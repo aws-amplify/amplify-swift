@@ -29,19 +29,21 @@ import struct Smithy.URIQueryItem
 @_spi(SmithyReadWrite) import struct SmithyReadWrite.ReadingClosureBox
 @_spi(SmithyReadWrite) import struct SmithyReadWrite.WritingClosureBox
 
-public struct GetConfigurationInput {
+
+public struct GetConfigurationInput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct PutConfigurationOutput {
+public struct PutConfigurationOutput: Swift.Sendable {
 
     public init() { }
 }
 
 extension ServiceCatalogAppRegistryClientTypes {
+
     /// Represents a Amazon Web Services Service Catalog AppRegistry application that is the top-level node in a hierarchy of related cloud resource abstractions.
-    public struct Application {
+    public struct Application: Swift.Sendable {
         /// A key-value pair that identifies an associated resource.
         public var applicationTag: [Swift.String: Swift.String]?
         /// The Amazon resource name (ARN) that specifies the application across services.
@@ -80,12 +82,12 @@ extension ServiceCatalogAppRegistryClientTypes {
             self.tags = tags
         }
     }
-
 }
 
 extension ServiceCatalogAppRegistryClientTypes {
+
     /// Summary of a Amazon Web Services Service Catalog AppRegistry application.
-    public struct ApplicationSummary {
+    public struct ApplicationSummary: Swift.Sendable {
         /// The Amazon resource name (ARN) that specifies the application across services.
         public var arn: Swift.String?
         /// The ISO-8601 formatted timestamp of the moment when the application was created.
@@ -116,12 +118,11 @@ extension ServiceCatalogAppRegistryClientTypes {
             self.name = name
         }
     }
-
 }
 
 extension ServiceCatalogAppRegistryClientTypes {
 
-    public enum ApplicationTagStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ApplicationTagStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case failure
         case inProgress
         case success
@@ -152,8 +153,9 @@ extension ServiceCatalogAppRegistryClientTypes {
 }
 
 extension ServiceCatalogAppRegistryClientTypes {
+
     /// The resource in a list of resources.
-    public struct ResourcesListItem {
+    public struct ResourcesListItem: Swift.Sendable {
         /// The message returned if the call fails.
         public var errorMessage: Swift.String?
         /// The Amazon resource name (ARN) of the resource.
@@ -176,12 +178,12 @@ extension ServiceCatalogAppRegistryClientTypes {
             self.status = status
         }
     }
-
 }
 
 extension ServiceCatalogAppRegistryClientTypes {
+
     /// The result of the application tag that's applied to a resource.
-    public struct ApplicationTagResult {
+    public struct ApplicationTagResult: Swift.Sendable {
         /// The application tag is in the process of being applied to a resource, was successfully applied to a resource, or failed to apply to a resource.
         public var applicationTagStatus: ServiceCatalogAppRegistryClientTypes.ApplicationTagStatus?
         /// The message returned if the call fails.
@@ -204,12 +206,12 @@ extension ServiceCatalogAppRegistryClientTypes {
             self.resources = resources
         }
     }
-
 }
 
 extension ServiceCatalogAppRegistryClientTypes {
+
     /// The definition of tagQuery. Specifies which resources are associated with an application.
-    public struct TagQueryConfiguration {
+    public struct TagQueryConfiguration: Swift.Sendable {
         /// Condition in the IAM policy that associates resources to an application.
         public var tagKey: Swift.String?
 
@@ -220,12 +222,12 @@ extension ServiceCatalogAppRegistryClientTypes {
             self.tagKey = tagKey
         }
     }
-
 }
 
 extension ServiceCatalogAppRegistryClientTypes {
+
     /// Includes all of the AppRegistry settings.
-    public struct AppRegistryConfiguration {
+    public struct AppRegistryConfiguration: Swift.Sendable {
         /// Includes the definition of a tagQuery.
         public var tagQueryConfiguration: ServiceCatalogAppRegistryClientTypes.TagQueryConfiguration?
 
@@ -236,7 +238,6 @@ extension ServiceCatalogAppRegistryClientTypes {
             self.tagQueryConfiguration = tagQueryConfiguration
         }
     }
-
 }
 
 /// There was a conflict when processing the request (for example, a resource with the given name already exists within the account).
@@ -359,7 +360,7 @@ public struct ValidationException: ClientRuntime.ModeledError, AWSClientRuntime.
     }
 }
 
-public struct AssociateAttributeGroupInput {
+public struct AssociateAttributeGroupInput: Swift.Sendable {
     /// The name, ID, or ARN of the application.
     /// This member is required.
     public var application: Swift.String?
@@ -377,7 +378,7 @@ public struct AssociateAttributeGroupInput {
     }
 }
 
-public struct AssociateAttributeGroupOutput {
+public struct AssociateAttributeGroupOutput: Swift.Sendable {
     /// The Amazon resource name (ARN) of the application that was augmented with attributes.
     public var applicationArn: Swift.String?
     /// The Amazon resource name (ARN) of the attribute group that contains the application's new attributes.
@@ -425,7 +426,7 @@ public struct ThrottlingException: ClientRuntime.ModeledError, AWSClientRuntime.
 
 extension ServiceCatalogAppRegistryClientTypes {
 
-    public enum AssociationOption: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AssociationOption: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case applyApplicationTag
         case skipApplicationTag
         case sdkUnknown(Swift.String)
@@ -454,7 +455,7 @@ extension ServiceCatalogAppRegistryClientTypes {
 
 extension ServiceCatalogAppRegistryClientTypes {
 
-    public enum ResourceType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ResourceType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case cfnStack
         case resourceTagValue
         case sdkUnknown(Swift.String)
@@ -481,7 +482,7 @@ extension ServiceCatalogAppRegistryClientTypes {
     }
 }
 
-public struct AssociateResourceInput {
+public struct AssociateResourceInput: Swift.Sendable {
     /// The name, ID, or ARN of the application.
     /// This member is required.
     public var application: Swift.String?
@@ -508,7 +509,7 @@ public struct AssociateResourceInput {
     }
 }
 
-public struct AssociateResourceOutput {
+public struct AssociateResourceOutput: Swift.Sendable {
     /// The Amazon resource name (ARN) of the application that was augmented with attributes.
     public var applicationArn: Swift.String?
     /// Determines whether an application tag is applied or skipped.
@@ -529,8 +530,9 @@ public struct AssociateResourceOutput {
 }
 
 extension ServiceCatalogAppRegistryClientTypes {
+
     /// Represents a Amazon Web Services Service Catalog AppRegistry attribute group that is rich metadata which describes an application and its components.
-    public struct AttributeGroup {
+    public struct AttributeGroup: Swift.Sendable {
         /// The Amazon resource name (ARN) that specifies the attribute group across services.
         public var arn: Swift.String?
         /// The ISO-8601 formatted timestamp of the moment the attribute group was created.
@@ -565,12 +567,12 @@ extension ServiceCatalogAppRegistryClientTypes {
             self.tags = tags
         }
     }
-
 }
 
 extension ServiceCatalogAppRegistryClientTypes {
+
     /// The details related to a specific AttributeGroup.
-    public struct AttributeGroupDetails {
+    public struct AttributeGroupDetails: Swift.Sendable {
         /// The Amazon resource name (ARN) that specifies the attribute group.
         public var arn: Swift.String?
         /// The service principal that created the attribute group.
@@ -593,12 +595,12 @@ extension ServiceCatalogAppRegistryClientTypes {
             self.name = name
         }
     }
-
 }
 
 extension ServiceCatalogAppRegistryClientTypes {
+
     /// Summary of a Amazon Web Services Service Catalog AppRegistry attribute group.
-    public struct AttributeGroupSummary {
+    public struct AttributeGroupSummary: Swift.Sendable {
         /// The Amazon resource name (ARN) that specifies the attribute group across services.
         public var arn: Swift.String?
         /// The service principal that created the attribute group.
@@ -633,10 +635,9 @@ extension ServiceCatalogAppRegistryClientTypes {
             self.name = name
         }
     }
-
 }
 
-public struct CreateApplicationInput {
+public struct CreateApplicationInput: Swift.Sendable {
     /// A unique identifier that you provide to ensure idempotency. If you retry a request that completed successfully using the same client token and the same parameters, the retry succeeds without performing any further actions. If you retry a successful request using the same client token, but one or more of the parameters are different, the retry fails.
     /// This member is required.
     public var clientToken: Swift.String?
@@ -662,7 +663,7 @@ public struct CreateApplicationInput {
     }
 }
 
-public struct CreateApplicationOutput {
+public struct CreateApplicationOutput: Swift.Sendable {
     /// Information about the application.
     public var application: ServiceCatalogAppRegistryClientTypes.Application?
 
@@ -674,7 +675,7 @@ public struct CreateApplicationOutput {
     }
 }
 
-public struct CreateAttributeGroupInput {
+public struct CreateAttributeGroupInput: Swift.Sendable {
     /// A JSON string in the form of nested key-value pairs that represent the attributes in the group and describes an application and its components.
     /// This member is required.
     public var attributes: Swift.String?
@@ -705,7 +706,7 @@ public struct CreateAttributeGroupInput {
     }
 }
 
-public struct CreateAttributeGroupOutput {
+public struct CreateAttributeGroupOutput: Swift.Sendable {
     /// Information about the attribute group.
     public var attributeGroup: ServiceCatalogAppRegistryClientTypes.AttributeGroup?
 
@@ -717,7 +718,7 @@ public struct CreateAttributeGroupOutput {
     }
 }
 
-public struct DeleteApplicationInput {
+public struct DeleteApplicationInput: Swift.Sendable {
     /// The name, ID, or ARN of the application.
     /// This member is required.
     public var application: Swift.String?
@@ -730,7 +731,7 @@ public struct DeleteApplicationInput {
     }
 }
 
-public struct DeleteApplicationOutput {
+public struct DeleteApplicationOutput: Swift.Sendable {
     /// Information about the deleted application.
     public var application: ServiceCatalogAppRegistryClientTypes.ApplicationSummary?
 
@@ -742,7 +743,7 @@ public struct DeleteApplicationOutput {
     }
 }
 
-public struct DeleteAttributeGroupInput {
+public struct DeleteAttributeGroupInput: Swift.Sendable {
     /// The name, ID, or ARN of the attribute group that holds the attributes to describe the application.
     /// This member is required.
     public var attributeGroup: Swift.String?
@@ -755,7 +756,7 @@ public struct DeleteAttributeGroupInput {
     }
 }
 
-public struct DeleteAttributeGroupOutput {
+public struct DeleteAttributeGroupOutput: Swift.Sendable {
     /// Information about the deleted attribute group.
     public var attributeGroup: ServiceCatalogAppRegistryClientTypes.AttributeGroupSummary?
 
@@ -767,7 +768,7 @@ public struct DeleteAttributeGroupOutput {
     }
 }
 
-public struct DisassociateAttributeGroupInput {
+public struct DisassociateAttributeGroupInput: Swift.Sendable {
     /// The name, ID, or ARN of the application.
     /// This member is required.
     public var application: Swift.String?
@@ -785,7 +786,7 @@ public struct DisassociateAttributeGroupInput {
     }
 }
 
-public struct DisassociateAttributeGroupOutput {
+public struct DisassociateAttributeGroupOutput: Swift.Sendable {
     /// The Amazon resource name (ARN) that specifies the application.
     public var applicationArn: Swift.String?
     /// The Amazon resource name (ARN) that specifies the attribute group.
@@ -801,7 +802,7 @@ public struct DisassociateAttributeGroupOutput {
     }
 }
 
-public struct DisassociateResourceInput {
+public struct DisassociateResourceInput: Swift.Sendable {
     /// The name or ID of the application.
     /// This member is required.
     public var application: Swift.String?
@@ -824,7 +825,7 @@ public struct DisassociateResourceInput {
     }
 }
 
-public struct DisassociateResourceOutput {
+public struct DisassociateResourceOutput: Swift.Sendable {
     /// The Amazon resource name (ARN) that specifies the application.
     public var applicationArn: Swift.String?
     /// The Amazon resource name (ARN) that specifies the resource.
@@ -840,7 +841,7 @@ public struct DisassociateResourceOutput {
     }
 }
 
-public struct GetApplicationInput {
+public struct GetApplicationInput: Swift.Sendable {
     /// The name, ID, or ARN of the application.
     /// This member is required.
     public var application: Swift.String?
@@ -855,7 +856,7 @@ public struct GetApplicationInput {
 
 extension ServiceCatalogAppRegistryClientTypes {
 
-    public enum ResourceGroupState: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ResourceGroupState: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case createComplete
         case createFailed
         case creating
@@ -895,8 +896,9 @@ extension ServiceCatalogAppRegistryClientTypes {
 }
 
 extension ServiceCatalogAppRegistryClientTypes {
+
     /// The information about the resource group integration.
-    public struct ResourceGroup {
+    public struct ResourceGroup: Swift.Sendable {
         /// The Amazon resource name (ARN) of the resource group.
         public var arn: Swift.String?
         /// The error message that generates when the propagation process for the resource group fails.
@@ -915,12 +917,12 @@ extension ServiceCatalogAppRegistryClientTypes {
             self.state = state
         }
     }
-
 }
 
 extension ServiceCatalogAppRegistryClientTypes {
+
     /// The information about the service integration.
-    public struct Integrations {
+    public struct Integrations: Swift.Sendable {
         /// The information about the resource group integration.
         public var applicationTagResourceGroup: ServiceCatalogAppRegistryClientTypes.ResourceGroup?
         /// The information about the resource group integration.
@@ -935,10 +937,9 @@ extension ServiceCatalogAppRegistryClientTypes {
             self.resourceGroup = resourceGroup
         }
     }
-
 }
 
-public struct GetApplicationOutput {
+public struct GetApplicationOutput: Swift.Sendable {
     /// A key-value pair that identifies an associated resource.
     public var applicationTag: [Swift.String: Swift.String]?
     /// The Amazon resource name (ARN) that specifies the application across services.
@@ -988,7 +989,7 @@ public struct GetApplicationOutput {
 
 extension ServiceCatalogAppRegistryClientTypes {
 
-    public enum ResourceItemStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ResourceItemStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case failed
         case inProgress
         case skipped
@@ -1021,7 +1022,7 @@ extension ServiceCatalogAppRegistryClientTypes {
     }
 }
 
-public struct GetAssociatedResourceInput {
+public struct GetAssociatedResourceInput: Swift.Sendable {
     /// The name, ID, or ARN of the application.
     /// This member is required.
     public var application: Swift.String?
@@ -1057,8 +1058,9 @@ public struct GetAssociatedResourceInput {
 }
 
 extension ServiceCatalogAppRegistryClientTypes {
+
     /// The service integration information about the resource.
-    public struct ResourceIntegrations {
+    public struct ResourceIntegrations: Swift.Sendable {
         /// The information about the integration of Resource Groups.
         public var resourceGroup: ServiceCatalogAppRegistryClientTypes.ResourceGroup?
 
@@ -1069,12 +1071,12 @@ extension ServiceCatalogAppRegistryClientTypes {
             self.resourceGroup = resourceGroup
         }
     }
-
 }
 
 extension ServiceCatalogAppRegistryClientTypes {
+
     /// The information about the resource.
-    public struct Resource {
+    public struct Resource: Swift.Sendable {
         /// The Amazon resource name (ARN) of the resource.
         public var arn: Swift.String?
         /// The time the resource was associated with the application.
@@ -1097,10 +1099,9 @@ extension ServiceCatalogAppRegistryClientTypes {
             self.name = name
         }
     }
-
 }
 
-public struct GetAssociatedResourceOutput {
+public struct GetAssociatedResourceOutput: Swift.Sendable {
     /// The result of the application that's tag applied to a resource.
     public var applicationTagResult: ServiceCatalogAppRegistryClientTypes.ApplicationTagResult?
     /// Determines whether an application tag is applied or skipped.
@@ -1120,7 +1121,7 @@ public struct GetAssociatedResourceOutput {
     }
 }
 
-public struct GetAttributeGroupInput {
+public struct GetAttributeGroupInput: Swift.Sendable {
     /// The name, ID, or ARN of the attribute group that holds the attributes to describe the application.
     /// This member is required.
     public var attributeGroup: Swift.String?
@@ -1133,7 +1134,7 @@ public struct GetAttributeGroupInput {
     }
 }
 
-public struct GetAttributeGroupOutput {
+public struct GetAttributeGroupOutput: Swift.Sendable {
     /// The Amazon resource name (ARN) that specifies the attribute group across services.
     public var arn: Swift.String?
     /// A JSON string in the form of nested key-value pairs that represent the attributes in the group and describes an application and its components.
@@ -1177,7 +1178,7 @@ public struct GetAttributeGroupOutput {
     }
 }
 
-public struct GetConfigurationOutput {
+public struct GetConfigurationOutput: Swift.Sendable {
     /// Retrieves TagKey configuration from an account.
     public var configuration: ServiceCatalogAppRegistryClientTypes.AppRegistryConfiguration?
 
@@ -1189,7 +1190,7 @@ public struct GetConfigurationOutput {
     }
 }
 
-public struct ListApplicationsInput {
+public struct ListApplicationsInput: Swift.Sendable {
     /// The upper bound of the number of results to return (cannot exceed 25). If this parameter is omitted, it defaults to 25. This value is optional.
     public var maxResults: Swift.Int?
     /// The token to use to get the next page of results after a previous API call.
@@ -1205,7 +1206,7 @@ public struct ListApplicationsInput {
     }
 }
 
-public struct ListApplicationsOutput {
+public struct ListApplicationsOutput: Swift.Sendable {
     /// This list of applications.
     public var applications: [ServiceCatalogAppRegistryClientTypes.ApplicationSummary]?
     /// The token to use to get the next page of results after a previous API call.
@@ -1221,7 +1222,7 @@ public struct ListApplicationsOutput {
     }
 }
 
-public struct ListAssociatedAttributeGroupsInput {
+public struct ListAssociatedAttributeGroupsInput: Swift.Sendable {
     /// The name or ID of the application.
     /// This member is required.
     public var application: Swift.String?
@@ -1242,7 +1243,7 @@ public struct ListAssociatedAttributeGroupsInput {
     }
 }
 
-public struct ListAssociatedAttributeGroupsOutput {
+public struct ListAssociatedAttributeGroupsOutput: Swift.Sendable {
     /// A list of attribute group IDs.
     public var attributeGroups: [Swift.String]?
     /// The token to use to get the next page of results after a previous API call.
@@ -1258,7 +1259,7 @@ public struct ListAssociatedAttributeGroupsOutput {
     }
 }
 
-public struct ListAssociatedResourcesInput {
+public struct ListAssociatedResourcesInput: Swift.Sendable {
     /// The name, ID, or ARN of the application.
     /// This member is required.
     public var application: Swift.String?
@@ -1280,8 +1281,9 @@ public struct ListAssociatedResourcesInput {
 }
 
 extension ServiceCatalogAppRegistryClientTypes {
+
     /// The details related to the resource.
-    public struct ResourceDetails {
+    public struct ResourceDetails: Swift.Sendable {
         /// The value of the tag.
         public var tagValue: Swift.String?
 
@@ -1292,12 +1294,12 @@ extension ServiceCatalogAppRegistryClientTypes {
             self.tagValue = tagValue
         }
     }
-
 }
 
 extension ServiceCatalogAppRegistryClientTypes {
+
     /// The information about the resource.
-    public struct ResourceInfo {
+    public struct ResourceInfo: Swift.Sendable {
         /// The Amazon resource name (ARN) that specifies the resource across services.
         public var arn: Swift.String?
         /// The name of the resource.
@@ -1324,10 +1326,9 @@ extension ServiceCatalogAppRegistryClientTypes {
             self.resourceType = resourceType
         }
     }
-
 }
 
-public struct ListAssociatedResourcesOutput {
+public struct ListAssociatedResourcesOutput: Swift.Sendable {
     /// The token to use to get the next page of results after a previous API call.
     public var nextToken: Swift.String?
     /// Information about the resources.
@@ -1343,7 +1344,7 @@ public struct ListAssociatedResourcesOutput {
     }
 }
 
-public struct ListAttributeGroupsInput {
+public struct ListAttributeGroupsInput: Swift.Sendable {
     /// The upper bound of the number of results to return (cannot exceed 25). If this parameter is omitted, it defaults to 25. This value is optional.
     public var maxResults: Swift.Int?
     /// The token to use to get the next page of results after a previous API call.
@@ -1359,7 +1360,7 @@ public struct ListAttributeGroupsInput {
     }
 }
 
-public struct ListAttributeGroupsOutput {
+public struct ListAttributeGroupsOutput: Swift.Sendable {
     /// This list of attribute groups.
     public var attributeGroups: [ServiceCatalogAppRegistryClientTypes.AttributeGroupSummary]?
     /// The token to use to get the next page of results after a previous API call.
@@ -1375,7 +1376,7 @@ public struct ListAttributeGroupsOutput {
     }
 }
 
-public struct ListAttributeGroupsForApplicationInput {
+public struct ListAttributeGroupsForApplicationInput: Swift.Sendable {
     /// The name or ID of the application.
     /// This member is required.
     public var application: Swift.String?
@@ -1396,7 +1397,7 @@ public struct ListAttributeGroupsForApplicationInput {
     }
 }
 
-public struct ListAttributeGroupsForApplicationOutput {
+public struct ListAttributeGroupsForApplicationOutput: Swift.Sendable {
     /// The details related to a specific attribute group.
     public var attributeGroupsDetails: [ServiceCatalogAppRegistryClientTypes.AttributeGroupDetails]?
     /// The token to use to get the next page of results after a previous API call.
@@ -1412,7 +1413,7 @@ public struct ListAttributeGroupsForApplicationOutput {
     }
 }
 
-public struct ListTagsForResourceInput {
+public struct ListTagsForResourceInput: Swift.Sendable {
     /// The Amazon resource name (ARN) that specifies the resource.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -1425,7 +1426,7 @@ public struct ListTagsForResourceInput {
     }
 }
 
-public struct ListTagsForResourceOutput {
+public struct ListTagsForResourceOutput: Swift.Sendable {
     /// The tags on the resource.
     public var tags: [Swift.String: Swift.String]?
 
@@ -1437,7 +1438,7 @@ public struct ListTagsForResourceOutput {
     }
 }
 
-public struct PutConfigurationInput {
+public struct PutConfigurationInput: Swift.Sendable {
     /// Associates a TagKey configuration to an account.
     /// This member is required.
     public var configuration: ServiceCatalogAppRegistryClientTypes.AppRegistryConfiguration?
@@ -1450,7 +1451,7 @@ public struct PutConfigurationInput {
     }
 }
 
-public struct SyncResourceInput {
+public struct SyncResourceInput: Swift.Sendable {
     /// An entity you can work with and specify with a name or ID. Examples include an Amazon EC2 instance, an Amazon Web Services CloudFormation stack, or an Amazon S3 bucket.
     /// This member is required.
     public var resource: Swift.String?
@@ -1470,7 +1471,7 @@ public struct SyncResourceInput {
 
 extension ServiceCatalogAppRegistryClientTypes {
 
-    public enum SyncAction: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SyncAction: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case noAction
         case startSync
         case sdkUnknown(Swift.String)
@@ -1497,7 +1498,7 @@ extension ServiceCatalogAppRegistryClientTypes {
     }
 }
 
-public struct SyncResourceOutput {
+public struct SyncResourceOutput: Swift.Sendable {
     /// The results of the output if an application is associated with an ARN value, which could be syncStarted or None.
     public var actionTaken: ServiceCatalogAppRegistryClientTypes.SyncAction?
     /// The Amazon resource name (ARN) that specifies the application.
@@ -1517,7 +1518,7 @@ public struct SyncResourceOutput {
     }
 }
 
-public struct TagResourceInput {
+public struct TagResourceInput: Swift.Sendable {
     /// The Amazon resource name (ARN) that specifies the resource.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -1535,12 +1536,12 @@ public struct TagResourceInput {
     }
 }
 
-public struct TagResourceOutput {
+public struct TagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UntagResourceInput {
+public struct UntagResourceInput: Swift.Sendable {
     /// The Amazon resource name (ARN) that specifies the resource.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -1558,12 +1559,12 @@ public struct UntagResourceInput {
     }
 }
 
-public struct UntagResourceOutput {
+public struct UntagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdateApplicationInput {
+public struct UpdateApplicationInput: Swift.Sendable {
     /// The name, ID, or ARN of the application that will be updated.
     /// This member is required.
     public var application: Swift.String?
@@ -1585,7 +1586,7 @@ public struct UpdateApplicationInput {
     }
 }
 
-public struct UpdateApplicationOutput {
+public struct UpdateApplicationOutput: Swift.Sendable {
     /// The updated information of the application.
     public var application: ServiceCatalogAppRegistryClientTypes.Application?
 
@@ -1597,7 +1598,7 @@ public struct UpdateApplicationOutput {
     }
 }
 
-public struct UpdateAttributeGroupInput {
+public struct UpdateAttributeGroupInput: Swift.Sendable {
     /// The name, ID, or ARN of the attribute group that holds the attributes to describe the application.
     /// This member is required.
     public var attributeGroup: Swift.String?
@@ -1623,7 +1624,7 @@ public struct UpdateAttributeGroupInput {
     }
 }
 
-public struct UpdateAttributeGroupOutput {
+public struct UpdateAttributeGroupOutput: Swift.Sendable {
     /// The updated information of the attribute group.
     public var attributeGroup: ServiceCatalogAppRegistryClientTypes.AttributeGroup?
 

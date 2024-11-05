@@ -39,74 +39,71 @@ import struct SmithyHTTPAPI.Headers
 @_spi(SmithyReadWrite) import struct SmithyReadWrite.WritingClosureBox
 import typealias SmithyEventStreamsAPI.UnmarshalClosure
 
-public struct DeleteAliasOutput {
+
+public struct DeleteAliasOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteFunctionCodeSigningConfigOutput {
+public struct DeleteFunctionCodeSigningConfigOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteFunctionConcurrencyOutput {
+public struct DeleteFunctionConcurrencyOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteFunctionEventInvokeConfigOutput {
+public struct DeleteFunctionEventInvokeConfigOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteFunctionOutput {
+public struct DeleteFunctionOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteFunctionUrlConfigOutput {
+public struct DeleteFunctionUrlConfigOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteLayerVersionOutput {
+public struct DeleteLayerVersionOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteProvisionedConcurrencyConfigOutput {
+public struct DeleteProvisionedConcurrencyConfigOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteResourcePolicyOutput {
+public struct RemoveLayerVersionPermissionOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct RemoveLayerVersionPermissionOutput {
+public struct RemovePermissionOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct RemovePermissionOutput {
+public struct TagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct TagResourceOutput {
-
-    public init() { }
-}
-
-public struct UntagResourceOutput {
+public struct UntagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
 extension LambdaClientTypes {
+
     /// Limits that are related to concurrency and storage. All file and storage sizes are in bytes.
-    public struct AccountLimit {
+    public struct AccountLimit: Swift.Sendable {
         /// The maximum size of a function's deployment package and layers when they're extracted.
         public var codeSizeUnzipped: Swift.Int
         /// The maximum size of a deployment package when it's uploaded directly to Lambda. Use Amazon S3 for larger files.
@@ -133,12 +130,12 @@ extension LambdaClientTypes {
             self.unreservedConcurrentExecutions = unreservedConcurrentExecutions
         }
     }
-
 }
 
 extension LambdaClientTypes {
+
     /// The number of functions and amount of storage in use.
-    public struct AccountUsage {
+    public struct AccountUsage: Swift.Sendable {
         /// The number of Lambda functions.
         public var functionCount: Swift.Int
         /// The amount of storage space, in bytes, that's being used by deployment packages and layer archives.
@@ -153,7 +150,6 @@ extension LambdaClientTypes {
             self.totalCodeSize = totalCodeSize
         }
     }
-
 }
 
 /// One of the parameters in the request is not valid.
@@ -330,7 +326,7 @@ public struct ServiceException: ClientRuntime.ModeledError, AWSClientRuntime.AWS
 
 extension LambdaClientTypes {
 
-    public enum ThrottleReason: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ThrottleReason: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case callerratelimitexceeded
         case concurrentinvocationlimitexceeded
         case concurrentsnapshotcreatelimitexceeded
@@ -403,7 +399,7 @@ public struct TooManyRequestsException: ClientRuntime.ModeledError, AWSClientRun
     }
 }
 
-public struct AddLayerVersionPermissionInput {
+public struct AddLayerVersionPermissionInput: Swift.Sendable {
     /// The API action that grants access to the layer. For example, lambda:GetLayerVersion.
     /// This member is required.
     public var action: Swift.String?
@@ -444,7 +440,7 @@ public struct AddLayerVersionPermissionInput {
     }
 }
 
-public struct AddLayerVersionPermissionOutput {
+public struct AddLayerVersionPermissionOutput: Swift.Sendable {
     /// A unique identifier for the current revision of the policy.
     public var revisionId: Swift.String?
     /// The permission statement.
@@ -460,37 +456,9 @@ public struct AddLayerVersionPermissionOutput {
     }
 }
 
-/// Lambda prevented your policy from being created because it would grant public access to your function. If you intended to create a public policy, use the [PutPublicAccessBlockConfig] API action to configure your function's public-access settings to allow public policies.
-public struct PublicPolicyException: ClientRuntime.ModeledError, AWSClientRuntime.AWSServiceError, ClientRuntime.HTTPError, Swift.Error {
-
-    public struct Properties {
-        public internal(set) var message: Swift.String? = nil
-        /// The exception type.
-        public internal(set) var type: Swift.String? = nil
-    }
-
-    public internal(set) var properties = Properties()
-    public static var typeName: Swift.String { "PublicPolicyException" }
-    public static var fault: ClientRuntime.ErrorFault { .client }
-    public static var isRetryable: Swift.Bool { false }
-    public static var isThrottling: Swift.Bool { false }
-    public internal(set) var httpResponse = SmithyHTTPAPI.HTTPResponse()
-    public internal(set) var message: Swift.String?
-    public internal(set) var requestID: Swift.String?
-
-    public init(
-        message: Swift.String? = nil,
-        type: Swift.String? = nil
-    )
-    {
-        self.properties.message = message
-        self.properties.type = type
-    }
-}
-
 extension LambdaClientTypes {
 
-    public enum FunctionUrlAuthType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum FunctionUrlAuthType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case awsIam
         case `none`
         case sdkUnknown(Swift.String)
@@ -517,7 +485,7 @@ extension LambdaClientTypes {
     }
 }
 
-public struct AddPermissionInput {
+public struct AddPermissionInput: Swift.Sendable {
     /// The action that the principal can use on the function. For example, lambda:InvokeFunction or lambda:GetFunction.
     /// This member is required.
     public var action: Swift.String?
@@ -537,7 +505,7 @@ public struct AddPermissionInput {
     public var functionName: Swift.String?
     /// The type of authentication that your function URL uses. Set to AWS_IAM if you want to restrict access to authenticated users only. Set to NONE if you want to bypass IAM authentication to create a public endpoint. For more information, see [Security and auth model for Lambda function URLs](https://docs.aws.amazon.com/lambda/latest/dg/urls-auth.html).
     public var functionUrlAuthType: LambdaClientTypes.FunctionUrlAuthType?
-    /// The Amazon Web Servicesservice, Amazon Web Services account, IAM user, or IAM role that invokes the function. If you specify a service, use SourceArn or SourceAccount to limit who can invoke the function through that service.
+    /// The Amazon Web Services service, Amazon Web Services account, IAM user, or IAM role that invokes the function. If you specify a service, use SourceArn or SourceAccount to limit who can invoke the function through that service.
     /// This member is required.
     public var principal: Swift.String?
     /// The identifier for your organization in Organizations. Use this to grant permissions to all the Amazon Web Services accounts under this organization.
@@ -546,9 +514,9 @@ public struct AddPermissionInput {
     public var qualifier: Swift.String?
     /// Update the policy only if the revision ID matches the ID that's specified. Use this option to avoid modifying a policy that has changed since you last read it.
     public var revisionId: Swift.String?
-    /// For Amazon Web Servicesservice, the ID of the Amazon Web Services account that owns the resource. Use this together with SourceArn to ensure that the specified account owns the resource. It is possible for an Amazon S3 bucket to be deleted by its owner and recreated by another account.
+    /// For Amazon Web Services service, the ID of the Amazon Web Services account that owns the resource. Use this together with SourceArn to ensure that the specified account owns the resource. It is possible for an Amazon S3 bucket to be deleted by its owner and recreated by another account.
     public var sourceAccount: Swift.String?
-    /// For Amazon Web Servicesservices, the ARN of the Amazon Web Services resource that invokes the function. For example, an Amazon S3 bucket or Amazon SNS topic. Note that Lambda configures the comparison using the StringLike operator.
+    /// For Amazon Web Services services, the ARN of the Amazon Web Services resource that invokes the function. For example, an Amazon S3 bucket or Amazon SNS topic. Note that Lambda configures the comparison using the StringLike operator.
     public var sourceArn: Swift.String?
     /// A statement identifier that differentiates the statement from others in the same policy.
     /// This member is required.
@@ -582,7 +550,7 @@ public struct AddPermissionInput {
     }
 }
 
-public struct AddPermissionOutput {
+public struct AddPermissionOutput: Swift.Sendable {
     /// The permission statement that's added to the function policy.
     public var statement: Swift.String?
 
@@ -595,8 +563,9 @@ public struct AddPermissionOutput {
 }
 
 extension LambdaClientTypes {
+
     /// The [traffic-shifting](https://docs.aws.amazon.com/lambda/latest/dg/lambda-traffic-shifting-using-aliases.html) configuration of a Lambda function alias.
-    public struct AliasRoutingConfiguration {
+    public struct AliasRoutingConfiguration: Swift.Sendable {
         /// The second version, and the percentage of traffic that's routed to it.
         public var additionalVersionWeights: [Swift.String: Swift.Double]?
 
@@ -607,12 +576,12 @@ extension LambdaClientTypes {
             self.additionalVersionWeights = additionalVersionWeights
         }
     }
-
 }
 
 extension LambdaClientTypes {
+
     /// Provides configuration information about a Lambda function [alias](https://docs.aws.amazon.com/lambda/latest/dg/configuration-aliases.html).
-    public struct AliasConfiguration {
+    public struct AliasConfiguration: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the alias.
         public var aliasArn: Swift.String?
         /// A description of the alias.
@@ -643,12 +612,12 @@ extension LambdaClientTypes {
             self.routingConfig = routingConfig
         }
     }
-
 }
 
 extension LambdaClientTypes {
+
     /// List of signing profiles that can sign a code package.
-    public struct AllowedPublishers {
+    public struct AllowedPublishers: Swift.Sendable {
         /// The Amazon Resource Name (ARN) for each of the signing profiles. A signing profile defines a trusted user who can sign a code package.
         /// This member is required.
         public var signingProfileVersionArns: [Swift.String]?
@@ -660,12 +629,12 @@ extension LambdaClientTypes {
             self.signingProfileVersionArns = signingProfileVersionArns
         }
     }
-
 }
 
 extension LambdaClientTypes {
+
     /// Specific configuration settings for an Amazon Managed Streaming for Apache Kafka (Amazon MSK) event source.
-    public struct AmazonManagedKafkaEventSourceConfig {
+    public struct AmazonManagedKafkaEventSourceConfig: Swift.Sendable {
         /// The identifier for the Kafka consumer group to join. The consumer group ID must be unique among all your Kafka event sources. After creating a Kafka event source mapping with the consumer group ID specified, you cannot update this value. For more information, see [Customizable consumer group ID](https://docs.aws.amazon.com/lambda/latest/dg/with-msk.html#services-msk-consumer-group-id).
         public var consumerGroupId: Swift.String?
 
@@ -676,12 +645,11 @@ extension LambdaClientTypes {
             self.consumerGroupId = consumerGroupId
         }
     }
-
 }
 
 extension LambdaClientTypes {
 
-    public enum ApplicationLogLevel: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ApplicationLogLevel: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case debug
         case error
         case fatal
@@ -722,7 +690,7 @@ extension LambdaClientTypes {
 
 extension LambdaClientTypes {
 
-    public enum Architecture: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Architecture: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case arm64
         case x8664
         case sdkUnknown(Swift.String)
@@ -749,7 +717,7 @@ extension LambdaClientTypes {
     }
 }
 
-public struct CreateAliasInput {
+public struct CreateAliasInput: Swift.Sendable {
     /// A description of the alias.
     public var description: Swift.String?
     /// The name or ARN of the Lambda function. Name formats
@@ -790,7 +758,7 @@ public struct CreateAliasInput {
 }
 
 /// Provides configuration information about a Lambda function [alias](https://docs.aws.amazon.com/lambda/latest/dg/configuration-aliases.html).
-public struct CreateAliasOutput {
+public struct CreateAliasOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the alias.
     public var aliasArn: Swift.String?
     /// A description of the alias.
@@ -824,7 +792,7 @@ public struct CreateAliasOutput {
 
 extension LambdaClientTypes {
 
-    public enum CodeSigningPolicy: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum CodeSigningPolicy: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case enforce
         case warn
         case sdkUnknown(Swift.String)
@@ -852,8 +820,9 @@ extension LambdaClientTypes {
 }
 
 extension LambdaClientTypes {
+
     /// Code signing configuration [policies](https://docs.aws.amazon.com/lambda/latest/dg/configuration-codesigning.html#config-codesigning-policies) specify the validation failure action for signature mismatch or expiry.
-    public struct CodeSigningPolicies {
+    public struct CodeSigningPolicies: Swift.Sendable {
         /// Code signing configuration policy for deployment validation failure. If you set the policy to Enforce, Lambda blocks the deployment request if signature validation checks fail. If you set the policy to Warn, Lambda allows the deployment and creates a CloudWatch log. Default value: Warn
         public var untrustedArtifactOnDeployment: LambdaClientTypes.CodeSigningPolicy?
 
@@ -864,10 +833,9 @@ extension LambdaClientTypes {
             self.untrustedArtifactOnDeployment = untrustedArtifactOnDeployment
         }
     }
-
 }
 
-public struct CreateCodeSigningConfigInput {
+public struct CreateCodeSigningConfigInput: Swift.Sendable {
     /// Signing profiles for this code signing configuration.
     /// This member is required.
     public var allowedPublishers: LambdaClientTypes.AllowedPublishers?
@@ -893,8 +861,9 @@ public struct CreateCodeSigningConfigInput {
 }
 
 extension LambdaClientTypes {
+
     /// Details about a [Code signing configuration](https://docs.aws.amazon.com/lambda/latest/dg/configuration-codesigning.html).
-    public struct CodeSigningConfig {
+    public struct CodeSigningConfig: Swift.Sendable {
         /// List of allowed publishers.
         /// This member is required.
         public var allowedPublishers: LambdaClientTypes.AllowedPublishers?
@@ -930,10 +899,9 @@ extension LambdaClientTypes {
             self.lastModified = lastModified
         }
     }
-
 }
 
-public struct CreateCodeSigningConfigOutput {
+public struct CreateCodeSigningConfigOutput: Swift.Sendable {
     /// The code signing configuration.
     /// This member is required.
     public var codeSigningConfig: LambdaClientTypes.CodeSigningConfig?
@@ -947,8 +915,9 @@ public struct CreateCodeSigningConfigOutput {
 }
 
 extension LambdaClientTypes {
+
     /// A destination for events that failed processing.
-    public struct OnFailure {
+    public struct OnFailure: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the destination resource. To retain records of [asynchronous invocations](https://docs.aws.amazon.com/lambda/latest/dg/invocation-async.html#invocation-async-destinations), you can configure an Amazon SNS topic, Amazon SQS queue, Lambda function, or Amazon EventBridge event bus as the destination. To retain records of failed invocations from [Kinesis and DynamoDB event sources](https://docs.aws.amazon.com/lambda/latest/dg/invocation-eventsourcemapping.html#event-source-mapping-destinations), you can configure an Amazon SNS topic or Amazon SQS queue as the destination. To retain records of failed invocations from [self-managed Kafka](https://docs.aws.amazon.com/lambda/latest/dg/with-kafka.html#services-smaa-onfailure-destination) or [Amazon MSK](https://docs.aws.amazon.com/lambda/latest/dg/with-msk.html#services-msk-onfailure-destination), you can configure an Amazon SNS topic, Amazon SQS queue, or Amazon S3 bucket as the destination.
         public var destination: Swift.String?
 
@@ -959,12 +928,12 @@ extension LambdaClientTypes {
             self.destination = destination
         }
     }
-
 }
 
 extension LambdaClientTypes {
+
     /// A destination for events that were processed successfully.
-    public struct OnSuccess {
+    public struct OnSuccess: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the destination resource.
         public var destination: Swift.String?
 
@@ -975,12 +944,12 @@ extension LambdaClientTypes {
             self.destination = destination
         }
     }
-
 }
 
 extension LambdaClientTypes {
+
     /// A configuration object that specifies the destination of an event after Lambda processes it.
-    public struct DestinationConfig {
+    public struct DestinationConfig: Swift.Sendable {
         /// The destination configuration for failed invocations.
         public var onFailure: LambdaClientTypes.OnFailure?
         /// The destination configuration for successful invocations.
@@ -995,12 +964,11 @@ extension LambdaClientTypes {
             self.onSuccess = onSuccess
         }
     }
-
 }
 
 extension LambdaClientTypes {
 
-    public enum FullDocument: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum FullDocument: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case `default`
         case updatelookup
         case sdkUnknown(Swift.String)
@@ -1028,8 +996,9 @@ extension LambdaClientTypes {
 }
 
 extension LambdaClientTypes {
+
     /// Specific configuration settings for a DocumentDB event source.
-    public struct DocumentDBEventSourceConfig {
+    public struct DocumentDBEventSourceConfig: Swift.Sendable {
         /// The name of the collection to consume within the database. If you do not specify a collection, Lambda consumes all collections.
         public var collectionName: Swift.String?
         /// The name of the database to consume within the DocumentDB cluster.
@@ -1048,12 +1017,12 @@ extension LambdaClientTypes {
             self.fullDocument = fullDocument
         }
     }
-
 }
 
 extension LambdaClientTypes {
+
     /// A structure within a FilterCriteria object that defines an event filtering pattern.
-    public struct Filter {
+    public struct Filter: Swift.Sendable {
         /// A filter pattern. For more information on the syntax of a filter pattern, see [ Filter rule syntax](https://docs.aws.amazon.com/lambda/latest/dg/invocation-eventfiltering.html#filtering-syntax).
         public var pattern: Swift.String?
 
@@ -1064,12 +1033,12 @@ extension LambdaClientTypes {
             self.pattern = pattern
         }
     }
-
 }
 
 extension LambdaClientTypes {
+
     /// An object that contains the filters for an event source.
-    public struct FilterCriteria {
+    public struct FilterCriteria: Swift.Sendable {
         /// A list of filters.
         public var filters: [LambdaClientTypes.Filter]?
 
@@ -1080,12 +1049,11 @@ extension LambdaClientTypes {
             self.filters = filters
         }
     }
-
 }
 
 extension LambdaClientTypes {
 
-    public enum FunctionResponseType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum FunctionResponseType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case reportbatchitemfailures
         case sdkUnknown(Swift.String)
 
@@ -1110,8 +1078,9 @@ extension LambdaClientTypes {
 }
 
 extension LambdaClientTypes {
+
     /// (Amazon SQS only) The scaling configuration for the event source. To remove the configuration, pass an empty value.
-    public struct ScalingConfig {
+    public struct ScalingConfig: Swift.Sendable {
         /// Limits the number of concurrent instances that the Amazon SQS event source can invoke.
         public var maximumConcurrency: Swift.Int?
 
@@ -1122,12 +1091,11 @@ extension LambdaClientTypes {
             self.maximumConcurrency = maximumConcurrency
         }
     }
-
 }
 
 extension LambdaClientTypes {
 
-    public enum EndPointType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum EndPointType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case kafkaBootstrapServers
         case sdkUnknown(Swift.String)
 
@@ -1152,8 +1120,9 @@ extension LambdaClientTypes {
 }
 
 extension LambdaClientTypes {
+
     /// The self-managed Apache Kafka cluster for your event source.
-    public struct SelfManagedEventSource {
+    public struct SelfManagedEventSource: Swift.Sendable {
         /// The list of bootstrap servers for your Kafka brokers in the following format: "KAFKA_BOOTSTRAP_SERVERS": ["abc.xyz.com:xxxx","abc2.xyz.com:xxxx"].
         public var endpoints: [Swift.String: [Swift.String]]?
 
@@ -1164,12 +1133,12 @@ extension LambdaClientTypes {
             self.endpoints = endpoints
         }
     }
-
 }
 
 extension LambdaClientTypes {
+
     /// Specific configuration settings for a self-managed Apache Kafka event source.
-    public struct SelfManagedKafkaEventSourceConfig {
+    public struct SelfManagedKafkaEventSourceConfig: Swift.Sendable {
         /// The identifier for the Kafka consumer group to join. The consumer group ID must be unique among all your Kafka event sources. After creating a Kafka event source mapping with the consumer group ID specified, you cannot update this value. For more information, see [Customizable consumer group ID](https://docs.aws.amazon.com/lambda/latest/dg/with-msk.html#services-msk-consumer-group-id).
         public var consumerGroupId: Swift.String?
 
@@ -1180,12 +1149,11 @@ extension LambdaClientTypes {
             self.consumerGroupId = consumerGroupId
         }
     }
-
 }
 
 extension LambdaClientTypes {
 
-    public enum SourceAccessType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SourceAccessType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case basicAuth
         case clientCertificateTlsAuth
         case saslScram256Auth
@@ -1231,8 +1199,9 @@ extension LambdaClientTypes {
 }
 
 extension LambdaClientTypes {
+
     /// To secure and define access to your event source, you can specify the authentication protocol, VPC components, or virtual host.
-    public struct SourceAccessConfiguration {
+    public struct SourceAccessConfiguration: Swift.Sendable {
         /// The type of authentication protocol, VPC components, or virtual host for your event source. For example: "Type":"SASL_SCRAM_512_AUTH".
         ///
         /// * BASIC_AUTH – (Amazon MQ) The Secrets Manager secret that stores your broker credentials.
@@ -1265,12 +1234,11 @@ extension LambdaClientTypes {
             self.uri = uri
         }
     }
-
 }
 
 extension LambdaClientTypes {
 
-    public enum EventSourcePosition: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum EventSourcePosition: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case atTimestamp
         case latest
         case trimHorizon
@@ -1300,7 +1268,7 @@ extension LambdaClientTypes {
     }
 }
 
-public struct CreateEventSourceMappingInput {
+public struct CreateEventSourceMappingInput: Swift.Sendable {
     /// Specific configuration settings for an Amazon Managed Streaming for Apache Kafka (Amazon MSK) event source.
     public var amazonManagedKafkaEventSourceConfig: LambdaClientTypes.AmazonManagedKafkaEventSourceConfig?
     /// The maximum number of records in each batch that Lambda pulls from your stream or queue and sends to your function. Lambda passes all of the records in the batch to the function in a single call, up to the payload limit for synchronous invocation (6 MB).
@@ -1447,8 +1415,9 @@ public struct CreateEventSourceMappingInput {
 }
 
 extension LambdaClientTypes {
+
     /// An object that contains details about an error related to filter criteria encryption.
-    public struct FilterCriteriaError {
+    public struct FilterCriteriaError: Swift.Sendable {
         /// The KMS exception that resulted from filter criteria encryption or decryption.
         public var errorCode: Swift.String?
         /// The error message.
@@ -1463,11 +1432,10 @@ extension LambdaClientTypes {
             self.message = message
         }
     }
-
 }
 
 /// A mapping between an Amazon Web Services resource and a Lambda function. For details, see [CreateEventSourceMapping].
-public struct CreateEventSourceMappingOutput {
+public struct CreateEventSourceMappingOutput: Swift.Sendable {
     /// Specific configuration settings for an Amazon Managed Streaming for Apache Kafka (Amazon MSK) event source.
     public var amazonManagedKafkaEventSourceConfig: LambdaClientTypes.AmazonManagedKafkaEventSourceConfig?
     /// The maximum number of records in each batch that Lambda pulls from your stream or queue and sends to your function. Lambda passes all of the records in the batch to the function in a single call, up to the payload limit for synchronous invocation (6 MB). Default value: Varies by service. For Amazon SQS, the default is 10. For all other services, the default is 100. Related setting: When you set BatchSize to a value greater than 10, you must set MaximumBatchingWindowInSeconds to at least 1.
@@ -1705,8 +1673,9 @@ public struct InvalidCodeSignatureException: ClientRuntime.ModeledError, AWSClie
 }
 
 extension LambdaClientTypes {
+
     /// The code for the Lambda function. You can either specify an object in Amazon S3, upload a .zip file archive deployment package directly, or specify the URI of a container image.
-    public struct FunctionCode {
+    public struct FunctionCode: Swift.Sendable {
         /// URI of a [container image](https://docs.aws.amazon.com/lambda/latest/dg/lambda-images.html) in the Amazon ECR registry.
         public var imageUri: Swift.String?
         /// An Amazon S3 bucket in the same Amazon Web Services Region as your function. The bucket can be in a different Amazon Web Services account.
@@ -1733,7 +1702,6 @@ extension LambdaClientTypes {
             self.zipFile = zipFile
         }
     }
-
 }
 
 extension LambdaClientTypes.FunctionCode: Swift.CustomDebugStringConvertible {
@@ -1742,8 +1710,9 @@ extension LambdaClientTypes.FunctionCode: Swift.CustomDebugStringConvertible {
 }
 
 extension LambdaClientTypes {
+
     /// The [dead-letter queue](https://docs.aws.amazon.com/lambda/latest/dg/invocation-async.html#dlq) for failed asynchronous invocations.
-    public struct DeadLetterConfig {
+    public struct DeadLetterConfig: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of an Amazon SQS queue or Amazon SNS topic.
         public var targetArn: Swift.String?
 
@@ -1754,12 +1723,12 @@ extension LambdaClientTypes {
             self.targetArn = targetArn
         }
     }
-
 }
 
 extension LambdaClientTypes {
+
     /// A function's environment variable settings. You can use environment variables to adjust your function's behavior without updating code. An environment variable is a pair of strings that are stored in a function's version-specific configuration.
-    public struct Environment {
+    public struct Environment: Swift.Sendable {
         /// Environment variable key-value pairs. For more information, see [Using Lambda environment variables](https://docs.aws.amazon.com/lambda/latest/dg/configuration-envvars.html).
         public var variables: [Swift.String: Swift.String]?
 
@@ -1770,7 +1739,6 @@ extension LambdaClientTypes {
             self.variables = variables
         }
     }
-
 }
 
 extension LambdaClientTypes.Environment: Swift.CustomDebugStringConvertible {
@@ -1779,8 +1747,9 @@ extension LambdaClientTypes.Environment: Swift.CustomDebugStringConvertible {
 }
 
 extension LambdaClientTypes {
+
     /// The size of the function's /tmp directory in MB. The default value is 512, but can be any whole number between 512 and 10,240 MB. For more information, see [Configuring ephemeral storage (console)](https://docs.aws.amazon.com/lambda/latest/dg/configuration-function-common.html#configuration-ephemeral-storage).
-    public struct EphemeralStorage {
+    public struct EphemeralStorage: Swift.Sendable {
         /// The size of the function's /tmp directory.
         /// This member is required.
         public var size: Swift.Int?
@@ -1792,12 +1761,12 @@ extension LambdaClientTypes {
             self.size = size
         }
     }
-
 }
 
 extension LambdaClientTypes {
+
     /// Details about the connection between a Lambda function and an [Amazon EFS file system](https://docs.aws.amazon.com/lambda/latest/dg/configuration-filesystem.html).
-    public struct FileSystemConfig {
+    public struct FileSystemConfig: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the Amazon EFS access point that provides access to the file system.
         /// This member is required.
         public var arn: Swift.String?
@@ -1814,12 +1783,12 @@ extension LambdaClientTypes {
             self.localMountPath = localMountPath
         }
     }
-
 }
 
 extension LambdaClientTypes {
+
     /// Configuration values that override the container image Dockerfile settings. For more information, see [Container image settings](https://docs.aws.amazon.com/lambda/latest/dg/images-create.html#images-parms).
-    public struct ImageConfig {
+    public struct ImageConfig: Swift.Sendable {
         /// Specifies parameters that you want to pass in with ENTRYPOINT.
         public var command: [Swift.String]?
         /// Specifies the entry point to their application, which is typically the location of the runtime executable.
@@ -1838,12 +1807,11 @@ extension LambdaClientTypes {
             self.workingDirectory = workingDirectory
         }
     }
-
 }
 
 extension LambdaClientTypes {
 
-    public enum LogFormat: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum LogFormat: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case json
         case text
         case sdkUnknown(Swift.String)
@@ -1872,7 +1840,7 @@ extension LambdaClientTypes {
 
 extension LambdaClientTypes {
 
-    public enum SystemLogLevel: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SystemLogLevel: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case debug
         case info
         case warn
@@ -1903,8 +1871,9 @@ extension LambdaClientTypes {
 }
 
 extension LambdaClientTypes {
+
     /// The function's Amazon CloudWatch Logs configuration settings.
-    public struct LoggingConfig {
+    public struct LoggingConfig: Swift.Sendable {
         /// Set this property to filter the application logs for your function that Lambda sends to CloudWatch. Lambda only sends application logs at the selected level of detail and lower, where TRACE is the highest level and FATAL is the lowest.
         public var applicationLogLevel: LambdaClientTypes.ApplicationLogLevel?
         /// The format in which Lambda sends your function's application and system logs to CloudWatch. Select between plain text and structured JSON.
@@ -1927,12 +1896,11 @@ extension LambdaClientTypes {
             self.systemLogLevel = systemLogLevel
         }
     }
-
 }
 
 extension LambdaClientTypes {
 
-    public enum PackageType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum PackageType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case image
         case zip
         case sdkUnknown(Swift.String)
@@ -1961,7 +1929,7 @@ extension LambdaClientTypes {
 
 extension LambdaClientTypes {
 
-    public enum Runtime: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Runtime: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case dotnet6
         case dotnet8
         case dotnetcore10
@@ -2098,7 +2066,7 @@ extension LambdaClientTypes {
 
 extension LambdaClientTypes {
 
-    public enum SnapStartApplyOn: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SnapStartApplyOn: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case `none`
         case publishedversions
         case sdkUnknown(Swift.String)
@@ -2126,8 +2094,9 @@ extension LambdaClientTypes {
 }
 
 extension LambdaClientTypes {
+
     /// The function's [Lambda SnapStart](https://docs.aws.amazon.com/lambda/latest/dg/snapstart.html) setting. Set ApplyOn to PublishedVersions to create a snapshot of the initialized execution environment when you publish a function version.
-    public struct SnapStart {
+    public struct SnapStart: Swift.Sendable {
         /// Set to PublishedVersions to create a snapshot of the initialized execution environment when you publish a function version.
         public var applyOn: LambdaClientTypes.SnapStartApplyOn?
 
@@ -2138,12 +2107,11 @@ extension LambdaClientTypes {
             self.applyOn = applyOn
         }
     }
-
 }
 
 extension LambdaClientTypes {
 
-    public enum TracingMode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum TracingMode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case active
         case passthrough
         case sdkUnknown(Swift.String)
@@ -2171,8 +2139,9 @@ extension LambdaClientTypes {
 }
 
 extension LambdaClientTypes {
+
     /// The function's [X-Ray](https://docs.aws.amazon.com/lambda/latest/dg/services-xray.html) tracing configuration. To sample and record incoming requests, set Mode to Active.
-    public struct TracingConfig {
+    public struct TracingConfig: Swift.Sendable {
         /// The tracing mode.
         public var mode: LambdaClientTypes.TracingMode?
 
@@ -2183,12 +2152,12 @@ extension LambdaClientTypes {
             self.mode = mode
         }
     }
-
 }
 
 extension LambdaClientTypes {
+
     /// The VPC security groups and subnets that are attached to a Lambda function. For more information, see [Configuring a Lambda function to access resources in a VPC](https://docs.aws.amazon.com/lambda/latest/dg/configuration-vpc.html).
-    public struct VpcConfig {
+    public struct VpcConfig: Swift.Sendable {
         /// Allows outbound IPv6 traffic on VPC functions that are connected to dual-stack subnets.
         public var ipv6AllowedForDualStack: Swift.Bool?
         /// A list of VPC security group IDs.
@@ -2207,10 +2176,9 @@ extension LambdaClientTypes {
             self.subnetIds = subnetIds
         }
     }
-
 }
 
-public struct CreateFunctionInput {
+public struct CreateFunctionInput: Swift.Sendable {
     /// The instruction set architecture that the function supports. Enter a string array with one of the valid values (arm64 or x86_64). The default value is x86_64.
     public var architectures: [LambdaClientTypes.Architecture]?
     /// The code for the function.
@@ -2327,8 +2295,9 @@ public struct CreateFunctionInput {
 }
 
 extension LambdaClientTypes {
+
     /// Error messages for environment variables that couldn't be applied.
-    public struct EnvironmentError {
+    public struct EnvironmentError: Swift.Sendable {
         /// The error code.
         public var errorCode: Swift.String?
         /// The error message.
@@ -2343,7 +2312,6 @@ extension LambdaClientTypes {
             self.message = message
         }
     }
-
 }
 
 extension LambdaClientTypes.EnvironmentError: Swift.CustomDebugStringConvertible {
@@ -2352,8 +2320,9 @@ extension LambdaClientTypes.EnvironmentError: Swift.CustomDebugStringConvertible
 }
 
 extension LambdaClientTypes {
+
     /// The results of an operation to update or read environment variables. If the operation succeeds, the response contains the environment variables. If it fails, the response contains details about the error.
-    public struct EnvironmentResponse {
+    public struct EnvironmentResponse: Swift.Sendable {
         /// Error messages for environment variables that couldn't be applied.
         public var error: LambdaClientTypes.EnvironmentError?
         /// Environment variable key-value pairs. Omitted from CloudTrail logs.
@@ -2368,7 +2337,6 @@ extension LambdaClientTypes {
             self.variables = variables
         }
     }
-
 }
 
 extension LambdaClientTypes.EnvironmentResponse: Swift.CustomDebugStringConvertible {
@@ -2377,8 +2345,9 @@ extension LambdaClientTypes.EnvironmentResponse: Swift.CustomDebugStringConverti
 }
 
 extension LambdaClientTypes {
+
     /// Error response to GetFunctionConfiguration.
-    public struct ImageConfigError {
+    public struct ImageConfigError: Swift.Sendable {
         /// Error code.
         public var errorCode: Swift.String?
         /// Error message.
@@ -2393,7 +2362,6 @@ extension LambdaClientTypes {
             self.message = message
         }
     }
-
 }
 
 extension LambdaClientTypes.ImageConfigError: Swift.CustomDebugStringConvertible {
@@ -2402,8 +2370,9 @@ extension LambdaClientTypes.ImageConfigError: Swift.CustomDebugStringConvertible
 }
 
 extension LambdaClientTypes {
+
     /// Response to a GetFunctionConfiguration request.
-    public struct ImageConfigResponse {
+    public struct ImageConfigResponse: Swift.Sendable {
         /// Error response to GetFunctionConfiguration.
         public var error: LambdaClientTypes.ImageConfigError?
         /// Configuration values that override the container image Dockerfile.
@@ -2418,12 +2387,11 @@ extension LambdaClientTypes {
             self.imageConfig = imageConfig
         }
     }
-
 }
 
 extension LambdaClientTypes {
 
-    public enum LastUpdateStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum LastUpdateStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case failed
         case inprogress
         case successful
@@ -2455,7 +2423,7 @@ extension LambdaClientTypes {
 
 extension LambdaClientTypes {
 
-    public enum LastUpdateStatusReasonCode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum LastUpdateStatusReasonCode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case disabledkmskey
         case efsioerror
         case efsmountconnectivityerror
@@ -2540,8 +2508,9 @@ extension LambdaClientTypes {
 }
 
 extension LambdaClientTypes {
+
     /// An [Lambda layer](https://docs.aws.amazon.com/lambda/latest/dg/configuration-layers.html).
-    public struct Layer {
+    public struct Layer: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the function layer.
         public var arn: Swift.String?
         /// The size of the layer archive in bytes.
@@ -2564,12 +2533,12 @@ extension LambdaClientTypes {
             self.signingProfileVersionArn = signingProfileVersionArn
         }
     }
-
 }
 
 extension LambdaClientTypes {
+
     /// Any error returned when the runtime version information for the function could not be retrieved.
-    public struct RuntimeVersionError {
+    public struct RuntimeVersionError: Swift.Sendable {
         /// The error code.
         public var errorCode: Swift.String?
         /// The error message.
@@ -2584,7 +2553,6 @@ extension LambdaClientTypes {
             self.message = message
         }
     }
-
 }
 
 extension LambdaClientTypes.RuntimeVersionError: Swift.CustomDebugStringConvertible {
@@ -2593,8 +2561,9 @@ extension LambdaClientTypes.RuntimeVersionError: Swift.CustomDebugStringConverti
 }
 
 extension LambdaClientTypes {
+
     /// The ARN of the runtime and any errors that occured.
-    public struct RuntimeVersionConfig {
+    public struct RuntimeVersionConfig: Swift.Sendable {
         /// Error response when Lambda is unable to retrieve the runtime version for a function.
         public var error: LambdaClientTypes.RuntimeVersionError?
         /// The ARN of the runtime version you want the function to use.
@@ -2609,12 +2578,11 @@ extension LambdaClientTypes {
             self.runtimeVersionArn = runtimeVersionArn
         }
     }
-
 }
 
 extension LambdaClientTypes {
 
-    public enum SnapStartOptimizationStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SnapStartOptimizationStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case off
         case on
         case sdkUnknown(Swift.String)
@@ -2642,8 +2610,9 @@ extension LambdaClientTypes {
 }
 
 extension LambdaClientTypes {
+
     /// The function's [SnapStart](https://docs.aws.amazon.com/lambda/latest/dg/snapstart.html) setting.
-    public struct SnapStartResponse {
+    public struct SnapStartResponse: Swift.Sendable {
         /// When set to PublishedVersions, Lambda creates a snapshot of the execution environment when you publish a function version.
         public var applyOn: LambdaClientTypes.SnapStartApplyOn?
         /// When you provide a [qualified Amazon Resource Name (ARN)](https://docs.aws.amazon.com/lambda/latest/dg/configuration-versions.html#versioning-versions-using), this response element indicates whether SnapStart is activated for the specified function version.
@@ -2658,12 +2627,11 @@ extension LambdaClientTypes {
             self.optimizationStatus = optimizationStatus
         }
     }
-
 }
 
 extension LambdaClientTypes {
 
-    public enum State: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum State: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case active
         case failed
         case inactive
@@ -2698,7 +2666,7 @@ extension LambdaClientTypes {
 
 extension LambdaClientTypes {
 
-    public enum StateReasonCode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum StateReasonCode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case creating
         case disabledkmskey
         case efsioerror
@@ -2792,8 +2760,9 @@ extension LambdaClientTypes {
 }
 
 extension LambdaClientTypes {
+
     /// The function's X-Ray tracing configuration.
-    public struct TracingConfigResponse {
+    public struct TracingConfigResponse: Swift.Sendable {
         /// The tracing mode.
         public var mode: LambdaClientTypes.TracingMode?
 
@@ -2804,12 +2773,12 @@ extension LambdaClientTypes {
             self.mode = mode
         }
     }
-
 }
 
 extension LambdaClientTypes {
+
     /// The VPC security groups and subnets that are attached to a Lambda function.
-    public struct VpcConfigResponse {
+    public struct VpcConfigResponse: Swift.Sendable {
         /// Allows outbound IPv6 traffic on VPC functions that are connected to dual-stack subnets.
         public var ipv6AllowedForDualStack: Swift.Bool?
         /// A list of VPC security group IDs.
@@ -2832,11 +2801,10 @@ extension LambdaClientTypes {
             self.vpcId = vpcId
         }
     }
-
 }
 
 /// Details about a function's configuration.
-public struct CreateFunctionOutput {
+public struct CreateFunctionOutput: Swift.Sendable {
     /// The instruction set architecture that the function supports. Architecture is a string array with one of the valid values. The default architecture value is x86_64.
     public var architectures: [LambdaClientTypes.Architecture]?
     /// The SHA256 hash of the function's deployment package.
@@ -2989,8 +2957,9 @@ public struct CreateFunctionOutput {
 }
 
 extension LambdaClientTypes {
+
     /// The [cross-origin resource sharing (CORS)](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS) settings for your Lambda function URL. Use CORS to grant access to your function URL from any origin. You can also use CORS to control access for specific HTTP headers and methods in requests to your function URL.
-    public struct Cors {
+    public struct Cors: Swift.Sendable {
         /// Whether to allow cookies or other credentials in requests to your function URL. The default is false.
         public var allowCredentials: Swift.Bool?
         /// The HTTP headers that origins can include in requests to your function URL. For example: Date, Keep-Alive, X-Custom-Header.
@@ -3021,12 +2990,11 @@ extension LambdaClientTypes {
             self.maxAge = maxAge
         }
     }
-
 }
 
 extension LambdaClientTypes {
 
-    public enum InvokeMode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum InvokeMode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case buffered
         case responseStream
         case sdkUnknown(Swift.String)
@@ -3053,7 +3021,7 @@ extension LambdaClientTypes {
     }
 }
 
-public struct CreateFunctionUrlConfigInput {
+public struct CreateFunctionUrlConfigInput: Swift.Sendable {
     /// The type of authentication that your function URL uses. Set to AWS_IAM if you want to restrict access to authenticated users only. Set to NONE if you want to bypass IAM authentication to create a public endpoint. For more information, see [Security and auth model for Lambda function URLs](https://docs.aws.amazon.com/lambda/latest/dg/urls-auth.html).
     /// This member is required.
     public var authType: LambdaClientTypes.FunctionUrlAuthType?
@@ -3096,7 +3064,7 @@ public struct CreateFunctionUrlConfigInput {
     }
 }
 
-public struct CreateFunctionUrlConfigOutput {
+public struct CreateFunctionUrlConfigOutput: Swift.Sendable {
     /// The type of authentication that your function URL uses. Set to AWS_IAM if you want to restrict access to authenticated users only. Set to NONE if you want to bypass IAM authentication to create a public endpoint. For more information, see [Security and auth model for Lambda function URLs](https://docs.aws.amazon.com/lambda/latest/dg/urls-auth.html).
     /// This member is required.
     public var authType: LambdaClientTypes.FunctionUrlAuthType?
@@ -3136,7 +3104,7 @@ public struct CreateFunctionUrlConfigOutput {
     }
 }
 
-public struct DeleteAliasInput {
+public struct DeleteAliasInput: Swift.Sendable {
     /// The name or ARN of the Lambda function. Name formats
     ///
     /// * Function name - MyFunction.
@@ -3163,7 +3131,7 @@ public struct DeleteAliasInput {
     }
 }
 
-public struct DeleteCodeSigningConfigInput {
+public struct DeleteCodeSigningConfigInput: Swift.Sendable {
     /// The The Amazon Resource Name (ARN) of the code signing configuration.
     /// This member is required.
     public var codeSigningConfigArn: Swift.String?
@@ -3176,7 +3144,7 @@ public struct DeleteCodeSigningConfigInput {
     }
 }
 
-public struct DeleteCodeSigningConfigOutput {
+public struct DeleteCodeSigningConfigOutput: Swift.Sendable {
 
     public init() { }
 }
@@ -3208,7 +3176,7 @@ public struct ResourceInUseException: ClientRuntime.ModeledError, AWSClientRunti
     }
 }
 
-public struct DeleteEventSourceMappingInput {
+public struct DeleteEventSourceMappingInput: Swift.Sendable {
     /// The identifier of the event source mapping.
     /// This member is required.
     public var uuid: Swift.String?
@@ -3222,7 +3190,7 @@ public struct DeleteEventSourceMappingInput {
 }
 
 /// A mapping between an Amazon Web Services resource and a Lambda function. For details, see [CreateEventSourceMapping].
-public struct DeleteEventSourceMappingOutput {
+public struct DeleteEventSourceMappingOutput: Swift.Sendable {
     /// Specific configuration settings for an Amazon Managed Streaming for Apache Kafka (Amazon MSK) event source.
     public var amazonManagedKafkaEventSourceConfig: LambdaClientTypes.AmazonManagedKafkaEventSourceConfig?
     /// The maximum number of records in each batch that Lambda pulls from your stream or queue and sends to your function. Lambda passes all of the records in the batch to the function in a single call, up to the payload limit for synchronous invocation (6 MB). Default value: Varies by service. For Amazon SQS, the default is 10. For all other services, the default is 100. Related setting: When you set BatchSize to a value greater than 10, you must set MaximumBatchingWindowInSeconds to at least 1.
@@ -3350,7 +3318,7 @@ public struct DeleteEventSourceMappingOutput {
     }
 }
 
-public struct DeleteFunctionInput {
+public struct DeleteFunctionInput: Swift.Sendable {
     /// The name or ARN of the Lambda function or version. Name formats
     ///
     /// * Function name – my-function (name-only), my-function:1 (with version).
@@ -3376,7 +3344,7 @@ public struct DeleteFunctionInput {
     }
 }
 
-public struct DeleteFunctionCodeSigningConfigInput {
+public struct DeleteFunctionCodeSigningConfigInput: Swift.Sendable {
     /// The name or ARN of the Lambda function. Name formats
     ///
     /// * Function name - MyFunction.
@@ -3398,7 +3366,7 @@ public struct DeleteFunctionCodeSigningConfigInput {
     }
 }
 
-public struct DeleteFunctionConcurrencyInput {
+public struct DeleteFunctionConcurrencyInput: Swift.Sendable {
     /// The name or ARN of the Lambda function. Name formats
     ///
     /// * Function name – my-function.
@@ -3420,7 +3388,7 @@ public struct DeleteFunctionConcurrencyInput {
     }
 }
 
-public struct DeleteFunctionEventInvokeConfigInput {
+public struct DeleteFunctionEventInvokeConfigInput: Swift.Sendable {
     /// The name or ARN of the Lambda function, version, or alias. Name formats
     ///
     /// * Function name - my-function (name-only), my-function:v1 (with alias).
@@ -3446,7 +3414,7 @@ public struct DeleteFunctionEventInvokeConfigInput {
     }
 }
 
-public struct DeleteFunctionUrlConfigInput {
+public struct DeleteFunctionUrlConfigInput: Swift.Sendable {
     /// The name or ARN of the Lambda function. Name formats
     ///
     /// * Function name – my-function.
@@ -3472,7 +3440,7 @@ public struct DeleteFunctionUrlConfigInput {
     }
 }
 
-public struct DeleteLayerVersionInput {
+public struct DeleteLayerVersionInput: Swift.Sendable {
     /// The name or Amazon Resource Name (ARN) of the layer.
     /// This member is required.
     public var layerName: Swift.String?
@@ -3490,7 +3458,7 @@ public struct DeleteLayerVersionInput {
     }
 }
 
-public struct DeleteProvisionedConcurrencyConfigInput {
+public struct DeleteProvisionedConcurrencyConfigInput: Swift.Sendable {
     /// The name or ARN of the Lambda function. Name formats
     ///
     /// * Function name – my-function.
@@ -3517,29 +3485,12 @@ public struct DeleteProvisionedConcurrencyConfigInput {
     }
 }
 
-public struct DeleteResourcePolicyInput {
-    /// The Amazon Resource Name (ARN) of the function you want to delete the policy from. You can use either a qualified or an unqualified ARN, but the value you specify must be a complete ARN and wildcard characters are not accepted.
-    /// This member is required.
-    public var resourceArn: Swift.String?
-    /// Delete the existing policy only if its revision ID matches the string you specify. To find the revision ID of the policy currently attached to your function, use the [GetResourcePolicy] action.
-    public var revisionId: Swift.String?
-
-    public init(
-        resourceArn: Swift.String? = nil,
-        revisionId: Swift.String? = nil
-    )
-    {
-        self.resourceArn = resourceArn
-        self.revisionId = revisionId
-    }
-}
-
-public struct GetAccountSettingsInput {
+public struct GetAccountSettingsInput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct GetAccountSettingsOutput {
+public struct GetAccountSettingsOutput: Swift.Sendable {
     /// Limits that are related to concurrency and code storage.
     public var accountLimit: LambdaClientTypes.AccountLimit?
     /// The number of functions and amount of storage in use.
@@ -3555,7 +3506,7 @@ public struct GetAccountSettingsOutput {
     }
 }
 
-public struct GetAliasInput {
+public struct GetAliasInput: Swift.Sendable {
     /// The name or ARN of the Lambda function. Name formats
     ///
     /// * Function name - MyFunction.
@@ -3583,7 +3534,7 @@ public struct GetAliasInput {
 }
 
 /// Provides configuration information about a Lambda function [alias](https://docs.aws.amazon.com/lambda/latest/dg/configuration-aliases.html).
-public struct GetAliasOutput {
+public struct GetAliasOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the alias.
     public var aliasArn: Swift.String?
     /// A description of the alias.
@@ -3615,7 +3566,7 @@ public struct GetAliasOutput {
     }
 }
 
-public struct GetCodeSigningConfigInput {
+public struct GetCodeSigningConfigInput: Swift.Sendable {
     /// The The Amazon Resource Name (ARN) of the code signing configuration.
     /// This member is required.
     public var codeSigningConfigArn: Swift.String?
@@ -3628,7 +3579,7 @@ public struct GetCodeSigningConfigInput {
     }
 }
 
-public struct GetCodeSigningConfigOutput {
+public struct GetCodeSigningConfigOutput: Swift.Sendable {
     /// The code signing configuration
     /// This member is required.
     public var codeSigningConfig: LambdaClientTypes.CodeSigningConfig?
@@ -3641,7 +3592,7 @@ public struct GetCodeSigningConfigOutput {
     }
 }
 
-public struct GetEventSourceMappingInput {
+public struct GetEventSourceMappingInput: Swift.Sendable {
     /// The identifier of the event source mapping.
     /// This member is required.
     public var uuid: Swift.String?
@@ -3655,7 +3606,7 @@ public struct GetEventSourceMappingInput {
 }
 
 /// A mapping between an Amazon Web Services resource and a Lambda function. For details, see [CreateEventSourceMapping].
-public struct GetEventSourceMappingOutput {
+public struct GetEventSourceMappingOutput: Swift.Sendable {
     /// Specific configuration settings for an Amazon Managed Streaming for Apache Kafka (Amazon MSK) event source.
     public var amazonManagedKafkaEventSourceConfig: LambdaClientTypes.AmazonManagedKafkaEventSourceConfig?
     /// The maximum number of records in each batch that Lambda pulls from your stream or queue and sends to your function. Lambda passes all of the records in the batch to the function in a single call, up to the payload limit for synchronous invocation (6 MB). Default value: Varies by service. For Amazon SQS, the default is 10. For all other services, the default is 100. Related setting: When you set BatchSize to a value greater than 10, you must set MaximumBatchingWindowInSeconds to at least 1.
@@ -3783,7 +3734,7 @@ public struct GetEventSourceMappingOutput {
     }
 }
 
-public struct GetFunctionInput {
+public struct GetFunctionInput: Swift.Sendable {
     /// The name or ARN of the Lambda function, version, or alias. Name formats
     ///
     /// * Function name – my-function (name-only), my-function:v1 (with alias).
@@ -3810,8 +3761,9 @@ public struct GetFunctionInput {
 }
 
 extension LambdaClientTypes {
+
     /// Details about a function's deployment package.
-    public struct FunctionCodeLocation {
+    public struct FunctionCodeLocation: Swift.Sendable {
         /// URI of a container image in the Amazon ECR registry.
         public var imageUri: Swift.String?
         /// A presigned URL that you can use to download the deployment package.
@@ -3834,11 +3786,11 @@ extension LambdaClientTypes {
             self.resolvedImageUri = resolvedImageUri
         }
     }
-
 }
 
 extension LambdaClientTypes {
-    public struct Concurrency {
+
+    public struct Concurrency: Swift.Sendable {
         /// The number of concurrent executions that are reserved for this function. For more information, see [Managing Lambda reserved concurrency](https://docs.aws.amazon.com/lambda/latest/dg/configuration-concurrency.html).
         public var reservedConcurrentExecutions: Swift.Int?
 
@@ -3849,12 +3801,12 @@ extension LambdaClientTypes {
             self.reservedConcurrentExecutions = reservedConcurrentExecutions
         }
     }
-
 }
 
 extension LambdaClientTypes {
+
     /// Details about a function's configuration.
-    public struct FunctionConfiguration {
+    public struct FunctionConfiguration: Swift.Sendable {
         /// The instruction set architecture that the function supports. Architecture is a string array with one of the valid values. The default architecture value is x86_64.
         public var architectures: [LambdaClientTypes.Architecture]?
         /// The SHA256 hash of the function's deployment package.
@@ -4005,34 +3957,59 @@ extension LambdaClientTypes {
             self.vpcConfig = vpcConfig
         }
     }
-
 }
 
-public struct GetFunctionOutput {
+extension LambdaClientTypes {
+
+    /// An object that contains details about an error related to retrieving tags.
+    public struct TagsError: Swift.Sendable {
+        /// The error code.
+        /// This member is required.
+        public var errorCode: Swift.String?
+        /// The error message.
+        /// This member is required.
+        public var message: Swift.String?
+
+        public init(
+            errorCode: Swift.String? = nil,
+            message: Swift.String? = nil
+        )
+        {
+            self.errorCode = errorCode
+            self.message = message
+        }
+    }
+}
+
+public struct GetFunctionOutput: Swift.Sendable {
     /// The deployment package of the function or version.
     public var code: LambdaClientTypes.FunctionCodeLocation?
     /// The function's [reserved concurrency](https://docs.aws.amazon.com/lambda/latest/dg/concurrent-executions.html).
     public var concurrency: LambdaClientTypes.Concurrency?
     /// The configuration of the function or version.
     public var configuration: LambdaClientTypes.FunctionConfiguration?
-    /// The function's [tags](https://docs.aws.amazon.com/lambda/latest/dg/tagging.html).
+    /// The function's [tags](https://docs.aws.amazon.com/lambda/latest/dg/tagging.html). Lambda returns tag data only if you have explicit allow permissions for [lambda:ListTags](https://docs.aws.amazon.com/https:/docs.aws.amazon.com/lambda/latest/api/API_ListTags.html).
     public var tags: [Swift.String: Swift.String]?
+    /// An object that contains details about an error related to retrieving tags.
+    public var tagsError: LambdaClientTypes.TagsError?
 
     public init(
         code: LambdaClientTypes.FunctionCodeLocation? = nil,
         concurrency: LambdaClientTypes.Concurrency? = nil,
         configuration: LambdaClientTypes.FunctionConfiguration? = nil,
-        tags: [Swift.String: Swift.String]? = nil
+        tags: [Swift.String: Swift.String]? = nil,
+        tagsError: LambdaClientTypes.TagsError? = nil
     )
     {
         self.code = code
         self.concurrency = concurrency
         self.configuration = configuration
         self.tags = tags
+        self.tagsError = tagsError
     }
 }
 
-public struct GetFunctionCodeSigningConfigInput {
+public struct GetFunctionCodeSigningConfigInput: Swift.Sendable {
     /// The name or ARN of the Lambda function. Name formats
     ///
     /// * Function name - MyFunction.
@@ -4054,7 +4031,7 @@ public struct GetFunctionCodeSigningConfigInput {
     }
 }
 
-public struct GetFunctionCodeSigningConfigOutput {
+public struct GetFunctionCodeSigningConfigOutput: Swift.Sendable {
     /// The The Amazon Resource Name (ARN) of the code signing configuration.
     /// This member is required.
     public var codeSigningConfigArn: Swift.String?
@@ -4081,7 +4058,7 @@ public struct GetFunctionCodeSigningConfigOutput {
     }
 }
 
-public struct GetFunctionConcurrencyInput {
+public struct GetFunctionConcurrencyInput: Swift.Sendable {
     /// The name or ARN of the Lambda function. Name formats
     ///
     /// * Function name – my-function.
@@ -4103,7 +4080,7 @@ public struct GetFunctionConcurrencyInput {
     }
 }
 
-public struct GetFunctionConcurrencyOutput {
+public struct GetFunctionConcurrencyOutput: Swift.Sendable {
     /// The number of simultaneous executions that are reserved for the function.
     public var reservedConcurrentExecutions: Swift.Int?
 
@@ -4115,7 +4092,7 @@ public struct GetFunctionConcurrencyOutput {
     }
 }
 
-public struct GetFunctionConfigurationInput {
+public struct GetFunctionConfigurationInput: Swift.Sendable {
     /// The name or ARN of the Lambda function, version, or alias. Name formats
     ///
     /// * Function name – my-function (name-only), my-function:v1 (with alias).
@@ -4142,7 +4119,7 @@ public struct GetFunctionConfigurationInput {
 }
 
 /// Details about a function's configuration.
-public struct GetFunctionConfigurationOutput {
+public struct GetFunctionConfigurationOutput: Swift.Sendable {
     /// The instruction set architecture that the function supports. Architecture is a string array with one of the valid values. The default architecture value is x86_64.
     public var architectures: [LambdaClientTypes.Architecture]?
     /// The SHA256 hash of the function's deployment package.
@@ -4294,7 +4271,7 @@ public struct GetFunctionConfigurationOutput {
     }
 }
 
-public struct GetFunctionEventInvokeConfigInput {
+public struct GetFunctionEventInvokeConfigInput: Swift.Sendable {
     /// The name or ARN of the Lambda function, version, or alias. Name formats
     ///
     /// * Function name - my-function (name-only), my-function:v1 (with alias).
@@ -4320,7 +4297,7 @@ public struct GetFunctionEventInvokeConfigInput {
     }
 }
 
-public struct GetFunctionEventInvokeConfigOutput {
+public struct GetFunctionEventInvokeConfigOutput: Swift.Sendable {
     /// A destination for events after they have been sent to a function for processing. Destinations
     ///
     /// * Function - The Amazon Resource Name (ARN) of a Lambda function.
@@ -4356,7 +4333,7 @@ public struct GetFunctionEventInvokeConfigOutput {
     }
 }
 
-public struct GetFunctionRecursionConfigInput {
+public struct GetFunctionRecursionConfigInput: Swift.Sendable {
     ///
     /// This member is required.
     public var functionName: Swift.String?
@@ -4371,7 +4348,7 @@ public struct GetFunctionRecursionConfigInput {
 
 extension LambdaClientTypes {
 
-    public enum RecursiveLoop: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum RecursiveLoop: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case allow
         case terminate
         case sdkUnknown(Swift.String)
@@ -4398,7 +4375,7 @@ extension LambdaClientTypes {
     }
 }
 
-public struct GetFunctionRecursionConfigOutput {
+public struct GetFunctionRecursionConfigOutput: Swift.Sendable {
     /// If your function's recursive loop detection configuration is Allow, Lambda doesn't take any action when it detects your function being invoked as part of a recursive loop. If your function's recursive loop detection configuration is Terminate, Lambda stops your function being invoked and notifies you when it detects your function being invoked as part of a recursive loop. By default, Lambda sets your function's configuration to Terminate. You can update this configuration using the [PutFunctionRecursionConfig] action.
     public var recursiveLoop: LambdaClientTypes.RecursiveLoop?
 
@@ -4410,7 +4387,7 @@ public struct GetFunctionRecursionConfigOutput {
     }
 }
 
-public struct GetFunctionUrlConfigInput {
+public struct GetFunctionUrlConfigInput: Swift.Sendable {
     /// The name or ARN of the Lambda function. Name formats
     ///
     /// * Function name – my-function.
@@ -4436,7 +4413,7 @@ public struct GetFunctionUrlConfigInput {
     }
 }
 
-public struct GetFunctionUrlConfigOutput {
+public struct GetFunctionUrlConfigOutput: Swift.Sendable {
     /// The type of authentication that your function URL uses. Set to AWS_IAM if you want to restrict access to authenticated users only. Set to NONE if you want to bypass IAM authentication to create a public endpoint. For more information, see [Security and auth model for Lambda function URLs](https://docs.aws.amazon.com/lambda/latest/dg/urls-auth.html).
     /// This member is required.
     public var authType: LambdaClientTypes.FunctionUrlAuthType?
@@ -4481,7 +4458,7 @@ public struct GetFunctionUrlConfigOutput {
     }
 }
 
-public struct GetLayerVersionInput {
+public struct GetLayerVersionInput: Swift.Sendable {
     /// The name or Amazon Resource Name (ARN) of the layer.
     /// This member is required.
     public var layerName: Swift.String?
@@ -4500,8 +4477,9 @@ public struct GetLayerVersionInput {
 }
 
 extension LambdaClientTypes {
+
     /// Details about a version of an [Lambda layer](https://docs.aws.amazon.com/lambda/latest/dg/configuration-layers.html).
-    public struct LayerVersionContentOutput {
+    public struct LayerVersionContentOutput: Swift.Sendable {
         /// The SHA-256 hash of the layer archive.
         public var codeSha256: Swift.String?
         /// The size of the layer archive in bytes.
@@ -4528,10 +4506,9 @@ extension LambdaClientTypes {
             self.signingProfileVersionArn = signingProfileVersionArn
         }
     }
-
 }
 
-public struct GetLayerVersionOutput {
+public struct GetLayerVersionOutput: Swift.Sendable {
     /// A list of compatible [instruction set architectures](https://docs.aws.amazon.com/lambda/latest/dg/foundation-arch.html).
     public var compatibleArchitectures: [LambdaClientTypes.Architecture]?
     /// The layer's compatible runtimes. The following list includes deprecated runtimes. For more information, see [Runtime use after deprecation](https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtimes.html#runtime-deprecation-levels). For a list of all currently supported runtimes, see [Supported runtimes](https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtimes.html#runtimes-supported).
@@ -4575,7 +4552,7 @@ public struct GetLayerVersionOutput {
     }
 }
 
-public struct GetLayerVersionByArnInput {
+public struct GetLayerVersionByArnInput: Swift.Sendable {
     /// The ARN of the layer version.
     /// This member is required.
     public var arn: Swift.String?
@@ -4588,7 +4565,7 @@ public struct GetLayerVersionByArnInput {
     }
 }
 
-public struct GetLayerVersionByArnOutput {
+public struct GetLayerVersionByArnOutput: Swift.Sendable {
     /// A list of compatible [instruction set architectures](https://docs.aws.amazon.com/lambda/latest/dg/foundation-arch.html).
     public var compatibleArchitectures: [LambdaClientTypes.Architecture]?
     /// The layer's compatible runtimes. The following list includes deprecated runtimes. For more information, see [Runtime use after deprecation](https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtimes.html#runtime-deprecation-levels). For a list of all currently supported runtimes, see [Supported runtimes](https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtimes.html#runtimes-supported).
@@ -4632,7 +4609,7 @@ public struct GetLayerVersionByArnOutput {
     }
 }
 
-public struct GetLayerVersionPolicyInput {
+public struct GetLayerVersionPolicyInput: Swift.Sendable {
     /// The name or Amazon Resource Name (ARN) of the layer.
     /// This member is required.
     public var layerName: Swift.String?
@@ -4650,7 +4627,7 @@ public struct GetLayerVersionPolicyInput {
     }
 }
 
-public struct GetLayerVersionPolicyOutput {
+public struct GetLayerVersionPolicyOutput: Swift.Sendable {
     /// The policy document.
     public var policy: Swift.String?
     /// A unique identifier for the current revision of the policy.
@@ -4666,7 +4643,7 @@ public struct GetLayerVersionPolicyOutput {
     }
 }
 
-public struct GetPolicyInput {
+public struct GetPolicyInput: Swift.Sendable {
     /// The name or ARN of the Lambda function, version, or alias. Name formats
     ///
     /// * Function name – my-function (name-only), my-function:v1 (with alias).
@@ -4692,7 +4669,7 @@ public struct GetPolicyInput {
     }
 }
 
-public struct GetPolicyOutput {
+public struct GetPolicyOutput: Swift.Sendable {
     /// The resource-based policy.
     public var policy: Swift.String?
     /// A unique identifier for the current revision of the policy.
@@ -4735,7 +4712,7 @@ public struct ProvisionedConcurrencyConfigNotFoundException: ClientRuntime.Model
     }
 }
 
-public struct GetProvisionedConcurrencyConfigInput {
+public struct GetProvisionedConcurrencyConfigInput: Swift.Sendable {
     /// The name or ARN of the Lambda function. Name formats
     ///
     /// * Function name – my-function.
@@ -4764,7 +4741,7 @@ public struct GetProvisionedConcurrencyConfigInput {
 
 extension LambdaClientTypes {
 
-    public enum ProvisionedConcurrencyStatusEnum: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ProvisionedConcurrencyStatusEnum: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case failed
         case inProgress
         case ready
@@ -4794,7 +4771,7 @@ extension LambdaClientTypes {
     }
 }
 
-public struct GetProvisionedConcurrencyConfigOutput {
+public struct GetProvisionedConcurrencyConfigOutput: Swift.Sendable {
     /// The amount of provisioned concurrency allocated. When a weighted alias is used during linear and canary deployments, this value fluctuates depending on the amount of concurrency that is provisioned for the function versions.
     public var allocatedProvisionedConcurrentExecutions: Swift.Int?
     /// The amount of provisioned concurrency available.
@@ -4826,81 +4803,7 @@ public struct GetProvisionedConcurrencyConfigOutput {
     }
 }
 
-public struct GetPublicAccessBlockConfigInput {
-    /// The Amazon Resource Name (ARN) of the function you want to retrieve public-access settings for.
-    /// This member is required.
-    public var resourceArn: Swift.String?
-
-    public init(
-        resourceArn: Swift.String? = nil
-    )
-    {
-        self.resourceArn = resourceArn
-    }
-}
-
-extension LambdaClientTypes {
-    /// An object that defines the public-access settings for a function.
-    public struct PublicAccessBlockConfig {
-        /// To block the creation of resource-based policies that would grant public access to your function, set BlockPublicPolicy to true. To allow the creation of resource-based policies that would grant public access to your function, set BlockPublicPolicy to false.
-        public var blockPublicPolicy: Swift.Bool?
-        /// To block public access to your function, even if its resource-based policy allows it, set RestrictPublicResource to true. To allow public access to a function with a resource-based policy that permits it, set RestrictPublicResource to false.
-        public var restrictPublicResource: Swift.Bool?
-
-        public init(
-            blockPublicPolicy: Swift.Bool? = nil,
-            restrictPublicResource: Swift.Bool? = nil
-        )
-        {
-            self.blockPublicPolicy = blockPublicPolicy
-            self.restrictPublicResource = restrictPublicResource
-        }
-    }
-
-}
-
-public struct GetPublicAccessBlockConfigOutput {
-    /// The public-access settings configured for the function you specified
-    public var publicAccessBlockConfig: LambdaClientTypes.PublicAccessBlockConfig?
-
-    public init(
-        publicAccessBlockConfig: LambdaClientTypes.PublicAccessBlockConfig? = nil
-    )
-    {
-        self.publicAccessBlockConfig = publicAccessBlockConfig
-    }
-}
-
-public struct GetResourcePolicyInput {
-    /// The Amazon Resource Name (ARN) of the function you want to retrieve the policy for. You can use either a qualified or an unqualified ARN, but the value you specify must be a complete ARN and wildcard characters are not accepted.
-    /// This member is required.
-    public var resourceArn: Swift.String?
-
-    public init(
-        resourceArn: Swift.String? = nil
-    )
-    {
-        self.resourceArn = resourceArn
-    }
-}
-
-public struct GetResourcePolicyOutput {
-    /// The resource-based policy attached to the function you specified.
-    public var policy: Swift.String?
-    /// The revision ID of the policy.
-    public var revisionId: Swift.String?
-
-    public init(
-        policy: Swift.String? = nil,
-        revisionId: Swift.String? = nil
-    )
-    {
-        self.policy = policy
-        self.revisionId = revisionId
-    }
-}
-
-public struct GetRuntimeManagementConfigInput {
+public struct GetRuntimeManagementConfigInput: Swift.Sendable {
     /// The name or ARN of the Lambda function. Name formats
     ///
     /// * Function name – my-function.
@@ -4928,7 +4831,7 @@ public struct GetRuntimeManagementConfigInput {
 
 extension LambdaClientTypes {
 
-    public enum UpdateRuntimeOn: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum UpdateRuntimeOn: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case auto
         case functionupdate
         case manual
@@ -4958,7 +4861,7 @@ extension LambdaClientTypes {
     }
 }
 
-public struct GetRuntimeManagementConfigOutput {
+public struct GetRuntimeManagementConfigOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of your function.
     public var functionArn: Swift.String?
     /// The ARN of the runtime the function is configured to use. If the runtime update mode is Manual, the ARN is returned, otherwise null is returned.
@@ -5664,7 +5567,7 @@ public struct UnsupportedMediaTypeException: ClientRuntime.ModeledError, AWSClie
 
 extension LambdaClientTypes {
 
-    public enum InvocationType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum InvocationType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case dryrun
         case event
         case requestresponse
@@ -5696,7 +5599,7 @@ extension LambdaClientTypes {
 
 extension LambdaClientTypes {
 
-    public enum LogType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum LogType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case `none`
         case tail
         case sdkUnknown(Swift.String)
@@ -5723,7 +5626,7 @@ extension LambdaClientTypes {
     }
 }
 
-public struct InvokeInput {
+public struct InvokeInput: Swift.Sendable {
     /// Up to 3,583 bytes of base64-encoded data about the invoking client to pass to the function in the context object. Lambda passes the ClientContext object to your function for synchronous invocations only.
     public var clientContext: Swift.String?
     /// The name or ARN of the Lambda function, version, or alias. Name formats
@@ -5776,7 +5679,7 @@ extension InvokeInput: Swift.CustomDebugStringConvertible {
         "InvokeInput(clientContext: \(Swift.String(describing: clientContext)), functionName: \(Swift.String(describing: functionName)), invocationType: \(Swift.String(describing: invocationType)), logType: \(Swift.String(describing: logType)), qualifier: \(Swift.String(describing: qualifier)), payload: \"CONTENT_REDACTED\")"}
 }
 
-public struct InvokeOutput {
+public struct InvokeOutput: Swift.Sendable {
     /// The version of the function that executed. When you invoke a function with an alias, this indicates which version the alias resolved to.
     public var executedVersion: Swift.String?
     /// If present, indicates that an error occurred during function execution. Details about the error are included in the response payload.
@@ -5810,7 +5713,7 @@ extension InvokeOutput: Swift.CustomDebugStringConvertible {
 }
 
 @available(*, deprecated)
-public struct InvokeAsyncInput {
+public struct InvokeAsyncInput: Swift.Sendable {
     /// The name or ARN of the Lambda function. Name formats
     ///
     /// * Function name – my-function.
@@ -5839,7 +5742,7 @@ public struct InvokeAsyncInput {
 
 /// A success response (202 Accepted) indicates that the request is queued for invocation.
 @available(*, deprecated)
-public struct InvokeAsyncOutput {
+public struct InvokeAsyncOutput: Swift.Sendable {
     /// The status code.
     public var status: Swift.Int
 
@@ -5853,7 +5756,7 @@ public struct InvokeAsyncOutput {
 
 extension LambdaClientTypes {
 
-    public enum ResponseStreamingInvocationType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ResponseStreamingInvocationType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case dryrun
         case requestresponse
         case sdkUnknown(Swift.String)
@@ -5880,7 +5783,7 @@ extension LambdaClientTypes {
     }
 }
 
-public struct InvokeWithResponseStreamInput {
+public struct InvokeWithResponseStreamInput: Swift.Sendable {
     /// Up to 3,583 bytes of base64-encoded data about the invoking client to pass to the function in the context object.
     public var clientContext: Swift.String?
     /// The name or ARN of the Lambda function. Name formats
@@ -5932,8 +5835,9 @@ extension InvokeWithResponseStreamInput: Swift.CustomDebugStringConvertible {
 }
 
 extension LambdaClientTypes {
+
     /// A response confirming that the event stream is complete.
-    public struct InvokeWithResponseStreamCompleteEvent {
+    public struct InvokeWithResponseStreamCompleteEvent: Swift.Sendable {
         /// An error code.
         public var errorCode: Swift.String?
         /// The details of any returned error.
@@ -5952,12 +5856,12 @@ extension LambdaClientTypes {
             self.logResult = logResult
         }
     }
-
 }
 
 extension LambdaClientTypes {
+
     /// A chunk of the streamed response payload.
-    public struct InvokeResponseStreamUpdate {
+    public struct InvokeResponseStreamUpdate: Swift.Sendable {
         /// Data returned by your Lambda function.
         public var payload: Foundation.Data?
 
@@ -5968,7 +5872,6 @@ extension LambdaClientTypes {
             self.payload = payload
         }
     }
-
 }
 
 extension LambdaClientTypes.InvokeResponseStreamUpdate: Swift.CustomDebugStringConvertible {
@@ -5977,18 +5880,18 @@ extension LambdaClientTypes.InvokeResponseStreamUpdate: Swift.CustomDebugStringC
 }
 
 extension LambdaClientTypes {
+
     /// An object that includes a chunk of the response payload. When the stream has ended, Lambda includes a InvokeComplete object.
-    public enum InvokeWithResponseStreamResponseEvent {
+    public enum InvokeWithResponseStreamResponseEvent: Swift.Sendable {
         /// A chunk of the streamed response payload.
         case payloadchunk(LambdaClientTypes.InvokeResponseStreamUpdate)
         /// An object that's returned when the stream has ended and all the payload chunks have been returned.
         case invokecomplete(LambdaClientTypes.InvokeWithResponseStreamCompleteEvent)
         case sdkUnknown(Swift.String)
     }
-
 }
 
-public struct InvokeWithResponseStreamOutput {
+public struct InvokeWithResponseStreamOutput: Swift.Sendable {
     /// The stream of response payloads.
     public var eventStream: AsyncThrowingStream<LambdaClientTypes.InvokeWithResponseStreamResponseEvent, Swift.Error>?
     /// The version of the function that executed. When you invoke a function with an alias, this indicates which version the alias resolved to.
@@ -6012,7 +5915,7 @@ public struct InvokeWithResponseStreamOutput {
     }
 }
 
-public struct ListAliasesInput {
+public struct ListAliasesInput: Swift.Sendable {
     /// The name or ARN of the Lambda function. Name formats
     ///
     /// * Function name - MyFunction.
@@ -6046,7 +5949,7 @@ public struct ListAliasesInput {
     }
 }
 
-public struct ListAliasesOutput {
+public struct ListAliasesOutput: Swift.Sendable {
     /// A list of aliases.
     public var aliases: [LambdaClientTypes.AliasConfiguration]?
     /// The pagination token that's included if more results are available.
@@ -6062,7 +5965,7 @@ public struct ListAliasesOutput {
     }
 }
 
-public struct ListCodeSigningConfigsInput {
+public struct ListCodeSigningConfigsInput: Swift.Sendable {
     /// Specify the pagination token that's returned by a previous request to retrieve the next page of results.
     public var marker: Swift.String?
     /// Maximum number of items to return.
@@ -6078,7 +5981,7 @@ public struct ListCodeSigningConfigsInput {
     }
 }
 
-public struct ListCodeSigningConfigsOutput {
+public struct ListCodeSigningConfigsOutput: Swift.Sendable {
     /// The code signing configurations
     public var codeSigningConfigs: [LambdaClientTypes.CodeSigningConfig]?
     /// The pagination token that's included if more results are available.
@@ -6094,7 +5997,7 @@ public struct ListCodeSigningConfigsOutput {
     }
 }
 
-public struct ListEventSourceMappingsInput {
+public struct ListEventSourceMappingsInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the event source.
     ///
     /// * Amazon Kinesis – The ARN of the data stream or a stream consumer.
@@ -6142,8 +6045,9 @@ public struct ListEventSourceMappingsInput {
 }
 
 extension LambdaClientTypes {
+
     /// A mapping between an Amazon Web Services resource and a Lambda function. For details, see [CreateEventSourceMapping].
-    public struct EventSourceMappingConfiguration {
+    public struct EventSourceMappingConfiguration: Swift.Sendable {
         /// Specific configuration settings for an Amazon Managed Streaming for Apache Kafka (Amazon MSK) event source.
         public var amazonManagedKafkaEventSourceConfig: LambdaClientTypes.AmazonManagedKafkaEventSourceConfig?
         /// The maximum number of records in each batch that Lambda pulls from your stream or queue and sends to your function. Lambda passes all of the records in the batch to the function in a single call, up to the payload limit for synchronous invocation (6 MB). Default value: Varies by service. For Amazon SQS, the default is 10. For all other services, the default is 100. Related setting: When you set BatchSize to a value greater than 10, you must set MaximumBatchingWindowInSeconds to at least 1.
@@ -6270,10 +6174,9 @@ extension LambdaClientTypes {
             self.uuid = uuid
         }
     }
-
 }
 
-public struct ListEventSourceMappingsOutput {
+public struct ListEventSourceMappingsOutput: Swift.Sendable {
     /// A list of event source mappings.
     public var eventSourceMappings: [LambdaClientTypes.EventSourceMappingConfiguration]?
     /// A pagination token that's returned when the response doesn't contain all event source mappings.
@@ -6289,7 +6192,7 @@ public struct ListEventSourceMappingsOutput {
     }
 }
 
-public struct ListFunctionEventInvokeConfigsInput {
+public struct ListFunctionEventInvokeConfigsInput: Swift.Sendable {
     /// The name or ARN of the Lambda function. Name formats
     ///
     /// * Function name - my-function.
@@ -6320,7 +6223,8 @@ public struct ListFunctionEventInvokeConfigsInput {
 }
 
 extension LambdaClientTypes {
-    public struct FunctionEventInvokeConfig {
+
+    public struct FunctionEventInvokeConfig: Swift.Sendable {
         /// A destination for events after they have been sent to a function for processing. Destinations
         ///
         /// * Function - The Amazon Resource Name (ARN) of a Lambda function.
@@ -6355,10 +6259,9 @@ extension LambdaClientTypes {
             self.maximumRetryAttempts = maximumRetryAttempts
         }
     }
-
 }
 
-public struct ListFunctionEventInvokeConfigsOutput {
+public struct ListFunctionEventInvokeConfigsOutput: Swift.Sendable {
     /// A list of configurations.
     public var functionEventInvokeConfigs: [LambdaClientTypes.FunctionEventInvokeConfig]?
     /// The pagination token that's included if more results are available.
@@ -6376,7 +6279,7 @@ public struct ListFunctionEventInvokeConfigsOutput {
 
 extension LambdaClientTypes {
 
-    public enum FunctionVersion: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum FunctionVersion: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case all
         case sdkUnknown(Swift.String)
 
@@ -6400,7 +6303,7 @@ extension LambdaClientTypes {
     }
 }
 
-public struct ListFunctionsInput {
+public struct ListFunctionsInput: Swift.Sendable {
     /// Set to ALL to include entries for all published versions of each function.
     public var functionVersion: LambdaClientTypes.FunctionVersion?
     /// Specify the pagination token that's returned by a previous request to retrieve the next page of results.
@@ -6425,7 +6328,7 @@ public struct ListFunctionsInput {
 }
 
 /// A list of Lambda functions.
-public struct ListFunctionsOutput {
+public struct ListFunctionsOutput: Swift.Sendable {
     /// A list of Lambda functions.
     public var functions: [LambdaClientTypes.FunctionConfiguration]?
     /// The pagination token that's included if more results are available.
@@ -6441,7 +6344,7 @@ public struct ListFunctionsOutput {
     }
 }
 
-public struct ListFunctionsByCodeSigningConfigInput {
+public struct ListFunctionsByCodeSigningConfigInput: Swift.Sendable {
     /// The The Amazon Resource Name (ARN) of the code signing configuration.
     /// This member is required.
     public var codeSigningConfigArn: Swift.String?
@@ -6462,7 +6365,7 @@ public struct ListFunctionsByCodeSigningConfigInput {
     }
 }
 
-public struct ListFunctionsByCodeSigningConfigOutput {
+public struct ListFunctionsByCodeSigningConfigOutput: Swift.Sendable {
     /// The function ARNs.
     public var functionArns: [Swift.String]?
     /// The pagination token that's included if more results are available.
@@ -6478,7 +6381,7 @@ public struct ListFunctionsByCodeSigningConfigOutput {
     }
 }
 
-public struct ListFunctionUrlConfigsInput {
+public struct ListFunctionUrlConfigsInput: Swift.Sendable {
     /// The name or ARN of the Lambda function. Name formats
     ///
     /// * Function name – my-function.
@@ -6509,8 +6412,9 @@ public struct ListFunctionUrlConfigsInput {
 }
 
 extension LambdaClientTypes {
+
     /// Details about a Lambda function URL.
-    public struct FunctionUrlConfig {
+    public struct FunctionUrlConfig: Swift.Sendable {
         /// The type of authentication that your function URL uses. Set to AWS_IAM if you want to restrict access to authenticated users only. Set to NONE if you want to bypass IAM authentication to create a public endpoint. For more information, see [Security and auth model for Lambda function URLs](https://docs.aws.amazon.com/lambda/latest/dg/urls-auth.html).
         /// This member is required.
         public var authType: LambdaClientTypes.FunctionUrlAuthType?
@@ -6554,10 +6458,9 @@ extension LambdaClientTypes {
             self.lastModifiedTime = lastModifiedTime
         }
     }
-
 }
 
-public struct ListFunctionUrlConfigsOutput {
+public struct ListFunctionUrlConfigsOutput: Swift.Sendable {
     /// A list of function URL configurations.
     /// This member is required.
     public var functionUrlConfigs: [LambdaClientTypes.FunctionUrlConfig]?
@@ -6574,7 +6477,7 @@ public struct ListFunctionUrlConfigsOutput {
     }
 }
 
-public struct ListLayersInput {
+public struct ListLayersInput: Swift.Sendable {
     /// The compatible [instruction set architecture](https://docs.aws.amazon.com/lambda/latest/dg/foundation-arch.html).
     public var compatibleArchitecture: LambdaClientTypes.Architecture?
     /// A runtime identifier. The following list includes deprecated runtimes. For more information, see [Runtime use after deprecation](https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtimes.html#runtime-deprecation-levels). For a list of all currently supported runtimes, see [Supported runtimes](https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtimes.html#runtimes-supported).
@@ -6599,8 +6502,9 @@ public struct ListLayersInput {
 }
 
 extension LambdaClientTypes {
+
     /// Details about a version of an [Lambda layer](https://docs.aws.amazon.com/lambda/latest/dg/configuration-layers.html).
-    public struct LayerVersionsListItem {
+    public struct LayerVersionsListItem: Swift.Sendable {
         /// A list of compatible [instruction set architectures](https://docs.aws.amazon.com/lambda/latest/dg/foundation-arch.html).
         public var compatibleArchitectures: [LambdaClientTypes.Architecture]?
         /// The layer's compatible runtimes. The following list includes deprecated runtimes. For more information, see [Runtime use after deprecation](https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtimes.html#runtime-deprecation-levels). For a list of all currently supported runtimes, see [Supported runtimes](https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtimes.html#runtimes-supported).
@@ -6635,12 +6539,12 @@ extension LambdaClientTypes {
             self.version = version
         }
     }
-
 }
 
 extension LambdaClientTypes {
+
     /// Details about an [Lambda layer](https://docs.aws.amazon.com/lambda/latest/dg/configuration-layers.html).
-    public struct LayersListItem {
+    public struct LayersListItem: Swift.Sendable {
         /// The newest version of the layer.
         public var latestMatchingVersion: LambdaClientTypes.LayerVersionsListItem?
         /// The Amazon Resource Name (ARN) of the function layer.
@@ -6659,10 +6563,9 @@ extension LambdaClientTypes {
             self.layerName = layerName
         }
     }
-
 }
 
-public struct ListLayersOutput {
+public struct ListLayersOutput: Swift.Sendable {
     /// A list of function layers.
     public var layers: [LambdaClientTypes.LayersListItem]?
     /// A pagination token returned when the response doesn't contain all layers.
@@ -6678,7 +6581,7 @@ public struct ListLayersOutput {
     }
 }
 
-public struct ListLayerVersionsInput {
+public struct ListLayerVersionsInput: Swift.Sendable {
     /// The compatible [instruction set architecture](https://docs.aws.amazon.com/lambda/latest/dg/foundation-arch.html).
     public var compatibleArchitecture: LambdaClientTypes.Architecture?
     /// A runtime identifier. The following list includes deprecated runtimes. For more information, see [Runtime use after deprecation](https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtimes.html#runtime-deprecation-levels). For a list of all currently supported runtimes, see [Supported runtimes](https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtimes.html#runtimes-supported).
@@ -6707,7 +6610,7 @@ public struct ListLayerVersionsInput {
     }
 }
 
-public struct ListLayerVersionsOutput {
+public struct ListLayerVersionsOutput: Swift.Sendable {
     /// A list of versions.
     public var layerVersions: [LambdaClientTypes.LayerVersionsListItem]?
     /// A pagination token returned when the response doesn't contain all versions.
@@ -6723,7 +6626,7 @@ public struct ListLayerVersionsOutput {
     }
 }
 
-public struct ListProvisionedConcurrencyConfigsInput {
+public struct ListProvisionedConcurrencyConfigsInput: Swift.Sendable {
     /// The name or ARN of the Lambda function. Name formats
     ///
     /// * Function name – my-function.
@@ -6754,8 +6657,9 @@ public struct ListProvisionedConcurrencyConfigsInput {
 }
 
 extension LambdaClientTypes {
+
     /// Details about the provisioned concurrency configuration for a function alias or version.
-    public struct ProvisionedConcurrencyConfigListItem {
+    public struct ProvisionedConcurrencyConfigListItem: Swift.Sendable {
         /// The amount of provisioned concurrency allocated. When a weighted alias is used during linear and canary deployments, this value fluctuates depending on the amount of concurrency that is provisioned for the function versions.
         public var allocatedProvisionedConcurrentExecutions: Swift.Int?
         /// The amount of provisioned concurrency available.
@@ -6790,10 +6694,9 @@ extension LambdaClientTypes {
             self.statusReason = statusReason
         }
     }
-
 }
 
-public struct ListProvisionedConcurrencyConfigsOutput {
+public struct ListProvisionedConcurrencyConfigsOutput: Swift.Sendable {
     /// The pagination token that's included if more results are available.
     public var nextMarker: Swift.String?
     /// A list of provisioned concurrency configurations.
@@ -6809,7 +6712,7 @@ public struct ListProvisionedConcurrencyConfigsOutput {
     }
 }
 
-public struct ListTagsInput {
+public struct ListTagsInput: Swift.Sendable {
     /// The resource's Amazon Resource Name (ARN). Note: Lambda does not support adding tags to function aliases or versions.
     /// This member is required.
     public var resource: Swift.String?
@@ -6822,7 +6725,7 @@ public struct ListTagsInput {
     }
 }
 
-public struct ListTagsOutput {
+public struct ListTagsOutput: Swift.Sendable {
     /// The function's tags.
     public var tags: [Swift.String: Swift.String]?
 
@@ -6834,7 +6737,7 @@ public struct ListTagsOutput {
     }
 }
 
-public struct ListVersionsByFunctionInput {
+public struct ListVersionsByFunctionInput: Swift.Sendable {
     /// The name or ARN of the Lambda function. Name formats
     ///
     /// * Function name - MyFunction.
@@ -6864,7 +6767,7 @@ public struct ListVersionsByFunctionInput {
     }
 }
 
-public struct ListVersionsByFunctionOutput {
+public struct ListVersionsByFunctionOutput: Swift.Sendable {
     /// The pagination token that's included if more results are available.
     public var nextMarker: Swift.String?
     /// A list of Lambda function versions.
@@ -6881,8 +6784,9 @@ public struct ListVersionsByFunctionOutput {
 }
 
 extension LambdaClientTypes {
+
     /// A ZIP archive that contains the contents of an [Lambda layer](https://docs.aws.amazon.com/lambda/latest/dg/configuration-layers.html). You can specify either an Amazon S3 location, or upload a layer archive directly.
-    public struct LayerVersionContentInput {
+    public struct LayerVersionContentInput: Swift.Sendable {
         /// The Amazon S3 bucket of the layer archive.
         public var s3Bucket: Swift.String?
         /// The Amazon S3 key of the layer archive.
@@ -6905,7 +6809,6 @@ extension LambdaClientTypes {
             self.zipFile = zipFile
         }
     }
-
 }
 
 extension LambdaClientTypes.LayerVersionContentInput: Swift.CustomDebugStringConvertible {
@@ -6913,7 +6816,7 @@ extension LambdaClientTypes.LayerVersionContentInput: Swift.CustomDebugStringCon
         "LayerVersionContentInput(s3Bucket: \(Swift.String(describing: s3Bucket)), s3Key: \(Swift.String(describing: s3Key)), s3ObjectVersion: \(Swift.String(describing: s3ObjectVersion)), zipFile: \"CONTENT_REDACTED\")"}
 }
 
-public struct PublishLayerVersionInput {
+public struct PublishLayerVersionInput: Swift.Sendable {
     /// A list of compatible [instruction set architectures](https://docs.aws.amazon.com/lambda/latest/dg/foundation-arch.html).
     public var compatibleArchitectures: [LambdaClientTypes.Architecture]?
     /// A list of compatible [function runtimes](https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtimes.html). Used for filtering with [ListLayers] and [ListLayerVersions]. The following list includes deprecated runtimes. For more information, see [Runtime deprecation policy](https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtimes.html#runtime-support-policy).
@@ -6953,7 +6856,7 @@ public struct PublishLayerVersionInput {
     }
 }
 
-public struct PublishLayerVersionOutput {
+public struct PublishLayerVersionOutput: Swift.Sendable {
     /// A list of compatible [instruction set architectures](https://docs.aws.amazon.com/lambda/latest/dg/foundation-arch.html).
     public var compatibleArchitectures: [LambdaClientTypes.Architecture]?
     /// The layer's compatible runtimes. The following list includes deprecated runtimes. For more information, see [Runtime use after deprecation](https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtimes.html#runtime-deprecation-levels). For a list of all currently supported runtimes, see [Supported runtimes](https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtimes.html#runtimes-supported).
@@ -6997,7 +6900,7 @@ public struct PublishLayerVersionOutput {
     }
 }
 
-public struct PublishVersionInput {
+public struct PublishVersionInput: Swift.Sendable {
     /// Only publish a version if the hash value matches the value that's specified. Use this option to avoid publishing a version if the function code has changed since you last updated it. You can get the hash for the version that you uploaded from the output of [UpdateFunctionCode].
     public var codeSha256: Swift.String?
     /// A description for the version to override the description in the function configuration.
@@ -7032,7 +6935,7 @@ public struct PublishVersionInput {
 }
 
 /// Details about a function's configuration.
-public struct PublishVersionOutput {
+public struct PublishVersionOutput: Swift.Sendable {
     /// The instruction set architecture that the function supports. Architecture is a string array with one of the valid values. The default architecture value is x86_64.
     public var architectures: [LambdaClientTypes.Architecture]?
     /// The SHA256 hash of the function's deployment package.
@@ -7184,7 +7087,7 @@ public struct PublishVersionOutput {
     }
 }
 
-public struct PutFunctionCodeSigningConfigInput {
+public struct PutFunctionCodeSigningConfigInput: Swift.Sendable {
     /// The The Amazon Resource Name (ARN) of the code signing configuration.
     /// This member is required.
     public var codeSigningConfigArn: Swift.String?
@@ -7211,7 +7114,7 @@ public struct PutFunctionCodeSigningConfigInput {
     }
 }
 
-public struct PutFunctionCodeSigningConfigOutput {
+public struct PutFunctionCodeSigningConfigOutput: Swift.Sendable {
     /// The The Amazon Resource Name (ARN) of the code signing configuration.
     /// This member is required.
     public var codeSigningConfigArn: Swift.String?
@@ -7238,7 +7141,7 @@ public struct PutFunctionCodeSigningConfigOutput {
     }
 }
 
-public struct PutFunctionConcurrencyInput {
+public struct PutFunctionConcurrencyInput: Swift.Sendable {
     /// The name or ARN of the Lambda function. Name formats
     ///
     /// * Function name – my-function.
@@ -7265,7 +7168,7 @@ public struct PutFunctionConcurrencyInput {
     }
 }
 
-public struct PutFunctionConcurrencyOutput {
+public struct PutFunctionConcurrencyOutput: Swift.Sendable {
     /// The number of concurrent executions that are reserved for this function. For more information, see [Managing Lambda reserved concurrency](https://docs.aws.amazon.com/lambda/latest/dg/configuration-concurrency.html).
     public var reservedConcurrentExecutions: Swift.Int?
 
@@ -7277,7 +7180,7 @@ public struct PutFunctionConcurrencyOutput {
     }
 }
 
-public struct PutFunctionEventInvokeConfigInput {
+public struct PutFunctionEventInvokeConfigInput: Swift.Sendable {
     /// A destination for events after they have been sent to a function for processing. Destinations
     ///
     /// * Function - The Amazon Resource Name (ARN) of a Lambda function.
@@ -7323,7 +7226,7 @@ public struct PutFunctionEventInvokeConfigInput {
     }
 }
 
-public struct PutFunctionEventInvokeConfigOutput {
+public struct PutFunctionEventInvokeConfigOutput: Swift.Sendable {
     /// A destination for events after they have been sent to a function for processing. Destinations
     ///
     /// * Function - The Amazon Resource Name (ARN) of a Lambda function.
@@ -7359,7 +7262,7 @@ public struct PutFunctionEventInvokeConfigOutput {
     }
 }
 
-public struct PutFunctionRecursionConfigInput {
+public struct PutFunctionRecursionConfigInput: Swift.Sendable {
     /// The name or ARN of the Lambda function. Name formats
     ///
     /// * Function name – my-function.
@@ -7386,7 +7289,7 @@ public struct PutFunctionRecursionConfigInput {
     }
 }
 
-public struct PutFunctionRecursionConfigOutput {
+public struct PutFunctionRecursionConfigOutput: Swift.Sendable {
     /// The status of your function's recursive loop detection configuration. When this value is set to Allowand Lambda detects your function being invoked as part of a recursive loop, it doesn't take any action. When this value is set to Terminate and Lambda detects your function being invoked as part of a recursive loop, it stops your function being invoked and notifies you.
     public var recursiveLoop: LambdaClientTypes.RecursiveLoop?
 
@@ -7398,7 +7301,7 @@ public struct PutFunctionRecursionConfigOutput {
     }
 }
 
-public struct PutProvisionedConcurrencyConfigInput {
+public struct PutProvisionedConcurrencyConfigInput: Swift.Sendable {
     /// The name or ARN of the Lambda function. Name formats
     ///
     /// * Function name – my-function.
@@ -7430,7 +7333,7 @@ public struct PutProvisionedConcurrencyConfigInput {
     }
 }
 
-public struct PutProvisionedConcurrencyConfigOutput {
+public struct PutProvisionedConcurrencyConfigOutput: Swift.Sendable {
     /// The amount of provisioned concurrency allocated. When a weighted alias is used during linear and canary deployments, this value fluctuates depending on the amount of concurrency that is provisioned for the function versions.
     public var allocatedProvisionedConcurrentExecutions: Swift.Int?
     /// The amount of provisioned concurrency available.
@@ -7462,75 +7365,7 @@ public struct PutProvisionedConcurrencyConfigOutput {
     }
 }
 
-public struct PutPublicAccessBlockConfigInput {
-    /// An object defining the public-access settings you want to apply. To block the creation of resource-based policies that would grant public access to your function, set BlockPublicPolicy to true. To allow the creation of resource-based policies that would grant public access to your function, set BlockPublicPolicy to false. To block public access to your function, even if its resource-based policy allows it, set RestrictPublicResource to true. To allow public access to a function with a resource-based policy that permits it, set RestrictPublicResource to false. The default setting for both BlockPublicPolicy and RestrictPublicResource is true.
-    /// This member is required.
-    public var publicAccessBlockConfig: LambdaClientTypes.PublicAccessBlockConfig?
-    /// The Amazon Resource Name (ARN) of the function you want to configure public-access settings for. Public-access settings are applied at the function level, so you can't apply different settings to function versions or aliases.
-    /// This member is required.
-    public var resourceArn: Swift.String?
-
-    public init(
-        publicAccessBlockConfig: LambdaClientTypes.PublicAccessBlockConfig? = nil,
-        resourceArn: Swift.String? = nil
-    )
-    {
-        self.publicAccessBlockConfig = publicAccessBlockConfig
-        self.resourceArn = resourceArn
-    }
-}
-
-public struct PutPublicAccessBlockConfigOutput {
-    /// The public-access settings Lambda applied to your function.
-    public var publicAccessBlockConfig: LambdaClientTypes.PublicAccessBlockConfig?
-
-    public init(
-        publicAccessBlockConfig: LambdaClientTypes.PublicAccessBlockConfig? = nil
-    )
-    {
-        self.publicAccessBlockConfig = publicAccessBlockConfig
-    }
-}
-
-public struct PutResourcePolicyInput {
-    /// The JSON resource-based policy you want to add to your function. To learn more about creating resource-based policies for controlling access to Lambda, see [Working with resource-based IAM policies in Lambda](https://docs.aws.amazon.com/) in the Lambda Developer Guide.
-    /// This member is required.
-    public var policy: Swift.String?
-    /// The Amazon Resource Name (ARN) of the function you want to add the policy to. You can use either a qualified or an unqualified ARN, but the value you specify must be a complete ARN and wildcard characters are not accepted.
-    /// This member is required.
-    public var resourceArn: Swift.String?
-    /// Replace the existing policy only if its revision ID matches the string you specify. To find the revision ID of the policy currently attached to your function, use the [GetResourcePolicy] action.
-    public var revisionId: Swift.String?
-
-    public init(
-        policy: Swift.String? = nil,
-        resourceArn: Swift.String? = nil,
-        revisionId: Swift.String? = nil
-    )
-    {
-        self.policy = policy
-        self.resourceArn = resourceArn
-        self.revisionId = revisionId
-    }
-}
-
-public struct PutResourcePolicyOutput {
-    /// The policy Lambda added to your function.
-    public var policy: Swift.String?
-    /// The revision ID of the policy Lambda added to your function.
-    public var revisionId: Swift.String?
-
-    public init(
-        policy: Swift.String? = nil,
-        revisionId: Swift.String? = nil
-    )
-    {
-        self.policy = policy
-        self.revisionId = revisionId
-    }
-}
-
-public struct PutRuntimeManagementConfigInput {
+public struct PutRuntimeManagementConfigInput: Swift.Sendable {
     /// The name or ARN of the Lambda function. Name formats
     ///
     /// * Function name – my-function.
@@ -7571,7 +7406,7 @@ public struct PutRuntimeManagementConfigInput {
     }
 }
 
-public struct PutRuntimeManagementConfigOutput {
+public struct PutRuntimeManagementConfigOutput: Swift.Sendable {
     /// The ARN of the function
     /// This member is required.
     public var functionArn: Swift.String?
@@ -7593,7 +7428,7 @@ public struct PutRuntimeManagementConfigOutput {
     }
 }
 
-public struct RemoveLayerVersionPermissionInput {
+public struct RemoveLayerVersionPermissionInput: Swift.Sendable {
     /// The name or Amazon Resource Name (ARN) of the layer.
     /// This member is required.
     public var layerName: Swift.String?
@@ -7620,7 +7455,7 @@ public struct RemoveLayerVersionPermissionInput {
     }
 }
 
-public struct RemovePermissionInput {
+public struct RemovePermissionInput: Swift.Sendable {
     /// The name or ARN of the Lambda function, version, or alias. Name formats
     ///
     /// * Function name – my-function (name-only), my-function:v1 (with alias).
@@ -7655,7 +7490,7 @@ public struct RemovePermissionInput {
     }
 }
 
-public struct TagResourceInput {
+public struct TagResourceInput: Swift.Sendable {
     /// The resource's Amazon Resource Name (ARN).
     /// This member is required.
     public var resource: Swift.String?
@@ -7673,7 +7508,7 @@ public struct TagResourceInput {
     }
 }
 
-public struct UntagResourceInput {
+public struct UntagResourceInput: Swift.Sendable {
     /// The resource's Amazon Resource Name (ARN).
     /// This member is required.
     public var resource: Swift.String?
@@ -7691,7 +7526,7 @@ public struct UntagResourceInput {
     }
 }
 
-public struct UpdateAliasInput {
+public struct UpdateAliasInput: Swift.Sendable {
     /// A description of the alias.
     public var description: Swift.String?
     /// The name or ARN of the Lambda function. Name formats
@@ -7735,7 +7570,7 @@ public struct UpdateAliasInput {
 }
 
 /// Provides configuration information about a Lambda function [alias](https://docs.aws.amazon.com/lambda/latest/dg/configuration-aliases.html).
-public struct UpdateAliasOutput {
+public struct UpdateAliasOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the alias.
     public var aliasArn: Swift.String?
     /// A description of the alias.
@@ -7767,7 +7602,7 @@ public struct UpdateAliasOutput {
     }
 }
 
-public struct UpdateCodeSigningConfigInput {
+public struct UpdateCodeSigningConfigInput: Swift.Sendable {
     /// Signing profiles for this code signing configuration.
     public var allowedPublishers: LambdaClientTypes.AllowedPublishers?
     /// The The Amazon Resource Name (ARN) of the code signing configuration.
@@ -7792,7 +7627,7 @@ public struct UpdateCodeSigningConfigInput {
     }
 }
 
-public struct UpdateCodeSigningConfigOutput {
+public struct UpdateCodeSigningConfigOutput: Swift.Sendable {
     /// The code signing configuration
     /// This member is required.
     public var codeSigningConfig: LambdaClientTypes.CodeSigningConfig?
@@ -7805,7 +7640,7 @@ public struct UpdateCodeSigningConfigOutput {
     }
 }
 
-public struct UpdateEventSourceMappingInput {
+public struct UpdateEventSourceMappingInput: Swift.Sendable {
     /// The maximum number of records in each batch that Lambda pulls from your stream or queue and sends to your function. Lambda passes all of the records in the batch to the function in a single call, up to the payload limit for synchronous invocation (6 MB).
     ///
     /// * Amazon Kinesis – Default 100. Max 10,000.
@@ -7908,7 +7743,7 @@ public struct UpdateEventSourceMappingInput {
 }
 
 /// A mapping between an Amazon Web Services resource and a Lambda function. For details, see [CreateEventSourceMapping].
-public struct UpdateEventSourceMappingOutput {
+public struct UpdateEventSourceMappingOutput: Swift.Sendable {
     /// Specific configuration settings for an Amazon Managed Streaming for Apache Kafka (Amazon MSK) event source.
     public var amazonManagedKafkaEventSourceConfig: LambdaClientTypes.AmazonManagedKafkaEventSourceConfig?
     /// The maximum number of records in each batch that Lambda pulls from your stream or queue and sends to your function. Lambda passes all of the records in the batch to the function in a single call, up to the payload limit for synchronous invocation (6 MB). Default value: Varies by service. For Amazon SQS, the default is 10. For all other services, the default is 100. Related setting: When you set BatchSize to a value greater than 10, you must set MaximumBatchingWindowInSeconds to at least 1.
@@ -8036,7 +7871,7 @@ public struct UpdateEventSourceMappingOutput {
     }
 }
 
-public struct UpdateFunctionCodeInput {
+public struct UpdateFunctionCodeInput: Swift.Sendable {
     /// The instruction set architecture that the function supports. Enter a string array with one of the valid values (arm64 or x86_64). The default value is x86_64.
     public var architectures: [LambdaClientTypes.Architecture]?
     /// Set to true to validate the request parameters and access permissions without modifying the function code.
@@ -8100,7 +7935,7 @@ extension UpdateFunctionCodeInput: Swift.CustomDebugStringConvertible {
 }
 
 /// Details about a function's configuration.
-public struct UpdateFunctionCodeOutput {
+public struct UpdateFunctionCodeOutput: Swift.Sendable {
     /// The instruction set architecture that the function supports. Architecture is a string array with one of the valid values. The default architecture value is x86_64.
     public var architectures: [LambdaClientTypes.Architecture]?
     /// The SHA256 hash of the function's deployment package.
@@ -8252,7 +8087,7 @@ public struct UpdateFunctionCodeOutput {
     }
 }
 
-public struct UpdateFunctionConfigurationInput {
+public struct UpdateFunctionConfigurationInput: Swift.Sendable {
     /// A dead-letter queue configuration that specifies the queue or topic where Lambda sends asynchronous events when they fail processing. For more information, see [Dead-letter queues](https://docs.aws.amazon.com/lambda/latest/dg/invocation-async.html#invocation-dlq).
     public var deadLetterConfig: LambdaClientTypes.DeadLetterConfig?
     /// A description of the function.
@@ -8347,7 +8182,7 @@ public struct UpdateFunctionConfigurationInput {
 }
 
 /// Details about a function's configuration.
-public struct UpdateFunctionConfigurationOutput {
+public struct UpdateFunctionConfigurationOutput: Swift.Sendable {
     /// The instruction set architecture that the function supports. Architecture is a string array with one of the valid values. The default architecture value is x86_64.
     public var architectures: [LambdaClientTypes.Architecture]?
     /// The SHA256 hash of the function's deployment package.
@@ -8499,7 +8334,7 @@ public struct UpdateFunctionConfigurationOutput {
     }
 }
 
-public struct UpdateFunctionEventInvokeConfigInput {
+public struct UpdateFunctionEventInvokeConfigInput: Swift.Sendable {
     /// A destination for events after they have been sent to a function for processing. Destinations
     ///
     /// * Function - The Amazon Resource Name (ARN) of a Lambda function.
@@ -8545,7 +8380,7 @@ public struct UpdateFunctionEventInvokeConfigInput {
     }
 }
 
-public struct UpdateFunctionEventInvokeConfigOutput {
+public struct UpdateFunctionEventInvokeConfigOutput: Swift.Sendable {
     /// A destination for events after they have been sent to a function for processing. Destinations
     ///
     /// * Function - The Amazon Resource Name (ARN) of a Lambda function.
@@ -8581,7 +8416,7 @@ public struct UpdateFunctionEventInvokeConfigOutput {
     }
 }
 
-public struct UpdateFunctionUrlConfigInput {
+public struct UpdateFunctionUrlConfigInput: Swift.Sendable {
     /// The type of authentication that your function URL uses. Set to AWS_IAM if you want to restrict access to authenticated users only. Set to NONE if you want to bypass IAM authentication to create a public endpoint. For more information, see [Security and auth model for Lambda function URLs](https://docs.aws.amazon.com/lambda/latest/dg/urls-auth.html).
     public var authType: LambdaClientTypes.FunctionUrlAuthType?
     /// The [cross-origin resource sharing (CORS)](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS) settings for your function URL.
@@ -8623,7 +8458,7 @@ public struct UpdateFunctionUrlConfigInput {
     }
 }
 
-public struct UpdateFunctionUrlConfigOutput {
+public struct UpdateFunctionUrlConfigOutput: Swift.Sendable {
     /// The type of authentication that your function URL uses. Set to AWS_IAM if you want to restrict access to authenticated users only. Set to NONE if you want to bypass IAM authentication to create a public endpoint. For more information, see [Security and auth model for Lambda function URLs](https://docs.aws.amazon.com/lambda/latest/dg/urls-auth.html).
     /// This member is required.
     public var authType: LambdaClientTypes.FunctionUrlAuthType?
@@ -8924,28 +8759,6 @@ extension DeleteProvisionedConcurrencyConfigInput {
     }
 }
 
-extension DeleteResourcePolicyInput {
-
-    static func urlPathProvider(_ value: DeleteResourcePolicyInput) -> Swift.String? {
-        guard let resourceArn = value.resourceArn else {
-            return nil
-        }
-        return "/2024-09-16/resource-policy/\(resourceArn.urlPercentEncoding())"
-    }
-}
-
-extension DeleteResourcePolicyInput {
-
-    static func queryItemProvider(_ value: DeleteResourcePolicyInput) throws -> [Smithy.URIQueryItem] {
-        var items = [Smithy.URIQueryItem]()
-        if let revisionId = value.revisionId {
-            let revisionIdQueryItem = Smithy.URIQueryItem(name: "RevisionId".urlPercentEncoding(), value: Swift.String(revisionId).urlPercentEncoding())
-            items.append(revisionIdQueryItem)
-        }
-        return items
-    }
-}
-
 extension GetAccountSettingsInput {
 
     static func urlPathProvider(_ value: GetAccountSettingsInput) -> Swift.String? {
@@ -9195,26 +9008,6 @@ extension GetProvisionedConcurrencyConfigInput {
         let qualifierQueryItem = Smithy.URIQueryItem(name: "Qualifier".urlPercentEncoding(), value: Swift.String(qualifier).urlPercentEncoding())
         items.append(qualifierQueryItem)
         return items
-    }
-}
-
-extension GetPublicAccessBlockConfigInput {
-
-    static func urlPathProvider(_ value: GetPublicAccessBlockConfigInput) -> Swift.String? {
-        guard let resourceArn = value.resourceArn else {
-            return nil
-        }
-        return "/2024-09-16/public-access-block/\(resourceArn.urlPercentEncoding())"
-    }
-}
-
-extension GetResourcePolicyInput {
-
-    static func urlPathProvider(_ value: GetResourcePolicyInput) -> Swift.String? {
-        guard let resourceArn = value.resourceArn else {
-            return nil
-        }
-        return "/2024-09-16/resource-policy/\(resourceArn.urlPercentEncoding())"
     }
 }
 
@@ -9745,26 +9538,6 @@ extension PutProvisionedConcurrencyConfigInput {
     }
 }
 
-extension PutPublicAccessBlockConfigInput {
-
-    static func urlPathProvider(_ value: PutPublicAccessBlockConfigInput) -> Swift.String? {
-        guard let resourceArn = value.resourceArn else {
-            return nil
-        }
-        return "/2024-09-16/public-access-block/\(resourceArn.urlPercentEncoding())"
-    }
-}
-
-extension PutResourcePolicyInput {
-
-    static func urlPathProvider(_ value: PutResourcePolicyInput) -> Swift.String? {
-        guard let resourceArn = value.resourceArn else {
-            return nil
-        }
-        return "/2024-09-16/resource-policy/\(resourceArn.urlPercentEncoding())"
-    }
-}
-
 extension PutRuntimeManagementConfigInput {
 
     static func urlPathProvider(_ value: PutRuntimeManagementConfigInput) -> Swift.String? {
@@ -10187,23 +9960,6 @@ extension PutProvisionedConcurrencyConfigInput {
     }
 }
 
-extension PutPublicAccessBlockConfigInput {
-
-    static func write(value: PutPublicAccessBlockConfigInput?, to writer: SmithyJSON.Writer) throws {
-        guard let value else { return }
-        try writer["PublicAccessBlockConfig"].write(value.publicAccessBlockConfig, with: LambdaClientTypes.PublicAccessBlockConfig.write(value:to:))
-    }
-}
-
-extension PutResourcePolicyInput {
-
-    static func write(value: PutResourcePolicyInput?, to writer: SmithyJSON.Writer) throws {
-        guard let value else { return }
-        try writer["Policy"].write(value.policy)
-        try writer["RevisionId"].write(value.revisionId)
-    }
-}
-
 extension PutRuntimeManagementConfigInput {
 
     static func write(value: PutRuntimeManagementConfigInput?, to writer: SmithyJSON.Writer) throws {
@@ -10589,13 +10345,6 @@ extension DeleteProvisionedConcurrencyConfigOutput {
     }
 }
 
-extension DeleteResourcePolicyOutput {
-
-    static func httpOutput(from httpResponse: SmithyHTTPAPI.HTTPResponse) async throws -> DeleteResourcePolicyOutput {
-        return DeleteResourcePolicyOutput()
-    }
-}
-
 extension GetAccountSettingsOutput {
 
     static func httpOutput(from httpResponse: SmithyHTTPAPI.HTTPResponse) async throws -> GetAccountSettingsOutput {
@@ -10690,6 +10439,7 @@ extension GetFunctionOutput {
         value.concurrency = try reader["Concurrency"].readIfPresent(with: LambdaClientTypes.Concurrency.read(from:))
         value.configuration = try reader["Configuration"].readIfPresent(with: LambdaClientTypes.FunctionConfiguration.read(from:))
         value.tags = try reader["Tags"].readMapIfPresent(valueReadingClosure: SmithyReadWrite.ReadingClosures.readString(from:), keyNodeInfo: "key", valueNodeInfo: "value", isFlattened: false)
+        value.tagsError = try reader["TagsError"].readIfPresent(with: LambdaClientTypes.TagsError.read(from:))
         return value
     }
 }
@@ -10891,31 +10641,6 @@ extension GetProvisionedConcurrencyConfigOutput {
         value.requestedProvisionedConcurrentExecutions = try reader["RequestedProvisionedConcurrentExecutions"].readIfPresent()
         value.status = try reader["Status"].readIfPresent()
         value.statusReason = try reader["StatusReason"].readIfPresent()
-        return value
-    }
-}
-
-extension GetPublicAccessBlockConfigOutput {
-
-    static func httpOutput(from httpResponse: SmithyHTTPAPI.HTTPResponse) async throws -> GetPublicAccessBlockConfigOutput {
-        let data = try await httpResponse.data()
-        let responseReader = try SmithyJSON.Reader.from(data: data)
-        let reader = responseReader
-        var value = GetPublicAccessBlockConfigOutput()
-        value.publicAccessBlockConfig = try reader["PublicAccessBlockConfig"].readIfPresent(with: LambdaClientTypes.PublicAccessBlockConfig.read(from:))
-        return value
-    }
-}
-
-extension GetResourcePolicyOutput {
-
-    static func httpOutput(from httpResponse: SmithyHTTPAPI.HTTPResponse) async throws -> GetResourcePolicyOutput {
-        let data = try await httpResponse.data()
-        let responseReader = try SmithyJSON.Reader.from(data: data)
-        let reader = responseReader
-        var value = GetResourcePolicyOutput()
-        value.policy = try reader["Policy"].readIfPresent()
-        value.revisionId = try reader["RevisionId"].readIfPresent()
         return value
     }
 }
@@ -11281,31 +11006,6 @@ extension PutProvisionedConcurrencyConfigOutput {
     }
 }
 
-extension PutPublicAccessBlockConfigOutput {
-
-    static func httpOutput(from httpResponse: SmithyHTTPAPI.HTTPResponse) async throws -> PutPublicAccessBlockConfigOutput {
-        let data = try await httpResponse.data()
-        let responseReader = try SmithyJSON.Reader.from(data: data)
-        let reader = responseReader
-        var value = PutPublicAccessBlockConfigOutput()
-        value.publicAccessBlockConfig = try reader["PublicAccessBlockConfig"].readIfPresent(with: LambdaClientTypes.PublicAccessBlockConfig.read(from:))
-        return value
-    }
-}
-
-extension PutResourcePolicyOutput {
-
-    static func httpOutput(from httpResponse: SmithyHTTPAPI.HTTPResponse) async throws -> PutResourcePolicyOutput {
-        let data = try await httpResponse.data()
-        let responseReader = try SmithyJSON.Reader.from(data: data)
-        let reader = responseReader
-        var value = PutResourcePolicyOutput()
-        value.policy = try reader["Policy"].readIfPresent()
-        value.revisionId = try reader["RevisionId"].readIfPresent()
-        return value
-    }
-}
-
 extension PutRuntimeManagementConfigOutput {
 
     static func httpOutput(from httpResponse: SmithyHTTPAPI.HTTPResponse) async throws -> PutRuntimeManagementConfigOutput {
@@ -11577,7 +11277,6 @@ enum AddPermissionOutputError {
             case "InvalidParameterValueException": return try InvalidParameterValueException.makeError(baseError: baseError)
             case "PolicyLengthExceededException": return try PolicyLengthExceededException.makeError(baseError: baseError)
             case "PreconditionFailedException": return try PreconditionFailedException.makeError(baseError: baseError)
-            case "PublicPolicyException": return try PublicPolicyException.makeError(baseError: baseError)
             case "ResourceConflictException": return try ResourceConflictException.makeError(baseError: baseError)
             case "ResourceNotFoundException": return try ResourceNotFoundException.makeError(baseError: baseError)
             case "ServiceException": return try ServiceException.makeError(baseError: baseError)
@@ -11854,25 +11553,6 @@ enum DeleteProvisionedConcurrencyConfigOutputError {
     }
 }
 
-enum DeleteResourcePolicyOutputError {
-
-    static func httpError(from httpResponse: SmithyHTTPAPI.HTTPResponse) async throws -> Swift.Error {
-        let data = try await httpResponse.data()
-        let responseReader = try SmithyJSON.Reader.from(data: data)
-        let baseError = try AWSClientRuntime.RestJSONError(httpResponse: httpResponse, responseReader: responseReader, noErrorWrapping: false)
-        if let error = baseError.customError() { return error }
-        switch baseError.code {
-            case "InvalidParameterValueException": return try InvalidParameterValueException.makeError(baseError: baseError)
-            case "PreconditionFailedException": return try PreconditionFailedException.makeError(baseError: baseError)
-            case "ResourceConflictException": return try ResourceConflictException.makeError(baseError: baseError)
-            case "ResourceNotFoundException": return try ResourceNotFoundException.makeError(baseError: baseError)
-            case "ServiceException": return try ServiceException.makeError(baseError: baseError)
-            case "TooManyRequestsException": return try TooManyRequestsException.makeError(baseError: baseError)
-            default: return try AWSClientRuntime.UnknownAWSHTTPServiceError.makeError(baseError: baseError)
-        }
-    }
-}
-
 enum GetAccountSettingsOutputError {
 
     static func httpError(from httpResponse: SmithyHTTPAPI.HTTPResponse) async throws -> Swift.Error {
@@ -12135,40 +11815,6 @@ enum GetProvisionedConcurrencyConfigOutputError {
         switch baseError.code {
             case "InvalidParameterValueException": return try InvalidParameterValueException.makeError(baseError: baseError)
             case "ProvisionedConcurrencyConfigNotFoundException": return try ProvisionedConcurrencyConfigNotFoundException.makeError(baseError: baseError)
-            case "ResourceNotFoundException": return try ResourceNotFoundException.makeError(baseError: baseError)
-            case "ServiceException": return try ServiceException.makeError(baseError: baseError)
-            case "TooManyRequestsException": return try TooManyRequestsException.makeError(baseError: baseError)
-            default: return try AWSClientRuntime.UnknownAWSHTTPServiceError.makeError(baseError: baseError)
-        }
-    }
-}
-
-enum GetPublicAccessBlockConfigOutputError {
-
-    static func httpError(from httpResponse: SmithyHTTPAPI.HTTPResponse) async throws -> Swift.Error {
-        let data = try await httpResponse.data()
-        let responseReader = try SmithyJSON.Reader.from(data: data)
-        let baseError = try AWSClientRuntime.RestJSONError(httpResponse: httpResponse, responseReader: responseReader, noErrorWrapping: false)
-        if let error = baseError.customError() { return error }
-        switch baseError.code {
-            case "InvalidParameterValueException": return try InvalidParameterValueException.makeError(baseError: baseError)
-            case "ResourceNotFoundException": return try ResourceNotFoundException.makeError(baseError: baseError)
-            case "ServiceException": return try ServiceException.makeError(baseError: baseError)
-            case "TooManyRequestsException": return try TooManyRequestsException.makeError(baseError: baseError)
-            default: return try AWSClientRuntime.UnknownAWSHTTPServiceError.makeError(baseError: baseError)
-        }
-    }
-}
-
-enum GetResourcePolicyOutputError {
-
-    static func httpError(from httpResponse: SmithyHTTPAPI.HTTPResponse) async throws -> Swift.Error {
-        let data = try await httpResponse.data()
-        let responseReader = try SmithyJSON.Reader.from(data: data)
-        let baseError = try AWSClientRuntime.RestJSONError(httpResponse: httpResponse, responseReader: responseReader, noErrorWrapping: false)
-        if let error = baseError.customError() { return error }
-        switch baseError.code {
-            case "InvalidParameterValueException": return try InvalidParameterValueException.makeError(baseError: baseError)
             case "ResourceNotFoundException": return try ResourceNotFoundException.makeError(baseError: baseError)
             case "ServiceException": return try ServiceException.makeError(baseError: baseError)
             case "TooManyRequestsException": return try TooManyRequestsException.makeError(baseError: baseError)
@@ -12626,45 +12272,6 @@ enum PutProvisionedConcurrencyConfigOutputError {
     }
 }
 
-enum PutPublicAccessBlockConfigOutputError {
-
-    static func httpError(from httpResponse: SmithyHTTPAPI.HTTPResponse) async throws -> Swift.Error {
-        let data = try await httpResponse.data()
-        let responseReader = try SmithyJSON.Reader.from(data: data)
-        let baseError = try AWSClientRuntime.RestJSONError(httpResponse: httpResponse, responseReader: responseReader, noErrorWrapping: false)
-        if let error = baseError.customError() { return error }
-        switch baseError.code {
-            case "InvalidParameterValueException": return try InvalidParameterValueException.makeError(baseError: baseError)
-            case "ResourceConflictException": return try ResourceConflictException.makeError(baseError: baseError)
-            case "ResourceNotFoundException": return try ResourceNotFoundException.makeError(baseError: baseError)
-            case "ServiceException": return try ServiceException.makeError(baseError: baseError)
-            case "TooManyRequestsException": return try TooManyRequestsException.makeError(baseError: baseError)
-            default: return try AWSClientRuntime.UnknownAWSHTTPServiceError.makeError(baseError: baseError)
-        }
-    }
-}
-
-enum PutResourcePolicyOutputError {
-
-    static func httpError(from httpResponse: SmithyHTTPAPI.HTTPResponse) async throws -> Swift.Error {
-        let data = try await httpResponse.data()
-        let responseReader = try SmithyJSON.Reader.from(data: data)
-        let baseError = try AWSClientRuntime.RestJSONError(httpResponse: httpResponse, responseReader: responseReader, noErrorWrapping: false)
-        if let error = baseError.customError() { return error }
-        switch baseError.code {
-            case "InvalidParameterValueException": return try InvalidParameterValueException.makeError(baseError: baseError)
-            case "PolicyLengthExceededException": return try PolicyLengthExceededException.makeError(baseError: baseError)
-            case "PreconditionFailedException": return try PreconditionFailedException.makeError(baseError: baseError)
-            case "PublicPolicyException": return try PublicPolicyException.makeError(baseError: baseError)
-            case "ResourceConflictException": return try ResourceConflictException.makeError(baseError: baseError)
-            case "ResourceNotFoundException": return try ResourceNotFoundException.makeError(baseError: baseError)
-            case "ServiceException": return try ServiceException.makeError(baseError: baseError)
-            case "TooManyRequestsException": return try TooManyRequestsException.makeError(baseError: baseError)
-            default: return try AWSClientRuntime.UnknownAWSHTTPServiceError.makeError(baseError: baseError)
-        }
-    }
-}
-
 enum PutRuntimeManagementConfigOutputError {
 
     static func httpError(from httpResponse: SmithyHTTPAPI.HTTPResponse) async throws -> Swift.Error {
@@ -12711,7 +12318,6 @@ enum RemovePermissionOutputError {
         switch baseError.code {
             case "InvalidParameterValueException": return try InvalidParameterValueException.makeError(baseError: baseError)
             case "PreconditionFailedException": return try PreconditionFailedException.makeError(baseError: baseError)
-            case "PublicPolicyException": return try PublicPolicyException.makeError(baseError: baseError)
             case "ResourceNotFoundException": return try ResourceNotFoundException.makeError(baseError: baseError)
             case "ServiceException": return try ServiceException.makeError(baseError: baseError)
             case "TooManyRequestsException": return try TooManyRequestsException.makeError(baseError: baseError)
@@ -12987,20 +12593,6 @@ extension ResourceConflictException {
         var value = ResourceConflictException()
         value.properties.type = try reader["Type"].readIfPresent()
         value.properties.message = try reader["message"].readIfPresent()
-        value.httpResponse = baseError.httpResponse
-        value.requestID = baseError.requestID
-        value.message = baseError.message
-        return value
-    }
-}
-
-extension PublicPolicyException {
-
-    static func makeError(baseError: AWSClientRuntime.RestJSONError) throws -> PublicPolicyException {
-        let reader = baseError.errorBodyReader
-        var value = PublicPolicyException()
-        value.properties.message = try reader["Message"].readIfPresent()
-        value.properties.type = try reader["Type"].readIfPresent()
         value.httpResponse = baseError.httpResponse
         value.requestID = baseError.requestID
         value.message = baseError.message
@@ -14031,6 +13623,17 @@ extension LambdaClientTypes.FunctionCodeLocation {
     }
 }
 
+extension LambdaClientTypes.TagsError {
+
+    static func read(from reader: SmithyJSON.Reader) throws -> LambdaClientTypes.TagsError {
+        guard reader.hasContent else { throw SmithyReadWrite.ReaderError.requiredValueNotPresent }
+        var value = LambdaClientTypes.TagsError()
+        value.errorCode = try reader["ErrorCode"].readIfPresent() ?? ""
+        value.message = try reader["Message"].readIfPresent() ?? ""
+        return value
+    }
+}
+
 extension LambdaClientTypes.Concurrency {
 
     static func read(from reader: SmithyJSON.Reader) throws -> LambdaClientTypes.Concurrency {
@@ -14051,23 +13654,6 @@ extension LambdaClientTypes.LayerVersionContentOutput {
         value.codeSize = try reader["CodeSize"].readIfPresent() ?? 0
         value.signingProfileVersionArn = try reader["SigningProfileVersionArn"].readIfPresent()
         value.signingJobArn = try reader["SigningJobArn"].readIfPresent()
-        return value
-    }
-}
-
-extension LambdaClientTypes.PublicAccessBlockConfig {
-
-    static func write(value: LambdaClientTypes.PublicAccessBlockConfig?, to writer: SmithyJSON.Writer) throws {
-        guard let value else { return }
-        try writer["BlockPublicPolicy"].write(value.blockPublicPolicy)
-        try writer["RestrictPublicResource"].write(value.restrictPublicResource)
-    }
-
-    static func read(from reader: SmithyJSON.Reader) throws -> LambdaClientTypes.PublicAccessBlockConfig {
-        guard reader.hasContent else { throw SmithyReadWrite.ReaderError.requiredValueNotPresent }
-        var value = LambdaClientTypes.PublicAccessBlockConfig()
-        value.blockPublicPolicy = try reader["BlockPublicPolicy"].readIfPresent()
-        value.restrictPublicResource = try reader["RestrictPublicResource"].readIfPresent()
         return value
     }
 }

@@ -59,7 +59,7 @@ public struct AccessDeniedException: ClientRuntime.ModeledError, AWSClientRuntim
 
 extension Inspector2ClientTypes {
 
-    public enum Status: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Status: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case disabled
         case disabling
         case enabled
@@ -99,8 +99,9 @@ extension Inspector2ClientTypes {
 }
 
 extension Inspector2ClientTypes {
+
     /// Details the status of Amazon Inspector for each resource type Amazon Inspector scans.
-    public struct ResourceStatus {
+    public struct ResourceStatus: Swift.Sendable {
         /// The status of Amazon Inspector scanning for Amazon EC2 resources.
         /// This member is required.
         public var ec2: Inspector2ClientTypes.Status?
@@ -125,12 +126,12 @@ extension Inspector2ClientTypes {
             self.lambdaCode = lambdaCode
         }
     }
-
 }
 
 extension Inspector2ClientTypes {
+
     /// An Amazon Web Services account within your environment that Amazon Inspector has been enabled for.
-    public struct Account {
+    public struct Account: Swift.Sendable {
         /// The ID of the Amazon Web Services account.
         /// This member is required.
         public var accountId: Swift.String?
@@ -152,12 +153,11 @@ extension Inspector2ClientTypes {
             self.status = status
         }
     }
-
 }
 
 extension Inspector2ClientTypes {
 
-    public enum AggregationFindingType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AggregationFindingType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case codeVulnerability
         case networkReachability
         case packageVulnerability
@@ -189,7 +189,7 @@ extension Inspector2ClientTypes {
 
 extension Inspector2ClientTypes {
 
-    public enum AggregationResourceType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AggregationResourceType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case awsEc2Instance
         case awsEcrContainerImage
         case awsLambdaFunction
@@ -221,7 +221,7 @@ extension Inspector2ClientTypes {
 
 extension Inspector2ClientTypes {
 
-    public enum AccountSortBy: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AccountSortBy: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case all
         case critical
         case high
@@ -253,7 +253,7 @@ extension Inspector2ClientTypes {
 
 extension Inspector2ClientTypes {
 
-    public enum SortOrder: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SortOrder: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case asc
         case desc
         case sdkUnknown(Swift.String)
@@ -281,8 +281,9 @@ extension Inspector2ClientTypes {
 }
 
 extension Inspector2ClientTypes {
+
     /// An object that contains details about an aggregation response based on Amazon Web Services accounts.
-    public struct AccountAggregation {
+    public struct AccountAggregation: Swift.Sendable {
         /// The type of finding.
         public var findingType: Inspector2ClientTypes.AggregationFindingType?
         /// The type of resource.
@@ -305,12 +306,12 @@ extension Inspector2ClientTypes {
             self.sortOrder = sortOrder
         }
     }
-
 }
 
 extension Inspector2ClientTypes {
+
     /// An object that contains the counts of aggregated finding per severity.
-    public struct SeverityCounts {
+    public struct SeverityCounts: Swift.Sendable {
         /// The total count of findings from all severities.
         public var all: Swift.Int?
         /// The total count of critical severity findings.
@@ -333,12 +334,12 @@ extension Inspector2ClientTypes {
             self.medium = medium
         }
     }
-
 }
 
 extension Inspector2ClientTypes {
+
     /// An aggregation of findings by Amazon Web Services account ID.
-    public struct AccountAggregationResponse {
+    public struct AccountAggregationResponse: Swift.Sendable {
         /// The Amazon Web Services account ID.
         public var accountId: Swift.String?
         /// The number of findings that have an exploit available.
@@ -361,12 +362,11 @@ extension Inspector2ClientTypes {
             self.severityCounts = severityCounts
         }
     }
-
 }
 
 extension Inspector2ClientTypes {
 
-    public enum CisStringComparison: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum CisStringComparison: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case equals
         case notEquals
         case `prefix`
@@ -397,8 +397,9 @@ extension Inspector2ClientTypes {
 }
 
 extension Inspector2ClientTypes {
+
     /// The CIS string filter.
-    public struct CisStringFilter {
+    public struct CisStringFilter: Swift.Sendable {
         /// The comparison value of the CIS string filter.
         /// This member is required.
         public var comparison: Inspector2ClientTypes.CisStringComparison?
@@ -415,12 +416,11 @@ extension Inspector2ClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension Inspector2ClientTypes {
 
-    public enum ErrorCode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ErrorCode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case accessDenied
         case accountIsIsolated
         case alreadyEnabled
@@ -490,8 +490,9 @@ extension Inspector2ClientTypes {
 }
 
 extension Inspector2ClientTypes {
+
     /// An object that described the state of Amazon Inspector scans for an account.
-    public struct State {
+    public struct State: Swift.Sendable {
         /// The error code explaining why the account failed to enable Amazon Inspector.
         /// This member is required.
         public var errorCode: Inspector2ClientTypes.ErrorCode?
@@ -513,12 +514,12 @@ extension Inspector2ClientTypes {
             self.status = status
         }
     }
-
 }
 
 extension Inspector2ClientTypes {
+
     /// Details the state of Amazon Inspector for each resource type Amazon Inspector scans.
-    public struct ResourceState {
+    public struct ResourceState: Swift.Sendable {
         /// An object detailing the state of Amazon Inspector scanning for Amazon EC2 resources.
         /// This member is required.
         public var ec2: Inspector2ClientTypes.State?
@@ -543,12 +544,12 @@ extension Inspector2ClientTypes {
             self.lambdaCode = lambdaCode
         }
     }
-
 }
 
 extension Inspector2ClientTypes {
+
     /// An object with details the status of an Amazon Web Services account within your Amazon Inspector environment.
-    public struct AccountState {
+    public struct AccountState: Swift.Sendable {
         /// The Amazon Web Services account ID.
         /// This member is required.
         public var accountId: Swift.String?
@@ -570,12 +571,11 @@ extension Inspector2ClientTypes {
             self.state = state
         }
     }
-
 }
 
 extension Inspector2ClientTypes {
 
-    public enum StringComparison: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum StringComparison: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case equals
         case notEquals
         case `prefix`
@@ -606,8 +606,9 @@ extension Inspector2ClientTypes {
 }
 
 extension Inspector2ClientTypes {
+
     /// An object that describes the details of a string filter.
-    public struct StringFilter {
+    public struct StringFilter: Swift.Sendable {
         /// The operator to use when comparing values in the filter.
         /// This member is required.
         public var comparison: Inspector2ClientTypes.StringComparison?
@@ -624,12 +625,11 @@ extension Inspector2ClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension Inspector2ClientTypes {
 
-    public enum AmiSortBy: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AmiSortBy: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case affectedInstances
         case all
         case critical
@@ -663,8 +663,9 @@ extension Inspector2ClientTypes {
 }
 
 extension Inspector2ClientTypes {
+
     /// The details that define an aggregation based on Amazon machine images (AMIs).
-    public struct AmiAggregation {
+    public struct AmiAggregation: Swift.Sendable {
         /// The IDs of AMIs to aggregate findings for.
         public var amis: [Inspector2ClientTypes.StringFilter]?
         /// The value to sort results by.
@@ -683,12 +684,11 @@ extension Inspector2ClientTypes {
             self.sortOrder = sortOrder
         }
     }
-
 }
 
 extension Inspector2ClientTypes {
 
-    public enum AwsEcrContainerSortBy: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AwsEcrContainerSortBy: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case all
         case critical
         case high
@@ -719,8 +719,9 @@ extension Inspector2ClientTypes {
 }
 
 extension Inspector2ClientTypes {
+
     /// An aggregation of information about Amazon ECR containers.
-    public struct AwsEcrContainerAggregation {
+    public struct AwsEcrContainerAggregation: Swift.Sendable {
         /// The architecture of the containers.
         public var architectures: [Inspector2ClientTypes.StringFilter]?
         /// The image SHA values.
@@ -755,12 +756,11 @@ extension Inspector2ClientTypes {
             self.sortOrder = sortOrder
         }
     }
-
 }
 
 extension Inspector2ClientTypes {
 
-    public enum MapComparison: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum MapComparison: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case equals
         case sdkUnknown(Swift.String)
 
@@ -785,8 +785,9 @@ extension Inspector2ClientTypes {
 }
 
 extension Inspector2ClientTypes {
+
     /// An object that describes details of a map filter.
-    public struct MapFilter {
+    public struct MapFilter: Swift.Sendable {
         /// The operator to use when comparing values in the filter.
         /// This member is required.
         public var comparison: Inspector2ClientTypes.MapComparison?
@@ -807,12 +808,11 @@ extension Inspector2ClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension Inspector2ClientTypes {
 
-    public enum Ec2InstanceSortBy: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Ec2InstanceSortBy: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case all
         case critical
         case high
@@ -846,8 +846,9 @@ extension Inspector2ClientTypes {
 }
 
 extension Inspector2ClientTypes {
+
     /// The details that define an aggregation based on Amazon EC2 instances.
-    public struct Ec2InstanceAggregation {
+    public struct Ec2InstanceAggregation: Swift.Sendable {
         /// The AMI IDs associated with the Amazon EC2 instances to aggregate findings for.
         public var amis: [Inspector2ClientTypes.StringFilter]?
         /// The Amazon EC2 instance IDs to aggregate findings for.
@@ -878,12 +879,11 @@ extension Inspector2ClientTypes {
             self.sortOrder = sortOrder
         }
     }
-
 }
 
 extension Inspector2ClientTypes {
 
-    public enum FindingTypeSortBy: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum FindingTypeSortBy: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case all
         case critical
         case high
@@ -914,8 +914,9 @@ extension Inspector2ClientTypes {
 }
 
 extension Inspector2ClientTypes {
+
     /// The details that define an aggregation based on finding type.
-    public struct FindingTypeAggregation {
+    public struct FindingTypeAggregation: Swift.Sendable {
         /// The finding type to aggregate.
         public var findingType: Inspector2ClientTypes.AggregationFindingType?
         /// The resource type to aggregate.
@@ -938,12 +939,11 @@ extension Inspector2ClientTypes {
             self.sortOrder = sortOrder
         }
     }
-
 }
 
 extension Inspector2ClientTypes {
 
-    public enum ImageLayerSortBy: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ImageLayerSortBy: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case all
         case critical
         case high
@@ -974,8 +974,9 @@ extension Inspector2ClientTypes {
 }
 
 extension Inspector2ClientTypes {
+
     /// The details that define an aggregation based on container image layers.
-    public struct ImageLayerAggregation {
+    public struct ImageLayerAggregation: Swift.Sendable {
         /// The hashes associated with the layers.
         public var layerHashes: [Inspector2ClientTypes.StringFilter]?
         /// The repository associated with the container image hosting the layers.
@@ -1002,12 +1003,11 @@ extension Inspector2ClientTypes {
             self.sortOrder = sortOrder
         }
     }
-
 }
 
 extension Inspector2ClientTypes {
 
-    public enum LambdaFunctionSortBy: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum LambdaFunctionSortBy: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case all
         case critical
         case high
@@ -1038,8 +1038,9 @@ extension Inspector2ClientTypes {
 }
 
 extension Inspector2ClientTypes {
+
     /// The details that define a findings aggregation based on Amazon Web Services Lambda functions.
-    public struct LambdaFunctionAggregation {
+    public struct LambdaFunctionAggregation: Swift.Sendable {
         /// The Amazon Web Services Lambda function names to include in the aggregation results.
         public var functionNames: [Inspector2ClientTypes.StringFilter]?
         /// The tags to include in the aggregation results.
@@ -1070,12 +1071,11 @@ extension Inspector2ClientTypes {
             self.sortOrder = sortOrder
         }
     }
-
 }
 
 extension Inspector2ClientTypes {
 
-    public enum LambdaLayerSortBy: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum LambdaLayerSortBy: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case all
         case critical
         case high
@@ -1106,8 +1106,9 @@ extension Inspector2ClientTypes {
 }
 
 extension Inspector2ClientTypes {
+
     /// The details that define a findings aggregation based on an Amazon Web Services Lambda function's layers.
-    public struct LambdaLayerAggregation {
+    public struct LambdaLayerAggregation: Swift.Sendable {
         /// The names of the Amazon Web Services Lambda functions associated with the layers.
         public var functionNames: [Inspector2ClientTypes.StringFilter]?
         /// The Amazon Resource Name (ARN) of the Amazon Web Services Lambda function layer.
@@ -1134,12 +1135,11 @@ extension Inspector2ClientTypes {
             self.sortOrder = sortOrder
         }
     }
-
 }
 
 extension Inspector2ClientTypes {
 
-    public enum PackageSortBy: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum PackageSortBy: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case all
         case critical
         case high
@@ -1170,8 +1170,9 @@ extension Inspector2ClientTypes {
 }
 
 extension Inspector2ClientTypes {
+
     /// The details that define an aggregation based on operating system package type.
-    public struct PackageAggregation {
+    public struct PackageAggregation: Swift.Sendable {
         /// The names of packages to aggregate findings on.
         public var packageNames: [Inspector2ClientTypes.StringFilter]?
         /// The value to sort results by.
@@ -1190,12 +1191,11 @@ extension Inspector2ClientTypes {
             self.sortOrder = sortOrder
         }
     }
-
 }
 
 extension Inspector2ClientTypes {
 
-    public enum RepositorySortBy: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum RepositorySortBy: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case affectedImages
         case all
         case critical
@@ -1229,8 +1229,9 @@ extension Inspector2ClientTypes {
 }
 
 extension Inspector2ClientTypes {
+
     /// The details that define an aggregation based on repository.
-    public struct RepositoryAggregation {
+    public struct RepositoryAggregation: Swift.Sendable {
         /// The names of repositories to aggregate findings on.
         public var repositories: [Inspector2ClientTypes.StringFilter]?
         /// The value to sort results by.
@@ -1249,12 +1250,11 @@ extension Inspector2ClientTypes {
             self.sortOrder = sortOrder
         }
     }
-
 }
 
 extension Inspector2ClientTypes {
 
-    public enum TitleSortBy: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum TitleSortBy: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case all
         case critical
         case high
@@ -1285,8 +1285,9 @@ extension Inspector2ClientTypes {
 }
 
 extension Inspector2ClientTypes {
+
     /// The details that define an aggregation based on finding title.
-    public struct TitleAggregation {
+    public struct TitleAggregation: Swift.Sendable {
         /// The type of finding to aggregate on.
         public var findingType: Inspector2ClientTypes.AggregationFindingType?
         /// The resource type to aggregate on.
@@ -1317,12 +1318,12 @@ extension Inspector2ClientTypes {
             self.vulnerabilityIds = vulnerabilityIds
         }
     }
-
 }
 
 extension Inspector2ClientTypes {
+
     /// Contains details about an aggregation request.
-    public enum AggregationRequest {
+    public enum AggregationRequest: Swift.Sendable {
         /// An object that contains details about an aggregation request based on Amazon Web Services account IDs.
         case accountaggregation(Inspector2ClientTypes.AccountAggregation)
         /// An object that contains details about an aggregation request based on Amazon Machine Images (AMIs).
@@ -1347,12 +1348,12 @@ extension Inspector2ClientTypes {
         case lambdafunctionaggregation(Inspector2ClientTypes.LambdaFunctionAggregation)
         case sdkUnknown(Swift.String)
     }
-
 }
 
 extension Inspector2ClientTypes {
+
     /// A response that contains the results of a finding aggregation by AMI.
-    public struct AmiAggregationResponse {
+    public struct AmiAggregationResponse: Swift.Sendable {
         /// The Amazon Web Services account ID for the AMI.
         public var accountId: Swift.String?
         /// The IDs of Amazon EC2 instances using this AMI.
@@ -1376,12 +1377,12 @@ extension Inspector2ClientTypes {
             self.severityCounts = severityCounts
         }
     }
-
 }
 
 extension Inspector2ClientTypes {
+
     /// An aggregation of information about Amazon ECR containers.
-    public struct AwsEcrContainerAggregationResponse {
+    public struct AwsEcrContainerAggregationResponse: Swift.Sendable {
         /// The Amazon Web Services account ID of the account that owns the container.
         public var accountId: Swift.String?
         /// The architecture of the container.
@@ -1417,12 +1418,12 @@ extension Inspector2ClientTypes {
             self.severityCounts = severityCounts
         }
     }
-
 }
 
 extension Inspector2ClientTypes {
+
     /// A response that contains the results of a finding aggregation by Amazon EC2 instance.
-    public struct Ec2InstanceAggregationResponse {
+    public struct Ec2InstanceAggregationResponse: Swift.Sendable {
         /// The Amazon Web Services account for the Amazon EC2 instance.
         public var accountId: Swift.String?
         /// The Amazon Machine Image (AMI) of the Amazon EC2 instance.
@@ -1458,12 +1459,12 @@ extension Inspector2ClientTypes {
             self.severityCounts = severityCounts
         }
     }
-
 }
 
 extension Inspector2ClientTypes {
+
     /// A response that contains the results of a finding type aggregation.
-    public struct FindingTypeAggregationResponse {
+    public struct FindingTypeAggregationResponse: Swift.Sendable {
         /// The ID of the Amazon Web Services account associated with the findings.
         public var accountId: Swift.String?
         /// The number of findings that have an exploit available.
@@ -1486,12 +1487,12 @@ extension Inspector2ClientTypes {
             self.severityCounts = severityCounts
         }
     }
-
 }
 
 extension Inspector2ClientTypes {
+
     /// A response that contains the results of a finding aggregation by image layer.
-    public struct ImageLayerAggregationResponse {
+    public struct ImageLayerAggregationResponse: Swift.Sendable {
         /// The ID of the Amazon Web Services account that owns the container image hosting the layer image.
         /// This member is required.
         public var accountId: Swift.String?
@@ -1522,12 +1523,12 @@ extension Inspector2ClientTypes {
             self.severityCounts = severityCounts
         }
     }
-
 }
 
 extension Inspector2ClientTypes {
+
     /// A response that contains the results of an Amazon Web Services Lambda function finding aggregation.
-    public struct LambdaFunctionAggregationResponse {
+    public struct LambdaFunctionAggregationResponse: Swift.Sendable {
         /// The ID of the Amazon Web Services account that owns the Amazon Web Services Lambda function.
         public var accountId: Swift.String?
         /// The Amazon Web Services Lambda function names included in the aggregation results.
@@ -1563,12 +1564,12 @@ extension Inspector2ClientTypes {
             self.severityCounts = severityCounts
         }
     }
-
 }
 
 extension Inspector2ClientTypes {
+
     /// A response that contains the results of an Amazon Web Services Lambda function layer finding aggregation.
-    public struct LambdaLayerAggregationResponse {
+    public struct LambdaLayerAggregationResponse: Swift.Sendable {
         /// The account ID of the Amazon Web Services Lambda function layer.
         /// This member is required.
         public var accountId: Swift.String?
@@ -1599,12 +1600,12 @@ extension Inspector2ClientTypes {
             self.severityCounts = severityCounts
         }
     }
-
 }
 
 extension Inspector2ClientTypes {
+
     /// A response that contains the results of a finding aggregation by image layer.
-    public struct PackageAggregationResponse {
+    public struct PackageAggregationResponse: Swift.Sendable {
         /// The ID of the Amazon Web Services account associated with the findings.
         public var accountId: Swift.String?
         /// The name of the operating system package.
@@ -1624,12 +1625,12 @@ extension Inspector2ClientTypes {
             self.severityCounts = severityCounts
         }
     }
-
 }
 
 extension Inspector2ClientTypes {
+
     /// A response that contains details on the results of a finding aggregation by repository.
-    public struct RepositoryAggregationResponse {
+    public struct RepositoryAggregationResponse: Swift.Sendable {
         /// The ID of the Amazon Web Services account associated with the findings.
         public var accountId: Swift.String?
         /// The number of container images impacted by the findings.
@@ -1653,12 +1654,12 @@ extension Inspector2ClientTypes {
             self.severityCounts = severityCounts
         }
     }
-
 }
 
 extension Inspector2ClientTypes {
+
     /// A response that contains details on the results of a finding aggregation by title.
-    public struct TitleAggregationResponse {
+    public struct TitleAggregationResponse: Swift.Sendable {
         /// The ID of the Amazon Web Services account associated with the findings.
         public var accountId: Swift.String?
         /// An object that represent the count of matched findings per severity.
@@ -1682,12 +1683,12 @@ extension Inspector2ClientTypes {
             self.vulnerabilityId = vulnerabilityId
         }
     }
-
 }
 
 extension Inspector2ClientTypes {
+
     /// A structure that contains details about the results of an aggregation type.
-    public enum AggregationResponse {
+    public enum AggregationResponse: Swift.Sendable {
         /// An object that contains details about an aggregation response based on Amazon Web Services account IDs.
         case accountaggregation(Inspector2ClientTypes.AccountAggregationResponse)
         /// An object that contains details about an aggregation response based on Amazon Machine Images (AMIs).
@@ -1712,12 +1713,11 @@ extension Inspector2ClientTypes {
         case lambdafunctionaggregation(Inspector2ClientTypes.LambdaFunctionAggregationResponse)
         case sdkUnknown(Swift.String)
     }
-
 }
 
 extension Inspector2ClientTypes {
 
-    public enum AggregationType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AggregationType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case account
         case ami
         case awsEc2Instance
@@ -1773,7 +1773,7 @@ extension Inspector2ClientTypes {
 
 extension Inspector2ClientTypes {
 
-    public enum Architecture: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Architecture: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case arm64
         case x8664
         case sdkUnknown(Swift.String)
@@ -1859,8 +1859,9 @@ public struct ThrottlingException: ClientRuntime.ModeledError, AWSClientRuntime.
 }
 
 extension Inspector2ClientTypes {
+
     /// An object that describes a validation exception.
-    public struct ValidationExceptionField {
+    public struct ValidationExceptionField: Swift.Sendable {
         /// The validation exception message.
         /// This member is required.
         public var message: Swift.String?
@@ -1877,12 +1878,11 @@ extension Inspector2ClientTypes {
             self.name = name
         }
     }
-
 }
 
 extension Inspector2ClientTypes {
 
-    public enum ValidationExceptionReason: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ValidationExceptionReason: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case cannotParse
         case fieldValidationFailed
         case other
@@ -1946,7 +1946,7 @@ public struct ValidationException: ClientRuntime.ModeledError, AWSClientRuntime.
     }
 }
 
-public struct AssociateMemberInput {
+public struct AssociateMemberInput: Swift.Sendable {
     /// The Amazon Web Services account ID of the member account to be associated.
     /// This member is required.
     public var accountId: Swift.String?
@@ -1959,7 +1959,7 @@ public struct AssociateMemberInput {
     }
 }
 
-public struct AssociateMemberOutput {
+public struct AssociateMemberOutput: Swift.Sendable {
     /// The Amazon Web Services account ID of the successfully associated member account.
     /// This member is required.
     public var accountId: Swift.String?
@@ -1973,8 +1973,9 @@ public struct AssociateMemberOutput {
 }
 
 extension Inspector2ClientTypes {
+
     /// The Amazon Web Services Threat Intel Group (ATIG) details for a specific vulnerability.
-    public struct AtigData {
+    public struct AtigData: Swift.Sendable {
         /// The date and time this vulnerability was first observed.
         public var firstSeen: Foundation.Date?
         /// The date and time this vulnerability was last observed.
@@ -1997,12 +1998,12 @@ extension Inspector2ClientTypes {
             self.ttps = ttps
         }
     }
-
 }
 
 extension Inspector2ClientTypes {
+
     /// Represents which scan types are automatically enabled for new members of your Amazon Inspector organization.
-    public struct AutoEnable {
+    public struct AutoEnable: Swift.Sendable {
         /// Represents whether Amazon EC2 scans are automatically enabled for new members of your Amazon Inspector organization.
         /// This member is required.
         public var ec2: Swift.Bool?
@@ -2027,12 +2028,12 @@ extension Inspector2ClientTypes {
             self.lambdaCode = lambdaCode
         }
     }
-
 }
 
 extension Inspector2ClientTypes {
+
     /// Details of the Amazon EC2 instance involved in a finding.
-    public struct AwsEc2InstanceDetails {
+    public struct AwsEc2InstanceDetails: Swift.Sendable {
         /// The IAM instance profile ARN of the Amazon EC2 instance.
         public var iamInstanceProfileArn: Swift.String?
         /// The image ID of the Amazon EC2 instance.
@@ -2079,12 +2080,12 @@ extension Inspector2ClientTypes {
             self.vpcId = vpcId
         }
     }
-
 }
 
 extension Inspector2ClientTypes {
+
     /// The image details of the Amazon ECR container image.
-    public struct AwsEcrContainerImageDetails {
+    public struct AwsEcrContainerImageDetails: Swift.Sendable {
         /// The architecture of the Amazon ECR container image.
         public var architecture: Swift.String?
         /// The image author of the Amazon ECR container image.
@@ -2126,12 +2127,11 @@ extension Inspector2ClientTypes {
             self.repositoryName = repositoryName
         }
     }
-
 }
 
 extension Inspector2ClientTypes {
 
-    public enum PackageType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum PackageType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case image
         case zip
         case sdkUnknown(Swift.String)
@@ -2160,7 +2160,7 @@ extension Inspector2ClientTypes {
 
 extension Inspector2ClientTypes {
 
-    public enum Runtime: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Runtime: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case go1X
         case java11
         case java17
@@ -2227,8 +2227,9 @@ extension Inspector2ClientTypes {
 }
 
 extension Inspector2ClientTypes {
+
     /// The VPC security groups and subnets that are attached to an Amazon Web Services Lambda function. For more information, see [VPC Settings](https://docs.aws.amazon.com/lambda/latest/dg/configuration-vpc.html).
-    public struct LambdaVpcConfig {
+    public struct LambdaVpcConfig: Swift.Sendable {
         /// The VPC security groups and subnets that are attached to an Amazon Web Services Lambda function. For more information, see [VPC Settings](https://docs.aws.amazon.com/lambda/latest/dg/configuration-vpc.html).
         public var securityGroupIds: [Swift.String]?
         /// A list of VPC subnet IDs.
@@ -2247,12 +2248,12 @@ extension Inspector2ClientTypes {
             self.vpcId = vpcId
         }
     }
-
 }
 
 extension Inspector2ClientTypes {
+
     /// A summary of information about the Amazon Web Services Lambda function.
-    public struct AwsLambdaFunctionDetails {
+    public struct AwsLambdaFunctionDetails: Swift.Sendable {
         /// The instruction set architecture that the Amazon Web Services Lambda function supports. Architecture is a string array with one of the valid values. The default architecture value is x86_64.
         public var architectures: [Inspector2ClientTypes.Architecture]?
         /// The SHA256 hash of the Amazon Web Services Lambda function's deployment package.
@@ -2304,7 +2305,6 @@ extension Inspector2ClientTypes {
             self.vpcConfig = vpcConfig
         }
     }
-
 }
 
 /// One or more tags submitted as part of the request is not valid.
@@ -2357,7 +2357,7 @@ public struct ResourceNotFoundException: ClientRuntime.ModeledError, AWSClientRu
     }
 }
 
-public struct BatchGetAccountStatusInput {
+public struct BatchGetAccountStatusInput: Swift.Sendable {
     /// The 12-digit Amazon Web Services account IDs of the accounts to retrieve Amazon Inspector status for.
     public var accountIds: [Swift.String]?
 
@@ -2370,8 +2370,9 @@ public struct BatchGetAccountStatusInput {
 }
 
 extension Inspector2ClientTypes {
+
     /// An object with details on why an account failed to enable Amazon Inspector.
-    public struct FailedAccount {
+    public struct FailedAccount: Swift.Sendable {
         /// The Amazon Web Services account ID.
         /// This member is required.
         public var accountId: Swift.String?
@@ -2401,10 +2402,9 @@ extension Inspector2ClientTypes {
             self.status = status
         }
     }
-
 }
 
-public struct BatchGetAccountStatusOutput {
+public struct BatchGetAccountStatusOutput: Swift.Sendable {
     /// An array of objects that provide details on the status of Amazon Inspector for each of the requested accounts.
     /// This member is required.
     public var accounts: [Inspector2ClientTypes.AccountState]?
@@ -2421,7 +2421,7 @@ public struct BatchGetAccountStatusOutput {
     }
 }
 
-public struct BatchGetCodeSnippetInput {
+public struct BatchGetCodeSnippetInput: Swift.Sendable {
     /// An array of finding ARNs for the findings you want to retrieve code snippets from.
     /// This member is required.
     public var findingArns: [Swift.String]?
@@ -2435,8 +2435,9 @@ public struct BatchGetCodeSnippetInput {
 }
 
 extension Inspector2ClientTypes {
+
     /// Contains information on the lines of code associated with a code snippet.
-    public struct CodeLine {
+    public struct CodeLine: Swift.Sendable {
         /// The content of a line of code
         /// This member is required.
         public var content: Swift.String?
@@ -2453,12 +2454,12 @@ extension Inspector2ClientTypes {
             self.lineNumber = lineNumber
         }
     }
-
 }
 
 extension Inspector2ClientTypes {
+
     /// A suggested fix for a vulnerability in your Lambda function code.
-    public struct SuggestedFix {
+    public struct SuggestedFix: Swift.Sendable {
         /// The fix's code.
         public var code: Swift.String?
         /// The fix's description.
@@ -2473,12 +2474,12 @@ extension Inspector2ClientTypes {
             self.description = description
         }
     }
-
 }
 
 extension Inspector2ClientTypes {
+
     /// Contains information on a code snippet retrieved by Amazon Inspector from a code vulnerability finding.
-    public struct CodeSnippetResult {
+    public struct CodeSnippetResult: Swift.Sendable {
         /// Contains information on the retrieved code snippet.
         public var codeSnippet: [Inspector2ClientTypes.CodeLine]?
         /// The line number of the last line of a code snippet.
@@ -2505,12 +2506,11 @@ extension Inspector2ClientTypes {
             self.suggestedFixes = suggestedFixes
         }
     }
-
 }
 
 extension Inspector2ClientTypes {
 
-    public enum CodeSnippetErrorCode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum CodeSnippetErrorCode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case accessDenied
         case codeSnippetNotFound
         case internalError
@@ -2544,8 +2544,9 @@ extension Inspector2ClientTypes {
 }
 
 extension Inspector2ClientTypes {
+
     /// Contains information about any errors encountered while trying to retrieve a code snippet.
-    public struct CodeSnippetError {
+    public struct CodeSnippetError: Swift.Sendable {
         /// The error code for the error that prevented a code snippet from being retrieved.
         /// This member is required.
         public var errorCode: Inspector2ClientTypes.CodeSnippetErrorCode?
@@ -2567,10 +2568,9 @@ extension Inspector2ClientTypes {
             self.findingArn = findingArn
         }
     }
-
 }
 
-public struct BatchGetCodeSnippetOutput {
+public struct BatchGetCodeSnippetOutput: Swift.Sendable {
     /// The retrieved code snippets associated with the provided finding ARNs.
     public var codeSnippetResults: [Inspector2ClientTypes.CodeSnippetResult]?
     /// Any errors Amazon Inspector encountered while trying to retrieve the requested code snippets.
@@ -2586,7 +2586,7 @@ public struct BatchGetCodeSnippetOutput {
     }
 }
 
-public struct BatchGetFindingDetailsInput {
+public struct BatchGetFindingDetailsInput: Swift.Sendable {
     /// A list of finding ARNs.
     /// This member is required.
     public var findingArns: [Swift.String]?
@@ -2601,7 +2601,7 @@ public struct BatchGetFindingDetailsInput {
 
 extension Inspector2ClientTypes {
 
-    public enum FindingDetailsErrorCode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum FindingDetailsErrorCode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case accessDenied
         case findingDetailsNotFound
         case internalError
@@ -2635,8 +2635,9 @@ extension Inspector2ClientTypes {
 }
 
 extension Inspector2ClientTypes {
+
     /// Details about an error encountered when trying to return vulnerability data for a finding.
-    public struct FindingDetailsError {
+    public struct FindingDetailsError: Swift.Sendable {
         /// The error code.
         /// This member is required.
         public var errorCode: Inspector2ClientTypes.FindingDetailsErrorCode?
@@ -2658,12 +2659,12 @@ extension Inspector2ClientTypes {
             self.findingArn = findingArn
         }
     }
-
 }
 
 extension Inspector2ClientTypes {
+
     /// The Cybersecurity and Infrastructure Security Agency (CISA) details for a specific vulnerability.
-    public struct CisaData {
+    public struct CisaData: Swift.Sendable {
         /// The remediation action recommended by CISA for this vulnerability.
         public var action: Swift.String?
         /// The date and time CISA added this vulnerability to their catalogue.
@@ -2682,12 +2683,12 @@ extension Inspector2ClientTypes {
             self.dateDue = dateDue
         }
     }
-
 }
 
 extension Inspector2ClientTypes {
+
     /// Details of the evidence for a vulnerability identified in a finding.
-    public struct Evidence {
+    public struct Evidence: Swift.Sendable {
         /// The evidence details.
         public var evidenceDetail: Swift.String?
         /// The evidence rule.
@@ -2706,12 +2707,12 @@ extension Inspector2ClientTypes {
             self.severity = severity
         }
     }
-
 }
 
 extension Inspector2ClientTypes {
+
     /// Contains information on when this exploit was observed.
-    public struct ExploitObserved {
+    public struct ExploitObserved: Swift.Sendable {
         /// The date an time when the exploit was first seen.
         public var firstSeen: Foundation.Date?
         /// The date an time when the exploit was last seen.
@@ -2726,12 +2727,12 @@ extension Inspector2ClientTypes {
             self.lastSeen = lastSeen
         }
     }
-
 }
 
 extension Inspector2ClientTypes {
+
     /// Details of the vulnerability identified in a finding.
-    public struct FindingDetail {
+    public struct FindingDetail: Swift.Sendable {
         /// The Cybersecurity and Infrastructure Security Agency (CISA) details for a specific vulnerability.
         public var cisaData: Inspector2ClientTypes.CisaData?
         /// The Common Weakness Enumerations (CWEs) associated with the vulnerability.
@@ -2778,10 +2779,9 @@ extension Inspector2ClientTypes {
             self.ttps = ttps
         }
     }
-
 }
 
-public struct BatchGetFindingDetailsOutput {
+public struct BatchGetFindingDetailsOutput: Swift.Sendable {
     /// Error information for findings that details could not be returned for.
     public var errors: [Inspector2ClientTypes.FindingDetailsError]?
     /// A finding's vulnerability details.
@@ -2797,7 +2797,7 @@ public struct BatchGetFindingDetailsOutput {
     }
 }
 
-public struct BatchGetFreeTrialInfoInput {
+public struct BatchGetFreeTrialInfoInput: Swift.Sendable {
     /// The account IDs to get free trial status for.
     /// This member is required.
     public var accountIds: [Swift.String]?
@@ -2812,7 +2812,7 @@ public struct BatchGetFreeTrialInfoInput {
 
 extension Inspector2ClientTypes {
 
-    public enum FreeTrialStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum FreeTrialStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case active
         case inactive
         case sdkUnknown(Swift.String)
@@ -2841,7 +2841,7 @@ extension Inspector2ClientTypes {
 
 extension Inspector2ClientTypes {
 
-    public enum FreeTrialType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum FreeTrialType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case ec2
         case ecr
         case lambda
@@ -2875,8 +2875,9 @@ extension Inspector2ClientTypes {
 }
 
 extension Inspector2ClientTypes {
+
     /// An object that contains information about the Amazon Inspector free trial for an account.
-    public struct FreeTrialInfo {
+    public struct FreeTrialInfo: Swift.Sendable {
         /// The date and time that the Amazon Inspector free trail ends for a given account.
         /// This member is required.
         public var end: Foundation.Date?
@@ -2903,12 +2904,12 @@ extension Inspector2ClientTypes {
             self.type = type
         }
     }
-
 }
 
 extension Inspector2ClientTypes {
+
     /// Information about the Amazon Inspector free trial for an account.
-    public struct FreeTrialAccountInfo {
+    public struct FreeTrialAccountInfo: Swift.Sendable {
         /// The account associated with the Amazon Inspector free trial information.
         /// This member is required.
         public var accountId: Swift.String?
@@ -2925,12 +2926,11 @@ extension Inspector2ClientTypes {
             self.freeTrialInfo = freeTrialInfo
         }
     }
-
 }
 
 extension Inspector2ClientTypes {
 
-    public enum FreeTrialInfoErrorCode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum FreeTrialInfoErrorCode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case accessDenied
         case internalError
         case sdkUnknown(Swift.String)
@@ -2958,8 +2958,9 @@ extension Inspector2ClientTypes {
 }
 
 extension Inspector2ClientTypes {
+
     /// Information about an error received while accessing free trail data for an account.
-    public struct FreeTrialInfoError {
+    public struct FreeTrialInfoError: Swift.Sendable {
         /// The account associated with the Amazon Inspector free trial information.
         /// This member is required.
         public var accountId: Swift.String?
@@ -2981,10 +2982,9 @@ extension Inspector2ClientTypes {
             self.message = message
         }
     }
-
 }
 
-public struct BatchGetFreeTrialInfoOutput {
+public struct BatchGetFreeTrialInfoOutput: Swift.Sendable {
     /// An array of objects that provide Amazon Inspector free trial details for each of the requested accounts.
     /// This member is required.
     public var accounts: [Inspector2ClientTypes.FreeTrialAccountInfo]?
@@ -3002,7 +3002,7 @@ public struct BatchGetFreeTrialInfoOutput {
     }
 }
 
-public struct BatchGetMemberEc2DeepInspectionStatusInput {
+public struct BatchGetMemberEc2DeepInspectionStatusInput: Swift.Sendable {
     /// The unique identifiers for the Amazon Web Services accounts to retrieve Amazon Inspector deep inspection activation status for.
     public var accountIds: [Swift.String]?
 
@@ -3016,7 +3016,7 @@ public struct BatchGetMemberEc2DeepInspectionStatusInput {
 
 extension Inspector2ClientTypes {
 
-    public enum Ec2DeepInspectionStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Ec2DeepInspectionStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case activated
         case deactivated
         case failed
@@ -3050,8 +3050,9 @@ extension Inspector2ClientTypes {
 }
 
 extension Inspector2ClientTypes {
+
     /// An object that contains details about the state of Amazon Inspector deep inspection for a member account.
-    public struct MemberAccountEc2DeepInspectionStatusState {
+    public struct MemberAccountEc2DeepInspectionStatusState: Swift.Sendable {
         /// The unique identifier for the Amazon Web Services account of the organization member
         /// This member is required.
         public var accountId: Swift.String?
@@ -3071,12 +3072,12 @@ extension Inspector2ClientTypes {
             self.status = status
         }
     }
-
 }
 
 extension Inspector2ClientTypes {
+
     /// An object that contains details about a member account in your organization that failed to activate Amazon Inspector deep inspection.
-    public struct FailedMemberAccountEc2DeepInspectionStatusState {
+    public struct FailedMemberAccountEc2DeepInspectionStatusState: Swift.Sendable {
         /// The unique identifier for the Amazon Web Services account of the organization member that failed to activate Amazon Inspector deep inspection.
         /// This member is required.
         public var accountId: Swift.String?
@@ -3096,10 +3097,9 @@ extension Inspector2ClientTypes {
             self.errorMessage = errorMessage
         }
     }
-
 }
 
-public struct BatchGetMemberEc2DeepInspectionStatusOutput {
+public struct BatchGetMemberEc2DeepInspectionStatusOutput: Swift.Sendable {
     /// An array of objects that provide details on the activation status of Amazon Inspector deep inspection for each of the requested accounts.
     public var accountIds: [Inspector2ClientTypes.MemberAccountEc2DeepInspectionStatusState]?
     /// An array of objects that provide details on any accounts that failed to activate Amazon Inspector deep inspection and why.
@@ -3116,8 +3116,9 @@ public struct BatchGetMemberEc2DeepInspectionStatusOutput {
 }
 
 extension Inspector2ClientTypes {
+
     /// An object that contains details about the status of Amazon Inspector deep inspection for a member account in your organization.
-    public struct MemberAccountEc2DeepInspectionStatus {
+    public struct MemberAccountEc2DeepInspectionStatus: Swift.Sendable {
         /// The unique identifier for the Amazon Web Services account of the organization member.
         /// This member is required.
         public var accountId: Swift.String?
@@ -3134,10 +3135,9 @@ extension Inspector2ClientTypes {
             self.activateDeepInspection = activateDeepInspection
         }
     }
-
 }
 
-public struct BatchUpdateMemberEc2DeepInspectionStatusInput {
+public struct BatchUpdateMemberEc2DeepInspectionStatusInput: Swift.Sendable {
     /// The unique identifiers for the Amazon Web Services accounts to change Amazon Inspector deep inspection status for.
     /// This member is required.
     public var accountIds: [Inspector2ClientTypes.MemberAccountEc2DeepInspectionStatus]?
@@ -3150,7 +3150,7 @@ public struct BatchUpdateMemberEc2DeepInspectionStatusInput {
     }
 }
 
-public struct BatchUpdateMemberEc2DeepInspectionStatusOutput {
+public struct BatchUpdateMemberEc2DeepInspectionStatusOutput: Swift.Sendable {
     /// An array of objects that provide details for each of the accounts that Amazon Inspector deep inspection status was successfully changed for.
     public var accountIds: [Inspector2ClientTypes.MemberAccountEc2DeepInspectionStatusState]?
     /// An array of objects that provide details for each of the accounts that Amazon Inspector deep inspection status could not be successfully changed for.
@@ -3166,7 +3166,7 @@ public struct BatchUpdateMemberEc2DeepInspectionStatusOutput {
     }
 }
 
-public struct CancelFindingsReportInput {
+public struct CancelFindingsReportInput: Swift.Sendable {
     /// The ID of the report to be canceled.
     /// This member is required.
     public var reportId: Swift.String?
@@ -3179,7 +3179,7 @@ public struct CancelFindingsReportInput {
     }
 }
 
-public struct CancelFindingsReportOutput {
+public struct CancelFindingsReportOutput: Swift.Sendable {
     /// The ID of the canceled report.
     /// This member is required.
     public var reportId: Swift.String?
@@ -3192,7 +3192,7 @@ public struct CancelFindingsReportOutput {
     }
 }
 
-public struct CancelSbomExportInput {
+public struct CancelSbomExportInput: Swift.Sendable {
     /// The report ID of the SBOM export to cancel.
     /// This member is required.
     public var reportId: Swift.String?
@@ -3205,7 +3205,7 @@ public struct CancelSbomExportInput {
     }
 }
 
-public struct CancelSbomExportOutput {
+public struct CancelSbomExportOutput: Swift.Sendable {
     /// The report ID of the canceled SBOM export.
     public var reportId: Swift.String?
 
@@ -3219,7 +3219,7 @@ public struct CancelSbomExportOutput {
 
 extension Inspector2ClientTypes {
 
-    public enum CisSecurityLevel: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum CisSecurityLevel: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case level1
         case level2
         case sdkUnknown(Swift.String)
@@ -3247,8 +3247,9 @@ extension Inspector2ClientTypes {
 }
 
 extension Inspector2ClientTypes {
+
     /// The status counts.
-    public struct StatusCounts {
+    public struct StatusCounts: Swift.Sendable {
         /// The number of checks that failed.
         public var failed: Swift.Int?
         /// The number of checks that passed.
@@ -3267,12 +3268,12 @@ extension Inspector2ClientTypes {
             self.skipped = skipped
         }
     }
-
 }
 
 extension Inspector2ClientTypes {
+
     /// A CIS check.
-    public struct CisCheckAggregation {
+    public struct CisCheckAggregation: Swift.Sendable {
         /// The account ID for the CIS check.
         public var accountId: Swift.String?
         /// The description for the CIS check.
@@ -3312,12 +3313,12 @@ extension Inspector2ClientTypes {
             self.title = title
         }
     }
-
 }
 
 extension Inspector2ClientTypes {
+
     /// The CIS date filter.
-    public struct CisDateFilter {
+    public struct CisDateFilter: Swift.Sendable {
         /// The CIS date filter's earliest scan start time.
         public var earliestScanStartTime: Foundation.Date?
         /// The CIS date filter's latest scan start time.
@@ -3332,12 +3333,11 @@ extension Inspector2ClientTypes {
             self.latestScanStartTime = latestScanStartTime
         }
     }
-
 }
 
 extension Inspector2ClientTypes {
 
-    public enum CisFindingStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum CisFindingStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case failed
         case passed
         case skipped
@@ -3369,7 +3369,7 @@ extension Inspector2ClientTypes {
 
 extension Inspector2ClientTypes {
 
-    public enum CisFindingStatusComparison: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum CisFindingStatusComparison: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case equals
         case sdkUnknown(Swift.String)
 
@@ -3394,8 +3394,9 @@ extension Inspector2ClientTypes {
 }
 
 extension Inspector2ClientTypes {
+
     /// The CIS finding status filter.
-    public struct CisFindingStatusFilter {
+    public struct CisFindingStatusFilter: Swift.Sendable {
         /// The comparison value of the CIS finding status filter.
         /// This member is required.
         public var comparison: Inspector2ClientTypes.CisFindingStatusComparison?
@@ -3412,12 +3413,12 @@ extension Inspector2ClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension Inspector2ClientTypes {
+
     /// The CIS number filter.
-    public struct CisNumberFilter {
+    public struct CisNumberFilter: Swift.Sendable {
         /// The CIS number filter's lower inclusive.
         public var lowerInclusive: Swift.Int?
         /// The CIS number filter's upper inclusive.
@@ -3432,12 +3433,11 @@ extension Inspector2ClientTypes {
             self.upperInclusive = upperInclusive
         }
     }
-
 }
 
 extension Inspector2ClientTypes {
 
-    public enum CisReportFormat: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum CisReportFormat: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case csv
         case pdf
         case sdkUnknown(Swift.String)
@@ -3466,7 +3466,7 @@ extension Inspector2ClientTypes {
 
 extension Inspector2ClientTypes {
 
-    public enum CisReportStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum CisReportStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case failed
         case inProgress
         case succeeded
@@ -3498,7 +3498,7 @@ extension Inspector2ClientTypes {
 
 extension Inspector2ClientTypes {
 
-    public enum CisResultStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum CisResultStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case failed
         case passed
         case skipped
@@ -3530,7 +3530,7 @@ extension Inspector2ClientTypes {
 
 extension Inspector2ClientTypes {
 
-    public enum CisResultStatusComparison: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum CisResultStatusComparison: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case equals
         case sdkUnknown(Swift.String)
 
@@ -3555,8 +3555,9 @@ extension Inspector2ClientTypes {
 }
 
 extension Inspector2ClientTypes {
+
     /// The CIS result status filter.
-    public struct CisResultStatusFilter {
+    public struct CisResultStatusFilter: Swift.Sendable {
         /// The comparison value of the CIS result status filter.
         /// This member is required.
         public var comparison: Inspector2ClientTypes.CisResultStatusComparison?
@@ -3573,12 +3574,11 @@ extension Inspector2ClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension Inspector2ClientTypes {
 
-    public enum CisRuleStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum CisRuleStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case error
         case failed
         case informational
@@ -3622,7 +3622,7 @@ extension Inspector2ClientTypes {
 
 extension Inspector2ClientTypes {
 
-    public enum CisScanStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum CisScanStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case cancelled
         case completed
         case failed
@@ -3656,8 +3656,9 @@ extension Inspector2ClientTypes {
 }
 
 extension Inspector2ClientTypes {
+
     /// The CIS targets.
-    public struct CisTargets {
+    public struct CisTargets: Swift.Sendable {
         /// The CIS target account ids.
         public var accountIds: [Swift.String]?
         /// The CIS target resource tags.
@@ -3672,12 +3673,12 @@ extension Inspector2ClientTypes {
             self.targetResourceTags = targetResourceTags
         }
     }
-
 }
 
 extension Inspector2ClientTypes {
+
     /// The CIS scan.
-    public struct CisScan {
+    public struct CisScan: Swift.Sendable {
         /// The CIS scan's failed checks.
         public var failedChecks: Swift.Int?
         /// The CIS scan's ARN.
@@ -3726,12 +3727,12 @@ extension Inspector2ClientTypes {
             self.totalChecks = totalChecks
         }
     }
-
 }
 
 extension Inspector2ClientTypes {
+
     /// The time.
-    public struct Time {
+    public struct Time: Swift.Sendable {
         /// The time of day in 24-hour format (00:00).
         /// This member is required.
         public var timeOfDay: Swift.String?
@@ -3748,12 +3749,12 @@ extension Inspector2ClientTypes {
             self.timezone = timezone
         }
     }
-
 }
 
 extension Inspector2ClientTypes {
+
     /// A daily schedule.
-    public struct DailySchedule {
+    public struct DailySchedule: Swift.Sendable {
         /// The schedule start time.
         /// This member is required.
         public var startTime: Inspector2ClientTypes.Time?
@@ -3765,12 +3766,11 @@ extension Inspector2ClientTypes {
             self.startTime = startTime
         }
     }
-
 }
 
 extension Inspector2ClientTypes {
 
-    public enum Day: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Day: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case fri
         case mon
         case sat
@@ -3813,8 +3813,9 @@ extension Inspector2ClientTypes {
 }
 
 extension Inspector2ClientTypes {
+
     /// A monthly schedule.
-    public struct MonthlySchedule {
+    public struct MonthlySchedule: Swift.Sendable {
         /// The monthly schedule's day.
         /// This member is required.
         public var day: Inspector2ClientTypes.Day?
@@ -3831,21 +3832,21 @@ extension Inspector2ClientTypes {
             self.startTime = startTime
         }
     }
-
 }
 
 extension Inspector2ClientTypes {
+
     /// A one time schedule.
-    public struct OneTimeSchedule {
+    public struct OneTimeSchedule: Swift.Sendable {
 
         public init() { }
     }
-
 }
 
 extension Inspector2ClientTypes {
+
     /// A weekly schedule.
-    public struct WeeklySchedule {
+    public struct WeeklySchedule: Swift.Sendable {
         /// The weekly schedule's days.
         /// This member is required.
         public var days: [Inspector2ClientTypes.Day]?
@@ -3862,12 +3863,12 @@ extension Inspector2ClientTypes {
             self.startTime = startTime
         }
     }
-
 }
 
 extension Inspector2ClientTypes {
+
     /// A schedule.
-    public enum Schedule {
+    public enum Schedule: Swift.Sendable {
         /// The schedule's one time.
         case onetime(Inspector2ClientTypes.OneTimeSchedule)
         /// The schedule's daily.
@@ -3878,12 +3879,12 @@ extension Inspector2ClientTypes {
         case monthly(Inspector2ClientTypes.MonthlySchedule)
         case sdkUnknown(Swift.String)
     }
-
 }
 
 extension Inspector2ClientTypes {
+
     /// The CIS scan configuration.
-    public struct CisScanConfiguration {
+    public struct CisScanConfiguration: Swift.Sendable {
         /// The CIS scan configuration's owner ID.
         public var ownerId: Swift.String?
         /// The CIS scan configuration's scan configuration ARN.
@@ -3919,12 +3920,11 @@ extension Inspector2ClientTypes {
             self.targets = targets
         }
     }
-
 }
 
 extension Inspector2ClientTypes {
 
-    public enum CisScanConfigurationsSortBy: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum CisScanConfigurationsSortBy: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case scanConfigurationArn
         case scanName
         case sdkUnknown(Swift.String)
@@ -3952,8 +3952,9 @@ extension Inspector2ClientTypes {
 }
 
 extension Inspector2ClientTypes {
+
     /// The CIS scan result details.
-    public struct CisScanResultDetails {
+    public struct CisScanResultDetails: Swift.Sendable {
         /// The CIS scan result details' account ID.
         public var accountId: Swift.String?
         /// The account ID that's associated with the CIS scan result details.
@@ -4009,12 +4010,11 @@ extension Inspector2ClientTypes {
             self.title = title
         }
     }
-
 }
 
 extension Inspector2ClientTypes {
 
-    public enum CisSecurityLevelComparison: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum CisSecurityLevelComparison: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case equals
         case sdkUnknown(Swift.String)
 
@@ -4039,8 +4039,9 @@ extension Inspector2ClientTypes {
 }
 
 extension Inspector2ClientTypes {
+
     /// The CIS security level filter. Security level refers to the Benchmark levels that CIS assigns to a profile.
-    public struct CisSecurityLevelFilter {
+    public struct CisSecurityLevelFilter: Swift.Sendable {
         /// The CIS security filter comparison value.
         /// This member is required.
         public var comparison: Inspector2ClientTypes.CisSecurityLevelComparison?
@@ -4057,12 +4058,12 @@ extension Inspector2ClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension Inspector2ClientTypes {
+
     /// The CIS scan result details filter criteria.
-    public struct CisScanResultDetailsFilterCriteria {
+    public struct CisScanResultDetailsFilterCriteria: Swift.Sendable {
         /// The criteria's check ID filters.
         public var checkIdFilters: [Inspector2ClientTypes.CisStringFilter]?
         /// The criteria's finding ARN filters.
@@ -4089,12 +4090,11 @@ extension Inspector2ClientTypes {
             self.titleFilters = titleFilters
         }
     }
-
 }
 
 extension Inspector2ClientTypes {
 
-    public enum CisScanResultDetailsSortBy: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum CisScanResultDetailsSortBy: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case checkId
         case status
         case sdkUnknown(Swift.String)
@@ -4122,8 +4122,9 @@ extension Inspector2ClientTypes {
 }
 
 extension Inspector2ClientTypes {
+
     /// The scan results aggregated by checks filter criteria.
-    public struct CisScanResultsAggregatedByChecksFilterCriteria {
+    public struct CisScanResultsAggregatedByChecksFilterCriteria: Swift.Sendable {
         /// The criteria's account ID filters.
         public var accountIdFilters: [Inspector2ClientTypes.CisStringFilter]?
         /// The criteria's check ID filters.
@@ -4154,12 +4155,11 @@ extension Inspector2ClientTypes {
             self.titleFilters = titleFilters
         }
     }
-
 }
 
 extension Inspector2ClientTypes {
 
-    public enum CisScanResultsAggregatedByChecksSortBy: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum CisScanResultsAggregatedByChecksSortBy: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case checkId
         case failedCounts
         case platform
@@ -4197,7 +4197,7 @@ extension Inspector2ClientTypes {
 
 extension Inspector2ClientTypes {
 
-    public enum TagComparison: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum TagComparison: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case equals
         case sdkUnknown(Swift.String)
 
@@ -4222,8 +4222,9 @@ extension Inspector2ClientTypes {
 }
 
 extension Inspector2ClientTypes {
+
     /// The tag filter.
-    public struct TagFilter {
+    public struct TagFilter: Swift.Sendable {
         /// The tag filter comparison value.
         /// This member is required.
         public var comparison: Inspector2ClientTypes.TagComparison?
@@ -4245,12 +4246,11 @@ extension Inspector2ClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension Inspector2ClientTypes {
 
-    public enum CisTargetStatusComparison: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum CisTargetStatusComparison: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case equals
         case sdkUnknown(Swift.String)
 
@@ -4276,7 +4276,7 @@ extension Inspector2ClientTypes {
 
 extension Inspector2ClientTypes {
 
-    public enum CisTargetStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum CisTargetStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case cancelled
         case completed
         case timedOut
@@ -4307,8 +4307,9 @@ extension Inspector2ClientTypes {
 }
 
 extension Inspector2ClientTypes {
+
     /// The CIS target status filter.
-    public struct CisTargetStatusFilter {
+    public struct CisTargetStatusFilter: Swift.Sendable {
         /// The comparison value of the CIS target status filter.
         /// This member is required.
         public var comparison: Inspector2ClientTypes.CisTargetStatusComparison?
@@ -4325,12 +4326,11 @@ extension Inspector2ClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension Inspector2ClientTypes {
 
-    public enum CisTargetStatusReason: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum CisTargetStatusReason: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case scanInProgress
         case ssmUnmanaged
         case unsupportedOs
@@ -4361,8 +4361,9 @@ extension Inspector2ClientTypes {
 }
 
 extension Inspector2ClientTypes {
+
     /// The CIS target status reason filter.
-    public struct CisTargetStatusReasonFilter {
+    public struct CisTargetStatusReasonFilter: Swift.Sendable {
         /// The comparison value of the CIS target status reason filter.
         /// This member is required.
         public var comparison: Inspector2ClientTypes.CisTargetStatusComparison?
@@ -4379,12 +4380,12 @@ extension Inspector2ClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension Inspector2ClientTypes {
+
     /// The scan results aggregated by target resource filter criteria.
-    public struct CisScanResultsAggregatedByTargetResourceFilterCriteria {
+    public struct CisScanResultsAggregatedByTargetResourceFilterCriteria: Swift.Sendable {
         /// The criteria's account ID filters.
         public var accountIdFilters: [Inspector2ClientTypes.CisStringFilter]?
         /// The criteria's check ID filters.
@@ -4427,12 +4428,11 @@ extension Inspector2ClientTypes {
             self.targetStatusReasonFilters = targetStatusReasonFilters
         }
     }
-
 }
 
 extension Inspector2ClientTypes {
 
-    public enum CisScanResultsAggregatedByTargetResourceSortBy: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum CisScanResultsAggregatedByTargetResourceSortBy: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case accountId
         case failedCounts
         case platform
@@ -4473,7 +4473,7 @@ extension Inspector2ClientTypes {
 
 extension Inspector2ClientTypes {
 
-    public enum CisScanStatusComparison: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum CisScanStatusComparison: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case equals
         case sdkUnknown(Swift.String)
 
@@ -4498,8 +4498,9 @@ extension Inspector2ClientTypes {
 }
 
 extension Inspector2ClientTypes {
+
     /// The CIS scan status filter.
-    public struct CisScanStatusFilter {
+    public struct CisScanStatusFilter: Swift.Sendable {
         /// The filter comparison value.
         /// This member is required.
         public var comparison: Inspector2ClientTypes.CisScanStatusComparison?
@@ -4516,12 +4517,12 @@ extension Inspector2ClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension Inspector2ClientTypes {
+
     /// The CIS session message.
-    public struct CisSessionMessage {
+    public struct CisSessionMessage: Swift.Sendable {
         /// The CIS rule details for the CIS session message.
         /// This member is required.
         public var cisRuleDetails: Foundation.Data?
@@ -4543,12 +4544,11 @@ extension Inspector2ClientTypes {
             self.status = status
         }
     }
-
 }
 
 extension Inspector2ClientTypes {
 
-    public enum CisSortOrder: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum CisSortOrder: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case asc
         case desc
         case sdkUnknown(Swift.String)
@@ -4576,8 +4576,9 @@ extension Inspector2ClientTypes {
 }
 
 extension Inspector2ClientTypes {
+
     /// The CIS target resource aggregation.
-    public struct CisTargetResourceAggregation {
+    public struct CisTargetResourceAggregation: Swift.Sendable {
         /// The account ID for the CIS target resource.
         public var accountId: Swift.String?
         /// The platform for the CIS target resource.
@@ -4617,12 +4618,12 @@ extension Inspector2ClientTypes {
             self.targetStatusReason = targetStatusReason
         }
     }
-
 }
 
 extension Inspector2ClientTypes {
+
     /// Contains information on where a code vulnerability is located in your Lambda function.
-    public struct CodeFilePath {
+    public struct CodeFilePath: Swift.Sendable {
         /// The line number of the last line of code that a vulnerability was found in.
         /// This member is required.
         public var endLine: Swift.Int?
@@ -4649,12 +4650,12 @@ extension Inspector2ClientTypes {
             self.startLine = startLine
         }
     }
-
 }
 
 extension Inspector2ClientTypes {
+
     /// Contains information on the code vulnerability identified in your Lambda function.
-    public struct CodeVulnerabilityDetails {
+    public struct CodeVulnerabilityDetails: Swift.Sendable {
         /// The Common Weakness Enumeration (CWE) item associated with the detected vulnerability.
         /// This member is required.
         public var cwes: [Swift.String]?
@@ -4697,12 +4698,12 @@ extension Inspector2ClientTypes {
             self.sourceLambdaLayerArn = sourceLambdaLayerArn
         }
     }
-
 }
 
 extension Inspector2ClientTypes {
+
     /// A compute platform.
-    public struct ComputePlatform {
+    public struct ComputePlatform: Swift.Sendable {
         /// The compute platform product.
         public var product: Swift.String?
         /// The compute platform vendor.
@@ -4721,7 +4722,6 @@ extension Inspector2ClientTypes {
             self.version = version
         }
     }
-
 }
 
 /// A conflict occurred.
@@ -4761,7 +4761,7 @@ public struct ConflictException: ClientRuntime.ModeledError, AWSClientRuntime.AW
 
 extension Inspector2ClientTypes {
 
-    public enum GroupKey: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum GroupKey: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case accountId
         case ecrRepositoryName
         case resourceType
@@ -4798,8 +4798,9 @@ extension Inspector2ClientTypes {
 }
 
 extension Inspector2ClientTypes {
+
     /// a structure that contains information on the count of resources within a group.
-    public struct Counts {
+    public struct Counts: Swift.Sendable {
         /// The number of resources.
         public var count: Swift.Int
         /// The key associated with this group
@@ -4814,12 +4815,12 @@ extension Inspector2ClientTypes {
             self.groupKey = groupKey
         }
     }
-
 }
 
 extension Inspector2ClientTypes {
+
     /// Contains details of a coverage date filter.
-    public struct CoverageDateFilter {
+    public struct CoverageDateFilter: Swift.Sendable {
         /// A timestamp representing the end of the time period to filter results by.
         public var endInclusive: Foundation.Date?
         /// A timestamp representing the start of the time period to filter results by.
@@ -4834,12 +4835,11 @@ extension Inspector2ClientTypes {
             self.startInclusive = startInclusive
         }
     }
-
 }
 
 extension Inspector2ClientTypes {
 
-    public enum CoverageStringComparison: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum CoverageStringComparison: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case equals
         case notEquals
         case sdkUnknown(Swift.String)
@@ -4867,8 +4867,9 @@ extension Inspector2ClientTypes {
 }
 
 extension Inspector2ClientTypes {
+
     /// Contains details of a coverage string filter.
-    public struct CoverageStringFilter {
+    public struct CoverageStringFilter: Swift.Sendable {
         /// The operator to compare strings on.
         /// This member is required.
         public var comparison: Inspector2ClientTypes.CoverageStringComparison?
@@ -4885,12 +4886,11 @@ extension Inspector2ClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension Inspector2ClientTypes {
 
-    public enum CoverageMapComparison: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum CoverageMapComparison: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case equals
         case sdkUnknown(Swift.String)
 
@@ -4915,8 +4915,9 @@ extension Inspector2ClientTypes {
 }
 
 extension Inspector2ClientTypes {
+
     /// Contains details of a coverage map filter.
-    public struct CoverageMapFilter {
+    public struct CoverageMapFilter: Swift.Sendable {
         /// The operator to compare coverage on.
         /// This member is required.
         public var comparison: Inspector2ClientTypes.CoverageMapComparison?
@@ -4937,12 +4938,12 @@ extension Inspector2ClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension Inspector2ClientTypes {
+
     /// A structure that identifies filter criteria for GetCoverageStatistics.
-    public struct CoverageFilterCriteria {
+    public struct CoverageFilterCriteria: Swift.Sendable {
         /// An array of Amazon Web Services account IDs to return coverage statistics for.
         public var accountId: [Inspector2ClientTypes.CoverageStringFilter]?
         /// The Amazon EC2 instance tags to filter on.
@@ -5009,12 +5010,11 @@ extension Inspector2ClientTypes {
             self.scanType = scanType
         }
     }
-
 }
 
 extension Inspector2ClientTypes {
 
-    public enum CoverageResourceType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum CoverageResourceType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case awsEc2Instance
         case awsEcrContainerImage
         case awsEcrRepository
@@ -5049,7 +5049,7 @@ extension Inspector2ClientTypes {
 
 extension Inspector2ClientTypes {
 
-    public enum Ec2Platform: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Ec2Platform: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case linux
         case macos
         case unknown
@@ -5083,8 +5083,9 @@ extension Inspector2ClientTypes {
 }
 
 extension Inspector2ClientTypes {
+
     /// Meta data details of an Amazon EC2 instance.
-    public struct Ec2Metadata {
+    public struct Ec2Metadata: Swift.Sendable {
         /// The ID of the Amazon Machine Image (AMI) used to launch the instance.
         public var amiId: Swift.String?
         /// The platform of the instance.
@@ -5103,12 +5104,12 @@ extension Inspector2ClientTypes {
             self.tags = tags
         }
     }
-
 }
 
 extension Inspector2ClientTypes {
+
     /// Information on the Amazon ECR image metadata associated with a finding.
-    public struct EcrContainerImageMetadata {
+    public struct EcrContainerImageMetadata: Swift.Sendable {
         /// The date an image was last pulled at.
         public var imagePulledAt: Foundation.Date?
         /// Tags associated with the Amazon ECR image metadata.
@@ -5123,12 +5124,11 @@ extension Inspector2ClientTypes {
             self.tags = tags
         }
     }
-
 }
 
 extension Inspector2ClientTypes {
 
-    public enum EcrScanFrequency: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum EcrScanFrequency: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case continuousScan
         case manual
         case scanOnPush
@@ -5159,8 +5159,9 @@ extension Inspector2ClientTypes {
 }
 
 extension Inspector2ClientTypes {
+
     /// Information on the Amazon ECR repository metadata associated with a finding.
-    public struct EcrRepositoryMetadata {
+    public struct EcrRepositoryMetadata: Swift.Sendable {
         /// The name of the Amazon ECR repository.
         public var name: Swift.String?
         /// The frequency of scans.
@@ -5175,12 +5176,12 @@ extension Inspector2ClientTypes {
             self.scanFrequency = scanFrequency
         }
     }
-
 }
 
 extension Inspector2ClientTypes {
+
     /// The Amazon Web Services Lambda function metadata.
-    public struct LambdaFunctionMetadata {
+    public struct LambdaFunctionMetadata: Swift.Sendable {
         /// The name of a function.
         public var functionName: Swift.String?
         /// The resource tags on an Amazon Web Services Lambda function.
@@ -5203,12 +5204,12 @@ extension Inspector2ClientTypes {
             self.runtime = runtime
         }
     }
-
 }
 
 extension Inspector2ClientTypes {
+
     /// An object that contains details about the metadata for an Amazon ECR resource.
-    public struct ResourceScanMetadata {
+    public struct ResourceScanMetadata: Swift.Sendable {
         /// An object that contains metadata details for an Amazon EC2 instance.
         public var ec2: Inspector2ClientTypes.Ec2Metadata?
         /// An object that contains details about the container metadata for an Amazon ECR image.
@@ -5231,12 +5232,11 @@ extension Inspector2ClientTypes {
             self.lambdaFunction = lambdaFunction
         }
     }
-
 }
 
 extension Inspector2ClientTypes {
 
-    public enum ScanMode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ScanMode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case ec2Agentless
         case ec2SsmAgentBased
         case sdkUnknown(Swift.String)
@@ -5265,7 +5265,7 @@ extension Inspector2ClientTypes {
 
 extension Inspector2ClientTypes {
 
-    public enum ScanStatusReason: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ScanStatusReason: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case accessDenied
         case agentlessInstanceCollectionTimeLimitExceeded
         case agentlessInstanceStorageLimitExceeded
@@ -5366,7 +5366,7 @@ extension Inspector2ClientTypes {
 
 extension Inspector2ClientTypes {
 
-    public enum ScanStatusCode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ScanStatusCode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case active
         case inactive
         case sdkUnknown(Swift.String)
@@ -5394,8 +5394,9 @@ extension Inspector2ClientTypes {
 }
 
 extension Inspector2ClientTypes {
+
     /// The status of the scan.
-    public struct ScanStatus {
+    public struct ScanStatus: Swift.Sendable {
         /// The scan status. Possible return values and descriptions are: PENDING_INITIAL_SCAN - This resource has been identified for scanning, results will be available soon. ACCESS_DENIED - Resource access policy restricting Amazon Inspector access. Please update the IAM policy. INTERNAL_ERROR - Amazon Inspector has encountered an internal error for this resource. Amazon Inspector service will automatically resolve the issue and resume the scanning. No action required from the user. UNMANAGED_EC2_INSTANCE - The EC2 instance is not managed by SSM, please use the following SSM automation to remediate the issue: [https://docs.aws.amazon.com/systems-manager-automation-runbooks/latest/userguide/automation-awssupport-troubleshoot-managed-instance.html](https://docs.aws.amazon.com/systems-manager-automation-runbooks/latest/userguide/automation-awssupport-troubleshoot-managed-instance.html). Once the instance becomes managed by SSM, Inspector will automatically begin scanning this instance. UNSUPPORTED_OS - Amazon Inspector does not support this OS, architecture, or image manifest type at this time. To see a complete list of supported operating systems see: [https://docs.aws.amazon.com/inspector/latest/user/supported.html](https://docs.aws.amazon.com/inspector/latest/user/supported.html). SCAN_ELIGIBILITY_EXPIRED - The configured scan duration has lapsed for this image. RESOURCE_TERMINATED - This resource has been terminated. The findings and coverage associated with this resource are in the process of being cleaned up. SUCCESSFUL - The scan was successful. NO_RESOURCES_FOUND - Reserved for future use. IMAGE_SIZE_EXCEEDED - Reserved for future use. SCAN_FREQUENCY_MANUAL - This image will not be covered by Amazon Inspector due to the repository scan frequency configuration. SCAN_FREQUENCY_SCAN_ON_PUSH - This image will be scanned one time and will not new findings because of the scan frequency configuration. EC2_INSTANCE_STOPPED - This EC2 instance is in a stopped state, therefore, Amazon Inspector will pause scanning. The existing findings will continue to exist until the instance is terminated. Once the instance is re-started, Inspector will automatically start scanning the instance again. Please note that you will not be charged for this instance while it’s in a stopped state. PENDING_DISABLE - This resource is pending cleanup during disablement. The customer will not be billed while a resource is in the pending disable status. NO INVENTORY - Amazon Inspector couldn’t find software application inventory to scan for vulnerabilities. This might be caused due to required Amazon Inspector associations being deleted or failing to run on your resource. Please verify the status of InspectorInventoryCollection-do-not-delete association in the SSM console for the resource. Additionally, you can verify the instance’s inventory in the SSM Fleet Manager console. STALE_INVENTORY - Amazon Inspector wasn’t able to collect an updated software application inventory in the last 7 days. Please confirm the required Amazon Inspector associations still exist and you can still see an updated inventory in the SSM console. EXCLUDED_BY_TAG - This resource was not scanned because it has been excluded by a tag. UNSUPPORTED_RUNTIME - The function was not scanned because it has an unsupported runtime. To see a complete list of supported runtimes see: [https://docs.aws.amazon.com/inspector/latest/user/supported.html](https://docs.aws.amazon.com/inspector/latest/user/supported.html). UNSUPPORTED_MEDIA_TYPE - The ECR image has an unsupported media type. UNSUPPORTED_CONFIG_FILE - Reserved for future use. DEEP_INSPECTION_PACKAGE_COLLECTION_LIMIT_EXCEEDED - The instance has exceeded the 5000 package limit for Amazon Inspector Deep inspection. To resume Deep inspection for this instance you can try to adjust the custom paths associated with the account. DEEP_INSPECTION_DAILY_SSM_INVENTORY_LIMIT_EXCEEDED - The SSM agent couldn't send inventory to Amazon Inspector because the SSM quota for Inventory data collected per instance per day has already been reached for this instance. DEEP_INSPECTION_COLLECTION_TIME_LIMIT_EXCEEDED - Amazon Inspector failed to extract the package inventory because the package collection time exceeding the maximum threshold of 15 minutes. DEEP_INSPECTION_NO_INVENTORY The Amazon Inspector plugin hasn't yet been able to collect an inventory of packages for this instance. This is usually the result of a pending scan, however, if this status persists after 6 hours, use SSM to ensure that the required Amazon Inspector associations exist and are running for the instance.
         /// This member is required.
         public var reason: Inspector2ClientTypes.ScanStatusReason?
@@ -5412,12 +5413,11 @@ extension Inspector2ClientTypes {
             self.statusCode = statusCode
         }
     }
-
 }
 
 extension Inspector2ClientTypes {
 
-    public enum ScanType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ScanType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case code
         case network
         case package
@@ -5448,8 +5448,9 @@ extension Inspector2ClientTypes {
 }
 
 extension Inspector2ClientTypes {
+
     /// An object that contains details about a resource covered by Amazon Inspector.
-    public struct CoveredResource {
+    public struct CoveredResource: Swift.Sendable {
         /// The Amazon Web Services account ID of the covered resource.
         /// This member is required.
         public var accountId: Swift.String?
@@ -5492,12 +5493,12 @@ extension Inspector2ClientTypes {
             self.scanType = scanType
         }
     }
-
 }
 
 extension Inspector2ClientTypes {
+
     /// Creates CIS targets.
-    public struct CreateCisTargets {
+    public struct CreateCisTargets: Swift.Sendable {
         /// The CIS target account ids.
         /// This member is required.
         public var accountIds: [Swift.String]?
@@ -5514,10 +5515,9 @@ extension Inspector2ClientTypes {
             self.targetResourceTags = targetResourceTags
         }
     }
-
 }
 
-public struct CreateCisScanConfigurationInput {
+public struct CreateCisScanConfigurationInput: Swift.Sendable {
     /// The scan name for the CIS scan configuration.
     /// This member is required.
     public var scanName: Swift.String?
@@ -5549,7 +5549,7 @@ public struct CreateCisScanConfigurationInput {
     }
 }
 
-public struct CreateCisScanConfigurationOutput {
+public struct CreateCisScanConfigurationOutput: Swift.Sendable {
     /// The scan configuration ARN for the CIS scan configuration.
     public var scanConfigurationArn: Swift.String?
 
@@ -5593,7 +5593,7 @@ public struct ServiceQuotaExceededException: ClientRuntime.ModeledError, AWSClie
 
 extension Inspector2ClientTypes {
 
-    public enum FilterAction: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum FilterAction: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case `none`
         case suppress
         case sdkUnknown(Swift.String)
@@ -5621,8 +5621,9 @@ extension Inspector2ClientTypes {
 }
 
 extension Inspector2ClientTypes {
+
     /// Contains details on the time range used to filter findings.
-    public struct DateFilter {
+    public struct DateFilter: Swift.Sendable {
         /// A timestamp representing the end of the time period filtered on.
         public var endInclusive: Foundation.Date?
         /// A timestamp representing the start of the time period filtered on.
@@ -5637,12 +5638,12 @@ extension Inspector2ClientTypes {
             self.startInclusive = startInclusive
         }
     }
-
 }
 
 extension Inspector2ClientTypes {
+
     /// An object that describes the details of a number filter.
-    public struct NumberFilter {
+    public struct NumberFilter: Swift.Sendable {
         /// The lowest number to be included in the filter.
         public var lowerInclusive: Swift.Double?
         /// The highest number to be included in the filter.
@@ -5657,12 +5658,12 @@ extension Inspector2ClientTypes {
             self.upperInclusive = upperInclusive
         }
     }
-
 }
 
 extension Inspector2ClientTypes {
+
     /// An object that describes the details of a port range filter.
-    public struct PortRangeFilter {
+    public struct PortRangeFilter: Swift.Sendable {
         /// The port number the port range begins at.
         public var beginInclusive: Swift.Int?
         /// The port number the port range ends at.
@@ -5677,12 +5678,12 @@ extension Inspector2ClientTypes {
             self.endInclusive = endInclusive
         }
     }
-
 }
 
 extension Inspector2ClientTypes {
+
     /// Contains information on the details of a package filter.
-    public struct PackageFilter {
+    public struct PackageFilter: Swift.Sendable {
         /// An object that contains details on the package architecture type to filter on.
         public var architecture: Inspector2ClientTypes.StringFilter?
         /// An object that contains details on the package epoch to filter on.
@@ -5717,12 +5718,12 @@ extension Inspector2ClientTypes {
             self.version = version
         }
     }
-
 }
 
 extension Inspector2ClientTypes {
+
     /// Details on the criteria used to define the filter.
-    public struct FilterCriteria {
+    public struct FilterCriteria: Swift.Sendable {
         /// Details of the Amazon Web Services account IDs used to filter findings.
         public var awsAccountId: [Inspector2ClientTypes.StringFilter]?
         /// The name of the detector used to identify a code vulnerability in a Lambda function used to filter findings.
@@ -5897,10 +5898,9 @@ extension Inspector2ClientTypes {
             self.vulnerablePackages = vulnerablePackages
         }
     }
-
 }
 
-public struct CreateFilterInput {
+public struct CreateFilterInput: Swift.Sendable {
     /// Defines the action that is to be applied to the findings that match the filter.
     /// This member is required.
     public var action: Inspector2ClientTypes.FilterAction?
@@ -5935,7 +5935,7 @@ public struct CreateFilterInput {
     }
 }
 
-public struct CreateFilterOutput {
+public struct CreateFilterOutput: Swift.Sendable {
     /// The Amazon Resource Number (ARN) of the successfully created filter.
     /// This member is required.
     public var arn: Swift.String?
@@ -5950,7 +5950,7 @@ public struct CreateFilterOutput {
 
 extension Inspector2ClientTypes {
 
-    public enum ReportFormat: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ReportFormat: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case csv
         case json
         case sdkUnknown(Swift.String)
@@ -5978,8 +5978,9 @@ extension Inspector2ClientTypes {
 }
 
 extension Inspector2ClientTypes {
+
     /// Contains details of the Amazon S3 bucket and KMS key used to export findings.
-    public struct Destination {
+    public struct Destination: Swift.Sendable {
         /// The name of the Amazon S3 bucket to export findings to.
         /// This member is required.
         public var bucketName: Swift.String?
@@ -6000,10 +6001,9 @@ extension Inspector2ClientTypes {
             self.kmsKeyArn = kmsKeyArn
         }
     }
-
 }
 
-public struct CreateFindingsReportInput {
+public struct CreateFindingsReportInput: Swift.Sendable {
     /// The filter criteria to apply to the results of the finding report.
     public var filterCriteria: Inspector2ClientTypes.FilterCriteria?
     /// The format to generate the report in.
@@ -6025,7 +6025,7 @@ public struct CreateFindingsReportInput {
     }
 }
 
-public struct CreateFindingsReportOutput {
+public struct CreateFindingsReportOutput: Swift.Sendable {
     /// The ID of the report.
     public var reportId: Swift.String?
 
@@ -6039,7 +6039,7 @@ public struct CreateFindingsReportOutput {
 
 extension Inspector2ClientTypes {
 
-    public enum SbomReportFormat: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SbomReportFormat: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case cyclonedx14
         case spdx23
         case sdkUnknown(Swift.String)
@@ -6068,7 +6068,7 @@ extension Inspector2ClientTypes {
 
 extension Inspector2ClientTypes {
 
-    public enum ResourceStringComparison: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ResourceStringComparison: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case equals
         case notEquals
         case sdkUnknown(Swift.String)
@@ -6096,8 +6096,9 @@ extension Inspector2ClientTypes {
 }
 
 extension Inspector2ClientTypes {
+
     /// A resource string filter for a software bill of materials report.
-    public struct ResourceStringFilter {
+    public struct ResourceStringFilter: Swift.Sendable {
         /// The filter's comparison.
         /// This member is required.
         public var comparison: Inspector2ClientTypes.ResourceStringComparison?
@@ -6114,12 +6115,11 @@ extension Inspector2ClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension Inspector2ClientTypes {
 
-    public enum ResourceMapComparison: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ResourceMapComparison: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case equals
         case sdkUnknown(Swift.String)
 
@@ -6144,8 +6144,9 @@ extension Inspector2ClientTypes {
 }
 
 extension Inspector2ClientTypes {
+
     /// A resource map filter for a software bill of material report.
-    public struct ResourceMapFilter {
+    public struct ResourceMapFilter: Swift.Sendable {
         /// The filter's comparison.
         /// This member is required.
         public var comparison: Inspector2ClientTypes.ResourceMapComparison?
@@ -6166,12 +6167,12 @@ extension Inspector2ClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension Inspector2ClientTypes {
+
     /// The resource filter criteria for a Software bill of materials (SBOM) report.
-    public struct ResourceFilterCriteria {
+    public struct ResourceFilterCriteria: Swift.Sendable {
         /// The account IDs used as resource filter criteria.
         public var accountId: [Inspector2ClientTypes.ResourceStringFilter]?
         /// The EC2 instance tags used as resource filter criteria.
@@ -6210,10 +6211,9 @@ extension Inspector2ClientTypes {
             self.resourceType = resourceType
         }
     }
-
 }
 
-public struct CreateSbomExportInput {
+public struct CreateSbomExportInput: Swift.Sendable {
     /// The output format for the software bill of materials (SBOM) report.
     /// This member is required.
     public var reportFormat: Inspector2ClientTypes.SbomReportFormat?
@@ -6235,7 +6235,7 @@ public struct CreateSbomExportInput {
     }
 }
 
-public struct CreateSbomExportOutput {
+public struct CreateSbomExportOutput: Swift.Sendable {
     /// The report ID for the software bill of materials (SBOM) report.
     public var reportId: Swift.String?
 
@@ -6249,7 +6249,7 @@ public struct CreateSbomExportOutput {
 
 extension Inspector2ClientTypes {
 
-    public enum Currency: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Currency: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case usd
         case sdkUnknown(Swift.String)
 
@@ -6274,8 +6274,9 @@ extension Inspector2ClientTypes {
 }
 
 extension Inspector2ClientTypes {
+
     /// The Common Vulnerability Scoring System (CVSS) version 2 details for the vulnerability.
-    public struct Cvss2 {
+    public struct Cvss2: Swift.Sendable {
         /// The CVSS v2 base score for the vulnerability.
         public var baseScore: Swift.Double
         /// The scoring vector associated with the CVSS v2 score.
@@ -6290,12 +6291,12 @@ extension Inspector2ClientTypes {
             self.scoringVector = scoringVector
         }
     }
-
 }
 
 extension Inspector2ClientTypes {
+
     /// The Common Vulnerability Scoring System (CVSS) version 3 details for the vulnerability.
-    public struct Cvss3 {
+    public struct Cvss3: Swift.Sendable {
         /// The CVSS v3 base score for the vulnerability.
         public var baseScore: Swift.Double
         /// The scoring vector associated with the CVSS v3 score.
@@ -6310,12 +6311,12 @@ extension Inspector2ClientTypes {
             self.scoringVector = scoringVector
         }
     }
-
 }
 
 extension Inspector2ClientTypes {
+
     /// The CVSS score for a finding.
-    public struct CvssScore {
+    public struct CvssScore: Swift.Sendable {
         /// The base CVSS score used for the finding.
         /// This member is required.
         public var baseScore: Swift.Double?
@@ -6342,12 +6343,12 @@ extension Inspector2ClientTypes {
             self.version = version
         }
     }
-
 }
 
 extension Inspector2ClientTypes {
+
     /// Details on adjustments Amazon Inspector made to the CVSS score for a finding.
-    public struct CvssScoreAdjustment {
+    public struct CvssScoreAdjustment: Swift.Sendable {
         /// The metric used to adjust the CVSS score.
         /// This member is required.
         public var metric: Swift.String?
@@ -6364,12 +6365,12 @@ extension Inspector2ClientTypes {
             self.reason = reason
         }
     }
-
 }
 
 extension Inspector2ClientTypes {
+
     /// Information about the CVSS score.
-    public struct CvssScoreDetails {
+    public struct CvssScoreDetails: Swift.Sendable {
         /// An object that contains details about adjustment Amazon Inspector made to the CVSS score.
         public var adjustments: [Inspector2ClientTypes.CvssScoreAdjustment]?
         /// The source of the CVSS data.
@@ -6404,12 +6405,11 @@ extension Inspector2ClientTypes {
             self.version = version
         }
     }
-
 }
 
 extension Inspector2ClientTypes {
 
-    public enum RelationshipStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum RelationshipStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case accountSuspended
         case cannotCreateDetectorInOrgMaster
         case created
@@ -6467,8 +6467,9 @@ extension Inspector2ClientTypes {
 }
 
 extension Inspector2ClientTypes {
+
     /// Details of the Amazon Inspector delegated administrator for your organization.
-    public struct DelegatedAdmin {
+    public struct DelegatedAdmin: Swift.Sendable {
         /// The Amazon Web Services account ID of the Amazon Inspector delegated administrator for your organization.
         public var accountId: Swift.String?
         /// The status of the Amazon Inspector delegated administrator.
@@ -6483,12 +6484,11 @@ extension Inspector2ClientTypes {
             self.relationshipStatus = relationshipStatus
         }
     }
-
 }
 
 extension Inspector2ClientTypes {
 
-    public enum DelegatedAdminStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DelegatedAdminStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case disableInProgress
         case enabled
         case sdkUnknown(Swift.String)
@@ -6516,8 +6516,9 @@ extension Inspector2ClientTypes {
 }
 
 extension Inspector2ClientTypes {
+
     /// Details of the Amazon Inspector delegated administrator for your organization.
-    public struct DelegatedAdminAccount {
+    public struct DelegatedAdminAccount: Swift.Sendable {
         /// The Amazon Web Services account ID of the Amazon Inspector delegated administrator for your organization.
         public var accountId: Swift.String?
         /// The status of the Amazon Inspector delegated administrator.
@@ -6532,10 +6533,9 @@ extension Inspector2ClientTypes {
             self.status = status
         }
     }
-
 }
 
-public struct DeleteCisScanConfigurationInput {
+public struct DeleteCisScanConfigurationInput: Swift.Sendable {
     /// The ARN of the CIS scan configuration.
     /// This member is required.
     public var scanConfigurationArn: Swift.String?
@@ -6548,7 +6548,7 @@ public struct DeleteCisScanConfigurationInput {
     }
 }
 
-public struct DeleteCisScanConfigurationOutput {
+public struct DeleteCisScanConfigurationOutput: Swift.Sendable {
     /// The ARN of the CIS scan configuration.
     /// This member is required.
     public var scanConfigurationArn: Swift.String?
@@ -6561,7 +6561,7 @@ public struct DeleteCisScanConfigurationOutput {
     }
 }
 
-public struct DeleteFilterInput {
+public struct DeleteFilterInput: Swift.Sendable {
     /// The Amazon Resource Number (ARN) of the filter to be deleted.
     /// This member is required.
     public var arn: Swift.String?
@@ -6574,7 +6574,7 @@ public struct DeleteFilterInput {
     }
 }
 
-public struct DeleteFilterOutput {
+public struct DeleteFilterOutput: Swift.Sendable {
     /// The Amazon Resource Number (ARN) of the filter that has been deleted.
     /// This member is required.
     public var arn: Swift.String?
@@ -6587,12 +6587,12 @@ public struct DeleteFilterOutput {
     }
 }
 
-public struct DescribeOrganizationConfigurationInput {
+public struct DescribeOrganizationConfigurationInput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DescribeOrganizationConfigurationOutput {
+public struct DescribeOrganizationConfigurationOutput: Swift.Sendable {
     /// The scan types are automatically enabled for new members of your organization.
     public var autoEnable: Inspector2ClientTypes.AutoEnable?
     /// Represents whether your organization has reached the maximum Amazon Web Services account limit for Amazon Inspector.
@@ -6610,7 +6610,7 @@ public struct DescribeOrganizationConfigurationOutput {
 
 extension Inspector2ClientTypes {
 
-    public enum ResourceScanType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ResourceScanType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case ec2
         case ecr
         case lambda
@@ -6643,7 +6643,7 @@ extension Inspector2ClientTypes {
     }
 }
 
-public struct DisableInput {
+public struct DisableInput: Swift.Sendable {
     /// An array of account IDs you want to disable Amazon Inspector scans for.
     public var accountIds: [Swift.String]?
     /// The resource scan types you want to disable.
@@ -6659,7 +6659,7 @@ public struct DisableInput {
     }
 }
 
-public struct DisableOutput {
+public struct DisableOutput: Swift.Sendable {
     /// Information on the accounts that have had Amazon Inspector scans successfully disabled. Details are provided for each account.
     /// This member is required.
     public var accounts: [Inspector2ClientTypes.Account]?
@@ -6676,7 +6676,7 @@ public struct DisableOutput {
     }
 }
 
-public struct DisableDelegatedAdminAccountInput {
+public struct DisableDelegatedAdminAccountInput: Swift.Sendable {
     /// The Amazon Web Services account ID of the current Amazon Inspector delegated administrator.
     /// This member is required.
     public var delegatedAdminAccountId: Swift.String?
@@ -6689,7 +6689,7 @@ public struct DisableDelegatedAdminAccountInput {
     }
 }
 
-public struct DisableDelegatedAdminAccountOutput {
+public struct DisableDelegatedAdminAccountOutput: Swift.Sendable {
     /// The Amazon Web Services account ID of the successfully disabled delegated administrator.
     /// This member is required.
     public var delegatedAdminAccountId: Swift.String?
@@ -6702,7 +6702,7 @@ public struct DisableDelegatedAdminAccountOutput {
     }
 }
 
-public struct DisassociateMemberInput {
+public struct DisassociateMemberInput: Swift.Sendable {
     /// The Amazon Web Services account ID of the member account to disassociate.
     /// This member is required.
     public var accountId: Swift.String?
@@ -6715,7 +6715,7 @@ public struct DisassociateMemberInput {
     }
 }
 
-public struct DisassociateMemberOutput {
+public struct DisassociateMemberOutput: Swift.Sendable {
     /// The Amazon Web Services account ID of the successfully disassociated member.
     /// This member is required.
     public var accountId: Swift.String?
@@ -6730,7 +6730,7 @@ public struct DisassociateMemberOutput {
 
 extension Inspector2ClientTypes {
 
-    public enum Ec2ScanMode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Ec2ScanMode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case ec2Hybrid
         case ec2SsmAgentBased
         case sdkUnknown(Swift.String)
@@ -6758,8 +6758,9 @@ extension Inspector2ClientTypes {
 }
 
 extension Inspector2ClientTypes {
+
     /// Enables agent-based scanning, which scans instances that are not managed by SSM.
-    public struct Ec2Configuration {
+    public struct Ec2Configuration: Swift.Sendable {
         /// The scan method that is applied to the instance.
         /// This member is required.
         public var scanMode: Inspector2ClientTypes.Ec2ScanMode?
@@ -6771,12 +6772,11 @@ extension Inspector2ClientTypes {
             self.scanMode = scanMode
         }
     }
-
 }
 
 extension Inspector2ClientTypes {
 
-    public enum Ec2ScanModeStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Ec2ScanModeStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case pending
         case success
         case sdkUnknown(Swift.String)
@@ -6804,8 +6804,9 @@ extension Inspector2ClientTypes {
 }
 
 extension Inspector2ClientTypes {
+
     /// The state of your Amazon EC2 scan mode configuration.
-    public struct Ec2ScanModeState {
+    public struct Ec2ScanModeState: Swift.Sendable {
         /// The scan method that is applied to the instance.
         public var scanMode: Inspector2ClientTypes.Ec2ScanMode?
         /// The status of the Amazon EC2 scan mode setting.
@@ -6820,12 +6821,12 @@ extension Inspector2ClientTypes {
             self.scanModeStatus = scanModeStatus
         }
     }
-
 }
 
 extension Inspector2ClientTypes {
+
     /// Details about the state of the EC2 scan configuration for your environment.
-    public struct Ec2ConfigurationState {
+    public struct Ec2ConfigurationState: Swift.Sendable {
         /// An object that contains details about the state of the Amazon EC2 scan mode.
         public var scanModeState: Inspector2ClientTypes.Ec2ScanModeState?
 
@@ -6836,12 +6837,11 @@ extension Inspector2ClientTypes {
             self.scanModeState = scanModeState
         }
     }
-
 }
 
 extension Inspector2ClientTypes {
 
-    public enum EcrPullDateRescanDuration: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum EcrPullDateRescanDuration: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case days14
         case days180
         case days30
@@ -6879,7 +6879,7 @@ extension Inspector2ClientTypes {
 
 extension Inspector2ClientTypes {
 
-    public enum EcrRescanDuration: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum EcrRescanDuration: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case days14
         case days180
         case days30
@@ -6919,8 +6919,9 @@ extension Inspector2ClientTypes {
 }
 
 extension Inspector2ClientTypes {
+
     /// Details about the ECR automated re-scan duration setting for your environment.
-    public struct EcrConfiguration {
+    public struct EcrConfiguration: Swift.Sendable {
         /// The rescan duration configured for image pull date.
         public var pullDateRescanDuration: Inspector2ClientTypes.EcrPullDateRescanDuration?
         /// The rescan duration configured for image push date.
@@ -6936,12 +6937,11 @@ extension Inspector2ClientTypes {
             self.rescanDuration = rescanDuration
         }
     }
-
 }
 
 extension Inspector2ClientTypes {
 
-    public enum EcrRescanDurationStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum EcrRescanDurationStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case failed
         case pending
         case success
@@ -6972,8 +6972,9 @@ extension Inspector2ClientTypes {
 }
 
 extension Inspector2ClientTypes {
+
     /// Details about the state of your ECR re-scan duration settings. The ECR re-scan duration defines how long an ECR image will be actively scanned by Amazon Inspector. When the number of days since an image was last pushed exceeds the duration configured for image pull date, and the duration configured for image pull date, the monitoring state of that image becomes inactive and all associated findings are scheduled for closure.
-    public struct EcrRescanDurationState {
+    public struct EcrRescanDurationState: Swift.Sendable {
         /// The rescan duration configured for image pull date.
         public var pullDateRescanDuration: Inspector2ClientTypes.EcrPullDateRescanDuration?
         /// The rescan duration configured for image push date.
@@ -6996,12 +6997,12 @@ extension Inspector2ClientTypes {
             self.updatedAt = updatedAt
         }
     }
-
 }
 
 extension Inspector2ClientTypes {
+
     /// Details about the state of the ECR scans for your environment.
-    public struct EcrConfigurationState {
+    public struct EcrConfigurationState: Swift.Sendable {
         /// An object that contains details about the state of the ECR re-scan settings.
         public var rescanDurationState: Inspector2ClientTypes.EcrRescanDurationState?
 
@@ -7012,10 +7013,9 @@ extension Inspector2ClientTypes {
             self.rescanDurationState = rescanDurationState
         }
     }
-
 }
 
-public struct EnableInput {
+public struct EnableInput: Swift.Sendable {
     /// A list of account IDs you want to enable Amazon Inspector scans for.
     public var accountIds: [Swift.String]?
     /// The idempotency token for the request.
@@ -7036,7 +7036,7 @@ public struct EnableInput {
     }
 }
 
-public struct EnableOutput {
+public struct EnableOutput: Swift.Sendable {
     /// Information on the accounts that have had Amazon Inspector scans successfully enabled. Details are provided for each account.
     /// This member is required.
     public var accounts: [Inspector2ClientTypes.Account]?
@@ -7053,7 +7053,7 @@ public struct EnableOutput {
     }
 }
 
-public struct EnableDelegatedAdminAccountInput {
+public struct EnableDelegatedAdminAccountInput: Swift.Sendable {
     /// The idempotency token for the request.
     public var clientToken: Swift.String?
     /// The Amazon Web Services account ID of the Amazon Inspector delegated administrator.
@@ -7070,7 +7070,7 @@ public struct EnableDelegatedAdminAccountInput {
     }
 }
 
-public struct EnableDelegatedAdminAccountOutput {
+public struct EnableDelegatedAdminAccountOutput: Swift.Sendable {
     /// The Amazon Web Services account ID of the successfully Amazon Inspector delegated administrator.
     /// This member is required.
     public var delegatedAdminAccountId: Swift.String?
@@ -7084,8 +7084,9 @@ public struct EnableDelegatedAdminAccountOutput {
 }
 
 extension Inspector2ClientTypes {
+
     /// Details about the Exploit Prediction Scoring System (EPSS) score.
-    public struct Epss {
+    public struct Epss: Swift.Sendable {
         /// The Exploit Prediction Scoring System (EPSS) score.
         public var score: Swift.Double
 
@@ -7096,12 +7097,12 @@ extension Inspector2ClientTypes {
             self.score = score
         }
     }
-
 }
 
 extension Inspector2ClientTypes {
+
     /// Details about the Exploit Prediction Scoring System (EPSS) score for a finding.
-    public struct EpssDetails {
+    public struct EpssDetails: Swift.Sendable {
         /// The EPSS score.
         public var score: Swift.Double
 
@@ -7112,12 +7113,12 @@ extension Inspector2ClientTypes {
             self.score = score
         }
     }
-
 }
 
 extension Inspector2ClientTypes {
+
     /// The details of an exploit available for a finding discovered in your environment.
-    public struct ExploitabilityDetails {
+    public struct ExploitabilityDetails: Swift.Sendable {
         /// The date and time of the last exploit associated with a finding discovered in your environment.
         public var lastKnownExploitAt: Foundation.Date?
 
@@ -7128,12 +7129,11 @@ extension Inspector2ClientTypes {
             self.lastKnownExploitAt = lastKnownExploitAt
         }
     }
-
 }
 
 extension Inspector2ClientTypes {
 
-    public enum ExploitAvailable: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ExploitAvailable: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case no
         case yes
         case sdkUnknown(Swift.String)
@@ -7162,7 +7162,7 @@ extension Inspector2ClientTypes {
 
 extension Inspector2ClientTypes {
 
-    public enum ExternalReportStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ExternalReportStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case cancelled
         case failed
         case inProgress
@@ -7196,8 +7196,9 @@ extension Inspector2ClientTypes {
 }
 
 extension Inspector2ClientTypes {
+
     /// Details about a filter.
-    public struct Filter {
+    public struct Filter: Swift.Sendable {
         /// The action that is to be applied to the findings that match the filter.
         /// This member is required.
         public var action: Inspector2ClientTypes.FilterAction?
@@ -7251,12 +7252,11 @@ extension Inspector2ClientTypes {
             self.updatedAt = updatedAt
         }
     }
-
 }
 
 extension Inspector2ClientTypes {
 
-    public enum FixAvailable: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum FixAvailable: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case no
         case partial
         case yes
@@ -7287,8 +7287,9 @@ extension Inspector2ClientTypes {
 }
 
 extension Inspector2ClientTypes {
+
     /// Information about the Amazon Inspector score given to a finding.
-    public struct InspectorScoreDetails {
+    public struct InspectorScoreDetails: Swift.Sendable {
         /// An object that contains details about the CVSS score given to a finding.
         public var adjustedCvss: Inspector2ClientTypes.CvssScoreDetails?
 
@@ -7299,12 +7300,12 @@ extension Inspector2ClientTypes {
             self.adjustedCvss = adjustedCvss
         }
     }
-
 }
 
 extension Inspector2ClientTypes {
+
     /// Details about the step associated with a finding.
-    public struct Step {
+    public struct Step: Swift.Sendable {
         /// The component ID.
         /// This member is required.
         public var componentId: Swift.String?
@@ -7321,12 +7322,12 @@ extension Inspector2ClientTypes {
             self.componentType = componentType
         }
     }
-
 }
 
 extension Inspector2ClientTypes {
+
     /// Information on the network path associated with a finding.
-    public struct NetworkPath {
+    public struct NetworkPath: Swift.Sendable {
         /// The details on the steps in the network path.
         public var steps: [Inspector2ClientTypes.Step]?
 
@@ -7337,12 +7338,12 @@ extension Inspector2ClientTypes {
             self.steps = steps
         }
     }
-
 }
 
 extension Inspector2ClientTypes {
+
     /// Details about the port range associated with a finding.
-    public struct PortRange {
+    public struct PortRange: Swift.Sendable {
         /// The beginning port in a port range.
         /// This member is required.
         public var begin: Swift.Int?
@@ -7359,12 +7360,11 @@ extension Inspector2ClientTypes {
             self.end = end
         }
     }
-
 }
 
 extension Inspector2ClientTypes {
 
-    public enum NetworkProtocol: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum NetworkProtocol: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case tcp
         case udp
         case sdkUnknown(Swift.String)
@@ -7392,8 +7392,9 @@ extension Inspector2ClientTypes {
 }
 
 extension Inspector2ClientTypes {
+
     /// Contains the details of a network reachability finding.
-    public struct NetworkReachabilityDetails {
+    public struct NetworkReachabilityDetails: Swift.Sendable {
         /// An object that contains details about a network path associated with a finding.
         /// This member is required.
         public var networkPath: Inspector2ClientTypes.NetworkPath?
@@ -7415,12 +7416,11 @@ extension Inspector2ClientTypes {
             self.`protocol` = `protocol`
         }
     }
-
 }
 
 extension Inspector2ClientTypes {
 
-    public enum PackageManager: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum PackageManager: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case bundler
         case cargo
         case composer
@@ -7493,8 +7493,9 @@ extension Inspector2ClientTypes {
 }
 
 extension Inspector2ClientTypes {
+
     /// Information on the vulnerable package identified by a finding.
-    public struct VulnerablePackage {
+    public struct VulnerablePackage: Swift.Sendable {
         /// The architecture of the vulnerable package.
         public var arch: Swift.String?
         /// The epoch of the vulnerable package.
@@ -7547,12 +7548,12 @@ extension Inspector2ClientTypes {
             self.version = version
         }
     }
-
 }
 
 extension Inspector2ClientTypes {
+
     /// Information about a package vulnerability finding.
-    public struct PackageVulnerabilityDetails {
+    public struct PackageVulnerabilityDetails: Swift.Sendable {
         /// An object that contains details about the CVSS score of a finding.
         public var cvss: [Inspector2ClientTypes.CvssScore]?
         /// One or more URLs that contain details about this vulnerability type.
@@ -7601,12 +7602,12 @@ extension Inspector2ClientTypes {
             self.vulnerablePackages = vulnerablePackages
         }
     }
-
 }
 
 extension Inspector2ClientTypes {
+
     /// Details about the recommended course of action to remediate the finding.
-    public struct Recommendation {
+    public struct Recommendation: Swift.Sendable {
         /// The recommended course of action to remediate the finding.
         public var text: Swift.String?
         /// The URL address to the CVE remediation recommendations.
@@ -7621,12 +7622,12 @@ extension Inspector2ClientTypes {
             self.url = url
         }
     }
-
 }
 
 extension Inspector2ClientTypes {
+
     /// Information on how to remediate a finding.
-    public struct Remediation {
+    public struct Remediation: Swift.Sendable {
         /// An object that contains information about the recommended course of action to remediate the finding.
         public var recommendation: Inspector2ClientTypes.Recommendation?
 
@@ -7637,12 +7638,12 @@ extension Inspector2ClientTypes {
             self.recommendation = recommendation
         }
     }
-
 }
 
 extension Inspector2ClientTypes {
+
     /// Contains details about the resource involved in the finding.
-    public struct ResourceDetails {
+    public struct ResourceDetails: Swift.Sendable {
         /// An object that contains details about the Amazon EC2 instance involved in the finding.
         public var awsEc2Instance: Inspector2ClientTypes.AwsEc2InstanceDetails?
         /// An object that contains details about the Amazon ECR container image involved in the finding.
@@ -7661,12 +7662,11 @@ extension Inspector2ClientTypes {
             self.awsLambdaFunction = awsLambdaFunction
         }
     }
-
 }
 
 extension Inspector2ClientTypes {
 
-    public enum ResourceType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ResourceType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case awsEc2Instance
         case awsEcrContainerImage
         case awsEcrRepository
@@ -7700,8 +7700,9 @@ extension Inspector2ClientTypes {
 }
 
 extension Inspector2ClientTypes {
+
     /// Details about the resource involved in a finding.
-    public struct Resource {
+    public struct Resource: Swift.Sendable {
         /// An object that contains details about the resource involved in a finding.
         public var details: Inspector2ClientTypes.ResourceDetails?
         /// The ID of the resource.
@@ -7734,12 +7735,11 @@ extension Inspector2ClientTypes {
             self.type = type
         }
     }
-
 }
 
 extension Inspector2ClientTypes {
 
-    public enum Severity: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Severity: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case critical
         case high
         case informational
@@ -7780,7 +7780,7 @@ extension Inspector2ClientTypes {
 
 extension Inspector2ClientTypes {
 
-    public enum FindingStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum FindingStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case active
         case closed
         case suppressed
@@ -7812,7 +7812,7 @@ extension Inspector2ClientTypes {
 
 extension Inspector2ClientTypes {
 
-    public enum FindingType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum FindingType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case codeVulnerability
         case networkReachability
         case packageVulnerability
@@ -7843,8 +7843,9 @@ extension Inspector2ClientTypes {
 }
 
 extension Inspector2ClientTypes {
+
     /// Details about an Amazon Inspector finding.
-    public struct Finding {
+    public struct Finding: Swift.Sendable {
         /// The Amazon Web Services account ID associated with the finding.
         /// This member is required.
         public var awsAccountId: Swift.String?
@@ -7945,10 +7946,9 @@ extension Inspector2ClientTypes {
             self.updatedAt = updatedAt
         }
     }
-
 }
 
-public struct GetCisScanReportInput {
+public struct GetCisScanReportInput: Swift.Sendable {
     /// The format of the report. Valid values are PDF and CSV. If no value is specified, the report format defaults to PDF.
     public var reportFormat: Inspector2ClientTypes.CisReportFormat?
     /// The scan ARN.
@@ -7969,7 +7969,7 @@ public struct GetCisScanReportInput {
     }
 }
 
-public struct GetCisScanReportOutput {
+public struct GetCisScanReportOutput: Swift.Sendable {
     /// The status.
     public var status: Inspector2ClientTypes.CisReportStatus?
     /// The URL where a PDF or CSV of the CIS scan report can be downloaded.
@@ -7985,7 +7985,7 @@ public struct GetCisScanReportOutput {
     }
 }
 
-public struct GetCisScanResultDetailsInput {
+public struct GetCisScanResultDetailsInput: Swift.Sendable {
     /// The account ID.
     /// This member is required.
     public var accountId: Swift.String?
@@ -8028,7 +8028,7 @@ public struct GetCisScanResultDetailsInput {
     }
 }
 
-public struct GetCisScanResultDetailsOutput {
+public struct GetCisScanResultDetailsOutput: Swift.Sendable {
     /// The pagination token from a previous request that's used to retrieve the next page of results.
     public var nextToken: Swift.String?
     /// The scan result details.
@@ -8044,12 +8044,12 @@ public struct GetCisScanResultDetailsOutput {
     }
 }
 
-public struct GetConfigurationInput {
+public struct GetConfigurationInput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct GetConfigurationOutput {
+public struct GetConfigurationOutput: Swift.Sendable {
     /// Specifies how the Amazon EC2 automated scan mode is currently configured for your environment.
     public var ec2Configuration: Inspector2ClientTypes.Ec2ConfigurationState?
     /// Specifies how the ECR automated re-scan duration is currently configured for your environment.
@@ -8065,12 +8065,12 @@ public struct GetConfigurationOutput {
     }
 }
 
-public struct GetDelegatedAdminAccountInput {
+public struct GetDelegatedAdminAccountInput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct GetDelegatedAdminAccountOutput {
+public struct GetDelegatedAdminAccountOutput: Swift.Sendable {
     /// The Amazon Web Services account ID of the Amazon Inspector delegated administrator.
     public var delegatedAdmin: Inspector2ClientTypes.DelegatedAdmin?
 
@@ -8082,12 +8082,12 @@ public struct GetDelegatedAdminAccountOutput {
     }
 }
 
-public struct GetEc2DeepInspectionConfigurationInput {
+public struct GetEc2DeepInspectionConfigurationInput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct GetEc2DeepInspectionConfigurationOutput {
+public struct GetEc2DeepInspectionConfigurationOutput: Swift.Sendable {
     /// An error message explaining why Amazon Inspector deep inspection configurations could not be retrieved for your account.
     public var errorMessage: Swift.String?
     /// The Amazon Inspector deep inspection custom paths for your organization.
@@ -8111,7 +8111,7 @@ public struct GetEc2DeepInspectionConfigurationOutput {
     }
 }
 
-public struct GetEncryptionKeyInput {
+public struct GetEncryptionKeyInput: Swift.Sendable {
     /// The resource type the key encrypts.
     /// This member is required.
     public var resourceType: Inspector2ClientTypes.ResourceType?
@@ -8129,7 +8129,7 @@ public struct GetEncryptionKeyInput {
     }
 }
 
-public struct GetEncryptionKeyOutput {
+public struct GetEncryptionKeyOutput: Swift.Sendable {
     /// A kms key ID.
     /// This member is required.
     public var kmsKeyId: Swift.String?
@@ -8142,7 +8142,7 @@ public struct GetEncryptionKeyOutput {
     }
 }
 
-public struct GetFindingsReportStatusInput {
+public struct GetFindingsReportStatusInput: Swift.Sendable {
     /// The ID of the report to retrieve the status of.
     public var reportId: Swift.String?
 
@@ -8156,7 +8156,7 @@ public struct GetFindingsReportStatusInput {
 
 extension Inspector2ClientTypes {
 
-    public enum ReportingErrorCode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ReportingErrorCode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case bucketNotFound
         case incompatibleBucketRegion
         case internalError
@@ -8195,7 +8195,7 @@ extension Inspector2ClientTypes {
     }
 }
 
-public struct GetFindingsReportStatusOutput {
+public struct GetFindingsReportStatusOutput: Swift.Sendable {
     /// The destination of the report.
     public var destination: Inspector2ClientTypes.Destination?
     /// The error code of the report.
@@ -8227,7 +8227,7 @@ public struct GetFindingsReportStatusOutput {
     }
 }
 
-public struct GetMemberInput {
+public struct GetMemberInput: Swift.Sendable {
     /// The Amazon Web Services account ID of the member account to retrieve information on.
     /// This member is required.
     public var accountId: Swift.String?
@@ -8241,8 +8241,9 @@ public struct GetMemberInput {
 }
 
 extension Inspector2ClientTypes {
+
     /// Details on a member account in your organization.
-    public struct Member {
+    public struct Member: Swift.Sendable {
         /// The Amazon Web Services account ID of the member account.
         public var accountId: Swift.String?
         /// The Amazon Web Services account ID of the Amazon Inspector delegated administrator for this member account.
@@ -8265,10 +8266,9 @@ extension Inspector2ClientTypes {
             self.updatedAt = updatedAt
         }
     }
-
 }
 
-public struct GetMemberOutput {
+public struct GetMemberOutput: Swift.Sendable {
     /// Details of the retrieved member account.
     public var member: Inspector2ClientTypes.Member?
 
@@ -8280,7 +8280,7 @@ public struct GetMemberOutput {
     }
 }
 
-public struct GetSbomExportInput {
+public struct GetSbomExportInput: Swift.Sendable {
     /// The report ID of the SBOM export to get details for.
     /// This member is required.
     public var reportId: Swift.String?
@@ -8293,7 +8293,7 @@ public struct GetSbomExportInput {
     }
 }
 
-public struct GetSbomExportOutput {
+public struct GetSbomExportOutput: Swift.Sendable {
     /// An error code.
     public var errorCode: Inspector2ClientTypes.ReportingErrorCode?
     /// An error message.
@@ -8331,7 +8331,7 @@ public struct GetSbomExportOutput {
 
 extension Inspector2ClientTypes {
 
-    public enum Service: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Service: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case ec2
         case ecr
         case lambda
@@ -8361,7 +8361,7 @@ extension Inspector2ClientTypes {
     }
 }
 
-public struct ListAccountPermissionsInput {
+public struct ListAccountPermissionsInput: Swift.Sendable {
     /// The maximum number of results the response can return. If your request would return more than the maximum the response will return a nextToken value, use this value when you call the action again to get the remaining results.
     public var maxResults: Swift.Int?
     /// A token to use for paginating results that are returned in the response. Set the value of this parameter to null for the first request to a list action. If your response returns more than the maxResults maximum value it will also return a nextToken value. For subsequent calls, use the NextToken value returned from the previous request to continue listing results after the first page.
@@ -8383,7 +8383,7 @@ public struct ListAccountPermissionsInput {
 
 extension Inspector2ClientTypes {
 
-    public enum Operation: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Operation: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case disableRepository
         case disableScanning
         case enableRepository
@@ -8417,8 +8417,9 @@ extension Inspector2ClientTypes {
 }
 
 extension Inspector2ClientTypes {
+
     /// Contains information on the permissions an account has within Amazon Inspector.
-    public struct Permission {
+    public struct Permission: Swift.Sendable {
         /// The operations that can be performed with the given permissions.
         /// This member is required.
         public var operation: Inspector2ClientTypes.Operation?
@@ -8435,10 +8436,9 @@ extension Inspector2ClientTypes {
             self.service = service
         }
     }
-
 }
 
-public struct ListAccountPermissionsOutput {
+public struct ListAccountPermissionsOutput: Swift.Sendable {
     /// A token to use for paginating results that are returned in the response. Set the value of this parameter to null for the first request to a list action. For subsequent calls, use the NextToken value returned from the previous request to continue listing results after the first page.
     public var nextToken: Swift.String?
     /// Contains details on the permissions an account has to configure Amazon Inspector.
@@ -8456,8 +8456,9 @@ public struct ListAccountPermissionsOutput {
 }
 
 extension Inspector2ClientTypes {
+
     /// A list of CIS scan configurations filter criteria.
-    public struct ListCisScanConfigurationsFilterCriteria {
+    public struct ListCisScanConfigurationsFilterCriteria: Swift.Sendable {
         /// The list of scan configuration ARN filters.
         public var scanConfigurationArnFilters: [Inspector2ClientTypes.CisStringFilter]?
         /// The list of scan name filters.
@@ -8476,10 +8477,9 @@ extension Inspector2ClientTypes {
             self.targetResourceTagFilters = targetResourceTagFilters
         }
     }
-
 }
 
-public struct ListCisScanConfigurationsInput {
+public struct ListCisScanConfigurationsInput: Swift.Sendable {
     /// The CIS scan configuration filter criteria.
     public var filterCriteria: Inspector2ClientTypes.ListCisScanConfigurationsFilterCriteria?
     /// The maximum number of CIS scan configurations to be returned in a single page of results.
@@ -8507,7 +8507,7 @@ public struct ListCisScanConfigurationsInput {
     }
 }
 
-public struct ListCisScanConfigurationsOutput {
+public struct ListCisScanConfigurationsOutput: Swift.Sendable {
     /// The pagination token from a previous request that's used to retrieve the next page of results.
     public var nextToken: Swift.String?
     /// The CIS scan configuration scan configurations.
@@ -8523,7 +8523,7 @@ public struct ListCisScanConfigurationsOutput {
     }
 }
 
-public struct ListCisScanResultsAggregatedByChecksInput {
+public struct ListCisScanResultsAggregatedByChecksInput: Swift.Sendable {
     /// The filter criteria.
     public var filterCriteria: Inspector2ClientTypes.CisScanResultsAggregatedByChecksFilterCriteria?
     /// The maximum number of scan results aggregated by checks to be returned in a single page of results.
@@ -8556,7 +8556,7 @@ public struct ListCisScanResultsAggregatedByChecksInput {
     }
 }
 
-public struct ListCisScanResultsAggregatedByChecksOutput {
+public struct ListCisScanResultsAggregatedByChecksOutput: Swift.Sendable {
     /// The check aggregations.
     public var checkAggregations: [Inspector2ClientTypes.CisCheckAggregation]?
     /// The pagination token from a previous request that's used to retrieve the next page of results.
@@ -8572,7 +8572,7 @@ public struct ListCisScanResultsAggregatedByChecksOutput {
     }
 }
 
-public struct ListCisScanResultsAggregatedByTargetResourceInput {
+public struct ListCisScanResultsAggregatedByTargetResourceInput: Swift.Sendable {
     /// The filter criteria.
     public var filterCriteria: Inspector2ClientTypes.CisScanResultsAggregatedByTargetResourceFilterCriteria?
     /// The maximum number of scan results aggregated by a target resource to be returned in a single page of results.
@@ -8605,7 +8605,7 @@ public struct ListCisScanResultsAggregatedByTargetResourceInput {
     }
 }
 
-public struct ListCisScanResultsAggregatedByTargetResourceOutput {
+public struct ListCisScanResultsAggregatedByTargetResourceOutput: Swift.Sendable {
     /// The pagination token from a previous request that's used to retrieve the next page of results.
     public var nextToken: Swift.String?
     /// The resource aggregations.
@@ -8623,7 +8623,7 @@ public struct ListCisScanResultsAggregatedByTargetResourceOutput {
 
 extension Inspector2ClientTypes {
 
-    public enum ListCisScansDetailLevel: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ListCisScansDetailLevel: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case member
         case organization
         case sdkUnknown(Swift.String)
@@ -8651,8 +8651,9 @@ extension Inspector2ClientTypes {
 }
 
 extension Inspector2ClientTypes {
+
     /// A list of CIS scans filter criteria.
-    public struct ListCisScansFilterCriteria {
+    public struct ListCisScansFilterCriteria: Swift.Sendable {
         /// The list of failed checks filters.
         public var failedChecksFilters: [Inspector2ClientTypes.CisNumberFilter]?
         /// The list of scan ARN filters.
@@ -8699,12 +8700,11 @@ extension Inspector2ClientTypes {
             self.targetResourceTagFilters = targetResourceTagFilters
         }
     }
-
 }
 
 extension Inspector2ClientTypes {
 
-    public enum ListCisScansSortBy: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ListCisScansSortBy: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case failedChecks
         case scanStartDate
         case scheduledBy
@@ -8737,7 +8737,7 @@ extension Inspector2ClientTypes {
     }
 }
 
-public struct ListCisScansInput {
+public struct ListCisScansInput: Swift.Sendable {
     /// The detail applied to the CIS scan.
     public var detailLevel: Inspector2ClientTypes.ListCisScansDetailLevel?
     /// The CIS scan filter criteria.
@@ -8769,7 +8769,7 @@ public struct ListCisScansInput {
     }
 }
 
-public struct ListCisScansOutput {
+public struct ListCisScansOutput: Swift.Sendable {
     /// The pagination token from a previous request that's used to retrieve the next page of results.
     public var nextToken: Swift.String?
     /// The CIS scans.
@@ -8785,7 +8785,7 @@ public struct ListCisScansOutput {
     }
 }
 
-public struct ListCoverageInput {
+public struct ListCoverageInput: Swift.Sendable {
     /// An object that contains details on the filters to apply to the coverage data for your environment.
     public var filterCriteria: Inspector2ClientTypes.CoverageFilterCriteria?
     /// The maximum number of results the response can return. If your request would return more than the maximum the response will return a nextToken value, use this value when you call the action again to get the remaining results.
@@ -8805,7 +8805,7 @@ public struct ListCoverageInput {
     }
 }
 
-public struct ListCoverageOutput {
+public struct ListCoverageOutput: Swift.Sendable {
     /// An object that contains details on the covered resources in your environment.
     public var coveredResources: [Inspector2ClientTypes.CoveredResource]?
     /// A token to use for paginating results that are returned in the response. Set the value of this parameter to null for the first request to a list action. For subsequent calls, use the NextToken value returned from the previous request to continue listing results after the first page.
@@ -8821,7 +8821,7 @@ public struct ListCoverageOutput {
     }
 }
 
-public struct ListCoverageStatisticsInput {
+public struct ListCoverageStatisticsInput: Swift.Sendable {
     /// An object that contains details on the filters to apply to the coverage data for your environment.
     public var filterCriteria: Inspector2ClientTypes.CoverageFilterCriteria?
     /// The value to group the results by.
@@ -8841,7 +8841,7 @@ public struct ListCoverageStatisticsInput {
     }
 }
 
-public struct ListCoverageStatisticsOutput {
+public struct ListCoverageStatisticsOutput: Swift.Sendable {
     /// An array with the number for each group.
     public var countsByGroup: [Inspector2ClientTypes.Counts]?
     /// A token to use for paginating results that are returned in the response. Set the value of this parameter to null for the first request to a list action. For subsequent calls, use the NextToken value returned from the previous request to continue listing results after the first page.
@@ -8862,7 +8862,7 @@ public struct ListCoverageStatisticsOutput {
     }
 }
 
-public struct ListDelegatedAdminAccountsInput {
+public struct ListDelegatedAdminAccountsInput: Swift.Sendable {
     /// The maximum number of results the response can return. If your request would return more than the maximum the response will return a nextToken value, use this value when you call the action again to get the remaining results.
     public var maxResults: Swift.Int?
     /// A token to use for paginating results that are returned in the response. Set the value of this parameter to null for the first request to a list action. If your response returns more than the maxResults maximum value it will also return a nextToken value. For subsequent calls, use the nextToken value returned from the previous request to continue listing results after the first page.
@@ -8878,7 +8878,7 @@ public struct ListDelegatedAdminAccountsInput {
     }
 }
 
-public struct ListDelegatedAdminAccountsOutput {
+public struct ListDelegatedAdminAccountsOutput: Swift.Sendable {
     /// Details of the Amazon Inspector delegated administrator of your organization.
     public var delegatedAdminAccounts: [Inspector2ClientTypes.DelegatedAdminAccount]?
     /// A token to use for paginating results that are returned in the response. Set the value of this parameter to null for the first request to a list action. For subsequent calls, use the NextToken value returned from the previous request to continue listing results after the first page.
@@ -8894,7 +8894,7 @@ public struct ListDelegatedAdminAccountsOutput {
     }
 }
 
-public struct ListFiltersInput {
+public struct ListFiltersInput: Swift.Sendable {
     /// The action the filter applies to matched findings.
     public var action: Inspector2ClientTypes.FilterAction?
     /// The Amazon resource number (ARN) of the filter.
@@ -8918,7 +8918,7 @@ public struct ListFiltersInput {
     }
 }
 
-public struct ListFiltersOutput {
+public struct ListFiltersOutput: Swift.Sendable {
     /// Contains details on the filters associated with your account.
     /// This member is required.
     public var filters: [Inspector2ClientTypes.Filter]?
@@ -8935,7 +8935,7 @@ public struct ListFiltersOutput {
     }
 }
 
-public struct ListFindingAggregationsInput {
+public struct ListFindingAggregationsInput: Swift.Sendable {
     /// The Amazon Web Services account IDs to retrieve finding aggregation data for.
     public var accountIds: [Inspector2ClientTypes.StringFilter]?
     /// Details of the aggregation request that is used to filter your aggregation results.
@@ -8964,7 +8964,7 @@ public struct ListFindingAggregationsInput {
     }
 }
 
-public struct ListFindingAggregationsOutput {
+public struct ListFindingAggregationsOutput: Swift.Sendable {
     /// The type of aggregation to perform.
     /// This member is required.
     public var aggregationType: Inspector2ClientTypes.AggregationType?
@@ -8987,7 +8987,7 @@ public struct ListFindingAggregationsOutput {
 
 extension Inspector2ClientTypes {
 
-    public enum SortField: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SortField: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case awsAccountId
         case componentType
         case ecrImagePushedAt
@@ -9060,8 +9060,9 @@ extension Inspector2ClientTypes {
 }
 
 extension Inspector2ClientTypes {
+
     /// Details about the criteria used to sort finding results.
-    public struct SortCriteria {
+    public struct SortCriteria: Swift.Sendable {
         /// The finding detail field by which results are sorted.
         /// This member is required.
         public var field: Inspector2ClientTypes.SortField?
@@ -9078,10 +9079,9 @@ extension Inspector2ClientTypes {
             self.sortOrder = sortOrder
         }
     }
-
 }
 
-public struct ListFindingsInput {
+public struct ListFindingsInput: Swift.Sendable {
     /// Details on the filters to apply to your finding results.
     public var filterCriteria: Inspector2ClientTypes.FilterCriteria?
     /// The maximum number of results the response can return. If your request would return more than the maximum the response will return a nextToken value, use this value when you call the action again to get the remaining results.
@@ -9105,7 +9105,7 @@ public struct ListFindingsInput {
     }
 }
 
-public struct ListFindingsOutput {
+public struct ListFindingsOutput: Swift.Sendable {
     /// Contains details on the findings in your environment.
     public var findings: [Inspector2ClientTypes.Finding]?
     /// A token to use for paginating results that are returned in the response. Set the value of this parameter to null for the first request to a list action. For subsequent calls, use the NextToken value returned from the previous request to continue listing results after the first page.
@@ -9121,7 +9121,7 @@ public struct ListFindingsOutput {
     }
 }
 
-public struct ListMembersInput {
+public struct ListMembersInput: Swift.Sendable {
     /// The maximum number of results the response can return. If your request would return more than the maximum the response will return a nextToken value, use this value when you call the action again to get the remaining results.
     public var maxResults: Swift.Int?
     /// A token to use for paginating results that are returned in the response. Set the value of this parameter to null for the first request to a list action. If your response returns more than the maxResults maximum value it will also return a nextToken value. For subsequent calls, use the nextToken value returned from the previous request to continue listing results after the first page.
@@ -9141,7 +9141,7 @@ public struct ListMembersInput {
     }
 }
 
-public struct ListMembersOutput {
+public struct ListMembersOutput: Swift.Sendable {
     /// An object that contains details for each member account.
     public var members: [Inspector2ClientTypes.Member]?
     /// The pagination parameter to be used on the next list operation to retrieve more items.
@@ -9157,7 +9157,7 @@ public struct ListMembersOutput {
     }
 }
 
-public struct ListTagsForResourceInput {
+public struct ListTagsForResourceInput: Swift.Sendable {
     /// The Amazon resource number (ARN) of the resource to list tags of.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -9170,7 +9170,7 @@ public struct ListTagsForResourceInput {
     }
 }
 
-public struct ListTagsForResourceOutput {
+public struct ListTagsForResourceOutput: Swift.Sendable {
     /// The tags associated with the resource.
     public var tags: [Swift.String: Swift.String]?
 
@@ -9182,7 +9182,7 @@ public struct ListTagsForResourceOutput {
     }
 }
 
-public struct ListUsageTotalsInput {
+public struct ListUsageTotalsInput: Swift.Sendable {
     /// The Amazon Web Services account IDs to retrieve usage totals for.
     public var accountIds: [Swift.String]?
     /// The maximum number of results the response can return. If your request would return more than the maximum the response will return a nextToken value, use this value when you call the action again to get the remaining results.
@@ -9204,7 +9204,7 @@ public struct ListUsageTotalsInput {
 
 extension Inspector2ClientTypes {
 
-    public enum UsageType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum UsageType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case ec2InstanceHours
         case ecrInitialScan
         case ecrRescan
@@ -9241,8 +9241,9 @@ extension Inspector2ClientTypes {
 }
 
 extension Inspector2ClientTypes {
+
     /// Contains usage information about the cost of Amazon Inspector operation.
-    public struct Usage {
+    public struct Usage: Swift.Sendable {
         /// The currency type used when calculating usage data.
         public var currency: Inspector2ClientTypes.Currency?
         /// The estimated monthly cost of Amazon Inspector.
@@ -9265,12 +9266,12 @@ extension Inspector2ClientTypes {
             self.type = type
         }
     }
-
 }
 
 extension Inspector2ClientTypes {
+
     /// The total of usage for an account ID.
-    public struct UsageTotal {
+    public struct UsageTotal: Swift.Sendable {
         /// The account ID of the account that usage data was retrieved for.
         public var accountId: Swift.String?
         /// An object representing the total usage for an account.
@@ -9285,10 +9286,9 @@ extension Inspector2ClientTypes {
             self.usage = usage
         }
     }
-
 }
 
-public struct ListUsageTotalsOutput {
+public struct ListUsageTotalsOutput: Swift.Sendable {
     /// The pagination parameter to be used on the next list operation to retrieve more items.
     public var nextToken: Swift.String?
     /// An object with details on the total usage for the requested account.
@@ -9304,7 +9304,7 @@ public struct ListUsageTotalsOutput {
     }
 }
 
-public struct ResetEncryptionKeyInput {
+public struct ResetEncryptionKeyInput: Swift.Sendable {
     /// The resource type the key encrypts.
     /// This member is required.
     public var resourceType: Inspector2ClientTypes.ResourceType?
@@ -9322,14 +9322,15 @@ public struct ResetEncryptionKeyInput {
     }
 }
 
-public struct ResetEncryptionKeyOutput {
+public struct ResetEncryptionKeyOutput: Swift.Sendable {
 
     public init() { }
 }
 
 extension Inspector2ClientTypes {
+
     /// Details on the criteria used to define the filter for a vulnerability search.
-    public struct SearchVulnerabilitiesFilterCriteria {
+    public struct SearchVulnerabilitiesFilterCriteria: Swift.Sendable {
         /// The IDs for specific vulnerabilities.
         /// This member is required.
         public var vulnerabilityIds: [Swift.String]?
@@ -9341,10 +9342,9 @@ extension Inspector2ClientTypes {
             self.vulnerabilityIds = vulnerabilityIds
         }
     }
-
 }
 
-public struct SearchVulnerabilitiesInput {
+public struct SearchVulnerabilitiesInput: Swift.Sendable {
     /// The criteria used to filter the results of a vulnerability search.
     /// This member is required.
     public var filterCriteria: Inspector2ClientTypes.SearchVulnerabilitiesFilterCriteria?
@@ -9363,7 +9363,7 @@ public struct SearchVulnerabilitiesInput {
 
 extension Inspector2ClientTypes {
 
-    public enum VulnerabilitySource: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum VulnerabilitySource: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case nvd
         case sdkUnknown(Swift.String)
 
@@ -9388,8 +9388,9 @@ extension Inspector2ClientTypes {
 }
 
 extension Inspector2ClientTypes {
+
     /// Contains details about a specific vulnerability Amazon Inspector can detect.
-    public struct Vulnerability {
+    public struct Vulnerability: Swift.Sendable {
         /// An object that contains information about the Amazon Web Services Threat Intel Group (ATIG) details for the vulnerability.
         public var atigData: Inspector2ClientTypes.AtigData?
         /// An object that contains the Cybersecurity and Infrastructure Security Agency (CISA) details for the vulnerability.
@@ -9465,10 +9466,9 @@ extension Inspector2ClientTypes {
             self.vendorUpdatedAt = vendorUpdatedAt
         }
     }
-
 }
 
-public struct SearchVulnerabilitiesOutput {
+public struct SearchVulnerabilitiesOutput: Swift.Sendable {
     /// The pagination parameter to be used on the next list operation to retrieve more items.
     public var nextToken: Swift.String?
     /// Details about the listed vulnerability.
@@ -9485,7 +9485,7 @@ public struct SearchVulnerabilitiesOutput {
     }
 }
 
-public struct SendCisSessionHealthInput {
+public struct SendCisSessionHealthInput: Swift.Sendable {
     /// A unique identifier for the scan job.
     /// This member is required.
     public var scanJobId: Swift.String?
@@ -9503,12 +9503,12 @@ public struct SendCisSessionHealthInput {
     }
 }
 
-public struct SendCisSessionHealthOutput {
+public struct SendCisSessionHealthOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct SendCisSessionTelemetryInput {
+public struct SendCisSessionTelemetryInput: Swift.Sendable {
     /// The CIS session telemetry messages.
     /// This member is required.
     public var messages: [Inspector2ClientTypes.CisSessionMessage]?
@@ -9531,14 +9531,15 @@ public struct SendCisSessionTelemetryInput {
     }
 }
 
-public struct SendCisSessionTelemetryOutput {
+public struct SendCisSessionTelemetryOutput: Swift.Sendable {
 
     public init() { }
 }
 
 extension Inspector2ClientTypes {
+
     /// The start CIS session message.
-    public struct StartCisSessionMessage {
+    public struct StartCisSessionMessage: Swift.Sendable {
         /// The unique token that identifies the CIS session.
         /// This member is required.
         public var sessionToken: Swift.String?
@@ -9550,10 +9551,9 @@ extension Inspector2ClientTypes {
             self.sessionToken = sessionToken
         }
     }
-
 }
 
-public struct StartCisSessionInput {
+public struct StartCisSessionInput: Swift.Sendable {
     /// The start CIS session message.
     /// This member is required.
     public var message: Inspector2ClientTypes.StartCisSessionMessage?
@@ -9571,14 +9571,15 @@ public struct StartCisSessionInput {
     }
 }
 
-public struct StartCisSessionOutput {
+public struct StartCisSessionOutput: Swift.Sendable {
 
     public init() { }
 }
 
 extension Inspector2ClientTypes {
+
     /// The stop CIS message progress.
-    public struct StopCisMessageProgress {
+    public struct StopCisMessageProgress: Swift.Sendable {
         /// The progress' error checks.
         public var errorChecks: Swift.Int
         /// The progress' failed checks.
@@ -9617,12 +9618,11 @@ extension Inspector2ClientTypes {
             self.unknownChecks = unknownChecks
         }
     }
-
 }
 
 extension Inspector2ClientTypes {
 
-    public enum StopCisSessionStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum StopCisSessionStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case failed
         case interrupted
         case success
@@ -9656,8 +9656,9 @@ extension Inspector2ClientTypes {
 }
 
 extension Inspector2ClientTypes {
+
     /// The stop CIS session message.
-    public struct StopCisSessionMessage {
+    public struct StopCisSessionMessage: Swift.Sendable {
         /// The message benchmark profile.
         public var benchmarkProfile: Swift.String?
         /// The message benchmark version.
@@ -9690,10 +9691,9 @@ extension Inspector2ClientTypes {
             self.status = status
         }
     }
-
 }
 
-public struct StopCisSessionInput {
+public struct StopCisSessionInput: Swift.Sendable {
     /// The stop CIS session message.
     /// This member is required.
     public var message: Inspector2ClientTypes.StopCisSessionMessage?
@@ -9716,12 +9716,12 @@ public struct StopCisSessionInput {
     }
 }
 
-public struct StopCisSessionOutput {
+public struct StopCisSessionOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct TagResourceInput {
+public struct TagResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the resource to apply a tag to.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -9739,12 +9739,12 @@ public struct TagResourceInput {
     }
 }
 
-public struct TagResourceOutput {
+public struct TagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UntagResourceInput {
+public struct UntagResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) for the resource to remove tags from.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -9762,14 +9762,15 @@ public struct UntagResourceInput {
     }
 }
 
-public struct UntagResourceOutput {
+public struct UntagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
 extension Inspector2ClientTypes {
+
     /// Updates CIS targets.
-    public struct UpdateCisTargets {
+    public struct UpdateCisTargets: Swift.Sendable {
         /// The target account ids.
         public var accountIds: [Swift.String]?
         /// The target resource tags.
@@ -9784,10 +9785,9 @@ extension Inspector2ClientTypes {
             self.targetResourceTags = targetResourceTags
         }
     }
-
 }
 
-public struct UpdateCisScanConfigurationInput {
+public struct UpdateCisScanConfigurationInput: Swift.Sendable {
     /// The CIS scan configuration ARN.
     /// This member is required.
     public var scanConfigurationArn: Swift.String?
@@ -9816,7 +9816,7 @@ public struct UpdateCisScanConfigurationInput {
     }
 }
 
-public struct UpdateCisScanConfigurationOutput {
+public struct UpdateCisScanConfigurationOutput: Swift.Sendable {
     /// The CIS scan configuration ARN.
     /// This member is required.
     public var scanConfigurationArn: Swift.String?
@@ -9829,7 +9829,7 @@ public struct UpdateCisScanConfigurationOutput {
     }
 }
 
-public struct UpdateConfigurationInput {
+public struct UpdateConfigurationInput: Swift.Sendable {
     /// Specifies how the Amazon EC2 automated scan will be updated for your environment.
     public var ec2Configuration: Inspector2ClientTypes.Ec2Configuration?
     /// Specifies how the ECR automated re-scan will be updated for your environment.
@@ -9845,12 +9845,12 @@ public struct UpdateConfigurationInput {
     }
 }
 
-public struct UpdateConfigurationOutput {
+public struct UpdateConfigurationOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdateEc2DeepInspectionConfigurationInput {
+public struct UpdateEc2DeepInspectionConfigurationInput: Swift.Sendable {
     /// Specify TRUE to activate Amazon Inspector deep inspection in your account, or FALSE to deactivate. Member accounts in an organization cannot deactivate deep inspection, instead the delegated administrator for the organization can deactivate a member account using [BatchUpdateMemberEc2DeepInspectionStatus](https://docs.aws.amazon.com/inspector/v2/APIReference/API_BatchUpdateMemberEc2DeepInspectionStatus.html).
     public var activateDeepInspection: Swift.Bool?
     /// The Amazon Inspector deep inspection custom paths you are adding for your account.
@@ -9866,7 +9866,7 @@ public struct UpdateEc2DeepInspectionConfigurationInput {
     }
 }
 
-public struct UpdateEc2DeepInspectionConfigurationOutput {
+public struct UpdateEc2DeepInspectionConfigurationOutput: Swift.Sendable {
     /// An error message explaining why new Amazon Inspector deep inspection custom paths could not be added.
     public var errorMessage: Swift.String?
     /// The current Amazon Inspector deep inspection custom paths for the organization.
@@ -9890,7 +9890,7 @@ public struct UpdateEc2DeepInspectionConfigurationOutput {
     }
 }
 
-public struct UpdateEncryptionKeyInput {
+public struct UpdateEncryptionKeyInput: Swift.Sendable {
     /// A KMS key ID for the encryption key.
     /// This member is required.
     public var kmsKeyId: Swift.String?
@@ -9913,12 +9913,12 @@ public struct UpdateEncryptionKeyInput {
     }
 }
 
-public struct UpdateEncryptionKeyOutput {
+public struct UpdateEncryptionKeyOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdateFilterInput {
+public struct UpdateFilterInput: Swift.Sendable {
     /// Specifies the action that is to be applied to the findings that match the filter.
     public var action: Inspector2ClientTypes.FilterAction?
     /// A description of the filter.
@@ -9951,7 +9951,7 @@ public struct UpdateFilterInput {
     }
 }
 
-public struct UpdateFilterOutput {
+public struct UpdateFilterOutput: Swift.Sendable {
     /// The Amazon Resource Number (ARN) of the successfully updated filter.
     /// This member is required.
     public var arn: Swift.String?
@@ -9964,7 +9964,7 @@ public struct UpdateFilterOutput {
     }
 }
 
-public struct UpdateOrganizationConfigurationInput {
+public struct UpdateOrganizationConfigurationInput: Swift.Sendable {
     /// Defines which scan types are enabled automatically for new members of your Amazon Inspector organization.
     /// This member is required.
     public var autoEnable: Inspector2ClientTypes.AutoEnable?
@@ -9977,7 +9977,7 @@ public struct UpdateOrganizationConfigurationInput {
     }
 }
 
-public struct UpdateOrganizationConfigurationOutput {
+public struct UpdateOrganizationConfigurationOutput: Swift.Sendable {
     /// The updated status of scan types automatically enabled for new members of your Amazon Inspector organization.
     /// This member is required.
     public var autoEnable: Inspector2ClientTypes.AutoEnable?
@@ -9990,7 +9990,7 @@ public struct UpdateOrganizationConfigurationOutput {
     }
 }
 
-public struct UpdateOrgEc2DeepInspectionConfigurationInput {
+public struct UpdateOrgEc2DeepInspectionConfigurationInput: Swift.Sendable {
     /// The Amazon Inspector deep inspection custom paths you are adding for your organization.
     /// This member is required.
     public var orgPackagePaths: [Swift.String]?
@@ -10003,7 +10003,7 @@ public struct UpdateOrgEc2DeepInspectionConfigurationInput {
     }
 }
 
-public struct UpdateOrgEc2DeepInspectionConfigurationOutput {
+public struct UpdateOrgEc2DeepInspectionConfigurationOutput: Swift.Sendable {
 
     public init() { }
 }

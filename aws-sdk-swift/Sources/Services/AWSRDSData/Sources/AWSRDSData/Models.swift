@@ -320,7 +320,7 @@ public struct TransactionNotFoundException: ClientRuntime.ModeledError, AWSClien
 
 extension RDSDataClientTypes {
 
-    public enum TypeHint: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum TypeHint: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case date
         case decimal
         case json
@@ -360,7 +360,7 @@ extension RDSDataClientTypes {
 }
 
 /// The request parameters represent the input of a request to start a SQL transaction.
-public struct BeginTransactionInput {
+public struct BeginTransactionInput: Swift.Sendable {
     /// The name of the database.
     public var database: Swift.String?
     /// The Amazon Resource Name (ARN) of the Aurora Serverless DB cluster.
@@ -387,7 +387,7 @@ public struct BeginTransactionInput {
 }
 
 /// The response elements represent the output of a request to start a SQL transaction.
-public struct BeginTransactionOutput {
+public struct BeginTransactionOutput: Swift.Sendable {
     /// The transaction ID of the transaction started by the call.
     public var transactionId: Swift.String?
 
@@ -400,8 +400,9 @@ public struct BeginTransactionOutput {
 }
 
 extension RDSDataClientTypes {
+
     /// Contains the metadata for a column.
-    public struct ColumnMetadata {
+    public struct ColumnMetadata: Swift.Sendable {
         /// The type of the column.
         public var arrayBaseColumnType: Swift.Int
         /// A value that indicates whether the column increments automatically.
@@ -464,7 +465,6 @@ extension RDSDataClientTypes {
             self.typeName = typeName
         }
     }
-
 }
 
 /// The resourceArn, secretArn, or transactionId value can't be found.
@@ -493,7 +493,7 @@ public struct NotFoundException: ClientRuntime.ModeledError, AWSClientRuntime.AW
 }
 
 /// The request parameters represent the input of a commit transaction request.
-public struct CommitTransactionInput {
+public struct CommitTransactionInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the Aurora Serverless DB cluster.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -517,7 +517,7 @@ public struct CommitTransactionInput {
 }
 
 /// The response elements represent the output of a commit transaction request.
-public struct CommitTransactionOutput {
+public struct CommitTransactionOutput: Swift.Sendable {
     /// The status of the commit operation.
     public var transactionStatus: Swift.String?
 
@@ -531,7 +531,7 @@ public struct CommitTransactionOutput {
 
 extension RDSDataClientTypes {
 
-    public enum DecimalReturnType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DecimalReturnType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case doubleOrLong
         case string
         case sdkUnknown(Swift.String)
@@ -590,7 +590,7 @@ public struct UnsupportedResultException: ClientRuntime.ModeledError, AWSClientR
 
 extension RDSDataClientTypes {
 
-    public enum RecordsFormatType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum RecordsFormatType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case json
         case `none`
         case sdkUnknown(Swift.String)
@@ -619,7 +619,7 @@ extension RDSDataClientTypes {
 
 extension RDSDataClientTypes {
 
-    public enum LongReturnType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum LongReturnType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case long
         case string
         case sdkUnknown(Swift.String)
@@ -647,8 +647,9 @@ extension RDSDataClientTypes {
 }
 
 extension RDSDataClientTypes {
+
     /// Options that control how the result set is returned.
-    public struct ResultSetOptions {
+    public struct ResultSetOptions: Swift.Sendable {
         /// A value that indicates how a field of DECIMAL type is represented in the response. The value of STRING, the default, specifies that it is converted to a String value. The value of DOUBLE_OR_LONG specifies that it is converted to a Long value if its scale is 0, or to a Double value otherwise. Conversion to Double or Long can result in roundoff errors due to precision loss. We recommend converting to String, especially when working with currency values.
         public var decimalReturnType: RDSDataClientTypes.DecimalReturnType?
         /// A value that indicates how a field of LONG type is represented. Allowed values are LONG and STRING. The default is LONG. Specify STRING if the length or precision of numeric values might cause truncation or rounding errors.
@@ -663,11 +664,10 @@ extension RDSDataClientTypes {
             self.longReturnType = longReturnType
         }
     }
-
 }
 
 /// The request parameters represent the input of a request to perform a rollback of a transaction.
-public struct RollbackTransactionInput {
+public struct RollbackTransactionInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the Aurora Serverless DB cluster.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -691,7 +691,7 @@ public struct RollbackTransactionInput {
 }
 
 /// The response elements represent the output of a request to perform a rollback of a transaction.
-public struct RollbackTransactionOutput {
+public struct RollbackTransactionOutput: Swift.Sendable {
     /// The status of the rollback operation.
     public var transactionStatus: Swift.String?
 
@@ -704,8 +704,9 @@ public struct RollbackTransactionOutput {
 }
 
 extension RDSDataClientTypes {
+
     /// Contains an array.
-    public indirect enum ArrayValue {
+    public indirect enum ArrayValue: Swift.Sendable {
         /// An array of Boolean values.
         case booleanvalues([Swift.Bool])
         /// An array of integers.
@@ -718,12 +719,12 @@ extension RDSDataClientTypes {
         case arrayvalues([RDSDataClientTypes.ArrayValue])
         case sdkUnknown(Swift.String)
     }
-
 }
 
 extension RDSDataClientTypes {
+
     /// Contains a value.
-    public indirect enum Field {
+    public indirect enum Field: Swift.Sendable {
         /// A NULL value.
         case isnull(Swift.Bool)
         /// A value of Boolean data type.
@@ -740,12 +741,12 @@ extension RDSDataClientTypes {
         case arrayvalue(RDSDataClientTypes.ArrayValue)
         case sdkUnknown(Swift.String)
     }
-
 }
 
 extension RDSDataClientTypes {
+
     /// A parameter used in a SQL statement.
-    public struct SqlParameter {
+    public struct SqlParameter: Swift.Sendable {
         /// The name of the parameter.
         public var name: Swift.String?
         /// A hint that specifies the correct object type for data type mapping. Possible values are as follows:
@@ -776,12 +777,12 @@ extension RDSDataClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension RDSDataClientTypes {
+
     /// The response elements represent the results of an update.
-    public struct UpdateResult {
+    public struct UpdateResult: Swift.Sendable {
         /// Values for fields generated during the request.
         public var generatedFields: [RDSDataClientTypes.Field]?
 
@@ -792,11 +793,10 @@ extension RDSDataClientTypes {
             self.generatedFields = generatedFields
         }
     }
-
 }
 
 /// The request parameters represent the input of a request to run a SQL statement against a database.
-public struct ExecuteStatementInput {
+public struct ExecuteStatementInput: Swift.Sendable {
     /// A value that indicates whether to continue running the statement after the call times out. By default, the statement stops running when the call times out. For DDL statements, we recommend continuing to run the statement after the call times out. When a DDL statement terminates before it is finished running, it can result in errors and possibly corrupted data structures.
     public var continueAfterTimeout: Swift.Bool
     /// The name of the database.
@@ -852,7 +852,7 @@ public struct ExecuteStatementInput {
 }
 
 /// The request parameters represent the input of a SQL statement over an array of data.
-public struct BatchExecuteStatementInput {
+public struct BatchExecuteStatementInput: Swift.Sendable {
     /// The name of the database.
     public var database: Swift.String?
     /// The parameter set for the batch operation. The SQL statement is executed as many times as the number of parameter sets provided. To execute a SQL statement with no parameters, use one of the following options:
@@ -899,7 +899,7 @@ public struct BatchExecuteStatementInput {
 }
 
 /// The response elements represent the output of a SQL statement over an array of data.
-public struct BatchExecuteStatementOutput {
+public struct BatchExecuteStatementOutput: Swift.Sendable {
     /// The execution results of each batch entry.
     public var updateResults: [RDSDataClientTypes.UpdateResult]?
 
@@ -912,7 +912,7 @@ public struct BatchExecuteStatementOutput {
 }
 
 /// The response elements represent the output of a request to run a SQL statement against a database.
-public struct ExecuteStatementOutput {
+public struct ExecuteStatementOutput: Swift.Sendable {
     /// Metadata for the columns included in the results. This field is blank if the formatRecordsAs parameter is set to JSON.
     public var columnMetadata: [RDSDataClientTypes.ColumnMetadata]?
     /// A string value that represents the result set of a SELECT statement in JSON format. This value is only present when the formatRecordsAs parameter is set to JSON. The size limit for this field is currently 10 MB. If the JSON-formatted string representing the result set requires more than 10 MB, the call returns an error.

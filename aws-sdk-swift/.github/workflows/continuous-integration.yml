@@ -10,48 +10,55 @@ env:
 jobs:
   apple:
     runs-on: ${{ matrix.runner }}
-    env:
-      DEVELOPER_DIR: /Applications/${{ matrix.xcode }}.app/Contents/Developer
     strategy:
       fail-fast: false
       matrix:
         # This matrix runs tests on iOS sim & Mac, on oldest & newest supported Xcodes
         runner:
-          - macos-13
           - macos-14
+          - macos-15
         xcode:
           - Xcode_15.2
-          - Xcode_16.0
+          - Xcode_16.1
         destination:
           - 'platform=iOS Simulator,OS=17.2,name=iPhone 15'
-          - 'platform=iOS Simulator,OS=18.0,name=iPhone 15'
+          - 'platform=iOS Simulator,OS=18.1,name=iPhone 16'
           - 'platform=tvOS Simulator,OS=17.2,name=Apple TV 4K (3rd generation) (at 1080p)'
-          - 'platform=tvOS Simulator,OS=18.0,name=Apple TV 4K (3rd generation) (at 1080p)'
+          - 'platform=tvOS Simulator,OS=18.1,name=Apple TV 4K (3rd generation) (at 1080p)'
           - 'platform=visionOS Simulator,OS=1.0,name=Apple Vision Pro'
-          - 'platform=visionOS Simulator,OS=2.0,name=Apple Vision Pro'
-          - 'platform=OS X'
+          - 'platform=visionOS Simulator,OS=2.1,name=Apple Vision Pro'
+          - 'platform=macOS'
         exclude:
           # Don't run old macOS with new Xcode
-          - runner: macos-13
-            xcode: Xcode_16.0
-          # Don't run new macOS with old Xcode
           - runner: macos-14
+            xcode: Xcode_16.1
+          # Don't run new macOS with old Xcode
+          - runner: macos-15
             xcode: Xcode_15.2
           # Don't run old simulators with new Xcode
           - destination: 'platform=tvOS Simulator,OS=17.2,name=Apple TV 4K (3rd generation) (at 1080p)'
-            xcode: Xcode_16.0
+            xcode: Xcode_16.1
           - destination: 'platform=iOS Simulator,OS=17.2,name=iPhone 15'
-            xcode: Xcode_16.0
+            xcode: Xcode_16.1
           - destination: 'platform=visionOS Simulator,OS=1.0,name=Apple Vision Pro'
-            xcode: Xcode_16.0
+            xcode: Xcode_16.1
           # Don't run new simulators with old Xcode
-          - destination: 'platform=tvOS Simulator,OS=18.0,name=Apple TV 4K (3rd generation) (at 1080p)'
+          - destination: 'platform=tvOS Simulator,OS=18.1,name=Apple TV 4K (3rd generation) (at 1080p)'
             xcode: Xcode_15.2
-          - destination: 'platform=iOS Simulator,OS=18.0,name=iPhone 15'
+          - destination: 'platform=iOS Simulator,OS=18.1,name=iPhone 16'
             xcode: Xcode_15.2
-          - destination: 'platform=visionOS Simulator,OS=2.0,name=Apple Vision Pro'
+          - destination: 'platform=visionOS Simulator,OS=2.1,name=Apple Vision Pro'
             xcode: Xcode_15.2
     steps:
+      - name: Configure Xcode
+        run: sudo xcode-select -s /Applications/${{ matrix.xcode }}.app
+      - name: Install visionOS sim if needed
+        if: ${{ contains(matrix.destination, 'platform=visionOS') }}
+        run: |
+          sudo xcodebuild -runFirstLaunch
+          sudo xcrun simctl list
+          sudo xcodebuild -downloadPlatform visionOS
+          sudo xcodebuild -runFirstLaunch
       - name: Checkout aws-sdk-swift
         uses: actions/checkout@v4
       - name: Select smithy-swift branch
@@ -94,6 +101,14 @@ jobs:
           java-version: 17
       - name: Tools Versions
         run: ./scripts/ci_steps/log_tool_versions.sh
+      - name: Run CLI Unit Tests
+        if: ${{ matrix.destination == 'platform=macOS' }}
+        run: |
+          cd AWSSDKSwiftCLI
+          swift test
+          cd ../SPRCLI
+          unset AWS_SWIFT_SDK_USE_LOCAL_DEPS
+          swift build
       - name: Prepare Protocol & Unit Tests
         run: |
           ./scripts/ci_steps/prepare_protocol_and_unit_tests.sh
@@ -111,7 +126,6 @@ jobs:
           set -o pipefail && \
           NSUnbufferedIO=YES xcodebuild \
             -scheme aws-sdk-swift-protocol-tests-Package \
-            -testPlan ProtocolTestPlan \
             -destination '${{ matrix.destination }}' \
             test 2>&1 \
             | xcbeautify
@@ -176,18 +190,13 @@ jobs:
         run: ./scripts/ci_steps/install_native_linux_dependencies.sh
       - name: Tools Versions
         run: ./scripts/ci_steps/log_tool_versions.sh
-      # Configure fake credentials using profiles
-      - name: (Credentials 1/3) Create AWS config directory
-        run: mkdir -p ~/.aws
-      - name: (Credentials 2/3) Create AWS config file
+      - name: Run CLI Unit Tests
         run: |
-          echo "[default]" > ~/.aws/config
-          echo "region=us-west-2" >> ~/.aws/config
-      - name: (Credentials 3/3) Create AWS credentials file
-        run: |
-          echo "[default]" > ~/.aws/credentials
-          echo "aws_access_key_id = test-key-id" >> ~/.aws/credentials
-          echo "aws_secret_access_key = test-secret-access-key" >> ~/.aws/credentials
+          cd AWSSDKSwiftCLI
+          swift test
+          cd ../SPRCLI
+          unset AWS_SWIFT_SDK_USE_LOCAL_DEPS
+          swift build
       - name: Prepare Protocol & Unit Tests
         run: |
           ./scripts/ci_steps/prepare_protocol_and_unit_tests.sh

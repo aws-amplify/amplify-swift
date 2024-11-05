@@ -190,8 +190,9 @@ public struct ThrottlingException: ClientRuntime.ModeledError, AWSClientRuntime.
 }
 
 extension VPCLatticeClientTypes {
+
     /// Describes a validation failure.
-    public struct ValidationExceptionField {
+    public struct ValidationExceptionField: Swift.Sendable {
         /// Additional information about why the validation failed.
         /// This member is required.
         public var message: Swift.String?
@@ -208,12 +209,11 @@ extension VPCLatticeClientTypes {
             self.name = name
         }
     }
-
 }
 
 extension VPCLatticeClientTypes {
 
-    public enum ValidationExceptionReason: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ValidationExceptionReason: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case cannotParse
         case fieldValidationFailed
         case other
@@ -280,7 +280,7 @@ public struct ValidationException: ClientRuntime.ModeledError, AWSClientRuntime.
     }
 }
 
-public struct CreateAccessLogSubscriptionInput {
+public struct CreateAccessLogSubscriptionInput: Swift.Sendable {
     /// A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If you retry a request that completed successfully using the same client token and parameters, the retry succeeds without performing any actions. If the parameters aren't identical, the retry fails.
     public var clientToken: Swift.String?
     /// The Amazon Resource Name (ARN) of the destination. The supported destination types are CloudWatch Log groups, Kinesis Data Firehose delivery streams, and Amazon S3 buckets.
@@ -306,7 +306,7 @@ public struct CreateAccessLogSubscriptionInput {
     }
 }
 
-public struct CreateAccessLogSubscriptionOutput {
+public struct CreateAccessLogSubscriptionOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the access log subscription.
     /// This member is required.
     public var arn: Swift.String?
@@ -339,7 +339,7 @@ public struct CreateAccessLogSubscriptionOutput {
     }
 }
 
-public struct DeleteAccessLogSubscriptionInput {
+public struct DeleteAccessLogSubscriptionInput: Swift.Sendable {
     /// The ID or Amazon Resource Name (ARN) of the access log subscription.
     /// This member is required.
     public var accessLogSubscriptionIdentifier: Swift.String?
@@ -352,12 +352,12 @@ public struct DeleteAccessLogSubscriptionInput {
     }
 }
 
-public struct DeleteAccessLogSubscriptionOutput {
+public struct DeleteAccessLogSubscriptionOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct GetAccessLogSubscriptionInput {
+public struct GetAccessLogSubscriptionInput: Swift.Sendable {
     /// The ID or Amazon Resource Name (ARN) of the access log subscription.
     /// This member is required.
     public var accessLogSubscriptionIdentifier: Swift.String?
@@ -370,7 +370,7 @@ public struct GetAccessLogSubscriptionInput {
     }
 }
 
-public struct GetAccessLogSubscriptionOutput {
+public struct GetAccessLogSubscriptionOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the access log subscription.
     /// This member is required.
     public var arn: Swift.String?
@@ -413,7 +413,7 @@ public struct GetAccessLogSubscriptionOutput {
     }
 }
 
-public struct ListAccessLogSubscriptionsInput {
+public struct ListAccessLogSubscriptionsInput: Swift.Sendable {
     /// The maximum number of results to return.
     public var maxResults: Swift.Int?
     /// A pagination token for the next page of results.
@@ -435,8 +435,9 @@ public struct ListAccessLogSubscriptionsInput {
 }
 
 extension VPCLatticeClientTypes {
+
     /// Summary information about an access log subscription.
-    public struct AccessLogSubscriptionSummary {
+    public struct AccessLogSubscriptionSummary: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the access log subscription
         /// This member is required.
         public var arn: Swift.String?
@@ -478,10 +479,9 @@ extension VPCLatticeClientTypes {
             self.resourceId = resourceId
         }
     }
-
 }
 
-public struct ListAccessLogSubscriptionsOutput {
+public struct ListAccessLogSubscriptionsOutput: Swift.Sendable {
     /// Information about the access log subscriptions.
     /// This member is required.
     public var items: [VPCLatticeClientTypes.AccessLogSubscriptionSummary]?
@@ -498,7 +498,7 @@ public struct ListAccessLogSubscriptionsOutput {
     }
 }
 
-public struct UpdateAccessLogSubscriptionInput {
+public struct UpdateAccessLogSubscriptionInput: Swift.Sendable {
     /// The ID or Amazon Resource Name (ARN) of the access log subscription.
     /// This member is required.
     public var accessLogSubscriptionIdentifier: Swift.String?
@@ -516,7 +516,7 @@ public struct UpdateAccessLogSubscriptionInput {
     }
 }
 
-public struct UpdateAccessLogSubscriptionOutput {
+public struct UpdateAccessLogSubscriptionOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the access log subscription.
     /// This member is required.
     public var arn: Swift.String?
@@ -551,7 +551,7 @@ public struct UpdateAccessLogSubscriptionOutput {
 
 extension VPCLatticeClientTypes {
 
-    public enum AuthPolicyState: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AuthPolicyState: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case active
         case inactive
         case sdkUnknown(Swift.String)
@@ -580,7 +580,7 @@ extension VPCLatticeClientTypes {
 
 extension VPCLatticeClientTypes {
 
-    public enum AuthType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AuthType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case awsIam
         case `none`
         case sdkUnknown(Swift.String)
@@ -608,8 +608,9 @@ extension VPCLatticeClientTypes {
 }
 
 extension VPCLatticeClientTypes {
+
     /// Describes an action that returns a custom HTTP response.
-    public struct FixedResponseAction {
+    public struct FixedResponseAction: Swift.Sendable {
         /// The HTTP response code.
         /// This member is required.
         public var statusCode: Swift.Int?
@@ -621,12 +622,12 @@ extension VPCLatticeClientTypes {
             self.statusCode = statusCode
         }
     }
-
 }
 
 extension VPCLatticeClientTypes {
+
     /// Describes the weight of a target group.
-    public struct WeightedTargetGroup {
+    public struct WeightedTargetGroup: Swift.Sendable {
         /// The ID or Amazon Resource Name (ARN) of the target group.
         /// This member is required.
         public var targetGroupIdentifier: Swift.String?
@@ -642,12 +643,12 @@ extension VPCLatticeClientTypes {
             self.weight = weight
         }
     }
-
 }
 
 extension VPCLatticeClientTypes {
+
     /// Describes a forward action. You can use forward actions to route requests to one or more target groups.
-    public struct ForwardAction {
+    public struct ForwardAction: Swift.Sendable {
         /// The target groups. Traffic matching the rule is forwarded to the specified target groups. With forward actions, you can assign a weight that controls the prioritization and selection of each target group. This means that requests are distributed to individual target groups based on their weights. For example, if two target groups have the same weight, each target group receives half of the traffic. The default value is 1. This means that if only one target group is provided, there is no need to set the weight; 100% of the traffic goes to that target group.
         /// This member is required.
         public var targetGroups: [VPCLatticeClientTypes.WeightedTargetGroup]?
@@ -659,24 +660,24 @@ extension VPCLatticeClientTypes {
             self.targetGroups = targetGroups
         }
     }
-
 }
 
 extension VPCLatticeClientTypes {
+
     /// Describes the action for a rule.
-    public enum RuleAction {
+    public enum RuleAction: Swift.Sendable {
         /// The forward action. Traffic that matches the rule is forwarded to the specified target groups.
         case forward(VPCLatticeClientTypes.ForwardAction)
         /// The fixed response action. The rule returns a custom HTTP response.
         case fixedresponse(VPCLatticeClientTypes.FixedResponseAction)
         case sdkUnknown(Swift.String)
     }
-
 }
 
 extension VPCLatticeClientTypes {
+
     /// Describes a header match type.
-    public enum HeaderMatchType {
+    public enum HeaderMatchType: Swift.Sendable {
         /// An exact type match.
         case exact(Swift.String)
         /// A prefix type match. Matches the value with the prefix.
@@ -685,12 +686,12 @@ extension VPCLatticeClientTypes {
         case contains(Swift.String)
         case sdkUnknown(Swift.String)
     }
-
 }
 
 extension VPCLatticeClientTypes {
+
     /// Describes the constraints for a header match. Matches incoming requests with rule based on request header value before applying rule action.
-    public struct HeaderMatch {
+    public struct HeaderMatch: Swift.Sendable {
         /// Indicates whether the match is case sensitive.
         public var caseSensitive: Swift.Bool?
         /// The header match type.
@@ -711,24 +712,24 @@ extension VPCLatticeClientTypes {
             self.name = name
         }
     }
-
 }
 
 extension VPCLatticeClientTypes {
+
     /// Describes a path match type. Each rule can include only one of the following types of paths.
-    public enum PathMatchType {
+    public enum PathMatchType: Swift.Sendable {
         /// An exact match of the path.
         case exact(Swift.String)
         /// A prefix match of the path.
         case `prefix`(Swift.String)
         case sdkUnknown(Swift.String)
     }
-
 }
 
 extension VPCLatticeClientTypes {
+
     /// Describes the conditions that can be applied when matching a path for incoming requests.
-    public struct PathMatch {
+    public struct PathMatch: Swift.Sendable {
         /// Indicates whether the match is case sensitive.
         public var caseSensitive: Swift.Bool?
         /// The type of path match.
@@ -744,12 +745,12 @@ extension VPCLatticeClientTypes {
             self.match = match
         }
     }
-
 }
 
 extension VPCLatticeClientTypes {
+
     /// Describes criteria that can be applied to incoming requests.
-    public struct HttpMatch {
+    public struct HttpMatch: Swift.Sendable {
         /// The header matches. Matches incoming requests with rule based on request header value before applying rule action.
         public var headerMatches: [VPCLatticeClientTypes.HeaderMatch]?
         /// The HTTP method type.
@@ -768,22 +769,22 @@ extension VPCLatticeClientTypes {
             self.pathMatch = pathMatch
         }
     }
-
 }
 
 extension VPCLatticeClientTypes {
+
     /// Describes a rule match.
-    public enum RuleMatch {
+    public enum RuleMatch: Swift.Sendable {
         /// The HTTP criteria that a rule must match.
         case httpmatch(VPCLatticeClientTypes.HttpMatch)
         case sdkUnknown(Swift.String)
     }
-
 }
 
 extension VPCLatticeClientTypes {
+
     /// Describes a rule update.
-    public struct RuleUpdate {
+    public struct RuleUpdate: Swift.Sendable {
         /// The rule action.
         public var action: VPCLatticeClientTypes.RuleAction?
         /// The rule match.
@@ -807,10 +808,9 @@ extension VPCLatticeClientTypes {
             self.ruleIdentifier = ruleIdentifier
         }
     }
-
 }
 
-public struct BatchUpdateRuleInput {
+public struct BatchUpdateRuleInput: Swift.Sendable {
     /// The ID or Amazon Resource Name (ARN) of the listener.
     /// This member is required.
     public var listenerIdentifier: Swift.String?
@@ -834,8 +834,9 @@ public struct BatchUpdateRuleInput {
 }
 
 extension VPCLatticeClientTypes {
+
     /// Describes a successful rule update.
-    public struct RuleUpdateSuccess {
+    public struct RuleUpdateSuccess: Swift.Sendable {
         /// The action for the rule.
         public var action: VPCLatticeClientTypes.RuleAction?
         /// The Amazon Resource Name (ARN) of the listener.
@@ -870,12 +871,12 @@ extension VPCLatticeClientTypes {
             self.priority = priority
         }
     }
-
 }
 
 extension VPCLatticeClientTypes {
+
     /// Describes a rule update that failed.
-    public struct RuleUpdateFailure {
+    public struct RuleUpdateFailure: Swift.Sendable {
         /// The failure code.
         public var failureCode: Swift.String?
         /// The failure message.
@@ -894,10 +895,9 @@ extension VPCLatticeClientTypes {
             self.ruleIdentifier = ruleIdentifier
         }
     }
-
 }
 
-public struct BatchUpdateRuleOutput {
+public struct BatchUpdateRuleOutput: Swift.Sendable {
     /// The rules that were successfully updated.
     public var successful: [VPCLatticeClientTypes.RuleUpdateSuccess]?
     /// The rules that the operation couldn't update.
@@ -959,7 +959,7 @@ public struct ServiceQuotaExceededException: ClientRuntime.ModeledError, AWSClie
 
 extension VPCLatticeClientTypes {
 
-    public enum ListenerProtocol: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ListenerProtocol: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         /// Indicates HTTP protocol
         case http
         /// Indicates HTTPS protocol
@@ -992,7 +992,7 @@ extension VPCLatticeClientTypes {
     }
 }
 
-public struct CreateListenerInput {
+public struct CreateListenerInput: Swift.Sendable {
     /// A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If you retry a request that completed successfully using the same client token and parameters, the retry succeeds without performing any actions. If the parameters aren't identical, the retry fails.
     public var clientToken: Swift.String?
     /// The action for the default rule. Each listener has a default rule. The default rule is used if no other rules match.
@@ -1032,7 +1032,7 @@ public struct CreateListenerInput {
     }
 }
 
-public struct CreateListenerOutput {
+public struct CreateListenerOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the listener.
     public var arn: Swift.String?
     /// The action for the default rule.
@@ -1072,7 +1072,7 @@ public struct CreateListenerOutput {
     }
 }
 
-public struct CreateRuleInput {
+public struct CreateRuleInput: Swift.Sendable {
     /// The action for the default rule.
     /// This member is required.
     public var action: VPCLatticeClientTypes.RuleAction?
@@ -1118,7 +1118,7 @@ public struct CreateRuleInput {
     }
 }
 
-public struct CreateRuleOutput {
+public struct CreateRuleOutput: Swift.Sendable {
     /// The rule action.
     public var action: VPCLatticeClientTypes.RuleAction?
     /// The Amazon Resource Name (ARN) of the rule.
@@ -1150,7 +1150,7 @@ public struct CreateRuleOutput {
     }
 }
 
-public struct CreateServiceInput {
+public struct CreateServiceInput: Swift.Sendable {
     /// The type of IAM policy.
     ///
     /// * NONE: The resource does not use an IAM policy. This is the default.
@@ -1188,8 +1188,9 @@ public struct CreateServiceInput {
 }
 
 extension VPCLatticeClientTypes {
+
     /// Describes the DNS information of a service.
-    public struct DnsEntry {
+    public struct DnsEntry: Swift.Sendable {
         /// The domain name of the service.
         public var domainName: Swift.String?
         /// The ID of the hosted zone.
@@ -1204,12 +1205,11 @@ extension VPCLatticeClientTypes {
             self.hostedZoneId = hostedZoneId
         }
     }
-
 }
 
 extension VPCLatticeClientTypes {
 
-    public enum ServiceStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ServiceStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         /// Service is active.
         case active
         /// Service creation failed
@@ -1250,7 +1250,7 @@ extension VPCLatticeClientTypes {
     }
 }
 
-public struct CreateServiceOutput {
+public struct CreateServiceOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the service.
     public var arn: Swift.String?
     /// The type of IAM policy.
@@ -1290,7 +1290,7 @@ public struct CreateServiceOutput {
     }
 }
 
-public struct CreateServiceNetworkInput {
+public struct CreateServiceNetworkInput: Swift.Sendable {
     /// The type of IAM policy.
     ///
     /// * NONE: The resource does not use an IAM policy. This is the default.
@@ -1319,7 +1319,7 @@ public struct CreateServiceNetworkInput {
     }
 }
 
-public struct CreateServiceNetworkOutput {
+public struct CreateServiceNetworkOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the service network.
     public var arn: Swift.String?
     /// The type of IAM policy.
@@ -1343,7 +1343,7 @@ public struct CreateServiceNetworkOutput {
     }
 }
 
-public struct CreateServiceNetworkServiceAssociationInput {
+public struct CreateServiceNetworkServiceAssociationInput: Swift.Sendable {
     /// A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If you retry a request that completed successfully using the same client token and parameters, the retry succeeds without performing any actions. If the parameters aren't identical, the retry fails.
     public var clientToken: Swift.String?
     /// The ID or Amazon Resource Name (ARN) of the service.
@@ -1371,7 +1371,7 @@ public struct CreateServiceNetworkServiceAssociationInput {
 
 extension VPCLatticeClientTypes {
 
-    public enum ServiceNetworkServiceAssociationStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ServiceNetworkServiceAssociationStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         /// ServiceNetwork and Service association is active
         case active
         /// ServiceNetwork and Service association creation failed.
@@ -1412,7 +1412,7 @@ extension VPCLatticeClientTypes {
     }
 }
 
-public struct CreateServiceNetworkServiceAssociationOutput {
+public struct CreateServiceNetworkServiceAssociationOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the association.
     public var arn: Swift.String?
     /// The account that created the association.
@@ -1444,7 +1444,7 @@ public struct CreateServiceNetworkServiceAssociationOutput {
     }
 }
 
-public struct CreateServiceNetworkVpcAssociationInput {
+public struct CreateServiceNetworkVpcAssociationInput: Swift.Sendable {
     /// A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If you retry a request that completed successfully using the same client token and parameters, the retry succeeds without performing any actions. If the parameters aren't identical, the retry fails.
     public var clientToken: Swift.String?
     /// The IDs of the security groups. Security groups aren't added by default. You can add a security group to apply network level controls to control which resources in a VPC are allowed to access the service network and its services. For more information, see [Control traffic to resources using security groups](https://docs.aws.amazon.com/vpc/latest/userguide/VPC_SecurityGroups.html) in the Amazon VPC User Guide.
@@ -1476,7 +1476,7 @@ public struct CreateServiceNetworkVpcAssociationInput {
 
 extension VPCLatticeClientTypes {
 
-    public enum ServiceNetworkVpcAssociationStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ServiceNetworkVpcAssociationStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         /// ServiceNetwork and Vpc association is active
         case active
         /// ServiceNetwork and Vpc association creation failed.
@@ -1525,7 +1525,7 @@ extension VPCLatticeClientTypes {
     }
 }
 
-public struct CreateServiceNetworkVpcAssociationOutput {
+public struct CreateServiceNetworkVpcAssociationOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the association.
     public var arn: Swift.String?
     /// The account that created the association.
@@ -1554,18 +1554,18 @@ public struct CreateServiceNetworkVpcAssociationOutput {
 }
 
 extension VPCLatticeClientTypes {
+
     /// Describes the codes to use when checking for a successful response from a target for health checks.
-    public enum Matcher {
+    public enum Matcher: Swift.Sendable {
         /// The HTTP code to use when checking for a successful response from a target.
         case httpcode(Swift.String)
         case sdkUnknown(Swift.String)
     }
-
 }
 
 extension VPCLatticeClientTypes {
 
-    public enum TargetGroupProtocol: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum TargetGroupProtocol: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         /// Indicates HTTP protocol
         case http
         /// Indicates HTTPS protocol
@@ -1600,7 +1600,7 @@ extension VPCLatticeClientTypes {
 
 extension VPCLatticeClientTypes {
 
-    public enum HealthCheckProtocolVersion: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum HealthCheckProtocolVersion: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         /// Indicates use of HTTP/1.1 to send requests to target
         case http1
         /// Indicates use of HTTP/2 to send requests to target
@@ -1630,8 +1630,9 @@ extension VPCLatticeClientTypes {
 }
 
 extension VPCLatticeClientTypes {
+
     /// Describes the health check configuration of a target group. Health check configurations aren't used for target groups of type LAMBDA or ALB.
-    public struct HealthCheckConfig {
+    public struct HealthCheckConfig: Swift.Sendable {
         /// Indicates whether health checking is enabled.
         public var enabled: Swift.Bool?
         /// The approximate amount of time, in seconds, between health checks of an individual target. The range is 5–300 seconds. The default is 30 seconds.
@@ -1678,12 +1679,11 @@ extension VPCLatticeClientTypes {
             self.unhealthyThresholdCount = unhealthyThresholdCount
         }
     }
-
 }
 
 extension VPCLatticeClientTypes {
 
-    public enum IpAddressType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum IpAddressType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         /// Indicates IPv4 address type
         case ipv4
         /// Indicates IPv6 address type
@@ -1714,7 +1714,7 @@ extension VPCLatticeClientTypes {
 
 extension VPCLatticeClientTypes {
 
-    public enum LambdaEventStructureVersion: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum LambdaEventStructureVersion: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         /// This is the default lambda event structure version
         case v1
         /// Indicates use of lambda event structure version 2
@@ -1745,7 +1745,7 @@ extension VPCLatticeClientTypes {
 
 extension VPCLatticeClientTypes {
 
-    public enum TargetGroupProtocolVersion: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum TargetGroupProtocolVersion: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         /// Indicates use of gRPC to send requests to target
         case grpc
         /// Indicates use of HTTP/1.1 to send requests to target
@@ -1779,8 +1779,9 @@ extension VPCLatticeClientTypes {
 }
 
 extension VPCLatticeClientTypes {
+
     /// Describes the configuration of a target group. For more information, see [Target groups](https://docs.aws.amazon.com/vpc-lattice/latest/ug/target-groups.html) in the Amazon VPC Lattice User Guide.
-    public struct TargetGroupConfig {
+    public struct TargetGroupConfig: Swift.Sendable {
         /// The health check configuration. Not supported if the target group type is LAMBDA or ALB.
         public var healthCheck: VPCLatticeClientTypes.HealthCheckConfig?
         /// The type of IP address used for the target group. Supported only if the target group type is IP. The default is IPV4.
@@ -1815,12 +1816,11 @@ extension VPCLatticeClientTypes {
             self.vpcIdentifier = vpcIdentifier
         }
     }
-
 }
 
 extension VPCLatticeClientTypes {
 
-    public enum TargetGroupType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum TargetGroupType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         /// Indicates target in this target group is an ALB
         case alb
         /// Indicates targets in this target group are EC2 instances
@@ -1857,7 +1857,7 @@ extension VPCLatticeClientTypes {
     }
 }
 
-public struct CreateTargetGroupInput {
+public struct CreateTargetGroupInput: Swift.Sendable {
     /// A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If you retry a request that completed successfully using the same client token and parameters, the retry succeeds without performing any actions. If the parameters aren't identical, the retry fails.
     public var clientToken: Swift.String?
     /// The target group configuration.
@@ -1889,7 +1889,7 @@ public struct CreateTargetGroupInput {
 
 extension VPCLatticeClientTypes {
 
-    public enum TargetGroupStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum TargetGroupStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         /// TargetGroup is active
         case active
         /// TargetGroup creation failed.
@@ -1930,7 +1930,7 @@ extension VPCLatticeClientTypes {
     }
 }
 
-public struct CreateTargetGroupOutput {
+public struct CreateTargetGroupOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the target group.
     public var arn: Swift.String?
     /// The target group configuration.
@@ -1962,7 +1962,7 @@ public struct CreateTargetGroupOutput {
     }
 }
 
-public struct DeleteAuthPolicyInput {
+public struct DeleteAuthPolicyInput: Swift.Sendable {
     /// The ID or Amazon Resource Name (ARN) of the resource.
     /// This member is required.
     public var resourceIdentifier: Swift.String?
@@ -1975,12 +1975,12 @@ public struct DeleteAuthPolicyInput {
     }
 }
 
-public struct DeleteAuthPolicyOutput {
+public struct DeleteAuthPolicyOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteListenerInput {
+public struct DeleteListenerInput: Swift.Sendable {
     /// The ID or Amazon Resource Name (ARN) of the listener.
     /// This member is required.
     public var listenerIdentifier: Swift.String?
@@ -1998,12 +1998,12 @@ public struct DeleteListenerInput {
     }
 }
 
-public struct DeleteListenerOutput {
+public struct DeleteListenerOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteResourcePolicyInput {
+public struct DeleteResourcePolicyInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the resource.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -2016,12 +2016,12 @@ public struct DeleteResourcePolicyInput {
     }
 }
 
-public struct DeleteResourcePolicyOutput {
+public struct DeleteResourcePolicyOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteRuleInput {
+public struct DeleteRuleInput: Swift.Sendable {
     /// The ID or Amazon Resource Name (ARN) of the listener.
     /// This member is required.
     public var listenerIdentifier: Swift.String?
@@ -2044,12 +2044,12 @@ public struct DeleteRuleInput {
     }
 }
 
-public struct DeleteRuleOutput {
+public struct DeleteRuleOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteServiceInput {
+public struct DeleteServiceInput: Swift.Sendable {
     /// The ID or Amazon Resource Name (ARN) of the service.
     /// This member is required.
     public var serviceIdentifier: Swift.String?
@@ -2062,7 +2062,7 @@ public struct DeleteServiceInput {
     }
 }
 
-public struct DeleteServiceOutput {
+public struct DeleteServiceOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the service.
     public var arn: Swift.String?
     /// The ID of the service.
@@ -2086,7 +2086,7 @@ public struct DeleteServiceOutput {
     }
 }
 
-public struct DeleteServiceNetworkInput {
+public struct DeleteServiceNetworkInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) or ID of the service network.
     /// This member is required.
     public var serviceNetworkIdentifier: Swift.String?
@@ -2099,12 +2099,12 @@ public struct DeleteServiceNetworkInput {
     }
 }
 
-public struct DeleteServiceNetworkOutput {
+public struct DeleteServiceNetworkOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteServiceNetworkServiceAssociationInput {
+public struct DeleteServiceNetworkServiceAssociationInput: Swift.Sendable {
     /// The ID or Amazon Resource Name (ARN) of the association.
     /// This member is required.
     public var serviceNetworkServiceAssociationIdentifier: Swift.String?
@@ -2117,7 +2117,7 @@ public struct DeleteServiceNetworkServiceAssociationInput {
     }
 }
 
-public struct DeleteServiceNetworkServiceAssociationOutput {
+public struct DeleteServiceNetworkServiceAssociationOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the association.
     public var arn: Swift.String?
     /// The ID of the association.
@@ -2137,7 +2137,7 @@ public struct DeleteServiceNetworkServiceAssociationOutput {
     }
 }
 
-public struct DeleteServiceNetworkVpcAssociationInput {
+public struct DeleteServiceNetworkVpcAssociationInput: Swift.Sendable {
     /// The ID or Amazon Resource Name (ARN) of the association.
     /// This member is required.
     public var serviceNetworkVpcAssociationIdentifier: Swift.String?
@@ -2150,7 +2150,7 @@ public struct DeleteServiceNetworkVpcAssociationInput {
     }
 }
 
-public struct DeleteServiceNetworkVpcAssociationOutput {
+public struct DeleteServiceNetworkVpcAssociationOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the association.
     public var arn: Swift.String?
     /// The ID of the association.
@@ -2170,7 +2170,7 @@ public struct DeleteServiceNetworkVpcAssociationOutput {
     }
 }
 
-public struct DeleteTargetGroupInput {
+public struct DeleteTargetGroupInput: Swift.Sendable {
     /// The ID or Amazon Resource Name (ARN) of the target group.
     /// This member is required.
     public var targetGroupIdentifier: Swift.String?
@@ -2183,7 +2183,7 @@ public struct DeleteTargetGroupInput {
     }
 }
 
-public struct DeleteTargetGroupOutput {
+public struct DeleteTargetGroupOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the target group.
     public var arn: Swift.String?
     /// The ID of the target group.
@@ -2204,8 +2204,9 @@ public struct DeleteTargetGroupOutput {
 }
 
 extension VPCLatticeClientTypes {
+
     /// Describes a target.
-    public struct Target {
+    public struct Target: Swift.Sendable {
         /// The ID of the target. If the target group type is INSTANCE, this is an instance ID. If the target group type is IP, this is an IP address. If the target group type is LAMBDA, this is the ARN of a Lambda function. If the target group type is ALB, this is the ARN of an Application Load Balancer.
         /// This member is required.
         public var id: Swift.String?
@@ -2221,10 +2222,9 @@ extension VPCLatticeClientTypes {
             self.port = port
         }
     }
-
 }
 
-public struct DeregisterTargetsInput {
+public struct DeregisterTargetsInput: Swift.Sendable {
     /// The ID or Amazon Resource Name (ARN) of the target group.
     /// This member is required.
     public var targetGroupIdentifier: Swift.String?
@@ -2243,8 +2243,9 @@ public struct DeregisterTargetsInput {
 }
 
 extension VPCLatticeClientTypes {
+
     /// Describes a target failure.
-    public struct TargetFailure {
+    public struct TargetFailure: Swift.Sendable {
         /// The failure code.
         public var failureCode: Swift.String?
         /// The failure message.
@@ -2267,10 +2268,9 @@ extension VPCLatticeClientTypes {
             self.port = port
         }
     }
-
 }
 
-public struct DeregisterTargetsOutput {
+public struct DeregisterTargetsOutput: Swift.Sendable {
     /// The targets that were successfully deregistered.
     public var successful: [VPCLatticeClientTypes.Target]?
     /// The targets that the operation couldn't deregister.
@@ -2286,7 +2286,7 @@ public struct DeregisterTargetsOutput {
     }
 }
 
-public struct GetAuthPolicyInput {
+public struct GetAuthPolicyInput: Swift.Sendable {
     /// The ID or Amazon Resource Name (ARN) of the service network or service.
     /// This member is required.
     public var resourceIdentifier: Swift.String?
@@ -2299,7 +2299,7 @@ public struct GetAuthPolicyInput {
     }
 }
 
-public struct GetAuthPolicyOutput {
+public struct GetAuthPolicyOutput: Swift.Sendable {
     /// The date and time that the auth policy was created, specified in ISO-8601 format.
     public var createdAt: Foundation.Date?
     /// The date and time that the auth policy was last updated, specified in ISO-8601 format.
@@ -2323,7 +2323,7 @@ public struct GetAuthPolicyOutput {
     }
 }
 
-public struct GetListenerInput {
+public struct GetListenerInput: Swift.Sendable {
     /// The ID or Amazon Resource Name (ARN) of the listener.
     /// This member is required.
     public var listenerIdentifier: Swift.String?
@@ -2341,7 +2341,7 @@ public struct GetListenerInput {
     }
 }
 
-public struct GetListenerOutput {
+public struct GetListenerOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the listener.
     public var arn: Swift.String?
     /// The date and time that the listener was created, specified in ISO-8601 format.
@@ -2389,7 +2389,7 @@ public struct GetListenerOutput {
     }
 }
 
-public struct GetResourcePolicyInput {
+public struct GetResourcePolicyInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the service network or service.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -2402,7 +2402,7 @@ public struct GetResourcePolicyInput {
     }
 }
 
-public struct GetResourcePolicyOutput {
+public struct GetResourcePolicyOutput: Swift.Sendable {
     /// An IAM policy.
     public var policy: Swift.String?
 
@@ -2414,7 +2414,7 @@ public struct GetResourcePolicyOutput {
     }
 }
 
-public struct GetRuleInput {
+public struct GetRuleInput: Swift.Sendable {
     /// The ID or Amazon Resource Name (ARN) of the listener.
     /// This member is required.
     public var listenerIdentifier: Swift.String?
@@ -2437,7 +2437,7 @@ public struct GetRuleInput {
     }
 }
 
-public struct GetRuleOutput {
+public struct GetRuleOutput: Swift.Sendable {
     /// The action for the default rule.
     public var action: VPCLatticeClientTypes.RuleAction?
     /// The Amazon Resource Name (ARN) of the listener.
@@ -2481,7 +2481,7 @@ public struct GetRuleOutput {
     }
 }
 
-public struct GetServiceInput {
+public struct GetServiceInput: Swift.Sendable {
     /// The ID or Amazon Resource Name (ARN) of the service.
     /// This member is required.
     public var serviceIdentifier: Swift.String?
@@ -2494,7 +2494,7 @@ public struct GetServiceInput {
     }
 }
 
-public struct GetServiceOutput {
+public struct GetServiceOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the service.
     public var arn: Swift.String?
     /// The type of IAM policy.
@@ -2550,7 +2550,7 @@ public struct GetServiceOutput {
     }
 }
 
-public struct GetServiceNetworkInput {
+public struct GetServiceNetworkInput: Swift.Sendable {
     /// The ID or Amazon Resource Name (ARN) of the service network.
     /// This member is required.
     public var serviceNetworkIdentifier: Swift.String?
@@ -2563,7 +2563,7 @@ public struct GetServiceNetworkInput {
     }
 }
 
-public struct GetServiceNetworkOutput {
+public struct GetServiceNetworkOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the service network.
     public var arn: Swift.String?
     /// The type of IAM policy.
@@ -2603,7 +2603,7 @@ public struct GetServiceNetworkOutput {
     }
 }
 
-public struct GetServiceNetworkServiceAssociationInput {
+public struct GetServiceNetworkServiceAssociationInput: Swift.Sendable {
     /// The ID or Amazon Resource Name (ARN) of the association.
     /// This member is required.
     public var serviceNetworkServiceAssociationIdentifier: Swift.String?
@@ -2616,7 +2616,7 @@ public struct GetServiceNetworkServiceAssociationInput {
     }
 }
 
-public struct GetServiceNetworkServiceAssociationOutput {
+public struct GetServiceNetworkServiceAssociationOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the association.
     public var arn: Swift.String?
     /// The date and time that the association was created, specified in ISO-8601 format.
@@ -2684,7 +2684,7 @@ public struct GetServiceNetworkServiceAssociationOutput {
     }
 }
 
-public struct GetServiceNetworkVpcAssociationInput {
+public struct GetServiceNetworkVpcAssociationInput: Swift.Sendable {
     /// The ID or Amazon Resource Name (ARN) of the association.
     /// This member is required.
     public var serviceNetworkVpcAssociationIdentifier: Swift.String?
@@ -2697,7 +2697,7 @@ public struct GetServiceNetworkVpcAssociationInput {
     }
 }
 
-public struct GetServiceNetworkVpcAssociationOutput {
+public struct GetServiceNetworkVpcAssociationOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the association.
     public var arn: Swift.String?
     /// The date and time that the association was created, specified in ISO-8601 format.
@@ -2757,7 +2757,7 @@ public struct GetServiceNetworkVpcAssociationOutput {
     }
 }
 
-public struct GetTargetGroupInput {
+public struct GetTargetGroupInput: Swift.Sendable {
     /// The ID or Amazon Resource Name (ARN) of the target group.
     /// This member is required.
     public var targetGroupIdentifier: Swift.String?
@@ -2770,7 +2770,7 @@ public struct GetTargetGroupInput {
     }
 }
 
-public struct GetTargetGroupOutput {
+public struct GetTargetGroupOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the target group.
     public var arn: Swift.String?
     /// The target group configuration.
@@ -2822,7 +2822,7 @@ public struct GetTargetGroupOutput {
     }
 }
 
-public struct ListListenersInput {
+public struct ListListenersInput: Swift.Sendable {
     /// The maximum number of results to return.
     public var maxResults: Swift.Int?
     /// A pagination token for the next page of results.
@@ -2844,8 +2844,9 @@ public struct ListListenersInput {
 }
 
 extension VPCLatticeClientTypes {
+
     /// Summary information about a listener.
-    public struct ListenerSummary {
+    public struct ListenerSummary: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the listener.
         public var arn: Swift.String?
         /// The date and time that the listener was created, specified in ISO-8601 format.
@@ -2880,10 +2881,9 @@ extension VPCLatticeClientTypes {
             self.`protocol` = `protocol`
         }
     }
-
 }
 
-public struct ListListenersOutput {
+public struct ListListenersOutput: Swift.Sendable {
     /// Information about the listeners.
     /// This member is required.
     public var items: [VPCLatticeClientTypes.ListenerSummary]?
@@ -2900,7 +2900,7 @@ public struct ListListenersOutput {
     }
 }
 
-public struct UpdateListenerInput {
+public struct UpdateListenerInput: Swift.Sendable {
     /// The action for the default rule.
     /// This member is required.
     public var defaultAction: VPCLatticeClientTypes.RuleAction?
@@ -2923,7 +2923,7 @@ public struct UpdateListenerInput {
     }
 }
 
-public struct UpdateListenerOutput {
+public struct UpdateListenerOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the listener.
     public var arn: Swift.String?
     /// The action for the default rule.
@@ -2963,7 +2963,7 @@ public struct UpdateListenerOutput {
     }
 }
 
-public struct ListRulesInput {
+public struct ListRulesInput: Swift.Sendable {
     /// The ID or Amazon Resource Name (ARN) of the listener.
     /// This member is required.
     public var listenerIdentifier: Swift.String?
@@ -2990,8 +2990,9 @@ public struct ListRulesInput {
 }
 
 extension VPCLatticeClientTypes {
+
     /// Summary information about the listener rule.
-    public struct RuleSummary {
+    public struct RuleSummary: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the rule.
         public var arn: Swift.String?
         /// The date and time that the listener rule was created, specified in ISO-8601 format.
@@ -3026,10 +3027,9 @@ extension VPCLatticeClientTypes {
             self.priority = priority
         }
     }
-
 }
 
-public struct ListRulesOutput {
+public struct ListRulesOutput: Swift.Sendable {
     /// Information about the rules.
     /// This member is required.
     public var items: [VPCLatticeClientTypes.RuleSummary]?
@@ -3046,7 +3046,7 @@ public struct ListRulesOutput {
     }
 }
 
-public struct ListServiceNetworksInput {
+public struct ListServiceNetworksInput: Swift.Sendable {
     /// The maximum number of results to return.
     public var maxResults: Swift.Int?
     /// A pagination token for the next page of results.
@@ -3063,8 +3063,9 @@ public struct ListServiceNetworksInput {
 }
 
 extension VPCLatticeClientTypes {
+
     /// Summary information about a service network.
-    public struct ServiceNetworkSummary {
+    public struct ServiceNetworkSummary: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the service network.
         public var arn: Swift.String?
         /// The date and time that the service network was created, specified in ISO-8601 format.
@@ -3099,10 +3100,9 @@ extension VPCLatticeClientTypes {
             self.numberOfAssociatedVPCs = numberOfAssociatedVPCs
         }
     }
-
 }
 
-public struct ListServiceNetworksOutput {
+public struct ListServiceNetworksOutput: Swift.Sendable {
     /// Information about the service networks.
     /// This member is required.
     public var items: [VPCLatticeClientTypes.ServiceNetworkSummary]?
@@ -3119,7 +3119,7 @@ public struct ListServiceNetworksOutput {
     }
 }
 
-public struct ListServiceNetworkServiceAssociationsInput {
+public struct ListServiceNetworkServiceAssociationsInput: Swift.Sendable {
     /// The maximum number of results to return.
     public var maxResults: Swift.Int?
     /// A pagination token for the next page of results.
@@ -3144,8 +3144,9 @@ public struct ListServiceNetworkServiceAssociationsInput {
 }
 
 extension VPCLatticeClientTypes {
+
     /// Summary information about the association between a service network and a service.
-    public struct ServiceNetworkServiceAssociationSummary {
+    public struct ServiceNetworkServiceAssociationSummary: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the association.
         public var arn: Swift.String?
         /// The date and time that the association was created, specified in ISO-8601 format.
@@ -3204,10 +3205,9 @@ extension VPCLatticeClientTypes {
             self.status = status
         }
     }
-
 }
 
-public struct ListServiceNetworkServiceAssociationsOutput {
+public struct ListServiceNetworkServiceAssociationsOutput: Swift.Sendable {
     /// Information about the associations.
     /// This member is required.
     public var items: [VPCLatticeClientTypes.ServiceNetworkServiceAssociationSummary]?
@@ -3224,7 +3224,7 @@ public struct ListServiceNetworkServiceAssociationsOutput {
     }
 }
 
-public struct ListServiceNetworkVpcAssociationsInput {
+public struct ListServiceNetworkVpcAssociationsInput: Swift.Sendable {
     /// The maximum number of results to return.
     public var maxResults: Swift.Int?
     /// A pagination token for the next page of results.
@@ -3249,8 +3249,9 @@ public struct ListServiceNetworkVpcAssociationsInput {
 }
 
 extension VPCLatticeClientTypes {
+
     /// Summary information about an association between a service network and a VPC.
-    public struct ServiceNetworkVpcAssociationSummary {
+    public struct ServiceNetworkVpcAssociationSummary: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the association.
         public var arn: Swift.String?
         /// The date and time that the association was created, specified in ISO-8601 format.
@@ -3297,10 +3298,9 @@ extension VPCLatticeClientTypes {
             self.vpcId = vpcId
         }
     }
-
 }
 
-public struct ListServiceNetworkVpcAssociationsOutput {
+public struct ListServiceNetworkVpcAssociationsOutput: Swift.Sendable {
     /// Information about the associations.
     /// This member is required.
     public var items: [VPCLatticeClientTypes.ServiceNetworkVpcAssociationSummary]?
@@ -3317,7 +3317,7 @@ public struct ListServiceNetworkVpcAssociationsOutput {
     }
 }
 
-public struct ListServicesInput {
+public struct ListServicesInput: Swift.Sendable {
     /// The maximum number of results to return.
     public var maxResults: Swift.Int?
     /// A pagination token for the next page of results.
@@ -3334,8 +3334,9 @@ public struct ListServicesInput {
 }
 
 extension VPCLatticeClientTypes {
+
     /// Summary information about a service.
-    public struct ServiceSummary {
+    public struct ServiceSummary: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the service.
         public var arn: Swift.String?
         /// The date and time that the service was created, specified in ISO-8601 format.
@@ -3374,10 +3375,9 @@ extension VPCLatticeClientTypes {
             self.status = status
         }
     }
-
 }
 
-public struct ListServicesOutput {
+public struct ListServicesOutput: Swift.Sendable {
     /// Information about the services.
     public var items: [VPCLatticeClientTypes.ServiceSummary]?
     /// If there are additional results, a pagination token for the next page of results.
@@ -3393,7 +3393,7 @@ public struct ListServicesOutput {
     }
 }
 
-public struct ListTagsForResourceInput {
+public struct ListTagsForResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the resource.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -3406,7 +3406,7 @@ public struct ListTagsForResourceInput {
     }
 }
 
-public struct ListTagsForResourceOutput {
+public struct ListTagsForResourceOutput: Swift.Sendable {
     /// Information about the tags.
     public var tags: [Swift.String: Swift.String]?
 
@@ -3418,7 +3418,7 @@ public struct ListTagsForResourceOutput {
     }
 }
 
-public struct ListTargetGroupsInput {
+public struct ListTargetGroupsInput: Swift.Sendable {
     /// The maximum number of results to return.
     public var maxResults: Swift.Int?
     /// A pagination token for the next page of results.
@@ -3443,8 +3443,9 @@ public struct ListTargetGroupsInput {
 }
 
 extension VPCLatticeClientTypes {
+
     /// Summary information about a target group. For more information, see [Target groups](https://docs.aws.amazon.com/vpc-lattice/latest/ug/target-groups.html) in the Amazon VPC Lattice User Guide.
-    public struct TargetGroupSummary {
+    public struct TargetGroupSummary: Swift.Sendable {
         /// The ARN (Amazon Resource Name) of the target group.
         public var arn: Swift.String?
         /// The date and time that the target group was created, specified in ISO-8601 format.
@@ -3503,10 +3504,9 @@ extension VPCLatticeClientTypes {
             self.vpcIdentifier = vpcIdentifier
         }
     }
-
 }
 
-public struct ListTargetGroupsOutput {
+public struct ListTargetGroupsOutput: Swift.Sendable {
     /// Information about the target groups.
     public var items: [VPCLatticeClientTypes.TargetGroupSummary]?
     /// If there are additional results, a pagination token for the next page of results.
@@ -3522,7 +3522,7 @@ public struct ListTargetGroupsOutput {
     }
 }
 
-public struct ListTargetsInput {
+public struct ListTargetsInput: Swift.Sendable {
     /// The maximum number of results to return.
     public var maxResults: Swift.Int?
     /// A pagination token for the next page of results.
@@ -3549,7 +3549,7 @@ public struct ListTargetsInput {
 
 extension VPCLatticeClientTypes {
 
-    public enum TargetStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum TargetStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         /// The target is deregistering and connection draining is in process.
         case draining
         /// The target is healthy.
@@ -3595,8 +3595,9 @@ extension VPCLatticeClientTypes {
 }
 
 extension VPCLatticeClientTypes {
+
     /// Summary information about a target.
-    public struct TargetSummary {
+    public struct TargetSummary: Swift.Sendable {
         /// The ID of the target. If the target group type is INSTANCE, this is an instance ID. If the target group type is IP, this is an IP address. If the target group type is LAMBDA, this is the ARN of a Lambda function. If the target type is ALB, this is the ARN of an Application Load Balancer.
         public var id: Swift.String?
         /// The port on which the target is listening.
@@ -3631,10 +3632,9 @@ extension VPCLatticeClientTypes {
             self.status = status
         }
     }
-
 }
 
-public struct ListTargetsOutput {
+public struct ListTargetsOutput: Swift.Sendable {
     /// Information about the targets.
     /// This member is required.
     public var items: [VPCLatticeClientTypes.TargetSummary]?
@@ -3651,7 +3651,7 @@ public struct ListTargetsOutput {
     }
 }
 
-public struct PutAuthPolicyInput {
+public struct PutAuthPolicyInput: Swift.Sendable {
     /// The auth policy. The policy string in JSON must not contain newlines or blank lines.
     /// This member is required.
     public var policy: Swift.String?
@@ -3669,7 +3669,7 @@ public struct PutAuthPolicyInput {
     }
 }
 
-public struct PutAuthPolicyOutput {
+public struct PutAuthPolicyOutput: Swift.Sendable {
     /// The auth policy. The policy string in JSON must not contain newlines or blank lines.
     public var policy: Swift.String?
     /// The state of the auth policy. The auth policy is only active when the auth type is set to AWS_IAM. If you provide a policy, then authentication and authorization decisions are made based on this policy and the client's IAM policy. If the Auth type is NONE, then, any auth policy that you provide remains inactive. For more information, see [Create a service network](https://docs.aws.amazon.com/vpc-lattice/latest/ug/service-networks.html#create-service-network) in the Amazon VPC Lattice User Guide.
@@ -3685,7 +3685,7 @@ public struct PutAuthPolicyOutput {
     }
 }
 
-public struct PutResourcePolicyInput {
+public struct PutResourcePolicyInput: Swift.Sendable {
     /// An IAM policy. The policy string in JSON must not contain newlines or blank lines.
     /// This member is required.
     public var policy: Swift.String?
@@ -3703,12 +3703,12 @@ public struct PutResourcePolicyInput {
     }
 }
 
-public struct PutResourcePolicyOutput {
+public struct PutResourcePolicyOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdateRuleInput {
+public struct UpdateRuleInput: Swift.Sendable {
     /// Information about the action for the specified listener rule.
     public var action: VPCLatticeClientTypes.RuleAction?
     /// The ID or Amazon Resource Name (ARN) of the listener.
@@ -3743,7 +3743,7 @@ public struct UpdateRuleInput {
     }
 }
 
-public struct UpdateRuleOutput {
+public struct UpdateRuleOutput: Swift.Sendable {
     /// Information about the action for the specified listener rule.
     public var action: VPCLatticeClientTypes.RuleAction?
     /// The Amazon Resource Name (ARN) of the listener.
@@ -3779,7 +3779,7 @@ public struct UpdateRuleOutput {
     }
 }
 
-public struct UpdateServiceInput {
+public struct UpdateServiceInput: Swift.Sendable {
     /// The type of IAM policy.
     ///
     /// * NONE: The resource does not use an IAM policy. This is the default.
@@ -3804,7 +3804,7 @@ public struct UpdateServiceInput {
     }
 }
 
-public struct UpdateServiceOutput {
+public struct UpdateServiceOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the service.
     public var arn: Swift.String?
     /// The type of IAM policy.
@@ -3836,7 +3836,7 @@ public struct UpdateServiceOutput {
     }
 }
 
-public struct UpdateServiceNetworkInput {
+public struct UpdateServiceNetworkInput: Swift.Sendable {
     /// The type of IAM policy.
     ///
     /// * NONE: The resource does not use an IAM policy. This is the default.
@@ -3858,7 +3858,7 @@ public struct UpdateServiceNetworkInput {
     }
 }
 
-public struct UpdateServiceNetworkOutput {
+public struct UpdateServiceNetworkOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the service network.
     public var arn: Swift.String?
     /// The type of IAM policy.
@@ -3882,7 +3882,7 @@ public struct UpdateServiceNetworkOutput {
     }
 }
 
-public struct UpdateServiceNetworkVpcAssociationInput {
+public struct UpdateServiceNetworkVpcAssociationInput: Swift.Sendable {
     /// The IDs of the security groups.
     /// This member is required.
     public var securityGroupIds: [Swift.String]?
@@ -3900,7 +3900,7 @@ public struct UpdateServiceNetworkVpcAssociationInput {
     }
 }
 
-public struct UpdateServiceNetworkVpcAssociationOutput {
+public struct UpdateServiceNetworkVpcAssociationOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the association.
     public var arn: Swift.String?
     /// The account that created the association.
@@ -3928,7 +3928,7 @@ public struct UpdateServiceNetworkVpcAssociationOutput {
     }
 }
 
-public struct TagResourceInput {
+public struct TagResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the resource.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -3946,12 +3946,12 @@ public struct TagResourceInput {
     }
 }
 
-public struct TagResourceOutput {
+public struct TagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct RegisterTargetsInput {
+public struct RegisterTargetsInput: Swift.Sendable {
     /// The ID or Amazon Resource Name (ARN) of the target group.
     /// This member is required.
     public var targetGroupIdentifier: Swift.String?
@@ -3969,7 +3969,7 @@ public struct RegisterTargetsInput {
     }
 }
 
-public struct RegisterTargetsOutput {
+public struct RegisterTargetsOutput: Swift.Sendable {
     /// The targets that were successfully registered.
     public var successful: [VPCLatticeClientTypes.Target]?
     /// The targets that were not registered.
@@ -3985,7 +3985,7 @@ public struct RegisterTargetsOutput {
     }
 }
 
-public struct UpdateTargetGroupInput {
+public struct UpdateTargetGroupInput: Swift.Sendable {
     /// The health check configuration.
     /// This member is required.
     public var healthCheck: VPCLatticeClientTypes.HealthCheckConfig?
@@ -4003,7 +4003,7 @@ public struct UpdateTargetGroupInput {
     }
 }
 
-public struct UpdateTargetGroupOutput {
+public struct UpdateTargetGroupOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the target group.
     public var arn: Swift.String?
     /// The target group configuration.
@@ -4035,7 +4035,7 @@ public struct UpdateTargetGroupOutput {
     }
 }
 
-public struct UntagResourceInput {
+public struct UntagResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the resource.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -4053,7 +4053,7 @@ public struct UntagResourceInput {
     }
 }
 
-public struct UntagResourceOutput {
+public struct UntagResourceOutput: Swift.Sendable {
 
     public init() { }
 }

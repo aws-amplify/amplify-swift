@@ -55,7 +55,7 @@ public struct AccessDeniedException: ClientRuntime.ModeledError, AWSClientRuntim
 
 extension MigrationHubStrategyClientTypes {
 
-    public enum RuntimeAnalysisStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum RuntimeAnalysisStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case analysisFailed
         case analysisStarted
         case analysisSuccess
@@ -90,7 +90,7 @@ extension MigrationHubStrategyClientTypes {
 
 extension MigrationHubStrategyClientTypes {
 
-    public enum SrcCodeOrDbAnalysisStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SrcCodeOrDbAnalysisStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case analysisFailed
         case analysisPartialSuccess
         case analysisStarted
@@ -133,20 +133,20 @@ extension MigrationHubStrategyClientTypes {
 }
 
 extension MigrationHubStrategyClientTypes {
+
     /// A combination of existing analysis statuses.
-    public enum AnalysisStatusUnion {
+    public enum AnalysisStatusUnion: Swift.Sendable {
         /// The status of the analysis.
         case runtimeanalysisstatus(MigrationHubStrategyClientTypes.RuntimeAnalysisStatus)
         /// The status of the source code or database analysis.
         case srccodeordbanalysisstatus(MigrationHubStrategyClientTypes.SrcCodeOrDbAnalysisStatus)
         case sdkUnknown(Swift.String)
     }
-
 }
 
 extension MigrationHubStrategyClientTypes {
 
-    public enum AnalysisType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AnalysisType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case binaryAnalysis
         case databaseAnalysis
         case runtimeAnalysis
@@ -180,8 +180,9 @@ extension MigrationHubStrategyClientTypes {
 }
 
 extension MigrationHubStrategyClientTypes {
+
     /// Summary information about an analyzable server.
-    public struct AnalyzableServerSummary {
+    public struct AnalyzableServerSummary: Swift.Sendable {
         /// The host name of the analyzable server.
         public var hostname: Swift.String?
         /// The ip address of the analyzable server.
@@ -204,12 +205,11 @@ extension MigrationHubStrategyClientTypes {
             self.vmId = vmId
         }
     }
-
 }
 
 extension MigrationHubStrategyClientTypes {
 
-    public enum BinaryAnalyzerName: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum BinaryAnalyzerName: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case bytecodeAnalyzer
         case dllAnalyzer
         case sdkUnknown(Swift.String)
@@ -238,7 +238,7 @@ extension MigrationHubStrategyClientTypes {
 
 extension MigrationHubStrategyClientTypes {
 
-    public enum RunTimeAnalyzerName: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum RunTimeAnalyzerName: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case a2cAnalyzer
         case databaseAnalyzer
         case empPaAnalyzer
@@ -276,7 +276,7 @@ extension MigrationHubStrategyClientTypes {
 
 extension MigrationHubStrategyClientTypes {
 
-    public enum SourceCodeAnalyzerName: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SourceCodeAnalyzerName: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case bytecodeAnalyzer
         case csharpAnalyzer
         case javaAnalyzer
@@ -310,8 +310,9 @@ extension MigrationHubStrategyClientTypes {
 }
 
 extension MigrationHubStrategyClientTypes {
+
     /// The combination of the existing analyzers.
-    public enum AnalyzerNameUnion {
+    public enum AnalyzerNameUnion: Swift.Sendable {
         /// The binary analyzer names.
         case binaryanalyzername(MigrationHubStrategyClientTypes.BinaryAnalyzerName)
         /// The assessment analyzer names.
@@ -320,12 +321,12 @@ extension MigrationHubStrategyClientTypes {
         case sourcecodeanalyzername(MigrationHubStrategyClientTypes.SourceCodeAnalyzerName)
         case sdkUnknown(Swift.String)
     }
-
 }
 
 extension MigrationHubStrategyClientTypes {
+
     /// Contains the S3 bucket name and the Amazon S3 key name.
-    public struct S3Object {
+    public struct S3Object: Swift.Sendable {
         /// The S3 bucket name.
         public var s3Bucket: Swift.String?
         /// The Amazon S3 key name.
@@ -340,12 +341,11 @@ extension MigrationHubStrategyClientTypes {
             self.s3key = s3key
         }
     }
-
 }
 
 extension MigrationHubStrategyClientTypes {
 
-    public enum AntipatternReportStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AntipatternReportStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case failed
         case inProgress
         case success
@@ -376,8 +376,9 @@ extension MigrationHubStrategyClientTypes {
 }
 
 extension MigrationHubStrategyClientTypes {
+
     /// The anti-pattern report result.
-    public struct AntipatternReportResult {
+    public struct AntipatternReportResult: Swift.Sendable {
         /// The analyzer name.
         public var analyzerName: MigrationHubStrategyClientTypes.AnalyzerNameUnion?
         /// Contains the S3 bucket name and the Amazon S3 key name.
@@ -400,12 +401,11 @@ extension MigrationHubStrategyClientTypes {
             self.antipatternReportStatusMessage = antipatternReportStatusMessage
         }
     }
-
 }
 
 extension MigrationHubStrategyClientTypes {
 
-    public enum Severity: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Severity: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case high
         case low
         case medium
@@ -436,8 +436,9 @@ extension MigrationHubStrategyClientTypes {
 }
 
 extension MigrationHubStrategyClientTypes {
+
     /// Contains the summary of anti-patterns and their severity.
-    public struct AntipatternSeveritySummary {
+    public struct AntipatternSeveritySummary: Swift.Sendable {
         /// Contains the count of anti-patterns.
         public var count: Swift.Int?
         /// Contains the severity of anti-patterns.
@@ -452,12 +453,11 @@ extension MigrationHubStrategyClientTypes {
             self.severity = severity
         }
     }
-
 }
 
 extension MigrationHubStrategyClientTypes {
 
-    public enum ApplicationComponentCriteria: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ApplicationComponentCriteria: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case analysisStatus
         case appName
         case appType
@@ -504,7 +504,7 @@ extension MigrationHubStrategyClientTypes {
 
 extension MigrationHubStrategyClientTypes {
 
-    public enum AppType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AppType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case iis
         case cassandra
         case db2
@@ -593,7 +593,7 @@ extension MigrationHubStrategyClientTypes {
 
 extension MigrationHubStrategyClientTypes {
 
-    public enum AppUnitErrorCategory: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AppUnitErrorCategory: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case connectivityError
         case credentialError
         case otherError
@@ -630,8 +630,9 @@ extension MigrationHubStrategyClientTypes {
 }
 
 extension MigrationHubStrategyClientTypes {
+
     /// Error in the analysis of the application unit.
-    public struct AppUnitError {
+    public struct AppUnitError: Swift.Sendable {
         /// The category of the error.
         public var appUnitErrorCategory: MigrationHubStrategyClientTypes.AppUnitErrorCategory?
 
@@ -642,12 +643,12 @@ extension MigrationHubStrategyClientTypes {
             self.appUnitErrorCategory = appUnitErrorCategory
         }
     }
-
 }
 
 extension MigrationHubStrategyClientTypes {
+
     /// Configuration information used for assessing databases.
-    public struct DatabaseConfigDetail {
+    public struct DatabaseConfigDetail: Swift.Sendable {
         /// AWS Secrets Manager key that holds the credentials that you use to connect to a database.
         public var secretName: Swift.String?
 
@@ -658,12 +659,11 @@ extension MigrationHubStrategyClientTypes {
             self.secretName = secretName
         }
     }
-
 }
 
 extension MigrationHubStrategyClientTypes {
 
-    public enum InclusionStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum InclusionStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case excludeFromRecommendation
         case includeInRecommendation
         case sdkUnknown(Swift.String)
@@ -692,7 +692,7 @@ extension MigrationHubStrategyClientTypes {
 
 extension MigrationHubStrategyClientTypes {
 
-    public enum Strategy: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Strategy: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case refactor
         case rehost
         case relocate
@@ -736,7 +736,7 @@ extension MigrationHubStrategyClientTypes {
 
 extension MigrationHubStrategyClientTypes {
 
-    public enum TargetDestination: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum TargetDestination: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case amazonDocumentdb
         case amazonDynamodb
         case amazonElasticCloudCompute
@@ -801,7 +801,7 @@ extension MigrationHubStrategyClientTypes {
 
 extension MigrationHubStrategyClientTypes {
 
-    public enum TransformationToolName: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum TransformationToolName: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case app2container
         case dms
         case emp
@@ -853,8 +853,9 @@ extension MigrationHubStrategyClientTypes {
 }
 
 extension MigrationHubStrategyClientTypes {
+
     /// Information of the transformation tool that can be used to migrate and modernize the application.
-    public struct TransformationTool {
+    public struct TransformationTool: Swift.Sendable {
         /// Description of the tool.
         public var description: Swift.String?
         /// Name of the tool.
@@ -873,12 +874,12 @@ extension MigrationHubStrategyClientTypes {
             self.tranformationToolInstallationLink = tranformationToolInstallationLink
         }
     }
-
 }
 
 extension MigrationHubStrategyClientTypes {
+
     /// Contains a recommendation set.
-    public struct RecommendationSet {
+    public struct RecommendationSet: Swift.Sendable {
         /// The recommended strategy.
         public var strategy: MigrationHubStrategyClientTypes.Strategy?
         /// The recommended target destination.
@@ -897,12 +898,11 @@ extension MigrationHubStrategyClientTypes {
             self.transformationTool = transformationTool
         }
     }
-
 }
 
 extension MigrationHubStrategyClientTypes {
 
-    public enum ResourceSubType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ResourceSubType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case database
         case databaseProcess
         case process
@@ -933,8 +933,9 @@ extension MigrationHubStrategyClientTypes {
 }
 
 extension MigrationHubStrategyClientTypes {
+
     /// The error in server analysis.
-    public struct Result {
+    public struct Result: Swift.Sendable {
         /// The error in server analysis.
         public var analysisStatus: MigrationHubStrategyClientTypes.AnalysisStatusUnion?
         /// The error in server analysis.
@@ -957,12 +958,12 @@ extension MigrationHubStrategyClientTypes {
             self.statusMessage = statusMessage
         }
     }
-
 }
 
 extension MigrationHubStrategyClientTypes {
+
     /// Object containing source code information that is linked to an application component.
-    public struct SourceCodeRepository {
+    public struct SourceCodeRepository: Swift.Sendable {
         /// The branch of the source code.
         public var branch: Swift.String?
         /// The name of the project.
@@ -985,12 +986,12 @@ extension MigrationHubStrategyClientTypes {
             self.versionControlType = versionControlType
         }
     }
-
 }
 
 extension MigrationHubStrategyClientTypes {
+
     /// Contains detailed information about an application component.
-    public struct ApplicationComponentDetail {
+    public struct ApplicationComponentDetail: Swift.Sendable {
         /// The status of analysis, if the application component has source code or an associated database.
         public var analysisStatus: MigrationHubStrategyClientTypes.SrcCodeOrDbAnalysisStatus?
         /// The S3 bucket name and the Amazon S3 key name for the anti-pattern report.
@@ -1089,12 +1090,12 @@ extension MigrationHubStrategyClientTypes {
             self.statusMessage = statusMessage
         }
     }
-
 }
 
 extension MigrationHubStrategyClientTypes {
+
     /// Summary of the analysis status of the application component.
-    public struct ApplicationComponentStatusSummary {
+    public struct ApplicationComponentStatusSummary: Swift.Sendable {
         /// The number of application components successfully analyzed, partially successful or failed analysis.
         public var count: Swift.Int?
         /// The status of database analysis.
@@ -1109,12 +1110,11 @@ extension MigrationHubStrategyClientTypes {
             self.srcCodeOrDbAnalysisStatus = srcCodeOrDbAnalysisStatus
         }
     }
-
 }
 
 extension MigrationHubStrategyClientTypes {
 
-    public enum StrategyRecommendation: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum StrategyRecommendation: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case notRecommended
         case potential
         case recommended
@@ -1148,8 +1148,9 @@ extension MigrationHubStrategyClientTypes {
 }
 
 extension MigrationHubStrategyClientTypes {
+
     /// Contains information about a strategy recommendation for an application component.
-    public struct ApplicationComponentStrategy {
+    public struct ApplicationComponentStrategy: Swift.Sendable {
         /// Set to true if the recommendation is set as preferred.
         public var isPreferred: Swift.Bool?
         /// Strategy recommendation for the application component.
@@ -1168,12 +1169,12 @@ extension MigrationHubStrategyClientTypes {
             self.status = status
         }
     }
-
 }
 
 extension MigrationHubStrategyClientTypes {
+
     /// Contains the summary of application components.
-    public struct ApplicationComponentSummary {
+    public struct ApplicationComponentSummary: Swift.Sendable {
         /// Contains the name of application types.
         public var appType: MigrationHubStrategyClientTypes.AppType?
         /// Contains the count of application type.
@@ -1188,12 +1189,11 @@ extension MigrationHubStrategyClientTypes {
             self.count = count
         }
     }
-
 }
 
 extension MigrationHubStrategyClientTypes {
 
-    public enum ApplicationMode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ApplicationMode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case all
         case known
         case unknown
@@ -1225,7 +1225,7 @@ extension MigrationHubStrategyClientTypes {
 
 extension MigrationHubStrategyClientTypes {
 
-    public enum AwsManagedTargetDestination: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AwsManagedTargetDestination: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case awsElasticBeanstalk
         case awsFargate
         case noneSpecified
@@ -1256,8 +1256,9 @@ extension MigrationHubStrategyClientTypes {
 }
 
 extension MigrationHubStrategyClientTypes {
+
     /// Object containing the choice of application destination that you specify.
-    public struct AwsManagedResources {
+    public struct AwsManagedResources: Swift.Sendable {
         /// The choice of application destination that you specify.
         /// This member is required.
         public var targetDestination: [MigrationHubStrategyClientTypes.AwsManagedTargetDestination]?
@@ -1269,12 +1270,11 @@ extension MigrationHubStrategyClientTypes {
             self.targetDestination = targetDestination
         }
     }
-
 }
 
 extension MigrationHubStrategyClientTypes {
 
-    public enum NoPreferenceTargetDestination: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum NoPreferenceTargetDestination: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case amazonElasticCloudCompute
         case amazonElasticContainerService
         case amazonElasticKubernetesService
@@ -1314,8 +1314,9 @@ extension MigrationHubStrategyClientTypes {
 }
 
 extension MigrationHubStrategyClientTypes {
+
     /// Object containing the choice of application destination that you specify.
-    public struct NoManagementPreference {
+    public struct NoManagementPreference: Swift.Sendable {
         /// The choice of application destination that you specify.
         /// This member is required.
         public var targetDestination: [MigrationHubStrategyClientTypes.NoPreferenceTargetDestination]?
@@ -1327,12 +1328,11 @@ extension MigrationHubStrategyClientTypes {
             self.targetDestination = targetDestination
         }
     }
-
 }
 
 extension MigrationHubStrategyClientTypes {
 
-    public enum SelfManageTargetDestination: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SelfManageTargetDestination: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case amazonElasticCloudCompute
         case amazonElasticContainerService
         case amazonElasticKubernetesService
@@ -1366,8 +1366,9 @@ extension MigrationHubStrategyClientTypes {
 }
 
 extension MigrationHubStrategyClientTypes {
+
     /// Self-managed resources.
-    public struct SelfManageResources {
+    public struct SelfManageResources: Swift.Sendable {
         /// Self-managed resources target destination.
         /// This member is required.
         public var targetDestination: [MigrationHubStrategyClientTypes.SelfManageTargetDestination]?
@@ -1379,12 +1380,12 @@ extension MigrationHubStrategyClientTypes {
             self.targetDestination = targetDestination
         }
     }
-
 }
 
 extension MigrationHubStrategyClientTypes {
+
     /// Preferences for migrating an application to AWS.
-    public enum ManagementPreference {
+    public enum ManagementPreference: Swift.Sendable {
         /// Indicates interest in solutions that are managed by AWS.
         case awsmanagedresources(MigrationHubStrategyClientTypes.AwsManagedResources)
         /// Indicates interest in managing your own resources on AWS.
@@ -1393,12 +1394,12 @@ extension MigrationHubStrategyClientTypes {
         case nopreference(MigrationHubStrategyClientTypes.NoManagementPreference)
         case sdkUnknown(Swift.String)
     }
-
 }
 
 extension MigrationHubStrategyClientTypes {
+
     /// Application preferences that you specify.
-    public struct ApplicationPreferences {
+    public struct ApplicationPreferences: Swift.Sendable {
         /// Application preferences that you specify to prefer managed environment.
         public var managementPreference: MigrationHubStrategyClientTypes.ManagementPreference?
 
@@ -1409,12 +1410,11 @@ extension MigrationHubStrategyClientTypes {
             self.managementPreference = managementPreference
         }
     }
-
 }
 
 extension MigrationHubStrategyClientTypes {
 
-    public enum AssessmentDataSourceType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AssessmentDataSourceType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case ads
         case manualImport
         case srCollector
@@ -1446,7 +1446,7 @@ extension MigrationHubStrategyClientTypes {
 
 extension MigrationHubStrategyClientTypes {
 
-    public enum AssessmentStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AssessmentStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case complete
         case failed
         case inProgress
@@ -1480,8 +1480,9 @@ extension MigrationHubStrategyClientTypes {
 }
 
 extension MigrationHubStrategyClientTypes {
+
     /// Object containing the summary of the strategy recommendations.
-    public struct StrategySummary {
+    public struct StrategySummary: Swift.Sendable {
         /// The count of recommendations per strategy.
         public var count: Swift.Int?
         /// The name of recommended strategy.
@@ -1496,12 +1497,11 @@ extension MigrationHubStrategyClientTypes {
             self.strategy = strategy
         }
     }
-
 }
 
 extension MigrationHubStrategyClientTypes {
 
-    public enum RunTimeAssessmentStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum RunTimeAssessmentStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case dcFailed
         case dcPartialSuccess
         case dcReqSent
@@ -1544,8 +1544,9 @@ extension MigrationHubStrategyClientTypes {
 }
 
 extension MigrationHubStrategyClientTypes {
+
     /// The status summary of the server analysis.
-    public struct ServerStatusSummary {
+    public struct ServerStatusSummary: Swift.Sendable {
         /// The number of servers successfully analyzed, partially successful or failed analysis.
         public var count: Swift.Int?
         /// The status of the run time.
@@ -1560,12 +1561,11 @@ extension MigrationHubStrategyClientTypes {
             self.runTimeAssessmentStatus = runTimeAssessmentStatus
         }
     }
-
 }
 
 extension MigrationHubStrategyClientTypes {
 
-    public enum ServerOsType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ServerOsType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case amazonlinux
         case endofsupportwindowsserver
         case other
@@ -1602,8 +1602,9 @@ extension MigrationHubStrategyClientTypes {
 }
 
 extension MigrationHubStrategyClientTypes {
+
     /// Object containing details about the servers imported by Application Discovery Service
-    public struct ServerSummary {
+    public struct ServerSummary: Swift.Sendable {
         /// Number of servers.
         public var count: Swift.Int?
         /// Type of operating system for the servers.
@@ -1618,12 +1619,12 @@ extension MigrationHubStrategyClientTypes {
             self.serverOsType = serverOsType
         }
     }
-
 }
 
 extension MigrationHubStrategyClientTypes {
+
     /// Contains the summary of the assessment results.
-    public struct AssessmentSummary {
+    public struct AssessmentSummary: Swift.Sendable {
         /// The Amazon S3 object containing the anti-pattern report.
         public var antipatternReportS3Object: MigrationHubStrategyClientTypes.S3Object?
         /// The status of the anti-pattern report.
@@ -1674,12 +1675,11 @@ extension MigrationHubStrategyClientTypes {
             self.listServerSummary = listServerSummary
         }
     }
-
 }
 
 extension MigrationHubStrategyClientTypes {
 
-    public enum Condition: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Condition: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case contains
         case equals
         case notContains
@@ -1713,8 +1713,9 @@ extension MigrationHubStrategyClientTypes {
 }
 
 extension MigrationHubStrategyClientTypes {
+
     /// Defines the criteria of assessment.
-    public struct AssessmentTarget {
+    public struct AssessmentTarget: Swift.Sendable {
         /// Condition of an assessment.
         /// This member is required.
         public var condition: MigrationHubStrategyClientTypes.Condition?
@@ -1736,12 +1737,12 @@ extension MigrationHubStrategyClientTypes {
             self.values = values
         }
     }
-
 }
 
 extension MigrationHubStrategyClientTypes {
+
     /// Object containing details about applications as defined in Application Discovery Service.
-    public struct AssociatedApplication {
+    public struct AssociatedApplication: Swift.Sendable {
         /// ID of the application as defined in Application Discovery Service.
         public var id: Swift.String?
         /// Name of the application as defined in Application Discovery Service.
@@ -1756,12 +1757,11 @@ extension MigrationHubStrategyClientTypes {
             self.name = name
         }
     }
-
 }
 
 extension MigrationHubStrategyClientTypes {
 
-    public enum AuthType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AuthType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case cert
         case ntlm
         case ssh
@@ -1863,7 +1863,7 @@ public struct ThrottlingException: ClientRuntime.ModeledError, AWSClientRuntime.
     }
 }
 
-public struct GetApplicationComponentDetailsInput {
+public struct GetApplicationComponentDetailsInput: Swift.Sendable {
     /// The ID of the application component. The ID is unique within an AWS account.
     /// This member is required.
     public var applicationComponentId: Swift.String?
@@ -1876,7 +1876,7 @@ public struct GetApplicationComponentDetailsInput {
     }
 }
 
-public struct GetApplicationComponentDetailsOutput {
+public struct GetApplicationComponentDetailsOutput: Swift.Sendable {
     /// Detailed information about an application component.
     public var applicationComponentDetail: MigrationHubStrategyClientTypes.ApplicationComponentDetail?
     /// The associated application group as defined in AWS Application Discovery Service.
@@ -1900,7 +1900,7 @@ public struct GetApplicationComponentDetailsOutput {
     }
 }
 
-public struct GetApplicationComponentStrategiesInput {
+public struct GetApplicationComponentStrategiesInput: Swift.Sendable {
     /// The ID of the application component. The ID is unique within an AWS account.
     /// This member is required.
     public var applicationComponentId: Swift.String?
@@ -1913,7 +1913,7 @@ public struct GetApplicationComponentStrategiesInput {
     }
 }
 
-public struct GetApplicationComponentStrategiesOutput {
+public struct GetApplicationComponentStrategiesOutput: Swift.Sendable {
     /// A list of application component strategy recommendations.
     public var applicationComponentStrategies: [MigrationHubStrategyClientTypes.ApplicationComponentStrategy]?
 
@@ -1925,7 +1925,7 @@ public struct GetApplicationComponentStrategiesOutput {
     }
 }
 
-public struct GetAssessmentInput {
+public struct GetAssessmentInput: Swift.Sendable {
     /// The assessmentid returned by [StartAssessment].
     /// This member is required.
     public var id: Swift.String?
@@ -1939,8 +1939,9 @@ public struct GetAssessmentInput {
 }
 
 extension MigrationHubStrategyClientTypes {
+
     /// Detailed information about an assessment.
-    public struct DataCollectionDetails {
+    public struct DataCollectionDetails: Swift.Sendable {
         /// The time the assessment completes.
         public var completionTime: Foundation.Date?
         /// The number of failed servers in the assessment.
@@ -1979,10 +1980,9 @@ extension MigrationHubStrategyClientTypes {
             self.success = success
         }
     }
-
 }
 
-public struct GetAssessmentOutput {
+public struct GetAssessmentOutput: Swift.Sendable {
     /// List of criteria for assessment.
     public var assessmentTargets: [MigrationHubStrategyClientTypes.AssessmentTarget]?
     /// Detailed information about the assessment.
@@ -2026,7 +2026,7 @@ public struct ValidationException: ClientRuntime.ModeledError, AWSClientRuntime.
     }
 }
 
-public struct GetImportFileTaskInput {
+public struct GetImportFileTaskInput: Swift.Sendable {
     /// The ID of the import file task. This ID is returned in the response of [StartImportFileTask].
     /// This member is required.
     public var id: Swift.String?
@@ -2041,7 +2041,7 @@ public struct GetImportFileTaskInput {
 
 extension MigrationHubStrategyClientTypes {
 
-    public enum ImportFileTaskStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ImportFileTaskStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case deleteFailed
         case deleteInProgress
         case deletePartialSuccess
@@ -2086,7 +2086,7 @@ extension MigrationHubStrategyClientTypes {
     }
 }
 
-public struct GetImportFileTaskOutput {
+public struct GetImportFileTaskOutput: Swift.Sendable {
     /// The time that the import task completed.
     public var completionTime: Foundation.Date?
     /// The import file task id returned in the response of [StartImportFileTask].
@@ -2162,12 +2162,12 @@ public struct DependencyException: ClientRuntime.ModeledError, AWSClientRuntime.
     }
 }
 
-public struct GetLatestAssessmentIdInput {
+public struct GetLatestAssessmentIdInput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct GetLatestAssessmentIdOutput {
+public struct GetLatestAssessmentIdOutput: Swift.Sendable {
     /// The latest ID for the specific assessment task.
     public var id: Swift.String?
 
@@ -2179,14 +2179,14 @@ public struct GetLatestAssessmentIdOutput {
     }
 }
 
-public struct GetPortfolioPreferencesInput {
+public struct GetPortfolioPreferencesInput: Swift.Sendable {
 
     public init() { }
 }
 
 extension MigrationHubStrategyClientTypes {
 
-    public enum DatabaseManagementPreference: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DatabaseManagementPreference: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case awsManaged
         case noPreference
         case selfManage
@@ -2218,7 +2218,7 @@ extension MigrationHubStrategyClientTypes {
 
 extension MigrationHubStrategyClientTypes {
 
-    public enum HeterogeneousTargetDatabaseEngine: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum HeterogeneousTargetDatabaseEngine: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case amazonAurora
         case awsPostgresql
         case db2Luw
@@ -2270,8 +2270,9 @@ extension MigrationHubStrategyClientTypes {
 }
 
 extension MigrationHubStrategyClientTypes {
+
     /// The object containing details about heterogeneous database preferences.
-    public struct Heterogeneous {
+    public struct Heterogeneous: Swift.Sendable {
         /// The target database engine for heterogeneous database migration preference.
         /// This member is required.
         public var targetDatabaseEngine: [MigrationHubStrategyClientTypes.HeterogeneousTargetDatabaseEngine]?
@@ -2283,12 +2284,11 @@ extension MigrationHubStrategyClientTypes {
             self.targetDatabaseEngine = targetDatabaseEngine
         }
     }
-
 }
 
 extension MigrationHubStrategyClientTypes {
 
-    public enum HomogeneousTargetDatabaseEngine: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum HomogeneousTargetDatabaseEngine: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case noneSpecified
         case sdkUnknown(Swift.String)
 
@@ -2313,8 +2313,9 @@ extension MigrationHubStrategyClientTypes {
 }
 
 extension MigrationHubStrategyClientTypes {
+
     /// The object containing details about homogeneous database preferences.
-    public struct Homogeneous {
+    public struct Homogeneous: Swift.Sendable {
         /// The target database engine for homogeneous database migration preferences.
         public var targetDatabaseEngine: [MigrationHubStrategyClientTypes.HomogeneousTargetDatabaseEngine]?
 
@@ -2325,12 +2326,11 @@ extension MigrationHubStrategyClientTypes {
             self.targetDatabaseEngine = targetDatabaseEngine
         }
     }
-
 }
 
 extension MigrationHubStrategyClientTypes {
 
-    public enum TargetDatabaseEngine: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum TargetDatabaseEngine: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case amazonAurora
         case awsPostgresql
         case db2Luw
@@ -2382,8 +2382,9 @@ extension MigrationHubStrategyClientTypes {
 }
 
 extension MigrationHubStrategyClientTypes {
+
     /// The object containing details about database migration preferences, when you have no particular preference.
-    public struct NoDatabaseMigrationPreference {
+    public struct NoDatabaseMigrationPreference: Swift.Sendable {
         /// The target database engine for database migration preference that you specify.
         /// This member is required.
         public var targetDatabaseEngine: [MigrationHubStrategyClientTypes.TargetDatabaseEngine]?
@@ -2395,12 +2396,12 @@ extension MigrationHubStrategyClientTypes {
             self.targetDatabaseEngine = targetDatabaseEngine
         }
     }
-
 }
 
 extension MigrationHubStrategyClientTypes {
+
     /// Preferences for migrating a database to AWS.
-    public enum DatabaseMigrationPreference {
+    public enum DatabaseMigrationPreference: Swift.Sendable {
         /// Indicates whether you are interested in moving from one type of database to another. For example, from SQL Server to Amazon Aurora MySQL-Compatible Edition.
         case heterogeneous(MigrationHubStrategyClientTypes.Heterogeneous)
         /// Indicates whether you are interested in moving to the same type of database into AWS. For example, from SQL Server in your environment to SQL Server on AWS.
@@ -2409,12 +2410,12 @@ extension MigrationHubStrategyClientTypes {
         case nopreference(MigrationHubStrategyClientTypes.NoDatabaseMigrationPreference)
         case sdkUnknown(Swift.String)
     }
-
 }
 
 extension MigrationHubStrategyClientTypes {
+
     /// Preferences on managing your databases on AWS.
-    public struct DatabasePreferences {
+    public struct DatabasePreferences: Swift.Sendable {
         /// Specifies whether you're interested in self-managed databases or databases managed by AWS.
         public var databaseManagementPreference: MigrationHubStrategyClientTypes.DatabaseManagementPreference?
         /// Specifies your preferred migration path.
@@ -2429,12 +2430,12 @@ extension MigrationHubStrategyClientTypes {
             self.databaseMigrationPreference = databaseMigrationPreference
         }
     }
-
 }
 
 extension MigrationHubStrategyClientTypes {
+
     /// Business goals that you specify.
-    public struct BusinessGoals {
+    public struct BusinessGoals: Swift.Sendable {
         /// Business goal to reduce license costs.
         public var licenseCostReduction: Swift.Int?
         /// Business goal to modernize infrastructure by moving to cloud native technologies.
@@ -2457,12 +2458,12 @@ extension MigrationHubStrategyClientTypes {
             self.speedOfMigration = speedOfMigration
         }
     }
-
 }
 
 extension MigrationHubStrategyClientTypes {
+
     /// Rank of business goals based on priority.
-    public struct PrioritizeBusinessGoals {
+    public struct PrioritizeBusinessGoals: Swift.Sendable {
         /// Rank of business goals based on priority.
         public var businessGoals: MigrationHubStrategyClientTypes.BusinessGoals?
 
@@ -2473,10 +2474,9 @@ extension MigrationHubStrategyClientTypes {
             self.businessGoals = businessGoals
         }
     }
-
 }
 
-public struct GetPortfolioPreferencesOutput {
+public struct GetPortfolioPreferencesOutput: Swift.Sendable {
     /// The classification for application component types.
     public var applicationMode: MigrationHubStrategyClientTypes.ApplicationMode?
     /// The transformation preferences for non-database applications.
@@ -2500,12 +2500,12 @@ public struct GetPortfolioPreferencesOutput {
     }
 }
 
-public struct GetPortfolioSummaryInput {
+public struct GetPortfolioSummaryInput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct GetPortfolioSummaryOutput {
+public struct GetPortfolioSummaryOutput: Swift.Sendable {
     /// An assessment summary for the portfolio including the number of servers to rehost and the overall number of anti-patterns.
     public var assessmentSummary: MigrationHubStrategyClientTypes.AssessmentSummary?
 
@@ -2517,7 +2517,7 @@ public struct GetPortfolioSummaryOutput {
     }
 }
 
-public struct GetRecommendationReportDetailsInput {
+public struct GetRecommendationReportDetailsInput: Swift.Sendable {
     /// The recommendation report generation task id returned by [StartRecommendationReportGeneration].
     /// This member is required.
     public var id: Swift.String?
@@ -2532,7 +2532,7 @@ public struct GetRecommendationReportDetailsInput {
 
 extension MigrationHubStrategyClientTypes {
 
-    public enum RecommendationReportStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum RecommendationReportStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case failed
         case inProgress
         case success
@@ -2563,8 +2563,9 @@ extension MigrationHubStrategyClientTypes {
 }
 
 extension MigrationHubStrategyClientTypes {
+
     /// Contains detailed information about a recommendation report.
-    public struct RecommendationReportDetails {
+    public struct RecommendationReportDetails: Swift.Sendable {
         /// The time that the recommendation report generation task completes.
         public var completionTime: Foundation.Date?
         /// The S3 bucket where the report file is located.
@@ -2595,10 +2596,9 @@ extension MigrationHubStrategyClientTypes {
             self.statusMessage = statusMessage
         }
     }
-
 }
 
-public struct GetRecommendationReportDetailsOutput {
+public struct GetRecommendationReportDetailsOutput: Swift.Sendable {
     /// The ID of the recommendation report generation task. See the response of [StartRecommendationReportGeneration].
     public var id: Swift.String?
     /// Detailed information about the recommendation report.
@@ -2614,7 +2614,7 @@ public struct GetRecommendationReportDetailsOutput {
     }
 }
 
-public struct GetServerDetailsInput {
+public struct GetServerDetailsInput: Swift.Sendable {
     /// The maximum number of items to include in the response. The maximum value is 100.
     public var maxResults: Swift.Int?
     /// The token from a previous call that you use to retrieve the next set of results. For example, if a previous call to this action returned 100 items, but you set maxResults to 10. You'll receive a set of 10 results along with a token. You then use the returned token to retrieve the next set of 10.
@@ -2637,7 +2637,7 @@ public struct GetServerDetailsInput {
 
 extension MigrationHubStrategyClientTypes {
 
-    public enum ServerErrorCategory: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ServerErrorCategory: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case architectureError
         case connectivityError
         case credentialError
@@ -2674,8 +2674,9 @@ extension MigrationHubStrategyClientTypes {
 }
 
 extension MigrationHubStrategyClientTypes {
+
     /// The error in server analysis.
-    public struct ServerError {
+    public struct ServerError: Swift.Sendable {
         /// The error category of server analysis.
         public var serverErrorCategory: MigrationHubStrategyClientTypes.ServerErrorCategory?
 
@@ -2686,12 +2687,12 @@ extension MigrationHubStrategyClientTypes {
             self.serverErrorCategory = serverErrorCategory
         }
     }
-
 }
 
 extension MigrationHubStrategyClientTypes {
+
     /// Information about the server's network for which the assessment was run.
-    public struct NetworkInfo {
+    public struct NetworkInfo: Swift.Sendable {
         /// Information about the name of the interface of the server for which the assessment was run.
         /// This member is required.
         public var interfaceName: Swift.String?
@@ -2718,12 +2719,11 @@ extension MigrationHubStrategyClientTypes {
             self.netMask = netMask
         }
     }
-
 }
 
 extension MigrationHubStrategyClientTypes {
 
-    public enum OSType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum OSType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case linux
         case windows
         case sdkUnknown(Swift.String)
@@ -2751,8 +2751,9 @@ extension MigrationHubStrategyClientTypes {
 }
 
 extension MigrationHubStrategyClientTypes {
+
     /// Information about the operating system.
-    public struct OSInfo {
+    public struct OSInfo: Swift.Sendable {
         /// Information about the type of operating system.
         public var type: MigrationHubStrategyClientTypes.OSType?
         /// Information about the version of operating system.
@@ -2767,12 +2768,12 @@ extension MigrationHubStrategyClientTypes {
             self.version = version
         }
     }
-
 }
 
 extension MigrationHubStrategyClientTypes {
+
     /// Information about the server that hosts application components.
-    public struct SystemInfo {
+    public struct SystemInfo: Swift.Sendable {
         /// CPU architecture type for the server.
         public var cpuArchitecture: Swift.String?
         /// File system type for the server.
@@ -2795,12 +2796,12 @@ extension MigrationHubStrategyClientTypes {
             self.osInfo = osInfo
         }
     }
-
 }
 
 extension MigrationHubStrategyClientTypes {
+
     /// Detailed information about a server.
-    public struct ServerDetail {
+    public struct ServerDetail: Swift.Sendable {
         /// The S3 bucket name and Amazon S3 key name for anti-pattern report.
         public var antipatternReportS3Object: MigrationHubStrategyClientTypes.S3Object?
         /// The status of the anti-pattern report generation.
@@ -2863,10 +2864,9 @@ extension MigrationHubStrategyClientTypes {
             self.systemInfo = systemInfo
         }
     }
-
 }
 
-public struct GetServerDetailsOutput {
+public struct GetServerDetailsOutput: Swift.Sendable {
     /// The associated application group the server belongs to, as defined in AWS Application Discovery Service.
     public var associatedApplications: [MigrationHubStrategyClientTypes.AssociatedApplication]?
     /// The token you use to retrieve the next set of results, or null if there are no more results.
@@ -2886,7 +2886,7 @@ public struct GetServerDetailsOutput {
     }
 }
 
-public struct GetServerStrategiesInput {
+public struct GetServerStrategiesInput: Swift.Sendable {
     /// The ID of the server.
     /// This member is required.
     public var serverId: Swift.String?
@@ -2900,8 +2900,9 @@ public struct GetServerStrategiesInput {
 }
 
 extension MigrationHubStrategyClientTypes {
+
     /// Contains information about a strategy recommendation for a server.
-    public struct ServerStrategy {
+    public struct ServerStrategy: Swift.Sendable {
         /// Set to true if the recommendation is set as preferred.
         public var isPreferred: Swift.Bool?
         /// The number of application components with this strategy recommendation running on the server.
@@ -2924,10 +2925,9 @@ extension MigrationHubStrategyClientTypes {
             self.status = status
         }
     }
-
 }
 
-public struct GetServerStrategiesOutput {
+public struct GetServerStrategiesOutput: Swift.Sendable {
     /// A list of strategy recommendations for the server.
     public var serverStrategies: [MigrationHubStrategyClientTypes.ServerStrategy]?
 
@@ -2941,7 +2941,7 @@ public struct GetServerStrategiesOutput {
 
 extension MigrationHubStrategyClientTypes {
 
-    public enum SortOrder: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SortOrder: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case asc
         case desc
         case sdkUnknown(Swift.String)
@@ -2969,7 +2969,7 @@ extension MigrationHubStrategyClientTypes {
 }
 
 /// Represents input for ListAnalyzableServers operation.
-public struct ListAnalyzableServersInput {
+public struct ListAnalyzableServersInput: Swift.Sendable {
     /// The maximum number of items to include in the response. The maximum value is 100.
     public var maxResults: Swift.Int?
     /// The token from a previous call that you use to retrieve the next set of results. For example, if a previous call to this action returned 100 items, but you set maxResults to 10. You'll receive a set of 10 results along with a token. You then use the returned token to retrieve the next set of 10.
@@ -2990,7 +2990,7 @@ public struct ListAnalyzableServersInput {
 }
 
 /// Represents output for ListAnalyzableServers operation.
-public struct ListAnalyzableServersOutput {
+public struct ListAnalyzableServersOutput: Swift.Sendable {
     /// The list of analyzable servers with summary information about each server.
     public var analyzableServers: [MigrationHubStrategyClientTypes.AnalyzableServerSummary]?
     /// The token you use to retrieve the next set of results, or null if there are no more results.
@@ -3032,7 +3032,7 @@ public struct ServiceLinkedRoleLockClientException: ClientRuntime.ModeledError, 
 
 extension MigrationHubStrategyClientTypes {
 
-    public enum GroupName: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum GroupName: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case externalId
         case externalSourceType
         case sdkUnknown(Swift.String)
@@ -3060,8 +3060,9 @@ extension MigrationHubStrategyClientTypes {
 }
 
 extension MigrationHubStrategyClientTypes {
+
     /// The object containing information about distinct imports or groups for Strategy Recommendations.
-    public struct Group {
+    public struct Group: Swift.Sendable {
         /// The key of the specific import group.
         public var name: MigrationHubStrategyClientTypes.GroupName?
         /// The value of the specific import group.
@@ -3076,10 +3077,9 @@ extension MigrationHubStrategyClientTypes {
             self.value = value
         }
     }
-
 }
 
-public struct ListApplicationComponentsInput {
+public struct ListApplicationComponentsInput: Swift.Sendable {
     /// Criteria for filtering the list of application components.
     public var applicationComponentCriteria: MigrationHubStrategyClientTypes.ApplicationComponentCriteria?
     /// Specify the value based on the application component criteria type. For example, if applicationComponentCriteria is set to SERVER_ID and filterValue is set to server1, then [ListApplicationComponents] returns all the application components running on server1.
@@ -3111,7 +3111,7 @@ public struct ListApplicationComponentsInput {
     }
 }
 
-public struct ListApplicationComponentsOutput {
+public struct ListApplicationComponentsOutput: Swift.Sendable {
     /// The list of application components with detailed information about each component.
     public var applicationComponentInfos: [MigrationHubStrategyClientTypes.ApplicationComponentDetail]?
     /// The token you use to retrieve the next set of results, or null if there are no more results.
@@ -3127,7 +3127,7 @@ public struct ListApplicationComponentsOutput {
     }
 }
 
-public struct ListCollectorsInput {
+public struct ListCollectorsInput: Swift.Sendable {
     /// The maximum number of items to include in the response. The maximum value is 100.
     public var maxResults: Swift.Int?
     /// The token from a previous call that you use to retrieve the next set of results. For example, if a previous call to this action returned 100 items, but you set maxResults to 10. You'll receive a set of 10 results along with a token. You then use the returned token to retrieve the next set of 10.
@@ -3145,7 +3145,7 @@ public struct ListCollectorsInput {
 
 extension MigrationHubStrategyClientTypes {
 
-    public enum CollectorHealth: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum CollectorHealth: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case collectorHealthy
         case collectorUnhealthy
         case sdkUnknown(Swift.String)
@@ -3173,8 +3173,9 @@ extension MigrationHubStrategyClientTypes {
 }
 
 extension MigrationHubStrategyClientTypes {
+
     /// IP address based configurations.
-    public struct IPAddressBasedRemoteInfo {
+    public struct IPAddressBasedRemoteInfo: Swift.Sendable {
         /// The type of authorization.
         public var authType: MigrationHubStrategyClientTypes.AuthType?
         /// The time stamp of the configuration.
@@ -3193,12 +3194,11 @@ extension MigrationHubStrategyClientTypes {
             self.osType = osType
         }
     }
-
 }
 
 extension MigrationHubStrategyClientTypes {
 
-    public enum PipelineType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum PipelineType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case azureDevops
         case sdkUnknown(Swift.String)
 
@@ -3223,8 +3223,9 @@ extension MigrationHubStrategyClientTypes {
 }
 
 extension MigrationHubStrategyClientTypes {
+
     /// Detailed information of the pipeline.
-    public struct PipelineInfo {
+    public struct PipelineInfo: Swift.Sendable {
         /// The time when the pipeline info was configured.
         public var pipelineConfigurationTimeStamp: Swift.String?
         /// The type of pipeline.
@@ -3239,12 +3240,12 @@ extension MigrationHubStrategyClientTypes {
             self.pipelineType = pipelineType
         }
     }
-
 }
 
 extension MigrationHubStrategyClientTypes {
+
     /// Information about the server configured for source code analysis.
-    public struct RemoteSourceCodeAnalysisServerInfo {
+    public struct RemoteSourceCodeAnalysisServerInfo: Swift.Sendable {
         /// The time when the remote source code server was configured.
         public var remoteSourceCodeAnalysisServerConfigurationTimestamp: Swift.String?
 
@@ -3255,12 +3256,12 @@ extension MigrationHubStrategyClientTypes {
             self.remoteSourceCodeAnalysisServerConfigurationTimestamp = remoteSourceCodeAnalysisServerConfigurationTimestamp
         }
     }
-
 }
 
 extension MigrationHubStrategyClientTypes {
+
     /// Details about the server in vCenter.
-    public struct VcenterBasedRemoteInfo {
+    public struct VcenterBasedRemoteInfo: Swift.Sendable {
         /// The type of the operating system.
         public var osType: MigrationHubStrategyClientTypes.OSType?
         /// The time when the remote server based on vCenter was last configured.
@@ -3275,12 +3276,11 @@ extension MigrationHubStrategyClientTypes {
             self.vcenterConfigurationTimeStamp = vcenterConfigurationTimeStamp
         }
     }
-
 }
 
 extension MigrationHubStrategyClientTypes {
 
-    public enum VersionControlType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum VersionControlType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case azureDevopsGit
         case github
         case githubEnterprise
@@ -3311,8 +3311,9 @@ extension MigrationHubStrategyClientTypes {
 }
 
 extension MigrationHubStrategyClientTypes {
+
     /// Details about the version control configuration.
-    public struct VersionControlInfo {
+    public struct VersionControlInfo: Swift.Sendable {
         /// The time when the version control system was last configured.
         public var versionControlConfigurationTimeStamp: Swift.String?
         /// The type of version control.
@@ -3327,12 +3328,12 @@ extension MigrationHubStrategyClientTypes {
             self.versionControlType = versionControlType
         }
     }
-
 }
 
 extension MigrationHubStrategyClientTypes {
+
     /// Summary of the collector configuration.
-    public struct ConfigurationSummary {
+    public struct ConfigurationSummary: Swift.Sendable {
         /// IP address based configurations.
         public var ipAddressBasedRemoteInfoList: [MigrationHubStrategyClientTypes.IPAddressBasedRemoteInfo]?
         /// The list of pipeline info configurations.
@@ -3359,12 +3360,12 @@ extension MigrationHubStrategyClientTypes {
             self.versionControlInfoList = versionControlInfoList
         }
     }
-
 }
 
 extension MigrationHubStrategyClientTypes {
+
     /// Process data collector that runs in the environment that you specify.
-    public struct Collector {
+    public struct Collector: Swift.Sendable {
         /// Indicates the health of a collector.
         public var collectorHealth: MigrationHubStrategyClientTypes.CollectorHealth?
         /// The ID of the collector.
@@ -3403,10 +3404,9 @@ extension MigrationHubStrategyClientTypes {
             self.registeredTimeStamp = registeredTimeStamp
         }
     }
-
 }
 
-public struct ListCollectorsOutput {
+public struct ListCollectorsOutput: Swift.Sendable {
     /// The list of all the installed collectors.
     public var collectors: [MigrationHubStrategyClientTypes.Collector]?
     /// The token you use to retrieve the next set of results, or null if there are no more results.
@@ -3422,7 +3422,7 @@ public struct ListCollectorsOutput {
     }
 }
 
-public struct ListImportFileTaskInput {
+public struct ListImportFileTaskInput: Swift.Sendable {
     /// The total number of items to return. The maximum value is 100.
     public var maxResults: Swift.Int?
     /// The token from a previous call that you use to retrieve the next set of results. For example, if a previous call to this action returned 100 items, but you set maxResults to 10. You'll receive a set of 10 results along with a token. You then use the returned token to retrieve the next set of 10.
@@ -3439,8 +3439,9 @@ public struct ListImportFileTaskInput {
 }
 
 extension MigrationHubStrategyClientTypes {
+
     /// Information about the import file tasks you request.
-    public struct ImportFileTaskInformation {
+    public struct ImportFileTaskInformation: Swift.Sendable {
         /// The time that the import task completes.
         public var completionTime: Foundation.Date?
         /// The ID of the import file task.
@@ -3491,10 +3492,9 @@ extension MigrationHubStrategyClientTypes {
             self.statusReportS3Key = statusReportS3Key
         }
     }
-
 }
 
-public struct ListImportFileTaskOutput {
+public struct ListImportFileTaskOutput: Swift.Sendable {
     /// The token you use to retrieve the next set of results, or null if there are no more results.
     public var nextToken: Swift.String?
     /// Lists information about the files you import.
@@ -3512,7 +3512,7 @@ public struct ListImportFileTaskOutput {
 
 extension MigrationHubStrategyClientTypes {
 
-    public enum ServerCriteria: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ServerCriteria: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case analysisStatus
         case destination
         case errorCategory
@@ -3554,7 +3554,7 @@ extension MigrationHubStrategyClientTypes {
     }
 }
 
-public struct ListServersInput {
+public struct ListServersInput: Swift.Sendable {
     /// Specifies the filter value, which is based on the type of server criteria. For example, if serverCriteria is OS_NAME, and the filterValue is equal to WindowsServer, then ListServers returns all of the servers matching the OS name WindowsServer.
     public var filterValue: Swift.String?
     /// Specifies the group ID to filter on.
@@ -3586,7 +3586,7 @@ public struct ListServersInput {
     }
 }
 
-public struct ListServersOutput {
+public struct ListServersOutput: Swift.Sendable {
     /// The token you use to retrieve the next set of results, or null if there are no more results.
     public var nextToken: Swift.String?
     /// The list of servers with detailed information about each server.
@@ -3627,7 +3627,7 @@ public struct ConflictException: ClientRuntime.ModeledError, AWSClientRuntime.AW
     }
 }
 
-public struct PutPortfolioPreferencesInput {
+public struct PutPortfolioPreferencesInput: Swift.Sendable {
     /// The classification for application component types.
     public var applicationMode: MigrationHubStrategyClientTypes.ApplicationMode?
     /// The transformation preferences for non-database applications.
@@ -3651,7 +3651,7 @@ public struct PutPortfolioPreferencesInput {
     }
 }
 
-public struct PutPortfolioPreferencesOutput {
+public struct PutPortfolioPreferencesOutput: Swift.Sendable {
 
     public init() { }
 }
@@ -3681,7 +3681,7 @@ public struct ServiceQuotaExceededException: ClientRuntime.ModeledError, AWSClie
     }
 }
 
-public struct StartAssessmentInput {
+public struct StartAssessmentInput: Swift.Sendable {
     /// The data source type of an assessment to be started.
     public var assessmentDataSourceType: MigrationHubStrategyClientTypes.AssessmentDataSourceType?
     /// List of criteria for assessment.
@@ -3705,7 +3705,7 @@ public struct StartAssessmentInput {
     }
 }
 
-public struct StartAssessmentOutput {
+public struct StartAssessmentOutput: Swift.Sendable {
     /// The ID of the assessment.
     public var assessmentId: Swift.String?
 
@@ -3719,7 +3719,7 @@ public struct StartAssessmentOutput {
 
 extension MigrationHubStrategyClientTypes {
 
-    public enum DataSourceType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DataSourceType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case ads
         case `import`
         case mhsrCollector
@@ -3752,7 +3752,7 @@ extension MigrationHubStrategyClientTypes {
     }
 }
 
-public struct StartImportFileTaskInput {
+public struct StartImportFileTaskInput: Swift.Sendable {
     /// Specifies the source that the servers are coming from. By default, Strategy Recommendations assumes that the servers specified in the import file are available in AWS Application Discovery Service.
     public var dataSourceType: MigrationHubStrategyClientTypes.DataSourceType?
     /// Groups the resources in the import file together with a unique name. This ID can be as filter in ListApplicationComponents and ListServers.
@@ -3787,7 +3787,7 @@ public struct StartImportFileTaskInput {
     }
 }
 
-public struct StartImportFileTaskOutput {
+public struct StartImportFileTaskOutput: Swift.Sendable {
     /// The ID for a specific import task. The ID is unique within an AWS account.
     public var id: Swift.String?
 
@@ -3801,7 +3801,7 @@ public struct StartImportFileTaskOutput {
 
 extension MigrationHubStrategyClientTypes {
 
-    public enum OutputFormat: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum OutputFormat: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case excel
         case json
         case sdkUnknown(Swift.String)
@@ -3828,7 +3828,7 @@ extension MigrationHubStrategyClientTypes {
     }
 }
 
-public struct StartRecommendationReportGenerationInput {
+public struct StartRecommendationReportGenerationInput: Swift.Sendable {
     /// Groups the resources in the recommendation report with a unique name.
     public var groupIdFilter: [MigrationHubStrategyClientTypes.Group]?
     /// The output format for the recommendation report file. The default format is Microsoft Excel.
@@ -3844,7 +3844,7 @@ public struct StartRecommendationReportGenerationInput {
     }
 }
 
-public struct StartRecommendationReportGenerationOutput {
+public struct StartRecommendationReportGenerationOutput: Swift.Sendable {
     /// The ID of the recommendation report generation task.
     public var id: Swift.String?
 
@@ -3856,7 +3856,7 @@ public struct StartRecommendationReportGenerationOutput {
     }
 }
 
-public struct StopAssessmentInput {
+public struct StopAssessmentInput: Swift.Sendable {
     /// The assessmentId returned by [StartAssessment].
     /// This member is required.
     public var assessmentId: Swift.String?
@@ -3869,14 +3869,14 @@ public struct StopAssessmentInput {
     }
 }
 
-public struct StopAssessmentOutput {
+public struct StopAssessmentOutput: Swift.Sendable {
 
     public init() { }
 }
 
 extension MigrationHubStrategyClientTypes {
 
-    public enum VersionControl: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum VersionControl: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case azureDevopsGit
         case github
         case githubEnterprise
@@ -3907,8 +3907,9 @@ extension MigrationHubStrategyClientTypes {
 }
 
 extension MigrationHubStrategyClientTypes {
+
     /// Object containing source code information that is linked to an application component.
-    public struct SourceCode {
+    public struct SourceCode: Swift.Sendable {
         /// The repository name for the source code.
         public var location: Swift.String?
         /// The name of the project.
@@ -3931,12 +3932,12 @@ extension MigrationHubStrategyClientTypes {
             self.versionControl = versionControl
         }
     }
-
 }
 
 extension MigrationHubStrategyClientTypes {
+
     /// Information about all the available strategy options for migrating and modernizing an application component.
-    public struct StrategyOption {
+    public struct StrategyOption: Swift.Sendable {
         /// Indicates if a specific strategy is preferred for the application component.
         public var isPreferred: Swift.Bool?
         /// Type of transformation. For example, Rehost, Replatform, and so on.
@@ -3959,10 +3960,9 @@ extension MigrationHubStrategyClientTypes {
             self.toolName = toolName
         }
     }
-
 }
 
-public struct UpdateApplicationComponentConfigInput {
+public struct UpdateApplicationComponentConfigInput: Swift.Sendable {
     /// The type of known component.
     public var appType: MigrationHubStrategyClientTypes.AppType?
     /// The ID of the application component. The ID is unique within an AWS account.
@@ -4004,12 +4004,12 @@ extension UpdateApplicationComponentConfigInput: Swift.CustomDebugStringConverti
         "UpdateApplicationComponentConfigInput(appType: \(Swift.String(describing: appType)), applicationComponentId: \(Swift.String(describing: applicationComponentId)), configureOnly: \(Swift.String(describing: configureOnly)), inclusionStatus: \(Swift.String(describing: inclusionStatus)), sourceCodeList: \(Swift.String(describing: sourceCodeList)), strategyOption: \(Swift.String(describing: strategyOption)), secretsManagerKey: \"CONTENT_REDACTED\")"}
 }
 
-public struct UpdateApplicationComponentConfigOutput {
+public struct UpdateApplicationComponentConfigOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdateServerConfigInput {
+public struct UpdateServerConfigInput: Swift.Sendable {
     /// The ID of the server.
     /// This member is required.
     public var serverId: Swift.String?
@@ -4026,7 +4026,7 @@ public struct UpdateServerConfigInput {
     }
 }
 
-public struct UpdateServerConfigOutput {
+public struct UpdateServerConfigOutput: Swift.Sendable {
 
     public init() { }
 }

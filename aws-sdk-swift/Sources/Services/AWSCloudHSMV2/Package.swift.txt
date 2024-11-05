@@ -12,10 +12,6 @@ let package = Package(
     ],
     dependencies: [
         .package(
-            id: "aws-sdk-swift.smithy-swift",
-            exact: "0.0.1"
-        ),
-        .package(
             id: "aws-sdk-swift.AWSClientRuntime",
             exact: "0.0.1"
         ),
@@ -23,11 +19,23 @@ let package = Package(
             id: "aws-sdk-swift.AWSSDKHTTPAuth",
             exact: "0.0.1"
         ),
+        .package(
+            id: "aws-sdk-swift.smithy-swift",
+            exact: "0.0.1"
+        ),
     ],
     targets: [
         .target(
             name: "AWSCloudHSMV2",
             dependencies: [
+                .product(
+                    name: "AWSClientRuntime",
+                    package: "aws-sdk-swift.AWSClientRuntime"
+                ),
+                .product(
+                    name: "AWSSDKHTTPAuth",
+                    package: "aws-sdk-swift.AWSSDKHTTPAuth"
+                ),
                 .product(
                     name: "SmithyHTTPAuthAPI",
                     package: "aws-sdk-swift.smithy-swift"
@@ -41,10 +49,6 @@ let package = Package(
                     package: "aws-sdk-swift.smithy-swift"
                 ),
                 .product(
-                    name: "AWSClientRuntime",
-                    package: "aws-sdk-swift.AWSClientRuntime"
-                ),
-                .product(
                     name: "SmithyIdentity",
                     package: "aws-sdk-swift.smithy-swift"
                 ),
@@ -55,10 +59,6 @@ let package = Package(
                 .product(
                     name: "SmithyHTTPAPI",
                     package: "aws-sdk-swift.smithy-swift"
-                ),
-                .product(
-                    name: "AWSSDKHTTPAuth",
-                    package: "aws-sdk-swift.AWSSDKHTTPAuth"
                 ),
                 .product(
                     name: "SmithyRetries",

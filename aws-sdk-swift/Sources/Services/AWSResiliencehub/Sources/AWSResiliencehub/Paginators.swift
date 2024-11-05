@@ -198,6 +198,7 @@ extension ListAppsInput: ClientRuntime.PaginateToken {
     public func usingPaginationToken(_ token: Swift.String) -> ListAppsInput {
         return ListAppsInput(
             appArn: self.appArn,
+            awsApplicationArn: self.awsApplicationArn,
             fromLastAssessmentTime: self.fromLastAssessmentTime,
             maxResults: self.maxResults,
             name: self.name,

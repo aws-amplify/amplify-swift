@@ -212,7 +212,7 @@ extension TranscribeStreamingClient {
     /// - Throws: One of the exceptions listed below __Possible Exceptions__.
     ///
     /// __Possible Exceptions:__
-    /// - `BadRequestException` : One or more arguments to the StartStreamTranscription, StartMedicalStreamTranscription, or StartCallAnalyticsStreamTranscription operation was not valid. For example, MediaEncoding or LanguageCode used not valid values. Check the specified parameters and try your request again.
+    /// - `BadRequestException` : One or more arguments to the StartStreamTranscription, StartMedicalStreamTranscription, or StartCallAnalyticsStreamTranscription operation was not valid. For example, MediaEncoding or LanguageCode used unsupported values. Check the specified parameters and try your request again.
     /// - `ConflictException` : A new stream started with the same session ID. The current stream has been terminated.
     /// - `InternalFailureException` : A problem occurred while processing the audio. Amazon Transcribe terminated processing.
     /// - `LimitExceededException` : Your client has exceeded one of the Amazon Transcribe limits. This is typically the audio length limit. Break your audio stream into smaller chunks and try your request again.
@@ -296,7 +296,7 @@ extension TranscribeStreamingClient {
     /// - Throws: One of the exceptions listed below __Possible Exceptions__.
     ///
     /// __Possible Exceptions:__
-    /// - `BadRequestException` : One or more arguments to the StartStreamTranscription, StartMedicalStreamTranscription, or StartCallAnalyticsStreamTranscription operation was not valid. For example, MediaEncoding or LanguageCode used not valid values. Check the specified parameters and try your request again.
+    /// - `BadRequestException` : One or more arguments to the StartStreamTranscription, StartMedicalStreamTranscription, or StartCallAnalyticsStreamTranscription operation was not valid. For example, MediaEncoding or LanguageCode used unsupported values. Check the specified parameters and try your request again.
     /// - `ConflictException` : A new stream started with the same session ID. The current stream has been terminated.
     /// - `InternalFailureException` : A problem occurred while processing the audio. Amazon Transcribe terminated processing.
     /// - `LimitExceededException` : Your client has exceeded one of the Amazon Transcribe limits. This is typically the audio length limit. Break your audio stream into smaller chunks and try your request again.
@@ -380,7 +380,7 @@ extension TranscribeStreamingClient {
     /// - Throws: One of the exceptions listed below __Possible Exceptions__.
     ///
     /// __Possible Exceptions:__
-    /// - `BadRequestException` : One or more arguments to the StartStreamTranscription, StartMedicalStreamTranscription, or StartCallAnalyticsStreamTranscription operation was not valid. For example, MediaEncoding or LanguageCode used not valid values. Check the specified parameters and try your request again.
+    /// - `BadRequestException` : One or more arguments to the StartStreamTranscription, StartMedicalStreamTranscription, or StartCallAnalyticsStreamTranscription operation was not valid. For example, MediaEncoding or LanguageCode used unsupported values. Check the specified parameters and try your request again.
     /// - `ConflictException` : A new stream started with the same session ID. The current stream has been terminated.
     /// - `InternalFailureException` : A problem occurred while processing the audio. Amazon Transcribe terminated processing.
     /// - `LimitExceededException` : Your client has exceeded one of the Amazon Transcribe limits. This is typically the audio length limit. Break your audio stream into smaller chunks and try your request again.

@@ -25,12 +25,13 @@ import protocol ClientRuntime.ModeledError
 @_spi(SmithyReadWrite) import struct AWSClientRuntime.AWSJSONError
 @_spi(UnknownAWSHTTPServiceError) import struct AWSClientRuntime.UnknownAWSHTTPServiceError
 
-public struct DeletePipelineOutput {
+
+public struct DeletePipelineOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct SetStatusOutput {
+public struct SetStatusOutput: Swift.Sendable {
 
     public init() { }
 }
@@ -136,8 +137,9 @@ public struct PipelineNotFoundException: ClientRuntime.ModeledError, AWSClientRu
 }
 
 extension DataPipelineClientTypes {
+
     /// A value or list of parameter values.
-    public struct ParameterValue {
+    public struct ParameterValue: Swift.Sendable {
         /// The ID of the parameter value.
         /// This member is required.
         public var id: Swift.String?
@@ -154,11 +156,10 @@ extension DataPipelineClientTypes {
             self.stringValue = stringValue
         }
     }
-
 }
 
 /// Contains the parameters for ActivatePipeline.
-public struct ActivatePipelineInput {
+public struct ActivatePipelineInput: Swift.Sendable {
     /// A list of parameter values to pass to the pipeline at activation.
     public var parameterValues: [DataPipelineClientTypes.ParameterValue]?
     /// The ID of the pipeline.
@@ -180,14 +181,15 @@ public struct ActivatePipelineInput {
 }
 
 /// Contains the output of ActivatePipeline.
-public struct ActivatePipelineOutput {
+public struct ActivatePipelineOutput: Swift.Sendable {
 
     public init() { }
 }
 
 extension DataPipelineClientTypes {
+
     /// Tags are key/value pairs defined by a user and associated with a pipeline to control access. AWS Data Pipeline allows you to associate ten tags per pipeline. For more information, see [Controlling User Access to Pipelines](http://docs.aws.amazon.com/datapipeline/latest/DeveloperGuide/dp-control-access.html) in the AWS Data Pipeline Developer Guide.
-    public struct Tag {
+    public struct Tag: Swift.Sendable {
         /// The key name of a tag defined by a user. For more information, see [Controlling User Access to Pipelines](http://docs.aws.amazon.com/datapipeline/latest/DeveloperGuide/dp-control-access.html) in the AWS Data Pipeline Developer Guide.
         /// This member is required.
         public var key: Swift.String?
@@ -204,11 +206,10 @@ extension DataPipelineClientTypes {
             self.value = value
         }
     }
-
 }
 
 /// Contains the parameters for AddTags.
-public struct AddTagsInput {
+public struct AddTagsInput: Swift.Sendable {
     /// The ID of the pipeline.
     /// This member is required.
     public var pipelineId: Swift.String?
@@ -227,13 +228,13 @@ public struct AddTagsInput {
 }
 
 /// Contains the output of AddTags.
-public struct AddTagsOutput {
+public struct AddTagsOutput: Swift.Sendable {
 
     public init() { }
 }
 
 /// Contains the parameters for CreatePipeline.
-public struct CreatePipelineInput {
+public struct CreatePipelineInput: Swift.Sendable {
     /// The description for the pipeline.
     public var description: Swift.String?
     /// The name for the pipeline. You can use the same name for multiple pipelines associated with your AWS account, because AWS Data Pipeline assigns each pipeline a unique pipeline identifier.
@@ -260,7 +261,7 @@ public struct CreatePipelineInput {
 }
 
 /// Contains the output of CreatePipeline.
-public struct CreatePipelineOutput {
+public struct CreatePipelineOutput: Swift.Sendable {
     /// The ID that AWS Data Pipeline assigns the newly created pipeline. For example, df-06372391ZG65EXAMPLE.
     /// This member is required.
     public var pipelineId: Swift.String?
@@ -274,7 +275,7 @@ public struct CreatePipelineOutput {
 }
 
 /// Contains the parameters for DeactivatePipeline.
-public struct DeactivatePipelineInput {
+public struct DeactivatePipelineInput: Swift.Sendable {
     /// Indicates whether to cancel any running objects. The default is true, which sets the state of any running objects to CANCELED. If this value is false, the pipeline is deactivated after all running objects finish.
     public var cancelActive: Swift.Bool?
     /// The ID of the pipeline.
@@ -292,13 +293,13 @@ public struct DeactivatePipelineInput {
 }
 
 /// Contains the output of DeactivatePipeline.
-public struct DeactivatePipelineOutput {
+public struct DeactivatePipelineOutput: Swift.Sendable {
 
     public init() { }
 }
 
 /// Contains the parameters for DeletePipeline.
-public struct DeletePipelineInput {
+public struct DeletePipelineInput: Swift.Sendable {
     /// The ID of the pipeline.
     /// This member is required.
     public var pipelineId: Swift.String?
@@ -312,7 +313,7 @@ public struct DeletePipelineInput {
 }
 
 /// Contains the parameters for DescribeObjects.
-public struct DescribeObjectsInput {
+public struct DescribeObjectsInput: Swift.Sendable {
     /// Indicates whether any expressions in the object should be evaluated when the object descriptions are returned.
     public var evaluateExpressions: Swift.Bool?
     /// The starting point for the results to be returned. For the first call, this value should be empty. As long as there are more results, continue to call DescribeObjects with the marker value from the previous call to retrieve the next set of results.
@@ -339,8 +340,9 @@ public struct DescribeObjectsInput {
 }
 
 extension DataPipelineClientTypes {
+
     /// A key-value pair that describes a property of a pipeline object. The value is specified as either a string value (StringValue) or a reference to another object (RefValue) but not as both.
-    public struct Field {
+    public struct Field: Swift.Sendable {
         /// The field identifier.
         /// This member is required.
         public var key: Swift.String?
@@ -360,12 +362,12 @@ extension DataPipelineClientTypes {
             self.stringValue = stringValue
         }
     }
-
 }
 
 extension DataPipelineClientTypes {
+
     /// Contains information about a pipeline object. This can be a logical, physical, or physical attempt pipeline object. The complete set of components of a pipeline defines the pipeline.
-    public struct PipelineObject {
+    public struct PipelineObject: Swift.Sendable {
         /// Key-value pairs that define the properties of the object.
         /// This member is required.
         public var fields: [DataPipelineClientTypes.Field]?
@@ -387,11 +389,10 @@ extension DataPipelineClientTypes {
             self.name = name
         }
     }
-
 }
 
 /// Contains the output of DescribeObjects.
-public struct DescribeObjectsOutput {
+public struct DescribeObjectsOutput: Swift.Sendable {
     /// Indicates whether there are more results to return.
     public var hasMoreResults: Swift.Bool
     /// The starting point for the next page of results. To view the next page of results, call DescribeObjects again with this marker value. If the value is null, there are no more results.
@@ -413,7 +414,7 @@ public struct DescribeObjectsOutput {
 }
 
 /// Contains the parameters for DescribePipelines.
-public struct DescribePipelinesInput {
+public struct DescribePipelinesInput: Swift.Sendable {
     /// The IDs of the pipelines to describe. You can pass as many as 25 identifiers in a single call. To obtain pipeline IDs, call [ListPipelines].
     /// This member is required.
     public var pipelineIds: [Swift.String]?
@@ -427,8 +428,9 @@ public struct DescribePipelinesInput {
 }
 
 extension DataPipelineClientTypes {
+
     /// Contains pipeline metadata.
-    public struct PipelineDescription {
+    public struct PipelineDescription: Swift.Sendable {
         /// Description of the pipeline.
         public var description: Swift.String?
         /// A list of read-only fields that contain metadata about the pipeline: @userId, @accountId, and @pipelineState.
@@ -458,11 +460,10 @@ extension DataPipelineClientTypes {
             self.tags = tags
         }
     }
-
 }
 
 /// Contains the output of DescribePipelines.
-public struct DescribePipelinesOutput {
+public struct DescribePipelinesOutput: Swift.Sendable {
     /// An array of descriptions for the specified pipelines.
     /// This member is required.
     public var pipelineDescriptionList: [DataPipelineClientTypes.PipelineDescription]?
@@ -501,7 +502,7 @@ public struct TaskNotFoundException: ClientRuntime.ModeledError, AWSClientRuntim
 }
 
 /// Contains the parameters for EvaluateExpression.
-public struct EvaluateExpressionInput {
+public struct EvaluateExpressionInput: Swift.Sendable {
     /// The expression to evaluate.
     /// This member is required.
     public var expression: Swift.String?
@@ -525,7 +526,7 @@ public struct EvaluateExpressionInput {
 }
 
 /// Contains the output of EvaluateExpression.
-public struct EvaluateExpressionOutput {
+public struct EvaluateExpressionOutput: Swift.Sendable {
     /// The evaluated expression.
     /// This member is required.
     public var evaluatedExpression: Swift.String?
@@ -539,7 +540,7 @@ public struct EvaluateExpressionOutput {
 }
 
 /// Contains the parameters for GetPipelineDefinition.
-public struct GetPipelineDefinitionInput {
+public struct GetPipelineDefinitionInput: Swift.Sendable {
     /// The ID of the pipeline.
     /// This member is required.
     public var pipelineId: Swift.String?
@@ -557,8 +558,9 @@ public struct GetPipelineDefinitionInput {
 }
 
 extension DataPipelineClientTypes {
+
     /// The attributes allowed or specified with a parameter object.
-    public struct ParameterAttribute {
+    public struct ParameterAttribute: Swift.Sendable {
         /// The field identifier.
         /// This member is required.
         public var key: Swift.String?
@@ -575,12 +577,12 @@ extension DataPipelineClientTypes {
             self.stringValue = stringValue
         }
     }
-
 }
 
 extension DataPipelineClientTypes {
+
     /// Contains information about a parameter object.
-    public struct ParameterObject {
+    public struct ParameterObject: Swift.Sendable {
         /// The attributes of the parameter object.
         /// This member is required.
         public var attributes: [DataPipelineClientTypes.ParameterAttribute]?
@@ -597,11 +599,10 @@ extension DataPipelineClientTypes {
             self.id = id
         }
     }
-
 }
 
 /// Contains the output of GetPipelineDefinition.
-public struct GetPipelineDefinitionOutput {
+public struct GetPipelineDefinitionOutput: Swift.Sendable {
     /// The parameter objects used in the pipeline definition.
     public var parameterObjects: [DataPipelineClientTypes.ParameterObject]?
     /// The parameter values used in the pipeline definition.
@@ -622,7 +623,7 @@ public struct GetPipelineDefinitionOutput {
 }
 
 /// Contains the parameters for ListPipelines.
-public struct ListPipelinesInput {
+public struct ListPipelinesInput: Swift.Sendable {
     /// The starting point for the results to be returned. For the first call, this value should be empty. As long as there are more results, continue to call ListPipelines with the marker value from the previous call to retrieve the next set of results.
     public var marker: Swift.String?
 
@@ -635,8 +636,9 @@ public struct ListPipelinesInput {
 }
 
 extension DataPipelineClientTypes {
+
     /// Contains the name and identifier of a pipeline.
-    public struct PipelineIdName {
+    public struct PipelineIdName: Swift.Sendable {
         /// The ID of the pipeline that was assigned by AWS Data Pipeline. This is a string of the form df-297EG78HU43EEXAMPLE.
         public var id: Swift.String?
         /// The name of the pipeline.
@@ -651,11 +653,10 @@ extension DataPipelineClientTypes {
             self.name = name
         }
     }
-
 }
 
 /// Contains the output of ListPipelines.
-public struct ListPipelinesOutput {
+public struct ListPipelinesOutput: Swift.Sendable {
     /// Indicates whether there are more results that can be obtained by a subsequent call.
     public var hasMoreResults: Swift.Bool
     /// The starting point for the next page of results. To view the next page of results, call ListPipelinesOutput again with this marker value. If the value is null, there are no more results.
@@ -677,8 +678,9 @@ public struct ListPipelinesOutput {
 }
 
 extension DataPipelineClientTypes {
+
     /// Identity information for the EC2 instance that is hosting the task runner. You can get this value by calling a metadata URI from the EC2 instance. For more information, see [Instance Metadata](http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/AESDG-chapter-instancedata.html) in the Amazon Elastic Compute Cloud User Guide. Passing in this value proves that your task runner is running on an EC2 instance, and ensures the proper AWS Data Pipeline service charges are applied to your pipeline.
-    public struct InstanceIdentity {
+    public struct InstanceIdentity: Swift.Sendable {
         /// A description of an EC2 instance that is generated when the instance is launched and exposed to the instance via the instance metadata service in the form of a JSON representation of an object.
         public var document: Swift.String?
         /// A signature which can be used to verify the accuracy and authenticity of the information provided in the instance identity document.
@@ -693,11 +695,10 @@ extension DataPipelineClientTypes {
             self.signature = signature
         }
     }
-
 }
 
 /// Contains the parameters for PollForTask.
-public struct PollForTaskInput {
+public struct PollForTaskInput: Swift.Sendable {
     /// The public DNS name of the calling task runner.
     public var hostname: Swift.String?
     /// Identity information for the EC2 instance that is hosting the task runner. You can get this value from the instance using http://169.254.169.254/latest/meta-data/instance-id. For more information, see [Instance Metadata](http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/AESDG-chapter-instancedata.html) in the Amazon Elastic Compute Cloud User Guide. Passing in this value proves that your task runner is running on an EC2 instance, and ensures the proper AWS Data Pipeline service charges are applied to your pipeline.
@@ -719,8 +720,9 @@ public struct PollForTaskInput {
 }
 
 extension DataPipelineClientTypes {
+
     /// Contains information about a pipeline task that is assigned to a task runner.
-    public struct TaskObject {
+    public struct TaskObject: Swift.Sendable {
         /// The ID of the pipeline task attempt object. AWS Data Pipeline uses this value to track how many times a task is attempted.
         public var attemptId: Swift.String?
         /// Connection information for the location where the task runner will publish the output of the task.
@@ -743,11 +745,10 @@ extension DataPipelineClientTypes {
             self.taskId = taskId
         }
     }
-
 }
 
 /// Contains the output of PollForTask.
-public struct PollForTaskOutput {
+public struct PollForTaskOutput: Swift.Sendable {
     /// The information needed to complete the task that is being assigned to the task runner. One of the fields returned in this object is taskId, which contains an identifier for the task being assigned. The calling task runner uses taskId in subsequent calls to [ReportTaskProgress] and [SetTaskStatus].
     public var taskObject: DataPipelineClientTypes.TaskObject?
 
@@ -760,7 +761,7 @@ public struct PollForTaskOutput {
 }
 
 /// Contains the parameters for PutPipelineDefinition.
-public struct PutPipelineDefinitionInput {
+public struct PutPipelineDefinitionInput: Swift.Sendable {
     /// The parameter objects used with the pipeline.
     public var parameterObjects: [DataPipelineClientTypes.ParameterObject]?
     /// The parameter values used with the pipeline.
@@ -787,8 +788,9 @@ public struct PutPipelineDefinitionInput {
 }
 
 extension DataPipelineClientTypes {
+
     /// Defines a validation error. Validation errors prevent pipeline activation. The set of validation errors that can be returned are defined by AWS Data Pipeline.
-    public struct ValidationError {
+    public struct ValidationError: Swift.Sendable {
         /// A description of the validation error.
         public var errors: [Swift.String]?
         /// The identifier of the object that contains the validation error.
@@ -803,12 +805,12 @@ extension DataPipelineClientTypes {
             self.id = id
         }
     }
-
 }
 
 extension DataPipelineClientTypes {
+
     /// Defines a validation warning. Validation warnings do not prevent pipeline activation. The set of validation warnings that can be returned are defined by AWS Data Pipeline.
-    public struct ValidationWarning {
+    public struct ValidationWarning: Swift.Sendable {
         /// The identifier of the object that contains the validation warning.
         public var id: Swift.String?
         /// A description of the validation warning.
@@ -823,11 +825,10 @@ extension DataPipelineClientTypes {
             self.warnings = warnings
         }
     }
-
 }
 
 /// Contains the output of PutPipelineDefinition.
-public struct PutPipelineDefinitionOutput {
+public struct PutPipelineDefinitionOutput: Swift.Sendable {
     /// Indicates whether there were validation errors, and the pipeline definition is stored but cannot be activated until you correct the pipeline and call PutPipelineDefinition to commit the corrected pipeline.
     /// This member is required.
     public var errored: Swift.Bool
@@ -850,7 +851,7 @@ public struct PutPipelineDefinitionOutput {
 
 extension DataPipelineClientTypes {
 
-    public enum OperatorType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum OperatorType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case between
         case equal
         case greaterthanorequal
@@ -887,8 +888,9 @@ extension DataPipelineClientTypes {
 }
 
 extension DataPipelineClientTypes {
+
     /// Contains a logical operation for comparing the value of a field with a specified value.
-    public struct Operator {
+    public struct Operator: Swift.Sendable {
         /// The logical operation to be performed: equal (EQ), equal reference (REF_EQ), less than or equal (LE), greater than or equal (GE), or between (BETWEEN). Equal reference (REF_EQ) can be used only with reference fields. The other comparison types can be used only with String fields. The comparison types you can use apply only to certain object fields, as detailed below. The comparison operators EQ and REF_EQ act on the following fields:
         ///
         /// * name
@@ -937,12 +939,12 @@ extension DataPipelineClientTypes {
             self.values = values
         }
     }
-
 }
 
 extension DataPipelineClientTypes {
+
     /// A comparision that is used to determine whether a query should return this object.
-    public struct Selector {
+    public struct Selector: Swift.Sendable {
         /// The name of the field that the operator will be applied to. The field name is the "key" portion of the field definition in the pipeline definition syntax that is used by the AWS Data Pipeline API. If the field is not set on the object, the condition fails.
         public var fieldName: Swift.String?
         /// Contains a logical operation for comparing the value of a field with a specified value.
@@ -957,12 +959,12 @@ extension DataPipelineClientTypes {
             self.`operator` = `operator`
         }
     }
-
 }
 
 extension DataPipelineClientTypes {
+
     /// Defines the query to run against an object.
-    public struct Query {
+    public struct Query: Swift.Sendable {
         /// List of selectors that define the query. An object must satisfy all of the selectors to match the query.
         public var selectors: [DataPipelineClientTypes.Selector]?
 
@@ -973,11 +975,10 @@ extension DataPipelineClientTypes {
             self.selectors = selectors
         }
     }
-
 }
 
 /// Contains the parameters for QueryObjects.
-public struct QueryObjectsInput {
+public struct QueryObjectsInput: Swift.Sendable {
     /// The maximum number of object names that QueryObjects will return in a single call. The default value is 100.
     public var limit: Swift.Int?
     /// The starting point for the results to be returned. For the first call, this value should be empty. As long as there are more results, continue to call QueryObjects with the marker value from the previous call to retrieve the next set of results.
@@ -1008,7 +1009,7 @@ public struct QueryObjectsInput {
 }
 
 /// Contains the output of QueryObjects.
-public struct QueryObjectsOutput {
+public struct QueryObjectsOutput: Swift.Sendable {
     /// Indicates whether there are more results that can be obtained by a subsequent call.
     public var hasMoreResults: Swift.Bool
     /// The identifiers that match the query selectors.
@@ -1029,7 +1030,7 @@ public struct QueryObjectsOutput {
 }
 
 /// Contains the parameters for RemoveTags.
-public struct RemoveTagsInput {
+public struct RemoveTagsInput: Swift.Sendable {
     /// The ID of the pipeline.
     /// This member is required.
     public var pipelineId: Swift.String?
@@ -1048,13 +1049,13 @@ public struct RemoveTagsInput {
 }
 
 /// Contains the output of RemoveTags.
-public struct RemoveTagsOutput {
+public struct RemoveTagsOutput: Swift.Sendable {
 
     public init() { }
 }
 
 /// Contains the parameters for ReportTaskProgress.
-public struct ReportTaskProgressInput {
+public struct ReportTaskProgressInput: Swift.Sendable {
     /// Key-value pairs that define the properties of the ReportTaskProgressInput object.
     public var fields: [DataPipelineClientTypes.Field]?
     /// The ID of the task assigned to the task runner. This value is provided in the response for [PollForTask].
@@ -1072,7 +1073,7 @@ public struct ReportTaskProgressInput {
 }
 
 /// Contains the output of ReportTaskProgress.
-public struct ReportTaskProgressOutput {
+public struct ReportTaskProgressOutput: Swift.Sendable {
     /// If true, the calling task runner should cancel processing of the task. The task runner does not need to call [SetTaskStatus] for canceled tasks.
     /// This member is required.
     public var canceled: Swift.Bool
@@ -1086,7 +1087,7 @@ public struct ReportTaskProgressOutput {
 }
 
 /// Contains the parameters for ReportTaskRunnerHeartbeat.
-public struct ReportTaskRunnerHeartbeatInput {
+public struct ReportTaskRunnerHeartbeatInput: Swift.Sendable {
     /// The public DNS name of the task runner.
     public var hostname: Swift.String?
     /// The ID of the task runner. This value should be unique across your AWS account. In the case of AWS Data Pipeline Task Runner launched on a resource managed by AWS Data Pipeline, the web service provides a unique identifier when it launches the application. If you have written a custom task runner, you should assign a unique identifier for the task runner.
@@ -1108,7 +1109,7 @@ public struct ReportTaskRunnerHeartbeatInput {
 }
 
 /// Contains the output of ReportTaskRunnerHeartbeat.
-public struct ReportTaskRunnerHeartbeatOutput {
+public struct ReportTaskRunnerHeartbeatOutput: Swift.Sendable {
     /// Indicates whether the calling task runner should terminate.
     /// This member is required.
     public var terminate: Swift.Bool
@@ -1122,7 +1123,7 @@ public struct ReportTaskRunnerHeartbeatOutput {
 }
 
 /// Contains the parameters for SetStatus.
-public struct SetStatusInput {
+public struct SetStatusInput: Swift.Sendable {
     /// The IDs of the objects. The corresponding objects can be either physical or components, but not a mix of both types.
     /// This member is required.
     public var objectIds: [Swift.String]?
@@ -1147,7 +1148,7 @@ public struct SetStatusInput {
 
 extension DataPipelineClientTypes {
 
-    public enum TaskStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum TaskStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case failed
         case `false`
         case finished
@@ -1178,7 +1179,7 @@ extension DataPipelineClientTypes {
 }
 
 /// Contains the parameters for SetTaskStatus.
-public struct SetTaskStatusInput {
+public struct SetTaskStatusInput: Swift.Sendable {
     /// If an error occurred during the task, this value specifies the error code. This value is set on the physical attempt object. It is used to display error information to the user. It should not start with string "Service_" which is reserved by the system.
     public var errorId: Swift.String?
     /// If an error occurred during the task, this value specifies a text description of the error. This value is set on the physical attempt object. It is used to display error information to the user. The web service does not parse this value.
@@ -1209,13 +1210,13 @@ public struct SetTaskStatusInput {
 }
 
 /// Contains the output of SetTaskStatus.
-public struct SetTaskStatusOutput {
+public struct SetTaskStatusOutput: Swift.Sendable {
 
     public init() { }
 }
 
 /// Contains the parameters for ValidatePipelineDefinition.
-public struct ValidatePipelineDefinitionInput {
+public struct ValidatePipelineDefinitionInput: Swift.Sendable {
     /// The parameter objects used with the pipeline.
     public var parameterObjects: [DataPipelineClientTypes.ParameterObject]?
     /// The parameter values used with the pipeline.
@@ -1242,7 +1243,7 @@ public struct ValidatePipelineDefinitionInput {
 }
 
 /// Contains the output of ValidatePipelineDefinition.
-public struct ValidatePipelineDefinitionOutput {
+public struct ValidatePipelineDefinitionOutput: Swift.Sendable {
     /// Indicates whether there were validation errors.
     /// This member is required.
     public var errored: Swift.Bool

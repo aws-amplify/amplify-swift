@@ -57,7 +57,7 @@ public struct AccessDeniedException: ClientRuntime.ModeledError, AWSClientRuntim
 
 extension LocationClientTypes {
 
-    public enum Status: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Status: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         /// List all active API keys.
         case active
         /// List all expired API keys.
@@ -87,8 +87,9 @@ extension LocationClientTypes {
 }
 
 extension LocationClientTypes {
+
     /// Options for filtering API keys.
-    public struct ApiKeyFilter {
+    public struct ApiKeyFilter: Swift.Sendable {
         /// Filter on Active or Expired API keys.
         public var keyStatus: LocationClientTypes.Status?
 
@@ -99,7 +100,6 @@ extension LocationClientTypes {
             self.keyStatus = keyStatus
         }
     }
-
 }
 
 /// The request was unsuccessful because of a conflict.
@@ -204,8 +204,9 @@ public struct ThrottlingException: ClientRuntime.ModeledError, AWSClientRuntime.
 }
 
 extension LocationClientTypes {
+
     /// The input failed to meet the constraints specified by the AWS service in a specified field.
-    public struct ValidationExceptionField {
+    public struct ValidationExceptionField: Swift.Sendable {
         /// A message with the reason for the validation exception error.
         /// This member is required.
         public var message: Swift.String?
@@ -222,12 +223,11 @@ extension LocationClientTypes {
             self.name = name
         }
     }
-
 }
 
 extension LocationClientTypes {
 
-    public enum ValidationExceptionReason: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ValidationExceptionReason: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         /// The input cannot be parsed. For example a required JSON document, ARN identifier, date value, or numeric field cannot be parsed.
         case cannotparse
         /// The input is present and parsable, but it is otherwise invalid. For example, a required numeric argument is outside the allowed range.
@@ -304,8 +304,9 @@ public struct ValidationException: ClientRuntime.ModeledError, AWSClientRuntime.
 }
 
 extension LocationClientTypes {
+
     /// API Restrictions on the allowed actions, resources, and referers for an API key resource.
-    public struct ApiKeyRestrictions {
+    public struct ApiKeyRestrictions: Swift.Sendable {
         /// A list of allowed actions that an API key resource grants permissions to perform. You must have at least one action for each type of resource. For example, if you have a place resource, you must include at least one place action. The following are valid values for the actions.
         ///
         /// * Map actions
@@ -377,10 +378,9 @@ extension LocationClientTypes {
             self.allowResources = allowResources
         }
     }
-
 }
 
-public struct CreateKeyInput {
+public struct CreateKeyInput: Swift.Sendable {
     /// An optional description for the API key resource.
     public var description: Swift.String?
     /// The optional timestamp for when the API key resource will expire in [ ISO 8601](https://www.iso.org/iso-8601-date-and-time-format.html) format: YYYY-MM-DDThh:mm:ss.sssZ. One of NoExpiry or ExpireTime must be set.
@@ -432,7 +432,7 @@ public struct CreateKeyInput {
     }
 }
 
-public struct CreateKeyOutput {
+public struct CreateKeyOutput: Swift.Sendable {
     /// The timestamp for when the API key resource was created in [ ISO 8601](https://www.iso.org/iso-8601-date-and-time-format.html) format: YYYY-MM-DDThh:mm:ss.sssZ.
     /// This member is required.
     public var createTime: Foundation.Date?
@@ -492,7 +492,7 @@ public struct ResourceNotFoundException: ClientRuntime.ModeledError, AWSClientRu
     }
 }
 
-public struct DeleteKeyInput {
+public struct DeleteKeyInput: Swift.Sendable {
     /// ForceDelete bypasses an API key's expiry conditions and deletes the key. Set the parameter true to delete the key or to false to not preemptively delete the API key. Valid values: true, or false. Required: No This action is irreversible. Only use ForceDelete if you are certain the key is no longer in use.
     public var forceDelete: Swift.Bool?
     /// The name of the API key to delete.
@@ -509,12 +509,12 @@ public struct DeleteKeyInput {
     }
 }
 
-public struct DeleteKeyOutput {
+public struct DeleteKeyOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DescribeKeyInput {
+public struct DescribeKeyInput: Swift.Sendable {
     /// The name of the API key resource.
     /// This member is required.
     public var keyName: Swift.String?
@@ -527,7 +527,7 @@ public struct DescribeKeyInput {
     }
 }
 
-public struct DescribeKeyOutput {
+public struct DescribeKeyOutput: Swift.Sendable {
     /// The timestamp for when the API key resource was created in [ ISO 8601](https://www.iso.org/iso-8601-date-and-time-format.html) format: YYYY-MM-DDThh:mm:ss.sssZ.
     /// This member is required.
     public var createTime: Foundation.Date?
@@ -585,7 +585,7 @@ extension DescribeKeyOutput: Swift.CustomDebugStringConvertible {
         "DescribeKeyOutput(createTime: \(Swift.String(describing: createTime)), description: \(Swift.String(describing: description)), expireTime: \(Swift.String(describing: expireTime)), keyArn: \(Swift.String(describing: keyArn)), keyName: \(Swift.String(describing: keyName)), restrictions: \(Swift.String(describing: restrictions)), tags: \(Swift.String(describing: tags)), updateTime: \(Swift.String(describing: updateTime)), key: \"CONTENT_REDACTED\")"}
 }
 
-public struct ListKeysInput {
+public struct ListKeysInput: Swift.Sendable {
     /// Optionally filter the list to only Active or Expired API keys.
     public var filter: LocationClientTypes.ApiKeyFilter?
     /// An optional limit for the number of resources returned in a single call. Default value: 100
@@ -606,8 +606,9 @@ public struct ListKeysInput {
 }
 
 extension LocationClientTypes {
+
     /// An API key resource listed in your Amazon Web Services account.
-    public struct ListKeysResponseEntry {
+    public struct ListKeysResponseEntry: Swift.Sendable {
         /// The timestamp of when the API key was created, in [ ISO 8601](https://www.iso.org/iso-8601-date-and-time-format.html) format: YYYY-MM-DDThh:mm:ss.sssZ.
         /// This member is required.
         public var createTime: Foundation.Date?
@@ -643,10 +644,9 @@ extension LocationClientTypes {
             self.updateTime = updateTime
         }
     }
-
 }
 
-public struct ListKeysOutput {
+public struct ListKeysOutput: Swift.Sendable {
     /// Contains API key resources in your Amazon Web Services account. Details include API key name, allowed referers and timestamp for when the API key will expire.
     /// This member is required.
     public var entries: [LocationClientTypes.ListKeysResponseEntry]?
@@ -663,7 +663,7 @@ public struct ListKeysOutput {
     }
 }
 
-public struct UpdateKeyInput {
+public struct UpdateKeyInput: Swift.Sendable {
     /// Updates the description for the API key resource.
     public var description: Swift.String?
     /// Updates the timestamp for when the API key resource will expire in [ ISO 8601](https://www.iso.org/iso-8601-date-and-time-format.html) format: YYYY-MM-DDThh:mm:ss.sssZ.
@@ -696,7 +696,7 @@ public struct UpdateKeyInput {
     }
 }
 
-public struct UpdateKeyOutput {
+public struct UpdateKeyOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) for the API key resource. Used when you need to specify a resource across all Amazon Web Services.
     ///
     /// * Format example: arn:aws:geo:region:account-id:key/ExampleKey
@@ -721,7 +721,7 @@ public struct UpdateKeyOutput {
     }
 }
 
-public struct AssociateTrackerConsumerInput {
+public struct AssociateTrackerConsumerInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) for the geofence collection to be associated to tracker resource. Used when you need to specify a resource across all Amazon Web Services.
     ///
     /// * Format example: arn:aws:geo:region:account-id:geofence-collection/ExampleGeofenceCollectionConsumer
@@ -741,12 +741,12 @@ public struct AssociateTrackerConsumerInput {
     }
 }
 
-public struct AssociateTrackerConsumerOutput {
+public struct AssociateTrackerConsumerOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct BatchDeleteDevicePositionHistoryInput {
+public struct BatchDeleteDevicePositionHistoryInput: Swift.Sendable {
     /// Devices whose position history you want to delete.
     ///
     /// * For example, for two devices: “DeviceIds” : [DeviceId1,DeviceId2]
@@ -768,7 +768,7 @@ public struct BatchDeleteDevicePositionHistoryInput {
 
 extension LocationClientTypes {
 
-    public enum BatchItemErrorCode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum BatchItemErrorCode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         /// Access to the resource was denied.
         case accessdeniederror
         /// The target resource already exists.
@@ -814,8 +814,9 @@ extension LocationClientTypes {
 }
 
 extension LocationClientTypes {
+
     /// Contains the batch request error details associated with the request.
-    public struct BatchItemError {
+    public struct BatchItemError: Swift.Sendable {
         /// The error code associated with the batch request error.
         public var code: LocationClientTypes.BatchItemErrorCode?
         /// A message with the reason for the batch request error.
@@ -830,12 +831,12 @@ extension LocationClientTypes {
             self.message = message
         }
     }
-
 }
 
 extension LocationClientTypes {
+
     /// Contains the tracker resource details.
-    public struct BatchDeleteDevicePositionHistoryError {
+    public struct BatchDeleteDevicePositionHistoryError: Swift.Sendable {
         /// The ID of the device for this position.
         /// This member is required.
         public var deviceId: Swift.String?
@@ -852,10 +853,9 @@ extension LocationClientTypes {
             self.error = error
         }
     }
-
 }
 
-public struct BatchDeleteDevicePositionHistoryOutput {
+public struct BatchDeleteDevicePositionHistoryOutput: Swift.Sendable {
     /// Contains error details for each device history that failed to delete.
     /// This member is required.
     public var errors: [LocationClientTypes.BatchDeleteDevicePositionHistoryError]?
@@ -868,7 +868,7 @@ public struct BatchDeleteDevicePositionHistoryOutput {
     }
 }
 
-public struct BatchDeleteGeofenceInput {
+public struct BatchDeleteGeofenceInput: Swift.Sendable {
     /// The geofence collection storing the geofences to be deleted.
     /// This member is required.
     public var collectionName: Swift.String?
@@ -887,8 +887,9 @@ public struct BatchDeleteGeofenceInput {
 }
 
 extension LocationClientTypes {
+
     /// Contains error details for each geofence that failed to delete from the geofence collection.
-    public struct BatchDeleteGeofenceError {
+    public struct BatchDeleteGeofenceError: Swift.Sendable {
         /// Contains details associated to the batch error.
         /// This member is required.
         public var error: LocationClientTypes.BatchItemError?
@@ -905,10 +906,9 @@ extension LocationClientTypes {
             self.geofenceId = geofenceId
         }
     }
-
 }
 
-public struct BatchDeleteGeofenceOutput {
+public struct BatchDeleteGeofenceOutput: Swift.Sendable {
     /// Contains error details for each geofence that failed to delete.
     /// This member is required.
     public var errors: [LocationClientTypes.BatchDeleteGeofenceError]?
@@ -922,8 +922,9 @@ public struct BatchDeleteGeofenceOutput {
 }
 
 extension LocationClientTypes {
+
     /// Defines the level of certainty of the position.
-    public struct PositionalAccuracy {
+    public struct PositionalAccuracy: Swift.Sendable {
         /// Estimated maximum distance, in meters, between the measured position and the true position of a device, along the Earth's surface.
         /// This member is required.
         public var horizontal: Swift.Double?
@@ -935,12 +936,12 @@ extension LocationClientTypes {
             self.horizontal = horizontal
         }
     }
-
 }
 
 extension LocationClientTypes {
+
     /// Contains the position update details for a device.
-    public struct DevicePositionUpdate {
+    public struct DevicePositionUpdate: Swift.Sendable {
         /// The accuracy of the device position.
         public var accuracy: LocationClientTypes.PositionalAccuracy?
         /// The device associated to the position update.
@@ -970,7 +971,6 @@ extension LocationClientTypes {
             self.sampleTime = sampleTime
         }
     }
-
 }
 
 extension LocationClientTypes.DevicePositionUpdate: Swift.CustomDebugStringConvertible {
@@ -978,7 +978,7 @@ extension LocationClientTypes.DevicePositionUpdate: Swift.CustomDebugStringConve
         "DevicePositionUpdate(accuracy: \(Swift.String(describing: accuracy)), deviceId: \(Swift.String(describing: deviceId)), sampleTime: \(Swift.String(describing: sampleTime)), position: \"CONTENT_REDACTED\", positionProperties: \"CONTENT_REDACTED\")"}
 }
 
-public struct BatchEvaluateGeofencesInput {
+public struct BatchEvaluateGeofencesInput: Swift.Sendable {
     /// The geofence collection used in evaluating the position of devices against its geofences.
     /// This member is required.
     public var collectionName: Swift.String?
@@ -997,8 +997,9 @@ public struct BatchEvaluateGeofencesInput {
 }
 
 extension LocationClientTypes {
+
     /// Contains error details for each device that failed to evaluate its position against the geofences in a given geofence collection.
-    public struct BatchEvaluateGeofencesError {
+    public struct BatchEvaluateGeofencesError: Swift.Sendable {
         /// The device associated with the position evaluation error.
         /// This member is required.
         public var deviceId: Swift.String?
@@ -1020,10 +1021,9 @@ extension LocationClientTypes {
             self.sampleTime = sampleTime
         }
     }
-
 }
 
-public struct BatchEvaluateGeofencesOutput {
+public struct BatchEvaluateGeofencesOutput: Swift.Sendable {
     /// Contains error details for each device that failed to evaluate its position against the given geofence collection.
     /// This member is required.
     public var errors: [LocationClientTypes.BatchEvaluateGeofencesError]?
@@ -1036,7 +1036,7 @@ public struct BatchEvaluateGeofencesOutput {
     }
 }
 
-public struct BatchGetDevicePositionInput {
+public struct BatchGetDevicePositionInput: Swift.Sendable {
     /// Devices whose position you want to retrieve.
     ///
     /// * For example, for two devices: device-ids=DeviceId1&device-ids=DeviceId2
@@ -1057,8 +1057,9 @@ public struct BatchGetDevicePositionInput {
 }
 
 extension LocationClientTypes {
+
     /// Contains the device position details.
-    public struct DevicePosition {
+    public struct DevicePosition: Swift.Sendable {
         /// The accuracy of the device position.
         public var accuracy: LocationClientTypes.PositionalAccuracy?
         /// The device whose position you retrieved.
@@ -1092,7 +1093,6 @@ extension LocationClientTypes {
             self.sampleTime = sampleTime
         }
     }
-
 }
 
 extension LocationClientTypes.DevicePosition: Swift.CustomDebugStringConvertible {
@@ -1101,8 +1101,9 @@ extension LocationClientTypes.DevicePosition: Swift.CustomDebugStringConvertible
 }
 
 extension LocationClientTypes {
+
     /// Contains error details for each device that didn't return a position.
-    public struct BatchGetDevicePositionError {
+    public struct BatchGetDevicePositionError: Swift.Sendable {
         /// The ID of the device that didn't return a position.
         /// This member is required.
         public var deviceId: Swift.String?
@@ -1119,10 +1120,9 @@ extension LocationClientTypes {
             self.error = error
         }
     }
-
 }
 
-public struct BatchGetDevicePositionOutput {
+public struct BatchGetDevicePositionOutput: Swift.Sendable {
     /// Contains device position details such as the device ID, position, and timestamps for when the position was received and sampled.
     /// This member is required.
     public var devicePositions: [LocationClientTypes.DevicePosition]?
@@ -1141,8 +1141,9 @@ public struct BatchGetDevicePositionOutput {
 }
 
 extension LocationClientTypes {
+
     /// A circle on the earth, as defined by a center point and a radius.
-    public struct Circle {
+    public struct Circle: Swift.Sendable {
         /// A single point geometry, specifying the center of the circle, using [WGS 84](https://gisgeography.com/wgs84-world-geodetic-system/) coordinates, in the form [longitude, latitude].
         /// This member is required.
         public var center: [Swift.Double]?
@@ -1159,7 +1160,6 @@ extension LocationClientTypes {
             self.radius = radius
         }
     }
-
 }
 
 extension LocationClientTypes.Circle: Swift.CustomDebugStringConvertible {
@@ -1169,8 +1169,9 @@ extension LocationClientTypes.Circle: Swift.CustomDebugStringConvertible {
 }
 
 extension LocationClientTypes {
+
     /// Contains the geofence geometry details. A geofence geometry is made up of either a polygon or a circle. Can be a polygon, a circle or a polygon encoded in Geobuf format. Including multiple selections will return a validation error. Amazon Location doesn't currently support polygons with holes, multipolygons, polygons that are wound clockwise, or that cross the antimeridian.
-    public struct GeofenceGeometry {
+    public struct GeofenceGeometry: Swift.Sendable {
         /// A circle on the earth, as defined by a center point and a radius.
         public var circle: LocationClientTypes.Circle?
         /// Geobuf is a compact binary encoding for geographic data that provides lossless compression of GeoJSON polygons. The Geobuf must be Base64-encoded. A polygon in Geobuf format can have up to 100,000 vertices.
@@ -1189,7 +1190,6 @@ extension LocationClientTypes {
             self.polygon = polygon
         }
     }
-
 }
 
 extension LocationClientTypes.GeofenceGeometry: Swift.CustomDebugStringConvertible {
@@ -1198,8 +1198,9 @@ extension LocationClientTypes.GeofenceGeometry: Swift.CustomDebugStringConvertib
 }
 
 extension LocationClientTypes {
+
     /// Contains geofence geometry details.
-    public struct BatchPutGeofenceRequestEntry {
+    public struct BatchPutGeofenceRequestEntry: Swift.Sendable {
         /// The identifier for the geofence to be stored in a given geofence collection.
         /// This member is required.
         public var geofenceId: Swift.String?
@@ -1220,7 +1221,6 @@ extension LocationClientTypes {
             self.geometry = geometry
         }
     }
-
 }
 
 extension LocationClientTypes.BatchPutGeofenceRequestEntry: Swift.CustomDebugStringConvertible {
@@ -1228,7 +1228,7 @@ extension LocationClientTypes.BatchPutGeofenceRequestEntry: Swift.CustomDebugStr
         "BatchPutGeofenceRequestEntry(geofenceId: \(Swift.String(describing: geofenceId)), geometry: \(Swift.String(describing: geometry)), geofenceProperties: \"CONTENT_REDACTED\")"}
 }
 
-public struct BatchPutGeofenceInput {
+public struct BatchPutGeofenceInput: Swift.Sendable {
     /// The geofence collection storing the geofences.
     /// This member is required.
     public var collectionName: Swift.String?
@@ -1247,8 +1247,9 @@ public struct BatchPutGeofenceInput {
 }
 
 extension LocationClientTypes {
+
     /// Contains error details for each geofence that failed to be stored in a given geofence collection.
-    public struct BatchPutGeofenceError {
+    public struct BatchPutGeofenceError: Swift.Sendable {
         /// Contains details associated to the batch error.
         /// This member is required.
         public var error: LocationClientTypes.BatchItemError?
@@ -1265,12 +1266,12 @@ extension LocationClientTypes {
             self.geofenceId = geofenceId
         }
     }
-
 }
 
 extension LocationClientTypes {
+
     /// Contains a summary of each geofence that was successfully stored in a given geofence collection.
-    public struct BatchPutGeofenceSuccess {
+    public struct BatchPutGeofenceSuccess: Swift.Sendable {
         /// The timestamp for when the geofence was stored in a geofence collection in [ISO 8601](https://www.iso.org/iso-8601-date-and-time-format.html) format: YYYY-MM-DDThh:mm:ss.sssZ
         /// This member is required.
         public var createTime: Foundation.Date?
@@ -1292,10 +1293,9 @@ extension LocationClientTypes {
             self.updateTime = updateTime
         }
     }
-
 }
 
-public struct BatchPutGeofenceOutput {
+public struct BatchPutGeofenceOutput: Swift.Sendable {
     /// Contains additional error details for each geofence that failed to be stored in a geofence collection.
     /// This member is required.
     public var errors: [LocationClientTypes.BatchPutGeofenceError]?
@@ -1313,7 +1313,7 @@ public struct BatchPutGeofenceOutput {
     }
 }
 
-public struct BatchUpdateDevicePositionInput {
+public struct BatchUpdateDevicePositionInput: Swift.Sendable {
     /// The name of the tracker resource to update.
     /// This member is required.
     public var trackerName: Swift.String?
@@ -1332,8 +1332,9 @@ public struct BatchUpdateDevicePositionInput {
 }
 
 extension LocationClientTypes {
+
     /// Contains error details for each device that failed to update its position.
-    public struct BatchUpdateDevicePositionError {
+    public struct BatchUpdateDevicePositionError: Swift.Sendable {
         /// The device associated with the failed location update.
         /// This member is required.
         public var deviceId: Swift.String?
@@ -1355,10 +1356,9 @@ extension LocationClientTypes {
             self.sampleTime = sampleTime
         }
     }
-
 }
 
-public struct BatchUpdateDevicePositionOutput {
+public struct BatchUpdateDevicePositionOutput: Swift.Sendable {
     /// Contains error details for each device that failed to update its position.
     /// This member is required.
     public var errors: [LocationClientTypes.BatchUpdateDevicePositionError]?
@@ -1372,8 +1372,9 @@ public struct BatchUpdateDevicePositionOutput {
 }
 
 extension LocationClientTypes {
+
     /// Contains details about additional route preferences for requests that specify TravelMode as Car.
-    public struct CalculateRouteCarModeOptions {
+    public struct CalculateRouteCarModeOptions: Swift.Sendable {
         /// Avoids ferries when calculating routes. Default Value: false Valid Values: false | true
         public var avoidFerries: Swift.Bool?
         /// Avoids tolls when calculating routes. Default Value: false Valid Values: false | true
@@ -1388,12 +1389,11 @@ extension LocationClientTypes {
             self.avoidTolls = avoidTolls
         }
     }
-
 }
 
 extension LocationClientTypes {
 
-    public enum DistanceUnit: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DistanceUnit: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case kilometers
         case miles
         case sdkUnknown(Swift.String)
@@ -1422,7 +1422,7 @@ extension LocationClientTypes {
 
 extension LocationClientTypes {
 
-    public enum OptimizationMode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum OptimizationMode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case fastestroute
         case shortestroute
         case sdkUnknown(Swift.String)
@@ -1451,7 +1451,7 @@ extension LocationClientTypes {
 
 extension LocationClientTypes {
 
-    public enum TravelMode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum TravelMode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case bicycle
         case car
         case motorcycle
@@ -1489,7 +1489,7 @@ extension LocationClientTypes {
 
 extension LocationClientTypes {
 
-    public enum DimensionUnit: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DimensionUnit: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case feet
         case meters
         case sdkUnknown(Swift.String)
@@ -1517,8 +1517,9 @@ extension LocationClientTypes {
 }
 
 extension LocationClientTypes {
+
     /// Contains details about the truck dimensions in the unit of measurement that you specify. Used to filter out roads that can't support or allow the specified dimensions for requests that specify TravelMode as Truck.
-    public struct TruckDimensions {
+    public struct TruckDimensions: Swift.Sendable {
         /// The height of the truck.
         ///
         /// * For example, 4.5.
@@ -1556,12 +1557,11 @@ extension LocationClientTypes {
             self.width = width
         }
     }
-
 }
 
 extension LocationClientTypes {
 
-    public enum VehicleWeightUnit: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum VehicleWeightUnit: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case kilograms
         case pounds
         case sdkUnknown(Swift.String)
@@ -1589,8 +1589,9 @@ extension LocationClientTypes {
 }
 
 extension LocationClientTypes {
+
     /// Contains details about the truck's weight specifications. Used to avoid roads that can't support or allow the total weight for requests that specify TravelMode as Truck.
-    public struct TruckWeight {
+    public struct TruckWeight: Swift.Sendable {
         /// The total weight of the truck.
         ///
         /// * For example, 3500.
@@ -1607,12 +1608,12 @@ extension LocationClientTypes {
             self.unit = unit
         }
     }
-
 }
 
 extension LocationClientTypes {
+
     /// Contains details about additional route preferences for requests that specify TravelMode as Truck.
-    public struct CalculateRouteTruckModeOptions {
+    public struct CalculateRouteTruckModeOptions: Swift.Sendable {
         /// Avoids ferries when calculating routes. Default Value: false Valid Values: false | true
         public var avoidFerries: Swift.Bool?
         /// Avoids tolls when calculating routes. Default Value: false Valid Values: false | true
@@ -1635,10 +1636,9 @@ extension LocationClientTypes {
             self.weight = weight
         }
     }
-
 }
 
-public struct CalculateRouteInput {
+public struct CalculateRouteInput: Swift.Sendable {
     /// Specifies the desired time of arrival. Uses the given time to calculate the route. Otherwise, the best time of day to travel with the best traffic conditions is used to calculate the route. ArrivalTime is not supported Esri.
     public var arrivalTime: Foundation.Date?
     /// The name of the route calculator resource that you want to use to calculate the route.
@@ -1735,8 +1735,9 @@ extension CalculateRouteInput: Swift.CustomDebugStringConvertible {
 }
 
 extension LocationClientTypes {
+
     /// Contains the geometry details for each path between a pair of positions. Used in plotting a route leg on a map.
-    public struct LegGeometry {
+    public struct LegGeometry: Swift.Sendable {
         /// An ordered list of positions used to plot a route on a map. The first position is closest to the start position for the leg, and the last position is the closest to the end position for the leg.
         ///
         /// * For example, [[-123.117, 49.284],[-123.115, 49.285],[-123.115, 49.285]]
@@ -1749,7 +1750,6 @@ extension LocationClientTypes {
             self.lineString = lineString
         }
     }
-
 }
 
 extension LocationClientTypes.LegGeometry: Swift.CustomDebugStringConvertible {
@@ -1758,8 +1758,9 @@ extension LocationClientTypes.LegGeometry: Swift.CustomDebugStringConvertible {
 }
 
 extension LocationClientTypes {
+
     /// Represents an element of a leg within a route. A step contains instructions for how to move to the next step in the leg.
-    public struct Step {
+    public struct Step: Swift.Sendable {
         /// The travel distance between the step's StartPosition and EndPosition.
         /// This member is required.
         public var distance: Swift.Double?
@@ -1790,7 +1791,6 @@ extension LocationClientTypes {
             self.startPosition = startPosition
         }
     }
-
 }
 
 extension LocationClientTypes.Step: Swift.CustomDebugStringConvertible {
@@ -1799,6 +1799,7 @@ extension LocationClientTypes.Step: Swift.CustomDebugStringConvertible {
 }
 
 extension LocationClientTypes {
+
     /// Contains the calculated route's details for each path between a pair of positions. The number of legs returned corresponds to one fewer than the total number of positions in the request. For example, a route with a departure position and destination position returns one leg with the positions [snapped to a nearby road](https://docs.aws.amazon.com/location/latest/developerguide/snap-to-nearby-road.html):
     ///
     /// * The StartPosition is the departure position.
@@ -1811,7 +1812,7 @@ extension LocationClientTypes {
     /// * Leg 1: The StartPosition is the departure position . The EndPosition is the waypoint positon.
     ///
     /// * Leg 2: The StartPosition is the waypoint position. The EndPosition is the destination position.
-    public struct Leg {
+    public struct Leg: Swift.Sendable {
         /// The distance between the leg's StartPosition and EndPosition along a calculated route.
         ///
         /// * The default measurement is Kilometers unless the request specifies a DistanceUnit of Miles.
@@ -1849,7 +1850,6 @@ extension LocationClientTypes {
             self.steps = steps
         }
     }
-
 }
 
 extension LocationClientTypes.Leg: Swift.CustomDebugStringConvertible {
@@ -1858,8 +1858,9 @@ extension LocationClientTypes.Leg: Swift.CustomDebugStringConvertible {
 }
 
 extension LocationClientTypes {
+
     /// A summary of the calculated route.
-    public struct CalculateRouteSummary {
+    public struct CalculateRouteSummary: Swift.Sendable {
         /// The data provider of traffic and road network data used to calculate the route. Indicates one of the available providers:
         ///
         /// * Esri
@@ -1911,7 +1912,6 @@ extension LocationClientTypes {
             self.routeBBox = routeBBox
         }
     }
-
 }
 
 extension LocationClientTypes.CalculateRouteSummary: Swift.CustomDebugStringConvertible {
@@ -1920,7 +1920,7 @@ extension LocationClientTypes.CalculateRouteSummary: Swift.CustomDebugStringConv
 }
 
 /// Returns the result of the route calculation. Metadata includes legs and route summary.
-public struct CalculateRouteOutput {
+public struct CalculateRouteOutput: Swift.Sendable {
     /// Contains details about each path between a pair of positions included along a route such as: StartPosition, EndPosition, Distance, DurationSeconds, Geometry, and Steps. The number of legs returned corresponds to one fewer than the total number of positions in the request. For example, a route with a departure position and destination position returns one leg with the positions [snapped to a nearby road](https://docs.aws.amazon.com/location/latest/developerguide/snap-to-nearby-road.html):
     ///
     /// * The StartPosition is the departure position.
@@ -1949,7 +1949,7 @@ public struct CalculateRouteOutput {
     }
 }
 
-public struct CalculateRouteMatrixInput {
+public struct CalculateRouteMatrixInput: Swift.Sendable {
     /// The name of the route calculator resource that you want to use to calculate the route matrix.
     /// This member is required.
     public var calculatorName: Swift.String?
@@ -2016,7 +2016,7 @@ extension CalculateRouteMatrixInput: Swift.CustomDebugStringConvertible {
 
 extension LocationClientTypes {
 
-    public enum RouteMatrixErrorCode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum RouteMatrixErrorCode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case departurepositionnotfound
         case destinationpositionnotfound
         case othervalidationerror
@@ -2056,6 +2056,7 @@ extension LocationClientTypes {
 }
 
 extension LocationClientTypes {
+
     /// An error corresponding to the calculation of a route between the DeparturePosition and DestinationPosition. The error code can be one of the following:
     ///
     /// * RouteNotFound - Unable to find a valid route with the given parameters.
@@ -2084,7 +2085,7 @@ extension LocationClientTypes {
     ///
     ///
     /// * OtherValidationError - The given inputs were not valid or a route was not found. More information is given in the error Message
-    public struct RouteMatrixEntryError {
+    public struct RouteMatrixEntryError: Swift.Sendable {
         /// The type of error which occurred for the route calculation.
         /// This member is required.
         public var code: LocationClientTypes.RouteMatrixErrorCode?
@@ -2100,12 +2101,12 @@ extension LocationClientTypes {
             self.message = message
         }
     }
-
 }
 
 extension LocationClientTypes {
+
     /// The result for the calculated route of one DeparturePositionDestinationPosition pair.
-    public struct RouteMatrixEntry {
+    public struct RouteMatrixEntry: Swift.Sendable {
         /// The total distance of travel for the route.
         public var distance: Swift.Double?
         /// The expected duration of travel for the route.
@@ -2124,12 +2125,12 @@ extension LocationClientTypes {
             self.error = error
         }
     }
-
 }
 
 extension LocationClientTypes {
+
     /// A summary of the calculated route matrix.
-    public struct CalculateRouteMatrixSummary {
+    public struct CalculateRouteMatrixSummary: Swift.Sendable {
         /// The data provider of traffic and road network data used to calculate the routes. Indicates one of the available providers:
         ///
         /// * Esri
@@ -2165,11 +2166,10 @@ extension LocationClientTypes {
             self.routeCount = routeCount
         }
     }
-
 }
 
 /// Returns the result of the route matrix calculation.
-public struct CalculateRouteMatrixOutput {
+public struct CalculateRouteMatrixOutput: Swift.Sendable {
     /// The calculated route matrix containing the results for all pairs of DeparturePositions to DestinationPositions. Each row corresponds to one entry in DeparturePositions. Each entry in the row corresponds to the route from that entry in DeparturePositions to an entry in DestinationPositions.
     /// This member is required.
     public var routeMatrix: [[LocationClientTypes.RouteMatrixEntry]]?
@@ -2201,8 +2201,9 @@ extension CalculateRouteMatrixOutput: Swift.CustomDebugStringConvertible {
 }
 
 extension LocationClientTypes {
+
     /// LTE local identification information (local ID).
-    public struct LteLocalId {
+    public struct LteLocalId: Swift.Sendable {
         /// E-UTRA (Evolved Universal Terrestrial Radio Access) absolute radio frequency channel number (EARFCN).
         /// This member is required.
         public var earfcn: Swift.Int
@@ -2219,12 +2220,12 @@ extension LocationClientTypes {
             self.pci = pci
         }
     }
-
 }
 
 extension LocationClientTypes {
+
     /// LTE network measurements.
-    public struct LteNetworkMeasurements {
+    public struct LteNetworkMeasurements: Swift.Sendable {
         /// E-UTRAN Cell Identifier (ECI).
         /// This member is required.
         public var cellId: Swift.Int
@@ -2254,12 +2255,12 @@ extension LocationClientTypes {
             self.rsrq = rsrq
         }
     }
-
 }
 
 extension LocationClientTypes {
+
     /// Details about the Long-Term Evolution (LTE) network.
-    public struct LteCellDetails {
+    public struct LteCellDetails: Swift.Sendable {
         /// The E-UTRAN Cell Identifier (ECI).
         /// This member is required.
         public var cellId: Swift.Int
@@ -2309,12 +2310,12 @@ extension LocationClientTypes {
             self.timingAdvance = timingAdvance
         }
     }
-
 }
 
 extension LocationClientTypes {
+
     /// The cellular network communication infrastructure that the device uses.
-    public struct CellSignals {
+    public struct CellSignals: Swift.Sendable {
         /// Information about the Long-Term Evolution (LTE) network the device is connected to.
         /// This member is required.
         public var lteCellDetails: [LocationClientTypes.LteCellDetails]?
@@ -2326,10 +2327,9 @@ extension LocationClientTypes {
             self.lteCellDetails = lteCellDetails
         }
     }
-
 }
 
-public struct CreateGeofenceCollectionInput {
+public struct CreateGeofenceCollectionInput: Swift.Sendable {
     /// A custom name for the geofence collection. Requirements:
     ///
     /// * Contain only alphanumeric characters (A–Z, a–z, 0–9), hyphens (-), periods (.), and underscores (_).
@@ -2372,7 +2372,7 @@ public struct CreateGeofenceCollectionInput {
     }
 }
 
-public struct CreateGeofenceCollectionOutput {
+public struct CreateGeofenceCollectionOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) for the geofence collection resource. Used when you need to specify a resource across all Amazon Web Services.
     ///
     /// * Format example: arn:aws:geo:region:account-id:geofence-collection/ExampleGeofenceCollection
@@ -2398,8 +2398,9 @@ public struct CreateGeofenceCollectionOutput {
 }
 
 extension LocationClientTypes {
+
     /// Specifies the map tile style selected from an available provider.
-    public struct MapConfiguration {
+    public struct MapConfiguration: Swift.Sendable {
         /// Specifies the custom layers for the style. Leave unset to not enable any custom layer, or, for styles that support custom layers, you can enable layer(s), such as POI layer for the VectorEsriNavigation style. Default is unset. Not all map resources or styles support custom layers. See Custom Layers for more information.
         public var customLayers: [Swift.String]?
         /// Specifies the political view for the style. Leave unset to not use a political view, or, for styles that support specific political views, you can choose a view, such as IND for the Indian view. Default is unset. Not all map resources or styles support political view styles. See [Political views](https://docs.aws.amazon.com/location/latest/developerguide/map-concepts.html#political-views) for more information.
@@ -2462,10 +2463,9 @@ extension LocationClientTypes {
             self.style = style
         }
     }
-
 }
 
-public struct CreateMapInput {
+public struct CreateMapInput: Swift.Sendable {
     /// Specifies the MapConfiguration, including the map style, for the map resource that you create. The map style defines the look of maps and the data provider for your map resource.
     /// This member is required.
     public var configuration: LocationClientTypes.MapConfiguration?
@@ -2509,7 +2509,7 @@ public struct CreateMapInput {
     }
 }
 
-public struct CreateMapOutput {
+public struct CreateMapOutput: Swift.Sendable {
     /// The timestamp for when the map resource was created in [ISO 8601](https://www.iso.org/iso-8601-date-and-time-format.html) format: YYYY-MM-DDThh:mm:ss.sssZ.
     /// This member is required.
     public var createTime: Foundation.Date?
@@ -2536,7 +2536,7 @@ public struct CreateMapOutput {
 
 extension LocationClientTypes {
 
-    public enum IntendedUse: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum IntendedUse: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         /// Indicates that results of the operation are for single use, e.g., displaying results on a map or presenting options to users.
         case singleuse
         /// Indicates that results of the operation may be stored locally.
@@ -2566,6 +2566,7 @@ extension LocationClientTypes {
 }
 
 extension LocationClientTypes {
+
     /// Specifies the data storage option chosen for requesting Places. When using Amazon Location Places:
     ///
     /// * If using HERE Technologies as a data provider, you can't store results for locations in Japan by setting IntendedUse to Storage. parameter.
@@ -2574,7 +2575,7 @@ extension LocationClientTypes {
     ///
     ///
     /// For more information, see the [AWS Service Terms](https://aws.amazon.com/service-terms/) for Amazon Location Service.
-    public struct DataSourceConfiguration {
+    public struct DataSourceConfiguration: Swift.Sendable {
         /// Specifies how the results of an operation will be stored by the caller. Valid values include:
         ///
         /// * SingleUse specifies that the results won't be stored.
@@ -2592,10 +2593,9 @@ extension LocationClientTypes {
             self.intendedUse = intendedUse
         }
     }
-
 }
 
-public struct CreatePlaceIndexInput {
+public struct CreatePlaceIndexInput: Swift.Sendable {
     /// Specifies the geospatial data provider for the new place index. This field is case-sensitive. Enter the valid values as shown. For example, entering HERE returns an error. Valid values include:
     ///
     /// * Esri – For additional information about [Esri](https://docs.aws.amazon.com/location/latest/developerguide/esri.html)'s coverage in your region of interest, see [Esri details on geocoding coverage](https://developers.arcgis.com/rest/geocode/api-reference/geocode-coverage.htm).
@@ -2652,7 +2652,7 @@ public struct CreatePlaceIndexInput {
     }
 }
 
-public struct CreatePlaceIndexOutput {
+public struct CreatePlaceIndexOutput: Swift.Sendable {
     /// The timestamp for when the place index resource was created in [ISO 8601](https://www.iso.org/iso-8601-date-and-time-format.html) format: YYYY-MM-DDThh:mm:ss.sssZ.
     /// This member is required.
     public var createTime: Foundation.Date?
@@ -2677,7 +2677,7 @@ public struct CreatePlaceIndexOutput {
     }
 }
 
-public struct CreateRouteCalculatorInput {
+public struct CreateRouteCalculatorInput: Swift.Sendable {
     /// The name of the route calculator resource. Requirements:
     ///
     /// * Can use alphanumeric characters (A–Z, a–z, 0–9) , hyphens (-), periods (.), and underscores (_).
@@ -2735,7 +2735,7 @@ public struct CreateRouteCalculatorInput {
     }
 }
 
-public struct CreateRouteCalculatorOutput {
+public struct CreateRouteCalculatorOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) for the route calculator resource. Use the ARN when you specify a resource across all Amazon Web Services.
     ///
     /// * Format example: arn:aws:geo:region:account-id:route-calculator/ExampleCalculator
@@ -2766,7 +2766,7 @@ public struct CreateRouteCalculatorOutput {
 
 extension LocationClientTypes {
 
-    public enum PositionFiltering: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum PositionFiltering: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         /// Filters device position updates according to their accuracy
         case accuracybased
         /// Filters device position updates according to the distance between them
@@ -2799,7 +2799,7 @@ extension LocationClientTypes {
     }
 }
 
-public struct CreateTrackerInput {
+public struct CreateTrackerInput: Swift.Sendable {
     /// An optional description for the tracker resource.
     public var description: Swift.String?
     /// Whether to enable position UPDATE events from this tracker to be sent to EventBridge. You do not need enable this feature to get ENTER and EXIT events for geofences with this tracker. Those events are always sent to EventBridge.
@@ -2863,7 +2863,7 @@ public struct CreateTrackerInput {
     }
 }
 
-public struct CreateTrackerOutput {
+public struct CreateTrackerOutput: Swift.Sendable {
     /// The timestamp for when the tracker resource was created in [ ISO 8601](https://www.iso.org/iso-8601-date-and-time-format.html) format: YYYY-MM-DDThh:mm:ss.sssZ.
     /// This member is required.
     public var createTime: Foundation.Date?
@@ -2888,7 +2888,7 @@ public struct CreateTrackerOutput {
     }
 }
 
-public struct DeleteGeofenceCollectionInput {
+public struct DeleteGeofenceCollectionInput: Swift.Sendable {
     /// The name of the geofence collection to be deleted.
     /// This member is required.
     public var collectionName: Swift.String?
@@ -2901,12 +2901,12 @@ public struct DeleteGeofenceCollectionInput {
     }
 }
 
-public struct DeleteGeofenceCollectionOutput {
+public struct DeleteGeofenceCollectionOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteMapInput {
+public struct DeleteMapInput: Swift.Sendable {
     /// The name of the map resource to be deleted.
     /// This member is required.
     public var mapName: Swift.String?
@@ -2919,12 +2919,12 @@ public struct DeleteMapInput {
     }
 }
 
-public struct DeleteMapOutput {
+public struct DeleteMapOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeletePlaceIndexInput {
+public struct DeletePlaceIndexInput: Swift.Sendable {
     /// The name of the place index resource to be deleted.
     /// This member is required.
     public var indexName: Swift.String?
@@ -2937,12 +2937,12 @@ public struct DeletePlaceIndexInput {
     }
 }
 
-public struct DeletePlaceIndexOutput {
+public struct DeletePlaceIndexOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteRouteCalculatorInput {
+public struct DeleteRouteCalculatorInput: Swift.Sendable {
     /// The name of the route calculator resource to be deleted.
     /// This member is required.
     public var calculatorName: Swift.String?
@@ -2955,12 +2955,12 @@ public struct DeleteRouteCalculatorInput {
     }
 }
 
-public struct DeleteRouteCalculatorOutput {
+public struct DeleteRouteCalculatorOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteTrackerInput {
+public struct DeleteTrackerInput: Swift.Sendable {
     /// The name of the tracker resource to be deleted.
     /// This member is required.
     public var trackerName: Swift.String?
@@ -2973,12 +2973,12 @@ public struct DeleteTrackerInput {
     }
 }
 
-public struct DeleteTrackerOutput {
+public struct DeleteTrackerOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DescribeGeofenceCollectionInput {
+public struct DescribeGeofenceCollectionInput: Swift.Sendable {
     /// The name of the geofence collection.
     /// This member is required.
     public var collectionName: Swift.String?
@@ -2991,7 +2991,7 @@ public struct DescribeGeofenceCollectionInput {
     }
 }
 
-public struct DescribeGeofenceCollectionOutput {
+public struct DescribeGeofenceCollectionOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) for the geofence collection resource. Used when you need to specify a resource across all Amazon Web Services.
     ///
     /// * Format example: arn:aws:geo:region:account-id:geofence-collection/ExampleGeofenceCollection
@@ -3038,7 +3038,7 @@ public struct DescribeGeofenceCollectionOutput {
     }
 }
 
-public struct DescribeMapInput {
+public struct DescribeMapInput: Swift.Sendable {
     /// The name of the map resource.
     /// This member is required.
     public var mapName: Swift.String?
@@ -3051,7 +3051,7 @@ public struct DescribeMapInput {
     }
 }
 
-public struct DescribeMapOutput {
+public struct DescribeMapOutput: Swift.Sendable {
     /// Specifies the map tile style selected from a partner data provider.
     /// This member is required.
     public var configuration: LocationClientTypes.MapConfiguration?
@@ -3100,7 +3100,7 @@ public struct DescribeMapOutput {
     }
 }
 
-public struct DescribePlaceIndexInput {
+public struct DescribePlaceIndexInput: Swift.Sendable {
     /// The name of the place index resource.
     /// This member is required.
     public var indexName: Swift.String?
@@ -3113,7 +3113,7 @@ public struct DescribePlaceIndexInput {
     }
 }
 
-public struct DescribePlaceIndexOutput {
+public struct DescribePlaceIndexOutput: Swift.Sendable {
     /// The timestamp for when the place index resource was created in [ISO 8601](https://www.iso.org/iso-8601-date-and-time-format.html) format: YYYY-MM-DDThh:mm:ss.sssZ.
     /// This member is required.
     public var createTime: Foundation.Date?
@@ -3171,7 +3171,7 @@ public struct DescribePlaceIndexOutput {
     }
 }
 
-public struct DescribeRouteCalculatorInput {
+public struct DescribeRouteCalculatorInput: Swift.Sendable {
     /// The name of the route calculator resource.
     /// This member is required.
     public var calculatorName: Swift.String?
@@ -3184,7 +3184,7 @@ public struct DescribeRouteCalculatorInput {
     }
 }
 
-public struct DescribeRouteCalculatorOutput {
+public struct DescribeRouteCalculatorOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) for the Route calculator resource. Use the ARN when you specify a resource across Amazon Web Services.
     ///
     /// * Format example: arn:aws:geo:region:account-id:route-calculator/ExampleCalculator
@@ -3241,7 +3241,7 @@ public struct DescribeRouteCalculatorOutput {
     }
 }
 
-public struct DescribeTrackerInput {
+public struct DescribeTrackerInput: Swift.Sendable {
     /// The name of the tracker resource.
     /// This member is required.
     public var trackerName: Swift.String?
@@ -3254,7 +3254,7 @@ public struct DescribeTrackerInput {
     }
 }
 
-public struct DescribeTrackerOutput {
+public struct DescribeTrackerOutput: Swift.Sendable {
     /// The timestamp for when the tracker resource was created in [ ISO 8601](https://www.iso.org/iso-8601-date-and-time-format.html) format: YYYY-MM-DDThh:mm:ss.sssZ.
     /// This member is required.
     public var createTime: Foundation.Date?
@@ -3310,8 +3310,9 @@ public struct DescribeTrackerOutput {
 }
 
 extension LocationClientTypes {
+
     /// Wi-Fi access point.
-    public struct WiFiAccessPoint {
+    public struct WiFiAccessPoint: Swift.Sendable {
         /// Medium access control address (Mac).
         /// This member is required.
         public var macAddress: Swift.String?
@@ -3328,12 +3329,12 @@ extension LocationClientTypes {
             self.rss = rss
         }
     }
-
 }
 
 extension LocationClientTypes {
+
     /// The device's position, IP address, and Wi-Fi access points.
-    public struct DeviceState {
+    public struct DeviceState: Swift.Sendable {
         /// Defines the level of certainty of the position.
         public var accuracy: LocationClientTypes.PositionalAccuracy?
         /// The cellular network infrastructure that the device is connected to.
@@ -3371,7 +3372,6 @@ extension LocationClientTypes {
             self.wiFiAccessPoints = wiFiAccessPoints
         }
     }
-
 }
 
 extension LocationClientTypes.DeviceState: Swift.CustomDebugStringConvertible {
@@ -3379,7 +3379,7 @@ extension LocationClientTypes.DeviceState: Swift.CustomDebugStringConvertible {
         "DeviceState(accuracy: \(Swift.String(describing: accuracy)), cellSignals: \(Swift.String(describing: cellSignals)), deviceId: \(Swift.String(describing: deviceId)), ipv4Address: \(Swift.String(describing: ipv4Address)), sampleTime: \(Swift.String(describing: sampleTime)), wiFiAccessPoints: \(Swift.String(describing: wiFiAccessPoints)), position: \"CONTENT_REDACTED\")"}
 }
 
-public struct DisassociateTrackerConsumerInput {
+public struct DisassociateTrackerConsumerInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) for the geofence collection to be disassociated from the tracker resource. Used when you need to specify a resource across all Amazon Web Services.
     ///
     /// * Format example: arn:aws:geo:region:account-id:geofence-collection/ExampleGeofenceCollectionConsumer
@@ -3399,14 +3399,14 @@ public struct DisassociateTrackerConsumerInput {
     }
 }
 
-public struct DisassociateTrackerConsumerOutput {
+public struct DisassociateTrackerConsumerOutput: Swift.Sendable {
 
     public init() { }
 }
 
 extension LocationClientTypes {
 
-    public enum ForecastedGeofenceEventType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ForecastedGeofenceEventType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         /// This event type signifies that a device is forecasted to enter the geofence
         case enter
         /// This event type signifies that a device is forecasted to exit the geofence
@@ -3440,8 +3440,9 @@ extension LocationClientTypes {
 }
 
 extension LocationClientTypes {
+
     /// A forecasted event represents a geofence event in relation to the requested device state, that may occur given the provided device state and time horizon.
-    public struct ForecastedEvent {
+    public struct ForecastedEvent: Swift.Sendable {
         /// The forecasted event identifier.
         /// This member is required.
         public var eventId: Swift.String?
@@ -3481,7 +3482,6 @@ extension LocationClientTypes {
             self.nearestDistance = nearestDistance
         }
     }
-
 }
 
 extension LocationClientTypes.ForecastedEvent: Swift.CustomDebugStringConvertible {
@@ -3490,8 +3490,9 @@ extension LocationClientTypes.ForecastedEvent: Swift.CustomDebugStringConvertibl
 }
 
 extension LocationClientTypes {
+
     /// The device's position, IP address, and WiFi access points.
-    public struct ForecastGeofenceEventsDeviceState {
+    public struct ForecastGeofenceEventsDeviceState: Swift.Sendable {
         /// The device's position.
         /// This member is required.
         public var position: [Swift.Double]?
@@ -3507,7 +3508,6 @@ extension LocationClientTypes {
             self.speed = speed
         }
     }
-
 }
 
 extension LocationClientTypes.ForecastGeofenceEventsDeviceState: Swift.CustomDebugStringConvertible {
@@ -3517,7 +3517,7 @@ extension LocationClientTypes.ForecastGeofenceEventsDeviceState: Swift.CustomDeb
 
 extension LocationClientTypes {
 
-    public enum SpeedUnit: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SpeedUnit: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case kilometersperhour
         case milesperhour
         case sdkUnknown(Swift.String)
@@ -3544,7 +3544,7 @@ extension LocationClientTypes {
     }
 }
 
-public struct ForecastGeofenceEventsInput {
+public struct ForecastGeofenceEventsInput: Swift.Sendable {
     /// The name of the geofence collection.
     /// This member is required.
     public var collectionName: Swift.String?
@@ -3582,7 +3582,7 @@ public struct ForecastGeofenceEventsInput {
     }
 }
 
-public struct ForecastGeofenceEventsOutput {
+public struct ForecastGeofenceEventsOutput: Swift.Sendable {
     /// The distance unit for the forecasted events.
     /// This member is required.
     public var distanceUnit: LocationClientTypes.DistanceUnit?
@@ -3609,7 +3609,7 @@ public struct ForecastGeofenceEventsOutput {
     }
 }
 
-public struct ListTagsForResourceInput {
+public struct ListTagsForResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the resource whose tags you want to retrieve.
     ///
     /// * Format example: arn:aws:geo:region:account-id:resourcetype/ExampleResource
@@ -3624,7 +3624,7 @@ public struct ListTagsForResourceInput {
     }
 }
 
-public struct ListTagsForResourceOutput {
+public struct ListTagsForResourceOutput: Swift.Sendable {
     /// Tags that have been applied to the specified resource. Tags are mapped from the tag key to the tag value: "TagKey" : "TagValue".
     ///
     /// * Format example: {"tag1" : "value1", "tag2" : "value2"}
@@ -3638,7 +3638,7 @@ public struct ListTagsForResourceOutput {
     }
 }
 
-public struct TagResourceInput {
+public struct TagResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the resource whose tags you want to update.
     ///
     /// * Format example: arn:aws:geo:region:account-id:resourcetype/ExampleResource
@@ -3670,12 +3670,12 @@ public struct TagResourceInput {
     }
 }
 
-public struct TagResourceOutput {
+public struct TagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UntagResourceInput {
+public struct UntagResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the resource from which you want to remove tags.
     ///
     /// * Format example: arn:aws:geo:region:account-id:resourcetype/ExampleResource
@@ -3695,12 +3695,12 @@ public struct UntagResourceInput {
     }
 }
 
-public struct UntagResourceOutput {
+public struct UntagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct GetGeofenceInput {
+public struct GetGeofenceInput: Swift.Sendable {
     /// The geofence collection storing the target geofence.
     /// This member is required.
     public var collectionName: Swift.String?
@@ -3718,7 +3718,7 @@ public struct GetGeofenceInput {
     }
 }
 
-public struct GetGeofenceOutput {
+public struct GetGeofenceOutput: Swift.Sendable {
     /// The timestamp for when the geofence collection was created in [ISO 8601](https://www.iso.org/iso-8601-date-and-time-format.html) format: YYYY-MM-DDThh:mm:ss.sssZ
     /// This member is required.
     public var createTime: Foundation.Date?
@@ -3770,7 +3770,7 @@ extension GetGeofenceOutput: Swift.CustomDebugStringConvertible {
         "GetGeofenceOutput(createTime: \(Swift.String(describing: createTime)), geofenceId: \(Swift.String(describing: geofenceId)), geometry: \(Swift.String(describing: geometry)), status: \(Swift.String(describing: status)), updateTime: \(Swift.String(describing: updateTime)), geofenceProperties: \"CONTENT_REDACTED\")"}
 }
 
-public struct ListGeofenceCollectionsInput {
+public struct ListGeofenceCollectionsInput: Swift.Sendable {
     /// An optional limit for the number of resources returned in a single call. Default value: 100
     public var maxResults: Swift.Int?
     /// The pagination token specifying which page of results to return in the response. If no token is provided, the default page is the first page. Default value: null
@@ -3787,8 +3787,9 @@ public struct ListGeofenceCollectionsInput {
 }
 
 extension LocationClientTypes {
+
     /// Contains the geofence collection details. The returned geometry will always match the geometry format used when the geofence was created.
-    public struct ListGeofenceCollectionsResponseEntry {
+    public struct ListGeofenceCollectionsResponseEntry: Swift.Sendable {
         /// The name of the geofence collection.
         /// This member is required.
         public var collectionName: Swift.String?
@@ -3815,10 +3816,9 @@ extension LocationClientTypes {
             self.updateTime = updateTime
         }
     }
-
 }
 
-public struct ListGeofenceCollectionsOutput {
+public struct ListGeofenceCollectionsOutput: Swift.Sendable {
     /// Lists the geofence collections that exist in your Amazon Web Services account.
     /// This member is required.
     public var entries: [LocationClientTypes.ListGeofenceCollectionsResponseEntry]?
@@ -3835,7 +3835,7 @@ public struct ListGeofenceCollectionsOutput {
     }
 }
 
-public struct ListGeofencesInput {
+public struct ListGeofencesInput: Swift.Sendable {
     /// The name of the geofence collection storing the list of geofences.
     /// This member is required.
     public var collectionName: Swift.String?
@@ -3857,8 +3857,9 @@ public struct ListGeofencesInput {
 }
 
 extension LocationClientTypes {
+
     /// Contains a list of geofences stored in a given geofence collection. The returned geometry will always match the geometry format used when the geofence was created.
-    public struct ListGeofenceResponseEntry {
+    public struct ListGeofenceResponseEntry: Swift.Sendable {
         /// The timestamp for when the geofence was stored in a geofence collection in [ISO 8601](https://www.iso.org/iso-8601-date-and-time-format.html) format: YYYY-MM-DDThh:mm:ss.sssZ
         /// This member is required.
         public var createTime: Foundation.Date?
@@ -3904,7 +3905,6 @@ extension LocationClientTypes {
             self.updateTime = updateTime
         }
     }
-
 }
 
 extension LocationClientTypes.ListGeofenceResponseEntry: Swift.CustomDebugStringConvertible {
@@ -3912,7 +3912,7 @@ extension LocationClientTypes.ListGeofenceResponseEntry: Swift.CustomDebugString
         "ListGeofenceResponseEntry(createTime: \(Swift.String(describing: createTime)), geofenceId: \(Swift.String(describing: geofenceId)), geometry: \(Swift.String(describing: geometry)), status: \(Swift.String(describing: status)), updateTime: \(Swift.String(describing: updateTime)), geofenceProperties: \"CONTENT_REDACTED\")"}
 }
 
-public struct ListGeofencesOutput {
+public struct ListGeofencesOutput: Swift.Sendable {
     /// Contains a list of geofences stored in the geofence collection.
     /// This member is required.
     public var entries: [LocationClientTypes.ListGeofenceResponseEntry]?
@@ -3929,7 +3929,7 @@ public struct ListGeofencesOutput {
     }
 }
 
-public struct PutGeofenceInput {
+public struct PutGeofenceInput: Swift.Sendable {
     /// The geofence collection to store the geofence in.
     /// This member is required.
     public var collectionName: Swift.String?
@@ -3961,7 +3961,7 @@ extension PutGeofenceInput: Swift.CustomDebugStringConvertible {
         "PutGeofenceInput(collectionName: \(Swift.String(describing: collectionName)), geofenceId: \(Swift.String(describing: geofenceId)), geometry: \(Swift.String(describing: geometry)), geofenceProperties: \"CONTENT_REDACTED\")"}
 }
 
-public struct PutGeofenceOutput {
+public struct PutGeofenceOutput: Swift.Sendable {
     /// The timestamp for when the geofence was created in [ISO 8601](https://www.iso.org/iso-8601-date-and-time-format.html) format: YYYY-MM-DDThh:mm:ss.sssZ
     /// This member is required.
     public var createTime: Foundation.Date?
@@ -3984,7 +3984,7 @@ public struct PutGeofenceOutput {
     }
 }
 
-public struct UpdateGeofenceCollectionInput {
+public struct UpdateGeofenceCollectionInput: Swift.Sendable {
     /// The name of the geofence collection to update.
     /// This member is required.
     public var collectionName: Swift.String?
@@ -4001,7 +4001,7 @@ public struct UpdateGeofenceCollectionInput {
     }
 }
 
-public struct UpdateGeofenceCollectionOutput {
+public struct UpdateGeofenceCollectionOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the updated geofence collection. Used to specify a resource across Amazon Web Services.
     ///
     /// * Format example: arn:aws:geo:region:account-id:geofence-collection/ExampleGeofenceCollection
@@ -4026,7 +4026,7 @@ public struct UpdateGeofenceCollectionOutput {
     }
 }
 
-public struct GetDevicePositionInput {
+public struct GetDevicePositionInput: Swift.Sendable {
     /// The device whose position you want to retrieve.
     /// This member is required.
     public var deviceId: Swift.String?
@@ -4044,7 +4044,7 @@ public struct GetDevicePositionInput {
     }
 }
 
-public struct GetDevicePositionOutput {
+public struct GetDevicePositionOutput: Swift.Sendable {
     /// The accuracy of the device position.
     public var accuracy: LocationClientTypes.PositionalAccuracy?
     /// The device whose position you retrieved.
@@ -4084,7 +4084,7 @@ extension GetDevicePositionOutput: Swift.CustomDebugStringConvertible {
         "GetDevicePositionOutput(accuracy: \(Swift.String(describing: accuracy)), deviceId: \(Swift.String(describing: deviceId)), receivedTime: \(Swift.String(describing: receivedTime)), sampleTime: \(Swift.String(describing: sampleTime)), position: \"CONTENT_REDACTED\", positionProperties: \"CONTENT_REDACTED\")"}
 }
 
-public struct GetDevicePositionHistoryInput {
+public struct GetDevicePositionHistoryInput: Swift.Sendable {
     /// The device whose position history you want to retrieve.
     /// This member is required.
     public var deviceId: Swift.String?
@@ -4122,7 +4122,7 @@ public struct GetDevicePositionHistoryInput {
     }
 }
 
-public struct GetDevicePositionHistoryOutput {
+public struct GetDevicePositionHistoryOutput: Swift.Sendable {
     /// Contains the position history details for the requested device.
     /// This member is required.
     public var devicePositions: [LocationClientTypes.DevicePosition]?
@@ -4139,7 +4139,7 @@ public struct GetDevicePositionHistoryOutput {
     }
 }
 
-public struct GetMapGlyphsInput {
+public struct GetMapGlyphsInput: Swift.Sendable {
     /// A comma-separated list of fonts to load glyphs from in order of preference. For example, Noto Sans Regular, Arial Unicode. Valid font stacks for [Esri](https://docs.aws.amazon.com/location/latest/developerguide/esri.html) styles:
     ///
     /// * VectorEsriDarkGrayCanvas – Ubuntu Medium Italic | Ubuntu Medium | Ubuntu Italic | Ubuntu Regular | Ubuntu Bold
@@ -4201,7 +4201,7 @@ extension GetMapGlyphsInput: Swift.CustomDebugStringConvertible {
         "GetMapGlyphsInput(fontStack: \(Swift.String(describing: fontStack)), fontUnicodeRange: \(Swift.String(describing: fontUnicodeRange)), mapName: \(Swift.String(describing: mapName)), key: \"CONTENT_REDACTED\")"}
 }
 
-public struct GetMapGlyphsOutput {
+public struct GetMapGlyphsOutput: Swift.Sendable {
     /// The glyph, as binary blob.
     public var blob: Foundation.Data?
     /// The HTTP Cache-Control directive for the value.
@@ -4221,7 +4221,7 @@ public struct GetMapGlyphsOutput {
     }
 }
 
-public struct GetMapSpritesInput {
+public struct GetMapSpritesInput: Swift.Sendable {
     /// The name of the sprite ﬁle. Use the following ﬁle names for the sprite sheet:
     ///
     /// * sprites.png
@@ -4259,7 +4259,7 @@ extension GetMapSpritesInput: Swift.CustomDebugStringConvertible {
         "GetMapSpritesInput(fileName: \(Swift.String(describing: fileName)), mapName: \(Swift.String(describing: mapName)), key: \"CONTENT_REDACTED\")"}
 }
 
-public struct GetMapSpritesOutput {
+public struct GetMapSpritesOutput: Swift.Sendable {
     /// Contains the body of the sprite sheet or JSON offset ﬁle.
     public var blob: Foundation.Data?
     /// The HTTP Cache-Control directive for the value.
@@ -4279,7 +4279,7 @@ public struct GetMapSpritesOutput {
     }
 }
 
-public struct GetMapStyleDescriptorInput {
+public struct GetMapStyleDescriptorInput: Swift.Sendable {
     /// The optional [API key](https://docs.aws.amazon.com/location/latest/developerguide/using-apikeys.html) to authorize the request.
     public var key: Swift.String?
     /// The map resource to retrieve the style descriptor from.
@@ -4301,7 +4301,7 @@ extension GetMapStyleDescriptorInput: Swift.CustomDebugStringConvertible {
         "GetMapStyleDescriptorInput(mapName: \(Swift.String(describing: mapName)), key: \"CONTENT_REDACTED\")"}
 }
 
-public struct GetMapStyleDescriptorOutput {
+public struct GetMapStyleDescriptorOutput: Swift.Sendable {
     /// Contains the body of the style descriptor.
     public var blob: Foundation.Data?
     /// The HTTP Cache-Control directive for the value.
@@ -4321,7 +4321,7 @@ public struct GetMapStyleDescriptorOutput {
     }
 }
 
-public struct GetMapTileInput {
+public struct GetMapTileInput: Swift.Sendable {
     /// The optional [API key](https://docs.aws.amazon.com/location/latest/developerguide/using-apikeys.html) to authorize the request.
     public var key: Swift.String?
     /// The map resource to retrieve the map tiles from.
@@ -4358,7 +4358,7 @@ extension GetMapTileInput: Swift.CustomDebugStringConvertible {
         "GetMapTileInput(mapName: \(Swift.String(describing: mapName)), x: \(Swift.String(describing: x)), y: \(Swift.String(describing: y)), z: \(Swift.String(describing: z)), key: \"CONTENT_REDACTED\")"}
 }
 
-public struct GetMapTileOutput {
+public struct GetMapTileOutput: Swift.Sendable {
     /// Contains Mapbox Vector Tile (MVT) data.
     public var blob: Foundation.Data?
     /// The HTTP Cache-Control directive for the value.
@@ -4378,7 +4378,7 @@ public struct GetMapTileOutput {
     }
 }
 
-public struct GetPlaceInput {
+public struct GetPlaceInput: Swift.Sendable {
     /// The name of the place index resource that you want to use for the search.
     /// This member is required.
     public var indexName: Swift.String?
@@ -4410,8 +4410,9 @@ extension GetPlaceInput: Swift.CustomDebugStringConvertible {
 }
 
 extension LocationClientTypes {
+
     /// Places uses a point geometry to specify a location or a Place.
-    public struct PlaceGeometry {
+    public struct PlaceGeometry: Swift.Sendable {
         /// A single point geometry specifies a location for a Place using [WGS 84](https://gisgeography.com/wgs84-world-geodetic-system/) coordinates:
         ///
         /// * x — Specifies the x coordinate or longitude.
@@ -4426,7 +4427,6 @@ extension LocationClientTypes {
             self.point = point
         }
     }
-
 }
 
 extension LocationClientTypes.PlaceGeometry: Swift.CustomDebugStringConvertible {
@@ -4435,8 +4435,9 @@ extension LocationClientTypes.PlaceGeometry: Swift.CustomDebugStringConvertible 
 }
 
 extension LocationClientTypes {
+
     /// Information about a time zone. Includes the name of the time zone and the offset from UTC in seconds.
-    public struct TimeZone {
+    public struct TimeZone: Swift.Sendable {
         /// The name of the time zone, following the [ IANA time zone standard](https://www.iana.org/time-zones). For example, America/Los_Angeles.
         /// This member is required.
         public var name: Swift.String?
@@ -4452,12 +4453,12 @@ extension LocationClientTypes {
             self.offset = offset
         }
     }
-
 }
 
 extension LocationClientTypes {
+
     /// Contains details about addresses or points of interest that match the search criteria. Not all details are included with all responses. Some details may only be returned by specific data partners.
-    public struct Place {
+    public struct Place: Swift.Sendable {
         /// The numerical portion of an address, such as a building number.
         public var addressNumber: Swift.String?
         /// The Amazon Location categories that describe this Place. For more information about using categories, including a list of Amazon Location categories, see [Categories and filtering](https://docs.aws.amazon.com/location/latest/developerguide/category-filtering.html), in the Amazon Location Service Developer Guide.
@@ -4533,10 +4534,9 @@ extension LocationClientTypes {
             self.unitType = unitType
         }
     }
-
 }
 
-public struct GetPlaceOutput {
+public struct GetPlaceOutput: Swift.Sendable {
     /// Details about the result, such as its address and position.
     /// This member is required.
     public var place: LocationClientTypes.Place?
@@ -4550,8 +4550,9 @@ public struct GetPlaceOutput {
 }
 
 extension LocationClientTypes {
+
     /// The inferred state of the device, given the provided position, IP address, cellular signals, and Wi-Fi- access points.
-    public struct InferredState {
+    public struct InferredState: Swift.Sendable {
         /// The level of certainty of the inferred position.
         public var accuracy: LocationClientTypes.PositionalAccuracy?
         /// The distance between the inferred position and the device's self-reported position.
@@ -4575,7 +4576,6 @@ extension LocationClientTypes {
             self.proxyDetected = proxyDetected
         }
     }
-
 }
 
 extension LocationClientTypes.InferredState: Swift.CustomDebugStringConvertible {
@@ -4584,8 +4584,9 @@ extension LocationClientTypes.InferredState: Swift.CustomDebugStringConvertible 
 }
 
 extension LocationClientTypes {
+
     /// The geomerty used to filter device positions.
-    public struct TrackingFilterGeometry {
+    public struct TrackingFilterGeometry: Swift.Sendable {
         /// The set of arrays which define the polygon. A polygon can have between 4 and 1000 vertices.
         public var polygon: [[[Swift.Double]]]?
 
@@ -4596,7 +4597,6 @@ extension LocationClientTypes {
             self.polygon = polygon
         }
     }
-
 }
 
 extension LocationClientTypes.TrackingFilterGeometry: Swift.CustomDebugStringConvertible {
@@ -4604,7 +4604,7 @@ extension LocationClientTypes.TrackingFilterGeometry: Swift.CustomDebugStringCon
         "TrackingFilterGeometry(polygon: \"CONTENT_REDACTED\")"}
 }
 
-public struct ListDevicePositionsInput {
+public struct ListDevicePositionsInput: Swift.Sendable {
     /// The geometry used to filter device positions.
     public var filterGeometry: LocationClientTypes.TrackingFilterGeometry?
     /// An optional limit for the number of entries returned in a single call. Default value: 100
@@ -4630,8 +4630,9 @@ public struct ListDevicePositionsInput {
 }
 
 extension LocationClientTypes {
+
     /// Contains the tracker resource details.
-    public struct ListDevicePositionsResponseEntry {
+    public struct ListDevicePositionsResponseEntry: Swift.Sendable {
         /// The accuracy of the device position.
         public var accuracy: LocationClientTypes.PositionalAccuracy?
         /// The ID of the device for this position.
@@ -4661,7 +4662,6 @@ extension LocationClientTypes {
             self.sampleTime = sampleTime
         }
     }
-
 }
 
 extension LocationClientTypes.ListDevicePositionsResponseEntry: Swift.CustomDebugStringConvertible {
@@ -4669,7 +4669,7 @@ extension LocationClientTypes.ListDevicePositionsResponseEntry: Swift.CustomDebu
         "ListDevicePositionsResponseEntry(accuracy: \(Swift.String(describing: accuracy)), deviceId: \(Swift.String(describing: deviceId)), sampleTime: \(Swift.String(describing: sampleTime)), position: \"CONTENT_REDACTED\", positionProperties: \"CONTENT_REDACTED\")"}
 }
 
-public struct ListDevicePositionsOutput {
+public struct ListDevicePositionsOutput: Swift.Sendable {
     /// Contains details about each device's last known position.
     /// This member is required.
     public var entries: [LocationClientTypes.ListDevicePositionsResponseEntry]?
@@ -4686,7 +4686,7 @@ public struct ListDevicePositionsOutput {
     }
 }
 
-public struct ListMapsInput {
+public struct ListMapsInput: Swift.Sendable {
     /// An optional limit for the number of resources returned in a single call. Default value: 100
     public var maxResults: Swift.Int?
     /// The pagination token specifying which page of results to return in the response. If no token is provided, the default page is the first page. Default value: null
@@ -4703,8 +4703,9 @@ public struct ListMapsInput {
 }
 
 extension LocationClientTypes {
+
     /// Contains details of an existing map resource in your Amazon Web Services account.
-    public struct ListMapsResponseEntry {
+    public struct ListMapsResponseEntry: Swift.Sendable {
         /// The timestamp for when the map resource was created in [ISO 8601](https://www.iso.org/iso-8601-date-and-time-format.html) format: YYYY-MM-DDThh:mm:ss.sssZ.
         /// This member is required.
         public var createTime: Foundation.Date?
@@ -4736,10 +4737,9 @@ extension LocationClientTypes {
             self.updateTime = updateTime
         }
     }
-
 }
 
-public struct ListMapsOutput {
+public struct ListMapsOutput: Swift.Sendable {
     /// Contains a list of maps in your Amazon Web Services account
     /// This member is required.
     public var entries: [LocationClientTypes.ListMapsResponseEntry]?
@@ -4756,7 +4756,7 @@ public struct ListMapsOutput {
     }
 }
 
-public struct ListPlaceIndexesInput {
+public struct ListPlaceIndexesInput: Swift.Sendable {
     /// An optional limit for the maximum number of results returned in a single call. Default value: 100
     public var maxResults: Swift.Int?
     /// The pagination token specifying which page of results to return in the response. If no token is provided, the default page is the first page. Default value: null
@@ -4773,8 +4773,9 @@ public struct ListPlaceIndexesInput {
 }
 
 extension LocationClientTypes {
+
     /// A place index resource listed in your Amazon Web Services account.
-    public struct ListPlaceIndexesResponseEntry {
+    public struct ListPlaceIndexesResponseEntry: Swift.Sendable {
         /// The timestamp for when the place index resource was created in [ISO 8601](https://www.iso.org/iso-8601-date-and-time-format.html) format: YYYY-MM-DDThh:mm:ss.sssZ.
         /// This member is required.
         public var createTime: Foundation.Date?
@@ -4815,10 +4816,9 @@ extension LocationClientTypes {
             self.updateTime = updateTime
         }
     }
-
 }
 
-public struct ListPlaceIndexesOutput {
+public struct ListPlaceIndexesOutput: Swift.Sendable {
     /// Lists the place index resources that exist in your Amazon Web Services account
     /// This member is required.
     public var entries: [LocationClientTypes.ListPlaceIndexesResponseEntry]?
@@ -4835,7 +4835,7 @@ public struct ListPlaceIndexesOutput {
     }
 }
 
-public struct ListRouteCalculatorsInput {
+public struct ListRouteCalculatorsInput: Swift.Sendable {
     /// An optional maximum number of results returned in a single call. Default Value: 100
     public var maxResults: Swift.Int?
     /// The pagination token specifying which page of results to return in the response. If no token is provided, the default page is the first page. Default Value: null
@@ -4852,8 +4852,9 @@ public struct ListRouteCalculatorsInput {
 }
 
 extension LocationClientTypes {
+
     /// A route calculator resource listed in your Amazon Web Services account.
-    public struct ListRouteCalculatorsResponseEntry {
+    public struct ListRouteCalculatorsResponseEntry: Swift.Sendable {
         /// The name of the route calculator resource.
         /// This member is required.
         public var calculatorName: Swift.String?
@@ -4898,10 +4899,9 @@ extension LocationClientTypes {
             self.updateTime = updateTime
         }
     }
-
 }
 
-public struct ListRouteCalculatorsOutput {
+public struct ListRouteCalculatorsOutput: Swift.Sendable {
     /// Lists the route calculator resources that exist in your Amazon Web Services account
     /// This member is required.
     public var entries: [LocationClientTypes.ListRouteCalculatorsResponseEntry]?
@@ -4918,7 +4918,7 @@ public struct ListRouteCalculatorsOutput {
     }
 }
 
-public struct ListTrackerConsumersInput {
+public struct ListTrackerConsumersInput: Swift.Sendable {
     /// An optional limit for the number of resources returned in a single call. Default value: 100
     public var maxResults: Swift.Int?
     /// The pagination token specifying which page of results to return in the response. If no token is provided, the default page is the first page. Default value: null
@@ -4939,7 +4939,7 @@ public struct ListTrackerConsumersInput {
     }
 }
 
-public struct ListTrackerConsumersOutput {
+public struct ListTrackerConsumersOutput: Swift.Sendable {
     /// Contains the list of geofence collection ARNs associated to the tracker resource.
     /// This member is required.
     public var consumerArns: [Swift.String]?
@@ -4956,7 +4956,7 @@ public struct ListTrackerConsumersOutput {
     }
 }
 
-public struct ListTrackersInput {
+public struct ListTrackersInput: Swift.Sendable {
     /// An optional limit for the number of resources returned in a single call. Default value: 100
     public var maxResults: Swift.Int?
     /// The pagination token specifying which page of results to return in the response. If no token is provided, the default page is the first page. Default value: null
@@ -4973,8 +4973,9 @@ public struct ListTrackersInput {
 }
 
 extension LocationClientTypes {
+
     /// Contains the tracker resource details.
-    public struct ListTrackersResponseEntry {
+    public struct ListTrackersResponseEntry: Swift.Sendable {
         /// The timestamp for when the tracker resource was created in [ ISO 8601](https://www.iso.org/iso-8601-date-and-time-format.html) format: YYYY-MM-DDThh:mm:ss.sssZ.
         /// This member is required.
         public var createTime: Foundation.Date?
@@ -5001,10 +5002,9 @@ extension LocationClientTypes {
             self.updateTime = updateTime
         }
     }
-
 }
 
-public struct ListTrackersOutput {
+public struct ListTrackersOutput: Swift.Sendable {
     /// Contains tracker resources in your Amazon Web Services account. Details include tracker name, description and timestamps for when the tracker was created and last updated.
     /// This member is required.
     public var entries: [LocationClientTypes.ListTrackersResponseEntry]?
@@ -5022,8 +5022,9 @@ public struct ListTrackersOutput {
 }
 
 extension LocationClientTypes {
+
     /// Specifies the political view for the style.
-    public struct MapConfigurationUpdate {
+    public struct MapConfigurationUpdate: Swift.Sendable {
         /// Specifies the custom layers for the style. Leave unset to not enable any custom layer, or, for styles that support custom layers, you can enable layer(s), such as POI layer for the VectorEsriNavigation style. Default is unset. Not all map resources or styles support custom layers. See Custom Layers for more information.
         public var customLayers: [Swift.String]?
         /// Specifies the political view for the style. Set to an empty string to not use a political view, or, for styles that support specific political views, you can choose a view, such as IND for the Indian view. Not all map resources or styles support political view styles. See [Political views](https://docs.aws.amazon.com/location/latest/developerguide/map-concepts.html#political-views) for more information.
@@ -5038,10 +5039,9 @@ extension LocationClientTypes {
             self.politicalView = politicalView
         }
     }
-
 }
 
-public struct UpdateMapInput {
+public struct UpdateMapInput: Swift.Sendable {
     /// Updates the parts of the map configuration that can be updated, including the political view.
     public var configurationUpdate: LocationClientTypes.MapConfigurationUpdate?
     /// Updates the description for the map resource.
@@ -5062,7 +5062,7 @@ public struct UpdateMapInput {
     }
 }
 
-public struct UpdateMapOutput {
+public struct UpdateMapOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the updated map resource. Used to specify a resource across AWS.
     ///
     /// * Format example: arn:aws:geo:region:account-id:map/ExampleMap
@@ -5087,7 +5087,7 @@ public struct UpdateMapOutput {
     }
 }
 
-public struct SearchPlaceIndexForPositionInput {
+public struct SearchPlaceIndexForPositionInput: Swift.Sendable {
     /// The name of the place index resource you want to use for the search.
     /// This member is required.
     public var indexName: Swift.String?
@@ -5123,8 +5123,9 @@ extension SearchPlaceIndexForPositionInput: Swift.CustomDebugStringConvertible {
 }
 
 extension LocationClientTypes {
+
     /// Contains a search result from a position search query that is run on a place index resource.
-    public struct SearchForPositionResult {
+    public struct SearchForPositionResult: Swift.Sendable {
         /// The distance in meters of a great-circle arc between the query position and the result. A great-circle arc is the shortest path on a sphere, in this case the Earth. This returns the shortest distance between two locations.
         /// This member is required.
         public var distance: Swift.Double?
@@ -5145,12 +5146,12 @@ extension LocationClientTypes {
             self.placeId = placeId
         }
     }
-
 }
 
 extension LocationClientTypes {
+
     /// A summary of the request sent by using SearchPlaceIndexForPosition.
-    public struct SearchPlaceIndexForPositionSummary {
+    public struct SearchPlaceIndexForPositionSummary: Swift.Sendable {
         /// The geospatial data provider attached to the place index resource specified in the request. Values can be one of the following:
         ///
         /// * Esri
@@ -5184,7 +5185,6 @@ extension LocationClientTypes {
             self.position = position
         }
     }
-
 }
 
 extension LocationClientTypes.SearchPlaceIndexForPositionSummary: Swift.CustomDebugStringConvertible {
@@ -5192,7 +5192,7 @@ extension LocationClientTypes.SearchPlaceIndexForPositionSummary: Swift.CustomDe
         "SearchPlaceIndexForPositionSummary(dataSource: \(Swift.String(describing: dataSource)), language: \(Swift.String(describing: language)), maxResults: \(Swift.String(describing: maxResults)), position: \"CONTENT_REDACTED\")"}
 }
 
-public struct SearchPlaceIndexForPositionOutput {
+public struct SearchPlaceIndexForPositionOutput: Swift.Sendable {
     /// Returns a list of Places closest to the specified position. Each result contains additional information about the Places returned.
     /// This member is required.
     public var results: [LocationClientTypes.SearchForPositionResult]?
@@ -5210,7 +5210,7 @@ public struct SearchPlaceIndexForPositionOutput {
     }
 }
 
-public struct SearchPlaceIndexForSuggestionsInput {
+public struct SearchPlaceIndexForSuggestionsInput: Swift.Sendable {
     /// An optional parameter that indicates a preference for place suggestions that are closer to a specified position. If provided, this parameter must contain a pair of numbers. The first number represents the X coordinate, or longitude; the second number represents the Y coordinate, or latitude. For example, [-123.1174, 49.2847] represents the position with longitude -123.1174 and latitude 49.2847. BiasPosition and FilterBBox are mutually exclusive. Specifying both options results in an error.
     public var biasPosition: [Swift.Double]?
     /// An optional parameter that limits the search results by returning only suggestions within a specified bounding box. If provided, this parameter must contain a total of four consecutive numbers in two pairs. The first pair of numbers represents the X and Y coordinates (longitude and latitude, respectively) of the southwest corner of the bounding box; the second pair of numbers represents the X and Y coordinates (longitude and latitude, respectively) of the northeast corner of the bounding box. For example, [-12.7935, -37.4835, -12.0684, -36.9542] represents a bounding box where the southwest corner has longitude -12.7935 and latitude -37.4835, and the northeast corner has longitude -12.0684 and latitude -36.9542. FilterBBox and BiasPosition are mutually exclusive. Specifying both options results in an error.
@@ -5264,8 +5264,9 @@ extension SearchPlaceIndexForSuggestionsInput: Swift.CustomDebugStringConvertibl
 }
 
 extension LocationClientTypes {
+
     /// Contains a place suggestion resulting from a place suggestion query that is run on a place index resource.
-    public struct SearchForSuggestionsResult {
+    public struct SearchForSuggestionsResult: Swift.Sendable {
         /// The Amazon Location categories that describe the Place. For more information about using categories, including a list of Amazon Location categories, see [Categories and filtering](https://docs.aws.amazon.com/location/latest/developerguide/category-filtering.html), in the Amazon Location Service Developer Guide.
         public var categories: [Swift.String]?
         /// The unique identifier of the Place. You can use this with the GetPlace operation to find the place again later, or to get full information for the Place. The GetPlace request must use the same PlaceIndex resource as the SearchPlaceIndexForSuggestions that generated the Place ID. For SearchPlaceIndexForSuggestions operations, the PlaceId is returned by place indexes that use Esri, Grab, or HERE as data providers.
@@ -5289,12 +5290,12 @@ extension LocationClientTypes {
             self.text = text
         }
     }
-
 }
 
 extension LocationClientTypes {
+
     /// A summary of the request sent by using SearchPlaceIndexForSuggestions.
-    public struct SearchPlaceIndexForSuggestionsSummary {
+    public struct SearchPlaceIndexForSuggestionsSummary: Swift.Sendable {
         /// Contains the coordinates for the optional bias position specified in the request. This parameter contains a pair of numbers. The first number represents the X coordinate, or longitude; the second number represents the Y coordinate, or latitude. For example, [-123.1174, 49.2847] represents the position with longitude -123.1174 and latitude 49.2847.
         public var biasPosition: [Swift.Double]?
         /// The geospatial data provider attached to the place index resource specified in the request. Values can be one of the following:
@@ -5344,7 +5345,6 @@ extension LocationClientTypes {
             self.text = text
         }
     }
-
 }
 
 extension LocationClientTypes.SearchPlaceIndexForSuggestionsSummary: Swift.CustomDebugStringConvertible {
@@ -5352,7 +5352,7 @@ extension LocationClientTypes.SearchPlaceIndexForSuggestionsSummary: Swift.Custo
         "SearchPlaceIndexForSuggestionsSummary(dataSource: \(Swift.String(describing: dataSource)), filterCategories: \(Swift.String(describing: filterCategories)), filterCountries: \(Swift.String(describing: filterCountries)), language: \(Swift.String(describing: language)), maxResults: \(Swift.String(describing: maxResults)), biasPosition: \"CONTENT_REDACTED\", filterBBox: \"CONTENT_REDACTED\", text: \"CONTENT_REDACTED\")"}
 }
 
-public struct SearchPlaceIndexForSuggestionsOutput {
+public struct SearchPlaceIndexForSuggestionsOutput: Swift.Sendable {
     /// A list of place suggestions that best match the search text.
     /// This member is required.
     public var results: [LocationClientTypes.SearchForSuggestionsResult]?
@@ -5370,7 +5370,7 @@ public struct SearchPlaceIndexForSuggestionsOutput {
     }
 }
 
-public struct SearchPlaceIndexForTextInput {
+public struct SearchPlaceIndexForTextInput: Swift.Sendable {
     /// An optional parameter that indicates a preference for places that are closer to a specified position. If provided, this parameter must contain a pair of numbers. The first number represents the X coordinate, or longitude; the second number represents the Y coordinate, or latitude. For example, [-123.1174, 49.2847] represents the position with longitude -123.1174 and latitude 49.2847. BiasPosition and FilterBBox are mutually exclusive. Specifying both options results in an error.
     public var biasPosition: [Swift.Double]?
     /// An optional parameter that limits the search results by returning only places that are within the provided bounding box. If provided, this parameter must contain a total of four consecutive numbers in two pairs. The first pair of numbers represents the X and Y coordinates (longitude and latitude, respectively) of the southwest corner of the bounding box; the second pair of numbers represents the X and Y coordinates (longitude and latitude, respectively) of the northeast corner of the bounding box. For example, [-12.7935, -37.4835, -12.0684, -36.9542] represents a bounding box where the southwest corner has longitude -12.7935 and latitude -37.4835, and the northeast corner has longitude -12.0684 and latitude -36.9542. FilterBBox and BiasPosition are mutually exclusive. Specifying both options results in an error.
@@ -5424,8 +5424,9 @@ extension SearchPlaceIndexForTextInput: Swift.CustomDebugStringConvertible {
 }
 
 extension LocationClientTypes {
+
     /// Contains a search result from a text search query that is run on a place index resource.
-    public struct SearchForTextResult {
+    public struct SearchForTextResult: Swift.Sendable {
         /// The distance in meters of a great-circle arc between the bias position specified and the result. Distance will be returned only if a bias position was specified in the query. A great-circle arc is the shortest path on a sphere, in this case the Earth. This returns the shortest distance between two locations.
         public var distance: Swift.Double?
         /// Details about the search result, such as its address and position.
@@ -5449,12 +5450,12 @@ extension LocationClientTypes {
             self.relevance = relevance
         }
     }
-
 }
 
 extension LocationClientTypes {
+
     /// A summary of the request sent by using SearchPlaceIndexForText.
-    public struct SearchPlaceIndexForTextSummary {
+    public struct SearchPlaceIndexForTextSummary: Swift.Sendable {
         /// Contains the coordinates for the optional bias position specified in the request. This parameter contains a pair of numbers. The first number represents the X coordinate, or longitude; the second number represents the Y coordinate, or latitude. For example, [-123.1174, 49.2847] represents the position with longitude -123.1174 and latitude 49.2847.
         public var biasPosition: [Swift.Double]?
         /// The geospatial data provider attached to the place index resource specified in the request. Values can be one of the following:
@@ -5508,7 +5509,6 @@ extension LocationClientTypes {
             self.text = text
         }
     }
-
 }
 
 extension LocationClientTypes.SearchPlaceIndexForTextSummary: Swift.CustomDebugStringConvertible {
@@ -5516,7 +5516,7 @@ extension LocationClientTypes.SearchPlaceIndexForTextSummary: Swift.CustomDebugS
         "SearchPlaceIndexForTextSummary(dataSource: \(Swift.String(describing: dataSource)), filterCategories: \(Swift.String(describing: filterCategories)), filterCountries: \(Swift.String(describing: filterCountries)), language: \(Swift.String(describing: language)), maxResults: \(Swift.String(describing: maxResults)), biasPosition: \"CONTENT_REDACTED\", filterBBox: \"CONTENT_REDACTED\", resultBBox: \"CONTENT_REDACTED\", text: \"CONTENT_REDACTED\")"}
 }
 
-public struct SearchPlaceIndexForTextOutput {
+public struct SearchPlaceIndexForTextOutput: Swift.Sendable {
     /// A list of Places matching the input text. Each result contains additional information about the specific point of interest. Not all response properties are included with all responses. Some properties may only be returned by specific data partners.
     /// This member is required.
     public var results: [LocationClientTypes.SearchForTextResult]?
@@ -5534,7 +5534,7 @@ public struct SearchPlaceIndexForTextOutput {
     }
 }
 
-public struct UpdatePlaceIndexInput {
+public struct UpdatePlaceIndexInput: Swift.Sendable {
     /// Updates the data storage option for the place index resource.
     public var dataSourceConfiguration: LocationClientTypes.DataSourceConfiguration?
     /// Updates the description for the place index resource.
@@ -5555,7 +5555,7 @@ public struct UpdatePlaceIndexInput {
     }
 }
 
-public struct UpdatePlaceIndexOutput {
+public struct UpdatePlaceIndexOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the upated place index resource. Used to specify a resource across Amazon Web Services.
     ///
     /// * Format example: arn:aws:geo:region:account-id:place- index/ExamplePlaceIndex
@@ -5580,7 +5580,7 @@ public struct UpdatePlaceIndexOutput {
     }
 }
 
-public struct UpdateRouteCalculatorInput {
+public struct UpdateRouteCalculatorInput: Swift.Sendable {
     /// The name of the route calculator resource to update.
     /// This member is required.
     public var calculatorName: Swift.String?
@@ -5597,7 +5597,7 @@ public struct UpdateRouteCalculatorInput {
     }
 }
 
-public struct UpdateRouteCalculatorOutput {
+public struct UpdateRouteCalculatorOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the updated route calculator resource. Used to specify a resource across AWS.
     ///
     /// * Format example: arn:aws:geo:region:account-id:route- calculator/ExampleCalculator
@@ -5622,7 +5622,7 @@ public struct UpdateRouteCalculatorOutput {
     }
 }
 
-public struct UpdateTrackerInput {
+public struct UpdateTrackerInput: Swift.Sendable {
     /// Updates the description for the tracker resource.
     public var description: Swift.String?
     /// Whether to enable position UPDATE events from this tracker to be sent to EventBridge. You do not need enable this feature to get ENTER and EXIT events for geofences with this tracker. Those events are always sent to EventBridge.
@@ -5657,7 +5657,7 @@ public struct UpdateTrackerInput {
     }
 }
 
-public struct UpdateTrackerOutput {
+public struct UpdateTrackerOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the updated tracker resource. Used to specify a resource across AWS.
     ///
     /// * Format example: arn:aws:geo:region:account-id:tracker/ExampleTracker
@@ -5682,7 +5682,7 @@ public struct UpdateTrackerOutput {
     }
 }
 
-public struct VerifyDevicePositionInput {
+public struct VerifyDevicePositionInput: Swift.Sendable {
     /// The device's state, including position, IP address, cell signals and Wi-Fi access points.
     /// This member is required.
     public var deviceState: LocationClientTypes.DeviceState?
@@ -5704,7 +5704,7 @@ public struct VerifyDevicePositionInput {
     }
 }
 
-public struct VerifyDevicePositionOutput {
+public struct VerifyDevicePositionOutput: Swift.Sendable {
     /// The device identifier.
     /// This member is required.
     public var deviceId: Swift.String?

@@ -5,10 +5,10 @@
 	<key>awsCRTSwiftBranch</key>
 	<string>main</string>
 	<key>awsCRTSwiftVersion</key>
-	<string>0.36.0</string>
+	<string>0.37.0</string>
 	<key>clientRuntimeBranch</key>
 	<string>main</string>
 	<key>clientRuntimeVersion</key>
-	<string>0.74.0</string>
+	<string>0.88.0</string>
 </dict>
 </plist>

@@ -143,7 +143,7 @@ public struct ResourceNotFoundException: ClientRuntime.ModeledError, AWSClientRu
     }
 }
 
-public struct QueryForecastInput {
+public struct QueryForecastInput: Swift.Sendable {
     /// The end date for the forecast. Specify the date using this format: yyyy-MM-dd'T'HH:mm:ss (ISO 8601 format). For example, 2015-01-01T20:00:00.
     public var endDate: Swift.String?
     /// The filtering criteria to apply when retrieving the forecast. For example, to get the forecast for client_21 in the electricity usage dataset, specify the following: {"item_id" : "client_21"} To get the full forecast, use the [CreateForecastExportJob](https://docs.aws.amazon.com/en_us/forecast/latest/dg/API_CreateForecastExportJob.html) operation.
@@ -174,8 +174,9 @@ public struct QueryForecastInput {
 }
 
 extension ForecastqueryClientTypes {
+
     /// The forecast value for a specific date. Part of the [Forecast] object.
-    public struct DataPoint {
+    public struct DataPoint: Swift.Sendable {
         /// The timestamp of the specific forecast.
         public var timestamp: Swift.String?
         /// The forecast value.
@@ -190,12 +191,12 @@ extension ForecastqueryClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension ForecastqueryClientTypes {
+
     /// Provides information about a forecast. Returned as part of the [QueryForecast] response.
-    public struct Forecast {
+    public struct Forecast: Swift.Sendable {
         /// The forecast. The string of the string-to-array map is one of the following values:
         ///
         /// * p10
@@ -215,10 +216,9 @@ extension ForecastqueryClientTypes {
             self.predictions = predictions
         }
     }
-
 }
 
-public struct QueryForecastOutput {
+public struct QueryForecastOutput: Swift.Sendable {
     /// The forecast.
     public var forecast: ForecastqueryClientTypes.Forecast?
 
@@ -230,7 +230,7 @@ public struct QueryForecastOutput {
     }
 }
 
-public struct QueryWhatIfForecastInput {
+public struct QueryWhatIfForecastInput: Swift.Sendable {
     /// The end date for the what-if forecast. Specify the date using this format: yyyy-MM-dd'T'HH:mm:ss (ISO 8601 format). For example, 2015-01-01T20:00:00.
     public var endDate: Swift.String?
     /// The filtering criteria to apply when retrieving the forecast. For example, to get the forecast for client_21 in the electricity usage dataset, specify the following: {"item_id" : "client_21"} To get the full what-if forecast, use the [CreateForecastExportJob](https://docs.aws.amazon.com/en_us/forecast/latest/dg/API_CreateWhatIfForecastExport.html) operation.
@@ -260,7 +260,7 @@ public struct QueryWhatIfForecastInput {
     }
 }
 
-public struct QueryWhatIfForecastOutput {
+public struct QueryWhatIfForecastOutput: Swift.Sendable {
     /// Provides information about a forecast. Returned as part of the [QueryForecast] response.
     public var forecast: ForecastqueryClientTypes.Forecast?
 

@@ -28,27 +28,28 @@ import protocol ClientRuntime.ModeledError
 import struct Smithy.Document
 import struct Smithy.URIQueryItem
 
-public struct DisassociateDefaultViewInput {
+
+public struct DisassociateDefaultViewInput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DisassociateDefaultViewOutput {
+public struct DisassociateDefaultViewOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct GetAccountLevelServiceConfigurationInput {
+public struct GetAccountLevelServiceConfigurationInput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct GetDefaultViewInput {
+public struct GetDefaultViewInput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct GetIndexInput {
+public struct GetIndexInput: Swift.Sendable {
 
     public init() { }
 }
@@ -150,8 +151,9 @@ public struct ThrottlingException: ClientRuntime.ModeledError, AWSClientRuntime.
 }
 
 extension ResourceExplorer2ClientTypes {
+
     /// A structure that describes a request field with a validation error.
-    public struct ValidationExceptionField {
+    public struct ValidationExceptionField: Swift.Sendable {
         /// The name of the request field that had a validation error.
         /// This member is required.
         public var name: Swift.String?
@@ -168,7 +170,6 @@ extension ResourceExplorer2ClientTypes {
             self.validationIssue = validationIssue
         }
     }
-
 }
 
 /// You provided an invalid value for one of the operation's parameters. Check the syntax for the operation, and try again.
@@ -200,7 +201,7 @@ public struct ValidationException: ClientRuntime.ModeledError, AWSClientRuntime.
     }
 }
 
-public struct AssociateDefaultViewInput {
+public struct AssociateDefaultViewInput: Swift.Sendable {
     /// The [Amazon resource name (ARN)](https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html) of the view to set as the default for the Amazon Web Services Region and Amazon Web Services account in which you call this operation. The specified view must already exist in the called Region.
     /// This member is required.
     public var viewArn: Swift.String?
@@ -213,7 +214,7 @@ public struct AssociateDefaultViewInput {
     }
 }
 
-public struct AssociateDefaultViewOutput {
+public struct AssociateDefaultViewOutput: Swift.Sendable {
     /// The [Amazon resource name (ARN)](https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html) of the view that the operation set as the default for queries made in the Amazon Web Services Region and Amazon Web Services account in which you called this operation.
     public var viewArn: Swift.String?
 
@@ -227,7 +228,7 @@ public struct AssociateDefaultViewOutput {
 
 extension ResourceExplorer2ClientTypes {
 
-    public enum AWSServiceAccessStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AWSServiceAccessStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case disabled
         case enabled
         case sdkUnknown(Swift.String)
@@ -278,7 +279,7 @@ public struct UnauthorizedException: ClientRuntime.ModeledError, AWSClientRuntim
     }
 }
 
-public struct BatchGetViewInput {
+public struct BatchGetViewInput: Swift.Sendable {
     /// A list of [Amazon resource names (ARNs)](https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html) that identify the views you want details for.
     public var viewArns: [Swift.String]?
 
@@ -291,8 +292,9 @@ public struct BatchGetViewInput {
 }
 
 extension ResourceExplorer2ClientTypes {
+
     /// A collection of error messages for any views that Amazon Web Services Resource Explorer couldn't retrieve details.
-    public struct BatchGetViewError {
+    public struct BatchGetViewError: Swift.Sendable {
         /// The description of the error for the specified view.
         /// This member is required.
         public var errorMessage: Swift.String?
@@ -309,12 +311,12 @@ extension ResourceExplorer2ClientTypes {
             self.viewArn = viewArn
         }
     }
-
 }
 
 extension ResourceExplorer2ClientTypes {
+
     /// A search filter defines which resources can be part of a search query result set.
-    public struct SearchFilter {
+    public struct SearchFilter: Swift.Sendable {
         /// The string that contains the search keywords, prefixes, and operators to control the results that can be returned by a [Search] operation. For more details, see [Search query syntax](https://docs.aws.amazon.com/resource-explorer/latest/APIReference/about-query-syntax.html).
         /// This member is required.
         public var filterString: Swift.String?
@@ -326,7 +328,6 @@ extension ResourceExplorer2ClientTypes {
             self.filterString = filterString
         }
     }
-
 }
 
 extension ResourceExplorer2ClientTypes.SearchFilter: Swift.CustomDebugStringConvertible {
@@ -336,8 +337,9 @@ extension ResourceExplorer2ClientTypes.SearchFilter: Swift.CustomDebugStringConv
 }
 
 extension ResourceExplorer2ClientTypes {
+
     /// Information about an additional property that describes a resource, that you can optionally include in the view. This lets you view that property in search results, and filter your search results based on the value of the property.
-    public struct IncludedProperty {
+    public struct IncludedProperty: Swift.Sendable {
         /// The name of the property that is included in this view. You can specify the following property names for this field:
         ///
         /// * Tags
@@ -351,12 +353,12 @@ extension ResourceExplorer2ClientTypes {
             self.name = name
         }
     }
-
 }
 
 extension ResourceExplorer2ClientTypes {
+
     /// A view is a structure that defines a set of filters that provide a view into the information in the Amazon Web Services Resource Explorer index. The filters specify which information from the index is visible to the users of the view. For example, you can specify filters that include only resources that are tagged with the key "ENV" and the value "DEVELOPMENT" in the results returned by this view. You could also create a second view that includes only resources that are tagged with "ENV" and "PRODUCTION".
-    public struct View {
+    public struct View: Swift.Sendable {
         /// An array of [SearchFilter] objects that specify which resources can be included in the results of queries made using this view.
         public var filters: ResourceExplorer2ClientTypes.SearchFilter?
         /// A structure that contains additional information about the view.
@@ -387,7 +389,6 @@ extension ResourceExplorer2ClientTypes {
             self.viewArn = viewArn
         }
     }
-
 }
 
 extension ResourceExplorer2ClientTypes.View: Swift.CustomDebugStringConvertible {
@@ -395,7 +396,7 @@ extension ResourceExplorer2ClientTypes.View: Swift.CustomDebugStringConvertible 
         "View(includedProperties: \(Swift.String(describing: includedProperties)), lastUpdatedAt: \(Swift.String(describing: lastUpdatedAt)), owner: \(Swift.String(describing: owner)), scope: \(Swift.String(describing: scope)), viewArn: \(Swift.String(describing: viewArn)), filters: \"CONTENT_REDACTED\")"}
 }
 
-public struct BatchGetViewOutput {
+public struct BatchGetViewOutput: Swift.Sendable {
     /// If any of the specified ARNs result in an error, then this structure describes the error.
     public var errors: [ResourceExplorer2ClientTypes.BatchGetViewError]?
     /// A structure with a list of objects with details for each of the specified views.
@@ -436,7 +437,7 @@ public struct ConflictException: ClientRuntime.ModeledError, AWSClientRuntime.AW
     }
 }
 
-public struct CreateIndexInput {
+public struct CreateIndexInput: Swift.Sendable {
     /// This value helps ensure idempotency. Resource Explorer uses this value to prevent the accidental creation of duplicate versions. We recommend that you generate a [UUID-type value](https://wikipedia.org/wiki/Universally_unique_identifier) to ensure the uniqueness of your index.
     public var clientToken: Swift.String?
     /// The specified tags are attached only to the index created in this Amazon Web Services Region. The tags aren't attached to any of the resources listed in the index.
@@ -459,7 +460,7 @@ extension CreateIndexInput: Swift.CustomDebugStringConvertible {
 
 extension ResourceExplorer2ClientTypes {
 
-    public enum IndexState: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum IndexState: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         /// Index is active.
         case active
         /// Resource Explorer is creating the index.
@@ -500,7 +501,7 @@ extension ResourceExplorer2ClientTypes {
     }
 }
 
-public struct CreateIndexOutput {
+public struct CreateIndexOutput: Swift.Sendable {
     /// The ARN of the new local index for the Region. You can reference this ARN in IAM permission policies to authorize the following operations: [DeleteIndex] | [GetIndex] | [UpdateIndexType] | [CreateView]
     public var arn: Swift.String?
     /// The date and timestamp when the index was created.
@@ -520,7 +521,7 @@ public struct CreateIndexOutput {
     }
 }
 
-public struct DeleteIndexInput {
+public struct DeleteIndexInput: Swift.Sendable {
     /// The [Amazon resource name (ARN)](https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html) of the index that you want to delete.
     /// This member is required.
     public var arn: Swift.String?
@@ -533,7 +534,7 @@ public struct DeleteIndexInput {
     }
 }
 
-public struct DeleteIndexOutput {
+public struct DeleteIndexOutput: Swift.Sendable {
     /// The [Amazon resource name (ARN)](https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html) of the index that you successfully started the deletion process. This operation is asynchronous. To check its status, call the [GetIndex] operation.
     public var arn: Swift.String?
     /// The date and time when you last updated this index.
@@ -555,7 +556,7 @@ public struct DeleteIndexOutput {
 
 extension ResourceExplorer2ClientTypes {
 
-    public enum IndexType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum IndexType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         /// aggregator index
         case aggregator
         /// local index
@@ -584,7 +585,7 @@ extension ResourceExplorer2ClientTypes {
     }
 }
 
-public struct ListIndexesInput {
+public struct ListIndexesInput: Swift.Sendable {
     /// The maximum number of results that you want included on each page of the response. If you do not include this parameter, it defaults to a value appropriate to the operation. If additional items exist beyond those included in the current response, the NextToken response element is present and has a value (is not null). Include that value as the NextToken request parameter in the next call to the operation to get the next part of the results. An API operation can return fewer results than the maximum even when there are more results available. You should check NextToken after every operation to ensure that you receive all of the results.
     public var maxResults: Swift.Int?
     /// The parameter for receiving additional results if you receive a NextToken response in a previous request. A NextToken response indicates that more output is available. Set this parameter to the value of the previous call's NextToken response to indicate where the output should continue from. The pagination tokens expire after 24 hours.
@@ -609,8 +610,9 @@ public struct ListIndexesInput {
 }
 
 extension ResourceExplorer2ClientTypes {
+
     /// An index is the data store used by Amazon Web Services Resource Explorer to hold information about your Amazon Web Services resources that the service discovers. Creating an index in an Amazon Web Services Region turns on Resource Explorer and lets it discover your resources. By default, an index is local, meaning that it contains information about resources in only the same Region as the index. However, you can promote the index of one Region in the account by calling [UpdateIndexType] to convert it into an aggregator index. The aggregator index receives a replicated copy of the index information from all other Regions where Resource Explorer is turned on. This allows search operations in that Region to return results from all Regions in the account.
-    public struct Index {
+    public struct Index: Swift.Sendable {
         /// The [Amazon resource name (ARN)](https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html) of the index.
         public var arn: Swift.String?
         /// The Amazon Web Services Region in which the index exists.
@@ -633,10 +635,9 @@ extension ResourceExplorer2ClientTypes {
             self.type = type
         }
     }
-
 }
 
-public struct ListIndexesOutput {
+public struct ListIndexesOutput: Swift.Sendable {
     /// A structure that contains the details and status of each index.
     public var indexes: [ResourceExplorer2ClientTypes.Index]?
     /// If present, indicates that more output is available than is included in the current response. Use this value in the NextToken request parameter in a subsequent call to the operation to get the next part of the output. You should repeat this until the NextToken response element comes back as null. The pagination tokens expire after 24 hours.
@@ -687,7 +688,7 @@ public struct ServiceQuotaExceededException: ClientRuntime.ModeledError, AWSClie
     }
 }
 
-public struct UpdateIndexTypeInput {
+public struct UpdateIndexTypeInput: Swift.Sendable {
     /// The [Amazon resource name (ARN)](https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html) of the index that you want to update.
     /// This member is required.
     public var arn: Swift.String?
@@ -705,7 +706,7 @@ public struct UpdateIndexTypeInput {
     }
 }
 
-public struct UpdateIndexTypeOutput {
+public struct UpdateIndexTypeOutput: Swift.Sendable {
     /// The [Amazon resource name (ARN)](https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html) of the index that you updated.
     public var arn: Swift.String?
     /// The date and timestamp when the index was last updated.
@@ -729,7 +730,7 @@ public struct UpdateIndexTypeOutput {
     }
 }
 
-public struct CreateViewInput {
+public struct CreateViewInput: Swift.Sendable {
     /// This value helps ensure idempotency. Resource Explorer uses this value to prevent the accidental creation of duplicate versions. We recommend that you generate a [UUID-type value](https://wikipedia.org/wiki/Universally_unique_identifier) to ensure the uniqueness of your views.
     public var clientToken: Swift.String?
     /// An array of strings that specify which resources are included in the results of queries made using this view. When you use this view in a [Search] operation, the filter string is combined with the search's QueryString parameter using a logical AND operator. For information about the supported syntax, see [Search query reference for Resource Explorer](https://docs.aws.amazon.com/resource-explorer/latest/userguide/using-search-query-syntax.html) in the Amazon Web Services Resource Explorer User Guide. This query string in the context of this operation supports only [filter prefixes](https://docs.aws.amazon.com/resource-explorer/latest/userguide/using-search-query-syntax.html#query-syntax-filters) with optional [operators](https://docs.aws.amazon.com/resource-explorer/latest/userguide/using-search-query-syntax.html#query-syntax-operators). It doesn't support free-form text. For example, the string region:us* service:ec2 -tag:stage=prod includes all Amazon EC2 resources in any Amazon Web Services Region that begins with the letters us and is not tagged with a key Stage that has the value prod.
@@ -767,7 +768,7 @@ extension CreateViewInput: Swift.CustomDebugStringConvertible {
         "CreateViewInput(clientToken: \(Swift.String(describing: clientToken)), includedProperties: \(Swift.String(describing: includedProperties)), scope: \(Swift.String(describing: scope)), viewName: \(Swift.String(describing: viewName)), filters: \"CONTENT_REDACTED\", tags: \"CONTENT_REDACTED\")"}
 }
 
-public struct CreateViewOutput {
+public struct CreateViewOutput: Swift.Sendable {
     /// A structure that contains the details about the new view.
     public var view: ResourceExplorer2ClientTypes.View?
 
@@ -779,7 +780,7 @@ public struct CreateViewOutput {
     }
 }
 
-public struct DeleteViewInput {
+public struct DeleteViewInput: Swift.Sendable {
     /// The [Amazon resource name (ARN)](https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html) of the view that you want to delete.
     /// This member is required.
     public var viewArn: Swift.String?
@@ -792,7 +793,7 @@ public struct DeleteViewInput {
     }
 }
 
-public struct DeleteViewOutput {
+public struct DeleteViewOutput: Swift.Sendable {
     /// The [Amazon resource name (ARN)](https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html) of the view that you successfully deleted.
     public var viewArn: Swift.String?
 
@@ -804,7 +805,7 @@ public struct DeleteViewOutput {
     }
 }
 
-public struct GetViewInput {
+public struct GetViewInput: Swift.Sendable {
     /// The [Amazon resource name (ARN)](https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html) of the view that you want information about.
     /// This member is required.
     public var viewArn: Swift.String?
@@ -817,7 +818,7 @@ public struct GetViewInput {
     }
 }
 
-public struct GetViewOutput {
+public struct GetViewOutput: Swift.Sendable {
     /// Tag key and value pairs that are attached to the view.
     public var tags: [Swift.String: Swift.String]?
     /// A structure that contains the details for the requested view.
@@ -838,7 +839,7 @@ extension GetViewOutput: Swift.CustomDebugStringConvertible {
         "GetViewOutput(view: \(Swift.String(describing: view)), tags: \"CONTENT_REDACTED\")"}
 }
 
-public struct ListViewsInput {
+public struct ListViewsInput: Swift.Sendable {
     /// The maximum number of results that you want included on each page of the response. If you do not include this parameter, it defaults to a value appropriate to the operation. If additional items exist beyond those included in the current response, the NextToken response element is present and has a value (is not null). Include that value as the NextToken request parameter in the next call to the operation to get the next part of the results. An API operation can return fewer results than the maximum even when there are more results available. You should check NextToken after every operation to ensure that you receive all of the results.
     public var maxResults: Swift.Int?
     /// The parameter for receiving additional results if you receive a NextToken response in a previous request. A NextToken response indicates that more output is available. Set this parameter to the value of the previous call's NextToken response to indicate where the output should continue from. The pagination tokens expire after 24 hours.
@@ -854,7 +855,7 @@ public struct ListViewsInput {
     }
 }
 
-public struct ListViewsOutput {
+public struct ListViewsOutput: Swift.Sendable {
     /// If present, indicates that more output is available than is included in the current response. Use this value in the NextToken request parameter in a subsequent call to the operation to get the next part of the output. You should repeat this until the NextToken response element comes back as null. The pagination tokens expire after 24 hours.
     public var nextToken: Swift.String?
     /// The list of views available in the Amazon Web Services Region in which you called this operation.
@@ -870,7 +871,7 @@ public struct ListViewsOutput {
     }
 }
 
-public struct UpdateViewInput {
+public struct UpdateViewInput: Swift.Sendable {
     /// An array of strings that specify which resources are included in the results of queries made using this view. When you use this view in a [Search] operation, the filter string is combined with the search's QueryString parameter using a logical AND operator. For information about the supported syntax, see [Search query reference for Resource Explorer](https://docs.aws.amazon.com/resource-explorer/latest/userguide/using-search-query-syntax.html) in the Amazon Web Services Resource Explorer User Guide. This query string in the context of this operation supports only [filter prefixes](https://docs.aws.amazon.com/resource-explorer/latest/userguide/using-search-query-syntax.html#query-syntax-filters) with optional [operators](https://docs.aws.amazon.com/resource-explorer/latest/userguide/using-search-query-syntax.html#query-syntax-operators). It doesn't support free-form text. For example, the string region:us* service:ec2 -tag:stage=prod includes all Amazon EC2 resources in any Amazon Web Services Region that begins with the letters us and is not tagged with a key Stage that has the value prod.
     public var filters: ResourceExplorer2ClientTypes.SearchFilter?
     /// Specifies optional fields that you want included in search results from this view. It is a list of objects that each describe a field to include. The default is an empty list, with no optional fields included in the results.
@@ -896,7 +897,7 @@ extension UpdateViewInput: Swift.CustomDebugStringConvertible {
         "UpdateViewInput(includedProperties: \(Swift.String(describing: includedProperties)), viewArn: \(Swift.String(describing: viewArn)), filters: \"CONTENT_REDACTED\")"}
 }
 
-public struct UpdateViewOutput {
+public struct UpdateViewOutput: Swift.Sendable {
     /// Details about the view that you changed with this operation.
     public var view: ResourceExplorer2ClientTypes.View?
 
@@ -909,8 +910,9 @@ public struct UpdateViewOutput {
 }
 
 extension ResourceExplorer2ClientTypes {
+
     /// This is a structure that contains the status of Amazon Web Services service access, and whether you have a valid service-linked role to enable multi-account search for your organization.
-    public struct OrgConfiguration {
+    public struct OrgConfiguration: Swift.Sendable {
         /// This value displays whether your Amazon Web Services service access is ENABLED or DISABLED.
         /// This member is required.
         public var awsServiceAccessStatus: ResourceExplorer2ClientTypes.AWSServiceAccessStatus?
@@ -926,10 +928,9 @@ extension ResourceExplorer2ClientTypes {
             self.serviceLinkedRole = serviceLinkedRole
         }
     }
-
 }
 
-public struct GetAccountLevelServiceConfigurationOutput {
+public struct GetAccountLevelServiceConfigurationOutput: Swift.Sendable {
     /// Details about the organization, and whether configuration is ENABLED or DISABLED.
     public var orgConfiguration: ResourceExplorer2ClientTypes.OrgConfiguration?
 
@@ -941,7 +942,7 @@ public struct GetAccountLevelServiceConfigurationOutput {
     }
 }
 
-public struct GetDefaultViewOutput {
+public struct GetDefaultViewOutput: Swift.Sendable {
     /// The [Amazon resource name (ARN)](https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html) of the view that is the current default for the Amazon Web Services Region in which you called this operation.
     public var viewArn: Swift.String?
 
@@ -953,7 +954,7 @@ public struct GetDefaultViewOutput {
     }
 }
 
-public struct GetIndexOutput {
+public struct GetIndexOutput: Swift.Sendable {
     /// The [Amazon resource name (ARN)](https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html) of the index.
     public var arn: Swift.String?
     /// The date and time when the index was originally created.
@@ -998,7 +999,7 @@ extension GetIndexOutput: Swift.CustomDebugStringConvertible {
         "GetIndexOutput(arn: \(Swift.String(describing: arn)), createdAt: \(Swift.String(describing: createdAt)), lastUpdatedAt: \(Swift.String(describing: lastUpdatedAt)), replicatingFrom: \(Swift.String(describing: replicatingFrom)), replicatingTo: \(Swift.String(describing: replicatingTo)), state: \(Swift.String(describing: state)), type: \(Swift.String(describing: type)), tags: \"CONTENT_REDACTED\")"}
 }
 
-public struct ListIndexesForMembersInput {
+public struct ListIndexesForMembersInput: Swift.Sendable {
     /// The account IDs will limit the output to only indexes from these accounts.
     /// This member is required.
     public var accountIdList: [Swift.String]?
@@ -1020,8 +1021,9 @@ public struct ListIndexesForMembersInput {
 }
 
 extension ResourceExplorer2ClientTypes {
+
     /// An index is the data store used by Amazon Web Services Resource Explorer to hold information about your Amazon Web Services resources that the service discovers.
-    public struct MemberIndex {
+    public struct MemberIndex: Swift.Sendable {
         /// The account ID for the index.
         public var accountId: Swift.String?
         /// The [Amazon resource name (ARN)](https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html) of the index.
@@ -1048,10 +1050,9 @@ extension ResourceExplorer2ClientTypes {
             self.type = type
         }
     }
-
 }
 
-public struct ListIndexesForMembersOutput {
+public struct ListIndexesForMembersOutput: Swift.Sendable {
     /// A structure that contains the details and status of each index.
     public var indexes: [ResourceExplorer2ClientTypes.MemberIndex]?
     /// If present, indicates that more output is available than is included in the current response. Use this value in the NextToken request parameter in a subsequent call to the operation to get the next part of the output. You should repeat this until the NextToken response element comes back as null. The pagination tokens expire after 24 hours.
@@ -1067,7 +1068,7 @@ public struct ListIndexesForMembersOutput {
     }
 }
 
-public struct ListResourcesInput {
+public struct ListResourcesInput: Swift.Sendable {
     /// A search filter defines which resources can be part of a search query result set.
     public var filters: ResourceExplorer2ClientTypes.SearchFilter?
     /// The maximum number of results that you want included on each page of the response. If you do not include this parameter, it defaults to a value appropriate to the operation. If additional items exist beyond those included in the current response, the NextToken response element is present and has a value (is not null). Include that value as the NextToken request parameter in the next call to the operation to get the next part of the results. An API operation can return fewer results than the maximum even when there are more results available. You should check NextToken after every operation to ensure that you receive all of the results.
@@ -1097,8 +1098,9 @@ extension ListResourcesInput: Swift.CustomDebugStringConvertible {
 }
 
 extension ResourceExplorer2ClientTypes {
+
     /// A structure that describes a property of a resource.
-    public struct ResourceProperty {
+    public struct ResourceProperty: Swift.Sendable {
         /// Details about this property. The content of this field is a JSON object that varies based on the resource type.
         public var data: Smithy.Document?
         /// The date and time that the information about this resource property was last updated.
@@ -1117,12 +1119,12 @@ extension ResourceExplorer2ClientTypes {
             self.name = name
         }
     }
-
 }
 
 extension ResourceExplorer2ClientTypes {
+
     /// A resource in Amazon Web Services that Amazon Web Services Resource Explorer has discovered, and for which it has stored information in the index of the Amazon Web Services Region that contains the resource.
-    public struct Resource {
+    public struct Resource: Swift.Sendable {
         /// The [Amazon resource name (ARN)](https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html) of the resource.
         public var arn: Swift.String?
         /// The date and time that Resource Explorer last queried this resource and updated the index with the latest information about the resource.
@@ -1157,10 +1159,9 @@ extension ResourceExplorer2ClientTypes {
             self.service = service
         }
     }
-
 }
 
-public struct ListResourcesOutput {
+public struct ListResourcesOutput: Swift.Sendable {
     /// If present, indicates that more output is available than is included in the current response. Use this value in the NextToken request parameter in a subsequent call to the operation to get the next part of the output. You should repeat this until the NextToken response element comes back as null. The pagination tokens expire after 24 hours.
     public var nextToken: Swift.String?
     /// The list of structures that describe the resources that match the query.
@@ -1180,7 +1181,7 @@ public struct ListResourcesOutput {
     }
 }
 
-public struct ListSupportedResourceTypesInput {
+public struct ListSupportedResourceTypesInput: Swift.Sendable {
     /// The maximum number of results that you want included on each page of the response. If you do not include this parameter, it defaults to a value appropriate to the operation. If additional items exist beyond those included in the current response, the NextToken response element is present and has a value (is not null). Include that value as the NextToken request parameter in the next call to the operation to get the next part of the results. An API operation can return fewer results than the maximum even when there are more results available. You should check NextToken after every operation to ensure that you receive all of the results.
     public var maxResults: Swift.Int?
     /// The parameter for receiving additional results if you receive a NextToken response in a previous request. A NextToken response indicates that more output is available. Set this parameter to the value of the previous call's NextToken response to indicate where the output should continue from. The pagination tokens expire after 24 hours.
@@ -1197,8 +1198,9 @@ public struct ListSupportedResourceTypesInput {
 }
 
 extension ResourceExplorer2ClientTypes {
+
     /// A structure that describes a resource type supported by Amazon Web Services Resource Explorer.
-    public struct SupportedResourceType {
+    public struct SupportedResourceType: Swift.Sendable {
         /// The unique identifier of the resource type.
         public var resourceType: Swift.String?
         /// The Amazon Web Servicesservice that is associated with the resource type. This is the primary service that lets you create and interact with resources of this type.
@@ -1213,10 +1215,9 @@ extension ResourceExplorer2ClientTypes {
             self.service = service
         }
     }
-
 }
 
-public struct ListSupportedResourceTypesOutput {
+public struct ListSupportedResourceTypesOutput: Swift.Sendable {
     /// If present, indicates that more output is available than is included in the current response. Use this value in the NextToken request parameter in a subsequent call to the operation to get the next part of the output. You should repeat this until the NextToken response element comes back as null. The pagination tokens expire after 24 hours.
     public var nextToken: Swift.String?
     /// The list of resource types supported by Resource Explorer.
@@ -1232,7 +1233,7 @@ public struct ListSupportedResourceTypesOutput {
     }
 }
 
-public struct ListTagsForResourceInput {
+public struct ListTagsForResourceInput: Swift.Sendable {
     /// The [Amazon resource name (ARN)](https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html) of the view or index that you want to attach tags to.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -1245,7 +1246,7 @@ public struct ListTagsForResourceInput {
     }
 }
 
-public struct ListTagsForResourceOutput {
+public struct ListTagsForResourceOutput: Swift.Sendable {
     /// The tag key and value pairs that you want to attach to the specified view or index.
     public var tags: [Swift.String: Swift.String]?
 
@@ -1263,8 +1264,9 @@ extension ListTagsForResourceOutput: Swift.CustomDebugStringConvertible {
 }
 
 extension ResourceExplorer2ClientTypes {
+
     /// Information about the number of results that match the query. At this time, Amazon Web Services Resource Explorer doesn't count more than 1,000 matches for any query. This structure provides information about whether the query exceeded this limit. This field is included in every page when you paginate the results.
-    public struct ResourceCount {
+    public struct ResourceCount: Swift.Sendable {
         /// Indicates whether the TotalResources value represents an exhaustive count of search results.
         ///
         /// * If True, it indicates that the search was exhaustive. Every resource that matches the query was counted.
@@ -1283,10 +1285,9 @@ extension ResourceExplorer2ClientTypes {
             self.totalResources = totalResources
         }
     }
-
 }
 
-public struct SearchInput {
+public struct SearchInput: Swift.Sendable {
     /// The maximum number of results that you want included on each page of the response. If you do not include this parameter, it defaults to a value appropriate to the operation. If additional items exist beyond those included in the current response, the NextToken response element is present and has a value (is not null). Include that value as the NextToken request parameter in the next call to the operation to get the next part of the results. An API operation can return fewer results than the maximum even when there are more results available. You should check NextToken after every operation to ensure that you receive all of the results.
     public var maxResults: Swift.Int?
     /// The parameter for receiving additional results if you receive a NextToken response in a previous request. A NextToken response indicates that more output is available. Set this parameter to the value of the previous call's NextToken response to indicate where the output should continue from. The pagination tokens expire after 24 hours.
@@ -1316,7 +1317,7 @@ extension SearchInput: Swift.CustomDebugStringConvertible {
         "SearchInput(maxResults: \(Swift.String(describing: maxResults)), nextToken: \(Swift.String(describing: nextToken)), viewArn: \(Swift.String(describing: viewArn)), queryString: \"CONTENT_REDACTED\")"}
 }
 
-public struct SearchOutput {
+public struct SearchOutput: Swift.Sendable {
     /// The number of resources that match the query.
     public var count: ResourceExplorer2ClientTypes.ResourceCount?
     /// If present, indicates that more output is available than is included in the current response. Use this value in the NextToken request parameter in a subsequent call to the operation to get the next part of the output. You should repeat this until the NextToken response element comes back as null. The pagination tokens expire after 24 hours.
@@ -1340,7 +1341,7 @@ public struct SearchOutput {
     }
 }
 
-public struct TagResourceInput {
+public struct TagResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the view or index that you want to attach tags to.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -1362,12 +1363,12 @@ extension TagResourceInput: Swift.CustomDebugStringConvertible {
         "TagResourceInput(resourceArn: \(Swift.String(describing: resourceArn)), tags: \"CONTENT_REDACTED\")"}
 }
 
-public struct TagResourceOutput {
+public struct TagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UntagResourceInput {
+public struct UntagResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the view or index that you want to remove tags from.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -1390,7 +1391,7 @@ extension UntagResourceInput: Swift.CustomDebugStringConvertible {
         "UntagResourceInput(resourceArn: \(Swift.String(describing: resourceArn)), tagKeys: \"CONTENT_REDACTED\")"}
 }
 
-public struct UntagResourceOutput {
+public struct UntagResourceOutput: Swift.Sendable {
 
     public init() { }
 }

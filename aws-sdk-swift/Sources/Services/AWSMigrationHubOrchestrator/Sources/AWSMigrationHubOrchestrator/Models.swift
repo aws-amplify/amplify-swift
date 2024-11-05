@@ -102,7 +102,7 @@ public struct ValidationException: ClientRuntime.ModeledError, AWSClientRuntime.
     }
 }
 
-public struct ListTagsForResourceInput {
+public struct ListTagsForResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the resource.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -115,7 +115,7 @@ public struct ListTagsForResourceInput {
     }
 }
 
-public struct ListTagsForResourceOutput {
+public struct ListTagsForResourceOutput: Swift.Sendable {
     /// The tags added to a resource.
     public var tags: [Swift.String: Swift.String]?
 
@@ -178,8 +178,9 @@ public struct ThrottlingException: ClientRuntime.ModeledError, AWSClientRuntime.
 }
 
 extension MigrationHubOrchestratorClientTypes {
+
     /// A map of key value pairs that is generated when you create a migration workflow. The key value pairs will differ based on your selection of the template.
-    public enum StepInput {
+    public enum StepInput: Swift.Sendable {
         /// The value of the integer.
         case integervalue(Swift.Int)
         /// String value.
@@ -190,10 +191,9 @@ extension MigrationHubOrchestratorClientTypes {
         case mapofstringvalue([Swift.String: Swift.String])
         case sdkUnknown(Swift.String)
     }
-
 }
 
-public struct CreateWorkflowInput {
+public struct CreateWorkflowInput: Swift.Sendable {
     /// The configuration ID of the application configured in Application Discovery Service.
     public var applicationConfigurationId: Swift.String?
     /// The description of the migration workflow.
@@ -239,7 +239,7 @@ extension CreateWorkflowInput: Swift.CustomDebugStringConvertible {
 
 extension MigrationHubOrchestratorClientTypes {
 
-    public enum MigrationWorkflowStatusEnum: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum MigrationWorkflowStatusEnum: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case completed
         case creating
         case creationFailed
@@ -302,7 +302,7 @@ extension MigrationHubOrchestratorClientTypes {
     }
 }
 
-public struct CreateWorkflowOutput {
+public struct CreateWorkflowOutput: Swift.Sendable {
     /// The configuration ID of the application configured in Application Discovery Service.
     public var adsApplicationConfigurationId: Swift.String?
     /// The Amazon Resource Name (ARN) of the migration workflow.
@@ -359,7 +359,7 @@ extension CreateWorkflowOutput: Swift.CustomDebugStringConvertible {
         "CreateWorkflowOutput(adsApplicationConfigurationId: \(Swift.String(describing: adsApplicationConfigurationId)), arn: \(Swift.String(describing: arn)), creationTime: \(Swift.String(describing: creationTime)), description: \(Swift.String(describing: description)), id: \(Swift.String(describing: id)), name: \(Swift.String(describing: name)), status: \(Swift.String(describing: status)), stepTargets: \(Swift.String(describing: stepTargets)), tags: \(Swift.String(describing: tags)), templateId: \(Swift.String(describing: templateId)), workflowInputs: \"CONTENT_REDACTED\")"}
 }
 
-public struct DeleteWorkflowInput {
+public struct DeleteWorkflowInput: Swift.Sendable {
     /// The ID of the migration workflow you want to delete.
     /// This member is required.
     public var id: Swift.String?
@@ -372,7 +372,7 @@ public struct DeleteWorkflowInput {
     }
 }
 
-public struct DeleteWorkflowOutput {
+public struct DeleteWorkflowOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the migration workflow.
     public var arn: Swift.String?
     /// The ID of the migration workflow.
@@ -392,7 +392,7 @@ public struct DeleteWorkflowOutput {
     }
 }
 
-public struct GetWorkflowInput {
+public struct GetWorkflowInput: Swift.Sendable {
     /// The ID of the migration workflow.
     /// This member is required.
     public var id: Swift.String?
@@ -406,8 +406,9 @@ public struct GetWorkflowInput {
 }
 
 extension MigrationHubOrchestratorClientTypes {
+
     /// List of AWS services utilized in a migration workflow.
-    public struct Tool {
+    public struct Tool: Swift.Sendable {
         /// The name of an AWS service.
         public var name: Swift.String?
         /// The URL of an AWS service.
@@ -422,10 +423,9 @@ extension MigrationHubOrchestratorClientTypes {
             self.url = url
         }
     }
-
 }
 
-public struct GetWorkflowOutput {
+public struct GetWorkflowOutput: Swift.Sendable {
     /// The configuration ID of the application configured in Application Discovery Service.
     public var adsApplicationConfigurationId: Swift.String?
     /// The name of the application configured in Application Discovery Service.
@@ -518,7 +518,7 @@ extension GetWorkflowOutput: Swift.CustomDebugStringConvertible {
         "GetWorkflowOutput(adsApplicationConfigurationId: \(Swift.String(describing: adsApplicationConfigurationId)), adsApplicationName: \(Swift.String(describing: adsApplicationName)), arn: \(Swift.String(describing: arn)), completedSteps: \(Swift.String(describing: completedSteps)), creationTime: \(Swift.String(describing: creationTime)), description: \(Swift.String(describing: description)), endTime: \(Swift.String(describing: endTime)), id: \(Swift.String(describing: id)), lastModifiedTime: \(Swift.String(describing: lastModifiedTime)), lastStartTime: \(Swift.String(describing: lastStartTime)), lastStopTime: \(Swift.String(describing: lastStopTime)), name: \(Swift.String(describing: name)), status: \(Swift.String(describing: status)), statusMessage: \(Swift.String(describing: statusMessage)), tags: \(Swift.String(describing: tags)), templateId: \(Swift.String(describing: templateId)), tools: \(Swift.String(describing: tools)), totalSteps: \(Swift.String(describing: totalSteps)), workflowBucket: \(Swift.String(describing: workflowBucket)), workflowInputs: \"CONTENT_REDACTED\")"}
 }
 
-public struct ListWorkflowsInput {
+public struct ListWorkflowsInput: Swift.Sendable {
     /// The name of the application configured in Application Discovery Service.
     public var adsApplicationConfigurationName: Swift.String?
     /// The maximum number of results that can be returned.
@@ -551,8 +551,9 @@ public struct ListWorkflowsInput {
 }
 
 extension MigrationHubOrchestratorClientTypes {
+
     /// The summary of a migration workflow.
-    public struct MigrationWorkflowSummary {
+    public struct MigrationWorkflowSummary: Swift.Sendable {
         /// The name of the application configured in Application Discovery Service.
         public var adsApplicationConfigurationName: Swift.String?
         /// The steps completed in the migration workflow.
@@ -599,10 +600,9 @@ extension MigrationHubOrchestratorClientTypes {
             self.totalSteps = totalSteps
         }
     }
-
 }
 
-public struct ListWorkflowsOutput {
+public struct ListWorkflowsOutput: Swift.Sendable {
     /// The summary of the migration workflow.
     /// This member is required.
     public var migrationWorkflowSummary: [MigrationHubOrchestratorClientTypes.MigrationWorkflowSummary]?
@@ -619,7 +619,7 @@ public struct ListWorkflowsOutput {
     }
 }
 
-public struct StartWorkflowInput {
+public struct StartWorkflowInput: Swift.Sendable {
     /// The ID of the migration workflow.
     /// This member is required.
     public var id: Swift.String?
@@ -632,7 +632,7 @@ public struct StartWorkflowInput {
     }
 }
 
-public struct StartWorkflowOutput {
+public struct StartWorkflowOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the migration workflow.
     public var arn: Swift.String?
     /// The ID of the migration workflow.
@@ -660,7 +660,7 @@ public struct StartWorkflowOutput {
     }
 }
 
-public struct StopWorkflowInput {
+public struct StopWorkflowInput: Swift.Sendable {
     /// The ID of the migration workflow.
     /// This member is required.
     public var id: Swift.String?
@@ -673,7 +673,7 @@ public struct StopWorkflowInput {
     }
 }
 
-public struct StopWorkflowOutput {
+public struct StopWorkflowOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the migration workflow.
     public var arn: Swift.String?
     /// The ID of the migration workflow.
@@ -701,7 +701,7 @@ public struct StopWorkflowOutput {
     }
 }
 
-public struct UpdateWorkflowInput {
+public struct UpdateWorkflowInput: Swift.Sendable {
     /// The description of the migration workflow.
     public var description: Swift.String?
     /// The ID of the migration workflow.
@@ -735,7 +735,7 @@ extension UpdateWorkflowInput: Swift.CustomDebugStringConvertible {
         "UpdateWorkflowInput(description: \(Swift.String(describing: description)), id: \(Swift.String(describing: id)), name: \(Swift.String(describing: name)), stepTargets: \(Swift.String(describing: stepTargets)), inputParameters: \"CONTENT_REDACTED\")"}
 }
 
-public struct UpdateWorkflowOutput {
+public struct UpdateWorkflowOutput: Swift.Sendable {
     /// The ID of the application configured in Application Discovery Service.
     public var adsApplicationConfigurationId: Swift.String?
     /// The Amazon Resource Name (ARN) of the migration workflow.
@@ -822,16 +822,16 @@ public struct ConflictException: ClientRuntime.ModeledError, AWSClientRuntime.AW
 }
 
 extension MigrationHubOrchestratorClientTypes {
+
     /// The migration workflow template used as the source for the new template.
-    public enum TemplateSource {
+    public enum TemplateSource: Swift.Sendable {
         /// The ID of the workflow from the source migration workflow template.
         case workflowid(Swift.String)
         case sdkUnknown(Swift.String)
     }
-
 }
 
-public struct CreateTemplateInput {
+public struct CreateTemplateInput: Swift.Sendable {
     /// A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. For more information, see [Idempotency](https://smithy.io/2.0/spec/behavior-traits.html#idempotencytoken-trait) in the Smithy documentation.
     public var clientToken: Swift.String?
     /// The tags to add to the migration workflow template.
@@ -861,7 +861,7 @@ public struct CreateTemplateInput {
     }
 }
 
-public struct CreateTemplateOutput {
+public struct CreateTemplateOutput: Swift.Sendable {
     /// The tags added to the migration workflow template.
     public var tags: [Swift.String: Swift.String]?
     /// The Amazon Resource Name (ARN) of the migration workflow template. The format for an Migration Hub Orchestrator template ARN is arn:aws:migrationhub-orchestrator:region:account:template/template-abcd1234. For more information about ARNs, see [Amazon Resource Names (ARNs)](https://docs.aws.amazon.com/IAM/latest/UserGuide/reference-arns.html) in the AWS General Reference.
@@ -881,7 +881,7 @@ public struct CreateTemplateOutput {
     }
 }
 
-public struct DeleteTemplateInput {
+public struct DeleteTemplateInput: Swift.Sendable {
     /// The ID of the request to delete a migration workflow template.
     /// This member is required.
     public var id: Swift.String?
@@ -894,12 +894,12 @@ public struct DeleteTemplateInput {
     }
 }
 
-public struct DeleteTemplateOutput {
+public struct DeleteTemplateOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct GetTemplateInput {
+public struct GetTemplateInput: Swift.Sendable {
     /// The ID of the template.
     /// This member is required.
     public var id: Swift.String?
@@ -914,7 +914,7 @@ public struct GetTemplateInput {
 
 extension MigrationHubOrchestratorClientTypes {
 
-    public enum DataType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DataType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case integer
         case string
         case stringlist
@@ -948,8 +948,9 @@ extension MigrationHubOrchestratorClientTypes {
 }
 
 extension MigrationHubOrchestratorClientTypes {
+
     /// The input parameters of a template.
-    public struct TemplateInput {
+    public struct TemplateInput: Swift.Sendable {
         /// The data type of the template input.
         public var dataType: MigrationHubOrchestratorClientTypes.DataType?
         /// The name of the template.
@@ -968,12 +969,11 @@ extension MigrationHubOrchestratorClientTypes {
             self.`required` = `required`
         }
     }
-
 }
 
 extension MigrationHubOrchestratorClientTypes {
 
-    public enum TemplateStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum TemplateStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case created
         case creating
         case creationFailed
@@ -1009,7 +1009,7 @@ extension MigrationHubOrchestratorClientTypes {
     }
 }
 
-public struct GetTemplateOutput {
+public struct GetTemplateOutput: Swift.Sendable {
     /// The time at which the template was last created.
     public var creationTime: Foundation.Date?
     /// The time at which the template was last created.
@@ -1077,7 +1077,7 @@ public struct GetTemplateOutput {
     }
 }
 
-public struct ListTemplatesInput {
+public struct ListTemplatesInput: Swift.Sendable {
     /// The maximum number of results that can be returned.
     public var maxResults: Swift.Int
     /// The name of the template.
@@ -1098,8 +1098,9 @@ public struct ListTemplatesInput {
 }
 
 extension MigrationHubOrchestratorClientTypes {
+
     /// The summary of the template.
-    public struct TemplateSummary {
+    public struct TemplateSummary: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the template.
         public var arn: Swift.String?
         /// The description of the template.
@@ -1122,10 +1123,9 @@ extension MigrationHubOrchestratorClientTypes {
             self.name = name
         }
     }
-
 }
 
-public struct ListTemplatesOutput {
+public struct ListTemplatesOutput: Swift.Sendable {
     /// The pagination token.
     public var nextToken: Swift.String?
     /// The summary of the template.
@@ -1142,7 +1142,7 @@ public struct ListTemplatesOutput {
     }
 }
 
-public struct UpdateTemplateInput {
+public struct UpdateTemplateInput: Swift.Sendable {
     /// A unique, case-sensitive identifier that you provide to ensure the idempotency of the request.
     public var clientToken: Swift.String?
     /// The ID of the request to update a migration workflow template.
@@ -1167,7 +1167,7 @@ public struct UpdateTemplateInput {
     }
 }
 
-public struct UpdateTemplateOutput {
+public struct UpdateTemplateOutput: Swift.Sendable {
     /// The tags added to the migration workflow template.
     public var tags: [Swift.String: Swift.String]?
     /// The ARN of the migration workflow template being updated. The format for an Migration Hub Orchestrator template ARN is arn:aws:migrationhub-orchestrator:region:account:template/template-abcd1234. For more information about ARNs, see [Amazon Resource Names (ARNs)](https://docs.aws.amazon.com/IAM/latest/UserGuide/reference-arns.html) in the AWS General Reference.
@@ -1187,7 +1187,7 @@ public struct UpdateTemplateOutput {
     }
 }
 
-public struct ListPluginsInput {
+public struct ListPluginsInput: Swift.Sendable {
     /// The maximum number of plugins that can be returned.
     public var maxResults: Swift.Int
     /// The pagination token.
@@ -1205,7 +1205,7 @@ public struct ListPluginsInput {
 
 extension MigrationHubOrchestratorClientTypes {
 
-    public enum PluginHealth: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum PluginHealth: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case pluginHealthy
         case pluginUnhealthy
         case sdkUnknown(Swift.String)
@@ -1233,8 +1233,9 @@ extension MigrationHubOrchestratorClientTypes {
 }
 
 extension MigrationHubOrchestratorClientTypes {
+
     /// The summary of the Migration Hub Orchestrator plugin.
-    public struct PluginSummary {
+    public struct PluginSummary: Swift.Sendable {
         /// The name of the host.
         public var hostname: Swift.String?
         /// The IP address at which the plugin is located.
@@ -1265,10 +1266,9 @@ extension MigrationHubOrchestratorClientTypes {
             self.version = version
         }
     }
-
 }
 
-public struct ListPluginsOutput {
+public struct ListPluginsOutput: Swift.Sendable {
     /// The pagination token.
     public var nextToken: Swift.String?
     /// Migration Hub Orchestrator plugins.
@@ -1284,7 +1284,7 @@ public struct ListPluginsOutput {
     }
 }
 
-public struct TagResourceInput {
+public struct TagResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the resource to which you want to add tags.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -1302,12 +1302,12 @@ public struct TagResourceInput {
     }
 }
 
-public struct TagResourceOutput {
+public struct TagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct GetTemplateStepInput {
+public struct GetTemplateStepInput: Swift.Sendable {
     /// The ID of the step.
     /// This member is required.
     public var id: Swift.String?
@@ -1331,8 +1331,9 @@ public struct GetTemplateStepInput {
 }
 
 extension MigrationHubOrchestratorClientTypes {
+
     /// The output of the step.
-    public struct StepOutput {
+    public struct StepOutput: Swift.Sendable {
         /// The data type of the step output.
         public var dataType: MigrationHubOrchestratorClientTypes.DataType?
         /// The name of the step.
@@ -1351,12 +1352,11 @@ extension MigrationHubOrchestratorClientTypes {
             self.`required` = `required`
         }
     }
-
 }
 
 extension MigrationHubOrchestratorClientTypes {
 
-    public enum StepActionType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum StepActionType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case automated
         case manual
         case sdkUnknown(Swift.String)
@@ -1384,8 +1384,9 @@ extension MigrationHubOrchestratorClientTypes {
 }
 
 extension MigrationHubOrchestratorClientTypes {
+
     /// Command to be run on a particular operating system.
-    public struct PlatformCommand {
+    public struct PlatformCommand: Swift.Sendable {
         /// Command for Linux.
         public var linux: Swift.String?
         /// Command for Windows.
@@ -1400,12 +1401,11 @@ extension MigrationHubOrchestratorClientTypes {
             self.windows = windows
         }
     }
-
 }
 
 extension MigrationHubOrchestratorClientTypes {
 
-    public enum RunEnvironment: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum RunEnvironment: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case aws
         case onpremise
         case sdkUnknown(Swift.String)
@@ -1433,8 +1433,9 @@ extension MigrationHubOrchestratorClientTypes {
 }
 
 extension MigrationHubOrchestratorClientTypes {
+
     /// The script location for a particular operating system.
-    public struct PlatformScriptKey {
+    public struct PlatformScriptKey: Swift.Sendable {
         /// The script location for Linux.
         public var linux: Swift.String?
         /// The script location for Windows.
@@ -1449,12 +1450,11 @@ extension MigrationHubOrchestratorClientTypes {
             self.windows = windows
         }
     }
-
 }
 
 extension MigrationHubOrchestratorClientTypes {
 
-    public enum TargetType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum TargetType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case all
         case `none`
         case single
@@ -1485,8 +1485,9 @@ extension MigrationHubOrchestratorClientTypes {
 }
 
 extension MigrationHubOrchestratorClientTypes {
+
     /// The custom script to run tests on source or target environments.
-    public struct StepAutomationConfiguration {
+    public struct StepAutomationConfiguration: Swift.Sendable {
         /// The command to run the script.
         public var command: MigrationHubOrchestratorClientTypes.PlatformCommand?
         /// The source or target environment.
@@ -1513,10 +1514,9 @@ extension MigrationHubOrchestratorClientTypes {
             self.targetType = targetType
         }
     }
-
 }
 
-public struct GetTemplateStepOutput {
+public struct GetTemplateStepOutput: Swift.Sendable {
     /// The time at which the step was created.
     public var creationTime: Swift.String?
     /// The description of the step.
@@ -1568,7 +1568,7 @@ public struct GetTemplateStepOutput {
     }
 }
 
-public struct ListTemplateStepsInput {
+public struct ListTemplateStepsInput: Swift.Sendable {
     /// The maximum number of results that can be returned.
     public var maxResults: Swift.Int
     /// The pagination token.
@@ -1596,7 +1596,7 @@ public struct ListTemplateStepsInput {
 
 extension MigrationHubOrchestratorClientTypes {
 
-    public enum Owner: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Owner: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case awsmanaged
         case custom
         case sdkUnknown(Swift.String)
@@ -1624,8 +1624,9 @@ extension MigrationHubOrchestratorClientTypes {
 }
 
 extension MigrationHubOrchestratorClientTypes {
+
     /// The summary of the step.
-    public struct TemplateStepSummary {
+    public struct TemplateStepSummary: Swift.Sendable {
         /// The ID of the step.
         public var id: Swift.String?
         /// The name of the step.
@@ -1668,10 +1669,9 @@ extension MigrationHubOrchestratorClientTypes {
             self.templateId = templateId
         }
     }
-
 }
 
-public struct ListTemplateStepsOutput {
+public struct ListTemplateStepsOutput: Swift.Sendable {
     /// The pagination token.
     public var nextToken: Swift.String?
     /// The list of summaries of steps in a template.
@@ -1687,7 +1687,7 @@ public struct ListTemplateStepsOutput {
     }
 }
 
-public struct GetTemplateStepGroupInput {
+public struct GetTemplateStepGroupInput: Swift.Sendable {
     /// The ID of the step group.
     /// This member is required.
     public var id: Swift.String?
@@ -1707,7 +1707,7 @@ public struct GetTemplateStepGroupInput {
 
 extension MigrationHubOrchestratorClientTypes {
 
-    public enum StepGroupStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum StepGroupStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case awaitingDependencies
         case completed
         case failed
@@ -1752,7 +1752,7 @@ extension MigrationHubOrchestratorClientTypes {
     }
 }
 
-public struct GetTemplateStepGroupOutput {
+public struct GetTemplateStepGroupOutput: Swift.Sendable {
     /// The time at which the step group was created.
     public var creationTime: Foundation.Date?
     /// The description of the step group.
@@ -1800,7 +1800,7 @@ public struct GetTemplateStepGroupOutput {
     }
 }
 
-public struct ListTemplateStepGroupsInput {
+public struct ListTemplateStepGroupsInput: Swift.Sendable {
     /// The maximum number of results that can be returned.
     public var maxResults: Swift.Int
     /// The pagination token.
@@ -1822,8 +1822,9 @@ public struct ListTemplateStepGroupsInput {
 }
 
 extension MigrationHubOrchestratorClientTypes {
+
     /// The summary of the step group in the template.
-    public struct TemplateStepGroupSummary {
+    public struct TemplateStepGroupSummary: Swift.Sendable {
         /// The ID of the step group.
         public var id: Swift.String?
         /// The name of the step group.
@@ -1846,10 +1847,9 @@ extension MigrationHubOrchestratorClientTypes {
             self.previous = previous
         }
     }
-
 }
 
-public struct ListTemplateStepGroupsOutput {
+public struct ListTemplateStepGroupsOutput: Swift.Sendable {
     /// The pagination token.
     public var nextToken: Swift.String?
     /// The summary of the step group in the template.
@@ -1866,7 +1866,7 @@ public struct ListTemplateStepGroupsOutput {
     }
 }
 
-public struct UntagResourceInput {
+public struct UntagResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the resource from which you want to remove tags.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -1884,14 +1884,15 @@ public struct UntagResourceInput {
     }
 }
 
-public struct UntagResourceOutput {
+public struct UntagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
 extension MigrationHubOrchestratorClientTypes {
+
     /// A structure to hold multiple values of an output.
-    public enum WorkflowStepOutputUnion {
+    public enum WorkflowStepOutputUnion: Swift.Sendable {
         /// The integer value.
         case integervalue(Swift.Int)
         /// The string value.
@@ -1900,12 +1901,12 @@ extension MigrationHubOrchestratorClientTypes {
         case listofstringvalue([Swift.String])
         case sdkUnknown(Swift.String)
     }
-
 }
 
 extension MigrationHubOrchestratorClientTypes {
+
     /// The output of a step.
-    public struct WorkflowStepOutput {
+    public struct WorkflowStepOutput: Swift.Sendable {
         /// The data type of the output.
         public var dataType: MigrationHubOrchestratorClientTypes.DataType?
         /// The name of the step.
@@ -1928,12 +1929,12 @@ extension MigrationHubOrchestratorClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension MigrationHubOrchestratorClientTypes {
+
     /// The custom script to run tests on source or target environments.
-    public struct WorkflowStepAutomationConfiguration {
+    public struct WorkflowStepAutomationConfiguration: Swift.Sendable {
         /// The command required to run the script.
         public var command: MigrationHubOrchestratorClientTypes.PlatformCommand?
         /// The source or target environment.
@@ -1960,10 +1961,9 @@ extension MigrationHubOrchestratorClientTypes {
             self.targetType = targetType
         }
     }
-
 }
 
-public struct CreateWorkflowStepInput {
+public struct CreateWorkflowStepInput: Swift.Sendable {
     /// The description of the step.
     public var description: Swift.String?
     /// The name of the step.
@@ -2015,7 +2015,7 @@ public struct CreateWorkflowStepInput {
     }
 }
 
-public struct CreateWorkflowStepOutput {
+public struct CreateWorkflowStepOutput: Swift.Sendable {
     /// The ID of the step.
     public var id: Swift.String?
     /// The name of the step.
@@ -2039,7 +2039,7 @@ public struct CreateWorkflowStepOutput {
     }
 }
 
-public struct DeleteWorkflowStepInput {
+public struct DeleteWorkflowStepInput: Swift.Sendable {
     /// The ID of the step you want to delete.
     /// This member is required.
     public var id: Swift.String?
@@ -2062,12 +2062,12 @@ public struct DeleteWorkflowStepInput {
     }
 }
 
-public struct DeleteWorkflowStepOutput {
+public struct DeleteWorkflowStepOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct GetWorkflowStepInput {
+public struct GetWorkflowStepInput: Swift.Sendable {
     /// The ID of the step.
     /// This member is required.
     public var id: Swift.String?
@@ -2092,7 +2092,7 @@ public struct GetWorkflowStepInput {
 
 extension MigrationHubOrchestratorClientTypes {
 
-    public enum StepStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum StepStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case awaitingDependencies
         case completed
         case failed
@@ -2137,7 +2137,7 @@ extension MigrationHubOrchestratorClientTypes {
     }
 }
 
-public struct GetWorkflowStepOutput {
+public struct GetWorkflowStepOutput: Swift.Sendable {
     /// The time at which the step was created.
     public var creationTime: Foundation.Date?
     /// The description of the step.
@@ -2229,7 +2229,7 @@ public struct GetWorkflowStepOutput {
     }
 }
 
-public struct ListWorkflowStepsInput {
+public struct ListWorkflowStepsInput: Swift.Sendable {
     /// The maximum number of results that can be returned.
     public var maxResults: Swift.Int
     /// The pagination token.
@@ -2256,8 +2256,9 @@ public struct ListWorkflowStepsInput {
 }
 
 extension MigrationHubOrchestratorClientTypes {
+
     /// The summary of the step in a migration workflow.
-    public struct WorkflowStepSummary {
+    public struct WorkflowStepSummary: Swift.Sendable {
         /// The description of the step.
         public var description: Swift.String?
         /// The name of the step.
@@ -2316,10 +2317,9 @@ extension MigrationHubOrchestratorClientTypes {
             self.totalNoOfSrv = totalNoOfSrv
         }
     }
-
 }
 
-public struct ListWorkflowStepsOutput {
+public struct ListWorkflowStepsOutput: Swift.Sendable {
     /// The pagination token.
     public var nextToken: Swift.String?
     /// The summary of steps in a migration workflow.
@@ -2336,7 +2336,7 @@ public struct ListWorkflowStepsOutput {
     }
 }
 
-public struct RetryWorkflowStepInput {
+public struct RetryWorkflowStepInput: Swift.Sendable {
     /// The ID of the step.
     /// This member is required.
     public var id: Swift.String?
@@ -2359,7 +2359,7 @@ public struct RetryWorkflowStepInput {
     }
 }
 
-public struct RetryWorkflowStepOutput {
+public struct RetryWorkflowStepOutput: Swift.Sendable {
     /// The ID of the step.
     public var id: Swift.String?
     /// The status of the step.
@@ -2383,7 +2383,7 @@ public struct RetryWorkflowStepOutput {
     }
 }
 
-public struct UpdateWorkflowStepInput {
+public struct UpdateWorkflowStepInput: Swift.Sendable {
     /// The description of the step.
     public var description: Swift.String?
     /// The ID of the step.
@@ -2442,7 +2442,7 @@ public struct UpdateWorkflowStepInput {
     }
 }
 
-public struct UpdateWorkflowStepOutput {
+public struct UpdateWorkflowStepOutput: Swift.Sendable {
     /// The ID of the step.
     public var id: Swift.String?
     /// The name of the step.
@@ -2466,7 +2466,7 @@ public struct UpdateWorkflowStepOutput {
     }
 }
 
-public struct CreateWorkflowStepGroupInput {
+public struct CreateWorkflowStepGroupInput: Swift.Sendable {
     /// The description of the step group.
     public var description: Swift.String?
     /// The name of the step group.
@@ -2496,7 +2496,7 @@ public struct CreateWorkflowStepGroupInput {
     }
 }
 
-public struct CreateWorkflowStepGroupOutput {
+public struct CreateWorkflowStepGroupOutput: Swift.Sendable {
     /// The time at which the step group is created.
     public var creationTime: Foundation.Date?
     /// The description of the step group.
@@ -2536,7 +2536,7 @@ public struct CreateWorkflowStepGroupOutput {
     }
 }
 
-public struct DeleteWorkflowStepGroupInput {
+public struct DeleteWorkflowStepGroupInput: Swift.Sendable {
     /// The ID of the step group you want to delete.
     /// This member is required.
     public var id: Swift.String?
@@ -2554,12 +2554,12 @@ public struct DeleteWorkflowStepGroupInput {
     }
 }
 
-public struct DeleteWorkflowStepGroupOutput {
+public struct DeleteWorkflowStepGroupOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct GetWorkflowStepGroupInput {
+public struct GetWorkflowStepGroupInput: Swift.Sendable {
     /// The ID of the step group.
     /// This member is required.
     public var id: Swift.String?
@@ -2577,7 +2577,7 @@ public struct GetWorkflowStepGroupInput {
     }
 }
 
-public struct GetWorkflowStepGroupOutput {
+public struct GetWorkflowStepGroupOutput: Swift.Sendable {
     /// The time at which the step group was created.
     public var creationTime: Foundation.Date?
     /// The description of the step group.
@@ -2633,7 +2633,7 @@ public struct GetWorkflowStepGroupOutput {
     }
 }
 
-public struct ListWorkflowStepGroupsInput {
+public struct ListWorkflowStepGroupsInput: Swift.Sendable {
     /// The maximum number of results that can be returned.
     public var maxResults: Swift.Int
     /// The pagination token.
@@ -2655,8 +2655,9 @@ public struct ListWorkflowStepGroupsInput {
 }
 
 extension MigrationHubOrchestratorClientTypes {
+
     /// The summary of a step group in a workflow.
-    public struct WorkflowStepGroupSummary {
+    public struct WorkflowStepGroupSummary: Swift.Sendable {
         /// The ID of the step group.
         public var id: Swift.String?
         /// The name of the step group.
@@ -2687,10 +2688,9 @@ extension MigrationHubOrchestratorClientTypes {
             self.status = status
         }
     }
-
 }
 
-public struct ListWorkflowStepGroupsOutput {
+public struct ListWorkflowStepGroupsOutput: Swift.Sendable {
     /// The pagination token.
     public var nextToken: Swift.String?
     /// The summary of step groups in a migration workflow.
@@ -2707,7 +2707,7 @@ public struct ListWorkflowStepGroupsOutput {
     }
 }
 
-public struct UpdateWorkflowStepGroupInput {
+public struct UpdateWorkflowStepGroupInput: Swift.Sendable {
     /// The description of the step group.
     public var description: Swift.String?
     /// The ID of the step group.
@@ -2741,7 +2741,7 @@ public struct UpdateWorkflowStepGroupInput {
     }
 }
 
-public struct UpdateWorkflowStepGroupOutput {
+public struct UpdateWorkflowStepGroupOutput: Swift.Sendable {
     /// The description of the step group.
     public var description: Swift.String?
     /// The ID of the step group.

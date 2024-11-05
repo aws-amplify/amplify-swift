@@ -15,7 +15,7 @@ extension SPRPublisher {
 
     mutating func uploadArchive() async throws {
         let tmpDirFileURL = FileManager.default.temporaryDirectory
-        let archiveFileURL = tmpDirFileURL.appending(component: "\(UUID().uuidString).zip")
+        let archiveFileURL = tmpDirFileURL.appendingPathComponent("\(UUID().uuidString).zip")
         let archiveProcess = Process.SPR.archive(name: name, packagePath: path, archiveFileURL: archiveFileURL)
         _ = try _runReturningStdOut(archiveProcess)
         guard FileManager.default.fileExists(atPath: urlPath(archiveFileURL)) else {

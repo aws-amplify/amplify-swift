@@ -205,8 +205,9 @@ public struct ValidationException: ClientRuntime.ModeledError, AWSClientRuntime.
 }
 
 extension MedicalImagingClientTypes {
+
     /// Copy the destination image set.
-    public struct CopyDestinationImageSet {
+    public struct CopyDestinationImageSet: Swift.Sendable {
         /// The image set identifier for the destination image set.
         /// This member is required.
         public var imageSetId: Swift.String?
@@ -223,29 +224,55 @@ extension MedicalImagingClientTypes {
             self.latestVersionId = latestVersionId
         }
     }
-
 }
 
 extension MedicalImagingClientTypes {
+
+    /// Contains copiable Attributes structure and wraps information related to specific copy use cases. For example, when copying subsets.
+    public struct MetadataCopies: Swift.Sendable {
+        /// The JSON string used to specify a subset of SOP Instances to copy from source to destination image set.
+        /// This member is required.
+        public var copiableAttributes: Swift.String?
+
+        public init(
+            copiableAttributes: Swift.String? = nil
+        )
+        {
+            self.copiableAttributes = copiableAttributes
+        }
+    }
+}
+
+extension MedicalImagingClientTypes.MetadataCopies: Swift.CustomDebugStringConvertible {
+    public var debugDescription: Swift.String {
+        "MetadataCopies(copiableAttributes: \"CONTENT_REDACTED\")"}
+}
+
+extension MedicalImagingClientTypes {
+
     /// Copy source image set information.
-    public struct CopySourceImageSetInformation {
+    public struct CopySourceImageSetInformation: Swift.Sendable {
+        /// Contains MetadataCopies structure and wraps information related to specific copy use cases. For example, when copying subsets.
+        public var dicomCopies: MedicalImagingClientTypes.MetadataCopies?
         /// The latest version identifier for the source image set.
         /// This member is required.
         public var latestVersionId: Swift.String?
 
         public init(
+            dicomCopies: MedicalImagingClientTypes.MetadataCopies? = nil,
             latestVersionId: Swift.String? = nil
         )
         {
+            self.dicomCopies = dicomCopies
             self.latestVersionId = latestVersionId
         }
     }
-
 }
 
 extension MedicalImagingClientTypes {
+
     /// Copy image set information.
-    public struct CopyImageSetInformation {
+    public struct CopyImageSetInformation: Swift.Sendable {
         /// The destination image set.
         public var destinationImageSet: MedicalImagingClientTypes.CopyDestinationImageSet?
         /// The source image set.
@@ -261,16 +288,17 @@ extension MedicalImagingClientTypes {
             self.sourceImageSet = sourceImageSet
         }
     }
-
 }
 
-public struct CopyImageSetInput {
+public struct CopyImageSetInput: Swift.Sendable {
     /// Copy image set information.
     /// This member is required.
     public var copyImageSetInformation: MedicalImagingClientTypes.CopyImageSetInformation?
     /// The data store identifier.
     /// This member is required.
     public var datastoreId: Swift.String?
+    /// Setting this flag will force the CopyImageSet operation, even if Patient, Study, or Series level metadata are mismatched across the sourceImageSet and destinationImageSet.
+    public var force: Swift.Bool?
     /// The source image set identifier.
     /// This member is required.
     public var sourceImageSetId: Swift.String?
@@ -278,18 +306,20 @@ public struct CopyImageSetInput {
     public init(
         copyImageSetInformation: MedicalImagingClientTypes.CopyImageSetInformation? = nil,
         datastoreId: Swift.String? = nil,
+        force: Swift.Bool? = nil,
         sourceImageSetId: Swift.String? = nil
     )
     {
         self.copyImageSetInformation = copyImageSetInformation
         self.datastoreId = datastoreId
+        self.force = force
         self.sourceImageSetId = sourceImageSetId
     }
 }
 
 extension MedicalImagingClientTypes {
 
-    public enum ImageSetState: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ImageSetState: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case active
         case deleted
         case locked
@@ -321,7 +351,7 @@ extension MedicalImagingClientTypes {
 
 extension MedicalImagingClientTypes {
 
-    public enum ImageSetWorkflowStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ImageSetWorkflowStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case copied
         case copying
         case copyingWithReadOnlyAccess
@@ -373,8 +403,9 @@ extension MedicalImagingClientTypes {
 }
 
 extension MedicalImagingClientTypes {
+
     /// Copy the image set properties of the destination image set.
-    public struct CopyDestinationImageSetProperties {
+    public struct CopyDestinationImageSetProperties: Swift.Sendable {
         /// The timestamp when the destination image set properties were created.
         public var createdAt: Foundation.Date?
         /// The Amazon Resource Name (ARN) assigned to the destination image set.
@@ -411,12 +442,12 @@ extension MedicalImagingClientTypes {
             self.updatedAt = updatedAt
         }
     }
-
 }
 
 extension MedicalImagingClientTypes {
+
     /// Copy source image set properties.
-    public struct CopySourceImageSetProperties {
+    public struct CopySourceImageSetProperties: Swift.Sendable {
         /// The timestamp when the source image set properties were created.
         public var createdAt: Foundation.Date?
         /// The Amazon Resource Name (ARN) assigned to the source image set.
@@ -453,10 +484,9 @@ extension MedicalImagingClientTypes {
             self.updatedAt = updatedAt
         }
     }
-
 }
 
-public struct CopyImageSetOutput {
+public struct CopyImageSetOutput: Swift.Sendable {
     /// The data store identifier.
     /// This member is required.
     public var datastoreId: Swift.String?
@@ -479,7 +509,7 @@ public struct CopyImageSetOutput {
     }
 }
 
-public struct CreateDatastoreInput {
+public struct CreateDatastoreInput: Swift.Sendable {
     /// A unique identifier for API idempotency.
     /// This member is required.
     public var clientToken: Swift.String?
@@ -506,7 +536,7 @@ public struct CreateDatastoreInput {
 
 extension MedicalImagingClientTypes {
 
-    public enum DatastoreStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DatastoreStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case active
         case createFailed
         case creating
@@ -542,7 +572,7 @@ extension MedicalImagingClientTypes {
     }
 }
 
-public struct CreateDatastoreOutput {
+public struct CreateDatastoreOutput: Swift.Sendable {
     /// The data store identifier.
     /// This member is required.
     public var datastoreId: Swift.String?
@@ -560,7 +590,7 @@ public struct CreateDatastoreOutput {
     }
 }
 
-public struct DeleteDatastoreInput {
+public struct DeleteDatastoreInput: Swift.Sendable {
     /// The data store identifier.
     /// This member is required.
     public var datastoreId: Swift.String?
@@ -573,7 +603,7 @@ public struct DeleteDatastoreInput {
     }
 }
 
-public struct DeleteDatastoreOutput {
+public struct DeleteDatastoreOutput: Swift.Sendable {
     /// The data store identifier.
     /// This member is required.
     public var datastoreId: Swift.String?
@@ -591,7 +621,7 @@ public struct DeleteDatastoreOutput {
     }
 }
 
-public struct GetDatastoreInput {
+public struct GetDatastoreInput: Swift.Sendable {
     /// The data store identifier.
     /// This member is required.
     public var datastoreId: Swift.String?
@@ -605,8 +635,9 @@ public struct GetDatastoreInput {
 }
 
 extension MedicalImagingClientTypes {
+
     /// The properties associated with the data store.
-    public struct DatastoreProperties {
+    public struct DatastoreProperties: Swift.Sendable {
         /// The timestamp when the data store was created.
         public var createdAt: Foundation.Date?
         /// The Amazon Resource Name (ARN) for the data store.
@@ -644,10 +675,9 @@ extension MedicalImagingClientTypes {
             self.updatedAt = updatedAt
         }
     }
-
 }
 
-public struct GetDatastoreOutput {
+public struct GetDatastoreOutput: Swift.Sendable {
     /// The data store properties.
     /// This member is required.
     public var datastoreProperties: MedicalImagingClientTypes.DatastoreProperties?
@@ -660,7 +690,7 @@ public struct GetDatastoreOutput {
     }
 }
 
-public struct ListDatastoresInput {
+public struct ListDatastoresInput: Swift.Sendable {
     /// The data store status.
     public var datastoreStatus: MedicalImagingClientTypes.DatastoreStatus?
     /// Valid Range: Minimum value of 1. Maximum value of 50.
@@ -681,8 +711,9 @@ public struct ListDatastoresInput {
 }
 
 extension MedicalImagingClientTypes {
+
     /// List of summaries of data stores.
-    public struct DatastoreSummary {
+    public struct DatastoreSummary: Swift.Sendable {
         /// The timestamp when the data store was created.
         public var createdAt: Foundation.Date?
         /// The Amazon Resource Name (ARN) for the data store.
@@ -716,10 +747,9 @@ extension MedicalImagingClientTypes {
             self.updatedAt = updatedAt
         }
     }
-
 }
 
-public struct ListDatastoresOutput {
+public struct ListDatastoresOutput: Swift.Sendable {
     /// The list of summaries of data stores.
     public var datastoreSummaries: [MedicalImagingClientTypes.DatastoreSummary]?
     /// The pagination token used to retrieve the list of data stores on the next page.
@@ -735,7 +765,7 @@ public struct ListDatastoresOutput {
     }
 }
 
-public struct DeleteImageSetInput {
+public struct DeleteImageSetInput: Swift.Sendable {
     /// The data store identifier.
     /// This member is required.
     public var datastoreId: Swift.String?
@@ -753,7 +783,7 @@ public struct DeleteImageSetInput {
     }
 }
 
-public struct DeleteImageSetOutput {
+public struct DeleteImageSetOutput: Swift.Sendable {
     /// The data store identifier.
     /// This member is required.
     public var datastoreId: Swift.String?
@@ -781,7 +811,7 @@ public struct DeleteImageSetOutput {
     }
 }
 
-public struct GetDICOMImportJobInput {
+public struct GetDICOMImportJobInput: Swift.Sendable {
     /// The data store identifier.
     /// This member is required.
     public var datastoreId: Swift.String?
@@ -801,7 +831,7 @@ public struct GetDICOMImportJobInput {
 
 extension MedicalImagingClientTypes {
 
-    public enum JobStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum JobStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case completed
         case failed
         case inProgress
@@ -835,8 +865,9 @@ extension MedicalImagingClientTypes {
 }
 
 extension MedicalImagingClientTypes {
+
     /// Properties of the import job.
-    public struct DICOMImportJobProperties {
+    public struct DICOMImportJobProperties: Swift.Sendable {
         /// The Amazon Resource Name (ARN) that grants permissions to access medical imaging resources.
         /// This member is required.
         public var dataAccessRoleArn: Swift.String?
@@ -890,10 +921,9 @@ extension MedicalImagingClientTypes {
             self.submittedAt = submittedAt
         }
     }
-
 }
 
-public struct GetDICOMImportJobOutput {
+public struct GetDICOMImportJobOutput: Swift.Sendable {
     /// The properties of the import job.
     /// This member is required.
     public var jobProperties: MedicalImagingClientTypes.DICOMImportJobProperties?
@@ -907,8 +937,9 @@ public struct GetDICOMImportJobOutput {
 }
 
 extension MedicalImagingClientTypes {
+
     /// Information about the image frame (pixel data) identifier.
-    public struct ImageFrameInformation {
+    public struct ImageFrameInformation: Swift.Sendable {
         /// The image frame (pixel data) identifier.
         /// This member is required.
         public var imageFrameId: Swift.String?
@@ -920,10 +951,9 @@ extension MedicalImagingClientTypes {
             self.imageFrameId = imageFrameId
         }
     }
-
 }
 
-public struct GetImageFrameInput {
+public struct GetImageFrameInput: Swift.Sendable {
     /// The data store identifier.
     /// This member is required.
     public var datastoreId: Swift.String?
@@ -946,7 +976,7 @@ public struct GetImageFrameInput {
     }
 }
 
-public struct GetImageFrameOutput {
+public struct GetImageFrameOutput: Swift.Sendable {
     /// The format in which the image frame information is returned to the customer. Default is application/octet-stream.
     public var contentType: Swift.String?
     /// The blob containing the aggregated image frame information.
@@ -963,7 +993,7 @@ public struct GetImageFrameOutput {
     }
 }
 
-public struct GetImageSetInput {
+public struct GetImageSetInput: Swift.Sendable {
     /// The data store identifier.
     /// This member is required.
     public var datastoreId: Swift.String?
@@ -985,7 +1015,23 @@ public struct GetImageSetInput {
     }
 }
 
-public struct GetImageSetOutput {
+extension MedicalImagingClientTypes {
+
+    /// Specifies the overrides used in image set modification calls to CopyImageSet and UpdateImageSetMetadata.
+    public struct Overrides: Swift.Sendable {
+        /// Setting this flag will force the CopyImageSet and UpdateImageSetMetadata operations, even if Patient, Study, or Series level metadata are mismatched.
+        public var forced: Swift.Bool?
+
+        public init(
+            forced: Swift.Bool? = nil
+        )
+        {
+            self.forced = forced
+        }
+    }
+}
+
+public struct GetImageSetOutput: Swift.Sendable {
     /// The timestamp when image set properties were created.
     public var createdAt: Foundation.Date?
     /// The data store identifier.
@@ -1005,6 +1051,8 @@ public struct GetImageSetOutput {
     public var imageSetWorkflowStatus: MedicalImagingClientTypes.ImageSetWorkflowStatus?
     /// The error message thrown if an image set action fails.
     public var message: Swift.String?
+    /// This object contains the details of any overrides used while creating a specific image set version. If an image set was copied or updated using the force flag, this object will contain the forced flag.
+    public var overrides: MedicalImagingClientTypes.Overrides?
     /// The timestamp when image set properties were updated.
     public var updatedAt: Foundation.Date?
     /// The image set version identifier.
@@ -1020,6 +1068,7 @@ public struct GetImageSetOutput {
         imageSetState: MedicalImagingClientTypes.ImageSetState? = nil,
         imageSetWorkflowStatus: MedicalImagingClientTypes.ImageSetWorkflowStatus? = nil,
         message: Swift.String? = nil,
+        overrides: MedicalImagingClientTypes.Overrides? = nil,
         updatedAt: Foundation.Date? = nil,
         versionId: Swift.String? = nil
     )
@@ -1032,12 +1081,13 @@ public struct GetImageSetOutput {
         self.imageSetState = imageSetState
         self.imageSetWorkflowStatus = imageSetWorkflowStatus
         self.message = message
+        self.overrides = overrides
         self.updatedAt = updatedAt
         self.versionId = versionId
     }
 }
 
-public struct GetImageSetMetadataInput {
+public struct GetImageSetMetadataInput: Swift.Sendable {
     /// The data store identifier.
     /// This member is required.
     public var datastoreId: Swift.String?
@@ -1059,7 +1109,7 @@ public struct GetImageSetMetadataInput {
     }
 }
 
-public struct GetImageSetMetadataOutput {
+public struct GetImageSetMetadataOutput: Swift.Sendable {
     /// The compression format in which image set metadata attributes are returned.
     public var contentEncoding: Swift.String?
     /// The format in which the study metadata is returned to the customer. Default is text/plain.
@@ -1080,7 +1130,7 @@ public struct GetImageSetMetadataOutput {
     }
 }
 
-public struct ListDICOMImportJobsInput {
+public struct ListDICOMImportJobsInput: Swift.Sendable {
     /// The data store identifier.
     /// This member is required.
     public var datastoreId: Swift.String?
@@ -1106,8 +1156,9 @@ public struct ListDICOMImportJobsInput {
 }
 
 extension MedicalImagingClientTypes {
+
     /// Summary of import job.
-    public struct DICOMImportJobSummary {
+    public struct DICOMImportJobSummary: Swift.Sendable {
         /// The Amazon Resource Name (ARN) that grants permissions to access medical imaging resources.
         public var dataAccessRoleArn: Swift.String?
         /// The data store identifier.
@@ -1150,10 +1201,9 @@ extension MedicalImagingClientTypes {
             self.submittedAt = submittedAt
         }
     }
-
 }
 
-public struct ListDICOMImportJobsOutput {
+public struct ListDICOMImportJobsOutput: Swift.Sendable {
     /// A list of job summaries.
     /// This member is required.
     public var jobSummaries: [MedicalImagingClientTypes.DICOMImportJobSummary]?
@@ -1170,7 +1220,7 @@ public struct ListDICOMImportJobsOutput {
     }
 }
 
-public struct ListImageSetVersionsInput {
+public struct ListImageSetVersionsInput: Swift.Sendable {
     /// The data store identifier.
     /// This member is required.
     public var datastoreId: Swift.String?
@@ -1197,8 +1247,9 @@ public struct ListImageSetVersionsInput {
 }
 
 extension MedicalImagingClientTypes {
+
     /// The image set properties.
-    public struct ImageSetProperties {
+    public struct ImageSetProperties: Swift.Sendable {
         /// The timestamp when the image set properties were created.
         public var createdAt: Foundation.Date?
         /// The timestamp when the image set properties were deleted.
@@ -1213,6 +1264,8 @@ extension MedicalImagingClientTypes {
         public var imageSetWorkflowStatus: MedicalImagingClientTypes.ImageSetWorkflowStatus?
         /// The error message thrown if an image set action fails.
         public var message: Swift.String?
+        /// Contains details on overrides used when creating the returned version of an image set. For example, if forced exists, the forced flag was used when creating the image set.
+        public var overrides: MedicalImagingClientTypes.Overrides?
         /// The timestamp when the image set properties were updated.
         public var updatedAt: Foundation.Date?
         /// The image set version identifier.
@@ -1226,6 +1279,7 @@ extension MedicalImagingClientTypes {
             imageSetState: MedicalImagingClientTypes.ImageSetState? = nil,
             imageSetWorkflowStatus: MedicalImagingClientTypes.ImageSetWorkflowStatus? = nil,
             message: Swift.String? = nil,
+            overrides: MedicalImagingClientTypes.Overrides? = nil,
             updatedAt: Foundation.Date? = nil,
             versionId: Swift.String? = nil
         )
@@ -1236,14 +1290,14 @@ extension MedicalImagingClientTypes {
             self.imageSetState = imageSetState
             self.imageSetWorkflowStatus = imageSetWorkflowStatus
             self.message = message
+            self.overrides = overrides
             self.updatedAt = updatedAt
             self.versionId = versionId
         }
     }
-
 }
 
-public struct ListImageSetVersionsOutput {
+public struct ListImageSetVersionsOutput: Swift.Sendable {
     /// Lists all properties associated with an image set.
     /// This member is required.
     public var imageSetPropertiesList: [MedicalImagingClientTypes.ImageSetProperties]?
@@ -1260,7 +1314,7 @@ public struct ListImageSetVersionsOutput {
     }
 }
 
-public struct ListTagsForResourceInput {
+public struct ListTagsForResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the medical imaging resource to list tags for.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -1273,7 +1327,7 @@ public struct ListTagsForResourceInput {
     }
 }
 
-public struct ListTagsForResourceOutput {
+public struct ListTagsForResourceOutput: Swift.Sendable {
     /// A list of all tags associated with a medical imaging resource.
     /// This member is required.
     public var tags: [Swift.String: Swift.String]?
@@ -1288,7 +1342,7 @@ public struct ListTagsForResourceOutput {
 
 extension MedicalImagingClientTypes {
 
-    public enum Operator: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Operator: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case between
         case equal
         case sdkUnknown(Swift.String)
@@ -1316,8 +1370,9 @@ extension MedicalImagingClientTypes {
 }
 
 extension MedicalImagingClientTypes {
+
     /// The aggregated structure to store DICOM study date and study time for search capabilities.
-    public struct DICOMStudyDateAndTime {
+    public struct DICOMStudyDateAndTime: Swift.Sendable {
         /// The DICOM study date provided in yyMMdd format.
         /// This member is required.
         public var dicomStudyDate: Swift.String?
@@ -1333,7 +1388,6 @@ extension MedicalImagingClientTypes {
             self.dicomStudyTime = dicomStudyTime
         }
     }
-
 }
 
 extension MedicalImagingClientTypes.DICOMStudyDateAndTime: Swift.CustomDebugStringConvertible {
@@ -1342,8 +1396,9 @@ extension MedicalImagingClientTypes.DICOMStudyDateAndTime: Swift.CustomDebugStri
 }
 
 extension MedicalImagingClientTypes {
+
     /// The search input attribute value.
-    public enum SearchByAttributeValue {
+    public enum SearchByAttributeValue: Swift.Sendable {
         /// The patient ID input for search.
         case dicompatientid(Swift.String)
         /// The DICOM accession number for search.
@@ -1362,12 +1417,12 @@ extension MedicalImagingClientTypes {
         case dicomstudydateandtime(MedicalImagingClientTypes.DICOMStudyDateAndTime)
         case sdkUnknown(Swift.String)
     }
-
 }
 
 extension MedicalImagingClientTypes {
+
     /// The search filter.
-    public struct SearchFilter {
+    public struct SearchFilter: Swift.Sendable {
         /// The search filter operator for imageSetDateTime.
         /// This member is required.
         public var `operator`: MedicalImagingClientTypes.Operator?
@@ -1384,12 +1439,11 @@ extension MedicalImagingClientTypes {
             self.values = values
         }
     }
-
 }
 
 extension MedicalImagingClientTypes {
 
-    public enum SortField: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SortField: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case dicomstudydateandtime
         case createdat
         case updatedat
@@ -1421,7 +1475,7 @@ extension MedicalImagingClientTypes {
 
 extension MedicalImagingClientTypes {
 
-    public enum SortOrder: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SortOrder: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case asc
         case desc
         case sdkUnknown(Swift.String)
@@ -1449,8 +1503,9 @@ extension MedicalImagingClientTypes {
 }
 
 extension MedicalImagingClientTypes {
+
     /// Sort search results.
-    public struct Sort {
+    public struct Sort: Swift.Sendable {
         /// The sort field for search criteria.
         /// This member is required.
         public var sortField: MedicalImagingClientTypes.SortField?
@@ -1467,12 +1522,12 @@ extension MedicalImagingClientTypes {
             self.sortOrder = sortOrder
         }
     }
-
 }
 
 extension MedicalImagingClientTypes {
+
     /// The search criteria.
-    public struct SearchCriteria {
+    public struct SearchCriteria: Swift.Sendable {
         /// The filters for the search criteria.
         public var filters: [MedicalImagingClientTypes.SearchFilter]?
         /// The sort input for search criteria.
@@ -1487,7 +1542,6 @@ extension MedicalImagingClientTypes {
             self.sort = sort
         }
     }
-
 }
 
 extension MedicalImagingClientTypes.SearchCriteria: Swift.CustomDebugStringConvertible {
@@ -1496,7 +1550,7 @@ extension MedicalImagingClientTypes.SearchCriteria: Swift.CustomDebugStringConve
     }
 }
 
-public struct SearchImageSetsInput {
+public struct SearchImageSetsInput: Swift.Sendable {
     /// The identifier of the data store where the image sets reside.
     /// This member is required.
     public var datastoreId: Swift.String?
@@ -1527,8 +1581,9 @@ extension SearchImageSetsInput: Swift.CustomDebugStringConvertible {
 }
 
 extension MedicalImagingClientTypes {
+
     /// The DICOM attributes returned as a part of a response. Each image set has these properties as part of a search result.
-    public struct DICOMTags {
+    public struct DICOMTags: Swift.Sendable {
         /// The accession number for the DICOM study.
         public var dicomAccessionNumber: Swift.String?
         /// The total number of instances in the DICOM study.
@@ -1599,7 +1654,6 @@ extension MedicalImagingClientTypes {
             self.dicomStudyTime = dicomStudyTime
         }
     }
-
 }
 
 extension MedicalImagingClientTypes.DICOMTags: Swift.CustomDebugStringConvertible {
@@ -1608,8 +1662,9 @@ extension MedicalImagingClientTypes.DICOMTags: Swift.CustomDebugStringConvertibl
 }
 
 extension MedicalImagingClientTypes {
+
     /// Summary of the image set metadata.
-    public struct ImageSetsMetadataSummary {
+    public struct ImageSetsMetadataSummary: Swift.Sendable {
         /// The time an image set is created. Sample creation date is provided in 1985-04-12T23:20:50.52Z format.
         public var createdAt: Foundation.Date?
         /// The DICOM tags associated with the image set.
@@ -1637,10 +1692,9 @@ extension MedicalImagingClientTypes {
             self.version = version
         }
     }
-
 }
 
-public struct SearchImageSetsOutput {
+public struct SearchImageSetsOutput: Swift.Sendable {
     /// The model containing the image set results.
     /// This member is required.
     public var imageSetsMetadataSummaries: [MedicalImagingClientTypes.ImageSetsMetadataSummary]?
@@ -1661,7 +1715,7 @@ public struct SearchImageSetsOutput {
     }
 }
 
-public struct StartDICOMImportJobInput {
+public struct StartDICOMImportJobInput: Swift.Sendable {
     /// A unique identifier for API idempotency.
     /// This member is required.
     public var clientToken: Swift.String?
@@ -1702,7 +1756,7 @@ public struct StartDICOMImportJobInput {
     }
 }
 
-public struct StartDICOMImportJobOutput {
+public struct StartDICOMImportJobOutput: Swift.Sendable {
     /// The data store identifier.
     /// This member is required.
     public var datastoreId: Swift.String?
@@ -1730,7 +1784,7 @@ public struct StartDICOMImportJobOutput {
     }
 }
 
-public struct TagResourceInput {
+public struct TagResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the medical imaging resource that tags are being added to.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -1748,12 +1802,12 @@ public struct TagResourceInput {
     }
 }
 
-public struct TagResourceOutput {
+public struct TagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UntagResourceInput {
+public struct UntagResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the medical imaging resource that tags are being removed from.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -1771,14 +1825,15 @@ public struct UntagResourceInput {
     }
 }
 
-public struct UntagResourceOutput {
+public struct UntagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
 extension MedicalImagingClientTypes {
+
     /// The object containing removableAttributes and updatableAttributes.
-    public struct DICOMUpdates {
+    public struct DICOMUpdates: Swift.Sendable {
         /// The DICOM tags to be removed from ImageSetMetadata.
         public var removableAttributes: Foundation.Data?
         /// The DICOM tags that need to be updated in ImageSetMetadata.
@@ -1793,7 +1848,6 @@ extension MedicalImagingClientTypes {
             self.updatableAttributes = updatableAttributes
         }
     }
-
 }
 
 extension MedicalImagingClientTypes.DICOMUpdates: Swift.CustomDebugStringConvertible {
@@ -1802,19 +1856,27 @@ extension MedicalImagingClientTypes.DICOMUpdates: Swift.CustomDebugStringConvert
 }
 
 extension MedicalImagingClientTypes {
+
     /// Contains DICOMUpdates.
-    public enum MetadataUpdates {
+    public enum MetadataUpdates: Swift.Sendable {
         /// The object containing removableAttributes and updatableAttributes.
         case dicomupdates(MedicalImagingClientTypes.DICOMUpdates)
+        /// Specifies the previous image set version ID to revert the current image set back to. You must provide either revertToVersionId or DICOMUpdates in your request. A ValidationException error is thrown if both parameters are provided at the same time.
+        case reverttoversionid(Swift.String)
         case sdkUnknown(Swift.String)
     }
-
 }
 
-public struct UpdateImageSetMetadataInput {
+public struct UpdateImageSetMetadataInput: Swift.Sendable {
     /// The data store identifier.
     /// This member is required.
     public var datastoreId: Swift.String?
+    /// Setting this flag will force the UpdateImageSetMetadata operation for the following attributes:
+    ///
+    /// * Tag.StudyInstanceUID, Tag.SeriesInstanceUID, Tag.SOPInstanceUID, and Tag.StudyID
+    ///
+    /// * Adding, removing, or updating private tags for an individual SOP Instance
+    public var force: Swift.Bool?
     /// The image set identifier.
     /// This member is required.
     public var imageSetId: Swift.String?
@@ -1827,19 +1889,21 @@ public struct UpdateImageSetMetadataInput {
 
     public init(
         datastoreId: Swift.String? = nil,
+        force: Swift.Bool? = nil,
         imageSetId: Swift.String? = nil,
         latestVersionId: Swift.String? = nil,
         updateImageSetMetadataUpdates: MedicalImagingClientTypes.MetadataUpdates? = nil
     )
     {
         self.datastoreId = datastoreId
+        self.force = force
         self.imageSetId = imageSetId
         self.latestVersionId = latestVersionId
         self.updateImageSetMetadataUpdates = updateImageSetMetadataUpdates
     }
 }
 
-public struct UpdateImageSetMetadataOutput {
+public struct UpdateImageSetMetadataOutput: Swift.Sendable {
     /// The timestamp when image set metadata was created.
     public var createdAt: Foundation.Date?
     /// The data store identifier.
@@ -1893,6 +1957,18 @@ extension CopyImageSetInput {
             return nil
         }
         return "/datastore/\(datastoreId.urlPercentEncoding())/imageSet/\(sourceImageSetId.urlPercentEncoding())/copyImageSet"
+    }
+}
+
+extension CopyImageSetInput {
+
+    static func queryItemProvider(_ value: CopyImageSetInput) throws -> [Smithy.URIQueryItem] {
+        var items = [Smithy.URIQueryItem]()
+        if let force = value.force {
+            let forceQueryItem = Smithy.URIQueryItem(name: "force".urlPercentEncoding(), value: Swift.String(force).urlPercentEncoding())
+            items.append(forceQueryItem)
+        }
+        return items
     }
 }
 
@@ -2203,6 +2279,10 @@ extension UpdateImageSetMetadataInput {
         }
         let latestVersionIdQueryItem = Smithy.URIQueryItem(name: "latestVersion".urlPercentEncoding(), value: Swift.String(latestVersionId).urlPercentEncoding())
         items.append(latestVersionIdQueryItem)
+        if let force = value.force {
+            let forceQueryItem = Smithy.URIQueryItem(name: "force".urlPercentEncoding(), value: Swift.String(force).urlPercentEncoding())
+            items.append(forceQueryItem)
+        }
         return items
     }
 }
@@ -2384,6 +2464,7 @@ extension GetImageSetOutput {
         value.imageSetState = try reader["imageSetState"].readIfPresent() ?? .sdkUnknown("")
         value.imageSetWorkflowStatus = try reader["imageSetWorkflowStatus"].readIfPresent()
         value.message = try reader["message"].readIfPresent()
+        value.overrides = try reader["overrides"].readIfPresent(with: MedicalImagingClientTypes.Overrides.read(from:))
         value.updatedAt = try reader["updatedAt"].readTimestampIfPresent(format: SmithyTimestamps.TimestampFormat.epochSeconds)
         value.versionId = try reader["versionId"].readIfPresent() ?? ""
         return value
@@ -3022,6 +3103,16 @@ extension MedicalImagingClientTypes.DICOMImportJobProperties {
     }
 }
 
+extension MedicalImagingClientTypes.Overrides {
+
+    static func read(from reader: SmithyJSON.Reader) throws -> MedicalImagingClientTypes.Overrides {
+        guard reader.hasContent else { throw SmithyReadWrite.ReaderError.requiredValueNotPresent }
+        var value = MedicalImagingClientTypes.Overrides()
+        value.forced = try reader["forced"].readIfPresent()
+        return value
+    }
+}
+
 extension MedicalImagingClientTypes.DatastoreSummary {
 
     static func read(from reader: SmithyJSON.Reader) throws -> MedicalImagingClientTypes.DatastoreSummary {
@@ -3067,6 +3158,7 @@ extension MedicalImagingClientTypes.ImageSetProperties {
         value.updatedAt = try reader["updatedAt"].readTimestampIfPresent(format: SmithyTimestamps.TimestampFormat.epochSeconds)
         value.deletedAt = try reader["deletedAt"].readTimestampIfPresent(format: SmithyTimestamps.TimestampFormat.epochSeconds)
         value.message = try reader["message"].readIfPresent()
+        value.overrides = try reader["overrides"].readIfPresent(with: MedicalImagingClientTypes.Overrides.read(from:))
         return value
     }
 }
@@ -3149,7 +3241,16 @@ extension MedicalImagingClientTypes.CopySourceImageSetInformation {
 
     static func write(value: MedicalImagingClientTypes.CopySourceImageSetInformation?, to writer: SmithyJSON.Writer) throws {
         guard let value else { return }
+        try writer["DICOMCopies"].write(value.dicomCopies, with: MedicalImagingClientTypes.MetadataCopies.write(value:to:))
         try writer["latestVersionId"].write(value.latestVersionId)
+    }
+}
+
+extension MedicalImagingClientTypes.MetadataCopies {
+
+    static func write(value: MedicalImagingClientTypes.MetadataCopies?, to writer: SmithyJSON.Writer) throws {
+        guard let value else { return }
+        try writer["copiableAttributes"].write(value.copiableAttributes)
     }
 }
 
@@ -3222,6 +3323,8 @@ extension MedicalImagingClientTypes.MetadataUpdates {
         switch value {
             case let .dicomupdates(dicomupdates):
                 try writer["DICOMUpdates"].write(dicomupdates, with: MedicalImagingClientTypes.DICOMUpdates.write(value:to:))
+            case let .reverttoversionid(reverttoversionid):
+                try writer["revertToVersionId"].write(reverttoversionid)
             case let .sdkUnknown(sdkUnknown):
                 try writer["sdkUnknown"].write(sdkUnknown)
         }

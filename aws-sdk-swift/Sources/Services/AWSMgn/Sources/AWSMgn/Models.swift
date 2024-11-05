@@ -28,22 +28,23 @@ import protocol ClientRuntime.ModeledError
 import struct Smithy.URIQueryItem
 @_spi(SmithyReadWrite) import struct SmithyReadWrite.WritingClosureBox
 
-public struct DeleteConnectorOutput {
+
+public struct DeleteConnectorOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteVcenterClientOutput {
+public struct DeleteVcenterClientOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct TagResourceOutput {
+public struct TagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UntagResourceOutput {
+public struct UntagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
@@ -77,7 +78,7 @@ public struct AccessDeniedException: ClientRuntime.ModeledError, AWSClientRuntim
 
 extension MgnClientTypes {
 
-    public enum ActionCategory: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ActionCategory: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case backup
         case configuration
         case disasterRecovery
@@ -133,7 +134,7 @@ extension MgnClientTypes {
 
 extension MgnClientTypes {
 
-    public enum ApplicationHealthStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ApplicationHealthStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case error
         case healthy
         case lagging
@@ -165,7 +166,7 @@ extension MgnClientTypes {
 
 extension MgnClientTypes {
 
-    public enum ApplicationProgressStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ApplicationProgressStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case completed
         case inProgress
         case notStarted
@@ -196,8 +197,9 @@ extension MgnClientTypes {
 }
 
 extension MgnClientTypes {
+
     /// Application aggregated status.
-    public struct ApplicationAggregatedStatus {
+    public struct ApplicationAggregatedStatus: Swift.Sendable {
         /// Application aggregated status health status.
         public var healthStatus: MgnClientTypes.ApplicationHealthStatus?
         /// Application aggregated status last update dateTime.
@@ -220,11 +222,11 @@ extension MgnClientTypes {
             self.totalSourceServers = totalSourceServers
         }
     }
-
 }
 
 extension MgnClientTypes {
-    public struct Application {
+
+    public struct Application: Swift.Sendable {
         /// Application aggregated status.
         public var applicationAggregatedStatus: MgnClientTypes.ApplicationAggregatedStatus?
         /// Application ID.
@@ -271,7 +273,6 @@ extension MgnClientTypes {
             self.waveID = waveID
         }
     }
-
 }
 
 extension MgnClientTypes.Application: Swift.CustomDebugStringConvertible {
@@ -280,8 +281,9 @@ extension MgnClientTypes.Application: Swift.CustomDebugStringConvertible {
 }
 
 extension MgnClientTypes {
+
     /// Error details.
-    public struct ErrorDetails {
+    public struct ErrorDetails: Swift.Sendable {
         /// Error details code.
         public var code: Swift.String?
         /// Error details message.
@@ -304,7 +306,6 @@ extension MgnClientTypes {
             self.resourceType = resourceType
         }
     }
-
 }
 
 /// The request could not be completed due to a conflict with the current state of the target resource.
@@ -455,7 +456,7 @@ public struct UninitializedAccountException: ClientRuntime.ModeledError, AWSClie
     }
 }
 
-public struct ArchiveApplicationInput {
+public struct ArchiveApplicationInput: Swift.Sendable {
     /// Account ID.
     public var accountID: Swift.String?
     /// Application ID.
@@ -472,7 +473,7 @@ public struct ArchiveApplicationInput {
     }
 }
 
-public struct ArchiveApplicationOutput {
+public struct ArchiveApplicationOutput: Swift.Sendable {
     /// Application aggregated status.
     public var applicationAggregatedStatus: MgnClientTypes.ApplicationAggregatedStatus?
     /// Application ID.
@@ -525,7 +526,7 @@ extension ArchiveApplicationOutput: Swift.CustomDebugStringConvertible {
         "ArchiveApplicationOutput(applicationAggregatedStatus: \(Swift.String(describing: applicationAggregatedStatus)), applicationID: \(Swift.String(describing: applicationID)), arn: \(Swift.String(describing: arn)), creationDateTime: \(Swift.String(describing: creationDateTime)), description: \(Swift.String(describing: description)), isArchived: \(Swift.String(describing: isArchived)), lastModifiedDateTime: \(Swift.String(describing: lastModifiedDateTime)), name: \(Swift.String(describing: name)), waveID: \(Swift.String(describing: waveID)), tags: \"CONTENT_REDACTED\")"}
 }
 
-public struct AssociateSourceServersInput {
+public struct AssociateSourceServersInput: Swift.Sendable {
     /// Account ID.
     public var accountID: Swift.String?
     /// Application ID.
@@ -547,12 +548,12 @@ public struct AssociateSourceServersInput {
     }
 }
 
-public struct AssociateSourceServersOutput {
+public struct AssociateSourceServersOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct CreateApplicationInput {
+public struct CreateApplicationInput: Swift.Sendable {
     /// Account ID.
     public var accountID: Swift.String?
     /// Application description.
@@ -582,7 +583,7 @@ extension CreateApplicationInput: Swift.CustomDebugStringConvertible {
         "CreateApplicationInput(accountID: \(Swift.String(describing: accountID)), description: \(Swift.String(describing: description)), name: \(Swift.String(describing: name)), tags: \"CONTENT_REDACTED\")"}
 }
 
-public struct CreateApplicationOutput {
+public struct CreateApplicationOutput: Swift.Sendable {
     /// Application aggregated status.
     public var applicationAggregatedStatus: MgnClientTypes.ApplicationAggregatedStatus?
     /// Application ID.
@@ -635,7 +636,7 @@ extension CreateApplicationOutput: Swift.CustomDebugStringConvertible {
         "CreateApplicationOutput(applicationAggregatedStatus: \(Swift.String(describing: applicationAggregatedStatus)), applicationID: \(Swift.String(describing: applicationID)), arn: \(Swift.String(describing: arn)), creationDateTime: \(Swift.String(describing: creationDateTime)), description: \(Swift.String(describing: description)), isArchived: \(Swift.String(describing: isArchived)), lastModifiedDateTime: \(Swift.String(describing: lastModifiedDateTime)), name: \(Swift.String(describing: name)), waveID: \(Swift.String(describing: waveID)), tags: \"CONTENT_REDACTED\")"}
 }
 
-public struct DeleteApplicationInput {
+public struct DeleteApplicationInput: Swift.Sendable {
     /// Account ID.
     public var accountID: Swift.String?
     /// Application ID.
@@ -652,12 +653,12 @@ public struct DeleteApplicationInput {
     }
 }
 
-public struct DeleteApplicationOutput {
+public struct DeleteApplicationOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DisassociateSourceServersInput {
+public struct DisassociateSourceServersInput: Swift.Sendable {
     /// Account ID.
     public var accountID: Swift.String?
     /// Application ID.
@@ -679,14 +680,15 @@ public struct DisassociateSourceServersInput {
     }
 }
 
-public struct DisassociateSourceServersOutput {
+public struct DisassociateSourceServersOutput: Swift.Sendable {
 
     public init() { }
 }
 
 extension MgnClientTypes {
+
     /// Applications list filters.
-    public struct ListApplicationsRequestFilters {
+    public struct ListApplicationsRequestFilters: Swift.Sendable {
         /// Filter applications list by application ID.
         public var applicationIDs: [Swift.String]?
         /// Filter applications list by archival status.
@@ -705,10 +707,9 @@ extension MgnClientTypes {
             self.waveIDs = waveIDs
         }
     }
-
 }
 
-public struct ListApplicationsInput {
+public struct ListApplicationsInput: Swift.Sendable {
     /// Applications list Account ID.
     public var accountID: Swift.String?
     /// Applications list filters.
@@ -732,7 +733,7 @@ public struct ListApplicationsInput {
     }
 }
 
-public struct ListApplicationsOutput {
+public struct ListApplicationsOutput: Swift.Sendable {
     /// Applications list.
     public var items: [MgnClientTypes.Application]?
     /// Response next token.
@@ -748,7 +749,7 @@ public struct ListApplicationsOutput {
     }
 }
 
-public struct UnarchiveApplicationInput {
+public struct UnarchiveApplicationInput: Swift.Sendable {
     /// Account ID.
     public var accountID: Swift.String?
     /// Application ID.
@@ -765,7 +766,7 @@ public struct UnarchiveApplicationInput {
     }
 }
 
-public struct UnarchiveApplicationOutput {
+public struct UnarchiveApplicationOutput: Swift.Sendable {
     /// Application aggregated status.
     public var applicationAggregatedStatus: MgnClientTypes.ApplicationAggregatedStatus?
     /// Application ID.
@@ -818,7 +819,7 @@ extension UnarchiveApplicationOutput: Swift.CustomDebugStringConvertible {
         "UnarchiveApplicationOutput(applicationAggregatedStatus: \(Swift.String(describing: applicationAggregatedStatus)), applicationID: \(Swift.String(describing: applicationID)), arn: \(Swift.String(describing: arn)), creationDateTime: \(Swift.String(describing: creationDateTime)), description: \(Swift.String(describing: description)), isArchived: \(Swift.String(describing: isArchived)), lastModifiedDateTime: \(Swift.String(describing: lastModifiedDateTime)), name: \(Swift.String(describing: name)), waveID: \(Swift.String(describing: waveID)), tags: \"CONTENT_REDACTED\")"}
 }
 
-public struct UpdateApplicationInput {
+public struct UpdateApplicationInput: Swift.Sendable {
     /// Account ID.
     public var accountID: Swift.String?
     /// Application ID.
@@ -843,7 +844,7 @@ public struct UpdateApplicationInput {
     }
 }
 
-public struct UpdateApplicationOutput {
+public struct UpdateApplicationOutput: Swift.Sendable {
     /// Application aggregated status.
     public var applicationAggregatedStatus: MgnClientTypes.ApplicationAggregatedStatus?
     /// Application ID.
@@ -897,8 +898,9 @@ extension UpdateApplicationOutput: Swift.CustomDebugStringConvertible {
 }
 
 extension MgnClientTypes {
+
     /// Validate exception field.
-    public struct ValidationExceptionField {
+    public struct ValidationExceptionField: Swift.Sendable {
         /// Validate exception field message.
         public var message: Swift.String?
         /// Validate exception field name.
@@ -913,12 +915,11 @@ extension MgnClientTypes {
             self.name = name
         }
     }
-
 }
 
 extension MgnClientTypes {
 
-    public enum ValidationExceptionReason: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ValidationExceptionReason: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case cannotParse
         case fieldValidationFailed
         case other
@@ -987,8 +988,9 @@ public struct ValidationException: ClientRuntime.ModeledError, AWSClientRuntime.
 }
 
 extension MgnClientTypes {
+
     /// Connector SSM command config.
-    public struct ConnectorSsmCommandConfig {
+    public struct ConnectorSsmCommandConfig: Swift.Sendable {
         /// Connector SSM command config CloudWatch log group name.
         public var cloudWatchLogGroupName: Swift.String?
         /// Connector SSM command config CloudWatch output enabled.
@@ -1013,10 +1015,9 @@ extension MgnClientTypes {
             self.s3OutputEnabled = s3OutputEnabled
         }
     }
-
 }
 
-public struct CreateConnectorInput {
+public struct CreateConnectorInput: Swift.Sendable {
     /// Create Connector request name.
     /// This member is required.
     public var name: Swift.String?
@@ -1047,7 +1048,7 @@ extension CreateConnectorInput: Swift.CustomDebugStringConvertible {
         "CreateConnectorInput(name: \(Swift.String(describing: name)), ssmCommandConfig: \(Swift.String(describing: ssmCommandConfig)), ssmInstanceID: \(Swift.String(describing: ssmInstanceID)), tags: \"CONTENT_REDACTED\")"}
 }
 
-public struct CreateConnectorOutput {
+public struct CreateConnectorOutput: Swift.Sendable {
     /// Connector arn.
     public var arn: Swift.String?
     /// Connector ID.
@@ -1084,7 +1085,7 @@ extension CreateConnectorOutput: Swift.CustomDebugStringConvertible {
         "CreateConnectorOutput(arn: \(Swift.String(describing: arn)), connectorID: \(Swift.String(describing: connectorID)), name: \(Swift.String(describing: name)), ssmCommandConfig: \(Swift.String(describing: ssmCommandConfig)), ssmInstanceID: \(Swift.String(describing: ssmInstanceID)), tags: \"CONTENT_REDACTED\")"}
 }
 
-public struct DeleteConnectorInput {
+public struct DeleteConnectorInput: Swift.Sendable {
     /// Delete Connector request connector ID.
     /// This member is required.
     public var connectorID: Swift.String?
@@ -1098,8 +1099,9 @@ public struct DeleteConnectorInput {
 }
 
 extension MgnClientTypes {
+
     /// List Connectors Request Filters.
-    public struct ListConnectorsRequestFilters {
+    public struct ListConnectorsRequestFilters: Swift.Sendable {
         /// List Connectors Request Filters connector IDs.
         public var connectorIDs: [Swift.String]?
 
@@ -1110,10 +1112,9 @@ extension MgnClientTypes {
             self.connectorIDs = connectorIDs
         }
     }
-
 }
 
-public struct ListConnectorsInput {
+public struct ListConnectorsInput: Swift.Sendable {
     /// List Connectors Request filters.
     public var filters: MgnClientTypes.ListConnectorsRequestFilters?
     /// List Connectors Request max results.
@@ -1134,7 +1135,8 @@ public struct ListConnectorsInput {
 }
 
 extension MgnClientTypes {
-    public struct Connector {
+
+    public struct Connector: Swift.Sendable {
         /// Connector arn.
         public var arn: Swift.String?
         /// Connector ID.
@@ -1165,7 +1167,6 @@ extension MgnClientTypes {
             self.tags = tags
         }
     }
-
 }
 
 extension MgnClientTypes.Connector: Swift.CustomDebugStringConvertible {
@@ -1173,7 +1174,7 @@ extension MgnClientTypes.Connector: Swift.CustomDebugStringConvertible {
         "Connector(arn: \(Swift.String(describing: arn)), connectorID: \(Swift.String(describing: connectorID)), name: \(Swift.String(describing: name)), ssmCommandConfig: \(Swift.String(describing: ssmCommandConfig)), ssmInstanceID: \(Swift.String(describing: ssmInstanceID)), tags: \"CONTENT_REDACTED\")"}
 }
 
-public struct ListConnectorsOutput {
+public struct ListConnectorsOutput: Swift.Sendable {
     /// List connectors response items.
     public var items: [MgnClientTypes.Connector]?
     /// List connectors response next token.
@@ -1189,7 +1190,7 @@ public struct ListConnectorsOutput {
     }
 }
 
-public struct UpdateConnectorInput {
+public struct UpdateConnectorInput: Swift.Sendable {
     /// Update Connector request connector ID.
     /// This member is required.
     public var connectorID: Swift.String?
@@ -1210,7 +1211,7 @@ public struct UpdateConnectorInput {
     }
 }
 
-public struct UpdateConnectorOutput {
+public struct UpdateConnectorOutput: Swift.Sendable {
     /// Connector arn.
     public var arn: Swift.String?
     /// Connector ID.
@@ -1248,7 +1249,7 @@ extension UpdateConnectorOutput: Swift.CustomDebugStringConvertible {
 }
 
 /// List export errors request.
-public struct ListExportErrorsInput {
+public struct ListExportErrorsInput: Swift.Sendable {
     /// List export errors request export id.
     /// This member is required.
     public var exportID: Swift.String?
@@ -1270,8 +1271,9 @@ public struct ListExportErrorsInput {
 }
 
 extension MgnClientTypes {
+
     /// Export errors data.
-    public struct ExportErrorData {
+    public struct ExportErrorData: Swift.Sendable {
         /// Export errors data raw error.
         public var rawError: Swift.String?
 
@@ -1282,12 +1284,12 @@ extension MgnClientTypes {
             self.rawError = rawError
         }
     }
-
 }
 
 extension MgnClientTypes {
+
     /// Export task error.
-    public struct ExportTaskError {
+    public struct ExportTaskError: Swift.Sendable {
         /// Export task error data.
         public var errorData: MgnClientTypes.ExportErrorData?
         /// Export task error datetime.
@@ -1302,11 +1304,10 @@ extension MgnClientTypes {
             self.errorDateTime = errorDateTime
         }
     }
-
 }
 
 /// List export errors response.
-public struct ListExportErrorsOutput {
+public struct ListExportErrorsOutput: Swift.Sendable {
     /// List export errors response items.
     public var items: [MgnClientTypes.ExportTaskError]?
     /// List export errors response next token.
@@ -1323,8 +1324,9 @@ public struct ListExportErrorsOutput {
 }
 
 extension MgnClientTypes {
+
     /// List exports request filters.
-    public struct ListExportsRequestFilters {
+    public struct ListExportsRequestFilters: Swift.Sendable {
         /// List exports request filters export ids.
         public var exportIDs: [Swift.String]?
 
@@ -1335,11 +1337,10 @@ extension MgnClientTypes {
             self.exportIDs = exportIDs
         }
     }
-
 }
 
 /// List export request.
-public struct ListExportsInput {
+public struct ListExportsInput: Swift.Sendable {
     /// List exports request filters.
     public var filters: MgnClientTypes.ListExportsRequestFilters?
     /// List export request max results.
@@ -1361,7 +1362,7 @@ public struct ListExportsInput {
 
 extension MgnClientTypes {
 
-    public enum ExportStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ExportStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case failed
         case pending
         case started
@@ -1395,8 +1396,9 @@ extension MgnClientTypes {
 }
 
 extension MgnClientTypes {
+
     /// Export task summary.
-    public struct ExportTaskSummary {
+    public struct ExportTaskSummary: Swift.Sendable {
         /// Export task summary applications count.
         public var applicationsCount: Swift.Int
         /// Export task summary servers count.
@@ -1415,12 +1417,12 @@ extension MgnClientTypes {
             self.wavesCount = wavesCount
         }
     }
-
 }
 
 extension MgnClientTypes {
+
     /// Export task.
-    public struct ExportTask {
+    public struct ExportTask: Swift.Sendable {
         /// Export task creation datetime.
         public var creationDateTime: Swift.String?
         /// Export task end datetime.
@@ -1463,11 +1465,10 @@ extension MgnClientTypes {
             self.summary = summary
         }
     }
-
 }
 
 /// List export response.
-public struct ListExportsOutput {
+public struct ListExportsOutput: Swift.Sendable {
     /// List export response items.
     public var items: [MgnClientTypes.ExportTask]?
     /// List export response next token.
@@ -1484,7 +1485,7 @@ public struct ListExportsOutput {
 }
 
 /// Start export request.
-public struct StartExportInput {
+public struct StartExportInput: Swift.Sendable {
     /// Start export request s3 bucket.
     /// This member is required.
     public var s3Bucket: Swift.String?
@@ -1507,7 +1508,7 @@ public struct StartExportInput {
 }
 
 /// Start export response.
-public struct StartExportOutput {
+public struct StartExportOutput: Swift.Sendable {
     /// Start export response export task.
     public var exportTask: MgnClientTypes.ExportTask?
 
@@ -1520,7 +1521,7 @@ public struct StartExportOutput {
 }
 
 /// List import errors request.
-public struct ListImportErrorsInput {
+public struct ListImportErrorsInput: Swift.Sendable {
     /// List import errors request import id.
     /// This member is required.
     public var importID: Swift.String?
@@ -1542,8 +1543,9 @@ public struct ListImportErrorsInput {
 }
 
 extension MgnClientTypes {
+
     /// Import error data.
-    public struct ImportErrorData {
+    public struct ImportErrorData: Swift.Sendable {
         /// Import error data source account ID.
         public var accountID: Swift.String?
         /// Import error data application ID.
@@ -1578,12 +1580,11 @@ extension MgnClientTypes {
             self.waveID = waveID
         }
     }
-
 }
 
 extension MgnClientTypes {
 
-    public enum ImportErrorType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ImportErrorType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case processingError
         case validationError
         case sdkUnknown(Swift.String)
@@ -1611,8 +1612,9 @@ extension MgnClientTypes {
 }
 
 extension MgnClientTypes {
+
     /// Import task error.
-    public struct ImportTaskError {
+    public struct ImportTaskError: Swift.Sendable {
         /// Import task error data.
         public var errorData: MgnClientTypes.ImportErrorData?
         /// Import task error datetime.
@@ -1631,11 +1633,10 @@ extension MgnClientTypes {
             self.errorType = errorType
         }
     }
-
 }
 
 /// List imports errors response.
-public struct ListImportErrorsOutput {
+public struct ListImportErrorsOutput: Swift.Sendable {
     /// List imports errors response items.
     public var items: [MgnClientTypes.ImportTaskError]?
     /// List imports errors response next token.
@@ -1652,8 +1653,9 @@ public struct ListImportErrorsOutput {
 }
 
 extension MgnClientTypes {
+
     /// List imports request filters.
-    public struct ListImportsRequestFilters {
+    public struct ListImportsRequestFilters: Swift.Sendable {
         /// List imports request filters import IDs.
         public var importIDs: [Swift.String]?
 
@@ -1664,11 +1666,10 @@ extension MgnClientTypes {
             self.importIDs = importIDs
         }
     }
-
 }
 
 /// List imports request.
-public struct ListImportsInput {
+public struct ListImportsInput: Swift.Sendable {
     /// List imports request filters.
     public var filters: MgnClientTypes.ListImportsRequestFilters?
     /// List imports request max results.
@@ -1689,8 +1690,9 @@ public struct ListImportsInput {
 }
 
 extension MgnClientTypes {
+
     /// S3 bucket source.
-    public struct S3BucketSource {
+    public struct S3BucketSource: Swift.Sendable {
         /// S3 bucket source s3 bucket.
         /// This member is required.
         public var s3Bucket: Swift.String?
@@ -1711,12 +1713,11 @@ extension MgnClientTypes {
             self.s3Key = s3Key
         }
     }
-
 }
 
 extension MgnClientTypes {
 
-    public enum ImportStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ImportStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case failed
         case pending
         case started
@@ -1750,8 +1751,9 @@ extension MgnClientTypes {
 }
 
 extension MgnClientTypes {
+
     /// Import task summary applications.
-    public struct ImportTaskSummaryApplications {
+    public struct ImportTaskSummaryApplications: Swift.Sendable {
         /// Import task summary applications created count.
         public var createdCount: Swift.Int
         /// Import task summary applications modified count.
@@ -1766,12 +1768,12 @@ extension MgnClientTypes {
             self.modifiedCount = modifiedCount
         }
     }
-
 }
 
 extension MgnClientTypes {
+
     /// Import task summary servers.
-    public struct ImportTaskSummaryServers {
+    public struct ImportTaskSummaryServers: Swift.Sendable {
         /// Import task summary servers created count.
         public var createdCount: Swift.Int
         /// Import task summary servers modified count.
@@ -1786,12 +1788,12 @@ extension MgnClientTypes {
             self.modifiedCount = modifiedCount
         }
     }
-
 }
 
 extension MgnClientTypes {
+
     /// Import task summery waves.
-    public struct ImportTaskSummaryWaves {
+    public struct ImportTaskSummaryWaves: Swift.Sendable {
         /// Import task summery waves created count.
         public var createdCount: Swift.Int
         /// Import task summery waves modified count.
@@ -1806,12 +1808,12 @@ extension MgnClientTypes {
             self.modifiedCount = modifiedCount
         }
     }
-
 }
 
 extension MgnClientTypes {
+
     /// Import task summary.
-    public struct ImportTaskSummary {
+    public struct ImportTaskSummary: Swift.Sendable {
         /// Import task summary applications.
         public var applications: MgnClientTypes.ImportTaskSummaryApplications?
         /// Import task summary servers.
@@ -1830,12 +1832,12 @@ extension MgnClientTypes {
             self.waves = waves
         }
     }
-
 }
 
 extension MgnClientTypes {
+
     /// Import task.
-    public struct ImportTask {
+    public struct ImportTask: Swift.Sendable {
         /// Import task creation datetime.
         public var creationDateTime: Swift.String?
         /// Import task end datetime.
@@ -1870,11 +1872,10 @@ extension MgnClientTypes {
             self.summary = summary
         }
     }
-
 }
 
 /// List import response.
-public struct ListImportsOutput {
+public struct ListImportsOutput: Swift.Sendable {
     /// List import response items.
     public var items: [MgnClientTypes.ImportTask]?
     /// List import response next token.
@@ -1891,7 +1892,7 @@ public struct ListImportsOutput {
 }
 
 /// Start import request.
-public struct StartImportInput {
+public struct StartImportInput: Swift.Sendable {
     /// Start import request client token.
     public var clientToken: Swift.String?
     /// Start import request s3 bucket source.
@@ -1909,7 +1910,7 @@ public struct StartImportInput {
 }
 
 /// Start import response.
-public struct StartImportOutput {
+public struct StartImportOutput: Swift.Sendable {
     /// Start import response import task.
     public var importTask: MgnClientTypes.ImportTask?
 
@@ -1921,17 +1922,17 @@ public struct StartImportOutput {
     }
 }
 
-public struct InitializeServiceInput {
+public struct InitializeServiceInput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct InitializeServiceOutput {
+public struct InitializeServiceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteJobInput {
+public struct DeleteJobInput: Swift.Sendable {
     /// Request to delete Job from service by Account ID.
     public var accountID: Swift.String?
     /// Request to delete Job from service by Job ID.
@@ -1948,12 +1949,12 @@ public struct DeleteJobInput {
     }
 }
 
-public struct DeleteJobOutput {
+public struct DeleteJobOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DescribeJobLogItemsInput {
+public struct DescribeJobLogItemsInput: Swift.Sendable {
     /// Request to describe Job log Account ID.
     public var accountID: Swift.String?
     /// Request to describe Job log job ID.
@@ -1980,7 +1981,7 @@ public struct DescribeJobLogItemsInput {
 
 extension MgnClientTypes {
 
-    public enum JobLogEvent: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum JobLogEvent: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case cleanupEnd
         case cleanupFail
         case cleanupStart
@@ -2050,8 +2051,9 @@ extension MgnClientTypes {
 }
 
 extension MgnClientTypes {
+
     /// Job log data
-    public struct JobLogEventData {
+    public struct JobLogEventData: Swift.Sendable {
         /// Job Event conversion Server ID.
         public var conversionServerID: Swift.String?
         /// Job error.
@@ -2074,12 +2076,12 @@ extension MgnClientTypes {
             self.targetInstanceID = targetInstanceID
         }
     }
-
 }
 
 extension MgnClientTypes {
+
     /// Job log.
-    public struct JobLog {
+    public struct JobLog: Swift.Sendable {
         /// Job log event.
         public var event: MgnClientTypes.JobLogEvent?
         /// Job event data
@@ -2098,10 +2100,9 @@ extension MgnClientTypes {
             self.logDateTime = logDateTime
         }
     }
-
 }
 
-public struct DescribeJobLogItemsOutput {
+public struct DescribeJobLogItemsOutput: Swift.Sendable {
     /// Request to describe Job log response items.
     public var items: [MgnClientTypes.JobLog]?
     /// Request to describe Job log response next token.
@@ -2118,8 +2119,9 @@ public struct DescribeJobLogItemsOutput {
 }
 
 extension MgnClientTypes {
+
     /// Request to describe Job log filters.
-    public struct DescribeJobsRequestFilters {
+    public struct DescribeJobsRequestFilters: Swift.Sendable {
         /// Request to describe Job log filters by date.
         public var fromDate: Swift.String?
         /// Request to describe Job log filters by job ID.
@@ -2138,10 +2140,9 @@ extension MgnClientTypes {
             self.toDate = toDate
         }
     }
-
 }
 
-public struct DescribeJobsInput {
+public struct DescribeJobsInput: Swift.Sendable {
     /// Request to describe job log items by Account ID.
     public var accountID: Swift.String?
     /// Request to describe Job log filters.
@@ -2167,7 +2168,7 @@ public struct DescribeJobsInput {
 
 extension MgnClientTypes {
 
-    public enum InitiatedBy: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum InitiatedBy: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case diagnostic
         case startCutover
         case startTest
@@ -2202,7 +2203,7 @@ extension MgnClientTypes {
 
 extension MgnClientTypes {
 
-    public enum LaunchStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum LaunchStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case failed
         case inProgress
         case launched
@@ -2240,7 +2241,7 @@ extension MgnClientTypes {
 
 extension MgnClientTypes {
 
-    public enum PostLaunchActionExecutionStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum PostLaunchActionExecutionStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case failed
         case inProgress
         case success
@@ -2271,18 +2272,18 @@ extension MgnClientTypes {
 }
 
 extension MgnClientTypes {
+
     /// AWS Systems Manager Document external parameter.
-    public enum SsmExternalParameter {
+    public enum SsmExternalParameter: Swift.Sendable {
         /// AWS Systems Manager Document external parameters dynamic path.
         case dynamicpath(Swift.String)
         case sdkUnknown(Swift.String)
     }
-
 }
 
 extension MgnClientTypes {
 
-    public enum SsmParameterStoreParameterType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SsmParameterStoreParameterType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case string
         case sdkUnknown(Swift.String)
 
@@ -2307,8 +2308,9 @@ extension MgnClientTypes {
 }
 
 extension MgnClientTypes {
+
     /// AWS Systems Manager Parameter Store parameter.
-    public struct SsmParameterStoreParameter {
+    public struct SsmParameterStoreParameter: Swift.Sendable {
         /// AWS Systems Manager Parameter Store parameter name.
         /// This member is required.
         public var parameterName: Swift.String?
@@ -2325,12 +2327,12 @@ extension MgnClientTypes {
             self.parameterType = parameterType
         }
     }
-
 }
 
 extension MgnClientTypes {
+
     /// AWS Systems Manager Document.
-    public struct SsmDocument {
+    public struct SsmDocument: Swift.Sendable {
         /// User-friendly name for the AWS Systems Manager Document.
         /// This member is required.
         public var actionName: Swift.String?
@@ -2363,12 +2365,11 @@ extension MgnClientTypes {
             self.timeoutSeconds = timeoutSeconds
         }
     }
-
 }
 
 extension MgnClientTypes {
 
-    public enum SsmDocumentType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SsmDocumentType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case automation
         case command
         case sdkUnknown(Swift.String)
@@ -2396,8 +2397,9 @@ extension MgnClientTypes {
 }
 
 extension MgnClientTypes {
+
     /// Launch Status of the Job Post Launch Actions.
-    public struct JobPostLaunchActionsLaunchStatus {
+    public struct JobPostLaunchActionsLaunchStatus: Swift.Sendable {
         /// AWS Systems Manager Document's execution ID of the of the Job Post Launch Actions.
         public var executionID: Swift.String?
         /// AWS Systems Manager Document's execution status.
@@ -2424,12 +2426,12 @@ extension MgnClientTypes {
             self.ssmDocumentType = ssmDocumentType
         }
     }
-
 }
 
 extension MgnClientTypes {
+
     /// Status of the Post Launch Actions running on the Test or Cutover instance.
-    public struct PostLaunchActionsStatus {
+    public struct PostLaunchActionsStatus: Swift.Sendable {
         /// List of Post Launch Action status.
         public var postLaunchActionsLaunchStatusList: [MgnClientTypes.JobPostLaunchActionsLaunchStatus]?
         /// Time where the AWS Systems Manager was detected as running on the Test or Cutover instance.
@@ -2444,12 +2446,12 @@ extension MgnClientTypes {
             self.ssmAgentDiscoveryDatetime = ssmAgentDiscoveryDatetime
         }
     }
-
 }
 
 extension MgnClientTypes {
+
     /// Server participating in Job.
-    public struct ParticipatingServer {
+    public struct ParticipatingServer: Swift.Sendable {
         /// Participating server launch status.
         public var launchStatus: MgnClientTypes.LaunchStatus?
         /// Participating server's launched ec2 instance ID.
@@ -2473,12 +2475,11 @@ extension MgnClientTypes {
             self.sourceServerID = sourceServerID
         }
     }
-
 }
 
 extension MgnClientTypes {
 
-    public enum JobStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum JobStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case completed
         case pending
         case started
@@ -2510,7 +2511,7 @@ extension MgnClientTypes {
 
 extension MgnClientTypes {
 
-    public enum JobType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum JobType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case launch
         case terminate
         case sdkUnknown(Swift.String)
@@ -2538,8 +2539,9 @@ extension MgnClientTypes {
 }
 
 extension MgnClientTypes {
+
     /// Job.
-    public struct Job {
+    public struct Job: Swift.Sendable {
         /// the ARN of the specific Job.
         public var arn: Swift.String?
         /// Job creation time.
@@ -2583,7 +2585,6 @@ extension MgnClientTypes {
             self.type = type
         }
     }
-
 }
 
 extension MgnClientTypes.Job: Swift.CustomDebugStringConvertible {
@@ -2591,7 +2592,7 @@ extension MgnClientTypes.Job: Swift.CustomDebugStringConvertible {
         "Job(arn: \(Swift.String(describing: arn)), creationDateTime: \(Swift.String(describing: creationDateTime)), endDateTime: \(Swift.String(describing: endDateTime)), initiatedBy: \(Swift.String(describing: initiatedBy)), jobID: \(Swift.String(describing: jobID)), participatingServers: \(Swift.String(describing: participatingServers)), status: \(Swift.String(describing: status)), type: \(Swift.String(describing: type)), tags: \"CONTENT_REDACTED\")"}
 }
 
-public struct DescribeJobsOutput {
+public struct DescribeJobsOutput: Swift.Sendable {
     /// Request to describe Job log items.
     public var items: [MgnClientTypes.Job]?
     /// Request to describe Job response by next token.
@@ -2609,7 +2610,7 @@ public struct DescribeJobsOutput {
 
 extension MgnClientTypes {
 
-    public enum BootMode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum BootMode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case legacyBios
         case uefi
         case useSource
@@ -2641,7 +2642,7 @@ extension MgnClientTypes {
 
 extension MgnClientTypes {
 
-    public enum VolumeType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum VolumeType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case gp2
         case gp3
         case io1
@@ -2684,8 +2685,9 @@ extension MgnClientTypes {
 }
 
 extension MgnClientTypes {
+
     /// Launch template disk configuration.
-    public struct LaunchTemplateDiskConf {
+    public struct LaunchTemplateDiskConf: Swift.Sendable {
         /// Launch template disk iops configuration.
         public var iops: Swift.Int?
         /// Launch template disk throughput configuration.
@@ -2704,12 +2706,11 @@ extension MgnClientTypes {
             self.volumeType = volumeType
         }
     }
-
 }
 
 extension MgnClientTypes {
 
-    public enum LaunchDisposition: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum LaunchDisposition: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case started
         case stopped
         case sdkUnknown(Swift.String)
@@ -2737,8 +2738,9 @@ extension MgnClientTypes {
 }
 
 extension MgnClientTypes {
+
     /// Configure Licensing.
-    public struct Licensing {
+    public struct Licensing: Swift.Sendable {
         /// Configure BYOL OS licensing.
         public var osByol: Swift.Bool?
 
@@ -2749,12 +2751,11 @@ extension MgnClientTypes {
             self.osByol = osByol
         }
     }
-
 }
 
 extension MgnClientTypes {
 
-    public enum PostLaunchActionsDeploymentType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum PostLaunchActionsDeploymentType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case cutoverOnly
         case testAndCutover
         case testOnly
@@ -2785,8 +2786,9 @@ extension MgnClientTypes {
 }
 
 extension MgnClientTypes {
+
     /// Post Launch Actions to executed on the Test or Cutover instance.
-    public struct PostLaunchActions {
+    public struct PostLaunchActions: Swift.Sendable {
         /// AWS Systems Manager Command's CloudWatch log group name.
         public var cloudWatchLogGroupName: Swift.String?
         /// Deployment type in which AWS Systems Manager Documents will be executed.
@@ -2813,12 +2815,11 @@ extension MgnClientTypes {
             self.ssmDocuments = ssmDocuments
         }
     }
-
 }
 
 extension MgnClientTypes {
 
-    public enum TargetInstanceTypeRightSizingMethod: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum TargetInstanceTypeRightSizingMethod: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case basic
         case `none`
         case sdkUnknown(Swift.String)
@@ -2845,7 +2846,7 @@ extension MgnClientTypes {
     }
 }
 
-public struct CreateLaunchConfigurationTemplateInput {
+public struct CreateLaunchConfigurationTemplateInput: Swift.Sendable {
     /// Associate public Ip address.
     public var associatePublicIpAddress: Swift.Bool?
     /// Launch configuration template boot mode.
@@ -2914,7 +2915,7 @@ extension CreateLaunchConfigurationTemplateInput: Swift.CustomDebugStringConvert
         "CreateLaunchConfigurationTemplateInput(associatePublicIpAddress: \(Swift.String(describing: associatePublicIpAddress)), bootMode: \(Swift.String(describing: bootMode)), copyPrivateIp: \(Swift.String(describing: copyPrivateIp)), copyTags: \(Swift.String(describing: copyTags)), enableMapAutoTagging: \(Swift.String(describing: enableMapAutoTagging)), largeVolumeConf: \(Swift.String(describing: largeVolumeConf)), launchDisposition: \(Swift.String(describing: launchDisposition)), licensing: \(Swift.String(describing: licensing)), mapAutoTaggingMpeID: \(Swift.String(describing: mapAutoTaggingMpeID)), postLaunchActions: \(Swift.String(describing: postLaunchActions)), smallVolumeConf: \(Swift.String(describing: smallVolumeConf)), smallVolumeMaxSize: \(Swift.String(describing: smallVolumeMaxSize)), targetInstanceTypeRightSizingMethod: \(Swift.String(describing: targetInstanceTypeRightSizingMethod)), tags: \"CONTENT_REDACTED\")"}
 }
 
-public struct CreateLaunchConfigurationTemplateOutput {
+public struct CreateLaunchConfigurationTemplateOutput: Swift.Sendable {
     /// ARN of the Launch Configuration Template.
     public var arn: Swift.String?
     /// Associate public Ip address.
@@ -2996,7 +2997,7 @@ extension CreateLaunchConfigurationTemplateOutput: Swift.CustomDebugStringConver
         "CreateLaunchConfigurationTemplateOutput(arn: \(Swift.String(describing: arn)), associatePublicIpAddress: \(Swift.String(describing: associatePublicIpAddress)), bootMode: \(Swift.String(describing: bootMode)), copyPrivateIp: \(Swift.String(describing: copyPrivateIp)), copyTags: \(Swift.String(describing: copyTags)), ec2LaunchTemplateID: \(Swift.String(describing: ec2LaunchTemplateID)), enableMapAutoTagging: \(Swift.String(describing: enableMapAutoTagging)), largeVolumeConf: \(Swift.String(describing: largeVolumeConf)), launchConfigurationTemplateID: \(Swift.String(describing: launchConfigurationTemplateID)), launchDisposition: \(Swift.String(describing: launchDisposition)), licensing: \(Swift.String(describing: licensing)), mapAutoTaggingMpeID: \(Swift.String(describing: mapAutoTaggingMpeID)), postLaunchActions: \(Swift.String(describing: postLaunchActions)), smallVolumeConf: \(Swift.String(describing: smallVolumeConf)), smallVolumeMaxSize: \(Swift.String(describing: smallVolumeMaxSize)), targetInstanceTypeRightSizingMethod: \(Swift.String(describing: targetInstanceTypeRightSizingMethod)), tags: \"CONTENT_REDACTED\")"}
 }
 
-public struct DeleteLaunchConfigurationTemplateInput {
+public struct DeleteLaunchConfigurationTemplateInput: Swift.Sendable {
     /// ID of resource to be deleted.
     /// This member is required.
     public var launchConfigurationTemplateID: Swift.String?
@@ -3009,12 +3010,12 @@ public struct DeleteLaunchConfigurationTemplateInput {
     }
 }
 
-public struct DeleteLaunchConfigurationTemplateOutput {
+public struct DeleteLaunchConfigurationTemplateOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DescribeLaunchConfigurationTemplatesInput {
+public struct DescribeLaunchConfigurationTemplatesInput: Swift.Sendable {
     /// Request to filter Launch Configuration Templates list by Launch Configuration Template ID.
     public var launchConfigurationTemplateIDs: [Swift.String]?
     /// Maximum results to be returned in DescribeLaunchConfigurationTemplates.
@@ -3035,7 +3036,8 @@ public struct DescribeLaunchConfigurationTemplatesInput {
 }
 
 extension MgnClientTypes {
-    public struct LaunchConfigurationTemplate {
+
+    public struct LaunchConfigurationTemplate: Swift.Sendable {
         /// ARN of the Launch Configuration Template.
         public var arn: Swift.String?
         /// Associate public Ip address.
@@ -3111,7 +3113,6 @@ extension MgnClientTypes {
             self.targetInstanceTypeRightSizingMethod = targetInstanceTypeRightSizingMethod
         }
     }
-
 }
 
 extension MgnClientTypes.LaunchConfigurationTemplate: Swift.CustomDebugStringConvertible {
@@ -3119,7 +3120,7 @@ extension MgnClientTypes.LaunchConfigurationTemplate: Swift.CustomDebugStringCon
         "LaunchConfigurationTemplate(arn: \(Swift.String(describing: arn)), associatePublicIpAddress: \(Swift.String(describing: associatePublicIpAddress)), bootMode: \(Swift.String(describing: bootMode)), copyPrivateIp: \(Swift.String(describing: copyPrivateIp)), copyTags: \(Swift.String(describing: copyTags)), ec2LaunchTemplateID: \(Swift.String(describing: ec2LaunchTemplateID)), enableMapAutoTagging: \(Swift.String(describing: enableMapAutoTagging)), largeVolumeConf: \(Swift.String(describing: largeVolumeConf)), launchConfigurationTemplateID: \(Swift.String(describing: launchConfigurationTemplateID)), launchDisposition: \(Swift.String(describing: launchDisposition)), licensing: \(Swift.String(describing: licensing)), mapAutoTaggingMpeID: \(Swift.String(describing: mapAutoTaggingMpeID)), postLaunchActions: \(Swift.String(describing: postLaunchActions)), smallVolumeConf: \(Swift.String(describing: smallVolumeConf)), smallVolumeMaxSize: \(Swift.String(describing: smallVolumeMaxSize)), targetInstanceTypeRightSizingMethod: \(Swift.String(describing: targetInstanceTypeRightSizingMethod)), tags: \"CONTENT_REDACTED\")"}
 }
 
-public struct DescribeLaunchConfigurationTemplatesOutput {
+public struct DescribeLaunchConfigurationTemplatesOutput: Swift.Sendable {
     /// List of items returned by DescribeLaunchConfigurationTemplates.
     public var items: [MgnClientTypes.LaunchConfigurationTemplate]?
     /// Next pagination token returned from DescribeLaunchConfigurationTemplates.
@@ -3136,8 +3137,9 @@ public struct DescribeLaunchConfigurationTemplatesOutput {
 }
 
 extension MgnClientTypes {
+
     /// Template post migration custom action filters.
-    public struct TemplateActionsRequestFilters {
+    public struct TemplateActionsRequestFilters: Swift.Sendable {
         /// Action IDs to filter template post migration custom actions by.
         public var actionIDs: [Swift.String]?
 
@@ -3148,10 +3150,9 @@ extension MgnClientTypes {
             self.actionIDs = actionIDs
         }
     }
-
 }
 
-public struct ListTemplateActionsInput {
+public struct ListTemplateActionsInput: Swift.Sendable {
     /// Filters to apply when listing template post migration custom actions.
     public var filters: MgnClientTypes.TemplateActionsRequestFilters?
     /// Launch configuration template ID.
@@ -3177,7 +3178,8 @@ public struct ListTemplateActionsInput {
 }
 
 extension MgnClientTypes {
-    public struct TemplateActionDocument {
+
+    public struct TemplateActionDocument: Swift.Sendable {
         /// Template post migration custom action ID.
         public var actionID: Swift.String?
         /// Template post migration custom action name.
@@ -3236,10 +3238,9 @@ extension MgnClientTypes {
             self.timeoutSeconds = timeoutSeconds
         }
     }
-
 }
 
-public struct ListTemplateActionsOutput {
+public struct ListTemplateActionsOutput: Swift.Sendable {
     /// List of template post migration custom actions.
     public var items: [MgnClientTypes.TemplateActionDocument]?
     /// Next token returned when listing template post migration custom actions.
@@ -3255,7 +3256,7 @@ public struct ListTemplateActionsOutput {
     }
 }
 
-public struct PutTemplateActionInput {
+public struct PutTemplateActionInput: Swift.Sendable {
     /// Template post migration custom action ID.
     /// This member is required.
     public var actionID: Swift.String?
@@ -3324,7 +3325,7 @@ public struct PutTemplateActionInput {
     }
 }
 
-public struct PutTemplateActionOutput {
+public struct PutTemplateActionOutput: Swift.Sendable {
     /// Template post migration custom action ID.
     public var actionID: Swift.String?
     /// Template post migration custom action name.
@@ -3384,7 +3385,7 @@ public struct PutTemplateActionOutput {
     }
 }
 
-public struct RemoveTemplateActionInput {
+public struct RemoveTemplateActionInput: Swift.Sendable {
     /// Template post migration custom action ID to remove.
     /// This member is required.
     public var actionID: Swift.String?
@@ -3402,12 +3403,12 @@ public struct RemoveTemplateActionInput {
     }
 }
 
-public struct RemoveTemplateActionOutput {
+public struct RemoveTemplateActionOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdateLaunchConfigurationTemplateInput {
+public struct UpdateLaunchConfigurationTemplateInput: Swift.Sendable {
     /// Associate public Ip address.
     public var associatePublicIpAddress: Swift.Bool?
     /// Launch configuration template boot mode.
@@ -3472,7 +3473,7 @@ public struct UpdateLaunchConfigurationTemplateInput {
     }
 }
 
-public struct UpdateLaunchConfigurationTemplateOutput {
+public struct UpdateLaunchConfigurationTemplateOutput: Swift.Sendable {
     /// ARN of the Launch Configuration Template.
     public var arn: Swift.String?
     /// Associate public Ip address.
@@ -3555,7 +3556,7 @@ extension UpdateLaunchConfigurationTemplateOutput: Swift.CustomDebugStringConver
 }
 
 /// List managed accounts request.
-public struct ListManagedAccountsInput {
+public struct ListManagedAccountsInput: Swift.Sendable {
     /// List managed accounts request max results.
     public var maxResults: Swift.Int?
     /// List managed accounts request next token.
@@ -3572,8 +3573,9 @@ public struct ListManagedAccountsInput {
 }
 
 extension MgnClientTypes {
+
     /// Managed account.
-    public struct ManagedAccount {
+    public struct ManagedAccount: Swift.Sendable {
         /// Managed account, account ID.
         public var accountId: Swift.String?
 
@@ -3584,11 +3586,10 @@ extension MgnClientTypes {
             self.accountId = accountId
         }
     }
-
 }
 
 /// List managed accounts response.
-public struct ListManagedAccountsOutput {
+public struct ListManagedAccountsOutput: Swift.Sendable {
     /// List managed accounts response items.
     /// This member is required.
     public var items: [MgnClientTypes.ManagedAccount]?
@@ -3671,7 +3672,7 @@ public struct ThrottlingException: ClientRuntime.ModeledError, AWSClientRuntime.
     }
 }
 
-public struct ListTagsForResourceInput {
+public struct ListTagsForResourceInput: Swift.Sendable {
     /// List tags for resource request by ARN.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -3684,7 +3685,7 @@ public struct ListTagsForResourceInput {
     }
 }
 
-public struct ListTagsForResourceOutput {
+public struct ListTagsForResourceOutput: Swift.Sendable {
     /// List tags for resource response.
     public var tags: [Swift.String: Swift.String]?
 
@@ -3703,7 +3704,7 @@ extension ListTagsForResourceOutput: Swift.CustomDebugStringConvertible {
 
 extension MgnClientTypes {
 
-    public enum ReplicationConfigurationDataPlaneRouting: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ReplicationConfigurationDataPlaneRouting: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case privateIp
         case publicIp
         case sdkUnknown(Swift.String)
@@ -3732,7 +3733,7 @@ extension MgnClientTypes {
 
 extension MgnClientTypes {
 
-    public enum ReplicationConfigurationDefaultLargeStagingDiskType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ReplicationConfigurationDefaultLargeStagingDiskType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case gp2
         case gp3
         case st1
@@ -3764,7 +3765,7 @@ extension MgnClientTypes {
 
 extension MgnClientTypes {
 
-    public enum ReplicationConfigurationEbsEncryption: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ReplicationConfigurationEbsEncryption: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case custom
         case `default`
         case sdkUnknown(Swift.String)
@@ -3791,7 +3792,7 @@ extension MgnClientTypes {
     }
 }
 
-public struct CreateReplicationConfigurationTemplateInput {
+public struct CreateReplicationConfigurationTemplateInput: Swift.Sendable {
     /// Request to associate the default Application Migration Service Security group with the Replication Settings template.
     /// This member is required.
     public var associateDefaultSecurityGroup: Swift.Bool?
@@ -3871,7 +3872,7 @@ extension CreateReplicationConfigurationTemplateInput: Swift.CustomDebugStringCo
         "CreateReplicationConfigurationTemplateInput(associateDefaultSecurityGroup: \(Swift.String(describing: associateDefaultSecurityGroup)), bandwidthThrottling: \(Swift.String(describing: bandwidthThrottling)), createPublicIP: \(Swift.String(describing: createPublicIP)), dataPlaneRouting: \(Swift.String(describing: dataPlaneRouting)), defaultLargeStagingDiskType: \(Swift.String(describing: defaultLargeStagingDiskType)), ebsEncryption: \(Swift.String(describing: ebsEncryption)), ebsEncryptionKeyArn: \(Swift.String(describing: ebsEncryptionKeyArn)), replicationServerInstanceType: \(Swift.String(describing: replicationServerInstanceType)), replicationServersSecurityGroupsIDs: \(Swift.String(describing: replicationServersSecurityGroupsIDs)), stagingAreaSubnetId: \(Swift.String(describing: stagingAreaSubnetId)), useDedicatedReplicationServer: \(Swift.String(describing: useDedicatedReplicationServer)), useFipsEndpoint: \(Swift.String(describing: useFipsEndpoint)), stagingAreaTags: \"CONTENT_REDACTED\", tags: \"CONTENT_REDACTED\")"}
 }
 
-public struct CreateReplicationConfigurationTemplateOutput {
+public struct CreateReplicationConfigurationTemplateOutput: Swift.Sendable {
     /// Replication Configuration template ARN.
     public var arn: Swift.String?
     /// Replication Configuration template associate default Application Migration Service Security group.
@@ -3949,7 +3950,7 @@ extension CreateReplicationConfigurationTemplateOutput: Swift.CustomDebugStringC
         "CreateReplicationConfigurationTemplateOutput(arn: \(Swift.String(describing: arn)), associateDefaultSecurityGroup: \(Swift.String(describing: associateDefaultSecurityGroup)), bandwidthThrottling: \(Swift.String(describing: bandwidthThrottling)), createPublicIP: \(Swift.String(describing: createPublicIP)), dataPlaneRouting: \(Swift.String(describing: dataPlaneRouting)), defaultLargeStagingDiskType: \(Swift.String(describing: defaultLargeStagingDiskType)), ebsEncryption: \(Swift.String(describing: ebsEncryption)), ebsEncryptionKeyArn: \(Swift.String(describing: ebsEncryptionKeyArn)), replicationConfigurationTemplateID: \(Swift.String(describing: replicationConfigurationTemplateID)), replicationServerInstanceType: \(Swift.String(describing: replicationServerInstanceType)), replicationServersSecurityGroupsIDs: \(Swift.String(describing: replicationServersSecurityGroupsIDs)), stagingAreaSubnetId: \(Swift.String(describing: stagingAreaSubnetId)), useDedicatedReplicationServer: \(Swift.String(describing: useDedicatedReplicationServer)), useFipsEndpoint: \(Swift.String(describing: useFipsEndpoint)), stagingAreaTags: \"CONTENT_REDACTED\", tags: \"CONTENT_REDACTED\")"}
 }
 
-public struct DeleteReplicationConfigurationTemplateInput {
+public struct DeleteReplicationConfigurationTemplateInput: Swift.Sendable {
     /// Request to delete Replication Configuration Template from service by Replication Configuration Template ID.
     /// This member is required.
     public var replicationConfigurationTemplateID: Swift.String?
@@ -3962,12 +3963,12 @@ public struct DeleteReplicationConfigurationTemplateInput {
     }
 }
 
-public struct DeleteReplicationConfigurationTemplateOutput {
+public struct DeleteReplicationConfigurationTemplateOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DescribeReplicationConfigurationTemplatesInput {
+public struct DescribeReplicationConfigurationTemplatesInput: Swift.Sendable {
     /// Request to describe Replication Configuration template by max results.
     public var maxResults: Swift.Int?
     /// Request to describe Replication Configuration template by next token.
@@ -3988,7 +3989,8 @@ public struct DescribeReplicationConfigurationTemplatesInput {
 }
 
 extension MgnClientTypes {
-    public struct ReplicationConfigurationTemplate {
+
+    public struct ReplicationConfigurationTemplate: Swift.Sendable {
         /// Replication Configuration template ARN.
         public var arn: Swift.String?
         /// Replication Configuration template associate default Application Migration Service Security group.
@@ -4060,7 +4062,6 @@ extension MgnClientTypes {
             self.useFipsEndpoint = useFipsEndpoint
         }
     }
-
 }
 
 extension MgnClientTypes.ReplicationConfigurationTemplate: Swift.CustomDebugStringConvertible {
@@ -4068,7 +4069,7 @@ extension MgnClientTypes.ReplicationConfigurationTemplate: Swift.CustomDebugStri
         "ReplicationConfigurationTemplate(arn: \(Swift.String(describing: arn)), associateDefaultSecurityGroup: \(Swift.String(describing: associateDefaultSecurityGroup)), bandwidthThrottling: \(Swift.String(describing: bandwidthThrottling)), createPublicIP: \(Swift.String(describing: createPublicIP)), dataPlaneRouting: \(Swift.String(describing: dataPlaneRouting)), defaultLargeStagingDiskType: \(Swift.String(describing: defaultLargeStagingDiskType)), ebsEncryption: \(Swift.String(describing: ebsEncryption)), ebsEncryptionKeyArn: \(Swift.String(describing: ebsEncryptionKeyArn)), replicationConfigurationTemplateID: \(Swift.String(describing: replicationConfigurationTemplateID)), replicationServerInstanceType: \(Swift.String(describing: replicationServerInstanceType)), replicationServersSecurityGroupsIDs: \(Swift.String(describing: replicationServersSecurityGroupsIDs)), stagingAreaSubnetId: \(Swift.String(describing: stagingAreaSubnetId)), useDedicatedReplicationServer: \(Swift.String(describing: useDedicatedReplicationServer)), useFipsEndpoint: \(Swift.String(describing: useFipsEndpoint)), stagingAreaTags: \"CONTENT_REDACTED\", tags: \"CONTENT_REDACTED\")"}
 }
 
-public struct DescribeReplicationConfigurationTemplatesOutput {
+public struct DescribeReplicationConfigurationTemplatesOutput: Swift.Sendable {
     /// Request to describe Replication Configuration template by items.
     public var items: [MgnClientTypes.ReplicationConfigurationTemplate]?
     /// Request to describe Replication Configuration template by next token.
@@ -4084,7 +4085,7 @@ public struct DescribeReplicationConfigurationTemplatesOutput {
     }
 }
 
-public struct UpdateReplicationConfigurationTemplateInput {
+public struct UpdateReplicationConfigurationTemplateInput: Swift.Sendable {
     /// Update replication configuration template ARN request.
     public var arn: Swift.String?
     /// Update replication configuration template associate default Application Migration Service Security group request.
@@ -4158,7 +4159,7 @@ extension UpdateReplicationConfigurationTemplateInput: Swift.CustomDebugStringCo
         "UpdateReplicationConfigurationTemplateInput(arn: \(Swift.String(describing: arn)), associateDefaultSecurityGroup: \(Swift.String(describing: associateDefaultSecurityGroup)), bandwidthThrottling: \(Swift.String(describing: bandwidthThrottling)), createPublicIP: \(Swift.String(describing: createPublicIP)), dataPlaneRouting: \(Swift.String(describing: dataPlaneRouting)), defaultLargeStagingDiskType: \(Swift.String(describing: defaultLargeStagingDiskType)), ebsEncryption: \(Swift.String(describing: ebsEncryption)), ebsEncryptionKeyArn: \(Swift.String(describing: ebsEncryptionKeyArn)), replicationConfigurationTemplateID: \(Swift.String(describing: replicationConfigurationTemplateID)), replicationServerInstanceType: \(Swift.String(describing: replicationServerInstanceType)), replicationServersSecurityGroupsIDs: \(Swift.String(describing: replicationServersSecurityGroupsIDs)), stagingAreaSubnetId: \(Swift.String(describing: stagingAreaSubnetId)), useDedicatedReplicationServer: \(Swift.String(describing: useDedicatedReplicationServer)), useFipsEndpoint: \(Swift.String(describing: useFipsEndpoint)), stagingAreaTags: \"CONTENT_REDACTED\")"}
 }
 
-public struct UpdateReplicationConfigurationTemplateOutput {
+public struct UpdateReplicationConfigurationTemplateOutput: Swift.Sendable {
     /// Replication Configuration template ARN.
     public var arn: Swift.String?
     /// Replication Configuration template associate default Application Migration Service Security group.
@@ -4238,7 +4239,7 @@ extension UpdateReplicationConfigurationTemplateOutput: Swift.CustomDebugStringC
 
 extension MgnClientTypes {
 
-    public enum ChangeServerLifeCycleStateSourceServerLifecycleState: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ChangeServerLifeCycleStateSourceServerLifecycleState: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case cutover
         case readyForCutover
         case readyForTest
@@ -4269,8 +4270,9 @@ extension MgnClientTypes {
 }
 
 extension MgnClientTypes {
+
     /// The request to change the source server migration lifecycle state.
-    public struct ChangeServerLifeCycleStateSourceServerLifecycle {
+    public struct ChangeServerLifeCycleStateSourceServerLifecycle: Swift.Sendable {
         /// The request to change the source server migration lifecycle state.
         /// This member is required.
         public var state: MgnClientTypes.ChangeServerLifeCycleStateSourceServerLifecycleState?
@@ -4282,10 +4284,9 @@ extension MgnClientTypes {
             self.state = state
         }
     }
-
 }
 
-public struct ChangeServerLifeCycleStateInput {
+public struct ChangeServerLifeCycleStateInput: Swift.Sendable {
     /// The request to change the source server migration account ID.
     public var accountID: Swift.String?
     /// The request to change the source server migration lifecycle state.
@@ -4308,8 +4309,9 @@ public struct ChangeServerLifeCycleStateInput {
 }
 
 extension MgnClientTypes {
+
     /// Source Server connector action.
-    public struct SourceServerConnectorAction {
+    public struct SourceServerConnectorAction: Swift.Sendable {
         /// Source Server connector action connector arn.
         public var connectorArn: Swift.String?
         /// Source Server connector action credentials secret arn.
@@ -4324,12 +4326,11 @@ extension MgnClientTypes {
             self.credentialsSecretArn = credentialsSecretArn
         }
     }
-
 }
 
 extension MgnClientTypes {
 
-    public enum DataReplicationErrorString: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DataReplicationErrorString: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case agentNotSeen
         case failedToAttachStagingDisks
         case failedToAuthenticateWithService
@@ -4399,8 +4400,9 @@ extension MgnClientTypes {
 }
 
 extension MgnClientTypes {
+
     /// Error in data replication.
-    public struct DataReplicationError {
+    public struct DataReplicationError: Swift.Sendable {
         /// Error in data replication.
         public var error: MgnClientTypes.DataReplicationErrorString?
         /// Error in data replication.
@@ -4415,12 +4417,11 @@ extension MgnClientTypes {
             self.rawError = rawError
         }
     }
-
 }
 
 extension MgnClientTypes {
 
-    public enum DataReplicationInitiationStepName: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DataReplicationInitiationStepName: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case attachStagingDisks
         case authenticateWithService
         case bootReplicationServer
@@ -4476,7 +4477,7 @@ extension MgnClientTypes {
 
 extension MgnClientTypes {
 
-    public enum DataReplicationInitiationStepStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DataReplicationInitiationStepStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case failed
         case inProgress
         case notStarted
@@ -4513,8 +4514,9 @@ extension MgnClientTypes {
 }
 
 extension MgnClientTypes {
+
     /// Data replication initiation step.
-    public struct DataReplicationInitiationStep {
+    public struct DataReplicationInitiationStep: Swift.Sendable {
         /// Request to query data initiation step name.
         public var name: MgnClientTypes.DataReplicationInitiationStepName?
         /// Request to query data initiation status.
@@ -4529,12 +4531,12 @@ extension MgnClientTypes {
             self.status = status
         }
     }
-
 }
 
 extension MgnClientTypes {
+
     /// Data replication initiation.
-    public struct DataReplicationInitiation {
+    public struct DataReplicationInitiation: Swift.Sendable {
         /// Request to query next data initiation date and time.
         public var nextAttemptDateTime: Swift.String?
         /// Request to query data initiation start date and time.
@@ -4553,12 +4555,11 @@ extension MgnClientTypes {
             self.steps = steps
         }
     }
-
 }
 
 extension MgnClientTypes {
 
-    public enum DataReplicationState: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DataReplicationState: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case backlog
         case continuous
         case creatingSnapshot
@@ -4616,8 +4617,9 @@ extension MgnClientTypes {
 }
 
 extension MgnClientTypes {
+
     /// Request to query disks replicated.
-    public struct DataReplicationInfoReplicatedDisk {
+    public struct DataReplicationInfoReplicatedDisk: Swift.Sendable {
         /// Request to query data replication backlog size in bytes.
         public var backloggedStorageBytes: Swift.Int
         /// Request to query device name.
@@ -4644,12 +4646,12 @@ extension MgnClientTypes {
             self.totalStorageBytes = totalStorageBytes
         }
     }
-
 }
 
 extension MgnClientTypes {
+
     /// Request data replication info.
-    public struct DataReplicationInfo {
+    public struct DataReplicationInfo: Swift.Sendable {
         /// Error in obtaining data replication info.
         public var dataReplicationError: MgnClientTypes.DataReplicationError?
         /// Request to query whether data replication has been initiated.
@@ -4684,12 +4686,11 @@ extension MgnClientTypes {
             self.replicatedDisks = replicatedDisks
         }
     }
-
 }
 
 extension MgnClientTypes {
 
-    public enum FirstBoot: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum FirstBoot: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case stopped
         case succeeded
         case unknown
@@ -4723,8 +4724,9 @@ extension MgnClientTypes {
 }
 
 extension MgnClientTypes {
+
     /// Launched instance.
-    public struct LaunchedInstance {
+    public struct LaunchedInstance: Swift.Sendable {
         /// Launched instance EC2 ID.
         public var ec2InstanceID: Swift.String?
         /// Launched instance first boot.
@@ -4743,12 +4745,12 @@ extension MgnClientTypes {
             self.jobID = jobID
         }
     }
-
 }
 
 extension MgnClientTypes {
+
     /// Lifecycle Cutover finalized
-    public struct LifeCycleLastCutoverFinalized {
+    public struct LifeCycleLastCutoverFinalized: Swift.Sendable {
         /// Lifecycle Cutover finalized date and time.
         public var apiCallDateTime: Swift.String?
 
@@ -4759,12 +4761,12 @@ extension MgnClientTypes {
             self.apiCallDateTime = apiCallDateTime
         }
     }
-
 }
 
 extension MgnClientTypes {
+
     /// Lifecycle last Cutover initiated.
-    public struct LifeCycleLastCutoverInitiated {
+    public struct LifeCycleLastCutoverInitiated: Swift.Sendable {
         ///
         public var apiCallDateTime: Swift.String?
         /// Lifecycle last Cutover initiated by Job ID.
@@ -4779,12 +4781,12 @@ extension MgnClientTypes {
             self.jobID = jobID
         }
     }
-
 }
 
 extension MgnClientTypes {
+
     /// Lifecycle last Cutover reverted.
-    public struct LifeCycleLastCutoverReverted {
+    public struct LifeCycleLastCutoverReverted: Swift.Sendable {
         /// Lifecycle last Cutover reverted API call date time.
         public var apiCallDateTime: Swift.String?
 
@@ -4795,12 +4797,12 @@ extension MgnClientTypes {
             self.apiCallDateTime = apiCallDateTime
         }
     }
-
 }
 
 extension MgnClientTypes {
+
     /// Lifecycle last Cutover .
-    public struct LifeCycleLastCutover {
+    public struct LifeCycleLastCutover: Swift.Sendable {
         /// Lifecycle Cutover finalized date and time.
         public var finalized: MgnClientTypes.LifeCycleLastCutoverFinalized?
         /// Lifecycle last Cutover initiated.
@@ -4819,12 +4821,12 @@ extension MgnClientTypes {
             self.reverted = reverted
         }
     }
-
 }
 
 extension MgnClientTypes {
+
     /// Lifecycle last Test finalized.
-    public struct LifeCycleLastTestFinalized {
+    public struct LifeCycleLastTestFinalized: Swift.Sendable {
         /// Lifecycle Test failed API call date and time.
         public var apiCallDateTime: Swift.String?
 
@@ -4835,12 +4837,12 @@ extension MgnClientTypes {
             self.apiCallDateTime = apiCallDateTime
         }
     }
-
 }
 
 extension MgnClientTypes {
+
     /// Lifecycle last Test initiated.
-    public struct LifeCycleLastTestInitiated {
+    public struct LifeCycleLastTestInitiated: Swift.Sendable {
         /// Lifecycle last Test initiated API call date and time.
         public var apiCallDateTime: Swift.String?
         /// Lifecycle last Test initiated Job ID.
@@ -4855,12 +4857,12 @@ extension MgnClientTypes {
             self.jobID = jobID
         }
     }
-
 }
 
 extension MgnClientTypes {
+
     /// Lifecycle last Test reverted.
-    public struct LifeCycleLastTestReverted {
+    public struct LifeCycleLastTestReverted: Swift.Sendable {
         /// Lifecycle last Test reverted API call date and time.
         public var apiCallDateTime: Swift.String?
 
@@ -4871,12 +4873,12 @@ extension MgnClientTypes {
             self.apiCallDateTime = apiCallDateTime
         }
     }
-
 }
 
 extension MgnClientTypes {
+
     /// Lifecycle last Test.
-    public struct LifeCycleLastTest {
+    public struct LifeCycleLastTest: Swift.Sendable {
         /// Lifecycle last Test finalized.
         public var finalized: MgnClientTypes.LifeCycleLastTestFinalized?
         /// Lifecycle last Test initiated.
@@ -4895,12 +4897,11 @@ extension MgnClientTypes {
             self.reverted = reverted
         }
     }
-
 }
 
 extension MgnClientTypes {
 
-    public enum LifeCycleState: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum LifeCycleState: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case cutover
         case cuttingOver
         case disconnected
@@ -4952,8 +4953,9 @@ extension MgnClientTypes {
 }
 
 extension MgnClientTypes {
+
     /// Lifecycle.
-    public struct LifeCycle {
+    public struct LifeCycle: Swift.Sendable {
         /// Lifecycle added to service data and time.
         public var addedToServiceDateTime: Swift.String?
         /// Lifecycle elapsed time and duration.
@@ -4988,12 +4990,11 @@ extension MgnClientTypes {
             self.state = state
         }
     }
-
 }
 
 extension MgnClientTypes {
 
-    public enum ReplicationType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ReplicationType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case agentBased
         case snapshotShipping
         case sdkUnknown(Swift.String)
@@ -5021,8 +5022,9 @@ extension MgnClientTypes {
 }
 
 extension MgnClientTypes {
+
     /// Source server CPU information.
-    public struct CPU {
+    public struct CPU: Swift.Sendable {
         /// The number of CPU cores on the source server.
         public var cores: Swift.Int
         /// The source server's CPU model name.
@@ -5037,12 +5039,12 @@ extension MgnClientTypes {
             self.modelName = modelName
         }
     }
-
 }
 
 extension MgnClientTypes {
+
     /// The disk identifier.
-    public struct Disk {
+    public struct Disk: Swift.Sendable {
         /// The amount of storage on the disk in bytes.
         public var bytes: Swift.Int
         /// The disk or device name.
@@ -5057,12 +5059,12 @@ extension MgnClientTypes {
             self.deviceName = deviceName
         }
     }
-
 }
 
 extension MgnClientTypes {
+
     /// Identification hints.
-    public struct IdentificationHints {
+    public struct IdentificationHints: Swift.Sendable {
         /// AWS Instance ID identification hint.
         public var awsInstanceID: Swift.String?
         /// FQDN address identification hint.
@@ -5089,12 +5091,12 @@ extension MgnClientTypes {
             self.vmWareUuid = vmWareUuid
         }
     }
-
 }
 
 extension MgnClientTypes {
+
     /// Network interface.
-    public struct NetworkInterface {
+    public struct NetworkInterface: Swift.Sendable {
         /// Network interface IPs.
         public var ips: [Swift.String]?
         /// Network interface primary IP.
@@ -5113,12 +5115,12 @@ extension MgnClientTypes {
             self.macAddress = macAddress
         }
     }
-
 }
 
 extension MgnClientTypes {
+
     /// Operating System.
-    public struct OS {
+    public struct OS: Swift.Sendable {
         /// OS full string.
         public var fullString: Swift.String?
 
@@ -5129,12 +5131,12 @@ extension MgnClientTypes {
             self.fullString = fullString
         }
     }
-
 }
 
 extension MgnClientTypes {
+
     /// Source server properties.
-    public struct SourceProperties {
+    public struct SourceProperties: Swift.Sendable {
         /// Source Server CPUs.
         public var cpus: [MgnClientTypes.CPU]?
         /// Source Server disks.
@@ -5173,10 +5175,9 @@ extension MgnClientTypes {
             self.recommendedInstanceType = recommendedInstanceType
         }
     }
-
 }
 
-public struct ChangeServerLifeCycleStateOutput {
+public struct ChangeServerLifeCycleStateOutput: Swift.Sendable {
     /// Source server application ID.
     public var applicationID: Swift.String?
     /// Source server ARN.
@@ -5245,7 +5246,7 @@ extension ChangeServerLifeCycleStateOutput: Swift.CustomDebugStringConvertible {
         "ChangeServerLifeCycleStateOutput(applicationID: \(Swift.String(describing: applicationID)), arn: \(Swift.String(describing: arn)), connectorAction: \(Swift.String(describing: connectorAction)), dataReplicationInfo: \(Swift.String(describing: dataReplicationInfo)), fqdnForActionFramework: \(Swift.String(describing: fqdnForActionFramework)), isArchived: \(Swift.String(describing: isArchived)), launchedInstance: \(Swift.String(describing: launchedInstance)), lifeCycle: \(Swift.String(describing: lifeCycle)), replicationType: \(Swift.String(describing: replicationType)), sourceProperties: \(Swift.String(describing: sourceProperties)), sourceServerID: \(Swift.String(describing: sourceServerID)), userProvidedID: \(Swift.String(describing: userProvidedID)), vcenterClientID: \(Swift.String(describing: vcenterClientID)), tags: \"CONTENT_REDACTED\")"}
 }
 
-public struct DeleteSourceServerInput {
+public struct DeleteSourceServerInput: Swift.Sendable {
     /// Request to delete Source Server from service by Account ID.
     public var accountID: Swift.String?
     /// Request to delete Source Server from service by Server ID.
@@ -5262,14 +5263,15 @@ public struct DeleteSourceServerInput {
     }
 }
 
-public struct DeleteSourceServerOutput {
+public struct DeleteSourceServerOutput: Swift.Sendable {
 
     public init() { }
 }
 
 extension MgnClientTypes {
+
     /// Request to filter Source Servers list.
-    public struct DescribeSourceServersRequestFilters {
+    public struct DescribeSourceServersRequestFilters: Swift.Sendable {
         /// Request to filter Source Servers list by application IDs.
         public var applicationIDs: [Swift.String]?
         /// Request to filter Source Servers list by archived.
@@ -5296,10 +5298,9 @@ extension MgnClientTypes {
             self.sourceServerIDs = sourceServerIDs
         }
     }
-
 }
 
-public struct DescribeSourceServersInput {
+public struct DescribeSourceServersInput: Swift.Sendable {
     /// Request to filter Source Servers list by Accoun ID.
     public var accountID: Swift.String?
     /// Request to filter Source Servers list.
@@ -5324,7 +5325,8 @@ public struct DescribeSourceServersInput {
 }
 
 extension MgnClientTypes {
-    public struct SourceServer {
+
+    public struct SourceServer: Swift.Sendable {
         /// Source server application ID.
         public var applicationID: Swift.String?
         /// Source server ARN.
@@ -5387,7 +5389,6 @@ extension MgnClientTypes {
             self.vcenterClientID = vcenterClientID
         }
     }
-
 }
 
 extension MgnClientTypes.SourceServer: Swift.CustomDebugStringConvertible {
@@ -5395,7 +5396,7 @@ extension MgnClientTypes.SourceServer: Swift.CustomDebugStringConvertible {
         "SourceServer(applicationID: \(Swift.String(describing: applicationID)), arn: \(Swift.String(describing: arn)), connectorAction: \(Swift.String(describing: connectorAction)), dataReplicationInfo: \(Swift.String(describing: dataReplicationInfo)), fqdnForActionFramework: \(Swift.String(describing: fqdnForActionFramework)), isArchived: \(Swift.String(describing: isArchived)), launchedInstance: \(Swift.String(describing: launchedInstance)), lifeCycle: \(Swift.String(describing: lifeCycle)), replicationType: \(Swift.String(describing: replicationType)), sourceProperties: \(Swift.String(describing: sourceProperties)), sourceServerID: \(Swift.String(describing: sourceServerID)), userProvidedID: \(Swift.String(describing: userProvidedID)), vcenterClientID: \(Swift.String(describing: vcenterClientID)), tags: \"CONTENT_REDACTED\")"}
 }
 
-public struct DescribeSourceServersOutput {
+public struct DescribeSourceServersOutput: Swift.Sendable {
     /// Request to filter Source Servers list by item.
     public var items: [MgnClientTypes.SourceServer]?
     /// Request to filter Source Servers next token.
@@ -5411,7 +5412,7 @@ public struct DescribeSourceServersOutput {
     }
 }
 
-public struct DisconnectFromServiceInput {
+public struct DisconnectFromServiceInput: Swift.Sendable {
     /// Request to disconnect Source Server from service by Account ID.
     public var accountID: Swift.String?
     /// Request to disconnect Source Server from service by Server ID.
@@ -5428,7 +5429,7 @@ public struct DisconnectFromServiceInput {
     }
 }
 
-public struct DisconnectFromServiceOutput {
+public struct DisconnectFromServiceOutput: Swift.Sendable {
     /// Source server application ID.
     public var applicationID: Swift.String?
     /// Source server ARN.
@@ -5497,7 +5498,7 @@ extension DisconnectFromServiceOutput: Swift.CustomDebugStringConvertible {
         "DisconnectFromServiceOutput(applicationID: \(Swift.String(describing: applicationID)), arn: \(Swift.String(describing: arn)), connectorAction: \(Swift.String(describing: connectorAction)), dataReplicationInfo: \(Swift.String(describing: dataReplicationInfo)), fqdnForActionFramework: \(Swift.String(describing: fqdnForActionFramework)), isArchived: \(Swift.String(describing: isArchived)), launchedInstance: \(Swift.String(describing: launchedInstance)), lifeCycle: \(Swift.String(describing: lifeCycle)), replicationType: \(Swift.String(describing: replicationType)), sourceProperties: \(Swift.String(describing: sourceProperties)), sourceServerID: \(Swift.String(describing: sourceServerID)), userProvidedID: \(Swift.String(describing: userProvidedID)), vcenterClientID: \(Swift.String(describing: vcenterClientID)), tags: \"CONTENT_REDACTED\")"}
 }
 
-public struct FinalizeCutoverInput {
+public struct FinalizeCutoverInput: Swift.Sendable {
     /// Request to finalize Cutover by Source Account ID.
     public var accountID: Swift.String?
     /// Request to finalize Cutover by Source Server ID.
@@ -5514,7 +5515,7 @@ public struct FinalizeCutoverInput {
     }
 }
 
-public struct FinalizeCutoverOutput {
+public struct FinalizeCutoverOutput: Swift.Sendable {
     /// Source server application ID.
     public var applicationID: Swift.String?
     /// Source server ARN.
@@ -5583,7 +5584,7 @@ extension FinalizeCutoverOutput: Swift.CustomDebugStringConvertible {
         "FinalizeCutoverOutput(applicationID: \(Swift.String(describing: applicationID)), arn: \(Swift.String(describing: arn)), connectorAction: \(Swift.String(describing: connectorAction)), dataReplicationInfo: \(Swift.String(describing: dataReplicationInfo)), fqdnForActionFramework: \(Swift.String(describing: fqdnForActionFramework)), isArchived: \(Swift.String(describing: isArchived)), launchedInstance: \(Swift.String(describing: launchedInstance)), lifeCycle: \(Swift.String(describing: lifeCycle)), replicationType: \(Swift.String(describing: replicationType)), sourceProperties: \(Swift.String(describing: sourceProperties)), sourceServerID: \(Swift.String(describing: sourceServerID)), userProvidedID: \(Swift.String(describing: userProvidedID)), vcenterClientID: \(Swift.String(describing: vcenterClientID)), tags: \"CONTENT_REDACTED\")"}
 }
 
-public struct GetLaunchConfigurationInput {
+public struct GetLaunchConfigurationInput: Swift.Sendable {
     /// Request to get Launch Configuration information by Account ID.
     public var accountID: Swift.String?
     /// Request to get Launch Configuration information by Source Server ID.
@@ -5600,7 +5601,7 @@ public struct GetLaunchConfigurationInput {
     }
 }
 
-public struct GetLaunchConfigurationOutput {
+public struct GetLaunchConfigurationOutput: Swift.Sendable {
     /// Launch configuration boot mode.
     public var bootMode: MgnClientTypes.BootMode?
     /// Copy Private IP during Launch Configuration.
@@ -5656,7 +5657,7 @@ public struct GetLaunchConfigurationOutput {
     }
 }
 
-public struct GetReplicationConfigurationInput {
+public struct GetReplicationConfigurationInput: Swift.Sendable {
     /// Request to get Replication Configuration by Account ID.
     public var accountID: Swift.String?
     /// Request to get Replication Configuration by Source Server ID.
@@ -5675,7 +5676,7 @@ public struct GetReplicationConfigurationInput {
 
 extension MgnClientTypes {
 
-    public enum ReplicationConfigurationReplicatedDiskStagingDiskType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ReplicationConfigurationReplicatedDiskStagingDiskType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case auto
         case gp2
         case gp3
@@ -5721,8 +5722,9 @@ extension MgnClientTypes {
 }
 
 extension MgnClientTypes {
+
     /// Replication Configuration replicated disk.
-    public struct ReplicationConfigurationReplicatedDisk {
+    public struct ReplicationConfigurationReplicatedDisk: Swift.Sendable {
         /// Replication Configuration replicated disk device name.
         public var deviceName: Swift.String?
         /// Replication Configuration replicated disk IOPs.
@@ -5749,10 +5751,9 @@ extension MgnClientTypes {
             self.throughput = throughput
         }
     }
-
 }
 
-public struct GetReplicationConfigurationOutput {
+public struct GetReplicationConfigurationOutput: Swift.Sendable {
     /// Replication Configuration associate default Application Migration Service Security Group.
     public var associateDefaultSecurityGroup: Swift.Bool?
     /// Replication Configuration set bandwidth throttling.
@@ -5830,8 +5831,9 @@ extension GetReplicationConfigurationOutput: Swift.CustomDebugStringConvertible 
 }
 
 extension MgnClientTypes {
+
     /// Source server post migration custom action filters.
-    public struct SourceServerActionsRequestFilters {
+    public struct SourceServerActionsRequestFilters: Swift.Sendable {
         /// Action IDs to filter source server post migration custom actions by.
         public var actionIDs: [Swift.String]?
 
@@ -5842,10 +5844,9 @@ extension MgnClientTypes {
             self.actionIDs = actionIDs
         }
     }
-
 }
 
-public struct ListSourceServerActionsInput {
+public struct ListSourceServerActionsInput: Swift.Sendable {
     /// Account ID to return when listing source server post migration custom actions.
     public var accountID: Swift.String?
     /// Filters to apply when listing source server post migration custom actions.
@@ -5875,7 +5876,8 @@ public struct ListSourceServerActionsInput {
 }
 
 extension MgnClientTypes {
-    public struct SourceServerActionDocument {
+
+    public struct SourceServerActionDocument: Swift.Sendable {
         /// Source server post migration custom action ID.
         public var actionID: Swift.String?
         /// Source server post migration custom action name.
@@ -5930,10 +5932,9 @@ extension MgnClientTypes {
             self.timeoutSeconds = timeoutSeconds
         }
     }
-
 }
 
-public struct ListSourceServerActionsOutput {
+public struct ListSourceServerActionsOutput: Swift.Sendable {
     /// List of source server post migration custom actions.
     public var items: [MgnClientTypes.SourceServerActionDocument]?
     /// Next token returned when listing source server post migration custom actions.
@@ -5949,7 +5950,7 @@ public struct ListSourceServerActionsOutput {
     }
 }
 
-public struct MarkAsArchivedInput {
+public struct MarkAsArchivedInput: Swift.Sendable {
     /// Mark as archived by Account ID.
     public var accountID: Swift.String?
     /// Mark as archived by Source Server ID.
@@ -5966,7 +5967,7 @@ public struct MarkAsArchivedInput {
     }
 }
 
-public struct MarkAsArchivedOutput {
+public struct MarkAsArchivedOutput: Swift.Sendable {
     /// Source server application ID.
     public var applicationID: Swift.String?
     /// Source server ARN.
@@ -6035,7 +6036,7 @@ extension MarkAsArchivedOutput: Swift.CustomDebugStringConvertible {
         "MarkAsArchivedOutput(applicationID: \(Swift.String(describing: applicationID)), arn: \(Swift.String(describing: arn)), connectorAction: \(Swift.String(describing: connectorAction)), dataReplicationInfo: \(Swift.String(describing: dataReplicationInfo)), fqdnForActionFramework: \(Swift.String(describing: fqdnForActionFramework)), isArchived: \(Swift.String(describing: isArchived)), launchedInstance: \(Swift.String(describing: launchedInstance)), lifeCycle: \(Swift.String(describing: lifeCycle)), replicationType: \(Swift.String(describing: replicationType)), sourceProperties: \(Swift.String(describing: sourceProperties)), sourceServerID: \(Swift.String(describing: sourceServerID)), userProvidedID: \(Swift.String(describing: userProvidedID)), vcenterClientID: \(Swift.String(describing: vcenterClientID)), tags: \"CONTENT_REDACTED\")"}
 }
 
-public struct PauseReplicationInput {
+public struct PauseReplicationInput: Swift.Sendable {
     /// Pause Replication Request account ID.
     public var accountID: Swift.String?
     /// Pause Replication Request source server ID.
@@ -6052,7 +6053,7 @@ public struct PauseReplicationInput {
     }
 }
 
-public struct PauseReplicationOutput {
+public struct PauseReplicationOutput: Swift.Sendable {
     /// Source server application ID.
     public var applicationID: Swift.String?
     /// Source server ARN.
@@ -6121,7 +6122,7 @@ extension PauseReplicationOutput: Swift.CustomDebugStringConvertible {
         "PauseReplicationOutput(applicationID: \(Swift.String(describing: applicationID)), arn: \(Swift.String(describing: arn)), connectorAction: \(Swift.String(describing: connectorAction)), dataReplicationInfo: \(Swift.String(describing: dataReplicationInfo)), fqdnForActionFramework: \(Swift.String(describing: fqdnForActionFramework)), isArchived: \(Swift.String(describing: isArchived)), launchedInstance: \(Swift.String(describing: launchedInstance)), lifeCycle: \(Swift.String(describing: lifeCycle)), replicationType: \(Swift.String(describing: replicationType)), sourceProperties: \(Swift.String(describing: sourceProperties)), sourceServerID: \(Swift.String(describing: sourceServerID)), userProvidedID: \(Swift.String(describing: userProvidedID)), vcenterClientID: \(Swift.String(describing: vcenterClientID)), tags: \"CONTENT_REDACTED\")"}
 }
 
-public struct PutSourceServerActionInput {
+public struct PutSourceServerActionInput: Swift.Sendable {
     /// Source server post migration custom account ID.
     public var accountID: Swift.String?
     /// Source server post migration custom action ID.
@@ -6190,7 +6191,7 @@ public struct PutSourceServerActionInput {
     }
 }
 
-public struct PutSourceServerActionOutput {
+public struct PutSourceServerActionOutput: Swift.Sendable {
     /// Source server post migration custom action ID.
     public var actionID: Swift.String?
     /// Source server post migration custom action name.
@@ -6246,7 +6247,7 @@ public struct PutSourceServerActionOutput {
     }
 }
 
-public struct RemoveSourceServerActionInput {
+public struct RemoveSourceServerActionInput: Swift.Sendable {
     /// Source server post migration account ID.
     public var accountID: Swift.String?
     /// Source server post migration custom action ID to remove.
@@ -6268,12 +6269,12 @@ public struct RemoveSourceServerActionInput {
     }
 }
 
-public struct RemoveSourceServerActionOutput {
+public struct RemoveSourceServerActionOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct ResumeReplicationInput {
+public struct ResumeReplicationInput: Swift.Sendable {
     /// Resume Replication Request account ID.
     public var accountID: Swift.String?
     /// Resume Replication Request source server ID.
@@ -6290,7 +6291,7 @@ public struct ResumeReplicationInput {
     }
 }
 
-public struct ResumeReplicationOutput {
+public struct ResumeReplicationOutput: Swift.Sendable {
     /// Source server application ID.
     public var applicationID: Swift.String?
     /// Source server ARN.
@@ -6359,7 +6360,7 @@ extension ResumeReplicationOutput: Swift.CustomDebugStringConvertible {
         "ResumeReplicationOutput(applicationID: \(Swift.String(describing: applicationID)), arn: \(Swift.String(describing: arn)), connectorAction: \(Swift.String(describing: connectorAction)), dataReplicationInfo: \(Swift.String(describing: dataReplicationInfo)), fqdnForActionFramework: \(Swift.String(describing: fqdnForActionFramework)), isArchived: \(Swift.String(describing: isArchived)), launchedInstance: \(Swift.String(describing: launchedInstance)), lifeCycle: \(Swift.String(describing: lifeCycle)), replicationType: \(Swift.String(describing: replicationType)), sourceProperties: \(Swift.String(describing: sourceProperties)), sourceServerID: \(Swift.String(describing: sourceServerID)), userProvidedID: \(Swift.String(describing: userProvidedID)), vcenterClientID: \(Swift.String(describing: vcenterClientID)), tags: \"CONTENT_REDACTED\")"}
 }
 
-public struct RetryDataReplicationInput {
+public struct RetryDataReplicationInput: Swift.Sendable {
     /// Retry data replication for Account ID.
     public var accountID: Swift.String?
     /// Retry data replication for Source Server ID.
@@ -6376,7 +6377,7 @@ public struct RetryDataReplicationInput {
     }
 }
 
-public struct RetryDataReplicationOutput {
+public struct RetryDataReplicationOutput: Swift.Sendable {
     /// Source server application ID.
     public var applicationID: Swift.String?
     /// Source server ARN.
@@ -6445,7 +6446,7 @@ extension RetryDataReplicationOutput: Swift.CustomDebugStringConvertible {
         "RetryDataReplicationOutput(applicationID: \(Swift.String(describing: applicationID)), arn: \(Swift.String(describing: arn)), connectorAction: \(Swift.String(describing: connectorAction)), dataReplicationInfo: \(Swift.String(describing: dataReplicationInfo)), fqdnForActionFramework: \(Swift.String(describing: fqdnForActionFramework)), isArchived: \(Swift.String(describing: isArchived)), launchedInstance: \(Swift.String(describing: launchedInstance)), lifeCycle: \(Swift.String(describing: lifeCycle)), replicationType: \(Swift.String(describing: replicationType)), sourceProperties: \(Swift.String(describing: sourceProperties)), sourceServerID: \(Swift.String(describing: sourceServerID)), userProvidedID: \(Swift.String(describing: userProvidedID)), vcenterClientID: \(Swift.String(describing: vcenterClientID)), tags: \"CONTENT_REDACTED\")"}
 }
 
-public struct StartCutoverInput {
+public struct StartCutoverInput: Swift.Sendable {
     /// Start Cutover by Account IDs
     public var accountID: Swift.String?
     /// Start Cutover by Source Server IDs.
@@ -6471,7 +6472,7 @@ extension StartCutoverInput: Swift.CustomDebugStringConvertible {
         "StartCutoverInput(accountID: \(Swift.String(describing: accountID)), sourceServerIDs: \(Swift.String(describing: sourceServerIDs)), tags: \"CONTENT_REDACTED\")"}
 }
 
-public struct StartCutoverOutput {
+public struct StartCutoverOutput: Swift.Sendable {
     /// Start Cutover Job response.
     public var job: MgnClientTypes.Job?
 
@@ -6483,7 +6484,7 @@ public struct StartCutoverOutput {
     }
 }
 
-public struct StartReplicationInput {
+public struct StartReplicationInput: Swift.Sendable {
     /// Account ID on which to start replication.
     public var accountID: Swift.String?
     /// ID of source server on which to start replication.
@@ -6500,7 +6501,7 @@ public struct StartReplicationInput {
     }
 }
 
-public struct StartReplicationOutput {
+public struct StartReplicationOutput: Swift.Sendable {
     /// Source server application ID.
     public var applicationID: Swift.String?
     /// Source server ARN.
@@ -6569,7 +6570,7 @@ extension StartReplicationOutput: Swift.CustomDebugStringConvertible {
         "StartReplicationOutput(applicationID: \(Swift.String(describing: applicationID)), arn: \(Swift.String(describing: arn)), connectorAction: \(Swift.String(describing: connectorAction)), dataReplicationInfo: \(Swift.String(describing: dataReplicationInfo)), fqdnForActionFramework: \(Swift.String(describing: fqdnForActionFramework)), isArchived: \(Swift.String(describing: isArchived)), launchedInstance: \(Swift.String(describing: launchedInstance)), lifeCycle: \(Swift.String(describing: lifeCycle)), replicationType: \(Swift.String(describing: replicationType)), sourceProperties: \(Swift.String(describing: sourceProperties)), sourceServerID: \(Swift.String(describing: sourceServerID)), userProvidedID: \(Swift.String(describing: userProvidedID)), vcenterClientID: \(Swift.String(describing: vcenterClientID)), tags: \"CONTENT_REDACTED\")"}
 }
 
-public struct StartTestInput {
+public struct StartTestInput: Swift.Sendable {
     /// Start Test for Account ID.
     public var accountID: Swift.String?
     /// Start Test for Source Server IDs.
@@ -6595,7 +6596,7 @@ extension StartTestInput: Swift.CustomDebugStringConvertible {
         "StartTestInput(accountID: \(Swift.String(describing: accountID)), sourceServerIDs: \(Swift.String(describing: sourceServerIDs)), tags: \"CONTENT_REDACTED\")"}
 }
 
-public struct StartTestOutput {
+public struct StartTestOutput: Swift.Sendable {
     /// Start Test Job response.
     public var job: MgnClientTypes.Job?
 
@@ -6607,7 +6608,7 @@ public struct StartTestOutput {
     }
 }
 
-public struct StopReplicationInput {
+public struct StopReplicationInput: Swift.Sendable {
     /// Stop Replication Request account ID.
     public var accountID: Swift.String?
     /// Stop Replication Request source server ID.
@@ -6624,7 +6625,7 @@ public struct StopReplicationInput {
     }
 }
 
-public struct StopReplicationOutput {
+public struct StopReplicationOutput: Swift.Sendable {
     /// Source server application ID.
     public var applicationID: Swift.String?
     /// Source server ARN.
@@ -6693,7 +6694,7 @@ extension StopReplicationOutput: Swift.CustomDebugStringConvertible {
         "StopReplicationOutput(applicationID: \(Swift.String(describing: applicationID)), arn: \(Swift.String(describing: arn)), connectorAction: \(Swift.String(describing: connectorAction)), dataReplicationInfo: \(Swift.String(describing: dataReplicationInfo)), fqdnForActionFramework: \(Swift.String(describing: fqdnForActionFramework)), isArchived: \(Swift.String(describing: isArchived)), launchedInstance: \(Swift.String(describing: launchedInstance)), lifeCycle: \(Swift.String(describing: lifeCycle)), replicationType: \(Swift.String(describing: replicationType)), sourceProperties: \(Swift.String(describing: sourceProperties)), sourceServerID: \(Swift.String(describing: sourceServerID)), userProvidedID: \(Swift.String(describing: userProvidedID)), vcenterClientID: \(Swift.String(describing: vcenterClientID)), tags: \"CONTENT_REDACTED\")"}
 }
 
-public struct TerminateTargetInstancesInput {
+public struct TerminateTargetInstancesInput: Swift.Sendable {
     /// Terminate Target instance by Account ID
     public var accountID: Swift.String?
     /// Terminate Target instance by Source Server IDs.
@@ -6719,7 +6720,7 @@ extension TerminateTargetInstancesInput: Swift.CustomDebugStringConvertible {
         "TerminateTargetInstancesInput(accountID: \(Swift.String(describing: accountID)), sourceServerIDs: \(Swift.String(describing: sourceServerIDs)), tags: \"CONTENT_REDACTED\")"}
 }
 
-public struct TerminateTargetInstancesOutput {
+public struct TerminateTargetInstancesOutput: Swift.Sendable {
     /// Terminate Target instance Job response.
     public var job: MgnClientTypes.Job?
 
@@ -6731,7 +6732,7 @@ public struct TerminateTargetInstancesOutput {
     }
 }
 
-public struct UpdateLaunchConfigurationInput {
+public struct UpdateLaunchConfigurationInput: Swift.Sendable {
     /// Update Launch configuration Account ID.
     public var accountID: Swift.String?
     /// Update Launch configuration boot mode request.
@@ -6788,7 +6789,7 @@ public struct UpdateLaunchConfigurationInput {
     }
 }
 
-public struct UpdateLaunchConfigurationOutput {
+public struct UpdateLaunchConfigurationOutput: Swift.Sendable {
     /// Launch configuration boot mode.
     public var bootMode: MgnClientTypes.BootMode?
     /// Copy Private IP during Launch Configuration.
@@ -6844,7 +6845,7 @@ public struct UpdateLaunchConfigurationOutput {
     }
 }
 
-public struct UpdateReplicationConfigurationInput {
+public struct UpdateReplicationConfigurationInput: Swift.Sendable {
     /// Update replication configuration Account ID request.
     public var accountID: Swift.String?
     /// Update replication configuration associate default Application Migration Service Security group request.
@@ -6926,7 +6927,7 @@ extension UpdateReplicationConfigurationInput: Swift.CustomDebugStringConvertibl
         "UpdateReplicationConfigurationInput(accountID: \(Swift.String(describing: accountID)), associateDefaultSecurityGroup: \(Swift.String(describing: associateDefaultSecurityGroup)), bandwidthThrottling: \(Swift.String(describing: bandwidthThrottling)), createPublicIP: \(Swift.String(describing: createPublicIP)), dataPlaneRouting: \(Swift.String(describing: dataPlaneRouting)), defaultLargeStagingDiskType: \(Swift.String(describing: defaultLargeStagingDiskType)), ebsEncryption: \(Swift.String(describing: ebsEncryption)), ebsEncryptionKeyArn: \(Swift.String(describing: ebsEncryptionKeyArn)), name: \(Swift.String(describing: name)), replicatedDisks: \(Swift.String(describing: replicatedDisks)), replicationServerInstanceType: \(Swift.String(describing: replicationServerInstanceType)), replicationServersSecurityGroupsIDs: \(Swift.String(describing: replicationServersSecurityGroupsIDs)), sourceServerID: \(Swift.String(describing: sourceServerID)), stagingAreaSubnetId: \(Swift.String(describing: stagingAreaSubnetId)), useDedicatedReplicationServer: \(Swift.String(describing: useDedicatedReplicationServer)), useFipsEndpoint: \(Swift.String(describing: useFipsEndpoint)), stagingAreaTags: \"CONTENT_REDACTED\")"}
 }
 
-public struct UpdateReplicationConfigurationOutput {
+public struct UpdateReplicationConfigurationOutput: Swift.Sendable {
     /// Replication Configuration associate default Application Migration Service Security Group.
     public var associateDefaultSecurityGroup: Swift.Bool?
     /// Replication Configuration set bandwidth throttling.
@@ -7003,7 +7004,7 @@ extension UpdateReplicationConfigurationOutput: Swift.CustomDebugStringConvertib
         "UpdateReplicationConfigurationOutput(associateDefaultSecurityGroup: \(Swift.String(describing: associateDefaultSecurityGroup)), bandwidthThrottling: \(Swift.String(describing: bandwidthThrottling)), createPublicIP: \(Swift.String(describing: createPublicIP)), dataPlaneRouting: \(Swift.String(describing: dataPlaneRouting)), defaultLargeStagingDiskType: \(Swift.String(describing: defaultLargeStagingDiskType)), ebsEncryption: \(Swift.String(describing: ebsEncryption)), ebsEncryptionKeyArn: \(Swift.String(describing: ebsEncryptionKeyArn)), name: \(Swift.String(describing: name)), replicatedDisks: \(Swift.String(describing: replicatedDisks)), replicationServerInstanceType: \(Swift.String(describing: replicationServerInstanceType)), replicationServersSecurityGroupsIDs: \(Swift.String(describing: replicationServersSecurityGroupsIDs)), sourceServerID: \(Swift.String(describing: sourceServerID)), stagingAreaSubnetId: \(Swift.String(describing: stagingAreaSubnetId)), useDedicatedReplicationServer: \(Swift.String(describing: useDedicatedReplicationServer)), useFipsEndpoint: \(Swift.String(describing: useFipsEndpoint)), stagingAreaTags: \"CONTENT_REDACTED\")"}
 }
 
-public struct UpdateSourceServerInput {
+public struct UpdateSourceServerInput: Swift.Sendable {
     /// Update Source Server request account ID.
     public var accountID: Swift.String?
     /// Update Source Server request connector action.
@@ -7024,7 +7025,7 @@ public struct UpdateSourceServerInput {
     }
 }
 
-public struct UpdateSourceServerOutput {
+public struct UpdateSourceServerOutput: Swift.Sendable {
     /// Source server application ID.
     public var applicationID: Swift.String?
     /// Source server ARN.
@@ -7093,7 +7094,7 @@ extension UpdateSourceServerOutput: Swift.CustomDebugStringConvertible {
         "UpdateSourceServerOutput(applicationID: \(Swift.String(describing: applicationID)), arn: \(Swift.String(describing: arn)), connectorAction: \(Swift.String(describing: connectorAction)), dataReplicationInfo: \(Swift.String(describing: dataReplicationInfo)), fqdnForActionFramework: \(Swift.String(describing: fqdnForActionFramework)), isArchived: \(Swift.String(describing: isArchived)), launchedInstance: \(Swift.String(describing: launchedInstance)), lifeCycle: \(Swift.String(describing: lifeCycle)), replicationType: \(Swift.String(describing: replicationType)), sourceProperties: \(Swift.String(describing: sourceProperties)), sourceServerID: \(Swift.String(describing: sourceServerID)), userProvidedID: \(Swift.String(describing: userProvidedID)), vcenterClientID: \(Swift.String(describing: vcenterClientID)), tags: \"CONTENT_REDACTED\")"}
 }
 
-public struct UpdateSourceServerReplicationTypeInput {
+public struct UpdateSourceServerReplicationTypeInput: Swift.Sendable {
     /// Account ID on which to update replication type.
     public var accountID: Swift.String?
     /// Replication type to which to update source server.
@@ -7115,7 +7116,7 @@ public struct UpdateSourceServerReplicationTypeInput {
     }
 }
 
-public struct UpdateSourceServerReplicationTypeOutput {
+public struct UpdateSourceServerReplicationTypeOutput: Swift.Sendable {
     /// Source server application ID.
     public var applicationID: Swift.String?
     /// Source server ARN.
@@ -7184,7 +7185,7 @@ extension UpdateSourceServerReplicationTypeOutput: Swift.CustomDebugStringConver
         "UpdateSourceServerReplicationTypeOutput(applicationID: \(Swift.String(describing: applicationID)), arn: \(Swift.String(describing: arn)), connectorAction: \(Swift.String(describing: connectorAction)), dataReplicationInfo: \(Swift.String(describing: dataReplicationInfo)), fqdnForActionFramework: \(Swift.String(describing: fqdnForActionFramework)), isArchived: \(Swift.String(describing: isArchived)), launchedInstance: \(Swift.String(describing: launchedInstance)), lifeCycle: \(Swift.String(describing: lifeCycle)), replicationType: \(Swift.String(describing: replicationType)), sourceProperties: \(Swift.String(describing: sourceProperties)), sourceServerID: \(Swift.String(describing: sourceServerID)), userProvidedID: \(Swift.String(describing: userProvidedID)), vcenterClientID: \(Swift.String(describing: vcenterClientID)), tags: \"CONTENT_REDACTED\")"}
 }
 
-public struct TagResourceInput {
+public struct TagResourceInput: Swift.Sendable {
     /// Tag resource by ARN.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -7207,7 +7208,7 @@ extension TagResourceInput: Swift.CustomDebugStringConvertible {
         "TagResourceInput(resourceArn: \(Swift.String(describing: resourceArn)), tags: \"CONTENT_REDACTED\")"}
 }
 
-public struct UntagResourceInput {
+public struct UntagResourceInput: Swift.Sendable {
     /// Untag resource by ARN.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -7230,7 +7231,7 @@ extension UntagResourceInput: Swift.CustomDebugStringConvertible {
         "UntagResourceInput(resourceArn: \(Swift.String(describing: resourceArn)), tagKeys: \"CONTENT_REDACTED\")"}
 }
 
-public struct DeleteVcenterClientInput {
+public struct DeleteVcenterClientInput: Swift.Sendable {
     /// ID of resource to be deleted.
     /// This member is required.
     public var vcenterClientID: Swift.String?
@@ -7243,7 +7244,7 @@ public struct DeleteVcenterClientInput {
     }
 }
 
-public struct DescribeVcenterClientsInput {
+public struct DescribeVcenterClientsInput: Swift.Sendable {
     /// Maximum results to be returned in DescribeVcenterClients.
     public var maxResults: Swift.Int?
     /// Next pagination token to be provided for DescribeVcenterClients.
@@ -7260,8 +7261,9 @@ public struct DescribeVcenterClientsInput {
 }
 
 extension MgnClientTypes {
+
     /// vCenter client.
-    public struct VcenterClient {
+    public struct VcenterClient: Swift.Sendable {
         /// Arn of vCenter client.
         public var arn: Swift.String?
         /// Datacenter name of vCenter client.
@@ -7300,7 +7302,6 @@ extension MgnClientTypes {
             self.vcenterUUID = vcenterUUID
         }
     }
-
 }
 
 extension MgnClientTypes.VcenterClient: Swift.CustomDebugStringConvertible {
@@ -7308,7 +7309,7 @@ extension MgnClientTypes.VcenterClient: Swift.CustomDebugStringConvertible {
         "VcenterClient(arn: \(Swift.String(describing: arn)), datacenterName: \(Swift.String(describing: datacenterName)), hostname: \(Swift.String(describing: hostname)), lastSeenDatetime: \(Swift.String(describing: lastSeenDatetime)), vcenterClientID: \(Swift.String(describing: vcenterClientID)), vcenterUUID: \(Swift.String(describing: vcenterUUID)), sourceServerTags: \"CONTENT_REDACTED\", tags: \"CONTENT_REDACTED\")"}
 }
 
-public struct DescribeVcenterClientsOutput {
+public struct DescribeVcenterClientsOutput: Swift.Sendable {
     /// List of items returned by DescribeVcenterClients.
     public var items: [MgnClientTypes.VcenterClient]?
     /// Next pagination token returned from DescribeVcenterClients.
@@ -7324,7 +7325,7 @@ public struct DescribeVcenterClientsOutput {
     }
 }
 
-public struct ArchiveWaveInput {
+public struct ArchiveWaveInput: Swift.Sendable {
     /// Account ID.
     public var accountID: Swift.String?
     /// Wave ID.
@@ -7343,7 +7344,7 @@ public struct ArchiveWaveInput {
 
 extension MgnClientTypes {
 
-    public enum WaveHealthStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum WaveHealthStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case error
         case healthy
         case lagging
@@ -7375,7 +7376,7 @@ extension MgnClientTypes {
 
 extension MgnClientTypes {
 
-    public enum WaveProgressStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum WaveProgressStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case completed
         case inProgress
         case notStarted
@@ -7406,8 +7407,9 @@ extension MgnClientTypes {
 }
 
 extension MgnClientTypes {
+
     /// Wave aggregated status.
-    public struct WaveAggregatedStatus {
+    public struct WaveAggregatedStatus: Swift.Sendable {
         /// Wave aggregated status health status.
         public var healthStatus: MgnClientTypes.WaveHealthStatus?
         /// Wave aggregated status last update dateTime.
@@ -7434,10 +7436,9 @@ extension MgnClientTypes {
             self.totalApplications = totalApplications
         }
     }
-
 }
 
-public struct ArchiveWaveOutput {
+public struct ArchiveWaveOutput: Swift.Sendable {
     /// Wave ARN.
     public var arn: Swift.String?
     /// Wave creation dateTime.
@@ -7486,7 +7487,7 @@ extension ArchiveWaveOutput: Swift.CustomDebugStringConvertible {
         "ArchiveWaveOutput(arn: \(Swift.String(describing: arn)), creationDateTime: \(Swift.String(describing: creationDateTime)), description: \(Swift.String(describing: description)), isArchived: \(Swift.String(describing: isArchived)), lastModifiedDateTime: \(Swift.String(describing: lastModifiedDateTime)), name: \(Swift.String(describing: name)), waveAggregatedStatus: \(Swift.String(describing: waveAggregatedStatus)), waveID: \(Swift.String(describing: waveID)), tags: \"CONTENT_REDACTED\")"}
 }
 
-public struct AssociateApplicationsInput {
+public struct AssociateApplicationsInput: Swift.Sendable {
     /// Account ID.
     public var accountID: Swift.String?
     /// Application IDs list.
@@ -7508,12 +7509,12 @@ public struct AssociateApplicationsInput {
     }
 }
 
-public struct AssociateApplicationsOutput {
+public struct AssociateApplicationsOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct CreateWaveInput {
+public struct CreateWaveInput: Swift.Sendable {
     /// Account ID.
     public var accountID: Swift.String?
     /// Wave description.
@@ -7543,7 +7544,7 @@ extension CreateWaveInput: Swift.CustomDebugStringConvertible {
         "CreateWaveInput(accountID: \(Swift.String(describing: accountID)), description: \(Swift.String(describing: description)), name: \(Swift.String(describing: name)), tags: \"CONTENT_REDACTED\")"}
 }
 
-public struct CreateWaveOutput {
+public struct CreateWaveOutput: Swift.Sendable {
     /// Wave ARN.
     public var arn: Swift.String?
     /// Wave creation dateTime.
@@ -7592,7 +7593,7 @@ extension CreateWaveOutput: Swift.CustomDebugStringConvertible {
         "CreateWaveOutput(arn: \(Swift.String(describing: arn)), creationDateTime: \(Swift.String(describing: creationDateTime)), description: \(Swift.String(describing: description)), isArchived: \(Swift.String(describing: isArchived)), lastModifiedDateTime: \(Swift.String(describing: lastModifiedDateTime)), name: \(Swift.String(describing: name)), waveAggregatedStatus: \(Swift.String(describing: waveAggregatedStatus)), waveID: \(Swift.String(describing: waveID)), tags: \"CONTENT_REDACTED\")"}
 }
 
-public struct DeleteWaveInput {
+public struct DeleteWaveInput: Swift.Sendable {
     /// Account ID.
     public var accountID: Swift.String?
     /// Wave ID.
@@ -7609,12 +7610,12 @@ public struct DeleteWaveInput {
     }
 }
 
-public struct DeleteWaveOutput {
+public struct DeleteWaveOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DisassociateApplicationsInput {
+public struct DisassociateApplicationsInput: Swift.Sendable {
     /// Account ID.
     public var accountID: Swift.String?
     /// Application IDs list.
@@ -7636,14 +7637,15 @@ public struct DisassociateApplicationsInput {
     }
 }
 
-public struct DisassociateApplicationsOutput {
+public struct DisassociateApplicationsOutput: Swift.Sendable {
 
     public init() { }
 }
 
 extension MgnClientTypes {
+
     /// Waves list filters.
-    public struct ListWavesRequestFilters {
+    public struct ListWavesRequestFilters: Swift.Sendable {
         /// Filter waves list by archival status.
         public var isArchived: Swift.Bool?
         /// Filter waves list by wave ID.
@@ -7658,10 +7660,9 @@ extension MgnClientTypes {
             self.waveIDs = waveIDs
         }
     }
-
 }
 
-public struct ListWavesInput {
+public struct ListWavesInput: Swift.Sendable {
     /// Request account ID.
     public var accountID: Swift.String?
     /// Waves list filters.
@@ -7686,7 +7687,8 @@ public struct ListWavesInput {
 }
 
 extension MgnClientTypes {
-    public struct Wave {
+
+    public struct Wave: Swift.Sendable {
         /// Wave ARN.
         public var arn: Swift.String?
         /// Wave creation dateTime.
@@ -7729,7 +7731,6 @@ extension MgnClientTypes {
             self.waveID = waveID
         }
     }
-
 }
 
 extension MgnClientTypes.Wave: Swift.CustomDebugStringConvertible {
@@ -7737,7 +7738,7 @@ extension MgnClientTypes.Wave: Swift.CustomDebugStringConvertible {
         "Wave(arn: \(Swift.String(describing: arn)), creationDateTime: \(Swift.String(describing: creationDateTime)), description: \(Swift.String(describing: description)), isArchived: \(Swift.String(describing: isArchived)), lastModifiedDateTime: \(Swift.String(describing: lastModifiedDateTime)), name: \(Swift.String(describing: name)), waveAggregatedStatus: \(Swift.String(describing: waveAggregatedStatus)), waveID: \(Swift.String(describing: waveID)), tags: \"CONTENT_REDACTED\")"}
 }
 
-public struct ListWavesOutput {
+public struct ListWavesOutput: Swift.Sendable {
     /// Waves list.
     public var items: [MgnClientTypes.Wave]?
     /// Response next token.
@@ -7753,7 +7754,7 @@ public struct ListWavesOutput {
     }
 }
 
-public struct UnarchiveWaveInput {
+public struct UnarchiveWaveInput: Swift.Sendable {
     /// Account ID.
     public var accountID: Swift.String?
     /// Wave ID.
@@ -7770,7 +7771,7 @@ public struct UnarchiveWaveInput {
     }
 }
 
-public struct UnarchiveWaveOutput {
+public struct UnarchiveWaveOutput: Swift.Sendable {
     /// Wave ARN.
     public var arn: Swift.String?
     /// Wave creation dateTime.
@@ -7819,7 +7820,7 @@ extension UnarchiveWaveOutput: Swift.CustomDebugStringConvertible {
         "UnarchiveWaveOutput(arn: \(Swift.String(describing: arn)), creationDateTime: \(Swift.String(describing: creationDateTime)), description: \(Swift.String(describing: description)), isArchived: \(Swift.String(describing: isArchived)), lastModifiedDateTime: \(Swift.String(describing: lastModifiedDateTime)), name: \(Swift.String(describing: name)), waveAggregatedStatus: \(Swift.String(describing: waveAggregatedStatus)), waveID: \(Swift.String(describing: waveID)), tags: \"CONTENT_REDACTED\")"}
 }
 
-public struct UpdateWaveInput {
+public struct UpdateWaveInput: Swift.Sendable {
     /// Account ID.
     public var accountID: Swift.String?
     /// Wave description.
@@ -7844,7 +7845,7 @@ public struct UpdateWaveInput {
     }
 }
 
-public struct UpdateWaveOutput {
+public struct UpdateWaveOutput: Swift.Sendable {
     /// Wave ARN.
     public var arn: Swift.String?
     /// Wave creation dateTime.

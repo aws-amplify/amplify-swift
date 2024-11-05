@@ -10,8 +10,11 @@ import Waiters
 import SmithyWaitersAPI
 
 // Convenience test-helper methods for testing acceptor matches
-
-extension WaiterConfiguration.Acceptor.Match: Equatable where Input: Equatable, Output: Equatable {
+//
+// Use of fully-qualified type names in this extension suppresses the Swift 6
+// "retroactive conformance" warning in a manner compatible with Swift 5.
+// See: https://github.com/swiftlang/swift-evolution/blob/main/proposals/0364-retroactive-conformance-warning.md#source-compatibility
+extension SmithyWaitersAPI.WaiterConfiguration.Acceptor.Match: Swift.Equatable where Input: Swift.Equatable, Output: Swift.Equatable {
 
     public static func == (
         lhs: WaiterConfiguration<Input, Output>.Acceptor.Match,
@@ -42,7 +45,11 @@ extension WaiterConfiguration.Acceptor.Match: Equatable where Input: Equatable, 
 }
 
 // Allows for the use of a string as an Error, for easy test validation & easy-to-read tests.
-extension String: Error {
+//
+// Use of fully-qualified type names in this extension suppresses the Swift 6
+// "retroactive conformance" warning in a manner compatible with Swift 5.
+// See: https://github.com/swiftlang/swift-evolution/blob/main/proposals/0364-retroactive-conformance-warning.md#source-compatibility
+extension Swift.String: Swift.Error {
     var localizedString: String? { self }
 }
 

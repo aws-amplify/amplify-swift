@@ -2593,7 +2593,7 @@ extension AppConfigClient {
 
     /// Performs the `StopDeployment` operation on the `AmazonAppConfig` service.
     ///
-    /// Stops a deployment. This API action works only on deployments that have a status of DEPLOYING. This action moves the deployment to a status of ROLLED_BACK.
+    /// Stops a deployment. This API action works only on deployments that have a status of DEPLOYING, unless an AllowRevert parameter is supplied. If the AllowRevert parameter is supplied, the status of an in-progress deployment will be ROLLED_BACK. The status of a completed deployment will be REVERTED. AppConfig only allows a revert within 72 hours of deployment completion.
     ///
     /// - Parameter StopDeploymentInput : [no documentation found]
     ///
@@ -2633,6 +2633,7 @@ extension AppConfigClient {
         }
         builder.interceptors.add(ClientRuntime.URLPathMiddleware<StopDeploymentInput, StopDeploymentOutput>(StopDeploymentInput.urlPathProvider(_:)))
         builder.interceptors.add(ClientRuntime.URLHostMiddleware<StopDeploymentInput, StopDeploymentOutput>())
+        builder.serialize(ClientRuntime.HeaderMiddleware<StopDeploymentInput, StopDeploymentOutput>(StopDeploymentInput.headerProvider(_:)))
         builder.deserialize(ClientRuntime.DeserializeMiddleware<StopDeploymentOutput>(StopDeploymentOutput.httpOutput(from:), StopDeploymentOutputError.httpError(from:)))
         builder.interceptors.add(ClientRuntime.LoggerMiddleware<StopDeploymentInput, StopDeploymentOutput>(clientLogMode: config.clientLogMode))
         builder.retryStrategy(SmithyRetries.DefaultRetryStrategy(options: config.retryStrategyOptions))

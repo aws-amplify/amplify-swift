@@ -36,6 +36,19 @@ public extension FileManager {
             .filter { !$0.hasPrefix(".") }
     }
 
+    /// Returns the list of services that have smoke tests and test runner generated for them.
+    /// Service names are extracted from service name prefix of directory names under `SmokeTests/`.
+    /// E.g., extract `AWSS3` from `SmokeTests/AWSS3SmokeTestRunner/`.
+    ///
+    /// - Returns: The list of services with generated smoke tests.
+    func servicesWithSmokeTests() throws -> [String] {
+        try FileManager.default
+            .contentsOfDirectory(atPath: "SmokeTests")
+            .sorted()
+            .filter { !$0.hasPrefix(".") && $0.hasSuffix("SmokeTestRunner") }
+            .map { $0.replacingOccurrences(of: "SmokeTestRunner", with: "") }
+    }
+
     /// Returns the list of Smithy runtime modules within `../smithy-swift/Sources/Core`
     ///
     /// - Returns: The list of Smithy runtime modules.

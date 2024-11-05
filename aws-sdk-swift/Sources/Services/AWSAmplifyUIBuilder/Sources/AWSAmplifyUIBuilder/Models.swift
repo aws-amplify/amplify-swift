@@ -31,29 +31,31 @@ import protocol ClientRuntime.ModeledError
 import struct Smithy.URIQueryItem
 @_spi(SmithyTimestamps) import struct SmithyTimestamps.TimestampFormatter
 
-public struct DeleteComponentOutput {
+
+public struct DeleteComponentOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteFormOutput {
+public struct DeleteFormOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteThemeOutput {
+public struct DeleteThemeOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct PutMetadataFlagOutput {
+public struct PutMetadataFlagOutput: Swift.Sendable {
 
     public init() { }
 }
 
 extension AmplifyUIBuilderClientTypes {
+
     /// Associates a component property to a binding property. This enables exposed properties on the top level component to propagate data to the component's property values.
-    public struct ComponentPropertyBindingProperties {
+    public struct ComponentPropertyBindingProperties: Swift.Sendable {
         /// The data field to bind the property to.
         public var field: Swift.String?
         /// The component property to bind to the data field.
@@ -69,12 +71,12 @@ extension AmplifyUIBuilderClientTypes {
             self.property = property
         }
     }
-
 }
 
 extension AmplifyUIBuilderClientTypes {
+
     /// Describes how to bind a component property to form data.
-    public struct FormBindingElement {
+    public struct FormBindingElement: Swift.Sendable {
         /// The name of the component to retrieve a value from.
         /// This member is required.
         public var element: Swift.String?
@@ -91,7 +93,6 @@ extension AmplifyUIBuilderClientTypes {
             self.property = property
         }
     }
-
 }
 
 /// An internal error has occurred. Please retry your request.
@@ -190,7 +191,7 @@ public struct ThrottlingException: ClientRuntime.ModeledError, AWSClientRuntime.
     }
 }
 
-public struct GetCodegenJobInput {
+public struct GetCodegenJobInput: Swift.Sendable {
     /// The unique ID of the Amplify app associated with the code generation job.
     /// This member is required.
     public var appId: Swift.String?
@@ -214,8 +215,9 @@ public struct GetCodegenJobInput {
 }
 
 extension AmplifyUIBuilderClientTypes {
+
     /// Describes an asset for a code generation job.
-    public struct CodegenJobAsset {
+    public struct CodegenJobAsset: Swift.Sendable {
         /// The URL to use to access the asset.
         public var downloadUrl: Swift.String?
 
@@ -226,12 +228,12 @@ extension AmplifyUIBuilderClientTypes {
             self.downloadUrl = downloadUrl
         }
     }
-
 }
 
 extension AmplifyUIBuilderClientTypes {
+
     /// Dependency package that may be required for the project code to run.
-    public struct CodegenDependency {
+    public struct CodegenDependency: Swift.Sendable {
         /// Determines if the dependency package is using Semantic versioning. If set to true, it indicates that the dependency package uses Semantic versioning.
         public var isSemVer: Swift.Bool?
         /// Name of the dependency package.
@@ -254,12 +256,12 @@ extension AmplifyUIBuilderClientTypes {
             self.supportedVersion = supportedVersion
         }
     }
-
 }
 
 extension AmplifyUIBuilderClientTypes {
+
     /// Describes the feature flags that you can specify for a code generation job.
-    public struct CodegenFeatureFlags {
+    public struct CodegenFeatureFlags: Swift.Sendable {
         /// Specifies whether a code generation job supports non models.
         public var isNonModelSupported: Swift.Bool?
         /// Specifes whether a code generation job supports data relationships.
@@ -274,12 +276,11 @@ extension AmplifyUIBuilderClientTypes {
             self.isRelationshipSupported = isRelationshipSupported
         }
     }
-
 }
 
 extension AmplifyUIBuilderClientTypes {
 
-    public enum CodegenJobGenericDataSourceType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum CodegenJobGenericDataSourceType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case dataStore
         case sdkUnknown(Swift.String)
 
@@ -304,8 +305,9 @@ extension AmplifyUIBuilderClientTypes {
 }
 
 extension AmplifyUIBuilderClientTypes {
+
     /// Describes the enums in a generic data schema.
-    public struct CodegenGenericDataEnum {
+    public struct CodegenGenericDataEnum: Swift.Sendable {
         /// The list of enum values in the generic data schema.
         /// This member is required.
         public var values: [Swift.String]?
@@ -317,12 +319,11 @@ extension AmplifyUIBuilderClientTypes {
             self.values = values
         }
     }
-
 }
 
 extension AmplifyUIBuilderClientTypes {
 
-    public enum CodegenGenericDataFieldDataType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum CodegenGenericDataFieldDataType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case awsDate
         case awsDateTime
         case awsEmail
@@ -396,7 +397,7 @@ extension AmplifyUIBuilderClientTypes {
 
 extension AmplifyUIBuilderClientTypes {
 
-    public enum GenericDataRelationshipType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum GenericDataRelationshipType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case belongsTo
         case hasMany
         case hasOne
@@ -427,8 +428,9 @@ extension AmplifyUIBuilderClientTypes {
 }
 
 extension AmplifyUIBuilderClientTypes {
+
     /// Describes the relationship between generic data models.
-    public struct CodegenGenericDataRelationshipType {
+    public struct CodegenGenericDataRelationshipType: Swift.Sendable {
         /// The associated fields of the data relationship.
         public var associatedFields: [Swift.String]?
         /// The value of the belongsTo field on the related data model.
@@ -473,12 +475,12 @@ extension AmplifyUIBuilderClientTypes {
             self.type = type
         }
     }
-
 }
 
 extension AmplifyUIBuilderClientTypes {
+
     /// Describes a field in a generic data schema.
-    public struct CodegenGenericDataField {
+    public struct CodegenGenericDataField: Swift.Sendable {
         /// The data type for the generic data field.
         /// This member is required.
         public var dataType: AmplifyUIBuilderClientTypes.CodegenGenericDataFieldDataType?
@@ -514,12 +516,12 @@ extension AmplifyUIBuilderClientTypes {
             self.`required` = `required`
         }
     }
-
 }
 
 extension AmplifyUIBuilderClientTypes {
+
     /// Describes a model in a generic data schema.
-    public struct CodegenGenericDataModel {
+    public struct CodegenGenericDataModel: Swift.Sendable {
         /// The fields in the generic data model.
         /// This member is required.
         public var fields: [Swift.String: AmplifyUIBuilderClientTypes.CodegenGenericDataField]?
@@ -540,12 +542,12 @@ extension AmplifyUIBuilderClientTypes {
             self.primaryKeys = primaryKeys
         }
     }
-
 }
 
 extension AmplifyUIBuilderClientTypes {
+
     /// Describes a non-model in a generic data schema.
-    public struct CodegenGenericDataNonModel {
+    public struct CodegenGenericDataNonModel: Swift.Sendable {
         /// The fields in a generic data schema non model.
         /// This member is required.
         public var fields: [Swift.String: AmplifyUIBuilderClientTypes.CodegenGenericDataField]?
@@ -557,12 +559,12 @@ extension AmplifyUIBuilderClientTypes {
             self.fields = fields
         }
     }
-
 }
 
 extension AmplifyUIBuilderClientTypes {
+
     /// Describes the data schema for a code generation job.
-    public struct CodegenJobGenericDataSchema {
+    public struct CodegenJobGenericDataSchema: Swift.Sendable {
         /// The type of the data source for the schema. Currently, the only valid value is an Amplify DataStore.
         /// This member is required.
         public var dataSourceType: AmplifyUIBuilderClientTypes.CodegenJobGenericDataSourceType?
@@ -589,21 +591,21 @@ extension AmplifyUIBuilderClientTypes {
             self.nonModels = nonModels
         }
     }
-
 }
 
 extension AmplifyUIBuilderClientTypes {
+
     /// Describes the DataStore configuration for an API for a code generation job.
-    public struct DataStoreRenderConfig {
+    public struct DataStoreRenderConfig: Swift.Sendable {
 
         public init() { }
     }
-
 }
 
 extension AmplifyUIBuilderClientTypes {
+
     /// Describes the GraphQL configuration for an API for a code generation job.
-    public struct GraphQLRenderConfig {
+    public struct GraphQLRenderConfig: Swift.Sendable {
         /// The path to the GraphQL fragments file, relative to the component output directory.
         /// This member is required.
         public var fragmentsFilePath: Swift.String?
@@ -635,21 +637,21 @@ extension AmplifyUIBuilderClientTypes {
             self.typesFilePath = typesFilePath
         }
     }
-
 }
 
 extension AmplifyUIBuilderClientTypes {
+
     /// Describes the configuration for an application with no API being used.
-    public struct NoApiRenderConfig {
+    public struct NoApiRenderConfig: Swift.Sendable {
 
         public init() { }
     }
-
 }
 
 extension AmplifyUIBuilderClientTypes {
+
     /// Describes the API configuration for a code generation job.
-    public enum ApiConfiguration {
+    public enum ApiConfiguration: Swift.Sendable {
         /// The configuration for an application using GraphQL APIs.
         case graphqlconfig(AmplifyUIBuilderClientTypes.GraphQLRenderConfig)
         /// The configuration for an application using DataStore APIs.
@@ -658,12 +660,11 @@ extension AmplifyUIBuilderClientTypes {
         case noapiconfig(AmplifyUIBuilderClientTypes.NoApiRenderConfig)
         case sdkUnknown(Swift.String)
     }
-
 }
 
 extension AmplifyUIBuilderClientTypes {
 
-    public enum JSModule: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum JSModule: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case es2020
         case esnext
         case sdkUnknown(Swift.String)
@@ -692,7 +693,7 @@ extension AmplifyUIBuilderClientTypes {
 
 extension AmplifyUIBuilderClientTypes {
 
-    public enum JSScript: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum JSScript: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case js
         case jsx
         case tsx
@@ -724,7 +725,7 @@ extension AmplifyUIBuilderClientTypes {
 
 extension AmplifyUIBuilderClientTypes {
 
-    public enum JSTarget: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum JSTarget: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case es2015
         case es2020
         case sdkUnknown(Swift.String)
@@ -752,8 +753,9 @@ extension AmplifyUIBuilderClientTypes {
 }
 
 extension AmplifyUIBuilderClientTypes {
+
     /// Describes the code generation job configuration for a React project.
-    public struct ReactStartCodegenJobData {
+    public struct ReactStartCodegenJobData: Swift.Sendable {
         /// The API configuration for the code generation job.
         public var apiConfiguration: AmplifyUIBuilderClientTypes.ApiConfiguration?
         /// Lists the dependency packages that may be required for the project code to run.
@@ -788,22 +790,21 @@ extension AmplifyUIBuilderClientTypes {
             self.target = target
         }
     }
-
 }
 
 extension AmplifyUIBuilderClientTypes {
+
     /// Describes the configuration information for rendering the UI component associated with the code generation job.
-    public enum CodegenJobRenderConfig {
+    public enum CodegenJobRenderConfig: Swift.Sendable {
         /// The name of the ReactStartCodegenJobData object.
         case react(AmplifyUIBuilderClientTypes.ReactStartCodegenJobData)
         case sdkUnknown(Swift.String)
     }
-
 }
 
 extension AmplifyUIBuilderClientTypes {
 
-    public enum CodegenJobStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum CodegenJobStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case failed
         case inProgress
         case succeeded
@@ -834,8 +835,9 @@ extension AmplifyUIBuilderClientTypes {
 }
 
 extension AmplifyUIBuilderClientTypes {
+
     /// Describes the configuration for a code generation job that is associated with an Amplify app.
-    public struct CodegenJob {
+    public struct CodegenJob: Swift.Sendable {
         /// The ID of the Amplify app associated with the code generation job.
         /// This member is required.
         public var appId: Swift.String?
@@ -901,10 +903,9 @@ extension AmplifyUIBuilderClientTypes {
             self.tags = tags
         }
     }
-
 }
 
-public struct GetCodegenJobOutput {
+public struct GetCodegenJobOutput: Swift.Sendable {
     /// The configuration settings for the code generation job.
     public var job: AmplifyUIBuilderClientTypes.CodegenJob?
 
@@ -916,7 +917,7 @@ public struct GetCodegenJobOutput {
     }
 }
 
-public struct ListCodegenJobsInput {
+public struct ListCodegenJobsInput: Swift.Sendable {
     /// The unique ID for the Amplify app.
     /// This member is required.
     public var appId: Swift.String?
@@ -943,8 +944,9 @@ public struct ListCodegenJobsInput {
 }
 
 extension AmplifyUIBuilderClientTypes {
+
     /// A summary of the basic information about the code generation job.
-    public struct CodegenJobSummary {
+    public struct CodegenJobSummary: Swift.Sendable {
         /// The unique ID of the Amplify app associated with the code generation job.
         /// This member is required.
         public var appId: Swift.String?
@@ -974,10 +976,9 @@ extension AmplifyUIBuilderClientTypes {
             self.modifiedAt = modifiedAt
         }
     }
-
 }
 
-public struct ListCodegenJobsOutput {
+public struct ListCodegenJobsOutput: Swift.Sendable {
     /// The list of code generation jobs for the Amplify app.
     /// This member is required.
     public var entities: [AmplifyUIBuilderClientTypes.CodegenJobSummary]?
@@ -995,8 +996,9 @@ public struct ListCodegenJobsOutput {
 }
 
 extension AmplifyUIBuilderClientTypes {
+
     /// The code generation job resource configuration.
-    public struct StartCodegenJobData {
+    public struct StartCodegenJobData: Swift.Sendable {
         /// Specifies whether to autogenerate forms in the code generation job.
         public var autoGenerateForms: Swift.Bool?
         /// The feature flags for a code generation job.
@@ -1024,10 +1026,9 @@ extension AmplifyUIBuilderClientTypes {
             self.tags = tags
         }
     }
-
 }
 
-public struct StartCodegenJobInput {
+public struct StartCodegenJobInput: Swift.Sendable {
     /// The unique ID for the Amplify app.
     /// This member is required.
     public var appId: Swift.String?
@@ -1054,7 +1055,7 @@ public struct StartCodegenJobInput {
     }
 }
 
-public struct StartCodegenJobOutput {
+public struct StartCodegenJobOutput: Swift.Sendable {
     /// The code generation job for a UI component that is associated with an Amplify app.
     public var entity: AmplifyUIBuilderClientTypes.CodegenJob?
 
@@ -1116,7 +1117,7 @@ public struct ServiceQuotaExceededException: ClientRuntime.ModeledError, AWSClie
 
 extension AmplifyUIBuilderClientTypes {
 
-    public enum SortDirection: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SortDirection: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case asc
         case desc
         case sdkUnknown(Swift.String)
@@ -1144,8 +1145,9 @@ extension AmplifyUIBuilderClientTypes {
 }
 
 extension AmplifyUIBuilderClientTypes {
+
     /// Describes how to sort the data that you bind to a component.
-    public struct SortProperty {
+    public struct SortProperty: Swift.Sendable {
         /// The direction of the sort, either ascending or descending.
         /// This member is required.
         public var direction: AmplifyUIBuilderClientTypes.SortDirection?
@@ -1162,12 +1164,12 @@ extension AmplifyUIBuilderClientTypes {
             self.field = field
         }
     }
-
 }
 
 extension AmplifyUIBuilderClientTypes {
+
     /// Describes the style configuration of a unique variation of a main component.
-    public struct ComponentVariant {
+    public struct ComponentVariant: Swift.Sendable {
         /// The properties of the component variant that can be overriden when customizing an instance of the component. You can't specify tags as a valid property for overrides.
         public var overrides: [Swift.String: [Swift.String: Swift.String]]?
         /// The combination of variants that comprise this variant. You can't specify tags as a valid property for variantValues.
@@ -1182,10 +1184,9 @@ extension AmplifyUIBuilderClientTypes {
             self.variantValues = variantValues
         }
     }
-
 }
 
-public struct DeleteComponentInput {
+public struct DeleteComponentInput: Swift.Sendable {
     /// The unique ID of the Amplify app associated with the component to delete.
     /// This member is required.
     public var appId: Swift.String?
@@ -1208,7 +1209,7 @@ public struct DeleteComponentInput {
     }
 }
 
-public struct ExportComponentsInput {
+public struct ExportComponentsInput: Swift.Sendable {
     /// The unique ID of the Amplify app to export components to.
     /// This member is required.
     public var appId: Swift.String?
@@ -1230,7 +1231,7 @@ public struct ExportComponentsInput {
     }
 }
 
-public struct GetComponentInput {
+public struct GetComponentInput: Swift.Sendable {
     /// The unique ID of the Amplify app.
     /// This member is required.
     public var appId: Swift.String?
@@ -1253,7 +1254,7 @@ public struct GetComponentInput {
     }
 }
 
-public struct ListComponentsInput {
+public struct ListComponentsInput: Swift.Sendable {
     /// The unique ID for the Amplify app.
     /// This member is required.
     public var appId: Swift.String?
@@ -1280,8 +1281,9 @@ public struct ListComponentsInput {
 }
 
 extension AmplifyUIBuilderClientTypes {
+
     /// Contains a summary of a component. This is a read-only data type that is returned by ListComponents.
-    public struct ComponentSummary {
+    public struct ComponentSummary: Swift.Sendable {
         /// The unique ID of the Amplify app associated with the component.
         /// This member is required.
         public var appId: Swift.String?
@@ -1313,10 +1315,9 @@ extension AmplifyUIBuilderClientTypes {
             self.name = name
         }
     }
-
 }
 
-public struct ListComponentsOutput {
+public struct ListComponentsOutput: Swift.Sendable {
     /// The list of components for the Amplify app.
     /// This member is required.
     public var entities: [AmplifyUIBuilderClientTypes.ComponentSummary]?
@@ -1335,7 +1336,7 @@ public struct ListComponentsOutput {
 
 extension AmplifyUIBuilderClientTypes {
 
-    public enum TokenProviders: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum TokenProviders: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         /// The figma token provider.
         case figma
         case sdkUnknown(Swift.String)
@@ -1361,8 +1362,9 @@ extension AmplifyUIBuilderClientTypes {
 }
 
 extension AmplifyUIBuilderClientTypes {
+
     /// Describes the configuration of a request to exchange an access code for a token.
-    public struct ExchangeCodeForTokenRequestBody {
+    public struct ExchangeCodeForTokenRequestBody: Swift.Sendable {
         /// The ID of the client to request the token from.
         public var clientId: Swift.String?
         /// The access code to send in the request.
@@ -1383,7 +1385,6 @@ extension AmplifyUIBuilderClientTypes {
             self.redirectUri = redirectUri
         }
     }
-
 }
 
 extension AmplifyUIBuilderClientTypes.ExchangeCodeForTokenRequestBody: Swift.CustomDebugStringConvertible {
@@ -1391,7 +1392,7 @@ extension AmplifyUIBuilderClientTypes.ExchangeCodeForTokenRequestBody: Swift.Cus
         "ExchangeCodeForTokenRequestBody(redirectUri: \(Swift.String(describing: redirectUri)), clientId: \"CONTENT_REDACTED\", code: \"CONTENT_REDACTED\")"}
 }
 
-public struct ExchangeCodeForTokenInput {
+public struct ExchangeCodeForTokenInput: Swift.Sendable {
     /// The third-party provider for the token. The only valid value is figma.
     /// This member is required.
     public var provider: AmplifyUIBuilderClientTypes.TokenProviders?
@@ -1409,7 +1410,7 @@ public struct ExchangeCodeForTokenInput {
     }
 }
 
-public struct ExchangeCodeForTokenOutput {
+public struct ExchangeCodeForTokenOutput: Swift.Sendable {
     /// The access token.
     /// This member is required.
     public var accessToken: Swift.String?
@@ -1439,7 +1440,7 @@ extension ExchangeCodeForTokenOutput: Swift.CustomDebugStringConvertible {
 
 extension AmplifyUIBuilderClientTypes {
 
-    public enum FixedPosition: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum FixedPosition: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case first
         case sdkUnknown(Swift.String)
 
@@ -1464,8 +1465,9 @@ extension AmplifyUIBuilderClientTypes {
 }
 
 extension AmplifyUIBuilderClientTypes {
+
     /// Describes the field position.
-    public enum FieldPosition {
+    public enum FieldPosition: Swift.Sendable {
         /// The field position is fixed and doesn't change in relation to other fields.
         case fixed(AmplifyUIBuilderClientTypes.FixedPosition)
         /// The field position is to the right of the field specified by the string.
@@ -1474,12 +1476,12 @@ extension AmplifyUIBuilderClientTypes {
         case below(Swift.String)
         case sdkUnknown(Swift.String)
     }
-
 }
 
 extension AmplifyUIBuilderClientTypes {
+
     /// Describes the configuration for a button UI element that is a part of a form.
-    public struct FormButton {
+    public struct FormButton: Swift.Sendable {
         /// Describes the button's properties.
         public var children: Swift.String?
         /// Specifies whether the button is visible on the form.
@@ -1498,12 +1500,11 @@ extension AmplifyUIBuilderClientTypes {
             self.position = position
         }
     }
-
 }
 
 extension AmplifyUIBuilderClientTypes {
 
-    public enum FormButtonsPosition: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum FormButtonsPosition: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case bottom
         case top
         case topAndBottom
@@ -1534,8 +1535,9 @@ extension AmplifyUIBuilderClientTypes {
 }
 
 extension AmplifyUIBuilderClientTypes {
+
     /// Describes the call to action button configuration for the form.
-    public struct FormCTA {
+    public struct FormCTA: Swift.Sendable {
         /// Displays a cancel button.
         public var cancel: AmplifyUIBuilderClientTypes.FormButton?
         /// Displays a clear button.
@@ -1558,12 +1560,11 @@ extension AmplifyUIBuilderClientTypes {
             self.submit = submit
         }
     }
-
 }
 
 extension AmplifyUIBuilderClientTypes {
 
-    public enum FormDataSourceType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum FormDataSourceType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         /// Will use passed in hooks to use when creating a form from scratch
         case custom
         /// Will use a provided Amplify DataStore enabled API
@@ -1593,8 +1594,9 @@ extension AmplifyUIBuilderClientTypes {
 }
 
 extension AmplifyUIBuilderClientTypes {
+
     /// Describes the data type configuration for the data source associated with a form.
-    public struct FormDataTypeConfig {
+    public struct FormDataTypeConfig: Swift.Sendable {
         /// The data source type, either an Amplify DataStore model or a custom data type.
         /// This member is required.
         public var dataSourceType: AmplifyUIBuilderClientTypes.FormDataSourceType?
@@ -1611,12 +1613,11 @@ extension AmplifyUIBuilderClientTypes {
             self.dataTypeName = dataTypeName
         }
     }
-
 }
 
 extension AmplifyUIBuilderClientTypes {
 
-    public enum StorageAccessLevel: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum StorageAccessLevel: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case `private`
         case protected
         case `public`
@@ -1647,8 +1648,9 @@ extension AmplifyUIBuilderClientTypes {
 }
 
 extension AmplifyUIBuilderClientTypes {
+
     /// Describes the configuration for the file uploader field.
-    public struct FileUploaderFieldConfig {
+    public struct FileUploaderFieldConfig: Swift.Sendable {
         /// The file types that are allowed to be uploaded by the file uploader. Provide this information in an array of strings specifying the valid file extensions.
         /// This member is required.
         public var acceptedFileTypes: [Swift.String]?
@@ -1681,12 +1683,12 @@ extension AmplifyUIBuilderClientTypes {
             self.showThumbnails = showThumbnails
         }
     }
-
 }
 
 extension AmplifyUIBuilderClientTypes {
+
     /// Represents the data binding configuration for a specific property using data stored in Amazon Web Services. For Amazon Web Services connected properties, you can bind a property to data stored in an Amplify DataStore model.
-    public struct FormInputBindingPropertiesValueProperties {
+    public struct FormInputBindingPropertiesValueProperties: Swift.Sendable {
         /// An Amplify DataStore model.
         public var model: Swift.String?
 
@@ -1697,12 +1699,12 @@ extension AmplifyUIBuilderClientTypes {
             self.model = model
         }
     }
-
 }
 
 extension AmplifyUIBuilderClientTypes {
+
     /// Represents the data binding configuration for a form's input fields at runtime.You can use FormInputBindingPropertiesValue to add exposed properties to a form to allow different values to be entered when a form is reused in different places in an app.
-    public struct FormInputBindingPropertiesValue {
+    public struct FormInputBindingPropertiesValue: Swift.Sendable {
         /// Describes the properties to customize with data at runtime.
         public var bindingProperties: AmplifyUIBuilderClientTypes.FormInputBindingPropertiesValueProperties?
         /// The property type.
@@ -1717,12 +1719,12 @@ extension AmplifyUIBuilderClientTypes {
             self.type = type
         }
     }
-
 }
 
 extension AmplifyUIBuilderClientTypes {
+
     /// Associates a form property to a binding property. This enables exposed properties on the top level form to propagate data to the form's property values.
-    public struct FormInputValuePropertyBindingProperties {
+    public struct FormInputValuePropertyBindingProperties: Swift.Sendable {
         /// The data field to bind the property to.
         public var field: Swift.String?
         /// The form property to bind to the data field.
@@ -1738,12 +1740,12 @@ extension AmplifyUIBuilderClientTypes {
             self.property = property
         }
     }
-
 }
 
 extension AmplifyUIBuilderClientTypes {
+
     /// Describes the validation configuration for a field.
-    public struct FieldValidationConfiguration {
+    public struct FieldValidationConfiguration: Swift.Sendable {
         /// The validation to perform on a number value.
         public var numValues: [Swift.Int]?
         /// The validation to perform on a string value.
@@ -1767,12 +1769,11 @@ extension AmplifyUIBuilderClientTypes {
             self.validationMessage = validationMessage
         }
     }
-
 }
 
 extension AmplifyUIBuilderClientTypes {
 
-    public enum FormActionType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum FormActionType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case create
         case update
         case sdkUnknown(Swift.String)
@@ -1801,7 +1802,7 @@ extension AmplifyUIBuilderClientTypes {
 
 extension AmplifyUIBuilderClientTypes {
 
-    public enum LabelDecorator: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum LabelDecorator: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case `none`
         case `optional`
         case `required`
@@ -1832,8 +1833,9 @@ extension AmplifyUIBuilderClientTypes {
 }
 
 extension AmplifyUIBuilderClientTypes {
+
     /// Stores the configuration information for a visual helper element for a form. A sectional element can be a header, a text block, or a divider. These elements are static and not associated with any data.
-    public struct SectionalElement {
+    public struct SectionalElement: Swift.Sendable {
         /// Excludes a sectional element that was generated by default for a specified data model.
         public var excluded: Swift.Bool?
         /// Specifies the size of the font for a Heading sectional element. Valid values are 1 | 2 | 3 | 4 | 5 | 6.
@@ -1865,24 +1867,24 @@ extension AmplifyUIBuilderClientTypes {
             self.type = type
         }
     }
-
 }
 
 extension AmplifyUIBuilderClientTypes {
+
     /// Describes the configuration settings for the form's style properties.
-    public enum FormStyleConfig {
+    public enum FormStyleConfig: Swift.Sendable {
         /// A reference to a design token to use to bind the form's style properties to an existing theme.
         case tokenreference(Swift.String)
         /// The value of the style setting.
         case value(Swift.String)
         case sdkUnknown(Swift.String)
     }
-
 }
 
 extension AmplifyUIBuilderClientTypes {
+
     /// Describes the configuration for the form's style.
-    public struct FormStyle {
+    public struct FormStyle: Swift.Sendable {
         /// The spacing for the horizontal gap.
         public var horizontalGap: AmplifyUIBuilderClientTypes.FormStyleConfig?
         /// The size of the outer padding for the form.
@@ -1901,10 +1903,9 @@ extension AmplifyUIBuilderClientTypes {
             self.verticalGap = verticalGap
         }
     }
-
 }
 
-public struct DeleteFormInput {
+public struct DeleteFormInput: Swift.Sendable {
     /// The unique ID of the Amplify app associated with the form to delete.
     /// This member is required.
     public var appId: Swift.String?
@@ -1927,7 +1928,7 @@ public struct DeleteFormInput {
     }
 }
 
-public struct ExportFormsInput {
+public struct ExportFormsInput: Swift.Sendable {
     /// The unique ID of the Amplify app to export forms to.
     /// This member is required.
     public var appId: Swift.String?
@@ -1949,7 +1950,7 @@ public struct ExportFormsInput {
     }
 }
 
-public struct GetFormInput {
+public struct GetFormInput: Swift.Sendable {
     /// The unique ID of the Amplify app.
     /// This member is required.
     public var appId: Swift.String?
@@ -1972,7 +1973,7 @@ public struct GetFormInput {
     }
 }
 
-public struct ListFormsInput {
+public struct ListFormsInput: Swift.Sendable {
     /// The unique ID for the Amplify app.
     /// This member is required.
     public var appId: Swift.String?
@@ -1999,8 +2000,9 @@ public struct ListFormsInput {
 }
 
 extension AmplifyUIBuilderClientTypes {
+
     /// Describes the basic information about a form.
-    public struct FormSummary {
+    public struct FormSummary: Swift.Sendable {
         /// The unique ID for the app associated with the form summary.
         /// This member is required.
         public var appId: Swift.String?
@@ -2037,10 +2039,9 @@ extension AmplifyUIBuilderClientTypes {
             self.name = name
         }
     }
-
 }
 
-public struct ListFormsOutput {
+public struct ListFormsOutput: Swift.Sendable {
     /// The list of forms for the Amplify app.
     /// This member is required.
     public var entities: [AmplifyUIBuilderClientTypes.FormSummary]?
@@ -2081,7 +2082,7 @@ public struct UnauthorizedException: ClientRuntime.ModeledError, AWSClientRuntim
     }
 }
 
-public struct GetMetadataInput {
+public struct GetMetadataInput: Swift.Sendable {
     /// The unique ID of the Amplify app.
     /// This member is required.
     public var appId: Swift.String?
@@ -2099,7 +2100,7 @@ public struct GetMetadataInput {
     }
 }
 
-public struct GetMetadataOutput {
+public struct GetMetadataOutput: Swift.Sendable {
     /// Represents the configuration settings for the features metadata.
     /// This member is required.
     public var features: [Swift.String: Swift.String]?
@@ -2112,7 +2113,7 @@ public struct GetMetadataOutput {
     }
 }
 
-public struct ListTagsForResourceInput {
+public struct ListTagsForResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) to use to list tags.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -2125,7 +2126,7 @@ public struct ListTagsForResourceInput {
     }
 }
 
-public struct ListTagsForResourceOutput {
+public struct ListTagsForResourceOutput: Swift.Sendable {
     /// A list of tag key value pairs for a specified Amazon Resource Name (ARN).
     /// This member is required.
     public var tags: [Swift.String: Swift.String]?
@@ -2139,8 +2140,9 @@ public struct ListTagsForResourceOutput {
 }
 
 extension AmplifyUIBuilderClientTypes {
+
     /// Stores the metadata information about a feature on a form.
-    public struct PutMetadataFlagBody {
+    public struct PutMetadataFlagBody: Swift.Sendable {
         /// The new information to store.
         /// This member is required.
         public var newValue: Swift.String?
@@ -2152,10 +2154,9 @@ extension AmplifyUIBuilderClientTypes {
             self.newValue = newValue
         }
     }
-
 }
 
-public struct PutMetadataFlagInput {
+public struct PutMetadataFlagInput: Swift.Sendable {
     /// The unique ID for the Amplify app.
     /// This member is required.
     public var appId: Swift.String?
@@ -2184,8 +2185,9 @@ public struct PutMetadataFlagInput {
 }
 
 extension AmplifyUIBuilderClientTypes {
+
     /// Describes a refresh token.
-    public struct RefreshTokenRequestBody {
+    public struct RefreshTokenRequestBody: Swift.Sendable {
         /// The ID of the client to request the token from.
         public var clientId: Swift.String?
         /// The token to use to refresh a previously issued access token that might have expired.
@@ -2201,7 +2203,6 @@ extension AmplifyUIBuilderClientTypes {
             self.token = token
         }
     }
-
 }
 
 extension AmplifyUIBuilderClientTypes.RefreshTokenRequestBody: Swift.CustomDebugStringConvertible {
@@ -2209,7 +2210,7 @@ extension AmplifyUIBuilderClientTypes.RefreshTokenRequestBody: Swift.CustomDebug
         "RefreshTokenRequestBody(clientId: \"CONTENT_REDACTED\", token: \"CONTENT_REDACTED\")"}
 }
 
-public struct RefreshTokenInput {
+public struct RefreshTokenInput: Swift.Sendable {
     /// The third-party provider for the token. The only valid value is figma.
     /// This member is required.
     public var provider: AmplifyUIBuilderClientTypes.TokenProviders?
@@ -2227,7 +2228,7 @@ public struct RefreshTokenInput {
     }
 }
 
-public struct RefreshTokenOutput {
+public struct RefreshTokenOutput: Swift.Sendable {
     /// The access token.
     /// This member is required.
     public var accessToken: Swift.String?
@@ -2250,7 +2251,7 @@ extension RefreshTokenOutput: Swift.CustomDebugStringConvertible {
         "RefreshTokenOutput(expiresIn: \(Swift.String(describing: expiresIn)), accessToken: \"CONTENT_REDACTED\")"}
 }
 
-public struct TagResourceInput {
+public struct TagResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) to use to tag a resource.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -2268,12 +2269,12 @@ public struct TagResourceInput {
     }
 }
 
-public struct TagResourceOutput {
+public struct TagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteThemeInput {
+public struct DeleteThemeInput: Swift.Sendable {
     /// The unique ID of the Amplify app associated with the theme to delete.
     /// This member is required.
     public var appId: Swift.String?
@@ -2296,7 +2297,7 @@ public struct DeleteThemeInput {
     }
 }
 
-public struct ExportThemesInput {
+public struct ExportThemesInput: Swift.Sendable {
     /// The unique ID of the Amplify app to export the themes to.
     /// This member is required.
     public var appId: Swift.String?
@@ -2318,7 +2319,7 @@ public struct ExportThemesInput {
     }
 }
 
-public struct GetThemeInput {
+public struct GetThemeInput: Swift.Sendable {
     /// The unique ID of the Amplify app.
     /// This member is required.
     public var appId: Swift.String?
@@ -2341,7 +2342,7 @@ public struct GetThemeInput {
     }
 }
 
-public struct ListThemesInput {
+public struct ListThemesInput: Swift.Sendable {
     /// The unique ID for the Amplify app.
     /// This member is required.
     public var appId: Swift.String?
@@ -2368,8 +2369,9 @@ public struct ListThemesInput {
 }
 
 extension AmplifyUIBuilderClientTypes {
+
     /// Describes the basic information about a theme.
-    public struct ThemeSummary {
+    public struct ThemeSummary: Swift.Sendable {
         /// The unique ID for the app associated with the theme summary.
         /// This member is required.
         public var appId: Swift.String?
@@ -2396,10 +2398,9 @@ extension AmplifyUIBuilderClientTypes {
             self.name = name
         }
     }
-
 }
 
-public struct ListThemesOutput {
+public struct ListThemesOutput: Swift.Sendable {
     /// The list of themes for the Amplify app.
     /// This member is required.
     public var entities: [AmplifyUIBuilderClientTypes.ThemeSummary]?
@@ -2416,7 +2417,7 @@ public struct ListThemesOutput {
     }
 }
 
-public struct UntagResourceInput {
+public struct UntagResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) to use to untag a resource.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -2434,14 +2435,15 @@ public struct UntagResourceInput {
     }
 }
 
-public struct UntagResourceOutput {
+public struct UntagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
 extension AmplifyUIBuilderClientTypes {
+
     /// Describes the configuration for an input field on a form. Use FormInputValueProperty to specify the values to render or bind by default.
-    public struct FormInputValueProperty {
+    public struct FormInputValueProperty: Swift.Sendable {
         /// The information to bind fields to data at runtime.
         public var bindingProperties: AmplifyUIBuilderClientTypes.FormInputValuePropertyBindingProperties?
         /// A list of form properties to concatenate to create the value to assign to this field property.
@@ -2460,12 +2462,12 @@ extension AmplifyUIBuilderClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension AmplifyUIBuilderClientTypes {
+
     /// Describes the configuration of a theme's properties.
-    public struct ThemeValue {
+    public struct ThemeValue: Swift.Sendable {
         /// A list of key-value pairs that define the theme's properties.
         public var children: [AmplifyUIBuilderClientTypes.ThemeValues]?
         /// The value of a theme property.
@@ -2480,12 +2482,12 @@ extension AmplifyUIBuilderClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension AmplifyUIBuilderClientTypes {
+
     /// A key-value pair that defines a property of a theme.
-    public struct ThemeValues {
+    public struct ThemeValues: Swift.Sendable {
         /// The name of the property.
         public var key: Swift.String?
         /// The value of the property.
@@ -2500,12 +2502,12 @@ extension AmplifyUIBuilderClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension AmplifyUIBuilderClientTypes {
+
     /// Stores information for generating Amplify DataStore queries. Use a Predicate to retrieve a subset of the data in a collection.
-    public struct Predicate {
+    public struct Predicate: Swift.Sendable {
         /// A list of predicates to combine logically.
         public var and: [AmplifyUIBuilderClientTypes.Predicate]?
         /// The field to query.
@@ -2536,12 +2538,12 @@ extension AmplifyUIBuilderClientTypes {
             self.or = or
         }
     }
-
 }
 
 extension AmplifyUIBuilderClientTypes {
+
     /// Represents the data binding configuration for a specific property using data stored in Amazon Web Services. For Amazon Web Services connected properties, you can bind a property to data stored in an Amazon S3 bucket, an Amplify DataStore model or an authenticated user attribute.
-    public struct ComponentBindingPropertiesValueProperties {
+    public struct ComponentBindingPropertiesValueProperties: Swift.Sendable {
         /// An Amazon S3 bucket.
         public var bucket: Swift.String?
         /// The default value to assign to the property.
@@ -2580,12 +2582,12 @@ extension AmplifyUIBuilderClientTypes {
             self.userAttribute = userAttribute
         }
     }
-
 }
 
 extension AmplifyUIBuilderClientTypes {
+
     /// Describes the configuration for binding a component's properties to data.
-    public struct ComponentDataConfiguration {
+    public struct ComponentDataConfiguration: Swift.Sendable {
         /// A list of IDs to use to bind data to a component. Use this property to bind specifically chosen data, rather than data retrieved from a query.
         public var identifiers: [Swift.String]?
         /// The name of the data model to use to bind data to a component.
@@ -2609,12 +2611,12 @@ extension AmplifyUIBuilderClientTypes {
             self.sort = sort
         }
     }
-
 }
 
 extension AmplifyUIBuilderClientTypes {
+
     /// Describes the configuration for all of a component's properties. Use ComponentProperty to specify the values to render or bind by default.
-    public struct ComponentProperty {
+    public struct ComponentProperty: Swift.Sendable {
         /// The information to bind the component property to data at runtime.
         public var bindingProperties: AmplifyUIBuilderClientTypes.ComponentPropertyBindingProperties?
         /// The information to bind the component property to form data.
@@ -2681,12 +2683,12 @@ extension AmplifyUIBuilderClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension AmplifyUIBuilderClientTypes {
+
     /// Associates a complex object with a display value. Use ValueMapping to store how to represent complex objects when they are displayed.
-    public struct ValueMapping {
+    public struct ValueMapping: Swift.Sendable {
         /// The value to display for the complex object.
         public var displayValue: AmplifyUIBuilderClientTypes.FormInputValueProperty?
         /// The complex object.
@@ -2702,12 +2704,12 @@ extension AmplifyUIBuilderClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension AmplifyUIBuilderClientTypes {
+
     /// Represents the data binding configuration for a component at runtime. You can use ComponentBindingPropertiesValue to add exposed properties to a component to allow different values to be entered when a component is reused in different places in an app.
-    public struct ComponentBindingPropertiesValue {
+    public struct ComponentBindingPropertiesValue: Swift.Sendable {
         /// Describes the properties to customize with data at runtime.
         public var bindingProperties: AmplifyUIBuilderClientTypes.ComponentBindingPropertiesValueProperties?
         /// The default value of the property.
@@ -2726,12 +2728,12 @@ extension AmplifyUIBuilderClientTypes {
             self.type = type
         }
     }
-
 }
 
 extension AmplifyUIBuilderClientTypes {
+
     /// Represents all of the information that is required to create a theme.
-    public struct CreateThemeData {
+    public struct CreateThemeData: Swift.Sendable {
         /// The name of the theme.
         /// This member is required.
         public var name: Swift.String?
@@ -2756,12 +2758,12 @@ extension AmplifyUIBuilderClientTypes {
             self.values = values
         }
     }
-
 }
 
 extension AmplifyUIBuilderClientTypes {
+
     /// A theme is a collection of style settings that apply globally to the components associated with an Amplify application.
-    public struct Theme {
+    public struct Theme: Swift.Sendable {
         /// The unique ID for the Amplify app associated with the theme.
         /// This member is required.
         public var appId: Swift.String?
@@ -2810,12 +2812,12 @@ extension AmplifyUIBuilderClientTypes {
             self.values = values
         }
     }
-
 }
 
 extension AmplifyUIBuilderClientTypes {
+
     /// Saves the data binding information for a theme.
-    public struct UpdateThemeData {
+    public struct UpdateThemeData: Swift.Sendable {
         /// The unique ID of the theme to update.
         public var id: Swift.String?
         /// The name of the theme to update.
@@ -2839,12 +2841,12 @@ extension AmplifyUIBuilderClientTypes {
             self.values = values
         }
     }
-
 }
 
 extension AmplifyUIBuilderClientTypes {
+
     /// Represents the state configuration when an action modifies a property of another element within the same component.
-    public struct MutationActionSetStateParameter {
+    public struct MutationActionSetStateParameter: Swift.Sendable {
         /// The name of the component that is being modified.
         /// This member is required.
         public var componentName: Swift.String?
@@ -2866,12 +2868,12 @@ extension AmplifyUIBuilderClientTypes {
             self.`set` = `set`
         }
     }
-
 }
 
 extension AmplifyUIBuilderClientTypes {
+
     /// Represents a conditional expression to set a component property. Use ComponentConditionProperty to set a property to different values conditionally, based on the value of another property.
-    public struct ComponentConditionProperty {
+    public struct ComponentConditionProperty: Swift.Sendable {
         /// The value to assign to the property if the condition is not met.
         @Indirect public var `else`: AmplifyUIBuilderClientTypes.ComponentProperty?
         /// The name of a field. Specify this when the property is a data model.
@@ -2906,12 +2908,12 @@ extension AmplifyUIBuilderClientTypes {
             self.then = then
         }
     }
-
 }
 
 extension AmplifyUIBuilderClientTypes {
+
     /// Represents the data binding configuration for a value map.
-    public struct ValueMappings {
+    public struct ValueMappings: Swift.Sendable {
         /// The information to bind fields to data at runtime.
         public var bindingProperties: [Swift.String: AmplifyUIBuilderClientTypes.FormInputBindingPropertiesValue]?
         /// The value and display value pairs.
@@ -2927,10 +2929,9 @@ extension AmplifyUIBuilderClientTypes {
             self.values = values
         }
     }
-
 }
 
-public struct CreateThemeInput {
+public struct CreateThemeInput: Swift.Sendable {
     /// The unique ID of the Amplify app associated with the theme.
     /// This member is required.
     public var appId: Swift.String?
@@ -2957,7 +2958,7 @@ public struct CreateThemeInput {
     }
 }
 
-public struct CreateThemeOutput {
+public struct CreateThemeOutput: Swift.Sendable {
     /// Describes the configuration of the new theme.
     public var entity: AmplifyUIBuilderClientTypes.Theme?
 
@@ -2969,7 +2970,7 @@ public struct CreateThemeOutput {
     }
 }
 
-public struct GetThemeOutput {
+public struct GetThemeOutput: Swift.Sendable {
     /// Represents the configuration settings for the theme.
     public var theme: AmplifyUIBuilderClientTypes.Theme?
 
@@ -2981,7 +2982,7 @@ public struct GetThemeOutput {
     }
 }
 
-public struct UpdateThemeInput {
+public struct UpdateThemeInput: Swift.Sendable {
     /// The unique ID for the Amplify app.
     /// This member is required.
     public var appId: Swift.String?
@@ -3013,7 +3014,7 @@ public struct UpdateThemeInput {
     }
 }
 
-public struct UpdateThemeOutput {
+public struct UpdateThemeOutput: Swift.Sendable {
     /// Describes the configuration of the updated theme.
     public var entity: AmplifyUIBuilderClientTypes.Theme?
 
@@ -3026,8 +3027,9 @@ public struct UpdateThemeOutput {
 }
 
 extension AmplifyUIBuilderClientTypes {
+
     /// Describes the configuration for the default input values to display for a field.
-    public struct FieldInputConfig {
+    public struct FieldInputConfig: Swift.Sendable {
         /// Specifies whether a field has a default value.
         public var defaultChecked: Swift.Bool?
         /// The default country code for a phone number.
@@ -3099,10 +3101,9 @@ extension AmplifyUIBuilderClientTypes {
             self.valueMappings = valueMappings
         }
     }
-
 }
 
-public struct ExportThemesOutput {
+public struct ExportThemesOutput: Swift.Sendable {
     /// Represents the configuration of the exported themes.
     /// This member is required.
     public var entities: [AmplifyUIBuilderClientTypes.Theme]?
@@ -3120,8 +3121,9 @@ public struct ExportThemesOutput {
 }
 
 extension AmplifyUIBuilderClientTypes {
+
     /// Describes the configuration information for a field in a table.
-    public struct FieldConfig {
+    public struct FieldConfig: Swift.Sendable {
         /// Specifies whether to hide a field.
         public var excluded: Swift.Bool?
         /// Describes the configuration for the default input value to display for a field.
@@ -3148,12 +3150,12 @@ extension AmplifyUIBuilderClientTypes {
             self.validations = validations
         }
     }
-
 }
 
 extension AmplifyUIBuilderClientTypes {
+
     /// Represents all of the information that is required to create a form.
-    public struct CreateFormData {
+    public struct CreateFormData: Swift.Sendable {
         /// The FormCTA object that stores the call to action configuration for the form.
         public var cta: AmplifyUIBuilderClientTypes.FormCTA?
         /// The type of data source to use to create the form.
@@ -3207,12 +3209,12 @@ extension AmplifyUIBuilderClientTypes {
             self.tags = tags
         }
     }
-
 }
 
 extension AmplifyUIBuilderClientTypes {
+
     /// Contains the configuration settings for a Form user interface (UI) element for an Amplify app. A form is a component you can add to your project by specifying a data source as the default configuration for the form.
-    public struct Form {
+    public struct Form: Swift.Sendable {
         /// The unique ID of the Amplify app associated with the form.
         /// This member is required.
         public var appId: Swift.String?
@@ -3281,12 +3283,12 @@ extension AmplifyUIBuilderClientTypes {
             self.tags = tags
         }
     }
-
 }
 
 extension AmplifyUIBuilderClientTypes {
+
     /// Updates and saves all of the information about a form, based on form ID.
-    public struct UpdateFormData {
+    public struct UpdateFormData: Swift.Sendable {
         /// The FormCTA object that stores the call to action configuration for the form.
         public var cta: AmplifyUIBuilderClientTypes.FormCTA?
         /// The type of data source to use to create the form.
@@ -3329,10 +3331,9 @@ extension AmplifyUIBuilderClientTypes {
             self.style = style
         }
     }
-
 }
 
-public struct CreateFormInput {
+public struct CreateFormInput: Swift.Sendable {
     /// The unique ID of the Amplify app to associate with the form.
     /// This member is required.
     public var appId: Swift.String?
@@ -3359,7 +3360,7 @@ public struct CreateFormInput {
     }
 }
 
-public struct CreateFormOutput {
+public struct CreateFormOutput: Swift.Sendable {
     /// Describes the configuration of the new form.
     public var entity: AmplifyUIBuilderClientTypes.Form?
 
@@ -3371,7 +3372,7 @@ public struct CreateFormOutput {
     }
 }
 
-public struct GetFormOutput {
+public struct GetFormOutput: Swift.Sendable {
     /// Represents the configuration settings for the form.
     public var form: AmplifyUIBuilderClientTypes.Form?
 
@@ -3383,7 +3384,7 @@ public struct GetFormOutput {
     }
 }
 
-public struct UpdateFormInput {
+public struct UpdateFormInput: Swift.Sendable {
     /// The unique ID for the Amplify app.
     /// This member is required.
     public var appId: Swift.String?
@@ -3415,7 +3416,7 @@ public struct UpdateFormInput {
     }
 }
 
-public struct UpdateFormOutput {
+public struct UpdateFormOutput: Swift.Sendable {
     /// Describes the configuration of the updated form.
     public var entity: AmplifyUIBuilderClientTypes.Form?
 
@@ -3427,7 +3428,7 @@ public struct UpdateFormOutput {
     }
 }
 
-public struct ExportFormsOutput {
+public struct ExportFormsOutput: Swift.Sendable {
     /// Represents the configuration of the exported forms.
     /// This member is required.
     public var entities: [AmplifyUIBuilderClientTypes.Form]?
@@ -3445,8 +3446,9 @@ public struct ExportFormsOutput {
 }
 
 extension AmplifyUIBuilderClientTypes {
+
     /// Represents the event action configuration for an element of a Component or ComponentChild. Use for the workflow feature in Amplify Studio that allows you to bind events and actions to components. ActionParameters defines the action that is performed when an event occurs on the component.
-    public struct ActionParameters {
+    public struct ActionParameters: Swift.Sendable {
         /// The HTML anchor link to the location to open. Specify this value for a navigation action.
         public var anchor: AmplifyUIBuilderClientTypes.ComponentProperty?
         /// A dictionary of key-value pairs mapping Amplify Studio properties to fields in a data model. Use when the action performs an operation on an Amplify DataStore model.
@@ -3489,12 +3491,12 @@ extension AmplifyUIBuilderClientTypes {
             self.url = url
         }
     }
-
 }
 
 extension AmplifyUIBuilderClientTypes {
+
     /// Describes the configuration of an event. You can bind an event and a corresponding action to a Component or a ComponentChild. A button click is an example of an event.
-    public struct ComponentEvent {
+    public struct ComponentEvent: Swift.Sendable {
         /// The action to perform when a specific event is raised.
         public var action: Swift.String?
         /// Binds an event to an action on a component. When you specify a bindingEvent, the event is called when the action is performed.
@@ -3513,12 +3515,12 @@ extension AmplifyUIBuilderClientTypes {
             self.parameters = parameters
         }
     }
-
 }
 
 extension AmplifyUIBuilderClientTypes {
+
     /// A nested UI configuration within a parent Component.
-    public struct ComponentChild {
+    public struct ComponentChild: Swift.Sendable {
         /// The list of ComponentChild instances for this component.
         public var children: [AmplifyUIBuilderClientTypes.ComponentChild]?
         /// The type of the child component.
@@ -3552,12 +3554,12 @@ extension AmplifyUIBuilderClientTypes {
             self.sourceId = sourceId
         }
     }
-
 }
 
 extension AmplifyUIBuilderClientTypes {
+
     /// Contains the configuration settings for a user interface (UI) element for an Amplify app. A component is configured as a primary, stand-alone UI element. Use ComponentChild to configure an instance of a Component. A ComponentChild instance inherits the configuration of the main Component.
-    public struct Component {
+    public struct Component: Swift.Sendable {
         /// The unique ID of the Amplify app associated with the component.
         /// This member is required.
         public var appId: Swift.String?
@@ -3642,12 +3644,12 @@ extension AmplifyUIBuilderClientTypes {
             self.variants = variants
         }
     }
-
 }
 
 extension AmplifyUIBuilderClientTypes {
+
     /// Represents all of the information that is required to create a component.
-    public struct CreateComponentData {
+    public struct CreateComponentData: Swift.Sendable {
         /// The data binding information for the component's properties.
         /// This member is required.
         public var bindingProperties: [Swift.String: AmplifyUIBuilderClientTypes.ComponentBindingPropertiesValue]?
@@ -3708,12 +3710,12 @@ extension AmplifyUIBuilderClientTypes {
             self.variants = variants
         }
     }
-
 }
 
 extension AmplifyUIBuilderClientTypes {
+
     /// Updates and saves all of the information about a component, based on component ID.
-    public struct UpdateComponentData {
+    public struct UpdateComponentData: Swift.Sendable {
         /// The data binding information for the component's properties.
         public var bindingProperties: [Swift.String: AmplifyUIBuilderClientTypes.ComponentBindingPropertiesValue]?
         /// The components that are instances of the main component.
@@ -3768,10 +3770,9 @@ extension AmplifyUIBuilderClientTypes {
             self.variants = variants
         }
     }
-
 }
 
-public struct CreateComponentInput {
+public struct CreateComponentInput: Swift.Sendable {
     /// The unique ID of the Amplify app to associate with the component.
     /// This member is required.
     public var appId: Swift.String?
@@ -3798,7 +3799,7 @@ public struct CreateComponentInput {
     }
 }
 
-public struct CreateComponentOutput {
+public struct CreateComponentOutput: Swift.Sendable {
     /// Describes the configuration of the new component.
     public var entity: AmplifyUIBuilderClientTypes.Component?
 
@@ -3810,7 +3811,7 @@ public struct CreateComponentOutput {
     }
 }
 
-public struct GetComponentOutput {
+public struct GetComponentOutput: Swift.Sendable {
     /// Represents the configuration settings for the component.
     public var component: AmplifyUIBuilderClientTypes.Component?
 
@@ -3822,7 +3823,7 @@ public struct GetComponentOutput {
     }
 }
 
-public struct UpdateComponentInput {
+public struct UpdateComponentInput: Swift.Sendable {
     /// The unique ID for the Amplify app.
     /// This member is required.
     public var appId: Swift.String?
@@ -3854,7 +3855,7 @@ public struct UpdateComponentInput {
     }
 }
 
-public struct UpdateComponentOutput {
+public struct UpdateComponentOutput: Swift.Sendable {
     /// Describes the configuration of the updated component.
     public var entity: AmplifyUIBuilderClientTypes.Component?
 
@@ -3866,7 +3867,7 @@ public struct UpdateComponentOutput {
     }
 }
 
-public struct ExportComponentsOutput {
+public struct ExportComponentsOutput: Swift.Sendable {
     /// Represents the configuration of the exported components.
     /// This member is required.
     public var entities: [AmplifyUIBuilderClientTypes.Component]?

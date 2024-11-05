@@ -25,107 +25,108 @@ import protocol ClientRuntime.ModeledError
 @_spi(UnknownAWSHTTPServiceError) import struct AWSClientRuntime.UnknownAWSHTTPServiceError
 @_spi(SmithyReadWrite) import struct SmithyReadWrite.WritingClosureBox
 
-public struct AttachPolicyOutput {
+
+public struct AttachPolicyOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct CloseAccountOutput {
+public struct CloseAccountOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteOrganizationalUnitOutput {
+public struct DeleteOrganizationalUnitOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteOrganizationInput {
+public struct DeleteOrganizationInput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteOrganizationOutput {
+public struct DeleteOrganizationOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeletePolicyOutput {
+public struct DeletePolicyOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteResourcePolicyInput {
+public struct DeleteResourcePolicyInput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteResourcePolicyOutput {
+public struct DeleteResourcePolicyOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeregisterDelegatedAdministratorOutput {
+public struct DeregisterDelegatedAdministratorOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DescribeOrganizationInput {
+public struct DescribeOrganizationInput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DescribeResourcePolicyInput {
+public struct DescribeResourcePolicyInput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DetachPolicyOutput {
+public struct DetachPolicyOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DisableAWSServiceAccessOutput {
+public struct DisableAWSServiceAccessOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct EnableAWSServiceAccessOutput {
+public struct EnableAWSServiceAccessOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct LeaveOrganizationInput {
+public struct LeaveOrganizationInput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct LeaveOrganizationOutput {
+public struct LeaveOrganizationOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct MoveAccountOutput {
+public struct MoveAccountOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct RegisterDelegatedAdministratorOutput {
+public struct RegisterDelegatedAdministratorOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct RemoveAccountFromOrganizationOutput {
+public struct RemoveAccountFromOrganizationOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct TagResourceOutput {
+public struct TagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UntagResourceOutput {
+public struct UntagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
@@ -156,7 +157,7 @@ public struct AccessDeniedException: ClientRuntime.ModeledError, AWSClientRuntim
 
 extension OrganizationsClientTypes {
 
-    public enum AccessDeniedForDependencyExceptionReason: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AccessDeniedForDependencyExceptionReason: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case accessDeniedDuringCreateServiceLinkedRole
         case sdkUnknown(Swift.String)
 
@@ -281,7 +282,7 @@ public struct HandshakeAlreadyInStateException: ClientRuntime.ModeledError, AWSC
 
 extension OrganizationsClientTypes {
 
-    public enum HandshakeConstraintViolationExceptionReason: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum HandshakeConstraintViolationExceptionReason: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case accountNumberLimitExceeded
         case alreadyInAnOrganization
         case handshakeRateLimitExceeded
@@ -427,7 +428,7 @@ public struct InvalidHandshakeTransitionException: ClientRuntime.ModeledError, A
 
 extension OrganizationsClientTypes {
 
-    public enum InvalidInputExceptionReason: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum InvalidInputExceptionReason: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case duplicateTagKey
         case immutablePolicy
         case inputRequired
@@ -658,7 +659,7 @@ public struct TooManyRequestsException: ClientRuntime.ModeledError, AWSClientRun
     }
 }
 
-public struct AcceptHandshakeInput {
+public struct AcceptHandshakeInput: Swift.Sendable {
     /// The unique identifier (ID) of the handshake that you want to accept. The [regex pattern](http://wikipedia.org/wiki/regex) for handshake ID string requires "h-" followed by from 8 to 32 lowercase letters or digits.
     /// This member is required.
     public var handshakeId: Swift.String?
@@ -673,7 +674,7 @@ public struct AcceptHandshakeInput {
 
 extension OrganizationsClientTypes {
 
-    public enum ActionType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ActionType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case addOrganizationsServiceLinkedRole
         case approveAllFeatures
         case enableAllFeatures
@@ -708,7 +709,7 @@ extension OrganizationsClientTypes {
 
 extension OrganizationsClientTypes {
 
-    public enum HandshakePartyType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum HandshakePartyType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case account
         case email
         case organization
@@ -739,8 +740,9 @@ extension OrganizationsClientTypes {
 }
 
 extension OrganizationsClientTypes {
+
     /// Identifies a participant in a handshake.
-    public struct HandshakeParty {
+    public struct HandshakeParty: Swift.Sendable {
         /// The unique identifier (ID) for the party. The [regex pattern](http://wikipedia.org/wiki/regex) for handshake ID string requires "h-" followed by from 8 to 32 lowercase letters or digits.
         /// This member is required.
         public var id: Swift.String?
@@ -757,7 +759,6 @@ extension OrganizationsClientTypes {
             self.type = type
         }
     }
-
 }
 
 extension OrganizationsClientTypes.HandshakeParty: Swift.CustomDebugStringConvertible {
@@ -767,7 +768,7 @@ extension OrganizationsClientTypes.HandshakeParty: Swift.CustomDebugStringConver
 
 extension OrganizationsClientTypes {
 
-    public enum HandshakeResourceType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum HandshakeResourceType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case account
         case email
         case masterEmail
@@ -814,7 +815,7 @@ extension OrganizationsClientTypes {
 
 extension OrganizationsClientTypes {
 
-    public enum HandshakeState: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum HandshakeState: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case accepted
         case canceled
         case declined
@@ -855,7 +856,7 @@ extension OrganizationsClientTypes {
 
 extension OrganizationsClientTypes {
 
-    public enum AccountJoinedMethod: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AccountJoinedMethod: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case created
         case invited
         case sdkUnknown(Swift.String)
@@ -884,7 +885,7 @@ extension OrganizationsClientTypes {
 
 extension OrganizationsClientTypes {
 
-    public enum AccountStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AccountStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case active
         case pendingClosure
         case suspended
@@ -915,8 +916,9 @@ extension OrganizationsClientTypes {
 }
 
 extension OrganizationsClientTypes {
+
     /// Contains information about an Amazon Web Services account that is a member of an organization.
-    public struct Account {
+    public struct Account: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the account. For more information about ARNs in Organizations, see [ARN Formats Supported by Organizations](https://docs.aws.amazon.com/service-authorization/latest/reference/list_awsorganizations.html#awsorganizations-resources-for-iam-policies) in the Amazon Web Services Service Authorization Reference.
         public var arn: Swift.String?
         /// The email address associated with the Amazon Web Services account. The [regex pattern](http://wikipedia.org/wiki/regex) for this parameter is a string of characters that represents a standard internet email address.
@@ -951,7 +953,6 @@ extension OrganizationsClientTypes {
             self.status = status
         }
     }
-
 }
 
 extension OrganizationsClientTypes.Account: Swift.CustomDebugStringConvertible {
@@ -1105,7 +1106,7 @@ public struct AlreadyInOrganizationException: ClientRuntime.ModeledError, AWSCli
 
 extension OrganizationsClientTypes {
 
-    public enum ConstraintViolationExceptionReason: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ConstraintViolationExceptionReason: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case accountCannotLeaveOrganization
         case accountCannotLeaveWithoutEula
         case accountCannotLeaveWithoutPhoneVerification
@@ -1470,7 +1471,7 @@ public struct UnsupportedAPIEndpointException: ClientRuntime.ModeledError, AWSCl
     }
 }
 
-public struct AttachPolicyInput {
+public struct AttachPolicyInput: Swift.Sendable {
     /// The unique identifier (ID) of the policy that you want to attach to the target. You can get the ID for the policy by calling the [ListPolicies] operation. The [regex pattern](http://wikipedia.org/wiki/regex) for a policy ID string requires "p-" followed by from 8 to 128 lowercase or uppercase letters, digits, or the underscore character (_).
     /// This member is required.
     public var policyId: Swift.String?
@@ -1494,7 +1495,7 @@ public struct AttachPolicyInput {
     }
 }
 
-public struct CancelHandshakeInput {
+public struct CancelHandshakeInput: Swift.Sendable {
     /// The unique identifier (ID) of the handshake that you want to cancel. You can get the ID from the [ListHandshakesForOrganization] operation. The [regex pattern](http://wikipedia.org/wiki/regex) for handshake ID string requires "h-" followed by from 8 to 32 lowercase letters or digits.
     /// This member is required.
     public var handshakeId: Swift.String?
@@ -1531,7 +1532,7 @@ public struct ConflictException: ClientRuntime.ModeledError, AWSClientRuntime.AW
     }
 }
 
-public struct CloseAccountInput {
+public struct CloseAccountInput: Swift.Sendable {
     /// Retrieves the Amazon Web Services account Id for the current CloseAccount API request.
     /// This member is required.
     public var accountId: Swift.String?
@@ -1570,7 +1571,7 @@ public struct FinalizingOrganizationException: ClientRuntime.ModeledError, AWSCl
 
 extension OrganizationsClientTypes {
 
-    public enum IAMUserAccessToBilling: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum IAMUserAccessToBilling: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case allow
         case deny
         case sdkUnknown(Swift.String)
@@ -1598,6 +1599,7 @@ extension OrganizationsClientTypes {
 }
 
 extension OrganizationsClientTypes {
+
     /// A custom key-value pair associated with a resource within your organization. You can attach tags to any of the following organization resources.
     ///
     /// * Amazon Web Services account
@@ -1607,7 +1609,7 @@ extension OrganizationsClientTypes {
     /// * Organization root
     ///
     /// * Policy
-    public struct Tag {
+    public struct Tag: Swift.Sendable {
         /// The key identifier, or name, of the tag.
         /// This member is required.
         public var key: Swift.String?
@@ -1624,10 +1626,9 @@ extension OrganizationsClientTypes {
             self.value = value
         }
     }
-
 }
 
-public struct CreateAccountInput {
+public struct CreateAccountInput: Swift.Sendable {
     /// The friendly name of the member account.
     /// This member is required.
     public var accountName: Swift.String?
@@ -1690,7 +1691,7 @@ extension CreateAccountInput: Swift.CustomDebugStringConvertible {
 
 extension OrganizationsClientTypes {
 
-    public enum CreateAccountFailureReason: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum CreateAccountFailureReason: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case accountLimitExceeded
         case concurrentAccountModification
         case emailAlreadyExists
@@ -1758,7 +1759,7 @@ extension OrganizationsClientTypes {
 
 extension OrganizationsClientTypes {
 
-    public enum CreateAccountState: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum CreateAccountState: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case failed
         case inProgress
         case succeeded
@@ -1789,8 +1790,9 @@ extension OrganizationsClientTypes {
 }
 
 extension OrganizationsClientTypes {
+
     /// Contains the status about a [CreateAccount] or [CreateGovCloudAccount] request to create an Amazon Web Services account or an Amazon Web Services GovCloud (US) account in an organization.
-    public struct CreateAccountStatus {
+    public struct CreateAccountStatus: Swift.Sendable {
         /// If the account was created successfully, the unique identifier (ID) of the new account. The [regex pattern](http://wikipedia.org/wiki/regex) for an account ID string requires exactly 12 digits.
         public var accountId: Swift.String?
         /// The account name given to the account when it was created.
@@ -1857,7 +1859,6 @@ extension OrganizationsClientTypes {
             self.state = state
         }
     }
-
 }
 
 extension OrganizationsClientTypes.CreateAccountStatus: Swift.CustomDebugStringConvertible {
@@ -1865,7 +1866,7 @@ extension OrganizationsClientTypes.CreateAccountStatus: Swift.CustomDebugStringC
         "CreateAccountStatus(accountId: \(Swift.String(describing: accountId)), completedTimestamp: \(Swift.String(describing: completedTimestamp)), failureReason: \(Swift.String(describing: failureReason)), govCloudAccountId: \(Swift.String(describing: govCloudAccountId)), id: \(Swift.String(describing: id)), requestedTimestamp: \(Swift.String(describing: requestedTimestamp)), state: \(Swift.String(describing: state)), accountName: \"CONTENT_REDACTED\")"}
 }
 
-public struct CreateAccountOutput {
+public struct CreateAccountOutput: Swift.Sendable {
     /// A structure that contains details about the request to create an account. This response structure might not be fully populated when you first receive it because account creation is an asynchronous process. You can pass the returned CreateAccountStatus ID as a parameter to [DescribeCreateAccountStatus] to get status about the progress of the request at later times. You can also check the CloudTrail log for the CreateAccountResult event. For more information, see [Logging and monitoring in Organizations](https://docs.aws.amazon.com/organizations/latest/userguide/orgs_security_incident-response.html) in the Organizations User Guide.
     public var createAccountStatus: OrganizationsClientTypes.CreateAccountStatus?
 
@@ -1877,7 +1878,7 @@ public struct CreateAccountOutput {
     }
 }
 
-public struct CreateGovCloudAccountInput {
+public struct CreateGovCloudAccountInput: Swift.Sendable {
     /// The friendly name of the member account. The account name can consist of only the characters [a-z],[A-Z],[0-9], hyphen (-), or dot (.) You can't separate characters with a dash (–).
     /// This member is required.
     public var accountName: Swift.String?
@@ -1938,7 +1939,7 @@ extension CreateGovCloudAccountInput: Swift.CustomDebugStringConvertible {
         "CreateGovCloudAccountInput(iamUserAccessToBilling: \(Swift.String(describing: iamUserAccessToBilling)), roleName: \(Swift.String(describing: roleName)), tags: \(Swift.String(describing: tags)), accountName: \"CONTENT_REDACTED\", email: \"CONTENT_REDACTED\")"}
 }
 
-public struct CreateGovCloudAccountOutput {
+public struct CreateGovCloudAccountOutput: Swift.Sendable {
     /// Contains the status about a [CreateAccount] or [CreateGovCloudAccount] request to create an Amazon Web Services account or an Amazon Web Services GovCloud (US) account in an organization.
     public var createAccountStatus: OrganizationsClientTypes.CreateAccountStatus?
 
@@ -1952,7 +1953,7 @@ public struct CreateGovCloudAccountOutput {
 
 extension OrganizationsClientTypes {
 
-    public enum OrganizationFeatureSet: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum OrganizationFeatureSet: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case all
         case consolidatedBilling
         case sdkUnknown(Swift.String)
@@ -1979,7 +1980,7 @@ extension OrganizationsClientTypes {
     }
 }
 
-public struct CreateOrganizationInput {
+public struct CreateOrganizationInput: Swift.Sendable {
     /// Specifies the feature set supported by the new organization. Each feature set supports different levels of functionality.
     ///
     /// * CONSOLIDATED_BILLING: All member accounts have their bills consolidated to and paid by the management account. For more information, see [Consolidated billing](https://docs.aws.amazon.com/organizations/latest/userguide/orgs_getting-started_concepts.html#feature-set-cb-only) in the Organizations User Guide. The consolidated billing feature subset isn't available for organizations in the Amazon Web Services GovCloud (US) Region.
@@ -1997,7 +1998,7 @@ public struct CreateOrganizationInput {
 
 extension OrganizationsClientTypes {
 
-    public enum PolicyTypeStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum PolicyTypeStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case enabled
         case pendingDisable
         case pendingEnable
@@ -2029,9 +2030,10 @@ extension OrganizationsClientTypes {
 
 extension OrganizationsClientTypes {
 
-    public enum PolicyType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum PolicyType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case aiservicesOptOutPolicy
         case backupPolicy
+        case chatbotPolicy
         case serviceControlPolicy
         case tagPolicy
         case sdkUnknown(Swift.String)
@@ -2040,6 +2042,7 @@ extension OrganizationsClientTypes {
             return [
                 .aiservicesOptOutPolicy,
                 .backupPolicy,
+                .chatbotPolicy,
                 .serviceControlPolicy,
                 .tagPolicy
             ]
@@ -2054,6 +2057,7 @@ extension OrganizationsClientTypes {
             switch self {
             case .aiservicesOptOutPolicy: return "AISERVICES_OPT_OUT_POLICY"
             case .backupPolicy: return "BACKUP_POLICY"
+            case .chatbotPolicy: return "CHATBOT_POLICY"
             case .serviceControlPolicy: return "SERVICE_CONTROL_POLICY"
             case .tagPolicy: return "TAG_POLICY"
             case let .sdkUnknown(s): return s
@@ -2063,8 +2067,9 @@ extension OrganizationsClientTypes {
 }
 
 extension OrganizationsClientTypes {
+
     /// Contains information about a policy type and its status in the associated root.
-    public struct PolicyTypeSummary {
+    public struct PolicyTypeSummary: Swift.Sendable {
         /// The status of the policy type as it relates to the associated root. To attach a policy of the specified type to a root or to an OU or account in that root, it must be available in the organization and enabled for that root.
         public var status: OrganizationsClientTypes.PolicyTypeStatus?
         /// The name of the policy type.
@@ -2079,12 +2084,12 @@ extension OrganizationsClientTypes {
             self.type = type
         }
     }
-
 }
 
 extension OrganizationsClientTypes {
+
     /// Contains details about an organization. An organization is a collection of accounts that are centrally managed together using consolidated billing, organized hierarchically with organizational units (OUs), and controlled with policies .
-    public struct Organization {
+    public struct Organization: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of an organization. For more information about ARNs in Organizations, see [ARN Formats Supported by Organizations](https://docs.aws.amazon.com/service-authorization/latest/reference/list_awsorganizations.html#awsorganizations-resources-for-iam-policies) in the Amazon Web Services Service Authorization Reference.
         public var arn: Swift.String?
         /// Do not use. This field is deprecated and doesn't provide complete information about the policies in your organization. To determine the policies that are enabled and available for use in your organization, use the [ListRoots] operation instead.
@@ -2119,7 +2124,6 @@ extension OrganizationsClientTypes {
             self.masterAccountId = masterAccountId
         }
     }
-
 }
 
 extension OrganizationsClientTypes.Organization: Swift.CustomDebugStringConvertible {
@@ -2127,7 +2131,7 @@ extension OrganizationsClientTypes.Organization: Swift.CustomDebugStringConverti
         "Organization(arn: \(Swift.String(describing: arn)), availablePolicyTypes: \(Swift.String(describing: availablePolicyTypes)), featureSet: \(Swift.String(describing: featureSet)), id: \(Swift.String(describing: id)), masterAccountArn: \(Swift.String(describing: masterAccountArn)), masterAccountId: \(Swift.String(describing: masterAccountId)), masterAccountEmail: \"CONTENT_REDACTED\")"}
 }
 
-public struct CreateOrganizationOutput {
+public struct CreateOrganizationOutput: Swift.Sendable {
     /// A structure that contains details about the newly created organization.
     public var organization: OrganizationsClientTypes.Organization?
 
@@ -2187,7 +2191,7 @@ public struct ParentNotFoundException: ClientRuntime.ModeledError, AWSClientRunt
     }
 }
 
-public struct CreateOrganizationalUnitInput {
+public struct CreateOrganizationalUnitInput: Swift.Sendable {
     /// The friendly name to assign to the new OU.
     /// This member is required.
     public var name: Swift.String?
@@ -2214,8 +2218,9 @@ public struct CreateOrganizationalUnitInput {
 }
 
 extension OrganizationsClientTypes {
+
     /// Contains details about an organizational unit (OU). An OU is a container of Amazon Web Services accounts within a root of an organization. Policies that are attached to an OU apply to all accounts contained in that OU and in any child OUs.
-    public struct OrganizationalUnit {
+    public struct OrganizationalUnit: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of this OU. For more information about ARNs in Organizations, see [ARN Formats Supported by Organizations](https://docs.aws.amazon.com/service-authorization/latest/reference/list_awsorganizations.html#awsorganizations-resources-for-iam-policies) in the Amazon Web Services Service Authorization Reference.
         public var arn: Swift.String?
         /// The unique identifier (ID) associated with this OU. The ID is unique to the organization only. The [regex pattern](http://wikipedia.org/wiki/regex) for an organizational unit ID string requires "ou-" followed by from 4 to 32 lowercase letters or digits (the ID of the root that contains the OU). This string is followed by a second "-" dash and from 8 to 32 additional lowercase letters or digits.
@@ -2234,10 +2239,9 @@ extension OrganizationsClientTypes {
             self.name = name
         }
     }
-
 }
 
-public struct CreateOrganizationalUnitOutput {
+public struct CreateOrganizationalUnitOutput: Swift.Sendable {
     /// A structure that contains details about the newly created OU.
     public var organizationalUnit: OrganizationsClientTypes.OrganizationalUnit?
 
@@ -2321,7 +2325,7 @@ public struct PolicyTypeNotAvailableForOrganizationException: ClientRuntime.Mode
     }
 }
 
-public struct CreatePolicyInput {
+public struct CreatePolicyInput: Swift.Sendable {
     /// The policy text content to add to the new policy. The text that you supply must adhere to the rules of the policy type you specify in the Type parameter. The maximum size of a policy document depends on the policy's type. For more information, see [Maximum and minimum values](https://docs.aws.amazon.com/organizations/latest/userguide/orgs_reference_limits.html#min-max-values) in the Organizations User Guide.
     /// This member is required.
     public var content: Swift.String?
@@ -2335,13 +2339,15 @@ public struct CreatePolicyInput {
     public var tags: [OrganizationsClientTypes.Tag]?
     /// The type of policy to create. You can specify one of the following values:
     ///
-    /// * [AISERVICES_OPT_OUT_POLICY](https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_policies_ai-opt-out.html)
+    /// * [SERVICE_CONTROL_POLICY](https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_policies_scp.html)
     ///
     /// * [BACKUP_POLICY](https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_policies_backup.html)
     ///
-    /// * [SERVICE_CONTROL_POLICY](https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_policies_scp.html)
-    ///
     /// * [TAG_POLICY](https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_policies_tag-policies.html)
+    ///
+    /// * [CHATBOT_POLICY](https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_policies_chatbot.html)
+    ///
+    /// * [AISERVICES_OPT_OUT_POLICY](https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_policies_ai-opt-out.html)
     /// This member is required.
     public var type: OrganizationsClientTypes.PolicyType?
 
@@ -2362,8 +2368,9 @@ public struct CreatePolicyInput {
 }
 
 extension OrganizationsClientTypes {
+
     /// Contains information about a policy, but does not include the content. To see the content of a policy, see [DescribePolicy].
-    public struct PolicySummary {
+    public struct PolicySummary: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the policy. For more information about ARNs in Organizations, see [ARN Formats Supported by Organizations](https://docs.aws.amazon.com/service-authorization/latest/reference/list_awsorganizations.html#awsorganizations-resources-for-iam-policies) in the Amazon Web Services Service Authorization Reference.
         public var arn: Swift.String?
         /// A boolean value that indicates whether the specified policy is an Amazon Web Services managed policy. If true, then you can attach the policy to roots, OUs, or accounts, but you cannot edit it.
@@ -2394,12 +2401,12 @@ extension OrganizationsClientTypes {
             self.type = type
         }
     }
-
 }
 
 extension OrganizationsClientTypes {
+
     /// Contains rules to be applied to the affected accounts. Policies can be attached directly to accounts, or to roots and OUs to affect all accounts in those hierarchies.
-    public struct Policy {
+    public struct Policy: Swift.Sendable {
         /// The text content of the policy.
         public var content: Swift.String?
         /// A structure that contains additional details about the policy.
@@ -2414,10 +2421,9 @@ extension OrganizationsClientTypes {
             self.policySummary = policySummary
         }
     }
-
 }
 
-public struct CreatePolicyOutput {
+public struct CreatePolicyOutput: Swift.Sendable {
     /// A structure that contains details about the newly created policy.
     public var policy: OrganizationsClientTypes.Policy?
 
@@ -2429,7 +2435,7 @@ public struct CreatePolicyOutput {
     }
 }
 
-public struct DeclineHandshakeInput {
+public struct DeclineHandshakeInput: Swift.Sendable {
     /// The unique identifier (ID) of the handshake that you want to decline. You can get the ID from the [ListHandshakesForAccount] operation. The [regex pattern](http://wikipedia.org/wiki/regex) for handshake ID string requires "h-" followed by from 8 to 32 lowercase letters or digits.
     /// This member is required.
     public var handshakeId: Swift.String?
@@ -2514,7 +2520,7 @@ public struct OrganizationalUnitNotFoundException: ClientRuntime.ModeledError, A
     }
 }
 
-public struct DeleteOrganizationalUnitInput {
+public struct DeleteOrganizationalUnitInput: Swift.Sendable {
     /// The unique identifier (ID) of the organizational unit that you want to delete. You can get the ID from the [ListOrganizationalUnitsForParent] operation. The [regex pattern](http://wikipedia.org/wiki/regex) for an organizational unit ID string requires "ou-" followed by from 4 to 32 lowercase letters or digits (the ID of the root that contains the OU). This string is followed by a second "-" dash and from 8 to 32 additional lowercase letters or digits.
     /// This member is required.
     public var organizationalUnitId: Swift.String?
@@ -2551,7 +2557,7 @@ public struct PolicyInUseException: ClientRuntime.ModeledError, AWSClientRuntime
     }
 }
 
-public struct DeletePolicyInput {
+public struct DeletePolicyInput: Swift.Sendable {
     /// The unique identifier (ID) of the policy that you want to delete. You can get the ID from the [ListPolicies] or [ListPoliciesForTarget] operations. The [regex pattern](http://wikipedia.org/wiki/regex) for a policy ID string requires "p-" followed by from 8 to 128 lowercase or uppercase letters, digits, or the underscore character (_).
     /// This member is required.
     public var policyId: Swift.String?
@@ -2588,7 +2594,7 @@ public struct ResourcePolicyNotFoundException: ClientRuntime.ModeledError, AWSCl
     }
 }
 
-public struct DeregisterDelegatedAdministratorInput {
+public struct DeregisterDelegatedAdministratorInput: Swift.Sendable {
     /// The account ID number of the member account in the organization that you want to deregister as a delegated administrator.
     /// This member is required.
     public var accountId: Swift.String?
@@ -2606,7 +2612,7 @@ public struct DeregisterDelegatedAdministratorInput {
     }
 }
 
-public struct DescribeAccountInput {
+public struct DescribeAccountInput: Swift.Sendable {
     /// The unique identifier (ID) of the Amazon Web Services account that you want information about. You can get the ID from the [ListAccounts] or [ListAccountsForParent] operations. The [regex pattern](http://wikipedia.org/wiki/regex) for an account ID string requires exactly 12 digits.
     /// This member is required.
     public var accountId: Swift.String?
@@ -2619,7 +2625,7 @@ public struct DescribeAccountInput {
     }
 }
 
-public struct DescribeAccountOutput {
+public struct DescribeAccountOutput: Swift.Sendable {
     /// A structure that contains information about the requested account.
     public var account: OrganizationsClientTypes.Account?
 
@@ -2655,7 +2661,7 @@ public struct CreateAccountStatusNotFoundException: ClientRuntime.ModeledError, 
     }
 }
 
-public struct DescribeCreateAccountStatusInput {
+public struct DescribeCreateAccountStatusInput: Swift.Sendable {
     /// Specifies the Id value that uniquely identifies the CreateAccount request. You can get the value from the CreateAccountStatus.Id response in an earlier [CreateAccount] request, or from the [ListCreateAccountStatus] operation. The [regex pattern](http://wikipedia.org/wiki/regex) for a create account request ID string requires "car-" followed by from 8 to 32 lowercase letters or digits.
     /// This member is required.
     public var createAccountRequestId: Swift.String?
@@ -2668,7 +2674,7 @@ public struct DescribeCreateAccountStatusInput {
     }
 }
 
-public struct DescribeCreateAccountStatusOutput {
+public struct DescribeCreateAccountStatusOutput: Swift.Sendable {
     /// A structure that contains the current status of an account creation request.
     public var createAccountStatus: OrganizationsClientTypes.CreateAccountStatus?
 
@@ -2706,9 +2712,10 @@ public struct EffectivePolicyNotFoundException: ClientRuntime.ModeledError, AWSC
 
 extension OrganizationsClientTypes {
 
-    public enum EffectivePolicyType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum EffectivePolicyType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case aiservicesOptOutPolicy
         case backupPolicy
+        case chatbotPolicy
         case tagPolicy
         case sdkUnknown(Swift.String)
 
@@ -2716,6 +2723,7 @@ extension OrganizationsClientTypes {
             return [
                 .aiservicesOptOutPolicy,
                 .backupPolicy,
+                .chatbotPolicy,
                 .tagPolicy
             ]
         }
@@ -2729,6 +2737,7 @@ extension OrganizationsClientTypes {
             switch self {
             case .aiservicesOptOutPolicy: return "AISERVICES_OPT_OUT_POLICY"
             case .backupPolicy: return "BACKUP_POLICY"
+            case .chatbotPolicy: return "CHATBOT_POLICY"
             case .tagPolicy: return "TAG_POLICY"
             case let .sdkUnknown(s): return s
             }
@@ -2736,14 +2745,16 @@ extension OrganizationsClientTypes {
     }
 }
 
-public struct DescribeEffectivePolicyInput {
+public struct DescribeEffectivePolicyInput: Swift.Sendable {
     /// The type of policy that you want information about. You can specify one of the following values:
-    ///
-    /// * [AISERVICES_OPT_OUT_POLICY](https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_policies_ai-opt-out.html)
     ///
     /// * [BACKUP_POLICY](https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_policies_backup.html)
     ///
     /// * [TAG_POLICY](https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_policies_tag-policies.html)
+    ///
+    /// * [CHATBOT_POLICY](https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_policies_chatbot.html)
+    ///
+    /// * [AISERVICES_OPT_OUT_POLICY](https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_policies_ai-opt-out.html)
     /// This member is required.
     public var policyType: OrganizationsClientTypes.EffectivePolicyType?
     /// When you're signed in as the management account, specify the ID of the account that you want details about. Specifying an organization root or organizational unit (OU) as the target is not supported.
@@ -2760,8 +2771,9 @@ public struct DescribeEffectivePolicyInput {
 }
 
 extension OrganizationsClientTypes {
+
     /// Contains rules to be applied to the affected accounts. The effective policy is the aggregation of any policies the account inherits, plus any policy directly attached to the account.
-    public struct EffectivePolicy {
+    public struct EffectivePolicy: Swift.Sendable {
         /// The time of the last update to this policy.
         public var lastUpdatedTimestamp: Foundation.Date?
         /// The text content of the policy.
@@ -2784,10 +2796,9 @@ extension OrganizationsClientTypes {
             self.targetId = targetId
         }
     }
-
 }
 
-public struct DescribeEffectivePolicyOutput {
+public struct DescribeEffectivePolicyOutput: Swift.Sendable {
     /// The contents of the effective policy.
     public var effectivePolicy: OrganizationsClientTypes.EffectivePolicy?
 
@@ -2799,7 +2810,7 @@ public struct DescribeEffectivePolicyOutput {
     }
 }
 
-public struct DescribeHandshakeInput {
+public struct DescribeHandshakeInput: Swift.Sendable {
     /// The unique identifier (ID) of the handshake that you want information about. You can get the ID from the original call to [InviteAccountToOrganization], or from a call to [ListHandshakesForAccount] or [ListHandshakesForOrganization]. The [regex pattern](http://wikipedia.org/wiki/regex) for handshake ID string requires "h-" followed by from 8 to 32 lowercase letters or digits.
     /// This member is required.
     public var handshakeId: Swift.String?
@@ -2812,7 +2823,7 @@ public struct DescribeHandshakeInput {
     }
 }
 
-public struct DescribeOrganizationOutput {
+public struct DescribeOrganizationOutput: Swift.Sendable {
     /// A structure that contains information about the organization. The AvailablePolicyTypes part of the response is deprecated, and you shouldn't use it in your apps. It doesn't include any policy type supported by Organizations other than SCPs. In the China (Ningxia) Region, no policy type is included. To determine which policy types are enabled in your organization, use the [ListRoots] operation.
     public var organization: OrganizationsClientTypes.Organization?
 
@@ -2824,7 +2835,7 @@ public struct DescribeOrganizationOutput {
     }
 }
 
-public struct DescribeOrganizationalUnitInput {
+public struct DescribeOrganizationalUnitInput: Swift.Sendable {
     /// The unique identifier (ID) of the organizational unit that you want details about. You can get the ID from the [ListOrganizationalUnitsForParent] operation. The [regex pattern](http://wikipedia.org/wiki/regex) for an organizational unit ID string requires "ou-" followed by from 4 to 32 lowercase letters or digits (the ID of the root that contains the OU). This string is followed by a second "-" dash and from 8 to 32 additional lowercase letters or digits.
     /// This member is required.
     public var organizationalUnitId: Swift.String?
@@ -2837,7 +2848,7 @@ public struct DescribeOrganizationalUnitInput {
     }
 }
 
-public struct DescribeOrganizationalUnitOutput {
+public struct DescribeOrganizationalUnitOutput: Swift.Sendable {
     /// A structure that contains details about the specified OU.
     public var organizationalUnit: OrganizationsClientTypes.OrganizationalUnit?
 
@@ -2849,7 +2860,7 @@ public struct DescribeOrganizationalUnitOutput {
     }
 }
 
-public struct DescribePolicyInput {
+public struct DescribePolicyInput: Swift.Sendable {
     /// The unique identifier (ID) of the policy that you want details about. You can get the ID from the [ListPolicies] or [ListPoliciesForTarget] operations. The [regex pattern](http://wikipedia.org/wiki/regex) for a policy ID string requires "p-" followed by from 8 to 128 lowercase or uppercase letters, digits, or the underscore character (_).
     /// This member is required.
     public var policyId: Swift.String?
@@ -2862,7 +2873,7 @@ public struct DescribePolicyInput {
     }
 }
 
-public struct DescribePolicyOutput {
+public struct DescribePolicyOutput: Swift.Sendable {
     /// A structure that contains details about the specified policy.
     public var policy: OrganizationsClientTypes.Policy?
 
@@ -2875,8 +2886,9 @@ public struct DescribePolicyOutput {
 }
 
 extension OrganizationsClientTypes {
+
     /// A structure that contains resource policy ID and Amazon Resource Name (ARN).
-    public struct ResourcePolicySummary {
+    public struct ResourcePolicySummary: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the resource policy.
         public var arn: Swift.String?
         /// The unique identifier (ID) of the resource policy.
@@ -2891,12 +2903,12 @@ extension OrganizationsClientTypes {
             self.id = id
         }
     }
-
 }
 
 extension OrganizationsClientTypes {
+
     /// A structure that contains details about a resource policy.
-    public struct ResourcePolicy {
+    public struct ResourcePolicy: Swift.Sendable {
         /// The policy text of the resource policy.
         public var content: Swift.String?
         /// A structure that contains resource policy ID and Amazon Resource Name (ARN).
@@ -2911,10 +2923,9 @@ extension OrganizationsClientTypes {
             self.resourcePolicySummary = resourcePolicySummary
         }
     }
-
 }
 
-public struct DescribeResourcePolicyOutput {
+public struct DescribeResourcePolicyOutput: Swift.Sendable {
     /// A structure that contains details about the resource policy.
     public var resourcePolicy: OrganizationsClientTypes.ResourcePolicy?
 
@@ -2950,7 +2961,7 @@ public struct PolicyNotAttachedException: ClientRuntime.ModeledError, AWSClientR
     }
 }
 
-public struct DetachPolicyInput {
+public struct DetachPolicyInput: Swift.Sendable {
     /// The unique identifier (ID) of the policy you want to detach. You can get the ID from the [ListPolicies] or [ListPoliciesForTarget] operations. The [regex pattern](http://wikipedia.org/wiki/regex) for a policy ID string requires "p-" followed by from 8 to 128 lowercase or uppercase letters, digits, or the underscore character (_).
     /// This member is required.
     public var policyId: Swift.String?
@@ -2974,7 +2985,7 @@ public struct DetachPolicyInput {
     }
 }
 
-public struct DisableAWSServiceAccessInput {
+public struct DisableAWSServiceAccessInput: Swift.Sendable {
     /// The service principal name of the Amazon Web Services service for which you want to disable integration with your organization. This is typically in the form of a URL, such as  service-abbreviation.amazonaws.com.
     /// This member is required.
     public var servicePrincipal: Swift.String?
@@ -3011,16 +3022,18 @@ public struct RootNotFoundException: ClientRuntime.ModeledError, AWSClientRuntim
     }
 }
 
-public struct DisablePolicyTypeInput {
+public struct DisablePolicyTypeInput: Swift.Sendable {
     /// The policy type that you want to disable in this root. You can specify one of the following values:
-    ///
-    /// * [AISERVICES_OPT_OUT_POLICY](https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_policies_ai-opt-out.html)
-    ///
-    /// * [BACKUP_POLICY](https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_policies_backup.html)
     ///
     /// * [SERVICE_CONTROL_POLICY](https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_policies_scp.html)
     ///
+    /// * [BACKUP_POLICY](https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_policies_backup.html)
+    ///
     /// * [TAG_POLICY](https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_policies_tag-policies.html)
+    ///
+    /// * [CHATBOT_POLICY](https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_policies_chatbot.html)
+    ///
+    /// * [AISERVICES_OPT_OUT_POLICY](https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_policies_ai-opt-out.html)
     /// This member is required.
     public var policyType: OrganizationsClientTypes.PolicyType?
     /// The unique identifier (ID) of the root in which you want to disable a policy type. You can get the ID from the [ListRoots] operation. The [regex pattern](http://wikipedia.org/wiki/regex) for a root ID string requires "r-" followed by from 4 to 32 lowercase letters or digits.
@@ -3038,8 +3051,9 @@ public struct DisablePolicyTypeInput {
 }
 
 extension OrganizationsClientTypes {
+
     /// Contains details about a root. A root is a top-level parent node in the hierarchy of an organization that can contain organizational units (OUs) and accounts. The root contains every Amazon Web Services account in the organization.
-    public struct Root {
+    public struct Root: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the root. For more information about ARNs in Organizations, see [ARN Formats Supported by Organizations](https://docs.aws.amazon.com/service-authorization/latest/reference/list_awsorganizations.html#awsorganizations-resources-for-iam-policies) in the Amazon Web Services Service Authorization Reference.
         public var arn: Swift.String?
         /// The unique identifier (ID) for the root. The ID is unique to the organization only. The [regex pattern](http://wikipedia.org/wiki/regex) for a root ID string requires "r-" followed by from 4 to 32 lowercase letters or digits.
@@ -3062,10 +3076,9 @@ extension OrganizationsClientTypes {
             self.policyTypes = policyTypes
         }
     }
-
 }
 
-public struct DisablePolicyTypeOutput {
+public struct DisablePolicyTypeOutput: Swift.Sendable {
     /// A structure that shows the root with the updated list of enabled policy types.
     public var root: OrganizationsClientTypes.Root?
 
@@ -3077,12 +3090,12 @@ public struct DisablePolicyTypeOutput {
     }
 }
 
-public struct EnableAllFeaturesInput {
+public struct EnableAllFeaturesInput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct EnableAWSServiceAccessInput {
+public struct EnableAWSServiceAccessInput: Swift.Sendable {
     /// The service principal name of the Amazon Web Services service for which you want to enable integration with your organization. This is typically in the form of a URL, such as  service-abbreviation.amazonaws.com.
     /// This member is required.
     public var servicePrincipal: Swift.String?
@@ -3119,16 +3132,18 @@ public struct PolicyTypeAlreadyEnabledException: ClientRuntime.ModeledError, AWS
     }
 }
 
-public struct EnablePolicyTypeInput {
+public struct EnablePolicyTypeInput: Swift.Sendable {
     /// The policy type that you want to enable. You can specify one of the following values:
-    ///
-    /// * [AISERVICES_OPT_OUT_POLICY](https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_policies_ai-opt-out.html)
-    ///
-    /// * [BACKUP_POLICY](https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_policies_backup.html)
     ///
     /// * [SERVICE_CONTROL_POLICY](https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_policies_scp.html)
     ///
+    /// * [BACKUP_POLICY](https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_policies_backup.html)
+    ///
     /// * [TAG_POLICY](https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_policies_tag-policies.html)
+    ///
+    /// * [CHATBOT_POLICY](https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_policies_chatbot.html)
+    ///
+    /// * [AISERVICES_OPT_OUT_POLICY](https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_policies_ai-opt-out.html)
     /// This member is required.
     public var policyType: OrganizationsClientTypes.PolicyType?
     /// The unique identifier (ID) of the root in which you want to enable a policy type. You can get the ID from the [ListRoots] operation. The [regex pattern](http://wikipedia.org/wiki/regex) for a root ID string requires "r-" followed by from 4 to 32 lowercase letters or digits.
@@ -3145,7 +3160,7 @@ public struct EnablePolicyTypeInput {
     }
 }
 
-public struct EnablePolicyTypeOutput {
+public struct EnablePolicyTypeOutput: Swift.Sendable {
     /// A structure that shows the root with the updated list of enabled policy types.
     public var root: OrganizationsClientTypes.Root?
 
@@ -3181,7 +3196,7 @@ public struct DuplicateHandshakeException: ClientRuntime.ModeledError, AWSClient
     }
 }
 
-public struct InviteAccountToOrganizationInput {
+public struct InviteAccountToOrganizationInput: Swift.Sendable {
     /// Additional information that you want to include in the generated email to the recipient account owner.
     public var notes: Swift.String?
     /// A list of tags that you want to attach to the account when it becomes a member of the organization. For each tag in the list, you must specify both a tag key and a value. You can set the value to an empty string, but you can't set it to null. For more information about tagging, see [Tagging Organizations resources](https://docs.aws.amazon.com/organizations/latest/userguide/orgs_tagging.html) in the Organizations User Guide. Any tags in the request are checked for compliance with any applicable tag policies when the request is made. The request is rejected if the tags in the request don't match the requirements of the policy at that time. Tag policy compliance is not checked again when the invitation is accepted and the tags are actually attached to the account. That means that if the tag policy changes between the invitation and the acceptance, then that tags could potentially be non-compliant. If any one of the tags is not valid or if you exceed the allowed number of tags for an account, then the entire request fails and invitations are not sent.
@@ -3231,7 +3246,7 @@ public struct MasterCannotLeaveOrganizationException: ClientRuntime.ModeledError
     }
 }
 
-public struct ListAccountsInput {
+public struct ListAccountsInput: Swift.Sendable {
     /// The total number of results that you want included on each page of the response. If you do not include this parameter, it defaults to a value that is specific to the operation. If additional items exist beyond the maximum you specify, the NextToken response element is present and has a value (is not null). Include that value as the NextToken request parameter in the next call to the operation to get the next part of the results. Note that Organizations might return fewer results than the maximum even when there are more results available. You should check NextToken after every operation to ensure that you receive all of the results.
     public var maxResults: Swift.Int?
     /// The parameter for receiving additional results if you receive a NextToken response in a previous request. A NextToken response indicates that more output is available. Set this parameter to the value of the previous call's NextToken response to indicate where the output should continue from.
@@ -3247,7 +3262,7 @@ public struct ListAccountsInput {
     }
 }
 
-public struct ListAccountsOutput {
+public struct ListAccountsOutput: Swift.Sendable {
     /// A list of objects in the organization.
     public var accounts: [OrganizationsClientTypes.Account]?
     /// If present, indicates that more output is available than is included in the current response. Use this value in the NextToken request parameter in a subsequent call to the operation to get the next part of the output. You should repeat this until the NextToken response element comes back as null.
@@ -3263,7 +3278,7 @@ public struct ListAccountsOutput {
     }
 }
 
-public struct ListAccountsForParentInput {
+public struct ListAccountsForParentInput: Swift.Sendable {
     /// The total number of results that you want included on each page of the response. If you do not include this parameter, it defaults to a value that is specific to the operation. If additional items exist beyond the maximum you specify, the NextToken response element is present and has a value (is not null). Include that value as the NextToken request parameter in the next call to the operation to get the next part of the results. Note that Organizations might return fewer results than the maximum even when there are more results available. You should check NextToken after every operation to ensure that you receive all of the results.
     public var maxResults: Swift.Int?
     /// The parameter for receiving additional results if you receive a NextToken response in a previous request. A NextToken response indicates that more output is available. Set this parameter to the value of the previous call's NextToken response to indicate where the output should continue from.
@@ -3284,7 +3299,7 @@ public struct ListAccountsForParentInput {
     }
 }
 
-public struct ListAccountsForParentOutput {
+public struct ListAccountsForParentOutput: Swift.Sendable {
     /// A list of the accounts in the specified root or OU.
     public var accounts: [OrganizationsClientTypes.Account]?
     /// If present, indicates that more output is available than is included in the current response. Use this value in the NextToken request parameter in a subsequent call to the operation to get the next part of the output. You should repeat this until the NextToken response element comes back as null.
@@ -3300,7 +3315,7 @@ public struct ListAccountsForParentOutput {
     }
 }
 
-public struct ListAWSServiceAccessForOrganizationInput {
+public struct ListAWSServiceAccessForOrganizationInput: Swift.Sendable {
     /// The total number of results that you want included on each page of the response. If you do not include this parameter, it defaults to a value that is specific to the operation. If additional items exist beyond the maximum you specify, the NextToken response element is present and has a value (is not null). Include that value as the NextToken request parameter in the next call to the operation to get the next part of the results. Note that Organizations might return fewer results than the maximum even when there are more results available. You should check NextToken after every operation to ensure that you receive all of the results.
     public var maxResults: Swift.Int?
     /// The parameter for receiving additional results if you receive a NextToken response in a previous request. A NextToken response indicates that more output is available. Set this parameter to the value of the previous call's NextToken response to indicate where the output should continue from.
@@ -3317,8 +3332,9 @@ public struct ListAWSServiceAccessForOrganizationInput {
 }
 
 extension OrganizationsClientTypes {
+
     /// A structure that contains details of a service principal that represents an Amazon Web Services service that is enabled to integrate with Organizations.
-    public struct EnabledServicePrincipal {
+    public struct EnabledServicePrincipal: Swift.Sendable {
         /// The date that the service principal was enabled for integration with Organizations.
         public var dateEnabled: Foundation.Date?
         /// The name of the service principal. This is typically in the form of a URL, such as:  servicename.amazonaws.com.
@@ -3333,10 +3349,9 @@ extension OrganizationsClientTypes {
             self.servicePrincipal = servicePrincipal
         }
     }
-
 }
 
-public struct ListAWSServiceAccessForOrganizationOutput {
+public struct ListAWSServiceAccessForOrganizationOutput: Swift.Sendable {
     /// A list of the service principals for the services that are enabled to integrate with your organization. Each principal is a structure that includes the name and the date that it was enabled for integration with Organizations.
     public var enabledServicePrincipals: [OrganizationsClientTypes.EnabledServicePrincipal]?
     /// If present, indicates that more output is available than is included in the current response. Use this value in the NextToken request parameter in a subsequent call to the operation to get the next part of the output. You should repeat this until the NextToken response element comes back as null.
@@ -3354,7 +3369,7 @@ public struct ListAWSServiceAccessForOrganizationOutput {
 
 extension OrganizationsClientTypes {
 
-    public enum ChildType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ChildType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case account
         case organizationalUnit
         case sdkUnknown(Swift.String)
@@ -3381,7 +3396,7 @@ extension OrganizationsClientTypes {
     }
 }
 
-public struct ListChildrenInput {
+public struct ListChildrenInput: Swift.Sendable {
     /// Filters the output to include only the specified child type.
     /// This member is required.
     public var childType: OrganizationsClientTypes.ChildType?
@@ -3412,8 +3427,9 @@ public struct ListChildrenInput {
 }
 
 extension OrganizationsClientTypes {
+
     /// Contains a list of child entities, either OUs or accounts.
-    public struct Child {
+    public struct Child: Swift.Sendable {
         /// The unique identifier (ID) of this child entity. The [regex pattern](http://wikipedia.org/wiki/regex) for a child ID string requires one of the following:
         ///
         /// * Account - A string that consists of exactly 12 digits.
@@ -3432,10 +3448,9 @@ extension OrganizationsClientTypes {
             self.type = type
         }
     }
-
 }
 
-public struct ListChildrenOutput {
+public struct ListChildrenOutput: Swift.Sendable {
     /// The list of children of the specified parent container.
     public var children: [OrganizationsClientTypes.Child]?
     /// If present, indicates that more output is available than is included in the current response. Use this value in the NextToken request parameter in a subsequent call to the operation to get the next part of the output. You should repeat this until the NextToken response element comes back as null.
@@ -3451,7 +3466,7 @@ public struct ListChildrenOutput {
     }
 }
 
-public struct ListCreateAccountStatusInput {
+public struct ListCreateAccountStatusInput: Swift.Sendable {
     /// The total number of results that you want included on each page of the response. If you do not include this parameter, it defaults to a value that is specific to the operation. If additional items exist beyond the maximum you specify, the NextToken response element is present and has a value (is not null). Include that value as the NextToken request parameter in the next call to the operation to get the next part of the results. Note that Organizations might return fewer results than the maximum even when there are more results available. You should check NextToken after every operation to ensure that you receive all of the results.
     public var maxResults: Swift.Int?
     /// The parameter for receiving additional results if you receive a NextToken response in a previous request. A NextToken response indicates that more output is available. Set this parameter to the value of the previous call's NextToken response to indicate where the output should continue from.
@@ -3471,7 +3486,7 @@ public struct ListCreateAccountStatusInput {
     }
 }
 
-public struct ListCreateAccountStatusOutput {
+public struct ListCreateAccountStatusOutput: Swift.Sendable {
     /// A list of objects with details about the requests. Certain elements, such as the accountId number, are present in the output only after the account has been successfully created.
     public var createAccountStatuses: [OrganizationsClientTypes.CreateAccountStatus]?
     /// If present, indicates that more output is available than is included in the current response. Use this value in the NextToken request parameter in a subsequent call to the operation to get the next part of the output. You should repeat this until the NextToken response element comes back as null.
@@ -3487,7 +3502,7 @@ public struct ListCreateAccountStatusOutput {
     }
 }
 
-public struct ListDelegatedAdministratorsInput {
+public struct ListDelegatedAdministratorsInput: Swift.Sendable {
     /// The total number of results that you want included on each page of the response. If you do not include this parameter, it defaults to a value that is specific to the operation. If additional items exist beyond the maximum you specify, the NextToken response element is present and has a value (is not null). Include that value as the NextToken request parameter in the next call to the operation to get the next part of the results. Note that Organizations might return fewer results than the maximum even when there are more results available. You should check NextToken after every operation to ensure that you receive all of the results.
     public var maxResults: Swift.Int?
     /// The parameter for receiving additional results if you receive a NextToken response in a previous request. A NextToken response indicates that more output is available. Set this parameter to the value of the previous call's NextToken response to indicate where the output should continue from.
@@ -3508,8 +3523,9 @@ public struct ListDelegatedAdministratorsInput {
 }
 
 extension OrganizationsClientTypes {
+
     /// Contains information about the delegated administrator.
-    public struct DelegatedAdministrator {
+    public struct DelegatedAdministrator: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the delegated administrator's account.
         public var arn: Swift.String?
         /// The date when the account was made a delegated administrator.
@@ -3548,7 +3564,6 @@ extension OrganizationsClientTypes {
             self.status = status
         }
     }
-
 }
 
 extension OrganizationsClientTypes.DelegatedAdministrator: Swift.CustomDebugStringConvertible {
@@ -3556,7 +3571,7 @@ extension OrganizationsClientTypes.DelegatedAdministrator: Swift.CustomDebugStri
         "DelegatedAdministrator(arn: \(Swift.String(describing: arn)), delegationEnabledDate: \(Swift.String(describing: delegationEnabledDate)), id: \(Swift.String(describing: id)), joinedMethod: \(Swift.String(describing: joinedMethod)), joinedTimestamp: \(Swift.String(describing: joinedTimestamp)), status: \(Swift.String(describing: status)), email: \"CONTENT_REDACTED\", name: \"CONTENT_REDACTED\")"}
 }
 
-public struct ListDelegatedAdministratorsOutput {
+public struct ListDelegatedAdministratorsOutput: Swift.Sendable {
     /// The list of delegated administrators in your organization.
     public var delegatedAdministrators: [OrganizationsClientTypes.DelegatedAdministrator]?
     /// If present, indicates that more output is available than is included in the current response. Use this value in the NextToken request parameter in a subsequent call to the operation to get the next part of the output. You should repeat this until the NextToken response element comes back as null.
@@ -3572,7 +3587,7 @@ public struct ListDelegatedAdministratorsOutput {
     }
 }
 
-public struct ListDelegatedServicesForAccountInput {
+public struct ListDelegatedServicesForAccountInput: Swift.Sendable {
     /// The account ID number of a delegated administrator account in the organization.
     /// This member is required.
     public var accountId: Swift.String?
@@ -3594,8 +3609,9 @@ public struct ListDelegatedServicesForAccountInput {
 }
 
 extension OrganizationsClientTypes {
+
     /// Contains information about the Amazon Web Services service for which the account is a delegated administrator.
-    public struct DelegatedService {
+    public struct DelegatedService: Swift.Sendable {
         /// The date that the account became a delegated administrator for this service.
         public var delegationEnabledDate: Foundation.Date?
         /// The name of an Amazon Web Services service that can request an operation for the specified service. This is typically in the form of a URL, such as:  servicename.amazonaws.com.
@@ -3610,10 +3626,9 @@ extension OrganizationsClientTypes {
             self.servicePrincipal = servicePrincipal
         }
     }
-
 }
 
-public struct ListDelegatedServicesForAccountOutput {
+public struct ListDelegatedServicesForAccountOutput: Swift.Sendable {
     /// The services for which the account is a delegated administrator.
     public var delegatedServices: [OrganizationsClientTypes.DelegatedService]?
     /// If present, indicates that more output is available than is included in the current response. Use this value in the NextToken request parameter in a subsequent call to the operation to get the next part of the output. You should repeat this until the NextToken response element comes back as null.
@@ -3630,8 +3645,9 @@ public struct ListDelegatedServicesForAccountOutput {
 }
 
 extension OrganizationsClientTypes {
+
     /// Specifies the criteria that are used to select the handshakes for the operation.
-    public struct HandshakeFilter {
+    public struct HandshakeFilter: Swift.Sendable {
         /// Specifies the type of handshake action. If you specify ActionType, you cannot also specify ParentHandshakeId.
         public var actionType: OrganizationsClientTypes.ActionType?
         /// Specifies the parent handshake. Only used for handshake types that are a child of another type. If you specify ParentHandshakeId, you cannot also specify ActionType. The [regex pattern](http://wikipedia.org/wiki/regex) for handshake ID string requires "h-" followed by from 8 to 32 lowercase letters or digits.
@@ -3646,10 +3662,9 @@ extension OrganizationsClientTypes {
             self.parentHandshakeId = parentHandshakeId
         }
     }
-
 }
 
-public struct ListHandshakesForAccountInput {
+public struct ListHandshakesForAccountInput: Swift.Sendable {
     /// Filters the handshakes that you want included in the response. The default is all types. Use the ActionType element to limit the output to only a specified type, such as INVITE, ENABLE_ALL_FEATURES, or APPROVE_ALL_FEATURES. Alternatively, for the ENABLE_ALL_FEATURES handshake that generates a separate child handshake for each member account, you can specify ParentHandshakeId to see only the handshakes that were generated by that parent request.
     public var filter: OrganizationsClientTypes.HandshakeFilter?
     /// The total number of results that you want included on each page of the response. If you do not include this parameter, it defaults to a value that is specific to the operation. If additional items exist beyond the maximum you specify, the NextToken response element is present and has a value (is not null). Include that value as the NextToken request parameter in the next call to the operation to get the next part of the results. Note that Organizations might return fewer results than the maximum even when there are more results available. You should check NextToken after every operation to ensure that you receive all of the results.
@@ -3669,7 +3684,7 @@ public struct ListHandshakesForAccountInput {
     }
 }
 
-public struct ListHandshakesForOrganizationInput {
+public struct ListHandshakesForOrganizationInput: Swift.Sendable {
     /// A filter of the handshakes that you want included in the response. The default is all types. Use the ActionType element to limit the output to only a specified type, such as INVITE, ENABLE-ALL-FEATURES, or APPROVE-ALL-FEATURES. Alternatively, for the ENABLE-ALL-FEATURES handshake that generates a separate child handshake for each member account, you can specify the ParentHandshakeId to see only the handshakes that were generated by that parent request.
     public var filter: OrganizationsClientTypes.HandshakeFilter?
     /// The total number of results that you want included on each page of the response. If you do not include this parameter, it defaults to a value that is specific to the operation. If additional items exist beyond the maximum you specify, the NextToken response element is present and has a value (is not null). Include that value as the NextToken request parameter in the next call to the operation to get the next part of the results. Note that Organizations might return fewer results than the maximum even when there are more results available. You should check NextToken after every operation to ensure that you receive all of the results.
@@ -3689,7 +3704,7 @@ public struct ListHandshakesForOrganizationInput {
     }
 }
 
-public struct ListOrganizationalUnitsForParentInput {
+public struct ListOrganizationalUnitsForParentInput: Swift.Sendable {
     /// The total number of results that you want included on each page of the response. If you do not include this parameter, it defaults to a value that is specific to the operation. If additional items exist beyond the maximum you specify, the NextToken response element is present and has a value (is not null). Include that value as the NextToken request parameter in the next call to the operation to get the next part of the results. Note that Organizations might return fewer results than the maximum even when there are more results available. You should check NextToken after every operation to ensure that you receive all of the results.
     public var maxResults: Swift.Int?
     /// The parameter for receiving additional results if you receive a NextToken response in a previous request. A NextToken response indicates that more output is available. Set this parameter to the value of the previous call's NextToken response to indicate where the output should continue from.
@@ -3714,7 +3729,7 @@ public struct ListOrganizationalUnitsForParentInput {
     }
 }
 
-public struct ListOrganizationalUnitsForParentOutput {
+public struct ListOrganizationalUnitsForParentOutput: Swift.Sendable {
     /// If present, indicates that more output is available than is included in the current response. Use this value in the NextToken request parameter in a subsequent call to the operation to get the next part of the output. You should repeat this until the NextToken response element comes back as null.
     public var nextToken: Swift.String?
     /// A list of the OUs in the specified root or parent OU.
@@ -3754,7 +3769,7 @@ public struct ChildNotFoundException: ClientRuntime.ModeledError, AWSClientRunti
     }
 }
 
-public struct ListParentsInput {
+public struct ListParentsInput: Swift.Sendable {
     /// The unique identifier (ID) of the OU or account whose parent containers you want to list. Don't specify a root. The [regex pattern](http://wikipedia.org/wiki/regex) for a child ID string requires one of the following:
     ///
     /// * Account - A string that consists of exactly 12 digits.
@@ -3781,7 +3796,7 @@ public struct ListParentsInput {
 
 extension OrganizationsClientTypes {
 
-    public enum ParentType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ParentType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case organizationalUnit
         case root
         case sdkUnknown(Swift.String)
@@ -3809,8 +3824,9 @@ extension OrganizationsClientTypes {
 }
 
 extension OrganizationsClientTypes {
+
     /// Contains information about either a root or an organizational unit (OU) that can contain OUs or accounts in an organization.
-    public struct Parent {
+    public struct Parent: Swift.Sendable {
         /// The unique identifier (ID) of the parent entity. The [regex pattern](http://wikipedia.org/wiki/regex) for a parent ID string requires one of the following:
         ///
         /// * Root - A string that begins with "r-" followed by from 4 to 32 lowercase letters or digits.
@@ -3829,10 +3845,9 @@ extension OrganizationsClientTypes {
             self.type = type
         }
     }
-
 }
 
-public struct ListParentsOutput {
+public struct ListParentsOutput: Swift.Sendable {
     /// If present, indicates that more output is available than is included in the current response. Use this value in the NextToken request parameter in a subsequent call to the operation to get the next part of the output. You should repeat this until the NextToken response element comes back as null.
     public var nextToken: Swift.String?
     /// A list of parents for the specified child account or OU.
@@ -3848,16 +3863,18 @@ public struct ListParentsOutput {
     }
 }
 
-public struct ListPoliciesInput {
+public struct ListPoliciesInput: Swift.Sendable {
     /// Specifies the type of policy that you want to include in the response. You must specify one of the following values:
-    ///
-    /// * [AISERVICES_OPT_OUT_POLICY](https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_policies_ai-opt-out.html)
-    ///
-    /// * [BACKUP_POLICY](https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_policies_backup.html)
     ///
     /// * [SERVICE_CONTROL_POLICY](https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_policies_scp.html)
     ///
+    /// * [BACKUP_POLICY](https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_policies_backup.html)
+    ///
     /// * [TAG_POLICY](https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_policies_tag-policies.html)
+    ///
+    /// * [CHATBOT_POLICY](https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_policies_chatbot.html)
+    ///
+    /// * [AISERVICES_OPT_OUT_POLICY](https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_policies_ai-opt-out.html)
     /// This member is required.
     public var filter: OrganizationsClientTypes.PolicyType?
     /// The total number of results that you want included on each page of the response. If you do not include this parameter, it defaults to a value that is specific to the operation. If additional items exist beyond the maximum you specify, the NextToken response element is present and has a value (is not null). Include that value as the NextToken request parameter in the next call to the operation to get the next part of the results. Note that Organizations might return fewer results than the maximum even when there are more results available. You should check NextToken after every operation to ensure that you receive all of the results.
@@ -3877,7 +3894,7 @@ public struct ListPoliciesInput {
     }
 }
 
-public struct ListPoliciesOutput {
+public struct ListPoliciesOutput: Swift.Sendable {
     /// If present, indicates that more output is available than is included in the current response. Use this value in the NextToken request parameter in a subsequent call to the operation to get the next part of the output. You should repeat this until the NextToken response element comes back as null.
     public var nextToken: Swift.String?
     /// A list of policies that match the filter criteria in the request. The output list doesn't include the policy contents. To see the content for a policy, see [DescribePolicy].
@@ -3893,16 +3910,18 @@ public struct ListPoliciesOutput {
     }
 }
 
-public struct ListPoliciesForTargetInput {
+public struct ListPoliciesForTargetInput: Swift.Sendable {
     /// The type of policy that you want to include in the returned list. You must specify one of the following values:
-    ///
-    /// * [AISERVICES_OPT_OUT_POLICY](https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_policies_ai-opt-out.html)
-    ///
-    /// * [BACKUP_POLICY](https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_policies_backup.html)
     ///
     /// * [SERVICE_CONTROL_POLICY](https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_policies_scp.html)
     ///
+    /// * [BACKUP_POLICY](https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_policies_backup.html)
+    ///
     /// * [TAG_POLICY](https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_policies_tag-policies.html)
+    ///
+    /// * [CHATBOT_POLICY](https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_policies_chatbot.html)
+    ///
+    /// * [AISERVICES_OPT_OUT_POLICY](https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_policies_ai-opt-out.html)
     /// This member is required.
     public var filter: OrganizationsClientTypes.PolicyType?
     /// The total number of results that you want included on each page of the response. If you do not include this parameter, it defaults to a value that is specific to the operation. If additional items exist beyond the maximum you specify, the NextToken response element is present and has a value (is not null). Include that value as the NextToken request parameter in the next call to the operation to get the next part of the results. Note that Organizations might return fewer results than the maximum even when there are more results available. You should check NextToken after every operation to ensure that you receive all of the results.
@@ -3933,7 +3952,7 @@ public struct ListPoliciesForTargetInput {
     }
 }
 
-public struct ListPoliciesForTargetOutput {
+public struct ListPoliciesForTargetOutput: Swift.Sendable {
     /// If present, indicates that more output is available than is included in the current response. Use this value in the NextToken request parameter in a subsequent call to the operation to get the next part of the output. You should repeat this until the NextToken response element comes back as null.
     public var nextToken: Swift.String?
     /// The list of policies that match the criteria in the request.
@@ -3949,7 +3968,7 @@ public struct ListPoliciesForTargetOutput {
     }
 }
 
-public struct ListRootsInput {
+public struct ListRootsInput: Swift.Sendable {
     /// The total number of results that you want included on each page of the response. If you do not include this parameter, it defaults to a value that is specific to the operation. If additional items exist beyond the maximum you specify, the NextToken response element is present and has a value (is not null). Include that value as the NextToken request parameter in the next call to the operation to get the next part of the results. Note that Organizations might return fewer results than the maximum even when there are more results available. You should check NextToken after every operation to ensure that you receive all of the results.
     public var maxResults: Swift.Int?
     /// The parameter for receiving additional results if you receive a NextToken response in a previous request. A NextToken response indicates that more output is available. Set this parameter to the value of the previous call's NextToken response to indicate where the output should continue from.
@@ -3965,7 +3984,7 @@ public struct ListRootsInput {
     }
 }
 
-public struct ListRootsOutput {
+public struct ListRootsOutput: Swift.Sendable {
     /// If present, indicates that more output is available than is included in the current response. Use this value in the NextToken request parameter in a subsequent call to the operation to get the next part of the output. You should repeat this until the NextToken response element comes back as null.
     public var nextToken: Swift.String?
     /// A list of roots that are defined in an organization.
@@ -3981,7 +4000,7 @@ public struct ListRootsOutput {
     }
 }
 
-public struct ListTagsForResourceInput {
+public struct ListTagsForResourceInput: Swift.Sendable {
     /// The parameter for receiving additional results if you receive a NextToken response in a previous request. A NextToken response indicates that more output is available. Set this parameter to the value of the previous call's NextToken response to indicate where the output should continue from.
     public var nextToken: Swift.String?
     /// The ID of the resource with the tags to list. You can specify any of the following taggable resources.
@@ -4006,7 +4025,7 @@ public struct ListTagsForResourceInput {
     }
 }
 
-public struct ListTagsForResourceOutput {
+public struct ListTagsForResourceOutput: Swift.Sendable {
     /// If present, indicates that more output is available than is included in the current response. Use this value in the NextToken request parameter in a subsequent call to the operation to get the next part of the output. You should repeat this until the NextToken response element comes back as null.
     public var nextToken: Swift.String?
     /// The tags that are assigned to the resource.
@@ -4022,7 +4041,7 @@ public struct ListTagsForResourceOutput {
     }
 }
 
-public struct ListTargetsForPolicyInput {
+public struct ListTargetsForPolicyInput: Swift.Sendable {
     /// The total number of results that you want included on each page of the response. If you do not include this parameter, it defaults to a value that is specific to the operation. If additional items exist beyond the maximum you specify, the NextToken response element is present and has a value (is not null). Include that value as the NextToken request parameter in the next call to the operation to get the next part of the results. Note that Organizations might return fewer results than the maximum even when there are more results available. You should check NextToken after every operation to ensure that you receive all of the results.
     public var maxResults: Swift.Int?
     /// The parameter for receiving additional results if you receive a NextToken response in a previous request. A NextToken response indicates that more output is available. Set this parameter to the value of the previous call's NextToken response to indicate where the output should continue from.
@@ -4045,7 +4064,7 @@ public struct ListTargetsForPolicyInput {
 
 extension OrganizationsClientTypes {
 
-    public enum TargetType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum TargetType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case account
         case organizationalUnit
         case root
@@ -4076,8 +4095,9 @@ extension OrganizationsClientTypes {
 }
 
 extension OrganizationsClientTypes {
+
     /// Contains information about a root, OU, or account that a policy is attached to.
-    public struct PolicyTargetSummary {
+    public struct PolicyTargetSummary: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the policy target. For more information about ARNs in Organizations, see [ARN Formats Supported by Organizations](https://docs.aws.amazon.com/service-authorization/latest/reference/list_awsorganizations.html#awsorganizations-resources-for-iam-policies) in the Amazon Web Services Service Authorization Reference.
         public var arn: Swift.String?
         /// The friendly name of the policy target. The [regex pattern](http://wikipedia.org/wiki/regex) that is used to validate this parameter is a string of any of the characters in the ASCII character range.
@@ -4106,10 +4126,9 @@ extension OrganizationsClientTypes {
             self.type = type
         }
     }
-
 }
 
-public struct ListTargetsForPolicyOutput {
+public struct ListTargetsForPolicyOutput: Swift.Sendable {
     /// If present, indicates that more output is available than is included in the current response. Use this value in the NextToken request parameter in a subsequent call to the operation to get the next part of the output. You should repeat this until the NextToken response element comes back as null.
     public var nextToken: Swift.String?
     /// A list of structures, each of which contains details about one of the entities to which the specified policy is attached.
@@ -4197,7 +4216,7 @@ public struct SourceParentNotFoundException: ClientRuntime.ModeledError, AWSClie
     }
 }
 
-public struct MoveAccountInput {
+public struct MoveAccountInput: Swift.Sendable {
     /// The unique identifier (ID) of the account that you want to move. The [regex pattern](http://wikipedia.org/wiki/regex) for an account ID string requires exactly 12 digits.
     /// This member is required.
     public var accountId: Swift.String?
@@ -4228,7 +4247,7 @@ public struct MoveAccountInput {
     }
 }
 
-public struct PutResourcePolicyInput {
+public struct PutResourcePolicyInput: Swift.Sendable {
     /// If provided, the new content for the resource policy. The text must be correctly formatted JSON that complies with the syntax for the resource policy's type. For more information, see [SCP syntax](https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_policies_scps_syntax.html) in the Organizations User Guide.
     /// This member is required.
     public var content: Swift.String?
@@ -4245,7 +4264,7 @@ public struct PutResourcePolicyInput {
     }
 }
 
-public struct PutResourcePolicyOutput {
+public struct PutResourcePolicyOutput: Swift.Sendable {
     /// A structure that contains details about the resource policy.
     public var resourcePolicy: OrganizationsClientTypes.ResourcePolicy?
 
@@ -4257,7 +4276,7 @@ public struct PutResourcePolicyOutput {
     }
 }
 
-public struct RegisterDelegatedAdministratorInput {
+public struct RegisterDelegatedAdministratorInput: Swift.Sendable {
     /// The account ID number of the member account in the organization to register as a delegated administrator.
     /// This member is required.
     public var accountId: Swift.String?
@@ -4275,7 +4294,7 @@ public struct RegisterDelegatedAdministratorInput {
     }
 }
 
-public struct RemoveAccountFromOrganizationInput {
+public struct RemoveAccountFromOrganizationInput: Swift.Sendable {
     /// The unique identifier (ID) of the member account that you want to remove from the organization. The [regex pattern](http://wikipedia.org/wiki/regex) for an account ID string requires exactly 12 digits.
     /// This member is required.
     public var accountId: Swift.String?
@@ -4288,7 +4307,7 @@ public struct RemoveAccountFromOrganizationInput {
     }
 }
 
-public struct TagResourceInput {
+public struct TagResourceInput: Swift.Sendable {
     /// The ID of the resource to add a tag to. You can specify any of the following taggable resources.
     ///
     /// * Amazon Web Services account – specify the account ID number.
@@ -4314,7 +4333,7 @@ public struct TagResourceInput {
     }
 }
 
-public struct UntagResourceInput {
+public struct UntagResourceInput: Swift.Sendable {
     /// The ID of the resource to remove a tag from. You can specify any of the following taggable resources.
     ///
     /// * Amazon Web Services account – specify the account ID number.
@@ -4340,7 +4359,7 @@ public struct UntagResourceInput {
     }
 }
 
-public struct UpdateOrganizationalUnitInput {
+public struct UpdateOrganizationalUnitInput: Swift.Sendable {
     /// The new name that you want to assign to the OU. The [regex pattern](http://wikipedia.org/wiki/regex) that is used to validate this parameter is a string of any of the characters in the ASCII character range.
     public var name: Swift.String?
     /// The unique identifier (ID) of the OU that you want to rename. You can get the ID from the [ListOrganizationalUnitsForParent] operation. The [regex pattern](http://wikipedia.org/wiki/regex) for an organizational unit ID string requires "ou-" followed by from 4 to 32 lowercase letters or digits (the ID of the root that contains the OU). This string is followed by a second "-" dash and from 8 to 32 additional lowercase letters or digits.
@@ -4357,7 +4376,7 @@ public struct UpdateOrganizationalUnitInput {
     }
 }
 
-public struct UpdateOrganizationalUnitOutput {
+public struct UpdateOrganizationalUnitOutput: Swift.Sendable {
     /// A structure that contains the details about the specified OU, including its new name.
     public var organizationalUnit: OrganizationsClientTypes.OrganizationalUnit?
 
@@ -4369,7 +4388,7 @@ public struct UpdateOrganizationalUnitOutput {
     }
 }
 
-public struct UpdatePolicyInput {
+public struct UpdatePolicyInput: Swift.Sendable {
     /// If provided, the new content for the policy. The text must be correctly formatted JSON that complies with the syntax for the policy's type. For more information, see [SCP syntax](https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_policies_scps_syntax.html) in the Organizations User Guide. The maximum size of a policy document depends on the policy's type. For more information, see [Maximum and minimum values](https://docs.aws.amazon.com/organizations/latest/userguide/orgs_reference_limits.html#min-max-values) in the Organizations User Guide.
     public var content: Swift.String?
     /// If provided, the new description for the policy.
@@ -4394,7 +4413,7 @@ public struct UpdatePolicyInput {
     }
 }
 
-public struct UpdatePolicyOutput {
+public struct UpdatePolicyOutput: Swift.Sendable {
     /// A structure that contains details about the updated policy, showing the requested changes.
     public var policy: OrganizationsClientTypes.Policy?
 
@@ -4407,8 +4426,9 @@ public struct UpdatePolicyOutput {
 }
 
 extension OrganizationsClientTypes {
+
     /// Contains additional data that is needed to process a handshake.
-    public struct HandshakeResource {
+    public struct HandshakeResource: Swift.Sendable {
         /// When needed, contains an additional array of HandshakeResource objects.
         public var resources: [OrganizationsClientTypes.HandshakeResource]?
         /// The type of information being passed, specifying how the value is to be interpreted by the other party:
@@ -4439,7 +4459,6 @@ extension OrganizationsClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension OrganizationsClientTypes.HandshakeResource: Swift.CustomDebugStringConvertible {
@@ -4448,8 +4467,9 @@ extension OrganizationsClientTypes.HandshakeResource: Swift.CustomDebugStringCon
 }
 
 extension OrganizationsClientTypes {
+
     /// Contains information that must be exchanged to securely establish a relationship between two accounts (an originator and a recipient). For example, when a management account (the originator) invites another account (the recipient) to join its organization, the two accounts exchange information as a series of handshake requests and responses. Note: Handshakes that are CANCELED, ACCEPTED, DECLINED, or EXPIRED show up in lists for only 30 days after entering that state After that they are deleted.
-    public struct Handshake {
+    public struct Handshake: Swift.Sendable {
         /// The type of handshake, indicating what action occurs when the recipient accepts the handshake. The following handshake types are supported:
         ///
         /// * INVITE: This type of handshake represents a request to join an organization. It is always sent from the management account to only non-member accounts.
@@ -4506,10 +4526,9 @@ extension OrganizationsClientTypes {
             self.state = state
         }
     }
-
 }
 
-public struct AcceptHandshakeOutput {
+public struct AcceptHandshakeOutput: Swift.Sendable {
     /// A structure that contains details about the accepted handshake.
     public var handshake: OrganizationsClientTypes.Handshake?
 
@@ -4521,7 +4540,7 @@ public struct AcceptHandshakeOutput {
     }
 }
 
-public struct CancelHandshakeOutput {
+public struct CancelHandshakeOutput: Swift.Sendable {
     /// A structure that contains details about the handshake that you canceled.
     public var handshake: OrganizationsClientTypes.Handshake?
 
@@ -4533,7 +4552,7 @@ public struct CancelHandshakeOutput {
     }
 }
 
-public struct DeclineHandshakeOutput {
+public struct DeclineHandshakeOutput: Swift.Sendable {
     /// A structure that contains details about the declined handshake. The state is updated to show the value DECLINED.
     public var handshake: OrganizationsClientTypes.Handshake?
 
@@ -4545,7 +4564,7 @@ public struct DeclineHandshakeOutput {
     }
 }
 
-public struct DescribeHandshakeOutput {
+public struct DescribeHandshakeOutput: Swift.Sendable {
     /// A structure that contains information about the specified handshake.
     public var handshake: OrganizationsClientTypes.Handshake?
 
@@ -4557,7 +4576,7 @@ public struct DescribeHandshakeOutput {
     }
 }
 
-public struct EnableAllFeaturesOutput {
+public struct EnableAllFeaturesOutput: Swift.Sendable {
     /// A structure that contains details about the handshake created to support this request to enable all features in the organization.
     public var handshake: OrganizationsClientTypes.Handshake?
 
@@ -4569,7 +4588,7 @@ public struct EnableAllFeaturesOutput {
     }
 }
 
-public struct InviteAccountToOrganizationOutput {
+public struct InviteAccountToOrganizationOutput: Swift.Sendable {
     /// A structure that contains details about the handshake that is created to support this invitation request.
     public var handshake: OrganizationsClientTypes.Handshake?
 
@@ -4581,7 +4600,7 @@ public struct InviteAccountToOrganizationOutput {
     }
 }
 
-public struct ListHandshakesForAccountOutput {
+public struct ListHandshakesForAccountOutput: Swift.Sendable {
     /// A list of [Handshake] objects with details about each of the handshakes that is associated with the specified account.
     public var handshakes: [OrganizationsClientTypes.Handshake]?
     /// If present, indicates that more output is available than is included in the current response. Use this value in the NextToken request parameter in a subsequent call to the operation to get the next part of the output. You should repeat this until the NextToken response element comes back as null.
@@ -4597,7 +4616,7 @@ public struct ListHandshakesForAccountOutput {
     }
 }
 
-public struct ListHandshakesForOrganizationOutput {
+public struct ListHandshakesForOrganizationOutput: Swift.Sendable {
     /// A list of [Handshake] objects with details about each of the handshakes that are associated with an organization.
     public var handshakes: [OrganizationsClientTypes.Handshake]?
     /// If present, indicates that more output is available than is included in the current response. Use this value in the NextToken request parameter in a subsequent call to the operation to get the next part of the output. You should repeat this until the NextToken response element comes back as null.

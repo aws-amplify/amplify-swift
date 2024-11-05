@@ -55,7 +55,7 @@ public struct AccountLimitExceededException: ClientRuntime.ModeledError, AWSClie
 
 extension CodeBuildClientTypes {
 
-    public enum ArtifactNamespace: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ArtifactNamespace: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case buildId
         case `none`
         case sdkUnknown(Swift.String)
@@ -84,7 +84,7 @@ extension CodeBuildClientTypes {
 
 extension CodeBuildClientTypes {
 
-    public enum ArtifactPackaging: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ArtifactPackaging: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case `none`
         case zip
         case sdkUnknown(Swift.String)
@@ -113,7 +113,7 @@ extension CodeBuildClientTypes {
 
 extension CodeBuildClientTypes {
 
-    public enum ArtifactsType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ArtifactsType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case codepipeline
         case noArtifacts
         case s3
@@ -145,7 +145,7 @@ extension CodeBuildClientTypes {
 
 extension CodeBuildClientTypes {
 
-    public enum AuthType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AuthType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case basicAuth
         case codeconnections
         case oauth
@@ -181,6 +181,34 @@ extension CodeBuildClientTypes {
     }
 }
 
+extension CodeBuildClientTypes {
+
+    /// Information about the auto-retry configuration for the build.
+    public struct AutoRetryConfig: Swift.Sendable {
+        /// The maximum number of additional automatic retries after a failed build. For example, if the auto-retry limit is set to 2, CodeBuild will call the RetryBuild API to automatically retry your build for up to 2 additional times.
+        public var autoRetryLimit: Swift.Int?
+        /// The number of times that the build has been retried. The initial build will have an auto-retry number of 0.
+        public var autoRetryNumber: Swift.Int?
+        /// The build ARN of the auto-retried build triggered by the current build. The next auto-retry will be null for builds that don't trigger an auto-retry.
+        public var nextAutoRetry: Swift.String?
+        /// The build ARN of the build that triggered the current auto-retry build. The previous auto-retry will be null for the initial build.
+        public var previousAutoRetry: Swift.String?
+
+        public init(
+            autoRetryLimit: Swift.Int? = nil,
+            autoRetryNumber: Swift.Int? = nil,
+            nextAutoRetry: Swift.String? = nil,
+            previousAutoRetry: Swift.String? = nil
+        )
+        {
+            self.autoRetryLimit = autoRetryLimit
+            self.autoRetryNumber = autoRetryNumber
+            self.nextAutoRetry = nextAutoRetry
+            self.previousAutoRetry = previousAutoRetry
+        }
+    }
+}
+
 /// The input value that was provided is not valid.
 public struct InvalidInputException: ClientRuntime.ModeledError, AWSClientRuntime.AWSServiceError, ClientRuntime.HTTPError, Swift.Error {
 
@@ -205,7 +233,7 @@ public struct InvalidInputException: ClientRuntime.ModeledError, AWSClientRuntim
     }
 }
 
-public struct BatchDeleteBuildsInput {
+public struct BatchDeleteBuildsInput: Swift.Sendable {
     /// The IDs of the builds to delete.
     /// This member is required.
     public var ids: [Swift.String]?
@@ -219,8 +247,9 @@ public struct BatchDeleteBuildsInput {
 }
 
 extension CodeBuildClientTypes {
+
     /// Information about a build that could not be successfully deleted.
-    public struct BuildNotDeleted {
+    public struct BuildNotDeleted: Swift.Sendable {
         /// The ID of the build that could not be successfully deleted.
         public var id: Swift.String?
         /// Additional information about the build that could not be successfully deleted.
@@ -235,10 +264,9 @@ extension CodeBuildClientTypes {
             self.statusCode = statusCode
         }
     }
-
 }
 
-public struct BatchDeleteBuildsOutput {
+public struct BatchDeleteBuildsOutput: Swift.Sendable {
     /// The IDs of the builds that were successfully deleted.
     public var buildsDeleted: [Swift.String]?
     /// Information about any builds that could not be successfully deleted.
@@ -254,7 +282,7 @@ public struct BatchDeleteBuildsOutput {
     }
 }
 
-public struct BatchGetBuildBatchesInput {
+public struct BatchGetBuildBatchesInput: Swift.Sendable {
     /// An array that contains the batch build identifiers to retrieve.
     /// This member is required.
     public var ids: [Swift.String]?
@@ -277,7 +305,7 @@ extension CodeBuildClientTypes {
     ///
     ///
     /// For more information about Amazon S3 object ownership, see [Controlling ownership of uploaded objects using S3 Object Ownership](https://docs.aws.amazon.com/AmazonS3/latest/userguide/about-object-ownership.html) in the Amazon Simple Storage Service User Guide.
-    public enum BucketOwnerAccess: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum BucketOwnerAccess: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case full
         case `none`
         case readOnly
@@ -308,8 +336,9 @@ extension CodeBuildClientTypes {
 }
 
 extension CodeBuildClientTypes {
+
     /// Information about build output artifacts.
-    public struct BuildArtifacts {
+    public struct BuildArtifacts: Swift.Sendable {
         /// An identifier for this artifact definition.
         public var artifactIdentifier: Swift.String?
         /// Specifies the bucket owner's access for objects that another account uploads to their Amazon S3 bucket. By default, only the account that uploads the objects to the bucket has access to these objects. This property allows you to give the bucket owner access to these objects. To use this property, your CodeBuild service role must have the s3:PutBucketAcl permission. This permission allows CodeBuild to modify the access control list for the bucket. This property can be one of the following values: NONE The bucket owner does not have access to the objects. This is the default. READ_ONLY The bucket owner has read-only access to the objects. The uploading account retains ownership of the objects. FULL The bucket owner has full access to the objects. Object ownership is determined by the following criteria:
@@ -351,12 +380,11 @@ extension CodeBuildClientTypes {
             self.sha256sum = sha256sum
         }
     }
-
 }
 
 extension CodeBuildClientTypes {
 
-    public enum BatchReportModeType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum BatchReportModeType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case reportAggregatedBatch
         case reportIndividualBuilds
         case sdkUnknown(Swift.String)
@@ -384,8 +412,9 @@ extension CodeBuildClientTypes {
 }
 
 extension CodeBuildClientTypes {
+
     /// Specifies restrictions for the batch build.
-    public struct BatchRestrictions {
+    public struct BatchRestrictions: Swift.Sendable {
         /// An array of strings that specify the compute types that are allowed for the batch build. See [Build environment compute types](https://docs.aws.amazon.com/codebuild/latest/userguide/build-env-ref-compute-types.html) in the CodeBuild User Guide for these values.
         public var computeTypesAllowed: [Swift.String]?
         /// Specifies the maximum number of builds allowed.
@@ -400,12 +429,12 @@ extension CodeBuildClientTypes {
             self.maximumBuildsAllowed = maximumBuildsAllowed
         }
     }
-
 }
 
 extension CodeBuildClientTypes {
+
     /// Contains configuration information about a batch build project.
-    public struct ProjectBuildBatchConfig {
+    public struct ProjectBuildBatchConfig: Swift.Sendable {
         /// Specifies how build status reports are sent to the source provider for the batch build. This property is only used when the source provider for your project is Bitbucket, GitHub, or GitHub Enterprise, and your project is configured to report build statuses to the source provider. REPORT_AGGREGATED_BATCH (Default) Aggregate all of the build statuses into a single status report. REPORT_INDIVIDUAL_BUILDS Send a separate status report for each individual build.
         public var batchReportMode: CodeBuildClientTypes.BatchReportModeType?
         /// Specifies if the build artifacts for the batch build should be combined into a single artifact location.
@@ -432,12 +461,11 @@ extension CodeBuildClientTypes {
             self.timeoutInMins = timeoutInMins
         }
     }
-
 }
 
 extension CodeBuildClientTypes {
 
-    public enum StatusType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum StatusType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case failed
         case fault
         case inProgress
@@ -477,8 +505,9 @@ extension CodeBuildClientTypes {
 }
 
 extension CodeBuildClientTypes {
+
     /// Represents a resolved build artifact. A resolved artifact is an artifact that is built and deployed to the destination, such as Amazon S3.
-    public struct ResolvedArtifact {
+    public struct ResolvedArtifact: Swift.Sendable {
         /// The identifier of the artifact.
         public var identifier: Swift.String?
         /// The location of the artifact.
@@ -497,12 +526,12 @@ extension CodeBuildClientTypes {
             self.type = type
         }
     }
-
 }
 
 extension CodeBuildClientTypes {
+
     /// Contains summary information about a batch build group.
-    public struct BuildSummary {
+    public struct BuildSummary: Swift.Sendable {
         /// The batch build ARN.
         public var arn: Swift.String?
         /// The status of the build group. FAILED The build group failed. FAULT The build group faulted. IN_PROGRESS The build group is still in progress. STOPPED The build group stopped. SUCCEEDED The build group succeeded. TIMED_OUT The build group timed out.
@@ -529,12 +558,12 @@ extension CodeBuildClientTypes {
             self.secondaryArtifacts = secondaryArtifacts
         }
     }
-
 }
 
 extension CodeBuildClientTypes {
+
     /// Contains information about a batch build build group. Build groups are used to combine builds that can run in parallel, while still being able to set dependencies on other build groups.
-    public struct BuildGroup {
+    public struct BuildGroup: Swift.Sendable {
         /// A BuildSummary object that contains a summary of the current build group.
         public var currentBuildSummary: CodeBuildClientTypes.BuildSummary?
         /// An array of strings that contain the identifiers of the build groups that this build group depends on.
@@ -561,12 +590,11 @@ extension CodeBuildClientTypes {
             self.priorBuildSummaryList = priorBuildSummaryList
         }
     }
-
 }
 
 extension CodeBuildClientTypes {
 
-    public enum CacheMode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum CacheMode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case localCustomCache
         case localDockerLayerCache
         case localSourceCache
@@ -598,7 +626,7 @@ extension CodeBuildClientTypes {
 
 extension CodeBuildClientTypes {
 
-    public enum CacheType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum CacheType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case local
         case noCache
         case s3
@@ -629,8 +657,9 @@ extension CodeBuildClientTypes {
 }
 
 extension CodeBuildClientTypes {
+
     /// Information about the cache for the build project.
-    public struct ProjectCache {
+    public struct ProjectCache: Swift.Sendable {
         /// Information about the cache location:
         ///
         /// * NO_CACHE or LOCAL: This value is ignored.
@@ -675,12 +704,11 @@ extension CodeBuildClientTypes {
             self.type = type
         }
     }
-
 }
 
 extension CodeBuildClientTypes {
 
-    public enum ComputeType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ComputeType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case buildGeneral12xlarge
         case buildGeneral1Large
         case buildGeneral1Medium
@@ -733,7 +761,7 @@ extension CodeBuildClientTypes {
 
 extension CodeBuildClientTypes {
 
-    public enum EnvironmentVariableType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum EnvironmentVariableType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case parameterStore
         case plaintext
         case secretsManager
@@ -764,8 +792,9 @@ extension CodeBuildClientTypes {
 }
 
 extension CodeBuildClientTypes {
+
     /// Information about an environment variable for a build project or a build.
-    public struct EnvironmentVariable {
+    public struct EnvironmentVariable: Swift.Sendable {
         /// The name or key of the environment variable.
         /// This member is required.
         public var name: Swift.String?
@@ -792,12 +821,12 @@ extension CodeBuildClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension CodeBuildClientTypes {
+
     /// Information about the compute fleet of the build project. For more information, see [Working with reserved capacity in CodeBuild](https://docs.aws.amazon.com/codebuild/latest/userguide/fleets.html).
-    public struct ProjectFleet {
+    public struct ProjectFleet: Swift.Sendable {
         /// Specifies the compute fleet ARN for the build project.
         public var fleetArn: Swift.String?
 
@@ -808,12 +837,11 @@ extension CodeBuildClientTypes {
             self.fleetArn = fleetArn
         }
     }
-
 }
 
 extension CodeBuildClientTypes {
 
-    public enum ImagePullCredentialsType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ImagePullCredentialsType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case codebuild
         case serviceRole
         case sdkUnknown(Swift.String)
@@ -842,7 +870,7 @@ extension CodeBuildClientTypes {
 
 extension CodeBuildClientTypes {
 
-    public enum CredentialProviderType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum CredentialProviderType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case secretsManager
         case sdkUnknown(Swift.String)
 
@@ -867,6 +895,7 @@ extension CodeBuildClientTypes {
 }
 
 extension CodeBuildClientTypes {
+
     /// Information about credentials that provide access to a private Docker registry. When this is set:
     ///
     /// * imagePullCredentialsType must be set to SERVICE_ROLE.
@@ -875,7 +904,7 @@ extension CodeBuildClientTypes {
     ///
     ///
     /// For more information, see [Private Registry with Secrets Manager Sample for CodeBuild](https://docs.aws.amazon.com/codebuild/latest/userguide/sample-private-registry.html).
-    public struct RegistryCredential {
+    public struct RegistryCredential: Swift.Sendable {
         /// The Amazon Resource Name (ARN) or name of credentials created using Secrets Manager. The credential can use the name of the credentials only if they exist in your current Amazon Web Services Region.
         /// This member is required.
         public var credential: Swift.String?
@@ -892,12 +921,11 @@ extension CodeBuildClientTypes {
             self.credentialProvider = credentialProvider
         }
     }
-
 }
 
 extension CodeBuildClientTypes {
 
-    public enum EnvironmentType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum EnvironmentType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case armContainer
         case armLambdaContainer
         case linuxContainer
@@ -943,8 +971,9 @@ extension CodeBuildClientTypes {
 }
 
 extension CodeBuildClientTypes {
+
     /// Information about the build environment of the build project.
-    public struct ProjectEnvironment {
+    public struct ProjectEnvironment: Swift.Sendable {
         /// The ARN of the Amazon S3 bucket, path prefix, and object key that contains the PEM-encoded certificate for the build project. For more information, see [certificate](https://docs.aws.amazon.com/codebuild/latest/userguide/create-project-cli.html#cli.environment.certificate) in the CodeBuild User Guide.
         public var certificate: Swift.String?
         /// Information about the compute resources the build project uses. Available values include:
@@ -1065,12 +1094,11 @@ extension CodeBuildClientTypes {
             self.type = type
         }
     }
-
 }
 
 extension CodeBuildClientTypes {
 
-    public enum FileSystemType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum FileSystemType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case efs
         case sdkUnknown(Swift.String)
 
@@ -1095,8 +1123,9 @@ extension CodeBuildClientTypes {
 }
 
 extension CodeBuildClientTypes {
+
     /// Information about a file system created by Amazon Elastic File System (EFS). For more information, see [What Is Amazon Elastic File System?](https://docs.aws.amazon.com/efs/latest/ug/whatisefs.html)
-    public struct ProjectFileSystemLocation {
+    public struct ProjectFileSystemLocation: Swift.Sendable {
         /// The name used to access a file system created by Amazon EFS. CodeBuild creates an environment variable by appending the identifier in all capital letters to CODEBUILD_. For example, if you specify my_efs for identifier, a new environment variable is create named CODEBUILD_MY_EFS. The identifier is used to mount your file system.
         public var identifier: Swift.String?
         /// A string that specifies the location of the file system created by Amazon EFS. Its format is efs-dns-name:/directory-path. You can find the DNS name of file system when you view it in the Amazon EFS console. The directory path is a path to a directory in the file system that CodeBuild mounts. For example, if the DNS name of a file system is fs-abcd1234.efs.us-west-2.amazonaws.com, and its mount directory is my-efs-mount-directory, then the location is fs-abcd1234.efs.us-west-2.amazonaws.com:/my-efs-mount-directory. The directory path in the format efs-dns-name:/directory-path is optional. If you do not specify a directory path, the location is only the DNS name and CodeBuild mounts the entire file system.
@@ -1123,12 +1152,11 @@ extension CodeBuildClientTypes {
             self.type = type
         }
     }
-
 }
 
 extension CodeBuildClientTypes {
 
-    public enum LogsConfigStatusType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum LogsConfigStatusType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case disabled
         case enabled
         case sdkUnknown(Swift.String)
@@ -1156,8 +1184,9 @@ extension CodeBuildClientTypes {
 }
 
 extension CodeBuildClientTypes {
+
     /// Information about CloudWatch Logs for a build project.
-    public struct CloudWatchLogsConfig {
+    public struct CloudWatchLogsConfig: Swift.Sendable {
         /// The group name of the logs in CloudWatch Logs. For more information, see [Working with Log Groups and Log Streams](https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/Working-with-log-groups-and-streams.html).
         public var groupName: Swift.String?
         /// The current status of the logs in CloudWatch Logs for a build project. Valid values are:
@@ -1181,12 +1210,12 @@ extension CodeBuildClientTypes {
             self.streamName = streamName
         }
     }
-
 }
 
 extension CodeBuildClientTypes {
+
     /// Information about S3 logs for a build project.
-    public struct S3LogsConfig {
+    public struct S3LogsConfig: Swift.Sendable {
         /// Specifies the bucket owner's access for objects that another account uploads to their Amazon S3 bucket. By default, only the account that uploads the objects to the bucket has access to these objects. This property allows you to give the bucket owner access to these objects. To use this property, your CodeBuild service role must have the s3:PutBucketAcl permission. This permission allows CodeBuild to modify the access control list for the bucket. This property can be one of the following values: NONE The bucket owner does not have access to the objects. This is the default. READ_ONLY The bucket owner has read-only access to the objects. The uploading account retains ownership of the objects. FULL The bucket owner has full access to the objects. Object ownership is determined by the following criteria:
         ///
         /// * If the bucket is configured with the Bucket owner preferred setting, the bucket owner owns the objects. The uploading account will have object access as specified by the bucket's policy.
@@ -1221,12 +1250,12 @@ extension CodeBuildClientTypes {
             self.status = status
         }
     }
-
 }
 
 extension CodeBuildClientTypes {
+
     /// Information about logs for a build project. These can be logs in CloudWatch Logs, built in a specified S3 bucket, or both.
-    public struct LogsConfig {
+    public struct LogsConfig: Swift.Sendable {
         /// Information about CloudWatch Logs for a build project. CloudWatch Logs are enabled by default.
         public var cloudWatchLogs: CodeBuildClientTypes.CloudWatchLogsConfig?
         /// Information about logs built to an S3 bucket for a build project. S3 logs are not enabled by default.
@@ -1241,12 +1270,12 @@ extension CodeBuildClientTypes {
             self.s3Logs = s3Logs
         }
     }
-
 }
 
 extension CodeBuildClientTypes {
+
     /// Additional information about a build phase that has an error. You can use this information for troubleshooting.
-    public struct PhaseContext {
+    public struct PhaseContext: Swift.Sendable {
         /// An explanation of the build phase's context. This might include a command ID and an exit code.
         public var message: Swift.String?
         /// The status code for the context of the build phase.
@@ -1261,12 +1290,11 @@ extension CodeBuildClientTypes {
             self.statusCode = statusCode
         }
     }
-
 }
 
 extension CodeBuildClientTypes {
 
-    public enum BuildBatchPhaseType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum BuildBatchPhaseType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case combineArtifacts
         case downloadBatchspec
         case failed
@@ -1309,8 +1337,9 @@ extension CodeBuildClientTypes {
 }
 
 extension CodeBuildClientTypes {
+
     /// Contains information about a stage for a batch build.
-    public struct BuildBatchPhase {
+    public struct BuildBatchPhase: Swift.Sendable {
         /// Additional information about the batch build phase. Especially to help troubleshoot a failed batch build.
         public var contexts: [CodeBuildClientTypes.PhaseContext]?
         /// How long, in seconds, between the starting and ending times of the batch build's phase.
@@ -1341,12 +1370,11 @@ extension CodeBuildClientTypes {
             self.startTime = startTime
         }
     }
-
 }
 
 extension CodeBuildClientTypes {
 
-    public enum SourceAuthType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SourceAuthType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case codeconnections
         case oauth
         case secretsManager
@@ -1377,8 +1405,9 @@ extension CodeBuildClientTypes {
 }
 
 extension CodeBuildClientTypes {
+
     /// Information about the authorization settings for CodeBuild to access the source code to be built.
-    public struct SourceAuth {
+    public struct SourceAuth: Swift.Sendable {
         /// The resource value that applies to the specified authorization type.
         public var resource: Swift.String?
         /// The authorization type to use. Valid options are OAUTH, CODECONNECTIONS, or SECRETS_MANAGER.
@@ -1394,12 +1423,12 @@ extension CodeBuildClientTypes {
             self.type = type
         }
     }
-
 }
 
 extension CodeBuildClientTypes {
+
     /// Contains information that defines how the CodeBuild build project reports the build status to the source provider.
-    public struct BuildStatusConfig {
+    public struct BuildStatusConfig: Swift.Sendable {
         /// Specifies the context of the build status CodeBuild sends to the source provider. The usage of this parameter depends on the source provider. Bitbucket This parameter is used for the name parameter in the Bitbucket commit status. For more information, see [build](https://developer.atlassian.com/bitbucket/api/2/reference/resource/repositories/%7Bworkspace%7D/%7Brepo_slug%7D/commit/%7Bnode%7D/statuses/build) in the Bitbucket API documentation. GitHub/GitHub Enterprise Server This parameter is used for the context parameter in the GitHub commit status. For more information, see [Create a commit status](https://developer.github.com/v3/repos/statuses/#create-a-commit-status) in the GitHub developer guide.
         public var context: Swift.String?
         /// Specifies the target url of the build status CodeBuild sends to the source provider. The usage of this parameter depends on the source provider. Bitbucket This parameter is used for the url parameter in the Bitbucket commit status. For more information, see [build](https://developer.atlassian.com/bitbucket/api/2/reference/resource/repositories/%7Bworkspace%7D/%7Brepo_slug%7D/commit/%7Bnode%7D/statuses/build) in the Bitbucket API documentation. GitHub/GitHub Enterprise Server This parameter is used for the target_url parameter in the GitHub commit status. For more information, see [Create a commit status](https://developer.github.com/v3/repos/statuses/#create-a-commit-status) in the GitHub developer guide.
@@ -1414,12 +1443,12 @@ extension CodeBuildClientTypes {
             self.targetUrl = targetUrl
         }
     }
-
 }
 
 extension CodeBuildClientTypes {
+
     /// Information about the Git submodules configuration for an CodeBuild build project.
-    public struct GitSubmodulesConfig {
+    public struct GitSubmodulesConfig: Swift.Sendable {
         /// Set to true to fetch Git submodules for your CodeBuild build project.
         /// This member is required.
         public var fetchSubmodules: Swift.Bool?
@@ -1431,12 +1460,11 @@ extension CodeBuildClientTypes {
             self.fetchSubmodules = fetchSubmodules
         }
     }
-
 }
 
 extension CodeBuildClientTypes {
 
-    public enum SourceType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SourceType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case bitbucket
         case codecommit
         case codepipeline
@@ -1485,8 +1513,9 @@ extension CodeBuildClientTypes {
 }
 
 extension CodeBuildClientTypes {
+
     /// Information about the build input source code for the build project.
-    public struct ProjectSource {
+    public struct ProjectSource: Swift.Sendable {
         /// Information about the authorization settings for CodeBuild to access the source code to be built.
         public var auth: CodeBuildClientTypes.SourceAuth?
         /// Contains information that defines how the build project reports the build status to the source provider. This option is only used when the source provider is GITHUB, GITHUB_ENTERPRISE, or BITBUCKET.
@@ -1574,12 +1603,12 @@ extension CodeBuildClientTypes {
             self.type = type
         }
     }
-
 }
 
 extension CodeBuildClientTypes {
+
     /// A source identifier and its corresponding version.
-    public struct ProjectSourceVersion {
+    public struct ProjectSourceVersion: Swift.Sendable {
         /// An identifier for a source in the build project. The identifier can only contain alphanumeric characters and underscores, and must be less than 128 characters in length.
         /// This member is required.
         public var sourceIdentifier: Swift.String?
@@ -1609,12 +1638,12 @@ extension CodeBuildClientTypes {
             self.sourceVersion = sourceVersion
         }
     }
-
 }
 
 extension CodeBuildClientTypes {
+
     /// Information about the VPC configuration that CodeBuild accesses.
-    public struct VpcConfig {
+    public struct VpcConfig: Swift.Sendable {
         /// A list of one or more security groups IDs in your Amazon VPC.
         public var securityGroupIds: [Swift.String]?
         /// A list of one or more subnet IDs in your Amazon VPC.
@@ -1633,12 +1662,12 @@ extension CodeBuildClientTypes {
             self.vpcId = vpcId
         }
     }
-
 }
 
 extension CodeBuildClientTypes {
+
     /// Contains information about a batch build.
-    public struct BuildBatch {
+    public struct BuildBatch: Swift.Sendable {
         /// The ARN of the batch build.
         public var arn: Swift.String?
         /// A BuildArtifacts object the defines the build artifacts for this batch build.
@@ -1785,10 +1814,9 @@ extension CodeBuildClientTypes {
             self.vpcConfig = vpcConfig
         }
     }
-
 }
 
-public struct BatchGetBuildBatchesOutput {
+public struct BatchGetBuildBatchesOutput: Swift.Sendable {
     /// An array of BuildBatch objects that represent the retrieved batch builds.
     public var buildBatches: [CodeBuildClientTypes.BuildBatch]?
     /// An array that contains the identifiers of any batch builds that are not found.
@@ -1804,7 +1832,7 @@ public struct BatchGetBuildBatchesOutput {
     }
 }
 
-public struct BatchGetBuildsInput {
+public struct BatchGetBuildsInput: Swift.Sendable {
     /// The IDs of the builds.
     /// This member is required.
     public var ids: [Swift.String]?
@@ -1818,8 +1846,9 @@ public struct BatchGetBuildsInput {
 }
 
 extension CodeBuildClientTypes {
+
     /// Contains information about the debug session for a build. For more information, see [Viewing a running build in Session Manager](https://docs.aws.amazon.com/codebuild/latest/userguide/session-manager.html).
-    public struct DebugSession {
+    public struct DebugSession: Swift.Sendable {
         /// Specifies if session debugging is enabled for this build.
         public var sessionEnabled: Swift.Bool?
         /// Contains the identifier of the Session Manager session used for the build. To work with the paused build, you open this session to examine, control, and resume the build.
@@ -1834,12 +1863,12 @@ extension CodeBuildClientTypes {
             self.sessionTarget = sessionTarget
         }
     }
-
 }
 
 extension CodeBuildClientTypes {
+
     /// Contains information about an exported environment variable. Exported environment variables are used in conjunction with CodePipeline to export environment variables from the current build stage to subsequent stages in the pipeline. For more information, see [Working with variables](https://docs.aws.amazon.com/codepipeline/latest/userguide/actions-variables.html) in the CodePipeline User Guide. During a build, the value of a variable is available starting with the install phase. It can be updated between the start of the install phase and the end of the post_build phase. After the post_build phase ends, the value of exported variables cannot change.
-    public struct ExportedEnvironmentVariable {
+    public struct ExportedEnvironmentVariable: Swift.Sendable {
         /// The name of the exported environment variable.
         public var name: Swift.String?
         /// The value assigned to the exported environment variable.
@@ -1854,12 +1883,12 @@ extension CodeBuildClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension CodeBuildClientTypes {
+
     /// Information about build logs in CloudWatch Logs.
-    public struct LogsLocation {
+    public struct LogsLocation: Swift.Sendable {
         /// Information about CloudWatch Logs for a build project.
         public var cloudWatchLogs: CodeBuildClientTypes.CloudWatchLogsConfig?
         /// The ARN of the CloudWatch Logs stream for a build execution. Its format is arn:${Partition}:logs:${Region}:${Account}:log-group:${LogGroupName}:log-stream:${LogStreamName}. The CloudWatch Logs stream is created during the PROVISIONING phase of a build and the ARN will not be valid until it is created. For more information, see [Resources Defined by CloudWatch Logs](https://docs.aws.amazon.com/IAM/latest/UserGuide/list_amazoncloudwatchlogs.html#amazoncloudwatchlogs-resources-for-iam-policies).
@@ -1898,12 +1927,12 @@ extension CodeBuildClientTypes {
             self.streamName = streamName
         }
     }
-
 }
 
 extension CodeBuildClientTypes {
+
     /// Describes a network interface.
-    public struct NetworkInterface {
+    public struct NetworkInterface: Swift.Sendable {
         /// The ID of the network interface.
         public var networkInterfaceId: Swift.String?
         /// The ID of the subnet.
@@ -1918,12 +1947,11 @@ extension CodeBuildClientTypes {
             self.subnetId = subnetId
         }
     }
-
 }
 
 extension CodeBuildClientTypes {
 
-    public enum BuildPhaseType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum BuildPhaseType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case build
         case completed
         case downloadSource
@@ -1978,8 +2006,9 @@ extension CodeBuildClientTypes {
 }
 
 extension CodeBuildClientTypes {
+
     /// Information about a stage for a build.
-    public struct BuildPhase {
+    public struct BuildPhase: Swift.Sendable {
         /// Additional information about a build phase, especially to help troubleshoot a failed build.
         public var contexts: [CodeBuildClientTypes.PhaseContext]?
         /// How long, in seconds, between the starting and ending times of the build's phase.
@@ -2010,16 +2039,18 @@ extension CodeBuildClientTypes {
             self.startTime = startTime
         }
     }
-
 }
 
 extension CodeBuildClientTypes {
+
     /// Information about a build.
-    public struct Build {
+    public struct Build: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the build.
         public var arn: Swift.String?
         /// Information about the output artifacts for the build.
         public var artifacts: CodeBuildClientTypes.BuildArtifacts?
+        /// Information about the auto-retry configuration for the build.
+        public var autoRetryConfig: CodeBuildClientTypes.AutoRetryConfig?
         /// The ARN of the batch build that this build is a member of, if applicable.
         public var buildBatchArn: Swift.String?
         /// Whether the build is complete. True if complete; otherwise, false.
@@ -2116,6 +2147,7 @@ extension CodeBuildClientTypes {
         public init(
             arn: Swift.String? = nil,
             artifacts: CodeBuildClientTypes.BuildArtifacts? = nil,
+            autoRetryConfig: CodeBuildClientTypes.AutoRetryConfig? = nil,
             buildBatchArn: Swift.String? = nil,
             buildComplete: Swift.Bool = false,
             buildNumber: Swift.Int? = nil,
@@ -2150,6 +2182,7 @@ extension CodeBuildClientTypes {
         {
             self.arn = arn
             self.artifacts = artifacts
+            self.autoRetryConfig = autoRetryConfig
             self.buildBatchArn = buildBatchArn
             self.buildComplete = buildComplete
             self.buildNumber = buildNumber
@@ -2182,10 +2215,9 @@ extension CodeBuildClientTypes {
             self.vpcConfig = vpcConfig
         }
     }
-
 }
 
-public struct BatchGetBuildsOutput {
+public struct BatchGetBuildsOutput: Swift.Sendable {
     /// Information about the requested builds.
     public var builds: [CodeBuildClientTypes.Build]?
     /// The IDs of builds for which information could not be found.
@@ -2201,7 +2233,7 @@ public struct BatchGetBuildsOutput {
     }
 }
 
-public struct BatchGetFleetsInput {
+public struct BatchGetFleetsInput: Swift.Sendable {
     /// The names or ARNs of the compute fleets.
     /// This member is required.
     public var names: [Swift.String]?
@@ -2216,7 +2248,7 @@ public struct BatchGetFleetsInput {
 
 extension CodeBuildClientTypes {
 
-    public enum FleetOverflowBehavior: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum FleetOverflowBehavior: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case onDemand
         case queue
         case sdkUnknown(Swift.String)
@@ -2245,7 +2277,141 @@ extension CodeBuildClientTypes {
 
 extension CodeBuildClientTypes {
 
-    public enum FleetScalingType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum FleetProxyRuleBehavior: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+        case allowAll
+        case denyAll
+        case sdkUnknown(Swift.String)
+
+        public static var allCases: [FleetProxyRuleBehavior] {
+            return [
+                .allowAll,
+                .denyAll
+            ]
+        }
+
+        public init?(rawValue: Swift.String) {
+            let value = Self.allCases.first(where: { $0.rawValue == rawValue })
+            self = value ?? Self.sdkUnknown(rawValue)
+        }
+
+        public var rawValue: Swift.String {
+            switch self {
+            case .allowAll: return "ALLOW_ALL"
+            case .denyAll: return "DENY_ALL"
+            case let .sdkUnknown(s): return s
+            }
+        }
+    }
+}
+
+extension CodeBuildClientTypes {
+
+    public enum FleetProxyRuleEffectType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+        case allow
+        case deny
+        case sdkUnknown(Swift.String)
+
+        public static var allCases: [FleetProxyRuleEffectType] {
+            return [
+                .allow,
+                .deny
+            ]
+        }
+
+        public init?(rawValue: Swift.String) {
+            let value = Self.allCases.first(where: { $0.rawValue == rawValue })
+            self = value ?? Self.sdkUnknown(rawValue)
+        }
+
+        public var rawValue: Swift.String {
+            switch self {
+            case .allow: return "ALLOW"
+            case .deny: return "DENY"
+            case let .sdkUnknown(s): return s
+            }
+        }
+    }
+}
+
+extension CodeBuildClientTypes {
+
+    public enum FleetProxyRuleType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+        case domain
+        case ip
+        case sdkUnknown(Swift.String)
+
+        public static var allCases: [FleetProxyRuleType] {
+            return [
+                .domain,
+                .ip
+            ]
+        }
+
+        public init?(rawValue: Swift.String) {
+            let value = Self.allCases.first(where: { $0.rawValue == rawValue })
+            self = value ?? Self.sdkUnknown(rawValue)
+        }
+
+        public var rawValue: Swift.String {
+            switch self {
+            case .domain: return "DOMAIN"
+            case .ip: return "IP"
+            case let .sdkUnknown(s): return s
+            }
+        }
+    }
+}
+
+extension CodeBuildClientTypes {
+
+    /// Information about the proxy rule for your reserved capacity instances.
+    public struct FleetProxyRule: Swift.Sendable {
+        /// The behavior of the proxy rule.
+        /// This member is required.
+        public var effect: CodeBuildClientTypes.FleetProxyRuleEffectType?
+        /// The destination of the proxy rule.
+        /// This member is required.
+        public var entities: [Swift.String]?
+        /// The type of proxy rule.
+        /// This member is required.
+        public var type: CodeBuildClientTypes.FleetProxyRuleType?
+
+        public init(
+            effect: CodeBuildClientTypes.FleetProxyRuleEffectType? = nil,
+            entities: [Swift.String]? = nil,
+            type: CodeBuildClientTypes.FleetProxyRuleType? = nil
+        )
+        {
+            self.effect = effect
+            self.entities = entities
+            self.type = type
+        }
+    }
+}
+
+extension CodeBuildClientTypes {
+
+    /// Information about the proxy configurations that apply network access control to your reserved capacity instances.
+    public struct ProxyConfiguration: Swift.Sendable {
+        /// The default behavior of outgoing traffic.
+        public var defaultBehavior: CodeBuildClientTypes.FleetProxyRuleBehavior?
+        /// An array of FleetProxyRule objects that represent the specified destination domains or IPs to allow or deny network access control to.
+        public var orderedProxyRules: [CodeBuildClientTypes.FleetProxyRule]?
+
+        public init(
+            defaultBehavior: CodeBuildClientTypes.FleetProxyRuleBehavior? = nil,
+            orderedProxyRules: [CodeBuildClientTypes.FleetProxyRule]? = nil
+        )
+        {
+            self.defaultBehavior = defaultBehavior
+            self.orderedProxyRules = orderedProxyRules
+        }
+    }
+}
+
+extension CodeBuildClientTypes {
+
+    public enum FleetScalingType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case targetTrackingScaling
         case sdkUnknown(Swift.String)
 
@@ -2271,7 +2437,7 @@ extension CodeBuildClientTypes {
 
 extension CodeBuildClientTypes {
 
-    public enum FleetScalingMetricType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum FleetScalingMetricType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case fleetUtilizationRate
         case sdkUnknown(Swift.String)
 
@@ -2296,8 +2462,9 @@ extension CodeBuildClientTypes {
 }
 
 extension CodeBuildClientTypes {
+
     /// Defines when a new instance is auto-scaled into the compute fleet.
-    public struct TargetTrackingScalingConfiguration {
+    public struct TargetTrackingScalingConfiguration: Swift.Sendable {
         /// The metric type to determine auto-scaling.
         public var metricType: CodeBuildClientTypes.FleetScalingMetricType?
         /// The value of metricType when to start scaling.
@@ -2312,12 +2479,12 @@ extension CodeBuildClientTypes {
             self.targetValue = targetValue
         }
     }
-
 }
 
 extension CodeBuildClientTypes {
+
     /// The scaling configuration output of a compute fleet.
-    public struct ScalingConfigurationOutput {
+    public struct ScalingConfigurationOutput: Swift.Sendable {
         /// The desired number of instances in the ﬂeet when auto-scaling.
         public var desiredCapacity: Swift.Int?
         /// The maximum number of instances in the ﬂeet when auto-scaling.
@@ -2340,12 +2507,11 @@ extension CodeBuildClientTypes {
             self.targetTrackingScalingConfigs = targetTrackingScalingConfigs
         }
     }
-
 }
 
 extension CodeBuildClientTypes {
 
-    public enum FleetContextCode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum FleetContextCode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case actionRequired
         case createFailed
         case insufficientCapacity
@@ -2383,7 +2549,7 @@ extension CodeBuildClientTypes {
 
 extension CodeBuildClientTypes {
 
-    public enum FleetStatusCode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum FleetStatusCode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case active
         case createFailed
         case creating
@@ -2429,8 +2595,9 @@ extension CodeBuildClientTypes {
 }
 
 extension CodeBuildClientTypes {
+
     /// The status of the compute fleet.
-    public struct FleetStatus {
+    public struct FleetStatus: Swift.Sendable {
         /// Additional information about a compute fleet. Valid values include:
         ///
         /// * CREATE_FAILED: The compute fleet has failed to create.
@@ -2469,12 +2636,12 @@ extension CodeBuildClientTypes {
             self.statusCode = statusCode
         }
     }
-
 }
 
 extension CodeBuildClientTypes {
+
     /// A tag, consisting of a key and a value. This tag is available for use by Amazon Web Services services that support tags in CodeBuild.
-    public struct Tag {
+    public struct Tag: Swift.Sendable {
         /// The tag's key.
         public var key: Swift.String?
         /// The tag's value.
@@ -2489,12 +2656,12 @@ extension CodeBuildClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension CodeBuildClientTypes {
+
     /// A set of dedicated instances for your build environment.
-    public struct Fleet {
+    public struct Fleet: Swift.Sendable {
         /// The ARN of the compute fleet.
         public var arn: Swift.String?
         /// The initial number of machines allocated to the compute ﬂeet, which deﬁnes the number of builds that can run in parallel.
@@ -2569,6 +2736,8 @@ extension CodeBuildClientTypes {
         ///
         /// * For overflow behavior ON_DEMAND, your overflow builds run on CodeBuild on-demand. If you choose to set your overflow behavior to on-demand while creating a VPC-connected fleet, make sure that you add the required VPC permissions to your project service role. For more information, see [Example policy statement to allow CodeBuild access to Amazon Web Services services required to create a VPC network interface](https://docs.aws.amazon.com/codebuild/latest/userguide/auth-and-access-control-iam-identity-based-access-control.html#customer-managed-policies-example-create-vpc-network-interface).
         public var overflowBehavior: CodeBuildClientTypes.FleetOverflowBehavior?
+        /// The proxy configuration of the compute fleet.
+        public var proxyConfiguration: CodeBuildClientTypes.ProxyConfiguration?
         /// The scaling configuration of the compute fleet.
         public var scalingConfiguration: CodeBuildClientTypes.ScalingConfigurationOutput?
         /// The status of the compute fleet.
@@ -2590,6 +2759,7 @@ extension CodeBuildClientTypes {
             lastModified: Foundation.Date? = nil,
             name: Swift.String? = nil,
             overflowBehavior: CodeBuildClientTypes.FleetOverflowBehavior? = nil,
+            proxyConfiguration: CodeBuildClientTypes.ProxyConfiguration? = nil,
             scalingConfiguration: CodeBuildClientTypes.ScalingConfigurationOutput? = nil,
             status: CodeBuildClientTypes.FleetStatus? = nil,
             tags: [CodeBuildClientTypes.Tag]? = nil,
@@ -2607,16 +2777,16 @@ extension CodeBuildClientTypes {
             self.lastModified = lastModified
             self.name = name
             self.overflowBehavior = overflowBehavior
+            self.proxyConfiguration = proxyConfiguration
             self.scalingConfiguration = scalingConfiguration
             self.status = status
             self.tags = tags
             self.vpcConfig = vpcConfig
         }
     }
-
 }
 
-public struct BatchGetFleetsOutput {
+public struct BatchGetFleetsOutput: Swift.Sendable {
     /// Information about the requested compute fleets.
     public var fleets: [CodeBuildClientTypes.Fleet]?
     /// The names of compute fleets for which information could not be found.
@@ -2632,7 +2802,7 @@ public struct BatchGetFleetsOutput {
     }
 }
 
-public struct BatchGetProjectsInput {
+public struct BatchGetProjectsInput: Swift.Sendable {
     /// The names or ARNs of the build projects. To get information about a project shared with your Amazon Web Services account, its ARN must be specified. You cannot specify a shared project using its name.
     /// This member is required.
     public var names: [Swift.String]?
@@ -2646,8 +2816,9 @@ public struct BatchGetProjectsInput {
 }
 
 extension CodeBuildClientTypes {
+
     /// Information about the build output artifacts for the build project.
-    public struct ProjectArtifacts {
+    public struct ProjectArtifacts: Swift.Sendable {
         /// An identifier for this artifact definition.
         public var artifactIdentifier: Swift.String?
         /// Specifies the bucket owner's access for objects that another account uploads to their Amazon S3 bucket. By default, only the account that uploads the objects to the bucket has access to these objects. This property allows you to give the bucket owner access to these objects. To use this property, your CodeBuild service role must have the s3:PutBucketAcl permission. This permission allows CodeBuild to modify the access control list for the bucket. This property can be one of the following values: NONE The bucket owner does not have access to the objects. This is the default. READ_ONLY The bucket owner has read-only access to the objects. The uploading account retains ownership of the objects. FULL The bucket owner has full access to the objects. Object ownership is determined by the following criteria:
@@ -2764,12 +2935,12 @@ extension CodeBuildClientTypes {
             self.type = type
         }
     }
-
 }
 
 extension CodeBuildClientTypes {
+
     /// Information about the build badge for the build project.
-    public struct ProjectBadge {
+    public struct ProjectBadge: Swift.Sendable {
         /// Set this to true to generate a publicly accessible URL for your project's build badge.
         public var badgeEnabled: Swift.Bool
         /// The publicly-accessible URL through which you can access the build badge for your project.
@@ -2784,13 +2955,12 @@ extension CodeBuildClientTypes {
             self.badgeRequestUrl = badgeRequestUrl
         }
     }
-
 }
 
 extension CodeBuildClientTypes {
 
     /// Specifies the visibility of the project's builds. Possible values are: PUBLIC_READ The project builds are visible to the public. PRIVATE The project builds are not visible to the public.
-    public enum ProjectVisibilityType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ProjectVisibilityType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case `private`
         case publicRead
         case sdkUnknown(Swift.String)
@@ -2819,7 +2989,7 @@ extension CodeBuildClientTypes {
 
 extension CodeBuildClientTypes {
 
-    public enum WebhookBuildType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum WebhookBuildType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case build
         case buildBatch
         case sdkUnknown(Swift.String)
@@ -2848,7 +3018,7 @@ extension CodeBuildClientTypes {
 
 extension CodeBuildClientTypes {
 
-    public enum WebhookFilterType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum WebhookFilterType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case actorAccountId
         case baseRef
         case commitMessage
@@ -2856,6 +3026,7 @@ extension CodeBuildClientTypes {
         case filePath
         case headRef
         case releaseName
+        case repositoryName
         case tagName
         case workflowName
         case sdkUnknown(Swift.String)
@@ -2869,6 +3040,7 @@ extension CodeBuildClientTypes {
                 .filePath,
                 .headRef,
                 .releaseName,
+                .repositoryName,
                 .tagName,
                 .workflowName
             ]
@@ -2888,6 +3060,7 @@ extension CodeBuildClientTypes {
             case .filePath: return "FILE_PATH"
             case .headRef: return "HEAD_REF"
             case .releaseName: return "RELEASE_NAME"
+            case .repositoryName: return "REPOSITORY_NAME"
             case .tagName: return "TAG_NAME"
             case .workflowName: return "WORKFLOW_NAME"
             case let .sdkUnknown(s): return s
@@ -2897,8 +3070,9 @@ extension CodeBuildClientTypes {
 }
 
 extension CodeBuildClientTypes {
+
     /// A filter used to determine which webhooks trigger a build.
-    public struct WebhookFilter {
+    public struct WebhookFilter: Swift.Sendable {
         /// Used to indicate that the pattern determines which webhook events do not trigger a build. If true, then a webhook event that does not match the pattern triggers a build. If false, then a webhook event that matches the pattern triggers a build.
         public var excludeMatchedPattern: Swift.Bool?
         /// For a WebHookFilter that uses EVENT type, a comma-separated string that specifies one or more events. For example, the webhook filter PUSH, PULL_REQUEST_CREATED, PULL_REQUEST_UPDATED allows all push, pull request created, and pull request updated events to trigger a build. For a WebHookFilter that uses any of the other filter types, a regular expression pattern. For example, a WebHookFilter that uses HEAD_REF for its type and the pattern ^refs/heads/ triggers a build when the head reference is a branch with a reference name refs/heads/branch-name.
@@ -2986,12 +3160,11 @@ extension CodeBuildClientTypes {
             self.type = type
         }
     }
-
 }
 
 extension CodeBuildClientTypes {
 
-    public enum WebhookScopeType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum WebhookScopeType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case githubGlobal
         case githubOrganization
         case gitlabGroup
@@ -3022,8 +3195,9 @@ extension CodeBuildClientTypes {
 }
 
 extension CodeBuildClientTypes {
+
     /// Contains configuration information about the scope for a webhook.
-    public struct ScopeConfiguration {
+    public struct ScopeConfiguration: Swift.Sendable {
         /// The domain of the GitHub Enterprise organization or the GitLab Self Managed group. Note that this parameter is only required if your project's source type is GITHUB_ENTERPRISE or GITLAB_SELF_MANAGED.
         public var domain: Swift.String?
         /// The name of either the group, enterprise, or organization that will send webhook events to CodeBuild, depending on the type of webhook.
@@ -3044,12 +3218,12 @@ extension CodeBuildClientTypes {
             self.scope = scope
         }
     }
-
 }
 
 extension CodeBuildClientTypes {
+
     /// Information about a webhook that connects repository events to a build project in CodeBuild.
-    public struct Webhook {
+    public struct Webhook: Swift.Sendable {
         /// A regular expression used to determine which repository branches are built when a webhook is triggered. If the name of a branch matches the regular expression, then it is built. If branchFilter is empty, then all branches are built. It is recommended that you use filterGroups instead of branchFilter.
         public var branchFilter: Swift.String?
         /// Specifies the type of build this webhook will trigger.
@@ -3092,16 +3266,18 @@ extension CodeBuildClientTypes {
             self.url = url
         }
     }
-
 }
 
 extension CodeBuildClientTypes {
+
     /// Information about a build project.
-    public struct Project {
+    public struct Project: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the build project.
         public var arn: Swift.String?
         /// Information about the build output artifacts for the build project.
         public var artifacts: CodeBuildClientTypes.ProjectArtifacts?
+        /// The maximum number of additional automatic retries after a failed build. For example, if the auto-retry limit is set to 2, CodeBuild will call the RetryBuild API to automatically retry your build for up to 2 additional times.
+        public var autoRetryLimit: Swift.Int?
         /// Information about the build badge for the build project.
         public var badge: CodeBuildClientTypes.ProjectBadge?
         /// A [ProjectBuildBatchConfig] object that defines the batch build options for the project.
@@ -3171,6 +3347,7 @@ extension CodeBuildClientTypes {
         public init(
             arn: Swift.String? = nil,
             artifacts: CodeBuildClientTypes.ProjectArtifacts? = nil,
+            autoRetryLimit: Swift.Int? = nil,
             badge: CodeBuildClientTypes.ProjectBadge? = nil,
             buildBatchConfig: CodeBuildClientTypes.ProjectBuildBatchConfig? = nil,
             cache: CodeBuildClientTypes.ProjectCache? = nil,
@@ -3201,6 +3378,7 @@ extension CodeBuildClientTypes {
         {
             self.arn = arn
             self.artifacts = artifacts
+            self.autoRetryLimit = autoRetryLimit
             self.badge = badge
             self.buildBatchConfig = buildBatchConfig
             self.cache = cache
@@ -3229,10 +3407,9 @@ extension CodeBuildClientTypes {
             self.webhook = webhook
         }
     }
-
 }
 
-public struct BatchGetProjectsOutput {
+public struct BatchGetProjectsOutput: Swift.Sendable {
     /// Information about the requested build projects.
     public var projects: [CodeBuildClientTypes.Project]?
     /// The names of build projects for which information could not be found.
@@ -3248,7 +3425,7 @@ public struct BatchGetProjectsOutput {
     }
 }
 
-public struct BatchGetReportGroupsInput {
+public struct BatchGetReportGroupsInput: Swift.Sendable {
     /// An array of report group ARNs that identify the report groups to return.
     /// This member is required.
     public var reportGroupArns: [Swift.String]?
@@ -3263,7 +3440,7 @@ public struct BatchGetReportGroupsInput {
 
 extension CodeBuildClientTypes {
 
-    public enum ReportExportConfigType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ReportExportConfigType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case noExport
         case s3
         case sdkUnknown(Swift.String)
@@ -3292,7 +3469,7 @@ extension CodeBuildClientTypes {
 
 extension CodeBuildClientTypes {
 
-    public enum ReportPackagingType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ReportPackagingType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case `none`
         case zip
         case sdkUnknown(Swift.String)
@@ -3320,8 +3497,9 @@ extension CodeBuildClientTypes {
 }
 
 extension CodeBuildClientTypes {
+
     /// Information about the S3 bucket where the raw data of a report are exported.
-    public struct S3ReportExportConfig {
+    public struct S3ReportExportConfig: Swift.Sendable {
         /// The name of the S3 bucket where the raw data of a report are exported.
         public var bucket: Swift.String?
         /// The Amazon Web Services account identifier of the owner of the Amazon S3 bucket. This allows report data to be exported to an Amazon S3 bucket that is owned by an account other than the account running the build.
@@ -3356,12 +3534,12 @@ extension CodeBuildClientTypes {
             self.path = path
         }
     }
-
 }
 
 extension CodeBuildClientTypes {
+
     /// Information about the location where the run of a report is exported.
-    public struct ReportExportConfig {
+    public struct ReportExportConfig: Swift.Sendable {
         /// The export configuration type. Valid values are:
         ///
         /// * S3: The report results are exported to an S3 bucket.
@@ -3380,12 +3558,11 @@ extension CodeBuildClientTypes {
             self.s3Destination = s3Destination
         }
     }
-
 }
 
 extension CodeBuildClientTypes {
 
-    public enum ReportGroupStatusType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ReportGroupStatusType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case active
         case deleting
         case sdkUnknown(Swift.String)
@@ -3414,7 +3591,7 @@ extension CodeBuildClientTypes {
 
 extension CodeBuildClientTypes {
 
-    public enum ReportType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ReportType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case codeCoverage
         case test
         case sdkUnknown(Swift.String)
@@ -3442,8 +3619,9 @@ extension CodeBuildClientTypes {
 }
 
 extension CodeBuildClientTypes {
+
     /// A series of reports. Each report contains information about the results from running a series of test cases. You specify the test cases for a report group in the buildspec for a build project using one or more paths to the test case files.
-    public struct ReportGroup {
+    public struct ReportGroup: Swift.Sendable {
         /// The ARN of the ReportGroup.
         public var arn: Swift.String?
         /// The date and time this ReportGroup was created.
@@ -3482,10 +3660,9 @@ extension CodeBuildClientTypes {
             self.type = type
         }
     }
-
 }
 
-public struct BatchGetReportGroupsOutput {
+public struct BatchGetReportGroupsOutput: Swift.Sendable {
     /// The array of report groups returned by BatchGetReportGroups.
     public var reportGroups: [CodeBuildClientTypes.ReportGroup]?
     /// An array of ARNs passed to BatchGetReportGroups that are not associated with a ReportGroup.
@@ -3501,7 +3678,7 @@ public struct BatchGetReportGroupsOutput {
     }
 }
 
-public struct BatchGetReportsInput {
+public struct BatchGetReportsInput: Swift.Sendable {
     /// An array of ARNs that identify the Report objects to return.
     /// This member is required.
     public var reportArns: [Swift.String]?
@@ -3515,8 +3692,9 @@ public struct BatchGetReportsInput {
 }
 
 extension CodeBuildClientTypes {
+
     /// Contains a summary of a code coverage report. Line coverage measures how many statements your tests cover. A statement is a single instruction, not including comments, conditionals, etc. Branch coverage determines if your tests cover every possible branch of a control structure, such as an if or case statement.
-    public struct CodeCoverageReportSummary {
+    public struct CodeCoverageReportSummary: Swift.Sendable {
         /// The percentage of branches that are covered by your tests.
         public var branchCoveragePercentage: Swift.Double?
         /// The number of conditional branches that are covered by your tests.
@@ -3547,12 +3725,11 @@ extension CodeBuildClientTypes {
             self.linesMissed = linesMissed
         }
     }
-
 }
 
 extension CodeBuildClientTypes {
 
-    public enum ReportStatusType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ReportStatusType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case deleting
         case failed
         case generating
@@ -3589,8 +3766,9 @@ extension CodeBuildClientTypes {
 }
 
 extension CodeBuildClientTypes {
+
     /// Information about a test report.
-    public struct TestReportSummary {
+    public struct TestReportSummary: Swift.Sendable {
         /// The number of nanoseconds it took to run all of the test cases in this report.
         /// This member is required.
         public var durationInNanoSeconds: Swift.Int?
@@ -3612,12 +3790,12 @@ extension CodeBuildClientTypes {
             self.total = total
         }
     }
-
 }
 
 extension CodeBuildClientTypes {
+
     /// Information about the results from running a series of test cases during the run of a build project. The test cases are specified in the buildspec for the build project using one or more paths to the test case files. You can specify any type of tests you want, such as unit tests, integration tests, and functional tests.
-    public struct Report {
+    public struct Report: Swift.Sendable {
         /// The ARN of the report run.
         public var arn: Swift.String?
         /// A CodeCoverageReportSummary object that contains a code coverage summary for this report.
@@ -3672,10 +3850,9 @@ extension CodeBuildClientTypes {
             self.type = type
         }
     }
-
 }
 
-public struct BatchGetReportsOutput {
+public struct BatchGetReportsOutput: Swift.Sendable {
     /// The array of Report objects returned by BatchGetReports.
     public var reports: [CodeBuildClientTypes.Report]?
     /// An array of ARNs passed to BatchGetReportGroups that are not associated with a Report.
@@ -3692,8 +3869,9 @@ public struct BatchGetReportsOutput {
 }
 
 extension CodeBuildClientTypes {
+
     /// Specifies filters when retrieving batch builds.
-    public struct BuildBatchFilter {
+    public struct BuildBatchFilter: Swift.Sendable {
         /// The status of the batch builds to retrieve. Only batch builds that have this status will be retrieved.
         public var status: CodeBuildClientTypes.StatusType?
 
@@ -3704,7 +3882,6 @@ extension CodeBuildClientTypes {
             self.status = status
         }
     }
-
 }
 
 /// The specified Amazon Web Services resource cannot be created, because an Amazon Web Services resource with the same settings already exists.
@@ -3732,8 +3909,9 @@ public struct ResourceAlreadyExistsException: ClientRuntime.ModeledError, AWSCli
 }
 
 extension CodeBuildClientTypes {
+
     /// The scaling configuration input of a compute fleet.
-    public struct ScalingConfigurationInput {
+    public struct ScalingConfigurationInput: Swift.Sendable {
         /// The maximum number of instances in the ﬂeet when auto-scaling.
         public var maxCapacity: Swift.Int?
         /// The scaling type for a compute fleet.
@@ -3752,10 +3930,9 @@ extension CodeBuildClientTypes {
             self.targetTrackingScalingConfigs = targetTrackingScalingConfigs
         }
     }
-
 }
 
-public struct CreateFleetInput {
+public struct CreateFleetInput: Swift.Sendable {
     /// The initial number of machines allocated to the ﬂeet, which deﬁnes the number of builds that can run in parallel.
     /// This member is required.
     public var baseCapacity: Swift.Int?
@@ -3826,6 +4003,8 @@ public struct CreateFleetInput {
     ///
     /// * For overflow behavior ON_DEMAND, your overflow builds run on CodeBuild on-demand. If you choose to set your overflow behavior to on-demand while creating a VPC-connected fleet, make sure that you add the required VPC permissions to your project service role. For more information, see [Example policy statement to allow CodeBuild access to Amazon Web Services services required to create a VPC network interface](https://docs.aws.amazon.com/codebuild/latest/userguide/auth-and-access-control-iam-identity-based-access-control.html#customer-managed-policies-example-create-vpc-network-interface).
     public var overflowBehavior: CodeBuildClientTypes.FleetOverflowBehavior?
+    /// The proxy configuration of the compute fleet.
+    public var proxyConfiguration: CodeBuildClientTypes.ProxyConfiguration?
     /// The scaling configuration of the compute fleet.
     public var scalingConfiguration: CodeBuildClientTypes.ScalingConfigurationInput?
     /// A list of tag key and value pairs associated with this compute fleet. These tags are available for use by Amazon Web Services services that support CodeBuild build project tags.
@@ -3841,6 +4020,7 @@ public struct CreateFleetInput {
         imageId: Swift.String? = nil,
         name: Swift.String? = nil,
         overflowBehavior: CodeBuildClientTypes.FleetOverflowBehavior? = nil,
+        proxyConfiguration: CodeBuildClientTypes.ProxyConfiguration? = nil,
         scalingConfiguration: CodeBuildClientTypes.ScalingConfigurationInput? = nil,
         tags: [CodeBuildClientTypes.Tag]? = nil,
         vpcConfig: CodeBuildClientTypes.VpcConfig? = nil
@@ -3853,13 +4033,14 @@ public struct CreateFleetInput {
         self.imageId = imageId
         self.name = name
         self.overflowBehavior = overflowBehavior
+        self.proxyConfiguration = proxyConfiguration
         self.scalingConfiguration = scalingConfiguration
         self.tags = tags
         self.vpcConfig = vpcConfig
     }
 }
 
-public struct CreateFleetOutput {
+public struct CreateFleetOutput: Swift.Sendable {
     /// Information about the compute fleet
     public var fleet: CodeBuildClientTypes.Fleet?
 
@@ -3871,10 +4052,12 @@ public struct CreateFleetOutput {
     }
 }
 
-public struct CreateProjectInput {
+public struct CreateProjectInput: Swift.Sendable {
     /// Information about the build output artifacts for the build project.
     /// This member is required.
     public var artifacts: CodeBuildClientTypes.ProjectArtifacts?
+    /// The maximum number of additional automatic retries after a failed build. For example, if the auto-retry limit is set to 2, CodeBuild will call the RetryBuild API to automatically retry your build for up to 2 additional times.
+    public var autoRetryLimit: Swift.Int?
     /// Set this to true to generate a publicly accessible URL for your project's build badge.
     public var badgeEnabled: Swift.Bool?
     /// A [ProjectBuildBatchConfig] object that defines the batch build options for the project.
@@ -3935,6 +4118,7 @@ public struct CreateProjectInput {
 
     public init(
         artifacts: CodeBuildClientTypes.ProjectArtifacts? = nil,
+        autoRetryLimit: Swift.Int? = nil,
         badgeEnabled: Swift.Bool? = nil,
         buildBatchConfig: CodeBuildClientTypes.ProjectBuildBatchConfig? = nil,
         cache: CodeBuildClientTypes.ProjectCache? = nil,
@@ -3958,6 +4142,7 @@ public struct CreateProjectInput {
     )
     {
         self.artifacts = artifacts
+        self.autoRetryLimit = autoRetryLimit
         self.badgeEnabled = badgeEnabled
         self.buildBatchConfig = buildBatchConfig
         self.cache = cache
@@ -3981,7 +4166,7 @@ public struct CreateProjectInput {
     }
 }
 
-public struct CreateProjectOutput {
+public struct CreateProjectOutput: Swift.Sendable {
     /// Information about the build project that was created.
     public var project: CodeBuildClientTypes.Project?
 
@@ -3993,7 +4178,7 @@ public struct CreateProjectOutput {
     }
 }
 
-public struct CreateReportGroupInput {
+public struct CreateReportGroupInput: Swift.Sendable {
     /// A ReportExportConfig object that contains information about where the report group test results are exported.
     /// This member is required.
     public var exportConfig: CodeBuildClientTypes.ReportExportConfig?
@@ -4020,7 +4205,7 @@ public struct CreateReportGroupInput {
     }
 }
 
-public struct CreateReportGroupOutput {
+public struct CreateReportGroupOutput: Swift.Sendable {
     /// Information about the report group that was created.
     public var reportGroup: CodeBuildClientTypes.ReportGroup?
 
@@ -4080,7 +4265,7 @@ public struct ResourceNotFoundException: ClientRuntime.ModeledError, AWSClientRu
     }
 }
 
-public struct CreateWebhookInput {
+public struct CreateWebhookInput: Swift.Sendable {
     /// A regular expression used to determine which repository branches are built when a webhook is triggered. If the name of a branch matches the regular expression, then it is built. If branchFilter is empty, then all branches are built. It is recommended that you use filterGroups instead of branchFilter.
     public var branchFilter: Swift.String?
     /// Specifies the type of build this webhook will trigger.
@@ -4113,7 +4298,7 @@ public struct CreateWebhookInput {
     }
 }
 
-public struct CreateWebhookOutput {
+public struct CreateWebhookOutput: Swift.Sendable {
     /// Information about a webhook that connects repository events to a build project in CodeBuild.
     public var webhook: CodeBuildClientTypes.Webhook?
 
@@ -4125,7 +4310,7 @@ public struct CreateWebhookOutput {
     }
 }
 
-public struct DeleteBuildBatchInput {
+public struct DeleteBuildBatchInput: Swift.Sendable {
     /// The identifier of the batch build to delete.
     /// This member is required.
     public var id: Swift.String?
@@ -4138,7 +4323,7 @@ public struct DeleteBuildBatchInput {
     }
 }
 
-public struct DeleteBuildBatchOutput {
+public struct DeleteBuildBatchOutput: Swift.Sendable {
     /// An array of strings that contain the identifiers of the builds that were deleted.
     public var buildsDeleted: [Swift.String]?
     /// An array of BuildNotDeleted objects that specify the builds that could not be deleted.
@@ -4158,7 +4343,7 @@ public struct DeleteBuildBatchOutput {
     }
 }
 
-public struct DeleteFleetInput {
+public struct DeleteFleetInput: Swift.Sendable {
     /// The ARN of the compute fleet.
     /// This member is required.
     public var arn: Swift.String?
@@ -4171,12 +4356,12 @@ public struct DeleteFleetInput {
     }
 }
 
-public struct DeleteFleetOutput {
+public struct DeleteFleetOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteProjectInput {
+public struct DeleteProjectInput: Swift.Sendable {
     /// The name of the build project.
     /// This member is required.
     public var name: Swift.String?
@@ -4189,12 +4374,12 @@ public struct DeleteProjectInput {
     }
 }
 
-public struct DeleteProjectOutput {
+public struct DeleteProjectOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteReportInput {
+public struct DeleteReportInput: Swift.Sendable {
     /// The ARN of the report to delete.
     /// This member is required.
     public var arn: Swift.String?
@@ -4207,12 +4392,12 @@ public struct DeleteReportInput {
     }
 }
 
-public struct DeleteReportOutput {
+public struct DeleteReportOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteReportGroupInput {
+public struct DeleteReportGroupInput: Swift.Sendable {
     /// The ARN of the report group to delete.
     /// This member is required.
     public var arn: Swift.String?
@@ -4229,12 +4414,12 @@ public struct DeleteReportGroupInput {
     }
 }
 
-public struct DeleteReportGroupOutput {
+public struct DeleteReportGroupOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteResourcePolicyInput {
+public struct DeleteResourcePolicyInput: Swift.Sendable {
     /// The ARN of the resource that is associated with the resource policy.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -4247,12 +4432,12 @@ public struct DeleteResourcePolicyInput {
     }
 }
 
-public struct DeleteResourcePolicyOutput {
+public struct DeleteResourcePolicyOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteSourceCredentialsInput {
+public struct DeleteSourceCredentialsInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the token.
     /// This member is required.
     public var arn: Swift.String?
@@ -4265,7 +4450,7 @@ public struct DeleteSourceCredentialsInput {
     }
 }
 
-public struct DeleteSourceCredentialsOutput {
+public struct DeleteSourceCredentialsOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the token.
     public var arn: Swift.String?
 
@@ -4277,7 +4462,7 @@ public struct DeleteSourceCredentialsOutput {
     }
 }
 
-public struct DeleteWebhookInput {
+public struct DeleteWebhookInput: Swift.Sendable {
     /// The name of the CodeBuild project.
     /// This member is required.
     public var projectName: Swift.String?
@@ -4290,14 +4475,14 @@ public struct DeleteWebhookInput {
     }
 }
 
-public struct DeleteWebhookOutput {
+public struct DeleteWebhookOutput: Swift.Sendable {
 
     public init() { }
 }
 
 extension CodeBuildClientTypes {
 
-    public enum ReportCodeCoverageSortByType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ReportCodeCoverageSortByType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case filePath
         case lineCoveragePercentage
         case sdkUnknown(Swift.String)
@@ -4326,7 +4511,7 @@ extension CodeBuildClientTypes {
 
 extension CodeBuildClientTypes {
 
-    public enum SortOrderType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SortOrderType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case ascending
         case descending
         case sdkUnknown(Swift.String)
@@ -4353,7 +4538,7 @@ extension CodeBuildClientTypes {
     }
 }
 
-public struct DescribeCodeCoveragesInput {
+public struct DescribeCodeCoveragesInput: Swift.Sendable {
     /// The maximum line coverage percentage to report.
     public var maxLineCoveragePercentage: Swift.Double?
     /// The maximum number of results to return.
@@ -4391,8 +4576,9 @@ public struct DescribeCodeCoveragesInput {
 }
 
 extension CodeBuildClientTypes {
+
     /// Contains code coverage report information. Line coverage measures how many statements your tests cover. A statement is a single instruction, not including comments, conditionals, etc. Branch coverage determines if your tests cover every possible branch of a control structure, such as an if or case statement.
-    public struct CodeCoverage {
+    public struct CodeCoverage: Swift.Sendable {
         /// The percentage of branches that are covered by your tests.
         public var branchCoveragePercentage: Swift.Double?
         /// The number of conditional branches that are covered by your tests.
@@ -4439,10 +4625,9 @@ extension CodeBuildClientTypes {
             self.reportARN = reportARN
         }
     }
-
 }
 
-public struct DescribeCodeCoveragesOutput {
+public struct DescribeCodeCoveragesOutput: Swift.Sendable {
     /// An array of CodeCoverage objects that contain the results.
     public var codeCoverages: [CodeBuildClientTypes.CodeCoverage]?
     /// If there are more items to return, this contains a token that is passed to a subsequent call to DescribeCodeCoverages to retrieve the next set of items.
@@ -4459,8 +4644,9 @@ public struct DescribeCodeCoveragesOutput {
 }
 
 extension CodeBuildClientTypes {
+
     /// A filter used to return specific types of test cases. In order to pass the filter, the report must meet all of the filter properties.
-    public struct TestCaseFilter {
+    public struct TestCaseFilter: Swift.Sendable {
         /// A keyword that is used to filter on the name or the prefix of the test cases. Only test cases where the keyword is a substring of the name or the prefix will be returned.
         public var keyword: Swift.String?
         /// The status used to filter test cases. A TestCaseFilter can have one status. Valid values are:
@@ -4485,10 +4671,9 @@ extension CodeBuildClientTypes {
             self.status = status
         }
     }
-
 }
 
-public struct DescribeTestCasesInput {
+public struct DescribeTestCasesInput: Swift.Sendable {
     /// A TestCaseFilter object used to filter the returned reports.
     public var filter: CodeBuildClientTypes.TestCaseFilter?
     /// The maximum number of paginated test cases returned per response. Use nextToken to iterate pages in the list of returned TestCase objects. The default value is 100.
@@ -4514,8 +4699,9 @@ public struct DescribeTestCasesInput {
 }
 
 extension CodeBuildClientTypes {
+
     /// Information about a test case created using a framework such as NUnit or Cucumber. A test case might be a unit test or a configuration test.
-    public struct TestCase {
+    public struct TestCase: Swift.Sendable {
         /// The number of nanoseconds it took to run this test case.
         public var durationInNanoSeconds: Swift.Int?
         /// The date and time a test case expires. A test case expires 30 days after it is created. An expired test case is not available to view in CodeBuild.
@@ -4554,10 +4740,9 @@ extension CodeBuildClientTypes {
             self.testRawDataPath = testRawDataPath
         }
     }
-
 }
 
-public struct DescribeTestCasesOutput {
+public struct DescribeTestCasesOutput: Swift.Sendable {
     /// During a previous call, the maximum number of items that can be returned is the value specified in maxResults. If there more items in the list, then a unique string called a nextToken is returned. To get the next batch of items in the list, call this operation again, adding the next token to the call. To get all of the items in the list, keep calling this operation with each subsequent next token that is returned, until no more next tokens are returned.
     public var nextToken: Swift.String?
     /// The returned list of test cases.
@@ -4575,7 +4760,7 @@ public struct DescribeTestCasesOutput {
 
 extension CodeBuildClientTypes {
 
-    public enum ReportGroupTrendFieldType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ReportGroupTrendFieldType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case branchesCovered
         case branchesMissed
         case branchCoverage
@@ -4623,7 +4808,7 @@ extension CodeBuildClientTypes {
     }
 }
 
-public struct GetReportGroupTrendInput {
+public struct GetReportGroupTrendInput: Swift.Sendable {
     /// The number of reports to analyze. This operation always retrieves the most recent reports. If this parameter is omitted, the most recent 100 reports are analyzed.
     public var numOfReports: Swift.Int?
     /// The ARN of the report group that contains the reports to analyze.
@@ -4646,8 +4831,9 @@ public struct GetReportGroupTrendInput {
 }
 
 extension CodeBuildClientTypes {
+
     /// Contains the unmodified data for the report. For more information, see .
-    public struct ReportWithRawData {
+    public struct ReportWithRawData: Swift.Sendable {
         /// The value of the requested data field from the report.
         public var data: Swift.String?
         /// The ARN of the report.
@@ -4662,12 +4848,12 @@ extension CodeBuildClientTypes {
             self.reportArn = reportArn
         }
     }
-
 }
 
 extension CodeBuildClientTypes {
+
     /// Contains trend statistics for a set of reports. The actual values depend on the type of trend being collected. For more information, see .
-    public struct ReportGroupTrendStats {
+    public struct ReportGroupTrendStats: Swift.Sendable {
         /// Contains the average of all values analyzed.
         public var average: Swift.String?
         /// Contains the maximum value analyzed.
@@ -4686,10 +4872,9 @@ extension CodeBuildClientTypes {
             self.min = min
         }
     }
-
 }
 
-public struct GetReportGroupTrendOutput {
+public struct GetReportGroupTrendOutput: Swift.Sendable {
     /// An array that contains the raw data for each report.
     public var rawData: [CodeBuildClientTypes.ReportWithRawData]?
     /// Contains the accumulated trend data.
@@ -4705,7 +4890,7 @@ public struct GetReportGroupTrendOutput {
     }
 }
 
-public struct GetResourcePolicyInput {
+public struct GetResourcePolicyInput: Swift.Sendable {
     /// The ARN of the resource that is associated with the resource policy.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -4718,7 +4903,7 @@ public struct GetResourcePolicyInput {
     }
 }
 
-public struct GetResourcePolicyOutput {
+public struct GetResourcePolicyOutput: Swift.Sendable {
     /// The resource policy for the resource identified by the input ARN parameter.
     public var policy: Swift.String?
 
@@ -4732,7 +4917,7 @@ public struct GetResourcePolicyOutput {
 
 extension CodeBuildClientTypes {
 
-    public enum ServerType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ServerType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case bitbucket
         case github
         case githubEnterprise
@@ -4768,7 +4953,7 @@ extension CodeBuildClientTypes {
     }
 }
 
-public struct ImportSourceCredentialsInput {
+public struct ImportSourceCredentialsInput: Swift.Sendable {
     /// The type of authentication used to connect to a GitHub, GitHub Enterprise, GitLab, GitLab Self Managed, or Bitbucket repository. An OAUTH connection is not supported by the API and must be created using the CodeBuild console.
     /// This member is required.
     public var authType: CodeBuildClientTypes.AuthType?
@@ -4804,7 +4989,7 @@ extension ImportSourceCredentialsInput: Swift.CustomDebugStringConvertible {
         "ImportSourceCredentialsInput(authType: \(Swift.String(describing: authType)), serverType: \(Swift.String(describing: serverType)), shouldOverwrite: \(Swift.String(describing: shouldOverwrite)), username: \(Swift.String(describing: username)), token: \"CONTENT_REDACTED\")"}
 }
 
-public struct ImportSourceCredentialsOutput {
+public struct ImportSourceCredentialsOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the token.
     public var arn: Swift.String?
 
@@ -4816,7 +5001,7 @@ public struct ImportSourceCredentialsOutput {
     }
 }
 
-public struct InvalidateProjectCacheInput {
+public struct InvalidateProjectCacheInput: Swift.Sendable {
     /// The name of the CodeBuild build project that the cache is reset for.
     /// This member is required.
     public var projectName: Swift.String?
@@ -4829,12 +5014,12 @@ public struct InvalidateProjectCacheInput {
     }
 }
 
-public struct InvalidateProjectCacheOutput {
+public struct InvalidateProjectCacheOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct ListBuildBatchesInput {
+public struct ListBuildBatchesInput: Swift.Sendable {
     /// A BuildBatchFilter object that specifies the filters for the search.
     public var filter: CodeBuildClientTypes.BuildBatchFilter?
     /// The maximum number of results to return.
@@ -4862,7 +5047,7 @@ public struct ListBuildBatchesInput {
     }
 }
 
-public struct ListBuildBatchesOutput {
+public struct ListBuildBatchesOutput: Swift.Sendable {
     /// An array of strings that contains the batch build identifiers.
     public var ids: [Swift.String]?
     /// If there are more items to return, this contains a token that is passed to a subsequent call to ListBuildBatches to retrieve the next set of items.
@@ -4878,7 +5063,7 @@ public struct ListBuildBatchesOutput {
     }
 }
 
-public struct ListBuildBatchesForProjectInput {
+public struct ListBuildBatchesForProjectInput: Swift.Sendable {
     /// A BuildBatchFilter object that specifies the filters for the search.
     public var filter: CodeBuildClientTypes.BuildBatchFilter?
     /// The maximum number of results to return.
@@ -4910,7 +5095,7 @@ public struct ListBuildBatchesForProjectInput {
     }
 }
 
-public struct ListBuildBatchesForProjectOutput {
+public struct ListBuildBatchesForProjectOutput: Swift.Sendable {
     /// An array of strings that contains the batch build identifiers.
     public var ids: [Swift.String]?
     /// If there are more items to return, this contains a token that is passed to a subsequent call to ListBuildBatchesForProject to retrieve the next set of items.
@@ -4926,7 +5111,7 @@ public struct ListBuildBatchesForProjectOutput {
     }
 }
 
-public struct ListBuildsInput {
+public struct ListBuildsInput: Swift.Sendable {
     /// During a previous call, if there are more than 100 items in the list, only the first 100 items are returned, along with a unique string called a nextToken. To get the next batch of items in the list, call this operation again, adding the next token to the call. To get all of the items in the list, keep calling this operation with each subsequent next token that is returned, until no more next tokens are returned.
     public var nextToken: Swift.String?
     /// The order to list build IDs. Valid values include:
@@ -4946,7 +5131,7 @@ public struct ListBuildsInput {
     }
 }
 
-public struct ListBuildsOutput {
+public struct ListBuildsOutput: Swift.Sendable {
     /// A list of build IDs, with each build ID representing a single build.
     public var ids: [Swift.String]?
     /// If there are more than 100 items in the list, only the first 100 items are returned, along with a unique string called a nextToken. To get the next batch of items in the list, call this operation again, adding the next token to the call.
@@ -4962,7 +5147,7 @@ public struct ListBuildsOutput {
     }
 }
 
-public struct ListBuildsForProjectInput {
+public struct ListBuildsForProjectInput: Swift.Sendable {
     /// During a previous call, if there are more than 100 items in the list, only the first 100 items are returned, along with a unique string called a nextToken. To get the next batch of items in the list, call this operation again, adding the next token to the call. To get all of the items in the list, keep calling this operation with each subsequent next token that is returned, until no more next tokens are returned.
     public var nextToken: Swift.String?
     /// The name of the CodeBuild project.
@@ -4990,7 +5175,7 @@ public struct ListBuildsForProjectInput {
     }
 }
 
-public struct ListBuildsForProjectOutput {
+public struct ListBuildsForProjectOutput: Swift.Sendable {
     /// A list of build identifiers for the specified build project, with each build ID representing a single build.
     public var ids: [Swift.String]?
     /// If there are more than 100 items in the list, only the first 100 items are returned, along with a unique string called a nextToken. To get the next batch of items in the list, call this operation again, adding the next token to the call.
@@ -5006,14 +5191,15 @@ public struct ListBuildsForProjectOutput {
     }
 }
 
-public struct ListCuratedEnvironmentImagesInput {
+public struct ListCuratedEnvironmentImagesInput: Swift.Sendable {
 
     public init() { }
 }
 
 extension CodeBuildClientTypes {
+
     /// Information about a Docker image that is managed by CodeBuild.
-    public struct EnvironmentImage {
+    public struct EnvironmentImage: Swift.Sendable {
         /// The description of the Docker image.
         public var description: Swift.String?
         /// The name of the Docker image.
@@ -5032,12 +5218,11 @@ extension CodeBuildClientTypes {
             self.versions = versions
         }
     }
-
 }
 
 extension CodeBuildClientTypes {
 
-    public enum LanguageType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum LanguageType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case android
         case base
         case docker
@@ -5089,8 +5274,9 @@ extension CodeBuildClientTypes {
 }
 
 extension CodeBuildClientTypes {
+
     /// A set of Docker images that are related by programming language and are managed by CodeBuild.
-    public struct EnvironmentLanguage {
+    public struct EnvironmentLanguage: Swift.Sendable {
         /// The list of Docker images that are related by the specified programming language.
         public var images: [CodeBuildClientTypes.EnvironmentImage]?
         /// The programming language for the Docker images.
@@ -5105,12 +5291,11 @@ extension CodeBuildClientTypes {
             self.language = language
         }
     }
-
 }
 
 extension CodeBuildClientTypes {
 
-    public enum PlatformType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum PlatformType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case amazonLinux
         case debian
         case ubuntu
@@ -5144,8 +5329,9 @@ extension CodeBuildClientTypes {
 }
 
 extension CodeBuildClientTypes {
+
     /// A set of Docker images that are related by platform and are managed by CodeBuild.
-    public struct EnvironmentPlatform {
+    public struct EnvironmentPlatform: Swift.Sendable {
         /// The list of programming languages that are available for the specified platform.
         public var languages: [CodeBuildClientTypes.EnvironmentLanguage]?
         /// The platform's name.
@@ -5160,10 +5346,9 @@ extension CodeBuildClientTypes {
             self.platform = platform
         }
     }
-
 }
 
-public struct ListCuratedEnvironmentImagesOutput {
+public struct ListCuratedEnvironmentImagesOutput: Swift.Sendable {
     /// Information about supported platforms for Docker images that are managed by CodeBuild.
     public var platforms: [CodeBuildClientTypes.EnvironmentPlatform]?
 
@@ -5177,7 +5362,7 @@ public struct ListCuratedEnvironmentImagesOutput {
 
 extension CodeBuildClientTypes {
 
-    public enum FleetSortByType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum FleetSortByType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case createdTime
         case lastModifiedTime
         case name
@@ -5207,7 +5392,7 @@ extension CodeBuildClientTypes {
     }
 }
 
-public struct ListFleetsInput {
+public struct ListFleetsInput: Swift.Sendable {
     /// The maximum number of paginated compute fleets returned per response. Use nextToken to iterate pages in the list of returned compute fleets.
     public var maxResults: Swift.Int?
     /// During a previous call, if there are more than 100 items in the list, only the first 100 items are returned, along with a unique string called a nextToken. To get the next batch of items in the list, call this operation again, adding the next token to the call. To get all of the items in the list, keep calling this operation with each subsequent next token that is returned, until no more next tokens are returned.
@@ -5252,7 +5437,7 @@ extension ListFleetsInput: Swift.CustomDebugStringConvertible {
         "ListFleetsInput(maxResults: \(Swift.String(describing: maxResults)), sortBy: \(Swift.String(describing: sortBy)), sortOrder: \(Swift.String(describing: sortOrder)), nextToken: \"CONTENT_REDACTED\")"}
 }
 
-public struct ListFleetsOutput {
+public struct ListFleetsOutput: Swift.Sendable {
     /// The list of compute fleet names.
     public var fleets: [Swift.String]?
     /// If there are more than 100 items in the list, only the first 100 items are returned, along with a unique string called a nextToken. To get the next batch of items in the list, call this operation again, adding the next token to the call.
@@ -5270,7 +5455,7 @@ public struct ListFleetsOutput {
 
 extension CodeBuildClientTypes {
 
-    public enum ProjectSortByType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ProjectSortByType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case createdTime
         case lastModifiedTime
         case name
@@ -5300,7 +5485,7 @@ extension CodeBuildClientTypes {
     }
 }
 
-public struct ListProjectsInput {
+public struct ListProjectsInput: Swift.Sendable {
     /// During a previous call, if there are more than 100 items in the list, only the first 100 items are returned, along with a unique string called a nextToken. To get the next batch of items in the list, call this operation again, adding the next token to the call. To get all of the items in the list, keep calling this operation with each subsequent next token that is returned, until no more next tokens are returned.
     public var nextToken: Swift.String?
     /// The criterion to be used to list build project names. Valid values include:
@@ -5336,7 +5521,7 @@ public struct ListProjectsInput {
     }
 }
 
-public struct ListProjectsOutput {
+public struct ListProjectsOutput: Swift.Sendable {
     /// If there are more than 100 items in the list, only the first 100 items are returned, along with a unique string called a nextToken. To get the next batch of items in the list, call this operation again, adding the next token to the call.
     public var nextToken: Swift.String?
     /// The list of build project names, with each build project name representing a single build project.
@@ -5354,7 +5539,7 @@ public struct ListProjectsOutput {
 
 extension CodeBuildClientTypes {
 
-    public enum ReportGroupSortByType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ReportGroupSortByType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case createdTime
         case lastModifiedTime
         case name
@@ -5384,7 +5569,7 @@ extension CodeBuildClientTypes {
     }
 }
 
-public struct ListReportGroupsInput {
+public struct ListReportGroupsInput: Swift.Sendable {
     /// The maximum number of paginated report groups returned per response. Use nextToken to iterate pages in the list of returned ReportGroup objects. The default value is 100.
     public var maxResults: Swift.Int?
     /// During a previous call, the maximum number of items that can be returned is the value specified in maxResults. If there more items in the list, then a unique string called a nextToken is returned. To get the next batch of items in the list, call this operation again, adding the next token to the call. To get all of the items in the list, keep calling this operation with each subsequent next token that is returned, until no more next tokens are returned.
@@ -5414,7 +5599,7 @@ public struct ListReportGroupsInput {
     }
 }
 
-public struct ListReportGroupsOutput {
+public struct ListReportGroupsOutput: Swift.Sendable {
     /// During a previous call, the maximum number of items that can be returned is the value specified in maxResults. If there more items in the list, then a unique string called a nextToken is returned. To get the next batch of items in the list, call this operation again, adding the next token to the call. To get all of the items in the list, keep calling this operation with each subsequent next token that is returned, until no more next tokens are returned.
     public var nextToken: Swift.String?
     /// The list of ARNs for the report groups in the current Amazon Web Services account.
@@ -5431,8 +5616,9 @@ public struct ListReportGroupsOutput {
 }
 
 extension CodeBuildClientTypes {
+
     /// A filter used to return reports with the status specified by the input status parameter.
-    public struct ReportFilter {
+    public struct ReportFilter: Swift.Sendable {
         /// The status used to filter reports. You can filter using one status only.
         public var status: CodeBuildClientTypes.ReportStatusType?
 
@@ -5443,10 +5629,9 @@ extension CodeBuildClientTypes {
             self.status = status
         }
     }
-
 }
 
-public struct ListReportsInput {
+public struct ListReportsInput: Swift.Sendable {
     /// A ReportFilter object used to filter the returned reports.
     public var filter: CodeBuildClientTypes.ReportFilter?
     /// The maximum number of paginated reports returned per response. Use nextToken to iterate pages in the list of returned Report objects. The default value is 100.
@@ -5474,7 +5659,7 @@ public struct ListReportsInput {
     }
 }
 
-public struct ListReportsOutput {
+public struct ListReportsOutput: Swift.Sendable {
     /// During a previous call, the maximum number of items that can be returned is the value specified in maxResults. If there more items in the list, then a unique string called a nextToken is returned. To get the next batch of items in the list, call this operation again, adding the next token to the call. To get all of the items in the list, keep calling this operation with each subsequent next token that is returned, until no more next tokens are returned.
     public var nextToken: Swift.String?
     /// The list of returned ARNs for the reports in the current Amazon Web Services account.
@@ -5490,7 +5675,7 @@ public struct ListReportsOutput {
     }
 }
 
-public struct ListReportsForReportGroupInput {
+public struct ListReportsForReportGroupInput: Swift.Sendable {
     /// A ReportFilter object used to filter the returned reports.
     public var filter: CodeBuildClientTypes.ReportFilter?
     /// The maximum number of paginated reports in this report group returned per response. Use nextToken to iterate pages in the list of returned Report objects. The default value is 100.
@@ -5519,7 +5704,7 @@ public struct ListReportsForReportGroupInput {
     }
 }
 
-public struct ListReportsForReportGroupOutput {
+public struct ListReportsForReportGroupOutput: Swift.Sendable {
     /// During a previous call, the maximum number of items that can be returned is the value specified in maxResults. If there more items in the list, then a unique string called a nextToken is returned. To get the next batch of items in the list, call this operation again, adding the next token to the call. To get all of the items in the list, keep calling this operation with each subsequent next token that is returned, until no more next tokens are returned.
     public var nextToken: Swift.String?
     /// The list of report ARNs.
@@ -5537,7 +5722,7 @@ public struct ListReportsForReportGroupOutput {
 
 extension CodeBuildClientTypes {
 
-    public enum SharedResourceSortByType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SharedResourceSortByType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case arn
         case modifiedTime
         case sdkUnknown(Swift.String)
@@ -5564,7 +5749,7 @@ extension CodeBuildClientTypes {
     }
 }
 
-public struct ListSharedProjectsInput {
+public struct ListSharedProjectsInput: Swift.Sendable {
     /// The maximum number of paginated shared build projects returned per response. Use nextToken to iterate pages in the list of returned Project objects. The default value is 100.
     public var maxResults: Swift.Int?
     /// During a previous call, the maximum number of items that can be returned is the value specified in maxResults. If there more items in the list, then a unique string called a nextToken is returned. To get the next batch of items in the list, call this operation again, adding the next token to the call. To get all of the items in the list, keep calling this operation with each subsequent next token that is returned, until no more next tokens are returned.
@@ -5596,7 +5781,7 @@ public struct ListSharedProjectsInput {
     }
 }
 
-public struct ListSharedProjectsOutput {
+public struct ListSharedProjectsOutput: Swift.Sendable {
     /// During a previous call, the maximum number of items that can be returned is the value specified in maxResults. If there more items in the list, then a unique string called a nextToken is returned. To get the next batch of items in the list, call this operation again, adding the next token to the call. To get all of the items in the list, keep calling this operation with each subsequent next token that is returned, until no more next tokens are returned.
     public var nextToken: Swift.String?
     /// The list of ARNs for the build projects shared with the current Amazon Web Services account or user.
@@ -5612,7 +5797,7 @@ public struct ListSharedProjectsOutput {
     }
 }
 
-public struct ListSharedReportGroupsInput {
+public struct ListSharedReportGroupsInput: Swift.Sendable {
     /// The maximum number of paginated shared report groups per response. Use nextToken to iterate pages in the list of returned ReportGroup objects. The default value is 100.
     public var maxResults: Swift.Int?
     /// During a previous call, the maximum number of items that can be returned is the value specified in maxResults. If there more items in the list, then a unique string called a nextToken is returned. To get the next batch of items in the list, call this operation again, adding the next token to the call. To get all of the items in the list, keep calling this operation with each subsequent next token that is returned, until no more next tokens are returned.
@@ -5644,7 +5829,7 @@ public struct ListSharedReportGroupsInput {
     }
 }
 
-public struct ListSharedReportGroupsOutput {
+public struct ListSharedReportGroupsOutput: Swift.Sendable {
     /// During a previous call, the maximum number of items that can be returned is the value specified in maxResults. If there more items in the list, then a unique string called a nextToken is returned. To get the next batch of items in the list, call this operation again, adding the next token to the call. To get all of the items in the list, keep calling this operation with each subsequent next token that is returned, until no more next tokens are returned.
     public var nextToken: Swift.String?
     /// The list of ARNs for the report groups shared with the current Amazon Web Services account or user.
@@ -5660,14 +5845,15 @@ public struct ListSharedReportGroupsOutput {
     }
 }
 
-public struct ListSourceCredentialsInput {
+public struct ListSourceCredentialsInput: Swift.Sendable {
 
     public init() { }
 }
 
 extension CodeBuildClientTypes {
+
     /// Information about the credentials for a GitHub, GitHub Enterprise, GitLab, GitLab Self Managed, or Bitbucket repository.
-    public struct SourceCredentialsInfo {
+    public struct SourceCredentialsInfo: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the token.
         public var arn: Swift.String?
         /// The type of authentication used by the credentials. Valid options are OAUTH, BASIC_AUTH, PERSONAL_ACCESS_TOKEN, CODECONNECTIONS, or SECRETS_MANAGER.
@@ -5690,10 +5876,9 @@ extension CodeBuildClientTypes {
             self.serverType = serverType
         }
     }
-
 }
 
-public struct ListSourceCredentialsOutput {
+public struct ListSourceCredentialsOutput: Swift.Sendable {
     /// A list of SourceCredentialsInfo objects. Each SourceCredentialsInfo object includes the authentication type, token ARN, and type of source provider for one set of credentials.
     public var sourceCredentialsInfos: [CodeBuildClientTypes.SourceCredentialsInfo]?
 
@@ -5705,7 +5890,7 @@ public struct ListSourceCredentialsOutput {
     }
 }
 
-public struct PutResourcePolicyInput {
+public struct PutResourcePolicyInput: Swift.Sendable {
     /// A JSON-formatted resource policy. For more information, see [Sharing a Project](https://docs.aws.amazon.com/codebuild/latest/userguide/project-sharing.html#project-sharing-share) and [Sharing a Report Group](https://docs.aws.amazon.com/codebuild/latest/userguide/report-groups-sharing.html#report-groups-sharing-share) in the CodeBuild User Guide.
     /// This member is required.
     public var policy: Swift.String?
@@ -5723,7 +5908,7 @@ public struct PutResourcePolicyInput {
     }
 }
 
-public struct PutResourcePolicyOutput {
+public struct PutResourcePolicyOutput: Swift.Sendable {
     /// The ARN of the Project or ReportGroup resource that is associated with a resource policy.
     public var resourceArn: Swift.String?
 
@@ -5735,7 +5920,7 @@ public struct PutResourcePolicyOutput {
     }
 }
 
-public struct RetryBuildInput {
+public struct RetryBuildInput: Swift.Sendable {
     /// Specifies the identifier of the build to restart.
     public var id: Swift.String?
     /// A unique, case sensitive identifier you provide to ensure the idempotency of the RetryBuild request. The token is included in the RetryBuild request and is valid for five minutes. If you repeat the RetryBuild request with the same token, but change a parameter, CodeBuild returns a parameter mismatch error.
@@ -5751,7 +5936,7 @@ public struct RetryBuildInput {
     }
 }
 
-public struct RetryBuildOutput {
+public struct RetryBuildOutput: Swift.Sendable {
     /// Information about a build.
     public var build: CodeBuildClientTypes.Build?
 
@@ -5765,7 +5950,7 @@ public struct RetryBuildOutput {
 
 extension CodeBuildClientTypes {
 
-    public enum RetryBuildBatchType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum RetryBuildBatchType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case retryAllBuilds
         case retryFailedBuilds
         case sdkUnknown(Swift.String)
@@ -5792,7 +5977,7 @@ extension CodeBuildClientTypes {
     }
 }
 
-public struct RetryBuildBatchInput {
+public struct RetryBuildBatchInput: Swift.Sendable {
     /// Specifies the identifier of the batch build to restart.
     public var id: Swift.String?
     /// A unique, case sensitive identifier you provide to ensure the idempotency of the RetryBuildBatch request. The token is included in the RetryBuildBatch request and is valid for five minutes. If you repeat the RetryBuildBatch request with the same token, but change a parameter, CodeBuild returns a parameter mismatch error.
@@ -5812,7 +5997,7 @@ public struct RetryBuildBatchInput {
     }
 }
 
-public struct RetryBuildBatchOutput {
+public struct RetryBuildBatchOutput: Swift.Sendable {
     /// Contains information about a batch build.
     public var buildBatch: CodeBuildClientTypes.BuildBatch?
 
@@ -5824,9 +6009,11 @@ public struct RetryBuildBatchOutput {
     }
 }
 
-public struct StartBuildInput {
+public struct StartBuildInput: Swift.Sendable {
     /// Build output artifact settings that override, for this build only, the latest ones already defined in the build project.
     public var artifactsOverride: CodeBuildClientTypes.ProjectArtifacts?
+    /// The maximum number of additional automatic retries after a failed build. For example, if the auto-retry limit is set to 2, CodeBuild will call the RetryBuild API to automatically retry your build for up to 2 additional times.
+    public var autoRetryLimitOverride: Swift.Int?
     /// Contains information that defines how the build project reports the build status to the source provider. This option is only used when the source provider is GITHUB, GITHUB_ENTERPRISE, or BITBUCKET.
     public var buildStatusConfigOverride: CodeBuildClientTypes.BuildStatusConfig?
     /// A buildspec file declaration that overrides the latest one defined in the build project, for this build only. The buildspec defined on the project is not changed. If this value is set, it can be either an inline buildspec definition, the path to an alternate buildspec file relative to the value of the built-in CODEBUILD_SRC_DIR environment variable, or the path to an S3 bucket. The bucket must be in the same Amazon Web Services Region as the build project. Specify the buildspec file using its ARN (for example, arn:aws:s3:::my-codebuild-sample2/buildspec.yml). If this value is not provided or is set to an empty string, the source code must contain a buildspec file in its root directory. For more information, see [Buildspec File Name and Storage Location](https://docs.aws.amazon.com/codebuild/latest/userguide/build-spec-ref.html#build-spec-ref-name-storage). Since this property allows you to change the build commands that will run in the container, you should note that an IAM principal with the ability to call this API and set this parameter can override the default settings. Moreover, we encourage that you use a trustworthy buildspec location like a file in your source repository or a Amazon S3 bucket.
@@ -5893,6 +6080,7 @@ public struct StartBuildInput {
 
     public init(
         artifactsOverride: CodeBuildClientTypes.ProjectArtifacts? = nil,
+        autoRetryLimitOverride: Swift.Int? = nil,
         buildStatusConfigOverride: CodeBuildClientTypes.BuildStatusConfig? = nil,
         buildspecOverride: Swift.String? = nil,
         cacheOverride: CodeBuildClientTypes.ProjectCache? = nil,
@@ -5927,6 +6115,7 @@ public struct StartBuildInput {
     )
     {
         self.artifactsOverride = artifactsOverride
+        self.autoRetryLimitOverride = autoRetryLimitOverride
         self.buildStatusConfigOverride = buildStatusConfigOverride
         self.buildspecOverride = buildspecOverride
         self.cacheOverride = cacheOverride
@@ -5961,7 +6150,7 @@ public struct StartBuildInput {
     }
 }
 
-public struct StartBuildOutput {
+public struct StartBuildOutput: Swift.Sendable {
     /// Information about the build to be run.
     public var build: CodeBuildClientTypes.Build?
 
@@ -5973,7 +6162,7 @@ public struct StartBuildOutput {
     }
 }
 
-public struct StartBuildBatchInput {
+public struct StartBuildBatchInput: Swift.Sendable {
     /// An array of ProjectArtifacts objects that contains information about the build output artifact overrides for the build project.
     public var artifactsOverride: CodeBuildClientTypes.ProjectArtifacts?
     /// A BuildBatchConfigOverride object that contains batch build configuration overrides.
@@ -6106,7 +6295,7 @@ public struct StartBuildBatchInput {
     }
 }
 
-public struct StartBuildBatchOutput {
+public struct StartBuildBatchOutput: Swift.Sendable {
     /// A BuildBatch object that contains information about the batch build.
     public var buildBatch: CodeBuildClientTypes.BuildBatch?
 
@@ -6118,7 +6307,7 @@ public struct StartBuildBatchOutput {
     }
 }
 
-public struct StopBuildInput {
+public struct StopBuildInput: Swift.Sendable {
     /// The ID of the build.
     /// This member is required.
     public var id: Swift.String?
@@ -6131,7 +6320,7 @@ public struct StopBuildInput {
     }
 }
 
-public struct StopBuildOutput {
+public struct StopBuildOutput: Swift.Sendable {
     /// Information about the build.
     public var build: CodeBuildClientTypes.Build?
 
@@ -6143,7 +6332,7 @@ public struct StopBuildOutput {
     }
 }
 
-public struct StopBuildBatchInput {
+public struct StopBuildBatchInput: Swift.Sendable {
     /// The identifier of the batch build to stop.
     /// This member is required.
     public var id: Swift.String?
@@ -6156,7 +6345,7 @@ public struct StopBuildBatchInput {
     }
 }
 
-public struct StopBuildBatchOutput {
+public struct StopBuildBatchOutput: Swift.Sendable {
     /// Contains information about a batch build.
     public var buildBatch: CodeBuildClientTypes.BuildBatch?
 
@@ -6168,7 +6357,7 @@ public struct StopBuildBatchOutput {
     }
 }
 
-public struct UpdateFleetInput {
+public struct UpdateFleetInput: Swift.Sendable {
     /// The ARN of the compute fleet.
     /// This member is required.
     public var arn: Swift.String?
@@ -6236,6 +6425,8 @@ public struct UpdateFleetInput {
     ///
     /// * For overflow behavior ON_DEMAND, your overflow builds run on CodeBuild on-demand. If you choose to set your overflow behavior to on-demand while creating a VPC-connected fleet, make sure that you add the required VPC permissions to your project service role. For more information, see [Example policy statement to allow CodeBuild access to Amazon Web Services services required to create a VPC network interface](https://docs.aws.amazon.com/codebuild/latest/userguide/auth-and-access-control-iam-identity-based-access-control.html#customer-managed-policies-example-create-vpc-network-interface).
     public var overflowBehavior: CodeBuildClientTypes.FleetOverflowBehavior?
+    /// The proxy configuration of the compute fleet.
+    public var proxyConfiguration: CodeBuildClientTypes.ProxyConfiguration?
     /// The scaling configuration of the compute fleet.
     public var scalingConfiguration: CodeBuildClientTypes.ScalingConfigurationInput?
     /// A list of tag key and value pairs associated with this compute fleet. These tags are available for use by Amazon Web Services services that support CodeBuild build project tags.
@@ -6251,6 +6442,7 @@ public struct UpdateFleetInput {
         fleetServiceRole: Swift.String? = nil,
         imageId: Swift.String? = nil,
         overflowBehavior: CodeBuildClientTypes.FleetOverflowBehavior? = nil,
+        proxyConfiguration: CodeBuildClientTypes.ProxyConfiguration? = nil,
         scalingConfiguration: CodeBuildClientTypes.ScalingConfigurationInput? = nil,
         tags: [CodeBuildClientTypes.Tag]? = nil,
         vpcConfig: CodeBuildClientTypes.VpcConfig? = nil
@@ -6263,13 +6455,14 @@ public struct UpdateFleetInput {
         self.fleetServiceRole = fleetServiceRole
         self.imageId = imageId
         self.overflowBehavior = overflowBehavior
+        self.proxyConfiguration = proxyConfiguration
         self.scalingConfiguration = scalingConfiguration
         self.tags = tags
         self.vpcConfig = vpcConfig
     }
 }
 
-public struct UpdateFleetOutput {
+public struct UpdateFleetOutput: Swift.Sendable {
     /// A Fleet object.
     public var fleet: CodeBuildClientTypes.Fleet?
 
@@ -6281,9 +6474,11 @@ public struct UpdateFleetOutput {
     }
 }
 
-public struct UpdateProjectInput {
+public struct UpdateProjectInput: Swift.Sendable {
     /// Information to be changed about the build output artifacts for the build project.
     public var artifacts: CodeBuildClientTypes.ProjectArtifacts?
+    /// The maximum number of additional automatic retries after a failed build. For example, if the auto-retry limit is set to 2, CodeBuild will call the RetryBuild API to automatically retry your build for up to 2 additional times.
+    public var autoRetryLimit: Swift.Int?
     /// Set this to true to generate a publicly accessible URL for your project's build badge.
     public var badgeEnabled: Swift.Bool?
     /// Contains configuration information about a batch build project.
@@ -6341,6 +6536,7 @@ public struct UpdateProjectInput {
 
     public init(
         artifacts: CodeBuildClientTypes.ProjectArtifacts? = nil,
+        autoRetryLimit: Swift.Int? = nil,
         badgeEnabled: Swift.Bool? = nil,
         buildBatchConfig: CodeBuildClientTypes.ProjectBuildBatchConfig? = nil,
         cache: CodeBuildClientTypes.ProjectCache? = nil,
@@ -6364,6 +6560,7 @@ public struct UpdateProjectInput {
     )
     {
         self.artifacts = artifacts
+        self.autoRetryLimit = autoRetryLimit
         self.badgeEnabled = badgeEnabled
         self.buildBatchConfig = buildBatchConfig
         self.cache = cache
@@ -6387,7 +6584,7 @@ public struct UpdateProjectInput {
     }
 }
 
-public struct UpdateProjectOutput {
+public struct UpdateProjectOutput: Swift.Sendable {
     /// Information about the build project that was changed.
     public var project: CodeBuildClientTypes.Project?
 
@@ -6399,7 +6596,7 @@ public struct UpdateProjectOutput {
     }
 }
 
-public struct UpdateProjectVisibilityInput {
+public struct UpdateProjectVisibilityInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the build project.
     /// This member is required.
     public var projectArn: Swift.String?
@@ -6421,7 +6618,7 @@ public struct UpdateProjectVisibilityInput {
     }
 }
 
-public struct UpdateProjectVisibilityOutput {
+public struct UpdateProjectVisibilityOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the build project.
     public var projectArn: Swift.String?
     /// Specifies the visibility of the project's builds. Possible values are: PUBLIC_READ The project builds are visible to the public. PRIVATE The project builds are not visible to the public.
@@ -6441,7 +6638,7 @@ public struct UpdateProjectVisibilityOutput {
     }
 }
 
-public struct UpdateReportGroupInput {
+public struct UpdateReportGroupInput: Swift.Sendable {
     /// The ARN of the report group to update.
     /// This member is required.
     public var arn: Swift.String?
@@ -6466,7 +6663,7 @@ public struct UpdateReportGroupInput {
     }
 }
 
-public struct UpdateReportGroupOutput {
+public struct UpdateReportGroupOutput: Swift.Sendable {
     /// Information about the updated report group.
     public var reportGroup: CodeBuildClientTypes.ReportGroup?
 
@@ -6478,7 +6675,7 @@ public struct UpdateReportGroupOutput {
     }
 }
 
-public struct UpdateWebhookInput {
+public struct UpdateWebhookInput: Swift.Sendable {
     /// A regular expression used to determine which repository branches are built when a webhook is triggered. If the name of a branch matches the regular expression, then it is built. If branchFilter is empty, then all branches are built. It is recommended that you use filterGroups instead of branchFilter.
     public var branchFilter: Swift.String?
     /// Specifies the type of build this webhook will trigger.
@@ -6507,7 +6704,7 @@ public struct UpdateWebhookInput {
     }
 }
 
-public struct UpdateWebhookOutput {
+public struct UpdateWebhookOutput: Swift.Sendable {
     /// Information about a repository's webhook that is associated with a project in CodeBuild.
     public var webhook: CodeBuildClientTypes.Webhook?
 
@@ -6936,6 +7133,7 @@ extension CreateFleetInput {
         try writer["imageId"].write(value.imageId)
         try writer["name"].write(value.name)
         try writer["overflowBehavior"].write(value.overflowBehavior)
+        try writer["proxyConfiguration"].write(value.proxyConfiguration, with: CodeBuildClientTypes.ProxyConfiguration.write(value:to:))
         try writer["scalingConfiguration"].write(value.scalingConfiguration, with: CodeBuildClientTypes.ScalingConfigurationInput.write(value:to:))
         try writer["tags"].writeList(value.tags, memberWritingClosure: CodeBuildClientTypes.Tag.write(value:to:), memberNodeInfo: "member", isFlattened: false)
         try writer["vpcConfig"].write(value.vpcConfig, with: CodeBuildClientTypes.VpcConfig.write(value:to:))
@@ -6947,6 +7145,7 @@ extension CreateProjectInput {
     static func write(value: CreateProjectInput?, to writer: SmithyJSON.Writer) throws {
         guard let value else { return }
         try writer["artifacts"].write(value.artifacts, with: CodeBuildClientTypes.ProjectArtifacts.write(value:to:))
+        try writer["autoRetryLimit"].write(value.autoRetryLimit)
         try writer["badgeEnabled"].write(value.badgeEnabled)
         try writer["buildBatchConfig"].write(value.buildBatchConfig, with: CodeBuildClientTypes.ProjectBuildBatchConfig.write(value:to:))
         try writer["cache"].write(value.cache, with: CodeBuildClientTypes.ProjectCache.write(value:to:))
@@ -7290,6 +7489,7 @@ extension StartBuildInput {
     static func write(value: StartBuildInput?, to writer: SmithyJSON.Writer) throws {
         guard let value else { return }
         try writer["artifactsOverride"].write(value.artifactsOverride, with: CodeBuildClientTypes.ProjectArtifacts.write(value:to:))
+        try writer["autoRetryLimitOverride"].write(value.autoRetryLimitOverride)
         try writer["buildStatusConfigOverride"].write(value.buildStatusConfigOverride, with: CodeBuildClientTypes.BuildStatusConfig.write(value:to:))
         try writer["buildspecOverride"].write(value.buildspecOverride)
         try writer["cacheOverride"].write(value.cacheOverride, with: CodeBuildClientTypes.ProjectCache.write(value:to:))
@@ -7389,6 +7589,7 @@ extension UpdateFleetInput {
         try writer["fleetServiceRole"].write(value.fleetServiceRole)
         try writer["imageId"].write(value.imageId)
         try writer["overflowBehavior"].write(value.overflowBehavior)
+        try writer["proxyConfiguration"].write(value.proxyConfiguration, with: CodeBuildClientTypes.ProxyConfiguration.write(value:to:))
         try writer["scalingConfiguration"].write(value.scalingConfiguration, with: CodeBuildClientTypes.ScalingConfigurationInput.write(value:to:))
         try writer["tags"].writeList(value.tags, memberWritingClosure: CodeBuildClientTypes.Tag.write(value:to:), memberNodeInfo: "member", isFlattened: false)
         try writer["vpcConfig"].write(value.vpcConfig, with: CodeBuildClientTypes.VpcConfig.write(value:to:))
@@ -7400,6 +7601,7 @@ extension UpdateProjectInput {
     static func write(value: UpdateProjectInput?, to writer: SmithyJSON.Writer) throws {
         guard let value else { return }
         try writer["artifacts"].write(value.artifacts, with: CodeBuildClientTypes.ProjectArtifacts.write(value:to:))
+        try writer["autoRetryLimit"].write(value.autoRetryLimit)
         try writer["badgeEnabled"].write(value.badgeEnabled)
         try writer["buildBatchConfig"].write(value.buildBatchConfig, with: CodeBuildClientTypes.ProjectBuildBatchConfig.write(value:to:))
         try writer["cache"].write(value.cache, with: CodeBuildClientTypes.ProjectCache.write(value:to:))
@@ -9354,6 +9556,20 @@ extension CodeBuildClientTypes.Build {
         value.fileSystemLocations = try reader["fileSystemLocations"].readListIfPresent(memberReadingClosure: CodeBuildClientTypes.ProjectFileSystemLocation.read(from:), memberNodeInfo: "member", isFlattened: false)
         value.debugSession = try reader["debugSession"].readIfPresent(with: CodeBuildClientTypes.DebugSession.read(from:))
         value.buildBatchArn = try reader["buildBatchArn"].readIfPresent()
+        value.autoRetryConfig = try reader["autoRetryConfig"].readIfPresent(with: CodeBuildClientTypes.AutoRetryConfig.read(from:))
+        return value
+    }
+}
+
+extension CodeBuildClientTypes.AutoRetryConfig {
+
+    static func read(from reader: SmithyJSON.Reader) throws -> CodeBuildClientTypes.AutoRetryConfig {
+        guard reader.hasContent else { throw SmithyReadWrite.ReaderError.requiredValueNotPresent }
+        var value = CodeBuildClientTypes.AutoRetryConfig()
+        value.autoRetryLimit = try reader["autoRetryLimit"].readIfPresent()
+        value.autoRetryNumber = try reader["autoRetryNumber"].readIfPresent()
+        value.nextAutoRetry = try reader["nextAutoRetry"].readIfPresent()
+        value.previousAutoRetry = try reader["previousAutoRetry"].readIfPresent()
         return value
     }
 }
@@ -9440,6 +9656,7 @@ extension CodeBuildClientTypes.Fleet {
         value.scalingConfiguration = try reader["scalingConfiguration"].readIfPresent(with: CodeBuildClientTypes.ScalingConfigurationOutput.read(from:))
         value.overflowBehavior = try reader["overflowBehavior"].readIfPresent()
         value.vpcConfig = try reader["vpcConfig"].readIfPresent(with: CodeBuildClientTypes.VpcConfig.read(from:))
+        value.proxyConfiguration = try reader["proxyConfiguration"].readIfPresent(with: CodeBuildClientTypes.ProxyConfiguration.read(from:))
         value.imageId = try reader["imageId"].readIfPresent()
         value.fleetServiceRole = try reader["fleetServiceRole"].readIfPresent()
         value.tags = try reader["tags"].readListIfPresent(memberReadingClosure: CodeBuildClientTypes.Tag.read(from:), memberNodeInfo: "member", isFlattened: false)
@@ -9460,6 +9677,42 @@ extension CodeBuildClientTypes.Tag {
         var value = CodeBuildClientTypes.Tag()
         value.key = try reader["key"].readIfPresent()
         value.value = try reader["value"].readIfPresent()
+        return value
+    }
+}
+
+extension CodeBuildClientTypes.ProxyConfiguration {
+
+    static func write(value: CodeBuildClientTypes.ProxyConfiguration?, to writer: SmithyJSON.Writer) throws {
+        guard let value else { return }
+        try writer["defaultBehavior"].write(value.defaultBehavior)
+        try writer["orderedProxyRules"].writeList(value.orderedProxyRules, memberWritingClosure: CodeBuildClientTypes.FleetProxyRule.write(value:to:), memberNodeInfo: "member", isFlattened: false)
+    }
+
+    static func read(from reader: SmithyJSON.Reader) throws -> CodeBuildClientTypes.ProxyConfiguration {
+        guard reader.hasContent else { throw SmithyReadWrite.ReaderError.requiredValueNotPresent }
+        var value = CodeBuildClientTypes.ProxyConfiguration()
+        value.defaultBehavior = try reader["defaultBehavior"].readIfPresent()
+        value.orderedProxyRules = try reader["orderedProxyRules"].readListIfPresent(memberReadingClosure: CodeBuildClientTypes.FleetProxyRule.read(from:), memberNodeInfo: "member", isFlattened: false)
+        return value
+    }
+}
+
+extension CodeBuildClientTypes.FleetProxyRule {
+
+    static func write(value: CodeBuildClientTypes.FleetProxyRule?, to writer: SmithyJSON.Writer) throws {
+        guard let value else { return }
+        try writer["effect"].write(value.effect)
+        try writer["entities"].writeList(value.entities, memberWritingClosure: SmithyReadWrite.WritingClosures.writeString(value:to:), memberNodeInfo: "member", isFlattened: false)
+        try writer["type"].write(value.type)
+    }
+
+    static func read(from reader: SmithyJSON.Reader) throws -> CodeBuildClientTypes.FleetProxyRule {
+        guard reader.hasContent else { throw SmithyReadWrite.ReaderError.requiredValueNotPresent }
+        var value = CodeBuildClientTypes.FleetProxyRule()
+        value.type = try reader["type"].readIfPresent() ?? .sdkUnknown("")
+        value.effect = try reader["effect"].readIfPresent() ?? .sdkUnknown("")
+        value.entities = try reader["entities"].readListIfPresent(memberReadingClosure: SmithyReadWrite.ReadingClosures.readString(from:), memberNodeInfo: "member", isFlattened: false) ?? []
         return value
     }
 }
@@ -9539,6 +9792,7 @@ extension CodeBuildClientTypes.Project {
         value.projectVisibility = try reader["projectVisibility"].readIfPresent()
         value.publicProjectAlias = try reader["publicProjectAlias"].readIfPresent()
         value.resourceAccessRole = try reader["resourceAccessRole"].readIfPresent()
+        value.autoRetryLimit = try reader["autoRetryLimit"].readIfPresent()
         return value
     }
 }

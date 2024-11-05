@@ -210,12 +210,12 @@ extension ElastiCacheClient {
     /// - `CacheSubnetGroupNotFoundFault` : The requested cache subnet group name does not refer to an existing cache subnet group.
     /// - `InvalidARNFault` : The requested Amazon Resource Name (ARN) does not refer to an existing resource.
     /// - `InvalidReplicationGroupStateFault` : The requested replication group is not in the available state.
-    /// - `InvalidServerlessCacheSnapshotStateFault` : The state of the serverless cache snapshot was not received. Available for Redis OSS and Serverless Memcached only.
+    /// - `InvalidServerlessCacheSnapshotStateFault` : The state of the serverless cache snapshot was not received. Available for Valkey, Redis OSS and Serverless Memcached only.
     /// - `InvalidServerlessCacheStateFault` : The account for these credentials is not currently active.
     /// - `ReplicationGroupNotFoundFault` : The specified replication group does not exist.
     /// - `ReservedCacheNodeNotFoundFault` : The requested reserved cache node was not found.
     /// - `ServerlessCacheNotFoundFault` : The serverless cache was not found or does not exist.
-    /// - `ServerlessCacheSnapshotNotFoundFault` : This serverless cache snapshot could not be found or does not exist. Available for Redis OSS and Serverless Memcached only.
+    /// - `ServerlessCacheSnapshotNotFoundFault` : This serverless cache snapshot could not be found or does not exist. Available for Valkey, Redis OSS and Serverless Memcached only.
     /// - `SnapshotNotFoundFault` : The requested snapshot name does not refer to an existing snapshot.
     /// - `TagQuotaPerResourceExceeded` : The request cannot be processed because it would cause the resource to have more than the allowed number of tags. The maximum number of tags permitted on a resource is 50.
     /// - `UserGroupNotFoundFault` : The user group was not found or does not exist
@@ -563,7 +563,7 @@ extension ElastiCacheClient {
 
     /// Performs the `CopyServerlessCacheSnapshot` operation on the `AmazonElastiCacheV9` service.
     ///
-    /// Creates a copy of an existing serverless cache’s snapshot. Available for Redis OSS and Serverless Memcached only.
+    /// Creates a copy of an existing serverless cache’s snapshot. Available for Valkey, Redis OSS and Serverless Memcached only.
     ///
     /// - Parameter CopyServerlessCacheSnapshotInput : [no documentation found]
     ///
@@ -574,10 +574,10 @@ extension ElastiCacheClient {
     /// __Possible Exceptions:__
     /// - `InvalidParameterCombinationException` : Two or more incompatible parameters were specified.
     /// - `InvalidParameterValueException` : The value for a parameter is invalid.
-    /// - `InvalidServerlessCacheSnapshotStateFault` : The state of the serverless cache snapshot was not received. Available for Redis OSS and Serverless Memcached only.
-    /// - `ServerlessCacheSnapshotAlreadyExistsFault` : A serverless cache snapshot with this name already exists. Available for Redis OSS and Serverless Memcached only.
-    /// - `ServerlessCacheSnapshotNotFoundFault` : This serverless cache snapshot could not be found or does not exist. Available for Redis OSS and Serverless Memcached only.
-    /// - `ServerlessCacheSnapshotQuotaExceededFault` : The number of serverless cache snapshots exceeds the customer snapshot quota. Available for Redis OSS and Serverless Memcached only.
+    /// - `InvalidServerlessCacheSnapshotStateFault` : The state of the serverless cache snapshot was not received. Available for Valkey, Redis OSS and Serverless Memcached only.
+    /// - `ServerlessCacheSnapshotAlreadyExistsFault` : A serverless cache snapshot with this name already exists. Available for Valkey, Redis OSS and Serverless Memcached only.
+    /// - `ServerlessCacheSnapshotNotFoundFault` : This serverless cache snapshot could not be found or does not exist. Available for Valkey, Redis OSS and Serverless Memcached only.
+    /// - `ServerlessCacheSnapshotQuotaExceededFault` : The number of serverless cache snapshots exceeds the customer snapshot quota. Available for Valkey, Redis OSS and Serverless Memcached only.
     /// - `ServiceLinkedRoleNotFoundFault` : The specified service linked role (SLR) was not found.
     /// - `TagQuotaPerResourceExceeded` : The request cannot be processed because it would cause the resource to have more than the allowed number of tags. The maximum number of tags permitted on a resource is 50.
     public func copyServerlessCacheSnapshot(input: CopyServerlessCacheSnapshotInput) async throws -> CopyServerlessCacheSnapshotOutput {
@@ -639,7 +639,7 @@ extension ElastiCacheClient {
 
     /// Performs the `CopySnapshot` operation on the `AmazonElastiCacheV9` service.
     ///
-    /// Makes a copy of an existing snapshot. This operation is valid for Redis OSS only. Users or groups that have permissions to use the CopySnapshot operation can create their own Amazon S3 buckets and copy snapshots to it. To control access to your snapshots, use an IAM policy to control who has the ability to use the CopySnapshot operation. For more information about using IAM to control the use of ElastiCache operations, see [Exporting Snapshots](https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/backups-exporting.html) and [Authentication & Access Control](https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/IAM.html). You could receive the following error messages. Error Messages
+    /// Makes a copy of an existing snapshot. This operation is valid for Valkey or Redis OSS only. Users or groups that have permissions to use the CopySnapshot operation can create their own Amazon S3 buckets and copy snapshots to it. To control access to your snapshots, use an IAM policy to control who has the ability to use the CopySnapshot operation. For more information about using IAM to control the use of ElastiCache operations, see [Exporting Snapshots](https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/backups-exporting.html) and [Authentication & Access Control](https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/IAM.html). You could receive the following error messages. Error Messages
     ///
     /// * Error Message: The S3 bucket %s is outside of the region. Solution: Create an Amazon S3 bucket in the same region as your snapshot. For more information, see [Step 1: Create an Amazon S3 Bucket](https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/backups-exporting.html#backups-exporting-create-s3-bucket) in the ElastiCache User Guide.
     ///
@@ -730,7 +730,7 @@ extension ElastiCacheClient {
 
     /// Performs the `CreateCacheCluster` operation on the `AmazonElastiCacheV9` service.
     ///
-    /// Creates a cluster. All nodes in the cluster run the same protocol-compliant cache engine software, either Memcached or Redis OSS. This operation is not supported for Redis OSS (cluster mode enabled) clusters.
+    /// Creates a cluster. All nodes in the cluster run the same protocol-compliant cache engine software, either Memcached, Valkey or Redis OSS. This operation is not supported for Valkey or Redis OSS (cluster mode enabled) clusters.
     ///
     /// - Parameter CreateCacheClusterInput : Represents the input of a CreateCacheCluster operation.
     ///
@@ -1037,7 +1037,7 @@ extension ElastiCacheClient {
 
     /// Performs the `CreateGlobalReplicationGroup` operation on the `AmazonElastiCacheV9` service.
     ///
-    /// Global Datastore for Redis OSS offers fully managed, fast, reliable and secure cross-region replication. Using Global Datastore for Redis OSS, you can create cross-region read replica clusters for ElastiCache (Redis OSS) to enable low-latency reads and disaster recovery across regions. For more information, see [Replication Across Regions Using Global Datastore](https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/Redis-Global-Datastore.html).
+    /// Global Datastore offers fully managed, fast, reliable and secure cross-region replication. Using Global Datastore with Valkey or Redis OSS, you can create cross-region read replica clusters for ElastiCache to enable low-latency reads and disaster recovery across regions. For more information, see [Replication Across Regions Using Global Datastore](https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/Redis-Global-Datastore.html).
     ///
     /// * The GlobalReplicationGroupIdSuffix is the name of the Global datastore.
     ///
@@ -1114,7 +1114,7 @@ extension ElastiCacheClient {
 
     /// Performs the `CreateReplicationGroup` operation on the `AmazonElastiCacheV9` service.
     ///
-    /// Creates a Redis OSS (cluster mode disabled) or a Redis OSS (cluster mode enabled) replication group. This API can be used to create a standalone regional replication group or a secondary replication group associated with a Global datastore. A Redis OSS (cluster mode disabled) replication group is a collection of nodes, where one of the nodes is a read/write primary and the others are read-only replicas. Writes to the primary are asynchronously propagated to the replicas. A Redis OSS cluster-mode enabled cluster is comprised of from 1 to 90 shards (API/CLI: node groups). Each shard has a primary node and up to 5 read-only replica nodes. The configuration can range from 90 shards and 0 replicas to 15 shards and 5 replicas, which is the maximum number or replicas allowed. The node or shard limit can be increased to a maximum of 500 per cluster if the Redis OSS engine version is 5.0.6 or higher. For example, you can choose to configure a 500 node cluster that ranges between 83 shards (one primary and 5 replicas per shard) and 500 shards (single primary and no replicas). Make sure there are enough available IP addresses to accommodate the increase. Common pitfalls include the subnets in the subnet group have too small a CIDR range or the subnets are shared and heavily used by other clusters. For more information, see [Creating a Subnet Group](https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/SubnetGroups.Creating.html). For versions below 5.0.6, the limit is 250 per cluster. To request a limit increase, see [Amazon Service Limits](https://docs.aws.amazon.com/general/latest/gr/aws_service_limits.html) and choose the limit type Nodes per cluster per instance type. When a Redis OSS (cluster mode disabled) replication group has been successfully created, you can add one or more read replicas to it, up to a total of 5 read replicas. If you need to increase or decrease the number of node groups (console: shards), you can use ElastiCache (Redis OSS) scaling. For more information, see [Scaling ElastiCache (Redis OSS) Clusters](https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/Scaling.html) in the ElastiCache User Guide. This operation is valid for Redis OSS only.
+    /// Creates a Valkey or Redis OSS (cluster mode disabled) or a Valkey or Redis OSS (cluster mode enabled) replication group. This API can be used to create a standalone regional replication group or a secondary replication group associated with a Global datastore. A Valkey or Redis OSS (cluster mode disabled) replication group is a collection of nodes, where one of the nodes is a read/write primary and the others are read-only replicas. Writes to the primary are asynchronously propagated to the replicas. A Valkey or Redis OSS cluster-mode enabled cluster is comprised of from 1 to 90 shards (API/CLI: node groups). Each shard has a primary node and up to 5 read-only replica nodes. The configuration can range from 90 shards and 0 replicas to 15 shards and 5 replicas, which is the maximum number or replicas allowed. The node or shard limit can be increased to a maximum of 500 per cluster if the Valkey or Redis OSS engine version is 5.0.6 or higher. For example, you can choose to configure a 500 node cluster that ranges between 83 shards (one primary and 5 replicas per shard) and 500 shards (single primary and no replicas). Make sure there are enough available IP addresses to accommodate the increase. Common pitfalls include the subnets in the subnet group have too small a CIDR range or the subnets are shared and heavily used by other clusters. For more information, see [Creating a Subnet Group](https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/SubnetGroups.Creating.html). For versions below 5.0.6, the limit is 250 per cluster. To request a limit increase, see [Amazon Service Limits](https://docs.aws.amazon.com/general/latest/gr/aws_service_limits.html) and choose the limit type Nodes per cluster per instance type. When a Valkey or Redis OSS (cluster mode disabled) replication group has been successfully created, you can add one or more read replicas to it, up to a total of 5 read replicas. If you need to increase or decrease the number of node groups (console: shards), you can use scaling. For more information, see [Scaling self-designed clusters](https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/Scaling.html) in the ElastiCache User Guide. This operation is valid for Valkey and Redis OSS only.
     ///
     /// - Parameter CreateReplicationGroupInput : Represents the input of a CreateReplicationGroup operation.
     ///
@@ -1280,7 +1280,7 @@ extension ElastiCacheClient {
 
     /// Performs the `CreateServerlessCacheSnapshot` operation on the `AmazonElastiCacheV9` service.
     ///
-    /// This API creates a copy of an entire ServerlessCache at a specific moment in time. Available for Redis OSS and Serverless Memcached only.
+    /// This API creates a copy of an entire ServerlessCache at a specific moment in time. Available for Valkey, Redis OSS and Serverless Memcached only.
     ///
     /// - Parameter CreateServerlessCacheSnapshotInput : [no documentation found]
     ///
@@ -1293,8 +1293,8 @@ extension ElastiCacheClient {
     /// - `InvalidParameterValueException` : The value for a parameter is invalid.
     /// - `InvalidServerlessCacheStateFault` : The account for these credentials is not currently active.
     /// - `ServerlessCacheNotFoundFault` : The serverless cache was not found or does not exist.
-    /// - `ServerlessCacheSnapshotAlreadyExistsFault` : A serverless cache snapshot with this name already exists. Available for Redis OSS and Serverless Memcached only.
-    /// - `ServerlessCacheSnapshotQuotaExceededFault` : The number of serverless cache snapshots exceeds the customer snapshot quota. Available for Redis OSS and Serverless Memcached only.
+    /// - `ServerlessCacheSnapshotAlreadyExistsFault` : A serverless cache snapshot with this name already exists. Available for Valkey, Redis OSS and Serverless Memcached only.
+    /// - `ServerlessCacheSnapshotQuotaExceededFault` : The number of serverless cache snapshots exceeds the customer snapshot quota. Available for Valkey, Redis OSS and Serverless Memcached only.
     /// - `ServiceLinkedRoleNotFoundFault` : The specified service linked role (SLR) was not found.
     /// - `TagQuotaPerResourceExceeded` : The request cannot be processed because it would cause the resource to have more than the allowed number of tags. The maximum number of tags permitted on a resource is 50.
     public func createServerlessCacheSnapshot(input: CreateServerlessCacheSnapshotInput) async throws -> CreateServerlessCacheSnapshotOutput {
@@ -1356,7 +1356,7 @@ extension ElastiCacheClient {
 
     /// Performs the `CreateSnapshot` operation on the `AmazonElastiCacheV9` service.
     ///
-    /// Creates a copy of an entire cluster or replication group at a specific moment in time. This operation is valid for Redis OSS only.
+    /// Creates a copy of an entire cluster or replication group at a specific moment in time. This operation is valid for Valkey or Redis OSS only.
     ///
     /// - Parameter CreateSnapshotInput : Represents the input of a CreateSnapshot operation.
     ///
@@ -1374,9 +1374,9 @@ extension ElastiCacheClient {
     /// - `SnapshotAlreadyExistsFault` : You already have a snapshot with the given name.
     /// - `SnapshotFeatureNotSupportedFault` : You attempted one of the following operations:
     ///
-    /// * Creating a snapshot of a Redis OSS cluster running on a cache.t1.micro cache node.
+    /// * Creating a snapshot of a Valkey or Redis OSS cluster running on a cache.t1.micro cache node.
     ///
-    /// * Creating a snapshot of a cluster that is running Memcached rather than Redis OSS.
+    /// * Creating a snapshot of a cluster that is running Memcached rather than Valkey or Redis OSS.
     ///
     ///
     /// Neither of these are supported by ElastiCache.
@@ -1441,7 +1441,7 @@ extension ElastiCacheClient {
 
     /// Performs the `CreateUser` operation on the `AmazonElastiCacheV9` service.
     ///
-    /// For Redis OSS engine version 6.0 onwards: Creates a Redis OSS user. For more information, see [Using Role Based Access Control (RBAC)](http://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/Clusters.RBAC.html).
+    /// For Valkey engine version 7.2 onwards and Redis OSS 6.0 and onwards: Creates a user. For more information, see [Using Role Based Access Control (RBAC)](http://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/Clusters.RBAC.html).
     ///
     /// - Parameter CreateUserInput : [no documentation found]
     ///
@@ -1516,7 +1516,7 @@ extension ElastiCacheClient {
 
     /// Performs the `CreateUserGroup` operation on the `AmazonElastiCacheV9` service.
     ///
-    /// For Redis OSS engine version 6.0 onwards: Creates a Redis OSS user group. For more information, see [Using Role Based Access Control (RBAC)](http://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/Clusters.RBAC.html)
+    /// For Valkey engine version 7.2 onwards and Redis OSS 6.0 onwards: Creates a user group. For more information, see [Using Role Based Access Control (RBAC)](http://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/Clusters.RBAC.html)
     ///
     /// - Parameter CreateUserGroupInput : [no documentation found]
     ///
@@ -1664,7 +1664,7 @@ extension ElastiCacheClient {
 
     /// Performs the `DecreaseReplicaCount` operation on the `AmazonElastiCacheV9` service.
     ///
-    /// Dynamically decreases the number of replicas in a Redis OSS (cluster mode disabled) replication group or the number of replica nodes in one or more node groups (shards) of a Redis OSS (cluster mode enabled) replication group. This operation is performed with no cluster down time.
+    /// Dynamically decreases the number of replicas in a Valkey or Redis OSS (cluster mode disabled) replication group or the number of replica nodes in one or more node groups (shards) of a Valkey or Redis OSS (cluster mode enabled) replication group. This operation is performed with no cluster down time.
     ///
     /// - Parameter DecreaseReplicaCountInput : [no documentation found]
     ///
@@ -1746,9 +1746,9 @@ extension ElastiCacheClient {
     ///
     /// Deletes a previously provisioned cluster. DeleteCacheCluster deletes all associated cache nodes, node endpoints and the cluster itself. When you receive a successful response from this operation, Amazon ElastiCache immediately begins deleting the cluster; you cannot cancel or revert this operation. This operation is not valid for:
     ///
-    /// * Redis OSS (cluster mode enabled) clusters
+    /// * Valkey or Redis OSS (cluster mode enabled) clusters
     ///
-    /// * Redis OSS (cluster mode disabled) clusters
+    /// * Valkey or Redis OSS (cluster mode disabled) clusters
     ///
     /// * A cluster that is the last read replica of a replication group
     ///
@@ -1756,7 +1756,7 @@ extension ElastiCacheClient {
     ///
     /// * A node group (shard) that has Multi-AZ mode enabled
     ///
-    /// * A cluster from a Redis OSS (cluster mode enabled) replication group
+    /// * A cluster from a Valkey or Redis OSS (cluster mode enabled) replication group
     ///
     /// * A cluster that is not in the available state
     ///
@@ -1774,9 +1774,9 @@ extension ElastiCacheClient {
     /// - `SnapshotAlreadyExistsFault` : You already have a snapshot with the given name.
     /// - `SnapshotFeatureNotSupportedFault` : You attempted one of the following operations:
     ///
-    /// * Creating a snapshot of a Redis OSS cluster running on a cache.t1.micro cache node.
+    /// * Creating a snapshot of a Valkey or Redis OSS cluster running on a cache.t1.micro cache node.
     ///
-    /// * Creating a snapshot of a cluster that is running Memcached rather than Redis OSS.
+    /// * Creating a snapshot of a cluster that is running Memcached rather than Valkey or Redis OSS.
     ///
     ///
     /// Neither of these are supported by ElastiCache.
@@ -2132,7 +2132,11 @@ extension ElastiCacheClient {
 
     /// Performs the `DeleteReplicationGroup` operation on the `AmazonElastiCacheV9` service.
     ///
-    /// Deletes an existing replication group. By default, this operation deletes the entire replication group, including the primary/primaries and all of the read replicas. If the replication group has only one primary, you can optionally delete only the read replicas, while retaining the primary by setting RetainPrimaryCluster=true. When you receive a successful response from this operation, Amazon ElastiCache immediately begins deleting the selected resources; you cannot cancel or revert this operation. This operation is valid for Redis OSS only.
+    /// Deletes an existing replication group. By default, this operation deletes the entire replication group, including the primary/primaries and all of the read replicas. If the replication group has only one primary, you can optionally delete only the read replicas, while retaining the primary by setting RetainPrimaryCluster=true. When you receive a successful response from this operation, Amazon ElastiCache immediately begins deleting the selected resources; you cannot cancel or revert this operation.
+    ///
+    /// * CreateSnapshot permission is required to create a final snapshot. Without this permission, the API call will fail with an Access Denied exception.
+    ///
+    /// * This operation is valid for Redis OSS only.
     ///
     /// - Parameter DeleteReplicationGroupInput : Represents the input of a DeleteReplicationGroup operation.
     ///
@@ -2148,9 +2152,9 @@ extension ElastiCacheClient {
     /// - `SnapshotAlreadyExistsFault` : You already have a snapshot with the given name.
     /// - `SnapshotFeatureNotSupportedFault` : You attempted one of the following operations:
     ///
-    /// * Creating a snapshot of a Redis OSS cluster running on a cache.t1.micro cache node.
+    /// * Creating a snapshot of a Valkey or Redis OSS cluster running on a cache.t1.micro cache node.
     ///
-    /// * Creating a snapshot of a cluster that is running Memcached rather than Redis OSS.
+    /// * Creating a snapshot of a cluster that is running Memcached rather than Valkey or Redis OSS.
     ///
     ///
     /// Neither of these are supported by ElastiCache.
@@ -2214,7 +2218,7 @@ extension ElastiCacheClient {
 
     /// Performs the `DeleteServerlessCache` operation on the `AmazonElastiCacheV9` service.
     ///
-    /// Deletes a specified existing serverless cache.
+    /// Deletes a specified existing serverless cache. CreateServerlessCacheSnapshot permission is required to create a final snapshot. Without this permission, the API call will fail with an Access Denied exception.
     ///
     /// - Parameter DeleteServerlessCacheInput : [no documentation found]
     ///
@@ -2228,7 +2232,7 @@ extension ElastiCacheClient {
     /// - `InvalidParameterValueException` : The value for a parameter is invalid.
     /// - `InvalidServerlessCacheStateFault` : The account for these credentials is not currently active.
     /// - `ServerlessCacheNotFoundFault` : The serverless cache was not found or does not exist.
-    /// - `ServerlessCacheSnapshotAlreadyExistsFault` : A serverless cache snapshot with this name already exists. Available for Redis OSS and Serverless Memcached only.
+    /// - `ServerlessCacheSnapshotAlreadyExistsFault` : A serverless cache snapshot with this name already exists. Available for Valkey, Redis OSS and Serverless Memcached only.
     /// - `ServiceLinkedRoleNotFoundFault` : The specified service linked role (SLR) was not found.
     public func deleteServerlessCache(input: DeleteServerlessCacheInput) async throws -> DeleteServerlessCacheOutput {
         let context = Smithy.ContextBuilder()
@@ -2289,7 +2293,7 @@ extension ElastiCacheClient {
 
     /// Performs the `DeleteServerlessCacheSnapshot` operation on the `AmazonElastiCacheV9` service.
     ///
-    /// Deletes an existing serverless cache snapshot. Available for Redis OSS and Serverless Memcached only.
+    /// Deletes an existing serverless cache snapshot. Available for Valkey, Redis OSS and Serverless Memcached only.
     ///
     /// - Parameter DeleteServerlessCacheSnapshotInput : [no documentation found]
     ///
@@ -2299,8 +2303,8 @@ extension ElastiCacheClient {
     ///
     /// __Possible Exceptions:__
     /// - `InvalidParameterValueException` : The value for a parameter is invalid.
-    /// - `InvalidServerlessCacheSnapshotStateFault` : The state of the serverless cache snapshot was not received. Available for Redis OSS and Serverless Memcached only.
-    /// - `ServerlessCacheSnapshotNotFoundFault` : This serverless cache snapshot could not be found or does not exist. Available for Redis OSS and Serverless Memcached only.
+    /// - `InvalidServerlessCacheSnapshotStateFault` : The state of the serverless cache snapshot was not received. Available for Valkey, Redis OSS and Serverless Memcached only.
+    /// - `ServerlessCacheSnapshotNotFoundFault` : This serverless cache snapshot could not be found or does not exist. Available for Valkey, Redis OSS and Serverless Memcached only.
     /// - `ServiceLinkedRoleNotFoundFault` : The specified service linked role (SLR) was not found.
     public func deleteServerlessCacheSnapshot(input: DeleteServerlessCacheSnapshotInput) async throws -> DeleteServerlessCacheSnapshotOutput {
         let context = Smithy.ContextBuilder()
@@ -2361,7 +2365,7 @@ extension ElastiCacheClient {
 
     /// Performs the `DeleteSnapshot` operation on the `AmazonElastiCacheV9` service.
     ///
-    /// Deletes an existing snapshot. When you receive a successful response from this operation, ElastiCache immediately begins deleting the snapshot; you cannot cancel or revert this operation. This operation is valid for Redis OSS only.
+    /// Deletes an existing snapshot. When you receive a successful response from this operation, ElastiCache immediately begins deleting the snapshot; you cannot cancel or revert this operation. This operation is valid for Valkey or Redis OSS only.
     ///
     /// - Parameter DeleteSnapshotInput : Represents the input of a DeleteSnapshot operation.
     ///
@@ -2433,7 +2437,7 @@ extension ElastiCacheClient {
 
     /// Performs the `DeleteUser` operation on the `AmazonElastiCacheV9` service.
     ///
-    /// For Redis OSS engine version 6.0 onwards: Deletes a user. The user will be removed from all user groups and in turn removed from all replication groups. For more information, see [Using Role Based Access Control (RBAC)](http://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/Clusters.RBAC.html).
+    /// For Valkey engine version 7.2 onwards and Redis OSS 6.0 onwards: Deletes a user. The user will be removed from all user groups and in turn removed from all replication groups. For more information, see [Using Role Based Access Control (RBAC)](http://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/Clusters.RBAC.html).
     ///
     /// - Parameter DeleteUserInput : [no documentation found]
     ///
@@ -2506,7 +2510,7 @@ extension ElastiCacheClient {
 
     /// Performs the `DeleteUserGroup` operation on the `AmazonElastiCacheV9` service.
     ///
-    /// For Redis OSS engine version 6.0 onwards: Deletes a user group. The user group must first be disassociated from the replication group before it can be deleted. For more information, see [Using Role Based Access Control (RBAC)](http://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/Clusters.RBAC.html).
+    /// For Valkey engine version 7.2 onwards and Redis OSS 6.0 onwards: Deletes a user group. The user group must first be disassociated from the replication group before it can be deleted. For more information, see [Using Role Based Access Control (RBAC)](http://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/Clusters.RBAC.html).
     ///
     /// - Parameter DeleteUserGroupInput : [no documentation found]
     ///
@@ -3206,7 +3210,7 @@ extension ElastiCacheClient {
 
     /// Performs the `DescribeReplicationGroups` operation on the `AmazonElastiCacheV9` service.
     ///
-    /// Returns information about a particular replication group. If no identifier is specified, DescribeReplicationGroups returns information about all replication groups. This operation is valid for Redis OSS only.
+    /// Returns information about a particular replication group. If no identifier is specified, DescribeReplicationGroups returns information about all replication groups. This operation is valid for Valkey or Redis OSS only.
     ///
     /// - Parameter DescribeReplicationGroupsInput : Represents the input of a DescribeReplicationGroups operation.
     ///
@@ -3419,7 +3423,7 @@ extension ElastiCacheClient {
 
     /// Performs the `DescribeServerlessCacheSnapshots` operation on the `AmazonElastiCacheV9` service.
     ///
-    /// Returns information about serverless cache snapshots. By default, this API lists all of the customer’s serverless cache snapshots. It can also describe a single serverless cache snapshot, or the snapshots associated with a particular serverless cache. Available for Redis OSS and Serverless Memcached only.
+    /// Returns information about serverless cache snapshots. By default, this API lists all of the customer’s serverless cache snapshots. It can also describe a single serverless cache snapshot, or the snapshots associated with a particular serverless cache. Available for Valkey, Redis OSS and Serverless Memcached only.
     ///
     /// - Parameter DescribeServerlessCacheSnapshotsInput : [no documentation found]
     ///
@@ -3431,7 +3435,7 @@ extension ElastiCacheClient {
     /// - `InvalidParameterCombinationException` : Two or more incompatible parameters were specified.
     /// - `InvalidParameterValueException` : The value for a parameter is invalid.
     /// - `ServerlessCacheNotFoundFault` : The serverless cache was not found or does not exist.
-    /// - `ServerlessCacheSnapshotNotFoundFault` : This serverless cache snapshot could not be found or does not exist. Available for Redis OSS and Serverless Memcached only.
+    /// - `ServerlessCacheSnapshotNotFoundFault` : This serverless cache snapshot could not be found or does not exist. Available for Valkey, Redis OSS and Serverless Memcached only.
     public func describeServerlessCacheSnapshots(input: DescribeServerlessCacheSnapshotsInput) async throws -> DescribeServerlessCacheSnapshotsOutput {
         let context = Smithy.ContextBuilder()
                       .withMethod(value: .post)
@@ -3633,7 +3637,7 @@ extension ElastiCacheClient {
 
     /// Performs the `DescribeSnapshots` operation on the `AmazonElastiCacheV9` service.
     ///
-    /// Returns information about cluster or replication group snapshots. By default, DescribeSnapshots lists all of your snapshots; it can optionally describe a single snapshot, or just the snapshots associated with a particular cache cluster. This operation is valid for Redis OSS only.
+    /// Returns information about cluster or replication group snapshots. By default, DescribeSnapshots lists all of your snapshots; it can optionally describe a single snapshot, or just the snapshots associated with a particular cache cluster. This operation is valid for Valkey or Redis OSS only.
     ///
     /// - Parameter DescribeSnapshotsInput : Represents the input of a DescribeSnapshotsMessage operation.
     ///
@@ -3989,7 +3993,7 @@ extension ElastiCacheClient {
 
     /// Performs the `ExportServerlessCacheSnapshot` operation on the `AmazonElastiCacheV9` service.
     ///
-    /// Provides the functionality to export the serverless cache snapshot data to Amazon S3. Available for Redis OSS only.
+    /// Provides the functionality to export the serverless cache snapshot data to Amazon S3. Available for Valkey and Redis OSS only.
     ///
     /// - Parameter ExportServerlessCacheSnapshotInput : [no documentation found]
     ///
@@ -3999,8 +4003,8 @@ extension ElastiCacheClient {
     ///
     /// __Possible Exceptions:__
     /// - `InvalidParameterValueException` : The value for a parameter is invalid.
-    /// - `InvalidServerlessCacheSnapshotStateFault` : The state of the serverless cache snapshot was not received. Available for Redis OSS and Serverless Memcached only.
-    /// - `ServerlessCacheSnapshotNotFoundFault` : This serverless cache snapshot could not be found or does not exist. Available for Redis OSS and Serverless Memcached only.
+    /// - `InvalidServerlessCacheSnapshotStateFault` : The state of the serverless cache snapshot was not received. Available for Valkey, Redis OSS and Serverless Memcached only.
+    /// - `ServerlessCacheSnapshotNotFoundFault` : This serverless cache snapshot could not be found or does not exist. Available for Valkey, Redis OSS and Serverless Memcached only.
     /// - `ServiceLinkedRoleNotFoundFault` : The specified service linked role (SLR) was not found.
     public func exportServerlessCacheSnapshot(input: ExportServerlessCacheSnapshotInput) async throws -> ExportServerlessCacheSnapshotOutput {
         let context = Smithy.ContextBuilder()
@@ -4204,7 +4208,7 @@ extension ElastiCacheClient {
 
     /// Performs the `IncreaseReplicaCount` operation on the `AmazonElastiCacheV9` service.
     ///
-    /// Dynamically increases the number of replicas in a Redis OSS (cluster mode disabled) replication group or the number of replica nodes in one or more node groups (shards) of a Redis OSS (cluster mode enabled) replication group. This operation is performed with no cluster down time.
+    /// Dynamically increases the number of replicas in a Valkey or Redis OSS (cluster mode disabled) replication group or the number of replica nodes in one or more node groups (shards) of a Valkey or Redis OSS (cluster mode enabled) replication group. This operation is performed with no cluster down time.
     ///
     /// - Parameter IncreaseReplicaCountInput : [no documentation found]
     ///
@@ -4284,7 +4288,7 @@ extension ElastiCacheClient {
 
     /// Performs the `ListAllowedNodeTypeModifications` operation on the `AmazonElastiCacheV9` service.
     ///
-    /// Lists all available node types that you can scale your Redis OSS cluster's or replication group's current node type. When you use the ModifyCacheCluster or ModifyReplicationGroup operations to scale your cluster or replication group, the value of the CacheNodeType parameter must be one of the node types returned by this operation.
+    /// Lists all available node types that you can scale with your cluster's replication group's current node type. When you use the ModifyCacheCluster or ModifyReplicationGroup operations to scale your cluster or replication group, the value of the CacheNodeType parameter must be one of the node types returned by this operation.
     ///
     /// - Parameter ListAllowedNodeTypeModificationsInput : The input parameters for the ListAllowedNodeTypeModifications operation.
     ///
@@ -4371,12 +4375,12 @@ extension ElastiCacheClient {
     /// - `CacheSubnetGroupNotFoundFault` : The requested cache subnet group name does not refer to an existing cache subnet group.
     /// - `InvalidARNFault` : The requested Amazon Resource Name (ARN) does not refer to an existing resource.
     /// - `InvalidReplicationGroupStateFault` : The requested replication group is not in the available state.
-    /// - `InvalidServerlessCacheSnapshotStateFault` : The state of the serverless cache snapshot was not received. Available for Redis OSS and Serverless Memcached only.
+    /// - `InvalidServerlessCacheSnapshotStateFault` : The state of the serverless cache snapshot was not received. Available for Valkey, Redis OSS and Serverless Memcached only.
     /// - `InvalidServerlessCacheStateFault` : The account for these credentials is not currently active.
     /// - `ReplicationGroupNotFoundFault` : The specified replication group does not exist.
     /// - `ReservedCacheNodeNotFoundFault` : The requested reserved cache node was not found.
     /// - `ServerlessCacheNotFoundFault` : The serverless cache was not found or does not exist.
-    /// - `ServerlessCacheSnapshotNotFoundFault` : This serverless cache snapshot could not be found or does not exist. Available for Redis OSS and Serverless Memcached only.
+    /// - `ServerlessCacheSnapshotNotFoundFault` : This serverless cache snapshot could not be found or does not exist. Available for Valkey, Redis OSS and Serverless Memcached only.
     /// - `SnapshotNotFoundFault` : The requested snapshot name does not refer to an existing snapshot.
     /// - `UserGroupNotFoundFault` : The user group was not found or does not exist
     /// - `UserNotFoundFault` : The user does not exist or could not be found.
@@ -4739,14 +4743,14 @@ extension ElastiCacheClient {
 
     /// Performs the `ModifyReplicationGroup` operation on the `AmazonElastiCacheV9` service.
     ///
-    /// Modifies the settings for a replication group. This is limited to Redis OSS 7 and newer.
+    /// Modifies the settings for a replication group. This is limited to Valkey and Redis OSS 7 and above.
     ///
-    /// * [Scaling for Amazon ElastiCache (Redis OSS) (cluster mode enabled)](https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/scaling-redis-cluster-mode-enabled.html) in the ElastiCache User Guide
+    /// * [Scaling for Valkey or Redis OSS (cluster mode enabled)](https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/scaling-redis-cluster-mode-enabled.html) in the ElastiCache User Guide
     ///
     /// * [ModifyReplicationGroupShardConfiguration](https://docs.aws.amazon.com/AmazonElastiCache/latest/APIReference/API_ModifyReplicationGroupShardConfiguration.html) in the ElastiCache API Reference
     ///
     ///
-    /// This operation is valid for Redis OSS only.
+    /// This operation is valid for Valkey or Redis OSS only.
     ///
     /// - Parameter ModifyReplicationGroupInput : Represents the input of a ModifyReplicationGroups operation.
     ///
@@ -5133,7 +5137,7 @@ extension ElastiCacheClient {
 
     /// Performs the `PurchaseReservedCacheNodesOffering` operation on the `AmazonElastiCacheV9` service.
     ///
-    /// Allows you to purchase a reserved cache node offering. Reserved nodes are not eligible for cancellation and are non-refundable. For more information, see [Managing Costs with Reserved Nodes](https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/reserved-nodes.html) for Redis OSS or [Managing Costs with Reserved Nodes](https://docs.aws.amazon.com/AmazonElastiCache/latest/mem-ug/reserved-nodes.html) for Memcached.
+    /// Allows you to purchase a reserved cache node offering. Reserved nodes are not eligible for cancellation and are non-refundable. For more information, see [Managing Costs with Reserved Nodes](https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/reserved-nodes.html).
     ///
     /// - Parameter PurchaseReservedCacheNodesOfferingInput : Represents the input of a PurchaseReservedCacheNodesOffering operation.
     ///
@@ -5278,7 +5282,7 @@ extension ElastiCacheClient {
 
     /// Performs the `RebootCacheCluster` operation on the `AmazonElastiCacheV9` service.
     ///
-    /// Reboots some, or all, of the cache nodes within a provisioned cluster. This operation applies any modified cache parameter groups to the cluster. The reboot operation takes place as soon as possible, and results in a momentary outage to the cluster. During the reboot, the cluster status is set to REBOOTING. The reboot causes the contents of the cache (for each cache node being rebooted) to be lost. When the reboot is complete, a cluster event is created. Rebooting a cluster is currently supported on Memcached and Redis OSS (cluster mode disabled) clusters. Rebooting is not supported on Redis OSS (cluster mode enabled) clusters. If you make changes to parameters that require a Redis OSS (cluster mode enabled) cluster reboot for the changes to be applied, see [Rebooting a Cluster](http://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/nodes.rebooting.html) for an alternate process.
+    /// Reboots some, or all, of the cache nodes within a provisioned cluster. This operation applies any modified cache parameter groups to the cluster. The reboot operation takes place as soon as possible, and results in a momentary outage to the cluster. During the reboot, the cluster status is set to REBOOTING. The reboot causes the contents of the cache (for each cache node being rebooted) to be lost. When the reboot is complete, a cluster event is created. Rebooting a cluster is currently supported on Memcached, Valkey and Redis OSS (cluster mode disabled) clusters. Rebooting is not supported on Valkey or Redis OSS (cluster mode enabled) clusters. If you make changes to parameters that require a Valkey or Redis OSS (cluster mode enabled) cluster reboot for the changes to be applied, see [Rebooting a Cluster](http://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/nodes.rebooting.html) for an alternate process.
     ///
     /// - Parameter RebootCacheClusterInput : Represents the input of a RebootCacheCluster operation.
     ///
@@ -5363,12 +5367,12 @@ extension ElastiCacheClient {
     /// - `CacheSubnetGroupNotFoundFault` : The requested cache subnet group name does not refer to an existing cache subnet group.
     /// - `InvalidARNFault` : The requested Amazon Resource Name (ARN) does not refer to an existing resource.
     /// - `InvalidReplicationGroupStateFault` : The requested replication group is not in the available state.
-    /// - `InvalidServerlessCacheSnapshotStateFault` : The state of the serverless cache snapshot was not received. Available for Redis OSS and Serverless Memcached only.
+    /// - `InvalidServerlessCacheSnapshotStateFault` : The state of the serverless cache snapshot was not received. Available for Valkey, Redis OSS and Serverless Memcached only.
     /// - `InvalidServerlessCacheStateFault` : The account for these credentials is not currently active.
     /// - `ReplicationGroupNotFoundFault` : The specified replication group does not exist.
     /// - `ReservedCacheNodeNotFoundFault` : The requested reserved cache node was not found.
     /// - `ServerlessCacheNotFoundFault` : The serverless cache was not found or does not exist.
-    /// - `ServerlessCacheSnapshotNotFoundFault` : This serverless cache snapshot could not be found or does not exist. Available for Redis OSS and Serverless Memcached only.
+    /// - `ServerlessCacheSnapshotNotFoundFault` : This serverless cache snapshot could not be found or does not exist. Available for Valkey, Redis OSS and Serverless Memcached only.
     /// - `SnapshotNotFoundFault` : The requested snapshot name does not refer to an existing snapshot.
     /// - `TagNotFoundFault` : The requested tag was not found on this resource.
     /// - `UserGroupNotFoundFault` : The user group was not found or does not exist
@@ -5660,7 +5664,7 @@ extension ElastiCacheClient {
     ///
     /// * If calling this operation on shards in different clusters (called replication groups in the API and CLI), the calls can be made concurrently.
     ///
-    /// * If calling this operation multiple times on different shards in the same Redis OSS (cluster mode enabled) replication group, the first node replacement must complete before a subsequent call can be made.
+    /// * If calling this operation multiple times on different shards in the same Valkey or Redis OSS (cluster mode enabled) replication group, the first node replacement must complete before a subsequent call can be made.
     ///
     /// * To determine whether the node replacement is complete you can check Events using the Amazon ElastiCache console, the Amazon CLI, or the ElastiCache API. Look for the following automatic failover related events, listed here in order of occurrance:
     ///

@@ -30,119 +30,121 @@ import struct Smithy.URIQueryItem
 @_spi(SmithyReadWrite) import struct SmithyReadWrite.WritingClosureBox
 @_spi(SmithyTimestamps) import struct SmithyTimestamps.TimestampFormatter
 
-public struct DeleteBackupSelectionOutput {
+
+public struct DeleteBackupSelectionOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteBackupVaultAccessPolicyOutput {
+public struct DeleteBackupVaultAccessPolicyOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteBackupVaultLockConfigurationOutput {
+public struct DeleteBackupVaultLockConfigurationOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteBackupVaultNotificationsOutput {
+public struct DeleteBackupVaultNotificationsOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteBackupVaultOutput {
+public struct DeleteBackupVaultOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteFrameworkOutput {
+public struct DeleteFrameworkOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteRecoveryPointOutput {
+public struct DeleteRecoveryPointOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteReportPlanOutput {
+public struct DeleteReportPlanOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteRestoreTestingPlanOutput {
+public struct DeleteRestoreTestingPlanOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteRestoreTestingSelectionOutput {
+public struct DeleteRestoreTestingSelectionOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DisassociateRecoveryPointFromParentOutput {
+public struct DisassociateRecoveryPointFromParentOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DisassociateRecoveryPointOutput {
+public struct DisassociateRecoveryPointOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct GetSupportedResourceTypesInput {
+public struct GetSupportedResourceTypesInput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct PutBackupVaultAccessPolicyOutput {
+public struct PutBackupVaultAccessPolicyOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct PutBackupVaultLockConfigurationOutput {
+public struct PutBackupVaultLockConfigurationOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct PutBackupVaultNotificationsOutput {
+public struct PutBackupVaultNotificationsOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct PutRestoreValidationResultOutput {
+public struct PutRestoreValidationResultOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct StopBackupJobOutput {
+public struct StopBackupJobOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct TagResourceOutput {
+public struct TagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UntagResourceOutput {
+public struct UntagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdateGlobalSettingsOutput {
+public struct UpdateGlobalSettingsOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdateRegionSettingsOutput {
+public struct UpdateRegionSettingsOutput: Swift.Sendable {
 
     public init() { }
 }
 
 extension BackupClientTypes {
+
     /// The backup options for each resource type.
-    public struct AdvancedBackupSetting {
+    public struct AdvancedBackupSetting: Swift.Sendable {
         /// Specifies the backup option for a selected resource. This option is only available for Windows VSS backup jobs. Valid values: Set to "WindowsVSS":"enabled" to enable the WindowsVSS backup option and create a Windows VSS backup. Set to "WindowsVSS":"disabled" to create a regular backup. The WindowsVSS option is not enabled by default. If you specify an invalid option, you get an InvalidParameterValueException exception. For more information about Windows VSS backups, see [Creating a VSS-Enabled Windows Backup](https://docs.aws.amazon.com/aws-backup/latest/devguide/windows-backups.html).
         public var backupOptions: [Swift.String: Swift.String]?
         /// Specifies an object containing resource type and backup options. The only supported resource type is Amazon EC2 instances with Windows Volume Shadow Copy Service (VSS). For a CloudFormation example, see the [sample CloudFormation template to enable Windows VSS](https://docs.aws.amazon.com/aws-backup/latest/devguide/integrate-cloudformation-with-aws-backup.html) in the Backup User Guide. Valid values: EC2.
@@ -157,12 +159,11 @@ extension BackupClientTypes {
             self.resourceType = resourceType
         }
     }
-
 }
 
 extension BackupClientTypes {
 
-    public enum AggregationPeriod: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AggregationPeriod: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case fourteenDays
         case oneDay
         case sevenDays
@@ -236,8 +237,9 @@ public struct AlreadyExistsException: ClientRuntime.ModeledError, AWSClientRunti
 }
 
 extension BackupClientTypes {
+
     /// Contains information about the backup plan and rule that Backup used to initiate the recovery point backup.
-    public struct RecoveryPointCreator {
+    public struct RecoveryPointCreator: Swift.Sendable {
         /// An Amazon Resource Name (ARN) that uniquely identifies a backup plan; for example, arn:aws:backup:us-east-1:123456789012:plan:8F81F553-3A74-4A3F-B93D-B3360DC80C50.
         public var backupPlanArn: Swift.String?
         /// Uniquely identifies a backup plan.
@@ -260,12 +262,11 @@ extension BackupClientTypes {
             self.backupRuleId = backupRuleId
         }
     }
-
 }
 
 extension BackupClientTypes {
 
-    public enum BackupJobState: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum BackupJobState: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case aborted
         case aborting
         case completed
@@ -314,8 +315,9 @@ extension BackupClientTypes {
 }
 
 extension BackupClientTypes {
+
     /// Contains detailed information about a backup job.
-    public struct BackupJob {
+    public struct BackupJob: Swift.Sendable {
         /// The account ID that owns the backup job.
         public var accountId: Swift.String?
         /// Uniquely identifies a request to Backup to back up a resource.
@@ -422,12 +424,11 @@ extension BackupClientTypes {
             self.statusMessage = statusMessage
         }
     }
-
 }
 
 extension BackupClientTypes {
 
-    public enum BackupJobStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum BackupJobStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case aborted
         case aborting
         case aggregateAll
@@ -482,8 +483,9 @@ extension BackupClientTypes {
 }
 
 extension BackupClientTypes {
+
     /// This is a summary of jobs created or running within the most recent 30 days. The returned summary may contain the following: Region, Account, State, RestourceType, MessageCategory, StartTime, EndTime, and Count of included jobs.
-    public struct BackupJobSummary {
+    public struct BackupJobSummary: Swift.Sendable {
         /// The account ID that owns the jobs within the summary.
         public var accountId: Swift.String?
         /// The value as a number of jobs in a job summary.
@@ -522,12 +524,12 @@ extension BackupClientTypes {
             self.state = state
         }
     }
-
 }
 
 extension BackupClientTypes {
+
     /// Specifies the time period, in days, before a recovery point transitions to cold storage or is deleted. Backups transitioned to cold storage must be stored in cold storage for a minimum of 90 days. Therefore, on the console, the retention setting must be 90 days greater than the transition to cold after days setting. The transition to cold after days setting can't be changed after a backup has been transitioned to cold. Resource types that can transition to cold storage are listed in the [Feature availability by resource](https://docs.aws.amazon.com/aws-backup/latest/devguide/backup-feature-availability.html#features-by-resource) table. Backup ignores this expression for other resource types. To remove the existing lifecycle and retention periods and keep your recovery points indefinitely, specify -1 for MoveToColdStorageAfterDays and DeleteAfterDays.
-    public struct Lifecycle {
+    public struct Lifecycle: Swift.Sendable {
         /// The number of days after creation that a recovery point is deleted. This value must be at least 90 days after the number of days specified in MoveToColdStorageAfterDays.
         public var deleteAfterDays: Swift.Int?
         /// The number of days after creation that a recovery point is moved to cold storage.
@@ -546,12 +548,12 @@ extension BackupClientTypes {
             self.optInToArchiveForSupportedResources = optInToArchiveForSupportedResources
         }
     }
-
 }
 
 extension BackupClientTypes {
+
     /// The details of the copy operation.
-    public struct CopyAction {
+    public struct CopyAction: Swift.Sendable {
         /// An Amazon Resource Name (ARN) that uniquely identifies the destination backup vault for the copied backup. For example, arn:aws:backup:us-east-1:123456789012:backup-vault:aBackupVault.
         /// This member is required.
         public var destinationBackupVaultArn: Swift.String?
@@ -567,12 +569,12 @@ extension BackupClientTypes {
             self.lifecycle = lifecycle
         }
     }
-
 }
 
 extension BackupClientTypes {
+
     /// Specifies a scheduled task used to back up a selection of resources.
-    public struct BackupRule {
+    public struct BackupRule: Swift.Sendable {
         /// A value in minutes after a backup job is successfully started before it must be completed or it will be canceled by Backup. This value is optional.
         public var completionWindowMinutes: Swift.Int?
         /// An array of CopyAction objects, which contains the details of the copy operation.
@@ -625,7 +627,6 @@ extension BackupClientTypes {
             self.targetBackupVaultName = targetBackupVaultName
         }
     }
-
 }
 
 extension BackupClientTypes.BackupRule: Swift.CustomDebugStringConvertible {
@@ -634,8 +635,9 @@ extension BackupClientTypes.BackupRule: Swift.CustomDebugStringConvertible {
 }
 
 extension BackupClientTypes {
+
     /// Contains an optional backup plan display name and an array of BackupRule objects, each of which specifies a backup rule. Each rule in a backup plan is a separate scheduled task and can back up a different selection of Amazon Web Services resources.
-    public struct BackupPlan {
+    public struct BackupPlan: Swift.Sendable {
         /// Contains a list of BackupOptions for each resource type.
         public var advancedBackupSettings: [BackupClientTypes.AdvancedBackupSetting]?
         /// The display name of a backup plan. Must contain only alphanumeric or '-_.' special characters. If this is set in the console, it can contain 1 to 50 characters; if this is set through CLI or API, it can contain 1 to 200 characters.
@@ -656,12 +658,12 @@ extension BackupClientTypes {
             self.rules = rules
         }
     }
-
 }
 
 extension BackupClientTypes {
+
     /// Specifies a scheduled task used to back up a selection of resources.
-    public struct BackupRuleInput {
+    public struct BackupRuleInput: Swift.Sendable {
         /// A value in minutes after a backup job is successfully started before it must be completed or it will be canceled by Backup. This value is optional.
         public var completionWindowMinutes: Swift.Int?
         /// An array of CopyAction objects, which contains the details of the copy operation.
@@ -710,7 +712,6 @@ extension BackupClientTypes {
             self.targetBackupVaultName = targetBackupVaultName
         }
     }
-
 }
 
 extension BackupClientTypes.BackupRuleInput: Swift.CustomDebugStringConvertible {
@@ -719,8 +720,9 @@ extension BackupClientTypes.BackupRuleInput: Swift.CustomDebugStringConvertible 
 }
 
 extension BackupClientTypes {
+
     /// Contains an optional backup plan display name and an array of BackupRule objects, each of which specifies a backup rule. Each rule in a backup plan is a separate scheduled task.
-    public struct BackupPlanInput {
+    public struct BackupPlanInput: Swift.Sendable {
         /// Specifies a list of BackupOptions for each resource type. These settings are only available for Windows Volume Shadow Copy Service (VSS) backup jobs.
         public var advancedBackupSettings: [BackupClientTypes.AdvancedBackupSetting]?
         /// The display name of a backup plan. Must contain 1 to 50 alphanumeric or '-_.' characters.
@@ -741,12 +743,12 @@ extension BackupClientTypes {
             self.rules = rules
         }
     }
-
 }
 
 extension BackupClientTypes {
+
     /// Contains metadata about a backup plan.
-    public struct BackupPlansListMember {
+    public struct BackupPlansListMember: Swift.Sendable {
         /// Contains a list of BackupOptions for a resource type.
         public var advancedBackupSettings: [BackupClientTypes.AdvancedBackupSetting]?
         /// An Amazon Resource Name (ARN) that uniquely identifies a backup plan; for example, arn:aws:backup:us-east-1:123456789012:plan:8F81F553-3A74-4A3F-B93D-B3360DC80C50.
@@ -789,12 +791,12 @@ extension BackupClientTypes {
             self.versionId = versionId
         }
     }
-
 }
 
 extension BackupClientTypes {
+
     /// An object specifying metadata associated with a backup plan template.
-    public struct BackupPlanTemplatesListMember {
+    public struct BackupPlanTemplatesListMember: Swift.Sendable {
         /// Uniquely identifies a stored backup plan template.
         public var backupPlanTemplateId: Swift.String?
         /// The optional display name of a backup plan template.
@@ -809,12 +811,12 @@ extension BackupClientTypes {
             self.backupPlanTemplateName = backupPlanTemplateName
         }
     }
-
 }
 
 extension BackupClientTypes {
+
     /// Includes information about tags you define to assign tagged resources to a backup plan. Include the prefix aws:ResourceTag in your tags. For example, "aws:ResourceTag/TagKey1": "Value1".
-    public struct ConditionParameter {
+    public struct ConditionParameter: Swift.Sendable {
         /// The key in a key-value pair. For example, in the tag Department: Accounting, Department is the key.
         public var conditionKey: Swift.String?
         /// The value in a key-value pair. For example, in the tag Department: Accounting, Accounting is the value.
@@ -829,12 +831,12 @@ extension BackupClientTypes {
             self.conditionValue = conditionValue
         }
     }
-
 }
 
 extension BackupClientTypes {
+
     /// Contains information about which resources to include or exclude from a backup plan using their tags. Conditions are case sensitive.
-    public struct Conditions {
+    public struct Conditions: Swift.Sendable {
         /// Filters the values of your tagged resources for only those resources that you tagged with the same value. Also called "exact matching."
         public var stringEquals: [BackupClientTypes.ConditionParameter]?
         /// Filters the values of your tagged resources for matching tag values with the use of a wildcard character (*) anywhere in the string. For example, "prod*" or "*rod*" matches the tag value "production".
@@ -857,12 +859,11 @@ extension BackupClientTypes {
             self.stringNotLike = stringNotLike
         }
     }
-
 }
 
 extension BackupClientTypes {
 
-    public enum ConditionType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ConditionType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case stringequals
         case sdkUnknown(Swift.String)
 
@@ -887,8 +888,9 @@ extension BackupClientTypes {
 }
 
 extension BackupClientTypes {
+
     /// Contains an array of triplets made up of a condition type (such as StringEquals), a key, and a value. Used to filter resources using their tags and assign them to a backup plan. Case sensitive.
-    public struct Condition {
+    public struct Condition: Swift.Sendable {
         /// The key in a key-value pair. For example, in the tag Department: Accounting, Department is the key.
         /// This member is required.
         public var conditionKey: Swift.String?
@@ -910,12 +912,12 @@ extension BackupClientTypes {
             self.conditionValue = conditionValue
         }
     }
-
 }
 
 extension BackupClientTypes {
+
     /// Used to specify a set of resources to a backup plan. We recommend that you specify conditions, tags, or resources to include or exclude. Otherwise, Backup attempts to select all supported and opted-in storage resources, which could have unintended cost implications. For more information, see [Assigning resources programmatically](https://docs.aws.amazon.com/aws-backup/latest/devguide/assigning-resources.html#assigning-resources-json).
-    public struct BackupSelection {
+    public struct BackupSelection: Swift.Sendable {
         /// The conditions that you define to assign resources to your backup plans using tags. For example, "StringEquals": { "ConditionKey": "aws:ResourceTag/backup", "ConditionValue": "daily" }. Conditions supports StringEquals, StringLike, StringNotEquals, and StringNotLike. Condition operators are case sensitive. If you specify multiple conditions, the resources much match all conditions (AND logic).
         public var conditions: BackupClientTypes.Conditions?
         /// The ARN of the IAM role that Backup uses to authenticate when backing up the target resource; for example, arn:aws:iam::123456789012:role/S3Access.
@@ -948,12 +950,12 @@ extension BackupClientTypes {
             self.selectionName = selectionName
         }
     }
-
 }
 
 extension BackupClientTypes {
+
     /// Contains metadata about a BackupSelection object.
-    public struct BackupSelectionsListMember {
+    public struct BackupSelectionsListMember: Swift.Sendable {
         /// Uniquely identifies a backup plan.
         public var backupPlanId: Swift.String?
         /// The date and time a backup plan is created, in Unix format and Coordinated Universal Time (UTC). The value of CreationDate is accurate to milliseconds. For example, the value 1516925490.087 represents Friday, January 26, 2018 12:11:30.087 AM.
@@ -984,12 +986,11 @@ extension BackupClientTypes {
             self.selectionName = selectionName
         }
     }
-
 }
 
 extension BackupClientTypes {
 
-    public enum BackupVaultEvent: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum BackupVaultEvent: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case backupJobCompleted
         case backupJobExpired
         case backupJobFailed
@@ -1063,7 +1064,7 @@ extension BackupClientTypes {
 
 extension BackupClientTypes {
 
-    public enum VaultState: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum VaultState: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case available
         case creating
         case failed
@@ -1095,7 +1096,7 @@ extension BackupClientTypes {
 
 extension BackupClientTypes {
 
-    public enum VaultType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum VaultType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case backupVault
         case logicallyAirGappedBackupVault
         case sdkUnknown(Swift.String)
@@ -1123,8 +1124,9 @@ extension BackupClientTypes {
 }
 
 extension BackupClientTypes {
+
     /// Contains metadata about a backup vault.
-    public struct BackupVaultListMember {
+    public struct BackupVaultListMember: Swift.Sendable {
         /// An Amazon Resource Name (ARN) that uniquely identifies a backup vault; for example, arn:aws:backup:us-east-1:123456789012:backup-vault:aBackupVault.
         public var backupVaultArn: Swift.String?
         /// The name of a logical container where backups are stored. Backup vaults are identified by names that are unique to the account used to create them and the Amazon Web Services Region where they are created.
@@ -1179,12 +1181,12 @@ extension BackupClientTypes {
             self.vaultType = vaultType
         }
     }
-
 }
 
 extension BackupClientTypes {
+
     /// Contains DeleteAt and MoveToColdStorageAt timestamps, which are used to specify a lifecycle for a recovery point. The lifecycle defines when a protected resource is transitioned to cold storage and when it expires. Backup transitions and expires backups automatically according to the lifecycle that you define. Backups transitioned to cold storage must be stored in cold storage for a minimum of 90 days. Therefore, the “retention” setting must be 90 days greater than the “transition to cold after days” setting. The “transition to cold after days” setting cannot be changed after a backup has been transitioned to cold. Resource types that can transition to cold storage are listed in the [Feature availability by resource](https://docs.aws.amazon.com/aws-backup/latest/devguide/backup-feature-availability.html#features-by-resource) table. Backup ignores this expression for other resource types.
-    public struct CalculatedLifecycle {
+    public struct CalculatedLifecycle: Swift.Sendable {
         /// A timestamp that specifies when to delete a recovery point.
         public var deleteAt: Foundation.Date?
         /// A timestamp that specifies when to transition a recovery point to cold storage.
@@ -1199,7 +1201,6 @@ extension BackupClientTypes {
             self.moveToColdStorageAt = moveToColdStorageAt
         }
     }
-
 }
 
 /// Indicates that something is wrong with a parameter's value. For example, the value is out of range.
@@ -1377,7 +1378,7 @@ public struct ServiceUnavailableException: ClientRuntime.ModeledError, AWSClient
     }
 }
 
-public struct CancelLegalHoldInput {
+public struct CancelLegalHoldInput: Swift.Sendable {
     /// A string the describes the reason for removing the legal hold.
     /// This member is required.
     public var cancelDescription: Swift.String?
@@ -1399,7 +1400,7 @@ public struct CancelLegalHoldInput {
     }
 }
 
-public struct CancelLegalHoldOutput {
+public struct CancelLegalHoldOutput: Swift.Sendable {
 
     public init() { }
 }
@@ -1440,8 +1441,9 @@ public struct ConflictException: ClientRuntime.ModeledError, AWSClientRuntime.AW
 }
 
 extension BackupClientTypes {
+
     /// The parameters for a control. A control can have zero, one, or more than one parameter. An example of a control with two parameters is: "backup plan frequency is at least daily and the retention period is at least 1 year". The first parameter is daily. The second parameter is 1 year.
-    public struct ControlInputParameter {
+    public struct ControlInputParameter: Swift.Sendable {
         /// The name of a parameter, for example, BackupPlanFrequency.
         public var parameterName: Swift.String?
         /// The value of parameter, for example, hourly.
@@ -1456,12 +1458,12 @@ extension BackupClientTypes {
             self.parameterValue = parameterValue
         }
     }
-
 }
 
 extension BackupClientTypes {
+
     /// A framework consists of one or more controls. Each control has its own control scope. The control scope can include one or more resource types, a combination of a tag key and value, or a combination of one resource type and one resource ID. If no scope is specified, evaluations for the rule are triggered when any resource in your recording group changes in configuration. To set a control scope that includes all of a particular resource, leave the ControlScope empty or do not pass it when calling CreateFramework.
-    public struct ControlScope {
+    public struct ControlScope: Swift.Sendable {
         /// The ID of the only Amazon Web Services resource that you want your control scope to contain.
         public var complianceResourceIds: [Swift.String]?
         /// Describes whether the control scope includes one or more types of resources, such as EFS or RDS.
@@ -1480,12 +1482,11 @@ extension BackupClientTypes {
             self.tags = tags
         }
     }
-
 }
 
 extension BackupClientTypes {
 
-    public enum CopyJobState: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum CopyJobState: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case completed
         case created
         case failed
@@ -1522,8 +1523,9 @@ extension BackupClientTypes {
 }
 
 extension BackupClientTypes {
+
     /// Contains detailed information about a copy job.
-    public struct CopyJob {
+    public struct CopyJob: Swift.Sendable {
         /// The account ID that owns the copy job.
         public var accountId: Swift.String?
         /// The size, in bytes, of a copy job.
@@ -1618,12 +1620,11 @@ extension BackupClientTypes {
             self.statusMessage = statusMessage
         }
     }
-
 }
 
 extension BackupClientTypes {
 
-    public enum CopyJobStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum CopyJobStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case aborted
         case aborting
         case aggregateAll
@@ -1678,8 +1679,9 @@ extension BackupClientTypes {
 }
 
 extension BackupClientTypes {
+
     /// This is a summary of copy jobs created or running within the most recent 30 days. The returned summary may contain the following: Region, Account, State, RestourceType, MessageCategory, StartTime, EndTime, and Count of included jobs.
-    public struct CopyJobSummary {
+    public struct CopyJobSummary: Swift.Sendable {
         /// The account ID that owns the jobs within the summary.
         public var accountId: Swift.String?
         /// The value as a number of jobs in a job summary.
@@ -1718,7 +1720,6 @@ extension BackupClientTypes {
             self.state = state
         }
     }
-
 }
 
 /// A limit in the request has been exceeded; for example, a maximum number of items allowed in a request.
@@ -1756,7 +1757,7 @@ public struct LimitExceededException: ClientRuntime.ModeledError, AWSClientRunti
     }
 }
 
-public struct CreateBackupPlanInput {
+public struct CreateBackupPlanInput: Swift.Sendable {
     /// The body of a backup plan. Includes a BackupPlanName and one or more sets of Rules.
     /// This member is required.
     public var backupPlan: BackupClientTypes.BackupPlanInput?
@@ -1782,7 +1783,7 @@ extension CreateBackupPlanInput: Swift.CustomDebugStringConvertible {
         "CreateBackupPlanInput(backupPlan: \(Swift.String(describing: backupPlan)), creatorRequestId: \(Swift.String(describing: creatorRequestId)), backupPlanTags: \"CONTENT_REDACTED\")"}
 }
 
-public struct CreateBackupPlanOutput {
+public struct CreateBackupPlanOutput: Swift.Sendable {
     /// The settings for a resource type. This option is only available for Windows Volume Shadow Copy Service (VSS) backup jobs.
     public var advancedBackupSettings: [BackupClientTypes.AdvancedBackupSetting]?
     /// An Amazon Resource Name (ARN) that uniquely identifies a backup plan; for example, arn:aws:backup:us-east-1:123456789012:plan:8F81F553-3A74-4A3F-B93D-B3360DC80C50.
@@ -1810,7 +1811,7 @@ public struct CreateBackupPlanOutput {
     }
 }
 
-public struct CreateBackupSelectionInput {
+public struct CreateBackupSelectionInput: Swift.Sendable {
     /// The ID of the backup plan.
     /// This member is required.
     public var backupPlanId: Swift.String?
@@ -1832,7 +1833,7 @@ public struct CreateBackupSelectionInput {
     }
 }
 
-public struct CreateBackupSelectionOutput {
+public struct CreateBackupSelectionOutput: Swift.Sendable {
     /// The ID of the backup plan.
     public var backupPlanId: Swift.String?
     /// The date and time a backup selection is created, in Unix format and Coordinated Universal Time (UTC). The value of CreationDate is accurate to milliseconds. For example, the value 1516925490.087 represents Friday, January 26, 2018 12:11:30.087 AM.
@@ -1852,7 +1853,7 @@ public struct CreateBackupSelectionOutput {
     }
 }
 
-public struct CreateBackupVaultInput {
+public struct CreateBackupVaultInput: Swift.Sendable {
     /// The name of a logical container where backups are stored. Backup vaults are identified by names that are unique to the account used to create them and the Amazon Web Services Region where they are created. They consist of letters, numbers, and hyphens.
     /// This member is required.
     public var backupVaultName: Swift.String?
@@ -1882,7 +1883,7 @@ extension CreateBackupVaultInput: Swift.CustomDebugStringConvertible {
         "CreateBackupVaultInput(backupVaultName: \(Swift.String(describing: backupVaultName)), creatorRequestId: \(Swift.String(describing: creatorRequestId)), encryptionKeyArn: \(Swift.String(describing: encryptionKeyArn)), backupVaultTags: \"CONTENT_REDACTED\")"}
 }
 
-public struct CreateBackupVaultOutput {
+public struct CreateBackupVaultOutput: Swift.Sendable {
     /// An Amazon Resource Name (ARN) that uniquely identifies a backup vault; for example, arn:aws:backup:us-east-1:123456789012:backup-vault:aBackupVault.
     public var backupVaultArn: Swift.String?
     /// The name of a logical container where backups are stored. Backup vaults are identified by names that are unique to the account used to create them and the Region where they are created. They consist of lowercase letters, numbers, and hyphens.
@@ -1903,8 +1904,9 @@ public struct CreateBackupVaultOutput {
 }
 
 extension BackupClientTypes {
+
     /// Contains detailed information about all of the controls of a framework. Each framework must contain at least one control.
-    public struct FrameworkControl {
+    public struct FrameworkControl: Swift.Sendable {
         /// The name/value pairs.
         public var controlInputParameters: [BackupClientTypes.ControlInputParameter]?
         /// The name of a control. This name is between 1 and 256 characters.
@@ -1924,10 +1926,9 @@ extension BackupClientTypes {
             self.controlScope = controlScope
         }
     }
-
 }
 
-public struct CreateFrameworkInput {
+public struct CreateFrameworkInput: Swift.Sendable {
     /// The controls that make up the framework. Each control in the list has a name, input parameters, and scope.
     /// This member is required.
     public var frameworkControls: [BackupClientTypes.FrameworkControl]?
@@ -1957,7 +1958,7 @@ public struct CreateFrameworkInput {
     }
 }
 
-public struct CreateFrameworkOutput {
+public struct CreateFrameworkOutput: Swift.Sendable {
     /// An Amazon Resource Name (ARN) that uniquely identifies a resource. The format of the ARN depends on the resource type.
     public var frameworkArn: Swift.String?
     /// The unique name of the framework. The name must be between 1 and 256 characters, starting with a letter, and consisting of letters (a-z, A-Z), numbers (0-9), and underscores (_).
@@ -1974,8 +1975,9 @@ public struct CreateFrameworkOutput {
 }
 
 extension BackupClientTypes {
+
     /// This is a resource filter containing FromDate: DateTime and ToDate: DateTime. Both values are required. Future DateTime values are not permitted. The date and time are in Unix format and Coordinated Universal Time (UTC), and it is accurate to milliseconds ((milliseconds are optional). For example, the value 1516925490.087 represents Friday, January 26, 2018 12:11:30.087 AM.
-    public struct DateRange {
+    public struct DateRange: Swift.Sendable {
         /// This value is the beginning date, inclusive. The date and time are in Unix format and Coordinated Universal Time (UTC), and it is accurate to milliseconds (milliseconds are optional).
         /// This member is required.
         public var fromDate: Foundation.Date?
@@ -1992,12 +1994,12 @@ extension BackupClientTypes {
             self.toDate = toDate
         }
     }
-
 }
 
 extension BackupClientTypes {
+
     /// This specifies criteria to assign a set of resources, such as resource types or backup vaults.
-    public struct RecoveryPointSelection {
+    public struct RecoveryPointSelection: Swift.Sendable {
         /// This is a resource filter containing FromDate: DateTime and ToDate: DateTime. Both values are required. Future DateTime values are not permitted. The date and time are in Unix format and Coordinated Universal Time (UTC), and it is accurate to milliseconds ((milliseconds are optional). For example, the value 1516925490.087 represents Friday, January 26, 2018 12:11:30.087 AM.
         public var dateRange: BackupClientTypes.DateRange?
         /// These are the resources included in the resource selection (including type of resources and vaults).
@@ -2016,10 +2018,9 @@ extension BackupClientTypes {
             self.vaultNames = vaultNames
         }
     }
-
 }
 
-public struct CreateLegalHoldInput {
+public struct CreateLegalHoldInput: Swift.Sendable {
     /// The description of the legal hold.
     /// This member is required.
     public var description: Swift.String?
@@ -2056,7 +2057,7 @@ extension CreateLegalHoldInput: Swift.CustomDebugStringConvertible {
 
 extension BackupClientTypes {
 
-    public enum LegalHoldStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum LegalHoldStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case active
         case canceled
         case canceling
@@ -2089,7 +2090,7 @@ extension BackupClientTypes {
     }
 }
 
-public struct CreateLegalHoldOutput {
+public struct CreateLegalHoldOutput: Swift.Sendable {
     /// The time when the legal hold was created.
     public var creationDate: Foundation.Date?
     /// The description of the legal hold.
@@ -2160,7 +2161,7 @@ public struct InvalidRequestException: ClientRuntime.ModeledError, AWSClientRunt
     }
 }
 
-public struct CreateLogicallyAirGappedBackupVaultInput {
+public struct CreateLogicallyAirGappedBackupVaultInput: Swift.Sendable {
     /// The name of a logical container where backups are stored. Logically air-gapped backup vaults are identified by names that are unique to the account used to create them and the Region where they are created.
     /// This member is required.
     public var backupVaultName: Swift.String?
@@ -2196,7 +2197,7 @@ extension CreateLogicallyAirGappedBackupVaultInput: Swift.CustomDebugStringConve
         "CreateLogicallyAirGappedBackupVaultInput(backupVaultName: \(Swift.String(describing: backupVaultName)), creatorRequestId: \(Swift.String(describing: creatorRequestId)), maxRetentionDays: \(Swift.String(describing: maxRetentionDays)), minRetentionDays: \(Swift.String(describing: minRetentionDays)), backupVaultTags: \"CONTENT_REDACTED\")"}
 }
 
-public struct CreateLogicallyAirGappedBackupVaultOutput {
+public struct CreateLogicallyAirGappedBackupVaultOutput: Swift.Sendable {
     /// The ARN (Amazon Resource Name) of the vault.
     public var backupVaultArn: Swift.String?
     /// The name of a logical container where backups are stored. Logically air-gapped backup vaults are identified by names that are unique to the account used to create them and the Region where they are created.
@@ -2221,8 +2222,9 @@ public struct CreateLogicallyAirGappedBackupVaultOutput {
 }
 
 extension BackupClientTypes {
+
     /// Contains information from your report plan about where to deliver your reports, specifically your Amazon S3 bucket name, S3 key prefix, and the formats of your reports.
-    public struct ReportDeliveryChannel {
+    public struct ReportDeliveryChannel: Swift.Sendable {
         /// The format of your reports: CSV, JSON, or both. If not specified, the default format is CSV.
         public var formats: [Swift.String]?
         /// The unique name of the S3 bucket that receives your reports.
@@ -2242,12 +2244,12 @@ extension BackupClientTypes {
             self.s3KeyPrefix = s3KeyPrefix
         }
     }
-
 }
 
 extension BackupClientTypes {
+
     /// Contains detailed information about a report setting.
-    public struct ReportSetting {
+    public struct ReportSetting: Swift.Sendable {
         /// These are the accounts to be included in the report. Use string value of ROOT to include all organizational units.
         public var accounts: [Swift.String]?
         /// The Amazon Resource Names (ARNs) of the frameworks a report covers.
@@ -2279,10 +2281,9 @@ extension BackupClientTypes {
             self.reportTemplate = reportTemplate
         }
     }
-
 }
 
-public struct CreateReportPlanInput {
+public struct CreateReportPlanInput: Swift.Sendable {
     /// A customer-chosen string that you can use to distinguish between otherwise identical calls to CreateReportPlanInput. Retrying a successful request with the same idempotency token results in a success message with no action taken.
     public var idempotencyToken: Swift.String?
     /// A structure that contains information about where and how to deliver your reports, specifically your Amazon S3 bucket name, S3 key prefix, and the formats of your reports.
@@ -2317,7 +2318,7 @@ public struct CreateReportPlanInput {
     }
 }
 
-public struct CreateReportPlanOutput {
+public struct CreateReportPlanOutput: Swift.Sendable {
     /// The date and time a backup vault is created, in Unix format and Coordinated Universal Time (UTC). The value of CreationTime is accurate to milliseconds. For example, the value 1516925490.087 represents Friday, January 26, 2018 12:11:30.087 AM.
     public var creationTime: Foundation.Date?
     /// An Amazon Resource Name (ARN) that uniquely identifies a resource. The format of the ARN depends on the resource type.
@@ -2339,7 +2340,7 @@ public struct CreateReportPlanOutput {
 
 extension BackupClientTypes {
 
-    public enum RestoreTestingRecoveryPointSelectionAlgorithm: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum RestoreTestingRecoveryPointSelectionAlgorithm: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case latestWithinWindow
         case randomWithinWindow
         case sdkUnknown(Swift.String)
@@ -2368,7 +2369,7 @@ extension BackupClientTypes {
 
 extension BackupClientTypes {
 
-    public enum RestoreTestingRecoveryPointType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum RestoreTestingRecoveryPointType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case continuous
         case snapshot
         case sdkUnknown(Swift.String)
@@ -2396,8 +2397,9 @@ extension BackupClientTypes {
 }
 
 extension BackupClientTypes {
+
     /// RecoveryPointSelection has five parameters (three required and two optional). The values you specify determine which recovery point is included in the restore test. You must indicate with Algorithm if you want the latest recovery point within your SelectionWindowDays or if you want a random recovery point, and you must indicate through IncludeVaults from which vaults the recovery points can be chosen. Algorithm (required) Valid values: "LATEST_WITHIN_WINDOW" or "RANDOM_WITHIN_WINDOW". Recovery point types (required) Valid values: "SNAPSHOT" and/or "CONTINUOUS". Include SNAPSHOT to restore only snapshot recovery points; include CONTINUOUS to restore continuous recovery points (point in time restore / PITR); use both to restore either a snapshot or a continuous recovery point. The recovery point will be determined by the value for Algorithm. IncludeVaults (required). You must include one or more backup vaults. Use the wildcard ["*"] or specific ARNs. SelectionWindowDays (optional) Value must be an integer (in days) from 1 to 365. If not included, the value defaults to 30. ExcludeVaults (optional). You can choose to input one or more specific backup vault ARNs to exclude those vaults' contents from restore eligibility. Or, you can include a list of selectors. If this parameter and its value are not included, it defaults to empty list.
-    public struct RestoreTestingRecoveryPointSelection {
+    public struct RestoreTestingRecoveryPointSelection: Swift.Sendable {
         /// Acceptable values include "LATEST_WITHIN_WINDOW" or "RANDOM_WITHIN_WINDOW"
         public var algorithm: BackupClientTypes.RestoreTestingRecoveryPointSelectionAlgorithm?
         /// Accepted values include specific ARNs or list of selectors. Defaults to empty list if not listed.
@@ -2424,12 +2426,12 @@ extension BackupClientTypes {
             self.selectionWindowDays = selectionWindowDays
         }
     }
-
 }
 
 extension BackupClientTypes {
+
     /// This contains metadata about a restore testing plan.
-    public struct RestoreTestingPlanForCreate {
+    public struct RestoreTestingPlanForCreate: Swift.Sendable {
         /// RecoveryPointSelection has five parameters (three required and two optional). The values you specify determine which recovery point is included in the restore test. You must indicate with Algorithm if you want the latest recovery point within your SelectionWindowDays or if you want a random recovery point, and you must indicate through IncludeVaults from which vaults the recovery points can be chosen. Algorithm (required) Valid values: "LATEST_WITHIN_WINDOW" or "RANDOM_WITHIN_WINDOW". Recovery point types (required) Valid values: "SNAPSHOT" and/or "CONTINUOUS". Include SNAPSHOT to restore only snapshot recovery points; include CONTINUOUS to restore continuous recovery points (point in time restore / PITR); use both to restore either a snapshot or a continuous recovery point. The recovery point will be determined by the value for Algorithm. IncludeVaults (required). You must include one or more backup vaults. Use the wildcard ["*"] or specific ARNs. SelectionWindowDays (optional) Value must be an integer (in days) from 1 to 365. If not included, the value defaults to 30. ExcludeVaults (optional). You can choose to input one or more specific backup vault ARNs to exclude those vaults' contents from restore eligibility. Or, you can include a list of selectors. If this parameter and its value are not included, it defaults to empty list.
         /// This member is required.
         public var recoveryPointSelection: BackupClientTypes.RestoreTestingRecoveryPointSelection?
@@ -2459,10 +2461,9 @@ extension BackupClientTypes {
             self.startWindowHours = startWindowHours
         }
     }
-
 }
 
-public struct CreateRestoreTestingPlanInput {
+public struct CreateRestoreTestingPlanInput: Swift.Sendable {
     /// This is a unique string that identifies the request and allows failed requests to be retriedwithout the risk of running the operation twice. This parameter is optional. If used, this parameter must contain 1 to 50 alphanumeric or '-_.' characters.
     public var creatorRequestId: Swift.String?
     /// A restore testing plan must contain a unique RestoreTestingPlanName string you create and must contain a ScheduleExpression cron. You may optionally include a StartWindowHours integer and a CreatorRequestId string. The RestoreTestingPlanName is a unique string that is the name of the restore testing plan. This cannot be changed after creation, and it must consist of only alphanumeric characters and underscores.
@@ -2488,7 +2489,7 @@ extension CreateRestoreTestingPlanInput: Swift.CustomDebugStringConvertible {
         "CreateRestoreTestingPlanInput(creatorRequestId: \(Swift.String(describing: creatorRequestId)), restoreTestingPlan: \(Swift.String(describing: restoreTestingPlan)), tags: \"CONTENT_REDACTED\")"}
 }
 
-public struct CreateRestoreTestingPlanOutput {
+public struct CreateRestoreTestingPlanOutput: Swift.Sendable {
     /// The date and time a restore testing plan was created, in Unix format and Coordinated Universal Time (UTC). The value of CreationTime is accurate to milliseconds. For example, the value 1516925490.087 represents Friday, January 26, 2018 12:11:30.087AM.
     /// This member is required.
     public var creationTime: Foundation.Date?
@@ -2512,8 +2513,9 @@ public struct CreateRestoreTestingPlanOutput {
 }
 
 extension BackupClientTypes {
+
     /// Pair of two related strings. Allowed characters are letters, white space, and numbers that can be represented in UTF-8 and the following characters:  + - = . _ : /
-    public struct KeyValue {
+    public struct KeyValue: Swift.Sendable {
         /// The tag key (String). The key can't start with aws:. Length Constraints: Minimum length of 1. Maximum length of 128. Pattern: ^(?![aA]{1}[wW]{1}[sS]{1}:)([\p{L}\p{Z}\p{N}_.:/=+\-@]+)$
         /// This member is required.
         public var key: Swift.String?
@@ -2530,12 +2532,12 @@ extension BackupClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension BackupClientTypes {
+
     /// The conditions that you define for resources in your restore testing plan using tags.
-    public struct ProtectedResourceConditions {
+    public struct ProtectedResourceConditions: Swift.Sendable {
         /// Filters the values of your tagged resources for only those resources that you tagged with the same value. Also called "exact matching."
         public var stringEquals: [BackupClientTypes.KeyValue]?
         /// Filters the values of your tagged resources for only those resources that you tagged that do not have the same value. Also called "negated matching."
@@ -2550,10 +2552,10 @@ extension BackupClientTypes {
             self.stringNotEquals = stringNotEquals
         }
     }
-
 }
 
 extension BackupClientTypes {
+
     /// This contains metadata about a specific restore testing selection. ProtectedResourceType is required, such as Amazon EBS or Amazon EC2. This consists of RestoreTestingSelectionName, ProtectedResourceType, and one of the following:
     ///
     /// * ProtectedResourceArns
@@ -2562,7 +2564,7 @@ extension BackupClientTypes {
     ///
     ///
     /// Each protected resource type can have one single value. A restore testing selection can include a wildcard value ("*") for ProtectedResourceArns along with ProtectedResourceConditions. Alternatively, you can include up to 30 specific protected resource ARNs in ProtectedResourceArns. ProtectedResourceConditions examples include as StringEquals and StringNotEquals.
-    public struct RestoreTestingSelectionForCreate {
+    public struct RestoreTestingSelectionForCreate: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the IAM role that Backup uses to create the target resource; for example: arn:aws:iam::123456789012:role/S3Access.
         /// This member is required.
         public var iamRoleArn: Swift.String?
@@ -2620,7 +2622,6 @@ extension BackupClientTypes {
             self.validationWindowHours = validationWindowHours
         }
     }
-
 }
 
 extension BackupClientTypes.RestoreTestingSelectionForCreate: Swift.CustomDebugStringConvertible {
@@ -2628,7 +2629,7 @@ extension BackupClientTypes.RestoreTestingSelectionForCreate: Swift.CustomDebugS
         "RestoreTestingSelectionForCreate(iamRoleArn: \(Swift.String(describing: iamRoleArn)), protectedResourceArns: \(Swift.String(describing: protectedResourceArns)), protectedResourceConditions: \(Swift.String(describing: protectedResourceConditions)), protectedResourceType: \(Swift.String(describing: protectedResourceType)), restoreTestingSelectionName: \(Swift.String(describing: restoreTestingSelectionName)), validationWindowHours: \(Swift.String(describing: validationWindowHours)), restoreMetadataOverrides: \"CONTENT_REDACTED\")"}
 }
 
-public struct CreateRestoreTestingSelectionInput {
+public struct CreateRestoreTestingSelectionInput: Swift.Sendable {
     /// This is an optional unique string that identifies the request and allows failed requests to be retried without the risk of running the operation twice. If used, this parameter must contain 1 to 50 alphanumeric or '-_.' characters.
     public var creatorRequestId: Swift.String?
     /// Input the restore testing plan name that was returned from the related CreateRestoreTestingPlan request.
@@ -2657,7 +2658,7 @@ public struct CreateRestoreTestingSelectionInput {
     }
 }
 
-public struct CreateRestoreTestingSelectionOutput {
+public struct CreateRestoreTestingSelectionOutput: Swift.Sendable {
     /// The time that the resource testing selection was created.
     /// This member is required.
     public var creationTime: Foundation.Date?
@@ -2685,7 +2686,7 @@ public struct CreateRestoreTestingSelectionOutput {
     }
 }
 
-public struct DeleteBackupPlanInput {
+public struct DeleteBackupPlanInput: Swift.Sendable {
     /// Uniquely identifies a backup plan.
     /// This member is required.
     public var backupPlanId: Swift.String?
@@ -2698,7 +2699,7 @@ public struct DeleteBackupPlanInput {
     }
 }
 
-public struct DeleteBackupPlanOutput {
+public struct DeleteBackupPlanOutput: Swift.Sendable {
     /// An Amazon Resource Name (ARN) that uniquely identifies a backup plan; for example, arn:aws:backup:us-east-1:123456789012:plan:8F81F553-3A74-4A3F-B93D-B3360DC80C50.
     public var backupPlanArn: Swift.String?
     /// Uniquely identifies a backup plan.
@@ -2722,7 +2723,7 @@ public struct DeleteBackupPlanOutput {
     }
 }
 
-public struct DeleteBackupSelectionInput {
+public struct DeleteBackupSelectionInput: Swift.Sendable {
     /// Uniquely identifies a backup plan.
     /// This member is required.
     public var backupPlanId: Swift.String?
@@ -2740,7 +2741,7 @@ public struct DeleteBackupSelectionInput {
     }
 }
 
-public struct DeleteBackupVaultInput {
+public struct DeleteBackupVaultInput: Swift.Sendable {
     /// The name of a logical container where backups are stored. Backup vaults are identified by names that are unique to the account used to create them and the Amazon Web Services Region where they are created.
     /// This member is required.
     public var backupVaultName: Swift.String?
@@ -2753,7 +2754,7 @@ public struct DeleteBackupVaultInput {
     }
 }
 
-public struct DeleteBackupVaultAccessPolicyInput {
+public struct DeleteBackupVaultAccessPolicyInput: Swift.Sendable {
     /// The name of a logical container where backups are stored. Backup vaults are identified by names that are unique to the account used to create them and the Amazon Web Services Region where they are created. They consist of lowercase letters, numbers, and hyphens.
     /// This member is required.
     public var backupVaultName: Swift.String?
@@ -2766,7 +2767,7 @@ public struct DeleteBackupVaultAccessPolicyInput {
     }
 }
 
-public struct DeleteBackupVaultLockConfigurationInput {
+public struct DeleteBackupVaultLockConfigurationInput: Swift.Sendable {
     /// The name of the backup vault from which to delete Backup Vault Lock.
     /// This member is required.
     public var backupVaultName: Swift.String?
@@ -2779,7 +2780,7 @@ public struct DeleteBackupVaultLockConfigurationInput {
     }
 }
 
-public struct DeleteBackupVaultNotificationsInput {
+public struct DeleteBackupVaultNotificationsInput: Swift.Sendable {
     /// The name of a logical container where backups are stored. Backup vaults are identified by names that are unique to the account used to create them and the Region where they are created.
     /// This member is required.
     public var backupVaultName: Swift.String?
@@ -2792,7 +2793,7 @@ public struct DeleteBackupVaultNotificationsInput {
     }
 }
 
-public struct DeleteFrameworkInput {
+public struct DeleteFrameworkInput: Swift.Sendable {
     /// The unique name of a framework.
     /// This member is required.
     public var frameworkName: Swift.String?
@@ -2805,7 +2806,7 @@ public struct DeleteFrameworkInput {
     }
 }
 
-public struct DeleteRecoveryPointInput {
+public struct DeleteRecoveryPointInput: Swift.Sendable {
     /// The name of a logical container where backups are stored. Backup vaults are identified by names that are unique to the account used to create them and the Amazon Web Services Region where they are created.
     /// This member is required.
     public var backupVaultName: Swift.String?
@@ -2823,7 +2824,7 @@ public struct DeleteRecoveryPointInput {
     }
 }
 
-public struct DeleteReportPlanInput {
+public struct DeleteReportPlanInput: Swift.Sendable {
     /// The unique name of a report plan.
     /// This member is required.
     public var reportPlanName: Swift.String?
@@ -2836,7 +2837,7 @@ public struct DeleteReportPlanInput {
     }
 }
 
-public struct DeleteRestoreTestingPlanInput {
+public struct DeleteRestoreTestingPlanInput: Swift.Sendable {
     /// Required unique name of the restore testing plan you wish to delete.
     /// This member is required.
     public var restoreTestingPlanName: Swift.String?
@@ -2849,7 +2850,7 @@ public struct DeleteRestoreTestingPlanInput {
     }
 }
 
-public struct DeleteRestoreTestingSelectionInput {
+public struct DeleteRestoreTestingSelectionInput: Swift.Sendable {
     /// Required unique name of the restore testing plan that contains the restore testing selection you wish to delete.
     /// This member is required.
     public var restoreTestingPlanName: Swift.String?
@@ -2902,7 +2903,7 @@ public struct DependencyFailureException: ClientRuntime.ModeledError, AWSClientR
     }
 }
 
-public struct DescribeBackupJobInput {
+public struct DescribeBackupJobInput: Swift.Sendable {
     /// Uniquely identifies a request to Backup to back up a resource.
     /// This member is required.
     public var backupJobId: Swift.String?
@@ -2915,7 +2916,7 @@ public struct DescribeBackupJobInput {
     }
 }
 
-public struct DescribeBackupJobOutput {
+public struct DescribeBackupJobOutput: Swift.Sendable {
     /// Returns the account ID that owns the backup job.
     public var accountId: Swift.String?
     /// Uniquely identifies a request to Backup to back up a resource.
@@ -3031,7 +3032,7 @@ public struct DescribeBackupJobOutput {
     }
 }
 
-public struct DescribeBackupVaultInput {
+public struct DescribeBackupVaultInput: Swift.Sendable {
     /// The account ID of the specified backup vault.
     public var backupVaultAccountId: Swift.String?
     /// The name of a logical container where backups are stored. Backup vaults are identified by names that are unique to the account used to create them and the Amazon Web Services Region where they are created.
@@ -3048,7 +3049,7 @@ public struct DescribeBackupVaultInput {
     }
 }
 
-public struct DescribeBackupVaultOutput {
+public struct DescribeBackupVaultOutput: Swift.Sendable {
     /// An Amazon Resource Name (ARN) that uniquely identifies a backup vault; for example, arn:aws:backup:us-east-1:123456789012:backup-vault:aBackupVault.
     public var backupVaultArn: Swift.String?
     /// The name of a logical container where backups are stored. Backup vaults are identified by names that are unique to the account used to create them and the Region where they are created.
@@ -3104,7 +3105,7 @@ public struct DescribeBackupVaultOutput {
     }
 }
 
-public struct DescribeCopyJobInput {
+public struct DescribeCopyJobInput: Swift.Sendable {
     /// Uniquely identifies a copy job.
     /// This member is required.
     public var copyJobId: Swift.String?
@@ -3117,7 +3118,7 @@ public struct DescribeCopyJobInput {
     }
 }
 
-public struct DescribeCopyJobOutput {
+public struct DescribeCopyJobOutput: Swift.Sendable {
     /// Contains detailed information about a copy job.
     public var copyJob: BackupClientTypes.CopyJob?
 
@@ -3129,7 +3130,7 @@ public struct DescribeCopyJobOutput {
     }
 }
 
-public struct DescribeFrameworkInput {
+public struct DescribeFrameworkInput: Swift.Sendable {
     /// The unique name of a framework.
     /// This member is required.
     public var frameworkName: Swift.String?
@@ -3142,7 +3143,7 @@ public struct DescribeFrameworkInput {
     }
 }
 
-public struct DescribeFrameworkOutput {
+public struct DescribeFrameworkOutput: Swift.Sendable {
     /// The date and time that a framework is created, in ISO 8601 representation. The value of CreationTime is accurate to milliseconds. For example, 2020-07-10T15:00:00.000-08:00 represents the 10th of July 2020 at 3:00 PM 8 hours behind UTC.
     public var creationTime: Foundation.Date?
     /// The deployment status of a framework. The statuses are: CREATE_IN_PROGRESS | UPDATE_IN_PROGRESS | DELETE_IN_PROGRESS | COMPLETED | FAILED
@@ -3190,12 +3191,12 @@ public struct DescribeFrameworkOutput {
     }
 }
 
-public struct DescribeGlobalSettingsInput {
+public struct DescribeGlobalSettingsInput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DescribeGlobalSettingsOutput {
+public struct DescribeGlobalSettingsOutput: Swift.Sendable {
     /// The status of the flag isCrossAccountBackupEnabled.
     public var globalSettings: [Swift.String: Swift.String]?
     /// The date and time that the flag isCrossAccountBackupEnabled was last updated. This update is in Unix format and Coordinated Universal Time (UTC). The value of LastUpdateTime is accurate to milliseconds. For example, the value 1516925490.087 represents Friday, January 26, 2018 12:11:30.087 AM.
@@ -3211,7 +3212,7 @@ public struct DescribeGlobalSettingsOutput {
     }
 }
 
-public struct DescribeProtectedResourceInput {
+public struct DescribeProtectedResourceInput: Swift.Sendable {
     /// An Amazon Resource Name (ARN) that uniquely identifies a resource. The format of the ARN depends on the resource type.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -3224,7 +3225,7 @@ public struct DescribeProtectedResourceInput {
     }
 }
 
-public struct DescribeProtectedResourceOutput {
+public struct DescribeProtectedResourceOutput: Swift.Sendable {
     /// The date and time that a resource was last backed up, in Unix format and Coordinated Universal Time (UTC). The value of LastBackupTime is accurate to milliseconds. For example, the value 1516925490.087 represents Friday, January 26, 2018 12:11:30.087 AM.
     public var lastBackupTime: Foundation.Date?
     /// The ARN (Amazon Resource Name) of the backup vault that contains the most recent backup recovery point.
@@ -3268,7 +3269,7 @@ public struct DescribeProtectedResourceOutput {
     }
 }
 
-public struct DescribeRecoveryPointInput {
+public struct DescribeRecoveryPointInput: Swift.Sendable {
     /// The account ID of the specified backup vault.
     public var backupVaultAccountId: Swift.String?
     /// The name of a logical container where backups are stored. Backup vaults are identified by names that are unique to the account used to create them and the Amazon Web Services Region where they are created.
@@ -3292,7 +3293,7 @@ public struct DescribeRecoveryPointInput {
 
 extension BackupClientTypes {
 
-    public enum RecoveryPointStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum RecoveryPointStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case completed
         case deleting
         case expired
@@ -3327,7 +3328,7 @@ extension BackupClientTypes {
 
 extension BackupClientTypes {
 
-    public enum StorageClass: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum StorageClass: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case cold
         case deleted
         case warm
@@ -3357,7 +3358,7 @@ extension BackupClientTypes {
     }
 }
 
-public struct DescribeRecoveryPointOutput {
+public struct DescribeRecoveryPointOutput: Swift.Sendable {
     /// The size, in bytes, of a backup.
     public var backupSizeInBytes: Swift.Int?
     /// An ARN that uniquely identifies a backup vault; for example, arn:aws:backup:us-east-1:123456789012:backup-vault:aBackupVault.
@@ -3461,12 +3462,12 @@ public struct DescribeRecoveryPointOutput {
     }
 }
 
-public struct DescribeRegionSettingsInput {
+public struct DescribeRegionSettingsInput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DescribeRegionSettingsOutput {
+public struct DescribeRegionSettingsOutput: Swift.Sendable {
     /// Returns whether Backup fully manages the backups for a resource type. For the benefits of full Backup management, see [Full Backup management](https://docs.aws.amazon.com/aws-backup/latest/devguide/whatisbackup.html#full-management). For a list of resource types and whether each supports full Backup management, see the [Feature availability by resource](https://docs.aws.amazon.com/aws-backup/latest/devguide/backup-feature-availability.html#features-by-resource) table. If "DynamoDB":false, you can enable full Backup management for DynamoDB backup by enabling [ Backup's advanced DynamoDB backup features](https://docs.aws.amazon.com/aws-backup/latest/devguide/advanced-ddb-backup.html#advanced-ddb-backup-enable-cli).
     public var resourceTypeManagementPreference: [Swift.String: Swift.Bool]?
     /// The services along with the opt-in preferences in the Region.
@@ -3482,7 +3483,7 @@ public struct DescribeRegionSettingsOutput {
     }
 }
 
-public struct DescribeReportJobInput {
+public struct DescribeReportJobInput: Swift.Sendable {
     /// The identifier of the report job. A unique, randomly generated, Unicode, UTF-8 encoded string that is at most 1,024 bytes long. The report job ID cannot be edited.
     /// This member is required.
     public var reportJobId: Swift.String?
@@ -3496,8 +3497,9 @@ public struct DescribeReportJobInput {
 }
 
 extension BackupClientTypes {
+
     /// Contains information from your report job about your report destination.
-    public struct ReportDestination {
+    public struct ReportDestination: Swift.Sendable {
         /// The unique name of the Amazon S3 bucket that receives your reports.
         public var s3BucketName: Swift.String?
         /// The object key that uniquely identifies your reports in your S3 bucket.
@@ -3512,12 +3514,12 @@ extension BackupClientTypes {
             self.s3Keys = s3Keys
         }
     }
-
 }
 
 extension BackupClientTypes {
+
     /// Contains detailed information about a report job. A report job compiles a report based on a report plan and publishes it to Amazon S3.
-    public struct ReportJob {
+    public struct ReportJob: Swift.Sendable {
         /// The date and time that a report job is completed, in Unix format and Coordinated Universal Time (UTC). The value of CompletionTime is accurate to milliseconds. For example, the value 1516925490.087 represents Friday, January 26, 2018 12:11:30.087 AM.
         public var completionTime: Foundation.Date?
         /// The date and time that a report job is created, in Unix format and Coordinated Universal Time (UTC). The value of CreationTime is accurate to milliseconds. For example, the value 1516925490.087 represents Friday, January 26, 2018 12:11:30.087 AM.
@@ -3556,10 +3558,9 @@ extension BackupClientTypes {
             self.statusMessage = statusMessage
         }
     }
-
 }
 
-public struct DescribeReportJobOutput {
+public struct DescribeReportJobOutput: Swift.Sendable {
     /// The information about a report job, including its completion and creation times, report destination, unique report job ID, Amazon Resource Name (ARN), report template, status, and status message.
     public var reportJob: BackupClientTypes.ReportJob?
 
@@ -3571,7 +3572,7 @@ public struct DescribeReportJobOutput {
     }
 }
 
-public struct DescribeReportPlanInput {
+public struct DescribeReportPlanInput: Swift.Sendable {
     /// The unique name of a report plan.
     /// This member is required.
     public var reportPlanName: Swift.String?
@@ -3585,8 +3586,9 @@ public struct DescribeReportPlanInput {
 }
 
 extension BackupClientTypes {
+
     /// Contains detailed information about a report plan.
-    public struct ReportPlan {
+    public struct ReportPlan: Swift.Sendable {
         /// The date and time that a report plan is created, in Unix format and Coordinated Universal Time (UTC). The value of CreationTime is accurate to milliseconds. For example, the value 1516925490.087 represents Friday, January 26, 2018 12:11:30.087 AM.
         public var creationTime: Foundation.Date?
         /// The deployment status of a report plan. The statuses are: CREATE_IN_PROGRESS | UPDATE_IN_PROGRESS | DELETE_IN_PROGRESS | COMPLETED
@@ -3629,10 +3631,9 @@ extension BackupClientTypes {
             self.reportSetting = reportSetting
         }
     }
-
 }
 
-public struct DescribeReportPlanOutput {
+public struct DescribeReportPlanOutput: Swift.Sendable {
     /// Returns details about the report plan that is specified by its name. These details include the report plan's Amazon Resource Name (ARN), description, settings, delivery channel, deployment status, creation time, and last attempted and successful run times.
     public var reportPlan: BackupClientTypes.ReportPlan?
 
@@ -3644,7 +3645,7 @@ public struct DescribeReportPlanOutput {
     }
 }
 
-public struct DescribeRestoreJobInput {
+public struct DescribeRestoreJobInput: Swift.Sendable {
     /// Uniquely identifies the job that restores a recovery point.
     /// This member is required.
     public var restoreJobId: Swift.String?
@@ -3658,8 +3659,9 @@ public struct DescribeRestoreJobInput {
 }
 
 extension BackupClientTypes {
+
     /// Contains information about the restore testing plan that Backup used to initiate the restore job.
-    public struct RestoreJobCreator {
+    public struct RestoreJobCreator: Swift.Sendable {
         /// An Amazon Resource Name (ARN) that uniquely identifies a restore testing plan.
         public var restoreTestingPlanArn: Swift.String?
 
@@ -3670,12 +3672,11 @@ extension BackupClientTypes {
             self.restoreTestingPlanArn = restoreTestingPlanArn
         }
     }
-
 }
 
 extension BackupClientTypes {
 
-    public enum RestoreDeletionStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum RestoreDeletionStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case deleting
         case failed
         case successful
@@ -3707,7 +3708,7 @@ extension BackupClientTypes {
 
 extension BackupClientTypes {
 
-    public enum RestoreJobStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum RestoreJobStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case aborted
         case completed
         case failed
@@ -3745,7 +3746,7 @@ extension BackupClientTypes {
 
 extension BackupClientTypes {
 
-    public enum RestoreValidationStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum RestoreValidationStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case failed
         case successful
         case timedOut
@@ -3778,7 +3779,7 @@ extension BackupClientTypes {
     }
 }
 
-public struct DescribeRestoreJobOutput {
+public struct DescribeRestoreJobOutput: Swift.Sendable {
     /// Returns the account ID that owns the restore job.
     public var accountId: Swift.String?
     /// The size, in bytes, of the restored resource.
@@ -3862,7 +3863,7 @@ public struct DescribeRestoreJobOutput {
     }
 }
 
-public struct DisassociateRecoveryPointInput {
+public struct DisassociateRecoveryPointInput: Swift.Sendable {
     /// The unique name of an Backup vault.
     /// This member is required.
     public var backupVaultName: Swift.String?
@@ -3880,7 +3881,7 @@ public struct DisassociateRecoveryPointInput {
     }
 }
 
-public struct DisassociateRecoveryPointFromParentInput {
+public struct DisassociateRecoveryPointFromParentInput: Swift.Sendable {
     /// The name of a logical container where the child (nested) recovery point is stored. Backup vaults are identified by names that are unique to the account used to create them and the Amazon Web Services Region where they are created.
     /// This member is required.
     public var backupVaultName: Swift.String?
@@ -3898,7 +3899,7 @@ public struct DisassociateRecoveryPointFromParentInput {
     }
 }
 
-public struct ExportBackupPlanTemplateInput {
+public struct ExportBackupPlanTemplateInput: Swift.Sendable {
     /// Uniquely identifies a backup plan.
     /// This member is required.
     public var backupPlanId: Swift.String?
@@ -3911,7 +3912,7 @@ public struct ExportBackupPlanTemplateInput {
     }
 }
 
-public struct ExportBackupPlanTemplateOutput {
+public struct ExportBackupPlanTemplateOutput: Swift.Sendable {
     /// The body of a backup plan template in JSON format. This is a signed JSON document that cannot be modified before being passed to GetBackupPlanFromJSON.
     public var backupPlanTemplateJson: Swift.String?
 
@@ -3923,7 +3924,7 @@ public struct ExportBackupPlanTemplateOutput {
     }
 }
 
-public struct GetBackupPlanInput {
+public struct GetBackupPlanInput: Swift.Sendable {
     /// Uniquely identifies a backup plan.
     /// This member is required.
     public var backupPlanId: Swift.String?
@@ -3940,7 +3941,7 @@ public struct GetBackupPlanInput {
     }
 }
 
-public struct GetBackupPlanOutput {
+public struct GetBackupPlanOutput: Swift.Sendable {
     /// Contains a list of BackupOptions for each resource type. The list is populated only if the advanced option is set for the backup plan.
     public var advancedBackupSettings: [BackupClientTypes.AdvancedBackupSetting]?
     /// Specifies the body of a backup plan. Includes a BackupPlanName and one or more sets of Rules.
@@ -3984,7 +3985,7 @@ public struct GetBackupPlanOutput {
     }
 }
 
-public struct GetBackupPlanFromJSONInput {
+public struct GetBackupPlanFromJSONInput: Swift.Sendable {
     /// A customer-supplied backup plan document in JSON format.
     /// This member is required.
     public var backupPlanTemplateJson: Swift.String?
@@ -3997,7 +3998,7 @@ public struct GetBackupPlanFromJSONInput {
     }
 }
 
-public struct GetBackupPlanFromJSONOutput {
+public struct GetBackupPlanFromJSONOutput: Swift.Sendable {
     /// Specifies the body of a backup plan. Includes a BackupPlanName and one or more sets of Rules.
     public var backupPlan: BackupClientTypes.BackupPlan?
 
@@ -4009,7 +4010,7 @@ public struct GetBackupPlanFromJSONOutput {
     }
 }
 
-public struct GetBackupPlanFromTemplateInput {
+public struct GetBackupPlanFromTemplateInput: Swift.Sendable {
     /// Uniquely identifies a stored backup plan template.
     /// This member is required.
     public var backupPlanTemplateId: Swift.String?
@@ -4022,7 +4023,7 @@ public struct GetBackupPlanFromTemplateInput {
     }
 }
 
-public struct GetBackupPlanFromTemplateOutput {
+public struct GetBackupPlanFromTemplateOutput: Swift.Sendable {
     /// Returns the body of a backup plan based on the target template, including the name, rules, and backup vault of the plan.
     public var backupPlanDocument: BackupClientTypes.BackupPlan?
 
@@ -4034,7 +4035,7 @@ public struct GetBackupPlanFromTemplateOutput {
     }
 }
 
-public struct GetBackupSelectionInput {
+public struct GetBackupSelectionInput: Swift.Sendable {
     /// Uniquely identifies a backup plan.
     /// This member is required.
     public var backupPlanId: Swift.String?
@@ -4052,7 +4053,7 @@ public struct GetBackupSelectionInput {
     }
 }
 
-public struct GetBackupSelectionOutput {
+public struct GetBackupSelectionOutput: Swift.Sendable {
     /// Uniquely identifies a backup plan.
     public var backupPlanId: Swift.String?
     /// Specifies the body of a request to assign a set of resources to a backup plan.
@@ -4080,7 +4081,7 @@ public struct GetBackupSelectionOutput {
     }
 }
 
-public struct GetBackupVaultAccessPolicyInput {
+public struct GetBackupVaultAccessPolicyInput: Swift.Sendable {
     /// The name of a logical container where backups are stored. Backup vaults are identified by names that are unique to the account used to create them and the Amazon Web Services Region where they are created.
     /// This member is required.
     public var backupVaultName: Swift.String?
@@ -4093,7 +4094,7 @@ public struct GetBackupVaultAccessPolicyInput {
     }
 }
 
-public struct GetBackupVaultAccessPolicyOutput {
+public struct GetBackupVaultAccessPolicyOutput: Swift.Sendable {
     /// An Amazon Resource Name (ARN) that uniquely identifies a backup vault; for example, arn:aws:backup:us-east-1:123456789012:backup-vault:aBackupVault.
     public var backupVaultArn: Swift.String?
     /// The name of a logical container where backups are stored. Backup vaults are identified by names that are unique to the account used to create them and the Region where they are created.
@@ -4113,7 +4114,7 @@ public struct GetBackupVaultAccessPolicyOutput {
     }
 }
 
-public struct GetBackupVaultNotificationsInput {
+public struct GetBackupVaultNotificationsInput: Swift.Sendable {
     /// The name of a logical container where backups are stored. Backup vaults are identified by names that are unique to the account used to create them and the Amazon Web Services Region where they are created.
     /// This member is required.
     public var backupVaultName: Swift.String?
@@ -4126,7 +4127,7 @@ public struct GetBackupVaultNotificationsInput {
     }
 }
 
-public struct GetBackupVaultNotificationsOutput {
+public struct GetBackupVaultNotificationsOutput: Swift.Sendable {
     /// An Amazon Resource Name (ARN) that uniquely identifies a backup vault; for example, arn:aws:backup:us-east-1:123456789012:backup-vault:aBackupVault.
     public var backupVaultArn: Swift.String?
     /// An array of events that indicate the status of jobs to back up resources to the backup vault.
@@ -4150,7 +4151,7 @@ public struct GetBackupVaultNotificationsOutput {
     }
 }
 
-public struct GetLegalHoldInput {
+public struct GetLegalHoldInput: Swift.Sendable {
     /// The ID of the legal hold.
     /// This member is required.
     public var legalHoldId: Swift.String?
@@ -4163,7 +4164,7 @@ public struct GetLegalHoldInput {
     }
 }
 
-public struct GetLegalHoldOutput {
+public struct GetLegalHoldOutput: Swift.Sendable {
     /// The reason for removing the legal hold.
     public var cancelDescription: Swift.String?
     /// The time when the legal hold was cancelled.
@@ -4211,7 +4212,7 @@ public struct GetLegalHoldOutput {
     }
 }
 
-public struct GetRecoveryPointRestoreMetadataInput {
+public struct GetRecoveryPointRestoreMetadataInput: Swift.Sendable {
     /// The account ID of the specified backup vault.
     public var backupVaultAccountId: Swift.String?
     /// The name of a logical container where backups are stored. Backup vaults are identified by names that are unique to the account used to create them and the Amazon Web Services Region where they are created.
@@ -4233,7 +4234,7 @@ public struct GetRecoveryPointRestoreMetadataInput {
     }
 }
 
-public struct GetRecoveryPointRestoreMetadataOutput {
+public struct GetRecoveryPointRestoreMetadataOutput: Swift.Sendable {
     /// An ARN that uniquely identifies a backup vault; for example, arn:aws:backup:us-east-1:123456789012:backup-vault:aBackupVault.
     public var backupVaultArn: Swift.String?
     /// An ARN that uniquely identifies a recovery point; for example, arn:aws:backup:us-east-1:123456789012:recovery-point:1EB3B5E7-9EB0-435A-A80B-108B488B0D45.
@@ -4262,7 +4263,7 @@ extension GetRecoveryPointRestoreMetadataOutput: Swift.CustomDebugStringConverti
         "GetRecoveryPointRestoreMetadataOutput(backupVaultArn: \(Swift.String(describing: backupVaultArn)), recoveryPointArn: \(Swift.String(describing: recoveryPointArn)), resourceType: \(Swift.String(describing: resourceType)), restoreMetadata: \"CONTENT_REDACTED\")"}
 }
 
-public struct GetRestoreJobMetadataInput {
+public struct GetRestoreJobMetadataInput: Swift.Sendable {
     /// This is a unique identifier of a restore job within Backup.
     /// This member is required.
     public var restoreJobId: Swift.String?
@@ -4275,7 +4276,7 @@ public struct GetRestoreJobMetadataInput {
     }
 }
 
-public struct GetRestoreJobMetadataOutput {
+public struct GetRestoreJobMetadataOutput: Swift.Sendable {
     /// This contains the metadata of the specified backup job.
     public var metadata: [Swift.String: Swift.String]?
     /// This is a unique identifier of a restore job within Backup.
@@ -4296,7 +4297,7 @@ extension GetRestoreJobMetadataOutput: Swift.CustomDebugStringConvertible {
         "GetRestoreJobMetadataOutput(restoreJobId: \(Swift.String(describing: restoreJobId)), metadata: \"CONTENT_REDACTED\")"}
 }
 
-public struct GetRestoreTestingInferredMetadataInput {
+public struct GetRestoreTestingInferredMetadataInput: Swift.Sendable {
     /// The account ID of the specified backup vault.
     public var backupVaultAccountId: Swift.String?
     /// The name of a logical container where backups are stored. Backup vaults are identified by names that are unique to the account used to create them and the Amazon Web ServicesRegion where they are created. They consist of letters, numbers, and hyphens.
@@ -4318,7 +4319,7 @@ public struct GetRestoreTestingInferredMetadataInput {
     }
 }
 
-public struct GetRestoreTestingInferredMetadataOutput {
+public struct GetRestoreTestingInferredMetadataOutput: Swift.Sendable {
     /// This is a string map of the metadata inferred from the request.
     /// This member is required.
     public var inferredMetadata: [Swift.String: Swift.String]?
@@ -4331,7 +4332,7 @@ public struct GetRestoreTestingInferredMetadataOutput {
     }
 }
 
-public struct GetRestoreTestingPlanInput {
+public struct GetRestoreTestingPlanInput: Swift.Sendable {
     /// Required unique name of the restore testing plan.
     /// This member is required.
     public var restoreTestingPlanName: Swift.String?
@@ -4345,8 +4346,9 @@ public struct GetRestoreTestingPlanInput {
 }
 
 extension BackupClientTypes {
+
     /// This contains metadata about a restore testing plan.
-    public struct RestoreTestingPlanForGet {
+    public struct RestoreTestingPlanForGet: Swift.Sendable {
         /// The date and time that a restore testing plan was created, in Unix format and Coordinated Universal Time (UTC). The value of CreationTime is accurate to milliseconds. For example, the value 1516925490.087 represents Friday, January 26, 2018 12:11:30.087 AM.
         /// This member is required.
         public var creationTime: Foundation.Date?
@@ -4398,10 +4400,9 @@ extension BackupClientTypes {
             self.startWindowHours = startWindowHours
         }
     }
-
 }
 
-public struct GetRestoreTestingPlanOutput {
+public struct GetRestoreTestingPlanOutput: Swift.Sendable {
     /// Specifies the body of a restore testing plan. Includes RestoreTestingPlanName.
     /// This member is required.
     public var restoreTestingPlan: BackupClientTypes.RestoreTestingPlanForGet?
@@ -4414,7 +4415,7 @@ public struct GetRestoreTestingPlanOutput {
     }
 }
 
-public struct GetRestoreTestingSelectionInput {
+public struct GetRestoreTestingSelectionInput: Swift.Sendable {
     /// Required unique name of the restore testing plan.
     /// This member is required.
     public var restoreTestingPlanName: Swift.String?
@@ -4433,8 +4434,9 @@ public struct GetRestoreTestingSelectionInput {
 }
 
 extension BackupClientTypes {
+
     /// This contains metadata about a restore testing selection.
-    public struct RestoreTestingSelectionForGet {
+    public struct RestoreTestingSelectionForGet: Swift.Sendable {
         /// The date and time that a restore testing selection was created, in Unix format and Coordinated Universal Time (UTC). The value of CreationTime is accurate to milliseconds. For example, the value 1516925490.087 represents Friday, January 26, 201812:11:30.087 AM.
         /// This member is required.
         public var creationTime: Foundation.Date?
@@ -4486,7 +4488,6 @@ extension BackupClientTypes {
             self.validationWindowHours = validationWindowHours
         }
     }
-
 }
 
 extension BackupClientTypes.RestoreTestingSelectionForGet: Swift.CustomDebugStringConvertible {
@@ -4494,7 +4495,7 @@ extension BackupClientTypes.RestoreTestingSelectionForGet: Swift.CustomDebugStri
         "RestoreTestingSelectionForGet(creationTime: \(Swift.String(describing: creationTime)), creatorRequestId: \(Swift.String(describing: creatorRequestId)), iamRoleArn: \(Swift.String(describing: iamRoleArn)), protectedResourceArns: \(Swift.String(describing: protectedResourceArns)), protectedResourceConditions: \(Swift.String(describing: protectedResourceConditions)), protectedResourceType: \(Swift.String(describing: protectedResourceType)), restoreTestingPlanName: \(Swift.String(describing: restoreTestingPlanName)), restoreTestingSelectionName: \(Swift.String(describing: restoreTestingSelectionName)), validationWindowHours: \(Swift.String(describing: validationWindowHours)), restoreMetadataOverrides: \"CONTENT_REDACTED\")"}
 }
 
-public struct GetRestoreTestingSelectionOutput {
+public struct GetRestoreTestingSelectionOutput: Swift.Sendable {
     /// Unique name of the restore testing selection.
     /// This member is required.
     public var restoreTestingSelection: BackupClientTypes.RestoreTestingSelectionForGet?
@@ -4507,7 +4508,7 @@ public struct GetRestoreTestingSelectionOutput {
     }
 }
 
-public struct GetSupportedResourceTypesOutput {
+public struct GetSupportedResourceTypesOutput: Swift.Sendable {
     /// Contains a string with the supported Amazon Web Services resource types:
     ///
     /// * Aurora for Amazon Aurora
@@ -4551,7 +4552,7 @@ public struct GetSupportedResourceTypesOutput {
     }
 }
 
-public struct ListBackupJobsInput {
+public struct ListBackupJobsInput: Swift.Sendable {
     /// The account ID to list the jobs from. Returns only backup jobs associated with the specified account ID. If used from an Organizations management account, passing * returns all jobs across the organization.
     public var byAccountId: Swift.String?
     /// Returns only backup jobs that will be stored in the specified backup vault. Backup vaults are identified by names that are unique to the account used to create them and the Amazon Web Services Region where they are created.
@@ -4643,7 +4644,7 @@ public struct ListBackupJobsInput {
     }
 }
 
-public struct ListBackupJobsOutput {
+public struct ListBackupJobsOutput: Swift.Sendable {
     /// An array of structures containing metadata about your backup jobs returned in JSON format.
     public var backupJobs: [BackupClientTypes.BackupJob]?
     /// The next item following a partial list of returned items. For example, if a request is made to return MaxResults number of items, NextToken allows you to return more items in your list starting at the location pointed to by the next token.
@@ -4659,7 +4660,7 @@ public struct ListBackupJobsOutput {
     }
 }
 
-public struct ListBackupJobSummariesInput {
+public struct ListBackupJobSummariesInput: Swift.Sendable {
     /// Returns the job count for the specified account. If the request is sent from a member account or an account not part of Amazon Web Services Organizations, jobs within requestor's account will be returned. Root, admin, and delegated administrator accounts can use the value ANY to return job counts from every account in the organization. AGGREGATE_ALL aggregates job counts from all accounts within the authenticated organization, then returns the sum.
     public var accountId: Swift.String?
     /// The period for the returned results.
@@ -4701,7 +4702,7 @@ public struct ListBackupJobSummariesInput {
     }
 }
 
-public struct ListBackupJobSummariesOutput {
+public struct ListBackupJobSummariesOutput: Swift.Sendable {
     /// The period for the returned results.
     ///
     /// * ONE_DAY - The daily job count for the prior 14 days.
@@ -4727,7 +4728,7 @@ public struct ListBackupJobSummariesOutput {
     }
 }
 
-public struct ListBackupPlansInput {
+public struct ListBackupPlansInput: Swift.Sendable {
     /// A Boolean value with a default value of FALSE that returns deleted backup plans when set to TRUE.
     public var includeDeleted: Swift.Bool?
     /// The maximum number of items to be returned.
@@ -4747,7 +4748,7 @@ public struct ListBackupPlansInput {
     }
 }
 
-public struct ListBackupPlansOutput {
+public struct ListBackupPlansOutput: Swift.Sendable {
     /// Information about the backup plans.
     public var backupPlansList: [BackupClientTypes.BackupPlansListMember]?
     /// The next item following a partial list of returned items. For example, if a request is made to return MaxResults number of items, NextToken allows you to return more items in your list starting at the location pointed to by the next token.
@@ -4763,7 +4764,7 @@ public struct ListBackupPlansOutput {
     }
 }
 
-public struct ListBackupPlanTemplatesInput {
+public struct ListBackupPlanTemplatesInput: Swift.Sendable {
     /// The maximum number of items to return.
     public var maxResults: Swift.Int?
     /// The next item following a partial list of returned items. For example, if a request is made to return MaxResults number of items, NextToken allows you to return more items in your list starting at the location pointed to by the next token.
@@ -4779,7 +4780,7 @@ public struct ListBackupPlanTemplatesInput {
     }
 }
 
-public struct ListBackupPlanTemplatesOutput {
+public struct ListBackupPlanTemplatesOutput: Swift.Sendable {
     /// An array of template list items containing metadata about your saved templates.
     public var backupPlanTemplatesList: [BackupClientTypes.BackupPlanTemplatesListMember]?
     /// The next item following a partial list of returned items. For example, if a request is made to return MaxResults number of items, NextToken allows you to return more items in your list starting at the location pointed to by the next token.
@@ -4795,7 +4796,7 @@ public struct ListBackupPlanTemplatesOutput {
     }
 }
 
-public struct ListBackupPlanVersionsInput {
+public struct ListBackupPlanVersionsInput: Swift.Sendable {
     /// Uniquely identifies a backup plan.
     /// This member is required.
     public var backupPlanId: Swift.String?
@@ -4816,7 +4817,7 @@ public struct ListBackupPlanVersionsInput {
     }
 }
 
-public struct ListBackupPlanVersionsOutput {
+public struct ListBackupPlanVersionsOutput: Swift.Sendable {
     /// An array of version list items containing metadata about your backup plans.
     public var backupPlanVersionsList: [BackupClientTypes.BackupPlansListMember]?
     /// The next item following a partial list of returned items. For example, if a request is made to return MaxResults number of items, NextToken allows you to return more items in your list starting at the location pointed to by the next token.
@@ -4832,7 +4833,7 @@ public struct ListBackupPlanVersionsOutput {
     }
 }
 
-public struct ListBackupSelectionsInput {
+public struct ListBackupSelectionsInput: Swift.Sendable {
     /// Uniquely identifies a backup plan.
     /// This member is required.
     public var backupPlanId: Swift.String?
@@ -4853,7 +4854,7 @@ public struct ListBackupSelectionsInput {
     }
 }
 
-public struct ListBackupSelectionsOutput {
+public struct ListBackupSelectionsOutput: Swift.Sendable {
     /// An array of backup selection list items containing metadata about each resource in the list.
     public var backupSelectionsList: [BackupClientTypes.BackupSelectionsListMember]?
     /// The next item following a partial list of returned items. For example, if a request is made to return MaxResults number of items, NextToken allows you to return more items in your list starting at the location pointed to by the next token.
@@ -4869,7 +4870,7 @@ public struct ListBackupSelectionsOutput {
     }
 }
 
-public struct ListBackupVaultsInput {
+public struct ListBackupVaultsInput: Swift.Sendable {
     /// This parameter will sort the list of vaults by shared vaults.
     public var byShared: Swift.Bool?
     /// This parameter will sort the list of vaults by vault type.
@@ -4893,7 +4894,7 @@ public struct ListBackupVaultsInput {
     }
 }
 
-public struct ListBackupVaultsOutput {
+public struct ListBackupVaultsOutput: Swift.Sendable {
     /// An array of backup vault list members containing vault metadata, including Amazon Resource Name (ARN), display name, creation date, number of saved recovery points, and encryption information if the resources saved in the backup vault are encrypted.
     public var backupVaultList: [BackupClientTypes.BackupVaultListMember]?
     /// The next item following a partial list of returned items. For example, if a request is made to return MaxResults number of items, NextToken allows you to return more items in your list starting at the location pointed to by the next token.
@@ -4909,7 +4910,7 @@ public struct ListBackupVaultsOutput {
     }
 }
 
-public struct ListCopyJobsInput {
+public struct ListCopyJobsInput: Swift.Sendable {
     /// The account ID to list the jobs from. Returns only copy jobs associated with the specified account ID.
     public var byAccountId: Swift.String?
     /// Returns only copy jobs completed after a date expressed in Unix format and Coordinated Universal Time (UTC).
@@ -5001,7 +5002,7 @@ public struct ListCopyJobsInput {
     }
 }
 
-public struct ListCopyJobsOutput {
+public struct ListCopyJobsOutput: Swift.Sendable {
     /// An array of structures containing metadata about your copy jobs returned in JSON format.
     public var copyJobs: [BackupClientTypes.CopyJob]?
     /// The next item following a partial list of returned items. For example, if a request is made to return MaxResults number of items, NextToken allows you to return more items in your list starting at the location pointed to by the next token.
@@ -5017,7 +5018,7 @@ public struct ListCopyJobsOutput {
     }
 }
 
-public struct ListCopyJobSummariesInput {
+public struct ListCopyJobSummariesInput: Swift.Sendable {
     /// Returns the job count for the specified account. If the request is sent from a member account or an account not part of Amazon Web Services Organizations, jobs within requestor's account will be returned. Root, admin, and delegated administrator accounts can use the value ANY to return job counts from every account in the organization. AGGREGATE_ALL aggregates job counts from all accounts within the authenticated organization, then returns the sum.
     public var accountId: Swift.String?
     /// The period for the returned results.
@@ -5059,7 +5060,7 @@ public struct ListCopyJobSummariesInput {
     }
 }
 
-public struct ListCopyJobSummariesOutput {
+public struct ListCopyJobSummariesOutput: Swift.Sendable {
     /// The period for the returned results.
     ///
     /// * ONE_DAY - The daily job count for the prior 14 days.
@@ -5085,7 +5086,7 @@ public struct ListCopyJobSummariesOutput {
     }
 }
 
-public struct ListFrameworksInput {
+public struct ListFrameworksInput: Swift.Sendable {
     /// The number of desired results from 1 to 1000. Optional. If unspecified, the query will return 1 MB of data.
     public var maxResults: Swift.Int?
     /// An identifier that was returned from the previous call to this operation, which can be used to return the next set of items in the list.
@@ -5102,8 +5103,9 @@ public struct ListFrameworksInput {
 }
 
 extension BackupClientTypes {
+
     /// Contains detailed information about a framework. Frameworks contain controls, which evaluate and report on your backup events and resources. Frameworks generate daily compliance results.
-    public struct Framework {
+    public struct Framework: Swift.Sendable {
         /// The date and time that a framework is created, in ISO 8601 representation. The value of CreationTime is accurate to milliseconds. For example, 2020-07-10T15:00:00.000-08:00 represents the 10th of July 2020 at 3:00 PM 8 hours behind UTC.
         public var creationTime: Foundation.Date?
         /// The deployment status of a framework. The statuses are: CREATE_IN_PROGRESS | UPDATE_IN_PROGRESS | DELETE_IN_PROGRESS | COMPLETED | FAILED
@@ -5134,10 +5136,9 @@ extension BackupClientTypes {
             self.numberOfControls = numberOfControls
         }
     }
-
 }
 
-public struct ListFrameworksOutput {
+public struct ListFrameworksOutput: Swift.Sendable {
     /// The frameworks with details for each framework, including the framework name, Amazon Resource Name (ARN), description, number of controls, creation time, and deployment status.
     public var frameworks: [BackupClientTypes.Framework]?
     /// An identifier that was returned from the previous call to this operation, which can be used to return the next set of items in the list.
@@ -5153,7 +5154,7 @@ public struct ListFrameworksOutput {
     }
 }
 
-public struct ListLegalHoldsInput {
+public struct ListLegalHoldsInput: Swift.Sendable {
     /// The maximum number of resource list items to be returned.
     public var maxResults: Swift.Int?
     /// The next item following a partial list of returned resources. For example, if a request is made to return MaxResults number of resources, NextToken allows you to return more items in your list starting at the location pointed to by the next token.
@@ -5170,8 +5171,9 @@ public struct ListLegalHoldsInput {
 }
 
 extension BackupClientTypes {
+
     /// A legal hold is an administrative tool that helps prevent backups from being deleted while under a hold. While the hold is in place, backups under a hold cannot be deleted and lifecycle policies that would alter the backup status (such as transition to cold storage) are delayed until the legal hold is removed. A backup can have more than one legal hold. Legal holds are applied to one or more backups (also known as recovery points). These backups can be filtered by resource types and by resource IDs.
-    public struct LegalHold {
+    public struct LegalHold: Swift.Sendable {
         /// The time when the legal hold was cancelled.
         public var cancellationDate: Foundation.Date?
         /// The time when the legal hold was created.
@@ -5206,10 +5208,9 @@ extension BackupClientTypes {
             self.title = title
         }
     }
-
 }
 
-public struct ListLegalHoldsOutput {
+public struct ListLegalHoldsOutput: Swift.Sendable {
     /// This is an array of returned legal holds, both active and previous.
     public var legalHolds: [BackupClientTypes.LegalHold]?
     /// The next item following a partial list of returned resources. For example, if a request is made to return MaxResults number of resources, NextToken allows you to return more items in your list starting at the location pointed to by the next token.
@@ -5225,7 +5226,7 @@ public struct ListLegalHoldsOutput {
     }
 }
 
-public struct ListProtectedResourcesInput {
+public struct ListProtectedResourcesInput: Swift.Sendable {
     /// The maximum number of items to be returned.
     public var maxResults: Swift.Int?
     /// The next item following a partial list of returned items. For example, if a request is made to return MaxResults number of items, NextToken allows you to return more items in your list starting at the location pointed to by the next token.
@@ -5242,8 +5243,9 @@ public struct ListProtectedResourcesInput {
 }
 
 extension BackupClientTypes {
+
     /// A structure that contains information about a backed-up resource.
-    public struct ProtectedResource {
+    public struct ProtectedResource: Swift.Sendable {
         /// The date and time a resource was last backed up, in Unix format and Coordinated Universal Time (UTC). The value of LastBackupTime is accurate to milliseconds. For example, the value 1516925490.087 represents Friday, January 26, 2018 12:11:30.087 AM.
         public var lastBackupTime: Foundation.Date?
         /// The ARN (Amazon Resource Name) of the backup vault that contains the most recent backup recovery point.
@@ -5274,10 +5276,9 @@ extension BackupClientTypes {
             self.resourceType = resourceType
         }
     }
-
 }
 
-public struct ListProtectedResourcesOutput {
+public struct ListProtectedResourcesOutput: Swift.Sendable {
     /// The next item following a partial list of returned items. For example, if a request is made to return MaxResults number of items, NextToken allows you to return more items in your list starting at the location pointed to by the next token.
     public var nextToken: Swift.String?
     /// An array of resources successfully backed up by Backup including the time the resource was saved, an Amazon Resource Name (ARN) of the resource, and a resource type.
@@ -5293,7 +5294,7 @@ public struct ListProtectedResourcesOutput {
     }
 }
 
-public struct ListProtectedResourcesByBackupVaultInput {
+public struct ListProtectedResourcesByBackupVaultInput: Swift.Sendable {
     /// The list of protected resources by backup vault within the vault(s) you specify by account ID.
     public var backupVaultAccountId: Swift.String?
     /// The list of protected resources by backup vault within the vault(s) you specify by name.
@@ -5318,7 +5319,7 @@ public struct ListProtectedResourcesByBackupVaultInput {
     }
 }
 
-public struct ListProtectedResourcesByBackupVaultOutput {
+public struct ListProtectedResourcesByBackupVaultOutput: Swift.Sendable {
     /// The next item following a partial list of returned items. For example, if a request is made to return MaxResults number of items, NextToken allows you to return more items in your list starting at the location pointed to by the next token.
     public var nextToken: Swift.String?
     /// These are the results returned for the request ListProtectedResourcesByBackupVault.
@@ -5334,7 +5335,7 @@ public struct ListProtectedResourcesByBackupVaultOutput {
     }
 }
 
-public struct ListRecoveryPointsByBackupVaultInput {
+public struct ListRecoveryPointsByBackupVaultInput: Swift.Sendable {
     /// This parameter will sort the list of recovery points by account ID.
     public var backupVaultAccountId: Swift.String?
     /// The name of a logical container where backups are stored. Backup vaults are identified by names that are unique to the account used to create them and the Amazon Web Services Region where they are created. Backup vault name might not be available when a supported service creates the backup.
@@ -5416,8 +5417,9 @@ public struct ListRecoveryPointsByBackupVaultInput {
 }
 
 extension BackupClientTypes {
+
     /// Contains detailed information about the recovery points stored in a backup vault.
-    public struct RecoveryPointByBackupVault {
+    public struct RecoveryPointByBackupVault: Swift.Sendable {
         /// The size, in bytes, of a backup.
         public var backupSizeInBytes: Swift.Int?
         /// An ARN that uniquely identifies a backup vault; for example, arn:aws:backup:us-east-1:123456789012:backup-vault:aBackupVault.
@@ -5516,10 +5518,9 @@ extension BackupClientTypes {
             self.vaultType = vaultType
         }
     }
-
 }
 
-public struct ListRecoveryPointsByBackupVaultOutput {
+public struct ListRecoveryPointsByBackupVaultOutput: Swift.Sendable {
     /// The next item following a partial list of returned items. For example, if a request is made to return MaxResults number of items, NextToken allows you to return more items in your list starting at the location pointed to by the next token.
     public var nextToken: Swift.String?
     /// An array of objects that contain detailed information about recovery points saved in a backup vault.
@@ -5535,7 +5536,7 @@ public struct ListRecoveryPointsByBackupVaultOutput {
     }
 }
 
-public struct ListRecoveryPointsByLegalHoldInput {
+public struct ListRecoveryPointsByLegalHoldInput: Swift.Sendable {
     /// The ID of the legal hold.
     /// This member is required.
     public var legalHoldId: Swift.String?
@@ -5557,8 +5558,9 @@ public struct ListRecoveryPointsByLegalHoldInput {
 }
 
 extension BackupClientTypes {
+
     /// This is a recovery point which is a child (nested) recovery point of a parent (composite) recovery point. These recovery points can be disassociated from their parent (composite) recovery point, in which case they will no longer be a member.
-    public struct RecoveryPointMember {
+    public struct RecoveryPointMember: Swift.Sendable {
         /// The name of the backup vault (the logical container in which backups are stored).
         public var backupVaultName: Swift.String?
         /// The Amazon Resource Name (ARN) of the parent (composite) recovery point.
@@ -5581,10 +5583,9 @@ extension BackupClientTypes {
             self.resourceType = resourceType
         }
     }
-
 }
 
-public struct ListRecoveryPointsByLegalHoldOutput {
+public struct ListRecoveryPointsByLegalHoldOutput: Swift.Sendable {
     /// The next item following a partial list of returned resources.
     public var nextToken: Swift.String?
     /// The recovery points.
@@ -5600,7 +5601,7 @@ public struct ListRecoveryPointsByLegalHoldOutput {
     }
 }
 
-public struct ListRecoveryPointsByResourceInput {
+public struct ListRecoveryPointsByResourceInput: Swift.Sendable {
     /// This attribute filters recovery points based on ownership. If this is set to TRUE, the response will contain recovery points associated with the selected resources that are managed by Backup. If this is set to FALSE, the response will contain all recovery points associated with the selected resource. Type: Boolean
     public var managedByAWSBackupOnly: Swift.Bool?
     /// The maximum number of items to be returned. Amazon RDS requires a value of at least 20.
@@ -5626,8 +5627,9 @@ public struct ListRecoveryPointsByResourceInput {
 }
 
 extension BackupClientTypes {
+
     /// Contains detailed information about a saved recovery point.
-    public struct RecoveryPointByResource {
+    public struct RecoveryPointByResource: Swift.Sendable {
         /// The size, in bytes, of a backup.
         public var backupSizeBytes: Swift.Int?
         /// The name of a logical container where backups are stored. Backup vaults are identified by names that are unique to the account used to create them and the Amazon Web Services Region where they are created.
@@ -5678,10 +5680,9 @@ extension BackupClientTypes {
             self.vaultType = vaultType
         }
     }
-
 }
 
-public struct ListRecoveryPointsByResourceOutput {
+public struct ListRecoveryPointsByResourceOutput: Swift.Sendable {
     /// The next item following a partial list of returned items. For example, if a request is made to return MaxResults number of items, NextToken allows you to return more items in your list starting at the location pointed to by the next token.
     public var nextToken: Swift.String?
     /// An array of objects that contain detailed information about recovery points of the specified resource type. Only Amazon EFS and Amazon EC2 recovery points return BackupVaultName.
@@ -5697,7 +5698,7 @@ public struct ListRecoveryPointsByResourceOutput {
     }
 }
 
-public struct ListReportJobsInput {
+public struct ListReportJobsInput: Swift.Sendable {
     /// Returns only report jobs that were created after the date and time specified in Unix format and Coordinated Universal Time (UTC). For example, the value 1516925490 represents Friday, January 26, 2018 12:11:30 AM.
     public var byCreationAfter: Foundation.Date?
     /// Returns only report jobs that were created before the date and time specified in Unix format and Coordinated Universal Time (UTC). For example, the value 1516925490 represents Friday, January 26, 2018 12:11:30 AM.
@@ -5729,7 +5730,7 @@ public struct ListReportJobsInput {
     }
 }
 
-public struct ListReportJobsOutput {
+public struct ListReportJobsOutput: Swift.Sendable {
     /// An identifier that was returned from the previous call to this operation, which can be used to return the next set of items in the list.
     public var nextToken: Swift.String?
     /// Details about your report jobs in JSON format.
@@ -5745,7 +5746,7 @@ public struct ListReportJobsOutput {
     }
 }
 
-public struct ListReportPlansInput {
+public struct ListReportPlansInput: Swift.Sendable {
     /// The number of desired results from 1 to 1000. Optional. If unspecified, the query will return 1 MB of data.
     public var maxResults: Swift.Int?
     /// An identifier that was returned from the previous call to this operation, which can be used to return the next set of items in the list.
@@ -5761,7 +5762,7 @@ public struct ListReportPlansInput {
     }
 }
 
-public struct ListReportPlansOutput {
+public struct ListReportPlansOutput: Swift.Sendable {
     /// An identifier that was returned from the previous call to this operation, which can be used to return the next set of items in the list.
     public var nextToken: Swift.String?
     /// The report plans with detailed information for each plan. This information includes the Amazon Resource Name (ARN), report plan name, description, settings, delivery channel, deployment status, creation time, and last times the report plan attempted to and successfully ran.
@@ -5777,7 +5778,7 @@ public struct ListReportPlansOutput {
     }
 }
 
-public struct ListRestoreJobsInput {
+public struct ListRestoreJobsInput: Swift.Sendable {
     /// The account ID to list the jobs from. Returns only restore jobs associated with the specified account ID.
     public var byAccountId: Swift.String?
     /// Returns only copy jobs completed after a date expressed in Unix format and Coordinated Universal Time (UTC).
@@ -5858,8 +5859,9 @@ public struct ListRestoreJobsInput {
 }
 
 extension BackupClientTypes {
+
     /// Contains metadata about a restore job.
-    public struct RestoreJobsListMember {
+    public struct RestoreJobsListMember: Swift.Sendable {
         /// The account ID that owns the restore job.
         public var accountId: Swift.String?
         /// The size, in bytes, of the restored resource.
@@ -5942,10 +5944,9 @@ extension BackupClientTypes {
             self.validationStatusMessage = validationStatusMessage
         }
     }
-
 }
 
-public struct ListRestoreJobsOutput {
+public struct ListRestoreJobsOutput: Swift.Sendable {
     /// The next item following a partial list of returned items. For example, if a request is made to return MaxResults number of items, NextToken allows you to return more items in your list starting at the location pointed to by the next token.
     public var nextToken: Swift.String?
     /// An array of objects that contain detailed information about jobs to restore saved resources.
@@ -5961,7 +5962,7 @@ public struct ListRestoreJobsOutput {
     }
 }
 
-public struct ListRestoreJobsByProtectedResourceInput {
+public struct ListRestoreJobsByProtectedResourceInput: Swift.Sendable {
     /// Returns only restore jobs of recovery points that were created after the specified date.
     public var byRecoveryPointCreationDateAfter: Foundation.Date?
     /// Returns only restore jobs of recovery points that were created before the specified date.
@@ -5994,7 +5995,7 @@ public struct ListRestoreJobsByProtectedResourceInput {
     }
 }
 
-public struct ListRestoreJobsByProtectedResourceOutput {
+public struct ListRestoreJobsByProtectedResourceOutput: Swift.Sendable {
     /// The next item following a partial list of returned items. For example, if a request is made to return MaxResults number of items, NextToken allows youto return more items in your list starting at the location pointed to by the next token
     public var nextToken: Swift.String?
     /// An array of objects that contain detailed information about jobs to restore saved resources.>
@@ -6012,7 +6013,7 @@ public struct ListRestoreJobsByProtectedResourceOutput {
 
 extension BackupClientTypes {
 
-    public enum RestoreJobState: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum RestoreJobState: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case aborted
         case aggregateAll
         case any
@@ -6057,7 +6058,7 @@ extension BackupClientTypes {
     }
 }
 
-public struct ListRestoreJobSummariesInput {
+public struct ListRestoreJobSummariesInput: Swift.Sendable {
     /// Returns the job count for the specified account. If the request is sent from a member account or an account not part of Amazon Web Services Organizations, jobs within requestor's account will be returned. Root, admin, and delegated administrator accounts can use the value ANY to return job counts from every account in the organization. AGGREGATE_ALL aggregates job counts from all accounts within the authenticated organization, then returns the sum.
     public var accountId: Swift.String?
     /// The period for the returned results.
@@ -6096,8 +6097,9 @@ public struct ListRestoreJobSummariesInput {
 }
 
 extension BackupClientTypes {
+
     /// This is a summary of restore jobs created or running within the most recent 30 days. The returned summary may contain the following: Region, Account, State, ResourceType, MessageCategory, StartTime, EndTime, and Count of included jobs.
-    public struct RestoreJobSummary {
+    public struct RestoreJobSummary: Swift.Sendable {
         /// The account ID that owns the jobs within the summary.
         public var accountId: Swift.String?
         /// The value as a number of jobs in a job summary.
@@ -6132,10 +6134,9 @@ extension BackupClientTypes {
             self.state = state
         }
     }
-
 }
 
-public struct ListRestoreJobSummariesOutput {
+public struct ListRestoreJobSummariesOutput: Swift.Sendable {
     /// The period for the returned results.
     ///
     /// * ONE_DAY - The daily job count for the prior 14 days.
@@ -6161,7 +6162,7 @@ public struct ListRestoreJobSummariesOutput {
     }
 }
 
-public struct ListRestoreTestingPlansInput {
+public struct ListRestoreTestingPlansInput: Swift.Sendable {
     /// The maximum number of items to be returned.
     public var maxResults: Swift.Int?
     /// The next item following a partial list of returned items. For example, if a request is made to return MaxResults number of items, NextToken allows you to return more items in your list starting at the location pointed to by the nexttoken.
@@ -6178,8 +6179,9 @@ public struct ListRestoreTestingPlansInput {
 }
 
 extension BackupClientTypes {
+
     /// This contains metadata about a restore testing plan.
-    public struct RestoreTestingPlanForList {
+    public struct RestoreTestingPlanForList: Swift.Sendable {
         /// The date and time that a restore testing plan was created, in Unix format and Coordinated Universal Time (UTC). The value of CreationTime is accurate to milliseconds. For example, the value 1516925490.087 represents Friday, January 26, 2018 12:11:30.087 AM.
         /// This member is required.
         public var creationTime: Foundation.Date?
@@ -6222,10 +6224,9 @@ extension BackupClientTypes {
             self.startWindowHours = startWindowHours
         }
     }
-
 }
 
-public struct ListRestoreTestingPlansOutput {
+public struct ListRestoreTestingPlansOutput: Swift.Sendable {
     /// The next item following a partial list of returned items. For example, if a request is made to return MaxResults number of items, NextToken allows you to return more items in your list starting at the location pointed to by the nexttoken.
     public var nextToken: Swift.String?
     /// This is a returned list of restore testing plans.
@@ -6242,7 +6243,7 @@ public struct ListRestoreTestingPlansOutput {
     }
 }
 
-public struct ListRestoreTestingSelectionsInput {
+public struct ListRestoreTestingSelectionsInput: Swift.Sendable {
     /// The maximum number of items to be returned.
     public var maxResults: Swift.Int?
     /// The next item following a partial list of returned items. For example, if a request is made to return MaxResults number of items, NextToken allows you to return more items in your list starting at the location pointed to by the nexttoken.
@@ -6264,8 +6265,9 @@ public struct ListRestoreTestingSelectionsInput {
 }
 
 extension BackupClientTypes {
+
     /// This contains metadata about a restore testing selection.
-    public struct RestoreTestingSelectionForList {
+    public struct RestoreTestingSelectionForList: Swift.Sendable {
         /// The date and time that a restore testing selection was created, in Unix format and Coordinated Universal Time (UTC). The value of CreationTime is accurate to milliseconds. For example, the value 1516925490.087 represents Friday, January 26,2018 12:11:30.087 AM.
         /// This member is required.
         public var creationTime: Foundation.Date?
@@ -6301,10 +6303,9 @@ extension BackupClientTypes {
             self.validationWindowHours = validationWindowHours
         }
     }
-
 }
 
-public struct ListRestoreTestingSelectionsOutput {
+public struct ListRestoreTestingSelectionsOutput: Swift.Sendable {
     /// The next item following a partial list of returned items. For example, if a request is made to return MaxResults number of items, NextToken allows you to return more items in your list starting at the location pointed to by the nexttoken.
     public var nextToken: Swift.String?
     /// The returned restore testing selections associated with the restore testing plan.
@@ -6321,7 +6322,7 @@ public struct ListRestoreTestingSelectionsOutput {
     }
 }
 
-public struct ListTagsInput {
+public struct ListTagsInput: Swift.Sendable {
     /// The maximum number of items to be returned.
     public var maxResults: Swift.Int?
     /// The next item following a partial list of returned items. For example, if a request is made to return MaxResults number of items, NextToken allows you to return more items in your list starting at the location pointed to by the next token.
@@ -6342,7 +6343,7 @@ public struct ListTagsInput {
     }
 }
 
-public struct ListTagsOutput {
+public struct ListTagsOutput: Swift.Sendable {
     /// The next item following a partial list of returned items. For example, if a request is made to return MaxResults number of items, NextToken allows you to return more items in your list starting at the location pointed to by the next token.
     public var nextToken: Swift.String?
     /// Information about the tags.
@@ -6363,7 +6364,7 @@ extension ListTagsOutput: Swift.CustomDebugStringConvertible {
         "ListTagsOutput(nextToken: \(Swift.String(describing: nextToken)), tags: \"CONTENT_REDACTED\")"}
 }
 
-public struct PutBackupVaultAccessPolicyInput {
+public struct PutBackupVaultAccessPolicyInput: Swift.Sendable {
     /// The name of a logical container where backups are stored. Backup vaults are identified by names that are unique to the account used to create them and the Amazon Web Services Region where they are created.
     /// This member is required.
     public var backupVaultName: Swift.String?
@@ -6380,7 +6381,7 @@ public struct PutBackupVaultAccessPolicyInput {
     }
 }
 
-public struct PutBackupVaultLockConfigurationInput {
+public struct PutBackupVaultLockConfigurationInput: Swift.Sendable {
     /// The Backup Vault Lock configuration that specifies the name of the backup vault it protects.
     /// This member is required.
     public var backupVaultName: Swift.String?
@@ -6405,7 +6406,7 @@ public struct PutBackupVaultLockConfigurationInput {
     }
 }
 
-public struct PutBackupVaultNotificationsInput {
+public struct PutBackupVaultNotificationsInput: Swift.Sendable {
     /// An array of events that indicate the status of jobs to back up resources to the backup vault. For common use cases and code samples, see [Using Amazon SNS to track Backup events](https://docs.aws.amazon.com/aws-backup/latest/devguide/sns-notifications.html). The following events are supported:
     ///
     /// * BACKUP_JOB_STARTED | BACKUP_JOB_COMPLETED
@@ -6439,7 +6440,7 @@ public struct PutBackupVaultNotificationsInput {
     }
 }
 
-public struct PutRestoreValidationResultInput {
+public struct PutRestoreValidationResultInput: Swift.Sendable {
     /// This is a unique identifier of a restore job within Backup.
     /// This member is required.
     public var restoreJobId: Swift.String?
@@ -6461,7 +6462,7 @@ public struct PutRestoreValidationResultInput {
     }
 }
 
-public struct StartBackupJobInput {
+public struct StartBackupJobInput: Swift.Sendable {
     /// The backup option for a selected resource. This option is only available for Windows Volume Shadow Copy Service (VSS) backup jobs. Valid values: Set to "WindowsVSS":"enabled" to enable the WindowsVSS backup option and create a Windows VSS backup. Set to "WindowsVSS""disabled" to create a regular backup. The WindowsVSS option is not enabled by default.
     public var backupOptions: [Swift.String: Swift.String]?
     /// The name of a logical container where backups are stored. Backup vaults are identified by names that are unique to the account used to create them and the Amazon Web Services Region where they are created.
@@ -6513,7 +6514,7 @@ extension StartBackupJobInput: Swift.CustomDebugStringConvertible {
         "StartBackupJobInput(backupOptions: \(Swift.String(describing: backupOptions)), backupVaultName: \(Swift.String(describing: backupVaultName)), completeWindowMinutes: \(Swift.String(describing: completeWindowMinutes)), iamRoleArn: \(Swift.String(describing: iamRoleArn)), idempotencyToken: \(Swift.String(describing: idempotencyToken)), lifecycle: \(Swift.String(describing: lifecycle)), resourceArn: \(Swift.String(describing: resourceArn)), startWindowMinutes: \(Swift.String(describing: startWindowMinutes)), recoveryPointTags: \"CONTENT_REDACTED\")"}
 }
 
-public struct StartBackupJobOutput {
+public struct StartBackupJobOutput: Swift.Sendable {
     /// Uniquely identifies a request to Backup to back up a resource.
     public var backupJobId: Swift.String?
     /// The date and time that a backup job is created, in Unix format and Coordinated Universal Time (UTC). The value of CreationDate is accurate to milliseconds. For example, the value 1516925490.087 represents Friday, January 26, 2018 12:11:30.087 AM.
@@ -6537,7 +6538,7 @@ public struct StartBackupJobOutput {
     }
 }
 
-public struct StartCopyJobInput {
+public struct StartCopyJobInput: Swift.Sendable {
     /// An Amazon Resource Name (ARN) that uniquely identifies a destination backup vault to copy to; for example, arn:aws:backup:us-east-1:123456789012:backup-vault:aBackupVault.
     /// This member is required.
     public var destinationBackupVaultArn: Swift.String?
@@ -6573,7 +6574,7 @@ public struct StartCopyJobInput {
     }
 }
 
-public struct StartCopyJobOutput {
+public struct StartCopyJobOutput: Swift.Sendable {
     /// Uniquely identifies a copy job.
     public var copyJobId: Swift.String?
     /// The date and time that a copy job is created, in Unix format and Coordinated Universal Time (UTC). The value of CreationDate is accurate to milliseconds. For example, the value 1516925490.087 represents Friday, January 26, 2018 12:11:30.087 AM.
@@ -6593,7 +6594,7 @@ public struct StartCopyJobOutput {
     }
 }
 
-public struct StartReportJobInput {
+public struct StartReportJobInput: Swift.Sendable {
     /// A customer-chosen string that you can use to distinguish between otherwise identical calls to StartReportJobInput. Retrying a successful request with the same idempotency token results in a success message with no action taken.
     public var idempotencyToken: Swift.String?
     /// The unique name of a report plan.
@@ -6610,7 +6611,7 @@ public struct StartReportJobInput {
     }
 }
 
-public struct StartReportJobOutput {
+public struct StartReportJobOutput: Swift.Sendable {
     /// The identifier of the report job. A unique, randomly generated, Unicode, UTF-8 encoded string that is at most 1,024 bytes long. The report job ID cannot be edited.
     public var reportJobId: Swift.String?
 
@@ -6622,7 +6623,7 @@ public struct StartReportJobOutput {
     }
 }
 
-public struct StartRestoreJobInput {
+public struct StartRestoreJobInput: Swift.Sendable {
     /// This is an optional parameter. If this equals True, tags included in the backup will be copied to the restored resource. This can only be applied to backups created through Backup.
     public var copySourceTagsToRestoredResource: Swift.Bool?
     /// The Amazon Resource Name (ARN) of the IAM role that Backup uses to create the target resource; for example: arn:aws:iam::123456789012:role/S3Access.
@@ -6721,7 +6722,7 @@ extension StartRestoreJobInput: Swift.CustomDebugStringConvertible {
         "StartRestoreJobInput(copySourceTagsToRestoredResource: \(Swift.String(describing: copySourceTagsToRestoredResource)), iamRoleArn: \(Swift.String(describing: iamRoleArn)), idempotencyToken: \(Swift.String(describing: idempotencyToken)), recoveryPointArn: \(Swift.String(describing: recoveryPointArn)), resourceType: \(Swift.String(describing: resourceType)), metadata: \"CONTENT_REDACTED\")"}
 }
 
-public struct StartRestoreJobOutput {
+public struct StartRestoreJobOutput: Swift.Sendable {
     /// Uniquely identifies the job that restores a recovery point.
     public var restoreJobId: Swift.String?
 
@@ -6733,7 +6734,7 @@ public struct StartRestoreJobOutput {
     }
 }
 
-public struct StopBackupJobInput {
+public struct StopBackupJobInput: Swift.Sendable {
     /// Uniquely identifies a request to Backup to back up a resource.
     /// This member is required.
     public var backupJobId: Swift.String?
@@ -6746,7 +6747,7 @@ public struct StopBackupJobInput {
     }
 }
 
-public struct TagResourceInput {
+public struct TagResourceInput: Swift.Sendable {
     /// An ARN that uniquely identifies a resource. The format of the ARN depends on the type of the tagged resource. ARNs that do not include backup are incompatible with tagging. TagResource and UntagResource with invalid ARNs will result in an error. Acceptable ARN content can include arn:aws:backup:us-east. Invalid ARN content may look like arn:aws:ec2:us-east.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -6769,7 +6770,7 @@ extension TagResourceInput: Swift.CustomDebugStringConvertible {
         "TagResourceInput(resourceArn: \(Swift.String(describing: resourceArn)), tags: \"CONTENT_REDACTED\")"}
 }
 
-public struct UntagResourceInput {
+public struct UntagResourceInput: Swift.Sendable {
     /// An ARN that uniquely identifies a resource. The format of the ARN depends on the type of the tagged resource. ARNs that do not include backup are incompatible with tagging. TagResource and UntagResource with invalid ARNs will result in an error. Acceptable ARN content can include arn:aws:backup:us-east. Invalid ARN content may look like arn:aws:ec2:us-east.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -6792,7 +6793,7 @@ extension UntagResourceInput: Swift.CustomDebugStringConvertible {
         "UntagResourceInput(resourceArn: \(Swift.String(describing: resourceArn)), tagKeyList: \"CONTENT_REDACTED\")"}
 }
 
-public struct UpdateBackupPlanInput {
+public struct UpdateBackupPlanInput: Swift.Sendable {
     /// The body of a backup plan. Includes a BackupPlanName and one or more sets of Rules.
     /// This member is required.
     public var backupPlan: BackupClientTypes.BackupPlanInput?
@@ -6810,7 +6811,7 @@ public struct UpdateBackupPlanInput {
     }
 }
 
-public struct UpdateBackupPlanOutput {
+public struct UpdateBackupPlanOutput: Swift.Sendable {
     /// Contains a list of BackupOptions for each resource type.
     public var advancedBackupSettings: [BackupClientTypes.AdvancedBackupSetting]?
     /// An Amazon Resource Name (ARN) that uniquely identifies a backup plan; for example, arn:aws:backup:us-east-1:123456789012:plan:8F81F553-3A74-4A3F-B93D-B3360DC80C50.
@@ -6838,7 +6839,7 @@ public struct UpdateBackupPlanOutput {
     }
 }
 
-public struct UpdateFrameworkInput {
+public struct UpdateFrameworkInput: Swift.Sendable {
     /// The controls that make up the framework. Each control in the list has a name, input parameters, and scope.
     public var frameworkControls: [BackupClientTypes.FrameworkControl]?
     /// An optional description of the framework with a maximum 1,024 characters.
@@ -6863,7 +6864,7 @@ public struct UpdateFrameworkInput {
     }
 }
 
-public struct UpdateFrameworkOutput {
+public struct UpdateFrameworkOutput: Swift.Sendable {
     /// The date and time that a framework is created, in ISO 8601 representation. The value of CreationTime is accurate to milliseconds. For example, 2020-07-10T15:00:00.000-08:00 represents the 10th of July 2020 at 3:00 PM 8 hours behind UTC.
     public var creationTime: Foundation.Date?
     /// An Amazon Resource Name (ARN) that uniquely identifies a resource. The format of the ARN depends on the resource type.
@@ -6883,7 +6884,7 @@ public struct UpdateFrameworkOutput {
     }
 }
 
-public struct UpdateGlobalSettingsInput {
+public struct UpdateGlobalSettingsInput: Swift.Sendable {
     /// A value for isCrossAccountBackupEnabled and a Region. Example: update-global-settings --global-settings isCrossAccountBackupEnabled=false --region us-west-2.
     public var globalSettings: [Swift.String: Swift.String]?
 
@@ -6895,7 +6896,7 @@ public struct UpdateGlobalSettingsInput {
     }
 }
 
-public struct UpdateRecoveryPointLifecycleInput {
+public struct UpdateRecoveryPointLifecycleInput: Swift.Sendable {
     /// The name of a logical container where backups are stored. Backup vaults are identified by names that are unique to the account used to create them and the Amazon Web Services Region where they are created.
     /// This member is required.
     public var backupVaultName: Swift.String?
@@ -6917,7 +6918,7 @@ public struct UpdateRecoveryPointLifecycleInput {
     }
 }
 
-public struct UpdateRecoveryPointLifecycleOutput {
+public struct UpdateRecoveryPointLifecycleOutput: Swift.Sendable {
     /// An ARN that uniquely identifies a backup vault; for example, arn:aws:backup:us-east-1:123456789012:backup-vault:aBackupVault.
     public var backupVaultArn: Swift.String?
     /// A CalculatedLifecycle object containing DeleteAt and MoveToColdStorageAt timestamps.
@@ -6941,7 +6942,7 @@ public struct UpdateRecoveryPointLifecycleOutput {
     }
 }
 
-public struct UpdateRegionSettingsInput {
+public struct UpdateRegionSettingsInput: Swift.Sendable {
     /// Enables or disables full Backup management of backups for a resource type. To enable full Backup management for DynamoDB along with [ Backup's advanced DynamoDB backup features](https://docs.aws.amazon.com/aws-backup/latest/devguide/advanced-ddb-backup.html), follow the procedure to [ enable advanced DynamoDB backup programmatically](https://docs.aws.amazon.com/aws-backup/latest/devguide/advanced-ddb-backup.html#advanced-ddb-backup-enable-cli).
     public var resourceTypeManagementPreference: [Swift.String: Swift.Bool]?
     /// Updates the list of services along with the opt-in preferences for the Region. If resource assignments are only based on tags, then service opt-in settings are applied. If a resource type is explicitly assigned to a backup plan, such as Amazon S3, Amazon EC2, or Amazon RDS, it will be included in the backup even if the opt-in is not enabled for that particular service. If both a resource type and tags are specified in a resource assignment, the resource type specified in the backup plan takes priority over the tag condition. Service opt-in settings are disregarded in this situation.
@@ -6957,7 +6958,7 @@ public struct UpdateRegionSettingsInput {
     }
 }
 
-public struct UpdateReportPlanInput {
+public struct UpdateReportPlanInput: Swift.Sendable {
     /// A customer-chosen string that you can use to distinguish between otherwise identical calls to UpdateReportPlanInput. Retrying a successful request with the same idempotency token results in a success message with no action taken.
     public var idempotencyToken: Swift.String?
     /// The information about where to deliver your reports, specifically your Amazon S3 bucket name, S3 key prefix, and the formats of your reports.
@@ -6986,7 +6987,7 @@ public struct UpdateReportPlanInput {
     }
 }
 
-public struct UpdateReportPlanOutput {
+public struct UpdateReportPlanOutput: Swift.Sendable {
     /// The date and time that a report plan is created, in Unix format and Coordinated Universal Time (UTC). The value of CreationTime is accurate to milliseconds. For example, the value 1516925490.087 represents Friday, January 26, 2018 12:11:30.087 AM.
     public var creationTime: Foundation.Date?
     /// An Amazon Resource Name (ARN) that uniquely identifies a resource. The format of the ARN depends on the resource type.
@@ -7007,8 +7008,9 @@ public struct UpdateReportPlanOutput {
 }
 
 extension BackupClientTypes {
+
     /// This contains metadata about a restore testing plan.
-    public struct RestoreTestingPlanForUpdate {
+    public struct RestoreTestingPlanForUpdate: Swift.Sendable {
         /// Required: Algorithm; RecoveryPointTypes; IncludeVaults (one or more). Optional: SelectionWindowDays ('30' if not specified); ExcludeVaults (defaults to empty list if not listed).
         public var recoveryPointSelection: BackupClientTypes.RestoreTestingRecoveryPointSelection?
         /// A CRON expression in specified timezone when a restore testing plan is executed.
@@ -7031,10 +7033,9 @@ extension BackupClientTypes {
             self.startWindowHours = startWindowHours
         }
     }
-
 }
 
-public struct UpdateRestoreTestingPlanInput {
+public struct UpdateRestoreTestingPlanInput: Swift.Sendable {
     /// Specifies the body of a restore testing plan.
     /// This member is required.
     public var restoreTestingPlan: BackupClientTypes.RestoreTestingPlanForUpdate?
@@ -7052,7 +7053,7 @@ public struct UpdateRestoreTestingPlanInput {
     }
 }
 
-public struct UpdateRestoreTestingPlanOutput {
+public struct UpdateRestoreTestingPlanOutput: Swift.Sendable {
     /// The time the resource testing plan was created.
     /// This member is required.
     public var creationTime: Foundation.Date?
@@ -7081,8 +7082,9 @@ public struct UpdateRestoreTestingPlanOutput {
 }
 
 extension BackupClientTypes {
+
     /// This contains metadata about a restore testing selection.
-    public struct RestoreTestingSelectionForUpdate {
+    public struct RestoreTestingSelectionForUpdate: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the IAM role that Backup uses to create the target resource; for example: arn:aws:iam::123456789012:role/S3Access.
         public var iamRoleArn: Swift.String?
         /// You can include a list of specific ARNs, such as ProtectedResourceArns: ["arn:aws:...", "arn:aws:..."] or you can include a wildcard: ProtectedResourceArns: ["*"], but not both.
@@ -7109,7 +7111,6 @@ extension BackupClientTypes {
             self.validationWindowHours = validationWindowHours
         }
     }
-
 }
 
 extension BackupClientTypes.RestoreTestingSelectionForUpdate: Swift.CustomDebugStringConvertible {
@@ -7117,7 +7118,7 @@ extension BackupClientTypes.RestoreTestingSelectionForUpdate: Swift.CustomDebugS
         "RestoreTestingSelectionForUpdate(iamRoleArn: \(Swift.String(describing: iamRoleArn)), protectedResourceArns: \(Swift.String(describing: protectedResourceArns)), protectedResourceConditions: \(Swift.String(describing: protectedResourceConditions)), validationWindowHours: \(Swift.String(describing: validationWindowHours)), restoreMetadataOverrides: \"CONTENT_REDACTED\")"}
 }
 
-public struct UpdateRestoreTestingSelectionInput {
+public struct UpdateRestoreTestingSelectionInput: Swift.Sendable {
     /// The restore testing plan name is required to update the indicated testing plan.
     /// This member is required.
     public var restoreTestingPlanName: Swift.String?
@@ -7140,7 +7141,7 @@ public struct UpdateRestoreTestingSelectionInput {
     }
 }
 
-public struct UpdateRestoreTestingSelectionOutput {
+public struct UpdateRestoreTestingSelectionOutput: Swift.Sendable {
     /// The time the resource testing selection was updated successfully.
     /// This member is required.
     public var creationTime: Foundation.Date?

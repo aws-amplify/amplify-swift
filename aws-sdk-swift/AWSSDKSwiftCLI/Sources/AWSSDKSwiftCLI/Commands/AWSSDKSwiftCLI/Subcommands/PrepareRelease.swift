@@ -76,7 +76,7 @@ struct PrepareRelease {
     let diffChecker: DiffChecker
     
     /// Prepares a release for the specified repository.
-    /// If the respository doesn't have any changes, then this does nothing.
+    /// If the repository doesn't have any changes, then this does nothing.
     func run() throws {
         try FileManager.default.changeWorkingDirectory(repoPath)
         
@@ -235,13 +235,16 @@ struct PrepareRelease {
         previousVersion: Version
     ) throws {
         let commits = try Process.git.listOfCommitsBetween("HEAD", "\(previousVersion)")
-        
-        let releaseNotes = ReleaseNotesBuilder(
+        let featuresReader = FeaturesReader()
+
+        let releaseNotes = try ReleaseNotesBuilder(
             previousVersion: previousVersion,
             newVersion: newVersion,
             repoOrg: repoOrg,
             repoType: repoType,
-            commits: commits
+            commits: commits,
+            features: featuresReader.getFeaturesFromFile(),
+            featuresIDToServiceName: featuresReader.getFeaturesIDToServiceNameDictFromFile()
         ).build()
         
         let manifest = ReleaseManifest(

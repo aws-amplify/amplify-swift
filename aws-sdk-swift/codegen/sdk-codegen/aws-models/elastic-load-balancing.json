@@ -2152,7 +2152,35 @@
                     "inputToken": "Marker",
                     "outputToken": "NextMarker",
                     "items": "LoadBalancerDescriptions"
-                }
+                },
+                "smithy.test#smokeTests": [
+                    {
+                        "id": "DescribeLoadBalancersSuccess",
+                        "params": {},
+                        "vendorParams": {
+                            "region": "us-west-2"
+                        },
+                        "vendorParamsShape": "aws.test#AwsVendorParams",
+                        "expect": {
+                            "success": {}
+                        }
+                    },
+                    {
+                        "id": "DescribeLoadBalancersFailure",
+                        "params": {
+                            "LoadBalancerNames": [
+                                "fake_load_balancer"
+                            ]
+                        },
+                        "vendorParams": {
+                            "region": "us-west-2"
+                        },
+                        "vendorParamsShape": "aws.test#AwsVendorParams",
+                        "expect": {
+                            "failure": {}
+                        }
+                    }
+                ]
             }
         },
         "com.amazonaws.elasticloadbalancing#DescribeTags": {

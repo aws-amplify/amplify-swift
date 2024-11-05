@@ -29,7 +29,7 @@ import struct Smithy.URIQueryItem
 
 extension IotDeviceAdvisorClientTypes {
 
-    public enum AuthenticationMethod: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AuthenticationMethod: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case signatureversion4
         case x509clientcertificate
         case sdkUnknown(Swift.String)
@@ -132,8 +132,9 @@ public struct ValidationException: ClientRuntime.ModeledError, AWSClientRuntime.
 }
 
 extension IotDeviceAdvisorClientTypes {
+
     /// Information of a test device. A thing ARN, certificate ARN or device role ARN is required.
-    public struct DeviceUnderTest {
+    public struct DeviceUnderTest: Swift.Sendable {
         /// Lists device's certificate ARN.
         public var certificateArn: Swift.String?
         /// Lists device's role ARN.
@@ -152,12 +153,11 @@ extension IotDeviceAdvisorClientTypes {
             self.thingArn = thingArn
         }
     }
-
 }
 
 extension IotDeviceAdvisorClientTypes {
 
-    public enum ModelProtocol: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ModelProtocol: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case mqttv311
         case mqttv311Overwebsocket
         case mqttv5
@@ -191,8 +191,9 @@ extension IotDeviceAdvisorClientTypes {
 }
 
 extension IotDeviceAdvisorClientTypes {
+
     /// Gets the suite definition configuration.
-    public struct SuiteDefinitionConfiguration {
+    public struct SuiteDefinitionConfiguration: Swift.Sendable {
         /// Gets the device permission ARN. This is a required parameter.
         /// This member is required.
         public var devicePermissionRoleArn: Swift.String?
@@ -230,10 +231,11 @@ extension IotDeviceAdvisorClientTypes {
             self.suiteDefinitionName = suiteDefinitionName
         }
     }
-
 }
 
-public struct CreateSuiteDefinitionInput {
+public struct CreateSuiteDefinitionInput: Swift.Sendable {
+    /// The client token for the test suite definition creation. This token is used for tracking test suite definition creation using retries and obtaining its status. This parameter is optional.
+    public var clientToken: Swift.String?
     /// Creates a Device Advisor test suite with suite definition configuration.
     /// This member is required.
     public var suiteDefinitionConfiguration: IotDeviceAdvisorClientTypes.SuiteDefinitionConfiguration?
@@ -241,16 +243,18 @@ public struct CreateSuiteDefinitionInput {
     public var tags: [Swift.String: Swift.String]?
 
     public init(
+        clientToken: Swift.String? = nil,
         suiteDefinitionConfiguration: IotDeviceAdvisorClientTypes.SuiteDefinitionConfiguration? = nil,
         tags: [Swift.String: Swift.String]? = nil
     )
     {
+        self.clientToken = clientToken
         self.suiteDefinitionConfiguration = suiteDefinitionConfiguration
         self.tags = tags
     }
 }
 
-public struct CreateSuiteDefinitionOutput {
+public struct CreateSuiteDefinitionOutput: Swift.Sendable {
     /// The timestamp of when the test suite was created.
     public var createdAt: Foundation.Date?
     /// The Amazon Resource Name (ARN) of the test suite.
@@ -274,7 +278,7 @@ public struct CreateSuiteDefinitionOutput {
     }
 }
 
-public struct DeleteSuiteDefinitionInput {
+public struct DeleteSuiteDefinitionInput: Swift.Sendable {
     /// Suite definition ID of the test suite to be deleted.
     /// This member is required.
     public var suiteDefinitionId: Swift.String?
@@ -287,7 +291,7 @@ public struct DeleteSuiteDefinitionInput {
     }
 }
 
-public struct DeleteSuiteDefinitionOutput {
+public struct DeleteSuiteDefinitionOutput: Swift.Sendable {
 
     public init() { }
 }
@@ -317,7 +321,7 @@ public struct ResourceNotFoundException: ClientRuntime.ModeledError, AWSClientRu
     }
 }
 
-public struct GetEndpointInput {
+public struct GetEndpointInput: Swift.Sendable {
     /// The authentication method used during the device connection.
     public var authenticationMethod: IotDeviceAdvisorClientTypes.AuthenticationMethod?
     /// The certificate ARN of the device. This is an optional parameter.
@@ -341,7 +345,7 @@ public struct GetEndpointInput {
     }
 }
 
-public struct GetEndpointOutput {
+public struct GetEndpointOutput: Swift.Sendable {
     /// The response of an Device Advisor endpoint.
     public var endpoint: Swift.String?
 
@@ -353,7 +357,7 @@ public struct GetEndpointOutput {
     }
 }
 
-public struct GetSuiteDefinitionInput {
+public struct GetSuiteDefinitionInput: Swift.Sendable {
     /// Suite definition ID of the test suite to get.
     /// This member is required.
     public var suiteDefinitionId: Swift.String?
@@ -370,7 +374,7 @@ public struct GetSuiteDefinitionInput {
     }
 }
 
-public struct GetSuiteDefinitionOutput {
+public struct GetSuiteDefinitionOutput: Swift.Sendable {
     /// Date (in Unix epoch time) when the suite definition was created.
     public var createdAt: Foundation.Date?
     /// Date (in Unix epoch time) when the suite definition was last modified.
@@ -410,7 +414,7 @@ public struct GetSuiteDefinitionOutput {
     }
 }
 
-public struct GetSuiteRunInput {
+public struct GetSuiteRunInput: Swift.Sendable {
     /// Suite definition ID for the test suite run.
     /// This member is required.
     public var suiteDefinitionId: Swift.String?
@@ -430,7 +434,7 @@ public struct GetSuiteRunInput {
 
 extension IotDeviceAdvisorClientTypes {
 
-    public enum SuiteRunStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SuiteRunStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case canceled
         case error
         case fail
@@ -479,8 +483,9 @@ extension IotDeviceAdvisorClientTypes {
 }
 
 extension IotDeviceAdvisorClientTypes {
+
     /// Gets suite run configuration.
-    public struct SuiteRunConfiguration {
+    public struct SuiteRunConfiguration: Swift.Sendable {
         /// TRUE if multiple test suites run in parallel.
         public var parallelRun: Swift.Bool?
         /// Sets the primary device for the test suite run. This requires a thing ARN or a certificate ARN.
@@ -500,12 +505,11 @@ extension IotDeviceAdvisorClientTypes {
             self.selectedTestList = selectedTestList
         }
     }
-
 }
 
 extension IotDeviceAdvisorClientTypes {
 
-    public enum Status: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Status: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case canceled
         case error
         case fail
@@ -555,7 +559,7 @@ extension IotDeviceAdvisorClientTypes {
 
 extension IotDeviceAdvisorClientTypes {
 
-    public enum TestCaseScenarioStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum TestCaseScenarioStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case canceled
         case error
         case fail
@@ -605,7 +609,7 @@ extension IotDeviceAdvisorClientTypes {
 
 extension IotDeviceAdvisorClientTypes {
 
-    public enum TestCaseScenarioType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum TestCaseScenarioType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case advanced
         case basic
         case sdkUnknown(Swift.String)
@@ -633,8 +637,9 @@ extension IotDeviceAdvisorClientTypes {
 }
 
 extension IotDeviceAdvisorClientTypes {
+
     /// Provides test case scenario.
-    public struct TestCaseScenario {
+    public struct TestCaseScenario: Swift.Sendable {
         /// Provides test case scenario failure result.
         public var failure: Swift.String?
         /// Provides the test case scenario status. Status is one of the following:
@@ -681,12 +686,12 @@ extension IotDeviceAdvisorClientTypes {
             self.testCaseScenarioType = testCaseScenarioType
         }
     }
-
 }
 
 extension IotDeviceAdvisorClientTypes {
+
     /// Provides the test case run.
-    public struct TestCaseRun {
+    public struct TestCaseRun: Swift.Sendable {
         /// Provides test case run end time.
         public var endTime: Foundation.Date?
         /// Provides test case run failure result.
@@ -749,12 +754,12 @@ extension IotDeviceAdvisorClientTypes {
             self.warnings = warnings
         }
     }
-
 }
 
 extension IotDeviceAdvisorClientTypes {
+
     /// Show Group Result.
-    public struct GroupResult {
+    public struct GroupResult: Swift.Sendable {
         /// Group result ID.
         public var groupId: Swift.String?
         /// Group Result Name.
@@ -773,12 +778,12 @@ extension IotDeviceAdvisorClientTypes {
             self.tests = tests
         }
     }
-
 }
 
 extension IotDeviceAdvisorClientTypes {
+
     /// Show each group result.
-    public struct TestResult {
+    public struct TestResult: Swift.Sendable {
         /// Show each group of test results.
         public var groups: [IotDeviceAdvisorClientTypes.GroupResult]?
 
@@ -789,10 +794,9 @@ extension IotDeviceAdvisorClientTypes {
             self.groups = groups
         }
     }
-
 }
 
-public struct GetSuiteRunOutput {
+public struct GetSuiteRunOutput: Swift.Sendable {
     /// Date (in Unix epoch time) when the test suite run ended.
     public var endTime: Foundation.Date?
     /// Error reason for any test suite run failure.
@@ -844,7 +848,7 @@ public struct GetSuiteRunOutput {
     }
 }
 
-public struct GetSuiteRunReportInput {
+public struct GetSuiteRunReportInput: Swift.Sendable {
     /// Suite definition ID of the test suite.
     /// This member is required.
     public var suiteDefinitionId: Swift.String?
@@ -862,7 +866,7 @@ public struct GetSuiteRunReportInput {
     }
 }
 
-public struct GetSuiteRunReportOutput {
+public struct GetSuiteRunReportOutput: Swift.Sendable {
     /// Download URL of the qualification report.
     public var qualificationReportDownloadUrl: Swift.String?
 
@@ -874,7 +878,7 @@ public struct GetSuiteRunReportOutput {
     }
 }
 
-public struct ListSuiteDefinitionsInput {
+public struct ListSuiteDefinitionsInput: Swift.Sendable {
     /// The maximum number of results to return at once.
     public var maxResults: Swift.Int?
     /// A token used to get the next set of results.
@@ -891,8 +895,9 @@ public struct ListSuiteDefinitionsInput {
 }
 
 extension IotDeviceAdvisorClientTypes {
+
     /// Information about the suite definition.
-    public struct SuiteDefinitionInformation {
+    public struct SuiteDefinitionInformation: Swift.Sendable {
         /// Date (in Unix epoch time) when the test suite was created.
         public var createdAt: Foundation.Date?
         /// Specifies the devices that are under test for the test suite.
@@ -927,10 +932,9 @@ extension IotDeviceAdvisorClientTypes {
             self.suiteDefinitionName = suiteDefinitionName
         }
     }
-
 }
 
-public struct ListSuiteDefinitionsOutput {
+public struct ListSuiteDefinitionsOutput: Swift.Sendable {
     /// A token used to get the next set of results.
     public var nextToken: Swift.String?
     /// An array of objects that provide summaries of information about the suite definitions in the list.
@@ -946,7 +950,7 @@ public struct ListSuiteDefinitionsOutput {
     }
 }
 
-public struct ListSuiteRunsInput {
+public struct ListSuiteRunsInput: Swift.Sendable {
     /// The maximum number of results to return at once.
     public var maxResults: Swift.Int?
     /// A token to retrieve the next set of results.
@@ -971,8 +975,9 @@ public struct ListSuiteRunsInput {
 }
 
 extension IotDeviceAdvisorClientTypes {
+
     /// Information about the suite run. Requires permission to access the [SuiteRunInformation](https://docs.aws.amazon.com/service-authorization/latest/reference/list_awsiot.html#awsiot-actions-as-permissions) action.
-    public struct SuiteRunInformation {
+    public struct SuiteRunInformation: Swift.Sendable {
         /// Date (in Unix epoch time) when the suite run was created.
         public var createdAt: Foundation.Date?
         /// Date (in Unix epoch time) when the suite run ended.
@@ -1019,10 +1024,9 @@ extension IotDeviceAdvisorClientTypes {
             self.suiteRunId = suiteRunId
         }
     }
-
 }
 
-public struct ListSuiteRunsOutput {
+public struct ListSuiteRunsOutput: Swift.Sendable {
     /// A token to retrieve the next set of results.
     public var nextToken: Swift.String?
     /// An array of objects that provide summaries of information about the suite runs in the list.
@@ -1038,7 +1042,7 @@ public struct ListSuiteRunsOutput {
     }
 }
 
-public struct ListTagsForResourceInput {
+public struct ListTagsForResourceInput: Swift.Sendable {
     /// The resource ARN of the IoT Device Advisor resource. This can be SuiteDefinition ARN or SuiteRun ARN.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -1051,7 +1055,7 @@ public struct ListTagsForResourceInput {
     }
 }
 
-public struct ListTagsForResourceOutput {
+public struct ListTagsForResourceOutput: Swift.Sendable {
     /// The tags attached to the IoT Device Advisor resource.
     public var tags: [Swift.String: Swift.String]?
 
@@ -1063,7 +1067,7 @@ public struct ListTagsForResourceOutput {
     }
 }
 
-public struct StartSuiteRunInput {
+public struct StartSuiteRunInput: Swift.Sendable {
     /// Suite definition ID of the test suite.
     /// This member is required.
     public var suiteDefinitionId: Swift.String?
@@ -1089,7 +1093,7 @@ public struct StartSuiteRunInput {
     }
 }
 
-public struct StartSuiteRunOutput {
+public struct StartSuiteRunOutput: Swift.Sendable {
     /// Starts a Device Advisor test suite run based on suite create time.
     public var createdAt: Foundation.Date?
     /// The response of an Device Advisor test endpoint.
@@ -1113,7 +1117,7 @@ public struct StartSuiteRunOutput {
     }
 }
 
-public struct StopSuiteRunInput {
+public struct StopSuiteRunInput: Swift.Sendable {
     /// Suite definition ID of the test suite run to be stopped.
     /// This member is required.
     public var suiteDefinitionId: Swift.String?
@@ -1131,12 +1135,12 @@ public struct StopSuiteRunInput {
     }
 }
 
-public struct StopSuiteRunOutput {
+public struct StopSuiteRunOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct TagResourceInput {
+public struct TagResourceInput: Swift.Sendable {
     /// The resource ARN of an IoT Device Advisor resource. This can be SuiteDefinition ARN or SuiteRun ARN.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -1154,12 +1158,12 @@ public struct TagResourceInput {
     }
 }
 
-public struct TagResourceOutput {
+public struct TagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UntagResourceInput {
+public struct UntagResourceInput: Swift.Sendable {
     /// The resource ARN of an IoT Device Advisor resource. This can be SuiteDefinition ARN or SuiteRun ARN.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -1177,12 +1181,12 @@ public struct UntagResourceInput {
     }
 }
 
-public struct UntagResourceOutput {
+public struct UntagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdateSuiteDefinitionInput {
+public struct UpdateSuiteDefinitionInput: Swift.Sendable {
     /// Updates a Device Advisor test suite with suite definition configuration.
     /// This member is required.
     public var suiteDefinitionConfiguration: IotDeviceAdvisorClientTypes.SuiteDefinitionConfiguration?
@@ -1200,7 +1204,7 @@ public struct UpdateSuiteDefinitionInput {
     }
 }
 
-public struct UpdateSuiteDefinitionOutput {
+public struct UpdateSuiteDefinitionOutput: Swift.Sendable {
     /// Timestamp of when the test suite was created.
     public var createdAt: Foundation.Date?
     /// Timestamp of when the test suite was updated.
@@ -1465,6 +1469,7 @@ extension CreateSuiteDefinitionInput {
 
     static func write(value: CreateSuiteDefinitionInput?, to writer: SmithyJSON.Writer) throws {
         guard let value else { return }
+        try writer["clientToken"].write(value.clientToken)
         try writer["suiteDefinitionConfiguration"].write(value.suiteDefinitionConfiguration, with: IotDeviceAdvisorClientTypes.SuiteDefinitionConfiguration.write(value:to:))
         try writer["tags"].writeMap(value.tags, valueWritingClosure: SmithyReadWrite.WritingClosures.writeString(value:to:), keyNodeInfo: "key", valueNodeInfo: "value", isFlattened: false)
     }

@@ -26,12 +26,13 @@ import protocol ClientRuntime.ModeledError
 @_spi(UnknownAWSHTTPServiceError) import struct AWSClientRuntime.UnknownAWSHTTPServiceError
 @_spi(SmithyReadWrite) import struct SmithyReadWrite.WritingClosureBox
 
-public struct PushDomainOutput {
+
+public struct PushDomainOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct ResendOperationAuthorizationOutput {
+public struct ResendOperationAuthorizationOutput: Swift.Sendable {
 
     public init() { }
 }
@@ -137,7 +138,7 @@ public struct UnsupportedTLD: ClientRuntime.ModeledError, AWSClientRuntime.AWSSe
 }
 
 /// The AcceptDomainTransferFromAnotherAwsAccount request includes the following elements.
-public struct AcceptDomainTransferFromAnotherAwsAccountInput {
+public struct AcceptDomainTransferFromAnotherAwsAccountInput: Swift.Sendable {
     /// The name of the domain that was specified when another Amazon Web Services account submitted a [TransferDomainToAnotherAwsAccount](https://docs.aws.amazon.com/Route53/latest/APIReference/API_domains_TransferDomainToAnotherAwsAccount.html) request.
     /// This member is required.
     public var domainName: Swift.String?
@@ -161,7 +162,7 @@ extension AcceptDomainTransferFromAnotherAwsAccountInput: Swift.CustomDebugStrin
 }
 
 /// The AcceptDomainTransferFromAnotherAwsAccount response includes the following element.
-public struct AcceptDomainTransferFromAnotherAwsAccountOutput {
+public struct AcceptDomainTransferFromAnotherAwsAccountOutput: Swift.Sendable {
     /// Identifier for tracking the progress of the request. To query the operation status, use [GetOperationDetail](https://docs.aws.amazon.com/Route53/latest/APIReference/API_domains_GetOperationDetail.html).
     public var operationId: Swift.String?
 
@@ -252,8 +253,9 @@ public struct TLDRulesViolation: ClientRuntime.ModeledError, AWSClientRuntime.AW
 }
 
 extension Route53DomainsClientTypes {
+
     /// Information about a delegation signer (DS) record that was created in the registry by [AssociateDelegationSignerToDomain](https://docs.aws.amazon.com/Route53/latest/APIReference/API_domains_AssociateDelegationSignerToDomain.html).
-    public struct DnssecSigningAttributes {
+    public struct DnssecSigningAttributes: Swift.Sendable {
         /// Algorithm which was used to generate the digest from the public key.
         public var algorithm: Swift.Int?
         /// Defines the type of key. It can be either a KSK (key-signing-key, value 257) or ZSK (zone-signing-key, value 256). Using KSK is always encouraged. Only use ZSK if your DNS provider isn't Route 53 and you don’t have KSK available. If you have KSK and ZSK keys, always use KSK to create a delegations signer (DS) record. If you have ZSK keys only – use ZSK to create a DS record.
@@ -272,10 +274,9 @@ extension Route53DomainsClientTypes {
             self.publicKey = publicKey
         }
     }
-
 }
 
-public struct AssociateDelegationSignerToDomainInput {
+public struct AssociateDelegationSignerToDomainInput: Swift.Sendable {
     /// The name of the domain.
     /// This member is required.
     public var domainName: Swift.String?
@@ -293,7 +294,7 @@ public struct AssociateDelegationSignerToDomainInput {
     }
 }
 
-public struct AssociateDelegationSignerToDomainOutput {
+public struct AssociateDelegationSignerToDomainOutput: Swift.Sendable {
     /// The identifier for tracking the progress of the request. To query the operation status, use [GetOperationDetail](https://docs.aws.amazon.com/Route53/latest/APIReference/API_domains_GetOperationDetail.html).
     public var operationId: Swift.String?
 
@@ -307,7 +308,7 @@ public struct AssociateDelegationSignerToDomainOutput {
 
 extension Route53DomainsClientTypes {
 
-    public enum OperationType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum OperationType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case addDnssec
         case changeDomainOwner
         case changePrivacyProtection
@@ -389,8 +390,9 @@ extension Route53DomainsClientTypes {
 }
 
 extension Route53DomainsClientTypes {
+
     /// Information for one billing record.
-    public struct BillingRecord {
+    public struct BillingRecord: Swift.Sendable {
         /// The date that the operation was billed, in Unix format.
         public var billDate: Foundation.Date?
         /// The name of the domain that the billing record applies to. If the domain name contains characters other than a-z, 0-9, and - (hyphen), such as an internationalized domain name, then this value is in Punycode. For more information, see [DNS Domain Name Format](https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/DomainNameFormat.html) in the Amazon Route 53 Developer Guide.
@@ -417,11 +419,10 @@ extension Route53DomainsClientTypes {
             self.price = price
         }
     }
-
 }
 
 /// The CancelDomainTransferToAnotherAwsAccount request includes the following element.
-public struct CancelDomainTransferToAnotherAwsAccountInput {
+public struct CancelDomainTransferToAnotherAwsAccountInput: Swift.Sendable {
     /// The name of the domain for which you want to cancel the transfer to another Amazon Web Services account.
     /// This member is required.
     public var domainName: Swift.String?
@@ -435,7 +436,7 @@ public struct CancelDomainTransferToAnotherAwsAccountInput {
 }
 
 /// The CancelDomainTransferToAnotherAwsAccount response includes the following element.
-public struct CancelDomainTransferToAnotherAwsAccountOutput {
+public struct CancelDomainTransferToAnotherAwsAccountOutput: Swift.Sendable {
     /// The identifier that TransferDomainToAnotherAwsAccount returned to track the progress of the request. Because the transfer request was canceled, the value is no longer valid, and you can't use GetOperationDetail to query the operation status.
     public var operationId: Swift.String?
 
@@ -448,7 +449,7 @@ public struct CancelDomainTransferToAnotherAwsAccountOutput {
 }
 
 /// The CheckDomainAvailability request contains the following elements.
-public struct CheckDomainAvailabilityInput {
+public struct CheckDomainAvailabilityInput: Swift.Sendable {
     /// The name of the domain that you want to get availability for. The top-level domain (TLD), such as .com, must be a TLD that Route 53 supports. For a list of supported TLDs, see [Domains that You Can Register with Amazon Route 53](https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/registrar-tld-list.html) in the Amazon Route 53 Developer Guide. The domain name can contain only the following characters:
     ///
     /// * Letters a through z. Domain names are not case sensitive.
@@ -478,7 +479,7 @@ public struct CheckDomainAvailabilityInput {
 
 extension Route53DomainsClientTypes {
 
-    public enum DomainAvailability: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DomainAvailability: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case available
         case availablePreorder
         case availableReserved
@@ -530,7 +531,7 @@ extension Route53DomainsClientTypes {
 }
 
 /// The CheckDomainAvailability response includes the following elements.
-public struct CheckDomainAvailabilityOutput {
+public struct CheckDomainAvailabilityOutput: Swift.Sendable {
     /// Whether the domain name is available for registering. You can register only domains designated as AVAILABLE. Valid values: AVAILABLE The domain name is available. AVAILABLE_RESERVED The domain name is reserved under specific conditions. AVAILABLE_PREORDER The domain name is available and can be preordered. DONT_KNOW The TLD registry didn't reply with a definitive answer about whether the domain name is available. Route 53 can return this response for a variety of reasons, for example, the registry is performing maintenance. Try again later. INVALID_NAME_FOR_TLD The TLD isn't valid. For example, it can contain characters that aren't allowed. PENDING The TLD registry didn't return a response in the expected amount of time. When the response is delayed, it usually takes just a few extra seconds. You can resubmit the request immediately. RESERVED The domain name has been reserved for another person or organization. UNAVAILABLE The domain name is not available. UNAVAILABLE_PREMIUM The domain name is not available. UNAVAILABLE_RESTRICTED The domain name is forbidden.
     public var availability: Route53DomainsClientTypes.DomainAvailability?
 
@@ -543,7 +544,7 @@ public struct CheckDomainAvailabilityOutput {
 }
 
 /// The CheckDomainTransferability request contains the following elements.
-public struct CheckDomainTransferabilityInput {
+public struct CheckDomainTransferabilityInput: Swift.Sendable {
     /// If the registrar for the top-level domain (TLD) requires an authorization code to transfer the domain, the code that you got from the current registrar for the domain.
     public var authCode: Swift.String?
     /// The name of the domain that you want to transfer to Route 53. The top-level domain (TLD), such as .com, must be a TLD that Route 53 supports. For a list of supported TLDs, see [Domains that You Can Register with Amazon Route 53](https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/registrar-tld-list.html) in the Amazon Route 53 Developer Guide. The domain name can contain only the following characters:
@@ -576,7 +577,7 @@ extension CheckDomainTransferabilityInput: Swift.CustomDebugStringConvertible {
 extension Route53DomainsClientTypes {
 
     /// Whether the domain name can be transferred to Route 53. You can transfer only domains that have a value of TRANSFERABLE or Transferable. Valid values: TRANSFERABLE The domain name can be transferred to Route 53. UNTRANSFERRABLE The domain name can't be transferred to Route 53. DONT_KNOW Reserved for future use. DOMAIN_IN_OWN_ACCOUNT The domain already exists in the current Amazon Web Services account. DOMAIN_IN_ANOTHER_ACCOUNT The domain exists in another Amazon Web Services account. PREMIUM_DOMAIN Premium domain transfer is not supported.
-    public enum Transferable: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Transferable: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case domainInAnotherAccount
         case domainInOwnAccount
         case dontKnow
@@ -616,8 +617,9 @@ extension Route53DomainsClientTypes {
 }
 
 extension Route53DomainsClientTypes {
+
     /// A complex type that contains information about whether the specified domain can be transferred to Route 53.
-    public struct DomainTransferability {
+    public struct DomainTransferability: Swift.Sendable {
         /// Whether the domain name can be transferred to Route 53. You can transfer only domains that have a value of TRANSFERABLE or Transferable. Valid values: TRANSFERABLE The domain name can be transferred to Route 53. UNTRANSFERRABLE The domain name can't be transferred to Route 53. DONT_KNOW Reserved for future use. DOMAIN_IN_OWN_ACCOUNT The domain already exists in the current Amazon Web Services account. DOMAIN_IN_ANOTHER_ACCOUNT The domain exists in another Amazon Web Services account. PREMIUM_DOMAIN Premium domain transfer is not supported.
         public var transferable: Route53DomainsClientTypes.Transferable?
 
@@ -628,11 +630,10 @@ extension Route53DomainsClientTypes {
             self.transferable = transferable
         }
     }
-
 }
 
 /// The CheckDomainTransferability response includes the following elements.
-public struct CheckDomainTransferabilityOutput {
+public struct CheckDomainTransferabilityOutput: Swift.Sendable {
     /// Provides an explanation for when a domain can't be transferred.
     public var message: Swift.String?
     /// A complex type that contains information about whether the specified domain can be transferred to Route 53.
@@ -649,8 +650,9 @@ public struct CheckDomainTransferabilityOutput {
 }
 
 extension Route53DomainsClientTypes {
+
     /// Customer's consent for the owner change request.
-    public struct Consent {
+    public struct Consent: Swift.Sendable {
         /// Currency for the MaxPrice.
         /// This member is required.
         public var currency: Swift.String?
@@ -667,12 +669,11 @@ extension Route53DomainsClientTypes {
             self.maxPrice = maxPrice
         }
     }
-
 }
 
 extension Route53DomainsClientTypes {
 
-    public enum ContactType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ContactType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case association
         case company
         case person
@@ -710,7 +711,7 @@ extension Route53DomainsClientTypes {
 
 extension Route53DomainsClientTypes {
 
-    public enum CountryCode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum CountryCode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case ac
         case ad
         case ae
@@ -1486,7 +1487,7 @@ extension Route53DomainsClientTypes {
 
 extension Route53DomainsClientTypes {
 
-    public enum ExtraParamName: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ExtraParamName: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case auIdNumber
         case auIdType
         case auPriorityToken
@@ -1601,8 +1602,9 @@ extension Route53DomainsClientTypes {
 }
 
 extension Route53DomainsClientTypes {
+
     /// ExtraParam includes the following elements.
-    public struct ExtraParam {
+    public struct ExtraParam: Swift.Sendable {
         /// The name of an additional parameter that is required by a top-level domain. Here are the top-level domains that require additional parameters and the names of the parameters that they require: .com.au and .net.au
         ///
         /// * AU_ID_NUMBER
@@ -2003,7 +2005,6 @@ extension Route53DomainsClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension Route53DomainsClientTypes.ExtraParam: Swift.CustomDebugStringConvertible {
@@ -2012,8 +2013,9 @@ extension Route53DomainsClientTypes.ExtraParam: Swift.CustomDebugStringConvertib
 }
 
 extension Route53DomainsClientTypes {
+
     /// ContactDetail includes the following elements.
-    public struct ContactDetail {
+    public struct ContactDetail: Swift.Sendable {
         /// First line of the contact's address.
         public var addressLine1: Swift.String?
         /// Second line of contact's address, if any.
@@ -2082,7 +2084,6 @@ extension Route53DomainsClientTypes {
             self.zipCode = zipCode
         }
     }
-
 }
 
 extension Route53DomainsClientTypes.ContactDetail: Swift.CustomDebugStringConvertible {
@@ -2091,7 +2092,7 @@ extension Route53DomainsClientTypes.ContactDetail: Swift.CustomDebugStringConver
     }
 }
 
-public struct DeleteDomainInput {
+public struct DeleteDomainInput: Swift.Sendable {
     /// Name of the domain to be deleted.
     /// This member is required.
     public var domainName: Swift.String?
@@ -2104,7 +2105,7 @@ public struct DeleteDomainInput {
     }
 }
 
-public struct DeleteDomainOutput {
+public struct DeleteDomainOutput: Swift.Sendable {
     /// Identifier for tracking the progress of the request. To query the operation status, use [GetOperationDetail](https://docs.aws.amazon.com/Route53/latest/APIReference/API_domains_GetOperationDetail.html).
     public var operationId: Swift.String?
 
@@ -2117,7 +2118,7 @@ public struct DeleteDomainOutput {
 }
 
 /// The DeleteTagsForDomainRequest includes the following elements.
-public struct DeleteTagsForDomainInput {
+public struct DeleteTagsForDomainInput: Swift.Sendable {
     /// The domain for which you want to delete one or more tags.
     /// This member is required.
     public var domainName: Swift.String?
@@ -2135,12 +2136,12 @@ public struct DeleteTagsForDomainInput {
     }
 }
 
-public struct DeleteTagsForDomainOutput {
+public struct DeleteTagsForDomainOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DisableDomainAutoRenewInput {
+public struct DisableDomainAutoRenewInput: Swift.Sendable {
     /// The name of the domain that you want to disable automatic renewal for.
     /// This member is required.
     public var domainName: Swift.String?
@@ -2153,13 +2154,13 @@ public struct DisableDomainAutoRenewInput {
     }
 }
 
-public struct DisableDomainAutoRenewOutput {
+public struct DisableDomainAutoRenewOutput: Swift.Sendable {
 
     public init() { }
 }
 
 /// The DisableDomainTransferLock request includes the following element.
-public struct DisableDomainTransferLockInput {
+public struct DisableDomainTransferLockInput: Swift.Sendable {
     /// The name of the domain that you want to remove the transfer lock for.
     /// This member is required.
     public var domainName: Swift.String?
@@ -2173,7 +2174,7 @@ public struct DisableDomainTransferLockInput {
 }
 
 /// The DisableDomainTransferLock response includes the following element.
-public struct DisableDomainTransferLockOutput {
+public struct DisableDomainTransferLockOutput: Swift.Sendable {
     /// Identifier for tracking the progress of the request. To query the operation status, use [GetOperationDetail](https://docs.aws.amazon.com/Route53/latest/APIReference/API_domains_GetOperationDetail.html).
     public var operationId: Swift.String?
 
@@ -2185,7 +2186,7 @@ public struct DisableDomainTransferLockOutput {
     }
 }
 
-public struct DisassociateDelegationSignerFromDomainInput {
+public struct DisassociateDelegationSignerFromDomainInput: Swift.Sendable {
     /// Name of the domain.
     /// This member is required.
     public var domainName: Swift.String?
@@ -2203,7 +2204,7 @@ public struct DisassociateDelegationSignerFromDomainInput {
     }
 }
 
-public struct DisassociateDelegationSignerFromDomainOutput {
+public struct DisassociateDelegationSignerFromDomainOutput: Swift.Sendable {
     /// Identifier for tracking the progress of the request. To query the operation status, use [GetOperationDetail](https://docs.aws.amazon.com/Route53/latest/APIReference/API_domains_GetOperationDetail.html).
     public var operationId: Swift.String?
 
@@ -2216,8 +2217,9 @@ public struct DisassociateDelegationSignerFromDomainOutput {
 }
 
 extension Route53DomainsClientTypes {
+
     /// Information about the DNSSEC key. You get this from your DNS provider and then give it to Route 53 (by using [AssociateDelegationSignerToDomain](https://docs.aws.amazon.com/Route53/latest/APIReference/API_domains_AssociateDelegationSignerToDomain.html)) to pass it to the registry to establish the chain of trust.
-    public struct DnssecKey {
+    public struct DnssecKey: Swift.Sendable {
         /// The number of the public key’s cryptographic algorithm according to an [IANA](https://www.iana.org/assignments/dns-sec-alg-numbers/dns-sec-alg-numbers.xml) assignment. If Route 53 is your DNS service, set this to 13. For more information about enabling DNSSEC signing, see [Enabling DNSSEC signing and establishing a chain of trust](https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/dns-configuring-dnssec-enable-signing.html).
         public var algorithm: Swift.Int?
         /// The delegation signer digest. Digest is calculated from the public key provided using specified digest algorithm and this digest is the actual value returned from the registry nameservers as the value of DS records.
@@ -2252,12 +2254,12 @@ extension Route53DomainsClientTypes {
             self.publicKey = publicKey
         }
     }
-
 }
 
 extension Route53DomainsClientTypes {
+
     /// Currency-specific price information.
-    public struct PriceWithCurrency {
+    public struct PriceWithCurrency: Swift.Sendable {
         /// The currency specifier.
         /// This member is required.
         public var currency: Swift.String?
@@ -2274,12 +2276,12 @@ extension Route53DomainsClientTypes {
             self.price = price
         }
     }
-
 }
 
 extension Route53DomainsClientTypes {
+
     /// Information about the domain price associated with a TLD.
-    public struct DomainPrice {
+    public struct DomainPrice: Swift.Sendable {
         /// The price for changing domain ownership.
         public var changeOwnershipPrice: Route53DomainsClientTypes.PriceWithCurrency?
         /// The name of the TLD for which the prices apply.
@@ -2310,12 +2312,12 @@ extension Route53DomainsClientTypes {
             self.transferPrice = transferPrice
         }
     }
-
 }
 
 extension Route53DomainsClientTypes {
+
     /// Information about one suggested domain name.
-    public struct DomainSuggestion {
+    public struct DomainSuggestion: Swift.Sendable {
         /// Whether the domain name is available for registering. You can register only the domains that are designated as AVAILABLE. Valid values: AVAILABLE The domain name is available. AVAILABLE_RESERVED The domain name is reserved under specific conditions. AVAILABLE_PREORDER The domain name is available and can be preordered. DONT_KNOW The TLD registry didn't reply with a definitive answer about whether the domain name is available. Route 53 can return this response for a variety of reasons, for example, the registry is performing maintenance. Try again later. PENDING The TLD registry didn't return a response in the expected amount of time. When the response is delayed, it usually takes just a few extra seconds. You can resubmit the request immediately. RESERVED The domain name has been reserved for another person or organization. UNAVAILABLE The domain name is not available. UNAVAILABLE_PREMIUM The domain name is not available. UNAVAILABLE_RESTRICTED The domain name is forbidden.
         public var availability: Swift.String?
         /// A suggested domain name.
@@ -2330,12 +2332,12 @@ extension Route53DomainsClientTypes {
             self.domainName = domainName
         }
     }
-
 }
 
 extension Route53DomainsClientTypes {
+
     /// Summary information about one domain.
-    public struct DomainSummary {
+    public struct DomainSummary: Swift.Sendable {
         /// Indicates whether the domain is automatically renewed upon expiration.
         public var autoRenew: Swift.Bool?
         /// The name of the domain that the summary information applies to.
@@ -2358,10 +2360,9 @@ extension Route53DomainsClientTypes {
             self.transferLock = transferLock
         }
     }
-
 }
 
-public struct EnableDomainAutoRenewInput {
+public struct EnableDomainAutoRenewInput: Swift.Sendable {
     /// The name of the domain that you want to enable automatic renewal for.
     /// This member is required.
     public var domainName: Swift.String?
@@ -2374,13 +2375,13 @@ public struct EnableDomainAutoRenewInput {
     }
 }
 
-public struct EnableDomainAutoRenewOutput {
+public struct EnableDomainAutoRenewOutput: Swift.Sendable {
 
     public init() { }
 }
 
 /// A request to set the transfer lock for the specified domain.
-public struct EnableDomainTransferLockInput {
+public struct EnableDomainTransferLockInput: Swift.Sendable {
     /// The name of the domain that you want to set the transfer lock for.
     /// This member is required.
     public var domainName: Swift.String?
@@ -2394,7 +2395,7 @@ public struct EnableDomainTransferLockInput {
 }
 
 /// The EnableDomainTransferLock response includes the following elements.
-public struct EnableDomainTransferLockOutput {
+public struct EnableDomainTransferLockOutput: Swift.Sendable {
     /// Identifier for tracking the progress of the request. To use this ID to query the operation status, use GetOperationDetail.
     public var operationId: Swift.String?
 
@@ -2408,7 +2409,7 @@ public struct EnableDomainTransferLockOutput {
 
 extension Route53DomainsClientTypes {
 
-    public enum ListDomainsAttributeName: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ListDomainsAttributeName: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case domainname
         case expiry
         case sdkUnknown(Swift.String)
@@ -2437,7 +2438,7 @@ extension Route53DomainsClientTypes {
 
 extension Route53DomainsClientTypes {
 
-    public enum Operator: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Operator: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case beginsWith
         case ge
         case le
@@ -2468,8 +2469,9 @@ extension Route53DomainsClientTypes {
 }
 
 extension Route53DomainsClientTypes {
+
     /// Information for the filtering of a list of domains returned by [ListDomains](https://docs.aws.amazon.com/Route53/latest/APIReference/API_domains__ListDomains.html).
-    public struct FilterCondition {
+    public struct FilterCondition: Swift.Sendable {
         /// Name of the field which should be used for filtering the list of domains.
         /// This member is required.
         public var name: Route53DomainsClientTypes.ListDomainsAttributeName?
@@ -2497,10 +2499,9 @@ extension Route53DomainsClientTypes {
             self.values = values
         }
     }
-
 }
 
-public struct GetContactReachabilityStatusInput {
+public struct GetContactReachabilityStatusInput: Swift.Sendable {
     /// The name of the domain for which you want to know whether the registrant contact has confirmed that the email address is valid.
     public var domainName: Swift.String?
 
@@ -2514,7 +2515,7 @@ public struct GetContactReachabilityStatusInput {
 
 extension Route53DomainsClientTypes {
 
-    public enum ReachabilityStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ReachabilityStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case done
         case expired
         case pending
@@ -2544,7 +2545,7 @@ extension Route53DomainsClientTypes {
     }
 }
 
-public struct GetContactReachabilityStatusOutput {
+public struct GetContactReachabilityStatusOutput: Swift.Sendable {
     /// The domain name for which you requested the reachability status.
     public var domainName: Swift.String?
     /// Whether the registrant contact has responded. Values include the following: PENDING We sent the confirmation email and haven't received a response yet. DONE We sent the email and got confirmation from the registrant contact. EXPIRED The time limit expired before the registrant contact responded.
@@ -2561,7 +2562,7 @@ public struct GetContactReachabilityStatusOutput {
 }
 
 /// The GetDomainDetail request includes the following element.
-public struct GetDomainDetailInput {
+public struct GetDomainDetailInput: Swift.Sendable {
     /// The name of the domain that you want to get detailed information about.
     /// This member is required.
     public var domainName: Swift.String?
@@ -2575,8 +2576,9 @@ public struct GetDomainDetailInput {
 }
 
 extension Route53DomainsClientTypes {
+
     /// Name server includes the following elements.
-    public struct Nameserver {
+    public struct Nameserver: Swift.Sendable {
         /// Glue IP address of a name server entry. Glue IP addresses are required only when the name of the name server is a subdomain of the domain. For example, if your domain is example.com and the name server for the domain is ns.example.com, you need to specify the IP address for ns.example.com. Constraints: The list can contain only one IPv4 and one IPv6 address.
         public var glueIps: [Swift.String]?
         /// The fully qualified host name of the name server. Constraint: Maximum 255 characters
@@ -2592,11 +2594,10 @@ extension Route53DomainsClientTypes {
             self.name = name
         }
     }
-
 }
 
 /// The GetDomainDetail response includes the following elements.
-public struct GetDomainDetailOutput {
+public struct GetDomainDetailOutput: Swift.Sendable {
     /// Email address to contact to report incorrect contact information for a domain, to report that the domain is being used to send spam, to report that someone is cybersquatting on a domain name, or report some other type of abuse.
     public var abuseContactEmail: Swift.String?
     /// Phone number for reporting abuse.
@@ -2705,7 +2706,7 @@ extension GetDomainDetailOutput: Swift.CustomDebugStringConvertible {
         "GetDomainDetailOutput(adminPrivacy: \(Swift.String(describing: adminPrivacy)), autoRenew: \(Swift.String(describing: autoRenew)), billingPrivacy: \(Swift.String(describing: billingPrivacy)), creationDate: \(Swift.String(describing: creationDate)), dnsSec: \(Swift.String(describing: dnsSec)), dnssecKeys: \(Swift.String(describing: dnssecKeys)), domainName: \(Swift.String(describing: domainName)), expirationDate: \(Swift.String(describing: expirationDate)), nameservers: \(Swift.String(describing: nameservers)), registrantPrivacy: \(Swift.String(describing: registrantPrivacy)), registrarName: \(Swift.String(describing: registrarName)), registrarUrl: \(Swift.String(describing: registrarUrl)), registryDomainId: \(Swift.String(describing: registryDomainId)), reseller: \(Swift.String(describing: reseller)), statusList: \(Swift.String(describing: statusList)), techPrivacy: \(Swift.String(describing: techPrivacy)), updatedDate: \(Swift.String(describing: updatedDate)), whoIsServer: \(Swift.String(describing: whoIsServer)), abuseContactEmail: \"CONTENT_REDACTED\", abuseContactPhone: \"CONTENT_REDACTED\", adminContact: \"CONTENT_REDACTED\", billingContact: \"CONTENT_REDACTED\", registrantContact: \"CONTENT_REDACTED\", techContact: \"CONTENT_REDACTED\")"}
 }
 
-public struct GetDomainSuggestionsInput {
+public struct GetDomainSuggestionsInput: Swift.Sendable {
     /// A domain name that you want to use as the basis for a list of possible domain names. The top-level domain (TLD), such as .com, must be a TLD that Route 53 supports. For a list of supported TLDs, see [Domains that You Can Register with Amazon Route 53](https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/registrar-tld-list.html) in the Amazon Route 53 Developer Guide. The domain name can contain only the following characters:
     ///
     /// * Letters a through z. Domain names are not case sensitive.
@@ -2739,7 +2740,7 @@ public struct GetDomainSuggestionsInput {
     }
 }
 
-public struct GetDomainSuggestionsOutput {
+public struct GetDomainSuggestionsOutput: Swift.Sendable {
     /// A list of possible domain names. If you specified true for OnlyAvailable in the request, the list contains only domains that are available for registration.
     public var suggestionsList: [Route53DomainsClientTypes.DomainSuggestion]?
 
@@ -2752,7 +2753,7 @@ public struct GetDomainSuggestionsOutput {
 }
 
 /// The [GetOperationDetail](https://docs.aws.amazon.com/Route53/latest/APIReference/API_domains_GetOperationDetail.html) request includes the following element.
-public struct GetOperationDetailInput {
+public struct GetOperationDetailInput: Swift.Sendable {
     /// The identifier for the operation for which you want to get the status. Route 53 returned the identifier in the response to the original request.
     /// This member is required.
     public var operationId: Swift.String?
@@ -2767,7 +2768,7 @@ public struct GetOperationDetailInput {
 
 extension Route53DomainsClientTypes {
 
-    public enum OperationStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum OperationStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case error
         case failed
         case inProgress
@@ -2805,7 +2806,7 @@ extension Route53DomainsClientTypes {
 
 extension Route53DomainsClientTypes {
 
-    public enum StatusFlag: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum StatusFlag: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case pendingAcceptance
         case pendingAuthorization
         case pendingCustomerAction
@@ -2842,7 +2843,7 @@ extension Route53DomainsClientTypes {
 }
 
 /// The GetOperationDetail response includes the following elements.
-public struct GetOperationDetailOutput {
+public struct GetOperationDetailOutput: Swift.Sendable {
     /// The name of a domain.
     public var domainName: Swift.String?
     /// The date when the operation was last updated.
@@ -2894,7 +2895,7 @@ public struct GetOperationDetailOutput {
 
 extension Route53DomainsClientTypes {
 
-    public enum SortOrder: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SortOrder: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case asc
         case desc
         case sdkUnknown(Swift.String)
@@ -2922,8 +2923,9 @@ extension Route53DomainsClientTypes {
 }
 
 extension Route53DomainsClientTypes {
+
     /// Information for sorting a list of domains.
-    public struct SortCondition {
+    public struct SortCondition: Swift.Sendable {
         /// Field to be used for sorting the list of domains. It can be either the name or the expiration for a domain. Note that if filterCondition is used in the same [ListDomains](https://docs.aws.amazon.com/Route53/latest/APIReference/API_domains__ListDomains.html) call, the field used for sorting has to be the same as the field used for filtering.
         /// This member is required.
         public var name: Route53DomainsClientTypes.ListDomainsAttributeName?
@@ -2940,11 +2942,10 @@ extension Route53DomainsClientTypes {
             self.sortOrder = sortOrder
         }
     }
-
 }
 
 /// The ListDomains request includes the following elements.
-public struct ListDomainsInput {
+public struct ListDomainsInput: Swift.Sendable {
     /// A complex type that contains information about the filters applied during the ListDomains request. The filter conditions can include domain name and domain expiration.
     public var filterConditions: [Route53DomainsClientTypes.FilterCondition]?
     /// For an initial request for a list of domains, omit this element. If the number of domains that are associated with the current Amazon Web Services account is greater than the value that you specified for MaxItems, you can use Marker to return additional domains. Get the value of NextPageMarker from the previous response, and submit another request that includes the value of NextPageMarker in the Marker element. Constraints: The marker must match the value specified in the previous request.
@@ -2969,7 +2970,7 @@ public struct ListDomainsInput {
 }
 
 /// The ListDomains response includes the following elements.
-public struct ListDomainsOutput {
+public struct ListDomainsOutput: Swift.Sendable {
     /// A list of domains.
     public var domains: [Route53DomainsClientTypes.DomainSummary]?
     /// If there are more domains than you specified for MaxItems in the request, submit another request and include the value of NextPageMarker in the value of Marker.
@@ -2987,7 +2988,7 @@ public struct ListDomainsOutput {
 
 extension Route53DomainsClientTypes {
 
-    public enum ListOperationsSortAttributeName: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ListOperationsSortAttributeName: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case submitteddate
         case sdkUnknown(Swift.String)
 
@@ -3012,7 +3013,7 @@ extension Route53DomainsClientTypes {
 }
 
 /// The ListOperations request includes the following elements.
-public struct ListOperationsInput {
+public struct ListOperationsInput: Swift.Sendable {
     /// For an initial request for a list of operations, omit this element. If the number of operations that are not yet complete is greater than the value that you specified for MaxItems, you can use Marker to return additional operations. Get the value of NextPageMarker from the previous response, and submit another request that includes the value of NextPageMarker in the Marker element.
     public var marker: Swift.String?
     /// Number of domains to be returned. Default: 20
@@ -3049,8 +3050,9 @@ public struct ListOperationsInput {
 }
 
 extension Route53DomainsClientTypes {
+
     /// OperationSummary includes the following elements.
-    public struct OperationSummary {
+    public struct OperationSummary: Swift.Sendable {
         /// Name of the domain.
         public var domainName: Swift.String?
         /// The date when the last change was made in Unix time format and Coordinated Universal Time (UTC).
@@ -3099,11 +3101,10 @@ extension Route53DomainsClientTypes {
             self.type = type
         }
     }
-
 }
 
 /// The ListOperations response includes the following elements.
-public struct ListOperationsOutput {
+public struct ListOperationsOutput: Swift.Sendable {
     /// If there are more operations than you specified for MaxItems in the request, submit another request and include the value of NextPageMarker in the value of Marker.
     public var nextPageMarker: Swift.String?
     /// Lists summaries of the operations.
@@ -3119,7 +3120,7 @@ public struct ListOperationsOutput {
     }
 }
 
-public struct ListPricesInput {
+public struct ListPricesInput: Swift.Sendable {
     /// For an initial request for a list of prices, omit this element. If the number of prices that are not yet complete is greater than the value that you specified for MaxItems, you can use Marker to return additional prices. Get the value of NextPageMarker from the previous response, and submit another request that includes the value of NextPageMarker in the Marker element. Used only for all TLDs. If you specify a TLD, don't specify a Marker.
     public var marker: Swift.String?
     /// Number of Prices to be returned. Used only for all TLDs. If you specify a TLD, don't specify a MaxItems.
@@ -3139,7 +3140,7 @@ public struct ListPricesInput {
     }
 }
 
-public struct ListPricesOutput {
+public struct ListPricesOutput: Swift.Sendable {
     /// If there are more prices than you specified for MaxItems in the request, submit another request and include the value of NextPageMarker in the value of Marker. Used only for all TLDs. If you specify a TLD, don't specify a NextPageMarker.
     public var nextPageMarker: Swift.String?
     /// A complex type that includes all the pricing information. If you specify a TLD, this array contains only the pricing for that TLD.
@@ -3156,7 +3157,7 @@ public struct ListPricesOutput {
 }
 
 /// The ListTagsForDomainRequest includes the following elements.
-public struct ListTagsForDomainInput {
+public struct ListTagsForDomainInput: Swift.Sendable {
     /// The domain for which you want to get a list of tags.
     /// This member is required.
     public var domainName: Swift.String?
@@ -3170,8 +3171,9 @@ public struct ListTagsForDomainInput {
 }
 
 extension Route53DomainsClientTypes {
+
     /// Each tag includes the following elements.
-    public struct Tag {
+    public struct Tag: Swift.Sendable {
         /// The key (name) of a tag. Valid values: A-Z, a-z, 0-9, space, ".:/=+\-@" Constraints: Each key can be 1-128 characters long.
         public var key: Swift.String?
         /// The value of a tag. Valid values: A-Z, a-z, 0-9, space, ".:/=+\-@" Constraints: Each value can be 0-256 characters long.
@@ -3186,11 +3188,10 @@ extension Route53DomainsClientTypes {
             self.value = value
         }
     }
-
 }
 
 /// The ListTagsForDomain response includes the following elements.
-public struct ListTagsForDomainOutput {
+public struct ListTagsForDomainOutput: Swift.Sendable {
     /// A list of the tags that are associated with the specified domain.
     public var tagList: [Route53DomainsClientTypes.Tag]?
 
@@ -3202,7 +3203,7 @@ public struct ListTagsForDomainOutput {
     }
 }
 
-public struct PushDomainInput {
+public struct PushDomainInput: Swift.Sendable {
     /// Name of the domain.
     /// This member is required.
     public var domainName: Swift.String?
@@ -3221,7 +3222,7 @@ public struct PushDomainInput {
 }
 
 /// The RegisterDomain request includes the following elements.
-public struct RegisterDomainInput {
+public struct RegisterDomainInput: Swift.Sendable {
     /// Provides detailed contact information. For information about the values that you specify for each element, see [ContactDetail](https://docs.aws.amazon.com/Route53/latest/APIReference/API_domains_ContactDetail.html).
     /// This member is required.
     public var adminContact: Route53DomainsClientTypes.ContactDetail?
@@ -3299,7 +3300,7 @@ extension RegisterDomainInput: Swift.CustomDebugStringConvertible {
 }
 
 /// The RegisterDomain response includes the following element.
-public struct RegisterDomainOutput {
+public struct RegisterDomainOutput: Swift.Sendable {
     /// Identifier for tracking the progress of the request. To query the operation status, use [GetOperationDetail](https://docs.aws.amazon.com/Route53/latest/APIReference/API_domains_GetOperationDetail.html).
     public var operationId: Swift.String?
 
@@ -3312,7 +3313,7 @@ public struct RegisterDomainOutput {
 }
 
 /// The RejectDomainTransferFromAnotherAwsAccount request includes the following element.
-public struct RejectDomainTransferFromAnotherAwsAccountInput {
+public struct RejectDomainTransferFromAnotherAwsAccountInput: Swift.Sendable {
     /// The name of the domain that was specified when another Amazon Web Services account submitted a [TransferDomainToAnotherAwsAccount](https://docs.aws.amazon.com/Route53/latest/APIReference/API_domains_TransferDomainToAnotherAwsAccount.html) request.
     /// This member is required.
     public var domainName: Swift.String?
@@ -3326,7 +3327,7 @@ public struct RejectDomainTransferFromAnotherAwsAccountInput {
 }
 
 /// The RejectDomainTransferFromAnotherAwsAccount response includes the following element.
-public struct RejectDomainTransferFromAnotherAwsAccountOutput {
+public struct RejectDomainTransferFromAnotherAwsAccountOutput: Swift.Sendable {
     /// The identifier that TransferDomainToAnotherAwsAccount returned to track the progress of the request. Because the transfer request was rejected, the value is no longer valid, and you can't use GetOperationDetail to query the operation status.
     public var operationId: Swift.String?
 
@@ -3339,7 +3340,7 @@ public struct RejectDomainTransferFromAnotherAwsAccountOutput {
 }
 
 /// A RenewDomain request includes the number of years that you want to renew for and the current expiration year.
-public struct RenewDomainInput {
+public struct RenewDomainInput: Swift.Sendable {
     /// The year when the registration for the domain is set to expire. This value must match the current expiration date for the domain.
     /// This member is required.
     public var currentExpiryYear: Swift.Int?
@@ -3361,7 +3362,7 @@ public struct RenewDomainInput {
     }
 }
 
-public struct RenewDomainOutput {
+public struct RenewDomainOutput: Swift.Sendable {
     /// Identifier for tracking the progress of the request. To query the operation status, use [GetOperationDetail](https://docs.aws.amazon.com/Route53/latest/APIReference/API_domains_GetOperationDetail.html).
     public var operationId: Swift.String?
 
@@ -3373,7 +3374,7 @@ public struct RenewDomainOutput {
     }
 }
 
-public struct ResendContactReachabilityEmailInput {
+public struct ResendContactReachabilityEmailInput: Swift.Sendable {
     /// The name of the domain for which you want Route 53 to resend a confirmation email to the registrant contact.
     public var domainName: Swift.String?
 
@@ -3385,7 +3386,7 @@ public struct ResendContactReachabilityEmailInput {
     }
 }
 
-public struct ResendContactReachabilityEmailOutput {
+public struct ResendContactReachabilityEmailOutput: Swift.Sendable {
     /// The domain name for which you requested a confirmation email.
     public var domainName: Swift.String?
     /// The email address for the registrant contact at the time that we sent the verification email.
@@ -3410,7 +3411,7 @@ extension ResendContactReachabilityEmailOutput: Swift.CustomDebugStringConvertib
         "ResendContactReachabilityEmailOutput(domainName: \(Swift.String(describing: domainName)), isAlreadyVerified: \(Swift.String(describing: isAlreadyVerified)), emailAddress: \"CONTENT_REDACTED\")"}
 }
 
-public struct ResendOperationAuthorizationInput {
+public struct ResendOperationAuthorizationInput: Swift.Sendable {
     /// Operation ID.
     /// This member is required.
     public var operationId: Swift.String?
@@ -3424,7 +3425,7 @@ public struct ResendOperationAuthorizationInput {
 }
 
 /// A request for the authorization code for the specified domain. To transfer a domain to another registrar, you provide this value to the new registrar.
-public struct RetrieveDomainAuthCodeInput {
+public struct RetrieveDomainAuthCodeInput: Swift.Sendable {
     /// The name of the domain that you want to get an authorization code for.
     /// This member is required.
     public var domainName: Swift.String?
@@ -3438,7 +3439,7 @@ public struct RetrieveDomainAuthCodeInput {
 }
 
 /// The RetrieveDomainAuthCode response includes the following element.
-public struct RetrieveDomainAuthCodeOutput {
+public struct RetrieveDomainAuthCodeOutput: Swift.Sendable {
     /// The authorization code for the domain.
     public var authCode: Swift.String?
 
@@ -3456,7 +3457,7 @@ extension RetrieveDomainAuthCodeOutput: Swift.CustomDebugStringConvertible {
 }
 
 /// The TransferDomain request includes the following elements.
-public struct TransferDomainInput {
+public struct TransferDomainInput: Swift.Sendable {
     /// Provides detailed contact information.
     /// This member is required.
     public var adminContact: Route53DomainsClientTypes.ContactDetail?
@@ -3539,7 +3540,7 @@ extension TransferDomainInput: Swift.CustomDebugStringConvertible {
 }
 
 /// The TransferDomain response includes the following element.
-public struct TransferDomainOutput {
+public struct TransferDomainOutput: Swift.Sendable {
     /// Identifier for tracking the progress of the request. To query the operation status, use [GetOperationDetail](https://docs.aws.amazon.com/Route53/latest/APIReference/API_domains_GetOperationDetail.html).
     public var operationId: Swift.String?
 
@@ -3552,7 +3553,7 @@ public struct TransferDomainOutput {
 }
 
 /// The TransferDomainToAnotherAwsAccount request includes the following elements.
-public struct TransferDomainToAnotherAwsAccountInput {
+public struct TransferDomainToAnotherAwsAccountInput: Swift.Sendable {
     /// The account ID of the Amazon Web Services account that you want to transfer the domain to, for example, 111122223333.
     /// This member is required.
     public var accountId: Swift.String?
@@ -3571,7 +3572,7 @@ public struct TransferDomainToAnotherAwsAccountInput {
 }
 
 /// The TransferDomainToAnotherAwsAccount response includes the following elements.
-public struct TransferDomainToAnotherAwsAccountOutput {
+public struct TransferDomainToAnotherAwsAccountOutput: Swift.Sendable {
     /// Identifier for tracking the progress of the request. To query the operation status, use [GetOperationDetail](https://docs.aws.amazon.com/Route53/latest/APIReference/API_domains_GetOperationDetail.html).
     public var operationId: Swift.String?
     /// To finish transferring a domain to another Amazon Web Services account, the account that the domain is being transferred to must submit an [AcceptDomainTransferFromAnotherAwsAccount](https://docs.aws.amazon.com/Route53/latest/APIReference/API_domains_AcceptDomainTransferFromAnotherAwsAccount.html) request. The request must include the value of the Password element that was returned in the TransferDomainToAnotherAwsAccount response.
@@ -3593,7 +3594,7 @@ extension TransferDomainToAnotherAwsAccountOutput: Swift.CustomDebugStringConver
 }
 
 /// The UpdateDomainContact request includes the following elements.
-public struct UpdateDomainContactInput {
+public struct UpdateDomainContactInput: Swift.Sendable {
     /// Provides detailed contact information.
     public var adminContact: Route53DomainsClientTypes.ContactDetail?
     /// Provides detailed contact information.
@@ -3632,7 +3633,7 @@ extension UpdateDomainContactInput: Swift.CustomDebugStringConvertible {
 }
 
 /// The UpdateDomainContact response includes the following element.
-public struct UpdateDomainContactOutput {
+public struct UpdateDomainContactOutput: Swift.Sendable {
     /// Identifier for tracking the progress of the request. To query the operation status, use [GetOperationDetail](https://docs.aws.amazon.com/Route53/latest/APIReference/API_domains_GetOperationDetail.html).
     public var operationId: Swift.String?
 
@@ -3645,7 +3646,7 @@ public struct UpdateDomainContactOutput {
 }
 
 /// The UpdateDomainContactPrivacy request includes the following elements.
-public struct UpdateDomainContactPrivacyInput {
+public struct UpdateDomainContactPrivacyInput: Swift.Sendable {
     /// Whether you want to conceal contact information from WHOIS queries. If you specify true, WHOIS ("who is") queries return contact information either for Amazon Registrar or for our registrar associate, Gandi. If you specify false, WHOIS queries return the information that you entered for the admin contact. You must specify the same privacy setting for the administrative, billing, registrant, and technical contacts.
     public var adminPrivacy: Swift.Bool?
     /// Whether you want to conceal contact information from WHOIS queries. If you specify true, WHOIS ("who is") queries return contact information either for Amazon Registrar or for our registrar associate, Gandi. If you specify false, WHOIS queries return the information that you entered for the billing contact. You must specify the same privacy setting for the administrative, billing, registrant, and technical contacts.
@@ -3675,7 +3676,7 @@ public struct UpdateDomainContactPrivacyInput {
 }
 
 /// The UpdateDomainContactPrivacy response includes the following element.
-public struct UpdateDomainContactPrivacyOutput {
+public struct UpdateDomainContactPrivacyOutput: Swift.Sendable {
     /// Identifier for tracking the progress of the request. To use this ID to query the operation status, use GetOperationDetail.
     public var operationId: Swift.String?
 
@@ -3688,7 +3689,7 @@ public struct UpdateDomainContactPrivacyOutput {
 }
 
 /// Replaces the current set of name servers for the domain with the specified set of name servers. If you use Amazon Route 53 as your DNS service, specify the four name servers in the delegation set for the hosted zone for the domain. If successful, this operation returns an operation ID that you can use to track the progress and completion of the action. If the request is not completed successfully, the domain registrant will be notified by email.
-public struct UpdateDomainNameserversInput {
+public struct UpdateDomainNameserversInput: Swift.Sendable {
     /// The name of the domain that you want to change name servers for.
     /// This member is required.
     public var domainName: Swift.String?
@@ -3717,7 +3718,7 @@ extension UpdateDomainNameserversInput: Swift.CustomDebugStringConvertible {
 }
 
 /// The UpdateDomainNameservers response includes the following element.
-public struct UpdateDomainNameserversOutput {
+public struct UpdateDomainNameserversOutput: Swift.Sendable {
     /// Identifier for tracking the progress of the request. To query the operation status, use [GetOperationDetail](https://docs.aws.amazon.com/Route53/latest/APIReference/API_domains_GetOperationDetail.html).
     public var operationId: Swift.String?
 
@@ -3730,7 +3731,7 @@ public struct UpdateDomainNameserversOutput {
 }
 
 /// The UpdateTagsForDomainRequest includes the following elements.
-public struct UpdateTagsForDomainInput {
+public struct UpdateTagsForDomainInput: Swift.Sendable {
     /// The domain for which you want to add or update tags.
     /// This member is required.
     public var domainName: Swift.String?
@@ -3747,13 +3748,13 @@ public struct UpdateTagsForDomainInput {
     }
 }
 
-public struct UpdateTagsForDomainOutput {
+public struct UpdateTagsForDomainOutput: Swift.Sendable {
 
     public init() { }
 }
 
 /// The ViewBilling request includes the following elements.
-public struct ViewBillingInput {
+public struct ViewBillingInput: Swift.Sendable {
     /// The end date and time for the time period for which you want a list of billing records. Specify the date and time in Unix time format and Coordinated Universal time (UTC).
     public var end: Foundation.Date?
     /// For an initial request for a list of billing records, omit this element. If the number of billing records that are associated with the current Amazon Web Services account during the specified period is greater than the value that you specified for MaxItems, you can use Marker to return additional billing records. Get the value of NextPageMarker from the previous response, and submit another request that includes the value of NextPageMarker in the Marker element. Constraints: The marker must match the value of NextPageMarker that was returned in the previous response.
@@ -3778,7 +3779,7 @@ public struct ViewBillingInput {
 }
 
 /// The ViewBilling response includes the following elements.
-public struct ViewBillingOutput {
+public struct ViewBillingOutput: Swift.Sendable {
     /// A summary of billing records.
     public var billingRecords: [Route53DomainsClientTypes.BillingRecord]?
     /// If there are more billing records than you specified for MaxItems in the request, submit another request and include the value of NextPageMarker in the value of Marker.

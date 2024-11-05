@@ -54,7 +54,7 @@ public struct AccessDeniedException: ClientRuntime.ModeledError, AWSClientRuntim
 
 extension ComputeOptimizerClientTypes {
 
-    public enum Status: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Status: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case active
         case failed
         case inactive
@@ -88,8 +88,9 @@ extension ComputeOptimizerClientTypes {
 }
 
 extension ComputeOptimizerClientTypes {
+
     /// Describes the enrollment status of an organization's member accounts in Compute Optimizer.
-    public struct AccountEnrollmentStatus {
+    public struct AccountEnrollmentStatus: Swift.Sendable {
         /// The Amazon Web Services account ID.
         public var accountId: Swift.String?
         /// The Unix epoch timestamp, in seconds, of when the account enrollment status was last updated.
@@ -112,12 +113,11 @@ extension ComputeOptimizerClientTypes {
             self.statusReason = statusReason
         }
     }
-
 }
 
 extension ComputeOptimizerClientTypes {
 
-    public enum AutoScalingConfiguration: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AutoScalingConfiguration: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case targetTrackingScalingCpu
         case targetTrackingScalingMemory
         case sdkUnknown(Swift.String)
@@ -145,8 +145,9 @@ extension ComputeOptimizerClientTypes {
 }
 
 extension ComputeOptimizerClientTypes {
+
     /// Describes the configuration of an Auto Scaling group.
-    public struct AutoScalingGroupConfiguration {
+    public struct AutoScalingGroupConfiguration: Swift.Sendable {
         /// The desired capacity, or number of instances, for the Auto Scaling group.
         public var desiredCapacity: Swift.Int
         /// The instance type for the Auto Scaling group.
@@ -169,12 +170,11 @@ extension ComputeOptimizerClientTypes {
             self.minSize = minSize
         }
     }
-
 }
 
 extension ComputeOptimizerClientTypes {
 
-    public enum Currency: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Currency: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case cny
         case usd
         case sdkUnknown(Swift.String)
@@ -202,8 +202,9 @@ extension ComputeOptimizerClientTypes {
 }
 
 extension ComputeOptimizerClientTypes {
+
     /// An object that describes the estimated monthly savings possible by adopting Compute Optimizer’s Auto Scaling group recommendations. This is based on the Savings Plans and Reserved Instances discounts.
-    public struct AutoScalingGroupEstimatedMonthlySavings {
+    public struct AutoScalingGroupEstimatedMonthlySavings: Swift.Sendable {
         /// The currency of the estimated monthly savings.
         public var currency: ComputeOptimizerClientTypes.Currency?
         /// The value of the estimated monthly savings.
@@ -218,12 +219,12 @@ extension ComputeOptimizerClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension ComputeOptimizerClientTypes {
+
     /// Describes the GPU accelerators for the instance type.
-    public struct Gpu {
+    public struct Gpu: Swift.Sendable {
         /// The number of GPUs for the instance type.
         public var gpuCount: Swift.Int
         /// The total size of the memory for the GPU accelerators for the instance type, in MiB.
@@ -238,12 +239,12 @@ extension ComputeOptimizerClientTypes {
             self.gpuMemorySizeInMiB = gpuMemorySizeInMiB
         }
     }
-
 }
 
 extension ComputeOptimizerClientTypes {
+
     /// Describes the GPU accelerator settings for the instance type.
-    public struct GpuInfo {
+    public struct GpuInfo: Swift.Sendable {
         /// Describes the GPU accelerators for the instance type.
         public var gpus: [ComputeOptimizerClientTypes.Gpu]?
 
@@ -254,12 +255,11 @@ extension ComputeOptimizerClientTypes {
             self.gpus = gpus
         }
     }
-
 }
 
 extension ComputeOptimizerClientTypes {
 
-    public enum CurrentPerformanceRisk: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum CurrentPerformanceRisk: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case high
         case low
         case medium
@@ -294,7 +294,7 @@ extension ComputeOptimizerClientTypes {
 
 extension ComputeOptimizerClientTypes {
 
-    public enum CpuVendorArchitecture: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum CpuVendorArchitecture: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case awsArm64
         case current
         case sdkUnknown(Swift.String)
@@ -323,7 +323,7 @@ extension ComputeOptimizerClientTypes {
 
 extension ComputeOptimizerClientTypes {
 
-    public enum EnhancedInfrastructureMetrics: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum EnhancedInfrastructureMetrics: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case active
         case inactive
         case sdkUnknown(Swift.String)
@@ -352,7 +352,7 @@ extension ComputeOptimizerClientTypes {
 
 extension ComputeOptimizerClientTypes {
 
-    public enum ExternalMetricsSource: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ExternalMetricsSource: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case datadog
         case dynatrace
         case instana
@@ -386,8 +386,9 @@ extension ComputeOptimizerClientTypes {
 }
 
 extension ComputeOptimizerClientTypes {
+
     /// Describes the external metrics preferences for EC2 rightsizing recommendations.
-    public struct ExternalMetricsPreference {
+    public struct ExternalMetricsPreference: Swift.Sendable {
         /// Contains the source options for external metrics preferences.
         public var source: ComputeOptimizerClientTypes.ExternalMetricsSource?
 
@@ -398,12 +399,11 @@ extension ComputeOptimizerClientTypes {
             self.source = source
         }
     }
-
 }
 
 extension ComputeOptimizerClientTypes {
 
-    public enum InferredWorkloadTypesPreference: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum InferredWorkloadTypesPreference: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case active
         case inactive
         case sdkUnknown(Swift.String)
@@ -432,7 +432,7 @@ extension ComputeOptimizerClientTypes {
 
 extension ComputeOptimizerClientTypes {
 
-    public enum LookBackPeriodPreference: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum LookBackPeriodPreference: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case days14
         case days32
         case days93
@@ -464,7 +464,7 @@ extension ComputeOptimizerClientTypes {
 
 extension ComputeOptimizerClientTypes {
 
-    public enum PreferredResourceName: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum PreferredResourceName: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case ec2InstanceTypes
         case sdkUnknown(Swift.String)
 
@@ -489,8 +489,9 @@ extension ComputeOptimizerClientTypes {
 }
 
 extension ComputeOptimizerClientTypes {
+
     /// Describes the effective preferred resources that Compute Optimizer considers as rightsizing recommendation candidates. Compute Optimizer only supports Amazon EC2 instance types.
-    public struct EffectivePreferredResource {
+    public struct EffectivePreferredResource: Swift.Sendable {
         /// The expanded version of your preferred resource's include list.
         public var effectiveIncludeList: [Swift.String]?
         /// The list of preferred resources values that you want excluded from rightsizing recommendation candidates.
@@ -513,12 +514,11 @@ extension ComputeOptimizerClientTypes {
             self.name = name
         }
     }
-
 }
 
 extension ComputeOptimizerClientTypes {
 
-    public enum InstanceSavingsEstimationModeSource: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum InstanceSavingsEstimationModeSource: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case costExplorerRightsizing
         case costOptimizationHub
         case publicPricing
@@ -549,8 +549,9 @@ extension ComputeOptimizerClientTypes {
 }
 
 extension ComputeOptimizerClientTypes {
+
     /// Describes the savings estimation mode used for calculating savings opportunity for Amazon EC2 instances.
-    public struct InstanceSavingsEstimationMode {
+    public struct InstanceSavingsEstimationMode: Swift.Sendable {
         /// Describes the source for calculating the savings opportunity for Amazon EC2 instances.
         public var source: ComputeOptimizerClientTypes.InstanceSavingsEstimationModeSource?
 
@@ -561,12 +562,11 @@ extension ComputeOptimizerClientTypes {
             self.source = source
         }
     }
-
 }
 
 extension ComputeOptimizerClientTypes {
 
-    public enum CustomizableMetricName: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum CustomizableMetricName: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case cpuUtilization
         case memoryUtilization
         case sdkUnknown(Swift.String)
@@ -595,7 +595,7 @@ extension ComputeOptimizerClientTypes {
 
 extension ComputeOptimizerClientTypes {
 
-    public enum CustomizableMetricHeadroom: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum CustomizableMetricHeadroom: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case percent0
         case percent10
         case percent20
@@ -630,7 +630,7 @@ extension ComputeOptimizerClientTypes {
 
 extension ComputeOptimizerClientTypes {
 
-    public enum CustomizableMetricThreshold: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum CustomizableMetricThreshold: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case p90
         case p95
         case p995
@@ -661,8 +661,9 @@ extension ComputeOptimizerClientTypes {
 }
 
 extension ComputeOptimizerClientTypes {
+
     /// Defines the various metric parameters that can be customized, such as threshold and headroom.
-    public struct CustomizableMetricParameters {
+    public struct CustomizableMetricParameters: Swift.Sendable {
         /// The headroom value in percentage used for the specified metric parameter. The following lists the valid values for CPU and memory utilization.
         ///
         /// * CPU utilization: PERCENT_30 | PERCENT_20 | PERCENT_0
@@ -681,12 +682,12 @@ extension ComputeOptimizerClientTypes {
             self.threshold = threshold
         }
     }
-
 }
 
 extension ComputeOptimizerClientTypes {
+
     /// The preference to control the resource’s CPU utilization threshold, CPU utilization headroom, and memory utilization headroom. This preference is only available for the Amazon EC2 instance resource type.
-    public struct UtilizationPreference {
+    public struct UtilizationPreference: Swift.Sendable {
         /// The name of the resource utilization metric name to customize.
         public var metricName: ComputeOptimizerClientTypes.CustomizableMetricName?
         /// The parameters to set when customizing the resource utilization thresholds.
@@ -701,12 +702,12 @@ extension ComputeOptimizerClientTypes {
             self.metricParameters = metricParameters
         }
     }
-
 }
 
 extension ComputeOptimizerClientTypes {
+
     /// Describes the effective recommendation preferences for a resource.
-    public struct EffectiveRecommendationPreferences {
+    public struct EffectiveRecommendationPreferences: Swift.Sendable {
         /// Describes the CPU vendor and architecture for an instance or Auto Scaling group recommendations. For example, when you specify AWS_ARM64 with:
         ///
         /// * A [GetEC2InstanceRecommendations] or [GetAutoScalingGroupRecommendations] request, Compute Optimizer returns recommendations that consist of Graviton instance types only.
@@ -751,12 +752,11 @@ extension ComputeOptimizerClientTypes {
             self.utilizationPreferences = utilizationPreferences
         }
     }
-
 }
 
 extension ComputeOptimizerClientTypes {
 
-    public enum Finding: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Finding: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case notOptimized
         case optimized
         case overProvisioned
@@ -791,7 +791,7 @@ extension ComputeOptimizerClientTypes {
 
 extension ComputeOptimizerClientTypes {
 
-    public enum InferredWorkloadType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum InferredWorkloadType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case amazonEmr
         case apacheCassandra
         case apacheHadoop
@@ -841,7 +841,7 @@ extension ComputeOptimizerClientTypes {
 
 extension ComputeOptimizerClientTypes {
 
-    public enum MigrationEffort: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum MigrationEffort: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case high
         case low
         case medium
@@ -876,7 +876,7 @@ extension ComputeOptimizerClientTypes {
 
 extension ComputeOptimizerClientTypes {
 
-    public enum MetricName: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum MetricName: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case cpu
         case diskReadBytesPerSecond
         case diskReadOpsPerSecond
@@ -947,7 +947,7 @@ extension ComputeOptimizerClientTypes {
 
 extension ComputeOptimizerClientTypes {
 
-    public enum MetricStatistic: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum MetricStatistic: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case average
         case maximum
         case sdkUnknown(Swift.String)
@@ -975,8 +975,9 @@ extension ComputeOptimizerClientTypes {
 }
 
 extension ComputeOptimizerClientTypes {
+
     /// Describes a utilization metric of a resource, such as an Amazon EC2 instance. Compare the utilization metric data of your resource against its projected utilization metric data to determine the performance difference between your current resource and the recommended option.
-    public struct UtilizationMetric {
+    public struct UtilizationMetric: Swift.Sendable {
         /// The name of the utilization metric. The following utilization metrics are available:
         ///
         /// * Cpu - The percentage of allocated EC2 compute units that are currently in use on the instance. This metric identifies the processing power required to run an application on the instance. Depending on the instance type, tools in your operating system can show a lower percentage than CloudWatch when the instance is not allocated a full processor core. Units: Percent
@@ -1027,12 +1028,12 @@ extension ComputeOptimizerClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension ComputeOptimizerClientTypes {
+
     /// Describes the estimated monthly savings amount possible, based on On-Demand instance pricing, by adopting Compute Optimizer recommendations for a given resource. For more information, see [Estimated monthly savings and savings opportunities](https://docs.aws.amazon.com/compute-optimizer/latest/ug/view-ec2-recommendations.html#ec2-savings-calculation) in the Compute Optimizer User Guide.
-    public struct EstimatedMonthlySavings {
+    public struct EstimatedMonthlySavings: Swift.Sendable {
         /// The currency of the estimated monthly savings.
         public var currency: ComputeOptimizerClientTypes.Currency?
         /// The value of the estimated monthly savings.
@@ -1047,12 +1048,12 @@ extension ComputeOptimizerClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension ComputeOptimizerClientTypes {
+
     /// Describes the savings opportunity for recommendations of a given resource type or for the recommendation option of an individual resource. Savings opportunity represents the estimated monthly savings you can achieve by implementing a given Compute Optimizer recommendation. Savings opportunity data requires that you opt in to Cost Explorer, as well as activate Receive Amazon EC2 resource recommendations in the Cost Explorer preferences page. That creates a connection between Cost Explorer and Compute Optimizer. With this connection, Cost Explorer generates savings estimates considering the price of existing resources, the price of recommended resources, and historical usage data. Estimated monthly savings reflects the projected dollar savings associated with each of the recommendations generated. For more information, see [Enabling Cost Explorer](https://docs.aws.amazon.com/cost-management/latest/userguide/ce-enable.html) and [Optimizing your cost with Rightsizing Recommendations](https://docs.aws.amazon.com/cost-management/latest/userguide/ce-rightsizing.html) in the Cost Management User Guide.
-    public struct SavingsOpportunity {
+    public struct SavingsOpportunity: Swift.Sendable {
         /// An object that describes the estimated monthly savings amount possible by adopting Compute Optimizer recommendations for a given resource. This is based on the On-Demand instance pricing..
         public var estimatedMonthlySavings: ComputeOptimizerClientTypes.EstimatedMonthlySavings?
         /// The estimated monthly savings possible as a percentage of monthly cost by adopting Compute Optimizer recommendations for a given resource.
@@ -1067,12 +1068,12 @@ extension ComputeOptimizerClientTypes {
             self.savingsOpportunityPercentage = savingsOpportunityPercentage
         }
     }
-
 }
 
 extension ComputeOptimizerClientTypes {
+
     /// Describes the savings opportunity for Auto Scaling group recommendations after applying the Savings Plans and Reserved Instances discounts. Savings opportunity represents the estimated monthly savings you can achieve by implementing Compute Optimizer recommendations.
-    public struct AutoScalingGroupSavingsOpportunityAfterDiscounts {
+    public struct AutoScalingGroupSavingsOpportunityAfterDiscounts: Swift.Sendable {
         /// An object that describes the estimated monthly savings possible by adopting Compute Optimizer’s Auto Scaling group recommendations. This is based on the Savings Plans and Reserved Instances pricing discounts.
         public var estimatedMonthlySavings: ComputeOptimizerClientTypes.AutoScalingGroupEstimatedMonthlySavings?
         /// The estimated monthly savings possible as a percentage of monthly cost after applying the Savings Plans and Reserved Instances discounts. This saving can be achieved by adopting Compute Optimizer’s Auto Scaling group recommendations.
@@ -1087,12 +1088,12 @@ extension ComputeOptimizerClientTypes {
             self.savingsOpportunityPercentage = savingsOpportunityPercentage
         }
     }
-
 }
 
 extension ComputeOptimizerClientTypes {
+
     /// Describes a recommendation option for an Auto Scaling group.
-    public struct AutoScalingGroupRecommendationOption {
+    public struct AutoScalingGroupRecommendationOption: Swift.Sendable {
         /// An array of objects that describe an Auto Scaling group configuration.
         public var configuration: ComputeOptimizerClientTypes.AutoScalingGroupConfiguration?
         /// Describes the GPU accelerator settings for the recommended instance type of the Auto Scaling group.
@@ -1131,12 +1132,12 @@ extension ComputeOptimizerClientTypes {
             self.savingsOpportunityAfterDiscounts = savingsOpportunityAfterDiscounts
         }
     }
-
 }
 
 extension ComputeOptimizerClientTypes {
+
     /// Describes an Auto Scaling group recommendation.
-    public struct AutoScalingGroupRecommendation {
+    public struct AutoScalingGroupRecommendation: Swift.Sendable {
         /// The Amazon Web Services account ID of the Auto Scaling group.
         public var accountId: Swift.String?
         /// The Amazon Resource Name (ARN) of the Auto Scaling group.
@@ -1217,7 +1218,6 @@ extension ComputeOptimizerClientTypes {
             self.utilizationMetrics = utilizationMetrics
         }
     }
-
 }
 
 /// An internal error has occurred. Try your call again.
@@ -1391,7 +1391,7 @@ public struct ThrottlingException: ClientRuntime.ModeledError, AWSClientRuntime.
 
 extension ComputeOptimizerClientTypes {
 
-    public enum RecommendationPreferenceName: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum RecommendationPreferenceName: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case enhancedInfrastructureMetrics
         case externalMetricsPreference
         case inferredWorkloadTypes
@@ -1432,7 +1432,7 @@ extension ComputeOptimizerClientTypes {
 
 extension ComputeOptimizerClientTypes {
 
-    public enum ResourceType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ResourceType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case autoScalingGroup
         case ebsVolume
         case ec2Instance
@@ -1479,7 +1479,7 @@ extension ComputeOptimizerClientTypes {
 
 extension ComputeOptimizerClientTypes {
 
-    public enum ScopeName: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ScopeName: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case accountId
         case organization
         case resourceArn
@@ -1510,8 +1510,9 @@ extension ComputeOptimizerClientTypes {
 }
 
 extension ComputeOptimizerClientTypes {
+
     /// Describes the scope of a recommendation preference. Recommendation preferences can be created at the organization level (for management accounts of an organization only), account level, and resource level. For more information, see [Activating enhanced infrastructure metrics](https://docs.aws.amazon.com/compute-optimizer/latest/ug/enhanced-infrastructure-metrics.html) in the Compute Optimizer User Guide. You cannot create recommendation preferences for Auto Scaling groups at the organization and account levels. You can create recommendation preferences for Auto Scaling groups only at the resource level by specifying a scope name of ResourceArn and a scope value of the Auto Scaling group Amazon Resource Name (ARN). This will configure the preference for all instances that are part of the specified Auto Scaling group. You also cannot create recommendation preferences at the resource level for instances that are part of an Auto Scaling group. You can create recommendation preferences at the resource level only for standalone instances.
-    public struct Scope {
+    public struct Scope: Swift.Sendable {
         /// The name of the scope. The following scopes are possible:
         ///
         /// * Organization - Specifies that the recommendation preference applies at the organization level, for all member accounts of an organization.
@@ -1541,10 +1542,9 @@ extension ComputeOptimizerClientTypes {
             self.value = value
         }
     }
-
 }
 
-public struct DeleteRecommendationPreferencesInput {
+public struct DeleteRecommendationPreferencesInput: Swift.Sendable {
     /// The name of the recommendation preference to delete.
     /// This member is required.
     public var recommendationPreferenceNames: [ComputeOptimizerClientTypes.RecommendationPreferenceName]?
@@ -1566,14 +1566,14 @@ public struct DeleteRecommendationPreferencesInput {
     }
 }
 
-public struct DeleteRecommendationPreferencesOutput {
+public struct DeleteRecommendationPreferencesOutput: Swift.Sendable {
 
     public init() { }
 }
 
 extension ComputeOptimizerClientTypes {
 
-    public enum JobFilterName: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum JobFilterName: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case jobStatus
         case resourceType
         case sdkUnknown(Swift.String)
@@ -1601,8 +1601,9 @@ extension ComputeOptimizerClientTypes {
 }
 
 extension ComputeOptimizerClientTypes {
+
     /// Describes a filter that returns a more specific list of recommendation export jobs. Use this filter with the [DescribeRecommendationExportJobs] action. You can use EBSFilter with the [GetEBSVolumeRecommendations] action, LambdaFunctionRecommendationFilter with the [GetLambdaFunctionRecommendations] action, and Filter with the [GetAutoScalingGroupRecommendations] and [GetEC2InstanceRecommendations] actions.
-    public struct JobFilter {
+    public struct JobFilter: Swift.Sendable {
         /// The name of the filter. Specify ResourceType to return export jobs of a specific resource type (for example, Ec2Instance). Specify JobStatus to return export jobs with a specific status (e.g, Complete).
         public var name: ComputeOptimizerClientTypes.JobFilterName?
         /// The value of the filter. The valid values for this parameter are as follows, depending on what you specify for the name parameter:
@@ -1621,10 +1622,9 @@ extension ComputeOptimizerClientTypes {
             self.values = values
         }
     }
-
 }
 
-public struct DescribeRecommendationExportJobsInput {
+public struct DescribeRecommendationExportJobsInput: Swift.Sendable {
     /// An array of objects to specify a filter that returns a more specific list of export jobs.
     public var filters: [ComputeOptimizerClientTypes.JobFilter]?
     /// The identification numbers of the export jobs to return. An export job ID is returned when you create an export using the [ExportAutoScalingGroupRecommendations] or [ExportEC2InstanceRecommendations] actions. All export jobs created in the last seven days are returned if this parameter is omitted.
@@ -1649,8 +1649,9 @@ public struct DescribeRecommendationExportJobsInput {
 }
 
 extension ComputeOptimizerClientTypes {
+
     /// Describes the destination Amazon Simple Storage Service (Amazon S3) bucket name and object keys of a recommendations export file, and its associated metadata file.
-    public struct S3Destination {
+    public struct S3Destination: Swift.Sendable {
         /// The name of the Amazon S3 bucket used as the destination of an export file.
         public var bucket: Swift.String?
         /// The Amazon S3 bucket key of an export file. The key uniquely identifies the object, or export file, in the S3 bucket.
@@ -1669,12 +1670,12 @@ extension ComputeOptimizerClientTypes {
             self.metadataKey = metadataKey
         }
     }
-
 }
 
 extension ComputeOptimizerClientTypes {
+
     /// Describes the destination of the recommendations export and metadata files.
-    public struct ExportDestination {
+    public struct ExportDestination: Swift.Sendable {
         /// An object that describes the destination Amazon Simple Storage Service (Amazon S3) bucket name and object keys of a recommendations export file, and its associated metadata file.
         public var s3: ComputeOptimizerClientTypes.S3Destination?
 
@@ -1685,12 +1686,11 @@ extension ComputeOptimizerClientTypes {
             self.s3 = s3
         }
     }
-
 }
 
 extension ComputeOptimizerClientTypes {
 
-    public enum JobStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum JobStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case complete
         case failed
         case inProgress
@@ -1724,8 +1724,9 @@ extension ComputeOptimizerClientTypes {
 }
 
 extension ComputeOptimizerClientTypes {
+
     /// Describes a recommendation export job. Use the [DescribeRecommendationExportJobs] action to view your recommendation export jobs. Use the [ExportAutoScalingGroupRecommendations] or [ExportEC2InstanceRecommendations] actions to request an export of your recommendations.
-    public struct RecommendationExportJob {
+    public struct RecommendationExportJob: Swift.Sendable {
         /// The timestamp of when the export job was created.
         public var creationTimestamp: Foundation.Date?
         /// An object that describes the destination of the export file.
@@ -1760,10 +1761,9 @@ extension ComputeOptimizerClientTypes {
             self.status = status
         }
     }
-
 }
 
-public struct DescribeRecommendationExportJobsOutput {
+public struct DescribeRecommendationExportJobsOutput: Swift.Sendable {
     /// The token to use to advance to the next page of export jobs. This value is null when there are no more pages of export jobs to return.
     public var nextToken: Swift.String?
     /// An array of objects that describe recommendation export jobs.
@@ -1805,7 +1805,7 @@ public struct LimitExceededException: ClientRuntime.ModeledError, AWSClientRunti
 
 extension ComputeOptimizerClientTypes {
 
-    public enum ExportableAutoScalingGroupField: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ExportableAutoScalingGroupField: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case accountId
         case autoScalingGroupArn
         case autoScalingGroupName
@@ -2026,7 +2026,7 @@ extension ComputeOptimizerClientTypes {
 
 extension ComputeOptimizerClientTypes {
 
-    public enum FileFormat: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum FileFormat: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case csv
         case sdkUnknown(Swift.String)
 
@@ -2052,7 +2052,7 @@ extension ComputeOptimizerClientTypes {
 
 extension ComputeOptimizerClientTypes {
 
-    public enum FilterName: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum FilterName: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case finding
         case findingReasonCodes
         case inferredWorkloadTypes
@@ -2086,8 +2086,9 @@ extension ComputeOptimizerClientTypes {
 }
 
 extension ComputeOptimizerClientTypes {
+
     /// Describes a filter that returns a more specific list of recommendations. Use this filter with the [GetAutoScalingGroupRecommendations] and [GetEC2InstanceRecommendations] actions. You can use EBSFilter with the [GetEBSVolumeRecommendations] action, LambdaFunctionRecommendationFilter with the [GetLambdaFunctionRecommendations] action, and JobFilter with the [DescribeRecommendationExportJobs] action.
-    public struct Filter {
+    public struct Filter: Swift.Sendable {
         /// The name of the filter. Specify Finding to return recommendations with a specific finding classification. For example, Underprovisioned. Specify RecommendationSourceType to return recommendations of a specific resource type. For example, Ec2Instance. Specify FindingReasonCodes to return recommendations with a specific finding reason code. For example, CPUUnderprovisioned. Specify InferredWorkloadTypes to return recommendations of a specific inferred workload. For example, Redis. You can filter your EC2 instance recommendations by tag:key and tag-key tags. A tag:key is a key and value combination of a tag assigned to your recommendations. Use the tag key in the filter name and the tag value as the filter value. For example, to find all recommendations that have a tag with the key of Owner and the value of TeamA, specify tag:Owner for the filter name and TeamA for the filter value. A tag-key is the key of a tag assigned to your recommendations. Use this filter to find all of your recommendations that have a tag with a specific key. This doesn’t consider the tag value. For example, you can find your recommendations with a tag key value of Owner or without any tag keys assigned.
         public var name: ComputeOptimizerClientTypes.FilterName?
         /// The value of the filter. The valid values for this parameter are as follows, depending on what you specify for the name parameter and the resource type that you wish to filter results for:
@@ -2142,12 +2143,12 @@ extension ComputeOptimizerClientTypes {
             self.values = values
         }
     }
-
 }
 
 extension ComputeOptimizerClientTypes {
+
     /// Describes the recommendation preferences to return in the response of a [GetAutoScalingGroupRecommendations], [GetEC2InstanceRecommendations], [GetEC2RecommendationProjectedMetrics], [GetRDSDatabaseRecommendations], and [GetRDSDatabaseRecommendationProjectedMetrics] request.
-    public struct RecommendationPreferences {
+    public struct RecommendationPreferences: Swift.Sendable {
         /// Specifies the CPU vendor and architecture for Amazon EC2 instance and Auto Scaling group recommendations. For example, when you specify AWS_ARM64 with:
         ///
         /// * A [GetEC2InstanceRecommendations] or [GetAutoScalingGroupRecommendations] request, Compute Optimizer returns recommendations that consist of Graviton instance types only.
@@ -2164,12 +2165,12 @@ extension ComputeOptimizerClientTypes {
             self.cpuVendorArchitectures = cpuVendorArchitectures
         }
     }
-
 }
 
 extension ComputeOptimizerClientTypes {
+
     /// Describes the destination Amazon Simple Storage Service (Amazon S3) bucket name and key prefix for a recommendations export job. You must create the destination Amazon S3 bucket for your recommendations export before you create the export job. Compute Optimizer does not create the S3 bucket for you. After you create the S3 bucket, ensure that it has the required permission policy to allow Compute Optimizer to write the export file to it. If you plan to specify an object prefix when you create the export job, you must include the object prefix in the policy that you add to the S3 bucket. For more information, see [Amazon S3 Bucket Policy for Compute Optimizer](https://docs.aws.amazon.com/compute-optimizer/latest/ug/create-s3-bucket-policy-for-compute-optimizer.html) in the Compute Optimizer User Guide.
-    public struct S3DestinationConfig {
+    public struct S3DestinationConfig: Swift.Sendable {
         /// The name of the Amazon S3 bucket to use as the destination for an export job.
         public var bucket: Swift.String?
         /// The Amazon S3 bucket prefix for an export job.
@@ -2184,10 +2185,9 @@ extension ComputeOptimizerClientTypes {
             self.keyPrefix = keyPrefix
         }
     }
-
 }
 
-public struct ExportAutoScalingGroupRecommendationsInput {
+public struct ExportAutoScalingGroupRecommendationsInput: Swift.Sendable {
     /// The IDs of the Amazon Web Services accounts for which to export Auto Scaling group recommendations. If your account is the management account of an organization, use this parameter to specify the member account for which you want to export recommendations. This parameter cannot be specified together with the include member accounts parameter. The parameters are mutually exclusive. Recommendations for member accounts are not included in the export if this parameter, or the include member accounts parameter, is omitted. You can specify multiple account IDs per request.
     public var accountIds: [Swift.String]?
     /// The recommendations data to include in the export file. For more information about the fields that can be exported, see [Exported files](https://docs.aws.amazon.com/compute-optimizer/latest/ug/exporting-recommendations.html#exported-files) in the Compute Optimizer User Guide.
@@ -2224,7 +2224,7 @@ public struct ExportAutoScalingGroupRecommendationsInput {
     }
 }
 
-public struct ExportAutoScalingGroupRecommendationsOutput {
+public struct ExportAutoScalingGroupRecommendationsOutput: Swift.Sendable {
     /// The identification number of the export job. Use the [DescribeRecommendationExportJobs] action, and specify the job ID to view the status of an export job.
     public var jobId: Swift.String?
     /// An object that describes the destination Amazon S3 bucket of a recommendations export file.
@@ -2242,7 +2242,7 @@ public struct ExportAutoScalingGroupRecommendationsOutput {
 
 extension ComputeOptimizerClientTypes {
 
-    public enum ExportableVolumeField: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ExportableVolumeField: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case accountId
         case currentConfigurationRootVolume
         case currentConfigurationVolumeBaselineIops
@@ -2370,7 +2370,7 @@ extension ComputeOptimizerClientTypes {
 
 extension ComputeOptimizerClientTypes {
 
-    public enum EBSFilterName: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum EBSFilterName: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case finding
         case sdkUnknown(Swift.String)
 
@@ -2395,8 +2395,9 @@ extension ComputeOptimizerClientTypes {
 }
 
 extension ComputeOptimizerClientTypes {
+
     /// Describes a filter that returns a more specific list of Amazon Elastic Block Store (Amazon EBS) volume recommendations. Use this filter with the [GetEBSVolumeRecommendations] action. You can use LambdaFunctionRecommendationFilter with the [GetLambdaFunctionRecommendations] action, JobFilter with the [DescribeRecommendationExportJobs] action, and Filter with the [GetAutoScalingGroupRecommendations] and [GetEC2InstanceRecommendations] actions.
-    public struct EBSFilter {
+    public struct EBSFilter: Swift.Sendable {
         /// The name of the filter. Specify Finding to return recommendations with a specific finding classification (for example, NotOptimized). You can filter your Amazon EBS volume recommendations by tag:key and tag-key tags. A tag:key is a key and value combination of a tag assigned to your Amazon EBS volume recommendations. Use the tag key in the filter name and the tag value as the filter value. For example, to find all Amazon EBS volume recommendations that have a tag with the key of Owner and the value of TeamA, specify tag:Owner for the filter name and TeamA for the filter value. A tag-key is the key of a tag assigned to your Amazon EBS volume recommendations. Use this filter to find all of your Amazon EBS volume recommendations that have a tag with a specific key. This doesn’t consider the tag value. For example, you can find your Amazon EBS volume recommendations with a tag key value of Owner or without any tag keys assigned.
         public var name: ComputeOptimizerClientTypes.EBSFilterName?
         /// The value of the filter. The valid values are Optimized, or NotOptimized.
@@ -2411,10 +2412,9 @@ extension ComputeOptimizerClientTypes {
             self.values = values
         }
     }
-
 }
 
-public struct ExportEBSVolumeRecommendationsInput {
+public struct ExportEBSVolumeRecommendationsInput: Swift.Sendable {
     /// The IDs of the Amazon Web Services accounts for which to export Amazon EBS volume recommendations. If your account is the management account of an organization, use this parameter to specify the member account for which you want to export recommendations. This parameter cannot be specified together with the include member accounts parameter. The parameters are mutually exclusive. Recommendations for member accounts are not included in the export if this parameter, or the include member accounts parameter, is omitted. You can specify multiple account IDs per request.
     public var accountIds: [Swift.String]?
     /// The recommendations data to include in the export file. For more information about the fields that can be exported, see [Exported files](https://docs.aws.amazon.com/compute-optimizer/latest/ug/exporting-recommendations.html#exported-files) in the Compute Optimizer User Guide.
@@ -2447,7 +2447,7 @@ public struct ExportEBSVolumeRecommendationsInput {
     }
 }
 
-public struct ExportEBSVolumeRecommendationsOutput {
+public struct ExportEBSVolumeRecommendationsOutput: Swift.Sendable {
     /// The identification number of the export job. Use the [DescribeRecommendationExportJobs] action, and specify the job ID to view the status of an export job.
     public var jobId: Swift.String?
     /// Describes the destination Amazon Simple Storage Service (Amazon S3) bucket name and object keys of a recommendations export file, and its associated metadata file.
@@ -2465,7 +2465,7 @@ public struct ExportEBSVolumeRecommendationsOutput {
 
 extension ComputeOptimizerClientTypes {
 
-    public enum ExportableInstanceField: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ExportableInstanceField: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case accountId
         case currentInstanceGpuInfo
         case currentInstanceType
@@ -2699,7 +2699,7 @@ extension ComputeOptimizerClientTypes {
     }
 }
 
-public struct ExportEC2InstanceRecommendationsInput {
+public struct ExportEC2InstanceRecommendationsInput: Swift.Sendable {
     /// The IDs of the Amazon Web Services accounts for which to export instance recommendations. If your account is the management account of an organization, use this parameter to specify the member account for which you want to export recommendations. This parameter cannot be specified together with the include member accounts parameter. The parameters are mutually exclusive. Recommendations for member accounts are not included in the export if this parameter, or the include member accounts parameter, is omitted. You can specify multiple account IDs per request.
     public var accountIds: [Swift.String]?
     /// The recommendations data to include in the export file. For more information about the fields that can be exported, see [Exported files](https://docs.aws.amazon.com/compute-optimizer/latest/ug/exporting-recommendations.html#exported-files) in the Compute Optimizer User Guide.
@@ -2736,7 +2736,7 @@ public struct ExportEC2InstanceRecommendationsInput {
     }
 }
 
-public struct ExportEC2InstanceRecommendationsOutput {
+public struct ExportEC2InstanceRecommendationsOutput: Swift.Sendable {
     /// The identification number of the export job. Use the [DescribeRecommendationExportJobs] action, and specify the job ID to view the status of an export job.
     public var jobId: Swift.String?
     /// An object that describes the destination Amazon S3 bucket of a recommendations export file.
@@ -2754,7 +2754,7 @@ public struct ExportEC2InstanceRecommendationsOutput {
 
 extension ComputeOptimizerClientTypes {
 
-    public enum ExportableECSServiceField: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ExportableECSServiceField: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case accountId
         case currentPerformanceRisk
         case currentServiceConfigurationAutoScalingConfiguration
@@ -2861,7 +2861,7 @@ extension ComputeOptimizerClientTypes {
 
 extension ComputeOptimizerClientTypes {
 
-    public enum ECSServiceRecommendationFilterName: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ECSServiceRecommendationFilterName: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case finding
         case findingReasonCode
         case sdkUnknown(Swift.String)
@@ -2889,8 +2889,9 @@ extension ComputeOptimizerClientTypes {
 }
 
 extension ComputeOptimizerClientTypes {
+
     /// Describes a filter that returns a more specific list of Amazon ECS service recommendations. Use this filter with the [GetECSServiceRecommendations] action.
-    public struct ECSServiceRecommendationFilter {
+    public struct ECSServiceRecommendationFilter: Swift.Sendable {
         /// The name of the filter. Specify Finding to return recommendations with a specific finding classification. Specify FindingReasonCode to return recommendations with a specific finding reason code. You can filter your Amazon ECS service recommendations by tag:key and tag-key tags. A tag:key is a key and value combination of a tag assigned to your Amazon ECS service recommendations. Use the tag key in the filter name and the tag value as the filter value. For example, to find all Amazon ECS service recommendations that have a tag with the key of Owner and the value of TeamA, specify tag:Owner for the filter name and TeamA for the filter value. A tag-key is the key of a tag assigned to your Amazon ECS service recommendations. Use this filter to find all of your Amazon ECS service recommendations that have a tag with a specific key. This doesn’t consider the tag value. For example, you can find your Amazon ECS service recommendations with a tag key value of Owner or without any tag keys assigned.
         public var name: ComputeOptimizerClientTypes.ECSServiceRecommendationFilterName?
         /// The value of the filter. The valid values for this parameter are as follows:
@@ -2909,10 +2910,9 @@ extension ComputeOptimizerClientTypes {
             self.values = values
         }
     }
-
 }
 
-public struct ExportECSServiceRecommendationsInput {
+public struct ExportECSServiceRecommendationsInput: Swift.Sendable {
     /// The Amazon Web Services account IDs for the export Amazon ECS service recommendations. If your account is the management account or the delegated administrator of an organization, use this parameter to specify the member account you want to export recommendations to. This parameter can't be specified together with the include member accounts parameter. The parameters are mutually exclusive. If this parameter or the include member accounts parameter is omitted, the recommendations for member accounts aren't included in the export. You can specify multiple account IDs per request.
     public var accountIds: [Swift.String]?
     /// The recommendations data to include in the export file. For more information about the fields that can be exported, see [Exported files](https://docs.aws.amazon.com/compute-optimizer/latest/ug/exporting-recommendations.html#exported-files) in the Compute Optimizer User Guide.
@@ -2945,7 +2945,7 @@ public struct ExportECSServiceRecommendationsInput {
     }
 }
 
-public struct ExportECSServiceRecommendationsOutput {
+public struct ExportECSServiceRecommendationsOutput: Swift.Sendable {
     /// The identification number of the export job. To view the status of an export job, use the [DescribeRecommendationExportJobs] action and specify the job ID.
     public var jobId: Swift.String?
     /// Describes the destination Amazon Simple Storage Service (Amazon S3) bucket name and object keys of a recommendations export file, and its associated metadata file.
@@ -2963,7 +2963,7 @@ public struct ExportECSServiceRecommendationsOutput {
 
 extension ComputeOptimizerClientTypes {
 
-    public enum ExportableLambdaFunctionField: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ExportableLambdaFunctionField: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case accountId
         case currentConfigurationMemorySize
         case currentConfigurationTimeout
@@ -3079,7 +3079,7 @@ extension ComputeOptimizerClientTypes {
 
 extension ComputeOptimizerClientTypes {
 
-    public enum LambdaFunctionRecommendationFilterName: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum LambdaFunctionRecommendationFilterName: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case finding
         case findingReasonCode
         case sdkUnknown(Swift.String)
@@ -3107,8 +3107,9 @@ extension ComputeOptimizerClientTypes {
 }
 
 extension ComputeOptimizerClientTypes {
+
     /// Describes a filter that returns a more specific list of Lambda function recommendations. Use this filter with the [GetLambdaFunctionRecommendations] action. You can use EBSFilter with the [GetEBSVolumeRecommendations] action, JobFilter with the [DescribeRecommendationExportJobs] action, and Filter with the [GetAutoScalingGroupRecommendations] and [GetEC2InstanceRecommendations] actions.
-    public struct LambdaFunctionRecommendationFilter {
+    public struct LambdaFunctionRecommendationFilter: Swift.Sendable {
         /// The name of the filter. Specify Finding to return recommendations with a specific finding classification (for example, NotOptimized). Specify FindingReasonCode to return recommendations with a specific finding reason code (for example, MemoryUnderprovisioned). You can filter your Lambda function recommendations by tag:key and tag-key tags. A tag:key is a key and value combination of a tag assigned to your Lambda function recommendations. Use the tag key in the filter name and the tag value as the filter value. For example, to find all Lambda function recommendations that have a tag with the key of Owner and the value of TeamA, specify tag:Owner for the filter name and TeamA for the filter value. A tag-key is the key of a tag assigned to your Lambda function recommendations. Use this filter to find all of your Lambda function recommendations that have a tag with a specific key. This doesn’t consider the tag value. For example, you can find your Lambda function recommendations with a tag key value of Owner or without any tag keys assigned.
         public var name: ComputeOptimizerClientTypes.LambdaFunctionRecommendationFilterName?
         /// The value of the filter. The valid values for this parameter are as follows, depending on what you specify for the name parameter:
@@ -3127,10 +3128,9 @@ extension ComputeOptimizerClientTypes {
             self.values = values
         }
     }
-
 }
 
-public struct ExportLambdaFunctionRecommendationsInput {
+public struct ExportLambdaFunctionRecommendationsInput: Swift.Sendable {
     /// The IDs of the Amazon Web Services accounts for which to export Lambda function recommendations. If your account is the management account of an organization, use this parameter to specify the member account for which you want to export recommendations. This parameter cannot be specified together with the include member accounts parameter. The parameters are mutually exclusive. Recommendations for member accounts are not included in the export if this parameter, or the include member accounts parameter, is omitted. You can specify multiple account IDs per request.
     public var accountIds: [Swift.String]?
     /// The recommendations data to include in the export file. For more information about the fields that can be exported, see [Exported files](https://docs.aws.amazon.com/compute-optimizer/latest/ug/exporting-recommendations.html#exported-files) in the Compute Optimizer User Guide.
@@ -3163,7 +3163,7 @@ public struct ExportLambdaFunctionRecommendationsInput {
     }
 }
 
-public struct ExportLambdaFunctionRecommendationsOutput {
+public struct ExportLambdaFunctionRecommendationsOutput: Swift.Sendable {
     /// The identification number of the export job. Use the [DescribeRecommendationExportJobs] action, and specify the job ID to view the status of an export job.
     public var jobId: Swift.String?
     /// Describes the destination Amazon Simple Storage Service (Amazon S3) bucket name and object keys of a recommendations export file, and its associated metadata file.
@@ -3181,7 +3181,7 @@ public struct ExportLambdaFunctionRecommendationsOutput {
 
 extension ComputeOptimizerClientTypes {
 
-    public enum ExportableLicenseField: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ExportableLicenseField: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case accountId
         case currentLicenseConfigurationInstanceType
         case currentLicenseConfigurationLicenseEdition
@@ -3267,7 +3267,7 @@ extension ComputeOptimizerClientTypes {
 
 extension ComputeOptimizerClientTypes {
 
-    public enum LicenseRecommendationFilterName: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum LicenseRecommendationFilterName: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case licenseFinding
         case licenseFindingReasonCode
         case licenseName
@@ -3298,8 +3298,9 @@ extension ComputeOptimizerClientTypes {
 }
 
 extension ComputeOptimizerClientTypes {
+
     /// Describes a filter that returns a more specific list of license recommendations. Use this filter with the GetLicenseRecommendation action.
-    public struct LicenseRecommendationFilter {
+    public struct LicenseRecommendationFilter: Swift.Sendable {
         /// The name of the filter. Specify Finding to return recommendations with a specific finding classification. Specify FindingReasonCode to return recommendations with a specific finding reason code. You can filter your license recommendations by tag:key and tag-key tags. A tag:key is a key and value combination of a tag assigned to your license recommendations. Use the tag key in the filter name and the tag value as the filter value. For example, to find all license recommendations that have a tag with the key of Owner and the value of TeamA, specify tag:Owner for the filter name and TeamA for the filter value. A tag-key is the key of a tag assigned to your license recommendations. Use this filter to find all of your license recommendations that have a tag with a specific key. This doesn’t consider the tag value. For example, you can find your license recommendations with a tag key value of Owner or without any tag keys assigned.
         public var name: ComputeOptimizerClientTypes.LicenseRecommendationFilterName?
         /// The value of the filter. The valid values for this parameter are as follows, depending on what you specify for the name parameter:
@@ -3318,10 +3319,9 @@ extension ComputeOptimizerClientTypes {
             self.values = values
         }
     }
-
 }
 
-public struct ExportLicenseRecommendationsInput {
+public struct ExportLicenseRecommendationsInput: Swift.Sendable {
     /// The IDs of the Amazon Web Services accounts for which to export license recommendations. If your account is the management account of an organization, use this parameter to specify the member account for which you want to export recommendations. This parameter can't be specified together with the include member accounts parameter. The parameters are mutually exclusive. If this parameter is omitted, recommendations for member accounts aren't included in the export. You can specify multiple account IDs per request.
     public var accountIds: [Swift.String]?
     /// The recommendations data to include in the export file. For more information about the fields that can be exported, see [Exported files](https://docs.aws.amazon.com/compute-optimizer/latest/ug/exporting-recommendations.html#exported-files) in the Compute Optimizer User Guide.
@@ -3354,7 +3354,7 @@ public struct ExportLicenseRecommendationsInput {
     }
 }
 
-public struct ExportLicenseRecommendationsOutput {
+public struct ExportLicenseRecommendationsOutput: Swift.Sendable {
     /// The identification number of the export job. To view the status of an export job, use the [DescribeRecommendationExportJobs] action and specify the job ID.
     public var jobId: Swift.String?
     /// Describes the destination Amazon Simple Storage Service (Amazon S3) bucket name and object keys of a recommendations export file, and its associated metadata file.
@@ -3372,7 +3372,7 @@ public struct ExportLicenseRecommendationsOutput {
 
 extension ComputeOptimizerClientTypes {
 
-    public enum ExportableRDSDBField: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ExportableRDSDBField: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case accountId
         case currentDbInstanceClass
         case currentInstanceOnDemandHourlyPrice
@@ -3572,7 +3572,7 @@ extension ComputeOptimizerClientTypes {
 
 extension ComputeOptimizerClientTypes {
 
-    public enum RDSDBRecommendationFilterName: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum RDSDBRecommendationFilterName: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case idle
         case instanceFinding
         case instanceFindingReasonCode
@@ -3609,8 +3609,9 @@ extension ComputeOptimizerClientTypes {
 }
 
 extension ComputeOptimizerClientTypes {
+
     /// Describes a filter that returns a more specific list of Amazon RDS recommendations. Use this filter with the [GetECSServiceRecommendations] action.
-    public struct RDSDBRecommendationFilter {
+    public struct RDSDBRecommendationFilter: Swift.Sendable {
         /// The name of the filter. Specify Finding to return recommendations with a specific finding classification. You can filter your Amazon RDS recommendations by tag:key and tag-key tags. A tag:key is a key and value combination of a tag assigned to your Amazon RDS recommendations. Use the tag key in the filter name and the tag value as the filter value. For example, to find all Amazon RDS service recommendations that have a tag with the key of Owner and the value of TeamA, specify tag:Owner for the filter name and TeamA for the filter value. A tag-key is the key of a tag assigned to your Amazon RDS recommendations. Use this filter to find all of your Amazon RDS recommendations that have a tag with a specific key. This doesn’t consider the tag value. For example, you can find your Amazon RDS service recommendations with a tag key value of Owner or without any tag keys assigned.
         public var name: ComputeOptimizerClientTypes.RDSDBRecommendationFilterName?
         /// The value of the filter.
@@ -3625,10 +3626,9 @@ extension ComputeOptimizerClientTypes {
             self.values = values
         }
     }
-
 }
 
-public struct ExportRDSDatabaseRecommendationsInput {
+public struct ExportRDSDatabaseRecommendationsInput: Swift.Sendable {
     /// The Amazon Web Services account IDs for the export Amazon RDS recommendations. If your account is the management account or the delegated administrator of an organization, use this parameter to specify the member account you want to export recommendations to. This parameter can't be specified together with the include member accounts parameter. The parameters are mutually exclusive. If this parameter or the include member accounts parameter is omitted, the recommendations for member accounts aren't included in the export. You can specify multiple account IDs per request.
     public var accountIds: [Swift.String]?
     /// The recommendations data to include in the export file. For more information about the fields that can be exported, see [Exported files](https://docs.aws.amazon.com/compute-optimizer/latest/ug/exporting-recommendations.html#exported-files) in the Compute Optimizer User Guide.
@@ -3665,7 +3665,7 @@ public struct ExportRDSDatabaseRecommendationsInput {
     }
 }
 
-public struct ExportRDSDatabaseRecommendationsOutput {
+public struct ExportRDSDatabaseRecommendationsOutput: Swift.Sendable {
     /// The identification number of the export job. To view the status of an export job, use the [DescribeRecommendationExportJobs] action and specify the job ID.
     public var jobId: Swift.String?
     /// Describes the destination Amazon Simple Storage Service (Amazon S3) bucket name and object keys of a recommendations export file, and its associated metadata file.
@@ -3681,7 +3681,7 @@ public struct ExportRDSDatabaseRecommendationsOutput {
     }
 }
 
-public struct GetAutoScalingGroupRecommendationsInput {
+public struct GetAutoScalingGroupRecommendationsInput: Swift.Sendable {
     /// The ID of the Amazon Web Services account for which to return Auto Scaling group recommendations. If your account is the management account of an organization, use this parameter to specify the member account for which you want to return Auto Scaling group recommendations. Only one account ID can be specified per request.
     public var accountIds: [Swift.String]?
     /// The Amazon Resource Name (ARN) of the Auto Scaling groups for which to return recommendations.
@@ -3714,8 +3714,9 @@ public struct GetAutoScalingGroupRecommendationsInput {
 }
 
 extension ComputeOptimizerClientTypes {
+
     /// Describes an error experienced when getting recommendations. For example, an error is returned if you request recommendations for an unsupported Auto Scaling group, or if you request recommendations for an instance of an unsupported instance family.
-    public struct GetRecommendationError {
+    public struct GetRecommendationError: Swift.Sendable {
         /// The error code.
         public var code: Swift.String?
         /// The ID of the error.
@@ -3734,10 +3735,9 @@ extension ComputeOptimizerClientTypes {
             self.message = message
         }
     }
-
 }
 
-public struct GetAutoScalingGroupRecommendationsOutput {
+public struct GetAutoScalingGroupRecommendationsOutput: Swift.Sendable {
     /// An array of objects that describe Auto Scaling group recommendations.
     public var autoScalingGroupRecommendations: [ComputeOptimizerClientTypes.AutoScalingGroupRecommendation]?
     /// An array of objects that describe errors of the request. For example, an error is returned if you request recommendations for an unsupported Auto Scaling group.
@@ -3757,7 +3757,7 @@ public struct GetAutoScalingGroupRecommendationsOutput {
     }
 }
 
-public struct GetEBSVolumeRecommendationsInput {
+public struct GetEBSVolumeRecommendationsInput: Swift.Sendable {
     /// The ID of the Amazon Web Services account for which to return volume recommendations. If your account is the management account of an organization, use this parameter to specify the member account for which you want to return volume recommendations. Only one account ID can be specified per request.
     public var accountIds: [Swift.String]?
     /// An array of objects to specify a filter that returns a more specific list of volume recommendations.
@@ -3786,8 +3786,9 @@ public struct GetEBSVolumeRecommendationsInput {
 }
 
 extension ComputeOptimizerClientTypes {
+
     /// Describes the configuration of an Amazon Elastic Block Store (Amazon EBS) volume.
-    public struct VolumeConfiguration {
+    public struct VolumeConfiguration: Swift.Sendable {
         /// Contains the image used to boot the instance during launch.
         public var rootVolume: Swift.Bool?
         /// The baseline IOPS of the volume.
@@ -3822,12 +3823,11 @@ extension ComputeOptimizerClientTypes {
             self.volumeType = volumeType
         }
     }
-
 }
 
 extension ComputeOptimizerClientTypes {
 
-    public enum EBSSavingsEstimationModeSource: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum EBSSavingsEstimationModeSource: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case costExplorerRightsizing
         case costOptimizationHub
         case publicPricing
@@ -3858,8 +3858,9 @@ extension ComputeOptimizerClientTypes {
 }
 
 extension ComputeOptimizerClientTypes {
+
     /// Describes the savings estimation mode used for calculating savings opportunity for Amazon EBS volumes.
-    public struct EBSSavingsEstimationMode {
+    public struct EBSSavingsEstimationMode: Swift.Sendable {
         /// Describes the source for calculating the savings opportunity for Amazon EBS volumes.
         public var source: ComputeOptimizerClientTypes.EBSSavingsEstimationModeSource?
 
@@ -3870,12 +3871,12 @@ extension ComputeOptimizerClientTypes {
             self.source = source
         }
     }
-
 }
 
 extension ComputeOptimizerClientTypes {
+
     /// Describes the effective recommendation preferences for Amazon EBS volumes.
-    public struct EBSEffectiveRecommendationPreferences {
+    public struct EBSEffectiveRecommendationPreferences: Swift.Sendable {
         /// Describes the savings estimation mode preference applied for calculating savings opportunity for Amazon EBS volumes.
         public var savingsEstimationMode: ComputeOptimizerClientTypes.EBSSavingsEstimationMode?
 
@@ -3886,12 +3887,11 @@ extension ComputeOptimizerClientTypes {
             self.savingsEstimationMode = savingsEstimationMode
         }
     }
-
 }
 
 extension ComputeOptimizerClientTypes {
 
-    public enum EBSFinding: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum EBSFinding: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case notOptimized
         case optimized
         case sdkUnknown(Swift.String)
@@ -3919,8 +3919,9 @@ extension ComputeOptimizerClientTypes {
 }
 
 extension ComputeOptimizerClientTypes {
+
     /// A list of tag key and value pairs that you define.
-    public struct Tag {
+    public struct Tag: Swift.Sendable {
         /// One part of a key-value pair that makes up a tag. A key is a general label that acts like a category for more specific tag values.
         public var key: Swift.String?
         /// One part of a key-value pair that make up a tag. A value acts as a descriptor within a tag category (key). The value can be empty or null.
@@ -3935,12 +3936,11 @@ extension ComputeOptimizerClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension ComputeOptimizerClientTypes {
 
-    public enum EBSMetricName: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum EBSMetricName: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case volumeReadBytesPerSecond
         case volumeReadOpsPerSecond
         case volumeWriteBytesPerSecond
@@ -3974,8 +3974,9 @@ extension ComputeOptimizerClientTypes {
 }
 
 extension ComputeOptimizerClientTypes {
+
     /// Describes a utilization metric of an Amazon Elastic Block Store (Amazon EBS) volume. Compare the utilization metric data of your resource against its projected utilization metric data to determine the performance difference between your current resource and the recommended option.
-    public struct EBSUtilizationMetric {
+    public struct EBSUtilizationMetric: Swift.Sendable {
         /// The name of the utilization metric. The following utilization metrics are available:
         ///
         /// * VolumeReadOpsPerSecond - The completed read operations per second from the volume in a specified period of time. Unit: Count
@@ -4002,12 +4003,12 @@ extension ComputeOptimizerClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension ComputeOptimizerClientTypes {
+
     /// An object that describes the estimated monthly savings possible by adopting Compute Optimizer’s Amazon EBS volume recommendations. This includes any applicable discounts.
-    public struct EBSEstimatedMonthlySavings {
+    public struct EBSEstimatedMonthlySavings: Swift.Sendable {
         /// The currency of the estimated monthly savings.
         public var currency: ComputeOptimizerClientTypes.Currency?
         /// The value of the estimated monthly savings.
@@ -4022,12 +4023,12 @@ extension ComputeOptimizerClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension ComputeOptimizerClientTypes {
+
     /// Describes the savings opportunity for Amazon EBS volume recommendations after applying specific discounts.
-    public struct EBSSavingsOpportunityAfterDiscounts {
+    public struct EBSSavingsOpportunityAfterDiscounts: Swift.Sendable {
         /// The estimated monthly savings possible as a percentage of monthly cost by adopting Compute Optimizer’s Amazon EBS volume recommendations. This saving includes any applicable discounts.
         public var estimatedMonthlySavings: ComputeOptimizerClientTypes.EBSEstimatedMonthlySavings?
         /// The estimated monthly savings possible as a percentage of monthly cost after applying the specific discounts. This saving can be achieved by adopting Compute Optimizer’s Amazon EBS volume recommendations.
@@ -4042,12 +4043,12 @@ extension ComputeOptimizerClientTypes {
             self.savingsOpportunityPercentage = savingsOpportunityPercentage
         }
     }
-
 }
 
 extension ComputeOptimizerClientTypes {
+
     /// Describes a recommendation option for an Amazon Elastic Block Store (Amazon EBS) instance.
-    public struct VolumeRecommendationOption {
+    public struct VolumeRecommendationOption: Swift.Sendable {
         /// An array of objects that describe a volume configuration.
         public var configuration: ComputeOptimizerClientTypes.VolumeConfiguration?
         /// The performance risk of the volume recommendation option. Performance risk is the likelihood of the recommended volume type meeting the performance requirement of your workload. The value ranges from 0 - 4, with 0 meaning that the recommended resource is predicted to always provide enough hardware capability. The higher the performance risk is, the more likely you should validate whether the recommendation will meet the performance requirements of your workload before migrating your resource.
@@ -4074,12 +4075,12 @@ extension ComputeOptimizerClientTypes {
             self.savingsOpportunityAfterDiscounts = savingsOpportunityAfterDiscounts
         }
     }
-
 }
 
 extension ComputeOptimizerClientTypes {
+
     /// Describes an Amazon Elastic Block Store (Amazon EBS) volume recommendation.
-    public struct VolumeRecommendation {
+    public struct VolumeRecommendation: Swift.Sendable {
         /// The Amazon Web Services account ID of the volume.
         public var accountId: Swift.String?
         /// An array of objects that describe the current configuration of the volume.
@@ -4134,10 +4135,9 @@ extension ComputeOptimizerClientTypes {
             self.volumeRecommendationOptions = volumeRecommendationOptions
         }
     }
-
 }
 
-public struct GetEBSVolumeRecommendationsOutput {
+public struct GetEBSVolumeRecommendationsOutput: Swift.Sendable {
     /// An array of objects that describe errors of the request. For example, an error is returned if you request recommendations for an unsupported volume.
     public var errors: [ComputeOptimizerClientTypes.GetRecommendationError]?
     /// The token to use to advance to the next page of volume recommendations. This value is null when there are no more pages of volume recommendations to return.
@@ -4157,7 +4157,7 @@ public struct GetEBSVolumeRecommendationsOutput {
     }
 }
 
-public struct GetEC2InstanceRecommendationsInput {
+public struct GetEC2InstanceRecommendationsInput: Swift.Sendable {
     /// The ID of the Amazon Web Services account for which to return instance recommendations. If your account is the management account of an organization, use this parameter to specify the member account for which you want to return instance recommendations. Only one account ID can be specified per request.
     public var accountIds: [Swift.String]?
     /// An array of objects to specify a filter that returns a more specific list of instance recommendations.
@@ -4191,7 +4191,7 @@ public struct GetEC2InstanceRecommendationsInput {
 
 extension ComputeOptimizerClientTypes {
 
-    public enum ExternalMetricStatusCode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ExternalMetricStatusCode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case datadogIntegrationError
         case dynatraceIntegrationError
         case instanaIntegrationError
@@ -4243,8 +4243,9 @@ extension ComputeOptimizerClientTypes {
 }
 
 extension ComputeOptimizerClientTypes {
+
     /// Describes Compute Optimizer's integration status with your chosen external metric provider. For example, Datadog.
-    public struct ExternalMetricStatus {
+    public struct ExternalMetricStatus: Swift.Sendable {
         /// The status code for Compute Optimizer's integration with an external metrics provider.
         public var statusCode: ComputeOptimizerClientTypes.ExternalMetricStatusCode?
         /// The reason for Compute Optimizer's integration status with your external metric provider.
@@ -4259,12 +4260,11 @@ extension ComputeOptimizerClientTypes {
             self.statusReason = statusReason
         }
     }
-
 }
 
 extension ComputeOptimizerClientTypes {
 
-    public enum InstanceRecommendationFindingReasonCode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum InstanceRecommendationFindingReasonCode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case cpuOverProvisioned
         case cpuUnderProvisioned
         case diskIopsOverProvisioned
@@ -4347,7 +4347,7 @@ extension ComputeOptimizerClientTypes {
 
 extension ComputeOptimizerClientTypes {
 
-    public enum InstanceIdle: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum InstanceIdle: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case `false`
         case `true`
         case sdkUnknown(Swift.String)
@@ -4376,7 +4376,7 @@ extension ComputeOptimizerClientTypes {
 
 extension ComputeOptimizerClientTypes {
 
-    public enum InstanceState: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum InstanceState: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case pending
         case running
         case shuttingDown
@@ -4417,7 +4417,7 @@ extension ComputeOptimizerClientTypes {
 
 extension ComputeOptimizerClientTypes {
 
-    public enum PlatformDifference: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum PlatformDifference: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case architecture
         case hypervisor
         case instanceStoreAvailability
@@ -4457,8 +4457,9 @@ extension ComputeOptimizerClientTypes {
 }
 
 extension ComputeOptimizerClientTypes {
+
     /// An object that describes the estimated monthly savings possible by adopting Compute Optimizer’s Amazon EC2 instance recommendations. This is based on the Savings Plans and Reserved Instances pricing discounts.
-    public struct InstanceEstimatedMonthlySavings {
+    public struct InstanceEstimatedMonthlySavings: Swift.Sendable {
         /// The currency of the estimated monthly savings.
         public var currency: ComputeOptimizerClientTypes.Currency?
         /// The value of the estimated monthly savings.
@@ -4473,12 +4474,12 @@ extension ComputeOptimizerClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension ComputeOptimizerClientTypes {
+
     /// Describes the savings opportunity for instance recommendations after applying the Savings Plans and Reserved Instances discounts. Savings opportunity after discounts represents the estimated monthly savings you can achieve by implementing Compute Optimizer recommendations.
-    public struct InstanceSavingsOpportunityAfterDiscounts {
+    public struct InstanceSavingsOpportunityAfterDiscounts: Swift.Sendable {
         /// An object that describes the estimated monthly savings possible by adopting Compute Optimizer’s Amazon EC2 instance recommendations. This is based on pricing after applying the Savings Plans and Reserved Instances discounts.
         public var estimatedMonthlySavings: ComputeOptimizerClientTypes.InstanceEstimatedMonthlySavings?
         /// The estimated monthly savings possible as a percentage of monthly cost after applying the Savings Plans and Reserved Instances discounts. This saving can be achieved by adopting Compute Optimizer’s EC2 instance recommendations.
@@ -4493,12 +4494,12 @@ extension ComputeOptimizerClientTypes {
             self.savingsOpportunityPercentage = savingsOpportunityPercentage
         }
     }
-
 }
 
 extension ComputeOptimizerClientTypes {
+
     /// Describes a recommendation option for an Amazon EC2 instance.
-    public struct InstanceRecommendationOption {
+    public struct InstanceRecommendationOption: Swift.Sendable {
         /// Describes the GPU accelerator settings for the recommended instance type.
         public var instanceGpuInfo: ComputeOptimizerClientTypes.GpuInfo?
         /// The instance type of the instance recommendation.
@@ -4553,12 +4554,11 @@ extension ComputeOptimizerClientTypes {
             self.savingsOpportunityAfterDiscounts = savingsOpportunityAfterDiscounts
         }
     }
-
 }
 
 extension ComputeOptimizerClientTypes {
 
-    public enum RecommendationSourceType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum RecommendationSourceType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case autoScalingGroup
         case ebsVolume
         case ec2Instance
@@ -4604,8 +4604,9 @@ extension ComputeOptimizerClientTypes {
 }
 
 extension ComputeOptimizerClientTypes {
+
     /// Describes the source of a recommendation, such as an Amazon EC2 instance or Auto Scaling group.
-    public struct RecommendationSource {
+    public struct RecommendationSource: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the recommendation source.
         public var recommendationSourceArn: Swift.String?
         /// The resource type of the recommendation source.
@@ -4620,12 +4621,12 @@ extension ComputeOptimizerClientTypes {
             self.recommendationSourceType = recommendationSourceType
         }
     }
-
 }
 
 extension ComputeOptimizerClientTypes {
+
     /// Describes an Amazon EC2 instance recommendation.
-    public struct InstanceRecommendation {
+    public struct InstanceRecommendation: Swift.Sendable {
         /// The Amazon Web Services account ID of the instance.
         public var accountId: Swift.String?
         /// Describes the GPU accelerator settings for the current instance type.
@@ -4770,10 +4771,9 @@ extension ComputeOptimizerClientTypes {
             self.utilizationMetrics = utilizationMetrics
         }
     }
-
 }
 
-public struct GetEC2InstanceRecommendationsOutput {
+public struct GetEC2InstanceRecommendationsOutput: Swift.Sendable {
     /// An array of objects that describe errors of the request. For example, an error is returned if you request recommendations for an instance of an unsupported instance family.
     public var errors: [ComputeOptimizerClientTypes.GetRecommendationError]?
     /// An array of objects that describe instance recommendations.
@@ -4793,7 +4793,7 @@ public struct GetEC2InstanceRecommendationsOutput {
     }
 }
 
-public struct GetEC2RecommendationProjectedMetricsInput {
+public struct GetEC2RecommendationProjectedMetricsInput: Swift.Sendable {
     /// The timestamp of the last projected metrics data point to return.
     /// This member is required.
     public var endTime: Foundation.Date?
@@ -4831,8 +4831,9 @@ public struct GetEC2RecommendationProjectedMetricsInput {
 }
 
 extension ComputeOptimizerClientTypes {
+
     /// Describes a projected utilization metric of a recommendation option, such as an Amazon EC2 instance. This represents the projected utilization of a recommendation option had you used that resource during the analyzed period. Compare the utilization metric data of your resource against its projected utilization metric data to determine the performance difference between your current resource and the recommended option. The Cpu, Memory, GPU, and GPU_MEMORY metrics are the only projected utilization metrics returned when you run the [GetEC2RecommendationProjectedMetrics] action. Additionally, these metrics are only returned for resources with the unified CloudWatch agent installed on them. For more information, see [Enabling Memory Utilization with the CloudWatch Agent](https://docs.aws.amazon.com/compute-optimizer/latest/ug/metrics.html#cw-agent) and [Enabling NVIDIA GPU utilization with the CloudWatch Agent](https://docs.aws.amazon.com/compute-optimizer/latest/ug/metrics.html#nvidia-cw-agent).
-    public struct ProjectedMetric {
+    public struct ProjectedMetric: Swift.Sendable {
         /// The name of the projected utilization metric. The following projected utilization metrics are returned:
         ///
         /// * Cpu - The projected percentage of allocated EC2 compute units that would be in use on the recommendation option had you used that resource during the analyzed period. This metric identifies the processing power required to run an application on the recommendation option. Depending on the instance type, tools in your operating system can show a lower percentage than CloudWatch when the instance is not allocated a full processor core.
@@ -4859,12 +4860,12 @@ extension ComputeOptimizerClientTypes {
             self.values = values
         }
     }
-
 }
 
 extension ComputeOptimizerClientTypes {
+
     /// Describes a projected utilization metric of a recommendation option. The Cpu and Memory metrics are the only projected utilization metrics returned when you run the [GetEC2RecommendationProjectedMetrics] action. Additionally, the Memory metric is returned only for resources that have the unified CloudWatch agent installed on them. For more information, see [Enabling Memory Utilization with the CloudWatch Agent](https://docs.aws.amazon.com/compute-optimizer/latest/ug/metrics.html#cw-agent).
-    public struct RecommendedOptionProjectedMetric {
+    public struct RecommendedOptionProjectedMetric: Swift.Sendable {
         /// An array of objects that describe a projected utilization metric.
         public var projectedMetrics: [ComputeOptimizerClientTypes.ProjectedMetric]?
         /// The rank of the recommendation option projected metric. The top recommendation option is ranked as 1. The projected metric rank correlates to the recommendation option rank. For example, the projected metric ranked as 1 is related to the recommendation option that is also ranked as 1 in the same response.
@@ -4883,10 +4884,9 @@ extension ComputeOptimizerClientTypes {
             self.recommendedInstanceType = recommendedInstanceType
         }
     }
-
 }
 
-public struct GetEC2RecommendationProjectedMetricsOutput {
+public struct GetEC2RecommendationProjectedMetricsOutput: Swift.Sendable {
     /// An array of objects that describes projected metrics.
     public var recommendedOptionProjectedMetrics: [ComputeOptimizerClientTypes.RecommendedOptionProjectedMetric]?
 
@@ -4898,7 +4898,7 @@ public struct GetEC2RecommendationProjectedMetricsOutput {
     }
 }
 
-public struct GetECSServiceRecommendationProjectedMetricsInput {
+public struct GetECSServiceRecommendationProjectedMetricsInput: Swift.Sendable {
     /// The timestamp of the last projected metrics data point to return.
     /// This member is required.
     public var endTime: Foundation.Date?
@@ -4933,7 +4933,7 @@ public struct GetECSServiceRecommendationProjectedMetricsInput {
 
 extension ComputeOptimizerClientTypes {
 
-    public enum ECSServiceMetricName: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ECSServiceMetricName: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case cpu
         case memory
         case sdkUnknown(Swift.String)
@@ -4961,8 +4961,9 @@ extension ComputeOptimizerClientTypes {
 }
 
 extension ComputeOptimizerClientTypes {
+
     /// Describes the projected metrics of an Amazon ECS service recommendation option. To determine the performance difference between your current Amazon ECS service and the recommended option, compare the metric data of your service against its projected metric data.
-    public struct ECSServiceProjectedMetric {
+    public struct ECSServiceProjectedMetric: Swift.Sendable {
         /// The lower bound values for the projected metric.
         public var lowerBoundValues: [Swift.Double]?
         /// The name of the projected metric. The following metrics are available:
@@ -4989,12 +4990,12 @@ extension ComputeOptimizerClientTypes {
             self.upperBoundValues = upperBoundValues
         }
     }
-
 }
 
 extension ComputeOptimizerClientTypes {
+
     /// Describes the projected metrics of an Amazon ECS service recommendation option. To determine the performance difference between your current Amazon ECS service and the recommended option, compare the metric data of your service against its projected metric data.
-    public struct ECSServiceRecommendedOptionProjectedMetric {
+    public struct ECSServiceRecommendedOptionProjectedMetric: Swift.Sendable {
         /// An array of objects that describe the projected metric.
         public var projectedMetrics: [ComputeOptimizerClientTypes.ECSServiceProjectedMetric]?
         /// The recommended CPU size for the Amazon ECS service.
@@ -5013,10 +5014,9 @@ extension ComputeOptimizerClientTypes {
             self.recommendedMemorySize = recommendedMemorySize
         }
     }
-
 }
 
-public struct GetECSServiceRecommendationProjectedMetricsOutput {
+public struct GetECSServiceRecommendationProjectedMetricsOutput: Swift.Sendable {
     /// An array of objects that describes the projected metrics.
     public var recommendedOptionProjectedMetrics: [ComputeOptimizerClientTypes.ECSServiceRecommendedOptionProjectedMetric]?
 
@@ -5028,7 +5028,7 @@ public struct GetECSServiceRecommendationProjectedMetricsOutput {
     }
 }
 
-public struct GetECSServiceRecommendationsInput {
+public struct GetECSServiceRecommendationsInput: Swift.Sendable {
     /// Return the Amazon ECS service recommendations to the specified Amazon Web Services account IDs. If your account is the management account or the delegated administrator of an organization, use this parameter to return the Amazon ECS service recommendations to specific member accounts. You can only specify one account ID per request.
     public var accountIds: [Swift.String]?
     /// An array of objects to specify a filter that returns a more specific list of Amazon ECS service recommendations.
@@ -5057,8 +5057,9 @@ public struct GetECSServiceRecommendationsInput {
 }
 
 extension ComputeOptimizerClientTypes {
+
     /// The memory size configurations of a container.
-    public struct MemorySizeConfiguration {
+    public struct MemorySizeConfiguration: Swift.Sendable {
         /// The amount of memory in the container.
         public var memory: Swift.Int?
         /// The limit of memory reserve for the container.
@@ -5073,12 +5074,12 @@ extension ComputeOptimizerClientTypes {
             self.memoryReservation = memoryReservation
         }
     }
-
 }
 
 extension ComputeOptimizerClientTypes {
+
     /// Describes the container configurations within the tasks of your Amazon ECS service.
-    public struct ContainerConfiguration {
+    public struct ContainerConfiguration: Swift.Sendable {
         /// The name of the container.
         public var containerName: Swift.String?
         /// The number of CPU units reserved for the container.
@@ -5097,12 +5098,12 @@ extension ComputeOptimizerClientTypes {
             self.memorySizeConfiguration = memorySizeConfiguration
         }
     }
-
 }
 
 extension ComputeOptimizerClientTypes {
+
     /// The Amazon ECS service configurations used for recommendations.
-    public struct ServiceConfiguration {
+    public struct ServiceConfiguration: Swift.Sendable {
         /// Describes the Auto Scaling configuration methods for an Amazon ECS service. This affects the generated recommendations. For example, if Auto Scaling is configured on a service’s CPU, then Compute Optimizer doesn’t generate CPU size recommendations. The Auto Scaling configuration methods include:
         ///
         /// * TARGET_TRACKING_SCALING_CPU — If the Amazon ECS service is configured to use target scaling on CPU, Compute Optimizer doesn't generate CPU recommendations.
@@ -5136,12 +5137,11 @@ extension ComputeOptimizerClientTypes {
             self.taskDefinitionArn = taskDefinitionArn
         }
     }
-
 }
 
 extension ComputeOptimizerClientTypes {
 
-    public enum ECSSavingsEstimationModeSource: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ECSSavingsEstimationModeSource: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case costExplorerRightsizing
         case costOptimizationHub
         case publicPricing
@@ -5172,8 +5172,9 @@ extension ComputeOptimizerClientTypes {
 }
 
 extension ComputeOptimizerClientTypes {
+
     /// Describes the savings estimation mode used for calculating savings opportunity for Amazon ECS services.
-    public struct ECSSavingsEstimationMode {
+    public struct ECSSavingsEstimationMode: Swift.Sendable {
         /// Describes the source for calculating the savings opportunity for Amazon ECS services.
         public var source: ComputeOptimizerClientTypes.ECSSavingsEstimationModeSource?
 
@@ -5184,12 +5185,12 @@ extension ComputeOptimizerClientTypes {
             self.source = source
         }
     }
-
 }
 
 extension ComputeOptimizerClientTypes {
+
     /// Describes the effective recommendation preferences for Amazon ECS services.
-    public struct ECSEffectiveRecommendationPreferences {
+    public struct ECSEffectiveRecommendationPreferences: Swift.Sendable {
         /// Describes the savings estimation mode preference applied for calculating savings opportunity for Amazon ECS services.
         public var savingsEstimationMode: ComputeOptimizerClientTypes.ECSSavingsEstimationMode?
 
@@ -5200,12 +5201,11 @@ extension ComputeOptimizerClientTypes {
             self.savingsEstimationMode = savingsEstimationMode
         }
     }
-
 }
 
 extension ComputeOptimizerClientTypes {
 
-    public enum ECSServiceRecommendationFinding: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ECSServiceRecommendationFinding: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case optimized
         case overProvisioned
         case underProvisioned
@@ -5237,7 +5237,7 @@ extension ComputeOptimizerClientTypes {
 
 extension ComputeOptimizerClientTypes {
 
-    public enum ECSServiceRecommendationFindingReasonCode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ECSServiceRecommendationFindingReasonCode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case cpuOverProvisioned
         case cpuUnderProvisioned
         case memoryOverProvisioned
@@ -5272,7 +5272,7 @@ extension ComputeOptimizerClientTypes {
 
 extension ComputeOptimizerClientTypes {
 
-    public enum ECSServiceLaunchType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ECSServiceLaunchType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case ec2
         case fargate
         case sdkUnknown(Swift.String)
@@ -5300,8 +5300,9 @@ extension ComputeOptimizerClientTypes {
 }
 
 extension ComputeOptimizerClientTypes {
+
     /// The CPU and memory recommendations for a container within the tasks of your Amazon ECS service.
-    public struct ContainerRecommendation {
+    public struct ContainerRecommendation: Swift.Sendable {
         /// The name of the container.
         public var containerName: Swift.String?
         /// The recommended number of CPU units reserved for the container.
@@ -5320,12 +5321,11 @@ extension ComputeOptimizerClientTypes {
             self.memorySizeConfiguration = memorySizeConfiguration
         }
     }
-
 }
 
 extension ComputeOptimizerClientTypes {
 
-    public enum ECSServiceMetricStatistic: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ECSServiceMetricStatistic: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case average
         case maximum
         case sdkUnknown(Swift.String)
@@ -5353,8 +5353,9 @@ extension ComputeOptimizerClientTypes {
 }
 
 extension ComputeOptimizerClientTypes {
+
     /// Describes the projected utilization metrics of an Amazon ECS service recommendation option. To determine the performance difference between your current Amazon ECS service and the recommended option, compare the utilization metric data of your service against its projected utilization metric data.
-    public struct ECSServiceProjectedUtilizationMetric {
+    public struct ECSServiceProjectedUtilizationMetric: Swift.Sendable {
         /// The lower bound values for the projected utilization metrics.
         public var lowerBoundValue: Swift.Double
         /// The name of the projected utilization metric. The following utilization metrics are available:
@@ -5381,12 +5382,12 @@ extension ComputeOptimizerClientTypes {
             self.upperBoundValue = upperBoundValue
         }
     }
-
 }
 
 extension ComputeOptimizerClientTypes {
+
     /// Describes the estimated monthly savings possible for Amazon ECS services by adopting Compute Optimizer recommendations. This is based on Amazon ECS service pricing after applying Savings Plans discounts.
-    public struct ECSEstimatedMonthlySavings {
+    public struct ECSEstimatedMonthlySavings: Swift.Sendable {
         /// The currency of the estimated monthly savings.
         public var currency: ComputeOptimizerClientTypes.Currency?
         /// The value of the estimated monthly savings for Amazon ECS services.
@@ -5401,12 +5402,12 @@ extension ComputeOptimizerClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension ComputeOptimizerClientTypes {
+
     /// Describes the savings opportunity for Amazon ECS service recommendations after applying Savings Plans discounts. Savings opportunity represents the estimated monthly savings after applying Savings Plans discounts. You can achieve this by implementing a given Compute Optimizer recommendation.
-    public struct ECSSavingsOpportunityAfterDiscounts {
+    public struct ECSSavingsOpportunityAfterDiscounts: Swift.Sendable {
         /// The estimated monthly savings possible by adopting Compute Optimizer’s Amazon ECS service recommendations. This includes any applicable Savings Plans discounts.
         public var estimatedMonthlySavings: ComputeOptimizerClientTypes.ECSEstimatedMonthlySavings?
         /// The estimated monthly savings possible as a percentage of monthly cost by adopting Compute Optimizer’s Amazon ECS service recommendations. This includes any applicable Savings Plans discounts.
@@ -5421,12 +5422,12 @@ extension ComputeOptimizerClientTypes {
             self.savingsOpportunityPercentage = savingsOpportunityPercentage
         }
     }
-
 }
 
 extension ComputeOptimizerClientTypes {
+
     /// Describes the recommendation options for an Amazon ECS service.
-    public struct ECSServiceRecommendationOption {
+    public struct ECSServiceRecommendationOption: Swift.Sendable {
         /// The CPU and memory size recommendations for the containers within the task of your Amazon ECS service.
         public var containerRecommendations: [ComputeOptimizerClientTypes.ContainerRecommendation]?
         /// The CPU size of the Amazon ECS service recommendation option.
@@ -5457,12 +5458,12 @@ extension ComputeOptimizerClientTypes {
             self.savingsOpportunityAfterDiscounts = savingsOpportunityAfterDiscounts
         }
     }
-
 }
 
 extension ComputeOptimizerClientTypes {
+
     /// Describes the utilization metric of an Amazon ECS service. To determine the performance difference between your current Amazon ECS service and the recommended option, compare the utilization metric data of your service against its projected utilization metric data.
-    public struct ECSServiceUtilizationMetric {
+    public struct ECSServiceUtilizationMetric: Swift.Sendable {
         /// The name of the utilization metric. The following utilization metrics are available:
         ///
         /// * Cpu — The amount of CPU capacity that's used in the service.
@@ -5485,12 +5486,12 @@ extension ComputeOptimizerClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension ComputeOptimizerClientTypes {
+
     /// Describes an Amazon ECS service recommendation.
-    public struct ECSServiceRecommendation {
+    public struct ECSServiceRecommendation: Swift.Sendable {
         /// The Amazon Web Services account ID of the Amazon ECS service.
         public var accountId: Swift.String?
         /// The risk of the current Amazon ECS service not meeting the performance needs of its workloads. The higher the risk, the more likely the current service can't meet the performance requirements of its workload.
@@ -5563,10 +5564,9 @@ extension ComputeOptimizerClientTypes {
             self.utilizationMetrics = utilizationMetrics
         }
     }
-
 }
 
-public struct GetECSServiceRecommendationsOutput {
+public struct GetECSServiceRecommendationsOutput: Swift.Sendable {
     /// An array of objects that describe the Amazon ECS service recommendations.
     public var ecsServiceRecommendations: [ComputeOptimizerClientTypes.ECSServiceRecommendation]?
     /// An array of objects that describe errors of the request.
@@ -5586,7 +5586,7 @@ public struct GetECSServiceRecommendationsOutput {
     }
 }
 
-public struct GetEffectiveRecommendationPreferencesInput {
+public struct GetEffectiveRecommendationPreferencesInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the resource for which to confirm effective recommendation preferences. Only EC2 instance and Auto Scaling group ARNs are currently supported.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -5599,7 +5599,7 @@ public struct GetEffectiveRecommendationPreferencesInput {
     }
 }
 
-public struct GetEffectiveRecommendationPreferencesOutput {
+public struct GetEffectiveRecommendationPreferencesOutput: Swift.Sendable {
     /// The status of the enhanced infrastructure metrics recommendation preference. Considers all applicable preferences that you might have set at the resource, account, and organization level. A status of Active confirms that the preference is applied in the latest recommendation refresh, and a status of Inactive confirms that it's not yet applied to recommendations. To validate whether the preference is applied to your last generated set of recommendations, review the effectiveRecommendationPreferences value in the response of the [GetAutoScalingGroupRecommendations] and [GetEC2InstanceRecommendations] actions. For more information, see [Enhanced infrastructure metrics](https://docs.aws.amazon.com/compute-optimizer/latest/ug/enhanced-infrastructure-metrics.html) in the Compute Optimizer User Guide.
     public var enhancedInfrastructureMetrics: ComputeOptimizerClientTypes.EnhancedInfrastructureMetrics?
     /// The provider of the external metrics recommendation preference. Considers all applicable preferences that you might have set at the account and organization level. If the preference is applied in the latest recommendation refresh, an object with a valid source value appears in the response. If the preference isn't applied to the recommendations already, then this object doesn't appear in the response. To validate whether the preference is applied to your last generated set of recommendations, review the effectiveRecommendationPreferences value in the response of the [GetEC2InstanceRecommendations] actions. For more information, see [Enhanced infrastructure metrics](https://docs.aws.amazon.com/compute-optimizer/latest/ug/external-metrics-ingestion.html) in the Compute Optimizer User Guide.
@@ -5627,12 +5627,12 @@ public struct GetEffectiveRecommendationPreferencesOutput {
     }
 }
 
-public struct GetEnrollmentStatusInput {
+public struct GetEnrollmentStatusInput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct GetEnrollmentStatusOutput {
+public struct GetEnrollmentStatusOutput: Swift.Sendable {
     /// The Unix epoch timestamp, in seconds, of when the account enrollment status was last updated.
     public var lastUpdatedTimestamp: Foundation.Date?
     /// Confirms the enrollment status of member accounts of the organization, if the account is a management account of an organization.
@@ -5662,7 +5662,7 @@ public struct GetEnrollmentStatusOutput {
 
 extension ComputeOptimizerClientTypes {
 
-    public enum EnrollmentFilterName: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum EnrollmentFilterName: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case status
         case sdkUnknown(Swift.String)
 
@@ -5687,8 +5687,9 @@ extension ComputeOptimizerClientTypes {
 }
 
 extension ComputeOptimizerClientTypes {
+
     /// Describes a filter that returns a more specific list of account enrollment statuses. Use this filter with the [GetEnrollmentStatusesForOrganization] action.
-    public struct EnrollmentFilter {
+    public struct EnrollmentFilter: Swift.Sendable {
         /// The name of the filter. Specify Status to return accounts with a specific enrollment status (for example, Active).
         public var name: ComputeOptimizerClientTypes.EnrollmentFilterName?
         /// The value of the filter. The valid values are Active, Inactive, Pending, and Failed.
@@ -5703,10 +5704,9 @@ extension ComputeOptimizerClientTypes {
             self.values = values
         }
     }
-
 }
 
-public struct GetEnrollmentStatusesForOrganizationInput {
+public struct GetEnrollmentStatusesForOrganizationInput: Swift.Sendable {
     /// An array of objects to specify a filter that returns a more specific list of account enrollment statuses.
     public var filters: [ComputeOptimizerClientTypes.EnrollmentFilter]?
     /// The maximum number of account enrollment statuses to return with a single request. You can specify up to 100 statuses to return with each request. To retrieve the remaining results, make another request with the returned nextToken value.
@@ -5726,7 +5726,7 @@ public struct GetEnrollmentStatusesForOrganizationInput {
     }
 }
 
-public struct GetEnrollmentStatusesForOrganizationOutput {
+public struct GetEnrollmentStatusesForOrganizationOutput: Swift.Sendable {
     /// An array of objects that describe the enrollment statuses of organization member accounts.
     public var accountEnrollmentStatuses: [ComputeOptimizerClientTypes.AccountEnrollmentStatus]?
     /// The token to use to advance to the next page of account enrollment statuses. This value is null when there are no more pages of account enrollment statuses to return.
@@ -5742,7 +5742,7 @@ public struct GetEnrollmentStatusesForOrganizationOutput {
     }
 }
 
-public struct GetLambdaFunctionRecommendationsInput {
+public struct GetLambdaFunctionRecommendationsInput: Swift.Sendable {
     /// The ID of the Amazon Web Services account for which to return function recommendations. If your account is the management account of an organization, use this parameter to specify the member account for which you want to return function recommendations. Only one account ID can be specified per request.
     public var accountIds: [Swift.String]?
     /// An array of objects to specify a filter that returns a more specific list of function recommendations.
@@ -5772,7 +5772,7 @@ public struct GetLambdaFunctionRecommendationsInput {
 
 extension ComputeOptimizerClientTypes {
 
-    public enum LambdaSavingsEstimationModeSource: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum LambdaSavingsEstimationModeSource: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case costExplorerRightsizing
         case costOptimizationHub
         case publicPricing
@@ -5803,8 +5803,9 @@ extension ComputeOptimizerClientTypes {
 }
 
 extension ComputeOptimizerClientTypes {
+
     /// Describes the savings estimation used for calculating savings opportunity for Lambda functions.
-    public struct LambdaSavingsEstimationMode {
+    public struct LambdaSavingsEstimationMode: Swift.Sendable {
         /// Describes the source for calculation of savings opportunity for Lambda functions.
         public var source: ComputeOptimizerClientTypes.LambdaSavingsEstimationModeSource?
 
@@ -5815,12 +5816,12 @@ extension ComputeOptimizerClientTypes {
             self.source = source
         }
     }
-
 }
 
 extension ComputeOptimizerClientTypes {
+
     /// Describes the effective recommendation preferences for Lambda functions.
-    public struct LambdaEffectiveRecommendationPreferences {
+    public struct LambdaEffectiveRecommendationPreferences: Swift.Sendable {
         /// Describes the savings estimation mode applied for calculating savings opportunity for Lambda functions.
         public var savingsEstimationMode: ComputeOptimizerClientTypes.LambdaSavingsEstimationMode?
 
@@ -5831,12 +5832,11 @@ extension ComputeOptimizerClientTypes {
             self.savingsEstimationMode = savingsEstimationMode
         }
     }
-
 }
 
 extension ComputeOptimizerClientTypes {
 
-    public enum LambdaFunctionRecommendationFinding: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum LambdaFunctionRecommendationFinding: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case notOptimized
         case optimized
         case unavailable
@@ -5868,7 +5868,7 @@ extension ComputeOptimizerClientTypes {
 
 extension ComputeOptimizerClientTypes {
 
-    public enum LambdaFunctionRecommendationFindingReasonCode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum LambdaFunctionRecommendationFindingReasonCode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case inconclusive
         case insufficientData
         case memoryOverProvisioned
@@ -5903,7 +5903,7 @@ extension ComputeOptimizerClientTypes {
 
 extension ComputeOptimizerClientTypes {
 
-    public enum LambdaFunctionMemoryMetricName: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum LambdaFunctionMemoryMetricName: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case duration
         case sdkUnknown(Swift.String)
 
@@ -5929,7 +5929,7 @@ extension ComputeOptimizerClientTypes {
 
 extension ComputeOptimizerClientTypes {
 
-    public enum LambdaFunctionMemoryMetricStatistic: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum LambdaFunctionMemoryMetricStatistic: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case expected
         case lowerBound
         case upperBound
@@ -5960,8 +5960,9 @@ extension ComputeOptimizerClientTypes {
 }
 
 extension ComputeOptimizerClientTypes {
+
     /// Describes a projected utilization metric of an Lambda function recommendation option.
-    public struct LambdaFunctionMemoryProjectedMetric {
+    public struct LambdaFunctionMemoryProjectedMetric: Swift.Sendable {
         /// The name of the projected utilization metric.
         public var name: ComputeOptimizerClientTypes.LambdaFunctionMemoryMetricName?
         /// The statistic of the projected utilization metric.
@@ -5980,12 +5981,12 @@ extension ComputeOptimizerClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension ComputeOptimizerClientTypes {
+
     /// Describes the estimated monthly savings possible for Lambda functions by adopting Compute Optimizer recommendations. This is based on Lambda functions pricing after applying Savings Plans discounts.
-    public struct LambdaEstimatedMonthlySavings {
+    public struct LambdaEstimatedMonthlySavings: Swift.Sendable {
         /// The currency of the estimated monthly savings.
         public var currency: ComputeOptimizerClientTypes.Currency?
         /// The value of the estimated monthly savings.
@@ -6000,12 +6001,12 @@ extension ComputeOptimizerClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension ComputeOptimizerClientTypes {
+
     /// Describes the savings opportunity for Lambda functions recommendations after applying Savings Plans discounts. Savings opportunity represents the estimated monthly savings after applying Savings Plans discounts. You can achieve this by implementing a given Compute Optimizer recommendation.
-    public struct LambdaSavingsOpportunityAfterDiscounts {
+    public struct LambdaSavingsOpportunityAfterDiscounts: Swift.Sendable {
         /// The estimated monthly savings possible by adopting Compute Optimizer’s Lambda function recommendations. This includes any applicable Savings Plans discounts.
         public var estimatedMonthlySavings: ComputeOptimizerClientTypes.LambdaEstimatedMonthlySavings?
         /// The estimated monthly savings possible as a percentage of monthly cost by adopting Compute Optimizer’s Lambda function recommendations. This includes any applicable Savings Plans discounts.
@@ -6020,12 +6021,12 @@ extension ComputeOptimizerClientTypes {
             self.savingsOpportunityPercentage = savingsOpportunityPercentage
         }
     }
-
 }
 
 extension ComputeOptimizerClientTypes {
+
     /// Describes a recommendation option for an Lambda function.
-    public struct LambdaFunctionMemoryRecommendationOption {
+    public struct LambdaFunctionMemoryRecommendationOption: Swift.Sendable {
         /// The memory size, in MB, of the function recommendation option.
         public var memorySize: Swift.Int
         /// An array of objects that describe the projected utilization metrics of the function recommendation option.
@@ -6052,12 +6053,11 @@ extension ComputeOptimizerClientTypes {
             self.savingsOpportunityAfterDiscounts = savingsOpportunityAfterDiscounts
         }
     }
-
 }
 
 extension ComputeOptimizerClientTypes {
 
-    public enum LambdaFunctionMetricName: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum LambdaFunctionMetricName: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case duration
         case memory
         case sdkUnknown(Swift.String)
@@ -6086,7 +6086,7 @@ extension ComputeOptimizerClientTypes {
 
 extension ComputeOptimizerClientTypes {
 
-    public enum LambdaFunctionMetricStatistic: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum LambdaFunctionMetricStatistic: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case average
         case maximum
         case sdkUnknown(Swift.String)
@@ -6114,8 +6114,9 @@ extension ComputeOptimizerClientTypes {
 }
 
 extension ComputeOptimizerClientTypes {
+
     /// Describes a utilization metric of an Lambda function.
-    public struct LambdaFunctionUtilizationMetric {
+    public struct LambdaFunctionUtilizationMetric: Swift.Sendable {
         /// The name of the utilization metric. The following utilization metrics are available:
         ///
         /// * Duration - The amount of time that your function code spends processing an event.
@@ -6138,12 +6139,12 @@ extension ComputeOptimizerClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension ComputeOptimizerClientTypes {
+
     /// Describes an Lambda function recommendation.
-    public struct LambdaFunctionRecommendation {
+    public struct LambdaFunctionRecommendation: Swift.Sendable {
         /// The Amazon Web Services account ID of the function.
         public var accountId: Swift.String?
         /// The amount of memory, in MB, that's allocated to the current function.
@@ -6220,10 +6221,9 @@ extension ComputeOptimizerClientTypes {
             self.utilizationMetrics = utilizationMetrics
         }
     }
-
 }
 
-public struct GetLambdaFunctionRecommendationsOutput {
+public struct GetLambdaFunctionRecommendationsOutput: Swift.Sendable {
     /// An array of objects that describe function recommendations.
     public var lambdaFunctionRecommendations: [ComputeOptimizerClientTypes.LambdaFunctionRecommendation]?
     /// The token to use to advance to the next page of function recommendations. This value is null when there are no more pages of function recommendations to return.
@@ -6239,7 +6239,7 @@ public struct GetLambdaFunctionRecommendationsOutput {
     }
 }
 
-public struct GetLicenseRecommendationsInput {
+public struct GetLicenseRecommendationsInput: Swift.Sendable {
     /// The ID of the Amazon Web Services account for which to return license recommendations. If your account is the management account of an organization, use this parameter to specify the member account for which you want to return license recommendations. Only one account ID can be specified per request.
     public var accountIds: [Swift.String]?
     /// An array of objects to specify a filter that returns a more specific list of license recommendations.
@@ -6269,7 +6269,7 @@ public struct GetLicenseRecommendationsInput {
 
 extension ComputeOptimizerClientTypes {
 
-    public enum LicenseEdition: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum LicenseEdition: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case enterprise
         case free
         case noLicenseEditionFound
@@ -6304,7 +6304,7 @@ extension ComputeOptimizerClientTypes {
 
 extension ComputeOptimizerClientTypes {
 
-    public enum LicenseModel: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum LicenseModel: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case bringYourOwnLicense
         case licenseIncluded
         case sdkUnknown(Swift.String)
@@ -6333,7 +6333,7 @@ extension ComputeOptimizerClientTypes {
 
 extension ComputeOptimizerClientTypes {
 
-    public enum LicenseName: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum LicenseName: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case sqlserver
         case sdkUnknown(Swift.String)
 
@@ -6359,7 +6359,7 @@ extension ComputeOptimizerClientTypes {
 
 extension ComputeOptimizerClientTypes {
 
-    public enum MetricSourceProvider: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum MetricSourceProvider: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case cloudwatchappinsights
         case sdkUnknown(Swift.String)
 
@@ -6384,8 +6384,9 @@ extension ComputeOptimizerClientTypes {
 }
 
 extension ComputeOptimizerClientTypes {
+
     /// The list of metric sources required to generate recommendations for commercial software licenses.
-    public struct MetricSource {
+    public struct MetricSource: Swift.Sendable {
         /// The name of the metric source provider.
         public var provider: ComputeOptimizerClientTypes.MetricSourceProvider?
         /// The ARN of the metric source provider.
@@ -6400,12 +6401,12 @@ extension ComputeOptimizerClientTypes {
             self.providerArn = providerArn
         }
     }
-
 }
 
 extension ComputeOptimizerClientTypes {
+
     /// Describes the configuration of a license for an Amazon EC2 instance.
-    public struct LicenseConfiguration {
+    public struct LicenseConfiguration: Swift.Sendable {
         /// The instance type used in the license.
         public var instanceType: Swift.String?
         /// The edition of the license for the application that runs on the instance.
@@ -6444,12 +6445,11 @@ extension ComputeOptimizerClientTypes {
             self.operatingSystem = operatingSystem
         }
     }
-
 }
 
 extension ComputeOptimizerClientTypes {
 
-    public enum LicenseFinding: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum LicenseFinding: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case insufficientMetrics
         case notOptimized
         case optimized
@@ -6481,7 +6481,7 @@ extension ComputeOptimizerClientTypes {
 
 extension ComputeOptimizerClientTypes {
 
-    public enum LicenseFindingReasonCode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum LicenseFindingReasonCode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case cwAppInsightsDisabled
         case cwAppInsightsError
         case licenseOverProvisioned
@@ -6515,8 +6515,9 @@ extension ComputeOptimizerClientTypes {
 }
 
 extension ComputeOptimizerClientTypes {
+
     /// Describes the recommendation options for licenses.
-    public struct LicenseRecommendationOption {
+    public struct LicenseRecommendationOption: Swift.Sendable {
         /// The recommended edition of the license for the application that runs on the instance.
         public var licenseEdition: ComputeOptimizerClientTypes.LicenseEdition?
         /// The recommended license type associated with the instance.
@@ -6543,12 +6544,12 @@ extension ComputeOptimizerClientTypes {
             self.savingsOpportunity = savingsOpportunity
         }
     }
-
 }
 
 extension ComputeOptimizerClientTypes {
+
     /// Describes a license recommendation for an EC2 instance.
-    public struct LicenseRecommendation {
+    public struct LicenseRecommendation: Swift.Sendable {
         /// The Amazon Web Services account ID of the license.
         public var accountId: Swift.String?
         /// An object that describes the current configuration of an instance that runs on a license.
@@ -6605,10 +6606,9 @@ extension ComputeOptimizerClientTypes {
             self.tags = tags
         }
     }
-
 }
 
-public struct GetLicenseRecommendationsOutput {
+public struct GetLicenseRecommendationsOutput: Swift.Sendable {
     /// An array of objects that describe errors of the request.
     public var errors: [ComputeOptimizerClientTypes.GetRecommendationError]?
     /// An array of objects that describe license recommendations.
@@ -6628,7 +6628,7 @@ public struct GetLicenseRecommendationsOutput {
     }
 }
 
-public struct GetRDSDatabaseRecommendationProjectedMetricsInput {
+public struct GetRDSDatabaseRecommendationProjectedMetricsInput: Swift.Sendable {
     /// The timestamp of the last projected metrics data point to return.
     /// This member is required.
     public var endTime: Foundation.Date?
@@ -6667,7 +6667,7 @@ public struct GetRDSDatabaseRecommendationProjectedMetricsInput {
 
 extension ComputeOptimizerClientTypes {
 
-    public enum RDSDBMetricName: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum RDSDBMetricName: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case cpu
         case databaseConnections
         case ebsVolumeReadIops
@@ -6719,8 +6719,9 @@ extension ComputeOptimizerClientTypes {
 }
 
 extension ComputeOptimizerClientTypes {
+
     /// Describes the projected metrics of an Amazon RDS recommendation option. To determine the performance difference between your current Amazon RDS and the recommended option, compare the metric data of your service against its projected metric data.
-    public struct RDSDatabaseProjectedMetric {
+    public struct RDSDatabaseProjectedMetric: Swift.Sendable {
         /// The name of the projected metric.
         public var name: ComputeOptimizerClientTypes.RDSDBMetricName?
         /// The timestamps of the projected metric.
@@ -6739,12 +6740,12 @@ extension ComputeOptimizerClientTypes {
             self.values = values
         }
     }
-
 }
 
 extension ComputeOptimizerClientTypes {
+
     /// Describes the projected metrics of an Amazon RDS recommendation option. To determine the performance difference between your current Amazon RDS and the recommended option, compare the metric data of your service against its projected metric data.
-    public struct RDSDatabaseRecommendedOptionProjectedMetric {
+    public struct RDSDatabaseRecommendedOptionProjectedMetric: Swift.Sendable {
         /// An array of objects that describe the projected metric.
         public var projectedMetrics: [ComputeOptimizerClientTypes.RDSDatabaseProjectedMetric]?
         /// The rank identifier of the RDS instance recommendation option.
@@ -6763,10 +6764,9 @@ extension ComputeOptimizerClientTypes {
             self.recommendedDBInstanceClass = recommendedDBInstanceClass
         }
     }
-
 }
 
-public struct GetRDSDatabaseRecommendationProjectedMetricsOutput {
+public struct GetRDSDatabaseRecommendationProjectedMetricsOutput: Swift.Sendable {
     /// An array of objects that describes the projected metrics.
     public var recommendedOptionProjectedMetrics: [ComputeOptimizerClientTypes.RDSDatabaseRecommendedOptionProjectedMetric]?
 
@@ -6778,7 +6778,7 @@ public struct GetRDSDatabaseRecommendationProjectedMetricsOutput {
     }
 }
 
-public struct GetRDSDatabaseRecommendationsInput {
+public struct GetRDSDatabaseRecommendationsInput: Swift.Sendable {
     /// Return the Amazon RDS recommendations to the specified Amazon Web Services account IDs. If your account is the management account or the delegated administrator of an organization, use this parameter to return the Amazon RDS recommendations to specific member accounts. You can only specify one account ID per request.
     public var accountIds: [Swift.String]?
     /// An array of objects to specify a filter that returns a more specific list of Amazon RDS recommendations.
@@ -6811,8 +6811,9 @@ public struct GetRDSDatabaseRecommendationsInput {
 }
 
 extension ComputeOptimizerClientTypes {
+
     /// The configuration of the recommended RDS storage.
-    public struct DBStorageConfiguration {
+    public struct DBStorageConfiguration: Swift.Sendable {
         /// The size of the RDS storage in gigabytes (GB).
         public var allocatedStorage: Swift.Int
         /// The provisioned IOPs of the RDS storage.
@@ -6839,12 +6840,11 @@ extension ComputeOptimizerClientTypes {
             self.storageType = storageType
         }
     }
-
 }
 
 extension ComputeOptimizerClientTypes {
 
-    public enum RDSSavingsEstimationModeSource: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum RDSSavingsEstimationModeSource: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case costExplorerRightsizing
         case costOptimizationHub
         case publicPricing
@@ -6875,8 +6875,9 @@ extension ComputeOptimizerClientTypes {
 }
 
 extension ComputeOptimizerClientTypes {
+
     /// Describes the savings estimation mode used for calculating savings opportunity for Amazon RDS.
-    public struct RDSSavingsEstimationMode {
+    public struct RDSSavingsEstimationMode: Swift.Sendable {
         /// Describes the source for calculating the savings opportunity for Amazon RDS.
         public var source: ComputeOptimizerClientTypes.RDSSavingsEstimationModeSource?
 
@@ -6887,12 +6888,12 @@ extension ComputeOptimizerClientTypes {
             self.source = source
         }
     }
-
 }
 
 extension ComputeOptimizerClientTypes {
+
     /// Describes the effective recommendation preferences for Amazon RDS.
-    public struct RDSEffectiveRecommendationPreferences {
+    public struct RDSEffectiveRecommendationPreferences: Swift.Sendable {
         /// Describes the CPU vendor and architecture for Amazon RDS recommendations.
         public var cpuVendorArchitectures: [ComputeOptimizerClientTypes.CpuVendorArchitecture]?
         /// Describes the activation status of the enhanced infrastructure metrics preference. A status of Active confirms that the preference is applied in the latest recommendation refresh, and a status of Inactive confirms that it's not yet applied to recommendations. For more information, see [Enhanced infrastructure metrics](https://docs.aws.amazon.com/compute-optimizer/latest/ug/enhanced-infrastructure-metrics.html) in the Compute Optimizer User Guide.
@@ -6915,12 +6916,11 @@ extension ComputeOptimizerClientTypes {
             self.savingsEstimationMode = savingsEstimationMode
         }
     }
-
 }
 
 extension ComputeOptimizerClientTypes {
 
-    public enum Idle: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Idle: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case `false`
         case `true`
         case sdkUnknown(Swift.String)
@@ -6949,7 +6949,7 @@ extension ComputeOptimizerClientTypes {
 
 extension ComputeOptimizerClientTypes {
 
-    public enum RDSInstanceFinding: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum RDSInstanceFinding: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case optimized
         case overProvisioned
         case underProvisioned
@@ -6981,7 +6981,7 @@ extension ComputeOptimizerClientTypes {
 
 extension ComputeOptimizerClientTypes {
 
-    public enum RDSInstanceFindingReasonCode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum RDSInstanceFindingReasonCode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case cpuOverProvisioned
         case cpuUnderProvisioned
         case ebsIopsOverProvisioned
@@ -7031,7 +7031,7 @@ extension ComputeOptimizerClientTypes {
 
 extension ComputeOptimizerClientTypes {
 
-    public enum RDSDBMetricStatistic: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum RDSDBMetricStatistic: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case average
         case maximum
         case minimum
@@ -7062,8 +7062,9 @@ extension ComputeOptimizerClientTypes {
 }
 
 extension ComputeOptimizerClientTypes {
+
     /// Describes the utilization metric of an Amazon RDS. To determine the performance difference between your current Amazon RDS and the recommended option, compare the utilization metric data of your service against its projected utilization metric data.
-    public struct RDSDBUtilizationMetric {
+    public struct RDSDBUtilizationMetric: Swift.Sendable {
         /// The name of the utilization metric.
         public var name: ComputeOptimizerClientTypes.RDSDBMetricName?
         /// The statistic of the utilization metric. The Compute Optimizer API, Command Line Interface (CLI), and SDKs return utilization metrics using only the Maximum statistic, which is the highest value observed during the specified period. The Compute Optimizer console displays graphs for some utilization metrics using the Average statistic, which is the value of Sum / SampleCount during the specified period. For more information, see [Viewing resource recommendations](https://docs.aws.amazon.com/compute-optimizer/latest/ug/viewing-recommendations.html) in the Compute Optimizer User Guide. You can also get averaged utilization metric data for your resources using Amazon CloudWatch. For more information, see the [Amazon CloudWatch User Guide](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/WhatIsCloudWatch.html).
@@ -7082,12 +7083,12 @@ extension ComputeOptimizerClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension ComputeOptimizerClientTypes {
+
     /// Describes the estimated monthly savings possible for Amazon RDS instances by adopting Compute Optimizer recommendations. This is based on Amazon RDS pricing after applying Savings Plans discounts.
-    public struct RDSInstanceEstimatedMonthlySavings {
+    public struct RDSInstanceEstimatedMonthlySavings: Swift.Sendable {
         /// The currency of the estimated monthly savings.
         public var currency: ComputeOptimizerClientTypes.Currency?
         /// The value of the estimated monthly savings for Amazon RDS instances.
@@ -7102,12 +7103,12 @@ extension ComputeOptimizerClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension ComputeOptimizerClientTypes {
+
     /// Describes the savings opportunity for Amazon RDS instance recommendations after applying Savings Plans discounts. Savings opportunity represents the estimated monthly savings after applying Savings Plans discounts. You can achieve this by implementing a given Compute Optimizer recommendation.
-    public struct RDSInstanceSavingsOpportunityAfterDiscounts {
+    public struct RDSInstanceSavingsOpportunityAfterDiscounts: Swift.Sendable {
         /// The estimated monthly savings possible by adopting Compute Optimizer’s Amazon RDS instance recommendations. This includes any applicable Savings Plans discounts.
         public var estimatedMonthlySavings: ComputeOptimizerClientTypes.RDSInstanceEstimatedMonthlySavings?
         /// The estimated monthly savings possible as a percentage of monthly cost by adopting Compute Optimizer’s Amazon RDS instance recommendations. This includes any applicable Savings Plans discounts.
@@ -7122,12 +7123,12 @@ extension ComputeOptimizerClientTypes {
             self.savingsOpportunityPercentage = savingsOpportunityPercentage
         }
     }
-
 }
 
 extension ComputeOptimizerClientTypes {
+
     /// Describes the recommendation options for an Amazon RDS instance.
-    public struct RDSDBInstanceRecommendationOption {
+    public struct RDSDBInstanceRecommendationOption: Swift.Sendable {
         /// Describes the DB instance class recommendation option for your Amazon RDS instance.
         public var dbInstanceClass: Swift.String?
         /// The performance risk of the RDS instance recommendation option.
@@ -7158,12 +7159,11 @@ extension ComputeOptimizerClientTypes {
             self.savingsOpportunityAfterDiscounts = savingsOpportunityAfterDiscounts
         }
     }
-
 }
 
 extension ComputeOptimizerClientTypes {
 
-    public enum RDSStorageFinding: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum RDSStorageFinding: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case optimized
         case overProvisioned
         case underProvisioned
@@ -7195,7 +7195,7 @@ extension ComputeOptimizerClientTypes {
 
 extension ComputeOptimizerClientTypes {
 
-    public enum RDSStorageFindingReasonCode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum RDSStorageFindingReasonCode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case ebsVolumeAllocatedStorageUnderProvisioned
         case ebsVolumeIopsOverProvisioned
         case ebsVolumeThroughputOverProvisioned
@@ -7232,8 +7232,9 @@ extension ComputeOptimizerClientTypes {
 }
 
 extension ComputeOptimizerClientTypes {
+
     /// Describes the estimated monthly savings possible for Amazon RDS storage by adopting Compute Optimizer recommendations. This is based on Amazon RDS pricing after applying Savings Plans discounts.
-    public struct RDSStorageEstimatedMonthlySavings {
+    public struct RDSStorageEstimatedMonthlySavings: Swift.Sendable {
         /// The currency of the estimated monthly savings.
         public var currency: ComputeOptimizerClientTypes.Currency?
         /// The value of the estimated monthly savings for Amazon RDS storage.
@@ -7248,12 +7249,12 @@ extension ComputeOptimizerClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension ComputeOptimizerClientTypes {
+
     /// Describes the savings opportunity for Amazon RDS storage recommendations after applying Savings Plans discounts. Savings opportunity represents the estimated monthly savings after applying Savings Plans discounts. You can achieve this by implementing a given Compute Optimizer recommendation.
-    public struct RDSStorageSavingsOpportunityAfterDiscounts {
+    public struct RDSStorageSavingsOpportunityAfterDiscounts: Swift.Sendable {
         /// The estimated monthly savings possible by adopting Compute Optimizer’s Amazon RDS storage recommendations. This includes any applicable Savings Plans discounts.
         public var estimatedMonthlySavings: ComputeOptimizerClientTypes.RDSStorageEstimatedMonthlySavings?
         /// The estimated monthly savings possible as a percentage of monthly cost by adopting Compute Optimizer’s Amazon RDS storage recommendations. This includes any applicable Savings Plans discounts.
@@ -7268,12 +7269,12 @@ extension ComputeOptimizerClientTypes {
             self.savingsOpportunityPercentage = savingsOpportunityPercentage
         }
     }
-
 }
 
 extension ComputeOptimizerClientTypes {
+
     /// Describes the recommendation options for Amazon RDS storage.
-    public struct RDSDBStorageRecommendationOption {
+    public struct RDSDBStorageRecommendationOption: Swift.Sendable {
         /// The rank identifier of the RDS storage recommendation option.
         public var rank: Swift.Int
         /// Describes the savings opportunity for recommendations of a given resource type or for the recommendation option of an individual resource. Savings opportunity represents the estimated monthly savings you can achieve by implementing a given Compute Optimizer recommendation. Savings opportunity data requires that you opt in to Cost Explorer, as well as activate Receive Amazon EC2 resource recommendations in the Cost Explorer preferences page. That creates a connection between Cost Explorer and Compute Optimizer. With this connection, Cost Explorer generates savings estimates considering the price of existing resources, the price of recommended resources, and historical usage data. Estimated monthly savings reflects the projected dollar savings associated with each of the recommendations generated. For more information, see [Enabling Cost Explorer](https://docs.aws.amazon.com/cost-management/latest/userguide/ce-enable.html) and [Optimizing your cost with Rightsizing Recommendations](https://docs.aws.amazon.com/cost-management/latest/userguide/ce-rightsizing.html) in the Cost Management User Guide.
@@ -7296,12 +7297,12 @@ extension ComputeOptimizerClientTypes {
             self.storageConfiguration = storageConfiguration
         }
     }
-
 }
 
 extension ComputeOptimizerClientTypes {
+
     /// Describes an Amazon RDS recommendation.
-    public struct RDSDBRecommendation {
+    public struct RDSDBRecommendation: Swift.Sendable {
         /// The Amazon Web Services account ID of the Amazon RDS.
         public var accountId: Swift.String?
         /// The DB instance class of the current RDS instance.
@@ -7392,10 +7393,9 @@ extension ComputeOptimizerClientTypes {
             self.utilizationMetrics = utilizationMetrics
         }
     }
-
 }
 
-public struct GetRDSDatabaseRecommendationsOutput {
+public struct GetRDSDatabaseRecommendationsOutput: Swift.Sendable {
     /// An array of objects that describe errors of the request.
     public var errors: [ComputeOptimizerClientTypes.GetRecommendationError]?
     /// The token to advance to the next page of Amazon RDS recommendations.
@@ -7415,7 +7415,7 @@ public struct GetRDSDatabaseRecommendationsOutput {
     }
 }
 
-public struct GetRecommendationPreferencesInput {
+public struct GetRecommendationPreferencesInput: Swift.Sendable {
     /// The maximum number of recommendation preferences to return with a single request. To retrieve the remaining results, make another request with the returned nextToken value.
     public var maxResults: Swift.Int?
     /// The token to advance to the next page of recommendation preferences.
@@ -7442,7 +7442,7 @@ public struct GetRecommendationPreferencesInput {
 
 extension ComputeOptimizerClientTypes {
 
-    public enum SavingsEstimationMode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SavingsEstimationMode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case afterDiscounts
         case beforeDiscounts
         case sdkUnknown(Swift.String)
@@ -7470,8 +7470,9 @@ extension ComputeOptimizerClientTypes {
 }
 
 extension ComputeOptimizerClientTypes {
+
     /// Describes a recommendation preference.
-    public struct RecommendationPreferencesDetail {
+    public struct RecommendationPreferencesDetail: Swift.Sendable {
         /// The status of the enhanced infrastructure metrics recommendation preference. When the recommendations page is refreshed, a status of Active confirms that the preference is applied to the recommendations, and a status of Inactive confirms that the preference isn't yet applied to recommendations. For more information, see [Enhanced infrastructure metrics](https://docs.aws.amazon.com/compute-optimizer/latest/ug/enhanced-infrastructure-metrics.html) in the Compute Optimizer User Guide.
         public var enhancedInfrastructureMetrics: ComputeOptimizerClientTypes.EnhancedInfrastructureMetrics?
         /// An object that describes the external metrics recommendation preference. If the preference is applied in the latest recommendation refresh, an object with a valid source value appears in the response. If the preference isn't applied to the recommendations already, then this object doesn't appear in the response.
@@ -7514,10 +7515,9 @@ extension ComputeOptimizerClientTypes {
             self.utilizationPreferences = utilizationPreferences
         }
     }
-
 }
 
-public struct GetRecommendationPreferencesOutput {
+public struct GetRecommendationPreferencesOutput: Swift.Sendable {
     /// The token to use to advance to the next page of recommendation preferences. This value is null when there are no more pages of recommendation preferences to return.
     public var nextToken: Swift.String?
     /// An array of objects that describe recommendation preferences.
@@ -7533,7 +7533,7 @@ public struct GetRecommendationPreferencesOutput {
     }
 }
 
-public struct GetRecommendationSummariesInput {
+public struct GetRecommendationSummariesInput: Swift.Sendable {
     /// The ID of the Amazon Web Services account for which to return recommendation summaries. If your account is the management account of an organization, use this parameter to specify the member account for which you want to return recommendation summaries. Only one account ID can be specified per request.
     public var accountIds: [Swift.String]?
     /// The maximum number of recommendation summaries to return with a single request. To retrieve the remaining results, make another request with the returned nextToken value.
@@ -7554,8 +7554,9 @@ public struct GetRecommendationSummariesInput {
 }
 
 extension ComputeOptimizerClientTypes {
+
     /// Describes the performance risk ratings for a given resource type. Resources with a high or medium rating are at risk of not meeting the performance needs of their workloads, while resources with a low rating are performing well in their workloads.
-    public struct CurrentPerformanceRiskRatings {
+    public struct CurrentPerformanceRiskRatings: Swift.Sendable {
         /// A count of the applicable resource types with a high performance risk rating.
         public var high: Swift.Int
         /// A count of the applicable resource types with a low performance risk rating.
@@ -7578,12 +7579,12 @@ extension ComputeOptimizerClientTypes {
             self.veryLow = veryLow
         }
     }
-
 }
 
 extension ComputeOptimizerClientTypes {
+
     /// The estimated monthly savings after you adjust the configurations of your instances running on the inferred workload types to the recommended configurations. If the inferredWorkloadTypes list contains multiple entries, then the savings are the sum of the monthly savings from instances that run the exact combination of the inferred workload types.
-    public struct InferredWorkloadSaving {
+    public struct InferredWorkloadSaving: Swift.Sendable {
         /// An object that describes the estimated monthly savings amount possible by adopting Compute Optimizer recommendations for a given resource. This is based on the On-Demand instance pricing.
         public var estimatedMonthlySavings: ComputeOptimizerClientTypes.EstimatedMonthlySavings?
         /// The applications that might be running on the instance as inferred by Compute Optimizer. Compute Optimizer can infer if one of the following applications might be running on the instance:
@@ -7616,12 +7617,11 @@ extension ComputeOptimizerClientTypes {
             self.inferredWorkloadTypes = inferredWorkloadTypes
         }
     }
-
 }
 
 extension ComputeOptimizerClientTypes {
 
-    public enum FindingReasonCode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum FindingReasonCode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case memoryOverProvisioned
         case memoryUnderProvisioned
         case sdkUnknown(Swift.String)
@@ -7649,8 +7649,9 @@ extension ComputeOptimizerClientTypes {
 }
 
 extension ComputeOptimizerClientTypes {
+
     /// A summary of a finding reason code.
-    public struct ReasonCodeSummary {
+    public struct ReasonCodeSummary: Swift.Sendable {
         /// The name of the finding reason code.
         public var name: ComputeOptimizerClientTypes.FindingReasonCode?
         /// The value of the finding reason code summary.
@@ -7665,12 +7666,12 @@ extension ComputeOptimizerClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension ComputeOptimizerClientTypes {
+
     /// The summary of a recommendation.
-    public struct Summary {
+    public struct Summary: Swift.Sendable {
         /// The finding classification of the recommendation.
         public var name: ComputeOptimizerClientTypes.Finding?
         /// An array of objects that summarize a finding reason code.
@@ -7689,12 +7690,12 @@ extension ComputeOptimizerClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension ComputeOptimizerClientTypes {
+
     /// A summary of a recommendation.
-    public struct RecommendationSummary {
+    public struct RecommendationSummary: Swift.Sendable {
         /// The Amazon Web Services account ID of the recommendation summary.
         public var accountId: Swift.String?
         /// An object that describes the performance risk ratings for a given resource type.
@@ -7725,10 +7726,9 @@ extension ComputeOptimizerClientTypes {
             self.summaries = summaries
         }
     }
-
 }
 
-public struct GetRecommendationSummariesOutput {
+public struct GetRecommendationSummariesOutput: Swift.Sendable {
     /// The token to use to advance to the next page of recommendation summaries. This value is null when there are no more pages of recommendation summaries to return.
     public var nextToken: Swift.String?
     /// An array of objects that summarize a recommendation.
@@ -7745,12 +7745,13 @@ public struct GetRecommendationSummariesOutput {
 }
 
 extension ComputeOptimizerClientTypes {
+
     /// The preference to control which resource type values are considered when generating rightsizing recommendations. You can specify this preference as a combination of include and exclude lists. You must specify either an includeList or excludeList. If the preference is an empty set of resource type values, an error occurs. For more information, see [ Rightsizing recommendation preferences](https://docs.aws.amazon.com/compute-optimizer/latest/ug/rightsizing-preferences.html) in the Compute Optimizer User Guide.
     ///
     /// * This preference is only available for the Amazon EC2 instance and Auto Scaling group resource types.
     ///
     /// * Compute Optimizer only supports the customization of Ec2InstanceTypes.
-    public struct PreferredResource {
+    public struct PreferredResource: Swift.Sendable {
         /// The preferred resource type values to exclude from the recommendation candidates. If this isn’t specified, all supported resources are included by default. You can specify up to 1000 values in this list.
         public var excludeList: [Swift.String]?
         /// The preferred resource type values to include in the recommendation candidates. You can specify the exact resource type value, such as m5.large, or use wild card expressions, such as m5. If this isn’t specified, all supported resources are included by default. You can specify up to 1000 values in this list.
@@ -7769,10 +7770,9 @@ extension ComputeOptimizerClientTypes {
             self.name = name
         }
     }
-
 }
 
-public struct PutRecommendationPreferencesInput {
+public struct PutRecommendationPreferencesInput: Swift.Sendable {
     /// The status of the enhanced infrastructure metrics recommendation preference to create or update. Specify the Active status to activate the preference, or specify Inactive to deactivate the preference. For more information, see [Enhanced infrastructure metrics](https://docs.aws.amazon.com/compute-optimizer/latest/ug/enhanced-infrastructure-metrics.html) in the Compute Optimizer User Guide.
     public var enhancedInfrastructureMetrics: ComputeOptimizerClientTypes.EnhancedInfrastructureMetrics?
     /// The provider of the external metrics recommendation preference to create or update. Specify a valid provider in the source field to activate the preference. To delete this preference, see the [DeleteRecommendationPreferences] action. This preference can only be set for the Ec2Instance resource type. For more information, see [External metrics ingestion](https://docs.aws.amazon.com/compute-optimizer/latest/ug/external-metrics-ingestion.html) in the Compute Optimizer User Guide.
@@ -7837,12 +7837,12 @@ public struct PutRecommendationPreferencesInput {
     }
 }
 
-public struct PutRecommendationPreferencesOutput {
+public struct PutRecommendationPreferencesOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdateEnrollmentStatusInput {
+public struct UpdateEnrollmentStatusInput: Swift.Sendable {
     /// Indicates whether to enroll member accounts of the organization if the account is the management account of an organization.
     public var includeMemberAccounts: Swift.Bool?
     /// The new enrollment status of the account. The following status options are available:
@@ -7866,7 +7866,7 @@ public struct UpdateEnrollmentStatusInput {
     }
 }
 
-public struct UpdateEnrollmentStatusOutput {
+public struct UpdateEnrollmentStatusOutput: Swift.Sendable {
     /// The enrollment status of the account.
     public var status: ComputeOptimizerClientTypes.Status?
     /// The reason for the enrollment status of the account. For example, an account might show a status of Pending because member accounts of an organization require more time to be enrolled in the service.

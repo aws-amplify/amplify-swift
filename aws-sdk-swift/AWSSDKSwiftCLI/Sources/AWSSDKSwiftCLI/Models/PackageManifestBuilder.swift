@@ -17,62 +17,69 @@ struct PackageManifestBuilder {
     let clientRuntimeVersion: Version
     let crtVersion: Version
     let services: [Service]
-    let excludeAWSServices: Bool
     let excludeRuntimeTests: Bool
+    let prefixContents: () throws -> String
     let basePackageContents: () throws -> String
     
     init(
         clientRuntimeVersion: Version,
         crtVersion: Version,
         services: [Service],
-        excludeAWSServices: Bool,
         excludeRuntimeTests: Bool,
+        prefixContents: @escaping () throws -> String,
         basePackageContents: @escaping () throws -> String
     ) {
         self.clientRuntimeVersion = clientRuntimeVersion
         self.crtVersion = crtVersion
         self.services = services
-        self.excludeAWSServices = excludeAWSServices
-        self.basePackageContents = basePackageContents
         self.excludeRuntimeTests = excludeRuntimeTests
+        self.prefixContents = prefixContents
+        self.basePackageContents = basePackageContents
     }
     
     init(
         clientRuntimeVersion: Version,
         crtVersion: Version,
         services: [Service],
-        excludeAWSServices: Bool,
         excludeRuntimeTests: Bool
     ) {
-        self.init(clientRuntimeVersion: clientRuntimeVersion, crtVersion: crtVersion, services: services, excludeAWSServices: excludeAWSServices, excludeRuntimeTests: excludeRuntimeTests) {
-            // Returns the contents of the base package manifest stored in the bundle at `Resources/Package.Base.swift`
-            let basePackageName = "Package.Base"
-            
-            // Get the url for the base package manifest that is stored in the bundle
-            guard let url = Bundle.module.url(forResource: basePackageName, withExtension: "swift") else {
-                throw Error("Could not find \(basePackageName).swift in bundle")
+        self.init(
+            clientRuntimeVersion: clientRuntimeVersion,
+            crtVersion: crtVersion,
+            services: services,
+            excludeRuntimeTests: excludeRuntimeTests,
+            prefixContents: Self.contentReader(filename: "Package.Prefix"),
+            basePackageContents: Self.contentReader(filename: "Package.Base")
+        )
+    }
+
+    static func contentReader(filename: String) -> () throws -> String {
+        return {
+            // Get the url for the file that is stored in the bundle
+            guard let url = Bundle.module.url(forResource: filename, withExtension: "txt") else {
+                throw Error("Could not find \(filename).txt in bundle")
             }
-            
+
             // Load the contents of the base package manifest
             let fileContents = try FileManager.default.loadContents(atPath: url.path)
-            
+
             // Convert the base package manifest data to a string
             guard let fileText = String(data: fileContents, encoding: .utf8) else {
-                throw Error("Failed to create string from contents of file \(basePackageName).swift")
+                throw Error("Failed to create string from contents of file \(filename).txt")
             }
-            
+
             return fileText
         }
     }
-    
+
     // MARK: - Build
     
     /// Builds the contents of the package manifest file.
     func build() throws-> String {
         let contents = try [
+            prefixContents(),
+            buildGeneratedContent(),
             basePackageContents(),
-            "",
-            buildGeneratedContent()
         ]
         return contents.joined(separator: .newline)
     }
@@ -92,8 +99,6 @@ struct PackageManifestBuilder {
             // Add the generated content that defines the list of services to include
             buildServiceTargets(),
             "",
-            buildResolvedServices(),
-            "\n"
         ]
         return contents.joined(separator: .newline)
     }
@@ -102,25 +107,20 @@ struct PackageManifestBuilder {
     ///
     /// - Returns: A pragma mark comment to provide separation between the non-generated (base) and generated content
     private func buildPragmaMark() -> String {
-        "// MARK: - Generated"
+        "// MARK: - Dynamic Content"
     }
     
     
     /// Builds the dependencies versions
     private func buildDependencies() -> String {
         """
-        addDependencies(
-            clientRuntimeVersion: \(clientRuntimeVersion.description.wrappedInQuotes()),
-            crtVersion: \(crtVersion.description.wrappedInQuotes())
-        )
+        let clientRuntimeVersion: Version = \(clientRuntimeVersion.description.wrappedInQuotes())
+        let crtVersion: Version = \(crtVersion.description.wrappedInQuotes())
         """
     }
 
     private func buildRuntimeTests() -> String {
-        return [
-            "// Uncomment this line to exclude runtime unit tests",
-            (excludeRuntimeTests ? "" : "// ") + "excludeRuntimeUnitTests()"
-        ].joined(separator: .newline)
+        "let excludeRuntimeUnitTests = \(excludeRuntimeTests)"
     }
 
     /// Builds the list of services to include.
@@ -131,14 +131,6 @@ struct PackageManifestBuilder {
         lines += ["let serviceTargets: [String] = ["]
         lines += services.map { "    \($0.name.wrappedInQuotes())," }
         lines += ["]"]
-        lines += [""]
-        lines += ["// Uncomment this line to enable all services"]
-        lines += ["\(excludeAWSServices ? "// " : "")addAllServices()"]
-
         return lines.joined(separator: .newline)
-    }
-
-    private func buildResolvedServices() -> String {
-        "addResolvedTargets()"
     }
 }

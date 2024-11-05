@@ -53,8 +53,9 @@ public struct AccessDeniedException: ClientRuntime.ModeledError, AWSClientRuntim
 }
 
 extension WisdomClientTypes {
+
     /// Configuration information for Amazon AppIntegrations to automatically ingest content.
-    public struct AppIntegrationsConfiguration {
+    public struct AppIntegrationsConfiguration: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the AppIntegrations DataIntegration to use for ingesting content.
         ///
         /// * For [ Salesforce](https://developer.salesforce.com/docs/atlas.en-us.knowledge_dev.meta/knowledge_dev/sforce_api_objects_knowledge__kav.htm), your AppIntegrations DataIntegration must have an ObjectConfiguration if objectFields is not provided, including at least Id, ArticleNumber, VersionNumber, Title, PublishStatus, and IsDeleted as source fields.
@@ -89,7 +90,6 @@ extension WisdomClientTypes {
             self.objectFields = objectFields
         }
     }
-
 }
 
 /// The request could not be processed because of conflict in the current state of the resource. For example, if you're using a Create API (such as CreateAssistant) that accepts name, a conflicting resource (usually with the same name) is being created or mutated.
@@ -193,18 +193,18 @@ public struct ValidationException: ClientRuntime.ModeledError, AWSClientRuntime.
 }
 
 extension WisdomClientTypes {
+
     /// The data that is input into Wisdom as a result of the assistant association.
-    public enum AssistantAssociationInputData {
+    public enum AssistantAssociationInputData: Swift.Sendable {
         /// The identifier of the knowledge base. This should not be a QUICK_RESPONSES type knowledge base if you're storing Wisdom Content resource to it.
         case knowledgebaseid(Swift.String)
         case sdkUnknown(Swift.String)
     }
-
 }
 
 extension WisdomClientTypes {
 
-    public enum AssociationType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AssociationType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case knowledgeBase
         case sdkUnknown(Swift.String)
 
@@ -228,7 +228,7 @@ extension WisdomClientTypes {
     }
 }
 
-public struct CreateAssistantAssociationInput {
+public struct CreateAssistantAssociationInput: Swift.Sendable {
     /// The identifier of the Wisdom assistant. Can be either the ID or the ARN. URLs cannot contain the ARN.
     /// This member is required.
     public var assistantId: Swift.String?
@@ -260,8 +260,9 @@ public struct CreateAssistantAssociationInput {
 }
 
 extension WisdomClientTypes {
+
     /// Association information about the knowledge base.
-    public struct KnowledgeBaseAssociationData {
+    public struct KnowledgeBaseAssociationData: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the knowledge base.
         public var knowledgeBaseArn: Swift.String?
         /// The identifier of the knowledge base. This should not be a QUICK_RESPONSES type knowledge base if you're storing Wisdom Content resource to it.
@@ -276,22 +277,22 @@ extension WisdomClientTypes {
             self.knowledgeBaseId = knowledgeBaseId
         }
     }
-
 }
 
 extension WisdomClientTypes {
+
     /// The data that is output as a result of the assistant association.
-    public enum AssistantAssociationOutputData {
+    public enum AssistantAssociationOutputData: Swift.Sendable {
         /// The knowledge base where output data is sent.
         case knowledgebaseassociation(WisdomClientTypes.KnowledgeBaseAssociationData)
         case sdkUnknown(Swift.String)
     }
-
 }
 
 extension WisdomClientTypes {
+
     /// Information about the assistant association.
-    public struct AssistantAssociationData {
+    public struct AssistantAssociationData: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the Wisdom assistant.
         /// This member is required.
         public var assistantArn: Swift.String?
@@ -332,10 +333,9 @@ extension WisdomClientTypes {
             self.tags = tags
         }
     }
-
 }
 
-public struct CreateAssistantAssociationOutput {
+public struct CreateAssistantAssociationOutput: Swift.Sendable {
     /// The assistant association.
     public var assistantAssociation: WisdomClientTypes.AssistantAssociationData?
 
@@ -347,7 +347,7 @@ public struct CreateAssistantAssociationOutput {
     }
 }
 
-public struct DeleteAssistantAssociationInput {
+public struct DeleteAssistantAssociationInput: Swift.Sendable {
     /// The identifier of the assistant association. Can be either the ID or the ARN. URLs cannot contain the ARN.
     /// This member is required.
     public var assistantAssociationId: Swift.String?
@@ -365,12 +365,12 @@ public struct DeleteAssistantAssociationInput {
     }
 }
 
-public struct DeleteAssistantAssociationOutput {
+public struct DeleteAssistantAssociationOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct GetAssistantAssociationInput {
+public struct GetAssistantAssociationInput: Swift.Sendable {
     /// The identifier of the assistant association. Can be either the ID or the ARN. URLs cannot contain the ARN.
     /// This member is required.
     public var assistantAssociationId: Swift.String?
@@ -388,7 +388,7 @@ public struct GetAssistantAssociationInput {
     }
 }
 
-public struct GetAssistantAssociationOutput {
+public struct GetAssistantAssociationOutput: Swift.Sendable {
     /// The assistant association.
     public var assistantAssociation: WisdomClientTypes.AssistantAssociationData?
 
@@ -400,7 +400,7 @@ public struct GetAssistantAssociationOutput {
     }
 }
 
-public struct ListAssistantAssociationsInput {
+public struct ListAssistantAssociationsInput: Swift.Sendable {
     /// The identifier of the Wisdom assistant. Can be either the ID or the ARN. URLs cannot contain the ARN.
     /// This member is required.
     public var assistantId: Swift.String?
@@ -422,8 +422,9 @@ public struct ListAssistantAssociationsInput {
 }
 
 extension WisdomClientTypes {
+
     /// Summary information about the assistant association.
-    public struct AssistantAssociationSummary {
+    public struct AssistantAssociationSummary: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the Wisdom assistant.
         /// This member is required.
         public var assistantArn: Swift.String?
@@ -464,10 +465,9 @@ extension WisdomClientTypes {
             self.tags = tags
         }
     }
-
 }
 
-public struct ListAssistantAssociationsOutput {
+public struct ListAssistantAssociationsOutput: Swift.Sendable {
     /// Summary information about assistant associations.
     /// This member is required.
     public var assistantAssociationSummaries: [WisdomClientTypes.AssistantAssociationSummary]?
@@ -485,8 +485,9 @@ public struct ListAssistantAssociationsOutput {
 }
 
 extension WisdomClientTypes {
+
     /// The configuration information for the customer managed key used for encryption.
-    public struct ServerSideEncryptionConfiguration {
+    public struct ServerSideEncryptionConfiguration: Swift.Sendable {
         /// The customer managed key used for encryption. For more information about setting up a customer managed key for Wisdom, see [Enable Amazon Connect Wisdom for your instance](https://docs.aws.amazon.com/connect/latest/adminguide/enable-wisdom.html). For information about valid ID values, see [Key identifiers (KeyId)](https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#key-id).
         public var kmsKeyId: Swift.String?
 
@@ -497,12 +498,11 @@ extension WisdomClientTypes {
             self.kmsKeyId = kmsKeyId
         }
     }
-
 }
 
 extension WisdomClientTypes {
 
-    public enum AssistantType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AssistantType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case agent
         case sdkUnknown(Swift.String)
 
@@ -526,7 +526,7 @@ extension WisdomClientTypes {
     }
 }
 
-public struct CreateAssistantInput {
+public struct CreateAssistantInput: Swift.Sendable {
     /// A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If not provided, the Amazon Web Services SDK populates this field. For more information about idempotency, see [Making retries safe with idempotent APIs](https://aws.amazon.com/builders-library/making-retries-safe-with-idempotent-APIs/).
     public var clientToken: Swift.String?
     /// The description of the assistant.
@@ -561,8 +561,9 @@ public struct CreateAssistantInput {
 }
 
 extension WisdomClientTypes {
+
     /// The configuration information for the Wisdom assistant integration.
-    public struct AssistantIntegrationConfiguration {
+    public struct AssistantIntegrationConfiguration: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the integrated Amazon SNS topic used for streaming chat messages.
         public var topicIntegrationArn: Swift.String?
 
@@ -573,12 +574,11 @@ extension WisdomClientTypes {
             self.topicIntegrationArn = topicIntegrationArn
         }
     }
-
 }
 
 extension WisdomClientTypes {
 
-    public enum AssistantStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AssistantStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case active
         case createFailed
         case createInProgress
@@ -618,8 +618,9 @@ extension WisdomClientTypes {
 }
 
 extension WisdomClientTypes {
+
     /// The assistant data.
-    public struct AssistantData {
+    public struct AssistantData: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the Wisdom assistant.
         /// This member is required.
         public var assistantArn: Swift.String?
@@ -667,10 +668,9 @@ extension WisdomClientTypes {
             self.type = type
         }
     }
-
 }
 
-public struct CreateAssistantOutput {
+public struct CreateAssistantOutput: Swift.Sendable {
     /// Information about the assistant.
     public var assistant: WisdomClientTypes.AssistantData?
 
@@ -682,7 +682,7 @@ public struct CreateAssistantOutput {
     }
 }
 
-public struct DeleteAssistantInput {
+public struct DeleteAssistantInput: Swift.Sendable {
     /// The identifier of the Wisdom assistant. Can be either the ID or the ARN. URLs cannot contain the ARN.
     /// This member is required.
     public var assistantId: Swift.String?
@@ -695,12 +695,12 @@ public struct DeleteAssistantInput {
     }
 }
 
-public struct DeleteAssistantOutput {
+public struct DeleteAssistantOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct GetAssistantInput {
+public struct GetAssistantInput: Swift.Sendable {
     /// The identifier of the Wisdom assistant. Can be either the ID or the ARN. URLs cannot contain the ARN.
     /// This member is required.
     public var assistantId: Swift.String?
@@ -713,7 +713,7 @@ public struct GetAssistantInput {
     }
 }
 
-public struct GetAssistantOutput {
+public struct GetAssistantOutput: Swift.Sendable {
     /// Information about the assistant.
     public var assistant: WisdomClientTypes.AssistantData?
 
@@ -725,7 +725,7 @@ public struct GetAssistantOutput {
     }
 }
 
-public struct GetRecommendationsInput {
+public struct GetRecommendationsInput: Swift.Sendable {
     /// The identifier of the Wisdom assistant. Can be either the ID or the ARN. URLs cannot contain the ARN.
     /// This member is required.
     public var assistantId: Swift.String?
@@ -752,8 +752,9 @@ public struct GetRecommendationsInput {
 }
 
 extension WisdomClientTypes {
+
     /// Reference information about the content.
-    public struct ContentReference {
+    public struct ContentReference: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the content.
         public var contentArn: Swift.String?
         /// The identifier of the content.
@@ -776,12 +777,12 @@ extension WisdomClientTypes {
             self.knowledgeBaseId = knowledgeBaseId
         }
     }
-
 }
 
 extension WisdomClientTypes {
+
     /// Offset specification to describe highlighting of document excerpts for rendering search results and recommendations.
-    public struct Highlight {
+    public struct Highlight: Swift.Sendable {
         /// The offset for the start of the highlight.
         public var beginOffsetInclusive: Swift.Int
         /// The offset for the end of the highlight.
@@ -796,12 +797,12 @@ extension WisdomClientTypes {
             self.endOffsetExclusive = endOffsetExclusive
         }
     }
-
 }
 
 extension WisdomClientTypes {
+
     /// The text of the document.
-    public struct DocumentText {
+    public struct DocumentText: Swift.Sendable {
         /// Highlights in the document text.
         public var highlights: [WisdomClientTypes.Highlight]?
         /// Text in the document.
@@ -816,7 +817,6 @@ extension WisdomClientTypes {
             self.text = text
         }
     }
-
 }
 
 extension WisdomClientTypes.DocumentText: Swift.CustomDebugStringConvertible {
@@ -825,8 +825,9 @@ extension WisdomClientTypes.DocumentText: Swift.CustomDebugStringConvertible {
 }
 
 extension WisdomClientTypes {
+
     /// The document.
-    public struct Document {
+    public struct Document: Swift.Sendable {
         /// A reference to the content resource.
         /// This member is required.
         public var contentReference: WisdomClientTypes.ContentReference?
@@ -846,12 +847,11 @@ extension WisdomClientTypes {
             self.title = title
         }
     }
-
 }
 
 extension WisdomClientTypes {
 
-    public enum RelevanceLevel: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum RelevanceLevel: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case high
         case low
         case medium
@@ -883,7 +883,7 @@ extension WisdomClientTypes {
 
 extension WisdomClientTypes {
 
-    public enum RecommendationType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum RecommendationType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case knowledgeContent
         case sdkUnknown(Swift.String)
 
@@ -908,8 +908,9 @@ extension WisdomClientTypes {
 }
 
 extension WisdomClientTypes {
+
     /// Information about the recommendation.
-    public struct RecommendationData {
+    public struct RecommendationData: Swift.Sendable {
         /// The recommended document.
         /// This member is required.
         public var document: WisdomClientTypes.Document?
@@ -938,12 +939,12 @@ extension WisdomClientTypes {
             self.type = type
         }
     }
-
 }
 
 extension WisdomClientTypes {
+
     /// Data associated with the QUERY RecommendationTriggerType.
-    public struct QueryRecommendationTriggerData {
+    public struct QueryRecommendationTriggerData: Swift.Sendable {
         /// The text associated with the recommendation trigger.
         public var text: Swift.String?
 
@@ -954,7 +955,6 @@ extension WisdomClientTypes {
             self.text = text
         }
     }
-
 }
 
 extension WisdomClientTypes.QueryRecommendationTriggerData: Swift.CustomDebugStringConvertible {
@@ -963,18 +963,18 @@ extension WisdomClientTypes.QueryRecommendationTriggerData: Swift.CustomDebugStr
 }
 
 extension WisdomClientTypes {
+
     /// A union type containing information related to the trigger.
-    public enum RecommendationTriggerData {
+    public enum RecommendationTriggerData: Swift.Sendable {
         /// Data associated with the QUERY RecommendationTriggerType.
         case query(WisdomClientTypes.QueryRecommendationTriggerData)
         case sdkUnknown(Swift.String)
     }
-
 }
 
 extension WisdomClientTypes {
 
-    public enum RecommendationSourceType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum RecommendationSourceType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case issueDetection
         case other
         case ruleEvaluation
@@ -1006,7 +1006,7 @@ extension WisdomClientTypes {
 
 extension WisdomClientTypes {
 
-    public enum RecommendationTriggerType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum RecommendationTriggerType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case query
         case sdkUnknown(Swift.String)
 
@@ -1031,8 +1031,9 @@ extension WisdomClientTypes {
 }
 
 extension WisdomClientTypes {
+
     /// A recommendation trigger provides context on the event that produced the referenced recommendations. Recommendations are only referenced in recommendationIds by a single RecommendationTrigger.
-    public struct RecommendationTrigger {
+    public struct RecommendationTrigger: Swift.Sendable {
         /// A union type containing information related to the trigger.
         /// This member is required.
         public var data: WisdomClientTypes.RecommendationTriggerData?
@@ -1068,10 +1069,9 @@ extension WisdomClientTypes {
             self.type = type
         }
     }
-
 }
 
-public struct GetRecommendationsOutput {
+public struct GetRecommendationsOutput: Swift.Sendable {
     /// The recommendations.
     /// This member is required.
     public var recommendations: [WisdomClientTypes.RecommendationData]?
@@ -1088,7 +1088,7 @@ public struct GetRecommendationsOutput {
     }
 }
 
-public struct ListAssistantsInput {
+public struct ListAssistantsInput: Swift.Sendable {
     /// The maximum number of results to return per page.
     public var maxResults: Swift.Int?
     /// The token for the next set of results. Use the value returned in the previous response in the next request to retrieve the next set of results.
@@ -1105,8 +1105,9 @@ public struct ListAssistantsInput {
 }
 
 extension WisdomClientTypes {
+
     /// Summary information about the assistant.
-    public struct AssistantSummary {
+    public struct AssistantSummary: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the Wisdom assistant.
         /// This member is required.
         public var assistantArn: Swift.String?
@@ -1154,10 +1155,9 @@ extension WisdomClientTypes {
             self.type = type
         }
     }
-
 }
 
-public struct ListAssistantsOutput {
+public struct ListAssistantsOutput: Swift.Sendable {
     /// Information about the assistants.
     /// This member is required.
     public var assistantSummaries: [WisdomClientTypes.AssistantSummary]?
@@ -1174,7 +1174,7 @@ public struct ListAssistantsOutput {
     }
 }
 
-public struct NotifyRecommendationsReceivedInput {
+public struct NotifyRecommendationsReceivedInput: Swift.Sendable {
     /// The identifier of the Wisdom assistant. Can be either the ID or the ARN. URLs cannot contain the ARN.
     /// This member is required.
     public var assistantId: Swift.String?
@@ -1198,8 +1198,9 @@ public struct NotifyRecommendationsReceivedInput {
 }
 
 extension WisdomClientTypes {
+
     /// An error occurred when creating a recommendation.
-    public struct NotifyRecommendationsReceivedError {
+    public struct NotifyRecommendationsReceivedError: Swift.Sendable {
         /// A recommendation is causing an error.
         public var message: Swift.String?
         /// The identifier of the recommendation that is in error.
@@ -1214,10 +1215,9 @@ extension WisdomClientTypes {
             self.recommendationId = recommendationId
         }
     }
-
 }
 
-public struct NotifyRecommendationsReceivedOutput {
+public struct NotifyRecommendationsReceivedOutput: Swift.Sendable {
     /// The identifiers of recommendations that are causing errors.
     public var errors: [WisdomClientTypes.NotifyRecommendationsReceivedError]?
     /// The identifiers of the recommendations.
@@ -1257,7 +1257,7 @@ public struct RequestTimeoutException: ClientRuntime.ModeledError, AWSClientRunt
     }
 }
 
-public struct QueryAssistantInput {
+public struct QueryAssistantInput: Swift.Sendable {
     /// The identifier of the Wisdom assistant. Can be either the ID or the ARN. URLs cannot contain the ARN.
     /// This member is required.
     public var assistantId: Swift.String?
@@ -1289,8 +1289,9 @@ extension QueryAssistantInput: Swift.CustomDebugStringConvertible {
 }
 
 extension WisdomClientTypes {
+
     /// Information about the result.
-    public struct ResultData {
+    public struct ResultData: Swift.Sendable {
         /// The document.
         /// This member is required.
         public var document: WisdomClientTypes.Document?
@@ -1311,10 +1312,9 @@ extension WisdomClientTypes {
             self.resultId = resultId
         }
     }
-
 }
 
-public struct QueryAssistantOutput {
+public struct QueryAssistantOutput: Swift.Sendable {
     /// If there are additional results, this is the token for the next set of results.
     public var nextToken: Swift.String?
     /// The results of the query.
@@ -1333,7 +1333,7 @@ public struct QueryAssistantOutput {
 
 extension WisdomClientTypes {
 
-    public enum FilterField: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum FilterField: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case name
         case sdkUnknown(Swift.String)
 
@@ -1359,7 +1359,7 @@ extension WisdomClientTypes {
 
 extension WisdomClientTypes {
 
-    public enum FilterOperator: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum FilterOperator: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case equals
         case sdkUnknown(Swift.String)
 
@@ -1384,8 +1384,9 @@ extension WisdomClientTypes {
 }
 
 extension WisdomClientTypes {
+
     /// A search filter.
-    public struct Filter {
+    public struct Filter: Swift.Sendable {
         /// The field on which to filter.
         /// This member is required.
         public var field: WisdomClientTypes.FilterField?
@@ -1407,12 +1408,12 @@ extension WisdomClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension WisdomClientTypes {
+
     /// The search expression.
-    public struct SearchExpression {
+    public struct SearchExpression: Swift.Sendable {
         /// The search expression filters.
         /// This member is required.
         public var filters: [WisdomClientTypes.Filter]?
@@ -1424,10 +1425,9 @@ extension WisdomClientTypes {
             self.filters = filters
         }
     }
-
 }
 
-public struct SearchSessionsInput {
+public struct SearchSessionsInput: Swift.Sendable {
     /// The identifier of the Wisdom assistant. Can be either the ID or the ARN. URLs cannot contain the ARN.
     /// This member is required.
     public var assistantId: Swift.String?
@@ -1454,8 +1454,9 @@ public struct SearchSessionsInput {
 }
 
 extension WisdomClientTypes {
+
     /// Summary information about the session.
-    public struct SessionSummary {
+    public struct SessionSummary: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the Wisdom assistant.
         /// This member is required.
         public var assistantArn: Swift.String?
@@ -1482,10 +1483,9 @@ extension WisdomClientTypes {
             self.sessionId = sessionId
         }
     }
-
 }
 
-public struct SearchSessionsOutput {
+public struct SearchSessionsOutput: Swift.Sendable {
     /// If there are additional results, this is the token for the next set of results.
     public var nextToken: Swift.String?
     /// Summary information about the sessions.
@@ -1502,7 +1502,7 @@ public struct SearchSessionsOutput {
     }
 }
 
-public struct CreateSessionInput {
+public struct CreateSessionInput: Swift.Sendable {
     /// The identifier of the Wisdom assistant. Can be either the ID or the ARN. URLs cannot contain the ARN.
     /// This member is required.
     public var assistantId: Swift.String?
@@ -1533,8 +1533,9 @@ public struct CreateSessionInput {
 }
 
 extension WisdomClientTypes {
+
     /// The configuration information for the session integration.
-    public struct SessionIntegrationConfiguration {
+    public struct SessionIntegrationConfiguration: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the integrated Amazon SNS topic used for streaming chat messages.
         public var topicIntegrationArn: Swift.String?
 
@@ -1545,12 +1546,12 @@ extension WisdomClientTypes {
             self.topicIntegrationArn = topicIntegrationArn
         }
     }
-
 }
 
 extension WisdomClientTypes {
+
     /// Information about the session.
-    public struct SessionData {
+    public struct SessionData: Swift.Sendable {
         /// The description of the session.
         public var description: Swift.String?
         /// The configuration information for the session integration.
@@ -1584,10 +1585,9 @@ extension WisdomClientTypes {
             self.tags = tags
         }
     }
-
 }
 
-public struct CreateSessionOutput {
+public struct CreateSessionOutput: Swift.Sendable {
     /// The session.
     public var session: WisdomClientTypes.SessionData?
 
@@ -1599,7 +1599,7 @@ public struct CreateSessionOutput {
     }
 }
 
-public struct GetSessionInput {
+public struct GetSessionInput: Swift.Sendable {
     /// The identifier of the Wisdom assistant. Can be either the ID or the ARN. URLs cannot contain the ARN.
     /// This member is required.
     public var assistantId: Swift.String?
@@ -1617,7 +1617,7 @@ public struct GetSessionInput {
     }
 }
 
-public struct GetSessionOutput {
+public struct GetSessionOutput: Swift.Sendable {
     /// The session.
     public var session: WisdomClientTypes.SessionData?
 
@@ -1630,8 +1630,9 @@ public struct GetSessionOutput {
 }
 
 extension WisdomClientTypes {
+
     /// The configuration information of the Amazon Connect data source.
-    public struct ConnectConfiguration {
+    public struct ConnectConfiguration: Swift.Sendable {
         /// The identifier of the Amazon Connect instance. You can find the instanceId in the ARN of the instance.
         public var instanceId: Swift.String?
 
@@ -1642,20 +1643,19 @@ extension WisdomClientTypes {
             self.instanceId = instanceId
         }
     }
-
 }
 
 extension WisdomClientTypes {
+
     /// The configuration information of the external data source.
-    public enum Configuration {
+    public enum Configuration: Swift.Sendable {
         /// The configuration information of the Amazon Connect data source.
         case connectconfiguration(WisdomClientTypes.ConnectConfiguration)
         case sdkUnknown(Swift.String)
     }
-
 }
 
-public struct CreateContentInput {
+public struct CreateContentInput: Swift.Sendable {
     /// A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If not provided, the Amazon Web Services SDK populates this field. For more information about idempotency, see [Making retries safe with idempotent APIs](https://aws.amazon.com/builders-library/making-retries-safe-with-idempotent-APIs/).
     public var clientToken: Swift.String?
     /// The identifier of the knowledge base. This should not be a QUICK_RESPONSES type knowledge base if you're storing Wisdom Content resource to it. Can be either the ID or the ARN. URLs cannot contain the ARN.
@@ -1700,7 +1700,7 @@ public struct CreateContentInput {
 
 extension WisdomClientTypes {
 
-    public enum ContentStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ContentStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case active
         case createFailed
         case createInProgress
@@ -1743,8 +1743,9 @@ extension WisdomClientTypes {
 }
 
 extension WisdomClientTypes {
+
     /// Information about the content.
-    public struct ContentData {
+    public struct ContentData: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the content.
         /// This member is required.
         public var contentArn: Swift.String?
@@ -1819,7 +1820,6 @@ extension WisdomClientTypes {
             self.urlExpiry = urlExpiry
         }
     }
-
 }
 
 extension WisdomClientTypes.ContentData: Swift.CustomDebugStringConvertible {
@@ -1827,7 +1827,7 @@ extension WisdomClientTypes.ContentData: Swift.CustomDebugStringConvertible {
         "ContentData(contentArn: \(Swift.String(describing: contentArn)), contentId: \(Swift.String(describing: contentId)), contentType: \(Swift.String(describing: contentType)), knowledgeBaseArn: \(Swift.String(describing: knowledgeBaseArn)), knowledgeBaseId: \(Swift.String(describing: knowledgeBaseId)), linkOutUri: \(Swift.String(describing: linkOutUri)), metadata: \(Swift.String(describing: metadata)), name: \(Swift.String(describing: name)), revisionId: \(Swift.String(describing: revisionId)), status: \(Swift.String(describing: status)), tags: \(Swift.String(describing: tags)), title: \(Swift.String(describing: title)), urlExpiry: \(Swift.String(describing: urlExpiry)), url: \"CONTENT_REDACTED\")"}
 }
 
-public struct CreateContentOutput {
+public struct CreateContentOutput: Swift.Sendable {
     /// The content.
     public var content: WisdomClientTypes.ContentData?
 
@@ -1839,7 +1839,7 @@ public struct CreateContentOutput {
     }
 }
 
-public struct DeleteContentInput {
+public struct DeleteContentInput: Swift.Sendable {
     /// The identifier of the content. Can be either the ID or the ARN. URLs cannot contain the ARN.
     /// This member is required.
     public var contentId: Swift.String?
@@ -1857,12 +1857,12 @@ public struct DeleteContentInput {
     }
 }
 
-public struct DeleteContentOutput {
+public struct DeleteContentOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct GetContentInput {
+public struct GetContentInput: Swift.Sendable {
     /// The identifier of the content. Can be either the ID or the ARN. URLs cannot contain the ARN.
     /// This member is required.
     public var contentId: Swift.String?
@@ -1880,7 +1880,7 @@ public struct GetContentInput {
     }
 }
 
-public struct GetContentOutput {
+public struct GetContentOutput: Swift.Sendable {
     /// The content.
     public var content: WisdomClientTypes.ContentData?
 
@@ -1892,7 +1892,7 @@ public struct GetContentOutput {
     }
 }
 
-public struct GetContentSummaryInput {
+public struct GetContentSummaryInput: Swift.Sendable {
     /// The identifier of the content. Can be either the ID or the ARN. URLs cannot contain the ARN.
     /// This member is required.
     public var contentId: Swift.String?
@@ -1911,8 +1911,9 @@ public struct GetContentSummaryInput {
 }
 
 extension WisdomClientTypes {
+
     /// Summary information about the content.
-    public struct ContentSummary {
+    public struct ContentSummary: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the content.
         /// This member is required.
         public var contentArn: Swift.String?
@@ -1973,10 +1974,9 @@ extension WisdomClientTypes {
             self.title = title
         }
     }
-
 }
 
-public struct GetContentSummaryOutput {
+public struct GetContentSummaryOutput: Swift.Sendable {
     /// The content summary.
     public var contentSummary: WisdomClientTypes.ContentSummary?
 
@@ -1988,7 +1988,7 @@ public struct GetContentSummaryOutput {
     }
 }
 
-public struct ListContentsInput {
+public struct ListContentsInput: Swift.Sendable {
     /// The identifier of the knowledge base. This should not be a QUICK_RESPONSES type knowledge base if you're storing Wisdom Content resource to it. Can be either the ID or the ARN. URLs cannot contain the ARN.
     /// This member is required.
     public var knowledgeBaseId: Swift.String?
@@ -2009,7 +2009,7 @@ public struct ListContentsInput {
     }
 }
 
-public struct ListContentsOutput {
+public struct ListContentsOutput: Swift.Sendable {
     /// Information about the content.
     /// This member is required.
     public var contentSummaries: [WisdomClientTypes.ContentSummary]?
@@ -2050,7 +2050,7 @@ public struct PreconditionFailedException: ClientRuntime.ModeledError, AWSClient
     }
 }
 
-public struct UpdateContentInput {
+public struct UpdateContentInput: Swift.Sendable {
     /// The identifier of the content. Can be either the ID or the ARN. URLs cannot contain the ARN.
     /// This member is required.
     public var contentId: Swift.String?
@@ -2092,7 +2092,7 @@ public struct UpdateContentInput {
     }
 }
 
-public struct UpdateContentOutput {
+public struct UpdateContentOutput: Swift.Sendable {
     /// The content.
     public var content: WisdomClientTypes.ContentData?
 
@@ -2106,7 +2106,7 @@ public struct UpdateContentOutput {
 
 extension WisdomClientTypes {
 
-    public enum KnowledgeBaseType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum KnowledgeBaseType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case custom
         case external
         case quickResponses
@@ -2137,8 +2137,9 @@ extension WisdomClientTypes {
 }
 
 extension WisdomClientTypes {
+
     /// Information about how to render the content.
-    public struct RenderingConfiguration {
+    public struct RenderingConfiguration: Swift.Sendable {
         /// A URI template containing exactly one variable in ${variableName} format. This can only be set for EXTERNAL knowledge bases. For Salesforce, ServiceNow, and Zendesk, the variable must be one of the following:
         ///
         /// * Salesforce: Id, ArticleNumber, VersionNumber, Title, PublishStatus, or IsDeleted
@@ -2158,20 +2159,19 @@ extension WisdomClientTypes {
             self.templateUri = templateUri
         }
     }
-
 }
 
 extension WisdomClientTypes {
+
     /// Configuration information about the external data source.
-    public enum SourceConfiguration {
+    public enum SourceConfiguration: Swift.Sendable {
         /// Configuration information for Amazon AppIntegrations to automatically ingest content.
         case appintegrations(WisdomClientTypes.AppIntegrationsConfiguration)
         case sdkUnknown(Swift.String)
     }
-
 }
 
-public struct CreateKnowledgeBaseInput {
+public struct CreateKnowledgeBaseInput: Swift.Sendable {
     /// A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If not provided, the Amazon Web Services SDK populates this field. For more information about idempotency, see [Making retries safe with idempotent APIs](https://aws.amazon.com/builders-library/making-retries-safe-with-idempotent-APIs/).
     public var clientToken: Swift.String?
     /// The description.
@@ -2215,7 +2215,7 @@ public struct CreateKnowledgeBaseInput {
 
 extension WisdomClientTypes {
 
-    public enum KnowledgeBaseStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum KnowledgeBaseStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case active
         case createFailed
         case createInProgress
@@ -2255,8 +2255,9 @@ extension WisdomClientTypes {
 }
 
 extension WisdomClientTypes {
+
     /// Information about the knowledge base.
-    public struct KnowledgeBaseData {
+    public struct KnowledgeBaseData: Swift.Sendable {
         /// The description.
         public var description: Swift.String?
         /// The Amazon Resource Name (ARN) of the knowledge base.
@@ -2312,10 +2313,9 @@ extension WisdomClientTypes {
             self.tags = tags
         }
     }
-
 }
 
-public struct CreateKnowledgeBaseOutput {
+public struct CreateKnowledgeBaseOutput: Swift.Sendable {
     /// The knowledge base.
     public var knowledgeBase: WisdomClientTypes.KnowledgeBaseData?
 
@@ -2328,18 +2328,19 @@ public struct CreateKnowledgeBaseOutput {
 }
 
 extension WisdomClientTypes {
+
     /// The container of quick response data.
-    public enum QuickResponseDataProvider {
+    public enum QuickResponseDataProvider: Swift.Sendable {
         /// The content of the quick response.
         case content(Swift.String)
         case sdkUnknown(Swift.String)
     }
-
 }
 
 extension WisdomClientTypes {
+
     /// The configuration information of the grouping of Wisdom users.
-    public struct GroupingConfiguration {
+    public struct GroupingConfiguration: Swift.Sendable {
         /// The criteria used for grouping Wisdom users. The following is the list of supported criteria values.
         ///
         /// * RoutingProfileArn: Grouping the users by their [Amazon Connect routing profile ARN](https://docs.aws.amazon.com/connect/latest/APIReference/API_RoutingProfile.html). User should have [SearchRoutingProfile](https://docs.aws.amazon.com/connect/latest/APIReference/API_SearchRoutingProfiles.html) and [DescribeRoutingProfile](https://docs.aws.amazon.com/connect/latest/APIReference/API_DescribeRoutingProfile.html) permissions when setting criteria to this value.
@@ -2358,7 +2359,6 @@ extension WisdomClientTypes {
             self.values = values
         }
     }
-
 }
 
 extension WisdomClientTypes.GroupingConfiguration: Swift.CustomDebugStringConvertible {
@@ -2366,7 +2366,7 @@ extension WisdomClientTypes.GroupingConfiguration: Swift.CustomDebugStringConver
         "GroupingConfiguration(criteria: \"CONTENT_REDACTED\", values: \"CONTENT_REDACTED\")"}
 }
 
-public struct CreateQuickResponseInput {
+public struct CreateQuickResponseInput: Swift.Sendable {
     /// The Amazon Connect channels this quick response applies to.
     public var channels: [Swift.String]?
     /// A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If not provided, the Amazon Web Services SDK populates this field. For more information about idempotency, see [Making retries safe with idempotent APIs](https://aws.amazon.com/builders-library/making-retries-safe-with-idempotent-APIs/).
@@ -2435,18 +2435,19 @@ extension CreateQuickResponseInput: Swift.CustomDebugStringConvertible {
 }
 
 extension WisdomClientTypes {
+
     /// The container quick response content.
-    public enum QuickResponseContentProvider {
+    public enum QuickResponseContentProvider: Swift.Sendable {
         /// The content of the quick response.
         case content(Swift.String)
         case sdkUnknown(Swift.String)
     }
-
 }
 
 extension WisdomClientTypes {
+
     /// The content of the quick response stored in different media types.
-    public struct QuickResponseContents {
+    public struct QuickResponseContents: Swift.Sendable {
         /// The container quick response content.
         public var markdown: WisdomClientTypes.QuickResponseContentProvider?
         /// The container quick response content.
@@ -2461,12 +2462,11 @@ extension WisdomClientTypes {
             self.plainText = plainText
         }
     }
-
 }
 
 extension WisdomClientTypes {
 
-    public enum QuickResponseStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum QuickResponseStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case created
         case createFailed
         case createInProgress
@@ -2512,8 +2512,9 @@ extension WisdomClientTypes {
 }
 
 extension WisdomClientTypes {
+
     /// Information about the quick response.
-    public struct QuickResponseData {
+    public struct QuickResponseData: Swift.Sendable {
         /// The Amazon Connect contact channels this quick response applies to. The supported contact channel types include Chat.
         public var channels: [Swift.String]?
         /// The media type of the quick response content.
@@ -2605,7 +2606,6 @@ extension WisdomClientTypes {
             self.tags = tags
         }
     }
-
 }
 
 extension WisdomClientTypes.QuickResponseData: Swift.CustomDebugStringConvertible {
@@ -2613,7 +2613,7 @@ extension WisdomClientTypes.QuickResponseData: Swift.CustomDebugStringConvertibl
         "QuickResponseData(contentType: \(Swift.String(describing: contentType)), contents: \(Swift.String(describing: contents)), createdTime: \(Swift.String(describing: createdTime)), description: \(Swift.String(describing: description)), groupingConfiguration: \(Swift.String(describing: groupingConfiguration)), isActive: \(Swift.String(describing: isActive)), knowledgeBaseArn: \(Swift.String(describing: knowledgeBaseArn)), knowledgeBaseId: \(Swift.String(describing: knowledgeBaseId)), language: \(Swift.String(describing: language)), lastModifiedBy: \(Swift.String(describing: lastModifiedBy)), lastModifiedTime: \(Swift.String(describing: lastModifiedTime)), name: \(Swift.String(describing: name)), quickResponseArn: \(Swift.String(describing: quickResponseArn)), quickResponseId: \(Swift.String(describing: quickResponseId)), shortcutKey: \(Swift.String(describing: shortcutKey)), status: \(Swift.String(describing: status)), tags: \(Swift.String(describing: tags)), channels: \"CONTENT_REDACTED\")"}
 }
 
-public struct CreateQuickResponseOutput {
+public struct CreateQuickResponseOutput: Swift.Sendable {
     /// The quick response.
     public var quickResponse: WisdomClientTypes.QuickResponseData?
 
@@ -2625,7 +2625,7 @@ public struct CreateQuickResponseOutput {
     }
 }
 
-public struct DeleteImportJobInput {
+public struct DeleteImportJobInput: Swift.Sendable {
     /// The identifier of the import job to be deleted.
     /// This member is required.
     public var importJobId: Swift.String?
@@ -2643,12 +2643,12 @@ public struct DeleteImportJobInput {
     }
 }
 
-public struct DeleteImportJobOutput {
+public struct DeleteImportJobOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteKnowledgeBaseInput {
+public struct DeleteKnowledgeBaseInput: Swift.Sendable {
     /// The knowledge base to delete content from. Can be either the ID or the ARN. URLs cannot contain the ARN.
     /// This member is required.
     public var knowledgeBaseId: Swift.String?
@@ -2661,12 +2661,12 @@ public struct DeleteKnowledgeBaseInput {
     }
 }
 
-public struct DeleteKnowledgeBaseOutput {
+public struct DeleteKnowledgeBaseOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteQuickResponseInput {
+public struct DeleteQuickResponseInput: Swift.Sendable {
     /// The knowledge base from which the quick response is deleted. The identifier of the knowledge base. This should not be a QUICK_RESPONSES type knowledge base if you're storing Wisdom Content resource to it.
     /// This member is required.
     public var knowledgeBaseId: Swift.String?
@@ -2684,14 +2684,14 @@ public struct DeleteQuickResponseInput {
     }
 }
 
-public struct DeleteQuickResponseOutput {
+public struct DeleteQuickResponseOutput: Swift.Sendable {
 
     public init() { }
 }
 
 extension WisdomClientTypes {
 
-    public enum ExternalSource: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ExternalSource: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case amazonConnect
         case sdkUnknown(Swift.String)
 
@@ -2716,8 +2716,9 @@ extension WisdomClientTypes {
 }
 
 extension WisdomClientTypes {
+
     /// The configuration information of the external data source.
-    public struct ExternalSourceConfiguration {
+    public struct ExternalSourceConfiguration: Swift.Sendable {
         /// The configuration information of the external data source.
         /// This member is required.
         public var configuration: WisdomClientTypes.Configuration?
@@ -2734,10 +2735,9 @@ extension WisdomClientTypes {
             self.source = source
         }
     }
-
 }
 
-public struct GetImportJobInput {
+public struct GetImportJobInput: Swift.Sendable {
     /// The identifier of the import job to retrieve.
     /// This member is required.
     public var importJobId: Swift.String?
@@ -2757,7 +2757,7 @@ public struct GetImportJobInput {
 
 extension WisdomClientTypes {
 
-    public enum ImportJobType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ImportJobType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case quickResponses
         case sdkUnknown(Swift.String)
 
@@ -2783,7 +2783,7 @@ extension WisdomClientTypes {
 
 extension WisdomClientTypes {
 
-    public enum ImportJobStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ImportJobStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case complete
         case deleted
         case deleteFailed
@@ -2823,8 +2823,9 @@ extension WisdomClientTypes {
 }
 
 extension WisdomClientTypes {
+
     /// Summary information about the import job.
-    public struct ImportJobData {
+    public struct ImportJobData: Swift.Sendable {
         /// The timestamp when the import job was created.
         /// This member is required.
         public var createdTime: Foundation.Date?
@@ -2893,7 +2894,6 @@ extension WisdomClientTypes {
             self.urlExpiry = urlExpiry
         }
     }
-
 }
 
 extension WisdomClientTypes.ImportJobData: Swift.CustomDebugStringConvertible {
@@ -2901,7 +2901,7 @@ extension WisdomClientTypes.ImportJobData: Swift.CustomDebugStringConvertible {
         "ImportJobData(createdTime: \(Swift.String(describing: createdTime)), externalSourceConfiguration: \(Swift.String(describing: externalSourceConfiguration)), importJobId: \(Swift.String(describing: importJobId)), importJobType: \(Swift.String(describing: importJobType)), knowledgeBaseArn: \(Swift.String(describing: knowledgeBaseArn)), knowledgeBaseId: \(Swift.String(describing: knowledgeBaseId)), lastModifiedTime: \(Swift.String(describing: lastModifiedTime)), metadata: \(Swift.String(describing: metadata)), status: \(Swift.String(describing: status)), uploadId: \(Swift.String(describing: uploadId)), urlExpiry: \(Swift.String(describing: urlExpiry)), failedRecordReport: \"CONTENT_REDACTED\", url: \"CONTENT_REDACTED\")"}
 }
 
-public struct GetImportJobOutput {
+public struct GetImportJobOutput: Swift.Sendable {
     /// The import job.
     public var importJob: WisdomClientTypes.ImportJobData?
 
@@ -2913,7 +2913,7 @@ public struct GetImportJobOutput {
     }
 }
 
-public struct GetKnowledgeBaseInput {
+public struct GetKnowledgeBaseInput: Swift.Sendable {
     /// The identifier of the knowledge base. This should not be a QUICK_RESPONSES type knowledge base if you're storing Wisdom Content resource to it. Can be either the ID or the ARN. URLs cannot contain the ARN.
     /// This member is required.
     public var knowledgeBaseId: Swift.String?
@@ -2926,7 +2926,7 @@ public struct GetKnowledgeBaseInput {
     }
 }
 
-public struct GetKnowledgeBaseOutput {
+public struct GetKnowledgeBaseOutput: Swift.Sendable {
     /// The knowledge base.
     public var knowledgeBase: WisdomClientTypes.KnowledgeBaseData?
 
@@ -2938,7 +2938,7 @@ public struct GetKnowledgeBaseOutput {
     }
 }
 
-public struct GetQuickResponseInput {
+public struct GetQuickResponseInput: Swift.Sendable {
     /// The identifier of the knowledge base. This should be a QUICK_RESPONSES type knowledge base.
     /// This member is required.
     public var knowledgeBaseId: Swift.String?
@@ -2956,7 +2956,7 @@ public struct GetQuickResponseInput {
     }
 }
 
-public struct GetQuickResponseOutput {
+public struct GetQuickResponseOutput: Swift.Sendable {
     /// The quick response.
     public var quickResponse: WisdomClientTypes.QuickResponseData?
 
@@ -2969,8 +2969,9 @@ public struct GetQuickResponseOutput {
 }
 
 extension WisdomClientTypes {
+
     /// Summary information about the import job.
-    public struct ImportJobSummary {
+    public struct ImportJobSummary: Swift.Sendable {
         /// The timestamp when the import job was created.
         /// This member is required.
         public var createdTime: Foundation.Date?
@@ -3025,10 +3026,9 @@ extension WisdomClientTypes {
             self.uploadId = uploadId
         }
     }
-
 }
 
-public struct ListImportJobsInput {
+public struct ListImportJobsInput: Swift.Sendable {
     /// The identifier of the knowledge base. This should not be a QUICK_RESPONSES type knowledge base if you're storing Wisdom Content resource to it. Can be either the ID or the ARN. URLs cannot contain the ARN.
     /// This member is required.
     public var knowledgeBaseId: Swift.String?
@@ -3049,7 +3049,7 @@ public struct ListImportJobsInput {
     }
 }
 
-public struct ListImportJobsOutput {
+public struct ListImportJobsOutput: Swift.Sendable {
     /// Summary information about the import jobs.
     /// This member is required.
     public var importJobSummaries: [WisdomClientTypes.ImportJobSummary]?
@@ -3066,7 +3066,7 @@ public struct ListImportJobsOutput {
     }
 }
 
-public struct ListKnowledgeBasesInput {
+public struct ListKnowledgeBasesInput: Swift.Sendable {
     /// The maximum number of results to return per page.
     public var maxResults: Swift.Int?
     /// The token for the next set of results. Use the value returned in the previous response in the next request to retrieve the next set of results.
@@ -3083,8 +3083,9 @@ public struct ListKnowledgeBasesInput {
 }
 
 extension WisdomClientTypes {
+
     /// Summary information about the knowledge base.
-    public struct KnowledgeBaseSummary {
+    public struct KnowledgeBaseSummary: Swift.Sendable {
         /// The description of the knowledge base.
         public var description: Swift.String?
         /// The Amazon Resource Name (ARN) of the knowledge base.
@@ -3136,10 +3137,9 @@ extension WisdomClientTypes {
             self.tags = tags
         }
     }
-
 }
 
-public struct ListKnowledgeBasesOutput {
+public struct ListKnowledgeBasesOutput: Swift.Sendable {
     /// Information about the knowledge bases.
     /// This member is required.
     public var knowledgeBaseSummaries: [WisdomClientTypes.KnowledgeBaseSummary]?
@@ -3156,7 +3156,7 @@ public struct ListKnowledgeBasesOutput {
     }
 }
 
-public struct ListQuickResponsesInput {
+public struct ListQuickResponsesInput: Swift.Sendable {
     /// The identifier of the knowledge base. This should not be a QUICK_RESPONSES type knowledge base if you're storing Wisdom Content resource to it. Can be either the ID or the ARN. URLs cannot contain the ARN.
     /// This member is required.
     public var knowledgeBaseId: Swift.String?
@@ -3178,8 +3178,9 @@ public struct ListQuickResponsesInput {
 }
 
 extension WisdomClientTypes {
+
     /// The summary information about the quick response.
-    public struct QuickResponseSummary {
+    public struct QuickResponseSummary: Swift.Sendable {
         /// The Amazon Connect contact channels this quick response applies to. The supported contact channel types include Chat.
         public var channels: [Swift.String]?
         /// The media type of the quick response content.
@@ -3255,7 +3256,6 @@ extension WisdomClientTypes {
             self.tags = tags
         }
     }
-
 }
 
 extension WisdomClientTypes.QuickResponseSummary: Swift.CustomDebugStringConvertible {
@@ -3263,7 +3263,7 @@ extension WisdomClientTypes.QuickResponseSummary: Swift.CustomDebugStringConvert
         "QuickResponseSummary(contentType: \(Swift.String(describing: contentType)), createdTime: \(Swift.String(describing: createdTime)), description: \(Swift.String(describing: description)), isActive: \(Swift.String(describing: isActive)), knowledgeBaseArn: \(Swift.String(describing: knowledgeBaseArn)), knowledgeBaseId: \(Swift.String(describing: knowledgeBaseId)), lastModifiedBy: \(Swift.String(describing: lastModifiedBy)), lastModifiedTime: \(Swift.String(describing: lastModifiedTime)), name: \(Swift.String(describing: name)), quickResponseArn: \(Swift.String(describing: quickResponseArn)), quickResponseId: \(Swift.String(describing: quickResponseId)), status: \(Swift.String(describing: status)), tags: \(Swift.String(describing: tags)), channels: \"CONTENT_REDACTED\")"}
 }
 
-public struct ListQuickResponsesOutput {
+public struct ListQuickResponsesOutput: Swift.Sendable {
     /// The token for the next set of results. Use the value returned in the previous response in the next request to retrieve the next set of results.
     public var nextToken: Swift.String?
     /// Summary information about the quick responses.
@@ -3280,7 +3280,7 @@ public struct ListQuickResponsesOutput {
     }
 }
 
-public struct UpdateQuickResponseInput {
+public struct UpdateQuickResponseInput: Swift.Sendable {
     /// The Amazon Connect contact channels this quick response applies to. The supported contact channel types include Chat.
     public var channels: [Swift.String]?
     /// The updated content of the quick response.
@@ -3355,7 +3355,7 @@ extension UpdateQuickResponseInput: Swift.CustomDebugStringConvertible {
         "UpdateQuickResponseInput(content: \(Swift.String(describing: content)), contentType: \(Swift.String(describing: contentType)), description: \(Swift.String(describing: description)), groupingConfiguration: \(Swift.String(describing: groupingConfiguration)), isActive: \(Swift.String(describing: isActive)), knowledgeBaseId: \(Swift.String(describing: knowledgeBaseId)), language: \(Swift.String(describing: language)), name: \(Swift.String(describing: name)), quickResponseId: \(Swift.String(describing: quickResponseId)), removeDescription: \(Swift.String(describing: removeDescription)), removeGroupingConfiguration: \(Swift.String(describing: removeGroupingConfiguration)), removeShortcutKey: \(Swift.String(describing: removeShortcutKey)), shortcutKey: \(Swift.String(describing: shortcutKey)), channels: \"CONTENT_REDACTED\")"}
 }
 
-public struct UpdateQuickResponseOutput {
+public struct UpdateQuickResponseOutput: Swift.Sendable {
     /// The quick response.
     public var quickResponse: WisdomClientTypes.QuickResponseData?
 
@@ -3367,7 +3367,7 @@ public struct UpdateQuickResponseOutput {
     }
 }
 
-public struct RemoveKnowledgeBaseTemplateUriInput {
+public struct RemoveKnowledgeBaseTemplateUriInput: Swift.Sendable {
     /// The identifier of the knowledge base. This should not be a QUICK_RESPONSES type knowledge base if you're storing Wisdom Content resource to it. Can be either the ID or the ARN. URLs cannot contain the ARN.
     /// This member is required.
     public var knowledgeBaseId: Swift.String?
@@ -3380,12 +3380,12 @@ public struct RemoveKnowledgeBaseTemplateUriInput {
     }
 }
 
-public struct RemoveKnowledgeBaseTemplateUriOutput {
+public struct RemoveKnowledgeBaseTemplateUriOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct SearchContentInput {
+public struct SearchContentInput: Swift.Sendable {
     /// The identifier of the knowledge base. This should not be a QUICK_RESPONSES type knowledge base if you're storing Wisdom Content resource to it. Can be either the ID or the ARN. URLs cannot contain the ARN.
     /// This member is required.
     public var knowledgeBaseId: Swift.String?
@@ -3411,7 +3411,7 @@ public struct SearchContentInput {
     }
 }
 
-public struct SearchContentOutput {
+public struct SearchContentOutput: Swift.Sendable {
     /// Summary information about the content.
     /// This member is required.
     public var contentSummaries: [WisdomClientTypes.ContentSummary]?
@@ -3430,7 +3430,7 @@ public struct SearchContentOutput {
 
 extension WisdomClientTypes {
 
-    public enum QuickResponseFilterOperator: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum QuickResponseFilterOperator: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case equals
         case `prefix`
         case sdkUnknown(Swift.String)
@@ -3458,6 +3458,7 @@ extension WisdomClientTypes {
 }
 
 extension WisdomClientTypes {
+
     /// The quick response fields to filter the quick response query results by. The following is the list of supported field names.
     ///
     /// * name
@@ -3483,7 +3484,7 @@ extension WisdomClientTypes {
     /// * groupingConfiguration.criteria
     ///
     /// * groupingConfiguration.values
-    public struct QuickResponseFilterField {
+    public struct QuickResponseFilterField: Swift.Sendable {
         /// Whether to treat null value as a match for the attribute field.
         public var includeNoExistence: Swift.Bool?
         /// The name of the attribute field to filter the quick responses by.
@@ -3508,12 +3509,11 @@ extension WisdomClientTypes {
             self.values = values
         }
     }
-
 }
 
 extension WisdomClientTypes {
 
-    public enum Order: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Order: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case asc
         case desc
         case sdkUnknown(Swift.String)
@@ -3541,6 +3541,7 @@ extension WisdomClientTypes {
 }
 
 extension WisdomClientTypes {
+
     /// The quick response fields to order the quick response query results by. The following is the list of supported field names.
     ///
     /// * name
@@ -3566,7 +3567,7 @@ extension WisdomClientTypes {
     /// * groupingConfiguration.criteria
     ///
     /// * groupingConfiguration.values
-    public struct QuickResponseOrderField {
+    public struct QuickResponseOrderField: Swift.Sendable {
         /// The name of the attribute to order the quick response query results by.
         /// This member is required.
         public var name: Swift.String?
@@ -3582,12 +3583,11 @@ extension WisdomClientTypes {
             self.order = order
         }
     }
-
 }
 
 extension WisdomClientTypes {
 
-    public enum QuickResponseQueryOperator: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum QuickResponseQueryOperator: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case contains
         case containsAndPrefix
         case sdkUnknown(Swift.String)
@@ -3616,7 +3616,7 @@ extension WisdomClientTypes {
 
 extension WisdomClientTypes {
 
-    public enum Priority: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Priority: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case high
         case low
         case medium
@@ -3647,6 +3647,7 @@ extension WisdomClientTypes {
 }
 
 extension WisdomClientTypes {
+
     /// The quick response fields to query quick responses by. The following is the list of supported field names.
     ///
     /// * content
@@ -3656,7 +3657,7 @@ extension WisdomClientTypes {
     /// * description
     ///
     /// * shortcutKey
-    public struct QuickResponseQueryField {
+    public struct QuickResponseQueryField: Swift.Sendable {
         /// Whether the query expects only exact matches on the attribute field values. The results of the query will only include exact matches if this parameter is set to false.
         public var allowFuzziness: Swift.Bool?
         /// The name of the attribute to query the quick responses by.
@@ -3686,12 +3687,12 @@ extension WisdomClientTypes {
             self.values = values
         }
     }
-
 }
 
 extension WisdomClientTypes {
+
     /// Information about the import job.
-    public struct QuickResponseSearchExpression {
+    public struct QuickResponseSearchExpression: Swift.Sendable {
         /// The configuration of filtering rules applied to quick response query results.
         public var filters: [WisdomClientTypes.QuickResponseFilterField]?
         /// The quick response attribute fields on which the query results are ordered.
@@ -3710,10 +3711,9 @@ extension WisdomClientTypes {
             self.queries = queries
         }
     }
-
 }
 
-public struct SearchQuickResponsesInput {
+public struct SearchQuickResponsesInput: Swift.Sendable {
     /// The [user-defined Amazon Connect contact attributes](https://docs.aws.amazon.com/connect/latest/adminguide/connect-attrib-list.html#user-defined-attributes) to be resolved when search results are returned.
     public var attributes: [Swift.String: Swift.String]?
     /// The identifier of the knowledge base. This should be a QUICK_RESPONSES type knowledge base. Can be either the ID or the ARN. URLs cannot contain the ARN.
@@ -3749,8 +3749,9 @@ extension SearchQuickResponsesInput: Swift.CustomDebugStringConvertible {
 }
 
 extension WisdomClientTypes {
+
     /// The result of quick response search.
-    public struct QuickResponseSearchResultData {
+    public struct QuickResponseSearchResultData: Swift.Sendable {
         /// The user defined contact attributes that are resolved when the search result is returned.
         public var attributesInterpolated: [Swift.String]?
         /// The user defined contact attributes that are not resolved when the search result is returned.
@@ -3852,7 +3853,6 @@ extension WisdomClientTypes {
             self.tags = tags
         }
     }
-
 }
 
 extension WisdomClientTypes.QuickResponseSearchResultData: Swift.CustomDebugStringConvertible {
@@ -3860,7 +3860,7 @@ extension WisdomClientTypes.QuickResponseSearchResultData: Swift.CustomDebugStri
         "QuickResponseSearchResultData(contentType: \(Swift.String(describing: contentType)), contents: \(Swift.String(describing: contents)), createdTime: \(Swift.String(describing: createdTime)), description: \(Swift.String(describing: description)), groupingConfiguration: \(Swift.String(describing: groupingConfiguration)), isActive: \(Swift.String(describing: isActive)), knowledgeBaseArn: \(Swift.String(describing: knowledgeBaseArn)), knowledgeBaseId: \(Swift.String(describing: knowledgeBaseId)), language: \(Swift.String(describing: language)), lastModifiedBy: \(Swift.String(describing: lastModifiedBy)), lastModifiedTime: \(Swift.String(describing: lastModifiedTime)), name: \(Swift.String(describing: name)), quickResponseArn: \(Swift.String(describing: quickResponseArn)), quickResponseId: \(Swift.String(describing: quickResponseId)), shortcutKey: \(Swift.String(describing: shortcutKey)), status: \(Swift.String(describing: status)), tags: \(Swift.String(describing: tags)), attributesInterpolated: \"CONTENT_REDACTED\", attributesNotInterpolated: \"CONTENT_REDACTED\", channels: \"CONTENT_REDACTED\")"}
 }
 
-public struct SearchQuickResponsesOutput {
+public struct SearchQuickResponsesOutput: Swift.Sendable {
     /// The token for the next set of results. Use the value returned in the previous response in the next request to retrieve the next set of results.
     public var nextToken: Swift.String?
     /// The results of the quick response search.
@@ -3877,7 +3877,7 @@ public struct SearchQuickResponsesOutput {
     }
 }
 
-public struct StartContentUploadInput {
+public struct StartContentUploadInput: Swift.Sendable {
     /// The type of content to upload.
     /// This member is required.
     public var contentType: Swift.String?
@@ -3899,7 +3899,7 @@ public struct StartContentUploadInput {
     }
 }
 
-public struct StartContentUploadOutput {
+public struct StartContentUploadOutput: Swift.Sendable {
     /// The headers to include in the upload.
     /// This member is required.
     public var headersToInclude: [Swift.String: Swift.String]?
@@ -3932,7 +3932,7 @@ extension StartContentUploadOutput: Swift.CustomDebugStringConvertible {
         "StartContentUploadOutput(headersToInclude: \(Swift.String(describing: headersToInclude)), uploadId: \(Swift.String(describing: uploadId)), urlExpiry: \(Swift.String(describing: urlExpiry)), url: \"CONTENT_REDACTED\")"}
 }
 
-public struct StartImportJobInput {
+public struct StartImportJobInput: Swift.Sendable {
     /// The tags used to organize, track, or control access for this resource.
     public var clientToken: Swift.String?
     /// The configuration information of the external source that the resource data are imported from.
@@ -3971,7 +3971,7 @@ public struct StartImportJobInput {
     }
 }
 
-public struct StartImportJobOutput {
+public struct StartImportJobOutput: Swift.Sendable {
     /// The import job.
     public var importJob: WisdomClientTypes.ImportJobData?
 
@@ -3983,7 +3983,7 @@ public struct StartImportJobOutput {
     }
 }
 
-public struct UpdateKnowledgeBaseTemplateUriInput {
+public struct UpdateKnowledgeBaseTemplateUriInput: Swift.Sendable {
     /// The identifier of the knowledge base. This should not be a QUICK_RESPONSES type knowledge base if you're storing Wisdom Content resource to it. Can be either the ID or the ARN. URLs cannot contain the ARN.
     /// This member is required.
     public var knowledgeBaseId: Swift.String?
@@ -4001,7 +4001,7 @@ public struct UpdateKnowledgeBaseTemplateUriInput {
     }
 }
 
-public struct UpdateKnowledgeBaseTemplateUriOutput {
+public struct UpdateKnowledgeBaseTemplateUriOutput: Swift.Sendable {
     /// The knowledge base to update.
     public var knowledgeBase: WisdomClientTypes.KnowledgeBaseData?
 
@@ -4013,7 +4013,7 @@ public struct UpdateKnowledgeBaseTemplateUriOutput {
     }
 }
 
-public struct ListTagsForResourceInput {
+public struct ListTagsForResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the resource.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -4026,7 +4026,7 @@ public struct ListTagsForResourceInput {
     }
 }
 
-public struct ListTagsForResourceOutput {
+public struct ListTagsForResourceOutput: Swift.Sendable {
     /// The tags used to organize, track, or control access for this resource.
     public var tags: [Swift.String: Swift.String]?
 
@@ -4066,7 +4066,7 @@ public struct TooManyTagsException: ClientRuntime.ModeledError, AWSClientRuntime
     }
 }
 
-public struct TagResourceInput {
+public struct TagResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the resource.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -4084,12 +4084,12 @@ public struct TagResourceInput {
     }
 }
 
-public struct TagResourceOutput {
+public struct TagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UntagResourceInput {
+public struct UntagResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the resource.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -4107,7 +4107,7 @@ public struct UntagResourceInput {
     }
 }
 
-public struct UntagResourceOutput {
+public struct UntagResourceOutput: Swift.Sendable {
 
     public init() { }
 }

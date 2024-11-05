@@ -27,44 +27,45 @@ import protocol ClientRuntime.ModeledError
 @_spi(SmithyReadWrite) import struct SmithyReadWrite.ReadingClosureBox
 @_spi(SmithyReadWrite) import struct SmithyReadWrite.WritingClosureBox
 
-public struct DeleteAliasOutput {
+
+public struct DeleteAliasOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteBuildOutput {
+public struct DeleteBuildOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteContainerGroupDefinitionOutput {
+public struct DeleteContainerGroupDefinitionOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteFleetOutput {
+public struct DeleteFleetOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteScalingPolicyOutput {
+public struct DeleteScalingPolicyOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteScriptOutput {
+public struct DeleteScriptOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeregisterGameServerOutput {
+public struct DeregisterGameServerOutput: Swift.Sendable {
 
     public init() { }
 }
 
 extension GameLiftClientTypes {
 
-    public enum AcceptanceType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AcceptanceType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case accept
         case reject
         case sdkUnknown(Swift.String)
@@ -187,7 +188,7 @@ public struct UnsupportedRegionException: ClientRuntime.ModeledError, AWSClientR
     }
 }
 
-public struct AcceptMatchInput {
+public struct AcceptMatchInput: Swift.Sendable {
     /// Player response to the proposed match.
     /// This member is required.
     public var acceptanceType: GameLiftClientTypes.AcceptanceType?
@@ -215,14 +216,14 @@ extension AcceptMatchInput: Swift.CustomDebugStringConvertible {
         "AcceptMatchInput(acceptanceType: \(Swift.String(describing: acceptanceType)), ticketId: \(Swift.String(describing: ticketId)), playerIds: \"CONTENT_REDACTED\")"}
 }
 
-public struct AcceptMatchOutput {
+public struct AcceptMatchOutput: Swift.Sendable {
 
     public init() { }
 }
 
 extension GameLiftClientTypes {
 
-    public enum RoutingStrategyType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum RoutingStrategyType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case simple
         case terminal
         case sdkUnknown(Swift.String)
@@ -250,8 +251,9 @@ extension GameLiftClientTypes {
 }
 
 extension GameLiftClientTypes {
+
     /// The routing configuration for a fleet alias. Related actions [All APIs by task](https://docs.aws.amazon.com/gamelift/latest/developerguide/reference-awssdk.html#reference-awssdk-resources-fleets)
-    public struct RoutingStrategy {
+    public struct RoutingStrategy: Swift.Sendable {
         /// A unique identifier for the fleet that the alias points to. This value is the fleet ID, not the fleet ARN.
         public var fleetId: Swift.String?
         /// The message text to be used with a terminal routing strategy.
@@ -274,12 +276,12 @@ extension GameLiftClientTypes {
             self.type = type
         }
     }
-
 }
 
 extension GameLiftClientTypes {
+
     /// Properties that describe an alias resource. Related actions [All APIs by task](https://docs.aws.amazon.com/gamelift/latest/developerguide/reference-awssdk.html#reference-awssdk-resources-fleets)
-    public struct Alias {
+    public struct Alias: Swift.Sendable {
         /// The Amazon Resource Name ([ARN](https://docs.aws.amazon.com/AmazonS3/latest/dev/s3-arn-format.html)) that is assigned to a Amazon GameLift alias resource and uniquely identifies it. ARNs are unique across all Regions. Format is arn:aws:gamelift:::alias/alias-a1234567-b8c9-0d1e-2fa3-b45c6d7e8912. In a GameLift alias ARN, the resource ID matches the alias ID value.
         public var aliasArn: Swift.String?
         /// A unique identifier for the alias. Alias IDs are unique within a Region.
@@ -314,12 +316,12 @@ extension GameLiftClientTypes {
             self.routingStrategy = routingStrategy
         }
     }
-
 }
 
 extension GameLiftClientTypes {
+
     /// Amazon GameLift configuration options for your Anywhere fleets.
-    public struct AnywhereConfiguration {
+    public struct AnywhereConfiguration: Swift.Sendable {
         /// The cost to run your fleet per hour. Amazon GameLift uses the provided cost of your fleet to balance usage in queues. For more information about queues, see [Setting up queues](https://docs.aws.amazon.com/gamelift/latest/developerguide/queues-intro.html) in the Amazon GameLift Developer Guide.
         /// This member is required.
         public var cost: Swift.String?
@@ -331,12 +333,12 @@ extension GameLiftClientTypes {
             self.cost = cost
         }
     }
-
 }
 
 extension GameLiftClientTypes {
+
     /// Values for use in player attribute key-value pairs. This object lets you specify an attribute value using any of the valid data types: string, number, string array, or data map. Each AttributeValue object can use only one of the available properties.
-    public struct AttributeValue {
+    public struct AttributeValue: Swift.Sendable {
         /// For number values, expressed as double.
         public var n: Swift.Double?
         /// For single string values. Maximum string length is 100 characters.
@@ -359,16 +361,16 @@ extension GameLiftClientTypes {
             self.sl = sl
         }
     }
-
 }
 
 extension GameLiftClientTypes {
+
     /// Amazon Web Services account security credentials that allow interactions with Amazon GameLift resources. The credentials are temporary and valid for a limited time span. You can request fresh credentials at any time. Amazon Web Services security credentials consist of three parts: an access key ID, a secret access key, and a session token. You must use all three parts together to authenticate your access requests. You need Amazon Web Services credentials for the following tasks:
     ///
     /// * To upload a game server build directly to Amazon GameLift S3 storage using CreateBuild. To get access for this task, call [RequestUploadCredentials].
     ///
     /// * To remotely connect to an active Amazon GameLift fleet instances. To get remote access, call [GetComputeAccess].
-    public struct AwsCredentials {
+    public struct AwsCredentials: Swift.Sendable {
         /// The access key ID that identifies the temporary security credentials.
         public var accessKeyId: Swift.String?
         /// The secret access key that can be used to sign requests.
@@ -387,7 +389,6 @@ extension GameLiftClientTypes {
             self.sessionToken = sessionToken
         }
     }
-
 }
 
 extension GameLiftClientTypes.AwsCredentials: Swift.CustomDebugStringConvertible {
@@ -398,7 +399,7 @@ extension GameLiftClientTypes.AwsCredentials: Swift.CustomDebugStringConvertible
 
 extension GameLiftClientTypes {
 
-    public enum BackfillMode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum BackfillMode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case automatic
         case manual
         case sdkUnknown(Swift.String)
@@ -427,7 +428,7 @@ extension GameLiftClientTypes {
 
 extension GameLiftClientTypes {
 
-    public enum BalancingStrategy: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum BalancingStrategy: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case onDemandOnly
         case spotOnly
         case spotPreferred
@@ -459,7 +460,7 @@ extension GameLiftClientTypes {
 
 extension GameLiftClientTypes {
 
-    public enum OperatingSystem: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum OperatingSystem: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case amazonLinux
         case amazonLinux2
         case amazonLinux2023
@@ -497,7 +498,7 @@ extension GameLiftClientTypes {
 
 extension GameLiftClientTypes {
 
-    public enum BuildStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum BuildStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case failed
         case initialized
         case ready
@@ -528,8 +529,9 @@ extension GameLiftClientTypes {
 }
 
 extension GameLiftClientTypes {
+
     /// Properties describing a custom game build. [All APIs by task](https://docs.aws.amazon.com/gamelift/latest/developerguide/reference-awssdk.html#reference-awssdk-resources-fleets)
-    public struct Build {
+    public struct Build: Swift.Sendable {
         /// The Amazon Resource Name ([ARN](https://docs.aws.amazon.com/AmazonS3/latest/dev/s3-arn-format.html)) assigned to a Amazon GameLift build resource and uniquely identifies it. ARNs are unique across all Regions. Format is arn:aws:gamelift:::build/build-a1234567-b8c9-0d1e-2fa3-b45c6d7e8912. In a GameLift build ARN, the resource ID matches the BuildId value.
         public var buildArn: Swift.String?
         /// A unique identifier for the build.
@@ -578,12 +580,11 @@ extension GameLiftClientTypes {
             self.version = version
         }
     }
-
 }
 
 extension GameLiftClientTypes {
 
-    public enum CertificateType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum CertificateType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case disabled
         case generated
         case sdkUnknown(Swift.String)
@@ -611,8 +612,9 @@ extension GameLiftClientTypes {
 }
 
 extension GameLiftClientTypes {
+
     /// This data type has been expanded to use with the Amazon GameLift containers feature, which is currently in public preview. Determines whether a TLS/SSL certificate is generated for a fleet. This feature must be enabled when creating the fleet. All instances in a fleet share the same certificate. The certificate can be retrieved by calling the [Amazon GameLift Server SDK](https://docs.aws.amazon.com/gamelift/latest/developerguide/reference-serversdk.html) operation GetInstanceCertificate.
-    public struct CertificateConfiguration {
+    public struct CertificateConfiguration: Swift.Sendable {
         /// Indicates whether a TLS/SSL certificate is generated for a fleet. Valid values include:
         ///
         /// * GENERATED - Generate a TLS/SSL certificate for this fleet.
@@ -628,12 +630,11 @@ extension GameLiftClientTypes {
             self.certificateType = certificateType
         }
     }
-
 }
 
 extension GameLiftClientTypes {
 
-    public enum FilterInstanceStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum FilterInstanceStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case active
         case draining
         case sdkUnknown(Swift.String)
@@ -661,8 +662,9 @@ extension GameLiftClientTypes {
 }
 
 extension GameLiftClientTypes {
+
     /// This data type is used with the Amazon GameLift FleetIQ and game server groups. Filters which game servers may be claimed when calling ClaimGameServer.
-    public struct ClaimFilterOption {
+    public struct ClaimFilterOption: Swift.Sendable {
         /// List of instance statuses that game servers may be claimed on. If provided, the list must contain the ACTIVE status.
         public var instanceStatuses: [GameLiftClientTypes.FilterInstanceStatus]?
 
@@ -673,7 +675,6 @@ extension GameLiftClientTypes {
             self.instanceStatuses = instanceStatuses
         }
     }
-
 }
 
 /// The requested operation would cause a conflict with the current state of a service resource associated with the request. Resolve the conflict before retrying this request.
@@ -748,7 +749,7 @@ public struct UnauthorizedException: ClientRuntime.ModeledError, AWSClientRuntim
     }
 }
 
-public struct ClaimGameServerInput {
+public struct ClaimGameServerInput: Swift.Sendable {
     /// Object that restricts how a claimed game server is chosen.
     public var filterOption: GameLiftClientTypes.ClaimFilterOption?
     /// A set of custom game server properties, formatted as a single string value. This data is passed to a game client or service when it requests information on game servers.
@@ -775,7 +776,7 @@ public struct ClaimGameServerInput {
 
 extension GameLiftClientTypes {
 
-    public enum GameServerClaimStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum GameServerClaimStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case claimed
         case sdkUnknown(Swift.String)
 
@@ -801,7 +802,7 @@ extension GameLiftClientTypes {
 
 extension GameLiftClientTypes {
 
-    public enum GameServerUtilizationStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum GameServerUtilizationStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case available
         case utilized
         case sdkUnknown(Swift.String)
@@ -829,8 +830,9 @@ extension GameLiftClientTypes {
 }
 
 extension GameLiftClientTypes {
+
     /// This data type is used with the Amazon GameLift FleetIQ and game server groups. Properties describing a game server that is running on an instance in a game server group. A game server is created by a successful call to RegisterGameServer and deleted by calling DeregisterGameServer. A game server is claimed to host a game session by calling ClaimGameServer.
-    public struct GameServer {
+    public struct GameServer: Swift.Sendable {
         /// Indicates when an available game server has been reserved for gameplay but has not yet started hosting a game. Once it is claimed, the game server remains in CLAIMED status for a maximum of one minute. During this time, game clients connect to the game server to start the game and trigger the game server to update its utilization status. After one minute, the game server claim status reverts to null.
         public var claimStatus: GameLiftClientTypes.GameServerClaimStatus?
         /// The port and IP address that must be used to establish a client connection to the game server.
@@ -885,10 +887,9 @@ extension GameLiftClientTypes {
             self.utilizationStatus = utilizationStatus
         }
     }
-
 }
 
-public struct ClaimGameServerOutput {
+public struct ClaimGameServerOutput: Swift.Sendable {
     /// Object that describes the newly claimed game server.
     public var gameServer: GameLiftClientTypes.GameServer?
 
@@ -902,7 +903,7 @@ public struct ClaimGameServerOutput {
 
 extension GameLiftClientTypes {
 
-    public enum ComparisonOperatorType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ComparisonOperatorType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case greaterthanorequaltothreshold
         case greaterthanthreshold
         case lessthanorequaltothreshold
@@ -937,7 +938,7 @@ extension GameLiftClientTypes {
 
 extension GameLiftClientTypes {
 
-    public enum ComputeStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ComputeStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case active
         case pending
         case terminating
@@ -969,7 +970,7 @@ extension GameLiftClientTypes {
 
 extension GameLiftClientTypes {
 
-    public enum IpProtocol: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum IpProtocol: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case tcp
         case udp
         case sdkUnknown(Swift.String)
@@ -997,8 +998,9 @@ extension GameLiftClientTypes {
 }
 
 extension GameLiftClientTypes {
+
     /// This data type is used with the Amazon GameLift containers feature, which is currently in public preview. Defines how an internal-facing container port is mapped to an external-facing connection port on a fleet instance of compute type CONTAINER. Incoming traffic, such as a game client, uses a connection port to connect to a process in the container fleet. Amazon GameLift directs the inbound traffic to the container port that is assigned to the process, such as a game session, running on a container. Part of: [ContainerAttributes]
-    public struct ContainerPortMapping {
+    public struct ContainerPortMapping: Swift.Sendable {
         /// The port opened on the fleet instance. This is also called the "host port".
         public var connectionPort: Swift.Int?
         /// The port opened on the container.
@@ -1017,7 +1019,6 @@ extension GameLiftClientTypes {
             self.`protocol` = `protocol`
         }
     }
-
 }
 
 extension GameLiftClientTypes.ContainerPortMapping: Swift.CustomDebugStringConvertible {
@@ -1026,8 +1027,9 @@ extension GameLiftClientTypes.ContainerPortMapping: Swift.CustomDebugStringConve
 }
 
 extension GameLiftClientTypes {
+
     /// This data type is used with the Amazon GameLift containers feature, which is currently in public preview. Describes attributes of containers that are deployed to a fleet with compute type CONTAINER.
-    public struct ContainerAttributes {
+    public struct ContainerAttributes: Swift.Sendable {
         /// Describes how container ports map to connection ports on the fleet instance. Incoming traffic connects to a game via a connection port. A ContainerPortMapping directs the traffic from a connection port to a port on the container that hosts the game session.
         public var containerPortMappings: [GameLiftClientTypes.ContainerPortMapping]?
 
@@ -1038,12 +1040,11 @@ extension GameLiftClientTypes {
             self.containerPortMappings = containerPortMappings
         }
     }
-
 }
 
 extension GameLiftClientTypes {
 
-    public enum EC2InstanceType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum EC2InstanceType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case c32xlarge
         case c34xlarge
         case c38xlarge
@@ -1590,6 +1591,7 @@ extension GameLiftClientTypes {
 }
 
 extension GameLiftClientTypes {
+
     /// This data type has been expanded to use with the Amazon GameLift containers feature, which is currently in public preview. An Amazon GameLift compute resource for hosting your game servers. Computes in an Amazon GameLift fleet differs depending on the fleet's compute type property as follows:
     ///
     /// * For EC2 fleets, a compute is an EC2 instance.
@@ -1597,7 +1599,7 @@ extension GameLiftClientTypes {
     /// * For ANYWHERE fleets, a compute is a computing resource that you provide and is registered to the fleet.
     ///
     /// * For CONTAINER fleets, a compute is a container that's registered to the fleet.
-    public struct Compute {
+    public struct Compute: Swift.Sendable {
         /// The ARN that is assigned to a compute resource and uniquely identifies it. ARNs are unique across locations. Instances in managed EC2 fleets are not assigned a Compute ARN.
         public var computeArn: Swift.String?
         /// A descriptive label for the compute resource. For instances in a managed EC2 fleet, the compute name is the same value as the InstanceId ID.
@@ -1664,7 +1666,6 @@ extension GameLiftClientTypes {
             self.type = type
         }
     }
-
 }
 
 extension GameLiftClientTypes.Compute: Swift.CustomDebugStringConvertible {
@@ -1674,7 +1675,7 @@ extension GameLiftClientTypes.Compute: Swift.CustomDebugStringConvertible {
 
 extension GameLiftClientTypes {
 
-    public enum ComputeType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ComputeType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case anywhere
         case container
         case ec2
@@ -1705,8 +1706,9 @@ extension GameLiftClientTypes {
 }
 
 extension GameLiftClientTypes {
+
     /// This operation has been expanded to use with the Amazon GameLift containers feature, which is currently in public preview. The set of port numbers to open on each instance in a container fleet. Connection ports are used by inbound traffic to connect with processes that are running in containers on the fleet. Part of: [ContainerGroupsConfiguration], [ContainerGroupsAttributes]
-    public struct ConnectionPortRange {
+    public struct ConnectionPortRange: Swift.Sendable {
         /// Starting value for the port range.
         /// This member is required.
         public var fromPort: Swift.Int?
@@ -1723,7 +1725,6 @@ extension GameLiftClientTypes {
             self.toPort = toPort
         }
     }
-
 }
 
 extension GameLiftClientTypes.ConnectionPortRange: Swift.CustomDebugStringConvertible {
@@ -1733,7 +1734,7 @@ extension GameLiftClientTypes.ConnectionPortRange: Swift.CustomDebugStringConver
 
 extension GameLiftClientTypes {
 
-    public enum ContainerDependencyCondition: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ContainerDependencyCondition: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case complete
         case healthy
         case start
@@ -1767,8 +1768,9 @@ extension GameLiftClientTypes {
 }
 
 extension GameLiftClientTypes {
+
     /// This data type is used with the Amazon GameLift containers feature, which is currently in public preview. A container's dependency on another container in the same container group. The dependency impacts how the dependent container is able to start or shut down based the status of the other container. For example, ContainerA is configured with the following dependency: a START dependency on ContainerB. This means that ContainerA can't start until ContainerB has started. It also means that ContainerA must shut down before ContainerB. Part of: [ContainerDefinition]
-    public struct ContainerDependency {
+    public struct ContainerDependency: Swift.Sendable {
         /// The condition that the dependency container must reach before the dependent container can start. Valid conditions include:
         ///
         /// * START - The dependency container must have started.
@@ -1793,12 +1795,12 @@ extension GameLiftClientTypes {
             self.containerName = containerName
         }
     }
-
 }
 
 extension GameLiftClientTypes {
+
     /// This data type is used with the Amazon GameLift containers feature, which is currently in public preview. An environment variable to set inside a container, in the form of a key-value pair. Related data type: [ContainerDefinition$Environment]
-    public struct ContainerEnvironment {
+    public struct ContainerEnvironment: Swift.Sendable {
         /// The environment variable name.
         /// This member is required.
         public var name: Swift.String?
@@ -1815,12 +1817,12 @@ extension GameLiftClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension GameLiftClientTypes {
+
     /// Instructions on when and how to check the health of a container in a container fleet. When health check properties are set in a container definition, they override any Docker health checks in the container image. For more information on container health checks, see [HealthCheck command](https://docs.aws.amazon.com/AmazonECS/latest/APIReference/API_HealthCheck.html#ECS-Type-HealthCheck-command) in the Amazon Elastic Container Service API. The following example instructions tell the container to wait 100 seconds after launch before counting failed health checks, then initiate the health check command every 60 seconds. After issuing the health check command, wait 10 seconds for it to succeed. If it fails, retry the command 3 times before considering the container to be unhealthy. {"Command": [ "CMD-SHELL", "ps cax | grep "processmanager" || exit 1" ], "Interval": 300, "Timeout": 30, "Retries": 5, "StartPeriod": 100 } Part of: [ContainerDefinition$HealthCheck]
-    public struct ContainerHealthCheck {
+    public struct ContainerHealthCheck: Swift.Sendable {
         /// A string array that specifies the command that the container runs to determine if it's healthy.
         /// This member is required.
         public var command: [Swift.String]?
@@ -1848,12 +1850,12 @@ extension GameLiftClientTypes {
             self.timeout = timeout
         }
     }
-
 }
 
 extension GameLiftClientTypes {
+
     /// Specifies how much memory is available to a container. You can't change this value after you create this object. Part of: [ContainerDefinition$MemoryLimits]
-    public struct ContainerMemoryLimits {
+    public struct ContainerMemoryLimits: Swift.Sendable {
         /// The maximum amount of memory that the container can use. If a container attempts to exceed this limit, the container is stopped. This property is similar to the Amazon ECS container definition parameter [memory](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/task_definition_parameters.html#container_definition_memory) in the Amazon Elastic Container Service Developer Guide.
         public var hardLimit: Swift.Int?
         /// The amount of memory that is reserved for a container. When the container group's shared memory is under contention, the system attempts to maintain the container memory usage at this soft limit. However, the container can use more memory when needed, if available. This property is similar to the Amazon ECS container definition parameter [memoryreservation](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/task_definition_parameters.html#ContainerDefinition-memoryReservation) (Amazon Elastic Container Service Developer Guide).
@@ -1868,12 +1870,12 @@ extension GameLiftClientTypes {
             self.softLimit = softLimit
         }
     }
-
 }
 
 extension GameLiftClientTypes {
+
     /// This data type is used with the Amazon GameLift containers feature, which is currently in public preview. A set of one or more port numbers that can be opened on the container. Part of: [ContainerPortConfiguration]
-    public struct ContainerPortRange {
+    public struct ContainerPortRange: Swift.Sendable {
         /// A starting value for the range of allowed port numbers.
         /// This member is required.
         public var fromPort: Swift.Int?
@@ -1895,7 +1897,6 @@ extension GameLiftClientTypes {
             self.toPort = toPort
         }
     }
-
 }
 
 extension GameLiftClientTypes.ContainerPortRange: Swift.CustomDebugStringConvertible {
@@ -1904,8 +1905,9 @@ extension GameLiftClientTypes.ContainerPortRange: Swift.CustomDebugStringConvert
 }
 
 extension GameLiftClientTypes {
+
     /// Defines ranges of ports that server processes can connect to. Part of: [ContainerDefinition$PortConfiguration]
-    public struct ContainerPortConfiguration {
+    public struct ContainerPortConfiguration: Swift.Sendable {
         /// Specifies one or more ranges of ports on a container. These ranges must not overlap.
         /// This member is required.
         public var containerPortRanges: [GameLiftClientTypes.ContainerPortRange]?
@@ -1917,12 +1919,12 @@ extension GameLiftClientTypes {
             self.containerPortRanges = containerPortRanges
         }
     }
-
 }
 
 extension GameLiftClientTypes {
+
     /// This data type is used with the Amazon GameLift containers feature, which is currently in public preview. Describes a container in a container fleet, the resources available to the container, and the commands that are run when the container starts. Container properties can't be updated. To change a property, create a new container group definition. See also [ContainerDefinitionInput]. Part of: [ContainerGroupDefinition] Returned by: [DescribeContainerGroupDefinition], [ListContainerGroupDefinitions]
-    public struct ContainerDefinition {
+    public struct ContainerDefinition: Swift.Sendable {
         /// A command that's passed to the container on startup. Each argument for the command is an additional string in the array. See the [ContainerDefinition::command](https://docs.aws.amazon.com/AmazonECS/latest/APIReference/API_ContainerDefinition.html#ECS-Type-ContainerDefinition-command) parameter in the Amazon Elastic Container Service API reference.
         public var command: [Swift.String]?
         /// The container definition identifier. Container names are unique within a container group definition.
@@ -1983,12 +1985,12 @@ extension GameLiftClientTypes {
             self.workingDirectory = workingDirectory
         }
     }
-
 }
 
 extension GameLiftClientTypes {
+
     /// This data type is used with the Amazon GameLift containers feature, which is currently in public preview. Describes a container's configuration, resources, and start instructions. Use this data type to create a container group definition. For the properties of a container that's been deployed to a fleet, see [ContainerDefinition]. You can't change these properties after you've created the container group definition. If you need a container group with different properties, then you must create a new one. Used with: [CreateContainerGroupDefinition]
-    public struct ContainerDefinitionInput {
+    public struct ContainerDefinitionInput: Swift.Sendable {
         /// A command to pass to the container on startup. Add multiple arguments as additional strings in the array. See the [ContainerDefinition command](https://docs.aws.amazon.com/AmazonECS/latest/APIReference/API_ContainerDefinition.html#ECS-Type-ContainerDefinition-command) parameter in the Amazon Elastic Container Service API reference.
         public var command: [Swift.String]?
         /// A string that uniquely identifies the container definition within a container group.
@@ -2060,12 +2062,11 @@ extension GameLiftClientTypes {
             self.workingDirectory = workingDirectory
         }
     }
-
 }
 
 extension GameLiftClientTypes {
 
-    public enum ContainerOperatingSystem: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ContainerOperatingSystem: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case amazonLinux2023
         case sdkUnknown(Swift.String)
 
@@ -2091,7 +2092,7 @@ extension GameLiftClientTypes {
 
 extension GameLiftClientTypes {
 
-    public enum ContainerSchedulingStrategy: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ContainerSchedulingStrategy: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case daemon
         case replica
         case sdkUnknown(Swift.String)
@@ -2120,7 +2121,7 @@ extension GameLiftClientTypes {
 
 extension GameLiftClientTypes {
 
-    public enum ContainerGroupDefinitionStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ContainerGroupDefinitionStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case copying
         case failed
         case ready
@@ -2151,8 +2152,9 @@ extension GameLiftClientTypes {
 }
 
 extension GameLiftClientTypes {
+
     /// This data type is used with the Amazon GameLift containers feature, which is currently in public preview. The properties that describe a container group resource. Container group definition properties can't be updated. To change a property, create a new container group definition. Used with: [CreateContainerGroupDefinition] Returned by: [DescribeContainerGroupDefinition], [ListContainerGroupDefinitions]
-    public struct ContainerGroupDefinition {
+    public struct ContainerGroupDefinition: Swift.Sendable {
         /// The set of container definitions that are included in the container group.
         public var containerDefinitions: [GameLiftClientTypes.ContainerDefinition]?
         /// The Amazon Resource Name ([ARN](https://docs.aws.amazon.com/AmazonS3/latest/dev/s3-arn-format.html)) that is assigned to an Amazon GameLift ContainerGroupDefinition resource. It uniquely identifies the resource across all Amazon Web Services Regions. Format is arn:aws:gamelift:::containergroupdefinition/[container group definition name].
@@ -2222,12 +2224,12 @@ extension GameLiftClientTypes {
             self.totalMemoryLimit = totalMemoryLimit
         }
     }
-
 }
 
 extension GameLiftClientTypes {
+
     /// This data type is used with the Amazon GameLift containers feature, which is currently in public preview. The properties of a container group that is deployed to a container fleet. Part of: [ContainerGroupsAttributes] Returned by: [DescribeFleetAttributes]
-    public struct ContainerGroupDefinitionProperty {
+    public struct ContainerGroupDefinitionProperty: Swift.Sendable {
         /// The unique identifier for the container group definition.
         public var containerGroupDefinitionName: Swift.String?
         /// The method for scheduling and maintaining copies of the container group across a container fleet.
@@ -2242,10 +2244,10 @@ extension GameLiftClientTypes {
             self.schedulingStrategy = schedulingStrategy
         }
     }
-
 }
 
 extension GameLiftClientTypes {
+
     /// This data type is used with the Amazon GameLift containers feature, which is currently in public preview. Determines how many replica container groups that Amazon GameLift deploys to each instance in a container fleet. Amazon GameLift calculates the maximum possible replica groups per instance based on the instance 's CPU and memory resources. When deploying a fleet, Amazon GameLift places replica container groups on each fleet instance based on the following:
     ///
     /// * If no desired value is set, Amazon GameLift places the calculated maximum.
@@ -2256,7 +2258,7 @@ extension GameLiftClientTypes {
     ///
     ///
     /// Part of: [ContainerGroupsConfiguration], [ContainerGroupsAttributes] Returned by: [DescribeFleetAttributes], [CreateFleet]
-    public struct ContainerGroupsPerInstance {
+    public struct ContainerGroupsPerInstance: Swift.Sendable {
         /// The desired number of replica container groups to place on each fleet instance.
         public var desiredReplicaContainerGroupsPerInstance: Swift.Int?
         /// The maximum possible number of replica container groups that each fleet instance can have.
@@ -2271,12 +2273,12 @@ extension GameLiftClientTypes {
             self.maxReplicaContainerGroupsPerInstance = maxReplicaContainerGroupsPerInstance
         }
     }
-
 }
 
 extension GameLiftClientTypes {
+
     /// This data type is used with the Amazon GameLift containers feature, which is currently in public preview. The properties of container groups that are running on a container fleet. Container group properties for a fleet can't be changed. Returned by: [DescribeFleetAttributes], [CreateFleet]
-    public struct ContainerGroupsAttributes {
+    public struct ContainerGroupsAttributes: Swift.Sendable {
         /// A set of ports that allow inbound traffic to connect to processes running in the fleet's container groups. Amazon GameLift maps each connection port to a container port, which is assigned to a specific container process. A fleet's connection port range can't be changed, but you can control access to connection ports by updating a fleet's EC2InboundPermissions with [UpdateFleetPortSettings].
         public var connectionPortRange: GameLiftClientTypes.ConnectionPortRange?
         /// A collection of properties that describe each container group in the fleet. A container fleet is deployed with one or more [ContainerGroupDefinition] resources, which is where these properties are set.
@@ -2295,12 +2297,12 @@ extension GameLiftClientTypes {
             self.containerGroupsPerInstance = containerGroupsPerInstance
         }
     }
-
 }
 
 extension GameLiftClientTypes {
+
     /// This data type is used with the Amazon GameLift containers feature, which is currently in public preview. Configuration details for a set of container groups, for use when creating a fleet with compute type CONTAINER. Used with: [CreateFleet]
-    public struct ContainerGroupsConfiguration {
+    public struct ContainerGroupsConfiguration: Swift.Sendable {
         /// A set of ports to allow inbound traffic, including game clients, to connect to processes running in the container fleet. Connection ports are dynamically mapped to container ports, which are assigned to individual processes running in a container. The connection port range must have enough ports to map to all container ports across a fleet instance. To calculate the minimum connection ports needed, use the following formula: [Total number of container ports as defined for containers in the replica container group] * [Desired or calculated number of replica container groups per instance] + [Total number of container ports as defined for containers in the daemon container group] As a best practice, double the minimum number of connection ports. Use the fleet's EC2InboundPermissions property to control external access to connection ports. Set this property to the connection port numbers that you want to open access to. See [IpPermission] for more details.
         /// This member is required.
         public var connectionPortRange: GameLiftClientTypes.ConnectionPortRange?
@@ -2321,7 +2323,6 @@ extension GameLiftClientTypes {
             self.desiredReplicaContainerGroupsPerInstance = desiredReplicaContainerGroupsPerInstance
         }
     }
-
 }
 
 /// The requested operation would cause the resource to exceed the allowed service limit. Resolve the issue before retrying.
@@ -2373,8 +2374,9 @@ public struct TaggingFailedException: ClientRuntime.ModeledError, AWSClientRunti
 }
 
 extension GameLiftClientTypes {
+
     /// A label that you can assign to a Amazon GameLift resource. Learn more [Tagging Amazon Web Services Resources](https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html) in the Amazon Web Services General Reference [ Amazon Web Services Tagging Strategies](http://aws.amazon.com/answers/account-management/aws-tagging-strategies/) Related actions [All APIs by task](https://docs.aws.amazon.com/gamelift/latest/developerguide/reference-awssdk.html#reference-awssdk-resources-fleets)
-    public struct Tag {
+    public struct Tag: Swift.Sendable {
         /// The key for a developer-defined key value pair for tagging an Amazon Web Services resource.
         /// This member is required.
         public var key: Swift.String?
@@ -2391,10 +2393,9 @@ extension GameLiftClientTypes {
             self.value = value
         }
     }
-
 }
 
-public struct CreateAliasInput {
+public struct CreateAliasInput: Swift.Sendable {
     /// A human-readable description of the alias.
     public var description: Swift.String?
     /// A descriptive label that is associated with an alias. Alias names do not need to be unique.
@@ -2420,7 +2421,7 @@ public struct CreateAliasInput {
     }
 }
 
-public struct CreateAliasOutput {
+public struct CreateAliasOutput: Swift.Sendable {
     /// The newly created alias resource.
     public var alias: GameLiftClientTypes.Alias?
 
@@ -2433,8 +2434,9 @@ public struct CreateAliasOutput {
 }
 
 extension GameLiftClientTypes {
+
     /// The location in Amazon S3 where build or script files are stored for access by Amazon GameLift.
-    public struct S3Location {
+    public struct S3Location: Swift.Sendable {
         /// An Amazon S3 bucket identifier. Thename of the S3 bucket. Amazon GameLift doesn't support uploading from Amazon S3 buckets with names that contain a dot (.).
         public var bucket: Swift.String?
         /// The name of the zip file that contains the build files or script files.
@@ -2457,10 +2459,9 @@ extension GameLiftClientTypes {
             self.roleArn = roleArn
         }
     }
-
 }
 
-public struct CreateBuildInput {
+public struct CreateBuildInput: Swift.Sendable {
     /// A descriptive label associated with a build. Build names don't need to be unique. You can change this value later.
     public var name: Swift.String?
     /// The operating system that your game server binaries run on. This value determines the type of fleet resources that you use for this build. If your game build contains multiple executables, they all must run on the same operating system. You must specify a valid operating system in this request. There is no default value. You can't change a build's operating system later. Amazon Linux 2 (AL2) will reach end of support on 6/30/2025. See more details in the [Amazon Linux 2 FAQs](https://aws.amazon.com/amazon-linux-2/faqs/). For game servers that are hosted on AL2 and use Amazon GameLift server SDK 4.x., first update the game server build to server SDK 5.x, and then deploy to AL2023 instances. See [ Migrate to Amazon GameLift server SDK version 5.](https://docs.aws.amazon.com/gamelift/latest/developerguide/reference-serversdk5-migration.html)
@@ -2492,7 +2493,7 @@ public struct CreateBuildInput {
     }
 }
 
-public struct CreateBuildOutput {
+public struct CreateBuildOutput: Swift.Sendable {
     /// The newly created build resource, including a unique build IDs and status.
     public var build: GameLiftClientTypes.Build?
     /// Amazon S3 location for your game build file, including bucket name and key.
@@ -2517,7 +2518,7 @@ extension CreateBuildOutput: Swift.CustomDebugStringConvertible {
         "CreateBuildOutput(build: \(Swift.String(describing: build)), storageLocation: \(Swift.String(describing: storageLocation)), uploadCredentials: \"CONTENT_REDACTED\")"}
 }
 
-public struct CreateContainerGroupDefinitionInput {
+public struct CreateContainerGroupDefinitionInput: Swift.Sendable {
     /// Definitions for all containers in this group. Each container definition identifies the container image and specifies configuration settings for the container. See the [ Container fleet design guide](https://docs.aws.amazon.com/gamelift/latest/developerguide/containers-design-fleet.html) for container guidelines.
     /// This member is required.
     public var containerDefinitions: [GameLiftClientTypes.ContainerDefinitionInput]?
@@ -2558,7 +2559,7 @@ public struct CreateContainerGroupDefinitionInput {
     }
 }
 
-public struct CreateContainerGroupDefinitionOutput {
+public struct CreateContainerGroupDefinitionOutput: Swift.Sendable {
     /// The properties of the newly created container group definition resource. You use this resource to create a container fleet.
     public var containerGroupDefinition: GameLiftClientTypes.ContainerGroupDefinition?
 
@@ -2595,8 +2596,9 @@ public struct NotReadyException: ClientRuntime.ModeledError, AWSClientRuntime.AW
 }
 
 extension GameLiftClientTypes {
+
     /// A range of IP addresses and port settings that allow inbound traffic to connect to processes on an instance in a fleet. Processes are assigned an IP address/port number combination, which must fall into the fleet's allowed ranges. For container fleets, the port settings must use the same port numbers as the fleet's connection ports. For Realtime Servers fleets, Amazon GameLift automatically opens two port ranges, one for TCP messaging and one for UDP.
-    public struct IpPermission {
+    public struct IpPermission: Swift.Sendable {
         /// A starting value for a range of allowed port numbers. For fleets using Linux builds, only ports 22 and 1026-60000 are valid. For fleets using Windows builds, only ports 1026-60000 are valid.
         /// This member is required.
         public var fromPort: Swift.Int?
@@ -2623,7 +2625,6 @@ extension GameLiftClientTypes {
             self.toPort = toPort
         }
     }
-
 }
 
 extension GameLiftClientTypes.IpPermission: Swift.CustomDebugStringConvertible {
@@ -2633,7 +2634,7 @@ extension GameLiftClientTypes.IpPermission: Swift.CustomDebugStringConvertible {
 
 extension GameLiftClientTypes {
 
-    public enum FleetType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum FleetType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case ondemand
         case spot
         case sdkUnknown(Swift.String)
@@ -2662,7 +2663,7 @@ extension GameLiftClientTypes {
 
 extension GameLiftClientTypes {
 
-    public enum InstanceRoleCredentialsProvider: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum InstanceRoleCredentialsProvider: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case sharedCredentialFile
         case sdkUnknown(Swift.String)
 
@@ -2687,8 +2688,9 @@ extension GameLiftClientTypes {
 }
 
 extension GameLiftClientTypes {
+
     /// This data type has been expanded to use with the Amazon GameLift containers feature, which is currently in public preview. A remote location where a multi-location fleet can deploy game servers for game hosting.
-    public struct LocationConfiguration {
+    public struct LocationConfiguration: Swift.Sendable {
         /// An Amazon Web Services Region code, such as us-west-2. For a list of supported Regions and Local Zones, see [ Amazon GameLift service locations](https://docs.aws.amazon.com/gamelift/latest/developerguide/gamelift-regions.html) for managed hosting.
         /// This member is required.
         public var location: Swift.String?
@@ -2700,12 +2702,11 @@ extension GameLiftClientTypes {
             self.location = location
         }
     }
-
 }
 
 extension GameLiftClientTypes {
 
-    public enum ProtectionPolicy: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ProtectionPolicy: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case fullprotection
         case noprotection
         case sdkUnknown(Swift.String)
@@ -2733,8 +2734,9 @@ extension GameLiftClientTypes {
 }
 
 extension GameLiftClientTypes {
+
     /// A policy that puts limits on the number of game sessions that a player can create within a specified span of time. With this policy, you can control players' ability to consume available resources. The policy is evaluated when a player tries to create a new game session. On receiving a CreateGameSession request, Amazon GameLift checks that the player (identified by CreatorId) has created fewer than game session limit in the specified time period.
-    public struct ResourceCreationLimitPolicy {
+    public struct ResourceCreationLimitPolicy: Swift.Sendable {
         /// A policy that puts limits on the number of game sessions that a player can create within a specified span of time. With this policy, you can control players' ability to consume available resources. The policy is evaluated when a player tries to create a new game session. On receiving a CreateGameSession request, Amazon GameLift checks that the player (identified by CreatorId) has created fewer than game session limit in the specified time period.
         public var newGameSessionsPerCreator: Swift.Int?
         /// The time span used in evaluating the resource creation limit policy.
@@ -2749,12 +2751,12 @@ extension GameLiftClientTypes {
             self.policyPeriodInMinutes = policyPeriodInMinutes
         }
     }
-
 }
 
 extension GameLiftClientTypes {
+
     /// A set of instructions for launching server processes on fleet computes. Server processes run either an executable in a custom game build or a Realtime Servers script. Server process configurations are part of a fleet's runtime configuration.
-    public struct ServerProcess {
+    public struct ServerProcess: Swift.Sendable {
         /// The number of server processes using this configuration that run concurrently on each instance or container..
         /// This member is required.
         public var concurrentExecutions: Swift.Int?
@@ -2782,12 +2784,12 @@ extension GameLiftClientTypes {
             self.parameters = parameters
         }
     }
-
 }
 
 extension GameLiftClientTypes {
+
     /// This data type has been expanded to use with the Amazon GameLift containers feature, which is currently in public preview. A set of instructions that define the set of server processes to run on computes in a fleet. Server processes run either an executable in a custom game build or a Realtime Servers script. Amazon GameLift launches the processes, manages their life cycle, and replaces them as needed. Computes check regularly for an updated runtime configuration. On a container fleet, the Amazon GameLift Agent uses the runtime configuration to manage the lifecycle of server processes in a replica container group. An Amazon GameLift instance is limited to 50 processes running concurrently. To calculate the total number of processes defined in a runtime configuration, add the values of the ConcurrentExecutions parameter for each server process. Learn more about [ Running Multiple Processes on a Fleet](https://docs.aws.amazon.com/gamelift/latest/developerguide/fleets-multiprocess.html).
-    public struct RuntimeConfiguration {
+    public struct RuntimeConfiguration: Swift.Sendable {
         /// The maximum amount of time (in seconds) allowed to launch a new game session and have it report ready to host players. During this time, the game session is in status ACTIVATING. If the game session does not become active before the timeout, it is ended and the game session status is changed to TERMINATED.
         public var gameSessionActivationTimeoutSeconds: Swift.Int?
         /// The number of game sessions in status ACTIVATING to allow on an instance or container. This setting limits the instance resources that can be used for new game activations at any one time.
@@ -2806,10 +2808,9 @@ extension GameLiftClientTypes {
             self.serverProcesses = serverProcesses
         }
     }
-
 }
 
-public struct CreateFleetInput {
+public struct CreateFleetInput: Swift.Sendable {
     /// Amazon GameLift Anywhere configuration options.
     public var anywhereConfiguration: GameLiftClientTypes.AnywhereConfiguration?
     /// The unique identifier for a custom game server build to be deployed to a fleet with compute type EC2. You can use either the build ID or ARN. The build must be uploaded to Amazon GameLift and in READY status. This fleet property can't be changed after the fleet is created.
@@ -2926,7 +2927,7 @@ public struct CreateFleetInput {
 
 extension GameLiftClientTypes {
 
-    public enum FleetStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum FleetStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case activating
         case active
         case building
@@ -2979,7 +2980,7 @@ extension GameLiftClientTypes {
 
 extension GameLiftClientTypes {
 
-    public enum FleetAction: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum FleetAction: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case autoscaling
         case sdkUnknown(Swift.String)
 
@@ -3004,6 +3005,7 @@ extension GameLiftClientTypes {
 }
 
 extension GameLiftClientTypes {
+
     /// This operation has been expanded to use with the Amazon GameLift containers feature, which is currently in public preview. Describes an Amazon GameLift fleet of game hosting resources. Attributes differ based on the fleet's compute type, as follows:
     ///
     /// * EC2 fleet attributes identify a Build resource (for fleets with customer game server builds) or a Script resource (for Realtime Servers fleets).
@@ -3014,7 +3016,7 @@ extension GameLiftClientTypes {
     ///
     ///
     /// Returned by: [DescribeFleetAttributes]
-    public struct FleetAttributes {
+    public struct FleetAttributes: Swift.Sendable {
         /// This property is used with the Amazon GameLift containers feature, which is currently in public preview. A set of attributes that describe the container groups that are deployed on the fleet. These attributes are included for fleets with compute type CONTAINER only. This attribute is used with fleets where ComputeType is "Container".
         public var anywhereConfiguration: GameLiftClientTypes.AnywhereConfiguration?
         /// The Amazon Resource Name ([ARN](https://docs.aws.amazon.com/AmazonS3/latest/dev/s3-arn-format.html)) associated with the Amazon GameLift build resource that is deployed on instances in this fleet. In a GameLift build ARN, the resource ID matches the BuildId value. This attribute is used with fleets where ComputeType is "EC2".
@@ -3147,10 +3149,10 @@ extension GameLiftClientTypes {
             self.terminationTime = terminationTime
         }
     }
-
 }
 
 extension GameLiftClientTypes {
+
     /// A fleet location and its life-cycle state. A location state object might be used to describe a fleet's remote location or home Region. Life-cycle state tracks the progress of launching the first instance in a new location and preparing it for game hosting, and then removing all instances and deleting the location from the fleet.
     ///
     /// * NEW -- A new fleet location has been defined and desired instances is set to 1.
@@ -3166,7 +3168,7 @@ extension GameLiftClientTypes {
     /// * TERMINATED -- The fleet location no longer exists.
     ///
     /// * NOT_FOUND -- The fleet location was not found. This could be because the custom location was removed or not created.
-    public struct LocationState {
+    public struct LocationState: Swift.Sendable {
         /// The fleet location, expressed as an Amazon Web Services Region code such as us-west-2.
         public var location: Swift.String?
         /// The life-cycle status of a fleet location.
@@ -3181,10 +3183,9 @@ extension GameLiftClientTypes {
             self.status = status
         }
     }
-
 }
 
-public struct CreateFleetOutput {
+public struct CreateFleetOutput: Swift.Sendable {
     /// The properties for the new fleet, including the current status. All fleets are placed in NEW status on creation.
     public var fleetAttributes: GameLiftClientTypes.FleetAttributes?
     /// The fleet's locations and life-cycle status of each location. For new fleets, the status of all locations is set to NEW. During fleet creation, Amazon GameLift updates each location status as instances are deployed there and prepared for game hosting. This list includes an entry for the fleet's home Region. For fleets with no remote locations, only one entry, representing the home Region, is returned.
@@ -3224,7 +3225,7 @@ public struct InvalidFleetStatusException: ClientRuntime.ModeledError, AWSClient
     }
 }
 
-public struct CreateFleetLocationsInput {
+public struct CreateFleetLocationsInput: Swift.Sendable {
     /// A unique identifier for the fleet to add locations to. You can use either the fleet ID or ARN value.
     /// This member is required.
     public var fleetId: Swift.String?
@@ -3242,7 +3243,7 @@ public struct CreateFleetLocationsInput {
     }
 }
 
-public struct CreateFleetLocationsOutput {
+public struct CreateFleetLocationsOutput: Swift.Sendable {
     /// The Amazon Resource Name ([ARN](https://docs.aws.amazon.com/AmazonS3/latest/dev/s3-arn-format.html)) that is assigned to a Amazon GameLift fleet resource and uniquely identifies it. ARNs are unique across all Regions. Format is arn:aws:gamelift:::fleet/fleet-a1234567-b8c9-0d1e-2fa3-b45c6d7e8912.
     public var fleetArn: Swift.String?
     /// A unique identifier for the fleet that was updated with new locations.
@@ -3263,8 +3264,9 @@ public struct CreateFleetLocationsOutput {
 }
 
 extension GameLiftClientTypes {
+
     /// This data type is used with the Amazon GameLift FleetIQ and game server groups. Settings for a target-based scaling policy as part of a [GameServerGroupAutoScalingPolicy](https://docs.aws.amazon.com/gamelift/latest/apireference/API_GameServerGroupAutoScalingPolicy.html) . These settings are used to create a target-based policy that tracks the Amazon GameLift FleetIQ metric "PercentUtilizedGameServers" and specifies a target value for the metric. As player usage changes, the policy triggers to adjust the game server group capacity so that the metric returns to the target value.
-    public struct TargetTrackingConfiguration {
+    public struct TargetTrackingConfiguration: Swift.Sendable {
         /// Desired value to use with a game server group target-based scaling policy.
         /// This member is required.
         public var targetValue: Swift.Double?
@@ -3276,12 +3278,12 @@ extension GameLiftClientTypes {
             self.targetValue = targetValue
         }
     }
-
 }
 
 extension GameLiftClientTypes {
+
     /// This data type is used with the Amazon GameLift FleetIQ and game server groups. Configuration settings for intelligent automatic scaling that uses target tracking. These settings are used to add an Auto Scaling policy when creating the corresponding Auto Scaling group. After the Auto Scaling group is created, all updates to Auto Scaling policies, including changing this policy and adding or removing other policies, is done directly on the Auto Scaling group.
-    public struct GameServerGroupAutoScalingPolicy {
+    public struct GameServerGroupAutoScalingPolicy: Swift.Sendable {
         /// Length of time, in seconds, it takes for a new instance to start new game server processes and register with Amazon GameLift FleetIQ. Specifying a warm-up time can be useful, particularly with game servers that take a long time to start up, because it avoids prematurely starting new instances.
         public var estimatedInstanceWarmup: Swift.Int?
         /// Settings for a target-based scaling policy applied to Auto Scaling group. These settings are used to create a target-based policy that tracks the Amazon GameLift FleetIQ metric "PercentUtilizedGameServers" and specifies a target value for the metric. As player usage changes, the policy triggers to adjust the game server group capacity so that the metric returns to the target value.
@@ -3297,12 +3299,11 @@ extension GameLiftClientTypes {
             self.targetTrackingConfiguration = targetTrackingConfiguration
         }
     }
-
 }
 
 extension GameLiftClientTypes {
 
-    public enum GameServerProtectionPolicy: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum GameServerProtectionPolicy: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case fullProtection
         case noProtection
         case sdkUnknown(Swift.String)
@@ -3331,7 +3332,7 @@ extension GameLiftClientTypes {
 
 extension GameLiftClientTypes {
 
-    public enum GameServerGroupInstanceType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum GameServerGroupInstanceType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case c42xlarge
         case c44xlarge
         case c48xlarge
@@ -3617,8 +3618,9 @@ extension GameLiftClientTypes {
 }
 
 extension GameLiftClientTypes {
+
     /// This data type is used with the Amazon GameLift FleetIQ and game server groups. An allowed instance type for a game server group. All game server groups must have at least two instance types defined for it. Amazon GameLift FleetIQ periodically evaluates each defined instance type for viability. It then updates the Auto Scaling group with the list of viable instance types.
-    public struct InstanceDefinition {
+    public struct InstanceDefinition: Swift.Sendable {
         /// An Amazon EC2 instance type designation.
         /// This member is required.
         public var instanceType: GameLiftClientTypes.GameServerGroupInstanceType?
@@ -3634,12 +3636,12 @@ extension GameLiftClientTypes {
             self.weightedCapacity = weightedCapacity
         }
     }
-
 }
 
 extension GameLiftClientTypes {
+
     /// This data type is used with the Amazon GameLift FleetIQ and game server groups. An Amazon Elastic Compute Cloud launch template that contains configuration settings and game server code to be deployed to all instances in a game server group. The launch template is specified when creating a new game server group.
-    public struct LaunchTemplateSpecification {
+    public struct LaunchTemplateSpecification: Swift.Sendable {
         /// A unique identifier for an existing Amazon EC2 launch template.
         public var launchTemplateId: Swift.String?
         /// A readable identifier for an existing Amazon EC2 launch template.
@@ -3658,10 +3660,9 @@ extension GameLiftClientTypes {
             self.version = version
         }
     }
-
 }
 
-public struct CreateGameServerGroupInput {
+public struct CreateGameServerGroupInput: Swift.Sendable {
     /// Configuration settings to define a scaling policy for the Auto Scaling group that is optimized for game hosting. The scaling policy uses the metric "PercentUtilizedGameServers" to maintain a buffer of idle game servers that can immediately accommodate new games and players. After the Auto Scaling group is created, update this value directly in the Auto Scaling group using the Amazon Web Services console or APIs.
     public var autoScalingPolicy: GameLiftClientTypes.GameServerGroupAutoScalingPolicy?
     /// Indicates how Amazon GameLift FleetIQ balances the use of Spot Instances and On-Demand Instances in the game server group. Method options include the following:
@@ -3727,7 +3728,7 @@ public struct CreateGameServerGroupInput {
 
 extension GameLiftClientTypes {
 
-    public enum GameServerGroupStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum GameServerGroupStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case activating
         case active
         case deleted
@@ -3771,7 +3772,7 @@ extension GameLiftClientTypes {
 
 extension GameLiftClientTypes {
 
-    public enum GameServerGroupAction: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum GameServerGroupAction: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case replaceInstanceTypes
         case sdkUnknown(Swift.String)
 
@@ -3796,8 +3797,9 @@ extension GameLiftClientTypes {
 }
 
 extension GameLiftClientTypes {
+
     /// This data type is used with the Amazon GameLift FleetIQ and game server groups. Properties that describe a game server group resource. A game server group manages certain properties related to a corresponding Amazon EC2 Auto Scaling group. A game server group is created by a successful call to CreateGameServerGroup and deleted by calling DeleteGameServerGroup. Game server group activity can be temporarily suspended and resumed by calling SuspendGameServerGroup and ResumeGameServerGroup, respectively.
-    public struct GameServerGroup {
+    public struct GameServerGroup: Swift.Sendable {
         /// A generated unique ID for the Amazon EC2 Auto Scaling group that is associated with this game server group.
         public var autoScalingGroupArn: Swift.String?
         /// Indicates how Amazon GameLift FleetIQ balances the use of Spot Instances and On-Demand Instances in the game server group. Method options include the following:
@@ -3872,10 +3874,9 @@ extension GameLiftClientTypes {
             self.suspendedActions = suspendedActions
         }
     }
-
 }
 
-public struct CreateGameServerGroupOutput {
+public struct CreateGameServerGroupOutput: Swift.Sendable {
     /// The newly created game server group object, including the new ARN value for the Amazon GameLift FleetIQ game server group and the object's status. The Amazon EC2 Auto Scaling group ARN is initially null, since the group has not yet been created. This value is added once the game server group status reaches ACTIVE.
     public var gameServerGroup: GameLiftClientTypes.GameServerGroup?
 
@@ -3960,8 +3961,9 @@ public struct TerminalRoutingStrategyException: ClientRuntime.ModeledError, AWSC
 }
 
 extension GameLiftClientTypes {
+
     /// This key-value pair can store custom data about a game session. For example, you might use a GameProperty to track a game session's map, level of difficulty, or remaining time. The difficulty level could be specified like this: {"Key": "difficulty", "Value":"Novice"}. You can set game properties when creating a game session. You can also modify game properties of an active game session. When searching for game sessions, you can filter on game property keys and values. You can't delete game properties from a game session. For examples of working with game properties, see [Create a game session with properties](https://docs.aws.amazon.com/gamelift/latest/developerguide/gamelift-sdk-client-api.html#game-properties).
-    public struct GameProperty {
+    public struct GameProperty: Swift.Sendable {
         /// The game property identifier.
         /// This member is required.
         public var key: Swift.String?
@@ -3978,10 +3980,9 @@ extension GameLiftClientTypes {
             self.value = value
         }
     }
-
 }
 
-public struct CreateGameSessionInput {
+public struct CreateGameSessionInput: Swift.Sendable {
     /// A unique identifier for the alias associated with the fleet to create a game session in. You can use either the alias ID or ARN value. Each request must reference either a fleet ID or alias ID, but not both.
     public var aliasId: Swift.String?
     /// A unique identifier for a player or entity creating the game session. If you add a resource creation limit policy to a fleet, the CreateGameSession operation requires a CreatorId. Amazon GameLift limits the number of game session creation requests with the same CreatorId in a specified time period. If you your fleet doesn't have a resource creation limit policy and you provide a CreatorId in your CreateGameSession requests, Amazon GameLift limits requests to one request per CreatorId per second. To not limit CreateGameSession requests with the same CreatorId, don't provide a CreatorId in your CreateGameSession request.
@@ -4032,7 +4033,7 @@ public struct CreateGameSessionInput {
 
 extension GameLiftClientTypes {
 
-    public enum PlayerSessionCreationPolicy: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum PlayerSessionCreationPolicy: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case acceptAll
         case denyAll
         case sdkUnknown(Swift.String)
@@ -4061,7 +4062,7 @@ extension GameLiftClientTypes {
 
 extension GameLiftClientTypes {
 
-    public enum GameSessionStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum GameSessionStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case activating
         case active
         case error
@@ -4099,7 +4100,7 @@ extension GameLiftClientTypes {
 
 extension GameLiftClientTypes {
 
-    public enum GameSessionStatusReason: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum GameSessionStatusReason: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case interrupted
         case sdkUnknown(Swift.String)
 
@@ -4124,8 +4125,9 @@ extension GameLiftClientTypes {
 }
 
 extension GameLiftClientTypes {
+
     /// Properties describing a game session. A game session in ACTIVE status can host players. When a game session ends, its status is set to TERMINATED. Amazon GameLift retains a game session resource for 30 days after the game session ends. You can reuse idempotency token values after this time. Game session logs are retained for 14 days. [All APIs by task](https://docs.aws.amazon.com/gamelift/latest/developerguide/reference-awssdk.html#reference-awssdk-resources-fleets)
-    public struct GameSession {
+    public struct GameSession: Swift.Sendable {
         /// A time stamp indicating when this data object was created. Format is a number expressed in Unix time as milliseconds (for example "1469498468.057").
         public var creationTime: Foundation.Date?
         /// A unique identifier for a player. This ID is used to enforce a resource protection policy (if one exists), that limits the number of game sessions a player can create.
@@ -4215,7 +4217,6 @@ extension GameLiftClientTypes {
             self.terminationTime = terminationTime
         }
     }
-
 }
 
 extension GameLiftClientTypes.GameSession: Swift.CustomDebugStringConvertible {
@@ -4223,7 +4224,7 @@ extension GameLiftClientTypes.GameSession: Swift.CustomDebugStringConvertible {
         "GameSession(creationTime: \(Swift.String(describing: creationTime)), creatorId: \(Swift.String(describing: creatorId)), currentPlayerSessionCount: \(Swift.String(describing: currentPlayerSessionCount)), dnsName: \(Swift.String(describing: dnsName)), fleetArn: \(Swift.String(describing: fleetArn)), fleetId: \(Swift.String(describing: fleetId)), gameProperties: \(Swift.String(describing: gameProperties)), gameSessionData: \(Swift.String(describing: gameSessionData)), gameSessionId: \(Swift.String(describing: gameSessionId)), location: \(Swift.String(describing: location)), matchmakerData: \(Swift.String(describing: matchmakerData)), maximumPlayerSessionCount: \(Swift.String(describing: maximumPlayerSessionCount)), name: \(Swift.String(describing: name)), playerSessionCreationPolicy: \(Swift.String(describing: playerSessionCreationPolicy)), status: \(Swift.String(describing: status)), statusReason: \(Swift.String(describing: statusReason)), terminationTime: \(Swift.String(describing: terminationTime)), ipAddress: \"CONTENT_REDACTED\", port: \"CONTENT_REDACTED\")"}
 }
 
-public struct CreateGameSessionOutput {
+public struct CreateGameSessionOutput: Swift.Sendable {
     /// Object that describes the newly created game session record.
     public var gameSession: GameLiftClientTypes.GameSession?
 
@@ -4236,8 +4237,9 @@ public struct CreateGameSessionOutput {
 }
 
 extension GameLiftClientTypes {
+
     /// A fleet or alias designated in a game session queue. Queues fulfill requests for new game sessions by placing a new game session on any of the queue's destinations.
-    public struct GameSessionQueueDestination {
+    public struct GameSessionQueueDestination: Swift.Sendable {
         /// The Amazon Resource Name (ARN) that is assigned to fleet or fleet alias. ARNs, which include a fleet ID or alias ID and a Region name, provide a unique identifier across all Regions.
         public var destinationArn: Swift.String?
 
@@ -4248,12 +4250,12 @@ extension GameLiftClientTypes {
             self.destinationArn = destinationArn
         }
     }
-
 }
 
 extension GameLiftClientTypes {
+
     /// A list of fleet locations where a game session queue can place new game sessions. You can use a filter to temporarily turn off placements for specific locations. For queues that have multi-location fleets, you can use a filter configuration allow placement with some, but not all of these locations.
-    public struct FilterConfiguration {
+    public struct FilterConfiguration: Swift.Sendable {
         /// A list of locations to allow game session placement in, in the form of Amazon Web Services Region codes such as us-west-2.
         public var allowedLocations: [Swift.String]?
 
@@ -4264,12 +4266,12 @@ extension GameLiftClientTypes {
             self.allowedLocations = allowedLocations
         }
     }
-
 }
 
 extension GameLiftClientTypes {
+
     /// Sets a latency cap for individual players when placing a game session. With a latency policy in force, a game session cannot be placed in a fleet location where a player reports latency higher than the cap. Latency policies are used only with placement request that provide player latency information. Player latency policies can be stacked to gradually relax latency requirements over time.
-    public struct PlayerLatencyPolicy {
+    public struct PlayerLatencyPolicy: Swift.Sendable {
         /// The maximum latency value that is allowed for any player, in milliseconds. All policies must have a value set for this property.
         public var maximumIndividualPlayerLatencyMilliseconds: Swift.Int?
         /// The length of time, in seconds, that the policy is enforced while placing a new game session. A null value for this property means that the policy is enforced until the queue times out.
@@ -4284,12 +4286,11 @@ extension GameLiftClientTypes {
             self.policyDurationSeconds = policyDurationSeconds
         }
     }
-
 }
 
 extension GameLiftClientTypes {
 
-    public enum PriorityType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum PriorityType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case cost
         case destination
         case latency
@@ -4323,6 +4324,7 @@ extension GameLiftClientTypes {
 }
 
 extension GameLiftClientTypes {
+
     /// Custom prioritization settings for use by a game session queue when placing new game sessions with available game servers. When defined, this configuration replaces the default FleetIQ prioritization process, which is as follows:
     ///
     /// * If player latency data is included in a game session request, destinations and locations are prioritized first based on lowest average latency (1), then on lowest hosting cost (2), then on destination list order (3), and finally on location (alphabetical) (4). This approach ensures that the queue's top priority is to place game sessions where average player latency is lowest, and--if latency is the same--where the hosting cost is less, etc.
@@ -4331,7 +4333,7 @@ extension GameLiftClientTypes {
     ///
     ///
     /// Changing the priority order will affect how game sessions are placed.
-    public struct PriorityConfiguration {
+    public struct PriorityConfiguration: Swift.Sendable {
         /// The prioritization order to use for fleet locations, when the PriorityOrder property includes LOCATION. Locations are identified by Amazon Web Services Region codes such as us-west-2. Each location can only be listed once.
         public var locationOrder: [Swift.String]?
         /// The recommended sequence to use when prioritizing where to place new game sessions. Each type can only be listed once.
@@ -4354,10 +4356,9 @@ extension GameLiftClientTypes {
             self.priorityOrder = priorityOrder
         }
     }
-
 }
 
-public struct CreateGameSessionQueueInput {
+public struct CreateGameSessionQueueInput: Swift.Sendable {
     /// Information to be added to all events that are related to this game session queue.
     public var customEventData: Swift.String?
     /// A list of fleets and/or fleet aliases that can be used to fulfill game session placement requests in the queue. Destinations are identified by either a fleet ARN or a fleet alias ARN, and are listed in order of placement preference.
@@ -4403,8 +4404,9 @@ public struct CreateGameSessionQueueInput {
 }
 
 extension GameLiftClientTypes {
+
     /// Configuration for a game session placement mechanism that processes requests for new game sessions. A queue can be used on its own or as part of a matchmaking solution.
-    public struct GameSessionQueue {
+    public struct GameSessionQueue: Swift.Sendable {
         /// Information that is added to all events that are related to this game session queue.
         public var customEventData: Swift.String?
         /// A list of fleets and/or fleet aliases that can be used to fulfill game session placement requests in the queue. Destinations are identified by either a fleet ARN or a fleet alias ARN, and are listed in order of placement preference.
@@ -4447,10 +4449,9 @@ extension GameLiftClientTypes {
             self.timeoutInSeconds = timeoutInSeconds
         }
     }
-
 }
 
-public struct CreateGameSessionQueueOutput {
+public struct CreateGameSessionQueueOutput: Swift.Sendable {
     /// An object that describes the newly created game session queue.
     public var gameSessionQueue: GameLiftClientTypes.GameSessionQueue?
 
@@ -4462,7 +4463,7 @@ public struct CreateGameSessionQueueOutput {
     }
 }
 
-public struct CreateLocationInput {
+public struct CreateLocationInput: Swift.Sendable {
     /// A descriptive name for the custom location.
     /// This member is required.
     public var locationName: Swift.String?
@@ -4480,8 +4481,9 @@ public struct CreateLocationInput {
 }
 
 extension GameLiftClientTypes {
+
     /// Properties of a custom location for use in an Amazon GameLift Anywhere fleet. This data type is returned in response to a call to [CreateLocation].
-    public struct LocationModel {
+    public struct LocationModel: Swift.Sendable {
         /// The Amazon Resource Name ([ARN](https://docs.aws.amazon.com/AmazonS3/latest/dev/s3-arn-format.html)) that is assigned to a Amazon GameLift location resource and uniquely identifies it. ARNs are unique across all Regions. Format is arn:aws:gamelift:::location/location-a1234567-b8c9-0d1e-2fa3-b45c6d7e8912.
         public var locationArn: Swift.String?
         /// The location's name.
@@ -4496,10 +4498,9 @@ extension GameLiftClientTypes {
             self.locationName = locationName
         }
     }
-
 }
 
-public struct CreateLocationOutput {
+public struct CreateLocationOutput: Swift.Sendable {
     /// The details of the custom location you created.
     public var location: GameLiftClientTypes.LocationModel?
 
@@ -4513,7 +4514,7 @@ public struct CreateLocationOutput {
 
 extension GameLiftClientTypes {
 
-    public enum FlexMatchMode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum FlexMatchMode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case standalone
         case withQueue
         case sdkUnknown(Swift.String)
@@ -4540,7 +4541,7 @@ extension GameLiftClientTypes {
     }
 }
 
-public struct CreateMatchmakingConfigurationInput {
+public struct CreateMatchmakingConfigurationInput: Swift.Sendable {
     /// A flag that determines whether a match that was created with this configuration must be accepted by the matched players. To require acceptance, set to TRUE. With this option enabled, matchmaking tickets use the status REQUIRES_ACCEPTANCE to indicate when a completed potential match is waiting for player acceptance.
     /// This member is required.
     public var acceptanceRequired: Swift.Bool?
@@ -4617,8 +4618,9 @@ public struct CreateMatchmakingConfigurationInput {
 }
 
 extension GameLiftClientTypes {
+
     /// Guidelines for use with FlexMatch to match players into games. All matchmaking requests must specify a matchmaking configuration.
-    public struct MatchmakingConfiguration {
+    public struct MatchmakingConfiguration: Swift.Sendable {
         /// A flag that indicates whether a match that was created with this configuration must be accepted by the matched players. To require acceptance, set to TRUE. When this option is enabled, matchmaking tickets use the status REQUIRES_ACCEPTANCE to indicate when a completed potential match is waiting for player acceptance.
         public var acceptanceRequired: Swift.Bool?
         /// The length of time (in seconds) to wait for players to accept a proposed match, if acceptance is required. If any player rejects the match or fails to accept before the timeout, the ticket continues to look for an acceptable match.
@@ -4697,10 +4699,9 @@ extension GameLiftClientTypes {
             self.ruleSetName = ruleSetName
         }
     }
-
 }
 
-public struct CreateMatchmakingConfigurationOutput {
+public struct CreateMatchmakingConfigurationOutput: Swift.Sendable {
     /// Object that describes the newly created matchmaking configuration.
     public var configuration: GameLiftClientTypes.MatchmakingConfiguration?
 
@@ -4712,7 +4713,7 @@ public struct CreateMatchmakingConfigurationOutput {
     }
 }
 
-public struct CreateMatchmakingRuleSetInput {
+public struct CreateMatchmakingRuleSetInput: Swift.Sendable {
     /// A unique identifier for the matchmaking rule set. A matchmaking configuration identifies the rule set it uses by this name value. Note that the rule set name is different from the optional name field in the rule set body.
     /// This member is required.
     public var name: Swift.String?
@@ -4735,6 +4736,7 @@ public struct CreateMatchmakingRuleSetInput {
 }
 
 extension GameLiftClientTypes {
+
     /// Set of rule statements, used with FlexMatch, that determine how to build your player matches. Each rule set describes a type of group to be created and defines the parameters for acceptable player matches. A rule set may define the following elements for a match. For detailed information and examples showing how to construct a rule set, see [Build a FlexMatch rule set](https://docs.aws.amazon.com/gamelift/latest/flexmatchguide/match-rulesets.html).
     ///
     /// * Teams -- Required. A rule set must define one or multiple teams for the match and set minimum and maximum team sizes. For example, a rule set might describe a 4x4 match that requires all eight slots to be filled.
@@ -4744,7 +4746,7 @@ extension GameLiftClientTypes {
     /// * Rules -- Optional. Rules define how to evaluate potential players for a match based on player attributes. A rule might specify minimum requirements for individual players, teams, or entire matches. For example, a rule might require each player to meet a certain skill level, each team to have at least one player in a certain role, or the match to have a minimum average skill level. or may describe an entire group--such as all teams must be evenly matched or have at least one player in a certain role.
     ///
     /// * Expansions -- Optional. Expansions allow you to relax the rules after a period of time when no acceptable matches are found. This feature lets you balance getting players into games in a reasonable amount of time instead of making them wait indefinitely for the best possible match. For example, you might use an expansion to increase the maximum skill variance between players after 30 seconds.
-    public struct MatchmakingRuleSet {
+    public struct MatchmakingRuleSet: Swift.Sendable {
         /// A time stamp indicating when this data object was created. Format is a number expressed in Unix time as milliseconds (for example "1469498468.057").
         public var creationTime: Foundation.Date?
         /// The Amazon Resource Name ([ARN](https://docs.aws.amazon.com/AmazonS3/latest/dev/s3-arn-format.html)) that is assigned to a Amazon GameLift matchmaking rule set resource and uniquely identifies it. ARNs are unique across all Regions. Format is arn:aws:gamelift:::matchmakingruleset/. In a GameLift rule set ARN, the resource ID matches the RuleSetName value.
@@ -4768,10 +4770,9 @@ extension GameLiftClientTypes {
             self.ruleSetName = ruleSetName
         }
     }
-
 }
 
-public struct CreateMatchmakingRuleSetOutput {
+public struct CreateMatchmakingRuleSetOutput: Swift.Sendable {
     /// The newly created matchmaking rule set.
     /// This member is required.
     public var ruleSet: GameLiftClientTypes.MatchmakingRuleSet?
@@ -4832,7 +4833,7 @@ public struct InvalidGameSessionStatusException: ClientRuntime.ModeledError, AWS
     }
 }
 
-public struct CreatePlayerSessionInput {
+public struct CreatePlayerSessionInput: Swift.Sendable {
     /// A unique identifier for the game session to add a player to.
     /// This member is required.
     public var gameSessionId: Swift.String?
@@ -4861,7 +4862,7 @@ extension CreatePlayerSessionInput: Swift.CustomDebugStringConvertible {
 
 extension GameLiftClientTypes {
 
-    public enum PlayerSessionStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum PlayerSessionStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case active
         case completed
         case reserved
@@ -4895,8 +4896,9 @@ extension GameLiftClientTypes {
 }
 
 extension GameLiftClientTypes {
+
     /// Represents a player session. Player sessions are created either for a specific game session, or as part of a game session placement or matchmaking request. A player session can represents a reserved player slot in a game session (when status is RESERVED) or actual player activity in a game session (when status is ACTIVE). A player session object, including player data, is automatically passed to a game session when the player connects to the game session and is validated. After the game session ends, player sessions information is retained for 30 days and then removed. Related actions [All APIs by task](https://docs.aws.amazon.com/gamelift/latest/developerguide/reference-awssdk.html#reference-awssdk-resources-fleets)
-    public struct PlayerSession {
+    public struct PlayerSession: Swift.Sendable {
         /// A time stamp indicating when this data object was created. Format is a number expressed in Unix time as milliseconds (for example "1469498468.057").
         public var creationTime: Foundation.Date?
         /// The DNS identifier assigned to the instance that is running the game session. Values have the following format:
@@ -4966,7 +4968,6 @@ extension GameLiftClientTypes {
             self.terminationTime = terminationTime
         }
     }
-
 }
 
 extension GameLiftClientTypes.PlayerSession: Swift.CustomDebugStringConvertible {
@@ -4974,7 +4975,7 @@ extension GameLiftClientTypes.PlayerSession: Swift.CustomDebugStringConvertible 
         "PlayerSession(creationTime: \(Swift.String(describing: creationTime)), dnsName: \(Swift.String(describing: dnsName)), fleetArn: \(Swift.String(describing: fleetArn)), fleetId: \(Swift.String(describing: fleetId)), gameSessionId: \(Swift.String(describing: gameSessionId)), playerData: \(Swift.String(describing: playerData)), playerSessionId: \(Swift.String(describing: playerSessionId)), status: \(Swift.String(describing: status)), terminationTime: \(Swift.String(describing: terminationTime)), ipAddress: \"CONTENT_REDACTED\", playerId: \"CONTENT_REDACTED\", port: \"CONTENT_REDACTED\")"}
 }
 
-public struct CreatePlayerSessionOutput {
+public struct CreatePlayerSessionOutput: Swift.Sendable {
     /// Object that describes the newly created player session record.
     public var playerSession: GameLiftClientTypes.PlayerSession?
 
@@ -4986,7 +4987,7 @@ public struct CreatePlayerSessionOutput {
     }
 }
 
-public struct CreatePlayerSessionsInput {
+public struct CreatePlayerSessionsInput: Swift.Sendable {
     /// A unique identifier for the game session to add players to.
     /// This member is required.
     public var gameSessionId: Swift.String?
@@ -5013,7 +5014,7 @@ extension CreatePlayerSessionsInput: Swift.CustomDebugStringConvertible {
         "CreatePlayerSessionsInput(gameSessionId: \(Swift.String(describing: gameSessionId)), playerDataMap: \(Swift.String(describing: playerDataMap)), playerIds: \"CONTENT_REDACTED\")"}
 }
 
-public struct CreatePlayerSessionsOutput {
+public struct CreatePlayerSessionsOutput: Swift.Sendable {
     /// A collection of player session objects created for the added players.
     public var playerSessions: [GameLiftClientTypes.PlayerSession]?
 
@@ -5025,7 +5026,7 @@ public struct CreatePlayerSessionsOutput {
     }
 }
 
-public struct CreateScriptInput {
+public struct CreateScriptInput: Swift.Sendable {
     /// A descriptive label that is associated with a script. Script names don't need to be unique. You can use [UpdateScript](https://docs.aws.amazon.com/gamelift/latest/apireference/API_UpdateScript.html) to change this value later.
     public var name: Swift.String?
     /// The location of the Amazon S3 bucket where a zipped file containing your Realtime scripts is stored. The storage location must specify the Amazon S3 bucket name, the zip file name (the "key"), and a role ARN that allows Amazon GameLift to access the Amazon S3 storage location. The S3 bucket must be in the same Region where you want to create a new script. By default, Amazon GameLift uploads the latest version of the zip file; if you have S3 object versioning turned on, you can use the ObjectVersion parameter to specify an earlier version.
@@ -5054,8 +5055,9 @@ public struct CreateScriptInput {
 }
 
 extension GameLiftClientTypes {
+
     /// Properties describing a Realtime script. Related actions [All APIs by task](https://docs.aws.amazon.com/gamelift/latest/developerguide/reference-awssdk.html#reference-awssdk-resources-fleets)
-    public struct Script {
+    public struct Script: Swift.Sendable {
         /// A time stamp indicating when this data object was created. Format is a number expressed in Unix time as milliseconds (for example "1469498468.057").
         public var creationTime: Foundation.Date?
         /// A descriptive label that is associated with a script. Script names don't need to be unique.
@@ -5090,10 +5092,9 @@ extension GameLiftClientTypes {
             self.version = version
         }
     }
-
 }
 
-public struct CreateScriptOutput {
+public struct CreateScriptOutput: Swift.Sendable {
     /// The newly created script record with a unique script ID and ARN. The new script's storage location reflects an Amazon S3 location: (1) If the script was uploaded from an S3 bucket under your account, the storage location reflects the information that was provided in the CreateScript request; (2) If the script file was uploaded from a local zip file, the storage location reflects an S3 location controls by the Amazon GameLift service.
     public var script: GameLiftClientTypes.Script?
 
@@ -5105,7 +5106,7 @@ public struct CreateScriptOutput {
     }
 }
 
-public struct CreateVpcPeeringAuthorizationInput {
+public struct CreateVpcPeeringAuthorizationInput: Swift.Sendable {
     /// A unique identifier for the Amazon Web Services account that you use to manage your Amazon GameLift fleet. You can find your Account ID in the Amazon Web Services Management Console under account settings.
     /// This member is required.
     public var gameLiftAwsAccountId: Swift.String?
@@ -5124,8 +5125,9 @@ public struct CreateVpcPeeringAuthorizationInput {
 }
 
 extension GameLiftClientTypes {
+
     /// Represents an authorization for a VPC peering connection between the VPC for an Amazon GameLift fleet and another VPC on an account you have access to. This authorization must exist and be valid for the peering connection to be established. Authorizations are valid for 24 hours after they are issued. Related actions [All APIs by task](https://docs.aws.amazon.com/gamelift/latest/developerguide/reference-awssdk.html#reference-awssdk-resources-fleets)
-    public struct VpcPeeringAuthorization {
+    public struct VpcPeeringAuthorization: Swift.Sendable {
         /// Time stamp indicating when this authorization was issued. Format is a number expressed in Unix time as milliseconds (for example "1469498468.057").
         public var creationTime: Foundation.Date?
         /// Time stamp indicating when this authorization expires (24 hours after issuance). Format is a number expressed in Unix time as milliseconds (for example "1469498468.057").
@@ -5152,10 +5154,9 @@ extension GameLiftClientTypes {
             self.peerVpcId = peerVpcId
         }
     }
-
 }
 
-public struct CreateVpcPeeringAuthorizationOutput {
+public struct CreateVpcPeeringAuthorizationOutput: Swift.Sendable {
     /// Details on the requested VPC peering authorization, including expiration.
     public var vpcPeeringAuthorization: GameLiftClientTypes.VpcPeeringAuthorization?
 
@@ -5167,7 +5168,7 @@ public struct CreateVpcPeeringAuthorizationOutput {
     }
 }
 
-public struct CreateVpcPeeringConnectionInput {
+public struct CreateVpcPeeringConnectionInput: Swift.Sendable {
     /// A unique identifier for the fleet. You can use either the fleet ID or ARN value. This tells Amazon GameLift which GameLift VPC to peer with.
     /// This member is required.
     public var fleetId: Swift.String?
@@ -5190,12 +5191,12 @@ public struct CreateVpcPeeringConnectionInput {
     }
 }
 
-public struct CreateVpcPeeringConnectionOutput {
+public struct CreateVpcPeeringConnectionOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteAliasInput {
+public struct DeleteAliasInput: Swift.Sendable {
     /// A unique identifier of the alias that you want to delete. You can use either the alias ID or ARN value.
     /// This member is required.
     public var aliasId: Swift.String?
@@ -5208,7 +5209,7 @@ public struct DeleteAliasInput {
     }
 }
 
-public struct DeleteBuildInput {
+public struct DeleteBuildInput: Swift.Sendable {
     /// A unique identifier for the build to delete. You can use either the build ID or ARN value.
     /// This member is required.
     public var buildId: Swift.String?
@@ -5221,7 +5222,7 @@ public struct DeleteBuildInput {
     }
 }
 
-public struct DeleteContainerGroupDefinitionInput {
+public struct DeleteContainerGroupDefinitionInput: Swift.Sendable {
     /// The unique identifier for the container group definition to delete. You can use either the Name or ARN value.
     /// This member is required.
     public var name: Swift.String?
@@ -5234,7 +5235,7 @@ public struct DeleteContainerGroupDefinitionInput {
     }
 }
 
-public struct DeleteFleetInput {
+public struct DeleteFleetInput: Swift.Sendable {
     /// A unique identifier for the fleet to be deleted. You can use either the fleet ID or ARN value.
     /// This member is required.
     public var fleetId: Swift.String?
@@ -5247,7 +5248,7 @@ public struct DeleteFleetInput {
     }
 }
 
-public struct DeleteFleetLocationsInput {
+public struct DeleteFleetLocationsInput: Swift.Sendable {
     /// A unique identifier for the fleet to delete locations for. You can use either the fleet ID or ARN value.
     /// This member is required.
     public var fleetId: Swift.String?
@@ -5265,7 +5266,7 @@ public struct DeleteFleetLocationsInput {
     }
 }
 
-public struct DeleteFleetLocationsOutput {
+public struct DeleteFleetLocationsOutput: Swift.Sendable {
     /// The Amazon Resource Name ([ARN](https://docs.aws.amazon.com/AmazonS3/latest/dev/s3-arn-format.html)) that is assigned to a Amazon GameLift fleet resource and uniquely identifies it. ARNs are unique across all Regions. Format is arn:aws:gamelift:::fleet/fleet-a1234567-b8c9-0d1e-2fa3-b45c6d7e8912.
     public var fleetArn: Swift.String?
     /// A unique identifier for the fleet that location attributes are being deleted for.
@@ -5287,7 +5288,7 @@ public struct DeleteFleetLocationsOutput {
 
 extension GameLiftClientTypes {
 
-    public enum GameServerGroupDeleteOption: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum GameServerGroupDeleteOption: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case forceDelete
         case retain
         case safeDelete
@@ -5317,7 +5318,7 @@ extension GameLiftClientTypes {
     }
 }
 
-public struct DeleteGameServerGroupInput {
+public struct DeleteGameServerGroupInput: Swift.Sendable {
     /// The type of delete to perform. Options include the following:
     ///
     /// * SAFE_DELETE – (default) Terminates the game server group and Amazon EC2 Auto Scaling group only when it has no game servers that are in UTILIZED status.
@@ -5340,7 +5341,7 @@ public struct DeleteGameServerGroupInput {
     }
 }
 
-public struct DeleteGameServerGroupOutput {
+public struct DeleteGameServerGroupOutput: Swift.Sendable {
     /// An object that describes the deleted game server group resource, with status updated to DELETE_SCHEDULED.
     public var gameServerGroup: GameLiftClientTypes.GameServerGroup?
 
@@ -5352,7 +5353,7 @@ public struct DeleteGameServerGroupOutput {
     }
 }
 
-public struct DeleteGameSessionQueueInput {
+public struct DeleteGameSessionQueueInput: Swift.Sendable {
     /// A descriptive label that is associated with game session queue. Queue names must be unique within each Region. You can use either the queue ID or ARN value.
     /// This member is required.
     public var name: Swift.String?
@@ -5365,12 +5366,12 @@ public struct DeleteGameSessionQueueInput {
     }
 }
 
-public struct DeleteGameSessionQueueOutput {
+public struct DeleteGameSessionQueueOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteLocationInput {
+public struct DeleteLocationInput: Swift.Sendable {
     /// The location name of the custom location to be deleted.
     /// This member is required.
     public var locationName: Swift.String?
@@ -5383,12 +5384,12 @@ public struct DeleteLocationInput {
     }
 }
 
-public struct DeleteLocationOutput {
+public struct DeleteLocationOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteMatchmakingConfigurationInput {
+public struct DeleteMatchmakingConfigurationInput: Swift.Sendable {
     /// A unique identifier for the matchmaking configuration. You can use either the configuration name or ARN value.
     /// This member is required.
     public var name: Swift.String?
@@ -5401,12 +5402,12 @@ public struct DeleteMatchmakingConfigurationInput {
     }
 }
 
-public struct DeleteMatchmakingConfigurationOutput {
+public struct DeleteMatchmakingConfigurationOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteMatchmakingRuleSetInput {
+public struct DeleteMatchmakingRuleSetInput: Swift.Sendable {
     /// A unique identifier for the matchmaking rule set to be deleted. (Note: The rule set name is different from the optional "name" field in the rule set body.) You can use either the rule set name or ARN value.
     /// This member is required.
     public var name: Swift.String?
@@ -5419,12 +5420,12 @@ public struct DeleteMatchmakingRuleSetInput {
     }
 }
 
-public struct DeleteMatchmakingRuleSetOutput {
+public struct DeleteMatchmakingRuleSetOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteScalingPolicyInput {
+public struct DeleteScalingPolicyInput: Swift.Sendable {
     /// A unique identifier for the fleet to be deleted. You can use either the fleet ID or ARN value.
     /// This member is required.
     public var fleetId: Swift.String?
@@ -5442,7 +5443,7 @@ public struct DeleteScalingPolicyInput {
     }
 }
 
-public struct DeleteScriptInput {
+public struct DeleteScriptInput: Swift.Sendable {
     /// A unique identifier for the Realtime script to delete. You can use either the script ID or ARN value.
     /// This member is required.
     public var scriptId: Swift.String?
@@ -5455,7 +5456,7 @@ public struct DeleteScriptInput {
     }
 }
 
-public struct DeleteVpcPeeringAuthorizationInput {
+public struct DeleteVpcPeeringAuthorizationInput: Swift.Sendable {
     /// A unique identifier for the Amazon Web Services account that you use to manage your Amazon GameLift fleet. You can find your Account ID in the Amazon Web Services Management Console under account settings.
     /// This member is required.
     public var gameLiftAwsAccountId: Swift.String?
@@ -5473,12 +5474,12 @@ public struct DeleteVpcPeeringAuthorizationInput {
     }
 }
 
-public struct DeleteVpcPeeringAuthorizationOutput {
+public struct DeleteVpcPeeringAuthorizationOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteVpcPeeringConnectionInput {
+public struct DeleteVpcPeeringConnectionInput: Swift.Sendable {
     /// A unique identifier for the fleet. This fleet specified must match the fleet referenced in the VPC peering connection record. You can use either the fleet ID or ARN value.
     /// This member is required.
     public var fleetId: Swift.String?
@@ -5496,12 +5497,12 @@ public struct DeleteVpcPeeringConnectionInput {
     }
 }
 
-public struct DeleteVpcPeeringConnectionOutput {
+public struct DeleteVpcPeeringConnectionOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeregisterComputeInput {
+public struct DeregisterComputeInput: Swift.Sendable {
     /// The unique identifier of the compute resource to deregister. For an Anywhere fleet compute, use the registered compute name. For a container fleet, use the compute name (for example, a123b456c789012d3e4567f8a901b23c/1a234b56-7cd8-9e0f-a1b2-c34d567ef8a9) or the compute ARN.
     /// This member is required.
     public var computeName: Swift.String?
@@ -5519,12 +5520,12 @@ public struct DeregisterComputeInput {
     }
 }
 
-public struct DeregisterComputeOutput {
+public struct DeregisterComputeOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeregisterGameServerInput {
+public struct DeregisterGameServerInput: Swift.Sendable {
     /// A unique identifier for the game server group where the game server is running.
     /// This member is required.
     public var gameServerGroupName: Swift.String?
@@ -5542,7 +5543,7 @@ public struct DeregisterGameServerInput {
     }
 }
 
-public struct DescribeAliasInput {
+public struct DescribeAliasInput: Swift.Sendable {
     /// The unique identifier for the fleet alias that you want to retrieve. You can use either the alias ID or ARN value.
     /// This member is required.
     public var aliasId: Swift.String?
@@ -5555,7 +5556,7 @@ public struct DescribeAliasInput {
     }
 }
 
-public struct DescribeAliasOutput {
+public struct DescribeAliasOutput: Swift.Sendable {
     /// The requested alias resource.
     public var alias: GameLiftClientTypes.Alias?
 
@@ -5567,7 +5568,7 @@ public struct DescribeAliasOutput {
     }
 }
 
-public struct DescribeBuildInput {
+public struct DescribeBuildInput: Swift.Sendable {
     /// A unique identifier for the build to retrieve properties for. You can use either the build ID or ARN value.
     /// This member is required.
     public var buildId: Swift.String?
@@ -5580,7 +5581,7 @@ public struct DescribeBuildInput {
     }
 }
 
-public struct DescribeBuildOutput {
+public struct DescribeBuildOutput: Swift.Sendable {
     /// Set of properties describing the requested build.
     public var build: GameLiftClientTypes.Build?
 
@@ -5592,7 +5593,7 @@ public struct DescribeBuildOutput {
     }
 }
 
-public struct DescribeComputeInput {
+public struct DescribeComputeInput: Swift.Sendable {
     /// The unique identifier of the compute resource to retrieve properties for. For an Anywhere fleet compute, use the registered compute name. For an EC2 fleet instance, use the instance ID. For a container fleet, use the compute name (for example, a123b456c789012d3e4567f8a901b23c/1a234b56-7cd8-9e0f-a1b2-c34d567ef8a9) or the compute ARN.
     /// This member is required.
     public var computeName: Swift.String?
@@ -5610,7 +5611,7 @@ public struct DescribeComputeInput {
     }
 }
 
-public struct DescribeComputeOutput {
+public struct DescribeComputeOutput: Swift.Sendable {
     /// The set of properties for the requested compute resource.
     public var compute: GameLiftClientTypes.Compute?
 
@@ -5622,7 +5623,7 @@ public struct DescribeComputeOutput {
     }
 }
 
-public struct DescribeContainerGroupDefinitionInput {
+public struct DescribeContainerGroupDefinitionInput: Swift.Sendable {
     /// The unique identifier for the container group definition to retrieve properties for. You can use either the Name or ARN value.
     /// This member is required.
     public var name: Swift.String?
@@ -5635,7 +5636,7 @@ public struct DescribeContainerGroupDefinitionInput {
     }
 }
 
-public struct DescribeContainerGroupDefinitionOutput {
+public struct DescribeContainerGroupDefinitionOutput: Swift.Sendable {
     /// The properties of the requested container group definition resource.
     public var containerGroupDefinition: GameLiftClientTypes.ContainerGroupDefinition?
 
@@ -5647,7 +5648,7 @@ public struct DescribeContainerGroupDefinitionOutput {
     }
 }
 
-public struct DescribeEC2InstanceLimitsInput {
+public struct DescribeEC2InstanceLimitsInput: Swift.Sendable {
     /// Name of an Amazon EC2 instance type that is supported in Amazon GameLift. A fleet instance type determines the computing resources of each instance in the fleet, including CPU, memory, storage, and networking capacity. Do not specify a value for this parameter to retrieve limits for all instance types.
     public var ec2InstanceType: GameLiftClientTypes.EC2InstanceType?
     /// The name of a remote location to request instance limits for, in the form of an Amazon Web Services Region code such as us-west-2.
@@ -5664,8 +5665,9 @@ public struct DescribeEC2InstanceLimitsInput {
 }
 
 extension GameLiftClientTypes {
+
     /// The Amazon GameLift service limits for an Amazon EC2 instance type and current utilization. Amazon GameLift allows Amazon Web Services accounts a maximum number of instances, per instance type, per Amazon Web Services Region or location, for use with Amazon GameLift. You can request an limit increase for your account by using the Service limits page in the Amazon GameLift console.
-    public struct EC2InstanceLimit {
+    public struct EC2InstanceLimit: Swift.Sendable {
         /// The number of instances for the specified type and location that are currently being used by the Amazon Web Services account.
         public var currentInstances: Swift.Int?
         /// The name of an Amazon EC2 instance type. See [Amazon Elastic Compute Cloud Instance Types](http://aws.amazon.com/ec2/instance-types/) for detailed descriptions.
@@ -5688,10 +5690,9 @@ extension GameLiftClientTypes {
             self.location = location
         }
     }
-
 }
 
-public struct DescribeEC2InstanceLimitsOutput {
+public struct DescribeEC2InstanceLimitsOutput: Swift.Sendable {
     /// The maximum number of instances for the specified instance type.
     public var ec2InstanceLimits: [GameLiftClientTypes.EC2InstanceLimit]?
 
@@ -5703,7 +5704,7 @@ public struct DescribeEC2InstanceLimitsOutput {
     }
 }
 
-public struct DescribeFleetAttributesInput {
+public struct DescribeFleetAttributesInput: Swift.Sendable {
     /// A list of unique fleet identifiers to retrieve attributes for. You can use either the fleet ID or ARN value. To retrieve attributes for all current fleets, do not include this parameter.
     public var fleetIds: [Swift.String]?
     /// The maximum number of results to return. Use this parameter with NextToken to get results as a set of sequential pages. This parameter is ignored when the request specifies one or a list of fleet IDs.
@@ -5723,7 +5724,7 @@ public struct DescribeFleetAttributesInput {
     }
 }
 
-public struct DescribeFleetAttributesOutput {
+public struct DescribeFleetAttributesOutput: Swift.Sendable {
     /// A collection of objects containing attribute metadata for each requested fleet ID. Attribute objects are returned only for fleets that currently exist.
     public var fleetAttributes: [GameLiftClientTypes.FleetAttributes]?
     /// A token that indicates where to resume retrieving results on the next call to this operation. If no token is returned, these results represent the end of the list.
@@ -5739,7 +5740,7 @@ public struct DescribeFleetAttributesOutput {
     }
 }
 
-public struct DescribeFleetCapacityInput {
+public struct DescribeFleetCapacityInput: Swift.Sendable {
     /// A unique identifier for the fleet to retrieve capacity information for. You can use either the fleet ID or ARN value. Leave this parameter empty to retrieve capacity information for all fleets.
     public var fleetIds: [Swift.String]?
     /// The maximum number of results to return. Use this parameter with NextToken to get results as a set of sequential pages. This parameter is ignored when the request specifies one or a list of fleet IDs.
@@ -5760,8 +5761,9 @@ public struct DescribeFleetCapacityInput {
 }
 
 extension GameLiftClientTypes {
+
     /// Resource capacity settings. Fleet capacity is measured in Amazon EC2 instances. Pending and terminating counts are non-zero when the fleet capacity is adjusting to a scaling event or if access to resources is temporarily affected.
-    public struct EC2InstanceCounts {
+    public struct EC2InstanceCounts: Swift.Sendable {
         /// Actual number of instances that are ready to host game sessions.
         public var active: Swift.Int?
         /// Requested number of active instances. Amazon GameLift takes action as needed to maintain the desired number of instances. Capacity is scaled up or down by changing the desired instances. A change in the desired instances value can take up to 1 minute to be reflected when viewing a fleet's capacity settings.
@@ -5796,12 +5798,12 @@ extension GameLiftClientTypes {
             self.terminating = terminating
         }
     }
-
 }
 
 extension GameLiftClientTypes {
+
     /// This data type is used with the Amazon GameLift containers feature, which is currently in public preview. The number and status of replica container groups that are deployed across a fleet with compute type CONTAINER. This information, combined with the number of server processes being hosted per container group (see RuntimeConfiguration), tells you how many game sessions the fleet is currently capable of hosting concurrently. Returned by: [DescribeFleetCapacity], [DescribeFleetLocationCapacity]
-    public struct ReplicaContainerGroupCounts {
+    public struct ReplicaContainerGroupCounts: Swift.Sendable {
         /// The number of container groups that have active game sessions.
         public var active: Swift.Int?
         /// The number of container groups that have no active game sessions.
@@ -5824,12 +5826,12 @@ extension GameLiftClientTypes {
             self.terminating = terminating
         }
     }
-
 }
 
 extension GameLiftClientTypes {
+
     /// Current resource capacity settings for managed EC2 fleets and container fleets. For multi-location fleets, location values might refer to a fleet's remote location or its home Region. Returned by: [DescribeFleetCapacity](https://docs.aws.amazon.com/gamelift/latest/apireference/API_DescribeFleetCapacity.html), [DescribeFleetLocationCapacity](https://docs.aws.amazon.com/gamelift/latest/apireference/API_DescribeFleetLocationCapacity.html), [UpdateFleetCapacity](https://docs.aws.amazon.com/gamelift/latest/apireference/API_UpdateFleetCapacity.html)
-    public struct FleetCapacity {
+    public struct FleetCapacity: Swift.Sendable {
         /// The Amazon Resource Name ([ARN](https://docs.aws.amazon.com/AmazonS3/latest/dev/s3-arn-format.html)) that is assigned to a Amazon GameLift fleet resource and uniquely identifies it. ARNs are unique across all Regions. Format is arn:aws:gamelift:::fleet/fleet-a1234567-b8c9-0d1e-2fa3-b45c6d7e8912.
         public var fleetArn: Swift.String?
         /// A unique identifier for the fleet associated with the location.
@@ -5860,10 +5862,9 @@ extension GameLiftClientTypes {
             self.replicaContainerGroupCounts = replicaContainerGroupCounts
         }
     }
-
 }
 
-public struct DescribeFleetCapacityOutput {
+public struct DescribeFleetCapacityOutput: Swift.Sendable {
     /// A collection of objects that contains capacity information for each requested fleet ID. Capacity objects are returned only for fleets that currently exist. Changes in desired instance value can take up to 1 minute to be reflected.
     public var fleetCapacity: [GameLiftClientTypes.FleetCapacity]?
     /// A token that indicates where to resume retrieving results on the next call to this operation. If no token is returned, these results represent the end of the list.
@@ -5879,7 +5880,7 @@ public struct DescribeFleetCapacityOutput {
     }
 }
 
-public struct DescribeFleetEventsInput {
+public struct DescribeFleetEventsInput: Swift.Sendable {
     /// The most recent date to retrieve event logs for. If no end time is specified, this call returns entries from the specified start time up to the present. Format is a number expressed in Unix time as milliseconds (ex: "1469498468.057").
     public var endTime: Foundation.Date?
     /// A unique identifier for the fleet to get event logs for. You can use either the fleet ID or ARN value.
@@ -5910,7 +5911,7 @@ public struct DescribeFleetEventsInput {
 
 extension GameLiftClientTypes {
 
-    public enum EventCode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum EventCode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case fleetActivationFailed
         case fleetActivationFailedNoInstances
         case fleetBinaryDownloadFailed
@@ -6040,8 +6041,9 @@ extension GameLiftClientTypes {
 }
 
 extension GameLiftClientTypes {
+
     /// Log entry describing an event that involves Amazon GameLift resources (such as a fleet). In addition to tracking activity, event codes and messages can provide additional information for troubleshooting and debugging problems.
-    public struct Event {
+    public struct Event: Swift.Sendable {
         /// The number of times that this event occurred.
         public var count: Swift.Int?
         /// The type of event being logged. Fleet state transition events:
@@ -6166,10 +6168,9 @@ extension GameLiftClientTypes {
             self.resourceId = resourceId
         }
     }
-
 }
 
-public struct DescribeFleetEventsOutput {
+public struct DescribeFleetEventsOutput: Swift.Sendable {
     /// A collection of objects containing event log entries for the specified fleet.
     public var events: [GameLiftClientTypes.Event]?
     /// A token that indicates where to resume retrieving results on the next call to this operation. If no token is returned, these results represent the end of the list.
@@ -6185,7 +6186,7 @@ public struct DescribeFleetEventsOutput {
     }
 }
 
-public struct DescribeFleetLocationAttributesInput {
+public struct DescribeFleetLocationAttributesInput: Swift.Sendable {
     /// A unique identifier for the fleet to retrieve remote locations for. You can use either the fleet ID or ARN value.
     /// This member is required.
     public var fleetId: Swift.String?
@@ -6212,7 +6213,7 @@ public struct DescribeFleetLocationAttributesInput {
 
 extension GameLiftClientTypes {
 
-    public enum LocationUpdateStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum LocationUpdateStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case pendingUpdate
         case sdkUnknown(Swift.String)
 
@@ -6237,8 +6238,9 @@ extension GameLiftClientTypes {
 }
 
 extension GameLiftClientTypes {
+
     /// Details about a location in a multi-location fleet.
-    public struct LocationAttributes {
+    public struct LocationAttributes: Swift.Sendable {
         /// A fleet location and its current life-cycle state.
         public var locationState: GameLiftClientTypes.LocationState?
         /// A list of fleet actions that have been suspended in the fleet location.
@@ -6257,10 +6259,9 @@ extension GameLiftClientTypes {
             self.updateStatus = updateStatus
         }
     }
-
 }
 
-public struct DescribeFleetLocationAttributesOutput {
+public struct DescribeFleetLocationAttributesOutput: Swift.Sendable {
     /// The Amazon Resource Name ([ARN](https://docs.aws.amazon.com/AmazonS3/latest/dev/s3-arn-format.html)) that is assigned to a Amazon GameLift fleet resource and uniquely identifies it. ARNs are unique across all Regions. Format is arn:aws:gamelift:::fleet/fleet-a1234567-b8c9-0d1e-2fa3-b45c6d7e8912.
     public var fleetArn: Swift.String?
     /// A unique identifier for the fleet that location attributes were requested for.
@@ -6284,7 +6285,7 @@ public struct DescribeFleetLocationAttributesOutput {
     }
 }
 
-public struct DescribeFleetLocationCapacityInput {
+public struct DescribeFleetLocationCapacityInput: Swift.Sendable {
     /// A unique identifier for the fleet to request location capacity for. You can use either the fleet ID or ARN value.
     /// This member is required.
     public var fleetId: Swift.String?
@@ -6302,7 +6303,7 @@ public struct DescribeFleetLocationCapacityInput {
     }
 }
 
-public struct DescribeFleetLocationCapacityOutput {
+public struct DescribeFleetLocationCapacityOutput: Swift.Sendable {
     /// Resource capacity information for the requested fleet location. Capacity objects are returned only for fleets and locations that currently exist. Changes in desired instance value can take up to 1 minute to be reflected.
     public var fleetCapacity: GameLiftClientTypes.FleetCapacity?
 
@@ -6314,7 +6315,7 @@ public struct DescribeFleetLocationCapacityOutput {
     }
 }
 
-public struct DescribeFleetLocationUtilizationInput {
+public struct DescribeFleetLocationUtilizationInput: Swift.Sendable {
     /// A unique identifier for the fleet to request location utilization for. You can use either the fleet ID or ARN value.
     /// This member is required.
     public var fleetId: Swift.String?
@@ -6333,8 +6334,9 @@ public struct DescribeFleetLocationUtilizationInput {
 }
 
 extension GameLiftClientTypes {
+
     /// Current resource utilization statistics in a specified fleet or location. The location value might refer to a fleet's remote location or its home region.
-    public struct FleetUtilization {
+    public struct FleetUtilization: Swift.Sendable {
         /// The number of active game sessions that are currently being hosted across all instances in the fleet location.
         public var activeGameSessionCount: Swift.Int?
         /// The number of server processes in ACTIVE status that are currently running across all instances in the fleet location.
@@ -6369,10 +6371,9 @@ extension GameLiftClientTypes {
             self.maximumPlayerSessionCount = maximumPlayerSessionCount
         }
     }
-
 }
 
-public struct DescribeFleetLocationUtilizationOutput {
+public struct DescribeFleetLocationUtilizationOutput: Swift.Sendable {
     /// Utilization information for the requested fleet location. Utilization objects are returned only for fleets and locations that currently exist.
     public var fleetUtilization: GameLiftClientTypes.FleetUtilization?
 
@@ -6384,7 +6385,7 @@ public struct DescribeFleetLocationUtilizationOutput {
     }
 }
 
-public struct DescribeFleetPortSettingsInput {
+public struct DescribeFleetPortSettingsInput: Swift.Sendable {
     /// A unique identifier for the fleet to retrieve port settings for. You can use either the fleet ID or ARN value.
     /// This member is required.
     public var fleetId: Swift.String?
@@ -6401,7 +6402,7 @@ public struct DescribeFleetPortSettingsInput {
     }
 }
 
-public struct DescribeFleetPortSettingsOutput {
+public struct DescribeFleetPortSettingsOutput: Swift.Sendable {
     /// The Amazon Resource Name ([ARN](https://docs.aws.amazon.com/AmazonS3/latest/dev/s3-arn-format.html)) that is assigned to a Amazon GameLift fleet resource and uniquely identifies it. ARNs are unique across all Regions. Format is arn:aws:gamelift:::fleet/fleet-a1234567-b8c9-0d1e-2fa3-b45c6d7e8912.
     public var fleetArn: Swift.String?
     /// A unique identifier for the fleet that was requested.
@@ -6429,7 +6430,7 @@ public struct DescribeFleetPortSettingsOutput {
     }
 }
 
-public struct DescribeFleetUtilizationInput {
+public struct DescribeFleetUtilizationInput: Swift.Sendable {
     /// A unique identifier for the fleet to retrieve utilization data for. You can use either the fleet ID or ARN value. To retrieve attributes for all current fleets, do not include this parameter.
     public var fleetIds: [Swift.String]?
     /// The maximum number of results to return. Use this parameter with NextToken to get results as a set of sequential pages. This parameter is ignored when the request specifies one or a list of fleet IDs.
@@ -6449,7 +6450,7 @@ public struct DescribeFleetUtilizationInput {
     }
 }
 
-public struct DescribeFleetUtilizationOutput {
+public struct DescribeFleetUtilizationOutput: Swift.Sendable {
     /// A collection of objects containing utilization information for each requested fleet ID. Utilization objects are returned only for fleets that currently exist.
     public var fleetUtilization: [GameLiftClientTypes.FleetUtilization]?
     /// A token that indicates where to resume retrieving results on the next call to this operation. If no token is returned, these results represent the end of the list.
@@ -6465,7 +6466,7 @@ public struct DescribeFleetUtilizationOutput {
     }
 }
 
-public struct DescribeGameServerInput {
+public struct DescribeGameServerInput: Swift.Sendable {
     /// A unique identifier for the game server group where the game server is running.
     /// This member is required.
     public var gameServerGroupName: Swift.String?
@@ -6483,7 +6484,7 @@ public struct DescribeGameServerInput {
     }
 }
 
-public struct DescribeGameServerOutput {
+public struct DescribeGameServerOutput: Swift.Sendable {
     /// Object that describes the requested game server.
     public var gameServer: GameLiftClientTypes.GameServer?
 
@@ -6495,7 +6496,7 @@ public struct DescribeGameServerOutput {
     }
 }
 
-public struct DescribeGameServerGroupInput {
+public struct DescribeGameServerGroupInput: Swift.Sendable {
     /// A unique identifier for the game server group. Use either the name or ARN value.
     /// This member is required.
     public var gameServerGroupName: Swift.String?
@@ -6508,7 +6509,7 @@ public struct DescribeGameServerGroupInput {
     }
 }
 
-public struct DescribeGameServerGroupOutput {
+public struct DescribeGameServerGroupOutput: Swift.Sendable {
     /// An object with the property settings for the requested game server group resource.
     public var gameServerGroup: GameLiftClientTypes.GameServerGroup?
 
@@ -6520,7 +6521,7 @@ public struct DescribeGameServerGroupOutput {
     }
 }
 
-public struct DescribeGameServerInstancesInput {
+public struct DescribeGameServerInstancesInput: Swift.Sendable {
     /// A unique identifier for the game server group. Use either the name or ARN value.
     /// This member is required.
     public var gameServerGroupName: Swift.String?
@@ -6547,7 +6548,7 @@ public struct DescribeGameServerInstancesInput {
 
 extension GameLiftClientTypes {
 
-    public enum GameServerInstanceStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum GameServerInstanceStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case active
         case draining
         case spotTerminating
@@ -6578,8 +6579,9 @@ extension GameLiftClientTypes {
 }
 
 extension GameLiftClientTypes {
+
     /// This data type is used with the Amazon GameLift FleetIQ and game server groups. Additional properties, including status, that describe an EC2 instance in a game server group. Instance configurations are set with game server group properties (see DescribeGameServerGroup and with the EC2 launch template that was used when creating the game server group. Retrieve game server instances for a game server group by calling DescribeGameServerInstances.
-    public struct GameServerInstance {
+    public struct GameServerInstance: Swift.Sendable {
         /// A generated unique identifier for the game server group that includes the game server instance.
         public var gameServerGroupArn: Swift.String?
         /// A developer-defined identifier for the game server group that includes the game server instance. The name is unique for each Region in each Amazon Web Services account.
@@ -6602,10 +6604,9 @@ extension GameLiftClientTypes {
             self.instanceStatus = instanceStatus
         }
     }
-
 }
 
-public struct DescribeGameServerInstancesOutput {
+public struct DescribeGameServerInstancesOutput: Swift.Sendable {
     /// The collection of requested game server instances.
     public var gameServerInstances: [GameLiftClientTypes.GameServerInstance]?
     /// A token that indicates where to resume retrieving results on the next call to this operation. If no token is returned, these results represent the end of the list.
@@ -6621,7 +6622,7 @@ public struct DescribeGameServerInstancesOutput {
     }
 }
 
-public struct DescribeGameSessionDetailsInput {
+public struct DescribeGameSessionDetailsInput: Swift.Sendable {
     /// A unique identifier for the alias associated with the fleet to retrieve all game sessions for. You can use either the alias ID or ARN value.
     public var aliasId: Swift.String?
     /// A unique identifier for the fleet to retrieve all game sessions active on the fleet. You can use either the fleet ID or ARN value.
@@ -6658,8 +6659,9 @@ public struct DescribeGameSessionDetailsInput {
 }
 
 extension GameLiftClientTypes {
+
     /// A game session's properties plus the protection policy currently in force.
-    public struct GameSessionDetail {
+    public struct GameSessionDetail: Swift.Sendable {
         /// Object that describes a game session.
         public var gameSession: GameLiftClientTypes.GameSession?
         /// Current status of protection for the game session.
@@ -6678,10 +6680,9 @@ extension GameLiftClientTypes {
             self.protectionPolicy = protectionPolicy
         }
     }
-
 }
 
-public struct DescribeGameSessionDetailsOutput {
+public struct DescribeGameSessionDetailsOutput: Swift.Sendable {
     /// A collection of properties for each game session that matches the request.
     public var gameSessionDetails: [GameLiftClientTypes.GameSessionDetail]?
     /// A token that indicates where to resume retrieving results on the next call to this operation. If no token is returned, these results represent the end of the list.
@@ -6697,7 +6698,7 @@ public struct DescribeGameSessionDetailsOutput {
     }
 }
 
-public struct DescribeGameSessionPlacementInput {
+public struct DescribeGameSessionPlacementInput: Swift.Sendable {
     /// A unique identifier for a game session placement to retrieve.
     /// This member is required.
     public var placementId: Swift.String?
@@ -6711,8 +6712,9 @@ public struct DescribeGameSessionPlacementInput {
 }
 
 extension GameLiftClientTypes {
+
     /// Information about a player session. This object contains only the player ID and player session ID. To retrieve full details on a player session, call [DescribePlayerSessions](https://docs.aws.amazon.com/gamelift/latest/apireference/API_DescribePlayerSessions.html) with the player session ID.
-    public struct PlacedPlayerSession {
+    public struct PlacedPlayerSession: Swift.Sendable {
         /// A unique identifier for a player that is associated with this player session.
         public var playerId: Swift.String?
         /// A unique identifier for a player session.
@@ -6727,7 +6729,6 @@ extension GameLiftClientTypes {
             self.playerSessionId = playerSessionId
         }
     }
-
 }
 
 extension GameLiftClientTypes.PlacedPlayerSession: Swift.CustomDebugStringConvertible {
@@ -6736,8 +6737,9 @@ extension GameLiftClientTypes.PlacedPlayerSession: Swift.CustomDebugStringConver
 }
 
 extension GameLiftClientTypes {
+
     /// Regional latency information for a player, used when requesting a new game session. This value indicates the amount of time lag that exists when the player is connected to a fleet in the specified Region. The relative difference between a player's latency values for multiple Regions are used to determine which fleets are best suited to place a new game session for the player.
-    public struct PlayerLatency {
+    public struct PlayerLatency: Swift.Sendable {
         /// Amount of time that represents the time lag experienced by the player when connected to the specified Region.
         public var latencyInMilliseconds: Swift.Float?
         /// A unique identifier for a player associated with the latency data.
@@ -6756,7 +6758,6 @@ extension GameLiftClientTypes {
             self.regionIdentifier = regionIdentifier
         }
     }
-
 }
 
 extension GameLiftClientTypes.PlayerLatency: Swift.CustomDebugStringConvertible {
@@ -6766,7 +6767,7 @@ extension GameLiftClientTypes.PlayerLatency: Swift.CustomDebugStringConvertible 
 
 extension GameLiftClientTypes {
 
-    public enum GameSessionPlacementState: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum GameSessionPlacementState: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case cancelled
         case failed
         case fulfilled
@@ -6803,8 +6804,9 @@ extension GameLiftClientTypes {
 }
 
 extension GameLiftClientTypes {
+
     /// Represents a potential game session placement, including the full details of the original placement request and the current status. If the game session placement status is PENDING, the properties for game session ID/ARN, region, IP address/DNS, and port aren't final. A game session is not active and ready to accept players until placement status reaches FULFILLED. When the placement is in PENDING status, Amazon GameLift may attempt to place a game session multiple times before succeeding. With each attempt it creates a [GameSession] object and updates this placement object with the new game session properties..
-    public struct GameSessionPlacement {
+    public struct GameSessionPlacement: Swift.Sendable {
         /// The DNS identifier assigned to the instance that is running the game session. Values have the following format:
         ///
         /// * TLS-enabled fleets: ..amazongamelift.com.
@@ -6900,7 +6902,6 @@ extension GameLiftClientTypes {
             self.status = status
         }
     }
-
 }
 
 extension GameLiftClientTypes.GameSessionPlacement: Swift.CustomDebugStringConvertible {
@@ -6908,7 +6909,7 @@ extension GameLiftClientTypes.GameSessionPlacement: Swift.CustomDebugStringConve
         "GameSessionPlacement(dnsName: \(Swift.String(describing: dnsName)), endTime: \(Swift.String(describing: endTime)), gameProperties: \(Swift.String(describing: gameProperties)), gameSessionArn: \(Swift.String(describing: gameSessionArn)), gameSessionData: \(Swift.String(describing: gameSessionData)), gameSessionId: \(Swift.String(describing: gameSessionId)), gameSessionName: \(Swift.String(describing: gameSessionName)), gameSessionQueueName: \(Swift.String(describing: gameSessionQueueName)), gameSessionRegion: \(Swift.String(describing: gameSessionRegion)), matchmakerData: \(Swift.String(describing: matchmakerData)), maximumPlayerSessionCount: \(Swift.String(describing: maximumPlayerSessionCount)), placedPlayerSessions: \(Swift.String(describing: placedPlayerSessions)), placementId: \(Swift.String(describing: placementId)), playerLatencies: \(Swift.String(describing: playerLatencies)), startTime: \(Swift.String(describing: startTime)), status: \(Swift.String(describing: status)), ipAddress: \"CONTENT_REDACTED\", port: \"CONTENT_REDACTED\")"}
 }
 
-public struct DescribeGameSessionPlacementOutput {
+public struct DescribeGameSessionPlacementOutput: Swift.Sendable {
     /// Object that describes the requested game session placement.
     public var gameSessionPlacement: GameLiftClientTypes.GameSessionPlacement?
 
@@ -6920,7 +6921,7 @@ public struct DescribeGameSessionPlacementOutput {
     }
 }
 
-public struct DescribeGameSessionQueuesInput {
+public struct DescribeGameSessionQueuesInput: Swift.Sendable {
     /// The maximum number of results to return. Use this parameter with NextToken to get results as a set of sequential pages. You can request up to 50 results.
     public var limit: Swift.Int?
     /// A list of queue names to retrieve information for. You can use either the queue ID or ARN value. To request settings for all queues, leave this parameter empty.
@@ -6940,7 +6941,7 @@ public struct DescribeGameSessionQueuesInput {
     }
 }
 
-public struct DescribeGameSessionQueuesOutput {
+public struct DescribeGameSessionQueuesOutput: Swift.Sendable {
     /// A collection of objects that describe the requested game session queues.
     public var gameSessionQueues: [GameLiftClientTypes.GameSessionQueue]?
     /// A token that indicates where to resume retrieving results on the next call to this operation. If no token is returned, these results represent the end of the list.
@@ -6956,7 +6957,7 @@ public struct DescribeGameSessionQueuesOutput {
     }
 }
 
-public struct DescribeGameSessionsInput {
+public struct DescribeGameSessionsInput: Swift.Sendable {
     /// A unique identifier for the alias associated with the fleet to retrieve game sessions for. You can use either the alias ID or ARN value.
     public var aliasId: Swift.String?
     /// A unique identifier for the fleet to retrieve game sessions for. You can use either the fleet ID or ARN value.
@@ -6992,7 +6993,7 @@ public struct DescribeGameSessionsInput {
     }
 }
 
-public struct DescribeGameSessionsOutput {
+public struct DescribeGameSessionsOutput: Swift.Sendable {
     /// A collection of properties for each game session that matches the request.
     public var gameSessions: [GameLiftClientTypes.GameSession]?
     /// A token that indicates where to resume retrieving results on the next call to this operation. If no token is returned, these results represent the end of the list.
@@ -7008,7 +7009,7 @@ public struct DescribeGameSessionsOutput {
     }
 }
 
-public struct DescribeInstancesInput {
+public struct DescribeInstancesInput: Swift.Sendable {
     /// A unique identifier for the fleet to retrieve instance information for. You can use either the fleet ID or ARN value.
     /// This member is required.
     public var fleetId: Swift.String?
@@ -7039,7 +7040,7 @@ public struct DescribeInstancesInput {
 
 extension GameLiftClientTypes {
 
-    public enum InstanceStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum InstanceStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case active
         case pending
         case terminating
@@ -7070,8 +7071,9 @@ extension GameLiftClientTypes {
 }
 
 extension GameLiftClientTypes {
+
     /// Represents a virtual computing instance that runs game server processes and hosts game sessions. In Amazon GameLift, one or more instances make up a managed EC2 fleet.
-    public struct Instance {
+    public struct Instance: Swift.Sendable {
         /// A time stamp indicating when this data object was created. Format is a number expressed in Unix time as milliseconds (for example "1469498468.057").
         public var creationTime: Foundation.Date?
         /// The DNS identifier assigned to the instance that is running the game session. Values have the following format:
@@ -7131,7 +7133,6 @@ extension GameLiftClientTypes {
             self.type = type
         }
     }
-
 }
 
 extension GameLiftClientTypes.Instance: Swift.CustomDebugStringConvertible {
@@ -7139,7 +7140,7 @@ extension GameLiftClientTypes.Instance: Swift.CustomDebugStringConvertible {
         "Instance(creationTime: \(Swift.String(describing: creationTime)), dnsName: \(Swift.String(describing: dnsName)), fleetArn: \(Swift.String(describing: fleetArn)), fleetId: \(Swift.String(describing: fleetId)), instanceId: \(Swift.String(describing: instanceId)), location: \(Swift.String(describing: location)), operatingSystem: \(Swift.String(describing: operatingSystem)), status: \(Swift.String(describing: status)), type: \(Swift.String(describing: type)), ipAddress: \"CONTENT_REDACTED\")"}
 }
 
-public struct DescribeInstancesOutput {
+public struct DescribeInstancesOutput: Swift.Sendable {
     /// A collection of objects containing properties for each instance returned.
     public var instances: [GameLiftClientTypes.Instance]?
     /// A token that indicates where to resume retrieving results on the next call to this operation. If no token is returned, these results represent the end of the list.
@@ -7155,7 +7156,7 @@ public struct DescribeInstancesOutput {
     }
 }
 
-public struct DescribeMatchmakingInput {
+public struct DescribeMatchmakingInput: Swift.Sendable {
     /// A unique identifier for a matchmaking ticket. You can include up to 10 ID values.
     /// This member is required.
     public var ticketIds: [Swift.String]?
@@ -7169,8 +7170,9 @@ public struct DescribeMatchmakingInput {
 }
 
 extension GameLiftClientTypes {
+
     /// Represents a new player session that is created as a result of a successful FlexMatch match. A successful match automatically creates new player sessions for every player ID in the original matchmaking request. When players connect to the match's game session, they must include both player ID and player session ID in order to claim their assigned player slot.
-    public struct MatchedPlayerSession {
+    public struct MatchedPlayerSession: Swift.Sendable {
         /// A unique identifier for a player
         public var playerId: Swift.String?
         /// A unique identifier for a player session
@@ -7185,7 +7187,6 @@ extension GameLiftClientTypes {
             self.playerSessionId = playerSessionId
         }
     }
-
 }
 
 extension GameLiftClientTypes.MatchedPlayerSession: Swift.CustomDebugStringConvertible {
@@ -7194,8 +7195,9 @@ extension GameLiftClientTypes.MatchedPlayerSession: Swift.CustomDebugStringConve
 }
 
 extension GameLiftClientTypes {
+
     /// Connection information for a new game session that is created in response to a start matchmaking request. Once a match is made, the FlexMatch engine creates a new game session for it. This information, including the game session endpoint and player sessions for each player in the original matchmaking request, is added to the matchmaking ticket.
-    public struct GameSessionConnectionInfo {
+    public struct GameSessionConnectionInfo: Swift.Sendable {
         /// The DNS identifier assigned to the instance that is running the game session. Values have the following format:
         ///
         /// * TLS-enabled fleets: ..amazongamelift.com.
@@ -7229,7 +7231,6 @@ extension GameLiftClientTypes {
             self.port = port
         }
     }
-
 }
 
 extension GameLiftClientTypes.GameSessionConnectionInfo: Swift.CustomDebugStringConvertible {
@@ -7238,8 +7239,9 @@ extension GameLiftClientTypes.GameSessionConnectionInfo: Swift.CustomDebugString
 }
 
 extension GameLiftClientTypes {
+
     /// Represents a player in matchmaking. When starting a matchmaking request, a player has a player ID, attributes, and may have latency data. Team information is added after a match has been successfully completed.
-    public struct Player {
+    public struct Player: Swift.Sendable {
         /// A set of values, expressed in milliseconds, that indicates the amount of latency that a player experiences when connected to @aws; Regions. If this property is present, FlexMatch considers placing the match only in Regions for which latency is reported. If a matchmaker has a rule that evaluates player latency, players must report latency in order to be matched. If no latency is reported in this scenario, FlexMatch assumes that no Regions are available to the player and the ticket is not matchable.
         public var latencyInMs: [Swift.String: Swift.Int]?
         /// A collection of key:value pairs containing player information for use in matchmaking. Player attribute keys must match the playerAttributes used in a matchmaking rule set. Example: "PlayerAttributes": {"skill": {"N": "23"}, "gameMode": {"S": "deathmatch"}}. You can provide up to 10 PlayerAttributes.
@@ -7262,7 +7264,6 @@ extension GameLiftClientTypes {
             self.team = team
         }
     }
-
 }
 
 extension GameLiftClientTypes.Player: Swift.CustomDebugStringConvertible {
@@ -7272,7 +7273,7 @@ extension GameLiftClientTypes.Player: Swift.CustomDebugStringConvertible {
 
 extension GameLiftClientTypes {
 
-    public enum MatchmakingConfigurationStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum MatchmakingConfigurationStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case cancelled
         case completed
         case failed
@@ -7318,8 +7319,9 @@ extension GameLiftClientTypes {
 }
 
 extension GameLiftClientTypes {
+
     /// Ticket generated to track the progress of a matchmaking request. Each ticket is uniquely identified by a ticket ID, supplied by the requester, when creating a matchmaking request.
-    public struct MatchmakingTicket {
+    public struct MatchmakingTicket: Swift.Sendable {
         /// The Amazon Resource Name ([ARN](https://docs.aws.amazon.com/AmazonS3/latest/dev/s3-arn-format.html)) associated with the GameLift matchmaking configuration resource that is used with this ticket.
         public var configurationArn: Swift.String?
         /// Name of the matchmaking configuration that is used with this ticket. Matchmaking configurations determine how players are grouped into a match and how a new game session is created for the match.
@@ -7389,10 +7391,9 @@ extension GameLiftClientTypes {
             self.ticketId = ticketId
         }
     }
-
 }
 
-public struct DescribeMatchmakingOutput {
+public struct DescribeMatchmakingOutput: Swift.Sendable {
     /// A collection of existing matchmaking ticket objects matching the request.
     public var ticketList: [GameLiftClientTypes.MatchmakingTicket]?
 
@@ -7404,7 +7405,7 @@ public struct DescribeMatchmakingOutput {
     }
 }
 
-public struct DescribeMatchmakingConfigurationsInput {
+public struct DescribeMatchmakingConfigurationsInput: Swift.Sendable {
     /// The maximum number of results to return. Use this parameter with NextToken to get results as a set of sequential pages. This parameter is limited to 10.
     public var limit: Swift.Int?
     /// A unique identifier for the matchmaking configuration(s) to retrieve. You can use either the configuration name or ARN value. To request all existing configurations, leave this parameter empty.
@@ -7428,7 +7429,7 @@ public struct DescribeMatchmakingConfigurationsInput {
     }
 }
 
-public struct DescribeMatchmakingConfigurationsOutput {
+public struct DescribeMatchmakingConfigurationsOutput: Swift.Sendable {
     /// A collection of requested matchmaking configurations.
     public var configurations: [GameLiftClientTypes.MatchmakingConfiguration]?
     /// A token that indicates where to resume retrieving results on the next call to this operation. If no token is returned, these results represent the end of the list.
@@ -7444,7 +7445,7 @@ public struct DescribeMatchmakingConfigurationsOutput {
     }
 }
 
-public struct DescribeMatchmakingRuleSetsInput {
+public struct DescribeMatchmakingRuleSetsInput: Swift.Sendable {
     /// The maximum number of results to return. Use this parameter with NextToken to get results as a set of sequential pages.
     public var limit: Swift.Int?
     /// A list of one or more matchmaking rule set names to retrieve details for. (Note: The rule set name is different from the optional "name" field in the rule set body.) You can use either the rule set name or ARN value.
@@ -7464,7 +7465,7 @@ public struct DescribeMatchmakingRuleSetsInput {
     }
 }
 
-public struct DescribeMatchmakingRuleSetsOutput {
+public struct DescribeMatchmakingRuleSetsOutput: Swift.Sendable {
     /// A token that indicates where to resume retrieving results on the next call to this operation. If no token is returned, these results represent the end of the list.
     public var nextToken: Swift.String?
     /// A collection of requested matchmaking rule set objects.
@@ -7481,7 +7482,7 @@ public struct DescribeMatchmakingRuleSetsOutput {
     }
 }
 
-public struct DescribePlayerSessionsInput {
+public struct DescribePlayerSessionsInput: Swift.Sendable {
     /// A unique identifier for the game session to retrieve player sessions for.
     public var gameSessionId: Swift.String?
     /// The maximum number of results to return. Use this parameter with NextToken to get results as a set of sequential pages. If a player session ID is specified, this parameter is ignored.
@@ -7526,7 +7527,7 @@ extension DescribePlayerSessionsInput: Swift.CustomDebugStringConvertible {
         "DescribePlayerSessionsInput(gameSessionId: \(Swift.String(describing: gameSessionId)), limit: \(Swift.String(describing: limit)), nextToken: \(Swift.String(describing: nextToken)), playerSessionId: \(Swift.String(describing: playerSessionId)), playerSessionStatusFilter: \(Swift.String(describing: playerSessionStatusFilter)), playerId: \"CONTENT_REDACTED\")"}
 }
 
-public struct DescribePlayerSessionsOutput {
+public struct DescribePlayerSessionsOutput: Swift.Sendable {
     /// A token that indicates where to resume retrieving results on the next call to this operation. If no token is returned, these results represent the end of the list.
     public var nextToken: Swift.String?
     /// A collection of objects containing properties for each player session that matches the request.
@@ -7542,7 +7543,7 @@ public struct DescribePlayerSessionsOutput {
     }
 }
 
-public struct DescribeRuntimeConfigurationInput {
+public struct DescribeRuntimeConfigurationInput: Swift.Sendable {
     /// A unique identifier for the fleet to get the runtime configuration for. You can use either the fleet ID or ARN value.
     /// This member is required.
     public var fleetId: Swift.String?
@@ -7555,7 +7556,7 @@ public struct DescribeRuntimeConfigurationInput {
     }
 }
 
-public struct DescribeRuntimeConfigurationOutput {
+public struct DescribeRuntimeConfigurationOutput: Swift.Sendable {
     /// Instructions that describe how server processes are launched and maintained on computes in the fleet.
     public var runtimeConfiguration: GameLiftClientTypes.RuntimeConfiguration?
 
@@ -7569,7 +7570,7 @@ public struct DescribeRuntimeConfigurationOutput {
 
 extension GameLiftClientTypes {
 
-    public enum ScalingStatusType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ScalingStatusType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case active
         case deleted
         case deleteRequested
@@ -7611,7 +7612,7 @@ extension GameLiftClientTypes {
     }
 }
 
-public struct DescribeScalingPoliciesInput {
+public struct DescribeScalingPoliciesInput: Swift.Sendable {
     /// A unique identifier for the fleet for which to retrieve scaling policies. You can use either the fleet ID or ARN value.
     /// This member is required.
     public var fleetId: Swift.String?
@@ -7656,7 +7657,7 @@ public struct DescribeScalingPoliciesInput {
 
 extension GameLiftClientTypes {
 
-    public enum MetricName: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum MetricName: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case activatinggamesessions
         case activegamesessions
         case activeinstances
@@ -7715,7 +7716,7 @@ extension GameLiftClientTypes {
 
 extension GameLiftClientTypes {
 
-    public enum PolicyType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum PolicyType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case rulebased
         case targetbased
         case sdkUnknown(Swift.String)
@@ -7744,7 +7745,7 @@ extension GameLiftClientTypes {
 
 extension GameLiftClientTypes {
 
-    public enum ScalingAdjustmentType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ScalingAdjustmentType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case changeincapacity
         case exactcapacity
         case percentchangeincapacity
@@ -7775,8 +7776,9 @@ extension GameLiftClientTypes {
 }
 
 extension GameLiftClientTypes {
+
     /// Settings for a target-based scaling policy. A target-based policy tracks a particular fleet metric specifies a target value for the metric. As player usage changes, the policy triggers Amazon GameLift to adjust capacity so that the metric returns to the target value. The target configuration specifies settings as needed for the target based policy, including the target value.
-    public struct TargetConfiguration {
+    public struct TargetConfiguration: Swift.Sendable {
         /// Desired value to use with a target-based scaling policy. The value must be relevant for whatever metric the scaling policy is using. For example, in a policy using the metric PercentAvailableGameSessions, the target value should be the preferred size of the fleet's buffer (the percent of capacity that should be idle and ready for new game sessions).
         /// This member is required.
         public var targetValue: Swift.Double?
@@ -7788,12 +7790,12 @@ extension GameLiftClientTypes {
             self.targetValue = targetValue
         }
     }
-
 }
 
 extension GameLiftClientTypes {
+
     /// Rule that controls how a fleet is scaled. Scaling policies are uniquely identified by the combination of name and fleet ID.
-    public struct ScalingPolicy {
+    public struct ScalingPolicy: Swift.Sendable {
         /// Comparison operator to use when measuring a metric against the threshold value.
         public var comparisonOperator: GameLiftClientTypes.ComparisonOperatorType?
         /// Length of time (in minutes) the metric must be at or beyond the threshold before a scaling event is triggered.
@@ -7898,10 +7900,9 @@ extension GameLiftClientTypes {
             self.updateStatus = updateStatus
         }
     }
-
 }
 
-public struct DescribeScalingPoliciesOutput {
+public struct DescribeScalingPoliciesOutput: Swift.Sendable {
     /// A token that indicates where to resume retrieving results on the next call to this operation. If no token is returned, these results represent the end of the list.
     public var nextToken: Swift.String?
     /// A collection of objects containing the scaling policies matching the request.
@@ -7917,7 +7918,7 @@ public struct DescribeScalingPoliciesOutput {
     }
 }
 
-public struct DescribeScriptInput {
+public struct DescribeScriptInput: Swift.Sendable {
     /// A unique identifier for the Realtime script to retrieve properties for. You can use either the script ID or ARN value.
     /// This member is required.
     public var scriptId: Swift.String?
@@ -7930,7 +7931,7 @@ public struct DescribeScriptInput {
     }
 }
 
-public struct DescribeScriptOutput {
+public struct DescribeScriptOutput: Swift.Sendable {
     /// A set of properties describing the requested script.
     public var script: GameLiftClientTypes.Script?
 
@@ -7942,12 +7943,12 @@ public struct DescribeScriptOutput {
     }
 }
 
-public struct DescribeVpcPeeringAuthorizationsInput {
+public struct DescribeVpcPeeringAuthorizationsInput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DescribeVpcPeeringAuthorizationsOutput {
+public struct DescribeVpcPeeringAuthorizationsOutput: Swift.Sendable {
     /// A collection of objects that describe all valid VPC peering operations for the current Amazon Web Services account.
     public var vpcPeeringAuthorizations: [GameLiftClientTypes.VpcPeeringAuthorization]?
 
@@ -7959,7 +7960,7 @@ public struct DescribeVpcPeeringAuthorizationsOutput {
     }
 }
 
-public struct DescribeVpcPeeringConnectionsInput {
+public struct DescribeVpcPeeringConnectionsInput: Swift.Sendable {
     /// A unique identifier for the fleet. You can use either the fleet ID or ARN value.
     public var fleetId: Swift.String?
 
@@ -7972,8 +7973,9 @@ public struct DescribeVpcPeeringConnectionsInput {
 }
 
 extension GameLiftClientTypes {
+
     /// Represents status information for a VPC peering connection. Status codes and messages are provided from EC2 (see [VpcPeeringConnectionStateReason](https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_VpcPeeringConnectionStateReason.html)). Connection status information is also communicated as a fleet event.
-    public struct VpcPeeringConnectionStatus {
+    public struct VpcPeeringConnectionStatus: Swift.Sendable {
         /// Code indicating the status of a VPC peering connection.
         public var code: Swift.String?
         /// Additional messaging associated with the connection status.
@@ -7988,12 +7990,12 @@ extension GameLiftClientTypes {
             self.message = message
         }
     }
-
 }
 
 extension GameLiftClientTypes {
+
     /// Represents a peering connection between a VPC on one of your Amazon Web Services accounts and the VPC for your Amazon GameLift fleets. This record may be for an active peering connection or a pending connection that has not yet been established. Related actions [All APIs by task](https://docs.aws.amazon.com/gamelift/latest/developerguide/reference-awssdk.html#reference-awssdk-resources-fleets)
-    public struct VpcPeeringConnection {
+    public struct VpcPeeringConnection: Swift.Sendable {
         /// The Amazon Resource Name ([ARN](https://docs.aws.amazon.com/AmazonS3/latest/dev/s3-arn-format.html)) associated with the GameLift fleet resource for this connection.
         public var fleetArn: Swift.String?
         /// A unique identifier for the fleet. This ID determines the ID of the Amazon GameLift VPC for your fleet.
@@ -8028,10 +8030,9 @@ extension GameLiftClientTypes {
             self.vpcPeeringConnectionId = vpcPeeringConnectionId
         }
     }
-
 }
 
-public struct DescribeVpcPeeringConnectionsOutput {
+public struct DescribeVpcPeeringConnectionsOutput: Swift.Sendable {
     /// A collection of VPC peering connection records that match the request.
     public var vpcPeeringConnections: [GameLiftClientTypes.VpcPeeringConnection]?
 
@@ -8044,8 +8045,9 @@ public struct DescribeVpcPeeringConnectionsOutput {
 }
 
 extension GameLiftClientTypes {
+
     /// Player information for use when creating player sessions using a game session placement request.
-    public struct DesiredPlayerSession {
+    public struct DesiredPlayerSession: Swift.Sendable {
         /// Developer-defined information related to a player. Amazon GameLift does not use this data, so it can be formatted as needed for use in the game.
         public var playerData: Swift.String?
         /// A unique identifier for a player to associate with the player session.
@@ -8060,7 +8062,6 @@ extension GameLiftClientTypes {
             self.playerId = playerId
         }
     }
-
 }
 
 extension GameLiftClientTypes.DesiredPlayerSession: Swift.CustomDebugStringConvertible {
@@ -8068,7 +8069,7 @@ extension GameLiftClientTypes.DesiredPlayerSession: Swift.CustomDebugStringConve
         "DesiredPlayerSession(playerData: \(Swift.String(describing: playerData)), playerId: \"CONTENT_REDACTED\")"}
 }
 
-public struct GetComputeAccessInput {
+public struct GetComputeAccessInput: Swift.Sendable {
     /// A unique identifier for the compute resource that you want to connect to. For an EC2 fleet compute, use the instance ID. For a container fleet, use the compute name (for example, a123b456c789012d3e4567f8a901b23c/1a234b56-7cd8-9e0f-a1b2-c34d567ef8a9) or the compute ARN.
     /// This member is required.
     public var computeName: Swift.String?
@@ -8086,7 +8087,7 @@ public struct GetComputeAccessInput {
     }
 }
 
-public struct GetComputeAccessOutput {
+public struct GetComputeAccessOutput: Swift.Sendable {
     /// The Amazon Resource Name ([ARN](https://docs.aws.amazon.com/AmazonS3/latest/dev/s3-arn-format.html)) that is assigned to an Amazon GameLift compute resource and uniquely identifies it. ARNs are unique across all Regions. Format is arn:aws:gamelift:::compute/compute-a1234567-b8c9-0d1e-2fa3-b45c6d7e8912.
     public var computeArn: Swift.String?
     /// The identifier of the compute resource to be accessed. This value might be either a compute name or an instance ID.
@@ -8123,7 +8124,7 @@ extension GetComputeAccessOutput: Swift.CustomDebugStringConvertible {
         "GetComputeAccessOutput(computeArn: \(Swift.String(describing: computeArn)), computeName: \(Swift.String(describing: computeName)), fleetArn: \(Swift.String(describing: fleetArn)), fleetId: \(Swift.String(describing: fleetId)), target: \(Swift.String(describing: target)), credentials: \"CONTENT_REDACTED\")"}
 }
 
-public struct GetComputeAuthTokenInput {
+public struct GetComputeAuthTokenInput: Swift.Sendable {
     /// The name of the compute resource you are requesting the authentication token for. For an Anywhere fleet compute, use the registered compute name. For an EC2 fleet instance, use the instance ID. For a container fleet, use the compute name (for example, a123b456c789012d3e4567f8a901b23c/1a234b56-7cd8-9e0f-a1b2-c34d567ef8a9) or the compute ARN.
     /// This member is required.
     public var computeName: Swift.String?
@@ -8141,7 +8142,7 @@ public struct GetComputeAuthTokenInput {
     }
 }
 
-public struct GetComputeAuthTokenOutput {
+public struct GetComputeAuthTokenOutput: Swift.Sendable {
     /// A valid temporary authentication token.
     public var authToken: Swift.String?
     /// The Amazon Resource Name ([ARN](https://docs.aws.amazon.com/AmazonS3/latest/dev/s3-arn-format.html)) that is assigned to an Amazon GameLift compute resource and uniquely identifies it. ARNs are unique across all Regions. Format is arn:aws:gamelift:::compute/compute-a1234567-b8c9-0d1e-2fa3-b45c6d7e8912.
@@ -8173,7 +8174,7 @@ public struct GetComputeAuthTokenOutput {
     }
 }
 
-public struct GetGameSessionLogUrlInput {
+public struct GetGameSessionLogUrlInput: Swift.Sendable {
     /// A unique identifier for the game session to get logs for.
     /// This member is required.
     public var gameSessionId: Swift.String?
@@ -8186,7 +8187,7 @@ public struct GetGameSessionLogUrlInput {
     }
 }
 
-public struct GetGameSessionLogUrlOutput {
+public struct GetGameSessionLogUrlOutput: Swift.Sendable {
     /// Location of the requested game session logs, available for download. This URL is valid for 15 minutes, after which S3 will reject any download request using this URL. You can request a new URL any time within the 14-day period that the logs are retained.
     public var preSignedUrl: Swift.String?
 
@@ -8198,7 +8199,7 @@ public struct GetGameSessionLogUrlOutput {
     }
 }
 
-public struct GetInstanceAccessInput {
+public struct GetInstanceAccessInput: Swift.Sendable {
     /// A unique identifier for the fleet that contains the instance you want to access. You can request access to instances in EC2 fleets with the following statuses: ACTIVATING, ACTIVE, or ERROR. Use either a fleet ID or an ARN value. You can access fleets in ERROR status for a short period of time before Amazon GameLift deletes them.
     /// This member is required.
     public var fleetId: Swift.String?
@@ -8217,8 +8218,9 @@ public struct GetInstanceAccessInput {
 }
 
 extension GameLiftClientTypes {
+
     /// A set of credentials that allow remote access to an instance in an EC2 managed fleet. These credentials are returned in response to a call to [GetInstanceAccess], which requests access for instances that are running game servers with the Amazon GameLift server SDK version 4.x or earlier.
-    public struct InstanceCredentials {
+    public struct InstanceCredentials: Swift.Sendable {
         /// Secret string. For Windows instances, the secret is a password for use with Windows Remote Desktop. For Linux instances, it's a private key for use with SSH.
         public var secret: Swift.String?
         /// A user name for logging in.
@@ -8233,7 +8235,6 @@ extension GameLiftClientTypes {
             self.userName = userName
         }
     }
-
 }
 
 extension GameLiftClientTypes.InstanceCredentials: Swift.CustomDebugStringConvertible {
@@ -8243,8 +8244,9 @@ extension GameLiftClientTypes.InstanceCredentials: Swift.CustomDebugStringConver
 }
 
 extension GameLiftClientTypes {
+
     /// Information and credentials that you can use to remotely connect to an instance in an EC2 managed fleet. This data type is returned in response to a call to [GetInstanceAccess].
-    public struct InstanceAccess {
+    public struct InstanceAccess: Swift.Sendable {
         /// Security credentials that are required to access the instance.
         public var credentials: GameLiftClientTypes.InstanceCredentials?
         /// A unique identifier for the fleet containing the instance to be accessed.
@@ -8271,7 +8273,6 @@ extension GameLiftClientTypes {
             self.operatingSystem = operatingSystem
         }
     }
-
 }
 
 extension GameLiftClientTypes.InstanceAccess: Swift.CustomDebugStringConvertible {
@@ -8279,7 +8280,7 @@ extension GameLiftClientTypes.InstanceAccess: Swift.CustomDebugStringConvertible
         "InstanceAccess(fleetId: \(Swift.String(describing: fleetId)), instanceId: \(Swift.String(describing: instanceId)), operatingSystem: \(Swift.String(describing: operatingSystem)), credentials: \"CONTENT_REDACTED\", ipAddress: \"CONTENT_REDACTED\")"}
 }
 
-public struct GetInstanceAccessOutput {
+public struct GetInstanceAccessOutput: Swift.Sendable {
     /// The connection information for a fleet instance, including IP address and access credentials.
     public var instanceAccess: GameLiftClientTypes.InstanceAccess?
 
@@ -8291,7 +8292,7 @@ public struct GetInstanceAccessOutput {
     }
 }
 
-public struct ListAliasesInput {
+public struct ListAliasesInput: Swift.Sendable {
     /// The maximum number of results to return. Use this parameter with NextToken to get results as a set of sequential pages.
     public var limit: Swift.Int?
     /// A descriptive label that is associated with an alias. Alias names do not need to be unique.
@@ -8319,7 +8320,7 @@ public struct ListAliasesInput {
     }
 }
 
-public struct ListAliasesOutput {
+public struct ListAliasesOutput: Swift.Sendable {
     /// A collection of alias resources that match the request parameters.
     public var aliases: [GameLiftClientTypes.Alias]?
     /// A token that indicates where to resume retrieving results on the next call to this operation. If no token is returned, these results represent the end of the list.
@@ -8335,7 +8336,7 @@ public struct ListAliasesOutput {
     }
 }
 
-public struct ListBuildsInput {
+public struct ListBuildsInput: Swift.Sendable {
     /// The maximum number of results to return. Use this parameter with NextToken to get results as a set of sequential pages.
     public var limit: Swift.Int?
     /// A token that indicates the start of the next sequential page of results. Use the token that is returned with a previous call to this operation. To start at the beginning of the result set, don't specify a value.
@@ -8361,7 +8362,7 @@ public struct ListBuildsInput {
     }
 }
 
-public struct ListBuildsOutput {
+public struct ListBuildsOutput: Swift.Sendable {
     /// A collection of build resources that match the request.
     public var builds: [GameLiftClientTypes.Build]?
     /// A token that indicates where to resume retrieving results on the next call to this operation. If no token is returned, these results represent the end of the list.
@@ -8377,7 +8378,7 @@ public struct ListBuildsOutput {
     }
 }
 
-public struct ListComputeInput {
+public struct ListComputeInput: Swift.Sendable {
     /// A unique identifier for the fleet to retrieve compute resources for.
     /// This member is required.
     public var fleetId: Swift.String?
@@ -8402,7 +8403,7 @@ public struct ListComputeInput {
     }
 }
 
-public struct ListComputeOutput {
+public struct ListComputeOutput: Swift.Sendable {
     /// A list of compute resources in the specified fleet.
     public var computeList: [GameLiftClientTypes.Compute]?
     /// A token that indicates where to resume retrieving results on the next call to this operation. If no token is returned, these results represent the end of the list.
@@ -8418,7 +8419,7 @@ public struct ListComputeOutput {
     }
 }
 
-public struct ListContainerGroupDefinitionsInput {
+public struct ListContainerGroupDefinitionsInput: Swift.Sendable {
     /// The maximum number of results to return. Use this parameter with NextToken to get results as a set of sequential pages.
     public var limit: Swift.Int?
     /// A token that indicates the start of the next sequential page of results. Use the token that is returned with a previous call to this operation. To start at the beginning of the result set, do not specify a value.
@@ -8442,7 +8443,7 @@ public struct ListContainerGroupDefinitionsInput {
     }
 }
 
-public struct ListContainerGroupDefinitionsOutput {
+public struct ListContainerGroupDefinitionsOutput: Swift.Sendable {
     /// A result set of container group definitions that match the request.
     public var containerGroupDefinitions: [GameLiftClientTypes.ContainerGroupDefinition]?
     /// A token that indicates where to resume retrieving results on the next call to this operation. If no token is returned, these results represent the end of the list.
@@ -8458,7 +8459,7 @@ public struct ListContainerGroupDefinitionsOutput {
     }
 }
 
-public struct ListFleetsInput {
+public struct ListFleetsInput: Swift.Sendable {
     /// A unique identifier for the build to request fleets for. Use this parameter to return only fleets using a specified build. Use either the build ID or ARN value.
     public var buildId: Swift.String?
     /// The container group definition name to request fleets for. Use this parameter to return only fleets that are deployed with the specified container group definition.
@@ -8486,7 +8487,7 @@ public struct ListFleetsInput {
     }
 }
 
-public struct ListFleetsOutput {
+public struct ListFleetsOutput: Swift.Sendable {
     /// A set of fleet IDs that match the list request.
     public var fleetIds: [Swift.String]?
     /// A token that indicates where to resume retrieving results on the next call to this operation. If no token is returned, these results represent the end of the list.
@@ -8502,7 +8503,7 @@ public struct ListFleetsOutput {
     }
 }
 
-public struct ListGameServerGroupsInput {
+public struct ListGameServerGroupsInput: Swift.Sendable {
     /// The game server groups' limit.
     public var limit: Swift.Int?
     /// Specify the pagination token from a previous request to retrieve the next page of results.
@@ -8518,7 +8519,7 @@ public struct ListGameServerGroupsInput {
     }
 }
 
-public struct ListGameServerGroupsOutput {
+public struct ListGameServerGroupsOutput: Swift.Sendable {
     /// The game server groups' game server groups.
     public var gameServerGroups: [GameLiftClientTypes.GameServerGroup]?
     /// Specify the pagination token from a previous request to retrieve the next page of results.
@@ -8536,7 +8537,7 @@ public struct ListGameServerGroupsOutput {
 
 extension GameLiftClientTypes {
 
-    public enum SortOrder: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SortOrder: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case ascending
         case descending
         case sdkUnknown(Swift.String)
@@ -8563,7 +8564,7 @@ extension GameLiftClientTypes {
     }
 }
 
-public struct ListGameServersInput {
+public struct ListGameServersInput: Swift.Sendable {
     /// An identifier for the game server group to retrieve a list of game servers from. Use either the name or ARN value.
     /// This member is required.
     public var gameServerGroupName: Swift.String?
@@ -8588,7 +8589,7 @@ public struct ListGameServersInput {
     }
 }
 
-public struct ListGameServersOutput {
+public struct ListGameServersOutput: Swift.Sendable {
     /// A collection of game server objects that match the request.
     public var gameServers: [GameLiftClientTypes.GameServer]?
     /// A token that indicates where to resume retrieving results on the next call to this operation. If no token is returned, these results represent the end of the list.
@@ -8606,7 +8607,7 @@ public struct ListGameServersOutput {
 
 extension GameLiftClientTypes {
 
-    public enum LocationFilter: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum LocationFilter: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case aws
         case custom
         case sdkUnknown(Swift.String)
@@ -8633,7 +8634,7 @@ extension GameLiftClientTypes {
     }
 }
 
-public struct ListLocationsInput {
+public struct ListLocationsInput: Swift.Sendable {
     /// Filters the list for AWS or CUSTOM locations.
     public var filters: [GameLiftClientTypes.LocationFilter]?
     /// The maximum number of results to return. Use this parameter with NextToken to get results as a set of sequential pages.
@@ -8653,7 +8654,7 @@ public struct ListLocationsInput {
     }
 }
 
-public struct ListLocationsOutput {
+public struct ListLocationsOutput: Swift.Sendable {
     /// A collection of locations.
     public var locations: [GameLiftClientTypes.LocationModel]?
     /// A token that indicates where to resume retrieving results on the next call to this operation. If no token is returned, these results represent the end of the list.
@@ -8669,7 +8670,7 @@ public struct ListLocationsOutput {
     }
 }
 
-public struct ListScriptsInput {
+public struct ListScriptsInput: Swift.Sendable {
     /// The maximum number of results to return. Use this parameter with NextToken to get results as a set of sequential pages.
     public var limit: Swift.Int?
     /// A token that indicates the start of the next sequential page of results. Use the token that is returned with a previous call to this operation. To start at the beginning of the result set, don't specify a value.
@@ -8685,7 +8686,7 @@ public struct ListScriptsInput {
     }
 }
 
-public struct ListScriptsOutput {
+public struct ListScriptsOutput: Swift.Sendable {
     /// A token that indicates where to resume retrieving results on the next call to this operation. If no token is returned, these results represent the end of the list.
     public var nextToken: Swift.String?
     /// A set of properties describing the requested script.
@@ -8701,7 +8702,7 @@ public struct ListScriptsOutput {
     }
 }
 
-public struct ListTagsForResourceInput {
+public struct ListTagsForResourceInput: Swift.Sendable {
     /// The Amazon Resource Name ([ARN](https://docs.aws.amazon.com/AmazonS3/latest/dev/s3-arn-format.html)) that uniquely identifies the Amazon GameLift resource that you want to retrieve tags for. Amazon GameLift includes resource ARNs in the data object for the resource. You can retrieve the ARN by calling a List or Describe operation for the resource type.
     /// This member is required.
     public var resourceARN: Swift.String?
@@ -8714,7 +8715,7 @@ public struct ListTagsForResourceInput {
     }
 }
 
-public struct ListTagsForResourceOutput {
+public struct ListTagsForResourceOutput: Swift.Sendable {
     /// The collection of tags assigned to the resource.
     public var tags: [GameLiftClientTypes.Tag]?
 
@@ -8726,7 +8727,7 @@ public struct ListTagsForResourceOutput {
     }
 }
 
-public struct PutScalingPolicyInput {
+public struct PutScalingPolicyInput: Swift.Sendable {
     /// Comparison operator to use when measuring the metric against the threshold value.
     public var comparisonOperator: GameLiftClientTypes.ComparisonOperatorType?
     /// Length of time (in minutes) the metric must be at or beyond the threshold before a scaling event is triggered.
@@ -8805,7 +8806,7 @@ public struct PutScalingPolicyInput {
     }
 }
 
-public struct PutScalingPolicyOutput {
+public struct PutScalingPolicyOutput: Swift.Sendable {
     /// A descriptive label that is associated with a fleet's scaling policy. Policy names do not need to be unique.
     public var name: Swift.String?
 
@@ -8817,7 +8818,7 @@ public struct PutScalingPolicyOutput {
     }
 }
 
-public struct RegisterComputeInput {
+public struct RegisterComputeInput: Swift.Sendable {
     /// The path to a TLS certificate on your compute resource. Amazon GameLift doesn't validate the path and certificate.
     public var certificatePath: Swift.String?
     /// A descriptive label for the compute resource.
@@ -8856,7 +8857,7 @@ extension RegisterComputeInput: Swift.CustomDebugStringConvertible {
         "RegisterComputeInput(certificatePath: \(Swift.String(describing: certificatePath)), computeName: \(Swift.String(describing: computeName)), dnsName: \(Swift.String(describing: dnsName)), fleetId: \(Swift.String(describing: fleetId)), location: \(Swift.String(describing: location)), ipAddress: \"CONTENT_REDACTED\")"}
 }
 
-public struct RegisterComputeOutput {
+public struct RegisterComputeOutput: Swift.Sendable {
     /// The details of the compute resource you registered.
     public var compute: GameLiftClientTypes.Compute?
 
@@ -8868,7 +8869,7 @@ public struct RegisterComputeOutput {
     }
 }
 
-public struct RegisterGameServerInput {
+public struct RegisterGameServerInput: Swift.Sendable {
     /// Information that is needed to make inbound client connections to the game server. This might include the IP address and port, DNS name, and other information.
     public var connectionInfo: Swift.String?
     /// A set of custom game server properties, formatted as a single string value. This data is passed to a game client or service when it requests information on game servers.
@@ -8899,7 +8900,7 @@ public struct RegisterGameServerInput {
     }
 }
 
-public struct RegisterGameServerOutput {
+public struct RegisterGameServerOutput: Swift.Sendable {
     /// Object that describes the newly registered game server.
     public var gameServer: GameLiftClientTypes.GameServer?
 
@@ -8911,7 +8912,7 @@ public struct RegisterGameServerOutput {
     }
 }
 
-public struct RequestUploadCredentialsInput {
+public struct RequestUploadCredentialsInput: Swift.Sendable {
     /// A unique identifier for the build to get credentials for. You can use either the build ID or ARN value.
     /// This member is required.
     public var buildId: Swift.String?
@@ -8924,7 +8925,7 @@ public struct RequestUploadCredentialsInput {
     }
 }
 
-public struct RequestUploadCredentialsOutput {
+public struct RequestUploadCredentialsOutput: Swift.Sendable {
     /// Amazon S3 path and key, identifying where the game build files are stored.
     public var storageLocation: GameLiftClientTypes.S3Location?
     /// Amazon Web Services credentials required when uploading a game build to the storage location. These credentials have a limited lifespan and are valid only for the build they were issued for.
@@ -8945,7 +8946,7 @@ extension RequestUploadCredentialsOutput: Swift.CustomDebugStringConvertible {
         "RequestUploadCredentialsOutput(storageLocation: \(Swift.String(describing: storageLocation)), uploadCredentials: \"CONTENT_REDACTED\")"}
 }
 
-public struct ResolveAliasInput {
+public struct ResolveAliasInput: Swift.Sendable {
     /// The unique identifier of the alias that you want to retrieve a fleet ID for. You can use either the alias ID or ARN value.
     /// This member is required.
     public var aliasId: Swift.String?
@@ -8958,7 +8959,7 @@ public struct ResolveAliasInput {
     }
 }
 
-public struct ResolveAliasOutput {
+public struct ResolveAliasOutput: Swift.Sendable {
     /// The Amazon Resource Name ([ARN](https://docs.aws.amazon.com/AmazonS3/latest/dev/s3-arn-format.html)) associated with the GameLift fleet resource that this alias points to.
     public var fleetArn: Swift.String?
     /// The fleet identifier that the alias is pointing to.
@@ -8974,7 +8975,7 @@ public struct ResolveAliasOutput {
     }
 }
 
-public struct ResumeGameServerGroupInput {
+public struct ResumeGameServerGroupInput: Swift.Sendable {
     /// A unique identifier for the game server group. Use either the name or ARN value.
     /// This member is required.
     public var gameServerGroupName: Swift.String?
@@ -8992,7 +8993,7 @@ public struct ResumeGameServerGroupInput {
     }
 }
 
-public struct ResumeGameServerGroupOutput {
+public struct ResumeGameServerGroupOutput: Swift.Sendable {
     /// An object that describes the game server group resource, with the SuspendedActions property updated to reflect the resumed activity.
     public var gameServerGroup: GameLiftClientTypes.GameServerGroup?
 
@@ -9004,7 +9005,7 @@ public struct ResumeGameServerGroupOutput {
     }
 }
 
-public struct SearchGameSessionsInput {
+public struct SearchGameSessionsInput: Swift.Sendable {
     /// A unique identifier for the alias associated with the fleet to search for active game sessions. You can use either the alias ID or ARN value. Each request must reference either a fleet ID or alias ID, but not both.
     public var aliasId: Swift.String?
     /// String containing the search criteria for the session search. If no filter expression is included, the request returns results for all game sessions in the fleet that are in ACTIVE status. A filter expression can contain one or multiple conditions. Each condition consists of the following:
@@ -9069,7 +9070,7 @@ public struct SearchGameSessionsInput {
     }
 }
 
-public struct SearchGameSessionsOutput {
+public struct SearchGameSessionsOutput: Swift.Sendable {
     /// A collection of objects containing game session properties for each session that matches the request.
     public var gameSessions: [GameLiftClientTypes.GameSession]?
     /// A token that indicates where to resume retrieving results on the next call to this operation. If no token is returned, these results represent the end of the list.
@@ -9085,7 +9086,7 @@ public struct SearchGameSessionsOutput {
     }
 }
 
-public struct StartFleetActionsInput {
+public struct StartFleetActionsInput: Swift.Sendable {
     /// List of actions to restart on the fleet.
     /// This member is required.
     public var actions: [GameLiftClientTypes.FleetAction]?
@@ -9107,7 +9108,7 @@ public struct StartFleetActionsInput {
     }
 }
 
-public struct StartFleetActionsOutput {
+public struct StartFleetActionsOutput: Swift.Sendable {
     /// The Amazon Resource Name ([ARN](https://docs.aws.amazon.com/AmazonS3/latest/dev/s3-arn-format.html)) that is assigned to a Amazon GameLift fleet resource and uniquely identifies it. ARNs are unique across all Regions. Format is arn:aws:gamelift:::fleet/fleet-a1234567-b8c9-0d1e-2fa3-b45c6d7e8912.
     public var fleetArn: Swift.String?
     /// A unique identifier for the fleet to restart actions on.
@@ -9123,7 +9124,7 @@ public struct StartFleetActionsOutput {
     }
 }
 
-public struct StartGameSessionPlacementInput {
+public struct StartGameSessionPlacementInput: Swift.Sendable {
     /// Set of information on each player to create a player session for.
     public var desiredPlayerSessions: [GameLiftClientTypes.DesiredPlayerSession]?
     /// A set of key-value pairs that can store custom data in a game session. For example: {"Key": "difficulty", "Value": "novice"}.
@@ -9166,7 +9167,7 @@ public struct StartGameSessionPlacementInput {
     }
 }
 
-public struct StartGameSessionPlacementOutput {
+public struct StartGameSessionPlacementOutput: Swift.Sendable {
     /// Object that describes the newly created game session placement. This object includes all the information provided in the request, as well as start/end time stamps and placement status.
     public var gameSessionPlacement: GameLiftClientTypes.GameSessionPlacement?
 
@@ -9178,7 +9179,7 @@ public struct StartGameSessionPlacementOutput {
     }
 }
 
-public struct StartMatchBackfillInput {
+public struct StartMatchBackfillInput: Swift.Sendable {
     /// Name of the matchmaker to use for this request. You can use either the configuration name or ARN value. The ARN of the matchmaker that was used with the original game session is listed in the GameSession object, MatchmakerData property.
     /// This member is required.
     public var configurationName: Swift.String?
@@ -9208,7 +9209,7 @@ public struct StartMatchBackfillInput {
     }
 }
 
-public struct StartMatchBackfillOutput {
+public struct StartMatchBackfillOutput: Swift.Sendable {
     /// Ticket representing the backfill matchmaking request. This object includes the information in the request, ticket status, and match results as generated during the matchmaking process.
     public var matchmakingTicket: GameLiftClientTypes.MatchmakingTicket?
 
@@ -9220,7 +9221,7 @@ public struct StartMatchBackfillOutput {
     }
 }
 
-public struct StartMatchmakingInput {
+public struct StartMatchmakingInput: Swift.Sendable {
     /// Name of the matchmaking configuration to use for this request. Matchmaking configurations must exist in the same Region as this request. You can use either the configuration name or ARN value.
     /// This member is required.
     public var configurationName: Swift.String?
@@ -9242,7 +9243,7 @@ public struct StartMatchmakingInput {
     }
 }
 
-public struct StartMatchmakingOutput {
+public struct StartMatchmakingOutput: Swift.Sendable {
     /// Ticket representing the matchmaking request. This object include the information included in the request, ticket status, and match results as generated during the matchmaking process.
     public var matchmakingTicket: GameLiftClientTypes.MatchmakingTicket?
 
@@ -9254,7 +9255,7 @@ public struct StartMatchmakingOutput {
     }
 }
 
-public struct StopFleetActionsInput {
+public struct StopFleetActionsInput: Swift.Sendable {
     /// List of actions to suspend on the fleet.
     /// This member is required.
     public var actions: [GameLiftClientTypes.FleetAction]?
@@ -9276,7 +9277,7 @@ public struct StopFleetActionsInput {
     }
 }
 
-public struct StopFleetActionsOutput {
+public struct StopFleetActionsOutput: Swift.Sendable {
     /// The Amazon Resource Name ([ARN](https://docs.aws.amazon.com/AmazonS3/latest/dev/s3-arn-format.html)) that is assigned to a Amazon GameLift fleet resource and uniquely identifies it. ARNs are unique across all Regions. Format is arn:aws:gamelift:::fleet/fleet-a1234567-b8c9-0d1e-2fa3-b45c6d7e8912.
     public var fleetArn: Swift.String?
     /// A unique identifier for the fleet to stop actions on.
@@ -9292,7 +9293,7 @@ public struct StopFleetActionsOutput {
     }
 }
 
-public struct StopGameSessionPlacementInput {
+public struct StopGameSessionPlacementInput: Swift.Sendable {
     /// A unique identifier for a game session placement to stop.
     /// This member is required.
     public var placementId: Swift.String?
@@ -9305,7 +9306,7 @@ public struct StopGameSessionPlacementInput {
     }
 }
 
-public struct StopGameSessionPlacementOutput {
+public struct StopGameSessionPlacementOutput: Swift.Sendable {
     /// Object that describes the canceled game session placement, with CANCELLED status and an end time stamp.
     public var gameSessionPlacement: GameLiftClientTypes.GameSessionPlacement?
 
@@ -9317,7 +9318,7 @@ public struct StopGameSessionPlacementOutput {
     }
 }
 
-public struct StopMatchmakingInput {
+public struct StopMatchmakingInput: Swift.Sendable {
     /// A unique identifier for a matchmaking ticket.
     /// This member is required.
     public var ticketId: Swift.String?
@@ -9330,12 +9331,12 @@ public struct StopMatchmakingInput {
     }
 }
 
-public struct StopMatchmakingOutput {
+public struct StopMatchmakingOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct SuspendGameServerGroupInput {
+public struct SuspendGameServerGroupInput: Swift.Sendable {
     /// A unique identifier for the game server group. Use either the name or ARN value.
     /// This member is required.
     public var gameServerGroupName: Swift.String?
@@ -9353,7 +9354,7 @@ public struct SuspendGameServerGroupInput {
     }
 }
 
-public struct SuspendGameServerGroupOutput {
+public struct SuspendGameServerGroupOutput: Swift.Sendable {
     /// An object that describes the game server group resource, with the SuspendedActions property updated to reflect the suspended activity.
     public var gameServerGroup: GameLiftClientTypes.GameServerGroup?
 
@@ -9365,7 +9366,7 @@ public struct SuspendGameServerGroupOutput {
     }
 }
 
-public struct TagResourceInput {
+public struct TagResourceInput: Swift.Sendable {
     /// The Amazon Resource Name ([ARN](https://docs.aws.amazon.com/AmazonS3/latest/dev/s3-arn-format.html)) that uniquely identifies the Amazon GameLift resource that you want to assign tags to. Amazon GameLift includes resource ARNs in the data object for the resource. You can retrieve the ARN by calling a List or Describe operation for the resource type.
     /// This member is required.
     public var resourceARN: Swift.String?
@@ -9383,12 +9384,12 @@ public struct TagResourceInput {
     }
 }
 
-public struct TagResourceOutput {
+public struct TagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UntagResourceInput {
+public struct UntagResourceInput: Swift.Sendable {
     /// The Amazon Resource Name ([ARN](https://docs.aws.amazon.com/AmazonS3/latest/dev/s3-arn-format.html)) that uniquely identifies the Amazon GameLift resource that you want to remove tags from. Amazon GameLift includes resource ARNs in the data object for the resource. You can retrieve the ARN by calling a List or Describe operation for the resource type.
     /// This member is required.
     public var resourceARN: Swift.String?
@@ -9406,12 +9407,12 @@ public struct UntagResourceInput {
     }
 }
 
-public struct UntagResourceOutput {
+public struct UntagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdateAliasInput {
+public struct UpdateAliasInput: Swift.Sendable {
     /// A unique identifier for the alias that you want to update. You can use either the alias ID or ARN value.
     /// This member is required.
     public var aliasId: Swift.String?
@@ -9436,7 +9437,7 @@ public struct UpdateAliasInput {
     }
 }
 
-public struct UpdateAliasOutput {
+public struct UpdateAliasOutput: Swift.Sendable {
     /// The updated alias resource.
     public var alias: GameLiftClientTypes.Alias?
 
@@ -9448,7 +9449,7 @@ public struct UpdateAliasOutput {
     }
 }
 
-public struct UpdateBuildInput {
+public struct UpdateBuildInput: Swift.Sendable {
     /// A unique identifier for the build to update. You can use either the build ID or ARN value.
     /// This member is required.
     public var buildId: Swift.String?
@@ -9469,7 +9470,7 @@ public struct UpdateBuildInput {
     }
 }
 
-public struct UpdateBuildOutput {
+public struct UpdateBuildOutput: Swift.Sendable {
     /// The updated build resource.
     public var build: GameLiftClientTypes.Build?
 
@@ -9481,7 +9482,7 @@ public struct UpdateBuildOutput {
     }
 }
 
-public struct UpdateFleetAttributesInput {
+public struct UpdateFleetAttributesInput: Swift.Sendable {
     /// Amazon GameLift Anywhere configuration options.
     public var anywhereConfiguration: GameLiftClientTypes.AnywhereConfiguration?
     /// A human-readable description of a fleet.
@@ -9522,7 +9523,7 @@ public struct UpdateFleetAttributesInput {
     }
 }
 
-public struct UpdateFleetAttributesOutput {
+public struct UpdateFleetAttributesOutput: Swift.Sendable {
     /// The Amazon Resource Name ([ARN](https://docs.aws.amazon.com/AmazonS3/latest/dev/s3-arn-format.html)) that is assigned to a Amazon GameLift fleet resource and uniquely identifies it. ARNs are unique across all Regions. Format is arn:aws:gamelift:::fleet/fleet-a1234567-b8c9-0d1e-2fa3-b45c6d7e8912.
     public var fleetArn: Swift.String?
     /// A unique identifier for the fleet that was updated.
@@ -9538,7 +9539,7 @@ public struct UpdateFleetAttributesOutput {
     }
 }
 
-public struct UpdateFleetCapacityInput {
+public struct UpdateFleetCapacityInput: Swift.Sendable {
     /// The number of Amazon EC2 instances you want to maintain in the specified fleet location. This value must fall between the minimum and maximum size limits. Changes in desired instance value can take up to 1 minute to be reflected when viewing the fleet's capacity settings.
     public var desiredInstances: Swift.Int?
     /// A unique identifier for the fleet to update capacity settings for. You can use either the fleet ID or ARN value.
@@ -9567,7 +9568,7 @@ public struct UpdateFleetCapacityInput {
     }
 }
 
-public struct UpdateFleetCapacityOutput {
+public struct UpdateFleetCapacityOutput: Swift.Sendable {
     /// The Amazon Resource Name ([ARN](https://docs.aws.amazon.com/AmazonS3/latest/dev/s3-arn-format.html)) that is assigned to a Amazon GameLift fleet resource and uniquely identifies it. ARNs are unique across all Regions. Format is arn:aws:gamelift:::fleet/fleet-a1234567-b8c9-0d1e-2fa3-b45c6d7e8912.
     public var fleetArn: Swift.String?
     /// A unique identifier for the fleet that was updated.
@@ -9587,7 +9588,7 @@ public struct UpdateFleetCapacityOutput {
     }
 }
 
-public struct UpdateFleetPortSettingsInput {
+public struct UpdateFleetPortSettingsInput: Swift.Sendable {
     /// A unique identifier for the fleet to update port settings for. You can use either the fleet ID or ARN value.
     /// This member is required.
     public var fleetId: Swift.String?
@@ -9608,7 +9609,7 @@ public struct UpdateFleetPortSettingsInput {
     }
 }
 
-public struct UpdateFleetPortSettingsOutput {
+public struct UpdateFleetPortSettingsOutput: Swift.Sendable {
     /// The Amazon Resource Name ([ARN](https://docs.aws.amazon.com/AmazonS3/latest/dev/s3-arn-format.html)) that is assigned to a Amazon GameLift fleet resource and uniquely identifies it. ARNs are unique across all Regions. Format is arn:aws:gamelift:::fleet/fleet-a1234567-b8c9-0d1e-2fa3-b45c6d7e8912.
     public var fleetArn: Swift.String?
     /// A unique identifier for the fleet that was updated.
@@ -9626,7 +9627,7 @@ public struct UpdateFleetPortSettingsOutput {
 
 extension GameLiftClientTypes {
 
-    public enum GameServerHealthCheck: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum GameServerHealthCheck: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case healthy
         case sdkUnknown(Swift.String)
 
@@ -9650,7 +9651,7 @@ extension GameLiftClientTypes {
     }
 }
 
-public struct UpdateGameServerInput {
+public struct UpdateGameServerInput: Swift.Sendable {
     /// A set of custom game server properties, formatted as a single string value. This data is passed to a game client or service when it requests information on game servers.
     public var gameServerData: Swift.String?
     /// A unique identifier for the game server group where the game server is running.
@@ -9680,7 +9681,7 @@ public struct UpdateGameServerInput {
     }
 }
 
-public struct UpdateGameServerOutput {
+public struct UpdateGameServerOutput: Swift.Sendable {
     /// Object that describes the newly updated game server.
     public var gameServer: GameLiftClientTypes.GameServer?
 
@@ -9692,7 +9693,7 @@ public struct UpdateGameServerOutput {
     }
 }
 
-public struct UpdateGameServerGroupInput {
+public struct UpdateGameServerGroupInput: Swift.Sendable {
     /// Indicates how Amazon GameLift FleetIQ balances the use of Spot Instances and On-Demand Instances in the game server group. Method options include the following:
     ///
     /// * SPOT_ONLY - Only Spot Instances are used in the game server group. If Spot Instances are unavailable or not viable for game hosting, the game server group provides no hosting capacity until Spot Instances can again be used. Until then, no new instances are started, and the existing nonviable Spot Instances are terminated (after current gameplay ends) and are not replaced.
@@ -9727,7 +9728,7 @@ public struct UpdateGameServerGroupInput {
     }
 }
 
-public struct UpdateGameServerGroupOutput {
+public struct UpdateGameServerGroupOutput: Swift.Sendable {
     /// An object that describes the game server group resource with updated properties.
     public var gameServerGroup: GameLiftClientTypes.GameServerGroup?
 
@@ -9739,7 +9740,7 @@ public struct UpdateGameServerGroupOutput {
     }
 }
 
-public struct UpdateGameSessionInput {
+public struct UpdateGameSessionInput: Swift.Sendable {
     /// A set of key-value pairs that can store custom data in a game session. For example: {"Key": "difficulty", "Value": "novice"}. You can use this parameter to modify game properties in an active game session. This action adds new properties and modifies existing properties. There is no way to delete properties. For an example, see [Update the value of a game property](https://docs.aws.amazon.com/gamelift/latest/developerguide/gamelift-sdk-client-api.html#game-properties-update).
     public var gameProperties: [GameLiftClientTypes.GameProperty]?
     /// A unique identifier for the game session to update.
@@ -9776,7 +9777,7 @@ public struct UpdateGameSessionInput {
     }
 }
 
-public struct UpdateGameSessionOutput {
+public struct UpdateGameSessionOutput: Swift.Sendable {
     /// The updated game session properties.
     public var gameSession: GameLiftClientTypes.GameSession?
 
@@ -9788,7 +9789,7 @@ public struct UpdateGameSessionOutput {
     }
 }
 
-public struct UpdateGameSessionQueueInput {
+public struct UpdateGameSessionQueueInput: Swift.Sendable {
     /// Information to be added to all events that are related to this game session queue.
     public var customEventData: Swift.String?
     /// A list of fleets and/or fleet aliases that can be used to fulfill game session placement requests in the queue. Destinations are identified by either a fleet ARN or a fleet alias ARN, and are listed in order of placement preference. When updating this list, provide a complete list of destinations.
@@ -9829,7 +9830,7 @@ public struct UpdateGameSessionQueueInput {
     }
 }
 
-public struct UpdateGameSessionQueueOutput {
+public struct UpdateGameSessionQueueOutput: Swift.Sendable {
     /// An object that describes the newly updated game session queue.
     public var gameSessionQueue: GameLiftClientTypes.GameSessionQueue?
 
@@ -9841,7 +9842,7 @@ public struct UpdateGameSessionQueueOutput {
     }
 }
 
-public struct UpdateMatchmakingConfigurationInput {
+public struct UpdateMatchmakingConfigurationInput: Swift.Sendable {
     /// A flag that indicates whether a match that was created with this configuration must be accepted by the matched players. To require acceptance, set to TRUE. With this option enabled, matchmaking tickets use the status REQUIRES_ACCEPTANCE to indicate when a completed potential match is waiting for player acceptance.
     public var acceptanceRequired: Swift.Bool?
     /// The length of time (in seconds) to wait for players to accept a proposed match, if acceptance is required.
@@ -9910,7 +9911,7 @@ public struct UpdateMatchmakingConfigurationInput {
     }
 }
 
-public struct UpdateMatchmakingConfigurationOutput {
+public struct UpdateMatchmakingConfigurationOutput: Swift.Sendable {
     /// The updated matchmaking configuration.
     public var configuration: GameLiftClientTypes.MatchmakingConfiguration?
 
@@ -9922,7 +9923,7 @@ public struct UpdateMatchmakingConfigurationOutput {
     }
 }
 
-public struct UpdateRuntimeConfigurationInput {
+public struct UpdateRuntimeConfigurationInput: Swift.Sendable {
     /// A unique identifier for the fleet to update runtime configuration for. You can use either the fleet ID or ARN value.
     /// This member is required.
     public var fleetId: Swift.String?
@@ -9940,7 +9941,7 @@ public struct UpdateRuntimeConfigurationInput {
     }
 }
 
-public struct UpdateRuntimeConfigurationOutput {
+public struct UpdateRuntimeConfigurationOutput: Swift.Sendable {
     /// The runtime configuration currently in use by computes in the fleet. If the update is successful, all property changes are shown.
     public var runtimeConfiguration: GameLiftClientTypes.RuntimeConfiguration?
 
@@ -9952,7 +9953,7 @@ public struct UpdateRuntimeConfigurationOutput {
     }
 }
 
-public struct UpdateScriptInput {
+public struct UpdateScriptInput: Swift.Sendable {
     /// A descriptive label that is associated with a script. Script names don't need to be unique.
     public var name: Swift.String?
     /// A unique identifier for the Realtime script to update. You can use either the script ID or ARN value.
@@ -9981,7 +9982,7 @@ public struct UpdateScriptInput {
     }
 }
 
-public struct UpdateScriptOutput {
+public struct UpdateScriptOutput: Swift.Sendable {
     /// The newly created script record with a unique script ID. The new script's storage location reflects an Amazon S3 location: (1) If the script was uploaded from an S3 bucket under your account, the storage location reflects the information that was provided in the CreateScript request; (2) If the script file was uploaded from a local zip file, the storage location reflects an S3 location controls by the Amazon GameLift service.
     public var script: GameLiftClientTypes.Script?
 
@@ -9993,7 +9994,7 @@ public struct UpdateScriptOutput {
     }
 }
 
-public struct ValidateMatchmakingRuleSetInput {
+public struct ValidateMatchmakingRuleSetInput: Swift.Sendable {
     /// A collection of matchmaking rules to validate, formatted as a JSON string.
     /// This member is required.
     public var ruleSetBody: Swift.String?
@@ -10006,7 +10007,7 @@ public struct ValidateMatchmakingRuleSetInput {
     }
 }
 
-public struct ValidateMatchmakingRuleSetOutput {
+public struct ValidateMatchmakingRuleSetOutput: Swift.Sendable {
     /// A response indicating whether the rule set is valid.
     public var valid: Swift.Bool?
 

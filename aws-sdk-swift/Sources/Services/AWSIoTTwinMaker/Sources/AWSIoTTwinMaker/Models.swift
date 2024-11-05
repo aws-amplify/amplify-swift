@@ -153,8 +153,9 @@ public struct ValidationException: ClientRuntime.ModeledError, AWSClientRuntime.
 }
 
 extension IoTTwinMakerClientTypes {
+
     /// An object that uniquely identifies an entity property.
-    public struct EntityPropertyReference {
+    public struct EntityPropertyReference: Swift.Sendable {
         /// The name of the component.
         public var componentName: Swift.String?
         /// This string specifies the path to the composite component, starting from the top-level component.
@@ -182,12 +183,12 @@ extension IoTTwinMakerClientTypes {
             self.propertyName = propertyName
         }
     }
-
 }
 
 extension IoTTwinMakerClientTypes {
+
     /// A value that associates a component and an entity.
-    public struct RelationshipValue {
+    public struct RelationshipValue: Swift.Sendable {
         /// The name of the target component associated with the relationship value.
         public var targetComponentName: Swift.String?
         /// The ID of the target entity associated with this relationship value.
@@ -202,7 +203,6 @@ extension IoTTwinMakerClientTypes {
             self.targetEntityId = targetEntityId
         }
     }
-
 }
 
 /// A conflict occurred.
@@ -229,7 +229,7 @@ public struct ConflictException: ClientRuntime.ModeledError, AWSClientRuntime.AW
     }
 }
 
-public struct CancelMetadataTransferJobInput {
+public struct CancelMetadataTransferJobInput: Swift.Sendable {
     /// The metadata transfer job Id.
     /// This member is required.
     public var metadataTransferJobId: Swift.String?
@@ -243,8 +243,9 @@ public struct CancelMetadataTransferJobInput {
 }
 
 extension IoTTwinMakerClientTypes {
+
     /// The metadata transfer job's progress.
-    public struct MetadataTransferJobProgress {
+    public struct MetadataTransferJobProgress: Swift.Sendable {
         /// The failed count.
         public var failedCount: Swift.Int?
         /// The skipped count.
@@ -267,12 +268,11 @@ extension IoTTwinMakerClientTypes {
             self.totalCount = totalCount
         }
     }
-
 }
 
 extension IoTTwinMakerClientTypes {
 
-    public enum ErrorCode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ErrorCode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case compositeComponentFailure
         case internalFailure
         case processingError
@@ -318,8 +318,9 @@ extension IoTTwinMakerClientTypes {
 }
 
 extension IoTTwinMakerClientTypes {
+
     /// The error details.
-    public struct ErrorDetails {
+    public struct ErrorDetails: Swift.Sendable {
         /// The error code.
         public var code: IoTTwinMakerClientTypes.ErrorCode?
         /// The error message.
@@ -334,12 +335,11 @@ extension IoTTwinMakerClientTypes {
             self.message = message
         }
     }
-
 }
 
 extension IoTTwinMakerClientTypes {
 
-    public enum MetadataTransferJobState: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum MetadataTransferJobState: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case cancelled
         case cancelling
         case completed
@@ -382,8 +382,9 @@ extension IoTTwinMakerClientTypes {
 }
 
 extension IoTTwinMakerClientTypes {
+
     /// The metadata transfer job status.
-    public struct MetadataTransferJobStatus {
+    public struct MetadataTransferJobStatus: Swift.Sendable {
         /// The metadata transfer job error.
         public var error: IoTTwinMakerClientTypes.ErrorDetails?
         /// The queued position.
@@ -402,10 +403,9 @@ extension IoTTwinMakerClientTypes {
             self.state = state
         }
     }
-
 }
 
-public struct CancelMetadataTransferJobOutput {
+public struct CancelMetadataTransferJobOutput: Swift.Sendable {
     /// The metadata transfer job ARN.
     /// This member is required.
     public var arn: Swift.String?
@@ -462,8 +462,9 @@ public struct ServiceQuotaExceededException: ClientRuntime.ModeledError, AWSClie
 }
 
 extension IoTTwinMakerClientTypes {
+
     /// An object that sets information about the composite component types of a component type.
-    public struct CompositeComponentTypeRequest {
+    public struct CompositeComponentTypeRequest: Swift.Sendable {
         /// This is the componentTypeId that the compositeComponentType refers to.
         public var componentTypeId: Swift.String?
 
@@ -474,12 +475,12 @@ extension IoTTwinMakerClientTypes {
             self.componentTypeId = componentTypeId
         }
     }
-
 }
 
 extension IoTTwinMakerClientTypes {
+
     /// The Lambda function.
-    public struct LambdaFunction {
+    public struct LambdaFunction: Swift.Sendable {
         /// The ARN of the Lambda function.
         /// This member is required.
         public var arn: Swift.String?
@@ -491,12 +492,12 @@ extension IoTTwinMakerClientTypes {
             self.arn = arn
         }
     }
-
 }
 
 extension IoTTwinMakerClientTypes {
+
     /// The data connector.
-    public struct DataConnector {
+    public struct DataConnector: Swift.Sendable {
         /// A Boolean value that specifies whether the data connector is native to IoT TwinMaker.
         public var isNative: Swift.Bool?
         /// The Lambda function associated with this data connector.
@@ -511,12 +512,11 @@ extension IoTTwinMakerClientTypes {
             self.lambda = lambda
         }
     }
-
 }
 
 extension IoTTwinMakerClientTypes {
 
-    public enum Scope: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Scope: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case entity
         case workspace
         case sdkUnknown(Swift.String)
@@ -544,8 +544,9 @@ extension IoTTwinMakerClientTypes {
 }
 
 extension IoTTwinMakerClientTypes {
+
     /// The function request body.
-    public struct FunctionRequest {
+    public struct FunctionRequest: Swift.Sendable {
         /// The data connector.
         public var implementedBy: IoTTwinMakerClientTypes.DataConnector?
         /// The required properties of the function.
@@ -564,12 +565,12 @@ extension IoTTwinMakerClientTypes {
             self.scope = scope
         }
     }
-
 }
 
 extension IoTTwinMakerClientTypes {
+
     /// An object that specifies a relationship with another component type.
-    public struct Relationship {
+    public struct Relationship: Swift.Sendable {
         /// The type of the relationship.
         public var relationshipType: Swift.String?
         /// The ID of the target component type associated with this relationship.
@@ -584,12 +585,11 @@ extension IoTTwinMakerClientTypes {
             self.targetComponentTypeId = targetComponentTypeId
         }
     }
-
 }
 
 extension IoTTwinMakerClientTypes {
 
-    public enum ModelType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ModelType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case boolean
         case double
         case integer
@@ -636,7 +636,7 @@ extension IoTTwinMakerClientTypes {
 
 extension IoTTwinMakerClientTypes {
 
-    public enum GroupType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum GroupType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case tabular
         case sdkUnknown(Swift.String)
 
@@ -661,8 +661,9 @@ extension IoTTwinMakerClientTypes {
 }
 
 extension IoTTwinMakerClientTypes {
+
     ///
-    public struct PropertyGroupRequest {
+    public struct PropertyGroupRequest: Swift.Sendable {
         /// The group type.
         public var groupType: IoTTwinMakerClientTypes.GroupType?
         /// The names of properties.
@@ -677,12 +678,11 @@ extension IoTTwinMakerClientTypes {
             self.propertyNames = propertyNames
         }
     }
-
 }
 
 extension IoTTwinMakerClientTypes {
 
-    public enum State: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum State: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case active
         case creating
         case deleting
@@ -718,7 +718,7 @@ extension IoTTwinMakerClientTypes {
     }
 }
 
-public struct CreateComponentTypeOutput {
+public struct CreateComponentTypeOutput: Swift.Sendable {
     /// The ARN of the component type.
     /// This member is required.
     public var arn: Swift.String?
@@ -743,7 +743,7 @@ public struct CreateComponentTypeOutput {
 
 extension IoTTwinMakerClientTypes {
 
-    public enum PropertyUpdateType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum PropertyUpdateType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case create
         case delete
         case resetValue
@@ -778,7 +778,7 @@ extension IoTTwinMakerClientTypes {
 
 extension IoTTwinMakerClientTypes {
 
-    public enum PropertyGroupUpdateType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum PropertyGroupUpdateType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case create
         case delete
         case update
@@ -809,8 +809,9 @@ extension IoTTwinMakerClientTypes {
 }
 
 extension IoTTwinMakerClientTypes {
+
     /// The component property group request.
-    public struct ComponentPropertyGroupRequest {
+    public struct ComponentPropertyGroupRequest: Swift.Sendable {
         /// The group type.
         public var groupType: IoTTwinMakerClientTypes.GroupType?
         /// The property names.
@@ -829,10 +830,9 @@ extension IoTTwinMakerClientTypes {
             self.updateType = updateType
         }
     }
-
 }
 
-public struct CreateEntityOutput {
+public struct CreateEntityOutput: Swift.Sendable {
     /// The ARN of the entity.
     /// This member is required.
     public var arn: Swift.String?
@@ -861,8 +861,9 @@ public struct CreateEntityOutput {
 }
 
 extension IoTTwinMakerClientTypes {
+
     /// The metadata transfer job AWS IoT TwinMaker destination configuration.
-    public struct IotTwinMakerDestinationConfiguration {
+    public struct IotTwinMakerDestinationConfiguration: Swift.Sendable {
         /// The IoT TwinMaker workspace.
         /// This member is required.
         public var workspace: Swift.String?
@@ -874,12 +875,12 @@ extension IoTTwinMakerClientTypes {
             self.workspace = workspace
         }
     }
-
 }
 
 extension IoTTwinMakerClientTypes {
+
     /// The S3 destination configuration.
-    public struct S3DestinationConfiguration {
+    public struct S3DestinationConfiguration: Swift.Sendable {
         /// The S3 destination configuration location.
         /// This member is required.
         public var location: Swift.String?
@@ -891,12 +892,11 @@ extension IoTTwinMakerClientTypes {
             self.location = location
         }
     }
-
 }
 
 extension IoTTwinMakerClientTypes {
 
-    public enum DestinationType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DestinationType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case iotsitewise
         case iottwinmaker
         case s3
@@ -927,8 +927,9 @@ extension IoTTwinMakerClientTypes {
 }
 
 extension IoTTwinMakerClientTypes {
+
     /// The [link to action] metadata transfer job destination configuration.
-    public struct DestinationConfiguration {
+    public struct DestinationConfiguration: Swift.Sendable {
         /// The metadata transfer job Amazon Web Services IoT TwinMaker configuration.
         public var iotTwinMakerConfiguration: IoTTwinMakerClientTypes.IotTwinMakerDestinationConfiguration?
         /// The metadata transfer job S3 configuration. [need to add S3 entity]
@@ -948,12 +949,12 @@ extension IoTTwinMakerClientTypes {
             self.type = type
         }
     }
-
 }
 
 extension IoTTwinMakerClientTypes {
+
     /// Filter by asset. [TwinMaker asset]
-    public struct FilterByAsset {
+    public struct FilterByAsset: Swift.Sendable {
         /// The external-Id property of an asset.
         public var assetExternalId: Swift.String?
         /// Filter by asset Id.
@@ -976,12 +977,12 @@ extension IoTTwinMakerClientTypes {
             self.includeOffspring = includeOffspring
         }
     }
-
 }
 
 extension IoTTwinMakerClientTypes {
+
     /// Filter by asset model.
-    public struct FilterByAssetModel {
+    public struct FilterByAssetModel: Swift.Sendable {
         /// The external-Id property of an asset model.
         public var assetModelExternalId: Swift.String?
         /// The asset model Id.
@@ -1004,24 +1005,24 @@ extension IoTTwinMakerClientTypes {
             self.includeOffspring = includeOffspring
         }
     }
-
 }
 
 extension IoTTwinMakerClientTypes {
+
     /// The AWS IoT SiteWise soucre configuration filter.[need held with desc here]
-    public enum IotSiteWiseSourceConfigurationFilter {
+    public enum IotSiteWiseSourceConfigurationFilter: Swift.Sendable {
         /// Filter by asset model.
         case filterbyassetmodel(IoTTwinMakerClientTypes.FilterByAssetModel)
         /// Filter by asset.
         case filterbyasset(IoTTwinMakerClientTypes.FilterByAsset)
         case sdkUnknown(Swift.String)
     }
-
 }
 
 extension IoTTwinMakerClientTypes {
+
     /// The metadata transfer job AWS IoT SiteWise source configuration.
-    public struct IotSiteWiseSourceConfiguration {
+    public struct IotSiteWiseSourceConfiguration: Swift.Sendable {
         /// The AWS IoT SiteWise soucre configuration filters.
         public var filters: [IoTTwinMakerClientTypes.IotSiteWiseSourceConfigurationFilter]?
 
@@ -1032,12 +1033,12 @@ extension IoTTwinMakerClientTypes {
             self.filters = filters
         }
     }
-
 }
 
 extension IoTTwinMakerClientTypes {
+
     /// Filter by component type.
-    public struct FilterByComponentType {
+    public struct FilterByComponentType: Swift.Sendable {
         /// The component type Id.
         /// This member is required.
         public var componentTypeId: Swift.String?
@@ -1049,12 +1050,12 @@ extension IoTTwinMakerClientTypes {
             self.componentTypeId = componentTypeId
         }
     }
-
 }
 
 extension IoTTwinMakerClientTypes {
+
     /// Vilter by entity.
-    public struct FilterByEntity {
+    public struct FilterByEntity: Swift.Sendable {
         /// The entity Id.
         /// This member is required.
         public var entityId: Swift.String?
@@ -1066,24 +1067,24 @@ extension IoTTwinMakerClientTypes {
             self.entityId = entityId
         }
     }
-
 }
 
 extension IoTTwinMakerClientTypes {
+
     /// The metadata transfer job AWS IoT TwinMaker source configuration filter.
-    public enum IotTwinMakerSourceConfigurationFilter {
+    public enum IotTwinMakerSourceConfigurationFilter: Swift.Sendable {
         /// Filter by component type.
         case filterbycomponenttype(IoTTwinMakerClientTypes.FilterByComponentType)
         /// Filter by entity.
         case filterbyentity(IoTTwinMakerClientTypes.FilterByEntity)
         case sdkUnknown(Swift.String)
     }
-
 }
 
 extension IoTTwinMakerClientTypes {
+
     /// The metadata transfer job AWS IoT TwinMaker source configuration.
-    public struct IotTwinMakerSourceConfiguration {
+    public struct IotTwinMakerSourceConfiguration: Swift.Sendable {
         /// The metadata transfer job AWS IoT TwinMaker source configuration filters.
         public var filters: [IoTTwinMakerClientTypes.IotTwinMakerSourceConfigurationFilter]?
         /// The IoT TwinMaker workspace.
@@ -1099,12 +1100,12 @@ extension IoTTwinMakerClientTypes {
             self.workspace = workspace
         }
     }
-
 }
 
 extension IoTTwinMakerClientTypes {
+
     /// The S3 destination source configuration.
-    public struct S3SourceConfiguration {
+    public struct S3SourceConfiguration: Swift.Sendable {
         /// The S3 destination source configuration location.
         /// This member is required.
         public var location: Swift.String?
@@ -1116,12 +1117,11 @@ extension IoTTwinMakerClientTypes {
             self.location = location
         }
     }
-
 }
 
 extension IoTTwinMakerClientTypes {
 
-    public enum SourceType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SourceType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case iotsitewise
         case iottwinmaker
         case s3
@@ -1152,8 +1152,9 @@ extension IoTTwinMakerClientTypes {
 }
 
 extension IoTTwinMakerClientTypes {
+
     /// The source configuration.
-    public struct SourceConfiguration {
+    public struct SourceConfiguration: Swift.Sendable {
         /// The source configuration IoT SiteWise configuration.
         public var iotSiteWiseConfiguration: IoTTwinMakerClientTypes.IotSiteWiseSourceConfiguration?
         /// The source configuration IoT TwinMaker configuration.
@@ -1177,10 +1178,9 @@ extension IoTTwinMakerClientTypes {
             self.type = type
         }
     }
-
 }
 
-public struct CreateMetadataTransferJobInput {
+public struct CreateMetadataTransferJobInput: Swift.Sendable {
     /// The metadata transfer job description.
     public var description: Swift.String?
     /// The metadata transfer job destination.
@@ -1206,7 +1206,7 @@ public struct CreateMetadataTransferJobInput {
     }
 }
 
-public struct CreateMetadataTransferJobOutput {
+public struct CreateMetadataTransferJobOutput: Swift.Sendable {
     /// The metadata transfer job ARN.
     /// This member is required.
     public var arn: Swift.String?
@@ -1234,7 +1234,7 @@ public struct CreateMetadataTransferJobOutput {
     }
 }
 
-public struct CreateSceneInput {
+public struct CreateSceneInput: Swift.Sendable {
     /// A list of capabilities that the scene uses to render itself.
     public var capabilities: [Swift.String]?
     /// The relative path that specifies the location of the content definition file.
@@ -1273,7 +1273,7 @@ public struct CreateSceneInput {
     }
 }
 
-public struct CreateSceneOutput {
+public struct CreateSceneOutput: Swift.Sendable {
     /// The ARN of the scene.
     /// This member is required.
     public var arn: Swift.String?
@@ -1291,7 +1291,7 @@ public struct CreateSceneOutput {
     }
 }
 
-public struct CreateSyncJobInput {
+public struct CreateSyncJobInput: Swift.Sendable {
     /// The SyncJob IAM role. This IAM role is used by the SyncJob to read from the syncSource, and create, update, or delete the corresponding resources.
     /// This member is required.
     public var syncRole: Swift.String?
@@ -1320,7 +1320,7 @@ public struct CreateSyncJobInput {
 
 extension IoTTwinMakerClientTypes {
 
-    public enum SyncJobState: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SyncJobState: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case active
         case creating
         case deleting
@@ -1356,7 +1356,7 @@ extension IoTTwinMakerClientTypes {
     }
 }
 
-public struct CreateSyncJobOutput {
+public struct CreateSyncJobOutput: Swift.Sendable {
     /// The SyncJob ARN.
     /// This member is required.
     public var arn: Swift.String?
@@ -1379,7 +1379,7 @@ public struct CreateSyncJobOutput {
     }
 }
 
-public struct CreateWorkspaceInput {
+public struct CreateWorkspaceInput: Swift.Sendable {
     /// The description of the workspace.
     public var description: Swift.String?
     /// The ARN of the execution role associated with the workspace.
@@ -1408,7 +1408,7 @@ public struct CreateWorkspaceInput {
     }
 }
 
-public struct CreateWorkspaceOutput {
+public struct CreateWorkspaceOutput: Swift.Sendable {
     /// The ARN of the workspace.
     /// This member is required.
     public var arn: Swift.String?
@@ -1426,7 +1426,7 @@ public struct CreateWorkspaceOutput {
     }
 }
 
-public struct DeleteComponentTypeInput {
+public struct DeleteComponentTypeInput: Swift.Sendable {
     /// The ID of the component type to delete.
     /// This member is required.
     public var componentTypeId: Swift.String?
@@ -1444,7 +1444,7 @@ public struct DeleteComponentTypeInput {
     }
 }
 
-public struct DeleteComponentTypeOutput {
+public struct DeleteComponentTypeOutput: Swift.Sendable {
     /// The current state of the component type to be deleted.
     /// This member is required.
     public var state: IoTTwinMakerClientTypes.State?
@@ -1457,7 +1457,7 @@ public struct DeleteComponentTypeOutput {
     }
 }
 
-public struct DeleteEntityInput {
+public struct DeleteEntityInput: Swift.Sendable {
     /// The ID of the entity to delete.
     /// This member is required.
     public var entityId: Swift.String?
@@ -1479,7 +1479,7 @@ public struct DeleteEntityInput {
     }
 }
 
-public struct DeleteEntityOutput {
+public struct DeleteEntityOutput: Swift.Sendable {
     /// The current state of the deleted entity.
     /// This member is required.
     public var state: IoTTwinMakerClientTypes.State?
@@ -1492,7 +1492,7 @@ public struct DeleteEntityOutput {
     }
 }
 
-public struct DeleteSceneInput {
+public struct DeleteSceneInput: Swift.Sendable {
     /// The ID of the scene to delete.
     /// This member is required.
     public var sceneId: Swift.String?
@@ -1510,12 +1510,12 @@ public struct DeleteSceneInput {
     }
 }
 
-public struct DeleteSceneOutput {
+public struct DeleteSceneOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteSyncJobInput {
+public struct DeleteSyncJobInput: Swift.Sendable {
     /// The sync source. Currently the only supported syncSource is SITEWISE .
     /// This member is required.
     public var syncSource: Swift.String?
@@ -1533,7 +1533,7 @@ public struct DeleteSyncJobInput {
     }
 }
 
-public struct DeleteSyncJobOutput {
+public struct DeleteSyncJobOutput: Swift.Sendable {
     /// The SyncJob response state.
     /// This member is required.
     public var state: IoTTwinMakerClientTypes.SyncJobState?
@@ -1546,7 +1546,7 @@ public struct DeleteSyncJobOutput {
     }
 }
 
-public struct DeleteWorkspaceInput {
+public struct DeleteWorkspaceInput: Swift.Sendable {
     /// The ID of the workspace to delete.
     /// This member is required.
     public var workspaceId: Swift.String?
@@ -1559,7 +1559,7 @@ public struct DeleteWorkspaceInput {
     }
 }
 
-public struct DeleteWorkspaceOutput {
+public struct DeleteWorkspaceOutput: Swift.Sendable {
     /// The string that specifies the delete result for the workspace.
     public var message: Swift.String?
 
@@ -1595,7 +1595,7 @@ public struct QueryTimeoutException: ClientRuntime.ModeledError, AWSClientRuntim
     }
 }
 
-public struct ExecuteQueryInput {
+public struct ExecuteQueryInput: Swift.Sendable {
     /// The maximum number of results to return at one time. The default is 50.
     public var maxResults: Swift.Int?
     /// The string that specifies the next page of results.
@@ -1623,7 +1623,7 @@ public struct ExecuteQueryInput {
 
 extension IoTTwinMakerClientTypes {
 
-    public enum ColumnType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ColumnType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case edge
         case node
         case value
@@ -1654,8 +1654,9 @@ extension IoTTwinMakerClientTypes {
 }
 
 extension IoTTwinMakerClientTypes {
+
     /// A description of the column in the query results.
-    public struct ColumnDescription {
+    public struct ColumnDescription: Swift.Sendable {
         /// The name of the column description.
         public var name: Swift.String?
         /// The type of the column description.
@@ -1670,12 +1671,12 @@ extension IoTTwinMakerClientTypes {
             self.type = type
         }
     }
-
 }
 
 extension IoTTwinMakerClientTypes {
+
     /// Represents a single row in the query results.
-    public struct Row {
+    public struct Row: Swift.Sendable {
         /// The data in a row of query results.
         public var rowData: [Smithy.Document]?
 
@@ -1686,10 +1687,9 @@ extension IoTTwinMakerClientTypes {
             self.rowData = rowData
         }
     }
-
 }
 
-public struct ExecuteQueryOutput {
+public struct ExecuteQueryOutput: Swift.Sendable {
     /// A list of ColumnDescription objects.
     public var columnDescriptions: [IoTTwinMakerClientTypes.ColumnDescription]?
     /// The string that specifies the next page of results.
@@ -1709,7 +1709,7 @@ public struct ExecuteQueryOutput {
     }
 }
 
-public struct GetComponentTypeInput {
+public struct GetComponentTypeInput: Swift.Sendable {
     /// The ID of the component type.
     /// This member is required.
     public var componentTypeId: Swift.String?
@@ -1728,8 +1728,9 @@ public struct GetComponentTypeInput {
 }
 
 extension IoTTwinMakerClientTypes {
+
     /// An object that returns information about the composite component types of a component type.
-    public struct CompositeComponentTypeResponse {
+    public struct CompositeComponentTypeResponse: Swift.Sendable {
         /// This is the componentTypeId that this compositeComponentType refers to.
         public var componentTypeId: Swift.String?
         /// This boolean indicates whether this compositeComponentType is inherited from its parent.
@@ -1744,12 +1745,12 @@ extension IoTTwinMakerClientTypes {
             self.isInherited = isInherited
         }
     }
-
 }
 
 extension IoTTwinMakerClientTypes {
+
     /// The function response.
-    public struct FunctionResponse {
+    public struct FunctionResponse: Swift.Sendable {
         /// The data connector.
         public var implementedBy: IoTTwinMakerClientTypes.DataConnector?
         /// Indicates whether this function is inherited.
@@ -1772,12 +1773,12 @@ extension IoTTwinMakerClientTypes {
             self.scope = scope
         }
     }
-
 }
 
 extension IoTTwinMakerClientTypes {
+
     /// The property group response
-    public struct PropertyGroupResponse {
+    public struct PropertyGroupResponse: Swift.Sendable {
         /// The group types.
         /// This member is required.
         public var groupType: IoTTwinMakerClientTypes.GroupType?
@@ -1799,12 +1800,12 @@ extension IoTTwinMakerClientTypes {
             self.propertyNames = propertyNames
         }
     }
-
 }
 
 extension IoTTwinMakerClientTypes {
+
     /// An object that represents the status of an entity, component, component type, or workspace.
-    public struct Status {
+    public struct Status: Swift.Sendable {
         /// The error message.
         public var error: IoTTwinMakerClientTypes.ErrorDetails?
         /// The current state of the entity, component, component type, or workspace.
@@ -1819,10 +1820,9 @@ extension IoTTwinMakerClientTypes {
             self.state = state
         }
     }
-
 }
 
-public struct GetEntityInput {
+public struct GetEntityInput: Swift.Sendable {
     /// The ID of the entity.
     /// This member is required.
     public var entityId: Swift.String?
@@ -1841,8 +1841,9 @@ public struct GetEntityInput {
 }
 
 extension IoTTwinMakerClientTypes {
+
     /// The component property group response.
-    public struct ComponentPropertyGroupResponse {
+    public struct ComponentPropertyGroupResponse: Swift.Sendable {
         /// The group type.
         /// This member is required.
         public var groupType: IoTTwinMakerClientTypes.GroupType?
@@ -1864,12 +1865,12 @@ extension IoTTwinMakerClientTypes {
             self.propertyNames = propertyNames
         }
     }
-
 }
 
 extension IoTTwinMakerClientTypes {
+
     /// An object that returns information about a component summary.
-    public struct ComponentSummary {
+    public struct ComponentSummary: Swift.Sendable {
         /// The name of the component.
         /// This member is required.
         public var componentName: Swift.String?
@@ -1911,10 +1912,9 @@ extension IoTTwinMakerClientTypes {
             self.syncSource = syncSource
         }
     }
-
 }
 
-public struct GetMetadataTransferJobInput {
+public struct GetMetadataTransferJobInput: Swift.Sendable {
     /// The metadata transfer job Id.
     /// This member is required.
     public var metadataTransferJobId: Swift.String?
@@ -1927,7 +1927,7 @@ public struct GetMetadataTransferJobInput {
     }
 }
 
-public struct GetMetadataTransferJobOutput {
+public struct GetMetadataTransferJobOutput: Swift.Sendable {
     /// The metadata transfer job ARN.
     /// This member is required.
     public var arn: Swift.String?
@@ -1987,14 +1987,14 @@ public struct GetMetadataTransferJobOutput {
     }
 }
 
-public struct GetPricingPlanInput {
+public struct GetPricingPlanInput: Swift.Sendable {
 
     public init() { }
 }
 
 extension IoTTwinMakerClientTypes {
 
-    public enum PricingTier: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum PricingTier: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case tier1
         case tier2
         case tier3
@@ -2028,8 +2028,9 @@ extension IoTTwinMakerClientTypes {
 }
 
 extension IoTTwinMakerClientTypes {
+
     /// Information about the pricing bundle.
-    public struct BundleInformation {
+    public struct BundleInformation: Swift.Sendable {
         /// The bundle names.
         /// This member is required.
         public var bundleNames: [Swift.String]?
@@ -2045,12 +2046,11 @@ extension IoTTwinMakerClientTypes {
             self.pricingTier = pricingTier
         }
     }
-
 }
 
 extension IoTTwinMakerClientTypes {
 
-    public enum PricingMode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum PricingMode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case basic
         case standard
         case tieredBundle
@@ -2082,7 +2082,7 @@ extension IoTTwinMakerClientTypes {
 
 extension IoTTwinMakerClientTypes {
 
-    public enum UpdateReason: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum UpdateReason: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case `default`
         case entityCountUpdate
         case overwritten
@@ -2119,8 +2119,9 @@ extension IoTTwinMakerClientTypes {
 }
 
 extension IoTTwinMakerClientTypes {
+
     /// The pricing plan.
-    public struct PricingPlan {
+    public struct PricingPlan: Swift.Sendable {
         /// The billable entity count.
         public var billableEntityCount: Swift.Int?
         /// The pricing plan's bundle information.
@@ -2155,10 +2156,9 @@ extension IoTTwinMakerClientTypes {
             self.updateReason = updateReason
         }
     }
-
 }
 
-public struct GetPricingPlanOutput {
+public struct GetPricingPlanOutput: Swift.Sendable {
     /// The chosen pricing plan for the current billing cycle.
     /// This member is required.
     public var currentPricingPlan: IoTTwinMakerClientTypes.PricingPlan?
@@ -2225,7 +2225,7 @@ public struct ConnectorTimeoutException: ClientRuntime.ModeledError, AWSClientRu
 
 extension IoTTwinMakerClientTypes {
 
-    public enum Order: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Order: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case ascending
         case descending
         case sdkUnknown(Swift.String)
@@ -2253,8 +2253,9 @@ extension IoTTwinMakerClientTypes {
 }
 
 extension IoTTwinMakerClientTypes {
+
     /// Filter criteria that orders the return output. It can be sorted in ascending or descending order.
-    public struct OrderBy {
+    public struct OrderBy: Swift.Sendable {
         /// The set order that filters results.
         public var order: IoTTwinMakerClientTypes.Order?
         /// The property name.
@@ -2270,12 +2271,11 @@ extension IoTTwinMakerClientTypes {
             self.propertyName = propertyName
         }
     }
-
 }
 
 extension IoTTwinMakerClientTypes {
 
-    public enum InterpolationType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum InterpolationType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case linear
         case sdkUnknown(Swift.String)
 
@@ -2300,8 +2300,9 @@ extension IoTTwinMakerClientTypes {
 }
 
 extension IoTTwinMakerClientTypes {
+
     /// An object that specifies how to interpolate data in a list.
-    public struct InterpolationParameters {
+    public struct InterpolationParameters: Swift.Sendable {
         /// The interpolation type.
         public var interpolationType: IoTTwinMakerClientTypes.InterpolationType?
         /// The interpolation time interval in seconds.
@@ -2316,12 +2317,11 @@ extension IoTTwinMakerClientTypes {
             self.intervalInSeconds = intervalInSeconds
         }
     }
-
 }
 
 extension IoTTwinMakerClientTypes {
 
-    public enum OrderByTime: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum OrderByTime: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case ascending
         case descending
         case sdkUnknown(Swift.String)
@@ -2348,7 +2348,7 @@ extension IoTTwinMakerClientTypes {
     }
 }
 
-public struct GetSceneInput {
+public struct GetSceneInput: Swift.Sendable {
     /// The ID of the scene.
     /// This member is required.
     public var sceneId: Swift.String?
@@ -2368,7 +2368,7 @@ public struct GetSceneInput {
 
 extension IoTTwinMakerClientTypes {
 
-    public enum SceneErrorCode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SceneErrorCode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case matterportError
         case sdkUnknown(Swift.String)
 
@@ -2393,8 +2393,9 @@ extension IoTTwinMakerClientTypes {
 }
 
 extension IoTTwinMakerClientTypes {
+
     /// The scene error.
-    public struct SceneError {
+    public struct SceneError: Swift.Sendable {
         /// The SceneError code.
         public var code: IoTTwinMakerClientTypes.SceneErrorCode?
         /// The SceneError message.
@@ -2409,10 +2410,9 @@ extension IoTTwinMakerClientTypes {
             self.message = message
         }
     }
-
 }
 
-public struct GetSceneOutput {
+public struct GetSceneOutput: Swift.Sendable {
     /// The ARN of the scene.
     /// This member is required.
     public var arn: Swift.String?
@@ -2470,7 +2470,7 @@ public struct GetSceneOutput {
     }
 }
 
-public struct GetSyncJobInput {
+public struct GetSyncJobInput: Swift.Sendable {
     /// The sync source. Currently the only supported syncSource is SITEWISE .
     /// This member is required.
     public var syncSource: Swift.String?
@@ -2488,8 +2488,9 @@ public struct GetSyncJobInput {
 }
 
 extension IoTTwinMakerClientTypes {
+
     /// The SyncJob status.
-    public struct SyncJobStatus {
+    public struct SyncJobStatus: Swift.Sendable {
         /// The SyncJob error.
         public var error: IoTTwinMakerClientTypes.ErrorDetails?
         /// The SyncJob status state.
@@ -2504,10 +2505,9 @@ extension IoTTwinMakerClientTypes {
             self.state = state
         }
     }
-
 }
 
-public struct GetSyncJobOutput {
+public struct GetSyncJobOutput: Swift.Sendable {
     /// The sync job ARN.
     /// This member is required.
     public var arn: Swift.String?
@@ -2550,7 +2550,7 @@ public struct GetSyncJobOutput {
     }
 }
 
-public struct GetWorkspaceInput {
+public struct GetWorkspaceInput: Swift.Sendable {
     /// The ID of the workspace.
     /// This member is required.
     public var workspaceId: Swift.String?
@@ -2563,7 +2563,7 @@ public struct GetWorkspaceInput {
     }
 }
 
-public struct GetWorkspaceOutput {
+public struct GetWorkspaceOutput: Swift.Sendable {
     /// The ARN of the workspace.
     /// This member is required.
     public var arn: Swift.String?
@@ -2607,7 +2607,7 @@ public struct GetWorkspaceOutput {
     }
 }
 
-public struct ListComponentsInput {
+public struct ListComponentsInput: Swift.Sendable {
     /// This string specifies the path to the composite component, starting from the top-level component.
     public var componentPath: Swift.String?
     /// The ID for the entity whose metadata (component/properties) is returned by the operation.
@@ -2637,7 +2637,7 @@ public struct ListComponentsInput {
     }
 }
 
-public struct ListComponentsOutput {
+public struct ListComponentsOutput: Swift.Sendable {
     /// A list of objects that contain information about the components.
     /// This member is required.
     public var componentSummaries: [IoTTwinMakerClientTypes.ComponentSummary]?
@@ -2655,8 +2655,9 @@ public struct ListComponentsOutput {
 }
 
 extension IoTTwinMakerClientTypes {
+
     /// An object that filters items in a list of component types. Only one object is accepted as a valid input.
-    public enum ListComponentTypesFilter {
+    public enum ListComponentTypesFilter: Swift.Sendable {
         /// The component type that the component types in the list extend.
         case extendsfrom(Swift.String)
         /// The namespace to which the component types in the list belong.
@@ -2665,10 +2666,9 @@ extension IoTTwinMakerClientTypes {
         case isabstract(Swift.Bool)
         case sdkUnknown(Swift.String)
     }
-
 }
 
-public struct ListComponentTypesInput {
+public struct ListComponentTypesInput: Swift.Sendable {
     /// A list of objects that filter the request.
     public var filters: [IoTTwinMakerClientTypes.ListComponentTypesFilter]?
     /// The maximum number of results to return at one time. The default is 25. Valid Range: Minimum value of 1. Maximum value of 250.
@@ -2694,8 +2694,9 @@ public struct ListComponentTypesInput {
 }
 
 extension IoTTwinMakerClientTypes {
+
     /// An object that contains information about a component type.
-    public struct ComponentTypeSummary {
+    public struct ComponentTypeSummary: Swift.Sendable {
         /// The ARN of the component type.
         /// This member is required.
         public var arn: Swift.String?
@@ -2734,10 +2735,9 @@ extension IoTTwinMakerClientTypes {
             self.updateDateTime = updateDateTime
         }
     }
-
 }
 
-public struct ListComponentTypesOutput {
+public struct ListComponentTypesOutput: Swift.Sendable {
     /// A list of objects that contain information about the component types.
     /// This member is required.
     public var componentTypeSummaries: [IoTTwinMakerClientTypes.ComponentTypeSummary]?
@@ -2764,8 +2764,9 @@ public struct ListComponentTypesOutput {
 }
 
 extension IoTTwinMakerClientTypes {
+
     /// An object that filters items in a list of entities.
-    public enum ListEntitiesFilter {
+    public enum ListEntitiesFilter: Swift.Sendable {
         /// The parent of the entities in the list.
         case parententityid(Swift.String)
         /// The ID of the component type in the entities in the list.
@@ -2774,10 +2775,9 @@ extension IoTTwinMakerClientTypes {
         case externalid(Swift.String)
         case sdkUnknown(Swift.String)
     }
-
 }
 
-public struct ListEntitiesInput {
+public struct ListEntitiesInput: Swift.Sendable {
     /// A list of objects that filter the request. Only one object is accepted as a valid input.
     public var filters: [IoTTwinMakerClientTypes.ListEntitiesFilter]?
     /// The maximum number of results to return at one time. The default is 25. Valid Range: Minimum value of 1. Maximum value of 250.
@@ -2803,8 +2803,9 @@ public struct ListEntitiesInput {
 }
 
 extension IoTTwinMakerClientTypes {
+
     /// An object that contains information about an entity.
-    public struct EntitySummary {
+    public struct EntitySummary: Swift.Sendable {
         /// The ARN of the entity.
         /// This member is required.
         public var arn: Swift.String?
@@ -2853,10 +2854,9 @@ extension IoTTwinMakerClientTypes {
             self.updateDateTime = updateDateTime
         }
     }
-
 }
 
-public struct ListEntitiesOutput {
+public struct ListEntitiesOutput: Swift.Sendable {
     /// A list of objects that contain information about the entities.
     public var entitySummaries: [IoTTwinMakerClientTypes.EntitySummary]?
     /// The string that specifies the next page of results.
@@ -2873,18 +2873,18 @@ public struct ListEntitiesOutput {
 }
 
 extension IoTTwinMakerClientTypes {
+
     /// The ListMetadataTransferJobs filter.
-    public enum ListMetadataTransferJobsFilter {
+    public enum ListMetadataTransferJobsFilter: Swift.Sendable {
         /// The workspace Id.
         case workspaceid(Swift.String)
         /// The filter state.
         case state(IoTTwinMakerClientTypes.MetadataTransferJobState)
         case sdkUnknown(Swift.String)
     }
-
 }
 
-public struct ListMetadataTransferJobsInput {
+public struct ListMetadataTransferJobsInput: Swift.Sendable {
     /// The metadata transfer job's destination type.
     /// This member is required.
     public var destinationType: IoTTwinMakerClientTypes.DestinationType?
@@ -2915,8 +2915,9 @@ public struct ListMetadataTransferJobsInput {
 }
 
 extension IoTTwinMakerClientTypes {
+
     /// The metadata transfer job summary.
-    public struct MetadataTransferJobSummary {
+    public struct MetadataTransferJobSummary: Swift.Sendable {
         /// The metadata transfer job summary ARN.
         /// This member is required.
         public var arn: Swift.String?
@@ -2952,10 +2953,9 @@ extension IoTTwinMakerClientTypes {
             self.updateDateTime = updateDateTime
         }
     }
-
 }
 
-public struct ListMetadataTransferJobsOutput {
+public struct ListMetadataTransferJobsOutput: Swift.Sendable {
     /// The metadata transfer job summaries.
     /// This member is required.
     public var metadataTransferJobSummaries: [IoTTwinMakerClientTypes.MetadataTransferJobSummary]?
@@ -2972,7 +2972,7 @@ public struct ListMetadataTransferJobsOutput {
     }
 }
 
-public struct ListPropertiesInput {
+public struct ListPropertiesInput: Swift.Sendable {
     /// The name of the component whose properties are returned by the operation.
     public var componentName: Swift.String?
     /// This string specifies the path to the composite component, starting from the top-level component.
@@ -3006,7 +3006,7 @@ public struct ListPropertiesInput {
     }
 }
 
-public struct ListScenesInput {
+public struct ListScenesInput: Swift.Sendable {
     /// Specifies the maximum number of results to display.
     public var maxResults: Swift.Int?
     /// The string that specifies the next page of results.
@@ -3028,8 +3028,9 @@ public struct ListScenesInput {
 }
 
 extension IoTTwinMakerClientTypes {
+
     /// An object that contains information about a scene.
-    public struct SceneSummary {
+    public struct SceneSummary: Swift.Sendable {
         /// The ARN of the scene.
         /// This member is required.
         public var arn: Swift.String?
@@ -3065,10 +3066,9 @@ extension IoTTwinMakerClientTypes {
             self.updateDateTime = updateDateTime
         }
     }
-
 }
 
-public struct ListScenesOutput {
+public struct ListScenesOutput: Swift.Sendable {
     /// The string that specifies the next page of results.
     public var nextToken: Swift.String?
     /// A list of objects that contain information about the scenes.
@@ -3084,7 +3084,7 @@ public struct ListScenesOutput {
     }
 }
 
-public struct ListSyncJobsInput {
+public struct ListSyncJobsInput: Swift.Sendable {
     /// The maximum number of results to return at one time. The default is 50. Valid Range: Minimum value of 0. Maximum value of 200.
     public var maxResults: Swift.Int?
     /// The string that specifies the next page of results.
@@ -3106,8 +3106,9 @@ public struct ListSyncJobsInput {
 }
 
 extension IoTTwinMakerClientTypes {
+
     /// The SyncJob summary.
-    public struct SyncJobSummary {
+    public struct SyncJobSummary: Swift.Sendable {
         /// The SyncJob summary ARN.
         public var arn: Swift.String?
         /// The creation date and time.
@@ -3138,10 +3139,9 @@ extension IoTTwinMakerClientTypes {
             self.workspaceId = workspaceId
         }
     }
-
 }
 
-public struct ListSyncJobsOutput {
+public struct ListSyncJobsOutput: Swift.Sendable {
     /// The string that specifies the next page of results.
     public var nextToken: Swift.String?
     /// The listed SyncJob summaries.
@@ -3159,7 +3159,7 @@ public struct ListSyncJobsOutput {
 
 extension IoTTwinMakerClientTypes {
 
-    public enum SyncResourceType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SyncResourceType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case componentType
         case entity
         case sdkUnknown(Swift.String)
@@ -3188,7 +3188,7 @@ extension IoTTwinMakerClientTypes {
 
 extension IoTTwinMakerClientTypes {
 
-    public enum SyncResourceState: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SyncResourceState: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case deleted
         case error
         case initializing
@@ -3225,8 +3225,9 @@ extension IoTTwinMakerClientTypes {
 }
 
 extension IoTTwinMakerClientTypes {
+
     /// The sync resource filter.
-    public enum SyncResourceFilter {
+    public enum SyncResourceFilter: Swift.Sendable {
         /// The sync resource filter's state.
         case state(IoTTwinMakerClientTypes.SyncResourceState)
         /// The sync resource filter resource type
@@ -3237,10 +3238,9 @@ extension IoTTwinMakerClientTypes {
         case externalid(Swift.String)
         case sdkUnknown(Swift.String)
     }
-
 }
 
-public struct ListSyncResourcesInput {
+public struct ListSyncResourcesInput: Swift.Sendable {
     /// A list of objects that filter the request. The following filter combinations are supported:
     ///
     /// * Filter with state
@@ -3277,8 +3277,9 @@ public struct ListSyncResourcesInput {
 }
 
 extension IoTTwinMakerClientTypes {
+
     /// The sync resource status.
-    public struct SyncResourceStatus {
+    public struct SyncResourceStatus: Swift.Sendable {
         /// The status error.
         public var error: IoTTwinMakerClientTypes.ErrorDetails?
         /// The sync resource status state.
@@ -3293,12 +3294,12 @@ extension IoTTwinMakerClientTypes {
             self.state = state
         }
     }
-
 }
 
 extension IoTTwinMakerClientTypes {
+
     /// The sync resource summary.
-    public struct SyncResourceSummary {
+    public struct SyncResourceSummary: Swift.Sendable {
         /// The external ID.
         public var externalId: Swift.String?
         /// The resource ID.
@@ -3325,10 +3326,9 @@ extension IoTTwinMakerClientTypes {
             self.updateDateTime = updateDateTime
         }
     }
-
 }
 
-public struct ListSyncResourcesOutput {
+public struct ListSyncResourcesOutput: Swift.Sendable {
     /// The string that specifies the next page of results.
     public var nextToken: Swift.String?
     /// The sync resources.
@@ -3344,7 +3344,7 @@ public struct ListSyncResourcesOutput {
     }
 }
 
-public struct ListTagsForResourceInput {
+public struct ListTagsForResourceInput: Swift.Sendable {
     /// The maximum number of results to return at one time. The default is 25. Valid Range: Minimum value of 1. Maximum value of 250.
     public var maxResults: Swift.Int?
     /// The string that specifies the next page of results.
@@ -3365,7 +3365,7 @@ public struct ListTagsForResourceInput {
     }
 }
 
-public struct ListTagsForResourceOutput {
+public struct ListTagsForResourceOutput: Swift.Sendable {
     /// The string that specifies the next page of results.
     public var nextToken: Swift.String?
     /// Metadata that you can use to manage a resource.
@@ -3381,7 +3381,7 @@ public struct ListTagsForResourceOutput {
     }
 }
 
-public struct ListWorkspacesInput {
+public struct ListWorkspacesInput: Swift.Sendable {
     /// The maximum number of results to return at one time. The default is 25. Valid Range: Minimum value of 1. Maximum value of 250.
     public var maxResults: Swift.Int?
     /// The string that specifies the next page of results.
@@ -3398,8 +3398,9 @@ public struct ListWorkspacesInput {
 }
 
 extension IoTTwinMakerClientTypes {
+
     /// An object that contains information about a workspace.
-    public struct WorkspaceSummary {
+    public struct WorkspaceSummary: Swift.Sendable {
         /// The ARN of the workspace.
         /// This member is required.
         public var arn: Swift.String?
@@ -3434,10 +3435,9 @@ extension IoTTwinMakerClientTypes {
             self.workspaceId = workspaceId
         }
     }
-
 }
 
-public struct ListWorkspacesOutput {
+public struct ListWorkspacesOutput: Swift.Sendable {
     /// The string that specifies the next page of results.
     public var nextToken: Swift.String?
     /// A list of objects that contain information about the workspaces.
@@ -3477,7 +3477,7 @@ public struct TooManyTagsException: ClientRuntime.ModeledError, AWSClientRuntime
     }
 }
 
-public struct TagResourceInput {
+public struct TagResourceInput: Swift.Sendable {
     /// The ARN of the resource.
     /// This member is required.
     public var resourceARN: Swift.String?
@@ -3495,12 +3495,12 @@ public struct TagResourceInput {
     }
 }
 
-public struct TagResourceOutput {
+public struct TagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UntagResourceInput {
+public struct UntagResourceInput: Swift.Sendable {
     /// The ARN of the resource.
     /// This member is required.
     public var resourceARN: Swift.String?
@@ -3518,12 +3518,12 @@ public struct UntagResourceInput {
     }
 }
 
-public struct UntagResourceOutput {
+public struct UntagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdateComponentTypeOutput {
+public struct UpdateComponentTypeOutput: Swift.Sendable {
     /// The ARN of the component type.
     /// This member is required.
     public var arn: Swift.String?
@@ -3553,7 +3553,7 @@ public struct UpdateComponentTypeOutput {
 
 extension IoTTwinMakerClientTypes {
 
-    public enum ComponentUpdateType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ComponentUpdateType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case create
         case delete
         case update
@@ -3585,7 +3585,7 @@ extension IoTTwinMakerClientTypes {
 
 extension IoTTwinMakerClientTypes {
 
-    public enum ParentEntityUpdateType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ParentEntityUpdateType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case delete
         case update
         case sdkUnknown(Swift.String)
@@ -3613,8 +3613,9 @@ extension IoTTwinMakerClientTypes {
 }
 
 extension IoTTwinMakerClientTypes {
+
     /// The parent entity update request.
-    public struct ParentEntityUpdateRequest {
+    public struct ParentEntityUpdateRequest: Swift.Sendable {
         /// The ID of the parent entity.
         public var parentEntityId: Swift.String?
         /// The type of the update.
@@ -3630,10 +3631,9 @@ extension IoTTwinMakerClientTypes {
             self.updateType = updateType
         }
     }
-
 }
 
-public struct UpdateEntityOutput {
+public struct UpdateEntityOutput: Swift.Sendable {
     /// The current state of the entity update.
     /// This member is required.
     public var state: IoTTwinMakerClientTypes.State?
@@ -3651,7 +3651,7 @@ public struct UpdateEntityOutput {
     }
 }
 
-public struct UpdatePricingPlanInput {
+public struct UpdatePricingPlanInput: Swift.Sendable {
     /// The bundle names.
     public var bundleNames: [Swift.String]?
     /// The pricing mode.
@@ -3668,7 +3668,7 @@ public struct UpdatePricingPlanInput {
     }
 }
 
-public struct UpdatePricingPlanOutput {
+public struct UpdatePricingPlanOutput: Swift.Sendable {
     /// Update the current pricing plan.
     /// This member is required.
     public var currentPricingPlan: IoTTwinMakerClientTypes.PricingPlan?
@@ -3685,7 +3685,7 @@ public struct UpdatePricingPlanOutput {
     }
 }
 
-public struct UpdateSceneInput {
+public struct UpdateSceneInput: Swift.Sendable {
     /// A list of capabilities that the scene uses to render.
     public var capabilities: [Swift.String]?
     /// The relative path that specifies the location of the content definition file.
@@ -3719,7 +3719,7 @@ public struct UpdateSceneInput {
     }
 }
 
-public struct UpdateSceneOutput {
+public struct UpdateSceneOutput: Swift.Sendable {
     /// The date and time when the scene was last updated.
     /// This member is required.
     public var updateDateTime: Foundation.Date?
@@ -3732,7 +3732,7 @@ public struct UpdateSceneOutput {
     }
 }
 
-public struct UpdateWorkspaceInput {
+public struct UpdateWorkspaceInput: Swift.Sendable {
     /// The description of the workspace.
     public var description: Swift.String?
     /// The ARN of the execution role associated with the workspace.
@@ -3757,7 +3757,7 @@ public struct UpdateWorkspaceInput {
     }
 }
 
-public struct UpdateWorkspaceOutput {
+public struct UpdateWorkspaceOutput: Swift.Sendable {
     /// The date and time of the current update.
     /// This member is required.
     public var updateDateTime: Foundation.Date?
@@ -3771,8 +3771,9 @@ public struct UpdateWorkspaceOutput {
 }
 
 extension IoTTwinMakerClientTypes {
+
     /// An object that specifies a value for a property.
-    public struct DataValue {
+    public struct DataValue: Swift.Sendable {
         /// A Boolean value.
         public var booleanValue: Swift.Bool?
         /// A double value.
@@ -3815,12 +3816,12 @@ extension IoTTwinMakerClientTypes {
             self.stringValue = stringValue
         }
     }
-
 }
 
 extension IoTTwinMakerClientTypes {
+
     /// An object that filters items returned by a property request.
-    public struct PropertyFilter {
+    public struct PropertyFilter: Swift.Sendable {
         /// The operator associated with this property filter.
         public var `operator`: Swift.String?
         /// The property name associated with this property filter.
@@ -3839,12 +3840,12 @@ extension IoTTwinMakerClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension IoTTwinMakerClientTypes {
+
     /// The latest value of the property.
-    public struct PropertyLatestValue {
+    public struct PropertyLatestValue: Swift.Sendable {
         /// An object that specifies information about a property.
         /// This member is required.
         public var propertyReference: IoTTwinMakerClientTypes.EntityPropertyReference?
@@ -3860,12 +3861,12 @@ extension IoTTwinMakerClientTypes {
             self.propertyValue = propertyValue
         }
     }
-
 }
 
 extension IoTTwinMakerClientTypes {
+
     /// An object that contains information about a value for a time series property.
-    public struct PropertyValue {
+    public struct PropertyValue: Swift.Sendable {
         /// ISO8601 DateTime of a value for a time series property. The time for when the property value was recorded in ISO 8601 format: YYYY-MM-DDThh:mm:ss[.SSSSSSSSS][Z/±HH:mm].
         ///
         /// * [YYYY]: year
@@ -3907,12 +3908,12 @@ extension IoTTwinMakerClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension IoTTwinMakerClientTypes {
+
     /// An object that specifies the data type of a property.
-    public struct DataType {
+    public struct DataType: Swift.Sendable {
         /// The allowed values for this data type.
         public var allowedValues: [IoTTwinMakerClientTypes.DataValue]?
         /// The nested type in the data type.
@@ -3940,12 +3941,12 @@ extension IoTTwinMakerClientTypes {
             self.unitOfMeasure = unitOfMeasure
         }
     }
-
 }
 
 extension IoTTwinMakerClientTypes {
+
     /// An object that specifies information about time series property values. This object is used and consumed by the [BatchPutPropertyValues](https://docs.aws.amazon.com/iot-twinmaker/latest/apireference/API_BatchPutPropertyValues.html) action.
-    public struct PropertyValueEntry {
+    public struct PropertyValueEntry: Swift.Sendable {
         /// An object that contains information about the entity that has the property.
         /// This member is required.
         public var entityPropertyReference: IoTTwinMakerClientTypes.EntityPropertyReference?
@@ -3961,12 +3962,12 @@ extension IoTTwinMakerClientTypes {
             self.propertyValues = propertyValues
         }
     }
-
 }
 
 extension IoTTwinMakerClientTypes {
+
     /// The history of values for a time series property.
-    public struct PropertyValueHistory {
+    public struct PropertyValueHistory: Swift.Sendable {
         /// An object that uniquely identifies an entity property.
         /// This member is required.
         public var entityPropertyReference: IoTTwinMakerClientTypes.EntityPropertyReference?
@@ -3982,12 +3983,12 @@ extension IoTTwinMakerClientTypes {
             self.values = values
         }
     }
-
 }
 
 extension IoTTwinMakerClientTypes {
+
     /// The tabular conditions.
-    public struct TabularConditions {
+    public struct TabularConditions: Swift.Sendable {
         /// Filter criteria that orders the output. It can be sorted in ascending or descending order.
         public var orderBy: [IoTTwinMakerClientTypes.OrderBy]?
         /// You can filter the request using various logical operators and a key-value format. For example: {"key": "serverType", "value": "webServer"}
@@ -4002,10 +4003,9 @@ extension IoTTwinMakerClientTypes {
             self.propertyFilters = propertyFilters
         }
     }
-
 }
 
-public struct GetPropertyValueHistoryInput {
+public struct GetPropertyValueHistoryInput: Swift.Sendable {
     /// The name of the component.
     public var componentName: Swift.String?
     /// This string specifies the path to the composite component, starting from the top-level component.
@@ -4078,8 +4078,9 @@ public struct GetPropertyValueHistoryInput {
 }
 
 extension IoTTwinMakerClientTypes {
+
     /// An error returned by the BatchPutProperty action.
-    public struct BatchPutPropertyError {
+    public struct BatchPutPropertyError: Swift.Sendable {
         /// An object that contains information about errors returned by the BatchPutProperty action.
         /// This member is required.
         public var entry: IoTTwinMakerClientTypes.PropertyValueEntry?
@@ -4101,10 +4102,9 @@ extension IoTTwinMakerClientTypes {
             self.errorMessage = errorMessage
         }
     }
-
 }
 
-public struct GetPropertyValueInput {
+public struct GetPropertyValueInput: Swift.Sendable {
     /// The name of the component whose property values the operation returns.
     public var componentName: Swift.String?
     /// This string specifies the path to the composite component, starting from the top-level component.
@@ -4154,7 +4154,7 @@ public struct GetPropertyValueInput {
     }
 }
 
-public struct BatchPutPropertyValuesInput {
+public struct BatchPutPropertyValuesInput: Swift.Sendable {
     /// An object that maps strings to the property value entries to set. Each string in the mapping must be unique to this object.
     /// This member is required.
     public var entries: [IoTTwinMakerClientTypes.PropertyValueEntry]?
@@ -4172,7 +4172,7 @@ public struct BatchPutPropertyValuesInput {
     }
 }
 
-public struct GetPropertyValueHistoryOutput {
+public struct GetPropertyValueHistoryOutput: Swift.Sendable {
     /// The string that specifies the next page of results.
     public var nextToken: Swift.String?
     /// An object that maps strings to the property definitions in the component type. Each string in the mapping must be unique to this object.
@@ -4190,8 +4190,9 @@ public struct GetPropertyValueHistoryOutput {
 }
 
 extension IoTTwinMakerClientTypes {
+
     /// An object that contains information about errors returned by the BatchPutProperty action.
-    public struct BatchPutPropertyErrorEntry {
+    public struct BatchPutPropertyErrorEntry: Swift.Sendable {
         /// A list of objects that contain information about errors returned by the BatchPutProperty action.
         /// This member is required.
         public var errors: [IoTTwinMakerClientTypes.BatchPutPropertyError]?
@@ -4203,12 +4204,12 @@ extension IoTTwinMakerClientTypes {
             self.errors = errors
         }
     }
-
 }
 
 extension IoTTwinMakerClientTypes {
+
     /// An object that sets information about a property.
-    public struct PropertyDefinitionRequest {
+    public struct PropertyDefinitionRequest: Swift.Sendable {
         /// A mapping that specifies configuration information about the property. Use this field to specify information that you read from and write to an external source.
         public var configuration: [Swift.String: Swift.String]?
         /// An object that contains information about the data type.
@@ -4247,12 +4248,12 @@ extension IoTTwinMakerClientTypes {
             self.isTimeSeries = isTimeSeries
         }
     }
-
 }
 
 extension IoTTwinMakerClientTypes {
+
     /// An object that contains response data from a property definition request.
-    public struct PropertyDefinitionResponse {
+    public struct PropertyDefinitionResponse: Swift.Sendable {
         /// A mapping that specifies configuration information about the property.
         public var configuration: [Swift.String: Swift.String]?
         /// An object that contains information about the data type.
@@ -4311,10 +4312,9 @@ extension IoTTwinMakerClientTypes {
             self.isTimeSeries = isTimeSeries
         }
     }
-
 }
 
-public struct BatchPutPropertyValuesOutput {
+public struct BatchPutPropertyValuesOutput: Swift.Sendable {
     /// Entries that caused errors in the batch put operation.
     /// This member is required.
     public var errorEntries: [IoTTwinMakerClientTypes.BatchPutPropertyErrorEntry]?
@@ -4327,7 +4327,7 @@ public struct BatchPutPropertyValuesOutput {
     }
 }
 
-public struct GetPropertyValueOutput {
+public struct GetPropertyValueOutput: Swift.Sendable {
     /// The string that specifies the next page of results.
     public var nextToken: Swift.String?
     /// An object that maps strings to the properties and latest property values in the response. Each string in the mapping must be unique to this object.
@@ -4347,7 +4347,7 @@ public struct GetPropertyValueOutput {
     }
 }
 
-public struct CreateComponentTypeInput {
+public struct CreateComponentTypeInput: Swift.Sendable {
     /// The ID of the component type.
     /// This member is required.
     public var componentTypeId: Swift.String?
@@ -4401,7 +4401,7 @@ public struct CreateComponentTypeInput {
     }
 }
 
-public struct GetComponentTypeOutput {
+public struct GetComponentTypeOutput: Swift.Sendable {
     /// The ARN of the component type.
     /// This member is required.
     public var arn: Swift.String?
@@ -4482,7 +4482,7 @@ public struct GetComponentTypeOutput {
     }
 }
 
-public struct UpdateComponentTypeInput {
+public struct UpdateComponentTypeInput: Swift.Sendable {
     /// The ID of the component type.
     /// This member is required.
     public var componentTypeId: Swift.String?
@@ -4533,8 +4533,9 @@ public struct UpdateComponentTypeInput {
 }
 
 extension IoTTwinMakerClientTypes {
+
     /// An object that sets information about a property.
-    public struct PropertyRequest {
+    public struct PropertyRequest: Swift.Sendable {
         /// An object that specifies information about a property.
         public var definition: IoTTwinMakerClientTypes.PropertyDefinitionRequest?
         /// The update type of the update property request.
@@ -4553,12 +4554,12 @@ extension IoTTwinMakerClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension IoTTwinMakerClientTypes {
+
     /// An object that contains information about a property response.
-    public struct PropertyResponse {
+    public struct PropertyResponse: Swift.Sendable {
         /// This flag notes whether all values of a list or map type property are returned in the API response. The maximum number of values per property returned is 50.
         public var areAllPropertyValuesReturned: Swift.Bool?
         /// An object that specifies information about a property.
@@ -4577,12 +4578,12 @@ extension IoTTwinMakerClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension IoTTwinMakerClientTypes {
+
     /// This is an object that contains the information of a property.
-    public struct PropertySummary {
+    public struct PropertySummary: Swift.Sendable {
         /// This flag notes whether all values of a list or map type property are returned in the API response. The maximum number of values per property returned is 50.
         public var areAllPropertyValuesReturned: Swift.Bool?
         /// This is the schema for the property.
@@ -4606,12 +4607,12 @@ extension IoTTwinMakerClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension IoTTwinMakerClientTypes {
+
     /// An object that sets information about a component type create or update request.
-    public struct ComponentRequest {
+    public struct ComponentRequest: Swift.Sendable {
         /// The ID of the component type.
         public var componentTypeId: Swift.String?
         /// The description of the component request.
@@ -4634,12 +4635,12 @@ extension IoTTwinMakerClientTypes {
             self.propertyGroups = propertyGroups
         }
     }
-
 }
 
 extension IoTTwinMakerClientTypes {
+
     /// An object that returns information about a component type create or update request.
-    public struct ComponentResponse {
+    public struct ComponentResponse: Swift.Sendable {
         /// This flag notes whether all compositeComponents are returned in the API response.
         public var areAllCompositeComponentsReturned: Swift.Bool?
         /// This flag notes whether all properties of the component are returned in the API response. The maximum number of properties returned is 800.
@@ -4690,12 +4691,12 @@ extension IoTTwinMakerClientTypes {
             self.syncSource = syncSource
         }
     }
-
 }
 
 extension IoTTwinMakerClientTypes {
+
     /// The component update request.
-    public struct ComponentUpdateRequest {
+    public struct ComponentUpdateRequest: Swift.Sendable {
         /// The ID of the component type.
         public var componentTypeId: Swift.String?
         /// The description of the component type.
@@ -4722,12 +4723,12 @@ extension IoTTwinMakerClientTypes {
             self.updateType = updateType
         }
     }
-
 }
 
 extension IoTTwinMakerClientTypes {
+
     /// An object that sets information about the composite component update request.
-    public struct CompositeComponentRequest {
+    public struct CompositeComponentRequest: Swift.Sendable {
         /// The description of the component type.
         public var description: Swift.String?
         /// This is an object that maps strings to the properties to set in the component type. Each string in the mapping must be unique to this object.
@@ -4746,12 +4747,12 @@ extension IoTTwinMakerClientTypes {
             self.propertyGroups = propertyGroups
         }
     }
-
 }
 
 extension IoTTwinMakerClientTypes {
+
     /// An object that sets information about the composite component update request.
-    public struct CompositeComponentUpdateRequest {
+    public struct CompositeComponentUpdateRequest: Swift.Sendable {
         /// The description of the component type.
         public var description: Swift.String?
         /// The property group updates.
@@ -4774,10 +4775,9 @@ extension IoTTwinMakerClientTypes {
             self.updateType = updateType
         }
     }
-
 }
 
-public struct ListPropertiesOutput {
+public struct ListPropertiesOutput: Swift.Sendable {
     /// The string that specifies the next page of property results.
     public var nextToken: Swift.String?
     /// A list of objects that contain information about the properties.
@@ -4794,7 +4794,7 @@ public struct ListPropertiesOutput {
     }
 }
 
-public struct GetEntityOutput {
+public struct GetEntityOutput: Swift.Sendable {
     /// This flag notes whether all components are returned in the API response. The maximum number of components returned is 30.
     public var areAllComponentsReturned: Swift.Bool?
     /// The ARN of the entity.
@@ -4863,7 +4863,7 @@ public struct GetEntityOutput {
     }
 }
 
-public struct CreateEntityInput {
+public struct CreateEntityInput: Swift.Sendable {
     /// An object that maps strings to the components in the entity. Each string in the mapping must be unique to this object.
     public var components: [Swift.String: IoTTwinMakerClientTypes.ComponentRequest]?
     /// This is an object that maps strings to compositeComponent updates in the request. Each key of the map represents the componentPath of the compositeComponent.
@@ -4905,7 +4905,7 @@ public struct CreateEntityInput {
     }
 }
 
-public struct UpdateEntityInput {
+public struct UpdateEntityInput: Swift.Sendable {
     /// An object that maps strings to the component updates in the request. Each string in the mapping must be unique to this object.
     public var componentUpdates: [Swift.String: IoTTwinMakerClientTypes.ComponentUpdateRequest]?
     /// This is an object that maps strings to compositeComponent updates in the request. Each key of the map represents the componentPath of the compositeComponent.

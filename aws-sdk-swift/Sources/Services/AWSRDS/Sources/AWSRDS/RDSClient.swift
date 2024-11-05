@@ -2089,6 +2089,7 @@ extension RDSClient {
     /// - `InvalidDBClusterStateFault` : The requested operation can't be performed while the cluster is in this state.
     /// - `InvalidVPCNetworkStateFault` : The DB subnet group doesn't cover all Availability Zones after it's created because of users' change.
     /// - `MaxDBShardGroupLimitReached` : The maximum number of DB shard groups for your Amazon Web Services account in the specified Amazon Web Services Region has been reached.
+    /// - `NetworkTypeNotSupported` : The network type is invalid for the DB instance. Valid nework type values are IPV4 and DUAL.
     /// - `UnsupportedDBEngineVersionFault` : The specified DB engine version isn't supported for Aurora Limitless Database.
     public func createDBShardGroup(input: CreateDBShardGroupInput) async throws -> CreateDBShardGroupOutput {
         let context = Smithy.ContextBuilder()
@@ -2379,7 +2380,7 @@ extension RDSClient {
     ///
     /// __Possible Exceptions:__
     /// - `DBClusterNotFoundFault` : DBClusterIdentifier doesn't refer to an existing DB cluster.
-    /// - `GlobalClusterAlreadyExistsFault` : The GlobalClusterIdentifier already exists. Choose a new global database identifier (unique name) to create a new global database cluster.
+    /// - `GlobalClusterAlreadyExistsFault` : The GlobalClusterIdentifier already exists. Specify a new global database identifier (unique name) to create a new global database cluster or to rename an existing one.
     /// - `GlobalClusterQuotaExceededFault` : The number of global database clusters for this account is already at the maximum allowed.
     /// - `InvalidDBClusterStateFault` : The requested operation can't be performed while the cluster is in this state.
     public func createGlobalCluster(input: CreateGlobalClusterInput) async throws -> CreateGlobalClusterOutput {
@@ -9145,6 +9146,7 @@ extension RDSClient {
     /// - Throws: One of the exceptions listed below __Possible Exceptions__.
     ///
     /// __Possible Exceptions:__
+    /// - `GlobalClusterAlreadyExistsFault` : The GlobalClusterIdentifier already exists. Specify a new global database identifier (unique name) to create a new global database cluster or to rename an existing one.
     /// - `GlobalClusterNotFoundFault` : The GlobalClusterIdentifier doesn't refer to an existing global database cluster.
     /// - `InvalidDBClusterStateFault` : The requested operation can't be performed while the cluster is in this state.
     /// - `InvalidDBInstanceStateFault` : The DB instance isn't in a valid state.

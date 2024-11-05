@@ -23,17 +23,18 @@ import protocol ClientRuntime.ModeledError
 @_spi(UnknownAWSHTTPServiceError) import struct AWSClientRuntime.UnknownAWSHTTPServiceError
 
 extension QLDBSessionClientTypes {
+
     /// Contains the details of the transaction to abort.
-    public struct AbortTransactionRequest {
+    public struct AbortTransactionRequest: Swift.Sendable {
 
         public init() { }
     }
-
 }
 
 extension QLDBSessionClientTypes {
+
     /// Contains server-side performance information for a command. Amazon QLDB captures timing information between the times when it receives the request and when it sends the corresponding response.
-    public struct TimingInformation {
+    public struct TimingInformation: Swift.Sendable {
         /// The amount of time that QLDB spent on processing the command, measured in milliseconds.
         public var processingTimeMilliseconds: Swift.Int
 
@@ -44,12 +45,12 @@ extension QLDBSessionClientTypes {
             self.processingTimeMilliseconds = processingTimeMilliseconds
         }
     }
-
 }
 
 extension QLDBSessionClientTypes {
+
     /// Contains the details of the aborted transaction.
-    public struct AbortTransactionResult {
+    public struct AbortTransactionResult: Swift.Sendable {
         /// Contains server-side performance information for the command.
         public var timingInformation: QLDBSessionClientTypes.TimingInformation?
 
@@ -60,7 +61,6 @@ extension QLDBSessionClientTypes {
             self.timingInformation = timingInformation
         }
     }
-
 }
 
 /// Returned if the request is malformed or contains an error such as an invalid parameter value or a missing required parameter.
@@ -115,8 +115,9 @@ public struct CapacityExceededException: ClientRuntime.ModeledError, AWSClientRu
 }
 
 extension QLDBSessionClientTypes {
+
     /// Contains the details of the transaction to commit.
-    public struct CommitTransactionRequest {
+    public struct CommitTransactionRequest: Swift.Sendable {
         /// Specifies the commit digest for the transaction to commit. For every active transaction, the commit digest must be passed. QLDB validates CommitDigest and rejects the commit with an error if the digest computed on the client does not match the digest computed by QLDB. The purpose of the CommitDigest parameter is to ensure that QLDB commits a transaction if and only if the server has processed the exact set of statements sent by the client, in the same order that client sent them, and with no duplicates.
         /// This member is required.
         public var commitDigest: Foundation.Data?
@@ -133,12 +134,12 @@ extension QLDBSessionClientTypes {
             self.transactionId = transactionId
         }
     }
-
 }
 
 extension QLDBSessionClientTypes {
+
     /// Contains I/O usage metrics for a command that was invoked.
-    public struct IOUsage {
+    public struct IOUsage: Swift.Sendable {
         /// The number of read I/O requests that the command made.
         public var readIOs: Swift.Int
         /// The number of write I/O requests that the command made.
@@ -153,12 +154,12 @@ extension QLDBSessionClientTypes {
             self.writeIOs = writeIOs
         }
     }
-
 }
 
 extension QLDBSessionClientTypes {
+
     /// Contains the details of the committed transaction.
-    public struct CommitTransactionResult {
+    public struct CommitTransactionResult: Swift.Sendable {
         /// The commit digest of the committed transaction.
         public var commitDigest: Foundation.Data?
         /// Contains metrics about the number of I/O requests that were consumed.
@@ -181,21 +182,21 @@ extension QLDBSessionClientTypes {
             self.transactionId = transactionId
         }
     }
-
 }
 
 extension QLDBSessionClientTypes {
+
     /// Specifies a request to end the session.
-    public struct EndSessionRequest {
+    public struct EndSessionRequest: Swift.Sendable {
 
         public init() { }
     }
-
 }
 
 extension QLDBSessionClientTypes {
+
     /// Contains the details of the ended session.
-    public struct EndSessionResult {
+    public struct EndSessionResult: Swift.Sendable {
         /// Contains server-side performance information for the command.
         public var timingInformation: QLDBSessionClientTypes.TimingInformation?
 
@@ -206,12 +207,12 @@ extension QLDBSessionClientTypes {
             self.timingInformation = timingInformation
         }
     }
-
 }
 
 extension QLDBSessionClientTypes {
+
     /// A structure that can contain a value in multiple encoding formats.
-    public struct ValueHolder {
+    public struct ValueHolder: Swift.Sendable {
         /// An Amazon Ion binary value contained in a ValueHolder structure.
         public var ionBinary: Foundation.Data?
         /// An Amazon Ion plaintext value contained in a ValueHolder structure.
@@ -226,12 +227,12 @@ extension QLDBSessionClientTypes {
             self.ionText = ionText
         }
     }
-
 }
 
 extension QLDBSessionClientTypes {
+
     /// Specifies a request to execute a statement.
-    public struct ExecuteStatementRequest {
+    public struct ExecuteStatementRequest: Swift.Sendable {
         /// Specifies the parameters for the parameterized statement in the request.
         public var parameters: [QLDBSessionClientTypes.ValueHolder]?
         /// Specifies the statement of the request.
@@ -252,12 +253,12 @@ extension QLDBSessionClientTypes {
             self.transactionId = transactionId
         }
     }
-
 }
 
 extension QLDBSessionClientTypes {
+
     /// Contains details of the fetched page.
-    public struct Page {
+    public struct Page: Swift.Sendable {
         /// The token of the next page.
         public var nextPageToken: Swift.String?
         /// A structure that contains values in multiple encoding formats.
@@ -272,12 +273,12 @@ extension QLDBSessionClientTypes {
             self.values = values
         }
     }
-
 }
 
 extension QLDBSessionClientTypes {
+
     /// Contains the details of the executed statement.
-    public struct ExecuteStatementResult {
+    public struct ExecuteStatementResult: Swift.Sendable {
         /// Contains metrics about the number of I/O requests that were consumed.
         public var consumedIOs: QLDBSessionClientTypes.IOUsage?
         /// Contains the details of the first fetched page.
@@ -296,12 +297,12 @@ extension QLDBSessionClientTypes {
             self.timingInformation = timingInformation
         }
     }
-
 }
 
 extension QLDBSessionClientTypes {
+
     /// Specifies the details of the page to be fetched.
-    public struct FetchPageRequest {
+    public struct FetchPageRequest: Swift.Sendable {
         /// Specifies the next page token of the page to be fetched.
         /// This member is required.
         public var nextPageToken: Swift.String?
@@ -318,12 +319,12 @@ extension QLDBSessionClientTypes {
             self.transactionId = transactionId
         }
     }
-
 }
 
 extension QLDBSessionClientTypes {
+
     /// Contains the page that was fetched.
-    public struct FetchPageResult {
+    public struct FetchPageResult: Swift.Sendable {
         /// Contains metrics about the number of I/O requests that were consumed.
         public var consumedIOs: QLDBSessionClientTypes.IOUsage?
         /// Contains details of the fetched page.
@@ -342,7 +343,6 @@ extension QLDBSessionClientTypes {
             self.timingInformation = timingInformation
         }
     }
-
 }
 
 /// Returned if the session doesn't exist anymore because it timed out or expired.
@@ -445,8 +445,9 @@ public struct RateExceededException: ClientRuntime.ModeledError, AWSClientRuntim
 }
 
 extension QLDBSessionClientTypes {
+
     /// Specifies a request to start a new session.
-    public struct StartSessionRequest {
+    public struct StartSessionRequest: Swift.Sendable {
         /// The name of the ledger to start a new session against.
         /// This member is required.
         public var ledgerName: Swift.String?
@@ -458,19 +459,18 @@ extension QLDBSessionClientTypes {
             self.ledgerName = ledgerName
         }
     }
-
 }
 
 extension QLDBSessionClientTypes {
+
     /// Specifies a request to start a transaction.
-    public struct StartTransactionRequest {
+    public struct StartTransactionRequest: Swift.Sendable {
 
         public init() { }
     }
-
 }
 
-public struct SendCommandInput {
+public struct SendCommandInput: Swift.Sendable {
     /// Command to abort the current transaction.
     public var abortTransaction: QLDBSessionClientTypes.AbortTransactionRequest?
     /// Command to commit the specified transaction.
@@ -511,8 +511,9 @@ public struct SendCommandInput {
 }
 
 extension QLDBSessionClientTypes {
+
     /// Contains the details of the started session.
-    public struct StartSessionResult {
+    public struct StartSessionResult: Swift.Sendable {
         /// Session token of the started session. This SessionToken is required for every subsequent command that is issued during the current session.
         public var sessionToken: Swift.String?
         /// Contains server-side performance information for the command.
@@ -527,12 +528,12 @@ extension QLDBSessionClientTypes {
             self.timingInformation = timingInformation
         }
     }
-
 }
 
 extension QLDBSessionClientTypes {
+
     /// Contains the details of the started transaction.
-    public struct StartTransactionResult {
+    public struct StartTransactionResult: Swift.Sendable {
         /// Contains server-side performance information for the command.
         public var timingInformation: QLDBSessionClientTypes.TimingInformation?
         /// The transaction ID of the started transaction.
@@ -547,10 +548,9 @@ extension QLDBSessionClientTypes {
             self.transactionId = transactionId
         }
     }
-
 }
 
-public struct SendCommandOutput {
+public struct SendCommandOutput: Swift.Sendable {
     /// Contains the details of the aborted transaction.
     public var abortTransaction: QLDBSessionClientTypes.AbortTransactionResult?
     /// Contains the details of the committed transaction.

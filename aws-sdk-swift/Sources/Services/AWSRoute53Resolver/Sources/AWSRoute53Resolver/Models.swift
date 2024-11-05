@@ -51,7 +51,7 @@ public struct AccessDeniedException: ClientRuntime.ModeledError, AWSClientRuntim
 
 extension Route53ResolverClientTypes {
 
-    public enum Action: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Action: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case alert
         case allow
         case block
@@ -235,7 +235,7 @@ public struct ValidationException: ClientRuntime.ModeledError, AWSClientRuntime.
 
 extension Route53ResolverClientTypes {
 
-    public enum MutationProtectionStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum MutationProtectionStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case disabled
         case enabled
         case sdkUnknown(Swift.String)
@@ -263,8 +263,9 @@ extension Route53ResolverClientTypes {
 }
 
 extension Route53ResolverClientTypes {
+
     /// One tag that you want to add to the specified resource. A tag consists of a Key (a name for the tag) and a Value.
-    public struct Tag {
+    public struct Tag: Swift.Sendable {
         /// The name for the tag. For example, if you want to associate Resolver resources with the account IDs of your customers for billing purposes, the value of Key might be account-id.
         /// This member is required.
         public var key: Swift.String?
@@ -281,10 +282,9 @@ extension Route53ResolverClientTypes {
             self.value = value
         }
     }
-
 }
 
-public struct AssociateFirewallRuleGroupInput {
+public struct AssociateFirewallRuleGroupInput: Swift.Sendable {
     /// A unique string that identifies the request and that allows failed requests to be retried without the risk of running the operation twice. CreatorRequestId can be any unique string, for example, a date/time stamp.
     /// This member is required.
     public var creatorRequestId: Swift.String?
@@ -327,7 +327,7 @@ public struct AssociateFirewallRuleGroupInput {
 
 extension Route53ResolverClientTypes {
 
-    public enum FirewallRuleGroupAssociationStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum FirewallRuleGroupAssociationStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case complete
         case deleting
         case updating
@@ -358,8 +358,9 @@ extension Route53ResolverClientTypes {
 }
 
 extension Route53ResolverClientTypes {
+
     /// An association between a firewall rule group and a VPC, which enables DNS filtering for the VPC.
-    public struct FirewallRuleGroupAssociation {
+    public struct FirewallRuleGroupAssociation: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the firewall rule group association.
         public var arn: Swift.String?
         /// The date and time that the association was created, in Unix time format and Coordinated Universal Time (UTC).
@@ -418,10 +419,9 @@ extension Route53ResolverClientTypes {
             self.vpcId = vpcId
         }
     }
-
 }
 
-public struct AssociateFirewallRuleGroupOutput {
+public struct AssociateFirewallRuleGroupOutput: Swift.Sendable {
     /// The association that you just created. The association has an ID that you can use to identify it in other requests, like update and delete.
     public var firewallRuleGroupAssociation: Route53ResolverClientTypes.FirewallRuleGroupAssociation?
 
@@ -515,8 +515,9 @@ public struct ResourceExistsException: ClientRuntime.ModeledError, AWSClientRunt
 }
 
 extension Route53ResolverClientTypes {
+
     /// In an [UpdateResolverEndpoint](https://docs.aws.amazon.com/Route53/latest/APIReference/API_route53resolver_UpdateResolverEndpoint.html) request, information about an IP address to update.
-    public struct IpAddressUpdate {
+    public struct IpAddressUpdate: Swift.Sendable {
         /// The new IPv4 address.
         public var ip: Swift.String?
         /// Only when removing an IP address from a Resolver endpoint: The ID of the IP address that you want to remove. To get this ID, use [GetResolverEndpoint](https://docs.aws.amazon.com/Route53/latest/APIReference/API_route53resolver_GetResolverEndpoint.html).
@@ -539,10 +540,9 @@ extension Route53ResolverClientTypes {
             self.subnetId = subnetId
         }
     }
-
 }
 
-public struct AssociateResolverEndpointIpAddressInput {
+public struct AssociateResolverEndpointIpAddressInput: Swift.Sendable {
     /// Either the IPv4 address that you want to add to a Resolver endpoint or a subnet ID. If you specify a subnet ID, Resolver chooses an IP address for you from the available IPs in the specified subnet.
     /// This member is required.
     public var ipAddress: Route53ResolverClientTypes.IpAddressUpdate?
@@ -562,7 +562,7 @@ public struct AssociateResolverEndpointIpAddressInput {
 
 extension Route53ResolverClientTypes {
 
-    public enum ResolverEndpointDirection: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ResolverEndpointDirection: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case inbound
         case outbound
         case sdkUnknown(Swift.String)
@@ -591,7 +591,7 @@ extension Route53ResolverClientTypes {
 
 extension Route53ResolverClientTypes {
 
-    public enum ModelProtocol: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ModelProtocol: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case do53
         case doh
         case dohfips
@@ -623,7 +623,7 @@ extension Route53ResolverClientTypes {
 
 extension Route53ResolverClientTypes {
 
-    public enum ResolverEndpointType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ResolverEndpointType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case dualstack
         case ipv4
         case ipv6
@@ -655,7 +655,7 @@ extension Route53ResolverClientTypes {
 
 extension Route53ResolverClientTypes {
 
-    public enum ResolverEndpointStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ResolverEndpointStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case actionneeded
         case autorecovering
         case creating
@@ -695,8 +695,9 @@ extension Route53ResolverClientTypes {
 }
 
 extension Route53ResolverClientTypes {
+
     /// In the response to a [CreateResolverEndpoint](https://docs.aws.amazon.com/Route53/latest/APIReference/API_route53resolver_CreateResolverEndpoint.html), [DeleteResolverEndpoint](https://docs.aws.amazon.com/Route53/latest/APIReference/API_route53resolver_DeleteResolverEndpoint.html), [GetResolverEndpoint](https://docs.aws.amazon.com/Route53/latest/APIReference/API_route53resolver_GetResolverEndpoint.html), Updates the name, or ResolverEndpointType for an endpoint, or [UpdateResolverEndpoint](https://docs.aws.amazon.com/Route53/latest/APIReference/API_route53resolver_UpdateResolverEndpoint.html) request, a complex type that contains settings for an existing inbound or outbound Resolver endpoint.
-    public struct ResolverEndpoint {
+    public struct ResolverEndpoint: Swift.Sendable {
         /// The ARN (Amazon Resource Name) for the Resolver endpoint.
         public var arn: Swift.String?
         /// The date and time that the endpoint was created, in Unix time format and Coordinated Universal Time (UTC).
@@ -813,10 +814,9 @@ extension Route53ResolverClientTypes {
             self.statusMessage = statusMessage
         }
     }
-
 }
 
-public struct AssociateResolverEndpointIpAddressOutput {
+public struct AssociateResolverEndpointIpAddressOutput: Swift.Sendable {
     /// The response to an AssociateResolverEndpointIpAddress request.
     public var resolverEndpoint: Route53ResolverClientTypes.ResolverEndpoint?
 
@@ -828,7 +828,7 @@ public struct AssociateResolverEndpointIpAddressOutput {
     }
 }
 
-public struct AssociateResolverQueryLogConfigInput {
+public struct AssociateResolverQueryLogConfigInput: Swift.Sendable {
     /// The ID of the query logging configuration that you want to associate a VPC with.
     /// This member is required.
     public var resolverQueryLogConfigId: Swift.String?
@@ -848,7 +848,7 @@ public struct AssociateResolverQueryLogConfigInput {
 
 extension Route53ResolverClientTypes {
 
-    public enum ResolverQueryLogConfigAssociationError: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ResolverQueryLogConfigAssociationError: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case accessdenied
         case destinationnotfound
         case internalserviceerror
@@ -883,7 +883,7 @@ extension Route53ResolverClientTypes {
 
 extension Route53ResolverClientTypes {
 
-    public enum ResolverQueryLogConfigAssociationStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ResolverQueryLogConfigAssociationStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case actionneeded
         case active
         case creating
@@ -920,8 +920,9 @@ extension Route53ResolverClientTypes {
 }
 
 extension Route53ResolverClientTypes {
+
     /// In the response to an [AssociateResolverQueryLogConfig](https://docs.aws.amazon.com/Route53/latest/APIReference/API_route53resolver_AssociateResolverQueryLogConfig.html), [DisassociateResolverQueryLogConfig](https://docs.aws.amazon.com/Route53/latest/APIReference/API_route53resolver_DisassociateResolverQueryLogConfig.html), [GetResolverQueryLogConfigAssociation](https://docs.aws.amazon.com/Route53/latest/APIReference/API_route53resolver_GetResolverQueryLogConfigAssociation.html), or [ListResolverQueryLogConfigAssociations](https://docs.aws.amazon.com/Route53/latest/APIReference/API_route53resolver_ListResolverQueryLogConfigAssociations.html), request, a complex type that contains settings for a specified association between an Amazon VPC and a query logging configuration.
-    public struct ResolverQueryLogConfigAssociation {
+    public struct ResolverQueryLogConfigAssociation: Swift.Sendable {
         /// The date and time that the VPC was associated with the query logging configuration, in Unix time format and Coordinated Universal Time (UTC).
         public var creationTime: Swift.String?
         /// If the value of Status is FAILED, the value of Error indicates the cause:
@@ -971,10 +972,9 @@ extension Route53ResolverClientTypes {
             self.status = status
         }
     }
-
 }
 
-public struct AssociateResolverQueryLogConfigOutput {
+public struct AssociateResolverQueryLogConfigOutput: Swift.Sendable {
     /// A complex type that contains settings for a specified association between an Amazon VPC and a query logging configuration.
     public var resolverQueryLogConfigAssociation: Route53ResolverClientTypes.ResolverQueryLogConfigAssociation?
 
@@ -1014,7 +1014,7 @@ public struct ResourceUnavailableException: ClientRuntime.ModeledError, AWSClien
     }
 }
 
-public struct AssociateResolverRuleInput {
+public struct AssociateResolverRuleInput: Swift.Sendable {
     /// A name for the association that you're creating between a Resolver rule and a VPC.
     public var name: Swift.String?
     /// The ID of the Resolver rule that you want to associate with the VPC. To list the existing Resolver rules, use [ListResolverRules](https://docs.aws.amazon.com/Route53/latest/APIReference/API_route53resolver_ListResolverRules.html).
@@ -1038,7 +1038,7 @@ public struct AssociateResolverRuleInput {
 
 extension Route53ResolverClientTypes {
 
-    public enum ResolverRuleAssociationStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ResolverRuleAssociationStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case complete
         case creating
         case deleting
@@ -1075,8 +1075,9 @@ extension Route53ResolverClientTypes {
 }
 
 extension Route53ResolverClientTypes {
+
     /// In the response to an [AssociateResolverRule](https://docs.aws.amazon.com/Route53/latest/APIReference/API_route53resolver_AssociateResolverRule.html), [DisassociateResolverRule](https://docs.aws.amazon.com/Route53/latest/APIReference/API_route53resolver_DisassociateResolverRule.html), or [ListResolverRuleAssociations](https://docs.aws.amazon.com/Route53/latest/APIReference/API_route53resolver_ListResolverRuleAssociations.html) request, provides information about an association between a Resolver rule and a VPC. The association determines which DNS queries that originate in the VPC are forwarded to your network.
-    public struct ResolverRuleAssociation {
+    public struct ResolverRuleAssociation: Swift.Sendable {
         /// The ID of the association between a Resolver rule and a VPC. Resolver assigns this value when you submit an [AssociateResolverRule](https://docs.aws.amazon.com/Route53/latest/APIReference/API_route53resolver_AssociateResolverRule.html) request.
         public var id: Swift.String?
         /// The name of an association between a Resolver rule and a VPC.
@@ -1107,10 +1108,9 @@ extension Route53ResolverClientTypes {
             self.vpcId = vpcId
         }
     }
-
 }
 
-public struct AssociateResolverRuleOutput {
+public struct AssociateResolverRuleOutput: Swift.Sendable {
     /// Information about the AssociateResolverRule request, including the status of the request.
     public var resolverRuleAssociation: Route53ResolverClientTypes.ResolverRuleAssociation?
 
@@ -1124,7 +1124,7 @@ public struct AssociateResolverRuleOutput {
 
 extension Route53ResolverClientTypes {
 
-    public enum AutodefinedReverseFlag: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AutodefinedReverseFlag: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case disable
         case enable
         case useLocalResourceSetting
@@ -1156,7 +1156,7 @@ extension Route53ResolverClientTypes {
 
 extension Route53ResolverClientTypes {
 
-    public enum BlockOverrideDnsType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum BlockOverrideDnsType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case cname
         case sdkUnknown(Swift.String)
 
@@ -1182,7 +1182,7 @@ extension Route53ResolverClientTypes {
 
 extension Route53ResolverClientTypes {
 
-    public enum BlockResponse: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum BlockResponse: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case nodata
         case nxdomain
         case `override`
@@ -1212,7 +1212,7 @@ extension Route53ResolverClientTypes {
     }
 }
 
-public struct CreateFirewallDomainListInput {
+public struct CreateFirewallDomainListInput: Swift.Sendable {
     /// A unique string that identifies the request and that allows you to retry failed requests without the risk of running the operation twice. CreatorRequestId can be any unique string, for example, a date/time stamp.
     /// This member is required.
     public var creatorRequestId: Swift.String?
@@ -1236,7 +1236,7 @@ public struct CreateFirewallDomainListInput {
 
 extension Route53ResolverClientTypes {
 
-    public enum FirewallDomainListStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum FirewallDomainListStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case complete
         case completeImportFailed
         case deleting
@@ -1273,8 +1273,9 @@ extension Route53ResolverClientTypes {
 }
 
 extension Route53ResolverClientTypes {
+
     /// High-level information about a list of firewall domains for use in a [FirewallRule]. This is returned by [GetFirewallDomainList]. To retrieve the domains that are defined for this domain list, call [ListFirewallDomains].
-    public struct FirewallDomainList {
+    public struct FirewallDomainList: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the firewall domain list.
         public var arn: Swift.String?
         /// The date and time that the domain list was created, in Unix time format and Coordinated Universal Time (UTC).
@@ -1321,10 +1322,9 @@ extension Route53ResolverClientTypes {
             self.statusMessage = statusMessage
         }
     }
-
 }
 
-public struct CreateFirewallDomainListOutput {
+public struct CreateFirewallDomainListOutput: Swift.Sendable {
     /// The domain list that you just created.
     public var firewallDomainList: Route53ResolverClientTypes.FirewallDomainList?
 
@@ -1338,7 +1338,7 @@ public struct CreateFirewallDomainListOutput {
 
 extension Route53ResolverClientTypes {
 
-    public enum FirewallDomainRedirectionAction: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum FirewallDomainRedirectionAction: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case inspectRedirectionDomain
         case trustRedirectionDomain
         case sdkUnknown(Swift.String)
@@ -1365,7 +1365,7 @@ extension Route53ResolverClientTypes {
     }
 }
 
-public struct CreateFirewallRuleInput {
+public struct CreateFirewallRuleInput: Swift.Sendable {
     /// The action that DNS Firewall should take on a DNS query when it matches one of the domains in the rule's domain list:
     ///
     /// * ALLOW - Permit the request to go through.
@@ -1471,8 +1471,9 @@ public struct CreateFirewallRuleInput {
 }
 
 extension Route53ResolverClientTypes {
+
     /// A single firewall rule in a rule group.
-    public struct FirewallRule {
+    public struct FirewallRule: Swift.Sendable {
         /// The action that DNS Firewall should take on a DNS query when it matches one of the domains in the rule's domain list:
         ///
         /// * ALLOW - Permit the request to go through.
@@ -1575,10 +1576,9 @@ extension Route53ResolverClientTypes {
             self.qtype = qtype
         }
     }
-
 }
 
-public struct CreateFirewallRuleOutput {
+public struct CreateFirewallRuleOutput: Swift.Sendable {
     /// The firewall rule that you just created.
     public var firewallRule: Route53ResolverClientTypes.FirewallRule?
 
@@ -1590,7 +1590,7 @@ public struct CreateFirewallRuleOutput {
     }
 }
 
-public struct CreateFirewallRuleGroupInput {
+public struct CreateFirewallRuleGroupInput: Swift.Sendable {
     /// A unique string defined by you to identify the request. This allows you to retry failed requests without the risk of running the operation twice. This can be any unique string, for example, a timestamp.
     /// This member is required.
     public var creatorRequestId: Swift.String?
@@ -1614,7 +1614,7 @@ public struct CreateFirewallRuleGroupInput {
 
 extension Route53ResolverClientTypes {
 
-    public enum ShareStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ShareStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case notshared
         case sharedbyme
         case sharedwithme
@@ -1646,7 +1646,7 @@ extension Route53ResolverClientTypes {
 
 extension Route53ResolverClientTypes {
 
-    public enum FirewallRuleGroupStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum FirewallRuleGroupStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case complete
         case deleting
         case updating
@@ -1677,8 +1677,9 @@ extension Route53ResolverClientTypes {
 }
 
 extension Route53ResolverClientTypes {
+
     /// High-level information for a firewall rule group. A firewall rule group is a collection of rules that DNS Firewall uses to filter DNS network traffic for a VPC. To retrieve the rules for the rule group, call [ListFirewallRules].
-    public struct FirewallRuleGroup {
+    public struct FirewallRuleGroup: Swift.Sendable {
         /// The ARN (Amazon Resource Name) of the rule group.
         public var arn: Swift.String?
         /// The date and time that the rule group was created, in Unix time format and Coordinated Universal Time (UTC).
@@ -1729,10 +1730,9 @@ extension Route53ResolverClientTypes {
             self.statusMessage = statusMessage
         }
     }
-
 }
 
-public struct CreateFirewallRuleGroupOutput {
+public struct CreateFirewallRuleGroupOutput: Swift.Sendable {
     /// A collection of rules used to filter DNS network traffic.
     public var firewallRuleGroup: Route53ResolverClientTypes.FirewallRuleGroup?
 
@@ -1768,7 +1768,7 @@ public struct ServiceQuotaExceededException: ClientRuntime.ModeledError, AWSClie
     }
 }
 
-public struct CreateOutpostResolverInput {
+public struct CreateOutpostResolverInput: Swift.Sendable {
     /// A unique string that identifies the request and that allows failed requests to be retried without the risk of running the operation twice. CreatorRequestId can be any unique string, for example, a date/time stamp.
     /// This member is required.
     public var creatorRequestId: Swift.String?
@@ -1806,7 +1806,7 @@ public struct CreateOutpostResolverInput {
 
 extension Route53ResolverClientTypes {
 
-    public enum OutpostResolverStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum OutpostResolverStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case actionNeeded
         case creating
         case deleting
@@ -1849,8 +1849,9 @@ extension Route53ResolverClientTypes {
 }
 
 extension Route53ResolverClientTypes {
+
     /// A complex type that contains settings for an existing Resolver on an Outpost.
-    public struct OutpostResolver {
+    public struct OutpostResolver: Swift.Sendable {
         /// The ARN (Amazon Resource Name) for the Resolver on an Outpost.
         public var arn: Swift.String?
         /// The date and time that the Outpost Resolver was created, in Unix time format and Coordinated Universal Time (UTC).
@@ -1901,10 +1902,9 @@ extension Route53ResolverClientTypes {
             self.statusMessage = statusMessage
         }
     }
-
 }
 
-public struct CreateOutpostResolverOutput {
+public struct CreateOutpostResolverOutput: Swift.Sendable {
     /// Information about the CreateOutpostResolver request, including the status of the request.
     public var outpostResolver: Route53ResolverClientTypes.OutpostResolver?
 
@@ -1917,8 +1917,9 @@ public struct CreateOutpostResolverOutput {
 }
 
 extension Route53ResolverClientTypes {
+
     /// In a [CreateResolverEndpoint](https://docs.aws.amazon.com/Route53/latest/APIReference/API_route53resolver_CreateResolverEndpoint.html) request, the IP address that DNS queries originate from (for outbound endpoints) or that you forward DNS queries to (for inbound endpoints). IpAddressRequest also includes the ID of the subnet that contains the IP address.
-    public struct IpAddressRequest {
+    public struct IpAddressRequest: Swift.Sendable {
         /// The IPv4 address that you want to use for DNS queries.
         public var ip: Swift.String?
         /// The IPv6 address that you want to use for DNS queries.
@@ -1938,10 +1939,9 @@ extension Route53ResolverClientTypes {
             self.subnetId = subnetId
         }
     }
-
 }
 
-public struct CreateResolverEndpointInput {
+public struct CreateResolverEndpointInput: Swift.Sendable {
     /// A unique string that identifies the request and that allows failed requests to be retried without the risk of running the operation twice. CreatorRequestId can be any unique string, for example, a date/time stamp.
     /// This member is required.
     public var creatorRequestId: Swift.String?
@@ -2020,7 +2020,7 @@ public struct CreateResolverEndpointInput {
     }
 }
 
-public struct CreateResolverEndpointOutput {
+public struct CreateResolverEndpointOutput: Swift.Sendable {
     /// Information about the CreateResolverEndpoint request, including the status of the request.
     public var resolverEndpoint: Route53ResolverClientTypes.ResolverEndpoint?
 
@@ -2032,13 +2032,13 @@ public struct CreateResolverEndpointOutput {
     }
 }
 
-public struct CreateResolverQueryLogConfigInput {
+public struct CreateResolverQueryLogConfigInput: Swift.Sendable {
     /// A unique string that identifies the request and that allows failed requests to be retried without the risk of running the operation twice. CreatorRequestId can be any unique string, for example, a date/time stamp.
     /// This member is required.
     public var creatorRequestId: Swift.String?
     /// The ARN of the resource that you want Resolver to send query logs. You can send query logs to an S3 bucket, a CloudWatch Logs log group, or a Kinesis Data Firehose delivery stream. Examples of valid values include the following:
     ///
-    /// * S3 bucket: arn:aws:s3:::examplebucket You can optionally append a file prefix to the end of the ARN. arn:aws:s3:::examplebucket/development/
+    /// * S3 bucket: arn:aws:s3:::amzn-s3-demo-bucket You can optionally append a file prefix to the end of the ARN. arn:aws:s3:::amzn-s3-demo-bucket/development/
     ///
     /// * CloudWatch Logs log group: arn:aws:logs:us-west-1:123456789012:log-group:/mystack-testgroup-12ABC1AB12A1:*
     ///
@@ -2067,7 +2067,7 @@ public struct CreateResolverQueryLogConfigInput {
 
 extension Route53ResolverClientTypes {
 
-    public enum ResolverQueryLogConfigStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ResolverQueryLogConfigStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case created
         case creating
         case deleting
@@ -2101,8 +2101,9 @@ extension Route53ResolverClientTypes {
 }
 
 extension Route53ResolverClientTypes {
+
     /// In the response to a [CreateResolverQueryLogConfig](https://docs.aws.amazon.com/Route53/latest/APIReference/API_route53resolver_CreateResolverQueryLogConfig.html), [DeleteResolverQueryLogConfig](https://docs.aws.amazon.com/Route53/latest/APIReference/API_route53resolver_DeleteResolverQueryLogConfig.html), [GetResolverQueryLogConfig](https://docs.aws.amazon.com/Route53/latest/APIReference/API_route53resolver_GetResolverQueryLogConfig.html), or [ListResolverQueryLogConfigs](https://docs.aws.amazon.com/Route53/latest/APIReference/API_route53resolver_ListResolverQueryLogConfigs.html) request, a complex type that contains settings for one query logging configuration.
-    public struct ResolverQueryLogConfig {
+    public struct ResolverQueryLogConfig: Swift.Sendable {
         /// The ARN for the query logging configuration.
         public var arn: Swift.String?
         /// The number of VPCs that are associated with the query logging configuration.
@@ -2161,10 +2162,9 @@ extension Route53ResolverClientTypes {
             self.status = status
         }
     }
-
 }
 
-public struct CreateResolverQueryLogConfigOutput {
+public struct CreateResolverQueryLogConfigOutput: Swift.Sendable {
     /// Information about the CreateResolverQueryLogConfig request, including the status of the request.
     public var resolverQueryLogConfig: Route53ResolverClientTypes.ResolverQueryLogConfig?
 
@@ -2178,7 +2178,7 @@ public struct CreateResolverQueryLogConfigOutput {
 
 extension Route53ResolverClientTypes {
 
-    public enum RuleTypeOption: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum RuleTypeOption: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case forward
         case recursive
         case system
@@ -2209,8 +2209,9 @@ extension Route53ResolverClientTypes {
 }
 
 extension Route53ResolverClientTypes {
+
     /// In a [CreateResolverRule](https://docs.aws.amazon.com/Route53/latest/APIReference/API_route53resolver_CreateResolverRule.html) request, an array of the IPs that you want to forward DNS queries to.
-    public struct TargetAddress {
+    public struct TargetAddress: Swift.Sendable {
         /// One IPv4 address that you want to forward DNS queries to.
         public var ip: Swift.String?
         /// One IPv6 address that you want to forward DNS queries to.
@@ -2242,24 +2243,27 @@ extension Route53ResolverClientTypes {
         ///
         /// * None, which is treated as Do53.
         public var `protocol`: Route53ResolverClientTypes.ModelProtocol?
+        /// The Server Name Indication of the DoH server that you want to forward queries to. This is only used if the Protocol of the TargetAddress is DoH.
+        public var serverNameIndication: Swift.String?
 
         public init(
             ip: Swift.String? = nil,
             ipv6: Swift.String? = nil,
             port: Swift.Int? = nil,
-            `protocol`: Route53ResolverClientTypes.ModelProtocol? = nil
+            `protocol`: Route53ResolverClientTypes.ModelProtocol? = nil,
+            serverNameIndication: Swift.String? = nil
         )
         {
             self.ip = ip
             self.ipv6 = ipv6
             self.port = port
             self.`protocol` = `protocol`
+            self.serverNameIndication = serverNameIndication
         }
     }
-
 }
 
-public struct CreateResolverRuleInput {
+public struct CreateResolverRuleInput: Swift.Sendable {
     /// A unique string that identifies the request and that allows failed requests to be retried without the risk of running the operation twice. CreatorRequestId can be any unique string, for example, a date/time stamp.
     /// This member is required.
     public var creatorRequestId: Swift.String?
@@ -2299,7 +2303,7 @@ public struct CreateResolverRuleInput {
 
 extension Route53ResolverClientTypes {
 
-    public enum ResolverRuleStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ResolverRuleStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case complete
         case deleting
         case failed
@@ -2333,8 +2337,9 @@ extension Route53ResolverClientTypes {
 }
 
 extension Route53ResolverClientTypes {
+
     /// For queries that originate in your VPC, detailed information about a Resolver rule, which specifies how to route DNS queries out of the VPC. The ResolverRule parameter appears in the response to a [CreateResolverRule](https://docs.aws.amazon.com/Route53/latest/APIReference/API_route53resolver_CreateResolverRule.html), [DeleteResolverRule](https://docs.aws.amazon.com/Route53/latest/APIReference/API_route53resolver_DeleteResolverRule.html), [GetResolverRule](https://docs.aws.amazon.com/Route53/latest/APIReference/API_route53resolver_GetResolverRule.html), [ListResolverRules](https://docs.aws.amazon.com/Route53/latest/APIReference/API_route53resolver_ListResolverRules.html), or [UpdateResolverRule](https://docs.aws.amazon.com/Route53/latest/APIReference/API_route53resolver_UpdateResolverRule.html) request.
-    public struct ResolverRule {
+    public struct ResolverRule: Swift.Sendable {
         /// The ARN (Amazon Resource Name) for the Resolver rule specified by Id.
         public var arn: Swift.String?
         /// The date and time that the Resolver rule was created, in Unix time format and Coordinated Universal Time (UTC).
@@ -2397,10 +2402,9 @@ extension Route53ResolverClientTypes {
             self.targetIps = targetIps
         }
     }
-
 }
 
-public struct CreateResolverRuleOutput {
+public struct CreateResolverRuleOutput: Swift.Sendable {
     /// Information about the CreateResolverRule request, including the status of the request.
     public var resolverRule: Route53ResolverClientTypes.ResolverRule?
 
@@ -2412,7 +2416,7 @@ public struct CreateResolverRuleOutput {
     }
 }
 
-public struct DeleteFirewallDomainListInput {
+public struct DeleteFirewallDomainListInput: Swift.Sendable {
     /// The ID of the domain list that you want to delete.
     /// This member is required.
     public var firewallDomainListId: Swift.String?
@@ -2425,7 +2429,7 @@ public struct DeleteFirewallDomainListInput {
     }
 }
 
-public struct DeleteFirewallDomainListOutput {
+public struct DeleteFirewallDomainListOutput: Swift.Sendable {
     /// The domain list that you just deleted.
     public var firewallDomainList: Route53ResolverClientTypes.FirewallDomainList?
 
@@ -2437,7 +2441,7 @@ public struct DeleteFirewallDomainListOutput {
     }
 }
 
-public struct DeleteFirewallRuleInput {
+public struct DeleteFirewallRuleInput: Swift.Sendable {
     /// The ID of the domain list that's used in the rule.
     /// This member is required.
     public var firewallDomainListId: Swift.String?
@@ -2487,7 +2491,7 @@ public struct DeleteFirewallRuleInput {
     }
 }
 
-public struct DeleteFirewallRuleOutput {
+public struct DeleteFirewallRuleOutput: Swift.Sendable {
     /// The specification for the firewall rule that you just deleted.
     public var firewallRule: Route53ResolverClientTypes.FirewallRule?
 
@@ -2499,7 +2503,7 @@ public struct DeleteFirewallRuleOutput {
     }
 }
 
-public struct DeleteFirewallRuleGroupInput {
+public struct DeleteFirewallRuleGroupInput: Swift.Sendable {
     /// The unique identifier of the firewall rule group that you want to delete.
     /// This member is required.
     public var firewallRuleGroupId: Swift.String?
@@ -2512,7 +2516,7 @@ public struct DeleteFirewallRuleGroupInput {
     }
 }
 
-public struct DeleteFirewallRuleGroupOutput {
+public struct DeleteFirewallRuleGroupOutput: Swift.Sendable {
     /// A collection of rules used to filter DNS network traffic.
     public var firewallRuleGroup: Route53ResolverClientTypes.FirewallRuleGroup?
 
@@ -2524,7 +2528,7 @@ public struct DeleteFirewallRuleGroupOutput {
     }
 }
 
-public struct DeleteOutpostResolverInput {
+public struct DeleteOutpostResolverInput: Swift.Sendable {
     /// A unique string that identifies the Resolver on the Outpost.
     /// This member is required.
     public var id: Swift.String?
@@ -2537,7 +2541,7 @@ public struct DeleteOutpostResolverInput {
     }
 }
 
-public struct DeleteOutpostResolverOutput {
+public struct DeleteOutpostResolverOutput: Swift.Sendable {
     /// Information about the DeleteOutpostResolver request, including the status of the request.
     public var outpostResolver: Route53ResolverClientTypes.OutpostResolver?
 
@@ -2549,7 +2553,7 @@ public struct DeleteOutpostResolverOutput {
     }
 }
 
-public struct DeleteResolverEndpointInput {
+public struct DeleteResolverEndpointInput: Swift.Sendable {
     /// The ID of the Resolver endpoint that you want to delete.
     /// This member is required.
     public var resolverEndpointId: Swift.String?
@@ -2562,7 +2566,7 @@ public struct DeleteResolverEndpointInput {
     }
 }
 
-public struct DeleteResolverEndpointOutput {
+public struct DeleteResolverEndpointOutput: Swift.Sendable {
     /// Information about the DeleteResolverEndpoint request, including the status of the request.
     public var resolverEndpoint: Route53ResolverClientTypes.ResolverEndpoint?
 
@@ -2574,7 +2578,7 @@ public struct DeleteResolverEndpointOutput {
     }
 }
 
-public struct DeleteResolverQueryLogConfigInput {
+public struct DeleteResolverQueryLogConfigInput: Swift.Sendable {
     /// The ID of the query logging configuration that you want to delete.
     /// This member is required.
     public var resolverQueryLogConfigId: Swift.String?
@@ -2587,7 +2591,7 @@ public struct DeleteResolverQueryLogConfigInput {
     }
 }
 
-public struct DeleteResolverQueryLogConfigOutput {
+public struct DeleteResolverQueryLogConfigOutput: Swift.Sendable {
     /// Information about the query logging configuration that you deleted, including the status of the request.
     public var resolverQueryLogConfig: Route53ResolverClientTypes.ResolverQueryLogConfig?
 
@@ -2627,7 +2631,7 @@ public struct ResourceInUseException: ClientRuntime.ModeledError, AWSClientRunti
     }
 }
 
-public struct DeleteResolverRuleInput {
+public struct DeleteResolverRuleInput: Swift.Sendable {
     /// The ID of the Resolver rule that you want to delete.
     /// This member is required.
     public var resolverRuleId: Swift.String?
@@ -2640,7 +2644,7 @@ public struct DeleteResolverRuleInput {
     }
 }
 
-public struct DeleteResolverRuleOutput {
+public struct DeleteResolverRuleOutput: Swift.Sendable {
     /// Information about the DeleteResolverRule request, including the status of the request.
     public var resolverRule: Route53ResolverClientTypes.ResolverRule?
 
@@ -2652,7 +2656,7 @@ public struct DeleteResolverRuleOutput {
     }
 }
 
-public struct DisassociateFirewallRuleGroupInput {
+public struct DisassociateFirewallRuleGroupInput: Swift.Sendable {
     /// The identifier of the [FirewallRuleGroupAssociation].
     /// This member is required.
     public var firewallRuleGroupAssociationId: Swift.String?
@@ -2665,7 +2669,7 @@ public struct DisassociateFirewallRuleGroupInput {
     }
 }
 
-public struct DisassociateFirewallRuleGroupOutput {
+public struct DisassociateFirewallRuleGroupOutput: Swift.Sendable {
     /// The firewall rule group association that you just removed.
     public var firewallRuleGroupAssociation: Route53ResolverClientTypes.FirewallRuleGroupAssociation?
 
@@ -2677,7 +2681,7 @@ public struct DisassociateFirewallRuleGroupOutput {
     }
 }
 
-public struct DisassociateResolverEndpointIpAddressInput {
+public struct DisassociateResolverEndpointIpAddressInput: Swift.Sendable {
     /// The IPv4 address that you want to remove from a Resolver endpoint.
     /// This member is required.
     public var ipAddress: Route53ResolverClientTypes.IpAddressUpdate?
@@ -2695,7 +2699,7 @@ public struct DisassociateResolverEndpointIpAddressInput {
     }
 }
 
-public struct DisassociateResolverEndpointIpAddressOutput {
+public struct DisassociateResolverEndpointIpAddressOutput: Swift.Sendable {
     /// The response to an DisassociateResolverEndpointIpAddress request.
     public var resolverEndpoint: Route53ResolverClientTypes.ResolverEndpoint?
 
@@ -2707,7 +2711,7 @@ public struct DisassociateResolverEndpointIpAddressOutput {
     }
 }
 
-public struct DisassociateResolverQueryLogConfigInput {
+public struct DisassociateResolverQueryLogConfigInput: Swift.Sendable {
     /// The ID of the query logging configuration that you want to disassociate a specified VPC from.
     /// This member is required.
     public var resolverQueryLogConfigId: Swift.String?
@@ -2725,7 +2729,7 @@ public struct DisassociateResolverQueryLogConfigInput {
     }
 }
 
-public struct DisassociateResolverQueryLogConfigOutput {
+public struct DisassociateResolverQueryLogConfigOutput: Swift.Sendable {
     /// A complex type that contains settings for the association that you deleted between an Amazon VPC and a query logging configuration.
     public var resolverQueryLogConfigAssociation: Route53ResolverClientTypes.ResolverQueryLogConfigAssociation?
 
@@ -2737,7 +2741,7 @@ public struct DisassociateResolverQueryLogConfigOutput {
     }
 }
 
-public struct DisassociateResolverRuleInput {
+public struct DisassociateResolverRuleInput: Swift.Sendable {
     /// The ID of the Resolver rule that you want to disassociate from the specified VPC.
     /// This member is required.
     public var resolverRuleId: Swift.String?
@@ -2755,7 +2759,7 @@ public struct DisassociateResolverRuleInput {
     }
 }
 
-public struct DisassociateResolverRuleOutput {
+public struct DisassociateResolverRuleOutput: Swift.Sendable {
     /// Information about the DisassociateResolverRule request, including the status of the request.
     public var resolverRuleAssociation: Route53ResolverClientTypes.ResolverRuleAssociation?
 
@@ -2768,8 +2772,9 @@ public struct DisassociateResolverRuleOutput {
 }
 
 extension Route53ResolverClientTypes {
+
     /// For Resolver list operations ([ListResolverEndpoints](https://docs.aws.amazon.com/Route53/latest/APIReference/API_route53resolver_ListResolverEndpoints.html), [ListResolverRules](https://docs.aws.amazon.com/Route53/latest/APIReference/API_route53resolver_ListResolverRules.html), [ListResolverRuleAssociations](https://docs.aws.amazon.com/Route53/latest/APIReference/API_route53resolver_ListResolverRuleAssociations.html), [ListResolverQueryLogConfigs](https://docs.aws.amazon.com/Route53/latest/APIReference/API_route53resolver_ListResolverQueryLogConfigs.html), [ListResolverQueryLogConfigAssociations](https://docs.aws.amazon.com/Route53/latest/APIReference/API_route53resolver_ListResolverQueryLogConfigAssociations.html)), and [ListResolverDnssecConfigs](https://docs.aws.amazon.com/Route53/latest/APIReference/API_route53resolver_ListResolverDnssecConfigs.html)), an optional specification to return a subset of objects. To filter objects, such as Resolver endpoints or Resolver rules, you specify Name and Values. For example, to list only inbound Resolver endpoints, specify Direction for Name and specify INBOUND for Values.
-    public struct Filter {
+    public struct Filter: Swift.Sendable {
         /// The name of the parameter that you want to use to filter objects. The valid values for Name depend on the action that you're including the filter in, [ListResolverEndpoints](https://docs.aws.amazon.com/Route53/latest/APIReference/API_route53resolver_ListResolverEndpoints.html), [ListResolverRules](https://docs.aws.amazon.com/Route53/latest/APIReference/API_route53resolver_ListResolverRules.html), [ListResolverRuleAssociations](https://docs.aws.amazon.com/Route53/latest/APIReference/API_route53resolver_ListResolverRuleAssociations.html), [ListResolverQueryLogConfigs](https://docs.aws.amazon.com/Route53/latest/APIReference/API_route53resolver_ListResolverQueryLogConfigs.html), or [ListResolverQueryLogConfigAssociations](https://docs.aws.amazon.com/Route53/latest/APIReference/API_route53resolver_ListResolverQueryLogConfigAssociations.html). In early versions of Resolver, values for Name were listed as uppercase, with underscore (_) delimiters. For example, CreatorRequestId was originally listed as CREATOR_REQUEST_ID. Uppercase values for Name are still supported. ListResolverEndpoints Valid values for Name include the following:
         ///
         /// * CreatorRequestId: The value that you specified when you created the Resolver endpoint.
@@ -2873,12 +2878,11 @@ extension Route53ResolverClientTypes {
             self.values = values
         }
     }
-
 }
 
 extension Route53ResolverClientTypes {
 
-    public enum FirewallFailOpenStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum FirewallFailOpenStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case disabled
         case enabled
         case useLocalResourceSetting
@@ -2909,8 +2913,9 @@ extension Route53ResolverClientTypes {
 }
 
 extension Route53ResolverClientTypes {
+
     /// Configuration of the firewall behavior provided by DNS Firewall for a single VPC from Amazon Virtual Private Cloud (Amazon VPC).
-    public struct FirewallConfig {
+    public struct FirewallConfig: Swift.Sendable {
         /// Determines how DNS Firewall operates during failures, for example when all traffic that is sent to DNS Firewall fails to receive a reply.
         ///
         /// * By default, fail open is disabled, which means the failure mode is closed. This approach favors security over availability. DNS Firewall returns a failure error when it is unable to properly evaluate a query.
@@ -2940,12 +2945,11 @@ extension Route53ResolverClientTypes {
             self.resourceId = resourceId
         }
     }
-
 }
 
 extension Route53ResolverClientTypes {
 
-    public enum FirewallDomainImportOperation: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum FirewallDomainImportOperation: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case replace
         case sdkUnknown(Swift.String)
 
@@ -2970,8 +2974,9 @@ extension Route53ResolverClientTypes {
 }
 
 extension Route53ResolverClientTypes {
+
     /// Minimal high-level information for a firewall domain list. The action [ListFirewallDomainLists] returns an array of these objects. To retrieve full information for a firewall domain list, call [GetFirewallDomainList] and [ListFirewallDomains].
-    public struct FirewallDomainListMetadata {
+    public struct FirewallDomainListMetadata: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the firewall domain list metadata.
         public var arn: Swift.String?
         /// A unique string defined by you to identify the request. This allows you to retry failed requests without the risk of running the operation twice. This can be any unique string, for example, a timestamp.
@@ -2998,12 +3003,11 @@ extension Route53ResolverClientTypes {
             self.name = name
         }
     }
-
 }
 
 extension Route53ResolverClientTypes {
 
-    public enum FirewallDomainUpdateOperation: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum FirewallDomainUpdateOperation: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case add
         case remove
         case replace
@@ -3034,8 +3038,9 @@ extension Route53ResolverClientTypes {
 }
 
 extension Route53ResolverClientTypes {
+
     /// Minimal high-level information for a firewall rule group. The action [ListFirewallRuleGroups] returns an array of these objects. To retrieve full information for a firewall rule group, call [GetFirewallRuleGroup] and [ListFirewallRules].
-    public struct FirewallRuleGroupMetadata {
+    public struct FirewallRuleGroupMetadata: Swift.Sendable {
         /// The ARN (Amazon Resource Name) of the rule group.
         public var arn: Swift.String?
         /// A unique string defined by you to identify the request. This allows you to retry failed requests without the risk of running the operation twice. This can be any unique string, for example, a timestamp.
@@ -3066,10 +3071,9 @@ extension Route53ResolverClientTypes {
             self.shareStatus = shareStatus
         }
     }
-
 }
 
-public struct GetFirewallConfigInput {
+public struct GetFirewallConfigInput: Swift.Sendable {
     /// The ID of the VPC from Amazon VPC that the configuration is for.
     /// This member is required.
     public var resourceId: Swift.String?
@@ -3082,7 +3086,7 @@ public struct GetFirewallConfigInput {
     }
 }
 
-public struct GetFirewallConfigOutput {
+public struct GetFirewallConfigOutput: Swift.Sendable {
     /// Configuration of the firewall behavior provided by DNS Firewall for a single VPC from AmazonVPC.
     public var firewallConfig: Route53ResolverClientTypes.FirewallConfig?
 
@@ -3094,7 +3098,7 @@ public struct GetFirewallConfigOutput {
     }
 }
 
-public struct GetFirewallDomainListInput {
+public struct GetFirewallDomainListInput: Swift.Sendable {
     /// The ID of the domain list.
     /// This member is required.
     public var firewallDomainListId: Swift.String?
@@ -3107,7 +3111,7 @@ public struct GetFirewallDomainListInput {
     }
 }
 
-public struct GetFirewallDomainListOutput {
+public struct GetFirewallDomainListOutput: Swift.Sendable {
     /// The domain list that you requested.
     public var firewallDomainList: Route53ResolverClientTypes.FirewallDomainList?
 
@@ -3119,7 +3123,7 @@ public struct GetFirewallDomainListOutput {
     }
 }
 
-public struct GetFirewallRuleGroupInput {
+public struct GetFirewallRuleGroupInput: Swift.Sendable {
     /// The unique identifier of the firewall rule group.
     /// This member is required.
     public var firewallRuleGroupId: Swift.String?
@@ -3132,7 +3136,7 @@ public struct GetFirewallRuleGroupInput {
     }
 }
 
-public struct GetFirewallRuleGroupOutput {
+public struct GetFirewallRuleGroupOutput: Swift.Sendable {
     /// A collection of rules used to filter DNS network traffic.
     public var firewallRuleGroup: Route53ResolverClientTypes.FirewallRuleGroup?
 
@@ -3144,7 +3148,7 @@ public struct GetFirewallRuleGroupOutput {
     }
 }
 
-public struct GetFirewallRuleGroupAssociationInput {
+public struct GetFirewallRuleGroupAssociationInput: Swift.Sendable {
     /// The identifier of the [FirewallRuleGroupAssociation].
     /// This member is required.
     public var firewallRuleGroupAssociationId: Swift.String?
@@ -3157,7 +3161,7 @@ public struct GetFirewallRuleGroupAssociationInput {
     }
 }
 
-public struct GetFirewallRuleGroupAssociationOutput {
+public struct GetFirewallRuleGroupAssociationOutput: Swift.Sendable {
     /// The association that you requested.
     public var firewallRuleGroupAssociation: Route53ResolverClientTypes.FirewallRuleGroupAssociation?
 
@@ -3169,7 +3173,7 @@ public struct GetFirewallRuleGroupAssociationOutput {
     }
 }
 
-public struct GetFirewallRuleGroupPolicyInput {
+public struct GetFirewallRuleGroupPolicyInput: Swift.Sendable {
     /// The ARN (Amazon Resource Name) for the rule group.
     /// This member is required.
     public var arn: Swift.String?
@@ -3182,7 +3186,7 @@ public struct GetFirewallRuleGroupPolicyInput {
     }
 }
 
-public struct GetFirewallRuleGroupPolicyOutput {
+public struct GetFirewallRuleGroupPolicyOutput: Swift.Sendable {
     /// The Identity and Access Management (Amazon Web Services IAM) policy for sharing the specified rule group. You can use the policy to share the rule group using Resource Access Manager (RAM).
     public var firewallRuleGroupPolicy: Swift.String?
 
@@ -3194,7 +3198,7 @@ public struct GetFirewallRuleGroupPolicyOutput {
     }
 }
 
-public struct GetOutpostResolverInput {
+public struct GetOutpostResolverInput: Swift.Sendable {
     /// The ID of the Resolver on the Outpost.
     /// This member is required.
     public var id: Swift.String?
@@ -3207,7 +3211,7 @@ public struct GetOutpostResolverInput {
     }
 }
 
-public struct GetOutpostResolverOutput {
+public struct GetOutpostResolverOutput: Swift.Sendable {
     /// Information about the GetOutpostResolver request, including the status of the request.
     public var outpostResolver: Route53ResolverClientTypes.OutpostResolver?
 
@@ -3219,7 +3223,7 @@ public struct GetOutpostResolverOutput {
     }
 }
 
-public struct GetResolverConfigInput {
+public struct GetResolverConfigInput: Swift.Sendable {
     /// Resource ID of the Amazon VPC that you want to get information about.
     /// This member is required.
     public var resourceId: Swift.String?
@@ -3234,7 +3238,7 @@ public struct GetResolverConfigInput {
 
 extension Route53ResolverClientTypes {
 
-    public enum ResolverAutodefinedReverseStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ResolverAutodefinedReverseStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case disabled
         case disabling
         case enabled
@@ -3274,8 +3278,9 @@ extension Route53ResolverClientTypes {
 }
 
 extension Route53ResolverClientTypes {
+
     /// A complex type that contains information about a Resolver configuration for a VPC.
-    public struct ResolverConfig {
+    public struct ResolverConfig: Swift.Sendable {
         /// The status of whether or not the Resolver will create autodefined rules for reverse DNS lookups. This is enabled by default. The status can be one of following:
         ///
         /// * ENABLING: Autodefined rules for reverse DNS lookups are being enabled but are not complete.
@@ -3306,10 +3311,9 @@ extension Route53ResolverClientTypes {
             self.resourceId = resourceId
         }
     }
-
 }
 
-public struct GetResolverConfigOutput {
+public struct GetResolverConfigOutput: Swift.Sendable {
     /// Information about the behavior configuration of Route 53 Resolver behavior for the VPC you specified in the GetResolverConfig request.
     public var resolverConfig: Route53ResolverClientTypes.ResolverConfig?
 
@@ -3321,7 +3325,7 @@ public struct GetResolverConfigOutput {
     }
 }
 
-public struct GetResolverDnssecConfigInput {
+public struct GetResolverDnssecConfigInput: Swift.Sendable {
     /// The ID of the virtual private cloud (VPC) for the DNSSEC validation status.
     /// This member is required.
     public var resourceId: Swift.String?
@@ -3336,7 +3340,7 @@ public struct GetResolverDnssecConfigInput {
 
 extension Route53ResolverClientTypes {
 
-    public enum ResolverDNSSECValidationStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ResolverDNSSECValidationStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case disabled
         case disabling
         case enabled
@@ -3376,8 +3380,9 @@ extension Route53ResolverClientTypes {
 }
 
 extension Route53ResolverClientTypes {
+
     /// A complex type that contains information about a configuration for DNSSEC validation.
-    public struct ResolverDnssecConfig {
+    public struct ResolverDnssecConfig: Swift.Sendable {
         /// The ID for a configuration for DNSSEC validation.
         public var id: Swift.String?
         /// The owner account ID of the virtual private cloud (VPC) for a configuration for DNSSEC validation.
@@ -3408,10 +3413,9 @@ extension Route53ResolverClientTypes {
             self.validationStatus = validationStatus
         }
     }
-
 }
 
-public struct GetResolverDnssecConfigOutput {
+public struct GetResolverDnssecConfigOutput: Swift.Sendable {
     /// The information about a configuration for DNSSEC validation.
     public var resolverDNSSECConfig: Route53ResolverClientTypes.ResolverDnssecConfig?
 
@@ -3423,7 +3427,7 @@ public struct GetResolverDnssecConfigOutput {
     }
 }
 
-public struct GetResolverEndpointInput {
+public struct GetResolverEndpointInput: Swift.Sendable {
     /// The ID of the Resolver endpoint that you want to get information about.
     /// This member is required.
     public var resolverEndpointId: Swift.String?
@@ -3436,7 +3440,7 @@ public struct GetResolverEndpointInput {
     }
 }
 
-public struct GetResolverEndpointOutput {
+public struct GetResolverEndpointOutput: Swift.Sendable {
     /// Information about the Resolver endpoint that you specified in a GetResolverEndpoint request.
     public var resolverEndpoint: Route53ResolverClientTypes.ResolverEndpoint?
 
@@ -3448,7 +3452,7 @@ public struct GetResolverEndpointOutput {
     }
 }
 
-public struct GetResolverQueryLogConfigInput {
+public struct GetResolverQueryLogConfigInput: Swift.Sendable {
     /// The ID of the Resolver query logging configuration that you want to get information about.
     /// This member is required.
     public var resolverQueryLogConfigId: Swift.String?
@@ -3461,7 +3465,7 @@ public struct GetResolverQueryLogConfigInput {
     }
 }
 
-public struct GetResolverQueryLogConfigOutput {
+public struct GetResolverQueryLogConfigOutput: Swift.Sendable {
     /// Information about the Resolver query logging configuration that you specified in a GetQueryLogConfig request.
     public var resolverQueryLogConfig: Route53ResolverClientTypes.ResolverQueryLogConfig?
 
@@ -3473,7 +3477,7 @@ public struct GetResolverQueryLogConfigOutput {
     }
 }
 
-public struct GetResolverQueryLogConfigAssociationInput {
+public struct GetResolverQueryLogConfigAssociationInput: Swift.Sendable {
     /// The ID of the Resolver query logging configuration association that you want to get information about.
     /// This member is required.
     public var resolverQueryLogConfigAssociationId: Swift.String?
@@ -3486,7 +3490,7 @@ public struct GetResolverQueryLogConfigAssociationInput {
     }
 }
 
-public struct GetResolverQueryLogConfigAssociationOutput {
+public struct GetResolverQueryLogConfigAssociationOutput: Swift.Sendable {
     /// Information about the Resolver query logging configuration association that you specified in a GetQueryLogConfigAssociation request.
     public var resolverQueryLogConfigAssociation: Route53ResolverClientTypes.ResolverQueryLogConfigAssociation?
 
@@ -3522,7 +3526,7 @@ public struct UnknownResourceException: ClientRuntime.ModeledError, AWSClientRun
     }
 }
 
-public struct GetResolverQueryLogConfigPolicyInput {
+public struct GetResolverQueryLogConfigPolicyInput: Swift.Sendable {
     /// The ARN of the query logging configuration that you want to get the query logging policy for.
     /// This member is required.
     public var arn: Swift.String?
@@ -3535,7 +3539,7 @@ public struct GetResolverQueryLogConfigPolicyInput {
     }
 }
 
-public struct GetResolverQueryLogConfigPolicyOutput {
+public struct GetResolverQueryLogConfigPolicyOutput: Swift.Sendable {
     /// Information about the query logging policy for the query logging configuration that you specified in a GetResolverQueryLogConfigPolicy request.
     public var resolverQueryLogConfigPolicy: Swift.String?
 
@@ -3547,7 +3551,7 @@ public struct GetResolverQueryLogConfigPolicyOutput {
     }
 }
 
-public struct GetResolverRuleInput {
+public struct GetResolverRuleInput: Swift.Sendable {
     /// The ID of the Resolver rule that you want to get information about.
     /// This member is required.
     public var resolverRuleId: Swift.String?
@@ -3560,7 +3564,7 @@ public struct GetResolverRuleInput {
     }
 }
 
-public struct GetResolverRuleOutput {
+public struct GetResolverRuleOutput: Swift.Sendable {
     /// Information about the Resolver rule that you specified in a GetResolverRule request.
     public var resolverRule: Route53ResolverClientTypes.ResolverRule?
 
@@ -3572,7 +3576,7 @@ public struct GetResolverRuleOutput {
     }
 }
 
-public struct GetResolverRuleAssociationInput {
+public struct GetResolverRuleAssociationInput: Swift.Sendable {
     /// The ID of the Resolver rule association that you want to get information about.
     /// This member is required.
     public var resolverRuleAssociationId: Swift.String?
@@ -3585,7 +3589,7 @@ public struct GetResolverRuleAssociationInput {
     }
 }
 
-public struct GetResolverRuleAssociationOutput {
+public struct GetResolverRuleAssociationOutput: Swift.Sendable {
     /// Information about the Resolver rule association that you specified in a GetResolverRuleAssociation request.
     public var resolverRuleAssociation: Route53ResolverClientTypes.ResolverRuleAssociation?
 
@@ -3597,7 +3601,7 @@ public struct GetResolverRuleAssociationOutput {
     }
 }
 
-public struct GetResolverRulePolicyInput {
+public struct GetResolverRulePolicyInput: Swift.Sendable {
     /// The ID of the Resolver rule that you want to get the Resolver rule policy for.
     /// This member is required.
     public var arn: Swift.String?
@@ -3610,7 +3614,7 @@ public struct GetResolverRulePolicyInput {
     }
 }
 
-public struct GetResolverRulePolicyOutput {
+public struct GetResolverRulePolicyOutput: Swift.Sendable {
     /// The Resolver rule policy for the rule that you specified in a GetResolverRulePolicy request.
     public var resolverRulePolicy: Swift.String?
 
@@ -3622,7 +3626,7 @@ public struct GetResolverRulePolicyOutput {
     }
 }
 
-public struct ImportFirewallDomainsInput {
+public struct ImportFirewallDomainsInput: Swift.Sendable {
     /// The fully qualified URL or URI of the file stored in Amazon Simple Storage Service (Amazon S3) that contains the list of domains to import. The file must be in an S3 bucket that's in the same Region as your DNS Firewall. The file must be a text file and must contain a single domain per line.
     /// This member is required.
     public var domainFileUrl: Swift.String?
@@ -3645,7 +3649,7 @@ public struct ImportFirewallDomainsInput {
     }
 }
 
-public struct ImportFirewallDomainsOutput {
+public struct ImportFirewallDomainsOutput: Swift.Sendable {
     /// The Id of the firewall domain list that DNS Firewall just updated.
     public var id: Swift.String?
     /// The name of the domain list.
@@ -3743,7 +3747,7 @@ public struct InvalidTagException: ClientRuntime.ModeledError, AWSClientRuntime.
 
 extension Route53ResolverClientTypes {
 
-    public enum IpAddressStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum IpAddressStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case attached
         case attaching
         case creating
@@ -3801,8 +3805,9 @@ extension Route53ResolverClientTypes {
 }
 
 extension Route53ResolverClientTypes {
+
     /// In the response to a [GetResolverEndpoint](https://docs.aws.amazon.com/Route53/latest/APIReference/API_route53resolver_GetResolverEndpoint.html) request, information about the IP addresses that the Resolver endpoint uses for DNS queries.
-    public struct IpAddressResponse {
+    public struct IpAddressResponse: Swift.Sendable {
         /// The date and time that the IP address was created, in Unix time format and Coordinated Universal Time (UTC).
         public var creationTime: Swift.String?
         /// One IPv4 address that the Resolver endpoint uses for DNS queries.
@@ -3841,10 +3846,9 @@ extension Route53ResolverClientTypes {
             self.subnetId = subnetId
         }
     }
-
 }
 
-public struct ListFirewallConfigsInput {
+public struct ListFirewallConfigsInput: Swift.Sendable {
     /// The maximum number of objects that you want Resolver to return for this request. If more objects are available, in the response, Resolver provides a NextToken value that you can use in a subsequent call to get the next batch of objects. If you don't specify a value for MaxResults, Resolver returns up to 100 objects.
     public var maxResults: Swift.Int?
     /// For the first call to this list request, omit this value. When you request a list of objects, Resolver returns at most the number of objects specified in MaxResults. If more objects are available for retrieval, Resolver returns a NextToken value in the response. To retrieve the next batch of objects, use the token that was returned for the prior request in your next request.
@@ -3860,7 +3864,7 @@ public struct ListFirewallConfigsInput {
     }
 }
 
-public struct ListFirewallConfigsOutput {
+public struct ListFirewallConfigsOutput: Swift.Sendable {
     /// The configurations for the firewall behavior provided by DNS Firewall for VPCs from Amazon Virtual Private Cloud (Amazon VPC).
     public var firewallConfigs: [Route53ResolverClientTypes.FirewallConfig]?
     /// If objects are still available for retrieval, Resolver returns this token in the response. To retrieve the next batch of objects, provide this token in your next request.
@@ -3876,7 +3880,7 @@ public struct ListFirewallConfigsOutput {
     }
 }
 
-public struct ListFirewallDomainListsInput {
+public struct ListFirewallDomainListsInput: Swift.Sendable {
     /// The maximum number of objects that you want Resolver to return for this request. If more objects are available, in the response, Resolver provides a NextToken value that you can use in a subsequent call to get the next batch of objects. If you don't specify a value for MaxResults, Resolver returns up to 100 objects.
     public var maxResults: Swift.Int?
     /// For the first call to this list request, omit this value. When you request a list of objects, Resolver returns at most the number of objects specified in MaxResults. If more objects are available for retrieval, Resolver returns a NextToken value in the response. To retrieve the next batch of objects, use the token that was returned for the prior request in your next request.
@@ -3892,7 +3896,7 @@ public struct ListFirewallDomainListsInput {
     }
 }
 
-public struct ListFirewallDomainListsOutput {
+public struct ListFirewallDomainListsOutput: Swift.Sendable {
     /// A list of the domain lists that you have defined. This might be a partial list of the domain lists that you've defined. For information, see MaxResults.
     public var firewallDomainLists: [Route53ResolverClientTypes.FirewallDomainListMetadata]?
     /// If objects are still available for retrieval, Resolver returns this token in the response. To retrieve the next batch of objects, provide this token in your next request.
@@ -3908,7 +3912,7 @@ public struct ListFirewallDomainListsOutput {
     }
 }
 
-public struct ListFirewallDomainsInput {
+public struct ListFirewallDomainsInput: Swift.Sendable {
     /// The ID of the domain list whose domains you want to retrieve.
     /// This member is required.
     public var firewallDomainListId: Swift.String?
@@ -3929,7 +3933,7 @@ public struct ListFirewallDomainsInput {
     }
 }
 
-public struct ListFirewallDomainsOutput {
+public struct ListFirewallDomainsOutput: Swift.Sendable {
     /// A list of the domains in the firewall domain list. This might be a partial list of the domains that you've defined in the domain list. For information, see MaxResults.
     public var domains: [Swift.String]?
     /// If objects are still available for retrieval, Resolver returns this token in the response. To retrieve the next batch of objects, provide this token in your next request.
@@ -3945,7 +3949,7 @@ public struct ListFirewallDomainsOutput {
     }
 }
 
-public struct ListFirewallRuleGroupAssociationsInput {
+public struct ListFirewallRuleGroupAssociationsInput: Swift.Sendable {
     /// The unique identifier of the firewall rule group that you want to retrieve the associations for. Leave this blank to retrieve associations for any rule group.
     public var firewallRuleGroupId: Swift.String?
     /// The maximum number of objects that you want Resolver to return for this request. If more objects are available, in the response, Resolver provides a NextToken value that you can use in a subsequent call to get the next batch of objects. If you don't specify a value for MaxResults, Resolver returns up to 100 objects.
@@ -3977,7 +3981,7 @@ public struct ListFirewallRuleGroupAssociationsInput {
     }
 }
 
-public struct ListFirewallRuleGroupAssociationsOutput {
+public struct ListFirewallRuleGroupAssociationsOutput: Swift.Sendable {
     /// A list of your firewall rule group associations. This might be a partial list of the associations that you have defined. For information, see MaxResults.
     public var firewallRuleGroupAssociations: [Route53ResolverClientTypes.FirewallRuleGroupAssociation]?
     /// If objects are still available for retrieval, Resolver returns this token in the response. To retrieve the next batch of objects, provide this token in your next request.
@@ -3993,7 +3997,7 @@ public struct ListFirewallRuleGroupAssociationsOutput {
     }
 }
 
-public struct ListFirewallRuleGroupsInput {
+public struct ListFirewallRuleGroupsInput: Swift.Sendable {
     /// The maximum number of objects that you want Resolver to return for this request. If more objects are available, in the response, Resolver provides a NextToken value that you can use in a subsequent call to get the next batch of objects. If you don't specify a value for MaxResults, Resolver returns up to 100 objects.
     public var maxResults: Swift.Int?
     /// For the first call to this list request, omit this value. When you request a list of objects, Resolver returns at most the number of objects specified in MaxResults. If more objects are available for retrieval, Resolver returns a NextToken value in the response. To retrieve the next batch of objects, use the token that was returned for the prior request in your next request.
@@ -4009,7 +4013,7 @@ public struct ListFirewallRuleGroupsInput {
     }
 }
 
-public struct ListFirewallRuleGroupsOutput {
+public struct ListFirewallRuleGroupsOutput: Swift.Sendable {
     /// A list of your firewall rule groups. This might be a partial list of the rule groups that you have defined. For information, see MaxResults.
     public var firewallRuleGroups: [Route53ResolverClientTypes.FirewallRuleGroupMetadata]?
     /// If objects are still available for retrieval, Resolver returns this token in the response. To retrieve the next batch of objects, provide this token in your next request.
@@ -4025,7 +4029,7 @@ public struct ListFirewallRuleGroupsOutput {
     }
 }
 
-public struct ListFirewallRulesInput {
+public struct ListFirewallRulesInput: Swift.Sendable {
     /// Optional additional filter for the rules to retrieve. The action that DNS Firewall should take on a DNS query when it matches one of the domains in the rule's domain list:
     ///
     /// * ALLOW - Permit the request to go through.
@@ -4060,7 +4064,7 @@ public struct ListFirewallRulesInput {
     }
 }
 
-public struct ListFirewallRulesOutput {
+public struct ListFirewallRulesOutput: Swift.Sendable {
     /// A list of the rules that you have defined. This might be a partial list of the firewall rules that you've defined. For information, see MaxResults.
     public var firewallRules: [Route53ResolverClientTypes.FirewallRule]?
     /// If objects are still available for retrieval, Resolver returns this token in the response. To retrieve the next batch of objects, provide this token in your next request.
@@ -4076,7 +4080,7 @@ public struct ListFirewallRulesOutput {
     }
 }
 
-public struct ListOutpostResolversInput {
+public struct ListOutpostResolversInput: Swift.Sendable {
     /// The maximum number of Resolvers on the Outpost that you want to return in the response to a ListOutpostResolver request. If you don't specify a value for MaxResults, the request returns up to 100 Resolvers.
     public var maxResults: Swift.Int?
     /// For the first ListOutpostResolver request, omit this value.
@@ -4096,7 +4100,7 @@ public struct ListOutpostResolversInput {
     }
 }
 
-public struct ListOutpostResolversOutput {
+public struct ListOutpostResolversOutput: Swift.Sendable {
     /// If more than MaxResults Resolvers match the specified criteria, you can submit another ListOutpostResolver request to get the next group of results. In the next request, specify the value of NextToken from the previous response.
     public var nextToken: Swift.String?
     /// The Resolvers on Outposts that were created by using the current Amazon Web Services account, and that match the specified filters, if any.
@@ -4112,7 +4116,7 @@ public struct ListOutpostResolversOutput {
     }
 }
 
-public struct ListResolverConfigsInput {
+public struct ListResolverConfigsInput: Swift.Sendable {
     /// The maximum number of Resolver configurations that you want to return in the response to a ListResolverConfigs request. If you don't specify a value for MaxResults, up to 100 Resolver configurations are returned.
     public var maxResults: Swift.Int?
     /// (Optional) If the current Amazon Web Services account has more than MaxResults Resolver configurations, use NextToken to get the second and subsequent pages of results. For the first ListResolverConfigs request, omit this value. For the second and subsequent requests, get the value of NextToken from the previous response and specify that value for NextToken in the request.
@@ -4128,7 +4132,7 @@ public struct ListResolverConfigsInput {
     }
 }
 
-public struct ListResolverConfigsOutput {
+public struct ListResolverConfigsOutput: Swift.Sendable {
     /// If a response includes the last of the Resolver configurations that are associated with the current Amazon Web Services account, NextToken doesn't appear in the response. If a response doesn't include the last of the configurations, you can get more configurations by submitting another ListResolverConfigs request. Get the value of NextToken that Amazon Route 53 returned in the previous response and include it in NextToken in the next request.
     public var nextToken: Swift.String?
     /// An array that contains one ResolverConfigs element for each Resolver configuration that is associated with the current Amazon Web Services account.
@@ -4144,7 +4148,7 @@ public struct ListResolverConfigsOutput {
     }
 }
 
-public struct ListResolverDnssecConfigsInput {
+public struct ListResolverDnssecConfigsInput: Swift.Sendable {
     /// An optional specification to return a subset of objects.
     public var filters: [Route53ResolverClientTypes.Filter]?
     /// Optional: An integer that specifies the maximum number of DNSSEC configuration results that you want Amazon Route 53 to return. If you don't specify a value for MaxResults, Route 53 returns up to 100 configuration per page.
@@ -4164,7 +4168,7 @@ public struct ListResolverDnssecConfigsInput {
     }
 }
 
-public struct ListResolverDnssecConfigsOutput {
+public struct ListResolverDnssecConfigsOutput: Swift.Sendable {
     /// If a response includes the last of the DNSSEC configurations that are associated with the current Amazon Web Services account, NextToken doesn't appear in the response. If a response doesn't include the last of the configurations, you can get more configurations by submitting another [ListResolverDnssecConfigs](https://docs.aws.amazon.com/Route53/latest/APIReference/API_ListResolverDnssecConfigs.html) request. Get the value of NextToken that Amazon Route 53 returned in the previous response and include it in NextToken in the next request.
     public var nextToken: Swift.String?
     /// An array that contains one [ResolverDnssecConfig](https://docs.aws.amazon.com/Route53/latest/APIReference/API_ResolverDnssecConfig.html) element for each configuration for DNSSEC validation that is associated with the current Amazon Web Services account. It doesn't contain disabled DNSSEC configurations for the resource.
@@ -4180,7 +4184,7 @@ public struct ListResolverDnssecConfigsOutput {
     }
 }
 
-public struct ListResolverEndpointIpAddressesInput {
+public struct ListResolverEndpointIpAddressesInput: Swift.Sendable {
     /// The maximum number of IP addresses that you want to return in the response to a ListResolverEndpointIpAddresses request. If you don't specify a value for MaxResults, Resolver returns up to 100 IP addresses.
     public var maxResults: Swift.Int?
     /// For the first ListResolverEndpointIpAddresses request, omit this value. If the specified Resolver endpoint has more than MaxResults IP addresses, you can submit another ListResolverEndpointIpAddresses request to get the next group of IP addresses. In the next request, specify the value of NextToken from the previous response.
@@ -4201,7 +4205,7 @@ public struct ListResolverEndpointIpAddressesInput {
     }
 }
 
-public struct ListResolverEndpointIpAddressesOutput {
+public struct ListResolverEndpointIpAddressesOutput: Swift.Sendable {
     /// Information about the IP addresses in your VPC that DNS queries originate from (for outbound endpoints) or that you forward DNS queries to (for inbound endpoints).
     public var ipAddresses: [Route53ResolverClientTypes.IpAddressResponse]?
     /// The value that you specified for MaxResults in the request.
@@ -4221,7 +4225,7 @@ public struct ListResolverEndpointIpAddressesOutput {
     }
 }
 
-public struct ListResolverEndpointsInput {
+public struct ListResolverEndpointsInput: Swift.Sendable {
     /// An optional specification to return a subset of Resolver endpoints, such as all inbound Resolver endpoints. If you submit a second or subsequent ListResolverEndpoints request and specify the NextToken parameter, you must use the same values for Filters, if any, as in the previous request.
     public var filters: [Route53ResolverClientTypes.Filter]?
     /// The maximum number of Resolver endpoints that you want to return in the response to a ListResolverEndpoints request. If you don't specify a value for MaxResults, Resolver returns up to 100 Resolver endpoints.
@@ -4241,7 +4245,7 @@ public struct ListResolverEndpointsInput {
     }
 }
 
-public struct ListResolverEndpointsOutput {
+public struct ListResolverEndpointsOutput: Swift.Sendable {
     /// The value that you specified for MaxResults in the request.
     public var maxResults: Swift.Int?
     /// If more than MaxResults IP addresses match the specified criteria, you can submit another ListResolverEndpoint request to get the next group of results. In the next request, specify the value of NextToken from the previous response.
@@ -4263,7 +4267,7 @@ public struct ListResolverEndpointsOutput {
 
 extension Route53ResolverClientTypes {
 
-    public enum SortOrder: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SortOrder: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case ascending
         case descending
         case sdkUnknown(Swift.String)
@@ -4290,7 +4294,7 @@ extension Route53ResolverClientTypes {
     }
 }
 
-public struct ListResolverQueryLogConfigAssociationsInput {
+public struct ListResolverQueryLogConfigAssociationsInput: Swift.Sendable {
     /// An optional specification to return a subset of query logging associations. If you submit a second or subsequent ListResolverQueryLogConfigAssociations request and specify the NextToken parameter, you must use the same values for Filters, if any, as in the previous request.
     public var filters: [Route53ResolverClientTypes.Filter]?
     /// The maximum number of query logging associations that you want to return in the response to a ListResolverQueryLogConfigAssociations request. If you don't specify a value for MaxResults, Resolver returns up to 100 query logging associations.
@@ -4349,7 +4353,7 @@ public struct ListResolverQueryLogConfigAssociationsInput {
     }
 }
 
-public struct ListResolverQueryLogConfigAssociationsOutput {
+public struct ListResolverQueryLogConfigAssociationsOutput: Swift.Sendable {
     /// If there are more than MaxResults query logging associations, you can submit another ListResolverQueryLogConfigAssociations request to get the next group of associations. In the next request, specify the value of NextToken from the previous response.
     public var nextToken: Swift.String?
     /// A list that contains one ResolverQueryLogConfigAssociations element for each query logging association that matches the values that you specified for Filter.
@@ -4373,7 +4377,7 @@ public struct ListResolverQueryLogConfigAssociationsOutput {
     }
 }
 
-public struct ListResolverQueryLogConfigsInput {
+public struct ListResolverQueryLogConfigsInput: Swift.Sendable {
     /// An optional specification to return a subset of query logging configurations. If you submit a second or subsequent ListResolverQueryLogConfigs request and specify the NextToken parameter, you must use the same values for Filters, if any, as in the previous request.
     public var filters: [Route53ResolverClientTypes.Filter]?
     /// The maximum number of query logging configurations that you want to return in the response to a ListResolverQueryLogConfigs request. If you don't specify a value for MaxResults, Resolver returns up to 100 query logging configurations.
@@ -4433,7 +4437,7 @@ public struct ListResolverQueryLogConfigsInput {
     }
 }
 
-public struct ListResolverQueryLogConfigsOutput {
+public struct ListResolverQueryLogConfigsOutput: Swift.Sendable {
     /// If there are more than MaxResults query logging configurations, you can submit another ListResolverQueryLogConfigs request to get the next group of configurations. In the next request, specify the value of NextToken from the previous response.
     public var nextToken: Swift.String?
     /// A list that contains one ResolverQueryLogConfig element for each query logging configuration that matches the values that you specified for Filter.
@@ -4457,7 +4461,7 @@ public struct ListResolverQueryLogConfigsOutput {
     }
 }
 
-public struct ListResolverRuleAssociationsInput {
+public struct ListResolverRuleAssociationsInput: Swift.Sendable {
     /// An optional specification to return a subset of Resolver rules, such as Resolver rules that are associated with the same VPC ID. If you submit a second or subsequent ListResolverRuleAssociations request and specify the NextToken parameter, you must use the same values for Filters, if any, as in the previous request.
     public var filters: [Route53ResolverClientTypes.Filter]?
     /// The maximum number of rule associations that you want to return in the response to a ListResolverRuleAssociations request. If you don't specify a value for MaxResults, Resolver returns up to 100 rule associations.
@@ -4477,7 +4481,7 @@ public struct ListResolverRuleAssociationsInput {
     }
 }
 
-public struct ListResolverRuleAssociationsOutput {
+public struct ListResolverRuleAssociationsOutput: Swift.Sendable {
     /// The value that you specified for MaxResults in the request.
     public var maxResults: Swift.Int?
     /// If more than MaxResults rule associations match the specified criteria, you can submit another ListResolverRuleAssociation request to get the next group of results. In the next request, specify the value of NextToken from the previous response.
@@ -4497,7 +4501,7 @@ public struct ListResolverRuleAssociationsOutput {
     }
 }
 
-public struct ListResolverRulesInput {
+public struct ListResolverRulesInput: Swift.Sendable {
     /// An optional specification to return a subset of Resolver rules, such as all Resolver rules that are associated with the same Resolver endpoint. If you submit a second or subsequent ListResolverRules request and specify the NextToken parameter, you must use the same values for Filters, if any, as in the previous request.
     public var filters: [Route53ResolverClientTypes.Filter]?
     /// The maximum number of Resolver rules that you want to return in the response to a ListResolverRules request. If you don't specify a value for MaxResults, Resolver returns up to 100 Resolver rules.
@@ -4517,7 +4521,7 @@ public struct ListResolverRulesInput {
     }
 }
 
-public struct ListResolverRulesOutput {
+public struct ListResolverRulesOutput: Swift.Sendable {
     /// The value that you specified for MaxResults in the request.
     public var maxResults: Swift.Int?
     /// If more than MaxResults Resolver rules match the specified criteria, you can submit another ListResolverRules request to get the next group of results. In the next request, specify the value of NextToken from the previous response.
@@ -4537,7 +4541,7 @@ public struct ListResolverRulesOutput {
     }
 }
 
-public struct ListTagsForResourceInput {
+public struct ListTagsForResourceInput: Swift.Sendable {
     /// The maximum number of tags that you want to return in the response to a ListTagsForResource request. If you don't specify a value for MaxResults, Resolver returns up to 100 tags.
     public var maxResults: Swift.Int?
     /// For the first ListTagsForResource request, omit this value. If you have more than MaxResults tags, you can submit another ListTagsForResource request to get the next group of tags for the resource. In the next request, specify the value of NextToken from the previous response.
@@ -4558,7 +4562,7 @@ public struct ListTagsForResourceInput {
     }
 }
 
-public struct ListTagsForResourceOutput {
+public struct ListTagsForResourceOutput: Swift.Sendable {
     /// If more than MaxResults tags match the specified criteria, you can submit another ListTagsForResource request to get the next group of results. In the next request, specify the value of NextToken from the previous response.
     public var nextToken: Swift.String?
     /// The tags that are associated with the resource that you specified in the ListTagsForResource request.
@@ -4574,7 +4578,7 @@ public struct ListTagsForResourceOutput {
     }
 }
 
-public struct PutFirewallRuleGroupPolicyInput {
+public struct PutFirewallRuleGroupPolicyInput: Swift.Sendable {
     /// The ARN (Amazon Resource Name) for the rule group that you want to share.
     /// This member is required.
     public var arn: Swift.String?
@@ -4592,7 +4596,7 @@ public struct PutFirewallRuleGroupPolicyInput {
     }
 }
 
-public struct PutFirewallRuleGroupPolicyOutput {
+public struct PutFirewallRuleGroupPolicyOutput: Swift.Sendable {
     ///
     public var returnValue: Swift.Bool
 
@@ -4604,7 +4608,7 @@ public struct PutFirewallRuleGroupPolicyOutput {
     }
 }
 
-public struct PutResolverQueryLogConfigPolicyInput {
+public struct PutResolverQueryLogConfigPolicyInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the account that you want to share rules with.
     /// This member is required.
     public var arn: Swift.String?
@@ -4632,7 +4636,7 @@ public struct PutResolverQueryLogConfigPolicyInput {
 }
 
 /// The response to a PutResolverQueryLogConfigPolicy request.
-public struct PutResolverQueryLogConfigPolicyOutput {
+public struct PutResolverQueryLogConfigPolicyOutput: Swift.Sendable {
     /// Whether the PutResolverQueryLogConfigPolicy request was successful.
     public var returnValue: Swift.Bool
 
@@ -4644,7 +4648,7 @@ public struct PutResolverQueryLogConfigPolicyOutput {
     }
 }
 
-public struct PutResolverRulePolicyInput {
+public struct PutResolverRulePolicyInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the rule that you want to share with another account.
     /// This member is required.
     public var arn: Swift.String?
@@ -4676,7 +4680,7 @@ public struct PutResolverRulePolicyInput {
 }
 
 /// The response to a PutResolverRulePolicy request.
-public struct PutResolverRulePolicyOutput {
+public struct PutResolverRulePolicyOutput: Swift.Sendable {
     /// Whether the PutResolverRulePolicy request was successful.
     public var returnValue: Swift.Bool
 
@@ -4689,8 +4693,9 @@ public struct PutResolverRulePolicyOutput {
 }
 
 extension Route53ResolverClientTypes {
+
     /// In an [UpdateResolverRule](https://docs.aws.amazon.com/Route53/latest/APIReference/API_route53resolver_UpdateResolverRule.html) request, information about the changes that you want to make.
-    public struct ResolverRuleConfig {
+    public struct ResolverRuleConfig: Swift.Sendable {
         /// The new name for the Resolver rule. The name that you specify appears in the Resolver dashboard in the Route 53 console.
         public var name: Swift.String?
         /// The ID of the new outbound Resolver endpoint that you want to use to route DNS queries to the IP addresses that you specify in TargetIps.
@@ -4709,10 +4714,9 @@ extension Route53ResolverClientTypes {
             self.targetIps = targetIps
         }
     }
-
 }
 
-public struct TagResourceInput {
+public struct TagResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) for the resource that you want to add tags to. To get the ARN for a resource, use the applicable Get or List command:
     ///
     /// * [GetResolverEndpoint](https://docs.aws.amazon.com/Route53/latest/APIReference/API_route53resolver_GetResolverEndpoint.html)
@@ -4742,12 +4746,12 @@ public struct TagResourceInput {
     }
 }
 
-public struct TagResourceOutput {
+public struct TagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UntagResourceInput {
+public struct UntagResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) for the resource that you want to remove tags from. To get the ARN for a resource, use the applicable Get or List command:
     ///
     /// * [GetResolverEndpoint](https://docs.aws.amazon.com/Route53/latest/APIReference/API_route53resolver_GetResolverEndpoint.html)
@@ -4777,12 +4781,12 @@ public struct UntagResourceInput {
     }
 }
 
-public struct UntagResourceOutput {
+public struct UntagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdateFirewallConfigInput {
+public struct UpdateFirewallConfigInput: Swift.Sendable {
     /// Determines how Route 53 Resolver handles queries during failures, for example when all traffic that is sent to DNS Firewall fails to receive a reply.
     ///
     /// * By default, fail open is disabled, which means the failure mode is closed. This approach favors security over availability. DNS Firewall blocks queries that it is unable to evaluate properly.
@@ -4807,7 +4811,7 @@ public struct UpdateFirewallConfigInput {
     }
 }
 
-public struct UpdateFirewallConfigOutput {
+public struct UpdateFirewallConfigOutput: Swift.Sendable {
     /// Configuration of the firewall behavior provided by DNS Firewall for a single VPC.
     public var firewallConfig: Route53ResolverClientTypes.FirewallConfig?
 
@@ -4819,7 +4823,7 @@ public struct UpdateFirewallConfigOutput {
     }
 }
 
-public struct UpdateFirewallDomainsInput {
+public struct UpdateFirewallDomainsInput: Swift.Sendable {
     /// A list of domains to use in the update operation. There is a limit of 1000 domains per request. Each domain specification in your domain list must satisfy the following requirements:
     ///
     /// * It can optionally start with * (asterisk).
@@ -4854,7 +4858,7 @@ public struct UpdateFirewallDomainsInput {
     }
 }
 
-public struct UpdateFirewallDomainsOutput {
+public struct UpdateFirewallDomainsOutput: Swift.Sendable {
     /// The ID of the firewall domain list that DNS Firewall just updated.
     public var id: Swift.String?
     /// The name of the domain list.
@@ -4878,7 +4882,7 @@ public struct UpdateFirewallDomainsOutput {
     }
 }
 
-public struct UpdateFirewallRuleInput {
+public struct UpdateFirewallRuleInput: Swift.Sendable {
     /// The action that DNS Firewall should take on a DNS query when it matches one of the domains in the rule's domain list:
     ///
     /// * ALLOW - Permit the request to go through.
@@ -4941,7 +4945,7 @@ public struct UpdateFirewallRuleInput {
     ///
     /// * TXT: Verifies email senders and application-specific values.
     ///
-    /// * A query type you define by using the DNS type ID, for example 28 for AAAA. The values must be defined as TYPENUMBER, where the NUMBER can be 1-65334, for example, TYPE28. For more information, see [List of DNS record types](https://en.wikipedia.org/wiki/List_of_DNS_record_types).
+    /// * A query type you define by using the DNS type ID, for example 28 for AAAA. The values must be defined as TYPENUMBER, where the NUMBER can be 1-65334, for example, TYPE28. For more information, see [List of DNS record types](https://en.wikipedia.org/wiki/List_of_DNS_record_types). If you set up a firewall BLOCK rule with action NXDOMAIN on query type equals AAAA, this action will not be applied to synthetic IPv6 addresses generated when DNS64 is enabled.
     public var qtype: Swift.String?
 
     public init(
@@ -4972,7 +4976,7 @@ public struct UpdateFirewallRuleInput {
     }
 }
 
-public struct UpdateFirewallRuleOutput {
+public struct UpdateFirewallRuleOutput: Swift.Sendable {
     /// The firewall rule that you just updated.
     public var firewallRule: Route53ResolverClientTypes.FirewallRule?
 
@@ -4984,7 +4988,7 @@ public struct UpdateFirewallRuleOutput {
     }
 }
 
-public struct UpdateFirewallRuleGroupAssociationInput {
+public struct UpdateFirewallRuleGroupAssociationInput: Swift.Sendable {
     /// The identifier of the [FirewallRuleGroupAssociation].
     /// This member is required.
     public var firewallRuleGroupAssociationId: Swift.String?
@@ -5009,7 +5013,7 @@ public struct UpdateFirewallRuleGroupAssociationInput {
     }
 }
 
-public struct UpdateFirewallRuleGroupAssociationOutput {
+public struct UpdateFirewallRuleGroupAssociationOutput: Swift.Sendable {
     /// The association that you just updated.
     public var firewallRuleGroupAssociation: Route53ResolverClientTypes.FirewallRuleGroupAssociation?
 
@@ -5021,7 +5025,7 @@ public struct UpdateFirewallRuleGroupAssociationOutput {
     }
 }
 
-public struct UpdateOutpostResolverInput {
+public struct UpdateOutpostResolverInput: Swift.Sendable {
     /// A unique string that identifies Resolver on an Outpost.
     /// This member is required.
     public var id: Swift.String?
@@ -5046,7 +5050,7 @@ public struct UpdateOutpostResolverInput {
     }
 }
 
-public struct UpdateOutpostResolverOutput {
+public struct UpdateOutpostResolverOutput: Swift.Sendable {
     /// The response to an UpdateOutpostResolver request.
     public var outpostResolver: Route53ResolverClientTypes.OutpostResolver?
 
@@ -5058,7 +5062,7 @@ public struct UpdateOutpostResolverOutput {
     }
 }
 
-public struct UpdateResolverConfigInput {
+public struct UpdateResolverConfigInput: Swift.Sendable {
     /// Indicates whether or not the Resolver will create autodefined rules for reverse DNS lookups. This is enabled by default. Disabling this option will also affect EC2-Classic instances using ClassicLink. For more information, see [ClassicLink](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/vpc-classiclink.html) in the Amazon EC2 guide. We are retiring EC2-Classic on August 15, 2022. We recommend that you migrate from EC2-Classic to a VPC. For more information, see [Migrate from EC2-Classic to a VPC](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/vpc-migrate.html) in the Amazon EC2 guide and the blog [EC2-Classic Networking is Retiring – Here’s How to Prepare](http://aws.amazon.com/blogs/aws/ec2-classic-is-retiring-heres-how-to-prepare/). It can take some time for the status change to be completed.
     /// This member is required.
     public var autodefinedReverseFlag: Route53ResolverClientTypes.AutodefinedReverseFlag?
@@ -5076,7 +5080,7 @@ public struct UpdateResolverConfigInput {
     }
 }
 
-public struct UpdateResolverConfigOutput {
+public struct UpdateResolverConfigOutput: Swift.Sendable {
     /// An array that contains settings for the specified Resolver configuration.
     public var resolverConfig: Route53ResolverClientTypes.ResolverConfig?
 
@@ -5090,7 +5094,7 @@ public struct UpdateResolverConfigOutput {
 
 extension Route53ResolverClientTypes {
 
-    public enum Validation: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Validation: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case disable
         case enable
         case useLocalResourceSetting
@@ -5120,7 +5124,7 @@ extension Route53ResolverClientTypes {
     }
 }
 
-public struct UpdateResolverDnssecConfigInput {
+public struct UpdateResolverDnssecConfigInput: Swift.Sendable {
     /// The ID of the virtual private cloud (VPC) that you're updating the DNSSEC validation status for.
     /// This member is required.
     public var resourceId: Swift.String?
@@ -5138,7 +5142,7 @@ public struct UpdateResolverDnssecConfigInput {
     }
 }
 
-public struct UpdateResolverDnssecConfigOutput {
+public struct UpdateResolverDnssecConfigOutput: Swift.Sendable {
     /// A complex type that contains settings for the specified DNSSEC configuration.
     public var resolverDNSSECConfig: Route53ResolverClientTypes.ResolverDnssecConfig?
 
@@ -5151,8 +5155,9 @@ public struct UpdateResolverDnssecConfigOutput {
 }
 
 extension Route53ResolverClientTypes {
+
     /// Provides information about the IP address type in response to [UpdateResolverEndpoint](https://docs.aws.amazon.com/Route53/latest/APIReference/API_route53resolver_UpdateResolverEndpoint.html).
-    public struct UpdateIpAddress {
+    public struct UpdateIpAddress: Swift.Sendable {
         /// The ID of the IP address, specified by the ResolverEndpointId.
         /// This member is required.
         public var ipId: Swift.String?
@@ -5169,10 +5174,9 @@ extension Route53ResolverClientTypes {
             self.ipv6 = ipv6
         }
     }
-
 }
 
-public struct UpdateResolverEndpointInput {
+public struct UpdateResolverEndpointInput: Swift.Sendable {
     /// The name of the Resolver endpoint that you want to update.
     public var name: Swift.String?
     /// The protocols you want to use for the endpoint. DoH-FIPS is applicable for inbound endpoints only. For an inbound endpoint you can apply the protocols as follows:
@@ -5227,7 +5231,7 @@ public struct UpdateResolverEndpointInput {
     }
 }
 
-public struct UpdateResolverEndpointOutput {
+public struct UpdateResolverEndpointOutput: Swift.Sendable {
     /// The response to an UpdateResolverEndpoint request.
     public var resolverEndpoint: Route53ResolverClientTypes.ResolverEndpoint?
 
@@ -5239,7 +5243,7 @@ public struct UpdateResolverEndpointOutput {
     }
 }
 
-public struct UpdateResolverRuleInput {
+public struct UpdateResolverRuleInput: Swift.Sendable {
     /// The new settings for the Resolver rule.
     /// This member is required.
     public var config: Route53ResolverClientTypes.ResolverRuleConfig?
@@ -5257,7 +5261,7 @@ public struct UpdateResolverRuleInput {
     }
 }
 
-public struct UpdateResolverRuleOutput {
+public struct UpdateResolverRuleOutput: Swift.Sendable {
     /// The response to an UpdateResolverRule request.
     public var resolverRule: Route53ResolverClientTypes.ResolverRule?
 
@@ -8954,6 +8958,7 @@ extension Route53ResolverClientTypes.TargetAddress {
         try writer["Ipv6"].write(value.ipv6)
         try writer["Port"].write(value.port)
         try writer["Protocol"].write(value.`protocol`)
+        try writer["ServerNameIndication"].write(value.serverNameIndication)
     }
 
     static func read(from reader: SmithyJSON.Reader) throws -> Route53ResolverClientTypes.TargetAddress {
@@ -8963,6 +8968,7 @@ extension Route53ResolverClientTypes.TargetAddress {
         value.port = try reader["Port"].readIfPresent()
         value.ipv6 = try reader["Ipv6"].readIfPresent()
         value.`protocol` = try reader["Protocol"].readIfPresent()
+        value.serverNameIndication = try reader["ServerNameIndication"].readIfPresent()
         return value
     }
 }

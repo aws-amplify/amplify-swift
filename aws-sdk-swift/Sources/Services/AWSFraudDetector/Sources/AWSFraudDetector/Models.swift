@@ -26,7 +26,8 @@ import protocol ClientRuntime.ModeledError
 @_spi(SmithyReadWrite) import struct AWSClientRuntime.AWSJSONError
 @_spi(UnknownAWSHTTPServiceError) import struct AWSClientRuntime.UnknownAWSHTTPServiceError
 
-public struct GetKMSEncryptionKeyInput {
+
+public struct GetKMSEncryptionKeyInput: Swift.Sendable {
 
     public init() { }
 }
@@ -57,8 +58,9 @@ public struct AccessDeniedException: ClientRuntime.ModeledError, AWSClientRuntim
 }
 
 extension FraudDetectorClientTypes {
+
     /// The log odds metric details. Account Takeover Insights (ATI) model uses event variables from the login data you provide to continuously calculate a set of variables (aggregated variables) based on historical events. For example, your ATI model might calculate the number of times an user has logged in using the same IP address. In this case, event variables used to derive the aggregated variables are IP address and user.
-    public struct AggregatedLogOddsMetric {
+    public struct AggregatedLogOddsMetric: Swift.Sendable {
         /// The relative importance of the variables in the list to the other event variable.
         /// This member is required.
         public var aggregatedVariablesImportance: Swift.Float?
@@ -75,12 +77,12 @@ extension FraudDetectorClientTypes {
             self.variableNames = variableNames
         }
     }
-
 }
 
 extension FraudDetectorClientTypes {
+
     /// The details of the impact of aggregated variables on the prediction score. Account Takeover Insights (ATI) model uses the login data you provide to continuously calculate a set of variables (aggregated variables) based on historical events. For example, the model might calculate the number of times an user has logged in using the same IP address. In this case, event variables used to derive the aggregated variables are IP address and user.
-    public struct AggregatedVariablesImpactExplanation {
+    public struct AggregatedVariablesImpactExplanation: Swift.Sendable {
         /// The names of all the event variables that were used to derive the aggregated variables.
         public var eventVariableNames: [Swift.String]?
         /// The raw, uninterpreted value represented as log-odds of the fraud. These values are usually between -10 to +10, but range from -infinity to +infinity.
@@ -103,12 +105,12 @@ extension FraudDetectorClientTypes {
             self.relativeImpact = relativeImpact
         }
     }
-
 }
 
 extension FraudDetectorClientTypes {
+
     /// The details of the relative importance of the aggregated variables. Account Takeover Insights (ATI) model uses event variables from the login data you provide to continuously calculate a set of variables (aggregated variables) based on historical events. For example, your ATI model might calculate the number of times an user has logged in using the same IP address. In this case, event variables used to derive the aggregated variables are IP address and user.
-    public struct AggregatedVariablesImportanceMetrics {
+    public struct AggregatedVariablesImportanceMetrics: Swift.Sendable {
         /// List of variables' metrics.
         public var logOddsMetrics: [FraudDetectorClientTypes.AggregatedLogOddsMetric]?
 
@@ -119,12 +121,12 @@ extension FraudDetectorClientTypes {
             self.logOddsMetrics = logOddsMetrics
         }
     }
-
 }
 
 extension FraudDetectorClientTypes {
+
     /// The metadata of a list.
-    public struct AllowDenyList {
+    public struct AllowDenyList: Swift.Sendable {
         /// The ARN of the list.
         public var arn: Swift.String?
         /// The time the list was created.
@@ -156,12 +158,11 @@ extension FraudDetectorClientTypes {
             self.variableType = variableType
         }
     }
-
 }
 
 extension FraudDetectorClientTypes {
 
-    public enum AsyncJobStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AsyncJobStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case canceled
         case cancelInProgress
         case complete
@@ -201,8 +202,9 @@ extension FraudDetectorClientTypes {
 }
 
 extension FraudDetectorClientTypes {
+
     /// The Account Takeover Insights (ATI) model performance metrics data points.
-    public struct ATIMetricDataPoint {
+    public struct ATIMetricDataPoint: Swift.Sendable {
         /// The anomaly discovery rate. This metric quantifies the percentage of anomalies that can be detected by the model at the selected score threshold. A lower score threshold increases the percentage of anomalies captured by the model, but would also require challenging a larger percentage of login events, leading to a higher customer friction.
         public var adr: Swift.Float?
         /// The account takeover discovery rate. This metric quantifies the percentage of account compromise events that can be detected by the model at the selected score threshold. This metric is only available if 50 or more entities with at-least one labeled account takeover event is present in the ingested dataset.
@@ -225,12 +227,12 @@ extension FraudDetectorClientTypes {
             self.threshold = threshold
         }
     }
-
 }
 
 extension FraudDetectorClientTypes {
+
     /// The Account Takeover Insights (ATI) model performance score.
-    public struct ATIModelPerformance {
+    public struct ATIModelPerformance: Swift.Sendable {
         /// The anomaly separation index (ASI) score. This metric summarizes the overall ability of the model to separate anomalous activities from the normal behavior. Depending on the business, a large fraction of these anomalous activities can be malicious and correspond to the account takeover attacks. A model with no separability power will have the lowest possible ASI score of 0.5, whereas the a model with a high separability power will have the highest possible ASI score of 1.0
         public var asi: Swift.Float?
 
@@ -241,12 +243,12 @@ extension FraudDetectorClientTypes {
             self.asi = asi
         }
     }
-
 }
 
 extension FraudDetectorClientTypes {
+
     /// The Account Takeover Insights (ATI) model training metric details.
-    public struct ATITrainingMetricsValue {
+    public struct ATITrainingMetricsValue: Swift.Sendable {
         /// The model's performance metrics data points.
         public var metricDataPoints: [FraudDetectorClientTypes.ATIMetricDataPoint]?
         /// The model's overall performance scores.
@@ -261,7 +263,6 @@ extension FraudDetectorClientTypes {
             self.modelPerformance = modelPerformance
         }
     }
-
 }
 
 /// An exception indicating an internal server error.
@@ -340,8 +341,9 @@ public struct ValidationException: ClientRuntime.ModeledError, AWSClientRuntime.
 }
 
 extension FraudDetectorClientTypes {
+
     /// A key and value pair.
-    public struct Tag {
+    public struct Tag: Swift.Sendable {
         /// A tag key.
         /// This member is required.
         public var key: Swift.String?
@@ -358,12 +360,12 @@ extension FraudDetectorClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension FraudDetectorClientTypes {
+
     /// A variable in the list of variables for the batch create variable request.
-    public struct VariableEntry {
+    public struct VariableEntry: Swift.Sendable {
         /// The data source of the variable.
         public var dataSource: Swift.String?
         /// The data type of the variable.
@@ -394,10 +396,9 @@ extension FraudDetectorClientTypes {
             self.variableType = variableType
         }
     }
-
 }
 
-public struct BatchCreateVariableInput {
+public struct BatchCreateVariableInput: Swift.Sendable {
     /// A collection of key and value pairs.
     public var tags: [FraudDetectorClientTypes.Tag]?
     /// The list of variables for the batch create variable request.
@@ -415,8 +416,9 @@ public struct BatchCreateVariableInput {
 }
 
 extension FraudDetectorClientTypes {
+
     /// Provides the error of the batch create variable API.
-    public struct BatchCreateVariableError {
+    public struct BatchCreateVariableError: Swift.Sendable {
         /// The error code.
         public var code: Swift.Int
         /// The error message.
@@ -435,10 +437,9 @@ extension FraudDetectorClientTypes {
             self.name = name
         }
     }
-
 }
 
-public struct BatchCreateVariableOutput {
+public struct BatchCreateVariableOutput: Swift.Sendable {
     /// Provides the errors for the BatchCreateVariable request.
     public var errors: [FraudDetectorClientTypes.BatchCreateVariableError]?
 
@@ -450,7 +451,7 @@ public struct BatchCreateVariableOutput {
     }
 }
 
-public struct BatchGetVariableInput {
+public struct BatchGetVariableInput: Swift.Sendable {
     /// The list of variable names to get.
     /// This member is required.
     public var names: [Swift.String]?
@@ -464,8 +465,9 @@ public struct BatchGetVariableInput {
 }
 
 extension FraudDetectorClientTypes {
+
     /// Provides the error of the batch get variable API.
-    public struct BatchGetVariableError {
+    public struct BatchGetVariableError: Swift.Sendable {
         /// The error code.
         public var code: Swift.Int
         /// The error message.
@@ -484,12 +486,11 @@ extension FraudDetectorClientTypes {
             self.name = name
         }
     }
-
 }
 
 extension FraudDetectorClientTypes {
 
-    public enum DataSource: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DataSource: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case event
         case externalModelScore
         case modelScore
@@ -521,7 +522,7 @@ extension FraudDetectorClientTypes {
 
 extension FraudDetectorClientTypes {
 
-    public enum DataType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DataType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case boolean
         case datetime
         case float
@@ -558,8 +559,9 @@ extension FraudDetectorClientTypes {
 }
 
 extension FraudDetectorClientTypes {
+
     /// The variable.
-    public struct Variable {
+    public struct Variable: Swift.Sendable {
         /// The ARN of the variable.
         public var arn: Swift.String?
         /// The time when the variable was created.
@@ -602,10 +604,9 @@ extension FraudDetectorClientTypes {
             self.variableType = variableType
         }
     }
-
 }
 
-public struct BatchGetVariableOutput {
+public struct BatchGetVariableOutput: Swift.Sendable {
     /// The errors from the request.
     public var errors: [FraudDetectorClientTypes.BatchGetVariableError]?
     /// The returned variables.
@@ -646,7 +647,7 @@ public struct ResourceNotFoundException: ClientRuntime.ModeledError, AWSClientRu
     }
 }
 
-public struct CancelBatchImportJobInput {
+public struct CancelBatchImportJobInput: Swift.Sendable {
     /// The ID of an in-progress batch import job to cancel. Amazon Fraud Detector will throw an error if the batch import job is in FAILED, CANCELED, or COMPLETED state.
     /// This member is required.
     public var jobId: Swift.String?
@@ -659,12 +660,12 @@ public struct CancelBatchImportJobInput {
     }
 }
 
-public struct CancelBatchImportJobOutput {
+public struct CancelBatchImportJobOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct CancelBatchPredictionJobInput {
+public struct CancelBatchPredictionJobInput: Swift.Sendable {
     /// The ID of the batch prediction job to cancel.
     /// This member is required.
     public var jobId: Swift.String?
@@ -677,12 +678,12 @@ public struct CancelBatchPredictionJobInput {
     }
 }
 
-public struct CancelBatchPredictionJobOutput {
+public struct CancelBatchPredictionJobOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct CreateBatchImportJobInput {
+public struct CreateBatchImportJobInput: Swift.Sendable {
     /// The name of the event type.
     /// This member is required.
     public var eventTypeName: Swift.String?
@@ -719,12 +720,12 @@ public struct CreateBatchImportJobInput {
     }
 }
 
-public struct CreateBatchImportJobOutput {
+public struct CreateBatchImportJobOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct CreateBatchPredictionJobInput {
+public struct CreateBatchPredictionJobInput: Swift.Sendable {
     /// The name of the detector.
     /// This member is required.
     public var detectorName: Swift.String?
@@ -770,14 +771,14 @@ public struct CreateBatchPredictionJobInput {
     }
 }
 
-public struct CreateBatchPredictionJobOutput {
+public struct CreateBatchPredictionJobOutput: Swift.Sendable {
 
     public init() { }
 }
 
 extension FraudDetectorClientTypes {
 
-    public enum ModelTypeEnum: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ModelTypeEnum: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case accountTakeoverInsights
         case onlineFraudInsights
         case transactionFraudInsights
@@ -808,8 +809,9 @@ extension FraudDetectorClientTypes {
 }
 
 extension FraudDetectorClientTypes {
+
     /// The model version.
-    public struct ModelVersion {
+    public struct ModelVersion: Swift.Sendable {
         /// The model version ARN.
         public var arn: Swift.String?
         /// The model ID.
@@ -835,12 +837,11 @@ extension FraudDetectorClientTypes {
             self.modelVersionNumber = modelVersionNumber
         }
     }
-
 }
 
 extension FraudDetectorClientTypes {
 
-    public enum RuleExecutionMode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum RuleExecutionMode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case allMatched
         case firstMatched
         case sdkUnknown(Swift.String)
@@ -868,8 +869,9 @@ extension FraudDetectorClientTypes {
 }
 
 extension FraudDetectorClientTypes {
+
     /// A rule.
-    public struct Rule {
+    public struct Rule: Swift.Sendable {
         /// The detector for which the rule is associated.
         /// This member is required.
         public var detectorId: Swift.String?
@@ -891,10 +893,9 @@ extension FraudDetectorClientTypes {
             self.ruleVersion = ruleVersion
         }
     }
-
 }
 
-public struct CreateDetectorVersionInput {
+public struct CreateDetectorVersionInput: Swift.Sendable {
     /// The description of the detector version.
     public var description: Swift.String?
     /// The ID of the detector under which you want to create a new version.
@@ -934,7 +935,7 @@ public struct CreateDetectorVersionInput {
 
 extension FraudDetectorClientTypes {
 
-    public enum DetectorVersionStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DetectorVersionStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case active
         case draft
         case inactive
@@ -964,7 +965,7 @@ extension FraudDetectorClientTypes {
     }
 }
 
-public struct CreateDetectorVersionOutput {
+public struct CreateDetectorVersionOutput: Swift.Sendable {
     /// The ID for the created version's parent detector.
     public var detectorId: Swift.String?
     /// The ID for the created detector.
@@ -984,7 +985,7 @@ public struct CreateDetectorVersionOutput {
     }
 }
 
-public struct CreateListInput {
+public struct CreateListInput: Swift.Sendable {
     /// The description of the list.
     public var description: Swift.String?
     /// The names of the elements, if providing. You can also create an empty list and add elements later using the [UpdateList](https://docs.aws.amazon.com/frauddetector/latest/api/API_Updatelist.html) API.
@@ -1018,12 +1019,12 @@ extension CreateListInput: Swift.CustomDebugStringConvertible {
         "CreateListInput(description: \(Swift.String(describing: description)), name: \(Swift.String(describing: name)), tags: \(Swift.String(describing: tags)), variableType: \(Swift.String(describing: variableType)), elements: \"CONTENT_REDACTED\")"}
 }
 
-public struct CreateListOutput {
+public struct CreateListOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct CreateModelInput {
+public struct CreateModelInput: Swift.Sendable {
     /// The model description.
     public var description: Swift.String?
     /// The name of the event type.
@@ -1054,14 +1055,15 @@ public struct CreateModelInput {
     }
 }
 
-public struct CreateModelOutput {
+public struct CreateModelOutput: Swift.Sendable {
 
     public init() { }
 }
 
 extension FraudDetectorClientTypes {
+
     /// Details for the external events data used for model version training.
-    public struct ExternalEventsDetail {
+    public struct ExternalEventsDetail: Swift.Sendable {
         /// The ARN of the role that provides Amazon Fraud Detector access to the data location.
         /// This member is required.
         public var dataAccessRoleArn: Swift.String?
@@ -1078,12 +1080,12 @@ extension FraudDetectorClientTypes {
             self.dataLocation = dataLocation
         }
     }
-
 }
 
 extension FraudDetectorClientTypes {
+
     /// The start and stop time of the ingested events.
-    public struct IngestedEventsTimeWindow {
+    public struct IngestedEventsTimeWindow: Swift.Sendable {
         /// Timestamp of the final ingested event.
         /// This member is required.
         public var endTime: Swift.String?
@@ -1100,12 +1102,12 @@ extension FraudDetectorClientTypes {
             self.startTime = startTime
         }
     }
-
 }
 
 extension FraudDetectorClientTypes {
+
     /// The details of the ingested event.
-    public struct IngestedEventsDetail {
+    public struct IngestedEventsDetail: Swift.Sendable {
         /// The start and stop time of the ingested events.
         /// This member is required.
         public var ingestedEventsTimeWindow: FraudDetectorClientTypes.IngestedEventsTimeWindow?
@@ -1117,12 +1119,11 @@ extension FraudDetectorClientTypes {
             self.ingestedEventsTimeWindow = ingestedEventsTimeWindow
         }
     }
-
 }
 
 extension FraudDetectorClientTypes {
 
-    public enum UnlabeledEventsTreatment: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum UnlabeledEventsTreatment: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case auto
         case fraud
         case ignore
@@ -1156,8 +1157,9 @@ extension FraudDetectorClientTypes {
 }
 
 extension FraudDetectorClientTypes {
+
     /// The label schema.
-    public struct LabelSchema {
+    public struct LabelSchema: Swift.Sendable {
         /// The label mapper maps the Amazon Fraud Detector supported model classification labels (FRAUD, LEGIT) to the appropriate event type labels. For example, if "FRAUD" and "LEGIT" are Amazon Fraud Detector supported labels, this mapper could be: {"FRAUD" => ["0"], "LEGIT" => ["1"]} or {"FRAUD" => ["false"], "LEGIT" => ["true"]} or {"FRAUD" => ["fraud", "abuse"], "LEGIT" => ["legit", "safe"]}. The value part of the mapper is a list, because you may have multiple label variants from your event type for a single Amazon Fraud Detector label.
         public var labelMapper: [Swift.String: [Swift.String]]?
         /// The action to take for unlabeled events.
@@ -1183,12 +1185,12 @@ extension FraudDetectorClientTypes {
             self.unlabeledEventsTreatment = unlabeledEventsTreatment
         }
     }
-
 }
 
 extension FraudDetectorClientTypes {
+
     /// The training data schema.
-    public struct TrainingDataSchema {
+    public struct TrainingDataSchema: Swift.Sendable {
         /// The label schema.
         public var labelSchema: FraudDetectorClientTypes.LabelSchema?
         /// The training data schema variables.
@@ -1204,12 +1206,11 @@ extension FraudDetectorClientTypes {
             self.modelVariables = modelVariables
         }
     }
-
 }
 
 extension FraudDetectorClientTypes {
 
-    public enum TrainingDataSourceEnum: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum TrainingDataSourceEnum: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case externalEvents
         case ingestedEvents
         case sdkUnknown(Swift.String)
@@ -1236,7 +1237,7 @@ extension FraudDetectorClientTypes {
     }
 }
 
-public struct CreateModelVersionInput {
+public struct CreateModelVersionInput: Swift.Sendable {
     /// Details of the external events data used for model version training. Required if trainingDataSource is EXTERNAL_EVENTS.
     public var externalEventsDetail: FraudDetectorClientTypes.ExternalEventsDetail?
     /// Details of the ingested events data used for model version training. Required if trainingDataSource is INGESTED_EVENTS.
@@ -1276,7 +1277,7 @@ public struct CreateModelVersionInput {
     }
 }
 
-public struct CreateModelVersionOutput {
+public struct CreateModelVersionOutput: Swift.Sendable {
     /// The model ID.
     public var modelId: Swift.String?
     /// The model type.
@@ -1302,7 +1303,7 @@ public struct CreateModelVersionOutput {
 
 extension FraudDetectorClientTypes {
 
-    public enum Language: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Language: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case detectorpl
         case sdkUnknown(Swift.String)
 
@@ -1326,7 +1327,7 @@ extension FraudDetectorClientTypes {
     }
 }
 
-public struct CreateRuleInput {
+public struct CreateRuleInput: Swift.Sendable {
     /// The rule description.
     public var description: Swift.String?
     /// The detector ID for the rule's parent detector.
@@ -1372,7 +1373,7 @@ extension CreateRuleInput: Swift.CustomDebugStringConvertible {
         "CreateRuleInput(description: \(Swift.String(describing: description)), detectorId: \(Swift.String(describing: detectorId)), language: \(Swift.String(describing: language)), outcomes: \(Swift.String(describing: outcomes)), ruleId: \(Swift.String(describing: ruleId)), tags: \(Swift.String(describing: tags)), expression: \"CONTENT_REDACTED\")"}
 }
 
-public struct CreateRuleOutput {
+public struct CreateRuleOutput: Swift.Sendable {
     /// The created rule.
     public var rule: FraudDetectorClientTypes.Rule?
 
@@ -1384,7 +1385,7 @@ public struct CreateRuleOutput {
     }
 }
 
-public struct CreateVariableInput {
+public struct CreateVariableInput: Swift.Sendable {
     /// The source of the data.
     /// This member is required.
     public var dataSource: FraudDetectorClientTypes.DataSource?
@@ -1424,12 +1425,12 @@ public struct CreateVariableInput {
     }
 }
 
-public struct CreateVariableOutput {
+public struct CreateVariableOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteBatchImportJobInput {
+public struct DeleteBatchImportJobInput: Swift.Sendable {
     /// The ID of the batch import job to delete.
     /// This member is required.
     public var jobId: Swift.String?
@@ -1442,12 +1443,12 @@ public struct DeleteBatchImportJobInput {
     }
 }
 
-public struct DeleteBatchImportJobOutput {
+public struct DeleteBatchImportJobOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteBatchPredictionJobInput {
+public struct DeleteBatchPredictionJobInput: Swift.Sendable {
     /// The ID of the batch prediction job to delete.
     /// This member is required.
     public var jobId: Swift.String?
@@ -1460,7 +1461,7 @@ public struct DeleteBatchPredictionJobInput {
     }
 }
 
-public struct DeleteBatchPredictionJobOutput {
+public struct DeleteBatchPredictionJobOutput: Swift.Sendable {
 
     public init() { }
 }
@@ -1490,7 +1491,7 @@ public struct ConflictException: ClientRuntime.ModeledError, AWSClientRuntime.AW
     }
 }
 
-public struct DeleteDetectorInput {
+public struct DeleteDetectorInput: Swift.Sendable {
     /// The ID of the detector to delete.
     /// This member is required.
     public var detectorId: Swift.String?
@@ -1503,12 +1504,12 @@ public struct DeleteDetectorInput {
     }
 }
 
-public struct DeleteDetectorOutput {
+public struct DeleteDetectorOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteDetectorVersionInput {
+public struct DeleteDetectorVersionInput: Swift.Sendable {
     /// The ID of the parent detector for the detector version to delete.
     /// This member is required.
     public var detectorId: Swift.String?
@@ -1526,12 +1527,12 @@ public struct DeleteDetectorVersionInput {
     }
 }
 
-public struct DeleteDetectorVersionOutput {
+public struct DeleteDetectorVersionOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteEntityTypeInput {
+public struct DeleteEntityTypeInput: Swift.Sendable {
     /// The name of the entity type to delete.
     /// This member is required.
     public var name: Swift.String?
@@ -1544,12 +1545,12 @@ public struct DeleteEntityTypeInput {
     }
 }
 
-public struct DeleteEntityTypeOutput {
+public struct DeleteEntityTypeOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteEventInput {
+public struct DeleteEventInput: Swift.Sendable {
     /// Specifies whether or not to delete any predictions associated with the event. If set to True,
     public var deleteAuditHistory: Swift.Bool?
     /// The ID of the event to delete.
@@ -1571,12 +1572,12 @@ public struct DeleteEventInput {
     }
 }
 
-public struct DeleteEventOutput {
+public struct DeleteEventOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteEventsByEventTypeInput {
+public struct DeleteEventsByEventTypeInput: Swift.Sendable {
     /// The name of the event type.
     /// This member is required.
     public var eventTypeName: Swift.String?
@@ -1589,7 +1590,7 @@ public struct DeleteEventsByEventTypeInput {
     }
 }
 
-public struct DeleteEventsByEventTypeOutput {
+public struct DeleteEventsByEventTypeOutput: Swift.Sendable {
     /// Name of event type for which to delete the events.
     public var eventTypeName: Swift.String?
     /// The status of the delete request.
@@ -1605,7 +1606,7 @@ public struct DeleteEventsByEventTypeOutput {
     }
 }
 
-public struct DeleteEventTypeInput {
+public struct DeleteEventTypeInput: Swift.Sendable {
     /// The name of the event type to delete.
     /// This member is required.
     public var name: Swift.String?
@@ -1618,12 +1619,12 @@ public struct DeleteEventTypeInput {
     }
 }
 
-public struct DeleteEventTypeOutput {
+public struct DeleteEventTypeOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteExternalModelInput {
+public struct DeleteExternalModelInput: Swift.Sendable {
     /// The endpoint of the Amazon Sagemaker model to delete.
     /// This member is required.
     public var modelEndpoint: Swift.String?
@@ -1636,12 +1637,12 @@ public struct DeleteExternalModelInput {
     }
 }
 
-public struct DeleteExternalModelOutput {
+public struct DeleteExternalModelOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteLabelInput {
+public struct DeleteLabelInput: Swift.Sendable {
     /// The name of the label to delete.
     /// This member is required.
     public var name: Swift.String?
@@ -1654,12 +1655,12 @@ public struct DeleteLabelInput {
     }
 }
 
-public struct DeleteLabelOutput {
+public struct DeleteLabelOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteListInput {
+public struct DeleteListInput: Swift.Sendable {
     /// The name of the list to delete.
     /// This member is required.
     public var name: Swift.String?
@@ -1672,12 +1673,12 @@ public struct DeleteListInput {
     }
 }
 
-public struct DeleteListOutput {
+public struct DeleteListOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteModelInput {
+public struct DeleteModelInput: Swift.Sendable {
     /// The model ID of the model to delete.
     /// This member is required.
     public var modelId: Swift.String?
@@ -1695,12 +1696,12 @@ public struct DeleteModelInput {
     }
 }
 
-public struct DeleteModelOutput {
+public struct DeleteModelOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteModelVersionInput {
+public struct DeleteModelVersionInput: Swift.Sendable {
     /// The model ID of the model version to delete.
     /// This member is required.
     public var modelId: Swift.String?
@@ -1723,12 +1724,12 @@ public struct DeleteModelVersionInput {
     }
 }
 
-public struct DeleteModelVersionOutput {
+public struct DeleteModelVersionOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteOutcomeInput {
+public struct DeleteOutcomeInput: Swift.Sendable {
     /// The name of the outcome to delete.
     /// This member is required.
     public var name: Swift.String?
@@ -1741,12 +1742,12 @@ public struct DeleteOutcomeInput {
     }
 }
 
-public struct DeleteOutcomeOutput {
+public struct DeleteOutcomeOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteRuleInput {
+public struct DeleteRuleInput: Swift.Sendable {
     /// A rule.
     /// This member is required.
     public var rule: FraudDetectorClientTypes.Rule?
@@ -1759,12 +1760,12 @@ public struct DeleteRuleInput {
     }
 }
 
-public struct DeleteRuleOutput {
+public struct DeleteRuleOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteVariableInput {
+public struct DeleteVariableInput: Swift.Sendable {
     /// The name of the variable to delete.
     /// This member is required.
     public var name: Swift.String?
@@ -1777,12 +1778,12 @@ public struct DeleteVariableInput {
     }
 }
 
-public struct DeleteVariableOutput {
+public struct DeleteVariableOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DescribeDetectorInput {
+public struct DescribeDetectorInput: Swift.Sendable {
     /// The detector ID.
     /// This member is required.
     public var detectorId: Swift.String?
@@ -1804,8 +1805,9 @@ public struct DescribeDetectorInput {
 }
 
 extension FraudDetectorClientTypes {
+
     /// The summary of the detector version.
-    public struct DetectorVersionSummary {
+    public struct DetectorVersionSummary: Swift.Sendable {
         /// The detector version description.
         public var description: Swift.String?
         /// The detector version ID.
@@ -1828,10 +1830,9 @@ extension FraudDetectorClientTypes {
             self.status = status
         }
     }
-
 }
 
-public struct DescribeDetectorOutput {
+public struct DescribeDetectorOutput: Swift.Sendable {
     /// The detector ARN.
     public var arn: Swift.String?
     /// The detector ID.
@@ -1855,7 +1856,7 @@ public struct DescribeDetectorOutput {
     }
 }
 
-public struct DescribeModelVersionsInput {
+public struct DescribeModelVersionsInput: Swift.Sendable {
     /// The maximum number of results to return.
     public var maxResults: Swift.Int?
     /// The model ID.
@@ -1884,8 +1885,9 @@ public struct DescribeModelVersionsInput {
 }
 
 extension FraudDetectorClientTypes {
+
     /// The message details.
-    public struct FieldValidationMessage {
+    public struct FieldValidationMessage: Swift.Sendable {
         /// The message content.
         public var content: Swift.String?
         /// The field name.
@@ -1912,12 +1914,12 @@ extension FraudDetectorClientTypes {
             self.type = type
         }
     }
-
 }
 
 extension FraudDetectorClientTypes {
+
     /// The message details.
-    public struct FileValidationMessage {
+    public struct FileValidationMessage: Swift.Sendable {
         /// The message content.
         public var content: Swift.String?
         /// The message title.
@@ -1936,12 +1938,12 @@ extension FraudDetectorClientTypes {
             self.type = type
         }
     }
-
 }
 
 extension FraudDetectorClientTypes {
+
     /// The model training data validation metrics.
-    public struct DataValidationMetrics {
+    public struct DataValidationMetrics: Swift.Sendable {
         /// The field-specific model training validation messages.
         public var fieldLevelMessages: [FraudDetectorClientTypes.FieldValidationMessage]?
         /// The file-specific model training data validation messages.
@@ -1956,12 +1958,12 @@ extension FraudDetectorClientTypes {
             self.fileLevelMessages = fileLevelMessages
         }
     }
-
 }
 
 extension FraudDetectorClientTypes {
+
     /// Model performance metrics data points.
-    public struct MetricDataPoint {
+    public struct MetricDataPoint: Swift.Sendable {
         /// The false positive rate. This is the percentage of total legitimate events that are incorrectly predicted as fraud.
         public var fpr: Swift.Float?
         /// The percentage of fraud events correctly predicted as fraudulent as compared to all events predicted as fraudulent.
@@ -1984,12 +1986,12 @@ extension FraudDetectorClientTypes {
             self.tpr = tpr
         }
     }
-
 }
 
 extension FraudDetectorClientTypes {
+
     /// The training metric details.
-    public struct TrainingMetrics {
+    public struct TrainingMetrics: Swift.Sendable {
         /// The area under the curve. This summarizes true positive rate (TPR) and false positive rate (FPR) across all possible model score thresholds. A model with no predictive power has an AUC of 0.5, whereas a perfect model has a score of 1.0.
         public var auc: Swift.Float?
         /// The data points details.
@@ -2004,12 +2006,12 @@ extension FraudDetectorClientTypes {
             self.metricDataPoints = metricDataPoints
         }
     }
-
 }
 
 extension FraudDetectorClientTypes {
+
     /// The log odds metric details.
-    public struct LogOddsMetric {
+    public struct LogOddsMetric: Swift.Sendable {
         /// The relative importance of the variable. For more information, see [Model variable importance](https://docs.aws.amazon.com/frauddetector/latest/ug/model-variable-importance.html).
         /// This member is required.
         public var variableImportance: Swift.Float?
@@ -2031,12 +2033,12 @@ extension FraudDetectorClientTypes {
             self.variableType = variableType
         }
     }
-
 }
 
 extension FraudDetectorClientTypes {
+
     /// The variable importance metrics details.
-    public struct VariableImportanceMetrics {
+    public struct VariableImportanceMetrics: Swift.Sendable {
         /// List of variable metrics.
         public var logOddsMetrics: [FraudDetectorClientTypes.LogOddsMetric]?
 
@@ -2047,12 +2049,12 @@ extension FraudDetectorClientTypes {
             self.logOddsMetrics = logOddsMetrics
         }
     }
-
 }
 
 extension FraudDetectorClientTypes {
+
     /// The training result details.
-    public struct TrainingResult {
+    public struct TrainingResult: Swift.Sendable {
         /// The validation metrics.
         public var dataValidationMetrics: FraudDetectorClientTypes.DataValidationMetrics?
         /// The training metric details.
@@ -2071,12 +2073,12 @@ extension FraudDetectorClientTypes {
             self.variableImportanceMetrics = variableImportanceMetrics
         }
     }
-
 }
 
 extension FraudDetectorClientTypes {
+
     /// The Online Fraud Insights (OFI) model performance metrics data points.
-    public struct OFIMetricDataPoint {
+    public struct OFIMetricDataPoint: Swift.Sendable {
         /// The false positive rate. This is the percentage of total legitimate events that are incorrectly predicted as fraud.
         public var fpr: Swift.Float?
         /// The percentage of fraud events correctly predicted as fraudulent as compared to all events predicted as fraudulent.
@@ -2099,12 +2101,12 @@ extension FraudDetectorClientTypes {
             self.tpr = tpr
         }
     }
-
 }
 
 extension FraudDetectorClientTypes {
+
     /// Range of area under curve (auc) expected from the model. A range greater than 0.1 indicates higher model uncertainity. A range is the difference between upper and lower bound of auc.
-    public struct UncertaintyRange {
+    public struct UncertaintyRange: Swift.Sendable {
         /// The lower bound value of the area under curve (auc).
         /// This member is required.
         public var lowerBoundValue: Swift.Float?
@@ -2121,12 +2123,12 @@ extension FraudDetectorClientTypes {
             self.upperBoundValue = upperBoundValue
         }
     }
-
 }
 
 extension FraudDetectorClientTypes {
+
     /// The Online Fraud Insights (OFI) model performance score.
-    public struct OFIModelPerformance {
+    public struct OFIModelPerformance: Swift.Sendable {
         /// The area under the curve (auc). This summarizes the total positive rate (tpr) and false positive rate (FPR) across all possible model score thresholds.
         public var auc: Swift.Float?
         /// Indicates the range of area under curve (auc) expected from the OFI model. A range greater than 0.1 indicates higher model uncertainity.
@@ -2141,12 +2143,12 @@ extension FraudDetectorClientTypes {
             self.uncertaintyRange = uncertaintyRange
         }
     }
-
 }
 
 extension FraudDetectorClientTypes {
+
     /// The Online Fraud Insights (OFI) model training metric details.
-    public struct OFITrainingMetricsValue {
+    public struct OFITrainingMetricsValue: Swift.Sendable {
         /// The model's performance metrics data points.
         public var metricDataPoints: [FraudDetectorClientTypes.OFIMetricDataPoint]?
         /// The model's overall performance score.
@@ -2161,12 +2163,12 @@ extension FraudDetectorClientTypes {
             self.modelPerformance = modelPerformance
         }
     }
-
 }
 
 extension FraudDetectorClientTypes {
+
     /// The performance metrics data points for Transaction Fraud Insights (TFI) model.
-    public struct TFIMetricDataPoint {
+    public struct TFIMetricDataPoint: Swift.Sendable {
         /// The false positive rate. This is the percentage of total legitimate events that are incorrectly predicted as fraud.
         public var fpr: Swift.Float?
         /// The percentage of fraud events correctly predicted as fraudulent as compared to all events predicted as fraudulent.
@@ -2189,12 +2191,12 @@ extension FraudDetectorClientTypes {
             self.tpr = tpr
         }
     }
-
 }
 
 extension FraudDetectorClientTypes {
+
     /// The Transaction Fraud Insights (TFI) model performance score.
-    public struct TFIModelPerformance {
+    public struct TFIModelPerformance: Swift.Sendable {
         /// The area under the curve (auc). This summarizes the total positive rate (tpr) and false positive rate (FPR) across all possible model score thresholds.
         public var auc: Swift.Float?
         /// Indicates the range of area under curve (auc) expected from the TFI model. A range greater than 0.1 indicates higher model uncertainity.
@@ -2209,12 +2211,12 @@ extension FraudDetectorClientTypes {
             self.uncertaintyRange = uncertaintyRange
         }
     }
-
 }
 
 extension FraudDetectorClientTypes {
+
     /// The Transaction Fraud Insights (TFI) model training metric details.
-    public struct TFITrainingMetricsValue {
+    public struct TFITrainingMetricsValue: Swift.Sendable {
         /// The model's performance metrics data points.
         public var metricDataPoints: [FraudDetectorClientTypes.TFIMetricDataPoint]?
         /// The model performance score.
@@ -2229,12 +2231,12 @@ extension FraudDetectorClientTypes {
             self.modelPerformance = modelPerformance
         }
     }
-
 }
 
 extension FraudDetectorClientTypes {
+
     /// The training metrics details.
-    public struct TrainingMetricsV2 {
+    public struct TrainingMetricsV2: Swift.Sendable {
         /// The Account Takeover Insights (ATI) model training metric details.
         public var ati: FraudDetectorClientTypes.ATITrainingMetricsValue?
         /// The Online Fraud Insights (OFI) model training metric details.
@@ -2253,12 +2255,12 @@ extension FraudDetectorClientTypes {
             self.tfi = tfi
         }
     }
-
 }
 
 extension FraudDetectorClientTypes {
+
     /// The training result details.
-    public struct TrainingResultV2 {
+    public struct TrainingResultV2: Swift.Sendable {
         /// The variable importance metrics of the aggregated variables. Account Takeover Insights (ATI) model uses event variables from the login data you provide to continuously calculate a set of variables (aggregated variables) based on historical events. For example, your ATI model might calculate the number of times an user has logged in using the same IP address. In this case, event variables used to derive the aggregated variables are IP address and user.
         public var aggregatedVariablesImportanceMetrics: FraudDetectorClientTypes.AggregatedVariablesImportanceMetrics?
         /// The model training data validation metrics.
@@ -2281,12 +2283,12 @@ extension FraudDetectorClientTypes {
             self.variableImportanceMetrics = variableImportanceMetrics
         }
     }
-
 }
 
 extension FraudDetectorClientTypes {
+
     /// The details of the model version.
-    public struct ModelVersionDetail {
+    public struct ModelVersionDetail: Swift.Sendable {
         /// The model version ARN.
         public var arn: Swift.String?
         /// The timestamp when the model was created.
@@ -2345,10 +2347,9 @@ extension FraudDetectorClientTypes {
             self.trainingResultV2 = trainingResultV2
         }
     }
-
 }
 
-public struct DescribeModelVersionsOutput {
+public struct DescribeModelVersionsOutput: Swift.Sendable {
     /// The model version details.
     public var modelVersionDetails: [FraudDetectorClientTypes.ModelVersionDetail]?
     /// The next token.
@@ -2364,7 +2365,7 @@ public struct DescribeModelVersionsOutput {
     }
 }
 
-public struct GetBatchImportJobsInput {
+public struct GetBatchImportJobsInput: Swift.Sendable {
     /// The ID of the batch import job to get.
     public var jobId: Swift.String?
     /// The maximum number of objects to return for request.
@@ -2385,8 +2386,9 @@ public struct GetBatchImportJobsInput {
 }
 
 extension FraudDetectorClientTypes {
+
     /// The batch import job details.
-    public struct BatchImport {
+    public struct BatchImport: Swift.Sendable {
         /// The ARN of the batch import job.
         public var arn: Swift.String?
         /// Timestamp of when batch import job completed.
@@ -2445,10 +2447,9 @@ extension FraudDetectorClientTypes {
             self.totalRecordsCount = totalRecordsCount
         }
     }
-
 }
 
-public struct GetBatchImportJobsOutput {
+public struct GetBatchImportJobsOutput: Swift.Sendable {
     /// An array containing the details of each batch import job.
     public var batchImports: [FraudDetectorClientTypes.BatchImport]?
     /// The next token for the subsequent resquest.
@@ -2464,7 +2465,7 @@ public struct GetBatchImportJobsOutput {
     }
 }
 
-public struct GetBatchPredictionJobsInput {
+public struct GetBatchPredictionJobsInput: Swift.Sendable {
     /// The batch prediction job for which to get the details.
     public var jobId: Swift.String?
     /// The maximum number of objects to return for the request.
@@ -2485,8 +2486,9 @@ public struct GetBatchPredictionJobsInput {
 }
 
 extension FraudDetectorClientTypes {
+
     /// The batch prediction details.
-    public struct BatchPrediction {
+    public struct BatchPrediction: Swift.Sendable {
         /// The ARN of batch prediction job.
         public var arn: Swift.String?
         /// Timestamp of when the batch prediction job completed.
@@ -2553,10 +2555,9 @@ extension FraudDetectorClientTypes {
             self.totalRecordsCount = totalRecordsCount
         }
     }
-
 }
 
-public struct GetBatchPredictionJobsOutput {
+public struct GetBatchPredictionJobsOutput: Swift.Sendable {
     /// An array containing the details of each batch prediction job.
     public var batchPredictions: [FraudDetectorClientTypes.BatchPrediction]?
     /// The next token for the subsequent request.
@@ -2572,7 +2573,7 @@ public struct GetBatchPredictionJobsOutput {
     }
 }
 
-public struct GetDeleteEventsByEventTypeStatusInput {
+public struct GetDeleteEventsByEventTypeStatusInput: Swift.Sendable {
     /// Name of event type for which to get the deletion status.
     /// This member is required.
     public var eventTypeName: Swift.String?
@@ -2585,7 +2586,7 @@ public struct GetDeleteEventsByEventTypeStatusInput {
     }
 }
 
-public struct GetDeleteEventsByEventTypeStatusOutput {
+public struct GetDeleteEventsByEventTypeStatusOutput: Swift.Sendable {
     /// The event type name.
     public var eventTypeName: Swift.String?
     /// The deletion status.
@@ -2601,7 +2602,7 @@ public struct GetDeleteEventsByEventTypeStatusOutput {
     }
 }
 
-public struct GetDetectorsInput {
+public struct GetDetectorsInput: Swift.Sendable {
     /// The detector ID.
     public var detectorId: Swift.String?
     /// The maximum number of objects to return for the request.
@@ -2622,8 +2623,9 @@ public struct GetDetectorsInput {
 }
 
 extension FraudDetectorClientTypes {
+
     /// The detector.
-    public struct Detector {
+    public struct Detector: Swift.Sendable {
         /// The detector ARN.
         public var arn: Swift.String?
         /// Timestamp of when the detector was created.
@@ -2654,10 +2656,9 @@ extension FraudDetectorClientTypes {
             self.lastUpdatedTime = lastUpdatedTime
         }
     }
-
 }
 
-public struct GetDetectorsOutput {
+public struct GetDetectorsOutput: Swift.Sendable {
     /// The detectors.
     public var detectors: [FraudDetectorClientTypes.Detector]?
     /// The next page token.
@@ -2673,7 +2674,7 @@ public struct GetDetectorsOutput {
     }
 }
 
-public struct GetDetectorVersionInput {
+public struct GetDetectorVersionInput: Swift.Sendable {
     /// The detector ID.
     /// This member is required.
     public var detectorId: Swift.String?
@@ -2691,7 +2692,7 @@ public struct GetDetectorVersionInput {
     }
 }
 
-public struct GetDetectorVersionOutput {
+public struct GetDetectorVersionOutput: Swift.Sendable {
     /// The detector version ARN.
     public var arn: Swift.String?
     /// The timestamp when the detector version was created.
@@ -2743,7 +2744,7 @@ public struct GetDetectorVersionOutput {
     }
 }
 
-public struct GetEntityTypesInput {
+public struct GetEntityTypesInput: Swift.Sendable {
     /// The maximum number of objects to return for the request.
     public var maxResults: Swift.Int?
     /// The name.
@@ -2764,8 +2765,9 @@ public struct GetEntityTypesInput {
 }
 
 extension FraudDetectorClientTypes {
+
     /// The entity type details.
-    public struct EntityType {
+    public struct EntityType: Swift.Sendable {
         /// The entity type ARN.
         public var arn: Swift.String?
         /// Timestamp of when the entity type was created.
@@ -2792,10 +2794,9 @@ extension FraudDetectorClientTypes {
             self.name = name
         }
     }
-
 }
 
-public struct GetEntityTypesOutput {
+public struct GetEntityTypesOutput: Swift.Sendable {
     /// An array of entity types.
     public var entityTypes: [FraudDetectorClientTypes.EntityType]?
     /// The next page token.
@@ -2811,7 +2812,7 @@ public struct GetEntityTypesOutput {
     }
 }
 
-public struct GetEventInput {
+public struct GetEventInput: Swift.Sendable {
     /// The ID of the event to retrieve.
     /// This member is required.
     public var eventId: Swift.String?
@@ -2830,8 +2831,9 @@ public struct GetEventInput {
 }
 
 extension FraudDetectorClientTypes {
+
     /// The entity details.
-    public struct Entity {
+    public struct Entity: Swift.Sendable {
         /// The entity ID. If you do not know the entityId, you can pass unknown, which is areserved string literal.
         /// This member is required.
         public var entityId: Swift.String?
@@ -2848,7 +2850,6 @@ extension FraudDetectorClientTypes {
             self.entityType = entityType
         }
     }
-
 }
 
 extension FraudDetectorClientTypes.Entity: Swift.CustomDebugStringConvertible {
@@ -2858,8 +2859,9 @@ extension FraudDetectorClientTypes.Entity: Swift.CustomDebugStringConvertible {
 }
 
 extension FraudDetectorClientTypes {
+
     /// The event details.
-    public struct Event {
+    public struct Event: Swift.Sendable {
         /// The label associated with the event.
         public var currentLabel: Swift.String?
         /// The event entities.
@@ -2894,7 +2896,6 @@ extension FraudDetectorClientTypes {
             self.labelTimestamp = labelTimestamp
         }
     }
-
 }
 
 extension FraudDetectorClientTypes.Event: Swift.CustomDebugStringConvertible {
@@ -2902,7 +2903,7 @@ extension FraudDetectorClientTypes.Event: Swift.CustomDebugStringConvertible {
         "Event(currentLabel: \(Swift.String(describing: currentLabel)), eventId: \(Swift.String(describing: eventId)), eventTimestamp: \(Swift.String(describing: eventTimestamp)), eventTypeName: \(Swift.String(describing: eventTypeName)), labelTimestamp: \(Swift.String(describing: labelTimestamp)), entities: \"CONTENT_REDACTED\", eventVariables: [keys: \(Swift.String(describing: eventVariables?.keys)), values: \"CONTENT_REDACTED\"])"}
 }
 
-public struct GetEventOutput {
+public struct GetEventOutput: Swift.Sendable {
     /// The details of the event.
     public var event: FraudDetectorClientTypes.Event?
 
@@ -2939,8 +2940,9 @@ public struct ResourceUnavailableException: ClientRuntime.ModeledError, AWSClien
 }
 
 extension FraudDetectorClientTypes {
+
     /// A pre-formed Amazon SageMaker model input you can include if your detector version includes an imported Amazon SageMaker model endpoint with pass-through input configuration.
-    public struct ModelEndpointDataBlob {
+    public struct ModelEndpointDataBlob: Swift.Sendable {
         /// The byte buffer of the Amazon SageMaker model endpoint input data blob.
         public var byteBuffer: Foundation.Data?
         /// The content type of the Amazon SageMaker model endpoint input data blob.
@@ -2955,10 +2957,9 @@ extension FraudDetectorClientTypes {
             self.contentType = contentType
         }
     }
-
 }
 
-public struct GetEventPredictionInput {
+public struct GetEventPredictionInput: Swift.Sendable {
     /// The detector ID.
     /// This member is required.
     public var detectorId: Swift.String?
@@ -3011,7 +3012,7 @@ extension GetEventPredictionInput: Swift.CustomDebugStringConvertible {
 
 extension FraudDetectorClientTypes {
 
-    public enum ModelSource: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ModelSource: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case sagemaker
         case sdkUnknown(Swift.String)
 
@@ -3036,8 +3037,9 @@ extension FraudDetectorClientTypes {
 }
 
 extension FraudDetectorClientTypes {
+
     /// The Amazon SageMaker model.
-    public struct ExternalModelSummary {
+    public struct ExternalModelSummary: Swift.Sendable {
         /// The endpoint of the Amazon SageMaker model.
         public var modelEndpoint: Swift.String?
         /// The source of the model.
@@ -3052,12 +3054,12 @@ extension FraudDetectorClientTypes {
             self.modelSource = modelSource
         }
     }
-
 }
 
 extension FraudDetectorClientTypes {
+
     /// The fraud prediction scores from Amazon SageMaker model.
-    public struct ExternalModelOutputs {
+    public struct ExternalModelOutputs: Swift.Sendable {
         /// The Amazon SageMaker model.
         public var externalModel: FraudDetectorClientTypes.ExternalModelSummary?
         /// The fraud prediction scores from Amazon SageMaker model.
@@ -3072,12 +3074,12 @@ extension FraudDetectorClientTypes {
             self.outputs = outputs
         }
     }
-
 }
 
 extension FraudDetectorClientTypes {
+
     /// The fraud prediction scores.
-    public struct ModelScores {
+    public struct ModelScores: Swift.Sendable {
         /// The model version.
         public var modelVersion: FraudDetectorClientTypes.ModelVersion?
         /// The model's fraud prediction scores.
@@ -3092,12 +3094,12 @@ extension FraudDetectorClientTypes {
             self.scores = scores
         }
     }
-
 }
 
 extension FraudDetectorClientTypes {
+
     /// The rule results.
-    public struct RuleResult {
+    public struct RuleResult: Swift.Sendable {
         /// The outcomes of the matched rule, based on the rule execution mode.
         public var outcomes: [Swift.String]?
         /// The rule ID that was matched, based on the rule execution mode.
@@ -3112,10 +3114,9 @@ extension FraudDetectorClientTypes {
             self.ruleId = ruleId
         }
     }
-
 }
 
-public struct GetEventPredictionOutput {
+public struct GetEventPredictionOutput: Swift.Sendable {
     /// The model scores for Amazon SageMaker models.
     public var externalModelOutputs: [FraudDetectorClientTypes.ExternalModelOutputs]?
     /// The model scores. Amazon Fraud Detector generates model scores between 0 and 1000, where 0 is low fraud risk and 1000 is high fraud risk. Model scores are directly related to the false positive rate (FPR). For example, a score of 600 corresponds to an estimated 10% false positive rate whereas a score of 900 corresponds to an estimated 2% false positive rate.
@@ -3135,7 +3136,7 @@ public struct GetEventPredictionOutput {
     }
 }
 
-public struct GetEventPredictionMetadataInput {
+public struct GetEventPredictionMetadataInput: Swift.Sendable {
     /// The detector ID.
     /// This member is required.
     public var detectorId: Swift.String?
@@ -3169,8 +3170,9 @@ public struct GetEventPredictionMetadataInput {
 }
 
 extension FraudDetectorClientTypes {
+
     /// The details of the external (Amazon Sagemaker) model evaluated for generating predictions.
-    public struct EvaluatedExternalModel {
+    public struct EvaluatedExternalModel: Swift.Sendable {
         /// Input variables use for generating predictions.
         public var inputVariables: [Swift.String: Swift.String]?
         /// The endpoint of the external (Amazon Sagemaker) model.
@@ -3193,7 +3195,6 @@ extension FraudDetectorClientTypes {
             self.useEventVariables = useEventVariables
         }
     }
-
 }
 
 extension FraudDetectorClientTypes.EvaluatedExternalModel: Swift.CustomDebugStringConvertible {
@@ -3202,8 +3203,9 @@ extension FraudDetectorClientTypes.EvaluatedExternalModel: Swift.CustomDebugStri
 }
 
 extension FraudDetectorClientTypes {
+
     /// The details of the event variable's impact on the prediction score.
-    public struct VariableImpactExplanation {
+    public struct VariableImpactExplanation: Swift.Sendable {
         /// The event variable name.
         public var eventVariableName: Swift.String?
         /// The raw, uninterpreted value represented as log-odds of the fraud. These values are usually between -10 to +10, but range from - infinity to + infinity.
@@ -3226,12 +3228,12 @@ extension FraudDetectorClientTypes {
             self.relativeImpact = relativeImpact
         }
     }
-
 }
 
 extension FraudDetectorClientTypes {
+
     /// The prediction explanations that provide insight into how each event variable impacted the model version's fraud prediction score.
-    public struct PredictionExplanations {
+    public struct PredictionExplanations: Swift.Sendable {
         /// The details of the aggregated variables impact on the prediction score. Account Takeover Insights (ATI) model uses event variables from the login data you provide to continuously calculate a set of variables (aggregated variables) based on historical events. For example, your ATI model might calculate the number of times an user has logged in using the same IP address. In this case, event variables used to derive the aggregated variables are IP address and user.
         public var aggregatedVariablesImpactExplanations: [FraudDetectorClientTypes.AggregatedVariablesImpactExplanation]?
         /// The details of the event variable's impact on the prediction score.
@@ -3246,12 +3248,12 @@ extension FraudDetectorClientTypes {
             self.variableImpactExplanations = variableImpactExplanations
         }
     }
-
 }
 
 extension FraudDetectorClientTypes {
+
     /// The model version evalutions.
-    public struct ModelVersionEvaluation {
+    public struct ModelVersionEvaluation: Swift.Sendable {
         /// The evaluation score generated for the model version.
         public var evaluationScore: Swift.String?
         /// The output variable name.
@@ -3270,12 +3272,12 @@ extension FraudDetectorClientTypes {
             self.predictionExplanations = predictionExplanations
         }
     }
-
 }
 
 extension FraudDetectorClientTypes {
+
     /// The model version evaluated for generating prediction.
-    public struct EvaluatedModelVersion {
+    public struct EvaluatedModelVersion: Swift.Sendable {
         /// Evaluations generated for the model version.
         public var evaluations: [FraudDetectorClientTypes.ModelVersionEvaluation]?
         /// The model ID.
@@ -3298,12 +3300,12 @@ extension FraudDetectorClientTypes {
             self.modelVersion = modelVersion
         }
     }
-
 }
 
 extension FraudDetectorClientTypes {
+
     /// Information about the summary of an event variable that was evaluated for generating prediction.
-    public struct EventVariableSummary {
+    public struct EventVariableSummary: Swift.Sendable {
         /// The event variable name.
         public var name: Swift.String?
         /// The event variable source.
@@ -3322,7 +3324,6 @@ extension FraudDetectorClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension FraudDetectorClientTypes.EventVariableSummary: Swift.CustomDebugStringConvertible {
@@ -3331,8 +3332,9 @@ extension FraudDetectorClientTypes.EventVariableSummary: Swift.CustomDebugString
 }
 
 extension FraudDetectorClientTypes {
+
     /// The details of the rule used for evaluating variable values.
-    public struct EvaluatedRule {
+    public struct EvaluatedRule: Swift.Sendable {
         /// Indicates whether the rule was evaluated.
         public var evaluated: Swift.Bool?
         /// The rule expression.
@@ -3367,7 +3369,6 @@ extension FraudDetectorClientTypes {
             self.ruleVersion = ruleVersion
         }
     }
-
 }
 
 extension FraudDetectorClientTypes.EvaluatedRule: Swift.CustomDebugStringConvertible {
@@ -3375,7 +3376,7 @@ extension FraudDetectorClientTypes.EvaluatedRule: Swift.CustomDebugStringConvert
         "EvaluatedRule(evaluated: \(Swift.String(describing: evaluated)), matched: \(Swift.String(describing: matched)), outcomes: \(Swift.String(describing: outcomes)), ruleId: \(Swift.String(describing: ruleId)), ruleVersion: \(Swift.String(describing: ruleVersion)), expression: \"CONTENT_REDACTED\", expressionWithValues: \"CONTENT_REDACTED\")"}
 }
 
-public struct GetEventPredictionMetadataOutput {
+public struct GetEventPredictionMetadataOutput: Swift.Sendable {
     /// The detector ID.
     public var detectorId: Swift.String?
     /// The detector version ID.
@@ -3443,7 +3444,7 @@ public struct GetEventPredictionMetadataOutput {
     }
 }
 
-public struct GetEventTypesInput {
+public struct GetEventTypesInput: Swift.Sendable {
     /// The maximum number of objects to return for the request.
     public var maxResults: Swift.Int?
     /// The name.
@@ -3465,7 +3466,7 @@ public struct GetEventTypesInput {
 
 extension FraudDetectorClientTypes {
 
-    public enum EventIngestion: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum EventIngestion: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case disabled
         case enabled
         case sdkUnknown(Swift.String)
@@ -3493,8 +3494,9 @@ extension FraudDetectorClientTypes {
 }
 
 extension FraudDetectorClientTypes {
+
     /// The event orchestration status.
-    public struct EventOrchestration {
+    public struct EventOrchestration: Swift.Sendable {
         /// Specifies if event orchestration is enabled through Amazon EventBridge.
         /// This member is required.
         public var eventBridgeEnabled: Swift.Bool?
@@ -3506,12 +3508,12 @@ extension FraudDetectorClientTypes {
             self.eventBridgeEnabled = eventBridgeEnabled
         }
     }
-
 }
 
 extension FraudDetectorClientTypes {
+
     /// Data about the stored events.
-    public struct IngestedEventStatistics {
+    public struct IngestedEventStatistics: Swift.Sendable {
         /// The total size of the stored events.
         public var eventDataSizeInBytes: Swift.Int?
         /// Timestamp of when the stored event was last updated.
@@ -3538,12 +3540,12 @@ extension FraudDetectorClientTypes {
             self.numberOfEvents = numberOfEvents
         }
     }
-
 }
 
 extension FraudDetectorClientTypes {
+
     /// The event type details.
-    public struct EventType {
+    public struct EventType: Swift.Sendable {
         /// The entity type ARN.
         public var arn: Swift.String?
         /// Timestamp of when the event type was created.
@@ -3594,7 +3596,6 @@ extension FraudDetectorClientTypes {
             self.name = name
         }
     }
-
 }
 
 extension FraudDetectorClientTypes.EventType: Swift.CustomDebugStringConvertible {
@@ -3603,7 +3604,7 @@ extension FraudDetectorClientTypes.EventType: Swift.CustomDebugStringConvertible
     }
 }
 
-public struct GetEventTypesOutput {
+public struct GetEventTypesOutput: Swift.Sendable {
     /// An array of event types.
     public var eventTypes: [FraudDetectorClientTypes.EventType]?
     /// The next page token.
@@ -3624,7 +3625,7 @@ extension GetEventTypesOutput: Swift.CustomDebugStringConvertible {
         "GetEventTypesOutput(nextToken: \(Swift.String(describing: nextToken)), eventTypes: \"CONTENT_REDACTED\")"}
 }
 
-public struct GetExternalModelsInput {
+public struct GetExternalModelsInput: Swift.Sendable {
     /// The maximum number of objects to return for the request.
     public var maxResults: Swift.Int?
     /// The Amazon SageMaker model endpoint.
@@ -3646,7 +3647,7 @@ public struct GetExternalModelsInput {
 
 extension FraudDetectorClientTypes {
 
-    public enum ModelInputDataFormat: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ModelInputDataFormat: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case csv
         case json
         case sdkUnknown(Swift.String)
@@ -3674,8 +3675,9 @@ extension FraudDetectorClientTypes {
 }
 
 extension FraudDetectorClientTypes {
+
     /// The Amazon SageMaker model input configuration.
-    public struct ModelInputConfiguration {
+    public struct ModelInputConfiguration: Swift.Sendable {
         /// Template for constructing the CSV input-data sent to SageMaker. At event-evaluation, the placeholders for variable-names in the template will be replaced with the variable values before being sent to SageMaker.
         public var csvInputTemplate: Swift.String?
         /// The event type name.
@@ -3703,12 +3705,11 @@ extension FraudDetectorClientTypes {
             self.useEventVariables = useEventVariables
         }
     }
-
 }
 
 extension FraudDetectorClientTypes {
 
-    public enum ModelEndpointStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ModelEndpointStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case associated
         case dissociated
         case sdkUnknown(Swift.String)
@@ -3737,7 +3738,7 @@ extension FraudDetectorClientTypes {
 
 extension FraudDetectorClientTypes {
 
-    public enum ModelOutputDataFormat: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ModelOutputDataFormat: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case csv
         case jsonlines
         case sdkUnknown(Swift.String)
@@ -3765,8 +3766,9 @@ extension FraudDetectorClientTypes {
 }
 
 extension FraudDetectorClientTypes {
+
     /// Provides the Amazon Sagemaker model output configuration.
-    public struct ModelOutputConfiguration {
+    public struct ModelOutputConfiguration: Swift.Sendable {
         /// A map of CSV index values in the SageMaker response to the Amazon Fraud Detector variables.
         public var csvIndexToVariableMap: [Swift.String: Swift.String]?
         /// The format of the model output configuration.
@@ -3786,12 +3788,12 @@ extension FraudDetectorClientTypes {
             self.jsonKeyToVariableMap = jsonKeyToVariableMap
         }
     }
-
 }
 
 extension FraudDetectorClientTypes {
+
     /// The Amazon SageMaker model.
-    public struct ExternalModel {
+    public struct ExternalModel: Swift.Sendable {
         /// The model ARN.
         public var arn: Swift.String?
         /// Timestamp of when the model was last created.
@@ -3834,10 +3836,9 @@ extension FraudDetectorClientTypes {
             self.outputConfiguration = outputConfiguration
         }
     }
-
 }
 
-public struct GetExternalModelsOutput {
+public struct GetExternalModelsOutput: Swift.Sendable {
     /// Gets the Amazon SageMaker models.
     public var externalModels: [FraudDetectorClientTypes.ExternalModel]?
     /// The next page token to be used in subsequent requests.
@@ -3854,8 +3855,9 @@ public struct GetExternalModelsOutput {
 }
 
 extension FraudDetectorClientTypes {
+
     /// The KMS key details.
-    public struct KMSKey {
+    public struct KMSKey: Swift.Sendable {
         /// The encryption key ARN.
         public var kmsEncryptionKeyArn: Swift.String?
 
@@ -3866,10 +3868,9 @@ extension FraudDetectorClientTypes {
             self.kmsEncryptionKeyArn = kmsEncryptionKeyArn
         }
     }
-
 }
 
-public struct GetKMSEncryptionKeyOutput {
+public struct GetKMSEncryptionKeyOutput: Swift.Sendable {
     /// The KMS encryption key.
     public var kmsKey: FraudDetectorClientTypes.KMSKey?
 
@@ -3881,7 +3882,7 @@ public struct GetKMSEncryptionKeyOutput {
     }
 }
 
-public struct GetLabelsInput {
+public struct GetLabelsInput: Swift.Sendable {
     /// The maximum number of objects to return for the request.
     public var maxResults: Swift.Int?
     /// The name of the label or labels to get.
@@ -3902,8 +3903,9 @@ public struct GetLabelsInput {
 }
 
 extension FraudDetectorClientTypes {
+
     /// The label details.
-    public struct Label {
+    public struct Label: Swift.Sendable {
         /// The label ARN.
         public var arn: Swift.String?
         /// Timestamp of when the event type was created.
@@ -3930,10 +3932,9 @@ extension FraudDetectorClientTypes {
             self.name = name
         }
     }
-
 }
 
-public struct GetLabelsOutput {
+public struct GetLabelsOutput: Swift.Sendable {
     /// An array of labels.
     public var labels: [FraudDetectorClientTypes.Label]?
     /// The next page token.
@@ -3949,7 +3950,7 @@ public struct GetLabelsOutput {
     }
 }
 
-public struct GetListElementsInput {
+public struct GetListElementsInput: Swift.Sendable {
     /// The maximum number of objects to return for the request.
     public var maxResults: Swift.Int?
     /// The name of the list.
@@ -3970,7 +3971,7 @@ public struct GetListElementsInput {
     }
 }
 
-public struct GetListElementsOutput {
+public struct GetListElementsOutput: Swift.Sendable {
     /// The list elements.
     public var elements: [Swift.String]?
     /// The next page token.
@@ -3991,7 +3992,7 @@ extension GetListElementsOutput: Swift.CustomDebugStringConvertible {
         "GetListElementsOutput(nextToken: \(Swift.String(describing: nextToken)), elements: \"CONTENT_REDACTED\")"}
 }
 
-public struct GetListsMetadataInput {
+public struct GetListsMetadataInput: Swift.Sendable {
     /// The maximum number of objects to return for the request.
     public var maxResults: Swift.Int?
     /// The name of the list.
@@ -4011,7 +4012,7 @@ public struct GetListsMetadataInput {
     }
 }
 
-public struct GetListsMetadataOutput {
+public struct GetListsMetadataOutput: Swift.Sendable {
     /// The metadata of the specified list or all lists under the account.
     public var lists: [FraudDetectorClientTypes.AllowDenyList]?
     /// The next page token.
@@ -4027,7 +4028,7 @@ public struct GetListsMetadataOutput {
     }
 }
 
-public struct GetModelsInput {
+public struct GetModelsInput: Swift.Sendable {
     /// The maximum number of objects to return for the request.
     public var maxResults: Swift.Int?
     /// The model ID.
@@ -4052,8 +4053,9 @@ public struct GetModelsInput {
 }
 
 extension FraudDetectorClientTypes {
+
     /// The model.
-    public struct Model {
+    public struct Model: Swift.Sendable {
         /// The ARN of the model.
         public var arn: Swift.String?
         /// Timestamp of when the model was created.
@@ -4088,10 +4090,9 @@ extension FraudDetectorClientTypes {
             self.modelType = modelType
         }
     }
-
 }
 
-public struct GetModelsOutput {
+public struct GetModelsOutput: Swift.Sendable {
     /// The array of models.
     public var models: [FraudDetectorClientTypes.Model]?
     /// The next page token to be used in subsequent requests.
@@ -4107,7 +4108,7 @@ public struct GetModelsOutput {
     }
 }
 
-public struct GetModelVersionInput {
+public struct GetModelVersionInput: Swift.Sendable {
     /// The model ID.
     /// This member is required.
     public var modelId: Swift.String?
@@ -4130,7 +4131,7 @@ public struct GetModelVersionInput {
     }
 }
 
-public struct GetModelVersionOutput {
+public struct GetModelVersionOutput: Swift.Sendable {
     /// The model version ARN.
     public var arn: Swift.String?
     /// The details of the external events data used for training the model version. This will be populated if the trainingDataSource is EXTERNAL_EVENTS
@@ -4192,7 +4193,7 @@ public struct GetModelVersionOutput {
     }
 }
 
-public struct GetOutcomesInput {
+public struct GetOutcomesInput: Swift.Sendable {
     /// The maximum number of objects to return for the request.
     public var maxResults: Swift.Int?
     /// The name of the outcome or outcomes to get.
@@ -4213,8 +4214,9 @@ public struct GetOutcomesInput {
 }
 
 extension FraudDetectorClientTypes {
+
     /// The outcome.
-    public struct Outcome {
+    public struct Outcome: Swift.Sendable {
         /// The outcome ARN.
         public var arn: Swift.String?
         /// The timestamp when the outcome was created.
@@ -4241,10 +4243,9 @@ extension FraudDetectorClientTypes {
             self.name = name
         }
     }
-
 }
 
-public struct GetOutcomesOutput {
+public struct GetOutcomesOutput: Swift.Sendable {
     /// The next page token for subsequent requests.
     public var nextToken: Swift.String?
     /// The outcomes.
@@ -4260,7 +4261,7 @@ public struct GetOutcomesOutput {
     }
 }
 
-public struct GetRulesInput {
+public struct GetRulesInput: Swift.Sendable {
     /// The detector ID.
     /// This member is required.
     public var detectorId: Swift.String?
@@ -4290,8 +4291,9 @@ public struct GetRulesInput {
 }
 
 extension FraudDetectorClientTypes {
+
     /// The details of the rule.
-    public struct RuleDetail {
+    public struct RuleDetail: Swift.Sendable {
         /// The rule ARN.
         public var arn: Swift.String?
         /// The timestamp of when the rule was created.
@@ -4338,7 +4340,6 @@ extension FraudDetectorClientTypes {
             self.ruleVersion = ruleVersion
         }
     }
-
 }
 
 extension FraudDetectorClientTypes.RuleDetail: Swift.CustomDebugStringConvertible {
@@ -4346,7 +4347,7 @@ extension FraudDetectorClientTypes.RuleDetail: Swift.CustomDebugStringConvertibl
         "RuleDetail(arn: \(Swift.String(describing: arn)), createdTime: \(Swift.String(describing: createdTime)), description: \(Swift.String(describing: description)), detectorId: \(Swift.String(describing: detectorId)), language: \(Swift.String(describing: language)), lastUpdatedTime: \(Swift.String(describing: lastUpdatedTime)), outcomes: \(Swift.String(describing: outcomes)), ruleId: \(Swift.String(describing: ruleId)), ruleVersion: \(Swift.String(describing: ruleVersion)), expression: \"CONTENT_REDACTED\")"}
 }
 
-public struct GetRulesOutput {
+public struct GetRulesOutput: Swift.Sendable {
     /// The next page token to be used in subsequent requests.
     public var nextToken: Swift.String?
     /// The details of the requested rule.
@@ -4362,7 +4363,7 @@ public struct GetRulesOutput {
     }
 }
 
-public struct GetVariablesInput {
+public struct GetVariablesInput: Swift.Sendable {
     /// The max size per page determined for the get variable request.
     public var maxResults: Swift.Int?
     /// The name of the variable.
@@ -4382,7 +4383,7 @@ public struct GetVariablesInput {
     }
 }
 
-public struct GetVariablesOutput {
+public struct GetVariablesOutput: Swift.Sendable {
     /// The next page token to be used in subsequent requests.
     public var nextToken: Swift.String?
     /// The names of the variables returned.
@@ -4399,8 +4400,9 @@ public struct GetVariablesOutput {
 }
 
 extension FraudDetectorClientTypes {
+
     /// A conditional statement for filtering a list of past predictions.
-    public struct FilterCondition {
+    public struct FilterCondition: Swift.Sendable {
         /// A statement containing a resource property and a value to specify filter condition.
         public var value: Swift.String?
 
@@ -4411,12 +4413,12 @@ extension FraudDetectorClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension FraudDetectorClientTypes {
+
     /// The time period for when the predictions were generated.
-    public struct PredictionTimeRange {
+    public struct PredictionTimeRange: Swift.Sendable {
         /// The end time of the time period for when the predictions were generated.
         /// This member is required.
         public var endTime: Swift.String?
@@ -4433,10 +4435,9 @@ extension FraudDetectorClientTypes {
             self.startTime = startTime
         }
     }
-
 }
 
-public struct ListEventPredictionsInput {
+public struct ListEventPredictionsInput: Swift.Sendable {
     /// The detector ID.
     public var detectorId: FraudDetectorClientTypes.FilterCondition?
     /// The detector version ID.
@@ -4473,8 +4474,9 @@ public struct ListEventPredictionsInput {
 }
 
 extension FraudDetectorClientTypes {
+
     /// Information about the summary of an event prediction.
-    public struct EventPredictionSummary {
+    public struct EventPredictionSummary: Swift.Sendable {
         /// The detector ID.
         public var detectorId: Swift.String?
         /// The detector version ID.
@@ -4505,10 +4507,9 @@ extension FraudDetectorClientTypes {
             self.predictionTimestamp = predictionTimestamp
         }
     }
-
 }
 
-public struct ListEventPredictionsOutput {
+public struct ListEventPredictionsOutput: Swift.Sendable {
     /// The summary of the past predictions.
     public var eventPredictionSummaries: [FraudDetectorClientTypes.EventPredictionSummary]?
     /// Identifies the next page of results to return. Use the token to make the call again to retrieve the next page. Keep all other arguments unchanged. Each pagination token expires after 24 hours.
@@ -4524,7 +4525,7 @@ public struct ListEventPredictionsOutput {
     }
 }
 
-public struct ListTagsForResourceInput {
+public struct ListTagsForResourceInput: Swift.Sendable {
     /// The maximum number of objects to return for the request.
     public var maxResults: Swift.Int?
     /// The next token from the previous results.
@@ -4545,7 +4546,7 @@ public struct ListTagsForResourceInput {
     }
 }
 
-public struct ListTagsForResourceOutput {
+public struct ListTagsForResourceOutput: Swift.Sendable {
     /// The next token for subsequent requests.
     public var nextToken: Swift.String?
     /// A collection of key and value pairs.
@@ -4561,7 +4562,7 @@ public struct ListTagsForResourceOutput {
     }
 }
 
-public struct PutDetectorInput {
+public struct PutDetectorInput: Swift.Sendable {
     /// The description of the detector.
     public var description: Swift.String?
     /// The detector ID.
@@ -4587,12 +4588,12 @@ public struct PutDetectorInput {
     }
 }
 
-public struct PutDetectorOutput {
+public struct PutDetectorOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct PutEntityTypeInput {
+public struct PutEntityTypeInput: Swift.Sendable {
     /// The description.
     public var description: Swift.String?
     /// The name of the entity type.
@@ -4613,12 +4614,12 @@ public struct PutEntityTypeInput {
     }
 }
 
-public struct PutEntityTypeOutput {
+public struct PutEntityTypeOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct PutEventTypeInput {
+public struct PutEventTypeInput: Swift.Sendable {
     /// The description of the event type.
     public var description: Swift.String?
     /// The entity type for the event type. Example entity types: customer, merchant, account.
@@ -4661,12 +4662,12 @@ public struct PutEventTypeInput {
     }
 }
 
-public struct PutEventTypeOutput {
+public struct PutEventTypeOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct PutExternalModelInput {
+public struct PutExternalModelInput: Swift.Sendable {
     /// The model endpoint input configuration.
     /// This member is required.
     public var inputConfiguration: FraudDetectorClientTypes.ModelInputConfiguration?
@@ -4708,12 +4709,12 @@ public struct PutExternalModelInput {
     }
 }
 
-public struct PutExternalModelOutput {
+public struct PutExternalModelOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct PutKMSEncryptionKeyInput {
+public struct PutKMSEncryptionKeyInput: Swift.Sendable {
     /// The KMS encryption key ARN. The KMS key must be single-Region key. Amazon Fraud Detector does not support multi-Region KMS key.
     /// This member is required.
     public var kmsEncryptionKeyArn: Swift.String?
@@ -4726,12 +4727,12 @@ public struct PutKMSEncryptionKeyInput {
     }
 }
 
-public struct PutKMSEncryptionKeyOutput {
+public struct PutKMSEncryptionKeyOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct PutLabelInput {
+public struct PutLabelInput: Swift.Sendable {
     /// The label description.
     public var description: Swift.String?
     /// The label name.
@@ -4752,12 +4753,12 @@ public struct PutLabelInput {
     }
 }
 
-public struct PutLabelOutput {
+public struct PutLabelOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct PutOutcomeInput {
+public struct PutOutcomeInput: Swift.Sendable {
     /// The outcome description.
     public var description: Swift.String?
     /// The name of the outcome.
@@ -4778,12 +4779,12 @@ public struct PutOutcomeInput {
     }
 }
 
-public struct PutOutcomeOutput {
+public struct PutOutcomeOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct SendEventInput {
+public struct SendEventInput: Swift.Sendable {
     /// The label to associate with the event. Required if specifying labelTimestamp.
     public var assignedLabel: Swift.String?
     /// An array of entities.
@@ -4829,12 +4830,12 @@ extension SendEventInput: Swift.CustomDebugStringConvertible {
         "SendEventInput(assignedLabel: \(Swift.String(describing: assignedLabel)), eventId: \(Swift.String(describing: eventId)), eventTimestamp: \(Swift.String(describing: eventTimestamp)), eventTypeName: \(Swift.String(describing: eventTypeName)), labelTimestamp: \(Swift.String(describing: labelTimestamp)), entities: \"CONTENT_REDACTED\", eventVariables: [keys: \(Swift.String(describing: eventVariables?.keys)), values: \"CONTENT_REDACTED\"])"}
 }
 
-public struct SendEventOutput {
+public struct SendEventOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct TagResourceInput {
+public struct TagResourceInput: Swift.Sendable {
     /// The resource ARN.
     /// This member is required.
     public var resourceARN: Swift.String?
@@ -4852,12 +4853,12 @@ public struct TagResourceInput {
     }
 }
 
-public struct TagResourceOutput {
+public struct TagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UntagResourceInput {
+public struct UntagResourceInput: Swift.Sendable {
     /// The ARN of the resource from which to remove the tag.
     /// This member is required.
     public var resourceARN: Swift.String?
@@ -4875,12 +4876,12 @@ public struct UntagResourceInput {
     }
 }
 
-public struct UntagResourceOutput {
+public struct UntagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdateDetectorVersionInput {
+public struct UpdateDetectorVersionInput: Swift.Sendable {
     /// The detector version description.
     public var description: Swift.String?
     /// The parent detector ID for the detector version you want to update.
@@ -4920,12 +4921,12 @@ public struct UpdateDetectorVersionInput {
     }
 }
 
-public struct UpdateDetectorVersionOutput {
+public struct UpdateDetectorVersionOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdateDetectorVersionMetadataInput {
+public struct UpdateDetectorVersionMetadataInput: Swift.Sendable {
     /// The description.
     /// This member is required.
     public var description: Swift.String?
@@ -4948,12 +4949,12 @@ public struct UpdateDetectorVersionMetadataInput {
     }
 }
 
-public struct UpdateDetectorVersionMetadataOutput {
+public struct UpdateDetectorVersionMetadataOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdateDetectorVersionStatusInput {
+public struct UpdateDetectorVersionStatusInput: Swift.Sendable {
     /// The detector ID.
     /// This member is required.
     public var detectorId: Swift.String?
@@ -4976,12 +4977,12 @@ public struct UpdateDetectorVersionStatusInput {
     }
 }
 
-public struct UpdateDetectorVersionStatusOutput {
+public struct UpdateDetectorVersionStatusOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdateEventLabelInput {
+public struct UpdateEventLabelInput: Swift.Sendable {
     /// The new label to assign to the event.
     /// This member is required.
     public var assignedLabel: Swift.String?
@@ -5009,14 +5010,14 @@ public struct UpdateEventLabelInput {
     }
 }
 
-public struct UpdateEventLabelOutput {
+public struct UpdateEventLabelOutput: Swift.Sendable {
 
     public init() { }
 }
 
 extension FraudDetectorClientTypes {
 
-    public enum ListUpdateMode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ListUpdateMode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case append
         case remove
         case replace
@@ -5046,7 +5047,7 @@ extension FraudDetectorClientTypes {
     }
 }
 
-public struct UpdateListInput {
+public struct UpdateListInput: Swift.Sendable {
     /// The new description.
     public var description: Swift.String?
     /// One or more list elements to add or replace. If you are providing the elements, make sure to specify the updateMode to use. If you are deleting all elements from the list, use REPLACE for the updateMode and provide an empty list (0 elements).
@@ -5086,12 +5087,12 @@ extension UpdateListInput: Swift.CustomDebugStringConvertible {
         "UpdateListInput(description: \(Swift.String(describing: description)), name: \(Swift.String(describing: name)), updateMode: \(Swift.String(describing: updateMode)), variableType: \(Swift.String(describing: variableType)), elements: \"CONTENT_REDACTED\")"}
 }
 
-public struct UpdateListOutput {
+public struct UpdateListOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdateModelInput {
+public struct UpdateModelInput: Swift.Sendable {
     /// The new model description.
     public var description: Swift.String?
     /// The model ID.
@@ -5113,12 +5114,12 @@ public struct UpdateModelInput {
     }
 }
 
-public struct UpdateModelOutput {
+public struct UpdateModelOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdateModelVersionInput {
+public struct UpdateModelVersionInput: Swift.Sendable {
     /// The details of the external events data used for training the model version. Required if trainingDataSource is EXTERNAL_EVENTS.
     public var externalEventsDetail: FraudDetectorClientTypes.ExternalEventsDetail?
     /// The details of the ingested event used for training the model version. Required if your trainingDataSource is INGESTED_EVENTS.
@@ -5153,7 +5154,7 @@ public struct UpdateModelVersionInput {
     }
 }
 
-public struct UpdateModelVersionOutput {
+public struct UpdateModelVersionOutput: Swift.Sendable {
     /// The model ID.
     public var modelId: Swift.String?
     /// The model type.
@@ -5179,7 +5180,7 @@ public struct UpdateModelVersionOutput {
 
 extension FraudDetectorClientTypes {
 
-    public enum ModelVersionStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ModelVersionStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case active
         case inactive
         case trainingCancelled
@@ -5209,7 +5210,7 @@ extension FraudDetectorClientTypes {
     }
 }
 
-public struct UpdateModelVersionStatusInput {
+public struct UpdateModelVersionStatusInput: Swift.Sendable {
     /// The model ID of the model version to update.
     /// This member is required.
     public var modelId: Swift.String?
@@ -5237,12 +5238,12 @@ public struct UpdateModelVersionStatusInput {
     }
 }
 
-public struct UpdateModelVersionStatusOutput {
+public struct UpdateModelVersionStatusOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdateRuleMetadataInput {
+public struct UpdateRuleMetadataInput: Swift.Sendable {
     /// The rule description.
     /// This member is required.
     public var description: Swift.String?
@@ -5260,12 +5261,12 @@ public struct UpdateRuleMetadataInput {
     }
 }
 
-public struct UpdateRuleMetadataOutput {
+public struct UpdateRuleMetadataOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdateRuleVersionInput {
+public struct UpdateRuleVersionInput: Swift.Sendable {
     /// The description.
     public var description: Swift.String?
     /// The rule expression.
@@ -5306,7 +5307,7 @@ extension UpdateRuleVersionInput: Swift.CustomDebugStringConvertible {
         "UpdateRuleVersionInput(description: \(Swift.String(describing: description)), language: \(Swift.String(describing: language)), outcomes: \(Swift.String(describing: outcomes)), rule: \(Swift.String(describing: rule)), tags: \(Swift.String(describing: tags)), expression: \"CONTENT_REDACTED\")"}
 }
 
-public struct UpdateRuleVersionOutput {
+public struct UpdateRuleVersionOutput: Swift.Sendable {
     /// The new rule version that was created.
     public var rule: FraudDetectorClientTypes.Rule?
 
@@ -5318,7 +5319,7 @@ public struct UpdateRuleVersionOutput {
     }
 }
 
-public struct UpdateVariableInput {
+public struct UpdateVariableInput: Swift.Sendable {
     /// The new default value of the variable.
     public var defaultValue: Swift.String?
     /// The new description.
@@ -5343,7 +5344,7 @@ public struct UpdateVariableInput {
     }
 }
 
-public struct UpdateVariableOutput {
+public struct UpdateVariableOutput: Swift.Sendable {
 
     public init() { }
 }

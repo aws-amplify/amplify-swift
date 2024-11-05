@@ -20,12 +20,13 @@ import protocol ClientRuntime.ModeledError
 @_spi(SmithyReadWrite) import struct AWSClientRuntime.RestJSONError
 @_spi(UnknownAWSHTTPServiceError) import struct AWSClientRuntime.UnknownAWSHTTPServiceError
 
-public struct JoinStorageSessionAsViewerOutput {
+
+public struct JoinStorageSessionAsViewerOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct JoinStorageSessionOutput {
+public struct JoinStorageSessionOutput: Swift.Sendable {
 
     public init() { }
 }
@@ -126,7 +127,7 @@ public struct ResourceNotFoundException: ClientRuntime.ModeledError, AWSClientRu
     }
 }
 
-public struct JoinStorageSessionInput {
+public struct JoinStorageSessionInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the signaling channel.
     /// This member is required.
     public var channelArn: Swift.String?
@@ -139,7 +140,7 @@ public struct JoinStorageSessionInput {
     }
 }
 
-public struct JoinStorageSessionAsViewerInput {
+public struct JoinStorageSessionAsViewerInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the signaling channel.
     /// This member is required.
     public var channelArn: Swift.String?

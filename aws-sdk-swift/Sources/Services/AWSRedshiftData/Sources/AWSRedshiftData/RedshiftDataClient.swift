@@ -613,7 +613,7 @@ extension RedshiftDataClient {
 
     /// Performs the `GetStatementResult` operation on the `RedshiftData` service.
     ///
-    /// Fetches the temporarily cached result of an SQL statement. A token is returned to page through the statement results. For more information about the Amazon Redshift Data API and CLI usage examples, see [Using the Amazon Redshift Data API](https://docs.aws.amazon.com/redshift/latest/mgmt/data-api.html) in the Amazon Redshift Management Guide.
+    /// Fetches the temporarily cached result of an SQL statement in JSON format. The ExecuteStatement or BatchExecuteStatement operation that ran the SQL statement must have specified ResultFormat as JSON , or let the format default to JSON. A token is returned to page through the statement results. For more information about the Amazon Redshift Data API and CLI usage examples, see [Using the Amazon Redshift Data API](https://docs.aws.amazon.com/redshift/latest/mgmt/data-api.html) in the Amazon Redshift Management Guide.
     ///
     /// - Parameter GetStatementResultInput : [no documentation found]
     ///
@@ -671,6 +671,78 @@ extension RedshiftDataClient {
         var metricsAttributes = Smithy.Attributes()
         metricsAttributes.set(key: ClientRuntime.OrchestratorMetricsAttributesKeys.service, value: "RedshiftData")
         metricsAttributes.set(key: ClientRuntime.OrchestratorMetricsAttributesKeys.method, value: "GetStatementResult")
+        let op = builder.attributes(context)
+            .telemetry(ClientRuntime.OrchestratorTelemetry(
+                telemetryProvider: config.telemetryProvider,
+                metricsAttributes: metricsAttributes,
+                meterScope: serviceName,
+                tracerScope: serviceName
+            ))
+            .executeRequest(client)
+            .build()
+        return try await op.execute(input: input)
+    }
+
+    /// Performs the `GetStatementResultV2` operation on the `RedshiftData` service.
+    ///
+    /// Fetches the temporarily cached result of an SQL statement in CSV format. The ExecuteStatement or BatchExecuteStatement operation that ran the SQL statement must have specified ResultFormat as CSV. A token is returned to page through the statement results. For more information about the Amazon Redshift Data API and CLI usage examples, see [Using the Amazon Redshift Data API](https://docs.aws.amazon.com/redshift/latest/mgmt/data-api.html) in the Amazon Redshift Management Guide.
+    ///
+    /// - Parameter GetStatementResultV2Input : [no documentation found]
+    ///
+    /// - Returns: `GetStatementResultV2Output` : [no documentation found]
+    ///
+    /// - Throws: One of the exceptions listed below __Possible Exceptions__.
+    ///
+    /// __Possible Exceptions:__
+    /// - `InternalServerException` : The Amazon Redshift Data API operation failed due to invalid input.
+    /// - `ResourceNotFoundException` : The Amazon Redshift Data API operation failed due to a missing resource.
+    /// - `ValidationException` : The Amazon Redshift Data API operation failed due to invalid input.
+    public func getStatementResultV2(input: GetStatementResultV2Input) async throws -> GetStatementResultV2Output {
+        let context = Smithy.ContextBuilder()
+                      .withMethod(value: .post)
+                      .withServiceName(value: serviceName)
+                      .withOperation(value: "getStatementResultV2")
+                      .withIdempotencyTokenGenerator(value: config.idempotencyTokenGenerator)
+                      .withLogger(value: config.logger)
+                      .withPartitionID(value: config.partitionID)
+                      .withAuthSchemes(value: config.authSchemes ?? [])
+                      .withAuthSchemeResolver(value: config.authSchemeResolver)
+                      .withUnsignedPayloadTrait(value: false)
+                      .withSocketTimeout(value: config.httpClientConfiguration.socketTimeout)
+                      .withIdentityResolver(value: config.bearerTokenIdentityResolver, schemeID: "smithy.api#httpBearerAuth")
+                      .withIdentityResolver(value: config.awsCredentialIdentityResolver, schemeID: "aws.auth#sigv4")
+                      .withIdentityResolver(value: config.awsCredentialIdentityResolver, schemeID: "aws.auth#sigv4a")
+                      .withRegion(value: config.region)
+                      .withSigningName(value: "redshift-data")
+                      .withSigningRegion(value: config.signingRegion)
+                      .build()
+        let builder = ClientRuntime.OrchestratorBuilder<GetStatementResultV2Input, GetStatementResultV2Output, SmithyHTTPAPI.HTTPRequest, SmithyHTTPAPI.HTTPResponse>()
+        config.interceptorProviders.forEach { provider in
+            builder.interceptors.add(provider.create())
+        }
+        config.httpInterceptorProviders.forEach { provider in
+            builder.interceptors.add(provider.create())
+        }
+        builder.interceptors.add(ClientRuntime.URLPathMiddleware<GetStatementResultV2Input, GetStatementResultV2Output>(GetStatementResultV2Input.urlPathProvider(_:)))
+        builder.interceptors.add(ClientRuntime.URLHostMiddleware<GetStatementResultV2Input, GetStatementResultV2Output>())
+        builder.interceptors.add(ClientRuntime.ContentLengthMiddleware<GetStatementResultV2Input, GetStatementResultV2Output>())
+        builder.deserialize(ClientRuntime.DeserializeMiddleware<GetStatementResultV2Output>(GetStatementResultV2Output.httpOutput(from:), GetStatementResultV2OutputError.httpError(from:)))
+        builder.interceptors.add(ClientRuntime.LoggerMiddleware<GetStatementResultV2Input, GetStatementResultV2Output>(clientLogMode: config.clientLogMode))
+        builder.retryStrategy(SmithyRetries.DefaultRetryStrategy(options: config.retryStrategyOptions))
+        builder.retryErrorInfoProvider(AWSClientRuntime.AWSRetryErrorInfoProvider.errorInfo(for:))
+        builder.applySigner(ClientRuntime.SignerMiddleware<GetStatementResultV2Output>())
+        let endpointParams = EndpointParams(endpoint: config.endpoint, region: config.region, useDualStack: config.useDualStack ?? false, useFIPS: config.useFIPS ?? false)
+        builder.applyEndpoint(AWSClientRuntime.EndpointResolverMiddleware<GetStatementResultV2Output, EndpointParams>(endpointResolverBlock: { [config] in try config.endpointResolver.resolve(params: $0) }, endpointParams: endpointParams))
+        builder.interceptors.add(AWSClientRuntime.UserAgentMiddleware<GetStatementResultV2Input, GetStatementResultV2Output>(serviceID: serviceName, version: "1.0", config: config))
+        builder.interceptors.add(AWSClientRuntime.XAmzTargetMiddleware<GetStatementResultV2Input, GetStatementResultV2Output>(xAmzTarget: "RedshiftData.GetStatementResultV2"))
+        builder.serialize(ClientRuntime.BodyMiddleware<GetStatementResultV2Input, GetStatementResultV2Output, SmithyJSON.Writer>(rootNodeInfo: "", inputWritingClosure: GetStatementResultV2Input.write(value:to:)))
+        builder.interceptors.add(ClientRuntime.ContentTypeMiddleware<GetStatementResultV2Input, GetStatementResultV2Output>(contentType: "application/x-amz-json-1.1"))
+        builder.selectAuthScheme(ClientRuntime.AuthSchemeMiddleware<GetStatementResultV2Output>())
+        builder.interceptors.add(AWSClientRuntime.AmzSdkInvocationIdMiddleware<GetStatementResultV2Input, GetStatementResultV2Output>())
+        builder.interceptors.add(AWSClientRuntime.AmzSdkRequestMiddleware<GetStatementResultV2Input, GetStatementResultV2Output>(maxRetries: config.retryStrategyOptions.maxRetriesBase))
+        var metricsAttributes = Smithy.Attributes()
+        metricsAttributes.set(key: ClientRuntime.OrchestratorMetricsAttributesKeys.service, value: "RedshiftData")
+        metricsAttributes.set(key: ClientRuntime.OrchestratorMetricsAttributesKeys.method, value: "GetStatementResultV2")
         let op = builder.attributes(context)
             .telemetry(ClientRuntime.OrchestratorTelemetry(
                 telemetryProvider: config.telemetryProvider,

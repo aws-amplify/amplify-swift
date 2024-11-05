@@ -27,57 +27,58 @@ import protocol ClientRuntime.ModeledError
 @_spi(SmithyReadWrite) import struct SmithyReadWrite.ReadingClosureBox
 @_spi(SmithyReadWrite) import struct SmithyReadWrite.WritingClosureBox
 
-public struct AssociateApprovalRuleTemplateWithRepositoryOutput {
+
+public struct AssociateApprovalRuleTemplateWithRepositoryOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct CreateBranchOutput {
+public struct CreateBranchOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DisassociateApprovalRuleTemplateFromRepositoryOutput {
+public struct DisassociateApprovalRuleTemplateFromRepositoryOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct OverridePullRequestApprovalRulesOutput {
+public struct OverridePullRequestApprovalRulesOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct PutCommentReactionOutput {
+public struct PutCommentReactionOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct TagResourceOutput {
+public struct TagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UntagResourceOutput {
+public struct UntagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdateDefaultBranchOutput {
+public struct UpdateDefaultBranchOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdatePullRequestApprovalStateOutput {
+public struct UpdatePullRequestApprovalStateOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdateRepositoryDescriptionOutput {
+public struct UpdateRepositoryDescriptionOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdateRepositoryNameOutput {
+public struct UpdateRepositoryNameOutput: Swift.Sendable {
 
     public init() { }
 }
@@ -109,7 +110,7 @@ public struct ActorDoesNotExistException: ClientRuntime.ModeledError, AWSClientR
 
 extension CodeCommitClientTypes {
 
-    public enum ApprovalState: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ApprovalState: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case approve
         case revoke
         case sdkUnknown(Swift.String)
@@ -137,8 +138,9 @@ extension CodeCommitClientTypes {
 }
 
 extension CodeCommitClientTypes {
+
     /// Returns information about a specific approval on a pull request.
-    public struct Approval {
+    public struct Approval: Swift.Sendable {
         /// The state of the approval, APPROVE or REVOKE. REVOKE states are not stored.
         public var approvalState: CodeCommitClientTypes.ApprovalState?
         /// The Amazon Resource Name (ARN) of the user.
@@ -153,12 +155,12 @@ extension CodeCommitClientTypes {
             self.userArn = userArn
         }
     }
-
 }
 
 extension CodeCommitClientTypes {
+
     /// Returns information about the template that created the approval rule for a pull request.
-    public struct OriginApprovalRuleTemplate {
+    public struct OriginApprovalRuleTemplate: Swift.Sendable {
         /// The ID of the template that created the approval rule.
         public var approvalRuleTemplateId: Swift.String?
         /// The name of the template that created the approval rule.
@@ -173,12 +175,12 @@ extension CodeCommitClientTypes {
             self.approvalRuleTemplateName = approvalRuleTemplateName
         }
     }
-
 }
 
 extension CodeCommitClientTypes {
+
     /// Returns information about an approval rule.
-    public struct ApprovalRule {
+    public struct ApprovalRule: Swift.Sendable {
         /// The content of the approval rule.
         public var approvalRuleContent: Swift.String?
         /// The system-generated ID of the approval rule.
@@ -217,7 +219,6 @@ extension CodeCommitClientTypes {
             self.ruleContentSha256 = ruleContentSha256
         }
     }
-
 }
 
 /// The content for the approval rule is empty. You must provide some content for an approval rule. The content cannot be null.
@@ -271,8 +272,9 @@ public struct ApprovalRuleDoesNotExistException: ClientRuntime.ModeledError, AWS
 }
 
 extension CodeCommitClientTypes {
+
     /// Returns information about an event for an approval rule.
-    public struct ApprovalRuleEventMetadata {
+    public struct ApprovalRuleEventMetadata: Swift.Sendable {
         /// The content of the approval rule.
         public var approvalRuleContent: Swift.String?
         /// The system-generated ID of the approval rule.
@@ -291,7 +293,6 @@ extension CodeCommitClientTypes {
             self.approvalRuleName = approvalRuleName
         }
     }
-
 }
 
 /// An approval rule with that name already exists. Approval rule names must be unique within the scope of a pull request.
@@ -346,7 +347,7 @@ public struct ApprovalRuleNameRequiredException: ClientRuntime.ModeledError, AWS
 
 extension CodeCommitClientTypes {
 
-    public enum OverrideStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum OverrideStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case `override`
         case revoke
         case sdkUnknown(Swift.String)
@@ -374,8 +375,9 @@ extension CodeCommitClientTypes {
 }
 
 extension CodeCommitClientTypes {
+
     /// Returns information about an override event for approval rules for a pull request.
-    public struct ApprovalRuleOverriddenEventMetadata {
+    public struct ApprovalRuleOverriddenEventMetadata: Swift.Sendable {
         /// The status of the override event.
         public var overrideStatus: CodeCommitClientTypes.OverrideStatus?
         /// The revision ID of the pull request when the override event occurred.
@@ -390,12 +392,12 @@ extension CodeCommitClientTypes {
             self.revisionId = revisionId
         }
     }
-
 }
 
 extension CodeCommitClientTypes {
+
     /// Returns information about an approval rule template.
-    public struct ApprovalRuleTemplate {
+    public struct ApprovalRuleTemplate: Swift.Sendable {
         /// The content of the approval rule template.
         public var approvalRuleTemplateContent: Swift.String?
         /// The description of the approval rule template.
@@ -434,7 +436,6 @@ extension CodeCommitClientTypes {
             self.ruleContentSha256 = ruleContentSha256
         }
     }
-
 }
 
 /// The content for the approval rule template is empty. You must provide some content for an approval rule template. The content cannot be null.
@@ -563,8 +564,9 @@ public struct ApprovalRuleTemplateNameRequiredException: ClientRuntime.ModeledEr
 }
 
 extension CodeCommitClientTypes {
+
     /// Returns information about a change in the approval state for a pull request.
-    public struct ApprovalStateChangedEventMetadata {
+    public struct ApprovalStateChangedEventMetadata: Swift.Sendable {
         /// The approval status for the pull request.
         public var approvalStatus: CodeCommitClientTypes.ApprovalState?
         /// The revision ID of the pull request when the approval state changed.
@@ -579,7 +581,6 @@ extension CodeCommitClientTypes {
             self.revisionId = revisionId
         }
     }
-
 }
 
 /// An approval state is required, but was not specified.
@@ -857,7 +858,7 @@ public struct RepositoryNameRequiredException: ClientRuntime.ModeledError, AWSCl
     }
 }
 
-public struct AssociateApprovalRuleTemplateWithRepositoryInput {
+public struct AssociateApprovalRuleTemplateWithRepositoryInput: Swift.Sendable {
     /// The name for the approval rule template.
     /// This member is required.
     public var approvalRuleTemplateName: Swift.String?
@@ -950,7 +951,7 @@ public struct RepositoryNamesRequiredException: ClientRuntime.ModeledError, AWSC
     }
 }
 
-public struct BatchAssociateApprovalRuleTemplateWithRepositoriesInput {
+public struct BatchAssociateApprovalRuleTemplateWithRepositoriesInput: Swift.Sendable {
     /// The name of the template you want to associate with one or more repositories.
     /// This member is required.
     public var approvalRuleTemplateName: Swift.String?
@@ -969,8 +970,9 @@ public struct BatchAssociateApprovalRuleTemplateWithRepositoriesInput {
 }
 
 extension CodeCommitClientTypes {
+
     /// Returns information about errors in a BatchAssociateApprovalRuleTemplateWithRepositories operation.
-    public struct BatchAssociateApprovalRuleTemplateWithRepositoriesError {
+    public struct BatchAssociateApprovalRuleTemplateWithRepositoriesError: Swift.Sendable {
         /// An error code that specifies whether the repository name was not valid or not found.
         public var errorCode: Swift.String?
         /// An error message that provides details about why the repository name was not found or not valid.
@@ -989,10 +991,9 @@ extension CodeCommitClientTypes {
             self.repositoryName = repositoryName
         }
     }
-
 }
 
-public struct BatchAssociateApprovalRuleTemplateWithRepositoriesOutput {
+public struct BatchAssociateApprovalRuleTemplateWithRepositoriesOutput: Swift.Sendable {
     /// A list of names of the repositories that have been associated with the template.
     /// This member is required.
     public var associatedRepositoryNames: [Swift.String]?
@@ -1337,7 +1338,7 @@ public struct TipsDivergenceExceededException: ClientRuntime.ModeledError, AWSCl
 
 extension CodeCommitClientTypes {
 
-    public enum ConflictDetailLevelTypeEnum: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ConflictDetailLevelTypeEnum: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case fileLevel
         case lineLevel
         case sdkUnknown(Swift.String)
@@ -1366,7 +1367,7 @@ extension CodeCommitClientTypes {
 
 extension CodeCommitClientTypes {
 
-    public enum ConflictResolutionStrategyTypeEnum: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ConflictResolutionStrategyTypeEnum: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case acceptDestination
         case acceptSource
         case automerge
@@ -1401,7 +1402,7 @@ extension CodeCommitClientTypes {
 
 extension CodeCommitClientTypes {
 
-    public enum MergeOptionTypeEnum: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum MergeOptionTypeEnum: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case fastForwardMerge
         case squashMerge
         case threeWayMerge
@@ -1431,7 +1432,7 @@ extension CodeCommitClientTypes {
     }
 }
 
-public struct BatchDescribeMergeConflictsInput {
+public struct BatchDescribeMergeConflictsInput: Swift.Sendable {
     /// The level of conflict detail to use. If unspecified, the default FILE_LEVEL is used, which returns a not-mergeable result if the same file has differences in both branches. If LINE_LEVEL is specified, a conflict is considered not mergeable if the same file in both branches has differences on the same line.
     public var conflictDetailLevel: CodeCommitClientTypes.ConflictDetailLevelTypeEnum?
     /// Specifies which branch to use when resolving conflicts, or whether to attempt automatically merging two versions of a file. The default is NONE, which requires any conflicts to be resolved manually before the merge operation is successful.
@@ -1485,7 +1486,7 @@ public struct BatchDescribeMergeConflictsInput {
 
 extension CodeCommitClientTypes {
 
-    public enum FileModeTypeEnum: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum FileModeTypeEnum: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case executable
         case normal
         case symlink
@@ -1516,8 +1517,9 @@ extension CodeCommitClientTypes {
 }
 
 extension CodeCommitClientTypes {
+
     /// Information about file modes in a merge or pull request.
-    public struct FileModes {
+    public struct FileModes: Swift.Sendable {
         /// The file mode of a file in the base of a merge or pull request.
         public var base: CodeCommitClientTypes.FileModeTypeEnum?
         /// The file mode of a file in the destination of a merge or pull request.
@@ -1536,12 +1538,12 @@ extension CodeCommitClientTypes {
             self.source = source
         }
     }
-
 }
 
 extension CodeCommitClientTypes {
+
     /// Information about the size of files in a merge or pull request.
-    public struct FileSizes {
+    public struct FileSizes: Swift.Sendable {
         /// The size of a file in the base of a merge or pull request.
         public var base: Swift.Int
         /// The size of a file in the destination of a merge or pull request.
@@ -1560,12 +1562,12 @@ extension CodeCommitClientTypes {
             self.source = source
         }
     }
-
 }
 
 extension CodeCommitClientTypes {
+
     /// Information about whether a file is binary or textual in a merge or pull request operation.
-    public struct IsBinaryFile {
+    public struct IsBinaryFile: Swift.Sendable {
         /// The binary or non-binary status of a file in the base of a merge or pull request.
         public var base: Swift.Bool?
         /// The binary or non-binary status of a file in the destination of a merge or pull request.
@@ -1584,12 +1586,11 @@ extension CodeCommitClientTypes {
             self.source = source
         }
     }
-
 }
 
 extension CodeCommitClientTypes {
 
-    public enum ChangeTypeEnum: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ChangeTypeEnum: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case added
         case deleted
         case modified
@@ -1620,8 +1621,9 @@ extension CodeCommitClientTypes {
 }
 
 extension CodeCommitClientTypes {
+
     /// Information about the file operation conflicts in a merge operation.
-    public struct MergeOperations {
+    public struct MergeOperations: Swift.Sendable {
         /// The operation on a file in the destination of a merge or pull request.
         public var destination: CodeCommitClientTypes.ChangeTypeEnum?
         /// The operation (add, modify, or delete) on a file in the source of a merge or pull request.
@@ -1636,12 +1638,11 @@ extension CodeCommitClientTypes {
             self.source = source
         }
     }
-
 }
 
 extension CodeCommitClientTypes {
 
-    public enum ObjectTypeEnum: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ObjectTypeEnum: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case directory
         case file
         case gitLink
@@ -1675,8 +1676,9 @@ extension CodeCommitClientTypes {
 }
 
 extension CodeCommitClientTypes {
+
     /// Information about the type of an object in a merge operation.
-    public struct ObjectTypes {
+    public struct ObjectTypes: Swift.Sendable {
         /// The type of the object in the base commit of the merge.
         public var base: CodeCommitClientTypes.ObjectTypeEnum?
         /// The type of the object in the destination branch.
@@ -1695,12 +1697,12 @@ extension CodeCommitClientTypes {
             self.source = source
         }
     }
-
 }
 
 extension CodeCommitClientTypes {
+
     /// Information about the metadata for a conflict in a merge operation.
-    public struct ConflictMetadata {
+    public struct ConflictMetadata: Swift.Sendable {
         /// A boolean value indicating whether there are conflicts in the content of a file.
         public var contentConflict: Swift.Bool
         /// A boolean value indicating whether there are conflicts in the file mode of a file.
@@ -1747,12 +1749,12 @@ extension CodeCommitClientTypes {
             self.objectTypes = objectTypes
         }
     }
-
 }
 
 extension CodeCommitClientTypes {
+
     /// Information about the details of a merge hunk that contains a conflict in a merge or pull request operation.
-    public struct MergeHunkDetail {
+    public struct MergeHunkDetail: Swift.Sendable {
         /// The end position of the hunk in the merge result.
         public var endLine: Swift.Int?
         /// The base-64 encoded content of the hunk merged region that might contain a conflict.
@@ -1771,12 +1773,12 @@ extension CodeCommitClientTypes {
             self.startLine = startLine
         }
     }
-
 }
 
 extension CodeCommitClientTypes {
+
     /// Information about merge hunks in a merge or pull request operation.
-    public struct MergeHunk {
+    public struct MergeHunk: Swift.Sendable {
         /// Information about the merge hunk in the base of a merge or pull request.
         public var base: CodeCommitClientTypes.MergeHunkDetail?
         /// Information about the merge hunk in the destination of a merge or pull request.
@@ -1799,12 +1801,12 @@ extension CodeCommitClientTypes {
             self.source = source
         }
     }
-
 }
 
 extension CodeCommitClientTypes {
+
     /// Information about conflicts in a merge operation.
-    public struct Conflict {
+    public struct Conflict: Swift.Sendable {
         /// Metadata about a conflict in a merge operation.
         public var conflictMetadata: CodeCommitClientTypes.ConflictMetadata?
         /// A list of hunks that contain the differences between files or lines causing the conflict.
@@ -1819,12 +1821,12 @@ extension CodeCommitClientTypes {
             self.mergeHunks = mergeHunks
         }
     }
-
 }
 
 extension CodeCommitClientTypes {
+
     /// Returns information about errors in a BatchDescribeMergeConflicts operation.
-    public struct BatchDescribeMergeConflictsError {
+    public struct BatchDescribeMergeConflictsError: Swift.Sendable {
         /// The name of the exception.
         /// This member is required.
         public var exceptionName: Swift.String?
@@ -1846,10 +1848,9 @@ extension CodeCommitClientTypes {
             self.message = message
         }
     }
-
 }
 
-public struct BatchDescribeMergeConflictsOutput {
+public struct BatchDescribeMergeConflictsOutput: Swift.Sendable {
     /// The commit ID of the merge base.
     public var baseCommitId: Swift.String?
     /// A list of conflicts for each file, including the conflict metadata and the hunks of the differences between the files.
@@ -1884,7 +1885,7 @@ public struct BatchDescribeMergeConflictsOutput {
     }
 }
 
-public struct BatchDisassociateApprovalRuleTemplateFromRepositoriesInput {
+public struct BatchDisassociateApprovalRuleTemplateFromRepositoriesInput: Swift.Sendable {
     /// The name of the template that you want to disassociate from one or more repositories.
     /// This member is required.
     public var approvalRuleTemplateName: Swift.String?
@@ -1903,8 +1904,9 @@ public struct BatchDisassociateApprovalRuleTemplateFromRepositoriesInput {
 }
 
 extension CodeCommitClientTypes {
+
     /// Returns information about errors in a BatchDisassociateApprovalRuleTemplateFromRepositories operation.
-    public struct BatchDisassociateApprovalRuleTemplateFromRepositoriesError {
+    public struct BatchDisassociateApprovalRuleTemplateFromRepositoriesError: Swift.Sendable {
         /// An error code that specifies whether the repository name was not valid or not found.
         public var errorCode: Swift.String?
         /// An error message that provides details about why the repository name was either not found or not valid.
@@ -1923,10 +1925,9 @@ extension CodeCommitClientTypes {
             self.repositoryName = repositoryName
         }
     }
-
 }
 
-public struct BatchDisassociateApprovalRuleTemplateFromRepositoriesOutput {
+public struct BatchDisassociateApprovalRuleTemplateFromRepositoriesOutput: Swift.Sendable {
     /// A list of repository names that have had their association with the template removed.
     /// This member is required.
     public var disassociatedRepositoryNames: [Swift.String]?
@@ -1994,7 +1995,7 @@ public struct CommitIdsListRequiredException: ClientRuntime.ModeledError, AWSCli
     }
 }
 
-public struct BatchGetCommitsInput {
+public struct BatchGetCommitsInput: Swift.Sendable {
     /// The full commit IDs of the commits to get information about. You must supply the full SHA IDs of each commit. You cannot use shortened SHA IDs.
     /// This member is required.
     public var commitIds: [Swift.String]?
@@ -2013,8 +2014,9 @@ public struct BatchGetCommitsInput {
 }
 
 extension CodeCommitClientTypes {
+
     /// Information about the user who made a specified commit.
-    public struct UserInfo {
+    public struct UserInfo: Swift.Sendable {
         /// The date when the specified commit was commited, in timestamp format with GMT offset.
         public var date: Swift.String?
         /// The email address associated with the user who made the commit, if any.
@@ -2033,12 +2035,12 @@ extension CodeCommitClientTypes {
             self.name = name
         }
     }
-
 }
 
 extension CodeCommitClientTypes {
+
     /// Returns information about a specific commit.
-    public struct Commit {
+    public struct Commit: Swift.Sendable {
         /// Any other data associated with the specified commit.
         public var additionalData: Swift.String?
         /// Information about the author of the specified commit. Information includes the date in timestamp format with GMT offset, the name of the author, and the email address for the author, as configured in Git.
@@ -2073,12 +2075,12 @@ extension CodeCommitClientTypes {
             self.treeId = treeId
         }
     }
-
 }
 
 extension CodeCommitClientTypes {
+
     /// Returns information about errors in a BatchGetCommits operation.
-    public struct BatchGetCommitsError {
+    public struct BatchGetCommitsError: Swift.Sendable {
         /// A commit ID that either could not be found or was not in a valid format.
         public var commitId: Swift.String?
         /// An error code that specifies whether the commit ID was not valid or not found.
@@ -2097,10 +2099,9 @@ extension CodeCommitClientTypes {
             self.errorMessage = errorMessage
         }
     }
-
 }
 
-public struct BatchGetCommitsOutput {
+public struct BatchGetCommitsOutput: Swift.Sendable {
     /// An array of commit data type objects, each of which contains information about a specified commit.
     public var commits: [CodeCommitClientTypes.Commit]?
     /// Returns any commit IDs for which information could not be found. For example, if one of the commit IDs was a shortened SHA ID or that commit was not found in the specified repository, the ID returns an error object with more information.
@@ -2117,7 +2118,7 @@ public struct BatchGetCommitsOutput {
 }
 
 /// Represents the input of a batch get repositories operation.
-public struct BatchGetRepositoriesInput {
+public struct BatchGetRepositoriesInput: Swift.Sendable {
     /// The names of the repositories to get information about. The length constraint limit is for each string in the array. The array itself can be empty.
     /// This member is required.
     public var repositoryNames: [Swift.String]?
@@ -2132,7 +2133,7 @@ public struct BatchGetRepositoriesInput {
 
 extension CodeCommitClientTypes {
 
-    public enum BatchGetRepositoriesErrorCodeEnum: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum BatchGetRepositoriesErrorCodeEnum: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case encryptionIntegrityChecksFailedException
         case encryptionKeyAccessDeniedException
         case encryptionKeyDisabledException
@@ -2172,8 +2173,9 @@ extension CodeCommitClientTypes {
 }
 
 extension CodeCommitClientTypes {
+
     /// Returns information about errors in a BatchGetRepositories operation.
-    public struct BatchGetRepositoriesError {
+    public struct BatchGetRepositoriesError: Swift.Sendable {
         /// An error code that specifies the type of failure.
         public var errorCode: CodeCommitClientTypes.BatchGetRepositoriesErrorCodeEnum?
         /// An error message that provides detail about why the repository either was not found or was not in a valid state.
@@ -2196,12 +2198,12 @@ extension CodeCommitClientTypes {
             self.repositoryName = repositoryName
         }
     }
-
 }
 
 extension CodeCommitClientTypes {
+
     /// Information about a repository.
-    public struct RepositoryMetadata {
+    public struct RepositoryMetadata: Swift.Sendable {
         /// The ID of the Amazon Web Services account associated with the repository.
         public var accountId: Swift.String?
         /// The Amazon Resource Name (ARN) of the repository.
@@ -2252,11 +2254,10 @@ extension CodeCommitClientTypes {
             self.repositoryName = repositoryName
         }
     }
-
 }
 
 /// Represents the output of a batch get repositories operation.
-public struct BatchGetRepositoriesOutput {
+public struct BatchGetRepositoriesOutput: Swift.Sendable {
     /// Returns information about any errors returned when attempting to retrieve information about the repositories.
     public var errors: [CodeCommitClientTypes.BatchGetRepositoriesError]?
     /// A list of repositories returned by the batch get repositories operation.
@@ -2352,8 +2353,9 @@ public struct BlobIdRequiredException: ClientRuntime.ModeledError, AWSClientRunt
 }
 
 extension CodeCommitClientTypes {
+
     /// Returns information about a specific Git blob object.
-    public struct BlobMetadata {
+    public struct BlobMetadata: Swift.Sendable {
         /// The full ID of the blob.
         public var blobId: Swift.String?
         /// The file mode permissions of the blob. File mode permission codes include:
@@ -2380,7 +2382,6 @@ extension CodeCommitClientTypes {
             self.path = path
         }
     }
-
 }
 
 /// The specified branch does not exist.
@@ -2409,8 +2410,9 @@ public struct BranchDoesNotExistException: ClientRuntime.ModeledError, AWSClient
 }
 
 extension CodeCommitClientTypes {
+
     /// Returns information about a branch.
-    public struct BranchInfo {
+    public struct BranchInfo: Swift.Sendable {
         /// The name of the branch.
         public var branchName: Swift.String?
         /// The ID of the last commit made to the branch.
@@ -2425,7 +2427,6 @@ extension CodeCommitClientTypes {
             self.commitId = commitId
         }
     }
-
 }
 
 /// Cannot create the branch with the specified name because the commit conflicts with an existing branch with the same name. Branch names must be unique.
@@ -2653,7 +2654,7 @@ public struct NumberOfRuleTemplatesExceededException: ClientRuntime.ModeledError
     }
 }
 
-public struct CreateApprovalRuleTemplateInput {
+public struct CreateApprovalRuleTemplateInput: Swift.Sendable {
     /// The content of the approval rule that is created on pull requests in associated repositories. If you specify one or more destination references (branches), approval rules are created in an associated repository only if their destination references (branches) match those specified in the template. When you create the content of the approval rule template, you can specify approvers in an approval pool in one of two ways:
     ///
     /// * CodeCommitApprovers: This option only requires an Amazon Web Services account and a resource. It can be used for both IAM users and federated access users whose name matches the provided resource name. This is a very powerful option that offers a great deal of flexibility. For example, if you specify the Amazon Web Services account 123456789012 and Mary_Major, all of the following are counted as approvals coming from that user:
@@ -2689,7 +2690,7 @@ public struct CreateApprovalRuleTemplateInput {
     }
 }
 
-public struct CreateApprovalRuleTemplateOutput {
+public struct CreateApprovalRuleTemplateOutput: Swift.Sendable {
     /// The content and structure of the created approval rule template.
     /// This member is required.
     public var approvalRuleTemplate: CodeCommitClientTypes.ApprovalRuleTemplate?
@@ -2778,7 +2779,7 @@ public struct InvalidCommitIdException: ClientRuntime.ModeledError, AWSClientRun
 }
 
 /// Represents the input of a create branch operation.
-public struct CreateBranchInput {
+public struct CreateBranchInput: Swift.Sendable {
     /// The name of the new branch to create.
     /// This member is required.
     public var branchName: Swift.String?
@@ -3452,8 +3453,9 @@ public struct SourceFileOrContentRequiredException: ClientRuntime.ModeledError, 
 }
 
 extension CodeCommitClientTypes {
+
     /// A file that is deleted as part of a commit.
-    public struct DeleteFileEntry {
+    public struct DeleteFileEntry: Swift.Sendable {
         /// The full path of the file to be deleted, including the name of the file.
         /// This member is required.
         public var filePath: Swift.String?
@@ -3465,12 +3467,12 @@ extension CodeCommitClientTypes {
             self.filePath = filePath
         }
     }
-
 }
 
 extension CodeCommitClientTypes {
+
     /// Information about a source file that is part of changes made in a commit.
-    public struct SourceFileSpecifier {
+    public struct SourceFileSpecifier: Swift.Sendable {
         /// The full path to the file, including the name of the file.
         /// This member is required.
         public var filePath: Swift.String?
@@ -3486,12 +3488,12 @@ extension CodeCommitClientTypes {
             self.isMove = isMove
         }
     }
-
 }
 
 extension CodeCommitClientTypes {
+
     /// Information about a file added or updated as part of a commit.
-    public struct PutFileEntry {
+    public struct PutFileEntry: Swift.Sendable {
         /// The content of the file, if a source file is not specified.
         public var fileContent: Foundation.Data?
         /// The extrapolated file mode permissions for the file. Valid values include EXECUTABLE and NORMAL.
@@ -3515,12 +3517,12 @@ extension CodeCommitClientTypes {
             self.sourceFile = sourceFile
         }
     }
-
 }
 
 extension CodeCommitClientTypes {
+
     /// Information about the file mode changes.
-    public struct SetFileModeEntry {
+    public struct SetFileModeEntry: Swift.Sendable {
         /// The file mode for the file.
         /// This member is required.
         public var fileMode: CodeCommitClientTypes.FileModeTypeEnum?
@@ -3537,10 +3539,9 @@ extension CodeCommitClientTypes {
             self.filePath = filePath
         }
     }
-
 }
 
-public struct CreateCommitInput {
+public struct CreateCommitInput: Swift.Sendable {
     /// The name of the author who created the commit. This information is used as both the author and committer for the commit.
     public var authorName: Swift.String?
     /// The name of the branch where you create the commit.
@@ -3591,8 +3592,9 @@ public struct CreateCommitInput {
 }
 
 extension CodeCommitClientTypes {
+
     /// A file to be added, updated, or deleted as part of a commit.
-    public struct FileMetadata {
+    public struct FileMetadata: Swift.Sendable {
         /// The full path to the file to be added or updated, including the name of the file.
         public var absolutePath: Swift.String?
         /// The blob ID that contains the file information.
@@ -3611,10 +3613,9 @@ extension CodeCommitClientTypes {
             self.fileMode = fileMode
         }
     }
-
 }
 
-public struct CreateCommitOutput {
+public struct CreateCommitOutput: Swift.Sendable {
     /// The full commit ID of the commit that contains your committed file changes.
     public var commitId: Swift.String?
     /// The files added as part of the committed file changes.
@@ -4043,8 +4044,9 @@ public struct TitleRequiredException: ClientRuntime.ModeledError, AWSClientRunti
 }
 
 extension CodeCommitClientTypes {
+
     /// Returns information about a target for a pull request.
-    public struct Target {
+    public struct Target: Swift.Sendable {
         /// The branch of the repository where the pull request changes are merged. Also known as the destination branch.
         public var destinationReference: Swift.String?
         /// The name of the repository that contains the pull request.
@@ -4065,10 +4067,9 @@ extension CodeCommitClientTypes {
             self.sourceReference = sourceReference
         }
     }
-
 }
 
-public struct CreatePullRequestInput {
+public struct CreatePullRequestInput: Swift.Sendable {
     /// A unique, client-generated idempotency token that, when provided in a request, ensures the request cannot be repeated with a changed parameter. If a request is received with the same parameters and a token is included, the request returns information about the initial request that used that token. The Amazon Web ServicesSDKs prepopulate client request tokens. If you are using an Amazon Web ServicesSDK, an idempotency token is created for you.
     public var clientRequestToken: Swift.String?
     /// A description of the pull request.
@@ -4096,7 +4097,7 @@ public struct CreatePullRequestInput {
 
 extension CodeCommitClientTypes {
 
-    public enum PullRequestStatusEnum: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum PullRequestStatusEnum: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case closed
         case `open`
         case sdkUnknown(Swift.String)
@@ -4124,8 +4125,9 @@ extension CodeCommitClientTypes {
 }
 
 extension CodeCommitClientTypes {
+
     /// Returns information about a merge or potential merge between a source reference and a destination reference in a pull request.
-    public struct MergeMetadata {
+    public struct MergeMetadata: Swift.Sendable {
         /// A Boolean value indicating whether the merge has been made.
         public var isMerged: Swift.Bool
         /// The commit ID for the merge commit, if any.
@@ -4148,12 +4150,12 @@ extension CodeCommitClientTypes {
             self.mergedBy = mergedBy
         }
     }
-
 }
 
 extension CodeCommitClientTypes {
+
     /// Returns information about a pull request target.
-    public struct PullRequestTarget {
+    public struct PullRequestTarget: Swift.Sendable {
         /// The full commit ID that is the tip of the destination branch. This is the commit where the pull request was or will be merged.
         public var destinationCommit: Swift.String?
         /// The branch of the repository where the pull request changes are merged. Also known as the destination branch.
@@ -4188,12 +4190,12 @@ extension CodeCommitClientTypes {
             self.sourceReference = sourceReference
         }
     }
-
 }
 
 extension CodeCommitClientTypes {
+
     /// Returns information about a pull request.
-    public struct PullRequest {
+    public struct PullRequest: Swift.Sendable {
         /// The approval rules applied to the pull request.
         public var approvalRules: [CodeCommitClientTypes.ApprovalRule]?
         /// The Amazon Resource Name (ARN) of the user who created the pull request.
@@ -4244,10 +4246,9 @@ extension CodeCommitClientTypes {
             self.title = title
         }
     }
-
 }
 
-public struct CreatePullRequestOutput {
+public struct CreatePullRequestOutput: Swift.Sendable {
     /// Information about the newly created pull request.
     /// This member is required.
     public var pullRequest: CodeCommitClientTypes.PullRequest?
@@ -4435,7 +4436,7 @@ public struct PullRequestIdRequiredException: ClientRuntime.ModeledError, AWSCli
     }
 }
 
-public struct CreatePullRequestApprovalRuleInput {
+public struct CreatePullRequestApprovalRuleInput: Swift.Sendable {
     /// The content of the approval rule, including the number of approvals needed and the structure of an approval pool defined for approvals, if any. For more information about approval pools, see the CodeCommit User Guide. When you create the content of the approval rule, you can specify approvers in an approval pool in one of two ways:
     ///
     /// * CodeCommitApprovers: This option only requires an Amazon Web Services account and a resource. It can be used for both IAM users and federated access users whose name matches the provided resource name. This is a very powerful option that offers a great deal of flexibility. For example, if you specify the Amazon Web Services account 123456789012 and Mary_Major, all of the following would be counted as approvals coming from that user:
@@ -4472,7 +4473,7 @@ public struct CreatePullRequestApprovalRuleInput {
     }
 }
 
-public struct CreatePullRequestApprovalRuleOutput {
+public struct CreatePullRequestApprovalRuleOutput: Swift.Sendable {
     /// Information about the created approval rule.
     /// This member is required.
     public var approvalRule: CodeCommitClientTypes.ApprovalRule?
@@ -4610,6 +4611,31 @@ public struct InvalidTagsMapException: ClientRuntime.ModeledError, AWSClientRunt
     }
 }
 
+/// The requested action is not allowed.
+public struct OperationNotAllowedException: ClientRuntime.ModeledError, AWSClientRuntime.AWSServiceError, ClientRuntime.HTTPError, Swift.Error {
+
+    public struct Properties {
+        /// Any message associated with the exception.
+        public internal(set) var message: Swift.String? = nil
+    }
+
+    public internal(set) var properties = Properties()
+    public static var typeName: Swift.String { "OperationNotAllowedException" }
+    public static var fault: ClientRuntime.ErrorFault { .client }
+    public static var isRetryable: Swift.Bool { false }
+    public static var isThrottling: Swift.Bool { false }
+    public internal(set) var httpResponse = SmithyHTTPAPI.HTTPResponse()
+    public internal(set) var message: Swift.String?
+    public internal(set) var requestID: Swift.String?
+
+    public init(
+        message: Swift.String? = nil
+    )
+    {
+        self.properties.message = message
+    }
+}
+
 /// A repository resource limit was exceeded.
 public struct RepositoryLimitExceededException: ClientRuntime.ModeledError, AWSClientRuntime.AWSServiceError, ClientRuntime.HTTPError, Swift.Error {
 
@@ -4711,8 +4737,8 @@ public struct TooManyTagsException: ClientRuntime.ModeledError, AWSClientRuntime
 }
 
 /// Represents the input of a create repository operation.
-public struct CreateRepositoryInput {
-    /// The ID of the encryption key. You can view the ID of an encryption key in the KMS console, or use the KMS APIs to programmatically retrieve a key ID. For more information about acceptable values for kmsKeyID, see [KeyId](https://docs.aws.amazon.com/APIReference/API_Decrypt.html#KMS-Decrypt-request-KeyId) in the Decrypt API description in the Key Management Service API Reference. If no key is specified, the default aws/codecommit Amazon Web Services managed key is used.
+public struct CreateRepositoryInput: Swift.Sendable {
+    /// The ID of the encryption key. You can view the ID of an encryption key in the KMS console, or use the KMS APIs to programmatically retrieve a key ID. For more information about acceptable values for kmsKeyID, see [KeyId](https://docs.aws.amazon.com/kms/latest/APIReference/API_Decrypt.html#KMS-Decrypt-request-KeyId) in the Decrypt API description in the Key Management Service API Reference. If no key is specified, the default aws/codecommit Amazon Web Services managed key is used.
     public var kmsKeyId: Swift.String?
     /// A comment or description about the new repository. The description field for a repository accepts all HTML characters and all valid Unicode characters. Applications that do not HTML-encode the description and display it in a webpage can expose users to potentially malicious code. Make sure that you HTML-encode the description field in any application that uses this API to display the repository description on a webpage.
     public var repositoryDescription: Swift.String?
@@ -4737,7 +4763,7 @@ public struct CreateRepositoryInput {
 }
 
 /// Represents the output of a create repository operation.
-public struct CreateRepositoryOutput {
+public struct CreateRepositoryOutput: Swift.Sendable {
     /// Information about the newly created repository.
     public var repositoryMetadata: CodeCommitClientTypes.RepositoryMetadata?
 
@@ -4976,7 +5002,7 @@ public struct ReplacementTypeRequiredException: ClientRuntime.ModeledError, AWSC
 
 extension CodeCommitClientTypes {
 
-    public enum ReplacementTypeEnum: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ReplacementTypeEnum: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case keepBase
         case keepDestination
         case keepSource
@@ -5010,8 +5036,9 @@ extension CodeCommitClientTypes {
 }
 
 extension CodeCommitClientTypes {
+
     /// Information about a replacement content entry in the conflict of a merge or pull request operation.
-    public struct ReplaceContentEntry {
+    public struct ReplaceContentEntry: Swift.Sendable {
         /// The base-64 encoded content to use when the replacement type is USE_NEW_CONTENT.
         public var content: Foundation.Data?
         /// The file mode to apply during conflict resoltion.
@@ -5036,12 +5063,12 @@ extension CodeCommitClientTypes {
             self.replacementType = replacementType
         }
     }
-
 }
 
 extension CodeCommitClientTypes {
+
     /// If AUTOMERGE is the conflict resolution strategy, a list of inputs to use when resolving conflicts during a merge.
-    public struct ConflictResolution {
+    public struct ConflictResolution: Swift.Sendable {
         /// Files to be deleted as part of the merge conflict resolution.
         public var deleteFiles: [CodeCommitClientTypes.DeleteFileEntry]?
         /// Files to have content replaced as part of the merge conflict resolution.
@@ -5060,10 +5087,9 @@ extension CodeCommitClientTypes {
             self.setFileModes = setFileModes
         }
     }
-
 }
 
-public struct CreateUnreferencedMergeCommitInput {
+public struct CreateUnreferencedMergeCommitInput: Swift.Sendable {
     /// The name of the author who created the unreferenced commit. This information is used as both the author and committer for the commit.
     public var authorName: Swift.String?
     /// The commit message for the unreferenced commit.
@@ -5119,7 +5145,7 @@ public struct CreateUnreferencedMergeCommitInput {
     }
 }
 
-public struct CreateUnreferencedMergeCommitOutput {
+public struct CreateUnreferencedMergeCommitOutput: Swift.Sendable {
     /// The full commit ID of the commit that contains your merge results.
     public var commitId: Swift.String?
     /// The full SHA-1 pointer of the tree information for the commit that contains the merge results.
@@ -5135,7 +5161,7 @@ public struct CreateUnreferencedMergeCommitOutput {
     }
 }
 
-public struct DeleteApprovalRuleTemplateInput {
+public struct DeleteApprovalRuleTemplateInput: Swift.Sendable {
     /// The name of the approval rule template to delete.
     /// This member is required.
     public var approvalRuleTemplateName: Swift.String?
@@ -5148,7 +5174,7 @@ public struct DeleteApprovalRuleTemplateInput {
     }
 }
 
-public struct DeleteApprovalRuleTemplateOutput {
+public struct DeleteApprovalRuleTemplateOutput: Swift.Sendable {
     /// The system-generated ID of the deleted approval rule template. If the template has been previously deleted, the only response is a 200 OK.
     /// This member is required.
     public var approvalRuleTemplateId: Swift.String?
@@ -5187,7 +5213,7 @@ public struct DefaultBranchCannotBeDeletedException: ClientRuntime.ModeledError,
 }
 
 /// Represents the input of a delete branch operation.
-public struct DeleteBranchInput {
+public struct DeleteBranchInput: Swift.Sendable {
     /// The name of the branch to delete.
     /// This member is required.
     public var branchName: Swift.String?
@@ -5206,7 +5232,7 @@ public struct DeleteBranchInput {
 }
 
 /// Represents the output of a delete branch operation.
-public struct DeleteBranchOutput {
+public struct DeleteBranchOutput: Swift.Sendable {
     /// Information about the branch deleted by the operation, including the branch name and the commit ID that was the tip of the branch.
     public var deletedBranch: CodeCommitClientTypes.BranchInfo?
 
@@ -5318,7 +5344,7 @@ public struct InvalidCommentIdException: ClientRuntime.ModeledError, AWSClientRu
     }
 }
 
-public struct DeleteCommentContentInput {
+public struct DeleteCommentContentInput: Swift.Sendable {
     /// The unique, system-generated ID of the comment. To get this ID, use [GetCommentsForComparedCommit] or [GetCommentsForPullRequest].
     /// This member is required.
     public var commentId: Swift.String?
@@ -5332,8 +5358,9 @@ public struct DeleteCommentContentInput {
 }
 
 extension CodeCommitClientTypes {
+
     /// Returns information about a specific comment.
-    public struct Comment {
+    public struct Comment: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the person who posted the comment.
         public var authorArn: Swift.String?
         /// The emoji reactions to a comment, if any, submitted by the user whose credentials are associated with the call to the API.
@@ -5380,10 +5407,9 @@ extension CodeCommitClientTypes {
             self.reactionCounts = reactionCounts
         }
     }
-
 }
 
-public struct DeleteCommentContentOutput {
+public struct DeleteCommentContentOutput: Swift.Sendable {
     /// Information about the comment you just deleted.
     public var comment: CodeCommitClientTypes.Comment?
 
@@ -5395,7 +5421,7 @@ public struct DeleteCommentContentOutput {
     }
 }
 
-public struct DeleteFileInput {
+public struct DeleteFileInput: Swift.Sendable {
     /// The name of the branch where the commit that deletes the file is made.
     /// This member is required.
     public var branchName: Swift.String?
@@ -5439,7 +5465,7 @@ public struct DeleteFileInput {
     }
 }
 
-public struct DeleteFileOutput {
+public struct DeleteFileOutput: Swift.Sendable {
     /// The blob ID removed from the tree as part of deleting the file.
     /// This member is required.
     public var blobId: Swift.String?
@@ -5467,7 +5493,7 @@ public struct DeleteFileOutput {
     }
 }
 
-public struct DeletePullRequestApprovalRuleInput {
+public struct DeletePullRequestApprovalRuleInput: Swift.Sendable {
     /// The name of the approval rule you want to delete.
     /// This member is required.
     public var approvalRuleName: Swift.String?
@@ -5485,7 +5511,7 @@ public struct DeletePullRequestApprovalRuleInput {
     }
 }
 
-public struct DeletePullRequestApprovalRuleOutput {
+public struct DeletePullRequestApprovalRuleOutput: Swift.Sendable {
     /// The ID of the deleted approval rule. If the approval rule was deleted in an earlier API call, the response is 200 OK without content.
     /// This member is required.
     public var approvalRuleId: Swift.String?
@@ -5499,7 +5525,7 @@ public struct DeletePullRequestApprovalRuleOutput {
 }
 
 /// Represents the input of a delete repository operation.
-public struct DeleteRepositoryInput {
+public struct DeleteRepositoryInput: Swift.Sendable {
     /// The name of the repository to delete.
     /// This member is required.
     public var repositoryName: Swift.String?
@@ -5513,7 +5539,7 @@ public struct DeleteRepositoryInput {
 }
 
 /// Represents the output of a delete repository operation.
-public struct DeleteRepositoryOutput {
+public struct DeleteRepositoryOutput: Swift.Sendable {
     /// The ID of the repository that was deleted.
     public var repositoryId: Swift.String?
 
@@ -5525,7 +5551,7 @@ public struct DeleteRepositoryOutput {
     }
 }
 
-public struct DescribeMergeConflictsInput {
+public struct DescribeMergeConflictsInput: Swift.Sendable {
     /// The level of conflict detail to use. If unspecified, the default FILE_LEVEL is used, which returns a not-mergeable result if the same file has differences in both branches. If LINE_LEVEL is specified, a conflict is considered not mergeable if the same file in both branches has differences on the same line.
     public var conflictDetailLevel: CodeCommitClientTypes.ConflictDetailLevelTypeEnum?
     /// Specifies which branch to use when resolving conflicts, or whether to attempt automatically merging two versions of a file. The default is NONE, which requires any conflicts to be resolved manually before the merge operation is successful.
@@ -5574,7 +5600,7 @@ public struct DescribeMergeConflictsInput {
     }
 }
 
-public struct DescribeMergeConflictsOutput {
+public struct DescribeMergeConflictsOutput: Swift.Sendable {
     /// The commit ID of the merge base.
     public var baseCommitId: Swift.String?
     /// Contains metadata about the conflicts found in the merge.
@@ -5687,7 +5713,7 @@ public struct InvalidPullRequestEventTypeException: ClientRuntime.ModeledError, 
 
 extension CodeCommitClientTypes {
 
-    public enum PullRequestEventType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum PullRequestEventType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case pullRequestApprovalRuleCreated
         case pullRequestApprovalRuleDeleted
         case pullRequestApprovalRuleOverridden
@@ -5735,7 +5761,7 @@ extension CodeCommitClientTypes {
     }
 }
 
-public struct DescribePullRequestEventsInput {
+public struct DescribePullRequestEventsInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the user whose actions resulted in the event. Examples include updating the pull request with more commits or changing the status of a pull request.
     public var actorArn: Swift.String?
     /// A non-zero, non-negative integer used to limit the number of returned results. The default is 100 events, which is also the maximum number of events that can be returned in a result.
@@ -5765,8 +5791,9 @@ public struct DescribePullRequestEventsInput {
 }
 
 extension CodeCommitClientTypes {
+
     /// Metadata about the pull request that is used when comparing the pull request source with its destination.
-    public struct PullRequestCreatedEventMetadata {
+    public struct PullRequestCreatedEventMetadata: Swift.Sendable {
         /// The commit ID of the tip of the branch specified as the destination branch when the pull request was created.
         public var destinationCommitId: Swift.String?
         /// The commit ID of the most recent commit that the source branch and the destination branch have in common.
@@ -5789,12 +5816,12 @@ extension CodeCommitClientTypes {
             self.sourceCommitId = sourceCommitId
         }
     }
-
 }
 
 extension CodeCommitClientTypes {
+
     /// Returns information about the change in the merge state for a pull request event.
-    public struct PullRequestMergedStateChangedEventMetadata {
+    public struct PullRequestMergedStateChangedEventMetadata: Swift.Sendable {
         /// The name of the branch that the pull request is merged into.
         public var destinationReference: Swift.String?
         /// Information about the merge state change event.
@@ -5813,12 +5840,12 @@ extension CodeCommitClientTypes {
             self.repositoryName = repositoryName
         }
     }
-
 }
 
 extension CodeCommitClientTypes {
+
     /// Information about an update to the source branch of a pull request.
-    public struct PullRequestSourceReferenceUpdatedEventMetadata {
+    public struct PullRequestSourceReferenceUpdatedEventMetadata: Swift.Sendable {
         /// The full commit ID of the commit in the source branch that was the tip of the branch at the time the pull request was updated.
         public var afterCommitId: Swift.String?
         /// The full commit ID of the commit in the destination branch that was the tip of the branch at the time the pull request was updated.
@@ -5841,12 +5868,12 @@ extension CodeCommitClientTypes {
             self.repositoryName = repositoryName
         }
     }
-
 }
 
 extension CodeCommitClientTypes {
+
     /// Information about a change to the status of a pull request.
-    public struct PullRequestStatusChangedEventMetadata {
+    public struct PullRequestStatusChangedEventMetadata: Swift.Sendable {
         /// The changed status of the pull request.
         public var pullRequestStatus: CodeCommitClientTypes.PullRequestStatusEnum?
 
@@ -5857,12 +5884,12 @@ extension CodeCommitClientTypes {
             self.pullRequestStatus = pullRequestStatus
         }
     }
-
 }
 
 extension CodeCommitClientTypes {
+
     /// Returns information about a pull request event.
-    public struct PullRequestEvent {
+    public struct PullRequestEvent: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the user whose actions resulted in the event. Examples include updating the pull request with more commits or changing the status of a pull request.
         public var actorArn: Swift.String?
         /// Information about a pull request event.
@@ -5913,10 +5940,9 @@ extension CodeCommitClientTypes {
             self.pullRequestStatusChangedEventMetadata = pullRequestStatusChangedEventMetadata
         }
     }
-
 }
 
-public struct DescribePullRequestEventsOutput {
+public struct DescribePullRequestEventsOutput: Swift.Sendable {
     /// An enumeration token that can be used in a request to return the next batch of the results.
     public var nextToken: Swift.String?
     /// Information about the pull request events.
@@ -5933,7 +5959,7 @@ public struct DescribePullRequestEventsOutput {
     }
 }
 
-public struct DisassociateApprovalRuleTemplateFromRepositoryInput {
+public struct DisassociateApprovalRuleTemplateFromRepositoryInput: Swift.Sendable {
     /// The name of the approval rule template to disassociate from a specified repository.
     /// This member is required.
     public var approvalRuleTemplateName: Swift.String?
@@ -6026,7 +6052,7 @@ public struct RevisionNotCurrentException: ClientRuntime.ModeledError, AWSClient
     }
 }
 
-public struct EvaluatePullRequestApprovalRulesInput {
+public struct EvaluatePullRequestApprovalRulesInput: Swift.Sendable {
     /// The system-generated ID of the pull request you want to evaluate.
     /// This member is required.
     public var pullRequestId: Swift.String?
@@ -6045,8 +6071,9 @@ public struct EvaluatePullRequestApprovalRulesInput {
 }
 
 extension CodeCommitClientTypes {
+
     /// Returns information about the approval rules applied to a pull request and whether conditions have been met.
-    public struct Evaluation {
+    public struct Evaluation: Swift.Sendable {
         /// The names of the approval rules that have not had their conditions met.
         public var approvalRulesNotSatisfied: [Swift.String]?
         /// The names of the approval rules that have had their conditions met.
@@ -6069,10 +6096,9 @@ extension CodeCommitClientTypes {
             self.overridden = overridden
         }
     }
-
 }
 
-public struct EvaluatePullRequestApprovalRulesOutput {
+public struct EvaluatePullRequestApprovalRulesOutput: Swift.Sendable {
     /// The result of the evaluation, including the names of the rules whose conditions have been met (if any), the names of the rules whose conditions have not been met (if any), whether the pull request is in the approved state, and whether the pull request approval rule has been set aside by an override.
     /// This member is required.
     public var evaluation: CodeCommitClientTypes.Evaluation?
@@ -6085,7 +6111,7 @@ public struct EvaluatePullRequestApprovalRulesOutput {
     }
 }
 
-public struct GetApprovalRuleTemplateInput {
+public struct GetApprovalRuleTemplateInput: Swift.Sendable {
     /// The name of the approval rule template for which you want to get information.
     /// This member is required.
     public var approvalRuleTemplateName: Swift.String?
@@ -6098,7 +6124,7 @@ public struct GetApprovalRuleTemplateInput {
     }
 }
 
-public struct GetApprovalRuleTemplateOutput {
+public struct GetApprovalRuleTemplateOutput: Swift.Sendable {
     /// The content and structure of the approval rule template.
     /// This member is required.
     public var approvalRuleTemplate: CodeCommitClientTypes.ApprovalRuleTemplate?
@@ -6162,7 +6188,7 @@ public struct InvalidBlobIdException: ClientRuntime.ModeledError, AWSClientRunti
 }
 
 /// Represents the input of a get blob operation.
-public struct GetBlobInput {
+public struct GetBlobInput: Swift.Sendable {
     /// The ID of the blob, which is its SHA-1 pointer.
     /// This member is required.
     public var blobId: Swift.String?
@@ -6181,7 +6207,7 @@ public struct GetBlobInput {
 }
 
 /// Represents the output of a get blob operation.
-public struct GetBlobOutput {
+public struct GetBlobOutput: Swift.Sendable {
     /// The content of the blob, usually a file.
     /// This member is required.
     public var content: Foundation.Data?
@@ -6195,7 +6221,7 @@ public struct GetBlobOutput {
 }
 
 /// Represents the input of a get branch operation.
-public struct GetBranchInput {
+public struct GetBranchInput: Swift.Sendable {
     /// The name of the branch for which you want to retrieve information.
     public var branchName: Swift.String?
     /// The name of the repository that contains the branch for which you want to retrieve information.
@@ -6212,7 +6238,7 @@ public struct GetBranchInput {
 }
 
 /// Represents the output of a get branch operation.
-public struct GetBranchOutput {
+public struct GetBranchOutput: Swift.Sendable {
     /// The name of the branch.
     public var branch: CodeCommitClientTypes.BranchInfo?
 
@@ -6224,7 +6250,7 @@ public struct GetBranchOutput {
     }
 }
 
-public struct GetCommentInput {
+public struct GetCommentInput: Swift.Sendable {
     /// The unique, system-generated ID of the comment. To get this ID, use [GetCommentsForComparedCommit] or [GetCommentsForPullRequest].
     /// This member is required.
     public var commentId: Swift.String?
@@ -6237,7 +6263,7 @@ public struct GetCommentInput {
     }
 }
 
-public struct GetCommentOutput {
+public struct GetCommentOutput: Swift.Sendable {
     /// The contents of the comment.
     public var comment: CodeCommitClientTypes.Comment?
 
@@ -6274,7 +6300,7 @@ public struct InvalidReactionUserArnException: ClientRuntime.ModeledError, AWSCl
     }
 }
 
-public struct GetCommentReactionsInput {
+public struct GetCommentReactionsInput: Swift.Sendable {
     /// The ID of the comment for which you want to get reactions information.
     /// This member is required.
     public var commentId: Swift.String?
@@ -6300,8 +6326,9 @@ public struct GetCommentReactionsInput {
 }
 
 extension CodeCommitClientTypes {
+
     /// Information about the values for reactions to a comment. CodeCommit supports a limited set of reactions.
-    public struct ReactionValueFormats {
+    public struct ReactionValueFormats: Swift.Sendable {
         /// The Emoji Version 1.0 graphic of the reaction. These graphics are interpreted slightly differently on different operating systems.
         public var emoji: Swift.String?
         /// The emoji short code for the reaction. Short codes are interpreted slightly differently on different operating systems.
@@ -6320,12 +6347,12 @@ extension CodeCommitClientTypes {
             self.unicode = unicode
         }
     }
-
 }
 
 extension CodeCommitClientTypes {
+
     /// Information about the reaction values provided by users on a comment.
-    public struct ReactionForComment {
+    public struct ReactionForComment: Swift.Sendable {
         /// The reaction for a specified comment.
         public var reaction: CodeCommitClientTypes.ReactionValueFormats?
         /// The Amazon Resource Names (ARNs) of users who have provided reactions to the comment.
@@ -6344,10 +6371,9 @@ extension CodeCommitClientTypes {
             self.reactionsFromDeletedUsersCount = reactionsFromDeletedUsersCount
         }
     }
-
 }
 
-public struct GetCommentReactionsOutput {
+public struct GetCommentReactionsOutput: Swift.Sendable {
     /// An enumeration token that can be used in a request to return the next batch of the results.
     public var nextToken: Swift.String?
     /// An array of reactions to the specified comment.
@@ -6364,7 +6390,7 @@ public struct GetCommentReactionsOutput {
     }
 }
 
-public struct GetCommentsForComparedCommitInput {
+public struct GetCommentsForComparedCommitInput: Swift.Sendable {
     /// To establish the directionality of the comparison, the full commit ID of the after commit.
     /// This member is required.
     public var afterCommitId: Swift.String?
@@ -6396,7 +6422,7 @@ public struct GetCommentsForComparedCommitInput {
 
 extension CodeCommitClientTypes {
 
-    public enum RelativeFileVersionEnum: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum RelativeFileVersionEnum: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case after
         case before
         case sdkUnknown(Swift.String)
@@ -6424,8 +6450,9 @@ extension CodeCommitClientTypes {
 }
 
 extension CodeCommitClientTypes {
+
     /// Returns information about the location of a change or comment in the comparison between two commits or a pull request.
-    public struct Location {
+    public struct Location: Swift.Sendable {
         /// The name of the file being compared, including its extension and subdirectory, if any.
         public var filePath: Swift.String?
         /// The position of a change in a compared file, in line number format.
@@ -6444,12 +6471,12 @@ extension CodeCommitClientTypes {
             self.relativeFileVersion = relativeFileVersion
         }
     }
-
 }
 
 extension CodeCommitClientTypes {
+
     /// Returns information about comments on the comparison between two commits.
-    public struct CommentsForComparedCommit {
+    public struct CommentsForComparedCommit: Swift.Sendable {
         /// The full blob ID of the commit used to establish the after of the comparison.
         public var afterBlobId: Swift.String?
         /// The full commit ID of the commit used to establish the after of the comparison.
@@ -6484,10 +6511,9 @@ extension CodeCommitClientTypes {
             self.repositoryName = repositoryName
         }
     }
-
 }
 
-public struct GetCommentsForComparedCommitOutput {
+public struct GetCommentsForComparedCommitOutput: Swift.Sendable {
     /// A list of comment objects on the compared commit.
     public var commentsForComparedCommitData: [CodeCommitClientTypes.CommentsForComparedCommit]?
     /// An enumeration token that can be used in a request to return the next batch of the results.
@@ -6528,7 +6554,7 @@ public struct RepositoryNotAssociatedWithPullRequestException: ClientRuntime.Mod
     }
 }
 
-public struct GetCommentsForPullRequestInput {
+public struct GetCommentsForPullRequestInput: Swift.Sendable {
     /// The full commit ID of the commit in the source branch that was the tip of the branch at the time the comment was made. Requirement is conditional: afterCommitId must be specified when repositoryName is included.
     public var afterCommitId: Swift.String?
     /// The full commit ID of the commit in the destination branch that was the tip of the branch at the time the pull request was created. Requirement is conditional: beforeCommitId must be specified when repositoryName is included.
@@ -6562,8 +6588,9 @@ public struct GetCommentsForPullRequestInput {
 }
 
 extension CodeCommitClientTypes {
+
     /// Returns information about comments on a pull request.
-    public struct CommentsForPullRequest {
+    public struct CommentsForPullRequest: Swift.Sendable {
         /// The full blob ID of the file on which you want to comment on the source commit.
         public var afterBlobId: Swift.String?
         /// The full commit ID of the commit that was the tip of the source branch at the time the comment was made.
@@ -6602,10 +6629,9 @@ extension CodeCommitClientTypes {
             self.repositoryName = repositoryName
         }
     }
-
 }
 
-public struct GetCommentsForPullRequestOutput {
+public struct GetCommentsForPullRequestOutput: Swift.Sendable {
     /// An array of comment objects on the pull request.
     public var commentsForPullRequestData: [CodeCommitClientTypes.CommentsForPullRequest]?
     /// An enumeration token that can be used in a request to return the next batch of the results.
@@ -6647,7 +6673,7 @@ public struct CommitIdDoesNotExistException: ClientRuntime.ModeledError, AWSClie
 }
 
 /// Represents the input of a get commit operation.
-public struct GetCommitInput {
+public struct GetCommitInput: Swift.Sendable {
     /// The commit ID. Commit IDs are the full SHA ID of the commit.
     /// This member is required.
     public var commitId: Swift.String?
@@ -6666,7 +6692,7 @@ public struct GetCommitInput {
 }
 
 /// Represents the output of a get commit operation.
-public struct GetCommitOutput {
+public struct GetCommitOutput: Swift.Sendable {
     /// A commit data type object that contains information about the specified commit.
     /// This member is required.
     public var commit: CodeCommitClientTypes.Commit?
@@ -6704,7 +6730,7 @@ public struct PathDoesNotExistException: ClientRuntime.ModeledError, AWSClientRu
     }
 }
 
-public struct GetDifferencesInput {
+public struct GetDifferencesInput: Swift.Sendable {
     /// The branch, tag, HEAD, or other fully qualified reference used to identify a commit.
     /// This member is required.
     public var afterCommitSpecifier: Swift.String?
@@ -6743,8 +6769,9 @@ public struct GetDifferencesInput {
 }
 
 extension CodeCommitClientTypes {
+
     /// Returns information about a set of differences for a commit specifier.
-    public struct Difference {
+    public struct Difference: Swift.Sendable {
         /// Information about an afterBlob data type object, including the ID, the file mode permission code, and the path.
         public var afterBlob: CodeCommitClientTypes.BlobMetadata?
         /// Information about a beforeBlob data type object, including the ID, the file mode permission code, and the path.
@@ -6763,10 +6790,9 @@ extension CodeCommitClientTypes {
             self.changeType = changeType
         }
     }
-
 }
 
-public struct GetDifferencesOutput {
+public struct GetDifferencesOutput: Swift.Sendable {
     /// A data type object that contains information about the differences, including whether the difference is added, modified, or deleted (A, D, M).
     public var differences: [CodeCommitClientTypes.Difference]?
     /// An enumeration token that can be used in a request to return the next batch of the results.
@@ -6782,7 +6808,7 @@ public struct GetDifferencesOutput {
     }
 }
 
-public struct GetFileInput {
+public struct GetFileInput: Swift.Sendable {
     /// The fully quaified reference that identifies the commit that contains the file. For example, you can specify a full commit ID, a tag, a branch name, or a reference such as refs/heads/main. If none is provided, the head commit is used.
     public var commitSpecifier: Swift.String?
     /// The fully qualified path to the file, including the full name and extension of the file. For example, /examples/file.md is the fully qualified path to a file named file.md in a folder named examples.
@@ -6804,7 +6830,7 @@ public struct GetFileInput {
     }
 }
 
-public struct GetFileOutput {
+public struct GetFileOutput: Swift.Sendable {
     /// The blob ID of the object that represents the file content.
     /// This member is required.
     public var blobId: Swift.String?
@@ -6867,7 +6893,7 @@ public struct FolderDoesNotExistException: ClientRuntime.ModeledError, AWSClient
     }
 }
 
-public struct GetFolderInput {
+public struct GetFolderInput: Swift.Sendable {
     /// A fully qualified reference used to identify a commit that contains the version of the folder's content to return. A fully qualified reference can be a commit ID, branch name, tag, or reference such as HEAD. If no specifier is provided, the folder content is returned as it exists in the HEAD commit.
     public var commitSpecifier: Swift.String?
     /// The fully qualified path to the folder whose contents are returned, including the folder name. For example, /examples is a fully-qualified path to a folder named examples that was created off of the root directory (/) of a repository.
@@ -6890,8 +6916,9 @@ public struct GetFolderInput {
 }
 
 extension CodeCommitClientTypes {
+
     /// Returns information about a file in a repository.
-    public struct File {
+    public struct File: Swift.Sendable {
         /// The fully qualified path to the file in the repository.
         public var absolutePath: Swift.String?
         /// The blob ID that contains the file information.
@@ -6914,12 +6941,12 @@ extension CodeCommitClientTypes {
             self.relativePath = relativePath
         }
     }
-
 }
 
 extension CodeCommitClientTypes {
+
     /// Returns information about a folder in a repository.
-    public struct Folder {
+    public struct Folder: Swift.Sendable {
         /// The fully qualified path of the folder in the repository.
         public var absolutePath: Swift.String?
         /// The relative path of the specified folder from the folder where the query originated.
@@ -6938,12 +6965,12 @@ extension CodeCommitClientTypes {
             self.treeId = treeId
         }
     }
-
 }
 
 extension CodeCommitClientTypes {
+
     /// Returns information about a submodule reference in a repository folder.
-    public struct SubModule {
+    public struct SubModule: Swift.Sendable {
         /// The fully qualified path to the folder that contains the reference to the submodule.
         public var absolutePath: Swift.String?
         /// The commit ID that contains the reference to the submodule.
@@ -6962,12 +6989,12 @@ extension CodeCommitClientTypes {
             self.relativePath = relativePath
         }
     }
-
 }
 
 extension CodeCommitClientTypes {
+
     /// Returns information about a symbolic link in a repository folder.
-    public struct SymbolicLink {
+    public struct SymbolicLink: Swift.Sendable {
         /// The fully qualified path to the folder that contains the symbolic link.
         public var absolutePath: Swift.String?
         /// The blob ID that contains the information about the symbolic link.
@@ -6990,10 +7017,9 @@ extension CodeCommitClientTypes {
             self.relativePath = relativePath
         }
     }
-
 }
 
-public struct GetFolderOutput {
+public struct GetFolderOutput: Swift.Sendable {
     /// The full commit ID used as a reference for the returned version of the folder content.
     /// This member is required.
     public var commitId: Swift.String?
@@ -7031,7 +7057,7 @@ public struct GetFolderOutput {
     }
 }
 
-public struct GetMergeCommitInput {
+public struct GetMergeCommitInput: Swift.Sendable {
     /// The level of conflict detail to use. If unspecified, the default FILE_LEVEL is used, which returns a not-mergeable result if the same file has differences in both branches. If LINE_LEVEL is specified, a conflict is considered not mergeable if the same file in both branches has differences on the same line.
     public var conflictDetailLevel: CodeCommitClientTypes.ConflictDetailLevelTypeEnum?
     /// Specifies which branch to use when resolving conflicts, or whether to attempt automatically merging two versions of a file. The default is NONE, which requires any conflicts to be resolved manually before the merge operation is successful.
@@ -7062,7 +7088,7 @@ public struct GetMergeCommitInput {
     }
 }
 
-public struct GetMergeCommitOutput {
+public struct GetMergeCommitOutput: Swift.Sendable {
     /// The commit ID of the merge base.
     public var baseCommitId: Swift.String?
     /// The commit ID of the destination commit specifier that was used in the merge evaluation.
@@ -7136,7 +7162,7 @@ public struct InvalidSourceCommitSpecifierException: ClientRuntime.ModeledError,
     }
 }
 
-public struct GetMergeConflictsInput {
+public struct GetMergeConflictsInput: Swift.Sendable {
     /// The level of conflict detail to use. If unspecified, the default FILE_LEVEL is used, which returns a not-mergeable result if the same file has differences in both branches. If LINE_LEVEL is specified, a conflict is considered not mergeable if the same file in both branches has differences on the same line.
     public var conflictDetailLevel: CodeCommitClientTypes.ConflictDetailLevelTypeEnum?
     /// Specifies which branch to use when resolving conflicts, or whether to attempt automatically merging two versions of a file. The default is NONE, which requires any conflicts to be resolved manually before the merge operation is successful.
@@ -7180,7 +7206,7 @@ public struct GetMergeConflictsInput {
     }
 }
 
-public struct GetMergeConflictsOutput {
+public struct GetMergeConflictsOutput: Swift.Sendable {
     /// The commit ID of the merge base.
     public var baseCommitId: Swift.String?
     /// A list of metadata for any conflicting files. If the specified merge strategy is FAST_FORWARD_MERGE, this list is always empty.
@@ -7216,7 +7242,7 @@ public struct GetMergeConflictsOutput {
     }
 }
 
-public struct GetMergeOptionsInput {
+public struct GetMergeOptionsInput: Swift.Sendable {
     /// The level of conflict detail to use. If unspecified, the default FILE_LEVEL is used, which returns a not-mergeable result if the same file has differences in both branches. If LINE_LEVEL is specified, a conflict is considered not mergeable if the same file in both branches has differences on the same line.
     public var conflictDetailLevel: CodeCommitClientTypes.ConflictDetailLevelTypeEnum?
     /// Specifies which branch to use when resolving conflicts, or whether to attempt automatically merging two versions of a file. The default is NONE, which requires any conflicts to be resolved manually before the merge operation is successful.
@@ -7247,7 +7273,7 @@ public struct GetMergeOptionsInput {
     }
 }
 
-public struct GetMergeOptionsOutput {
+public struct GetMergeOptionsOutput: Swift.Sendable {
     /// The commit ID of the merge base.
     /// This member is required.
     public var baseCommitId: Swift.String?
@@ -7275,7 +7301,7 @@ public struct GetMergeOptionsOutput {
     }
 }
 
-public struct GetPullRequestInput {
+public struct GetPullRequestInput: Swift.Sendable {
     /// The system-generated ID of the pull request. To get this ID, use [ListPullRequests].
     /// This member is required.
     public var pullRequestId: Swift.String?
@@ -7288,7 +7314,7 @@ public struct GetPullRequestInput {
     }
 }
 
-public struct GetPullRequestOutput {
+public struct GetPullRequestOutput: Swift.Sendable {
     /// Information about the specified pull request.
     /// This member is required.
     public var pullRequest: CodeCommitClientTypes.PullRequest?
@@ -7301,7 +7327,7 @@ public struct GetPullRequestOutput {
     }
 }
 
-public struct GetPullRequestApprovalStatesInput {
+public struct GetPullRequestApprovalStatesInput: Swift.Sendable {
     /// The system-generated ID for the pull request.
     /// This member is required.
     public var pullRequestId: Swift.String?
@@ -7319,7 +7345,7 @@ public struct GetPullRequestApprovalStatesInput {
     }
 }
 
-public struct GetPullRequestApprovalStatesOutput {
+public struct GetPullRequestApprovalStatesOutput: Swift.Sendable {
     /// Information about users who have approved the pull request.
     public var approvals: [CodeCommitClientTypes.Approval]?
 
@@ -7331,7 +7357,7 @@ public struct GetPullRequestApprovalStatesOutput {
     }
 }
 
-public struct GetPullRequestOverrideStateInput {
+public struct GetPullRequestOverrideStateInput: Swift.Sendable {
     /// The ID of the pull request for which you want to get information about whether approval rules have been set aside (overridden).
     /// This member is required.
     public var pullRequestId: Swift.String?
@@ -7349,7 +7375,7 @@ public struct GetPullRequestOverrideStateInput {
     }
 }
 
-public struct GetPullRequestOverrideStateOutput {
+public struct GetPullRequestOverrideStateOutput: Swift.Sendable {
     /// A Boolean value that indicates whether a pull request has had its rules set aside (TRUE) or whether all approval rules still apply (FALSE).
     public var overridden: Swift.Bool
     /// The Amazon Resource Name (ARN) of the user or identity that overrode the rules and their requirements for the pull request.
@@ -7366,7 +7392,7 @@ public struct GetPullRequestOverrideStateOutput {
 }
 
 /// Represents the input of a get repository operation.
-public struct GetRepositoryInput {
+public struct GetRepositoryInput: Swift.Sendable {
     /// The name of the repository to get information about.
     /// This member is required.
     public var repositoryName: Swift.String?
@@ -7380,7 +7406,7 @@ public struct GetRepositoryInput {
 }
 
 /// Represents the output of a get repository operation.
-public struct GetRepositoryOutput {
+public struct GetRepositoryOutput: Swift.Sendable {
     /// Information about the repository.
     public var repositoryMetadata: CodeCommitClientTypes.RepositoryMetadata?
 
@@ -7393,7 +7419,7 @@ public struct GetRepositoryOutput {
 }
 
 /// Represents the input of a get repository triggers operation.
-public struct GetRepositoryTriggersInput {
+public struct GetRepositoryTriggersInput: Swift.Sendable {
     /// The name of the repository for which the trigger is configured.
     /// This member is required.
     public var repositoryName: Swift.String?
@@ -7408,7 +7434,7 @@ public struct GetRepositoryTriggersInput {
 
 extension CodeCommitClientTypes {
 
-    public enum RepositoryTriggerEventEnum: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum RepositoryTriggerEventEnum: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case all
         case createReference
         case deleteReference
@@ -7442,8 +7468,9 @@ extension CodeCommitClientTypes {
 }
 
 extension CodeCommitClientTypes {
+
     /// Information about a trigger for a repository. If you want to receive notifications about repository events, consider using notifications instead of triggers. For more information, see [Configuring notifications for repository events](https://docs.aws.amazon.com/codecommit/latest/userguide/how-to-repository-email.html).
-    public struct RepositoryTrigger {
+    public struct RepositoryTrigger: Swift.Sendable {
         /// The branches to be included in the trigger configuration. If you specify an empty array, the trigger applies to all branches. Although no content is required in the array, you must include the array itself.
         public var branches: [Swift.String]?
         /// Any custom data associated with the trigger to be included in the information sent to the target of the trigger.
@@ -7473,11 +7500,10 @@ extension CodeCommitClientTypes {
             self.name = name
         }
     }
-
 }
 
 /// Represents the output of a get repository triggers operation.
-public struct GetRepositoryTriggersOutput {
+public struct GetRepositoryTriggersOutput: Swift.Sendable {
     /// The system-generated unique ID for the trigger.
     public var configurationId: Swift.String?
     /// The JSON block of configuration information for each trigger.
@@ -7493,7 +7519,7 @@ public struct GetRepositoryTriggersOutput {
     }
 }
 
-public struct ListApprovalRuleTemplatesInput {
+public struct ListApprovalRuleTemplatesInput: Swift.Sendable {
     /// A non-zero, non-negative integer used to limit the number of returned results.
     public var maxResults: Swift.Int?
     /// An enumeration token that, when provided in a request, returns the next batch of the results.
@@ -7509,7 +7535,7 @@ public struct ListApprovalRuleTemplatesInput {
     }
 }
 
-public struct ListApprovalRuleTemplatesOutput {
+public struct ListApprovalRuleTemplatesOutput: Swift.Sendable {
     /// The names of all the approval rule templates found in the Amazon Web Services Region for your Amazon Web Services account.
     public var approvalRuleTemplateNames: [Swift.String]?
     /// An enumeration token that allows the operation to batch the next results of the operation.
@@ -7525,7 +7551,7 @@ public struct ListApprovalRuleTemplatesOutput {
     }
 }
 
-public struct ListAssociatedApprovalRuleTemplatesForRepositoryInput {
+public struct ListAssociatedApprovalRuleTemplatesForRepositoryInput: Swift.Sendable {
     /// A non-zero, non-negative integer used to limit the number of returned results.
     public var maxResults: Swift.Int?
     /// An enumeration token that, when provided in a request, returns the next batch of the results.
@@ -7546,7 +7572,7 @@ public struct ListAssociatedApprovalRuleTemplatesForRepositoryInput {
     }
 }
 
-public struct ListAssociatedApprovalRuleTemplatesForRepositoryOutput {
+public struct ListAssociatedApprovalRuleTemplatesForRepositoryOutput: Swift.Sendable {
     /// The names of all approval rule templates associated with the repository.
     public var approvalRuleTemplateNames: [Swift.String]?
     /// An enumeration token that allows the operation to batch the next results of the operation.
@@ -7563,7 +7589,7 @@ public struct ListAssociatedApprovalRuleTemplatesForRepositoryOutput {
 }
 
 /// Represents the input of a list branches operation.
-public struct ListBranchesInput {
+public struct ListBranchesInput: Swift.Sendable {
     /// An enumeration token that allows the operation to batch the results.
     public var nextToken: Swift.String?
     /// The name of the repository that contains the branches.
@@ -7581,7 +7607,7 @@ public struct ListBranchesInput {
 }
 
 /// Represents the output of a list branches operation.
-public struct ListBranchesOutput {
+public struct ListBranchesOutput: Swift.Sendable {
     /// The list of branch names.
     public var branches: [Swift.String]?
     /// An enumeration token that returns the batch of the results.
@@ -7597,7 +7623,7 @@ public struct ListBranchesOutput {
     }
 }
 
-public struct ListFileCommitHistoryInput {
+public struct ListFileCommitHistoryInput: Swift.Sendable {
     /// The fully quaified reference that identifies the commit that contains the file. For example, you can specify a full commit ID, a tag, a branch name, or a reference such as refs/heads/main. If none is provided, the head commit is used.
     public var commitSpecifier: Swift.String?
     /// The full path of the file whose history you want to retrieve, including the name of the file.
@@ -7628,8 +7654,9 @@ public struct ListFileCommitHistoryInput {
 }
 
 extension CodeCommitClientTypes {
+
     /// Information about a version of a file.
-    public struct FileVersion {
+    public struct FileVersion: Swift.Sendable {
         /// The blob ID of the object that represents the content of the file in this version.
         public var blobId: Swift.String?
         /// Returns information about a specific commit.
@@ -7652,10 +7679,9 @@ extension CodeCommitClientTypes {
             self.revisionChildren = revisionChildren
         }
     }
-
 }
 
-public struct ListFileCommitHistoryOutput {
+public struct ListFileCommitHistoryOutput: Swift.Sendable {
     /// An enumeration token that can be used to return the next batch of results.
     public var nextToken: Swift.String?
     /// An array of FileVersion objects that form a directed acyclic graph (DAG) of the changes to the file made by the commits that changed the file.
@@ -7722,7 +7748,7 @@ public struct InvalidPullRequestStatusException: ClientRuntime.ModeledError, AWS
     }
 }
 
-public struct ListPullRequestsInput {
+public struct ListPullRequestsInput: Swift.Sendable {
     /// Optional. The Amazon Resource Name (ARN) of the user who created the pull request. If used, this filters the results to pull requests created by that user.
     public var authorArn: Swift.String?
     /// A non-zero, non-negative integer used to limit the number of returned results.
@@ -7751,7 +7777,7 @@ public struct ListPullRequestsInput {
     }
 }
 
-public struct ListPullRequestsOutput {
+public struct ListPullRequestsOutput: Swift.Sendable {
     /// An enumeration token that allows the operation to batch the next results of the operation.
     public var nextToken: Swift.String?
     /// The system-generated IDs of the pull requests.
@@ -7820,7 +7846,7 @@ public struct InvalidSortByException: ClientRuntime.ModeledError, AWSClientRunti
 
 extension CodeCommitClientTypes {
 
-    public enum OrderEnum: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum OrderEnum: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case ascending
         case descending
         case sdkUnknown(Swift.String)
@@ -7849,7 +7875,7 @@ extension CodeCommitClientTypes {
 
 extension CodeCommitClientTypes {
 
-    public enum SortByEnum: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SortByEnum: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case modifiedDate
         case repositoryName
         case sdkUnknown(Swift.String)
@@ -7877,7 +7903,7 @@ extension CodeCommitClientTypes {
 }
 
 /// Represents the input of a list repositories operation.
-public struct ListRepositoriesInput {
+public struct ListRepositoriesInput: Swift.Sendable {
     /// An enumeration token that allows the operation to batch the results of the operation. Batch sizes are 1,000 for list repository operations. When the client sends the token back to CodeCommit, another page of 1,000 records is retrieved.
     public var nextToken: Swift.String?
     /// The order in which to sort the results of a list repositories operation.
@@ -7898,8 +7924,9 @@ public struct ListRepositoriesInput {
 }
 
 extension CodeCommitClientTypes {
+
     /// Information about a repository name and ID.
-    public struct RepositoryNameIdPair {
+    public struct RepositoryNameIdPair: Swift.Sendable {
         /// The ID associated with the repository.
         public var repositoryId: Swift.String?
         /// The name associated with the repository.
@@ -7914,11 +7941,10 @@ extension CodeCommitClientTypes {
             self.repositoryName = repositoryName
         }
     }
-
 }
 
 /// Represents the output of a list repositories operation.
-public struct ListRepositoriesOutput {
+public struct ListRepositoriesOutput: Swift.Sendable {
     /// An enumeration token that allows the operation to batch the results of the operation. Batch sizes are 1,000 for list repository operations. When the client sends the token back to CodeCommit, another page of 1,000 records is retrieved.
     public var nextToken: Swift.String?
     /// Lists the repositories called by the list repositories operation.
@@ -7934,7 +7960,7 @@ public struct ListRepositoriesOutput {
     }
 }
 
-public struct ListRepositoriesForApprovalRuleTemplateInput {
+public struct ListRepositoriesForApprovalRuleTemplateInput: Swift.Sendable {
     /// The name of the approval rule template for which you want to list repositories that are associated with that template.
     /// This member is required.
     public var approvalRuleTemplateName: Swift.String?
@@ -7955,7 +7981,7 @@ public struct ListRepositoriesForApprovalRuleTemplateInput {
     }
 }
 
-public struct ListRepositoriesForApprovalRuleTemplateOutput {
+public struct ListRepositoriesForApprovalRuleTemplateOutput: Swift.Sendable {
     /// An enumeration token that allows the operation to batch the next results of the operation.
     public var nextToken: Swift.String?
     /// A list of repository names that are associated with the specified approval rule template.
@@ -8021,7 +8047,7 @@ public struct ResourceArnRequiredException: ClientRuntime.ModeledError, AWSClien
     }
 }
 
-public struct ListTagsForResourceInput {
+public struct ListTagsForResourceInput: Swift.Sendable {
     /// An enumeration token that, when provided in a request, returns the next batch of the results.
     public var nextToken: Swift.String?
     /// The Amazon Resource Name (ARN) of the resource for which you want to get information about tags, if any.
@@ -8038,7 +8064,7 @@ public struct ListTagsForResourceInput {
     }
 }
 
-public struct ListTagsForResourceOutput {
+public struct ListTagsForResourceOutput: Swift.Sendable {
     /// An enumeration token that allows the operation to batch the next results of the operation.
     public var nextToken: Swift.String?
     /// A list of tag key and value pairs associated with the specified resource.
@@ -8079,7 +8105,7 @@ public struct InvalidTargetBranchException: ClientRuntime.ModeledError, AWSClien
     }
 }
 
-public struct MergeBranchesByFastForwardInput {
+public struct MergeBranchesByFastForwardInput: Swift.Sendable {
     /// The branch, tag, HEAD, or other fully qualified reference used to identify a commit (for example, a branch name or a full commit ID).
     /// This member is required.
     public var destinationCommitSpecifier: Swift.String?
@@ -8106,7 +8132,7 @@ public struct MergeBranchesByFastForwardInput {
     }
 }
 
-public struct MergeBranchesByFastForwardOutput {
+public struct MergeBranchesByFastForwardOutput: Swift.Sendable {
     /// The commit ID of the merge in the destination or target branch.
     public var commitId: Swift.String?
     /// The tree ID of the merge in the destination or target branch.
@@ -8122,7 +8148,7 @@ public struct MergeBranchesByFastForwardOutput {
     }
 }
 
-public struct MergeBranchesBySquashInput {
+public struct MergeBranchesBySquashInput: Swift.Sendable {
     /// The name of the author who created the commit. This information is used as both the author and committer for the commit.
     public var authorName: Swift.String?
     /// The commit message for the merge.
@@ -8177,7 +8203,7 @@ public struct MergeBranchesBySquashInput {
     }
 }
 
-public struct MergeBranchesBySquashOutput {
+public struct MergeBranchesBySquashOutput: Swift.Sendable {
     /// The commit ID of the merge in the destination or target branch.
     public var commitId: Swift.String?
     /// The tree ID of the merge in the destination or target branch.
@@ -8193,7 +8219,7 @@ public struct MergeBranchesBySquashOutput {
     }
 }
 
-public struct MergeBranchesByThreeWayInput {
+public struct MergeBranchesByThreeWayInput: Swift.Sendable {
     /// The name of the author who created the commit. This information is used as both the author and committer for the commit.
     public var authorName: Swift.String?
     /// The commit message to include in the commit information for the merge.
@@ -8248,7 +8274,7 @@ public struct MergeBranchesByThreeWayInput {
     }
 }
 
-public struct MergeBranchesByThreeWayOutput {
+public struct MergeBranchesByThreeWayOutput: Swift.Sendable {
     /// The commit ID of the merge in the destination or target branch.
     public var commitId: Swift.String?
     /// The tree ID of the merge in the destination or target branch.
@@ -8314,7 +8340,7 @@ public struct TipOfSourceReferenceIsDifferentException: ClientRuntime.ModeledErr
     }
 }
 
-public struct MergePullRequestByFastForwardInput {
+public struct MergePullRequestByFastForwardInput: Swift.Sendable {
     /// The system-generated ID of the pull request. To get this ID, use [ListPullRequests].
     /// This member is required.
     public var pullRequestId: Swift.String?
@@ -8336,7 +8362,7 @@ public struct MergePullRequestByFastForwardInput {
     }
 }
 
-public struct MergePullRequestByFastForwardOutput {
+public struct MergePullRequestByFastForwardOutput: Swift.Sendable {
     /// Information about the specified pull request, including the merge.
     public var pullRequest: CodeCommitClientTypes.PullRequest?
 
@@ -8348,7 +8374,7 @@ public struct MergePullRequestByFastForwardOutput {
     }
 }
 
-public struct MergePullRequestBySquashInput {
+public struct MergePullRequestBySquashInput: Swift.Sendable {
     /// The name of the author who created the commit. This information is used as both the author and committer for the commit.
     public var authorName: Swift.String?
     /// The commit message to include in the commit information for the merge.
@@ -8398,7 +8424,7 @@ public struct MergePullRequestBySquashInput {
     }
 }
 
-public struct MergePullRequestBySquashOutput {
+public struct MergePullRequestBySquashOutput: Swift.Sendable {
     /// Returns information about a pull request.
     public var pullRequest: CodeCommitClientTypes.PullRequest?
 
@@ -8410,7 +8436,7 @@ public struct MergePullRequestBySquashOutput {
     }
 }
 
-public struct MergePullRequestByThreeWayInput {
+public struct MergePullRequestByThreeWayInput: Swift.Sendable {
     /// The name of the author who created the commit. This information is used as both the author and committer for the commit.
     public var authorName: Swift.String?
     /// The commit message to include in the commit information for the merge.
@@ -8460,7 +8486,7 @@ public struct MergePullRequestByThreeWayInput {
     }
 }
 
-public struct MergePullRequestByThreeWayOutput {
+public struct MergePullRequestByThreeWayOutput: Swift.Sendable {
     /// Returns information about a pull request.
     public var pullRequest: CodeCommitClientTypes.PullRequest?
 
@@ -8547,7 +8573,7 @@ public struct OverrideStatusRequiredException: ClientRuntime.ModeledError, AWSCl
     }
 }
 
-public struct OverridePullRequestApprovalRulesInput {
+public struct OverridePullRequestApprovalRulesInput: Swift.Sendable {
     /// Whether you want to set aside approval rule requirements for the pull request (OVERRIDE) or revoke a previous override and apply approval rule requirements (REVOKE). REVOKE status is not stored.
     /// This member is required.
     public var overrideStatus: CodeCommitClientTypes.OverrideStatus?
@@ -8695,7 +8721,7 @@ public struct InvalidRelativeFileVersionEnumException: ClientRuntime.ModeledErro
     }
 }
 
-public struct PostCommentForComparedCommitInput {
+public struct PostCommentForComparedCommitInput: Swift.Sendable {
     /// To establish the directionality of the comparison, the full commit ID of the after commit.
     /// This member is required.
     public var afterCommitId: Swift.String?
@@ -8730,7 +8756,7 @@ public struct PostCommentForComparedCommitInput {
     }
 }
 
-public struct PostCommentForComparedCommitOutput {
+public struct PostCommentForComparedCommitOutput: Swift.Sendable {
     /// In the directionality you established, the blob ID of the after blob.
     public var afterBlobId: Swift.String?
     /// In the directionality you established, the full commit ID of the after commit.
@@ -8766,7 +8792,7 @@ public struct PostCommentForComparedCommitOutput {
     }
 }
 
-public struct PostCommentForPullRequestInput {
+public struct PostCommentForPullRequestInput: Swift.Sendable {
     /// The full commit ID of the commit in the source branch that is the current tip of the branch for the pull request when you post the comment.
     /// This member is required.
     public var afterCommitId: Swift.String?
@@ -8807,7 +8833,7 @@ public struct PostCommentForPullRequestInput {
     }
 }
 
-public struct PostCommentForPullRequestOutput {
+public struct PostCommentForPullRequestOutput: Swift.Sendable {
     /// In the directionality of the pull request, the blob ID of the after blob.
     public var afterBlobId: Swift.String?
     /// The full commit ID of the commit in the destination branch where the pull request is merged.
@@ -8847,7 +8873,7 @@ public struct PostCommentForPullRequestOutput {
     }
 }
 
-public struct PostCommentReplyInput {
+public struct PostCommentReplyInput: Swift.Sendable {
     /// A unique, client-generated idempotency token that, when provided in a request, ensures the request cannot be repeated with a changed parameter. If a request is received with the same parameters and a token is included, the request returns information about the initial request that used that token.
     public var clientRequestToken: Swift.String?
     /// The contents of your reply to a comment.
@@ -8869,7 +8895,7 @@ public struct PostCommentReplyInput {
     }
 }
 
-public struct PostCommentReplyOutput {
+public struct PostCommentReplyOutput: Swift.Sendable {
     /// Information about the reply to a comment.
     public var comment: CodeCommitClientTypes.Comment?
 
@@ -8956,7 +8982,7 @@ public struct ReactionValueRequiredException: ClientRuntime.ModeledError, AWSCli
     }
 }
 
-public struct PutCommentReactionInput {
+public struct PutCommentReactionInput: Swift.Sendable {
     /// The ID of the comment to which you want to add or update a reaction.
     /// This member is required.
     public var commentId: Swift.String?
@@ -9024,7 +9050,7 @@ public struct SameFileContentException: ClientRuntime.ModeledError, AWSClientRun
     }
 }
 
-public struct PutFileInput {
+public struct PutFileInput: Swift.Sendable {
     /// The name of the branch where you want to add or update the file. If this is an empty repository, this branch is created.
     /// This member is required.
     public var branchName: Swift.String?
@@ -9072,7 +9098,7 @@ public struct PutFileInput {
     }
 }
 
-public struct PutFileOutput {
+public struct PutFileOutput: Swift.Sendable {
     /// The ID of the blob, which is its SHA-1 pointer.
     /// This member is required.
     public var blobId: Swift.String?
@@ -9421,7 +9447,7 @@ public struct RepositoryTriggersListRequiredException: ClientRuntime.ModeledErro
 }
 
 /// Represents the input of a put repository triggers operation.
-public struct PutRepositoryTriggersInput {
+public struct PutRepositoryTriggersInput: Swift.Sendable {
     /// The name of the repository where you want to create or update the trigger.
     /// This member is required.
     public var repositoryName: Swift.String?
@@ -9440,7 +9466,7 @@ public struct PutRepositoryTriggersInput {
 }
 
 /// Represents the output of a put repository triggers operation.
-public struct PutRepositoryTriggersOutput {
+public struct PutRepositoryTriggersOutput: Swift.Sendable {
     /// The system-generated unique ID for the create or update operation.
     public var configurationId: Swift.String?
 
@@ -9477,7 +9503,7 @@ public struct TagsMapRequiredException: ClientRuntime.ModeledError, AWSClientRun
     }
 }
 
-public struct TagResourceInput {
+public struct TagResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the resource to which you want to add or update tags.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -9496,7 +9522,7 @@ public struct TagResourceInput {
 }
 
 /// Represents the input of a test repository triggers operation.
-public struct TestRepositoryTriggersInput {
+public struct TestRepositoryTriggersInput: Swift.Sendable {
     /// The name of the repository in which to test the triggers.
     /// This member is required.
     public var repositoryName: Swift.String?
@@ -9515,8 +9541,9 @@ public struct TestRepositoryTriggersInput {
 }
 
 extension CodeCommitClientTypes {
+
     /// A trigger failed to run.
-    public struct RepositoryTriggerExecutionFailure {
+    public struct RepositoryTriggerExecutionFailure: Swift.Sendable {
         /// Message information about the trigger that did not run.
         public var failureMessage: Swift.String?
         /// The name of the trigger that did not run.
@@ -9531,11 +9558,10 @@ extension CodeCommitClientTypes {
             self.trigger = trigger
         }
     }
-
 }
 
 /// Represents the output of a test repository triggers operation.
-public struct TestRepositoryTriggersOutput {
+public struct TestRepositoryTriggersOutput: Swift.Sendable {
     /// The list of triggers that were not tested. This list provides the names of the triggers that could not be tested, separated by commas.
     public var failedExecutions: [CodeCommitClientTypes.RepositoryTriggerExecutionFailure]?
     /// The list of triggers that were successfully tested. This list provides the names of the triggers that were successfully tested, separated by commas.
@@ -9601,7 +9627,7 @@ public struct TagKeysListRequiredException: ClientRuntime.ModeledError, AWSClien
     }
 }
 
-public struct UntagResourceInput {
+public struct UntagResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the resource to which you want to remove tags.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -9644,7 +9670,7 @@ public struct InvalidRuleContentSha256Exception: ClientRuntime.ModeledError, AWS
     }
 }
 
-public struct UpdateApprovalRuleTemplateContentInput {
+public struct UpdateApprovalRuleTemplateContentInput: Swift.Sendable {
     /// The name of the approval rule template where you want to update the content of the rule.
     /// This member is required.
     public var approvalRuleTemplateName: Swift.String?
@@ -9666,7 +9692,7 @@ public struct UpdateApprovalRuleTemplateContentInput {
     }
 }
 
-public struct UpdateApprovalRuleTemplateContentOutput {
+public struct UpdateApprovalRuleTemplateContentOutput: Swift.Sendable {
     /// Returns information about an approval rule template.
     /// This member is required.
     public var approvalRuleTemplate: CodeCommitClientTypes.ApprovalRuleTemplate?
@@ -9679,7 +9705,7 @@ public struct UpdateApprovalRuleTemplateContentOutput {
     }
 }
 
-public struct UpdateApprovalRuleTemplateDescriptionInput {
+public struct UpdateApprovalRuleTemplateDescriptionInput: Swift.Sendable {
     /// The updated description of the approval rule template.
     /// This member is required.
     public var approvalRuleTemplateDescription: Swift.String?
@@ -9697,7 +9723,7 @@ public struct UpdateApprovalRuleTemplateDescriptionInput {
     }
 }
 
-public struct UpdateApprovalRuleTemplateDescriptionOutput {
+public struct UpdateApprovalRuleTemplateDescriptionOutput: Swift.Sendable {
     /// The structure and content of the updated approval rule template.
     /// This member is required.
     public var approvalRuleTemplate: CodeCommitClientTypes.ApprovalRuleTemplate?
@@ -9710,7 +9736,7 @@ public struct UpdateApprovalRuleTemplateDescriptionOutput {
     }
 }
 
-public struct UpdateApprovalRuleTemplateNameInput {
+public struct UpdateApprovalRuleTemplateNameInput: Swift.Sendable {
     /// The new name you want to apply to the approval rule template.
     /// This member is required.
     public var newApprovalRuleTemplateName: Swift.String?
@@ -9728,7 +9754,7 @@ public struct UpdateApprovalRuleTemplateNameInput {
     }
 }
 
-public struct UpdateApprovalRuleTemplateNameOutput {
+public struct UpdateApprovalRuleTemplateNameOutput: Swift.Sendable {
     /// The structure and content of the updated approval rule template.
     /// This member is required.
     public var approvalRuleTemplate: CodeCommitClientTypes.ApprovalRuleTemplate?
@@ -9766,7 +9792,7 @@ public struct CommentNotCreatedByCallerException: ClientRuntime.ModeledError, AW
     }
 }
 
-public struct UpdateCommentInput {
+public struct UpdateCommentInput: Swift.Sendable {
     /// The system-generated ID of the comment you want to update. To get this ID, use [GetCommentsForComparedCommit] or [GetCommentsForPullRequest].
     /// This member is required.
     public var commentId: Swift.String?
@@ -9784,7 +9810,7 @@ public struct UpdateCommentInput {
     }
 }
 
-public struct UpdateCommentOutput {
+public struct UpdateCommentOutput: Swift.Sendable {
     /// Information about the updated comment.
     public var comment: CodeCommitClientTypes.Comment?
 
@@ -9797,7 +9823,7 @@ public struct UpdateCommentOutput {
 }
 
 /// Represents the input of an update default branch operation.
-public struct UpdateDefaultBranchInput {
+public struct UpdateDefaultBranchInput: Swift.Sendable {
     /// The name of the branch to set as the default branch.
     /// This member is required.
     public var defaultBranchName: Swift.String?
@@ -9815,7 +9841,7 @@ public struct UpdateDefaultBranchInput {
     }
 }
 
-public struct UpdatePullRequestApprovalRuleContentInput {
+public struct UpdatePullRequestApprovalRuleContentInput: Swift.Sendable {
     /// The name of the approval rule you want to update.
     /// This member is required.
     public var approvalRuleName: Swift.String?
@@ -9856,7 +9882,7 @@ public struct UpdatePullRequestApprovalRuleContentInput {
     }
 }
 
-public struct UpdatePullRequestApprovalRuleContentOutput {
+public struct UpdatePullRequestApprovalRuleContentOutput: Swift.Sendable {
     /// Information about the updated approval rule.
     /// This member is required.
     public var approvalRule: CodeCommitClientTypes.ApprovalRule?
@@ -9944,7 +9970,7 @@ public struct PullRequestCannotBeApprovedByAuthorException: ClientRuntime.Modele
     }
 }
 
-public struct UpdatePullRequestApprovalStateInput {
+public struct UpdatePullRequestApprovalStateInput: Swift.Sendable {
     /// The approval state to associate with the user on the pull request.
     /// This member is required.
     public var approvalState: CodeCommitClientTypes.ApprovalState?
@@ -9967,7 +9993,7 @@ public struct UpdatePullRequestApprovalStateInput {
     }
 }
 
-public struct UpdatePullRequestDescriptionInput {
+public struct UpdatePullRequestDescriptionInput: Swift.Sendable {
     /// The updated content of the description for the pull request. This content replaces the existing description.
     /// This member is required.
     public var description: Swift.String?
@@ -9985,7 +10011,7 @@ public struct UpdatePullRequestDescriptionInput {
     }
 }
 
-public struct UpdatePullRequestDescriptionOutput {
+public struct UpdatePullRequestDescriptionOutput: Swift.Sendable {
     /// Information about the updated pull request.
     /// This member is required.
     public var pullRequest: CodeCommitClientTypes.PullRequest?
@@ -10048,7 +10074,7 @@ public struct PullRequestStatusRequiredException: ClientRuntime.ModeledError, AW
     }
 }
 
-public struct UpdatePullRequestStatusInput {
+public struct UpdatePullRequestStatusInput: Swift.Sendable {
     /// The system-generated ID of the pull request. To get this ID, use [ListPullRequests].
     /// This member is required.
     public var pullRequestId: Swift.String?
@@ -10066,7 +10092,7 @@ public struct UpdatePullRequestStatusInput {
     }
 }
 
-public struct UpdatePullRequestStatusOutput {
+public struct UpdatePullRequestStatusOutput: Swift.Sendable {
     /// Information about the pull request.
     /// This member is required.
     public var pullRequest: CodeCommitClientTypes.PullRequest?
@@ -10079,7 +10105,7 @@ public struct UpdatePullRequestStatusOutput {
     }
 }
 
-public struct UpdatePullRequestTitleInput {
+public struct UpdatePullRequestTitleInput: Swift.Sendable {
     /// The system-generated ID of the pull request. To get this ID, use [ListPullRequests].
     /// This member is required.
     public var pullRequestId: Swift.String?
@@ -10097,7 +10123,7 @@ public struct UpdatePullRequestTitleInput {
     }
 }
 
-public struct UpdatePullRequestTitleOutput {
+public struct UpdatePullRequestTitleOutput: Swift.Sendable {
     /// Information about the updated pull request.
     /// This member is required.
     public var pullRequest: CodeCommitClientTypes.PullRequest?
@@ -10111,7 +10137,7 @@ public struct UpdatePullRequestTitleOutput {
 }
 
 /// Represents the input of an update repository description operation.
-public struct UpdateRepositoryDescriptionInput {
+public struct UpdateRepositoryDescriptionInput: Swift.Sendable {
     /// The new comment or description for the specified repository. Repository descriptions are limited to 1,000 characters.
     public var repositoryDescription: Swift.String?
     /// The name of the repository to set or change the comment or description for.
@@ -10153,8 +10179,8 @@ public struct EncryptionKeyRequiredException: ClientRuntime.ModeledError, AWSCli
     }
 }
 
-public struct UpdateRepositoryEncryptionKeyInput {
-    /// The ID of the encryption key. You can view the ID of an encryption key in the KMS console, or use the KMS APIs to programmatically retrieve a key ID. For more information about acceptable values for keyID, see [KeyId](https://docs.aws.amazon.com/APIReference/API_Decrypt.html#KMS-Decrypt-request-KeyId) in the Decrypt API description in the Key Management Service API Reference.
+public struct UpdateRepositoryEncryptionKeyInput: Swift.Sendable {
+    /// The ID of the encryption key. You can view the ID of an encryption key in the KMS console, or use the KMS APIs to programmatically retrieve a key ID. For more information about acceptable values for keyID, see [KeyId](https://docs.aws.amazon.com/kms/latest/APIReference/API_Decrypt.html#KMS-Decrypt-request-KeyId) in the Decrypt API description in the Key Management Service API Reference.
     /// This member is required.
     public var kmsKeyId: Swift.String?
     /// The name of the repository for which you want to update the KMS encryption key used to encrypt and decrypt the repository.
@@ -10171,7 +10197,7 @@ public struct UpdateRepositoryEncryptionKeyInput {
     }
 }
 
-public struct UpdateRepositoryEncryptionKeyOutput {
+public struct UpdateRepositoryEncryptionKeyOutput: Swift.Sendable {
     /// The ID of the encryption key.
     public var kmsKeyId: Swift.String?
     /// The ID of the encryption key formerly used to encrypt and decrypt the repository.
@@ -10192,7 +10218,7 @@ public struct UpdateRepositoryEncryptionKeyOutput {
 }
 
 /// Represents the input of an update repository description operation.
-public struct UpdateRepositoryNameInput {
+public struct UpdateRepositoryNameInput: Swift.Sendable {
     /// The new name for the repository.
     /// This member is required.
     public var newName: Swift.String?
@@ -12915,6 +12941,7 @@ enum CreateRepositoryOutputError {
             case "InvalidRepositoryNameException": return try InvalidRepositoryNameException.makeError(baseError: baseError)
             case "InvalidSystemTagUsageException": return try InvalidSystemTagUsageException.makeError(baseError: baseError)
             case "InvalidTagsMapException": return try InvalidTagsMapException.makeError(baseError: baseError)
+            case "OperationNotAllowedException": return try OperationNotAllowedException.makeError(baseError: baseError)
             case "RepositoryLimitExceededException": return try RepositoryLimitExceededException.makeError(baseError: baseError)
             case "RepositoryNameExistsException": return try RepositoryNameExistsException.makeError(baseError: baseError)
             case "RepositoryNameRequiredException": return try RepositoryNameRequiredException.makeError(baseError: baseError)
@@ -14733,6 +14760,58 @@ extension EncryptionKeyAccessDeniedException {
     }
 }
 
+extension RepositoryNameRequiredException {
+
+    static func makeError(baseError: AWSClientRuntime.AWSJSONError) throws -> RepositoryNameRequiredException {
+        let reader = baseError.errorBodyReader
+        var value = RepositoryNameRequiredException()
+        value.properties.message = try reader["message"].readIfPresent()
+        value.httpResponse = baseError.httpResponse
+        value.requestID = baseError.requestID
+        value.message = baseError.message
+        return value
+    }
+}
+
+extension EncryptionKeyUnavailableException {
+
+    static func makeError(baseError: AWSClientRuntime.AWSJSONError) throws -> EncryptionKeyUnavailableException {
+        let reader = baseError.errorBodyReader
+        var value = EncryptionKeyUnavailableException()
+        value.properties.message = try reader["message"].readIfPresent()
+        value.httpResponse = baseError.httpResponse
+        value.requestID = baseError.requestID
+        value.message = baseError.message
+        return value
+    }
+}
+
+extension EncryptionKeyNotFoundException {
+
+    static func makeError(baseError: AWSClientRuntime.AWSJSONError) throws -> EncryptionKeyNotFoundException {
+        let reader = baseError.errorBodyReader
+        var value = EncryptionKeyNotFoundException()
+        value.properties.message = try reader["message"].readIfPresent()
+        value.httpResponse = baseError.httpResponse
+        value.requestID = baseError.requestID
+        value.message = baseError.message
+        return value
+    }
+}
+
+extension InvalidRepositoryNameException {
+
+    static func makeError(baseError: AWSClientRuntime.AWSJSONError) throws -> InvalidRepositoryNameException {
+        let reader = baseError.errorBodyReader
+        var value = InvalidRepositoryNameException()
+        value.properties.message = try reader["message"].readIfPresent()
+        value.httpResponse = baseError.httpResponse
+        value.requestID = baseError.requestID
+        value.message = baseError.message
+        return value
+    }
+}
+
 extension ApprovalRuleTemplateDoesNotExistException {
 
     static func makeError(baseError: AWSClientRuntime.AWSJSONError) throws -> ApprovalRuleTemplateDoesNotExistException {
@@ -14751,19 +14830,6 @@ extension EncryptionKeyDisabledException {
     static func makeError(baseError: AWSClientRuntime.AWSJSONError) throws -> EncryptionKeyDisabledException {
         let reader = baseError.errorBodyReader
         var value = EncryptionKeyDisabledException()
-        value.properties.message = try reader["message"].readIfPresent()
-        value.httpResponse = baseError.httpResponse
-        value.requestID = baseError.requestID
-        value.message = baseError.message
-        return value
-    }
-}
-
-extension RepositoryNameRequiredException {
-
-    static func makeError(baseError: AWSClientRuntime.AWSJSONError) throws -> RepositoryNameRequiredException {
-        let reader = baseError.errorBodyReader
-        var value = RepositoryNameRequiredException()
         value.properties.message = try reader["message"].readIfPresent()
         value.httpResponse = baseError.httpResponse
         value.requestID = baseError.requestID
@@ -14798,19 +14864,6 @@ extension MaximumRuleTemplatesAssociatedWithRepositoryException {
     }
 }
 
-extension EncryptionKeyUnavailableException {
-
-    static func makeError(baseError: AWSClientRuntime.AWSJSONError) throws -> EncryptionKeyUnavailableException {
-        let reader = baseError.errorBodyReader
-        var value = EncryptionKeyUnavailableException()
-        value.properties.message = try reader["message"].readIfPresent()
-        value.httpResponse = baseError.httpResponse
-        value.requestID = baseError.requestID
-        value.message = baseError.message
-        return value
-    }
-}
-
 extension RepositoryDoesNotExistException {
 
     static func makeError(baseError: AWSClientRuntime.AWSJSONError) throws -> RepositoryDoesNotExistException {
@@ -14824,37 +14877,11 @@ extension RepositoryDoesNotExistException {
     }
 }
 
-extension EncryptionKeyNotFoundException {
-
-    static func makeError(baseError: AWSClientRuntime.AWSJSONError) throws -> EncryptionKeyNotFoundException {
-        let reader = baseError.errorBodyReader
-        var value = EncryptionKeyNotFoundException()
-        value.properties.message = try reader["message"].readIfPresent()
-        value.httpResponse = baseError.httpResponse
-        value.requestID = baseError.requestID
-        value.message = baseError.message
-        return value
-    }
-}
-
 extension InvalidApprovalRuleTemplateNameException {
 
     static func makeError(baseError: AWSClientRuntime.AWSJSONError) throws -> InvalidApprovalRuleTemplateNameException {
         let reader = baseError.errorBodyReader
         var value = InvalidApprovalRuleTemplateNameException()
-        value.properties.message = try reader["message"].readIfPresent()
-        value.httpResponse = baseError.httpResponse
-        value.requestID = baseError.requestID
-        value.message = baseError.message
-        return value
-    }
-}
-
-extension InvalidRepositoryNameException {
-
-    static func makeError(baseError: AWSClientRuntime.AWSJSONError) throws -> InvalidRepositoryNameException {
-        let reader = baseError.errorBodyReader
-        var value = InvalidRepositoryNameException()
         value.properties.message = try reader["message"].readIfPresent()
         value.httpResponse = baseError.httpResponse
         value.requestID = baseError.requestID
@@ -15934,6 +15961,19 @@ extension InvalidSystemTagUsageException {
     static func makeError(baseError: AWSClientRuntime.AWSJSONError) throws -> InvalidSystemTagUsageException {
         let reader = baseError.errorBodyReader
         var value = InvalidSystemTagUsageException()
+        value.properties.message = try reader["message"].readIfPresent()
+        value.httpResponse = baseError.httpResponse
+        value.requestID = baseError.requestID
+        value.message = baseError.message
+        return value
+    }
+}
+
+extension OperationNotAllowedException {
+
+    static func makeError(baseError: AWSClientRuntime.AWSJSONError) throws -> OperationNotAllowedException {
+        let reader = baseError.errorBodyReader
+        var value = OperationNotAllowedException()
         value.properties.message = try reader["message"].readIfPresent()
         value.httpResponse = baseError.httpResponse
         value.requestID = baseError.requestID

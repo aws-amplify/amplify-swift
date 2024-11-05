@@ -27,64 +27,65 @@ import protocol ClientRuntime.ModeledError
 @_spi(UnknownAWSHTTPServiceError) import struct AWSClientRuntime.UnknownAWSHTTPServiceError
 import struct Smithy.URIQueryItem
 
-public struct CreateServicePrincipalNameOutput {
+
+public struct CreateServicePrincipalNameOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct CreateTemplateGroupAccessControlEntryOutput {
+public struct CreateTemplateGroupAccessControlEntryOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteConnectorOutput {
+public struct DeleteConnectorOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteDirectoryRegistrationOutput {
+public struct DeleteDirectoryRegistrationOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteServicePrincipalNameOutput {
+public struct DeleteServicePrincipalNameOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteTemplateGroupAccessControlEntryOutput {
+public struct DeleteTemplateGroupAccessControlEntryOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteTemplateOutput {
+public struct DeleteTemplateOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct TagResourceOutput {
+public struct TagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UntagResourceOutput {
+public struct UntagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdateTemplateGroupAccessControlEntryOutput {
+public struct UpdateTemplateGroupAccessControlEntryOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdateTemplateOutput {
+public struct UpdateTemplateOutput: Swift.Sendable {
 
     public init() { }
 }
 
 extension PcaConnectorAdClientTypes {
 
-    public enum AccessRight: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AccessRight: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case allow
         case deny
         case sdkUnknown(Swift.String)
@@ -112,8 +113,9 @@ extension PcaConnectorAdClientTypes {
 }
 
 extension PcaConnectorAdClientTypes {
+
     /// Allow or deny permissions for an Active Directory group to enroll or autoenroll certificates for a template.
-    public struct AccessRights {
+    public struct AccessRights: Swift.Sendable {
         /// Allow or deny an Active Directory group from autoenrolling certificates issued against a template. The Active Directory group must be allowed to enroll to allow autoenrollment
         public var autoEnroll: PcaConnectorAdClientTypes.AccessRight?
         /// Allow or deny an Active Directory group from enrolling certificates issued against a template.
@@ -128,12 +130,12 @@ extension PcaConnectorAdClientTypes {
             self.enroll = enroll
         }
     }
-
 }
 
 extension PcaConnectorAdClientTypes {
+
     /// An access control entry allows or denies Active Directory groups based on their security identifiers (SIDs) from enrolling and/or autoenrolling with the template.
-    public struct AccessControlEntry {
+    public struct AccessControlEntry: Swift.Sendable {
         /// Permissions to allow or deny an Active Directory group to enroll or autoenroll certificates issued against a template.
         public var accessRights: PcaConnectorAdClientTypes.AccessRights?
         /// The date and time that the Access Control Entry was created.
@@ -164,12 +166,12 @@ extension PcaConnectorAdClientTypes {
             self.updatedAt = updatedAt
         }
     }
-
 }
 
 extension PcaConnectorAdClientTypes {
+
     /// Summary of group access control entries that allow or deny Active Directory groups based on their security identifiers (SIDs) from enrolling and/or autofenrolling with the template.
-    public struct AccessControlEntrySummary {
+    public struct AccessControlEntrySummary: Swift.Sendable {
         /// Allow or deny an Active Directory group from enrolling and autoenrolling certificates issued against a template.
         public var accessRights: PcaConnectorAdClientTypes.AccessRights?
         /// The date and time that the Access Control Entry was created.
@@ -200,7 +202,6 @@ extension PcaConnectorAdClientTypes {
             self.updatedAt = updatedAt
         }
     }
-
 }
 
 /// You can receive this error if you attempt to create a resource share when you don't have the required permissions. This can be caused by insufficient permissions in policies attached to your Amazon Web Services Identity and Access Management (IAM) principal. It can also happen because of restrictions in place from an Amazon Web Services Organizations service control policy (SCP) that affects your Amazon Web Services account.
@@ -230,7 +231,7 @@ public struct AccessDeniedException: ClientRuntime.ModeledError, AWSClientRuntim
 
 extension PcaConnectorAdClientTypes {
 
-    public enum ApplicationPolicyType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ApplicationPolicyType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case allApplicationPolicies
         case anyPurpose
         case attestationIdentityKeyCertificate
@@ -453,20 +454,21 @@ extension PcaConnectorAdClientTypes {
 }
 
 extension PcaConnectorAdClientTypes {
+
     /// Application policies describe what the certificate can be used for.
-    public enum ApplicationPolicy {
+    public enum ApplicationPolicy: Swift.Sendable {
         /// The type of application policy
         case policytype(PcaConnectorAdClientTypes.ApplicationPolicyType)
         /// The object identifier (OID) of an application policy.
         case policyobjectidentifier(Swift.String)
         case sdkUnknown(Swift.String)
     }
-
 }
 
 extension PcaConnectorAdClientTypes {
+
     /// Application policies describe what the certificate can be used for.
-    public struct ApplicationPolicies {
+    public struct ApplicationPolicies: Swift.Sendable {
         /// Marks the application policy extension as critical.
         public var critical: Swift.Bool?
         /// Application policies describe what the certificate can be used for.
@@ -482,12 +484,11 @@ extension PcaConnectorAdClientTypes {
             self.policies = policies
         }
     }
-
 }
 
 extension PcaConnectorAdClientTypes {
 
-    public enum ValidityPeriodType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ValidityPeriodType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case days
         case hours
         case months
@@ -524,8 +525,9 @@ extension PcaConnectorAdClientTypes {
 }
 
 extension PcaConnectorAdClientTypes {
+
     /// Information describing the end of the validity period of the certificate. This parameter sets the “Not After” date for the certificate. Certificate validity is the period of time during which a certificate is valid. Validity can be expressed as an explicit date and time when the certificate expires, or as a span of time after issuance, stated in hours, days, months, or years. For more information, see Validity in RFC 5280. This value is unaffected when ValidityNotBefore is also specified. For example, if Validity is set to 20 days in the future, the certificate will expire 20 days from issuance time regardless of the ValidityNotBefore value.
-    public struct ValidityPeriod {
+    public struct ValidityPeriod: Swift.Sendable {
         /// The numeric value for the validity period.
         /// This member is required.
         public var period: Swift.Int?
@@ -542,12 +544,12 @@ extension PcaConnectorAdClientTypes {
             self.periodType = periodType
         }
     }
-
 }
 
 extension PcaConnectorAdClientTypes {
+
     /// Information describing the end of the validity period of the certificate. This parameter sets the “Not After” date for the certificate. Certificate validity is the period of time during which a certificate is valid. Validity can be expressed as an explicit date and time when the certificate expires, or as a span of time after issuance, stated in days, months, or years. For more information, see Validity in RFC 5280. This value is unaffected when ValidityNotBefore is also specified. For example, if Validity is set to 20 days in the future, the certificate will expire 20 days from issuance time regardless of the ValidityNotBefore value.
-    public struct CertificateValidity {
+    public struct CertificateValidity: Swift.Sendable {
         /// Renewal period is the period of time before certificate expiration when a new certificate will be requested.
         /// This member is required.
         public var renewalPeriod: PcaConnectorAdClientTypes.ValidityPeriod?
@@ -564,12 +566,11 @@ extension PcaConnectorAdClientTypes {
             self.validityPeriod = validityPeriod
         }
     }
-
 }
 
 extension PcaConnectorAdClientTypes {
 
-    public enum ClientCompatibilityV2: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ClientCompatibilityV2: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case windowsServer2003
         case windowsServer2008
         case windowsServer2008R2
@@ -610,7 +611,7 @@ extension PcaConnectorAdClientTypes {
 
 extension PcaConnectorAdClientTypes {
 
-    public enum ClientCompatibilityV3: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ClientCompatibilityV3: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case windowsServer2008
         case windowsServer2008R2
         case windowsServer2012
@@ -648,7 +649,7 @@ extension PcaConnectorAdClientTypes {
 
 extension PcaConnectorAdClientTypes {
 
-    public enum ClientCompatibilityV4: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ClientCompatibilityV4: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case windowsServer2012
         case windowsServer2012R2
         case windowsServer2016
@@ -715,7 +716,7 @@ public struct ConflictException: ClientRuntime.ModeledError, AWSClientRuntime.AW
 
 extension PcaConnectorAdClientTypes {
 
-    public enum ConnectorStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ConnectorStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case active
         case creating
         case deleting
@@ -750,7 +751,7 @@ extension PcaConnectorAdClientTypes {
 
 extension PcaConnectorAdClientTypes {
 
-    public enum ConnectorStatusReason: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ConnectorStatusReason: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case directoryAccessDenied
         case internalFailure
         case privatecaAccessDenied
@@ -796,8 +797,9 @@ extension PcaConnectorAdClientTypes {
 }
 
 extension PcaConnectorAdClientTypes {
+
     /// Information about your VPC and security groups used with the connector.
-    public struct VpcInformation {
+    public struct VpcInformation: Swift.Sendable {
         /// The security groups used with the connector. You can use a maximum of 4 security groups with a connector.
         /// This member is required.
         public var securityGroupIds: [Swift.String]?
@@ -809,12 +811,12 @@ extension PcaConnectorAdClientTypes {
             self.securityGroupIds = securityGroupIds
         }
     }
-
 }
 
 extension PcaConnectorAdClientTypes {
+
     /// Amazon Web Services Private CA Connector for Active Directory is a service that links your Active Directory with Amazon Web Services Private CA. The connector brokers the exchange of certificates from Amazon Web Services Private CA to domain-joined users and machines managed with Active Directory.
-    public struct Connector {
+    public struct Connector: Swift.Sendable {
         /// The Amazon Resource Name (ARN) that was returned when you called [CreateConnector](https://docs.aws.amazon.com/pca-connector-ad/latest/APIReference/API_CreateConnector.html).
         public var arn: Swift.String?
         /// The Amazon Resource Name (ARN) of the certificate authority being used.
@@ -857,12 +859,12 @@ extension PcaConnectorAdClientTypes {
             self.vpcInformation = vpcInformation
         }
     }
-
 }
 
 extension PcaConnectorAdClientTypes {
+
     /// Summary description of the Amazon Web Services Private CA AD connectors belonging to an Amazon Web Services account.
-    public struct ConnectorSummary {
+    public struct ConnectorSummary: Swift.Sendable {
         /// The Amazon Resource Name (ARN) that was returned when you called [CreateConnector](https://docs.aws.amazon.com/pca-connector-ad/latest/APIReference/API_CreateConnector.html).
         public var arn: Swift.String?
         /// The Amazon Resource Name (ARN) of the certificate authority being used.
@@ -905,7 +907,6 @@ extension PcaConnectorAdClientTypes {
             self.vpcInformation = vpcInformation
         }
     }
-
 }
 
 /// The request processing has failed because of an unknown error, exception or failure with an internal server.
@@ -1048,7 +1049,7 @@ public struct ThrottlingException: ClientRuntime.ModeledError, AWSClientRuntime.
 
 extension PcaConnectorAdClientTypes {
 
-    public enum ValidationExceptionReason: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ValidationExceptionReason: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case fieldValidationFailed
         case invalidPermission
         case invalidState
@@ -1122,7 +1123,7 @@ public struct ValidationException: ClientRuntime.ModeledError, AWSClientRuntime.
     }
 }
 
-public struct CreateConnectorInput {
+public struct CreateConnectorInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the certificate authority being used.
     /// This member is required.
     public var certificateAuthorityArn: Swift.String?
@@ -1153,7 +1154,7 @@ public struct CreateConnectorInput {
     }
 }
 
-public struct CreateConnectorOutput {
+public struct CreateConnectorOutput: Swift.Sendable {
     /// If successful, the Amazon Resource Name (ARN) of the connector for Active Directory.
     public var connectorArn: Swift.String?
 
@@ -1165,7 +1166,7 @@ public struct CreateConnectorOutput {
     }
 }
 
-public struct DeleteConnectorInput {
+public struct DeleteConnectorInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) that was returned when you called [CreateConnector](https://docs.aws.amazon.com/pca-connector-ad/latest/APIReference/API_CreateConnector.html).
     /// This member is required.
     public var connectorArn: Swift.String?
@@ -1178,7 +1179,7 @@ public struct DeleteConnectorInput {
     }
 }
 
-public struct GetConnectorInput {
+public struct GetConnectorInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) that was returned when you called [CreateConnector](https://docs.aws.amazon.com/pca-connector-ad/latest/APIReference/API_CreateConnector.html).
     /// This member is required.
     public var connectorArn: Swift.String?
@@ -1191,7 +1192,7 @@ public struct GetConnectorInput {
     }
 }
 
-public struct GetConnectorOutput {
+public struct GetConnectorOutput: Swift.Sendable {
     /// A structure that contains information about your connector.
     public var connector: PcaConnectorAdClientTypes.Connector?
 
@@ -1203,7 +1204,7 @@ public struct GetConnectorOutput {
     }
 }
 
-public struct ListConnectorsInput {
+public struct ListConnectorsInput: Swift.Sendable {
     /// Use this parameter when paginating results to specify the maximum number of items to return in the response on each page. If additional items exist beyond the number you specify, the NextToken element is sent in the response. Use this NextToken value in a subsequent request to retrieve additional items.
     public var maxResults: Swift.Int?
     /// Use this parameter when paginating results in a subsequent request after you receive a response with truncated results. Set it to the value of the NextToken parameter from the response you just received.
@@ -1219,7 +1220,7 @@ public struct ListConnectorsInput {
     }
 }
 
-public struct ListConnectorsOutput {
+public struct ListConnectorsOutput: Swift.Sendable {
     /// Summary information about each connector you have created.
     public var connectors: [PcaConnectorAdClientTypes.ConnectorSummary]?
     /// Use this parameter when paginating results in a subsequent request after you receive a response with truncated results. Set it to the value of the NextToken parameter from the response you just received.
@@ -1235,7 +1236,7 @@ public struct ListConnectorsOutput {
     }
 }
 
-public struct CreateDirectoryRegistrationInput {
+public struct CreateDirectoryRegistrationInput: Swift.Sendable {
     /// Idempotency token.
     public var clientToken: Swift.String?
     /// The identifier of the Active Directory.
@@ -1256,7 +1257,7 @@ public struct CreateDirectoryRegistrationInput {
     }
 }
 
-public struct CreateDirectoryRegistrationOutput {
+public struct CreateDirectoryRegistrationOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) that was returned when you called [CreateDirectoryRegistration](https://docs.aws.amazon.com/pca-connector-ad/latest/APIReference/API_CreateDirectoryRegistration.html).
     public var directoryRegistrationArn: Swift.String?
 
@@ -1268,7 +1269,7 @@ public struct CreateDirectoryRegistrationOutput {
     }
 }
 
-public struct CreateServicePrincipalNameInput {
+public struct CreateServicePrincipalNameInput: Swift.Sendable {
     /// Idempotency token.
     public var clientToken: Swift.String?
     /// The Amazon Resource Name (ARN) that was returned when you called [CreateConnector](https://docs.aws.amazon.com/pca-connector-ad/latest/APIReference/API_CreateConnector.html).
@@ -1291,8 +1292,9 @@ public struct CreateServicePrincipalNameInput {
 }
 
 extension PcaConnectorAdClientTypes {
+
     /// Template configurations for v2 template schema.
-    public struct EnrollmentFlagsV2 {
+    public struct EnrollmentFlagsV2: Swift.Sendable {
         /// Allow renewal using the same key.
         public var enableKeyReuseOnNtTokenKeysetStorageFull: Swift.Bool?
         /// Include symmetric algorithms allowed by the subject.
@@ -1319,12 +1321,12 @@ extension PcaConnectorAdClientTypes {
             self.userInteractionRequired = userInteractionRequired
         }
     }
-
 }
 
 extension PcaConnectorAdClientTypes {
+
     /// The key usage flags represent the purpose (e.g., encipherment, signature) of the key contained in the certificate.
-    public struct KeyUsageFlags {
+    public struct KeyUsageFlags: Swift.Sendable {
         /// DataEncipherment is asserted when the subject public key is used for directly enciphering raw user data without the use of an intermediate symmetric cipher.
         public var dataEncipherment: Swift.Bool?
         /// The digitalSignature is asserted when the subject public key is used for verifying digital signatures.
@@ -1351,12 +1353,12 @@ extension PcaConnectorAdClientTypes {
             self.nonRepudiation = nonRepudiation
         }
     }
-
 }
 
 extension PcaConnectorAdClientTypes {
+
     /// The key usage extension defines the purpose (e.g., encipherment, signature) of the key contained in the certificate.
-    public struct KeyUsage {
+    public struct KeyUsage: Swift.Sendable {
         /// Sets the key usage extension to critical.
         public var critical: Swift.Bool?
         /// The key usage flags represent the purpose (e.g., encipherment, signature) of the key contained in the certificate.
@@ -1372,12 +1374,12 @@ extension PcaConnectorAdClientTypes {
             self.usageFlags = usageFlags
         }
     }
-
 }
 
 extension PcaConnectorAdClientTypes {
+
     /// Certificate extensions for v2 template schema
-    public struct ExtensionsV2 {
+    public struct ExtensionsV2: Swift.Sendable {
         /// Application policies specify what the certificate is used for and its purpose.
         public var applicationPolicies: PcaConnectorAdClientTypes.ApplicationPolicies?
         /// The key usage extension defines the purpose (e.g., encipherment, signature, certificate signing) of the key contained in the certificate.
@@ -1393,12 +1395,12 @@ extension PcaConnectorAdClientTypes {
             self.keyUsage = keyUsage
         }
     }
-
 }
 
 extension PcaConnectorAdClientTypes {
+
     /// General flags for v2 template schema that defines if the template is for a machine or a user and if the template can be issued using autoenrollment.
-    public struct GeneralFlagsV2 {
+    public struct GeneralFlagsV2: Swift.Sendable {
         /// Allows certificate issuance using autoenrollment. Set to TRUE to allow autoenrollment.
         public var autoEnrollment: Swift.Bool?
         /// Defines if the template is for machines or users. Set to TRUE if the template is for machines. Set to FALSE if the template is for users.
@@ -1413,12 +1415,11 @@ extension PcaConnectorAdClientTypes {
             self.machineType = machineType
         }
     }
-
 }
 
 extension PcaConnectorAdClientTypes {
 
-    public enum KeySpec: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum KeySpec: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case keyExchange
         case signature
         case sdkUnknown(Swift.String)
@@ -1446,8 +1447,9 @@ extension PcaConnectorAdClientTypes {
 }
 
 extension PcaConnectorAdClientTypes {
+
     /// Defines the attributes of the private key.
-    public struct PrivateKeyAttributesV2 {
+    public struct PrivateKeyAttributesV2: Swift.Sendable {
         /// Defines the cryptographic providers used to generate the private key.
         public var cryptoProviders: [Swift.String]?
         /// Defines the purpose of the private key. Set it to "KEY_EXCHANGE" or "SIGNATURE" value.
@@ -1468,12 +1470,12 @@ extension PcaConnectorAdClientTypes {
             self.minimalKeyLength = minimalKeyLength
         }
     }
-
 }
 
 extension PcaConnectorAdClientTypes {
+
     /// Private key flags for v2 templates specify the client compatibility, if the private key can be exported, and if user input is required when using a private key.
-    public struct PrivateKeyFlagsV2 {
+    public struct PrivateKeyFlagsV2: Swift.Sendable {
         /// Defines the minimum client compatibility.
         /// This member is required.
         public var clientVersion: PcaConnectorAdClientTypes.ClientCompatibilityV2?
@@ -1493,12 +1495,12 @@ extension PcaConnectorAdClientTypes {
             self.strongKeyProtectionRequired = strongKeyProtectionRequired
         }
     }
-
 }
 
 extension PcaConnectorAdClientTypes {
+
     /// Information to include in the subject name and alternate subject name of the certificate. The subject name can be common name, directory path, DNS as common name, or left blank. You can optionally include email to the subject name for user templates. If you leave the subject name blank then you must set a subject alternate name. The subject alternate name (SAN) can include globally unique identifier (GUID), DNS, domain DNS, email, service principal name (SPN), and user principal name (UPN). You can leave the SAN blank. If you leave the SAN blank, then you must set a subject name.
-    public struct SubjectNameFlagsV2 {
+    public struct SubjectNameFlagsV2: Swift.Sendable {
         /// Include the common name in the subject name.
         public var requireCommonName: Swift.Bool?
         /// Include the directory path in the subject name.
@@ -1545,12 +1547,12 @@ extension PcaConnectorAdClientTypes {
             self.sanRequireUpn = sanRequireUpn
         }
     }
-
 }
 
 extension PcaConnectorAdClientTypes {
+
     /// v2 template schema that uses Legacy Cryptographic Providers.
-    public struct TemplateV2 {
+    public struct TemplateV2: Swift.Sendable {
         /// Certificate validity describes the validity and renewal periods of a certificate.
         /// This member is required.
         public var certificateValidity: PcaConnectorAdClientTypes.CertificateValidity?
@@ -1596,12 +1598,12 @@ extension PcaConnectorAdClientTypes {
             self.supersededTemplates = supersededTemplates
         }
     }
-
 }
 
 extension PcaConnectorAdClientTypes {
+
     /// Template configurations for v3 template schema.
-    public struct EnrollmentFlagsV3 {
+    public struct EnrollmentFlagsV3: Swift.Sendable {
         /// Allow renewal using the same key.
         public var enableKeyReuseOnNtTokenKeysetStorageFull: Swift.Bool?
         /// Include symmetric algorithms allowed by the subject.
@@ -1628,12 +1630,12 @@ extension PcaConnectorAdClientTypes {
             self.userInteractionRequired = userInteractionRequired
         }
     }
-
 }
 
 extension PcaConnectorAdClientTypes {
+
     /// Certificate extensions for v3 template schema
-    public struct ExtensionsV3 {
+    public struct ExtensionsV3: Swift.Sendable {
         /// Application policies specify what the certificate is used for and its purpose.
         public var applicationPolicies: PcaConnectorAdClientTypes.ApplicationPolicies?
         /// The key usage extension defines the purpose (e.g., encipherment, signature, certificate signing) of the key contained in the certificate.
@@ -1649,12 +1651,12 @@ extension PcaConnectorAdClientTypes {
             self.keyUsage = keyUsage
         }
     }
-
 }
 
 extension PcaConnectorAdClientTypes {
+
     /// General flags for v3 template schema that defines if the template is for a machine or a user and if the template can be issued using autoenrollment.
-    public struct GeneralFlagsV3 {
+    public struct GeneralFlagsV3: Swift.Sendable {
         /// Allows certificate issuance using autoenrollment. Set to TRUE to allow autoenrollment.
         public var autoEnrollment: Swift.Bool?
         /// Defines if the template is for machines or users. Set to TRUE if the template is for machines. Set to FALSE if the template is for users
@@ -1669,12 +1671,11 @@ extension PcaConnectorAdClientTypes {
             self.machineType = machineType
         }
     }
-
 }
 
 extension PcaConnectorAdClientTypes {
 
-    public enum HashAlgorithm: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum HashAlgorithm: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case sha256
         case sha384
         case sha512
@@ -1706,7 +1707,7 @@ extension PcaConnectorAdClientTypes {
 
 extension PcaConnectorAdClientTypes {
 
-    public enum PrivateKeyAlgorithm: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum PrivateKeyAlgorithm: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case ecdhP256
         case ecdhP384
         case ecdhP521
@@ -1740,8 +1741,9 @@ extension PcaConnectorAdClientTypes {
 }
 
 extension PcaConnectorAdClientTypes {
+
     /// Specifies key usage.
-    public struct KeyUsagePropertyFlags {
+    public struct KeyUsagePropertyFlags: Swift.Sendable {
         /// Allows key for encryption and decryption.
         public var decrypt: Swift.Bool?
         /// Allows key exchange without encryption.
@@ -1760,12 +1762,11 @@ extension PcaConnectorAdClientTypes {
             self.sign = sign
         }
     }
-
 }
 
 extension PcaConnectorAdClientTypes {
 
-    public enum KeyUsagePropertyType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum KeyUsagePropertyType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case all
         case sdkUnknown(Swift.String)
 
@@ -1790,20 +1791,21 @@ extension PcaConnectorAdClientTypes {
 }
 
 extension PcaConnectorAdClientTypes {
+
     /// The key usage property defines the purpose of the private key contained in the certificate. You can specify specific purposes using property flags or all by using property type ALL.
-    public enum KeyUsageProperty {
+    public enum KeyUsageProperty: Swift.Sendable {
         /// You can specify all key usages using property type ALL. You can use property type or property flags but not both.
         case propertytype(PcaConnectorAdClientTypes.KeyUsagePropertyType)
         /// You can specify key usage for encryption, key agreement, and signature. You can use property flags or property type but not both.
         case propertyflags(PcaConnectorAdClientTypes.KeyUsagePropertyFlags)
         case sdkUnknown(Swift.String)
     }
-
 }
 
 extension PcaConnectorAdClientTypes {
+
     /// Defines the attributes of the private key.
-    public struct PrivateKeyAttributesV3 {
+    public struct PrivateKeyAttributesV3: Swift.Sendable {
         /// Defines the algorithm used to generate the private key.
         /// This member is required.
         public var algorithm: PcaConnectorAdClientTypes.PrivateKeyAlgorithm?
@@ -1834,12 +1836,12 @@ extension PcaConnectorAdClientTypes {
             self.minimalKeyLength = minimalKeyLength
         }
     }
-
 }
 
 extension PcaConnectorAdClientTypes {
+
     /// Private key flags for v3 templates specify the client compatibility, if the private key can be exported, if user input is required when using a private key, and if an alternate signature algorithm should be used.
-    public struct PrivateKeyFlagsV3 {
+    public struct PrivateKeyFlagsV3: Swift.Sendable {
         /// Defines the minimum client compatibility.
         /// This member is required.
         public var clientVersion: PcaConnectorAdClientTypes.ClientCompatibilityV3?
@@ -1863,12 +1865,12 @@ extension PcaConnectorAdClientTypes {
             self.strongKeyProtectionRequired = strongKeyProtectionRequired
         }
     }
-
 }
 
 extension PcaConnectorAdClientTypes {
+
     /// Information to include in the subject name and alternate subject name of the certificate. The subject name can be common name, directory path, DNS as common name, or left blank. You can optionally include email to the subject name for user templates. If you leave the subject name blank then you must set a subject alternate name. The subject alternate name (SAN) can include globally unique identifier (GUID), DNS, domain DNS, email, service principal name (SPN), and user principal name (UPN). You can leave the SAN blank. If you leave the SAN blank, then you must set a subject name.
-    public struct SubjectNameFlagsV3 {
+    public struct SubjectNameFlagsV3: Swift.Sendable {
         /// Include the common name in the subject name.
         public var requireCommonName: Swift.Bool?
         /// Include the directory path in the subject name.
@@ -1915,12 +1917,12 @@ extension PcaConnectorAdClientTypes {
             self.sanRequireUpn = sanRequireUpn
         }
     }
-
 }
 
 extension PcaConnectorAdClientTypes {
+
     /// v3 template schema that uses Key Storage Providers.
-    public struct TemplateV3 {
+    public struct TemplateV3: Swift.Sendable {
         /// Certificate validity describes the validity and renewal periods of a certificate.
         /// This member is required.
         public var certificateValidity: PcaConnectorAdClientTypes.CertificateValidity?
@@ -1971,12 +1973,12 @@ extension PcaConnectorAdClientTypes {
             self.supersededTemplates = supersededTemplates
         }
     }
-
 }
 
 extension PcaConnectorAdClientTypes {
+
     /// Template configurations for v4 template schema.
-    public struct EnrollmentFlagsV4 {
+    public struct EnrollmentFlagsV4: Swift.Sendable {
         /// Allow renewal using the same key.
         public var enableKeyReuseOnNtTokenKeysetStorageFull: Swift.Bool?
         /// Include symmetric algorithms allowed by the subject.
@@ -2003,12 +2005,12 @@ extension PcaConnectorAdClientTypes {
             self.userInteractionRequired = userInteractionRequired
         }
     }
-
 }
 
 extension PcaConnectorAdClientTypes {
+
     /// Certificate extensions for v4 template schema
-    public struct ExtensionsV4 {
+    public struct ExtensionsV4: Swift.Sendable {
         /// Application policies specify what the certificate is used for and its purpose.
         public var applicationPolicies: PcaConnectorAdClientTypes.ApplicationPolicies?
         /// The key usage extension defines the purpose (e.g., encipherment, signature) of the key contained in the certificate.
@@ -2024,12 +2026,12 @@ extension PcaConnectorAdClientTypes {
             self.keyUsage = keyUsage
         }
     }
-
 }
 
 extension PcaConnectorAdClientTypes {
+
     /// General flags for v4 template schema that defines if the template is for a machine or a user and if the template can be issued using autoenrollment.
-    public struct GeneralFlagsV4 {
+    public struct GeneralFlagsV4: Swift.Sendable {
         /// Allows certificate issuance using autoenrollment. Set to TRUE to allow autoenrollment.
         public var autoEnrollment: Swift.Bool?
         /// Defines if the template is for machines or users. Set to TRUE if the template is for machines. Set to FALSE if the template is for users
@@ -2044,12 +2046,12 @@ extension PcaConnectorAdClientTypes {
             self.machineType = machineType
         }
     }
-
 }
 
 extension PcaConnectorAdClientTypes {
+
     /// Defines the attributes of the private key.
-    public struct PrivateKeyAttributesV4 {
+    public struct PrivateKeyAttributesV4: Swift.Sendable {
         /// Defines the algorithm used to generate the private key.
         public var algorithm: PcaConnectorAdClientTypes.PrivateKeyAlgorithm?
         /// Defines the cryptographic providers used to generate the private key.
@@ -2078,12 +2080,12 @@ extension PcaConnectorAdClientTypes {
             self.minimalKeyLength = minimalKeyLength
         }
     }
-
 }
 
 extension PcaConnectorAdClientTypes {
+
     /// Private key flags for v4 templates specify the client compatibility, if the private key can be exported, if user input is required when using a private key, if an alternate signature algorithm should be used, and if certificates are renewed using the same private key.
-    public struct PrivateKeyFlagsV4 {
+    public struct PrivateKeyFlagsV4: Swift.Sendable {
         /// Defines the minimum client compatibility.
         /// This member is required.
         public var clientVersion: PcaConnectorAdClientTypes.ClientCompatibilityV4?
@@ -2115,12 +2117,12 @@ extension PcaConnectorAdClientTypes {
             self.useLegacyProvider = useLegacyProvider
         }
     }
-
 }
 
 extension PcaConnectorAdClientTypes {
+
     /// Information to include in the subject name and alternate subject name of the certificate. The subject name can be common name, directory path, DNS as common name, or left blank. You can optionally include email to the subject name for user templates. If you leave the subject name blank then you must set a subject alternate name. The subject alternate name (SAN) can include globally unique identifier (GUID), DNS, domain DNS, email, service principal name (SPN), and user principal name (UPN). You can leave the SAN blank. If you leave the SAN blank, then you must set a subject name.
-    public struct SubjectNameFlagsV4 {
+    public struct SubjectNameFlagsV4: Swift.Sendable {
         /// Include the common name in the subject name.
         public var requireCommonName: Swift.Bool?
         /// Include the directory path in the subject name.
@@ -2167,12 +2169,12 @@ extension PcaConnectorAdClientTypes {
             self.sanRequireUpn = sanRequireUpn
         }
     }
-
 }
 
 extension PcaConnectorAdClientTypes {
+
     /// v4 template schema that can use either Legacy Cryptographic Providers or Key Storage Providers.
-    public struct TemplateV4 {
+    public struct TemplateV4: Swift.Sendable {
         /// Certificate validity describes the validity and renewal periods of a certificate.
         /// This member is required.
         public var certificateValidity: PcaConnectorAdClientTypes.CertificateValidity?
@@ -2222,12 +2224,12 @@ extension PcaConnectorAdClientTypes {
             self.supersededTemplates = supersededTemplates
         }
     }
-
 }
 
 extension PcaConnectorAdClientTypes {
+
     /// Template configuration to define the information included in certificates. Define certificate validity and renewal periods, certificate request handling and enrollment options, key usage extensions, application policies, and cryptography settings.
-    public enum TemplateDefinition {
+    public enum TemplateDefinition: Swift.Sendable {
         /// Template configuration to define the information included in certificates. Define certificate validity and renewal periods, certificate request handling and enrollment options, key usage extensions, application policies, and cryptography settings.
         case templatev2(PcaConnectorAdClientTypes.TemplateV2)
         /// Template configuration to define the information included in certificates. Define certificate validity and renewal periods, certificate request handling and enrollment options, key usage extensions, application policies, and cryptography settings.
@@ -2236,10 +2238,9 @@ extension PcaConnectorAdClientTypes {
         case templatev4(PcaConnectorAdClientTypes.TemplateV4)
         case sdkUnknown(Swift.String)
     }
-
 }
 
-public struct CreateTemplateInput {
+public struct CreateTemplateInput: Swift.Sendable {
     /// Idempotency token.
     public var clientToken: Swift.String?
     /// The Amazon Resource Name (ARN) that was returned when you called [CreateConnector](https://docs.aws.amazon.com/pca-connector-ad/latest/APIReference/API_CreateConnector.html).
@@ -2270,7 +2271,7 @@ public struct CreateTemplateInput {
     }
 }
 
-public struct CreateTemplateOutput {
+public struct CreateTemplateOutput: Swift.Sendable {
     /// If successful, the Amazon Resource Name (ARN) of the template.
     public var templateArn: Swift.String?
 
@@ -2282,7 +2283,7 @@ public struct CreateTemplateOutput {
     }
 }
 
-public struct CreateTemplateGroupAccessControlEntryInput {
+public struct CreateTemplateGroupAccessControlEntryInput: Swift.Sendable {
     /// Allow or deny permissions for an Active Directory group to enroll or autoenroll certificates for a template.
     /// This member is required.
     public var accessRights: PcaConnectorAdClientTypes.AccessRights?
@@ -2314,7 +2315,7 @@ public struct CreateTemplateGroupAccessControlEntryInput {
     }
 }
 
-public struct DeleteDirectoryRegistrationInput {
+public struct DeleteDirectoryRegistrationInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) that was returned when you called [CreateDirectoryRegistration](https://docs.aws.amazon.com/pca-connector-ad/latest/APIReference/API_CreateDirectoryRegistration.html).
     /// This member is required.
     public var directoryRegistrationArn: Swift.String?
@@ -2327,7 +2328,7 @@ public struct DeleteDirectoryRegistrationInput {
     }
 }
 
-public struct DeleteServicePrincipalNameInput {
+public struct DeleteServicePrincipalNameInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) that was returned when you called [CreateConnector](https://docs.aws.amazon.com/pca-connector-ad/latest/APIReference/API_CreateConnector.html).
     /// This member is required.
     public var connectorArn: Swift.String?
@@ -2345,7 +2346,7 @@ public struct DeleteServicePrincipalNameInput {
     }
 }
 
-public struct DeleteTemplateInput {
+public struct DeleteTemplateInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) that was returned when you called [CreateTemplate](https://docs.aws.amazon.com/pca-connector-ad/latest/APIReference/API_CreateTemplate.html).
     /// This member is required.
     public var templateArn: Swift.String?
@@ -2358,7 +2359,7 @@ public struct DeleteTemplateInput {
     }
 }
 
-public struct DeleteTemplateGroupAccessControlEntryInput {
+public struct DeleteTemplateGroupAccessControlEntryInput: Swift.Sendable {
     /// Security identifier (SID) of the group object from Active Directory. The SID starts with "S-".
     /// This member is required.
     public var groupSecurityIdentifier: Swift.String?
@@ -2378,7 +2379,7 @@ public struct DeleteTemplateGroupAccessControlEntryInput {
 
 extension PcaConnectorAdClientTypes {
 
-    public enum DirectoryRegistrationStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DirectoryRegistrationStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case active
         case creating
         case deleting
@@ -2413,7 +2414,7 @@ extension PcaConnectorAdClientTypes {
 
 extension PcaConnectorAdClientTypes {
 
-    public enum DirectoryRegistrationStatusReason: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DirectoryRegistrationStatusReason: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case directoryAccessDenied
         case directoryNotActive
         case directoryNotReachable
@@ -2453,8 +2454,9 @@ extension PcaConnectorAdClientTypes {
 }
 
 extension PcaConnectorAdClientTypes {
+
     /// The directory registration represents the authorization of the connector service with a directory.
-    public struct DirectoryRegistration {
+    public struct DirectoryRegistration: Swift.Sendable {
         /// The Amazon Resource Name (ARN) that was returned when you called CreateDirectoryRegistration.
         public var arn: Swift.String?
         /// The date and time that the directory registration was created.
@@ -2485,12 +2487,12 @@ extension PcaConnectorAdClientTypes {
             self.updatedAt = updatedAt
         }
     }
-
 }
 
 extension PcaConnectorAdClientTypes {
+
     /// The directory registration represents the authorization of the connector service with the Active Directory.
-    public struct DirectoryRegistrationSummary {
+    public struct DirectoryRegistrationSummary: Swift.Sendable {
         /// The Amazon Resource Name (ARN) that was returned when you called [CreateDirectoryRegistration](https://docs.aws.amazon.com/pca-connector-ad/latest/APIReference/API_CreateDirectoryRegistration.html).
         public var arn: Swift.String?
         /// The date and time that the directory registration was created.
@@ -2521,10 +2523,9 @@ extension PcaConnectorAdClientTypes {
             self.updatedAt = updatedAt
         }
     }
-
 }
 
-public struct GetDirectoryRegistrationInput {
+public struct GetDirectoryRegistrationInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) that was returned when you called [CreateDirectoryRegistration](https://docs.aws.amazon.com/pca-connector-ad/latest/APIReference/API_CreateDirectoryRegistration.html).
     /// This member is required.
     public var directoryRegistrationArn: Swift.String?
@@ -2537,7 +2538,7 @@ public struct GetDirectoryRegistrationInput {
     }
 }
 
-public struct GetDirectoryRegistrationOutput {
+public struct GetDirectoryRegistrationOutput: Swift.Sendable {
     /// The directory registration represents the authorization of the connector service with a directory.
     public var directoryRegistration: PcaConnectorAdClientTypes.DirectoryRegistration?
 
@@ -2549,7 +2550,7 @@ public struct GetDirectoryRegistrationOutput {
     }
 }
 
-public struct ListDirectoryRegistrationsInput {
+public struct ListDirectoryRegistrationsInput: Swift.Sendable {
     /// Use this parameter when paginating results to specify the maximum number of items to return in the response on each page. If additional items exist beyond the number you specify, the NextToken element is sent in the response. Use this NextToken value in a subsequent request to retrieve additional items.
     public var maxResults: Swift.Int?
     /// Use this parameter when paginating results in a subsequent request after you receive a response with truncated results. Set it to the value of the NextToken parameter from the response you just received.
@@ -2565,7 +2566,7 @@ public struct ListDirectoryRegistrationsInput {
     }
 }
 
-public struct ListDirectoryRegistrationsOutput {
+public struct ListDirectoryRegistrationsOutput: Swift.Sendable {
     /// Summary information about each directory registration you have created.
     public var directoryRegistrations: [PcaConnectorAdClientTypes.DirectoryRegistrationSummary]?
     /// Use this parameter when paginating results in a subsequent request after you receive a response with truncated results. Set it to the value of the NextToken parameter from the response you just received.
@@ -2581,7 +2582,7 @@ public struct ListDirectoryRegistrationsOutput {
     }
 }
 
-public struct GetServicePrincipalNameInput {
+public struct GetServicePrincipalNameInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) that was returned when you called [CreateConnector](https://docs.aws.amazon.com/pca-connector-ad/latest/APIReference/API_CreateConnector.html).
     /// This member is required.
     public var connectorArn: Swift.String?
@@ -2601,7 +2602,7 @@ public struct GetServicePrincipalNameInput {
 
 extension PcaConnectorAdClientTypes {
 
-    public enum ServicePrincipalNameStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ServicePrincipalNameStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case active
         case creating
         case deleting
@@ -2636,7 +2637,7 @@ extension PcaConnectorAdClientTypes {
 
 extension PcaConnectorAdClientTypes {
 
-    public enum ServicePrincipalNameStatusReason: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ServicePrincipalNameStatusReason: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case directoryAccessDenied
         case directoryNotReachable
         case directoryResourceNotFound
@@ -2673,8 +2674,9 @@ extension PcaConnectorAdClientTypes {
 }
 
 extension PcaConnectorAdClientTypes {
+
     /// The service principal name that the connector uses to authenticate with Active Directory.
-    public struct ServicePrincipalName {
+    public struct ServicePrincipalName: Swift.Sendable {
         /// The Amazon Resource Name (ARN) that was returned when you called [CreateConnector.html](https://docs.aws.amazon.com/pca-connector-ad/latest/APIReference/API_CreateConnector.html).
         public var connectorArn: Swift.String?
         /// The date and time that the service principal name was created.
@@ -2705,10 +2707,9 @@ extension PcaConnectorAdClientTypes {
             self.updatedAt = updatedAt
         }
     }
-
 }
 
-public struct GetServicePrincipalNameOutput {
+public struct GetServicePrincipalNameOutput: Swift.Sendable {
     /// The service principal name that the connector uses to authenticate with Active Directory.
     public var servicePrincipalName: PcaConnectorAdClientTypes.ServicePrincipalName?
 
@@ -2720,7 +2721,7 @@ public struct GetServicePrincipalNameOutput {
     }
 }
 
-public struct GetTemplateInput {
+public struct GetTemplateInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) that was returned when you called [CreateTemplate](https://docs.aws.amazon.com/pca-connector-ad/latest/APIReference/API_CreateTemplate.html).
     /// This member is required.
     public var templateArn: Swift.String?
@@ -2734,8 +2735,9 @@ public struct GetTemplateInput {
 }
 
 extension PcaConnectorAdClientTypes {
+
     /// The revision version of the template. Template updates will increment the minor revision. Re-enrolling all certificate holders will increment the major revision.
-    public struct TemplateRevision {
+    public struct TemplateRevision: Swift.Sendable {
         /// The revision version of the template. Re-enrolling all certificate holders will increment the major revision.
         /// This member is required.
         public var majorRevision: Swift.Int?
@@ -2752,12 +2754,11 @@ extension PcaConnectorAdClientTypes {
             self.minorRevision = minorRevision
         }
     }
-
 }
 
 extension PcaConnectorAdClientTypes {
 
-    public enum TemplateStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum TemplateStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case active
         case deleting
         case sdkUnknown(Swift.String)
@@ -2785,8 +2786,9 @@ extension PcaConnectorAdClientTypes {
 }
 
 extension PcaConnectorAdClientTypes {
+
     /// An Active Directory compatible certificate template. Connectors issue certificates against these templates based on the requestor's Active Directory group membership.
-    public struct Template {
+    public struct Template: Swift.Sendable {
         /// The Amazon Resource Name (ARN) that was returned when you called [CreateTemplate](https://docs.aws.amazon.com/pca-connector-ad/latest/APIReference/API_CreateTemplate.html).
         public var arn: Swift.String?
         /// The Amazon Resource Name (ARN) that was returned when you called [CreateConnector](https://docs.aws.amazon.com/pca-connector-ad/latest/APIReference/API_CreateConnector.html).
@@ -2833,10 +2835,9 @@ extension PcaConnectorAdClientTypes {
             self.updatedAt = updatedAt
         }
     }
-
 }
 
-public struct GetTemplateOutput {
+public struct GetTemplateOutput: Swift.Sendable {
     /// A certificate template that the connector uses to issue certificates from a private CA.
     public var template: PcaConnectorAdClientTypes.Template?
 
@@ -2848,7 +2849,7 @@ public struct GetTemplateOutput {
     }
 }
 
-public struct GetTemplateGroupAccessControlEntryInput {
+public struct GetTemplateGroupAccessControlEntryInput: Swift.Sendable {
     /// Security identifier (SID) of the group object from Active Directory. The SID starts with "S-".
     /// This member is required.
     public var groupSecurityIdentifier: Swift.String?
@@ -2866,7 +2867,7 @@ public struct GetTemplateGroupAccessControlEntryInput {
     }
 }
 
-public struct GetTemplateGroupAccessControlEntryOutput {
+public struct GetTemplateGroupAccessControlEntryOutput: Swift.Sendable {
     /// An access control entry allows or denies an Active Directory group from enrolling and/or autoenrolling with a template.
     public var accessControlEntry: PcaConnectorAdClientTypes.AccessControlEntry?
 
@@ -2878,7 +2879,7 @@ public struct GetTemplateGroupAccessControlEntryOutput {
     }
 }
 
-public struct ListServicePrincipalNamesInput {
+public struct ListServicePrincipalNamesInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) that was returned when you called [CreateDirectoryRegistration](https://docs.aws.amazon.com/pca-connector-ad/latest/APIReference/API_CreateDirectoryRegistration.html).
     /// This member is required.
     public var directoryRegistrationArn: Swift.String?
@@ -2900,8 +2901,9 @@ public struct ListServicePrincipalNamesInput {
 }
 
 extension PcaConnectorAdClientTypes {
+
     /// The service principal name that the connector uses to authenticate with Active Directory.
-    public struct ServicePrincipalNameSummary {
+    public struct ServicePrincipalNameSummary: Swift.Sendable {
         /// The Amazon Resource Name (ARN) that was returned when you called [CreateConnector](https://docs.aws.amazon.com/pca-connector-ad/latest/APIReference/API_CreateConnector.html).
         public var connectorArn: Swift.String?
         /// The date and time that the service principal name was created.
@@ -2932,10 +2934,9 @@ extension PcaConnectorAdClientTypes {
             self.updatedAt = updatedAt
         }
     }
-
 }
 
-public struct ListServicePrincipalNamesOutput {
+public struct ListServicePrincipalNamesOutput: Swift.Sendable {
     /// Use this parameter when paginating results in a subsequent request after you receive a response with truncated results. Set it to the value of the NextToken parameter from the response you just received.
     public var nextToken: Swift.String?
     /// The service principal name, if any, that the connector uses to authenticate with Active Directory.
@@ -2951,7 +2952,7 @@ public struct ListServicePrincipalNamesOutput {
     }
 }
 
-public struct ListTagsForResourceInput {
+public struct ListTagsForResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) that was returned when you created the resource.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -2964,7 +2965,7 @@ public struct ListTagsForResourceInput {
     }
 }
 
-public struct ListTagsForResourceOutput {
+public struct ListTagsForResourceOutput: Swift.Sendable {
     /// The tags, if any, that are associated with your resource.
     public var tags: [Swift.String: Swift.String]?
 
@@ -2976,7 +2977,7 @@ public struct ListTagsForResourceOutput {
     }
 }
 
-public struct ListTemplateGroupAccessControlEntriesInput {
+public struct ListTemplateGroupAccessControlEntriesInput: Swift.Sendable {
     /// Use this parameter when paginating results to specify the maximum number of items to return in the response on each page. If additional items exist beyond the number you specify, the NextToken element is sent in the response. Use this NextToken value in a subsequent request to retrieve additional items.
     public var maxResults: Swift.Int?
     /// Use this parameter when paginating results in a subsequent request after you receive a response with truncated results. Set it to the value of the NextToken parameter from the response you just received.
@@ -2997,7 +2998,7 @@ public struct ListTemplateGroupAccessControlEntriesInput {
     }
 }
 
-public struct ListTemplateGroupAccessControlEntriesOutput {
+public struct ListTemplateGroupAccessControlEntriesOutput: Swift.Sendable {
     /// An access control entry grants or denies permission to an Active Directory group to enroll certificates for a template.
     public var accessControlEntries: [PcaConnectorAdClientTypes.AccessControlEntrySummary]?
     /// Use this parameter when paginating results in a subsequent request after you receive a response with truncated results. Set it to the value of the NextToken parameter from the response you just received.
@@ -3013,7 +3014,7 @@ public struct ListTemplateGroupAccessControlEntriesOutput {
     }
 }
 
-public struct ListTemplatesInput {
+public struct ListTemplatesInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) that was returned when you called [CreateConnector](https://docs.aws.amazon.com/pca-connector-ad/latest/APIReference/API_CreateConnector.html).
     /// This member is required.
     public var connectorArn: Swift.String?
@@ -3035,8 +3036,9 @@ public struct ListTemplatesInput {
 }
 
 extension PcaConnectorAdClientTypes {
+
     /// An Active Directory compatible certificate template. Connectors issue certificates against these templates based on the requestor's Active Directory group membership.
-    public struct TemplateSummary {
+    public struct TemplateSummary: Swift.Sendable {
         /// The Amazon Resource Name (ARN) that was returned when you called [CreateTemplate](https://docs.aws.amazon.com/pca-connector-ad/latest/APIReference/API_CreateTemplate.html).
         public var arn: Swift.String?
         /// The Amazon Resource Name (ARN) that was returned when you called [CreateConnector](https://docs.aws.amazon.com/pca-connector-ad/latest/APIReference/API_CreateConnector.html).
@@ -3083,10 +3085,9 @@ extension PcaConnectorAdClientTypes {
             self.updatedAt = updatedAt
         }
     }
-
 }
 
-public struct ListTemplatesOutput {
+public struct ListTemplatesOutput: Swift.Sendable {
     /// Use this parameter when paginating results in a subsequent request after you receive a response with truncated results. Set it to the value of the NextToken parameter from the response you just received.
     public var nextToken: Swift.String?
     /// Custom configuration templates used when issuing a certificate.
@@ -3102,7 +3103,7 @@ public struct ListTemplatesOutput {
     }
 }
 
-public struct TagResourceInput {
+public struct TagResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) that was returned when you created the resource.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -3120,7 +3121,7 @@ public struct TagResourceInput {
     }
 }
 
-public struct UpdateTemplateGroupAccessControlEntryInput {
+public struct UpdateTemplateGroupAccessControlEntryInput: Swift.Sendable {
     /// Allow or deny permissions for an Active Directory group to enroll or autoenroll certificates for a template.
     public var accessRights: PcaConnectorAdClientTypes.AccessRights?
     /// Name of the Active Directory group. This name does not need to match the group name in Active Directory.
@@ -3146,7 +3147,7 @@ public struct UpdateTemplateGroupAccessControlEntryInput {
     }
 }
 
-public struct UpdateTemplateInput {
+public struct UpdateTemplateInput: Swift.Sendable {
     /// Template configuration to define the information included in certificates. Define certificate validity and renewal periods, certificate request handling and enrollment options, key usage extensions, application policies, and cryptography settings.
     public var definition: PcaConnectorAdClientTypes.TemplateDefinition?
     /// This setting allows the major version of a template to be increased automatically. All members of Active Directory groups that are allowed to enroll with a template will receive a new certificate issued using that template.
@@ -3167,7 +3168,7 @@ public struct UpdateTemplateInput {
     }
 }
 
-public struct UntagResourceInput {
+public struct UntagResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) that was returned when you created the resource.
     /// This member is required.
     public var resourceArn: Swift.String?

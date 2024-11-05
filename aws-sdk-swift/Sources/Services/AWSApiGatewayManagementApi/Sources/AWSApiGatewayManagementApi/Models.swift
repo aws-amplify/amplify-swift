@@ -23,12 +23,13 @@ import protocol ClientRuntime.ModeledError
 @_spi(SmithyReadWrite) import struct AWSClientRuntime.RestJSONError
 @_spi(UnknownAWSHTTPServiceError) import struct AWSClientRuntime.UnknownAWSHTTPServiceError
 
-public struct DeleteConnectionOutput {
+
+public struct DeleteConnectionOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct PostToConnectionOutput {
+public struct PostToConnectionOutput: Swift.Sendable {
 
     public init() { }
 }
@@ -72,7 +73,7 @@ public struct LimitExceededException: ClientRuntime.ModeledError, AWSClientRunti
     public init() { }
 }
 
-public struct DeleteConnectionInput {
+public struct DeleteConnectionInput: Swift.Sendable {
     /// This member is required.
     public var connectionId: Swift.String?
 
@@ -84,7 +85,7 @@ public struct DeleteConnectionInput {
     }
 }
 
-public struct GetConnectionInput {
+public struct GetConnectionInput: Swift.Sendable {
     /// This member is required.
     public var connectionId: Swift.String?
 
@@ -97,7 +98,8 @@ public struct GetConnectionInput {
 }
 
 extension ApiGatewayManagementApiClientTypes {
-    public struct Identity {
+
+    public struct Identity: Swift.Sendable {
         /// The source IP address of the TCP connection making the request to API Gateway.
         /// This member is required.
         public var sourceIp: Swift.String?
@@ -114,10 +116,9 @@ extension ApiGatewayManagementApiClientTypes {
             self.userAgent = userAgent
         }
     }
-
 }
 
-public struct GetConnectionOutput {
+public struct GetConnectionOutput: Swift.Sendable {
     /// The time in ISO 8601 format for when the connection was established.
     public var connectedAt: Foundation.Date?
     public var identity: ApiGatewayManagementApiClientTypes.Identity?
@@ -160,7 +161,7 @@ public struct PayloadTooLargeException: ClientRuntime.ModeledError, AWSClientRun
     }
 }
 
-public struct PostToConnectionInput {
+public struct PostToConnectionInput: Swift.Sendable {
     /// The identifier of the connection that a specific client is using.
     /// This member is required.
     public var connectionId: Swift.String?

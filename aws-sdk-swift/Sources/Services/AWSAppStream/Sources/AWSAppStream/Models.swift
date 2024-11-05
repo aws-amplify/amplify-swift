@@ -29,7 +29,7 @@ import protocol ClientRuntime.ModeledError
 
 extension AppStreamClientTypes {
 
-    public enum AccessEndpointType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AccessEndpointType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case streaming
         case sdkUnknown(Swift.String)
 
@@ -54,8 +54,9 @@ extension AppStreamClientTypes {
 }
 
 extension AppStreamClientTypes {
+
     /// Describes an interface VPC endpoint (interface endpoint) that lets you create a private connection between the virtual private cloud (VPC) that you specify and AppStream 2.0. When you specify an interface endpoint for a stack, users of the stack can connect to AppStream 2.0 only through that endpoint. When you specify an interface endpoint for an image builder, administrators can connect to the image builder only through that endpoint.
-    public struct AccessEndpoint {
+    public struct AccessEndpoint: Swift.Sendable {
         /// The type of interface endpoint.
         /// This member is required.
         public var endpointType: AppStreamClientTypes.AccessEndpointType?
@@ -71,12 +72,12 @@ extension AppStreamClientTypes {
             self.vpceId = vpceId
         }
     }
-
 }
 
 extension AppStreamClientTypes {
 
-    public enum Action: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Action: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+        case autoTimeZoneRedirection
         case clipboardCopyFromLocalDevice
         case clipboardCopyToLocalDevice
         case domainPasswordSignin
@@ -88,6 +89,7 @@ extension AppStreamClientTypes {
 
         public static var allCases: [Action] {
             return [
+                .autoTimeZoneRedirection,
                 .clipboardCopyFromLocalDevice,
                 .clipboardCopyToLocalDevice,
                 .domainPasswordSignin,
@@ -105,6 +107,7 @@ extension AppStreamClientTypes {
 
         public var rawValue: Swift.String {
             switch self {
+            case .autoTimeZoneRedirection: return "AUTO_TIME_ZONE_REDIRECTION"
             case .clipboardCopyFromLocalDevice: return "CLIPBOARD_COPY_FROM_LOCAL_DEVICE"
             case .clipboardCopyToLocalDevice: return "CLIPBOARD_COPY_TO_LOCAL_DEVICE"
             case .domainPasswordSignin: return "DOMAIN_PASSWORD_SIGNIN"
@@ -119,8 +122,9 @@ extension AppStreamClientTypes {
 }
 
 extension AppStreamClientTypes {
+
     /// The error details.
-    public struct ErrorDetails {
+    public struct ErrorDetails: Swift.Sendable {
         /// The error code.
         public var errorCode: Swift.String?
         /// The error message.
@@ -135,12 +139,11 @@ extension AppStreamClientTypes {
             self.errorMessage = errorMessage
         }
     }
-
 }
 
 extension AppStreamClientTypes {
 
-    public enum PackagingType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum PackagingType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case appstream2
         case custom
         case sdkUnknown(Swift.String)
@@ -168,8 +171,9 @@ extension AppStreamClientTypes {
 }
 
 extension AppStreamClientTypes {
+
     /// Describes the S3 location.
-    public struct S3Location {
+    public struct S3Location: Swift.Sendable {
         /// The S3 bucket of the S3 object.
         /// This member is required.
         public var s3Bucket: Swift.String?
@@ -195,12 +199,12 @@ extension AppStreamClientTypes {
             self.s3Key = s3Key
         }
     }
-
 }
 
 extension AppStreamClientTypes {
+
     /// Describes the details of the script.
-    public struct ScriptDetails {
+    public struct ScriptDetails: Swift.Sendable {
         /// The runtime parameters passed to the run path for the script.
         public var executableParameters: Swift.String?
         /// The run path for the script.
@@ -226,12 +230,11 @@ extension AppStreamClientTypes {
             self.timeoutInSeconds = timeoutInSeconds
         }
     }
-
 }
 
 extension AppStreamClientTypes {
 
-    public enum AppBlockState: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AppBlockState: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case active
         case inactive
         case sdkUnknown(Swift.String)
@@ -259,8 +262,9 @@ extension AppStreamClientTypes {
 }
 
 extension AppStreamClientTypes {
+
     /// Describes an app block. App blocks are an Amazon AppStream 2.0 resource that stores the details about the virtual hard disk in an S3 bucket. It also stores the setup script with details about how to mount the virtual hard disk. The virtual hard disk includes the application binaries and other files necessary to launch your applications. Multiple applications can be assigned to a single app block. This is only supported for Elastic fleets.
-    public struct AppBlock {
+    public struct AppBlock: Swift.Sendable {
         /// The errors of the app block.
         public var appBlockErrors: [AppStreamClientTypes.ErrorDetails]?
         /// The ARN of the app block.
@@ -313,12 +317,11 @@ extension AppStreamClientTypes {
             self.state = state
         }
     }
-
 }
 
 extension AppStreamClientTypes {
 
-    public enum FleetErrorCode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum FleetErrorCode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case domainJoinErrorAccessDenied
         case domainJoinErrorDsMachineAccountQuotaExceeded
         case domainJoinErrorFileNotFound
@@ -430,8 +433,9 @@ extension AppStreamClientTypes {
 }
 
 extension AppStreamClientTypes {
+
     /// Describes a resource error.
-    public struct ResourceError {
+    public struct ResourceError: Swift.Sendable {
         /// The error code.
         public var errorCode: AppStreamClientTypes.FleetErrorCode?
         /// The error message.
@@ -450,12 +454,11 @@ extension AppStreamClientTypes {
             self.errorTimestamp = errorTimestamp
         }
     }
-
 }
 
 extension AppStreamClientTypes {
 
-    public enum AppBlockBuilderPlatformType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AppBlockBuilderPlatformType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case windowsServer2019
         case sdkUnknown(Swift.String)
 
@@ -481,7 +484,7 @@ extension AppStreamClientTypes {
 
 extension AppStreamClientTypes {
 
-    public enum AppBlockBuilderState: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AppBlockBuilderState: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case running
         case starting
         case stopped
@@ -516,7 +519,7 @@ extension AppStreamClientTypes {
 
 extension AppStreamClientTypes {
 
-    public enum AppBlockBuilderStateChangeReasonCode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AppBlockBuilderStateChangeReasonCode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case internalError
         case sdkUnknown(Swift.String)
 
@@ -541,8 +544,9 @@ extension AppStreamClientTypes {
 }
 
 extension AppStreamClientTypes {
+
     /// Describes the reason why the last app block builder state change occurred.
-    public struct AppBlockBuilderStateChangeReason {
+    public struct AppBlockBuilderStateChangeReason: Swift.Sendable {
         /// The state change reason code.
         public var code: AppStreamClientTypes.AppBlockBuilderStateChangeReasonCode?
         /// The state change reason message.
@@ -557,12 +561,12 @@ extension AppStreamClientTypes {
             self.message = message
         }
     }
-
 }
 
 extension AppStreamClientTypes {
+
     /// Describes VPC configuration information for fleets and image builders.
-    public struct VpcConfig {
+    public struct VpcConfig: Swift.Sendable {
         /// The identifiers of the security groups for the fleet or image builder.
         public var securityGroupIds: [Swift.String]?
         /// The identifiers of the subnets to which a network interface is attached from the fleet instance or image builder instance. Fleet instances use one or more subnets. Image builder instances use one subnet.
@@ -577,12 +581,12 @@ extension AppStreamClientTypes {
             self.subnetIds = subnetIds
         }
     }
-
 }
 
 extension AppStreamClientTypes {
+
     /// Describes an app block builder.
-    public struct AppBlockBuilder {
+    public struct AppBlockBuilder: Swift.Sendable {
         /// The list of interface VPC endpoint (interface endpoint) objects. Administrators can connect to the app block builder only through the specified endpoints.
         public var accessEndpoints: [AppStreamClientTypes.AccessEndpoint]?
         /// The app block builder errors.
@@ -651,12 +655,12 @@ extension AppStreamClientTypes {
             self.vpcConfig = vpcConfig
         }
     }
-
 }
 
 extension AppStreamClientTypes {
+
     /// Describes an association between an app block builder and app block.
-    public struct AppBlockBuilderAppBlockAssociation {
+    public struct AppBlockBuilderAppBlockAssociation: Swift.Sendable {
         /// The ARN of the app block.
         /// This member is required.
         public var appBlockArn: Swift.String?
@@ -673,12 +677,11 @@ extension AppStreamClientTypes {
             self.appBlockBuilderName = appBlockBuilderName
         }
     }
-
 }
 
 extension AppStreamClientTypes {
 
-    public enum AppBlockBuilderAttribute: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AppBlockBuilderAttribute: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case accessEndpoints
         case iamRoleArn
         case vpcConfigurationSecurityGroupIds
@@ -710,7 +713,7 @@ extension AppStreamClientTypes {
 
 extension AppStreamClientTypes {
 
-    public enum PlatformType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum PlatformType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case amazonLinux2
         case rhel8
         case windows
@@ -750,8 +753,9 @@ extension AppStreamClientTypes {
 }
 
 extension AppStreamClientTypes {
+
     /// Describes an application in the application catalog.
-    public struct Application {
+    public struct Application: Swift.Sendable {
         /// The app block ARN of the application.
         public var appBlockArn: Swift.String?
         /// The ARN of the application.
@@ -818,12 +822,11 @@ extension AppStreamClientTypes {
             self.workingDirectory = workingDirectory
         }
     }
-
 }
 
 extension AppStreamClientTypes {
 
-    public enum ApplicationAttribute: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ApplicationAttribute: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case launchParameters
         case workingDirectory
         case sdkUnknown(Swift.String)
@@ -851,8 +854,9 @@ extension AppStreamClientTypes {
 }
 
 extension AppStreamClientTypes {
+
     /// Describes the application fleet association.
-    public struct ApplicationFleetAssociation {
+    public struct ApplicationFleetAssociation: Swift.Sendable {
         /// The ARN of the application associated with the fleet.
         /// This member is required.
         public var applicationArn: Swift.String?
@@ -869,12 +873,12 @@ extension AppStreamClientTypes {
             self.fleetName = fleetName
         }
     }
-
 }
 
 extension AppStreamClientTypes {
+
     /// The persistent application settings for users of a stack.
-    public struct ApplicationSettings {
+    public struct ApplicationSettings: Swift.Sendable {
         /// Enables or disables persistent application settings for users during their streaming sessions.
         /// This member is required.
         public var enabled: Swift.Bool?
@@ -890,12 +894,12 @@ extension AppStreamClientTypes {
             self.settingsGroup = settingsGroup
         }
     }
-
 }
 
 extension AppStreamClientTypes {
+
     /// Describes the persistent application settings for users of a stack.
-    public struct ApplicationSettingsResponse {
+    public struct ApplicationSettingsResponse: Swift.Sendable {
         /// Specifies whether persistent application settings are enabled for users during their streaming sessions.
         public var enabled: Swift.Bool?
         /// The S3 bucket where users’ persistent application settings are stored. When persistent application settings are enabled for the first time for an account in an AWS Region, an S3 bucket is created. The bucket is unique to the AWS account and the Region.
@@ -914,12 +918,11 @@ extension AppStreamClientTypes {
             self.settingsGroup = settingsGroup
         }
     }
-
 }
 
 extension AppStreamClientTypes {
 
-    public enum AppVisibility: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AppVisibility: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case all
         case associated
         case sdkUnknown(Swift.String)
@@ -1071,7 +1074,7 @@ public struct ResourceNotFoundException: ClientRuntime.ModeledError, AWSClientRu
     }
 }
 
-public struct AssociateAppBlockBuilderAppBlockInput {
+public struct AssociateAppBlockBuilderAppBlockInput: Swift.Sendable {
     /// The ARN of the app block.
     /// This member is required.
     public var appBlockArn: Swift.String?
@@ -1089,7 +1092,7 @@ public struct AssociateAppBlockBuilderAppBlockInput {
     }
 }
 
-public struct AssociateAppBlockBuilderAppBlockOutput {
+public struct AssociateAppBlockBuilderAppBlockOutput: Swift.Sendable {
     /// The list of app block builders associated with app blocks.
     public var appBlockBuilderAppBlockAssociation: AppStreamClientTypes.AppBlockBuilderAppBlockAssociation?
 
@@ -1101,7 +1104,7 @@ public struct AssociateAppBlockBuilderAppBlockOutput {
     }
 }
 
-public struct AssociateApplicationFleetInput {
+public struct AssociateApplicationFleetInput: Swift.Sendable {
     /// The ARN of the application.
     /// This member is required.
     public var applicationArn: Swift.String?
@@ -1119,7 +1122,7 @@ public struct AssociateApplicationFleetInput {
     }
 }
 
-public struct AssociateApplicationFleetOutput {
+public struct AssociateApplicationFleetOutput: Swift.Sendable {
     /// If fleet name is specified, this returns the list of applications that are associated to it. If application ARN is specified, this returns the list of fleets to which it is associated.
     public var applicationFleetAssociation: AppStreamClientTypes.ApplicationFleetAssociation?
 
@@ -1156,7 +1159,7 @@ public struct EntitlementNotFoundException: ClientRuntime.ModeledError, AWSClien
     }
 }
 
-public struct AssociateApplicationToEntitlementInput {
+public struct AssociateApplicationToEntitlementInput: Swift.Sendable {
     /// The identifier of the application.
     /// This member is required.
     public var applicationIdentifier: Swift.String?
@@ -1179,7 +1182,7 @@ public struct AssociateApplicationToEntitlementInput {
     }
 }
 
-public struct AssociateApplicationToEntitlementOutput {
+public struct AssociateApplicationToEntitlementOutput: Swift.Sendable {
 
     public init() { }
 }
@@ -1234,7 +1237,7 @@ public struct InvalidAccountStatusException: ClientRuntime.ModeledError, AWSClie
     }
 }
 
-public struct AssociateFleetInput {
+public struct AssociateFleetInput: Swift.Sendable {
     /// The name of the fleet.
     /// This member is required.
     public var fleetName: Swift.String?
@@ -1252,14 +1255,14 @@ public struct AssociateFleetInput {
     }
 }
 
-public struct AssociateFleetOutput {
+public struct AssociateFleetOutput: Swift.Sendable {
 
     public init() { }
 }
 
 extension AppStreamClientTypes {
 
-    public enum AuthenticationType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AuthenticationType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case api
         case awsAd
         case saml
@@ -1293,8 +1296,9 @@ extension AppStreamClientTypes {
 }
 
 extension AppStreamClientTypes {
+
     /// Describes a user in the user pool and the associated stack.
-    public struct UserStackAssociation {
+    public struct UserStackAssociation: Swift.Sendable {
         /// The authentication type for the user.
         /// This member is required.
         public var authenticationType: AppStreamClientTypes.AuthenticationType?
@@ -1320,7 +1324,6 @@ extension AppStreamClientTypes {
             self.userName = userName
         }
     }
-
 }
 
 extension AppStreamClientTypes.UserStackAssociation: Swift.CustomDebugStringConvertible {
@@ -1328,7 +1331,7 @@ extension AppStreamClientTypes.UserStackAssociation: Swift.CustomDebugStringConv
         "UserStackAssociation(authenticationType: \(Swift.String(describing: authenticationType)), sendEmailNotification: \(Swift.String(describing: sendEmailNotification)), stackName: \(Swift.String(describing: stackName)), userName: \"CONTENT_REDACTED\")"}
 }
 
-public struct BatchAssociateUserStackInput {
+public struct BatchAssociateUserStackInput: Swift.Sendable {
     /// The list of UserStackAssociation objects.
     /// This member is required.
     public var userStackAssociations: [AppStreamClientTypes.UserStackAssociation]?
@@ -1343,7 +1346,7 @@ public struct BatchAssociateUserStackInput {
 
 extension AppStreamClientTypes {
 
-    public enum UserStackAssociationErrorCode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum UserStackAssociationErrorCode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case directoryNotFound
         case internalError
         case stackNotFound
@@ -1377,8 +1380,9 @@ extension AppStreamClientTypes {
 }
 
 extension AppStreamClientTypes {
+
     /// Describes the error that is returned when a user can’t be associated with or disassociated from a stack.
-    public struct UserStackAssociationError {
+    public struct UserStackAssociationError: Swift.Sendable {
         /// The error code for the error that is returned when a user can’t be associated with or disassociated from a stack.
         public var errorCode: AppStreamClientTypes.UserStackAssociationErrorCode?
         /// The error message for the error that is returned when a user can’t be associated with or disassociated from a stack.
@@ -1397,10 +1401,9 @@ extension AppStreamClientTypes {
             self.userStackAssociation = userStackAssociation
         }
     }
-
 }
 
-public struct BatchAssociateUserStackOutput {
+public struct BatchAssociateUserStackOutput: Swift.Sendable {
     /// The list of UserStackAssociationError objects.
     public var errors: [AppStreamClientTypes.UserStackAssociationError]?
 
@@ -1412,7 +1415,7 @@ public struct BatchAssociateUserStackOutput {
     }
 }
 
-public struct BatchDisassociateUserStackInput {
+public struct BatchDisassociateUserStackInput: Swift.Sendable {
     /// The list of UserStackAssociation objects.
     /// This member is required.
     public var userStackAssociations: [AppStreamClientTypes.UserStackAssociation]?
@@ -1425,7 +1428,7 @@ public struct BatchDisassociateUserStackInput {
     }
 }
 
-public struct BatchDisassociateUserStackOutput {
+public struct BatchDisassociateUserStackOutput: Swift.Sendable {
     /// The list of UserStackAssociationError objects.
     public var errors: [AppStreamClientTypes.UserStackAssociationError]?
 
@@ -1439,7 +1442,7 @@ public struct BatchDisassociateUserStackOutput {
 
 extension AppStreamClientTypes {
 
-    public enum CertificateBasedAuthStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum CertificateBasedAuthStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case disabled
         case enabled
         case enabledNoDirectoryLoginFallback
@@ -1470,8 +1473,9 @@ extension AppStreamClientTypes {
 }
 
 extension AppStreamClientTypes {
+
     /// The certificate-based authentication properties used to authenticate SAML 2.0 Identity Provider (IdP) user identities to Active Directory domain-joined streaming instances. Fallback is turned on by default when certificate-based authentication is Enabled . Fallback allows users to log in using their AD domain password if certificate-based authentication is unsuccessful, or to unlock a desktop lock screen. Enabled_no_directory_login_fallback enables certificate-based authentication, but does not allow users to log in using their AD domain password. Users will be disconnected to re-authenticate using certificates.
-    public struct CertificateBasedAuthProperties {
+    public struct CertificateBasedAuthProperties: Swift.Sendable {
         /// The ARN of the AWS Certificate Manager Private CA resource.
         public var certificateAuthorityArn: Swift.String?
         /// The status of the certificate-based authentication properties.
@@ -1486,12 +1490,12 @@ extension AppStreamClientTypes {
             self.status = status
         }
     }
-
 }
 
 extension AppStreamClientTypes {
+
     /// Describes the capacity for a fleet.
-    public struct ComputeCapacity {
+    public struct ComputeCapacity: Swift.Sendable {
         /// The desired number of streaming instances.
         public var desiredInstances: Swift.Int?
         /// The desired number of user sessions for a multi-session fleet. This is not allowed for single-session fleets. When you create a fleet, you must set either the DesiredSessions or DesiredInstances attribute, based on the type of fleet you create. You can’t define both attributes or leave both attributes blank.
@@ -1506,12 +1510,12 @@ extension AppStreamClientTypes {
             self.desiredSessions = desiredSessions
         }
     }
-
 }
 
 extension AppStreamClientTypes {
+
     /// Describes the capacity status for a fleet.
-    public struct ComputeCapacityStatus {
+    public struct ComputeCapacityStatus: Swift.Sendable {
         /// The number of user sessions currently being used for streaming sessions. This only applies to multi-session fleets.
         public var activeUserSessions: Swift.Int?
         /// The total number of session slots that are available for streaming or are currently streaming. ActualUserSessionCapacity = AvailableUserSessionCapacity + ActiveUserSessions This only applies to multi-session fleets.
@@ -1551,7 +1555,6 @@ extension AppStreamClientTypes {
             self.running = running
         }
     }
-
 }
 
 /// The specified resource already exists.
@@ -1604,7 +1607,7 @@ public struct ResourceNotAvailableException: ClientRuntime.ModeledError, AWSClie
     }
 }
 
-public struct CopyImageInput {
+public struct CopyImageInput: Swift.Sendable {
     /// The description that the image will have when it is copied to the destination.
     public var destinationImageDescription: Swift.String?
     /// The name that the image will have when it is copied to the destination.
@@ -1631,7 +1634,7 @@ public struct CopyImageInput {
     }
 }
 
-public struct CopyImageOutput {
+public struct CopyImageOutput: Swift.Sendable {
     /// The name of the destination image.
     public var destinationImageName: Swift.String?
 
@@ -1643,7 +1646,7 @@ public struct CopyImageOutput {
     }
 }
 
-public struct CreateAppBlockInput {
+public struct CreateAppBlockInput: Swift.Sendable {
     /// The description of the app block.
     public var description: Swift.String?
     /// The display name of the app block. This is not displayed to the user.
@@ -1685,7 +1688,7 @@ public struct CreateAppBlockInput {
     }
 }
 
-public struct CreateAppBlockOutput {
+public struct CreateAppBlockOutput: Swift.Sendable {
     /// The app block.
     public var appBlock: AppStreamClientTypes.AppBlock?
 
@@ -1747,7 +1750,7 @@ public struct RequestLimitExceededException: ClientRuntime.ModeledError, AWSClie
     }
 }
 
-public struct CreateAppBlockBuilderInput {
+public struct CreateAppBlockBuilderInput: Swift.Sendable {
     /// The list of interface VPC endpoint (interface endpoint) objects. Administrators can connect to the app block builder only through the specified endpoints.
     public var accessEndpoints: [AppStreamClientTypes.AccessEndpoint]?
     /// The description of the app block builder.
@@ -1809,7 +1812,7 @@ public struct CreateAppBlockBuilderInput {
     }
 }
 
-public struct CreateAppBlockBuilderOutput {
+public struct CreateAppBlockBuilderOutput: Swift.Sendable {
     /// Describes an app block builder.
     public var appBlockBuilder: AppStreamClientTypes.AppBlockBuilder?
 
@@ -1821,7 +1824,7 @@ public struct CreateAppBlockBuilderOutput {
     }
 }
 
-public struct CreateAppBlockBuilderStreamingURLInput {
+public struct CreateAppBlockBuilderStreamingURLInput: Swift.Sendable {
     /// The name of the app block builder.
     /// This member is required.
     public var appBlockBuilderName: Swift.String?
@@ -1838,7 +1841,7 @@ public struct CreateAppBlockBuilderStreamingURLInput {
     }
 }
 
-public struct CreateAppBlockBuilderStreamingURLOutput {
+public struct CreateAppBlockBuilderStreamingURLOutput: Swift.Sendable {
     /// The elapsed time, in seconds after the Unix epoch, when this URL expires.
     public var expires: Foundation.Date?
     /// The URL to start the streaming session.
@@ -1854,7 +1857,7 @@ public struct CreateAppBlockBuilderStreamingURLOutput {
     }
 }
 
-public struct CreateApplicationInput {
+public struct CreateApplicationInput: Swift.Sendable {
     /// The app block ARN to which the application should be associated
     /// This member is required.
     public var appBlockArn: Swift.String?
@@ -1912,7 +1915,7 @@ public struct CreateApplicationInput {
     }
 }
 
-public struct CreateApplicationOutput {
+public struct CreateApplicationOutput: Swift.Sendable {
     /// Describes an application in the application catalog.
     public var application: AppStreamClientTypes.Application?
 
@@ -1925,8 +1928,9 @@ public struct CreateApplicationOutput {
 }
 
 extension AppStreamClientTypes {
+
     /// Describes the credentials for the service account used by the fleet or image builder to connect to the directory.
-    public struct ServiceAccountCredentials {
+    public struct ServiceAccountCredentials: Swift.Sendable {
         /// The user name of the account. This account must have the following privileges: create computer objects, join computers to the domain, and change/reset the password on descendant computer objects for the organizational units specified.
         /// This member is required.
         public var accountName: Swift.String?
@@ -1943,7 +1947,6 @@ extension AppStreamClientTypes {
             self.accountPassword = accountPassword
         }
     }
-
 }
 
 extension AppStreamClientTypes.ServiceAccountCredentials: Swift.CustomDebugStringConvertible {
@@ -1951,7 +1954,7 @@ extension AppStreamClientTypes.ServiceAccountCredentials: Swift.CustomDebugStrin
         "ServiceAccountCredentials(accountName: \"CONTENT_REDACTED\", accountPassword: \"CONTENT_REDACTED\")"}
 }
 
-public struct CreateDirectoryConfigInput {
+public struct CreateDirectoryConfigInput: Swift.Sendable {
     /// The certificate-based authentication properties used to authenticate SAML 2.0 Identity Provider (IdP) user identities to Active Directory domain-joined streaming instances. Fallback is turned on by default when certificate-based authentication is Enabled . Fallback allows users to log in using their AD domain password if certificate-based authentication is unsuccessful, or to unlock a desktop lock screen. Enabled_no_directory_login_fallback enables certificate-based authentication, but does not allow users to log in using their AD domain password. Users will be disconnected to re-authenticate using certificates.
     public var certificateBasedAuthProperties: AppStreamClientTypes.CertificateBasedAuthProperties?
     /// The fully qualified name of the directory (for example, corp.example.com).
@@ -1978,8 +1981,9 @@ public struct CreateDirectoryConfigInput {
 }
 
 extension AppStreamClientTypes {
+
     /// Describes the configuration information required to join fleets and image builders to Microsoft Active Directory domains.
-    public struct DirectoryConfig {
+    public struct DirectoryConfig: Swift.Sendable {
         /// The certificate-based authentication properties used to authenticate SAML 2.0 Identity Provider (IdP) user identities to Active Directory domain-joined streaming instances. Fallback is turned on by default when certificate-based authentication is Enabled . Fallback allows users to log in using their AD domain password if certificate-based authentication is unsuccessful, or to unlock a desktop lock screen. Enabled_no_directory_login_fallback enables certificate-based authentication, but does not allow users to log in using their AD domain password. Users will be disconnected to re-authenticate using certificates.
         public var certificateBasedAuthProperties: AppStreamClientTypes.CertificateBasedAuthProperties?
         /// The time the directory configuration was created.
@@ -2007,10 +2011,9 @@ extension AppStreamClientTypes {
             self.serviceAccountCredentials = serviceAccountCredentials
         }
     }
-
 }
 
-public struct CreateDirectoryConfigOutput {
+public struct CreateDirectoryConfigOutput: Swift.Sendable {
     /// Information about the directory configuration.
     public var directoryConfig: AppStreamClientTypes.DirectoryConfig?
 
@@ -2048,8 +2051,9 @@ public struct EntitlementAlreadyExistsException: ClientRuntime.ModeledError, AWS
 }
 
 extension AppStreamClientTypes {
+
     /// An attribute associated with an entitlement. Application entitlements work by matching a supported SAML 2.0 attribute name to a value when a user identity federates to an Amazon AppStream 2.0 SAML application.
-    public struct EntitlementAttribute {
+    public struct EntitlementAttribute: Swift.Sendable {
         /// A supported AWS IAM SAML PrincipalTag attribute that is matched to the associated value when a user identity federates into an Amazon AppStream 2.0 SAML application. The following are valid values:
         ///
         /// * roles
@@ -2080,10 +2084,9 @@ extension AppStreamClientTypes {
             self.value = value
         }
     }
-
 }
 
-public struct CreateEntitlementInput {
+public struct CreateEntitlementInput: Swift.Sendable {
     /// Specifies whether all or selected apps are entitled.
     /// This member is required.
     public var appVisibility: AppStreamClientTypes.AppVisibility?
@@ -2116,8 +2119,9 @@ public struct CreateEntitlementInput {
 }
 
 extension AppStreamClientTypes {
+
     /// Specifies an entitlement. Entitlements control access to specific applications within a stack, based on user attributes. Entitlements apply to SAML 2.0 federated user identities. Amazon AppStream 2.0 user pool and streaming URL users are entitled to all applications in a stack. Entitlements don't apply to the desktop stream view application, or to applications managed by a dynamic app provider using the Dynamic Application Framework.
-    public struct Entitlement {
+    public struct Entitlement: Swift.Sendable {
         /// Specifies whether all or selected apps are entitled.
         /// This member is required.
         public var appVisibility: AppStreamClientTypes.AppVisibility?
@@ -2156,10 +2160,9 @@ extension AppStreamClientTypes {
             self.stackName = stackName
         }
     }
-
 }
 
-public struct CreateEntitlementOutput {
+public struct CreateEntitlementOutput: Swift.Sendable {
     /// The entitlement.
     public var entitlement: AppStreamClientTypes.Entitlement?
 
@@ -2172,8 +2175,9 @@ public struct CreateEntitlementOutput {
 }
 
 extension AppStreamClientTypes {
+
     /// Describes the configuration information required to join fleets and image builders to Microsoft Active Directory domains.
-    public struct DomainJoinInfo {
+    public struct DomainJoinInfo: Swift.Sendable {
         /// The fully qualified name of the directory (for example, corp.example.com).
         public var directoryName: Swift.String?
         /// The distinguished name of the organizational unit for computer accounts.
@@ -2188,12 +2192,11 @@ extension AppStreamClientTypes {
             self.organizationalUnitDistinguishedName = organizationalUnitDistinguishedName
         }
     }
-
 }
 
 extension AppStreamClientTypes {
 
-    public enum FleetType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum FleetType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case alwaysOn
         case elastic
         case onDemand
@@ -2225,7 +2228,7 @@ extension AppStreamClientTypes {
 
 extension AppStreamClientTypes {
 
-    public enum StreamView: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum StreamView: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case app
         case desktop
         case sdkUnknown(Swift.String)
@@ -2252,7 +2255,7 @@ extension AppStreamClientTypes {
     }
 }
 
-public struct CreateFleetInput {
+public struct CreateFleetInput: Swift.Sendable {
     /// The desired capacity for the fleet. This is not allowed for Elastic fleets. For Elastic fleets, specify MaxConcurrentSessions instead.
     public var computeCapacity: AppStreamClientTypes.ComputeCapacity?
     /// The description to display.
@@ -2448,8 +2451,9 @@ public struct CreateFleetInput {
 }
 
 extension AppStreamClientTypes {
+
     /// Describes a fleet error.
-    public struct FleetError {
+    public struct FleetError: Swift.Sendable {
         /// The error code.
         public var errorCode: AppStreamClientTypes.FleetErrorCode?
         /// The error message.
@@ -2464,12 +2468,11 @@ extension AppStreamClientTypes {
             self.errorMessage = errorMessage
         }
     }
-
 }
 
 extension AppStreamClientTypes {
 
-    public enum FleetState: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum FleetState: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case running
         case starting
         case stopped
@@ -2503,8 +2506,9 @@ extension AppStreamClientTypes {
 }
 
 extension AppStreamClientTypes {
+
     /// Describes a fleet.
-    public struct Fleet {
+    public struct Fleet: Swift.Sendable {
         /// The Amazon Resource Name (ARN) for the fleet.
         /// This member is required.
         public var arn: Swift.String?
@@ -2682,10 +2686,9 @@ extension AppStreamClientTypes {
             self.vpcConfig = vpcConfig
         }
     }
-
 }
 
-public struct CreateFleetOutput {
+public struct CreateFleetOutput: Swift.Sendable {
     /// Information about the fleet.
     public var fleet: AppStreamClientTypes.Fleet?
 
@@ -2697,7 +2700,7 @@ public struct CreateFleetOutput {
     }
 }
 
-public struct CreateImageBuilderInput {
+public struct CreateImageBuilderInput: Swift.Sendable {
     /// The list of interface VPC endpoint (interface endpoint) objects. Administrators can connect to the image builder only through the specified endpoints.
     public var accessEndpoints: [AppStreamClientTypes.AccessEndpoint]?
     /// The version of the AppStream 2.0 agent to use for this image builder. To use the latest version of the AppStream 2.0 agent, specify [LATEST].
@@ -2827,7 +2830,7 @@ public struct CreateImageBuilderInput {
 
 extension AppStreamClientTypes {
 
-    public enum LatestAppstreamAgentVersion: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum LatestAppstreamAgentVersion: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case `false`
         case `true`
         case sdkUnknown(Swift.String)
@@ -2855,8 +2858,9 @@ extension AppStreamClientTypes {
 }
 
 extension AppStreamClientTypes {
+
     /// Describes the network details of the fleet or image builder instance.
-    public struct NetworkAccessConfiguration {
+    public struct NetworkAccessConfiguration: Swift.Sendable {
         /// The resource identifier of the elastic network interface that is attached to instances in your VPC. All network interfaces have the eni-xxxxxxxx resource identifier.
         public var eniId: Swift.String?
         /// The private IP address of the elastic network interface that is attached to instances in your VPC.
@@ -2871,12 +2875,11 @@ extension AppStreamClientTypes {
             self.eniPrivateIpAddress = eniPrivateIpAddress
         }
     }
-
 }
 
 extension AppStreamClientTypes {
 
-    public enum ImageBuilderState: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ImageBuilderState: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case deleting
         case failed
         case pending
@@ -2932,7 +2935,7 @@ extension AppStreamClientTypes {
 
 extension AppStreamClientTypes {
 
-    public enum ImageBuilderStateChangeReasonCode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ImageBuilderStateChangeReasonCode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case imageUnavailable
         case internalError
         case sdkUnknown(Swift.String)
@@ -2960,8 +2963,9 @@ extension AppStreamClientTypes {
 }
 
 extension AppStreamClientTypes {
+
     /// Describes the reason why the last image builder state change occurred.
-    public struct ImageBuilderStateChangeReason {
+    public struct ImageBuilderStateChangeReason: Swift.Sendable {
         /// The state change reason code.
         public var code: AppStreamClientTypes.ImageBuilderStateChangeReasonCode?
         /// The state change reason message.
@@ -2976,12 +2980,12 @@ extension AppStreamClientTypes {
             self.message = message
         }
     }
-
 }
 
 extension AppStreamClientTypes {
+
     /// Describes a virtual machine that is used to create an image.
-    public struct ImageBuilder {
+    public struct ImageBuilder: Swift.Sendable {
         /// The list of virtual private cloud (VPC) interface endpoint objects. Administrators can connect to the image builder only through the specified endpoints.
         public var accessEndpoints: [AppStreamClientTypes.AccessEndpoint]?
         /// The version of the AppStream 2.0 agent that is currently being used by the image builder.
@@ -3131,10 +3135,9 @@ extension AppStreamClientTypes {
             self.vpcConfig = vpcConfig
         }
     }
-
 }
 
-public struct CreateImageBuilderOutput {
+public struct CreateImageBuilderOutput: Swift.Sendable {
     /// Information about the image builder.
     public var imageBuilder: AppStreamClientTypes.ImageBuilder?
 
@@ -3146,7 +3149,7 @@ public struct CreateImageBuilderOutput {
     }
 }
 
-public struct CreateImageBuilderStreamingURLInput {
+public struct CreateImageBuilderStreamingURLInput: Swift.Sendable {
     /// The name of the image builder.
     /// This member is required.
     public var name: Swift.String?
@@ -3163,7 +3166,7 @@ public struct CreateImageBuilderStreamingURLInput {
     }
 }
 
-public struct CreateImageBuilderStreamingURLOutput {
+public struct CreateImageBuilderStreamingURLOutput: Swift.Sendable {
     /// The elapsed time, in seconds after the Unix epoch, when this URL expires.
     public var expires: Foundation.Date?
     /// The URL to start the AppStream 2.0 streaming session.
@@ -3182,7 +3185,7 @@ public struct CreateImageBuilderStreamingURLOutput {
 extension AppStreamClientTypes {
 
     /// The type of storage connector.
-    public enum StorageConnectorType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum StorageConnectorType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case googleDrive
         case homefolders
         case oneDrive
@@ -3213,8 +3216,9 @@ extension AppStreamClientTypes {
 }
 
 extension AppStreamClientTypes {
+
     /// Describes a connector that enables persistent storage for users.
-    public struct StorageConnector {
+    public struct StorageConnector: Swift.Sendable {
         /// The type of storage connector.
         /// This member is required.
         public var connectorType: AppStreamClientTypes.StorageConnectorType?
@@ -3234,12 +3238,11 @@ extension AppStreamClientTypes {
             self.resourceIdentifier = resourceIdentifier
         }
     }
-
 }
 
 extension AppStreamClientTypes {
 
-    public enum PreferredProtocol: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum PreferredProtocol: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case tcp
         case udp
         case sdkUnknown(Swift.String)
@@ -3267,8 +3270,9 @@ extension AppStreamClientTypes {
 }
 
 extension AppStreamClientTypes {
+
     /// The streaming protocol you want your stack to prefer. This can be UDP or TCP. Currently, UDP is only supported in the Windows native client.
-    public struct StreamingExperienceSettings {
+    public struct StreamingExperienceSettings: Swift.Sendable {
         /// The preferred protocol that you want to use while streaming your application.
         public var preferredProtocol: AppStreamClientTypes.PreferredProtocol?
 
@@ -3279,12 +3283,11 @@ extension AppStreamClientTypes {
             self.preferredProtocol = preferredProtocol
         }
     }
-
 }
 
 extension AppStreamClientTypes {
 
-    public enum Permission: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Permission: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case disabled
         case enabled
         case sdkUnknown(Swift.String)
@@ -3312,8 +3315,9 @@ extension AppStreamClientTypes {
 }
 
 extension AppStreamClientTypes {
+
     /// Describes an action and whether the action is enabled or disabled for users during their streaming sessions.
-    public struct UserSetting {
+    public struct UserSetting: Swift.Sendable {
         /// The action that is enabled or disabled.
         /// This member is required.
         public var action: AppStreamClientTypes.Action?
@@ -3334,10 +3338,9 @@ extension AppStreamClientTypes {
             self.permission = permission
         }
     }
-
 }
 
-public struct CreateStackInput {
+public struct CreateStackInput: Swift.Sendable {
     /// The list of interface VPC endpoint (interface endpoint) objects. Users of the stack can connect to AppStream 2.0 only through the specified endpoints.
     public var accessEndpoints: [AppStreamClientTypes.AccessEndpoint]?
     /// The persistent application settings for users of a stack. When these settings are enabled, changes that users make to applications and Windows settings are automatically saved after each session and applied to the next session.
@@ -3396,7 +3399,7 @@ public struct CreateStackInput {
 
 extension AppStreamClientTypes {
 
-    public enum StackErrorCode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum StackErrorCode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case internalServiceError
         case storageConnectorError
         case sdkUnknown(Swift.String)
@@ -3424,8 +3427,9 @@ extension AppStreamClientTypes {
 }
 
 extension AppStreamClientTypes {
+
     /// Describes a stack error.
-    public struct StackError {
+    public struct StackError: Swift.Sendable {
         /// The error code.
         public var errorCode: AppStreamClientTypes.StackErrorCode?
         /// The error message.
@@ -3440,12 +3444,12 @@ extension AppStreamClientTypes {
             self.errorMessage = errorMessage
         }
     }
-
 }
 
 extension AppStreamClientTypes {
+
     /// Describes a stack.
-    public struct Stack {
+    public struct Stack: Swift.Sendable {
         /// The list of virtual private cloud (VPC) interface endpoint objects. Users of the stack can connect to AppStream 2.0 only through the specified endpoints.
         public var accessEndpoints: [AppStreamClientTypes.AccessEndpoint]?
         /// The persistent application settings for users of the stack.
@@ -3509,10 +3513,9 @@ extension AppStreamClientTypes {
             self.userSettings = userSettings
         }
     }
-
 }
 
-public struct CreateStackOutput {
+public struct CreateStackOutput: Swift.Sendable {
     /// Information about the stack.
     public var stack: AppStreamClientTypes.Stack?
 
@@ -3524,7 +3527,7 @@ public struct CreateStackOutput {
     }
 }
 
-public struct CreateStreamingURLInput {
+public struct CreateStreamingURLInput: Swift.Sendable {
     /// The name of the application to launch after the session starts. This is the name that you specified as Name in the Image Assistant. If your fleet is enabled for the Desktop stream view, you can also choose to launch directly to the operating system desktop. To do so, specify Desktop.
     public var applicationId: Swift.String?
     /// The name of the fleet.
@@ -3559,7 +3562,7 @@ public struct CreateStreamingURLInput {
     }
 }
 
-public struct CreateStreamingURLOutput {
+public struct CreateStreamingURLOutput: Swift.Sendable {
     /// The elapsed time, in seconds after the Unix epoch, when this URL expires.
     public var expires: Foundation.Date?
     /// The URL to start the AppStream 2.0 streaming session.
@@ -3576,8 +3579,9 @@ public struct CreateStreamingURLOutput {
 }
 
 extension AppStreamClientTypes {
+
     /// The website links that display in the catalog page footer.
-    public struct ThemeFooterLink {
+    public struct ThemeFooterLink: Swift.Sendable {
         /// The name of the websites that display in the catalog page footer.
         public var displayName: Swift.String?
         /// The URL of the websites that display in the catalog page footer.
@@ -3592,12 +3596,11 @@ extension AppStreamClientTypes {
             self.footerLinkURL = footerLinkURL
         }
     }
-
 }
 
 extension AppStreamClientTypes {
 
-    public enum ThemeStyling: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ThemeStyling: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case blue
         case lightBlue
         case pink
@@ -3630,7 +3633,7 @@ extension AppStreamClientTypes {
     }
 }
 
-public struct CreateThemeForStackInput {
+public struct CreateThemeForStackInput: Swift.Sendable {
     /// The S3 location of the favicon. The favicon enables users to recognize their application streaming site in a browser full of tabs or bookmarks. It is displayed at the top of the browser tab for the application streaming site during users' streaming sessions.
     /// This member is required.
     public var faviconS3Location: AppStreamClientTypes.S3Location?
@@ -3669,7 +3672,7 @@ public struct CreateThemeForStackInput {
 
 extension AppStreamClientTypes {
 
-    public enum ThemeState: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ThemeState: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case disabled
         case enabled
         case sdkUnknown(Swift.String)
@@ -3697,8 +3700,9 @@ extension AppStreamClientTypes {
 }
 
 extension AppStreamClientTypes {
+
     /// The custom branding theme, which might include a custom logo, website links, and other branding to display to users.
-    public struct Theme {
+    public struct Theme: Swift.Sendable {
         /// The time the theme was created.
         public var createdTime: Foundation.Date?
         /// The stack that has the custom branding theme.
@@ -3737,10 +3741,9 @@ extension AppStreamClientTypes {
             self.themeTitleText = themeTitleText
         }
     }
-
 }
 
-public struct CreateThemeForStackOutput {
+public struct CreateThemeForStackOutput: Swift.Sendable {
     /// The theme object that contains the metadata of the custom branding.
     public var theme: AppStreamClientTypes.Theme?
 
@@ -3752,7 +3755,7 @@ public struct CreateThemeForStackOutput {
     }
 }
 
-public struct CreateUpdatedImageInput {
+public struct CreateUpdatedImageInput: Swift.Sendable {
     /// Indicates whether to display the status of image update availability before AppStream 2.0 initiates the process of creating a new updated image. If this value is set to true, AppStream 2.0 displays whether image updates are available. If this value is set to false, AppStream 2.0 initiates the process of creating a new updated image without displaying whether image updates are available.
     public var dryRun: Swift.Bool?
     /// The name of the image to update.
@@ -3788,7 +3791,7 @@ public struct CreateUpdatedImageInput {
 
 extension AppStreamClientTypes {
 
-    public enum DynamicAppProvidersEnabled: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DynamicAppProvidersEnabled: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case disabled
         case enabled
         case sdkUnknown(Swift.String)
@@ -3816,8 +3819,9 @@ extension AppStreamClientTypes {
 }
 
 extension AppStreamClientTypes {
+
     /// Describes the permissions for an image.
-    public struct ImagePermissions {
+    public struct ImagePermissions: Swift.Sendable {
         /// Indicates whether the image can be used for a fleet.
         public var allowFleet: Swift.Bool?
         /// Indicates whether the image can be used for an image builder.
@@ -3832,12 +3836,11 @@ extension AppStreamClientTypes {
             self.allowImageBuilder = allowImageBuilder
         }
     }
-
 }
 
 extension AppStreamClientTypes {
 
-    public enum ImageSharedWithOthers: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ImageSharedWithOthers: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case `false`
         case `true`
         case sdkUnknown(Swift.String)
@@ -3866,7 +3869,7 @@ extension AppStreamClientTypes {
 
 extension AppStreamClientTypes {
 
-    public enum ImageState: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ImageState: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case available
         case copying
         case creating
@@ -3910,7 +3913,7 @@ extension AppStreamClientTypes {
 
 extension AppStreamClientTypes {
 
-    public enum ImageStateChangeReasonCode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ImageStateChangeReasonCode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case imageBuilderNotAvailable
         case imageCopyFailure
         case internalError
@@ -3941,8 +3944,9 @@ extension AppStreamClientTypes {
 }
 
 extension AppStreamClientTypes {
+
     /// Describes the reason why the last image state change occurred.
-    public struct ImageStateChangeReason {
+    public struct ImageStateChangeReason: Swift.Sendable {
         /// The state change reason code.
         public var code: AppStreamClientTypes.ImageStateChangeReasonCode?
         /// The state change reason message.
@@ -3957,12 +3961,11 @@ extension AppStreamClientTypes {
             self.message = message
         }
     }
-
 }
 
 extension AppStreamClientTypes {
 
-    public enum VisibilityType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum VisibilityType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case `private`
         case `public`
         case shared
@@ -3993,8 +3996,9 @@ extension AppStreamClientTypes {
 }
 
 extension AppStreamClientTypes {
+
     /// Describes an image.
-    public struct Image {
+    public struct Image: Swift.Sendable {
         /// The applications associated with the image.
         public var applications: [AppStreamClientTypes.Application]?
         /// The version of the AppStream 2.0 agent to use for instances that are launched from this image.
@@ -4102,10 +4106,9 @@ extension AppStreamClientTypes {
             self.visibility = visibility
         }
     }
-
 }
 
-public struct CreateUpdatedImageOutput {
+public struct CreateUpdatedImageOutput: Swift.Sendable {
     /// Indicates whether a new image can be created.
     public var canUpdateImage: Swift.Bool?
     /// Describes an image.
@@ -4121,14 +4124,14 @@ public struct CreateUpdatedImageOutput {
     }
 }
 
-public struct CreateUsageReportSubscriptionInput {
+public struct CreateUsageReportSubscriptionInput: Swift.Sendable {
 
     public init() { }
 }
 
 extension AppStreamClientTypes {
 
-    public enum UsageReportSchedule: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum UsageReportSchedule: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case daily
         case sdkUnknown(Swift.String)
 
@@ -4152,7 +4155,7 @@ extension AppStreamClientTypes {
     }
 }
 
-public struct CreateUsageReportSubscriptionOutput {
+public struct CreateUsageReportSubscriptionOutput: Swift.Sendable {
     /// The Amazon S3 bucket where generated reports are stored. If you enabled on-instance session scripts and Amazon S3 logging for your session script configuration, AppStream 2.0 created an S3 bucket to store the script output. The bucket is unique to your account and Region. When you enable usage reporting in this case, AppStream 2.0 uses the same bucket to store your usage reports. If you haven't already enabled on-instance session scripts, when you enable usage reports, AppStream 2.0 creates a new S3 bucket.
     public var s3BucketName: Swift.String?
     /// The schedule for generating usage reports.
@@ -4170,7 +4173,7 @@ public struct CreateUsageReportSubscriptionOutput {
 
 extension AppStreamClientTypes {
 
-    public enum MessageAction: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum MessageAction: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case resend
         case suppress
         case sdkUnknown(Swift.String)
@@ -4197,7 +4200,7 @@ extension AppStreamClientTypes {
     }
 }
 
-public struct CreateUserInput {
+public struct CreateUserInput: Swift.Sendable {
     /// The authentication type for the user. You must specify USERPOOL.
     /// This member is required.
     public var authenticationType: AppStreamClientTypes.AuthenticationType?
@@ -4232,7 +4235,7 @@ extension CreateUserInput: Swift.CustomDebugStringConvertible {
         "CreateUserInput(authenticationType: \(Swift.String(describing: authenticationType)), messageAction: \(Swift.String(describing: messageAction)), firstName: \"CONTENT_REDACTED\", lastName: \"CONTENT_REDACTED\", userName: \"CONTENT_REDACTED\")"}
 }
 
-public struct CreateUserOutput {
+public struct CreateUserOutput: Swift.Sendable {
 
     public init() { }
 }
@@ -4262,7 +4265,7 @@ public struct ResourceInUseException: ClientRuntime.ModeledError, AWSClientRunti
     }
 }
 
-public struct DeleteAppBlockInput {
+public struct DeleteAppBlockInput: Swift.Sendable {
     /// The name of the app block.
     /// This member is required.
     public var name: Swift.String?
@@ -4275,12 +4278,12 @@ public struct DeleteAppBlockInput {
     }
 }
 
-public struct DeleteAppBlockOutput {
+public struct DeleteAppBlockOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteAppBlockBuilderInput {
+public struct DeleteAppBlockBuilderInput: Swift.Sendable {
     /// The name of the app block builder.
     /// This member is required.
     public var name: Swift.String?
@@ -4293,12 +4296,12 @@ public struct DeleteAppBlockBuilderInput {
     }
 }
 
-public struct DeleteAppBlockBuilderOutput {
+public struct DeleteAppBlockBuilderOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteApplicationInput {
+public struct DeleteApplicationInput: Swift.Sendable {
     /// The name of the application.
     /// This member is required.
     public var name: Swift.String?
@@ -4311,12 +4314,12 @@ public struct DeleteApplicationInput {
     }
 }
 
-public struct DeleteApplicationOutput {
+public struct DeleteApplicationOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteDirectoryConfigInput {
+public struct DeleteDirectoryConfigInput: Swift.Sendable {
     /// The name of the directory configuration.
     /// This member is required.
     public var directoryName: Swift.String?
@@ -4329,12 +4332,12 @@ public struct DeleteDirectoryConfigInput {
     }
 }
 
-public struct DeleteDirectoryConfigOutput {
+public struct DeleteDirectoryConfigOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteEntitlementInput {
+public struct DeleteEntitlementInput: Swift.Sendable {
     /// The name of the entitlement.
     /// This member is required.
     public var name: Swift.String?
@@ -4352,12 +4355,12 @@ public struct DeleteEntitlementInput {
     }
 }
 
-public struct DeleteEntitlementOutput {
+public struct DeleteEntitlementOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteFleetInput {
+public struct DeleteFleetInput: Swift.Sendable {
     /// The name of the fleet.
     /// This member is required.
     public var name: Swift.String?
@@ -4370,12 +4373,12 @@ public struct DeleteFleetInput {
     }
 }
 
-public struct DeleteFleetOutput {
+public struct DeleteFleetOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteImageInput {
+public struct DeleteImageInput: Swift.Sendable {
     /// The name of the image.
     /// This member is required.
     public var name: Swift.String?
@@ -4388,7 +4391,7 @@ public struct DeleteImageInput {
     }
 }
 
-public struct DeleteImageOutput {
+public struct DeleteImageOutput: Swift.Sendable {
     /// Information about the image.
     public var image: AppStreamClientTypes.Image?
 
@@ -4400,7 +4403,7 @@ public struct DeleteImageOutput {
     }
 }
 
-public struct DeleteImageBuilderInput {
+public struct DeleteImageBuilderInput: Swift.Sendable {
     /// The name of the image builder.
     /// This member is required.
     public var name: Swift.String?
@@ -4413,7 +4416,7 @@ public struct DeleteImageBuilderInput {
     }
 }
 
-public struct DeleteImageBuilderOutput {
+public struct DeleteImageBuilderOutput: Swift.Sendable {
     /// Information about the image builder.
     public var imageBuilder: AppStreamClientTypes.ImageBuilder?
 
@@ -4425,7 +4428,7 @@ public struct DeleteImageBuilderOutput {
     }
 }
 
-public struct DeleteImagePermissionsInput {
+public struct DeleteImagePermissionsInput: Swift.Sendable {
     /// The name of the private image.
     /// This member is required.
     public var name: Swift.String?
@@ -4443,12 +4446,12 @@ public struct DeleteImagePermissionsInput {
     }
 }
 
-public struct DeleteImagePermissionsOutput {
+public struct DeleteImagePermissionsOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteStackInput {
+public struct DeleteStackInput: Swift.Sendable {
     /// The name of the stack.
     /// This member is required.
     public var name: Swift.String?
@@ -4461,12 +4464,12 @@ public struct DeleteStackInput {
     }
 }
 
-public struct DeleteStackOutput {
+public struct DeleteStackOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteThemeForStackInput {
+public struct DeleteThemeForStackInput: Swift.Sendable {
     /// The name of the stack for the theme.
     /// This member is required.
     public var stackName: Swift.String?
@@ -4479,22 +4482,22 @@ public struct DeleteThemeForStackInput {
     }
 }
 
-public struct DeleteThemeForStackOutput {
+public struct DeleteThemeForStackOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteUsageReportSubscriptionInput {
+public struct DeleteUsageReportSubscriptionInput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteUsageReportSubscriptionOutput {
+public struct DeleteUsageReportSubscriptionOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteUserInput {
+public struct DeleteUserInput: Swift.Sendable {
     /// The authentication type for the user. You must specify USERPOOL.
     /// This member is required.
     public var authenticationType: AppStreamClientTypes.AuthenticationType?
@@ -4517,12 +4520,12 @@ extension DeleteUserInput: Swift.CustomDebugStringConvertible {
         "DeleteUserInput(authenticationType: \(Swift.String(describing: authenticationType)), userName: \"CONTENT_REDACTED\")"}
 }
 
-public struct DeleteUserOutput {
+public struct DeleteUserOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DescribeAppBlockBuilderAppBlockAssociationsInput {
+public struct DescribeAppBlockBuilderAppBlockAssociationsInput: Swift.Sendable {
     /// The ARN of the app block.
     public var appBlockArn: Swift.String?
     /// The name of the app block builder.
@@ -4546,7 +4549,7 @@ public struct DescribeAppBlockBuilderAppBlockAssociationsInput {
     }
 }
 
-public struct DescribeAppBlockBuilderAppBlockAssociationsOutput {
+public struct DescribeAppBlockBuilderAppBlockAssociationsOutput: Swift.Sendable {
     /// This list of app block builders associated with app blocks.
     public var appBlockBuilderAppBlockAssociations: [AppStreamClientTypes.AppBlockBuilderAppBlockAssociation]?
     /// The pagination token used to retrieve the next page of results for this operation.
@@ -4562,7 +4565,7 @@ public struct DescribeAppBlockBuilderAppBlockAssociationsOutput {
     }
 }
 
-public struct DescribeAppBlockBuildersInput {
+public struct DescribeAppBlockBuildersInput: Swift.Sendable {
     /// The maximum size of each page of results. The maximum value is 25.
     public var maxResults: Swift.Int?
     /// The names of the app block builders.
@@ -4582,7 +4585,7 @@ public struct DescribeAppBlockBuildersInput {
     }
 }
 
-public struct DescribeAppBlockBuildersOutput {
+public struct DescribeAppBlockBuildersOutput: Swift.Sendable {
     /// The list that describes one or more app block builders.
     public var appBlockBuilders: [AppStreamClientTypes.AppBlockBuilder]?
     /// The pagination token used to retrieve the next page of results for this operation.
@@ -4598,7 +4601,7 @@ public struct DescribeAppBlockBuildersOutput {
     }
 }
 
-public struct DescribeAppBlocksInput {
+public struct DescribeAppBlocksInput: Swift.Sendable {
     /// The ARNs of the app blocks.
     public var arns: [Swift.String]?
     /// The maximum size of each page of results.
@@ -4618,7 +4621,7 @@ public struct DescribeAppBlocksInput {
     }
 }
 
-public struct DescribeAppBlocksOutput {
+public struct DescribeAppBlocksOutput: Swift.Sendable {
     /// The app blocks in the list.
     public var appBlocks: [AppStreamClientTypes.AppBlock]?
     /// The pagination token used to retrieve the next page of results for this operation.
@@ -4634,7 +4637,7 @@ public struct DescribeAppBlocksOutput {
     }
 }
 
-public struct DescribeApplicationFleetAssociationsInput {
+public struct DescribeApplicationFleetAssociationsInput: Swift.Sendable {
     /// The ARN of the application.
     public var applicationArn: Swift.String?
     /// The name of the fleet.
@@ -4658,7 +4661,7 @@ public struct DescribeApplicationFleetAssociationsInput {
     }
 }
 
-public struct DescribeApplicationFleetAssociationsOutput {
+public struct DescribeApplicationFleetAssociationsOutput: Swift.Sendable {
     /// The application fleet associations in the list.
     public var applicationFleetAssociations: [AppStreamClientTypes.ApplicationFleetAssociation]?
     /// The pagination token used to retrieve the next page of results for this operation.
@@ -4674,7 +4677,7 @@ public struct DescribeApplicationFleetAssociationsOutput {
     }
 }
 
-public struct DescribeApplicationsInput {
+public struct DescribeApplicationsInput: Swift.Sendable {
     /// The ARNs for the applications.
     public var arns: [Swift.String]?
     /// The maximum size of each page of results.
@@ -4694,7 +4697,7 @@ public struct DescribeApplicationsInput {
     }
 }
 
-public struct DescribeApplicationsOutput {
+public struct DescribeApplicationsOutput: Swift.Sendable {
     /// The applications in the list.
     public var applications: [AppStreamClientTypes.Application]?
     /// The pagination token used to retrieve the next page of results for this operation.
@@ -4710,7 +4713,7 @@ public struct DescribeApplicationsOutput {
     }
 }
 
-public struct DescribeDirectoryConfigsInput {
+public struct DescribeDirectoryConfigsInput: Swift.Sendable {
     /// The directory names.
     public var directoryNames: [Swift.String]?
     /// The maximum size of each page of results.
@@ -4730,7 +4733,7 @@ public struct DescribeDirectoryConfigsInput {
     }
 }
 
-public struct DescribeDirectoryConfigsOutput {
+public struct DescribeDirectoryConfigsOutput: Swift.Sendable {
     /// Information about the directory configurations. Note that although the response syntax in this topic includes the account password, this password is not returned in the actual response.
     public var directoryConfigs: [AppStreamClientTypes.DirectoryConfig]?
     /// The pagination token to use to retrieve the next page of results for this operation. If there are no more pages, this value is null.
@@ -4746,7 +4749,7 @@ public struct DescribeDirectoryConfigsOutput {
     }
 }
 
-public struct DescribeEntitlementsInput {
+public struct DescribeEntitlementsInput: Swift.Sendable {
     /// The maximum size of each page of results.
     public var maxResults: Swift.Int?
     /// The name of the entitlement.
@@ -4771,7 +4774,7 @@ public struct DescribeEntitlementsInput {
     }
 }
 
-public struct DescribeEntitlementsOutput {
+public struct DescribeEntitlementsOutput: Swift.Sendable {
     /// The entitlements.
     public var entitlements: [AppStreamClientTypes.Entitlement]?
     /// The pagination token used to retrieve the next page of results for this operation.
@@ -4787,7 +4790,7 @@ public struct DescribeEntitlementsOutput {
     }
 }
 
-public struct DescribeFleetsInput {
+public struct DescribeFleetsInput: Swift.Sendable {
     /// The names of the fleets to describe.
     public var names: [Swift.String]?
     /// The pagination token to use to retrieve the next page of results for this operation. If this value is null, it retrieves the first page.
@@ -4803,7 +4806,7 @@ public struct DescribeFleetsInput {
     }
 }
 
-public struct DescribeFleetsOutput {
+public struct DescribeFleetsOutput: Swift.Sendable {
     /// Information about the fleets.
     public var fleets: [AppStreamClientTypes.Fleet]?
     /// The pagination token to use to retrieve the next page of results for this operation. If there are no more pages, this value is null.
@@ -4819,7 +4822,7 @@ public struct DescribeFleetsOutput {
     }
 }
 
-public struct DescribeImageBuildersInput {
+public struct DescribeImageBuildersInput: Swift.Sendable {
     /// The maximum size of each page of results.
     public var maxResults: Swift.Int?
     /// The names of the image builders to describe.
@@ -4839,7 +4842,7 @@ public struct DescribeImageBuildersInput {
     }
 }
 
-public struct DescribeImageBuildersOutput {
+public struct DescribeImageBuildersOutput: Swift.Sendable {
     /// Information about the image builders.
     public var imageBuilders: [AppStreamClientTypes.ImageBuilder]?
     /// The pagination token to use to retrieve the next page of results for this operation. If there are no more pages, this value is null.
@@ -4855,7 +4858,7 @@ public struct DescribeImageBuildersOutput {
     }
 }
 
-public struct DescribeImagePermissionsInput {
+public struct DescribeImagePermissionsInput: Swift.Sendable {
     /// The maximum size of each page of results.
     public var maxResults: Swift.Int?
     /// The name of the private image for which to describe permissions. The image must be one that you own.
@@ -4881,8 +4884,9 @@ public struct DescribeImagePermissionsInput {
 }
 
 extension AppStreamClientTypes {
+
     /// Describes the permissions that are available to the specified AWS account for a shared image.
-    public struct SharedImagePermissions {
+    public struct SharedImagePermissions: Swift.Sendable {
         /// Describes the permissions for a shared image.
         /// This member is required.
         public var imagePermissions: AppStreamClientTypes.ImagePermissions?
@@ -4899,10 +4903,9 @@ extension AppStreamClientTypes {
             self.sharedAccountId = sharedAccountId
         }
     }
-
 }
 
-public struct DescribeImagePermissionsOutput {
+public struct DescribeImagePermissionsOutput: Swift.Sendable {
     /// The name of the private image.
     public var name: Swift.String?
     /// The pagination token to use to retrieve the next page of results for this operation. If there are no more pages, this value is null.
@@ -4922,7 +4925,7 @@ public struct DescribeImagePermissionsOutput {
     }
 }
 
-public struct DescribeImagesInput {
+public struct DescribeImagesInput: Swift.Sendable {
     /// The ARNs of the public, private, and shared images to describe.
     public var arns: [Swift.String]?
     /// The maximum size of each page of results.
@@ -4950,7 +4953,7 @@ public struct DescribeImagesInput {
     }
 }
 
-public struct DescribeImagesOutput {
+public struct DescribeImagesOutput: Swift.Sendable {
     /// Information about the images.
     public var images: [AppStreamClientTypes.Image]?
     /// The pagination token to use to retrieve the next page of results for this operation. If there are no more pages, this value is null.
@@ -4966,7 +4969,7 @@ public struct DescribeImagesOutput {
     }
 }
 
-public struct DescribeSessionsInput {
+public struct DescribeSessionsInput: Swift.Sendable {
     /// The authentication method. Specify API for a user authenticated using a streaming URL or SAML for a SAML federated user. The default is to authenticate users using a streaming URL.
     public var authenticationType: AppStreamClientTypes.AuthenticationType?
     /// The name of the fleet. This value is case-sensitive.
@@ -5006,7 +5009,7 @@ public struct DescribeSessionsInput {
 
 extension AppStreamClientTypes {
 
-    public enum SessionConnectionState: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SessionConnectionState: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case connected
         case notConnected
         case sdkUnknown(Swift.String)
@@ -5036,7 +5039,7 @@ extension AppStreamClientTypes {
 extension AppStreamClientTypes {
 
     /// Possible values for the state of a streaming session.
-    public enum SessionState: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SessionState: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case active
         case expired
         case pending
@@ -5067,8 +5070,9 @@ extension AppStreamClientTypes {
 }
 
 extension AppStreamClientTypes {
+
     /// Describes a streaming session.
-    public struct Session {
+    public struct Session: Swift.Sendable {
         /// The authentication method. The user is authenticated using a streaming URL (API) or SAML 2.0 federation (SAML).
         public var authenticationType: AppStreamClientTypes.AuthenticationType?
         /// Specifies whether a user is connected to the streaming session.
@@ -5124,10 +5128,9 @@ extension AppStreamClientTypes {
             self.userId = userId
         }
     }
-
 }
 
-public struct DescribeSessionsOutput {
+public struct DescribeSessionsOutput: Swift.Sendable {
     /// The pagination token to use to retrieve the next page of results for this operation. If there are no more pages, this value is null.
     public var nextToken: Swift.String?
     /// Information about the streaming sessions.
@@ -5143,7 +5146,7 @@ public struct DescribeSessionsOutput {
     }
 }
 
-public struct DescribeStacksInput {
+public struct DescribeStacksInput: Swift.Sendable {
     /// The names of the stacks to describe.
     public var names: [Swift.String]?
     /// The pagination token to use to retrieve the next page of results for this operation. If this value is null, it retrieves the first page.
@@ -5159,7 +5162,7 @@ public struct DescribeStacksInput {
     }
 }
 
-public struct DescribeStacksOutput {
+public struct DescribeStacksOutput: Swift.Sendable {
     /// The pagination token to use to retrieve the next page of results for this operation. If there are no more pages, this value is null.
     public var nextToken: Swift.String?
     /// Information about the stacks.
@@ -5175,7 +5178,7 @@ public struct DescribeStacksOutput {
     }
 }
 
-public struct DescribeThemeForStackInput {
+public struct DescribeThemeForStackInput: Swift.Sendable {
     /// The name of the stack for the theme.
     /// This member is required.
     public var stackName: Swift.String?
@@ -5188,7 +5191,7 @@ public struct DescribeThemeForStackInput {
     }
 }
 
-public struct DescribeThemeForStackOutput {
+public struct DescribeThemeForStackOutput: Swift.Sendable {
     /// The theme object that contains the metadata of the custom branding.
     public var theme: AppStreamClientTypes.Theme?
 
@@ -5200,7 +5203,7 @@ public struct DescribeThemeForStackOutput {
     }
 }
 
-public struct DescribeUsageReportSubscriptionsInput {
+public struct DescribeUsageReportSubscriptionsInput: Swift.Sendable {
     /// The maximum size of each page of results.
     public var maxResults: Swift.Int?
     /// The pagination token to use to retrieve the next page of results for this operation. If this value is null, it retrieves the first page.
@@ -5218,7 +5221,7 @@ public struct DescribeUsageReportSubscriptionsInput {
 
 extension AppStreamClientTypes {
 
-    public enum UsageReportExecutionErrorCode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum UsageReportExecutionErrorCode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case accessDenied
         case internalServiceError
         case resourceNotFound
@@ -5249,8 +5252,9 @@ extension AppStreamClientTypes {
 }
 
 extension AppStreamClientTypes {
+
     /// Describes the error that is returned when a usage report can't be generated.
-    public struct LastReportGenerationExecutionError {
+    public struct LastReportGenerationExecutionError: Swift.Sendable {
         /// The error code for the error that is returned when a usage report can't be generated.
         public var errorCode: AppStreamClientTypes.UsageReportExecutionErrorCode?
         /// The error message for the error that is returned when a usage report can't be generated.
@@ -5265,12 +5269,12 @@ extension AppStreamClientTypes {
             self.errorMessage = errorMessage
         }
     }
-
 }
 
 extension AppStreamClientTypes {
+
     /// Describes information about the usage report subscription.
-    public struct UsageReportSubscription {
+    public struct UsageReportSubscription: Swift.Sendable {
         /// The time when the last usage report was generated.
         public var lastGeneratedReportDate: Foundation.Date?
         /// The Amazon S3 bucket where generated reports are stored. If you enabled on-instance session scripts and Amazon S3 logging for your session script configuration, AppStream 2.0 created an S3 bucket to store the script output. The bucket is unique to your account and Region. When you enable usage reporting in this case, AppStream 2.0 uses the same bucket to store your usage reports. If you haven't already enabled on-instance session scripts, when you enable usage reports, AppStream 2.0 creates a new S3 bucket.
@@ -5293,10 +5297,9 @@ extension AppStreamClientTypes {
             self.subscriptionErrors = subscriptionErrors
         }
     }
-
 }
 
-public struct DescribeUsageReportSubscriptionsOutput {
+public struct DescribeUsageReportSubscriptionsOutput: Swift.Sendable {
     /// The pagination token to use to retrieve the next page of results for this operation. If there are no more pages, this value is null.
     public var nextToken: Swift.String?
     /// Information about the usage report subscription.
@@ -5312,7 +5315,7 @@ public struct DescribeUsageReportSubscriptionsOutput {
     }
 }
 
-public struct DescribeUsersInput {
+public struct DescribeUsersInput: Swift.Sendable {
     /// The authentication type for the users in the user pool to describe. You must specify USERPOOL.
     /// This member is required.
     public var authenticationType: AppStreamClientTypes.AuthenticationType?
@@ -5334,8 +5337,9 @@ public struct DescribeUsersInput {
 }
 
 extension AppStreamClientTypes {
+
     /// Describes a user in the user pool.
-    public struct User {
+    public struct User: Swift.Sendable {
         /// The ARN of the user.
         public var arn: Swift.String?
         /// The authentication type for the user.
@@ -5385,7 +5389,6 @@ extension AppStreamClientTypes {
             self.userName = userName
         }
     }
-
 }
 
 extension AppStreamClientTypes.User: Swift.CustomDebugStringConvertible {
@@ -5393,7 +5396,7 @@ extension AppStreamClientTypes.User: Swift.CustomDebugStringConvertible {
         "User(arn: \(Swift.String(describing: arn)), authenticationType: \(Swift.String(describing: authenticationType)), createdTime: \(Swift.String(describing: createdTime)), enabled: \(Swift.String(describing: enabled)), status: \(Swift.String(describing: status)), firstName: \"CONTENT_REDACTED\", lastName: \"CONTENT_REDACTED\", userName: \"CONTENT_REDACTED\")"}
 }
 
-public struct DescribeUsersOutput {
+public struct DescribeUsersOutput: Swift.Sendable {
     /// The pagination token to use to retrieve the next page of results for this operation. If there are no more pages, this value is null.
     public var nextToken: Swift.String?
     /// Information about users in the user pool.
@@ -5409,7 +5412,7 @@ public struct DescribeUsersOutput {
     }
 }
 
-public struct DescribeUserStackAssociationsInput {
+public struct DescribeUserStackAssociationsInput: Swift.Sendable {
     /// The authentication type for the user who is associated with the stack. You must specify USERPOOL.
     public var authenticationType: AppStreamClientTypes.AuthenticationType?
     /// The maximum size of each page of results.
@@ -5442,7 +5445,7 @@ extension DescribeUserStackAssociationsInput: Swift.CustomDebugStringConvertible
         "DescribeUserStackAssociationsInput(authenticationType: \(Swift.String(describing: authenticationType)), maxResults: \(Swift.String(describing: maxResults)), nextToken: \(Swift.String(describing: nextToken)), stackName: \(Swift.String(describing: stackName)), userName: \"CONTENT_REDACTED\")"}
 }
 
-public struct DescribeUserStackAssociationsOutput {
+public struct DescribeUserStackAssociationsOutput: Swift.Sendable {
     /// The pagination token to use to retrieve the next page of results for this operation. If there are no more pages, this value is null.
     public var nextToken: Swift.String?
     /// The UserStackAssociation objects.
@@ -5458,7 +5461,7 @@ public struct DescribeUserStackAssociationsOutput {
     }
 }
 
-public struct DisableUserInput {
+public struct DisableUserInput: Swift.Sendable {
     /// The authentication type for the user. You must specify USERPOOL.
     /// This member is required.
     public var authenticationType: AppStreamClientTypes.AuthenticationType?
@@ -5481,12 +5484,12 @@ extension DisableUserInput: Swift.CustomDebugStringConvertible {
         "DisableUserInput(authenticationType: \(Swift.String(describing: authenticationType)), userName: \"CONTENT_REDACTED\")"}
 }
 
-public struct DisableUserOutput {
+public struct DisableUserOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DisassociateAppBlockBuilderAppBlockInput {
+public struct DisassociateAppBlockBuilderAppBlockInput: Swift.Sendable {
     /// The ARN of the app block.
     /// This member is required.
     public var appBlockArn: Swift.String?
@@ -5504,12 +5507,12 @@ public struct DisassociateAppBlockBuilderAppBlockInput {
     }
 }
 
-public struct DisassociateAppBlockBuilderAppBlockOutput {
+public struct DisassociateAppBlockBuilderAppBlockOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DisassociateApplicationFleetInput {
+public struct DisassociateApplicationFleetInput: Swift.Sendable {
     /// The ARN of the application.
     /// This member is required.
     public var applicationArn: Swift.String?
@@ -5527,12 +5530,12 @@ public struct DisassociateApplicationFleetInput {
     }
 }
 
-public struct DisassociateApplicationFleetOutput {
+public struct DisassociateApplicationFleetOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DisassociateApplicationFromEntitlementInput {
+public struct DisassociateApplicationFromEntitlementInput: Swift.Sendable {
     /// The identifier of the application to remove from the entitlement.
     /// This member is required.
     public var applicationIdentifier: Swift.String?
@@ -5555,12 +5558,12 @@ public struct DisassociateApplicationFromEntitlementInput {
     }
 }
 
-public struct DisassociateApplicationFromEntitlementOutput {
+public struct DisassociateApplicationFromEntitlementOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DisassociateFleetInput {
+public struct DisassociateFleetInput: Swift.Sendable {
     /// The name of the fleet.
     /// This member is required.
     public var fleetName: Swift.String?
@@ -5578,12 +5581,12 @@ public struct DisassociateFleetInput {
     }
 }
 
-public struct DisassociateFleetOutput {
+public struct DisassociateFleetOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct EnableUserInput {
+public struct EnableUserInput: Swift.Sendable {
     /// The authentication type for the user. You must specify USERPOOL.
     /// This member is required.
     public var authenticationType: AppStreamClientTypes.AuthenticationType?
@@ -5606,14 +5609,15 @@ extension EnableUserInput: Swift.CustomDebugStringConvertible {
         "EnableUserInput(authenticationType: \(Swift.String(describing: authenticationType)), userName: \"CONTENT_REDACTED\")"}
 }
 
-public struct EnableUserOutput {
+public struct EnableUserOutput: Swift.Sendable {
 
     public init() { }
 }
 
 extension AppStreamClientTypes {
+
     /// The application associated to an entitlement. Access is controlled based on user attributes.
-    public struct EntitledApplication {
+    public struct EntitledApplication: Swift.Sendable {
         /// The identifier of the application.
         /// This member is required.
         public var applicationIdentifier: Swift.String?
@@ -5625,10 +5629,9 @@ extension AppStreamClientTypes {
             self.applicationIdentifier = applicationIdentifier
         }
     }
-
 }
 
-public struct ExpireSessionInput {
+public struct ExpireSessionInput: Swift.Sendable {
     /// The identifier of the streaming session.
     /// This member is required.
     public var sessionId: Swift.String?
@@ -5641,7 +5644,7 @@ public struct ExpireSessionInput {
     }
 }
 
-public struct ExpireSessionOutput {
+public struct ExpireSessionOutput: Swift.Sendable {
 
     public init() { }
 }
@@ -5649,7 +5652,7 @@ public struct ExpireSessionOutput {
 extension AppStreamClientTypes {
 
     /// The fleet attribute.
-    public enum FleetAttribute: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum FleetAttribute: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case domainJoinInfo
         case iamRoleArn
         case maxSessionsPerInstance
@@ -5691,7 +5694,7 @@ extension AppStreamClientTypes {
     }
 }
 
-public struct ListAssociatedFleetsInput {
+public struct ListAssociatedFleetsInput: Swift.Sendable {
     /// The pagination token to use to retrieve the next page of results for this operation. If this value is null, it retrieves the first page.
     public var nextToken: Swift.String?
     /// The name of the stack.
@@ -5708,7 +5711,7 @@ public struct ListAssociatedFleetsInput {
     }
 }
 
-public struct ListAssociatedFleetsOutput {
+public struct ListAssociatedFleetsOutput: Swift.Sendable {
     /// The name of the fleet.
     public var names: [Swift.String]?
     /// The pagination token to use to retrieve the next page of results for this operation. If there are no more pages, this value is null.
@@ -5724,7 +5727,7 @@ public struct ListAssociatedFleetsOutput {
     }
 }
 
-public struct ListAssociatedStacksInput {
+public struct ListAssociatedStacksInput: Swift.Sendable {
     /// The name of the fleet.
     /// This member is required.
     public var fleetName: Swift.String?
@@ -5741,7 +5744,7 @@ public struct ListAssociatedStacksInput {
     }
 }
 
-public struct ListAssociatedStacksOutput {
+public struct ListAssociatedStacksOutput: Swift.Sendable {
     /// The name of the stack.
     public var names: [Swift.String]?
     /// The pagination token to use to retrieve the next page of results for this operation. If there are no more pages, this value is null.
@@ -5757,7 +5760,7 @@ public struct ListAssociatedStacksOutput {
     }
 }
 
-public struct ListEntitledApplicationsInput {
+public struct ListEntitledApplicationsInput: Swift.Sendable {
     /// The name of the entitlement.
     /// This member is required.
     public var entitlementName: Swift.String?
@@ -5783,7 +5786,7 @@ public struct ListEntitledApplicationsInput {
     }
 }
 
-public struct ListEntitledApplicationsOutput {
+public struct ListEntitledApplicationsOutput: Swift.Sendable {
     /// The entitled applications.
     public var entitledApplications: [AppStreamClientTypes.EntitledApplication]?
     /// The pagination token used to retrieve the next page of results for this operation.
@@ -5799,7 +5802,7 @@ public struct ListEntitledApplicationsOutput {
     }
 }
 
-public struct ListTagsForResourceInput {
+public struct ListTagsForResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the resource.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -5812,7 +5815,7 @@ public struct ListTagsForResourceInput {
     }
 }
 
-public struct ListTagsForResourceOutput {
+public struct ListTagsForResourceOutput: Swift.Sendable {
     /// The information about the tags.
     public var tags: [Swift.String: Swift.String]?
 
@@ -5824,7 +5827,7 @@ public struct ListTagsForResourceOutput {
     }
 }
 
-public struct StartAppBlockBuilderInput {
+public struct StartAppBlockBuilderInput: Swift.Sendable {
     /// The name of the app block builder.
     /// This member is required.
     public var name: Swift.String?
@@ -5837,7 +5840,7 @@ public struct StartAppBlockBuilderInput {
     }
 }
 
-public struct StartAppBlockBuilderOutput {
+public struct StartAppBlockBuilderOutput: Swift.Sendable {
     /// Describes an app block builder.
     public var appBlockBuilder: AppStreamClientTypes.AppBlockBuilder?
 
@@ -5849,7 +5852,7 @@ public struct StartAppBlockBuilderOutput {
     }
 }
 
-public struct StartFleetInput {
+public struct StartFleetInput: Swift.Sendable {
     /// The name of the fleet.
     /// This member is required.
     public var name: Swift.String?
@@ -5862,12 +5865,12 @@ public struct StartFleetInput {
     }
 }
 
-public struct StartFleetOutput {
+public struct StartFleetOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct StartImageBuilderInput {
+public struct StartImageBuilderInput: Swift.Sendable {
     /// The version of the AppStream 2.0 agent to use for this image builder. To use the latest version of the AppStream 2.0 agent, specify [LATEST].
     public var appstreamAgentVersion: Swift.String?
     /// The name of the image builder.
@@ -5884,7 +5887,7 @@ public struct StartImageBuilderInput {
     }
 }
 
-public struct StartImageBuilderOutput {
+public struct StartImageBuilderOutput: Swift.Sendable {
     /// Information about the image builder.
     public var imageBuilder: AppStreamClientTypes.ImageBuilder?
 
@@ -5896,7 +5899,7 @@ public struct StartImageBuilderOutput {
     }
 }
 
-public struct StopAppBlockBuilderInput {
+public struct StopAppBlockBuilderInput: Swift.Sendable {
     /// The name of the app block builder.
     /// This member is required.
     public var name: Swift.String?
@@ -5909,7 +5912,7 @@ public struct StopAppBlockBuilderInput {
     }
 }
 
-public struct StopAppBlockBuilderOutput {
+public struct StopAppBlockBuilderOutput: Swift.Sendable {
     /// Describes an app block builder.
     public var appBlockBuilder: AppStreamClientTypes.AppBlockBuilder?
 
@@ -5921,7 +5924,7 @@ public struct StopAppBlockBuilderOutput {
     }
 }
 
-public struct StopFleetInput {
+public struct StopFleetInput: Swift.Sendable {
     /// The name of the fleet.
     /// This member is required.
     public var name: Swift.String?
@@ -5934,12 +5937,12 @@ public struct StopFleetInput {
     }
 }
 
-public struct StopFleetOutput {
+public struct StopFleetOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct StopImageBuilderInput {
+public struct StopImageBuilderInput: Swift.Sendable {
     /// The name of the image builder.
     /// This member is required.
     public var name: Swift.String?
@@ -5952,7 +5955,7 @@ public struct StopImageBuilderInput {
     }
 }
 
-public struct StopImageBuilderOutput {
+public struct StopImageBuilderOutput: Swift.Sendable {
     /// Information about the image builder.
     public var imageBuilder: AppStreamClientTypes.ImageBuilder?
 
@@ -5964,7 +5967,7 @@ public struct StopImageBuilderOutput {
     }
 }
 
-public struct TagResourceInput {
+public struct TagResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the resource.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -5982,12 +5985,12 @@ public struct TagResourceInput {
     }
 }
 
-public struct TagResourceOutput {
+public struct TagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UntagResourceInput {
+public struct UntagResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the resource.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -6005,12 +6008,12 @@ public struct UntagResourceInput {
     }
 }
 
-public struct UntagResourceOutput {
+public struct UntagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdateAppBlockBuilderInput {
+public struct UpdateAppBlockBuilderInput: Swift.Sendable {
     /// The list of interface VPC endpoint (interface endpoint) objects. Administrators can connect to the app block builder only through the specified endpoints.
     public var accessEndpoints: [AppStreamClientTypes.AccessEndpoint]?
     /// The attributes to delete from the app block builder.
@@ -6069,7 +6072,7 @@ public struct UpdateAppBlockBuilderInput {
     }
 }
 
-public struct UpdateAppBlockBuilderOutput {
+public struct UpdateAppBlockBuilderOutput: Swift.Sendable {
     /// Describes an app block builder.
     public var appBlockBuilder: AppStreamClientTypes.AppBlockBuilder?
 
@@ -6081,7 +6084,7 @@ public struct UpdateAppBlockBuilderOutput {
     }
 }
 
-public struct UpdateApplicationInput {
+public struct UpdateApplicationInput: Swift.Sendable {
     /// The ARN of the app block.
     public var appBlockArn: Swift.String?
     /// The attributes to delete for an application.
@@ -6126,7 +6129,7 @@ public struct UpdateApplicationInput {
     }
 }
 
-public struct UpdateApplicationOutput {
+public struct UpdateApplicationOutput: Swift.Sendable {
     /// Describes an application in the application catalog.
     public var application: AppStreamClientTypes.Application?
 
@@ -6138,7 +6141,7 @@ public struct UpdateApplicationOutput {
     }
 }
 
-public struct UpdateDirectoryConfigInput {
+public struct UpdateDirectoryConfigInput: Swift.Sendable {
     /// The certificate-based authentication properties used to authenticate SAML 2.0 Identity Provider (IdP) user identities to Active Directory domain-joined streaming instances. Fallback is turned on by default when certificate-based authentication is Enabled . Fallback allows users to log in using their AD domain password if certificate-based authentication is unsuccessful, or to unlock a desktop lock screen. Enabled_no_directory_login_fallback enables certificate-based authentication, but does not allow users to log in using their AD domain password. Users will be disconnected to re-authenticate using certificates.
     public var certificateBasedAuthProperties: AppStreamClientTypes.CertificateBasedAuthProperties?
     /// The name of the Directory Config object.
@@ -6163,7 +6166,7 @@ public struct UpdateDirectoryConfigInput {
     }
 }
 
-public struct UpdateDirectoryConfigOutput {
+public struct UpdateDirectoryConfigOutput: Swift.Sendable {
     /// Information about the Directory Config object.
     public var directoryConfig: AppStreamClientTypes.DirectoryConfig?
 
@@ -6175,7 +6178,7 @@ public struct UpdateDirectoryConfigOutput {
     }
 }
 
-public struct UpdateEntitlementInput {
+public struct UpdateEntitlementInput: Swift.Sendable {
     /// Specifies whether all or only selected apps are entitled.
     public var appVisibility: AppStreamClientTypes.AppVisibility?
     /// The attributes of the entitlement.
@@ -6205,7 +6208,7 @@ public struct UpdateEntitlementInput {
     }
 }
 
-public struct UpdateEntitlementOutput {
+public struct UpdateEntitlementOutput: Swift.Sendable {
     /// The entitlement.
     public var entitlement: AppStreamClientTypes.Entitlement?
 
@@ -6217,7 +6220,7 @@ public struct UpdateEntitlementOutput {
     }
 }
 
-public struct UpdateFleetInput {
+public struct UpdateFleetInput: Swift.Sendable {
     /// The fleet attributes to delete.
     public var attributesToDelete: [AppStreamClientTypes.FleetAttribute]?
     /// The desired capacity for the fleet. This is not allowed for Elastic fleets.
@@ -6397,7 +6400,7 @@ public struct UpdateFleetInput {
     }
 }
 
-public struct UpdateFleetOutput {
+public struct UpdateFleetOutput: Swift.Sendable {
     /// Information about the fleet.
     public var fleet: AppStreamClientTypes.Fleet?
 
@@ -6409,7 +6412,7 @@ public struct UpdateFleetOutput {
     }
 }
 
-public struct UpdateImagePermissionsInput {
+public struct UpdateImagePermissionsInput: Swift.Sendable {
     /// The permissions for the image.
     /// This member is required.
     public var imagePermissions: AppStreamClientTypes.ImagePermissions?
@@ -6432,14 +6435,14 @@ public struct UpdateImagePermissionsInput {
     }
 }
 
-public struct UpdateImagePermissionsOutput {
+public struct UpdateImagePermissionsOutput: Swift.Sendable {
 
     public init() { }
 }
 
 extension AppStreamClientTypes {
 
-    public enum StackAttribute: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum StackAttribute: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case accessEndpoints
         case embedHostDomains
         case feedbackUrl
@@ -6496,7 +6499,7 @@ extension AppStreamClientTypes {
     }
 }
 
-public struct UpdateStackInput {
+public struct UpdateStackInput: Swift.Sendable {
     /// The list of interface VPC endpoint (interface endpoint) objects. Users of the stack can connect to AppStream 2.0 only through the specified endpoints.
     public var accessEndpoints: [AppStreamClientTypes.AccessEndpoint]?
     /// The persistent application settings for users of a stack. When these settings are enabled, changes that users make to applications and Windows settings are automatically saved after each session and applied to the next session.
@@ -6558,7 +6561,7 @@ public struct UpdateStackInput {
     }
 }
 
-public struct UpdateStackOutput {
+public struct UpdateStackOutput: Swift.Sendable {
     /// Information about the stack.
     public var stack: AppStreamClientTypes.Stack?
 
@@ -6572,7 +6575,7 @@ public struct UpdateStackOutput {
 
 extension AppStreamClientTypes {
 
-    public enum ThemeAttribute: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ThemeAttribute: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case footerLinks
         case sdkUnknown(Swift.String)
 
@@ -6596,7 +6599,7 @@ extension AppStreamClientTypes {
     }
 }
 
-public struct UpdateThemeForStackInput {
+public struct UpdateThemeForStackInput: Swift.Sendable {
     /// The attributes to delete.
     public var attributesToDelete: [AppStreamClientTypes.ThemeAttribute]?
     /// The S3 location of the favicon. The favicon enables users to recognize their application streaming site in a browser full of tabs or bookmarks. It is displayed at the top of the browser tab for the application streaming site during users' streaming sessions.
@@ -6637,7 +6640,7 @@ public struct UpdateThemeForStackInput {
     }
 }
 
-public struct UpdateThemeForStackOutput {
+public struct UpdateThemeForStackOutput: Swift.Sendable {
     /// The theme object that contains the metadata of the custom branding.
     public var theme: AppStreamClientTypes.Theme?
 

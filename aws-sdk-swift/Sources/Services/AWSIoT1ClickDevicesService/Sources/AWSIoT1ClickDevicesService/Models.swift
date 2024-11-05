@@ -27,18 +27,20 @@ import protocol ClientRuntime.ModeledError
 import struct Smithy.URIQueryItem
 @_spi(SmithyTimestamps) import struct SmithyTimestamps.TimestampFormatter
 
-public struct TagResourceOutput {
+
+public struct TagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UntagResourceOutput {
+public struct UntagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
 extension IoT1ClickDevicesClientTypes {
-    public struct DeviceDescription {
+
+    public struct DeviceDescription: Swift.Sendable {
         /// The ARN of the device.
         public var arn: Swift.String?
         /// An array of zero or more elements of DeviceAttribute objects providing user specified device attributes.
@@ -73,19 +75,19 @@ extension IoT1ClickDevicesClientTypes {
             self.type = type
         }
     }
-
 }
 
 extension IoT1ClickDevicesClientTypes {
-    public struct Attributes {
+
+    public struct Attributes: Swift.Sendable {
 
         public init() { }
     }
-
 }
 
 extension IoT1ClickDevicesClientTypes {
-    public struct Device {
+
+    public struct Device: Swift.Sendable {
         /// The user specified attributes associated with the device for an event.
         public var attributes: IoT1ClickDevicesClientTypes.Attributes?
         /// The unique identifier of the device.
@@ -104,11 +106,11 @@ extension IoT1ClickDevicesClientTypes {
             self.type = type
         }
     }
-
 }
 
 extension IoT1ClickDevicesClientTypes {
-    public struct DeviceEvent {
+
+    public struct DeviceEvent: Swift.Sendable {
         /// An object representing the device associated with the event.
         public var device: IoT1ClickDevicesClientTypes.Device?
         /// A serialized JSON object representing the device-type specific event.
@@ -123,11 +125,11 @@ extension IoT1ClickDevicesClientTypes {
             self.stdEvent = stdEvent
         }
     }
-
 }
 
 extension IoT1ClickDevicesClientTypes {
-    public struct DeviceMethod {
+
+    public struct DeviceMethod: Swift.Sendable {
         /// The type of the device, such as "button".
         public var deviceType: Swift.String?
         /// The name of the method applicable to the deviceType.
@@ -142,7 +144,6 @@ extension IoT1ClickDevicesClientTypes {
             self.methodName = methodName
         }
     }
-
 }
 
 public struct ForbiddenException: ClientRuntime.ModeledError, AWSClientRuntime.AWSServiceError, ClientRuntime.HTTPError, Swift.Error {
@@ -229,7 +230,7 @@ public struct InvalidRequestException: ClientRuntime.ModeledError, AWSClientRunt
     }
 }
 
-public struct ClaimDevicesByClaimCodeInput {
+public struct ClaimDevicesByClaimCodeInput: Swift.Sendable {
     /// The claim code, starting with "C-", as provided by the device manufacturer.
     /// This member is required.
     public var claimCode: Swift.String?
@@ -242,7 +243,7 @@ public struct ClaimDevicesByClaimCodeInput {
     }
 }
 
-public struct ClaimDevicesByClaimCodeOutput {
+public struct ClaimDevicesByClaimCodeOutput: Swift.Sendable {
     /// The claim code provided by the device manufacturer.
     public var claimCode: Swift.String?
     /// The total number of devices associated with the claim code that has been processed in the claim request.
@@ -286,7 +287,7 @@ public struct ResourceNotFoundException: ClientRuntime.ModeledError, AWSClientRu
     }
 }
 
-public struct DescribeDeviceInput {
+public struct DescribeDeviceInput: Swift.Sendable {
     /// The unique identifier of the device.
     /// This member is required.
     public var deviceId: Swift.String?
@@ -299,7 +300,7 @@ public struct DescribeDeviceInput {
     }
 }
 
-public struct DescribeDeviceOutput {
+public struct DescribeDeviceOutput: Swift.Sendable {
     /// Device details.
     public var deviceDescription: IoT1ClickDevicesClientTypes.DeviceDescription?
 
@@ -367,7 +368,7 @@ public struct ResourceConflictException: ClientRuntime.ModeledError, AWSClientRu
     }
 }
 
-public struct FinalizeDeviceClaimInput {
+public struct FinalizeDeviceClaimInput: Swift.Sendable {
     /// The unique identifier of the device.
     /// This member is required.
     public var deviceId: Swift.String?
@@ -384,7 +385,7 @@ public struct FinalizeDeviceClaimInput {
     }
 }
 
-public struct FinalizeDeviceClaimOutput {
+public struct FinalizeDeviceClaimOutput: Swift.Sendable {
     /// The device's final claim state.
     public var state: Swift.String?
 
@@ -396,7 +397,7 @@ public struct FinalizeDeviceClaimOutput {
     }
 }
 
-public struct GetDeviceMethodsInput {
+public struct GetDeviceMethodsInput: Swift.Sendable {
     /// The unique identifier of the device.
     /// This member is required.
     public var deviceId: Swift.String?
@@ -409,7 +410,7 @@ public struct GetDeviceMethodsInput {
     }
 }
 
-public struct GetDeviceMethodsOutput {
+public struct GetDeviceMethodsOutput: Swift.Sendable {
     /// List of available device APIs.
     public var deviceMethods: [IoT1ClickDevicesClientTypes.DeviceMethod]?
 
@@ -421,7 +422,7 @@ public struct GetDeviceMethodsOutput {
     }
 }
 
-public struct InitiateDeviceClaimInput {
+public struct InitiateDeviceClaimInput: Swift.Sendable {
     /// The unique identifier of the device.
     /// This member is required.
     public var deviceId: Swift.String?
@@ -434,7 +435,7 @@ public struct InitiateDeviceClaimInput {
     }
 }
 
-public struct InitiateDeviceClaimOutput {
+public struct InitiateDeviceClaimOutput: Swift.Sendable {
     /// The device's final claim state.
     public var state: Swift.String?
 
@@ -474,7 +475,7 @@ public struct RangeNotSatisfiableException: ClientRuntime.ModeledError, AWSClien
     }
 }
 
-public struct InvokeDeviceMethodInput {
+public struct InvokeDeviceMethodInput: Swift.Sendable {
     /// The unique identifier of the device.
     /// This member is required.
     public var deviceId: Swift.String?
@@ -495,7 +496,7 @@ public struct InvokeDeviceMethodInput {
     }
 }
 
-public struct InvokeDeviceMethodOutput {
+public struct InvokeDeviceMethodOutput: Swift.Sendable {
     /// A JSON encoded string containing the device method response.
     public var deviceMethodResponse: Swift.String?
 
@@ -507,7 +508,7 @@ public struct InvokeDeviceMethodOutput {
     }
 }
 
-public struct ListDeviceEventsInput {
+public struct ListDeviceEventsInput: Swift.Sendable {
     /// The unique identifier of the device.
     /// This member is required.
     public var deviceId: Swift.String?
@@ -538,7 +539,7 @@ public struct ListDeviceEventsInput {
     }
 }
 
-public struct ListDeviceEventsOutput {
+public struct ListDeviceEventsOutput: Swift.Sendable {
     /// An array of zero or more elements describing the event(s) associated with the device.
     public var events: [IoT1ClickDevicesClientTypes.DeviceEvent]?
     /// The token to retrieve the next set of results.
@@ -554,7 +555,7 @@ public struct ListDeviceEventsOutput {
     }
 }
 
-public struct ListDevicesInput {
+public struct ListDevicesInput: Swift.Sendable {
     /// The type of the device, such as "button".
     public var deviceType: Swift.String?
     /// The maximum number of results to return per request. If not set, a default value of 100 is used.
@@ -574,7 +575,7 @@ public struct ListDevicesInput {
     }
 }
 
-public struct ListDevicesOutput {
+public struct ListDevicesOutput: Swift.Sendable {
     /// A list of devices.
     public var devices: [IoT1ClickDevicesClientTypes.DeviceDescription]?
     /// The token to retrieve the next set of results.
@@ -590,7 +591,7 @@ public struct ListDevicesOutput {
     }
 }
 
-public struct ListTagsForResourceInput {
+public struct ListTagsForResourceInput: Swift.Sendable {
     /// The ARN of the resource.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -603,7 +604,7 @@ public struct ListTagsForResourceInput {
     }
 }
 
-public struct ListTagsForResourceOutput {
+public struct ListTagsForResourceOutput: Swift.Sendable {
     /// A collection of key/value pairs defining the resource tags. For example, { "tags": {"key1": "value1", "key2": "value2"} }. For more information, see [AWS Tagging Strategies](https://aws.amazon.com/answers/account-management/aws-tagging-strategies/).
     public var tags: [Swift.String: Swift.String]?
 
@@ -615,7 +616,7 @@ public struct ListTagsForResourceOutput {
     }
 }
 
-public struct TagResourceInput {
+public struct TagResourceInput: Swift.Sendable {
     /// The ARN of the resource.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -633,7 +634,7 @@ public struct TagResourceInput {
     }
 }
 
-public struct UnclaimDeviceInput {
+public struct UnclaimDeviceInput: Swift.Sendable {
     /// The unique identifier of the device.
     /// This member is required.
     public var deviceId: Swift.String?
@@ -646,7 +647,7 @@ public struct UnclaimDeviceInput {
     }
 }
 
-public struct UnclaimDeviceOutput {
+public struct UnclaimDeviceOutput: Swift.Sendable {
     /// The device's final claim state.
     public var state: Swift.String?
 
@@ -658,7 +659,7 @@ public struct UnclaimDeviceOutput {
     }
 }
 
-public struct UntagResourceInput {
+public struct UntagResourceInput: Swift.Sendable {
     /// The ARN of the resource.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -676,7 +677,7 @@ public struct UntagResourceInput {
     }
 }
 
-public struct UpdateDeviceStateInput {
+public struct UpdateDeviceStateInput: Swift.Sendable {
     /// The unique identifier of the device.
     /// This member is required.
     public var deviceId: Swift.String?
@@ -693,7 +694,7 @@ public struct UpdateDeviceStateInput {
     }
 }
 
-public struct UpdateDeviceStateOutput {
+public struct UpdateDeviceStateOutput: Swift.Sendable {
 
     public init() { }
 }

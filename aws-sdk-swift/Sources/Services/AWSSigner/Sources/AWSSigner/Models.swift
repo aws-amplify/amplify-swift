@@ -29,17 +29,18 @@ import struct Smithy.URIQueryItem
 @_spi(SmithyReadWrite) import struct SmithyReadWrite.ReadingClosureBox
 @_spi(SmithyTimestamps) import struct SmithyTimestamps.TimestampFormatter
 
-public struct CancelSigningProfileOutput {
+
+public struct CancelSigningProfileOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct RevokeSignatureOutput {
+public struct RevokeSignatureOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct RevokeSigningProfileOutput {
+public struct RevokeSigningProfileOutput: Swift.Sendable {
 
     public init() { }
 }
@@ -233,7 +234,7 @@ public struct ValidationException: ClientRuntime.ModeledError, AWSClientRuntime.
     }
 }
 
-public struct AddProfilePermissionInput {
+public struct AddProfilePermissionInput: Swift.Sendable {
     /// For cross-account signing. Grant a designated account permission to perform one or more of the following actions. Each action is associated with a specific API's operations. For more information about cross-account signing, see [Using cross-account signing with signing profiles](https://docs.aws.amazon.com/signer/latest/developerguide/signing-profile-cross-account.html) in the AWS Signer Developer Guide. You can designate the following actions to an account.
     ///
     /// * signer:StartSigningJob. This action isn't supported for container image workflows. For details, see [StartSigningJob].
@@ -277,7 +278,7 @@ public struct AddProfilePermissionInput {
     }
 }
 
-public struct AddProfilePermissionOutput {
+public struct AddProfilePermissionOutput: Swift.Sendable {
     /// A unique identifier for the current profile revision.
     public var revisionId: Swift.String?
 
@@ -316,7 +317,7 @@ public struct BadRequestException: ClientRuntime.ModeledError, AWSClientRuntime.
     }
 }
 
-public struct CancelSigningProfileInput {
+public struct CancelSigningProfileInput: Swift.Sendable {
     /// The name of the signing profile to be canceled.
     /// This member is required.
     public var profileName: Swift.String?
@@ -331,7 +332,7 @@ public struct CancelSigningProfileInput {
 
 extension SignerClientTypes {
 
-    public enum Category: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Category: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case awsiot
         case sdkUnknown(Swift.String)
 
@@ -355,7 +356,7 @@ extension SignerClientTypes {
     }
 }
 
-public struct DescribeSigningJobInput {
+public struct DescribeSigningJobInput: Swift.Sendable {
     /// The ID of the signing job on input.
     /// This member is required.
     public var jobId: Swift.String?
@@ -370,7 +371,7 @@ public struct DescribeSigningJobInput {
 
 extension SignerClientTypes {
 
-    public enum EncryptionAlgorithm: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum EncryptionAlgorithm: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case ecdsa
         case rsa
         case sdkUnknown(Swift.String)
@@ -399,7 +400,7 @@ extension SignerClientTypes {
 
 extension SignerClientTypes {
 
-    public enum HashAlgorithm: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum HashAlgorithm: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case sha1
         case sha256
         case sdkUnknown(Swift.String)
@@ -427,8 +428,9 @@ extension SignerClientTypes {
 }
 
 extension SignerClientTypes {
+
     /// A signing configuration that overrides the default encryption or hash algorithm of a signing job.
-    public struct SigningConfigurationOverrides {
+    public struct SigningConfigurationOverrides: Swift.Sendable {
         /// A specified override of the default encryption algorithm that is used in a code-signing job.
         public var encryptionAlgorithm: SignerClientTypes.EncryptionAlgorithm?
         /// A specified override of the default hash algorithm that is used in a code-signing job.
@@ -443,12 +445,11 @@ extension SignerClientTypes {
             self.hashAlgorithm = hashAlgorithm
         }
     }
-
 }
 
 extension SignerClientTypes {
 
-    public enum ImageFormat: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ImageFormat: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case json
         case jsondetached
         case jsonembedded
@@ -479,8 +480,9 @@ extension SignerClientTypes {
 }
 
 extension SignerClientTypes {
+
     /// Any overrides that are applied to the signing configuration of a signing platform.
-    public struct SigningPlatformOverrides {
+    public struct SigningPlatformOverrides: Swift.Sendable {
         /// A signing configuration that overrides the default encryption or hash algorithm of a signing job.
         public var signingConfiguration: SignerClientTypes.SigningConfigurationOverrides?
         /// A signed image is a JSON object. When overriding the default signing platform configuration, a customer can select either of two signing formats, JSONEmbedded or JSONDetached. (A third format value, JSON, is reserved for future use.) With JSONEmbedded, the signing image has the payload embedded in it. With JSONDetached, the payload is not be embedded in the signing image.
@@ -495,12 +497,12 @@ extension SignerClientTypes {
             self.signingImageFormat = signingImageFormat
         }
     }
-
 }
 
 extension SignerClientTypes {
+
     /// Revocation information for a signing job.
-    public struct SigningJobRevocationRecord {
+    public struct SigningJobRevocationRecord: Swift.Sendable {
         /// A caller-supplied reason for revocation.
         public var reason: Swift.String?
         /// The time of revocation.
@@ -519,12 +521,12 @@ extension SignerClientTypes {
             self.revokedBy = revokedBy
         }
     }
-
 }
 
 extension SignerClientTypes {
+
     /// The Amazon S3 bucket name and key where Signer saved your signed code image.
-    public struct S3SignedObject {
+    public struct S3SignedObject: Swift.Sendable {
         /// Name of the S3 bucket.
         public var bucketName: Swift.String?
         /// Key name that uniquely identifies a signed code image in your bucket.
@@ -539,12 +541,12 @@ extension SignerClientTypes {
             self.key = key
         }
     }
-
 }
 
 extension SignerClientTypes {
+
     /// Points to an S3SignedObject object that contains information about your signed code image.
-    public struct SignedObject {
+    public struct SignedObject: Swift.Sendable {
         /// The S3SignedObject.
         public var s3: SignerClientTypes.S3SignedObject?
 
@@ -555,12 +557,12 @@ extension SignerClientTypes {
             self.s3 = s3
         }
     }
-
 }
 
 extension SignerClientTypes {
+
     /// The ACM certificate that is used to sign your code.
-    public struct SigningMaterial {
+    public struct SigningMaterial: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the certificates that is used to sign your code.
         /// This member is required.
         public var certificateArn: Swift.String?
@@ -572,12 +574,12 @@ extension SignerClientTypes {
             self.certificateArn = certificateArn
         }
     }
-
 }
 
 extension SignerClientTypes {
+
     /// Information about the Amazon S3 bucket where you saved your unsigned code.
-    public struct S3Source {
+    public struct S3Source: Swift.Sendable {
         /// Name of the S3 bucket.
         /// This member is required.
         public var bucketName: Swift.String?
@@ -599,12 +601,12 @@ extension SignerClientTypes {
             self.version = version
         }
     }
-
 }
 
 extension SignerClientTypes {
+
     /// An S3Source object that contains information about the S3 bucket where you saved your unsigned code.
-    public struct Source {
+    public struct Source: Swift.Sendable {
         /// The S3Source object.
         public var s3: SignerClientTypes.S3Source?
 
@@ -615,12 +617,11 @@ extension SignerClientTypes {
             self.s3 = s3
         }
     }
-
 }
 
 extension SignerClientTypes {
 
-    public enum SigningStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SigningStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case failed
         case inprogress
         case succeeded
@@ -650,7 +651,7 @@ extension SignerClientTypes {
     }
 }
 
-public struct DescribeSigningJobOutput {
+public struct DescribeSigningJobOutput: Swift.Sendable {
     /// Date and time that the signing job was completed.
     public var completedAt: Foundation.Date?
     /// Date and time that the signing job was created.
@@ -735,8 +736,9 @@ public struct DescribeSigningJobOutput {
 }
 
 extension SignerClientTypes {
+
     /// The name and prefix of the Amazon S3 bucket where AWS Signer saves your signed objects.
-    public struct S3Destination {
+    public struct S3Destination: Swift.Sendable {
         /// Name of the S3 bucket.
         public var bucketName: Swift.String?
         /// An S3 prefix that you can use to limit responses to those that begin with the specified prefix.
@@ -751,12 +753,12 @@ extension SignerClientTypes {
             self.`prefix` = `prefix`
         }
     }
-
 }
 
 extension SignerClientTypes {
+
     /// Points to an S3Destination object that contains information about your S3 bucket.
-    public struct Destination {
+    public struct Destination: Swift.Sendable {
         /// The S3Destination object.
         public var s3: SignerClientTypes.S3Destination?
 
@@ -767,12 +769,12 @@ extension SignerClientTypes {
             self.s3 = s3
         }
     }
-
 }
 
 extension SignerClientTypes {
+
     /// The encryption algorithm options that are available to a code-signing job.
-    public struct EncryptionAlgorithmOptions {
+    public struct EncryptionAlgorithmOptions: Swift.Sendable {
         /// The set of accepted encryption algorithms that are allowed in a code-signing job.
         /// This member is required.
         public var allowedValues: [SignerClientTypes.EncryptionAlgorithm]?
@@ -789,10 +791,9 @@ extension SignerClientTypes {
             self.defaultValue = defaultValue
         }
     }
-
 }
 
-public struct GetRevocationStatusInput {
+public struct GetRevocationStatusInput: Swift.Sendable {
     /// A list of composite signed hashes that identify certificates. A certificate identifier consists of a subject certificate TBS hash (signed by the parent CA) combined with a parent CA TBS hash (signed by the parent CA’s CA). Root certificates are defined as their own CA. The following example shows how to calculate a hash for this parameter using OpenSSL commands: openssl asn1parse -in childCert.pem -strparse 4 -out childCert.tbs
     ///     openssl sha384 < childCert.tbs -binary > childCertTbsHash
     ///
@@ -835,7 +836,7 @@ public struct GetRevocationStatusInput {
     }
 }
 
-public struct GetRevocationStatusOutput {
+public struct GetRevocationStatusOutput: Swift.Sendable {
     /// A list of revoked entities (including zero or more of the signing profile ARN, signing job ARN, and certificate hashes) supplied as input to the API.
     public var revokedEntities: [Swift.String]?
 
@@ -847,7 +848,7 @@ public struct GetRevocationStatusOutput {
     }
 }
 
-public struct GetSigningPlatformInput {
+public struct GetSigningPlatformInput: Swift.Sendable {
     /// The ID of the target signing platform.
     /// This member is required.
     public var platformId: Swift.String?
@@ -861,8 +862,9 @@ public struct GetSigningPlatformInput {
 }
 
 extension SignerClientTypes {
+
     /// The hash algorithms that are available to a code-signing job.
-    public struct HashAlgorithmOptions {
+    public struct HashAlgorithmOptions: Swift.Sendable {
         /// The set of accepted hash algorithms allowed in a code-signing job.
         /// This member is required.
         public var allowedValues: [SignerClientTypes.HashAlgorithm]?
@@ -879,12 +881,12 @@ extension SignerClientTypes {
             self.defaultValue = defaultValue
         }
     }
-
 }
 
 extension SignerClientTypes {
+
     /// The configuration of a signing operation.
-    public struct SigningConfiguration {
+    public struct SigningConfiguration: Swift.Sendable {
         /// The encryption algorithm options that are available for a code-signing job.
         /// This member is required.
         public var encryptionAlgorithmOptions: SignerClientTypes.EncryptionAlgorithmOptions?
@@ -901,12 +903,12 @@ extension SignerClientTypes {
             self.hashAlgorithmOptions = hashAlgorithmOptions
         }
     }
-
 }
 
 extension SignerClientTypes {
+
     /// The image format of a AWS Signer platform or profile.
-    public struct SigningImageFormat {
+    public struct SigningImageFormat: Swift.Sendable {
         /// The default format of a signing image.
         /// This member is required.
         public var defaultFormat: SignerClientTypes.ImageFormat?
@@ -923,10 +925,9 @@ extension SignerClientTypes {
             self.supportedFormats = supportedFormats
         }
     }
-
 }
 
-public struct GetSigningPlatformOutput {
+public struct GetSigningPlatformOutput: Swift.Sendable {
     /// The category type of the target signing platform.
     public var category: SignerClientTypes.Category?
     /// The display name of the target signing platform.
@@ -970,7 +971,7 @@ public struct GetSigningPlatformOutput {
     }
 }
 
-public struct GetSigningProfileInput {
+public struct GetSigningProfileInput: Swift.Sendable {
     /// The name of the target signing profile.
     /// This member is required.
     public var profileName: Swift.String?
@@ -988,8 +989,9 @@ public struct GetSigningProfileInput {
 }
 
 extension SignerClientTypes {
+
     /// Revocation information for a signing profile.
-    public struct SigningProfileRevocationRecord {
+    public struct SigningProfileRevocationRecord: Swift.Sendable {
         /// The time when revocation becomes effective.
         public var revocationEffectiveFrom: Foundation.Date?
         /// The time when the signing profile was revoked.
@@ -1008,12 +1010,11 @@ extension SignerClientTypes {
             self.revokedBy = revokedBy
         }
     }
-
 }
 
 extension SignerClientTypes {
 
-    public enum ValidityType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ValidityType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case days
         case months
         case years
@@ -1044,8 +1045,9 @@ extension SignerClientTypes {
 }
 
 extension SignerClientTypes {
+
     /// The validity period for a signing job.
-    public struct SignatureValidityPeriod {
+    public struct SignatureValidityPeriod: Swift.Sendable {
         /// The time unit for signature validity.
         public var type: SignerClientTypes.ValidityType?
         /// The numerical value of the time unit for signature validity.
@@ -1060,12 +1062,11 @@ extension SignerClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension SignerClientTypes {
 
-    public enum SigningProfileStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SigningProfileStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case active
         case canceled
         case revoked
@@ -1095,7 +1096,7 @@ extension SignerClientTypes {
     }
 }
 
-public struct GetSigningProfileOutput {
+public struct GetSigningProfileOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) for the signing profile.
     public var arn: Swift.String?
     /// A list of overrides applied by the target signing profile for signing operations.
@@ -1159,7 +1160,7 @@ public struct GetSigningProfileOutput {
     }
 }
 
-public struct ListProfilePermissionsInput {
+public struct ListProfilePermissionsInput: Swift.Sendable {
     /// String for specifying the next set of paginated results.
     public var nextToken: Swift.String?
     /// Name of the signing profile containing the cross-account permissions.
@@ -1177,8 +1178,9 @@ public struct ListProfilePermissionsInput {
 }
 
 extension SignerClientTypes {
+
     /// A cross-account permission for a signing profile.
-    public struct Permission {
+    public struct Permission: Swift.Sendable {
         /// An AWS Signer action permitted as part of cross-account permissions.
         public var action: Swift.String?
         /// The AWS principal that has been granted a cross-account permission.
@@ -1201,10 +1203,9 @@ extension SignerClientTypes {
             self.statementId = statementId
         }
     }
-
 }
 
-public struct ListProfilePermissionsOutput {
+public struct ListProfilePermissionsOutput: Swift.Sendable {
     /// String for specifying the next set of paginated results.
     public var nextToken: Swift.String?
     /// List of permissions associated with the Signing Profile.
@@ -1228,7 +1229,7 @@ public struct ListProfilePermissionsOutput {
     }
 }
 
-public struct ListSigningJobsInput {
+public struct ListSigningJobsInput: Swift.Sendable {
     /// Filters results to return only signing jobs with revoked signatures.
     public var isRevoked: Swift.Bool?
     /// Filters results to return only signing jobs initiated by a specified IAM entity.
@@ -1273,8 +1274,9 @@ public struct ListSigningJobsInput {
 }
 
 extension SignerClientTypes {
+
     /// Contains information about a signing job.
-    public struct SigningJob {
+    public struct SigningJob: Swift.Sendable {
         /// The date and time that the signing job was created.
         public var createdAt: Foundation.Date?
         /// Indicates whether the signing job is revoked.
@@ -1337,10 +1339,9 @@ extension SignerClientTypes {
             self.status = status
         }
     }
-
 }
 
-public struct ListSigningJobsOutput {
+public struct ListSigningJobsOutput: Swift.Sendable {
     /// A list of your signing jobs.
     public var jobs: [SignerClientTypes.SigningJob]?
     /// String for specifying the next set of paginated results.
@@ -1356,7 +1357,7 @@ public struct ListSigningJobsOutput {
     }
 }
 
-public struct ListSigningPlatformsInput {
+public struct ListSigningPlatformsInput: Swift.Sendable {
     /// The category type of a signing platform.
     public var category: Swift.String?
     /// The maximum number of results to be returned by this operation.
@@ -1385,8 +1386,9 @@ public struct ListSigningPlatformsInput {
 }
 
 extension SignerClientTypes {
+
     /// Contains information about the signing configurations and parameters that are used to perform a code-signing job.
-    public struct SigningPlatform {
+    public struct SigningPlatform: Swift.Sendable {
         /// The category of a signing platform.
         public var category: SignerClientTypes.Category?
         /// The display name of a signing platform.
@@ -1429,10 +1431,9 @@ extension SignerClientTypes {
             self.target = target
         }
     }
-
 }
 
-public struct ListSigningPlatformsOutput {
+public struct ListSigningPlatformsOutput: Swift.Sendable {
     /// Value for specifying the next set of paginated results to return.
     public var nextToken: Swift.String?
     /// A list of all platforms that match the request parameters.
@@ -1448,7 +1449,7 @@ public struct ListSigningPlatformsOutput {
     }
 }
 
-public struct ListSigningProfilesInput {
+public struct ListSigningProfilesInput: Swift.Sendable {
     /// Designates whether to include profiles with the status of CANCELED.
     public var includeCanceled: Swift.Bool?
     /// The maximum number of profiles to be returned.
@@ -1477,8 +1478,9 @@ public struct ListSigningProfilesInput {
 }
 
 extension SignerClientTypes {
+
     /// Contains information about the ACM certificates and signing configuration parameters that can be used by a given code signing user.
-    public struct SigningProfile {
+    public struct SigningProfile: Swift.Sendable {
         /// The Amazon Resource Name (ARN) for the signing profile.
         public var arn: Swift.String?
         /// The name of the signing platform.
@@ -1529,10 +1531,9 @@ extension SignerClientTypes {
             self.tags = tags
         }
     }
-
 }
 
-public struct ListSigningProfilesOutput {
+public struct ListSigningProfilesOutput: Swift.Sendable {
     /// Value for specifying the next set of paginated results to return.
     public var nextToken: Swift.String?
     /// A list of profiles that are available in the AWS account. This includes profiles with the status of CANCELED if the includeCanceled parameter is set to true.
@@ -1575,7 +1576,7 @@ public struct NotFoundException: ClientRuntime.ModeledError, AWSClientRuntime.AW
     }
 }
 
-public struct ListTagsForResourceInput {
+public struct ListTagsForResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) for the signing profile.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -1588,7 +1589,7 @@ public struct ListTagsForResourceInput {
     }
 }
 
-public struct ListTagsForResourceOutput {
+public struct ListTagsForResourceOutput: Swift.Sendable {
     /// A list of tags associated with the signing profile.
     public var tags: [Swift.String: Swift.String]?
 
@@ -1600,7 +1601,7 @@ public struct ListTagsForResourceOutput {
     }
 }
 
-public struct PutSigningProfileInput {
+public struct PutSigningProfileInput: Swift.Sendable {
     /// A subfield of platform. This specifies any different configuration options that you want to apply to the chosen platform (such as a different hash-algorithm or signing-algorithm).
     public var overrides: SignerClientTypes.SigningPlatformOverrides?
     /// The ID of the signing platform to be created.
@@ -1638,7 +1639,7 @@ public struct PutSigningProfileInput {
     }
 }
 
-public struct PutSigningProfileOutput {
+public struct PutSigningProfileOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the signing profile created.
     public var arn: Swift.String?
     /// The version of the signing profile being created.
@@ -1658,7 +1659,7 @@ public struct PutSigningProfileOutput {
     }
 }
 
-public struct RemoveProfilePermissionInput {
+public struct RemoveProfilePermissionInput: Swift.Sendable {
     /// A human-readable name for the signing profile with permissions to be removed.
     /// This member is required.
     public var profileName: Swift.String?
@@ -1681,7 +1682,7 @@ public struct RemoveProfilePermissionInput {
     }
 }
 
-public struct RemoveProfilePermissionOutput {
+public struct RemoveProfilePermissionOutput: Swift.Sendable {
     /// An identifier for the current revision of the profile permissions.
     public var revisionId: Swift.String?
 
@@ -1693,7 +1694,7 @@ public struct RemoveProfilePermissionOutput {
     }
 }
 
-public struct RevokeSignatureInput {
+public struct RevokeSignatureInput: Swift.Sendable {
     /// ID of the signing job to be revoked.
     /// This member is required.
     public var jobId: Swift.String?
@@ -1715,7 +1716,7 @@ public struct RevokeSignatureInput {
     }
 }
 
-public struct RevokeSigningProfileInput {
+public struct RevokeSigningProfileInput: Swift.Sendable {
     /// A timestamp for when revocation of a Signing Profile should become effective. Signatures generated using the signing profile after this timestamp are not trusted.
     /// This member is required.
     public var effectiveTime: Foundation.Date?
@@ -1743,7 +1744,7 @@ public struct RevokeSigningProfileInput {
     }
 }
 
-public struct SignPayloadInput {
+public struct SignPayloadInput: Swift.Sendable {
     /// Specifies the object digest (hash) to sign.
     /// This member is required.
     public var payload: Foundation.Data?
@@ -1770,7 +1771,7 @@ public struct SignPayloadInput {
     }
 }
 
-public struct SignPayloadOutput {
+public struct SignPayloadOutput: Swift.Sendable {
     /// Unique identifier of the signing job.
     public var jobId: Swift.String?
     /// The AWS account ID of the job owner.
@@ -1822,7 +1823,7 @@ public struct ThrottlingException: ClientRuntime.ModeledError, AWSClientRuntime.
     }
 }
 
-public struct StartSigningJobInput {
+public struct StartSigningJobInput: Swift.Sendable {
     /// String that identifies the signing request. All calls after the first that use this token return the same response as the first call.
     /// This member is required.
     public var clientRequestToken: Swift.String?
@@ -1854,7 +1855,7 @@ public struct StartSigningJobInput {
     }
 }
 
-public struct StartSigningJobOutput {
+public struct StartSigningJobOutput: Swift.Sendable {
     /// The ID of your signing job.
     public var jobId: Swift.String?
     /// The AWS account ID of the signing job owner.
@@ -1870,7 +1871,7 @@ public struct StartSigningJobOutput {
     }
 }
 
-public struct TagResourceInput {
+public struct TagResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) for the signing profile.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -1888,12 +1889,12 @@ public struct TagResourceInput {
     }
 }
 
-public struct TagResourceOutput {
+public struct TagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UntagResourceInput {
+public struct UntagResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) for the signing profile.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -1911,7 +1912,7 @@ public struct UntagResourceInput {
     }
 }
 
-public struct UntagResourceOutput {
+public struct UntagResourceOutput: Swift.Sendable {
 
     public init() { }
 }

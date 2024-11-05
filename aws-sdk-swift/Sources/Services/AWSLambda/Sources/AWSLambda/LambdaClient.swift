@@ -281,7 +281,7 @@ extension LambdaClient {
 
     /// Performs the `AddPermission` operation on the `AWSGirApiService` service.
     ///
-    /// Grants a [principal](https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_elements_principal.html#Principal_specifying) permission to use a function. You can apply the policy at the function level, or specify a qualifier to restrict access to a single version or alias. If you use a qualifier, the invoker must use the full Amazon Resource Name (ARN) of that version or alias to invoke the function. Note: Lambda does not support adding policies to version $LATEST. To grant permission to another account, specify the account ID as the Principal. To grant permission to an organization defined in Organizations, specify the organization ID as the PrincipalOrgID. For Amazon Web Servicesservices, the principal is a domain-style identifier that the service defines, such as s3.amazonaws.com or sns.amazonaws.com. For Amazon Web Servicesservices, you can also specify the ARN of the associated resource as the SourceArn. If you grant permission to a service principal without specifying the source, other accounts could potentially configure resources in their account to invoke your Lambda function. This operation adds a statement to a resource-based permissions policy for the function. For more information about function policies, see [Using resource-based policies for Lambda](https://docs.aws.amazon.com/lambda/latest/dg/access-control-resource-based.html).
+    /// Grants a [principal](https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_elements_principal.html#Principal_specifying) permission to use a function. You can apply the policy at the function level, or specify a qualifier to restrict access to a single version or alias. If you use a qualifier, the invoker must use the full Amazon Resource Name (ARN) of that version or alias to invoke the function. Note: Lambda does not support adding policies to version $LATEST. To grant permission to another account, specify the account ID as the Principal. To grant permission to an organization defined in Organizations, specify the organization ID as the PrincipalOrgID. For Amazon Web Services services, the principal is a domain-style identifier that the service defines, such as s3.amazonaws.com or sns.amazonaws.com. For Amazon Web Services services, you can also specify the ARN of the associated resource as the SourceArn. If you grant permission to a service principal without specifying the source, other accounts could potentially configure resources in their account to invoke your Lambda function. This operation adds a statement to a resource-based permissions policy for the function. For more information about function policies, see [Using resource-based policies for Lambda](https://docs.aws.amazon.com/lambda/latest/dg/access-control-resource-based.html).
     ///
     /// - Parameter AddPermissionInput : [no documentation found]
     ///
@@ -297,7 +297,6 @@ extension LambdaClient {
     /// * For AddPermission and RemovePermission API operations: Call GetPolicy to retrieve the latest RevisionId for your resource.
     ///
     /// * For all other API operations: Call GetFunction or GetAlias to retrieve the latest RevisionId for your resource.
-    /// - `PublicPolicyException` : Lambda prevented your policy from being created because it would grant public access to your function. If you intended to create a public policy, use the [PutPublicAccessBlockConfig] API action to configure your function's public-access settings to allow public policies.
     /// - `ResourceConflictException` : The resource already exists, or another operation is in progress.
     /// - `ResourceNotFoundException` : The resource specified in the request does not exist.
     /// - `ServiceException` : The Lambda service encountered an internal error.
@@ -622,7 +621,7 @@ extension LambdaClient {
 
     /// Performs the `CreateFunction` operation on the `AWSGirApiService` service.
     ///
-    /// Creates a Lambda function. To create a function, you need a [deployment package](https://docs.aws.amazon.com/lambda/latest/dg/gettingstarted-package.html) and an [execution role](https://docs.aws.amazon.com/lambda/latest/dg/intro-permission-model.html#lambda-intro-execution-role). The deployment package is a .zip file archive or container image that contains your function code. The execution role grants the function permission to use Amazon Web Servicesservices, such as Amazon CloudWatch Logs for log streaming and X-Ray for request tracing. If the deployment package is a [container image](https://docs.aws.amazon.com/lambda/latest/dg/lambda-images.html), then you set the package type to Image. For a container image, the code property must include the URI of a container image in the Amazon ECR registry. You do not need to specify the handler and runtime properties. If the deployment package is a [.zip file archive](https://docs.aws.amazon.com/lambda/latest/dg/gettingstarted-package.html#gettingstarted-package-zip), then you set the package type to Zip. For a .zip file archive, the code property specifies the location of the .zip file. You must also specify the handler and runtime properties. The code in the deployment package must be compatible with the target instruction set architecture of the function (x86-64 or arm64). If you do not specify the architecture, then the default value is x86-64. When you create a function, Lambda provisions an instance of the function and its supporting resources. If your function connects to a VPC, this process can take a minute or so. During this time, you can't invoke or modify the function. The State, StateReason, and StateReasonCode fields in the response from [GetFunctionConfiguration] indicate when the function is ready to invoke. For more information, see [Lambda function states](https://docs.aws.amazon.com/lambda/latest/dg/functions-states.html). A function has an unpublished version, and can have published versions and aliases. The unpublished version changes when you update your function's code and configuration. A published version is a snapshot of your function code and configuration that can't be changed. An alias is a named resource that maps to a version, and can be changed to map to a different version. Use the Publish parameter to create version 1 of your function from its initial configuration. The other parameters let you configure version-specific and function-level settings. You can modify version-specific settings later with [UpdateFunctionConfiguration]. Function-level settings apply to both the unpublished and published versions of the function, and include tags ([TagResource]) and per-function concurrency limits ([PutFunctionConcurrency]). You can use code signing if your deployment package is a .zip file archive. To enable code signing for this function, specify the ARN of a code-signing configuration. When a user attempts to deploy a code package with [UpdateFunctionCode], Lambda checks that the code package has a valid signature from a trusted publisher. The code-signing configuration includes set of signing profiles, which define the trusted publishers for this function. If another Amazon Web Services account or an Amazon Web Servicesservice invokes your function, use [AddPermission] to grant permission by creating a resource-based Identity and Access Management (IAM) policy. You can grant permissions at the function level, on a version, or on an alias. To invoke your function directly, use [Invoke]. To invoke your function in response to events in other Amazon Web Servicesservices, create an event source mapping ([CreateEventSourceMapping]), or configure a function trigger in the other service. For more information, see [Invoking Lambda functions](https://docs.aws.amazon.com/lambda/latest/dg/lambda-invocation.html).
+    /// Creates a Lambda function. To create a function, you need a [deployment package](https://docs.aws.amazon.com/lambda/latest/dg/gettingstarted-package.html) and an [execution role](https://docs.aws.amazon.com/lambda/latest/dg/intro-permission-model.html#lambda-intro-execution-role). The deployment package is a .zip file archive or container image that contains your function code. The execution role grants the function permission to use Amazon Web Services services, such as Amazon CloudWatch Logs for log streaming and X-Ray for request tracing. If the deployment package is a [container image](https://docs.aws.amazon.com/lambda/latest/dg/lambda-images.html), then you set the package type to Image. For a container image, the code property must include the URI of a container image in the Amazon ECR registry. You do not need to specify the handler and runtime properties. If the deployment package is a [.zip file archive](https://docs.aws.amazon.com/lambda/latest/dg/gettingstarted-package.html#gettingstarted-package-zip), then you set the package type to Zip. For a .zip file archive, the code property specifies the location of the .zip file. You must also specify the handler and runtime properties. The code in the deployment package must be compatible with the target instruction set architecture of the function (x86-64 or arm64). If you do not specify the architecture, then the default value is x86-64. When you create a function, Lambda provisions an instance of the function and its supporting resources. If your function connects to a VPC, this process can take a minute or so. During this time, you can't invoke or modify the function. The State, StateReason, and StateReasonCode fields in the response from [GetFunctionConfiguration] indicate when the function is ready to invoke. For more information, see [Lambda function states](https://docs.aws.amazon.com/lambda/latest/dg/functions-states.html). A function has an unpublished version, and can have published versions and aliases. The unpublished version changes when you update your function's code and configuration. A published version is a snapshot of your function code and configuration that can't be changed. An alias is a named resource that maps to a version, and can be changed to map to a different version. Use the Publish parameter to create version 1 of your function from its initial configuration. The other parameters let you configure version-specific and function-level settings. You can modify version-specific settings later with [UpdateFunctionConfiguration]. Function-level settings apply to both the unpublished and published versions of the function, and include tags ([TagResource]) and per-function concurrency limits ([PutFunctionConcurrency]). You can use code signing if your deployment package is a .zip file archive. To enable code signing for this function, specify the ARN of a code-signing configuration. When a user attempts to deploy a code package with [UpdateFunctionCode], Lambda checks that the code package has a valid signature from a trusted publisher. The code-signing configuration includes set of signing profiles, which define the trusted publishers for this function. If another Amazon Web Services account or an Amazon Web Services service invokes your function, use [AddPermission] to grant permission by creating a resource-based Identity and Access Management (IAM) policy. You can grant permissions at the function level, on a version, or on an alias. To invoke your function directly, use [Invoke]. To invoke your function in response to events in other Amazon Web Services services, create an event source mapping ([CreateEventSourceMapping]), or configure a function trigger in the other service. For more information, see [Invoking Lambda functions](https://docs.aws.amazon.com/lambda/latest/dg/lambda-invocation.html).
     ///
     /// - Parameter CreateFunctionInput : [no documentation found]
     ///
@@ -982,7 +981,7 @@ extension LambdaClient {
 
     /// Performs the `DeleteFunction` operation on the `AWSGirApiService` service.
     ///
-    /// Deletes a Lambda function. To delete a specific function version, use the Qualifier parameter. Otherwise, all versions and aliases are deleted. This doesn't require the user to have explicit permissions for [DeleteAlias]. To delete Lambda event source mappings that invoke a function, use [DeleteEventSourceMapping]. For Amazon Web Servicesservices and resources that invoke your function directly, delete the trigger in the service where you originally configured it.
+    /// Deletes a Lambda function. To delete a specific function version, use the Qualifier parameter. Otherwise, all versions and aliases are deleted. This doesn't require the user to have explicit permissions for [DeleteAlias]. To delete Lambda event source mappings that invoke a function, use [DeleteEventSourceMapping]. For Amazon Web Services services and resources that invoke your function directly, delete the trigger in the service where you originally configured it.
     ///
     /// - Parameter DeleteFunctionInput : [no documentation found]
     ///
@@ -1459,82 +1458,6 @@ extension LambdaClient {
         var metricsAttributes = Smithy.Attributes()
         metricsAttributes.set(key: ClientRuntime.OrchestratorMetricsAttributesKeys.service, value: "Lambda")
         metricsAttributes.set(key: ClientRuntime.OrchestratorMetricsAttributesKeys.method, value: "DeleteProvisionedConcurrencyConfig")
-        let op = builder.attributes(context)
-            .telemetry(ClientRuntime.OrchestratorTelemetry(
-                telemetryProvider: config.telemetryProvider,
-                metricsAttributes: metricsAttributes,
-                meterScope: serviceName,
-                tracerScope: serviceName
-            ))
-            .executeRequest(client)
-            .build()
-        return try await op.execute(input: input)
-    }
-
-    /// Performs the `DeleteResourcePolicy` operation on the `AWSGirApiService` service.
-    ///
-    /// The option to create and modify full JSON resource-based policies, and to use the PutResourcePolicy, GetResourcePolicy, and DeleteResourcePolicy APIs, won't be available in all Amazon Web Services Regions until September 30, 2024. Deletes a [resource-based policy](https://docs.aws.amazon.com/lambda/latest/dg/access-control-resource-based.html) from a function.
-    ///
-    /// - Parameter DeleteResourcePolicyInput : [no documentation found]
-    ///
-    /// - Returns: `DeleteResourcePolicyOutput` : [no documentation found]
-    ///
-    /// - Throws: One of the exceptions listed below __Possible Exceptions__.
-    ///
-    /// __Possible Exceptions:__
-    /// - `InvalidParameterValueException` : One of the parameters in the request is not valid.
-    /// - `PreconditionFailedException` : The RevisionId provided does not match the latest RevisionId for the Lambda function or alias.
-    ///
-    /// * For AddPermission and RemovePermission API operations: Call GetPolicy to retrieve the latest RevisionId for your resource.
-    ///
-    /// * For all other API operations: Call GetFunction or GetAlias to retrieve the latest RevisionId for your resource.
-    /// - `ResourceConflictException` : The resource already exists, or another operation is in progress.
-    /// - `ResourceNotFoundException` : The resource specified in the request does not exist.
-    /// - `ServiceException` : The Lambda service encountered an internal error.
-    /// - `TooManyRequestsException` : The request throughput limit was exceeded. For more information, see [Lambda quotas](https://docs.aws.amazon.com/lambda/latest/dg/gettingstarted-limits.html#api-requests).
-    public func deleteResourcePolicy(input: DeleteResourcePolicyInput) async throws -> DeleteResourcePolicyOutput {
-        let context = Smithy.ContextBuilder()
-                      .withMethod(value: .delete)
-                      .withServiceName(value: serviceName)
-                      .withOperation(value: "deleteResourcePolicy")
-                      .withIdempotencyTokenGenerator(value: config.idempotencyTokenGenerator)
-                      .withLogger(value: config.logger)
-                      .withPartitionID(value: config.partitionID)
-                      .withAuthSchemes(value: config.authSchemes ?? [])
-                      .withAuthSchemeResolver(value: config.authSchemeResolver)
-                      .withUnsignedPayloadTrait(value: false)
-                      .withSocketTimeout(value: config.httpClientConfiguration.socketTimeout)
-                      .withIdentityResolver(value: config.bearerTokenIdentityResolver, schemeID: "smithy.api#httpBearerAuth")
-                      .withIdentityResolver(value: config.awsCredentialIdentityResolver, schemeID: "aws.auth#sigv4")
-                      .withIdentityResolver(value: config.awsCredentialIdentityResolver, schemeID: "aws.auth#sigv4a")
-                      .withRegion(value: config.region)
-                      .withSigningName(value: "lambda")
-                      .withSigningRegion(value: config.signingRegion)
-                      .build()
-        let builder = ClientRuntime.OrchestratorBuilder<DeleteResourcePolicyInput, DeleteResourcePolicyOutput, SmithyHTTPAPI.HTTPRequest, SmithyHTTPAPI.HTTPResponse>()
-        config.interceptorProviders.forEach { provider in
-            builder.interceptors.add(provider.create())
-        }
-        config.httpInterceptorProviders.forEach { provider in
-            builder.interceptors.add(provider.create())
-        }
-        builder.interceptors.add(ClientRuntime.URLPathMiddleware<DeleteResourcePolicyInput, DeleteResourcePolicyOutput>(DeleteResourcePolicyInput.urlPathProvider(_:)))
-        builder.interceptors.add(ClientRuntime.URLHostMiddleware<DeleteResourcePolicyInput, DeleteResourcePolicyOutput>())
-        builder.serialize(ClientRuntime.QueryItemMiddleware<DeleteResourcePolicyInput, DeleteResourcePolicyOutput>(DeleteResourcePolicyInput.queryItemProvider(_:)))
-        builder.deserialize(ClientRuntime.DeserializeMiddleware<DeleteResourcePolicyOutput>(DeleteResourcePolicyOutput.httpOutput(from:), DeleteResourcePolicyOutputError.httpError(from:)))
-        builder.interceptors.add(ClientRuntime.LoggerMiddleware<DeleteResourcePolicyInput, DeleteResourcePolicyOutput>(clientLogMode: config.clientLogMode))
-        builder.retryStrategy(SmithyRetries.DefaultRetryStrategy(options: config.retryStrategyOptions))
-        builder.retryErrorInfoProvider(AWSClientRuntime.AWSRetryErrorInfoProvider.errorInfo(for:))
-        builder.applySigner(ClientRuntime.SignerMiddleware<DeleteResourcePolicyOutput>())
-        let endpointParams = EndpointParams(endpoint: config.endpoint, region: config.region, useDualStack: config.useDualStack ?? false, useFIPS: config.useFIPS ?? false)
-        builder.applyEndpoint(AWSClientRuntime.EndpointResolverMiddleware<DeleteResourcePolicyOutput, EndpointParams>(endpointResolverBlock: { [config] in try config.endpointResolver.resolve(params: $0) }, endpointParams: endpointParams))
-        builder.interceptors.add(AWSClientRuntime.UserAgentMiddleware<DeleteResourcePolicyInput, DeleteResourcePolicyOutput>(serviceID: serviceName, version: "1.0", config: config))
-        builder.selectAuthScheme(ClientRuntime.AuthSchemeMiddleware<DeleteResourcePolicyOutput>())
-        builder.interceptors.add(AWSClientRuntime.AmzSdkInvocationIdMiddleware<DeleteResourcePolicyInput, DeleteResourcePolicyOutput>())
-        builder.interceptors.add(AWSClientRuntime.AmzSdkRequestMiddleware<DeleteResourcePolicyInput, DeleteResourcePolicyOutput>(maxRetries: config.retryStrategyOptions.maxRetriesBase))
-        var metricsAttributes = Smithy.Attributes()
-        metricsAttributes.set(key: ClientRuntime.OrchestratorMetricsAttributesKeys.service, value: "Lambda")
-        metricsAttributes.set(key: ClientRuntime.OrchestratorMetricsAttributesKeys.method, value: "DeleteResourcePolicy")
         let op = builder.attributes(context)
             .telemetry(ClientRuntime.OrchestratorTelemetry(
                 telemetryProvider: config.telemetryProvider,
@@ -2656,144 +2579,6 @@ extension LambdaClient {
         return try await op.execute(input: input)
     }
 
-    /// Performs the `GetPublicAccessBlockConfig` operation on the `AWSGirApiService` service.
-    ///
-    /// The option to configure public-access settings, and to use the PutPublicAccessBlock and GetPublicAccessBlock APIs, won't be available in all Amazon Web Services Regions until September 30, 2024. Retrieve the public-access settings for a function.
-    ///
-    /// - Parameter GetPublicAccessBlockConfigInput : [no documentation found]
-    ///
-    /// - Returns: `GetPublicAccessBlockConfigOutput` : [no documentation found]
-    ///
-    /// - Throws: One of the exceptions listed below __Possible Exceptions__.
-    ///
-    /// __Possible Exceptions:__
-    /// - `InvalidParameterValueException` : One of the parameters in the request is not valid.
-    /// - `ResourceNotFoundException` : The resource specified in the request does not exist.
-    /// - `ServiceException` : The Lambda service encountered an internal error.
-    /// - `TooManyRequestsException` : The request throughput limit was exceeded. For more information, see [Lambda quotas](https://docs.aws.amazon.com/lambda/latest/dg/gettingstarted-limits.html#api-requests).
-    public func getPublicAccessBlockConfig(input: GetPublicAccessBlockConfigInput) async throws -> GetPublicAccessBlockConfigOutput {
-        let context = Smithy.ContextBuilder()
-                      .withMethod(value: .get)
-                      .withServiceName(value: serviceName)
-                      .withOperation(value: "getPublicAccessBlockConfig")
-                      .withIdempotencyTokenGenerator(value: config.idempotencyTokenGenerator)
-                      .withLogger(value: config.logger)
-                      .withPartitionID(value: config.partitionID)
-                      .withAuthSchemes(value: config.authSchemes ?? [])
-                      .withAuthSchemeResolver(value: config.authSchemeResolver)
-                      .withUnsignedPayloadTrait(value: false)
-                      .withSocketTimeout(value: config.httpClientConfiguration.socketTimeout)
-                      .withIdentityResolver(value: config.bearerTokenIdentityResolver, schemeID: "smithy.api#httpBearerAuth")
-                      .withIdentityResolver(value: config.awsCredentialIdentityResolver, schemeID: "aws.auth#sigv4")
-                      .withIdentityResolver(value: config.awsCredentialIdentityResolver, schemeID: "aws.auth#sigv4a")
-                      .withRegion(value: config.region)
-                      .withSigningName(value: "lambda")
-                      .withSigningRegion(value: config.signingRegion)
-                      .build()
-        let builder = ClientRuntime.OrchestratorBuilder<GetPublicAccessBlockConfigInput, GetPublicAccessBlockConfigOutput, SmithyHTTPAPI.HTTPRequest, SmithyHTTPAPI.HTTPResponse>()
-        config.interceptorProviders.forEach { provider in
-            builder.interceptors.add(provider.create())
-        }
-        config.httpInterceptorProviders.forEach { provider in
-            builder.interceptors.add(provider.create())
-        }
-        builder.interceptors.add(ClientRuntime.URLPathMiddleware<GetPublicAccessBlockConfigInput, GetPublicAccessBlockConfigOutput>(GetPublicAccessBlockConfigInput.urlPathProvider(_:)))
-        builder.interceptors.add(ClientRuntime.URLHostMiddleware<GetPublicAccessBlockConfigInput, GetPublicAccessBlockConfigOutput>())
-        builder.deserialize(ClientRuntime.DeserializeMiddleware<GetPublicAccessBlockConfigOutput>(GetPublicAccessBlockConfigOutput.httpOutput(from:), GetPublicAccessBlockConfigOutputError.httpError(from:)))
-        builder.interceptors.add(ClientRuntime.LoggerMiddleware<GetPublicAccessBlockConfigInput, GetPublicAccessBlockConfigOutput>(clientLogMode: config.clientLogMode))
-        builder.retryStrategy(SmithyRetries.DefaultRetryStrategy(options: config.retryStrategyOptions))
-        builder.retryErrorInfoProvider(AWSClientRuntime.AWSRetryErrorInfoProvider.errorInfo(for:))
-        builder.applySigner(ClientRuntime.SignerMiddleware<GetPublicAccessBlockConfigOutput>())
-        let endpointParams = EndpointParams(endpoint: config.endpoint, region: config.region, useDualStack: config.useDualStack ?? false, useFIPS: config.useFIPS ?? false)
-        builder.applyEndpoint(AWSClientRuntime.EndpointResolverMiddleware<GetPublicAccessBlockConfigOutput, EndpointParams>(endpointResolverBlock: { [config] in try config.endpointResolver.resolve(params: $0) }, endpointParams: endpointParams))
-        builder.interceptors.add(AWSClientRuntime.UserAgentMiddleware<GetPublicAccessBlockConfigInput, GetPublicAccessBlockConfigOutput>(serviceID: serviceName, version: "1.0", config: config))
-        builder.selectAuthScheme(ClientRuntime.AuthSchemeMiddleware<GetPublicAccessBlockConfigOutput>())
-        builder.interceptors.add(AWSClientRuntime.AmzSdkInvocationIdMiddleware<GetPublicAccessBlockConfigInput, GetPublicAccessBlockConfigOutput>())
-        builder.interceptors.add(AWSClientRuntime.AmzSdkRequestMiddleware<GetPublicAccessBlockConfigInput, GetPublicAccessBlockConfigOutput>(maxRetries: config.retryStrategyOptions.maxRetriesBase))
-        var metricsAttributes = Smithy.Attributes()
-        metricsAttributes.set(key: ClientRuntime.OrchestratorMetricsAttributesKeys.service, value: "Lambda")
-        metricsAttributes.set(key: ClientRuntime.OrchestratorMetricsAttributesKeys.method, value: "GetPublicAccessBlockConfig")
-        let op = builder.attributes(context)
-            .telemetry(ClientRuntime.OrchestratorTelemetry(
-                telemetryProvider: config.telemetryProvider,
-                metricsAttributes: metricsAttributes,
-                meterScope: serviceName,
-                tracerScope: serviceName
-            ))
-            .executeRequest(client)
-            .build()
-        return try await op.execute(input: input)
-    }
-
-    /// Performs the `GetResourcePolicy` operation on the `AWSGirApiService` service.
-    ///
-    /// The option to create and modify full JSON resource-based policies, and to use the PutResourcePolicy, GetResourcePolicy, and DeleteResourcePolicy APIs, won't be available in all Amazon Web Services Regions until September 30, 2024. Retrieves the [resource-based policy](https://docs.aws.amazon.com/lambda/latest/dg/access-control-resource-based.html) attached to a function.
-    ///
-    /// - Parameter GetResourcePolicyInput : [no documentation found]
-    ///
-    /// - Returns: `GetResourcePolicyOutput` : [no documentation found]
-    ///
-    /// - Throws: One of the exceptions listed below __Possible Exceptions__.
-    ///
-    /// __Possible Exceptions:__
-    /// - `InvalidParameterValueException` : One of the parameters in the request is not valid.
-    /// - `ResourceNotFoundException` : The resource specified in the request does not exist.
-    /// - `ServiceException` : The Lambda service encountered an internal error.
-    /// - `TooManyRequestsException` : The request throughput limit was exceeded. For more information, see [Lambda quotas](https://docs.aws.amazon.com/lambda/latest/dg/gettingstarted-limits.html#api-requests).
-    public func getResourcePolicy(input: GetResourcePolicyInput) async throws -> GetResourcePolicyOutput {
-        let context = Smithy.ContextBuilder()
-                      .withMethod(value: .get)
-                      .withServiceName(value: serviceName)
-                      .withOperation(value: "getResourcePolicy")
-                      .withIdempotencyTokenGenerator(value: config.idempotencyTokenGenerator)
-                      .withLogger(value: config.logger)
-                      .withPartitionID(value: config.partitionID)
-                      .withAuthSchemes(value: config.authSchemes ?? [])
-                      .withAuthSchemeResolver(value: config.authSchemeResolver)
-                      .withUnsignedPayloadTrait(value: false)
-                      .withSocketTimeout(value: config.httpClientConfiguration.socketTimeout)
-                      .withIdentityResolver(value: config.bearerTokenIdentityResolver, schemeID: "smithy.api#httpBearerAuth")
-                      .withIdentityResolver(value: config.awsCredentialIdentityResolver, schemeID: "aws.auth#sigv4")
-                      .withIdentityResolver(value: config.awsCredentialIdentityResolver, schemeID: "aws.auth#sigv4a")
-                      .withRegion(value: config.region)
-                      .withSigningName(value: "lambda")
-                      .withSigningRegion(value: config.signingRegion)
-                      .build()
-        let builder = ClientRuntime.OrchestratorBuilder<GetResourcePolicyInput, GetResourcePolicyOutput, SmithyHTTPAPI.HTTPRequest, SmithyHTTPAPI.HTTPResponse>()
-        config.interceptorProviders.forEach { provider in
-            builder.interceptors.add(provider.create())
-        }
-        config.httpInterceptorProviders.forEach { provider in
-            builder.interceptors.add(provider.create())
-        }
-        builder.interceptors.add(ClientRuntime.URLPathMiddleware<GetResourcePolicyInput, GetResourcePolicyOutput>(GetResourcePolicyInput.urlPathProvider(_:)))
-        builder.interceptors.add(ClientRuntime.URLHostMiddleware<GetResourcePolicyInput, GetResourcePolicyOutput>())
-        builder.deserialize(ClientRuntime.DeserializeMiddleware<GetResourcePolicyOutput>(GetResourcePolicyOutput.httpOutput(from:), GetResourcePolicyOutputError.httpError(from:)))
-        builder.interceptors.add(ClientRuntime.LoggerMiddleware<GetResourcePolicyInput, GetResourcePolicyOutput>(clientLogMode: config.clientLogMode))
-        builder.retryStrategy(SmithyRetries.DefaultRetryStrategy(options: config.retryStrategyOptions))
-        builder.retryErrorInfoProvider(AWSClientRuntime.AWSRetryErrorInfoProvider.errorInfo(for:))
-        builder.applySigner(ClientRuntime.SignerMiddleware<GetResourcePolicyOutput>())
-        let endpointParams = EndpointParams(endpoint: config.endpoint, region: config.region, useDualStack: config.useDualStack ?? false, useFIPS: config.useFIPS ?? false)
-        builder.applyEndpoint(AWSClientRuntime.EndpointResolverMiddleware<GetResourcePolicyOutput, EndpointParams>(endpointResolverBlock: { [config] in try config.endpointResolver.resolve(params: $0) }, endpointParams: endpointParams))
-        builder.interceptors.add(AWSClientRuntime.UserAgentMiddleware<GetResourcePolicyInput, GetResourcePolicyOutput>(serviceID: serviceName, version: "1.0", config: config))
-        builder.selectAuthScheme(ClientRuntime.AuthSchemeMiddleware<GetResourcePolicyOutput>())
-        builder.interceptors.add(AWSClientRuntime.AmzSdkInvocationIdMiddleware<GetResourcePolicyInput, GetResourcePolicyOutput>())
-        builder.interceptors.add(AWSClientRuntime.AmzSdkRequestMiddleware<GetResourcePolicyInput, GetResourcePolicyOutput>(maxRetries: config.retryStrategyOptions.maxRetriesBase))
-        var metricsAttributes = Smithy.Attributes()
-        metricsAttributes.set(key: ClientRuntime.OrchestratorMetricsAttributesKeys.service, value: "Lambda")
-        metricsAttributes.set(key: ClientRuntime.OrchestratorMetricsAttributesKeys.method, value: "GetResourcePolicy")
-        let op = builder.attributes(context)
-            .telemetry(ClientRuntime.OrchestratorTelemetry(
-                telemetryProvider: config.telemetryProvider,
-                metricsAttributes: metricsAttributes,
-                meterScope: serviceName,
-                tracerScope: serviceName
-            ))
-            .executeRequest(client)
-            .build()
-        return try await op.execute(input: input)
-    }
-
     /// Performs the `GetRuntimeManagementConfig` operation on the `AWSGirApiService` service.
     ///
     /// Retrieves the runtime management configuration for a function's version. If the runtime update mode is Manual, this includes the ARN of the runtime version and the runtime update mode. If the runtime update mode is Auto or Function update, this includes the runtime update mode and null is returned for the ARN. For more information, see [Runtime updates](https://docs.aws.amazon.com/lambda/latest/dg/runtimes-update.html).
@@ -3835,7 +3620,7 @@ extension LambdaClient {
 
     /// Performs the `ListTags` operation on the `AWSGirApiService` service.
     ///
-    /// Returns a function, event source mapping, or code signing configuration's [tags](https://docs.aws.amazon.com/lambda/latest/dg/tagging.html). You can also view funciton tags with [GetFunction].
+    /// Returns a function, event source mapping, or code signing configuration's [tags](https://docs.aws.amazon.com/lambda/latest/dg/tagging.html). You can also view function tags with [GetFunction].
     ///
     /// - Parameter ListTagsInput : [no documentation found]
     ///
@@ -4492,159 +4277,6 @@ extension LambdaClient {
         return try await op.execute(input: input)
     }
 
-    /// Performs the `PutPublicAccessBlockConfig` operation on the `AWSGirApiService` service.
-    ///
-    /// The option to configure public-access settings, and to use the PutPublicAccessBlock and GetPublicAccessBlock APIs, won't be available in all Amazon Web Services Regions until September 30, 2024. Configure your function's public-access settings. To control public access to a Lambda function, you can choose whether to allow the creation of [resource-based policies](https://docs.aws.amazon.com/lambda/latest/dg/access-control-resource-based.html) that allow public access to that function. You can also block public access to a function, even if it has an existing resource-based policy that allows it.
-    ///
-    /// - Parameter PutPublicAccessBlockConfigInput : [no documentation found]
-    ///
-    /// - Returns: `PutPublicAccessBlockConfigOutput` : [no documentation found]
-    ///
-    /// - Throws: One of the exceptions listed below __Possible Exceptions__.
-    ///
-    /// __Possible Exceptions:__
-    /// - `InvalidParameterValueException` : One of the parameters in the request is not valid.
-    /// - `ResourceConflictException` : The resource already exists, or another operation is in progress.
-    /// - `ResourceNotFoundException` : The resource specified in the request does not exist.
-    /// - `ServiceException` : The Lambda service encountered an internal error.
-    /// - `TooManyRequestsException` : The request throughput limit was exceeded. For more information, see [Lambda quotas](https://docs.aws.amazon.com/lambda/latest/dg/gettingstarted-limits.html#api-requests).
-    public func putPublicAccessBlockConfig(input: PutPublicAccessBlockConfigInput) async throws -> PutPublicAccessBlockConfigOutput {
-        let context = Smithy.ContextBuilder()
-                      .withMethod(value: .put)
-                      .withServiceName(value: serviceName)
-                      .withOperation(value: "putPublicAccessBlockConfig")
-                      .withIdempotencyTokenGenerator(value: config.idempotencyTokenGenerator)
-                      .withLogger(value: config.logger)
-                      .withPartitionID(value: config.partitionID)
-                      .withAuthSchemes(value: config.authSchemes ?? [])
-                      .withAuthSchemeResolver(value: config.authSchemeResolver)
-                      .withUnsignedPayloadTrait(value: false)
-                      .withSocketTimeout(value: config.httpClientConfiguration.socketTimeout)
-                      .withIdentityResolver(value: config.bearerTokenIdentityResolver, schemeID: "smithy.api#httpBearerAuth")
-                      .withIdentityResolver(value: config.awsCredentialIdentityResolver, schemeID: "aws.auth#sigv4")
-                      .withIdentityResolver(value: config.awsCredentialIdentityResolver, schemeID: "aws.auth#sigv4a")
-                      .withRegion(value: config.region)
-                      .withSigningName(value: "lambda")
-                      .withSigningRegion(value: config.signingRegion)
-                      .build()
-        let builder = ClientRuntime.OrchestratorBuilder<PutPublicAccessBlockConfigInput, PutPublicAccessBlockConfigOutput, SmithyHTTPAPI.HTTPRequest, SmithyHTTPAPI.HTTPResponse>()
-        config.interceptorProviders.forEach { provider in
-            builder.interceptors.add(provider.create())
-        }
-        config.httpInterceptorProviders.forEach { provider in
-            builder.interceptors.add(provider.create())
-        }
-        builder.interceptors.add(ClientRuntime.URLPathMiddleware<PutPublicAccessBlockConfigInput, PutPublicAccessBlockConfigOutput>(PutPublicAccessBlockConfigInput.urlPathProvider(_:)))
-        builder.interceptors.add(ClientRuntime.URLHostMiddleware<PutPublicAccessBlockConfigInput, PutPublicAccessBlockConfigOutput>())
-        builder.interceptors.add(ClientRuntime.ContentTypeMiddleware<PutPublicAccessBlockConfigInput, PutPublicAccessBlockConfigOutput>(contentType: "application/json"))
-        builder.serialize(ClientRuntime.BodyMiddleware<PutPublicAccessBlockConfigInput, PutPublicAccessBlockConfigOutput, SmithyJSON.Writer>(rootNodeInfo: "", inputWritingClosure: PutPublicAccessBlockConfigInput.write(value:to:)))
-        builder.interceptors.add(ClientRuntime.ContentLengthMiddleware<PutPublicAccessBlockConfigInput, PutPublicAccessBlockConfigOutput>())
-        builder.deserialize(ClientRuntime.DeserializeMiddleware<PutPublicAccessBlockConfigOutput>(PutPublicAccessBlockConfigOutput.httpOutput(from:), PutPublicAccessBlockConfigOutputError.httpError(from:)))
-        builder.interceptors.add(ClientRuntime.LoggerMiddleware<PutPublicAccessBlockConfigInput, PutPublicAccessBlockConfigOutput>(clientLogMode: config.clientLogMode))
-        builder.retryStrategy(SmithyRetries.DefaultRetryStrategy(options: config.retryStrategyOptions))
-        builder.retryErrorInfoProvider(AWSClientRuntime.AWSRetryErrorInfoProvider.errorInfo(for:))
-        builder.applySigner(ClientRuntime.SignerMiddleware<PutPublicAccessBlockConfigOutput>())
-        let endpointParams = EndpointParams(endpoint: config.endpoint, region: config.region, useDualStack: config.useDualStack ?? false, useFIPS: config.useFIPS ?? false)
-        builder.applyEndpoint(AWSClientRuntime.EndpointResolverMiddleware<PutPublicAccessBlockConfigOutput, EndpointParams>(endpointResolverBlock: { [config] in try config.endpointResolver.resolve(params: $0) }, endpointParams: endpointParams))
-        builder.interceptors.add(AWSClientRuntime.UserAgentMiddleware<PutPublicAccessBlockConfigInput, PutPublicAccessBlockConfigOutput>(serviceID: serviceName, version: "1.0", config: config))
-        builder.selectAuthScheme(ClientRuntime.AuthSchemeMiddleware<PutPublicAccessBlockConfigOutput>())
-        builder.interceptors.add(AWSClientRuntime.AmzSdkInvocationIdMiddleware<PutPublicAccessBlockConfigInput, PutPublicAccessBlockConfigOutput>())
-        builder.interceptors.add(AWSClientRuntime.AmzSdkRequestMiddleware<PutPublicAccessBlockConfigInput, PutPublicAccessBlockConfigOutput>(maxRetries: config.retryStrategyOptions.maxRetriesBase))
-        var metricsAttributes = Smithy.Attributes()
-        metricsAttributes.set(key: ClientRuntime.OrchestratorMetricsAttributesKeys.service, value: "Lambda")
-        metricsAttributes.set(key: ClientRuntime.OrchestratorMetricsAttributesKeys.method, value: "PutPublicAccessBlockConfig")
-        let op = builder.attributes(context)
-            .telemetry(ClientRuntime.OrchestratorTelemetry(
-                telemetryProvider: config.telemetryProvider,
-                metricsAttributes: metricsAttributes,
-                meterScope: serviceName,
-                tracerScope: serviceName
-            ))
-            .executeRequest(client)
-            .build()
-        return try await op.execute(input: input)
-    }
-
-    /// Performs the `PutResourcePolicy` operation on the `AWSGirApiService` service.
-    ///
-    /// The option to create and modify full JSON resource-based policies, and to use the PutResourcePolicy, GetResourcePolicy, and DeleteResourcePolicy APIs, won't be available in all Amazon Web Services Regions until September 30, 2024. Adds a [resource-based policy](https://docs.aws.amazon.com/lambda/latest/dg/access-control-resource-based.html) to a function. You can use resource-based policies to grant access to other [Amazon Web Services accounts](https://docs.aws.amazon.com/lambda/latest/dg/permissions-function-cross-account.html), [organizations](https://docs.aws.amazon.com/lambda/latest/dg/permissions-function-organization.html), or [services](https://docs.aws.amazon.com/lambda/latest/dg/permissions-function-services.html). Resource-based policies apply to a single function, version, or alias. Adding a resource-based policy using this API action replaces any existing policy you've previously created. This means that if you've previously added resource-based permissions to a function using the [AddPermission] action, those permissions will be overwritten by your new policy.
-    ///
-    /// - Parameter PutResourcePolicyInput : [no documentation found]
-    ///
-    /// - Returns: `PutResourcePolicyOutput` : [no documentation found]
-    ///
-    /// - Throws: One of the exceptions listed below __Possible Exceptions__.
-    ///
-    /// __Possible Exceptions:__
-    /// - `InvalidParameterValueException` : One of the parameters in the request is not valid.
-    /// - `PolicyLengthExceededException` : The permissions policy for the resource is too large. For more information, see [Lambda quotas](https://docs.aws.amazon.com/lambda/latest/dg/gettingstarted-limits.html).
-    /// - `PreconditionFailedException` : The RevisionId provided does not match the latest RevisionId for the Lambda function or alias.
-    ///
-    /// * For AddPermission and RemovePermission API operations: Call GetPolicy to retrieve the latest RevisionId for your resource.
-    ///
-    /// * For all other API operations: Call GetFunction or GetAlias to retrieve the latest RevisionId for your resource.
-    /// - `PublicPolicyException` : Lambda prevented your policy from being created because it would grant public access to your function. If you intended to create a public policy, use the [PutPublicAccessBlockConfig] API action to configure your function's public-access settings to allow public policies.
-    /// - `ResourceConflictException` : The resource already exists, or another operation is in progress.
-    /// - `ResourceNotFoundException` : The resource specified in the request does not exist.
-    /// - `ServiceException` : The Lambda service encountered an internal error.
-    /// - `TooManyRequestsException` : The request throughput limit was exceeded. For more information, see [Lambda quotas](https://docs.aws.amazon.com/lambda/latest/dg/gettingstarted-limits.html#api-requests).
-    public func putResourcePolicy(input: PutResourcePolicyInput) async throws -> PutResourcePolicyOutput {
-        let context = Smithy.ContextBuilder()
-                      .withMethod(value: .put)
-                      .withServiceName(value: serviceName)
-                      .withOperation(value: "putResourcePolicy")
-                      .withIdempotencyTokenGenerator(value: config.idempotencyTokenGenerator)
-                      .withLogger(value: config.logger)
-                      .withPartitionID(value: config.partitionID)
-                      .withAuthSchemes(value: config.authSchemes ?? [])
-                      .withAuthSchemeResolver(value: config.authSchemeResolver)
-                      .withUnsignedPayloadTrait(value: false)
-                      .withSocketTimeout(value: config.httpClientConfiguration.socketTimeout)
-                      .withIdentityResolver(value: config.bearerTokenIdentityResolver, schemeID: "smithy.api#httpBearerAuth")
-                      .withIdentityResolver(value: config.awsCredentialIdentityResolver, schemeID: "aws.auth#sigv4")
-                      .withIdentityResolver(value: config.awsCredentialIdentityResolver, schemeID: "aws.auth#sigv4a")
-                      .withRegion(value: config.region)
-                      .withSigningName(value: "lambda")
-                      .withSigningRegion(value: config.signingRegion)
-                      .build()
-        let builder = ClientRuntime.OrchestratorBuilder<PutResourcePolicyInput, PutResourcePolicyOutput, SmithyHTTPAPI.HTTPRequest, SmithyHTTPAPI.HTTPResponse>()
-        config.interceptorProviders.forEach { provider in
-            builder.interceptors.add(provider.create())
-        }
-        config.httpInterceptorProviders.forEach { provider in
-            builder.interceptors.add(provider.create())
-        }
-        builder.interceptors.add(ClientRuntime.URLPathMiddleware<PutResourcePolicyInput, PutResourcePolicyOutput>(PutResourcePolicyInput.urlPathProvider(_:)))
-        builder.interceptors.add(ClientRuntime.URLHostMiddleware<PutResourcePolicyInput, PutResourcePolicyOutput>())
-        builder.interceptors.add(ClientRuntime.ContentTypeMiddleware<PutResourcePolicyInput, PutResourcePolicyOutput>(contentType: "application/json"))
-        builder.serialize(ClientRuntime.BodyMiddleware<PutResourcePolicyInput, PutResourcePolicyOutput, SmithyJSON.Writer>(rootNodeInfo: "", inputWritingClosure: PutResourcePolicyInput.write(value:to:)))
-        builder.interceptors.add(ClientRuntime.ContentLengthMiddleware<PutResourcePolicyInput, PutResourcePolicyOutput>())
-        builder.deserialize(ClientRuntime.DeserializeMiddleware<PutResourcePolicyOutput>(PutResourcePolicyOutput.httpOutput(from:), PutResourcePolicyOutputError.httpError(from:)))
-        builder.interceptors.add(ClientRuntime.LoggerMiddleware<PutResourcePolicyInput, PutResourcePolicyOutput>(clientLogMode: config.clientLogMode))
-        builder.retryStrategy(SmithyRetries.DefaultRetryStrategy(options: config.retryStrategyOptions))
-        builder.retryErrorInfoProvider(AWSClientRuntime.AWSRetryErrorInfoProvider.errorInfo(for:))
-        builder.applySigner(ClientRuntime.SignerMiddleware<PutResourcePolicyOutput>())
-        let endpointParams = EndpointParams(endpoint: config.endpoint, region: config.region, useDualStack: config.useDualStack ?? false, useFIPS: config.useFIPS ?? false)
-        builder.applyEndpoint(AWSClientRuntime.EndpointResolverMiddleware<PutResourcePolicyOutput, EndpointParams>(endpointResolverBlock: { [config] in try config.endpointResolver.resolve(params: $0) }, endpointParams: endpointParams))
-        builder.interceptors.add(AWSClientRuntime.UserAgentMiddleware<PutResourcePolicyInput, PutResourcePolicyOutput>(serviceID: serviceName, version: "1.0", config: config))
-        builder.selectAuthScheme(ClientRuntime.AuthSchemeMiddleware<PutResourcePolicyOutput>())
-        builder.interceptors.add(AWSClientRuntime.AmzSdkInvocationIdMiddleware<PutResourcePolicyInput, PutResourcePolicyOutput>())
-        builder.interceptors.add(AWSClientRuntime.AmzSdkRequestMiddleware<PutResourcePolicyInput, PutResourcePolicyOutput>(maxRetries: config.retryStrategyOptions.maxRetriesBase))
-        var metricsAttributes = Smithy.Attributes()
-        metricsAttributes.set(key: ClientRuntime.OrchestratorMetricsAttributesKeys.service, value: "Lambda")
-        metricsAttributes.set(key: ClientRuntime.OrchestratorMetricsAttributesKeys.method, value: "PutResourcePolicy")
-        let op = builder.attributes(context)
-            .telemetry(ClientRuntime.OrchestratorTelemetry(
-                telemetryProvider: config.telemetryProvider,
-                metricsAttributes: metricsAttributes,
-                meterScope: serviceName,
-                tracerScope: serviceName
-            ))
-            .executeRequest(client)
-            .build()
-        return try await op.execute(input: input)
-    }
-
     /// Performs the `PutRuntimeManagementConfig` operation on the `AWSGirApiService` service.
     ///
     /// Sets the runtime management configuration for a function's version. For more information, see [Runtime updates](https://docs.aws.amazon.com/lambda/latest/dg/runtimes-update.html).
@@ -4796,7 +4428,7 @@ extension LambdaClient {
 
     /// Performs the `RemovePermission` operation on the `AWSGirApiService` service.
     ///
-    /// Revokes function-use permission from an Amazon Web Servicesservice or another Amazon Web Services account. You can get the ID of the statement from the output of [GetPolicy].
+    /// Revokes function-use permission from an Amazon Web Services service or another Amazon Web Services account. You can get the ID of the statement from the output of [GetPolicy].
     ///
     /// - Parameter RemovePermissionInput : [no documentation found]
     ///
@@ -4811,7 +4443,6 @@ extension LambdaClient {
     /// * For AddPermission and RemovePermission API operations: Call GetPolicy to retrieve the latest RevisionId for your resource.
     ///
     /// * For all other API operations: Call GetFunction or GetAlias to retrieve the latest RevisionId for your resource.
-    /// - `PublicPolicyException` : Lambda prevented your policy from being created because it would grant public access to your function. If you intended to create a public policy, use the [PutPublicAccessBlockConfig] API action to configure your function's public-access settings to allow public policies.
     /// - `ResourceNotFoundException` : The resource specified in the request does not exist.
     /// - `ServiceException` : The Lambda service encountered an internal error.
     /// - `TooManyRequestsException` : The request throughput limit was exceeded. For more information, see [Lambda quotas](https://docs.aws.amazon.com/lambda/latest/dg/gettingstarted-limits.html#api-requests).
@@ -5365,7 +4996,7 @@ extension LambdaClient {
 
     /// Performs the `UpdateFunctionConfiguration` operation on the `AWSGirApiService` service.
     ///
-    /// Modify the version-specific settings of a Lambda function. When you update a function, Lambda provisions an instance of the function and its supporting resources. If your function connects to a VPC, this process can take a minute. During this time, you can't modify the function, but you can still invoke it. The LastUpdateStatus, LastUpdateStatusReason, and LastUpdateStatusReasonCode fields in the response from [GetFunctionConfiguration] indicate when the update is complete and the function is processing events with the new configuration. For more information, see [Lambda function states](https://docs.aws.amazon.com/lambda/latest/dg/functions-states.html). These settings can vary between versions of a function and are locked when you publish a version. You can't modify the configuration of a published version, only the unpublished version. To configure function concurrency, use [PutFunctionConcurrency]. To grant invoke permissions to an Amazon Web Services account or Amazon Web Servicesservice, use [AddPermission].
+    /// Modify the version-specific settings of a Lambda function. When you update a function, Lambda provisions an instance of the function and its supporting resources. If your function connects to a VPC, this process can take a minute. During this time, you can't modify the function, but you can still invoke it. The LastUpdateStatus, LastUpdateStatusReason, and LastUpdateStatusReasonCode fields in the response from [GetFunctionConfiguration] indicate when the update is complete and the function is processing events with the new configuration. For more information, see [Lambda function states](https://docs.aws.amazon.com/lambda/latest/dg/functions-states.html). These settings can vary between versions of a function and are locked when you publish a version. You can't modify the configuration of a published version, only the unpublished version. To configure function concurrency, use [PutFunctionConcurrency]. To grant invoke permissions to an Amazon Web Services account or Amazon Web Services service, use [AddPermission].
     ///
     /// - Parameter UpdateFunctionConfigurationInput : [no documentation found]
     ///

@@ -27,7 +27,7 @@ import struct Smithy.URIQueryItem
 
 extension ArtifactClientTypes {
 
-    public enum AcceptanceType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AcceptanceType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         /// Require explicit click-through acceptance of the Term associated with this Report.
         case explicit
         /// Do not require explicit click-through acceptance of the Term associated with this Report.
@@ -83,7 +83,7 @@ public struct AccessDeniedException: ClientRuntime.ModeledError, AWSClientRuntim
 
 extension ArtifactClientTypes {
 
-    public enum NotificationSubscriptionStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum NotificationSubscriptionStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         /// The account is not subscribed for notification.
         case notSubscribed
         /// The account is subscribed for notification.
@@ -113,8 +113,9 @@ extension ArtifactClientTypes {
 }
 
 extension ArtifactClientTypes {
+
     /// Account settings for the customer.
-    public struct AccountSettings {
+    public struct AccountSettings: Swift.Sendable {
         /// Notification subscription status of the customer.
         public var notificationSubscriptionStatus: ArtifactClientTypes.NotificationSubscriptionStatus?
 
@@ -125,7 +126,6 @@ extension ArtifactClientTypes {
             self.notificationSubscriptionStatus = notificationSubscriptionStatus
         }
     }
-
 }
 
 /// Request to create/modify content would result in a conflict.
@@ -310,8 +310,9 @@ public struct ThrottlingException: ClientRuntime.ModeledError, AWSClientRuntime.
 }
 
 extension ArtifactClientTypes {
+
     /// Validation exception message and name.
-    public struct ValidationExceptionField {
+    public struct ValidationExceptionField: Swift.Sendable {
         /// Message describing why the field failed validation.
         /// This member is required.
         public var message: Swift.String?
@@ -328,12 +329,11 @@ extension ArtifactClientTypes {
             self.name = name
         }
     }
-
 }
 
 extension ArtifactClientTypes {
 
-    public enum ValidationExceptionReason: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ValidationExceptionReason: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case cannotParse
         case fieldValidationFailed
         case invalidToken
@@ -403,12 +403,12 @@ public struct ValidationException: ClientRuntime.ModeledError, AWSClientRuntime.
     }
 }
 
-public struct GetAccountSettingsInput {
+public struct GetAccountSettingsInput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct GetAccountSettingsOutput {
+public struct GetAccountSettingsOutput: Swift.Sendable {
     /// Account settings for the customer.
     public var accountSettings: ArtifactClientTypes.AccountSettings?
 
@@ -420,7 +420,7 @@ public struct GetAccountSettingsOutput {
     }
 }
 
-public struct PutAccountSettingsInput {
+public struct PutAccountSettingsInput: Swift.Sendable {
     /// Desired notification subscription status.
     public var notificationSubscriptionStatus: ArtifactClientTypes.NotificationSubscriptionStatus?
 
@@ -432,7 +432,7 @@ public struct PutAccountSettingsInput {
     }
 }
 
-public struct PutAccountSettingsOutput {
+public struct PutAccountSettingsOutput: Swift.Sendable {
     /// Account settings for the customer.
     public var accountSettings: ArtifactClientTypes.AccountSettings?
 
@@ -444,7 +444,7 @@ public struct PutAccountSettingsOutput {
     }
 }
 
-public struct GetReportInput {
+public struct GetReportInput: Swift.Sendable {
     /// Unique resource ID for the report resource.
     /// This member is required.
     public var reportId: Swift.String?
@@ -466,7 +466,7 @@ public struct GetReportInput {
     }
 }
 
-public struct GetReportOutput {
+public struct GetReportOutput: Swift.Sendable {
     /// Presigned S3 url to access the report content.
     public var documentPresignedUrl: Swift.String?
 
@@ -478,7 +478,7 @@ public struct GetReportOutput {
     }
 }
 
-public struct GetReportMetadataInput {
+public struct GetReportMetadataInput: Swift.Sendable {
     /// Unique resource ID for the report resource.
     /// This member is required.
     public var reportId: Swift.String?
@@ -497,7 +497,7 @@ public struct GetReportMetadataInput {
 
 extension ArtifactClientTypes {
 
-    public enum PublishedState: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum PublishedState: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         /// The resource is published for consumption.
         case published
         /// The resource is not published for consumption.
@@ -528,7 +528,7 @@ extension ArtifactClientTypes {
 
 extension ArtifactClientTypes {
 
-    public enum UploadState: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum UploadState: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case complete
         case failed
         case fault
@@ -562,8 +562,9 @@ extension ArtifactClientTypes {
 }
 
 extension ArtifactClientTypes {
+
     /// Full detail for report resource metadata.
-    public struct ReportDetail {
+    public struct ReportDetail: Swift.Sendable {
         /// Acceptance type for report.
         public var acceptanceType: ArtifactClientTypes.AcceptanceType?
         /// ARN for the report resource.
@@ -650,10 +651,9 @@ extension ArtifactClientTypes {
             self.version = version
         }
     }
-
 }
 
-public struct GetReportMetadataOutput {
+public struct GetReportMetadataOutput: Swift.Sendable {
     /// Report resource detail.
     public var reportDetails: ArtifactClientTypes.ReportDetail?
 
@@ -665,7 +665,7 @@ public struct GetReportMetadataOutput {
     }
 }
 
-public struct GetTermForReportInput {
+public struct GetTermForReportInput: Swift.Sendable {
     /// Unique resource ID for the report resource.
     /// This member is required.
     public var reportId: Swift.String?
@@ -682,7 +682,7 @@ public struct GetTermForReportInput {
     }
 }
 
-public struct GetTermForReportOutput {
+public struct GetTermForReportOutput: Swift.Sendable {
     /// Presigned S3 url to access the term content.
     public var documentPresignedUrl: Swift.String?
     /// Unique token representing this request event.
@@ -698,7 +698,7 @@ public struct GetTermForReportOutput {
     }
 }
 
-public struct ListReportsInput {
+public struct ListReportsInput: Swift.Sendable {
     /// Maximum number of resources to return in the paginated response.
     public var maxResults: Swift.Int?
     /// Pagination token to request the next page of resources.
@@ -715,8 +715,9 @@ public struct ListReportsInput {
 }
 
 extension ArtifactClientTypes {
+
     /// Summary for report resource.
-    public struct ReportSummary {
+    public struct ReportSummary: Swift.Sendable {
         /// Acceptance type for report.
         public var acceptanceType: ArtifactClientTypes.AcceptanceType?
         /// ARN for the report resource.
@@ -783,10 +784,9 @@ extension ArtifactClientTypes {
             self.version = version
         }
     }
-
 }
 
-public struct ListReportsOutput {
+public struct ListReportsOutput: Swift.Sendable {
     /// Pagination token to request the next page of resources.
     public var nextToken: Swift.String?
     /// List of report resources.

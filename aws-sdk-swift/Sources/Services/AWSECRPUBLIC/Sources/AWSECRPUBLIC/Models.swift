@@ -26,8 +26,9 @@ import protocol ClientRuntime.ModeledError
 @_spi(UnknownAWSHTTPServiceError) import struct AWSClientRuntime.UnknownAWSHTTPServiceError
 
 extension ECRPUBLICClientTypes {
+
     /// An authorization token data object that corresponds to a public registry.
-    public struct AuthorizationData {
+    public struct AuthorizationData: Swift.Sendable {
         /// A base64-encoded string that contains authorization data for a public Amazon ECR registry. When the string is decoded, it's presented in the format user:password for public registry authentication using docker login.
         public var authorizationToken: Swift.String?
         /// The Unix time in seconds and milliseconds when the authorization token expires. Authorization tokens are valid for 12 hours.
@@ -42,7 +43,6 @@ extension ECRPUBLICClientTypes {
             self.expiresAt = expiresAt
         }
     }
-
 }
 
 /// The specified parameter is invalid. Review the available parameters for the API request.
@@ -165,7 +165,7 @@ public struct UnsupportedCommandException: ClientRuntime.ModeledError, AWSClient
     }
 }
 
-public struct BatchCheckLayerAvailabilityInput {
+public struct BatchCheckLayerAvailabilityInput: Swift.Sendable {
     /// The digests of the image layers to check.
     /// This member is required.
     public var layerDigests: [Swift.String]?
@@ -189,7 +189,7 @@ public struct BatchCheckLayerAvailabilityInput {
 
 extension ECRPUBLICClientTypes {
 
-    public enum LayerFailureCode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum LayerFailureCode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case invalidlayerdigest
         case missinglayerdigest
         case sdkUnknown(Swift.String)
@@ -217,8 +217,9 @@ extension ECRPUBLICClientTypes {
 }
 
 extension ECRPUBLICClientTypes {
+
     /// An object that represents an Amazon ECR image layer failure.
-    public struct LayerFailure {
+    public struct LayerFailure: Swift.Sendable {
         /// The failure code that's associated with the failure.
         public var failureCode: ECRPUBLICClientTypes.LayerFailureCode?
         /// The reason for the failure.
@@ -237,12 +238,11 @@ extension ECRPUBLICClientTypes {
             self.layerDigest = layerDigest
         }
     }
-
 }
 
 extension ECRPUBLICClientTypes {
 
-    public enum LayerAvailability: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum LayerAvailability: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case available
         case unavailable
         case sdkUnknown(Swift.String)
@@ -270,8 +270,9 @@ extension ECRPUBLICClientTypes {
 }
 
 extension ECRPUBLICClientTypes {
+
     /// An object that represents an Amazon ECR image layer.
-    public struct Layer {
+    public struct Layer: Swift.Sendable {
         /// The availability status of the image layer.
         public var layerAvailability: ECRPUBLICClientTypes.LayerAvailability?
         /// The sha256 digest of the image layer.
@@ -294,10 +295,9 @@ extension ECRPUBLICClientTypes {
             self.mediaType = mediaType
         }
     }
-
 }
 
-public struct BatchCheckLayerAvailabilityOutput {
+public struct BatchCheckLayerAvailabilityOutput: Swift.Sendable {
     /// Any failures associated with the call.
     public var failures: [ECRPUBLICClientTypes.LayerFailure]?
     /// A list of image layer objects that correspond to the image layer references in the request.
@@ -314,8 +314,9 @@ public struct BatchCheckLayerAvailabilityOutput {
 }
 
 extension ECRPUBLICClientTypes {
+
     /// An object with identifying information for an Amazon ECR image.
-    public struct ImageIdentifier {
+    public struct ImageIdentifier: Swift.Sendable {
         /// The sha256 digest of the image manifest.
         public var imageDigest: Swift.String?
         /// The tag that's used for the image.
@@ -330,10 +331,9 @@ extension ECRPUBLICClientTypes {
             self.imageTag = imageTag
         }
     }
-
 }
 
-public struct BatchDeleteImageInput {
+public struct BatchDeleteImageInput: Swift.Sendable {
     /// A list of image ID references that correspond to images to delete. The format of the imageIds reference is imageTag=tag or imageDigest=digest.
     /// This member is required.
     public var imageIds: [ECRPUBLICClientTypes.ImageIdentifier]?
@@ -357,7 +357,7 @@ public struct BatchDeleteImageInput {
 
 extension ECRPUBLICClientTypes {
 
-    public enum ImageFailureCode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ImageFailureCode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case imagenotfound
         case imagereferencedbymanifestlist
         case imagetagdoesnotmatchdigest
@@ -400,8 +400,9 @@ extension ECRPUBLICClientTypes {
 }
 
 extension ECRPUBLICClientTypes {
+
     /// An object that represents an Amazon ECR image failure.
-    public struct ImageFailure {
+    public struct ImageFailure: Swift.Sendable {
         /// The code that's associated with the failure.
         public var failureCode: ECRPUBLICClientTypes.ImageFailureCode?
         /// The reason for the failure.
@@ -420,10 +421,9 @@ extension ECRPUBLICClientTypes {
             self.imageId = imageId
         }
     }
-
 }
 
-public struct BatchDeleteImageOutput {
+public struct BatchDeleteImageOutput: Swift.Sendable {
     /// Any failures associated with the call.
     public var failures: [ECRPUBLICClientTypes.ImageFailure]?
     /// The image IDs of the deleted images.
@@ -559,7 +559,7 @@ public struct UploadNotFoundException: ClientRuntime.ModeledError, AWSClientRunt
     }
 }
 
-public struct CompleteLayerUploadInput {
+public struct CompleteLayerUploadInput: Swift.Sendable {
     /// The sha256 digest of the image layer.
     /// This member is required.
     public var layerDigests: [Swift.String]?
@@ -586,7 +586,7 @@ public struct CompleteLayerUploadInput {
     }
 }
 
-public struct CompleteLayerUploadOutput {
+public struct CompleteLayerUploadOutput: Swift.Sendable {
     /// The sha256 digest of the image layer.
     public var layerDigest: Swift.String?
     /// The public registry ID that's associated with the request.
@@ -707,8 +707,9 @@ public struct TooManyTagsException: ClientRuntime.ModeledError, AWSClientRuntime
 }
 
 extension ECRPUBLICClientTypes {
+
     /// An object that contains the catalog data for a repository. This data is publicly visible in the Amazon ECR Public Gallery.
-    public struct RepositoryCatalogDataInput {
+    public struct RepositoryCatalogDataInput: Swift.Sendable {
         /// A detailed description of the contents of the repository. It's publicly visible in the Amazon ECR Public Gallery. The text must be in markdown format.
         public var aboutText: Swift.String?
         /// The system architecture that the images in the repository are compatible with. On the Amazon ECR Public Gallery, the following supported architectures appear as badges on the repository and are used as search filters. If an unsupported tag is added to your repository catalog data, it's associated with the repository and can be retrieved using the API but isn't discoverable in the Amazon ECR Public Gallery.
@@ -751,12 +752,12 @@ extension ECRPUBLICClientTypes {
             self.usageText = usageText
         }
     }
-
 }
 
 extension ECRPUBLICClientTypes {
+
     /// The metadata that you apply to a resource to help you categorize and organize them. Each tag consists of a key and an optional value. You define both. Tag keys can have a maximum character length of 128 characters, and tag values can have a maximum length of 256 characters.
-    public struct Tag {
+    public struct Tag: Swift.Sendable {
         /// One part of a key-value pair that make up a tag. A key is a general label that acts like a category for more specific tag values.
         public var key: Swift.String?
         /// The optional part of a key-value pair that make up a tag. A value acts as a descriptor within a tag category (key).
@@ -771,10 +772,9 @@ extension ECRPUBLICClientTypes {
             self.value = value
         }
     }
-
 }
 
-public struct CreateRepositoryInput {
+public struct CreateRepositoryInput: Swift.Sendable {
     /// The details about the repository that are publicly visible in the Amazon ECR Public Gallery.
     public var catalogData: ECRPUBLICClientTypes.RepositoryCatalogDataInput?
     /// The name to use for the repository. This appears publicly in the Amazon ECR Public Gallery. The repository name can be specified on its own (for example nginx-web-app) or prepended with a namespace to group the repository into a category (for example project-a/nginx-web-app).
@@ -796,8 +796,9 @@ public struct CreateRepositoryInput {
 }
 
 extension ECRPUBLICClientTypes {
+
     /// The catalog data for a repository. This data is publicly visible in the Amazon ECR Public Gallery.
-    public struct RepositoryCatalogData {
+    public struct RepositoryCatalogData: Swift.Sendable {
         /// The longform description of the contents of the repository. This text appears in the repository details on the Amazon ECR Public Gallery.
         public var aboutText: Swift.String?
         /// The architecture tags that are associated with the repository. Only supported operating system tags appear publicly in the Amazon ECR Public Gallery. For more information, see [RepositoryCatalogDataInput].
@@ -832,12 +833,12 @@ extension ECRPUBLICClientTypes {
             self.usageText = usageText
         }
     }
-
 }
 
 extension ECRPUBLICClientTypes {
+
     /// An object representing a repository.
-    public struct Repository {
+    public struct Repository: Swift.Sendable {
         /// The date and time, in JavaScript date format, when the repository was created.
         public var createdAt: Foundation.Date?
         /// The Amazon Web Services account ID that's associated with the public registry that contains the repository.
@@ -864,10 +865,9 @@ extension ECRPUBLICClientTypes {
             self.repositoryUri = repositoryUri
         }
     }
-
 }
 
-public struct CreateRepositoryOutput {
+public struct CreateRepositoryOutput: Swift.Sendable {
     /// The catalog data for a repository. This data is publicly visible in the Amazon ECR Public Gallery.
     public var catalogData: ECRPUBLICClientTypes.RepositoryCatalogData?
     /// The repository that was created.
@@ -907,7 +907,7 @@ public struct RepositoryNotEmptyException: ClientRuntime.ModeledError, AWSClient
     }
 }
 
-public struct DeleteRepositoryInput {
+public struct DeleteRepositoryInput: Swift.Sendable {
     /// The force option can be used to delete a repository that contains images. If the force option is not used, the repository must be empty prior to deletion.
     public var force: Swift.Bool?
     /// The Amazon Web Services account ID that's associated with the public registry that contains the repository to delete. If you do not specify a registry, the default public registry is assumed.
@@ -928,7 +928,7 @@ public struct DeleteRepositoryInput {
     }
 }
 
-public struct DeleteRepositoryOutput {
+public struct DeleteRepositoryOutput: Swift.Sendable {
     /// The repository that was deleted.
     public var repository: ECRPUBLICClientTypes.Repository?
 
@@ -964,7 +964,7 @@ public struct RepositoryPolicyNotFoundException: ClientRuntime.ModeledError, AWS
     }
 }
 
-public struct DeleteRepositoryPolicyInput {
+public struct DeleteRepositoryPolicyInput: Swift.Sendable {
     /// The Amazon Web Services account ID that's associated with the public registry that contains the repository policy to delete. If you do not specify a registry, the default public registry is assumed.
     public var registryId: Swift.String?
     /// The name of the repository that's associated with the repository policy to delete.
@@ -981,7 +981,7 @@ public struct DeleteRepositoryPolicyInput {
     }
 }
 
-public struct DeleteRepositoryPolicyOutput {
+public struct DeleteRepositoryPolicyOutput: Swift.Sendable {
     /// The JSON repository policy that was deleted from the repository.
     public var policyText: Swift.String?
     /// The registry ID that's associated with the request.
@@ -1025,7 +1025,7 @@ public struct ImageNotFoundException: ClientRuntime.ModeledError, AWSClientRunti
     }
 }
 
-public struct DescribeImagesInput {
+public struct DescribeImagesInput: Swift.Sendable {
     /// The list of image IDs for the requested repository.
     public var imageIds: [ECRPUBLICClientTypes.ImageIdentifier]?
     /// The maximum number of repository results that's returned by DescribeImages in paginated output. When this parameter is used, DescribeImages only returns maxResults results in a single page along with a nextToken response element. You can see the remaining results of the initial request by sending another DescribeImages request with the returned nextToken value. This value can be between 1 and 1000. If this parameter isn't used, then DescribeImages returns up to 100 results and a nextToken value, if applicable. If you specify images with imageIds, you can't use this option.
@@ -1055,8 +1055,9 @@ public struct DescribeImagesInput {
 }
 
 extension ECRPUBLICClientTypes {
+
     /// An object that describes an image that's returned by a [DescribeImages] operation.
-    public struct ImageDetail {
+    public struct ImageDetail: Swift.Sendable {
         /// The artifact media type of the image.
         public var artifactMediaType: Swift.String?
         /// The sha256 digest of the image manifest.
@@ -1095,10 +1096,9 @@ extension ECRPUBLICClientTypes {
             self.repositoryName = repositoryName
         }
     }
-
 }
 
-public struct DescribeImagesOutput {
+public struct DescribeImagesOutput: Swift.Sendable {
     /// A list of [ImageDetail] objects that contain data about the image.
     public var imageDetails: [ECRPUBLICClientTypes.ImageDetail]?
     /// The nextToken value to include in a future DescribeImages request. When the results of a DescribeImages request exceed maxResults, you can use this value to retrieve the next page of results. If there are no more results to return, this value is null.
@@ -1114,7 +1114,7 @@ public struct DescribeImagesOutput {
     }
 }
 
-public struct DescribeImageTagsInput {
+public struct DescribeImageTagsInput: Swift.Sendable {
     /// The maximum number of repository results that's returned by DescribeImageTags in paginated output. When this parameter is used, DescribeImageTags only returns maxResults results in a single page along with a nextToken response element. You can see the remaining results of the initial request by sending another DescribeImageTags request with the returned nextToken value. This value can be between 1 and 1000. If this parameter isn't used, then DescribeImageTags returns up to 100 results and a nextToken value, if applicable. If you specify images with imageIds, you can't use this option.
     public var maxResults: Swift.Int?
     /// The nextToken value that's returned from a previous paginated DescribeImageTags request where maxResults was used and the results exceeded the value of that parameter. Pagination continues from the end of the previous results that returned the nextToken value. If there are no more results to return, this value is null. If you specify images with imageIds, you can't use this option.
@@ -1140,8 +1140,9 @@ public struct DescribeImageTagsInput {
 }
 
 extension ECRPUBLICClientTypes {
+
     /// An object that describes the image tag details that are returned by a [DescribeImageTags] action.
-    public struct ReferencedImageDetail {
+    public struct ReferencedImageDetail: Swift.Sendable {
         /// The artifact media type of the image.
         public var artifactMediaType: Swift.String?
         /// The sha256 digest of the image manifest.
@@ -1168,12 +1169,12 @@ extension ECRPUBLICClientTypes {
             self.imageSizeInBytes = imageSizeInBytes
         }
     }
-
 }
 
 extension ECRPUBLICClientTypes {
+
     /// An object that represents the image tag details for an image.
-    public struct ImageTagDetail {
+    public struct ImageTagDetail: Swift.Sendable {
         /// The time stamp that indicates when the image tag was created.
         public var createdAt: Foundation.Date?
         /// An object that describes the details of an image.
@@ -1192,10 +1193,9 @@ extension ECRPUBLICClientTypes {
             self.imageTag = imageTag
         }
     }
-
 }
 
-public struct DescribeImageTagsOutput {
+public struct DescribeImageTagsOutput: Swift.Sendable {
     /// The image tag details for the images in the requested repository.
     public var imageTagDetails: [ECRPUBLICClientTypes.ImageTagDetail]?
     /// The nextToken value to include in a future DescribeImageTags request. When the results of a DescribeImageTags request exceed maxResults, you can use this value to retrieve the next page of results. If there are no more results to return, this value is null.
@@ -1211,7 +1211,7 @@ public struct DescribeImageTagsOutput {
     }
 }
 
-public struct DescribeRegistriesInput {
+public struct DescribeRegistriesInput: Swift.Sendable {
     /// The maximum number of repository results that's returned by DescribeRegistries in paginated output. When this parameter is used, DescribeRegistries only returns maxResults results in a single page along with a nextToken response element. The remaining results of the initial request can be seen by sending another DescribeRegistries request with the returned nextToken value. This value can be between 1 and 1000. If this parameter isn't used, then DescribeRegistries returns up to 100 results and a nextToken value, if applicable.
     public var maxResults: Swift.Int?
     /// The nextToken value that's returned from a previous paginated DescribeRegistries request where maxResults was used and the results exceeded the value of that parameter. Pagination continues from the end of the previous results that returned the nextToken value. If there are no more results to return, this value is null. This token should be treated as an opaque identifier that is only used to retrieve the next items in a list and not for other programmatic purposes.
@@ -1229,7 +1229,7 @@ public struct DescribeRegistriesInput {
 
 extension ECRPUBLICClientTypes {
 
-    public enum RegistryAliasStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum RegistryAliasStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case active
         case pending
         case rejected
@@ -1260,8 +1260,9 @@ extension ECRPUBLICClientTypes {
 }
 
 extension ECRPUBLICClientTypes {
+
     /// An object representing the aliases for a public registry. A public registry is given an alias when it's created. However, a custom alias can be set using the Amazon ECR console. For more information, see [Registries](https://docs.aws.amazon.com/AmazonECR/latest/userguide/Registries.html) in the Amazon Elastic Container Registry User Guide.
-    public struct RegistryAlias {
+    public struct RegistryAlias: Swift.Sendable {
         /// Indicates whether the registry alias is the default alias for the registry. When the first public repository is created, your public registry is assigned a default registry alias.
         /// This member is required.
         public var defaultRegistryAlias: Swift.Bool
@@ -1288,12 +1289,12 @@ extension ECRPUBLICClientTypes {
             self.status = status
         }
     }
-
 }
 
 extension ECRPUBLICClientTypes {
+
     /// The details of a public registry.
-    public struct Registry {
+    public struct Registry: Swift.Sendable {
         /// An array of objects that represents the aliases for a public registry.
         /// This member is required.
         public var aliases: [ECRPUBLICClientTypes.RegistryAlias]?
@@ -1325,10 +1326,9 @@ extension ECRPUBLICClientTypes {
             self.verified = verified
         }
     }
-
 }
 
-public struct DescribeRegistriesOutput {
+public struct DescribeRegistriesOutput: Swift.Sendable {
     /// The nextToken value to include in a future DescribeRepositories request. If the results of a DescribeRepositories request exceed maxResults, you can use this value to retrieve the next page of results. If there are no more results, this value is null.
     public var nextToken: Swift.String?
     /// An object that contains the details for a public registry.
@@ -1345,7 +1345,7 @@ public struct DescribeRegistriesOutput {
     }
 }
 
-public struct DescribeRepositoriesInput {
+public struct DescribeRepositoriesInput: Swift.Sendable {
     /// The maximum number of repository results that's returned by DescribeRepositories in paginated output. When this parameter is used, DescribeRepositories only returns maxResults results in a single page along with a nextToken response element. You can see the remaining results of the initial request by sending another DescribeRepositories request with the returned nextToken value. This value can be between 1 and 1000. If this parameter isn't used, then DescribeRepositories returns up to 100 results and a nextToken value, if applicable. If you specify repositories with repositoryNames, you can't use this option.
     public var maxResults: Swift.Int?
     /// The nextToken value that's returned from a previous paginated DescribeRepositories request where maxResults was used and the results exceeded the value of that parameter. Pagination continues from the end of the previous results that returned the nextToken value. If there are no more results to return, this value is null. If you specify repositories with repositoryNames, you can't use this option. This token should be treated as an opaque identifier that is only used to retrieve the next items in a list and not for other programmatic purposes.
@@ -1369,7 +1369,7 @@ public struct DescribeRepositoriesInput {
     }
 }
 
-public struct DescribeRepositoriesOutput {
+public struct DescribeRepositoriesOutput: Swift.Sendable {
     /// The nextToken value to include in a future DescribeRepositories request. When the results of a DescribeRepositories request exceed maxResults, this value can be used to retrieve the next page of results. If there are no more results to return, this value is null.
     public var nextToken: Swift.String?
     /// A list of repository objects corresponding to valid repositories.
@@ -1385,12 +1385,12 @@ public struct DescribeRepositoriesOutput {
     }
 }
 
-public struct GetAuthorizationTokenInput {
+public struct GetAuthorizationTokenInput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct GetAuthorizationTokenOutput {
+public struct GetAuthorizationTokenOutput: Swift.Sendable {
     /// An authorization token data object that corresponds to a public registry.
     public var authorizationData: ECRPUBLICClientTypes.AuthorizationData?
 
@@ -1402,14 +1402,15 @@ public struct GetAuthorizationTokenOutput {
     }
 }
 
-public struct GetRegistryCatalogDataInput {
+public struct GetRegistryCatalogDataInput: Swift.Sendable {
 
     public init() { }
 }
 
 extension ECRPUBLICClientTypes {
+
     /// The metadata for a public registry.
-    public struct RegistryCatalogData {
+    public struct RegistryCatalogData: Swift.Sendable {
         /// The display name for a public registry. This appears on the Amazon ECR Public Gallery. Only accounts that have the verified account badge can have a registry display name.
         public var displayName: Swift.String?
 
@@ -1420,10 +1421,9 @@ extension ECRPUBLICClientTypes {
             self.displayName = displayName
         }
     }
-
 }
 
-public struct GetRegistryCatalogDataOutput {
+public struct GetRegistryCatalogDataOutput: Swift.Sendable {
     /// The catalog metadata for the public registry.
     /// This member is required.
     public var registryCatalogData: ECRPUBLICClientTypes.RegistryCatalogData?
@@ -1460,7 +1460,7 @@ public struct RepositoryCatalogDataNotFoundException: ClientRuntime.ModeledError
     }
 }
 
-public struct GetRepositoryCatalogDataInput {
+public struct GetRepositoryCatalogDataInput: Swift.Sendable {
     /// The Amazon Web Services account ID that's associated with the registry that contains the repositories to be described. If you do not specify a registry, the default public registry is assumed.
     public var registryId: Swift.String?
     /// The name of the repository to retrieve the catalog metadata for.
@@ -1477,7 +1477,7 @@ public struct GetRepositoryCatalogDataInput {
     }
 }
 
-public struct GetRepositoryCatalogDataOutput {
+public struct GetRepositoryCatalogDataOutput: Swift.Sendable {
     /// The catalog metadata for the repository.
     public var catalogData: ECRPUBLICClientTypes.RepositoryCatalogData?
 
@@ -1489,7 +1489,7 @@ public struct GetRepositoryCatalogDataOutput {
     }
 }
 
-public struct GetRepositoryPolicyInput {
+public struct GetRepositoryPolicyInput: Swift.Sendable {
     /// The Amazon Web Services account ID that's associated with the public registry that contains the repository. If you do not specify a registry, the default public registry is assumed.
     public var registryId: Swift.String?
     /// The name of the repository with the policy to retrieve.
@@ -1506,7 +1506,7 @@ public struct GetRepositoryPolicyInput {
     }
 }
 
-public struct GetRepositoryPolicyOutput {
+public struct GetRepositoryPolicyOutput: Swift.Sendable {
     /// The repository policy text that's associated with the repository. The policy text will be in JSON format.
     public var policyText: Swift.String?
     /// The registry ID that's associated with the request.
@@ -1527,8 +1527,9 @@ public struct GetRepositoryPolicyOutput {
 }
 
 extension ECRPUBLICClientTypes {
+
     /// An object that represents an Amazon ECR image.
-    public struct Image {
+    public struct Image: Swift.Sendable {
         /// An object that contains the image tag and image digest associated with an image.
         public var imageId: ECRPUBLICClientTypes.ImageIdentifier?
         /// The image manifest that's associated with the image.
@@ -1555,7 +1556,6 @@ extension ECRPUBLICClientTypes {
             self.repositoryName = repositoryName
         }
     }
-
 }
 
 /// The specified image has already been pushed, and there were no changes to the manifest or image tag after the last push.
@@ -1630,7 +1630,7 @@ public struct ImageTagAlreadyExistsException: ClientRuntime.ModeledError, AWSCli
     }
 }
 
-public struct InitiateLayerUploadInput {
+public struct InitiateLayerUploadInput: Swift.Sendable {
     /// The Amazon Web Services account ID, or registry alias, that's associated with the registry to which you intend to upload layers. If you do not specify a registry, the default public registry is assumed.
     public var registryId: Swift.String?
     /// The name of the repository that you want to upload layers to.
@@ -1647,7 +1647,7 @@ public struct InitiateLayerUploadInput {
     }
 }
 
-public struct InitiateLayerUploadOutput {
+public struct InitiateLayerUploadOutput: Swift.Sendable {
     /// The size, in bytes, that Amazon ECR expects future layer part uploads to be.
     public var partSize: Swift.Int?
     /// The upload ID for the layer upload. This parameter is passed to further [UploadLayerPart] and [CompleteLayerUpload] operations.
@@ -1727,7 +1727,7 @@ public struct LayersNotFoundException: ClientRuntime.ModeledError, AWSClientRunt
     }
 }
 
-public struct ListTagsForResourceInput {
+public struct ListTagsForResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) that identifies the resource to list the tags for. Currently, the supported resource is an Amazon ECR Public repository.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -1740,7 +1740,7 @@ public struct ListTagsForResourceInput {
     }
 }
 
-public struct ListTagsForResourceOutput {
+public struct ListTagsForResourceOutput: Swift.Sendable {
     /// The tags for the resource.
     public var tags: [ECRPUBLICClientTypes.Tag]?
 
@@ -1776,7 +1776,7 @@ public struct ReferencedImagesNotFoundException: ClientRuntime.ModeledError, AWS
     }
 }
 
-public struct PutImageInput {
+public struct PutImageInput: Swift.Sendable {
     /// The image digest of the image manifest that corresponds to the image.
     public var imageDigest: Swift.String?
     /// The image manifest that corresponds to the image to be uploaded.
@@ -1810,7 +1810,7 @@ public struct PutImageInput {
     }
 }
 
-public struct PutImageOutput {
+public struct PutImageOutput: Swift.Sendable {
     /// Details of the image uploaded.
     public var image: ECRPUBLICClientTypes.Image?
 
@@ -1822,7 +1822,7 @@ public struct PutImageOutput {
     }
 }
 
-public struct PutRegistryCatalogDataInput {
+public struct PutRegistryCatalogDataInput: Swift.Sendable {
     /// The display name for a public registry. The display name is shown as the repository author in the Amazon ECR Public Gallery. The registry display name is only publicly visible in the Amazon ECR Public Gallery for verified accounts.
     public var displayName: Swift.String?
 
@@ -1834,7 +1834,7 @@ public struct PutRegistryCatalogDataInput {
     }
 }
 
-public struct PutRegistryCatalogDataOutput {
+public struct PutRegistryCatalogDataOutput: Swift.Sendable {
     /// The catalog data for the public registry.
     /// This member is required.
     public var registryCatalogData: ECRPUBLICClientTypes.RegistryCatalogData?
@@ -1847,7 +1847,7 @@ public struct PutRegistryCatalogDataOutput {
     }
 }
 
-public struct PutRepositoryCatalogDataInput {
+public struct PutRepositoryCatalogDataInput: Swift.Sendable {
     /// An object containing the catalog data for a repository. This data is publicly visible in the Amazon ECR Public Gallery.
     /// This member is required.
     public var catalogData: ECRPUBLICClientTypes.RepositoryCatalogDataInput?
@@ -1869,7 +1869,7 @@ public struct PutRepositoryCatalogDataInput {
     }
 }
 
-public struct PutRepositoryCatalogDataOutput {
+public struct PutRepositoryCatalogDataOutput: Swift.Sendable {
     /// The catalog data for the repository.
     public var catalogData: ECRPUBLICClientTypes.RepositoryCatalogData?
 
@@ -1881,7 +1881,7 @@ public struct PutRepositoryCatalogDataOutput {
     }
 }
 
-public struct SetRepositoryPolicyInput {
+public struct SetRepositoryPolicyInput: Swift.Sendable {
     /// If the policy that you want to set on a repository policy would prevent you from setting another policy in the future, you must force the [SetRepositoryPolicy] operation. This prevents accidental repository lockouts.
     public var force: Swift.Bool?
     /// The JSON repository policy text to apply to the repository. For more information, see [Amazon ECR Repository Policies](https://docs.aws.amazon.com/AmazonECR/latest/userguide/repository-policy-examples.html) in the Amazon Elastic Container Registry User Guide.
@@ -1907,7 +1907,7 @@ public struct SetRepositoryPolicyInput {
     }
 }
 
-public struct SetRepositoryPolicyOutput {
+public struct SetRepositoryPolicyOutput: Swift.Sendable {
     /// The JSON repository policy text that's applied to the repository.
     public var policyText: Swift.String?
     /// The registry ID that's associated with the request.
@@ -1927,7 +1927,7 @@ public struct SetRepositoryPolicyOutput {
     }
 }
 
-public struct TagResourceInput {
+public struct TagResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the resource to add tags to. Currently, the supported resource is an Amazon ECR Public repository.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -1945,12 +1945,12 @@ public struct TagResourceInput {
     }
 }
 
-public struct TagResourceOutput {
+public struct TagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UntagResourceInput {
+public struct UntagResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the resource to delete tags from. Currently, the supported resource is an Amazon ECR Public repository.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -1968,12 +1968,12 @@ public struct UntagResourceInput {
     }
 }
 
-public struct UntagResourceOutput {
+public struct UntagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UploadLayerPartInput {
+public struct UploadLayerPartInput: Swift.Sendable {
     /// The base64-encoded layer part payload.
     /// This member is required.
     public var layerPartBlob: Foundation.Data?
@@ -2010,7 +2010,7 @@ public struct UploadLayerPartInput {
     }
 }
 
-public struct UploadLayerPartOutput {
+public struct UploadLayerPartOutput: Swift.Sendable {
     /// The integer value of the last byte that's received in the request.
     public var lastByteReceived: Swift.Int?
     /// The registry ID that's associated with the request.

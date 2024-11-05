@@ -30,7 +30,7 @@ import struct SmithyHTTPAPI.Headers
 
 extension EBSClientTypes {
 
-    public enum AccessDeniedExceptionReason: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AccessDeniedExceptionReason: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case dependencyAccessDenied
         case unauthorizedAccount
         case sdkUnknown(Swift.String)
@@ -87,8 +87,9 @@ public struct AccessDeniedException: ClientRuntime.ModeledError, AWSClientRuntim
 }
 
 extension EBSClientTypes {
+
     /// A block of data in an Amazon Elastic Block Store snapshot.
-    public struct Block {
+    public struct Block: Swift.Sendable {
         /// The block index.
         public var blockIndex: Swift.Int?
         /// The block token for the block index.
@@ -103,12 +104,12 @@ extension EBSClientTypes {
             self.blockToken = blockToken
         }
     }
-
 }
 
 extension EBSClientTypes {
+
     /// A block of data in an Amazon Elastic Block Store snapshot that is different from another snapshot of the same volume/snapshot lineage.
-    public struct ChangedBlock {
+    public struct ChangedBlock: Swift.Sendable {
         /// The block index.
         public var blockIndex: Swift.Int?
         /// The block token for the block index of the FirstSnapshotId specified in the ListChangedBlocks operation. This value is absent if the first snapshot does not have the changed block that is on the second snapshot.
@@ -127,7 +128,6 @@ extension EBSClientTypes {
             self.secondBlockToken = secondBlockToken
         }
     }
-
 }
 
 extension EBSClientTypes.ChangedBlock: Swift.CustomDebugStringConvertible {
@@ -138,7 +138,7 @@ extension EBSClientTypes.ChangedBlock: Swift.CustomDebugStringConvertible {
 
 extension EBSClientTypes {
 
-    public enum ChecksumAggregationMethod: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ChecksumAggregationMethod: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case checksumAggregationLinear
         case sdkUnknown(Swift.String)
 
@@ -164,7 +164,7 @@ extension EBSClientTypes {
 
 extension EBSClientTypes {
 
-    public enum ChecksumAlgorithm: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ChecksumAlgorithm: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case checksumAlgorithmSha256
         case sdkUnknown(Swift.String)
 
@@ -214,7 +214,7 @@ public struct InternalServerException: ClientRuntime.ModeledError, AWSClientRunt
 
 extension EBSClientTypes {
 
-    public enum RequestThrottledExceptionReason: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum RequestThrottledExceptionReason: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case accountThrottled
         case dependencyRequestThrottled
         case resourceLevelThrottle
@@ -274,7 +274,7 @@ public struct RequestThrottledException: ClientRuntime.ModeledError, AWSClientRu
 
 extension EBSClientTypes {
 
-    public enum ResourceNotFoundExceptionReason: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ResourceNotFoundExceptionReason: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case dependencyResourceNotFound
         case grantNotFound
         case imageNotFound
@@ -337,7 +337,7 @@ public struct ResourceNotFoundException: ClientRuntime.ModeledError, AWSClientRu
 
 extension EBSClientTypes {
 
-    public enum ServiceQuotaExceededExceptionReason: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ServiceQuotaExceededExceptionReason: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case dependencyServiceQuotaExceeded
         case sdkUnknown(Swift.String)
 
@@ -391,7 +391,7 @@ public struct ServiceQuotaExceededException: ClientRuntime.ModeledError, AWSClie
 
 extension EBSClientTypes {
 
-    public enum ValidationExceptionReason: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ValidationExceptionReason: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case conflictingBlockUpdate
         case invalidBlock
         case invalidBlockToken
@@ -485,7 +485,7 @@ public struct ValidationException: ClientRuntime.ModeledError, AWSClientRuntime.
     }
 }
 
-public struct CompleteSnapshotInput {
+public struct CompleteSnapshotInput: Swift.Sendable {
     /// The number of blocks that were written to the snapshot.
     /// This member is required.
     public var changedBlocksCount: Swift.Int?
@@ -517,7 +517,7 @@ public struct CompleteSnapshotInput {
 
 extension EBSClientTypes {
 
-    public enum Status: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Status: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case completed
         case error
         case pending
@@ -547,7 +547,7 @@ extension EBSClientTypes {
     }
 }
 
-public struct CompleteSnapshotOutput {
+public struct CompleteSnapshotOutput: Swift.Sendable {
     /// The status of the snapshot.
     public var status: EBSClientTypes.Status?
 
@@ -607,7 +607,7 @@ public struct ConflictException: ClientRuntime.ModeledError, AWSClientRuntime.AW
     }
 }
 
-public struct GetSnapshotBlockInput {
+public struct GetSnapshotBlockInput: Swift.Sendable {
     /// The block index of the block in which to read the data. A block index is a logical index in units of 512 KiB blocks. To identify the block index, divide the logical offset of the data in the logical volume by the block size (logical offset of data/524288). The logical offset of the data must be 512 KiB aligned.
     /// This member is required.
     public var blockIndex: Swift.Int?
@@ -630,7 +630,7 @@ public struct GetSnapshotBlockInput {
     }
 }
 
-public struct GetSnapshotBlockOutput {
+public struct GetSnapshotBlockOutput: Swift.Sendable {
     /// The data content of the block.
     public var blockData: Smithy.ByteStream?
     /// The checksum generated for the block, which is Base64 encoded.
@@ -659,7 +659,7 @@ extension GetSnapshotBlockOutput: Swift.CustomDebugStringConvertible {
         "GetSnapshotBlockOutput(checksum: \(Swift.String(describing: checksum)), checksumAlgorithm: \(Swift.String(describing: checksumAlgorithm)), dataLength: \(Swift.String(describing: dataLength)), blockData: \"CONTENT_REDACTED\")"}
 }
 
-public struct ListChangedBlocksInput {
+public struct ListChangedBlocksInput: Swift.Sendable {
     /// The ID of the first snapshot to use for the comparison. The FirstSnapshotID parameter must be specified with a SecondSnapshotId parameter; otherwise, an error occurs.
     public var firstSnapshotId: Swift.String?
     /// The maximum number of blocks to be returned by the request. Even if additional blocks can be retrieved from the snapshot, the request can return less blocks than MaxResults or an empty array of blocks. To retrieve the next set of blocks from the snapshot, make another request with the returned NextToken value. The value of NextToken is null when there are no more blocks to return.
@@ -688,7 +688,7 @@ public struct ListChangedBlocksInput {
     }
 }
 
-public struct ListChangedBlocksOutput {
+public struct ListChangedBlocksOutput: Swift.Sendable {
     /// The size of the blocks in the snapshot, in bytes.
     public var blockSize: Swift.Int?
     /// An array of objects containing information about the changed blocks.
@@ -721,7 +721,7 @@ extension ListChangedBlocksOutput: Swift.CustomDebugStringConvertible {
         "ListChangedBlocksOutput(blockSize: \(Swift.String(describing: blockSize)), expiryTime: \(Swift.String(describing: expiryTime)), nextToken: \(Swift.String(describing: nextToken)), volumeSize: \(Swift.String(describing: volumeSize)), changedBlocks: \"CONTENT_REDACTED\")"}
 }
 
-public struct ListSnapshotBlocksInput {
+public struct ListSnapshotBlocksInput: Swift.Sendable {
     /// The maximum number of blocks to be returned by the request. Even if additional blocks can be retrieved from the snapshot, the request can return less blocks than MaxResults or an empty array of blocks. To retrieve the next set of blocks from the snapshot, make another request with the returned NextToken value. The value of NextToken is null when there are no more blocks to return.
     public var maxResults: Swift.Int?
     /// The token to request the next page of results. If you specify NextToken, then StartingBlockIndex is ignored.
@@ -746,7 +746,7 @@ public struct ListSnapshotBlocksInput {
     }
 }
 
-public struct ListSnapshotBlocksOutput {
+public struct ListSnapshotBlocksOutput: Swift.Sendable {
     /// The size of the blocks in the snapshot, in bytes.
     public var blockSize: Swift.Int?
     /// An array of objects containing information about the blocks.
@@ -779,7 +779,7 @@ extension ListSnapshotBlocksOutput: Swift.CustomDebugStringConvertible {
         "ListSnapshotBlocksOutput(blockSize: \(Swift.String(describing: blockSize)), expiryTime: \(Swift.String(describing: expiryTime)), nextToken: \(Swift.String(describing: nextToken)), volumeSize: \(Swift.String(describing: volumeSize)), blocks: \"CONTENT_REDACTED\")"}
 }
 
-public struct PutSnapshotBlockInput {
+public struct PutSnapshotBlockInput: Swift.Sendable {
     /// The data to write to the block. The block data is not signed as part of the Signature Version 4 signing process. As a result, you must generate and provide a Base64-encoded SHA256 checksum for the block data using the x-amz-Checksum header. Also, you must specify the checksum algorithm using the x-amz-Checksum-Algorithm header. The checksum that you provide is part of the Signature Version 4 signing process. It is validated against a checksum generated by Amazon EBS to ensure the validity and authenticity of the data. If the checksums do not correspond, the request fails. For more information, see [ Using checksums with the EBS direct APIs](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ebs-accessing-snapshot.html#ebsapis-using-checksums) in the Amazon Elastic Compute Cloud User Guide.
     /// This member is required.
     public var blockData: Smithy.ByteStream?
@@ -826,7 +826,7 @@ extension PutSnapshotBlockInput: Swift.CustomDebugStringConvertible {
         "PutSnapshotBlockInput(blockIndex: \(Swift.String(describing: blockIndex)), checksum: \(Swift.String(describing: checksum)), checksumAlgorithm: \(Swift.String(describing: checksumAlgorithm)), dataLength: \(Swift.String(describing: dataLength)), progress: \(Swift.String(describing: progress)), snapshotId: \(Swift.String(describing: snapshotId)), blockData: \"CONTENT_REDACTED\")"}
 }
 
-public struct PutSnapshotBlockOutput {
+public struct PutSnapshotBlockOutput: Swift.Sendable {
     /// The SHA256 checksum generated for the block data by Amazon EBS.
     public var checksum: Swift.String?
     /// The algorithm used by Amazon EBS to generate the checksum.
@@ -843,8 +843,9 @@ public struct PutSnapshotBlockOutput {
 }
 
 extension EBSClientTypes {
+
     /// Describes a tag.
-    public struct Tag {
+    public struct Tag: Swift.Sendable {
         /// The key of the tag.
         public var key: Swift.String?
         /// The value of the tag.
@@ -859,10 +860,9 @@ extension EBSClientTypes {
             self.value = value
         }
     }
-
 }
 
-public struct StartSnapshotInput {
+public struct StartSnapshotInput: Swift.Sendable {
     /// A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. Idempotency ensures that an API request completes only once. With an idempotent request, if the original request completes successfully. The subsequent retries with the same client token return the result from the original successful request and they have no additional effect. If you do not specify a client token, one is automatically generated by the Amazon Web Services SDK. For more information, see [ Idempotency for StartSnapshot API](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ebs-direct-api-idempotency.html) in the Amazon Elastic Compute Cloud User Guide.
     public var clientToken: Swift.String?
     /// A description for the snapshot.
@@ -917,7 +917,7 @@ extension StartSnapshotInput: Swift.CustomDebugStringConvertible {
 
 extension EBSClientTypes {
 
-    public enum SSEType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SSEType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case `none`
         case sseEbs
         case sseKms
@@ -947,7 +947,7 @@ extension EBSClientTypes {
     }
 }
 
-public struct StartSnapshotOutput {
+public struct StartSnapshotOutput: Swift.Sendable {
     /// The size of the blocks in the snapshot, in bytes.
     public var blockSize: Swift.Int?
     /// The description of the snapshot.

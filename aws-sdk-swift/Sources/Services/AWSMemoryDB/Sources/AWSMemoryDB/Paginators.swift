@@ -92,6 +92,7 @@ extension DescribeEngineVersionsInput: ClientRuntime.PaginateToken {
     public func usingPaginationToken(_ token: Swift.String) -> DescribeEngineVersionsInput {
         return DescribeEngineVersionsInput(
             defaultOnly: self.defaultOnly,
+            engine: self.engine,
             engineVersion: self.engineVersion,
             maxResults: self.maxResults,
             nextToken: token,

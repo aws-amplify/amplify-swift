@@ -1064,7 +1064,7 @@
                     "min": 1,
                     "max": 2048
                 },
-                "smithy.api#pattern": "^(arn:aws(-[^:]+)?:bedrock:[a-z0-9-]{1,20}:(([0-9]{12}:custom-model/[a-z0-9-]{1,63}[.]{1}[a-z0-9-]{1,63}/[a-z0-9]{12})|(:foundation-model/[a-z0-9-]{1,63}[.]{1}[a-z0-9-]{1,63}([.:]?[a-z0-9-]{1,63}))))|(arn:aws(|-us-gov|-cn|-iso|-iso-b):bedrock:(|[0-9a-z-]{1,20}):(|[0-9]{12}):inference-profile/[a-zA-Z0-9-:.]+)|([a-z0-9-]{1,63}[.]{1}[a-z0-9-]{1,63}([.:]?[a-z0-9-]{1,63}))|(([0-9a-zA-Z][_-]?)+)$"
+                "smithy.api#pattern": "^(arn:aws(-[^:]{1,10})?:bedrock:[a-z0-9-]{1,20}:([0-9]{12})?:([a-z-]{1,20}/)?)?([a-z0-9.-]{1,63}){0,2}(([:][a-z0-9-]{1,63}){0,2})?(/[a-z0-9]{1,12})?$"
             }
         },
         "com.amazonaws.bedrockagentruntime#ByteContentBlob": {
@@ -1504,26 +1504,26 @@
                 "modelArn": {
                     "target": "com.amazonaws.bedrockagentruntime#BedrockModelArn",
                     "traits": {
-                        "smithy.api#documentation": "<p>The modelArn used with the external source wrapper object in the retrieveAndGenerate function.</p>",
+                        "smithy.api#documentation": "<p>The model Amazon Resource Name (ARN) for the external source wrapper object in the <code>retrieveAndGenerate</code> function.</p>",
                         "smithy.api#required": {}
                     }
                 },
                 "sources": {
                     "target": "com.amazonaws.bedrockagentruntime#ExternalSources",
                     "traits": {
-                        "smithy.api#documentation": "<p>The document used with the external source wrapper object in the retrieveAndGenerate function.</p>",
+                        "smithy.api#documentation": "<p>The document for the external source wrapper object in the <code>retrieveAndGenerate</code> function.</p>",
                         "smithy.api#required": {}
                     }
                 },
                 "generationConfiguration": {
                     "target": "com.amazonaws.bedrockagentruntime#ExternalSourcesGenerationConfiguration",
                     "traits": {
-                        "smithy.api#documentation": "<p>The prompt used with the external source wrapper object with the retrieveAndGenerate function.</p>"
+                        "smithy.api#documentation": "<p>The prompt used with the external source wrapper object with the <code>retrieveAndGenerate</code> function.</p>"
                     }
                 }
             },
             "traits": {
-                "smithy.api#documentation": "<p>The configurations of the external source wrapper object in the retrieveAndGenerate function.</p>"
+                "smithy.api#documentation": "<p>The configurations of the external source wrapper object in the <code>retrieveAndGenerate</code> function.</p>"
             }
         },
         "com.amazonaws.bedrockagentruntime#FailureReasonString": {
@@ -4012,11 +4012,28 @@
         "com.amazonaws.bedrockagentruntime#OrchestrationConfiguration": {
             "type": "structure",
             "members": {
+                "promptTemplate": {
+                    "target": "com.amazonaws.bedrockagentruntime#PromptTemplate",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Contains the template for the prompt that's sent to the model for response generation.</p>"
+                    }
+                },
+                "inferenceConfig": {
+                    "target": "com.amazonaws.bedrockagentruntime#InferenceConfig",
+                    "traits": {
+                        "smithy.api#documentation": "<p> Configuration settings for inference when using RetrieveAndGenerate to generate responses while using a knowledge base as a source. </p>"
+                    }
+                },
+                "additionalModelRequestFields": {
+                    "target": "com.amazonaws.bedrockagentruntime#AdditionalModelRequestFields",
+                    "traits": {
+                        "smithy.api#documentation": "<p> Additional model parameters and corresponding values not included in the textInferenceConfig structure for a knowledge base. This allows users to provide custom model parameters specific to the language model being used. </p>"
+                    }
+                },
                 "queryTransformationConfiguration": {
                     "target": "com.amazonaws.bedrockagentruntime#QueryTransformationConfiguration",
                     "traits": {
-                        "smithy.api#documentation": "<p>To split up the prompt and retrieve multiple sources, set the transformation type to\n    <code>QUERY_DECOMPOSITION</code>.</p>",
-                        "smithy.api#required": {}
+                        "smithy.api#documentation": "<p>To split up the prompt and retrieve multiple sources, set the transformation type to\n    <code>QUERY_DECOMPOSITION</code>.</p>"
                     }
                 }
             },
@@ -4042,7 +4059,7 @@
                 "metadata": {
                     "target": "com.amazonaws.bedrockagentruntime#Metadata",
                     "traits": {
-                        "smithy.api#documentation": "<p>Contains information about the foundation model output.</p>"
+                        "smithy.api#documentation": "<p>Contains information about the foundation model output from the orchestration step.</p>"
                     }
                 }
             },
@@ -4217,6 +4234,18 @@
                     "traits": {
                         "smithy.api#documentation": "<p>Details about the response from the Lambda parsing of the output of the post-processing step.</p>"
                     }
+                },
+                "rawResponse": {
+                    "target": "com.amazonaws.bedrockagentruntime#RawResponse",
+                    "traits": {
+                        "smithy.api#documentation": "<p>\n            Details of the raw response from the foundation model output.\n        </p>"
+                    }
+                },
+                "metadata": {
+                    "target": "com.amazonaws.bedrockagentruntime#Metadata",
+                    "traits": {
+                        "smithy.api#documentation": "<p>\n            Contains information about the foundation model output from the post-processing step.\n        </p>"
+                    }
                 }
             },
             "traits": {
@@ -4273,6 +4302,18 @@
                     "target": "com.amazonaws.bedrockagentruntime#PreProcessingParsedResponse",
                     "traits": {
                         "smithy.api#documentation": "<p>Details about the response from the Lambda parsing of the output of the pre-processing step.</p>"
+                    }
+                },
+                "rawResponse": {
+                    "target": "com.amazonaws.bedrockagentruntime#RawResponse",
+                    "traits": {
+                        "smithy.api#documentation": "<p>\n            Details of the raw response from the foundation model output.\n        </p>"
+                    }
+                },
+                "metadata": {
+                    "target": "com.amazonaws.bedrockagentruntime#Metadata",
+                    "traits": {
+                        "smithy.api#documentation": "<p>\n            Contains information about the foundation model output from the pre-processing step.\n        </p>"
                     }
                 }
             },
@@ -5038,20 +5079,20 @@
                 "type": {
                     "target": "com.amazonaws.bedrockagentruntime#RetrieveAndGenerateType",
                     "traits": {
-                        "smithy.api#documentation": "<p>The type of resource that is queried by the request.</p>",
+                        "smithy.api#documentation": "<p>The type of resource that contains your data for retrieving information and generating responses.</p>\n         <p>If you choose ot use <code>EXTERNAL_SOURCES</code>, then currently only Claude 3 Sonnet models for knowledge bases are supported.</p>",
                         "smithy.api#required": {}
                     }
                 },
                 "knowledgeBaseConfiguration": {
                     "target": "com.amazonaws.bedrockagentruntime#KnowledgeBaseRetrieveAndGenerateConfiguration",
                     "traits": {
-                        "smithy.api#documentation": "<p>Contains details about the resource being queried.</p>"
+                        "smithy.api#documentation": "<p>Contains details about the knowledge base for retrieving information and generating responses.</p>"
                     }
                 },
                 "externalSourcesConfiguration": {
                     "target": "com.amazonaws.bedrockagentruntime#ExternalSourcesRetrieveAndGenerateConfiguration",
                     "traits": {
-                        "smithy.api#documentation": "<p>The configuration used with the external source wrapper object in the retrieveAndGenerate function.</p>"
+                        "smithy.api#documentation": "<p>The configuration for the external source wrapper object in the <code>retrieveAndGenerate</code> function.</p>"
                     }
                 }
             },

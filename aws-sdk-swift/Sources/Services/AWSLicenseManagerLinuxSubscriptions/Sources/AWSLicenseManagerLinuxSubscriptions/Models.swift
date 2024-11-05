@@ -122,7 +122,7 @@ public struct ValidationException: ClientRuntime.ModeledError, AWSClientRuntime.
     }
 }
 
-public struct DeregisterSubscriptionProviderInput {
+public struct DeregisterSubscriptionProviderInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the subscription provider resource to deregister.
     /// This member is required.
     public var subscriptionProviderArn: Swift.String?
@@ -135,14 +135,14 @@ public struct DeregisterSubscriptionProviderInput {
     }
 }
 
-public struct DeregisterSubscriptionProviderOutput {
+public struct DeregisterSubscriptionProviderOutput: Swift.Sendable {
 
     public init() { }
 }
 
 extension LicenseManagerLinuxSubscriptionsClientTypes {
 
-    public enum Operator: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Operator: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         /// Contains operator
         case contains
         /// Equal operator
@@ -176,8 +176,9 @@ extension LicenseManagerLinuxSubscriptionsClientTypes {
 }
 
 extension LicenseManagerLinuxSubscriptionsClientTypes {
+
     /// A filter object that is used to return more specific results from a describe operation. Filters can be used to match a set of resources by specific criteria.
-    public struct Filter {
+    public struct Filter: Swift.Sendable {
         /// The type of name to filter by.
         public var name: Swift.String?
         /// An operator for filtering results.
@@ -196,10 +197,9 @@ extension LicenseManagerLinuxSubscriptionsClientTypes {
             self.values = values
         }
     }
-
 }
 
-public struct GetRegisteredSubscriptionProviderInput {
+public struct GetRegisteredSubscriptionProviderInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the BYOL registration resource to get details for.
     /// This member is required.
     public var subscriptionProviderArn: Swift.String?
@@ -214,7 +214,7 @@ public struct GetRegisteredSubscriptionProviderInput {
 
 extension LicenseManagerLinuxSubscriptionsClientTypes {
 
-    public enum SubscriptionProviderSource: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SubscriptionProviderSource: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         /// RedHat subscription provider namespace
         case redhat
         case sdkUnknown(Swift.String)
@@ -241,7 +241,7 @@ extension LicenseManagerLinuxSubscriptionsClientTypes {
 
 extension LicenseManagerLinuxSubscriptionsClientTypes {
 
-    public enum SubscriptionProviderStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SubscriptionProviderStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         /// ACTIVE status
         case active
         /// INVALID status
@@ -274,7 +274,7 @@ extension LicenseManagerLinuxSubscriptionsClientTypes {
     }
 }
 
-public struct GetRegisteredSubscriptionProviderOutput {
+public struct GetRegisteredSubscriptionProviderOutput: Swift.Sendable {
     /// The timestamp from the last time License Manager retrieved subscription details from your registered third-party Linux subscription provider.
     public var lastSuccessfulDataRetrievalTime: Swift.String?
     /// The Amazon Resource Name (ARN) of the third-party access secret stored in Secrets Manager for the BYOL registration resource specified in the request.
@@ -306,14 +306,14 @@ public struct GetRegisteredSubscriptionProviderOutput {
     }
 }
 
-public struct GetServiceSettingsInput {
+public struct GetServiceSettingsInput: Swift.Sendable {
 
     public init() { }
 }
 
 extension LicenseManagerLinuxSubscriptionsClientTypes {
 
-    public enum LinuxSubscriptionsDiscovery: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum LinuxSubscriptionsDiscovery: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         /// Disabled LinuxSubscriptionsDiscovery
         case disabled
         /// Enabled LinuxSubscriptionsDiscovery
@@ -344,7 +344,7 @@ extension LicenseManagerLinuxSubscriptionsClientTypes {
 
 extension LicenseManagerLinuxSubscriptionsClientTypes {
 
-    public enum OrganizationIntegration: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum OrganizationIntegration: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         /// Disabled OrganizationIntegration
         case disabled
         /// Enabled OrganizationIntegration
@@ -374,8 +374,9 @@ extension LicenseManagerLinuxSubscriptionsClientTypes {
 }
 
 extension LicenseManagerLinuxSubscriptionsClientTypes {
+
     /// Lists the settings defined for discovering Linux subscriptions.
-    public struct LinuxSubscriptionsDiscoverySettings {
+    public struct LinuxSubscriptionsDiscoverySettings: Swift.Sendable {
         /// Details if you have enabled resource discovery across your accounts in Organizations.
         /// This member is required.
         public var organizationIntegration: LicenseManagerLinuxSubscriptionsClientTypes.OrganizationIntegration?
@@ -392,12 +393,11 @@ extension LicenseManagerLinuxSubscriptionsClientTypes {
             self.sourceRegions = sourceRegions
         }
     }
-
 }
 
 extension LicenseManagerLinuxSubscriptionsClientTypes {
 
-    public enum Status: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Status: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         /// Completed status
         case completed
         /// Failed status
@@ -434,7 +434,7 @@ extension LicenseManagerLinuxSubscriptionsClientTypes {
     }
 }
 
-public struct GetServiceSettingsOutput {
+public struct GetServiceSettingsOutput: Swift.Sendable {
     /// The Region in which License Manager displays the aggregated data for Linux subscriptions.
     public var homeRegions: [Swift.String]?
     /// Lists if discovery has been enabled for Linux subscriptions.
@@ -463,8 +463,9 @@ public struct GetServiceSettingsOutput {
 }
 
 extension LicenseManagerLinuxSubscriptionsClientTypes {
+
     /// Details discovered information about a running instance using Linux subscriptions.
-    public struct Instance {
+    public struct Instance: Swift.Sendable {
         /// The account ID which owns the instance.
         public var accountID: Swift.String?
         /// The AMI ID used to launch the instance.
@@ -531,11 +532,10 @@ extension LicenseManagerLinuxSubscriptionsClientTypes {
             self.usageOperation = usageOperation
         }
     }
-
 }
 
 /// NextToken length limit is half of ddb accepted limit. Increase this limit if parameters in request increases.
-public struct ListLinuxSubscriptionInstancesInput {
+public struct ListLinuxSubscriptionInstancesInput: Swift.Sendable {
     /// An array of structures that you can use to filter the results by your specified criteria. For example, you can specify Region in the Name, with the contains operator to list all subscriptions that match a partial string in the Value, such as us-west. For each filter, you can specify one of the following values for the Name key to streamline results:
     ///
     /// * AccountID
@@ -582,7 +582,7 @@ public struct ListLinuxSubscriptionInstancesInput {
     }
 }
 
-public struct ListLinuxSubscriptionInstancesOutput {
+public struct ListLinuxSubscriptionInstancesOutput: Swift.Sendable {
     /// An array that contains instance objects.
     public var instances: [LicenseManagerLinuxSubscriptionsClientTypes.Instance]?
     /// The next token used for paginated responses. When this field isn't empty, there are additional elements that the service hasn't included in this request. Use this token with the next request to retrieve additional objects.
@@ -599,7 +599,7 @@ public struct ListLinuxSubscriptionInstancesOutput {
 }
 
 /// NextToken length limit is half of ddb accepted limit. Increase this limit if parameters in request increases.
-public struct ListLinuxSubscriptionsInput {
+public struct ListLinuxSubscriptionsInput: Swift.Sendable {
     /// An array of structures that you can use to filter the results to those that match one or more sets of key-value pairs that you specify. For example, you can filter by the name of Subscription with an optional operator to see subscriptions that match, partially match, or don't match a certain subscription's name. The valid names for this filter are:
     ///
     /// * Subscription
@@ -631,8 +631,9 @@ public struct ListLinuxSubscriptionsInput {
 }
 
 extension LicenseManagerLinuxSubscriptionsClientTypes {
+
     /// An object which details a discovered Linux subscription.
-    public struct Subscription {
+    public struct Subscription: Swift.Sendable {
         /// The total amount of running instances using this subscription.
         public var instanceCount: Swift.Int?
         /// The name of the subscription.
@@ -651,10 +652,9 @@ extension LicenseManagerLinuxSubscriptionsClientTypes {
             self.type = type
         }
     }
-
 }
 
-public struct ListLinuxSubscriptionsOutput {
+public struct ListLinuxSubscriptionsOutput: Swift.Sendable {
     /// The next token used for paginated responses. When this field isn't empty, there are additional elements that the service hasn't included in this request. Use this token with the next request to retrieve additional objects.
     public var nextToken: Swift.String?
     /// An array that contains subscription objects.
@@ -670,7 +670,7 @@ public struct ListLinuxSubscriptionsOutput {
     }
 }
 
-public struct ListRegisteredSubscriptionProvidersInput {
+public struct ListRegisteredSubscriptionProvidersInput: Swift.Sendable {
     /// The maximum items to return in a request.
     public var maxResults: Swift.Int?
     /// A token to specify where to start paginating. This is the nextToken from a previously truncated response.
@@ -691,8 +691,9 @@ public struct ListRegisteredSubscriptionProvidersInput {
 }
 
 extension LicenseManagerLinuxSubscriptionsClientTypes {
+
     /// A third-party provider for operating system (OS) platform software and license subscriptions, such as Red Hat. When you register a third-party Linux subscription provider, License Manager can get subscription data from the registered provider.
-    public struct RegisteredSubscriptionProvider {
+    public struct RegisteredSubscriptionProvider: Swift.Sendable {
         /// The timestamp from the last time that License Manager accessed third-party subscription data for your account from your registered Linux subscription provider.
         public var lastSuccessfulDataRetrievalTime: Swift.String?
         /// The Amazon Resource Name (ARN) of the Secrets Manager secret that stores your registered Linux subscription provider access token. For RHEL account subscriptions, this is the offline token.
@@ -723,10 +724,9 @@ extension LicenseManagerLinuxSubscriptionsClientTypes {
             self.subscriptionProviderStatusMessage = subscriptionProviderStatusMessage
         }
     }
-
 }
 
-public struct ListRegisteredSubscriptionProvidersOutput {
+public struct ListRegisteredSubscriptionProvidersOutput: Swift.Sendable {
     /// The next token used for paginated responses. When this field isn't empty, there are additional elements that the service hasn't included in this request. Use this token with the next request to retrieve additional objects.
     public var nextToken: Swift.String?
     /// The list of BYOL registration resources that fit the criteria you specified in the request.
@@ -742,7 +742,7 @@ public struct ListRegisteredSubscriptionProvidersOutput {
     }
 }
 
-public struct ListTagsForResourceInput {
+public struct ListTagsForResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the resource for which to list metadata tags.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -755,7 +755,7 @@ public struct ListTagsForResourceInput {
     }
 }
 
-public struct ListTagsForResourceOutput {
+public struct ListTagsForResourceOutput: Swift.Sendable {
     /// The metadata tags for the requested resource.
     public var tags: [Swift.String: Swift.String]?
 
@@ -772,7 +772,7 @@ extension ListTagsForResourceOutput: Swift.CustomDebugStringConvertible {
         "ListTagsForResourceOutput(tags: \"CONTENT_REDACTED\")"}
 }
 
-public struct RegisterSubscriptionProviderInput {
+public struct RegisterSubscriptionProviderInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the secret where you've stored your subscription provider's access token. For RHEL subscriptions managed through the Red Hat Subscription Manager (RHSM), the secret contains your Red Hat Offline token.
     /// This member is required.
     public var secretArn: Swift.String?
@@ -799,7 +799,7 @@ extension RegisterSubscriptionProviderInput: Swift.CustomDebugStringConvertible 
         "RegisterSubscriptionProviderInput(secretArn: \(Swift.String(describing: secretArn)), subscriptionProviderSource: \(Swift.String(describing: subscriptionProviderSource)), tags: \"CONTENT_REDACTED\")"}
 }
 
-public struct RegisterSubscriptionProviderOutput {
+public struct RegisterSubscriptionProviderOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the Linux subscription provider resource that you registered.
     public var subscriptionProviderArn: Swift.String?
     /// The Linux subscription provider that you registered.
@@ -819,7 +819,7 @@ public struct RegisterSubscriptionProviderOutput {
     }
 }
 
-public struct TagResourceInput {
+public struct TagResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the Amazon Web Services resource to which to add the specified metadata tags.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -842,12 +842,12 @@ extension TagResourceInput: Swift.CustomDebugStringConvertible {
         "TagResourceInput(resourceArn: \(Swift.String(describing: resourceArn)), tags: \"CONTENT_REDACTED\")"}
 }
 
-public struct TagResourceOutput {
+public struct TagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UntagResourceInput {
+public struct UntagResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the Amazon Web Services resource to remove the metadata tags from.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -870,12 +870,12 @@ extension UntagResourceInput: Swift.CustomDebugStringConvertible {
         "UntagResourceInput(resourceArn: \(Swift.String(describing: resourceArn)), tagKeys: \"CONTENT_REDACTED\")"}
 }
 
-public struct UntagResourceOutput {
+public struct UntagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdateServiceSettingsInput {
+public struct UpdateServiceSettingsInput: Swift.Sendable {
     /// Describes if updates are allowed to the service settings for Linux subscriptions. If you allow updates, you can aggregate Linux subscription data in more than one home Region.
     public var allowUpdate: Swift.Bool?
     /// Describes if the discovery of Linux subscriptions is enabled.
@@ -897,7 +897,7 @@ public struct UpdateServiceSettingsInput {
     }
 }
 
-public struct UpdateServiceSettingsOutput {
+public struct UpdateServiceSettingsOutput: Swift.Sendable {
     /// The Region in which License Manager displays the aggregated data for Linux subscriptions.
     public var homeRegions: [Swift.String]?
     /// Lists if discovery has been enabled for Linux subscriptions.

@@ -340,14 +340,7 @@ extension DataSyncClient {
 
     /// Performs the `CreateAgent` operation on the `FmrsService` service.
     ///
-    /// Activates an DataSync agent that you've deployed in your storage environment. The activation process associates the agent with your Amazon Web Services account. If you haven't deployed an agent yet, see the following topics to learn more:
-    ///
-    /// * [Agent requirements](https://docs.aws.amazon.com/datasync/latest/userguide/agent-requirements.html)
-    ///
-    /// * [Create an agent](https://docs.aws.amazon.com/datasync/latest/userguide/configure-agent.html)
-    ///
-    ///
-    /// If you're transferring between Amazon Web Services storage services, you don't need a DataSync agent.
+    /// Activates an DataSync agent that you deploy in your storage environment. The activation process associates the agent with your Amazon Web Services account. If you haven't deployed an agent yet, see [Do I need a DataSync agent?](https://docs.aws.amazon.com/datasync/latest/userguide/do-i-need-datasync-agent.html)
     ///
     /// - Parameter CreateAgentInput : CreateAgentRequest
     ///
@@ -2697,7 +2690,7 @@ extension DataSyncClient {
 
     /// Performs the `DescribeTaskExecution` operation on the `FmrsService` service.
     ///
-    /// Provides information about an execution of your DataSync task. You can use this operation to help monitor the progress of an ongoing transfer or check the results of the transfer.
+    /// Provides information about an execution of your DataSync task. You can use this operation to help monitor the progress of an ongoing data transfer or check the results of the transfer. Some DescribeTaskExecution response elements are only relevant to a specific task mode. For information, see [Understanding task mode differences](https://docs.aws.amazon.com/datasync/latest/userguide/choosing-task-mode.html#task-mode-differences) and [Understanding data transfer performance metrics](https://docs.aws.amazon.com/datasync/latest/userguide/transfer-performance-metrics.html).
     ///
     /// - Parameter DescribeTaskExecutionInput : DescribeTaskExecutionRequest
     ///
@@ -3479,7 +3472,7 @@ extension DataSyncClient {
 
     /// Performs the `StartTaskExecution` operation on the `FmrsService` service.
     ///
-    /// Starts an DataSync transfer task. For each task, you can only run one task execution at a time. There are several phases to a task execution. For more information, see [Task execution statuses](https://docs.aws.amazon.com/datasync/latest/userguide/working-with-task-executions.html#understand-task-execution-statuses). If you're planning to transfer data to or from an Amazon S3 location, review [how DataSync can affect your S3 request charges](https://docs.aws.amazon.com/datasync/latest/userguide/create-s3-location.html#create-s3-location-s3-requests) and the [DataSync pricing page](http://aws.amazon.com/datasync/pricing/) before you begin.
+    /// Starts an DataSync transfer task. For each task, you can only run one task execution at a time. There are several steps to a task execution. For more information, see [Task execution statuses](https://docs.aws.amazon.com/datasync/latest/userguide/working-with-task-executions.html#understand-task-execution-statuses). If you're planning to transfer data to or from an Amazon S3 location, review [how DataSync can affect your S3 request charges](https://docs.aws.amazon.com/datasync/latest/userguide/create-s3-location.html#create-s3-location-s3-requests) and the [DataSync pricing page](http://aws.amazon.com/datasync/pricing/) before you begin.
     ///
     /// - Parameter StartTaskExecutionInput : StartTaskExecutionRequest
     ///

@@ -69,179 +69,176 @@ import struct SmithyRetries.DefaultRetryStrategy
 @_spi(SmithyTimestamps) import struct SmithyTimestamps.TimestampFormatter
 import typealias SmithyEventStreamsAPI.UnmarshalClosure
 
-public struct DeleteBucketAnalyticsConfigurationOutput {
+
+public struct DeleteBucketAnalyticsConfigurationOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteBucketCorsOutput {
+public struct DeleteBucketCorsOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteBucketEncryptionOutput {
+public struct DeleteBucketEncryptionOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteBucketIntelligentTieringConfigurationOutput {
+public struct DeleteBucketIntelligentTieringConfigurationOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteBucketInventoryConfigurationOutput {
+public struct DeleteBucketInventoryConfigurationOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteBucketLifecycleOutput {
+public struct DeleteBucketLifecycleOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteBucketMetricsConfigurationOutput {
+public struct DeleteBucketMetricsConfigurationOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteBucketOutput {
+public struct DeleteBucketOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteBucketOwnershipControlsOutput {
+public struct DeleteBucketOwnershipControlsOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteBucketPolicyOutput {
+public struct DeleteBucketPolicyOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteBucketReplicationOutput {
+public struct DeleteBucketReplicationOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteBucketTaggingOutput {
+public struct DeleteBucketTaggingOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteBucketWebsiteOutput {
+public struct DeleteBucketWebsiteOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeletePublicAccessBlockOutput {
+public struct DeletePublicAccessBlockOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct PutBucketAccelerateConfigurationOutput {
+public struct PutBucketAccelerateConfigurationOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct PutBucketAclOutput {
+public struct PutBucketAclOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct PutBucketAnalyticsConfigurationOutput {
+public struct PutBucketAnalyticsConfigurationOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct PutBucketCorsOutput {
+public struct PutBucketCorsOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct PutBucketEncryptionOutput {
+public struct PutBucketEncryptionOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct PutBucketIntelligentTieringConfigurationOutput {
+public struct PutBucketIntelligentTieringConfigurationOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct PutBucketInventoryConfigurationOutput {
+public struct PutBucketInventoryConfigurationOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct PutBucketLifecycleConfigurationOutput {
+public struct PutBucketLoggingOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct PutBucketLoggingOutput {
+public struct PutBucketMetricsConfigurationOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct PutBucketMetricsConfigurationOutput {
+public struct PutBucketNotificationConfigurationOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct PutBucketNotificationConfigurationOutput {
+public struct PutBucketOwnershipControlsOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct PutBucketOwnershipControlsOutput {
+public struct PutBucketPolicyOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct PutBucketPolicyOutput {
+public struct PutBucketReplicationOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct PutBucketReplicationOutput {
+public struct PutBucketRequestPaymentOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct PutBucketRequestPaymentOutput {
+public struct PutBucketTaggingOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct PutBucketTaggingOutput {
+public struct PutBucketVersioningOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct PutBucketVersioningOutput {
+public struct PutBucketWebsiteOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct PutBucketWebsiteOutput {
+public struct PutPublicAccessBlockOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct PutPublicAccessBlockOutput {
-
-    public init() { }
-}
-
-public struct WriteGetObjectResponseOutput {
+public struct WriteGetObjectResponseOutput: Swift.Sendable {
 
     public init() { }
 }
 
 extension S3ClientTypes {
+
     /// Specifies the days since the initiation of an incomplete multipart upload that Amazon S3 will wait before permanently removing all parts of the upload. For more information, see [ Aborting Incomplete Multipart Uploads Using a Bucket Lifecycle Configuration](https://docs.aws.amazon.com/AmazonS3/latest/dev/mpuoverview.html#mpu-abort-incomplete-mpu-lifecycle-config) in the Amazon S3 User Guide.
-    public struct AbortIncompleteMultipartUpload {
+    public struct AbortIncompleteMultipartUpload: Swift.Sendable {
         /// Specifies the number of days after which Amazon S3 aborts an incomplete multipart upload.
         public var daysAfterInitiation: Swift.Int?
 
@@ -252,7 +249,6 @@ extension S3ClientTypes {
             self.daysAfterInitiation = daysAfterInitiation
         }
     }
-
 }
 
 /// The specified multipart upload does not exist.
@@ -272,7 +268,7 @@ public struct NoSuchUpload: ClientRuntime.ModeledError, AWSClientRuntime.AWSS3Se
 extension S3ClientTypes {
 
     /// Confirms that the requester knows that they will be charged for the request. Bucket owners need not specify this parameter in their requests. If either the source or destination S3 bucket has Requester Pays enabled, the requester will pay for corresponding charges to copy the object. For information about downloading objects from Requester Pays buckets, see [Downloading Objects in Requester Pays Buckets](https://docs.aws.amazon.com/AmazonS3/latest/dev/ObjectsinRequesterPaysBuckets.html) in the Amazon S3 User Guide. This functionality is not supported for directory buckets.
-    public enum RequestPayer: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum RequestPayer: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case requester
         case sdkUnknown(Swift.String)
 
@@ -296,7 +292,7 @@ extension S3ClientTypes {
     }
 }
 
-public struct AbortMultipartUploadInput {
+public struct AbortMultipartUploadInput: Swift.Sendable {
     /// The bucket name to which the upload was taking place. Directory buckets - When you use this operation with a directory bucket, you must use virtual-hosted-style requests in the format  Bucket_name.s3express-az_id.region.amazonaws.com. Path-style requests are not supported. Directory bucket names must be unique in the chosen Availability Zone. Bucket names must follow the format  bucket_base_name--az-id--x-s3 (for example,  DOC-EXAMPLE-BUCKET--usw2-az1--x-s3). For information about bucket naming restrictions, see [Directory bucket naming rules](https://docs.aws.amazon.com/AmazonS3/latest/userguide/directory-bucket-naming-rules.html) in the Amazon S3 User Guide. Access points - When you use this action with an access point, you must provide the alias of the access point in place of the bucket name or specify the access point ARN. When using the access point ARN, you must direct requests to the access point hostname. The access point hostname takes the form AccessPointName-AccountId.s3-accesspoint.Region.amazonaws.com. When using this action with an access point through the Amazon Web Services SDKs, you provide the access point ARN in place of the bucket name. For more information about access point ARNs, see [Using access points](https://docs.aws.amazon.com/AmazonS3/latest/userguide/using-access-points.html) in the Amazon S3 User Guide. Access points and Object Lambda access points are not supported by directory buckets. S3 on Outposts - When you use this action with Amazon S3 on Outposts, you must direct requests to the S3 on Outposts hostname. The S3 on Outposts hostname takes the form  AccessPointName-AccountId.outpostID.s3-outposts.Region.amazonaws.com. When you use this action with S3 on Outposts through the Amazon Web Services SDKs, you provide the Outposts access point ARN in place of the bucket name. For more information about S3 on Outposts ARNs, see [What is S3 on Outposts?](https://docs.aws.amazon.com/AmazonS3/latest/userguide/S3onOutposts.html) in the Amazon S3 User Guide.
     /// This member is required.
     public var bucket: Swift.String?
@@ -330,7 +326,7 @@ public struct AbortMultipartUploadInput {
 extension S3ClientTypes {
 
     /// If present, indicates that the requester was successfully charged for the request. This functionality is not supported for directory buckets.
-    public enum RequestCharged: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum RequestCharged: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case requester
         case sdkUnknown(Swift.String)
 
@@ -354,7 +350,7 @@ extension S3ClientTypes {
     }
 }
 
-public struct AbortMultipartUploadOutput {
+public struct AbortMultipartUploadOutput: Swift.Sendable {
     /// If present, indicates that the requester was successfully charged for the request. This functionality is not supported for directory buckets.
     public var requestCharged: S3ClientTypes.RequestCharged?
 
@@ -368,7 +364,7 @@ public struct AbortMultipartUploadOutput {
 
 extension S3ClientTypes {
 
-    public enum BucketAccelerateStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum BucketAccelerateStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case enabled
         case suspended
         case sdkUnknown(Swift.String)
@@ -396,8 +392,9 @@ extension S3ClientTypes {
 }
 
 extension S3ClientTypes {
+
     /// Configures the transfer acceleration state for an Amazon S3 bucket. For more information, see [Amazon S3 Transfer Acceleration](https://docs.aws.amazon.com/AmazonS3/latest/dev/transfer-acceleration.html) in the Amazon S3 User Guide.
-    public struct AccelerateConfiguration {
+    public struct AccelerateConfiguration: Swift.Sendable {
         /// Specifies the transfer acceleration status of the bucket.
         public var status: S3ClientTypes.BucketAccelerateStatus?
 
@@ -408,12 +405,11 @@ extension S3ClientTypes {
             self.status = status
         }
     }
-
 }
 
 extension S3ClientTypes {
 
-    public enum ModelType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ModelType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case amazoncustomerbyemail
         case canonicaluser
         case group
@@ -444,8 +440,9 @@ extension S3ClientTypes {
 }
 
 extension S3ClientTypes {
+
     /// Container for the person being granted permissions.
-    public struct Grantee {
+    public struct Grantee: Swift.Sendable {
         /// Screen name of the grantee.
         public var displayName: Swift.String?
         /// Email address of the grantee. Using email addresses to specify a grantee is only supported in the following Amazon Web Services Regions:
@@ -492,12 +489,11 @@ extension S3ClientTypes {
             self.uri = uri
         }
     }
-
 }
 
 extension S3ClientTypes {
 
-    public enum Permission: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Permission: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case fullControl
         case read
         case readAcp
@@ -534,8 +530,9 @@ extension S3ClientTypes {
 }
 
 extension S3ClientTypes {
+
     /// Container for grant information.
-    public struct Grant {
+    public struct Grant: Swift.Sendable {
         /// The person being granted permissions.
         public var grantee: S3ClientTypes.Grantee?
         /// Specifies the permission given to the grantee.
@@ -550,12 +547,12 @@ extension S3ClientTypes {
             self.permission = permission
         }
     }
-
 }
 
 extension S3ClientTypes {
+
     /// Container for the owner's display name and ID.
-    public struct Owner {
+    public struct Owner: Swift.Sendable {
         /// Container for the display name of the owner. This value is only supported in the following Amazon Web Services Regions:
         ///
         /// * US East (N. Virginia)
@@ -589,12 +586,12 @@ extension S3ClientTypes {
             self.id = id
         }
     }
-
 }
 
 extension S3ClientTypes {
+
     /// Contains the elements that set the ACL permissions for an object per grantee.
-    public struct AccessControlPolicy {
+    public struct AccessControlPolicy: Swift.Sendable {
         /// A list of grants.
         public var grants: [S3ClientTypes.Grant]?
         /// Container for the bucket owner's display name and ID.
@@ -609,12 +606,11 @@ extension S3ClientTypes {
             self.owner = owner
         }
     }
-
 }
 
 extension S3ClientTypes {
 
-    public enum OwnerOverride: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum OwnerOverride: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case destination
         case sdkUnknown(Swift.String)
 
@@ -639,8 +635,9 @@ extension S3ClientTypes {
 }
 
 extension S3ClientTypes {
+
     /// A container for information about access control for replicas.
-    public struct AccessControlTranslation {
+    public struct AccessControlTranslation: Swift.Sendable {
         /// Specifies the replica ownership. For default and valid values, see [PUT bucket replication](https://docs.aws.amazon.com/AmazonS3/latest/API/RESTBucketPUTreplication.html) in the Amazon S3 API Reference.
         /// This member is required.
         public var owner: S3ClientTypes.OwnerOverride?
@@ -652,15 +649,15 @@ extension S3ClientTypes {
             self.owner = owner
         }
     }
-
 }
 
 extension S3ClientTypes {
+
     /// Details of the parts that were uploaded.
-    public struct CompletedPart {
-        /// The base64-encoded, 32-bit CRC32 checksum of the object. This will only be present if it was uploaded with the object. When you use an API operation on an object that was uploaded using multipart uploads, this value may not be a direct checksum value of the full object. Instead, it's a calculation based on the checksum values of each individual part. For more information about how checksums are calculated with multipart uploads, see [ Checking object integrity](https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html#large-object-checksums) in the Amazon S3 User Guide.
+    public struct CompletedPart: Swift.Sendable {
+        /// The base64-encoded, 32-bit CRC-32 checksum of the object. This will only be present if it was uploaded with the object. When you use an API operation on an object that was uploaded using multipart uploads, this value may not be a direct checksum value of the full object. Instead, it's a calculation based on the checksum values of each individual part. For more information about how checksums are calculated with multipart uploads, see [ Checking object integrity](https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html#large-object-checksums) in the Amazon S3 User Guide.
         public var checksumCRC32: Swift.String?
-        /// The base64-encoded, 32-bit CRC32C checksum of the object. This will only be present if it was uploaded with the object. When you use an API operation on an object that was uploaded using multipart uploads, this value may not be a direct checksum value of the full object. Instead, it's a calculation based on the checksum values of each individual part. For more information about how checksums are calculated with multipart uploads, see [ Checking object integrity](https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html#large-object-checksums) in the Amazon S3 User Guide.
+        /// The base64-encoded, 32-bit CRC-32C checksum of the object. This will only be present if it was uploaded with the object. When you use an API operation on an object that was uploaded using multipart uploads, this value may not be a direct checksum value of the full object. Instead, it's a calculation based on the checksum values of each individual part. For more information about how checksums are calculated with multipart uploads, see [ Checking object integrity](https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html#large-object-checksums) in the Amazon S3 User Guide.
         public var checksumCRC32C: Swift.String?
         /// The base64-encoded, 160-bit SHA-1 digest of the object. This will only be present if it was uploaded with the object. When you use the API operation on an object that was uploaded using multipart uploads, this value may not be a direct checksum value of the full object. Instead, it's a calculation based on the checksum values of each individual part. For more information about how checksums are calculated with multipart uploads, see [ Checking object integrity](https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html#large-object-checksums) in the Amazon S3 User Guide.
         public var checksumSHA1: Swift.String?
@@ -692,12 +689,12 @@ extension S3ClientTypes {
             self.partNumber = partNumber
         }
     }
-
 }
 
 extension S3ClientTypes {
+
     /// The container for the completed multipart upload details.
-    public struct CompletedMultipartUpload {
+    public struct CompletedMultipartUpload: Swift.Sendable {
         /// Array of CompletedPart data types. If you do not supply a valid Part with your request, the service sends back an HTTP 400 response.
         public var parts: [S3ClientTypes.CompletedPart]?
 
@@ -708,16 +705,15 @@ extension S3ClientTypes {
             self.parts = parts
         }
     }
-
 }
 
-public struct CompleteMultipartUploadInput {
+public struct CompleteMultipartUploadInput: Swift.Sendable {
     /// Name of the bucket to which the multipart upload was initiated. Directory buckets - When you use this operation with a directory bucket, you must use virtual-hosted-style requests in the format  Bucket_name.s3express-az_id.region.amazonaws.com. Path-style requests are not supported. Directory bucket names must be unique in the chosen Availability Zone. Bucket names must follow the format  bucket_base_name--az-id--x-s3 (for example,  DOC-EXAMPLE-BUCKET--usw2-az1--x-s3). For information about bucket naming restrictions, see [Directory bucket naming rules](https://docs.aws.amazon.com/AmazonS3/latest/userguide/directory-bucket-naming-rules.html) in the Amazon S3 User Guide. Access points - When you use this action with an access point, you must provide the alias of the access point in place of the bucket name or specify the access point ARN. When using the access point ARN, you must direct requests to the access point hostname. The access point hostname takes the form AccessPointName-AccountId.s3-accesspoint.Region.amazonaws.com. When using this action with an access point through the Amazon Web Services SDKs, you provide the access point ARN in place of the bucket name. For more information about access point ARNs, see [Using access points](https://docs.aws.amazon.com/AmazonS3/latest/userguide/using-access-points.html) in the Amazon S3 User Guide. Access points and Object Lambda access points are not supported by directory buckets. S3 on Outposts - When you use this action with Amazon S3 on Outposts, you must direct requests to the S3 on Outposts hostname. The S3 on Outposts hostname takes the form  AccessPointName-AccountId.outpostID.s3-outposts.Region.amazonaws.com. When you use this action with S3 on Outposts through the Amazon Web Services SDKs, you provide the Outposts access point ARN in place of the bucket name. For more information about S3 on Outposts ARNs, see [What is S3 on Outposts?](https://docs.aws.amazon.com/AmazonS3/latest/userguide/S3onOutposts.html) in the Amazon S3 User Guide.
     /// This member is required.
     public var bucket: Swift.String?
-    /// This header can be used as a data integrity check to verify that the data received is the same data that was originally sent. This header specifies the base64-encoded, 32-bit CRC32 checksum of the object. For more information, see [Checking object integrity](https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html) in the Amazon S3 User Guide.
+    /// This header can be used as a data integrity check to verify that the data received is the same data that was originally sent. This header specifies the base64-encoded, 32-bit CRC-32 checksum of the object. For more information, see [Checking object integrity](https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html) in the Amazon S3 User Guide.
     public var checksumCRC32: Swift.String?
-    /// This header can be used as a data integrity check to verify that the data received is the same data that was originally sent. This header specifies the base64-encoded, 32-bit CRC32C checksum of the object. For more information, see [Checking object integrity](https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html) in the Amazon S3 User Guide.
+    /// This header can be used as a data integrity check to verify that the data received is the same data that was originally sent. This header specifies the base64-encoded, 32-bit CRC-32C checksum of the object. For more information, see [Checking object integrity](https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html) in the Amazon S3 User Guide.
     public var checksumCRC32C: Swift.String?
     /// This header can be used as a data integrity check to verify that the data received is the same data that was originally sent. This header specifies the base64-encoded, 160-bit SHA-1 digest of the object. For more information, see [Checking object integrity](https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html) in the Amazon S3 User Guide.
     public var checksumSHA1: Swift.String?
@@ -785,7 +781,7 @@ extension CompleteMultipartUploadInput: Swift.CustomDebugStringConvertible {
 
 extension S3ClientTypes {
 
-    public enum ServerSideEncryption: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ServerSideEncryption: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case aes256
         case awsKms
         case awsKmsDsse
@@ -815,14 +811,14 @@ extension S3ClientTypes {
     }
 }
 
-public struct CompleteMultipartUploadOutput {
+public struct CompleteMultipartUploadOutput: Swift.Sendable {
     /// The name of the bucket that contains the newly created object. Does not return the access point ARN or access point alias if used. Access points are not supported by directory buckets.
     public var bucket: Swift.String?
     /// Indicates whether the multipart upload uses an S3 Bucket Key for server-side encryption with Key Management Service (KMS) keys (SSE-KMS).
     public var bucketKeyEnabled: Swift.Bool?
-    /// The base64-encoded, 32-bit CRC32 checksum of the object. This will only be present if it was uploaded with the object. When you use an API operation on an object that was uploaded using multipart uploads, this value may not be a direct checksum value of the full object. Instead, it's a calculation based on the checksum values of each individual part. For more information about how checksums are calculated with multipart uploads, see [ Checking object integrity](https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html#large-object-checksums) in the Amazon S3 User Guide.
+    /// The base64-encoded, 32-bit CRC-32 checksum of the object. This will only be present if it was uploaded with the object. When you use an API operation on an object that was uploaded using multipart uploads, this value may not be a direct checksum value of the full object. Instead, it's a calculation based on the checksum values of each individual part. For more information about how checksums are calculated with multipart uploads, see [ Checking object integrity](https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html#large-object-checksums) in the Amazon S3 User Guide.
     public var checksumCRC32: Swift.String?
-    /// The base64-encoded, 32-bit CRC32C checksum of the object. This will only be present if it was uploaded with the object. When you use an API operation on an object that was uploaded using multipart uploads, this value may not be a direct checksum value of the full object. Instead, it's a calculation based on the checksum values of each individual part. For more information about how checksums are calculated with multipart uploads, see [ Checking object integrity](https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html#large-object-checksums) in the Amazon S3 User Guide.
+    /// The base64-encoded, 32-bit CRC-32C checksum of the object. This will only be present if it was uploaded with the object. When you use an API operation on an object that was uploaded using multipart uploads, this value may not be a direct checksum value of the full object. Instead, it's a calculation based on the checksum values of each individual part. For more information about how checksums are calculated with multipart uploads, see [ Checking object integrity](https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html#large-object-checksums) in the Amazon S3 User Guide.
     public var checksumCRC32C: Swift.String?
     /// The base64-encoded, 160-bit SHA-1 digest of the object. This will only be present if it was uploaded with the object. When you use the API operation on an object that was uploaded using multipart uploads, this value may not be a direct checksum value of the full object. Instead, it's a calculation based on the checksum values of each individual part. For more information about how checksums are calculated with multipart uploads, see [ Checking object integrity](https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html#large-object-checksums) in the Amazon S3 User Guide.
     public var checksumSHA1: Swift.String?
@@ -900,7 +896,7 @@ public struct ObjectNotInActiveTierError: ClientRuntime.ModeledError, AWSClientR
 
 extension S3ClientTypes {
 
-    public enum ObjectCannedACL: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ObjectCannedACL: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case authenticatedRead
         case awsExecRead
         case bucketOwnerFullControl
@@ -944,7 +940,7 @@ extension S3ClientTypes {
 
 extension S3ClientTypes {
 
-    public enum ChecksumAlgorithm: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ChecksumAlgorithm: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case crc32
         case crc32c
         case sha1
@@ -979,7 +975,7 @@ extension S3ClientTypes {
 
 extension S3ClientTypes {
 
-    public enum MetadataDirective: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum MetadataDirective: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case copy
         case replace
         case sdkUnknown(Swift.String)
@@ -1008,7 +1004,7 @@ extension S3ClientTypes {
 
 extension S3ClientTypes {
 
-    public enum ObjectLockLegalHoldStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ObjectLockLegalHoldStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case off
         case on
         case sdkUnknown(Swift.String)
@@ -1037,7 +1033,7 @@ extension S3ClientTypes {
 
 extension S3ClientTypes {
 
-    public enum ObjectLockMode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ObjectLockMode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case compliance
         case governance
         case sdkUnknown(Swift.String)
@@ -1066,7 +1062,7 @@ extension S3ClientTypes {
 
 extension S3ClientTypes {
 
-    public enum StorageClass: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum StorageClass: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case deepArchive
         case expressOnezone
         case glacier
@@ -1122,7 +1118,7 @@ extension S3ClientTypes {
 
 extension S3ClientTypes {
 
-    public enum TaggingDirective: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum TaggingDirective: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case copy
         case replace
         case sdkUnknown(Swift.String)
@@ -1149,7 +1145,7 @@ extension S3ClientTypes {
     }
 }
 
-public struct CopyObjectInput {
+public struct CopyObjectInput: Swift.Sendable {
     /// The canned access control list (ACL) to apply to the object. When you copy an object, the ACL metadata is not preserved and is set to private by default. Only the owner has full access control. To override the default ACL setting, specify a new ACL when you generate a copy request. For more information, see [Using ACLs](https://docs.aws.amazon.com/AmazonS3/latest/dev/S3_ACLs_UsingACLs.html). If the destination bucket that you're copying objects to uses the bucket owner enforced setting for S3 Object Ownership, ACLs are disabled and no longer affect permissions. Buckets that use this setting only accept PUT requests that don't specify an ACL or PUT requests that specify bucket owner full control ACLs, such as the bucket-owner-full-control canned ACL or an equivalent form of this ACL expressed in the XML format. For more information, see [Controlling ownership of objects and disabling ACLs](https://docs.aws.amazon.com/AmazonS3/latest/userguide/about-object-ownership.html) in the Amazon S3 User Guide.
     ///
     /// * If your destination bucket uses the bucket owner enforced setting for Object Ownership, all objects written to the bucket by any account will be owned by the bucket owner.
@@ -1278,7 +1274,7 @@ public struct CopyObjectInput {
     ///
     /// * For directory buckets, there are only two supported options for server-side encryption: server-side encryption with Amazon S3 managed keys (SSE-S3) (AES256) and server-side encryption with KMS keys (SSE-KMS) (aws:kms). We recommend that the bucket's default encryption uses the desired encryption configuration and you don't override the bucket default encryption in your CreateSession requests or PUT object requests. Then, new objects are automatically encrypted with the desired encryption settings. For more information, see [Protecting data with server-side encryption](https://docs.aws.amazon.com/AmazonS3/latest/userguide/s3-express-serv-side-encryption.html) in the Amazon S3 User Guide. For more information about the encryption overriding behaviors in directory buckets, see [Specifying server-side encryption with KMS for new object uploads](https://docs.aws.amazon.com/AmazonS3/latest/userguide/s3-express-specifying-kms-encryption.html).
     ///
-    /// * To encrypt new object copies to a directory bucket with SSE-KMS, we recommend you specify SSE-KMS as the directory bucket's default encryption configuration with a KMS key (specifically, a [customer managed key](https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#customer-cmk)). [Amazon Web Services managed key](https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#aws-managed-cmk) (aws/s3) isn't supported. Your SSE-KMS configuration can only support 1 [customer managed key](https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#customer-cmk) per directory bucket for the lifetime of the bucket. After you specify a customer managed key for SSE-KMS, you can't override the customer managed key for the bucket's SSE-KMS configuration. Then, when you perform a CopyObject operation and want to specify server-side encryption settings for new object copies with SSE-KMS in the encryption-related request headers, you must ensure the encryption key is the same customer managed key that you specified for the directory bucket's default encryption configuration.
+    /// * To encrypt new object copies to a directory bucket with SSE-KMS, we recommend you specify SSE-KMS as the directory bucket's default encryption configuration with a KMS key (specifically, a [customer managed key](https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#customer-cmk)). The [Amazon Web Services managed key](https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#aws-managed-cmk) (aws/s3) isn't supported. Your SSE-KMS configuration can only support 1 [customer managed key](https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#customer-cmk) per directory bucket for the lifetime of the bucket. After you specify a customer managed key for SSE-KMS, you can't override the customer managed key for the bucket's SSE-KMS configuration. Then, when you perform a CopyObject operation and want to specify server-side encryption settings for new object copies with SSE-KMS in the encryption-related request headers, you must ensure the encryption key is the same customer managed key that you specified for the directory bucket's default encryption configuration.
     public var serverSideEncryption: S3ClientTypes.ServerSideEncryption?
     /// Specifies the algorithm to use when encrypting the object (for example, AES256). When you perform a CopyObject operation, if you want to use a different type of encryption setting for the target object, you can specify appropriate encryption-related headers to encrypt the target object with an Amazon S3 managed key, a KMS key, or a customer-provided key. If the encryption setting in your request is different from the default encryption configuration of the destination bucket, the encryption setting in your request takes precedence. This functionality is not supported when the destination bucket is a directory bucket.
     public var sseCustomerAlgorithm: Swift.String?
@@ -1288,7 +1284,7 @@ public struct CopyObjectInput {
     public var sseCustomerKeyMD5: Swift.String?
     /// Specifies the Amazon Web Services KMS Encryption Context as an additional encryption context to use for the destination object encryption. The value of this header is a base64-encoded UTF-8 string holding JSON with the encryption context key-value pairs. General purpose buckets - This value must be explicitly added to specify encryption context for CopyObject requests if you want an additional encryption context for your destination object. The additional encryption context of the source object won't be copied to the destination object. For more information, see [Encryption context](https://docs.aws.amazon.com/AmazonS3/latest/userguide/UsingKMSEncryption.html#encryption-context) in the Amazon S3 User Guide. Directory buckets - You can optionally provide an explicit encryption context value. The value must match the default encryption context - the bucket Amazon Resource Name (ARN). An additional encryption context value is not supported.
     public var ssekmsEncryptionContext: Swift.String?
-    /// Specifies the KMS key ID (Key ID, Key ARN, or Key Alias) to use for object encryption. All GET and PUT requests for an object protected by KMS will fail if they're not made via SSL or using SigV4. For information about configuring any of the officially supported Amazon Web Services SDKs and Amazon Web Services CLI, see [Specifying the Signature Version in Request Authentication](https://docs.aws.amazon.com/AmazonS3/latest/dev/UsingAWSSDK.html#specify-signature-version) in the Amazon S3 User Guide. Directory buckets - If you specify x-amz-server-side-encryption with aws:kms, you must specify the  x-amz-server-side-encryption-aws-kms-key-id header with the ID (Key ID or Key ARN) of the KMS symmetric encryption customer managed key to use. Otherwise, you get an HTTP 400 Bad Request error. Only use the key ID or key ARN. The key alias format of the KMS key isn't supported. Your SSE-KMS configuration can only support 1 [customer managed key](https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#customer-cmk) per directory bucket for the lifetime of the bucket. [Amazon Web Services managed key](https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#aws-managed-cmk) (aws/s3) isn't supported.
+    /// Specifies the KMS key ID (Key ID, Key ARN, or Key Alias) to use for object encryption. All GET and PUT requests for an object protected by KMS will fail if they're not made via SSL or using SigV4. For information about configuring any of the officially supported Amazon Web Services SDKs and Amazon Web Services CLI, see [Specifying the Signature Version in Request Authentication](https://docs.aws.amazon.com/AmazonS3/latest/dev/UsingAWSSDK.html#specify-signature-version) in the Amazon S3 User Guide. Directory buckets - If you specify x-amz-server-side-encryption with aws:kms, the  x-amz-server-side-encryption-aws-kms-key-id header is implicitly assigned the ID of the KMS symmetric encryption customer managed key that's configured for your directory bucket's default encryption setting. If you want to specify the  x-amz-server-side-encryption-aws-kms-key-id header explicitly, you can only specify it with the ID (Key ID or Key ARN) of the KMS customer managed key that's configured for your directory bucket's default encryption setting. Otherwise, you get an HTTP 400 Bad Request error. Only use the key ID or key ARN. The key alias format of the KMS key isn't supported. Your SSE-KMS configuration can only support 1 [customer managed key](https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#customer-cmk) per directory bucket for the lifetime of the bucket. The [Amazon Web Services managed key](https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#aws-managed-cmk) (aws/s3) isn't supported.
     public var ssekmsKeyId: Swift.String?
     /// If the x-amz-storage-class header is not used, the copied object will be stored in the STANDARD Storage Class by default. The STANDARD storage class provides high durability and high availability. Depending on performance needs, you can specify a different Storage Class.
     ///
@@ -1441,11 +1437,12 @@ extension CopyObjectInput: Swift.CustomDebugStringConvertible {
 }
 
 extension S3ClientTypes {
+
     /// Container for all response elements.
-    public struct CopyObjectResult {
-        /// The base64-encoded, 32-bit CRC32 checksum of the object. This will only be present if it was uploaded with the object. For more information, see [ Checking object integrity](https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html) in the Amazon S3 User Guide.
+    public struct CopyObjectResult: Swift.Sendable {
+        /// The base64-encoded, 32-bit CRC-32 checksum of the object. This will only be present if it was uploaded with the object. For more information, see [ Checking object integrity](https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html) in the Amazon S3 User Guide.
         public var checksumCRC32: Swift.String?
-        /// The base64-encoded, 32-bit CRC32C checksum of the object. This will only be present if it was uploaded with the object. For more information, see [ Checking object integrity](https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html) in the Amazon S3 User Guide.
+        /// The base64-encoded, 32-bit CRC-32C checksum of the object. This will only be present if it was uploaded with the object. For more information, see [ Checking object integrity](https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html) in the Amazon S3 User Guide.
         public var checksumCRC32C: Swift.String?
         /// The base64-encoded, 160-bit SHA-1 digest of the object. This will only be present if it was uploaded with the object. For more information, see [ Checking object integrity](https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html) in the Amazon S3 User Guide.
         public var checksumSHA1: Swift.String?
@@ -1473,10 +1470,9 @@ extension S3ClientTypes {
             self.lastModified = lastModified
         }
     }
-
 }
 
-public struct CopyObjectOutput {
+public struct CopyObjectOutput: Swift.Sendable {
     /// Indicates whether the copied object uses an S3 Bucket Key for server-side encryption with Key Management Service (KMS) keys (SSE-KMS).
     public var bucketKeyEnabled: Swift.Bool?
     /// Container for all response elements.
@@ -1563,7 +1559,7 @@ public struct BucketAlreadyOwnedByYou: ClientRuntime.ModeledError, AWSClientRunt
 
 extension S3ClientTypes {
 
-    public enum BucketCannedACL: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum BucketCannedACL: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case authenticatedRead
         case `private`
         case publicRead
@@ -1598,7 +1594,7 @@ extension S3ClientTypes {
 
 extension S3ClientTypes {
 
-    public enum DataRedundancy: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DataRedundancy: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case singleavailabilityzone
         case sdkUnknown(Swift.String)
 
@@ -1624,7 +1620,7 @@ extension S3ClientTypes {
 
 extension S3ClientTypes {
 
-    public enum BucketType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum BucketType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case directory
         case sdkUnknown(Swift.String)
 
@@ -1649,8 +1645,9 @@ extension S3ClientTypes {
 }
 
 extension S3ClientTypes {
+
     /// Specifies the information about the bucket that will be created. For more information about directory buckets, see [Directory buckets](https://docs.aws.amazon.com/AmazonS3/latest/userguide/directory-buckets-overview.html) in the Amazon S3 User Guide. This functionality is only supported by directory buckets.
-    public struct BucketInfo {
+    public struct BucketInfo: Swift.Sendable {
         /// The number of Availability Zone that's used for redundancy for the bucket.
         public var dataRedundancy: S3ClientTypes.DataRedundancy?
         /// The type of bucket.
@@ -1665,12 +1662,11 @@ extension S3ClientTypes {
             self.type = type
         }
     }
-
 }
 
 extension S3ClientTypes {
 
-    public enum LocationType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum LocationType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case availabilityzone
         case sdkUnknown(Swift.String)
 
@@ -1695,8 +1691,9 @@ extension S3ClientTypes {
 }
 
 extension S3ClientTypes {
+
     /// Specifies the location where the bucket will be created. For directory buckets, the location type is Availability Zone. For more information about directory buckets, see [Directory buckets](https://docs.aws.amazon.com/AmazonS3/latest/userguide/directory-buckets-overview.html) in the Amazon S3 User Guide. This functionality is only supported by directory buckets.
-    public struct LocationInfo {
+    public struct LocationInfo: Swift.Sendable {
         /// The name of the location where the bucket will be created. For directory buckets, the name of the location is the AZ ID of the Availability Zone where the bucket will be created. An example AZ ID value is usw2-az1.
         public var name: Swift.String?
         /// The type of location where the bucket will be created.
@@ -1711,12 +1708,11 @@ extension S3ClientTypes {
             self.type = type
         }
     }
-
 }
 
 extension S3ClientTypes {
 
-    public enum BucketLocationConstraint: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum BucketLocationConstraint: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case eu
         case afSouth1
         case apEast1
@@ -1822,8 +1818,9 @@ extension S3ClientTypes {
 }
 
 extension S3ClientTypes {
+
     /// The configuration information for the bucket.
-    public struct CreateBucketConfiguration {
+    public struct CreateBucketConfiguration: Swift.Sendable {
         /// Specifies the information about the bucket that will be created. This functionality is only supported by directory buckets.
         public var bucket: S3ClientTypes.BucketInfo?
         /// Specifies the location where the bucket will be created. For directory buckets, the location type is Availability Zone. This functionality is only supported by directory buckets.
@@ -1842,13 +1839,12 @@ extension S3ClientTypes {
             self.locationConstraint = locationConstraint
         }
     }
-
 }
 
 extension S3ClientTypes {
 
     /// The container element for object ownership for a bucket's ownership controls. BucketOwnerPreferred - Objects uploaded to the bucket change ownership to the bucket owner if the objects are uploaded with the bucket-owner-full-control canned ACL. ObjectWriter - The uploading account will own the object if the object is uploaded with the bucket-owner-full-control canned ACL. BucketOwnerEnforced - Access control lists (ACLs) are disabled and no longer affect permissions. The bucket owner automatically owns and has full control over every object in the bucket. The bucket only accepts PUT requests that don't specify an ACL or specify bucket owner full control ACLs (such as the predefined bucket-owner-full-control canned ACL or a custom ACL in XML format that grants the same permissions). By default, ObjectOwnership is set to BucketOwnerEnforced and ACLs are disabled. We recommend keeping ACLs disabled, except in uncommon use cases where you must control access for each object individually. For more information about S3 Object Ownership, see [Controlling ownership of objects and disabling ACLs for your bucket](https://docs.aws.amazon.com/AmazonS3/latest/userguide/about-object-ownership.html) in the Amazon S3 User Guide. This functionality is not supported for directory buckets. Directory buckets use the bucket owner enforced setting for S3 Object Ownership.
-    public enum ObjectOwnership: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ObjectOwnership: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case bucketownerenforced
         case bucketownerpreferred
         case objectwriter
@@ -1878,7 +1874,7 @@ extension S3ClientTypes {
     }
 }
 
-public struct CreateBucketInput {
+public struct CreateBucketInput: Swift.Sendable {
     /// The canned ACL to apply to the bucket. This functionality is not supported for directory buckets.
     public var acl: S3ClientTypes.BucketCannedACL?
     /// The name of the bucket to create. General purpose buckets - For information about bucket naming restrictions, see [Bucket naming rules](https://docs.aws.amazon.com/AmazonS3/latest/userguide/bucketnamingrules.html) in the Amazon S3 User Guide. Directory buckets - When you use this operation with a directory bucket, you must use path-style requests in the format https://s3express-control.region_code.amazonaws.com/bucket-name . Virtual-hosted-style requests aren't supported. Directory bucket names must be unique in the chosen Availability Zone. Bucket names must also follow the format  bucket_base_name--az_id--x-s3 (for example,  DOC-EXAMPLE-BUCKET--usw2-az1--x-s3). For information about bucket naming restrictions, see [Directory bucket naming rules](https://docs.aws.amazon.com/AmazonS3/latest/userguide/directory-bucket-naming-rules.html) in the Amazon S3 User Guide
@@ -1927,7 +1923,7 @@ public struct CreateBucketInput {
     }
 }
 
-public struct CreateBucketOutput {
+public struct CreateBucketOutput: Swift.Sendable {
     /// A forward slash followed by the name of the bucket.
     public var location: Swift.String?
 
@@ -1939,7 +1935,7 @@ public struct CreateBucketOutput {
     }
 }
 
-public struct CreateMultipartUploadInput {
+public struct CreateMultipartUploadInput: Swift.Sendable {
     /// The canned ACL to apply to the object. Amazon S3 supports a set of predefined ACLs, known as canned ACLs. Each canned ACL has a predefined set of grantees and permissions. For more information, see [Canned ACL](https://docs.aws.amazon.com/AmazonS3/latest/dev/acl-overview.html#CannedACL) in the Amazon S3 User Guide. By default, all objects are private. Only the owner has full access control. When uploading an object, you can grant access permissions to individual Amazon Web Services accounts or to predefined groups defined by Amazon S3. These permissions are then added to the access control list (ACL) on the new object. For more information, see [Using ACLs](https://docs.aws.amazon.com/AmazonS3/latest/dev/S3_ACLs_UsingACLs.html). One way to grant the permissions using the request headers is to specify a canned ACL with the x-amz-acl request header.
     ///
     /// * This functionality is not supported for directory buckets.
@@ -2128,7 +2124,7 @@ public struct CreateMultipartUploadInput {
     public var sseCustomerKeyMD5: Swift.String?
     /// Specifies the Amazon Web Services KMS Encryption Context to use for object encryption. The value of this header is a Base64-encoded string of a UTF-8 encoded JSON, which contains the encryption context as key-value pairs. Directory buckets - You can optionally provide an explicit encryption context value. The value must match the default encryption context - the bucket Amazon Resource Name (ARN). An additional encryption context value is not supported.
     public var ssekmsEncryptionContext: Swift.String?
-    /// Specifies the KMS key ID (Key ID, Key ARN, or Key Alias) to use for object encryption. If the KMS key doesn't exist in the same account that's issuing the command, you must use the full Key ARN not the Key ID. General purpose buckets - If you specify x-amz-server-side-encryption with aws:kms or aws:kms:dsse, this header specifies the ID (Key ID, Key ARN, or Key Alias) of the KMS key to use. If you specify x-amz-server-side-encryption:aws:kms or x-amz-server-side-encryption:aws:kms:dsse, but do not provide x-amz-server-side-encryption-aws-kms-key-id, Amazon S3 uses the Amazon Web Services managed key (aws/s3) to protect the data. Directory buckets - If you specify x-amz-server-side-encryption with aws:kms, you must specify the  x-amz-server-side-encryption-aws-kms-key-id header with the ID (Key ID or Key ARN) of the KMS symmetric encryption customer managed key to use. Otherwise, you get an HTTP 400 Bad Request error. Only use the key ID or key ARN. The key alias format of the KMS key isn't supported. Your SSE-KMS configuration can only support 1 [customer managed key](https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#customer-cmk) per directory bucket for the lifetime of the bucket. [Amazon Web Services managed key](https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#aws-managed-cmk) (aws/s3) isn't supported.
+    /// Specifies the KMS key ID (Key ID, Key ARN, or Key Alias) to use for object encryption. If the KMS key doesn't exist in the same account that's issuing the command, you must use the full Key ARN not the Key ID. General purpose buckets - If you specify x-amz-server-side-encryption with aws:kms or aws:kms:dsse, this header specifies the ID (Key ID, Key ARN, or Key Alias) of the KMS key to use. If you specify x-amz-server-side-encryption:aws:kms or x-amz-server-side-encryption:aws:kms:dsse, but do not provide x-amz-server-side-encryption-aws-kms-key-id, Amazon S3 uses the Amazon Web Services managed key (aws/s3) to protect the data. Directory buckets - If you specify x-amz-server-side-encryption with aws:kms, the  x-amz-server-side-encryption-aws-kms-key-id header is implicitly assigned the ID of the KMS symmetric encryption customer managed key that's configured for your directory bucket's default encryption setting. If you want to specify the  x-amz-server-side-encryption-aws-kms-key-id header explicitly, you can only specify it with the ID (Key ID or Key ARN) of the KMS customer managed key that's configured for your directory bucket's default encryption setting. Otherwise, you get an HTTP 400 Bad Request error. Only use the key ID or key ARN. The key alias format of the KMS key isn't supported. Your SSE-KMS configuration can only support 1 [customer managed key](https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#customer-cmk) per directory bucket for the lifetime of the bucket. The [Amazon Web Services managed key](https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#aws-managed-cmk) (aws/s3) isn't supported.
     public var ssekmsKeyId: Swift.String?
     /// By default, Amazon S3 uses the STANDARD Storage Class to store newly created objects. The STANDARD storage class provides high durability and high availability. Depending on performance needs, you can specify a different Storage Class. For more information, see [Storage Classes](https://docs.aws.amazon.com/AmazonS3/latest/dev/storage-class-intro.html) in the Amazon S3 User Guide.
     ///
@@ -2212,7 +2208,7 @@ extension CreateMultipartUploadInput: Swift.CustomDebugStringConvertible {
         "CreateMultipartUploadInput(acl: \(Swift.String(describing: acl)), bucket: \(Swift.String(describing: bucket)), bucketKeyEnabled: \(Swift.String(describing: bucketKeyEnabled)), cacheControl: \(Swift.String(describing: cacheControl)), checksumAlgorithm: \(Swift.String(describing: checksumAlgorithm)), contentDisposition: \(Swift.String(describing: contentDisposition)), contentEncoding: \(Swift.String(describing: contentEncoding)), contentLanguage: \(Swift.String(describing: contentLanguage)), contentType: \(Swift.String(describing: contentType)), expectedBucketOwner: \(Swift.String(describing: expectedBucketOwner)), expires: \(Swift.String(describing: expires)), grantFullControl: \(Swift.String(describing: grantFullControl)), grantRead: \(Swift.String(describing: grantRead)), grantReadACP: \(Swift.String(describing: grantReadACP)), grantWriteACP: \(Swift.String(describing: grantWriteACP)), key: \(Swift.String(describing: key)), metadata: \(Swift.String(describing: metadata)), objectLockLegalHoldStatus: \(Swift.String(describing: objectLockLegalHoldStatus)), objectLockMode: \(Swift.String(describing: objectLockMode)), objectLockRetainUntilDate: \(Swift.String(describing: objectLockRetainUntilDate)), requestPayer: \(Swift.String(describing: requestPayer)), serverSideEncryption: \(Swift.String(describing: serverSideEncryption)), sseCustomerAlgorithm: \(Swift.String(describing: sseCustomerAlgorithm)), sseCustomerKeyMD5: \(Swift.String(describing: sseCustomerKeyMD5)), storageClass: \(Swift.String(describing: storageClass)), tagging: \(Swift.String(describing: tagging)), websiteRedirectLocation: \(Swift.String(describing: websiteRedirectLocation)), sseCustomerKey: \"CONTENT_REDACTED\", ssekmsEncryptionContext: \"CONTENT_REDACTED\", ssekmsKeyId: \"CONTENT_REDACTED\")"}
 }
 
-public struct CreateMultipartUploadOutput {
+public struct CreateMultipartUploadOutput: Swift.Sendable {
     /// If the bucket has a lifecycle rule configured with an action to abort incomplete multipart uploads and the prefix in the lifecycle rule matches the object name in the request, the response includes this header. The header indicates when the initiated multipart upload becomes eligible for an abort operation. For more information, see [ Aborting Incomplete Multipart Uploads Using a Bucket Lifecycle Configuration](https://docs.aws.amazon.com/AmazonS3/latest/dev/mpuoverview.html#mpu-abort-incomplete-mpu-lifecycle-config) in the Amazon S3 User Guide. The response also includes the x-amz-abort-rule-id header that provides the ID of the lifecycle configuration rule that defines the abort action. This functionality is not supported for directory buckets.
     public var abortDate: Foundation.Date?
     /// This header is returned along with the x-amz-abort-date header. It identifies the applicable lifecycle configuration rule that defines the action to abort incomplete multipart uploads. This functionality is not supported for directory buckets.
@@ -2293,7 +2289,7 @@ public struct NoSuchBucket: ClientRuntime.ModeledError, AWSClientRuntime.AWSS3Se
 
 extension S3ClientTypes {
 
-    public enum SessionMode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SessionMode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case readonly
         case readwrite
         case sdkUnknown(Swift.String)
@@ -2320,7 +2316,7 @@ extension S3ClientTypes {
     }
 }
 
-public struct CreateSessionInput {
+public struct CreateSessionInput: Swift.Sendable {
     /// The name of the bucket that you create a session for.
     /// This member is required.
     public var bucket: Swift.String?
@@ -2332,7 +2328,7 @@ public struct CreateSessionInput {
     public var sessionMode: S3ClientTypes.SessionMode?
     /// Specifies the Amazon Web Services KMS Encryption Context as an additional encryption context to use for object encryption. The value of this header is a Base64-encoded string of a UTF-8 encoded JSON, which contains the encryption context as key-value pairs. This value is stored as object metadata and automatically gets passed on to Amazon Web Services KMS for future GetObject operations on this object. General purpose buckets - This value must be explicitly added during CopyObject operations if you want an additional encryption context for your object. For more information, see [Encryption context](https://docs.aws.amazon.com/AmazonS3/latest/userguide/UsingKMSEncryption.html#encryption-context) in the Amazon S3 User Guide. Directory buckets - You can optionally provide an explicit encryption context value. The value must match the default encryption context - the bucket Amazon Resource Name (ARN). An additional encryption context value is not supported.
     public var ssekmsEncryptionContext: Swift.String?
-    /// If you specify x-amz-server-side-encryption with aws:kms, you must specify the  x-amz-server-side-encryption-aws-kms-key-id header with the ID (Key ID or Key ARN) of the KMS symmetric encryption customer managed key to use. Otherwise, you get an HTTP 400 Bad Request error. Only use the key ID or key ARN. The key alias format of the KMS key isn't supported. Also, if the KMS key doesn't exist in the same account that't issuing the command, you must use the full Key ARN not the Key ID. Your SSE-KMS configuration can only support 1 [customer managed key](https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#customer-cmk) per directory bucket for the lifetime of the bucket. [Amazon Web Services managed key](https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#aws-managed-cmk) (aws/s3) isn't supported.
+    /// If you specify x-amz-server-side-encryption with aws:kms, you must specify the  x-amz-server-side-encryption-aws-kms-key-id header with the ID (Key ID or Key ARN) of the KMS symmetric encryption customer managed key to use. Otherwise, you get an HTTP 400 Bad Request error. Only use the key ID or key ARN. The key alias format of the KMS key isn't supported. Also, if the KMS key doesn't exist in the same account that't issuing the command, you must use the full Key ARN not the Key ID. Your SSE-KMS configuration can only support 1 [customer managed key](https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#customer-cmk) per directory bucket for the lifetime of the bucket. The [Amazon Web Services managed key](https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#aws-managed-cmk) (aws/s3) isn't supported.
     public var ssekmsKeyId: Swift.String?
 
     public init(
@@ -2359,8 +2355,9 @@ extension CreateSessionInput: Swift.CustomDebugStringConvertible {
 }
 
 extension S3ClientTypes {
+
     /// The established temporary security credentials of the session. Directory buckets - These session credentials are only supported for the authentication and authorization of Zonal endpoint API operations on directory buckets.
-    public struct SessionCredentials {
+    public struct SessionCredentials: Swift.Sendable {
         /// A unique identifier that's associated with a secret access key. The access key ID and the secret access key are used together to sign programmatic Amazon Web Services requests cryptographically.
         /// This member is required.
         public var accessKeyId: Swift.String?
@@ -2387,7 +2384,6 @@ extension S3ClientTypes {
             self.sessionToken = sessionToken
         }
     }
-
 }
 
 extension S3ClientTypes.SessionCredentials: Swift.CustomDebugStringConvertible {
@@ -2395,7 +2391,7 @@ extension S3ClientTypes.SessionCredentials: Swift.CustomDebugStringConvertible {
         "SessionCredentials(accessKeyId: \(Swift.String(describing: accessKeyId)), expiration: \(Swift.String(describing: expiration)), secretAccessKey: \"CONTENT_REDACTED\", sessionToken: \"CONTENT_REDACTED\")"}
 }
 
-public struct CreateSessionOutput {
+public struct CreateSessionOutput: Swift.Sendable {
     /// Indicates whether to use an S3 Bucket Key for server-side encryption with KMS keys (SSE-KMS).
     public var bucketKeyEnabled: Swift.Bool?
     /// The established temporary security credentials for the created session.
@@ -2429,7 +2425,7 @@ extension CreateSessionOutput: Swift.CustomDebugStringConvertible {
         "CreateSessionOutput(bucketKeyEnabled: \(Swift.String(describing: bucketKeyEnabled)), credentials: \(Swift.String(describing: credentials)), serverSideEncryption: \(Swift.String(describing: serverSideEncryption)), ssekmsEncryptionContext: \"CONTENT_REDACTED\", ssekmsKeyId: \"CONTENT_REDACTED\")"}
 }
 
-public struct DeleteBucketInput {
+public struct DeleteBucketInput: Swift.Sendable {
     /// Specifies the bucket being deleted. Directory buckets - When you use this operation with a directory bucket, you must use path-style requests in the format https://s3express-control.region_code.amazonaws.com/bucket-name . Virtual-hosted-style requests aren't supported. Directory bucket names must be unique in the chosen Availability Zone. Bucket names must also follow the format  bucket_base_name--az_id--x-s3 (for example,  DOC-EXAMPLE-BUCKET--usw2-az1--x-s3). For information about bucket naming restrictions, see [Directory bucket naming rules](https://docs.aws.amazon.com/AmazonS3/latest/userguide/directory-bucket-naming-rules.html) in the Amazon S3 User Guide
     /// This member is required.
     public var bucket: Swift.String?
@@ -2446,7 +2442,7 @@ public struct DeleteBucketInput {
     }
 }
 
-public struct DeleteBucketAnalyticsConfigurationInput {
+public struct DeleteBucketAnalyticsConfigurationInput: Swift.Sendable {
     /// The name of the bucket from which an analytics configuration is deleted.
     /// This member is required.
     public var bucket: Swift.String?
@@ -2468,7 +2464,7 @@ public struct DeleteBucketAnalyticsConfigurationInput {
     }
 }
 
-public struct DeleteBucketCorsInput {
+public struct DeleteBucketCorsInput: Swift.Sendable {
     /// Specifies the bucket whose cors configuration is being deleted.
     /// This member is required.
     public var bucket: Swift.String?
@@ -2485,7 +2481,7 @@ public struct DeleteBucketCorsInput {
     }
 }
 
-public struct DeleteBucketEncryptionInput {
+public struct DeleteBucketEncryptionInput: Swift.Sendable {
     /// The name of the bucket containing the server-side encryption configuration to delete. Directory buckets - When you use this operation with a directory bucket, you must use path-style requests in the format https://s3express-control.region_code.amazonaws.com/bucket-name . Virtual-hosted-style requests aren't supported. Directory bucket names must be unique in the chosen Availability Zone. Bucket names must also follow the format  bucket_base_name--az_id--x-s3 (for example,  DOC-EXAMPLE-BUCKET--usw2-az1--x-s3). For information about bucket naming restrictions, see [Directory bucket naming rules](https://docs.aws.amazon.com/AmazonS3/latest/userguide/directory-bucket-naming-rules.html) in the Amazon S3 User Guide
     /// This member is required.
     public var bucket: Swift.String?
@@ -2502,7 +2498,7 @@ public struct DeleteBucketEncryptionInput {
     }
 }
 
-public struct DeleteBucketIntelligentTieringConfigurationInput {
+public struct DeleteBucketIntelligentTieringConfigurationInput: Swift.Sendable {
     /// The name of the Amazon S3 bucket whose configuration you want to modify or retrieve.
     /// This member is required.
     public var bucket: Swift.String?
@@ -2520,7 +2516,7 @@ public struct DeleteBucketIntelligentTieringConfigurationInput {
     }
 }
 
-public struct DeleteBucketInventoryConfigurationInput {
+public struct DeleteBucketInventoryConfigurationInput: Swift.Sendable {
     /// The name of the bucket containing the inventory configuration to delete.
     /// This member is required.
     public var bucket: Swift.String?
@@ -2542,7 +2538,7 @@ public struct DeleteBucketInventoryConfigurationInput {
     }
 }
 
-public struct DeleteBucketLifecycleInput {
+public struct DeleteBucketLifecycleInput: Swift.Sendable {
     /// The bucket name of the lifecycle to delete.
     /// This member is required.
     public var bucket: Swift.String?
@@ -2559,7 +2555,7 @@ public struct DeleteBucketLifecycleInput {
     }
 }
 
-public struct DeleteBucketMetricsConfigurationInput {
+public struct DeleteBucketMetricsConfigurationInput: Swift.Sendable {
     /// The name of the bucket containing the metrics configuration to delete.
     /// This member is required.
     public var bucket: Swift.String?
@@ -2581,7 +2577,7 @@ public struct DeleteBucketMetricsConfigurationInput {
     }
 }
 
-public struct DeleteBucketOwnershipControlsInput {
+public struct DeleteBucketOwnershipControlsInput: Swift.Sendable {
     /// The Amazon S3 bucket whose OwnershipControls you want to delete.
     /// This member is required.
     public var bucket: Swift.String?
@@ -2598,7 +2594,7 @@ public struct DeleteBucketOwnershipControlsInput {
     }
 }
 
-public struct DeleteBucketPolicyInput {
+public struct DeleteBucketPolicyInput: Swift.Sendable {
     /// The bucket name. Directory buckets - When you use this operation with a directory bucket, you must use path-style requests in the format https://s3express-control.region_code.amazonaws.com/bucket-name . Virtual-hosted-style requests aren't supported. Directory bucket names must be unique in the chosen Availability Zone. Bucket names must also follow the format  bucket_base_name--az_id--x-s3 (for example,  DOC-EXAMPLE-BUCKET--usw2-az1--x-s3). For information about bucket naming restrictions, see [Directory bucket naming rules](https://docs.aws.amazon.com/AmazonS3/latest/userguide/directory-bucket-naming-rules.html) in the Amazon S3 User Guide
     /// This member is required.
     public var bucket: Swift.String?
@@ -2615,7 +2611,7 @@ public struct DeleteBucketPolicyInput {
     }
 }
 
-public struct DeleteBucketReplicationInput {
+public struct DeleteBucketReplicationInput: Swift.Sendable {
     /// The bucket name.
     /// This member is required.
     public var bucket: Swift.String?
@@ -2632,7 +2628,7 @@ public struct DeleteBucketReplicationInput {
     }
 }
 
-public struct DeleteBucketTaggingInput {
+public struct DeleteBucketTaggingInput: Swift.Sendable {
     /// The bucket that has the tag set to be removed.
     /// This member is required.
     public var bucket: Swift.String?
@@ -2649,7 +2645,7 @@ public struct DeleteBucketTaggingInput {
     }
 }
 
-public struct DeleteBucketWebsiteInput {
+public struct DeleteBucketWebsiteInput: Swift.Sendable {
     /// The bucket name for which you want to remove the website configuration.
     /// This member is required.
     public var bucket: Swift.String?
@@ -2666,7 +2662,7 @@ public struct DeleteBucketWebsiteInput {
     }
 }
 
-public struct DeleteObjectInput {
+public struct DeleteObjectInput: Swift.Sendable {
     /// The bucket name of the bucket containing the object. Directory buckets - When you use this operation with a directory bucket, you must use virtual-hosted-style requests in the format  Bucket_name.s3express-az_id.region.amazonaws.com. Path-style requests are not supported. Directory bucket names must be unique in the chosen Availability Zone. Bucket names must follow the format  bucket_base_name--az-id--x-s3 (for example,  DOC-EXAMPLE-BUCKET--usw2-az1--x-s3). For information about bucket naming restrictions, see [Directory bucket naming rules](https://docs.aws.amazon.com/AmazonS3/latest/userguide/directory-bucket-naming-rules.html) in the Amazon S3 User Guide. Access points - When you use this action with an access point, you must provide the alias of the access point in place of the bucket name or specify the access point ARN. When using the access point ARN, you must direct requests to the access point hostname. The access point hostname takes the form AccessPointName-AccountId.s3-accesspoint.Region.amazonaws.com. When using this action with an access point through the Amazon Web Services SDKs, you provide the access point ARN in place of the bucket name. For more information about access point ARNs, see [Using access points](https://docs.aws.amazon.com/AmazonS3/latest/userguide/using-access-points.html) in the Amazon S3 User Guide. Access points and Object Lambda access points are not supported by directory buckets. S3 on Outposts - When you use this action with Amazon S3 on Outposts, you must direct requests to the S3 on Outposts hostname. The S3 on Outposts hostname takes the form  AccessPointName-AccountId.outpostID.s3-outposts.Region.amazonaws.com. When you use this action with S3 on Outposts through the Amazon Web Services SDKs, you provide the Outposts access point ARN in place of the bucket name. For more information about S3 on Outposts ARNs, see [What is S3 on Outposts?](https://docs.aws.amazon.com/AmazonS3/latest/userguide/S3onOutposts.html) in the Amazon S3 User Guide.
     /// This member is required.
     public var bucket: Swift.String?
@@ -2704,7 +2700,7 @@ public struct DeleteObjectInput {
     }
 }
 
-public struct DeleteObjectOutput {
+public struct DeleteObjectOutput: Swift.Sendable {
     /// Indicates whether the specified object version that was permanently deleted was (true) or was not (false) a delete marker before deletion. In a simple DELETE, this header indicates whether (true) or not (false) the current version of the object is a delete marker. This functionality is not supported for directory buckets.
     public var deleteMarker: Swift.Bool?
     /// If present, indicates that the requester was successfully charged for the request. This functionality is not supported for directory buckets.
@@ -2725,8 +2721,9 @@ public struct DeleteObjectOutput {
 }
 
 extension S3ClientTypes {
+
     /// Object Identifier is unique value to identify objects.
-    public struct ObjectIdentifier {
+    public struct ObjectIdentifier: Swift.Sendable {
         /// Key name of the object. Replacement must be made for object keys containing special characters (such as carriage returns) when using XML requests. For more information, see [ XML related object key constraints](https://docs.aws.amazon.com/AmazonS3/latest/userguide/object-keys.html#object-key-xml-related-constraints).
         /// This member is required.
         public var key: Swift.String?
@@ -2742,12 +2739,12 @@ extension S3ClientTypes {
             self.versionId = versionId
         }
     }
-
 }
 
 extension S3ClientTypes {
+
     /// Container for the objects to delete.
-    public struct Delete {
+    public struct Delete: Swift.Sendable {
         /// The object to delete. Directory buckets - For directory buckets, an object that's composed entirely of whitespace characters is not supported by the DeleteObjects API operation. The request will receive a 400 Bad Request error and none of the objects in the request will be deleted.
         /// This member is required.
         public var objects: [S3ClientTypes.ObjectIdentifier]?
@@ -2763,10 +2760,9 @@ extension S3ClientTypes {
             self.quiet = quiet
         }
     }
-
 }
 
-public struct DeleteObjectsInput {
+public struct DeleteObjectsInput: Swift.Sendable {
     /// The bucket name containing the objects to delete. Directory buckets - When you use this operation with a directory bucket, you must use virtual-hosted-style requests in the format  Bucket_name.s3express-az_id.region.amazonaws.com. Path-style requests are not supported. Directory bucket names must be unique in the chosen Availability Zone. Bucket names must follow the format  bucket_base_name--az-id--x-s3 (for example,  DOC-EXAMPLE-BUCKET--usw2-az1--x-s3). For information about bucket naming restrictions, see [Directory bucket naming rules](https://docs.aws.amazon.com/AmazonS3/latest/userguide/directory-bucket-naming-rules.html) in the Amazon S3 User Guide. Access points - When you use this action with an access point, you must provide the alias of the access point in place of the bucket name or specify the access point ARN. When using the access point ARN, you must direct requests to the access point hostname. The access point hostname takes the form AccessPointName-AccountId.s3-accesspoint.Region.amazonaws.com. When using this action with an access point through the Amazon Web Services SDKs, you provide the access point ARN in place of the bucket name. For more information about access point ARNs, see [Using access points](https://docs.aws.amazon.com/AmazonS3/latest/userguide/using-access-points.html) in the Amazon S3 User Guide. Access points and Object Lambda access points are not supported by directory buckets. S3 on Outposts - When you use this action with Amazon S3 on Outposts, you must direct requests to the S3 on Outposts hostname. The S3 on Outposts hostname takes the form  AccessPointName-AccountId.outpostID.s3-outposts.Region.amazonaws.com. When you use this action with S3 on Outposts through the Amazon Web Services SDKs, you provide the Outposts access point ARN in place of the bucket name. For more information about S3 on Outposts ARNs, see [What is S3 on Outposts?](https://docs.aws.amazon.com/AmazonS3/latest/userguide/S3onOutposts.html) in the Amazon S3 User Guide.
     /// This member is required.
     public var bucket: Swift.String?
@@ -2816,8 +2812,9 @@ public struct DeleteObjectsInput {
 }
 
 extension S3ClientTypes {
+
     /// Information about the deleted object.
-    public struct DeletedObject {
+    public struct DeletedObject: Swift.Sendable {
         /// Indicates whether the specified object version that was permanently deleted was (true) or was not (false) a delete marker before deletion. In a simple DELETE, this header indicates whether (true) or not (false) the current version of the object is a delete marker. This functionality is not supported for directory buckets.
         public var deleteMarker: Swift.Bool?
         /// The version ID of the delete marker created as a result of the DELETE operation. If you delete a specific object version, the value returned by this header is the version ID of the object version deleted. This functionality is not supported for directory buckets.
@@ -2840,12 +2837,12 @@ extension S3ClientTypes {
             self.versionId = versionId
         }
     }
-
 }
 
 extension S3ClientTypes {
+
     /// Container for all error elements.
-    public struct Error {
+    public struct Error: Swift.Sendable {
         /// The error code is a string that uniquely identifies an error condition. It is meant to be read and understood by programs that detect and handle errors by type. The following is a list of Amazon S3 error codes. For more information, see [Error responses](https://docs.aws.amazon.com/AmazonS3/latest/API/ErrorResponses.html).
         ///
         ///
@@ -3921,10 +3918,9 @@ extension S3ClientTypes {
             self.versionId = versionId
         }
     }
-
 }
 
-public struct DeleteObjectsOutput {
+public struct DeleteObjectsOutput: Swift.Sendable {
     /// Container element for a successful delete. It identifies the object that was successfully deleted.
     public var deleted: [S3ClientTypes.DeletedObject]?
     /// Container for a failed delete action that describes the object that Amazon S3 attempted to delete and the error it encountered.
@@ -3944,7 +3940,7 @@ public struct DeleteObjectsOutput {
     }
 }
 
-public struct DeleteObjectTaggingInput {
+public struct DeleteObjectTaggingInput: Swift.Sendable {
     /// The bucket name containing the objects from which to remove the tags. Access points - When you use this action with an access point, you must provide the alias of the access point in place of the bucket name or specify the access point ARN. When using the access point ARN, you must direct requests to the access point hostname. The access point hostname takes the form AccessPointName-AccountId.s3-accesspoint.Region.amazonaws.com. When using this action with an access point through the Amazon Web Services SDKs, you provide the access point ARN in place of the bucket name. For more information about access point ARNs, see [Using access points](https://docs.aws.amazon.com/AmazonS3/latest/userguide/using-access-points.html) in the Amazon S3 User Guide. S3 on Outposts - When you use this action with Amazon S3 on Outposts, you must direct requests to the S3 on Outposts hostname. The S3 on Outposts hostname takes the form  AccessPointName-AccountId.outpostID.s3-outposts.Region.amazonaws.com. When you use this action with S3 on Outposts through the Amazon Web Services SDKs, you provide the Outposts access point ARN in place of the bucket name. For more information about S3 on Outposts ARNs, see [What is S3 on Outposts?](https://docs.aws.amazon.com/AmazonS3/latest/userguide/S3onOutposts.html) in the Amazon S3 User Guide.
     /// This member is required.
     public var bucket: Swift.String?
@@ -3970,7 +3966,7 @@ public struct DeleteObjectTaggingInput {
     }
 }
 
-public struct DeleteObjectTaggingOutput {
+public struct DeleteObjectTaggingOutput: Swift.Sendable {
     /// The versionId of the object the tag-set was removed from.
     public var versionId: Swift.String?
 
@@ -3982,7 +3978,7 @@ public struct DeleteObjectTaggingOutput {
     }
 }
 
-public struct DeletePublicAccessBlockInput {
+public struct DeletePublicAccessBlockInput: Swift.Sendable {
     /// The Amazon S3 bucket whose PublicAccessBlock configuration you want to delete.
     /// This member is required.
     public var bucket: Swift.String?
@@ -3999,7 +3995,7 @@ public struct DeletePublicAccessBlockInput {
     }
 }
 
-public struct GetBucketAccelerateConfigurationInput {
+public struct GetBucketAccelerateConfigurationInput: Swift.Sendable {
     /// The name of the bucket for which the accelerate configuration is retrieved.
     /// This member is required.
     public var bucket: Swift.String?
@@ -4020,7 +4016,7 @@ public struct GetBucketAccelerateConfigurationInput {
     }
 }
 
-public struct GetBucketAccelerateConfigurationOutput {
+public struct GetBucketAccelerateConfigurationOutput: Swift.Sendable {
     /// If present, indicates that the requester was successfully charged for the request. This functionality is not supported for directory buckets.
     public var requestCharged: S3ClientTypes.RequestCharged?
     /// The accelerate configuration of the bucket.
@@ -4036,7 +4032,7 @@ public struct GetBucketAccelerateConfigurationOutput {
     }
 }
 
-public struct GetBucketAclInput {
+public struct GetBucketAclInput: Swift.Sendable {
     /// Specifies the S3 bucket whose ACL is being requested. When you use this API operation with an access point, provide the alias of the access point in place of the bucket name. When you use this API operation with an Object Lambda access point, provide the alias of the Object Lambda access point in place of the bucket name. If the Object Lambda access point alias in a request is not valid, the error code InvalidAccessPointAliasError is returned. For more information about InvalidAccessPointAliasError, see [List of Error Codes](https://docs.aws.amazon.com/AmazonS3/latest/API/ErrorResponses.html#ErrorCodeList).
     /// This member is required.
     public var bucket: Swift.String?
@@ -4053,7 +4049,7 @@ public struct GetBucketAclInput {
     }
 }
 
-public struct GetBucketAclOutput {
+public struct GetBucketAclOutput: Swift.Sendable {
     /// A list of grants.
     public var grants: [S3ClientTypes.Grant]?
     /// Container for the bucket owner's display name and ID.
@@ -4069,7 +4065,7 @@ public struct GetBucketAclOutput {
     }
 }
 
-public struct GetBucketAnalyticsConfigurationInput {
+public struct GetBucketAnalyticsConfigurationInput: Swift.Sendable {
     /// The name of the bucket from which an analytics configuration is retrieved.
     /// This member is required.
     public var bucket: Swift.String?
@@ -4092,8 +4088,9 @@ public struct GetBucketAnalyticsConfigurationInput {
 }
 
 extension S3ClientTypes {
+
     /// A container of a key value name pair.
-    public struct Tag {
+    public struct Tag: Swift.Sendable {
         /// Name of the object key.
         /// This member is required.
         public var key: Swift.String?
@@ -4110,12 +4107,12 @@ extension S3ClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension S3ClientTypes {
+
     /// A conjunction (logical AND) of predicates, which is used in evaluating a metrics filter. The operator must have at least two predicates in any combination, and an object must match all of the predicates for the filter to apply.
-    public struct AnalyticsAndOperator {
+    public struct AnalyticsAndOperator: Swift.Sendable {
         /// The prefix to use when evaluating an AND predicate: The prefix that an object must have to be included in the metrics results.
         public var `prefix`: Swift.String?
         /// The list of tags to use when evaluating an AND predicate.
@@ -4130,12 +4127,12 @@ extension S3ClientTypes {
             self.tags = tags
         }
     }
-
 }
 
 extension S3ClientTypes {
+
     /// The filter used to describe a set of objects for analyses. A filter must have exactly one prefix, one tag, or one conjunction (AnalyticsAndOperator). If no filter is provided, all objects will be considered in any analysis.
-    public enum AnalyticsFilter {
+    public enum AnalyticsFilter: Swift.Sendable {
         /// The prefix to use when evaluating an analytics filter.
         case `prefix`(Swift.String)
         /// The tag to use when evaluating an analytics filter.
@@ -4144,12 +4141,11 @@ extension S3ClientTypes {
         case and(S3ClientTypes.AnalyticsAndOperator)
         case sdkUnknown(Swift.String)
     }
-
 }
 
 extension S3ClientTypes {
 
-    public enum AnalyticsS3ExportFileFormat: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AnalyticsS3ExportFileFormat: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case csv
         case sdkUnknown(Swift.String)
 
@@ -4174,8 +4170,9 @@ extension S3ClientTypes {
 }
 
 extension S3ClientTypes {
+
     /// Contains information about where to publish the analytics results.
-    public struct AnalyticsS3BucketDestination {
+    public struct AnalyticsS3BucketDestination: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the bucket to which data is exported.
         /// This member is required.
         public var bucket: Swift.String?
@@ -4200,12 +4197,12 @@ extension S3ClientTypes {
             self.`prefix` = `prefix`
         }
     }
-
 }
 
 extension S3ClientTypes {
+
     /// Where to publish the analytics results.
-    public struct AnalyticsExportDestination {
+    public struct AnalyticsExportDestination: Swift.Sendable {
         /// A destination signifying output to an S3 bucket.
         /// This member is required.
         public var s3BucketDestination: S3ClientTypes.AnalyticsS3BucketDestination?
@@ -4217,12 +4214,11 @@ extension S3ClientTypes {
             self.s3BucketDestination = s3BucketDestination
         }
     }
-
 }
 
 extension S3ClientTypes {
 
-    public enum StorageClassAnalysisSchemaVersion: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum StorageClassAnalysisSchemaVersion: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case v1
         case sdkUnknown(Swift.String)
 
@@ -4247,8 +4243,9 @@ extension S3ClientTypes {
 }
 
 extension S3ClientTypes {
+
     /// Container for data related to the storage class analysis for an Amazon S3 bucket for export.
-    public struct StorageClassAnalysisDataExport {
+    public struct StorageClassAnalysisDataExport: Swift.Sendable {
         /// The place to store the data for an analysis.
         /// This member is required.
         public var destination: S3ClientTypes.AnalyticsExportDestination?
@@ -4265,12 +4262,12 @@ extension S3ClientTypes {
             self.outputSchemaVersion = outputSchemaVersion
         }
     }
-
 }
 
 extension S3ClientTypes {
+
     /// Specifies data related to access patterns to be collected and made available to analyze the tradeoffs between different storage classes for an Amazon S3 bucket.
-    public struct StorageClassAnalysis {
+    public struct StorageClassAnalysis: Swift.Sendable {
         /// Specifies how data related to the storage class analysis for an Amazon S3 bucket should be exported.
         public var dataExport: S3ClientTypes.StorageClassAnalysisDataExport?
 
@@ -4281,12 +4278,12 @@ extension S3ClientTypes {
             self.dataExport = dataExport
         }
     }
-
 }
 
 extension S3ClientTypes {
+
     /// Specifies the configuration and any analyses for the analytics filter of an Amazon S3 bucket.
-    public struct AnalyticsConfiguration {
+    public struct AnalyticsConfiguration: Swift.Sendable {
         /// The filter used to describe a set of objects for analyses. A filter must have exactly one prefix, one tag, or one conjunction (AnalyticsAndOperator). If no filter is provided, all objects will be considered in any analysis.
         public var filter: S3ClientTypes.AnalyticsFilter?
         /// The ID that identifies the analytics configuration.
@@ -4307,10 +4304,9 @@ extension S3ClientTypes {
             self.storageClassAnalysis = storageClassAnalysis
         }
     }
-
 }
 
-public struct GetBucketAnalyticsConfigurationOutput {
+public struct GetBucketAnalyticsConfigurationOutput: Swift.Sendable {
     /// The configuration and any analyses for the analytics filter.
     public var analyticsConfiguration: S3ClientTypes.AnalyticsConfiguration?
 
@@ -4322,7 +4318,7 @@ public struct GetBucketAnalyticsConfigurationOutput {
     }
 }
 
-public struct GetBucketCorsInput {
+public struct GetBucketCorsInput: Swift.Sendable {
     /// The bucket name for which to get the cors configuration. When you use this API operation with an access point, provide the alias of the access point in place of the bucket name. When you use this API operation with an Object Lambda access point, provide the alias of the Object Lambda access point in place of the bucket name. If the Object Lambda access point alias in a request is not valid, the error code InvalidAccessPointAliasError is returned. For more information about InvalidAccessPointAliasError, see [List of Error Codes](https://docs.aws.amazon.com/AmazonS3/latest/API/ErrorResponses.html#ErrorCodeList).
     /// This member is required.
     public var bucket: Swift.String?
@@ -4340,8 +4336,9 @@ public struct GetBucketCorsInput {
 }
 
 extension S3ClientTypes {
+
     /// Specifies a cross-origin access rule for an Amazon S3 bucket.
-    public struct CORSRule {
+    public struct CORSRule: Swift.Sendable {
         /// Headers that are specified in the Access-Control-Request-Headers header. These headers are allowed in a preflight OPTIONS request. In response to any preflight OPTIONS request, Amazon S3 returns any requested headers that are allowed.
         public var allowedHeaders: [Swift.String]?
         /// An HTTP method that you allow the origin to execute. Valid values are GET, PUT, HEAD, POST, and DELETE.
@@ -4374,10 +4371,9 @@ extension S3ClientTypes {
             self.maxAgeSeconds = maxAgeSeconds
         }
     }
-
 }
 
-public struct GetBucketCorsOutput {
+public struct GetBucketCorsOutput: Swift.Sendable {
     /// A set of origins and methods (cross-origin access that you want to allow). You can add up to 100 rules to the configuration.
     public var corsRules: [S3ClientTypes.CORSRule]?
 
@@ -4389,7 +4385,7 @@ public struct GetBucketCorsOutput {
     }
 }
 
-public struct GetBucketEncryptionInput {
+public struct GetBucketEncryptionInput: Swift.Sendable {
     /// The name of the bucket from which the server-side encryption configuration is retrieved. Directory buckets - When you use this operation with a directory bucket, you must use path-style requests in the format https://s3express-control.region_code.amazonaws.com/bucket-name . Virtual-hosted-style requests aren't supported. Directory bucket names must be unique in the chosen Availability Zone. Bucket names must also follow the format  bucket_base_name--az_id--x-s3 (for example,  DOC-EXAMPLE-BUCKET--usw2-az1--x-s3). For information about bucket naming restrictions, see [Directory bucket naming rules](https://docs.aws.amazon.com/AmazonS3/latest/userguide/directory-bucket-naming-rules.html) in the Amazon S3 User Guide
     /// This member is required.
     public var bucket: Swift.String?
@@ -4407,14 +4403,15 @@ public struct GetBucketEncryptionInput {
 }
 
 extension S3ClientTypes {
+
     /// Describes the default server-side encryption to apply to new objects in the bucket. If a PUT Object request doesn't specify any server-side encryption, this default encryption will be applied. For more information, see [PutBucketEncryption](https://docs.aws.amazon.com/AmazonS3/latest/API/RESTBucketPUTencryption.html).
     ///
     /// * General purpose buckets - If you don't specify a customer managed key at configuration, Amazon S3 automatically creates an Amazon Web Services KMS key (aws/s3) in your Amazon Web Services account the first time that you add an object encrypted with SSE-KMS to a bucket. By default, Amazon S3 uses this KMS key for SSE-KMS.
     ///
-    /// * Directory buckets - Your SSE-KMS configuration can only support 1 [customer managed key](https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#customer-cmk) per directory bucket for the lifetime of the bucket. [Amazon Web Services managed key](https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#aws-managed-cmk) (aws/s3) isn't supported.
+    /// * Directory buckets - Your SSE-KMS configuration can only support 1 [customer managed key](https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#customer-cmk) per directory bucket for the lifetime of the bucket. The [Amazon Web Services managed key](https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#aws-managed-cmk) (aws/s3) isn't supported.
     ///
     /// * Directory buckets - For directory buckets, there are only two supported options for server-side encryption: SSE-S3 and SSE-KMS.
-    public struct ServerSideEncryptionByDefault {
+    public struct ServerSideEncryptionByDefault: Swift.Sendable {
         /// Amazon Web Services Key Management Service (KMS) customer managed key ID to use for the default encryption.
         ///
         /// * General purpose buckets - This parameter is allowed if and only if SSEAlgorithm is set to aws:kms or aws:kms:dsse.
@@ -4453,7 +4450,6 @@ extension S3ClientTypes {
             self.sseAlgorithm = sseAlgorithm
         }
     }
-
 }
 
 extension S3ClientTypes.ServerSideEncryptionByDefault: Swift.CustomDebugStringConvertible {
@@ -4462,12 +4458,13 @@ extension S3ClientTypes.ServerSideEncryptionByDefault: Swift.CustomDebugStringCo
 }
 
 extension S3ClientTypes {
+
     /// Specifies the default server-side encryption configuration.
     ///
     /// * General purpose buckets - If you're specifying a customer managed KMS key, we recommend using a fully qualified KMS key ARN. If you use a KMS key alias instead, then KMS resolves the key within the requester’s account. This behavior can result in data that's encrypted with a KMS key that belongs to the requester, and not the bucket owner.
     ///
     /// * Directory buckets - When you specify an [KMS customer managed key](https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#customer-cmk) for encryption in your directory bucket, only use the key ID or key ARN. The key alias format of the KMS key isn't supported.
-    public struct ServerSideEncryptionRule {
+    public struct ServerSideEncryptionRule: Swift.Sendable {
         /// Specifies the default server-side encryption to apply to new objects in the bucket. If a PUT Object request doesn't specify any server-side encryption, this default encryption will be applied.
         public var applyServerSideEncryptionByDefault: S3ClientTypes.ServerSideEncryptionByDefault?
         /// Specifies whether Amazon S3 should use an S3 Bucket Key with server-side encryption using KMS (SSE-KMS) for new objects in the bucket. Existing objects are not affected. Setting the BucketKeyEnabled element to true causes Amazon S3 to use an S3 Bucket Key.
@@ -4486,12 +4483,12 @@ extension S3ClientTypes {
             self.bucketKeyEnabled = bucketKeyEnabled
         }
     }
-
 }
 
 extension S3ClientTypes {
+
     /// Specifies the default server-side-encryption configuration.
-    public struct ServerSideEncryptionConfiguration {
+    public struct ServerSideEncryptionConfiguration: Swift.Sendable {
         /// Container for information about a particular server-side encryption configuration rule.
         /// This member is required.
         public var rules: [S3ClientTypes.ServerSideEncryptionRule]?
@@ -4503,10 +4500,9 @@ extension S3ClientTypes {
             self.rules = rules
         }
     }
-
 }
 
-public struct GetBucketEncryptionOutput {
+public struct GetBucketEncryptionOutput: Swift.Sendable {
     /// Specifies the default server-side-encryption configuration.
     public var serverSideEncryptionConfiguration: S3ClientTypes.ServerSideEncryptionConfiguration?
 
@@ -4518,7 +4514,7 @@ public struct GetBucketEncryptionOutput {
     }
 }
 
-public struct GetBucketIntelligentTieringConfigurationInput {
+public struct GetBucketIntelligentTieringConfigurationInput: Swift.Sendable {
     /// The name of the Amazon S3 bucket whose configuration you want to modify or retrieve.
     /// This member is required.
     public var bucket: Swift.String?
@@ -4537,8 +4533,9 @@ public struct GetBucketIntelligentTieringConfigurationInput {
 }
 
 extension S3ClientTypes {
+
     /// A container for specifying S3 Intelligent-Tiering filters. The filters determine the subset of objects to which the rule applies.
-    public struct IntelligentTieringAndOperator {
+    public struct IntelligentTieringAndOperator: Swift.Sendable {
         /// An object key name prefix that identifies the subset of objects to which the configuration applies.
         public var `prefix`: Swift.String?
         /// All of these tags must exist in the object's tag set in order for the configuration to apply.
@@ -4553,12 +4550,12 @@ extension S3ClientTypes {
             self.tags = tags
         }
     }
-
 }
 
 extension S3ClientTypes {
+
     /// The Filter is used to identify objects that the S3 Intelligent-Tiering configuration applies to.
-    public struct IntelligentTieringFilter {
+    public struct IntelligentTieringFilter: Swift.Sendable {
         /// A conjunction (logical AND) of predicates, which is used in evaluating a metrics filter. The operator must have at least two predicates, and an object must match all of the predicates in order for the filter to apply.
         public var and: S3ClientTypes.IntelligentTieringAndOperator?
         /// An object key name prefix that identifies the subset of objects to which the rule applies. Replacement must be made for object keys containing special characters (such as carriage returns) when using XML requests. For more information, see [ XML related object key constraints](https://docs.aws.amazon.com/AmazonS3/latest/userguide/object-keys.html#object-key-xml-related-constraints).
@@ -4577,12 +4574,11 @@ extension S3ClientTypes {
             self.tag = tag
         }
     }
-
 }
 
 extension S3ClientTypes {
 
-    public enum IntelligentTieringStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum IntelligentTieringStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case disabled
         case enabled
         case sdkUnknown(Swift.String)
@@ -4611,7 +4607,7 @@ extension S3ClientTypes {
 
 extension S3ClientTypes {
 
-    public enum IntelligentTieringAccessTier: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum IntelligentTieringAccessTier: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case archiveAccess
         case deepArchiveAccess
         case sdkUnknown(Swift.String)
@@ -4639,8 +4635,9 @@ extension S3ClientTypes {
 }
 
 extension S3ClientTypes {
+
     /// The S3 Intelligent-Tiering storage class is designed to optimize storage costs by automatically moving data to the most cost-effective storage access tier, without additional operational overhead.
-    public struct Tiering {
+    public struct Tiering: Swift.Sendable {
         /// S3 Intelligent-Tiering access tier. See [Storage class for automatically optimizing frequently and infrequently accessed objects](https://docs.aws.amazon.com/AmazonS3/latest/dev/storage-class-intro.html#sc-dynamic-data-access) for a list of access tiers in the S3 Intelligent-Tiering storage class.
         /// This member is required.
         public var accessTier: S3ClientTypes.IntelligentTieringAccessTier?
@@ -4657,12 +4654,12 @@ extension S3ClientTypes {
             self.days = days
         }
     }
-
 }
 
 extension S3ClientTypes {
+
     /// Specifies the S3 Intelligent-Tiering configuration for an Amazon S3 bucket. For information about the S3 Intelligent-Tiering storage class, see [Storage class for automatically optimizing frequently and infrequently accessed objects](https://docs.aws.amazon.com/AmazonS3/latest/dev/storage-class-intro.html#sc-dynamic-data-access).
-    public struct IntelligentTieringConfiguration {
+    public struct IntelligentTieringConfiguration: Swift.Sendable {
         /// Specifies a bucket filter. The configuration only includes objects that meet the filter's criteria.
         public var filter: S3ClientTypes.IntelligentTieringFilter?
         /// The ID used to identify the S3 Intelligent-Tiering configuration.
@@ -4688,10 +4685,9 @@ extension S3ClientTypes {
             self.tierings = tierings
         }
     }
-
 }
 
-public struct GetBucketIntelligentTieringConfigurationOutput {
+public struct GetBucketIntelligentTieringConfigurationOutput: Swift.Sendable {
     /// Container for S3 Intelligent-Tiering configuration.
     public var intelligentTieringConfiguration: S3ClientTypes.IntelligentTieringConfiguration?
 
@@ -4703,7 +4699,7 @@ public struct GetBucketIntelligentTieringConfigurationOutput {
     }
 }
 
-public struct GetBucketInventoryConfigurationInput {
+public struct GetBucketInventoryConfigurationInput: Swift.Sendable {
     /// The name of the bucket containing the inventory configuration to retrieve.
     /// This member is required.
     public var bucket: Swift.String?
@@ -4726,8 +4722,9 @@ public struct GetBucketInventoryConfigurationInput {
 }
 
 extension S3ClientTypes {
+
     /// Specifies the use of SSE-KMS to encrypt delivered inventory reports.
-    public struct SSEKMS {
+    public struct SSEKMS: Swift.Sendable {
         /// Specifies the ID of the Key Management Service (KMS) symmetric encryption customer managed key to use for encrypting inventory reports.
         /// This member is required.
         public var keyId: Swift.String?
@@ -4739,7 +4736,6 @@ extension S3ClientTypes {
             self.keyId = keyId
         }
     }
-
 }
 
 extension S3ClientTypes.SSEKMS: Swift.CustomDebugStringConvertible {
@@ -4748,17 +4744,18 @@ extension S3ClientTypes.SSEKMS: Swift.CustomDebugStringConvertible {
 }
 
 extension S3ClientTypes {
+
     /// Specifies the use of SSE-S3 to encrypt delivered inventory reports.
-    public struct SSES3 {
+    public struct SSES3: Swift.Sendable {
 
         public init() { }
     }
-
 }
 
 extension S3ClientTypes {
+
     /// Contains the type of server-side encryption used to encrypt the inventory results.
-    public struct InventoryEncryption {
+    public struct InventoryEncryption: Swift.Sendable {
         /// Specifies the use of SSE-KMS to encrypt delivered inventory reports.
         public var ssekms: S3ClientTypes.SSEKMS?
         /// Specifies the use of SSE-S3 to encrypt delivered inventory reports.
@@ -4773,12 +4770,11 @@ extension S3ClientTypes {
             self.sses3 = sses3
         }
     }
-
 }
 
 extension S3ClientTypes {
 
-    public enum InventoryFormat: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum InventoryFormat: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case csv
         case orc
         case parquet
@@ -4809,8 +4805,9 @@ extension S3ClientTypes {
 }
 
 extension S3ClientTypes {
+
     /// Contains the bucket name, file format, bucket owner (optional), and prefix (optional) where inventory results are published.
-    public struct InventoryS3BucketDestination {
+    public struct InventoryS3BucketDestination: Swift.Sendable {
         /// The account ID that owns the destination S3 bucket. If no account ID is provided, the owner is not validated before exporting data. Although this value is optional, we strongly recommend that you set it to help prevent problems if the destination bucket ownership changes.
         public var accountId: Swift.String?
         /// The Amazon Resource Name (ARN) of the bucket where inventory results will be published.
@@ -4839,12 +4836,12 @@ extension S3ClientTypes {
             self.`prefix` = `prefix`
         }
     }
-
 }
 
 extension S3ClientTypes {
+
     /// Specifies the inventory configuration for an Amazon S3 bucket.
-    public struct InventoryDestination {
+    public struct InventoryDestination: Swift.Sendable {
         /// Contains the bucket name, file format, bucket owner (optional), and prefix (optional) where inventory results are published.
         /// This member is required.
         public var s3BucketDestination: S3ClientTypes.InventoryS3BucketDestination?
@@ -4856,12 +4853,12 @@ extension S3ClientTypes {
             self.s3BucketDestination = s3BucketDestination
         }
     }
-
 }
 
 extension S3ClientTypes {
+
     /// Specifies an inventory filter. The inventory only includes objects that meet the filter's criteria.
-    public struct InventoryFilter {
+    public struct InventoryFilter: Swift.Sendable {
         /// The prefix that an object must have to be included in the inventory results.
         /// This member is required.
         public var `prefix`: Swift.String?
@@ -4873,12 +4870,11 @@ extension S3ClientTypes {
             self.`prefix` = `prefix`
         }
     }
-
 }
 
 extension S3ClientTypes {
 
-    public enum InventoryIncludedObjectVersions: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum InventoryIncludedObjectVersions: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case all
         case current
         case sdkUnknown(Swift.String)
@@ -4907,7 +4903,7 @@ extension S3ClientTypes {
 
 extension S3ClientTypes {
 
-    public enum InventoryOptionalField: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum InventoryOptionalField: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case bucketkeystatus
         case checksumalgorithm
         case etag
@@ -4975,7 +4971,7 @@ extension S3ClientTypes {
 
 extension S3ClientTypes {
 
-    public enum InventoryFrequency: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum InventoryFrequency: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case daily
         case weekly
         case sdkUnknown(Swift.String)
@@ -5003,8 +4999,9 @@ extension S3ClientTypes {
 }
 
 extension S3ClientTypes {
+
     /// Specifies the schedule for generating inventory results.
-    public struct InventorySchedule {
+    public struct InventorySchedule: Swift.Sendable {
         /// Specifies how frequently inventory results are produced.
         /// This member is required.
         public var frequency: S3ClientTypes.InventoryFrequency?
@@ -5016,12 +5013,12 @@ extension S3ClientTypes {
             self.frequency = frequency
         }
     }
-
 }
 
 extension S3ClientTypes {
+
     /// Specifies the inventory configuration for an Amazon S3 bucket. For more information, see [GET Bucket inventory](https://docs.aws.amazon.com/AmazonS3/latest/API/RESTBucketGETInventoryConfig.html) in the Amazon S3 API Reference.
-    public struct InventoryConfiguration {
+    public struct InventoryConfiguration: Swift.Sendable {
         /// Contains information about where to publish the inventory results.
         /// This member is required.
         public var destination: S3ClientTypes.InventoryDestination?
@@ -5061,10 +5058,9 @@ extension S3ClientTypes {
             self.schedule = schedule
         }
     }
-
 }
 
-public struct GetBucketInventoryConfigurationOutput {
+public struct GetBucketInventoryConfigurationOutput: Swift.Sendable {
     /// Specifies the inventory configuration.
     public var inventoryConfiguration: S3ClientTypes.InventoryConfiguration?
 
@@ -5076,7 +5072,7 @@ public struct GetBucketInventoryConfigurationOutput {
     }
 }
 
-public struct GetBucketLifecycleConfigurationInput {
+public struct GetBucketLifecycleConfigurationInput: Swift.Sendable {
     /// The name of the bucket for which to get the lifecycle information.
     /// This member is required.
     public var bucket: Swift.String?
@@ -5094,8 +5090,9 @@ public struct GetBucketLifecycleConfigurationInput {
 }
 
 extension S3ClientTypes {
+
     /// Container for the expiration for the lifecycle of the object. For more information see, [Managing your storage lifecycle](https://docs.aws.amazon.com/AmazonS3/latest/userguide/object-lifecycle-mgmt.html) in the Amazon S3 User Guide.
-    public struct LifecycleExpiration {
+    public struct LifecycleExpiration: Swift.Sendable {
         /// Indicates at what date the object is to be moved or deleted. The date value must conform to the ISO 8601 format. The time is always midnight UTC.
         public var date: Foundation.Date?
         /// Indicates the lifetime, in days, of the objects that are subject to the rule. The value must be a non-zero positive integer.
@@ -5114,12 +5111,12 @@ extension S3ClientTypes {
             self.expiredObjectDeleteMarker = expiredObjectDeleteMarker
         }
     }
-
 }
 
 extension S3ClientTypes {
+
     /// This is used in a Lifecycle Rule Filter to apply a logical AND to two or more predicates. The Lifecycle Rule will apply to any object matching all of the predicates configured inside the And operator.
-    public struct LifecycleRuleAndOperator {
+    public struct LifecycleRuleAndOperator: Swift.Sendable {
         /// Minimum object size to which the rule applies.
         public var objectSizeGreaterThan: Swift.Int?
         /// Maximum object size to which the rule applies.
@@ -5142,30 +5139,44 @@ extension S3ClientTypes {
             self.tags = tags
         }
     }
-
 }
 
 extension S3ClientTypes {
+
     /// The Filter is used to identify objects that a Lifecycle Rule applies to. A Filter can have exactly one of Prefix, Tag, ObjectSizeGreaterThan, ObjectSizeLessThan, or And specified. If the Filter element is left empty, the Lifecycle Rule applies to all objects in the bucket.
-    public enum LifecycleRuleFilter {
-        /// Prefix identifying one or more objects to which the rule applies. Replacement must be made for object keys containing special characters (such as carriage returns) when using XML requests. For more information, see [ XML related object key constraints](https://docs.aws.amazon.com/AmazonS3/latest/userguide/object-keys.html#object-key-xml-related-constraints).
-        case `prefix`(Swift.String)
-        /// This tag must exist in the object's tag set in order for the rule to apply.
-        case tag(S3ClientTypes.Tag)
-        /// Minimum object size to which the rule applies.
-        case objectsizegreaterthan(Swift.Int)
-        /// Maximum object size to which the rule applies.
-        case objectsizelessthan(Swift.Int)
+    public struct LifecycleRuleFilter: Swift.Sendable {
         /// This is used in a Lifecycle Rule Filter to apply a logical AND to two or more predicates. The Lifecycle Rule will apply to any object matching all of the predicates configured inside the And operator.
-        case and(S3ClientTypes.LifecycleRuleAndOperator)
-        case sdkUnknown(Swift.String)
-    }
+        public var and: S3ClientTypes.LifecycleRuleAndOperator?
+        /// Minimum object size to which the rule applies.
+        public var objectSizeGreaterThan: Swift.Int?
+        /// Maximum object size to which the rule applies.
+        public var objectSizeLessThan: Swift.Int?
+        /// Prefix identifying one or more objects to which the rule applies. Replacement must be made for object keys containing special characters (such as carriage returns) when using XML requests. For more information, see [ XML related object key constraints](https://docs.aws.amazon.com/AmazonS3/latest/userguide/object-keys.html#object-key-xml-related-constraints).
+        public var `prefix`: Swift.String?
+        /// This tag must exist in the object's tag set in order for the rule to apply.
+        public var tag: S3ClientTypes.Tag?
 
+        public init(
+            and: S3ClientTypes.LifecycleRuleAndOperator? = nil,
+            objectSizeGreaterThan: Swift.Int? = nil,
+            objectSizeLessThan: Swift.Int? = nil,
+            `prefix`: Swift.String? = nil,
+            tag: S3ClientTypes.Tag? = nil
+        )
+        {
+            self.and = and
+            self.objectSizeGreaterThan = objectSizeGreaterThan
+            self.objectSizeLessThan = objectSizeLessThan
+            self.`prefix` = `prefix`
+            self.tag = tag
+        }
+    }
 }
 
 extension S3ClientTypes {
+
     /// Specifies when noncurrent object versions expire. Upon expiration, Amazon S3 permanently deletes the noncurrent object versions. You set this lifecycle configuration action on a bucket that has versioning enabled (or suspended) to request that Amazon S3 delete noncurrent object versions at a specific period in the object's lifetime.
-    public struct NoncurrentVersionExpiration {
+    public struct NoncurrentVersionExpiration: Swift.Sendable {
         /// Specifies how many noncurrent versions Amazon S3 will retain. You can specify up to 100 noncurrent versions to retain. Amazon S3 will permanently delete any additional noncurrent versions beyond the specified number to retain. For more information about noncurrent versions, see [Lifecycle configuration elements](https://docs.aws.amazon.com/AmazonS3/latest/userguide/intro-lifecycle-rules.html) in the Amazon S3 User Guide.
         public var newerNoncurrentVersions: Swift.Int?
         /// Specifies the number of days an object is noncurrent before Amazon S3 can perform the associated action. The value must be a non-zero positive integer. For information about the noncurrent days calculations, see [How Amazon S3 Calculates When an Object Became Noncurrent](https://docs.aws.amazon.com/AmazonS3/latest/dev/intro-lifecycle-rules.html#non-current-days-calculations) in the Amazon S3 User Guide.
@@ -5180,12 +5191,11 @@ extension S3ClientTypes {
             self.noncurrentDays = noncurrentDays
         }
     }
-
 }
 
 extension S3ClientTypes {
 
-    public enum TransitionStorageClass: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum TransitionStorageClass: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case deepArchive
         case glacier
         case glacierIr
@@ -5225,8 +5235,9 @@ extension S3ClientTypes {
 }
 
 extension S3ClientTypes {
+
     /// Container for the transition rule that describes when noncurrent objects transition to the STANDARD_IA, ONEZONE_IA, INTELLIGENT_TIERING, GLACIER_IR, GLACIER, or DEEP_ARCHIVE storage class. If your bucket is versioning-enabled (or versioning is suspended), you can set this action to request that Amazon S3 transition noncurrent object versions to the STANDARD_IA, ONEZONE_IA, INTELLIGENT_TIERING, GLACIER_IR, GLACIER, or DEEP_ARCHIVE storage class at a specific period in the object's lifetime.
-    public struct NoncurrentVersionTransition {
+    public struct NoncurrentVersionTransition: Swift.Sendable {
         /// Specifies how many noncurrent versions Amazon S3 will retain in the same storage class before transitioning objects. You can specify up to 100 noncurrent versions to retain. Amazon S3 will transition any additional noncurrent versions beyond the specified number to retain. For more information about noncurrent versions, see [Lifecycle configuration elements](https://docs.aws.amazon.com/AmazonS3/latest/userguide/intro-lifecycle-rules.html) in the Amazon S3 User Guide.
         public var newerNoncurrentVersions: Swift.Int?
         /// Specifies the number of days an object is noncurrent before Amazon S3 can perform the associated action. For information about the noncurrent days calculations, see [How Amazon S3 Calculates How Long an Object Has Been Noncurrent](https://docs.aws.amazon.com/AmazonS3/latest/dev/intro-lifecycle-rules.html#non-current-days-calculations) in the Amazon S3 User Guide.
@@ -5245,12 +5256,11 @@ extension S3ClientTypes {
             self.storageClass = storageClass
         }
     }
-
 }
 
 extension S3ClientTypes {
 
-    public enum ExpirationStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ExpirationStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case disabled
         case enabled
         case sdkUnknown(Swift.String)
@@ -5278,8 +5288,9 @@ extension S3ClientTypes {
 }
 
 extension S3ClientTypes {
+
     /// Specifies when an object transitions to a specified storage class. For more information about Amazon S3 lifecycle configuration rules, see [Transitioning Objects Using Amazon S3 Lifecycle](https://docs.aws.amazon.com/AmazonS3/latest/dev/lifecycle-transition-general-considerations.html) in the Amazon S3 User Guide.
-    public struct Transition {
+    public struct Transition: Swift.Sendable {
         /// Indicates when objects are transitioned to the specified storage class. The date value must be in ISO 8601 format. The time is always midnight UTC.
         public var date: Foundation.Date?
         /// Indicates the number of days after creation when objects are transitioned to the specified storage class. The value must be a positive integer.
@@ -5298,12 +5309,12 @@ extension S3ClientTypes {
             self.storageClass = storageClass
         }
     }
-
 }
 
 extension S3ClientTypes {
+
     /// A lifecycle rule for individual objects in an Amazon S3 bucket. For more information see, [Managing your storage lifecycle](https://docs.aws.amazon.com/AmazonS3/latest/userguide/object-lifecycle-mgmt.html) in the Amazon S3 User Guide.
-    public struct LifecycleRule {
+    public struct LifecycleRule: Swift.Sendable {
         /// Specifies the days since the initiation of an incomplete multipart upload that Amazon S3 will wait before permanently removing all parts of the upload. For more information, see [ Aborting Incomplete Multipart Uploads Using a Bucket Lifecycle Configuration](https://docs.aws.amazon.com/AmazonS3/latest/dev/mpuoverview.html#mpu-abort-incomplete-mpu-lifecycle-config) in the Amazon S3 User Guide.
         public var abortIncompleteMultipartUpload: S3ClientTypes.AbortIncompleteMultipartUpload?
         /// Specifies the expiration for the lifecycle of the object in the form of date, days and, whether the object has a delete marker.
@@ -5348,22 +5359,61 @@ extension S3ClientTypes {
             self.transitions = transitions
         }
     }
-
 }
 
-public struct GetBucketLifecycleConfigurationOutput {
-    /// Container for a lifecycle rule.
-    public var rules: [S3ClientTypes.LifecycleRule]?
+extension S3ClientTypes {
 
-    public init(
-        rules: [S3ClientTypes.LifecycleRule]? = nil
-    )
-    {
-        self.rules = rules
+    public enum TransitionDefaultMinimumObjectSize: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+        case allStorageClasses128k
+        case variesByStorageClass
+        case sdkUnknown(Swift.String)
+
+        public static var allCases: [TransitionDefaultMinimumObjectSize] {
+            return [
+                .allStorageClasses128k,
+                .variesByStorageClass
+            ]
+        }
+
+        public init?(rawValue: Swift.String) {
+            let value = Self.allCases.first(where: { $0.rawValue == rawValue })
+            self = value ?? Self.sdkUnknown(rawValue)
+        }
+
+        public var rawValue: Swift.String {
+            switch self {
+            case .allStorageClasses128k: return "all_storage_classes_128K"
+            case .variesByStorageClass: return "varies_by_storage_class"
+            case let .sdkUnknown(s): return s
+            }
+        }
     }
 }
 
-public struct GetBucketLocationInput {
+public struct GetBucketLifecycleConfigurationOutput: Swift.Sendable {
+    /// Container for a lifecycle rule.
+    public var rules: [S3ClientTypes.LifecycleRule]?
+    /// Indicates which default minimum object size behavior is applied to the lifecycle configuration.
+    ///
+    /// * all_storage_classes_128K - Objects smaller than 128 KB will not transition to any storage class by default.
+    ///
+    /// * varies_by_storage_class - Objects smaller than 128 KB will transition to Glacier Flexible Retrieval or Glacier Deep Archive storage classes. By default, all other storage classes will prevent transitions smaller than 128 KB.
+    ///
+    ///
+    /// To customize the minimum object size for any transition you can add a filter that specifies a custom ObjectSizeGreaterThan or ObjectSizeLessThan in the body of your transition rule. Custom filters always take precedence over the default transition behavior.
+    public var transitionDefaultMinimumObjectSize: S3ClientTypes.TransitionDefaultMinimumObjectSize?
+
+    public init(
+        rules: [S3ClientTypes.LifecycleRule]? = nil,
+        transitionDefaultMinimumObjectSize: S3ClientTypes.TransitionDefaultMinimumObjectSize? = nil
+    )
+    {
+        self.rules = rules
+        self.transitionDefaultMinimumObjectSize = transitionDefaultMinimumObjectSize
+    }
+}
+
+public struct GetBucketLocationInput: Swift.Sendable {
     /// The name of the bucket for which to get the location. When you use this API operation with an access point, provide the alias of the access point in place of the bucket name. When you use this API operation with an Object Lambda access point, provide the alias of the Object Lambda access point in place of the bucket name. If the Object Lambda access point alias in a request is not valid, the error code InvalidAccessPointAliasError is returned. For more information about InvalidAccessPointAliasError, see [List of Error Codes](https://docs.aws.amazon.com/AmazonS3/latest/API/ErrorResponses.html#ErrorCodeList).
     /// This member is required.
     public var bucket: Swift.String?
@@ -5380,7 +5430,7 @@ public struct GetBucketLocationInput {
     }
 }
 
-public struct GetBucketLocationOutput {
+public struct GetBucketLocationOutput: Swift.Sendable {
     /// Specifies the Region where the bucket resides. For a list of all the Amazon S3 supported location constraints by Region, see [Regions and Endpoints](https://docs.aws.amazon.com/general/latest/gr/rande.html#s3_region). Buckets in Region us-east-1 have a LocationConstraint of null.
     public var locationConstraint: S3ClientTypes.BucketLocationConstraint?
 
@@ -5392,7 +5442,7 @@ public struct GetBucketLocationOutput {
     }
 }
 
-public struct GetBucketLoggingInput {
+public struct GetBucketLoggingInput: Swift.Sendable {
     /// The bucket name for which to get the logging information.
     /// This member is required.
     public var bucket: Swift.String?
@@ -5411,7 +5461,7 @@ public struct GetBucketLoggingInput {
 
 extension S3ClientTypes {
 
-    public enum BucketLogsPermission: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum BucketLogsPermission: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case fullControl
         case read
         case write
@@ -5442,8 +5492,9 @@ extension S3ClientTypes {
 }
 
 extension S3ClientTypes {
+
     /// Container for granting information. Buckets that use the bucket owner enforced setting for Object Ownership don't support target grants. For more information, see [Permissions server access log delivery](https://docs.aws.amazon.com/AmazonS3/latest/userguide/enable-server-access-logging.html#grant-log-delivery-permissions-general) in the Amazon S3 User Guide.
-    public struct TargetGrant {
+    public struct TargetGrant: Swift.Sendable {
         /// Container for the person being granted permissions.
         public var grantee: S3ClientTypes.Grantee?
         /// Logging permissions assigned to the grantee for the bucket.
@@ -5458,12 +5509,11 @@ extension S3ClientTypes {
             self.permission = permission
         }
     }
-
 }
 
 extension S3ClientTypes {
 
-    public enum PartitionDateSource: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum PartitionDateSource: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case deliverytime
         case eventtime
         case sdkUnknown(Swift.String)
@@ -5491,8 +5541,9 @@ extension S3ClientTypes {
 }
 
 extension S3ClientTypes {
+
     /// Amazon S3 keys for log objects are partitioned in the following format: [DestinationPrefix][SourceAccountId]/[SourceRegion]/[SourceBucket]/[YYYY]/[MM]/[DD]/[YYYY]-[MM]-[DD]-[hh]-[mm]-[ss]-[UniqueString] PartitionedPrefix defaults to EventTime delivery when server access logs are delivered.
-    public struct PartitionedPrefix {
+    public struct PartitionedPrefix: Swift.Sendable {
         /// Specifies the partition date source for the partitioned prefix. PartitionDateSource can be EventTime or DeliveryTime. For DeliveryTime, the time in the log file names corresponds to the delivery time for the log files. For EventTime, The logs delivered are for a specific day only. The year, month, and day correspond to the day on which the event occurred, and the hour, minutes and seconds are set to 00 in the key.
         public var partitionDateSource: S3ClientTypes.PartitionDateSource?
 
@@ -5503,21 +5554,21 @@ extension S3ClientTypes {
             self.partitionDateSource = partitionDateSource
         }
     }
-
 }
 
 extension S3ClientTypes {
+
     /// To use simple format for S3 keys for log objects, set SimplePrefix to an empty object. [DestinationPrefix][YYYY]-[MM]-[DD]-[hh]-[mm]-[ss]-[UniqueString]
-    public struct SimplePrefix {
+    public struct SimplePrefix: Swift.Sendable {
 
         public init() { }
     }
-
 }
 
 extension S3ClientTypes {
+
     /// Amazon S3 key format for log objects. Only one format, PartitionedPrefix or SimplePrefix, is allowed.
-    public struct TargetObjectKeyFormat {
+    public struct TargetObjectKeyFormat: Swift.Sendable {
         /// Partitioned S3 key for log objects.
         public var partitionedPrefix: S3ClientTypes.PartitionedPrefix?
         /// To use the simple format for S3 keys for log objects. To specify SimplePrefix format, set SimplePrefix to {}.
@@ -5532,12 +5583,12 @@ extension S3ClientTypes {
             self.simplePrefix = simplePrefix
         }
     }
-
 }
 
 extension S3ClientTypes {
+
     /// Describes where logs are stored and the prefix that Amazon S3 assigns to all log object keys for a bucket. For more information, see [PUT Bucket logging](https://docs.aws.amazon.com/AmazonS3/latest/API/RESTBucketPUTlogging.html) in the Amazon S3 API Reference.
-    public struct LoggingEnabled {
+    public struct LoggingEnabled: Swift.Sendable {
         /// Specifies the bucket where you want Amazon S3 to store server access logs. You can have your logs delivered to any bucket that you own, including the same bucket that is being logged. You can also configure multiple buckets to deliver their logs to the same target bucket. In this case, you should choose a different TargetPrefix for each source bucket so that the delivered log files can be distinguished by key.
         /// This member is required.
         public var targetBucket: Swift.String?
@@ -5562,10 +5613,9 @@ extension S3ClientTypes {
             self.targetPrefix = targetPrefix
         }
     }
-
 }
 
-public struct GetBucketLoggingOutput {
+public struct GetBucketLoggingOutput: Swift.Sendable {
     /// Describes where logs are stored and the prefix that Amazon S3 assigns to all log object keys for a bucket. For more information, see [PUT Bucket logging](https://docs.aws.amazon.com/AmazonS3/latest/API/RESTBucketPUTlogging.html) in the Amazon S3 API Reference.
     public var loggingEnabled: S3ClientTypes.LoggingEnabled?
 
@@ -5577,7 +5627,7 @@ public struct GetBucketLoggingOutput {
     }
 }
 
-public struct GetBucketMetricsConfigurationInput {
+public struct GetBucketMetricsConfigurationInput: Swift.Sendable {
     /// The name of the bucket containing the metrics configuration to retrieve.
     /// This member is required.
     public var bucket: Swift.String?
@@ -5600,8 +5650,9 @@ public struct GetBucketMetricsConfigurationInput {
 }
 
 extension S3ClientTypes {
+
     /// A conjunction (logical AND) of predicates, which is used in evaluating a metrics filter. The operator must have at least two predicates, and an object must match all of the predicates in order for the filter to apply.
-    public struct MetricsAndOperator {
+    public struct MetricsAndOperator: Swift.Sendable {
         /// The access point ARN used when evaluating an AND predicate.
         public var accessPointArn: Swift.String?
         /// The prefix used when evaluating an AND predicate.
@@ -5620,12 +5671,12 @@ extension S3ClientTypes {
             self.tags = tags
         }
     }
-
 }
 
 extension S3ClientTypes {
+
     /// Specifies a metrics configuration filter. The metrics configuration only includes objects that meet the filter's criteria. A filter must be a prefix, an object tag, an access point ARN, or a conjunction (MetricsAndOperator). For more information, see [PutBucketMetricsConfiguration](https://docs.aws.amazon.com/AmazonS3/latest/API/API_PutBucketMetricsConfiguration.html).
-    public enum MetricsFilter {
+    public enum MetricsFilter: Swift.Sendable {
         /// The prefix used when evaluating a metrics filter.
         case `prefix`(Swift.String)
         /// The tag used when evaluating a metrics filter.
@@ -5636,12 +5687,12 @@ extension S3ClientTypes {
         case and(S3ClientTypes.MetricsAndOperator)
         case sdkUnknown(Swift.String)
     }
-
 }
 
 extension S3ClientTypes {
+
     /// Specifies a metrics configuration for the CloudWatch request metrics (specified by the metrics configuration ID) from an Amazon S3 bucket. If you're updating an existing metrics configuration, note that this is a full replacement of the existing metrics configuration. If you don't include the elements you want to keep, they are erased. For more information, see [PutBucketMetricsConfiguration](https://docs.aws.amazon.com/AmazonS3/latest/API/RESTBucketPUTMetricConfiguration.html).
-    public struct MetricsConfiguration {
+    public struct MetricsConfiguration: Swift.Sendable {
         /// Specifies a metrics configuration filter. The metrics configuration will only include objects that meet the filter's criteria. A filter must be a prefix, an object tag, an access point ARN, or a conjunction (MetricsAndOperator).
         public var filter: S3ClientTypes.MetricsFilter?
         /// The ID used to identify the metrics configuration. The ID has a 64 character limit and can only contain letters, numbers, periods, dashes, and underscores.
@@ -5657,10 +5708,9 @@ extension S3ClientTypes {
             self.id = id
         }
     }
-
 }
 
-public struct GetBucketMetricsConfigurationOutput {
+public struct GetBucketMetricsConfigurationOutput: Swift.Sendable {
     /// Specifies the metrics configuration.
     public var metricsConfiguration: S3ClientTypes.MetricsConfiguration?
 
@@ -5672,7 +5722,7 @@ public struct GetBucketMetricsConfigurationOutput {
     }
 }
 
-public struct GetBucketNotificationConfigurationInput {
+public struct GetBucketNotificationConfigurationInput: Swift.Sendable {
     /// The name of the bucket for which to get the notification configuration. When you use this API operation with an access point, provide the alias of the access point in place of the bucket name. When you use this API operation with an Object Lambda access point, provide the alias of the Object Lambda access point in place of the bucket name. If the Object Lambda access point alias in a request is not valid, the error code InvalidAccessPointAliasError is returned. For more information about InvalidAccessPointAliasError, see [List of Error Codes](https://docs.aws.amazon.com/AmazonS3/latest/API/ErrorResponses.html#ErrorCodeList).
     /// This member is required.
     public var bucket: Swift.String?
@@ -5690,18 +5740,18 @@ public struct GetBucketNotificationConfigurationInput {
 }
 
 extension S3ClientTypes {
+
     /// A container for specifying the configuration for Amazon EventBridge.
-    public struct EventBridgeConfiguration {
+    public struct EventBridgeConfiguration: Swift.Sendable {
 
         public init() { }
     }
-
 }
 
 extension S3ClientTypes {
 
     /// The bucket event for which to send notifications.
-    public enum Event: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Event: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case s3Intelligenttiering
         case s3Lifecycleexpiration
         case s3LifecycleexpirationDelete
@@ -5805,7 +5855,7 @@ extension S3ClientTypes {
 
 extension S3ClientTypes {
 
-    public enum FilterRuleName: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum FilterRuleName: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case `prefix`
         case suffix
         case sdkUnknown(Swift.String)
@@ -5833,8 +5883,9 @@ extension S3ClientTypes {
 }
 
 extension S3ClientTypes {
+
     /// Specifies the Amazon S3 object key name to filter on. An object key name is the name assigned to an object in your Amazon S3 bucket. You specify whether to filter on the suffix or prefix of the object key name. A prefix is a specific string of characters at the beginning of an object key name, which you can use to organize objects. For example, you can start the key names of related objects with a prefix, such as 2023- or engineering/. Then, you can use FilterRule to find objects in a bucket with key names that have the same prefix. A suffix is similar to a prefix, but it is at the end of the object key name instead of at the beginning.
-    public struct FilterRule {
+    public struct FilterRule: Swift.Sendable {
         /// The object key name prefix or suffix identifying one or more objects to which the filtering rule applies. The maximum length is 1,024 characters. Overlapping prefixes and suffixes are not supported. For more information, see [Configuring Event Notifications](https://docs.aws.amazon.com/AmazonS3/latest/dev/NotificationHowTo.html) in the Amazon S3 User Guide.
         public var name: S3ClientTypes.FilterRuleName?
         /// The value that the filter searches for in object key names.
@@ -5849,12 +5900,12 @@ extension S3ClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension S3ClientTypes {
+
     /// A container for object key name prefix and suffix filtering rules.
-    public struct S3KeyFilter {
+    public struct S3KeyFilter: Swift.Sendable {
         /// A list of containers for the key-value pair that defines the criteria for the filter rule.
         public var filterRules: [S3ClientTypes.FilterRule]?
 
@@ -5865,12 +5916,12 @@ extension S3ClientTypes {
             self.filterRules = filterRules
         }
     }
-
 }
 
 extension S3ClientTypes {
+
     /// Specifies object key name filtering rules. For information about key name filtering, see [Configuring event notifications using object key name filtering](https://docs.aws.amazon.com/AmazonS3/latest/userguide/notification-how-to-filtering.html) in the Amazon S3 User Guide.
-    public struct NotificationConfigurationFilter {
+    public struct NotificationConfigurationFilter: Swift.Sendable {
         /// A container for object key name prefix and suffix filtering rules.
         public var key: S3ClientTypes.S3KeyFilter?
 
@@ -5881,12 +5932,12 @@ extension S3ClientTypes {
             self.key = key
         }
     }
-
 }
 
 extension S3ClientTypes {
+
     /// A container for specifying the configuration for Lambda notifications.
-    public struct LambdaFunctionConfiguration {
+    public struct LambdaFunctionConfiguration: Swift.Sendable {
         /// The Amazon S3 bucket event for which to invoke the Lambda function. For more information, see [Supported Event Types](https://docs.aws.amazon.com/AmazonS3/latest/dev/NotificationHowTo.html) in the Amazon S3 User Guide.
         /// This member is required.
         public var events: [S3ClientTypes.Event]?
@@ -5911,12 +5962,12 @@ extension S3ClientTypes {
             self.lambdaFunctionArn = lambdaFunctionArn
         }
     }
-
 }
 
 extension S3ClientTypes {
+
     /// Specifies the configuration for publishing messages to an Amazon Simple Queue Service (Amazon SQS) queue when Amazon S3 detects specified events.
-    public struct QueueConfiguration {
+    public struct QueueConfiguration: Swift.Sendable {
         /// A collection of bucket events for which to send notifications
         /// This member is required.
         public var events: [S3ClientTypes.Event]?
@@ -5941,12 +5992,12 @@ extension S3ClientTypes {
             self.queueArn = queueArn
         }
     }
-
 }
 
 extension S3ClientTypes {
+
     /// A container for specifying the configuration for publication of messages to an Amazon Simple Notification Service (Amazon SNS) topic when Amazon S3 detects specified events.
-    public struct TopicConfiguration {
+    public struct TopicConfiguration: Swift.Sendable {
         /// The Amazon S3 bucket event about which to send notifications. For more information, see [Supported Event Types](https://docs.aws.amazon.com/AmazonS3/latest/dev/NotificationHowTo.html) in the Amazon S3 User Guide.
         /// This member is required.
         public var events: [S3ClientTypes.Event]?
@@ -5971,11 +6022,10 @@ extension S3ClientTypes {
             self.topicArn = topicArn
         }
     }
-
 }
 
 /// A container for specifying the notification configuration of the bucket. If this element is empty, notifications are turned off for the bucket.
-public struct GetBucketNotificationConfigurationOutput {
+public struct GetBucketNotificationConfigurationOutput: Swift.Sendable {
     /// Enables delivery of events to Amazon EventBridge.
     public var eventBridgeConfiguration: S3ClientTypes.EventBridgeConfiguration?
     /// Describes the Lambda functions to invoke and the events for which to invoke them.
@@ -5999,7 +6049,7 @@ public struct GetBucketNotificationConfigurationOutput {
     }
 }
 
-public struct GetBucketOwnershipControlsInput {
+public struct GetBucketOwnershipControlsInput: Swift.Sendable {
     /// The name of the Amazon S3 bucket whose OwnershipControls you want to retrieve.
     /// This member is required.
     public var bucket: Swift.String?
@@ -6017,8 +6067,9 @@ public struct GetBucketOwnershipControlsInput {
 }
 
 extension S3ClientTypes {
+
     /// The container element for an ownership control rule.
-    public struct OwnershipControlsRule {
+    public struct OwnershipControlsRule: Swift.Sendable {
         /// The container element for object ownership for a bucket's ownership controls. BucketOwnerPreferred - Objects uploaded to the bucket change ownership to the bucket owner if the objects are uploaded with the bucket-owner-full-control canned ACL. ObjectWriter - The uploading account will own the object if the object is uploaded with the bucket-owner-full-control canned ACL. BucketOwnerEnforced - Access control lists (ACLs) are disabled and no longer affect permissions. The bucket owner automatically owns and has full control over every object in the bucket. The bucket only accepts PUT requests that don't specify an ACL or specify bucket owner full control ACLs (such as the predefined bucket-owner-full-control canned ACL or a custom ACL in XML format that grants the same permissions). By default, ObjectOwnership is set to BucketOwnerEnforced and ACLs are disabled. We recommend keeping ACLs disabled, except in uncommon use cases where you must control access for each object individually. For more information about S3 Object Ownership, see [Controlling ownership of objects and disabling ACLs for your bucket](https://docs.aws.amazon.com/AmazonS3/latest/userguide/about-object-ownership.html) in the Amazon S3 User Guide. This functionality is not supported for directory buckets. Directory buckets use the bucket owner enforced setting for S3 Object Ownership.
         /// This member is required.
         public var objectOwnership: S3ClientTypes.ObjectOwnership?
@@ -6030,12 +6081,12 @@ extension S3ClientTypes {
             self.objectOwnership = objectOwnership
         }
     }
-
 }
 
 extension S3ClientTypes {
+
     /// The container element for a bucket's ownership controls.
-    public struct OwnershipControls {
+    public struct OwnershipControls: Swift.Sendable {
         /// The container element for an ownership control rule.
         /// This member is required.
         public var rules: [S3ClientTypes.OwnershipControlsRule]?
@@ -6047,10 +6098,9 @@ extension S3ClientTypes {
             self.rules = rules
         }
     }
-
 }
 
-public struct GetBucketOwnershipControlsOutput {
+public struct GetBucketOwnershipControlsOutput: Swift.Sendable {
     /// The OwnershipControls (BucketOwnerEnforced, BucketOwnerPreferred, or ObjectWriter) currently in effect for this Amazon S3 bucket.
     public var ownershipControls: S3ClientTypes.OwnershipControls?
 
@@ -6062,7 +6112,7 @@ public struct GetBucketOwnershipControlsOutput {
     }
 }
 
-public struct GetBucketPolicyInput {
+public struct GetBucketPolicyInput: Swift.Sendable {
     /// The bucket name to get the bucket policy for. Directory buckets - When you use this operation with a directory bucket, you must use path-style requests in the format https://s3express-control.region_code.amazonaws.com/bucket-name . Virtual-hosted-style requests aren't supported. Directory bucket names must be unique in the chosen Availability Zone. Bucket names must also follow the format  bucket_base_name--az_id--x-s3 (for example,  DOC-EXAMPLE-BUCKET--usw2-az1--x-s3). For information about bucket naming restrictions, see [Directory bucket naming rules](https://docs.aws.amazon.com/AmazonS3/latest/userguide/directory-bucket-naming-rules.html) in the Amazon S3 User Guide Access points - When you use this API operation with an access point, provide the alias of the access point in place of the bucket name. Object Lambda access points - When you use this API operation with an Object Lambda access point, provide the alias of the Object Lambda access point in place of the bucket name. If the Object Lambda access point alias in a request is not valid, the error code InvalidAccessPointAliasError is returned. For more information about InvalidAccessPointAliasError, see [List of Error Codes](https://docs.aws.amazon.com/AmazonS3/latest/API/ErrorResponses.html#ErrorCodeList). Access points and Object Lambda access points are not supported by directory buckets.
     /// This member is required.
     public var bucket: Swift.String?
@@ -6079,7 +6129,7 @@ public struct GetBucketPolicyInput {
     }
 }
 
-public struct GetBucketPolicyOutput {
+public struct GetBucketPolicyOutput: Swift.Sendable {
     /// The bucket policy as a JSON document.
     public var policy: Swift.String?
 
@@ -6091,7 +6141,7 @@ public struct GetBucketPolicyOutput {
     }
 }
 
-public struct GetBucketPolicyStatusInput {
+public struct GetBucketPolicyStatusInput: Swift.Sendable {
     /// The name of the Amazon S3 bucket whose policy status you want to retrieve.
     /// This member is required.
     public var bucket: Swift.String?
@@ -6109,8 +6159,9 @@ public struct GetBucketPolicyStatusInput {
 }
 
 extension S3ClientTypes {
+
     /// The container element for a bucket's policy status.
-    public struct PolicyStatus {
+    public struct PolicyStatus: Swift.Sendable {
         /// The policy status for this bucket. TRUE indicates that this bucket is public. FALSE indicates that the bucket is not public.
         public var isPublic: Swift.Bool?
 
@@ -6121,10 +6172,9 @@ extension S3ClientTypes {
             self.isPublic = isPublic
         }
     }
-
 }
 
-public struct GetBucketPolicyStatusOutput {
+public struct GetBucketPolicyStatusOutput: Swift.Sendable {
     /// The policy status for the specified bucket.
     public var policyStatus: S3ClientTypes.PolicyStatus?
 
@@ -6136,7 +6186,7 @@ public struct GetBucketPolicyStatusOutput {
     }
 }
 
-public struct GetBucketReplicationInput {
+public struct GetBucketReplicationInput: Swift.Sendable {
     /// The bucket name for which to get the replication information.
     /// This member is required.
     public var bucket: Swift.String?
@@ -6155,7 +6205,7 @@ public struct GetBucketReplicationInput {
 
 extension S3ClientTypes {
 
-    public enum DeleteMarkerReplicationStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DeleteMarkerReplicationStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case disabled
         case enabled
         case sdkUnknown(Swift.String)
@@ -6183,8 +6233,9 @@ extension S3ClientTypes {
 }
 
 extension S3ClientTypes {
+
     /// Specifies whether Amazon S3 replicates delete markers. If you specify a Filter in your replication configuration, you must also include a DeleteMarkerReplication element. If your Filter includes a Tag element, the DeleteMarkerReplicationStatus must be set to Disabled, because Amazon S3 does not support replicating delete markers for tag-based rules. For an example configuration, see [Basic Rule Configuration](https://docs.aws.amazon.com/AmazonS3/latest/dev/replication-add-config.html#replication-config-min-rule-config). For more information about delete marker replication, see [Basic Rule Configuration](https://docs.aws.amazon.com/AmazonS3/latest/dev/delete-marker-replication.html). If you are using an earlier version of the replication configuration, Amazon S3 handles replication of delete markers differently. For more information, see [Backward Compatibility](https://docs.aws.amazon.com/AmazonS3/latest/dev/replication-add-config.html#replication-backward-compat-considerations).
-    public struct DeleteMarkerReplication {
+    public struct DeleteMarkerReplication: Swift.Sendable {
         /// Indicates whether to replicate delete markers. Indicates whether to replicate delete markers.
         public var status: S3ClientTypes.DeleteMarkerReplicationStatus?
 
@@ -6195,12 +6246,12 @@ extension S3ClientTypes {
             self.status = status
         }
     }
-
 }
 
 extension S3ClientTypes {
+
     /// Specifies encryption-related information for an Amazon S3 bucket that is a destination for replicated objects. If you're specifying a customer managed KMS key, we recommend using a fully qualified KMS key ARN. If you use a KMS key alias instead, then KMS resolves the key within the requester’s account. This behavior can result in data that's encrypted with a KMS key that belongs to the requester, and not the bucket owner.
-    public struct EncryptionConfiguration {
+    public struct EncryptionConfiguration: Swift.Sendable {
         /// Specifies the ID (Key ARN or Alias ARN) of the customer managed Amazon Web Services KMS key stored in Amazon Web Services Key Management Service (KMS) for the destination bucket. Amazon S3 uses this key to encrypt replica objects. Amazon S3 only supports symmetric encryption KMS keys. For more information, see [Asymmetric keys in Amazon Web Services KMS](https://docs.aws.amazon.com/kms/latest/developerguide/symmetric-asymmetric.html) in the Amazon Web Services Key Management Service Developer Guide.
         public var replicaKmsKeyID: Swift.String?
 
@@ -6211,12 +6262,12 @@ extension S3ClientTypes {
             self.replicaKmsKeyID = replicaKmsKeyID
         }
     }
-
 }
 
 extension S3ClientTypes {
+
     /// A container specifying the time value for S3 Replication Time Control (S3 RTC) and replication metrics EventThreshold.
-    public struct ReplicationTimeValue {
+    public struct ReplicationTimeValue: Swift.Sendable {
         /// Contains an integer specifying time in minutes. Valid value: 15
         public var minutes: Swift.Int?
 
@@ -6227,12 +6278,11 @@ extension S3ClientTypes {
             self.minutes = minutes
         }
     }
-
 }
 
 extension S3ClientTypes {
 
-    public enum MetricsStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum MetricsStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case disabled
         case enabled
         case sdkUnknown(Swift.String)
@@ -6260,8 +6310,9 @@ extension S3ClientTypes {
 }
 
 extension S3ClientTypes {
+
     /// A container specifying replication metrics-related settings enabling replication metrics and events.
-    public struct Metrics {
+    public struct Metrics: Swift.Sendable {
         /// A container specifying the time threshold for emitting the s3:Replication:OperationMissedThreshold event.
         public var eventThreshold: S3ClientTypes.ReplicationTimeValue?
         /// Specifies whether the replication metrics are enabled.
@@ -6277,12 +6328,11 @@ extension S3ClientTypes {
             self.status = status
         }
     }
-
 }
 
 extension S3ClientTypes {
 
-    public enum ReplicationTimeStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ReplicationTimeStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case disabled
         case enabled
         case sdkUnknown(Swift.String)
@@ -6310,8 +6360,9 @@ extension S3ClientTypes {
 }
 
 extension S3ClientTypes {
+
     /// A container specifying S3 Replication Time Control (S3 RTC) related information, including whether S3 RTC is enabled and the time when all objects and operations on objects must be replicated. Must be specified together with a Metrics block.
-    public struct ReplicationTime {
+    public struct ReplicationTime: Swift.Sendable {
         /// Specifies whether the replication time is enabled.
         /// This member is required.
         public var status: S3ClientTypes.ReplicationTimeStatus?
@@ -6328,12 +6379,12 @@ extension S3ClientTypes {
             self.time = time
         }
     }
-
 }
 
 extension S3ClientTypes {
+
     /// Specifies information about where to publish analysis or configuration results for an Amazon S3 bucket and S3 Replication Time Control (S3 RTC).
-    public struct Destination {
+    public struct Destination: Swift.Sendable {
         /// Specify this only in a cross-account scenario (where source and destination bucket owners are not the same), and you want to change replica ownership to the Amazon Web Services account that owns the destination bucket. If this is not specified in the replication configuration, the replicas are owned by same Amazon Web Services account that owns the source object.
         public var accessControlTranslation: S3ClientTypes.AccessControlTranslation?
         /// Destination bucket owner account ID. In a cross-account scenario, if you direct Amazon S3 to change replica ownership to the Amazon Web Services account that owns the destination bucket by specifying the AccessControlTranslation property, this is the account ID of the destination bucket owner. For more information, see [Replication Additional Configuration: Changing the Replica Owner](https://docs.aws.amazon.com/AmazonS3/latest/dev/replication-change-owner.html) in the Amazon S3 User Guide.
@@ -6369,12 +6420,11 @@ extension S3ClientTypes {
             self.storageClass = storageClass
         }
     }
-
 }
 
 extension S3ClientTypes {
 
-    public enum ExistingObjectReplicationStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ExistingObjectReplicationStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case disabled
         case enabled
         case sdkUnknown(Swift.String)
@@ -6402,8 +6452,9 @@ extension S3ClientTypes {
 }
 
 extension S3ClientTypes {
+
     /// Optional configuration to replicate existing source bucket objects. This parameter is no longer supported. To replicate existing objects, see [Replicating existing objects with S3 Batch Replication](https://docs.aws.amazon.com/AmazonS3/latest/userguide/s3-batch-replication-batch.html) in the Amazon S3 User Guide.
-    public struct ExistingObjectReplication {
+    public struct ExistingObjectReplication: Swift.Sendable {
         /// Specifies whether Amazon S3 replicates existing source bucket objects.
         /// This member is required.
         public var status: S3ClientTypes.ExistingObjectReplicationStatus?
@@ -6415,16 +6466,16 @@ extension S3ClientTypes {
             self.status = status
         }
     }
-
 }
 
 extension S3ClientTypes {
+
     /// A container for specifying rule filters. The filters determine the subset of objects to which the rule applies. This element is required only if you specify more than one filter. For example:
     ///
     /// * If you specify both a Prefix and a Tag filter, wrap these filters in an And tag.
     ///
     /// * If you specify a filter based on multiple tags, wrap the Tag elements in an And tag.
-    public struct ReplicationRuleAndOperator {
+    public struct ReplicationRuleAndOperator: Swift.Sendable {
         /// An object key name prefix that identifies the subset of objects to which the rule applies.
         public var `prefix`: Swift.String?
         /// An array of tags containing key and value pairs.
@@ -6439,30 +6490,39 @@ extension S3ClientTypes {
             self.tags = tags
         }
     }
-
 }
 
 extension S3ClientTypes {
+
     /// A filter that identifies the subset of objects to which the replication rule applies. A Filter must specify exactly one Prefix, Tag, or an And child element.
-    public enum ReplicationRuleFilter {
-        /// An object key name prefix that identifies the subset of objects to which the rule applies. Replacement must be made for object keys containing special characters (such as carriage returns) when using XML requests. For more information, see [ XML related object key constraints](https://docs.aws.amazon.com/AmazonS3/latest/userguide/object-keys.html#object-key-xml-related-constraints).
-        case `prefix`(Swift.String)
-        /// A container for specifying a tag key and value. The rule applies only to objects that have the tag in their tag set.
-        case tag(S3ClientTypes.Tag)
+    public struct ReplicationRuleFilter: Swift.Sendable {
         /// A container for specifying rule filters. The filters determine the subset of objects to which the rule applies. This element is required only if you specify more than one filter. For example:
         ///
         /// * If you specify both a Prefix and a Tag filter, wrap these filters in an And tag.
         ///
         /// * If you specify a filter based on multiple tags, wrap the Tag elements in an And tag.
-        case and(S3ClientTypes.ReplicationRuleAndOperator)
-        case sdkUnknown(Swift.String)
-    }
+        public var and: S3ClientTypes.ReplicationRuleAndOperator?
+        /// An object key name prefix that identifies the subset of objects to which the rule applies. Replacement must be made for object keys containing special characters (such as carriage returns) when using XML requests. For more information, see [ XML related object key constraints](https://docs.aws.amazon.com/AmazonS3/latest/userguide/object-keys.html#object-key-xml-related-constraints).
+        public var `prefix`: Swift.String?
+        /// A container for specifying a tag key and value. The rule applies only to objects that have the tag in their tag set.
+        public var tag: S3ClientTypes.Tag?
 
+        public init(
+            and: S3ClientTypes.ReplicationRuleAndOperator? = nil,
+            `prefix`: Swift.String? = nil,
+            tag: S3ClientTypes.Tag? = nil
+        )
+        {
+            self.and = and
+            self.`prefix` = `prefix`
+            self.tag = tag
+        }
+    }
 }
 
 extension S3ClientTypes {
 
-    public enum ReplicaModificationsStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ReplicaModificationsStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case disabled
         case enabled
         case sdkUnknown(Swift.String)
@@ -6490,8 +6550,9 @@ extension S3ClientTypes {
 }
 
 extension S3ClientTypes {
+
     /// A filter that you can specify for selection for modifications on replicas. Amazon S3 doesn't replicate replica modifications by default. In the latest version of replication configuration (when Filter is specified), you can specify this element and set the status to Enabled to replicate modifications on replicas. If you don't specify the Filter element, Amazon S3 assumes that the replication configuration is the earlier version, V1. In the earlier version, this element is not allowed.
-    public struct ReplicaModifications {
+    public struct ReplicaModifications: Swift.Sendable {
         /// Specifies whether Amazon S3 replicates modifications on replicas.
         /// This member is required.
         public var status: S3ClientTypes.ReplicaModificationsStatus?
@@ -6503,12 +6564,11 @@ extension S3ClientTypes {
             self.status = status
         }
     }
-
 }
 
 extension S3ClientTypes {
 
-    public enum SseKmsEncryptedObjectsStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SseKmsEncryptedObjectsStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case disabled
         case enabled
         case sdkUnknown(Swift.String)
@@ -6536,8 +6596,9 @@ extension S3ClientTypes {
 }
 
 extension S3ClientTypes {
+
     /// A container for filter information for the selection of S3 objects encrypted with Amazon Web Services KMS.
-    public struct SseKmsEncryptedObjects {
+    public struct SseKmsEncryptedObjects: Swift.Sendable {
         /// Specifies whether Amazon S3 replicates objects created with server-side encryption using an Amazon Web Services KMS key stored in Amazon Web Services Key Management Service.
         /// This member is required.
         public var status: S3ClientTypes.SseKmsEncryptedObjectsStatus?
@@ -6549,12 +6610,12 @@ extension S3ClientTypes {
             self.status = status
         }
     }
-
 }
 
 extension S3ClientTypes {
+
     /// A container that describes additional filters for identifying the source objects that you want to replicate. You can choose to enable or disable the replication of these objects. Currently, Amazon S3 supports only the filter that you can specify for objects created with server-side encryption using a customer managed key stored in Amazon Web Services Key Management Service (SSE-KMS).
-    public struct SourceSelectionCriteria {
+    public struct SourceSelectionCriteria: Swift.Sendable {
         /// A filter that you can specify for selections for modifications on replicas. Amazon S3 doesn't replicate replica modifications by default. In the latest version of replication configuration (when Filter is specified), you can specify this element and set the status to Enabled to replicate modifications on replicas. If you don't specify the Filter element, Amazon S3 assumes that the replication configuration is the earlier version, V1. In the earlier version, this element is not allowed
         public var replicaModifications: S3ClientTypes.ReplicaModifications?
         /// A container for filter information for the selection of Amazon S3 objects encrypted with Amazon Web Services KMS. If you include SourceSelectionCriteria in the replication configuration, this element is required.
@@ -6569,12 +6630,11 @@ extension S3ClientTypes {
             self.sseKmsEncryptedObjects = sseKmsEncryptedObjects
         }
     }
-
 }
 
 extension S3ClientTypes {
 
-    public enum ReplicationRuleStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ReplicationRuleStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case disabled
         case enabled
         case sdkUnknown(Swift.String)
@@ -6602,8 +6662,9 @@ extension S3ClientTypes {
 }
 
 extension S3ClientTypes {
+
     /// Specifies which Amazon S3 objects to replicate and where to store the replicas.
-    public struct ReplicationRule {
+    public struct ReplicationRule: Swift.Sendable {
         /// Specifies whether Amazon S3 replicates delete markers. If you specify a Filter in your replication configuration, you must also include a DeleteMarkerReplication element. If your Filter includes a Tag element, the DeleteMarkerReplicationStatus must be set to Disabled, because Amazon S3 does not support replicating delete markers for tag-based rules. For an example configuration, see [Basic Rule Configuration](https://docs.aws.amazon.com/AmazonS3/latest/dev/replication-add-config.html#replication-config-min-rule-config). For more information about delete marker replication, see [Basic Rule Configuration](https://docs.aws.amazon.com/AmazonS3/latest/dev/delete-marker-replication.html). If you are using an earlier version of the replication configuration, Amazon S3 handles replication of delete markers differently. For more information, see [Backward Compatibility](https://docs.aws.amazon.com/AmazonS3/latest/dev/replication-add-config.html#replication-backward-compat-considerations).
         public var deleteMarkerReplication: S3ClientTypes.DeleteMarkerReplication?
         /// A container for information about the replication destination and its configurations including enabling the S3 Replication Time Control (S3 RTC).
@@ -6649,12 +6710,12 @@ extension S3ClientTypes {
             self.status = status
         }
     }
-
 }
 
 extension S3ClientTypes {
+
     /// A container for replication rules. You can add up to 1,000 rules. The maximum size of a replication configuration is 2 MB.
-    public struct ReplicationConfiguration {
+    public struct ReplicationConfiguration: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the Identity and Access Management (IAM) role that Amazon S3 assumes when replicating objects. For more information, see [How to Set Up Replication](https://docs.aws.amazon.com/AmazonS3/latest/dev/replication-how-setup.html) in the Amazon S3 User Guide.
         /// This member is required.
         public var role: Swift.String?
@@ -6671,10 +6732,9 @@ extension S3ClientTypes {
             self.rules = rules
         }
     }
-
 }
 
-public struct GetBucketReplicationOutput {
+public struct GetBucketReplicationOutput: Swift.Sendable {
     /// A container for replication rules. You can add up to 1,000 rules. The maximum size of a replication configuration is 2 MB.
     public var replicationConfiguration: S3ClientTypes.ReplicationConfiguration?
 
@@ -6686,7 +6746,7 @@ public struct GetBucketReplicationOutput {
     }
 }
 
-public struct GetBucketRequestPaymentInput {
+public struct GetBucketRequestPaymentInput: Swift.Sendable {
     /// The name of the bucket for which to get the payment request configuration
     /// This member is required.
     public var bucket: Swift.String?
@@ -6705,7 +6765,7 @@ public struct GetBucketRequestPaymentInput {
 
 extension S3ClientTypes {
 
-    public enum Payer: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Payer: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case bucketowner
         case requester
         case sdkUnknown(Swift.String)
@@ -6732,7 +6792,7 @@ extension S3ClientTypes {
     }
 }
 
-public struct GetBucketRequestPaymentOutput {
+public struct GetBucketRequestPaymentOutput: Swift.Sendable {
     /// Specifies who pays for the download and request fees.
     public var payer: S3ClientTypes.Payer?
 
@@ -6744,7 +6804,7 @@ public struct GetBucketRequestPaymentOutput {
     }
 }
 
-public struct GetBucketTaggingInput {
+public struct GetBucketTaggingInput: Swift.Sendable {
     /// The name of the bucket for which to get the tagging information.
     /// This member is required.
     public var bucket: Swift.String?
@@ -6761,7 +6821,7 @@ public struct GetBucketTaggingInput {
     }
 }
 
-public struct GetBucketTaggingOutput {
+public struct GetBucketTaggingOutput: Swift.Sendable {
     /// Contains the tag set.
     /// This member is required.
     public var tagSet: [S3ClientTypes.Tag]?
@@ -6774,7 +6834,7 @@ public struct GetBucketTaggingOutput {
     }
 }
 
-public struct GetBucketVersioningInput {
+public struct GetBucketVersioningInput: Swift.Sendable {
     /// The name of the bucket for which to get the versioning information.
     /// This member is required.
     public var bucket: Swift.String?
@@ -6793,7 +6853,7 @@ public struct GetBucketVersioningInput {
 
 extension S3ClientTypes {
 
-    public enum MFADeleteStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum MFADeleteStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case disabled
         case enabled
         case sdkUnknown(Swift.String)
@@ -6822,7 +6882,7 @@ extension S3ClientTypes {
 
 extension S3ClientTypes {
 
-    public enum BucketVersioningStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum BucketVersioningStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case enabled
         case suspended
         case sdkUnknown(Swift.String)
@@ -6849,7 +6909,7 @@ extension S3ClientTypes {
     }
 }
 
-public struct GetBucketVersioningOutput {
+public struct GetBucketVersioningOutput: Swift.Sendable {
     /// Specifies whether MFA delete is enabled in the bucket versioning configuration. This element is only returned if the bucket has been configured with MFA delete. If the bucket has never been so configured, this element is not returned.
     public var mfaDelete: S3ClientTypes.MFADeleteStatus?
     /// The versioning state of the bucket.
@@ -6865,7 +6925,7 @@ public struct GetBucketVersioningOutput {
     }
 }
 
-public struct GetBucketWebsiteInput {
+public struct GetBucketWebsiteInput: Swift.Sendable {
     /// The bucket name for which to get the website configuration.
     /// This member is required.
     public var bucket: Swift.String?
@@ -6883,8 +6943,9 @@ public struct GetBucketWebsiteInput {
 }
 
 extension S3ClientTypes {
+
     /// The error information.
-    public struct ErrorDocument {
+    public struct ErrorDocument: Swift.Sendable {
         /// The object key name to use when a 4XX class error occurs. Replacement must be made for object keys containing special characters (such as carriage returns) when using XML requests. For more information, see [ XML related object key constraints](https://docs.aws.amazon.com/AmazonS3/latest/userguide/object-keys.html#object-key-xml-related-constraints).
         /// This member is required.
         public var key: Swift.String?
@@ -6896,12 +6957,12 @@ extension S3ClientTypes {
             self.key = key
         }
     }
-
 }
 
 extension S3ClientTypes {
+
     /// Container for the Suffix element.
-    public struct IndexDocument {
+    public struct IndexDocument: Swift.Sendable {
         /// A suffix that is appended to a request that is for a directory on the website endpoint. (For example, if the suffix is index.html and you make a request to samplebucket/images/, the data that is returned will be for the object with the key name images/index.html.) The suffix must not be empty and must not include a slash character. Replacement must be made for object keys containing special characters (such as carriage returns) when using XML requests. For more information, see [ XML related object key constraints](https://docs.aws.amazon.com/AmazonS3/latest/userguide/object-keys.html#object-key-xml-related-constraints).
         /// This member is required.
         public var suffix: Swift.String?
@@ -6913,12 +6974,11 @@ extension S3ClientTypes {
             self.suffix = suffix
         }
     }
-
 }
 
 extension S3ClientTypes {
 
-    public enum ModelProtocol: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ModelProtocol: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case http
         case https
         case sdkUnknown(Swift.String)
@@ -6946,8 +7006,9 @@ extension S3ClientTypes {
 }
 
 extension S3ClientTypes {
+
     /// Specifies the redirect behavior of all requests to a website endpoint of an Amazon S3 bucket.
-    public struct RedirectAllRequestsTo {
+    public struct RedirectAllRequestsTo: Swift.Sendable {
         /// Name of the host where requests are redirected.
         /// This member is required.
         public var hostName: Swift.String?
@@ -6963,12 +7024,12 @@ extension S3ClientTypes {
             self.`protocol` = `protocol`
         }
     }
-
 }
 
 extension S3ClientTypes {
+
     /// A container for describing a condition that must be met for the specified redirect to apply. For example, 1. If request is for pages in the /docs folder, redirect to the /documents folder. 2. If request results in HTTP error 4xx, redirect request to another host where you might process the error.
-    public struct Condition {
+    public struct Condition: Swift.Sendable {
         /// The HTTP error code when the redirect is applied. In the event of an error, if the error code equals this value, then the specified redirect is applied. Required when parent element Condition is specified and sibling KeyPrefixEquals is not specified. If both are specified, then both must be true for the redirect to be applied.
         public var httpErrorCodeReturnedEquals: Swift.String?
         /// The object key name prefix when the redirect is applied. For example, to redirect requests for ExamplePage.html, the key prefix will be ExamplePage.html. To redirect request for all pages with the prefix docs/, the key prefix will be /docs, which identifies all objects in the docs/ folder. Required when the parent element Condition is specified and sibling HttpErrorCodeReturnedEquals is not specified. If both conditions are specified, both must be true for the redirect to be applied. Replacement must be made for object keys containing special characters (such as carriage returns) when using XML requests. For more information, see [ XML related object key constraints](https://docs.aws.amazon.com/AmazonS3/latest/userguide/object-keys.html#object-key-xml-related-constraints).
@@ -6983,12 +7044,12 @@ extension S3ClientTypes {
             self.keyPrefixEquals = keyPrefixEquals
         }
     }
-
 }
 
 extension S3ClientTypes {
+
     /// Specifies how requests are redirected. In the event of an error, you can specify a different error code to return.
-    public struct Redirect {
+    public struct Redirect: Swift.Sendable {
         /// The host name to use in the redirect request.
         public var hostName: Swift.String?
         /// The HTTP redirect code to use on the response. Not required if one of the siblings is present.
@@ -7015,12 +7076,12 @@ extension S3ClientTypes {
             self.replaceKeyWith = replaceKeyWith
         }
     }
-
 }
 
 extension S3ClientTypes {
+
     /// Specifies the redirect behavior and when a redirect is applied. For more information about routing rules, see [Configuring advanced conditional redirects](https://docs.aws.amazon.com/AmazonS3/latest/dev/how-to-page-redirect.html#advanced-conditional-redirects) in the Amazon S3 User Guide.
-    public struct RoutingRule {
+    public struct RoutingRule: Swift.Sendable {
         /// A container for describing a condition that must be met for the specified redirect to apply. For example, 1. If request is for pages in the /docs folder, redirect to the /documents folder. 2. If request results in HTTP error 4xx, redirect request to another host where you might process the error.
         public var condition: S3ClientTypes.Condition?
         /// Container for redirect information. You can redirect requests to another host, to another page, or with another protocol. In the event of an error, you can specify a different error code to return.
@@ -7036,10 +7097,9 @@ extension S3ClientTypes {
             self.redirect = redirect
         }
     }
-
 }
 
-public struct GetBucketWebsiteOutput {
+public struct GetBucketWebsiteOutput: Swift.Sendable {
     /// The object key name of the website error document to use for 4XX class errors.
     public var errorDocument: S3ClientTypes.ErrorDocument?
     /// The name of the index document for the website (for example index.html).
@@ -7107,7 +7167,7 @@ public struct NoSuchKey: ClientRuntime.ModeledError, AWSClientRuntime.AWSS3Servi
 
 extension S3ClientTypes {
 
-    public enum ChecksumMode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ChecksumMode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case enabled
         case sdkUnknown(Swift.String)
 
@@ -7131,7 +7191,7 @@ extension S3ClientTypes {
     }
 }
 
-public struct GetObjectInput {
+public struct GetObjectInput: Swift.Sendable {
     /// The bucket name containing the object. Directory buckets - When you use this operation with a directory bucket, you must use virtual-hosted-style requests in the format  Bucket_name.s3express-az_id.region.amazonaws.com. Path-style requests are not supported. Directory bucket names must be unique in the chosen Availability Zone. Bucket names must follow the format  bucket_base_name--az-id--x-s3 (for example,  DOC-EXAMPLE-BUCKET--usw2-az1--x-s3). For information about bucket naming restrictions, see [Directory bucket naming rules](https://docs.aws.amazon.com/AmazonS3/latest/userguide/directory-bucket-naming-rules.html) in the Amazon S3 User Guide. Access points - When you use this action with an access point, you must provide the alias of the access point in place of the bucket name or specify the access point ARN. When using the access point ARN, you must direct requests to the access point hostname. The access point hostname takes the form AccessPointName-AccountId.s3-accesspoint.Region.amazonaws.com. When using this action with an access point through the Amazon Web Services SDKs, you provide the access point ARN in place of the bucket name. For more information about access point ARNs, see [Using access points](https://docs.aws.amazon.com/AmazonS3/latest/userguide/using-access-points.html) in the Amazon S3 User Guide. Object Lambda access points - When you use this action with an Object Lambda access point, you must direct requests to the Object Lambda access point hostname. The Object Lambda access point hostname takes the form AccessPointName-AccountId.s3-object-lambda.Region.amazonaws.com. Access points and Object Lambda access points are not supported by directory buckets. S3 on Outposts - When you use this action with Amazon S3 on Outposts, you must direct requests to the S3 on Outposts hostname. The S3 on Outposts hostname takes the form  AccessPointName-AccountId.outpostID.s3-outposts.Region.amazonaws.com. When you use this action with S3 on Outposts through the Amazon Web Services SDKs, you provide the Outposts access point ARN in place of the bucket name. For more information about S3 on Outposts ARNs, see [What is S3 on Outposts?](https://docs.aws.amazon.com/AmazonS3/latest/userguide/S3onOutposts.html) in the Amazon S3 User Guide.
     /// This member is required.
     public var bucket: Swift.String?
@@ -7268,7 +7328,7 @@ extension GetObjectInput: Swift.CustomDebugStringConvertible {
 
 extension S3ClientTypes {
 
-    public enum ReplicationStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ReplicationStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case complete
         case completed
         case failed
@@ -7304,7 +7364,7 @@ extension S3ClientTypes {
     }
 }
 
-public struct GetObjectOutput {
+public struct GetObjectOutput: Swift.Sendable {
     /// Indicates that a range of bytes was specified in the request.
     public var acceptRanges: Swift.String?
     /// Object data.
@@ -7313,9 +7373,9 @@ public struct GetObjectOutput {
     public var bucketKeyEnabled: Swift.Bool?
     /// Specifies caching behavior along the request/reply chain.
     public var cacheControl: Swift.String?
-    /// The base64-encoded, 32-bit CRC32 checksum of the object. This will only be present if it was uploaded with the object. For more information, see [ Checking object integrity](https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html) in the Amazon S3 User Guide.
+    /// The base64-encoded, 32-bit CRC-32 checksum of the object. This will only be present if it was uploaded with the object. For more information, see [ Checking object integrity](https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html) in the Amazon S3 User Guide.
     public var checksumCRC32: Swift.String?
-    /// The base64-encoded, 32-bit CRC32C checksum of the object. This will only be present if it was uploaded with the object. For more information, see [ Checking object integrity](https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html) in the Amazon S3 User Guide.
+    /// The base64-encoded, 32-bit CRC-32C checksum of the object. This will only be present if it was uploaded with the object. For more information, see [ Checking object integrity](https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html) in the Amazon S3 User Guide.
     public var checksumCRC32C: Swift.String?
     /// The base64-encoded, 160-bit SHA-1 digest of the object. This will only be present if it was uploaded with the object. For more information, see [ Checking object integrity](https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html) in the Amazon S3 User Guide.
     public var checksumSHA1: Swift.String?
@@ -7465,7 +7525,7 @@ extension GetObjectOutput: Swift.CustomDebugStringConvertible {
         "GetObjectOutput(acceptRanges: \(Swift.String(describing: acceptRanges)), body: \(Swift.String(describing: body)), bucketKeyEnabled: \(Swift.String(describing: bucketKeyEnabled)), cacheControl: \(Swift.String(describing: cacheControl)), checksumCRC32: \(Swift.String(describing: checksumCRC32)), checksumCRC32C: \(Swift.String(describing: checksumCRC32C)), checksumSHA1: \(Swift.String(describing: checksumSHA1)), checksumSHA256: \(Swift.String(describing: checksumSHA256)), contentDisposition: \(Swift.String(describing: contentDisposition)), contentEncoding: \(Swift.String(describing: contentEncoding)), contentLanguage: \(Swift.String(describing: contentLanguage)), contentLength: \(Swift.String(describing: contentLength)), contentRange: \(Swift.String(describing: contentRange)), contentType: \(Swift.String(describing: contentType)), deleteMarker: \(Swift.String(describing: deleteMarker)), eTag: \(Swift.String(describing: eTag)), expiration: \(Swift.String(describing: expiration)), expires: \(Swift.String(describing: expires)), lastModified: \(Swift.String(describing: lastModified)), metadata: \(Swift.String(describing: metadata)), missingMeta: \(Swift.String(describing: missingMeta)), objectLockLegalHoldStatus: \(Swift.String(describing: objectLockLegalHoldStatus)), objectLockMode: \(Swift.String(describing: objectLockMode)), objectLockRetainUntilDate: \(Swift.String(describing: objectLockRetainUntilDate)), partsCount: \(Swift.String(describing: partsCount)), replicationStatus: \(Swift.String(describing: replicationStatus)), requestCharged: \(Swift.String(describing: requestCharged)), restore: \(Swift.String(describing: restore)), serverSideEncryption: \(Swift.String(describing: serverSideEncryption)), sseCustomerAlgorithm: \(Swift.String(describing: sseCustomerAlgorithm)), sseCustomerKeyMD5: \(Swift.String(describing: sseCustomerKeyMD5)), storageClass: \(Swift.String(describing: storageClass)), tagCount: \(Swift.String(describing: tagCount)), versionId: \(Swift.String(describing: versionId)), websiteRedirectLocation: \(Swift.String(describing: websiteRedirectLocation)), ssekmsKeyId: \"CONTENT_REDACTED\")"}
 }
 
-public struct GetObjectAclInput {
+public struct GetObjectAclInput: Swift.Sendable {
     /// The bucket name that contains the object for which to get the ACL information. Access points - When you use this action with an access point, you must provide the alias of the access point in place of the bucket name or specify the access point ARN. When using the access point ARN, you must direct requests to the access point hostname. The access point hostname takes the form AccessPointName-AccountId.s3-accesspoint.Region.amazonaws.com. When using this action with an access point through the Amazon Web Services SDKs, you provide the access point ARN in place of the bucket name. For more information about access point ARNs, see [Using access points](https://docs.aws.amazon.com/AmazonS3/latest/userguide/using-access-points.html) in the Amazon S3 User Guide.
     /// This member is required.
     public var bucket: Swift.String?
@@ -7495,7 +7555,7 @@ public struct GetObjectAclInput {
     }
 }
 
-public struct GetObjectAclOutput {
+public struct GetObjectAclOutput: Swift.Sendable {
     /// A list of grants.
     public var grants: [S3ClientTypes.Grant]?
     /// Container for the bucket owner's display name and ID.
@@ -7517,7 +7577,7 @@ public struct GetObjectAclOutput {
 
 extension S3ClientTypes {
 
-    public enum ObjectAttributes: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ObjectAttributes: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case checksum
         case etag
         case objectParts
@@ -7553,7 +7613,7 @@ extension S3ClientTypes {
     }
 }
 
-public struct GetObjectAttributesInput {
+public struct GetObjectAttributesInput: Swift.Sendable {
     /// The name of the bucket that contains the object. Directory buckets - When you use this operation with a directory bucket, you must use virtual-hosted-style requests in the format  Bucket_name.s3express-az_id.region.amazonaws.com. Path-style requests are not supported. Directory bucket names must be unique in the chosen Availability Zone. Bucket names must follow the format  bucket_base_name--az-id--x-s3 (for example,  DOC-EXAMPLE-BUCKET--usw2-az1--x-s3). For information about bucket naming restrictions, see [Directory bucket naming rules](https://docs.aws.amazon.com/AmazonS3/latest/userguide/directory-bucket-naming-rules.html) in the Amazon S3 User Guide. Access points - When you use this action with an access point, you must provide the alias of the access point in place of the bucket name or specify the access point ARN. When using the access point ARN, you must direct requests to the access point hostname. The access point hostname takes the form AccessPointName-AccountId.s3-accesspoint.Region.amazonaws.com. When using this action with an access point through the Amazon Web Services SDKs, you provide the access point ARN in place of the bucket name. For more information about access point ARNs, see [Using access points](https://docs.aws.amazon.com/AmazonS3/latest/userguide/using-access-points.html) in the Amazon S3 User Guide. Access points and Object Lambda access points are not supported by directory buckets. S3 on Outposts - When you use this action with Amazon S3 on Outposts, you must direct requests to the S3 on Outposts hostname. The S3 on Outposts hostname takes the form  AccessPointName-AccountId.outpostID.s3-outposts.Region.amazonaws.com. When you use this action with S3 on Outposts through the Amazon Web Services SDKs, you provide the Outposts access point ARN in place of the bucket name. For more information about S3 on Outposts ARNs, see [What is S3 on Outposts?](https://docs.aws.amazon.com/AmazonS3/latest/userguide/S3onOutposts.html) in the Amazon S3 User Guide.
     /// This member is required.
     public var bucket: Swift.String?
@@ -7614,11 +7674,12 @@ extension GetObjectAttributesInput: Swift.CustomDebugStringConvertible {
 }
 
 extension S3ClientTypes {
+
     /// Contains all the possible checksum or digest values for an object.
-    public struct Checksum {
-        /// The base64-encoded, 32-bit CRC32 checksum of the object. This will only be present if it was uploaded with the object. When you use an API operation on an object that was uploaded using multipart uploads, this value may not be a direct checksum value of the full object. Instead, it's a calculation based on the checksum values of each individual part. For more information about how checksums are calculated with multipart uploads, see [ Checking object integrity](https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html#large-object-checksums) in the Amazon S3 User Guide.
+    public struct Checksum: Swift.Sendable {
+        /// The base64-encoded, 32-bit CRC-32 checksum of the object. This will only be present if it was uploaded with the object. When you use an API operation on an object that was uploaded using multipart uploads, this value may not be a direct checksum value of the full object. Instead, it's a calculation based on the checksum values of each individual part. For more information about how checksums are calculated with multipart uploads, see [ Checking object integrity](https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html#large-object-checksums) in the Amazon S3 User Guide.
         public var checksumCRC32: Swift.String?
-        /// The base64-encoded, 32-bit CRC32C checksum of the object. This will only be present if it was uploaded with the object. When you use an API operation on an object that was uploaded using multipart uploads, this value may not be a direct checksum value of the full object. Instead, it's a calculation based on the checksum values of each individual part. For more information about how checksums are calculated with multipart uploads, see [ Checking object integrity](https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html#large-object-checksums) in the Amazon S3 User Guide.
+        /// The base64-encoded, 32-bit CRC-32C checksum of the object. This will only be present if it was uploaded with the object. When you use an API operation on an object that was uploaded using multipart uploads, this value may not be a direct checksum value of the full object. Instead, it's a calculation based on the checksum values of each individual part. For more information about how checksums are calculated with multipart uploads, see [ Checking object integrity](https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html#large-object-checksums) in the Amazon S3 User Guide.
         public var checksumCRC32C: Swift.String?
         /// The base64-encoded, 160-bit SHA-1 digest of the object. This will only be present if it was uploaded with the object. When you use the API operation on an object that was uploaded using multipart uploads, this value may not be a direct checksum value of the full object. Instead, it's a calculation based on the checksum values of each individual part. For more information about how checksums are calculated with multipart uploads, see [ Checking object integrity](https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html#large-object-checksums) in the Amazon S3 User Guide.
         public var checksumSHA1: Swift.String?
@@ -7638,15 +7699,15 @@ extension S3ClientTypes {
             self.checksumSHA256 = checksumSHA256
         }
     }
-
 }
 
 extension S3ClientTypes {
+
     /// A container for elements related to an individual part.
-    public struct ObjectPart {
-        /// This header can be used as a data integrity check to verify that the data received is the same data that was originally sent. This header specifies the base64-encoded, 32-bit CRC32 checksum of the object. For more information, see [Checking object integrity](https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html) in the Amazon S3 User Guide.
+    public struct ObjectPart: Swift.Sendable {
+        /// This header can be used as a data integrity check to verify that the data received is the same data that was originally sent. This header specifies the base64-encoded, 32-bit CRC-32 checksum of the object. For more information, see [Checking object integrity](https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html) in the Amazon S3 User Guide.
         public var checksumCRC32: Swift.String?
-        /// The base64-encoded, 32-bit CRC32C checksum of the object. This will only be present if it was uploaded with the object. When you use an API operation on an object that was uploaded using multipart uploads, this value may not be a direct checksum value of the full object. Instead, it's a calculation based on the checksum values of each individual part. For more information about how checksums are calculated with multipart uploads, see [ Checking object integrity](https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html#large-object-checksums) in the Amazon S3 User Guide.
+        /// The base64-encoded, 32-bit CRC-32C checksum of the object. This will only be present if it was uploaded with the object. When you use an API operation on an object that was uploaded using multipart uploads, this value may not be a direct checksum value of the full object. Instead, it's a calculation based on the checksum values of each individual part. For more information about how checksums are calculated with multipart uploads, see [ Checking object integrity](https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html#large-object-checksums) in the Amazon S3 User Guide.
         public var checksumCRC32C: Swift.String?
         /// The base64-encoded, 160-bit SHA-1 digest of the object. This will only be present if it was uploaded with the object. When you use the API operation on an object that was uploaded using multipart uploads, this value may not be a direct checksum value of the full object. Instead, it's a calculation based on the checksum values of each individual part. For more information about how checksums are calculated with multipart uploads, see [ Checking object integrity](https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html#large-object-checksums) in the Amazon S3 User Guide.
         public var checksumSHA1: Swift.String?
@@ -7674,12 +7735,12 @@ extension S3ClientTypes {
             self.size = size
         }
     }
-
 }
 
 extension S3ClientTypes {
+
     /// A collection of parts associated with a multipart upload.
-    public struct GetObjectAttributesParts {
+    public struct GetObjectAttributesParts: Swift.Sendable {
         /// Indicates whether the returned list of parts is truncated. A value of true indicates that the list was truncated. A list can be truncated if the number of parts exceeds the limit returned in the MaxParts element.
         public var isTruncated: Swift.Bool?
         /// The maximum number of parts allowed in the response.
@@ -7714,10 +7775,9 @@ extension S3ClientTypes {
             self.totalPartsCount = totalPartsCount
         }
     }
-
 }
 
-public struct GetObjectAttributesOutput {
+public struct GetObjectAttributesOutput: Swift.Sendable {
     /// The checksum or digest of the object.
     public var checksum: S3ClientTypes.Checksum?
     /// Specifies whether the object retrieved was (true) or was not (false) a delete marker. If false, this response header does not appear in the response. This functionality is not supported for directory buckets.
@@ -7761,7 +7821,7 @@ public struct GetObjectAttributesOutput {
     }
 }
 
-public struct GetObjectLegalHoldInput {
+public struct GetObjectLegalHoldInput: Swift.Sendable {
     /// The bucket name containing the object whose legal hold status you want to retrieve. Access points - When you use this action with an access point, you must provide the alias of the access point in place of the bucket name or specify the access point ARN. When using the access point ARN, you must direct requests to the access point hostname. The access point hostname takes the form AccessPointName-AccountId.s3-accesspoint.Region.amazonaws.com. When using this action with an access point through the Amazon Web Services SDKs, you provide the access point ARN in place of the bucket name. For more information about access point ARNs, see [Using access points](https://docs.aws.amazon.com/AmazonS3/latest/userguide/using-access-points.html) in the Amazon S3 User Guide.
     /// This member is required.
     public var bucket: Swift.String?
@@ -7792,8 +7852,9 @@ public struct GetObjectLegalHoldInput {
 }
 
 extension S3ClientTypes {
+
     /// A legal hold configuration for an object.
-    public struct ObjectLockLegalHold {
+    public struct ObjectLockLegalHold: Swift.Sendable {
         /// Indicates whether the specified object has a legal hold in place.
         public var status: S3ClientTypes.ObjectLockLegalHoldStatus?
 
@@ -7804,10 +7865,9 @@ extension S3ClientTypes {
             self.status = status
         }
     }
-
 }
 
-public struct GetObjectLegalHoldOutput {
+public struct GetObjectLegalHoldOutput: Swift.Sendable {
     /// The current legal hold status for the specified object.
     public var legalHold: S3ClientTypes.ObjectLockLegalHold?
 
@@ -7819,7 +7879,7 @@ public struct GetObjectLegalHoldOutput {
     }
 }
 
-public struct GetObjectLockConfigurationInput {
+public struct GetObjectLockConfigurationInput: Swift.Sendable {
     /// The bucket whose Object Lock configuration you want to retrieve. Access points - When you use this action with an access point, you must provide the alias of the access point in place of the bucket name or specify the access point ARN. When using the access point ARN, you must direct requests to the access point hostname. The access point hostname takes the form AccessPointName-AccountId.s3-accesspoint.Region.amazonaws.com. When using this action with an access point through the Amazon Web Services SDKs, you provide the access point ARN in place of the bucket name. For more information about access point ARNs, see [Using access points](https://docs.aws.amazon.com/AmazonS3/latest/userguide/using-access-points.html) in the Amazon S3 User Guide.
     /// This member is required.
     public var bucket: Swift.String?
@@ -7838,7 +7898,7 @@ public struct GetObjectLockConfigurationInput {
 
 extension S3ClientTypes {
 
-    public enum ObjectLockEnabled: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ObjectLockEnabled: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case enabled
         case sdkUnknown(Swift.String)
 
@@ -7864,7 +7924,7 @@ extension S3ClientTypes {
 
 extension S3ClientTypes {
 
-    public enum ObjectLockRetentionMode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ObjectLockRetentionMode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case compliance
         case governance
         case sdkUnknown(Swift.String)
@@ -7892,12 +7952,13 @@ extension S3ClientTypes {
 }
 
 extension S3ClientTypes {
+
     /// The container element for optionally specifying the default Object Lock retention settings for new objects placed in the specified bucket.
     ///
     /// * The DefaultRetention settings require both a mode and a period.
     ///
     /// * The DefaultRetention period can be either Days or Years but you must select one. You cannot specify Days and Years at the same time.
-    public struct DefaultRetention {
+    public struct DefaultRetention: Swift.Sendable {
         /// The number of days that you want to specify for the default retention period. Must be used with Mode.
         public var days: Swift.Int?
         /// The default Object Lock retention mode you want to apply to new objects placed in the specified bucket. Must be used with either Days or Years.
@@ -7916,12 +7977,12 @@ extension S3ClientTypes {
             self.years = years
         }
     }
-
 }
 
 extension S3ClientTypes {
+
     /// The container element for an Object Lock rule.
-    public struct ObjectLockRule {
+    public struct ObjectLockRule: Swift.Sendable {
         /// The default Object Lock retention mode and period that you want to apply to new objects placed in the specified bucket. Bucket settings require both a mode and a period. The period can be either Days or Years but you must select one. You cannot specify Days and Years at the same time.
         public var defaultRetention: S3ClientTypes.DefaultRetention?
 
@@ -7932,12 +7993,12 @@ extension S3ClientTypes {
             self.defaultRetention = defaultRetention
         }
     }
-
 }
 
 extension S3ClientTypes {
+
     /// The container element for Object Lock configuration parameters.
-    public struct ObjectLockConfiguration {
+    public struct ObjectLockConfiguration: Swift.Sendable {
         /// Indicates whether this bucket has an Object Lock configuration enabled. Enable ObjectLockEnabled when you apply ObjectLockConfiguration to a bucket.
         public var objectLockEnabled: S3ClientTypes.ObjectLockEnabled?
         /// Specifies the Object Lock rule for the specified object. Enable the this rule when you apply ObjectLockConfiguration to a bucket. Bucket settings require both a mode and a period. The period can be either Days or Years but you must select one. You cannot specify Days and Years at the same time.
@@ -7952,10 +8013,9 @@ extension S3ClientTypes {
             self.rule = rule
         }
     }
-
 }
 
-public struct GetObjectLockConfigurationOutput {
+public struct GetObjectLockConfigurationOutput: Swift.Sendable {
     /// The specified bucket's Object Lock configuration.
     public var objectLockConfiguration: S3ClientTypes.ObjectLockConfiguration?
 
@@ -7967,7 +8027,7 @@ public struct GetObjectLockConfigurationOutput {
     }
 }
 
-public struct GetObjectRetentionInput {
+public struct GetObjectRetentionInput: Swift.Sendable {
     /// The bucket name containing the object whose retention settings you want to retrieve. Access points - When you use this action with an access point, you must provide the alias of the access point in place of the bucket name or specify the access point ARN. When using the access point ARN, you must direct requests to the access point hostname. The access point hostname takes the form AccessPointName-AccountId.s3-accesspoint.Region.amazonaws.com. When using this action with an access point through the Amazon Web Services SDKs, you provide the access point ARN in place of the bucket name. For more information about access point ARNs, see [Using access points](https://docs.aws.amazon.com/AmazonS3/latest/userguide/using-access-points.html) in the Amazon S3 User Guide.
     /// This member is required.
     public var bucket: Swift.String?
@@ -7998,8 +8058,9 @@ public struct GetObjectRetentionInput {
 }
 
 extension S3ClientTypes {
+
     /// A Retention configuration for an object.
-    public struct ObjectLockRetention {
+    public struct ObjectLockRetention: Swift.Sendable {
         /// Indicates the Retention mode for the specified object.
         public var mode: S3ClientTypes.ObjectLockRetentionMode?
         /// The date on which this Object Lock Retention will expire.
@@ -8014,10 +8075,9 @@ extension S3ClientTypes {
             self.retainUntilDate = retainUntilDate
         }
     }
-
 }
 
-public struct GetObjectRetentionOutput {
+public struct GetObjectRetentionOutput: Swift.Sendable {
     /// The container element for an object's retention settings.
     public var retention: S3ClientTypes.ObjectLockRetention?
 
@@ -8029,7 +8089,7 @@ public struct GetObjectRetentionOutput {
     }
 }
 
-public struct GetObjectTaggingInput {
+public struct GetObjectTaggingInput: Swift.Sendable {
     /// The bucket name containing the object for which to get the tagging information. Access points - When you use this action with an access point, you must provide the alias of the access point in place of the bucket name or specify the access point ARN. When using the access point ARN, you must direct requests to the access point hostname. The access point hostname takes the form AccessPointName-AccountId.s3-accesspoint.Region.amazonaws.com. When using this action with an access point through the Amazon Web Services SDKs, you provide the access point ARN in place of the bucket name. For more information about access point ARNs, see [Using access points](https://docs.aws.amazon.com/AmazonS3/latest/userguide/using-access-points.html) in the Amazon S3 User Guide. S3 on Outposts - When you use this action with Amazon S3 on Outposts, you must direct requests to the S3 on Outposts hostname. The S3 on Outposts hostname takes the form  AccessPointName-AccountId.outpostID.s3-outposts.Region.amazonaws.com. When you use this action with S3 on Outposts through the Amazon Web Services SDKs, you provide the Outposts access point ARN in place of the bucket name. For more information about S3 on Outposts ARNs, see [What is S3 on Outposts?](https://docs.aws.amazon.com/AmazonS3/latest/userguide/S3onOutposts.html) in the Amazon S3 User Guide.
     /// This member is required.
     public var bucket: Swift.String?
@@ -8059,7 +8119,7 @@ public struct GetObjectTaggingInput {
     }
 }
 
-public struct GetObjectTaggingOutput {
+public struct GetObjectTaggingOutput: Swift.Sendable {
     /// Contains the tag set.
     /// This member is required.
     public var tagSet: [S3ClientTypes.Tag]?
@@ -8076,7 +8136,7 @@ public struct GetObjectTaggingOutput {
     }
 }
 
-public struct GetObjectTorrentInput {
+public struct GetObjectTorrentInput: Swift.Sendable {
     /// The name of the bucket containing the object for which to get the torrent files.
     /// This member is required.
     public var bucket: Swift.String?
@@ -8102,7 +8162,7 @@ public struct GetObjectTorrentInput {
     }
 }
 
-public struct GetObjectTorrentOutput {
+public struct GetObjectTorrentOutput: Swift.Sendable {
     /// A Bencoded dictionary as defined by the BitTorrent specification
     public var body: Smithy.ByteStream?
     /// If present, indicates that the requester was successfully charged for the request. This functionality is not supported for directory buckets.
@@ -8118,7 +8178,7 @@ public struct GetObjectTorrentOutput {
     }
 }
 
-public struct GetPublicAccessBlockInput {
+public struct GetPublicAccessBlockInput: Swift.Sendable {
     /// The name of the Amazon S3 bucket whose PublicAccessBlock configuration you want to retrieve.
     /// This member is required.
     public var bucket: Swift.String?
@@ -8136,8 +8196,9 @@ public struct GetPublicAccessBlockInput {
 }
 
 extension S3ClientTypes {
+
     /// The PublicAccessBlock configuration that you want to apply to this Amazon S3 bucket. You can enable the configuration options in any combination. For more information about when Amazon S3 considers a bucket or object public, see [The Meaning of "Public"](https://docs.aws.amazon.com/AmazonS3/latest/dev/access-control-block-public-access.html#access-control-block-public-access-policy-status) in the Amazon S3 User Guide.
-    public struct PublicAccessBlockConfiguration {
+    public struct PublicAccessBlockConfiguration: Swift.Sendable {
         /// Specifies whether Amazon S3 should block public access control lists (ACLs) for this bucket and objects in this bucket. Setting this element to TRUE causes the following behavior:
         ///
         /// * PUT Bucket ACL and PUT Object ACL calls fail if the specified ACL is public.
@@ -8153,7 +8214,7 @@ extension S3ClientTypes {
         public var blockPublicPolicy: Swift.Bool?
         /// Specifies whether Amazon S3 should ignore public ACLs for this bucket and objects in this bucket. Setting this element to TRUE causes Amazon S3 to ignore all public ACLs on this bucket and objects in this bucket. Enabling this setting doesn't affect the persistence of any existing ACLs and doesn't prevent new public ACLs from being set.
         public var ignorePublicAcls: Swift.Bool?
-        /// Specifies whether Amazon S3 should restrict public bucket policies for this bucket. Setting this element to TRUE restricts access to this bucket to only Amazon Web Servicesservice principals and authorized users within this account if the bucket has a public policy. Enabling this setting doesn't affect previously stored bucket policies, except that public and cross-account access within any public bucket policy, including non-public delegation to specific accounts, is blocked.
+        /// Specifies whether Amazon S3 should restrict public bucket policies for this bucket. Setting this element to TRUE restricts access to this bucket to only Amazon Web Services service principals and authorized users within this account if the bucket has a public policy. Enabling this setting doesn't affect previously stored bucket policies, except that public and cross-account access within any public bucket policy, including non-public delegation to specific accounts, is blocked.
         public var restrictPublicBuckets: Swift.Bool?
 
         public init(
@@ -8169,10 +8230,9 @@ extension S3ClientTypes {
             self.restrictPublicBuckets = restrictPublicBuckets
         }
     }
-
 }
 
-public struct GetPublicAccessBlockOutput {
+public struct GetPublicAccessBlockOutput: Swift.Sendable {
     /// The PublicAccessBlock configuration currently in effect for this Amazon S3 bucket.
     public var publicAccessBlockConfiguration: S3ClientTypes.PublicAccessBlockConfiguration?
 
@@ -8198,7 +8258,7 @@ public struct NotFound: ClientRuntime.ModeledError, AWSClientRuntime.AWSS3Servic
     public init() { }
 }
 
-public struct HeadBucketInput {
+public struct HeadBucketInput: Swift.Sendable {
     /// The bucket name. Directory buckets - When you use this operation with a directory bucket, you must use virtual-hosted-style requests in the format  Bucket_name.s3express-az_id.region.amazonaws.com. Path-style requests are not supported. Directory bucket names must be unique in the chosen Availability Zone. Bucket names must follow the format  bucket_base_name--az-id--x-s3 (for example,  DOC-EXAMPLE-BUCKET--usw2-az1--x-s3). For information about bucket naming restrictions, see [Directory bucket naming rules](https://docs.aws.amazon.com/AmazonS3/latest/userguide/directory-bucket-naming-rules.html) in the Amazon S3 User Guide. Access points - When you use this action with an access point, you must provide the alias of the access point in place of the bucket name or specify the access point ARN. When using the access point ARN, you must direct requests to the access point hostname. The access point hostname takes the form AccessPointName-AccountId.s3-accesspoint.Region.amazonaws.com. When using this action with an access point through the Amazon Web Services SDKs, you provide the access point ARN in place of the bucket name. For more information about access point ARNs, see [Using access points](https://docs.aws.amazon.com/AmazonS3/latest/userguide/using-access-points.html) in the Amazon S3 User Guide. Object Lambda access points - When you use this API operation with an Object Lambda access point, provide the alias of the Object Lambda access point in place of the bucket name. If the Object Lambda access point alias in a request is not valid, the error code InvalidAccessPointAliasError is returned. For more information about InvalidAccessPointAliasError, see [List of Error Codes](https://docs.aws.amazon.com/AmazonS3/latest/API/ErrorResponses.html#ErrorCodeList). Access points and Object Lambda access points are not supported by directory buckets. S3 on Outposts - When you use this action with Amazon S3 on Outposts, you must direct requests to the S3 on Outposts hostname. The S3 on Outposts hostname takes the form  AccessPointName-AccountId.outpostID.s3-outposts.Region.amazonaws.com. When you use this action with S3 on Outposts through the Amazon Web Services SDKs, you provide the Outposts access point ARN in place of the bucket name. For more information about S3 on Outposts ARNs, see [What is S3 on Outposts?](https://docs.aws.amazon.com/AmazonS3/latest/userguide/S3onOutposts.html) in the Amazon S3 User Guide.
     /// This member is required.
     public var bucket: Swift.String?
@@ -8215,7 +8275,7 @@ public struct HeadBucketInput {
     }
 }
 
-public struct HeadBucketOutput {
+public struct HeadBucketOutput: Swift.Sendable {
     /// Indicates whether the bucket name used in the request is an access point alias. For directory buckets, the value of this field is false.
     public var accessPointAlias: Swift.Bool?
     /// The name of the location where the bucket will be created. For directory buckets, the AZ ID of the Availability Zone where the bucket is created. An example AZ ID value is usw2-az1. This functionality is only supported by directory buckets.
@@ -8239,7 +8299,7 @@ public struct HeadBucketOutput {
     }
 }
 
-public struct HeadObjectInput {
+public struct HeadObjectInput: Swift.Sendable {
     /// The name of the bucket that contains the object. Directory buckets - When you use this operation with a directory bucket, you must use virtual-hosted-style requests in the format  Bucket_name.s3express-az_id.region.amazonaws.com. Path-style requests are not supported. Directory bucket names must be unique in the chosen Availability Zone. Bucket names must follow the format  bucket_base_name--az-id--x-s3 (for example,  DOC-EXAMPLE-BUCKET--usw2-az1--x-s3). For information about bucket naming restrictions, see [Directory bucket naming rules](https://docs.aws.amazon.com/AmazonS3/latest/userguide/directory-bucket-naming-rules.html) in the Amazon S3 User Guide. Access points - When you use this action with an access point, you must provide the alias of the access point in place of the bucket name or specify the access point ARN. When using the access point ARN, you must direct requests to the access point hostname. The access point hostname takes the form AccessPointName-AccountId.s3-accesspoint.Region.amazonaws.com. When using this action with an access point through the Amazon Web Services SDKs, you provide the access point ARN in place of the bucket name. For more information about access point ARNs, see [Using access points](https://docs.aws.amazon.com/AmazonS3/latest/userguide/using-access-points.html) in the Amazon S3 User Guide. Access points and Object Lambda access points are not supported by directory buckets. S3 on Outposts - When you use this action with Amazon S3 on Outposts, you must direct requests to the S3 on Outposts hostname. The S3 on Outposts hostname takes the form  AccessPointName-AccountId.outpostID.s3-outposts.Region.amazonaws.com. When you use this action with S3 on Outposts through the Amazon Web Services SDKs, you provide the Outposts access point ARN in place of the bucket name. For more information about S3 on Outposts ARNs, see [What is S3 on Outposts?](https://docs.aws.amazon.com/AmazonS3/latest/userguide/S3onOutposts.html) in the Amazon S3 User Guide.
     /// This member is required.
     public var bucket: Swift.String?
@@ -8368,7 +8428,7 @@ extension HeadObjectInput: Swift.CustomDebugStringConvertible {
 
 extension S3ClientTypes {
 
-    public enum ArchiveStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ArchiveStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case archiveAccess
         case deepArchiveAccess
         case sdkUnknown(Swift.String)
@@ -8395,7 +8455,7 @@ extension S3ClientTypes {
     }
 }
 
-public struct HeadObjectOutput {
+public struct HeadObjectOutput: Swift.Sendable {
     /// Indicates that a range of bytes was specified.
     public var acceptRanges: Swift.String?
     /// The archive state of the head object. This functionality is not supported for directory buckets.
@@ -8404,9 +8464,9 @@ public struct HeadObjectOutput {
     public var bucketKeyEnabled: Swift.Bool?
     /// Specifies caching behavior along the request/reply chain.
     public var cacheControl: Swift.String?
-    /// The base64-encoded, 32-bit CRC32 checksum of the object. This will only be present if it was uploaded with the object. When you use an API operation on an object that was uploaded using multipart uploads, this value may not be a direct checksum value of the full object. Instead, it's a calculation based on the checksum values of each individual part. For more information about how checksums are calculated with multipart uploads, see [ Checking object integrity](https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html#large-object-checksums) in the Amazon S3 User Guide.
+    /// The base64-encoded, 32-bit CRC-32 checksum of the object. This will only be present if it was uploaded with the object. When you use an API operation on an object that was uploaded using multipart uploads, this value may not be a direct checksum value of the full object. Instead, it's a calculation based on the checksum values of each individual part. For more information about how checksums are calculated with multipart uploads, see [ Checking object integrity](https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html#large-object-checksums) in the Amazon S3 User Guide.
     public var checksumCRC32: Swift.String?
-    /// The base64-encoded, 32-bit CRC32C checksum of the object. This will only be present if it was uploaded with the object. When you use an API operation on an object that was uploaded using multipart uploads, this value may not be a direct checksum value of the full object. Instead, it's a calculation based on the checksum values of each individual part. For more information about how checksums are calculated with multipart uploads, see [ Checking object integrity](https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html#large-object-checksums) in the Amazon S3 User Guide.
+    /// The base64-encoded, 32-bit CRC-32C checksum of the object. This will only be present if it was uploaded with the object. When you use an API operation on an object that was uploaded using multipart uploads, this value may not be a direct checksum value of the full object. Instead, it's a calculation based on the checksum values of each individual part. For more information about how checksums are calculated with multipart uploads, see [ Checking object integrity](https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html#large-object-checksums) in the Amazon S3 User Guide.
     public var checksumCRC32C: Swift.String?
     /// The base64-encoded, 160-bit SHA-1 digest of the object. This will only be present if it was uploaded with the object. When you use the API operation on an object that was uploaded using multipart uploads, this value may not be a direct checksum value of the full object. Instead, it's a calculation based on the checksum values of each individual part. For more information about how checksums are calculated with multipart uploads, see [ Checking object integrity](https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html#large-object-checksums) in the Amazon S3 User Guide.
     public var checksumSHA1: Swift.String?
@@ -8553,7 +8613,7 @@ extension HeadObjectOutput: Swift.CustomDebugStringConvertible {
         "HeadObjectOutput(acceptRanges: \(Swift.String(describing: acceptRanges)), archiveStatus: \(Swift.String(describing: archiveStatus)), bucketKeyEnabled: \(Swift.String(describing: bucketKeyEnabled)), cacheControl: \(Swift.String(describing: cacheControl)), checksumCRC32: \(Swift.String(describing: checksumCRC32)), checksumCRC32C: \(Swift.String(describing: checksumCRC32C)), checksumSHA1: \(Swift.String(describing: checksumSHA1)), checksumSHA256: \(Swift.String(describing: checksumSHA256)), contentDisposition: \(Swift.String(describing: contentDisposition)), contentEncoding: \(Swift.String(describing: contentEncoding)), contentLanguage: \(Swift.String(describing: contentLanguage)), contentLength: \(Swift.String(describing: contentLength)), contentType: \(Swift.String(describing: contentType)), deleteMarker: \(Swift.String(describing: deleteMarker)), eTag: \(Swift.String(describing: eTag)), expiration: \(Swift.String(describing: expiration)), expires: \(Swift.String(describing: expires)), lastModified: \(Swift.String(describing: lastModified)), metadata: \(Swift.String(describing: metadata)), missingMeta: \(Swift.String(describing: missingMeta)), objectLockLegalHoldStatus: \(Swift.String(describing: objectLockLegalHoldStatus)), objectLockMode: \(Swift.String(describing: objectLockMode)), objectLockRetainUntilDate: \(Swift.String(describing: objectLockRetainUntilDate)), partsCount: \(Swift.String(describing: partsCount)), replicationStatus: \(Swift.String(describing: replicationStatus)), requestCharged: \(Swift.String(describing: requestCharged)), restore: \(Swift.String(describing: restore)), serverSideEncryption: \(Swift.String(describing: serverSideEncryption)), sseCustomerAlgorithm: \(Swift.String(describing: sseCustomerAlgorithm)), sseCustomerKeyMD5: \(Swift.String(describing: sseCustomerKeyMD5)), storageClass: \(Swift.String(describing: storageClass)), versionId: \(Swift.String(describing: versionId)), websiteRedirectLocation: \(Swift.String(describing: websiteRedirectLocation)), ssekmsKeyId: \"CONTENT_REDACTED\")"}
 }
 
-public struct ListBucketAnalyticsConfigurationsInput {
+public struct ListBucketAnalyticsConfigurationsInput: Swift.Sendable {
     /// The name of the bucket from which analytics configurations are retrieved.
     /// This member is required.
     public var bucket: Swift.String?
@@ -8574,7 +8634,7 @@ public struct ListBucketAnalyticsConfigurationsInput {
     }
 }
 
-public struct ListBucketAnalyticsConfigurationsOutput {
+public struct ListBucketAnalyticsConfigurationsOutput: Swift.Sendable {
     /// The list of analytics configurations for a bucket.
     public var analyticsConfigurationList: [S3ClientTypes.AnalyticsConfiguration]?
     /// The marker that is used as a starting point for this analytics configuration list response. This value is present if it was sent in the request.
@@ -8598,7 +8658,7 @@ public struct ListBucketAnalyticsConfigurationsOutput {
     }
 }
 
-public struct ListBucketIntelligentTieringConfigurationsInput {
+public struct ListBucketIntelligentTieringConfigurationsInput: Swift.Sendable {
     /// The name of the Amazon S3 bucket whose configuration you want to modify or retrieve.
     /// This member is required.
     public var bucket: Swift.String?
@@ -8615,7 +8675,7 @@ public struct ListBucketIntelligentTieringConfigurationsInput {
     }
 }
 
-public struct ListBucketIntelligentTieringConfigurationsOutput {
+public struct ListBucketIntelligentTieringConfigurationsOutput: Swift.Sendable {
     /// The ContinuationToken that represents a placeholder from where this request should begin.
     public var continuationToken: Swift.String?
     /// The list of S3 Intelligent-Tiering configurations for a bucket.
@@ -8639,7 +8699,7 @@ public struct ListBucketIntelligentTieringConfigurationsOutput {
     }
 }
 
-public struct ListBucketInventoryConfigurationsInput {
+public struct ListBucketInventoryConfigurationsInput: Swift.Sendable {
     /// The name of the bucket containing the inventory configurations to retrieve.
     /// This member is required.
     public var bucket: Swift.String?
@@ -8660,7 +8720,7 @@ public struct ListBucketInventoryConfigurationsInput {
     }
 }
 
-public struct ListBucketInventoryConfigurationsOutput {
+public struct ListBucketInventoryConfigurationsOutput: Swift.Sendable {
     /// If sent in the request, the marker that is used as a starting point for this inventory configuration list response.
     public var continuationToken: Swift.String?
     /// The list of inventory configurations for a bucket.
@@ -8684,7 +8744,7 @@ public struct ListBucketInventoryConfigurationsOutput {
     }
 }
 
-public struct ListBucketMetricsConfigurationsInput {
+public struct ListBucketMetricsConfigurationsInput: Swift.Sendable {
     /// The name of the bucket containing the metrics configurations to retrieve.
     /// This member is required.
     public var bucket: Swift.String?
@@ -8705,7 +8765,7 @@ public struct ListBucketMetricsConfigurationsInput {
     }
 }
 
-public struct ListBucketMetricsConfigurationsOutput {
+public struct ListBucketMetricsConfigurationsOutput: Swift.Sendable {
     /// The marker that is used as a starting point for this metrics configuration list response. This value is present if it was sent in the request.
     public var continuationToken: Swift.String?
     /// Indicates whether the returned list of metrics configurations is complete. A value of true indicates that the list is not complete and the NextContinuationToken will be provided for a subsequent request.
@@ -8729,63 +8789,79 @@ public struct ListBucketMetricsConfigurationsOutput {
     }
 }
 
-public struct ListBucketsInput {
+public struct ListBucketsInput: Swift.Sendable {
+    /// Limits the response to buckets that are located in the specified Amazon Web Services Region. The Amazon Web Services Region must be expressed according to the Amazon Web Services Region code, such as us-west-2 for the US West (Oregon) Region. For a list of the valid values for all of the Amazon Web Services Regions, see [Regions and Endpoints](https://docs.aws.amazon.com/general/latest/gr/rande.html#s3_region). Requests made to a Regional endpoint that is different from the bucket-region parameter are not supported. For example, if you want to limit the response to your buckets in Region us-west-2, the request must be made to an endpoint in Region us-west-2.
+    public var bucketRegion: Swift.String?
     /// ContinuationToken indicates to Amazon S3 that the list is being continued on this bucket with a token. ContinuationToken is obfuscated and is not a real key. You can use this ContinuationToken for pagination of the list results. Length Constraints: Minimum length of 0. Maximum length of 1024. Required: No.
     public var continuationToken: Swift.String?
     /// Maximum number of buckets to be returned in response. When the number is more than the count of buckets that are owned by an Amazon Web Services account, return all the buckets in response.
     public var maxBuckets: Swift.Int?
+    /// Limits the response to bucket names that begin with the specified bucket name prefix.
+    public var `prefix`: Swift.String?
 
     public init(
+        bucketRegion: Swift.String? = nil,
         continuationToken: Swift.String? = nil,
-        maxBuckets: Swift.Int? = nil
+        maxBuckets: Swift.Int? = nil,
+        `prefix`: Swift.String? = nil
     )
     {
+        self.bucketRegion = bucketRegion
         self.continuationToken = continuationToken
         self.maxBuckets = maxBuckets
+        self.`prefix` = `prefix`
     }
 }
 
 extension S3ClientTypes {
+
     /// In terms of implementation, a Bucket is a resource.
-    public struct Bucket {
+    public struct Bucket: Swift.Sendable {
+        /// BucketRegion indicates the Amazon Web Services region where the bucket is located. If the request contains at least one valid parameter, it is included in the response.
+        public var bucketRegion: Swift.String?
         /// Date the bucket was created. This date can change when making changes to your bucket, such as editing its bucket policy.
         public var creationDate: Foundation.Date?
         /// The name of the bucket.
         public var name: Swift.String?
 
         public init(
+            bucketRegion: Swift.String? = nil,
             creationDate: Foundation.Date? = nil,
             name: Swift.String? = nil
         )
         {
+            self.bucketRegion = bucketRegion
             self.creationDate = creationDate
             self.name = name
         }
     }
-
 }
 
-public struct ListBucketsOutput {
+public struct ListBucketsOutput: Swift.Sendable {
     /// The list of buckets owned by the requester.
     public var buckets: [S3ClientTypes.Bucket]?
     /// ContinuationToken is included in the response when there are more buckets that can be listed with pagination. The next ListBuckets request to Amazon S3 can be continued with this ContinuationToken. ContinuationToken is obfuscated and is not a real bucket.
     public var continuationToken: Swift.String?
     /// The owner of the buckets listed.
     public var owner: S3ClientTypes.Owner?
+    /// If Prefix was sent with the request, it is included in the response. All bucket names in the response begin with the specified bucket name prefix.
+    public var `prefix`: Swift.String?
 
     public init(
         buckets: [S3ClientTypes.Bucket]? = nil,
         continuationToken: Swift.String? = nil,
-        owner: S3ClientTypes.Owner? = nil
+        owner: S3ClientTypes.Owner? = nil,
+        `prefix`: Swift.String? = nil
     )
     {
         self.buckets = buckets
         self.continuationToken = continuationToken
         self.owner = owner
+        self.`prefix` = `prefix`
     }
 }
 
-public struct ListDirectoryBucketsInput {
+public struct ListDirectoryBucketsInput: Swift.Sendable {
     /// ContinuationToken indicates to Amazon S3 that the list is being continued on buckets in this account with a token. ContinuationToken is obfuscated and is not a real bucket name. You can use this ContinuationToken for the pagination of the list results.
     public var continuationToken: Swift.String?
     /// Maximum number of buckets to be returned in response. When the number is more than the count of buckets that are owned by an Amazon Web Services account, return all the buckets in response.
@@ -8801,7 +8877,7 @@ public struct ListDirectoryBucketsInput {
     }
 }
 
-public struct ListDirectoryBucketsOutput {
+public struct ListDirectoryBucketsOutput: Swift.Sendable {
     /// The list of buckets owned by the requester.
     public var buckets: [S3ClientTypes.Bucket]?
     /// If ContinuationToken was sent with the request, it is included in the response. You can use the returned ContinuationToken for pagination of the list response.
@@ -8820,7 +8896,7 @@ public struct ListDirectoryBucketsOutput {
 extension S3ClientTypes {
 
     /// Encoding type used by Amazon S3 to encode the [object keys](https://docs.aws.amazon.com/AmazonS3/latest/userguide/object-keys.html) in the response. Responses are encoded only in UTF-8. An object key can contain any Unicode character. However, the XML 1.0 parser can't parse certain characters, such as characters with an ASCII value from 0 to 10. For characters that aren't supported in XML 1.0, you can add this parameter to request that Amazon S3 encode the keys in the response. For more information about characters to avoid in object key names, see [Object key naming guidelines](https://docs.aws.amazon.com/AmazonS3/latest/userguide/object-keys.html#object-key-guidelines). When using the URL encoding type, non-ASCII characters that are used in an object's key name will be percent-encoded according to UTF-8 code values. For example, the object test_file(3).png will appear as test_file%283%29.png.
-    public enum EncodingType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum EncodingType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case url
         case sdkUnknown(Swift.String)
 
@@ -8844,7 +8920,7 @@ extension S3ClientTypes {
     }
 }
 
-public struct ListMultipartUploadsInput {
+public struct ListMultipartUploadsInput: Swift.Sendable {
     /// The name of the bucket to which the multipart upload was initiated. Directory buckets - When you use this operation with a directory bucket, you must use virtual-hosted-style requests in the format  Bucket_name.s3express-az_id.region.amazonaws.com. Path-style requests are not supported. Directory bucket names must be unique in the chosen Availability Zone. Bucket names must follow the format  bucket_base_name--az-id--x-s3 (for example,  DOC-EXAMPLE-BUCKET--usw2-az1--x-s3). For information about bucket naming restrictions, see [Directory bucket naming rules](https://docs.aws.amazon.com/AmazonS3/latest/userguide/directory-bucket-naming-rules.html) in the Amazon S3 User Guide. Access points - When you use this action with an access point, you must provide the alias of the access point in place of the bucket name or specify the access point ARN. When using the access point ARN, you must direct requests to the access point hostname. The access point hostname takes the form AccessPointName-AccountId.s3-accesspoint.Region.amazonaws.com. When using this action with an access point through the Amazon Web Services SDKs, you provide the access point ARN in place of the bucket name. For more information about access point ARNs, see [Using access points](https://docs.aws.amazon.com/AmazonS3/latest/userguide/using-access-points.html) in the Amazon S3 User Guide. Access points and Object Lambda access points are not supported by directory buckets. S3 on Outposts - When you use this action with Amazon S3 on Outposts, you must direct requests to the S3 on Outposts hostname. The S3 on Outposts hostname takes the form  AccessPointName-AccountId.outpostID.s3-outposts.Region.amazonaws.com. When you use this action with S3 on Outposts through the Amazon Web Services SDKs, you provide the Outposts access point ARN in place of the bucket name. For more information about S3 on Outposts ARNs, see [What is S3 on Outposts?](https://docs.aws.amazon.com/AmazonS3/latest/userguide/S3onOutposts.html) in the Amazon S3 User Guide.
     /// This member is required.
     public var bucket: Swift.String?
@@ -8894,8 +8970,9 @@ public struct ListMultipartUploadsInput {
 }
 
 extension S3ClientTypes {
+
     /// Container for all (if there are any) keys between Prefix and the next occurrence of the string specified by a delimiter. CommonPrefixes lists keys that act like subdirectories in the directory specified by Prefix. For example, if the prefix is notes/ and the delimiter is a slash (/) as in notes/summer/july, the common prefix is notes/summer/.
-    public struct CommonPrefix {
+    public struct CommonPrefix: Swift.Sendable {
         /// Container for the specified common prefix.
         public var `prefix`: Swift.String?
 
@@ -8906,12 +8983,12 @@ extension S3ClientTypes {
             self.`prefix` = `prefix`
         }
     }
-
 }
 
 extension S3ClientTypes {
+
     /// Container element that identifies who initiated the multipart upload.
-    public struct Initiator {
+    public struct Initiator: Swift.Sendable {
         /// Name of the Principal. This functionality is not supported for directory buckets.
         public var displayName: Swift.String?
         /// If the principal is an Amazon Web Services account, it provides the Canonical User ID. If the principal is an IAM User, it provides a user ARN value. Directory buckets - If the principal is an Amazon Web Services account, it provides the Amazon Web Services account ID. If the principal is an IAM User, it provides a user ARN value.
@@ -8926,12 +9003,12 @@ extension S3ClientTypes {
             self.id = id
         }
     }
-
 }
 
 extension S3ClientTypes {
+
     /// Container for the MultipartUpload for the Amazon S3 object.
-    public struct MultipartUpload {
+    public struct MultipartUpload: Swift.Sendable {
         /// The algorithm that was used to create a checksum of the object.
         public var checksumAlgorithm: S3ClientTypes.ChecksumAlgorithm?
         /// Date and time at which the multipart upload was initiated.
@@ -8966,10 +9043,9 @@ extension S3ClientTypes {
             self.uploadId = uploadId
         }
     }
-
 }
 
-public struct ListMultipartUploadsOutput {
+public struct ListMultipartUploadsOutput: Swift.Sendable {
     /// The name of the bucket to which the multipart upload was initiated. Does not return the access point ARN or access point alias if used.
     public var bucket: Swift.String?
     /// If you specify a delimiter in the request, then the result returns each distinct key prefix containing the delimiter in a CommonPrefixes element. The distinct key prefixes are returned in the Prefix child element. Directory buckets - For directory buckets, only prefixes that end in a delimiter (/) are supported.
@@ -9031,7 +9107,7 @@ public struct ListMultipartUploadsOutput {
 
 extension S3ClientTypes {
 
-    public enum OptionalObjectAttributes: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum OptionalObjectAttributes: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case restoreStatus
         case sdkUnknown(Swift.String)
 
@@ -9055,7 +9131,7 @@ extension S3ClientTypes {
     }
 }
 
-public struct ListObjectsInput {
+public struct ListObjectsInput: Swift.Sendable {
     /// The name of the bucket containing the objects. Directory buckets - When you use this operation with a directory bucket, you must use virtual-hosted-style requests in the format  Bucket_name.s3express-az_id.region.amazonaws.com. Path-style requests are not supported. Directory bucket names must be unique in the chosen Availability Zone. Bucket names must follow the format  bucket_base_name--az-id--x-s3 (for example,  DOC-EXAMPLE-BUCKET--usw2-az1--x-s3). For information about bucket naming restrictions, see [Directory bucket naming rules](https://docs.aws.amazon.com/AmazonS3/latest/userguide/directory-bucket-naming-rules.html) in the Amazon S3 User Guide. Access points - When you use this action with an access point, you must provide the alias of the access point in place of the bucket name or specify the access point ARN. When using the access point ARN, you must direct requests to the access point hostname. The access point hostname takes the form AccessPointName-AccountId.s3-accesspoint.Region.amazonaws.com. When using this action with an access point through the Amazon Web Services SDKs, you provide the access point ARN in place of the bucket name. For more information about access point ARNs, see [Using access points](https://docs.aws.amazon.com/AmazonS3/latest/userguide/using-access-points.html) in the Amazon S3 User Guide. Access points and Object Lambda access points are not supported by directory buckets. S3 on Outposts - When you use this action with Amazon S3 on Outposts, you must direct requests to the S3 on Outposts hostname. The S3 on Outposts hostname takes the form  AccessPointName-AccountId.outpostID.s3-outposts.Region.amazonaws.com. When you use this action with S3 on Outposts through the Amazon Web Services SDKs, you provide the Outposts access point ARN in place of the bucket name. For more information about S3 on Outposts ARNs, see [What is S3 on Outposts?](https://docs.aws.amazon.com/AmazonS3/latest/userguide/S3onOutposts.html) in the Amazon S3 User Guide.
     /// This member is required.
     public var bucket: Swift.String?
@@ -9101,8 +9177,9 @@ public struct ListObjectsInput {
 }
 
 extension S3ClientTypes {
+
     /// Specifies the restoration status of an object. Objects in certain storage classes must be restored before they can be retrieved. For more information about these storage classes and how to work with archived objects, see [ Working with archived objects](https://docs.aws.amazon.com/AmazonS3/latest/userguide/archived-objects.html) in the Amazon S3 User Guide. This functionality is not supported for directory buckets. Only the S3 Express One Zone storage class is supported by directory buckets to store objects.
-    public struct RestoreStatus {
+    public struct RestoreStatus: Swift.Sendable {
         /// Specifies whether the object is currently being restored. If the object restoration is in progress, the header returns the value TRUE. For example: x-amz-optional-object-attributes: IsRestoreInProgress="true" If the object restoration has completed, the header returns the value FALSE. For example: x-amz-optional-object-attributes: IsRestoreInProgress="false", RestoreExpiryDate="2012-12-21T00:00:00.000Z" If the object hasn't been restored, there is no header response.
         public var isRestoreInProgress: Swift.Bool?
         /// Indicates when the restored copy will expire. This value is populated only if the object has already been restored. For example: x-amz-optional-object-attributes: IsRestoreInProgress="false", RestoreExpiryDate="2012-12-21T00:00:00.000Z"
@@ -9117,12 +9194,11 @@ extension S3ClientTypes {
             self.restoreExpiryDate = restoreExpiryDate
         }
     }
-
 }
 
 extension S3ClientTypes {
 
-    public enum ObjectStorageClass: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ObjectStorageClass: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case deepArchive
         case expressOnezone
         case glacier
@@ -9177,8 +9253,9 @@ extension S3ClientTypes {
 }
 
 extension S3ClientTypes {
+
     /// An object consists of data and its descriptive metadata.
-    public struct Object {
+    public struct Object: Swift.Sendable {
         /// The algorithm that was used to create a checksum of the object.
         public var checksumAlgorithm: [S3ClientTypes.ChecksumAlgorithm]?
         /// The entity tag is a hash of the object. The ETag reflects changes only to the contents of an object, not its metadata. The ETag may or may not be an MD5 digest of the object data. Whether or not it is depends on how the object was created and how it is encrypted as described below:
@@ -9226,10 +9303,9 @@ extension S3ClientTypes {
             self.storageClass = storageClass
         }
     }
-
 }
 
-public struct ListObjectsOutput {
+public struct ListObjectsOutput: Swift.Sendable {
     /// All of the keys (up to 1,000) rolled up in a common prefix count as a single return when calculating the number of returns. A response can contain CommonPrefixes only if you specify a delimiter. CommonPrefixes contains all (if there are any) keys between Prefix and the next occurrence of the string specified by the delimiter. CommonPrefixes lists keys that act like subdirectories in the directory specified by Prefix. For example, if the prefix is notes/ and the delimiter is a slash (/), as in notes/summer/july, the common prefix is notes/summer/. All of the keys that roll up into a common prefix count as a single return when calculating the number of returns.
     public var commonPrefixes: [S3ClientTypes.CommonPrefix]?
     /// Metadata about each object returned.
@@ -9281,7 +9357,7 @@ public struct ListObjectsOutput {
     }
 }
 
-public struct ListObjectsV2Input {
+public struct ListObjectsV2Input: Swift.Sendable {
     /// Directory buckets - When you use this operation with a directory bucket, you must use virtual-hosted-style requests in the format  Bucket_name.s3express-az_id.region.amazonaws.com. Path-style requests are not supported. Directory bucket names must be unique in the chosen Availability Zone. Bucket names must follow the format  bucket_base_name--az-id--x-s3 (for example,  DOC-EXAMPLE-BUCKET--usw2-az1--x-s3). For information about bucket naming restrictions, see [Directory bucket naming rules](https://docs.aws.amazon.com/AmazonS3/latest/userguide/directory-bucket-naming-rules.html) in the Amazon S3 User Guide. Access points - When you use this action with an access point, you must provide the alias of the access point in place of the bucket name or specify the access point ARN. When using the access point ARN, you must direct requests to the access point hostname. The access point hostname takes the form AccessPointName-AccountId.s3-accesspoint.Region.amazonaws.com. When using this action with an access point through the Amazon Web Services SDKs, you provide the access point ARN in place of the bucket name. For more information about access point ARNs, see [Using access points](https://docs.aws.amazon.com/AmazonS3/latest/userguide/using-access-points.html) in the Amazon S3 User Guide. Access points and Object Lambda access points are not supported by directory buckets. S3 on Outposts - When you use this action with Amazon S3 on Outposts, you must direct requests to the S3 on Outposts hostname. The S3 on Outposts hostname takes the form  AccessPointName-AccountId.outpostID.s3-outposts.Region.amazonaws.com. When you use this action with S3 on Outposts through the Amazon Web Services SDKs, you provide the Outposts access point ARN in place of the bucket name. For more information about S3 on Outposts ARNs, see [What is S3 on Outposts?](https://docs.aws.amazon.com/AmazonS3/latest/userguide/S3onOutposts.html) in the Amazon S3 User Guide.
     /// This member is required.
     public var bucket: Swift.String?
@@ -9338,7 +9414,7 @@ public struct ListObjectsV2Input {
     }
 }
 
-public struct ListObjectsV2Output {
+public struct ListObjectsV2Output: Swift.Sendable {
     /// All of the keys (up to 1,000) that share the same prefix are grouped together. When counting the total numbers of returns by this API operation, this group of keys is considered as one item. A response can contain CommonPrefixes only if you specify a delimiter. CommonPrefixes contains all (if there are any) keys between Prefix and the next occurrence of the string specified by a delimiter. CommonPrefixes lists keys that act like subdirectories in the directory specified by Prefix. For example, if the prefix is notes/ and the delimiter is a slash (/) as in notes/summer/july, the common prefix is notes/summer/. All of the keys that roll up into a common prefix count as a single return when calculating the number of returns.
     ///
     /// * Directory buckets - For directory buckets, only prefixes that end in a delimiter (/) are supported.
@@ -9402,7 +9478,7 @@ public struct ListObjectsV2Output {
     }
 }
 
-public struct ListObjectVersionsInput {
+public struct ListObjectVersionsInput: Swift.Sendable {
     /// The bucket name that contains the objects.
     /// This member is required.
     public var bucket: Swift.String?
@@ -9452,8 +9528,9 @@ public struct ListObjectVersionsInput {
 }
 
 extension S3ClientTypes {
+
     /// Information about the delete marker.
-    public struct DeleteMarkerEntry {
+    public struct DeleteMarkerEntry: Swift.Sendable {
         /// Specifies whether the object is (true) or is not (false) the latest version of an object.
         public var isLatest: Swift.Bool?
         /// The object key.
@@ -9480,12 +9557,11 @@ extension S3ClientTypes {
             self.versionId = versionId
         }
     }
-
 }
 
 extension S3ClientTypes {
 
-    public enum ObjectVersionStorageClass: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ObjectVersionStorageClass: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case standard
         case sdkUnknown(Swift.String)
 
@@ -9510,8 +9586,9 @@ extension S3ClientTypes {
 }
 
 extension S3ClientTypes {
+
     /// The version of an object.
-    public struct ObjectVersion {
+    public struct ObjectVersion: Swift.Sendable {
         /// The algorithm that was used to create a checksum of the object.
         public var checksumAlgorithm: [S3ClientTypes.ChecksumAlgorithm]?
         /// The entity tag is an MD5 hash of that version of the object.
@@ -9558,10 +9635,9 @@ extension S3ClientTypes {
             self.versionId = versionId
         }
     }
-
 }
 
-public struct ListObjectVersionsOutput {
+public struct ListObjectVersionsOutput: Swift.Sendable {
     /// All of the keys rolled up into a common prefix count as a single return when calculating the number of returns.
     public var commonPrefixes: [S3ClientTypes.CommonPrefix]?
     /// Container for an object that is a delete marker.
@@ -9625,7 +9701,7 @@ public struct ListObjectVersionsOutput {
     }
 }
 
-public struct ListPartsInput {
+public struct ListPartsInput: Swift.Sendable {
     /// The name of the bucket to which the parts are being uploaded. Directory buckets - When you use this operation with a directory bucket, you must use virtual-hosted-style requests in the format  Bucket_name.s3express-az_id.region.amazonaws.com. Path-style requests are not supported. Directory bucket names must be unique in the chosen Availability Zone. Bucket names must follow the format  bucket_base_name--az-id--x-s3 (for example,  DOC-EXAMPLE-BUCKET--usw2-az1--x-s3). For information about bucket naming restrictions, see [Directory bucket naming rules](https://docs.aws.amazon.com/AmazonS3/latest/userguide/directory-bucket-naming-rules.html) in the Amazon S3 User Guide. Access points - When you use this action with an access point, you must provide the alias of the access point in place of the bucket name or specify the access point ARN. When using the access point ARN, you must direct requests to the access point hostname. The access point hostname takes the form AccessPointName-AccountId.s3-accesspoint.Region.amazonaws.com. When using this action with an access point through the Amazon Web Services SDKs, you provide the access point ARN in place of the bucket name. For more information about access point ARNs, see [Using access points](https://docs.aws.amazon.com/AmazonS3/latest/userguide/using-access-points.html) in the Amazon S3 User Guide. Access points and Object Lambda access points are not supported by directory buckets. S3 on Outposts - When you use this action with Amazon S3 on Outposts, you must direct requests to the S3 on Outposts hostname. The S3 on Outposts hostname takes the form  AccessPointName-AccountId.outpostID.s3-outposts.Region.amazonaws.com. When you use this action with S3 on Outposts through the Amazon Web Services SDKs, you provide the Outposts access point ARN in place of the bucket name. For more information about S3 on Outposts ARNs, see [What is S3 on Outposts?](https://docs.aws.amazon.com/AmazonS3/latest/userguide/S3onOutposts.html) in the Amazon S3 User Guide.
     /// This member is required.
     public var bucket: Swift.String?
@@ -9682,11 +9758,12 @@ extension ListPartsInput: Swift.CustomDebugStringConvertible {
 }
 
 extension S3ClientTypes {
+
     /// Container for elements related to a part.
-    public struct Part {
-        /// This header can be used as a data integrity check to verify that the data received is the same data that was originally sent. This header specifies the base64-encoded, 32-bit CRC32 checksum of the object. For more information, see [Checking object integrity](https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html) in the Amazon S3 User Guide.
+    public struct Part: Swift.Sendable {
+        /// This header can be used as a data integrity check to verify that the data received is the same data that was originally sent. This header specifies the base64-encoded, 32-bit CRC-32 checksum of the object. For more information, see [Checking object integrity](https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html) in the Amazon S3 User Guide.
         public var checksumCRC32: Swift.String?
-        /// The base64-encoded, 32-bit CRC32C checksum of the object. This will only be present if it was uploaded with the object. When you use an API operation on an object that was uploaded using multipart uploads, this value may not be a direct checksum value of the full object. Instead, it's a calculation based on the checksum values of each individual part. For more information about how checksums are calculated with multipart uploads, see [ Checking object integrity](https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html#large-object-checksums) in the Amazon S3 User Guide.
+        /// The base64-encoded, 32-bit CRC-32C checksum of the object. This will only be present if it was uploaded with the object. When you use an API operation on an object that was uploaded using multipart uploads, this value may not be a direct checksum value of the full object. Instead, it's a calculation based on the checksum values of each individual part. For more information about how checksums are calculated with multipart uploads, see [ Checking object integrity](https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html#large-object-checksums) in the Amazon S3 User Guide.
         public var checksumCRC32C: Swift.String?
         /// The base64-encoded, 160-bit SHA-1 digest of the object. This will only be present if it was uploaded with the object. When you use the API operation on an object that was uploaded using multipart uploads, this value may not be a direct checksum value of the full object. Instead, it's a calculation based on the checksum values of each individual part. For more information about how checksums are calculated with multipart uploads, see [ Checking object integrity](https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html#large-object-checksums) in the Amazon S3 User Guide.
         public var checksumSHA1: Swift.String?
@@ -9722,10 +9799,9 @@ extension S3ClientTypes {
             self.size = size
         }
     }
-
 }
 
-public struct ListPartsOutput {
+public struct ListPartsOutput: Swift.Sendable {
     /// If the bucket has a lifecycle rule configured with an action to abort incomplete multipart uploads and the prefix in the lifecycle rule matches the object name in the request, then the response includes this header indicating when the initiated multipart upload will become eligible for abort operation. For more information, see [Aborting Incomplete Multipart Uploads Using a Bucket Lifecycle Configuration](https://docs.aws.amazon.com/AmazonS3/latest/dev/mpuoverview.html#mpu-abort-incomplete-mpu-lifecycle-config). The response will also include the x-amz-abort-rule-id header that will provide the ID of the lifecycle configuration rule that defines this action. This functionality is not supported for directory buckets.
     public var abortDate: Foundation.Date?
     /// This header is returned along with the x-amz-abort-date header. It identifies applicable lifecycle configuration rule that defines the action to abort incomplete multipart uploads. This functionality is not supported for directory buckets.
@@ -9793,7 +9869,7 @@ public struct ListPartsOutput {
     }
 }
 
-public struct PutBucketAccelerateConfigurationInput {
+public struct PutBucketAccelerateConfigurationInput: Swift.Sendable {
     /// Container for setting the transfer acceleration state.
     /// This member is required.
     public var accelerateConfiguration: S3ClientTypes.AccelerateConfiguration?
@@ -9819,7 +9895,7 @@ public struct PutBucketAccelerateConfigurationInput {
     }
 }
 
-public struct PutBucketAclInput {
+public struct PutBucketAclInput: Swift.Sendable {
     /// Contains the elements that set the ACL permissions for an object per grantee.
     public var accessControlPolicy: S3ClientTypes.AccessControlPolicy?
     /// The canned ACL to apply to the bucket.
@@ -9872,7 +9948,7 @@ public struct PutBucketAclInput {
     }
 }
 
-public struct PutBucketAnalyticsConfigurationInput {
+public struct PutBucketAnalyticsConfigurationInput: Swift.Sendable {
     /// The configuration and any analyses for the analytics filter.
     /// This member is required.
     public var analyticsConfiguration: S3ClientTypes.AnalyticsConfiguration?
@@ -9900,8 +9976,9 @@ public struct PutBucketAnalyticsConfigurationInput {
 }
 
 extension S3ClientTypes {
+
     /// Describes the cross-origin access configuration for objects in an Amazon S3 bucket. For more information, see [Enabling Cross-Origin Resource Sharing](https://docs.aws.amazon.com/AmazonS3/latest/dev/cors.html) in the Amazon S3 User Guide.
-    public struct CORSConfiguration {
+    public struct CORSConfiguration: Swift.Sendable {
         /// A set of origins and methods (cross-origin access that you want to allow). You can add up to 100 rules to the configuration.
         /// This member is required.
         public var corsRules: [S3ClientTypes.CORSRule]?
@@ -9913,10 +9990,9 @@ extension S3ClientTypes {
             self.corsRules = corsRules
         }
     }
-
 }
 
-public struct PutBucketCorsInput {
+public struct PutBucketCorsInput: Swift.Sendable {
     /// Specifies the bucket impacted by the corsconfiguration.
     /// This member is required.
     public var bucket: Swift.String?
@@ -9946,7 +10022,7 @@ public struct PutBucketCorsInput {
     }
 }
 
-public struct PutBucketEncryptionInput {
+public struct PutBucketEncryptionInput: Swift.Sendable {
     /// Specifies default encryption for a bucket using server-side encryption with different key options. Directory buckets - When you use this operation with a directory bucket, you must use path-style requests in the format https://s3express-control.region_code.amazonaws.com/bucket-name . Virtual-hosted-style requests aren't supported. Directory bucket names must be unique in the chosen Availability Zone. Bucket names must also follow the format  bucket_base_name--az_id--x-s3 (for example,  DOC-EXAMPLE-BUCKET--usw2-az1--x-s3). For information about bucket naming restrictions, see [Directory bucket naming rules](https://docs.aws.amazon.com/AmazonS3/latest/userguide/directory-bucket-naming-rules.html) in the Amazon S3 User Guide
     /// This member is required.
     public var bucket: Swift.String?
@@ -9976,7 +10052,7 @@ public struct PutBucketEncryptionInput {
     }
 }
 
-public struct PutBucketIntelligentTieringConfigurationInput {
+public struct PutBucketIntelligentTieringConfigurationInput: Swift.Sendable {
     /// The name of the Amazon S3 bucket whose configuration you want to modify or retrieve.
     /// This member is required.
     public var bucket: Swift.String?
@@ -9999,7 +10075,7 @@ public struct PutBucketIntelligentTieringConfigurationInput {
     }
 }
 
-public struct PutBucketInventoryConfigurationInput {
+public struct PutBucketInventoryConfigurationInput: Swift.Sendable {
     /// The name of the bucket where the inventory configuration will be stored.
     /// This member is required.
     public var bucket: Swift.String?
@@ -10027,8 +10103,9 @@ public struct PutBucketInventoryConfigurationInput {
 }
 
 extension S3ClientTypes {
+
     /// Specifies the lifecycle configuration for objects in an Amazon S3 bucket. For more information, see [Object Lifecycle Management](https://docs.aws.amazon.com/AmazonS3/latest/dev/object-lifecycle-mgmt.html) in the Amazon S3 User Guide.
-    public struct BucketLifecycleConfiguration {
+    public struct BucketLifecycleConfiguration: Swift.Sendable {
         /// A lifecycle rule for individual objects in an Amazon S3 bucket.
         /// This member is required.
         public var rules: [S3ClientTypes.LifecycleRule]?
@@ -10040,10 +10117,9 @@ extension S3ClientTypes {
             self.rules = rules
         }
     }
-
 }
 
-public struct PutBucketLifecycleConfigurationInput {
+public struct PutBucketLifecycleConfigurationInput: Swift.Sendable {
     /// The name of the bucket for which to set the configuration.
     /// This member is required.
     public var bucket: Swift.String?
@@ -10053,24 +10129,55 @@ public struct PutBucketLifecycleConfigurationInput {
     public var expectedBucketOwner: Swift.String?
     /// Container for lifecycle rules. You can add as many as 1,000 rules.
     public var lifecycleConfiguration: S3ClientTypes.BucketLifecycleConfiguration?
+    /// Indicates which default minimum object size behavior is applied to the lifecycle configuration.
+    ///
+    /// * all_storage_classes_128K - Objects smaller than 128 KB will not transition to any storage class by default.
+    ///
+    /// * varies_by_storage_class - Objects smaller than 128 KB will transition to Glacier Flexible Retrieval or Glacier Deep Archive storage classes. By default, all other storage classes will prevent transitions smaller than 128 KB.
+    ///
+    ///
+    /// To customize the minimum object size for any transition you can add a filter that specifies a custom ObjectSizeGreaterThan or ObjectSizeLessThan in the body of your transition rule. Custom filters always take precedence over the default transition behavior.
+    public var transitionDefaultMinimumObjectSize: S3ClientTypes.TransitionDefaultMinimumObjectSize?
 
     public init(
         bucket: Swift.String? = nil,
         checksumAlgorithm: S3ClientTypes.ChecksumAlgorithm? = nil,
         expectedBucketOwner: Swift.String? = nil,
-        lifecycleConfiguration: S3ClientTypes.BucketLifecycleConfiguration? = nil
+        lifecycleConfiguration: S3ClientTypes.BucketLifecycleConfiguration? = nil,
+        transitionDefaultMinimumObjectSize: S3ClientTypes.TransitionDefaultMinimumObjectSize? = nil
     )
     {
         self.bucket = bucket
         self.checksumAlgorithm = checksumAlgorithm
         self.expectedBucketOwner = expectedBucketOwner
         self.lifecycleConfiguration = lifecycleConfiguration
+        self.transitionDefaultMinimumObjectSize = transitionDefaultMinimumObjectSize
+    }
+}
+
+public struct PutBucketLifecycleConfigurationOutput: Swift.Sendable {
+    /// Indicates which default minimum object size behavior is applied to the lifecycle configuration.
+    ///
+    /// * all_storage_classes_128K - Objects smaller than 128 KB will not transition to any storage class by default.
+    ///
+    /// * varies_by_storage_class - Objects smaller than 128 KB will transition to Glacier Flexible Retrieval or Glacier Deep Archive storage classes. By default, all other storage classes will prevent transitions smaller than 128 KB.
+    ///
+    ///
+    /// To customize the minimum object size for any transition you can add a filter that specifies a custom ObjectSizeGreaterThan or ObjectSizeLessThan in the body of your transition rule. Custom filters always take precedence over the default transition behavior.
+    public var transitionDefaultMinimumObjectSize: S3ClientTypes.TransitionDefaultMinimumObjectSize?
+
+    public init(
+        transitionDefaultMinimumObjectSize: S3ClientTypes.TransitionDefaultMinimumObjectSize? = nil
+    )
+    {
+        self.transitionDefaultMinimumObjectSize = transitionDefaultMinimumObjectSize
     }
 }
 
 extension S3ClientTypes {
+
     /// Container for logging status information.
-    public struct BucketLoggingStatus {
+    public struct BucketLoggingStatus: Swift.Sendable {
         /// Describes where logs are stored and the prefix that Amazon S3 assigns to all log object keys for a bucket. For more information, see [PUT Bucket logging](https://docs.aws.amazon.com/AmazonS3/latest/API/RESTBucketPUTlogging.html) in the Amazon S3 API Reference.
         public var loggingEnabled: S3ClientTypes.LoggingEnabled?
 
@@ -10081,10 +10188,9 @@ extension S3ClientTypes {
             self.loggingEnabled = loggingEnabled
         }
     }
-
 }
 
-public struct PutBucketLoggingInput {
+public struct PutBucketLoggingInput: Swift.Sendable {
     /// The name of the bucket for which to set the logging parameters.
     /// This member is required.
     public var bucket: Swift.String?
@@ -10114,7 +10220,7 @@ public struct PutBucketLoggingInput {
     }
 }
 
-public struct PutBucketMetricsConfigurationInput {
+public struct PutBucketMetricsConfigurationInput: Swift.Sendable {
     /// The name of the bucket for which the metrics configuration is set.
     /// This member is required.
     public var bucket: Swift.String?
@@ -10142,8 +10248,9 @@ public struct PutBucketMetricsConfigurationInput {
 }
 
 extension S3ClientTypes {
+
     /// A container for specifying the notification configuration of the bucket. If this element is empty, notifications are turned off for the bucket.
-    public struct NotificationConfiguration {
+    public struct NotificationConfiguration: Swift.Sendable {
         /// Enables delivery of events to Amazon EventBridge.
         public var eventBridgeConfiguration: S3ClientTypes.EventBridgeConfiguration?
         /// Describes the Lambda functions to invoke and the events for which to invoke them.
@@ -10166,10 +10273,9 @@ extension S3ClientTypes {
             self.topicConfigurations = topicConfigurations
         }
     }
-
 }
 
-public struct PutBucketNotificationConfigurationInput {
+public struct PutBucketNotificationConfigurationInput: Swift.Sendable {
     /// The name of the bucket.
     /// This member is required.
     public var bucket: Swift.String?
@@ -10195,7 +10301,7 @@ public struct PutBucketNotificationConfigurationInput {
     }
 }
 
-public struct PutBucketOwnershipControlsInput {
+public struct PutBucketOwnershipControlsInput: Swift.Sendable {
     /// The name of the Amazon S3 bucket whose OwnershipControls you want to set.
     /// This member is required.
     public var bucket: Swift.String?
@@ -10221,7 +10327,7 @@ public struct PutBucketOwnershipControlsInput {
     }
 }
 
-public struct PutBucketPolicyInput {
+public struct PutBucketPolicyInput: Swift.Sendable {
     /// The name of the bucket. Directory buckets - When you use this operation with a directory bucket, you must use path-style requests in the format https://s3express-control.region_code.amazonaws.com/bucket-name . Virtual-hosted-style requests aren't supported. Directory bucket names must be unique in the chosen Availability Zone. Bucket names must also follow the format  bucket_base_name--az_id--x-s3 (for example,  DOC-EXAMPLE-BUCKET--usw2-az1--x-s3). For information about bucket naming restrictions, see [Directory bucket naming rules](https://docs.aws.amazon.com/AmazonS3/latest/userguide/directory-bucket-naming-rules.html) in the Amazon S3 User Guide
     /// This member is required.
     public var bucket: Swift.String?
@@ -10266,7 +10372,7 @@ public struct PutBucketPolicyInput {
     }
 }
 
-public struct PutBucketReplicationInput {
+public struct PutBucketReplicationInput: Swift.Sendable {
     /// The name of the bucket
     /// This member is required.
     public var bucket: Swift.String?
@@ -10301,8 +10407,9 @@ public struct PutBucketReplicationInput {
 }
 
 extension S3ClientTypes {
+
     /// Container for Payer.
-    public struct RequestPaymentConfiguration {
+    public struct RequestPaymentConfiguration: Swift.Sendable {
         /// Specifies who pays for the download and request fees.
         /// This member is required.
         public var payer: S3ClientTypes.Payer?
@@ -10314,10 +10421,9 @@ extension S3ClientTypes {
             self.payer = payer
         }
     }
-
 }
 
-public struct PutBucketRequestPaymentInput {
+public struct PutBucketRequestPaymentInput: Swift.Sendable {
     /// The bucket name.
     /// This member is required.
     public var bucket: Swift.String?
@@ -10348,8 +10454,9 @@ public struct PutBucketRequestPaymentInput {
 }
 
 extension S3ClientTypes {
+
     /// Container for TagSet elements.
-    public struct Tagging {
+    public struct Tagging: Swift.Sendable {
         /// A collection for a set of tags
         /// This member is required.
         public var tagSet: [S3ClientTypes.Tag]?
@@ -10361,10 +10468,9 @@ extension S3ClientTypes {
             self.tagSet = tagSet
         }
     }
-
 }
 
-public struct PutBucketTaggingInput {
+public struct PutBucketTaggingInput: Swift.Sendable {
     /// The bucket name.
     /// This member is required.
     public var bucket: Swift.String?
@@ -10396,7 +10502,7 @@ public struct PutBucketTaggingInput {
 
 extension S3ClientTypes {
 
-    public enum MFADelete: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum MFADelete: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case disabled
         case enabled
         case sdkUnknown(Swift.String)
@@ -10424,8 +10530,9 @@ extension S3ClientTypes {
 }
 
 extension S3ClientTypes {
+
     /// Describes the versioning state of an Amazon S3 bucket. For more information, see [PUT Bucket versioning](https://docs.aws.amazon.com/AmazonS3/latest/API/RESTBucketPUTVersioningStatus.html) in the Amazon S3 API Reference.
-    public struct VersioningConfiguration {
+    public struct VersioningConfiguration: Swift.Sendable {
         /// Specifies whether MFA delete is enabled in the bucket versioning configuration. This element is only returned if the bucket has been configured with MFA delete. If the bucket has never been so configured, this element is not returned.
         public var mfaDelete: S3ClientTypes.MFADelete?
         /// The versioning state of the bucket.
@@ -10440,10 +10547,9 @@ extension S3ClientTypes {
             self.status = status
         }
     }
-
 }
 
-public struct PutBucketVersioningInput {
+public struct PutBucketVersioningInput: Swift.Sendable {
     /// The bucket name.
     /// This member is required.
     public var bucket: Swift.String?
@@ -10478,8 +10584,9 @@ public struct PutBucketVersioningInput {
 }
 
 extension S3ClientTypes {
+
     /// Specifies website configuration parameters for an Amazon S3 bucket.
-    public struct WebsiteConfiguration {
+    public struct WebsiteConfiguration: Swift.Sendable {
         /// The name of the error document for the website.
         public var errorDocument: S3ClientTypes.ErrorDocument?
         /// The name of the index document for the website.
@@ -10502,10 +10609,9 @@ extension S3ClientTypes {
             self.routingRules = routingRules
         }
     }
-
 }
 
-public struct PutBucketWebsiteInput {
+public struct PutBucketWebsiteInput: Swift.Sendable {
     /// The bucket name.
     /// This member is required.
     public var bucket: Swift.String?
@@ -10535,7 +10641,7 @@ public struct PutBucketWebsiteInput {
     }
 }
 
-public struct PutObjectInput {
+public struct PutObjectInput: Swift.Sendable {
     /// The canned ACL to apply to the object. For more information, see [Canned ACL](https://docs.aws.amazon.com/AmazonS3/latest/dev/acl-overview.html#CannedACL) in the Amazon S3 User Guide. When adding a new object, you can use headers to grant ACL-based permissions to individual Amazon Web Services accounts or to predefined groups defined by Amazon S3. These permissions are then added to the ACL on the object. By default, all objects are private. Only the owner has full access control. For more information, see [Access Control List (ACL) Overview](https://docs.aws.amazon.com/AmazonS3/latest/dev/acl-overview.html) and [Managing ACLs Using the REST API](https://docs.aws.amazon.com/AmazonS3/latest/dev/acl-using-rest-api.html) in the Amazon S3 User Guide. If the bucket that you're uploading objects to uses the bucket owner enforced setting for S3 Object Ownership, ACLs are disabled and no longer affect permissions. Buckets that use this setting only accept PUT requests that don't specify an ACL or PUT requests that specify bucket owner full control ACLs, such as the bucket-owner-full-control canned ACL or an equivalent form of this ACL expressed in the XML format. PUT requests that contain other ACLs (for example, custom grants to certain Amazon Web Services accounts) fail and return a 400 error with the error code AccessControlListNotSupported. For more information, see [ Controlling ownership of objects and disabling ACLs](https://docs.aws.amazon.com/AmazonS3/latest/userguide/about-object-ownership.html) in the Amazon S3 User Guide.
     ///
     /// * This functionality is not supported for directory buckets.
@@ -10562,11 +10668,11 @@ public struct PutObjectInput {
     /// * SHA256
     ///
     ///
-    /// For more information, see [Checking object integrity](https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html) in the Amazon S3 User Guide. If the individual checksum value you provide through x-amz-checksum-algorithm  doesn't match the checksum algorithm you set through x-amz-sdk-checksum-algorithm, Amazon S3 ignores any provided ChecksumAlgorithm parameter and uses the checksum algorithm that matches the provided value in x-amz-checksum-algorithm . For directory buckets, when you use Amazon Web Services SDKs, CRC32 is the default checksum algorithm that's used for performance.
+    /// For more information, see [Checking object integrity](https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html) in the Amazon S3 User Guide. If the individual checksum value you provide through x-amz-checksum-algorithm  doesn't match the checksum algorithm you set through x-amz-sdk-checksum-algorithm, Amazon S3 ignores any provided ChecksumAlgorithm parameter and uses the checksum algorithm that matches the provided value in x-amz-checksum-algorithm . The Content-MD5 or x-amz-sdk-checksum-algorithm header is required for any request to upload an object with a retention period configured using Amazon S3 Object Lock. For more information, see [Uploading objects to an Object Lock enabled bucket ](https://docs.aws.amazon.com/AmazonS3/latest/userguide/object-lock-managing.html#object-lock-put-object) in the Amazon S3 User Guide. For directory buckets, when you use Amazon Web Services SDKs, CRC32 is the default checksum algorithm that's used for performance.
     public var checksumAlgorithm: S3ClientTypes.ChecksumAlgorithm?
-    /// This header can be used as a data integrity check to verify that the data received is the same data that was originally sent. This header specifies the base64-encoded, 32-bit CRC32 checksum of the object. For more information, see [Checking object integrity](https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html) in the Amazon S3 User Guide.
+    /// This header can be used as a data integrity check to verify that the data received is the same data that was originally sent. This header specifies the base64-encoded, 32-bit CRC-32 checksum of the object. For more information, see [Checking object integrity](https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html) in the Amazon S3 User Guide.
     public var checksumCRC32: Swift.String?
-    /// This header can be used as a data integrity check to verify that the data received is the same data that was originally sent. This header specifies the base64-encoded, 32-bit CRC32C checksum of the object. For more information, see [Checking object integrity](https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html) in the Amazon S3 User Guide.
+    /// This header can be used as a data integrity check to verify that the data received is the same data that was originally sent. This header specifies the base64-encoded, 32-bit CRC-32C checksum of the object. For more information, see [Checking object integrity](https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html) in the Amazon S3 User Guide.
     public var checksumCRC32C: Swift.String?
     /// This header can be used as a data integrity check to verify that the data received is the same data that was originally sent. This header specifies the base64-encoded, 160-bit SHA-1 digest of the object. For more information, see [Checking object integrity](https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html) in the Amazon S3 User Guide.
     public var checksumSHA1: Swift.String?
@@ -10580,7 +10686,7 @@ public struct PutObjectInput {
     public var contentLanguage: Swift.String?
     /// Size of the body in bytes. This parameter is useful when the size of the body cannot be determined automatically. For more information, see [https://www.rfc-editor.org/rfc/rfc9110.html#name-content-length](https://www.rfc-editor.org/rfc/rfc9110.html#name-content-length).
     public var contentLength: Swift.Int?
-    /// The base64-encoded 128-bit MD5 digest of the message (without the headers) according to RFC 1864. This header can be used as a message integrity check to verify that the data is the same data that was originally sent. Although it is optional, we recommend using the Content-MD5 mechanism as an end-to-end integrity check. For more information about REST request authentication, see [REST Authentication](https://docs.aws.amazon.com/AmazonS3/latest/dev/RESTAuthentication.html). The Content-MD5 header is required for any request to upload an object with a retention period configured using Amazon S3 Object Lock. For more information about Amazon S3 Object Lock, see [Amazon S3 Object Lock Overview](https://docs.aws.amazon.com/AmazonS3/latest/dev/object-lock-overview.html) in the Amazon S3 User Guide. This functionality is not supported for directory buckets.
+    /// The base64-encoded 128-bit MD5 digest of the message (without the headers) according to RFC 1864. This header can be used as a message integrity check to verify that the data is the same data that was originally sent. Although it is optional, we recommend using the Content-MD5 mechanism as an end-to-end integrity check. For more information about REST request authentication, see [REST Authentication](https://docs.aws.amazon.com/AmazonS3/latest/dev/RESTAuthentication.html). The Content-MD5 or x-amz-sdk-checksum-algorithm header is required for any request to upload an object with a retention period configured using Amazon S3 Object Lock. For more information, see [Uploading objects to an Object Lock enabled bucket ](https://docs.aws.amazon.com/AmazonS3/latest/userguide/object-lock-managing.html#object-lock-put-object) in the Amazon S3 User Guide. This functionality is not supported for directory buckets.
     public var contentMD5: Swift.String?
     /// A standard MIME type describing the format of the contents. For more information, see [https://www.rfc-editor.org/rfc/rfc9110.html#name-content-type](https://www.rfc-editor.org/rfc/rfc9110.html#name-content-type).
     public var contentType: Swift.String?
@@ -10641,7 +10747,7 @@ public struct PutObjectInput {
     public var sseCustomerKeyMD5: Swift.String?
     /// Specifies the Amazon Web Services KMS Encryption Context as an additional encryption context to use for object encryption. The value of this header is a Base64-encoded string of a UTF-8 encoded JSON, which contains the encryption context as key-value pairs. This value is stored as object metadata and automatically gets passed on to Amazon Web Services KMS for future GetObject operations on this object. General purpose buckets - This value must be explicitly added during CopyObject operations if you want an additional encryption context for your object. For more information, see [Encryption context](https://docs.aws.amazon.com/AmazonS3/latest/userguide/UsingKMSEncryption.html#encryption-context) in the Amazon S3 User Guide. Directory buckets - You can optionally provide an explicit encryption context value. The value must match the default encryption context - the bucket Amazon Resource Name (ARN). An additional encryption context value is not supported.
     public var ssekmsEncryptionContext: Swift.String?
-    /// Specifies the KMS key ID (Key ID, Key ARN, or Key Alias) to use for object encryption. If the KMS key doesn't exist in the same account that's issuing the command, you must use the full Key ARN not the Key ID. General purpose buckets - If you specify x-amz-server-side-encryption with aws:kms or aws:kms:dsse, this header specifies the ID (Key ID, Key ARN, or Key Alias) of the KMS key to use. If you specify x-amz-server-side-encryption:aws:kms or x-amz-server-side-encryption:aws:kms:dsse, but do not provide x-amz-server-side-encryption-aws-kms-key-id, Amazon S3 uses the Amazon Web Services managed key (aws/s3) to protect the data. Directory buckets - If you specify x-amz-server-side-encryption with aws:kms, you must specify the  x-amz-server-side-encryption-aws-kms-key-id header with the ID (Key ID or Key ARN) of the KMS symmetric encryption customer managed key to use. Otherwise, you get an HTTP 400 Bad Request error. Only use the key ID or key ARN. The key alias format of the KMS key isn't supported. Your SSE-KMS configuration can only support 1 [customer managed key](https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#customer-cmk) per directory bucket for the lifetime of the bucket. [Amazon Web Services managed key](https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#aws-managed-cmk) (aws/s3) isn't supported.
+    /// Specifies the KMS key ID (Key ID, Key ARN, or Key Alias) to use for object encryption. If the KMS key doesn't exist in the same account that's issuing the command, you must use the full Key ARN not the Key ID. General purpose buckets - If you specify x-amz-server-side-encryption with aws:kms or aws:kms:dsse, this header specifies the ID (Key ID, Key ARN, or Key Alias) of the KMS key to use. If you specify x-amz-server-side-encryption:aws:kms or x-amz-server-side-encryption:aws:kms:dsse, but do not provide x-amz-server-side-encryption-aws-kms-key-id, Amazon S3 uses the Amazon Web Services managed key (aws/s3) to protect the data. Directory buckets - If you specify x-amz-server-side-encryption with aws:kms, the  x-amz-server-side-encryption-aws-kms-key-id header is implicitly assigned the ID of the KMS symmetric encryption customer managed key that's configured for your directory bucket's default encryption setting. If you want to specify the  x-amz-server-side-encryption-aws-kms-key-id header explicitly, you can only specify it with the ID (Key ID or Key ARN) of the KMS customer managed key that's configured for your directory bucket's default encryption setting. Otherwise, you get an HTTP 400 Bad Request error. Only use the key ID or key ARN. The key alias format of the KMS key isn't supported. Your SSE-KMS configuration can only support 1 [customer managed key](https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#customer-cmk) per directory bucket for the lifetime of the bucket. The [Amazon Web Services managed key](https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#aws-managed-cmk) (aws/s3) isn't supported.
     public var ssekmsKeyId: Swift.String?
     /// By default, Amazon S3 uses the STANDARD Storage Class to store newly created objects. The STANDARD storage class provides high durability and high availability. Depending on performance needs, you can specify a different Storage Class. For more information, see [Storage Classes](https://docs.aws.amazon.com/AmazonS3/latest/dev/storage-class-intro.html) in the Amazon S3 User Guide.
     ///
@@ -10741,12 +10847,12 @@ extension PutObjectInput: Swift.CustomDebugStringConvertible {
         "PutObjectInput(acl: \(Swift.String(describing: acl)), body: \(Swift.String(describing: body)), bucket: \(Swift.String(describing: bucket)), bucketKeyEnabled: \(Swift.String(describing: bucketKeyEnabled)), cacheControl: \(Swift.String(describing: cacheControl)), checksumAlgorithm: \(Swift.String(describing: checksumAlgorithm)), checksumCRC32: \(Swift.String(describing: checksumCRC32)), checksumCRC32C: \(Swift.String(describing: checksumCRC32C)), checksumSHA1: \(Swift.String(describing: checksumSHA1)), checksumSHA256: \(Swift.String(describing: checksumSHA256)), contentDisposition: \(Swift.String(describing: contentDisposition)), contentEncoding: \(Swift.String(describing: contentEncoding)), contentLanguage: \(Swift.String(describing: contentLanguage)), contentLength: \(Swift.String(describing: contentLength)), contentMD5: \(Swift.String(describing: contentMD5)), contentType: \(Swift.String(describing: contentType)), expectedBucketOwner: \(Swift.String(describing: expectedBucketOwner)), expires: \(Swift.String(describing: expires)), grantFullControl: \(Swift.String(describing: grantFullControl)), grantRead: \(Swift.String(describing: grantRead)), grantReadACP: \(Swift.String(describing: grantReadACP)), grantWriteACP: \(Swift.String(describing: grantWriteACP)), ifNoneMatch: \(Swift.String(describing: ifNoneMatch)), key: \(Swift.String(describing: key)), metadata: \(Swift.String(describing: metadata)), objectLockLegalHoldStatus: \(Swift.String(describing: objectLockLegalHoldStatus)), objectLockMode: \(Swift.String(describing: objectLockMode)), objectLockRetainUntilDate: \(Swift.String(describing: objectLockRetainUntilDate)), requestPayer: \(Swift.String(describing: requestPayer)), serverSideEncryption: \(Swift.String(describing: serverSideEncryption)), sseCustomerAlgorithm: \(Swift.String(describing: sseCustomerAlgorithm)), sseCustomerKeyMD5: \(Swift.String(describing: sseCustomerKeyMD5)), storageClass: \(Swift.String(describing: storageClass)), tagging: \(Swift.String(describing: tagging)), websiteRedirectLocation: \(Swift.String(describing: websiteRedirectLocation)), sseCustomerKey: \"CONTENT_REDACTED\", ssekmsEncryptionContext: \"CONTENT_REDACTED\", ssekmsKeyId: \"CONTENT_REDACTED\")"}
 }
 
-public struct PutObjectOutput {
+public struct PutObjectOutput: Swift.Sendable {
     /// Indicates whether the uploaded object uses an S3 Bucket Key for server-side encryption with Key Management Service (KMS) keys (SSE-KMS).
     public var bucketKeyEnabled: Swift.Bool?
-    /// The base64-encoded, 32-bit CRC32 checksum of the object. This will only be present if it was uploaded with the object. When you use an API operation on an object that was uploaded using multipart uploads, this value may not be a direct checksum value of the full object. Instead, it's a calculation based on the checksum values of each individual part. For more information about how checksums are calculated with multipart uploads, see [ Checking object integrity](https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html#large-object-checksums) in the Amazon S3 User Guide.
+    /// The base64-encoded, 32-bit CRC-32 checksum of the object. This will only be present if it was uploaded with the object. When you use an API operation on an object that was uploaded using multipart uploads, this value may not be a direct checksum value of the full object. Instead, it's a calculation based on the checksum values of each individual part. For more information about how checksums are calculated with multipart uploads, see [ Checking object integrity](https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html#large-object-checksums) in the Amazon S3 User Guide.
     public var checksumCRC32: Swift.String?
-    /// The base64-encoded, 32-bit CRC32C checksum of the object. This will only be present if it was uploaded with the object. When you use an API operation on an object that was uploaded using multipart uploads, this value may not be a direct checksum value of the full object. Instead, it's a calculation based on the checksum values of each individual part. For more information about how checksums are calculated with multipart uploads, see [ Checking object integrity](https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html#large-object-checksums) in the Amazon S3 User Guide.
+    /// The base64-encoded, 32-bit CRC-32C checksum of the object. This will only be present if it was uploaded with the object. When you use an API operation on an object that was uploaded using multipart uploads, this value may not be a direct checksum value of the full object. Instead, it's a calculation based on the checksum values of each individual part. For more information about how checksums are calculated with multipart uploads, see [ Checking object integrity](https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html#large-object-checksums) in the Amazon S3 User Guide.
     public var checksumCRC32C: Swift.String?
     /// The base64-encoded, 160-bit SHA-1 digest of the object. This will only be present if it was uploaded with the object. When you use the API operation on an object that was uploaded using multipart uploads, this value may not be a direct checksum value of the full object. Instead, it's a calculation based on the checksum values of each individual part. For more information about how checksums are calculated with multipart uploads, see [ Checking object integrity](https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html#large-object-checksums) in the Amazon S3 User Guide.
     public var checksumSHA1: Swift.String?
@@ -10810,7 +10916,7 @@ extension PutObjectOutput: Swift.CustomDebugStringConvertible {
         "PutObjectOutput(bucketKeyEnabled: \(Swift.String(describing: bucketKeyEnabled)), checksumCRC32: \(Swift.String(describing: checksumCRC32)), checksumCRC32C: \(Swift.String(describing: checksumCRC32C)), checksumSHA1: \(Swift.String(describing: checksumSHA1)), checksumSHA256: \(Swift.String(describing: checksumSHA256)), eTag: \(Swift.String(describing: eTag)), expiration: \(Swift.String(describing: expiration)), requestCharged: \(Swift.String(describing: requestCharged)), serverSideEncryption: \(Swift.String(describing: serverSideEncryption)), sseCustomerAlgorithm: \(Swift.String(describing: sseCustomerAlgorithm)), sseCustomerKeyMD5: \(Swift.String(describing: sseCustomerKeyMD5)), versionId: \(Swift.String(describing: versionId)), ssekmsEncryptionContext: \"CONTENT_REDACTED\", ssekmsKeyId: \"CONTENT_REDACTED\")"}
 }
 
-public struct PutObjectAclInput {
+public struct PutObjectAclInput: Swift.Sendable {
     /// Contains the elements that set the ACL permissions for an object per grantee.
     public var accessControlPolicy: S3ClientTypes.AccessControlPolicy?
     /// The canned ACL to apply to the object. For more information, see [Canned ACL](https://docs.aws.amazon.com/AmazonS3/latest/dev/acl-overview.html#CannedACL).
@@ -10876,7 +10982,7 @@ public struct PutObjectAclInput {
     }
 }
 
-public struct PutObjectAclOutput {
+public struct PutObjectAclOutput: Swift.Sendable {
     /// If present, indicates that the requester was successfully charged for the request. This functionality is not supported for directory buckets.
     public var requestCharged: S3ClientTypes.RequestCharged?
 
@@ -10888,7 +10994,7 @@ public struct PutObjectAclOutput {
     }
 }
 
-public struct PutObjectLegalHoldInput {
+public struct PutObjectLegalHoldInput: Swift.Sendable {
     /// The bucket name containing the object that you want to place a legal hold on. Access points - When you use this action with an access point, you must provide the alias of the access point in place of the bucket name or specify the access point ARN. When using the access point ARN, you must direct requests to the access point hostname. The access point hostname takes the form AccessPointName-AccountId.s3-accesspoint.Region.amazonaws.com. When using this action with an access point through the Amazon Web Services SDKs, you provide the access point ARN in place of the bucket name. For more information about access point ARNs, see [Using access points](https://docs.aws.amazon.com/AmazonS3/latest/userguide/using-access-points.html) in the Amazon S3 User Guide.
     /// This member is required.
     public var bucket: Swift.String?
@@ -10930,7 +11036,7 @@ public struct PutObjectLegalHoldInput {
     }
 }
 
-public struct PutObjectLegalHoldOutput {
+public struct PutObjectLegalHoldOutput: Swift.Sendable {
     /// If present, indicates that the requester was successfully charged for the request. This functionality is not supported for directory buckets.
     public var requestCharged: S3ClientTypes.RequestCharged?
 
@@ -10942,7 +11048,7 @@ public struct PutObjectLegalHoldOutput {
     }
 }
 
-public struct PutObjectLockConfigurationInput {
+public struct PutObjectLockConfigurationInput: Swift.Sendable {
     /// The bucket whose Object Lock configuration you want to create or replace.
     /// This member is required.
     public var bucket: Swift.String?
@@ -10979,7 +11085,7 @@ public struct PutObjectLockConfigurationInput {
     }
 }
 
-public struct PutObjectLockConfigurationOutput {
+public struct PutObjectLockConfigurationOutput: Swift.Sendable {
     /// If present, indicates that the requester was successfully charged for the request. This functionality is not supported for directory buckets.
     public var requestCharged: S3ClientTypes.RequestCharged?
 
@@ -10991,7 +11097,7 @@ public struct PutObjectLockConfigurationOutput {
     }
 }
 
-public struct PutObjectRetentionInput {
+public struct PutObjectRetentionInput: Swift.Sendable {
     /// The bucket name that contains the object you want to apply this Object Retention configuration to. Access points - When you use this action with an access point, you must provide the alias of the access point in place of the bucket name or specify the access point ARN. When using the access point ARN, you must direct requests to the access point hostname. The access point hostname takes the form AccessPointName-AccountId.s3-accesspoint.Region.amazonaws.com. When using this action with an access point through the Amazon Web Services SDKs, you provide the access point ARN in place of the bucket name. For more information about access point ARNs, see [Using access points](https://docs.aws.amazon.com/AmazonS3/latest/userguide/using-access-points.html) in the Amazon S3 User Guide.
     /// This member is required.
     public var bucket: Swift.String?
@@ -11037,7 +11143,7 @@ public struct PutObjectRetentionInput {
     }
 }
 
-public struct PutObjectRetentionOutput {
+public struct PutObjectRetentionOutput: Swift.Sendable {
     /// If present, indicates that the requester was successfully charged for the request. This functionality is not supported for directory buckets.
     public var requestCharged: S3ClientTypes.RequestCharged?
 
@@ -11049,7 +11155,7 @@ public struct PutObjectRetentionOutput {
     }
 }
 
-public struct PutObjectTaggingInput {
+public struct PutObjectTaggingInput: Swift.Sendable {
     /// The bucket name containing the object. Access points - When you use this action with an access point, you must provide the alias of the access point in place of the bucket name or specify the access point ARN. When using the access point ARN, you must direct requests to the access point hostname. The access point hostname takes the form AccessPointName-AccountId.s3-accesspoint.Region.amazonaws.com. When using this action with an access point through the Amazon Web Services SDKs, you provide the access point ARN in place of the bucket name. For more information about access point ARNs, see [Using access points](https://docs.aws.amazon.com/AmazonS3/latest/userguide/using-access-points.html) in the Amazon S3 User Guide. S3 on Outposts - When you use this action with Amazon S3 on Outposts, you must direct requests to the S3 on Outposts hostname. The S3 on Outposts hostname takes the form  AccessPointName-AccountId.outpostID.s3-outposts.Region.amazonaws.com. When you use this action with S3 on Outposts through the Amazon Web Services SDKs, you provide the Outposts access point ARN in place of the bucket name. For more information about S3 on Outposts ARNs, see [What is S3 on Outposts?](https://docs.aws.amazon.com/AmazonS3/latest/userguide/S3onOutposts.html) in the Amazon S3 User Guide.
     /// This member is required.
     public var bucket: Swift.String?
@@ -11092,7 +11198,7 @@ public struct PutObjectTaggingInput {
     }
 }
 
-public struct PutObjectTaggingOutput {
+public struct PutObjectTaggingOutput: Swift.Sendable {
     /// The versionId of the object the tag-set was added to.
     public var versionId: Swift.String?
 
@@ -11104,7 +11210,7 @@ public struct PutObjectTaggingOutput {
     }
 }
 
-public struct PutPublicAccessBlockInput {
+public struct PutPublicAccessBlockInput: Swift.Sendable {
     /// The name of the Amazon S3 bucket whose PublicAccessBlock configuration you want to set.
     /// This member is required.
     public var bucket: Swift.String?
@@ -11150,7 +11256,7 @@ public struct ObjectAlreadyInActiveTierError: ClientRuntime.ModeledError, AWSCli
 
 extension S3ClientTypes {
 
-    public enum Tier: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Tier: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case bulk
         case expedited
         case standard
@@ -11181,8 +11287,9 @@ extension S3ClientTypes {
 }
 
 extension S3ClientTypes {
+
     /// Container for S3 Glacier job parameters.
-    public struct GlacierJobParameters {
+    public struct GlacierJobParameters: Swift.Sendable {
         /// Retrieval tier at which the restore will be processed.
         /// This member is required.
         public var tier: S3ClientTypes.Tier?
@@ -11194,12 +11301,12 @@ extension S3ClientTypes {
             self.tier = tier
         }
     }
-
 }
 
 extension S3ClientTypes {
+
     /// Contains the type of server-side encryption used.
-    public struct Encryption {
+    public struct Encryption: Swift.Sendable {
         /// The server-side encryption algorithm used when storing job results in Amazon S3 (for example, AES256, aws:kms).
         /// This member is required.
         public var encryptionType: S3ClientTypes.ServerSideEncryption?
@@ -11219,7 +11326,6 @@ extension S3ClientTypes {
             self.kmsKeyId = kmsKeyId
         }
     }
-
 }
 
 extension S3ClientTypes.Encryption: Swift.CustomDebugStringConvertible {
@@ -11228,8 +11334,9 @@ extension S3ClientTypes.Encryption: Swift.CustomDebugStringConvertible {
 }
 
 extension S3ClientTypes {
+
     /// A metadata key-value pair to store with an object.
-    public struct MetadataEntry {
+    public struct MetadataEntry: Swift.Sendable {
         /// Name of the object.
         public var name: Swift.String?
         /// Value of the object.
@@ -11244,12 +11351,12 @@ extension S3ClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension S3ClientTypes {
+
     /// Describes an Amazon S3 location that will receive the results of the restore request.
-    public struct S3Location {
+    public struct S3Location: Swift.Sendable {
         /// A list of grants that control access to the staged results.
         public var accessControlList: [S3ClientTypes.Grant]?
         /// The name of the bucket where the restore results will be placed.
@@ -11290,12 +11397,12 @@ extension S3ClientTypes {
             self.userMetadata = userMetadata
         }
     }
-
 }
 
 extension S3ClientTypes {
+
     /// Describes the location where the restore job's output is stored.
-    public struct OutputLocation {
+    public struct OutputLocation: Swift.Sendable {
         /// Describes an S3 location that will receive the results of the restore request.
         public var s3: S3ClientTypes.S3Location?
 
@@ -11306,12 +11413,11 @@ extension S3ClientTypes {
             self.s3 = s3
         }
     }
-
 }
 
 extension S3ClientTypes {
 
-    public enum ExpressionType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ExpressionType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case sql
         case sdkUnknown(Swift.String)
 
@@ -11337,7 +11443,7 @@ extension S3ClientTypes {
 
 extension S3ClientTypes {
 
-    public enum CompressionType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum CompressionType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case bzip2
         case gzip
         case `none`
@@ -11369,7 +11475,7 @@ extension S3ClientTypes {
 
 extension S3ClientTypes {
 
-    public enum FileHeaderInfo: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum FileHeaderInfo: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case ignore
         case `none`
         case use
@@ -11400,8 +11506,9 @@ extension S3ClientTypes {
 }
 
 extension S3ClientTypes {
+
     /// Describes how an uncompressed comma-separated values (CSV)-formatted input object is formatted.
-    public struct CSVInput {
+    public struct CSVInput: Swift.Sendable {
         /// Specifies that CSV field values may contain quoted record delimiters and such records should be allowed. Default value is FALSE. Setting this value to TRUE may lower performance.
         public var allowQuotedRecordDelimiter: Swift.Bool?
         /// A single character used to indicate that a row should be ignored when the character is present at the start of that row. You can specify any character to indicate a comment line. The default character is #. Default: #
@@ -11442,12 +11549,11 @@ extension S3ClientTypes {
             self.recordDelimiter = recordDelimiter
         }
     }
-
 }
 
 extension S3ClientTypes {
 
-    public enum JSONType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum JSONType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case document
         case lines
         case sdkUnknown(Swift.String)
@@ -11475,8 +11581,9 @@ extension S3ClientTypes {
 }
 
 extension S3ClientTypes {
+
     /// Specifies JSON as object's input serialization format.
-    public struct JSONInput {
+    public struct JSONInput: Swift.Sendable {
         /// The type of JSON. Valid values: Document, Lines.
         public var type: S3ClientTypes.JSONType?
 
@@ -11487,21 +11594,21 @@ extension S3ClientTypes {
             self.type = type
         }
     }
-
 }
 
 extension S3ClientTypes {
+
     /// Container for Parquet.
-    public struct ParquetInput {
+    public struct ParquetInput: Swift.Sendable {
 
         public init() { }
     }
-
 }
 
 extension S3ClientTypes {
+
     /// Describes the serialization format of the object.
-    public struct InputSerialization {
+    public struct InputSerialization: Swift.Sendable {
         /// Specifies object's compression format. Valid values: NONE, GZIP, BZIP2. Default Value: NONE.
         public var compressionType: S3ClientTypes.CompressionType?
         /// Describes the serialization of a CSV-encoded object.
@@ -11524,12 +11631,11 @@ extension S3ClientTypes {
             self.parquet = parquet
         }
     }
-
 }
 
 extension S3ClientTypes {
 
-    public enum QuoteFields: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum QuoteFields: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case always
         case asneeded
         case sdkUnknown(Swift.String)
@@ -11557,8 +11663,9 @@ extension S3ClientTypes {
 }
 
 extension S3ClientTypes {
+
     /// Describes how uncompressed comma-separated values (CSV)-formatted results are formatted.
-    public struct CSVOutput {
+    public struct CSVOutput: Swift.Sendable {
         /// The value used to separate individual fields in a record. You can specify an arbitrary delimiter.
         public var fieldDelimiter: Swift.String?
         /// A single character used for escaping when the field delimiter is part of the value. For example, if the value is a, b, Amazon S3 wraps this field value in quotation marks, as follows: " a , b ".
@@ -11589,12 +11696,12 @@ extension S3ClientTypes {
             self.recordDelimiter = recordDelimiter
         }
     }
-
 }
 
 extension S3ClientTypes {
+
     /// Specifies JSON as request's output serialization format.
-    public struct JSONOutput {
+    public struct JSONOutput: Swift.Sendable {
         /// The value used to separate individual records in the output. If no value is specified, Amazon S3 uses a newline character ('\n').
         public var recordDelimiter: Swift.String?
 
@@ -11605,12 +11712,12 @@ extension S3ClientTypes {
             self.recordDelimiter = recordDelimiter
         }
     }
-
 }
 
 extension S3ClientTypes {
+
     /// Describes how results of the Select job are serialized.
-    public struct OutputSerialization {
+    public struct OutputSerialization: Swift.Sendable {
         /// Describes the serialization of CSV-encoded Select results.
         public var csv: S3ClientTypes.CSVOutput?
         /// Specifies JSON as request's output serialization format.
@@ -11625,13 +11732,13 @@ extension S3ClientTypes {
             self.json = json
         }
     }
-
 }
 
 extension S3ClientTypes {
-    /// Amazon S3 Select is no longer available to new customers. Existing customers of Amazon S3 Select can continue to use the feature as usual. [Learn more](http://aws.amazon.com/blogs/storage/how-to-optimize-querying-your-data-in-amazon-s3/) Describes the parameters for Select job types. Learn [How to optimize querying your data in Amazon S3](http://aws.amazon.com/blogs/storage/how-to-optimize-querying-your-data-in-amazon-s3/) using [Amazon Athena](https://docs.aws.amazon.com/athena/latest/ug/what-is.html), [S3 Object Lambda](https://docs.aws.amazon.com/AmazonS3/latest/userguide/transforming-objects.html), or client-side filtering.
-    public struct SelectParameters {
-        /// Amazon S3 Select is no longer available to new customers. Existing customers of Amazon S3 Select can continue to use the feature as usual. [Learn more](http://aws.amazon.com/blogs/storage/how-to-optimize-querying-your-data-in-amazon-s3/) The expression that is used to query the object.
+
+    /// Describes the parameters for Select job types.
+    public struct SelectParameters: Swift.Sendable {
+        /// The expression that is used to query the object.
         /// This member is required.
         public var expression: Swift.String?
         /// The type of the provided expression (for example, SQL).
@@ -11657,12 +11764,11 @@ extension S3ClientTypes {
             self.outputSerialization = outputSerialization
         }
     }
-
 }
 
 extension S3ClientTypes {
 
-    public enum RestoreRequestType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum RestoreRequestType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case select
         case sdkUnknown(Swift.String)
 
@@ -11687,8 +11793,9 @@ extension S3ClientTypes {
 }
 
 extension S3ClientTypes {
+
     /// Container for restore job parameters.
-    public struct RestoreRequest {
+    public struct RestoreRequest: Swift.Sendable {
         /// Lifetime of the active copy in days. Do not use with restores that specify OutputLocation. The Days element is required for regular restores, and must not be provided for select requests.
         public var days: Swift.Int?
         /// The optional description for the job.
@@ -11697,11 +11804,11 @@ extension S3ClientTypes {
         public var glacierJobParameters: S3ClientTypes.GlacierJobParameters?
         /// Describes the location where the restore job's output is stored.
         public var outputLocation: S3ClientTypes.OutputLocation?
-        /// Amazon S3 Select is no longer available to new customers. Existing customers of Amazon S3 Select can continue to use the feature as usual. [Learn more](http://aws.amazon.com/blogs/storage/how-to-optimize-querying-your-data-in-amazon-s3/) Describes the parameters for Select job types.
+        /// Describes the parameters for Select job types.
         public var selectParameters: S3ClientTypes.SelectParameters?
         /// Retrieval tier at which the restore will be processed.
         public var tier: S3ClientTypes.Tier?
-        /// Amazon S3 Select is no longer available to new customers. Existing customers of Amazon S3 Select can continue to use the feature as usual. [Learn more](http://aws.amazon.com/blogs/storage/how-to-optimize-querying-your-data-in-amazon-s3/) Type of restore request.
+        /// Type of restore request.
         public var type: S3ClientTypes.RestoreRequestType?
 
         public init(
@@ -11723,10 +11830,9 @@ extension S3ClientTypes {
             self.type = type
         }
     }
-
 }
 
-public struct RestoreObjectInput {
+public struct RestoreObjectInput: Swift.Sendable {
     /// The bucket name containing the object to restore. Access points - When you use this action with an access point, you must provide the alias of the access point in place of the bucket name or specify the access point ARN. When using the access point ARN, you must direct requests to the access point hostname. The access point hostname takes the form AccessPointName-AccountId.s3-accesspoint.Region.amazonaws.com. When using this action with an access point through the Amazon Web Services SDKs, you provide the access point ARN in place of the bucket name. For more information about access point ARNs, see [Using access points](https://docs.aws.amazon.com/AmazonS3/latest/userguide/using-access-points.html) in the Amazon S3 User Guide. S3 on Outposts - When you use this action with Amazon S3 on Outposts, you must direct requests to the S3 on Outposts hostname. The S3 on Outposts hostname takes the form  AccessPointName-AccountId.outpostID.s3-outposts.Region.amazonaws.com. When you use this action with S3 on Outposts through the Amazon Web Services SDKs, you provide the Outposts access point ARN in place of the bucket name. For more information about S3 on Outposts ARNs, see [What is S3 on Outposts?](https://docs.aws.amazon.com/AmazonS3/latest/userguide/S3onOutposts.html) in the Amazon S3 User Guide.
     /// This member is required.
     public var bucket: Swift.String?
@@ -11764,7 +11870,7 @@ public struct RestoreObjectInput {
     }
 }
 
-public struct RestoreObjectOutput {
+public struct RestoreObjectOutput: Swift.Sendable {
     /// If present, indicates that the requester was successfully charged for the request. This functionality is not supported for directory buckets.
     public var requestCharged: S3ClientTypes.RequestCharged?
     /// Indicates the path in the provided S3 output location where Select results will be restored to.
@@ -11781,8 +11887,9 @@ public struct RestoreObjectOutput {
 }
 
 extension S3ClientTypes {
+
     /// Container for specifying if periodic QueryProgress messages should be sent.
-    public struct RequestProgress {
+    public struct RequestProgress: Swift.Sendable {
         /// Specifies whether periodic QueryProgress frames should be sent. Valid values: TRUE, FALSE. Default value: FALSE.
         public var enabled: Swift.Bool?
 
@@ -11793,12 +11900,12 @@ extension S3ClientTypes {
             self.enabled = enabled
         }
     }
-
 }
 
 extension S3ClientTypes {
+
     /// Specifies the byte range of the object to get the records from. A record is processed when its first byte is contained by the range. This parameter is optional, but when specified, it must not be empty. See RFC 2616, Section 14.35.1 about how to specify the start and end of the range.
-    public struct ScanRange {
+    public struct ScanRange: Swift.Sendable {
         /// Specifies the end of the byte range. This parameter is optional. Valid values: non-negative integers. The default value is one less than the size of the object being queried. If only the End parameter is supplied, it is interpreted to mean scan the last N bytes of the file. For example, 50 means scan the last 50 bytes.
         public var end: Swift.Int?
         /// Specifies the start of the byte range. This parameter is optional. Valid values: non-negative integers. The default value is 0. If only start is supplied, it means scan from that point to the end of the file. For example, 50 means scan from byte 50 until the end of the file.
@@ -11813,11 +11920,10 @@ extension S3ClientTypes {
             self.start = start
         }
     }
-
 }
 
-/// Learn Amazon S3 Select is no longer available to new customers. Existing customers of Amazon S3 Select can continue to use the feature as usual. [Learn more](http://aws.amazon.com/blogs/storage/how-to-optimize-querying-your-data-in-amazon-s3/) Request to filter the contents of an Amazon S3 object based on a simple Structured Query Language (SQL) statement. In the request, along with the SQL expression, you must specify a data serialization format (JSON or CSV) of the object. Amazon S3 uses this to parse object data into records. It returns only records that match the specified SQL expression. You must also specify the data serialization format for the response. For more information, see [S3Select API Documentation](https://docs.aws.amazon.com/AmazonS3/latest/API/RESTObjectSELECTContent.html).
-public struct SelectObjectContentInput {
+/// Request to filter the contents of an Amazon S3 object based on a simple Structured Query Language (SQL) statement. In the request, along with the SQL expression, you must specify a data serialization format (JSON or CSV) of the object. Amazon S3 uses this to parse object data into records. It returns only records that match the specified SQL expression. You must also specify the data serialization format for the response. For more information, see [S3Select API Documentation](https://docs.aws.amazon.com/AmazonS3/latest/API/RESTObjectSELECTContent.html).
+public struct SelectObjectContentInput: Swift.Sendable {
     /// The S3 bucket.
     /// This member is required.
     public var bucket: Swift.String?
@@ -11891,26 +11997,27 @@ extension SelectObjectContentInput: Swift.CustomDebugStringConvertible {
 }
 
 extension S3ClientTypes {
+
     ///
-    public struct ContinuationEvent {
+    public struct ContinuationEvent: Swift.Sendable {
 
         public init() { }
     }
-
 }
 
 extension S3ClientTypes {
+
     /// A message that indicates the request is complete and no more messages will be sent. You should not assume that the request is complete until the client receives an EndEvent.
-    public struct EndEvent {
+    public struct EndEvent: Swift.Sendable {
 
         public init() { }
     }
-
 }
 
 extension S3ClientTypes {
+
     /// This data type contains information about progress of an operation.
-    public struct Progress {
+    public struct Progress: Swift.Sendable {
         /// The current number of uncompressed object bytes processed.
         public var bytesProcessed: Swift.Int?
         /// The current number of bytes of records payload data returned.
@@ -11929,12 +12036,12 @@ extension S3ClientTypes {
             self.bytesScanned = bytesScanned
         }
     }
-
 }
 
 extension S3ClientTypes {
+
     /// This data type contains information about the progress event of an operation.
-    public struct ProgressEvent {
+    public struct ProgressEvent: Swift.Sendable {
         /// The Progress event details.
         public var details: S3ClientTypes.Progress?
 
@@ -11945,12 +12052,12 @@ extension S3ClientTypes {
             self.details = details
         }
     }
-
 }
 
 extension S3ClientTypes {
+
     /// The container for the records event.
-    public struct RecordsEvent {
+    public struct RecordsEvent: Swift.Sendable {
         /// The byte array of partial, one or more result records. S3 Select doesn't guarantee that a record will be self-contained in one record frame. To ensure continuous streaming of data, S3 Select might split the same record across multiple record frames instead of aggregating the results in memory. Some S3 clients (for example, the SDK for Java) handle this behavior by creating a ByteStream out of the response by default. Other clients might not handle this behavior by default. In those cases, you must aggregate the results on the client side and parse the response.
         public var payload: Foundation.Data?
 
@@ -11961,12 +12068,12 @@ extension S3ClientTypes {
             self.payload = payload
         }
     }
-
 }
 
 extension S3ClientTypes {
+
     /// Container for the stats details.
-    public struct Stats {
+    public struct Stats: Swift.Sendable {
         /// The total number of uncompressed object bytes processed.
         public var bytesProcessed: Swift.Int?
         /// The total number of bytes of records payload data returned.
@@ -11985,12 +12092,12 @@ extension S3ClientTypes {
             self.bytesScanned = bytesScanned
         }
     }
-
 }
 
 extension S3ClientTypes {
+
     /// Container for the Stats Event.
-    public struct StatsEvent {
+    public struct StatsEvent: Swift.Sendable {
         /// The Stats event details.
         public var details: S3ClientTypes.Stats?
 
@@ -12001,12 +12108,12 @@ extension S3ClientTypes {
             self.details = details
         }
     }
-
 }
 
 extension S3ClientTypes {
+
     /// The container for selecting objects from a content event stream.
-    public enum SelectObjectContentEventStream {
+    public enum SelectObjectContentEventStream: Swift.Sendable {
         /// The Records Event.
         case records(S3ClientTypes.RecordsEvent)
         /// The Stats Event.
@@ -12019,10 +12126,9 @@ extension S3ClientTypes {
         case end(S3ClientTypes.EndEvent)
         case sdkUnknown(Swift.String)
     }
-
 }
 
-public struct SelectObjectContentOutput {
+public struct SelectObjectContentOutput: Swift.Sendable {
     /// The array of results.
     public var payload: AsyncThrowingStream<S3ClientTypes.SelectObjectContentEventStream, Swift.Error>?
 
@@ -12034,7 +12140,7 @@ public struct SelectObjectContentOutput {
     }
 }
 
-public struct UploadPartInput {
+public struct UploadPartInput: Swift.Sendable {
     /// Object data.
     public var body: Smithy.ByteStream?
     /// The name of the bucket to which the multipart upload was initiated. Directory buckets - When you use this operation with a directory bucket, you must use virtual-hosted-style requests in the format  Bucket_name.s3express-az_id.region.amazonaws.com. Path-style requests are not supported. Directory bucket names must be unique in the chosen Availability Zone. Bucket names must follow the format  bucket_base_name--az-id--x-s3 (for example,  DOC-EXAMPLE-BUCKET--usw2-az1--x-s3). For information about bucket naming restrictions, see [Directory bucket naming rules](https://docs.aws.amazon.com/AmazonS3/latest/userguide/directory-bucket-naming-rules.html) in the Amazon S3 User Guide. Access points - When you use this action with an access point, you must provide the alias of the access point in place of the bucket name or specify the access point ARN. When using the access point ARN, you must direct requests to the access point hostname. The access point hostname takes the form AccessPointName-AccountId.s3-accesspoint.Region.amazonaws.com. When using this action with an access point through the Amazon Web Services SDKs, you provide the access point ARN in place of the bucket name. For more information about access point ARNs, see [Using access points](https://docs.aws.amazon.com/AmazonS3/latest/userguide/using-access-points.html) in the Amazon S3 User Guide. Access points and Object Lambda access points are not supported by directory buckets. S3 on Outposts - When you use this action with Amazon S3 on Outposts, you must direct requests to the S3 on Outposts hostname. The S3 on Outposts hostname takes the form  AccessPointName-AccountId.outpostID.s3-outposts.Region.amazonaws.com. When you use this action with S3 on Outposts through the Amazon Web Services SDKs, you provide the Outposts access point ARN in place of the bucket name. For more information about S3 on Outposts ARNs, see [What is S3 on Outposts?](https://docs.aws.amazon.com/AmazonS3/latest/userguide/S3onOutposts.html) in the Amazon S3 User Guide.
@@ -12042,9 +12148,9 @@ public struct UploadPartInput {
     public var bucket: Swift.String?
     /// Indicates the algorithm used to create the checksum for the object when you use the SDK. This header will not provide any additional functionality if you don't use the SDK. When you send this header, there must be a corresponding x-amz-checksum or x-amz-trailer header sent. Otherwise, Amazon S3 fails the request with the HTTP status code 400 Bad Request. For more information, see [Checking object integrity](https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html) in the Amazon S3 User Guide. If you provide an individual checksum, Amazon S3 ignores any provided ChecksumAlgorithm parameter. This checksum algorithm must be the same for all parts and it match the checksum value supplied in the CreateMultipartUpload request.
     public var checksumAlgorithm: S3ClientTypes.ChecksumAlgorithm?
-    /// This header can be used as a data integrity check to verify that the data received is the same data that was originally sent. This header specifies the base64-encoded, 32-bit CRC32 checksum of the object. For more information, see [Checking object integrity](https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html) in the Amazon S3 User Guide.
+    /// This header can be used as a data integrity check to verify that the data received is the same data that was originally sent. This header specifies the base64-encoded, 32-bit CRC-32 checksum of the object. For more information, see [Checking object integrity](https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html) in the Amazon S3 User Guide.
     public var checksumCRC32: Swift.String?
-    /// This header can be used as a data integrity check to verify that the data received is the same data that was originally sent. This header specifies the base64-encoded, 32-bit CRC32C checksum of the object. For more information, see [Checking object integrity](https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html) in the Amazon S3 User Guide.
+    /// This header can be used as a data integrity check to verify that the data received is the same data that was originally sent. This header specifies the base64-encoded, 32-bit CRC-32C checksum of the object. For more information, see [Checking object integrity](https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html) in the Amazon S3 User Guide.
     public var checksumCRC32C: Swift.String?
     /// This header can be used as a data integrity check to verify that the data received is the same data that was originally sent. This header specifies the base64-encoded, 160-bit SHA-1 digest of the object. For more information, see [Checking object integrity](https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html) in the Amazon S3 User Guide.
     public var checksumSHA1: Swift.String?
@@ -12119,12 +12225,12 @@ extension UploadPartInput: Swift.CustomDebugStringConvertible {
         "UploadPartInput(body: \(Swift.String(describing: body)), bucket: \(Swift.String(describing: bucket)), checksumAlgorithm: \(Swift.String(describing: checksumAlgorithm)), checksumCRC32: \(Swift.String(describing: checksumCRC32)), checksumCRC32C: \(Swift.String(describing: checksumCRC32C)), checksumSHA1: \(Swift.String(describing: checksumSHA1)), checksumSHA256: \(Swift.String(describing: checksumSHA256)), contentLength: \(Swift.String(describing: contentLength)), contentMD5: \(Swift.String(describing: contentMD5)), expectedBucketOwner: \(Swift.String(describing: expectedBucketOwner)), key: \(Swift.String(describing: key)), partNumber: \(Swift.String(describing: partNumber)), requestPayer: \(Swift.String(describing: requestPayer)), sseCustomerAlgorithm: \(Swift.String(describing: sseCustomerAlgorithm)), sseCustomerKeyMD5: \(Swift.String(describing: sseCustomerKeyMD5)), uploadId: \(Swift.String(describing: uploadId)), sseCustomerKey: \"CONTENT_REDACTED\")"}
 }
 
-public struct UploadPartOutput {
+public struct UploadPartOutput: Swift.Sendable {
     /// Indicates whether the multipart upload uses an S3 Bucket Key for server-side encryption with Key Management Service (KMS) keys (SSE-KMS).
     public var bucketKeyEnabled: Swift.Bool?
-    /// The base64-encoded, 32-bit CRC32 checksum of the object. This will only be present if it was uploaded with the object. When you use an API operation on an object that was uploaded using multipart uploads, this value may not be a direct checksum value of the full object. Instead, it's a calculation based on the checksum values of each individual part. For more information about how checksums are calculated with multipart uploads, see [ Checking object integrity](https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html#large-object-checksums) in the Amazon S3 User Guide.
+    /// The base64-encoded, 32-bit CRC-32 checksum of the object. This will only be present if it was uploaded with the object. When you use an API operation on an object that was uploaded using multipart uploads, this value may not be a direct checksum value of the full object. Instead, it's a calculation based on the checksum values of each individual part. For more information about how checksums are calculated with multipart uploads, see [ Checking object integrity](https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html#large-object-checksums) in the Amazon S3 User Guide.
     public var checksumCRC32: Swift.String?
-    /// The base64-encoded, 32-bit CRC32C checksum of the object. This will only be present if it was uploaded with the object. When you use an API operation on an object that was uploaded using multipart uploads, this value may not be a direct checksum value of the full object. Instead, it's a calculation based on the checksum values of each individual part. For more information about how checksums are calculated with multipart uploads, see [ Checking object integrity](https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html#large-object-checksums) in the Amazon S3 User Guide.
+    /// The base64-encoded, 32-bit CRC-32C checksum of the object. This will only be present if it was uploaded with the object. When you use an API operation on an object that was uploaded using multipart uploads, this value may not be a direct checksum value of the full object. Instead, it's a calculation based on the checksum values of each individual part. For more information about how checksums are calculated with multipart uploads, see [ Checking object integrity](https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html#large-object-checksums) in the Amazon S3 User Guide.
     public var checksumCRC32C: Swift.String?
     /// The base64-encoded, 160-bit SHA-1 digest of the object. This will only be present if it was uploaded with the object. When you use the API operation on an object that was uploaded using multipart uploads, this value may not be a direct checksum value of the full object. Instead, it's a calculation based on the checksum values of each individual part. For more information about how checksums are calculated with multipart uploads, see [ Checking object integrity](https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html#large-object-checksums) in the Amazon S3 User Guide.
     public var checksumSHA1: Swift.String?
@@ -12176,7 +12282,7 @@ extension UploadPartOutput: Swift.CustomDebugStringConvertible {
         "UploadPartOutput(bucketKeyEnabled: \(Swift.String(describing: bucketKeyEnabled)), checksumCRC32: \(Swift.String(describing: checksumCRC32)), checksumCRC32C: \(Swift.String(describing: checksumCRC32C)), checksumSHA1: \(Swift.String(describing: checksumSHA1)), checksumSHA256: \(Swift.String(describing: checksumSHA256)), eTag: \(Swift.String(describing: eTag)), requestCharged: \(Swift.String(describing: requestCharged)), serverSideEncryption: \(Swift.String(describing: serverSideEncryption)), sseCustomerAlgorithm: \(Swift.String(describing: sseCustomerAlgorithm)), sseCustomerKeyMD5: \(Swift.String(describing: sseCustomerKeyMD5)), ssekmsKeyId: \"CONTENT_REDACTED\")"}
 }
 
-public struct UploadPartCopyInput {
+public struct UploadPartCopyInput: Swift.Sendable {
     /// The bucket name. Directory buckets - When you use this operation with a directory bucket, you must use virtual-hosted-style requests in the format  Bucket_name.s3express-az_id.region.amazonaws.com. Path-style requests are not supported. Directory bucket names must be unique in the chosen Availability Zone. Bucket names must follow the format  bucket_base_name--az-id--x-s3 (for example,  DOC-EXAMPLE-BUCKET--usw2-az1--x-s3). For information about bucket naming restrictions, see [Directory bucket naming rules](https://docs.aws.amazon.com/AmazonS3/latest/userguide/directory-bucket-naming-rules.html) in the Amazon S3 User Guide. Access points - When you use this action with an access point, you must provide the alias of the access point in place of the bucket name or specify the access point ARN. When using the access point ARN, you must direct requests to the access point hostname. The access point hostname takes the form AccessPointName-AccountId.s3-accesspoint.Region.amazonaws.com. When using this action with an access point through the Amazon Web Services SDKs, you provide the access point ARN in place of the bucket name. For more information about access point ARNs, see [Using access points](https://docs.aws.amazon.com/AmazonS3/latest/userguide/using-access-points.html) in the Amazon S3 User Guide. Access points and Object Lambda access points are not supported by directory buckets. S3 on Outposts - When you use this action with Amazon S3 on Outposts, you must direct requests to the S3 on Outposts hostname. The S3 on Outposts hostname takes the form  AccessPointName-AccountId.outpostID.s3-outposts.Region.amazonaws.com. When you use this action with S3 on Outposts through the Amazon Web Services SDKs, you provide the Outposts access point ARN in place of the bucket name. For more information about S3 on Outposts ARNs, see [What is S3 on Outposts?](https://docs.aws.amazon.com/AmazonS3/latest/userguide/S3onOutposts.html) in the Amazon S3 User Guide.
     /// This member is required.
     public var bucket: Swift.String?
@@ -12285,11 +12391,12 @@ extension UploadPartCopyInput: Swift.CustomDebugStringConvertible {
 }
 
 extension S3ClientTypes {
+
     /// Container for all response elements.
-    public struct CopyPartResult {
-        /// The base64-encoded, 32-bit CRC32 checksum of the object. This will only be present if it was uploaded with the object. When you use an API operation on an object that was uploaded using multipart uploads, this value may not be a direct checksum value of the full object. Instead, it's a calculation based on the checksum values of each individual part. For more information about how checksums are calculated with multipart uploads, see [ Checking object integrity](https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html#large-object-checksums) in the Amazon S3 User Guide.
+    public struct CopyPartResult: Swift.Sendable {
+        /// The base64-encoded, 32-bit CRC-32 checksum of the object. This will only be present if it was uploaded with the object. When you use an API operation on an object that was uploaded using multipart uploads, this value may not be a direct checksum value of the full object. Instead, it's a calculation based on the checksum values of each individual part. For more information about how checksums are calculated with multipart uploads, see [ Checking object integrity](https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html#large-object-checksums) in the Amazon S3 User Guide.
         public var checksumCRC32: Swift.String?
-        /// The base64-encoded, 32-bit CRC32C checksum of the object. This will only be present if it was uploaded with the object. When you use an API operation on an object that was uploaded using multipart uploads, this value may not be a direct checksum value of the full object. Instead, it's a calculation based on the checksum values of each individual part. For more information about how checksums are calculated with multipart uploads, see [ Checking object integrity](https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html#large-object-checksums) in the Amazon S3 User Guide.
+        /// The base64-encoded, 32-bit CRC-32C checksum of the object. This will only be present if it was uploaded with the object. When you use an API operation on an object that was uploaded using multipart uploads, this value may not be a direct checksum value of the full object. Instead, it's a calculation based on the checksum values of each individual part. For more information about how checksums are calculated with multipart uploads, see [ Checking object integrity](https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html#large-object-checksums) in the Amazon S3 User Guide.
         public var checksumCRC32C: Swift.String?
         /// The base64-encoded, 160-bit SHA-1 digest of the object. This will only be present if it was uploaded with the object. When you use the API operation on an object that was uploaded using multipart uploads, this value may not be a direct checksum value of the full object. Instead, it's a calculation based on the checksum values of each individual part. For more information about how checksums are calculated with multipart uploads, see [ Checking object integrity](https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html#large-object-checksums) in the Amazon S3 User Guide.
         public var checksumSHA1: Swift.String?
@@ -12317,10 +12424,9 @@ extension S3ClientTypes {
             self.lastModified = lastModified
         }
     }
-
 }
 
-public struct UploadPartCopyOutput {
+public struct UploadPartCopyOutput: Swift.Sendable {
     /// Indicates whether the multipart upload uses an S3 Bucket Key for server-side encryption with Key Management Service (KMS) keys (SSE-KMS).
     public var bucketKeyEnabled: Swift.Bool?
     /// Container for all response elements.
@@ -12365,7 +12471,7 @@ extension UploadPartCopyOutput: Swift.CustomDebugStringConvertible {
         "UploadPartCopyOutput(bucketKeyEnabled: \(Swift.String(describing: bucketKeyEnabled)), copyPartResult: \(Swift.String(describing: copyPartResult)), copySourceVersionId: \(Swift.String(describing: copySourceVersionId)), requestCharged: \(Swift.String(describing: requestCharged)), serverSideEncryption: \(Swift.String(describing: serverSideEncryption)), sseCustomerAlgorithm: \(Swift.String(describing: sseCustomerAlgorithm)), sseCustomerKeyMD5: \(Swift.String(describing: sseCustomerKeyMD5)), ssekmsKeyId: \"CONTENT_REDACTED\")"}
 }
 
-public struct WriteGetObjectResponseInput {
+public struct WriteGetObjectResponseInput: Swift.Sendable {
     /// Indicates that a range of bytes was specified.
     public var acceptRanges: Swift.String?
     /// The object data.
@@ -12374,9 +12480,9 @@ public struct WriteGetObjectResponseInput {
     public var bucketKeyEnabled: Swift.Bool?
     /// Specifies caching behavior along the request/reply chain.
     public var cacheControl: Swift.String?
-    /// This header can be used as a data integrity check to verify that the data received is the same data that was originally sent. This specifies the base64-encoded, 32-bit CRC32 checksum of the object returned by the Object Lambda function. This may not match the checksum for the object stored in Amazon S3. Amazon S3 will perform validation of the checksum values only when the original GetObject request required checksum validation. For more information about checksums, see [Checking object integrity](https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html) in the Amazon S3 User Guide. Only one checksum header can be specified at a time. If you supply multiple checksum headers, this request will fail.
+    /// This header can be used as a data integrity check to verify that the data received is the same data that was originally sent. This specifies the base64-encoded, 32-bit CRC-32 checksum of the object returned by the Object Lambda function. This may not match the checksum for the object stored in Amazon S3. Amazon S3 will perform validation of the checksum values only when the original GetObject request required checksum validation. For more information about checksums, see [Checking object integrity](https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html) in the Amazon S3 User Guide. Only one checksum header can be specified at a time. If you supply multiple checksum headers, this request will fail.
     public var checksumCRC32: Swift.String?
-    /// This header can be used as a data integrity check to verify that the data received is the same data that was originally sent. This specifies the base64-encoded, 32-bit CRC32C checksum of the object returned by the Object Lambda function. This may not match the checksum for the object stored in Amazon S3. Amazon S3 will perform validation of the checksum values only when the original GetObject request required checksum validation. For more information about checksums, see [Checking object integrity](https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html) in the Amazon S3 User Guide. Only one checksum header can be specified at a time. If you supply multiple checksum headers, this request will fail.
+    /// This header can be used as a data integrity check to verify that the data received is the same data that was originally sent. This specifies the base64-encoded, 32-bit CRC-32C checksum of the object returned by the Object Lambda function. This may not match the checksum for the object stored in Amazon S3. Amazon S3 will perform validation of the checksum values only when the original GetObject request required checksum validation. For more information about checksums, see [Checking object integrity](https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html) in the Amazon S3 User Guide. Only one checksum header can be specified at a time. If you supply multiple checksum headers, this request will fail.
     public var checksumCRC32C: Swift.String?
     /// This header can be used as a data integrity check to verify that the data received is the same data that was originally sent. This specifies the base64-encoded, 160-bit SHA-1 digest of the object returned by the Object Lambda function. This may not match the checksum for the object stored in Amazon S3. Amazon S3 will perform validation of the checksum values only when the original GetObject request required checksum validation. For more information about checksums, see [Checking object integrity](https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html) in the Amazon S3 User Guide. Only one checksum header can be specified at a time. If you supply multiple checksum headers, this request will fail.
     public var checksumSHA1: Swift.String?
@@ -14214,6 +14320,9 @@ extension GetObjectAttributesInput {
             items.add(SmithyHTTPAPI.Header(name: "x-amz-max-parts", value: Swift.String(maxParts)))
         }
         if let objectAttributes = value.objectAttributes {
+            if objectAttributes.isEmpty {
+                items.add(name: "x-amz-object-attributes", value: "")
+            }
             objectAttributes.forEach { headerValue in
                 items.add(SmithyHTTPAPI.Header(name: "x-amz-object-attributes", value: ClientRuntime.quoteHeaderValue(Swift.String(headerValue.rawValue))))
             }
@@ -14690,6 +14799,14 @@ extension ListBucketsInput {
             let continuationTokenQueryItem = Smithy.URIQueryItem(name: "continuation-token".urlPercentEncoding(), value: Swift.String(continuationToken).urlPercentEncoding())
             items.append(continuationTokenQueryItem)
         }
+        if let bucketRegion = value.bucketRegion {
+            let bucketRegionQueryItem = Smithy.URIQueryItem(name: "bucket-region".urlPercentEncoding(), value: Swift.String(bucketRegion).urlPercentEncoding())
+            items.append(bucketRegionQueryItem)
+        }
+        if let `prefix` = value.`prefix` {
+            let prefixQueryItem = Smithy.URIQueryItem(name: "prefix".urlPercentEncoding(), value: Swift.String(`prefix`).urlPercentEncoding())
+            items.append(prefixQueryItem)
+        }
         if let maxBuckets = value.maxBuckets {
             let maxBucketsQueryItem = Smithy.URIQueryItem(name: "max-buckets".urlPercentEncoding(), value: Swift.String(maxBuckets).urlPercentEncoding())
             items.append(maxBucketsQueryItem)
@@ -14791,6 +14908,9 @@ extension ListObjectsInput {
             items.add(SmithyHTTPAPI.Header(name: "x-amz-expected-bucket-owner", value: Swift.String(expectedBucketOwner)))
         }
         if let optionalObjectAttributes = value.optionalObjectAttributes {
+            if optionalObjectAttributes.isEmpty {
+                items.add(name: "x-amz-optional-object-attributes", value: "")
+            }
             optionalObjectAttributes.forEach { headerValue in
                 items.add(SmithyHTTPAPI.Header(name: "x-amz-optional-object-attributes", value: ClientRuntime.quoteHeaderValue(Swift.String(headerValue.rawValue))))
             }
@@ -14845,6 +14965,9 @@ extension ListObjectsV2Input {
             items.add(SmithyHTTPAPI.Header(name: "x-amz-expected-bucket-owner", value: Swift.String(expectedBucketOwner)))
         }
         if let optionalObjectAttributes = value.optionalObjectAttributes {
+            if optionalObjectAttributes.isEmpty {
+                items.add(name: "x-amz-optional-object-attributes", value: "")
+            }
             optionalObjectAttributes.forEach { headerValue in
                 items.add(SmithyHTTPAPI.Header(name: "x-amz-optional-object-attributes", value: ClientRuntime.quoteHeaderValue(Swift.String(headerValue.rawValue))))
             }
@@ -14908,6 +15031,9 @@ extension ListObjectVersionsInput {
             items.add(SmithyHTTPAPI.Header(name: "x-amz-expected-bucket-owner", value: Swift.String(expectedBucketOwner)))
         }
         if let optionalObjectAttributes = value.optionalObjectAttributes {
+            if optionalObjectAttributes.isEmpty {
+                items.add(name: "x-amz-optional-object-attributes", value: "")
+            }
             optionalObjectAttributes.forEach { headerValue in
                 items.add(SmithyHTTPAPI.Header(name: "x-amz-optional-object-attributes", value: ClientRuntime.quoteHeaderValue(Swift.String(headerValue.rawValue))))
             }
@@ -15259,6 +15385,9 @@ extension PutBucketLifecycleConfigurationInput {
         }
         if let expectedBucketOwner = value.expectedBucketOwner {
             items.add(SmithyHTTPAPI.Header(name: "x-amz-expected-bucket-owner", value: Swift.String(expectedBucketOwner)))
+        }
+        if let transitionDefaultMinimumObjectSize = value.transitionDefaultMinimumObjectSize {
+            items.add(SmithyHTTPAPI.Header(name: "x-amz-transition-default-minimum-object-size", value: Swift.String(transitionDefaultMinimumObjectSize.rawValue)))
         }
         return items
     }
@@ -17045,6 +17174,9 @@ extension GetBucketLifecycleConfigurationOutput {
         let responseReader = try SmithyXML.Reader.from(data: data)
         let reader = responseReader
         var value = GetBucketLifecycleConfigurationOutput()
+        if let transitionDefaultMinimumObjectSizeHeaderValue = httpResponse.headers.value(for: "x-amz-transition-default-minimum-object-size") {
+            value.transitionDefaultMinimumObjectSize = S3ClientTypes.TransitionDefaultMinimumObjectSize(rawValue: transitionDefaultMinimumObjectSizeHeaderValue)
+        }
         value.rules = try reader["Rule"].readListIfPresent(memberReadingClosure: S3ClientTypes.LifecycleRule.read(from:), memberNodeInfo: "member", isFlattened: true)
         return value
     }
@@ -17665,6 +17797,7 @@ extension ListBucketsOutput {
         value.buckets = try reader["Buckets"].readListIfPresent(memberReadingClosure: S3ClientTypes.Bucket.read(from:), memberNodeInfo: "Bucket", isFlattened: false)
         value.continuationToken = try reader["ContinuationToken"].readIfPresent()
         value.owner = try reader["Owner"].readIfPresent(with: S3ClientTypes.Owner.read(from:))
+        value.`prefix` = try reader["Prefix"].readIfPresent()
         return value
     }
 }
@@ -17869,7 +18002,11 @@ extension PutBucketInventoryConfigurationOutput {
 extension PutBucketLifecycleConfigurationOutput {
 
     static func httpOutput(from httpResponse: SmithyHTTPAPI.HTTPResponse) async throws -> PutBucketLifecycleConfigurationOutput {
-        return PutBucketLifecycleConfigurationOutput()
+        var value = PutBucketLifecycleConfigurationOutput()
+        if let transitionDefaultMinimumObjectSizeHeaderValue = httpResponse.headers.value(for: "x-amz-transition-default-minimum-object-size") {
+            value.transitionDefaultMinimumObjectSize = S3ClientTypes.TransitionDefaultMinimumObjectSize(rawValue: transitionDefaultMinimumObjectSizeHeaderValue)
+        }
+        return value
     }
 }
 
@@ -20332,39 +20469,22 @@ extension S3ClientTypes.LifecycleRuleFilter {
 
     static func write(value: S3ClientTypes.LifecycleRuleFilter?, to writer: SmithyXML.Writer) throws {
         guard let value else { return }
-        switch value {
-            case let .and(and):
-                try writer["And"].write(and, with: S3ClientTypes.LifecycleRuleAndOperator.write(value:to:))
-            case let .objectsizegreaterthan(objectsizegreaterthan):
-                try writer["ObjectSizeGreaterThan"].write(objectsizegreaterthan)
-            case let .objectsizelessthan(objectsizelessthan):
-                try writer["ObjectSizeLessThan"].write(objectsizelessthan)
-            case let .`prefix`(`prefix`):
-                try writer["Prefix"].write(`prefix`)
-            case let .tag(tag):
-                try writer["Tag"].write(tag, with: S3ClientTypes.Tag.write(value:to:))
-            case let .sdkUnknown(sdkUnknown):
-                try writer["sdkUnknown"].write(sdkUnknown)
-        }
+        try writer["And"].write(value.and, with: S3ClientTypes.LifecycleRuleAndOperator.write(value:to:))
+        try writer["ObjectSizeGreaterThan"].write(value.objectSizeGreaterThan)
+        try writer["ObjectSizeLessThan"].write(value.objectSizeLessThan)
+        try writer["Prefix"].write(value.`prefix`)
+        try writer["Tag"].write(value.tag, with: S3ClientTypes.Tag.write(value:to:))
     }
 
     static func read(from reader: SmithyXML.Reader) throws -> S3ClientTypes.LifecycleRuleFilter {
         guard reader.hasContent else { throw SmithyReadWrite.ReaderError.requiredValueNotPresent }
-        let name = reader.children.filter { $0.hasContent && $0.nodeInfo.name != "__type" }.first?.nodeInfo.name
-        switch name {
-            case "Prefix":
-                return .`prefix`(try reader["Prefix"].read())
-            case "Tag":
-                return .tag(try reader["Tag"].read(with: S3ClientTypes.Tag.read(from:)))
-            case "ObjectSizeGreaterThan":
-                return .objectsizegreaterthan(try reader["ObjectSizeGreaterThan"].read())
-            case "ObjectSizeLessThan":
-                return .objectsizelessthan(try reader["ObjectSizeLessThan"].read())
-            case "And":
-                return .and(try reader["And"].read(with: S3ClientTypes.LifecycleRuleAndOperator.read(from:)))
-            default:
-                return .sdkUnknown(name ?? "")
-        }
+        var value = S3ClientTypes.LifecycleRuleFilter()
+        value.`prefix` = try reader["Prefix"].readIfPresent()
+        value.tag = try reader["Tag"].readIfPresent(with: S3ClientTypes.Tag.read(from:))
+        value.objectSizeGreaterThan = try reader["ObjectSizeGreaterThan"].readIfPresent()
+        value.objectSizeLessThan = try reader["ObjectSizeLessThan"].readIfPresent()
+        value.and = try reader["And"].readIfPresent(with: S3ClientTypes.LifecycleRuleAndOperator.read(from:))
+        return value
     }
 }
 
@@ -20961,31 +21081,18 @@ extension S3ClientTypes.ReplicationRuleFilter {
 
     static func write(value: S3ClientTypes.ReplicationRuleFilter?, to writer: SmithyXML.Writer) throws {
         guard let value else { return }
-        switch value {
-            case let .and(and):
-                try writer["And"].write(and, with: S3ClientTypes.ReplicationRuleAndOperator.write(value:to:))
-            case let .`prefix`(`prefix`):
-                try writer["Prefix"].write(`prefix`)
-            case let .tag(tag):
-                try writer["Tag"].write(tag, with: S3ClientTypes.Tag.write(value:to:))
-            case let .sdkUnknown(sdkUnknown):
-                try writer["sdkUnknown"].write(sdkUnknown)
-        }
+        try writer["And"].write(value.and, with: S3ClientTypes.ReplicationRuleAndOperator.write(value:to:))
+        try writer["Prefix"].write(value.`prefix`)
+        try writer["Tag"].write(value.tag, with: S3ClientTypes.Tag.write(value:to:))
     }
 
     static func read(from reader: SmithyXML.Reader) throws -> S3ClientTypes.ReplicationRuleFilter {
         guard reader.hasContent else { throw SmithyReadWrite.ReaderError.requiredValueNotPresent }
-        let name = reader.children.filter { $0.hasContent && $0.nodeInfo.name != "__type" }.first?.nodeInfo.name
-        switch name {
-            case "Prefix":
-                return .`prefix`(try reader["Prefix"].read())
-            case "Tag":
-                return .tag(try reader["Tag"].read(with: S3ClientTypes.Tag.read(from:)))
-            case "And":
-                return .and(try reader["And"].read(with: S3ClientTypes.ReplicationRuleAndOperator.read(from:)))
-            default:
-                return .sdkUnknown(name ?? "")
-        }
+        var value = S3ClientTypes.ReplicationRuleFilter()
+        value.`prefix` = try reader["Prefix"].readIfPresent()
+        value.tag = try reader["Tag"].readIfPresent(with: S3ClientTypes.Tag.read(from:))
+        value.and = try reader["And"].readIfPresent(with: S3ClientTypes.ReplicationRuleAndOperator.read(from:))
+        return value
     }
 }
 
@@ -21264,6 +21371,7 @@ extension S3ClientTypes.Bucket {
         var value = S3ClientTypes.Bucket()
         value.name = try reader["Name"].readIfPresent()
         value.creationDate = try reader["CreationDate"].readTimestampIfPresent(format: SmithyTimestamps.TimestampFormat.dateTime)
+        value.bucketRegion = try reader["BucketRegion"].readIfPresent()
         return value
     }
 }

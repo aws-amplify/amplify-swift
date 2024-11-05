@@ -28,399 +28,400 @@ import protocol ClientRuntime.ModeledError
 @_spi(SmithyReadWrite) import struct SmithyReadWrite.WritingClosureBox
 @_spi(SmithyTimestamps) import struct SmithyTimestamps.TimestampFormatter
 
-public struct AddClientIDToOpenIDConnectProviderOutput {
 
+public struct AddClientIDToOpenIDConnectProviderOutput: Swift.Sendable {
+
     public init() { }
 }
 
-public struct AddRoleToInstanceProfileOutput {
+public struct AddRoleToInstanceProfileOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct AddUserToGroupOutput {
+public struct AddUserToGroupOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct AttachGroupPolicyOutput {
+public struct AttachGroupPolicyOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct AttachRolePolicyOutput {
+public struct AttachRolePolicyOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct AttachUserPolicyOutput {
+public struct AttachUserPolicyOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct ChangePasswordOutput {
+public struct ChangePasswordOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct CreateAccountAliasOutput {
+public struct CreateAccountAliasOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeactivateMFADeviceOutput {
+public struct DeactivateMFADeviceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteAccessKeyOutput {
+public struct DeleteAccessKeyOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteAccountAliasOutput {
+public struct DeleteAccountAliasOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteAccountPasswordPolicyInput {
+public struct DeleteAccountPasswordPolicyInput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteAccountPasswordPolicyOutput {
+public struct DeleteAccountPasswordPolicyOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteGroupOutput {
+public struct DeleteGroupOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteGroupPolicyOutput {
+public struct DeleteGroupPolicyOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteInstanceProfileOutput {
+public struct DeleteInstanceProfileOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteLoginProfileOutput {
+public struct DeleteLoginProfileOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteOpenIDConnectProviderOutput {
+public struct DeleteOpenIDConnectProviderOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeletePolicyOutput {
+public struct DeletePolicyOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeletePolicyVersionOutput {
+public struct DeletePolicyVersionOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteRoleOutput {
+public struct DeleteRoleOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteRolePermissionsBoundaryOutput {
+public struct DeleteRolePermissionsBoundaryOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteRolePolicyOutput {
+public struct DeleteRolePolicyOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteSAMLProviderOutput {
+public struct DeleteSAMLProviderOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteServerCertificateOutput {
+public struct DeleteServerCertificateOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteServiceSpecificCredentialOutput {
+public struct DeleteServiceSpecificCredentialOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteSigningCertificateOutput {
+public struct DeleteSigningCertificateOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteSSHPublicKeyOutput {
+public struct DeleteSSHPublicKeyOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteUserOutput {
+public struct DeleteUserOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteUserPermissionsBoundaryOutput {
+public struct DeleteUserPermissionsBoundaryOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteUserPolicyOutput {
+public struct DeleteUserPolicyOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteVirtualMFADeviceOutput {
+public struct DeleteVirtualMFADeviceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DetachGroupPolicyOutput {
+public struct DetachGroupPolicyOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DetachRolePolicyOutput {
+public struct DetachRolePolicyOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DetachUserPolicyOutput {
+public struct DetachUserPolicyOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct EnableMFADeviceOutput {
+public struct EnableMFADeviceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct GenerateCredentialReportInput {
+public struct GenerateCredentialReportInput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct GetAccountPasswordPolicyInput {
+public struct GetAccountPasswordPolicyInput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct GetAccountSummaryInput {
+public struct GetAccountSummaryInput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct GetCredentialReportInput {
+public struct GetCredentialReportInput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct PutGroupPolicyOutput {
+public struct PutGroupPolicyOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct PutRolePermissionsBoundaryOutput {
+public struct PutRolePermissionsBoundaryOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct PutRolePolicyOutput {
+public struct PutRolePolicyOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct PutUserPermissionsBoundaryOutput {
+public struct PutUserPermissionsBoundaryOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct PutUserPolicyOutput {
+public struct PutUserPolicyOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct RemoveClientIDFromOpenIDConnectProviderOutput {
+public struct RemoveClientIDFromOpenIDConnectProviderOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct RemoveRoleFromInstanceProfileOutput {
+public struct RemoveRoleFromInstanceProfileOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct RemoveUserFromGroupOutput {
+public struct RemoveUserFromGroupOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct ResyncMFADeviceOutput {
+public struct ResyncMFADeviceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct SetDefaultPolicyVersionOutput {
+public struct SetDefaultPolicyVersionOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct SetSecurityTokenServicePreferencesOutput {
+public struct SetSecurityTokenServicePreferencesOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct TagInstanceProfileOutput {
+public struct TagInstanceProfileOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct TagMFADeviceOutput {
+public struct TagMFADeviceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct TagOpenIDConnectProviderOutput {
+public struct TagOpenIDConnectProviderOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct TagPolicyOutput {
+public struct TagPolicyOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct TagRoleOutput {
+public struct TagRoleOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct TagSAMLProviderOutput {
+public struct TagSAMLProviderOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct TagServerCertificateOutput {
+public struct TagServerCertificateOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct TagUserOutput {
+public struct TagUserOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UntagInstanceProfileOutput {
+public struct UntagInstanceProfileOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UntagMFADeviceOutput {
+public struct UntagMFADeviceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UntagOpenIDConnectProviderOutput {
+public struct UntagOpenIDConnectProviderOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UntagPolicyOutput {
+public struct UntagPolicyOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UntagRoleOutput {
+public struct UntagRoleOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UntagSAMLProviderOutput {
+public struct UntagSAMLProviderOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UntagServerCertificateOutput {
+public struct UntagServerCertificateOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UntagUserOutput {
+public struct UntagUserOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdateAccessKeyOutput {
+public struct UpdateAccessKeyOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdateAccountPasswordPolicyOutput {
+public struct UpdateAccountPasswordPolicyOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdateAssumeRolePolicyOutput {
+public struct UpdateAssumeRolePolicyOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdateGroupOutput {
+public struct UpdateGroupOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdateLoginProfileOutput {
+public struct UpdateLoginProfileOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdateOpenIDConnectProviderThumbprintOutput {
+public struct UpdateOpenIDConnectProviderThumbprintOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdateServerCertificateOutput {
+public struct UpdateServerCertificateOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdateServiceSpecificCredentialOutput {
+public struct UpdateServiceSpecificCredentialOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdateSigningCertificateOutput {
+public struct UpdateSigningCertificateOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdateSSHPublicKeyOutput {
+public struct UpdateSSHPublicKeyOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdateUserOutput {
+public struct UpdateUserOutput: Swift.Sendable {
 
     public init() { }
 }
 
 extension IAMClientTypes {
 
-    public enum AccessAdvisorUsageGranularityType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AccessAdvisorUsageGranularityType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case actionLevel
         case serviceLevel
         case sdkUnknown(Swift.String)
@@ -448,8 +449,9 @@ extension IAMClientTypes {
 }
 
 extension IAMClientTypes {
+
     /// An object that contains details about when a principal in the reported Organizations entity last attempted to access an Amazon Web Services service. A principal can be an IAM user, an IAM role, or the Amazon Web Services account root user within the reported Organizations entity. This data type is a response element in the [GetOrganizationsAccessReport] operation.
-    public struct AccessDetail {
+    public struct AccessDetail: Swift.Sendable {
         /// The path of the Organizations entity (root, organizational unit, or account) from which an authenticated principal last attempted to access the service. Amazon Web Services does not report unauthenticated requests. This field is null if no principals (IAM users, IAM roles, or root user) in the reported Organizations entity attempted to access the service within the [tracking period](https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies_access-advisor.html#service-last-accessed-reporting-period).
         public var entityPath: Swift.String?
         /// The date and time, in [ISO 8601 date-time format](http://www.iso.org/iso/iso8601), when an authenticated principal most recently attempted to access the service. Amazon Web Services does not report unauthenticated requests. This field is null if no principals in the reported Organizations entity attempted to access the service within the [tracking period](https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies_access-advisor.html#service-last-accessed-reporting-period).
@@ -482,12 +484,11 @@ extension IAMClientTypes {
             self.totalAuthenticatedEntities = totalAuthenticatedEntities
         }
     }
-
 }
 
 extension IAMClientTypes {
 
-    public enum StatusType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum StatusType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case active
         case inactive
         case sdkUnknown(Swift.String)
@@ -515,8 +516,9 @@ extension IAMClientTypes {
 }
 
 extension IAMClientTypes {
+
     /// Contains information about an Amazon Web Services access key. This data type is used as a response element in the [CreateAccessKey] and [ListAccessKeys] operations. The SecretAccessKey value is returned only in response to [CreateAccessKey]. You can get a secret access key only when you first create an access key; you cannot recover the secret access key later. If you lose a secret access key, you must create a new access key.
-    public struct AccessKey {
+    public struct AccessKey: Swift.Sendable {
         /// The ID for this access key.
         /// This member is required.
         public var accessKeyId: Swift.String?
@@ -547,7 +549,6 @@ extension IAMClientTypes {
             self.userName = userName
         }
     }
-
 }
 
 extension IAMClientTypes.AccessKey: Swift.CustomDebugStringConvertible {
@@ -556,8 +557,9 @@ extension IAMClientTypes.AccessKey: Swift.CustomDebugStringConvertible {
 }
 
 extension IAMClientTypes {
+
     /// Contains information about the last time an Amazon Web Services access key was used since IAM began tracking this information on April 22, 2015. This data type is used as a response element in the [GetAccessKeyLastUsed] operation.
-    public struct AccessKeyLastUsed {
+    public struct AccessKeyLastUsed: Swift.Sendable {
         /// The date and time, in [ISO 8601 date-time format](http://www.iso.org/iso/iso8601), when the access key was most recently used. This field is null in the following situations:
         ///
         /// * The user does not have an access key.
@@ -599,12 +601,12 @@ extension IAMClientTypes {
             self.serviceName = serviceName
         }
     }
-
 }
 
 extension IAMClientTypes {
+
     /// Contains information about an Amazon Web Services access key, without its secret key. This data type is used as a response element in the [ListAccessKeys] operation.
-    public struct AccessKeyMetadata {
+    public struct AccessKeyMetadata: Swift.Sendable {
         /// The ID for this access key.
         public var accessKeyId: Swift.String?
         /// The date when the access key was created.
@@ -627,7 +629,6 @@ extension IAMClientTypes {
             self.userName = userName
         }
     }
-
 }
 
 /// The request was rejected because an invalid or out-of-range value was supplied for an input parameter.
@@ -726,7 +727,7 @@ public struct ServiceFailureException: ClientRuntime.ModeledError, AWSClientRunt
     }
 }
 
-public struct AddClientIDToOpenIDConnectProviderInput {
+public struct AddClientIDToOpenIDConnectProviderInput: Swift.Sendable {
     /// The client ID (also known as audience) to add to the IAM OpenID Connect provider resource.
     /// This member is required.
     public var clientID: Swift.String?
@@ -792,7 +793,7 @@ public struct UnmodifiableEntityException: ClientRuntime.ModeledError, AWSClient
     }
 }
 
-public struct AddRoleToInstanceProfileInput {
+public struct AddRoleToInstanceProfileInput: Swift.Sendable {
     /// The name of the instance profile to update. This parameter allows (through its [regex pattern](http://wikipedia.org/wiki/regex)) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-
     /// This member is required.
     public var instanceProfileName: Swift.String?
@@ -810,7 +811,7 @@ public struct AddRoleToInstanceProfileInput {
     }
 }
 
-public struct AddUserToGroupInput {
+public struct AddUserToGroupInput: Swift.Sendable {
     /// The name of the group to update. This parameter allows (through its [regex pattern](http://wikipedia.org/wiki/regex)) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-
     /// This member is required.
     public var groupName: Swift.String?
@@ -830,7 +831,7 @@ public struct AddUserToGroupInput {
 
 extension IAMClientTypes {
 
-    public enum AssignmentStatusType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AssignmentStatusType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case any
         case assigned
         case unassigned
@@ -862,7 +863,7 @@ extension IAMClientTypes {
 
 extension IAMClientTypes {
 
-    public enum PermissionsBoundaryAttachmentType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum PermissionsBoundaryAttachmentType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case policy
         case sdkUnknown(Swift.String)
 
@@ -887,8 +888,9 @@ extension IAMClientTypes {
 }
 
 extension IAMClientTypes {
+
     /// Contains information about an attached permissions boundary. An attached permissions boundary is a managed policy that has been attached to a user or role to set the permissions boundary. For more information about permissions boundaries, see [Permissions boundaries for IAM identities ](https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies_boundaries.html) in the IAM User Guide.
-    public struct AttachedPermissionsBoundary {
+    public struct AttachedPermissionsBoundary: Swift.Sendable {
         /// The ARN of the policy used to set the permissions boundary for the user or role.
         public var permissionsBoundaryArn: Swift.String?
         /// The permissions boundary usage type that indicates what type of IAM resource is used as the permissions boundary for an entity. This data type can only have a value of Policy.
@@ -903,12 +905,12 @@ extension IAMClientTypes {
             self.permissionsBoundaryType = permissionsBoundaryType
         }
     }
-
 }
 
 extension IAMClientTypes {
+
     /// Contains information about an attached policy. An attached policy is a managed policy that has been attached to a user, group, or role. This data type is used as a response element in the [ListAttachedGroupPolicies], [ListAttachedRolePolicies], [ListAttachedUserPolicies], and [GetAccountAuthorizationDetails] operations. For more information about managed policies, refer to [Managed policies and inline policies](https://docs.aws.amazon.com/IAM/latest/UserGuide/policies-managed-vs-inline.html) in the IAM User Guide.
-    public struct AttachedPolicy {
+    public struct AttachedPolicy: Swift.Sendable {
         /// The Amazon Resource Name (ARN). ARNs are unique identifiers for Amazon Web Services resources. For more information about ARNs, go to [Amazon Resource Names (ARNs)](https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html) in the Amazon Web Services General Reference.
         public var policyArn: Swift.String?
         /// The friendly name of the attached policy.
@@ -923,7 +925,6 @@ extension IAMClientTypes {
             self.policyName = policyName
         }
     }
-
 }
 
 /// The request failed because Amazon Web Services service role policies can only be attached to the service-linked role for that service.
@@ -950,7 +951,7 @@ public struct PolicyNotAttachableException: ClientRuntime.ModeledError, AWSClien
     }
 }
 
-public struct AttachGroupPolicyInput {
+public struct AttachGroupPolicyInput: Swift.Sendable {
     /// The name (friendly name, not ARN) of the group to attach the policy to. This parameter allows (through its [regex pattern](http://wikipedia.org/wiki/regex)) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-
     /// This member is required.
     public var groupName: Swift.String?
@@ -968,7 +969,7 @@ public struct AttachGroupPolicyInput {
     }
 }
 
-public struct AttachRolePolicyInput {
+public struct AttachRolePolicyInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the IAM policy you want to attach. For more information about ARNs, see [Amazon Resource Names (ARNs)](https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html) in the Amazon Web Services General Reference.
     /// This member is required.
     public var policyArn: Swift.String?
@@ -986,7 +987,7 @@ public struct AttachRolePolicyInput {
     }
 }
 
-public struct AttachUserPolicyInput {
+public struct AttachUserPolicyInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the IAM policy you want to attach. For more information about ARNs, see [Amazon Resource Names (ARNs)](https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html) in the Amazon Web Services General Reference.
     /// This member is required.
     public var policyArn: Swift.String?
@@ -1076,7 +1077,7 @@ public struct PasswordPolicyViolationException: ClientRuntime.ModeledError, AWSC
     }
 }
 
-public struct ChangePasswordInput {
+public struct ChangePasswordInput: Swift.Sendable {
     /// The new password. The new password must conform to the Amazon Web Services account's password policy, if one exists. The [regex pattern](http://wikipedia.org/wiki/regex) that is used to validate this parameter is a string of characters. That string can include almost any printable ASCII character from the space (\u0020) through the end of the ASCII character range (\u00FF). You can also include the tab (\u0009), line feed (\u000A), and carriage return (\u000D) characters. Any of these characters are valid in a password. However, many tools, such as the Amazon Web Services Management Console, might restrict the ability to type certain characters because they have special meaning within that tool.
     /// This member is required.
     public var newPassword: Swift.String?
@@ -1099,7 +1100,7 @@ extension ChangePasswordInput: Swift.CustomDebugStringConvertible {
         "ChangePasswordInput(newPassword: \"CONTENT_REDACTED\", oldPassword: \"CONTENT_REDACTED\")"}
 }
 
-public struct CreateAccessKeyInput {
+public struct CreateAccessKeyInput: Swift.Sendable {
     /// The name of the IAM user that the new key will belong to. This parameter allows (through its [regex pattern](http://wikipedia.org/wiki/regex)) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-
     public var userName: Swift.String?
 
@@ -1112,7 +1113,7 @@ public struct CreateAccessKeyInput {
 }
 
 /// Contains the response to a successful [CreateAccessKey] request.
-public struct CreateAccessKeyOutput {
+public struct CreateAccessKeyOutput: Swift.Sendable {
     /// A structure with details about the access key.
     /// This member is required.
     public var accessKey: IAMClientTypes.AccessKey?
@@ -1149,7 +1150,7 @@ public struct ConcurrentModificationException: ClientRuntime.ModeledError, AWSCl
     }
 }
 
-public struct CreateAccountAliasInput {
+public struct CreateAccountAliasInput: Swift.Sendable {
     /// The account alias to create. This parameter allows (through its [regex pattern](http://wikipedia.org/wiki/regex)) a string of characters consisting of lowercase letters, digits, and dashes. You cannot start or finish with a dash, nor can you have two dashes in a row.
     /// This member is required.
     public var accountAlias: Swift.String?
@@ -1162,7 +1163,7 @@ public struct CreateAccountAliasInput {
     }
 }
 
-public struct CreateGroupInput {
+public struct CreateGroupInput: Swift.Sendable {
     /// The name of the group to create. Do not include the path in this value. IAM user, group, role, and policy names must be unique within the account. Names are not distinguished by case. For example, you cannot create resources named both "MyResource" and "myresource".
     /// This member is required.
     public var groupName: Swift.String?
@@ -1180,6 +1181,7 @@ public struct CreateGroupInput {
 }
 
 extension IAMClientTypes {
+
     /// Contains information about an IAM group entity. This data type is used as a response element in the following operations:
     ///
     /// * [CreateGroup]
@@ -1187,7 +1189,7 @@ extension IAMClientTypes {
     /// * [GetGroup]
     ///
     /// * [ListGroups]
-    public struct Group {
+    public struct Group: Swift.Sendable {
         /// The Amazon Resource Name (ARN) specifying the group. For more information about ARNs and how to use them in policies, see [IAM identifiers](https://docs.aws.amazon.com/IAM/latest/UserGuide/Using_Identifiers.html) in the IAM User Guide.
         /// This member is required.
         public var arn: Swift.String?
@@ -1219,11 +1221,10 @@ extension IAMClientTypes {
             self.path = path
         }
     }
-
 }
 
 /// Contains the response to a successful [CreateGroup] request.
-public struct CreateGroupOutput {
+public struct CreateGroupOutput: Swift.Sendable {
     /// A structure containing details about the new group.
     /// This member is required.
     public var group: IAMClientTypes.Group?
@@ -1237,8 +1238,9 @@ public struct CreateGroupOutput {
 }
 
 extension IAMClientTypes {
+
     /// A structure that represents user-provided metadata that can be associated with an IAM resource. For more information about tagging, see [Tagging IAM resources](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_tags.html) in the IAM User Guide.
-    public struct Tag {
+    public struct Tag: Swift.Sendable {
         /// The key name that can be used to look up or retrieve the associated value. For example, Department or Cost Center are common choices.
         /// This member is required.
         public var key: Swift.String?
@@ -1255,10 +1257,9 @@ extension IAMClientTypes {
             self.value = value
         }
     }
-
 }
 
-public struct CreateInstanceProfileInput {
+public struct CreateInstanceProfileInput: Swift.Sendable {
     /// The name of the instance profile to create. This parameter allows (through its [regex pattern](http://wikipedia.org/wiki/regex)) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-
     /// This member is required.
     public var instanceProfileName: Swift.String?
@@ -1280,8 +1281,9 @@ public struct CreateInstanceProfileInput {
 }
 
 extension IAMClientTypes {
+
     /// Contains information about the last time that an IAM role was used. This includes the date and time and the Region in which the role was last used. Activity is only reported for the trailing 400 days. This period can be shorter if your Region began supporting these features within the last year. The role might have been used more than 400 days ago. For more information, see [Regions where data is tracked](https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies_access-advisor.html#access-advisor_tracking-period) in the IAM user Guide. This data type is returned as a response element in the [GetRole] and [GetAccountAuthorizationDetails] operations.
-    public struct RoleLastUsed {
+    public struct RoleLastUsed: Swift.Sendable {
         /// The date and time, in [ISO 8601 date-time format](http://www.iso.org/iso/iso8601) that the role was last used. This field is null if the role has not been used within the IAM tracking period. For more information about the tracking period, see [Regions where data is tracked](https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies_access-advisor.html#access-advisor_tracking-period) in the IAM User Guide.
         public var lastUsedDate: Foundation.Date?
         /// The name of the Amazon Web Services Region in which the role was last used.
@@ -1296,12 +1298,12 @@ extension IAMClientTypes {
             self.region = region
         }
     }
-
 }
 
 extension IAMClientTypes {
+
     /// Contains information about an IAM role. This structure is returned as a response element in several API operations that interact with roles.
-    public struct Role {
+    public struct Role: Swift.Sendable {
         /// The Amazon Resource Name (ARN) specifying the role. For more information about ARNs and how to use them in policies, see [IAM identifiers](https://docs.aws.amazon.com/IAM/latest/UserGuide/Using_Identifiers.html) in the IAM User Guide guide.
         /// This member is required.
         public var arn: Swift.String?
@@ -1357,10 +1359,10 @@ extension IAMClientTypes {
             self.tags = tags
         }
     }
-
 }
 
 extension IAMClientTypes {
+
     /// Contains information about an instance profile. This data type is used as a response element in the following operations:
     ///
     /// * [CreateInstanceProfile]
@@ -1370,7 +1372,7 @@ extension IAMClientTypes {
     /// * [ListInstanceProfiles]
     ///
     /// * [ListInstanceProfilesForRole]
-    public struct InstanceProfile {
+    public struct InstanceProfile: Swift.Sendable {
         /// The Amazon Resource Name (ARN) specifying the instance profile. For more information about ARNs and how to use them in policies, see [IAM identifiers](https://docs.aws.amazon.com/IAM/latest/UserGuide/Using_Identifiers.html) in the IAM User Guide.
         /// This member is required.
         public var arn: Swift.String?
@@ -1411,11 +1413,10 @@ extension IAMClientTypes {
             self.tags = tags
         }
     }
-
 }
 
 /// Contains the response to a successful [CreateInstanceProfile] request.
-public struct CreateInstanceProfileOutput {
+public struct CreateInstanceProfileOutput: Swift.Sendable {
     /// A structure containing details about the new instance profile.
     /// This member is required.
     public var instanceProfile: IAMClientTypes.InstanceProfile?
@@ -1428,7 +1429,7 @@ public struct CreateInstanceProfileOutput {
     }
 }
 
-public struct CreateLoginProfileInput {
+public struct CreateLoginProfileInput: Swift.Sendable {
     /// The new password for the user. The [regex pattern](http://wikipedia.org/wiki/regex) that is used to validate this parameter is a string of characters. That string can include almost any printable ASCII character from the space (\u0020) through the end of the ASCII character range (\u00FF). You can also include the tab (\u0009), line feed (\u000A), and carriage return (\u000D) characters. Any of these characters are valid in a password. However, many tools, such as the Amazon Web Services Management Console, might restrict the ability to type certain characters because they have special meaning within that tool.
     /// This member is required.
     public var password: Swift.String?
@@ -1456,8 +1457,9 @@ extension CreateLoginProfileInput: Swift.CustomDebugStringConvertible {
 }
 
 extension IAMClientTypes {
+
     /// Contains the user name and password create date for a user. This data type is used as a response element in the [CreateLoginProfile] and [GetLoginProfile] operations.
-    public struct LoginProfile {
+    public struct LoginProfile: Swift.Sendable {
         /// The date when the password for the user was created.
         /// This member is required.
         public var createDate: Foundation.Date?
@@ -1478,11 +1480,10 @@ extension IAMClientTypes {
             self.userName = userName
         }
     }
-
 }
 
 /// Contains the response to a successful [CreateLoginProfile] request.
-public struct CreateLoginProfileOutput {
+public struct CreateLoginProfileOutput: Swift.Sendable {
     /// A structure containing the user name and password create date.
     /// This member is required.
     public var loginProfile: IAMClientTypes.LoginProfile?
@@ -1519,7 +1520,7 @@ public struct OpenIdIdpCommunicationErrorException: ClientRuntime.ModeledError, 
     }
 }
 
-public struct CreateOpenIDConnectProviderInput {
+public struct CreateOpenIDConnectProviderInput: Swift.Sendable {
     /// Provides a list of client IDs, also known as audiences. When a mobile or web app registers with an OpenID Connect provider, they establish a value that identifies the application. This is the value that's sent as the client_id parameter on OAuth requests. You can register multiple client IDs with the same provider. For example, you might have multiple applications that use the same OIDC provider. You cannot register more than 100 client IDs with a single IAM OIDC provider. There is no defined format for a client ID. The CreateOpenIDConnectProviderRequest operation accepts client IDs up to 255 characters long.
     public var clientIDList: [Swift.String]?
     /// A list of tags that you want to attach to the new IAM OpenID Connect (OIDC) provider. Each tag consists of a key name and an associated value. For more information about tagging, see [Tagging IAM resources](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_tags.html) in the IAM User Guide. If any one of the tags is invalid or if you exceed the allowed maximum number of tags, then the entire request fails and the resource is not created.
@@ -1545,7 +1546,7 @@ public struct CreateOpenIDConnectProviderInput {
 }
 
 /// Contains the response to a successful [CreateOpenIDConnectProvider] request.
-public struct CreateOpenIDConnectProviderOutput {
+public struct CreateOpenIDConnectProviderOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the new IAM OpenID Connect provider that is created. For more information, see [OpenIDConnectProviderListEntry].
     public var openIDConnectProviderArn: Swift.String?
     /// A list of tags that are attached to the new IAM OIDC provider. The returned list of tags is sorted by tag key. For more information about tagging, see [Tagging IAM resources](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_tags.html) in the IAM User Guide.
@@ -1585,7 +1586,7 @@ public struct MalformedPolicyDocumentException: ClientRuntime.ModeledError, AWSC
     }
 }
 
-public struct CreatePolicyInput {
+public struct CreatePolicyInput: Swift.Sendable {
     /// A friendly description of the policy. Typically used to store information about the permissions defined in the policy. For example, "Grants access to production DynamoDB tables." The policy description is immutable. After a value is assigned, it cannot be changed.
     public var description: Swift.String?
     /// The path for the policy. For more information about paths, see [IAM identifiers](https://docs.aws.amazon.com/IAM/latest/UserGuide/Using_Identifiers.html) in the IAM User Guide. This parameter is optional. If it is not included, it defaults to a slash (/). This parameter allows (through its [regex pattern](http://wikipedia.org/wiki/regex)) a string of characters consisting of either a forward slash (/) by itself or a string that must begin and end with forward slashes. In addition, it can contain any ASCII character from the ! (\u0021) through the DEL character (\u007F), including most punctuation characters, digits, and upper and lowercased letters. You cannot use an asterisk (*) in the path name.
@@ -1622,8 +1623,9 @@ public struct CreatePolicyInput {
 }
 
 extension IAMClientTypes {
+
     /// Contains information about a managed policy. This data type is used as a response element in the [CreatePolicy], [GetPolicy], and [ListPolicies] operations. For more information about managed policies, refer to [Managed policies and inline policies](https://docs.aws.amazon.com/IAM/latest/UserGuide/policies-managed-vs-inline.html) in the IAM User Guide.
-    public struct Policy {
+    public struct Policy: Swift.Sendable {
         /// The Amazon Resource Name (ARN). ARNs are unique identifiers for Amazon Web Services resources. For more information about ARNs, go to [Amazon Resource Names (ARNs)](https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html) in the Amazon Web Services General Reference.
         public var arn: Swift.String?
         /// The number of entities (users, groups, and roles) that the policy is attached to.
@@ -1678,11 +1680,10 @@ extension IAMClientTypes {
             self.updateDate = updateDate
         }
     }
-
 }
 
 /// Contains the response to a successful [CreatePolicy] request.
-public struct CreatePolicyOutput {
+public struct CreatePolicyOutput: Swift.Sendable {
     /// A structure containing details about the new policy.
     public var policy: IAMClientTypes.Policy?
 
@@ -1694,7 +1695,7 @@ public struct CreatePolicyOutput {
     }
 }
 
-public struct CreatePolicyVersionInput {
+public struct CreatePolicyVersionInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the IAM policy to which you want to add a new version. For more information about ARNs, see [Amazon Resource Names (ARNs)](https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html) in the Amazon Web Services General Reference.
     /// This member is required.
     public var policyArn: Swift.String?
@@ -1723,8 +1724,9 @@ public struct CreatePolicyVersionInput {
 }
 
 extension IAMClientTypes {
+
     /// Contains information about a version of a managed policy. This data type is used as a response element in the [CreatePolicyVersion], [GetPolicyVersion], [ListPolicyVersions], and [GetAccountAuthorizationDetails] operations. For more information about managed policies, refer to [Managed policies and inline policies](https://docs.aws.amazon.com/IAM/latest/UserGuide/policies-managed-vs-inline.html) in the IAM User Guide.
-    public struct PolicyVersion {
+    public struct PolicyVersion: Swift.Sendable {
         /// The date and time, in [ISO 8601 date-time format](http://www.iso.org/iso/iso8601), when the policy version was created.
         public var createDate: Foundation.Date?
         /// The policy document. The policy document is returned in the response to the [GetPolicyVersion] and [GetAccountAuthorizationDetails] operations. It is not returned in the response to the [CreatePolicyVersion] or [ListPolicyVersions] operations. The policy document returned in this structure is URL-encoded compliant with [RFC 3986](https://tools.ietf.org/html/rfc3986). You can use a URL decoding method to convert the policy back to plain JSON text. For example, if you use Java, you can use the decode method of the java.net.URLDecoder utility class in the Java SDK. Other languages and SDKs provide similar functionality.
@@ -1747,11 +1749,10 @@ extension IAMClientTypes {
             self.versionId = versionId
         }
     }
-
 }
 
 /// Contains the response to a successful [CreatePolicyVersion] request.
-public struct CreatePolicyVersionOutput {
+public struct CreatePolicyVersionOutput: Swift.Sendable {
     /// A structure containing details about the new policy version.
     public var policyVersion: IAMClientTypes.PolicyVersion?
 
@@ -1763,7 +1764,7 @@ public struct CreatePolicyVersionOutput {
     }
 }
 
-public struct CreateRoleInput {
+public struct CreateRoleInput: Swift.Sendable {
     /// The trust relationship policy document that grants an entity permission to assume the role. In IAM, you must provide a JSON policy that has been converted to a string. However, for CloudFormation templates formatted in YAML, you can provide the policy in JSON or YAML format. CloudFormation always converts a YAML policy to JSON format before submitting it to IAM. The [regex pattern](http://wikipedia.org/wiki/regex) used to validate this parameter is a string of characters consisting of the following:
     ///
     /// * Any printable ASCII character ranging from the space character (\u0020) through the end of the ASCII character range
@@ -1811,7 +1812,7 @@ public struct CreateRoleInput {
 }
 
 /// Contains the response to a successful [CreateRole] request.
-public struct CreateRoleOutput {
+public struct CreateRoleOutput: Swift.Sendable {
     /// A structure containing details about the new role.
     /// This member is required.
     public var role: IAMClientTypes.Role?
@@ -1824,7 +1825,7 @@ public struct CreateRoleOutput {
     }
 }
 
-public struct CreateSAMLProviderInput {
+public struct CreateSAMLProviderInput: Swift.Sendable {
     /// The name of the provider to create. This parameter allows (through its [regex pattern](http://wikipedia.org/wiki/regex)) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-
     /// This member is required.
     public var name: Swift.String?
@@ -1847,7 +1848,7 @@ public struct CreateSAMLProviderInput {
 }
 
 /// Contains the response to a successful [CreateSAMLProvider] request.
-public struct CreateSAMLProviderOutput {
+public struct CreateSAMLProviderOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the new SAML provider resource in IAM.
     public var samlProviderArn: Swift.String?
     /// A list of tags that are attached to the new IAM SAML provider. The returned list of tags is sorted by tag key. For more information about tagging, see [Tagging IAM resources](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_tags.html) in the IAM User Guide.
@@ -1863,7 +1864,7 @@ public struct CreateSAMLProviderOutput {
     }
 }
 
-public struct CreateServiceLinkedRoleInput {
+public struct CreateServiceLinkedRoleInput: Swift.Sendable {
     /// The service principal for the Amazon Web Services service to which this role is attached. You use a string similar to a URL but without the http:// in front. For example: elasticbeanstalk.amazonaws.com. Service principals are unique and case-sensitive. To find the exact service principal for your service-linked role, see [Amazon Web Services services that work with IAM](https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_aws-services-that-work-with-iam.html) in the IAM User Guide. Look for the services that have Yes in the Service-Linked Role column. Choose the Yes link to view the service-linked role documentation for that service.
     /// This member is required.
     public var awsServiceName: Swift.String?
@@ -1884,7 +1885,7 @@ public struct CreateServiceLinkedRoleInput {
     }
 }
 
-public struct CreateServiceLinkedRoleOutput {
+public struct CreateServiceLinkedRoleOutput: Swift.Sendable {
     /// A [Role] object that contains details about the newly created role.
     public var role: IAMClientTypes.Role?
 
@@ -1920,7 +1921,7 @@ public struct ServiceNotSupportedException: ClientRuntime.ModeledError, AWSClien
     }
 }
 
-public struct CreateServiceSpecificCredentialInput {
+public struct CreateServiceSpecificCredentialInput: Swift.Sendable {
     /// The name of the Amazon Web Services service that is to be associated with the credentials. The service you specify here is the only service that can be accessed using these credentials.
     /// This member is required.
     public var serviceName: Swift.String?
@@ -1939,8 +1940,9 @@ public struct CreateServiceSpecificCredentialInput {
 }
 
 extension IAMClientTypes {
+
     /// Contains the details of a service-specific credential.
-    public struct ServiceSpecificCredential {
+    public struct ServiceSpecificCredential: Swift.Sendable {
         /// The date and time, in [ISO 8601 date-time format](http://www.iso.org/iso/iso8601), when the service-specific credential were created.
         /// This member is required.
         public var createDate: Foundation.Date?
@@ -1982,7 +1984,6 @@ extension IAMClientTypes {
             self.userName = userName
         }
     }
-
 }
 
 extension IAMClientTypes.ServiceSpecificCredential: Swift.CustomDebugStringConvertible {
@@ -1990,7 +1991,7 @@ extension IAMClientTypes.ServiceSpecificCredential: Swift.CustomDebugStringConve
         "ServiceSpecificCredential(createDate: \(Swift.String(describing: createDate)), serviceName: \(Swift.String(describing: serviceName)), serviceSpecificCredentialId: \(Swift.String(describing: serviceSpecificCredentialId)), serviceUserName: \(Swift.String(describing: serviceUserName)), status: \(Swift.String(describing: status)), userName: \(Swift.String(describing: userName)), servicePassword: \"CONTENT_REDACTED\")"}
 }
 
-public struct CreateServiceSpecificCredentialOutput {
+public struct CreateServiceSpecificCredentialOutput: Swift.Sendable {
     /// A structure that contains information about the newly created service-specific credential. This is the only time that the password for this credential set is available. It cannot be recovered later. Instead, you must reset the password with [ResetServiceSpecificCredential].
     public var serviceSpecificCredential: IAMClientTypes.ServiceSpecificCredential?
 
@@ -2002,7 +2003,7 @@ public struct CreateServiceSpecificCredentialOutput {
     }
 }
 
-public struct CreateUserInput {
+public struct CreateUserInput: Swift.Sendable {
     /// The path for the user name. For more information about paths, see [IAM identifiers](https://docs.aws.amazon.com/IAM/latest/UserGuide/Using_Identifiers.html) in the IAM User Guide. This parameter is optional. If it is not included, it defaults to a slash (/). This parameter allows (through its [regex pattern](http://wikipedia.org/wiki/regex)) a string of characters consisting of either a forward slash (/) by itself or a string that must begin and end with forward slashes. In addition, it can contain any ASCII character from the ! (\u0021) through the DEL character (\u007F), including most punctuation characters, digits, and upper and lowercased letters.
     public var path: Swift.String?
     /// The ARN of the managed policy that is used to set the permissions boundary for the user. A permissions boundary policy defines the maximum permissions that identity-based policies can grant to an entity, but does not grant permissions. Permissions boundaries do not define the maximum permissions that a resource-based policy can grant to an entity. To learn more, see [Permissions boundaries for IAM entities](https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies_boundaries.html) in the IAM User Guide. For more information about policy types, see [Policy types ](https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies.html#access_policy-types) in the IAM User Guide.
@@ -2028,6 +2029,7 @@ public struct CreateUserInput {
 }
 
 extension IAMClientTypes {
+
     /// Contains information about an IAM user entity. This data type is used as a response element in the following operations:
     ///
     /// * [CreateUser]
@@ -2035,7 +2037,7 @@ extension IAMClientTypes {
     /// * [GetUser]
     ///
     /// * [ListUsers]
-    public struct User {
+    public struct User: Swift.Sendable {
         /// The Amazon Resource Name (ARN) that identifies the user. For more information about ARNs and how to use ARNs in policies, see [IAM Identifiers](https://docs.aws.amazon.com/IAM/latest/UserGuide/Using_Identifiers.html) in the IAM User Guide.
         /// This member is required.
         public var arn: Swift.String?
@@ -2086,11 +2088,10 @@ extension IAMClientTypes {
             self.userName = userName
         }
     }
-
 }
 
 /// Contains the response to a successful [CreateUser] request.
-public struct CreateUserOutput {
+public struct CreateUserOutput: Swift.Sendable {
     /// A structure with details about the new IAM user.
     public var user: IAMClientTypes.User?
 
@@ -2102,7 +2103,7 @@ public struct CreateUserOutput {
     }
 }
 
-public struct CreateVirtualMFADeviceInput {
+public struct CreateVirtualMFADeviceInput: Swift.Sendable {
     /// The path for the virtual MFA device. For more information about paths, see [IAM identifiers](https://docs.aws.amazon.com/IAM/latest/UserGuide/Using_Identifiers.html) in the IAM User Guide. This parameter is optional. If it is not included, it defaults to a slash (/). This parameter allows (through its [regex pattern](http://wikipedia.org/wiki/regex)) a string of characters consisting of either a forward slash (/) by itself or a string that must begin and end with forward slashes. In addition, it can contain any ASCII character from the ! (\u0021) through the DEL character (\u007F), including most punctuation characters, digits, and upper and lowercased letters.
     public var path: Swift.String?
     /// A list of tags that you want to attach to the new IAM virtual MFA device. Each tag consists of a key name and an associated value. For more information about tagging, see [Tagging IAM resources](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_tags.html) in the IAM User Guide. If any one of the tags is invalid or if you exceed the allowed maximum number of tags, then the entire request fails and the resource is not created.
@@ -2124,8 +2125,9 @@ public struct CreateVirtualMFADeviceInput {
 }
 
 extension IAMClientTypes {
+
     /// Contains information about a virtual MFA device.
-    public struct VirtualMFADevice {
+    public struct VirtualMFADevice: Swift.Sendable {
         /// The base32 seed defined as specified in [RFC3548](https://tools.ietf.org/html/rfc3548.txt). The Base32StringSeed is base32-encoded.
         public var base32StringSeed: Foundation.Data?
         /// The date and time on which the virtual MFA device was enabled.
@@ -2157,7 +2159,6 @@ extension IAMClientTypes {
             self.user = user
         }
     }
-
 }
 
 extension IAMClientTypes.VirtualMFADevice: Swift.CustomDebugStringConvertible {
@@ -2166,7 +2167,7 @@ extension IAMClientTypes.VirtualMFADevice: Swift.CustomDebugStringConvertible {
 }
 
 /// Contains the response to a successful [CreateVirtualMFADevice] request.
-public struct CreateVirtualMFADeviceOutput {
+public struct CreateVirtualMFADeviceOutput: Swift.Sendable {
     /// A structure containing details about the new virtual MFA device.
     /// This member is required.
     public var virtualMFADevice: IAMClientTypes.VirtualMFADevice?
@@ -2179,7 +2180,7 @@ public struct CreateVirtualMFADeviceOutput {
     }
 }
 
-public struct DeactivateMFADeviceInput {
+public struct DeactivateMFADeviceInput: Swift.Sendable {
     /// The serial number that uniquely identifies the MFA device. For virtual MFA devices, the serial number is the device ARN. This parameter allows (through its [regex pattern](http://wikipedia.org/wiki/regex)) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: =,.@:/-
     /// This member is required.
     public var serialNumber: Swift.String?
@@ -2197,7 +2198,7 @@ public struct DeactivateMFADeviceInput {
     }
 }
 
-public struct DeleteAccessKeyInput {
+public struct DeleteAccessKeyInput: Swift.Sendable {
     /// The access key ID for the access key ID and secret access key you want to delete. This parameter allows (through its [regex pattern](http://wikipedia.org/wiki/regex)) a string of characters that can consist of any upper or lowercased letter or digit.
     /// This member is required.
     public var accessKeyId: Swift.String?
@@ -2214,7 +2215,7 @@ public struct DeleteAccessKeyInput {
     }
 }
 
-public struct DeleteAccountAliasInput {
+public struct DeleteAccountAliasInput: Swift.Sendable {
     /// The name of the account alias to delete. This parameter allows (through its [regex pattern](http://wikipedia.org/wiki/regex)) a string of characters consisting of lowercase letters, digits, and dashes. You cannot start or finish with a dash, nor can you have two dashes in a row.
     /// This member is required.
     public var accountAlias: Swift.String?
@@ -2251,7 +2252,7 @@ public struct DeleteConflictException: ClientRuntime.ModeledError, AWSClientRunt
     }
 }
 
-public struct DeleteGroupInput {
+public struct DeleteGroupInput: Swift.Sendable {
     /// The name of the IAM group to delete. This parameter allows (through its [regex pattern](http://wikipedia.org/wiki/regex)) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-
     /// This member is required.
     public var groupName: Swift.String?
@@ -2264,7 +2265,7 @@ public struct DeleteGroupInput {
     }
 }
 
-public struct DeleteGroupPolicyInput {
+public struct DeleteGroupPolicyInput: Swift.Sendable {
     /// The name (friendly name, not ARN) identifying the group that the policy is embedded in. This parameter allows (through its [regex pattern](http://wikipedia.org/wiki/regex)) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-
     /// This member is required.
     public var groupName: Swift.String?
@@ -2282,7 +2283,7 @@ public struct DeleteGroupPolicyInput {
     }
 }
 
-public struct DeleteInstanceProfileInput {
+public struct DeleteInstanceProfileInput: Swift.Sendable {
     /// The name of the instance profile to delete. This parameter allows (through its [regex pattern](http://wikipedia.org/wiki/regex)) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-
     /// This member is required.
     public var instanceProfileName: Swift.String?
@@ -2295,7 +2296,7 @@ public struct DeleteInstanceProfileInput {
     }
 }
 
-public struct DeleteLoginProfileInput {
+public struct DeleteLoginProfileInput: Swift.Sendable {
     /// The name of the user whose password you want to delete. This parameter allows (through its [regex pattern](http://wikipedia.org/wiki/regex)) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-
     /// This member is required.
     public var userName: Swift.String?
@@ -2308,7 +2309,7 @@ public struct DeleteLoginProfileInput {
     }
 }
 
-public struct DeleteOpenIDConnectProviderInput {
+public struct DeleteOpenIDConnectProviderInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the IAM OpenID Connect provider resource object to delete. You can get a list of OpenID Connect provider resource ARNs by using the [ListOpenIDConnectProviders] operation.
     /// This member is required.
     public var openIDConnectProviderArn: Swift.String?
@@ -2321,7 +2322,7 @@ public struct DeleteOpenIDConnectProviderInput {
     }
 }
 
-public struct DeletePolicyInput {
+public struct DeletePolicyInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the IAM policy you want to delete. For more information about ARNs, see [Amazon Resource Names (ARNs)](https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html) in the Amazon Web Services General Reference.
     /// This member is required.
     public var policyArn: Swift.String?
@@ -2334,7 +2335,7 @@ public struct DeletePolicyInput {
     }
 }
 
-public struct DeletePolicyVersionInput {
+public struct DeletePolicyVersionInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the IAM policy from which you want to delete a version. For more information about ARNs, see [Amazon Resource Names (ARNs)](https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html) in the Amazon Web Services General Reference.
     /// This member is required.
     public var policyArn: Swift.String?
@@ -2352,7 +2353,7 @@ public struct DeletePolicyVersionInput {
     }
 }
 
-public struct DeleteRoleInput {
+public struct DeleteRoleInput: Swift.Sendable {
     /// The name of the role to delete. This parameter allows (through its [regex pattern](http://wikipedia.org/wiki/regex)) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-
     /// This member is required.
     public var roleName: Swift.String?
@@ -2365,7 +2366,7 @@ public struct DeleteRoleInput {
     }
 }
 
-public struct DeleteRolePermissionsBoundaryInput {
+public struct DeleteRolePermissionsBoundaryInput: Swift.Sendable {
     /// The name (friendly name, not ARN) of the IAM role from which you want to remove the permissions boundary.
     /// This member is required.
     public var roleName: Swift.String?
@@ -2378,7 +2379,7 @@ public struct DeleteRolePermissionsBoundaryInput {
     }
 }
 
-public struct DeleteRolePolicyInput {
+public struct DeleteRolePolicyInput: Swift.Sendable {
     /// The name of the inline policy to delete from the specified IAM role. This parameter allows (through its [regex pattern](http://wikipedia.org/wiki/regex)) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-
     /// This member is required.
     public var policyName: Swift.String?
@@ -2396,7 +2397,7 @@ public struct DeleteRolePolicyInput {
     }
 }
 
-public struct DeleteSAMLProviderInput {
+public struct DeleteSAMLProviderInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the SAML provider to delete.
     /// This member is required.
     public var samlProviderArn: Swift.String?
@@ -2409,7 +2410,7 @@ public struct DeleteSAMLProviderInput {
     }
 }
 
-public struct DeleteServerCertificateInput {
+public struct DeleteServerCertificateInput: Swift.Sendable {
     /// The name of the server certificate you want to delete. This parameter allows (through its [regex pattern](http://wikipedia.org/wiki/regex)) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-
     /// This member is required.
     public var serverCertificateName: Swift.String?
@@ -2422,7 +2423,7 @@ public struct DeleteServerCertificateInput {
     }
 }
 
-public struct DeleteServiceLinkedRoleInput {
+public struct DeleteServiceLinkedRoleInput: Swift.Sendable {
     /// The name of the service-linked role to be deleted.
     /// This member is required.
     public var roleName: Swift.String?
@@ -2435,7 +2436,7 @@ public struct DeleteServiceLinkedRoleInput {
     }
 }
 
-public struct DeleteServiceLinkedRoleOutput {
+public struct DeleteServiceLinkedRoleOutput: Swift.Sendable {
     /// The deletion task identifier that you can use to check the status of the deletion. This identifier is returned in the format task/aws-service-role///.
     /// This member is required.
     public var deletionTaskId: Swift.String?
@@ -2448,7 +2449,7 @@ public struct DeleteServiceLinkedRoleOutput {
     }
 }
 
-public struct DeleteServiceSpecificCredentialInput {
+public struct DeleteServiceSpecificCredentialInput: Swift.Sendable {
     /// The unique identifier of the service-specific credential. You can get this value by calling [ListServiceSpecificCredentials]. This parameter allows (through its [regex pattern](http://wikipedia.org/wiki/regex)) a string of characters that can consist of any upper or lowercased letter or digit.
     /// This member is required.
     public var serviceSpecificCredentialId: Swift.String?
@@ -2465,7 +2466,7 @@ public struct DeleteServiceSpecificCredentialInput {
     }
 }
 
-public struct DeleteSigningCertificateInput {
+public struct DeleteSigningCertificateInput: Swift.Sendable {
     /// The ID of the signing certificate to delete. The format of this parameter, as described by its [regex](http://wikipedia.org/wiki/regex) pattern, is a string of characters that can be upper- or lower-cased letters or digits.
     /// This member is required.
     public var certificateId: Swift.String?
@@ -2482,7 +2483,7 @@ public struct DeleteSigningCertificateInput {
     }
 }
 
-public struct DeleteSSHPublicKeyInput {
+public struct DeleteSSHPublicKeyInput: Swift.Sendable {
     /// The unique identifier for the SSH public key. This parameter allows (through its [regex pattern](http://wikipedia.org/wiki/regex)) a string of characters that can consist of any upper or lowercased letter or digit.
     /// This member is required.
     public var sshPublicKeyId: Swift.String?
@@ -2500,7 +2501,7 @@ public struct DeleteSSHPublicKeyInput {
     }
 }
 
-public struct DeleteUserInput {
+public struct DeleteUserInput: Swift.Sendable {
     /// The name of the user to delete. This parameter allows (through its [regex pattern](http://wikipedia.org/wiki/regex)) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-
     /// This member is required.
     public var userName: Swift.String?
@@ -2513,7 +2514,7 @@ public struct DeleteUserInput {
     }
 }
 
-public struct DeleteUserPermissionsBoundaryInput {
+public struct DeleteUserPermissionsBoundaryInput: Swift.Sendable {
     /// The name (friendly name, not ARN) of the IAM user from which you want to remove the permissions boundary.
     /// This member is required.
     public var userName: Swift.String?
@@ -2526,7 +2527,7 @@ public struct DeleteUserPermissionsBoundaryInput {
     }
 }
 
-public struct DeleteUserPolicyInput {
+public struct DeleteUserPolicyInput: Swift.Sendable {
     /// The name identifying the policy document to delete. This parameter allows (through its [regex pattern](http://wikipedia.org/wiki/regex)) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-
     /// This member is required.
     public var policyName: Swift.String?
@@ -2544,7 +2545,7 @@ public struct DeleteUserPolicyInput {
     }
 }
 
-public struct DeleteVirtualMFADeviceInput {
+public struct DeleteVirtualMFADeviceInput: Swift.Sendable {
     /// The serial number that uniquely identifies the MFA device. For virtual MFA devices, the serial number is the same as the ARN. This parameter allows (through its [regex pattern](http://wikipedia.org/wiki/regex)) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: =,.@:/-
     /// This member is required.
     public var serialNumber: Swift.String?
@@ -2557,7 +2558,7 @@ public struct DeleteVirtualMFADeviceInput {
     }
 }
 
-public struct DetachGroupPolicyInput {
+public struct DetachGroupPolicyInput: Swift.Sendable {
     /// The name (friendly name, not ARN) of the IAM group to detach the policy from. This parameter allows (through its [regex pattern](http://wikipedia.org/wiki/regex)) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-
     /// This member is required.
     public var groupName: Swift.String?
@@ -2575,7 +2576,7 @@ public struct DetachGroupPolicyInput {
     }
 }
 
-public struct DetachRolePolicyInput {
+public struct DetachRolePolicyInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the IAM policy you want to detach. For more information about ARNs, see [Amazon Resource Names (ARNs)](https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html) in the Amazon Web Services General Reference.
     /// This member is required.
     public var policyArn: Swift.String?
@@ -2593,7 +2594,7 @@ public struct DetachRolePolicyInput {
     }
 }
 
-public struct DetachUserPolicyInput {
+public struct DetachUserPolicyInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the IAM policy you want to detach. For more information about ARNs, see [Amazon Resource Names (ARNs)](https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html) in the Amazon Web Services General Reference.
     /// This member is required.
     public var policyArn: Swift.String?
@@ -2635,7 +2636,7 @@ public struct InvalidAuthenticationCodeException: ClientRuntime.ModeledError, AW
     }
 }
 
-public struct EnableMFADeviceInput {
+public struct EnableMFADeviceInput: Swift.Sendable {
     /// An authentication code emitted by the device. The format for this parameter is a string of six digits. Submit your request immediately after generating the authentication codes. If you generate the codes and then wait too long to submit the request, the MFA device successfully associates with the user but the MFA device becomes out of sync. This happens because time-based one-time passwords (TOTP) expire after a short period of time. If this happens, you can [resync the device](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_mfa_sync.html).
     /// This member is required.
     public var authenticationCode1: Swift.String?
@@ -2665,7 +2666,7 @@ public struct EnableMFADeviceInput {
 
 extension IAMClientTypes {
 
-    public enum ReportStateType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ReportStateType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case complete
         case inprogress
         case started
@@ -2696,7 +2697,7 @@ extension IAMClientTypes {
 }
 
 /// Contains the response to a successful [GenerateCredentialReport] request.
-public struct GenerateCredentialReportOutput {
+public struct GenerateCredentialReportOutput: Swift.Sendable {
     /// Information about the credential report.
     public var description: Swift.String?
     /// Information about the state of the credential report.
@@ -2736,7 +2737,7 @@ public struct ReportGenerationLimitExceededException: ClientRuntime.ModeledError
     }
 }
 
-public struct GenerateOrganizationsAccessReportInput {
+public struct GenerateOrganizationsAccessReportInput: Swift.Sendable {
     /// The path of the Organizations entity (root, OU, or account). You can build an entity path using the known structure of your organization. For example, assume that your account ID is 123456789012 and its parent OU ID is ou-rge0-awsabcde. The organization root ID is r-f6g7h8i9j0example and your organization ID is o-a1b2c3d4e5. Your entity path is o-a1b2c3d4e5/r-f6g7h8i9j0example/ou-rge0-awsabcde/123456789012.
     /// This member is required.
     public var entityPath: Swift.String?
@@ -2753,7 +2754,7 @@ public struct GenerateOrganizationsAccessReportInput {
     }
 }
 
-public struct GenerateOrganizationsAccessReportOutput {
+public struct GenerateOrganizationsAccessReportOutput: Swift.Sendable {
     /// The job identifier that you can use in the [GetOrganizationsAccessReport] operation.
     public var jobId: Swift.String?
 
@@ -2765,7 +2766,7 @@ public struct GenerateOrganizationsAccessReportOutput {
     }
 }
 
-public struct GenerateServiceLastAccessedDetailsInput {
+public struct GenerateServiceLastAccessedDetailsInput: Swift.Sendable {
     /// The ARN of the IAM resource (user, group, role, or managed policy) used to generate information about when the resource was last used in an attempt to access an Amazon Web Services service.
     /// This member is required.
     public var arn: Swift.String?
@@ -2782,7 +2783,7 @@ public struct GenerateServiceLastAccessedDetailsInput {
     }
 }
 
-public struct GenerateServiceLastAccessedDetailsOutput {
+public struct GenerateServiceLastAccessedDetailsOutput: Swift.Sendable {
     /// The JobId that you can use in the [GetServiceLastAccessedDetails] or [GetServiceLastAccessedDetailsWithEntities] operations. The JobId returned by GenerateServiceLastAccessedDetail must be used by the same role within a session, or by the same user when used to call GetServiceLastAccessedDetail.
     public var jobId: Swift.String?
 
@@ -2794,7 +2795,7 @@ public struct GenerateServiceLastAccessedDetailsOutput {
     }
 }
 
-public struct GetAccessKeyLastUsedInput {
+public struct GetAccessKeyLastUsedInput: Swift.Sendable {
     /// The identifier of an access key. This parameter allows (through its [regex pattern](http://wikipedia.org/wiki/regex)) a string of characters that can consist of any upper or lowercased letter or digit.
     /// This member is required.
     public var accessKeyId: Swift.String?
@@ -2808,7 +2809,7 @@ public struct GetAccessKeyLastUsedInput {
 }
 
 /// Contains the response to a successful [GetAccessKeyLastUsed] request. It is also returned as a member of the [AccessKeyMetaData] structure returned by the [ListAccessKeys] action.
-public struct GetAccessKeyLastUsedOutput {
+public struct GetAccessKeyLastUsedOutput: Swift.Sendable {
     /// Contains information about the last time the access key was used.
     public var accessKeyLastUsed: IAMClientTypes.AccessKeyLastUsed?
     /// The name of the IAM user that owns this access key.
@@ -2826,7 +2827,7 @@ public struct GetAccessKeyLastUsedOutput {
 
 extension IAMClientTypes {
 
-    public enum EntityType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum EntityType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case awsmanagedpolicy
         case group
         case localmanagedpolicy
@@ -2862,7 +2863,7 @@ extension IAMClientTypes {
     }
 }
 
-public struct GetAccountAuthorizationDetailsInput {
+public struct GetAccountAuthorizationDetailsInput: Swift.Sendable {
     /// A list of entity types used to filter the results. Only the entities that match the types you specify are included in the output. Use the value LocalManagedPolicy to include customer managed policies. The format for this parameter is a comma-separated (if more than one) list of strings. Each string value in the list must be one of the valid values listed below.
     public var filter: [IAMClientTypes.EntityType]?
     /// Use this parameter only when paginating results and only after you receive a response indicating that the results are truncated. Set it to the value of the Marker element in the response that you received to indicate where the next call should start.
@@ -2883,8 +2884,9 @@ public struct GetAccountAuthorizationDetailsInput {
 }
 
 extension IAMClientTypes {
+
     /// Contains information about an IAM policy, including the policy document. This data type is used as a response element in the [GetAccountAuthorizationDetails] operation.
-    public struct PolicyDetail {
+    public struct PolicyDetail: Swift.Sendable {
         /// The policy document.
         public var policyDocument: Swift.String?
         /// The name of the policy.
@@ -2899,12 +2901,12 @@ extension IAMClientTypes {
             self.policyName = policyName
         }
     }
-
 }
 
 extension IAMClientTypes {
+
     /// Contains information about an IAM group, including all of the group's policies. This data type is used as a response element in the [GetAccountAuthorizationDetails] operation.
-    public struct GroupDetail {
+    public struct GroupDetail: Swift.Sendable {
         /// The Amazon Resource Name (ARN). ARNs are unique identifiers for Amazon Web Services resources. For more information about ARNs, go to [Amazon Resource Names (ARNs)](https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html) in the Amazon Web Services General Reference.
         public var arn: Swift.String?
         /// A list of the managed policies attached to the group.
@@ -2939,12 +2941,12 @@ extension IAMClientTypes {
             self.path = path
         }
     }
-
 }
 
 extension IAMClientTypes {
+
     /// Contains information about a managed policy, including the policy's ARN, versions, and the number of principal entities (users, groups, and roles) that the policy is attached to. This data type is used as a response element in the [GetAccountAuthorizationDetails] operation. For more information about managed policies, see [Managed policies and inline policies](https://docs.aws.amazon.com/IAM/latest/UserGuide/policies-managed-vs-inline.html) in the IAM User Guide.
-    public struct ManagedPolicyDetail {
+    public struct ManagedPolicyDetail: Swift.Sendable {
         /// The Amazon Resource Name (ARN). ARNs are unique identifiers for Amazon Web Services resources. For more information about ARNs, go to [Amazon Resource Names (ARNs)](https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html) in the Amazon Web Services General Reference.
         public var arn: Swift.String?
         /// The number of principal entities (users, groups, and roles) that the policy is attached to.
@@ -2999,12 +3001,12 @@ extension IAMClientTypes {
             self.updateDate = updateDate
         }
     }
-
 }
 
 extension IAMClientTypes {
+
     /// Contains information about an IAM role, including all of the role's policies. This data type is used as a response element in the [GetAccountAuthorizationDetails] operation.
-    public struct RoleDetail {
+    public struct RoleDetail: Swift.Sendable {
         /// The Amazon Resource Name (ARN). ARNs are unique identifiers for Amazon Web Services resources. For more information about ARNs, go to [Amazon Resource Names (ARNs)](https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html) in the Amazon Web Services General Reference.
         public var arn: Swift.String?
         /// The trust policy that grants permission to assume the role.
@@ -3059,12 +3061,12 @@ extension IAMClientTypes {
             self.tags = tags
         }
     }
-
 }
 
 extension IAMClientTypes {
+
     /// Contains information about an IAM user, including all the user's policies and all the IAM groups the user is in. This data type is used as a response element in the [GetAccountAuthorizationDetails] operation.
-    public struct UserDetail {
+    public struct UserDetail: Swift.Sendable {
         /// The Amazon Resource Name (ARN). ARNs are unique identifiers for Amazon Web Services resources. For more information about ARNs, go to [Amazon Resource Names (ARNs)](https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html) in the Amazon Web Services General Reference.
         public var arn: Swift.String?
         /// A list of the managed policies attached to the user.
@@ -3111,11 +3113,10 @@ extension IAMClientTypes {
             self.userPolicyList = userPolicyList
         }
     }
-
 }
 
 /// Contains the response to a successful [GetAccountAuthorizationDetails] request.
-public struct GetAccountAuthorizationDetailsOutput {
+public struct GetAccountAuthorizationDetailsOutput: Swift.Sendable {
     /// A list containing information about IAM groups.
     public var groupDetailList: [IAMClientTypes.GroupDetail]?
     /// A flag that indicates whether there are more items to return. If your results were truncated, you can make a subsequent pagination request using the Marker request parameter to retrieve more items. Note that IAM might return fewer than the MaxItems number of results even when there are more results available. We recommend that you check IsTruncated after every call to ensure that you receive all your results.
@@ -3148,8 +3149,9 @@ public struct GetAccountAuthorizationDetailsOutput {
 }
 
 extension IAMClientTypes {
+
     /// Contains information about the account password policy. This data type is used as a response element in the [GetAccountPasswordPolicy] operation.
-    public struct PasswordPolicy {
+    public struct PasswordPolicy: Swift.Sendable {
         /// Specifies whether IAM users are allowed to change their own password. Gives IAM users permissions to iam:ChangePassword for only their user and to the iam:GetAccountPasswordPolicy action. This option does not attach a permissions policy to each user, rather the permissions are applied at the account-level for all users by IAM.
         public var allowUsersToChangePassword: Swift.Bool
         /// Indicates whether passwords in the account expire. Returns true if MaxPasswordAge contains a value greater than 0. Returns false if MaxPasswordAge is 0 or not present.
@@ -3196,11 +3198,10 @@ extension IAMClientTypes {
             self.requireUppercaseCharacters = requireUppercaseCharacters
         }
     }
-
 }
 
 /// Contains the response to a successful [GetAccountPasswordPolicy] request.
-public struct GetAccountPasswordPolicyOutput {
+public struct GetAccountPasswordPolicyOutput: Swift.Sendable {
     /// A structure that contains details about the account's password policy.
     /// This member is required.
     public var passwordPolicy: IAMClientTypes.PasswordPolicy?
@@ -3215,7 +3216,7 @@ public struct GetAccountPasswordPolicyOutput {
 
 extension IAMClientTypes {
 
-    public enum SummaryKeyType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SummaryKeyType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case accesskeysperuserquota
         case accountaccesskeyspresent
         case accountmfaenabled
@@ -3315,7 +3316,7 @@ extension IAMClientTypes {
 }
 
 /// Contains the response to a successful [GetAccountSummary] request.
-public struct GetAccountSummaryOutput {
+public struct GetAccountSummaryOutput: Swift.Sendable {
     /// A set of key–value pairs containing information about IAM entity usage and IAM quotas.
     public var summaryMap: [Swift.String: Swift.Int]?
 
@@ -3327,7 +3328,7 @@ public struct GetAccountSummaryOutput {
     }
 }
 
-public struct GetContextKeysForCustomPolicyInput {
+public struct GetContextKeysForCustomPolicyInput: Swift.Sendable {
     /// A list of policies for which you want the list of context keys referenced in those policies. Each document is specified as a string containing the complete, valid JSON text of an IAM policy. The [regex pattern](http://wikipedia.org/wiki/regex) used to validate this parameter is a string of characters consisting of the following:
     ///
     /// * Any printable ASCII character ranging from the space character (\u0020) through the end of the ASCII character range
@@ -3347,7 +3348,7 @@ public struct GetContextKeysForCustomPolicyInput {
 }
 
 /// Contains the response to a successful [GetContextKeysForPrincipalPolicy] or [GetContextKeysForCustomPolicy] request.
-public struct GetContextKeysForCustomPolicyOutput {
+public struct GetContextKeysForCustomPolicyOutput: Swift.Sendable {
     /// The list of context keys that are referenced in the input policies.
     public var contextKeyNames: [Swift.String]?
 
@@ -3359,7 +3360,7 @@ public struct GetContextKeysForCustomPolicyOutput {
     }
 }
 
-public struct GetContextKeysForPrincipalPolicyInput {
+public struct GetContextKeysForPrincipalPolicyInput: Swift.Sendable {
     /// An optional list of additional policies for which you want the list of context keys that are referenced. The [regex pattern](http://wikipedia.org/wiki/regex) used to validate this parameter is a string of characters consisting of the following:
     ///
     /// * Any printable ASCII character ranging from the space character (\u0020) through the end of the ASCII character range
@@ -3383,7 +3384,7 @@ public struct GetContextKeysForPrincipalPolicyInput {
 }
 
 /// Contains the response to a successful [GetContextKeysForPrincipalPolicy] or [GetContextKeysForCustomPolicy] request.
-public struct GetContextKeysForPrincipalPolicyOutput {
+public struct GetContextKeysForPrincipalPolicyOutput: Swift.Sendable {
     /// The list of context keys that are referenced in the input policies.
     public var contextKeyNames: [Swift.String]?
 
@@ -3469,7 +3470,7 @@ public struct CredentialReportNotReadyException: ClientRuntime.ModeledError, AWS
 
 extension IAMClientTypes {
 
-    public enum ReportFormatType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ReportFormatType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case textCsv
         case sdkUnknown(Swift.String)
 
@@ -3494,7 +3495,7 @@ extension IAMClientTypes {
 }
 
 /// Contains the response to a successful [GetCredentialReport] request.
-public struct GetCredentialReportOutput {
+public struct GetCredentialReportOutput: Swift.Sendable {
     /// Contains the credential report. The report is Base64-encoded.
     public var content: Foundation.Data?
     /// The date and time when the credential report was created, in [ISO 8601 date-time format](http://www.iso.org/iso/iso8601).
@@ -3514,7 +3515,7 @@ public struct GetCredentialReportOutput {
     }
 }
 
-public struct GetGroupInput {
+public struct GetGroupInput: Swift.Sendable {
     /// The name of the group. This parameter allows (through its [regex pattern](http://wikipedia.org/wiki/regex)) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-
     /// This member is required.
     public var groupName: Swift.String?
@@ -3536,7 +3537,7 @@ public struct GetGroupInput {
 }
 
 /// Contains the response to a successful [GetGroup] request.
-public struct GetGroupOutput {
+public struct GetGroupOutput: Swift.Sendable {
     /// A structure that contains details about the group.
     /// This member is required.
     public var group: IAMClientTypes.Group?
@@ -3562,7 +3563,7 @@ public struct GetGroupOutput {
     }
 }
 
-public struct GetGroupPolicyInput {
+public struct GetGroupPolicyInput: Swift.Sendable {
     /// The name of the group the policy is associated with. This parameter allows (through its [regex pattern](http://wikipedia.org/wiki/regex)) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-
     /// This member is required.
     public var groupName: Swift.String?
@@ -3581,7 +3582,7 @@ public struct GetGroupPolicyInput {
 }
 
 /// Contains the response to a successful [GetGroupPolicy] request.
-public struct GetGroupPolicyOutput {
+public struct GetGroupPolicyOutput: Swift.Sendable {
     /// The group the policy is associated with.
     /// This member is required.
     public var groupName: Swift.String?
@@ -3604,7 +3605,7 @@ public struct GetGroupPolicyOutput {
     }
 }
 
-public struct GetInstanceProfileInput {
+public struct GetInstanceProfileInput: Swift.Sendable {
     /// The name of the instance profile to get information about. This parameter allows (through its [regex pattern](http://wikipedia.org/wiki/regex)) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-
     /// This member is required.
     public var instanceProfileName: Swift.String?
@@ -3618,7 +3619,7 @@ public struct GetInstanceProfileInput {
 }
 
 /// Contains the response to a successful [GetInstanceProfile] request.
-public struct GetInstanceProfileOutput {
+public struct GetInstanceProfileOutput: Swift.Sendable {
     /// A structure containing details about the instance profile.
     /// This member is required.
     public var instanceProfile: IAMClientTypes.InstanceProfile?
@@ -3631,7 +3632,7 @@ public struct GetInstanceProfileOutput {
     }
 }
 
-public struct GetLoginProfileInput {
+public struct GetLoginProfileInput: Swift.Sendable {
     /// The name of the user whose login profile you want to retrieve. This parameter allows (through its [regex pattern](http://wikipedia.org/wiki/regex)) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-
     /// This member is required.
     public var userName: Swift.String?
@@ -3645,7 +3646,7 @@ public struct GetLoginProfileInput {
 }
 
 /// Contains the response to a successful [GetLoginProfile] request.
-public struct GetLoginProfileOutput {
+public struct GetLoginProfileOutput: Swift.Sendable {
     /// A structure containing the user name and the profile creation date for the user.
     /// This member is required.
     public var loginProfile: IAMClientTypes.LoginProfile?
@@ -3658,7 +3659,7 @@ public struct GetLoginProfileOutput {
     }
 }
 
-public struct GetMFADeviceInput {
+public struct GetMFADeviceInput: Swift.Sendable {
     /// Serial number that uniquely identifies the MFA device. For this API, we only accept FIDO security key [ARNs](https://docs.aws.amazon.com/IAM/latest/UserGuide/reference-arns.html).
     /// This member is required.
     public var serialNumber: Swift.String?
@@ -3675,7 +3676,7 @@ public struct GetMFADeviceInput {
     }
 }
 
-public struct GetMFADeviceOutput {
+public struct GetMFADeviceOutput: Swift.Sendable {
     /// The certifications of a specified user's MFA device. We currently provide FIPS-140-2, FIPS-140-3, and FIDO certification levels obtained from [ FIDO Alliance Metadata Service (MDS)](https://fidoalliance.org/metadata/).
     public var certifications: [Swift.String: Swift.String]?
     /// The date that a specified user's MFA device was first enabled.
@@ -3700,7 +3701,7 @@ public struct GetMFADeviceOutput {
     }
 }
 
-public struct GetOpenIDConnectProviderInput {
+public struct GetOpenIDConnectProviderInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the OIDC provider resource object in IAM to get information for. You can get a list of OIDC provider resource ARNs by using the [ListOpenIDConnectProviders] operation. For more information about ARNs, see [Amazon Resource Names (ARNs)](https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html) in the Amazon Web Services General Reference.
     /// This member is required.
     public var openIDConnectProviderArn: Swift.String?
@@ -3714,7 +3715,7 @@ public struct GetOpenIDConnectProviderInput {
 }
 
 /// Contains the response to a successful [GetOpenIDConnectProvider] request.
-public struct GetOpenIDConnectProviderOutput {
+public struct GetOpenIDConnectProviderOutput: Swift.Sendable {
     /// A list of client IDs (also known as audiences) that are associated with the specified IAM OIDC provider resource object. For more information, see [CreateOpenIDConnectProvider].
     public var clientIDList: [Swift.String]?
     /// The date and time when the IAM OIDC provider resource object was created in the Amazon Web Services account.
@@ -3744,7 +3745,7 @@ public struct GetOpenIDConnectProviderOutput {
 
 extension IAMClientTypes {
 
-    public enum SortKeyType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SortKeyType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case lastAuthenticatedTimeAscending
         case lastAuthenticatedTimeDescending
         case serviceNamespaceAscending
@@ -3777,7 +3778,7 @@ extension IAMClientTypes {
     }
 }
 
-public struct GetOrganizationsAccessReportInput {
+public struct GetOrganizationsAccessReportInput: Swift.Sendable {
     /// The identifier of the request generated by the [GenerateOrganizationsAccessReport] operation.
     /// This member is required.
     public var jobId: Swift.String?
@@ -3803,8 +3804,9 @@ public struct GetOrganizationsAccessReportInput {
 }
 
 extension IAMClientTypes {
+
     /// Contains information about the reason that the operation failed. This data type is used as a response element in the [GetOrganizationsAccessReport], [GetServiceLastAccessedDetails], and [GetServiceLastAccessedDetailsWithEntities] operations.
-    public struct ErrorDetails {
+    public struct ErrorDetails: Swift.Sendable {
         /// The error code associated with the operation failure.
         /// This member is required.
         public var code: Swift.String?
@@ -3821,12 +3823,11 @@ extension IAMClientTypes {
             self.message = message
         }
     }
-
 }
 
 extension IAMClientTypes {
 
-    public enum JobStatusType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum JobStatusType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case completed
         case failed
         case inProgress
@@ -3856,7 +3857,7 @@ extension IAMClientTypes {
     }
 }
 
-public struct GetOrganizationsAccessReportOutput {
+public struct GetOrganizationsAccessReportOutput: Swift.Sendable {
     /// An object that contains details about the most recent attempt to access the service.
     public var accessDetails: [IAMClientTypes.AccessDetail]?
     /// Contains information about the reason that the operation failed. This data type is used as a response element in the [GetOrganizationsAccessReport], [GetServiceLastAccessedDetails], and [GetServiceLastAccessedDetailsWithEntities] operations.
@@ -3902,7 +3903,7 @@ public struct GetOrganizationsAccessReportOutput {
     }
 }
 
-public struct GetPolicyInput {
+public struct GetPolicyInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the managed policy that you want information about. For more information about ARNs, see [Amazon Resource Names (ARNs)](https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html) in the Amazon Web Services General Reference.
     /// This member is required.
     public var policyArn: Swift.String?
@@ -3916,7 +3917,7 @@ public struct GetPolicyInput {
 }
 
 /// Contains the response to a successful [GetPolicy] request.
-public struct GetPolicyOutput {
+public struct GetPolicyOutput: Swift.Sendable {
     /// A structure containing details about the policy.
     public var policy: IAMClientTypes.Policy?
 
@@ -3928,7 +3929,7 @@ public struct GetPolicyOutput {
     }
 }
 
-public struct GetPolicyVersionInput {
+public struct GetPolicyVersionInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the managed policy that you want information about. For more information about ARNs, see [Amazon Resource Names (ARNs)](https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html) in the Amazon Web Services General Reference.
     /// This member is required.
     public var policyArn: Swift.String?
@@ -3947,7 +3948,7 @@ public struct GetPolicyVersionInput {
 }
 
 /// Contains the response to a successful [GetPolicyVersion] request.
-public struct GetPolicyVersionOutput {
+public struct GetPolicyVersionOutput: Swift.Sendable {
     /// A structure containing details about the policy version.
     public var policyVersion: IAMClientTypes.PolicyVersion?
 
@@ -3959,7 +3960,7 @@ public struct GetPolicyVersionOutput {
     }
 }
 
-public struct GetRoleInput {
+public struct GetRoleInput: Swift.Sendable {
     /// The name of the IAM role to get information about. This parameter allows (through its [regex pattern](http://wikipedia.org/wiki/regex)) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-
     /// This member is required.
     public var roleName: Swift.String?
@@ -3973,7 +3974,7 @@ public struct GetRoleInput {
 }
 
 /// Contains the response to a successful [GetRole] request.
-public struct GetRoleOutput {
+public struct GetRoleOutput: Swift.Sendable {
     /// A structure containing details about the IAM role.
     /// This member is required.
     public var role: IAMClientTypes.Role?
@@ -3986,7 +3987,7 @@ public struct GetRoleOutput {
     }
 }
 
-public struct GetRolePolicyInput {
+public struct GetRolePolicyInput: Swift.Sendable {
     /// The name of the policy document to get. This parameter allows (through its [regex pattern](http://wikipedia.org/wiki/regex)) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-
     /// This member is required.
     public var policyName: Swift.String?
@@ -4005,7 +4006,7 @@ public struct GetRolePolicyInput {
 }
 
 /// Contains the response to a successful [GetRolePolicy] request.
-public struct GetRolePolicyOutput {
+public struct GetRolePolicyOutput: Swift.Sendable {
     /// The policy document. IAM stores policies in JSON format. However, resources that were created using CloudFormation templates can be formatted in YAML. CloudFormation always converts a YAML policy to JSON format before submitting it to IAM.
     /// This member is required.
     public var policyDocument: Swift.String?
@@ -4028,7 +4029,7 @@ public struct GetRolePolicyOutput {
     }
 }
 
-public struct GetSAMLProviderInput {
+public struct GetSAMLProviderInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the SAML provider resource object in IAM to get information about. For more information about ARNs, see [Amazon Resource Names (ARNs)](https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html) in the Amazon Web Services General Reference.
     /// This member is required.
     public var samlProviderArn: Swift.String?
@@ -4042,7 +4043,7 @@ public struct GetSAMLProviderInput {
 }
 
 /// Contains the response to a successful [GetSAMLProvider] request.
-public struct GetSAMLProviderOutput {
+public struct GetSAMLProviderOutput: Swift.Sendable {
     /// The date and time when the SAML provider was created.
     public var createDate: Foundation.Date?
     /// The XML metadata document that includes information about an identity provider.
@@ -4066,7 +4067,7 @@ public struct GetSAMLProviderOutput {
     }
 }
 
-public struct GetServerCertificateInput {
+public struct GetServerCertificateInput: Swift.Sendable {
     /// The name of the server certificate you want to retrieve information about. This parameter allows (through its [regex pattern](http://wikipedia.org/wiki/regex)) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-
     /// This member is required.
     public var serverCertificateName: Swift.String?
@@ -4080,8 +4081,9 @@ public struct GetServerCertificateInput {
 }
 
 extension IAMClientTypes {
+
     /// Contains information about a server certificate without its certificate body, certificate chain, and private key. This data type is used as a response element in the [UploadServerCertificate] and [ListServerCertificates] operations.
-    public struct ServerCertificateMetadata {
+    public struct ServerCertificateMetadata: Swift.Sendable {
         /// The Amazon Resource Name (ARN) specifying the server certificate. For more information about ARNs and how to use them in policies, see [IAM identifiers](https://docs.aws.amazon.com/IAM/latest/UserGuide/Using_Identifiers.html) in the IAM User Guide.
         /// This member is required.
         public var arn: Swift.String?
@@ -4116,12 +4118,12 @@ extension IAMClientTypes {
             self.uploadDate = uploadDate
         }
     }
-
 }
 
 extension IAMClientTypes {
+
     /// Contains information about a server certificate. This data type is used as a response element in the [GetServerCertificate] operation.
-    public struct ServerCertificate {
+    public struct ServerCertificate: Swift.Sendable {
         /// The contents of the public key certificate.
         /// This member is required.
         public var certificateBody: Swift.String?
@@ -4146,11 +4148,10 @@ extension IAMClientTypes {
             self.tags = tags
         }
     }
-
 }
 
 /// Contains the response to a successful [GetServerCertificate] request.
-public struct GetServerCertificateOutput {
+public struct GetServerCertificateOutput: Swift.Sendable {
     /// A structure containing details about the server certificate.
     /// This member is required.
     public var serverCertificate: IAMClientTypes.ServerCertificate?
@@ -4163,7 +4164,7 @@ public struct GetServerCertificateOutput {
     }
 }
 
-public struct GetServiceLastAccessedDetailsInput {
+public struct GetServiceLastAccessedDetailsInput: Swift.Sendable {
     /// The ID of the request generated by the [GenerateServiceLastAccessedDetails] operation. The JobId returned by GenerateServiceLastAccessedDetail must be used by the same role within a session, or by the same user when used to call GetServiceLastAccessedDetail.
     /// This member is required.
     public var jobId: Swift.String?
@@ -4185,8 +4186,9 @@ public struct GetServiceLastAccessedDetailsInput {
 }
 
 extension IAMClientTypes {
+
     /// Contains details about the most recent attempt to access an action within the service. This data type is used as a response element in the [GetServiceLastAccessedDetails] operation.
-    public struct TrackedActionLastAccessed {
+    public struct TrackedActionLastAccessed: Swift.Sendable {
         /// The name of the tracked action to which access was attempted. Tracked actions are actions that report activity to IAM.
         public var actionName: Swift.String?
         /// The Amazon Resource Name (ARN). ARNs are unique identifiers for Amazon Web Services resources. For more information about ARNs, go to [Amazon Resource Names (ARNs)](https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html) in the Amazon Web Services General Reference.
@@ -4209,12 +4211,12 @@ extension IAMClientTypes {
             self.lastAccessedTime = lastAccessedTime
         }
     }
-
 }
 
 extension IAMClientTypes {
+
     /// Contains details about the most recent attempt to access the service. This data type is used as a response element in the [GetServiceLastAccessedDetails] operation.
-    public struct ServiceLastAccessed {
+    public struct ServiceLastAccessed: Swift.Sendable {
         /// The date and time, in [ISO 8601 date-time format](http://www.iso.org/iso/iso8601), when an authenticated entity most recently attempted to access the service. Amazon Web Services does not report unauthenticated requests. This field is null if no IAM entities attempted to access the service within the [tracking period](https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies_access-advisor.html#service-last-accessed-reporting-period).
         public var lastAuthenticated: Foundation.Date?
         /// The ARN of the authenticated entity (user or role) that last attempted to access the service. Amazon Web Services does not report unauthenticated requests. This field is null if no IAM entities attempted to access the service within the [tracking period](https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies_access-advisor.html#service-last-accessed-reporting-period).
@@ -4251,10 +4253,9 @@ extension IAMClientTypes {
             self.trackedActionsLastAccessed = trackedActionsLastAccessed
         }
     }
-
 }
 
-public struct GetServiceLastAccessedDetailsOutput {
+public struct GetServiceLastAccessedDetailsOutput: Swift.Sendable {
     /// An object that contains details about the reason the operation failed.
     public var error: IAMClientTypes.ErrorDetails?
     /// A flag that indicates whether there are more items to return. If your results were truncated, you can make a subsequent pagination request using the Marker request parameter to retrieve more items. Note that IAM might return fewer than the MaxItems number of results even when there are more results available. We recommend that you check IsTruncated after every call to ensure that you receive all your results.
@@ -4298,7 +4299,7 @@ public struct GetServiceLastAccessedDetailsOutput {
     }
 }
 
-public struct GetServiceLastAccessedDetailsWithEntitiesInput {
+public struct GetServiceLastAccessedDetailsWithEntitiesInput: Swift.Sendable {
     /// The ID of the request generated by the GenerateServiceLastAccessedDetails operation.
     /// This member is required.
     public var jobId: Swift.String?
@@ -4326,7 +4327,7 @@ public struct GetServiceLastAccessedDetailsWithEntitiesInput {
 
 extension IAMClientTypes {
 
-    public enum PolicyOwnerEntityType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum PolicyOwnerEntityType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case group
         case role
         case user
@@ -4357,8 +4358,9 @@ extension IAMClientTypes {
 }
 
 extension IAMClientTypes {
+
     /// Contains details about the specified entity (user or role). This data type is an element of the [EntityDetails] object.
-    public struct EntityInfo {
+    public struct EntityInfo: Swift.Sendable {
         /// The Amazon Resource Name (ARN). ARNs are unique identifiers for Amazon Web Services resources. For more information about ARNs, go to [Amazon Resource Names (ARNs)](https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html) in the Amazon Web Services General Reference.
         /// This member is required.
         public var arn: Swift.String?
@@ -4389,12 +4391,12 @@ extension IAMClientTypes {
             self.type = type
         }
     }
-
 }
 
 extension IAMClientTypes {
+
     /// An object that contains details about when the IAM entities (users or roles) were last used in an attempt to access the specified Amazon Web Services service. This data type is a response element in the [GetServiceLastAccessedDetailsWithEntities] operation.
-    public struct EntityDetails {
+    public struct EntityDetails: Swift.Sendable {
         /// The EntityInfo object that contains details about the entity (user or role).
         /// This member is required.
         public var entityInfo: IAMClientTypes.EntityInfo?
@@ -4410,10 +4412,9 @@ extension IAMClientTypes {
             self.lastAuthenticated = lastAuthenticated
         }
     }
-
 }
 
-public struct GetServiceLastAccessedDetailsWithEntitiesOutput {
+public struct GetServiceLastAccessedDetailsWithEntitiesOutput: Swift.Sendable {
     /// An EntityDetailsList object that contains details about when an IAM entity (user or role) used group or policy permissions in an attempt to access the specified Amazon Web Services service.
     /// This member is required.
     public var entityDetailsList: [IAMClientTypes.EntityDetails]?
@@ -4453,7 +4454,7 @@ public struct GetServiceLastAccessedDetailsWithEntitiesOutput {
     }
 }
 
-public struct GetServiceLinkedRoleDeletionStatusInput {
+public struct GetServiceLinkedRoleDeletionStatusInput: Swift.Sendable {
     /// The deletion task identifier. This identifier is returned by the [DeleteServiceLinkedRole] operation in the format task/aws-service-role///.
     /// This member is required.
     public var deletionTaskId: Swift.String?
@@ -4467,8 +4468,9 @@ public struct GetServiceLinkedRoleDeletionStatusInput {
 }
 
 extension IAMClientTypes {
+
     /// An object that contains details about how a service-linked role is used, if that information is returned by the service. This data type is used as a response element in the [GetServiceLinkedRoleDeletionStatus] operation.
-    public struct RoleUsageType {
+    public struct RoleUsageType: Swift.Sendable {
         /// The name of the Region where the service-linked role is being used.
         public var region: Swift.String?
         /// The name of the resource that is using the service-linked role.
@@ -4483,12 +4485,12 @@ extension IAMClientTypes {
             self.resources = resources
         }
     }
-
 }
 
 extension IAMClientTypes {
+
     /// The reason that the service-linked role deletion failed. This data type is used as a response element in the [GetServiceLinkedRoleDeletionStatus] operation.
-    public struct DeletionTaskFailureReasonType {
+    public struct DeletionTaskFailureReasonType: Swift.Sendable {
         /// A short description of the reason that the service-linked role deletion failed.
         public var reason: Swift.String?
         /// A list of objects that contains details about the service-linked role deletion failure, if that information is returned by the service. If the service-linked role has active sessions or if any resources that were used by the role have not been deleted from the linked service, the role can't be deleted. This parameter includes a list of the resources that are associated with the role and the Region in which the resources are being used.
@@ -4503,12 +4505,11 @@ extension IAMClientTypes {
             self.roleUsageList = roleUsageList
         }
     }
-
 }
 
 extension IAMClientTypes {
 
-    public enum DeletionTaskStatusType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DeletionTaskStatusType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case failed
         case inProgress
         case notStarted
@@ -4541,7 +4542,7 @@ extension IAMClientTypes {
     }
 }
 
-public struct GetServiceLinkedRoleDeletionStatusOutput {
+public struct GetServiceLinkedRoleDeletionStatusOutput: Swift.Sendable {
     /// An object that contains details about the reason the deletion failed.
     public var reason: IAMClientTypes.DeletionTaskFailureReasonType?
     /// The status of the deletion.
@@ -4584,7 +4585,7 @@ public struct UnrecognizedPublicKeyEncodingException: ClientRuntime.ModeledError
 
 extension IAMClientTypes {
 
-    public enum EncodingType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum EncodingType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case pem
         case ssh
         case sdkUnknown(Swift.String)
@@ -4611,7 +4612,7 @@ extension IAMClientTypes {
     }
 }
 
-public struct GetSSHPublicKeyInput {
+public struct GetSSHPublicKeyInput: Swift.Sendable {
     /// Specifies the public key encoding format to use in the response. To retrieve the public key in ssh-rsa format, use SSH. To retrieve the public key in PEM format, use PEM.
     /// This member is required.
     public var encoding: IAMClientTypes.EncodingType?
@@ -4635,8 +4636,9 @@ public struct GetSSHPublicKeyInput {
 }
 
 extension IAMClientTypes {
+
     /// Contains information about an SSH public key. This data type is used as a response element in the [GetSSHPublicKey] and [UploadSSHPublicKey] operations.
-    public struct SSHPublicKey {
+    public struct SSHPublicKey: Swift.Sendable {
         /// The MD5 message digest of the SSH public key.
         /// This member is required.
         public var fingerprint: Swift.String?
@@ -4672,11 +4674,10 @@ extension IAMClientTypes {
             self.userName = userName
         }
     }
-
 }
 
 /// Contains the response to a successful [GetSSHPublicKey] request.
-public struct GetSSHPublicKeyOutput {
+public struct GetSSHPublicKeyOutput: Swift.Sendable {
     /// A structure containing details about the SSH public key.
     public var sshPublicKey: IAMClientTypes.SSHPublicKey?
 
@@ -4688,7 +4689,7 @@ public struct GetSSHPublicKeyOutput {
     }
 }
 
-public struct GetUserInput {
+public struct GetUserInput: Swift.Sendable {
     /// The name of the user to get information about. This parameter is optional. If it is not included, it defaults to the user making the request. This parameter allows (through its [regex pattern](http://wikipedia.org/wiki/regex)) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-
     public var userName: Swift.String?
 
@@ -4701,7 +4702,7 @@ public struct GetUserInput {
 }
 
 /// Contains the response to a successful [GetUser] request.
-public struct GetUserOutput {
+public struct GetUserOutput: Swift.Sendable {
     /// A structure containing details about the IAM user. Due to a service issue, password last used data does not include password use from May 3, 2018 22:50 PDT to May 23, 2018 14:08 PDT. This affects [last sign-in](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_finding-unused.html) dates shown in the IAM console and password last used dates in the [IAM credential report](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_getting-report.html), and returned by this operation. If users signed in during the affected time, the password last used date that is returned is the date the user last signed in before May 3, 2018. For users that signed in after May 23, 2018 14:08 PDT, the returned password last used date is accurate. You can use password last used information to identify unused credentials for deletion. For example, you might delete users who did not sign in to Amazon Web Services in the last 90 days. In cases like this, we recommend that you adjust your evaluation window to include dates after May 23, 2018. Alternatively, if your users use access keys to access Amazon Web Services programmatically you can refer to access key last used information because it is accurate for all dates.
     /// This member is required.
     public var user: IAMClientTypes.User?
@@ -4714,7 +4715,7 @@ public struct GetUserOutput {
     }
 }
 
-public struct GetUserPolicyInput {
+public struct GetUserPolicyInput: Swift.Sendable {
     /// The name of the policy document to get. This parameter allows (through its [regex pattern](http://wikipedia.org/wiki/regex)) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-
     /// This member is required.
     public var policyName: Swift.String?
@@ -4733,7 +4734,7 @@ public struct GetUserPolicyInput {
 }
 
 /// Contains the response to a successful [GetUserPolicy] request.
-public struct GetUserPolicyOutput {
+public struct GetUserPolicyOutput: Swift.Sendable {
     /// The policy document. IAM stores policies in JSON format. However, resources that were created using CloudFormation templates can be formatted in YAML. CloudFormation always converts a YAML policy to JSON format before submitting it to IAM.
     /// This member is required.
     public var policyDocument: Swift.String?
@@ -4756,7 +4757,7 @@ public struct GetUserPolicyOutput {
     }
 }
 
-public struct ListAccessKeysInput {
+public struct ListAccessKeysInput: Swift.Sendable {
     /// Use this parameter only when paginating results and only after you receive a response indicating that the results are truncated. Set it to the value of the Marker element in the response that you received to indicate where the next call should start.
     public var marker: Swift.String?
     /// Use this only when paginating results to indicate the maximum number of items you want in the response. If additional items exist beyond the maximum you specify, the IsTruncated response element is true. If you do not include this parameter, the number of items defaults to 100. Note that IAM might return fewer results, even when there are more results available. In that case, the IsTruncated response element returns true, and Marker contains a value to include in the subsequent call that tells the service where to continue from.
@@ -4777,7 +4778,7 @@ public struct ListAccessKeysInput {
 }
 
 /// Contains the response to a successful [ListAccessKeys] request.
-public struct ListAccessKeysOutput {
+public struct ListAccessKeysOutput: Swift.Sendable {
     /// A list of objects containing metadata about the access keys.
     /// This member is required.
     public var accessKeyMetadata: [IAMClientTypes.AccessKeyMetadata]?
@@ -4798,7 +4799,7 @@ public struct ListAccessKeysOutput {
     }
 }
 
-public struct ListAccountAliasesInput {
+public struct ListAccountAliasesInput: Swift.Sendable {
     /// Use this parameter only when paginating results and only after you receive a response indicating that the results are truncated. Set it to the value of the Marker element in the response that you received to indicate where the next call should start.
     public var marker: Swift.String?
     /// Use this only when paginating results to indicate the maximum number of items you want in the response. If additional items exist beyond the maximum you specify, the IsTruncated response element is true. If you do not include this parameter, the number of items defaults to 100. Note that IAM might return fewer results, even when there are more results available. In that case, the IsTruncated response element returns true, and Marker contains a value to include in the subsequent call that tells the service where to continue from.
@@ -4815,7 +4816,7 @@ public struct ListAccountAliasesInput {
 }
 
 /// Contains the response to a successful [ListAccountAliases] request.
-public struct ListAccountAliasesOutput {
+public struct ListAccountAliasesOutput: Swift.Sendable {
     /// A list of aliases associated with the account. Amazon Web Services supports only one alias per account.
     /// This member is required.
     public var accountAliases: [Swift.String]?
@@ -4836,7 +4837,7 @@ public struct ListAccountAliasesOutput {
     }
 }
 
-public struct ListAttachedGroupPoliciesInput {
+public struct ListAttachedGroupPoliciesInput: Swift.Sendable {
     /// The name (friendly name, not ARN) of the group to list attached policies for. This parameter allows (through its [regex pattern](http://wikipedia.org/wiki/regex)) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-
     /// This member is required.
     public var groupName: Swift.String?
@@ -4862,7 +4863,7 @@ public struct ListAttachedGroupPoliciesInput {
 }
 
 /// Contains the response to a successful [ListAttachedGroupPolicies] request.
-public struct ListAttachedGroupPoliciesOutput {
+public struct ListAttachedGroupPoliciesOutput: Swift.Sendable {
     /// A list of the attached policies.
     public var attachedPolicies: [IAMClientTypes.AttachedPolicy]?
     /// A flag that indicates whether there are more items to return. If your results were truncated, you can make a subsequent pagination request using the Marker request parameter to retrieve more items. Note that IAM might return fewer than the MaxItems number of results even when there are more results available. We recommend that you check IsTruncated after every call to ensure that you receive all your results.
@@ -4882,7 +4883,7 @@ public struct ListAttachedGroupPoliciesOutput {
     }
 }
 
-public struct ListAttachedRolePoliciesInput {
+public struct ListAttachedRolePoliciesInput: Swift.Sendable {
     /// Use this parameter only when paginating results and only after you receive a response indicating that the results are truncated. Set it to the value of the Marker element in the response that you received to indicate where the next call should start.
     public var marker: Swift.String?
     /// Use this only when paginating results to indicate the maximum number of items you want in the response. If additional items exist beyond the maximum you specify, the IsTruncated response element is true. If you do not include this parameter, the number of items defaults to 100. Note that IAM might return fewer results, even when there are more results available. In that case, the IsTruncated response element returns true, and Marker contains a value to include in the subsequent call that tells the service where to continue from.
@@ -4908,7 +4909,7 @@ public struct ListAttachedRolePoliciesInput {
 }
 
 /// Contains the response to a successful [ListAttachedRolePolicies] request.
-public struct ListAttachedRolePoliciesOutput {
+public struct ListAttachedRolePoliciesOutput: Swift.Sendable {
     /// A list of the attached policies.
     public var attachedPolicies: [IAMClientTypes.AttachedPolicy]?
     /// A flag that indicates whether there are more items to return. If your results were truncated, you can make a subsequent pagination request using the Marker request parameter to retrieve more items. Note that IAM might return fewer than the MaxItems number of results even when there are more results available. We recommend that you check IsTruncated after every call to ensure that you receive all your results.
@@ -4928,7 +4929,7 @@ public struct ListAttachedRolePoliciesOutput {
     }
 }
 
-public struct ListAttachedUserPoliciesInput {
+public struct ListAttachedUserPoliciesInput: Swift.Sendable {
     /// Use this parameter only when paginating results and only after you receive a response indicating that the results are truncated. Set it to the value of the Marker element in the response that you received to indicate where the next call should start.
     public var marker: Swift.String?
     /// Use this only when paginating results to indicate the maximum number of items you want in the response. If additional items exist beyond the maximum you specify, the IsTruncated response element is true. If you do not include this parameter, the number of items defaults to 100. Note that IAM might return fewer results, even when there are more results available. In that case, the IsTruncated response element returns true, and Marker contains a value to include in the subsequent call that tells the service where to continue from.
@@ -4954,7 +4955,7 @@ public struct ListAttachedUserPoliciesInput {
 }
 
 /// Contains the response to a successful [ListAttachedUserPolicies] request.
-public struct ListAttachedUserPoliciesOutput {
+public struct ListAttachedUserPoliciesOutput: Swift.Sendable {
     /// A list of the attached policies.
     public var attachedPolicies: [IAMClientTypes.AttachedPolicy]?
     /// A flag that indicates whether there are more items to return. If your results were truncated, you can make a subsequent pagination request using the Marker request parameter to retrieve more items. Note that IAM might return fewer than the MaxItems number of results even when there are more results available. We recommend that you check IsTruncated after every call to ensure that you receive all your results.
@@ -4977,7 +4978,7 @@ public struct ListAttachedUserPoliciesOutput {
 extension IAMClientTypes {
 
     /// The policy usage type that indicates whether the policy is used as a permissions policy or as the permissions boundary for an entity. For more information about permissions boundaries, see [Permissions boundaries for IAM identities ](https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies_boundaries.html) in the IAM User Guide.
-    public enum PolicyUsageType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum PolicyUsageType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case permissionsboundary
         case permissionspolicy
         case sdkUnknown(Swift.String)
@@ -5004,7 +5005,7 @@ extension IAMClientTypes {
     }
 }
 
-public struct ListEntitiesForPolicyInput {
+public struct ListEntitiesForPolicyInput: Swift.Sendable {
     /// The entity type to use for filtering the results. For example, when EntityFilter is Role, only the roles that are attached to the specified policy are returned. This parameter is optional. If it is not included, all attached entities (users, groups, and roles) are returned. The argument for this parameter must be one of the valid values listed below.
     public var entityFilter: IAMClientTypes.EntityType?
     /// Use this parameter only when paginating results and only after you receive a response indicating that the results are truncated. Set it to the value of the Marker element in the response that you received to indicate where the next call should start.
@@ -5038,8 +5039,9 @@ public struct ListEntitiesForPolicyInput {
 }
 
 extension IAMClientTypes {
+
     /// Contains information about a group that a managed policy is attached to. This data type is used as a response element in the [ListEntitiesForPolicy] operation. For more information about managed policies, refer to [Managed policies and inline policies](https://docs.aws.amazon.com/IAM/latest/UserGuide/policies-managed-vs-inline.html) in the IAM User Guide.
-    public struct PolicyGroup {
+    public struct PolicyGroup: Swift.Sendable {
         /// The stable and unique string identifying the group. For more information about IDs, see [IAM identifiers](https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_identifiers.html) in the IAM User Guide.
         public var groupId: Swift.String?
         /// The name (friendly name, not ARN) identifying the group.
@@ -5054,12 +5056,12 @@ extension IAMClientTypes {
             self.groupName = groupName
         }
     }
-
 }
 
 extension IAMClientTypes {
+
     /// Contains information about a role that a managed policy is attached to. This data type is used as a response element in the [ListEntitiesForPolicy] operation. For more information about managed policies, refer to [Managed policies and inline policies](https://docs.aws.amazon.com/IAM/latest/UserGuide/policies-managed-vs-inline.html) in the IAM User Guide.
-    public struct PolicyRole {
+    public struct PolicyRole: Swift.Sendable {
         /// The stable and unique string identifying the role. For more information about IDs, see [IAM identifiers](https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_identifiers.html) in the IAM User Guide.
         public var roleId: Swift.String?
         /// The name (friendly name, not ARN) identifying the role.
@@ -5074,12 +5076,12 @@ extension IAMClientTypes {
             self.roleName = roleName
         }
     }
-
 }
 
 extension IAMClientTypes {
+
     /// Contains information about a user that a managed policy is attached to. This data type is used as a response element in the [ListEntitiesForPolicy] operation. For more information about managed policies, refer to [Managed policies and inline policies](https://docs.aws.amazon.com/IAM/latest/UserGuide/policies-managed-vs-inline.html) in the IAM User Guide.
-    public struct PolicyUser {
+    public struct PolicyUser: Swift.Sendable {
         /// The stable and unique string identifying the user. For more information about IDs, see [IAM identifiers](https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_identifiers.html) in the IAM User Guide.
         public var userId: Swift.String?
         /// The name (friendly name, not ARN) identifying the user.
@@ -5094,11 +5096,10 @@ extension IAMClientTypes {
             self.userName = userName
         }
     }
-
 }
 
 /// Contains the response to a successful [ListEntitiesForPolicy] request.
-public struct ListEntitiesForPolicyOutput {
+public struct ListEntitiesForPolicyOutput: Swift.Sendable {
     /// A flag that indicates whether there are more items to return. If your results were truncated, you can make a subsequent pagination request using the Marker request parameter to retrieve more items. Note that IAM might return fewer than the MaxItems number of results even when there are more results available. We recommend that you check IsTruncated after every call to ensure that you receive all your results.
     public var isTruncated: Swift.Bool
     /// When IsTruncated is true, this element is present and contains the value to use for the Marker parameter in a subsequent pagination request.
@@ -5126,7 +5127,7 @@ public struct ListEntitiesForPolicyOutput {
     }
 }
 
-public struct ListGroupPoliciesInput {
+public struct ListGroupPoliciesInput: Swift.Sendable {
     /// The name of the group to list policies for. This parameter allows (through its [regex pattern](http://wikipedia.org/wiki/regex)) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-
     /// This member is required.
     public var groupName: Swift.String?
@@ -5148,7 +5149,7 @@ public struct ListGroupPoliciesInput {
 }
 
 /// Contains the response to a successful [ListGroupPolicies] request.
-public struct ListGroupPoliciesOutput {
+public struct ListGroupPoliciesOutput: Swift.Sendable {
     /// A flag that indicates whether there are more items to return. If your results were truncated, you can make a subsequent pagination request using the Marker request parameter to retrieve more items. Note that IAM might return fewer than the MaxItems number of results even when there are more results available. We recommend that you check IsTruncated after every call to ensure that you receive all your results.
     public var isTruncated: Swift.Bool
     /// When IsTruncated is true, this element is present and contains the value to use for the Marker parameter in a subsequent pagination request.
@@ -5169,7 +5170,7 @@ public struct ListGroupPoliciesOutput {
     }
 }
 
-public struct ListGroupsInput {
+public struct ListGroupsInput: Swift.Sendable {
     /// Use this parameter only when paginating results and only after you receive a response indicating that the results are truncated. Set it to the value of the Marker element in the response that you received to indicate where the next call should start.
     public var marker: Swift.String?
     /// Use this only when paginating results to indicate the maximum number of items you want in the response. If additional items exist beyond the maximum you specify, the IsTruncated response element is true. If you do not include this parameter, the number of items defaults to 100. Note that IAM might return fewer results, even when there are more results available. In that case, the IsTruncated response element returns true, and Marker contains a value to include in the subsequent call that tells the service where to continue from.
@@ -5190,7 +5191,7 @@ public struct ListGroupsInput {
 }
 
 /// Contains the response to a successful [ListGroups] request.
-public struct ListGroupsOutput {
+public struct ListGroupsOutput: Swift.Sendable {
     /// A list of groups.
     /// This member is required.
     public var groups: [IAMClientTypes.Group]?
@@ -5211,7 +5212,7 @@ public struct ListGroupsOutput {
     }
 }
 
-public struct ListGroupsForUserInput {
+public struct ListGroupsForUserInput: Swift.Sendable {
     /// Use this parameter only when paginating results and only after you receive a response indicating that the results are truncated. Set it to the value of the Marker element in the response that you received to indicate where the next call should start.
     public var marker: Swift.String?
     /// Use this only when paginating results to indicate the maximum number of items you want in the response. If additional items exist beyond the maximum you specify, the IsTruncated response element is true. If you do not include this parameter, the number of items defaults to 100. Note that IAM might return fewer results, even when there are more results available. In that case, the IsTruncated response element returns true, and Marker contains a value to include in the subsequent call that tells the service where to continue from.
@@ -5233,7 +5234,7 @@ public struct ListGroupsForUserInput {
 }
 
 /// Contains the response to a successful [ListGroupsForUser] request.
-public struct ListGroupsForUserOutput {
+public struct ListGroupsForUserOutput: Swift.Sendable {
     /// A list of groups.
     /// This member is required.
     public var groups: [IAMClientTypes.Group]?
@@ -5254,7 +5255,7 @@ public struct ListGroupsForUserOutput {
     }
 }
 
-public struct ListInstanceProfilesInput {
+public struct ListInstanceProfilesInput: Swift.Sendable {
     /// Use this parameter only when paginating results and only after you receive a response indicating that the results are truncated. Set it to the value of the Marker element in the response that you received to indicate where the next call should start.
     public var marker: Swift.String?
     /// Use this only when paginating results to indicate the maximum number of items you want in the response. If additional items exist beyond the maximum you specify, the IsTruncated response element is true. If you do not include this parameter, the number of items defaults to 100. Note that IAM might return fewer results, even when there are more results available. In that case, the IsTruncated response element returns true, and Marker contains a value to include in the subsequent call that tells the service where to continue from.
@@ -5275,7 +5276,7 @@ public struct ListInstanceProfilesInput {
 }
 
 /// Contains the response to a successful [ListInstanceProfiles] request.
-public struct ListInstanceProfilesOutput {
+public struct ListInstanceProfilesOutput: Swift.Sendable {
     /// A list of instance profiles.
     /// This member is required.
     public var instanceProfiles: [IAMClientTypes.InstanceProfile]?
@@ -5296,7 +5297,7 @@ public struct ListInstanceProfilesOutput {
     }
 }
 
-public struct ListInstanceProfilesForRoleInput {
+public struct ListInstanceProfilesForRoleInput: Swift.Sendable {
     /// Use this parameter only when paginating results and only after you receive a response indicating that the results are truncated. Set it to the value of the Marker element in the response that you received to indicate where the next call should start.
     public var marker: Swift.String?
     /// Use this only when paginating results to indicate the maximum number of items you want in the response. If additional items exist beyond the maximum you specify, the IsTruncated response element is true. If you do not include this parameter, the number of items defaults to 100. Note that IAM might return fewer results, even when there are more results available. In that case, the IsTruncated response element returns true, and Marker contains a value to include in the subsequent call that tells the service where to continue from.
@@ -5318,7 +5319,7 @@ public struct ListInstanceProfilesForRoleInput {
 }
 
 /// Contains the response to a successful [ListInstanceProfilesForRole] request.
-public struct ListInstanceProfilesForRoleOutput {
+public struct ListInstanceProfilesForRoleOutput: Swift.Sendable {
     /// A list of instance profiles.
     /// This member is required.
     public var instanceProfiles: [IAMClientTypes.InstanceProfile]?
@@ -5339,7 +5340,7 @@ public struct ListInstanceProfilesForRoleOutput {
     }
 }
 
-public struct ListInstanceProfileTagsInput {
+public struct ListInstanceProfileTagsInput: Swift.Sendable {
     /// The name of the IAM instance profile whose tags you want to see. This parameter allows (through its [regex pattern](http://wikipedia.org/wiki/regex)) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-
     /// This member is required.
     public var instanceProfileName: Swift.String?
@@ -5360,7 +5361,7 @@ public struct ListInstanceProfileTagsInput {
     }
 }
 
-public struct ListInstanceProfileTagsOutput {
+public struct ListInstanceProfileTagsOutput: Swift.Sendable {
     /// A flag that indicates whether there are more items to return. If your results were truncated, you can make a subsequent pagination request using the Marker request parameter to retrieve more items. Note that IAM might return fewer than the MaxItems number of results even when there are more results available. We recommend that you check IsTruncated after every call to ensure that you receive all your results.
     public var isTruncated: Swift.Bool
     /// When IsTruncated is true, this element is present and contains the value to use for the Marker parameter in a subsequent pagination request.
@@ -5381,7 +5382,7 @@ public struct ListInstanceProfileTagsOutput {
     }
 }
 
-public struct ListMFADevicesInput {
+public struct ListMFADevicesInput: Swift.Sendable {
     /// Use this parameter only when paginating results and only after you receive a response indicating that the results are truncated. Set it to the value of the Marker element in the response that you received to indicate where the next call should start.
     public var marker: Swift.String?
     /// Use this only when paginating results to indicate the maximum number of items you want in the response. If additional items exist beyond the maximum you specify, the IsTruncated response element is true. If you do not include this parameter, the number of items defaults to 100. Note that IAM might return fewer results, even when there are more results available. In that case, the IsTruncated response element returns true, and Marker contains a value to include in the subsequent call that tells the service where to continue from.
@@ -5402,8 +5403,9 @@ public struct ListMFADevicesInput {
 }
 
 extension IAMClientTypes {
+
     /// Contains information about an MFA device. This data type is used as a response element in the [ListMFADevices] operation.
-    public struct MFADevice {
+    public struct MFADevice: Swift.Sendable {
         /// The date when the MFA device was enabled for the user.
         /// This member is required.
         public var enableDate: Foundation.Date?
@@ -5425,11 +5427,10 @@ extension IAMClientTypes {
             self.userName = userName
         }
     }
-
 }
 
 /// Contains the response to a successful [ListMFADevices] request.
-public struct ListMFADevicesOutput {
+public struct ListMFADevicesOutput: Swift.Sendable {
     /// A flag that indicates whether there are more items to return. If your results were truncated, you can make a subsequent pagination request using the Marker request parameter to retrieve more items. Note that IAM might return fewer than the MaxItems number of results even when there are more results available. We recommend that you check IsTruncated after every call to ensure that you receive all your results.
     public var isTruncated: Swift.Bool
     /// When IsTruncated is true, this element is present and contains the value to use for the Marker parameter in a subsequent pagination request.
@@ -5450,7 +5451,7 @@ public struct ListMFADevicesOutput {
     }
 }
 
-public struct ListMFADeviceTagsInput {
+public struct ListMFADeviceTagsInput: Swift.Sendable {
     /// Use this parameter only when paginating results and only after you receive a response indicating that the results are truncated. Set it to the value of the Marker element in the response that you received to indicate where the next call should start.
     public var marker: Swift.String?
     /// Use this only when paginating results to indicate the maximum number of items you want in the response. If additional items exist beyond the maximum you specify, the IsTruncated response element is true. If you do not include this parameter, the number of items defaults to 100. Note that IAM might return fewer results, even when there are more results available. In that case, the IsTruncated response element returns true, and Marker contains a value to include in the subsequent call that tells the service where to continue from.
@@ -5471,7 +5472,7 @@ public struct ListMFADeviceTagsInput {
     }
 }
 
-public struct ListMFADeviceTagsOutput {
+public struct ListMFADeviceTagsOutput: Swift.Sendable {
     /// A flag that indicates whether there are more items to return. If your results were truncated, you can make a subsequent pagination request using the Marker request parameter to retrieve more items. Note that IAM might return fewer than the MaxItems number of results even when there are more results available. We recommend that you check IsTruncated after every call to ensure that you receive all your results.
     public var isTruncated: Swift.Bool
     /// When IsTruncated is true, this element is present and contains the value to use for the Marker parameter in a subsequent pagination request.
@@ -5492,14 +5493,15 @@ public struct ListMFADeviceTagsOutput {
     }
 }
 
-public struct ListOpenIDConnectProvidersInput {
+public struct ListOpenIDConnectProvidersInput: Swift.Sendable {
 
     public init() { }
 }
 
 extension IAMClientTypes {
+
     /// Contains the Amazon Resource Name (ARN) for an IAM OpenID Connect provider.
-    public struct OpenIDConnectProviderListEntry {
+    public struct OpenIDConnectProviderListEntry: Swift.Sendable {
         /// The Amazon Resource Name (ARN). ARNs are unique identifiers for Amazon Web Services resources. For more information about ARNs, go to [Amazon Resource Names (ARNs)](https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html) in the Amazon Web Services General Reference.
         public var arn: Swift.String?
 
@@ -5510,11 +5512,10 @@ extension IAMClientTypes {
             self.arn = arn
         }
     }
-
 }
 
 /// Contains the response to a successful [ListOpenIDConnectProviders] request.
-public struct ListOpenIDConnectProvidersOutput {
+public struct ListOpenIDConnectProvidersOutput: Swift.Sendable {
     /// The list of IAM OIDC provider resource objects defined in the Amazon Web Services account.
     public var openIDConnectProviderList: [IAMClientTypes.OpenIDConnectProviderListEntry]?
 
@@ -5526,7 +5527,7 @@ public struct ListOpenIDConnectProvidersOutput {
     }
 }
 
-public struct ListOpenIDConnectProviderTagsInput {
+public struct ListOpenIDConnectProviderTagsInput: Swift.Sendable {
     /// Use this parameter only when paginating results and only after you receive a response indicating that the results are truncated. Set it to the value of the Marker element in the response that you received to indicate where the next call should start.
     public var marker: Swift.String?
     /// Use this only when paginating results to indicate the maximum number of items you want in the response. If additional items exist beyond the maximum you specify, the IsTruncated response element is true. If you do not include this parameter, the number of items defaults to 100. Note that IAM might return fewer results, even when there are more results available. In that case, the IsTruncated response element returns true, and Marker contains a value to include in the subsequent call that tells the service where to continue from.
@@ -5547,7 +5548,7 @@ public struct ListOpenIDConnectProviderTagsInput {
     }
 }
 
-public struct ListOpenIDConnectProviderTagsOutput {
+public struct ListOpenIDConnectProviderTagsOutput: Swift.Sendable {
     /// A flag that indicates whether there are more items to return. If your results were truncated, you can make a subsequent pagination request using the Marker request parameter to retrieve more items. Note that IAM might return fewer than the MaxItems number of results even when there are more results available. We recommend that you check IsTruncated after every call to ensure that you receive all your results.
     public var isTruncated: Swift.Bool
     /// When IsTruncated is true, this element is present and contains the value to use for the Marker parameter in a subsequent pagination request.
@@ -5570,7 +5571,7 @@ public struct ListOpenIDConnectProviderTagsOutput {
 
 extension IAMClientTypes {
 
-    public enum PolicyScopeType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum PolicyScopeType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case aws
         case all
         case local
@@ -5600,7 +5601,7 @@ extension IAMClientTypes {
     }
 }
 
-public struct ListPoliciesInput {
+public struct ListPoliciesInput: Swift.Sendable {
     /// Use this parameter only when paginating results and only after you receive a response indicating that the results are truncated. Set it to the value of the Marker element in the response that you received to indicate where the next call should start.
     public var marker: Swift.String?
     /// Use this only when paginating results to indicate the maximum number of items you want in the response. If additional items exist beyond the maximum you specify, the IsTruncated response element is true. If you do not include this parameter, the number of items defaults to 100. Note that IAM might return fewer results, even when there are more results available. In that case, the IsTruncated response element returns true, and Marker contains a value to include in the subsequent call that tells the service where to continue from.
@@ -5633,7 +5634,7 @@ public struct ListPoliciesInput {
 }
 
 /// Contains the response to a successful [ListPolicies] request.
-public struct ListPoliciesOutput {
+public struct ListPoliciesOutput: Swift.Sendable {
     /// A flag that indicates whether there are more items to return. If your results were truncated, you can make a subsequent pagination request using the Marker request parameter to retrieve more items. Note that IAM might return fewer than the MaxItems number of results even when there are more results available. We recommend that you check IsTruncated after every call to ensure that you receive all your results.
     public var isTruncated: Swift.Bool
     /// When IsTruncated is true, this element is present and contains the value to use for the Marker parameter in a subsequent pagination request.
@@ -5653,7 +5654,7 @@ public struct ListPoliciesOutput {
     }
 }
 
-public struct ListPoliciesGrantingServiceAccessInput {
+public struct ListPoliciesGrantingServiceAccessInput: Swift.Sendable {
     /// The ARN of the IAM identity (user, group, or role) whose policies you want to list.
     /// This member is required.
     public var arn: Swift.String?
@@ -5677,7 +5678,7 @@ public struct ListPoliciesGrantingServiceAccessInput {
 
 extension IAMClientTypes {
 
-    public enum PolicyType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum PolicyType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case inline
         case managed
         case sdkUnknown(Swift.String)
@@ -5705,8 +5706,9 @@ extension IAMClientTypes {
 }
 
 extension IAMClientTypes {
+
     /// Contains details about the permissions policies that are attached to the specified identity (user, group, or role). This data type is an element of the [ListPoliciesGrantingServiceAccessEntry] object.
-    public struct PolicyGrantingServiceAccess {
+    public struct PolicyGrantingServiceAccess: Swift.Sendable {
         /// The name of the entity (user or role) to which the inline policy is attached. This field is null for managed policies. For more information about these policy types, see [Managed policies and inline policies](https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies_managed-vs-inline.html) in the IAM User Guide.
         public var entityName: Swift.String?
         /// The type of entity (user or role) that used the policy to access the service to which the inline policy is attached. This field is null for managed policies. For more information about these policy types, see [Managed policies and inline policies](https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies_managed-vs-inline.html) in the IAM User Guide.
@@ -5735,12 +5737,12 @@ extension IAMClientTypes {
             self.policyType = policyType
         }
     }
-
 }
 
 extension IAMClientTypes {
+
     /// Contains details about the permissions policies that are attached to the specified identity (user, group, or role). This data type is used as a response element in the [ListPoliciesGrantingServiceAccess] operation.
-    public struct ListPoliciesGrantingServiceAccessEntry {
+    public struct ListPoliciesGrantingServiceAccessEntry: Swift.Sendable {
         /// The PoliciesGrantingServiceAccess object that contains details about the policy.
         public var policies: [IAMClientTypes.PolicyGrantingServiceAccess]?
         /// The namespace of the service that was accessed. To learn the service namespace of a service, see [Actions, resources, and condition keys for Amazon Web Services services](https://docs.aws.amazon.com/service-authorization/latest/reference/reference_policies_actions-resources-contextkeys.html) in the Service Authorization Reference. Choose the name of the service to view details for that service. In the first paragraph, find the service prefix. For example, (service prefix: a4b). For more information about service namespaces, see [Amazon Web Services service namespaces](https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html#genref-aws-service-namespaces) in the Amazon Web Services General Reference.
@@ -5755,10 +5757,9 @@ extension IAMClientTypes {
             self.serviceNamespace = serviceNamespace
         }
     }
-
 }
 
-public struct ListPoliciesGrantingServiceAccessOutput {
+public struct ListPoliciesGrantingServiceAccessOutput: Swift.Sendable {
     /// A flag that indicates whether there are more items to return. If your results were truncated, you can make a subsequent pagination request using the Marker request parameter to retrieve more items. We recommend that you check IsTruncated after every call to ensure that you receive all your results.
     public var isTruncated: Swift.Bool
     /// When IsTruncated is true, this element is present and contains the value to use for the Marker parameter in a subsequent pagination request.
@@ -5779,7 +5780,7 @@ public struct ListPoliciesGrantingServiceAccessOutput {
     }
 }
 
-public struct ListPolicyTagsInput {
+public struct ListPolicyTagsInput: Swift.Sendable {
     /// Use this parameter only when paginating results and only after you receive a response indicating that the results are truncated. Set it to the value of the Marker element in the response that you received to indicate where the next call should start.
     public var marker: Swift.String?
     /// Use this only when paginating results to indicate the maximum number of items you want in the response. If additional items exist beyond the maximum you specify, the IsTruncated response element is true. If you do not include this parameter, the number of items defaults to 100. Note that IAM might return fewer results, even when there are more results available. In that case, the IsTruncated response element returns true, and Marker contains a value to include in the subsequent call that tells the service where to continue from.
@@ -5800,7 +5801,7 @@ public struct ListPolicyTagsInput {
     }
 }
 
-public struct ListPolicyTagsOutput {
+public struct ListPolicyTagsOutput: Swift.Sendable {
     /// A flag that indicates whether there are more items to return. If your results were truncated, you can make a subsequent pagination request using the Marker request parameter to retrieve more items. Note that IAM might return fewer than the MaxItems number of results even when there are more results available. We recommend that you check IsTruncated after every call to ensure that you receive all your results.
     public var isTruncated: Swift.Bool
     /// When IsTruncated is true, this element is present and contains the value to use for the Marker parameter in a subsequent pagination request.
@@ -5821,7 +5822,7 @@ public struct ListPolicyTagsOutput {
     }
 }
 
-public struct ListPolicyVersionsInput {
+public struct ListPolicyVersionsInput: Swift.Sendable {
     /// Use this parameter only when paginating results and only after you receive a response indicating that the results are truncated. Set it to the value of the Marker element in the response that you received to indicate where the next call should start.
     public var marker: Swift.String?
     /// Use this only when paginating results to indicate the maximum number of items you want in the response. If additional items exist beyond the maximum you specify, the IsTruncated response element is true. If you do not include this parameter, the number of items defaults to 100. Note that IAM might return fewer results, even when there are more results available. In that case, the IsTruncated response element returns true, and Marker contains a value to include in the subsequent call that tells the service where to continue from.
@@ -5843,7 +5844,7 @@ public struct ListPolicyVersionsInput {
 }
 
 /// Contains the response to a successful [ListPolicyVersions] request.
-public struct ListPolicyVersionsOutput {
+public struct ListPolicyVersionsOutput: Swift.Sendable {
     /// A flag that indicates whether there are more items to return. If your results were truncated, you can make a subsequent pagination request using the Marker request parameter to retrieve more items. Note that IAM might return fewer than the MaxItems number of results even when there are more results available. We recommend that you check IsTruncated after every call to ensure that you receive all your results.
     public var isTruncated: Swift.Bool
     /// When IsTruncated is true, this element is present and contains the value to use for the Marker parameter in a subsequent pagination request.
@@ -5863,7 +5864,7 @@ public struct ListPolicyVersionsOutput {
     }
 }
 
-public struct ListRolePoliciesInput {
+public struct ListRolePoliciesInput: Swift.Sendable {
     /// Use this parameter only when paginating results and only after you receive a response indicating that the results are truncated. Set it to the value of the Marker element in the response that you received to indicate where the next call should start.
     public var marker: Swift.String?
     /// Use this only when paginating results to indicate the maximum number of items you want in the response. If additional items exist beyond the maximum you specify, the IsTruncated response element is true. If you do not include this parameter, the number of items defaults to 100. Note that IAM might return fewer results, even when there are more results available. In that case, the IsTruncated response element returns true, and Marker contains a value to include in the subsequent call that tells the service where to continue from.
@@ -5885,7 +5886,7 @@ public struct ListRolePoliciesInput {
 }
 
 /// Contains the response to a successful [ListRolePolicies] request.
-public struct ListRolePoliciesOutput {
+public struct ListRolePoliciesOutput: Swift.Sendable {
     /// A flag that indicates whether there are more items to return. If your results were truncated, you can make a subsequent pagination request using the Marker request parameter to retrieve more items. Note that IAM might return fewer than the MaxItems number of results even when there are more results available. We recommend that you check IsTruncated after every call to ensure that you receive all your results.
     public var isTruncated: Swift.Bool
     /// When IsTruncated is true, this element is present and contains the value to use for the Marker parameter in a subsequent pagination request.
@@ -5906,7 +5907,7 @@ public struct ListRolePoliciesOutput {
     }
 }
 
-public struct ListRolesInput {
+public struct ListRolesInput: Swift.Sendable {
     /// Use this parameter only when paginating results and only after you receive a response indicating that the results are truncated. Set it to the value of the Marker element in the response that you received to indicate where the next call should start.
     public var marker: Swift.String?
     /// Use this only when paginating results to indicate the maximum number of items you want in the response. If additional items exist beyond the maximum you specify, the IsTruncated response element is true. If you do not include this parameter, the number of items defaults to 100. Note that IAM might return fewer results, even when there are more results available. In that case, the IsTruncated response element returns true, and Marker contains a value to include in the subsequent call that tells the service where to continue from.
@@ -5927,7 +5928,7 @@ public struct ListRolesInput {
 }
 
 /// Contains the response to a successful [ListRoles] request.
-public struct ListRolesOutput {
+public struct ListRolesOutput: Swift.Sendable {
     /// A flag that indicates whether there are more items to return. If your results were truncated, you can make a subsequent pagination request using the Marker request parameter to retrieve more items. Note that IAM might return fewer than the MaxItems number of results even when there are more results available. We recommend that you check IsTruncated after every call to ensure that you receive all your results.
     public var isTruncated: Swift.Bool
     /// When IsTruncated is true, this element is present and contains the value to use for the Marker parameter in a subsequent pagination request.
@@ -5948,7 +5949,7 @@ public struct ListRolesOutput {
     }
 }
 
-public struct ListRoleTagsInput {
+public struct ListRoleTagsInput: Swift.Sendable {
     /// Use this parameter only when paginating results and only after you receive a response indicating that the results are truncated. Set it to the value of the Marker element in the response that you received to indicate where the next call should start.
     public var marker: Swift.String?
     /// Use this only when paginating results to indicate the maximum number of items you want in the response. If additional items exist beyond the maximum you specify, the IsTruncated response element is true. If you do not include this parameter, the number of items defaults to 100. Note that IAM might return fewer results, even when there are more results available. In that case, the IsTruncated response element returns true, and Marker contains a value to include in the subsequent call that tells the service where to continue from.
@@ -5969,7 +5970,7 @@ public struct ListRoleTagsInput {
     }
 }
 
-public struct ListRoleTagsOutput {
+public struct ListRoleTagsOutput: Swift.Sendable {
     /// A flag that indicates whether there are more items to return. If your results were truncated, you can make a subsequent pagination request using the Marker request parameter to retrieve more items. Note that IAM might return fewer than the MaxItems number of results even when there are more results available. We recommend that you check IsTruncated after every call to ensure that you receive all your results.
     public var isTruncated: Swift.Bool
     /// When IsTruncated is true, this element is present and contains the value to use for the Marker parameter in a subsequent pagination request.
@@ -5990,14 +5991,15 @@ public struct ListRoleTagsOutput {
     }
 }
 
-public struct ListSAMLProvidersInput {
+public struct ListSAMLProvidersInput: Swift.Sendable {
 
     public init() { }
 }
 
 extension IAMClientTypes {
+
     /// Contains the list of SAML providers for this account.
-    public struct SAMLProviderListEntry {
+    public struct SAMLProviderListEntry: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the SAML provider.
         public var arn: Swift.String?
         /// The date and time when the SAML provider was created.
@@ -6016,11 +6018,10 @@ extension IAMClientTypes {
             self.validUntil = validUntil
         }
     }
-
 }
 
 /// Contains the response to a successful [ListSAMLProviders] request.
-public struct ListSAMLProvidersOutput {
+public struct ListSAMLProvidersOutput: Swift.Sendable {
     /// The list of SAML provider resource objects defined in IAM for this Amazon Web Services account.
     public var samlProviderList: [IAMClientTypes.SAMLProviderListEntry]?
 
@@ -6032,7 +6033,7 @@ public struct ListSAMLProvidersOutput {
     }
 }
 
-public struct ListSAMLProviderTagsInput {
+public struct ListSAMLProviderTagsInput: Swift.Sendable {
     /// Use this parameter only when paginating results and only after you receive a response indicating that the results are truncated. Set it to the value of the Marker element in the response that you received to indicate where the next call should start.
     public var marker: Swift.String?
     /// Use this only when paginating results to indicate the maximum number of items you want in the response. If additional items exist beyond the maximum you specify, the IsTruncated response element is true. If you do not include this parameter, the number of items defaults to 100. Note that IAM might return fewer results, even when there are more results available. In that case, the IsTruncated response element returns true, and Marker contains a value to include in the subsequent call that tells the service where to continue from.
@@ -6053,7 +6054,7 @@ public struct ListSAMLProviderTagsInput {
     }
 }
 
-public struct ListSAMLProviderTagsOutput {
+public struct ListSAMLProviderTagsOutput: Swift.Sendable {
     /// A flag that indicates whether there are more items to return. If your results were truncated, you can make a subsequent pagination request using the Marker request parameter to retrieve more items. Note that IAM might return fewer than the MaxItems number of results even when there are more results available. We recommend that you check IsTruncated after every call to ensure that you receive all your results.
     public var isTruncated: Swift.Bool
     /// When IsTruncated is true, this element is present and contains the value to use for the Marker parameter in a subsequent pagination request.
@@ -6074,7 +6075,7 @@ public struct ListSAMLProviderTagsOutput {
     }
 }
 
-public struct ListServerCertificatesInput {
+public struct ListServerCertificatesInput: Swift.Sendable {
     /// Use this parameter only when paginating results and only after you receive a response indicating that the results are truncated. Set it to the value of the Marker element in the response that you received to indicate where the next call should start.
     public var marker: Swift.String?
     /// Use this only when paginating results to indicate the maximum number of items you want in the response. If additional items exist beyond the maximum you specify, the IsTruncated response element is true. If you do not include this parameter, the number of items defaults to 100. Note that IAM might return fewer results, even when there are more results available. In that case, the IsTruncated response element returns true, and Marker contains a value to include in the subsequent call that tells the service where to continue from.
@@ -6095,7 +6096,7 @@ public struct ListServerCertificatesInput {
 }
 
 /// Contains the response to a successful [ListServerCertificates] request.
-public struct ListServerCertificatesOutput {
+public struct ListServerCertificatesOutput: Swift.Sendable {
     /// A flag that indicates whether there are more items to return. If your results were truncated, you can make a subsequent pagination request using the Marker request parameter to retrieve more items. Note that IAM might return fewer than the MaxItems number of results even when there are more results available. We recommend that you check IsTruncated after every call to ensure that you receive all your results.
     public var isTruncated: Swift.Bool
     /// When IsTruncated is true, this element is present and contains the value to use for the Marker parameter in a subsequent pagination request.
@@ -6116,7 +6117,7 @@ public struct ListServerCertificatesOutput {
     }
 }
 
-public struct ListServerCertificateTagsInput {
+public struct ListServerCertificateTagsInput: Swift.Sendable {
     /// Use this parameter only when paginating results and only after you receive a response indicating that the results are truncated. Set it to the value of the Marker element in the response that you received to indicate where the next call should start.
     public var marker: Swift.String?
     /// Use this only when paginating results to indicate the maximum number of items you want in the response. If additional items exist beyond the maximum you specify, the IsTruncated response element is true. If you do not include this parameter, the number of items defaults to 100. Note that IAM might return fewer results, even when there are more results available. In that case, the IsTruncated response element returns true, and Marker contains a value to include in the subsequent call that tells the service where to continue from.
@@ -6137,7 +6138,7 @@ public struct ListServerCertificateTagsInput {
     }
 }
 
-public struct ListServerCertificateTagsOutput {
+public struct ListServerCertificateTagsOutput: Swift.Sendable {
     /// A flag that indicates whether there are more items to return. If your results were truncated, you can make a subsequent pagination request using the Marker request parameter to retrieve more items. Note that IAM might return fewer than the MaxItems number of results even when there are more results available. We recommend that you check IsTruncated after every call to ensure that you receive all your results.
     public var isTruncated: Swift.Bool
     /// When IsTruncated is true, this element is present and contains the value to use for the Marker parameter in a subsequent pagination request.
@@ -6158,7 +6159,7 @@ public struct ListServerCertificateTagsOutput {
     }
 }
 
-public struct ListServiceSpecificCredentialsInput {
+public struct ListServiceSpecificCredentialsInput: Swift.Sendable {
     /// Filters the returned results to only those for the specified Amazon Web Services service. If not specified, then Amazon Web Services returns service-specific credentials for all services.
     public var serviceName: Swift.String?
     /// The name of the user whose service-specific credentials you want information about. If this value is not specified, then the operation assumes the user whose credentials are used to call the operation. This parameter allows (through its [regex pattern](http://wikipedia.org/wiki/regex)) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-
@@ -6175,8 +6176,9 @@ public struct ListServiceSpecificCredentialsInput {
 }
 
 extension IAMClientTypes {
+
     /// Contains additional details about a service-specific credential.
-    public struct ServiceSpecificCredentialMetadata {
+    public struct ServiceSpecificCredentialMetadata: Swift.Sendable {
         /// The date and time, in [ISO 8601 date-time format](http://www.iso.org/iso/iso8601), when the service-specific credential were created.
         /// This member is required.
         public var createDate: Foundation.Date?
@@ -6213,10 +6215,9 @@ extension IAMClientTypes {
             self.userName = userName
         }
     }
-
 }
 
-public struct ListServiceSpecificCredentialsOutput {
+public struct ListServiceSpecificCredentialsOutput: Swift.Sendable {
     /// A list of structures that each contain details about a service-specific credential.
     public var serviceSpecificCredentials: [IAMClientTypes.ServiceSpecificCredentialMetadata]?
 
@@ -6228,7 +6229,7 @@ public struct ListServiceSpecificCredentialsOutput {
     }
 }
 
-public struct ListSigningCertificatesInput {
+public struct ListSigningCertificatesInput: Swift.Sendable {
     /// Use this parameter only when paginating results and only after you receive a response indicating that the results are truncated. Set it to the value of the Marker element in the response that you received to indicate where the next call should start.
     public var marker: Swift.String?
     /// Use this only when paginating results to indicate the maximum number of items you want in the response. If additional items exist beyond the maximum you specify, the IsTruncated response element is true. If you do not include this parameter, the number of items defaults to 100. Note that IAM might return fewer results, even when there are more results available. In that case, the IsTruncated response element returns true, and Marker contains a value to include in the subsequent call that tells the service where to continue from.
@@ -6249,8 +6250,9 @@ public struct ListSigningCertificatesInput {
 }
 
 extension IAMClientTypes {
+
     /// Contains information about an X.509 signing certificate. This data type is used as a response element in the [UploadSigningCertificate] and [ListSigningCertificates] operations.
-    public struct SigningCertificate {
+    public struct SigningCertificate: Swift.Sendable {
         /// The contents of the signing certificate.
         /// This member is required.
         public var certificateBody: Swift.String?
@@ -6281,11 +6283,10 @@ extension IAMClientTypes {
             self.userName = userName
         }
     }
-
 }
 
 /// Contains the response to a successful [ListSigningCertificates] request.
-public struct ListSigningCertificatesOutput {
+public struct ListSigningCertificatesOutput: Swift.Sendable {
     /// A list of the user's signing certificate information.
     /// This member is required.
     public var certificates: [IAMClientTypes.SigningCertificate]?
@@ -6306,7 +6307,7 @@ public struct ListSigningCertificatesOutput {
     }
 }
 
-public struct ListSSHPublicKeysInput {
+public struct ListSSHPublicKeysInput: Swift.Sendable {
     /// Use this parameter only when paginating results and only after you receive a response indicating that the results are truncated. Set it to the value of the Marker element in the response that you received to indicate where the next call should start.
     public var marker: Swift.String?
     /// Use this only when paginating results to indicate the maximum number of items you want in the response. If additional items exist beyond the maximum you specify, the IsTruncated response element is true. If you do not include this parameter, the number of items defaults to 100. Note that IAM might return fewer results, even when there are more results available. In that case, the IsTruncated response element returns true, and Marker contains a value to include in the subsequent call that tells the service where to continue from.
@@ -6327,8 +6328,9 @@ public struct ListSSHPublicKeysInput {
 }
 
 extension IAMClientTypes {
+
     /// Contains information about an SSH public key, without the key's body or fingerprint. This data type is used as a response element in the [ListSSHPublicKeys] operation.
-    public struct SSHPublicKeyMetadata {
+    public struct SSHPublicKeyMetadata: Swift.Sendable {
         /// The unique identifier for the SSH public key.
         /// This member is required.
         public var sshPublicKeyId: Swift.String?
@@ -6355,11 +6357,10 @@ extension IAMClientTypes {
             self.userName = userName
         }
     }
-
 }
 
 /// Contains the response to a successful [ListSSHPublicKeys] request.
-public struct ListSSHPublicKeysOutput {
+public struct ListSSHPublicKeysOutput: Swift.Sendable {
     /// A flag that indicates whether there are more items to return. If your results were truncated, you can make a subsequent pagination request using the Marker request parameter to retrieve more items. Note that IAM might return fewer than the MaxItems number of results even when there are more results available. We recommend that you check IsTruncated after every call to ensure that you receive all your results.
     public var isTruncated: Swift.Bool
     /// When IsTruncated is true, this element is present and contains the value to use for the Marker parameter in a subsequent pagination request.
@@ -6379,7 +6380,7 @@ public struct ListSSHPublicKeysOutput {
     }
 }
 
-public struct ListUserPoliciesInput {
+public struct ListUserPoliciesInput: Swift.Sendable {
     /// Use this parameter only when paginating results and only after you receive a response indicating that the results are truncated. Set it to the value of the Marker element in the response that you received to indicate where the next call should start.
     public var marker: Swift.String?
     /// Use this only when paginating results to indicate the maximum number of items you want in the response. If additional items exist beyond the maximum you specify, the IsTruncated response element is true. If you do not include this parameter, the number of items defaults to 100. Note that IAM might return fewer results, even when there are more results available. In that case, the IsTruncated response element returns true, and Marker contains a value to include in the subsequent call that tells the service where to continue from.
@@ -6401,7 +6402,7 @@ public struct ListUserPoliciesInput {
 }
 
 /// Contains the response to a successful [ListUserPolicies] request.
-public struct ListUserPoliciesOutput {
+public struct ListUserPoliciesOutput: Swift.Sendable {
     /// A flag that indicates whether there are more items to return. If your results were truncated, you can make a subsequent pagination request using the Marker request parameter to retrieve more items. Note that IAM might return fewer than the MaxItems number of results even when there are more results available. We recommend that you check IsTruncated after every call to ensure that you receive all your results.
     public var isTruncated: Swift.Bool
     /// When IsTruncated is true, this element is present and contains the value to use for the Marker parameter in a subsequent pagination request.
@@ -6422,7 +6423,7 @@ public struct ListUserPoliciesOutput {
     }
 }
 
-public struct ListUsersInput {
+public struct ListUsersInput: Swift.Sendable {
     /// Use this parameter only when paginating results and only after you receive a response indicating that the results are truncated. Set it to the value of the Marker element in the response that you received to indicate where the next call should start.
     public var marker: Swift.String?
     /// Use this only when paginating results to indicate the maximum number of items you want in the response. If additional items exist beyond the maximum you specify, the IsTruncated response element is true. If you do not include this parameter, the number of items defaults to 100. Note that IAM might return fewer results, even when there are more results available. In that case, the IsTruncated response element returns true, and Marker contains a value to include in the subsequent call that tells the service where to continue from.
@@ -6443,7 +6444,7 @@ public struct ListUsersInput {
 }
 
 /// Contains the response to a successful [ListUsers] request.
-public struct ListUsersOutput {
+public struct ListUsersOutput: Swift.Sendable {
     /// A flag that indicates whether there are more items to return. If your results were truncated, you can make a subsequent pagination request using the Marker request parameter to retrieve more items. Note that IAM might return fewer than the MaxItems number of results even when there are more results available. We recommend that you check IsTruncated after every call to ensure that you receive all your results.
     public var isTruncated: Swift.Bool
     /// When IsTruncated is true, this element is present and contains the value to use for the Marker parameter in a subsequent pagination request.
@@ -6464,7 +6465,7 @@ public struct ListUsersOutput {
     }
 }
 
-public struct ListUserTagsInput {
+public struct ListUserTagsInput: Swift.Sendable {
     /// Use this parameter only when paginating results and only after you receive a response indicating that the results are truncated. Set it to the value of the Marker element in the response that you received to indicate where the next call should start.
     public var marker: Swift.String?
     /// Use this only when paginating results to indicate the maximum number of items you want in the response. If additional items exist beyond the maximum you specify, the IsTruncated response element is true. If you do not include this parameter, the number of items defaults to 100. Note that IAM might return fewer results, even when there are more results available. In that case, the IsTruncated response element returns true, and Marker contains a value to include in the subsequent call that tells the service where to continue from.
@@ -6485,7 +6486,7 @@ public struct ListUserTagsInput {
     }
 }
 
-public struct ListUserTagsOutput {
+public struct ListUserTagsOutput: Swift.Sendable {
     /// A flag that indicates whether there are more items to return. If your results were truncated, you can make a subsequent pagination request using the Marker request parameter to retrieve more items. Note that IAM might return fewer than the MaxItems number of results even when there are more results available. We recommend that you check IsTruncated after every call to ensure that you receive all your results.
     public var isTruncated: Swift.Bool
     /// When IsTruncated is true, this element is present and contains the value to use for the Marker parameter in a subsequent pagination request.
@@ -6506,7 +6507,7 @@ public struct ListUserTagsOutput {
     }
 }
 
-public struct ListVirtualMFADevicesInput {
+public struct ListVirtualMFADevicesInput: Swift.Sendable {
     /// The status (Unassigned or Assigned) of the devices to list. If you do not specify an AssignmentStatus, the operation defaults to Any, which lists both assigned and unassigned virtual MFA devices.,
     public var assignmentStatus: IAMClientTypes.AssignmentStatusType?
     /// Use this parameter only when paginating results and only after you receive a response indicating that the results are truncated. Set it to the value of the Marker element in the response that you received to indicate where the next call should start.
@@ -6527,7 +6528,7 @@ public struct ListVirtualMFADevicesInput {
 }
 
 /// Contains the response to a successful [ListVirtualMFADevices] request.
-public struct ListVirtualMFADevicesOutput {
+public struct ListVirtualMFADevicesOutput: Swift.Sendable {
     /// A flag that indicates whether there are more items to return. If your results were truncated, you can make a subsequent pagination request using the Marker request parameter to retrieve more items. Note that IAM might return fewer than the MaxItems number of results even when there are more results available. We recommend that you check IsTruncated after every call to ensure that you receive all your results.
     public var isTruncated: Swift.Bool
     /// When IsTruncated is true, this element is present and contains the value to use for the Marker parameter in a subsequent pagination request.
@@ -6548,7 +6549,7 @@ public struct ListVirtualMFADevicesOutput {
     }
 }
 
-public struct PutGroupPolicyInput {
+public struct PutGroupPolicyInput: Swift.Sendable {
     /// The name of the group to associate the policy with. This parameter allows (through its [regex pattern](http://wikipedia.org/wiki/regex)) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-.
     /// This member is required.
     public var groupName: Swift.String?
@@ -6577,7 +6578,7 @@ public struct PutGroupPolicyInput {
     }
 }
 
-public struct PutRolePermissionsBoundaryInput {
+public struct PutRolePermissionsBoundaryInput: Swift.Sendable {
     /// The ARN of the managed policy that is used to set the permissions boundary for the role. A permissions boundary policy defines the maximum permissions that identity-based policies can grant to an entity, but does not grant permissions. Permissions boundaries do not define the maximum permissions that a resource-based policy can grant to an entity. To learn more, see [Permissions boundaries for IAM entities](https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies_boundaries.html) in the IAM User Guide. For more information about policy types, see [Policy types ](https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies.html#access_policy-types) in the IAM User Guide.
     /// This member is required.
     public var permissionsBoundary: Swift.String?
@@ -6595,7 +6596,7 @@ public struct PutRolePermissionsBoundaryInput {
     }
 }
 
-public struct PutRolePolicyInput {
+public struct PutRolePolicyInput: Swift.Sendable {
     /// The policy document. You must provide policies in JSON format in IAM. However, for CloudFormation templates formatted in YAML, you can provide the policy in JSON or YAML format. CloudFormation always converts a YAML policy to JSON format before submitting it to IAM. The [regex pattern](http://wikipedia.org/wiki/regex) used to validate this parameter is a string of characters consisting of the following:
     ///
     /// * Any printable ASCII character ranging from the space character (\u0020) through the end of the ASCII character range
@@ -6624,7 +6625,7 @@ public struct PutRolePolicyInput {
     }
 }
 
-public struct PutUserPermissionsBoundaryInput {
+public struct PutUserPermissionsBoundaryInput: Swift.Sendable {
     /// The ARN of the managed policy that is used to set the permissions boundary for the user. A permissions boundary policy defines the maximum permissions that identity-based policies can grant to an entity, but does not grant permissions. Permissions boundaries do not define the maximum permissions that a resource-based policy can grant to an entity. To learn more, see [Permissions boundaries for IAM entities](https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies_boundaries.html) in the IAM User Guide. For more information about policy types, see [Policy types ](https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies.html#access_policy-types) in the IAM User Guide.
     /// This member is required.
     public var permissionsBoundary: Swift.String?
@@ -6642,7 +6643,7 @@ public struct PutUserPermissionsBoundaryInput {
     }
 }
 
-public struct PutUserPolicyInput {
+public struct PutUserPolicyInput: Swift.Sendable {
     /// The policy document. You must provide policies in JSON format in IAM. However, for CloudFormation templates formatted in YAML, you can provide the policy in JSON or YAML format. CloudFormation always converts a YAML policy to JSON format before submitting it to IAM. The [regex pattern](http://wikipedia.org/wiki/regex) used to validate this parameter is a string of characters consisting of the following:
     ///
     /// * Any printable ASCII character ranging from the space character (\u0020) through the end of the ASCII character range
@@ -6671,7 +6672,7 @@ public struct PutUserPolicyInput {
     }
 }
 
-public struct RemoveClientIDFromOpenIDConnectProviderInput {
+public struct RemoveClientIDFromOpenIDConnectProviderInput: Swift.Sendable {
     /// The client ID (also known as audience) to remove from the IAM OIDC provider resource. For more information about client IDs, see [CreateOpenIDConnectProvider].
     /// This member is required.
     public var clientID: Swift.String?
@@ -6689,7 +6690,7 @@ public struct RemoveClientIDFromOpenIDConnectProviderInput {
     }
 }
 
-public struct RemoveRoleFromInstanceProfileInput {
+public struct RemoveRoleFromInstanceProfileInput: Swift.Sendable {
     /// The name of the instance profile to update. This parameter allows (through its [regex pattern](http://wikipedia.org/wiki/regex)) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-
     /// This member is required.
     public var instanceProfileName: Swift.String?
@@ -6707,7 +6708,7 @@ public struct RemoveRoleFromInstanceProfileInput {
     }
 }
 
-public struct RemoveUserFromGroupInput {
+public struct RemoveUserFromGroupInput: Swift.Sendable {
     /// The name of the group to update. This parameter allows (through its [regex pattern](http://wikipedia.org/wiki/regex)) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-
     /// This member is required.
     public var groupName: Swift.String?
@@ -6725,7 +6726,7 @@ public struct RemoveUserFromGroupInput {
     }
 }
 
-public struct ResetServiceSpecificCredentialInput {
+public struct ResetServiceSpecificCredentialInput: Swift.Sendable {
     /// The unique identifier of the service-specific credential. This parameter allows (through its [regex pattern](http://wikipedia.org/wiki/regex)) a string of characters that can consist of any upper or lowercased letter or digit.
     /// This member is required.
     public var serviceSpecificCredentialId: Swift.String?
@@ -6742,7 +6743,7 @@ public struct ResetServiceSpecificCredentialInput {
     }
 }
 
-public struct ResetServiceSpecificCredentialOutput {
+public struct ResetServiceSpecificCredentialOutput: Swift.Sendable {
     /// A structure with details about the updated service-specific credential, including the new password. This is the only time that you can access the password. You cannot recover the password later, but you can reset it again.
     public var serviceSpecificCredential: IAMClientTypes.ServiceSpecificCredential?
 
@@ -6754,7 +6755,7 @@ public struct ResetServiceSpecificCredentialOutput {
     }
 }
 
-public struct ResyncMFADeviceInput {
+public struct ResyncMFADeviceInput: Swift.Sendable {
     /// An authentication code emitted by the device. The format for this parameter is a sequence of six digits.
     /// This member is required.
     public var authenticationCode1: Swift.String?
@@ -6782,7 +6783,7 @@ public struct ResyncMFADeviceInput {
     }
 }
 
-public struct SetDefaultPolicyVersionInput {
+public struct SetDefaultPolicyVersionInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the IAM policy whose default version you want to set. For more information about ARNs, see [Amazon Resource Names (ARNs)](https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html) in the Amazon Web Services General Reference.
     /// This member is required.
     public var policyArn: Swift.String?
@@ -6802,7 +6803,7 @@ public struct SetDefaultPolicyVersionInput {
 
 extension IAMClientTypes {
 
-    public enum GlobalEndpointTokenVersion: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum GlobalEndpointTokenVersion: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case v1token
         case v2token
         case sdkUnknown(Swift.String)
@@ -6829,7 +6830,7 @@ extension IAMClientTypes {
     }
 }
 
-public struct SetSecurityTokenServicePreferencesInput {
+public struct SetSecurityTokenServicePreferencesInput: Swift.Sendable {
     /// The version of the global endpoint token. Version 1 tokens are valid only in Amazon Web Services Regions that are available by default. These tokens do not work in manually enabled Regions, such as Asia Pacific (Hong Kong). Version 2 tokens are valid in all Regions. However, version 2 tokens are longer and might affect systems where you temporarily store tokens. For information, see [Activating and deactivating STS in an Amazon Web Services Region](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_temp_enable-regions.html) in the IAM User Guide.
     /// This member is required.
     public var globalEndpointTokenVersion: IAMClientTypes.GlobalEndpointTokenVersion?
@@ -6868,7 +6869,7 @@ public struct PolicyEvaluationException: ClientRuntime.ModeledError, AWSClientRu
 
 extension IAMClientTypes {
 
-    public enum ContextKeyTypeEnum: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ContextKeyTypeEnum: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case binary
         case binaryList
         case boolean
@@ -6926,8 +6927,9 @@ extension IAMClientTypes {
 }
 
 extension IAMClientTypes {
+
     /// Contains information about a condition context key. It includes the name of the key and specifies the value (or values, if the context key supports multiple values) to use in the simulation. This information is used when evaluating the Condition elements of the input policies. This data type is used as an input parameter to [SimulateCustomPolicy] and [SimulatePrincipalPolicy].
-    public struct ContextEntry {
+    public struct ContextEntry: Swift.Sendable {
         /// The full name of a condition context key, including the service prefix. For example, aws:SourceIp or s3:VersionId.
         public var contextKeyName: Swift.String?
         /// The data type of the value (or values) specified in the ContextKeyValues parameter.
@@ -6946,10 +6948,9 @@ extension IAMClientTypes {
             self.contextKeyValues = contextKeyValues
         }
     }
-
 }
 
-public struct SimulateCustomPolicyInput {
+public struct SimulateCustomPolicyInput: Swift.Sendable {
     /// A list of names of API operations to evaluate in the simulation. Each operation is evaluated against each resource. Each operation must include the service identifier, such as iam:CreateUser. This operation does not support using wildcards (*) in an action name.
     /// This member is required.
     public var actionNames: [Swift.String]?
@@ -7034,7 +7035,7 @@ public struct SimulateCustomPolicyInput {
 
 extension IAMClientTypes {
 
-    public enum PolicyEvaluationDecisionType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum PolicyEvaluationDecisionType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case allowed
         case explicitDeny
         case implicitDeny
@@ -7065,8 +7066,9 @@ extension IAMClientTypes {
 }
 
 extension IAMClientTypes {
+
     /// Contains the row and column of a location of a Statement element in a policy document. This data type is used as a member of the [Statement] type.
-    public struct Position {
+    public struct Position: Swift.Sendable {
         /// The column in the line containing the specified position in the document.
         public var column: Swift.Int
         /// The line containing the specified position in the document.
@@ -7081,12 +7083,11 @@ extension IAMClientTypes {
             self.line = line
         }
     }
-
 }
 
 extension IAMClientTypes {
 
-    public enum PolicySourceType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum PolicySourceType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case awsManaged
         case group
         case `none`
@@ -7129,8 +7130,9 @@ extension IAMClientTypes {
 }
 
 extension IAMClientTypes {
+
     /// Contains a reference to a Statement element in a policy document that determines the result of the simulation. This data type is used by the MatchedStatements member of the [EvaluationResult] type.
-    public struct Statement {
+    public struct Statement: Swift.Sendable {
         /// The row and column of the end of a Statement in an IAM policy.
         public var endPosition: IAMClientTypes.Position?
         /// The identifier of the policy that was provided as an input.
@@ -7153,12 +7155,12 @@ extension IAMClientTypes {
             self.startPosition = startPosition
         }
     }
-
 }
 
 extension IAMClientTypes {
+
     /// Contains information about the effect that Organizations has on a policy simulation.
-    public struct OrganizationsDecisionDetail {
+    public struct OrganizationsDecisionDetail: Swift.Sendable {
         /// Specifies whether the simulated operation is allowed by the Organizations service control policies that impact the simulated user's account.
         public var allowedByOrganizations: Swift.Bool
 
@@ -7169,12 +7171,12 @@ extension IAMClientTypes {
             self.allowedByOrganizations = allowedByOrganizations
         }
     }
-
 }
 
 extension IAMClientTypes {
+
     /// Contains information about the effect that a permissions boundary has on a policy simulation when the boundary is applied to an IAM entity.
-    public struct PermissionsBoundaryDecisionDetail {
+    public struct PermissionsBoundaryDecisionDetail: Swift.Sendable {
         /// Specifies whether an action is allowed by a permissions boundary that is applied to an IAM entity (user or role). A value of true means that the permissions boundary does not deny the action. This means that the policy includes an Allow statement that matches the request. In this case, if an identity-based policy also allows the action, the request is allowed. A value of false means that either the requested action is not allowed (implicitly denied) or that the action is explicitly denied by the permissions boundary. In both of these cases, the action is not allowed, regardless of the identity-based policy.
         public var allowedByPermissionsBoundary: Swift.Bool
 
@@ -7185,12 +7187,12 @@ extension IAMClientTypes {
             self.allowedByPermissionsBoundary = allowedByPermissionsBoundary
         }
     }
-
 }
 
 extension IAMClientTypes {
+
     /// Contains the result of the simulation of a single API operation call on a single resource. This data type is used by a member of the [EvaluationResult] data type.
-    public struct ResourceSpecificResult {
+    public struct ResourceSpecificResult: Swift.Sendable {
         /// Additional details about the results of the evaluation decision on a single resource. This parameter is returned only for cross-account simulations. This parameter explains how each policy type contributes to the resource-specific evaluation decision.
         public var evalDecisionDetails: [Swift.String: IAMClientTypes.PolicyEvaluationDecisionType]?
         /// The result of the simulation of the simulated API operation on the resource specified in EvalResourceName.
@@ -7223,12 +7225,12 @@ extension IAMClientTypes {
             self.permissionsBoundaryDecisionDetail = permissionsBoundaryDecisionDetail
         }
     }
-
 }
 
 extension IAMClientTypes {
+
     /// Contains the results of a simulation. This data type is used by the return parameter of [SimulateCustomPolicy] and [SimulatePrincipalPolicy].
-    public struct EvaluationResult {
+    public struct EvaluationResult: Swift.Sendable {
         /// The name of the API operation tested on the indicated resource.
         /// This member is required.
         public var evalActionName: Swift.String?
@@ -7273,11 +7275,10 @@ extension IAMClientTypes {
             self.resourceSpecificResults = resourceSpecificResults
         }
     }
-
 }
 
 /// Contains the response to a successful [SimulatePrincipalPolicy] or [SimulateCustomPolicy] request.
-public struct SimulateCustomPolicyOutput {
+public struct SimulateCustomPolicyOutput: Swift.Sendable {
     /// The results of the simulation.
     public var evaluationResults: [IAMClientTypes.EvaluationResult]?
     /// A flag that indicates whether there are more items to return. If your results were truncated, you can make a subsequent pagination request using the Marker request parameter to retrieve more items. Note that IAM might return fewer than the MaxItems number of results even when there are more results available. We recommend that you check IsTruncated after every call to ensure that you receive all your results.
@@ -7297,7 +7298,7 @@ public struct SimulateCustomPolicyOutput {
     }
 }
 
-public struct SimulatePrincipalPolicyInput {
+public struct SimulatePrincipalPolicyInput: Swift.Sendable {
     /// A list of names of API operations to evaluate in the simulation. Each operation is evaluated for each resource. Each operation must include the service identifier, such as iam:CreateUser.
     /// This member is required.
     public var actionNames: [Swift.String]?
@@ -7385,7 +7386,7 @@ public struct SimulatePrincipalPolicyInput {
 }
 
 /// Contains the response to a successful [SimulatePrincipalPolicy] or [SimulateCustomPolicy] request.
-public struct SimulatePrincipalPolicyOutput {
+public struct SimulatePrincipalPolicyOutput: Swift.Sendable {
     /// The results of the simulation.
     public var evaluationResults: [IAMClientTypes.EvaluationResult]?
     /// A flag that indicates whether there are more items to return. If your results were truncated, you can make a subsequent pagination request using the Marker request parameter to retrieve more items. Note that IAM might return fewer than the MaxItems number of results even when there are more results available. We recommend that you check IsTruncated after every call to ensure that you receive all your results.
@@ -7405,7 +7406,7 @@ public struct SimulatePrincipalPolicyOutput {
     }
 }
 
-public struct TagInstanceProfileInput {
+public struct TagInstanceProfileInput: Swift.Sendable {
     /// The name of the IAM instance profile to which you want to add tags. This parameter allows (through its [regex pattern](http://wikipedia.org/wiki/regex)) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-
     /// This member is required.
     public var instanceProfileName: Swift.String?
@@ -7423,7 +7424,7 @@ public struct TagInstanceProfileInput {
     }
 }
 
-public struct TagMFADeviceInput {
+public struct TagMFADeviceInput: Swift.Sendable {
     /// The unique identifier for the IAM virtual MFA device to which you want to add tags. For virtual MFA devices, the serial number is the same as the ARN. This parameter allows (through its [regex pattern](http://wikipedia.org/wiki/regex)) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-
     /// This member is required.
     public var serialNumber: Swift.String?
@@ -7441,7 +7442,7 @@ public struct TagMFADeviceInput {
     }
 }
 
-public struct TagOpenIDConnectProviderInput {
+public struct TagOpenIDConnectProviderInput: Swift.Sendable {
     /// The ARN of the OIDC identity provider in IAM to which you want to add tags. This parameter allows (through its [regex pattern](http://wikipedia.org/wiki/regex)) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-
     /// This member is required.
     public var openIDConnectProviderArn: Swift.String?
@@ -7459,7 +7460,7 @@ public struct TagOpenIDConnectProviderInput {
     }
 }
 
-public struct TagPolicyInput {
+public struct TagPolicyInput: Swift.Sendable {
     /// The ARN of the IAM customer managed policy to which you want to add tags. This parameter allows (through its [regex pattern](http://wikipedia.org/wiki/regex)) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-
     /// This member is required.
     public var policyArn: Swift.String?
@@ -7477,7 +7478,7 @@ public struct TagPolicyInput {
     }
 }
 
-public struct TagRoleInput {
+public struct TagRoleInput: Swift.Sendable {
     /// The name of the IAM role to which you want to add tags. This parameter accepts (through its [regex pattern](http://wikipedia.org/wiki/regex)) a string of characters that consist of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-
     /// This member is required.
     public var roleName: Swift.String?
@@ -7495,7 +7496,7 @@ public struct TagRoleInput {
     }
 }
 
-public struct TagSAMLProviderInput {
+public struct TagSAMLProviderInput: Swift.Sendable {
     /// The ARN of the SAML identity provider in IAM to which you want to add tags. This parameter allows (through its [regex pattern](http://wikipedia.org/wiki/regex)) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-
     /// This member is required.
     public var samlProviderArn: Swift.String?
@@ -7513,7 +7514,7 @@ public struct TagSAMLProviderInput {
     }
 }
 
-public struct TagServerCertificateInput {
+public struct TagServerCertificateInput: Swift.Sendable {
     /// The name of the IAM server certificate to which you want to add tags. This parameter allows (through its [regex pattern](http://wikipedia.org/wiki/regex)) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-
     /// This member is required.
     public var serverCertificateName: Swift.String?
@@ -7531,7 +7532,7 @@ public struct TagServerCertificateInput {
     }
 }
 
-public struct TagUserInput {
+public struct TagUserInput: Swift.Sendable {
     /// The list of tags that you want to attach to the IAM user. Each tag consists of a key name and an associated value.
     /// This member is required.
     public var tags: [IAMClientTypes.Tag]?
@@ -7549,7 +7550,7 @@ public struct TagUserInput {
     }
 }
 
-public struct UntagInstanceProfileInput {
+public struct UntagInstanceProfileInput: Swift.Sendable {
     /// The name of the IAM instance profile from which you want to remove tags. This parameter allows (through its [regex pattern](http://wikipedia.org/wiki/regex)) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-
     /// This member is required.
     public var instanceProfileName: Swift.String?
@@ -7567,7 +7568,7 @@ public struct UntagInstanceProfileInput {
     }
 }
 
-public struct UntagMFADeviceInput {
+public struct UntagMFADeviceInput: Swift.Sendable {
     /// The unique identifier for the IAM virtual MFA device from which you want to remove tags. For virtual MFA devices, the serial number is the same as the ARN. This parameter allows (through its [regex pattern](http://wikipedia.org/wiki/regex)) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-
     /// This member is required.
     public var serialNumber: Swift.String?
@@ -7585,7 +7586,7 @@ public struct UntagMFADeviceInput {
     }
 }
 
-public struct UntagOpenIDConnectProviderInput {
+public struct UntagOpenIDConnectProviderInput: Swift.Sendable {
     /// The ARN of the OIDC provider in IAM from which you want to remove tags. This parameter allows (through its [regex pattern](http://wikipedia.org/wiki/regex)) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-
     /// This member is required.
     public var openIDConnectProviderArn: Swift.String?
@@ -7603,7 +7604,7 @@ public struct UntagOpenIDConnectProviderInput {
     }
 }
 
-public struct UntagPolicyInput {
+public struct UntagPolicyInput: Swift.Sendable {
     /// The ARN of the IAM customer managed policy from which you want to remove tags. This parameter allows (through its [regex pattern](http://wikipedia.org/wiki/regex)) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-
     /// This member is required.
     public var policyArn: Swift.String?
@@ -7621,7 +7622,7 @@ public struct UntagPolicyInput {
     }
 }
 
-public struct UntagRoleInput {
+public struct UntagRoleInput: Swift.Sendable {
     /// The name of the IAM role from which you want to remove tags. This parameter accepts (through its [regex pattern](http://wikipedia.org/wiki/regex)) a string of characters that consist of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-
     /// This member is required.
     public var roleName: Swift.String?
@@ -7639,7 +7640,7 @@ public struct UntagRoleInput {
     }
 }
 
-public struct UntagSAMLProviderInput {
+public struct UntagSAMLProviderInput: Swift.Sendable {
     /// The ARN of the SAML identity provider in IAM from which you want to remove tags. This parameter allows (through its [regex pattern](http://wikipedia.org/wiki/regex)) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-
     /// This member is required.
     public var samlProviderArn: Swift.String?
@@ -7657,7 +7658,7 @@ public struct UntagSAMLProviderInput {
     }
 }
 
-public struct UntagServerCertificateInput {
+public struct UntagServerCertificateInput: Swift.Sendable {
     /// The name of the IAM server certificate from which you want to remove tags. This parameter allows (through its [regex pattern](http://wikipedia.org/wiki/regex)) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-
     /// This member is required.
     public var serverCertificateName: Swift.String?
@@ -7675,7 +7676,7 @@ public struct UntagServerCertificateInput {
     }
 }
 
-public struct UntagUserInput {
+public struct UntagUserInput: Swift.Sendable {
     /// A list of key names as a simple array of strings. The tags with matching keys are removed from the specified user.
     /// This member is required.
     public var tagKeys: [Swift.String]?
@@ -7693,7 +7694,7 @@ public struct UntagUserInput {
     }
 }
 
-public struct UpdateAccessKeyInput {
+public struct UpdateAccessKeyInput: Swift.Sendable {
     /// The access key ID of the secret access key you want to update. This parameter allows (through its [regex pattern](http://wikipedia.org/wiki/regex)) a string of characters that can consist of any upper or lowercased letter or digit.
     /// This member is required.
     public var accessKeyId: Swift.String?
@@ -7715,7 +7716,7 @@ public struct UpdateAccessKeyInput {
     }
 }
 
-public struct UpdateAccountPasswordPolicyInput {
+public struct UpdateAccountPasswordPolicyInput: Swift.Sendable {
     /// Allows all IAM users in your account to use the Amazon Web Services Management Console to change their own passwords. For more information, see [Permitting IAM users to change their own passwords](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_passwords_enable-user-change.html) in the IAM User Guide. If you do not specify a value for this parameter, then the operation uses the default value of false. The result is that IAM users in the account do not automatically have permissions to change their own password.
     public var allowUsersToChangePassword: Swift.Bool?
     /// Prevents IAM users who are accessing the account via the Amazon Web Services Management Console from setting a new console password after their password has expired. The IAM user cannot access the console until an administrator resets the password. If you do not specify a value for this parameter, then the operation uses the default value of false. The result is that IAM users can change their passwords after they expire and continue to sign in as the user. In the Amazon Web Services Management Console, the custom password policy option Allow users to change their own password gives IAM users permissions to iam:ChangePassword for only their user and to the iam:GetAccountPasswordPolicy action. This option does not attach a permissions policy to each user, rather the permissions are applied at the account-level for all users by IAM. IAM users with iam:ChangePassword permission and active access keys can reset their own expired console password using the CLI or API.
@@ -7759,7 +7760,7 @@ public struct UpdateAccountPasswordPolicyInput {
     }
 }
 
-public struct UpdateAssumeRolePolicyInput {
+public struct UpdateAssumeRolePolicyInput: Swift.Sendable {
     /// The policy that grants an entity permission to assume the role. You must provide policies in JSON format in IAM. However, for CloudFormation templates formatted in YAML, you can provide the policy in JSON or YAML format. CloudFormation always converts a YAML policy to JSON format before submitting it to IAM. The [regex pattern](http://wikipedia.org/wiki/regex) used to validate this parameter is a string of characters consisting of the following:
     ///
     /// * Any printable ASCII character ranging from the space character (\u0020) through the end of the ASCII character range
@@ -7783,7 +7784,7 @@ public struct UpdateAssumeRolePolicyInput {
     }
 }
 
-public struct UpdateGroupInput {
+public struct UpdateGroupInput: Swift.Sendable {
     /// Name of the IAM group to update. If you're changing the name of the group, this is the original name. This parameter allows (through its [regex pattern](http://wikipedia.org/wiki/regex)) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-
     /// This member is required.
     public var groupName: Swift.String?
@@ -7804,7 +7805,7 @@ public struct UpdateGroupInput {
     }
 }
 
-public struct UpdateLoginProfileInput {
+public struct UpdateLoginProfileInput: Swift.Sendable {
     /// The new password for the specified IAM user. The [regex pattern](http://wikipedia.org/wiki/regex) used to validate this parameter is a string of characters consisting of the following:
     ///
     /// * Any printable ASCII character ranging from the space character (\u0020) through the end of the ASCII character range
@@ -7839,7 +7840,7 @@ extension UpdateLoginProfileInput: Swift.CustomDebugStringConvertible {
         "UpdateLoginProfileInput(passwordResetRequired: \(Swift.String(describing: passwordResetRequired)), userName: \(Swift.String(describing: userName)), password: \"CONTENT_REDACTED\")"}
 }
 
-public struct UpdateOpenIDConnectProviderThumbprintInput {
+public struct UpdateOpenIDConnectProviderThumbprintInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the IAM OIDC provider resource object for which you want to update the thumbprint. You can get a list of OIDC provider ARNs by using the [ListOpenIDConnectProviders] operation. For more information about ARNs, see [Amazon Resource Names (ARNs)](https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html) in the Amazon Web Services General Reference.
     /// This member is required.
     public var openIDConnectProviderArn: Swift.String?
@@ -7857,7 +7858,7 @@ public struct UpdateOpenIDConnectProviderThumbprintInput {
     }
 }
 
-public struct UpdateRoleInput {
+public struct UpdateRoleInput: Swift.Sendable {
     /// The new description that you want to apply to the specified role.
     public var description: Swift.String?
     /// The maximum session duration (in seconds) that you want to set for the specified role. If you do not specify a value for this setting, the default value of one hour is applied. This setting can have a value from 1 hour to 12 hours. Anyone who assumes the role from the CLI or API can use the DurationSeconds API parameter or the duration-seconds CLI parameter to request a longer session. The MaxSessionDuration setting determines the maximum duration that can be requested using the DurationSeconds parameter. If users don't specify a value for the DurationSeconds parameter, their security credentials are valid for one hour by default. This applies when you use the AssumeRole* API operations or the assume-role* CLI operations but does not apply when you use those operations to create a console URL. For more information, see [Using IAM roles](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_use.html) in the IAM User Guide. IAM role credentials provided by Amazon EC2 instances assigned to the role are not subject to the specified maximum session duration.
@@ -7878,12 +7879,12 @@ public struct UpdateRoleInput {
     }
 }
 
-public struct UpdateRoleOutput {
+public struct UpdateRoleOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdateRoleDescriptionInput {
+public struct UpdateRoleDescriptionInput: Swift.Sendable {
     /// The new description that you want to apply to the specified role.
     /// This member is required.
     public var description: Swift.String?
@@ -7901,7 +7902,7 @@ public struct UpdateRoleDescriptionInput {
     }
 }
 
-public struct UpdateRoleDescriptionOutput {
+public struct UpdateRoleDescriptionOutput: Swift.Sendable {
     /// A structure that contains details about the modified role.
     public var role: IAMClientTypes.Role?
 
@@ -7913,7 +7914,7 @@ public struct UpdateRoleDescriptionOutput {
     }
 }
 
-public struct UpdateSAMLProviderInput {
+public struct UpdateSAMLProviderInput: Swift.Sendable {
     /// An XML document generated by an identity provider (IdP) that supports SAML 2.0. The document includes the issuer's name, expiration information, and keys that can be used to validate the SAML authentication response (assertions) that are received from the IdP. You must generate the metadata document using the identity management software that is used as your organization's IdP.
     /// This member is required.
     public var samlMetadataDocument: Swift.String?
@@ -7932,7 +7933,7 @@ public struct UpdateSAMLProviderInput {
 }
 
 /// Contains the response to a successful [UpdateSAMLProvider] request.
-public struct UpdateSAMLProviderOutput {
+public struct UpdateSAMLProviderOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the SAML provider that was updated.
     public var samlProviderArn: Swift.String?
 
@@ -7944,7 +7945,7 @@ public struct UpdateSAMLProviderOutput {
     }
 }
 
-public struct UpdateServerCertificateInput {
+public struct UpdateServerCertificateInput: Swift.Sendable {
     /// The new path for the server certificate. Include this only if you are updating the server certificate's path. This parameter allows (through its [regex pattern](http://wikipedia.org/wiki/regex)) a string of characters consisting of either a forward slash (/) by itself or a string that must begin and end with forward slashes. In addition, it can contain any ASCII character from the ! (\u0021) through the DEL character (\u007F), including most punctuation characters, digits, and upper and lowercased letters.
     public var newPath: Swift.String?
     /// The new name for the server certificate. Include this only if you are updating the server certificate's name. The name of the certificate cannot contain any spaces. This parameter allows (through its [regex pattern](http://wikipedia.org/wiki/regex)) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-
@@ -7965,7 +7966,7 @@ public struct UpdateServerCertificateInput {
     }
 }
 
-public struct UpdateServiceSpecificCredentialInput {
+public struct UpdateServiceSpecificCredentialInput: Swift.Sendable {
     /// The unique identifier of the service-specific credential. This parameter allows (through its [regex pattern](http://wikipedia.org/wiki/regex)) a string of characters that can consist of any upper or lowercased letter or digit.
     /// This member is required.
     public var serviceSpecificCredentialId: Swift.String?
@@ -7987,7 +7988,7 @@ public struct UpdateServiceSpecificCredentialInput {
     }
 }
 
-public struct UpdateSigningCertificateInput {
+public struct UpdateSigningCertificateInput: Swift.Sendable {
     /// The ID of the signing certificate you want to update. This parameter allows (through its [regex pattern](http://wikipedia.org/wiki/regex)) a string of characters that can consist of any upper or lowercased letter or digit.
     /// This member is required.
     public var certificateId: Swift.String?
@@ -8009,7 +8010,7 @@ public struct UpdateSigningCertificateInput {
     }
 }
 
-public struct UpdateSSHPublicKeyInput {
+public struct UpdateSSHPublicKeyInput: Swift.Sendable {
     /// The unique identifier for the SSH public key. This parameter allows (through its [regex pattern](http://wikipedia.org/wiki/regex)) a string of characters that can consist of any upper or lowercased letter or digit.
     /// This member is required.
     public var sshPublicKeyId: Swift.String?
@@ -8032,7 +8033,7 @@ public struct UpdateSSHPublicKeyInput {
     }
 }
 
-public struct UpdateUserInput {
+public struct UpdateUserInput: Swift.Sendable {
     /// New path for the IAM user. Include this parameter only if you're changing the user's path. This parameter allows (through its [regex pattern](http://wikipedia.org/wiki/regex)) a string of characters consisting of either a forward slash (/) by itself or a string that must begin and end with forward slashes. In addition, it can contain any ASCII character from the ! (\u0021) through the DEL character (\u007F), including most punctuation characters, digits, and upper and lowercased letters.
     public var newPath: Swift.String?
     /// New name for the user. Include this parameter only if you're changing the user's name. IAM user, group, role, and policy names must be unique within the account. Names are not distinguished by case. For example, you cannot create resources named both "MyResource" and "myresource".
@@ -8101,7 +8102,7 @@ public struct MalformedCertificateException: ClientRuntime.ModeledError, AWSClie
     }
 }
 
-public struct UploadServerCertificateInput {
+public struct UploadServerCertificateInput: Swift.Sendable {
     /// The contents of the public key certificate in PEM-encoded format. The [regex pattern](http://wikipedia.org/wiki/regex) used to validate this parameter is a string of characters consisting of the following:
     ///
     /// * Any printable ASCII character ranging from the space character (\u0020) through the end of the ASCII character range
@@ -8160,7 +8161,7 @@ extension UploadServerCertificateInput: Swift.CustomDebugStringConvertible {
 }
 
 /// Contains the response to a successful [UploadServerCertificate] request.
-public struct UploadServerCertificateOutput {
+public struct UploadServerCertificateOutput: Swift.Sendable {
     /// The meta information of the uploaded server certificate without its certificate body, certificate chain, and private key.
     public var serverCertificateMetadata: IAMClientTypes.ServerCertificateMetadata?
     /// A list of tags that are attached to the new IAM server certificate. The returned list of tags is sorted by tag key. For more information about tagging, see [Tagging IAM resources](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_tags.html) in the IAM User Guide.
@@ -8224,7 +8225,7 @@ public struct InvalidCertificateException: ClientRuntime.ModeledError, AWSClient
     }
 }
 
-public struct UploadSigningCertificateInput {
+public struct UploadSigningCertificateInput: Swift.Sendable {
     /// The contents of the signing certificate. The [regex pattern](http://wikipedia.org/wiki/regex) used to validate this parameter is a string of characters consisting of the following:
     ///
     /// * Any printable ASCII character ranging from the space character (\u0020) through the end of the ASCII character range
@@ -8248,7 +8249,7 @@ public struct UploadSigningCertificateInput {
 }
 
 /// Contains the response to a successful [UploadSigningCertificate] request.
-public struct UploadSigningCertificateOutput {
+public struct UploadSigningCertificateOutput: Swift.Sendable {
     /// Information about the certificate.
     /// This member is required.
     public var certificate: IAMClientTypes.SigningCertificate?
@@ -8309,7 +8310,7 @@ public struct InvalidPublicKeyException: ClientRuntime.ModeledError, AWSClientRu
     }
 }
 
-public struct UploadSSHPublicKeyInput {
+public struct UploadSSHPublicKeyInput: Swift.Sendable {
     /// The SSH public key. The public key must be encoded in ssh-rsa format or PEM format. The minimum bit-length of the public key is 2048 bits. For example, you can generate a 2048-bit key, and the resulting PEM file is 1679 bytes long. The [regex pattern](http://wikipedia.org/wiki/regex) used to validate this parameter is a string of characters consisting of the following:
     ///
     /// * Any printable ASCII character ranging from the space character (\u0020) through the end of the ASCII character range
@@ -8334,7 +8335,7 @@ public struct UploadSSHPublicKeyInput {
 }
 
 /// Contains the response to a successful [UploadSSHPublicKey] request.
-public struct UploadSSHPublicKeyOutput {
+public struct UploadSSHPublicKeyOutput: Swift.Sendable {
     /// Contains information about the SSH public key.
     public var sshPublicKey: IAMClientTypes.SSHPublicKey?
 

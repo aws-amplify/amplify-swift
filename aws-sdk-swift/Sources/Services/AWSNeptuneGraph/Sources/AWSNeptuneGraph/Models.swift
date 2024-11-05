@@ -33,7 +33,8 @@ import struct SmithyHTTPAPI.Header
 import struct SmithyHTTPAPI.Headers
 @_spi(SmithyTimestamps) import struct SmithyTimestamps.TimestampFormatter
 
-public struct CancelQueryOutput {
+
+public struct CancelQueryOutput: Swift.Sendable {
 
     public init() { }
 }
@@ -144,7 +145,7 @@ public struct ThrottlingException: ClientRuntime.ModeledError, AWSClientRuntime.
 
 extension NeptuneGraphClientTypes {
 
-    public enum ValidationExceptionReason: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ValidationExceptionReason: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case badRequest
         case constraintViolation
         case illegalArgument
@@ -216,7 +217,7 @@ public struct ValidationException: ClientRuntime.ModeledError, AWSClientRuntime.
     }
 }
 
-public struct CancelQueryInput {
+public struct CancelQueryInput: Swift.Sendable {
     /// The unique identifier of the Neptune Analytics graph.
     /// This member is required.
     public var graphIdentifier: Swift.String?
@@ -236,7 +237,7 @@ public struct CancelQueryInput {
 
 extension NeptuneGraphClientTypes {
 
-    public enum ConflictExceptionReason: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ConflictExceptionReason: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case concurrentModification
         case sdkUnknown(Swift.String)
 
@@ -292,7 +293,7 @@ public struct ConflictException: ClientRuntime.ModeledError, AWSClientRuntime.AW
 
 extension NeptuneGraphClientTypes {
 
-    public enum UnprocessableExceptionReason: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum UnprocessableExceptionReason: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case internalLimitExceeded
         case memoryLimitExceeded
         case partitionFull
@@ -360,7 +361,7 @@ public struct UnprocessableException: ClientRuntime.ModeledError, AWSClientRunti
 
 extension NeptuneGraphClientTypes {
 
-    public enum ExplainMode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ExplainMode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case details
         case `static`
         case sdkUnknown(Swift.String)
@@ -389,7 +390,7 @@ extension NeptuneGraphClientTypes {
 
 extension NeptuneGraphClientTypes {
 
-    public enum QueryLanguage: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum QueryLanguage: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case openCypher
         case sdkUnknown(Swift.String)
 
@@ -415,7 +416,7 @@ extension NeptuneGraphClientTypes {
 
 extension NeptuneGraphClientTypes {
 
-    public enum PlanCacheType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum PlanCacheType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case auto
         case disabled
         case enabled
@@ -445,7 +446,7 @@ extension NeptuneGraphClientTypes {
     }
 }
 
-public struct ExecuteQueryInput {
+public struct ExecuteQueryInput: Swift.Sendable {
     /// The explain mode parameter returns a query explain instead of the actual query results. A query explain can be used to gather insights about the query execution such as planning decisions, time spent on each operator, solutions flowing etc.
     public var explainMode: NeptuneGraphClientTypes.ExplainMode?
     /// The unique identifier of the Neptune Analytics graph.
@@ -484,7 +485,7 @@ public struct ExecuteQueryInput {
     }
 }
 
-public struct ExecuteQueryOutput {
+public struct ExecuteQueryOutput: Swift.Sendable {
     /// The query results.
     /// This member is required.
     public var payload: Smithy.ByteStream?
@@ -499,7 +500,7 @@ public struct ExecuteQueryOutput {
 
 extension NeptuneGraphClientTypes {
 
-    public enum GraphSummaryMode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum GraphSummaryMode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case basic
         case detailed
         case sdkUnknown(Swift.String)
@@ -526,7 +527,7 @@ extension NeptuneGraphClientTypes {
     }
 }
 
-public struct GetGraphSummaryInput {
+public struct GetGraphSummaryInput: Swift.Sendable {
     /// The unique identifier of the Neptune Analytics graph.
     /// This member is required.
     public var graphIdentifier: Swift.String?
@@ -544,8 +545,9 @@ public struct GetGraphSummaryInput {
 }
 
 extension NeptuneGraphClientTypes {
+
     /// Contains information about an edge in a Neptune Analytics graph.
-    public struct EdgeStructure {
+    public struct EdgeStructure: Swift.Sendable {
         /// The number of instances of the edge in the graph.
         public var count: Swift.Int?
         /// A list of the properties associated with the edge.
@@ -560,12 +562,12 @@ extension NeptuneGraphClientTypes {
             self.edgeProperties = edgeProperties
         }
     }
-
 }
 
 extension NeptuneGraphClientTypes {
+
     /// Information about a node.
-    public struct NodeStructure {
+    public struct NodeStructure: Swift.Sendable {
         /// The number of instances of this node.
         public var count: Swift.Int?
         /// The outgoing edge labels associated with this node.
@@ -584,12 +586,12 @@ extension NeptuneGraphClientTypes {
             self.nodeProperties = nodeProperties
         }
     }
-
 }
 
 extension NeptuneGraphClientTypes {
+
     /// Summary information about the graph.
-    public struct GraphDataSummary {
+    public struct GraphDataSummary: Swift.Sendable {
         /// A list of the edge labels in the graph.
         public var edgeLabels: [Swift.String]?
         /// A list of the distinct edge properties in the graph, along with the count of edges where each property is used.
@@ -652,10 +654,9 @@ extension NeptuneGraphClientTypes {
             self.totalNodePropertyValues = totalNodePropertyValues
         }
     }
-
 }
 
-public struct GetGraphSummaryOutput {
+public struct GetGraphSummaryOutput: Swift.Sendable {
     /// The graph summary.
     public var graphSummary: NeptuneGraphClientTypes.GraphDataSummary?
     /// The timestamp, in ISO 8601 format, of the time at which Neptune Analytics last computed statistics.
@@ -675,7 +676,7 @@ public struct GetGraphSummaryOutput {
     }
 }
 
-public struct GetQueryInput {
+public struct GetQueryInput: Swift.Sendable {
     /// The unique identifier of the Neptune Analytics graph.
     /// This member is required.
     public var graphIdentifier: Swift.String?
@@ -695,7 +696,7 @@ public struct GetQueryInput {
 
 extension NeptuneGraphClientTypes {
 
-    public enum QueryState: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum QueryState: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case cancelling
         case running
         case waiting
@@ -725,7 +726,7 @@ extension NeptuneGraphClientTypes {
     }
 }
 
-public struct GetQueryOutput {
+public struct GetQueryOutput: Swift.Sendable {
     /// The number of milliseconds the query has been running.
     public var elapsed: Swift.Int?
     /// The ID of the query in question.
@@ -795,8 +796,9 @@ public struct ServiceQuotaExceededException: ClientRuntime.ModeledError, AWSClie
 }
 
 extension NeptuneGraphClientTypes {
+
     /// Specifies the number of dimensions for vector embeddings loaded into the graph. Max = 65535
-    public struct VectorSearchConfiguration {
+    public struct VectorSearchConfiguration: Swift.Sendable {
         /// The number of dimensions.
         /// This member is required.
         public var dimension: Swift.Int?
@@ -808,10 +810,9 @@ extension NeptuneGraphClientTypes {
             self.dimension = dimension
         }
     }
-
 }
 
-public struct CreateGraphInput {
+public struct CreateGraphInput: Swift.Sendable {
     /// Indicates whether or not to enable deletion protection on the graph. The graph can’t be deleted when deletion protection is enabled. (true or false).
     public var deletionProtection: Swift.Bool?
     /// A name for the new Neptune Analytics graph to be created. The name must contain from 1 to 63 letters, numbers, or hyphens, and its first character must be a letter. It cannot end with a hyphen or contain two consecutive hyphens.
@@ -855,7 +856,7 @@ public struct CreateGraphInput {
 
 extension NeptuneGraphClientTypes {
 
-    public enum GraphStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum GraphStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case available
         case creating
         case deleting
@@ -900,7 +901,7 @@ extension NeptuneGraphClientTypes {
     }
 }
 
-public struct CreateGraphOutput {
+public struct CreateGraphOutput: Swift.Sendable {
     /// The ARN of the graph.
     /// This member is required.
     public var arn: Swift.String?
@@ -971,7 +972,7 @@ public struct CreateGraphOutput {
     }
 }
 
-public struct DeleteGraphInput {
+public struct DeleteGraphInput: Swift.Sendable {
     /// The unique identifier of the Neptune Analytics graph.
     /// This member is required.
     public var graphIdentifier: Swift.String?
@@ -989,7 +990,7 @@ public struct DeleteGraphInput {
     }
 }
 
-public struct DeleteGraphOutput {
+public struct DeleteGraphOutput: Swift.Sendable {
     /// The ARN associated with the graph.
     /// This member is required.
     public var arn: Swift.String?
@@ -1060,7 +1061,7 @@ public struct DeleteGraphOutput {
     }
 }
 
-public struct GetGraphInput {
+public struct GetGraphInput: Swift.Sendable {
     /// The unique identifier of the Neptune Analytics graph.
     /// This member is required.
     public var graphIdentifier: Swift.String?
@@ -1073,7 +1074,7 @@ public struct GetGraphInput {
     }
 }
 
-public struct GetGraphOutput {
+public struct GetGraphOutput: Swift.Sendable {
     /// The ARN associated with the graph.
     /// This member is required.
     public var arn: Swift.String?
@@ -1144,7 +1145,7 @@ public struct GetGraphOutput {
     }
 }
 
-public struct ListGraphsInput {
+public struct ListGraphsInput: Swift.Sendable {
     /// The total number of records to return in the command's output. If the total number of records available is more than the value specified, nextToken is provided in the command's output. To resume pagination, provide the nextToken output value in the nextToken argument of a subsequent command. Do not use the nextToken response element directly outside of the Amazon CLI.
     public var maxResults: Swift.Int?
     /// Pagination token used to paginate output. When this value is provided as input, the service returns results from where the previous response left off. When this value is present in output, it indicates that there are more results to retrieve.
@@ -1161,8 +1162,9 @@ public struct ListGraphsInput {
 }
 
 extension NeptuneGraphClientTypes {
+
     /// Summary details about a graph.
-    public struct GraphSummary {
+    public struct GraphSummary: Swift.Sendable {
         /// The ARN associated with the graph.
         /// This member is required.
         public var arn: Swift.String?
@@ -1212,10 +1214,9 @@ extension NeptuneGraphClientTypes {
             self.status = status
         }
     }
-
 }
 
-public struct ListGraphsOutput {
+public struct ListGraphsOutput: Swift.Sendable {
     /// A list of the graphs.
     /// This member is required.
     public var graphs: [NeptuneGraphClientTypes.GraphSummary]?
@@ -1232,7 +1233,7 @@ public struct ListGraphsOutput {
     }
 }
 
-public struct ResetGraphInput {
+public struct ResetGraphInput: Swift.Sendable {
     /// ID of the graph to reset.
     /// This member is required.
     public var graphIdentifier: Swift.String?
@@ -1250,7 +1251,7 @@ public struct ResetGraphInput {
     }
 }
 
-public struct ResetGraphOutput {
+public struct ResetGraphOutput: Swift.Sendable {
     /// The ARN associated with the graph.
     /// This member is required.
     public var arn: Swift.String?
@@ -1321,7 +1322,7 @@ public struct ResetGraphOutput {
     }
 }
 
-public struct RestoreGraphFromSnapshotInput {
+public struct RestoreGraphFromSnapshotInput: Swift.Sendable {
     /// A value that indicates whether the graph has deletion protection enabled. The graph can't be deleted when deletion protection is enabled.
     public var deletionProtection: Swift.Bool?
     /// A name for the new Neptune Analytics graph to be created from the snapshot. The name must contain from 1 to 63 letters, numbers, or hyphens, and its first character must be a letter. It cannot end with a hyphen or contain two consecutive hyphens.
@@ -1359,7 +1360,7 @@ public struct RestoreGraphFromSnapshotInput {
     }
 }
 
-public struct RestoreGraphFromSnapshotOutput {
+public struct RestoreGraphFromSnapshotOutput: Swift.Sendable {
     /// The ARN associated with the graph.
     /// This member is required.
     public var arn: Swift.String?
@@ -1430,7 +1431,7 @@ public struct RestoreGraphFromSnapshotOutput {
     }
 }
 
-public struct UpdateGraphInput {
+public struct UpdateGraphInput: Swift.Sendable {
     /// A value that indicates whether the graph has deletion protection enabled. The graph can't be deleted when deletion protection is enabled.
     public var deletionProtection: Swift.Bool?
     /// The unique identifier of the Neptune Analytics graph.
@@ -1455,7 +1456,7 @@ public struct UpdateGraphInput {
     }
 }
 
-public struct UpdateGraphOutput {
+public struct UpdateGraphOutput: Swift.Sendable {
     /// The ARN associated with the graph.
     /// This member is required.
     public var arn: Swift.String?
@@ -1528,7 +1529,7 @@ public struct UpdateGraphOutput {
 
 extension NeptuneGraphClientTypes {
 
-    public enum QueryStateInput: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum QueryStateInput: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case all
         case cancelling
         case running
@@ -1561,7 +1562,7 @@ extension NeptuneGraphClientTypes {
     }
 }
 
-public struct ListQueriesInput {
+public struct ListQueriesInput: Swift.Sendable {
     /// The unique identifier of the Neptune Analytics graph.
     /// This member is required.
     public var graphIdentifier: Swift.String?
@@ -1584,8 +1585,9 @@ public struct ListQueriesInput {
 }
 
 extension NeptuneGraphClientTypes {
+
     /// Details of the query listed.
-    public struct QuerySummary {
+    public struct QuerySummary: Swift.Sendable {
         /// The running time of the query, in milliseconds.
         public var elapsed: Swift.Int?
         /// A string representation of the id of the query.
@@ -1612,10 +1614,9 @@ extension NeptuneGraphClientTypes {
             self.waited = waited
         }
     }
-
 }
 
-public struct ListQueriesOutput {
+public struct ListQueriesOutput: Swift.Sendable {
     /// A list of current openCypher queries.
     /// This member is required.
     public var queries: [NeptuneGraphClientTypes.QuerySummary]?
@@ -1628,7 +1629,7 @@ public struct ListQueriesOutput {
     }
 }
 
-public struct ListTagsForResourceInput {
+public struct ListTagsForResourceInput: Swift.Sendable {
     /// The ARN of the resource.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -1641,7 +1642,7 @@ public struct ListTagsForResourceInput {
     }
 }
 
-public struct ListTagsForResourceOutput {
+public struct ListTagsForResourceOutput: Swift.Sendable {
     /// The list of metadata tags associated with the resource.
     public var tags: [Swift.String: Swift.String]?
 
@@ -1653,7 +1654,7 @@ public struct ListTagsForResourceOutput {
     }
 }
 
-public struct CreatePrivateGraphEndpointInput {
+public struct CreatePrivateGraphEndpointInput: Swift.Sendable {
     /// The unique identifier of the Neptune Analytics graph.
     /// This member is required.
     public var graphIdentifier: Swift.String?
@@ -1680,7 +1681,7 @@ public struct CreatePrivateGraphEndpointInput {
 
 extension NeptuneGraphClientTypes {
 
-    public enum PrivateGraphEndpointStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum PrivateGraphEndpointStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case available
         case creating
         case deleting
@@ -1713,7 +1714,7 @@ extension NeptuneGraphClientTypes {
     }
 }
 
-public struct CreatePrivateGraphEndpointOutput {
+public struct CreatePrivateGraphEndpointOutput: Swift.Sendable {
     /// Status of the private graph endpoint.
     /// This member is required.
     public var status: NeptuneGraphClientTypes.PrivateGraphEndpointStatus?
@@ -1740,7 +1741,7 @@ public struct CreatePrivateGraphEndpointOutput {
     }
 }
 
-public struct DeletePrivateGraphEndpointInput {
+public struct DeletePrivateGraphEndpointInput: Swift.Sendable {
     /// The unique identifier of the Neptune Analytics graph.
     /// This member is required.
     public var graphIdentifier: Swift.String?
@@ -1758,7 +1759,7 @@ public struct DeletePrivateGraphEndpointInput {
     }
 }
 
-public struct DeletePrivateGraphEndpointOutput {
+public struct DeletePrivateGraphEndpointOutput: Swift.Sendable {
     /// The status of the delete operation.
     /// This member is required.
     public var status: NeptuneGraphClientTypes.PrivateGraphEndpointStatus?
@@ -1785,7 +1786,7 @@ public struct DeletePrivateGraphEndpointOutput {
     }
 }
 
-public struct GetPrivateGraphEndpointInput {
+public struct GetPrivateGraphEndpointInput: Swift.Sendable {
     /// The unique identifier of the Neptune Analytics graph.
     /// This member is required.
     public var graphIdentifier: Swift.String?
@@ -1803,7 +1804,7 @@ public struct GetPrivateGraphEndpointInput {
     }
 }
 
-public struct GetPrivateGraphEndpointOutput {
+public struct GetPrivateGraphEndpointOutput: Swift.Sendable {
     /// The current status of the private endpoint.
     /// This member is required.
     public var status: NeptuneGraphClientTypes.PrivateGraphEndpointStatus?
@@ -1830,7 +1831,7 @@ public struct GetPrivateGraphEndpointOutput {
     }
 }
 
-public struct ListPrivateGraphEndpointsInput {
+public struct ListPrivateGraphEndpointsInput: Swift.Sendable {
     /// The unique identifier of the Neptune Analytics graph.
     /// This member is required.
     public var graphIdentifier: Swift.String?
@@ -1852,8 +1853,9 @@ public struct ListPrivateGraphEndpointsInput {
 }
 
 extension NeptuneGraphClientTypes {
+
     /// Details about a private graph endpoint.
-    public struct PrivateGraphEndpointSummary {
+    public struct PrivateGraphEndpointSummary: Swift.Sendable {
         /// The status of the private graph endpoint.
         /// This member is required.
         public var status: NeptuneGraphClientTypes.PrivateGraphEndpointStatus?
@@ -1879,10 +1881,9 @@ extension NeptuneGraphClientTypes {
             self.vpcId = vpcId
         }
     }
-
 }
 
-public struct ListPrivateGraphEndpointsOutput {
+public struct ListPrivateGraphEndpointsOutput: Swift.Sendable {
     /// Pagination token used to paginate output. When this value is provided as input, the service returns results from where the previous response left off. When this value is present in output, it indicates that there are more results to retrieve.
     public var nextToken: Swift.String?
     /// A list of private endpoints for the specified Neptune Analytics graph.
@@ -1899,7 +1900,7 @@ public struct ListPrivateGraphEndpointsOutput {
     }
 }
 
-public struct CreateGraphSnapshotInput {
+public struct CreateGraphSnapshotInput: Swift.Sendable {
     /// The unique identifier of the Neptune Analytics graph.
     /// This member is required.
     public var graphIdentifier: Swift.String?
@@ -1923,7 +1924,7 @@ public struct CreateGraphSnapshotInput {
 
 extension NeptuneGraphClientTypes {
 
-    public enum SnapshotStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SnapshotStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case available
         case creating
         case deleting
@@ -1956,7 +1957,7 @@ extension NeptuneGraphClientTypes {
     }
 }
 
-public struct CreateGraphSnapshotOutput {
+public struct CreateGraphSnapshotOutput: Swift.Sendable {
     /// The ARN of the snapshot created.
     /// This member is required.
     public var arn: Swift.String?
@@ -1995,7 +1996,7 @@ public struct CreateGraphSnapshotOutput {
     }
 }
 
-public struct DeleteGraphSnapshotInput {
+public struct DeleteGraphSnapshotInput: Swift.Sendable {
     /// ID of the graph snapshot to be deleted.
     /// This member is required.
     public var snapshotIdentifier: Swift.String?
@@ -2008,7 +2009,7 @@ public struct DeleteGraphSnapshotInput {
     }
 }
 
-public struct DeleteGraphSnapshotOutput {
+public struct DeleteGraphSnapshotOutput: Swift.Sendable {
     /// The ARN of the graph snapshot.
     /// This member is required.
     public var arn: Swift.String?
@@ -2047,7 +2048,7 @@ public struct DeleteGraphSnapshotOutput {
     }
 }
 
-public struct GetGraphSnapshotInput {
+public struct GetGraphSnapshotInput: Swift.Sendable {
     /// The ID of the snapshot to retrieve.
     /// This member is required.
     public var snapshotIdentifier: Swift.String?
@@ -2060,7 +2061,7 @@ public struct GetGraphSnapshotInput {
     }
 }
 
-public struct GetGraphSnapshotOutput {
+public struct GetGraphSnapshotOutput: Swift.Sendable {
     /// The ARN of the graph snapshot.
     /// This member is required.
     public var arn: Swift.String?
@@ -2099,7 +2100,7 @@ public struct GetGraphSnapshotOutput {
     }
 }
 
-public struct ListGraphSnapshotsInput {
+public struct ListGraphSnapshotsInput: Swift.Sendable {
     /// The unique identifier of the Neptune Analytics graph.
     public var graphIdentifier: Swift.String?
     /// The total number of records to return in the command's output. If the total number of records available is more than the value specified, nextToken is provided in the command's output. To resume pagination, provide the nextToken output value in the nextToken argument of a subsequent command. Do not use the nextToken response element directly outside of the Amazon CLI.
@@ -2120,8 +2121,9 @@ public struct ListGraphSnapshotsInput {
 }
 
 extension NeptuneGraphClientTypes {
+
     /// Details about a graph snapshot.
-    public struct GraphSnapshotSummary {
+    public struct GraphSnapshotSummary: Swift.Sendable {
         /// The ARN of the graph snapshot.
         /// This member is required.
         public var arn: Swift.String?
@@ -2159,10 +2161,9 @@ extension NeptuneGraphClientTypes {
             self.status = status
         }
     }
-
 }
 
-public struct ListGraphSnapshotsOutput {
+public struct ListGraphSnapshotsOutput: Swift.Sendable {
     /// The requested list of snapshots.
     /// This member is required.
     public var graphSnapshots: [NeptuneGraphClientTypes.GraphSnapshotSummary]?
@@ -2179,7 +2180,7 @@ public struct ListGraphSnapshotsOutput {
     }
 }
 
-public struct TagResourceInput {
+public struct TagResourceInput: Swift.Sendable {
     /// ARN of the resource for which tags need to be added.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -2197,12 +2198,12 @@ public struct TagResourceInput {
     }
 }
 
-public struct TagResourceOutput {
+public struct TagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct CancelImportTaskInput {
+public struct CancelImportTaskInput: Swift.Sendable {
     /// The unique identifier of the import task.
     /// This member is required.
     public var taskIdentifier: Swift.String?
@@ -2217,7 +2218,7 @@ public struct CancelImportTaskInput {
 
 extension NeptuneGraphClientTypes {
 
-    public enum Format: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Format: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case csv
         case ntriples
         case openCypher
@@ -2249,7 +2250,7 @@ extension NeptuneGraphClientTypes {
 
 extension NeptuneGraphClientTypes {
 
-    public enum ImportTaskStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ImportTaskStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case analyzingData
         case cancelled
         case cancelling
@@ -2300,7 +2301,7 @@ extension NeptuneGraphClientTypes {
     }
 }
 
-public struct CancelImportTaskOutput {
+public struct CancelImportTaskOutput: Swift.Sendable {
     /// Specifies the format of S3 data to be imported. Valid values are CSV, which identifies the [Gremlin CSV format](https://docs.aws.amazon.com/neptune/latest/userguide/bulk-load-tutorial-format-gremlin.html) or OPENCYPHER, which identies the [openCypher load format](https://docs.aws.amazon.com/neptune/latest/userguide/bulk-load-tutorial-format-opencypher.html).
     public var format: NeptuneGraphClientTypes.Format?
     /// The unique identifier of the Neptune Analytics graph.
@@ -2338,7 +2339,7 @@ public struct CancelImportTaskOutput {
 
 extension NeptuneGraphClientTypes {
 
-    public enum BlankNodeHandling: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum BlankNodeHandling: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case convertToIri
         case sdkUnknown(Swift.String)
 
@@ -2363,8 +2364,9 @@ extension NeptuneGraphClientTypes {
 }
 
 extension NeptuneGraphClientTypes {
+
     /// Options for how to import Neptune data.
-    public struct NeptuneImportOptions {
+    public struct NeptuneImportOptions: Swift.Sendable {
         /// Neptune Analytics supports label-less vertices and no labels are assigned unless one is explicitly provided. Neptune assigns default labels when none is explicitly provided. When importing the data into Neptune Analytics, the default vertex labels can be omitted by setting preserveDefaultVertexLabels to false. Note that if the vertex only has default labels, and has no other properties or edges, then the vertex will effectively not get imported into Neptune Analytics when preserveDefaultVertexLabels is set to false.
         public var preserveDefaultVertexLabels: Swift.Bool?
         /// Neptune Analytics currently does not support user defined edge ids. The edge ids are not imported by default. They are imported if preserveEdgeIds is set to true, and ids are stored as properties on the relationships with the property name neptuneEdgeId.
@@ -2389,27 +2391,26 @@ extension NeptuneGraphClientTypes {
             self.s3ExportPath = s3ExportPath
         }
     }
-
 }
 
 extension NeptuneGraphClientTypes {
+
     /// Options for how to perform an import.
-    public enum ImportOptions {
+    public enum ImportOptions: Swift.Sendable {
         /// Options for importing data from a Neptune database.
         case neptune(NeptuneGraphClientTypes.NeptuneImportOptions)
         case sdkUnknown(Swift.String)
     }
-
 }
 
-public struct CreateGraphUsingImportTaskInput {
+public struct CreateGraphUsingImportTaskInput: Swift.Sendable {
     /// The method to handle blank nodes in the dataset. Currently, only convertToIri is supported, meaning blank nodes are converted to unique IRIs at load time. Must be provided when format is ntriples. For more information, see [Handling RDF values](https://docs.aws.amazon.com/neptune-analytics/latest/userguide/using-rdf-data.html#rdf-handling).
     public var blankNodeHandling: NeptuneGraphClientTypes.BlankNodeHandling?
     /// Indicates whether or not to enable deletion protection on the graph. The graph can’t be deleted when deletion protection is enabled. (true or false).
     public var deletionProtection: Swift.Bool?
     /// If set to true, the task halts when an import error is encountered. If set to false, the task skips the data that caused the error and continues if possible.
     public var failOnError: Swift.Bool?
-    /// Specifies the format of S3 data to be imported. Valid values are CSV, which identifies the [Gremlin CSV format](https://docs.aws.amazon.com/neptune/latest/userguide/bulk-load-tutorial-format-gremlin.html) or OPENCYPHER, which identies the [openCypher load format](https://docs.aws.amazon.com/neptune/latest/userguide/bulk-load-tutorial-format-opencypher.html).
+    /// Specifies the format of S3 data to be imported. Valid values are CSV, which identifies the [Gremlin CSV format](https://docs.aws.amazon.com/neptune/latest/userguide/bulk-load-tutorial-format-gremlin.html), OPEN_CYPHER, which identifies the [openCypher load format](https://docs.aws.amazon.com/neptune/latest/userguide/bulk-load-tutorial-format-opencypher.html), or ntriples, which identifies the [RDF n-triples](https://docs.aws.amazon.com/neptune-analytics/latest/userguide/using-rdf-data.html) format.
     public var format: NeptuneGraphClientTypes.Format?
     /// A name for the new Neptune Analytics graph to be created. The name must contain from 1 to 63 letters, numbers, or hyphens, and its first character must be a letter. It cannot end with a hyphen or contain two consecutive hyphens.
     /// This member is required.
@@ -2473,7 +2474,7 @@ public struct CreateGraphUsingImportTaskInput {
     }
 }
 
-public struct CreateGraphUsingImportTaskOutput {
+public struct CreateGraphUsingImportTaskOutput: Swift.Sendable {
     /// Specifies the format of S3 data to be imported. Valid values are CSV, which identifies the [Gremlin CSV format](https://docs.aws.amazon.com/neptune/latest/userguide/bulk-load-tutorial-format-gremlin.html), OPENCYPHER, which identifies the [openCypher load format](https://docs.aws.amazon.com/neptune/latest/userguide/bulk-load-tutorial-format-opencypher.html), or ntriples, which identifies the [RDF n-triples](https://docs.aws.amazon.com/neptune-analytics/latest/userguide/using-rdf-data.html) format.
     public var format: NeptuneGraphClientTypes.Format?
     /// The unique identifier of the Neptune Analytics graph.
@@ -2513,7 +2514,7 @@ public struct CreateGraphUsingImportTaskOutput {
     }
 }
 
-public struct GetImportTaskInput {
+public struct GetImportTaskInput: Swift.Sendable {
     /// The unique identifier of the import task.
     /// This member is required.
     public var taskIdentifier: Swift.String?
@@ -2527,8 +2528,9 @@ public struct GetImportTaskInput {
 }
 
 extension NeptuneGraphClientTypes {
+
     /// Contains details about an import task.
-    public struct ImportTaskDetails {
+    public struct ImportTaskDetails: Swift.Sendable {
         /// The number of dictionary entries in the import task.
         /// This member is required.
         public var dictionaryEntryCount: Swift.Int?
@@ -2574,10 +2576,9 @@ extension NeptuneGraphClientTypes {
             self.timeElapsedSeconds = timeElapsedSeconds
         }
     }
-
 }
 
-public struct GetImportTaskOutput {
+public struct GetImportTaskOutput: Swift.Sendable {
     /// The number of the current attempt to execute the import task.
     public var attemptNumber: Swift.Int?
     /// Specifies the format of S3 data to be imported. Valid values are CSV, which identifies the [Gremlin CSV format](https://docs.aws.amazon.com/neptune/latest/userguide/bulk-load-tutorial-format-gremlin.html) or OPENCYPHER, which identies the [openCypher load format](https://docs.aws.amazon.com/neptune/latest/userguide/bulk-load-tutorial-format-opencypher.html).
@@ -2649,7 +2650,7 @@ public struct GetImportTaskOutput {
     }
 }
 
-public struct ListImportTasksInput {
+public struct ListImportTasksInput: Swift.Sendable {
     /// The total number of records to return in the command's output. If the total number of records available is more than the value specified, nextToken is provided in the command's output. To resume pagination, provide the nextToken output value in the nextToken argument of a subsequent command. Do not use the nextToken response element directly outside of the Amazon CLI.
     public var maxResults: Swift.Int?
     /// Pagination token used to paginate output. When this value is provided as input, the service returns results from where the previous response left off. When this value is present in output, it indicates that there are more results to retrieve.
@@ -2666,8 +2667,9 @@ public struct ListImportTasksInput {
 }
 
 extension NeptuneGraphClientTypes {
+
     /// Details about an import task.
-    public struct ImportTaskSummary {
+    public struct ImportTaskSummary: Swift.Sendable {
         /// Specifies the format of S3 data to be imported. Valid values are CSV, which identifies the [Gremlin CSV format](https://docs.aws.amazon.com/neptune/latest/userguide/bulk-load-tutorial-format-gremlin.html) or OPENCYPHER, which identies the [openCypher load format](https://docs.aws.amazon.com/neptune/latest/userguide/bulk-load-tutorial-format-opencypher.html).
         public var format: NeptuneGraphClientTypes.Format?
         /// The unique identifier of the Neptune Analytics graph.
@@ -2702,10 +2704,9 @@ extension NeptuneGraphClientTypes {
             self.taskId = taskId
         }
     }
-
 }
 
-public struct ListImportTasksOutput {
+public struct ListImportTasksOutput: Swift.Sendable {
     /// Pagination token used to paginate output. When this value is provided as input, the service returns results from where the previous response left off. When this value is present in output, it indicates that there are more results to retrieve.
     public var nextToken: Swift.String?
     /// The requested list of import tasks.
@@ -2722,7 +2723,7 @@ public struct ListImportTasksOutput {
     }
 }
 
-public struct StartImportTaskInput {
+public struct StartImportTaskInput: Swift.Sendable {
     /// The method to handle blank nodes in the dataset. Currently, only convertToIri is supported, meaning blank nodes are converted to unique IRIs at load time. Must be provided when format is ntriples. For more information, see [Handling RDF values](https://docs.aws.amazon.com/neptune-analytics/latest/userguide/using-rdf-data.html#rdf-handling).
     public var blankNodeHandling: NeptuneGraphClientTypes.BlankNodeHandling?
     /// If set to true, the task halts when an import error is encountered. If set to false, the task skips the data that caused the error and continues if possible.
@@ -2761,7 +2762,7 @@ public struct StartImportTaskInput {
     }
 }
 
-public struct StartImportTaskOutput {
+public struct StartImportTaskOutput: Swift.Sendable {
     /// Specifies the format of Amazon S3 data to be imported. Valid values are CSV, which identifies the Gremlin CSV format or OPENCYPHER, which identies the openCypher load format.
     public var format: NeptuneGraphClientTypes.Format?
     /// The unique identifier of the Neptune Analytics graph.
@@ -2801,7 +2802,7 @@ public struct StartImportTaskOutput {
     }
 }
 
-public struct UntagResourceInput {
+public struct UntagResourceInput: Swift.Sendable {
     /// ARN of the resource whose tag needs to be removed.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -2819,7 +2820,7 @@ public struct UntagResourceInput {
     }
 }
 
-public struct UntagResourceOutput {
+public struct UntagResourceOutput: Swift.Sendable {
 
     public init() { }
 }

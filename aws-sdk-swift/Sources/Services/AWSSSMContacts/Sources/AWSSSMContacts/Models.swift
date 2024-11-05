@@ -30,7 +30,7 @@ import protocol ClientRuntime.ModeledError
 
 extension SSMContactsClientTypes {
 
-    public enum AcceptCodeValidation: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AcceptCodeValidation: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case enforce
         case ignore
         case sdkUnknown(Swift.String)
@@ -184,8 +184,9 @@ public struct ThrottlingException: ClientRuntime.ModeledError, AWSClientRuntime.
 }
 
 extension SSMContactsClientTypes {
+
     /// Provides information about which field caused the exception.
-    public struct ValidationExceptionField {
+    public struct ValidationExceptionField: Swift.Sendable {
         /// Information about what caused the field to cause an exception.
         /// This member is required.
         public var message: Swift.String?
@@ -202,12 +203,11 @@ extension SSMContactsClientTypes {
             self.name = name
         }
     }
-
 }
 
 extension SSMContactsClientTypes {
 
-    public enum ValidationExceptionReason: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ValidationExceptionReason: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case cannotParse
         case fieldValidationFailed
         case other
@@ -275,7 +275,7 @@ public struct ValidationException: ClientRuntime.ModeledError, AWSClientRuntime.
 
 extension SSMContactsClientTypes {
 
-    public enum AcceptType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AcceptType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case delivered
         case read
         case sdkUnknown(Swift.String)
@@ -302,7 +302,7 @@ extension SSMContactsClientTypes {
     }
 }
 
-public struct AcceptPageInput {
+public struct AcceptPageInput: Swift.Sendable {
     /// A 6-digit code used to acknowledge the page.
     /// This member is required.
     public var acceptCode: Swift.String?
@@ -337,12 +337,12 @@ public struct AcceptPageInput {
     }
 }
 
-public struct AcceptPageOutput {
+public struct AcceptPageOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct ActivateContactChannelInput {
+public struct ActivateContactChannelInput: Swift.Sendable {
     /// The code sent to the contact channel when it was created in the contact.
     /// This member is required.
     public var activationCode: Swift.String?
@@ -360,14 +360,14 @@ public struct ActivateContactChannelInput {
     }
 }
 
-public struct ActivateContactChannelOutput {
+public struct ActivateContactChannelOutput: Swift.Sendable {
 
     public init() { }
 }
 
 extension SSMContactsClientTypes {
 
-    public enum ActivationStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ActivationStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case activated
         case notActivated
         case sdkUnknown(Swift.String)
@@ -395,8 +395,9 @@ extension SSMContactsClientTypes {
 }
 
 extension SSMContactsClientTypes {
+
     /// Information about the contact channel that Incident Manager uses to engage the contact.
-    public struct ChannelTargetInfo {
+    public struct ChannelTargetInfo: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the contact channel.
         /// This member is required.
         public var contactChannelId: Swift.String?
@@ -412,12 +413,11 @@ extension SSMContactsClientTypes {
             self.retryIntervalInMinutes = retryIntervalInMinutes
         }
     }
-
 }
 
 extension SSMContactsClientTypes {
 
-    public enum ChannelType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ChannelType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case email
         case sms
         case voice
@@ -448,8 +448,9 @@ extension SSMContactsClientTypes {
 }
 
 extension SSMContactsClientTypes {
+
     /// Information about a resource that another resource is related to or depends on. For example, if a contact is a member of a rotation, the rotation is a dependent entity of the contact.
-    public struct DependentEntity {
+    public struct DependentEntity: Swift.Sendable {
         /// The Amazon Resource Names (ARNs) of the dependent resources.
         /// This member is required.
         public var dependentResourceIds: [Swift.String]?
@@ -466,7 +467,6 @@ extension SSMContactsClientTypes {
             self.relationType = relationType
         }
     }
-
 }
 
 /// Updating or deleting a resource causes an inconsistent state.
@@ -510,7 +510,7 @@ public struct ConflictException: ClientRuntime.ModeledError, AWSClientRuntime.AW
 
 extension SSMContactsClientTypes {
 
-    public enum ContactType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ContactType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case escalation
         case oncallSchedule
         case personal
@@ -541,8 +541,9 @@ extension SSMContactsClientTypes {
 }
 
 extension SSMContactsClientTypes {
+
     /// A personal contact or escalation plan that Incident Manager engages during an incident.
-    public struct Contact {
+    public struct Contact: Swift.Sendable {
         /// The unique and identifiable alias of the contact or escalation plan.
         /// This member is required.
         public var alias: Swift.String?
@@ -568,12 +569,12 @@ extension SSMContactsClientTypes {
             self.type = type
         }
     }
-
 }
 
 extension SSMContactsClientTypes {
+
     /// The details that Incident Manager uses when trying to engage the contact channel.
-    public struct ContactChannelAddress {
+    public struct ContactChannelAddress: Swift.Sendable {
         /// The format is dependent on the type of the contact channel. The following are the expected formats:
         ///
         /// * SMS - '+' followed by the country code and phone number
@@ -590,12 +591,12 @@ extension SSMContactsClientTypes {
             self.simpleAddress = simpleAddress
         }
     }
-
 }
 
 extension SSMContactsClientTypes {
+
     /// The method that Incident Manager uses to engage a contact.
-    public struct ContactChannel {
+    public struct ContactChannel: Swift.Sendable {
         /// A Boolean value describing if the contact channel has been activated or not. If the contact channel isn't activated, Incident Manager can't engage the contact through it.
         /// This member is required.
         public var activationStatus: SSMContactsClientTypes.ActivationStatus?
@@ -637,12 +638,12 @@ extension SSMContactsClientTypes {
             self.type = type
         }
     }
-
 }
 
 extension SSMContactsClientTypes {
+
     /// The contact that Incident Manager is engaging during an incident.
-    public struct ContactTargetInfo {
+    public struct ContactTargetInfo: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the contact.
         public var contactId: Swift.String?
         /// A Boolean value determining if the contact's acknowledgement stops the progress of stages in the plan.
@@ -658,12 +659,12 @@ extension SSMContactsClientTypes {
             self.isEssential = isEssential
         }
     }
-
 }
 
 extension SSMContactsClientTypes {
+
     /// Details about when an on-call rotation shift begins or ends.
-    public struct HandOffTime {
+    public struct HandOffTime: Swift.Sendable {
         /// The hour when an on-call rotation shift begins or ends.
         /// This member is required.
         public var hourOfDay: Swift.Int
@@ -680,12 +681,12 @@ extension SSMContactsClientTypes {
             self.minuteOfHour = minuteOfHour
         }
     }
-
 }
 
 extension SSMContactsClientTypes {
+
     /// Information about when an on-call shift begins and ends.
-    public struct CoverageTime {
+    public struct CoverageTime: Swift.Sendable {
         /// Information about when the on-call rotation shift ends.
         public var end: SSMContactsClientTypes.HandOffTime?
         /// Information about when the on-call rotation shift begins.
@@ -700,7 +701,6 @@ extension SSMContactsClientTypes {
             self.start = start
         }
     }
-
 }
 
 /// The operation failed to due an encryption key error.
@@ -772,8 +772,9 @@ public struct ServiceQuotaExceededException: ClientRuntime.ModeledError, AWSClie
 }
 
 extension SSMContactsClientTypes {
+
     /// The contact or contact channel that's being engaged.
-    public struct Target {
+    public struct Target: Swift.Sendable {
         /// Information about the contact channel Incident Manager is engaging.
         public var channelTargetInfo: SSMContactsClientTypes.ChannelTargetInfo?
         /// Information about the contact that Incident Manager is engaging.
@@ -788,12 +789,12 @@ extension SSMContactsClientTypes {
             self.contactTargetInfo = contactTargetInfo
         }
     }
-
 }
 
 extension SSMContactsClientTypes {
+
     /// A set amount of time that an escalation plan or engagement plan engages the specified contacts or contact methods.
-    public struct Stage {
+    public struct Stage: Swift.Sendable {
         /// The time to wait until beginning the next stage. The duration can only be set to 0 if a target is specified.
         /// This member is required.
         public var durationInMinutes: Swift.Int?
@@ -810,12 +811,12 @@ extension SSMContactsClientTypes {
             self.targets = targets
         }
     }
-
 }
 
 extension SSMContactsClientTypes {
+
     /// Information about the stages and on-call rotation teams associated with an escalation plan or engagement plan.
-    public struct Plan {
+    public struct Plan: Swift.Sendable {
         /// The Amazon Resource Names (ARNs) of the on-call rotations associated with the plan.
         public var rotationIds: [Swift.String]?
         /// A list of stages that the escalation plan or engagement plan uses to engage contacts and contact methods.
@@ -830,12 +831,12 @@ extension SSMContactsClientTypes {
             self.stages = stages
         }
     }
-
 }
 
 extension SSMContactsClientTypes {
+
     /// A container of a key-value name pair.
-    public struct Tag {
+    public struct Tag: Swift.Sendable {
         /// Name of the object key.
         public var key: Swift.String?
         /// Value of the tag.
@@ -850,10 +851,9 @@ extension SSMContactsClientTypes {
             self.value = value
         }
     }
-
 }
 
-public struct CreateContactInput {
+public struct CreateContactInput: Swift.Sendable {
     /// The short name to quickly identify a contact or escalation plan. The contact alias must be unique and identifiable.
     /// This member is required.
     public var alias: Swift.String?
@@ -888,7 +888,7 @@ public struct CreateContactInput {
     }
 }
 
-public struct CreateContactOutput {
+public struct CreateContactOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the created contact or escalation plan.
     /// This member is required.
     public var contactArn: Swift.String?
@@ -901,7 +901,7 @@ public struct CreateContactOutput {
     }
 }
 
-public struct CreateContactChannelInput {
+public struct CreateContactChannelInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the contact you are adding the contact channel to.
     /// This member is required.
     public var contactId: Swift.String?
@@ -949,7 +949,7 @@ public struct CreateContactChannelInput {
     }
 }
 
-public struct CreateContactChannelOutput {
+public struct CreateContactChannelOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the contact channel.
     /// This member is required.
     public var contactChannelArn: Swift.String?
@@ -963,8 +963,9 @@ public struct CreateContactChannelOutput {
 }
 
 extension SSMContactsClientTypes {
+
     /// Information about on-call rotations that recur monthly.
-    public struct MonthlySetting {
+    public struct MonthlySetting: Swift.Sendable {
         /// The day of the month when monthly recurring on-call rotations begin.
         /// This member is required.
         public var dayOfMonth: Swift.Int?
@@ -981,12 +982,11 @@ extension SSMContactsClientTypes {
             self.handOffTime = handOffTime
         }
     }
-
 }
 
 extension SSMContactsClientTypes {
 
-    public enum DayOfWeek: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DayOfWeek: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case fri
         case mon
         case sat
@@ -1029,8 +1029,9 @@ extension SSMContactsClientTypes {
 }
 
 extension SSMContactsClientTypes {
+
     /// Information about rotations that recur weekly.
-    public struct WeeklySetting {
+    public struct WeeklySetting: Swift.Sendable {
         /// The day of the week when weekly recurring on-call shift rotations begins.
         /// This member is required.
         public var dayOfWeek: SSMContactsClientTypes.DayOfWeek?
@@ -1047,12 +1048,12 @@ extension SSMContactsClientTypes {
             self.handOffTime = handOffTime
         }
     }
-
 }
 
 extension SSMContactsClientTypes {
+
     /// Information about when an on-call rotation is in effect and how long the rotation period lasts.
-    public struct RecurrenceSettings {
+    public struct RecurrenceSettings: Swift.Sendable {
         /// Information about on-call rotations that recur daily.
         public var dailySettings: [SSMContactsClientTypes.HandOffTime]?
         /// Information about on-call rotations that recur monthly.
@@ -1085,10 +1086,9 @@ extension SSMContactsClientTypes {
             self.weeklySettings = weeklySettings
         }
     }
-
 }
 
-public struct CreateRotationInput {
+public struct CreateRotationInput: Swift.Sendable {
     /// The Amazon Resource Names (ARNs) of the contacts to add to the rotation. The order that you list the contacts in is their shift order in the rotation schedule. To change the order of the contact's shifts, use the [UpdateRotation] operation.
     /// This member is required.
     public var contactIds: [Swift.String]?
@@ -1128,7 +1128,7 @@ public struct CreateRotationInput {
     }
 }
 
-public struct CreateRotationOutput {
+public struct CreateRotationOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the created rotation.
     /// This member is required.
     public var rotationArn: Swift.String?
@@ -1141,7 +1141,7 @@ public struct CreateRotationOutput {
     }
 }
 
-public struct CreateRotationOverrideInput {
+public struct CreateRotationOverrideInput: Swift.Sendable {
     /// The date and time when the override ends.
     /// This member is required.
     public var endTime: Foundation.Date?
@@ -1173,7 +1173,7 @@ public struct CreateRotationOverrideInput {
     }
 }
 
-public struct CreateRotationOverrideOutput {
+public struct CreateRotationOverrideOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the created rotation override.
     /// This member is required.
     public var rotationOverrideId: Swift.String?
@@ -1186,7 +1186,7 @@ public struct CreateRotationOverrideOutput {
     }
 }
 
-public struct DeactivateContactChannelInput {
+public struct DeactivateContactChannelInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the contact channel you're deactivating.
     /// This member is required.
     public var contactChannelId: Swift.String?
@@ -1199,12 +1199,12 @@ public struct DeactivateContactChannelInput {
     }
 }
 
-public struct DeactivateContactChannelOutput {
+public struct DeactivateContactChannelOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteContactInput {
+public struct DeleteContactInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the contact that you're deleting.
     /// This member is required.
     public var contactId: Swift.String?
@@ -1217,12 +1217,12 @@ public struct DeleteContactInput {
     }
 }
 
-public struct DeleteContactOutput {
+public struct DeleteContactOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteContactChannelInput {
+public struct DeleteContactChannelInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the contact channel.
     /// This member is required.
     public var contactChannelId: Swift.String?
@@ -1235,12 +1235,12 @@ public struct DeleteContactChannelInput {
     }
 }
 
-public struct DeleteContactChannelOutput {
+public struct DeleteContactChannelOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteRotationInput {
+public struct DeleteRotationInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the on-call rotation to delete.
     /// This member is required.
     public var rotationId: Swift.String?
@@ -1253,12 +1253,12 @@ public struct DeleteRotationInput {
     }
 }
 
-public struct DeleteRotationOutput {
+public struct DeleteRotationOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteRotationOverrideInput {
+public struct DeleteRotationOverrideInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the rotation that was overridden.
     /// This member is required.
     public var rotationId: Swift.String?
@@ -1276,12 +1276,12 @@ public struct DeleteRotationOverrideInput {
     }
 }
 
-public struct DeleteRotationOverrideOutput {
+public struct DeleteRotationOverrideOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DescribeEngagementInput {
+public struct DescribeEngagementInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the engagement you want the details of.
     /// This member is required.
     public var engagementId: Swift.String?
@@ -1294,7 +1294,7 @@ public struct DescribeEngagementInput {
     }
 }
 
-public struct DescribeEngagementOutput {
+public struct DescribeEngagementOutput: Swift.Sendable {
     /// The ARN of the escalation plan or contacts involved in the engagement.
     /// This member is required.
     public var contactArn: Swift.String?
@@ -1347,7 +1347,7 @@ public struct DescribeEngagementOutput {
     }
 }
 
-public struct DescribePageInput {
+public struct DescribePageInput: Swift.Sendable {
     /// The ID of the engagement to a contact channel.
     /// This member is required.
     public var pageId: Swift.String?
@@ -1360,7 +1360,7 @@ public struct DescribePageInput {
     }
 }
 
-public struct DescribePageOutput {
+public struct DescribePageOutput: Swift.Sendable {
     /// The ARN of the contact that was engaged.
     /// This member is required.
     public var contactArn: Swift.String?
@@ -1423,8 +1423,9 @@ public struct DescribePageOutput {
 }
 
 extension SSMContactsClientTypes {
+
     /// Incident Manager reaching out to a contact or escalation plan to engage contact during an incident.
-    public struct Engagement {
+    public struct Engagement: Swift.Sendable {
         /// The ARN of the escalation plan or contact that Incident Manager is engaging.
         /// This member is required.
         public var contactArn: Swift.String?
@@ -1458,10 +1459,9 @@ extension SSMContactsClientTypes {
             self.stopTime = stopTime
         }
     }
-
 }
 
-public struct GetContactInput {
+public struct GetContactInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the contact or escalation plan.
     /// This member is required.
     public var contactId: Swift.String?
@@ -1474,7 +1474,7 @@ public struct GetContactInput {
     }
 }
 
-public struct GetContactOutput {
+public struct GetContactOutput: Swift.Sendable {
     /// The alias of the contact or escalation plan. The alias is unique and identifiable.
     /// This member is required.
     public var alias: Swift.String?
@@ -1506,7 +1506,7 @@ public struct GetContactOutput {
     }
 }
 
-public struct GetContactChannelInput {
+public struct GetContactChannelInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the contact channel you want information about.
     /// This member is required.
     public var contactChannelId: Swift.String?
@@ -1519,7 +1519,7 @@ public struct GetContactChannelInput {
     }
 }
 
-public struct GetContactChannelOutput {
+public struct GetContactChannelOutput: Swift.Sendable {
     /// A Boolean value indicating if the contact channel has been activated or not.
     public var activationStatus: SSMContactsClientTypes.ActivationStatus?
     /// The ARN of the contact that the channel belongs to.
@@ -1556,7 +1556,7 @@ public struct GetContactChannelOutput {
     }
 }
 
-public struct GetContactPolicyInput {
+public struct GetContactPolicyInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the contact or escalation plan.
     /// This member is required.
     public var contactArn: Swift.String?
@@ -1569,7 +1569,7 @@ public struct GetContactPolicyInput {
     }
 }
 
-public struct GetContactPolicyOutput {
+public struct GetContactPolicyOutput: Swift.Sendable {
     /// The ARN of the contact or escalation plan.
     public var contactArn: Swift.String?
     /// Details about the resource policy attached to the contact or escalation plan.
@@ -1585,7 +1585,7 @@ public struct GetContactPolicyOutput {
     }
 }
 
-public struct GetRotationInput {
+public struct GetRotationInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the on-call rotation to retrieve information about.
     /// This member is required.
     public var rotationId: Swift.String?
@@ -1598,7 +1598,7 @@ public struct GetRotationInput {
     }
 }
 
-public struct GetRotationOutput {
+public struct GetRotationOutput: Swift.Sendable {
     /// The Amazon Resource Names (ARNs) of the contacts assigned to the on-call rotation team.
     /// This member is required.
     public var contactIds: [Swift.String]?
@@ -1636,7 +1636,7 @@ public struct GetRotationOutput {
     }
 }
 
-public struct GetRotationOverrideInput {
+public struct GetRotationOverrideInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the overridden rotation to retrieve information about.
     /// This member is required.
     public var rotationId: Swift.String?
@@ -1654,7 +1654,7 @@ public struct GetRotationOverrideInput {
     }
 }
 
-public struct GetRotationOverrideOutput {
+public struct GetRotationOverrideOutput: Swift.Sendable {
     /// The date and time when the override was created.
     public var createTime: Foundation.Date?
     /// The date and time when the override ends.
@@ -1686,7 +1686,7 @@ public struct GetRotationOverrideOutput {
     }
 }
 
-public struct ListContactChannelsInput {
+public struct ListContactChannelsInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the contact.
     /// This member is required.
     public var contactId: Swift.String?
@@ -1707,7 +1707,7 @@ public struct ListContactChannelsInput {
     }
 }
 
-public struct ListContactChannelsOutput {
+public struct ListContactChannelsOutput: Swift.Sendable {
     /// A list of contact channels related to the specified contact.
     /// This member is required.
     public var contactChannels: [SSMContactsClientTypes.ContactChannel]?
@@ -1724,7 +1724,7 @@ public struct ListContactChannelsOutput {
     }
 }
 
-public struct ListContactsInput {
+public struct ListContactsInput: Swift.Sendable {
     /// Used to list only contacts who's aliases start with the specified prefix.
     public var aliasPrefix: Swift.String?
     /// The maximum number of contacts and escalation plans per page of results.
@@ -1748,7 +1748,7 @@ public struct ListContactsInput {
     }
 }
 
-public struct ListContactsOutput {
+public struct ListContactsOutput: Swift.Sendable {
     /// A list of the contacts and escalation plans in your Incident Manager account.
     public var contacts: [SSMContactsClientTypes.Contact]?
     /// The pagination token to continue to the next page of results.
@@ -1765,8 +1765,9 @@ public struct ListContactsOutput {
 }
 
 extension SSMContactsClientTypes {
+
     /// A range of between two set times
-    public struct TimeRange {
+    public struct TimeRange: Swift.Sendable {
         /// The end of the time range.
         public var endTime: Foundation.Date?
         /// The start of the time range.
@@ -1781,10 +1782,9 @@ extension SSMContactsClientTypes {
             self.startTime = startTime
         }
     }
-
 }
 
-public struct ListEngagementsInput {
+public struct ListEngagementsInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the incident you're listing engagements for.
     public var incidentId: Swift.String?
     /// The maximum number of engagements per page of results.
@@ -1808,7 +1808,7 @@ public struct ListEngagementsInput {
     }
 }
 
-public struct ListEngagementsOutput {
+public struct ListEngagementsOutput: Swift.Sendable {
     /// A list of each engagement that occurred during the specified time range of an incident.
     /// This member is required.
     public var engagements: [SSMContactsClientTypes.Engagement]?
@@ -1825,7 +1825,7 @@ public struct ListEngagementsOutput {
     }
 }
 
-public struct ListPageReceiptsInput {
+public struct ListPageReceiptsInput: Swift.Sendable {
     /// The maximum number of acknowledgements per page of results.
     public var maxResults: Swift.Int?
     /// The pagination token to continue to the next page of results.
@@ -1848,7 +1848,7 @@ public struct ListPageReceiptsInput {
 
 extension SSMContactsClientTypes {
 
-    public enum ReceiptType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ReceiptType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case delivered
         case error
         case read
@@ -1885,8 +1885,9 @@ extension SSMContactsClientTypes {
 }
 
 extension SSMContactsClientTypes {
+
     /// Records events during an engagement.
-    public struct Receipt {
+    public struct Receipt: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the contact channel Incident Manager engaged.
         public var contactChannelArn: Swift.String?
         /// Information provided during the page acknowledgement.
@@ -1911,10 +1912,9 @@ extension SSMContactsClientTypes {
             self.receiptType = receiptType
         }
     }
-
 }
 
-public struct ListPageReceiptsOutput {
+public struct ListPageReceiptsOutput: Swift.Sendable {
     /// The pagination token to continue to the next page of results.
     public var nextToken: Swift.String?
     /// A list of each acknowledgement.
@@ -1930,7 +1930,7 @@ public struct ListPageReceiptsOutput {
     }
 }
 
-public struct ListPageResolutionsInput {
+public struct ListPageResolutionsInput: Swift.Sendable {
     /// A token to start the list. Use this token to get the next set of results.
     public var nextToken: Swift.String?
     /// The Amazon Resource Name (ARN) of the contact engaged for the incident.
@@ -1948,8 +1948,9 @@ public struct ListPageResolutionsInput {
 }
 
 extension SSMContactsClientTypes {
+
     /// Information about the engagement resolution steps. The resolution starts from the first contact, which can be an escalation plan, then resolves to an on-call rotation, and finally to a personal contact. The ResolutionContact structure describes the information for each node or step in that process. It contains information about different contact types, such as the escalation, rotation, and personal contacts.
-    public struct ResolutionContact {
+    public struct ResolutionContact: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of a contact in the engagement resolution process.
         /// This member is required.
         public var contactArn: Swift.String?
@@ -1970,10 +1971,9 @@ extension SSMContactsClientTypes {
             self.type = type
         }
     }
-
 }
 
-public struct ListPageResolutionsOutput {
+public struct ListPageResolutionsOutput: Swift.Sendable {
     /// The token for the next set of items to return. Use this token to get the next set of results.
     public var nextToken: Swift.String?
     /// Information about the resolution for an engagement.
@@ -1990,7 +1990,7 @@ public struct ListPageResolutionsOutput {
     }
 }
 
-public struct ListPagesByContactInput {
+public struct ListPagesByContactInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the contact you are retrieving engagements for.
     /// This member is required.
     public var contactId: Swift.String?
@@ -2012,8 +2012,9 @@ public struct ListPagesByContactInput {
 }
 
 extension SSMContactsClientTypes {
+
     /// Incident Manager engaging a contact's contact channel.
-    public struct Page {
+    public struct Page: Swift.Sendable {
         /// The ARN of the contact that Incident Manager is engaging.
         /// This member is required.
         public var contactArn: Swift.String?
@@ -2056,10 +2057,9 @@ extension SSMContactsClientTypes {
             self.sentTime = sentTime
         }
     }
-
 }
 
-public struct ListPagesByContactOutput {
+public struct ListPagesByContactOutput: Swift.Sendable {
     /// The pagination token to continue to the next page of results.
     public var nextToken: Swift.String?
     /// The list of engagements to a contact's contact channel.
@@ -2076,7 +2076,7 @@ public struct ListPagesByContactOutput {
     }
 }
 
-public struct ListPagesByEngagementInput {
+public struct ListPagesByEngagementInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the engagement.
     /// This member is required.
     public var engagementId: Swift.String?
@@ -2097,7 +2097,7 @@ public struct ListPagesByEngagementInput {
     }
 }
 
-public struct ListPagesByEngagementOutput {
+public struct ListPagesByEngagementOutput: Swift.Sendable {
     /// The pagination token to continue to the next page of results.
     public var nextToken: Swift.String?
     /// The list of engagements to contact channels.
@@ -2115,8 +2115,9 @@ public struct ListPagesByEngagementOutput {
 }
 
 extension SSMContactsClientTypes {
+
     /// Information about contacts and times that an on-call override replaces.
-    public struct PreviewOverride {
+    public struct PreviewOverride: Swift.Sendable {
         /// Information about the time a rotation override would end.
         public var endTime: Foundation.Date?
         /// Information about contacts to add to an on-call rotation override.
@@ -2135,10 +2136,9 @@ extension SSMContactsClientTypes {
             self.startTime = startTime
         }
     }
-
 }
 
-public struct ListPreviewRotationShiftsInput {
+public struct ListPreviewRotationShiftsInput: Swift.Sendable {
     /// The date and time a rotation shift would end.
     /// This member is required.
     public var endTime: Foundation.Date?
@@ -2187,8 +2187,9 @@ public struct ListPreviewRotationShiftsInput {
 }
 
 extension SSMContactsClientTypes {
+
     /// Information about overrides to an on-call rotation shift.
-    public struct ShiftDetails {
+    public struct ShiftDetails: Swift.Sendable {
         /// The Amazon Resources Names (ARNs) of the contacts who were replaced in a shift when an override was created. If the override is deleted, these contacts are restored to the shift.
         /// This member is required.
         public var overriddenContactIds: [Swift.String]?
@@ -2200,12 +2201,11 @@ extension SSMContactsClientTypes {
             self.overriddenContactIds = overriddenContactIds
         }
     }
-
 }
 
 extension SSMContactsClientTypes {
 
-    public enum ShiftType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ShiftType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case overridden
         case regular
         case sdkUnknown(Swift.String)
@@ -2233,8 +2233,9 @@ extension SSMContactsClientTypes {
 }
 
 extension SSMContactsClientTypes {
+
     /// Information about a shift that belongs to an on-call rotation.
-    public struct RotationShift {
+    public struct RotationShift: Swift.Sendable {
         /// The Amazon Resource Names (ARNs) of the contacts who are part of the shift rotation.
         public var contactIds: [Swift.String]?
         /// The time a shift rotation ends.
@@ -2263,10 +2264,9 @@ extension SSMContactsClientTypes {
             self.type = type
         }
     }
-
 }
 
-public struct ListPreviewRotationShiftsOutput {
+public struct ListPreviewRotationShiftsOutput: Swift.Sendable {
     /// The token for the next set of items to return. This token is used to get the next set of results.
     public var nextToken: Swift.String?
     /// Details about a rotation shift, including times, types, and contacts.
@@ -2282,7 +2282,7 @@ public struct ListPreviewRotationShiftsOutput {
     }
 }
 
-public struct ListRotationOverridesInput {
+public struct ListRotationOverridesInput: Swift.Sendable {
     /// The date and time for the end of a time range for listing overrides.
     /// This member is required.
     public var endTime: Foundation.Date?
@@ -2314,8 +2314,9 @@ public struct ListRotationOverridesInput {
 }
 
 extension SSMContactsClientTypes {
+
     /// Information about an override specified for an on-call rotation.
-    public struct RotationOverride {
+    public struct RotationOverride: Swift.Sendable {
         /// The time a rotation override was created.
         /// This member is required.
         public var createTime: Foundation.Date?
@@ -2347,10 +2348,9 @@ extension SSMContactsClientTypes {
             self.startTime = startTime
         }
     }
-
 }
 
-public struct ListRotationOverridesOutput {
+public struct ListRotationOverridesOutput: Swift.Sendable {
     /// The token for the next set of items to return. Use this token to get the next set of results.
     public var nextToken: Swift.String?
     /// A list of rotation overrides in the specified time range.
@@ -2366,7 +2366,7 @@ public struct ListRotationOverridesOutput {
     }
 }
 
-public struct ListRotationsInput {
+public struct ListRotationsInput: Swift.Sendable {
     /// The maximum number of items to return for this call. The call also returns a token that you can specify in a subsequent call to get the next set of results.
     public var maxResults: Swift.Int?
     /// A token to start the list. Use this token to get the next set of results.
@@ -2387,8 +2387,9 @@ public struct ListRotationsInput {
 }
 
 extension SSMContactsClientTypes {
+
     /// Information about a rotation in an on-call schedule.
-    public struct Rotation {
+    public struct Rotation: Swift.Sendable {
         /// The Amazon Resource Names (ARNs) of the contacts assigned to the rotation team.
         public var contactIds: [Swift.String]?
         /// The name of the rotation.
@@ -2421,10 +2422,9 @@ extension SSMContactsClientTypes {
             self.timeZoneId = timeZoneId
         }
     }
-
 }
 
-public struct ListRotationsOutput {
+public struct ListRotationsOutput: Swift.Sendable {
     /// The token for the next set of items to return. Use this token to get the next set of results.
     public var nextToken: Swift.String?
     /// Information about rotations that meet the filter criteria.
@@ -2441,7 +2441,7 @@ public struct ListRotationsOutput {
     }
 }
 
-public struct ListRotationShiftsInput {
+public struct ListRotationShiftsInput: Swift.Sendable {
     /// The date and time for the end of the time range to list shifts for.
     /// This member is required.
     public var endTime: Foundation.Date?
@@ -2471,7 +2471,7 @@ public struct ListRotationShiftsInput {
     }
 }
 
-public struct ListRotationShiftsOutput {
+public struct ListRotationShiftsOutput: Swift.Sendable {
     /// The token for the next set of items to return. Use this token to get the next set of results.
     public var nextToken: Swift.String?
     /// Information about shifts that meet the filter criteria.
@@ -2487,7 +2487,7 @@ public struct ListRotationShiftsOutput {
     }
 }
 
-public struct ListTagsForResourceInput {
+public struct ListTagsForResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the contact or escalation plan.
     /// This member is required.
     public var resourceARN: Swift.String?
@@ -2500,7 +2500,7 @@ public struct ListTagsForResourceInput {
     }
 }
 
-public struct ListTagsForResourceOutput {
+public struct ListTagsForResourceOutput: Swift.Sendable {
     /// The tags related to the contact or escalation plan.
     public var tags: [SSMContactsClientTypes.Tag]?
 
@@ -2512,7 +2512,7 @@ public struct ListTagsForResourceOutput {
     }
 }
 
-public struct PutContactPolicyInput {
+public struct PutContactPolicyInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the contact or escalation plan.
     /// This member is required.
     public var contactArn: Swift.String?
@@ -2530,12 +2530,12 @@ public struct PutContactPolicyInput {
     }
 }
 
-public struct PutContactPolicyOutput {
+public struct PutContactPolicyOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct SendActivationCodeInput {
+public struct SendActivationCodeInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the contact channel.
     /// This member is required.
     public var contactChannelId: Swift.String?
@@ -2548,12 +2548,12 @@ public struct SendActivationCodeInput {
     }
 }
 
-public struct SendActivationCodeOutput {
+public struct SendActivationCodeOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct StartEngagementInput {
+public struct StartEngagementInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the contact being engaged.
     /// This member is required.
     public var contactId: Swift.String?
@@ -2597,7 +2597,7 @@ public struct StartEngagementInput {
     }
 }
 
-public struct StartEngagementOutput {
+public struct StartEngagementOutput: Swift.Sendable {
     /// The ARN of the engagement.
     /// This member is required.
     public var engagementArn: Swift.String?
@@ -2610,7 +2610,7 @@ public struct StartEngagementOutput {
     }
 }
 
-public struct StopEngagementInput {
+public struct StopEngagementInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the engagement.
     /// This member is required.
     public var engagementId: Swift.String?
@@ -2627,12 +2627,12 @@ public struct StopEngagementInput {
     }
 }
 
-public struct StopEngagementOutput {
+public struct StopEngagementOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct TagResourceInput {
+public struct TagResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the contact or escalation plan.
     /// This member is required.
     public var resourceARN: Swift.String?
@@ -2650,12 +2650,12 @@ public struct TagResourceInput {
     }
 }
 
-public struct TagResourceOutput {
+public struct TagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UntagResourceInput {
+public struct UntagResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the contact or escalation plan.
     /// This member is required.
     public var resourceARN: Swift.String?
@@ -2673,12 +2673,12 @@ public struct UntagResourceInput {
     }
 }
 
-public struct UntagResourceOutput {
+public struct UntagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdateContactInput {
+public struct UpdateContactInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the contact or escalation plan you're updating.
     /// This member is required.
     public var contactId: Swift.String?
@@ -2699,12 +2699,12 @@ public struct UpdateContactInput {
     }
 }
 
-public struct UpdateContactOutput {
+public struct UpdateContactOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdateContactChannelInput {
+public struct UpdateContactChannelInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the contact channel you want to update.
     /// This member is required.
     public var contactChannelId: Swift.String?
@@ -2725,12 +2725,12 @@ public struct UpdateContactChannelInput {
     }
 }
 
-public struct UpdateContactChannelOutput {
+public struct UpdateContactChannelOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdateRotationInput {
+public struct UpdateRotationInput: Swift.Sendable {
     /// The Amazon Resource Names (ARNs) of the contacts to include in the updated rotation. The order in which you list the contacts is their shift order in the rotation schedule.
     public var contactIds: [Swift.String]?
     /// Information about how long the updated rotation lasts before restarting at the beginning of the shift order.
@@ -2760,7 +2760,7 @@ public struct UpdateRotationInput {
     }
 }
 
-public struct UpdateRotationOutput {
+public struct UpdateRotationOutput: Swift.Sendable {
 
     public init() { }
 }

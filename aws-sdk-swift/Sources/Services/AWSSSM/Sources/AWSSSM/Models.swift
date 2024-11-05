@@ -33,8 +33,9 @@ import protocol ClientRuntime.ModeledError
 @_spi(SmithyTimestamps) import struct SmithyTimestamps.TimestampFormatter
 
 extension SSMClientTypes {
+
     /// Information includes the Amazon Web Services account ID where the current document is shared and the version shared with that account.
-    public struct AccountSharingInfo {
+    public struct AccountSharingInfo: Swift.Sendable {
         /// The Amazon Web Services account ID where the current document is shared.
         public var accountId: Swift.String?
         /// The version of the current document shared with the account.
@@ -49,12 +50,12 @@ extension SSMClientTypes {
             self.sharedDocumentVersion = sharedDocumentVersion
         }
     }
-
 }
 
 extension SSMClientTypes {
+
     /// Metadata that you assign to your Amazon Web Services resources. Tags enable you to categorize your resources in different ways, for example, by purpose, owner, or environment. In Amazon Web Services Systems Manager, you can apply tags to Systems Manager documents (SSM documents), managed nodes, maintenance windows, parameters, patch baselines, OpsItems, and OpsMetadata.
-    public struct Tag {
+    public struct Tag: Swift.Sendable {
         /// The name of the tag.
         /// This member is required.
         public var key: Swift.String?
@@ -71,12 +72,12 @@ extension SSMClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension SSMClientTypes {
+
     /// An activation registers one or more on-premises servers or virtual machines (VMs) with Amazon Web Services so that you can configure those servers or VMs using Run Command. A server or VM that has been registered with Amazon Web Services Systems Manager is called a managed node.
-    public struct Activation {
+    public struct Activation: Swift.Sendable {
         /// The ID created by Systems Manager when you submitted the activation.
         public var activationId: Swift.String?
         /// The date the activation was created.
@@ -123,7 +124,6 @@ extension SSMClientTypes {
             self.tags = tags
         }
     }
-
 }
 
 /// An error occurred on the server side.
@@ -215,7 +215,7 @@ public struct TooManyUpdates: ClientRuntime.ModeledError, AWSClientRuntime.AWSSe
 
 extension SSMClientTypes {
 
-    public enum ResourceTypeForTagging: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ResourceTypeForTagging: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case association
         case automation
         case document
@@ -263,7 +263,7 @@ extension SSMClientTypes {
     }
 }
 
-public struct AddTagsToResourceInput {
+public struct AddTagsToResourceInput: Swift.Sendable {
     /// The resource ID you want to tag. Use the ID of the resource. Here are some examples: MaintenanceWindow: mw-012345abcdePatchBaseline: pb-012345abcdeAutomation: example-c160-4567-8519-012345abcdeOpsMetadata object: ResourceID for tagging is created from the Amazon Resource Name (ARN) for the object. Specifically, ResourceID is created from the strings that come after the word opsmetadata in the ARN. For example, an OpsMetadata object with an ARN of arn:aws:ssm:us-east-2:1234567890:opsmetadata/aws/ssm/MyGroup/appmanager has a ResourceID of either aws/ssm/MyGroup/appmanager or /aws/ssm/MyGroup/appmanager. For the Document and Parameter values, use the name of the resource. If you're tagging a shared document, you must use the full ARN of the document. ManagedInstance: mi-012345abcde The ManagedInstance type for this API operation is only for on-premises managed nodes. You must specify the name of the managed node in the following format: mi-ID_number . For example, mi-1a2b3c4d5e6f.
     /// This member is required.
     public var resourceId: Swift.String?
@@ -286,14 +286,15 @@ public struct AddTagsToResourceInput {
     }
 }
 
-public struct AddTagsToResourceOutput {
+public struct AddTagsToResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
 extension SSMClientTypes {
+
     /// A CloudWatch alarm you apply to an automation or command.
-    public struct Alarm {
+    public struct Alarm: Swift.Sendable {
         /// The name of your CloudWatch alarm.
         /// This member is required.
         public var name: Swift.String?
@@ -305,12 +306,12 @@ extension SSMClientTypes {
             self.name = name
         }
     }
-
 }
 
 extension SSMClientTypes {
+
     /// The details for the CloudWatch alarm you want to apply to an automation or command.
-    public struct AlarmConfiguration {
+    public struct AlarmConfiguration: Swift.Sendable {
         /// The name of the CloudWatch alarm specified in the configuration.
         /// This member is required.
         public var alarms: [SSMClientTypes.Alarm]?
@@ -326,12 +327,11 @@ extension SSMClientTypes {
             self.ignorePollAlarmFailure = ignorePollAlarmFailure
         }
     }
-
 }
 
 extension SSMClientTypes {
 
-    public enum ExternalAlarmState: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ExternalAlarmState: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case alarm
         case unknown
         case sdkUnknown(Swift.String)
@@ -359,8 +359,9 @@ extension SSMClientTypes {
 }
 
 extension SSMClientTypes {
+
     /// The details about the state of your CloudWatch alarm.
-    public struct AlarmStateInformation {
+    public struct AlarmStateInformation: Swift.Sendable {
         /// The name of your CloudWatch alarm.
         /// This member is required.
         public var name: Swift.String?
@@ -377,7 +378,6 @@ extension SSMClientTypes {
             self.state = state
         }
     }
-
 }
 
 /// Error returned if an attempt is made to register a patch group with a patch baseline that is already registered with a different patch baseline.
@@ -542,7 +542,7 @@ public struct OpsItemRelatedItemAlreadyExistsException: ClientRuntime.ModeledErr
     }
 }
 
-public struct AssociateOpsItemRelatedItemInput {
+public struct AssociateOpsItemRelatedItemInput: Swift.Sendable {
     /// The type of association that you want to create between an OpsItem and a resource. OpsCenter supports IsParentOf and RelatesTo association types.
     /// This member is required.
     public var associationType: Swift.String?
@@ -570,7 +570,7 @@ public struct AssociateOpsItemRelatedItemInput {
     }
 }
 
-public struct AssociateOpsItemRelatedItemOutput {
+public struct AssociateOpsItemRelatedItemOutput: Swift.Sendable {
     /// The association ID.
     public var associationId: Swift.String?
 
@@ -641,7 +641,7 @@ public struct InvalidInstanceId: ClientRuntime.ModeledError, AWSClientRuntime.AW
 }
 
 ///
-public struct CancelCommandInput {
+public struct CancelCommandInput: Swift.Sendable {
     /// The ID of the command you want to cancel.
     /// This member is required.
     public var commandId: Swift.String?
@@ -659,7 +659,7 @@ public struct CancelCommandInput {
 }
 
 /// Whether or not the command was successfully canceled. There is no guarantee that a request can be canceled.
-public struct CancelCommandOutput {
+public struct CancelCommandOutput: Swift.Sendable {
 
     public init() { }
 }
@@ -688,7 +688,7 @@ public struct DoesNotExistException: ClientRuntime.ModeledError, AWSClientRuntim
     }
 }
 
-public struct CancelMaintenanceWindowExecutionInput {
+public struct CancelMaintenanceWindowExecutionInput: Swift.Sendable {
     /// The ID of the maintenance window execution to stop.
     /// This member is required.
     public var windowExecutionId: Swift.String?
@@ -701,7 +701,7 @@ public struct CancelMaintenanceWindowExecutionInput {
     }
 }
 
-public struct CancelMaintenanceWindowExecutionOutput {
+public struct CancelMaintenanceWindowExecutionOutput: Swift.Sendable {
     /// The ID of the maintenance window execution that has been stopped.
     public var windowExecutionId: Swift.String?
 
@@ -738,8 +738,9 @@ public struct InvalidParameters: ClientRuntime.ModeledError, AWSClientRuntime.AW
 }
 
 extension SSMClientTypes {
+
     /// Reserved for internal use.
-    public struct RegistrationMetadataItem {
+    public struct RegistrationMetadataItem: Swift.Sendable {
         /// Reserved for internal use.
         /// This member is required.
         public var key: Swift.String?
@@ -756,10 +757,9 @@ extension SSMClientTypes {
             self.value = value
         }
     }
-
 }
 
-public struct CreateActivationInput {
+public struct CreateActivationInput: Swift.Sendable {
     /// The name of the registered, managed node as it will appear in the Amazon Web Services Systems Manager console or when you use the Amazon Web Services command line tools to list Systems Manager resources. Don't enter personally identifiable information in this field.
     public var defaultInstanceName: Swift.String?
     /// A user-defined description of the resource that you want to register with Systems Manager. Don't enter personally identifiable information in this field.
@@ -803,7 +803,7 @@ public struct CreateActivationInput {
     }
 }
 
-public struct CreateActivationOutput {
+public struct CreateActivationOutput: Swift.Sendable {
     /// The code the system generates when it processes the activation. The activation code functions like a password to validate the activation ID.
     public var activationCode: Swift.String?
     /// The ID number generated by the system when it processed the activation. The activation ID functions like a user name.
@@ -1029,7 +1029,7 @@ public struct UnsupportedPlatformType: ClientRuntime.ModeledError, AWSClientRunt
 
 extension SSMClientTypes {
 
-    public enum AssociationComplianceSeverity: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AssociationComplianceSeverity: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case critical
         case high
         case low
@@ -1066,8 +1066,9 @@ extension SSMClientTypes {
 }
 
 extension SSMClientTypes {
+
     /// An S3 bucket where you want to store the results of this request.
-    public struct S3OutputLocation {
+    public struct S3OutputLocation: Swift.Sendable {
         /// The name of the S3 bucket.
         public var outputS3BucketName: Swift.String?
         /// The S3 bucket subfolder.
@@ -1086,12 +1087,12 @@ extension SSMClientTypes {
             self.outputS3Region = outputS3Region
         }
     }
-
 }
 
 extension SSMClientTypes {
+
     /// An S3 bucket where you want to store the results of this request. For the minimal permissions required to enable Amazon S3 output for an association, see [Create an association (console)](https://docs.aws.amazon.com/systems-manager/latest/userguide/state-manager-associations-creating.html#state-manager-associations-console) in the Systems Manager User Guide.
-    public struct InstanceAssociationOutputLocation {
+    public struct InstanceAssociationOutputLocation: Swift.Sendable {
         /// An S3 bucket where you want to store the results of this request.
         public var s3Location: SSMClientTypes.S3OutputLocation?
 
@@ -1102,12 +1103,11 @@ extension SSMClientTypes {
             self.s3Location = s3Location
         }
     }
-
 }
 
 extension SSMClientTypes {
 
-    public enum AssociationSyncCompliance: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AssociationSyncCompliance: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case auto
         case manual
         case sdkUnknown(Swift.String)
@@ -1135,6 +1135,7 @@ extension SSMClientTypes {
 }
 
 extension SSMClientTypes {
+
     /// An array of search criteria that targets managed nodes using a key-value pair that you specify. One or more targets must be specified for maintenance window Run Command-type tasks. Depending on the task, targets are optional for other maintenance window task types (Automation, Lambda, and Step Functions). For more information about running tasks that don't specify targets, see [Registering maintenance window tasks without targets](https://docs.aws.amazon.com/systems-manager/latest/userguide/maintenance-windows-targetless-tasks.html) in the Amazon Web Services Systems Manager User Guide. Supported formats include the following. For all Systems Manager capabilities:
     ///
     /// * Key=tag-key,Values=tag-value-1,tag-value-2
@@ -1189,7 +1190,7 @@ extension SSMClientTypes {
     ///
     ///
     /// For more information about how to send commands that target managed nodes using Key,Value parameters, see [Targeting multiple managed nodes](https://docs.aws.amazon.com/systems-manager/latest/userguide/send-commands-multiple.html#send-commands-targeting) in the Amazon Web Services Systems Manager User Guide.
-    public struct Target {
+    public struct Target: Swift.Sendable {
         /// User-defined criteria for sending commands that target managed nodes that meet the criteria.
         public var key: Swift.String?
         /// User-defined criteria that maps to Key. For example, if you specified tag:ServerRole, you could specify value:WebServer to run a command on instances that include EC2 tags of ServerRole,WebServer. Depending on the type of target, the maximum number of values for a key might be lower than the global maximum of 50.
@@ -1204,12 +1205,12 @@ extension SSMClientTypes {
             self.values = values
         }
     }
-
 }
 
 extension SSMClientTypes {
+
     /// The combination of Amazon Web Services Regions and Amazon Web Services accounts targeted by the current Automation execution.
-    public struct TargetLocation {
+    public struct TargetLocation: Swift.Sendable {
         /// The Amazon Web Services accounts targeted by the current Automation execution.
         public var accounts: [Swift.String]?
         /// Amazon Web Services accounts or organizational units to exclude as expanded targets.
@@ -1260,10 +1261,9 @@ extension SSMClientTypes {
             self.targetsMaxErrors = targetsMaxErrors
         }
     }
-
 }
 
-public struct CreateAssociationInput {
+public struct CreateAssociationInput: Swift.Sendable {
     /// The details for the CloudWatch alarm you want to apply to an automation or command.
     public var alarmConfiguration: SSMClientTypes.AlarmConfiguration?
     /// By default, when you create a new association, the system runs it immediately after it is created and then according to the schedule you specified. Specify this option if you don't want an association to run immediately after you create it. This parameter isn't supported for rate expressions.
@@ -1366,8 +1366,9 @@ extension CreateAssociationInput: Swift.CustomDebugStringConvertible {
 }
 
 extension SSMClientTypes {
+
     /// Information about the association.
-    public struct AssociationOverview {
+    public struct AssociationOverview: Swift.Sendable {
         /// Returns the number of targets for the association status. For example, if you created an association with two managed nodes, and one of them was successful, this would return the count of managed nodes by status.
         public var associationStatusAggregatedCount: [Swift.String: Swift.Int]?
         /// A detailed status of the association.
@@ -1386,12 +1387,11 @@ extension SSMClientTypes {
             self.status = status
         }
     }
-
 }
 
 extension SSMClientTypes {
 
-    public enum AssociationStatusName: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AssociationStatusName: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case failed
         case pending
         case success
@@ -1422,8 +1422,9 @@ extension SSMClientTypes {
 }
 
 extension SSMClientTypes {
+
     /// Describes an association status.
-    public struct AssociationStatus {
+    public struct AssociationStatus: Swift.Sendable {
         /// A user-defined string.
         public var additionalInfo: Swift.String?
         /// The date when the status changed.
@@ -1449,12 +1450,12 @@ extension SSMClientTypes {
             self.name = name
         }
     }
-
 }
 
 extension SSMClientTypes {
+
     /// Describes the parameters for a document.
-    public struct AssociationDescription {
+    public struct AssociationDescription: Swift.Sendable {
         /// The details for the CloudWatch alarm you want to apply to an automation or command.
         public var alarmConfiguration: SSMClientTypes.AlarmConfiguration?
         /// By default, when you create a new associations, the system runs it immediately after it is created and then according to the schedule you specified. Specify this option if you don't want an association to run immediately after you create it. This parameter isn't supported for rate expressions.
@@ -1577,7 +1578,6 @@ extension SSMClientTypes {
             self.triggeredAlarms = triggeredAlarms
         }
     }
-
 }
 
 extension SSMClientTypes.AssociationDescription: Swift.CustomDebugStringConvertible {
@@ -1585,7 +1585,7 @@ extension SSMClientTypes.AssociationDescription: Swift.CustomDebugStringConverti
         "AssociationDescription(alarmConfiguration: \(Swift.String(describing: alarmConfiguration)), applyOnlyAtCronInterval: \(Swift.String(describing: applyOnlyAtCronInterval)), associationId: \(Swift.String(describing: associationId)), associationName: \(Swift.String(describing: associationName)), associationVersion: \(Swift.String(describing: associationVersion)), automationTargetParameterName: \(Swift.String(describing: automationTargetParameterName)), calendarNames: \(Swift.String(describing: calendarNames)), complianceSeverity: \(Swift.String(describing: complianceSeverity)), date: \(Swift.String(describing: date)), documentVersion: \(Swift.String(describing: documentVersion)), duration: \(Swift.String(describing: duration)), instanceId: \(Swift.String(describing: instanceId)), lastExecutionDate: \(Swift.String(describing: lastExecutionDate)), lastSuccessfulExecutionDate: \(Swift.String(describing: lastSuccessfulExecutionDate)), lastUpdateAssociationDate: \(Swift.String(describing: lastUpdateAssociationDate)), maxConcurrency: \(Swift.String(describing: maxConcurrency)), maxErrors: \(Swift.String(describing: maxErrors)), name: \(Swift.String(describing: name)), outputLocation: \(Swift.String(describing: outputLocation)), overview: \(Swift.String(describing: overview)), scheduleExpression: \(Swift.String(describing: scheduleExpression)), scheduleOffset: \(Swift.String(describing: scheduleOffset)), status: \(Swift.String(describing: status)), syncCompliance: \(Swift.String(describing: syncCompliance)), targetLocations: \(Swift.String(describing: targetLocations)), targetMaps: \(Swift.String(describing: targetMaps)), targets: \(Swift.String(describing: targets)), triggeredAlarms: \(Swift.String(describing: triggeredAlarms)), parameters: \"CONTENT_REDACTED\")"}
 }
 
-public struct CreateAssociationOutput {
+public struct CreateAssociationOutput: Swift.Sendable {
     /// Information about the association.
     public var associationDescription: SSMClientTypes.AssociationDescription?
 
@@ -1598,8 +1598,9 @@ public struct CreateAssociationOutput {
 }
 
 extension SSMClientTypes {
+
     /// Describes the association of a Amazon Web Services Systems Manager document (SSM document) and a managed node.
-    public struct CreateAssociationBatchRequestEntry {
+    public struct CreateAssociationBatchRequestEntry: Swift.Sendable {
         /// The details for the CloudWatch alarm you want to apply to an automation or command.
         public var alarmConfiguration: SSMClientTypes.AlarmConfiguration?
         /// By default, when you create a new associations, the system runs it immediately after it is created and then according to the schedule you specified. Specify this option if you don't want an association to run immediately after you create it. This parameter isn't supported for rate expressions.
@@ -1691,7 +1692,6 @@ extension SSMClientTypes {
             self.targets = targets
         }
     }
-
 }
 
 extension SSMClientTypes.CreateAssociationBatchRequestEntry: Swift.CustomDebugStringConvertible {
@@ -1699,7 +1699,7 @@ extension SSMClientTypes.CreateAssociationBatchRequestEntry: Swift.CustomDebugSt
         "CreateAssociationBatchRequestEntry(alarmConfiguration: \(Swift.String(describing: alarmConfiguration)), applyOnlyAtCronInterval: \(Swift.String(describing: applyOnlyAtCronInterval)), associationName: \(Swift.String(describing: associationName)), automationTargetParameterName: \(Swift.String(describing: automationTargetParameterName)), calendarNames: \(Swift.String(describing: calendarNames)), complianceSeverity: \(Swift.String(describing: complianceSeverity)), documentVersion: \(Swift.String(describing: documentVersion)), duration: \(Swift.String(describing: duration)), instanceId: \(Swift.String(describing: instanceId)), maxConcurrency: \(Swift.String(describing: maxConcurrency)), maxErrors: \(Swift.String(describing: maxErrors)), name: \(Swift.String(describing: name)), outputLocation: \(Swift.String(describing: outputLocation)), scheduleExpression: \(Swift.String(describing: scheduleExpression)), scheduleOffset: \(Swift.String(describing: scheduleOffset)), syncCompliance: \(Swift.String(describing: syncCompliance)), targetLocations: \(Swift.String(describing: targetLocations)), targetMaps: \(Swift.String(describing: targetMaps)), targets: \(Swift.String(describing: targets)), parameters: \"CONTENT_REDACTED\")"}
 }
 
-public struct CreateAssociationBatchInput {
+public struct CreateAssociationBatchInput: Swift.Sendable {
     /// One or more associations.
     /// This member is required.
     public var entries: [SSMClientTypes.CreateAssociationBatchRequestEntry]?
@@ -1714,7 +1714,7 @@ public struct CreateAssociationBatchInput {
 
 extension SSMClientTypes {
 
-    public enum Fault: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Fault: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case client
         case server
         case unknown
@@ -1745,8 +1745,9 @@ extension SSMClientTypes {
 }
 
 extension SSMClientTypes {
+
     /// Describes a failed association.
-    public struct FailedCreateAssociation {
+    public struct FailedCreateAssociation: Swift.Sendable {
         /// The association.
         public var entry: SSMClientTypes.CreateAssociationBatchRequestEntry?
         /// The source of the failure.
@@ -1765,10 +1766,9 @@ extension SSMClientTypes {
             self.message = message
         }
     }
-
 }
 
-public struct CreateAssociationBatchOutput {
+public struct CreateAssociationBatchOutput: Swift.Sendable {
     /// Information about the associations that failed.
     public var failed: [SSMClientTypes.FailedCreateAssociation]?
     /// Information about the associations that succeeded.
@@ -1907,7 +1907,7 @@ public struct MaxDocumentSizeExceeded: ClientRuntime.ModeledError, AWSClientRunt
 
 extension SSMClientTypes {
 
-    public enum AttachmentsSourceKey: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AttachmentsSourceKey: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case attachmentreference
         case s3fileurl
         case sourceurl
@@ -1938,8 +1938,9 @@ extension SSMClientTypes {
 }
 
 extension SSMClientTypes {
+
     /// Identifying information about a document attachment, including the file name and a key-value pair that identifies the location of an attachment to a document.
-    public struct AttachmentsSource {
+    public struct AttachmentsSource: Swift.Sendable {
         /// The key of a key-value pair that identifies the location of an attachment to a document.
         public var key: SSMClientTypes.AttachmentsSourceKey?
         /// The name of the document attachment file.
@@ -1964,12 +1965,11 @@ extension SSMClientTypes {
             self.values = values
         }
     }
-
 }
 
 extension SSMClientTypes {
 
-    public enum DocumentFormat: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DocumentFormat: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case json
         case text
         case yaml
@@ -2001,7 +2001,7 @@ extension SSMClientTypes {
 
 extension SSMClientTypes {
 
-    public enum DocumentType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DocumentType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case applicationconfiguration
         case applicationconfigurationschema
         case automation
@@ -2068,8 +2068,9 @@ extension SSMClientTypes {
 }
 
 extension SSMClientTypes {
+
     /// An SSM document required by the current document.
-    public struct DocumentRequires {
+    public struct DocumentRequires: Swift.Sendable {
         /// The name of the required SSM document. The name can be an Amazon Resource Name (ARN).
         /// This member is required.
         public var name: Swift.String?
@@ -2093,10 +2094,9 @@ extension SSMClientTypes {
             self.versionName = versionName
         }
     }
-
 }
 
-public struct CreateDocumentInput {
+public struct CreateDocumentInput: Swift.Sendable {
     /// A list of key-value pairs that describe attachments to a version of a document.
     public var attachments: [SSMClientTypes.AttachmentsSource]?
     /// The content for the new SSM document in JSON or YAML format. The content of the document must not exceed 64KB. This quota also includes the content specified for input parameters at runtime. We recommend storing the contents for your new document in an external JSON or YAML file and referencing the file in a command. For examples, see the following topics in the Amazon Web Services Systems Manager User Guide.
@@ -2172,8 +2172,9 @@ public struct CreateDocumentInput {
 }
 
 extension SSMClientTypes {
+
     /// An attribute of an attachment, such as the attachment name.
-    public struct AttachmentInformation {
+    public struct AttachmentInformation: Swift.Sendable {
         /// The name of the attachment.
         public var name: Swift.String?
 
@@ -2184,12 +2185,11 @@ extension SSMClientTypes {
             self.name = name
         }
     }
-
 }
 
 extension SSMClientTypes {
 
-    public enum DocumentHashType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DocumentHashType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case sha1
         case sha256
         case sdkUnknown(Swift.String)
@@ -2218,7 +2218,7 @@ extension SSMClientTypes {
 
 extension SSMClientTypes {
 
-    public enum DocumentParameterType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DocumentParameterType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case string
         case stringlist
         case sdkUnknown(Swift.String)
@@ -2246,8 +2246,9 @@ extension SSMClientTypes {
 }
 
 extension SSMClientTypes {
+
     /// Parameters specified in a Systems Manager document that run on the server when the command is run.
-    public struct DocumentParameter {
+    public struct DocumentParameter: Swift.Sendable {
         /// If specified, the default values for the parameters. Parameters without a default value are required. Parameters with a default value are optional.
         public var defaultValue: Swift.String?
         /// A description of what the parameter does, how to use it, the default value, and whether or not the parameter is optional.
@@ -2270,12 +2271,11 @@ extension SSMClientTypes {
             self.type = type
         }
     }
-
 }
 
 extension SSMClientTypes {
 
-    public enum PlatformType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum PlatformType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case linux
         case macos
         case windows
@@ -2307,7 +2307,7 @@ extension SSMClientTypes {
 
 extension SSMClientTypes {
 
-    public enum ReviewStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ReviewStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case approved
         case notReviewed
         case pending
@@ -2341,8 +2341,9 @@ extension SSMClientTypes {
 }
 
 extension SSMClientTypes {
+
     /// Information about the result of a document review request.
-    public struct ReviewInformation {
+    public struct ReviewInformation: Swift.Sendable {
         /// The time that the reviewer took action on the document review request.
         public var reviewedTime: Foundation.Date?
         /// The reviewer assigned to take action on the document review request.
@@ -2361,13 +2362,12 @@ extension SSMClientTypes {
             self.status = status
         }
     }
-
 }
 
 extension SSMClientTypes {
 
     /// The status of a document.
-    public enum DocumentStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DocumentStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case active
         case creating
         case deleting
@@ -2404,8 +2404,9 @@ extension SSMClientTypes {
 }
 
 extension SSMClientTypes {
+
     /// Describes an Amazon Web Services Systems Manager document (SSM document).
-    public struct DocumentDescription {
+    public struct DocumentDescription: Swift.Sendable {
         /// The version of the document currently approved for use in the organization.
         public var approvedVersion: Swift.String?
         /// Details about the document attachments, including names, locations, sizes, and so on.
@@ -2532,10 +2533,9 @@ extension SSMClientTypes {
             self.versionName = versionName
         }
     }
-
 }
 
-public struct CreateDocumentOutput {
+public struct CreateDocumentOutput: Swift.Sendable {
     /// Information about the SSM document.
     public var documentDescription: SSMClientTypes.DocumentDescription?
 
@@ -2595,7 +2595,7 @@ public struct ResourceLimitExceededException: ClientRuntime.ModeledError, AWSCli
     }
 }
 
-public struct CreateMaintenanceWindowInput {
+public struct CreateMaintenanceWindowInput: Swift.Sendable {
     /// Enables a maintenance window task to run on managed nodes, even if you haven't registered those nodes as targets. If enabled, then you must specify the unregistered managed nodes (by node ID) when you register a task with the maintenance window. If you don't enable this option, then you must specify previously-registered targets when you register a task with the maintenance window.
     /// This member is required.
     public var allowUnassociatedTargets: Swift.Bool?
@@ -2670,7 +2670,7 @@ extension CreateMaintenanceWindowInput: Swift.CustomDebugStringConvertible {
         "CreateMaintenanceWindowInput(allowUnassociatedTargets: \(Swift.String(describing: allowUnassociatedTargets)), clientToken: \(Swift.String(describing: clientToken)), cutoff: \(Swift.String(describing: cutoff)), duration: \(Swift.String(describing: duration)), endDate: \(Swift.String(describing: endDate)), name: \(Swift.String(describing: name)), schedule: \(Swift.String(describing: schedule)), scheduleOffset: \(Swift.String(describing: scheduleOffset)), scheduleTimezone: \(Swift.String(describing: scheduleTimezone)), startDate: \(Swift.String(describing: startDate)), tags: \(Swift.String(describing: tags)), description: \"CONTENT_REDACTED\")"}
 }
 
-public struct CreateMaintenanceWindowOutput {
+public struct CreateMaintenanceWindowOutput: Swift.Sendable {
     /// The ID of the created maintenance window.
     public var windowId: Swift.String?
 
@@ -2734,8 +2734,9 @@ public struct OpsItemAlreadyExistsException: ClientRuntime.ModeledError, AWSClie
 }
 
 extension SSMClientTypes {
+
     /// A notification about the OpsItem.
-    public struct OpsItemNotification {
+    public struct OpsItemNotification: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of an Amazon Simple Notification Service (Amazon SNS) topic where notifications are sent when this OpsItem is edited or changed.
         public var arn: Swift.String?
 
@@ -2746,12 +2747,11 @@ extension SSMClientTypes {
             self.arn = arn
         }
     }
-
 }
 
 extension SSMClientTypes {
 
-    public enum OpsItemDataType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum OpsItemDataType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case searchableString
         case string
         case sdkUnknown(Swift.String)
@@ -2779,8 +2779,9 @@ extension SSMClientTypes {
 }
 
 extension SSMClientTypes {
+
     /// An object that defines the value of the key and its type in the OperationalData map.
-    public struct OpsItemDataValue {
+    public struct OpsItemDataValue: Swift.Sendable {
         /// The type of key-value pair. Valid types include SearchableString and String.
         public var type: SSMClientTypes.OpsItemDataType?
         /// The value of the OperationalData key.
@@ -2795,12 +2796,12 @@ extension SSMClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension SSMClientTypes {
+
     /// An OpsItems that shares something in common with the current OpsItem. For example, related OpsItems can include OpsItems with similar error messages, impacted resources, or statuses for the impacted resource.
-    public struct RelatedOpsItem {
+    public struct RelatedOpsItem: Swift.Sendable {
         /// The ID of an OpsItem related to the current OpsItem.
         /// This member is required.
         public var opsItemId: Swift.String?
@@ -2812,10 +2813,9 @@ extension SSMClientTypes {
             self.opsItemId = opsItemId
         }
     }
-
 }
 
-public struct CreateOpsItemInput {
+public struct CreateOpsItemInput: Swift.Sendable {
     /// The target Amazon Web Services account where you want to create an OpsItem. To make this call, your account must be configured to work with OpsItems across accounts. For more information, see [Set up OpsCenter](https://docs.aws.amazon.com/systems-manager/latest/userguide/OpsCenter-setup.html) in the Amazon Web Services Systems Manager User Guide.
     public var accountId: Swift.String?
     /// The time a runbook workflow ended. Currently reported only for the OpsItem type /aws/changerequest.
@@ -2896,7 +2896,7 @@ public struct CreateOpsItemInput {
     }
 }
 
-public struct CreateOpsItemOutput {
+public struct CreateOpsItemOutput: Swift.Sendable {
     /// The OpsItem Amazon Resource Name (ARN).
     public var opsItemArn: Swift.String?
     /// The ID of the OpsItem.
@@ -3009,8 +3009,9 @@ public struct OpsMetadataTooManyUpdatesException: ClientRuntime.ModeledError, AW
 }
 
 extension SSMClientTypes {
+
     /// Metadata to assign to an Application Manager application.
-    public struct MetadataValue {
+    public struct MetadataValue: Swift.Sendable {
         /// Metadata value to assign to an Application Manager application.
         public var value: Swift.String?
 
@@ -3021,10 +3022,9 @@ extension SSMClientTypes {
             self.value = value
         }
     }
-
 }
 
-public struct CreateOpsMetadataInput {
+public struct CreateOpsMetadataInput: Swift.Sendable {
     /// Metadata for a new Application Manager application.
     public var metadata: [Swift.String: SSMClientTypes.MetadataValue]?
     /// A resource ID for a new Application Manager application.
@@ -3049,7 +3049,7 @@ public struct CreateOpsMetadataInput {
     }
 }
 
-public struct CreateOpsMetadataOutput {
+public struct CreateOpsMetadataOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the OpsMetadata Object or blob created by the call.
     public var opsMetadataArn: Swift.String?
 
@@ -3063,7 +3063,7 @@ public struct CreateOpsMetadataOutput {
 
 extension SSMClientTypes {
 
-    public enum PatchComplianceLevel: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum PatchComplianceLevel: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case critical
         case high
         case informational
@@ -3104,7 +3104,7 @@ extension SSMClientTypes {
 
 extension SSMClientTypes {
 
-    public enum PatchFilterKey: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum PatchFilterKey: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case advisoryid
         case arch
         case bugzillaid
@@ -3183,8 +3183,9 @@ extension SSMClientTypes {
 }
 
 extension SSMClientTypes {
+
     /// Defines which patches should be included in a patch baseline. A patch filter consists of a key and a set of values. The filter key is a patch property. For example, the available filter keys for WINDOWS are PATCH_SET, PRODUCT, PRODUCT_FAMILY, CLASSIFICATION, and MSRC_SEVERITY. The filter values define a matching criterion for the patch property indicated by the key. For example, if the filter key is PRODUCT and the filter values are ["Office 2013", "Office 2016"], then the filter accepts all patches where product name is either "Office 2013" or "Office 2016". The filter values can be exact values for the patch property given as a key, or a wildcard (*), which matches all values. You can view lists of valid values for the patch properties by running the DescribePatchProperties command. For information about which patch properties can be used with each major operating system, see [DescribePatchProperties].
-    public struct PatchFilter {
+    public struct PatchFilter: Swift.Sendable {
         /// The key for the filter. Run the [DescribePatchProperties] command to view lists of valid keys for each operating system type.
         /// This member is required.
         public var key: SSMClientTypes.PatchFilterKey?
@@ -3201,12 +3202,12 @@ extension SSMClientTypes {
             self.values = values
         }
     }
-
 }
 
 extension SSMClientTypes {
+
     /// A set of patch filters, typically used for approval rules.
-    public struct PatchFilterGroup {
+    public struct PatchFilterGroup: Swift.Sendable {
         /// The set of patch filters that make up the group.
         /// This member is required.
         public var patchFilters: [SSMClientTypes.PatchFilter]?
@@ -3218,12 +3219,12 @@ extension SSMClientTypes {
             self.patchFilters = patchFilters
         }
     }
-
 }
 
 extension SSMClientTypes {
+
     /// Defines an approval rule for a patch baseline.
-    public struct PatchRule {
+    public struct PatchRule: Swift.Sendable {
         /// The number of days after the release date of each patch matched by the rule that the patch is marked as approved in the patch baseline. For example, a value of 7 means that patches are approved seven days after they are released. This parameter is marked as Required: No, but your request must include a value for either ApproveAfterDays or ApproveUntilDate. Not supported for Debian Server or Ubuntu Server. Use caution when setting this value for Windows Server patch baselines. Because patch updates that are replaced by later updates are removed, setting too broad a value for this parameter can result in crucial patches not being installed. For more information, see the Windows Server tab in the topic [How security patches are selected](https://docs.aws.amazon.com/systems-manager/latest/userguide/patch-manager-selecting-patches.html) in the Amazon Web Services Systems Manager User Guide.
         public var approveAfterDays: Swift.Int?
         /// The cutoff date for auto approval of released patches. Any patches released on or before this date are installed automatically. Enter dates in the format YYYY-MM-DD. For example, 2024-12-31. This parameter is marked as Required: No, but your request must include a value for either ApproveUntilDate or ApproveAfterDays. Not supported for Debian Server or Ubuntu Server. Use caution when setting this value for Windows Server patch baselines. Because patch updates that are replaced by later updates are removed, setting too broad a value for this parameter can result in crucial patches not being installed. For more information, see the Windows Server tab in the topic [How security patches are selected](https://docs.aws.amazon.com/systems-manager/latest/userguide/patch-manager-selecting-patches.html) in the Amazon Web Services Systems Manager User Guide.
@@ -3251,12 +3252,12 @@ extension SSMClientTypes {
             self.patchFilterGroup = patchFilterGroup
         }
     }
-
 }
 
 extension SSMClientTypes {
+
     /// A set of rules defining the approval rules for a patch baseline.
-    public struct PatchRuleGroup {
+    public struct PatchRuleGroup: Swift.Sendable {
         /// The rules that make up the rule group.
         /// This member is required.
         public var patchRules: [SSMClientTypes.PatchRule]?
@@ -3268,12 +3269,11 @@ extension SSMClientTypes {
             self.patchRules = patchRules
         }
     }
-
 }
 
 extension SSMClientTypes {
 
-    public enum OperatingSystem: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum OperatingSystem: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case almalinux
         case amazonlinux
         case amazonlinux2
@@ -3341,7 +3341,7 @@ extension SSMClientTypes {
 
 extension SSMClientTypes {
 
-    public enum PatchAction: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum PatchAction: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case allowasdependency
         case block
         case sdkUnknown(Swift.String)
@@ -3369,8 +3369,9 @@ extension SSMClientTypes {
 }
 
 extension SSMClientTypes {
+
     /// Information about the patches to use to update the managed nodes, including target operating systems and source repository. Applies to Linux managed nodes only.
-    public struct PatchSource {
+    public struct PatchSource: Swift.Sendable {
         /// The value of the yum repo configuration. For example: [main]
         ///     name=MyCustomRepository
         ///
@@ -3398,7 +3399,6 @@ extension SSMClientTypes {
             self.products = products
         }
     }
-
 }
 
 extension SSMClientTypes.PatchSource: Swift.CustomDebugStringConvertible {
@@ -3406,7 +3406,7 @@ extension SSMClientTypes.PatchSource: Swift.CustomDebugStringConvertible {
         "PatchSource(name: \(Swift.String(describing: name)), products: \(Swift.String(describing: products)), configuration: \"CONTENT_REDACTED\")"}
 }
 
-public struct CreatePatchBaselineInput {
+public struct CreatePatchBaselineInput: Swift.Sendable {
     /// A set of rules used to include patches in the baseline.
     public var approvalRules: SSMClientTypes.PatchRuleGroup?
     /// A list of explicitly approved patches for the baseline. For information about accepted formats for lists of approved patches and rejected patches, see [Package name formats for approved and rejected patch lists](https://docs.aws.amazon.com/systems-manager/latest/userguide/patch-manager-approved-rejected-package-name-formats.html) in the Amazon Web Services Systems Manager User Guide.
@@ -3474,7 +3474,7 @@ public struct CreatePatchBaselineInput {
     }
 }
 
-public struct CreatePatchBaselineOutput {
+public struct CreatePatchBaselineOutput: Swift.Sendable {
     /// The ID of the created patch baseline.
     public var baselineId: Swift.String?
 
@@ -3559,8 +3559,9 @@ public struct ResourceDataSyncInvalidConfigurationException: ClientRuntime.Model
 }
 
 extension SSMClientTypes {
+
     /// Synchronize Amazon Web Services Systems Manager Inventory data from multiple Amazon Web Services accounts defined in Organizations to a centralized Amazon S3 bucket. Data is synchronized to individual key prefixes in the central bucket. Each key prefix represents a different Amazon Web Services account ID.
-    public struct ResourceDataSyncDestinationDataSharing {
+    public struct ResourceDataSyncDestinationDataSharing: Swift.Sendable {
         /// The sharing data type. Only Organization is supported.
         public var destinationDataSharingType: Swift.String?
 
@@ -3571,12 +3572,11 @@ extension SSMClientTypes {
             self.destinationDataSharingType = destinationDataSharingType
         }
     }
-
 }
 
 extension SSMClientTypes {
 
-    public enum ResourceDataSyncS3Format: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ResourceDataSyncS3Format: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case jsonSerde
         case sdkUnknown(Swift.String)
 
@@ -3601,8 +3601,9 @@ extension SSMClientTypes {
 }
 
 extension SSMClientTypes {
+
     /// Information about the target S3 bucket for the resource data sync.
-    public struct ResourceDataSyncS3Destination {
+    public struct ResourceDataSyncS3Destination: Swift.Sendable {
         /// The ARN of an encryption key for a destination in Amazon S3. Must belong to the same Region as the destination S3 bucket.
         public var awskmsKeyARN: Swift.String?
         /// The name of the S3 bucket where the aggregated data is stored.
@@ -3636,12 +3637,12 @@ extension SSMClientTypes {
             self.syncFormat = syncFormat
         }
     }
-
 }
 
 extension SSMClientTypes {
+
     /// The Organizations organizational unit data source for the sync.
-    public struct ResourceDataSyncOrganizationalUnit {
+    public struct ResourceDataSyncOrganizationalUnit: Swift.Sendable {
         /// The Organizations unit ID data source for the sync.
         public var organizationalUnitId: Swift.String?
 
@@ -3652,12 +3653,12 @@ extension SSMClientTypes {
             self.organizationalUnitId = organizationalUnitId
         }
     }
-
 }
 
 extension SSMClientTypes {
+
     /// Information about the AwsOrganizationsSource resource data sync source. A sync source of this type can synchronize data from Organizations or, if an Amazon Web Services organization isn't present, from multiple Amazon Web Services Regions.
-    public struct ResourceDataSyncAwsOrganizationsSource {
+    public struct ResourceDataSyncAwsOrganizationsSource: Swift.Sendable {
         /// If an Amazon Web Services organization is present, this is either OrganizationalUnits or EntireOrganization. For OrganizationalUnits, the data is aggregated from a set of organization units. For EntireOrganization, the data is aggregated from the entire Amazon Web Services organization.
         /// This member is required.
         public var organizationSourceType: Swift.String?
@@ -3673,12 +3674,12 @@ extension SSMClientTypes {
             self.organizationalUnits = organizationalUnits
         }
     }
-
 }
 
 extension SSMClientTypes {
+
     /// Information about the source of the data included in the resource data sync.
-    public struct ResourceDataSyncSource {
+    public struct ResourceDataSyncSource: Swift.Sendable {
         /// Information about the AwsOrganizationsSource resource data sync source. A sync source of this type can synchronize data from Organizations.
         public var awsOrganizationsSource: SSMClientTypes.ResourceDataSyncAwsOrganizationsSource?
         /// When you create a resource data sync, if you choose one of the Organizations options, then Systems Manager automatically enables all OpsData sources in the selected Amazon Web Services Regions for all Amazon Web Services accounts in your organization (or in the selected organization units). For more information, see [Setting up Systems Manager Explorer to display data from multiple accounts and Regions](https://docs.aws.amazon.com/systems-manager/latest/userguide/Explorer-resource-data-sync.html) in the Amazon Web Services Systems Manager User Guide.
@@ -3707,10 +3708,9 @@ extension SSMClientTypes {
             self.sourceType = sourceType
         }
     }
-
 }
 
-public struct CreateResourceDataSyncInput {
+public struct CreateResourceDataSyncInput: Swift.Sendable {
     /// Amazon S3 configuration details for the sync. This parameter is required if the SyncType value is SyncToDestination.
     public var s3Destination: SSMClientTypes.ResourceDataSyncS3Destination?
     /// A name for the configuration.
@@ -3735,7 +3735,7 @@ public struct CreateResourceDataSyncInput {
     }
 }
 
-public struct CreateResourceDataSyncOutput {
+public struct CreateResourceDataSyncOutput: Swift.Sendable {
 
     public init() { }
 }
@@ -3788,7 +3788,7 @@ public struct InvalidActivationId: ClientRuntime.ModeledError, AWSClientRuntime.
     }
 }
 
-public struct DeleteActivationInput {
+public struct DeleteActivationInput: Swift.Sendable {
     /// The ID of the activation that you want to delete.
     /// This member is required.
     public var activationId: Swift.String?
@@ -3801,7 +3801,7 @@ public struct DeleteActivationInput {
     }
 }
 
-public struct DeleteActivationOutput {
+public struct DeleteActivationOutput: Swift.Sendable {
 
     public init() { }
 }
@@ -3830,7 +3830,7 @@ public struct AssociationDoesNotExist: ClientRuntime.ModeledError, AWSClientRunt
     }
 }
 
-public struct DeleteAssociationInput {
+public struct DeleteAssociationInput: Swift.Sendable {
     /// The association ID that you want to delete.
     public var associationId: Swift.String?
     /// The managed node ID. InstanceId has been deprecated. To specify a managed node ID for an association, use the Targets parameter. Requests that include the parameter InstanceID with Systems Manager documents (SSM documents) that use schema version 2.0 or later will fail. In addition, if you use the parameter InstanceId, you can't use the parameters AssociationName, DocumentVersion, MaxErrors, MaxConcurrency, OutputLocation, or ScheduleExpression. To use these parameters, you must use the Targets parameter.
@@ -3850,7 +3850,7 @@ public struct DeleteAssociationInput {
     }
 }
 
-public struct DeleteAssociationOutput {
+public struct DeleteAssociationOutput: Swift.Sendable {
 
     public init() { }
 }
@@ -3892,7 +3892,7 @@ public struct InvalidDocumentOperation: ClientRuntime.ModeledError, AWSClientRun
     }
 }
 
-public struct DeleteDocumentInput {
+public struct DeleteDocumentInput: Swift.Sendable {
     /// The version of the document that you want to delete. If not provided, all versions of the document are deleted.
     public var documentVersion: Swift.String?
     /// Some SSM document types require that you specify a Force flag before you can delete the document. For example, you must specify a Force flag to delete a document of type ApplicationConfigurationSchema. You can restrict access to the Force flag in an Identity and Access Management (IAM) policy.
@@ -3917,7 +3917,7 @@ public struct DeleteDocumentInput {
     }
 }
 
-public struct DeleteDocumentOutput {
+public struct DeleteDocumentOutput: Swift.Sendable {
 
     public init() { }
 }
@@ -4020,7 +4020,7 @@ public struct InvalidTypeNameException: ClientRuntime.ModeledError, AWSClientRun
 
 extension SSMClientTypes {
 
-    public enum InventorySchemaDeleteOption: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum InventorySchemaDeleteOption: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case deleteSchema
         case disableSchema
         case sdkUnknown(Swift.String)
@@ -4047,7 +4047,7 @@ extension SSMClientTypes {
     }
 }
 
-public struct DeleteInventoryInput {
+public struct DeleteInventoryInput: Swift.Sendable {
     /// User-provided idempotency token.
     public var clientToken: Swift.String?
     /// Use this option to view a summary of the deletion request without deleting any data or the data type. This option is useful when you only want to understand what will be deleted. Once you validate that the data to be deleted is what you intend to delete, you can run the same command without specifying the DryRun option.
@@ -4073,8 +4073,9 @@ public struct DeleteInventoryInput {
 }
 
 extension SSMClientTypes {
+
     /// Either a count, remaining count, or a version number in a delete inventory summary.
-    public struct InventoryDeletionSummaryItem {
+    public struct InventoryDeletionSummaryItem: Swift.Sendable {
         /// A count of the number of deleted items.
         public var count: Swift.Int
         /// The remaining number of items to delete.
@@ -4093,12 +4094,12 @@ extension SSMClientTypes {
             self.version = version
         }
     }
-
 }
 
 extension SSMClientTypes {
+
     /// Information about the delete operation.
-    public struct InventoryDeletionSummary {
+    public struct InventoryDeletionSummary: Swift.Sendable {
         /// Remaining number of items to delete.
         public var remainingCount: Swift.Int
         /// A list of counts and versions for deleted items.
@@ -4117,10 +4118,9 @@ extension SSMClientTypes {
             self.totalCount = totalCount
         }
     }
-
 }
 
-public struct DeleteInventoryOutput {
+public struct DeleteInventoryOutput: Swift.Sendable {
     /// Every DeleteInventory operation is assigned a unique ID. This option returns a unique ID. You can use this ID to query the status of a delete operation. This option is useful for ensuring that a delete operation has completed before you begin other operations.
     public var deletionId: Swift.String?
     /// A summary of the delete operation. For more information about this summary, see [Deleting custom inventory](https://docs.aws.amazon.com/systems-manager/latest/userguide/inventory-custom.html#delete-custom-inventory-summary) in the Amazon Web Services Systems Manager User Guide.
@@ -4140,7 +4140,7 @@ public struct DeleteInventoryOutput {
     }
 }
 
-public struct DeleteMaintenanceWindowInput {
+public struct DeleteMaintenanceWindowInput: Swift.Sendable {
     /// The ID of the maintenance window to delete.
     /// This member is required.
     public var windowId: Swift.String?
@@ -4153,7 +4153,7 @@ public struct DeleteMaintenanceWindowInput {
     }
 }
 
-public struct DeleteMaintenanceWindowOutput {
+public struct DeleteMaintenanceWindowOutput: Swift.Sendable {
     /// The ID of the deleted maintenance window.
     public var windowId: Swift.String?
 
@@ -4165,7 +4165,7 @@ public struct DeleteMaintenanceWindowOutput {
     }
 }
 
-public struct DeleteOpsItemInput {
+public struct DeleteOpsItemInput: Swift.Sendable {
     /// The ID of the OpsItem that you want to delete.
     /// This member is required.
     public var opsItemId: Swift.String?
@@ -4178,7 +4178,7 @@ public struct DeleteOpsItemInput {
     }
 }
 
-public struct DeleteOpsItemOutput {
+public struct DeleteOpsItemOutput: Swift.Sendable {
 
     public init() { }
 }
@@ -4207,7 +4207,7 @@ public struct OpsMetadataNotFoundException: ClientRuntime.ModeledError, AWSClien
     }
 }
 
-public struct DeleteOpsMetadataInput {
+public struct DeleteOpsMetadataInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of an OpsMetadata Object to delete.
     /// This member is required.
     public var opsMetadataArn: Swift.String?
@@ -4220,7 +4220,7 @@ public struct DeleteOpsMetadataInput {
     }
 }
 
-public struct DeleteOpsMetadataOutput {
+public struct DeleteOpsMetadataOutput: Swift.Sendable {
 
     public init() { }
 }
@@ -4249,7 +4249,7 @@ public struct ParameterNotFound: ClientRuntime.ModeledError, AWSClientRuntime.AW
     }
 }
 
-public struct DeleteParameterInput {
+public struct DeleteParameterInput: Swift.Sendable {
     /// The name of the parameter to delete. You can't enter the Amazon Resource Name (ARN) for a parameter, only the parameter name itself.
     /// This member is required.
     public var name: Swift.String?
@@ -4262,12 +4262,12 @@ public struct DeleteParameterInput {
     }
 }
 
-public struct DeleteParameterOutput {
+public struct DeleteParameterOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteParametersInput {
+public struct DeleteParametersInput: Swift.Sendable {
     /// The names of the parameters to delete. After deleting a parameter, wait for at least 30 seconds to create a parameter with the same name. You can't enter the Amazon Resource Name (ARN) for a parameter, only the parameter name itself.
     /// This member is required.
     public var names: [Swift.String]?
@@ -4280,7 +4280,7 @@ public struct DeleteParametersInput {
     }
 }
 
-public struct DeleteParametersOutput {
+public struct DeleteParametersOutput: Swift.Sendable {
     /// The names of the deleted parameters.
     public var deletedParameters: [Swift.String]?
     /// The names of parameters that weren't deleted because the parameters aren't valid.
@@ -4320,7 +4320,7 @@ public struct ResourceInUseException: ClientRuntime.ModeledError, AWSClientRunti
     }
 }
 
-public struct DeletePatchBaselineInput {
+public struct DeletePatchBaselineInput: Swift.Sendable {
     /// The ID of the patch baseline to delete.
     /// This member is required.
     public var baselineId: Swift.String?
@@ -4333,7 +4333,7 @@ public struct DeletePatchBaselineInput {
     }
 }
 
-public struct DeletePatchBaselineOutput {
+public struct DeletePatchBaselineOutput: Swift.Sendable {
     /// The ID of the deleted patch baseline.
     public var baselineId: Swift.String?
 
@@ -4375,7 +4375,7 @@ public struct ResourceDataSyncNotFoundException: ClientRuntime.ModeledError, AWS
     }
 }
 
-public struct DeleteResourceDataSyncInput {
+public struct DeleteResourceDataSyncInput: Swift.Sendable {
     /// The name of the configuration to delete.
     /// This member is required.
     public var syncName: Swift.String?
@@ -4392,7 +4392,7 @@ public struct DeleteResourceDataSyncInput {
     }
 }
 
-public struct DeleteResourceDataSyncOutput {
+public struct DeleteResourceDataSyncOutput: Swift.Sendable {
 
     public init() { }
 }
@@ -4520,7 +4520,7 @@ public struct ResourcePolicyNotFoundException: ClientRuntime.ModeledError, AWSCl
     }
 }
 
-public struct DeleteResourcePolicyInput {
+public struct DeleteResourcePolicyInput: Swift.Sendable {
     /// ID of the current policy version. The hash helps to prevent multiple calls from attempting to overwrite a policy.
     /// This member is required.
     public var policyHash: Swift.String?
@@ -4543,12 +4543,12 @@ public struct DeleteResourcePolicyInput {
     }
 }
 
-public struct DeleteResourcePolicyOutput {
+public struct DeleteResourcePolicyOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeregisterManagedInstanceInput {
+public struct DeregisterManagedInstanceInput: Swift.Sendable {
     /// The ID assigned to the managed node when you registered it using the activation process.
     /// This member is required.
     public var instanceId: Swift.String?
@@ -4561,12 +4561,12 @@ public struct DeregisterManagedInstanceInput {
     }
 }
 
-public struct DeregisterManagedInstanceOutput {
+public struct DeregisterManagedInstanceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeregisterPatchBaselineForPatchGroupInput {
+public struct DeregisterPatchBaselineForPatchGroupInput: Swift.Sendable {
     /// The ID of the patch baseline to deregister the patch group from.
     /// This member is required.
     public var baselineId: Swift.String?
@@ -4584,7 +4584,7 @@ public struct DeregisterPatchBaselineForPatchGroupInput {
     }
 }
 
-public struct DeregisterPatchBaselineForPatchGroupOutput {
+public struct DeregisterPatchBaselineForPatchGroupOutput: Swift.Sendable {
     /// The ID of the patch baseline the patch group was deregistered from.
     public var baselineId: Swift.String?
     /// The name of the patch group deregistered from the patch baseline.
@@ -4624,7 +4624,7 @@ public struct TargetInUseException: ClientRuntime.ModeledError, AWSClientRuntime
     }
 }
 
-public struct DeregisterTargetFromMaintenanceWindowInput {
+public struct DeregisterTargetFromMaintenanceWindowInput: Swift.Sendable {
     /// The system checks if the target is being referenced by a task. If the target is being referenced, the system returns an error and doesn't deregister the target from the maintenance window.
     public var safe: Swift.Bool?
     /// The ID of the maintenance window the target should be removed from.
@@ -4646,7 +4646,7 @@ public struct DeregisterTargetFromMaintenanceWindowInput {
     }
 }
 
-public struct DeregisterTargetFromMaintenanceWindowOutput {
+public struct DeregisterTargetFromMaintenanceWindowOutput: Swift.Sendable {
     /// The ID of the maintenance window the target was removed from.
     public var windowId: Swift.String?
     /// The ID of the removed target definition.
@@ -4662,7 +4662,7 @@ public struct DeregisterTargetFromMaintenanceWindowOutput {
     }
 }
 
-public struct DeregisterTaskFromMaintenanceWindowInput {
+public struct DeregisterTaskFromMaintenanceWindowInput: Swift.Sendable {
     /// The ID of the maintenance window the task should be removed from.
     /// This member is required.
     public var windowId: Swift.String?
@@ -4680,7 +4680,7 @@ public struct DeregisterTaskFromMaintenanceWindowInput {
     }
 }
 
-public struct DeregisterTaskFromMaintenanceWindowOutput {
+public struct DeregisterTaskFromMaintenanceWindowOutput: Swift.Sendable {
     /// The ID of the maintenance window the task was removed from.
     public var windowId: Swift.String?
     /// The ID of the task removed from the maintenance window.
@@ -4746,7 +4746,7 @@ public struct InvalidNextToken: ClientRuntime.ModeledError, AWSClientRuntime.AWS
 
 extension SSMClientTypes {
 
-    public enum DescribeActivationsFilterKeys: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DescribeActivationsFilterKeys: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case activationIds
         case defaultInstanceName
         case iamRole
@@ -4777,8 +4777,9 @@ extension SSMClientTypes {
 }
 
 extension SSMClientTypes {
+
     /// Filter for the DescribeActivation API.
-    public struct DescribeActivationsFilter {
+    public struct DescribeActivationsFilter: Swift.Sendable {
         /// The name of the filter.
         public var filterKey: SSMClientTypes.DescribeActivationsFilterKeys?
         /// The filter values.
@@ -4793,10 +4794,9 @@ extension SSMClientTypes {
             self.filterValues = filterValues
         }
     }
-
 }
 
-public struct DescribeActivationsInput {
+public struct DescribeActivationsInput: Swift.Sendable {
     /// A filter to view information about your activations.
     public var filters: [SSMClientTypes.DescribeActivationsFilter]?
     /// The maximum number of items to return for this call. The call also returns a token that you can specify in a subsequent call to get the next set of results.
@@ -4816,7 +4816,7 @@ public struct DescribeActivationsInput {
     }
 }
 
-public struct DescribeActivationsOutput {
+public struct DescribeActivationsOutput: Swift.Sendable {
     /// A list of activations for your Amazon Web Services account.
     public var activationList: [SSMClientTypes.Activation]?
     /// The token for the next set of items to return. Use this token to get the next set of results.
@@ -4856,7 +4856,7 @@ public struct InvalidAssociationVersion: ClientRuntime.ModeledError, AWSClientRu
     }
 }
 
-public struct DescribeAssociationInput {
+public struct DescribeAssociationInput: Swift.Sendable {
     /// The association ID for which you want information.
     public var associationId: Swift.String?
     /// Specify the association version to retrieve. To view the latest version, either specify $LATEST for this parameter, or omit this parameter. To view a list of all associations for a managed node, use [ListAssociations]. To get a list of versions for a specific association, use [ListAssociationVersions].
@@ -4880,7 +4880,7 @@ public struct DescribeAssociationInput {
     }
 }
 
-public struct DescribeAssociationOutput {
+public struct DescribeAssociationOutput: Swift.Sendable {
     /// Information about the association.
     public var associationDescription: SSMClientTypes.AssociationDescription?
 
@@ -4894,7 +4894,7 @@ public struct DescribeAssociationOutput {
 
 extension SSMClientTypes {
 
-    public enum AssociationExecutionFilterKey: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AssociationExecutionFilterKey: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case createdtime
         case executionid
         case status
@@ -4926,7 +4926,7 @@ extension SSMClientTypes {
 
 extension SSMClientTypes {
 
-    public enum AssociationFilterOperatorType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AssociationFilterOperatorType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case equal
         case greaterthan
         case lessthan
@@ -4957,8 +4957,9 @@ extension SSMClientTypes {
 }
 
 extension SSMClientTypes {
+
     /// Filters used in the request.
-    public struct AssociationExecutionFilter {
+    public struct AssociationExecutionFilter: Swift.Sendable {
         /// The key value used in the request.
         /// This member is required.
         public var key: SSMClientTypes.AssociationExecutionFilterKey?
@@ -4980,10 +4981,9 @@ extension SSMClientTypes {
             self.value = value
         }
     }
-
 }
 
-public struct DescribeAssociationExecutionsInput {
+public struct DescribeAssociationExecutionsInput: Swift.Sendable {
     /// The association ID for which you want to view execution history details.
     /// This member is required.
     public var associationId: Swift.String?
@@ -5009,8 +5009,9 @@ public struct DescribeAssociationExecutionsInput {
 }
 
 extension SSMClientTypes {
+
     /// Includes information about the specified association.
-    public struct AssociationExecution {
+    public struct AssociationExecution: Swift.Sendable {
         /// The details for the CloudWatch alarm you want to apply to an automation or command.
         public var alarmConfiguration: SSMClientTypes.AlarmConfiguration?
         /// The association ID.
@@ -5057,10 +5058,9 @@ extension SSMClientTypes {
             self.triggeredAlarms = triggeredAlarms
         }
     }
-
 }
 
-public struct DescribeAssociationExecutionsOutput {
+public struct DescribeAssociationExecutionsOutput: Swift.Sendable {
     /// A list of the executions for the specified association ID.
     public var associationExecutions: [SSMClientTypes.AssociationExecution]?
     /// The token for the next set of items to return. Use this token to get the next set of results.
@@ -5102,7 +5102,7 @@ public struct AssociationExecutionDoesNotExist: ClientRuntime.ModeledError, AWSC
 
 extension SSMClientTypes {
 
-    public enum AssociationExecutionTargetsFilterKey: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AssociationExecutionTargetsFilterKey: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case resourceid
         case resourcetype
         case status
@@ -5133,8 +5133,9 @@ extension SSMClientTypes {
 }
 
 extension SSMClientTypes {
+
     /// Filters for the association execution.
-    public struct AssociationExecutionTargetsFilter {
+    public struct AssociationExecutionTargetsFilter: Swift.Sendable {
         /// The key value used in the request.
         /// This member is required.
         public var key: SSMClientTypes.AssociationExecutionTargetsFilterKey?
@@ -5151,10 +5152,9 @@ extension SSMClientTypes {
             self.value = value
         }
     }
-
 }
 
-public struct DescribeAssociationExecutionTargetsInput {
+public struct DescribeAssociationExecutionTargetsInput: Swift.Sendable {
     /// The association ID that includes the execution for which you want to view details.
     /// This member is required.
     public var associationId: Swift.String?
@@ -5185,8 +5185,9 @@ public struct DescribeAssociationExecutionTargetsInput {
 }
 
 extension SSMClientTypes {
+
     /// Information about the source where the association execution details are stored.
-    public struct OutputSource {
+    public struct OutputSource: Swift.Sendable {
         /// The ID of the output source, for example the URL of an S3 bucket.
         public var outputSourceId: Swift.String?
         /// The type of source where the association execution details are stored, for example, Amazon S3.
@@ -5201,12 +5202,12 @@ extension SSMClientTypes {
             self.outputSourceType = outputSourceType
         }
     }
-
 }
 
 extension SSMClientTypes {
+
     /// Includes information about the specified association execution.
-    public struct AssociationExecutionTarget {
+    public struct AssociationExecutionTarget: Swift.Sendable {
         /// The association ID.
         public var associationId: Swift.String?
         /// The association version.
@@ -5249,10 +5250,9 @@ extension SSMClientTypes {
             self.status = status
         }
     }
-
 }
 
-public struct DescribeAssociationExecutionTargetsOutput {
+public struct DescribeAssociationExecutionTargetsOutput: Swift.Sendable {
     /// Information about the execution.
     public var associationExecutionTargets: [SSMClientTypes.AssociationExecutionTarget]?
     /// The token for the next set of items to return. Use this token to get the next set of results.
@@ -5307,7 +5307,7 @@ public struct InvalidFilterValue: ClientRuntime.ModeledError, AWSClientRuntime.A
 
 extension SSMClientTypes {
 
-    public enum AutomationExecutionFilterKey: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AutomationExecutionFilterKey: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case automationSubtype
         case automationType
         case currentAction
@@ -5365,8 +5365,9 @@ extension SSMClientTypes {
 }
 
 extension SSMClientTypes {
+
     /// A filter used to match specific automation executions. This is used to limit the scope of Automation execution information returned.
-    public struct AutomationExecutionFilter {
+    public struct AutomationExecutionFilter: Swift.Sendable {
         /// One or more keys to limit the results.
         /// This member is required.
         public var key: SSMClientTypes.AutomationExecutionFilterKey?
@@ -5383,10 +5384,9 @@ extension SSMClientTypes {
             self.values = values
         }
     }
-
 }
 
-public struct DescribeAutomationExecutionsInput {
+public struct DescribeAutomationExecutionsInput: Swift.Sendable {
     /// Filters used to limit the scope of executions that are requested.
     public var filters: [SSMClientTypes.AutomationExecutionFilter]?
     /// The maximum number of items to return for this call. The call also returns a token that you can specify in a subsequent call to get the next set of results.
@@ -5408,7 +5408,7 @@ public struct DescribeAutomationExecutionsInput {
 
 extension SSMClientTypes {
 
-    public enum AutomationExecutionStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AutomationExecutionStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case approved
         case cancelled
         case cancelling
@@ -5488,7 +5488,7 @@ extension SSMClientTypes {
 
 extension SSMClientTypes {
 
-    public enum AutomationSubtype: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AutomationSubtype: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case changerequest
         case sdkUnknown(Swift.String)
 
@@ -5514,7 +5514,7 @@ extension SSMClientTypes {
 
 extension SSMClientTypes {
 
-    public enum AutomationType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AutomationType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case crossaccount
         case local
         case sdkUnknown(Swift.String)
@@ -5543,7 +5543,7 @@ extension SSMClientTypes {
 
 extension SSMClientTypes {
 
-    public enum ExecutionMode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ExecutionMode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case auto
         case interactive
         case sdkUnknown(Swift.String)
@@ -5571,8 +5571,9 @@ extension SSMClientTypes {
 }
 
 extension SSMClientTypes {
+
     /// Information about targets that resolved during the Automation execution.
-    public struct ResolvedTargets {
+    public struct ResolvedTargets: Swift.Sendable {
         /// A list of parameter values sent to targets that resolved during the Automation execution.
         public var parameterValues: [Swift.String]?
         /// A boolean value indicating whether the resolved target list is truncated.
@@ -5587,12 +5588,12 @@ extension SSMClientTypes {
             self.truncated = truncated
         }
     }
-
 }
 
 extension SSMClientTypes {
+
     /// Information about an Automation runbook used in a runbook workflow in Change Manager. The Automation runbooks specified for the runbook workflow can't run until all required approvals for the change request have been received.
-    public struct Runbook {
+    public struct Runbook: Swift.Sendable {
         /// The name of the Automation runbook used in a runbook workflow.
         /// This member is required.
         public var documentName: Swift.String?
@@ -5636,12 +5637,12 @@ extension SSMClientTypes {
             self.targets = targets
         }
     }
-
 }
 
 extension SSMClientTypes {
+
     /// Details about a specific Automation execution.
-    public struct AutomationExecutionMetadata {
+    public struct AutomationExecutionMetadata: Swift.Sendable {
         /// The details for the CloudWatch alarm applied to your automation.
         public var alarmConfiguration: SSMClientTypes.AlarmConfiguration?
         /// The ID of a State Manager association used in the Automation operation.
@@ -5772,10 +5773,9 @@ extension SSMClientTypes {
             self.triggeredAlarms = triggeredAlarms
         }
     }
-
 }
 
-public struct DescribeAutomationExecutionsOutput {
+public struct DescribeAutomationExecutionsOutput: Swift.Sendable {
     /// The list of details about each automation execution which has occurred which matches the filter specification, if any.
     public var automationExecutionMetadataList: [SSMClientTypes.AutomationExecutionMetadata]?
     /// The token to use when requesting the next set of items. If there are no additional items to return, the string is empty.
@@ -5817,7 +5817,7 @@ public struct AutomationExecutionNotFoundException: ClientRuntime.ModeledError, 
 
 extension SSMClientTypes {
 
-    public enum StepExecutionFilterKey: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum StepExecutionFilterKey: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case action
         case parentStepExecutionId
         case parentStepIteration
@@ -5866,8 +5866,9 @@ extension SSMClientTypes {
 }
 
 extension SSMClientTypes {
+
     /// A filter to limit the amount of step execution information returned by the call.
-    public struct StepExecutionFilter {
+    public struct StepExecutionFilter: Swift.Sendable {
         /// One or more keys to limit the results.
         /// This member is required.
         public var key: SSMClientTypes.StepExecutionFilterKey?
@@ -5884,10 +5885,9 @@ extension SSMClientTypes {
             self.values = values
         }
     }
-
 }
 
-public struct DescribeAutomationStepExecutionsInput {
+public struct DescribeAutomationStepExecutionsInput: Swift.Sendable {
     /// The Automation execution ID for which you want step execution descriptions.
     /// This member is required.
     public var automationExecutionId: Swift.String?
@@ -5917,8 +5917,9 @@ public struct DescribeAutomationStepExecutionsInput {
 }
 
 extension SSMClientTypes {
+
     /// Information about an Automation failure.
-    public struct FailureDetails {
+    public struct FailureDetails: Swift.Sendable {
         /// Detailed information about the Automation step failure.
         public var details: [Swift.String: [Swift.String]]?
         /// The stage of the Automation execution when the failure occurred. The stages include the following: InputValidation, PreVerification, Invocation, PostVerification.
@@ -5937,12 +5938,12 @@ extension SSMClientTypes {
             self.failureType = failureType
         }
     }
-
 }
 
 extension SSMClientTypes {
+
     /// A detailed status of the parent step.
-    public struct ParentStepDetails {
+    public struct ParentStepDetails: Swift.Sendable {
         /// The name of the automation action.
         public var action: Swift.String?
         /// The current repetition of the loop represented by an integer.
@@ -5969,12 +5970,12 @@ extension SSMClientTypes {
             self.stepName = stepName
         }
     }
-
 }
 
 extension SSMClientTypes {
+
     /// Detailed information about an the execution state of an Automation step.
-    public struct StepExecution {
+    public struct StepExecution: Swift.Sendable {
         /// The action this step performs. The action determines the behavior of the step.
         public var action: Swift.String?
         /// If a step has finished execution, this contains the time the execution ended. If the step hasn't yet concluded, this field isn't populated.
@@ -6077,10 +6078,9 @@ extension SSMClientTypes {
             self.validNextSteps = validNextSteps
         }
     }
-
 }
 
-public struct DescribeAutomationStepExecutionsOutput {
+public struct DescribeAutomationStepExecutionsOutput: Swift.Sendable {
     /// The token to use when requesting the next set of items. If there are no additional items to return, the string is empty.
     public var nextToken: Swift.String?
     /// A list of details about the current state of all steps that make up an execution.
@@ -6097,6 +6097,7 @@ public struct DescribeAutomationStepExecutionsOutput {
 }
 
 extension SSMClientTypes {
+
     /// Defines a filter used in Patch Manager APIs. Supported filter keys depend on the API operation that includes the filter. Patch Manager API operations that use PatchOrchestratorFilter include the following:
     ///
     /// * [DescribeAvailablePatches]
@@ -6106,7 +6107,7 @@ extension SSMClientTypes {
     /// * [DescribePatchBaselines]
     ///
     /// * [DescribePatchGroups]
-    public struct PatchOrchestratorFilter {
+    public struct PatchOrchestratorFilter: Swift.Sendable {
         /// The key for the filter.
         public var key: Swift.String?
         /// The value for the filter.
@@ -6121,10 +6122,9 @@ extension SSMClientTypes {
             self.values = values
         }
     }
-
 }
 
-public struct DescribeAvailablePatchesInput {
+public struct DescribeAvailablePatchesInput: Swift.Sendable {
     /// Each element in the array is a structure containing a key-value pair. Windows Server Supported keys for Windows Server managed node patches include the following:
     ///
     /// * PATCH_SET Sample values: OS | APPLICATION
@@ -6182,8 +6182,9 @@ public struct DescribeAvailablePatchesInput {
 }
 
 extension SSMClientTypes {
+
     /// Represents metadata about a patch.
-    public struct Patch {
+    public struct Patch: Swift.Sendable {
         /// The Advisory ID of the patch. For example, RHSA-2020:3779. Applies to Linux-based managed nodes only.
         public var advisoryIds: [Swift.String]?
         /// The architecture of the patch. For example, in example-pkg-0.710.10-2.7.abcd.x86_64, the architecture is indicated by x86_64. Applies to Linux-based managed nodes only.
@@ -6282,10 +6283,9 @@ extension SSMClientTypes {
             self.version = version
         }
     }
-
 }
 
-public struct DescribeAvailablePatchesOutput {
+public struct DescribeAvailablePatchesOutput: Swift.Sendable {
     /// The token to use when requesting the next set of items. If there are no additional items to return, the string is empty.
     public var nextToken: Swift.String?
     /// An array of patches. Each entry in the array is a patch structure.
@@ -6301,7 +6301,7 @@ public struct DescribeAvailablePatchesOutput {
     }
 }
 
-public struct DescribeDocumentInput {
+public struct DescribeDocumentInput: Swift.Sendable {
     /// The document version for which you want information. Can be a specific version or the default version.
     public var documentVersion: Swift.String?
     /// The name of the SSM document.
@@ -6322,7 +6322,7 @@ public struct DescribeDocumentInput {
     }
 }
 
-public struct DescribeDocumentOutput {
+public struct DescribeDocumentOutput: Swift.Sendable {
     /// Information about the SSM document.
     public var document: SSMClientTypes.DocumentDescription?
 
@@ -6360,7 +6360,7 @@ public struct InvalidPermissionType: ClientRuntime.ModeledError, AWSClientRuntim
 
 extension SSMClientTypes {
 
-    public enum DocumentPermissionType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DocumentPermissionType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case share
         case sdkUnknown(Swift.String)
 
@@ -6384,7 +6384,7 @@ extension SSMClientTypes {
     }
 }
 
-public struct DescribeDocumentPermissionInput {
+public struct DescribeDocumentPermissionInput: Swift.Sendable {
     /// The maximum number of items to return for this call. The call also returns a token that you can specify in a subsequent call to get the next set of results.
     public var maxResults: Swift.Int?
     /// The name of the document for which you are the owner.
@@ -6410,7 +6410,7 @@ public struct DescribeDocumentPermissionInput {
     }
 }
 
-public struct DescribeDocumentPermissionOutput {
+public struct DescribeDocumentPermissionOutput: Swift.Sendable {
     /// The account IDs that have permission to use this document. The ID can be either an Amazon Web Services account or All.
     public var accountIds: [Swift.String]?
     /// A list of Amazon Web Services accounts where the current document is shared and the version shared with each account.
@@ -6430,7 +6430,7 @@ public struct DescribeDocumentPermissionOutput {
     }
 }
 
-public struct DescribeEffectiveInstanceAssociationsInput {
+public struct DescribeEffectiveInstanceAssociationsInput: Swift.Sendable {
     /// The managed node ID for which you want to view all associations.
     /// This member is required.
     public var instanceId: Swift.String?
@@ -6452,8 +6452,9 @@ public struct DescribeEffectiveInstanceAssociationsInput {
 }
 
 extension SSMClientTypes {
+
     /// One or more association documents on the managed node.
-    public struct InstanceAssociation {
+    public struct InstanceAssociation: Swift.Sendable {
         /// The association ID.
         public var associationId: Swift.String?
         /// Version information for the association on the managed node.
@@ -6476,10 +6477,9 @@ extension SSMClientTypes {
             self.instanceId = instanceId
         }
     }
-
 }
 
-public struct DescribeEffectiveInstanceAssociationsOutput {
+public struct DescribeEffectiveInstanceAssociationsOutput: Swift.Sendable {
     /// The associations for the requested managed node.
     public var associations: [SSMClientTypes.InstanceAssociation]?
     /// The token to use when requesting the next set of items. If there are no additional items to return, the string is empty.
@@ -6519,7 +6519,7 @@ public struct UnsupportedOperatingSystem: ClientRuntime.ModeledError, AWSClientR
     }
 }
 
-public struct DescribeEffectivePatchesForPatchBaselineInput {
+public struct DescribeEffectivePatchesForPatchBaselineInput: Swift.Sendable {
     /// The ID of the patch baseline to retrieve the effective patches for.
     /// This member is required.
     public var baselineId: Swift.String?
@@ -6542,7 +6542,7 @@ public struct DescribeEffectivePatchesForPatchBaselineInput {
 
 extension SSMClientTypes {
 
-    public enum PatchDeploymentStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum PatchDeploymentStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case approved
         case explicitapproved
         case explicitrejected
@@ -6576,8 +6576,9 @@ extension SSMClientTypes {
 }
 
 extension SSMClientTypes {
+
     /// Information about the approval status of a patch.
-    public struct PatchStatus {
+    public struct PatchStatus: Swift.Sendable {
         /// The date the patch was approved (or will be approved if the status is PENDING_APPROVAL).
         public var approvalDate: Foundation.Date?
         /// The compliance severity level for a patch.
@@ -6596,12 +6597,12 @@ extension SSMClientTypes {
             self.deploymentStatus = deploymentStatus
         }
     }
-
 }
 
 extension SSMClientTypes {
+
     /// The EffectivePatch structure defines metadata about a patch along with the approval state of the patch in a particular patch baseline. The approval state includes information about whether the patch is currently approved, due to be approved by a rule, explicitly approved, or explicitly rejected and the date the patch was or will be approved.
-    public struct EffectivePatch {
+    public struct EffectivePatch: Swift.Sendable {
         /// Provides metadata for a patch, including information such as the KB ID, severity, classification and a URL for where more information can be obtained about the patch.
         public var patch: SSMClientTypes.Patch?
         /// The status of the patch in a patch baseline. This includes information about whether the patch is currently approved, due to be approved by a rule, explicitly approved, or explicitly rejected and the date the patch was or will be approved.
@@ -6616,10 +6617,9 @@ extension SSMClientTypes {
             self.patchStatus = patchStatus
         }
     }
-
 }
 
-public struct DescribeEffectivePatchesForPatchBaselineOutput {
+public struct DescribeEffectivePatchesForPatchBaselineOutput: Swift.Sendable {
     /// An array of patches and patch status.
     public var effectivePatches: [SSMClientTypes.EffectivePatch]?
     /// The token to use when requesting the next set of items. If there are no additional items to return, the string is empty.
@@ -6635,7 +6635,7 @@ public struct DescribeEffectivePatchesForPatchBaselineOutput {
     }
 }
 
-public struct DescribeInstanceAssociationsStatusInput {
+public struct DescribeInstanceAssociationsStatusInput: Swift.Sendable {
     /// The managed node IDs for which you want association status information.
     /// This member is required.
     public var instanceId: Swift.String?
@@ -6657,8 +6657,9 @@ public struct DescribeInstanceAssociationsStatusInput {
 }
 
 extension SSMClientTypes {
+
     /// A URL for the Amazon Web Services Systems Manager (Systems Manager) bucket where you want to store the results of this request.
-    public struct S3OutputUrl {
+    public struct S3OutputUrl: Swift.Sendable {
         /// A URL for an S3 bucket where you want to store the results of this request.
         public var outputUrl: Swift.String?
 
@@ -6669,12 +6670,12 @@ extension SSMClientTypes {
             self.outputUrl = outputUrl
         }
     }
-
 }
 
 extension SSMClientTypes {
+
     /// The URL of S3 bucket where you want to store the results of this request.
-    public struct InstanceAssociationOutputUrl {
+    public struct InstanceAssociationOutputUrl: Swift.Sendable {
         /// The URL of S3 bucket where you want to store the results of this request.
         public var s3OutputUrl: SSMClientTypes.S3OutputUrl?
 
@@ -6685,12 +6686,12 @@ extension SSMClientTypes {
             self.s3OutputUrl = s3OutputUrl
         }
     }
-
 }
 
 extension SSMClientTypes {
+
     /// Status information about the association.
-    public struct InstanceAssociationStatusInfo {
+    public struct InstanceAssociationStatusInfo: Swift.Sendable {
         /// The association ID.
         public var associationId: Swift.String?
         /// The name of the association applied to the managed node.
@@ -6745,10 +6746,9 @@ extension SSMClientTypes {
             self.status = status
         }
     }
-
 }
 
-public struct DescribeInstanceAssociationsStatusOutput {
+public struct DescribeInstanceAssociationsStatusOutput: Swift.Sendable {
     /// Status information about the association.
     public var instanceAssociationStatusInfos: [SSMClientTypes.InstanceAssociationStatusInfo]?
     /// The token to use when requesting the next set of items. If there are no additional items to return, the string is empty.
@@ -6789,8 +6789,9 @@ public struct InvalidInstanceInformationFilterValue: ClientRuntime.ModeledError,
 }
 
 extension SSMClientTypes {
+
     /// The filters to describe or get information about your managed nodes.
-    public struct InstanceInformationStringFilter {
+    public struct InstanceInformationStringFilter: Swift.Sendable {
         /// The filter key name to describe your managed nodes. Valid filter key values: ActivationIds | AgentVersion | AssociationStatus | IamRole | InstanceIds | PingStatus | PlatformTypes | ResourceType | SourceIds | SourceTypes | "tag-key" | "tag:{keyname}
         ///
         /// * Valid values for the AssociationStatus filter key: Success | Pending | Failed
@@ -6819,12 +6820,11 @@ extension SSMClientTypes {
             self.values = values
         }
     }
-
 }
 
 extension SSMClientTypes {
 
-    public enum InstanceInformationFilterKey: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum InstanceInformationFilterKey: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case activationIds
         case agentVersion
         case associationStatus
@@ -6870,8 +6870,9 @@ extension SSMClientTypes {
 }
 
 extension SSMClientTypes {
+
     /// Describes a filter for a specific list of managed nodes. You can filter node information by using tags. You specify tags by using a key-value mapping. Use this operation instead of the [DescribeInstanceInformationRequest$InstanceInformationFilterList] method. The InstanceInformationFilterList method is a legacy method and doesn't support tags.
-    public struct InstanceInformationFilter {
+    public struct InstanceInformationFilter: Swift.Sendable {
         /// The name of the filter.
         /// This member is required.
         public var key: SSMClientTypes.InstanceInformationFilterKey?
@@ -6888,10 +6889,9 @@ extension SSMClientTypes {
             self.valueSet = valueSet
         }
     }
-
 }
 
-public struct DescribeInstanceInformationInput {
+public struct DescribeInstanceInformationInput: Swift.Sendable {
     /// One or more filters. Use a filter to return a more specific list of managed nodes. You can filter based on tags applied to your managed nodes. Tag filters can't be combined with other filter types. Use this Filters data type instead of InstanceInformationFilterList, which is deprecated.
     public var filters: [SSMClientTypes.InstanceInformationStringFilter]?
     /// This is a legacy method. We recommend that you don't use this method. Instead, use the Filters data type. Filters enables you to return node information by filtering based on tags applied to managed nodes. Attempting to use InstanceInformationFilterList and Filters leads to an exception error.
@@ -6916,8 +6916,9 @@ public struct DescribeInstanceInformationInput {
 }
 
 extension SSMClientTypes {
+
     /// Status information about the aggregated associations.
-    public struct InstanceAggregatedAssociationOverview {
+    public struct InstanceAggregatedAssociationOverview: Swift.Sendable {
         /// Detailed status information about the aggregated associations.
         public var detailedStatus: Swift.String?
         /// The number of associations for the managed nodes.
@@ -6932,12 +6933,11 @@ extension SSMClientTypes {
             self.instanceAssociationStatusAggregatedCount = instanceAssociationStatusAggregatedCount
         }
     }
-
 }
 
 extension SSMClientTypes {
 
-    public enum PingStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum PingStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case connectionLost
         case inactive
         case online
@@ -6969,7 +6969,7 @@ extension SSMClientTypes {
 
 extension SSMClientTypes {
 
-    public enum ResourceType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ResourceType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case ec2Instance
         case managedInstance
         case sdkUnknown(Swift.String)
@@ -6998,7 +6998,7 @@ extension SSMClientTypes {
 
 extension SSMClientTypes {
 
-    public enum SourceType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SourceType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case awsEc2Instance
         case awsIotThing
         case awsSsmManagedinstance
@@ -7029,8 +7029,9 @@ extension SSMClientTypes {
 }
 
 extension SSMClientTypes {
+
     /// Describes a filter for a specific list of managed nodes.
-    public struct InstanceInformation {
+    public struct InstanceInformation: Swift.Sendable {
         /// The activation ID created by Amazon Web Services Systems Manager when the server or virtual machine (VM) was registered.
         public var activationId: Swift.String?
         /// The version of SSM Agent running on your Linux managed node.
@@ -7121,7 +7122,6 @@ extension SSMClientTypes {
             self.sourceType = sourceType
         }
     }
-
 }
 
 extension SSMClientTypes.InstanceInformation: Swift.CustomDebugStringConvertible {
@@ -7129,7 +7129,7 @@ extension SSMClientTypes.InstanceInformation: Swift.CustomDebugStringConvertible
         "InstanceInformation(activationId: \(Swift.String(describing: activationId)), agentVersion: \(Swift.String(describing: agentVersion)), associationOverview: \(Swift.String(describing: associationOverview)), associationStatus: \(Swift.String(describing: associationStatus)), computerName: \(Swift.String(describing: computerName)), iamRole: \(Swift.String(describing: iamRole)), instanceId: \(Swift.String(describing: instanceId)), isLatestVersion: \(Swift.String(describing: isLatestVersion)), lastAssociationExecutionDate: \(Swift.String(describing: lastAssociationExecutionDate)), lastPingDateTime: \(Swift.String(describing: lastPingDateTime)), lastSuccessfulAssociationExecutionDate: \(Swift.String(describing: lastSuccessfulAssociationExecutionDate)), name: \(Swift.String(describing: name)), pingStatus: \(Swift.String(describing: pingStatus)), platformName: \(Swift.String(describing: platformName)), platformType: \(Swift.String(describing: platformType)), platformVersion: \(Swift.String(describing: platformVersion)), registrationDate: \(Swift.String(describing: registrationDate)), resourceType: \(Swift.String(describing: resourceType)), sourceId: \(Swift.String(describing: sourceId)), sourceType: \(Swift.String(describing: sourceType)), ipAddress: \"CONTENT_REDACTED\")"}
 }
 
-public struct DescribeInstanceInformationOutput {
+public struct DescribeInstanceInformationOutput: Swift.Sendable {
     /// The managed node information list.
     public var instanceInformationList: [SSMClientTypes.InstanceInformation]?
     /// The token to use when requesting the next set of items. If there are no additional items to return, the string is empty.
@@ -7145,7 +7145,7 @@ public struct DescribeInstanceInformationOutput {
     }
 }
 
-public struct DescribeInstancePatchesInput {
+public struct DescribeInstancePatchesInput: Swift.Sendable {
     /// Each element in the array is a structure containing a key-value pair. Supported keys for DescribeInstancePatchesinclude the following:
     ///
     /// * Classification Sample values: Security | SecurityUpdates
@@ -7180,7 +7180,7 @@ public struct DescribeInstancePatchesInput {
 
 extension SSMClientTypes {
 
-    public enum PatchComplianceDataState: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum PatchComplianceDataState: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case failed
         case installed
         case installedother
@@ -7223,8 +7223,9 @@ extension SSMClientTypes {
 }
 
 extension SSMClientTypes {
+
     /// Information about the state of a patch on a particular managed node as it relates to the patch baseline used to patch the node.
-    public struct PatchComplianceData {
+    public struct PatchComplianceData: Swift.Sendable {
         /// The classification of the patch, such as SecurityUpdates, Updates, and CriticalUpdates.
         /// This member is required.
         public var classification: Swift.String?
@@ -7265,10 +7266,9 @@ extension SSMClientTypes {
             self.title = title
         }
     }
-
 }
 
-public struct DescribeInstancePatchesOutput {
+public struct DescribeInstancePatchesOutput: Swift.Sendable {
     /// The token to use when requesting the next set of items. If there are no additional items to return, the string is empty.
     public var nextToken: Swift.String?
     /// Each entry in the array is a structure containing:
@@ -7298,7 +7298,7 @@ public struct DescribeInstancePatchesOutput {
     }
 }
 
-public struct DescribeInstancePatchStatesInput {
+public struct DescribeInstancePatchStatesInput: Swift.Sendable {
     /// The ID of the managed node for which patch state information should be retrieved.
     /// This member is required.
     public var instanceIds: [Swift.String]?
@@ -7321,7 +7321,7 @@ public struct DescribeInstancePatchStatesInput {
 
 extension SSMClientTypes {
 
-    public enum PatchOperationType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum PatchOperationType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case install
         case scan
         case sdkUnknown(Swift.String)
@@ -7350,7 +7350,7 @@ extension SSMClientTypes {
 
 extension SSMClientTypes {
 
-    public enum RebootOption: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum RebootOption: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case noReboot
         case rebootIfNeeded
         case sdkUnknown(Swift.String)
@@ -7378,8 +7378,9 @@ extension SSMClientTypes {
 }
 
 extension SSMClientTypes {
+
     /// Defines the high-level patch compliance state for a managed node, providing information about the number of installed, missing, not applicable, and failed patches along with metadata about the operation when this information was gathered for the managed node.
-    public struct InstancePatchState {
+    public struct InstancePatchState: Swift.Sendable {
         /// The ID of the patch baseline used to patch the managed node.
         /// This member is required.
         public var baselineId: Swift.String?
@@ -7488,7 +7489,6 @@ extension SSMClientTypes {
             self.unreportedNotApplicableCount = unreportedNotApplicableCount
         }
     }
-
 }
 
 extension SSMClientTypes.InstancePatchState: Swift.CustomDebugStringConvertible {
@@ -7496,7 +7496,7 @@ extension SSMClientTypes.InstancePatchState: Swift.CustomDebugStringConvertible 
         "InstancePatchState(baselineId: \(Swift.String(describing: baselineId)), criticalNonCompliantCount: \(Swift.String(describing: criticalNonCompliantCount)), failedCount: \(Swift.String(describing: failedCount)), installOverrideList: \(Swift.String(describing: installOverrideList)), installedCount: \(Swift.String(describing: installedCount)), installedOtherCount: \(Swift.String(describing: installedOtherCount)), installedPendingRebootCount: \(Swift.String(describing: installedPendingRebootCount)), installedRejectedCount: \(Swift.String(describing: installedRejectedCount)), instanceId: \(Swift.String(describing: instanceId)), lastNoRebootInstallOperationTime: \(Swift.String(describing: lastNoRebootInstallOperationTime)), missingCount: \(Swift.String(describing: missingCount)), notApplicableCount: \(Swift.String(describing: notApplicableCount)), operation: \(Swift.String(describing: operation)), operationEndTime: \(Swift.String(describing: operationEndTime)), operationStartTime: \(Swift.String(describing: operationStartTime)), otherNonCompliantCount: \(Swift.String(describing: otherNonCompliantCount)), patchGroup: \(Swift.String(describing: patchGroup)), rebootOption: \(Swift.String(describing: rebootOption)), securityNonCompliantCount: \(Swift.String(describing: securityNonCompliantCount)), snapshotId: \(Swift.String(describing: snapshotId)), unreportedNotApplicableCount: \(Swift.String(describing: unreportedNotApplicableCount)), ownerInformation: \"CONTENT_REDACTED\")"}
 }
 
-public struct DescribeInstancePatchStatesOutput {
+public struct DescribeInstancePatchStatesOutput: Swift.Sendable {
     /// The high-level patch state for the requested managed nodes.
     public var instancePatchStates: [SSMClientTypes.InstancePatchState]?
     /// The token to use when requesting the next set of items. If there are no additional items to return, the string is empty.
@@ -7514,7 +7514,7 @@ public struct DescribeInstancePatchStatesOutput {
 
 extension SSMClientTypes {
 
-    public enum InstancePatchStateOperatorType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum InstancePatchStateOperatorType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case equal
         case greaterThan
         case lessThan
@@ -7548,6 +7548,7 @@ extension SSMClientTypes {
 }
 
 extension SSMClientTypes {
+
     /// Defines a filter used in [DescribeInstancePatchStatesForPatchGroup] to scope down the information returned by the API. Example: To filter for all managed nodes in a patch group having more than three patches with a FailedCount status, use the following for the filter:
     ///
     /// * Value for Key: FailedCount
@@ -7555,7 +7556,7 @@ extension SSMClientTypes {
     /// * Value for Type: GreaterThan
     ///
     /// * Value for Values: 3
-    public struct InstancePatchStateFilter {
+    public struct InstancePatchStateFilter: Swift.Sendable {
         /// The key for the filter. Supported values include the following:
         ///
         /// * InstalledCount
@@ -7593,10 +7594,9 @@ extension SSMClientTypes {
             self.values = values
         }
     }
-
 }
 
-public struct DescribeInstancePatchStatesForPatchGroupInput {
+public struct DescribeInstancePatchStatesForPatchGroupInput: Swift.Sendable {
     /// Each entry in the array is a structure containing:
     ///
     /// * Key (string between 1 and 200 characters)
@@ -7627,7 +7627,7 @@ public struct DescribeInstancePatchStatesForPatchGroupInput {
     }
 }
 
-public struct DescribeInstancePatchStatesForPatchGroupOutput {
+public struct DescribeInstancePatchStatesForPatchGroupOutput: Swift.Sendable {
     /// The high-level patch state for the requested managed nodes.
     public var instancePatchStates: [SSMClientTypes.InstancePatchState]?
     /// The token to use when requesting the next set of items. If there are no additional items to return, the string is empty.
@@ -7669,7 +7669,7 @@ public struct InvalidInstancePropertyFilterValue: ClientRuntime.ModeledError, AW
 
 extension SSMClientTypes {
 
-    public enum InstancePropertyFilterOperator: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum InstancePropertyFilterOperator: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case beginWith
         case equal
         case greaterThan
@@ -7706,8 +7706,9 @@ extension SSMClientTypes {
 }
 
 extension SSMClientTypes {
+
     /// The filters to describe or get information about your managed nodes.
-    public struct InstancePropertyStringFilter {
+    public struct InstancePropertyStringFilter: Swift.Sendable {
         /// The filter key name to describe your managed nodes.
         /// This member is required.
         public var key: Swift.String?
@@ -7728,12 +7729,11 @@ extension SSMClientTypes {
             self.values = values
         }
     }
-
 }
 
 extension SSMClientTypes {
 
-    public enum InstancePropertyFilterKey: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum InstancePropertyFilterKey: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case activationIds
         case agentVersion
         case associationStatus
@@ -7782,8 +7782,9 @@ extension SSMClientTypes {
 }
 
 extension SSMClientTypes {
+
     /// Describes a filter for a specific list of managed nodes. You can filter node information by using tags. You specify tags by using a key-value mapping.
-    public struct InstancePropertyFilter {
+    public struct InstancePropertyFilter: Swift.Sendable {
         /// The name of the filter.
         /// This member is required.
         public var key: SSMClientTypes.InstancePropertyFilterKey?
@@ -7800,10 +7801,9 @@ extension SSMClientTypes {
             self.valueSet = valueSet
         }
     }
-
 }
 
-public struct DescribeInstancePropertiesInput {
+public struct DescribeInstancePropertiesInput: Swift.Sendable {
     /// The request filters to use with the operator.
     public var filtersWithOperator: [SSMClientTypes.InstancePropertyStringFilter]?
     /// An array of instance property filters.
@@ -7828,8 +7828,9 @@ public struct DescribeInstancePropertiesInput {
 }
 
 extension SSMClientTypes {
+
     /// An object containing various properties of a managed node.
-    public struct InstanceProperty {
+    public struct InstanceProperty: Swift.Sendable {
         /// The activation ID created by Systems Manager when the server or virtual machine (VM) was registered
         public var activationId: Swift.String?
         /// The version of SSM Agent running on your managed node.
@@ -7940,7 +7941,6 @@ extension SSMClientTypes {
             self.sourceType = sourceType
         }
     }
-
 }
 
 extension SSMClientTypes.InstanceProperty: Swift.CustomDebugStringConvertible {
@@ -7948,7 +7948,7 @@ extension SSMClientTypes.InstanceProperty: Swift.CustomDebugStringConvertible {
         "InstanceProperty(activationId: \(Swift.String(describing: activationId)), agentVersion: \(Swift.String(describing: agentVersion)), architecture: \(Swift.String(describing: architecture)), associationOverview: \(Swift.String(describing: associationOverview)), associationStatus: \(Swift.String(describing: associationStatus)), computerName: \(Swift.String(describing: computerName)), iamRole: \(Swift.String(describing: iamRole)), instanceId: \(Swift.String(describing: instanceId)), instanceRole: \(Swift.String(describing: instanceRole)), instanceState: \(Swift.String(describing: instanceState)), instanceType: \(Swift.String(describing: instanceType)), keyName: \(Swift.String(describing: keyName)), lastAssociationExecutionDate: \(Swift.String(describing: lastAssociationExecutionDate)), lastPingDateTime: \(Swift.String(describing: lastPingDateTime)), lastSuccessfulAssociationExecutionDate: \(Swift.String(describing: lastSuccessfulAssociationExecutionDate)), launchTime: \(Swift.String(describing: launchTime)), name: \(Swift.String(describing: name)), pingStatus: \(Swift.String(describing: pingStatus)), platformName: \(Swift.String(describing: platformName)), platformType: \(Swift.String(describing: platformType)), platformVersion: \(Swift.String(describing: platformVersion)), registrationDate: \(Swift.String(describing: registrationDate)), resourceType: \(Swift.String(describing: resourceType)), sourceId: \(Swift.String(describing: sourceId)), sourceType: \(Swift.String(describing: sourceType)), ipAddress: \"CONTENT_REDACTED\")"}
 }
 
-public struct DescribeInstancePropertiesOutput {
+public struct DescribeInstancePropertiesOutput: Swift.Sendable {
     /// Properties for the managed instances.
     public var instanceProperties: [SSMClientTypes.InstanceProperty]?
     /// The token for the next set of properties to return. Use this token to get the next set of results.
@@ -7988,7 +7988,7 @@ public struct InvalidDeletionIdException: ClientRuntime.ModeledError, AWSClientR
     }
 }
 
-public struct DescribeInventoryDeletionsInput {
+public struct DescribeInventoryDeletionsInput: Swift.Sendable {
     /// Specify the delete inventory ID for which you want information. This ID was returned by the DeleteInventory operation.
     public var deletionId: Swift.String?
     /// The maximum number of items to return for this call. The call also returns a token that you can specify in a subsequent call to get the next set of results.
@@ -8010,7 +8010,7 @@ public struct DescribeInventoryDeletionsInput {
 
 extension SSMClientTypes {
 
-    public enum InventoryDeletionStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum InventoryDeletionStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case complete
         case inProgress
         case sdkUnknown(Swift.String)
@@ -8038,8 +8038,9 @@ extension SSMClientTypes {
 }
 
 extension SSMClientTypes {
+
     /// Status information returned by the DeleteInventory operation.
-    public struct InventoryDeletionStatusItem {
+    public struct InventoryDeletionStatusItem: Swift.Sendable {
         /// The deletion ID returned by the DeleteInventory operation.
         public var deletionId: Swift.String?
         /// The UTC timestamp when the delete operation started.
@@ -8074,10 +8075,9 @@ extension SSMClientTypes {
             self.typeName = typeName
         }
     }
-
 }
 
-public struct DescribeInventoryDeletionsOutput {
+public struct DescribeInventoryDeletionsOutput: Swift.Sendable {
     /// A list of status items for deleted inventory.
     public var inventoryDeletions: [SSMClientTypes.InventoryDeletionStatusItem]?
     /// The token for the next set of items to return. Use this token to get the next set of results.
@@ -8094,6 +8094,7 @@ public struct DescribeInventoryDeletionsOutput {
 }
 
 extension SSMClientTypes {
+
     /// Filter used in the request. Supported filter keys depend on the API operation that includes the filter. API operations that use MaintenanceWindowFilter> include the following:
     ///
     /// * [DescribeMaintenanceWindowExecutions]
@@ -8107,7 +8108,7 @@ extension SSMClientTypes {
     /// * [DescribeMaintenanceWindowTargets]
     ///
     /// * [DescribeMaintenanceWindowTasks]
-    public struct MaintenanceWindowFilter {
+    public struct MaintenanceWindowFilter: Swift.Sendable {
         /// The name of the filter.
         public var key: Swift.String?
         /// The filter values.
@@ -8122,10 +8123,9 @@ extension SSMClientTypes {
             self.values = values
         }
     }
-
 }
 
-public struct DescribeMaintenanceWindowExecutionsInput {
+public struct DescribeMaintenanceWindowExecutionsInput: Swift.Sendable {
     /// Each entry in the array is a structure containing:
     ///
     /// * Key. A string between 1 and 128 characters. Supported keys include ExecutedBefore and ExecutedAfter.
@@ -8156,7 +8156,7 @@ public struct DescribeMaintenanceWindowExecutionsInput {
 
 extension SSMClientTypes {
 
-    public enum MaintenanceWindowExecutionStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum MaintenanceWindowExecutionStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case cancelled
         case cancelling
         case failed
@@ -8202,8 +8202,9 @@ extension SSMClientTypes {
 }
 
 extension SSMClientTypes {
+
     /// Describes the information about an execution of a maintenance window.
-    public struct MaintenanceWindowExecution {
+    public struct MaintenanceWindowExecution: Swift.Sendable {
         /// The time the execution finished.
         public var endTime: Foundation.Date?
         /// The time the execution started.
@@ -8234,10 +8235,9 @@ extension SSMClientTypes {
             self.windowId = windowId
         }
     }
-
 }
 
-public struct DescribeMaintenanceWindowExecutionsOutput {
+public struct DescribeMaintenanceWindowExecutionsOutput: Swift.Sendable {
     /// The token to use when requesting the next set of items. If there are no additional items to return, the string is empty.
     public var nextToken: Swift.String?
     /// Information about the maintenance window executions.
@@ -8253,7 +8253,7 @@ public struct DescribeMaintenanceWindowExecutionsOutput {
     }
 }
 
-public struct DescribeMaintenanceWindowExecutionTaskInvocationsInput {
+public struct DescribeMaintenanceWindowExecutionTaskInvocationsInput: Swift.Sendable {
     /// Optional filters used to scope down the returned task invocations. The supported filter key is STATUS with the corresponding values PENDING, IN_PROGRESS, SUCCESS, FAILED, TIMED_OUT, CANCELLING, and CANCELLED.
     public var filters: [SSMClientTypes.MaintenanceWindowFilter]?
     /// The maximum number of items to return for this call. The call also returns a token that you can specify in a subsequent call to get the next set of results.
@@ -8285,7 +8285,7 @@ public struct DescribeMaintenanceWindowExecutionTaskInvocationsInput {
 
 extension SSMClientTypes {
 
-    public enum MaintenanceWindowTaskType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum MaintenanceWindowTaskType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case automation
         case lambda
         case runcommand
@@ -8319,8 +8319,9 @@ extension SSMClientTypes {
 }
 
 extension SSMClientTypes {
+
     /// Describes the information about a task invocation for a particular target as part of a task execution performed as part of a maintenance window execution.
-    public struct MaintenanceWindowExecutionTaskInvocationIdentity {
+    public struct MaintenanceWindowExecutionTaskInvocationIdentity: Swift.Sendable {
         /// The time the invocation finished.
         public var endTime: Foundation.Date?
         /// The ID of the action performed in the service that actually handled the task invocation. If the task type is RUN_COMMAND, this value is the command ID.
@@ -8375,7 +8376,6 @@ extension SSMClientTypes {
             self.windowTargetId = windowTargetId
         }
     }
-
 }
 
 extension SSMClientTypes.MaintenanceWindowExecutionTaskInvocationIdentity: Swift.CustomDebugStringConvertible {
@@ -8383,7 +8383,7 @@ extension SSMClientTypes.MaintenanceWindowExecutionTaskInvocationIdentity: Swift
         "MaintenanceWindowExecutionTaskInvocationIdentity(endTime: \(Swift.String(describing: endTime)), executionId: \(Swift.String(describing: executionId)), invocationId: \(Swift.String(describing: invocationId)), startTime: \(Swift.String(describing: startTime)), status: \(Swift.String(describing: status)), statusDetails: \(Swift.String(describing: statusDetails)), taskExecutionId: \(Swift.String(describing: taskExecutionId)), taskType: \(Swift.String(describing: taskType)), windowExecutionId: \(Swift.String(describing: windowExecutionId)), windowTargetId: \(Swift.String(describing: windowTargetId)), ownerInformation: \"CONTENT_REDACTED\", parameters: \"CONTENT_REDACTED\")"}
 }
 
-public struct DescribeMaintenanceWindowExecutionTaskInvocationsOutput {
+public struct DescribeMaintenanceWindowExecutionTaskInvocationsOutput: Swift.Sendable {
     /// The token to use when requesting the next set of items. If there are no additional items to return, the string is empty.
     public var nextToken: Swift.String?
     /// Information about the task invocation results per invocation.
@@ -8399,7 +8399,7 @@ public struct DescribeMaintenanceWindowExecutionTaskInvocationsOutput {
     }
 }
 
-public struct DescribeMaintenanceWindowExecutionTasksInput {
+public struct DescribeMaintenanceWindowExecutionTasksInput: Swift.Sendable {
     /// Optional filters used to scope down the returned tasks. The supported filter key is STATUS with the corresponding values PENDING, IN_PROGRESS, SUCCESS, FAILED, TIMED_OUT, CANCELLING, and CANCELLED.
     public var filters: [SSMClientTypes.MaintenanceWindowFilter]?
     /// The maximum number of items to return for this call. The call also returns a token that you can specify in a subsequent call to get the next set of results.
@@ -8425,8 +8425,9 @@ public struct DescribeMaintenanceWindowExecutionTasksInput {
 }
 
 extension SSMClientTypes {
+
     /// Information about a task execution performed as part of a maintenance window execution.
-    public struct MaintenanceWindowExecutionTaskIdentity {
+    public struct MaintenanceWindowExecutionTaskIdentity: Swift.Sendable {
         /// The details for the CloudWatch alarm applied to your maintenance window task.
         public var alarmConfiguration: SSMClientTypes.AlarmConfiguration?
         /// The time the task execution finished.
@@ -8473,10 +8474,9 @@ extension SSMClientTypes {
             self.windowExecutionId = windowExecutionId
         }
     }
-
 }
 
-public struct DescribeMaintenanceWindowExecutionTasksOutput {
+public struct DescribeMaintenanceWindowExecutionTasksOutput: Swift.Sendable {
     /// The token to use when requesting the next set of items. If there are no additional items to return, the string is empty.
     public var nextToken: Swift.String?
     /// Information about the task executions.
@@ -8492,7 +8492,7 @@ public struct DescribeMaintenanceWindowExecutionTasksOutput {
     }
 }
 
-public struct DescribeMaintenanceWindowsInput {
+public struct DescribeMaintenanceWindowsInput: Swift.Sendable {
     /// Optional filters used to narrow down the scope of the returned maintenance windows. Supported filter keys are Name and Enabled. For example, Name=MyMaintenanceWindow and Enabled=True.
     public var filters: [SSMClientTypes.MaintenanceWindowFilter]?
     /// The maximum number of items to return for this call. The call also returns a token that you can specify in a subsequent call to get the next set of results.
@@ -8513,8 +8513,9 @@ public struct DescribeMaintenanceWindowsInput {
 }
 
 extension SSMClientTypes {
+
     /// Information about the maintenance window.
-    public struct MaintenanceWindowIdentity {
+    public struct MaintenanceWindowIdentity: Swift.Sendable {
         /// The number of hours before the end of the maintenance window that Amazon Web Services Systems Manager stops scheduling new tasks for execution.
         public var cutoff: Swift.Int
         /// A description of the maintenance window.
@@ -8569,7 +8570,6 @@ extension SSMClientTypes {
             self.windowId = windowId
         }
     }
-
 }
 
 extension SSMClientTypes.MaintenanceWindowIdentity: Swift.CustomDebugStringConvertible {
@@ -8577,7 +8577,7 @@ extension SSMClientTypes.MaintenanceWindowIdentity: Swift.CustomDebugStringConve
         "MaintenanceWindowIdentity(cutoff: \(Swift.String(describing: cutoff)), duration: \(Swift.String(describing: duration)), enabled: \(Swift.String(describing: enabled)), endDate: \(Swift.String(describing: endDate)), name: \(Swift.String(describing: name)), nextExecutionTime: \(Swift.String(describing: nextExecutionTime)), schedule: \(Swift.String(describing: schedule)), scheduleOffset: \(Swift.String(describing: scheduleOffset)), scheduleTimezone: \(Swift.String(describing: scheduleTimezone)), startDate: \(Swift.String(describing: startDate)), windowId: \(Swift.String(describing: windowId)), description: \"CONTENT_REDACTED\")"}
 }
 
-public struct DescribeMaintenanceWindowsOutput {
+public struct DescribeMaintenanceWindowsOutput: Swift.Sendable {
     /// The token to use when requesting the next set of items. If there are no additional items to return, the string is empty.
     public var nextToken: Swift.String?
     /// Information about the maintenance windows.
@@ -8595,7 +8595,7 @@ public struct DescribeMaintenanceWindowsOutput {
 
 extension SSMClientTypes {
 
-    public enum MaintenanceWindowResourceType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum MaintenanceWindowResourceType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case instance
         case resourcegroup
         case sdkUnknown(Swift.String)
@@ -8622,7 +8622,7 @@ extension SSMClientTypes {
     }
 }
 
-public struct DescribeMaintenanceWindowScheduleInput {
+public struct DescribeMaintenanceWindowScheduleInput: Swift.Sendable {
     /// Filters used to limit the range of results. For example, you can limit maintenance window executions to only those scheduled before or after a certain date and time.
     public var filters: [SSMClientTypes.PatchOrchestratorFilter]?
     /// The maximum number of items to return for this call. The call also returns a token that you can specify in a subsequent call to get the next set of results.
@@ -8655,8 +8655,9 @@ public struct DescribeMaintenanceWindowScheduleInput {
 }
 
 extension SSMClientTypes {
+
     /// Information about a scheduled execution for a maintenance window.
-    public struct ScheduledWindowExecution {
+    public struct ScheduledWindowExecution: Swift.Sendable {
         /// The time, in ISO-8601 Extended format, that the maintenance window is scheduled to be run.
         public var executionTime: Swift.String?
         /// The name of the maintenance window to be run.
@@ -8675,10 +8676,9 @@ extension SSMClientTypes {
             self.windowId = windowId
         }
     }
-
 }
 
-public struct DescribeMaintenanceWindowScheduleOutput {
+public struct DescribeMaintenanceWindowScheduleOutput: Swift.Sendable {
     /// The token for the next set of items to return. (You use this token in the next call.)
     public var nextToken: Swift.String?
     /// Information about maintenance window executions scheduled for the specified time range.
@@ -8694,7 +8694,7 @@ public struct DescribeMaintenanceWindowScheduleOutput {
     }
 }
 
-public struct DescribeMaintenanceWindowsForTargetInput {
+public struct DescribeMaintenanceWindowsForTargetInput: Swift.Sendable {
     /// The maximum number of items to return for this call. The call also returns a token that you can specify in a subsequent call to get the next set of results.
     public var maxResults: Swift.Int?
     /// The token for the next set of items to return. (You received this token from a previous call.)
@@ -8721,8 +8721,9 @@ public struct DescribeMaintenanceWindowsForTargetInput {
 }
 
 extension SSMClientTypes {
+
     /// The maintenance window to which the specified target belongs.
-    public struct MaintenanceWindowIdentityForTarget {
+    public struct MaintenanceWindowIdentityForTarget: Swift.Sendable {
         /// The name of the maintenance window.
         public var name: Swift.String?
         /// The ID of the maintenance window.
@@ -8737,10 +8738,9 @@ extension SSMClientTypes {
             self.windowId = windowId
         }
     }
-
 }
 
-public struct DescribeMaintenanceWindowsForTargetOutput {
+public struct DescribeMaintenanceWindowsForTargetOutput: Swift.Sendable {
     /// The token for the next set of items to return. (You use this token in the next call.)
     public var nextToken: Swift.String?
     /// Information about the maintenance window targets and tasks a managed node is associated with.
@@ -8756,7 +8756,7 @@ public struct DescribeMaintenanceWindowsForTargetOutput {
     }
 }
 
-public struct DescribeMaintenanceWindowTargetsInput {
+public struct DescribeMaintenanceWindowTargetsInput: Swift.Sendable {
     /// Optional filters that can be used to narrow down the scope of the returned window targets. The supported filter keys are Type, WindowTargetId, and OwnerInformation.
     public var filters: [SSMClientTypes.MaintenanceWindowFilter]?
     /// The maximum number of items to return for this call. The call also returns a token that you can specify in a subsequent call to get the next set of results.
@@ -8782,8 +8782,9 @@ public struct DescribeMaintenanceWindowTargetsInput {
 }
 
 extension SSMClientTypes {
+
     /// The target registered with the maintenance window.
-    public struct MaintenanceWindowTarget {
+    public struct MaintenanceWindowTarget: Swift.Sendable {
         /// A description for the target.
         public var description: Swift.String?
         /// The name for the maintenance window target.
@@ -8818,7 +8819,6 @@ extension SSMClientTypes {
             self.windowTargetId = windowTargetId
         }
     }
-
 }
 
 extension SSMClientTypes.MaintenanceWindowTarget: Swift.CustomDebugStringConvertible {
@@ -8826,7 +8826,7 @@ extension SSMClientTypes.MaintenanceWindowTarget: Swift.CustomDebugStringConvert
         "MaintenanceWindowTarget(name: \(Swift.String(describing: name)), resourceType: \(Swift.String(describing: resourceType)), targets: \(Swift.String(describing: targets)), windowId: \(Swift.String(describing: windowId)), windowTargetId: \(Swift.String(describing: windowTargetId)), description: \"CONTENT_REDACTED\", ownerInformation: \"CONTENT_REDACTED\")"}
 }
 
-public struct DescribeMaintenanceWindowTargetsOutput {
+public struct DescribeMaintenanceWindowTargetsOutput: Swift.Sendable {
     /// The token to use when requesting the next set of items. If there are no additional items to return, the string is empty.
     public var nextToken: Swift.String?
     /// Information about the targets in the maintenance window.
@@ -8842,7 +8842,7 @@ public struct DescribeMaintenanceWindowTargetsOutput {
     }
 }
 
-public struct DescribeMaintenanceWindowTasksInput {
+public struct DescribeMaintenanceWindowTasksInput: Swift.Sendable {
     /// Optional filters used to narrow down the scope of the returned tasks. The supported filter keys are WindowTaskId, TaskArn, Priority, and TaskType.
     public var filters: [SSMClientTypes.MaintenanceWindowFilter]?
     /// The maximum number of items to return for this call. The call also returns a token that you can specify in a subsequent call to get the next set of results.
@@ -8869,7 +8869,7 @@ public struct DescribeMaintenanceWindowTasksInput {
 
 extension SSMClientTypes {
 
-    public enum MaintenanceWindowTaskCutoffBehavior: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum MaintenanceWindowTaskCutoffBehavior: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case canceltask
         case continuetask
         case sdkUnknown(Swift.String)
@@ -8897,8 +8897,9 @@ extension SSMClientTypes {
 }
 
 extension SSMClientTypes {
+
     /// Information about an Amazon Simple Storage Service (Amazon S3) bucket to write managed node-level logs to. LoggingInfo has been deprecated. To specify an Amazon Simple Storage Service (Amazon S3) bucket to contain logs, instead use the OutputS3BucketName and OutputS3KeyPrefix options in the TaskInvocationParameters structure. For information about how Amazon Web Services Systems Manager handles these options for the supported maintenance window task types, see [MaintenanceWindowTaskInvocationParameters].
-    public struct LoggingInfo {
+    public struct LoggingInfo: Swift.Sendable {
         /// The name of an S3 bucket where execution logs are stored.
         /// This member is required.
         public var s3BucketName: Swift.String?
@@ -8919,12 +8920,12 @@ extension SSMClientTypes {
             self.s3Region = s3Region
         }
     }
-
 }
 
 extension SSMClientTypes {
+
     /// Defines the values for a task parameter.
-    public struct MaintenanceWindowTaskParameterValueExpression {
+    public struct MaintenanceWindowTaskParameterValueExpression: Swift.Sendable {
         /// This field contains an array of 0 or more strings, each 1 to 255 characters in length.
         public var values: [Swift.String]?
 
@@ -8935,7 +8936,6 @@ extension SSMClientTypes {
             self.values = values
         }
     }
-
 }
 
 extension SSMClientTypes.MaintenanceWindowTaskParameterValueExpression: Swift.CustomDebugStringConvertible {
@@ -8945,8 +8945,9 @@ extension SSMClientTypes.MaintenanceWindowTaskParameterValueExpression: Swift.Cu
 }
 
 extension SSMClientTypes {
+
     /// Information about a task defined for a maintenance window.
-    public struct MaintenanceWindowTask {
+    public struct MaintenanceWindowTask: Swift.Sendable {
         /// The details for the CloudWatch alarm applied to your maintenance window task.
         public var alarmConfiguration: SSMClientTypes.AlarmConfiguration?
         /// The specification for whether tasks should continue to run after the cutoff time specified in the maintenance windows is reached.
@@ -9013,7 +9014,6 @@ extension SSMClientTypes {
             self.windowTaskId = windowTaskId
         }
     }
-
 }
 
 extension SSMClientTypes.MaintenanceWindowTask: Swift.CustomDebugStringConvertible {
@@ -9021,7 +9021,7 @@ extension SSMClientTypes.MaintenanceWindowTask: Swift.CustomDebugStringConvertib
         "MaintenanceWindowTask(alarmConfiguration: \(Swift.String(describing: alarmConfiguration)), cutoffBehavior: \(Swift.String(describing: cutoffBehavior)), loggingInfo: \(Swift.String(describing: loggingInfo)), maxConcurrency: \(Swift.String(describing: maxConcurrency)), maxErrors: \(Swift.String(describing: maxErrors)), name: \(Swift.String(describing: name)), priority: \(Swift.String(describing: priority)), serviceRoleArn: \(Swift.String(describing: serviceRoleArn)), targets: \(Swift.String(describing: targets)), taskArn: \(Swift.String(describing: taskArn)), type: \(Swift.String(describing: type)), windowId: \(Swift.String(describing: windowId)), windowTaskId: \(Swift.String(describing: windowTaskId)), description: \"CONTENT_REDACTED\", taskParameters: \"CONTENT_REDACTED\")"}
 }
 
-public struct DescribeMaintenanceWindowTasksOutput {
+public struct DescribeMaintenanceWindowTasksOutput: Swift.Sendable {
     /// The token to use when requesting the next set of items. If there are no additional items to return, the string is empty.
     public var nextToken: Swift.String?
     /// Information about the tasks in the maintenance window.
@@ -9039,7 +9039,7 @@ public struct DescribeMaintenanceWindowTasksOutput {
 
 extension SSMClientTypes {
 
-    public enum OpsItemFilterKey: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum OpsItemFilterKey: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case accountId
         case actualEndTime
         case actualStartTime
@@ -9146,7 +9146,7 @@ extension SSMClientTypes {
 
 extension SSMClientTypes {
 
-    public enum OpsItemFilterOperator: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum OpsItemFilterOperator: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case contains
         case equal
         case greaterThan
@@ -9180,8 +9180,9 @@ extension SSMClientTypes {
 }
 
 extension SSMClientTypes {
+
     /// Describes an OpsItem filter.
-    public struct OpsItemFilter {
+    public struct OpsItemFilter: Swift.Sendable {
         /// The name of the filter.
         /// This member is required.
         public var key: SSMClientTypes.OpsItemFilterKey?
@@ -9203,10 +9204,9 @@ extension SSMClientTypes {
             self.values = values
         }
     }
-
 }
 
-public struct DescribeOpsItemsInput {
+public struct DescribeOpsItemsInput: Swift.Sendable {
     /// The maximum number of items to return for this call. The call also returns a token that you can specify in a subsequent call to get the next set of results.
     public var maxResults: Swift.Int?
     /// A token to start the list. Use this token to get the next set of results.
@@ -9259,7 +9259,7 @@ public struct DescribeOpsItemsInput {
 
 extension SSMClientTypes {
 
-    public enum OpsItemStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum OpsItemStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case approved
         case cancelled
         case cancelling
@@ -9338,8 +9338,9 @@ extension SSMClientTypes {
 }
 
 extension SSMClientTypes {
+
     /// A count of OpsItems.
-    public struct OpsItemSummary {
+    public struct OpsItemSummary: Swift.Sendable {
         /// The time a runbook workflow ended. Currently reported only for the OpsItem type /aws/changerequest.
         public var actualEndTime: Foundation.Date?
         /// The time a runbook workflow started. Currently reported only for the OpsItem type /aws/changerequest.
@@ -9420,10 +9421,9 @@ extension SSMClientTypes {
             self.title = title
         }
     }
-
 }
 
-public struct DescribeOpsItemsOutput {
+public struct DescribeOpsItemsOutput: Swift.Sendable {
     /// The token for the next set of items to return. Use this token to get the next set of results.
     public var nextToken: Swift.String?
     /// A list of OpsItems.
@@ -9466,7 +9466,7 @@ public struct InvalidFilterOption: ClientRuntime.ModeledError, AWSClientRuntime.
 
 extension SSMClientTypes {
 
-    public enum ParametersFilterKey: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ParametersFilterKey: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case keyId
         case name
         case type
@@ -9497,8 +9497,9 @@ extension SSMClientTypes {
 }
 
 extension SSMClientTypes {
+
     /// This data type is deprecated. Instead, use [ParameterStringFilter].
-    public struct ParametersFilter {
+    public struct ParametersFilter: Swift.Sendable {
         /// The name of the filter.
         /// This member is required.
         public var key: SSMClientTypes.ParametersFilterKey?
@@ -9515,12 +9516,12 @@ extension SSMClientTypes {
             self.values = values
         }
     }
-
 }
 
 extension SSMClientTypes {
+
     /// One or more filters. Use a filter to return a more specific list of results.
-    public struct ParameterStringFilter {
+    public struct ParameterStringFilter: Swift.Sendable {
         /// The name of the filter. The ParameterStringFilter object is used by the [DescribeParameters] and [GetParametersByPath] API operations. However, not all of the pattern values listed for Key can be used with both operations. For DescribeParameters, all of the listed patterns are valid except Label. For GetParametersByPath, the following patterns listed for Key aren't valid: tag, DataType, Name, Path, and Tier. For examples of Amazon Web Services CLI commands demonstrating valid parameter filter constructions, see [Searching for Systems Manager parameters](https://docs.aws.amazon.com/systems-manager/latest/userguide/parameter-search.html) in the Amazon Web Services Systems Manager User Guide.
         /// This member is required.
         public var key: Swift.String?
@@ -9540,10 +9541,9 @@ extension SSMClientTypes {
             self.values = values
         }
     }
-
 }
 
-public struct DescribeParametersInput {
+public struct DescribeParametersInput: Swift.Sendable {
     /// This data type is deprecated. Instead, use ParameterFilters.
     public var filters: [SSMClientTypes.ParametersFilter]?
     /// The maximum number of items to return for this call. The call also returns a token that you can specify in a subsequent call to get the next set of results.
@@ -9572,8 +9572,9 @@ public struct DescribeParametersInput {
 }
 
 extension SSMClientTypes {
+
     /// One or more policies assigned to a parameter.
-    public struct ParameterInlinePolicy {
+    public struct ParameterInlinePolicy: Swift.Sendable {
         /// The status of the policy. Policies report the following statuses: Pending (the policy hasn't been enforced or applied yet), Finished (the policy was applied), Failed (the policy wasn't applied), or InProgress (the policy is being applied now).
         public var policyStatus: Swift.String?
         /// The JSON text of the policy.
@@ -9592,12 +9593,11 @@ extension SSMClientTypes {
             self.policyType = policyType
         }
     }
-
 }
 
 extension SSMClientTypes {
 
-    public enum ParameterTier: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ParameterTier: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case advanced
         case intelligentTiering
         case standard
@@ -9629,7 +9629,7 @@ extension SSMClientTypes {
 
 extension SSMClientTypes {
 
-    public enum ParameterType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ParameterType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case secureString
         case string
         case stringList
@@ -9660,8 +9660,9 @@ extension SSMClientTypes {
 }
 
 extension SSMClientTypes {
+
     /// Metadata includes information like the Amazon Resource Name (ARN) of the last user to update the parameter and the date and time the parameter was last used.
-    public struct ParameterMetadata {
+    public struct ParameterMetadata: Swift.Sendable {
         /// A parameter name can include only the following letters and symbols. a-zA-Z0-9_.-
         public var allowedPattern: Swift.String?
         /// The (ARN) of the last user to update the parameter.
@@ -9716,10 +9717,9 @@ extension SSMClientTypes {
             self.version = version
         }
     }
-
 }
 
-public struct DescribeParametersOutput {
+public struct DescribeParametersOutput: Swift.Sendable {
     /// The token to use when requesting the next set of items.
     public var nextToken: Swift.String?
     /// Parameters returned by the request.
@@ -9735,7 +9735,7 @@ public struct DescribeParametersOutput {
     }
 }
 
-public struct DescribePatchBaselinesInput {
+public struct DescribePatchBaselinesInput: Swift.Sendable {
     /// Each element in the array is a structure containing a key-value pair. Supported keys for DescribePatchBaselines include the following:
     ///
     /// * NAME_PREFIX Sample values: AWS- | My-
@@ -9762,8 +9762,9 @@ public struct DescribePatchBaselinesInput {
 }
 
 extension SSMClientTypes {
+
     /// Defines the basic information about a patch baseline.
-    public struct PatchBaselineIdentity {
+    public struct PatchBaselineIdentity: Swift.Sendable {
         /// The description of the patch baseline.
         public var baselineDescription: Swift.String?
         /// The ID of the patch baseline.
@@ -9790,10 +9791,9 @@ extension SSMClientTypes {
             self.operatingSystem = operatingSystem
         }
     }
-
 }
 
-public struct DescribePatchBaselinesOutput {
+public struct DescribePatchBaselinesOutput: Swift.Sendable {
     /// An array of PatchBaselineIdentity elements.
     public var baselineIdentities: [SSMClientTypes.PatchBaselineIdentity]?
     /// The token to use when requesting the next set of items. If there are no additional items to return, the string is empty.
@@ -9809,7 +9809,7 @@ public struct DescribePatchBaselinesOutput {
     }
 }
 
-public struct DescribePatchGroupsInput {
+public struct DescribePatchGroupsInput: Swift.Sendable {
     /// Each element in the array is a structure containing a key-value pair. Supported keys for DescribePatchGroups include the following:
     ///
     /// * NAME_PREFIX Sample values: AWS- | My-.
@@ -9834,8 +9834,9 @@ public struct DescribePatchGroupsInput {
 }
 
 extension SSMClientTypes {
+
     /// The mapping between a patch group and the patch baseline the patch group is registered with.
-    public struct PatchGroupPatchBaselineMapping {
+    public struct PatchGroupPatchBaselineMapping: Swift.Sendable {
         /// The patch baseline the patch group is registered with.
         public var baselineIdentity: SSMClientTypes.PatchBaselineIdentity?
         /// The name of the patch group registered with the patch baseline.
@@ -9850,10 +9851,9 @@ extension SSMClientTypes {
             self.patchGroup = patchGroup
         }
     }
-
 }
 
-public struct DescribePatchGroupsOutput {
+public struct DescribePatchGroupsOutput: Swift.Sendable {
     /// Each entry in the array contains:
     ///
     /// * PatchGroup: string (between 1 and 256 characters. Regex: ^([\p{L}\p{Z}\p{N}_.:/=+\-@]*)$)
@@ -9873,7 +9873,7 @@ public struct DescribePatchGroupsOutput {
     }
 }
 
-public struct DescribePatchGroupStateInput {
+public struct DescribePatchGroupStateInput: Swift.Sendable {
     /// The name of the patch group whose patch snapshot should be retrieved.
     /// This member is required.
     public var patchGroup: Swift.String?
@@ -9886,7 +9886,7 @@ public struct DescribePatchGroupStateInput {
     }
 }
 
-public struct DescribePatchGroupStateOutput {
+public struct DescribePatchGroupStateOutput: Swift.Sendable {
     /// The number of managed nodes in the patch group.
     public var instances: Swift.Int
     /// The number of managed nodes where patches that are specified as Critical for compliance reporting in the patch baseline aren't installed. These patches might be missing, have failed installation, were rejected, or were installed but awaiting a required managed node reboot. The status of these managed nodes is NON_COMPLIANT.
@@ -9944,7 +9944,7 @@ public struct DescribePatchGroupStateOutput {
 
 extension SSMClientTypes {
 
-    public enum PatchSet: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum PatchSet: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case application
         case os
         case sdkUnknown(Swift.String)
@@ -9973,7 +9973,7 @@ extension SSMClientTypes {
 
 extension SSMClientTypes {
 
-    public enum PatchProperty: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum PatchProperty: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case patchclassification
         case patchmsrcseverity
         case patchpriority
@@ -10012,7 +10012,7 @@ extension SSMClientTypes {
     }
 }
 
-public struct DescribePatchPropertiesInput {
+public struct DescribePatchPropertiesInput: Swift.Sendable {
     /// The maximum number of items to return for this call. The call also returns a token that you can specify in a subsequent call to get the next set of results.
     public var maxResults: Swift.Int?
     /// The token for the next set of items to return. (You received this token from a previous call.)
@@ -10042,7 +10042,7 @@ public struct DescribePatchPropertiesInput {
     }
 }
 
-public struct DescribePatchPropertiesOutput {
+public struct DescribePatchPropertiesOutput: Swift.Sendable {
     /// The token for the next set of items to return. (You use this token in the next call.)
     public var nextToken: Swift.String?
     /// A list of the properties for patches matching the filter request parameters.
@@ -10060,7 +10060,7 @@ public struct DescribePatchPropertiesOutput {
 
 extension SSMClientTypes {
 
-    public enum SessionFilterKey: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SessionFilterKey: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case invokedAfter
         case invokedBefore
         case owner
@@ -10100,8 +10100,9 @@ extension SSMClientTypes {
 }
 
 extension SSMClientTypes {
+
     /// Describes a filter for Session Manager information.
-    public struct SessionFilter {
+    public struct SessionFilter: Swift.Sendable {
         /// The name of the filter.
         /// This member is required.
         public var key: SSMClientTypes.SessionFilterKey?
@@ -10145,12 +10146,11 @@ extension SSMClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension SSMClientTypes {
 
-    public enum SessionState: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SessionState: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case active
         case history
         case sdkUnknown(Swift.String)
@@ -10177,7 +10177,7 @@ extension SSMClientTypes {
     }
 }
 
-public struct DescribeSessionsInput {
+public struct DescribeSessionsInput: Swift.Sendable {
     /// One or more filters to limit the type of sessions returned by the request.
     public var filters: [SSMClientTypes.SessionFilter]?
     /// The maximum number of items to return for this call. The call also returns a token that you can specify in a subsequent call to get the next set of results.
@@ -10203,8 +10203,9 @@ public struct DescribeSessionsInput {
 }
 
 extension SSMClientTypes {
+
     /// Reserved for future use.
-    public struct SessionManagerOutputUrl {
+    public struct SessionManagerOutputUrl: Swift.Sendable {
         /// Reserved for future use.
         public var cloudWatchOutputUrl: Swift.String?
         /// Reserved for future use.
@@ -10219,12 +10220,11 @@ extension SSMClientTypes {
             self.s3OutputUrl = s3OutputUrl
         }
     }
-
 }
 
 extension SSMClientTypes {
 
-    public enum SessionStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SessionStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case connected
         case connecting
         case disconnected
@@ -10264,8 +10264,9 @@ extension SSMClientTypes {
 }
 
 extension SSMClientTypes {
+
     /// Information about a Session Manager connection to a managed node.
-    public struct Session {
+    public struct Session: Swift.Sendable {
         /// Reserved for future use.
         public var details: Swift.String?
         /// The name of the Session Manager SSM document used to define the parameters and plugin settings for the session. For example, SSM-SessionManagerRunShell.
@@ -10316,10 +10317,9 @@ extension SSMClientTypes {
             self.target = target
         }
     }
-
 }
 
-public struct DescribeSessionsOutput {
+public struct DescribeSessionsOutput: Swift.Sendable {
     /// The token for the next set of items to return. (You received this token from a previous call.)
     public var nextToken: Swift.String?
     /// A list of sessions meeting the request parameters.
@@ -10359,7 +10359,7 @@ public struct OpsItemRelatedItemAssociationNotFoundException: ClientRuntime.Mode
     }
 }
 
-public struct DisassociateOpsItemRelatedItemInput {
+public struct DisassociateOpsItemRelatedItemInput: Swift.Sendable {
     /// The ID of the association for which you want to delete an association between the OpsItem and a related item.
     /// This member is required.
     public var associationId: Swift.String?
@@ -10377,12 +10377,12 @@ public struct DisassociateOpsItemRelatedItemInput {
     }
 }
 
-public struct DisassociateOpsItemRelatedItemOutput {
+public struct DisassociateOpsItemRelatedItemOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct GetAutomationExecutionInput {
+public struct GetAutomationExecutionInput: Swift.Sendable {
     /// The unique identifier for an existing automation execution to examine. The execution ID is returned by StartAutomationExecution when the execution of an Automation runbook is initiated.
     /// This member is required.
     public var automationExecutionId: Swift.String?
@@ -10396,8 +10396,9 @@ public struct GetAutomationExecutionInput {
 }
 
 extension SSMClientTypes {
+
     /// An aggregate of step execution statuses displayed in the Amazon Web Services Systems Manager console for a multi-Region and multi-account Automation execution.
-    public struct ProgressCounters {
+    public struct ProgressCounters: Swift.Sendable {
         /// The total number of steps that the system cancelled in all specified Amazon Web Services Regions and Amazon Web Services accounts for the current Automation execution.
         public var cancelledSteps: Swift.Int
         /// The total number of steps that failed to run in all specified Amazon Web Services Regions and Amazon Web Services accounts for the current Automation execution.
@@ -10424,12 +10425,12 @@ extension SSMClientTypes {
             self.totalSteps = totalSteps
         }
     }
-
 }
 
 extension SSMClientTypes {
+
     /// Detailed information about the current state of an individual Automation execution.
-    public struct AutomationExecution {
+    public struct AutomationExecution: Swift.Sendable {
         /// The details for the CloudWatch alarm applied to your automation.
         public var alarmConfiguration: SSMClientTypes.AlarmConfiguration?
         /// The ID of a State Manager association used in the Automation operation.
@@ -10576,10 +10577,9 @@ extension SSMClientTypes {
             self.variables = variables
         }
     }
-
 }
 
-public struct GetAutomationExecutionOutput {
+public struct GetAutomationExecutionOutput: Swift.Sendable {
     /// Detailed information about the current state of an automation execution.
     public var automationExecution: SSMClientTypes.AutomationExecution?
 
@@ -10639,7 +10639,7 @@ public struct UnsupportedCalendarException: ClientRuntime.ModeledError, AWSClien
     }
 }
 
-public struct GetCalendarStateInput {
+public struct GetCalendarStateInput: Swift.Sendable {
     /// (Optional) The specific time for which you want to get calendar state information, in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format. If you don't specify a value or AtTime, the current time is used.
     public var atTime: Swift.String?
     /// The names or Amazon Resource Names (ARNs) of the Systems Manager documents (SSM documents) that represent the calendar entries for which you want to get the state.
@@ -10658,7 +10658,7 @@ public struct GetCalendarStateInput {
 
 extension SSMClientTypes {
 
-    public enum CalendarState: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum CalendarState: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case closed
         case `open`
         case sdkUnknown(Swift.String)
@@ -10685,7 +10685,7 @@ extension SSMClientTypes {
     }
 }
 
-public struct GetCalendarStateOutput {
+public struct GetCalendarStateOutput: Swift.Sendable {
     /// The time, as an [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) string, that you specified in your command. If you don't specify a time, GetCalendarState uses the current time.
     public var atTime: Swift.String?
     /// The time, as an [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) string, that the calendar state will change. If the current calendar state is OPEN, NextTransitionTime indicates when the calendar state changes to CLOSED, and vice-versa.
@@ -10731,7 +10731,7 @@ public struct InvocationDoesNotExist: ClientRuntime.ModeledError, AWSClientRunti
     public init() { }
 }
 
-public struct GetCommandInvocationInput {
+public struct GetCommandInvocationInput: Swift.Sendable {
     /// (Required) The parent command ID of the invocation plugin.
     /// This member is required.
     public var commandId: Swift.String?
@@ -10754,8 +10754,9 @@ public struct GetCommandInvocationInput {
 }
 
 extension SSMClientTypes {
+
     /// Configuration options for sending command output to Amazon CloudWatch Logs.
-    public struct CloudWatchOutputConfig {
+    public struct CloudWatchOutputConfig: Swift.Sendable {
         /// The name of the CloudWatch Logs log group where you want to send command output. If you don't specify a group name, Amazon Web Services Systems Manager automatically creates a log group for you. The log group uses the following naming format: aws/ssm/SystemsManagerDocumentName
         public var cloudWatchLogGroupName: Swift.String?
         /// Enables Systems Manager to send command output to CloudWatch Logs.
@@ -10770,12 +10771,11 @@ extension SSMClientTypes {
             self.cloudWatchOutputEnabled = cloudWatchOutputEnabled
         }
     }
-
 }
 
 extension SSMClientTypes {
 
-    public enum CommandInvocationStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum CommandInvocationStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case cancelled
         case cancelling
         case delayed
@@ -10820,7 +10820,7 @@ extension SSMClientTypes {
     }
 }
 
-public struct GetCommandInvocationOutput {
+public struct GetCommandInvocationOutput: Swift.Sendable {
     /// Amazon CloudWatch Logs information where Systems Manager sent the command output.
     public var cloudWatchOutputConfig: SSMClientTypes.CloudWatchOutputConfig?
     /// The parent command ID of the invocation plugin.
@@ -10916,7 +10916,7 @@ public struct GetCommandInvocationOutput {
     }
 }
 
-public struct GetConnectionStatusInput {
+public struct GetConnectionStatusInput: Swift.Sendable {
     /// The managed node ID.
     /// This member is required.
     public var target: Swift.String?
@@ -10931,7 +10931,7 @@ public struct GetConnectionStatusInput {
 
 extension SSMClientTypes {
 
-    public enum ConnectionStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ConnectionStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case connected
         case notConnected
         case sdkUnknown(Swift.String)
@@ -10958,7 +10958,7 @@ extension SSMClientTypes {
     }
 }
 
-public struct GetConnectionStatusOutput {
+public struct GetConnectionStatusOutput: Swift.Sendable {
     /// The status of the connection to the managed node.
     public var status: SSMClientTypes.ConnectionStatus?
     /// The ID of the managed node to check connection status.
@@ -10974,7 +10974,7 @@ public struct GetConnectionStatusOutput {
     }
 }
 
-public struct GetDefaultPatchBaselineInput {
+public struct GetDefaultPatchBaselineInput: Swift.Sendable {
     /// Returns the default patch baseline for the specified operating system.
     public var operatingSystem: SSMClientTypes.OperatingSystem?
 
@@ -10986,7 +10986,7 @@ public struct GetDefaultPatchBaselineInput {
     }
 }
 
-public struct GetDefaultPatchBaselineOutput {
+public struct GetDefaultPatchBaselineOutput: Swift.Sendable {
     /// The ID of the default patch baseline.
     public var baselineId: Swift.String?
     /// The operating system for the returned patch baseline.
@@ -11027,8 +11027,9 @@ public struct UnsupportedFeatureRequiredException: ClientRuntime.ModeledError, A
 }
 
 extension SSMClientTypes {
+
     /// Defines the basic information about a patch baseline override.
-    public struct BaselineOverride {
+    public struct BaselineOverride: Swift.Sendable {
         /// A set of rules defining the approval rules for a patch baseline.
         public var approvalRules: SSMClientTypes.PatchRuleGroup?
         /// A list of explicitly approved patches for the baseline. For information about accepted formats for lists of approved patches and rejected patches, see [Package name formats for approved and rejected patch lists](https://docs.aws.amazon.com/systems-manager/latest/userguide/patch-manager-approved-rejected-package-name-formats.html) in the Amazon Web Services Systems Manager User Guide.
@@ -11071,10 +11072,9 @@ extension SSMClientTypes {
             self.sources = sources
         }
     }
-
 }
 
-public struct GetDeployablePatchSnapshotForInstanceInput {
+public struct GetDeployablePatchSnapshotForInstanceInput: Swift.Sendable {
     /// Defines the basic information about a patch baseline override.
     public var baselineOverride: SSMClientTypes.BaselineOverride?
     /// The ID of the managed node for which the appropriate patch snapshot should be retrieved.
@@ -11096,7 +11096,7 @@ public struct GetDeployablePatchSnapshotForInstanceInput {
     }
 }
 
-public struct GetDeployablePatchSnapshotForInstanceOutput {
+public struct GetDeployablePatchSnapshotForInstanceOutput: Swift.Sendable {
     /// The managed node ID.
     public var instanceId: Swift.String?
     /// Returns the specific operating system (for example Windows Server 2012 or Amazon Linux 2015.09) on the managed node for the specified patch snapshot.
@@ -11120,7 +11120,7 @@ public struct GetDeployablePatchSnapshotForInstanceOutput {
     }
 }
 
-public struct GetDocumentInput {
+public struct GetDocumentInput: Swift.Sendable {
     /// Returns the document in the specified format. The document format can be either JSON or YAML. JSON is the default format.
     public var documentFormat: SSMClientTypes.DocumentFormat?
     /// The document version for which you want information.
@@ -11147,7 +11147,7 @@ public struct GetDocumentInput {
 
 extension SSMClientTypes {
 
-    public enum AttachmentHashType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AttachmentHashType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case sha256
         case sdkUnknown(Swift.String)
 
@@ -11172,8 +11172,9 @@ extension SSMClientTypes {
 }
 
 extension SSMClientTypes {
+
     /// A structure that includes attributes that describe a document attachment.
-    public struct AttachmentContent {
+    public struct AttachmentContent: Swift.Sendable {
         /// The cryptographic hash value of the document content.
         public var hash: Swift.String?
         /// The hash algorithm used to calculate the hash value.
@@ -11200,10 +11201,9 @@ extension SSMClientTypes {
             self.url = url
         }
     }
-
 }
 
-public struct GetDocumentOutput {
+public struct GetDocumentOutput: Swift.Sendable {
     /// A description of the document attachments, including names, locations, sizes, and so on.
     public var attachmentsContent: [SSMClientTypes.AttachmentContent]?
     /// The contents of the SSM document.
@@ -11337,7 +11337,7 @@ public struct InvalidResultAttributeException: ClientRuntime.ModeledError, AWSCl
 
 extension SSMClientTypes {
 
-    public enum InventoryQueryOperatorType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum InventoryQueryOperatorType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case beginWith
         case equal
         case exists
@@ -11377,8 +11377,9 @@ extension SSMClientTypes {
 }
 
 extension SSMClientTypes {
+
     /// One or more filters. Use a filter to return a more specific list of results.
-    public struct InventoryFilter {
+    public struct InventoryFilter: Swift.Sendable {
         /// The name of the filter key.
         /// This member is required.
         public var key: Swift.String?
@@ -11399,12 +11400,12 @@ extension SSMClientTypes {
             self.values = values
         }
     }
-
 }
 
 extension SSMClientTypes {
+
     /// A user-defined set of one or more filters on which to aggregate inventory data. Groups return a count of resources that match and don't match the specified criteria.
-    public struct InventoryGroup {
+    public struct InventoryGroup: Swift.Sendable {
         /// Filters define the criteria for the group. The matchingCount field displays the number of resources that match the criteria. The notMatchingCount field displays the number of resources that don't match the criteria.
         /// This member is required.
         public var filters: [SSMClientTypes.InventoryFilter]?
@@ -11421,12 +11422,12 @@ extension SSMClientTypes {
             self.name = name
         }
     }
-
 }
 
 extension SSMClientTypes {
+
     /// The inventory item result attribute.
-    public struct ResultAttribute {
+    public struct ResultAttribute: Swift.Sendable {
         /// Name of the inventory item type. Valid value: AWS:InstanceInformation. Default Value: AWS:InstanceInformation.
         /// This member is required.
         public var typeName: Swift.String?
@@ -11438,12 +11439,12 @@ extension SSMClientTypes {
             self.typeName = typeName
         }
     }
-
 }
 
 extension SSMClientTypes {
+
     /// The inventory result item.
-    public struct InventoryResultItem {
+    public struct InventoryResultItem: Swift.Sendable {
         /// The time inventory item data was captured.
         public var captureTime: Swift.String?
         /// Contains all the inventory data of the item type. Results include attribute names and values.
@@ -11473,12 +11474,12 @@ extension SSMClientTypes {
             self.typeName = typeName
         }
     }
-
 }
 
 extension SSMClientTypes {
+
     /// Inventory query results.
-    public struct InventoryResultEntity {
+    public struct InventoryResultEntity: Swift.Sendable {
         /// The data section in the inventory result entity JSON.
         public var data: [Swift.String: SSMClientTypes.InventoryResultItem]?
         /// ID of the inventory result entity. For example, for managed node inventory the result will be the managed node ID. For EC2 instance inventory, the result will be the instance ID.
@@ -11493,10 +11494,9 @@ extension SSMClientTypes {
             self.id = id
         }
     }
-
 }
 
-public struct GetInventoryOutput {
+public struct GetInventoryOutput: Swift.Sendable {
     /// Collection of inventory entities such as a collection of managed node inventory.
     public var entities: [SSMClientTypes.InventoryResultEntity]?
     /// The token to use when requesting the next set of items. If there are no additional items to return, the string is empty.
@@ -11512,7 +11512,7 @@ public struct GetInventoryOutput {
     }
 }
 
-public struct GetInventorySchemaInput {
+public struct GetInventorySchemaInput: Swift.Sendable {
     /// Returns inventory schemas that support aggregation. For example, this call returns the AWS:InstanceInformation type, because it supports aggregation based on the PlatformName, PlatformType, and PlatformVersion attributes.
     public var aggregator: Swift.Bool?
     /// The maximum number of items to return for this call. The call also returns a token that you can specify in a subsequent call to get the next set of results.
@@ -11542,7 +11542,7 @@ public struct GetInventorySchemaInput {
 
 extension SSMClientTypes {
 
-    public enum InventoryAttributeDataType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum InventoryAttributeDataType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case number
         case string
         case sdkUnknown(Swift.String)
@@ -11570,8 +11570,9 @@ extension SSMClientTypes {
 }
 
 extension SSMClientTypes {
+
     /// Attributes are the entries within the inventory item content. It contains name and value.
-    public struct InventoryItemAttribute {
+    public struct InventoryItemAttribute: Swift.Sendable {
         /// The data type of the inventory item attribute.
         /// This member is required.
         public var dataType: SSMClientTypes.InventoryAttributeDataType?
@@ -11588,12 +11589,12 @@ extension SSMClientTypes {
             self.name = name
         }
     }
-
 }
 
 extension SSMClientTypes {
+
     /// The inventory item schema definition. Users can use this to compose inventory query filters.
-    public struct InventoryItemSchema {
+    public struct InventoryItemSchema: Swift.Sendable {
         /// The schema attributes for inventory. This contains data type and attribute name.
         /// This member is required.
         public var attributes: [SSMClientTypes.InventoryItemAttribute]?
@@ -11618,10 +11619,9 @@ extension SSMClientTypes {
             self.version = version
         }
     }
-
 }
 
-public struct GetInventorySchemaOutput {
+public struct GetInventorySchemaOutput: Swift.Sendable {
     /// The token to use when requesting the next set of items. If there are no additional items to return, the string is empty.
     public var nextToken: Swift.String?
     /// Inventory schemas returned by the request.
@@ -11637,7 +11637,7 @@ public struct GetInventorySchemaOutput {
     }
 }
 
-public struct GetMaintenanceWindowInput {
+public struct GetMaintenanceWindowInput: Swift.Sendable {
     /// The ID of the maintenance window for which you want to retrieve information.
     /// This member is required.
     public var windowId: Swift.String?
@@ -11650,7 +11650,7 @@ public struct GetMaintenanceWindowInput {
     }
 }
 
-public struct GetMaintenanceWindowOutput {
+public struct GetMaintenanceWindowOutput: Swift.Sendable {
     /// Whether targets must be registered with the maintenance window before tasks can be defined for those targets.
     public var allowUnassociatedTargets: Swift.Bool
     /// The date the maintenance window was created.
@@ -11723,7 +11723,7 @@ extension GetMaintenanceWindowOutput: Swift.CustomDebugStringConvertible {
         "GetMaintenanceWindowOutput(allowUnassociatedTargets: \(Swift.String(describing: allowUnassociatedTargets)), createdDate: \(Swift.String(describing: createdDate)), cutoff: \(Swift.String(describing: cutoff)), duration: \(Swift.String(describing: duration)), enabled: \(Swift.String(describing: enabled)), endDate: \(Swift.String(describing: endDate)), modifiedDate: \(Swift.String(describing: modifiedDate)), name: \(Swift.String(describing: name)), nextExecutionTime: \(Swift.String(describing: nextExecutionTime)), schedule: \(Swift.String(describing: schedule)), scheduleOffset: \(Swift.String(describing: scheduleOffset)), scheduleTimezone: \(Swift.String(describing: scheduleTimezone)), startDate: \(Swift.String(describing: startDate)), windowId: \(Swift.String(describing: windowId)), description: \"CONTENT_REDACTED\")"}
 }
 
-public struct GetMaintenanceWindowExecutionInput {
+public struct GetMaintenanceWindowExecutionInput: Swift.Sendable {
     /// The ID of the maintenance window execution that includes the task.
     /// This member is required.
     public var windowExecutionId: Swift.String?
@@ -11736,7 +11736,7 @@ public struct GetMaintenanceWindowExecutionInput {
     }
 }
 
-public struct GetMaintenanceWindowExecutionOutput {
+public struct GetMaintenanceWindowExecutionOutput: Swift.Sendable {
     /// The time the maintenance window finished running.
     public var endTime: Foundation.Date?
     /// The time the maintenance window started running.
@@ -11768,7 +11768,7 @@ public struct GetMaintenanceWindowExecutionOutput {
     }
 }
 
-public struct GetMaintenanceWindowExecutionTaskInput {
+public struct GetMaintenanceWindowExecutionTaskInput: Swift.Sendable {
     /// The ID of the specific task execution in the maintenance window task that should be retrieved.
     /// This member is required.
     public var taskId: Swift.String?
@@ -11786,7 +11786,7 @@ public struct GetMaintenanceWindowExecutionTaskInput {
     }
 }
 
-public struct GetMaintenanceWindowExecutionTaskOutput {
+public struct GetMaintenanceWindowExecutionTaskOutput: Swift.Sendable {
     /// The details for the CloudWatch alarm you applied to your maintenance window task.
     public var alarmConfiguration: SSMClientTypes.AlarmConfiguration?
     /// The time the task execution completed.
@@ -11863,7 +11863,7 @@ extension GetMaintenanceWindowExecutionTaskOutput: Swift.CustomDebugStringConver
         "GetMaintenanceWindowExecutionTaskOutput(alarmConfiguration: \(Swift.String(describing: alarmConfiguration)), endTime: \(Swift.String(describing: endTime)), maxConcurrency: \(Swift.String(describing: maxConcurrency)), maxErrors: \(Swift.String(describing: maxErrors)), priority: \(Swift.String(describing: priority)), serviceRole: \(Swift.String(describing: serviceRole)), startTime: \(Swift.String(describing: startTime)), status: \(Swift.String(describing: status)), statusDetails: \(Swift.String(describing: statusDetails)), taskArn: \(Swift.String(describing: taskArn)), taskExecutionId: \(Swift.String(describing: taskExecutionId)), triggeredAlarms: \(Swift.String(describing: triggeredAlarms)), type: \(Swift.String(describing: type)), windowExecutionId: \(Swift.String(describing: windowExecutionId)), taskParameters: \"CONTENT_REDACTED\")"}
 }
 
-public struct GetMaintenanceWindowExecutionTaskInvocationInput {
+public struct GetMaintenanceWindowExecutionTaskInvocationInput: Swift.Sendable {
     /// The invocation ID to retrieve.
     /// This member is required.
     public var invocationId: Swift.String?
@@ -11886,7 +11886,7 @@ public struct GetMaintenanceWindowExecutionTaskInvocationInput {
     }
 }
 
-public struct GetMaintenanceWindowExecutionTaskInvocationOutput {
+public struct GetMaintenanceWindowExecutionTaskInvocationOutput: Swift.Sendable {
     /// The time that the task finished running on the target.
     public var endTime: Foundation.Date?
     /// The execution ID.
@@ -11947,7 +11947,7 @@ extension GetMaintenanceWindowExecutionTaskInvocationOutput: Swift.CustomDebugSt
         "GetMaintenanceWindowExecutionTaskInvocationOutput(endTime: \(Swift.String(describing: endTime)), executionId: \(Swift.String(describing: executionId)), invocationId: \(Swift.String(describing: invocationId)), startTime: \(Swift.String(describing: startTime)), status: \(Swift.String(describing: status)), statusDetails: \(Swift.String(describing: statusDetails)), taskExecutionId: \(Swift.String(describing: taskExecutionId)), taskType: \(Swift.String(describing: taskType)), windowExecutionId: \(Swift.String(describing: windowExecutionId)), windowTargetId: \(Swift.String(describing: windowTargetId)), ownerInformation: \"CONTENT_REDACTED\", parameters: \"CONTENT_REDACTED\")"}
 }
 
-public struct GetMaintenanceWindowTaskInput {
+public struct GetMaintenanceWindowTaskInput: Swift.Sendable {
     /// The maintenance window ID that includes the task to retrieve.
     /// This member is required.
     public var windowId: Swift.String?
@@ -11966,8 +11966,9 @@ public struct GetMaintenanceWindowTaskInput {
 }
 
 extension SSMClientTypes {
+
     /// The parameters for an AUTOMATION task type.
-    public struct MaintenanceWindowAutomationParameters {
+    public struct MaintenanceWindowAutomationParameters: Swift.Sendable {
         /// The version of an Automation runbook to use during task execution.
         public var documentVersion: Swift.String?
         /// The parameters for the AUTOMATION task. For information about specifying and updating task parameters, see [RegisterTaskWithMaintenanceWindow] and [UpdateMaintenanceWindowTask]. LoggingInfo has been deprecated. To specify an Amazon Simple Storage Service (Amazon S3) bucket to contain logs, instead use the OutputS3BucketName and OutputS3KeyPrefix options in the TaskInvocationParameters structure. For information about how Amazon Web Services Systems Manager handles these options for the supported maintenance window task types, see [MaintenanceWindowTaskInvocationParameters]. TaskParameters has been deprecated. To specify parameters to pass to a task when it runs, instead use the Parameters option in the TaskInvocationParameters structure. For information about how Systems Manager handles these options for the supported maintenance window task types, see [MaintenanceWindowTaskInvocationParameters]. For AUTOMATION task types, Amazon Web Services Systems Manager ignores any values specified for these parameters.
@@ -11982,12 +11983,12 @@ extension SSMClientTypes {
             self.parameters = parameters
         }
     }
-
 }
 
 extension SSMClientTypes {
+
     /// The parameters for a LAMBDA task type. For information about specifying and updating task parameters, see [RegisterTaskWithMaintenanceWindow] and [UpdateMaintenanceWindowTask]. LoggingInfo has been deprecated. To specify an Amazon Simple Storage Service (Amazon S3) bucket to contain logs, instead use the OutputS3BucketName and OutputS3KeyPrefix options in the TaskInvocationParameters structure. For information about how Amazon Web Services Systems Manager handles these options for the supported maintenance window task types, see [MaintenanceWindowTaskInvocationParameters]. TaskParameters has been deprecated. To specify parameters to pass to a task when it runs, instead use the Parameters option in the TaskInvocationParameters structure. For information about how Systems Manager handles these options for the supported maintenance window task types, see [MaintenanceWindowTaskInvocationParameters]. For Lambda tasks, Systems Manager ignores any values specified for TaskParameters and LoggingInfo.
-    public struct MaintenanceWindowLambdaParameters {
+    public struct MaintenanceWindowLambdaParameters: Swift.Sendable {
         /// Pass client-specific information to the Lambda function that you are invoking. You can then process the client information in your Lambda function as you choose through the context variable.
         public var clientContext: Swift.String?
         /// JSON to provide to your Lambda function as input.
@@ -12006,7 +12007,6 @@ extension SSMClientTypes {
             self.qualifier = qualifier
         }
     }
-
 }
 
 extension SSMClientTypes.MaintenanceWindowLambdaParameters: Swift.CustomDebugStringConvertible {
@@ -12016,7 +12016,7 @@ extension SSMClientTypes.MaintenanceWindowLambdaParameters: Swift.CustomDebugStr
 
 extension SSMClientTypes {
 
-    public enum NotificationEvent: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum NotificationEvent: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case all
         case cancelled
         case failed
@@ -12057,7 +12057,7 @@ extension SSMClientTypes {
 
 extension SSMClientTypes {
 
-    public enum NotificationType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum NotificationType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case command
         case invocation
         case sdkUnknown(Swift.String)
@@ -12085,8 +12085,9 @@ extension SSMClientTypes {
 }
 
 extension SSMClientTypes {
+
     /// Configurations for sending notifications.
-    public struct NotificationConfig {
+    public struct NotificationConfig: Swift.Sendable {
         /// An Amazon Resource Name (ARN) for an Amazon Simple Notification Service (Amazon SNS) topic. Run Command pushes notifications about command status changes to this topic.
         public var notificationArn: Swift.String?
         /// The different events for which you can receive notifications. To learn more about these events, see [Monitoring Systems Manager status changes using Amazon SNS notifications](https://docs.aws.amazon.com/systems-manager/latest/userguide/monitoring-sns-notifications.html) in the Amazon Web Services Systems Manager User Guide.
@@ -12109,12 +12110,12 @@ extension SSMClientTypes {
             self.notificationType = notificationType
         }
     }
-
 }
 
 extension SSMClientTypes {
+
     /// The parameters for a RUN_COMMAND task type. For information about specifying and updating task parameters, see [RegisterTaskWithMaintenanceWindow] and [UpdateMaintenanceWindowTask]. LoggingInfo has been deprecated. To specify an Amazon Simple Storage Service (Amazon S3) bucket to contain logs, instead use the OutputS3BucketName and OutputS3KeyPrefix options in the TaskInvocationParameters structure. For information about how Amazon Web Services Systems Manager handles these options for the supported maintenance window task types, see [MaintenanceWindowTaskInvocationParameters]. TaskParameters has been deprecated. To specify parameters to pass to a task when it runs, instead use the Parameters option in the TaskInvocationParameters structure. For information about how Systems Manager handles these options for the supported maintenance window task types, see [MaintenanceWindowTaskInvocationParameters]. For RUN_COMMAND tasks, Systems Manager uses specified values for TaskParameters and LoggingInfo only if no values are specified for TaskInvocationParameters.
-    public struct MaintenanceWindowRunCommandParameters {
+    public struct MaintenanceWindowRunCommandParameters: Swift.Sendable {
         /// Configuration options for sending command output to Amazon CloudWatch Logs.
         public var cloudWatchOutputConfig: SSMClientTypes.CloudWatchOutputConfig?
         /// Information about the commands to run.
@@ -12169,7 +12170,6 @@ extension SSMClientTypes {
             self.timeoutSeconds = timeoutSeconds
         }
     }
-
 }
 
 extension SSMClientTypes.MaintenanceWindowRunCommandParameters: Swift.CustomDebugStringConvertible {
@@ -12178,8 +12178,9 @@ extension SSMClientTypes.MaintenanceWindowRunCommandParameters: Swift.CustomDebu
 }
 
 extension SSMClientTypes {
+
     /// The parameters for a STEP_FUNCTIONS task. For information about specifying and updating task parameters, see [RegisterTaskWithMaintenanceWindow] and [UpdateMaintenanceWindowTask]. LoggingInfo has been deprecated. To specify an Amazon Simple Storage Service (Amazon S3) bucket to contain logs, instead use the OutputS3BucketName and OutputS3KeyPrefix options in the TaskInvocationParameters structure. For information about how Amazon Web Services Systems Manager handles these options for the supported maintenance window task types, see [MaintenanceWindowTaskInvocationParameters]. TaskParameters has been deprecated. To specify parameters to pass to a task when it runs, instead use the Parameters option in the TaskInvocationParameters structure. For information about how Systems Manager handles these options for the supported maintenance window task types, see [MaintenanceWindowTaskInvocationParameters]. For Step Functions tasks, Systems Manager ignores any values specified for TaskParameters and LoggingInfo.
-    public struct MaintenanceWindowStepFunctionsParameters {
+    public struct MaintenanceWindowStepFunctionsParameters: Swift.Sendable {
         /// The inputs for the STEP_FUNCTIONS task.
         public var input: Swift.String?
         /// The name of the STEP_FUNCTIONS task.
@@ -12194,7 +12195,6 @@ extension SSMClientTypes {
             self.name = name
         }
     }
-
 }
 
 extension SSMClientTypes.MaintenanceWindowStepFunctionsParameters: Swift.CustomDebugStringConvertible {
@@ -12203,8 +12203,9 @@ extension SSMClientTypes.MaintenanceWindowStepFunctionsParameters: Swift.CustomD
 }
 
 extension SSMClientTypes {
+
     /// The parameters for task execution.
-    public struct MaintenanceWindowTaskInvocationParameters {
+    public struct MaintenanceWindowTaskInvocationParameters: Swift.Sendable {
         /// The parameters for an AUTOMATION task type.
         public var automation: SSMClientTypes.MaintenanceWindowAutomationParameters?
         /// The parameters for a LAMBDA task type.
@@ -12227,10 +12228,9 @@ extension SSMClientTypes {
             self.stepFunctions = stepFunctions
         }
     }
-
 }
 
-public struct GetMaintenanceWindowTaskOutput {
+public struct GetMaintenanceWindowTaskOutput: Swift.Sendable {
     /// The details for the CloudWatch alarm you applied to your maintenance window task.
     public var alarmConfiguration: SSMClientTypes.AlarmConfiguration?
     /// The action to take on tasks when the maintenance window cutoff time is reached. CONTINUE_TASK means that tasks continue to run. For Automation, Lambda, Step Functions tasks, CANCEL_TASK means that currently running task invocations continue, but no new task invocations are started. For Run Command tasks, CANCEL_TASK means the system attempts to stop the task by sending a CancelCommand operation.
@@ -12307,7 +12307,7 @@ extension GetMaintenanceWindowTaskOutput: Swift.CustomDebugStringConvertible {
         "GetMaintenanceWindowTaskOutput(alarmConfiguration: \(Swift.String(describing: alarmConfiguration)), cutoffBehavior: \(Swift.String(describing: cutoffBehavior)), loggingInfo: \(Swift.String(describing: loggingInfo)), maxConcurrency: \(Swift.String(describing: maxConcurrency)), maxErrors: \(Swift.String(describing: maxErrors)), name: \(Swift.String(describing: name)), priority: \(Swift.String(describing: priority)), serviceRoleArn: \(Swift.String(describing: serviceRoleArn)), targets: \(Swift.String(describing: targets)), taskArn: \(Swift.String(describing: taskArn)), taskInvocationParameters: \(Swift.String(describing: taskInvocationParameters)), taskType: \(Swift.String(describing: taskType)), windowId: \(Swift.String(describing: windowId)), windowTaskId: \(Swift.String(describing: windowTaskId)), description: \"CONTENT_REDACTED\", taskParameters: \"CONTENT_REDACTED\")"}
 }
 
-public struct GetOpsItemInput {
+public struct GetOpsItemInput: Swift.Sendable {
     /// The OpsItem Amazon Resource Name (ARN).
     public var opsItemArn: Swift.String?
     /// The ID of the OpsItem that you want to get.
@@ -12325,8 +12325,9 @@ public struct GetOpsItemInput {
 }
 
 extension SSMClientTypes {
+
     /// Operations engineers and IT professionals use Amazon Web Services Systems Manager OpsCenter to view, investigate, and remediate operational work items (OpsItems) impacting the performance and health of their Amazon Web Services resources. OpsCenter is integrated with Amazon EventBridge and Amazon CloudWatch. This means you can configure these services to automatically create an OpsItem in OpsCenter when a CloudWatch alarm enters the ALARM state or when EventBridge processes an event from any Amazon Web Services service that publishes events. Configuring Amazon CloudWatch alarms and EventBridge events to automatically create OpsItems allows you to quickly diagnose and remediate issues with Amazon Web Services resources from a single console. To help you diagnose issues, each OpsItem includes contextually relevant information such as the name and ID of the Amazon Web Services resource that generated the OpsItem, alarm or event details, alarm history, and an alarm timeline graph. For the Amazon Web Services resource, OpsCenter aggregates information from Config, CloudTrail logs, and EventBridge, so you don't have to navigate across multiple console pages during your investigation. For more information, see [Amazon Web Services Systems Manager OpsCenter](https://docs.aws.amazon.com/systems-manager/latest/userguide/OpsCenter.html) in the Amazon Web Services Systems Manager User Guide.
-    public struct OpsItem {
+    public struct OpsItem: Swift.Sendable {
         /// The time a runbook workflow ended. Currently reported only for the OpsItem type /aws/changerequest.
         public var actualEndTime: Foundation.Date?
         /// The time a runbook workflow started. Currently reported only for the OpsItem type /aws/changerequest.
@@ -12427,10 +12428,9 @@ extension SSMClientTypes {
             self.version = version
         }
     }
-
 }
 
-public struct GetOpsItemOutput {
+public struct GetOpsItemOutput: Swift.Sendable {
     /// The OpsItem.
     public var opsItem: SSMClientTypes.OpsItem?
 
@@ -12442,7 +12442,7 @@ public struct GetOpsItemOutput {
     }
 }
 
-public struct GetOpsMetadataInput {
+public struct GetOpsMetadataInput: Swift.Sendable {
     /// The maximum number of items to return for this call. The call also returns a token that you can specify in a subsequent call to get the next set of results.
     public var maxResults: Swift.Int?
     /// A token to start the list. Use this token to get the next set of results.
@@ -12463,7 +12463,7 @@ public struct GetOpsMetadataInput {
     }
 }
 
-public struct GetOpsMetadataOutput {
+public struct GetOpsMetadataOutput: Swift.Sendable {
     /// OpsMetadata for an Application Manager application.
     public var metadata: [Swift.String: SSMClientTypes.MetadataValue]?
     /// The token for the next set of items to return. Use this token to get the next set of results.
@@ -12485,7 +12485,7 @@ public struct GetOpsMetadataOutput {
 
 extension SSMClientTypes {
 
-    public enum OpsFilterOperatorType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum OpsFilterOperatorType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case beginWith
         case equal
         case exists
@@ -12525,8 +12525,9 @@ extension SSMClientTypes {
 }
 
 extension SSMClientTypes {
+
     /// A filter for viewing OpsData summaries.
-    public struct OpsFilter {
+    public struct OpsFilter: Swift.Sendable {
         /// The name of the filter.
         /// This member is required.
         public var key: Swift.String?
@@ -12547,12 +12548,12 @@ extension SSMClientTypes {
             self.values = values
         }
     }
-
 }
 
 extension SSMClientTypes {
+
     /// The OpsItem data type to return.
-    public struct OpsResultAttribute {
+    public struct OpsResultAttribute: Swift.Sendable {
         /// Name of the data type. Valid value: AWS:OpsItem, AWS:EC2InstanceInformation, AWS:OpsItemTrendline, or AWS:ComplianceSummary.
         /// This member is required.
         public var typeName: Swift.String?
@@ -12564,12 +12565,12 @@ extension SSMClientTypes {
             self.typeName = typeName
         }
     }
-
 }
 
 extension SSMClientTypes {
+
     /// The OpsData summary.
-    public struct OpsEntityItem {
+    public struct OpsEntityItem: Swift.Sendable {
         /// The time the OpsData was captured.
         public var captureTime: Swift.String?
         /// The details of an OpsData summary.
@@ -12584,12 +12585,12 @@ extension SSMClientTypes {
             self.content = content
         }
     }
-
 }
 
 extension SSMClientTypes {
+
     /// The result of the query.
-    public struct OpsEntity {
+    public struct OpsEntity: Swift.Sendable {
         /// The data returned by the query.
         public var data: [Swift.String: SSMClientTypes.OpsEntityItem]?
         /// The query ID.
@@ -12604,10 +12605,9 @@ extension SSMClientTypes {
             self.id = id
         }
     }
-
 }
 
-public struct GetOpsSummaryOutput {
+public struct GetOpsSummaryOutput: Swift.Sendable {
     /// The list of aggregated details and filtered OpsData.
     public var entities: [SSMClientTypes.OpsEntity]?
     /// The token for the next set of items to return. Use this token to get the next set of results.
@@ -12671,7 +12671,7 @@ public struct ParameterVersionNotFound: ClientRuntime.ModeledError, AWSClientRun
     }
 }
 
-public struct GetParameterInput {
+public struct GetParameterInput: Swift.Sendable {
     /// The name or Amazon Resource Name (ARN) of the parameter that you want to query. For parameters shared with you from another account, you must use the full ARN. To query by parameter label, use "Name": "name:label". To query by parameter version, use "Name": "name:version". For more information about shared parameters, see [Working with shared parameters](https://docs.aws.amazon.com/systems-manager/latest/userguide/parameter-store-shared-parameters.html) in the Amazon Web Services Systems Manager User Guide.
     /// This member is required.
     public var name: Swift.String?
@@ -12689,8 +12689,9 @@ public struct GetParameterInput {
 }
 
 extension SSMClientTypes {
+
     /// An Amazon Web Services Systems Manager parameter in Parameter Store.
-    public struct Parameter {
+    public struct Parameter: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the parameter.
         public var arn: Swift.String?
         /// The data type of the parameter, such as text or aws:ec2:image. The default is text.
@@ -12733,7 +12734,6 @@ extension SSMClientTypes {
             self.version = version
         }
     }
-
 }
 
 extension SSMClientTypes.Parameter: Swift.CustomDebugStringConvertible {
@@ -12741,7 +12741,7 @@ extension SSMClientTypes.Parameter: Swift.CustomDebugStringConvertible {
         "Parameter(arn: \(Swift.String(describing: arn)), dataType: \(Swift.String(describing: dataType)), lastModifiedDate: \(Swift.String(describing: lastModifiedDate)), name: \(Swift.String(describing: name)), selector: \(Swift.String(describing: selector)), sourceResult: \(Swift.String(describing: sourceResult)), type: \(Swift.String(describing: type)), version: \(Swift.String(describing: version)), value: \"CONTENT_REDACTED\")"}
 }
 
-public struct GetParameterOutput {
+public struct GetParameterOutput: Swift.Sendable {
     /// Information about a parameter.
     public var parameter: SSMClientTypes.Parameter?
 
@@ -12753,7 +12753,7 @@ public struct GetParameterOutput {
     }
 }
 
-public struct GetParameterHistoryInput {
+public struct GetParameterHistoryInput: Swift.Sendable {
     /// The maximum number of items to return for this call. The call also returns a token that you can specify in a subsequent call to get the next set of results.
     public var maxResults: Swift.Int?
     /// The name or Amazon Resource Name (ARN) of the parameter for which you want to review history. For parameters shared with you from another account, you must use the full ARN.
@@ -12779,8 +12779,9 @@ public struct GetParameterHistoryInput {
 }
 
 extension SSMClientTypes {
+
     /// Information about parameter usage.
-    public struct ParameterHistory {
+    public struct ParameterHistory: Swift.Sendable {
         /// Parameter names can include the following letters and symbols. a-zA-Z0-9_.-
         public var allowedPattern: Swift.String?
         /// The data type of the parameter, such as text or aws:ec2:image. The default is text.
@@ -12839,7 +12840,6 @@ extension SSMClientTypes {
             self.version = version
         }
     }
-
 }
 
 extension SSMClientTypes.ParameterHistory: Swift.CustomDebugStringConvertible {
@@ -12847,7 +12847,7 @@ extension SSMClientTypes.ParameterHistory: Swift.CustomDebugStringConvertible {
         "ParameterHistory(allowedPattern: \(Swift.String(describing: allowedPattern)), dataType: \(Swift.String(describing: dataType)), description: \(Swift.String(describing: description)), keyId: \(Swift.String(describing: keyId)), labels: \(Swift.String(describing: labels)), lastModifiedDate: \(Swift.String(describing: lastModifiedDate)), lastModifiedUser: \(Swift.String(describing: lastModifiedUser)), name: \(Swift.String(describing: name)), policies: \(Swift.String(describing: policies)), tier: \(Swift.String(describing: tier)), type: \(Swift.String(describing: type)), version: \(Swift.String(describing: version)), value: \"CONTENT_REDACTED\")"}
 }
 
-public struct GetParameterHistoryOutput {
+public struct GetParameterHistoryOutput: Swift.Sendable {
     /// The token to use when requesting the next set of items. If there are no additional items to return, the string is empty.
     public var nextToken: Swift.String?
     /// A list of parameters returned by the request.
@@ -12863,7 +12863,7 @@ public struct GetParameterHistoryOutput {
     }
 }
 
-public struct GetParametersInput {
+public struct GetParametersInput: Swift.Sendable {
     /// The names or Amazon Resource Names (ARNs) of the parameters that you want to query. For parameters shared with you from another account, you must use the full ARNs. To query by parameter label, use "Name": "name:label". To query by parameter version, use "Name": "name:version". The results for GetParameters requests are listed in alphabetical order in query responses. For information about shared parameters, see [Working with shared parameters](https://docs.aws.amazon.com/systems-manager/latest/userguide/parameter-store-shared-parameters.html) in the Amazon Web Services Systems Manager User Guide.
     /// This member is required.
     public var names: [Swift.String]?
@@ -12880,7 +12880,7 @@ public struct GetParametersInput {
     }
 }
 
-public struct GetParametersOutput {
+public struct GetParametersOutput: Swift.Sendable {
     /// A list of parameters that aren't formatted correctly or don't run during an execution.
     public var invalidParameters: [Swift.String]?
     /// A list of details for a parameter.
@@ -12896,7 +12896,7 @@ public struct GetParametersOutput {
     }
 }
 
-public struct GetParametersByPathInput {
+public struct GetParametersByPathInput: Swift.Sendable {
     /// The maximum number of items to return for this call. The call also returns a token that you can specify in a subsequent call to get the next set of results.
     public var maxResults: Swift.Int?
     /// A token to start the list. Use this token to get the next set of results.
@@ -12929,7 +12929,7 @@ public struct GetParametersByPathInput {
     }
 }
 
-public struct GetParametersByPathOutput {
+public struct GetParametersByPathOutput: Swift.Sendable {
     /// The token for the next set of items to return. Use this token to get the next set of results.
     public var nextToken: Swift.String?
     /// A list of parameters found in the specified hierarchy.
@@ -12945,7 +12945,7 @@ public struct GetParametersByPathOutput {
     }
 }
 
-public struct GetPatchBaselineInput {
+public struct GetPatchBaselineInput: Swift.Sendable {
     /// The ID of the patch baseline to retrieve. To retrieve information about an Amazon Web Services managed patch baseline, specify the full Amazon Resource Name (ARN) of the baseline. For example, for the baseline AWS-AmazonLinuxDefaultPatchBaseline, specify arn:aws:ssm:us-east-2:733109147000:patchbaseline/pb-0e392de35e7c563b7 instead of pb-0e392de35e7c563b7.
     /// This member is required.
     public var baselineId: Swift.String?
@@ -12958,7 +12958,7 @@ public struct GetPatchBaselineInput {
     }
 }
 
-public struct GetPatchBaselineOutput {
+public struct GetPatchBaselineOutput: Swift.Sendable {
     /// A set of rules used to include patches in the baseline.
     public var approvalRules: SSMClientTypes.PatchRuleGroup?
     /// A list of explicitly approved patches for the baseline.
@@ -13026,7 +13026,7 @@ public struct GetPatchBaselineOutput {
     }
 }
 
-public struct GetPatchBaselineForPatchGroupInput {
+public struct GetPatchBaselineForPatchGroupInput: Swift.Sendable {
     /// Returns the operating system rule specified for patch groups using the patch baseline.
     public var operatingSystem: SSMClientTypes.OperatingSystem?
     /// The name of the patch group whose patch baseline should be retrieved.
@@ -13043,7 +13043,7 @@ public struct GetPatchBaselineForPatchGroupInput {
     }
 }
 
-public struct GetPatchBaselineForPatchGroupOutput {
+public struct GetPatchBaselineForPatchGroupOutput: Swift.Sendable {
     /// The ID of the patch baseline that should be used for the patch group.
     public var baselineId: Swift.String?
     /// The operating system rule specified for patch groups using the patch baseline.
@@ -13063,7 +13063,7 @@ public struct GetPatchBaselineForPatchGroupOutput {
     }
 }
 
-public struct GetResourcePoliciesInput {
+public struct GetResourcePoliciesInput: Swift.Sendable {
     /// The maximum number of items to return for this call. The call also returns a token that you can specify in a subsequent call to get the next set of results.
     public var maxResults: Swift.Int?
     /// A token to start the list. Use this token to get the next set of results.
@@ -13085,8 +13085,9 @@ public struct GetResourcePoliciesInput {
 }
 
 extension SSMClientTypes {
+
     /// A resource policy helps you to define the IAM entity (for example, an Amazon Web Services account) that can manage your Systems Manager resources. Currently, OpsItemGroup is the only resource that supports Systems Manager resource policies. The resource policy for OpsItemGroup enables Amazon Web Services accounts to view and interact with OpsCenter operational work items (OpsItems).
-    public struct GetResourcePoliciesResponseEntry {
+    public struct GetResourcePoliciesResponseEntry: Swift.Sendable {
         /// A resource policy helps you to define the IAM entity (for example, an Amazon Web Services account) that can manage your Systems Manager resources. Currently, OpsItemGroup is the only resource that supports Systems Manager resource policies. The resource policy for OpsItemGroup enables Amazon Web Services accounts to view and interact with OpsCenter operational work items (OpsItems).
         public var policy: Swift.String?
         /// ID of the current policy version. The hash helps to prevent a situation where multiple users attempt to overwrite a policy. You must provide this hash when updating or deleting a policy.
@@ -13105,10 +13106,9 @@ extension SSMClientTypes {
             self.policyId = policyId
         }
     }
-
 }
 
-public struct GetResourcePoliciesOutput {
+public struct GetResourcePoliciesOutput: Swift.Sendable {
     /// The token for the next set of items to return. Use this token to get the next set of results.
     public var nextToken: Swift.String?
     /// An array of the Policy object.
@@ -13149,7 +13149,7 @@ public struct ServiceSettingNotFound: ClientRuntime.ModeledError, AWSClientRunti
 }
 
 /// The request body of the GetServiceSetting API operation.
-public struct GetServiceSettingInput {
+public struct GetServiceSettingInput: Swift.Sendable {
     /// The ID of the service setting to get. The setting ID can be one of the following.
     ///
     /// * /ssm/managed-instance/default-ec2-instance-management-role
@@ -13179,8 +13179,9 @@ public struct GetServiceSettingInput {
 }
 
 extension SSMClientTypes {
+
     /// The service setting data structure. ServiceSetting is an account-level setting for an Amazon Web Services service. This setting defines how a user interacts with or uses a service or a feature of a service. For example, if an Amazon Web Services service charges money to the account based on feature or service usage, then the Amazon Web Services service team might create a default setting of "false". This means the user can't use this feature unless they change the setting to "true" and intentionally opt in for a paid feature. Services map a SettingId object to a setting value. Amazon Web Services services teams define the default value for a SettingId. You can't create a new SettingId, but you can overwrite the default value if you have the ssm:UpdateServiceSetting permission for the setting. Use the [UpdateServiceSetting] API operation to change the default setting. Or, use the [ResetServiceSetting] to change the value back to the original value defined by the Amazon Web Services service team.
-    public struct ServiceSetting {
+    public struct ServiceSetting: Swift.Sendable {
         /// The ARN of the service setting.
         public var arn: Swift.String?
         /// The last time the service setting was modified.
@@ -13217,11 +13218,10 @@ extension SSMClientTypes {
             self.status = status
         }
     }
-
 }
 
 /// The query result body of the GetServiceSetting API operation.
-public struct GetServiceSettingOutput {
+public struct GetServiceSettingOutput: Swift.Sendable {
     /// The query result of the current service setting.
     public var serviceSetting: SSMClientTypes.ServiceSetting?
 
@@ -13257,7 +13257,7 @@ public struct ParameterVersionLabelLimitExceeded: ClientRuntime.ModeledError, AW
     }
 }
 
-public struct LabelParameterVersionInput {
+public struct LabelParameterVersionInput: Swift.Sendable {
     /// One or more labels to attach to the specified parameter version.
     /// This member is required.
     public var labels: [Swift.String]?
@@ -13279,7 +13279,7 @@ public struct LabelParameterVersionInput {
     }
 }
 
-public struct LabelParameterVersionOutput {
+public struct LabelParameterVersionOutput: Swift.Sendable {
     /// The label doesn't meet the requirements. For information about parameter label requirements, see [Working with parameter labels](https://docs.aws.amazon.com/systems-manager/latest/userguide/sysman-paramstore-labels.html) in the Amazon Web Services Systems Manager User Guide.
     public var invalidLabels: [Swift.String]?
     /// The version of the parameter that has been labeled.
@@ -13297,7 +13297,7 @@ public struct LabelParameterVersionOutput {
 
 extension SSMClientTypes {
 
-    public enum AssociationFilterKey: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AssociationFilterKey: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case associationid
         case associationname
         case instanceid
@@ -13343,8 +13343,9 @@ extension SSMClientTypes {
 }
 
 extension SSMClientTypes {
+
     /// Describes a filter.
-    public struct AssociationFilter {
+    public struct AssociationFilter: Swift.Sendable {
         /// The name of the filter. InstanceId has been deprecated.
         /// This member is required.
         public var key: SSMClientTypes.AssociationFilterKey?
@@ -13361,10 +13362,9 @@ extension SSMClientTypes {
             self.value = value
         }
     }
-
 }
 
-public struct ListAssociationsInput {
+public struct ListAssociationsInput: Swift.Sendable {
     /// One or more filters. Use a filter to return a more specific list of results. Filtering associations using the InstanceID attribute only returns legacy associations created using the InstanceID attribute. Associations targeting the managed node that are part of the Target Attributes ResourceGroup or Tags aren't returned.
     public var associationFilterList: [SSMClientTypes.AssociationFilter]?
     /// The maximum number of items to return for this call. The call also returns a token that you can specify in a subsequent call to get the next set of results.
@@ -13385,8 +13385,9 @@ public struct ListAssociationsInput {
 }
 
 extension SSMClientTypes {
+
     /// Describes an association of a Amazon Web Services Systems Manager document (SSM document) and a managed node.
-    public struct Association {
+    public struct Association: Swift.Sendable {
         /// The ID created by the system when you create an association. An association is a binding between a document and a set of targets with a schedule.
         public var associationId: Swift.String?
         /// The association name.
@@ -13445,10 +13446,9 @@ extension SSMClientTypes {
             self.targets = targets
         }
     }
-
 }
 
-public struct ListAssociationsOutput {
+public struct ListAssociationsOutput: Swift.Sendable {
     /// The associations.
     public var associations: [SSMClientTypes.Association]?
     /// The token to use when requesting the next set of items. If there are no additional items to return, the string is empty.
@@ -13464,7 +13464,7 @@ public struct ListAssociationsOutput {
     }
 }
 
-public struct ListAssociationVersionsInput {
+public struct ListAssociationVersionsInput: Swift.Sendable {
     /// The association ID for which you want to view all versions.
     /// This member is required.
     public var associationId: Swift.String?
@@ -13486,8 +13486,9 @@ public struct ListAssociationVersionsInput {
 }
 
 extension SSMClientTypes {
+
     /// Information about the association version.
-    public struct AssociationVersionInfo {
+    public struct AssociationVersionInfo: Swift.Sendable {
         /// By default, when you create a new associations, the system runs it immediately after it is created and then according to the schedule you specified. Specify this option if you don't want an association to run immediately after you create it. This parameter isn't supported for rate expressions.
         public var applyOnlyAtCronInterval: Swift.Bool
         /// The ID created by the system when the association was created.
@@ -13574,7 +13575,6 @@ extension SSMClientTypes {
             self.targets = targets
         }
     }
-
 }
 
 extension SSMClientTypes.AssociationVersionInfo: Swift.CustomDebugStringConvertible {
@@ -13582,7 +13582,7 @@ extension SSMClientTypes.AssociationVersionInfo: Swift.CustomDebugStringConverti
         "AssociationVersionInfo(applyOnlyAtCronInterval: \(Swift.String(describing: applyOnlyAtCronInterval)), associationId: \(Swift.String(describing: associationId)), associationName: \(Swift.String(describing: associationName)), associationVersion: \(Swift.String(describing: associationVersion)), calendarNames: \(Swift.String(describing: calendarNames)), complianceSeverity: \(Swift.String(describing: complianceSeverity)), createdDate: \(Swift.String(describing: createdDate)), documentVersion: \(Swift.String(describing: documentVersion)), duration: \(Swift.String(describing: duration)), maxConcurrency: \(Swift.String(describing: maxConcurrency)), maxErrors: \(Swift.String(describing: maxErrors)), name: \(Swift.String(describing: name)), outputLocation: \(Swift.String(describing: outputLocation)), scheduleExpression: \(Swift.String(describing: scheduleExpression)), scheduleOffset: \(Swift.String(describing: scheduleOffset)), syncCompliance: \(Swift.String(describing: syncCompliance)), targetLocations: \(Swift.String(describing: targetLocations)), targetMaps: \(Swift.String(describing: targetMaps)), targets: \(Swift.String(describing: targets)), parameters: \"CONTENT_REDACTED\")"}
 }
 
-public struct ListAssociationVersionsOutput {
+public struct ListAssociationVersionsOutput: Swift.Sendable {
     /// Information about all versions of the association for the specified association ID.
     public var associationVersions: [SSMClientTypes.AssociationVersionInfo]?
     /// The token for the next set of items to return. Use this token to get the next set of results.
@@ -13600,7 +13600,7 @@ public struct ListAssociationVersionsOutput {
 
 extension SSMClientTypes {
 
-    public enum CommandFilterKey: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum CommandFilterKey: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case documentName
         case executionStage
         case invokedAfter
@@ -13637,8 +13637,9 @@ extension SSMClientTypes {
 }
 
 extension SSMClientTypes {
+
     /// Describes a command filter. A managed node ID can't be specified when a command status is Pending because the command hasn't run on the node yet.
-    public struct CommandFilter {
+    public struct CommandFilter: Swift.Sendable {
         /// The name of the filter. The ExecutionStage filter can't be used with the ListCommandInvocations operation, only with ListCommands.
         /// This member is required.
         public var key: SSMClientTypes.CommandFilterKey?
@@ -13725,10 +13726,9 @@ extension SSMClientTypes {
             self.value = value
         }
     }
-
 }
 
-public struct ListCommandInvocationsInput {
+public struct ListCommandInvocationsInput: Swift.Sendable {
     /// (Optional) The invocations for a specific command ID.
     public var commandId: Swift.String?
     /// (Optional) If set this returns the response of the command executions and any command output. The default value is false.
@@ -13762,7 +13762,7 @@ public struct ListCommandInvocationsInput {
 
 extension SSMClientTypes {
 
-    public enum CommandPluginStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum CommandPluginStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case cancelled
         case failed
         case inProgress
@@ -13802,8 +13802,9 @@ extension SSMClientTypes {
 }
 
 extension SSMClientTypes {
+
     /// Describes plugin details.
-    public struct CommandPlugin {
+    public struct CommandPlugin: Swift.Sendable {
         /// The name of the plugin. Must be one of the following: aws:updateAgent, aws:domainjoin, aws:applications, aws:runPowerShellScript, aws:psmodule, aws:cloudWatch, aws:runShellScript, or aws:updateSSMAgent.
         public var name: Swift.String?
         /// Output of the plugin execution.
@@ -13876,12 +13877,12 @@ extension SSMClientTypes {
             self.statusDetails = statusDetails
         }
     }
-
 }
 
 extension SSMClientTypes {
+
     /// An invocation is a copy of a command sent to a specific managed node. A command can apply to one or more managed nodes. A command invocation applies to one managed node. For example, if a user runs SendCommand against three managed nodes, then a command invocation is created for each requested managed node ID. A command invocation returns status and detail information about a command you ran.
-    public struct CommandInvocation {
+    public struct CommandInvocation: Swift.Sendable {
         /// Amazon CloudWatch Logs information where you want Amazon Web Services Systems Manager to send the command output.
         public var cloudWatchOutputConfig: SSMClientTypes.CloudWatchOutputConfig?
         /// The command against which this invocation was requested.
@@ -13972,10 +13973,9 @@ extension SSMClientTypes {
             self.traceOutput = traceOutput
         }
     }
-
 }
 
-public struct ListCommandInvocationsOutput {
+public struct ListCommandInvocationsOutput: Swift.Sendable {
     /// (Optional) A list of all invocations.
     public var commandInvocations: [SSMClientTypes.CommandInvocation]?
     /// (Optional) The token for the next set of items to return. (You received this token from a previous call.)
@@ -13991,7 +13991,7 @@ public struct ListCommandInvocationsOutput {
     }
 }
 
-public struct ListCommandsInput {
+public struct ListCommandsInput: Swift.Sendable {
     /// (Optional) If provided, lists only the specified command.
     public var commandId: Swift.String?
     /// (Optional) One or more filters. Use a filter to return a more specific list of results.
@@ -14021,7 +14021,7 @@ public struct ListCommandsInput {
 
 extension SSMClientTypes {
 
-    public enum CommandStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum CommandStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case cancelled
         case cancelling
         case failed
@@ -14064,8 +14064,9 @@ extension SSMClientTypes {
 }
 
 extension SSMClientTypes {
+
     /// Describes a command request.
-    public struct Command {
+    public struct Command: Swift.Sendable {
         /// The details for the CloudWatch alarm applied to your command.
         public var alarmConfiguration: SSMClientTypes.AlarmConfiguration?
         /// Amazon CloudWatch Logs information where you want Amazon Web Services Systems Manager to send the command output.
@@ -14196,7 +14197,6 @@ extension SSMClientTypes {
             self.triggeredAlarms = triggeredAlarms
         }
     }
-
 }
 
 extension SSMClientTypes.Command: Swift.CustomDebugStringConvertible {
@@ -14204,7 +14204,7 @@ extension SSMClientTypes.Command: Swift.CustomDebugStringConvertible {
         "Command(alarmConfiguration: \(Swift.String(describing: alarmConfiguration)), cloudWatchOutputConfig: \(Swift.String(describing: cloudWatchOutputConfig)), commandId: \(Swift.String(describing: commandId)), comment: \(Swift.String(describing: comment)), completedCount: \(Swift.String(describing: completedCount)), deliveryTimedOutCount: \(Swift.String(describing: deliveryTimedOutCount)), documentName: \(Swift.String(describing: documentName)), documentVersion: \(Swift.String(describing: documentVersion)), errorCount: \(Swift.String(describing: errorCount)), expiresAfter: \(Swift.String(describing: expiresAfter)), instanceIds: \(Swift.String(describing: instanceIds)), maxConcurrency: \(Swift.String(describing: maxConcurrency)), maxErrors: \(Swift.String(describing: maxErrors)), notificationConfig: \(Swift.String(describing: notificationConfig)), outputS3BucketName: \(Swift.String(describing: outputS3BucketName)), outputS3KeyPrefix: \(Swift.String(describing: outputS3KeyPrefix)), outputS3Region: \(Swift.String(describing: outputS3Region)), requestedDateTime: \(Swift.String(describing: requestedDateTime)), serviceRole: \(Swift.String(describing: serviceRole)), status: \(Swift.String(describing: status)), statusDetails: \(Swift.String(describing: statusDetails)), targetCount: \(Swift.String(describing: targetCount)), targets: \(Swift.String(describing: targets)), timeoutSeconds: \(Swift.String(describing: timeoutSeconds)), triggeredAlarms: \(Swift.String(describing: triggeredAlarms)), parameters: \"CONTENT_REDACTED\")"}
 }
 
-public struct ListCommandsOutput {
+public struct ListCommandsOutput: Swift.Sendable {
     /// (Optional) The list of commands requested by the user.
     public var commands: [SSMClientTypes.Command]?
     /// (Optional) The token for the next set of items to return. (You received this token from a previous call.)
@@ -14222,7 +14222,7 @@ public struct ListCommandsOutput {
 
 extension SSMClientTypes {
 
-    public enum ComplianceQueryOperatorType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ComplianceQueryOperatorType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case beginwith
         case equal
         case greaterthan
@@ -14259,8 +14259,9 @@ extension SSMClientTypes {
 }
 
 extension SSMClientTypes {
+
     /// One or more filters. Use a filter to return a more specific list of results.
-    public struct ComplianceStringFilter {
+    public struct ComplianceStringFilter: Swift.Sendable {
         /// The name of the filter.
         public var key: Swift.String?
         /// The type of comparison that should be performed for the value: Equal, NotEqual, BeginWith, LessThan, or GreaterThan.
@@ -14279,10 +14280,9 @@ extension SSMClientTypes {
             self.values = values
         }
     }
-
 }
 
-public struct ListComplianceItemsInput {
+public struct ListComplianceItemsInput: Swift.Sendable {
     /// One or more compliance filters. Use a filter to return a more specific list of results.
     public var filters: [SSMClientTypes.ComplianceStringFilter]?
     /// The maximum number of items to return for this call. The call also returns a token that you can specify in a subsequent call to get the next set of results.
@@ -14311,8 +14311,9 @@ public struct ListComplianceItemsInput {
 }
 
 extension SSMClientTypes {
+
     /// A summary of the call execution that includes an execution ID, the type of execution (for example, Command), and the date/time of the execution using a datetime object that is saved in the following format: yyyy-MM-dd'T'HH:mm:ss'Z'
-    public struct ComplianceExecutionSummary {
+    public struct ComplianceExecutionSummary: Swift.Sendable {
         /// An ID created by the system when PutComplianceItems was called. For example, CommandID is a valid execution ID. You can use this ID in subsequent calls.
         public var executionId: Swift.String?
         /// The time the execution ran as a datetime object that is saved in the following format: yyyy-MM-dd'T'HH:mm:ss'Z'
@@ -14332,12 +14333,11 @@ extension SSMClientTypes {
             self.executionType = executionType
         }
     }
-
 }
 
 extension SSMClientTypes {
 
-    public enum ComplianceSeverity: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ComplianceSeverity: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case critical
         case high
         case informational
@@ -14378,7 +14378,7 @@ extension SSMClientTypes {
 
 extension SSMClientTypes {
 
-    public enum ComplianceStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ComplianceStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case compliant
         case noncompliant
         case sdkUnknown(Swift.String)
@@ -14406,8 +14406,9 @@ extension SSMClientTypes {
 }
 
 extension SSMClientTypes {
+
     /// Information about the compliance as defined by the resource type. For example, for a patch resource type, Items includes information about the PatchSeverity, Classification, and so on.
-    public struct ComplianceItem {
+    public struct ComplianceItem: Swift.Sendable {
         /// The compliance type. For example, Association (for a State Manager association), Patch, or Custom:string are all valid compliance types.
         public var complianceType: Swift.String?
         /// A "Key": "Value" tag combination for the compliance item.
@@ -14450,10 +14451,9 @@ extension SSMClientTypes {
             self.title = title
         }
     }
-
 }
 
-public struct ListComplianceItemsOutput {
+public struct ListComplianceItemsOutput: Swift.Sendable {
     /// A list of compliance information for the specified resource ID.
     public var complianceItems: [SSMClientTypes.ComplianceItem]?
     /// The token for the next set of items to return. Use this token to get the next set of results.
@@ -14469,7 +14469,7 @@ public struct ListComplianceItemsOutput {
     }
 }
 
-public struct ListComplianceSummariesInput {
+public struct ListComplianceSummariesInput: Swift.Sendable {
     /// One or more compliance or inventory filters. Use a filter to return a more specific list of results.
     public var filters: [SSMClientTypes.ComplianceStringFilter]?
     /// The maximum number of items to return for this call. Currently, you can specify null or 50. The call also returns a token that you can specify in a subsequent call to get the next set of results.
@@ -14490,8 +14490,9 @@ public struct ListComplianceSummariesInput {
 }
 
 extension SSMClientTypes {
+
     /// The number of managed nodes found for each patch severity level defined in the request filter.
-    public struct SeveritySummary {
+    public struct SeveritySummary: Swift.Sendable {
         /// The total number of resources or compliance items that have a severity level of Critical. Critical severity is determined by the organization that published the compliance items.
         public var criticalCount: Swift.Int
         /// The total number of resources or compliance items that have a severity level of high. High severity is determined by the organization that published the compliance items.
@@ -14522,12 +14523,12 @@ extension SSMClientTypes {
             self.unspecifiedCount = unspecifiedCount
         }
     }
-
 }
 
 extension SSMClientTypes {
+
     /// A summary of resources that are compliant. The summary is organized according to the resource count for each compliance type.
-    public struct CompliantSummary {
+    public struct CompliantSummary: Swift.Sendable {
         /// The total number of resources that are compliant.
         public var compliantCount: Swift.Int
         /// A summary of the compliance severity by compliance type.
@@ -14542,12 +14543,12 @@ extension SSMClientTypes {
             self.severitySummary = severitySummary
         }
     }
-
 }
 
 extension SSMClientTypes {
+
     /// A summary of resources that aren't compliant. The summary is organized according to resource type.
-    public struct NonCompliantSummary {
+    public struct NonCompliantSummary: Swift.Sendable {
         /// The total number of compliance items that aren't compliant.
         public var nonCompliantCount: Swift.Int
         /// A summary of the non-compliance severity by compliance type
@@ -14562,12 +14563,12 @@ extension SSMClientTypes {
             self.severitySummary = severitySummary
         }
     }
-
 }
 
 extension SSMClientTypes {
+
     /// A summary of compliance information by compliance type.
-    public struct ComplianceSummaryItem {
+    public struct ComplianceSummaryItem: Swift.Sendable {
         /// The type of compliance item. For example, the compliance type can be Association, Patch, or Custom:string.
         public var complianceType: Swift.String?
         /// A list of COMPLIANT items for the specified compliance type.
@@ -14586,10 +14587,9 @@ extension SSMClientTypes {
             self.nonCompliantSummary = nonCompliantSummary
         }
     }
-
 }
 
-public struct ListComplianceSummariesOutput {
+public struct ListComplianceSummariesOutput: Swift.Sendable {
     /// A list of compliant and non-compliant summary counts based on compliance types. For example, this call returns State Manager associations, patches, or custom compliance types according to the filter criteria that you specified.
     public var complianceSummaryItems: [SSMClientTypes.ComplianceSummaryItem]?
     /// The token for the next set of items to return. Use this token to get the next set of results.
@@ -14607,7 +14607,7 @@ public struct ListComplianceSummariesOutput {
 
 extension SSMClientTypes {
 
-    public enum DocumentMetadataEnum: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DocumentMetadataEnum: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case documentreviews
         case sdkUnknown(Swift.String)
 
@@ -14631,7 +14631,7 @@ extension SSMClientTypes {
     }
 }
 
-public struct ListDocumentMetadataHistoryInput {
+public struct ListDocumentMetadataHistoryInput: Swift.Sendable {
     /// The version of the change template.
     public var documentVersion: Swift.String?
     /// The maximum number of items to return for this call. The call also returns a token that you can specify in a subsequent call to get the next set of results.
@@ -14663,7 +14663,7 @@ public struct ListDocumentMetadataHistoryInput {
 
 extension SSMClientTypes {
 
-    public enum DocumentReviewCommentType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DocumentReviewCommentType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case comment
         case sdkUnknown(Swift.String)
 
@@ -14688,8 +14688,9 @@ extension SSMClientTypes {
 }
 
 extension SSMClientTypes {
+
     /// Information about comments added to a document review request.
-    public struct DocumentReviewCommentSource {
+    public struct DocumentReviewCommentSource: Swift.Sendable {
         /// The content of a comment entered by a user who requests a review of a new document version, or who reviews the new version.
         public var content: Swift.String?
         /// The type of information added to a review request. Currently, only the value Comment is supported.
@@ -14704,12 +14705,12 @@ extension SSMClientTypes {
             self.type = type
         }
     }
-
 }
 
 extension SSMClientTypes {
+
     /// Information about a reviewer's response to a document review request.
-    public struct DocumentReviewerResponseSource {
+    public struct DocumentReviewerResponseSource: Swift.Sendable {
         /// The comment entered by a reviewer as part of their document review response.
         public var comment: [SSMClientTypes.DocumentReviewCommentSource]?
         /// The date and time that a reviewer entered a response to a document review request.
@@ -14736,12 +14737,12 @@ extension SSMClientTypes {
             self.updatedTime = updatedTime
         }
     }
-
 }
 
 extension SSMClientTypes {
+
     /// Details about the response to a document review request.
-    public struct DocumentMetadataResponseInfo {
+    public struct DocumentMetadataResponseInfo: Swift.Sendable {
         /// Details about a reviewer's response to a document review request.
         public var reviewerResponse: [SSMClientTypes.DocumentReviewerResponseSource]?
 
@@ -14752,10 +14753,9 @@ extension SSMClientTypes {
             self.reviewerResponse = reviewerResponse
         }
     }
-
 }
 
-public struct ListDocumentMetadataHistoryOutput {
+public struct ListDocumentMetadataHistoryOutput: Swift.Sendable {
     /// The user ID of the person in the organization who requested the review of the change template.
     public var author: Swift.String?
     /// The version of the change template.
@@ -14785,7 +14785,7 @@ public struct ListDocumentMetadataHistoryOutput {
 
 extension SSMClientTypes {
 
-    public enum DocumentFilterKey: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DocumentFilterKey: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case documenttype
         case name
         case owner
@@ -14819,8 +14819,9 @@ extension SSMClientTypes {
 }
 
 extension SSMClientTypes {
+
     /// This data type is deprecated. Instead, use [DocumentKeyValuesFilter].
-    public struct DocumentFilter {
+    public struct DocumentFilter: Swift.Sendable {
         /// The name of the filter.
         /// This member is required.
         public var key: SSMClientTypes.DocumentFilterKey?
@@ -14837,10 +14838,10 @@ extension SSMClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension SSMClientTypes {
+
     /// One or more filters. Use a filter to return a more specific list of documents. For keys, you can specify one or more tags that have been applied to a document. You can also use Amazon Web Services-provided keys, some of which have specific allowed values. These keys and their associated values are as follows: DocumentType
     ///
     /// * ApplicationConfiguration
@@ -14881,7 +14882,7 @@ extension SSMClientTypes {
     ///
     ///
     /// Name is another Amazon Web Services-provided key. If you use Name as a key, you can use a name prefix to return a list of documents. For example, in the Amazon Web Services CLI, to return a list of all documents that begin with Te, run the following command: aws ssm list-documents --filters Key=Name,Values=Te You can also use the TargetType Amazon Web Services-provided key. For a list of valid resource type values that can be used with this key, see [Amazon Web Services resource and property types reference](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-template-resource-type-ref.html) in the CloudFormation User Guide. If you specify more than two keys, only documents that are identified by all the tags are returned in the results. If you specify more than two values for a key, documents that are identified by any of the values are returned in the results. To specify a custom key-value pair, use the format Key=tag:tagName,Values=valueName. For example, if you created a key called region and are using the Amazon Web Services CLI to call the list-documents command: aws ssm list-documents --filters Key=tag:region,Values=east,west Key=Owner,Values=Self
-    public struct DocumentKeyValuesFilter {
+    public struct DocumentKeyValuesFilter: Swift.Sendable {
         /// The name of the filter key.
         public var key: Swift.String?
         /// The value for the filter key.
@@ -14896,10 +14897,9 @@ extension SSMClientTypes {
             self.values = values
         }
     }
-
 }
 
-public struct ListDocumentsInput {
+public struct ListDocumentsInput: Swift.Sendable {
     /// This data type is deprecated. Instead, use Filters.
     public var documentFilterList: [SSMClientTypes.DocumentFilter]?
     /// One or more DocumentKeyValuesFilter objects. Use a filter to return a more specific list of results. For keys, you can specify one or more key-value pair tags that have been applied to a document. Other valid keys include Owner, Name, PlatformTypes, DocumentType, and TargetType. For example, to return documents you own use Key=Owner,Values=Self. To specify a custom key-value pair, use the format Key=tag:tagName,Values=valueName. This API operation only supports filtering documents by using a single tag key and one or more tag values. For example: Key=tag:tagName,Values=valueName1,valueName2
@@ -14924,8 +14924,9 @@ public struct ListDocumentsInput {
 }
 
 extension SSMClientTypes {
+
     /// Describes the name of a SSM document.
-    public struct DocumentIdentifier {
+    public struct DocumentIdentifier: Swift.Sendable {
         /// The user in your organization who created the document.
         public var author: Swift.String?
         /// The date the SSM document was created.
@@ -14992,10 +14993,9 @@ extension SSMClientTypes {
             self.versionName = versionName
         }
     }
-
 }
 
-public struct ListDocumentsOutput {
+public struct ListDocumentsOutput: Swift.Sendable {
     /// The names of the SSM documents.
     public var documentIdentifiers: [SSMClientTypes.DocumentIdentifier]?
     /// The token to use when requesting the next set of items. If there are no additional items to return, the string is empty.
@@ -15011,7 +15011,7 @@ public struct ListDocumentsOutput {
     }
 }
 
-public struct ListDocumentVersionsInput {
+public struct ListDocumentVersionsInput: Swift.Sendable {
     /// The maximum number of items to return for this call. The call also returns a token that you can specify in a subsequent call to get the next set of results.
     public var maxResults: Swift.Int?
     /// The name of the document. You can specify an Amazon Resource Name (ARN).
@@ -15033,8 +15033,9 @@ public struct ListDocumentVersionsInput {
 }
 
 extension SSMClientTypes {
+
     /// Version information about the document.
-    public struct DocumentVersionInfo {
+    public struct DocumentVersionInfo: Swift.Sendable {
         /// The date the document was created.
         public var createdDate: Foundation.Date?
         /// The friendly name of the SSM document. This value can differ for each version of the document. If you want to update this value, see [UpdateDocument].
@@ -15081,10 +15082,9 @@ extension SSMClientTypes {
             self.versionName = versionName
         }
     }
-
 }
 
-public struct ListDocumentVersionsOutput {
+public struct ListDocumentVersionsOutput: Swift.Sendable {
     /// The document versions.
     public var documentVersions: [SSMClientTypes.DocumentVersionInfo]?
     /// The token to use when requesting the next set of items. If there are no additional items to return, the string is empty.
@@ -15100,7 +15100,7 @@ public struct ListDocumentVersionsOutput {
     }
 }
 
-public struct ListInventoryEntriesInput {
+public struct ListInventoryEntriesInput: Swift.Sendable {
     /// One or more filters. Use a filter to return a more specific list of results.
     public var filters: [SSMClientTypes.InventoryFilter]?
     /// The managed node ID for which you want inventory information.
@@ -15130,7 +15130,7 @@ public struct ListInventoryEntriesInput {
     }
 }
 
-public struct ListInventoryEntriesOutput {
+public struct ListInventoryEntriesOutput: Swift.Sendable {
     /// The time that inventory information was collected for the managed nodes.
     public var captureTime: Swift.String?
     /// A list of inventory items on the managed nodes.
@@ -15164,7 +15164,7 @@ public struct ListInventoryEntriesOutput {
 
 extension SSMClientTypes {
 
-    public enum OpsItemEventFilterKey: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum OpsItemEventFilterKey: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case opsitemId
         case sdkUnknown(Swift.String)
 
@@ -15190,7 +15190,7 @@ extension SSMClientTypes {
 
 extension SSMClientTypes {
 
-    public enum OpsItemEventFilterOperator: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum OpsItemEventFilterOperator: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case equal
         case sdkUnknown(Swift.String)
 
@@ -15215,8 +15215,9 @@ extension SSMClientTypes {
 }
 
 extension SSMClientTypes {
+
     /// Describes a filter for a specific list of OpsItem events. You can filter event information by using tags. You specify tags by using a key-value pair mapping.
-    public struct OpsItemEventFilter {
+    public struct OpsItemEventFilter: Swift.Sendable {
         /// The name of the filter key. Currently, the only supported value is OpsItemId.
         /// This member is required.
         public var key: SSMClientTypes.OpsItemEventFilterKey?
@@ -15238,10 +15239,9 @@ extension SSMClientTypes {
             self.values = values
         }
     }
-
 }
 
-public struct ListOpsItemEventsInput {
+public struct ListOpsItemEventsInput: Swift.Sendable {
     /// One or more OpsItem filters. Use a filter to return a more specific list of results.
     public var filters: [SSMClientTypes.OpsItemEventFilter]?
     /// The maximum number of items to return for this call. The call also returns a token that you can specify in a subsequent call to get the next set of results.
@@ -15262,8 +15262,9 @@ public struct ListOpsItemEventsInput {
 }
 
 extension SSMClientTypes {
+
     /// Information about the user or resource that created an OpsItem event.
-    public struct OpsItemIdentity {
+    public struct OpsItemIdentity: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the IAM entity that created the OpsItem event.
         public var arn: Swift.String?
 
@@ -15274,12 +15275,12 @@ extension SSMClientTypes {
             self.arn = arn
         }
     }
-
 }
 
 extension SSMClientTypes {
+
     /// Summary information about an OpsItem event or that associated an OpsItem with a related item.
-    public struct OpsItemEventSummary {
+    public struct OpsItemEventSummary: Swift.Sendable {
         /// Information about the user or resource that created the OpsItem event.
         public var createdBy: SSMClientTypes.OpsItemIdentity?
         /// The date and time the OpsItem event was created.
@@ -15314,10 +15315,9 @@ extension SSMClientTypes {
             self.source = source
         }
     }
-
 }
 
-public struct ListOpsItemEventsOutput {
+public struct ListOpsItemEventsOutput: Swift.Sendable {
     /// The token for the next set of items to return. Use this token to get the next set of results.
     public var nextToken: Swift.String?
     /// A list of event information for the specified OpsItems.
@@ -15335,7 +15335,7 @@ public struct ListOpsItemEventsOutput {
 
 extension SSMClientTypes {
 
-    public enum OpsItemRelatedItemsFilterKey: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum OpsItemRelatedItemsFilterKey: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case associationId
         case resourceType
         case resourceUri
@@ -15367,7 +15367,7 @@ extension SSMClientTypes {
 
 extension SSMClientTypes {
 
-    public enum OpsItemRelatedItemsFilterOperator: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum OpsItemRelatedItemsFilterOperator: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case equal
         case sdkUnknown(Swift.String)
 
@@ -15392,8 +15392,9 @@ extension SSMClientTypes {
 }
 
 extension SSMClientTypes {
+
     /// Describes a filter for a specific list of related-item resources.
-    public struct OpsItemRelatedItemsFilter {
+    public struct OpsItemRelatedItemsFilter: Swift.Sendable {
         /// The name of the filter key. Supported values include ResourceUri, ResourceType, or AssociationId.
         /// This member is required.
         public var key: SSMClientTypes.OpsItemRelatedItemsFilterKey?
@@ -15415,10 +15416,9 @@ extension SSMClientTypes {
             self.values = values
         }
     }
-
 }
 
-public struct ListOpsItemRelatedItemsInput {
+public struct ListOpsItemRelatedItemsInput: Swift.Sendable {
     /// One or more OpsItem filters. Use a filter to return a more specific list of results.
     public var filters: [SSMClientTypes.OpsItemRelatedItemsFilter]?
     /// The maximum number of items to return for this call. The call also returns a token that you can specify in a subsequent call to get the next set of results.
@@ -15443,8 +15443,9 @@ public struct ListOpsItemRelatedItemsInput {
 }
 
 extension SSMClientTypes {
+
     /// Summary information about related-item resources for an OpsItem.
-    public struct OpsItemRelatedItemSummary {
+    public struct OpsItemRelatedItemSummary: Swift.Sendable {
         /// The association ID.
         public var associationId: Swift.String?
         /// The association type.
@@ -15487,10 +15488,9 @@ extension SSMClientTypes {
             self.resourceUri = resourceUri
         }
     }
-
 }
 
-public struct ListOpsItemRelatedItemsOutput {
+public struct ListOpsItemRelatedItemsOutput: Swift.Sendable {
     /// The token for the next set of items to return. Use this token to get the next set of results.
     public var nextToken: Swift.String?
     /// A list of related-item resources for the specified OpsItem.
@@ -15507,8 +15507,9 @@ public struct ListOpsItemRelatedItemsOutput {
 }
 
 extension SSMClientTypes {
+
     /// A filter to limit the number of OpsMetadata objects displayed.
-    public struct OpsMetadataFilter {
+    public struct OpsMetadataFilter: Swift.Sendable {
         /// A filter key.
         /// This member is required.
         public var key: Swift.String?
@@ -15525,10 +15526,9 @@ extension SSMClientTypes {
             self.values = values
         }
     }
-
 }
 
-public struct ListOpsMetadataInput {
+public struct ListOpsMetadataInput: Swift.Sendable {
     /// One or more filters to limit the number of OpsMetadata objects returned by the call.
     public var filters: [SSMClientTypes.OpsMetadataFilter]?
     /// The maximum number of items to return for this call. The call also returns a token that you can specify in a subsequent call to get the next set of results.
@@ -15549,8 +15549,9 @@ public struct ListOpsMetadataInput {
 }
 
 extension SSMClientTypes {
+
     /// Operational metadata for an application in Application Manager.
-    public struct OpsMetadata {
+    public struct OpsMetadata: Swift.Sendable {
         /// The date the OpsMetadata objects was created.
         public var creationDate: Foundation.Date?
         /// The date the OpsMetadata object was last updated.
@@ -15577,10 +15578,9 @@ extension SSMClientTypes {
             self.resourceId = resourceId
         }
     }
-
 }
 
-public struct ListOpsMetadataOutput {
+public struct ListOpsMetadataOutput: Swift.Sendable {
     /// The token for the next set of items to return. Use this token to get the next set of results.
     public var nextToken: Swift.String?
     /// Returns a list of OpsMetadata objects.
@@ -15596,7 +15596,7 @@ public struct ListOpsMetadataOutput {
     }
 }
 
-public struct ListResourceComplianceSummariesInput {
+public struct ListResourceComplianceSummariesInput: Swift.Sendable {
     /// One or more filters. Use a filter to return a more specific list of results.
     public var filters: [SSMClientTypes.ComplianceStringFilter]?
     /// The maximum number of items to return for this call. The call also returns a token that you can specify in a subsequent call to get the next set of results.
@@ -15617,8 +15617,9 @@ public struct ListResourceComplianceSummariesInput {
 }
 
 extension SSMClientTypes {
+
     /// Compliance summary information for a specific resource.
-    public struct ResourceComplianceSummaryItem {
+    public struct ResourceComplianceSummaryItem: Swift.Sendable {
         /// The compliance type.
         public var complianceType: Swift.String?
         /// A list of items that are compliant for the resource.
@@ -15657,10 +15658,9 @@ extension SSMClientTypes {
             self.status = status
         }
     }
-
 }
 
-public struct ListResourceComplianceSummariesOutput {
+public struct ListResourceComplianceSummariesOutput: Swift.Sendable {
     /// The token for the next set of items to return. Use this token to get the next set of results.
     public var nextToken: Swift.String?
     /// A summary count for specified or targeted managed nodes. Summary count includes information about compliant and non-compliant State Manager associations, patch status, or custom items according to the filter criteria that you specify.
@@ -15676,7 +15676,7 @@ public struct ListResourceComplianceSummariesOutput {
     }
 }
 
-public struct ListResourceDataSyncInput {
+public struct ListResourceDataSyncInput: Swift.Sendable {
     /// The maximum number of items to return for this call. The call also returns a token that you can specify in a subsequent call to get the next set of results.
     public var maxResults: Swift.Int?
     /// A token to start the list. Use this token to get the next set of results.
@@ -15698,7 +15698,7 @@ public struct ListResourceDataSyncInput {
 
 extension SSMClientTypes {
 
-    public enum LastResourceDataSyncStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum LastResourceDataSyncStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case failed
         case inprogress
         case successful
@@ -15729,8 +15729,9 @@ extension SSMClientTypes {
 }
 
 extension SSMClientTypes {
+
     /// The data type name for including resource data sync state. There are four sync states: OrganizationNotExists (Your organization doesn't exist) NoPermissions (The system can't locate the service-linked role. This role is automatically created when a user creates a resource data sync in Amazon Web Services Systems Manager Explorer.) InvalidOrganizationalUnit (You specified or selected an invalid unit in the resource data sync configuration.) TrustedAccessDisabled (You disabled Systems Manager access in the organization in Organizations.)
-    public struct ResourceDataSyncSourceWithState {
+    public struct ResourceDataSyncSourceWithState: Swift.Sendable {
         /// The field name in SyncSource for the ResourceDataSyncAwsOrganizationsSource type.
         public var awsOrganizationsSource: SSMClientTypes.ResourceDataSyncAwsOrganizationsSource?
         /// When you create a resource data sync, if you choose one of the Organizations options, then Systems Manager automatically enables all OpsData sources in the selected Amazon Web Services Regions for all Amazon Web Services accounts in your organization (or in the selected organization units). For more information, see [Setting up Systems Manager Explorer to display data from multiple accounts and Regions](https://docs.aws.amazon.com/systems-manager/latest/userguide/Explorer-resource-data-sync.html) in the Amazon Web Services Systems Manager User Guide.
@@ -15761,12 +15762,12 @@ extension SSMClientTypes {
             self.state = state
         }
     }
-
 }
 
 extension SSMClientTypes {
+
     /// Information about a resource data sync configuration, including its current status and last successful sync.
-    public struct ResourceDataSyncItem {
+    public struct ResourceDataSyncItem: Swift.Sendable {
         /// The status reported by the last sync.
         public var lastStatus: SSMClientTypes.LastResourceDataSyncStatus?
         /// The last time the sync operations returned a status of SUCCESSFUL (UTC).
@@ -15813,10 +15814,9 @@ extension SSMClientTypes {
             self.syncType = syncType
         }
     }
-
 }
 
-public struct ListResourceDataSyncOutput {
+public struct ListResourceDataSyncOutput: Swift.Sendable {
     /// The token for the next set of items to return. Use this token to get the next set of results.
     public var nextToken: Swift.String?
     /// A list of your current resource data sync configurations and their statuses.
@@ -15832,7 +15832,7 @@ public struct ListResourceDataSyncOutput {
     }
 }
 
-public struct ListTagsForResourceInput {
+public struct ListTagsForResourceInput: Swift.Sendable {
     /// The resource ID for which you want to see a list of tags.
     /// This member is required.
     public var resourceId: Swift.String?
@@ -15850,7 +15850,7 @@ public struct ListTagsForResourceInput {
     }
 }
 
-public struct ListTagsForResourceOutput {
+public struct ListTagsForResourceOutput: Swift.Sendable {
     /// A list of tags.
     public var tagList: [SSMClientTypes.Tag]?
 
@@ -15886,7 +15886,7 @@ public struct DocumentPermissionLimit: ClientRuntime.ModeledError, AWSClientRunt
     }
 }
 
-public struct ModifyDocumentPermissionInput {
+public struct ModifyDocumentPermissionInput: Swift.Sendable {
     /// The Amazon Web Services users that should have access to the document. The account IDs can either be a group of account IDs or All.
     public var accountIdsToAdd: [Swift.String]?
     /// The Amazon Web Services users that should no longer have access to the document. The Amazon Web Services user can either be a group of account IDs or All. This action has a higher priority than AccountIdsToAdd. If you specify an ID to add and the same ID to remove, the system removes access to the document.
@@ -15916,7 +15916,7 @@ public struct ModifyDocumentPermissionInput {
     }
 }
 
-public struct ModifyDocumentPermissionOutput {
+public struct ModifyDocumentPermissionOutput: Swift.Sendable {
 
     public init() { }
 }
@@ -16024,8 +16024,9 @@ public struct TotalSizeLimitExceededException: ClientRuntime.ModeledError, AWSCl
 }
 
 extension SSMClientTypes {
+
     /// Information about a compliance item.
-    public struct ComplianceItemEntry {
+    public struct ComplianceItemEntry: Swift.Sendable {
         /// A "Key": "Value" tag combination for the compliance item.
         public var details: [Swift.String: Swift.String]?
         /// The compliance item ID. For example, if the compliance item is a Windows patch, the ID could be the number of the KB article.
@@ -16054,12 +16055,11 @@ extension SSMClientTypes {
             self.title = title
         }
     }
-
 }
 
 extension SSMClientTypes {
 
-    public enum ComplianceUploadType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ComplianceUploadType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case complete
         case partial
         case sdkUnknown(Swift.String)
@@ -16086,7 +16086,7 @@ extension SSMClientTypes {
     }
 }
 
-public struct PutComplianceItemsInput {
+public struct PutComplianceItemsInput: Swift.Sendable {
     /// Specify the compliance type. For example, specify Association (for a State Manager association), Patch, or Custom:string.
     /// This member is required.
     public var complianceType: Swift.String?
@@ -16127,7 +16127,7 @@ public struct PutComplianceItemsInput {
     }
 }
 
-public struct PutComplianceItemsOutput {
+public struct PutComplianceItemsOutput: Swift.Sendable {
 
     public init() { }
 }
@@ -16283,8 +16283,9 @@ public struct UnsupportedInventorySchemaVersionException: ClientRuntime.ModeledE
 }
 
 extension SSMClientTypes {
+
     /// Information collected from managed nodes based on your inventory policy document
-    public struct InventoryItem {
+    public struct InventoryItem: Swift.Sendable {
         /// The time the inventory information was collected.
         /// This member is required.
         public var captureTime: Swift.String?
@@ -16318,10 +16319,9 @@ extension SSMClientTypes {
             self.typeName = typeName
         }
     }
-
 }
 
-public struct PutInventoryInput {
+public struct PutInventoryInput: Swift.Sendable {
     /// An managed node ID where you want to add or update inventory items.
     /// This member is required.
     public var instanceId: Swift.String?
@@ -16339,7 +16339,7 @@ public struct PutInventoryInput {
     }
 }
 
-public struct PutInventoryOutput {
+public struct PutInventoryOutput: Swift.Sendable {
     /// Information about the request.
     public var message: Swift.String?
 
@@ -16643,7 +16643,7 @@ public struct UnsupportedParameterType: ClientRuntime.ModeledError, AWSClientRun
     }
 }
 
-public struct PutParameterInput {
+public struct PutParameterInput: Swift.Sendable {
     /// A regular expression used to validate the parameter value. For example, for String types with values restricted to numbers, you can specify the following: AllowedPattern=^\d+$
     public var allowedPattern: Swift.String?
     /// The data type for a String parameter. Supported data types include plain text and Amazon Machine Image (AMI) IDs. The following data type values are supported.
@@ -16753,7 +16753,7 @@ extension PutParameterInput: Swift.CustomDebugStringConvertible {
         "PutParameterInput(allowedPattern: \(Swift.String(describing: allowedPattern)), dataType: \(Swift.String(describing: dataType)), description: \(Swift.String(describing: description)), keyId: \(Swift.String(describing: keyId)), name: \(Swift.String(describing: name)), overwrite: \(Swift.String(describing: overwrite)), policies: \(Swift.String(describing: policies)), tags: \(Swift.String(describing: tags)), tier: \(Swift.String(describing: tier)), type: \(Swift.String(describing: type)), value: \"CONTENT_REDACTED\")"}
 }
 
-public struct PutParameterOutput {
+public struct PutParameterOutput: Swift.Sendable {
     /// The tier assigned to the parameter.
     public var tier: SSMClientTypes.ParameterTier?
     /// The new version number of a parameter. If you edit a parameter value, Parameter Store automatically creates a new version and assigns this new version a unique ID. You can reference a parameter version ID in API operations or in Systems Manager documents (SSM documents). By default, if you don't specify a specific version, the system returns the latest parameter value when a parameter is called.
@@ -16799,7 +16799,7 @@ public struct ResourcePolicyLimitExceededException: ClientRuntime.ModeledError, 
     }
 }
 
-public struct PutResourcePolicyInput {
+public struct PutResourcePolicyInput: Swift.Sendable {
     /// A policy you want to associate with a resource.
     /// This member is required.
     public var policy: Swift.String?
@@ -16825,7 +16825,7 @@ public struct PutResourcePolicyInput {
     }
 }
 
-public struct PutResourcePolicyOutput {
+public struct PutResourcePolicyOutput: Swift.Sendable {
     /// ID of the current policy version.
     public var policyHash: Swift.String?
     /// The policy ID. To update a policy, you must specify PolicyId and PolicyHash.
@@ -16841,7 +16841,7 @@ public struct PutResourcePolicyOutput {
     }
 }
 
-public struct RegisterDefaultPatchBaselineInput {
+public struct RegisterDefaultPatchBaselineInput: Swift.Sendable {
     /// The ID of the patch baseline that should be the default patch baseline.
     /// This member is required.
     public var baselineId: Swift.String?
@@ -16854,7 +16854,7 @@ public struct RegisterDefaultPatchBaselineInput {
     }
 }
 
-public struct RegisterDefaultPatchBaselineOutput {
+public struct RegisterDefaultPatchBaselineOutput: Swift.Sendable {
     /// The ID of the default patch baseline.
     public var baselineId: Swift.String?
 
@@ -16866,7 +16866,7 @@ public struct RegisterDefaultPatchBaselineOutput {
     }
 }
 
-public struct RegisterPatchBaselineForPatchGroupInput {
+public struct RegisterPatchBaselineForPatchGroupInput: Swift.Sendable {
     /// The ID of the patch baseline to register with the patch group.
     /// This member is required.
     public var baselineId: Swift.String?
@@ -16884,7 +16884,7 @@ public struct RegisterPatchBaselineForPatchGroupInput {
     }
 }
 
-public struct RegisterPatchBaselineForPatchGroupOutput {
+public struct RegisterPatchBaselineForPatchGroupOutput: Swift.Sendable {
     /// The ID of the patch baseline the patch group was registered with.
     public var baselineId: Swift.String?
     /// The name of the patch group registered with the patch baseline.
@@ -16900,7 +16900,7 @@ public struct RegisterPatchBaselineForPatchGroupOutput {
     }
 }
 
-public struct RegisterTargetWithMaintenanceWindowInput {
+public struct RegisterTargetWithMaintenanceWindowInput: Swift.Sendable {
     /// User-provided idempotency token.
     public var clientToken: Swift.String?
     /// An optional description for the target.
@@ -16944,7 +16944,7 @@ extension RegisterTargetWithMaintenanceWindowInput: Swift.CustomDebugStringConve
         "RegisterTargetWithMaintenanceWindowInput(clientToken: \(Swift.String(describing: clientToken)), name: \(Swift.String(describing: name)), resourceType: \(Swift.String(describing: resourceType)), targets: \(Swift.String(describing: targets)), windowId: \(Swift.String(describing: windowId)), description: \"CONTENT_REDACTED\", ownerInformation: \"CONTENT_REDACTED\")"}
 }
 
-public struct RegisterTargetWithMaintenanceWindowOutput {
+public struct RegisterTargetWithMaintenanceWindowOutput: Swift.Sendable {
     /// The ID of the target definition in this maintenance window.
     public var windowTargetId: Swift.String?
 
@@ -16980,7 +16980,7 @@ public struct FeatureNotAvailableException: ClientRuntime.ModeledError, AWSClien
     }
 }
 
-public struct RegisterTaskWithMaintenanceWindowInput {
+public struct RegisterTaskWithMaintenanceWindowInput: Swift.Sendable {
     /// The CloudWatch alarm you want to apply to your maintenance window task.
     public var alarmConfiguration: SSMClientTypes.AlarmConfiguration?
     /// User-provided idempotency token.
@@ -17071,7 +17071,7 @@ extension RegisterTaskWithMaintenanceWindowInput: Swift.CustomDebugStringConvert
         "RegisterTaskWithMaintenanceWindowInput(alarmConfiguration: \(Swift.String(describing: alarmConfiguration)), clientToken: \(Swift.String(describing: clientToken)), cutoffBehavior: \(Swift.String(describing: cutoffBehavior)), loggingInfo: \(Swift.String(describing: loggingInfo)), maxConcurrency: \(Swift.String(describing: maxConcurrency)), maxErrors: \(Swift.String(describing: maxErrors)), name: \(Swift.String(describing: name)), priority: \(Swift.String(describing: priority)), serviceRoleArn: \(Swift.String(describing: serviceRoleArn)), targets: \(Swift.String(describing: targets)), taskArn: \(Swift.String(describing: taskArn)), taskInvocationParameters: \(Swift.String(describing: taskInvocationParameters)), taskType: \(Swift.String(describing: taskType)), windowId: \(Swift.String(describing: windowId)), description: \"CONTENT_REDACTED\", taskParameters: \"CONTENT_REDACTED\")"}
 }
 
-public struct RegisterTaskWithMaintenanceWindowOutput {
+public struct RegisterTaskWithMaintenanceWindowOutput: Swift.Sendable {
     /// The ID of the task in the maintenance window.
     public var windowTaskId: Swift.String?
 
@@ -17083,7 +17083,7 @@ public struct RegisterTaskWithMaintenanceWindowOutput {
     }
 }
 
-public struct RemoveTagsFromResourceInput {
+public struct RemoveTagsFromResourceInput: Swift.Sendable {
     /// The ID of the resource from which you want to remove tags. For example: ManagedInstance: mi-012345abcde MaintenanceWindow: mw-012345abcde Automation: example-c160-4567-8519-012345abcde PatchBaseline: pb-012345abcde OpsMetadata object: ResourceID for tagging is created from the Amazon Resource Name (ARN) for the object. Specifically, ResourceID is created from the strings that come after the word opsmetadata in the ARN. For example, an OpsMetadata object with an ARN of arn:aws:ssm:us-east-2:1234567890:opsmetadata/aws/ssm/MyGroup/appmanager has a ResourceID of either aws/ssm/MyGroup/appmanager or /aws/ssm/MyGroup/appmanager. For the Document and Parameter values, use the name of the resource. The ManagedInstance type for this API operation is only for on-premises managed nodes. Specify the name of the managed node in the following format: mi-ID_number. For example, mi-1a2b3c4d5e6f.
     /// This member is required.
     public var resourceId: Swift.String?
@@ -17106,13 +17106,13 @@ public struct RemoveTagsFromResourceInput {
     }
 }
 
-public struct RemoveTagsFromResourceOutput {
+public struct RemoveTagsFromResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
 /// The request body of the ResetServiceSetting API operation.
-public struct ResetServiceSettingInput {
+public struct ResetServiceSettingInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the service setting to reset. The setting ID can be one of the following.
     ///
     /// * /ssm/managed-instance/default-ec2-instance-management-role
@@ -17142,7 +17142,7 @@ public struct ResetServiceSettingInput {
 }
 
 /// The result body of the ResetServiceSetting API operation.
-public struct ResetServiceSettingOutput {
+public struct ResetServiceSettingOutput: Swift.Sendable {
     /// The current, effective service setting after calling the ResetServiceSetting API operation.
     public var serviceSetting: SSMClientTypes.ServiceSetting?
 
@@ -17154,7 +17154,7 @@ public struct ResetServiceSettingOutput {
     }
 }
 
-public struct ResumeSessionInput {
+public struct ResumeSessionInput: Swift.Sendable {
     /// The ID of the disconnected session to resume.
     /// This member is required.
     public var sessionId: Swift.String?
@@ -17167,7 +17167,7 @@ public struct ResumeSessionInput {
     }
 }
 
-public struct ResumeSessionOutput {
+public struct ResumeSessionOutput: Swift.Sendable {
     /// The ID of the session.
     public var sessionId: Swift.String?
     /// A URL back to SSM Agent on the managed node that the Session Manager client uses to send commands and receive output from the managed node. Format: wss://ssmmessages.region.amazonaws.com/v1/data-channel/session-id?stream=(input|output). region represents the Region identifier for an Amazon Web Services Region supported by Amazon Web Services Systems Manager, such as us-east-2 for the US East (Ohio) Region. For a list of supported region values, see the Region column in [Systems Manager service endpoints](https://docs.aws.amazon.com/general/latest/gr/ssm.html#ssm_region) in the Amazon Web Services General Reference. session-id represents the ID of a Session Manager session, such as 1a2b3c4dEXAMPLE.
@@ -17237,7 +17237,7 @@ public struct InvalidAutomationSignalException: ClientRuntime.ModeledError, AWSC
 
 extension SSMClientTypes {
 
-    public enum SignalType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SignalType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case approve
         case reject
         case resume
@@ -17273,7 +17273,7 @@ extension SSMClientTypes {
     }
 }
 
-public struct SendAutomationSignalInput {
+public struct SendAutomationSignalInput: Swift.Sendable {
     /// The unique identifier for an existing Automation execution that you want to send the signal to.
     /// This member is required.
     public var automationExecutionId: Swift.String?
@@ -17295,7 +17295,7 @@ public struct SendAutomationSignalInput {
     }
 }
 
-public struct SendAutomationSignalOutput {
+public struct SendAutomationSignalOutput: Swift.Sendable {
 
     public init() { }
 }
@@ -17361,7 +17361,7 @@ public struct InvalidRole: ClientRuntime.ModeledError, AWSClientRuntime.AWSServi
     }
 }
 
-public struct SendCommandInput {
+public struct SendCommandInput: Swift.Sendable {
     /// The CloudWatch alarm you want to apply to your command.
     public var alarmConfiguration: SSMClientTypes.AlarmConfiguration?
     /// Enables Amazon Web Services Systems Manager to send Run Command output to Amazon CloudWatch Logs. Run Command is a capability of Amazon Web Services Systems Manager.
@@ -17447,7 +17447,7 @@ extension SendCommandInput: Swift.CustomDebugStringConvertible {
         "SendCommandInput(alarmConfiguration: \(Swift.String(describing: alarmConfiguration)), cloudWatchOutputConfig: \(Swift.String(describing: cloudWatchOutputConfig)), comment: \(Swift.String(describing: comment)), documentHash: \(Swift.String(describing: documentHash)), documentHashType: \(Swift.String(describing: documentHashType)), documentName: \(Swift.String(describing: documentName)), documentVersion: \(Swift.String(describing: documentVersion)), instanceIds: \(Swift.String(describing: instanceIds)), maxConcurrency: \(Swift.String(describing: maxConcurrency)), maxErrors: \(Swift.String(describing: maxErrors)), notificationConfig: \(Swift.String(describing: notificationConfig)), outputS3BucketName: \(Swift.String(describing: outputS3BucketName)), outputS3KeyPrefix: \(Swift.String(describing: outputS3KeyPrefix)), outputS3Region: \(Swift.String(describing: outputS3Region)), serviceRoleArn: \(Swift.String(describing: serviceRoleArn)), targets: \(Swift.String(describing: targets)), timeoutSeconds: \(Swift.String(describing: timeoutSeconds)), parameters: \"CONTENT_REDACTED\")"}
 }
 
-public struct SendCommandOutput {
+public struct SendCommandOutput: Swift.Sendable {
     /// The request as it was received by Systems Manager. Also provides the command ID which can be used future references to this request.
     public var command: SSMClientTypes.Command?
 
@@ -17483,7 +17483,7 @@ public struct InvalidAssociation: ClientRuntime.ModeledError, AWSClientRuntime.A
     }
 }
 
-public struct StartAssociationsOnceInput {
+public struct StartAssociationsOnceInput: Swift.Sendable {
     /// The association IDs that you want to run immediately and only one time.
     /// This member is required.
     public var associationIds: [Swift.String]?
@@ -17496,7 +17496,7 @@ public struct StartAssociationsOnceInput {
     }
 }
 
-public struct StartAssociationsOnceOutput {
+public struct StartAssociationsOnceOutput: Swift.Sendable {
 
     public init() { }
 }
@@ -17597,7 +17597,7 @@ public struct InvalidAutomationExecutionParametersException: ClientRuntime.Model
     }
 }
 
-public struct StartAutomationExecutionInput {
+public struct StartAutomationExecutionInput: Swift.Sendable {
     /// The CloudWatch alarm you want to apply to your automation.
     public var alarmConfiguration: SSMClientTypes.AlarmConfiguration?
     /// User-provided idempotency token. The token must be unique, is case insensitive, enforces the UUID format, and can't be reused.
@@ -17669,7 +17669,7 @@ public struct StartAutomationExecutionInput {
     }
 }
 
-public struct StartAutomationExecutionOutput {
+public struct StartAutomationExecutionOutput: Swift.Sendable {
     /// The unique ID of a newly scheduled automation execution.
     public var automationExecutionId: Swift.String?
 
@@ -17705,7 +17705,7 @@ public struct AutomationDefinitionNotApprovedException: ClientRuntime.ModeledErr
     }
 }
 
-public struct StartChangeRequestExecutionInput {
+public struct StartChangeRequestExecutionInput: Swift.Sendable {
     /// Indicates whether the change request can be approved automatically without the need for manual approvals. If AutoApprovable is enabled in a change template, then setting AutoApprove to true in StartChangeRequestExecution creates a change request that bypasses approver review. Change Calendar restrictions are not bypassed in this scenario. If the state of an associated calendar is CLOSED, change freeze approvers must still grant permission for this change request to run. If they don't, the change won't be processed until the calendar state is again OPEN.
     public var autoApprove: Swift.Bool?
     /// User-provided details about the change. If no details are provided, content specified in the Template information section of the associated change template is added.
@@ -17763,7 +17763,7 @@ public struct StartChangeRequestExecutionInput {
     }
 }
 
-public struct StartChangeRequestExecutionOutput {
+public struct StartChangeRequestExecutionOutput: Swift.Sendable {
     /// The unique ID of a runbook workflow operation. (A runbook workflow is a type of Automation operation.)
     public var automationExecutionId: Swift.String?
 
@@ -17799,7 +17799,7 @@ public struct TargetNotConnected: ClientRuntime.ModeledError, AWSClientRuntime.A
     }
 }
 
-public struct StartSessionInput {
+public struct StartSessionInput: Swift.Sendable {
     /// The name of the SSM document you want to use to define the type of session, input parameters, or preferences for the session. For example, SSM-SessionManagerRunShell. You can call the [GetDocument] API to verify the document exists before attempting to start a session. If no document name is provided, a shell to the managed node is launched by default. For more information, see [Start a session](https://docs.aws.amazon.com/systems-manager/latest/userguide/session-manager-working-with-sessions-start.html) in the Amazon Web Services Systems Manager User Guide.
     public var documentName: Swift.String?
     /// The values you want to specify for the parameters defined in the Session document.
@@ -17824,7 +17824,7 @@ public struct StartSessionInput {
     }
 }
 
-public struct StartSessionOutput {
+public struct StartSessionOutput: Swift.Sendable {
     /// The ID of the session.
     public var sessionId: Swift.String?
     /// A URL back to SSM Agent on the managed node that the Session Manager client uses to send commands and receive output from the node. Format: wss://ssmmessages.region.amazonaws.com/v1/data-channel/session-id?stream=(input|output) region represents the Region identifier for an Amazon Web Services Region supported by Amazon Web Services Systems Manager, such as us-east-2 for the US East (Ohio) Region. For a list of supported region values, see the Region column in [Systems Manager service endpoints](https://docs.aws.amazon.com/general/latest/gr/ssm.html#ssm_region) in the Amazon Web Services General Reference. session-id represents the ID of a Session Manager session, such as 1a2b3c4dEXAMPLE.
@@ -17870,7 +17870,7 @@ public struct InvalidAutomationStatusUpdateException: ClientRuntime.ModeledError
 
 extension SSMClientTypes {
 
-    public enum StopType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum StopType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case cancel
         case complete
         case sdkUnknown(Swift.String)
@@ -17897,7 +17897,7 @@ extension SSMClientTypes {
     }
 }
 
-public struct StopAutomationExecutionInput {
+public struct StopAutomationExecutionInput: Swift.Sendable {
     /// The execution ID of the Automation to stop.
     /// This member is required.
     public var automationExecutionId: Swift.String?
@@ -17914,12 +17914,12 @@ public struct StopAutomationExecutionInput {
     }
 }
 
-public struct StopAutomationExecutionOutput {
+public struct StopAutomationExecutionOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct TerminateSessionInput {
+public struct TerminateSessionInput: Swift.Sendable {
     /// The ID of the session to terminate.
     /// This member is required.
     public var sessionId: Swift.String?
@@ -17932,7 +17932,7 @@ public struct TerminateSessionInput {
     }
 }
 
-public struct TerminateSessionOutput {
+public struct TerminateSessionOutput: Swift.Sendable {
     /// The ID of the session that has been terminated.
     public var sessionId: Swift.String?
 
@@ -17944,7 +17944,7 @@ public struct TerminateSessionOutput {
     }
 }
 
-public struct UnlabelParameterVersionInput {
+public struct UnlabelParameterVersionInput: Swift.Sendable {
     /// One or more labels to delete from the specified parameter version.
     /// This member is required.
     public var labels: [Swift.String]?
@@ -17967,7 +17967,7 @@ public struct UnlabelParameterVersionInput {
     }
 }
 
-public struct UnlabelParameterVersionOutput {
+public struct UnlabelParameterVersionOutput: Swift.Sendable {
     /// The labels that aren't attached to the given parameter version.
     public var invalidLabels: [Swift.String]?
     /// A list of all labels deleted from the parameter.
@@ -18031,7 +18031,7 @@ public struct InvalidUpdate: ClientRuntime.ModeledError, AWSClientRuntime.AWSSer
     }
 }
 
-public struct UpdateAssociationInput {
+public struct UpdateAssociationInput: Swift.Sendable {
     /// The details for the CloudWatch alarm you want to apply to an automation or command.
     public var alarmConfiguration: SSMClientTypes.AlarmConfiguration?
     /// By default, when you update an association, the system runs it immediately after it is updated and then according to the schedule you specified. Specify this option if you don't want an association to run immediately after you update it. This parameter isn't supported for rate expressions. If you chose this option when you created an association and later you edit that association or you make changes to the SSM document on which that association is based (by using the Documents page in the console), State Manager applies the association at the next specified cron interval. For example, if you chose the Latest version of an SSM document when you created an association and you edit the association by choosing a different document version on the Documents page, State Manager applies the association at the next specified cron interval if you previously selected this option. If this option wasn't selected, State Manager immediately runs the association. You can reset this option. To do so, specify the no-apply-only-at-cron-interval parameter when you update the association from the command line. This parameter forces the association to run immediately after updating it and according to the interval specified.
@@ -18133,7 +18133,7 @@ extension UpdateAssociationInput: Swift.CustomDebugStringConvertible {
         "UpdateAssociationInput(alarmConfiguration: \(Swift.String(describing: alarmConfiguration)), applyOnlyAtCronInterval: \(Swift.String(describing: applyOnlyAtCronInterval)), associationId: \(Swift.String(describing: associationId)), associationName: \(Swift.String(describing: associationName)), associationVersion: \(Swift.String(describing: associationVersion)), automationTargetParameterName: \(Swift.String(describing: automationTargetParameterName)), calendarNames: \(Swift.String(describing: calendarNames)), complianceSeverity: \(Swift.String(describing: complianceSeverity)), documentVersion: \(Swift.String(describing: documentVersion)), duration: \(Swift.String(describing: duration)), maxConcurrency: \(Swift.String(describing: maxConcurrency)), maxErrors: \(Swift.String(describing: maxErrors)), name: \(Swift.String(describing: name)), outputLocation: \(Swift.String(describing: outputLocation)), scheduleExpression: \(Swift.String(describing: scheduleExpression)), scheduleOffset: \(Swift.String(describing: scheduleOffset)), syncCompliance: \(Swift.String(describing: syncCompliance)), targetLocations: \(Swift.String(describing: targetLocations)), targetMaps: \(Swift.String(describing: targetMaps)), targets: \(Swift.String(describing: targets)), parameters: \"CONTENT_REDACTED\")"}
 }
 
-public struct UpdateAssociationOutput {
+public struct UpdateAssociationOutput: Swift.Sendable {
     /// The description of the association that was updated.
     public var associationDescription: SSMClientTypes.AssociationDescription?
 
@@ -18158,7 +18158,7 @@ public struct StatusUnchanged: ClientRuntime.ModeledError, AWSClientRuntime.AWSS
     public init() { }
 }
 
-public struct UpdateAssociationStatusInput {
+public struct UpdateAssociationStatusInput: Swift.Sendable {
     /// The association status.
     /// This member is required.
     public var associationStatus: SSMClientTypes.AssociationStatus?
@@ -18181,7 +18181,7 @@ public struct UpdateAssociationStatusInput {
     }
 }
 
-public struct UpdateAssociationStatusOutput {
+public struct UpdateAssociationStatusOutput: Swift.Sendable {
     /// Information about the association.
     public var associationDescription: SSMClientTypes.AssociationDescription?
 
@@ -18265,7 +18265,7 @@ public struct DuplicateDocumentVersionName: ClientRuntime.ModeledError, AWSClien
     }
 }
 
-public struct UpdateDocumentInput {
+public struct UpdateDocumentInput: Swift.Sendable {
     /// A list of key-value pairs that describe attachments to a version of a document.
     public var attachments: [SSMClientTypes.AttachmentsSource]?
     /// A valid JSON or YAML string.
@@ -18307,7 +18307,7 @@ public struct UpdateDocumentInput {
     }
 }
 
-public struct UpdateDocumentOutput {
+public struct UpdateDocumentOutput: Swift.Sendable {
     /// A description of the document that was updated.
     public var documentDescription: SSMClientTypes.DocumentDescription?
 
@@ -18319,7 +18319,7 @@ public struct UpdateDocumentOutput {
     }
 }
 
-public struct UpdateDocumentDefaultVersionInput {
+public struct UpdateDocumentDefaultVersionInput: Swift.Sendable {
     /// The version of a custom document that you want to set as the default version.
     /// This member is required.
     public var documentVersion: Swift.String?
@@ -18338,8 +18338,9 @@ public struct UpdateDocumentDefaultVersionInput {
 }
 
 extension SSMClientTypes {
+
     /// A default version of a document.
-    public struct DocumentDefaultVersionDescription {
+    public struct DocumentDefaultVersionDescription: Swift.Sendable {
         /// The default version of the document.
         public var defaultVersion: Swift.String?
         /// The default version of the artifact associated with the document.
@@ -18358,10 +18359,9 @@ extension SSMClientTypes {
             self.name = name
         }
     }
-
 }
 
-public struct UpdateDocumentDefaultVersionOutput {
+public struct UpdateDocumentDefaultVersionOutput: Swift.Sendable {
     /// The description of a custom document that you want to set as the default version.
     public var description: SSMClientTypes.DocumentDefaultVersionDescription?
 
@@ -18375,7 +18375,7 @@ public struct UpdateDocumentDefaultVersionOutput {
 
 extension SSMClientTypes {
 
-    public enum DocumentReviewAction: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DocumentReviewAction: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case approve
         case reject
         case sendforreview
@@ -18409,8 +18409,9 @@ extension SSMClientTypes {
 }
 
 extension SSMClientTypes {
+
     /// Information about a document approval review.
-    public struct DocumentReviews {
+    public struct DocumentReviews: Swift.Sendable {
         /// The action to take on a document approval review request.
         /// This member is required.
         public var action: SSMClientTypes.DocumentReviewAction?
@@ -18426,10 +18427,9 @@ extension SSMClientTypes {
             self.comment = comment
         }
     }
-
 }
 
-public struct UpdateDocumentMetadataInput {
+public struct UpdateDocumentMetadataInput: Swift.Sendable {
     /// The change template review details to update.
     /// This member is required.
     public var documentReviews: SSMClientTypes.DocumentReviews?
@@ -18451,12 +18451,12 @@ public struct UpdateDocumentMetadataInput {
     }
 }
 
-public struct UpdateDocumentMetadataOutput {
+public struct UpdateDocumentMetadataOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdateMaintenanceWindowInput {
+public struct UpdateMaintenanceWindowInput: Swift.Sendable {
     /// Whether targets must be registered with the maintenance window before tasks can be defined for those targets.
     public var allowUnassociatedTargets: Swift.Bool?
     /// The number of hours before the end of the maintenance window that Amazon Web Services Systems Manager stops scheduling new tasks for execution.
@@ -18522,7 +18522,7 @@ extension UpdateMaintenanceWindowInput: Swift.CustomDebugStringConvertible {
         "UpdateMaintenanceWindowInput(allowUnassociatedTargets: \(Swift.String(describing: allowUnassociatedTargets)), cutoff: \(Swift.String(describing: cutoff)), duration: \(Swift.String(describing: duration)), enabled: \(Swift.String(describing: enabled)), endDate: \(Swift.String(describing: endDate)), name: \(Swift.String(describing: name)), replace: \(Swift.String(describing: replace)), schedule: \(Swift.String(describing: schedule)), scheduleOffset: \(Swift.String(describing: scheduleOffset)), scheduleTimezone: \(Swift.String(describing: scheduleTimezone)), startDate: \(Swift.String(describing: startDate)), windowId: \(Swift.String(describing: windowId)), description: \"CONTENT_REDACTED\")"}
 }
 
-public struct UpdateMaintenanceWindowOutput {
+public struct UpdateMaintenanceWindowOutput: Swift.Sendable {
     /// Whether targets must be registered with the maintenance window before tasks can be defined for those targets.
     public var allowUnassociatedTargets: Swift.Bool
     /// The number of hours before the end of the maintenance window that Amazon Web Services Systems Manager stops scheduling new tasks for execution.
@@ -18583,7 +18583,7 @@ extension UpdateMaintenanceWindowOutput: Swift.CustomDebugStringConvertible {
         "UpdateMaintenanceWindowOutput(allowUnassociatedTargets: \(Swift.String(describing: allowUnassociatedTargets)), cutoff: \(Swift.String(describing: cutoff)), duration: \(Swift.String(describing: duration)), enabled: \(Swift.String(describing: enabled)), endDate: \(Swift.String(describing: endDate)), name: \(Swift.String(describing: name)), schedule: \(Swift.String(describing: schedule)), scheduleOffset: \(Swift.String(describing: scheduleOffset)), scheduleTimezone: \(Swift.String(describing: scheduleTimezone)), startDate: \(Swift.String(describing: startDate)), windowId: \(Swift.String(describing: windowId)), description: \"CONTENT_REDACTED\")"}
 }
 
-public struct UpdateMaintenanceWindowTargetInput {
+public struct UpdateMaintenanceWindowTargetInput: Swift.Sendable {
     /// An optional description for the update.
     public var description: Swift.String?
     /// A name for the update.
@@ -18626,7 +18626,7 @@ extension UpdateMaintenanceWindowTargetInput: Swift.CustomDebugStringConvertible
         "UpdateMaintenanceWindowTargetInput(name: \(Swift.String(describing: name)), replace: \(Swift.String(describing: replace)), targets: \(Swift.String(describing: targets)), windowId: \(Swift.String(describing: windowId)), windowTargetId: \(Swift.String(describing: windowTargetId)), description: \"CONTENT_REDACTED\", ownerInformation: \"CONTENT_REDACTED\")"}
 }
 
-public struct UpdateMaintenanceWindowTargetOutput {
+public struct UpdateMaintenanceWindowTargetOutput: Swift.Sendable {
     /// The updated description.
     public var description: Swift.String?
     /// The updated name.
@@ -18663,7 +18663,7 @@ extension UpdateMaintenanceWindowTargetOutput: Swift.CustomDebugStringConvertibl
         "UpdateMaintenanceWindowTargetOutput(name: \(Swift.String(describing: name)), targets: \(Swift.String(describing: targets)), windowId: \(Swift.String(describing: windowId)), windowTargetId: \(Swift.String(describing: windowTargetId)), description: \"CONTENT_REDACTED\", ownerInformation: \"CONTENT_REDACTED\")"}
 }
 
-public struct UpdateMaintenanceWindowTaskInput {
+public struct UpdateMaintenanceWindowTaskInput: Swift.Sendable {
     /// The CloudWatch alarm you want to apply to your maintenance window task.
     public var alarmConfiguration: SSMClientTypes.AlarmConfiguration?
     /// Indicates whether tasks should continue to run after the cutoff time specified in the maintenance windows is reached.
@@ -18753,7 +18753,7 @@ extension UpdateMaintenanceWindowTaskInput: Swift.CustomDebugStringConvertible {
         "UpdateMaintenanceWindowTaskInput(alarmConfiguration: \(Swift.String(describing: alarmConfiguration)), cutoffBehavior: \(Swift.String(describing: cutoffBehavior)), loggingInfo: \(Swift.String(describing: loggingInfo)), maxConcurrency: \(Swift.String(describing: maxConcurrency)), maxErrors: \(Swift.String(describing: maxErrors)), name: \(Swift.String(describing: name)), priority: \(Swift.String(describing: priority)), replace: \(Swift.String(describing: replace)), serviceRoleArn: \(Swift.String(describing: serviceRoleArn)), targets: \(Swift.String(describing: targets)), taskArn: \(Swift.String(describing: taskArn)), taskInvocationParameters: \(Swift.String(describing: taskInvocationParameters)), windowId: \(Swift.String(describing: windowId)), windowTaskId: \(Swift.String(describing: windowTaskId)), description: \"CONTENT_REDACTED\", taskParameters: \"CONTENT_REDACTED\")"}
 }
 
-public struct UpdateMaintenanceWindowTaskOutput {
+public struct UpdateMaintenanceWindowTaskOutput: Swift.Sendable {
     /// The details for the CloudWatch alarm you applied to your maintenance window task.
     public var alarmConfiguration: SSMClientTypes.AlarmConfiguration?
     /// The specification for whether tasks should continue to run after the cutoff time specified in the maintenance windows is reached.
@@ -18826,7 +18826,7 @@ extension UpdateMaintenanceWindowTaskOutput: Swift.CustomDebugStringConvertible 
         "UpdateMaintenanceWindowTaskOutput(alarmConfiguration: \(Swift.String(describing: alarmConfiguration)), cutoffBehavior: \(Swift.String(describing: cutoffBehavior)), loggingInfo: \(Swift.String(describing: loggingInfo)), maxConcurrency: \(Swift.String(describing: maxConcurrency)), maxErrors: \(Swift.String(describing: maxErrors)), name: \(Swift.String(describing: name)), priority: \(Swift.String(describing: priority)), serviceRoleArn: \(Swift.String(describing: serviceRoleArn)), targets: \(Swift.String(describing: targets)), taskArn: \(Swift.String(describing: taskArn)), taskInvocationParameters: \(Swift.String(describing: taskInvocationParameters)), windowId: \(Swift.String(describing: windowId)), windowTaskId: \(Swift.String(describing: windowTaskId)), description: \"CONTENT_REDACTED\", taskParameters: \"CONTENT_REDACTED\")"}
 }
 
-public struct UpdateManagedInstanceRoleInput {
+public struct UpdateManagedInstanceRoleInput: Swift.Sendable {
     /// The name of the Identity and Access Management (IAM) role that you want to assign to the managed node. This IAM role must provide AssumeRole permissions for the Amazon Web Services Systems Manager service principal ssm.amazonaws.com. For more information, see [Create the IAM service role required for Systems Manager in hybrid and multicloud environments](https://docs.aws.amazon.com/systems-manager/latest/userguide/hybrid-multicloud-service-role.html) in the Amazon Web Services Systems Manager User Guide. You can't specify an IAM service-linked role for this parameter. You must create a unique role.
     /// This member is required.
     public var iamRole: Swift.String?
@@ -18844,12 +18844,12 @@ public struct UpdateManagedInstanceRoleInput {
     }
 }
 
-public struct UpdateManagedInstanceRoleOutput {
+public struct UpdateManagedInstanceRoleOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdateOpsItemInput {
+public struct UpdateOpsItemInput: Swift.Sendable {
     /// The time a runbook workflow ended. Currently reported only for the OpsItem type /aws/changerequest.
     public var actualEndTime: Foundation.Date?
     /// The time a runbook workflow started. Currently reported only for the OpsItem type /aws/changerequest.
@@ -18922,7 +18922,7 @@ public struct UpdateOpsItemInput {
     }
 }
 
-public struct UpdateOpsItemOutput {
+public struct UpdateOpsItemOutput: Swift.Sendable {
 
     public init() { }
 }
@@ -18951,7 +18951,7 @@ public struct OpsMetadataKeyLimitExceededException: ClientRuntime.ModeledError, 
     }
 }
 
-public struct UpdateOpsMetadataInput {
+public struct UpdateOpsMetadataInput: Swift.Sendable {
     /// The metadata keys to delete from the OpsMetadata object.
     public var keysToDelete: [Swift.String]?
     /// Metadata to add to an OpsMetadata object.
@@ -18972,7 +18972,7 @@ public struct UpdateOpsMetadataInput {
     }
 }
 
-public struct UpdateOpsMetadataOutput {
+public struct UpdateOpsMetadataOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the OpsMetadata Object that was updated.
     public var opsMetadataArn: Swift.String?
 
@@ -18984,7 +18984,7 @@ public struct UpdateOpsMetadataOutput {
     }
 }
 
-public struct UpdatePatchBaselineInput {
+public struct UpdatePatchBaselineInput: Swift.Sendable {
     /// A set of rules used to include patches in the baseline.
     public var approvalRules: SSMClientTypes.PatchRuleGroup?
     /// A list of explicitly approved patches for the baseline. For information about accepted formats for lists of approved patches and rejected patches, see [Package name formats for approved and rejected patch lists](https://docs.aws.amazon.com/systems-manager/latest/userguide/patch-manager-approved-rejected-package-name-formats.html) in the Amazon Web Services Systems Manager User Guide.
@@ -19041,7 +19041,7 @@ public struct UpdatePatchBaselineInput {
     }
 }
 
-public struct UpdatePatchBaselineOutput {
+public struct UpdatePatchBaselineOutput: Swift.Sendable {
     /// A set of rules used to include patches in the baseline.
     public var approvalRules: SSMClientTypes.PatchRuleGroup?
     /// A list of explicitly approved patches for the baseline.
@@ -19129,7 +19129,7 @@ public struct ResourceDataSyncConflictException: ClientRuntime.ModeledError, AWS
     }
 }
 
-public struct UpdateResourceDataSyncInput {
+public struct UpdateResourceDataSyncInput: Swift.Sendable {
     /// The name of the resource data sync you want to update.
     /// This member is required.
     public var syncName: Swift.String?
@@ -19152,13 +19152,13 @@ public struct UpdateResourceDataSyncInput {
     }
 }
 
-public struct UpdateResourceDataSyncOutput {
+public struct UpdateResourceDataSyncOutput: Swift.Sendable {
 
     public init() { }
 }
 
 /// The request body of the UpdateServiceSetting API operation.
-public struct UpdateServiceSettingInput {
+public struct UpdateServiceSettingInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the service setting to update. For example, arn:aws:ssm:us-east-1:111122223333:servicesetting/ssm/parameter-store/high-throughput-enabled. The setting ID can be one of the following.
     ///
     /// * /ssm/managed-instance/default-ec2-instance-management-role
@@ -19212,14 +19212,15 @@ public struct UpdateServiceSettingInput {
 }
 
 /// The result body of the UpdateServiceSetting API operation.
-public struct UpdateServiceSettingOutput {
+public struct UpdateServiceSettingOutput: Swift.Sendable {
 
     public init() { }
 }
 
 extension SSMClientTypes {
+
     /// Specifies the inventory type and attribute for the aggregation execution.
-    public struct InventoryAggregator {
+    public struct InventoryAggregator: Swift.Sendable {
         /// Nested aggregators to further refine aggregation for an inventory type.
         public var aggregators: [SSMClientTypes.InventoryAggregator]?
         /// The inventory type and attribute name for aggregation.
@@ -19238,12 +19239,12 @@ extension SSMClientTypes {
             self.groups = groups
         }
     }
-
 }
 
 extension SSMClientTypes {
+
     /// One or more aggregators for viewing counts of OpsData using different dimensions such as Source, CreatedTime, or Source and CreatedTime, to name a few.
-    public struct OpsAggregator {
+    public struct OpsAggregator: Swift.Sendable {
         /// Either a Range or Count aggregator for limiting an OpsData summary.
         public var aggregatorType: Swift.String?
         /// A nested aggregator for viewing counts of OpsData.
@@ -19274,10 +19275,9 @@ extension SSMClientTypes {
             self.values = values
         }
     }
-
 }
 
-public struct GetInventoryInput {
+public struct GetInventoryInput: Swift.Sendable {
     /// Returns counts of inventory types based on one or more expressions. For example, if you aggregate by using an expression that uses the AWS:InstanceInformation.PlatformType type, you can see a count of how many Windows and Linux managed nodes exist in your inventoried fleet.
     public var aggregators: [SSMClientTypes.InventoryAggregator]?
     /// One or more filters. Use a filter to return a more specific list of results.
@@ -19305,7 +19305,7 @@ public struct GetInventoryInput {
     }
 }
 
-public struct GetOpsSummaryInput {
+public struct GetOpsSummaryInput: Swift.Sendable {
     /// Optional aggregators that return counts of OpsData based on one or more expressions.
     public var aggregators: [SSMClientTypes.OpsAggregator]?
     /// Optional filters used to scope down the returned OpsData.
@@ -27234,19 +27234,6 @@ extension TotalSizeLimitExceededException {
     }
 }
 
-extension InvalidInventoryItemContextException {
-
-    static func makeError(baseError: AWSClientRuntime.AWSJSONError) throws -> InvalidInventoryItemContextException {
-        let reader = baseError.errorBodyReader
-        var value = InvalidInventoryItemContextException()
-        value.properties.message = try reader["Message"].readIfPresent()
-        value.httpResponse = baseError.httpResponse
-        value.requestID = baseError.requestID
-        value.message = baseError.message
-        return value
-    }
-}
-
 extension ItemContentMismatchException {
 
     static func makeError(baseError: AWSClientRuntime.AWSJSONError) throws -> ItemContentMismatchException {
@@ -27266,19 +27253,6 @@ extension CustomSchemaCountLimitExceededException {
     static func makeError(baseError: AWSClientRuntime.AWSJSONError) throws -> CustomSchemaCountLimitExceededException {
         let reader = baseError.errorBodyReader
         var value = CustomSchemaCountLimitExceededException()
-        value.properties.message = try reader["Message"].readIfPresent()
-        value.httpResponse = baseError.httpResponse
-        value.requestID = baseError.requestID
-        value.message = baseError.message
-        return value
-    }
-}
-
-extension SubTypeCountLimitExceededException {
-
-    static func makeError(baseError: AWSClientRuntime.AWSJSONError) throws -> SubTypeCountLimitExceededException {
-        let reader = baseError.errorBodyReader
-        var value = SubTypeCountLimitExceededException()
         value.properties.message = try reader["Message"].readIfPresent()
         value.httpResponse = baseError.httpResponse
         value.requestID = baseError.requestID
@@ -27307,6 +27281,32 @@ extension UnsupportedInventoryItemContextException {
         var value = UnsupportedInventoryItemContextException()
         value.properties.message = try reader["Message"].readIfPresent()
         value.properties.typeName = try reader["TypeName"].readIfPresent()
+        value.httpResponse = baseError.httpResponse
+        value.requestID = baseError.requestID
+        value.message = baseError.message
+        return value
+    }
+}
+
+extension InvalidInventoryItemContextException {
+
+    static func makeError(baseError: AWSClientRuntime.AWSJSONError) throws -> InvalidInventoryItemContextException {
+        let reader = baseError.errorBodyReader
+        var value = InvalidInventoryItemContextException()
+        value.properties.message = try reader["Message"].readIfPresent()
+        value.httpResponse = baseError.httpResponse
+        value.requestID = baseError.requestID
+        value.message = baseError.message
+        return value
+    }
+}
+
+extension SubTypeCountLimitExceededException {
+
+    static func makeError(baseError: AWSClientRuntime.AWSJSONError) throws -> SubTypeCountLimitExceededException {
+        let reader = baseError.errorBodyReader
+        var value = SubTypeCountLimitExceededException()
+        value.properties.message = try reader["Message"].readIfPresent()
         value.httpResponse = baseError.httpResponse
         value.requestID = baseError.requestID
         value.message = baseError.message

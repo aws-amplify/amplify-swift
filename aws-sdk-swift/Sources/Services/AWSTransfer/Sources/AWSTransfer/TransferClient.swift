@@ -2847,6 +2847,79 @@ extension TransferClient {
         return try await op.execute(input: input)
     }
 
+    /// Performs the `ListFileTransferResults` operation on the `TransferService` service.
+    ///
+    /// Returns real-time updates and detailed information on the status of each individual file being transferred in a specific file transfer operation. You specify the file transfer by providing its ConnectorId and its TransferId. File transfer results are available up to 7 days after an operation has been requested.
+    ///
+    /// - Parameter ListFileTransferResultsInput : [no documentation found]
+    ///
+    /// - Returns: `ListFileTransferResultsOutput` : [no documentation found]
+    ///
+    /// - Throws: One of the exceptions listed below __Possible Exceptions__.
+    ///
+    /// __Possible Exceptions:__
+    /// - `InternalServiceError` : This exception is thrown when an error occurs in the Transfer Family service.
+    /// - `InvalidRequestException` : This exception is thrown when the client submits a malformed request.
+    /// - `ResourceNotFoundException` : This exception is thrown when a resource is not found by the Amazon Web ServicesTransfer Family service.
+    /// - `ServiceUnavailableException` : The request has failed because the Amazon Web ServicesTransfer Family service is not available.
+    public func listFileTransferResults(input: ListFileTransferResultsInput) async throws -> ListFileTransferResultsOutput {
+        let context = Smithy.ContextBuilder()
+                      .withMethod(value: .post)
+                      .withServiceName(value: serviceName)
+                      .withOperation(value: "listFileTransferResults")
+                      .withIdempotencyTokenGenerator(value: config.idempotencyTokenGenerator)
+                      .withLogger(value: config.logger)
+                      .withPartitionID(value: config.partitionID)
+                      .withAuthSchemes(value: config.authSchemes ?? [])
+                      .withAuthSchemeResolver(value: config.authSchemeResolver)
+                      .withUnsignedPayloadTrait(value: false)
+                      .withSocketTimeout(value: config.httpClientConfiguration.socketTimeout)
+                      .withIdentityResolver(value: config.bearerTokenIdentityResolver, schemeID: "smithy.api#httpBearerAuth")
+                      .withIdentityResolver(value: config.awsCredentialIdentityResolver, schemeID: "aws.auth#sigv4")
+                      .withIdentityResolver(value: config.awsCredentialIdentityResolver, schemeID: "aws.auth#sigv4a")
+                      .withRegion(value: config.region)
+                      .withSigningName(value: "transfer")
+                      .withSigningRegion(value: config.signingRegion)
+                      .build()
+        let builder = ClientRuntime.OrchestratorBuilder<ListFileTransferResultsInput, ListFileTransferResultsOutput, SmithyHTTPAPI.HTTPRequest, SmithyHTTPAPI.HTTPResponse>()
+        config.interceptorProviders.forEach { provider in
+            builder.interceptors.add(provider.create())
+        }
+        config.httpInterceptorProviders.forEach { provider in
+            builder.interceptors.add(provider.create())
+        }
+        builder.interceptors.add(ClientRuntime.URLPathMiddleware<ListFileTransferResultsInput, ListFileTransferResultsOutput>(ListFileTransferResultsInput.urlPathProvider(_:)))
+        builder.interceptors.add(ClientRuntime.URLHostMiddleware<ListFileTransferResultsInput, ListFileTransferResultsOutput>())
+        builder.interceptors.add(ClientRuntime.ContentLengthMiddleware<ListFileTransferResultsInput, ListFileTransferResultsOutput>())
+        builder.deserialize(ClientRuntime.DeserializeMiddleware<ListFileTransferResultsOutput>(ListFileTransferResultsOutput.httpOutput(from:), ListFileTransferResultsOutputError.httpError(from:)))
+        builder.interceptors.add(ClientRuntime.LoggerMiddleware<ListFileTransferResultsInput, ListFileTransferResultsOutput>(clientLogMode: config.clientLogMode))
+        builder.retryStrategy(SmithyRetries.DefaultRetryStrategy(options: config.retryStrategyOptions))
+        builder.retryErrorInfoProvider(AWSClientRuntime.AWSRetryErrorInfoProvider.errorInfo(for:))
+        builder.applySigner(ClientRuntime.SignerMiddleware<ListFileTransferResultsOutput>())
+        let endpointParams = EndpointParams(endpoint: config.endpoint, region: config.region, useDualStack: config.useDualStack ?? false, useFIPS: config.useFIPS ?? false)
+        builder.applyEndpoint(AWSClientRuntime.EndpointResolverMiddleware<ListFileTransferResultsOutput, EndpointParams>(endpointResolverBlock: { [config] in try config.endpointResolver.resolve(params: $0) }, endpointParams: endpointParams))
+        builder.interceptors.add(AWSClientRuntime.UserAgentMiddleware<ListFileTransferResultsInput, ListFileTransferResultsOutput>(serviceID: serviceName, version: "1.0", config: config))
+        builder.interceptors.add(AWSClientRuntime.XAmzTargetMiddleware<ListFileTransferResultsInput, ListFileTransferResultsOutput>(xAmzTarget: "TransferService.ListFileTransferResults"))
+        builder.serialize(ClientRuntime.BodyMiddleware<ListFileTransferResultsInput, ListFileTransferResultsOutput, SmithyJSON.Writer>(rootNodeInfo: "", inputWritingClosure: ListFileTransferResultsInput.write(value:to:)))
+        builder.interceptors.add(ClientRuntime.ContentTypeMiddleware<ListFileTransferResultsInput, ListFileTransferResultsOutput>(contentType: "application/x-amz-json-1.1"))
+        builder.selectAuthScheme(ClientRuntime.AuthSchemeMiddleware<ListFileTransferResultsOutput>())
+        builder.interceptors.add(AWSClientRuntime.AmzSdkInvocationIdMiddleware<ListFileTransferResultsInput, ListFileTransferResultsOutput>())
+        builder.interceptors.add(AWSClientRuntime.AmzSdkRequestMiddleware<ListFileTransferResultsInput, ListFileTransferResultsOutput>(maxRetries: config.retryStrategyOptions.maxRetriesBase))
+        var metricsAttributes = Smithy.Attributes()
+        metricsAttributes.set(key: ClientRuntime.OrchestratorMetricsAttributesKeys.service, value: "Transfer")
+        metricsAttributes.set(key: ClientRuntime.OrchestratorMetricsAttributesKeys.method, value: "ListFileTransferResults")
+        let op = builder.attributes(context)
+            .telemetry(ClientRuntime.OrchestratorTelemetry(
+                telemetryProvider: config.telemetryProvider,
+                metricsAttributes: metricsAttributes,
+                meterScope: serviceName,
+                tracerScope: serviceName
+            ))
+            .executeRequest(client)
+            .build()
+        return try await op.execute(input: input)
+    }
+
     /// Performs the `ListHostKeys` operation on the `TransferService` service.
     ///
     /// Returns a list of host keys for the server that's specified by the ServerId parameter.

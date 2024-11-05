@@ -66,7 +66,7 @@ open class AWSAuthUtils(
         val effectiveAuthSchemes = ServiceIndex(ctx.model).getEffectiveAuthSchemes(ctx.service)
 
         val sdkId = AuthSchemeResolverGenerator.getSdkId(ctx)
-        val servicesUsingSigV4A = arrayOf("S3", "EventBridge", "CloudFrontKeyValueStore")
+        val servicesUsingSigV4A = arrayOf("S3", "EventBridge", "CloudFrontKeyValueStore", "SESv2")
         var updatedAuthSchemeList = authSchemeList
 
         if (effectiveAuthSchemes.contains(SigV4Trait.ID)) {

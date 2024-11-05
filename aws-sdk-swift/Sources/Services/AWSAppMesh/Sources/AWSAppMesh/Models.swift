@@ -31,8 +31,9 @@ import struct Smithy.URIQueryItem
 @_spi(SmithyTimestamps) import struct SmithyTimestamps.TimestampFormatter
 
 extension AppMeshClientTypes {
+
     /// An object that represents the key value pairs for the JSON.
-    public struct JsonFormatRef {
+    public struct JsonFormatRef: Swift.Sendable {
         /// The specified key for the JSON.
         /// This member is required.
         public var key: Swift.String?
@@ -49,24 +50,24 @@ extension AppMeshClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension AppMeshClientTypes {
+
     /// An object that represents the format for the logs.
-    public enum LoggingFormat {
+    public enum LoggingFormat: Swift.Sendable {
         ///
         case text(Swift.String)
         ///
         case json([AppMeshClientTypes.JsonFormatRef])
         case sdkUnknown(Swift.String)
     }
-
 }
 
 extension AppMeshClientTypes {
+
     /// An object that represents an access log file.
-    public struct FileAccessLog {
+    public struct FileAccessLog: Swift.Sendable {
         /// The specified format for the logs. The format is either json_format or text_format.
         public var format: AppMeshClientTypes.LoggingFormat?
         /// The file path to write access logs to. You can use /dev/stdout to send access logs to standard out and configure your Envoy container to use a log driver, such as awslogs, to export the access logs to a log storage service such as Amazon CloudWatch Logs. You can also specify a path in the Envoy container's file system to write the files to disk. The Envoy process must have write permissions to the path that you specify here. Otherwise, Envoy fails to bootstrap properly.
@@ -82,17 +83,16 @@ extension AppMeshClientTypes {
             self.path = path
         }
     }
-
 }
 
 extension AppMeshClientTypes {
+
     /// An object that represents the access logging information for a virtual node.
-    public enum AccessLog {
+    public enum AccessLog: Swift.Sendable {
         /// The file object to send virtual node access logs to.
         case file(AppMeshClientTypes.FileAccessLog)
         case sdkUnknown(Swift.String)
     }
-
 }
 
 /// The request syntax was malformed. Check your request syntax and try again.
@@ -240,7 +240,7 @@ public struct TooManyRequestsException: ClientRuntime.ModeledError, AWSClientRun
 }
 
 ///
-public struct ListTagsForResourceInput {
+public struct ListTagsForResourceInput: Swift.Sendable {
     /// The maximum number of tag results returned by ListTagsForResource in paginated output. When this parameter is used, ListTagsForResource returns only limit results in a single page along with a nextToken response element. You can see the remaining results of the initial request by sending another ListTagsForResource request with the returned nextToken value. This value can be between 1 and 100. If you don't use this parameter, ListTagsForResource returns up to 100 results and a nextToken value if applicable.
     public var limit: Swift.Int?
     /// The nextToken value returned from a previous paginated ListTagsForResource request where limit was used and the results exceeded the value of that parameter. Pagination continues from the end of the previous results that returned the nextToken value.
@@ -262,8 +262,9 @@ public struct ListTagsForResourceInput {
 }
 
 extension AppMeshClientTypes {
+
     /// Optional metadata that you apply to a resource to assist with categorization and organization. Each tag consists of a key and an optional value, both of which you define. Tag keys can have a maximum character length of 128 characters, and tag values can have a maximum length of 256 characters.
-    public struct TagRef {
+    public struct TagRef: Swift.Sendable {
         /// One part of a key-value pair that make up a tag. A key is a general label that acts like a category for more specific tag values.
         /// This member is required.
         public var key: Swift.String?
@@ -280,11 +281,10 @@ extension AppMeshClientTypes {
             self.value = value
         }
     }
-
 }
 
 ///
-public struct ListTagsForResourceOutput {
+public struct ListTagsForResourceOutput: Swift.Sendable {
     /// The nextToken value to include in a future ListTagsForResource request. When the results of a ListTagsForResource request exceed limit, you can use this value to retrieve the next page of results. This value is null when there are no more results to return.
     public var nextToken: Swift.String?
     /// The tags for the resource.
@@ -351,7 +351,7 @@ public struct LimitExceededException: ClientRuntime.ModeledError, AWSClientRunti
 
 extension AppMeshClientTypes {
 
-    public enum EgressFilterType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum EgressFilterType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case allowAll
         case dropAll
         case sdkUnknown(Swift.String)
@@ -379,8 +379,9 @@ extension AppMeshClientTypes {
 }
 
 extension AppMeshClientTypes {
+
     /// An object that represents the egress filter rules for a service mesh.
-    public struct EgressFilter {
+    public struct EgressFilter: Swift.Sendable {
         /// The egress filter type. By default, the type is DROP_ALL, which allows egress only from virtual nodes to other defined resources in the service mesh (and any traffic to *.amazonaws.com for Amazon Web Services API calls). You can set the egress filter type to ALLOW_ALL to allow egress to any endpoint inside or outside of the service mesh.
         /// This member is required.
         public var type: AppMeshClientTypes.EgressFilterType?
@@ -392,12 +393,11 @@ extension AppMeshClientTypes {
             self.type = type
         }
     }
-
 }
 
 extension AppMeshClientTypes {
 
-    public enum IpPreference: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum IpPreference: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case ipv4Only
         case ipv4Preferred
         case ipv6Only
@@ -431,8 +431,9 @@ extension AppMeshClientTypes {
 }
 
 extension AppMeshClientTypes {
+
     /// An object that represents the service discovery information for a service mesh.
-    public struct MeshServiceDiscovery {
+    public struct MeshServiceDiscovery: Swift.Sendable {
         /// The IP version to use to control traffic within the mesh.
         public var ipPreference: AppMeshClientTypes.IpPreference?
 
@@ -443,12 +444,12 @@ extension AppMeshClientTypes {
             self.ipPreference = ipPreference
         }
     }
-
 }
 
 extension AppMeshClientTypes {
+
     /// An object that represents the specification of a service mesh.
-    public struct MeshSpec {
+    public struct MeshSpec: Swift.Sendable {
         /// The egress filter rules for the service mesh.
         public var egressFilter: AppMeshClientTypes.EgressFilter?
         /// An object that represents the service discovery information for a service mesh.
@@ -463,11 +464,10 @@ extension AppMeshClientTypes {
             self.serviceDiscovery = serviceDiscovery
         }
     }
-
 }
 
 ///
-public struct CreateMeshInput {
+public struct CreateMeshInput: Swift.Sendable {
     /// Unique, case-sensitive identifier that you provide to ensure the idempotency of the request. Up to 36 letters, numbers, hyphens, and underscores are allowed.
     public var clientToken: Swift.String?
     /// The name to use for the service mesh.
@@ -493,8 +493,9 @@ public struct CreateMeshInput {
 }
 
 extension AppMeshClientTypes {
+
     /// An object that represents metadata for a resource.
-    public struct ResourceMetadata {
+    public struct ResourceMetadata: Swift.Sendable {
         /// The full Amazon Resource Name (ARN) for the resource.
         /// This member is required.
         public var arn: Swift.String?
@@ -536,12 +537,11 @@ extension AppMeshClientTypes {
             self.version = version
         }
     }
-
 }
 
 extension AppMeshClientTypes {
 
-    public enum MeshStatusCode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum MeshStatusCode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case active
         case deleted
         case inactive
@@ -572,8 +572,9 @@ extension AppMeshClientTypes {
 }
 
 extension AppMeshClientTypes {
+
     /// An object that represents the status of a service mesh.
-    public struct MeshStatus {
+    public struct MeshStatus: Swift.Sendable {
         /// The current mesh status.
         public var status: AppMeshClientTypes.MeshStatusCode?
 
@@ -584,12 +585,12 @@ extension AppMeshClientTypes {
             self.status = status
         }
     }
-
 }
 
 extension AppMeshClientTypes {
+
     /// An object that represents a service mesh returned by a describe operation.
-    public struct MeshData {
+    public struct MeshData: Swift.Sendable {
         /// The name of the service mesh.
         /// This member is required.
         public var meshName: Swift.String?
@@ -616,11 +617,10 @@ extension AppMeshClientTypes {
             self.status = status
         }
     }
-
 }
 
 ///
-public struct CreateMeshOutput {
+public struct CreateMeshOutput: Swift.Sendable {
     /// The full description of your service mesh following the create call.
     /// This member is required.
     public var mesh: AppMeshClientTypes.MeshData?
@@ -658,7 +658,7 @@ public struct ResourceInUseException: ClientRuntime.ModeledError, AWSClientRunti
 }
 
 ///
-public struct DeleteMeshInput {
+public struct DeleteMeshInput: Swift.Sendable {
     /// The name of the service mesh to delete.
     /// This member is required.
     public var meshName: Swift.String?
@@ -672,7 +672,7 @@ public struct DeleteMeshInput {
 }
 
 ///
-public struct DeleteMeshOutput {
+public struct DeleteMeshOutput: Swift.Sendable {
     /// The service mesh that was deleted.
     /// This member is required.
     public var mesh: AppMeshClientTypes.MeshData?
@@ -686,7 +686,7 @@ public struct DeleteMeshOutput {
 }
 
 ///
-public struct DescribeMeshInput {
+public struct DescribeMeshInput: Swift.Sendable {
     /// The name of the service mesh to describe.
     /// This member is required.
     public var meshName: Swift.String?
@@ -704,7 +704,7 @@ public struct DescribeMeshInput {
 }
 
 ///
-public struct DescribeMeshOutput {
+public struct DescribeMeshOutput: Swift.Sendable {
     /// The full description of your service mesh.
     /// This member is required.
     public var mesh: AppMeshClientTypes.MeshData?
@@ -718,7 +718,7 @@ public struct DescribeMeshOutput {
 }
 
 ///
-public struct ListMeshesInput {
+public struct ListMeshesInput: Swift.Sendable {
     /// The maximum number of results returned by ListMeshes in paginated output. When you use this parameter, ListMeshes returns only limit results in a single page along with a nextToken response element. You can see the remaining results of the initial request by sending another ListMeshes request with the returned nextToken value. This value can be between 1 and 100. If you don't use this parameter, ListMeshes returns up to 100 results and a nextToken value if applicable.
     public var limit: Swift.Int?
     /// The nextToken value returned from a previous paginated ListMeshes request where limit was used and the results exceeded the value of that parameter. Pagination continues from the end of the previous results that returned the nextToken value. This token should be treated as an opaque identifier that is used only to retrieve the next items in a list and not for other programmatic purposes.
@@ -735,8 +735,9 @@ public struct ListMeshesInput {
 }
 
 extension AppMeshClientTypes {
+
     /// An object that represents a service mesh returned by a list operation.
-    public struct MeshRef {
+    public struct MeshRef: Swift.Sendable {
         /// The full Amazon Resource Name (ARN) of the service mesh.
         /// This member is required.
         public var arn: Swift.String?
@@ -778,11 +779,10 @@ extension AppMeshClientTypes {
             self.version = version
         }
     }
-
 }
 
 ///
-public struct ListMeshesOutput {
+public struct ListMeshesOutput: Swift.Sendable {
     /// The list of existing service meshes.
     /// This member is required.
     public var meshes: [AppMeshClientTypes.MeshRef]?
@@ -800,7 +800,7 @@ public struct ListMeshesOutput {
 }
 
 ///
-public struct UpdateMeshInput {
+public struct UpdateMeshInput: Swift.Sendable {
     /// Unique, case-sensitive identifier that you provide to ensure the idempotency of the request. Up to 36 letters, numbers, hyphens, and underscores are allowed.
     public var clientToken: Swift.String?
     /// The name of the service mesh to update.
@@ -822,7 +822,7 @@ public struct UpdateMeshInput {
 }
 
 ///
-public struct UpdateMeshOutput {
+public struct UpdateMeshOutput: Swift.Sendable {
     /// An object that represents a service mesh returned by a describe operation.
     /// This member is required.
     public var mesh: AppMeshClientTypes.MeshData?
@@ -836,8 +836,9 @@ public struct UpdateMeshOutput {
 }
 
 extension AppMeshClientTypes {
+
     /// An object that represents a local file certificate. The certificate must meet specific requirements and you must have proxy authorization enabled. For more information, see [Transport Layer Security (TLS)](https://docs.aws.amazon.com/app-mesh/latest/userguide/tls.html#virtual-node-tls-prerequisites).
-    public struct VirtualGatewayListenerTlsFileCertificate {
+    public struct VirtualGatewayListenerTlsFileCertificate: Swift.Sendable {
         /// The certificate chain for the certificate.
         /// This member is required.
         public var certificateChain: Swift.String?
@@ -854,12 +855,12 @@ extension AppMeshClientTypes {
             self.privateKey = privateKey
         }
     }
-
 }
 
 extension AppMeshClientTypes {
+
     /// An object that represents the virtual gateway's listener's Secret Discovery Service certificate.The proxy must be configured with a local SDS provider via a Unix Domain Socket. See App Mesh[TLS documentation](https://docs.aws.amazon.com/app-mesh/latest/userguide/tls.html) for more info.
-    public struct VirtualGatewayListenerTlsSdsCertificate {
+    public struct VirtualGatewayListenerTlsSdsCertificate: Swift.Sendable {
         /// A reference to an object that represents the name of the secret secret requested from the Secret Discovery Service provider representing Transport Layer Security (TLS) materials like a certificate or certificate chain.
         /// This member is required.
         public var secretName: Swift.String?
@@ -871,24 +872,24 @@ extension AppMeshClientTypes {
             self.secretName = secretName
         }
     }
-
 }
 
 extension AppMeshClientTypes {
+
     /// An object that represents the virtual gateway's client's Transport Layer Security (TLS) certificate.
-    public enum VirtualGatewayClientTlsCertificate {
+    public enum VirtualGatewayClientTlsCertificate: Swift.Sendable {
         /// An object that represents a local file certificate. The certificate must meet specific requirements and you must have proxy authorization enabled. For more information, see [ Transport Layer Security (TLS) ](https://docs.aws.amazon.com/app-mesh/latest/userguide/tls.html).
         case file(AppMeshClientTypes.VirtualGatewayListenerTlsFileCertificate)
         /// A reference to an object that represents a virtual gateway's client's Secret Discovery Service certificate.
         case sds(AppMeshClientTypes.VirtualGatewayListenerTlsSdsCertificate)
         case sdkUnknown(Swift.String)
     }
-
 }
 
 extension AppMeshClientTypes {
+
     /// An object that represents the methods by which a subject alternative name on a peer Transport Layer Security (TLS) certificate can be matched.
-    public struct SubjectAlternativeNameMatchers {
+    public struct SubjectAlternativeNameMatchers: Swift.Sendable {
         /// The values sent must match the specified values exactly.
         /// This member is required.
         public var exact: [Swift.String]?
@@ -900,12 +901,12 @@ extension AppMeshClientTypes {
             self.exact = exact
         }
     }
-
 }
 
 extension AppMeshClientTypes {
+
     /// An object that represents the subject alternative names secured by the certificate.
-    public struct SubjectAlternativeNames {
+    public struct SubjectAlternativeNames: Swift.Sendable {
         /// An object that represents the criteria for determining a SANs match.
         /// This member is required.
         public var match: AppMeshClientTypes.SubjectAlternativeNameMatchers?
@@ -917,12 +918,12 @@ extension AppMeshClientTypes {
             self.match = match
         }
     }
-
 }
 
 extension AppMeshClientTypes {
+
     /// An object that represents a Transport Layer Security (TLS) validation context trust for an Certificate Manager certificate.
-    public struct VirtualGatewayTlsValidationContextAcmTrust {
+    public struct VirtualGatewayTlsValidationContextAcmTrust: Swift.Sendable {
         /// One or more ACM Amazon Resource Name (ARN)s.
         /// This member is required.
         public var certificateAuthorityArns: [Swift.String]?
@@ -934,12 +935,12 @@ extension AppMeshClientTypes {
             self.certificateAuthorityArns = certificateAuthorityArns
         }
     }
-
 }
 
 extension AppMeshClientTypes {
+
     /// An object that represents a Transport Layer Security (TLS) validation context trust for a local file.
-    public struct VirtualGatewayTlsValidationContextFileTrust {
+    public struct VirtualGatewayTlsValidationContextFileTrust: Swift.Sendable {
         /// The certificate trust chain for a certificate stored on the file system of the virtual node that the proxy is running on.
         /// This member is required.
         public var certificateChain: Swift.String?
@@ -951,12 +952,12 @@ extension AppMeshClientTypes {
             self.certificateChain = certificateChain
         }
     }
-
 }
 
 extension AppMeshClientTypes {
+
     /// An object that represents a virtual gateway's listener's Transport Layer Security (TLS) Secret Discovery Service validation context trust. The proxy must be configured with a local SDS provider via a Unix Domain Socket. See App Mesh [TLS documentation](https://docs.aws.amazon.com/app-mesh/latest/userguide/tls.html) for more info.
-    public struct VirtualGatewayTlsValidationContextSdsTrust {
+    public struct VirtualGatewayTlsValidationContextSdsTrust: Swift.Sendable {
         /// A reference to an object that represents the name of the secret for a virtual gateway's Transport Layer Security (TLS) Secret Discovery Service validation context trust.
         /// This member is required.
         public var secretName: Swift.String?
@@ -968,12 +969,12 @@ extension AppMeshClientTypes {
             self.secretName = secretName
         }
     }
-
 }
 
 extension AppMeshClientTypes {
+
     /// An object that represents a Transport Layer Security (TLS) validation context trust.
-    public enum VirtualGatewayTlsValidationContextTrust {
+    public enum VirtualGatewayTlsValidationContextTrust: Swift.Sendable {
         /// A reference to an object that represents a Transport Layer Security (TLS) validation context trust for an Certificate Manager certificate.
         case acm(AppMeshClientTypes.VirtualGatewayTlsValidationContextAcmTrust)
         /// An object that represents a Transport Layer Security (TLS) validation context trust for a local file.
@@ -982,12 +983,12 @@ extension AppMeshClientTypes {
         case sds(AppMeshClientTypes.VirtualGatewayTlsValidationContextSdsTrust)
         case sdkUnknown(Swift.String)
     }
-
 }
 
 extension AppMeshClientTypes {
+
     /// An object that represents a Transport Layer Security (TLS) validation context.
-    public struct VirtualGatewayTlsValidationContext {
+    public struct VirtualGatewayTlsValidationContext: Swift.Sendable {
         /// A reference to an object that represents the SANs for a virtual gateway's listener's Transport Layer Security (TLS) validation context.
         public var subjectAlternativeNames: AppMeshClientTypes.SubjectAlternativeNames?
         /// A reference to where to retrieve the trust chain when validating a peer’s Transport Layer Security (TLS) certificate.
@@ -1003,12 +1004,12 @@ extension AppMeshClientTypes {
             self.trust = trust
         }
     }
-
 }
 
 extension AppMeshClientTypes {
+
     /// An object that represents a Transport Layer Security (TLS) client policy.
-    public struct VirtualGatewayClientPolicyTls {
+    public struct VirtualGatewayClientPolicyTls: Swift.Sendable {
         /// A reference to an object that represents a virtual gateway's client's Transport Layer Security (TLS) certificate.
         public var certificate: AppMeshClientTypes.VirtualGatewayClientTlsCertificate?
         /// Whether the policy is enforced. The default is True, if a value isn't specified.
@@ -1032,12 +1033,12 @@ extension AppMeshClientTypes {
             self.validation = validation
         }
     }
-
 }
 
 extension AppMeshClientTypes {
+
     /// An object that represents a client policy.
-    public struct VirtualGatewayClientPolicy {
+    public struct VirtualGatewayClientPolicy: Swift.Sendable {
         /// A reference to an object that represents a Transport Layer Security (TLS) client policy.
         public var tls: AppMeshClientTypes.VirtualGatewayClientPolicyTls?
 
@@ -1048,12 +1049,12 @@ extension AppMeshClientTypes {
             self.tls = tls
         }
     }
-
 }
 
 extension AppMeshClientTypes {
+
     /// An object that represents the default properties for a backend.
-    public struct VirtualGatewayBackendDefaults {
+    public struct VirtualGatewayBackendDefaults: Swift.Sendable {
         /// A reference to an object that represents a client policy.
         public var clientPolicy: AppMeshClientTypes.VirtualGatewayClientPolicy?
 
@@ -1064,12 +1065,12 @@ extension AppMeshClientTypes {
             self.clientPolicy = clientPolicy
         }
     }
-
 }
 
 extension AppMeshClientTypes {
+
     /// An object that represents a type of connection pool.
-    public struct VirtualGatewayGrpcConnectionPool {
+    public struct VirtualGatewayGrpcConnectionPool: Swift.Sendable {
         /// Maximum number of inflight requests Envoy can concurrently support across hosts in upstream cluster.
         /// This member is required.
         public var maxRequests: Swift.Int?
@@ -1081,12 +1082,12 @@ extension AppMeshClientTypes {
             self.maxRequests = maxRequests
         }
     }
-
 }
 
 extension AppMeshClientTypes {
+
     /// An object that represents a type of connection pool.
-    public struct VirtualGatewayHttpConnectionPool {
+    public struct VirtualGatewayHttpConnectionPool: Swift.Sendable {
         /// Maximum number of outbound TCP connections Envoy can establish concurrently with all hosts in upstream cluster.
         /// This member is required.
         public var maxConnections: Swift.Int?
@@ -1102,12 +1103,12 @@ extension AppMeshClientTypes {
             self.maxPendingRequests = maxPendingRequests
         }
     }
-
 }
 
 extension AppMeshClientTypes {
+
     /// An object that represents a type of connection pool.
-    public struct VirtualGatewayHttp2ConnectionPool {
+    public struct VirtualGatewayHttp2ConnectionPool: Swift.Sendable {
         /// Maximum number of inflight requests Envoy can concurrently support across hosts in upstream cluster.
         /// This member is required.
         public var maxRequests: Swift.Int?
@@ -1119,12 +1120,12 @@ extension AppMeshClientTypes {
             self.maxRequests = maxRequests
         }
     }
-
 }
 
 extension AppMeshClientTypes {
+
     /// An object that represents the type of virtual gateway connection pool. Only one protocol is used at a time and should be the same protocol as the one chosen under port mapping. If not present the default value for maxPendingRequests is 2147483647.
-    public enum VirtualGatewayConnectionPool {
+    public enum VirtualGatewayConnectionPool: Swift.Sendable {
         /// An object that represents a type of connection pool.
         case http(AppMeshClientTypes.VirtualGatewayHttpConnectionPool)
         /// An object that represents a type of connection pool.
@@ -1133,12 +1134,11 @@ extension AppMeshClientTypes {
         case grpc(AppMeshClientTypes.VirtualGatewayGrpcConnectionPool)
         case sdkUnknown(Swift.String)
     }
-
 }
 
 extension AppMeshClientTypes {
 
-    public enum VirtualGatewayPortProtocol: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum VirtualGatewayPortProtocol: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case grpc
         case http
         case http2
@@ -1169,8 +1169,9 @@ extension AppMeshClientTypes {
 }
 
 extension AppMeshClientTypes {
+
     /// An object that represents the health check policy for a virtual gateway's listener.
-    public struct VirtualGatewayHealthCheckPolicy {
+    public struct VirtualGatewayHealthCheckPolicy: Swift.Sendable {
         /// The number of consecutive successful health checks that must occur before declaring the listener healthy.
         /// This member is required.
         public var healthyThreshold: Swift.Int?
@@ -1210,12 +1211,12 @@ extension AppMeshClientTypes {
             self.unhealthyThreshold = unhealthyThreshold
         }
     }
-
 }
 
 extension AppMeshClientTypes {
+
     /// An object that represents a port mapping.
-    public struct VirtualGatewayPortMapping {
+    public struct VirtualGatewayPortMapping: Swift.Sendable {
         /// The port used for the port mapping. Specify one protocol.
         /// This member is required.
         public var port: Swift.Int?
@@ -1232,12 +1233,12 @@ extension AppMeshClientTypes {
             self.`protocol` = `protocol`
         }
     }
-
 }
 
 extension AppMeshClientTypes {
+
     /// An object that represents an Certificate Manager certificate.
-    public struct VirtualGatewayListenerTlsAcmCertificate {
+    public struct VirtualGatewayListenerTlsAcmCertificate: Swift.Sendable {
         /// The Amazon Resource Name (ARN) for the certificate. The certificate must meet specific requirements and you must have proxy authorization enabled. For more information, see [Transport Layer Security (TLS)](https://docs.aws.amazon.com/app-mesh/latest/userguide/tls.html#virtual-node-tls-prerequisites).
         /// This member is required.
         public var certificateArn: Swift.String?
@@ -1249,12 +1250,12 @@ extension AppMeshClientTypes {
             self.certificateArn = certificateArn
         }
     }
-
 }
 
 extension AppMeshClientTypes {
+
     /// An object that represents a listener's Transport Layer Security (TLS) certificate.
-    public enum VirtualGatewayListenerTlsCertificate {
+    public enum VirtualGatewayListenerTlsCertificate: Swift.Sendable {
         /// A reference to an object that represents an Certificate Manager certificate.
         case acm(AppMeshClientTypes.VirtualGatewayListenerTlsAcmCertificate)
         /// A reference to an object that represents a local file certificate.
@@ -1263,12 +1264,11 @@ extension AppMeshClientTypes {
         case sds(AppMeshClientTypes.VirtualGatewayListenerTlsSdsCertificate)
         case sdkUnknown(Swift.String)
     }
-
 }
 
 extension AppMeshClientTypes {
 
-    public enum VirtualGatewayListenerTlsMode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum VirtualGatewayListenerTlsMode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case disabled
         case permissive
         case strict
@@ -1299,20 +1299,21 @@ extension AppMeshClientTypes {
 }
 
 extension AppMeshClientTypes {
+
     /// An object that represents a virtual gateway's listener's Transport Layer Security (TLS) validation context trust.
-    public enum VirtualGatewayListenerTlsValidationContextTrust {
+    public enum VirtualGatewayListenerTlsValidationContextTrust: Swift.Sendable {
         /// An object that represents a Transport Layer Security (TLS) validation context trust for a local file.
         case file(AppMeshClientTypes.VirtualGatewayTlsValidationContextFileTrust)
         /// A reference to an object that represents a virtual gateway's listener's Transport Layer Security (TLS) Secret Discovery Service validation context trust.
         case sds(AppMeshClientTypes.VirtualGatewayTlsValidationContextSdsTrust)
         case sdkUnknown(Swift.String)
     }
-
 }
 
 extension AppMeshClientTypes {
+
     /// An object that represents a virtual gateway's listener's Transport Layer Security (TLS) validation context.
-    public struct VirtualGatewayListenerTlsValidationContext {
+    public struct VirtualGatewayListenerTlsValidationContext: Swift.Sendable {
         /// A reference to an object that represents the SANs for a virtual gateway listener's Transport Layer Security (TLS) validation context.
         public var subjectAlternativeNames: AppMeshClientTypes.SubjectAlternativeNames?
         /// A reference to where to retrieve the trust chain when validating a peer’s Transport Layer Security (TLS) certificate.
@@ -1328,12 +1329,12 @@ extension AppMeshClientTypes {
             self.trust = trust
         }
     }
-
 }
 
 extension AppMeshClientTypes {
+
     /// An object that represents the Transport Layer Security (TLS) properties for a listener.
-    public struct VirtualGatewayListenerTls {
+    public struct VirtualGatewayListenerTls: Swift.Sendable {
         /// An object that represents a Transport Layer Security (TLS) certificate.
         /// This member is required.
         public var certificate: AppMeshClientTypes.VirtualGatewayListenerTlsCertificate?
@@ -1360,12 +1361,12 @@ extension AppMeshClientTypes {
             self.validation = validation
         }
     }
-
 }
 
 extension AppMeshClientTypes {
+
     /// An object that represents a listener for a virtual gateway.
-    public struct VirtualGatewayListener {
+    public struct VirtualGatewayListener: Swift.Sendable {
         /// The connection pool information for the virtual gateway listener.
         public var connectionPool: AppMeshClientTypes.VirtualGatewayConnectionPool?
         /// The health check information for the listener.
@@ -1389,12 +1390,12 @@ extension AppMeshClientTypes {
             self.tls = tls
         }
     }
-
 }
 
 extension AppMeshClientTypes {
+
     /// An object that represents an access log file.
-    public struct VirtualGatewayFileAccessLog {
+    public struct VirtualGatewayFileAccessLog: Swift.Sendable {
         /// The specified format for the virtual gateway access logs. It can be either json_format or text_format.
         public var format: AppMeshClientTypes.LoggingFormat?
         /// The file path to write access logs to. You can use /dev/stdout to send access logs to standard out and configure your Envoy container to use a log driver, such as awslogs, to export the access logs to a log storage service such as Amazon CloudWatch Logs. You can also specify a path in the Envoy container's file system to write the files to disk.
@@ -1410,22 +1411,22 @@ extension AppMeshClientTypes {
             self.path = path
         }
     }
-
 }
 
 extension AppMeshClientTypes {
+
     /// The access log configuration for a virtual gateway.
-    public enum VirtualGatewayAccessLog {
+    public enum VirtualGatewayAccessLog: Swift.Sendable {
         /// The file object to send virtual gateway access logs to.
         case file(AppMeshClientTypes.VirtualGatewayFileAccessLog)
         case sdkUnknown(Swift.String)
     }
-
 }
 
 extension AppMeshClientTypes {
+
     /// An object that represents logging information.
-    public struct VirtualGatewayLogging {
+    public struct VirtualGatewayLogging: Swift.Sendable {
         /// The access log configuration.
         public var accessLog: AppMeshClientTypes.VirtualGatewayAccessLog?
 
@@ -1436,12 +1437,12 @@ extension AppMeshClientTypes {
             self.accessLog = accessLog
         }
     }
-
 }
 
 extension AppMeshClientTypes {
+
     /// An object that represents the specification of a service mesh resource.
-    public struct VirtualGatewaySpec {
+    public struct VirtualGatewaySpec: Swift.Sendable {
         /// A reference to an object that represents the defaults for backends.
         public var backendDefaults: AppMeshClientTypes.VirtualGatewayBackendDefaults?
         /// The listeners that the mesh endpoint is expected to receive inbound traffic from. You can specify one listener.
@@ -1461,10 +1462,9 @@ extension AppMeshClientTypes {
             self.logging = logging
         }
     }
-
 }
 
-public struct CreateVirtualGatewayInput {
+public struct CreateVirtualGatewayInput: Swift.Sendable {
     /// Unique, case-sensitive identifier that you provide to ensure the idempotency of the request. Up to 36 letters, numbers, hyphens, and underscores are allowed.
     public var clientToken: Swift.String?
     /// The name of the service mesh to create the virtual gateway in.
@@ -1501,7 +1501,7 @@ public struct CreateVirtualGatewayInput {
 
 extension AppMeshClientTypes {
 
-    public enum VirtualGatewayStatusCode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum VirtualGatewayStatusCode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case active
         case deleted
         case inactive
@@ -1532,8 +1532,9 @@ extension AppMeshClientTypes {
 }
 
 extension AppMeshClientTypes {
+
     /// An object that represents the status of the mesh resource.
-    public struct VirtualGatewayStatus {
+    public struct VirtualGatewayStatus: Swift.Sendable {
         /// The current status.
         /// This member is required.
         public var status: AppMeshClientTypes.VirtualGatewayStatusCode?
@@ -1545,12 +1546,12 @@ extension AppMeshClientTypes {
             self.status = status
         }
     }
-
 }
 
 extension AppMeshClientTypes {
+
     /// An object that represents a virtual gateway returned by a describe operation.
-    public struct VirtualGatewayData {
+    public struct VirtualGatewayData: Swift.Sendable {
         /// The name of the service mesh that the virtual gateway resides in.
         /// This member is required.
         public var meshName: Swift.String?
@@ -1582,10 +1583,9 @@ extension AppMeshClientTypes {
             self.virtualGatewayName = virtualGatewayName
         }
     }
-
 }
 
-public struct CreateVirtualGatewayOutput {
+public struct CreateVirtualGatewayOutput: Swift.Sendable {
     /// The full description of your virtual gateway following the create call.
     /// This member is required.
     public var virtualGateway: AppMeshClientTypes.VirtualGatewayData?
@@ -1598,7 +1598,7 @@ public struct CreateVirtualGatewayOutput {
     }
 }
 
-public struct DeleteVirtualGatewayInput {
+public struct DeleteVirtualGatewayInput: Swift.Sendable {
     /// The name of the service mesh to delete the virtual gateway from.
     /// This member is required.
     public var meshName: Swift.String?
@@ -1620,7 +1620,7 @@ public struct DeleteVirtualGatewayInput {
     }
 }
 
-public struct DeleteVirtualGatewayOutput {
+public struct DeleteVirtualGatewayOutput: Swift.Sendable {
     /// The virtual gateway that was deleted.
     /// This member is required.
     public var virtualGateway: AppMeshClientTypes.VirtualGatewayData?
@@ -1633,7 +1633,7 @@ public struct DeleteVirtualGatewayOutput {
     }
 }
 
-public struct DescribeVirtualGatewayInput {
+public struct DescribeVirtualGatewayInput: Swift.Sendable {
     /// The name of the service mesh that the gateway route resides in.
     /// This member is required.
     public var meshName: Swift.String?
@@ -1655,7 +1655,7 @@ public struct DescribeVirtualGatewayInput {
     }
 }
 
-public struct DescribeVirtualGatewayOutput {
+public struct DescribeVirtualGatewayOutput: Swift.Sendable {
     /// The full description of your virtual gateway.
     /// This member is required.
     public var virtualGateway: AppMeshClientTypes.VirtualGatewayData?
@@ -1670,7 +1670,7 @@ public struct DescribeVirtualGatewayOutput {
 
 extension AppMeshClientTypes {
 
-    public enum DefaultGatewayRouteRewrite: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DefaultGatewayRouteRewrite: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case disabled
         case enabled
         case sdkUnknown(Swift.String)
@@ -1698,8 +1698,9 @@ extension AppMeshClientTypes {
 }
 
 extension AppMeshClientTypes {
+
     /// An object representing the gateway route host name to rewrite.
-    public struct GatewayRouteHostnameRewrite {
+    public struct GatewayRouteHostnameRewrite: Swift.Sendable {
         /// The default target host name to write to.
         public var defaultTargetHostname: AppMeshClientTypes.DefaultGatewayRouteRewrite?
 
@@ -1710,12 +1711,12 @@ extension AppMeshClientTypes {
             self.defaultTargetHostname = defaultTargetHostname
         }
     }
-
 }
 
 extension AppMeshClientTypes {
+
     /// An object that represents the gateway route to rewrite.
-    public struct GrpcGatewayRouteRewrite {
+    public struct GrpcGatewayRouteRewrite: Swift.Sendable {
         /// The host name of the gateway route to rewrite.
         public var hostname: AppMeshClientTypes.GatewayRouteHostnameRewrite?
 
@@ -1726,12 +1727,12 @@ extension AppMeshClientTypes {
             self.hostname = hostname
         }
     }
-
 }
 
 extension AppMeshClientTypes {
+
     /// An object that represents the virtual service that traffic is routed to.
-    public struct GatewayRouteVirtualService {
+    public struct GatewayRouteVirtualService: Swift.Sendable {
         /// The name of the virtual service that traffic is routed to.
         /// This member is required.
         public var virtualServiceName: Swift.String?
@@ -1743,12 +1744,12 @@ extension AppMeshClientTypes {
             self.virtualServiceName = virtualServiceName
         }
     }
-
 }
 
 extension AppMeshClientTypes {
+
     /// An object that represents a gateway route target.
-    public struct GatewayRouteTarget {
+    public struct GatewayRouteTarget: Swift.Sendable {
         /// The port number of the gateway route target.
         public var port: Swift.Int?
         /// An object that represents a virtual service gateway route target.
@@ -1764,12 +1765,12 @@ extension AppMeshClientTypes {
             self.virtualService = virtualService
         }
     }
-
 }
 
 extension AppMeshClientTypes {
+
     /// An object that represents the action to take if a match is determined.
-    public struct GrpcGatewayRouteAction {
+    public struct GrpcGatewayRouteAction: Swift.Sendable {
         /// The gateway route action to rewrite.
         public var rewrite: AppMeshClientTypes.GrpcGatewayRouteRewrite?
         /// An object that represents the target that traffic is routed to when a request matches the gateway route.
@@ -1785,12 +1786,12 @@ extension AppMeshClientTypes {
             self.target = target
         }
     }
-
 }
 
 extension AppMeshClientTypes {
+
     /// An object representing the gateway route host name to match.
-    public struct GatewayRouteHostnameMatch {
+    public struct GatewayRouteHostnameMatch: Swift.Sendable {
         /// The exact host name to match on.
         public var exact: Swift.String?
         /// The specified ending characters of the host name to match on.
@@ -1805,12 +1806,12 @@ extension AppMeshClientTypes {
             self.suffix = suffix
         }
     }
-
 }
 
 extension AppMeshClientTypes {
+
     /// An object that represents the range of values to match on. The first character of the range is included in the range, though the last character is not. For example, if the range specified were 1-100, only values 1-99 would be matched.
-    public struct MatchRange {
+    public struct MatchRange: Swift.Sendable {
         /// The end of the range.
         /// This member is required.
         public var end: Swift.Int?
@@ -1827,12 +1828,12 @@ extension AppMeshClientTypes {
             self.start = start
         }
     }
-
 }
 
 extension AppMeshClientTypes {
+
     /// An object representing the method header to be matched.
-    public enum GrpcMetadataMatchMethod {
+    public enum GrpcMetadataMatchMethod: Swift.Sendable {
         /// The exact method header to be matched on.
         case exact(Swift.String)
         /// The regex used to match the method header.
@@ -1845,12 +1846,12 @@ extension AppMeshClientTypes {
         case suffix(Swift.String)
         case sdkUnknown(Swift.String)
     }
-
 }
 
 extension AppMeshClientTypes {
+
     /// An object representing the metadata of the gateway route.
-    public struct GrpcGatewayRouteMetadata {
+    public struct GrpcGatewayRouteMetadata: Swift.Sendable {
         /// Specify True to match anything except the match criteria. The default value is False.
         public var invert: Swift.Bool?
         /// The criteria for determining a metadata match.
@@ -1870,12 +1871,12 @@ extension AppMeshClientTypes {
             self.name = name
         }
     }
-
 }
 
 extension AppMeshClientTypes {
+
     /// An object that represents the criteria for determining a request match.
-    public struct GrpcGatewayRouteMatch {
+    public struct GrpcGatewayRouteMatch: Swift.Sendable {
         /// The gateway route host name to be matched on.
         public var hostname: AppMeshClientTypes.GatewayRouteHostnameMatch?
         /// The gateway route metadata to be matched on.
@@ -1898,12 +1899,12 @@ extension AppMeshClientTypes {
             self.serviceName = serviceName
         }
     }
-
 }
 
 extension AppMeshClientTypes {
+
     /// An object that represents a gRPC gateway route.
-    public struct GrpcGatewayRoute {
+    public struct GrpcGatewayRoute: Swift.Sendable {
         /// An object that represents the action to take if a match is determined.
         /// This member is required.
         public var action: AppMeshClientTypes.GrpcGatewayRouteAction?
@@ -1920,12 +1921,12 @@ extension AppMeshClientTypes {
             self.match = match
         }
     }
-
 }
 
 extension AppMeshClientTypes {
+
     /// An object that represents the path to rewrite.
-    public struct HttpGatewayRoutePathRewrite {
+    public struct HttpGatewayRoutePathRewrite: Swift.Sendable {
         /// The exact path to rewrite.
         public var exact: Swift.String?
 
@@ -1936,12 +1937,12 @@ extension AppMeshClientTypes {
             self.exact = exact
         }
     }
-
 }
 
 extension AppMeshClientTypes {
+
     /// An object representing the beginning characters of the route to rewrite.
-    public struct HttpGatewayRoutePrefixRewrite {
+    public struct HttpGatewayRoutePrefixRewrite: Swift.Sendable {
         /// The default prefix used to replace the incoming route prefix when rewritten.
         public var defaultPrefix: AppMeshClientTypes.DefaultGatewayRouteRewrite?
         /// The value used to replace the incoming route prefix when rewritten.
@@ -1956,12 +1957,12 @@ extension AppMeshClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension AppMeshClientTypes {
+
     /// An object representing the gateway route to rewrite.
-    public struct HttpGatewayRouteRewrite {
+    public struct HttpGatewayRouteRewrite: Swift.Sendable {
         /// The host name to rewrite.
         public var hostname: AppMeshClientTypes.GatewayRouteHostnameRewrite?
         /// The path to rewrite.
@@ -1980,12 +1981,12 @@ extension AppMeshClientTypes {
             self.`prefix` = `prefix`
         }
     }
-
 }
 
 extension AppMeshClientTypes {
+
     /// An object that represents the action to take if a match is determined.
-    public struct HttpGatewayRouteAction {
+    public struct HttpGatewayRouteAction: Swift.Sendable {
         /// The gateway route action to rewrite.
         public var rewrite: AppMeshClientTypes.HttpGatewayRouteRewrite?
         /// An object that represents the target that traffic is routed to when a request matches the gateway route.
@@ -2001,12 +2002,12 @@ extension AppMeshClientTypes {
             self.target = target
         }
     }
-
 }
 
 extension AppMeshClientTypes {
+
     /// An object that represents the method and value to match with the header value sent in a request. Specify one match method.
-    public enum HeaderMatchMethod {
+    public enum HeaderMatchMethod: Swift.Sendable {
         /// The value sent by the client must match the specified value exactly.
         case exact(Swift.String)
         /// The value sent by the client must include the specified characters.
@@ -2019,12 +2020,12 @@ extension AppMeshClientTypes {
         case suffix(Swift.String)
         case sdkUnknown(Swift.String)
     }
-
 }
 
 extension AppMeshClientTypes {
+
     /// An object that represents the HTTP header in the gateway route.
-    public struct HttpGatewayRouteHeader {
+    public struct HttpGatewayRouteHeader: Swift.Sendable {
         /// Specify True to match anything except the match criteria. The default value is False.
         public var invert: Swift.Bool?
         /// An object that represents the method and value to match with the header value sent in a request. Specify one match method.
@@ -2044,12 +2045,11 @@ extension AppMeshClientTypes {
             self.name = name
         }
     }
-
 }
 
 extension AppMeshClientTypes {
 
-    public enum HttpMethod: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum HttpMethod: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case connect
         case delete
         case `get`
@@ -2098,8 +2098,9 @@ extension AppMeshClientTypes {
 }
 
 extension AppMeshClientTypes {
+
     /// An object representing the path to match in the request.
-    public struct HttpPathMatch {
+    public struct HttpPathMatch: Swift.Sendable {
         /// The exact path to match on.
         public var exact: Swift.String?
         /// The regex used to match the path.
@@ -2114,12 +2115,12 @@ extension AppMeshClientTypes {
             self.regex = regex
         }
     }
-
 }
 
 extension AppMeshClientTypes {
+
     /// An object representing the query parameter to match.
-    public struct QueryParameterMatch {
+    public struct QueryParameterMatch: Swift.Sendable {
         /// The exact query parameter to match on.
         public var exact: Swift.String?
 
@@ -2130,12 +2131,12 @@ extension AppMeshClientTypes {
             self.exact = exact
         }
     }
-
 }
 
 extension AppMeshClientTypes {
+
     /// An object that represents the query parameter in the request.
-    public struct HttpQueryParameter {
+    public struct HttpQueryParameter: Swift.Sendable {
         /// The query parameter to match on.
         public var match: AppMeshClientTypes.QueryParameterMatch?
         /// A name for the query parameter that will be matched on.
@@ -2151,12 +2152,12 @@ extension AppMeshClientTypes {
             self.name = name
         }
     }
-
 }
 
 extension AppMeshClientTypes {
+
     /// An object that represents the criteria for determining a request match.
-    public struct HttpGatewayRouteMatch {
+    public struct HttpGatewayRouteMatch: Swift.Sendable {
         /// The client request headers to match on.
         public var headers: [AppMeshClientTypes.HttpGatewayRouteHeader]?
         /// The host name to match on.
@@ -2191,12 +2192,12 @@ extension AppMeshClientTypes {
             self.queryParameters = queryParameters
         }
     }
-
 }
 
 extension AppMeshClientTypes {
+
     /// An object that represents an HTTP gateway route.
-    public struct HttpGatewayRoute {
+    public struct HttpGatewayRoute: Swift.Sendable {
         /// An object that represents the action to take if a match is determined.
         /// This member is required.
         public var action: AppMeshClientTypes.HttpGatewayRouteAction?
@@ -2213,12 +2214,12 @@ extension AppMeshClientTypes {
             self.match = match
         }
     }
-
 }
 
 extension AppMeshClientTypes {
+
     /// An object that represents a gateway route specification. Specify one gateway route type.
-    public struct GatewayRouteSpec {
+    public struct GatewayRouteSpec: Swift.Sendable {
         /// An object that represents the specification of a gRPC gateway route.
         public var grpcRoute: AppMeshClientTypes.GrpcGatewayRoute?
         /// An object that represents the specification of an HTTP/2 gateway route.
@@ -2241,10 +2242,9 @@ extension AppMeshClientTypes {
             self.priority = priority
         }
     }
-
 }
 
-public struct CreateGatewayRouteInput {
+public struct CreateGatewayRouteInput: Swift.Sendable {
     /// Unique, case-sensitive identifier that you provide to ensure the idempotency of the request. Up to 36 letters, numbers, hyphens, and underscores are allowed.
     public var clientToken: Swift.String?
     /// The name to use for the gateway route.
@@ -2286,7 +2286,7 @@ public struct CreateGatewayRouteInput {
 
 extension AppMeshClientTypes {
 
-    public enum GatewayRouteStatusCode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum GatewayRouteStatusCode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case active
         case deleted
         case inactive
@@ -2317,8 +2317,9 @@ extension AppMeshClientTypes {
 }
 
 extension AppMeshClientTypes {
+
     /// An object that represents the current status of a gateway route.
-    public struct GatewayRouteStatus {
+    public struct GatewayRouteStatus: Swift.Sendable {
         /// The current status for the gateway route.
         /// This member is required.
         public var status: AppMeshClientTypes.GatewayRouteStatusCode?
@@ -2330,12 +2331,12 @@ extension AppMeshClientTypes {
             self.status = status
         }
     }
-
 }
 
 extension AppMeshClientTypes {
+
     /// An object that represents a gateway route returned by a describe operation.
-    public struct GatewayRouteData {
+    public struct GatewayRouteData: Swift.Sendable {
         /// The name of the gateway route.
         /// This member is required.
         public var gatewayRouteName: Swift.String?
@@ -2372,10 +2373,9 @@ extension AppMeshClientTypes {
             self.virtualGatewayName = virtualGatewayName
         }
     }
-
 }
 
-public struct CreateGatewayRouteOutput {
+public struct CreateGatewayRouteOutput: Swift.Sendable {
     /// The full description of your gateway route following the create call.
     /// This member is required.
     public var gatewayRoute: AppMeshClientTypes.GatewayRouteData?
@@ -2388,7 +2388,7 @@ public struct CreateGatewayRouteOutput {
     }
 }
 
-public struct DeleteGatewayRouteInput {
+public struct DeleteGatewayRouteInput: Swift.Sendable {
     /// The name of the gateway route to delete.
     /// This member is required.
     public var gatewayRouteName: Swift.String?
@@ -2415,7 +2415,7 @@ public struct DeleteGatewayRouteInput {
     }
 }
 
-public struct DeleteGatewayRouteOutput {
+public struct DeleteGatewayRouteOutput: Swift.Sendable {
     /// The gateway route that was deleted.
     /// This member is required.
     public var gatewayRoute: AppMeshClientTypes.GatewayRouteData?
@@ -2428,7 +2428,7 @@ public struct DeleteGatewayRouteOutput {
     }
 }
 
-public struct DescribeGatewayRouteInput {
+public struct DescribeGatewayRouteInput: Swift.Sendable {
     /// The name of the gateway route to describe.
     /// This member is required.
     public var gatewayRouteName: Swift.String?
@@ -2455,7 +2455,7 @@ public struct DescribeGatewayRouteInput {
     }
 }
 
-public struct DescribeGatewayRouteOutput {
+public struct DescribeGatewayRouteOutput: Swift.Sendable {
     /// The full description of your gateway route.
     /// This member is required.
     public var gatewayRoute: AppMeshClientTypes.GatewayRouteData?
@@ -2468,7 +2468,7 @@ public struct DescribeGatewayRouteOutput {
     }
 }
 
-public struct ListGatewayRoutesInput {
+public struct ListGatewayRoutesInput: Swift.Sendable {
     /// The maximum number of results returned by ListGatewayRoutes in paginated output. When you use this parameter, ListGatewayRoutes returns only limit results in a single page along with a nextToken response element. You can see the remaining results of the initial request by sending another ListGatewayRoutes request with the returned nextToken value. This value can be between 1 and 100. If you don't use this parameter, ListGatewayRoutes returns up to 100 results and a nextToken value if applicable.
     public var limit: Swift.Int?
     /// The name of the service mesh to list gateway routes in.
@@ -2499,8 +2499,9 @@ public struct ListGatewayRoutesInput {
 }
 
 extension AppMeshClientTypes {
+
     /// An object that represents a gateway route returned by a list operation.
-    public struct GatewayRouteRef {
+    public struct GatewayRouteRef: Swift.Sendable {
         /// The full Amazon Resource Name (ARN) for the gateway route.
         /// This member is required.
         public var arn: Swift.String?
@@ -2552,10 +2553,9 @@ extension AppMeshClientTypes {
             self.virtualGatewayName = virtualGatewayName
         }
     }
-
 }
 
-public struct ListGatewayRoutesOutput {
+public struct ListGatewayRoutesOutput: Swift.Sendable {
     /// The list of existing gateway routes for the specified service mesh and virtual gateway.
     /// This member is required.
     public var gatewayRoutes: [AppMeshClientTypes.GatewayRouteRef]?
@@ -2572,7 +2572,7 @@ public struct ListGatewayRoutesOutput {
     }
 }
 
-public struct UpdateGatewayRouteInput {
+public struct UpdateGatewayRouteInput: Swift.Sendable {
     /// Unique, case-sensitive identifier that you provide to ensure the idempotency of the request. Up to 36 letters, numbers, hyphens, and underscores are allowed.
     public var clientToken: Swift.String?
     /// The name of the gateway route to update.
@@ -2608,7 +2608,7 @@ public struct UpdateGatewayRouteInput {
     }
 }
 
-public struct UpdateGatewayRouteOutput {
+public struct UpdateGatewayRouteOutput: Swift.Sendable {
     /// A full description of the gateway route that was updated.
     /// This member is required.
     public var gatewayRoute: AppMeshClientTypes.GatewayRouteData?
@@ -2621,7 +2621,7 @@ public struct UpdateGatewayRouteOutput {
     }
 }
 
-public struct ListVirtualGatewaysInput {
+public struct ListVirtualGatewaysInput: Swift.Sendable {
     /// The maximum number of results returned by ListVirtualGateways in paginated output. When you use this parameter, ListVirtualGateways returns only limit results in a single page along with a nextToken response element. You can see the remaining results of the initial request by sending another ListVirtualGateways request with the returned nextToken value. This value can be between 1 and 100. If you don't use this parameter, ListVirtualGateways returns up to 100 results and a nextToken value if applicable.
     public var limit: Swift.Int?
     /// The name of the service mesh to list virtual gateways in.
@@ -2647,8 +2647,9 @@ public struct ListVirtualGatewaysInput {
 }
 
 extension AppMeshClientTypes {
+
     /// An object that represents a virtual gateway returned by a list operation.
-    public struct VirtualGatewayRef {
+    public struct VirtualGatewayRef: Swift.Sendable {
         /// The full Amazon Resource Name (ARN) for the resource.
         /// This member is required.
         public var arn: Swift.String?
@@ -2695,10 +2696,9 @@ extension AppMeshClientTypes {
             self.virtualGatewayName = virtualGatewayName
         }
     }
-
 }
 
-public struct ListVirtualGatewaysOutput {
+public struct ListVirtualGatewaysOutput: Swift.Sendable {
     /// The nextToken value to include in a future ListVirtualGateways request. When the results of a ListVirtualGateways request exceed limit, you can use this value to retrieve the next page of results. This value is null when there are no more results to return.
     public var nextToken: Swift.String?
     /// The list of existing virtual gateways for the specified service mesh.
@@ -2715,7 +2715,7 @@ public struct ListVirtualGatewaysOutput {
     }
 }
 
-public struct UpdateVirtualGatewayInput {
+public struct UpdateVirtualGatewayInput: Swift.Sendable {
     /// Unique, case-sensitive identifier that you provide to ensure the idempotency of the request. Up to 36 letters, numbers, hyphens, and underscores are allowed.
     public var clientToken: Swift.String?
     /// The name of the service mesh that the virtual gateway resides in.
@@ -2746,7 +2746,7 @@ public struct UpdateVirtualGatewayInput {
     }
 }
 
-public struct UpdateVirtualGatewayOutput {
+public struct UpdateVirtualGatewayOutput: Swift.Sendable {
     /// A full description of the virtual gateway that was updated.
     /// This member is required.
     public var virtualGateway: AppMeshClientTypes.VirtualGatewayData?
@@ -2760,8 +2760,9 @@ public struct UpdateVirtualGatewayOutput {
 }
 
 extension AppMeshClientTypes {
+
     /// An object that represents a local file certificate. The certificate must meet specific requirements and you must have proxy authorization enabled. For more information, see [Transport Layer Security (TLS)](https://docs.aws.amazon.com/app-mesh/latest/userguide/tls.html#virtual-node-tls-prerequisites).
-    public struct ListenerTlsFileCertificate {
+    public struct ListenerTlsFileCertificate: Swift.Sendable {
         /// The certificate chain for the certificate.
         /// This member is required.
         public var certificateChain: Swift.String?
@@ -2778,12 +2779,12 @@ extension AppMeshClientTypes {
             self.privateKey = privateKey
         }
     }
-
 }
 
 extension AppMeshClientTypes {
+
     /// An object that represents the listener's Secret Discovery Service certificate. The proxy must be configured with a local SDS provider via a Unix Domain Socket. See App Mesh [TLS documentation](https://docs.aws.amazon.com/app-mesh/latest/userguide/tls.html) for more info.
-    public struct ListenerTlsSdsCertificate {
+    public struct ListenerTlsSdsCertificate: Swift.Sendable {
         /// A reference to an object that represents the name of the secret requested from the Secret Discovery Service provider representing Transport Layer Security (TLS) materials like a certificate or certificate chain.
         /// This member is required.
         public var secretName: Swift.String?
@@ -2795,24 +2796,24 @@ extension AppMeshClientTypes {
             self.secretName = secretName
         }
     }
-
 }
 
 extension AppMeshClientTypes {
+
     /// An object that represents the client's certificate.
-    public enum ClientTlsCertificate {
+    public enum ClientTlsCertificate: Swift.Sendable {
         /// An object that represents a local file certificate. The certificate must meet specific requirements and you must have proxy authorization enabled. For more information, see [Transport Layer Security (TLS)](https://docs.aws.amazon.com/app-mesh/latest/userguide/tls.html).
         case file(AppMeshClientTypes.ListenerTlsFileCertificate)
         /// A reference to an object that represents a client's TLS Secret Discovery Service certificate.
         case sds(AppMeshClientTypes.ListenerTlsSdsCertificate)
         case sdkUnknown(Swift.String)
     }
-
 }
 
 extension AppMeshClientTypes {
+
     /// An object that represents a Transport Layer Security (TLS) validation context trust for an Certificate Manager certificate.
-    public struct TlsValidationContextAcmTrust {
+    public struct TlsValidationContextAcmTrust: Swift.Sendable {
         /// One or more ACM Amazon Resource Name (ARN)s.
         /// This member is required.
         public var certificateAuthorityArns: [Swift.String]?
@@ -2824,12 +2825,12 @@ extension AppMeshClientTypes {
             self.certificateAuthorityArns = certificateAuthorityArns
         }
     }
-
 }
 
 extension AppMeshClientTypes {
+
     /// An object that represents a Transport Layer Security (TLS) validation context trust for a local file.
-    public struct TlsValidationContextFileTrust {
+    public struct TlsValidationContextFileTrust: Swift.Sendable {
         /// The certificate trust chain for a certificate stored on the file system of the virtual node that the proxy is running on.
         /// This member is required.
         public var certificateChain: Swift.String?
@@ -2841,12 +2842,12 @@ extension AppMeshClientTypes {
             self.certificateChain = certificateChain
         }
     }
-
 }
 
 extension AppMeshClientTypes {
+
     /// An object that represents a Transport Layer Security (TLS) Secret Discovery Service validation context trust. The proxy must be configured with a local SDS provider via a Unix Domain Socket. See App Mesh [TLS documentation](https://docs.aws.amazon.com/app-mesh/latest/userguide/tls.html) for more info.
-    public struct TlsValidationContextSdsTrust {
+    public struct TlsValidationContextSdsTrust: Swift.Sendable {
         /// A reference to an object that represents the name of the secret for a Transport Layer Security (TLS) Secret Discovery Service validation context trust.
         /// This member is required.
         public var secretName: Swift.String?
@@ -2858,12 +2859,12 @@ extension AppMeshClientTypes {
             self.secretName = secretName
         }
     }
-
 }
 
 extension AppMeshClientTypes {
+
     /// An object that represents a Transport Layer Security (TLS) validation context trust.
-    public enum TlsValidationContextTrust {
+    public enum TlsValidationContextTrust: Swift.Sendable {
         /// A reference to an object that represents a Transport Layer Security (TLS) validation context trust for an Certificate Manager certificate.
         case acm(AppMeshClientTypes.TlsValidationContextAcmTrust)
         /// An object that represents a Transport Layer Security (TLS) validation context trust for a local file.
@@ -2872,12 +2873,12 @@ extension AppMeshClientTypes {
         case sds(AppMeshClientTypes.TlsValidationContextSdsTrust)
         case sdkUnknown(Swift.String)
     }
-
 }
 
 extension AppMeshClientTypes {
+
     /// An object that represents how the proxy will validate its peer during Transport Layer Security (TLS) negotiation.
-    public struct TlsValidationContext {
+    public struct TlsValidationContext: Swift.Sendable {
         /// A reference to an object that represents the SANs for a Transport Layer Security (TLS) validation context. If you don't specify SANs on the terminating mesh endpoint, the Envoy proxy for that node doesn't verify the SAN on a peer client certificate. If you don't specify SANs on the originating mesh endpoint, the SAN on the certificate provided by the terminating endpoint must match the mesh endpoint service discovery configuration. Since SPIRE vended certificates have a SPIFFE ID as a name, you must set the SAN since the name doesn't match the service discovery name.
         public var subjectAlternativeNames: AppMeshClientTypes.SubjectAlternativeNames?
         /// A reference to where to retrieve the trust chain when validating a peer’s Transport Layer Security (TLS) certificate.
@@ -2893,12 +2894,12 @@ extension AppMeshClientTypes {
             self.trust = trust
         }
     }
-
 }
 
 extension AppMeshClientTypes {
+
     /// A reference to an object that represents a Transport Layer Security (TLS) client policy.
-    public struct ClientPolicyTls {
+    public struct ClientPolicyTls: Swift.Sendable {
         /// A reference to an object that represents a client's TLS certificate.
         public var certificate: AppMeshClientTypes.ClientTlsCertificate?
         /// Whether the policy is enforced. The default is True, if a value isn't specified.
@@ -2922,12 +2923,12 @@ extension AppMeshClientTypes {
             self.validation = validation
         }
     }
-
 }
 
 extension AppMeshClientTypes {
+
     /// An object that represents a client policy.
-    public struct ClientPolicy {
+    public struct ClientPolicy: Swift.Sendable {
         /// A reference to an object that represents a Transport Layer Security (TLS) client policy.
         public var tls: AppMeshClientTypes.ClientPolicyTls?
 
@@ -2938,12 +2939,12 @@ extension AppMeshClientTypes {
             self.tls = tls
         }
     }
-
 }
 
 extension AppMeshClientTypes {
+
     /// An object that represents the default properties for a backend.
-    public struct BackendDefaults {
+    public struct BackendDefaults: Swift.Sendable {
         /// A reference to an object that represents a client policy.
         public var clientPolicy: AppMeshClientTypes.ClientPolicy?
 
@@ -2954,12 +2955,12 @@ extension AppMeshClientTypes {
             self.clientPolicy = clientPolicy
         }
     }
-
 }
 
 extension AppMeshClientTypes {
+
     /// An object that represents a virtual service backend for a virtual node.
-    public struct VirtualServiceBackend {
+    public struct VirtualServiceBackend: Swift.Sendable {
         /// A reference to an object that represents the client policy for a backend.
         public var clientPolicy: AppMeshClientTypes.ClientPolicy?
         /// The name of the virtual service that is acting as a virtual node backend.
@@ -2975,22 +2976,22 @@ extension AppMeshClientTypes {
             self.virtualServiceName = virtualServiceName
         }
     }
-
 }
 
 extension AppMeshClientTypes {
+
     /// An object that represents the backends that a virtual node is expected to send outbound traffic to.
-    public enum Backend {
+    public enum Backend: Swift.Sendable {
         /// Specifies a virtual service to use as a backend.
         case virtualservice(AppMeshClientTypes.VirtualServiceBackend)
         case sdkUnknown(Swift.String)
     }
-
 }
 
 extension AppMeshClientTypes {
+
     /// An object that represents a type of connection pool.
-    public struct VirtualNodeGrpcConnectionPool {
+    public struct VirtualNodeGrpcConnectionPool: Swift.Sendable {
         /// Maximum number of inflight requests Envoy can concurrently support across hosts in upstream cluster.
         /// This member is required.
         public var maxRequests: Swift.Int?
@@ -3002,12 +3003,12 @@ extension AppMeshClientTypes {
             self.maxRequests = maxRequests
         }
     }
-
 }
 
 extension AppMeshClientTypes {
+
     /// An object that represents a type of connection pool.
-    public struct VirtualNodeHttpConnectionPool {
+    public struct VirtualNodeHttpConnectionPool: Swift.Sendable {
         /// Maximum number of outbound TCP connections Envoy can establish concurrently with all hosts in upstream cluster.
         /// This member is required.
         public var maxConnections: Swift.Int?
@@ -3023,12 +3024,12 @@ extension AppMeshClientTypes {
             self.maxPendingRequests = maxPendingRequests
         }
     }
-
 }
 
 extension AppMeshClientTypes {
+
     /// An object that represents a type of connection pool.
-    public struct VirtualNodeHttp2ConnectionPool {
+    public struct VirtualNodeHttp2ConnectionPool: Swift.Sendable {
         /// Maximum number of inflight requests Envoy can concurrently support across hosts in upstream cluster.
         /// This member is required.
         public var maxRequests: Swift.Int?
@@ -3040,12 +3041,12 @@ extension AppMeshClientTypes {
             self.maxRequests = maxRequests
         }
     }
-
 }
 
 extension AppMeshClientTypes {
+
     /// An object that represents a type of connection pool.
-    public struct VirtualNodeTcpConnectionPool {
+    public struct VirtualNodeTcpConnectionPool: Swift.Sendable {
         /// Maximum number of outbound TCP connections Envoy can establish concurrently with all hosts in upstream cluster.
         /// This member is required.
         public var maxConnections: Swift.Int?
@@ -3057,12 +3058,12 @@ extension AppMeshClientTypes {
             self.maxConnections = maxConnections
         }
     }
-
 }
 
 extension AppMeshClientTypes {
+
     /// An object that represents the type of virtual node connection pool. Only one protocol is used at a time and should be the same protocol as the one chosen under port mapping. If not present the default value for maxPendingRequests is 2147483647.
-    public enum VirtualNodeConnectionPool {
+    public enum VirtualNodeConnectionPool: Swift.Sendable {
         /// An object that represents a type of connection pool.
         case tcp(AppMeshClientTypes.VirtualNodeTcpConnectionPool)
         /// An object that represents a type of connection pool.
@@ -3073,12 +3074,11 @@ extension AppMeshClientTypes {
         case grpc(AppMeshClientTypes.VirtualNodeGrpcConnectionPool)
         case sdkUnknown(Swift.String)
     }
-
 }
 
 extension AppMeshClientTypes {
 
-    public enum PortProtocol: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum PortProtocol: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case grpc
         case http
         case http2
@@ -3112,8 +3112,9 @@ extension AppMeshClientTypes {
 }
 
 extension AppMeshClientTypes {
+
     /// An object that represents the health check policy for a virtual node's listener.
-    public struct HealthCheckPolicy {
+    public struct HealthCheckPolicy: Swift.Sendable {
         /// The number of consecutive successful health checks that must occur before declaring listener healthy.
         /// This member is required.
         public var healthyThreshold: Swift.Int?
@@ -3153,12 +3154,11 @@ extension AppMeshClientTypes {
             self.unhealthyThreshold = unhealthyThreshold
         }
     }
-
 }
 
 extension AppMeshClientTypes {
 
-    public enum DurationUnit: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DurationUnit: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case ms
         case s
         case sdkUnknown(Swift.String)
@@ -3186,8 +3186,9 @@ extension AppMeshClientTypes {
 }
 
 extension AppMeshClientTypes {
+
     /// An object that represents a duration of time.
-    public struct Duration {
+    public struct Duration: Swift.Sendable {
         /// A unit of time.
         public var unit: AppMeshClientTypes.DurationUnit?
         /// A number of time units.
@@ -3202,12 +3203,12 @@ extension AppMeshClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension AppMeshClientTypes {
+
     /// An object that represents the outlier detection for a virtual node's listener.
-    public struct OutlierDetection {
+    public struct OutlierDetection: Swift.Sendable {
         /// The base amount of time for which a host is ejected.
         /// This member is required.
         public var baseEjectionDuration: AppMeshClientTypes.Duration?
@@ -3234,12 +3235,12 @@ extension AppMeshClientTypes {
             self.maxServerErrors = maxServerErrors
         }
     }
-
 }
 
 extension AppMeshClientTypes {
+
     /// An object that represents a port mapping.
-    public struct PortMapping {
+    public struct PortMapping: Swift.Sendable {
         /// The port used for the port mapping.
         /// This member is required.
         public var port: Swift.Int?
@@ -3256,12 +3257,12 @@ extension AppMeshClientTypes {
             self.`protocol` = `protocol`
         }
     }
-
 }
 
 extension AppMeshClientTypes {
+
     /// An object that represents types of timeouts.
-    public struct GrpcTimeout {
+    public struct GrpcTimeout: Swift.Sendable {
         /// An object that represents an idle timeout. An idle timeout bounds the amount of time that a connection may be idle. The default value is none.
         public var idle: AppMeshClientTypes.Duration?
         /// An object that represents a per request timeout. The default value is 15 seconds. If you set a higher timeout, then make sure that the higher value is set for each App Mesh resource in a conversation. For example, if a virtual node backend uses a virtual router provider to route to another virtual node, then the timeout should be greater than 15 seconds for the source and destination virtual node and the route.
@@ -3276,12 +3277,12 @@ extension AppMeshClientTypes {
             self.perRequest = perRequest
         }
     }
-
 }
 
 extension AppMeshClientTypes {
+
     /// An object that represents types of timeouts.
-    public struct HttpTimeout {
+    public struct HttpTimeout: Swift.Sendable {
         /// An object that represents an idle timeout. An idle timeout bounds the amount of time that a connection may be idle. The default value is none.
         public var idle: AppMeshClientTypes.Duration?
         /// An object that represents a per request timeout. The default value is 15 seconds. If you set a higher timeout, then make sure that the higher value is set for each App Mesh resource in a conversation. For example, if a virtual node backend uses a virtual router provider to route to another virtual node, then the timeout should be greater than 15 seconds for the source and destination virtual node and the route.
@@ -3296,12 +3297,12 @@ extension AppMeshClientTypes {
             self.perRequest = perRequest
         }
     }
-
 }
 
 extension AppMeshClientTypes {
+
     /// An object that represents types of timeouts.
-    public struct TcpTimeout {
+    public struct TcpTimeout: Swift.Sendable {
         /// An object that represents an idle timeout. An idle timeout bounds the amount of time that a connection may be idle. The default value is none.
         public var idle: AppMeshClientTypes.Duration?
 
@@ -3312,12 +3313,12 @@ extension AppMeshClientTypes {
             self.idle = idle
         }
     }
-
 }
 
 extension AppMeshClientTypes {
+
     /// An object that represents timeouts for different protocols.
-    public enum ListenerTimeout {
+    public enum ListenerTimeout: Swift.Sendable {
         /// An object that represents types of timeouts.
         case tcp(AppMeshClientTypes.TcpTimeout)
         /// An object that represents types of timeouts.
@@ -3328,12 +3329,12 @@ extension AppMeshClientTypes {
         case grpc(AppMeshClientTypes.GrpcTimeout)
         case sdkUnknown(Swift.String)
     }
-
 }
 
 extension AppMeshClientTypes {
+
     /// An object that represents an Certificate Manager certificate.
-    public struct ListenerTlsAcmCertificate {
+    public struct ListenerTlsAcmCertificate: Swift.Sendable {
         /// The Amazon Resource Name (ARN) for the certificate. The certificate must meet specific requirements and you must have proxy authorization enabled. For more information, see [Transport Layer Security (TLS)](https://docs.aws.amazon.com/app-mesh/latest/userguide/tls.html#virtual-node-tls-prerequisites).
         /// This member is required.
         public var certificateArn: Swift.String?
@@ -3345,12 +3346,12 @@ extension AppMeshClientTypes {
             self.certificateArn = certificateArn
         }
     }
-
 }
 
 extension AppMeshClientTypes {
+
     /// An object that represents a listener's Transport Layer Security (TLS) certificate.
-    public enum ListenerTlsCertificate {
+    public enum ListenerTlsCertificate: Swift.Sendable {
         /// A reference to an object that represents an Certificate Manager certificate.
         case acm(AppMeshClientTypes.ListenerTlsAcmCertificate)
         /// A reference to an object that represents a local file certificate.
@@ -3359,12 +3360,11 @@ extension AppMeshClientTypes {
         case sds(AppMeshClientTypes.ListenerTlsSdsCertificate)
         case sdkUnknown(Swift.String)
     }
-
 }
 
 extension AppMeshClientTypes {
 
-    public enum ListenerTlsMode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ListenerTlsMode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case disabled
         case permissive
         case strict
@@ -3395,20 +3395,21 @@ extension AppMeshClientTypes {
 }
 
 extension AppMeshClientTypes {
+
     /// An object that represents a listener's Transport Layer Security (TLS) validation context trust.
-    public enum ListenerTlsValidationContextTrust {
+    public enum ListenerTlsValidationContextTrust: Swift.Sendable {
         /// An object that represents a Transport Layer Security (TLS) validation context trust for a local file.
         case file(AppMeshClientTypes.TlsValidationContextFileTrust)
         /// A reference to an object that represents a listener's Transport Layer Security (TLS) Secret Discovery Service validation context trust.
         case sds(AppMeshClientTypes.TlsValidationContextSdsTrust)
         case sdkUnknown(Swift.String)
     }
-
 }
 
 extension AppMeshClientTypes {
+
     /// An object that represents a listener's Transport Layer Security (TLS) validation context.
-    public struct ListenerTlsValidationContext {
+    public struct ListenerTlsValidationContext: Swift.Sendable {
         /// A reference to an object that represents the SANs for a listener's Transport Layer Security (TLS) validation context.
         public var subjectAlternativeNames: AppMeshClientTypes.SubjectAlternativeNames?
         /// A reference to where to retrieve the trust chain when validating a peer’s Transport Layer Security (TLS) certificate.
@@ -3424,12 +3425,12 @@ extension AppMeshClientTypes {
             self.trust = trust
         }
     }
-
 }
 
 extension AppMeshClientTypes {
+
     /// An object that represents the Transport Layer Security (TLS) properties for a listener.
-    public struct ListenerTls {
+    public struct ListenerTls: Swift.Sendable {
         /// A reference to an object that represents a listener's Transport Layer Security (TLS) certificate.
         /// This member is required.
         public var certificate: AppMeshClientTypes.ListenerTlsCertificate?
@@ -3456,12 +3457,12 @@ extension AppMeshClientTypes {
             self.validation = validation
         }
     }
-
 }
 
 extension AppMeshClientTypes {
+
     /// An object that represents a listener for a virtual node.
-    public struct Listener {
+    public struct Listener: Swift.Sendable {
         /// The connection pool information for the listener.
         public var connectionPool: AppMeshClientTypes.VirtualNodeConnectionPool?
         /// The health check information for the listener.
@@ -3493,12 +3494,12 @@ extension AppMeshClientTypes {
             self.tls = tls
         }
     }
-
 }
 
 extension AppMeshClientTypes {
+
     /// An object that represents the logging information for a virtual node.
-    public struct Logging {
+    public struct Logging: Swift.Sendable {
         /// The access log configuration for a virtual node.
         public var accessLog: AppMeshClientTypes.AccessLog?
 
@@ -3509,12 +3510,12 @@ extension AppMeshClientTypes {
             self.accessLog = accessLog
         }
     }
-
 }
 
 extension AppMeshClientTypes {
+
     /// An object that represents the Cloud Map attribute information for your virtual node. Cloud Map is not available in the eu-south-1 Region.
-    public struct AwsCloudMapInstanceAttribute {
+    public struct AwsCloudMapInstanceAttribute: Swift.Sendable {
         /// The name of an Cloud Map service instance attribute key. Any Cloud Map service instance that contains the specified key and value is returned.
         /// This member is required.
         public var key: Swift.String?
@@ -3531,12 +3532,12 @@ extension AppMeshClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension AppMeshClientTypes {
+
     /// An object that represents the Cloud Map service discovery information for your virtual node. Cloud Map is not available in the eu-south-1 Region.
-    public struct AwsCloudMapServiceDiscovery {
+    public struct AwsCloudMapServiceDiscovery: Swift.Sendable {
         /// A string map that contains attributes with values that you can use to filter instances by any custom attribute that you specified when you registered the instance. Only instances that match all of the specified key/value pairs will be returned.
         public var attributes: [AppMeshClientTypes.AwsCloudMapInstanceAttribute]?
         /// The preferred IP version that this virtual node uses. Setting the IP preference on the virtual node only overrides the IP preference set for the mesh on this specific node.
@@ -3561,12 +3562,11 @@ extension AppMeshClientTypes {
             self.serviceName = serviceName
         }
     }
-
 }
 
 extension AppMeshClientTypes {
 
-    public enum DnsResponseType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DnsResponseType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case endpoints
         case loadbalancer
         case sdkUnknown(Swift.String)
@@ -3594,8 +3594,9 @@ extension AppMeshClientTypes {
 }
 
 extension AppMeshClientTypes {
+
     /// An object that represents the DNS service discovery information for your virtual node.
-    public struct DnsServiceDiscovery {
+    public struct DnsServiceDiscovery: Swift.Sendable {
         /// Specifies the DNS service discovery hostname for the virtual node.
         /// This member is required.
         public var hostname: Swift.String?
@@ -3615,24 +3616,24 @@ extension AppMeshClientTypes {
             self.responseType = responseType
         }
     }
-
 }
 
 extension AppMeshClientTypes {
+
     /// An object that represents the service discovery information for a virtual node.
-    public enum ServiceDiscovery {
+    public enum ServiceDiscovery: Swift.Sendable {
         /// Specifies the DNS information for the virtual node.
         case dns(AppMeshClientTypes.DnsServiceDiscovery)
         /// Specifies any Cloud Map information for the virtual node.
         case awscloudmap(AppMeshClientTypes.AwsCloudMapServiceDiscovery)
         case sdkUnknown(Swift.String)
     }
-
 }
 
 extension AppMeshClientTypes {
+
     /// An object that represents the specification of a virtual node.
-    public struct VirtualNodeSpec {
+    public struct VirtualNodeSpec: Swift.Sendable {
         /// A reference to an object that represents the defaults for backends.
         public var backendDefaults: AppMeshClientTypes.BackendDefaults?
         /// The backends that the virtual node is expected to send outbound traffic to.
@@ -3659,11 +3660,10 @@ extension AppMeshClientTypes {
             self.serviceDiscovery = serviceDiscovery
         }
     }
-
 }
 
 ///
-public struct CreateVirtualNodeInput {
+public struct CreateVirtualNodeInput: Swift.Sendable {
     /// Unique, case-sensitive identifier that you provide to ensure the idempotency of the request. Up to 36 letters, numbers, hyphens, and underscores are allowed.
     public var clientToken: Swift.String?
     /// The name of the service mesh to create the virtual node in.
@@ -3700,7 +3700,7 @@ public struct CreateVirtualNodeInput {
 
 extension AppMeshClientTypes {
 
-    public enum VirtualNodeStatusCode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum VirtualNodeStatusCode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case active
         case deleted
         case inactive
@@ -3731,8 +3731,9 @@ extension AppMeshClientTypes {
 }
 
 extension AppMeshClientTypes {
+
     /// An object that represents the current status of the virtual node.
-    public struct VirtualNodeStatus {
+    public struct VirtualNodeStatus: Swift.Sendable {
         /// The current status of the virtual node.
         /// This member is required.
         public var status: AppMeshClientTypes.VirtualNodeStatusCode?
@@ -3744,12 +3745,12 @@ extension AppMeshClientTypes {
             self.status = status
         }
     }
-
 }
 
 extension AppMeshClientTypes {
+
     /// An object that represents a virtual node returned by a describe operation.
-    public struct VirtualNodeData {
+    public struct VirtualNodeData: Swift.Sendable {
         /// The name of the service mesh that the virtual node resides in.
         /// This member is required.
         public var meshName: Swift.String?
@@ -3781,11 +3782,10 @@ extension AppMeshClientTypes {
             self.virtualNodeName = virtualNodeName
         }
     }
-
 }
 
 ///
-public struct CreateVirtualNodeOutput {
+public struct CreateVirtualNodeOutput: Swift.Sendable {
     /// The full description of your virtual node following the create call.
     /// This member is required.
     public var virtualNode: AppMeshClientTypes.VirtualNodeData?
@@ -3799,7 +3799,7 @@ public struct CreateVirtualNodeOutput {
 }
 
 /// Deletes a virtual node input.
-public struct DeleteVirtualNodeInput {
+public struct DeleteVirtualNodeInput: Swift.Sendable {
     /// The name of the service mesh to delete the virtual node in.
     /// This member is required.
     public var meshName: Swift.String?
@@ -3822,7 +3822,7 @@ public struct DeleteVirtualNodeInput {
 }
 
 ///
-public struct DeleteVirtualNodeOutput {
+public struct DeleteVirtualNodeOutput: Swift.Sendable {
     /// The virtual node that was deleted.
     /// This member is required.
     public var virtualNode: AppMeshClientTypes.VirtualNodeData?
@@ -3836,7 +3836,7 @@ public struct DeleteVirtualNodeOutput {
 }
 
 ///
-public struct DescribeVirtualNodeInput {
+public struct DescribeVirtualNodeInput: Swift.Sendable {
     /// The name of the service mesh that the virtual node resides in.
     /// This member is required.
     public var meshName: Swift.String?
@@ -3859,7 +3859,7 @@ public struct DescribeVirtualNodeInput {
 }
 
 ///
-public struct DescribeVirtualNodeOutput {
+public struct DescribeVirtualNodeOutput: Swift.Sendable {
     /// The full description of your virtual node.
     /// This member is required.
     public var virtualNode: AppMeshClientTypes.VirtualNodeData?
@@ -3873,7 +3873,7 @@ public struct DescribeVirtualNodeOutput {
 }
 
 ///
-public struct ListVirtualNodesInput {
+public struct ListVirtualNodesInput: Swift.Sendable {
     /// The maximum number of results returned by ListVirtualNodes in paginated output. When you use this parameter, ListVirtualNodes returns only limit results in a single page along with a nextToken response element. You can see the remaining results of the initial request by sending another ListVirtualNodes request with the returned nextToken value. This value can be between 1 and 100. If you don't use this parameter, ListVirtualNodes returns up to 100 results and a nextToken value if applicable.
     public var limit: Swift.Int?
     /// The name of the service mesh to list virtual nodes in.
@@ -3899,8 +3899,9 @@ public struct ListVirtualNodesInput {
 }
 
 extension AppMeshClientTypes {
+
     /// An object that represents a virtual node returned by a list operation.
-    public struct VirtualNodeRef {
+    public struct VirtualNodeRef: Swift.Sendable {
         /// The full Amazon Resource Name (ARN) for the virtual node.
         /// This member is required.
         public var arn: Swift.String?
@@ -3947,11 +3948,10 @@ extension AppMeshClientTypes {
             self.virtualNodeName = virtualNodeName
         }
     }
-
 }
 
 ///
-public struct ListVirtualNodesOutput {
+public struct ListVirtualNodesOutput: Swift.Sendable {
     /// The nextToken value to include in a future ListVirtualNodes request. When the results of a ListVirtualNodes request exceed limit, you can use this value to retrieve the next page of results. This value is null when there are no more results to return.
     public var nextToken: Swift.String?
     /// The list of existing virtual nodes for the specified service mesh.
@@ -3969,7 +3969,7 @@ public struct ListVirtualNodesOutput {
 }
 
 ///
-public struct UpdateVirtualNodeInput {
+public struct UpdateVirtualNodeInput: Swift.Sendable {
     /// Unique, case-sensitive identifier that you provide to ensure the idempotency of the request. Up to 36 letters, numbers, hyphens, and underscores are allowed.
     public var clientToken: Swift.String?
     /// The name of the service mesh that the virtual node resides in.
@@ -4001,7 +4001,7 @@ public struct UpdateVirtualNodeInput {
 }
 
 ///
-public struct UpdateVirtualNodeOutput {
+public struct UpdateVirtualNodeOutput: Swift.Sendable {
     /// A full description of the virtual node that was updated.
     /// This member is required.
     public var virtualNode: AppMeshClientTypes.VirtualNodeData?
@@ -4015,8 +4015,9 @@ public struct UpdateVirtualNodeOutput {
 }
 
 extension AppMeshClientTypes {
+
     /// An object that represents a virtual router listener.
-    public struct VirtualRouterListener {
+    public struct VirtualRouterListener: Swift.Sendable {
         /// An object that represents a port mapping.
         /// This member is required.
         public var portMapping: AppMeshClientTypes.PortMapping?
@@ -4028,12 +4029,12 @@ extension AppMeshClientTypes {
             self.portMapping = portMapping
         }
     }
-
 }
 
 extension AppMeshClientTypes {
+
     /// An object that represents the specification of a virtual router.
-    public struct VirtualRouterSpec {
+    public struct VirtualRouterSpec: Swift.Sendable {
         /// The listeners that the virtual router is expected to receive inbound traffic from. You can specify one listener.
         public var listeners: [AppMeshClientTypes.VirtualRouterListener]?
 
@@ -4044,11 +4045,10 @@ extension AppMeshClientTypes {
             self.listeners = listeners
         }
     }
-
 }
 
 ///
-public struct CreateVirtualRouterInput {
+public struct CreateVirtualRouterInput: Swift.Sendable {
     /// Unique, case-sensitive identifier that you provide to ensure the idempotency of the request. Up to 36 letters, numbers, hyphens, and underscores are allowed.
     public var clientToken: Swift.String?
     /// The name of the service mesh to create the virtual router in.
@@ -4085,7 +4085,7 @@ public struct CreateVirtualRouterInput {
 
 extension AppMeshClientTypes {
 
-    public enum VirtualRouterStatusCode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum VirtualRouterStatusCode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case active
         case deleted
         case inactive
@@ -4116,8 +4116,9 @@ extension AppMeshClientTypes {
 }
 
 extension AppMeshClientTypes {
+
     /// An object that represents the status of a virtual router.
-    public struct VirtualRouterStatus {
+    public struct VirtualRouterStatus: Swift.Sendable {
         /// The current status of the virtual router.
         /// This member is required.
         public var status: AppMeshClientTypes.VirtualRouterStatusCode?
@@ -4129,12 +4130,12 @@ extension AppMeshClientTypes {
             self.status = status
         }
     }
-
 }
 
 extension AppMeshClientTypes {
+
     /// An object that represents a virtual router returned by a describe operation.
-    public struct VirtualRouterData {
+    public struct VirtualRouterData: Swift.Sendable {
         /// The name of the service mesh that the virtual router resides in.
         /// This member is required.
         public var meshName: Swift.String?
@@ -4166,11 +4167,10 @@ extension AppMeshClientTypes {
             self.virtualRouterName = virtualRouterName
         }
     }
-
 }
 
 ///
-public struct CreateVirtualRouterOutput {
+public struct CreateVirtualRouterOutput: Swift.Sendable {
     /// The full description of your virtual router following the create call.
     /// This member is required.
     public var virtualRouter: AppMeshClientTypes.VirtualRouterData?
@@ -4184,7 +4184,7 @@ public struct CreateVirtualRouterOutput {
 }
 
 ///
-public struct DeleteVirtualRouterInput {
+public struct DeleteVirtualRouterInput: Swift.Sendable {
     /// The name of the service mesh to delete the virtual router in.
     /// This member is required.
     public var meshName: Swift.String?
@@ -4207,7 +4207,7 @@ public struct DeleteVirtualRouterInput {
 }
 
 ///
-public struct DeleteVirtualRouterOutput {
+public struct DeleteVirtualRouterOutput: Swift.Sendable {
     /// The virtual router that was deleted.
     /// This member is required.
     public var virtualRouter: AppMeshClientTypes.VirtualRouterData?
@@ -4221,7 +4221,7 @@ public struct DeleteVirtualRouterOutput {
 }
 
 ///
-public struct DescribeVirtualRouterInput {
+public struct DescribeVirtualRouterInput: Swift.Sendable {
     /// The name of the service mesh that the virtual router resides in.
     /// This member is required.
     public var meshName: Swift.String?
@@ -4244,7 +4244,7 @@ public struct DescribeVirtualRouterInput {
 }
 
 ///
-public struct DescribeVirtualRouterOutput {
+public struct DescribeVirtualRouterOutput: Swift.Sendable {
     /// The full description of your virtual router.
     /// This member is required.
     public var virtualRouter: AppMeshClientTypes.VirtualRouterData?
@@ -4258,7 +4258,7 @@ public struct DescribeVirtualRouterOutput {
 }
 
 ///
-public struct ListVirtualRoutersInput {
+public struct ListVirtualRoutersInput: Swift.Sendable {
     /// The maximum number of results returned by ListVirtualRouters in paginated output. When you use this parameter, ListVirtualRouters returns only limit results in a single page along with a nextToken response element. You can see the remaining results of the initial request by sending another ListVirtualRouters request with the returned nextToken value. This value can be between 1 and 100. If you don't use this parameter, ListVirtualRouters returns up to 100 results and a nextToken value if applicable.
     public var limit: Swift.Int?
     /// The name of the service mesh to list virtual routers in.
@@ -4284,8 +4284,9 @@ public struct ListVirtualRoutersInput {
 }
 
 extension AppMeshClientTypes {
+
     /// An object that represents a virtual router returned by a list operation.
-    public struct VirtualRouterRef {
+    public struct VirtualRouterRef: Swift.Sendable {
         /// The full Amazon Resource Name (ARN) for the virtual router.
         /// This member is required.
         public var arn: Swift.String?
@@ -4332,11 +4333,10 @@ extension AppMeshClientTypes {
             self.virtualRouterName = virtualRouterName
         }
     }
-
 }
 
 ///
-public struct ListVirtualRoutersOutput {
+public struct ListVirtualRoutersOutput: Swift.Sendable {
     /// The nextToken value to include in a future ListVirtualRouters request. When the results of a ListVirtualRouters request exceed limit, you can use this value to retrieve the next page of results. This value is null when there are no more results to return.
     public var nextToken: Swift.String?
     /// The list of existing virtual routers for the specified service mesh.
@@ -4354,8 +4354,9 @@ public struct ListVirtualRoutersOutput {
 }
 
 extension AppMeshClientTypes {
+
     /// An object that represents a target and its relative weight. Traffic is distributed across targets according to their relative weight. For example, a weighted target with a relative weight of 50 receives five times as much traffic as one with a relative weight of 10. The total weight for all targets combined must be less than or equal to 100.
-    public struct WeightedTarget {
+    public struct WeightedTarget: Swift.Sendable {
         /// The targeted port of the weighted object.
         public var port: Swift.Int?
         /// The virtual node to associate with the weighted target.
@@ -4376,12 +4377,12 @@ extension AppMeshClientTypes {
             self.weight = weight
         }
     }
-
 }
 
 extension AppMeshClientTypes {
+
     /// An object that represents the action to take if a match is determined.
-    public struct GrpcRouteAction {
+    public struct GrpcRouteAction: Swift.Sendable {
         /// An object that represents the targets that traffic is routed to when a request matches the route.
         /// This member is required.
         public var weightedTargets: [AppMeshClientTypes.WeightedTarget]?
@@ -4393,12 +4394,12 @@ extension AppMeshClientTypes {
             self.weightedTargets = weightedTargets
         }
     }
-
 }
 
 extension AppMeshClientTypes {
+
     /// An object that represents the match method. Specify one of the match values.
-    public enum GrpcRouteMetadataMatchMethod {
+    public enum GrpcRouteMetadataMatchMethod: Swift.Sendable {
         /// The value sent by the client must match the specified value exactly.
         case exact(Swift.String)
         /// The value sent by the client must include the specified characters.
@@ -4411,12 +4412,12 @@ extension AppMeshClientTypes {
         case suffix(Swift.String)
         case sdkUnknown(Swift.String)
     }
-
 }
 
 extension AppMeshClientTypes {
+
     /// An object that represents the match metadata for the route.
-    public struct GrpcRouteMetadata {
+    public struct GrpcRouteMetadata: Swift.Sendable {
         /// Specify True to match anything except the match criteria. The default value is False.
         public var invert: Swift.Bool?
         /// An object that represents the data to match from the request.
@@ -4436,12 +4437,12 @@ extension AppMeshClientTypes {
             self.name = name
         }
     }
-
 }
 
 extension AppMeshClientTypes {
+
     /// An object that represents the criteria for determining a request match.
-    public struct GrpcRouteMatch {
+    public struct GrpcRouteMatch: Swift.Sendable {
         /// An object that represents the data to match from the request.
         public var metadata: [AppMeshClientTypes.GrpcRouteMetadata]?
         /// The method name to match from the request. If you specify a name, you must also specify a serviceName.
@@ -4464,12 +4465,11 @@ extension AppMeshClientTypes {
             self.serviceName = serviceName
         }
     }
-
 }
 
 extension AppMeshClientTypes {
 
-    public enum GrpcRetryPolicyEvent: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum GrpcRetryPolicyEvent: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case cancelled
         case deadlineExceeded
         case `internal`
@@ -4507,7 +4507,7 @@ extension AppMeshClientTypes {
 
 extension AppMeshClientTypes {
 
-    public enum TcpRetryPolicyEvent: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum TcpRetryPolicyEvent: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case connectionError
         case sdkUnknown(Swift.String)
 
@@ -4532,8 +4532,9 @@ extension AppMeshClientTypes {
 }
 
 extension AppMeshClientTypes {
+
     /// An object that represents a retry policy. Specify at least one value for at least one of the types of RetryEvents, a value for maxRetries, and a value for perRetryTimeout. Both server-error and gateway-error under httpRetryEvents include the Envoy reset policy. For more information on the reset policy, see the [Envoy documentation](https://www.envoyproxy.io/docs/envoy/latest/configuration/http/http_filters/router_filter#x-envoy-retry-on).
-    public struct GrpcRetryPolicy {
+    public struct GrpcRetryPolicy: Swift.Sendable {
         /// Specify at least one of the valid values.
         public var grpcRetryEvents: [AppMeshClientTypes.GrpcRetryPolicyEvent]?
         /// Specify at least one of the following values.
@@ -4570,12 +4571,12 @@ extension AppMeshClientTypes {
             self.tcpRetryEvents = tcpRetryEvents
         }
     }
-
 }
 
 extension AppMeshClientTypes {
+
     /// An object that represents a gRPC route type.
-    public struct GrpcRoute {
+    public struct GrpcRoute: Swift.Sendable {
         /// An object that represents the action to take if a match is determined.
         /// This member is required.
         public var action: AppMeshClientTypes.GrpcRouteAction?
@@ -4600,12 +4601,12 @@ extension AppMeshClientTypes {
             self.timeout = timeout
         }
     }
-
 }
 
 extension AppMeshClientTypes {
+
     /// An object that represents the action to take if a match is determined.
-    public struct HttpRouteAction {
+    public struct HttpRouteAction: Swift.Sendable {
         /// An object that represents the targets that traffic is routed to when a request matches the route.
         /// This member is required.
         public var weightedTargets: [AppMeshClientTypes.WeightedTarget]?
@@ -4617,12 +4618,12 @@ extension AppMeshClientTypes {
             self.weightedTargets = weightedTargets
         }
     }
-
 }
 
 extension AppMeshClientTypes {
+
     /// An object that represents the HTTP header in the request.
-    public struct HttpRouteHeader {
+    public struct HttpRouteHeader: Swift.Sendable {
         /// Specify True to match anything except the match criteria. The default value is False.
         public var invert: Swift.Bool?
         /// The HeaderMatchMethod object.
@@ -4642,12 +4643,11 @@ extension AppMeshClientTypes {
             self.name = name
         }
     }
-
 }
 
 extension AppMeshClientTypes {
 
-    public enum HttpScheme: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum HttpScheme: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case http
         case https
         case sdkUnknown(Swift.String)
@@ -4675,8 +4675,9 @@ extension AppMeshClientTypes {
 }
 
 extension AppMeshClientTypes {
+
     /// An object that represents the requirements for a route to match HTTP requests for a virtual router.
-    public struct HttpRouteMatch {
+    public struct HttpRouteMatch: Swift.Sendable {
         /// The client request headers to match on.
         public var headers: [AppMeshClientTypes.HttpRouteHeader]?
         /// The client request method to match on. Specify only one.
@@ -4711,12 +4712,12 @@ extension AppMeshClientTypes {
             self.scheme = scheme
         }
     }
-
 }
 
 extension AppMeshClientTypes {
+
     /// An object that represents a retry policy. Specify at least one value for at least one of the types of RetryEvents, a value for maxRetries, and a value for perRetryTimeout. Both server-error and gateway-error under httpRetryEvents include the Envoy reset policy. For more information on the reset policy, see the [Envoy documentation](https://www.envoyproxy.io/docs/envoy/latest/configuration/http/http_filters/router_filter#x-envoy-retry-on).
-    public struct HttpRetryPolicy {
+    public struct HttpRetryPolicy: Swift.Sendable {
         /// Specify at least one of the following values.
         ///
         /// * server-error – HTTP status codes 500, 501, 502, 503, 504, 505, 506, 507, 508, 510, and 511
@@ -4749,12 +4750,12 @@ extension AppMeshClientTypes {
             self.tcpRetryEvents = tcpRetryEvents
         }
     }
-
 }
 
 extension AppMeshClientTypes {
+
     /// An object that represents an HTTP or HTTP/2 route type.
-    public struct HttpRoute {
+    public struct HttpRoute: Swift.Sendable {
         /// An object that represents the action to take if a match is determined.
         /// This member is required.
         public var action: AppMeshClientTypes.HttpRouteAction?
@@ -4779,12 +4780,12 @@ extension AppMeshClientTypes {
             self.timeout = timeout
         }
     }
-
 }
 
 extension AppMeshClientTypes {
+
     /// An object that represents the action to take if a match is determined.
-    public struct TcpRouteAction {
+    public struct TcpRouteAction: Swift.Sendable {
         /// An object that represents the targets that traffic is routed to when a request matches the route.
         /// This member is required.
         public var weightedTargets: [AppMeshClientTypes.WeightedTarget]?
@@ -4796,12 +4797,12 @@ extension AppMeshClientTypes {
             self.weightedTargets = weightedTargets
         }
     }
-
 }
 
 extension AppMeshClientTypes {
+
     /// An object representing the TCP route to match.
-    public struct TcpRouteMatch {
+    public struct TcpRouteMatch: Swift.Sendable {
         /// The port number to match on.
         public var port: Swift.Int?
 
@@ -4812,12 +4813,12 @@ extension AppMeshClientTypes {
             self.port = port
         }
     }
-
 }
 
 extension AppMeshClientTypes {
+
     /// An object that represents a TCP route type.
-    public struct TcpRoute {
+    public struct TcpRoute: Swift.Sendable {
         /// The action to take if a match is determined.
         /// This member is required.
         public var action: AppMeshClientTypes.TcpRouteAction?
@@ -4837,12 +4838,12 @@ extension AppMeshClientTypes {
             self.timeout = timeout
         }
     }
-
 }
 
 extension AppMeshClientTypes {
+
     /// An object that represents a route specification. Specify one route type.
-    public struct RouteSpec {
+    public struct RouteSpec: Swift.Sendable {
         /// An object that represents the specification of a gRPC route.
         public var grpcRoute: AppMeshClientTypes.GrpcRoute?
         /// An object that represents the specification of an HTTP/2 route.
@@ -4869,11 +4870,10 @@ extension AppMeshClientTypes {
             self.tcpRoute = tcpRoute
         }
     }
-
 }
 
 ///
-public struct CreateRouteInput {
+public struct CreateRouteInput: Swift.Sendable {
     /// Unique, case-sensitive identifier that you provide to ensure the idempotency of the request. Up to 36 letters, numbers, hyphens, and underscores are allowed.
     public var clientToken: Swift.String?
     /// The name of the service mesh to create the route in.
@@ -4915,7 +4915,7 @@ public struct CreateRouteInput {
 
 extension AppMeshClientTypes {
 
-    public enum RouteStatusCode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum RouteStatusCode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case active
         case deleted
         case inactive
@@ -4946,8 +4946,9 @@ extension AppMeshClientTypes {
 }
 
 extension AppMeshClientTypes {
+
     /// An object that represents the current status of a route.
-    public struct RouteStatus {
+    public struct RouteStatus: Swift.Sendable {
         /// The current status for the route.
         /// This member is required.
         public var status: AppMeshClientTypes.RouteStatusCode?
@@ -4959,12 +4960,12 @@ extension AppMeshClientTypes {
             self.status = status
         }
     }
-
 }
 
 extension AppMeshClientTypes {
+
     /// An object that represents a route returned by a describe operation.
-    public struct RouteData {
+    public struct RouteData: Swift.Sendable {
         /// The name of the service mesh that the route resides in.
         /// This member is required.
         public var meshName: Swift.String?
@@ -5001,11 +5002,10 @@ extension AppMeshClientTypes {
             self.virtualRouterName = virtualRouterName
         }
     }
-
 }
 
 ///
-public struct CreateRouteOutput {
+public struct CreateRouteOutput: Swift.Sendable {
     /// The full description of your mesh following the create call.
     /// This member is required.
     public var route: AppMeshClientTypes.RouteData?
@@ -5019,7 +5019,7 @@ public struct CreateRouteOutput {
 }
 
 ///
-public struct DeleteRouteInput {
+public struct DeleteRouteInput: Swift.Sendable {
     /// The name of the service mesh to delete the route in.
     /// This member is required.
     public var meshName: Swift.String?
@@ -5047,7 +5047,7 @@ public struct DeleteRouteInput {
 }
 
 ///
-public struct DeleteRouteOutput {
+public struct DeleteRouteOutput: Swift.Sendable {
     /// The route that was deleted.
     /// This member is required.
     public var route: AppMeshClientTypes.RouteData?
@@ -5061,7 +5061,7 @@ public struct DeleteRouteOutput {
 }
 
 ///
-public struct DescribeRouteInput {
+public struct DescribeRouteInput: Swift.Sendable {
     /// The name of the service mesh that the route resides in.
     /// This member is required.
     public var meshName: Swift.String?
@@ -5089,7 +5089,7 @@ public struct DescribeRouteInput {
 }
 
 ///
-public struct DescribeRouteOutput {
+public struct DescribeRouteOutput: Swift.Sendable {
     /// The full description of your route.
     /// This member is required.
     public var route: AppMeshClientTypes.RouteData?
@@ -5103,7 +5103,7 @@ public struct DescribeRouteOutput {
 }
 
 ///
-public struct ListRoutesInput {
+public struct ListRoutesInput: Swift.Sendable {
     /// The maximum number of results returned by ListRoutes in paginated output. When you use this parameter, ListRoutes returns only limit results in a single page along with a nextToken response element. You can see the remaining results of the initial request by sending another ListRoutes request with the returned nextToken value. This value can be between 1 and 100. If you don't use this parameter, ListRoutes returns up to 100 results and a nextToken value if applicable.
     public var limit: Swift.Int?
     /// The name of the service mesh to list routes in.
@@ -5134,8 +5134,9 @@ public struct ListRoutesInput {
 }
 
 extension AppMeshClientTypes {
+
     /// An object that represents a route returned by a list operation.
-    public struct RouteRef {
+    public struct RouteRef: Swift.Sendable {
         /// The full Amazon Resource Name (ARN) for the route.
         /// This member is required.
         public var arn: Swift.String?
@@ -5187,11 +5188,10 @@ extension AppMeshClientTypes {
             self.virtualRouterName = virtualRouterName
         }
     }
-
 }
 
 ///
-public struct ListRoutesOutput {
+public struct ListRoutesOutput: Swift.Sendable {
     /// The nextToken value to include in a future ListRoutes request. When the results of a ListRoutes request exceed limit, you can use this value to retrieve the next page of results. This value is null when there are no more results to return.
     public var nextToken: Swift.String?
     /// The list of existing routes for the specified service mesh and virtual router.
@@ -5209,7 +5209,7 @@ public struct ListRoutesOutput {
 }
 
 ///
-public struct UpdateRouteInput {
+public struct UpdateRouteInput: Swift.Sendable {
     /// Unique, case-sensitive identifier that you provide to ensure the idempotency of the request. Up to 36 letters, numbers, hyphens, and underscores are allowed.
     public var clientToken: Swift.String?
     /// The name of the service mesh that the route resides in.
@@ -5246,7 +5246,7 @@ public struct UpdateRouteInput {
 }
 
 ///
-public struct UpdateRouteOutput {
+public struct UpdateRouteOutput: Swift.Sendable {
     /// A full description of the route that was updated.
     /// This member is required.
     public var route: AppMeshClientTypes.RouteData?
@@ -5260,7 +5260,7 @@ public struct UpdateRouteOutput {
 }
 
 ///
-public struct UpdateVirtualRouterInput {
+public struct UpdateVirtualRouterInput: Swift.Sendable {
     /// Unique, case-sensitive identifier that you provide to ensure the idempotency of the request. Up to 36 letters, numbers, hyphens, and underscores are allowed.
     public var clientToken: Swift.String?
     /// The name of the service mesh that the virtual router resides in.
@@ -5292,7 +5292,7 @@ public struct UpdateVirtualRouterInput {
 }
 
 ///
-public struct UpdateVirtualRouterOutput {
+public struct UpdateVirtualRouterOutput: Swift.Sendable {
     /// A full description of the virtual router that was updated.
     /// This member is required.
     public var virtualRouter: AppMeshClientTypes.VirtualRouterData?
@@ -5306,8 +5306,9 @@ public struct UpdateVirtualRouterOutput {
 }
 
 extension AppMeshClientTypes {
+
     /// An object that represents a virtual node service provider.
-    public struct VirtualNodeServiceProvider {
+    public struct VirtualNodeServiceProvider: Swift.Sendable {
         /// The name of the virtual node that is acting as a service provider.
         /// This member is required.
         public var virtualNodeName: Swift.String?
@@ -5319,12 +5320,12 @@ extension AppMeshClientTypes {
             self.virtualNodeName = virtualNodeName
         }
     }
-
 }
 
 extension AppMeshClientTypes {
+
     /// An object that represents a virtual node service provider.
-    public struct VirtualRouterServiceProvider {
+    public struct VirtualRouterServiceProvider: Swift.Sendable {
         /// The name of the virtual router that is acting as a service provider.
         /// This member is required.
         public var virtualRouterName: Swift.String?
@@ -5336,24 +5337,24 @@ extension AppMeshClientTypes {
             self.virtualRouterName = virtualRouterName
         }
     }
-
 }
 
 extension AppMeshClientTypes {
+
     /// An object that represents the provider for a virtual service.
-    public enum VirtualServiceProvider {
+    public enum VirtualServiceProvider: Swift.Sendable {
         /// The virtual node associated with a virtual service.
         case virtualnode(AppMeshClientTypes.VirtualNodeServiceProvider)
         /// The virtual router associated with a virtual service.
         case virtualrouter(AppMeshClientTypes.VirtualRouterServiceProvider)
         case sdkUnknown(Swift.String)
     }
-
 }
 
 extension AppMeshClientTypes {
+
     /// An object that represents the specification of a virtual service.
-    public struct VirtualServiceSpec {
+    public struct VirtualServiceSpec: Swift.Sendable {
         /// The App Mesh object that is acting as the provider for a virtual service. You can specify a single virtual node or virtual router.
         public var provider: AppMeshClientTypes.VirtualServiceProvider?
 
@@ -5364,11 +5365,10 @@ extension AppMeshClientTypes {
             self.provider = provider
         }
     }
-
 }
 
 ///
-public struct CreateVirtualServiceInput {
+public struct CreateVirtualServiceInput: Swift.Sendable {
     /// Unique, case-sensitive identifier that you provide to ensure the idempotency of the request. Up to 36 letters, numbers, hyphens, and underscores are allowed.
     public var clientToken: Swift.String?
     /// The name of the service mesh to create the virtual service in.
@@ -5405,7 +5405,7 @@ public struct CreateVirtualServiceInput {
 
 extension AppMeshClientTypes {
 
-    public enum VirtualServiceStatusCode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum VirtualServiceStatusCode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case active
         case deleted
         case inactive
@@ -5436,8 +5436,9 @@ extension AppMeshClientTypes {
 }
 
 extension AppMeshClientTypes {
+
     /// An object that represents the status of a virtual service.
-    public struct VirtualServiceStatus {
+    public struct VirtualServiceStatus: Swift.Sendable {
         /// The current status of the virtual service.
         /// This member is required.
         public var status: AppMeshClientTypes.VirtualServiceStatusCode?
@@ -5449,12 +5450,12 @@ extension AppMeshClientTypes {
             self.status = status
         }
     }
-
 }
 
 extension AppMeshClientTypes {
+
     /// An object that represents a virtual service returned by a describe operation.
-    public struct VirtualServiceData {
+    public struct VirtualServiceData: Swift.Sendable {
         /// The name of the service mesh that the virtual service resides in.
         /// This member is required.
         public var meshName: Swift.String?
@@ -5486,11 +5487,10 @@ extension AppMeshClientTypes {
             self.virtualServiceName = virtualServiceName
         }
     }
-
 }
 
 ///
-public struct CreateVirtualServiceOutput {
+public struct CreateVirtualServiceOutput: Swift.Sendable {
     /// The full description of your virtual service following the create call.
     /// This member is required.
     public var virtualService: AppMeshClientTypes.VirtualServiceData?
@@ -5504,7 +5504,7 @@ public struct CreateVirtualServiceOutput {
 }
 
 ///
-public struct DeleteVirtualServiceInput {
+public struct DeleteVirtualServiceInput: Swift.Sendable {
     /// The name of the service mesh to delete the virtual service in.
     /// This member is required.
     public var meshName: Swift.String?
@@ -5527,7 +5527,7 @@ public struct DeleteVirtualServiceInput {
 }
 
 ///
-public struct DeleteVirtualServiceOutput {
+public struct DeleteVirtualServiceOutput: Swift.Sendable {
     /// The virtual service that was deleted.
     /// This member is required.
     public var virtualService: AppMeshClientTypes.VirtualServiceData?
@@ -5541,7 +5541,7 @@ public struct DeleteVirtualServiceOutput {
 }
 
 ///
-public struct DescribeVirtualServiceInput {
+public struct DescribeVirtualServiceInput: Swift.Sendable {
     /// The name of the service mesh that the virtual service resides in.
     /// This member is required.
     public var meshName: Swift.String?
@@ -5564,7 +5564,7 @@ public struct DescribeVirtualServiceInput {
 }
 
 ///
-public struct DescribeVirtualServiceOutput {
+public struct DescribeVirtualServiceOutput: Swift.Sendable {
     /// The full description of your virtual service.
     /// This member is required.
     public var virtualService: AppMeshClientTypes.VirtualServiceData?
@@ -5578,7 +5578,7 @@ public struct DescribeVirtualServiceOutput {
 }
 
 ///
-public struct ListVirtualServicesInput {
+public struct ListVirtualServicesInput: Swift.Sendable {
     /// The maximum number of results returned by ListVirtualServices in paginated output. When you use this parameter, ListVirtualServices returns only limit results in a single page along with a nextToken response element. You can see the remaining results of the initial request by sending another ListVirtualServices request with the returned nextToken value. This value can be between 1 and 100. If you don't use this parameter, ListVirtualServices returns up to 100 results and a nextToken value if applicable.
     public var limit: Swift.Int?
     /// The name of the service mesh to list virtual services in.
@@ -5604,8 +5604,9 @@ public struct ListVirtualServicesInput {
 }
 
 extension AppMeshClientTypes {
+
     /// An object that represents a virtual service returned by a list operation.
-    public struct VirtualServiceRef {
+    public struct VirtualServiceRef: Swift.Sendable {
         /// The full Amazon Resource Name (ARN) for the virtual service.
         /// This member is required.
         public var arn: Swift.String?
@@ -5652,11 +5653,10 @@ extension AppMeshClientTypes {
             self.virtualServiceName = virtualServiceName
         }
     }
-
 }
 
 ///
-public struct ListVirtualServicesOutput {
+public struct ListVirtualServicesOutput: Swift.Sendable {
     /// The nextToken value to include in a future ListVirtualServices request. When the results of a ListVirtualServices request exceed limit, you can use this value to retrieve the next page of results. This value is null when there are no more results to return.
     public var nextToken: Swift.String?
     /// The list of existing virtual services for the specified service mesh.
@@ -5674,7 +5674,7 @@ public struct ListVirtualServicesOutput {
 }
 
 ///
-public struct UpdateVirtualServiceInput {
+public struct UpdateVirtualServiceInput: Swift.Sendable {
     /// Unique, case-sensitive identifier that you provide to ensure the idempotency of the request. Up to 36 letters, numbers, hyphens, and underscores are allowed.
     public var clientToken: Swift.String?
     /// The name of the service mesh that the virtual service resides in.
@@ -5706,7 +5706,7 @@ public struct UpdateVirtualServiceInput {
 }
 
 ///
-public struct UpdateVirtualServiceOutput {
+public struct UpdateVirtualServiceOutput: Swift.Sendable {
     /// A full description of the virtual service that was updated.
     /// This member is required.
     public var virtualService: AppMeshClientTypes.VirtualServiceData?
@@ -5744,7 +5744,7 @@ public struct TooManyTagsException: ClientRuntime.ModeledError, AWSClientRuntime
 }
 
 ///
-public struct TagResourceInput {
+public struct TagResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the resource to add tags to.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -5763,13 +5763,13 @@ public struct TagResourceInput {
 }
 
 ///
-public struct TagResourceOutput {
+public struct TagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
 ///
-public struct UntagResourceInput {
+public struct UntagResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the resource to delete tags from.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -5788,7 +5788,7 @@ public struct UntagResourceInput {
 }
 
 ///
-public struct UntagResourceOutput {
+public struct UntagResourceOutput: Swift.Sendable {
 
     public init() { }
 }

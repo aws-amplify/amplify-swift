@@ -32,147 +32,148 @@ import struct SmithyEventStreamsAPI.Message
 @_spi(SmithyReadWrite) import struct SmithyReadWrite.WritingClosureBox
 import typealias SmithyEventStreamsAPI.UnmarshalClosure
 
-public struct AssociateKmsKeyOutput {
+
+public struct AssociateKmsKeyOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct CancelExportTaskOutput {
+public struct CancelExportTaskOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct CreateLogGroupOutput {
+public struct CreateLogGroupOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct CreateLogStreamOutput {
+public struct CreateLogStreamOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteAccountPolicyOutput {
+public struct DeleteAccountPolicyOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteDataProtectionPolicyOutput {
+public struct DeleteDataProtectionPolicyOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteDeliveryDestinationOutput {
+public struct DeleteDeliveryDestinationOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteDeliveryDestinationPolicyOutput {
+public struct DeleteDeliveryDestinationPolicyOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteDeliveryOutput {
+public struct DeleteDeliveryOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteDeliverySourceOutput {
+public struct DeleteDeliverySourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteDestinationOutput {
+public struct DeleteDestinationOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteLogAnomalyDetectorOutput {
+public struct DeleteLogAnomalyDetectorOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteLogGroupOutput {
+public struct DeleteLogGroupOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteLogStreamOutput {
+public struct DeleteLogStreamOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteMetricFilterOutput {
+public struct DeleteMetricFilterOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteResourcePolicyOutput {
+public struct DeleteResourcePolicyOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteRetentionPolicyOutput {
+public struct DeleteRetentionPolicyOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteSubscriptionFilterOutput {
+public struct DeleteSubscriptionFilterOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DisassociateKmsKeyOutput {
+public struct DisassociateKmsKeyOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct PutDestinationPolicyOutput {
+public struct PutDestinationPolicyOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct PutMetricFilterOutput {
+public struct PutMetricFilterOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct PutRetentionPolicyOutput {
+public struct PutRetentionPolicyOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct PutSubscriptionFilterOutput {
+public struct PutSubscriptionFilterOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct TagLogGroupOutput {
+public struct TagLogGroupOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct TagResourceOutput {
+public struct TagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UntagLogGroupOutput {
+public struct UntagLogGroupOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UntagResourceOutput {
+public struct UntagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdateAnomalyOutput {
+public struct UpdateAnomalyOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdateLogAnomalyDetectorOutput {
+public struct UpdateLogAnomalyDetectorOutput: Swift.Sendable {
 
     public init() { }
 }
@@ -203,7 +204,7 @@ public struct AccessDeniedException: ClientRuntime.ModeledError, AWSClientRuntim
 
 extension CloudWatchLogsClientTypes {
 
-    public enum PolicyType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum PolicyType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case dataProtectionPolicy
         case subscriptionFilterPolicy
         case sdkUnknown(Swift.String)
@@ -232,7 +233,7 @@ extension CloudWatchLogsClientTypes {
 
 extension CloudWatchLogsClientTypes {
 
-    public enum Scope: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Scope: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case all
         case sdkUnknown(Swift.String)
 
@@ -257,8 +258,9 @@ extension CloudWatchLogsClientTypes {
 }
 
 extension CloudWatchLogsClientTypes {
+
     /// A structure that contains information about one CloudWatch Logs account policy.
-    public struct AccountPolicy {
+    public struct AccountPolicy: Swift.Sendable {
         /// The Amazon Web Services account ID that the policy applies to.
         public var accountId: Swift.String?
         /// The date and time that this policy was most recently updated.
@@ -293,12 +295,12 @@ extension CloudWatchLogsClientTypes {
             self.selectionCriteria = selectionCriteria
         }
     }
-
 }
 
 extension CloudWatchLogsClientTypes {
+
     /// A structure that represents a valid record field header and whether it is mandatory.
-    public struct RecordField {
+    public struct RecordField: Swift.Sendable {
         /// If this is true, the record field must be present in the recordFields parameter provided to a [CreateDelivery](https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_CreateDelivery.html) or [UpdateDeliveryConfiguration](https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_UpdateDeliveryConfiguration.html) operation.
         public var mandatory: Swift.Bool?
         /// The name to use when specifying this record field in a [CreateDelivery](https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_CreateDelivery.html) or [UpdateDeliveryConfiguration](https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_UpdateDeliveryConfiguration.html) operation.
@@ -313,12 +315,12 @@ extension CloudWatchLogsClientTypes {
             self.name = name
         }
     }
-
 }
 
 extension CloudWatchLogsClientTypes {
+
     /// This structure contains the information for one sample log event that is associated with an anomaly found by a log anomaly detector.
-    public struct LogEvent {
+    public struct LogEvent: Swift.Sendable {
         /// The message content of the log event.
         public var message: Swift.String?
         /// The time stamp of the log event.
@@ -333,16 +335,18 @@ extension CloudWatchLogsClientTypes {
             self.timestamp = timestamp
         }
     }
-
 }
 
 extension CloudWatchLogsClientTypes {
+
     /// A structure that contains information about one pattern token related to an anomaly. For more information about patterns and tokens, see [CreateLogAnomalyDetector](https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_CreateLogAnomalyDetector.html).
-    public struct PatternToken {
+    public struct PatternToken: Swift.Sendable {
         /// For a dynamic token, this indicates where in the pattern that this token appears, related to other dynamic tokens. The dynamic token that appears first has a value of 1, the one that appears second is 2, and so on.
         public var dynamicTokenPosition: Swift.Int
         /// Contains the values found for a dynamic token, and the number of times each value was found.
         public var enumerations: [Swift.String: Swift.Int]?
+        /// A name that CloudWatch Logs assigned to this dynamic token to make the pattern more readable. The string part of the inferredTokenName gives you a clearer idea of the content of this token. The number part of the inferredTokenName shows where in the pattern this token appears, compared to other dynamic tokens. CloudWatch Logs assigns the string part of the name based on analyzing the content of the log events that contain it. For example, an inferred token name of IPAddress-3 means that the token represents an IP address, and this token is the third dynamic token in the pattern.
+        public var inferredTokenName: Swift.String?
         /// Specifies whether this is a dynamic token.
         public var isDynamic: Swift.Bool?
         /// The string represented by this token. If this is a dynamic token, the value will be <*>
@@ -351,22 +355,23 @@ extension CloudWatchLogsClientTypes {
         public init(
             dynamicTokenPosition: Swift.Int = 0,
             enumerations: [Swift.String: Swift.Int]? = nil,
+            inferredTokenName: Swift.String? = nil,
             isDynamic: Swift.Bool? = nil,
             tokenString: Swift.String? = nil
         )
         {
             self.dynamicTokenPosition = dynamicTokenPosition
             self.enumerations = enumerations
+            self.inferredTokenName = inferredTokenName
             self.isDynamic = isDynamic
             self.tokenString = tokenString
         }
     }
-
 }
 
 extension CloudWatchLogsClientTypes {
 
-    public enum State: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum State: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case active
         case baseline
         case suppressed
@@ -397,8 +402,9 @@ extension CloudWatchLogsClientTypes {
 }
 
 extension CloudWatchLogsClientTypes {
+
     /// This structure represents one anomaly that has been found by a logs anomaly detector. For more information about patterns and anomalies, see [CreateLogAnomalyDetector](https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_CreateLogAnomalyDetector.html).
-    public struct Anomaly {
+    public struct Anomaly: Swift.Sendable {
         /// Specifies whether this anomaly is still ongoing.
         /// This member is required.
         public var active: Swift.Bool?
@@ -494,12 +500,11 @@ extension CloudWatchLogsClientTypes {
             self.suppressedUntil = suppressedUntil
         }
     }
-
 }
 
 extension CloudWatchLogsClientTypes {
 
-    public enum AnomalyDetectorStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AnomalyDetectorStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case analyzing
         case deleted
         case failed
@@ -540,7 +545,7 @@ extension CloudWatchLogsClientTypes {
 
 extension CloudWatchLogsClientTypes {
 
-    public enum EvaluationFrequency: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum EvaluationFrequency: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case fifteenMin
         case fiveMin
         case oneHour
@@ -580,8 +585,9 @@ extension CloudWatchLogsClientTypes {
 }
 
 extension CloudWatchLogsClientTypes {
+
     /// Contains information about one anomaly detector in the account.
-    public struct AnomalyDetector {
+    public struct AnomalyDetector: Swift.Sendable {
         /// The ARN of the anomaly detector.
         public var anomalyDetectorArn: Swift.String?
         /// Specifies the current status of the anomaly detector. To pause an anomaly detector, use the enabled parameter in the [UpdateLogAnomalyDetector](https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_UpdateLogAnomalyDetector.html) operation.
@@ -628,7 +634,6 @@ extension CloudWatchLogsClientTypes {
             self.logGroupArnList = logGroupArnList
         }
     }
-
 }
 
 /// A parameter is specified incorrectly.
@@ -727,7 +732,7 @@ public struct ServiceUnavailableException: ClientRuntime.ModeledError, AWSClient
     }
 }
 
-public struct AssociateKmsKeyInput {
+public struct AssociateKmsKeyInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the KMS key to use when encrypting log data. This must be a symmetric KMS key. For more information, see [Amazon Resource Names](https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html#arn-syntax-kms) and [Using Symmetric and Asymmetric Keys](https://docs.aws.amazon.com/kms/latest/developerguide/symmetric-asymmetric.html).
     /// This member is required.
     public var kmsKeyId: Swift.String?
@@ -779,7 +784,7 @@ public struct InvalidOperationException: ClientRuntime.ModeledError, AWSClientRu
     }
 }
 
-public struct CancelExportTaskInput {
+public struct CancelExportTaskInput: Swift.Sendable {
     /// The ID of the export task.
     /// This member is required.
     public var taskId: Swift.String?
@@ -794,7 +799,7 @@ public struct CancelExportTaskInput {
 
 extension CloudWatchLogsClientTypes {
 
-    public enum OutputFormat: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum OutputFormat: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case json
         case parquet
         case plain
@@ -831,8 +836,9 @@ extension CloudWatchLogsClientTypes {
 }
 
 extension CloudWatchLogsClientTypes {
+
     /// This structure contains delivery configurations that apply only when the delivery destination resource is an S3 bucket.
-    public struct S3DeliveryConfiguration {
+    public struct S3DeliveryConfiguration: Swift.Sendable {
         /// This parameter causes the S3 objects that contain delivered logs to use a prefix structure that allows for integration with Apache Hive.
         public var enableHiveCompatiblePath: Swift.Bool?
         /// This string allows re-configuring the S3 object prefix to contain either static or variable sections. The valid variables to use in the suffix path will vary by each log source. See ConfigurationTemplate$allowedSuffixPathFields for more info on what values are supported in the suffix path for each log source.
@@ -847,12 +853,12 @@ extension CloudWatchLogsClientTypes {
             self.suffixPath = suffixPath
         }
     }
-
 }
 
 extension CloudWatchLogsClientTypes {
+
     /// This structure contains the default values that are used for each configuration parameter when you use [CreateDelivery](https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_CreateDelivery.html) to create a deliver under the current service type, resource type, and log type.
-    public struct ConfigurationTemplateDeliveryConfigValues {
+    public struct ConfigurationTemplateDeliveryConfigValues: Swift.Sendable {
         /// The default field delimiter that is used in a [CreateDelivery](https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_CreateDelivery.html) operation when the field delimiter is not specified in that operation. The field delimiter is used only when the final output delivery is in Plain, W3C, or Raw format.
         public var fieldDelimiter: Swift.String?
         /// The default record fields that will be delivered when a list of record fields is not provided in a [CreateDelivery](https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_CreateDelivery.html) operation.
@@ -871,12 +877,11 @@ extension CloudWatchLogsClientTypes {
             self.s3DeliveryConfiguration = s3DeliveryConfiguration
         }
     }
-
 }
 
 extension CloudWatchLogsClientTypes {
 
-    public enum DeliveryDestinationType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DeliveryDestinationType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case cwl
         case fh
         case s3
@@ -907,8 +912,9 @@ extension CloudWatchLogsClientTypes {
 }
 
 extension CloudWatchLogsClientTypes {
+
     /// A structure containing information about the deafult settings and available settings that you can use to configure a [delivery](https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_Delivery.html) or a [delivery destination](https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_DeliveryDestination.html).
-    public struct ConfigurationTemplate {
+    public struct ConfigurationTemplate: Swift.Sendable {
         /// The action permissions that a caller needs to have to be able to successfully create a delivery source on the desired resource type when calling [PutDeliverySource](https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_PutDeliverySource.html).
         public var allowedActionForAllowVendedLogsDeliveryForResource: Swift.String?
         /// The valid values that a caller can use as field delimiters when calling [CreateDelivery](https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_CreateDelivery.html) or [UpdateDeliveryConfiguration](https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_UpdateDeliveryConfiguration.html) on a delivery that delivers in Plain, W3C, or Raw format.
@@ -919,7 +925,7 @@ extension CloudWatchLogsClientTypes {
         public var allowedOutputFormats: [CloudWatchLogsClientTypes.OutputFormat]?
         /// The list of variable fields that can be used in the suffix path of a delivery that delivers to an S3 bucket.
         public var allowedSuffixPathFields: [Swift.String]?
-        /// A mapping that displays the default value of each property within a delivery’s configuration, if it is not specified in the request.
+        /// A mapping that displays the default value of each property within a delivery's configuration, if it is not specified in the request.
         public var defaultDeliveryConfigValues: CloudWatchLogsClientTypes.ConfigurationTemplateDeliveryConfigValues?
         /// A string specifying which destination type this configuration template applies to.
         public var deliveryDestinationType: CloudWatchLogsClientTypes.DeliveryDestinationType?
@@ -955,7 +961,6 @@ extension CloudWatchLogsClientTypes {
             self.service = service
         }
     }
-
 }
 
 /// This operation attempted to create a resource that already exists.
@@ -1054,7 +1059,7 @@ public struct ValidationException: ClientRuntime.ModeledError, AWSClientRuntime.
     }
 }
 
-public struct CreateDeliveryInput {
+public struct CreateDeliveryInput: Swift.Sendable {
     /// The ARN of the delivery destination to use for this delivery.
     /// This member is required.
     public var deliveryDestinationArn: Swift.String?
@@ -1063,9 +1068,9 @@ public struct CreateDeliveryInput {
     public var deliverySourceName: Swift.String?
     /// The field delimiter to use between record fields when the final output format of a delivery is in Plain, W3C, or Raw format.
     public var fieldDelimiter: Swift.String?
-    /// The list of record fields to be delivered to the destination, in order. If the delivery’s log source has mandatory fields, they must be included in this list.
+    /// The list of record fields to be delivered to the destination, in order. If the delivery's log source has mandatory fields, they must be included in this list.
     public var recordFields: [Swift.String]?
-    /// This structure contains parameters that are valid only when the delivery’s delivery destination is an S3 bucket.
+    /// This structure contains parameters that are valid only when the delivery's delivery destination is an S3 bucket.
     public var s3DeliveryConfiguration: CloudWatchLogsClientTypes.S3DeliveryConfiguration?
     /// An optional list of key-value pairs to associate with the resource. For more information about tagging, see [Tagging Amazon Web Services resources](https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html)
     public var tags: [Swift.String: Swift.String]?
@@ -1089,8 +1094,9 @@ public struct CreateDeliveryInput {
 }
 
 extension CloudWatchLogsClientTypes {
-    /// This structure contains information about one delivery in your account. A delivery is a connection between a logical delivery source and a logical delivery destination. For more information, see [CreateDelivery](https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_CreateDelivery.html). You can't update an existing delivery. You can only create and delete deliveries.
-    public struct Delivery {
+
+    /// This structure contains information about one delivery in your account. A delivery is a connection between a logical delivery source and a logical delivery destination. For more information, see [CreateDelivery](https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_CreateDelivery.html). To update an existing delivery configuration, use [UpdateDeliveryConfiguration](https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_UpdateDeliveryConfiguration.html).
+    public struct Delivery: Swift.Sendable {
         /// The Amazon Resource Name (ARN) that uniquely identifies this delivery.
         public var arn: Swift.String?
         /// The ARN of the delivery destination that is associated with this delivery.
@@ -1133,10 +1139,9 @@ extension CloudWatchLogsClientTypes {
             self.tags = tags
         }
     }
-
 }
 
-public struct CreateDeliveryOutput {
+public struct CreateDeliveryOutput: Swift.Sendable {
     /// A structure that contains information about the delivery that you just created.
     public var delivery: CloudWatchLogsClientTypes.Delivery?
 
@@ -1196,11 +1201,11 @@ public struct ResourceAlreadyExistsException: ClientRuntime.ModeledError, AWSCli
     }
 }
 
-public struct CreateExportTaskInput {
+public struct CreateExportTaskInput: Swift.Sendable {
     /// The name of S3 bucket for the exported log data. The bucket must be in the same Amazon Web Services Region.
     /// This member is required.
     public var destination: Swift.String?
-    /// The prefix used as the start of the key for every object exported. If you don't specify a value, the default is exportedlogs.
+    /// The prefix used as the start of the key for every object exported. If you don't specify a value, the default is exportedlogs. The length of this parameter must comply with the S3 object key name length limits. The object key name is a sequence of Unicode characters with UTF-8 encoding, and can be up to 1,024 bytes.
     public var destinationPrefix: Swift.String?
     /// The start time of the range for the request, expressed as the number of milliseconds after Jan 1, 1970 00:00:00 UTC. Events with a timestamp earlier than this time are not exported.
     /// This member is required.
@@ -1236,7 +1241,7 @@ public struct CreateExportTaskInput {
     }
 }
 
-public struct CreateExportTaskOutput {
+public struct CreateExportTaskOutput: Swift.Sendable {
     /// The ID of the export task.
     public var taskId: Swift.String?
 
@@ -1248,7 +1253,7 @@ public struct CreateExportTaskOutput {
     }
 }
 
-public struct CreateLogAnomalyDetectorInput {
+public struct CreateLogAnomalyDetectorInput: Swift.Sendable {
     /// The number of days to have visibility on an anomaly. After this time period has elapsed for an anomaly, it will be automatically baselined and the anomaly detector will treat new occurrences of a similar anomaly as normal. Therefore, if you do not correct the cause of an anomaly during the time period specified in anomalyVisibilityTime, it will be considered normal going forward and will not be detected as an anomaly.
     public var anomalyVisibilityTime: Swift.Int?
     /// A name for this anomaly detector.
@@ -1285,7 +1290,7 @@ public struct CreateLogAnomalyDetectorInput {
     }
 }
 
-public struct CreateLogAnomalyDetectorOutput {
+public struct CreateLogAnomalyDetectorOutput: Swift.Sendable {
     /// The ARN of the log anomaly detector that you just created.
     public var anomalyDetectorArn: Swift.String?
 
@@ -1299,7 +1304,7 @@ public struct CreateLogAnomalyDetectorOutput {
 
 extension CloudWatchLogsClientTypes {
 
-    public enum LogGroupClass: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum LogGroupClass: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case infrequentAccess
         case standard
         case sdkUnknown(Swift.String)
@@ -1326,7 +1331,7 @@ extension CloudWatchLogsClientTypes {
     }
 }
 
-public struct CreateLogGroupInput {
+public struct CreateLogGroupInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the KMS key to use when encrypting log data. For more information, see [Amazon Resource Names](https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html#arn-syntax-kms).
     public var kmsKeyId: Swift.String?
     /// Use this parameter to specify the log group class for this log group. There are two classes:
@@ -1358,7 +1363,7 @@ public struct CreateLogGroupInput {
     }
 }
 
-public struct CreateLogStreamInput {
+public struct CreateLogStreamInput: Swift.Sendable {
     /// The name of the log group.
     /// This member is required.
     public var logGroupName: Swift.String?
@@ -1405,7 +1410,7 @@ public struct DataAlreadyAcceptedException: ClientRuntime.ModeledError, AWSClien
 
 extension CloudWatchLogsClientTypes {
 
-    public enum DataProtectionStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DataProtectionStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case activated
         case archived
         case deleted
@@ -1438,7 +1443,7 @@ extension CloudWatchLogsClientTypes {
     }
 }
 
-public struct DeleteAccountPolicyInput {
+public struct DeleteAccountPolicyInput: Swift.Sendable {
     /// The name of the policy to delete.
     /// This member is required.
     public var policyName: Swift.String?
@@ -1456,7 +1461,7 @@ public struct DeleteAccountPolicyInput {
     }
 }
 
-public struct DeleteDataProtectionPolicyInput {
+public struct DeleteDataProtectionPolicyInput: Swift.Sendable {
     /// The name or ARN of the log group that you want to delete the data protection policy for.
     /// This member is required.
     public var logGroupIdentifier: Swift.String?
@@ -1469,7 +1474,7 @@ public struct DeleteDataProtectionPolicyInput {
     }
 }
 
-public struct DeleteDeliveryInput {
+public struct DeleteDeliveryInput: Swift.Sendable {
     /// The unique ID of the delivery to delete. You can find the ID of a delivery with the [DescribeDeliveries](https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_DescribeDeliveries.html) operation.
     /// This member is required.
     public var id: Swift.String?
@@ -1482,7 +1487,7 @@ public struct DeleteDeliveryInput {
     }
 }
 
-public struct DeleteDeliveryDestinationInput {
+public struct DeleteDeliveryDestinationInput: Swift.Sendable {
     /// The name of the delivery destination that you want to delete. You can find a list of delivery destionation names by using the [DescribeDeliveryDestinations](https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_DescribeDeliveryDestinations.html) operation.
     /// This member is required.
     public var name: Swift.String?
@@ -1495,7 +1500,7 @@ public struct DeleteDeliveryDestinationInput {
     }
 }
 
-public struct DeleteDeliveryDestinationPolicyInput {
+public struct DeleteDeliveryDestinationPolicyInput: Swift.Sendable {
     /// The name of the delivery destination that you want to delete the policy for.
     /// This member is required.
     public var deliveryDestinationName: Swift.String?
@@ -1508,7 +1513,7 @@ public struct DeleteDeliveryDestinationPolicyInput {
     }
 }
 
-public struct DeleteDeliverySourceInput {
+public struct DeleteDeliverySourceInput: Swift.Sendable {
     /// The name of the delivery source that you want to delete.
     /// This member is required.
     public var name: Swift.String?
@@ -1521,7 +1526,7 @@ public struct DeleteDeliverySourceInput {
     }
 }
 
-public struct DeleteDestinationInput {
+public struct DeleteDestinationInput: Swift.Sendable {
     /// The name of the destination.
     /// This member is required.
     public var destinationName: Swift.String?
@@ -1534,7 +1539,7 @@ public struct DeleteDestinationInput {
     }
 }
 
-public struct DeleteLogAnomalyDetectorInput {
+public struct DeleteLogAnomalyDetectorInput: Swift.Sendable {
     /// The ARN of the anomaly detector to delete. You can find the ARNs of log anomaly detectors in your account by using the [ListLogAnomalyDetectors](https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_ListLogAnomalyDetectors.html) operation.
     /// This member is required.
     public var anomalyDetectorArn: Swift.String?
@@ -1547,7 +1552,7 @@ public struct DeleteLogAnomalyDetectorInput {
     }
 }
 
-public struct DeleteLogGroupInput {
+public struct DeleteLogGroupInput: Swift.Sendable {
     /// The name of the log group.
     /// This member is required.
     public var logGroupName: Swift.String?
@@ -1560,7 +1565,7 @@ public struct DeleteLogGroupInput {
     }
 }
 
-public struct DeleteLogStreamInput {
+public struct DeleteLogStreamInput: Swift.Sendable {
     /// The name of the log group.
     /// This member is required.
     public var logGroupName: Swift.String?
@@ -1578,7 +1583,7 @@ public struct DeleteLogStreamInput {
     }
 }
 
-public struct DeleteMetricFilterInput {
+public struct DeleteMetricFilterInput: Swift.Sendable {
     /// The name of the metric filter.
     /// This member is required.
     public var filterName: Swift.String?
@@ -1596,7 +1601,7 @@ public struct DeleteMetricFilterInput {
     }
 }
 
-public struct DeleteQueryDefinitionInput {
+public struct DeleteQueryDefinitionInput: Swift.Sendable {
     /// The ID of the query definition that you want to delete. You can use [DescribeQueryDefinitions](https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_DescribeQueryDefinitions.html) to retrieve the IDs of your saved query definitions.
     /// This member is required.
     public var queryDefinitionId: Swift.String?
@@ -1609,7 +1614,7 @@ public struct DeleteQueryDefinitionInput {
     }
 }
 
-public struct DeleteQueryDefinitionOutput {
+public struct DeleteQueryDefinitionOutput: Swift.Sendable {
     /// A value of TRUE indicates that the operation succeeded. FALSE indicates that the operation failed.
     public var success: Swift.Bool
 
@@ -1621,7 +1626,7 @@ public struct DeleteQueryDefinitionOutput {
     }
 }
 
-public struct DeleteResourcePolicyInput {
+public struct DeleteResourcePolicyInput: Swift.Sendable {
     /// The name of the policy to be revoked. This parameter is required.
     public var policyName: Swift.String?
 
@@ -1633,7 +1638,7 @@ public struct DeleteResourcePolicyInput {
     }
 }
 
-public struct DeleteRetentionPolicyInput {
+public struct DeleteRetentionPolicyInput: Swift.Sendable {
     /// The name of the log group.
     /// This member is required.
     public var logGroupName: Swift.String?
@@ -1646,7 +1651,7 @@ public struct DeleteRetentionPolicyInput {
     }
 }
 
-public struct DeleteSubscriptionFilterInput {
+public struct DeleteSubscriptionFilterInput: Swift.Sendable {
     /// The name of the subscription filter.
     /// This member is required.
     public var filterName: Swift.String?
@@ -1665,8 +1670,9 @@ public struct DeleteSubscriptionFilterInput {
 }
 
 extension CloudWatchLogsClientTypes {
+
     /// A structure that contains information about one logs delivery destination.
-    public struct DeliveryDestinationConfiguration {
+    public struct DeliveryDestinationConfiguration: Swift.Sendable {
         /// The ARN of the Amazon Web Services destination that this delivery destination represents. That Amazon Web Services destination can be a log group in CloudWatch Logs, an Amazon S3 bucket, or a delivery stream in Firehose.
         /// This member is required.
         public var destinationResourceArn: Swift.String?
@@ -1678,10 +1684,10 @@ extension CloudWatchLogsClientTypes {
             self.destinationResourceArn = destinationResourceArn
         }
     }
-
 }
 
 extension CloudWatchLogsClientTypes {
+
     /// This structure contains information about one delivery destination in your account. A delivery destination is an Amazon Web Services resource that represents an Amazon Web Services service that logs can be sent to. CloudWatch Logs, Amazon S3, are supported as Firehose delivery destinations. To configure logs delivery between a supported Amazon Web Services service and a destination, you must do the following:
     ///
     /// * Create a delivery source, which is a logical object that represents the resource that is actually sending the logs. For more information, see [PutDeliverySource](https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_PutDeliverySource.html).
@@ -1694,7 +1700,7 @@ extension CloudWatchLogsClientTypes {
     ///
     ///
     /// You can configure a single delivery source to send logs to multiple destinations by creating multiple deliveries. You can also create multiple deliveries to configure multiple delivery sources to send logs to the same delivery destination.
-    public struct DeliveryDestination {
+    public struct DeliveryDestination: Swift.Sendable {
         /// The Amazon Resource Name (ARN) that uniquely identifies this delivery destination.
         public var arn: Swift.String?
         /// A structure that contains the ARN of the Amazon Web Services resource that will receive the logs.
@@ -1725,10 +1731,10 @@ extension CloudWatchLogsClientTypes {
             self.tags = tags
         }
     }
-
 }
 
 extension CloudWatchLogsClientTypes {
+
     /// This structure contains information about one delivery source in your account. A delivery source is an Amazon Web Services resource that sends logs to an Amazon Web Services destination. The destination can be CloudWatch Logs, Amazon S3, or Firehose. Only some Amazon Web Services services support being configured as a delivery source. These services are listed as Supported [V2 Permissions] in the table at [Enabling logging from Amazon Web Services services.](https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/AWS-logs-and-resource-policy.html) To configure logs delivery between a supported Amazon Web Services service and a destination, you must do the following:
     ///
     /// * Create a delivery source, which is a logical object that represents the resource that is actually sending the logs. For more information, see [PutDeliverySource](https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_PutDeliverySource.html).
@@ -1741,7 +1747,7 @@ extension CloudWatchLogsClientTypes {
     ///
     ///
     /// You can configure a single delivery source to send logs to multiple destinations by creating multiple deliveries. You can also create multiple deliveries to configure multiple delivery sources to send logs to the same delivery destination.
-    public struct DeliverySource {
+    public struct DeliverySource: Swift.Sendable {
         /// The Amazon Resource Name (ARN) that uniquely identifies this delivery source.
         public var arn: Swift.String?
         /// The type of log that the source is sending. For valid values for this parameter, see the documentation for the source service.
@@ -1772,10 +1778,9 @@ extension CloudWatchLogsClientTypes {
             self.tags = tags
         }
     }
-
 }
 
-public struct DescribeAccountPoliciesInput {
+public struct DescribeAccountPoliciesInput: Swift.Sendable {
     /// If you are using an account that is set up as a monitoring account for CloudWatch unified cross-account observability, you can use this to specify the account ID of a source account. If you do, the operation returns the account policy for the specified account. Currently, you can specify only one account ID in this parameter. If you omit this parameter, only the policy in the current account is returned.
     public var accountIdentifiers: [Swift.String]?
     /// Use this parameter to limit the returned policies to only the policy with the name that you specify.
@@ -1796,7 +1801,7 @@ public struct DescribeAccountPoliciesInput {
     }
 }
 
-public struct DescribeAccountPoliciesOutput {
+public struct DescribeAccountPoliciesOutput: Swift.Sendable {
     /// An array of structures that contain information about the CloudWatch Logs account policies that match the specified filters.
     public var accountPolicies: [CloudWatchLogsClientTypes.AccountPolicy]?
 
@@ -1808,7 +1813,7 @@ public struct DescribeAccountPoliciesOutput {
     }
 }
 
-public struct DescribeConfigurationTemplatesInput {
+public struct DescribeConfigurationTemplatesInput: Swift.Sendable {
     /// Use this parameter to filter the response to include only the configuration templates that apply to the delivery destination types that you specify here.
     public var deliveryDestinationTypes: [CloudWatchLogsClientTypes.DeliveryDestinationType]?
     /// Use this parameter to limit the number of configuration templates that are returned in the response.
@@ -1840,7 +1845,7 @@ public struct DescribeConfigurationTemplatesInput {
     }
 }
 
-public struct DescribeConfigurationTemplatesOutput {
+public struct DescribeConfigurationTemplatesOutput: Swift.Sendable {
     /// An array of objects, where each object describes one configuration template that matches the filters that you specified in the request.
     public var configurationTemplates: [CloudWatchLogsClientTypes.ConfigurationTemplate]?
     /// The token for the next set of items to return. The token expires after 24 hours.
@@ -1856,7 +1861,7 @@ public struct DescribeConfigurationTemplatesOutput {
     }
 }
 
-public struct DescribeDeliveriesInput {
+public struct DescribeDeliveriesInput: Swift.Sendable {
     /// Optionally specify the maximum number of deliveries to return in the response.
     public var limit: Swift.Int?
     /// The token for the next set of items to return. The token expires after 24 hours.
@@ -1872,7 +1877,7 @@ public struct DescribeDeliveriesInput {
     }
 }
 
-public struct DescribeDeliveriesOutput {
+public struct DescribeDeliveriesOutput: Swift.Sendable {
     /// An array of structures. Each structure contains information about one delivery in the account.
     public var deliveries: [CloudWatchLogsClientTypes.Delivery]?
     /// The token for the next set of items to return. The token expires after 24 hours.
@@ -1888,7 +1893,7 @@ public struct DescribeDeliveriesOutput {
     }
 }
 
-public struct DescribeDeliveryDestinationsInput {
+public struct DescribeDeliveryDestinationsInput: Swift.Sendable {
     /// Optionally specify the maximum number of delivery destinations to return in the response.
     public var limit: Swift.Int?
     /// The token for the next set of items to return. The token expires after 24 hours.
@@ -1904,7 +1909,7 @@ public struct DescribeDeliveryDestinationsInput {
     }
 }
 
-public struct DescribeDeliveryDestinationsOutput {
+public struct DescribeDeliveryDestinationsOutput: Swift.Sendable {
     /// An array of structures. Each structure contains information about one delivery destination in the account.
     public var deliveryDestinations: [CloudWatchLogsClientTypes.DeliveryDestination]?
     /// The token for the next set of items to return. The token expires after 24 hours.
@@ -1920,7 +1925,7 @@ public struct DescribeDeliveryDestinationsOutput {
     }
 }
 
-public struct DescribeDeliverySourcesInput {
+public struct DescribeDeliverySourcesInput: Swift.Sendable {
     /// Optionally specify the maximum number of delivery sources to return in the response.
     public var limit: Swift.Int?
     /// The token for the next set of items to return. The token expires after 24 hours.
@@ -1936,7 +1941,7 @@ public struct DescribeDeliverySourcesInput {
     }
 }
 
-public struct DescribeDeliverySourcesOutput {
+public struct DescribeDeliverySourcesOutput: Swift.Sendable {
     /// An array of structures. Each structure contains information about one delivery source in the account.
     public var deliverySources: [CloudWatchLogsClientTypes.DeliverySource]?
     /// The token for the next set of items to return. The token expires after 24 hours.
@@ -1952,7 +1957,7 @@ public struct DescribeDeliverySourcesOutput {
     }
 }
 
-public struct DescribeDestinationsInput {
+public struct DescribeDestinationsInput: Swift.Sendable {
     /// The prefix to match. If you don't specify a value, no prefix filter is applied.
     public var destinationNamePrefix: Swift.String?
     /// The maximum number of items returned. If you don't specify a value, the default maximum value of 50 items is used.
@@ -1973,8 +1978,9 @@ public struct DescribeDestinationsInput {
 }
 
 extension CloudWatchLogsClientTypes {
+
     /// Represents a cross-account destination that receives subscription log events.
-    public struct Destination {
+    public struct Destination: Swift.Sendable {
         /// An IAM policy document that governs which Amazon Web Services accounts can create subscription filters against this destination.
         public var accessPolicy: Swift.String?
         /// The ARN of this destination.
@@ -2005,10 +2011,9 @@ extension CloudWatchLogsClientTypes {
             self.targetArn = targetArn
         }
     }
-
 }
 
-public struct DescribeDestinationsOutput {
+public struct DescribeDestinationsOutput: Swift.Sendable {
     /// The destinations.
     public var destinations: [CloudWatchLogsClientTypes.Destination]?
     /// The token for the next set of items to return. The token expires after 24 hours.
@@ -2026,7 +2031,7 @@ public struct DescribeDestinationsOutput {
 
 extension CloudWatchLogsClientTypes {
 
-    public enum ExportTaskStatusCode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ExportTaskStatusCode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case cancelled
         case completed
         case failed
@@ -2065,7 +2070,7 @@ extension CloudWatchLogsClientTypes {
     }
 }
 
-public struct DescribeExportTasksInput {
+public struct DescribeExportTasksInput: Swift.Sendable {
     /// The maximum number of items returned. If you don't specify a value, the default is up to 50 items.
     public var limit: Swift.Int?
     /// The token for the next set of items to return. (You received this token from a previous call.)
@@ -2090,8 +2095,9 @@ public struct DescribeExportTasksInput {
 }
 
 extension CloudWatchLogsClientTypes {
+
     /// Represents the status of an export task.
-    public struct ExportTaskExecutionInfo {
+    public struct ExportTaskExecutionInfo: Swift.Sendable {
         /// The completion time of the export task, expressed as the number of milliseconds after Jan 1, 1970 00:00:00 UTC.
         public var completionTime: Swift.Int?
         /// The creation time of the export task, expressed as the number of milliseconds after Jan 1, 1970 00:00:00 UTC.
@@ -2106,12 +2112,12 @@ extension CloudWatchLogsClientTypes {
             self.creationTime = creationTime
         }
     }
-
 }
 
 extension CloudWatchLogsClientTypes {
+
     /// Represents the status of an export task.
-    public struct ExportTaskStatus {
+    public struct ExportTaskStatus: Swift.Sendable {
         /// The status code of the export task.
         public var code: CloudWatchLogsClientTypes.ExportTaskStatusCode?
         /// The status message related to the status code.
@@ -2126,12 +2132,12 @@ extension CloudWatchLogsClientTypes {
             self.message = message
         }
     }
-
 }
 
 extension CloudWatchLogsClientTypes {
+
     /// Represents an export task.
-    public struct ExportTask {
+    public struct ExportTask: Swift.Sendable {
         /// The name of the S3 bucket to which the log data was exported.
         public var destination: Swift.String?
         /// The prefix that was used as the start of Amazon S3 key for every object exported.
@@ -2174,10 +2180,9 @@ extension CloudWatchLogsClientTypes {
             self.to = to
         }
     }
-
 }
 
-public struct DescribeExportTasksOutput {
+public struct DescribeExportTasksOutput: Swift.Sendable {
     /// The export tasks.
     public var exportTasks: [CloudWatchLogsClientTypes.ExportTask]?
     /// The token for the next set of items to return. The token expires after 24 hours.
@@ -2193,7 +2198,7 @@ public struct DescribeExportTasksOutput {
     }
 }
 
-public struct DescribeLogGroupsInput {
+public struct DescribeLogGroupsInput: Swift.Sendable {
     /// When includeLinkedAccounts is set to True, use this parameter to specify the list of accounts to search. You can specify as many as 20 account IDs in the array.
     public var accountIdentifiers: [Swift.String]?
     /// If you are using a monitoring account, set this to True to have the operation return log groups in the accounts listed in accountIdentifiers. If this parameter is set to true and accountIdentifiers contains a null value, the operation returns all log groups in the monitoring account and all log groups in all source accounts that are linked to the monitoring account.
@@ -2238,7 +2243,7 @@ public struct DescribeLogGroupsInput {
 
 extension CloudWatchLogsClientTypes {
 
-    public enum InheritedProperty: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum InheritedProperty: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case accountDataProtection
         case sdkUnknown(Swift.String)
 
@@ -2263,8 +2268,9 @@ extension CloudWatchLogsClientTypes {
 }
 
 extension CloudWatchLogsClientTypes {
+
     /// Represents a log group.
-    public struct LogGroup {
+    public struct LogGroup: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the log group. This version of the ARN includes a trailing :* after the log group name. Use this version to refer to the ARN in IAM policies when specifying permissions for most API actions. The exception is when specifying permissions for [TagResource](https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_TagResource.html), [UntagResource](https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_UntagResource.html), and [ListTagsForResource](https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_ListTagsForResource.html). The permissions for those three actions require the ARN version that doesn't include a trailing :*.
         public var arn: Swift.String?
         /// The creation time of the log group, expressed as the number of milliseconds after Jan 1, 1970 00:00:00 UTC.
@@ -2328,10 +2334,9 @@ extension CloudWatchLogsClientTypes {
             self.storedBytes = storedBytes
         }
     }
-
 }
 
-public struct DescribeLogGroupsOutput {
+public struct DescribeLogGroupsOutput: Swift.Sendable {
     /// The log groups. If the retentionInDays value is not included for a log group, then that log group's events do not expire.
     public var logGroups: [CloudWatchLogsClientTypes.LogGroup]?
     /// The token for the next set of items to return. The token expires after 24 hours.
@@ -2349,7 +2354,7 @@ public struct DescribeLogGroupsOutput {
 
 extension CloudWatchLogsClientTypes {
 
-    public enum OrderBy: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum OrderBy: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case lasteventtime
         case logstreamname
         case sdkUnknown(Swift.String)
@@ -2376,7 +2381,7 @@ extension CloudWatchLogsClientTypes {
     }
 }
 
-public struct DescribeLogStreamsInput {
+public struct DescribeLogStreamsInput: Swift.Sendable {
     /// If the value is true, results are returned in descending order. If the value is to false, results are returned in ascending order. The default value is false.
     public var descending: Swift.Bool?
     /// The maximum number of items returned. If you don't specify a value, the default is up to 50 items.
@@ -2413,8 +2418,9 @@ public struct DescribeLogStreamsInput {
 }
 
 extension CloudWatchLogsClientTypes {
+
     /// Represents a log stream, which is a sequence of log events from a single emitter of logs.
-    public struct LogStream {
+    public struct LogStream: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the log stream.
         public var arn: Swift.String?
         /// The creation time of the stream, expressed as the number of milliseconds after Jan 1, 1970 00:00:00 UTC.
@@ -2454,10 +2460,9 @@ extension CloudWatchLogsClientTypes {
             self.uploadSequenceToken = uploadSequenceToken
         }
     }
-
 }
 
-public struct DescribeLogStreamsOutput {
+public struct DescribeLogStreamsOutput: Swift.Sendable {
     /// The log streams.
     public var logStreams: [CloudWatchLogsClientTypes.LogStream]?
     /// The token for the next set of items to return. The token expires after 24 hours.
@@ -2473,7 +2478,7 @@ public struct DescribeLogStreamsOutput {
     }
 }
 
-public struct DescribeMetricFiltersInput {
+public struct DescribeMetricFiltersInput: Swift.Sendable {
     /// The prefix to match. CloudWatch Logs uses the value that you set here only if you also include the logGroupName parameter in your request.
     public var filterNamePrefix: Swift.String?
     /// The maximum number of items returned. If you don't specify a value, the default is up to 50 items.
@@ -2507,7 +2512,7 @@ public struct DescribeMetricFiltersInput {
 
 extension CloudWatchLogsClientTypes {
 
-    public enum StandardUnit: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum StandardUnit: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case bits
         case bitssecond
         case bytes
@@ -2610,8 +2615,9 @@ extension CloudWatchLogsClientTypes {
 }
 
 extension CloudWatchLogsClientTypes {
+
     /// Indicates how to transform ingested log events to metric data in a CloudWatch metric.
-    public struct MetricTransformation {
+    public struct MetricTransformation: Swift.Sendable {
         /// (Optional) The value to emit when a filter pattern does not match a log event. This value can be null.
         public var defaultValue: Swift.Double?
         /// The fields to use as dimensions for the metric. One metric filter can include as many as three dimensions. Metrics extracted from log events are charged as custom metrics. To prevent unexpected high charges, do not specify high-cardinality fields such as IPAddress or requestID as dimensions. Each different value found for a dimension is treated as a separate metric and accrues charges as a separate custom metric. CloudWatch Logs disables a metric filter if it generates 1000 different name/value pairs for your specified dimensions within a certain amount of time. This helps to prevent accidental high charges. You can also set up a billing alarm to alert you if your charges are higher than expected. For more information, see [ Creating a Billing Alarm to Monitor Your Estimated Amazon Web Services Charges](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/monitor_estimated_charges_with_cloudwatch.html).
@@ -2645,12 +2651,12 @@ extension CloudWatchLogsClientTypes {
             self.unit = unit
         }
     }
-
 }
 
 extension CloudWatchLogsClientTypes {
+
     /// Metric filters express how CloudWatch Logs would extract metric observations from ingested log events and transform them into metric data in a CloudWatch metric.
-    public struct MetricFilter {
+    public struct MetricFilter: Swift.Sendable {
         /// The creation time of the metric filter, expressed as the number of milliseconds after Jan 1, 1970 00:00:00 UTC.
         public var creationTime: Swift.Int?
         /// The name of the metric filter.
@@ -2677,10 +2683,9 @@ extension CloudWatchLogsClientTypes {
             self.metricTransformations = metricTransformations
         }
     }
-
 }
 
-public struct DescribeMetricFiltersOutput {
+public struct DescribeMetricFiltersOutput: Swift.Sendable {
     /// The metric filters.
     public var metricFilters: [CloudWatchLogsClientTypes.MetricFilter]?
     /// The token for the next set of items to return. The token expires after 24 hours.
@@ -2698,7 +2703,7 @@ public struct DescribeMetricFiltersOutput {
 
 extension CloudWatchLogsClientTypes {
 
-    public enum QueryStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum QueryStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case cancelled
         case complete
         case failed
@@ -2740,7 +2745,7 @@ extension CloudWatchLogsClientTypes {
     }
 }
 
-public struct DescribeQueriesInput {
+public struct DescribeQueriesInput: Swift.Sendable {
     /// Limits the returned queries to only those for the specified log group.
     public var logGroupName: Swift.String?
     /// Limits the number of returned queries to the specified number.
@@ -2765,8 +2770,9 @@ public struct DescribeQueriesInput {
 }
 
 extension CloudWatchLogsClientTypes {
+
     /// Information about one CloudWatch Logs Insights query that matches the request in a DescribeQueries operation.
-    public struct QueryInfo {
+    public struct QueryInfo: Swift.Sendable {
         /// The date and time that this query was created.
         public var createTime: Swift.Int?
         /// The name of the log group scanned by this query.
@@ -2793,10 +2799,9 @@ extension CloudWatchLogsClientTypes {
             self.status = status
         }
     }
-
 }
 
-public struct DescribeQueriesOutput {
+public struct DescribeQueriesOutput: Swift.Sendable {
     /// The token for the next set of items to return. The token expires after 24 hours.
     public var nextToken: Swift.String?
     /// The list of queries that match the request.
@@ -2812,7 +2817,7 @@ public struct DescribeQueriesOutput {
     }
 }
 
-public struct DescribeQueryDefinitionsInput {
+public struct DescribeQueryDefinitionsInput: Swift.Sendable {
     /// Limits the number of returned query definitions to the specified number.
     public var maxResults: Swift.Int?
     /// The token for the next set of items to return. The token expires after 24 hours.
@@ -2833,8 +2838,9 @@ public struct DescribeQueryDefinitionsInput {
 }
 
 extension CloudWatchLogsClientTypes {
+
     /// This structure contains details about a saved CloudWatch Logs Insights query definition.
-    public struct QueryDefinition {
+    public struct QueryDefinition: Swift.Sendable {
         /// The date that the query definition was most recently modified.
         public var lastModified: Swift.Int?
         /// If this query definition contains a list of log groups that it is limited to, that list appears here.
@@ -2861,10 +2867,9 @@ extension CloudWatchLogsClientTypes {
             self.queryString = queryString
         }
     }
-
 }
 
-public struct DescribeQueryDefinitionsOutput {
+public struct DescribeQueryDefinitionsOutput: Swift.Sendable {
     /// The token for the next set of items to return. The token expires after 24 hours.
     public var nextToken: Swift.String?
     /// The list of query definitions that match your request.
@@ -2880,7 +2885,7 @@ public struct DescribeQueryDefinitionsOutput {
     }
 }
 
-public struct DescribeResourcePoliciesInput {
+public struct DescribeResourcePoliciesInput: Swift.Sendable {
     /// The maximum number of resource policies to be displayed with one call of this API.
     public var limit: Swift.Int?
     /// The token for the next set of items to return. The token expires after 24 hours.
@@ -2897,8 +2902,9 @@ public struct DescribeResourcePoliciesInput {
 }
 
 extension CloudWatchLogsClientTypes {
+
     /// A policy enabling one or more entities to put logs to a log group in this account.
-    public struct ResourcePolicy {
+    public struct ResourcePolicy: Swift.Sendable {
         /// Timestamp showing when this policy was last updated, expressed as the number of milliseconds after Jan 1, 1970 00:00:00 UTC.
         public var lastUpdatedTime: Swift.Int?
         /// The details of the policy.
@@ -2917,10 +2923,9 @@ extension CloudWatchLogsClientTypes {
             self.policyName = policyName
         }
     }
-
 }
 
-public struct DescribeResourcePoliciesOutput {
+public struct DescribeResourcePoliciesOutput: Swift.Sendable {
     /// The token for the next set of items to return. The token expires after 24 hours.
     public var nextToken: Swift.String?
     /// The resource policies that exist in this account.
@@ -2936,7 +2941,7 @@ public struct DescribeResourcePoliciesOutput {
     }
 }
 
-public struct DescribeSubscriptionFiltersInput {
+public struct DescribeSubscriptionFiltersInput: Swift.Sendable {
     /// The prefix to match. If you don't specify a value, no prefix filter is applied.
     public var filterNamePrefix: Swift.String?
     /// The maximum number of items returned. If you don't specify a value, the default is up to 50 items.
@@ -2964,7 +2969,7 @@ public struct DescribeSubscriptionFiltersInput {
 extension CloudWatchLogsClientTypes {
 
     /// The method used to distribute log data to the destination, which can be either random or grouped by log stream.
-    public enum Distribution: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Distribution: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case bylogstream
         case random
         case sdkUnknown(Swift.String)
@@ -2992,8 +2997,9 @@ extension CloudWatchLogsClientTypes {
 }
 
 extension CloudWatchLogsClientTypes {
+
     /// Represents a subscription filter.
-    public struct SubscriptionFilter {
+    public struct SubscriptionFilter: Swift.Sendable {
         /// The creation time of the subscription filter, expressed as the number of milliseconds after Jan 1, 1970 00:00:00 UTC.
         public var creationTime: Swift.Int?
         /// The Amazon Resource Name (ARN) of the destination.
@@ -3028,10 +3034,9 @@ extension CloudWatchLogsClientTypes {
             self.roleArn = roleArn
         }
     }
-
 }
 
-public struct DescribeSubscriptionFiltersOutput {
+public struct DescribeSubscriptionFiltersOutput: Swift.Sendable {
     /// The token for the next set of items to return. The token expires after 24 hours.
     public var nextToken: Swift.String?
     /// The subscription filters.
@@ -3047,7 +3052,7 @@ public struct DescribeSubscriptionFiltersOutput {
     }
 }
 
-public struct DisassociateKmsKeyInput {
+public struct DisassociateKmsKeyInput: Swift.Sendable {
     /// The name of the log group. In your DisassociateKmsKey operation, you must specify either the resourceIdentifier parameter or the logGroup parameter, but you can't specify both.
     public var logGroupName: Swift.String?
     /// Specifies the target for this operation. You must specify one of the following:
@@ -3071,8 +3076,9 @@ public struct DisassociateKmsKeyInput {
 }
 
 extension CloudWatchLogsClientTypes {
+
     /// Reserved for internal use.
-    public struct Entity {
+    public struct Entity: Swift.Sendable {
         /// Reserved for internal use.
         public var attributes: [Swift.String: Swift.String]?
         /// Reserved for internal use.
@@ -3087,12 +3093,11 @@ extension CloudWatchLogsClientTypes {
             self.keyAttributes = keyAttributes
         }
     }
-
 }
 
 extension CloudWatchLogsClientTypes {
 
-    public enum EntityRejectionErrorType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum EntityRejectionErrorType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case entitySizeTooLarge
         case invalidAttributes
         case invalidEntity
@@ -3135,8 +3140,9 @@ extension CloudWatchLogsClientTypes {
 }
 
 extension CloudWatchLogsClientTypes {
+
     /// Represents a matched event.
-    public struct FilteredLogEvent {
+    public struct FilteredLogEvent: Swift.Sendable {
         /// The ID of the event.
         public var eventId: Swift.String?
         /// The time the event was ingested, expressed as the number of milliseconds after Jan 1, 1970 00:00:00 UTC.
@@ -3163,10 +3169,9 @@ extension CloudWatchLogsClientTypes {
             self.timestamp = timestamp
         }
     }
-
 }
 
-public struct FilterLogEventsInput {
+public struct FilterLogEventsInput: Swift.Sendable {
     /// The end of the time range, expressed as the number of milliseconds after Jan 1, 1970 00:00:00 UTC. Events with a timestamp later than this time are not returned.
     public var endTime: Swift.Int?
     /// The filter pattern to use. For more information, see [Filter and Pattern Syntax](https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/FilterAndPatternSyntax.html). If not provided, all the events are matched.
@@ -3220,8 +3225,9 @@ public struct FilterLogEventsInput {
 }
 
 extension CloudWatchLogsClientTypes {
+
     /// Represents the search status of a log stream.
-    public struct SearchedLogStream {
+    public struct SearchedLogStream: Swift.Sendable {
         /// The name of the log stream.
         public var logStreamName: Swift.String?
         /// Indicates whether all the events in this log stream were searched.
@@ -3236,10 +3242,9 @@ extension CloudWatchLogsClientTypes {
             self.searchedCompletely = searchedCompletely
         }
     }
-
 }
 
-public struct FilterLogEventsOutput {
+public struct FilterLogEventsOutput: Swift.Sendable {
     /// The matched events.
     public var events: [CloudWatchLogsClientTypes.FilteredLogEvent]?
     /// The token to use when requesting the next set of items. The token expires after 24 hours.
@@ -3259,7 +3264,7 @@ public struct FilterLogEventsOutput {
     }
 }
 
-public struct GetDataProtectionPolicyInput {
+public struct GetDataProtectionPolicyInput: Swift.Sendable {
     /// The name or ARN of the log group that contains the data protection policy that you want to see.
     /// This member is required.
     public var logGroupIdentifier: Swift.String?
@@ -3272,7 +3277,7 @@ public struct GetDataProtectionPolicyInput {
     }
 }
 
-public struct GetDataProtectionPolicyOutput {
+public struct GetDataProtectionPolicyOutput: Swift.Sendable {
     /// The date and time that this policy was most recently updated.
     public var lastUpdatedTime: Swift.Int?
     /// The log group name or ARN that you specified in your request.
@@ -3292,7 +3297,7 @@ public struct GetDataProtectionPolicyOutput {
     }
 }
 
-public struct GetDeliveryInput {
+public struct GetDeliveryInput: Swift.Sendable {
     /// The ID of the delivery that you want to retrieve.
     /// This member is required.
     public var id: Swift.String?
@@ -3305,7 +3310,7 @@ public struct GetDeliveryInput {
     }
 }
 
-public struct GetDeliveryOutput {
+public struct GetDeliveryOutput: Swift.Sendable {
     /// A structure that contains information about the delivery.
     public var delivery: CloudWatchLogsClientTypes.Delivery?
 
@@ -3317,7 +3322,7 @@ public struct GetDeliveryOutput {
     }
 }
 
-public struct GetDeliveryDestinationInput {
+public struct GetDeliveryDestinationInput: Swift.Sendable {
     /// The name of the delivery destination that you want to retrieve.
     /// This member is required.
     public var name: Swift.String?
@@ -3330,7 +3335,7 @@ public struct GetDeliveryDestinationInput {
     }
 }
 
-public struct GetDeliveryDestinationOutput {
+public struct GetDeliveryDestinationOutput: Swift.Sendable {
     /// A structure containing information about the delivery destination.
     public var deliveryDestination: CloudWatchLogsClientTypes.DeliveryDestination?
 
@@ -3342,7 +3347,7 @@ public struct GetDeliveryDestinationOutput {
     }
 }
 
-public struct GetDeliveryDestinationPolicyInput {
+public struct GetDeliveryDestinationPolicyInput: Swift.Sendable {
     /// The name of the delivery destination that you want to retrieve the policy of.
     /// This member is required.
     public var deliveryDestinationName: Swift.String?
@@ -3356,8 +3361,9 @@ public struct GetDeliveryDestinationPolicyInput {
 }
 
 extension CloudWatchLogsClientTypes {
+
     /// A structure that contains information about one delivery destination policy.
-    public struct Policy {
+    public struct Policy: Swift.Sendable {
         /// The contents of the delivery destination policy.
         public var deliveryDestinationPolicy: Swift.String?
 
@@ -3368,10 +3374,9 @@ extension CloudWatchLogsClientTypes {
             self.deliveryDestinationPolicy = deliveryDestinationPolicy
         }
     }
-
 }
 
-public struct GetDeliveryDestinationPolicyOutput {
+public struct GetDeliveryDestinationPolicyOutput: Swift.Sendable {
     /// The IAM policy for this delivery destination.
     public var policy: CloudWatchLogsClientTypes.Policy?
 
@@ -3383,7 +3388,7 @@ public struct GetDeliveryDestinationPolicyOutput {
     }
 }
 
-public struct GetDeliverySourceInput {
+public struct GetDeliverySourceInput: Swift.Sendable {
     /// The name of the delivery source that you want to retrieve.
     /// This member is required.
     public var name: Swift.String?
@@ -3396,7 +3401,7 @@ public struct GetDeliverySourceInput {
     }
 }
 
-public struct GetDeliverySourceOutput {
+public struct GetDeliverySourceOutput: Swift.Sendable {
     /// A structure containing information about the delivery source.
     public var deliverySource: CloudWatchLogsClientTypes.DeliverySource?
 
@@ -3408,7 +3413,7 @@ public struct GetDeliverySourceOutput {
     }
 }
 
-public struct GetLogAnomalyDetectorInput {
+public struct GetLogAnomalyDetectorInput: Swift.Sendable {
     /// The ARN of the anomaly detector to retrieve information about. You can find the ARNs of log anomaly detectors in your account by using the [ListLogAnomalyDetectors](https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_ListLogAnomalyDetectors.html) operation.
     /// This member is required.
     public var anomalyDetectorArn: Swift.String?
@@ -3421,7 +3426,7 @@ public struct GetLogAnomalyDetectorInput {
     }
 }
 
-public struct GetLogAnomalyDetectorOutput {
+public struct GetLogAnomalyDetectorOutput: Swift.Sendable {
     /// Specifies whether the anomaly detector is currently active. To change its status, use the enabled parameter in the [UpdateLogAnomalyDetector](https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_UpdateLogAnomalyDetector.html) operation.
     public var anomalyDetectorStatus: CloudWatchLogsClientTypes.AnomalyDetectorStatus?
     /// The number of days used as the life cycle of anomalies. After this time, anomalies are automatically baselined and the anomaly detector model will treat new occurrences of similar event as normal.
@@ -3465,7 +3470,7 @@ public struct GetLogAnomalyDetectorOutput {
     }
 }
 
-public struct GetLogEventsInput {
+public struct GetLogEventsInput: Swift.Sendable {
     /// The end of the time range, expressed as the number of milliseconds after Jan 1, 1970 00:00:00 UTC. Events with a timestamp equal to or later than this time are not included.
     public var endTime: Swift.Int?
     /// The maximum number of log events returned. If you don't specify a limit, the default is as many log events as can fit in a response size of 1 MB (up to 10,000 log events).
@@ -3511,8 +3516,9 @@ public struct GetLogEventsInput {
 }
 
 extension CloudWatchLogsClientTypes {
+
     /// Represents a log event.
-    public struct OutputLogEvent {
+    public struct OutputLogEvent: Swift.Sendable {
         /// The time the event was ingested, expressed as the number of milliseconds after Jan 1, 1970 00:00:00 UTC.
         public var ingestionTime: Swift.Int?
         /// The data contained in the log event.
@@ -3531,10 +3537,9 @@ extension CloudWatchLogsClientTypes {
             self.timestamp = timestamp
         }
     }
-
 }
 
-public struct GetLogEventsOutput {
+public struct GetLogEventsOutput: Swift.Sendable {
     /// The events.
     public var events: [CloudWatchLogsClientTypes.OutputLogEvent]?
     /// The token for the next set of items in the backward direction. The token expires after 24 hours. This token is not null. If you have reached the end of the stream, it returns the same token you passed in.
@@ -3554,7 +3559,7 @@ public struct GetLogEventsOutput {
     }
 }
 
-public struct GetLogGroupFieldsInput {
+public struct GetLogGroupFieldsInput: Swift.Sendable {
     /// Specify either the name or ARN of the log group to view. If the log group is in a source account and you are using a monitoring account, you must specify the ARN. You must include either logGroupIdentifier or logGroupName, but not both.
     public var logGroupIdentifier: Swift.String?
     /// The name of the log group to search. You must include either logGroupIdentifier or logGroupName, but not both.
@@ -3575,8 +3580,9 @@ public struct GetLogGroupFieldsInput {
 }
 
 extension CloudWatchLogsClientTypes {
+
     /// The fields contained in log events found by a GetLogGroupFields operation, along with the percentage of queried log events in which each field appears.
-    public struct LogGroupField {
+    public struct LogGroupField: Swift.Sendable {
         /// The name of a log field.
         public var name: Swift.String?
         /// The percentage of log events queried that contained the field.
@@ -3591,10 +3597,9 @@ extension CloudWatchLogsClientTypes {
             self.percent = percent
         }
     }
-
 }
 
-public struct GetLogGroupFieldsOutput {
+public struct GetLogGroupFieldsOutput: Swift.Sendable {
     /// The array of fields found in the query. Each object in the array contains the name of the field, along with the percentage of time it appeared in the log events that were queried.
     public var logGroupFields: [CloudWatchLogsClientTypes.LogGroupField]?
 
@@ -3606,7 +3611,7 @@ public struct GetLogGroupFieldsOutput {
     }
 }
 
-public struct GetLogRecordInput {
+public struct GetLogRecordInput: Swift.Sendable {
     /// The pointer corresponding to the log event record you want to retrieve. You get this from the response of a GetQueryResults operation. In that response, the value of the @ptr field for a log event is the value to use as logRecordPointer to retrieve that complete log event record.
     /// This member is required.
     public var logRecordPointer: Swift.String?
@@ -3623,7 +3628,7 @@ public struct GetLogRecordInput {
     }
 }
 
-public struct GetLogRecordOutput {
+public struct GetLogRecordOutput: Swift.Sendable {
     /// The requested log event, as a JSON string.
     public var logRecord: [Swift.String: Swift.String]?
 
@@ -3635,7 +3640,7 @@ public struct GetLogRecordOutput {
     }
 }
 
-public struct GetQueryResultsInput {
+public struct GetQueryResultsInput: Swift.Sendable {
     /// The ID number of the query.
     /// This member is required.
     public var queryId: Swift.String?
@@ -3649,8 +3654,9 @@ public struct GetQueryResultsInput {
 }
 
 extension CloudWatchLogsClientTypes {
+
     /// Contains one field from one log event returned by a CloudWatch Logs Insights query, along with the value of that field. For more information about the fields that are generated by CloudWatch logs, see [Supported Logs and Discovered Fields](https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/CWL_AnalyzeLogData-discoverable-fields.html).
-    public struct ResultField {
+    public struct ResultField: Swift.Sendable {
         /// The log event field.
         public var field: Swift.String?
         /// The value of this field.
@@ -3665,12 +3671,12 @@ extension CloudWatchLogsClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension CloudWatchLogsClientTypes {
+
     /// Contains the number of log events scanned by the query, the number of log events that matched the query criteria, and the total number of bytes in the log events that were scanned.
-    public struct QueryStatistics {
+    public struct QueryStatistics: Swift.Sendable {
         /// The total number of bytes in the log events scanned during the query.
         public var bytesScanned: Swift.Double
         /// The number of log events that matched the query string.
@@ -3689,10 +3695,9 @@ extension CloudWatchLogsClientTypes {
             self.recordsScanned = recordsScanned
         }
     }
-
 }
 
-public struct GetQueryResultsOutput {
+public struct GetQueryResultsOutput: Swift.Sendable {
     /// If you associated an KMS key with the CloudWatch Logs Insights query results in this account, this field displays the ARN of the key that's used to encrypt the query results when [StartQuery](https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_StartQuery.html) stores them.
     public var encryptionKey: Swift.String?
     /// The log events that matched the query criteria during the most recent time it ran. The results value is an array of arrays. Each log event is one object in the top-level array. Each of these log event objects is an array of field/value pairs.
@@ -3717,8 +3722,9 @@ public struct GetQueryResultsOutput {
 }
 
 extension CloudWatchLogsClientTypes {
+
     /// Represents a log event, which is a record of activity that was recorded by the application or resource being monitored.
-    public struct InputLogEvent {
+    public struct InputLogEvent: Swift.Sendable {
         /// The raw event message. Each log event can be no larger than 256 KB.
         /// This member is required.
         public var message: Swift.String?
@@ -3735,7 +3741,6 @@ extension CloudWatchLogsClientTypes {
             self.timestamp = timestamp
         }
     }
-
 }
 
 /// The sequence token is not valid. You can get the correct sequence token in the expectedSequenceToken field in the InvalidSequenceTokenException message. PutLogEvents actions are now always accepted and never return InvalidSequenceTokenException regardless of receiving an invalid sequence token.
@@ -3767,7 +3772,7 @@ public struct InvalidSequenceTokenException: ClientRuntime.ModeledError, AWSClie
 
 extension CloudWatchLogsClientTypes {
 
-    public enum SuppressionState: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SuppressionState: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case suppressed
         case unsuppressed
         case sdkUnknown(Swift.String)
@@ -3794,7 +3799,7 @@ extension CloudWatchLogsClientTypes {
     }
 }
 
-public struct ListAnomaliesInput {
+public struct ListAnomaliesInput: Swift.Sendable {
     /// Use this to optionally limit the results to only the anomalies found by a certain anomaly detector.
     public var anomalyDetectorArn: Swift.String?
     /// The maximum number of items to return. If you don't specify a value, the default maximum value of 50 items is used.
@@ -3818,7 +3823,7 @@ public struct ListAnomaliesInput {
     }
 }
 
-public struct ListAnomaliesOutput {
+public struct ListAnomaliesOutput: Swift.Sendable {
     /// An array of structures, where each structure contains information about one anomaly that a log anomaly detector has found.
     public var anomalies: [CloudWatchLogsClientTypes.Anomaly]?
     /// The token for the next set of items to return. The token expires after 24 hours.
@@ -3834,7 +3839,7 @@ public struct ListAnomaliesOutput {
     }
 }
 
-public struct ListLogAnomalyDetectorsInput {
+public struct ListLogAnomalyDetectorsInput: Swift.Sendable {
     /// Use this to optionally filter the results to only include anomaly detectors that are associated with the specified log group.
     public var filterLogGroupArn: Swift.String?
     /// The maximum number of items to return. If you don't specify a value, the default maximum value of 50 items is used.
@@ -3854,7 +3859,7 @@ public struct ListLogAnomalyDetectorsInput {
     }
 }
 
-public struct ListLogAnomalyDetectorsOutput {
+public struct ListLogAnomalyDetectorsOutput: Swift.Sendable {
     /// An array of structures, where each structure in the array contains information about one anomaly detector.
     public var anomalyDetectors: [CloudWatchLogsClientTypes.AnomalyDetector]?
     /// The token for the next set of items to return. The token expires after 24 hours.
@@ -3870,7 +3875,7 @@ public struct ListLogAnomalyDetectorsOutput {
     }
 }
 
-public struct ListTagsForResourceInput {
+public struct ListTagsForResourceInput: Swift.Sendable {
     /// The ARN of the resource that you want to view tags for. The ARN format of a log group is arn:aws:logs:Region:account-id:log-group:log-group-name  The ARN format of a destination is arn:aws:logs:Region:account-id:destination:destination-name  For more information about ARN format, see [CloudWatch Logs resources and operations](https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/iam-access-control-overview-cwl.html).
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -3883,7 +3888,7 @@ public struct ListTagsForResourceInput {
     }
 }
 
-public struct ListTagsForResourceOutput {
+public struct ListTagsForResourceOutput: Swift.Sendable {
     /// The list of tags associated with the requested resource.>
     public var tags: [Swift.String: Swift.String]?
 
@@ -3896,7 +3901,7 @@ public struct ListTagsForResourceOutput {
 }
 
 @available(*, deprecated, message: "Please use the generic tagging API model ListTagsForResourceRequest and ListTagsForResourceResponse")
-public struct ListTagsLogGroupInput {
+public struct ListTagsLogGroupInput: Swift.Sendable {
     /// The name of the log group.
     /// This member is required.
     public var logGroupName: Swift.String?
@@ -3910,7 +3915,7 @@ public struct ListTagsLogGroupInput {
 }
 
 @available(*, deprecated, message: "Please use the generic tagging API model ListTagsForResourceRequest and ListTagsForResourceResponse")
-public struct ListTagsLogGroupOutput {
+public struct ListTagsLogGroupOutput: Swift.Sendable {
     /// The tags for the log group.
     public var tags: [Swift.String: Swift.String]?
 
@@ -3923,8 +3928,9 @@ public struct ListTagsLogGroupOutput {
 }
 
 extension CloudWatchLogsClientTypes {
+
     /// This object contains the information for one log event returned in a Live Tail stream.
-    public struct LiveTailSessionLogEvent {
+    public struct LiveTailSessionLogEvent: Swift.Sendable {
         /// The timestamp specifying when this log event was ingested into the log group.
         public var ingestionTime: Swift.Int?
         /// The name or ARN of the log group that ingested this log event.
@@ -3951,12 +3957,12 @@ extension CloudWatchLogsClientTypes {
             self.timestamp = timestamp
         }
     }
-
 }
 
 extension CloudWatchLogsClientTypes {
+
     /// This object contains the metadata for one LiveTailSessionUpdate structure. It indicates whether that update includes only a sample of 500 log events out of a larger number of ingested log events, or if it contains all of the matching log events ingested during that second of time.
-    public struct LiveTailSessionMetadata {
+    public struct LiveTailSessionMetadata: Swift.Sendable {
         /// If this is true, then more than 500 log events matched the request for this update, and the sessionResults includes a sample of 500 of those events. If this is false, then 500 or fewer log events matched the request for this update, so no sampling was necessary. In this case, the sessionResults array includes all log events that matched your request during this time.
         public var sampled: Swift.Bool
 
@@ -3967,12 +3973,12 @@ extension CloudWatchLogsClientTypes {
             self.sampled = sampled
         }
     }
-
 }
 
 extension CloudWatchLogsClientTypes {
+
     /// This object contains information about this Live Tail session, including the log groups included and the log stream filters, if any.
-    public struct LiveTailSessionStart {
+    public struct LiveTailSessionStart: Swift.Sendable {
         /// An optional pattern to filter the results to include only log events that match the pattern. For example, a filter pattern of error 404 displays only log events that include both error and 404. For more information about filter pattern syntax, see [Filter and Pattern Syntax](https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/FilterAndPatternSyntax.html).
         public var logEventFilterPattern: Swift.String?
         /// An array of the names and ARNs of the log groups included in this Live Tail session.
@@ -4003,12 +4009,12 @@ extension CloudWatchLogsClientTypes {
             self.sessionId = sessionId
         }
     }
-
 }
 
 extension CloudWatchLogsClientTypes {
+
     /// This object contains the log events and metadata for a Live Tail session.
-    public struct LiveTailSessionUpdate {
+    public struct LiveTailSessionUpdate: Swift.Sendable {
         /// This object contains the session metadata for a Live Tail session.
         public var sessionMetadata: CloudWatchLogsClientTypes.LiveTailSessionMetadata?
         /// An array, where each member of the array includes the information for one log event in the Live Tail session. A sessionResults array can include as many as 500 log events. If the number of log events matching the request exceeds 500 per second, the log events are sampled down to 500 log events to be included in each sessionUpdate structure.
@@ -4023,10 +4029,9 @@ extension CloudWatchLogsClientTypes {
             self.sessionResults = sessionResults
         }
     }
-
 }
 
-public struct PutAccountPolicyInput {
+public struct PutAccountPolicyInput: Swift.Sendable {
     /// Specify the policy, in JSON. Data protection policy A data protection policy must include two JSON blocks:
     ///
     /// * The first block must include both a DataIdentifer array and an Operation property with an Audit action. The DataIdentifer array lists the types of sensitive data that you want to mask. For more information about the available options, see [Types of data that you can mask](https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/mask-sensitive-log-data-types.html). The Operation property with an Audit action is required to find the sensitive data terms. This Audit action must contain a FindingsDestination object. You can optionally use that FindingsDestination object to list one or more destinations to send audit findings to. If you specify destinations such as log groups, Firehose streams, and S3 buckets, they must already exist.
@@ -4083,7 +4088,7 @@ public struct PutAccountPolicyInput {
     }
 }
 
-public struct PutAccountPolicyOutput {
+public struct PutAccountPolicyOutput: Swift.Sendable {
     /// The account policy that you created.
     public var accountPolicy: CloudWatchLogsClientTypes.AccountPolicy?
 
@@ -4095,7 +4100,7 @@ public struct PutAccountPolicyOutput {
     }
 }
 
-public struct PutDataProtectionPolicyInput {
+public struct PutDataProtectionPolicyInput: Swift.Sendable {
     /// Specify either the log group name or log group ARN.
     /// This member is required.
     public var logGroupIdentifier: Swift.String?
@@ -4120,7 +4125,7 @@ public struct PutDataProtectionPolicyInput {
     }
 }
 
-public struct PutDataProtectionPolicyOutput {
+public struct PutDataProtectionPolicyOutput: Swift.Sendable {
     /// The date and time that this policy was most recently updated.
     public var lastUpdatedTime: Swift.Int?
     /// The log group name or ARN that you specified in your request.
@@ -4140,7 +4145,7 @@ public struct PutDataProtectionPolicyOutput {
     }
 }
 
-public struct PutDeliveryDestinationInput {
+public struct PutDeliveryDestinationInput: Swift.Sendable {
     /// A structure that contains the ARN of the Amazon Web Services resource that will receive the logs.
     /// This member is required.
     public var deliveryDestinationConfiguration: CloudWatchLogsClientTypes.DeliveryDestinationConfiguration?
@@ -4166,7 +4171,7 @@ public struct PutDeliveryDestinationInput {
     }
 }
 
-public struct PutDeliveryDestinationOutput {
+public struct PutDeliveryDestinationOutput: Swift.Sendable {
     /// A structure containing information about the delivery destination that you just created or updated.
     public var deliveryDestination: CloudWatchLogsClientTypes.DeliveryDestination?
 
@@ -4178,7 +4183,7 @@ public struct PutDeliveryDestinationOutput {
     }
 }
 
-public struct PutDeliveryDestinationPolicyInput {
+public struct PutDeliveryDestinationPolicyInput: Swift.Sendable {
     /// The name of the delivery destination to assign this policy to.
     /// This member is required.
     public var deliveryDestinationName: Swift.String?
@@ -4196,7 +4201,7 @@ public struct PutDeliveryDestinationPolicyInput {
     }
 }
 
-public struct PutDeliveryDestinationPolicyOutput {
+public struct PutDeliveryDestinationPolicyOutput: Swift.Sendable {
     /// The contents of the policy that you just created.
     public var policy: CloudWatchLogsClientTypes.Policy?
 
@@ -4208,7 +4213,7 @@ public struct PutDeliveryDestinationPolicyOutput {
     }
 }
 
-public struct PutDeliverySourceInput {
+public struct PutDeliverySourceInput: Swift.Sendable {
     /// Defines the type of log that the source is sending.
     ///
     /// * For Amazon Bedrock, the valid value is APPLICATION_LOGS.
@@ -4243,7 +4248,7 @@ public struct PutDeliverySourceInput {
     }
 }
 
-public struct PutDeliverySourceOutput {
+public struct PutDeliverySourceOutput: Swift.Sendable {
     /// A structure containing information about the delivery source that was just created or updated.
     public var deliverySource: CloudWatchLogsClientTypes.DeliverySource?
 
@@ -4255,7 +4260,7 @@ public struct PutDeliverySourceOutput {
     }
 }
 
-public struct PutDestinationInput {
+public struct PutDestinationInput: Swift.Sendable {
     /// A name for the destination.
     /// This member is required.
     public var destinationName: Swift.String?
@@ -4282,7 +4287,7 @@ public struct PutDestinationInput {
     }
 }
 
-public struct PutDestinationOutput {
+public struct PutDestinationOutput: Swift.Sendable {
     /// The destination.
     public var destination: CloudWatchLogsClientTypes.Destination?
 
@@ -4294,7 +4299,7 @@ public struct PutDestinationOutput {
     }
 }
 
-public struct PutDestinationPolicyInput {
+public struct PutDestinationPolicyInput: Swift.Sendable {
     /// An IAM policy document that authorizes cross-account users to deliver their log events to the associated destination. This can be up to 5120 bytes.
     /// This member is required.
     public var accessPolicy: Swift.String?
@@ -4340,7 +4345,7 @@ public struct UnrecognizedClientException: ClientRuntime.ModeledError, AWSClient
     }
 }
 
-public struct PutLogEventsInput {
+public struct PutLogEventsInput: Swift.Sendable {
     /// Reserved for internal use.
     public var entity: CloudWatchLogsClientTypes.Entity?
     /// The log events.
@@ -4372,8 +4377,9 @@ public struct PutLogEventsInput {
 }
 
 extension CloudWatchLogsClientTypes {
+
     /// Reserved for internal use.
-    public struct RejectedEntityInfo {
+    public struct RejectedEntityInfo: Swift.Sendable {
         /// Reserved for internal use.
         /// This member is required.
         public var errorType: CloudWatchLogsClientTypes.EntityRejectionErrorType?
@@ -4385,12 +4391,12 @@ extension CloudWatchLogsClientTypes {
             self.errorType = errorType
         }
     }
-
 }
 
 extension CloudWatchLogsClientTypes {
+
     /// Represents the rejected events.
-    public struct RejectedLogEventsInfo {
+    public struct RejectedLogEventsInfo: Swift.Sendable {
         /// The expired log events.
         public var expiredLogEventEndIndex: Swift.Int?
         /// The index of the first log event that is too new. This field is inclusive.
@@ -4409,10 +4415,9 @@ extension CloudWatchLogsClientTypes {
             self.tooOldLogEventEndIndex = tooOldLogEventEndIndex
         }
     }
-
 }
 
-public struct PutLogEventsOutput {
+public struct PutLogEventsOutput: Swift.Sendable {
     /// The next sequence token. This field has been deprecated. The sequence token is now ignored in PutLogEvents actions. PutLogEvents actions are always accepted even if the sequence token is not valid. You can use parallel PutLogEvents actions on the same log stream and you do not need to wait for the response of a previous PutLogEvents action to obtain the nextSequenceToken value.
     public var nextSequenceToken: Swift.String?
     /// Reserved for internal use.
@@ -4432,7 +4437,7 @@ public struct PutLogEventsOutput {
     }
 }
 
-public struct PutMetricFilterInput {
+public struct PutMetricFilterInput: Swift.Sendable {
     /// A name for the metric filter.
     /// This member is required.
     public var filterName: Swift.String?
@@ -4460,7 +4465,7 @@ public struct PutMetricFilterInput {
     }
 }
 
-public struct PutQueryDefinitionInput {
+public struct PutQueryDefinitionInput: Swift.Sendable {
     /// Used as an idempotency token, to avoid returning an exception if the service receives the same request twice because of a network error.
     public var clientToken: Swift.String?
     /// Use this parameter to include specific log groups as part of your query definition. If you are updating a query definition and you omit this parameter, then the updated definition will contain no log groups.
@@ -4490,7 +4495,7 @@ public struct PutQueryDefinitionInput {
     }
 }
 
-public struct PutQueryDefinitionOutput {
+public struct PutQueryDefinitionOutput: Swift.Sendable {
     /// The ID of the query definition.
     public var queryDefinitionId: Swift.String?
 
@@ -4502,7 +4507,7 @@ public struct PutQueryDefinitionOutput {
     }
 }
 
-public struct PutResourcePolicyInput {
+public struct PutResourcePolicyInput: Swift.Sendable {
     /// Details of the new policy, including the identity of the principal that is enabled to put logs to this account. This is formatted as a JSON string. This parameter is required. The following example creates a resource policy enabling the Route 53 service to put DNS query logs in to the specified log group. Replace "logArn" with the ARN of your CloudWatch Logs resource, such as a log group or log stream. CloudWatch Logs also supports [aws:SourceArn](https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_condition-keys.html#condition-keys-sourcearn) and [aws:SourceAccount](https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_condition-keys.html#condition-keys-sourceaccount) condition context keys. In the example resource policy, you would replace the value of SourceArn with the resource making the call from Route 53 to CloudWatch Logs. You would also replace the value of SourceAccount with the Amazon Web Services account ID making that call. { "Version": "2012-10-17", "Statement": [ { "Sid": "Route53LogsToCloudWatchLogs", "Effect": "Allow", "Principal": { "Service": [ "route53.amazonaws.com" ] }, "Action": "logs:PutLogEvents", "Resource": "logArn", "Condition": { "ArnLike": { "aws:SourceArn": "myRoute53ResourceArn" }, "StringEquals": { "aws:SourceAccount": "myAwsAccountId" } } } ] }
     public var policyDocument: Swift.String?
     /// Name of the new policy. This parameter is required.
@@ -4518,7 +4523,7 @@ public struct PutResourcePolicyInput {
     }
 }
 
-public struct PutResourcePolicyOutput {
+public struct PutResourcePolicyOutput: Swift.Sendable {
     /// The new policy.
     public var resourcePolicy: CloudWatchLogsClientTypes.ResourcePolicy?
 
@@ -4530,7 +4535,7 @@ public struct PutResourcePolicyOutput {
     }
 }
 
-public struct PutRetentionPolicyInput {
+public struct PutRetentionPolicyInput: Swift.Sendable {
     /// The name of the log group.
     /// This member is required.
     public var logGroupName: Swift.String?
@@ -4548,7 +4553,7 @@ public struct PutRetentionPolicyInput {
     }
 }
 
-public struct PutSubscriptionFilterInput {
+public struct PutSubscriptionFilterInput: Swift.Sendable {
     /// The ARN of the destination to deliver matching log events to. Currently, the supported destinations are:
     ///
     /// * An Amazon Kinesis stream belonging to the same account as the subscription filter, for same-account delivery.
@@ -4592,7 +4597,7 @@ public struct PutSubscriptionFilterInput {
     }
 }
 
-public struct StartLiveTailInput {
+public struct StartLiveTailInput: Swift.Sendable {
     /// An optional pattern to use to filter the results to include only log events that match the pattern. For example, a filter pattern of error 404 causes only log events that include both error and 404 to be included in the Live Tail stream. Regular expression filter patterns are supported. For more information about filter pattern syntax, see [Filter and Pattern Syntax](https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/FilterAndPatternSyntax.html).
     public var logEventFilterPattern: Swift.String?
     /// An array where each item in the array is a log group to include in the Live Tail session. Specify each log group by its ARN. If you specify an ARN, the ARN can't end with an asterisk (*). You can include up to 10 log groups.
@@ -4666,18 +4671,18 @@ public struct SessionTimeoutException: ClientRuntime.ModeledError, AWSClientRunt
 }
 
 extension CloudWatchLogsClientTypes {
+
     /// This object includes the stream returned by your [StartLiveTail](https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_StartLiveTail.html) request.
-    public enum StartLiveTailResponseStream {
+    public enum StartLiveTailResponseStream: Swift.Sendable {
         /// This object contains information about this Live Tail session, including the log groups included and the log stream filters, if any.
         case sessionstart(CloudWatchLogsClientTypes.LiveTailSessionStart)
         /// This object contains the log events and session metadata.
         case sessionupdate(CloudWatchLogsClientTypes.LiveTailSessionUpdate)
         case sdkUnknown(Swift.String)
     }
-
 }
 
-public struct StartLiveTailOutput {
+public struct StartLiveTailOutput: Swift.Sendable {
     /// An object that includes the stream returned by your request. It can include both log events and exceptions.
     public var responseStream: AsyncThrowingStream<CloudWatchLogsClientTypes.StartLiveTailResponseStream, Swift.Error>?
 
@@ -4690,8 +4695,9 @@ public struct StartLiveTailOutput {
 }
 
 extension CloudWatchLogsClientTypes {
+
     /// Reserved.
-    public struct QueryCompileErrorLocation {
+    public struct QueryCompileErrorLocation: Swift.Sendable {
         /// Reserved.
         public var endCharOffset: Swift.Int?
         /// Reserved.
@@ -4706,12 +4712,12 @@ extension CloudWatchLogsClientTypes {
             self.startCharOffset = startCharOffset
         }
     }
-
 }
 
 extension CloudWatchLogsClientTypes {
+
     /// Reserved.
-    public struct QueryCompileError {
+    public struct QueryCompileError: Swift.Sendable {
         /// Reserved.
         public var location: CloudWatchLogsClientTypes.QueryCompileErrorLocation?
         /// Reserved.
@@ -4726,7 +4732,6 @@ extension CloudWatchLogsClientTypes {
             self.message = message
         }
     }
-
 }
 
 /// The query string is not valid. Details about this error are displayed in a QueryCompileError object. For more information, see [QueryCompileError](https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_QueryCompileError.html). For more information about valid query syntax, see [CloudWatch Logs Insights Query Syntax](https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/CWL_QuerySyntax.html).
@@ -4757,11 +4762,11 @@ public struct MalformedQueryException: ClientRuntime.ModeledError, AWSClientRunt
     }
 }
 
-public struct StartQueryInput {
+public struct StartQueryInput: Swift.Sendable {
     /// The end of the time range to query. The range is inclusive, so the specified end time is included in the query. Specified as epoch time, the number of seconds since January 1, 1970, 00:00:00 UTC.
     /// This member is required.
     public var endTime: Swift.Int?
-    /// The maximum number of log events to return in the query. If the query string uses the fields command, only the specified fields and their values are returned. The default is 1000.
+    /// The maximum number of log events to return in the query. If the query string uses the fields command, only the specified fields and their values are returned. The default is 10,000.
     public var limit: Swift.Int?
     /// The list of log groups to query. You can include up to 50 log groups. You can specify them by the log group name or ARN. If a log group that you're querying is in a source account and you're using a monitoring account, you must specify the ARN of the log group here. The query definition must also be defined in the monitoring account. If you specify an ARN, the ARN can't end with an asterisk (*). A StartQuery operation must include exactly one of the following parameters: logGroupName, logGroupNames, or logGroupIdentifiers.
     public var logGroupIdentifiers: [Swift.String]?
@@ -4796,7 +4801,7 @@ public struct StartQueryInput {
     }
 }
 
-public struct StartQueryOutput {
+public struct StartQueryOutput: Swift.Sendable {
     /// The unique ID of the query.
     public var queryId: Swift.String?
 
@@ -4808,7 +4813,7 @@ public struct StartQueryOutput {
     }
 }
 
-public struct StopQueryInput {
+public struct StopQueryInput: Swift.Sendable {
     /// The ID number of the query to stop. To find this ID number, use DescribeQueries.
     /// This member is required.
     public var queryId: Swift.String?
@@ -4821,7 +4826,7 @@ public struct StopQueryInput {
     }
 }
 
-public struct StopQueryOutput {
+public struct StopQueryOutput: Swift.Sendable {
     /// This is true if the query was stopped by the StopQuery operation.
     public var success: Swift.Bool
 
@@ -4834,7 +4839,7 @@ public struct StopQueryOutput {
 }
 
 @available(*, deprecated, message: "Please use the generic tagging API model TagResourceRequest")
-public struct TagLogGroupInput {
+public struct TagLogGroupInput: Swift.Sendable {
     /// The name of the log group.
     /// This member is required.
     public var logGroupName: Swift.String?
@@ -4880,7 +4885,7 @@ public struct TooManyTagsException: ClientRuntime.ModeledError, AWSClientRuntime
     }
 }
 
-public struct TagResourceInput {
+public struct TagResourceInput: Swift.Sendable {
     /// The ARN of the resource that you're adding tags to. The ARN format of a log group is arn:aws:logs:Region:account-id:log-group:log-group-name  The ARN format of a destination is arn:aws:logs:Region:account-id:destination:destination-name  For more information about ARN format, see [CloudWatch Logs resources and operations](https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/iam-access-control-overview-cwl.html).
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -4898,7 +4903,7 @@ public struct TagResourceInput {
     }
 }
 
-public struct TestMetricFilterInput {
+public struct TestMetricFilterInput: Swift.Sendable {
     /// A symbolic description of how CloudWatch Logs should interpret the data in each log event. For example, a log event can contain timestamps, IP addresses, strings, and so on. You use the filter pattern to specify what to look for in the log event message.
     /// This member is required.
     public var filterPattern: Swift.String?
@@ -4917,8 +4922,9 @@ public struct TestMetricFilterInput {
 }
 
 extension CloudWatchLogsClientTypes {
+
     /// Represents a matched event.
-    public struct MetricFilterMatchRecord {
+    public struct MetricFilterMatchRecord: Swift.Sendable {
         /// The raw event data.
         public var eventMessage: Swift.String?
         /// The event number.
@@ -4937,10 +4943,9 @@ extension CloudWatchLogsClientTypes {
             self.extractedValues = extractedValues
         }
     }
-
 }
 
-public struct TestMetricFilterOutput {
+public struct TestMetricFilterOutput: Swift.Sendable {
     /// The matched events.
     public var matches: [CloudWatchLogsClientTypes.MetricFilterMatchRecord]?
 
@@ -4953,7 +4958,7 @@ public struct TestMetricFilterOutput {
 }
 
 @available(*, deprecated, message: "Please use the generic tagging API model UntagResourceRequest")
-public struct UntagLogGroupInput {
+public struct UntagLogGroupInput: Swift.Sendable {
     /// The name of the log group.
     /// This member is required.
     public var logGroupName: Swift.String?
@@ -4971,7 +4976,7 @@ public struct UntagLogGroupInput {
     }
 }
 
-public struct UntagResourceInput {
+public struct UntagResourceInput: Swift.Sendable {
     /// The ARN of the CloudWatch Logs resource that you're removing tags from. The ARN format of a log group is arn:aws:logs:Region:account-id:log-group:log-group-name  The ARN format of a destination is arn:aws:logs:Region:account-id:destination:destination-name  For more information about ARN format, see [CloudWatch Logs resources and operations](https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/iam-access-control-overview-cwl.html).
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -4991,7 +4996,7 @@ public struct UntagResourceInput {
 
 extension CloudWatchLogsClientTypes {
 
-    public enum SuppressionUnit: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SuppressionUnit: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case hours
         case minutes
         case seconds
@@ -5022,8 +5027,9 @@ extension CloudWatchLogsClientTypes {
 }
 
 extension CloudWatchLogsClientTypes {
+
     /// If you are suppressing an anomaly temporariliy, this structure defines how long the suppression period is to be.
-    public struct SuppressionPeriod {
+    public struct SuppressionPeriod: Swift.Sendable {
         /// Specifies whether the value of value is in seconds, minutes, or hours.
         public var suppressionUnit: CloudWatchLogsClientTypes.SuppressionUnit?
         /// Specifies the number of seconds, minutes or hours to suppress this anomaly. There is no maximum.
@@ -5038,12 +5044,11 @@ extension CloudWatchLogsClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension CloudWatchLogsClientTypes {
 
-    public enum SuppressionType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SuppressionType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case infinite
         case limited
         case sdkUnknown(Swift.String)
@@ -5070,12 +5075,14 @@ extension CloudWatchLogsClientTypes {
     }
 }
 
-public struct UpdateAnomalyInput {
+public struct UpdateAnomalyInput: Swift.Sendable {
     /// The ARN of the anomaly detector that this operation is to act on.
     /// This member is required.
     public var anomalyDetectorArn: Swift.String?
     /// If you are suppressing or unsuppressing an anomaly, specify its unique ID here. You can find anomaly IDs by using the [ListAnomalies](https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_ListAnomalies.html) operation.
     public var anomalyId: Swift.String?
+    /// Set this to true to prevent CloudWatch Logs from displaying this behavior as an anomaly in the future. The behavior is then treated as baseline behavior. However, if similar but more severe occurrences of this behavior occur in the future, those will still be reported as anomalies. The default is false
+    public var baseline: Swift.Bool?
     /// If you are suppressing or unsuppressing an pattern, specify its unique ID here. You can find pattern IDs by using the [ListAnomalies](https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_ListAnomalies.html) operation.
     public var patternId: Swift.String?
     /// If you are temporarily suppressing an anomaly or pattern, use this structure to specify how long the suppression is to last.
@@ -5086,6 +5093,7 @@ public struct UpdateAnomalyInput {
     public init(
         anomalyDetectorArn: Swift.String? = nil,
         anomalyId: Swift.String? = nil,
+        baseline: Swift.Bool? = nil,
         patternId: Swift.String? = nil,
         suppressionPeriod: CloudWatchLogsClientTypes.SuppressionPeriod? = nil,
         suppressionType: CloudWatchLogsClientTypes.SuppressionType? = nil
@@ -5093,21 +5101,22 @@ public struct UpdateAnomalyInput {
     {
         self.anomalyDetectorArn = anomalyDetectorArn
         self.anomalyId = anomalyId
+        self.baseline = baseline
         self.patternId = patternId
         self.suppressionPeriod = suppressionPeriod
         self.suppressionType = suppressionType
     }
 }
 
-public struct UpdateDeliveryConfigurationInput {
+public struct UpdateDeliveryConfigurationInput: Swift.Sendable {
     /// The field delimiter to use between record fields when the final output format of a delivery is in Plain, W3C, or Raw format.
     public var fieldDelimiter: Swift.String?
     /// The ID of the delivery to be updated by this request.
     /// This member is required.
     public var id: Swift.String?
-    /// The list of record fields to be delivered to the destination, in order. If the delivery’s log source has mandatory fields, they must be included in this list.
+    /// The list of record fields to be delivered to the destination, in order. If the delivery's log source has mandatory fields, they must be included in this list.
     public var recordFields: [Swift.String]?
-    /// This structure contains parameters that are valid only when the delivery’s delivery destination is an S3 bucket.
+    /// This structure contains parameters that are valid only when the delivery's delivery destination is an S3 bucket.
     public var s3DeliveryConfiguration: CloudWatchLogsClientTypes.S3DeliveryConfiguration?
 
     public init(
@@ -5124,12 +5133,12 @@ public struct UpdateDeliveryConfigurationInput {
     }
 }
 
-public struct UpdateDeliveryConfigurationOutput {
+public struct UpdateDeliveryConfigurationOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdateLogAnomalyDetectorInput {
+public struct UpdateLogAnomalyDetectorInput: Swift.Sendable {
     /// The ARN of the anomaly detector that you want to update.
     /// This member is required.
     public var anomalyDetectorArn: Swift.String?
@@ -6425,6 +6434,7 @@ extension UpdateAnomalyInput {
         guard let value else { return }
         try writer["anomalyDetectorArn"].write(value.anomalyDetectorArn)
         try writer["anomalyId"].write(value.anomalyId)
+        try writer["baseline"].write(value.baseline)
         try writer["patternId"].write(value.patternId)
         try writer["suppressionPeriod"].write(value.suppressionPeriod, with: CloudWatchLogsClientTypes.SuppressionPeriod.write(value:to:))
         try writer["suppressionType"].write(value.suppressionType)
@@ -9248,6 +9258,7 @@ extension CloudWatchLogsClientTypes.PatternToken {
         value.isDynamic = try reader["isDynamic"].readIfPresent()
         value.tokenString = try reader["tokenString"].readIfPresent()
         value.enumerations = try reader["enumerations"].readMapIfPresent(valueReadingClosure: SmithyReadWrite.ReadingClosures.readInt(from:), keyNodeInfo: "key", valueNodeInfo: "value", isFlattened: false)
+        value.inferredTokenName = try reader["inferredTokenName"].readIfPresent()
         return value
     }
 }

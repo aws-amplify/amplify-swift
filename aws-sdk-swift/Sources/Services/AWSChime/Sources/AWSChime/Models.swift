@@ -32,204 +32,205 @@ import struct SmithyHTTPAPI.Headers
 @_spi(SmithyReadWrite) import struct SmithyReadWrite.WritingClosureBox
 @_spi(SmithyTimestamps) import struct SmithyTimestamps.TimestampFormatter
 
-public struct DeleteAppInstanceAdminOutput {
+
+public struct DeleteAppInstanceAdminOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteAppInstanceOutput {
+public struct DeleteAppInstanceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteAppInstanceStreamingConfigurationsOutput {
+public struct DeleteAppInstanceStreamingConfigurationsOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteAppInstanceUserOutput {
+public struct DeleteAppInstanceUserOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteAttendeeOutput {
+public struct DeleteAttendeeOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteChannelBanOutput {
+public struct DeleteChannelBanOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteChannelMembershipOutput {
+public struct DeleteChannelMembershipOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteChannelMessageOutput {
+public struct DeleteChannelMessageOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteChannelModeratorOutput {
+public struct DeleteChannelModeratorOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteChannelOutput {
+public struct DeleteChannelOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteEventsConfigurationOutput {
+public struct DeleteEventsConfigurationOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteMediaCapturePipelineOutput {
+public struct DeleteMediaCapturePipelineOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteMeetingOutput {
+public struct DeleteMeetingOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeletePhoneNumberOutput {
+public struct DeletePhoneNumberOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteProxySessionOutput {
+public struct DeleteProxySessionOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteRoomMembershipOutput {
+public struct DeleteRoomMembershipOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteRoomOutput {
+public struct DeleteRoomOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteSipMediaApplicationOutput {
+public struct DeleteSipMediaApplicationOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteSipRuleOutput {
+public struct DeleteSipRuleOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteVoiceConnectorEmergencyCallingConfigurationOutput {
+public struct DeleteVoiceConnectorEmergencyCallingConfigurationOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteVoiceConnectorGroupOutput {
+public struct DeleteVoiceConnectorGroupOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteVoiceConnectorOriginationOutput {
+public struct DeleteVoiceConnectorOriginationOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteVoiceConnectorOutput {
+public struct DeleteVoiceConnectorOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteVoiceConnectorProxyOutput {
+public struct DeleteVoiceConnectorProxyOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteVoiceConnectorStreamingConfigurationOutput {
+public struct DeleteVoiceConnectorStreamingConfigurationOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteVoiceConnectorTerminationCredentialsOutput {
+public struct DeleteVoiceConnectorTerminationCredentialsOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteVoiceConnectorTerminationOutput {
+public struct DeleteVoiceConnectorTerminationOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct GetGlobalSettingsInput {
+public struct GetGlobalSettingsInput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct GetPhoneNumberSettingsInput {
+public struct GetPhoneNumberSettingsInput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct PutVoiceConnectorTerminationCredentialsOutput {
+public struct PutVoiceConnectorTerminationCredentialsOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct TagAttendeeOutput {
+public struct TagAttendeeOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct TagMeetingOutput {
+public struct TagMeetingOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct TagResourceOutput {
+public struct TagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UntagAttendeeOutput {
+public struct UntagAttendeeOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UntagMeetingOutput {
+public struct UntagMeetingOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UntagResourceOutput {
+public struct UntagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdateGlobalSettingsOutput {
+public struct UpdateGlobalSettingsOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdatePhoneNumberSettingsOutput {
+public struct UpdatePhoneNumberSettingsOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdateUserSettingsOutput {
+public struct UpdateUserSettingsOutput: Swift.Sendable {
 
     public init() { }
 }
 
 extension ChimeClientTypes {
 
-    public enum ErrorCode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ErrorCode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case accessdenied
         case badrequest
         case conflict
@@ -324,7 +325,7 @@ public struct AccessDeniedException: ClientRuntime.ModeledError, AWSClientRuntim
 
 extension ChimeClientTypes {
 
-    public enum AccountStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AccountStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case active
         case suspended
         case sdkUnknown(Swift.String)
@@ -353,7 +354,7 @@ extension ChimeClientTypes {
 
 extension ChimeClientTypes {
 
-    public enum AccountType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AccountType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case enterprisedirectory
         case enterpriselwa
         case enterpriseoidc
@@ -388,7 +389,7 @@ extension ChimeClientTypes {
 
 extension ChimeClientTypes {
 
-    public enum License: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum License: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case basic
         case plus
         case pro
@@ -422,8 +423,9 @@ extension ChimeClientTypes {
 }
 
 extension ChimeClientTypes {
+
     /// An Active Directory (AD) group whose members are granted permission to act as delegates.
-    public struct SigninDelegateGroup {
+    public struct SigninDelegateGroup: Swift.Sendable {
         /// The group name.
         public var groupName: Swift.String?
 
@@ -434,12 +436,12 @@ extension ChimeClientTypes {
             self.groupName = groupName
         }
     }
-
 }
 
 extension ChimeClientTypes {
+
     /// The Amazon Chime account details. An AWS account can have multiple Amazon Chime accounts.
-    public struct Account {
+    public struct Account: Swift.Sendable {
         /// The Amazon Chime account ID.
         /// This member is required.
         public var accountId: Swift.String?
@@ -485,12 +487,12 @@ extension ChimeClientTypes {
             self.supportedLicenses = supportedLicenses
         }
     }
-
 }
 
 extension ChimeClientTypes {
+
     /// Settings related to the Amazon Chime account. This includes settings that start or stop remote control of shared screens, or start or stop the dial-out option in the Amazon Chime web application. For more information about these settings, see [Use the Policies Page](https://docs.aws.amazon.com/chime/latest/ag/policies.html) in the Amazon Chime Administration Guide.
-    public struct AccountSettings {
+    public struct AccountSettings: Swift.Sendable {
         /// Setting that stops or starts remote control of shared screens during meetings.
         public var disableRemoteControl: Swift.Bool?
         /// Setting that allows meeting participants to choose the Call me at a phone number option. For more information, see [Join a Meeting without the Amazon Chime App](https://docs.aws.amazon.com/chime/latest/ug/chime-join-meeting.html).
@@ -505,12 +507,12 @@ extension ChimeClientTypes {
             self.enableDialOut = enableDialOut
         }
     }
-
 }
 
 extension ChimeClientTypes {
+
     /// A validated address.
-    public struct Address {
+    public struct Address: Swift.Sendable {
         /// The city of an address.
         public var city: Swift.String?
         /// The country of an address.
@@ -557,7 +559,6 @@ extension ChimeClientTypes {
             self.streetSuffix = streetSuffix
         }
     }
-
 }
 
 extension ChimeClientTypes.Address: Swift.CustomDebugStringConvertible {
@@ -566,8 +567,9 @@ extension ChimeClientTypes.Address: Swift.CustomDebugStringConvertible {
 }
 
 extension ChimeClientTypes {
+
     /// The Alexa for Business metadata associated with an Amazon Chime user, used to integrate Alexa for Business with a device.
-    public struct AlexaForBusinessMetadata {
+    public struct AlexaForBusinessMetadata: Swift.Sendable {
         /// The ARN of the room resource.
         public var alexaForBusinessRoomArn: Swift.String?
         /// Starts or stops Alexa for Business.
@@ -582,7 +584,6 @@ extension ChimeClientTypes {
             self.isAlexaForBusinessEnabled = isAlexaForBusinessEnabled
         }
     }
-
 }
 
 extension ChimeClientTypes.AlexaForBusinessMetadata: Swift.CustomDebugStringConvertible {
@@ -591,8 +592,9 @@ extension ChimeClientTypes.AlexaForBusinessMetadata: Swift.CustomDebugStringConv
 }
 
 extension ChimeClientTypes {
+
     /// The details of an AppInstance, an instance of an Amazon Chime SDK messaging application.
-    public struct AppInstance {
+    public struct AppInstance: Swift.Sendable {
         /// The ARN of the messaging instance.
         public var appInstanceArn: Swift.String?
         /// The time at which an AppInstance was created. In epoch milliseconds.
@@ -619,7 +621,6 @@ extension ChimeClientTypes {
             self.name = name
         }
     }
-
 }
 
 extension ChimeClientTypes.AppInstance: Swift.CustomDebugStringConvertible {
@@ -628,8 +629,9 @@ extension ChimeClientTypes.AppInstance: Swift.CustomDebugStringConvertible {
 }
 
 extension ChimeClientTypes {
+
     /// The details of a user.
-    public struct Identity {
+    public struct Identity: Swift.Sendable {
         /// The ARN in an Identity.
         public var arn: Swift.String?
         /// The name in an Identity.
@@ -644,7 +646,6 @@ extension ChimeClientTypes {
             self.name = name
         }
     }
-
 }
 
 extension ChimeClientTypes.Identity: Swift.CustomDebugStringConvertible {
@@ -653,8 +654,9 @@ extension ChimeClientTypes.Identity: Swift.CustomDebugStringConvertible {
 }
 
 extension ChimeClientTypes {
+
     /// The details of an AppInstanceAdmin.
-    public struct AppInstanceAdmin {
+    public struct AppInstanceAdmin: Swift.Sendable {
         /// The AppInstanceAdmin data.
         public var admin: ChimeClientTypes.Identity?
         /// The ARN of the AppInstance for which the user is an administrator.
@@ -673,12 +675,12 @@ extension ChimeClientTypes {
             self.createdTimestamp = createdTimestamp
         }
     }
-
 }
 
 extension ChimeClientTypes {
+
     /// Summary of the details of an AppInstanceAdmin.
-    public struct AppInstanceAdminSummary {
+    public struct AppInstanceAdminSummary: Swift.Sendable {
         /// The details of the AppInstanceAdmin.
         public var admin: ChimeClientTypes.Identity?
 
@@ -689,12 +691,11 @@ extension ChimeClientTypes {
             self.admin = admin
         }
     }
-
 }
 
 extension ChimeClientTypes {
 
-    public enum AppInstanceDataType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AppInstanceDataType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case channel
         case channelmessage
         case sdkUnknown(Swift.String)
@@ -722,8 +723,9 @@ extension ChimeClientTypes {
 }
 
 extension ChimeClientTypes {
+
     /// Summary of the data for an AppInstance.
-    public struct AppInstanceSummary {
+    public struct AppInstanceSummary: Swift.Sendable {
         /// The AppInstance ARN.
         public var appInstanceArn: Swift.String?
         /// The metadata of the AppInstance.
@@ -742,7 +744,6 @@ extension ChimeClientTypes {
             self.name = name
         }
     }
-
 }
 
 extension ChimeClientTypes.AppInstanceSummary: Swift.CustomDebugStringConvertible {
@@ -751,8 +752,9 @@ extension ChimeClientTypes.AppInstanceSummary: Swift.CustomDebugStringConvertibl
 }
 
 extension ChimeClientTypes {
+
     /// The details of the retention settings for a channel.
-    public struct ChannelRetentionSettings {
+    public struct ChannelRetentionSettings: Swift.Sendable {
         /// The time in days to retain the messages in a channel.
         public var retentionDays: Swift.Int?
 
@@ -763,12 +765,12 @@ extension ChimeClientTypes {
             self.retentionDays = retentionDays
         }
     }
-
 }
 
 extension ChimeClientTypes {
+
     /// The details of the data-retention settings for an AppInstance.
-    public struct AppInstanceRetentionSettings {
+    public struct AppInstanceRetentionSettings: Swift.Sendable {
         /// The length of time in days to retain the messages in a channel.
         public var channelRetentionSettings: ChimeClientTypes.ChannelRetentionSettings?
 
@@ -779,12 +781,12 @@ extension ChimeClientTypes {
             self.channelRetentionSettings = channelRetentionSettings
         }
     }
-
 }
 
 extension ChimeClientTypes {
+
     /// The details of the streaming configuration of an AppInstance.
-    public struct AppInstanceStreamingConfiguration {
+    public struct AppInstanceStreamingConfiguration: Swift.Sendable {
         /// The type of data to be streamed.
         /// This member is required.
         public var appInstanceDataType: ChimeClientTypes.AppInstanceDataType?
@@ -801,7 +803,6 @@ extension ChimeClientTypes {
             self.resourceArn = resourceArn
         }
     }
-
 }
 
 extension ChimeClientTypes.AppInstanceStreamingConfiguration: Swift.CustomDebugStringConvertible {
@@ -810,8 +811,9 @@ extension ChimeClientTypes.AppInstanceStreamingConfiguration: Swift.CustomDebugS
 }
 
 extension ChimeClientTypes {
+
     /// The details of an AppInstanceUser.
-    public struct AppInstanceUser {
+    public struct AppInstanceUser: Swift.Sendable {
         /// The ARN of the AppInstanceUser.
         public var appInstanceUserArn: Swift.String?
         /// The time at which the AppInstanceUser was created.
@@ -838,7 +840,6 @@ extension ChimeClientTypes {
             self.name = name
         }
     }
-
 }
 
 extension ChimeClientTypes.AppInstanceUser: Swift.CustomDebugStringConvertible {
@@ -847,8 +848,9 @@ extension ChimeClientTypes.AppInstanceUser: Swift.CustomDebugStringConvertible {
 }
 
 extension ChimeClientTypes {
+
     /// Summary of the details of an AppInstanceUser.
-    public struct AppInstanceUserSummary {
+    public struct AppInstanceUserSummary: Swift.Sendable {
         /// The ARN of the AppInstanceUser.
         public var appInstanceUserArn: Swift.String?
         /// The metadata of the AppInstanceUser.
@@ -867,7 +869,6 @@ extension ChimeClientTypes {
             self.name = name
         }
     }
-
 }
 
 extension ChimeClientTypes.AppInstanceUserSummary: Swift.CustomDebugStringConvertible {
@@ -877,7 +878,7 @@ extension ChimeClientTypes.AppInstanceUserSummary: Swift.CustomDebugStringConver
 
 extension ChimeClientTypes {
 
-    public enum ChannelMembershipType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ChannelMembershipType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case `default`
         case hidden
         case sdkUnknown(Swift.String)
@@ -905,8 +906,9 @@ extension ChimeClientTypes {
 }
 
 extension ChimeClientTypes {
+
     /// Summary of the membership details of an AppInstanceUser.
-    public struct AppInstanceUserMembershipSummary {
+    public struct AppInstanceUserMembershipSummary: Swift.Sendable {
         /// The time at which a message was last read.
         public var readMarkerTimestamp: Foundation.Date?
         /// The type of ChannelMembership.
@@ -921,12 +923,11 @@ extension ChimeClientTypes {
             self.type = type
         }
     }
-
 }
 
 extension ChimeClientTypes {
 
-    public enum AudioMuxType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AudioMuxType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case audioonly
         case audiowithactivespeakervideo
         case sdkUnknown(Swift.String)
@@ -954,8 +955,9 @@ extension ChimeClientTypes {
 }
 
 extension ChimeClientTypes {
+
     /// The audio artifact configuration object.
-    public struct AudioArtifactsConfiguration {
+    public struct AudioArtifactsConfiguration: Swift.Sendable {
         /// The MUX type of the audio artifact configuration object.
         /// This member is required.
         public var muxType: ChimeClientTypes.AudioMuxType?
@@ -967,12 +969,11 @@ extension ChimeClientTypes {
             self.muxType = muxType
         }
     }
-
 }
 
 extension ChimeClientTypes {
 
-    public enum ContentMuxType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ContentMuxType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case contentonly
         case sdkUnknown(Swift.String)
 
@@ -998,7 +999,7 @@ extension ChimeClientTypes {
 
 extension ChimeClientTypes {
 
-    public enum ArtifactsState: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ArtifactsState: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case disabled
         case enabled
         case sdkUnknown(Swift.String)
@@ -1026,8 +1027,9 @@ extension ChimeClientTypes {
 }
 
 extension ChimeClientTypes {
+
     /// The content artifact object.
-    public struct ContentArtifactsConfiguration {
+    public struct ContentArtifactsConfiguration: Swift.Sendable {
         /// The MUX type of the artifact configuration.
         public var muxType: ChimeClientTypes.ContentMuxType?
         /// Indicates whether the content artifact is enabled or disabled.
@@ -1043,12 +1045,11 @@ extension ChimeClientTypes {
             self.state = state
         }
     }
-
 }
 
 extension ChimeClientTypes {
 
-    public enum VideoMuxType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum VideoMuxType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case videoonly
         case sdkUnknown(Swift.String)
 
@@ -1073,8 +1074,9 @@ extension ChimeClientTypes {
 }
 
 extension ChimeClientTypes {
+
     /// The video artifact configuration object.
-    public struct VideoArtifactsConfiguration {
+    public struct VideoArtifactsConfiguration: Swift.Sendable {
         /// The MUX type of the video artifact configuration object.
         public var muxType: ChimeClientTypes.VideoMuxType?
         /// Indicates whether the video artifact is enabled or disabled.
@@ -1090,12 +1092,12 @@ extension ChimeClientTypes {
             self.state = state
         }
     }
-
 }
 
 extension ChimeClientTypes {
+
     /// The configuration for the artifacts.
-    public struct ArtifactsConfiguration {
+    public struct ArtifactsConfiguration: Swift.Sendable {
         /// The configuration for the audio artifacts.
         /// This member is required.
         public var audio: ChimeClientTypes.AudioArtifactsConfiguration?
@@ -1117,7 +1119,6 @@ extension ChimeClientTypes {
             self.video = video
         }
     }
-
 }
 
 /// The input parameters don't match the service's restrictions.
@@ -1309,7 +1310,7 @@ public struct UnauthorizedClientException: ClientRuntime.ModeledError, AWSClient
     }
 }
 
-public struct AssociatePhoneNumbersWithVoiceConnectorInput {
+public struct AssociatePhoneNumbersWithVoiceConnectorInput: Swift.Sendable {
     /// List of phone numbers, in E.164 format.
     /// This member is required.
     public var e164PhoneNumbers: [Swift.String]?
@@ -1337,8 +1338,9 @@ extension AssociatePhoneNumbersWithVoiceConnectorInput: Swift.CustomDebugStringC
 }
 
 extension ChimeClientTypes {
+
     /// If the phone number action fails for one or more of the phone numbers in the request, a list of the phone numbers is returned, along with error codes and error messages.
-    public struct PhoneNumberError {
+    public struct PhoneNumberError: Swift.Sendable {
         /// The error code.
         public var errorCode: ChimeClientTypes.ErrorCode?
         /// The error message.
@@ -1357,10 +1359,9 @@ extension ChimeClientTypes {
             self.phoneNumberId = phoneNumberId
         }
     }
-
 }
 
-public struct AssociatePhoneNumbersWithVoiceConnectorOutput {
+public struct AssociatePhoneNumbersWithVoiceConnectorOutput: Swift.Sendable {
     /// If the action fails for one or more of the phone numbers in the request, a list of the phone numbers is returned, along with error codes and error messages.
     public var phoneNumberErrors: [ChimeClientTypes.PhoneNumberError]?
 
@@ -1372,7 +1373,7 @@ public struct AssociatePhoneNumbersWithVoiceConnectorOutput {
     }
 }
 
-public struct AssociatePhoneNumbersWithVoiceConnectorGroupInput {
+public struct AssociatePhoneNumbersWithVoiceConnectorGroupInput: Swift.Sendable {
     /// List of phone numbers, in E.164 format.
     /// This member is required.
     public var e164PhoneNumbers: [Swift.String]?
@@ -1399,7 +1400,7 @@ extension AssociatePhoneNumbersWithVoiceConnectorGroupInput: Swift.CustomDebugSt
         "AssociatePhoneNumbersWithVoiceConnectorGroupInput(forceAssociate: \(Swift.String(describing: forceAssociate)), voiceConnectorGroupId: \(Swift.String(describing: voiceConnectorGroupId)), e164PhoneNumbers: \"CONTENT_REDACTED\")"}
 }
 
-public struct AssociatePhoneNumbersWithVoiceConnectorGroupOutput {
+public struct AssociatePhoneNumbersWithVoiceConnectorGroupOutput: Swift.Sendable {
     /// If the action fails for one or more of the phone numbers in the request, a list of the phone numbers is returned, along with error codes and error messages.
     public var phoneNumberErrors: [ChimeClientTypes.PhoneNumberError]?
 
@@ -1411,7 +1412,7 @@ public struct AssociatePhoneNumbersWithVoiceConnectorGroupOutput {
     }
 }
 
-public struct AssociatePhoneNumberWithUserInput {
+public struct AssociatePhoneNumberWithUserInput: Swift.Sendable {
     /// The Amazon Chime account ID.
     /// This member is required.
     public var accountId: Swift.String?
@@ -1439,12 +1440,12 @@ extension AssociatePhoneNumberWithUserInput: Swift.CustomDebugStringConvertible 
         "AssociatePhoneNumberWithUserInput(accountId: \(Swift.String(describing: accountId)), userId: \(Swift.String(describing: userId)), e164PhoneNumber: \"CONTENT_REDACTED\")"}
 }
 
-public struct AssociatePhoneNumberWithUserOutput {
+public struct AssociatePhoneNumberWithUserOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct AssociateSigninDelegateGroupsWithAccountInput {
+public struct AssociateSigninDelegateGroupsWithAccountInput: Swift.Sendable {
     /// The Amazon Chime account ID.
     /// This member is required.
     public var accountId: Swift.String?
@@ -1462,14 +1463,15 @@ public struct AssociateSigninDelegateGroupsWithAccountInput {
     }
 }
 
-public struct AssociateSigninDelegateGroupsWithAccountOutput {
+public struct AssociateSigninDelegateGroupsWithAccountOutput: Swift.Sendable {
 
     public init() { }
 }
 
 extension ChimeClientTypes {
+
     /// An Amazon Chime SDK meeting attendee. Includes a unique AttendeeId and JoinToken . The JoinToken allows a client to authenticate and join as the specified attendee. The JoinToken expires when the meeting ends or when [DeleteAttendee] is called. After that, the attendee is unable to join the meeting. We recommend securely transferring each JoinToken from your server application to the client so that no other client has access to the token except for the one authorized to represent the attendee.
-    public struct Attendee {
+    public struct Attendee: Swift.Sendable {
         /// The Amazon Chime SDK attendee ID.
         public var attendeeId: Swift.String?
         /// The Amazon Chime SDK external user ID. An idempotency token. Links the attendee to an identity managed by a builder application.
@@ -1488,7 +1490,6 @@ extension ChimeClientTypes {
             self.joinToken = joinToken
         }
     }
-
 }
 
 extension ChimeClientTypes.Attendee: Swift.CustomDebugStringConvertible {
@@ -1497,8 +1498,9 @@ extension ChimeClientTypes.Attendee: Swift.CustomDebugStringConvertible {
 }
 
 extension ChimeClientTypes {
+
     /// Describes a tag applied to a resource.
-    public struct Tag {
+    public struct Tag: Swift.Sendable {
         /// The key of the tag.
         /// This member is required.
         public var key: Swift.String?
@@ -1515,7 +1517,6 @@ extension ChimeClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension ChimeClientTypes.Tag: Swift.CustomDebugStringConvertible {
@@ -1524,8 +1525,9 @@ extension ChimeClientTypes.Tag: Swift.CustomDebugStringConvertible {
 }
 
 extension ChimeClientTypes {
+
     /// The membership information, including member ARNs, the channel ARN, and membership types.
-    public struct BatchChannelMemberships {
+    public struct BatchChannelMemberships: Swift.Sendable {
         /// The ARN of the channel to which you're adding users.
         public var channelArn: Swift.String?
         /// The identifier of the member who invited another member.
@@ -1548,7 +1550,6 @@ extension ChimeClientTypes {
             self.type = type
         }
     }
-
 }
 
 /// The request exceeds the resource limit.
@@ -1579,8 +1580,9 @@ public struct ResourceLimitExceededException: ClientRuntime.ModeledError, AWSCli
 }
 
 extension ChimeClientTypes {
+
     /// The Amazon Chime SDK attendee fields to create, used with the BatchCreateAttendee action.
-    public struct CreateAttendeeRequestItem {
+    public struct CreateAttendeeRequestItem: Swift.Sendable {
         /// The Amazon Chime SDK external user ID. An idempotency token. Links the attendee to an identity managed by a builder application.
         /// This member is required.
         public var externalUserId: Swift.String?
@@ -1596,7 +1598,6 @@ extension ChimeClientTypes {
             self.tags = tags
         }
     }
-
 }
 
 extension ChimeClientTypes.CreateAttendeeRequestItem: Swift.CustomDebugStringConvertible {
@@ -1604,7 +1605,7 @@ extension ChimeClientTypes.CreateAttendeeRequestItem: Swift.CustomDebugStringCon
         "CreateAttendeeRequestItem(tags: \(Swift.String(describing: tags)), externalUserId: \"CONTENT_REDACTED\")"}
 }
 
-public struct BatchCreateAttendeeInput {
+public struct BatchCreateAttendeeInput: Swift.Sendable {
     /// The request containing the attendees to create.
     /// This member is required.
     public var attendees: [ChimeClientTypes.CreateAttendeeRequestItem]?
@@ -1623,8 +1624,9 @@ public struct BatchCreateAttendeeInput {
 }
 
 extension ChimeClientTypes {
+
     /// The list of errors returned when errors are encountered during the BatchCreateAttendee and CreateAttendee actions. This includes external user IDs, error codes, and error messages.
-    public struct CreateAttendeeError {
+    public struct CreateAttendeeError: Swift.Sendable {
         /// The error code.
         public var errorCode: Swift.String?
         /// The error message.
@@ -1643,7 +1645,6 @@ extension ChimeClientTypes {
             self.externalUserId = externalUserId
         }
     }
-
 }
 
 extension ChimeClientTypes.CreateAttendeeError: Swift.CustomDebugStringConvertible {
@@ -1651,7 +1652,7 @@ extension ChimeClientTypes.CreateAttendeeError: Swift.CustomDebugStringConvertib
         "CreateAttendeeError(errorCode: \(Swift.String(describing: errorCode)), errorMessage: \(Swift.String(describing: errorMessage)), externalUserId: \"CONTENT_REDACTED\")"}
 }
 
-public struct BatchCreateAttendeeOutput {
+public struct BatchCreateAttendeeOutput: Swift.Sendable {
     /// The attendee information, including attendees IDs and join tokens.
     public var attendees: [ChimeClientTypes.Attendee]?
     /// If the action fails for one or more of the attendees in the request, a list of the attendees is returned, along with error codes and error messages.
@@ -1667,7 +1668,7 @@ public struct BatchCreateAttendeeOutput {
     }
 }
 
-public struct BatchCreateChannelMembershipInput {
+public struct BatchCreateChannelMembershipInput: Swift.Sendable {
     /// The ARN of the channel to which you're adding users.
     /// This member is required.
     public var channelArn: Swift.String?
@@ -1694,8 +1695,9 @@ public struct BatchCreateChannelMembershipInput {
 }
 
 extension ChimeClientTypes {
+
     /// A list of failed member ARNs, error codes, and error messages.
-    public struct BatchCreateChannelMembershipError {
+    public struct BatchCreateChannelMembershipError: Swift.Sendable {
         /// The error code.
         public var errorCode: ChimeClientTypes.ErrorCode?
         /// The error message.
@@ -1714,10 +1716,9 @@ extension ChimeClientTypes {
             self.memberArn = memberArn
         }
     }
-
 }
 
-public struct BatchCreateChannelMembershipOutput {
+public struct BatchCreateChannelMembershipOutput: Swift.Sendable {
     /// The list of channel memberships in the response.
     public var batchChannelMemberships: ChimeClientTypes.BatchChannelMemberships?
     /// If the action fails for one or more of the memberships in the request, a list of the memberships is returned, along with error codes and error messages.
@@ -1735,7 +1736,7 @@ public struct BatchCreateChannelMembershipOutput {
 
 extension ChimeClientTypes {
 
-    public enum RoomMembershipRole: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum RoomMembershipRole: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case administrator
         case member
         case sdkUnknown(Swift.String)
@@ -1763,8 +1764,9 @@ extension ChimeClientTypes {
 }
 
 extension ChimeClientTypes {
+
     /// Membership details, such as member ID and member role.
-    public struct MembershipItem {
+    public struct MembershipItem: Swift.Sendable {
         /// The member ID.
         public var memberId: Swift.String?
         /// The member role.
@@ -1779,10 +1781,9 @@ extension ChimeClientTypes {
             self.role = role
         }
     }
-
 }
 
-public struct BatchCreateRoomMembershipInput {
+public struct BatchCreateRoomMembershipInput: Swift.Sendable {
     /// The Amazon Chime account ID.
     /// This member is required.
     public var accountId: Swift.String?
@@ -1806,8 +1807,9 @@ public struct BatchCreateRoomMembershipInput {
 }
 
 extension ChimeClientTypes {
+
     /// The list of errors returned when a member action results in an error.
-    public struct MemberError {
+    public struct MemberError: Swift.Sendable {
         /// The error code.
         public var errorCode: ChimeClientTypes.ErrorCode?
         /// The error message.
@@ -1826,10 +1828,9 @@ extension ChimeClientTypes {
             self.memberId = memberId
         }
     }
-
 }
 
-public struct BatchCreateRoomMembershipOutput {
+public struct BatchCreateRoomMembershipOutput: Swift.Sendable {
     /// If the action fails for one or more of the member IDs in the request, a list of the member IDs is returned, along with error codes and error messages.
     public var errors: [ChimeClientTypes.MemberError]?
 
@@ -1841,7 +1842,7 @@ public struct BatchCreateRoomMembershipOutput {
     }
 }
 
-public struct BatchDeletePhoneNumberInput {
+public struct BatchDeletePhoneNumberInput: Swift.Sendable {
     /// List of phone number IDs.
     /// This member is required.
     public var phoneNumberIds: [Swift.String]?
@@ -1854,7 +1855,7 @@ public struct BatchDeletePhoneNumberInput {
     }
 }
 
-public struct BatchDeletePhoneNumberOutput {
+public struct BatchDeletePhoneNumberOutput: Swift.Sendable {
     /// If the action fails for one or more of the phone numbers in the request, a list of the phone numbers is returned, along with error codes and error messages.
     public var phoneNumberErrors: [ChimeClientTypes.PhoneNumberError]?
 
@@ -1866,7 +1867,7 @@ public struct BatchDeletePhoneNumberOutput {
     }
 }
 
-public struct BatchSuspendUserInput {
+public struct BatchSuspendUserInput: Swift.Sendable {
     /// The Amazon Chime account ID.
     /// This member is required.
     public var accountId: Swift.String?
@@ -1885,8 +1886,9 @@ public struct BatchSuspendUserInput {
 }
 
 extension ChimeClientTypes {
+
     /// The list of errors returned when errors are encountered during the [BatchSuspendUser], [BatchUnsuspendUser], or [BatchUpdateUser] actions. This includes user IDs, error codes, and error messages.
-    public struct UserError {
+    public struct UserError: Swift.Sendable {
         /// The error code.
         public var errorCode: ChimeClientTypes.ErrorCode?
         /// The error message.
@@ -1905,10 +1907,9 @@ extension ChimeClientTypes {
             self.userId = userId
         }
     }
-
 }
 
-public struct BatchSuspendUserOutput {
+public struct BatchSuspendUserOutput: Swift.Sendable {
     /// If the [BatchSuspendUser] action fails for one or more of the user IDs in the request, a list of the user IDs is returned, along with error codes and error messages.
     public var userErrors: [ChimeClientTypes.UserError]?
 
@@ -1920,7 +1921,7 @@ public struct BatchSuspendUserOutput {
     }
 }
 
-public struct BatchUnsuspendUserInput {
+public struct BatchUnsuspendUserInput: Swift.Sendable {
     /// The Amazon Chime account ID.
     /// This member is required.
     public var accountId: Swift.String?
@@ -1938,7 +1939,7 @@ public struct BatchUnsuspendUserInput {
     }
 }
 
-public struct BatchUnsuspendUserOutput {
+public struct BatchUnsuspendUserOutput: Swift.Sendable {
     /// If the [BatchUnsuspendUser] action fails for one or more of the user IDs in the request, a list of the user IDs is returned, along with error codes and error messages.
     public var userErrors: [ChimeClientTypes.UserError]?
 
@@ -1952,7 +1953,7 @@ public struct BatchUnsuspendUserOutput {
 
 extension ChimeClientTypes {
 
-    public enum PhoneNumberProductType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum PhoneNumberProductType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case businesscalling
         case sipmediaapplicationdialin
         case voiceconnector
@@ -1983,8 +1984,9 @@ extension ChimeClientTypes {
 }
 
 extension ChimeClientTypes {
+
     /// The phone number ID, product type, or calling name fields to update, used with the [BatchUpdatePhoneNumber] and [UpdatePhoneNumber] actions.
-    public struct UpdatePhoneNumberRequestItem {
+    public struct UpdatePhoneNumberRequestItem: Swift.Sendable {
         /// The outbound calling name to update.
         public var callingName: Swift.String?
         /// The phone number ID to update.
@@ -2004,7 +2006,6 @@ extension ChimeClientTypes {
             self.productType = productType
         }
     }
-
 }
 
 extension ChimeClientTypes.UpdatePhoneNumberRequestItem: Swift.CustomDebugStringConvertible {
@@ -2012,7 +2013,7 @@ extension ChimeClientTypes.UpdatePhoneNumberRequestItem: Swift.CustomDebugString
         "UpdatePhoneNumberRequestItem(phoneNumberId: \(Swift.String(describing: phoneNumberId)), productType: \(Swift.String(describing: productType)), callingName: \"CONTENT_REDACTED\")"}
 }
 
-public struct BatchUpdatePhoneNumberInput {
+public struct BatchUpdatePhoneNumberInput: Swift.Sendable {
     /// The request containing the phone number IDs and product types or calling names to update.
     /// This member is required.
     public var updatePhoneNumberRequestItems: [ChimeClientTypes.UpdatePhoneNumberRequestItem]?
@@ -2025,7 +2026,7 @@ public struct BatchUpdatePhoneNumberInput {
     }
 }
 
-public struct BatchUpdatePhoneNumberOutput {
+public struct BatchUpdatePhoneNumberOutput: Swift.Sendable {
     /// If the action fails for one or more of the phone numbers in the request, a list of the phone numbers is returned, along with error codes and error messages.
     public var phoneNumberErrors: [ChimeClientTypes.PhoneNumberError]?
 
@@ -2039,7 +2040,7 @@ public struct BatchUpdatePhoneNumberOutput {
 
 extension ChimeClientTypes {
 
-    public enum UserType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum UserType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case privateuser
         case shareddevice
         case sdkUnknown(Swift.String)
@@ -2067,8 +2068,9 @@ extension ChimeClientTypes {
 }
 
 extension ChimeClientTypes {
+
     /// The user ID and user fields to update, used with the [BatchUpdateUser] action.
-    public struct UpdateUserRequestItem {
+    public struct UpdateUserRequestItem: Swift.Sendable {
         /// The Alexa for Business metadata.
         public var alexaForBusinessMetadata: ChimeClientTypes.AlexaForBusinessMetadata?
         /// The user license type.
@@ -2092,10 +2094,9 @@ extension ChimeClientTypes {
             self.userType = userType
         }
     }
-
 }
 
-public struct BatchUpdateUserInput {
+public struct BatchUpdateUserInput: Swift.Sendable {
     /// The Amazon Chime account ID.
     /// This member is required.
     public var accountId: Swift.String?
@@ -2113,7 +2114,7 @@ public struct BatchUpdateUserInput {
     }
 }
 
-public struct BatchUpdateUserOutput {
+public struct BatchUpdateUserOutput: Swift.Sendable {
     /// If the [BatchUpdateUser] action fails for one or more of the user IDs in the request, a list of the user IDs is returned, along with error codes and error messages.
     public var userErrors: [ChimeClientTypes.UserError]?
 
@@ -2127,7 +2128,7 @@ public struct BatchUpdateUserOutput {
 
 extension ChimeClientTypes {
 
-    public enum BotType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum BotType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case chatbot
         case sdkUnknown(Swift.String)
 
@@ -2152,8 +2153,9 @@ extension ChimeClientTypes {
 }
 
 extension ChimeClientTypes {
+
     /// A resource that allows Enterprise account administrators to configure an interface to receive events from Amazon Chime.
-    public struct Bot {
+    public struct Bot: Swift.Sendable {
         /// The bot email address.
         public var botEmail: Swift.String?
         /// The bot ID.
@@ -2196,7 +2198,6 @@ extension ChimeClientTypes {
             self.userId = userId
         }
     }
-
 }
 
 extension ChimeClientTypes.Bot: Swift.CustomDebugStringConvertible {
@@ -2205,8 +2206,9 @@ extension ChimeClientTypes.Bot: Swift.CustomDebugStringConvertible {
 }
 
 extension ChimeClientTypes {
+
     /// The Amazon Chime Business Calling settings for the administrator's AWS account. Includes any Amazon S3 buckets designated for storing call detail records.
-    public struct BusinessCallingSettings {
+    public struct BusinessCallingSettings: Swift.Sendable {
         /// The Amazon S3 bucket designated for call detail record storage.
         public var cdrBucket: Swift.String?
 
@@ -2217,12 +2219,11 @@ extension ChimeClientTypes {
             self.cdrBucket = cdrBucket
         }
     }
-
 }
 
 extension ChimeClientTypes {
 
-    public enum CallingNameStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum CallingNameStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case unassigned
         case updatefailed
         case updateinprogress
@@ -2256,8 +2257,9 @@ extension ChimeClientTypes {
 }
 
 extension ChimeClientTypes {
+
     /// A suggested address.
-    public struct CandidateAddress {
+    public struct CandidateAddress: Swift.Sendable {
         /// The city of a candidate address.
         public var city: Swift.String?
         /// The country of a candidate address.
@@ -2292,7 +2294,6 @@ extension ChimeClientTypes {
             self.streetNumber = streetNumber
         }
     }
-
 }
 
 extension ChimeClientTypes.CandidateAddress: Swift.CustomDebugStringConvertible {
@@ -2302,7 +2303,7 @@ extension ChimeClientTypes.CandidateAddress: Swift.CustomDebugStringConvertible 
 
 extension ChimeClientTypes {
 
-    public enum Capability: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Capability: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case sms
         case voice
         case sdkUnknown(Swift.String)
@@ -2331,7 +2332,7 @@ extension ChimeClientTypes {
 
 extension ChimeClientTypes {
 
-    public enum ChannelMode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ChannelMode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case restricted
         case unrestricted
         case sdkUnknown(Swift.String)
@@ -2360,7 +2361,7 @@ extension ChimeClientTypes {
 
 extension ChimeClientTypes {
 
-    public enum ChannelPrivacy: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ChannelPrivacy: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case `private`
         case `public`
         case sdkUnknown(Swift.String)
@@ -2388,8 +2389,9 @@ extension ChimeClientTypes {
 }
 
 extension ChimeClientTypes {
+
     /// The details of a channel.
-    public struct Channel {
+    public struct Channel: Swift.Sendable {
         /// The ARN of the channel.
         public var channelArn: Swift.String?
         /// The AppInstanceUser who created the channel.
@@ -2432,7 +2434,6 @@ extension ChimeClientTypes {
             self.privacy = privacy
         }
     }
-
 }
 
 extension ChimeClientTypes.Channel: Swift.CustomDebugStringConvertible {
@@ -2441,8 +2442,9 @@ extension ChimeClientTypes.Channel: Swift.CustomDebugStringConvertible {
 }
 
 extension ChimeClientTypes {
+
     /// The details of a channel ban.
-    public struct ChannelBan {
+    public struct ChannelBan: Swift.Sendable {
         /// The ARN of the channel from which a member is being banned.
         public var channelArn: Swift.String?
         /// The AppInstanceUser who created the ban.
@@ -2465,12 +2467,12 @@ extension ChimeClientTypes {
             self.member = member
         }
     }
-
 }
 
 extension ChimeClientTypes {
+
     /// Summary of the details of a ChannelBan.
-    public struct ChannelBanSummary {
+    public struct ChannelBanSummary: Swift.Sendable {
         /// The member being banned from a channel.
         public var member: ChimeClientTypes.Identity?
 
@@ -2481,12 +2483,12 @@ extension ChimeClientTypes {
             self.member = member
         }
     }
-
 }
 
 extension ChimeClientTypes {
+
     /// The details of a channel member.
-    public struct ChannelMembership {
+    public struct ChannelMembership: Swift.Sendable {
         /// The ARN of the member's channel.
         public var channelArn: Swift.String?
         /// The time at which the channel membership was created.
@@ -2517,12 +2519,12 @@ extension ChimeClientTypes {
             self.type = type
         }
     }
-
 }
 
 extension ChimeClientTypes {
+
     /// Summary of the details of a Channel.
-    public struct ChannelSummary {
+    public struct ChannelSummary: Swift.Sendable {
         /// The ARN of the channel.
         public var channelArn: Swift.String?
         /// The time at which the last message in a channel was sent.
@@ -2553,7 +2555,6 @@ extension ChimeClientTypes {
             self.privacy = privacy
         }
     }
-
 }
 
 extension ChimeClientTypes.ChannelSummary: Swift.CustomDebugStringConvertible {
@@ -2562,8 +2563,9 @@ extension ChimeClientTypes.ChannelSummary: Swift.CustomDebugStringConvertible {
 }
 
 extension ChimeClientTypes {
+
     /// Summary of the channel membership details of an AppInstanceUser.
-    public struct ChannelMembershipForAppInstanceUserSummary {
+    public struct ChannelMembershipForAppInstanceUserSummary: Swift.Sendable {
         /// Summary of the membership details of an AppInstanceUser.
         public var appInstanceUserMembershipSummary: ChimeClientTypes.AppInstanceUserMembershipSummary?
         /// Summary of the details of a Channel.
@@ -2578,12 +2580,12 @@ extension ChimeClientTypes {
             self.channelSummary = channelSummary
         }
     }
-
 }
 
 extension ChimeClientTypes {
+
     /// Summary of the details of a ChannelMembership.
-    public struct ChannelMembershipSummary {
+    public struct ChannelMembershipSummary: Swift.Sendable {
         /// A member's summary data.
         public var member: ChimeClientTypes.Identity?
 
@@ -2594,12 +2596,11 @@ extension ChimeClientTypes {
             self.member = member
         }
     }
-
 }
 
 extension ChimeClientTypes {
 
-    public enum ChannelMessagePersistenceType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ChannelMessagePersistenceType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case nonPersistent
         case persistent
         case sdkUnknown(Swift.String)
@@ -2628,7 +2629,7 @@ extension ChimeClientTypes {
 
 extension ChimeClientTypes {
 
-    public enum ChannelMessageType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ChannelMessageType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case control
         case standard
         case sdkUnknown(Swift.String)
@@ -2656,8 +2657,9 @@ extension ChimeClientTypes {
 }
 
 extension ChimeClientTypes {
+
     /// The details of a message in a channel.
-    public struct ChannelMessage {
+    public struct ChannelMessage: Swift.Sendable {
         /// The ARN of the channel.
         public var channelArn: Swift.String?
         /// The message content.
@@ -2708,7 +2710,6 @@ extension ChimeClientTypes {
             self.type = type
         }
     }
-
 }
 
 extension ChimeClientTypes.ChannelMessage: Swift.CustomDebugStringConvertible {
@@ -2717,8 +2718,9 @@ extension ChimeClientTypes.ChannelMessage: Swift.CustomDebugStringConvertible {
 }
 
 extension ChimeClientTypes {
+
     /// Summary of the messages in a Channel.
-    public struct ChannelMessageSummary {
+    public struct ChannelMessageSummary: Swift.Sendable {
         /// The content of the message.
         public var content: Swift.String?
         /// The time at which the message summary was created.
@@ -2761,7 +2763,6 @@ extension ChimeClientTypes {
             self.type = type
         }
     }
-
 }
 
 extension ChimeClientTypes.ChannelMessageSummary: Swift.CustomDebugStringConvertible {
@@ -2770,8 +2771,9 @@ extension ChimeClientTypes.ChannelMessageSummary: Swift.CustomDebugStringConvert
 }
 
 extension ChimeClientTypes {
+
     /// Summary of the details of a moderated channel.
-    public struct ChannelModeratedByAppInstanceUserSummary {
+    public struct ChannelModeratedByAppInstanceUserSummary: Swift.Sendable {
         /// Summary of the details of a Channel.
         public var channelSummary: ChimeClientTypes.ChannelSummary?
 
@@ -2782,12 +2784,12 @@ extension ChimeClientTypes {
             self.channelSummary = channelSummary
         }
     }
-
 }
 
 extension ChimeClientTypes {
+
     /// The details of a channel moderator.
-    public struct ChannelModerator {
+    public struct ChannelModerator: Swift.Sendable {
         /// The ARN of the moderator's channel.
         public var channelArn: Swift.String?
         /// The AppInstanceUser who created the moderator.
@@ -2810,12 +2812,12 @@ extension ChimeClientTypes {
             self.moderator = moderator
         }
     }
-
 }
 
 extension ChimeClientTypes {
+
     /// Summary of the details of a ChannelModerator.
-    public struct ChannelModeratorSummary {
+    public struct ChannelModeratorSummary: Swift.Sendable {
         /// The data for a moderator.
         public var moderator: ChimeClientTypes.Identity?
 
@@ -2826,12 +2828,12 @@ extension ChimeClientTypes {
             self.moderator = moderator
         }
     }
-
 }
 
 extension ChimeClientTypes {
+
     /// The video streams to capture for a specified media capture pipeline. The total number of video streams can't exceed 25.
-    public struct SelectedVideoStreams {
+    public struct SelectedVideoStreams: Swift.Sendable {
         /// The attendee IDs of the streams selected for a media capture pipeline.
         public var attendeeIds: [Swift.String]?
         /// The external user IDs of the streams selected for a media capture pipeline.
@@ -2846,7 +2848,6 @@ extension ChimeClientTypes {
             self.externalUserIds = externalUserIds
         }
     }
-
 }
 
 extension ChimeClientTypes.SelectedVideoStreams: Swift.CustomDebugStringConvertible {
@@ -2855,8 +2856,9 @@ extension ChimeClientTypes.SelectedVideoStreams: Swift.CustomDebugStringConverti
 }
 
 extension ChimeClientTypes {
+
     /// Source configuration for a specified media capture pipeline.
-    public struct SourceConfiguration {
+    public struct SourceConfiguration: Swift.Sendable {
         /// The selected video streams to capture for a specified media capture pipeline. The number of video streams can't exceed 25.
         public var selectedVideoStreams: ChimeClientTypes.SelectedVideoStreams?
 
@@ -2867,12 +2869,12 @@ extension ChimeClientTypes {
             self.selectedVideoStreams = selectedVideoStreams
         }
     }
-
 }
 
 extension ChimeClientTypes {
+
     /// The configuration object of the Amazon Chime SDK meeting for a specified media capture pipeline. SourceType must be ChimeSdkMeeting.
-    public struct ChimeSdkMeetingConfiguration {
+    public struct ChimeSdkMeetingConfiguration: Swift.Sendable {
         /// The configuration for the artifacts in an Amazon Chime SDK meeting.
         public var artifactsConfiguration: ChimeClientTypes.ArtifactsConfiguration?
         /// The source configuration for a specified media capture pipeline.
@@ -2887,7 +2889,6 @@ extension ChimeClientTypes {
             self.sourceConfiguration = sourceConfiguration
         }
     }
-
 }
 
 /// The request could not be processed because of conflict in the current state of the resource.
@@ -2918,8 +2919,9 @@ public struct ConflictException: ClientRuntime.ModeledError, AWSClientRuntime.AW
 }
 
 extension ChimeClientTypes {
+
     /// The retention settings that determine how long to retain conversation messages for an Amazon Chime Enterprise account.
-    public struct ConversationRetentionSettings {
+    public struct ConversationRetentionSettings: Swift.Sendable {
         /// The number of days for which to retain conversation messages.
         public var retentionDays: Swift.Int?
 
@@ -2930,10 +2932,9 @@ extension ChimeClientTypes {
             self.retentionDays = retentionDays
         }
     }
-
 }
 
-public struct CreateAccountInput {
+public struct CreateAccountInput: Swift.Sendable {
     /// The name of the Amazon Chime account.
     /// This member is required.
     public var name: Swift.String?
@@ -2946,7 +2947,7 @@ public struct CreateAccountInput {
     }
 }
 
-public struct CreateAccountOutput {
+public struct CreateAccountOutput: Swift.Sendable {
     /// The Amazon Chime account details.
     public var account: ChimeClientTypes.Account?
 
@@ -2958,7 +2959,7 @@ public struct CreateAccountOutput {
     }
 }
 
-public struct CreateAppInstanceInput {
+public struct CreateAppInstanceInput: Swift.Sendable {
     /// The ClientRequestToken of the AppInstance.
     /// This member is required.
     public var clientRequestToken: Swift.String?
@@ -2989,7 +2990,7 @@ extension CreateAppInstanceInput: Swift.CustomDebugStringConvertible {
         "CreateAppInstanceInput(tags: \(Swift.String(describing: tags)), clientRequestToken: \"CONTENT_REDACTED\", metadata: \"CONTENT_REDACTED\", name: \"CONTENT_REDACTED\")"}
 }
 
-public struct CreateAppInstanceOutput {
+public struct CreateAppInstanceOutput: Swift.Sendable {
     /// The Amazon Resource Number (ARN) of the AppInstance.
     public var appInstanceArn: Swift.String?
 
@@ -3001,7 +3002,7 @@ public struct CreateAppInstanceOutput {
     }
 }
 
-public struct CreateAppInstanceAdminInput {
+public struct CreateAppInstanceAdminInput: Swift.Sendable {
     /// The ARN of the administrator of the current AppInstance.
     /// This member is required.
     public var appInstanceAdminArn: Swift.String?
@@ -3019,7 +3020,7 @@ public struct CreateAppInstanceAdminInput {
     }
 }
 
-public struct CreateAppInstanceAdminOutput {
+public struct CreateAppInstanceAdminOutput: Swift.Sendable {
     /// The name and ARN of the admin for the AppInstance.
     public var appInstanceAdmin: ChimeClientTypes.Identity?
     /// The ARN of the of the admin for the AppInstance.
@@ -3035,7 +3036,7 @@ public struct CreateAppInstanceAdminOutput {
     }
 }
 
-public struct CreateAppInstanceUserInput {
+public struct CreateAppInstanceUserInput: Swift.Sendable {
     /// The ARN of the AppInstance request.
     /// This member is required.
     public var appInstanceArn: Swift.String?
@@ -3076,7 +3077,7 @@ extension CreateAppInstanceUserInput: Swift.CustomDebugStringConvertible {
         "CreateAppInstanceUserInput(appInstanceArn: \(Swift.String(describing: appInstanceArn)), tags: \(Swift.String(describing: tags)), appInstanceUserId: \"CONTENT_REDACTED\", clientRequestToken: \"CONTENT_REDACTED\", metadata: \"CONTENT_REDACTED\", name: \"CONTENT_REDACTED\")"}
 }
 
-public struct CreateAppInstanceUserOutput {
+public struct CreateAppInstanceUserOutput: Swift.Sendable {
     /// The user's ARN.
     public var appInstanceUserArn: Swift.String?
 
@@ -3088,7 +3089,7 @@ public struct CreateAppInstanceUserOutput {
     }
 }
 
-public struct CreateAttendeeInput {
+public struct CreateAttendeeInput: Swift.Sendable {
     /// The Amazon Chime SDK external user ID. An idempotency token. Links the attendee to an identity managed by a builder application.
     /// This member is required.
     public var externalUserId: Swift.String?
@@ -3115,7 +3116,7 @@ extension CreateAttendeeInput: Swift.CustomDebugStringConvertible {
         "CreateAttendeeInput(meetingId: \(Swift.String(describing: meetingId)), tags: \(Swift.String(describing: tags)), externalUserId: \"CONTENT_REDACTED\")"}
 }
 
-public struct CreateAttendeeOutput {
+public struct CreateAttendeeOutput: Swift.Sendable {
     /// The attendee information, including attendee ID and join token.
     public var attendee: ChimeClientTypes.Attendee?
 
@@ -3127,7 +3128,7 @@ public struct CreateAttendeeOutput {
     }
 }
 
-public struct CreateBotInput {
+public struct CreateBotInput: Swift.Sendable {
     /// The Amazon Chime account ID.
     /// This member is required.
     public var accountId: Swift.String?
@@ -3154,7 +3155,7 @@ extension CreateBotInput: Swift.CustomDebugStringConvertible {
         "CreateBotInput(accountId: \(Swift.String(describing: accountId)), domain: \(Swift.String(describing: domain)), displayName: \"CONTENT_REDACTED\")"}
 }
 
-public struct CreateBotOutput {
+public struct CreateBotOutput: Swift.Sendable {
     /// The bot details.
     public var bot: ChimeClientTypes.Bot?
 
@@ -3166,7 +3167,7 @@ public struct CreateBotOutput {
     }
 }
 
-public struct CreateChannelInput {
+public struct CreateChannelInput: Swift.Sendable {
     /// The ARN of the channel request.
     /// This member is required.
     public var appInstanceArn: Swift.String?
@@ -3214,7 +3215,7 @@ extension CreateChannelInput: Swift.CustomDebugStringConvertible {
         "CreateChannelInput(appInstanceArn: \(Swift.String(describing: appInstanceArn)), chimeBearer: \(Swift.String(describing: chimeBearer)), mode: \(Swift.String(describing: mode)), privacy: \(Swift.String(describing: privacy)), tags: \(Swift.String(describing: tags)), clientRequestToken: \"CONTENT_REDACTED\", metadata: \"CONTENT_REDACTED\", name: \"CONTENT_REDACTED\")"}
 }
 
-public struct CreateChannelOutput {
+public struct CreateChannelOutput: Swift.Sendable {
     /// The ARN of the channel.
     public var channelArn: Swift.String?
 
@@ -3226,7 +3227,7 @@ public struct CreateChannelOutput {
     }
 }
 
-public struct CreateChannelBanInput {
+public struct CreateChannelBanInput: Swift.Sendable {
     /// The ARN of the ban request.
     /// This member is required.
     public var channelArn: Swift.String?
@@ -3248,7 +3249,7 @@ public struct CreateChannelBanInput {
     }
 }
 
-public struct CreateChannelBanOutput {
+public struct CreateChannelBanOutput: Swift.Sendable {
     /// The ARN of the response to the ban request.
     public var channelArn: Swift.String?
     /// The ChannelArn and BannedIdentity of the member in the ban response.
@@ -3264,7 +3265,7 @@ public struct CreateChannelBanOutput {
     }
 }
 
-public struct CreateChannelMembershipInput {
+public struct CreateChannelMembershipInput: Swift.Sendable {
     /// The ARN of the channel to which you're adding users.
     /// This member is required.
     public var channelArn: Swift.String?
@@ -3291,7 +3292,7 @@ public struct CreateChannelMembershipInput {
     }
 }
 
-public struct CreateChannelMembershipOutput {
+public struct CreateChannelMembershipOutput: Swift.Sendable {
     /// The ARN of the channel.
     public var channelArn: Swift.String?
     /// The ARN and metadata of the member being added.
@@ -3307,7 +3308,7 @@ public struct CreateChannelMembershipOutput {
     }
 }
 
-public struct CreateChannelModeratorInput {
+public struct CreateChannelModeratorInput: Swift.Sendable {
     /// The ARN of the channel.
     /// This member is required.
     public var channelArn: Swift.String?
@@ -3329,7 +3330,7 @@ public struct CreateChannelModeratorInput {
     }
 }
 
-public struct CreateChannelModeratorOutput {
+public struct CreateChannelModeratorOutput: Swift.Sendable {
     /// The ARN of the channel.
     public var channelArn: Swift.String?
     /// The ARNs of the channel and the moderator.
@@ -3347,7 +3348,7 @@ public struct CreateChannelModeratorOutput {
 
 extension ChimeClientTypes {
 
-    public enum MediaPipelineSinkType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum MediaPipelineSinkType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case s3bucket
         case sdkUnknown(Swift.String)
 
@@ -3373,7 +3374,7 @@ extension ChimeClientTypes {
 
 extension ChimeClientTypes {
 
-    public enum MediaPipelineSourceType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum MediaPipelineSourceType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case chimesdkmeeting
         case sdkUnknown(Swift.String)
 
@@ -3397,7 +3398,7 @@ extension ChimeClientTypes {
     }
 }
 
-public struct CreateMediaCapturePipelineInput {
+public struct CreateMediaCapturePipelineInput: Swift.Sendable {
     /// The configuration for a specified media capture pipeline. SourceType must be ChimeSdkMeeting.
     public var chimeSdkMeetingConfiguration: ChimeClientTypes.ChimeSdkMeetingConfiguration?
     /// The unique identifier for the client request. The token makes the API request idempotent. Use a different token for different media pipeline requests.
@@ -3440,7 +3441,7 @@ extension CreateMediaCapturePipelineInput: Swift.CustomDebugStringConvertible {
 
 extension ChimeClientTypes {
 
-    public enum MediaPipelineStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum MediaPipelineStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case failed
         case inprogress
         case initializing
@@ -3477,8 +3478,9 @@ extension ChimeClientTypes {
 }
 
 extension ChimeClientTypes {
+
     /// A media capture pipeline object consisting of an ID, source type, source ARN, a sink type, a sink ARN, and a configuration object.
-    public struct MediaCapturePipeline {
+    public struct MediaCapturePipeline: Swift.Sendable {
         /// The configuration for a specified media capture pipeline. SourceType must be ChimeSdkMeeting.
         public var chimeSdkMeetingConfiguration: ChimeClientTypes.ChimeSdkMeetingConfiguration?
         /// The time at which the capture pipeline was created, in ISO 8601 format.
@@ -3521,7 +3523,6 @@ extension ChimeClientTypes {
             self.updatedTimestamp = updatedTimestamp
         }
     }
-
 }
 
 extension ChimeClientTypes.MediaCapturePipeline: Swift.CustomDebugStringConvertible {
@@ -3529,7 +3530,7 @@ extension ChimeClientTypes.MediaCapturePipeline: Swift.CustomDebugStringConverti
         "MediaCapturePipeline(chimeSdkMeetingConfiguration: \(Swift.String(describing: chimeSdkMeetingConfiguration)), createdTimestamp: \(Swift.String(describing: createdTimestamp)), mediaPipelineId: \(Swift.String(describing: mediaPipelineId)), sinkType: \(Swift.String(describing: sinkType)), sourceType: \(Swift.String(describing: sourceType)), status: \(Swift.String(describing: status)), updatedTimestamp: \(Swift.String(describing: updatedTimestamp)), sinkArn: \"CONTENT_REDACTED\", sourceArn: \"CONTENT_REDACTED\")"}
 }
 
-public struct CreateMediaCapturePipelineOutput {
+public struct CreateMediaCapturePipelineOutput: Swift.Sendable {
     /// A media capture pipeline object, the ID, source type, source ARN, sink type, and sink ARN of a media capture pipeline object.
     public var mediaCapturePipeline: ChimeClientTypes.MediaCapturePipeline?
 
@@ -3542,8 +3543,9 @@ public struct CreateMediaCapturePipelineOutput {
 }
 
 extension ChimeClientTypes {
+
     /// The resource target configurations for receiving Amazon Chime SDK meeting and attendee event notifications. The Amazon Chime SDK supports resource targets located in the US East (N. Virginia) AWS Region (us-east-1).
-    public struct MeetingNotificationConfiguration {
+    public struct MeetingNotificationConfiguration: Swift.Sendable {
         /// The SNS topic ARN.
         public var snsTopicArn: Swift.String?
         /// The SQS queue ARN.
@@ -3558,7 +3560,6 @@ extension ChimeClientTypes {
             self.sqsQueueArn = sqsQueueArn
         }
     }
-
 }
 
 extension ChimeClientTypes.MeetingNotificationConfiguration: Swift.CustomDebugStringConvertible {
@@ -3566,7 +3567,7 @@ extension ChimeClientTypes.MeetingNotificationConfiguration: Swift.CustomDebugSt
         "MeetingNotificationConfiguration(snsTopicArn: \"CONTENT_REDACTED\", sqsQueueArn: \"CONTENT_REDACTED\")"}
 }
 
-public struct CreateMeetingInput {
+public struct CreateMeetingInput: Swift.Sendable {
     /// The unique identifier for the client request. Use a different token for different meetings.
     /// This member is required.
     public var clientRequestToken: Swift.String?
@@ -3605,8 +3606,9 @@ extension CreateMeetingInput: Swift.CustomDebugStringConvertible {
 }
 
 extension ChimeClientTypes {
+
     /// A set of endpoints used by clients to connect to the media service group for an Amazon Chime SDK meeting.
-    public struct MediaPlacement {
+    public struct MediaPlacement: Swift.Sendable {
         /// The audio fallback URL.
         public var audioFallbackUrl: Swift.String?
         /// The audio host URL.
@@ -3645,12 +3647,12 @@ extension ChimeClientTypes {
             self.turnControlUrl = turnControlUrl
         }
     }
-
 }
 
 extension ChimeClientTypes {
+
     /// A meeting created using the Amazon Chime SDK.
-    public struct Meeting {
+    public struct Meeting: Swift.Sendable {
         /// The external meeting ID.
         public var externalMeetingId: Swift.String?
         /// The media placement for the meeting.
@@ -3673,7 +3675,6 @@ extension ChimeClientTypes {
             self.meetingId = meetingId
         }
     }
-
 }
 
 extension ChimeClientTypes.Meeting: Swift.CustomDebugStringConvertible {
@@ -3681,7 +3682,7 @@ extension ChimeClientTypes.Meeting: Swift.CustomDebugStringConvertible {
         "Meeting(mediaPlacement: \(Swift.String(describing: mediaPlacement)), mediaRegion: \(Swift.String(describing: mediaRegion)), meetingId: \(Swift.String(describing: meetingId)), externalMeetingId: \"CONTENT_REDACTED\")"}
 }
 
-public struct CreateMeetingOutput {
+public struct CreateMeetingOutput: Swift.Sendable {
     /// The meeting information, including the meeting ID and MediaPlacement .
     public var meeting: ChimeClientTypes.Meeting?
 
@@ -3693,7 +3694,7 @@ public struct CreateMeetingOutput {
     }
 }
 
-public struct CreateMeetingDialOutInput {
+public struct CreateMeetingDialOutInput: Swift.Sendable {
     /// Phone number used as the caller ID when the remote party receives a call.
     /// This member is required.
     public var fromPhoneNumber: Swift.String?
@@ -3726,7 +3727,7 @@ extension CreateMeetingDialOutInput: Swift.CustomDebugStringConvertible {
         "CreateMeetingDialOutInput(meetingId: \(Swift.String(describing: meetingId)), fromPhoneNumber: \"CONTENT_REDACTED\", joinToken: \"CONTENT_REDACTED\", toPhoneNumber: \"CONTENT_REDACTED\")"}
 }
 
-public struct CreateMeetingDialOutOutput {
+public struct CreateMeetingDialOutOutput: Swift.Sendable {
     /// Unique ID that tracks API calls.
     public var transactionId: Swift.String?
 
@@ -3738,7 +3739,7 @@ public struct CreateMeetingDialOutOutput {
     }
 }
 
-public struct CreateMeetingWithAttendeesInput {
+public struct CreateMeetingWithAttendeesInput: Swift.Sendable {
     /// The request containing the attendees to create.
     public var attendees: [ChimeClientTypes.CreateAttendeeRequestItem]?
     /// The unique identifier for the client request. Use a different token for different meetings.
@@ -3780,7 +3781,7 @@ extension CreateMeetingWithAttendeesInput: Swift.CustomDebugStringConvertible {
         "CreateMeetingWithAttendeesInput(attendees: \(Swift.String(describing: attendees)), mediaRegion: \(Swift.String(describing: mediaRegion)), notificationsConfiguration: \(Swift.String(describing: notificationsConfiguration)), tags: \(Swift.String(describing: tags)), clientRequestToken: \"CONTENT_REDACTED\", externalMeetingId: \"CONTENT_REDACTED\", meetingHostId: \"CONTENT_REDACTED\")"}
 }
 
-public struct CreateMeetingWithAttendeesOutput {
+public struct CreateMeetingWithAttendeesOutput: Swift.Sendable {
     /// The attendee information, including attendees IDs and join tokens.
     public var attendees: [ChimeClientTypes.Attendee]?
     /// If the action fails for one or more of the attendees in the request, a list of the attendees is returned, along with error codes and error messages.
@@ -3800,7 +3801,7 @@ public struct CreateMeetingWithAttendeesOutput {
     }
 }
 
-public struct CreatePhoneNumberOrderInput {
+public struct CreatePhoneNumberOrderInput: Swift.Sendable {
     /// List of phone numbers, in E.164 format.
     /// This member is required.
     public var e164PhoneNumbers: [Swift.String]?
@@ -3825,7 +3826,7 @@ extension CreatePhoneNumberOrderInput: Swift.CustomDebugStringConvertible {
 
 extension ChimeClientTypes {
 
-    public enum OrderedPhoneNumberStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum OrderedPhoneNumberStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case acquired
         case failed
         case processing
@@ -3856,8 +3857,9 @@ extension ChimeClientTypes {
 }
 
 extension ChimeClientTypes {
+
     /// A phone number for which an order has been placed.
-    public struct OrderedPhoneNumber {
+    public struct OrderedPhoneNumber: Swift.Sendable {
         /// The phone number, in E.164 format.
         public var e164PhoneNumber: Swift.String?
         /// The phone number status.
@@ -3872,7 +3874,6 @@ extension ChimeClientTypes {
             self.status = status
         }
     }
-
 }
 
 extension ChimeClientTypes.OrderedPhoneNumber: Swift.CustomDebugStringConvertible {
@@ -3882,7 +3883,7 @@ extension ChimeClientTypes.OrderedPhoneNumber: Swift.CustomDebugStringConvertibl
 
 extension ChimeClientTypes {
 
-    public enum PhoneNumberOrderStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum PhoneNumberOrderStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case failed
         case partial
         case processing
@@ -3916,8 +3917,9 @@ extension ChimeClientTypes {
 }
 
 extension ChimeClientTypes {
+
     /// The details of a phone number order created for Amazon Chime.
-    public struct PhoneNumberOrder {
+    public struct PhoneNumberOrder: Swift.Sendable {
         /// The phone number order creation time stamp, in ISO 8601 format.
         public var createdTimestamp: Foundation.Date?
         /// The ordered phone number details, such as the phone number in E.164 format and the phone number status.
@@ -3948,10 +3950,9 @@ extension ChimeClientTypes {
             self.updatedTimestamp = updatedTimestamp
         }
     }
-
 }
 
-public struct CreatePhoneNumberOrderOutput {
+public struct CreatePhoneNumberOrderOutput: Swift.Sendable {
     /// The phone number order details.
     public var phoneNumberOrder: ChimeClientTypes.PhoneNumberOrder?
 
@@ -3965,7 +3966,7 @@ public struct CreatePhoneNumberOrderOutput {
 
 extension ChimeClientTypes {
 
-    public enum GeoMatchLevel: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum GeoMatchLevel: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case areacode
         case country
         case sdkUnknown(Swift.String)
@@ -3993,8 +3994,9 @@ extension ChimeClientTypes {
 }
 
 extension ChimeClientTypes {
+
     /// The country and area code for a proxy phone number in a proxy phone session.
-    public struct GeoMatchParams {
+    public struct GeoMatchParams: Swift.Sendable {
         /// The area code.
         /// This member is required.
         public var areaCode: Swift.String?
@@ -4011,12 +4013,11 @@ extension ChimeClientTypes {
             self.country = country
         }
     }
-
 }
 
 extension ChimeClientTypes {
 
-    public enum NumberSelectionBehavior: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum NumberSelectionBehavior: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case avoidsticky
         case prefersticky
         case sdkUnknown(Swift.String)
@@ -4043,7 +4044,7 @@ extension ChimeClientTypes {
     }
 }
 
-public struct CreateProxySessionInput {
+public struct CreateProxySessionInput: Swift.Sendable {
     /// The proxy session capabilities.
     /// This member is required.
     public var capabilities: [ChimeClientTypes.Capability]?
@@ -4092,8 +4093,9 @@ extension CreateProxySessionInput: Swift.CustomDebugStringConvertible {
 }
 
 extension ChimeClientTypes {
+
     /// The phone number and proxy phone number for a participant in an Amazon Chime Voice Connector proxy session.
-    public struct Participant {
+    public struct Participant: Swift.Sendable {
         /// The participant's phone number.
         public var phoneNumber: Swift.String?
         /// The participant's proxy phone number.
@@ -4108,7 +4110,6 @@ extension ChimeClientTypes {
             self.proxyPhoneNumber = proxyPhoneNumber
         }
     }
-
 }
 
 extension ChimeClientTypes.Participant: Swift.CustomDebugStringConvertible {
@@ -4118,7 +4119,7 @@ extension ChimeClientTypes.Participant: Swift.CustomDebugStringConvertible {
 
 extension ChimeClientTypes {
 
-    public enum ProxySessionStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ProxySessionStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case closed
         case inprogress
         case `open`
@@ -4149,8 +4150,9 @@ extension ChimeClientTypes {
 }
 
 extension ChimeClientTypes {
+
     /// The proxy session for an Amazon Chime Voice Connector.
-    public struct ProxySession {
+    public struct ProxySession: Swift.Sendable {
         /// The proxy session capabilities.
         public var capabilities: [ChimeClientTypes.Capability]?
         /// The created time stamp, in ISO 8601 format.
@@ -4209,10 +4211,9 @@ extension ChimeClientTypes {
             self.voiceConnectorId = voiceConnectorId
         }
     }
-
 }
 
-public struct CreateProxySessionOutput {
+public struct CreateProxySessionOutput: Swift.Sendable {
     /// The proxy session details.
     public var proxySession: ChimeClientTypes.ProxySession?
 
@@ -4224,7 +4225,7 @@ public struct CreateProxySessionOutput {
     }
 }
 
-public struct CreateRoomInput {
+public struct CreateRoomInput: Swift.Sendable {
     /// The Amazon Chime account ID.
     /// This member is required.
     public var accountId: Swift.String?
@@ -4252,8 +4253,9 @@ extension CreateRoomInput: Swift.CustomDebugStringConvertible {
 }
 
 extension ChimeClientTypes {
+
     /// The Amazon Chime chat room details.
-    public struct Room {
+    public struct Room: Swift.Sendable {
         /// The Amazon Chime account ID.
         public var accountId: Swift.String?
         /// The identifier of the room creator.
@@ -4284,7 +4286,6 @@ extension ChimeClientTypes {
             self.updatedTimestamp = updatedTimestamp
         }
     }
-
 }
 
 extension ChimeClientTypes.Room: Swift.CustomDebugStringConvertible {
@@ -4292,7 +4293,7 @@ extension ChimeClientTypes.Room: Swift.CustomDebugStringConvertible {
         "Room(accountId: \(Swift.String(describing: accountId)), createdBy: \(Swift.String(describing: createdBy)), createdTimestamp: \(Swift.String(describing: createdTimestamp)), roomId: \(Swift.String(describing: roomId)), updatedTimestamp: \(Swift.String(describing: updatedTimestamp)), name: \"CONTENT_REDACTED\")"}
 }
 
-public struct CreateRoomOutput {
+public struct CreateRoomOutput: Swift.Sendable {
     /// The room details.
     public var room: ChimeClientTypes.Room?
 
@@ -4304,7 +4305,7 @@ public struct CreateRoomOutput {
     }
 }
 
-public struct CreateRoomMembershipInput {
+public struct CreateRoomMembershipInput: Swift.Sendable {
     /// The Amazon Chime account ID.
     /// This member is required.
     public var accountId: Swift.String?
@@ -4333,7 +4334,7 @@ public struct CreateRoomMembershipInput {
 
 extension ChimeClientTypes {
 
-    public enum MemberType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum MemberType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case bot
         case user
         case webhook
@@ -4364,8 +4365,9 @@ extension ChimeClientTypes {
 }
 
 extension ChimeClientTypes {
+
     /// The member details, such as email address, name, member ID, and member type.
-    public struct Member {
+    public struct Member: Swift.Sendable {
         /// The Amazon Chime account ID.
         public var accountId: Swift.String?
         /// The member email address.
@@ -4392,7 +4394,6 @@ extension ChimeClientTypes {
             self.memberType = memberType
         }
     }
-
 }
 
 extension ChimeClientTypes.Member: Swift.CustomDebugStringConvertible {
@@ -4401,8 +4402,9 @@ extension ChimeClientTypes.Member: Swift.CustomDebugStringConvertible {
 }
 
 extension ChimeClientTypes {
+
     /// The room membership details.
-    public struct RoomMembership {
+    public struct RoomMembership: Swift.Sendable {
         /// The identifier of the user that invited the room member.
         public var invitedBy: Swift.String?
         /// The member details, such as email address, name, member ID, and member type.
@@ -4429,10 +4431,9 @@ extension ChimeClientTypes {
             self.updatedTimestamp = updatedTimestamp
         }
     }
-
 }
 
-public struct CreateRoomMembershipOutput {
+public struct CreateRoomMembershipOutput: Swift.Sendable {
     /// The room membership details.
     public var roomMembership: ChimeClientTypes.RoomMembership?
 
@@ -4445,8 +4446,9 @@ public struct CreateRoomMembershipOutput {
 }
 
 extension ChimeClientTypes {
+
     /// The endpoint assigned to the SIP media application.
-    public struct SipMediaApplicationEndpoint {
+    public struct SipMediaApplicationEndpoint: Swift.Sendable {
         /// Valid Amazon Resource Name (ARN) of the Lambda function, version, or alias. The function must be created in the same AWS Region as the SIP media application.
         public var lambdaArn: Swift.String?
 
@@ -4457,7 +4459,6 @@ extension ChimeClientTypes {
             self.lambdaArn = lambdaArn
         }
     }
-
 }
 
 extension ChimeClientTypes.SipMediaApplicationEndpoint: Swift.CustomDebugStringConvertible {
@@ -4465,7 +4466,7 @@ extension ChimeClientTypes.SipMediaApplicationEndpoint: Swift.CustomDebugStringC
         "SipMediaApplicationEndpoint(lambdaArn: \"CONTENT_REDACTED\")"}
 }
 
-public struct CreateSipMediaApplicationInput {
+public struct CreateSipMediaApplicationInput: Swift.Sendable {
     /// The AWS Region assigned to the SIP media application.
     /// This member is required.
     public var awsRegion: Swift.String?
@@ -4489,8 +4490,9 @@ public struct CreateSipMediaApplicationInput {
 }
 
 extension ChimeClientTypes {
+
     /// The details of the SIP media application, including name and endpoints. An AWS account can have multiple SIP media applications.
-    public struct SipMediaApplication {
+    public struct SipMediaApplication: Swift.Sendable {
         /// The AWS Region in which the SIP media application is created.
         public var awsRegion: Swift.String?
         /// The SIP media application creation timestamp, in ISO 8601 format.
@@ -4521,10 +4523,9 @@ extension ChimeClientTypes {
             self.updatedTimestamp = updatedTimestamp
         }
     }
-
 }
 
-public struct CreateSipMediaApplicationOutput {
+public struct CreateSipMediaApplicationOutput: Swift.Sendable {
     /// The SIP media application details.
     public var sipMediaApplication: ChimeClientTypes.SipMediaApplication?
 
@@ -4536,7 +4537,7 @@ public struct CreateSipMediaApplicationOutput {
     }
 }
 
-public struct CreateSipMediaApplicationCallInput {
+public struct CreateSipMediaApplicationCallInput: Swift.Sendable {
     /// The phone number that a user calls from. This is a phone number in your Amazon Chime phone number inventory.
     /// This member is required.
     public var fromPhoneNumber: Swift.String?
@@ -4569,8 +4570,9 @@ extension CreateSipMediaApplicationCallInput: Swift.CustomDebugStringConvertible
 }
 
 extension ChimeClientTypes {
+
     /// A Call instance for a SIP media application.
-    public struct SipMediaApplicationCall {
+    public struct SipMediaApplicationCall: Swift.Sendable {
         /// The transaction ID of a call.
         public var transactionId: Swift.String?
 
@@ -4581,10 +4583,9 @@ extension ChimeClientTypes {
             self.transactionId = transactionId
         }
     }
-
 }
 
-public struct CreateSipMediaApplicationCallOutput {
+public struct CreateSipMediaApplicationCallOutput: Swift.Sendable {
     /// The actual call.
     public var sipMediaApplicationCall: ChimeClientTypes.SipMediaApplicationCall?
 
@@ -4597,8 +4598,9 @@ public struct CreateSipMediaApplicationCallOutput {
 }
 
 extension ChimeClientTypes {
+
     /// Target SIP media application and other details, such as priority and AWS Region, to be specified in the SIP rule. Only one SIP rule per AWS Region can be provided.
-    public struct SipRuleTargetApplication {
+    public struct SipRuleTargetApplication: Swift.Sendable {
         /// The AWS Region of the target application.
         public var awsRegion: Swift.String?
         /// Priority of the SIP media application in the target list.
@@ -4617,12 +4619,11 @@ extension ChimeClientTypes {
             self.sipMediaApplicationId = sipMediaApplicationId
         }
     }
-
 }
 
 extension ChimeClientTypes {
 
-    public enum SipRuleTriggerType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SipRuleTriggerType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case requesturihostname
         case tophonenumber
         case sdkUnknown(Swift.String)
@@ -4649,7 +4650,7 @@ extension ChimeClientTypes {
     }
 }
 
-public struct CreateSipRuleInput {
+public struct CreateSipRuleInput: Swift.Sendable {
     /// Enables or disables a rule. You must disable rules before you can delete them.
     public var disabled: Swift.Bool?
     /// The name of the SIP rule.
@@ -4682,8 +4683,9 @@ public struct CreateSipRuleInput {
 }
 
 extension ChimeClientTypes {
+
     /// The SIP rule details, including name, triggers, and target applications. An AWS account can have multiple SIP rules.
-    public struct SipRule {
+    public struct SipRule: Swift.Sendable {
         /// The time at which the SIP rule was created, in ISO 8601 format.
         public var createdTimestamp: Foundation.Date?
         /// Indicates whether the SIP rule is enabled or disabled. You must disable a rule before you can delete it.
@@ -4722,10 +4724,9 @@ extension ChimeClientTypes {
             self.updatedTimestamp = updatedTimestamp
         }
     }
-
 }
 
-public struct CreateSipRuleOutput {
+public struct CreateSipRuleOutput: Swift.Sendable {
     /// Returns the SIP rule information, including the rule ID, triggers, and target applications.
     public var sipRule: ChimeClientTypes.SipRule?
 
@@ -4737,7 +4738,7 @@ public struct CreateSipRuleOutput {
     }
 }
 
-public struct CreateUserInput {
+public struct CreateUserInput: Swift.Sendable {
     /// The Amazon Chime account ID.
     /// This member is required.
     public var accountId: Swift.String?
@@ -4769,7 +4770,7 @@ extension CreateUserInput: Swift.CustomDebugStringConvertible {
 
 extension ChimeClientTypes {
 
-    public enum InviteStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum InviteStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case accepted
         case failed
         case pending
@@ -4801,7 +4802,7 @@ extension ChimeClientTypes {
 
 extension ChimeClientTypes {
 
-    public enum RegistrationStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum RegistrationStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case registered
         case suspended
         case unregistered
@@ -4832,8 +4833,9 @@ extension ChimeClientTypes {
 }
 
 extension ChimeClientTypes {
+
     /// The user on the Amazon Chime account.
-    public struct User {
+    public struct User: Swift.Sendable {
         /// The Amazon Chime account ID.
         public var accountId: Swift.String?
         /// The Alexa for Business metadata.
@@ -4893,7 +4895,6 @@ extension ChimeClientTypes {
             self.userType = userType
         }
     }
-
 }
 
 extension ChimeClientTypes.User: Swift.CustomDebugStringConvertible {
@@ -4901,7 +4902,7 @@ extension ChimeClientTypes.User: Swift.CustomDebugStringConvertible {
         "User(accountId: \(Swift.String(describing: accountId)), alexaForBusinessMetadata: \(Swift.String(describing: alexaForBusinessMetadata)), invitedOn: \(Swift.String(describing: invitedOn)), licenseType: \(Swift.String(describing: licenseType)), personalPIN: \(Swift.String(describing: personalPIN)), registeredOn: \(Swift.String(describing: registeredOn)), userId: \(Swift.String(describing: userId)), userInvitationStatus: \(Swift.String(describing: userInvitationStatus)), userRegistrationStatus: \(Swift.String(describing: userRegistrationStatus)), userType: \(Swift.String(describing: userType)), displayName: \"CONTENT_REDACTED\", primaryEmail: \"CONTENT_REDACTED\", primaryProvisionedNumber: \"CONTENT_REDACTED\")"}
 }
 
-public struct CreateUserOutput {
+public struct CreateUserOutput: Swift.Sendable {
     /// The user on the Amazon Chime account.
     public var user: ChimeClientTypes.User?
 
@@ -4915,7 +4916,7 @@ public struct CreateUserOutput {
 
 extension ChimeClientTypes {
 
-    public enum VoiceConnectorAwsRegion: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum VoiceConnectorAwsRegion: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case usEast1
         case usWest2
         case sdkUnknown(Swift.String)
@@ -4942,7 +4943,7 @@ extension ChimeClientTypes {
     }
 }
 
-public struct CreateVoiceConnectorInput {
+public struct CreateVoiceConnectorInput: Swift.Sendable {
     /// The AWS Region in which the Amazon Chime Voice Connector is created. Default value: us-east-1 .
     public var awsRegion: ChimeClientTypes.VoiceConnectorAwsRegion?
     /// The name of the Amazon Chime Voice Connector.
@@ -4965,8 +4966,9 @@ public struct CreateVoiceConnectorInput {
 }
 
 extension ChimeClientTypes {
+
     /// The Amazon Chime Voice Connector configuration, including outbound host name and encryption settings.
-    public struct VoiceConnector {
+    public struct VoiceConnector: Swift.Sendable {
         /// The AWS Region in which the Amazon Chime Voice Connector is created. Default: us-east-1.
         public var awsRegion: ChimeClientTypes.VoiceConnectorAwsRegion?
         /// The Amazon Chime Voice Connector creation timestamp, in ISO 8601 format.
@@ -5005,10 +5007,9 @@ extension ChimeClientTypes {
             self.voiceConnectorId = voiceConnectorId
         }
     }
-
 }
 
-public struct CreateVoiceConnectorOutput {
+public struct CreateVoiceConnectorOutput: Swift.Sendable {
     /// The Amazon Chime Voice Connector details.
     public var voiceConnector: ChimeClientTypes.VoiceConnector?
 
@@ -5021,8 +5022,9 @@ public struct CreateVoiceConnectorOutput {
 }
 
 extension ChimeClientTypes {
+
     /// For Amazon Chime Voice Connector groups, the Amazon Chime Voice Connectors to which to route inbound calls. Includes priority configuration settings. Limit: 3 VoiceConnectorItems per Amazon Chime Voice Connector group.
-    public struct VoiceConnectorItem {
+    public struct VoiceConnectorItem: Swift.Sendable {
         /// The priority associated with the Amazon Chime Voice Connector, with 1 being the highest priority. Higher priority Amazon Chime Voice Connectors are attempted first.
         /// This member is required.
         public var priority: Swift.Int?
@@ -5039,10 +5041,9 @@ extension ChimeClientTypes {
             self.voiceConnectorId = voiceConnectorId
         }
     }
-
 }
 
-public struct CreateVoiceConnectorGroupInput {
+public struct CreateVoiceConnectorGroupInput: Swift.Sendable {
     /// The name of the Amazon Chime Voice Connector group.
     /// This member is required.
     public var name: Swift.String?
@@ -5060,8 +5061,9 @@ public struct CreateVoiceConnectorGroupInput {
 }
 
 extension ChimeClientTypes {
+
     /// The Amazon Chime Voice Connector group configuration, including associated Amazon Chime Voice Connectors. You can include Amazon Chime Voice Connectors from different AWS Regions in your group. This creates a fault tolerant mechanism for fallback in case of availability events.
-    public struct VoiceConnectorGroup {
+    public struct VoiceConnectorGroup: Swift.Sendable {
         /// The Amazon Chime Voice Connector group creation time stamp, in ISO 8601 format.
         public var createdTimestamp: Foundation.Date?
         /// The name of the Amazon Chime Voice Connector group.
@@ -5092,10 +5094,9 @@ extension ChimeClientTypes {
             self.voiceConnectorItems = voiceConnectorItems
         }
     }
-
 }
 
-public struct CreateVoiceConnectorGroupOutput {
+public struct CreateVoiceConnectorGroupOutput: Swift.Sendable {
     /// The Amazon Chime Voice Connector group details.
     public var voiceConnectorGroup: ChimeClientTypes.VoiceConnectorGroup?
 
@@ -5108,8 +5109,9 @@ public struct CreateVoiceConnectorGroupOutput {
 }
 
 extension ChimeClientTypes {
+
     /// The SIP credentials used to authenticate requests to your Amazon Chime Voice Connector.
-    public struct Credential {
+    public struct Credential: Swift.Sendable {
         /// The RFC2617 compliant password associated with the SIP credentials, in US-ASCII format.
         public var password: Swift.String?
         /// The RFC2617 compliant user name associated with the SIP credentials, in US-ASCII format.
@@ -5124,7 +5126,6 @@ extension ChimeClientTypes {
             self.username = username
         }
     }
-
 }
 
 extension ChimeClientTypes.Credential: Swift.CustomDebugStringConvertible {
@@ -5159,7 +5160,7 @@ public struct UnprocessableEntityException: ClientRuntime.ModeledError, AWSClien
     }
 }
 
-public struct DeleteAccountInput {
+public struct DeleteAccountInput: Swift.Sendable {
     /// The Amazon Chime account ID.
     /// This member is required.
     public var accountId: Swift.String?
@@ -5172,12 +5173,12 @@ public struct DeleteAccountInput {
     }
 }
 
-public struct DeleteAccountOutput {
+public struct DeleteAccountOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteAppInstanceInput {
+public struct DeleteAppInstanceInput: Swift.Sendable {
     /// The ARN of the AppInstance.
     /// This member is required.
     public var appInstanceArn: Swift.String?
@@ -5190,7 +5191,7 @@ public struct DeleteAppInstanceInput {
     }
 }
 
-public struct DeleteAppInstanceAdminInput {
+public struct DeleteAppInstanceAdminInput: Swift.Sendable {
     /// The ARN of the AppInstance's administrator.
     /// This member is required.
     public var appInstanceAdminArn: Swift.String?
@@ -5208,7 +5209,7 @@ public struct DeleteAppInstanceAdminInput {
     }
 }
 
-public struct DeleteAppInstanceStreamingConfigurationsInput {
+public struct DeleteAppInstanceStreamingConfigurationsInput: Swift.Sendable {
     /// The ARN of the streaming configurations being deleted.
     /// This member is required.
     public var appInstanceArn: Swift.String?
@@ -5221,7 +5222,7 @@ public struct DeleteAppInstanceStreamingConfigurationsInput {
     }
 }
 
-public struct DeleteAppInstanceUserInput {
+public struct DeleteAppInstanceUserInput: Swift.Sendable {
     /// The ARN of the user request being deleted.
     /// This member is required.
     public var appInstanceUserArn: Swift.String?
@@ -5234,7 +5235,7 @@ public struct DeleteAppInstanceUserInput {
     }
 }
 
-public struct DeleteAttendeeInput {
+public struct DeleteAttendeeInput: Swift.Sendable {
     /// The Amazon Chime SDK attendee ID.
     /// This member is required.
     public var attendeeId: Swift.String?
@@ -5252,7 +5253,7 @@ public struct DeleteAttendeeInput {
     }
 }
 
-public struct DeleteChannelInput {
+public struct DeleteChannelInput: Swift.Sendable {
     /// The ARN of the channel being deleted.
     /// This member is required.
     public var channelArn: Swift.String?
@@ -5269,7 +5270,7 @@ public struct DeleteChannelInput {
     }
 }
 
-public struct DeleteChannelBanInput {
+public struct DeleteChannelBanInput: Swift.Sendable {
     /// The ARN of the channel from which the AppInstanceUser was banned.
     /// This member is required.
     public var channelArn: Swift.String?
@@ -5291,7 +5292,7 @@ public struct DeleteChannelBanInput {
     }
 }
 
-public struct DeleteChannelMembershipInput {
+public struct DeleteChannelMembershipInput: Swift.Sendable {
     /// The ARN of the channel from which you want to remove the user.
     /// This member is required.
     public var channelArn: Swift.String?
@@ -5313,7 +5314,7 @@ public struct DeleteChannelMembershipInput {
     }
 }
 
-public struct DeleteChannelMessageInput {
+public struct DeleteChannelMessageInput: Swift.Sendable {
     /// The ARN of the channel.
     /// This member is required.
     public var channelArn: Swift.String?
@@ -5335,7 +5336,7 @@ public struct DeleteChannelMessageInput {
     }
 }
 
-public struct DeleteChannelModeratorInput {
+public struct DeleteChannelModeratorInput: Swift.Sendable {
     /// The ARN of the channel.
     /// This member is required.
     public var channelArn: Swift.String?
@@ -5357,7 +5358,7 @@ public struct DeleteChannelModeratorInput {
     }
 }
 
-public struct DeleteEventsConfigurationInput {
+public struct DeleteEventsConfigurationInput: Swift.Sendable {
     /// The Amazon Chime account ID.
     /// This member is required.
     public var accountId: Swift.String?
@@ -5375,7 +5376,7 @@ public struct DeleteEventsConfigurationInput {
     }
 }
 
-public struct DeleteMediaCapturePipelineInput {
+public struct DeleteMediaCapturePipelineInput: Swift.Sendable {
     /// The ID of the media capture pipeline being deleted.
     /// This member is required.
     public var mediaPipelineId: Swift.String?
@@ -5388,7 +5389,7 @@ public struct DeleteMediaCapturePipelineInput {
     }
 }
 
-public struct DeleteMeetingInput {
+public struct DeleteMeetingInput: Swift.Sendable {
     /// The Amazon Chime SDK meeting ID.
     /// This member is required.
     public var meetingId: Swift.String?
@@ -5401,7 +5402,7 @@ public struct DeleteMeetingInput {
     }
 }
 
-public struct DeletePhoneNumberInput {
+public struct DeletePhoneNumberInput: Swift.Sendable {
     /// The phone number ID.
     /// This member is required.
     public var phoneNumberId: Swift.String?
@@ -5414,7 +5415,7 @@ public struct DeletePhoneNumberInput {
     }
 }
 
-public struct DeleteProxySessionInput {
+public struct DeleteProxySessionInput: Swift.Sendable {
     /// The proxy session ID.
     /// This member is required.
     public var proxySessionId: Swift.String?
@@ -5432,7 +5433,7 @@ public struct DeleteProxySessionInput {
     }
 }
 
-public struct DeleteRoomInput {
+public struct DeleteRoomInput: Swift.Sendable {
     /// The Amazon Chime account ID.
     /// This member is required.
     public var accountId: Swift.String?
@@ -5450,7 +5451,7 @@ public struct DeleteRoomInput {
     }
 }
 
-public struct DeleteRoomMembershipInput {
+public struct DeleteRoomMembershipInput: Swift.Sendable {
     /// The Amazon Chime account ID.
     /// This member is required.
     public var accountId: Swift.String?
@@ -5473,7 +5474,7 @@ public struct DeleteRoomMembershipInput {
     }
 }
 
-public struct DeleteSipMediaApplicationInput {
+public struct DeleteSipMediaApplicationInput: Swift.Sendable {
     /// The SIP media application ID.
     /// This member is required.
     public var sipMediaApplicationId: Swift.String?
@@ -5486,7 +5487,7 @@ public struct DeleteSipMediaApplicationInput {
     }
 }
 
-public struct DeleteSipRuleInput {
+public struct DeleteSipRuleInput: Swift.Sendable {
     /// The SIP rule ID.
     /// This member is required.
     public var sipRuleId: Swift.String?
@@ -5499,7 +5500,7 @@ public struct DeleteSipRuleInput {
     }
 }
 
-public struct DeleteVoiceConnectorInput {
+public struct DeleteVoiceConnectorInput: Swift.Sendable {
     /// The Amazon Chime Voice Connector ID.
     /// This member is required.
     public var voiceConnectorId: Swift.String?
@@ -5512,7 +5513,7 @@ public struct DeleteVoiceConnectorInput {
     }
 }
 
-public struct DeleteVoiceConnectorEmergencyCallingConfigurationInput {
+public struct DeleteVoiceConnectorEmergencyCallingConfigurationInput: Swift.Sendable {
     /// The Amazon Chime Voice Connector ID.
     /// This member is required.
     public var voiceConnectorId: Swift.String?
@@ -5525,7 +5526,7 @@ public struct DeleteVoiceConnectorEmergencyCallingConfigurationInput {
     }
 }
 
-public struct DeleteVoiceConnectorGroupInput {
+public struct DeleteVoiceConnectorGroupInput: Swift.Sendable {
     /// The Amazon Chime Voice Connector group ID.
     /// This member is required.
     public var voiceConnectorGroupId: Swift.String?
@@ -5538,7 +5539,7 @@ public struct DeleteVoiceConnectorGroupInput {
     }
 }
 
-public struct DeleteVoiceConnectorOriginationInput {
+public struct DeleteVoiceConnectorOriginationInput: Swift.Sendable {
     /// The Amazon Chime Voice Connector ID.
     /// This member is required.
     public var voiceConnectorId: Swift.String?
@@ -5551,7 +5552,7 @@ public struct DeleteVoiceConnectorOriginationInput {
     }
 }
 
-public struct DeleteVoiceConnectorProxyInput {
+public struct DeleteVoiceConnectorProxyInput: Swift.Sendable {
     /// The Amazon Chime Voice Connector ID.
     /// This member is required.
     public var voiceConnectorId: Swift.String?
@@ -5564,7 +5565,7 @@ public struct DeleteVoiceConnectorProxyInput {
     }
 }
 
-public struct DeleteVoiceConnectorStreamingConfigurationInput {
+public struct DeleteVoiceConnectorStreamingConfigurationInput: Swift.Sendable {
     /// The Amazon Chime Voice Connector ID.
     /// This member is required.
     public var voiceConnectorId: Swift.String?
@@ -5577,7 +5578,7 @@ public struct DeleteVoiceConnectorStreamingConfigurationInput {
     }
 }
 
-public struct DeleteVoiceConnectorTerminationInput {
+public struct DeleteVoiceConnectorTerminationInput: Swift.Sendable {
     /// The Amazon Chime Voice Connector ID.
     /// This member is required.
     public var voiceConnectorId: Swift.String?
@@ -5590,7 +5591,7 @@ public struct DeleteVoiceConnectorTerminationInput {
     }
 }
 
-public struct DeleteVoiceConnectorTerminationCredentialsInput {
+public struct DeleteVoiceConnectorTerminationCredentialsInput: Swift.Sendable {
     /// The RFC2617 compliant username associated with the SIP credentials, in US-ASCII format.
     /// This member is required.
     public var usernames: [Swift.String]?
@@ -5613,7 +5614,7 @@ extension DeleteVoiceConnectorTerminationCredentialsInput: Swift.CustomDebugStri
         "DeleteVoiceConnectorTerminationCredentialsInput(voiceConnectorId: \(Swift.String(describing: voiceConnectorId)), usernames: \"CONTENT_REDACTED\")"}
 }
 
-public struct DescribeAppInstanceInput {
+public struct DescribeAppInstanceInput: Swift.Sendable {
     /// The ARN of the AppInstance.
     /// This member is required.
     public var appInstanceArn: Swift.String?
@@ -5626,7 +5627,7 @@ public struct DescribeAppInstanceInput {
     }
 }
 
-public struct DescribeAppInstanceOutput {
+public struct DescribeAppInstanceOutput: Swift.Sendable {
     /// The ARN, metadata, created and last-updated timestamps, and the name of the AppInstance. All timestamps use epoch milliseconds.
     public var appInstance: ChimeClientTypes.AppInstance?
 
@@ -5638,7 +5639,7 @@ public struct DescribeAppInstanceOutput {
     }
 }
 
-public struct DescribeAppInstanceAdminInput {
+public struct DescribeAppInstanceAdminInput: Swift.Sendable {
     /// The ARN of the AppInstanceAdmin.
     /// This member is required.
     public var appInstanceAdminArn: Swift.String?
@@ -5656,7 +5657,7 @@ public struct DescribeAppInstanceAdminInput {
     }
 }
 
-public struct DescribeAppInstanceAdminOutput {
+public struct DescribeAppInstanceAdminOutput: Swift.Sendable {
     /// The ARN and name of the AppInstanceUser, the ARN of the AppInstance, and the created and last-updated timestamps. All timestamps use epoch milliseconds.
     public var appInstanceAdmin: ChimeClientTypes.AppInstanceAdmin?
 
@@ -5668,7 +5669,7 @@ public struct DescribeAppInstanceAdminOutput {
     }
 }
 
-public struct DescribeAppInstanceUserInput {
+public struct DescribeAppInstanceUserInput: Swift.Sendable {
     /// The ARN of the AppInstanceUser.
     /// This member is required.
     public var appInstanceUserArn: Swift.String?
@@ -5681,7 +5682,7 @@ public struct DescribeAppInstanceUserInput {
     }
 }
 
-public struct DescribeAppInstanceUserOutput {
+public struct DescribeAppInstanceUserOutput: Swift.Sendable {
     /// The name of the AppInstanceUser.
     public var appInstanceUser: ChimeClientTypes.AppInstanceUser?
 
@@ -5693,7 +5694,7 @@ public struct DescribeAppInstanceUserOutput {
     }
 }
 
-public struct DescribeChannelInput {
+public struct DescribeChannelInput: Swift.Sendable {
     /// The ARN of the channel.
     /// This member is required.
     public var channelArn: Swift.String?
@@ -5710,7 +5711,7 @@ public struct DescribeChannelInput {
     }
 }
 
-public struct DescribeChannelOutput {
+public struct DescribeChannelOutput: Swift.Sendable {
     /// The channel details.
     public var channel: ChimeClientTypes.Channel?
 
@@ -5722,7 +5723,7 @@ public struct DescribeChannelOutput {
     }
 }
 
-public struct DescribeChannelBanInput {
+public struct DescribeChannelBanInput: Swift.Sendable {
     /// The ARN of the channel from which the user is banned.
     /// This member is required.
     public var channelArn: Swift.String?
@@ -5744,7 +5745,7 @@ public struct DescribeChannelBanInput {
     }
 }
 
-public struct DescribeChannelBanOutput {
+public struct DescribeChannelBanOutput: Swift.Sendable {
     /// The details of the ban.
     public var channelBan: ChimeClientTypes.ChannelBan?
 
@@ -5756,7 +5757,7 @@ public struct DescribeChannelBanOutput {
     }
 }
 
-public struct DescribeChannelMembershipInput {
+public struct DescribeChannelMembershipInput: Swift.Sendable {
     /// The ARN of the channel.
     /// This member is required.
     public var channelArn: Swift.String?
@@ -5778,7 +5779,7 @@ public struct DescribeChannelMembershipInput {
     }
 }
 
-public struct DescribeChannelMembershipOutput {
+public struct DescribeChannelMembershipOutput: Swift.Sendable {
     /// The details of the membership.
     public var channelMembership: ChimeClientTypes.ChannelMembership?
 
@@ -5790,7 +5791,7 @@ public struct DescribeChannelMembershipOutput {
     }
 }
 
-public struct DescribeChannelMembershipForAppInstanceUserInput {
+public struct DescribeChannelMembershipForAppInstanceUserInput: Swift.Sendable {
     /// The ARN of the user in a channel.
     /// This member is required.
     public var appInstanceUserArn: Swift.String?
@@ -5812,7 +5813,7 @@ public struct DescribeChannelMembershipForAppInstanceUserInput {
     }
 }
 
-public struct DescribeChannelMembershipForAppInstanceUserOutput {
+public struct DescribeChannelMembershipForAppInstanceUserOutput: Swift.Sendable {
     /// The channel to which a user belongs.
     public var channelMembership: ChimeClientTypes.ChannelMembershipForAppInstanceUserSummary?
 
@@ -5824,7 +5825,7 @@ public struct DescribeChannelMembershipForAppInstanceUserOutput {
     }
 }
 
-public struct DescribeChannelModeratedByAppInstanceUserInput {
+public struct DescribeChannelModeratedByAppInstanceUserInput: Swift.Sendable {
     /// The ARN of the AppInstanceUser in the moderated channel.
     /// This member is required.
     public var appInstanceUserArn: Swift.String?
@@ -5846,7 +5847,7 @@ public struct DescribeChannelModeratedByAppInstanceUserInput {
     }
 }
 
-public struct DescribeChannelModeratedByAppInstanceUserOutput {
+public struct DescribeChannelModeratedByAppInstanceUserOutput: Swift.Sendable {
     /// The moderated channel.
     public var channel: ChimeClientTypes.ChannelModeratedByAppInstanceUserSummary?
 
@@ -5858,7 +5859,7 @@ public struct DescribeChannelModeratedByAppInstanceUserOutput {
     }
 }
 
-public struct DescribeChannelModeratorInput {
+public struct DescribeChannelModeratorInput: Swift.Sendable {
     /// The ARN of the channel.
     /// This member is required.
     public var channelArn: Swift.String?
@@ -5880,7 +5881,7 @@ public struct DescribeChannelModeratorInput {
     }
 }
 
-public struct DescribeChannelModeratorOutput {
+public struct DescribeChannelModeratorOutput: Swift.Sendable {
     /// The details of the channel moderator.
     public var channelModerator: ChimeClientTypes.ChannelModerator?
 
@@ -5892,7 +5893,7 @@ public struct DescribeChannelModeratorOutput {
     }
 }
 
-public struct DisassociatePhoneNumberFromUserInput {
+public struct DisassociatePhoneNumberFromUserInput: Swift.Sendable {
     /// The Amazon Chime account ID.
     /// This member is required.
     public var accountId: Swift.String?
@@ -5910,12 +5911,12 @@ public struct DisassociatePhoneNumberFromUserInput {
     }
 }
 
-public struct DisassociatePhoneNumberFromUserOutput {
+public struct DisassociatePhoneNumberFromUserOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DisassociatePhoneNumbersFromVoiceConnectorInput {
+public struct DisassociatePhoneNumbersFromVoiceConnectorInput: Swift.Sendable {
     /// List of phone numbers, in E.164 format.
     /// This member is required.
     public var e164PhoneNumbers: [Swift.String]?
@@ -5938,7 +5939,7 @@ extension DisassociatePhoneNumbersFromVoiceConnectorInput: Swift.CustomDebugStri
         "DisassociatePhoneNumbersFromVoiceConnectorInput(voiceConnectorId: \(Swift.String(describing: voiceConnectorId)), e164PhoneNumbers: \"CONTENT_REDACTED\")"}
 }
 
-public struct DisassociatePhoneNumbersFromVoiceConnectorOutput {
+public struct DisassociatePhoneNumbersFromVoiceConnectorOutput: Swift.Sendable {
     /// If the action fails for one or more of the phone numbers in the request, a list of the phone numbers is returned, along with error codes and error messages.
     public var phoneNumberErrors: [ChimeClientTypes.PhoneNumberError]?
 
@@ -5950,7 +5951,7 @@ public struct DisassociatePhoneNumbersFromVoiceConnectorOutput {
     }
 }
 
-public struct DisassociatePhoneNumbersFromVoiceConnectorGroupInput {
+public struct DisassociatePhoneNumbersFromVoiceConnectorGroupInput: Swift.Sendable {
     /// List of phone numbers, in E.164 format.
     /// This member is required.
     public var e164PhoneNumbers: [Swift.String]?
@@ -5973,7 +5974,7 @@ extension DisassociatePhoneNumbersFromVoiceConnectorGroupInput: Swift.CustomDebu
         "DisassociatePhoneNumbersFromVoiceConnectorGroupInput(voiceConnectorGroupId: \(Swift.String(describing: voiceConnectorGroupId)), e164PhoneNumbers: \"CONTENT_REDACTED\")"}
 }
 
-public struct DisassociatePhoneNumbersFromVoiceConnectorGroupOutput {
+public struct DisassociatePhoneNumbersFromVoiceConnectorGroupOutput: Swift.Sendable {
     /// If the action fails for one or more of the phone numbers in the request, a list of the phone numbers is returned, along with error codes and error messages.
     public var phoneNumberErrors: [ChimeClientTypes.PhoneNumberError]?
 
@@ -5985,7 +5986,7 @@ public struct DisassociatePhoneNumbersFromVoiceConnectorGroupOutput {
     }
 }
 
-public struct DisassociateSigninDelegateGroupsFromAccountInput {
+public struct DisassociateSigninDelegateGroupsFromAccountInput: Swift.Sendable {
     /// The Amazon Chime account ID.
     /// This member is required.
     public var accountId: Swift.String?
@@ -6003,14 +6004,15 @@ public struct DisassociateSigninDelegateGroupsFromAccountInput {
     }
 }
 
-public struct DisassociateSigninDelegateGroupsFromAccountOutput {
+public struct DisassociateSigninDelegateGroupsFromAccountOutput: Swift.Sendable {
 
     public init() { }
 }
 
 extension ChimeClientTypes {
+
     /// The Dialed Number Identification Service (DNIS) emergency calling configuration details associated with an Amazon Chime Voice Connector's emergency calling configuration.
-    public struct DNISEmergencyCallingConfiguration {
+    public struct DNISEmergencyCallingConfiguration: Swift.Sendable {
         /// The country from which emergency calls are allowed, in ISO 3166-1 alpha-2 format.
         /// This member is required.
         public var callingCountry: Swift.String?
@@ -6031,7 +6033,6 @@ extension ChimeClientTypes {
             self.testPhoneNumber = testPhoneNumber
         }
     }
-
 }
 
 extension ChimeClientTypes.DNISEmergencyCallingConfiguration: Swift.CustomDebugStringConvertible {
@@ -6041,7 +6042,7 @@ extension ChimeClientTypes.DNISEmergencyCallingConfiguration: Swift.CustomDebugS
 
 extension ChimeClientTypes {
 
-    public enum EmailStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum EmailStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case failed
         case notsent
         case sent
@@ -6072,8 +6073,9 @@ extension ChimeClientTypes {
 }
 
 extension ChimeClientTypes {
+
     /// The emergency calling configuration details associated with an Amazon Chime Voice Connector.
-    public struct EmergencyCallingConfiguration {
+    public struct EmergencyCallingConfiguration: Swift.Sendable {
         /// The Dialed Number Identification Service (DNIS) emergency calling configuration details.
         public var dnis: [ChimeClientTypes.DNISEmergencyCallingConfiguration]?
 
@@ -6084,12 +6086,11 @@ extension ChimeClientTypes {
             self.dnis = dnis
         }
     }
-
 }
 
 extension ChimeClientTypes {
 
-    public enum TranscribeMedicalContentIdentificationType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum TranscribeMedicalContentIdentificationType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case phi
         case sdkUnknown(Swift.String)
 
@@ -6115,7 +6116,7 @@ extension ChimeClientTypes {
 
 extension ChimeClientTypes {
 
-    public enum TranscribeMedicalLanguageCode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum TranscribeMedicalLanguageCode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case enUs
         case sdkUnknown(Swift.String)
 
@@ -6141,7 +6142,7 @@ extension ChimeClientTypes {
 
 extension ChimeClientTypes {
 
-    public enum TranscribeMedicalRegion: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum TranscribeMedicalRegion: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case apSoutheast2
         case auto
         case caCentral1
@@ -6185,7 +6186,7 @@ extension ChimeClientTypes {
 
 extension ChimeClientTypes {
 
-    public enum TranscribeMedicalSpecialty: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum TranscribeMedicalSpecialty: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case cardiology
         case neurology
         case oncology
@@ -6226,7 +6227,7 @@ extension ChimeClientTypes {
 
 extension ChimeClientTypes {
 
-    public enum TranscribeMedicalType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum TranscribeMedicalType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case conversation
         case dictation
         case sdkUnknown(Swift.String)
@@ -6254,8 +6255,9 @@ extension ChimeClientTypes {
 }
 
 extension ChimeClientTypes {
+
     /// Settings specific to the Amazon Transcribe Medical engine.
-    public struct EngineTranscribeMedicalSettings {
+    public struct EngineTranscribeMedicalSettings: Swift.Sendable {
         /// Labels all personally identifiable information (PII) identified in your transcript. If you don't include PiiEntityTypes, all PII is identified. You can’t set ContentIdentificationType and ContentRedactionType.
         public var contentIdentificationType: ChimeClientTypes.TranscribeMedicalContentIdentificationType?
         /// The language code specified for the Amazon Transcribe Medical engine.
@@ -6289,12 +6291,11 @@ extension ChimeClientTypes {
             self.vocabularyName = vocabularyName
         }
     }
-
 }
 
 extension ChimeClientTypes {
 
-    public enum TranscribeContentIdentificationType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum TranscribeContentIdentificationType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case pii
         case sdkUnknown(Swift.String)
 
@@ -6320,7 +6321,7 @@ extension ChimeClientTypes {
 
 extension ChimeClientTypes {
 
-    public enum TranscribeContentRedactionType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum TranscribeContentRedactionType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case pii
         case sdkUnknown(Swift.String)
 
@@ -6346,7 +6347,7 @@ extension ChimeClientTypes {
 
 extension ChimeClientTypes {
 
-    public enum TranscribeLanguageCode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum TranscribeLanguageCode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case deDe
         case enAu
         case enGb
@@ -6411,7 +6412,7 @@ extension ChimeClientTypes {
 
 extension ChimeClientTypes {
 
-    public enum TranscribePartialResultsStability: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum TranscribePartialResultsStability: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case high
         case low
         case medium
@@ -6443,7 +6444,7 @@ extension ChimeClientTypes {
 
 extension ChimeClientTypes {
 
-    public enum TranscribeRegion: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum TranscribeRegion: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case apNortheast1
         case apNortheast2
         case apSoutheast2
@@ -6502,7 +6503,7 @@ extension ChimeClientTypes {
 
 extension ChimeClientTypes {
 
-    public enum TranscribeVocabularyFilterMethod: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum TranscribeVocabularyFilterMethod: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case mask
         case remove
         case tag
@@ -6533,8 +6534,9 @@ extension ChimeClientTypes {
 }
 
 extension ChimeClientTypes {
+
     /// Settings specific for Amazon Transcribe as the live transcription engine. If you specify an invalid combination of parameters, a TranscriptFailed event will be sent with the contents of the BadRequestException generated by Amazon Transcribe. For more information on each parameter and which combinations are valid, refer to the [StartStreamTranscription](https://docs.aws.amazon.com/transcribe/latest/APIReference/API_streaming_StartStreamTranscription.html) API in the Amazon Transcribe Developer Guide.
-    public struct EngineTranscribeSettings {
+    public struct EngineTranscribeSettings: Swift.Sendable {
         /// Labels all personally identifiable information (PII) identified in your transcript. If you don't include PiiEntityTypes, all PII is identified. You can’t set ContentIdentificationType and ContentRedactionType.
         public var contentIdentificationType: ChimeClientTypes.TranscribeContentIdentificationType?
         /// Content redaction is performed at the segment level. If you don't include PiiEntityTypes, all PII is redacted. You can’t set ContentIdentificationType and ContentRedactionType.
@@ -6605,12 +6607,12 @@ extension ChimeClientTypes {
             self.vocabularyNames = vocabularyNames
         }
     }
-
 }
 
 extension ChimeClientTypes {
+
     /// The configuration that allows a bot to receive outgoing events. Can be either an HTTPS endpoint or a Lambda function ARN.
-    public struct EventsConfiguration {
+    public struct EventsConfiguration: Swift.Sendable {
         /// The bot ID.
         public var botId: Swift.String?
         /// Lambda function ARN that allows a bot to receive outgoing events.
@@ -6629,7 +6631,6 @@ extension ChimeClientTypes {
             self.outboundEventsHTTPSEndpoint = outboundEventsHTTPSEndpoint
         }
     }
-
 }
 
 extension ChimeClientTypes.EventsConfiguration: Swift.CustomDebugStringConvertible {
@@ -6637,7 +6638,7 @@ extension ChimeClientTypes.EventsConfiguration: Swift.CustomDebugStringConvertib
         "EventsConfiguration(botId: \(Swift.String(describing: botId)), lambdaFunctionArn: \"CONTENT_REDACTED\", outboundEventsHTTPSEndpoint: \"CONTENT_REDACTED\")"}
 }
 
-public struct GetAccountInput {
+public struct GetAccountInput: Swift.Sendable {
     /// The Amazon Chime account ID.
     /// This member is required.
     public var accountId: Swift.String?
@@ -6650,7 +6651,7 @@ public struct GetAccountInput {
     }
 }
 
-public struct GetAccountOutput {
+public struct GetAccountOutput: Swift.Sendable {
     /// The Amazon Chime account details.
     public var account: ChimeClientTypes.Account?
 
@@ -6662,7 +6663,7 @@ public struct GetAccountOutput {
     }
 }
 
-public struct GetAccountSettingsInput {
+public struct GetAccountSettingsInput: Swift.Sendable {
     /// The Amazon Chime account ID.
     /// This member is required.
     public var accountId: Swift.String?
@@ -6675,7 +6676,7 @@ public struct GetAccountSettingsInput {
     }
 }
 
-public struct GetAccountSettingsOutput {
+public struct GetAccountSettingsOutput: Swift.Sendable {
     /// The Amazon Chime account settings.
     public var accountSettings: ChimeClientTypes.AccountSettings?
 
@@ -6687,7 +6688,7 @@ public struct GetAccountSettingsOutput {
     }
 }
 
-public struct GetAppInstanceRetentionSettingsInput {
+public struct GetAppInstanceRetentionSettingsInput: Swift.Sendable {
     /// The ARN of the AppInstance.
     /// This member is required.
     public var appInstanceArn: Swift.String?
@@ -6700,7 +6701,7 @@ public struct GetAppInstanceRetentionSettingsInput {
     }
 }
 
-public struct GetAppInstanceRetentionSettingsOutput {
+public struct GetAppInstanceRetentionSettingsOutput: Swift.Sendable {
     /// The retention settings for the AppInstance.
     public var appInstanceRetentionSettings: ChimeClientTypes.AppInstanceRetentionSettings?
     /// The timestamp representing the time at which the specified items are retained, in Epoch Seconds.
@@ -6716,7 +6717,7 @@ public struct GetAppInstanceRetentionSettingsOutput {
     }
 }
 
-public struct GetAppInstanceStreamingConfigurationsInput {
+public struct GetAppInstanceStreamingConfigurationsInput: Swift.Sendable {
     /// The ARN of the AppInstance.
     /// This member is required.
     public var appInstanceArn: Swift.String?
@@ -6729,7 +6730,7 @@ public struct GetAppInstanceStreamingConfigurationsInput {
     }
 }
 
-public struct GetAppInstanceStreamingConfigurationsOutput {
+public struct GetAppInstanceStreamingConfigurationsOutput: Swift.Sendable {
     /// The streaming settings.
     public var appInstanceStreamingConfigurations: [ChimeClientTypes.AppInstanceStreamingConfiguration]?
 
@@ -6741,7 +6742,7 @@ public struct GetAppInstanceStreamingConfigurationsOutput {
     }
 }
 
-public struct GetAttendeeInput {
+public struct GetAttendeeInput: Swift.Sendable {
     /// The Amazon Chime SDK attendee ID.
     /// This member is required.
     public var attendeeId: Swift.String?
@@ -6759,7 +6760,7 @@ public struct GetAttendeeInput {
     }
 }
 
-public struct GetAttendeeOutput {
+public struct GetAttendeeOutput: Swift.Sendable {
     /// The Amazon Chime SDK attendee information.
     public var attendee: ChimeClientTypes.Attendee?
 
@@ -6771,7 +6772,7 @@ public struct GetAttendeeOutput {
     }
 }
 
-public struct GetBotInput {
+public struct GetBotInput: Swift.Sendable {
     /// The Amazon Chime account ID.
     /// This member is required.
     public var accountId: Swift.String?
@@ -6789,7 +6790,7 @@ public struct GetBotInput {
     }
 }
 
-public struct GetBotOutput {
+public struct GetBotOutput: Swift.Sendable {
     /// The chat bot details.
     public var bot: ChimeClientTypes.Bot?
 
@@ -6801,7 +6802,7 @@ public struct GetBotOutput {
     }
 }
 
-public struct GetChannelMessageInput {
+public struct GetChannelMessageInput: Swift.Sendable {
     /// The ARN of the channel.
     /// This member is required.
     public var channelArn: Swift.String?
@@ -6823,7 +6824,7 @@ public struct GetChannelMessageInput {
     }
 }
 
-public struct GetChannelMessageOutput {
+public struct GetChannelMessageOutput: Swift.Sendable {
     /// The details of and content in the message.
     public var channelMessage: ChimeClientTypes.ChannelMessage?
 
@@ -6835,7 +6836,7 @@ public struct GetChannelMessageOutput {
     }
 }
 
-public struct GetEventsConfigurationInput {
+public struct GetEventsConfigurationInput: Swift.Sendable {
     /// The Amazon Chime account ID.
     /// This member is required.
     public var accountId: Swift.String?
@@ -6853,7 +6854,7 @@ public struct GetEventsConfigurationInput {
     }
 }
 
-public struct GetEventsConfigurationOutput {
+public struct GetEventsConfigurationOutput: Swift.Sendable {
     /// The events configuration details.
     public var eventsConfiguration: ChimeClientTypes.EventsConfiguration?
 
@@ -6866,8 +6867,9 @@ public struct GetEventsConfigurationOutput {
 }
 
 extension ChimeClientTypes {
+
     /// The Amazon Chime Voice Connector settings. Includes any Amazon S3 buckets designated for storing call detail records.
-    public struct VoiceConnectorSettings {
+    public struct VoiceConnectorSettings: Swift.Sendable {
         /// The Amazon S3 bucket designated for call detail record storage.
         public var cdrBucket: Swift.String?
 
@@ -6878,10 +6880,9 @@ extension ChimeClientTypes {
             self.cdrBucket = cdrBucket
         }
     }
-
 }
 
-public struct GetGlobalSettingsOutput {
+public struct GetGlobalSettingsOutput: Swift.Sendable {
     /// The Amazon Chime Business Calling settings.
     public var businessCalling: ChimeClientTypes.BusinessCallingSettings?
     /// The Amazon Chime Voice Connector settings.
@@ -6897,7 +6898,7 @@ public struct GetGlobalSettingsOutput {
     }
 }
 
-public struct GetMediaCapturePipelineInput {
+public struct GetMediaCapturePipelineInput: Swift.Sendable {
     /// The ID of the pipeline that you want to get.
     /// This member is required.
     public var mediaPipelineId: Swift.String?
@@ -6910,7 +6911,7 @@ public struct GetMediaCapturePipelineInput {
     }
 }
 
-public struct GetMediaCapturePipelineOutput {
+public struct GetMediaCapturePipelineOutput: Swift.Sendable {
     /// The media capture pipeline object.
     public var mediaCapturePipeline: ChimeClientTypes.MediaCapturePipeline?
 
@@ -6922,7 +6923,7 @@ public struct GetMediaCapturePipelineOutput {
     }
 }
 
-public struct GetMeetingInput {
+public struct GetMeetingInput: Swift.Sendable {
     /// The Amazon Chime SDK meeting ID.
     /// This member is required.
     public var meetingId: Swift.String?
@@ -6935,7 +6936,7 @@ public struct GetMeetingInput {
     }
 }
 
-public struct GetMeetingOutput {
+public struct GetMeetingOutput: Swift.Sendable {
     /// The Amazon Chime SDK meeting information.
     public var meeting: ChimeClientTypes.Meeting?
 
@@ -6947,14 +6948,15 @@ public struct GetMeetingOutput {
     }
 }
 
-public struct GetMessagingSessionEndpointInput {
+public struct GetMessagingSessionEndpointInput: Swift.Sendable {
 
     public init() { }
 }
 
 extension ChimeClientTypes {
+
     /// The websocket endpoint used to connect to Amazon Chime SDK messaging.
-    public struct MessagingSessionEndpoint {
+    public struct MessagingSessionEndpoint: Swift.Sendable {
         /// The endpoint to which you establish a websocket connection.
         public var url: Swift.String?
 
@@ -6965,10 +6967,9 @@ extension ChimeClientTypes {
             self.url = url
         }
     }
-
 }
 
-public struct GetMessagingSessionEndpointOutput {
+public struct GetMessagingSessionEndpointOutput: Swift.Sendable {
     /// The endpoint returned in the response.
     public var endpoint: ChimeClientTypes.MessagingSessionEndpoint?
 
@@ -6980,7 +6981,7 @@ public struct GetMessagingSessionEndpointOutput {
     }
 }
 
-public struct GetPhoneNumberInput {
+public struct GetPhoneNumberInput: Swift.Sendable {
     /// The phone number ID.
     /// This member is required.
     public var phoneNumberId: Swift.String?
@@ -6995,7 +6996,7 @@ public struct GetPhoneNumberInput {
 
 extension ChimeClientTypes {
 
-    public enum PhoneNumberAssociationName: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum PhoneNumberAssociationName: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case accountid
         case sipruleid
         case userid
@@ -7032,8 +7033,9 @@ extension ChimeClientTypes {
 }
 
 extension ChimeClientTypes {
+
     /// The phone number associations, such as Amazon Chime account ID, Amazon Chime user ID, Amazon Chime Voice Connector ID, or Amazon Chime Voice Connector group ID.
-    public struct PhoneNumberAssociation {
+    public struct PhoneNumberAssociation: Swift.Sendable {
         /// The timestamp of the phone number association, in ISO 8601 format.
         public var associatedTimestamp: Foundation.Date?
         /// Defines the association with an Amazon Chime account ID, user ID, Amazon Chime Voice Connector ID, or Amazon Chime Voice Connector group ID.
@@ -7052,12 +7054,12 @@ extension ChimeClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension ChimeClientTypes {
+
     /// The phone number capabilities for Amazon Chime Business Calling phone numbers, such as enabled inbound and outbound calling and text messaging.
-    public struct PhoneNumberCapabilities {
+    public struct PhoneNumberCapabilities: Swift.Sendable {
         /// Allows or denies inbound calling for the specified phone number.
         public var inboundCall: Swift.Bool?
         /// Allows or denies inbound MMS messaging for the specified phone number.
@@ -7088,12 +7090,11 @@ extension ChimeClientTypes {
             self.outboundSMS = outboundSMS
         }
     }
-
 }
 
 extension ChimeClientTypes {
 
-    public enum PhoneNumberStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum PhoneNumberStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case acquirefailed
         case acquireinprogress
         case assigned
@@ -7140,7 +7141,7 @@ extension ChimeClientTypes {
 
 extension ChimeClientTypes {
 
-    public enum PhoneNumberType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum PhoneNumberType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case local
         case tollfree
         case sdkUnknown(Swift.String)
@@ -7168,8 +7169,9 @@ extension ChimeClientTypes {
 }
 
 extension ChimeClientTypes {
+
     /// A phone number used for Amazon Chime Business Calling or an Amazon Chime Voice Connector.
-    public struct PhoneNumber {
+    public struct PhoneNumber: Swift.Sendable {
         /// The phone number associations.
         public var associations: [ChimeClientTypes.PhoneNumberAssociation]?
         /// The outbound calling name associated with the phone number.
@@ -7228,7 +7230,6 @@ extension ChimeClientTypes {
             self.updatedTimestamp = updatedTimestamp
         }
     }
-
 }
 
 extension ChimeClientTypes.PhoneNumber: Swift.CustomDebugStringConvertible {
@@ -7236,7 +7237,7 @@ extension ChimeClientTypes.PhoneNumber: Swift.CustomDebugStringConvertible {
         "PhoneNumber(associations: \(Swift.String(describing: associations)), callingNameStatus: \(Swift.String(describing: callingNameStatus)), capabilities: \(Swift.String(describing: capabilities)), country: \(Swift.String(describing: country)), createdTimestamp: \(Swift.String(describing: createdTimestamp)), deletionTimestamp: \(Swift.String(describing: deletionTimestamp)), phoneNumberId: \(Swift.String(describing: phoneNumberId)), productType: \(Swift.String(describing: productType)), status: \(Swift.String(describing: status)), type: \(Swift.String(describing: type)), updatedTimestamp: \(Swift.String(describing: updatedTimestamp)), callingName: \"CONTENT_REDACTED\", e164PhoneNumber: \"CONTENT_REDACTED\")"}
 }
 
-public struct GetPhoneNumberOutput {
+public struct GetPhoneNumberOutput: Swift.Sendable {
     /// The phone number details.
     public var phoneNumber: ChimeClientTypes.PhoneNumber?
 
@@ -7248,7 +7249,7 @@ public struct GetPhoneNumberOutput {
     }
 }
 
-public struct GetPhoneNumberOrderInput {
+public struct GetPhoneNumberOrderInput: Swift.Sendable {
     /// The ID for the phone number order.
     /// This member is required.
     public var phoneNumberOrderId: Swift.String?
@@ -7261,7 +7262,7 @@ public struct GetPhoneNumberOrderInput {
     }
 }
 
-public struct GetPhoneNumberOrderOutput {
+public struct GetPhoneNumberOrderOutput: Swift.Sendable {
     /// The phone number order details.
     public var phoneNumberOrder: ChimeClientTypes.PhoneNumberOrder?
 
@@ -7273,7 +7274,7 @@ public struct GetPhoneNumberOrderOutput {
     }
 }
 
-public struct GetPhoneNumberSettingsOutput {
+public struct GetPhoneNumberSettingsOutput: Swift.Sendable {
     /// The default outbound calling name for the account.
     public var callingName: Swift.String?
     /// The updated outbound calling name timestamp, in ISO 8601 format.
@@ -7294,7 +7295,7 @@ extension GetPhoneNumberSettingsOutput: Swift.CustomDebugStringConvertible {
         "GetPhoneNumberSettingsOutput(callingNameUpdatedTimestamp: \(Swift.String(describing: callingNameUpdatedTimestamp)), callingName: \"CONTENT_REDACTED\")"}
 }
 
-public struct GetProxySessionInput {
+public struct GetProxySessionInput: Swift.Sendable {
     /// The proxy session ID.
     /// This member is required.
     public var proxySessionId: Swift.String?
@@ -7312,7 +7313,7 @@ public struct GetProxySessionInput {
     }
 }
 
-public struct GetProxySessionOutput {
+public struct GetProxySessionOutput: Swift.Sendable {
     /// The proxy session details.
     public var proxySession: ChimeClientTypes.ProxySession?
 
@@ -7324,7 +7325,7 @@ public struct GetProxySessionOutput {
     }
 }
 
-public struct GetRetentionSettingsInput {
+public struct GetRetentionSettingsInput: Swift.Sendable {
     /// The Amazon Chime account ID.
     /// This member is required.
     public var accountId: Swift.String?
@@ -7338,8 +7339,9 @@ public struct GetRetentionSettingsInput {
 }
 
 extension ChimeClientTypes {
+
     /// The retention settings that determine how long to retain chat-room messages for an Amazon Chime Enterprise account.
-    public struct RoomRetentionSettings {
+    public struct RoomRetentionSettings: Swift.Sendable {
         /// The number of days for which to retain chat-room messages.
         public var retentionDays: Swift.Int?
 
@@ -7350,12 +7352,12 @@ extension ChimeClientTypes {
             self.retentionDays = retentionDays
         }
     }
-
 }
 
 extension ChimeClientTypes {
+
     /// The retention settings for an Amazon Chime Enterprise account that determine how long to retain items such as chat-room messages and chat-conversation messages.
-    public struct RetentionSettings {
+    public struct RetentionSettings: Swift.Sendable {
         /// The chat conversation retention settings.
         public var conversationRetentionSettings: ChimeClientTypes.ConversationRetentionSettings?
         /// The chat room retention settings.
@@ -7370,10 +7372,9 @@ extension ChimeClientTypes {
             self.roomRetentionSettings = roomRetentionSettings
         }
     }
-
 }
 
-public struct GetRetentionSettingsOutput {
+public struct GetRetentionSettingsOutput: Swift.Sendable {
     /// The timestamp representing the time at which the specified items are permanently deleted, in ISO 8601 format.
     public var initiateDeletionTimestamp: Foundation.Date?
     /// The retention settings.
@@ -7389,7 +7390,7 @@ public struct GetRetentionSettingsOutput {
     }
 }
 
-public struct GetRoomInput {
+public struct GetRoomInput: Swift.Sendable {
     /// The Amazon Chime account ID.
     /// This member is required.
     public var accountId: Swift.String?
@@ -7407,7 +7408,7 @@ public struct GetRoomInput {
     }
 }
 
-public struct GetRoomOutput {
+public struct GetRoomOutput: Swift.Sendable {
     /// The room details.
     public var room: ChimeClientTypes.Room?
 
@@ -7419,7 +7420,7 @@ public struct GetRoomOutput {
     }
 }
 
-public struct GetSipMediaApplicationInput {
+public struct GetSipMediaApplicationInput: Swift.Sendable {
     /// The SIP media application ID.
     /// This member is required.
     public var sipMediaApplicationId: Swift.String?
@@ -7432,7 +7433,7 @@ public struct GetSipMediaApplicationInput {
     }
 }
 
-public struct GetSipMediaApplicationOutput {
+public struct GetSipMediaApplicationOutput: Swift.Sendable {
     /// The SIP media application details.
     public var sipMediaApplication: ChimeClientTypes.SipMediaApplication?
 
@@ -7444,7 +7445,7 @@ public struct GetSipMediaApplicationOutput {
     }
 }
 
-public struct GetSipMediaApplicationLoggingConfigurationInput {
+public struct GetSipMediaApplicationLoggingConfigurationInput: Swift.Sendable {
     /// The SIP media application ID.
     /// This member is required.
     public var sipMediaApplicationId: Swift.String?
@@ -7458,8 +7459,9 @@ public struct GetSipMediaApplicationLoggingConfigurationInput {
 }
 
 extension ChimeClientTypes {
+
     /// Logging configuration of the SIP media application.
-    public struct SipMediaApplicationLoggingConfiguration {
+    public struct SipMediaApplicationLoggingConfiguration: Swift.Sendable {
         /// Enables application message logs for the SIP media application.
         public var enableSipMediaApplicationMessageLogs: Swift.Bool?
 
@@ -7470,10 +7472,9 @@ extension ChimeClientTypes {
             self.enableSipMediaApplicationMessageLogs = enableSipMediaApplicationMessageLogs
         }
     }
-
 }
 
-public struct GetSipMediaApplicationLoggingConfigurationOutput {
+public struct GetSipMediaApplicationLoggingConfigurationOutput: Swift.Sendable {
     /// The actual logging configuration.
     public var sipMediaApplicationLoggingConfiguration: ChimeClientTypes.SipMediaApplicationLoggingConfiguration?
 
@@ -7485,7 +7486,7 @@ public struct GetSipMediaApplicationLoggingConfigurationOutput {
     }
 }
 
-public struct GetSipRuleInput {
+public struct GetSipRuleInput: Swift.Sendable {
     /// The SIP rule ID.
     /// This member is required.
     public var sipRuleId: Swift.String?
@@ -7498,7 +7499,7 @@ public struct GetSipRuleInput {
     }
 }
 
-public struct GetSipRuleOutput {
+public struct GetSipRuleOutput: Swift.Sendable {
     /// The SIP rule details.
     public var sipRule: ChimeClientTypes.SipRule?
 
@@ -7510,7 +7511,7 @@ public struct GetSipRuleOutput {
     }
 }
 
-public struct GetUserInput {
+public struct GetUserInput: Swift.Sendable {
     /// The Amazon Chime account ID.
     /// This member is required.
     public var accountId: Swift.String?
@@ -7528,7 +7529,7 @@ public struct GetUserInput {
     }
 }
 
-public struct GetUserOutput {
+public struct GetUserOutput: Swift.Sendable {
     /// The user details.
     public var user: ChimeClientTypes.User?
 
@@ -7540,7 +7541,7 @@ public struct GetUserOutput {
     }
 }
 
-public struct GetUserSettingsInput {
+public struct GetUserSettingsInput: Swift.Sendable {
     /// The Amazon Chime account ID.
     /// This member is required.
     public var accountId: Swift.String?
@@ -7559,8 +7560,9 @@ public struct GetUserSettingsInput {
 }
 
 extension ChimeClientTypes {
+
     /// Settings that allow management of telephony permissions for an Amazon Chime user, such as inbound and outbound calling and text messaging.
-    public struct TelephonySettings {
+    public struct TelephonySettings: Swift.Sendable {
         /// Allows or denies inbound calling.
         /// This member is required.
         public var inboundCalling: Swift.Bool?
@@ -7582,12 +7584,12 @@ extension ChimeClientTypes {
             self.sms = sms
         }
     }
-
 }
 
 extension ChimeClientTypes {
+
     /// Settings associated with an Amazon Chime user, including inbound and outbound calling and text messaging.
-    public struct UserSettings {
+    public struct UserSettings: Swift.Sendable {
         /// The telephony settings associated with the user.
         /// This member is required.
         public var telephony: ChimeClientTypes.TelephonySettings?
@@ -7599,10 +7601,9 @@ extension ChimeClientTypes {
             self.telephony = telephony
         }
     }
-
 }
 
-public struct GetUserSettingsOutput {
+public struct GetUserSettingsOutput: Swift.Sendable {
     /// The user settings.
     public var userSettings: ChimeClientTypes.UserSettings?
 
@@ -7614,7 +7615,7 @@ public struct GetUserSettingsOutput {
     }
 }
 
-public struct GetVoiceConnectorInput {
+public struct GetVoiceConnectorInput: Swift.Sendable {
     /// The Amazon Chime Voice Connector ID.
     /// This member is required.
     public var voiceConnectorId: Swift.String?
@@ -7627,7 +7628,7 @@ public struct GetVoiceConnectorInput {
     }
 }
 
-public struct GetVoiceConnectorOutput {
+public struct GetVoiceConnectorOutput: Swift.Sendable {
     /// The Amazon Chime Voice Connector details.
     public var voiceConnector: ChimeClientTypes.VoiceConnector?
 
@@ -7639,7 +7640,7 @@ public struct GetVoiceConnectorOutput {
     }
 }
 
-public struct GetVoiceConnectorEmergencyCallingConfigurationInput {
+public struct GetVoiceConnectorEmergencyCallingConfigurationInput: Swift.Sendable {
     /// The Amazon Chime Voice Connector ID.
     /// This member is required.
     public var voiceConnectorId: Swift.String?
@@ -7652,7 +7653,7 @@ public struct GetVoiceConnectorEmergencyCallingConfigurationInput {
     }
 }
 
-public struct GetVoiceConnectorEmergencyCallingConfigurationOutput {
+public struct GetVoiceConnectorEmergencyCallingConfigurationOutput: Swift.Sendable {
     /// The emergency calling configuration details.
     public var emergencyCallingConfiguration: ChimeClientTypes.EmergencyCallingConfiguration?
 
@@ -7664,7 +7665,7 @@ public struct GetVoiceConnectorEmergencyCallingConfigurationOutput {
     }
 }
 
-public struct GetVoiceConnectorGroupInput {
+public struct GetVoiceConnectorGroupInput: Swift.Sendable {
     /// The Amazon Chime Voice Connector group ID.
     /// This member is required.
     public var voiceConnectorGroupId: Swift.String?
@@ -7677,7 +7678,7 @@ public struct GetVoiceConnectorGroupInput {
     }
 }
 
-public struct GetVoiceConnectorGroupOutput {
+public struct GetVoiceConnectorGroupOutput: Swift.Sendable {
     /// The Amazon Chime Voice Connector group details.
     public var voiceConnectorGroup: ChimeClientTypes.VoiceConnectorGroup?
 
@@ -7689,7 +7690,7 @@ public struct GetVoiceConnectorGroupOutput {
     }
 }
 
-public struct GetVoiceConnectorLoggingConfigurationInput {
+public struct GetVoiceConnectorLoggingConfigurationInput: Swift.Sendable {
     /// The Amazon Chime Voice Connector ID.
     /// This member is required.
     public var voiceConnectorId: Swift.String?
@@ -7703,8 +7704,9 @@ public struct GetVoiceConnectorLoggingConfigurationInput {
 }
 
 extension ChimeClientTypes {
+
     /// The logging configuration associated with an Amazon Chime Voice Connector. Specifies whether SIP message logs are enabled for sending to Amazon CloudWatch Logs.
-    public struct LoggingConfiguration {
+    public struct LoggingConfiguration: Swift.Sendable {
         /// Boolean that enables logging of detailed media metrics for Voice Connectors to Amazon CloudWatch logs.
         public var enableMediaMetricLogs: Swift.Bool?
         /// Boolean that enables SIP message logs to Amazon CloudWatch logs.
@@ -7719,10 +7721,9 @@ extension ChimeClientTypes {
             self.enableSIPLogs = enableSIPLogs
         }
     }
-
 }
 
-public struct GetVoiceConnectorLoggingConfigurationOutput {
+public struct GetVoiceConnectorLoggingConfigurationOutput: Swift.Sendable {
     /// The logging configuration details.
     public var loggingConfiguration: ChimeClientTypes.LoggingConfiguration?
 
@@ -7734,7 +7735,7 @@ public struct GetVoiceConnectorLoggingConfigurationOutput {
     }
 }
 
-public struct GetVoiceConnectorOriginationInput {
+public struct GetVoiceConnectorOriginationInput: Swift.Sendable {
     /// The Amazon Chime Voice Connector ID.
     /// This member is required.
     public var voiceConnectorId: Swift.String?
@@ -7749,7 +7750,7 @@ public struct GetVoiceConnectorOriginationInput {
 
 extension ChimeClientTypes {
 
-    public enum OriginationRouteProtocol: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum OriginationRouteProtocol: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case tcp
         case udp
         case sdkUnknown(Swift.String)
@@ -7777,8 +7778,9 @@ extension ChimeClientTypes {
 }
 
 extension ChimeClientTypes {
+
     /// Origination routes define call distribution properties for your SIP hosts to receive inbound calls using your Amazon Chime Voice Connector. Limit: Ten origination routes for each Amazon Chime Voice Connector. The parameters listed below are not required, but you must use at least one.
-    public struct OriginationRoute {
+    public struct OriginationRoute: Swift.Sendable {
         /// The FQDN or IP address to contact for origination traffic.
         public var host: Swift.String?
         /// The designated origination route port. Defaults to 5060.
@@ -7805,12 +7807,12 @@ extension ChimeClientTypes {
             self.weight = weight
         }
     }
-
 }
 
 extension ChimeClientTypes {
+
     /// Origination settings enable your SIP hosts to receive inbound calls using your Amazon Chime Voice Connector. The parameters listed below are not required, but you must use at least one.
-    public struct Origination {
+    public struct Origination: Swift.Sendable {
         /// When origination settings are disabled, inbound calls are not enabled for your Amazon Chime Voice Connector. This parameter is not required, but you must specify this parameter or Routes.
         public var disabled: Swift.Bool?
         /// The call distribution properties defined for your SIP hosts. Valid range: Minimum value of 1. Maximum value of 20. This parameter is not required, but you must specify this parameter or Disabled.
@@ -7825,10 +7827,9 @@ extension ChimeClientTypes {
             self.routes = routes
         }
     }
-
 }
 
-public struct GetVoiceConnectorOriginationOutput {
+public struct GetVoiceConnectorOriginationOutput: Swift.Sendable {
     /// The origination setting details.
     public var origination: ChimeClientTypes.Origination?
 
@@ -7840,7 +7841,7 @@ public struct GetVoiceConnectorOriginationOutput {
     }
 }
 
-public struct GetVoiceConnectorProxyInput {
+public struct GetVoiceConnectorProxyInput: Swift.Sendable {
     /// The Amazon Chime voice connector ID.
     /// This member is required.
     public var voiceConnectorId: Swift.String?
@@ -7854,8 +7855,9 @@ public struct GetVoiceConnectorProxyInput {
 }
 
 extension ChimeClientTypes {
+
     /// The proxy configuration for an Amazon Chime Voice Connector.
-    public struct Proxy {
+    public struct Proxy: Swift.Sendable {
         /// The default number of minutes allowed for proxy sessions.
         public var defaultSessionExpiryMinutes: Swift.Int?
         /// When true, stops proxy sessions from being created on the specified Amazon Chime Voice Connector.
@@ -7878,7 +7880,6 @@ extension ChimeClientTypes {
             self.phoneNumberCountries = phoneNumberCountries
         }
     }
-
 }
 
 extension ChimeClientTypes.Proxy: Swift.CustomDebugStringConvertible {
@@ -7886,7 +7887,7 @@ extension ChimeClientTypes.Proxy: Swift.CustomDebugStringConvertible {
         "Proxy(defaultSessionExpiryMinutes: \(Swift.String(describing: defaultSessionExpiryMinutes)), disabled: \(Swift.String(describing: disabled)), phoneNumberCountries: \(Swift.String(describing: phoneNumberCountries)), fallBackPhoneNumber: \"CONTENT_REDACTED\")"}
 }
 
-public struct GetVoiceConnectorProxyOutput {
+public struct GetVoiceConnectorProxyOutput: Swift.Sendable {
     /// The proxy configuration details.
     public var proxy: ChimeClientTypes.Proxy?
 
@@ -7898,7 +7899,7 @@ public struct GetVoiceConnectorProxyOutput {
     }
 }
 
-public struct GetVoiceConnectorStreamingConfigurationInput {
+public struct GetVoiceConnectorStreamingConfigurationInput: Swift.Sendable {
     /// The Amazon Chime Voice Connector ID.
     /// This member is required.
     public var voiceConnectorId: Swift.String?
@@ -7913,7 +7914,7 @@ public struct GetVoiceConnectorStreamingConfigurationInput {
 
 extension ChimeClientTypes {
 
-    public enum NotificationTarget: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum NotificationTarget: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case eventbridge
         case sns
         case sqs
@@ -7944,8 +7945,9 @@ extension ChimeClientTypes {
 }
 
 extension ChimeClientTypes {
+
     /// The targeted recipient for a streaming configuration notification.
-    public struct StreamingNotificationTarget {
+    public struct StreamingNotificationTarget: Swift.Sendable {
         /// The streaming notification target.
         /// This member is required.
         public var notificationTarget: ChimeClientTypes.NotificationTarget?
@@ -7957,12 +7959,12 @@ extension ChimeClientTypes {
             self.notificationTarget = notificationTarget
         }
     }
-
 }
 
 extension ChimeClientTypes {
+
     /// The streaming configuration associated with an Amazon Chime Voice Connector. Specifies whether media streaming is enabled for sending to Amazon Kinesis, and shows the retention period for the Amazon Kinesis data, in hours.
-    public struct StreamingConfiguration {
+    public struct StreamingConfiguration: Swift.Sendable {
         /// The retention period, in hours, for the Amazon Kinesis data.
         /// This member is required.
         public var dataRetentionInHours: Swift.Int?
@@ -7982,10 +7984,9 @@ extension ChimeClientTypes {
             self.streamingNotificationTargets = streamingNotificationTargets
         }
     }
-
 }
 
-public struct GetVoiceConnectorStreamingConfigurationOutput {
+public struct GetVoiceConnectorStreamingConfigurationOutput: Swift.Sendable {
     /// The streaming configuration details.
     public var streamingConfiguration: ChimeClientTypes.StreamingConfiguration?
 
@@ -7997,7 +7998,7 @@ public struct GetVoiceConnectorStreamingConfigurationOutput {
     }
 }
 
-public struct GetVoiceConnectorTerminationInput {
+public struct GetVoiceConnectorTerminationInput: Swift.Sendable {
     /// The Amazon Chime Voice Connector ID.
     /// This member is required.
     public var voiceConnectorId: Swift.String?
@@ -8011,8 +8012,9 @@ public struct GetVoiceConnectorTerminationInput {
 }
 
 extension ChimeClientTypes {
+
     /// Termination settings enable your SIP hosts to make outbound calls using your Amazon Chime Voice Connector.
-    public struct Termination {
+    public struct Termination: Swift.Sendable {
         /// The countries to which calls are allowed, in ISO 3166-1 alpha-2 format. Required.
         public var callingRegions: [Swift.String]?
         /// The IP addresses allowed to make calls, in CIDR format. Required.
@@ -8039,7 +8041,6 @@ extension ChimeClientTypes {
             self.disabled = disabled
         }
     }
-
 }
 
 extension ChimeClientTypes.Termination: Swift.CustomDebugStringConvertible {
@@ -8047,7 +8048,7 @@ extension ChimeClientTypes.Termination: Swift.CustomDebugStringConvertible {
         "Termination(callingRegions: \(Swift.String(describing: callingRegions)), cidrAllowedList: \(Swift.String(describing: cidrAllowedList)), cpsLimit: \(Swift.String(describing: cpsLimit)), disabled: \(Swift.String(describing: disabled)), defaultPhoneNumber: \"CONTENT_REDACTED\")"}
 }
 
-public struct GetVoiceConnectorTerminationOutput {
+public struct GetVoiceConnectorTerminationOutput: Swift.Sendable {
     /// The termination setting details.
     public var termination: ChimeClientTypes.Termination?
 
@@ -8059,7 +8060,7 @@ public struct GetVoiceConnectorTerminationOutput {
     }
 }
 
-public struct GetVoiceConnectorTerminationHealthInput {
+public struct GetVoiceConnectorTerminationHealthInput: Swift.Sendable {
     /// The Amazon Chime Voice Connector ID.
     /// This member is required.
     public var voiceConnectorId: Swift.String?
@@ -8073,8 +8074,9 @@ public struct GetVoiceConnectorTerminationHealthInput {
 }
 
 extension ChimeClientTypes {
+
     /// The termination health details, including the source IP address and timestamp of the last successful SIP OPTIONS message from your SIP infrastructure.
-    public struct TerminationHealth {
+    public struct TerminationHealth: Swift.Sendable {
         /// The source IP address.
         public var source: Swift.String?
         /// The timestamp, in ISO 8601 format.
@@ -8089,10 +8091,9 @@ extension ChimeClientTypes {
             self.timestamp = timestamp
         }
     }
-
 }
 
-public struct GetVoiceConnectorTerminationHealthOutput {
+public struct GetVoiceConnectorTerminationHealthOutput: Swift.Sendable {
     /// The termination health details.
     public var terminationHealth: ChimeClientTypes.TerminationHealth?
 
@@ -8105,8 +8106,9 @@ public struct GetVoiceConnectorTerminationHealthOutput {
 }
 
 extension ChimeClientTypes {
+
     /// Invitation object returned after emailing users to invite them to join the Amazon Chime Team account.
-    public struct Invite {
+    public struct Invite: Swift.Sendable {
         /// The email address to which the invite is sent.
         public var emailAddress: Swift.String?
         /// The status of the invite email.
@@ -8129,7 +8131,6 @@ extension ChimeClientTypes {
             self.status = status
         }
     }
-
 }
 
 extension ChimeClientTypes.Invite: Swift.CustomDebugStringConvertible {
@@ -8137,7 +8138,7 @@ extension ChimeClientTypes.Invite: Swift.CustomDebugStringConvertible {
         "Invite(emailStatus: \(Swift.String(describing: emailStatus)), inviteId: \(Swift.String(describing: inviteId)), status: \(Swift.String(describing: status)), emailAddress: \"CONTENT_REDACTED\")"}
 }
 
-public struct InviteUsersInput {
+public struct InviteUsersInput: Swift.Sendable {
     /// The Amazon Chime account ID.
     /// This member is required.
     public var accountId: Swift.String?
@@ -8164,7 +8165,7 @@ extension InviteUsersInput: Swift.CustomDebugStringConvertible {
         "InviteUsersInput(accountId: \(Swift.String(describing: accountId)), userType: \(Swift.String(describing: userType)), userEmailList: \"CONTENT_REDACTED\")"}
 }
 
-public struct InviteUsersOutput {
+public struct InviteUsersOutput: Swift.Sendable {
     /// The email invitation details.
     public var invites: [ChimeClientTypes.Invite]?
 
@@ -8176,7 +8177,7 @@ public struct InviteUsersOutput {
     }
 }
 
-public struct ListAccountsInput {
+public struct ListAccountsInput: Swift.Sendable {
     /// The maximum number of results to return in a single call. Defaults to 100.
     public var maxResults: Swift.Int?
     /// Amazon Chime account name prefix with which to filter results.
@@ -8205,7 +8206,7 @@ extension ListAccountsInput: Swift.CustomDebugStringConvertible {
         "ListAccountsInput(maxResults: \(Swift.String(describing: maxResults)), name: \(Swift.String(describing: name)), nextToken: \(Swift.String(describing: nextToken)), userEmail: \"CONTENT_REDACTED\")"}
 }
 
-public struct ListAccountsOutput {
+public struct ListAccountsOutput: Swift.Sendable {
     /// List of Amazon Chime accounts and account details.
     public var accounts: [ChimeClientTypes.Account]?
     /// The token to use to retrieve the next page of results.
@@ -8221,7 +8222,7 @@ public struct ListAccountsOutput {
     }
 }
 
-public struct ListAppInstanceAdminsInput {
+public struct ListAppInstanceAdminsInput: Swift.Sendable {
     /// The ARN of the AppInstance.
     /// This member is required.
     public var appInstanceArn: Swift.String?
@@ -8247,7 +8248,7 @@ extension ListAppInstanceAdminsInput: Swift.CustomDebugStringConvertible {
         "ListAppInstanceAdminsInput(appInstanceArn: \(Swift.String(describing: appInstanceArn)), maxResults: \(Swift.String(describing: maxResults)), nextToken: \"CONTENT_REDACTED\")"}
 }
 
-public struct ListAppInstanceAdminsOutput {
+public struct ListAppInstanceAdminsOutput: Swift.Sendable {
     /// The information for each administrator.
     public var appInstanceAdmins: [ChimeClientTypes.AppInstanceAdminSummary]?
     /// The ARN of the AppInstance.
@@ -8272,7 +8273,7 @@ extension ListAppInstanceAdminsOutput: Swift.CustomDebugStringConvertible {
         "ListAppInstanceAdminsOutput(appInstanceAdmins: \(Swift.String(describing: appInstanceAdmins)), appInstanceArn: \(Swift.String(describing: appInstanceArn)), nextToken: \"CONTENT_REDACTED\")"}
 }
 
-public struct ListAppInstancesInput {
+public struct ListAppInstancesInput: Swift.Sendable {
     /// The maximum number of AppInstances that you want to return.
     public var maxResults: Swift.Int?
     /// The token passed by previous API requests until you reach the maximum number of AppInstances.
@@ -8293,7 +8294,7 @@ extension ListAppInstancesInput: Swift.CustomDebugStringConvertible {
         "ListAppInstancesInput(maxResults: \(Swift.String(describing: maxResults)), nextToken: \"CONTENT_REDACTED\")"}
 }
 
-public struct ListAppInstancesOutput {
+public struct ListAppInstancesOutput: Swift.Sendable {
     /// The information for each AppInstance.
     public var appInstances: [ChimeClientTypes.AppInstanceSummary]?
     /// The token passed by previous API requests until the maximum number of AppInstances is reached.
@@ -8314,7 +8315,7 @@ extension ListAppInstancesOutput: Swift.CustomDebugStringConvertible {
         "ListAppInstancesOutput(appInstances: \(Swift.String(describing: appInstances)), nextToken: \"CONTENT_REDACTED\")"}
 }
 
-public struct ListAppInstanceUsersInput {
+public struct ListAppInstanceUsersInput: Swift.Sendable {
     /// The ARN of the AppInstance.
     /// This member is required.
     public var appInstanceArn: Swift.String?
@@ -8340,7 +8341,7 @@ extension ListAppInstanceUsersInput: Swift.CustomDebugStringConvertible {
         "ListAppInstanceUsersInput(appInstanceArn: \(Swift.String(describing: appInstanceArn)), maxResults: \(Swift.String(describing: maxResults)), nextToken: \"CONTENT_REDACTED\")"}
 }
 
-public struct ListAppInstanceUsersOutput {
+public struct ListAppInstanceUsersOutput: Swift.Sendable {
     /// The ARN of the AppInstance.
     public var appInstanceArn: Swift.String?
     /// The information for each requested AppInstanceUser.
@@ -8365,7 +8366,7 @@ extension ListAppInstanceUsersOutput: Swift.CustomDebugStringConvertible {
         "ListAppInstanceUsersOutput(appInstanceArn: \(Swift.String(describing: appInstanceArn)), appInstanceUsers: \(Swift.String(describing: appInstanceUsers)), nextToken: \"CONTENT_REDACTED\")"}
 }
 
-public struct ListAttendeesInput {
+public struct ListAttendeesInput: Swift.Sendable {
     /// The maximum number of results to return in a single call.
     public var maxResults: Swift.Int?
     /// The Amazon Chime SDK meeting ID.
@@ -8386,7 +8387,7 @@ public struct ListAttendeesInput {
     }
 }
 
-public struct ListAttendeesOutput {
+public struct ListAttendeesOutput: Swift.Sendable {
     /// The Amazon Chime SDK attendee information.
     public var attendees: [ChimeClientTypes.Attendee]?
     /// The token to use to retrieve the next page of results.
@@ -8402,7 +8403,7 @@ public struct ListAttendeesOutput {
     }
 }
 
-public struct ListAttendeeTagsInput {
+public struct ListAttendeeTagsInput: Swift.Sendable {
     /// The Amazon Chime SDK attendee ID.
     /// This member is required.
     public var attendeeId: Swift.String?
@@ -8420,7 +8421,7 @@ public struct ListAttendeeTagsInput {
     }
 }
 
-public struct ListAttendeeTagsOutput {
+public struct ListAttendeeTagsOutput: Swift.Sendable {
     /// A list of tag key-value pairs.
     public var tags: [ChimeClientTypes.Tag]?
 
@@ -8432,7 +8433,7 @@ public struct ListAttendeeTagsOutput {
     }
 }
 
-public struct ListBotsInput {
+public struct ListBotsInput: Swift.Sendable {
     /// The Amazon Chime account ID.
     /// This member is required.
     public var accountId: Swift.String?
@@ -8453,7 +8454,7 @@ public struct ListBotsInput {
     }
 }
 
-public struct ListBotsOutput {
+public struct ListBotsOutput: Swift.Sendable {
     /// List of bots and bot details.
     public var bots: [ChimeClientTypes.Bot]?
     /// The token to use to retrieve the next page of results.
@@ -8469,7 +8470,7 @@ public struct ListBotsOutput {
     }
 }
 
-public struct ListChannelBansInput {
+public struct ListChannelBansInput: Swift.Sendable {
     /// The ARN of the channel.
     /// This member is required.
     public var channelArn: Swift.String?
@@ -8499,7 +8500,7 @@ extension ListChannelBansInput: Swift.CustomDebugStringConvertible {
         "ListChannelBansInput(channelArn: \(Swift.String(describing: channelArn)), chimeBearer: \(Swift.String(describing: chimeBearer)), maxResults: \(Swift.String(describing: maxResults)), nextToken: \"CONTENT_REDACTED\")"}
 }
 
-public struct ListChannelBansOutput {
+public struct ListChannelBansOutput: Swift.Sendable {
     /// The ARN of the channel.
     public var channelArn: Swift.String?
     /// The information for each requested ban.
@@ -8524,7 +8525,7 @@ extension ListChannelBansOutput: Swift.CustomDebugStringConvertible {
         "ListChannelBansOutput(channelArn: \(Swift.String(describing: channelArn)), channelBans: \(Swift.String(describing: channelBans)), nextToken: \"CONTENT_REDACTED\")"}
 }
 
-public struct ListChannelMembershipsInput {
+public struct ListChannelMembershipsInput: Swift.Sendable {
     /// The maximum number of channel memberships that you want returned.
     /// This member is required.
     public var channelArn: Swift.String?
@@ -8558,7 +8559,7 @@ extension ListChannelMembershipsInput: Swift.CustomDebugStringConvertible {
         "ListChannelMembershipsInput(channelArn: \(Swift.String(describing: channelArn)), chimeBearer: \(Swift.String(describing: chimeBearer)), maxResults: \(Swift.String(describing: maxResults)), type: \(Swift.String(describing: type)), nextToken: \"CONTENT_REDACTED\")"}
 }
 
-public struct ListChannelMembershipsOutput {
+public struct ListChannelMembershipsOutput: Swift.Sendable {
     /// The ARN of the channel.
     public var channelArn: Swift.String?
     /// The information for the requested channel memberships.
@@ -8583,7 +8584,7 @@ extension ListChannelMembershipsOutput: Swift.CustomDebugStringConvertible {
         "ListChannelMembershipsOutput(channelArn: \(Swift.String(describing: channelArn)), channelMemberships: \(Swift.String(describing: channelMemberships)), nextToken: \"CONTENT_REDACTED\")"}
 }
 
-public struct ListChannelMembershipsForAppInstanceUserInput {
+public struct ListChannelMembershipsForAppInstanceUserInput: Swift.Sendable {
     /// The ARN of the AppInstanceUsers
     public var appInstanceUserArn: Swift.String?
     /// The AppInstanceUserArn of the user that makes the API call.
@@ -8612,7 +8613,7 @@ extension ListChannelMembershipsForAppInstanceUserInput: Swift.CustomDebugString
         "ListChannelMembershipsForAppInstanceUserInput(appInstanceUserArn: \(Swift.String(describing: appInstanceUserArn)), chimeBearer: \(Swift.String(describing: chimeBearer)), maxResults: \(Swift.String(describing: maxResults)), nextToken: \"CONTENT_REDACTED\")"}
 }
 
-public struct ListChannelMembershipsForAppInstanceUserOutput {
+public struct ListChannelMembershipsForAppInstanceUserOutput: Swift.Sendable {
     /// The information for the requested channel memberships.
     public var channelMemberships: [ChimeClientTypes.ChannelMembershipForAppInstanceUserSummary]?
     /// The token passed by previous API calls until all requested users are returned.
@@ -8635,7 +8636,7 @@ extension ListChannelMembershipsForAppInstanceUserOutput: Swift.CustomDebugStrin
 
 extension ChimeClientTypes {
 
-    public enum SortOrder: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SortOrder: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case ascending
         case descending
         case sdkUnknown(Swift.String)
@@ -8662,7 +8663,7 @@ extension ChimeClientTypes {
     }
 }
 
-public struct ListChannelMessagesInput {
+public struct ListChannelMessagesInput: Swift.Sendable {
     /// The ARN of the channel.
     /// This member is required.
     public var channelArn: Swift.String?
@@ -8704,7 +8705,7 @@ extension ListChannelMessagesInput: Swift.CustomDebugStringConvertible {
         "ListChannelMessagesInput(channelArn: \(Swift.String(describing: channelArn)), chimeBearer: \(Swift.String(describing: chimeBearer)), maxResults: \(Swift.String(describing: maxResults)), notAfter: \(Swift.String(describing: notAfter)), notBefore: \(Swift.String(describing: notBefore)), sortOrder: \(Swift.String(describing: sortOrder)), nextToken: \"CONTENT_REDACTED\")"}
 }
 
-public struct ListChannelMessagesOutput {
+public struct ListChannelMessagesOutput: Swift.Sendable {
     /// The ARN of the channel containing the requested messages.
     public var channelArn: Swift.String?
     /// The information about, and content of, each requested message.
@@ -8729,7 +8730,7 @@ extension ListChannelMessagesOutput: Swift.CustomDebugStringConvertible {
         "ListChannelMessagesOutput(channelArn: \(Swift.String(describing: channelArn)), channelMessages: \(Swift.String(describing: channelMessages)), nextToken: \"CONTENT_REDACTED\")"}
 }
 
-public struct ListChannelModeratorsInput {
+public struct ListChannelModeratorsInput: Swift.Sendable {
     /// The ARN of the channel.
     /// This member is required.
     public var channelArn: Swift.String?
@@ -8759,7 +8760,7 @@ extension ListChannelModeratorsInput: Swift.CustomDebugStringConvertible {
         "ListChannelModeratorsInput(channelArn: \(Swift.String(describing: channelArn)), chimeBearer: \(Swift.String(describing: chimeBearer)), maxResults: \(Swift.String(describing: maxResults)), nextToken: \"CONTENT_REDACTED\")"}
 }
 
-public struct ListChannelModeratorsOutput {
+public struct ListChannelModeratorsOutput: Swift.Sendable {
     /// The ARN of the channel.
     public var channelArn: Swift.String?
     /// The information about and names of each moderator.
@@ -8784,7 +8785,7 @@ extension ListChannelModeratorsOutput: Swift.CustomDebugStringConvertible {
         "ListChannelModeratorsOutput(channelArn: \(Swift.String(describing: channelArn)), channelModerators: \(Swift.String(describing: channelModerators)), nextToken: \"CONTENT_REDACTED\")"}
 }
 
-public struct ListChannelsInput {
+public struct ListChannelsInput: Swift.Sendable {
     /// The ARN of the AppInstance.
     /// This member is required.
     public var appInstanceArn: Swift.String?
@@ -8818,7 +8819,7 @@ extension ListChannelsInput: Swift.CustomDebugStringConvertible {
         "ListChannelsInput(appInstanceArn: \(Swift.String(describing: appInstanceArn)), chimeBearer: \(Swift.String(describing: chimeBearer)), maxResults: \(Swift.String(describing: maxResults)), privacy: \(Swift.String(describing: privacy)), nextToken: \"CONTENT_REDACTED\")"}
 }
 
-public struct ListChannelsOutput {
+public struct ListChannelsOutput: Swift.Sendable {
     /// The information about each channel.
     public var channels: [ChimeClientTypes.ChannelSummary]?
     /// The token returned from previous API requests until the number of channels is reached.
@@ -8839,7 +8840,7 @@ extension ListChannelsOutput: Swift.CustomDebugStringConvertible {
         "ListChannelsOutput(channels: \(Swift.String(describing: channels)), nextToken: \"CONTENT_REDACTED\")"}
 }
 
-public struct ListChannelsModeratedByAppInstanceUserInput {
+public struct ListChannelsModeratedByAppInstanceUserInput: Swift.Sendable {
     /// The ARN of the user in the moderated channel.
     public var appInstanceUserArn: Swift.String?
     /// The AppInstanceUserArn of the user that makes the API call.
@@ -8868,7 +8869,7 @@ extension ListChannelsModeratedByAppInstanceUserInput: Swift.CustomDebugStringCo
         "ListChannelsModeratedByAppInstanceUserInput(appInstanceUserArn: \(Swift.String(describing: appInstanceUserArn)), chimeBearer: \(Swift.String(describing: chimeBearer)), maxResults: \(Swift.String(describing: maxResults)), nextToken: \"CONTENT_REDACTED\")"}
 }
 
-public struct ListChannelsModeratedByAppInstanceUserOutput {
+public struct ListChannelsModeratedByAppInstanceUserOutput: Swift.Sendable {
     /// The moderated channels in the request.
     public var channels: [ChimeClientTypes.ChannelModeratedByAppInstanceUserSummary]?
     /// The token returned from previous API requests until the number of channels moderated by the user is reached.
@@ -8889,7 +8890,7 @@ extension ListChannelsModeratedByAppInstanceUserOutput: Swift.CustomDebugStringC
         "ListChannelsModeratedByAppInstanceUserOutput(channels: \(Swift.String(describing: channels)), nextToken: \"CONTENT_REDACTED\")"}
 }
 
-public struct ListMediaCapturePipelinesInput {
+public struct ListMediaCapturePipelinesInput: Swift.Sendable {
     /// The maximum number of results to return in a single call. Valid Range: 1 - 99.
     public var maxResults: Swift.Int?
     /// The token used to retrieve the next page of results.
@@ -8905,7 +8906,7 @@ public struct ListMediaCapturePipelinesInput {
     }
 }
 
-public struct ListMediaCapturePipelinesOutput {
+public struct ListMediaCapturePipelinesOutput: Swift.Sendable {
     /// The media capture pipeline objects in the list.
     public var mediaCapturePipelines: [ChimeClientTypes.MediaCapturePipeline]?
     /// The token used to retrieve the next page of results.
@@ -8921,7 +8922,7 @@ public struct ListMediaCapturePipelinesOutput {
     }
 }
 
-public struct ListMeetingsInput {
+public struct ListMeetingsInput: Swift.Sendable {
     /// The maximum number of results to return in a single call.
     public var maxResults: Swift.Int?
     /// The token to use to retrieve the next page of results.
@@ -8937,7 +8938,7 @@ public struct ListMeetingsInput {
     }
 }
 
-public struct ListMeetingsOutput {
+public struct ListMeetingsOutput: Swift.Sendable {
     /// The Amazon Chime SDK meeting information.
     public var meetings: [ChimeClientTypes.Meeting]?
     /// The token to use to retrieve the next page of results.
@@ -8953,7 +8954,7 @@ public struct ListMeetingsOutput {
     }
 }
 
-public struct ListMeetingTagsInput {
+public struct ListMeetingTagsInput: Swift.Sendable {
     /// The Amazon Chime SDK meeting ID.
     /// This member is required.
     public var meetingId: Swift.String?
@@ -8966,7 +8967,7 @@ public struct ListMeetingTagsInput {
     }
 }
 
-public struct ListMeetingTagsOutput {
+public struct ListMeetingTagsOutput: Swift.Sendable {
     /// A list of tag key-value pairs.
     public var tags: [ChimeClientTypes.Tag]?
 
@@ -8978,7 +8979,7 @@ public struct ListMeetingTagsOutput {
     }
 }
 
-public struct ListPhoneNumberOrdersInput {
+public struct ListPhoneNumberOrdersInput: Swift.Sendable {
     /// The maximum number of results to return in a single call.
     public var maxResults: Swift.Int?
     /// The token to use to retrieve the next page of results.
@@ -8994,7 +8995,7 @@ public struct ListPhoneNumberOrdersInput {
     }
 }
 
-public struct ListPhoneNumberOrdersOutput {
+public struct ListPhoneNumberOrdersOutput: Swift.Sendable {
     /// The token to use to retrieve the next page of results.
     public var nextToken: Swift.String?
     /// The phone number order details.
@@ -9010,7 +9011,7 @@ public struct ListPhoneNumberOrdersOutput {
     }
 }
 
-public struct ListPhoneNumbersInput {
+public struct ListPhoneNumbersInput: Swift.Sendable {
     /// The filter to use to limit the number of results.
     public var filterName: ChimeClientTypes.PhoneNumberAssociationName?
     /// The value to use for the filter.
@@ -9042,7 +9043,7 @@ public struct ListPhoneNumbersInput {
     }
 }
 
-public struct ListPhoneNumbersOutput {
+public struct ListPhoneNumbersOutput: Swift.Sendable {
     /// The token to use to retrieve the next page of results.
     public var nextToken: Swift.String?
     /// The phone number details.
@@ -9058,7 +9059,7 @@ public struct ListPhoneNumbersOutput {
     }
 }
 
-public struct ListProxySessionsInput {
+public struct ListProxySessionsInput: Swift.Sendable {
     /// The maximum number of results to return in a single call.
     public var maxResults: Swift.Int?
     /// The token to use to retrieve the next page of results.
@@ -9083,7 +9084,7 @@ public struct ListProxySessionsInput {
     }
 }
 
-public struct ListProxySessionsOutput {
+public struct ListProxySessionsOutput: Swift.Sendable {
     /// The token to use to retrieve the next page of results.
     public var nextToken: Swift.String?
     /// The proxy session details.
@@ -9099,7 +9100,7 @@ public struct ListProxySessionsOutput {
     }
 }
 
-public struct ListRoomMembershipsInput {
+public struct ListRoomMembershipsInput: Swift.Sendable {
     /// The Amazon Chime account ID.
     /// This member is required.
     public var accountId: Swift.String?
@@ -9125,7 +9126,7 @@ public struct ListRoomMembershipsInput {
     }
 }
 
-public struct ListRoomMembershipsOutput {
+public struct ListRoomMembershipsOutput: Swift.Sendable {
     /// The token to use to retrieve the next page of results.
     public var nextToken: Swift.String?
     /// The room membership details.
@@ -9141,7 +9142,7 @@ public struct ListRoomMembershipsOutput {
     }
 }
 
-public struct ListRoomsInput {
+public struct ListRoomsInput: Swift.Sendable {
     /// The Amazon Chime account ID.
     /// This member is required.
     public var accountId: Swift.String?
@@ -9166,7 +9167,7 @@ public struct ListRoomsInput {
     }
 }
 
-public struct ListRoomsOutput {
+public struct ListRoomsOutput: Swift.Sendable {
     /// The token to use to retrieve the next page of results.
     public var nextToken: Swift.String?
     /// The room details.
@@ -9182,7 +9183,7 @@ public struct ListRoomsOutput {
     }
 }
 
-public struct ListSipMediaApplicationsInput {
+public struct ListSipMediaApplicationsInput: Swift.Sendable {
     /// The maximum number of results to return in a single call. Defaults to 100.
     public var maxResults: Swift.Int?
     /// The token to use to retrieve the next page of results.
@@ -9198,7 +9199,7 @@ public struct ListSipMediaApplicationsInput {
     }
 }
 
-public struct ListSipMediaApplicationsOutput {
+public struct ListSipMediaApplicationsOutput: Swift.Sendable {
     /// The token to use to retrieve the next page of results.
     public var nextToken: Swift.String?
     /// List of SIP media applications and application details.
@@ -9214,7 +9215,7 @@ public struct ListSipMediaApplicationsOutput {
     }
 }
 
-public struct ListSipRulesInput {
+public struct ListSipRulesInput: Swift.Sendable {
     /// The maximum number of results to return in a single call. Defaults to 100.
     public var maxResults: Swift.Int?
     /// The token to use to retrieve the next page of results.
@@ -9234,7 +9235,7 @@ public struct ListSipRulesInput {
     }
 }
 
-public struct ListSipRulesOutput {
+public struct ListSipRulesOutput: Swift.Sendable {
     /// The token to use to retrieve the next page of results.
     public var nextToken: Swift.String?
     /// List of SIP rules and rule details.
@@ -9250,7 +9251,7 @@ public struct ListSipRulesOutput {
     }
 }
 
-public struct ListSupportedPhoneNumberCountriesInput {
+public struct ListSupportedPhoneNumberCountriesInput: Swift.Sendable {
     /// The phone number product type.
     /// This member is required.
     public var productType: ChimeClientTypes.PhoneNumberProductType?
@@ -9264,8 +9265,9 @@ public struct ListSupportedPhoneNumberCountriesInput {
 }
 
 extension ChimeClientTypes {
+
     /// The phone number country.
-    public struct PhoneNumberCountry {
+    public struct PhoneNumberCountry: Swift.Sendable {
         /// The phone number country code. Format: ISO 3166-1 alpha-2.
         public var countryCode: Swift.String?
         /// The supported phone number types.
@@ -9280,10 +9282,9 @@ extension ChimeClientTypes {
             self.supportedPhoneNumberTypes = supportedPhoneNumberTypes
         }
     }
-
 }
 
-public struct ListSupportedPhoneNumberCountriesOutput {
+public struct ListSupportedPhoneNumberCountriesOutput: Swift.Sendable {
     /// The supported phone number countries.
     public var phoneNumberCountries: [ChimeClientTypes.PhoneNumberCountry]?
 
@@ -9295,7 +9296,7 @@ public struct ListSupportedPhoneNumberCountriesOutput {
     }
 }
 
-public struct ListTagsForResourceInput {
+public struct ListTagsForResourceInput: Swift.Sendable {
     /// The resource ARN.
     /// This member is required.
     public var resourceARN: Swift.String?
@@ -9313,7 +9314,7 @@ extension ListTagsForResourceInput: Swift.CustomDebugStringConvertible {
         "ListTagsForResourceInput(resourceARN: \"CONTENT_REDACTED\")"}
 }
 
-public struct ListTagsForResourceOutput {
+public struct ListTagsForResourceOutput: Swift.Sendable {
     /// A list of tag-key value pairs.
     public var tags: [ChimeClientTypes.Tag]?
 
@@ -9325,7 +9326,7 @@ public struct ListTagsForResourceOutput {
     }
 }
 
-public struct ListUsersInput {
+public struct ListUsersInput: Swift.Sendable {
     /// The Amazon Chime account ID.
     /// This member is required.
     public var accountId: Swift.String?
@@ -9359,7 +9360,7 @@ extension ListUsersInput: Swift.CustomDebugStringConvertible {
         "ListUsersInput(accountId: \(Swift.String(describing: accountId)), maxResults: \(Swift.String(describing: maxResults)), nextToken: \(Swift.String(describing: nextToken)), userType: \(Swift.String(describing: userType)), userEmail: \"CONTENT_REDACTED\")"}
 }
 
-public struct ListUsersOutput {
+public struct ListUsersOutput: Swift.Sendable {
     /// The token to use to retrieve the next page of results.
     public var nextToken: Swift.String?
     /// List of users and user details.
@@ -9375,7 +9376,7 @@ public struct ListUsersOutput {
     }
 }
 
-public struct ListVoiceConnectorGroupsInput {
+public struct ListVoiceConnectorGroupsInput: Swift.Sendable {
     /// The maximum number of results to return in a single call.
     public var maxResults: Swift.Int?
     /// The token to use to retrieve the next page of results.
@@ -9391,7 +9392,7 @@ public struct ListVoiceConnectorGroupsInput {
     }
 }
 
-public struct ListVoiceConnectorGroupsOutput {
+public struct ListVoiceConnectorGroupsOutput: Swift.Sendable {
     /// The token to use to retrieve the next page of results.
     public var nextToken: Swift.String?
     /// The details of the Amazon Chime Voice Connector groups.
@@ -9407,7 +9408,7 @@ public struct ListVoiceConnectorGroupsOutput {
     }
 }
 
-public struct ListVoiceConnectorsInput {
+public struct ListVoiceConnectorsInput: Swift.Sendable {
     /// The maximum number of results to return in a single call.
     public var maxResults: Swift.Int?
     /// The token to use to retrieve the next page of results.
@@ -9423,7 +9424,7 @@ public struct ListVoiceConnectorsInput {
     }
 }
 
-public struct ListVoiceConnectorsOutput {
+public struct ListVoiceConnectorsOutput: Swift.Sendable {
     /// The token to use to retrieve the next page of results.
     public var nextToken: Swift.String?
     /// The details of the Amazon Chime Voice Connectors.
@@ -9439,7 +9440,7 @@ public struct ListVoiceConnectorsOutput {
     }
 }
 
-public struct ListVoiceConnectorTerminationCredentialsInput {
+public struct ListVoiceConnectorTerminationCredentialsInput: Swift.Sendable {
     /// The Amazon Chime Voice Connector ID.
     /// This member is required.
     public var voiceConnectorId: Swift.String?
@@ -9452,7 +9453,7 @@ public struct ListVoiceConnectorTerminationCredentialsInput {
     }
 }
 
-public struct ListVoiceConnectorTerminationCredentialsOutput {
+public struct ListVoiceConnectorTerminationCredentialsOutput: Swift.Sendable {
     /// A list of user names.
     public var usernames: [Swift.String]?
 
@@ -9469,7 +9470,7 @@ extension ListVoiceConnectorTerminationCredentialsOutput: Swift.CustomDebugStrin
         "ListVoiceConnectorTerminationCredentialsOutput(usernames: \"CONTENT_REDACTED\")"}
 }
 
-public struct LogoutUserInput {
+public struct LogoutUserInput: Swift.Sendable {
     /// The Amazon Chime account ID.
     /// This member is required.
     public var accountId: Swift.String?
@@ -9487,12 +9488,12 @@ public struct LogoutUserInput {
     }
 }
 
-public struct LogoutUserOutput {
+public struct LogoutUserOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct PutAppInstanceRetentionSettingsInput {
+public struct PutAppInstanceRetentionSettingsInput: Swift.Sendable {
     /// The ARN of the AppInstance.
     /// This member is required.
     public var appInstanceArn: Swift.String?
@@ -9510,7 +9511,7 @@ public struct PutAppInstanceRetentionSettingsInput {
     }
 }
 
-public struct PutAppInstanceRetentionSettingsOutput {
+public struct PutAppInstanceRetentionSettingsOutput: Swift.Sendable {
     /// The time in days to retain data. Data type: number.
     public var appInstanceRetentionSettings: ChimeClientTypes.AppInstanceRetentionSettings?
     /// The time at which the API deletes data.
@@ -9526,7 +9527,7 @@ public struct PutAppInstanceRetentionSettingsOutput {
     }
 }
 
-public struct PutAppInstanceStreamingConfigurationsInput {
+public struct PutAppInstanceStreamingConfigurationsInput: Swift.Sendable {
     /// The ARN of the AppInstance.
     /// This member is required.
     public var appInstanceArn: Swift.String?
@@ -9544,7 +9545,7 @@ public struct PutAppInstanceStreamingConfigurationsInput {
     }
 }
 
-public struct PutAppInstanceStreamingConfigurationsOutput {
+public struct PutAppInstanceStreamingConfigurationsOutput: Swift.Sendable {
     /// The streaming configurations of an AppInstance.
     public var appInstanceStreamingConfigurations: [ChimeClientTypes.AppInstanceStreamingConfiguration]?
 
@@ -9556,7 +9557,7 @@ public struct PutAppInstanceStreamingConfigurationsOutput {
     }
 }
 
-public struct PutEventsConfigurationInput {
+public struct PutEventsConfigurationInput: Swift.Sendable {
     /// The Amazon Chime account ID.
     /// This member is required.
     public var accountId: Swift.String?
@@ -9587,7 +9588,7 @@ extension PutEventsConfigurationInput: Swift.CustomDebugStringConvertible {
         "PutEventsConfigurationInput(accountId: \(Swift.String(describing: accountId)), botId: \(Swift.String(describing: botId)), lambdaFunctionArn: \"CONTENT_REDACTED\", outboundEventsHTTPSEndpoint: \"CONTENT_REDACTED\")"}
 }
 
-public struct PutEventsConfigurationOutput {
+public struct PutEventsConfigurationOutput: Swift.Sendable {
     /// The configuration that allows a bot to receive outgoing events. Can be an HTTPS endpoint or an AWS Lambda function ARN.
     public var eventsConfiguration: ChimeClientTypes.EventsConfiguration?
 
@@ -9599,7 +9600,7 @@ public struct PutEventsConfigurationOutput {
     }
 }
 
-public struct PutRetentionSettingsInput {
+public struct PutRetentionSettingsInput: Swift.Sendable {
     /// The Amazon Chime account ID.
     /// This member is required.
     public var accountId: Swift.String?
@@ -9617,7 +9618,7 @@ public struct PutRetentionSettingsInput {
     }
 }
 
-public struct PutRetentionSettingsOutput {
+public struct PutRetentionSettingsOutput: Swift.Sendable {
     /// The timestamp representing the time at which the specified items are permanently deleted, in ISO 8601 format.
     public var initiateDeletionTimestamp: Foundation.Date?
     /// The retention settings.
@@ -9633,7 +9634,7 @@ public struct PutRetentionSettingsOutput {
     }
 }
 
-public struct PutSipMediaApplicationLoggingConfigurationInput {
+public struct PutSipMediaApplicationLoggingConfigurationInput: Swift.Sendable {
     /// The SIP media application ID.
     /// This member is required.
     public var sipMediaApplicationId: Swift.String?
@@ -9650,7 +9651,7 @@ public struct PutSipMediaApplicationLoggingConfigurationInput {
     }
 }
 
-public struct PutSipMediaApplicationLoggingConfigurationOutput {
+public struct PutSipMediaApplicationLoggingConfigurationOutput: Swift.Sendable {
     /// The logging configuration of the SIP media application.
     public var sipMediaApplicationLoggingConfiguration: ChimeClientTypes.SipMediaApplicationLoggingConfiguration?
 
@@ -9662,7 +9663,7 @@ public struct PutSipMediaApplicationLoggingConfigurationOutput {
     }
 }
 
-public struct PutVoiceConnectorEmergencyCallingConfigurationInput {
+public struct PutVoiceConnectorEmergencyCallingConfigurationInput: Swift.Sendable {
     /// The emergency calling configuration details.
     /// This member is required.
     public var emergencyCallingConfiguration: ChimeClientTypes.EmergencyCallingConfiguration?
@@ -9680,7 +9681,7 @@ public struct PutVoiceConnectorEmergencyCallingConfigurationInput {
     }
 }
 
-public struct PutVoiceConnectorEmergencyCallingConfigurationOutput {
+public struct PutVoiceConnectorEmergencyCallingConfigurationOutput: Swift.Sendable {
     /// The emergency calling configuration details.
     public var emergencyCallingConfiguration: ChimeClientTypes.EmergencyCallingConfiguration?
 
@@ -9692,7 +9693,7 @@ public struct PutVoiceConnectorEmergencyCallingConfigurationOutput {
     }
 }
 
-public struct PutVoiceConnectorLoggingConfigurationInput {
+public struct PutVoiceConnectorLoggingConfigurationInput: Swift.Sendable {
     /// The logging configuration details to add.
     /// This member is required.
     public var loggingConfiguration: ChimeClientTypes.LoggingConfiguration?
@@ -9710,7 +9711,7 @@ public struct PutVoiceConnectorLoggingConfigurationInput {
     }
 }
 
-public struct PutVoiceConnectorLoggingConfigurationOutput {
+public struct PutVoiceConnectorLoggingConfigurationOutput: Swift.Sendable {
     /// The updated logging configuration details.
     public var loggingConfiguration: ChimeClientTypes.LoggingConfiguration?
 
@@ -9722,7 +9723,7 @@ public struct PutVoiceConnectorLoggingConfigurationOutput {
     }
 }
 
-public struct PutVoiceConnectorOriginationInput {
+public struct PutVoiceConnectorOriginationInput: Swift.Sendable {
     /// The origination setting details to add.
     /// This member is required.
     public var origination: ChimeClientTypes.Origination?
@@ -9740,7 +9741,7 @@ public struct PutVoiceConnectorOriginationInput {
     }
 }
 
-public struct PutVoiceConnectorOriginationOutput {
+public struct PutVoiceConnectorOriginationOutput: Swift.Sendable {
     /// The updated origination setting details.
     public var origination: ChimeClientTypes.Origination?
 
@@ -9752,7 +9753,7 @@ public struct PutVoiceConnectorOriginationOutput {
     }
 }
 
-public struct PutVoiceConnectorProxyInput {
+public struct PutVoiceConnectorProxyInput: Swift.Sendable {
     /// The default number of minutes allowed for proxy sessions.
     /// This member is required.
     public var defaultSessionExpiryMinutes: Swift.Int?
@@ -9788,7 +9789,7 @@ extension PutVoiceConnectorProxyInput: Swift.CustomDebugStringConvertible {
         "PutVoiceConnectorProxyInput(defaultSessionExpiryMinutes: \(Swift.String(describing: defaultSessionExpiryMinutes)), disabled: \(Swift.String(describing: disabled)), phoneNumberPoolCountries: \(Swift.String(describing: phoneNumberPoolCountries)), voiceConnectorId: \(Swift.String(describing: voiceConnectorId)), fallBackPhoneNumber: \"CONTENT_REDACTED\")"}
 }
 
-public struct PutVoiceConnectorProxyOutput {
+public struct PutVoiceConnectorProxyOutput: Swift.Sendable {
     /// The proxy configuration details.
     public var proxy: ChimeClientTypes.Proxy?
 
@@ -9800,7 +9801,7 @@ public struct PutVoiceConnectorProxyOutput {
     }
 }
 
-public struct PutVoiceConnectorStreamingConfigurationInput {
+public struct PutVoiceConnectorStreamingConfigurationInput: Swift.Sendable {
     /// The streaming configuration details to add.
     /// This member is required.
     public var streamingConfiguration: ChimeClientTypes.StreamingConfiguration?
@@ -9818,7 +9819,7 @@ public struct PutVoiceConnectorStreamingConfigurationInput {
     }
 }
 
-public struct PutVoiceConnectorStreamingConfigurationOutput {
+public struct PutVoiceConnectorStreamingConfigurationOutput: Swift.Sendable {
     /// The updated streaming configuration details.
     public var streamingConfiguration: ChimeClientTypes.StreamingConfiguration?
 
@@ -9830,7 +9831,7 @@ public struct PutVoiceConnectorStreamingConfigurationOutput {
     }
 }
 
-public struct PutVoiceConnectorTerminationInput {
+public struct PutVoiceConnectorTerminationInput: Swift.Sendable {
     /// The termination setting details to add.
     /// This member is required.
     public var termination: ChimeClientTypes.Termination?
@@ -9848,7 +9849,7 @@ public struct PutVoiceConnectorTerminationInput {
     }
 }
 
-public struct PutVoiceConnectorTerminationOutput {
+public struct PutVoiceConnectorTerminationOutput: Swift.Sendable {
     /// The updated termination setting details.
     public var termination: ChimeClientTypes.Termination?
 
@@ -9860,7 +9861,7 @@ public struct PutVoiceConnectorTerminationOutput {
     }
 }
 
-public struct PutVoiceConnectorTerminationCredentialsInput {
+public struct PutVoiceConnectorTerminationCredentialsInput: Swift.Sendable {
     /// The termination SIP credentials.
     public var credentials: [ChimeClientTypes.Credential]?
     /// The Amazon Chime Voice Connector ID.
@@ -9877,7 +9878,7 @@ public struct PutVoiceConnectorTerminationCredentialsInput {
     }
 }
 
-public struct RedactChannelMessageInput {
+public struct RedactChannelMessageInput: Swift.Sendable {
     /// The ARN of the channel containing the messages that you want to redact.
     /// This member is required.
     public var channelArn: Swift.String?
@@ -9899,7 +9900,7 @@ public struct RedactChannelMessageInput {
     }
 }
 
-public struct RedactChannelMessageOutput {
+public struct RedactChannelMessageOutput: Swift.Sendable {
     /// The ARN of the channel containing the messages that you want to redact.
     public var channelArn: Swift.String?
     /// The ID of the message being redacted.
@@ -9915,7 +9916,7 @@ public struct RedactChannelMessageOutput {
     }
 }
 
-public struct RedactConversationMessageInput {
+public struct RedactConversationMessageInput: Swift.Sendable {
     /// The Amazon Chime account ID.
     /// This member is required.
     public var accountId: Swift.String?
@@ -9938,12 +9939,12 @@ public struct RedactConversationMessageInput {
     }
 }
 
-public struct RedactConversationMessageOutput {
+public struct RedactConversationMessageOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct RedactRoomMessageInput {
+public struct RedactRoomMessageInput: Swift.Sendable {
     /// The Amazon Chime account ID.
     /// This member is required.
     public var accountId: Swift.String?
@@ -9966,12 +9967,12 @@ public struct RedactRoomMessageInput {
     }
 }
 
-public struct RedactRoomMessageOutput {
+public struct RedactRoomMessageOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct RegenerateSecurityTokenInput {
+public struct RegenerateSecurityTokenInput: Swift.Sendable {
     /// The Amazon Chime account ID.
     /// This member is required.
     public var accountId: Swift.String?
@@ -9989,7 +9990,7 @@ public struct RegenerateSecurityTokenInput {
     }
 }
 
-public struct RegenerateSecurityTokenOutput {
+public struct RegenerateSecurityTokenOutput: Swift.Sendable {
     /// A resource that allows Enterprise account administrators to configure an interface that receives events from Amazon Chime.
     public var bot: ChimeClientTypes.Bot?
 
@@ -10001,7 +10002,7 @@ public struct RegenerateSecurityTokenOutput {
     }
 }
 
-public struct ResetPersonalPINInput {
+public struct ResetPersonalPINInput: Swift.Sendable {
     /// The Amazon Chime account ID.
     /// This member is required.
     public var accountId: Swift.String?
@@ -10019,7 +10020,7 @@ public struct ResetPersonalPINInput {
     }
 }
 
-public struct ResetPersonalPINOutput {
+public struct ResetPersonalPINOutput: Swift.Sendable {
     /// The user details and new personal meeting PIN.
     public var user: ChimeClientTypes.User?
 
@@ -10031,7 +10032,7 @@ public struct ResetPersonalPINOutput {
     }
 }
 
-public struct RestorePhoneNumberInput {
+public struct RestorePhoneNumberInput: Swift.Sendable {
     /// The phone number.
     /// This member is required.
     public var phoneNumberId: Swift.String?
@@ -10044,7 +10045,7 @@ public struct RestorePhoneNumberInput {
     }
 }
 
-public struct RestorePhoneNumberOutput {
+public struct RestorePhoneNumberOutput: Swift.Sendable {
     /// The phone number details.
     public var phoneNumber: ChimeClientTypes.PhoneNumber?
 
@@ -10056,7 +10057,7 @@ public struct RestorePhoneNumberOutput {
     }
 }
 
-public struct SearchAvailablePhoneNumbersInput {
+public struct SearchAvailablePhoneNumbersInput: Swift.Sendable {
     /// The area code used to filter results. Only applies to the US.
     public var areaCode: Swift.String?
     /// The city used to filter results. Only applies to the US.
@@ -10096,7 +10097,7 @@ public struct SearchAvailablePhoneNumbersInput {
     }
 }
 
-public struct SearchAvailablePhoneNumbersOutput {
+public struct SearchAvailablePhoneNumbersOutput: Swift.Sendable {
     /// List of phone numbers, in E.164 format.
     public var e164PhoneNumbers: [Swift.String]?
     /// The token used to retrieve the next page of search results.
@@ -10117,7 +10118,7 @@ extension SearchAvailablePhoneNumbersOutput: Swift.CustomDebugStringConvertible 
         "SearchAvailablePhoneNumbersOutput(nextToken: \(Swift.String(describing: nextToken)), e164PhoneNumbers: \"CONTENT_REDACTED\")"}
 }
 
-public struct SendChannelMessageInput {
+public struct SendChannelMessageInput: Swift.Sendable {
     /// The ARN of the channel.
     /// This member is required.
     public var channelArn: Swift.String?
@@ -10163,7 +10164,7 @@ extension SendChannelMessageInput: Swift.CustomDebugStringConvertible {
         "SendChannelMessageInput(channelArn: \(Swift.String(describing: channelArn)), chimeBearer: \(Swift.String(describing: chimeBearer)), persistence: \(Swift.String(describing: persistence)), type: \(Swift.String(describing: type)), clientRequestToken: \"CONTENT_REDACTED\", content: \"CONTENT_REDACTED\", metadata: \"CONTENT_REDACTED\")"}
 }
 
-public struct SendChannelMessageOutput {
+public struct SendChannelMessageOutput: Swift.Sendable {
     /// The ARN of the channel.
     public var channelArn: Swift.String?
     /// The ID string assigned to each message.
@@ -10180,8 +10181,9 @@ public struct SendChannelMessageOutput {
 }
 
 extension ChimeClientTypes {
+
     /// The configuration for the current transcription operation. Must contain EngineTranscribeSettings or EngineTranscribeMedicalSettings.
-    public struct TranscriptionConfiguration {
+    public struct TranscriptionConfiguration: Swift.Sendable {
         /// The transcription configuration settings passed to Amazon Transcribe Medical.
         public var engineTranscribeMedicalSettings: ChimeClientTypes.EngineTranscribeMedicalSettings?
         /// The transcription configuration settings passed to Amazon Transcribe.
@@ -10196,10 +10198,9 @@ extension ChimeClientTypes {
             self.engineTranscribeSettings = engineTranscribeSettings
         }
     }
-
 }
 
-public struct StartMeetingTranscriptionInput {
+public struct StartMeetingTranscriptionInput: Swift.Sendable {
     /// The unique ID of the meeting being transcribed.
     /// This member is required.
     public var meetingId: Swift.String?
@@ -10217,12 +10218,12 @@ public struct StartMeetingTranscriptionInput {
     }
 }
 
-public struct StartMeetingTranscriptionOutput {
+public struct StartMeetingTranscriptionOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct StopMeetingTranscriptionInput {
+public struct StopMeetingTranscriptionInput: Swift.Sendable {
     /// The unique ID of the meeting for which you stop transcription.
     /// This member is required.
     public var meetingId: Swift.String?
@@ -10235,12 +10236,12 @@ public struct StopMeetingTranscriptionInput {
     }
 }
 
-public struct StopMeetingTranscriptionOutput {
+public struct StopMeetingTranscriptionOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct TagAttendeeInput {
+public struct TagAttendeeInput: Swift.Sendable {
     /// The Amazon Chime SDK attendee ID.
     /// This member is required.
     public var attendeeId: Swift.String?
@@ -10263,7 +10264,7 @@ public struct TagAttendeeInput {
     }
 }
 
-public struct TagMeetingInput {
+public struct TagMeetingInput: Swift.Sendable {
     /// The Amazon Chime SDK meeting ID.
     /// This member is required.
     public var meetingId: Swift.String?
@@ -10281,7 +10282,7 @@ public struct TagMeetingInput {
     }
 }
 
-public struct TagResourceInput {
+public struct TagResourceInput: Swift.Sendable {
     /// The resource ARN.
     /// This member is required.
     public var resourceARN: Swift.String?
@@ -10304,7 +10305,7 @@ extension TagResourceInput: Swift.CustomDebugStringConvertible {
         "TagResourceInput(tags: \(Swift.String(describing: tags)), resourceARN: \"CONTENT_REDACTED\")"}
 }
 
-public struct UntagAttendeeInput {
+public struct UntagAttendeeInput: Swift.Sendable {
     /// The Amazon Chime SDK attendee ID.
     /// This member is required.
     public var attendeeId: Swift.String?
@@ -10332,7 +10333,7 @@ extension UntagAttendeeInput: Swift.CustomDebugStringConvertible {
         "UntagAttendeeInput(attendeeId: \(Swift.String(describing: attendeeId)), meetingId: \(Swift.String(describing: meetingId)), tagKeys: \"CONTENT_REDACTED\")"}
 }
 
-public struct UntagMeetingInput {
+public struct UntagMeetingInput: Swift.Sendable {
     /// The Amazon Chime SDK meeting ID.
     /// This member is required.
     public var meetingId: Swift.String?
@@ -10355,7 +10356,7 @@ extension UntagMeetingInput: Swift.CustomDebugStringConvertible {
         "UntagMeetingInput(meetingId: \(Swift.String(describing: meetingId)), tagKeys: \"CONTENT_REDACTED\")"}
 }
 
-public struct UntagResourceInput {
+public struct UntagResourceInput: Swift.Sendable {
     /// The resource ARN.
     /// This member is required.
     public var resourceARN: Swift.String?
@@ -10378,7 +10379,7 @@ extension UntagResourceInput: Swift.CustomDebugStringConvertible {
         "UntagResourceInput(resourceARN: \"CONTENT_REDACTED\", tagKeys: \"CONTENT_REDACTED\")"}
 }
 
-public struct UpdateAccountInput {
+public struct UpdateAccountInput: Swift.Sendable {
     /// The Amazon Chime account ID.
     /// This member is required.
     public var accountId: Swift.String?
@@ -10399,7 +10400,7 @@ public struct UpdateAccountInput {
     }
 }
 
-public struct UpdateAccountOutput {
+public struct UpdateAccountOutput: Swift.Sendable {
     /// The updated Amazon Chime account details.
     public var account: ChimeClientTypes.Account?
 
@@ -10411,7 +10412,7 @@ public struct UpdateAccountOutput {
     }
 }
 
-public struct UpdateAccountSettingsInput {
+public struct UpdateAccountSettingsInput: Swift.Sendable {
     /// The Amazon Chime account ID.
     /// This member is required.
     public var accountId: Swift.String?
@@ -10429,12 +10430,12 @@ public struct UpdateAccountSettingsInput {
     }
 }
 
-public struct UpdateAccountSettingsOutput {
+public struct UpdateAccountSettingsOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdateAppInstanceInput {
+public struct UpdateAppInstanceInput: Swift.Sendable {
     /// The ARN of the AppInstance.
     /// This member is required.
     public var appInstanceArn: Swift.String?
@@ -10461,7 +10462,7 @@ extension UpdateAppInstanceInput: Swift.CustomDebugStringConvertible {
         "UpdateAppInstanceInput(appInstanceArn: \(Swift.String(describing: appInstanceArn)), metadata: \"CONTENT_REDACTED\", name: \"CONTENT_REDACTED\")"}
 }
 
-public struct UpdateAppInstanceOutput {
+public struct UpdateAppInstanceOutput: Swift.Sendable {
     /// The ARN of the AppInstance.
     public var appInstanceArn: Swift.String?
 
@@ -10473,7 +10474,7 @@ public struct UpdateAppInstanceOutput {
     }
 }
 
-public struct UpdateAppInstanceUserInput {
+public struct UpdateAppInstanceUserInput: Swift.Sendable {
     /// The ARN of the AppInstanceUser.
     /// This member is required.
     public var appInstanceUserArn: Swift.String?
@@ -10500,7 +10501,7 @@ extension UpdateAppInstanceUserInput: Swift.CustomDebugStringConvertible {
         "UpdateAppInstanceUserInput(appInstanceUserArn: \(Swift.String(describing: appInstanceUserArn)), metadata: \"CONTENT_REDACTED\", name: \"CONTENT_REDACTED\")"}
 }
 
-public struct UpdateAppInstanceUserOutput {
+public struct UpdateAppInstanceUserOutput: Swift.Sendable {
     /// The ARN of the AppInstanceUser.
     public var appInstanceUserArn: Swift.String?
 
@@ -10512,7 +10513,7 @@ public struct UpdateAppInstanceUserOutput {
     }
 }
 
-public struct UpdateBotInput {
+public struct UpdateBotInput: Swift.Sendable {
     /// The Amazon Chime account ID.
     /// This member is required.
     public var accountId: Swift.String?
@@ -10534,7 +10535,7 @@ public struct UpdateBotInput {
     }
 }
 
-public struct UpdateBotOutput {
+public struct UpdateBotOutput: Swift.Sendable {
     /// The updated bot details.
     public var bot: ChimeClientTypes.Bot?
 
@@ -10546,7 +10547,7 @@ public struct UpdateBotOutput {
     }
 }
 
-public struct UpdateChannelInput {
+public struct UpdateChannelInput: Swift.Sendable {
     /// The ARN of the channel.
     /// This member is required.
     public var channelArn: Swift.String?
@@ -10582,7 +10583,7 @@ extension UpdateChannelInput: Swift.CustomDebugStringConvertible {
         "UpdateChannelInput(channelArn: \(Swift.String(describing: channelArn)), chimeBearer: \(Swift.String(describing: chimeBearer)), mode: \(Swift.String(describing: mode)), metadata: \"CONTENT_REDACTED\", name: \"CONTENT_REDACTED\")"}
 }
 
-public struct UpdateChannelOutput {
+public struct UpdateChannelOutput: Swift.Sendable {
     /// The ARN of the channel.
     public var channelArn: Swift.String?
 
@@ -10594,7 +10595,7 @@ public struct UpdateChannelOutput {
     }
 }
 
-public struct UpdateChannelMessageInput {
+public struct UpdateChannelMessageInput: Swift.Sendable {
     /// The ARN of the channel.
     /// This member is required.
     public var channelArn: Swift.String?
@@ -10629,7 +10630,7 @@ extension UpdateChannelMessageInput: Swift.CustomDebugStringConvertible {
         "UpdateChannelMessageInput(channelArn: \(Swift.String(describing: channelArn)), chimeBearer: \(Swift.String(describing: chimeBearer)), messageId: \(Swift.String(describing: messageId)), content: \"CONTENT_REDACTED\", metadata: \"CONTENT_REDACTED\")"}
 }
 
-public struct UpdateChannelMessageOutput {
+public struct UpdateChannelMessageOutput: Swift.Sendable {
     /// The ARN of the channel.
     public var channelArn: Swift.String?
     /// The ID string of the message being updated.
@@ -10645,7 +10646,7 @@ public struct UpdateChannelMessageOutput {
     }
 }
 
-public struct UpdateChannelReadMarkerInput {
+public struct UpdateChannelReadMarkerInput: Swift.Sendable {
     /// The ARN of the channel.
     /// This member is required.
     public var channelArn: Swift.String?
@@ -10662,7 +10663,7 @@ public struct UpdateChannelReadMarkerInput {
     }
 }
 
-public struct UpdateChannelReadMarkerOutput {
+public struct UpdateChannelReadMarkerOutput: Swift.Sendable {
     /// The ARN of the channel.
     public var channelArn: Swift.String?
 
@@ -10674,7 +10675,7 @@ public struct UpdateChannelReadMarkerOutput {
     }
 }
 
-public struct UpdateGlobalSettingsInput {
+public struct UpdateGlobalSettingsInput: Swift.Sendable {
     /// The Amazon Chime Business Calling settings.
     public var businessCalling: ChimeClientTypes.BusinessCallingSettings?
     /// The Amazon Chime Voice Connector settings.
@@ -10690,7 +10691,7 @@ public struct UpdateGlobalSettingsInput {
     }
 }
 
-public struct UpdatePhoneNumberInput {
+public struct UpdatePhoneNumberInput: Swift.Sendable {
     /// The outbound calling name associated with the phone number.
     public var callingName: Swift.String?
     /// The phone number ID.
@@ -10716,7 +10717,7 @@ extension UpdatePhoneNumberInput: Swift.CustomDebugStringConvertible {
         "UpdatePhoneNumberInput(phoneNumberId: \(Swift.String(describing: phoneNumberId)), productType: \(Swift.String(describing: productType)), callingName: \"CONTENT_REDACTED\")"}
 }
 
-public struct UpdatePhoneNumberOutput {
+public struct UpdatePhoneNumberOutput: Swift.Sendable {
     /// The updated phone number details.
     public var phoneNumber: ChimeClientTypes.PhoneNumber?
 
@@ -10728,7 +10729,7 @@ public struct UpdatePhoneNumberOutput {
     }
 }
 
-public struct UpdatePhoneNumberSettingsInput {
+public struct UpdatePhoneNumberSettingsInput: Swift.Sendable {
     /// The default outbound calling name for the account.
     /// This member is required.
     public var callingName: Swift.String?
@@ -10746,7 +10747,7 @@ extension UpdatePhoneNumberSettingsInput: Swift.CustomDebugStringConvertible {
         "UpdatePhoneNumberSettingsInput(callingName: \"CONTENT_REDACTED\")"}
 }
 
-public struct UpdateProxySessionInput {
+public struct UpdateProxySessionInput: Swift.Sendable {
     /// The proxy session capabilities.
     /// This member is required.
     public var capabilities: [ChimeClientTypes.Capability]?
@@ -10773,7 +10774,7 @@ public struct UpdateProxySessionInput {
     }
 }
 
-public struct UpdateProxySessionOutput {
+public struct UpdateProxySessionOutput: Swift.Sendable {
     /// The proxy session details.
     public var proxySession: ChimeClientTypes.ProxySession?
 
@@ -10785,7 +10786,7 @@ public struct UpdateProxySessionOutput {
     }
 }
 
-public struct UpdateRoomInput {
+public struct UpdateRoomInput: Swift.Sendable {
     /// The Amazon Chime account ID.
     /// This member is required.
     public var accountId: Swift.String?
@@ -10812,7 +10813,7 @@ extension UpdateRoomInput: Swift.CustomDebugStringConvertible {
         "UpdateRoomInput(accountId: \(Swift.String(describing: accountId)), roomId: \(Swift.String(describing: roomId)), name: \"CONTENT_REDACTED\")"}
 }
 
-public struct UpdateRoomOutput {
+public struct UpdateRoomOutput: Swift.Sendable {
     /// The room details.
     public var room: ChimeClientTypes.Room?
 
@@ -10824,7 +10825,7 @@ public struct UpdateRoomOutput {
     }
 }
 
-public struct UpdateRoomMembershipInput {
+public struct UpdateRoomMembershipInput: Swift.Sendable {
     /// The Amazon Chime account ID.
     /// This member is required.
     public var accountId: Swift.String?
@@ -10851,7 +10852,7 @@ public struct UpdateRoomMembershipInput {
     }
 }
 
-public struct UpdateRoomMembershipOutput {
+public struct UpdateRoomMembershipOutput: Swift.Sendable {
     /// The room membership details.
     public var roomMembership: ChimeClientTypes.RoomMembership?
 
@@ -10863,7 +10864,7 @@ public struct UpdateRoomMembershipOutput {
     }
 }
 
-public struct UpdateSipMediaApplicationInput {
+public struct UpdateSipMediaApplicationInput: Swift.Sendable {
     /// The new set of endpoints for the specified SIP media application.
     public var endpoints: [ChimeClientTypes.SipMediaApplicationEndpoint]?
     /// The new name for the specified SIP media application.
@@ -10884,7 +10885,7 @@ public struct UpdateSipMediaApplicationInput {
     }
 }
 
-public struct UpdateSipMediaApplicationOutput {
+public struct UpdateSipMediaApplicationOutput: Swift.Sendable {
     /// The updated SIP media application details.
     public var sipMediaApplication: ChimeClientTypes.SipMediaApplication?
 
@@ -10896,7 +10897,7 @@ public struct UpdateSipMediaApplicationOutput {
     }
 }
 
-public struct UpdateSipMediaApplicationCallInput {
+public struct UpdateSipMediaApplicationCallInput: Swift.Sendable {
     /// Arguments made available to the Lambda function as part of the CALL_UPDATE_REQUESTED event. Can contain 0-20 key-value pairs.
     /// This member is required.
     public var arguments: [Swift.String: Swift.String]?
@@ -10924,7 +10925,7 @@ extension UpdateSipMediaApplicationCallInput: Swift.CustomDebugStringConvertible
         "UpdateSipMediaApplicationCallInput(sipMediaApplicationId: \(Swift.String(describing: sipMediaApplicationId)), transactionId: \(Swift.String(describing: transactionId)), arguments: \"CONTENT_REDACTED\")"}
 }
 
-public struct UpdateSipMediaApplicationCallOutput {
+public struct UpdateSipMediaApplicationCallOutput: Swift.Sendable {
     /// A Call instance for a SIP media application.
     public var sipMediaApplicationCall: ChimeClientTypes.SipMediaApplicationCall?
 
@@ -10936,7 +10937,7 @@ public struct UpdateSipMediaApplicationCallOutput {
     }
 }
 
-public struct UpdateSipRuleInput {
+public struct UpdateSipRuleInput: Swift.Sendable {
     /// The new value specified to indicate whether the rule is disabled.
     public var disabled: Swift.Bool?
     /// The new name for the specified SIP rule.
@@ -10962,7 +10963,7 @@ public struct UpdateSipRuleInput {
     }
 }
 
-public struct UpdateSipRuleOutput {
+public struct UpdateSipRuleOutput: Swift.Sendable {
     /// Updated SIP rule details.
     public var sipRule: ChimeClientTypes.SipRule?
 
@@ -10974,7 +10975,7 @@ public struct UpdateSipRuleOutput {
     }
 }
 
-public struct UpdateUserInput {
+public struct UpdateUserInput: Swift.Sendable {
     /// The Amazon Chime account ID.
     /// This member is required.
     public var accountId: Swift.String?
@@ -11004,7 +11005,7 @@ public struct UpdateUserInput {
     }
 }
 
-public struct UpdateUserOutput {
+public struct UpdateUserOutput: Swift.Sendable {
     /// The updated user details.
     public var user: ChimeClientTypes.User?
 
@@ -11016,7 +11017,7 @@ public struct UpdateUserOutput {
     }
 }
 
-public struct UpdateUserSettingsInput {
+public struct UpdateUserSettingsInput: Swift.Sendable {
     /// The Amazon Chime account ID.
     /// This member is required.
     public var accountId: Swift.String?
@@ -11039,7 +11040,7 @@ public struct UpdateUserSettingsInput {
     }
 }
 
-public struct UpdateVoiceConnectorInput {
+public struct UpdateVoiceConnectorInput: Swift.Sendable {
     /// The name of the Amazon Chime Voice Connector.
     /// This member is required.
     public var name: Swift.String?
@@ -11062,7 +11063,7 @@ public struct UpdateVoiceConnectorInput {
     }
 }
 
-public struct UpdateVoiceConnectorOutput {
+public struct UpdateVoiceConnectorOutput: Swift.Sendable {
     /// The updated Amazon Chime Voice Connector details.
     public var voiceConnector: ChimeClientTypes.VoiceConnector?
 
@@ -11074,7 +11075,7 @@ public struct UpdateVoiceConnectorOutput {
     }
 }
 
-public struct UpdateVoiceConnectorGroupInput {
+public struct UpdateVoiceConnectorGroupInput: Swift.Sendable {
     /// The name of the Amazon Chime Voice Connector group.
     /// This member is required.
     public var name: Swift.String?
@@ -11097,7 +11098,7 @@ public struct UpdateVoiceConnectorGroupInput {
     }
 }
 
-public struct UpdateVoiceConnectorGroupOutput {
+public struct UpdateVoiceConnectorGroupOutput: Swift.Sendable {
     /// The updated Amazon Chime Voice Connector group details.
     public var voiceConnectorGroup: ChimeClientTypes.VoiceConnectorGroup?
 
@@ -11109,7 +11110,7 @@ public struct UpdateVoiceConnectorGroupOutput {
     }
 }
 
-public struct ValidateE911AddressInput {
+public struct ValidateE911AddressInput: Swift.Sendable {
     /// The AWS account ID.
     /// This member is required.
     public var awsAccountId: Swift.String?
@@ -11157,7 +11158,7 @@ extension ValidateE911AddressInput: Swift.CustomDebugStringConvertible {
         "ValidateE911AddressInput(awsAccountId: \(Swift.String(describing: awsAccountId)), city: \"CONTENT_REDACTED\", country: \"CONTENT_REDACTED\", postalCode: \"CONTENT_REDACTED\", state: \"CONTENT_REDACTED\", streetInfo: \"CONTENT_REDACTED\", streetNumber: \"CONTENT_REDACTED\")"}
 }
 
-public struct ValidateE911AddressOutput {
+public struct ValidateE911AddressOutput: Swift.Sendable {
     /// The validated address.
     public var address: ChimeClientTypes.Address?
     /// The ID that represents the address.

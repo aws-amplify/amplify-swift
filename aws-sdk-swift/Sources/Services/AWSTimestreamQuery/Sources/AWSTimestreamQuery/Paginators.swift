@@ -91,6 +91,7 @@ extension QueryInput: ClientRuntime.PaginateToken {
             clientToken: self.clientToken,
             maxRows: self.maxRows,
             nextToken: token,
+            queryInsights: self.queryInsights,
             queryString: self.queryString
         )}
 }

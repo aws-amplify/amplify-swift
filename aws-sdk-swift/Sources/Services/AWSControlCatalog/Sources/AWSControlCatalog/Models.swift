@@ -51,8 +51,9 @@ public struct AccessDeniedException: ClientRuntime.ModeledError, AWSClientRuntim
 }
 
 extension ControlCatalogClientTypes {
+
     /// A summary of the domain that a common control or an objective belongs to.
-    public struct AssociatedDomainSummary {
+    public struct AssociatedDomainSummary: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the related domain.
         public var arn: Swift.String?
         /// The name of the related domain.
@@ -67,12 +68,12 @@ extension ControlCatalogClientTypes {
             self.name = name
         }
     }
-
 }
 
 extension ControlCatalogClientTypes {
+
     /// A summary of the objective that a common control supports.
-    public struct AssociatedObjectiveSummary {
+    public struct AssociatedObjectiveSummary: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the related objective.
         public var arn: Swift.String?
         /// The name of the related objective.
@@ -87,12 +88,12 @@ extension ControlCatalogClientTypes {
             self.name = name
         }
     }
-
 }
 
 extension ControlCatalogClientTypes {
+
     /// The objective resource that's being used as a filter.
-    public struct ObjectiveResourceFilter {
+    public struct ObjectiveResourceFilter: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the objective.
         public var arn: Swift.String?
 
@@ -103,12 +104,12 @@ extension ControlCatalogClientTypes {
             self.arn = arn
         }
     }
-
 }
 
 extension ControlCatalogClientTypes {
+
     /// An optional filter that narrows the results to a specific objective.
-    public struct CommonControlFilter {
+    public struct CommonControlFilter: Swift.Sendable {
         /// The objective that's used as filter criteria. You can use this parameter to specify one objective ARN at a time. Passing multiple ARNs in the CommonControlFilter isn’t currently supported.
         public var objectives: [ControlCatalogClientTypes.ObjectiveResourceFilter]?
 
@@ -119,7 +120,6 @@ extension ControlCatalogClientTypes {
             self.objectives = objectives
         }
     }
-
 }
 
 /// An internal service error occurred during the processing of your request. Try again later.
@@ -194,7 +194,7 @@ public struct ValidationException: ClientRuntime.ModeledError, AWSClientRuntime.
     }
 }
 
-public struct ListCommonControlsInput {
+public struct ListCommonControlsInput: Swift.Sendable {
     /// An optional filter that narrows the results to a specific objective. This filter allows you to specify one objective ARN at a time. Passing multiple ARNs in the CommonControlFilter isn’t currently supported.
     public var commonControlFilter: ControlCatalogClientTypes.CommonControlFilter?
     /// The maximum number of results on a page or for an API request call.
@@ -215,8 +215,9 @@ public struct ListCommonControlsInput {
 }
 
 extension ControlCatalogClientTypes {
+
     /// A summary of metadata for a common control.
-    public struct CommonControlSummary {
+    public struct CommonControlSummary: Swift.Sendable {
         /// The Amazon Resource Name (ARN) that identifies the common control.
         /// This member is required.
         public var arn: Swift.String?
@@ -258,10 +259,9 @@ extension ControlCatalogClientTypes {
             self.objective = objective
         }
     }
-
 }
 
-public struct ListCommonControlsOutput {
+public struct ListCommonControlsOutput: Swift.Sendable {
     /// The list of common controls that the ListCommonControls API returns.
     /// This member is required.
     public var commonControls: [ControlCatalogClientTypes.CommonControlSummary]?
@@ -280,7 +280,7 @@ public struct ListCommonControlsOutput {
 
 extension ControlCatalogClientTypes {
 
-    public enum ControlBehavior: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ControlBehavior: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case detective
         case preventive
         case proactive
@@ -334,7 +334,7 @@ public struct ResourceNotFoundException: ClientRuntime.ModeledError, AWSClientRu
     }
 }
 
-public struct GetControlInput {
+public struct GetControlInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the control. It has one of the following formats: Global format arn:{PARTITION}:controlcatalog:::control/{CONTROL_CATALOG_OPAQUE_ID} Or Regional format arn:{PARTITION}:controltower:{REGION}::control/{CONTROL_TOWER_OPAQUE_ID} Here is a more general pattern that covers Amazon Web Services Control Tower and Control Catalog ARNs: ^arn:(aws(?:[-a-z]*)?):(controlcatalog|controltower):[a-zA-Z0-9-]*::control/[0-9a-zA-Z_\\-]+$
     /// This member is required.
     public var controlArn: Swift.String?
@@ -349,7 +349,7 @@ public struct GetControlInput {
 
 extension ControlCatalogClientTypes {
 
-    public enum ControlScope: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ControlScope: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case global
         case regional
         case sdkUnknown(Swift.String)
@@ -377,8 +377,9 @@ extension ControlCatalogClientTypes {
 }
 
 extension ControlCatalogClientTypes {
+
     /// Returns information about the control, including the scope of the control, if enabled, and the Regions in which the control currently is available for deployment. If you are applying controls through an Amazon Web Services Control Tower landing zone environment, remember that the values returned in the RegionConfiguration API operation are not related to the governed Regions in your landing zone. For example, if you are governing Regions A,B,and C while the control is available in Regions A, B, C, and D, you'd see a response with DeployableRegions of A, B, C, and D for a control with REGIONAL scope, even though you may not intend to deploy the control in Region D, because you do not govern it through your landing zone.
-    public struct RegionConfiguration {
+    public struct RegionConfiguration: Swift.Sendable {
         /// Regions in which the control is available to be deployed.
         public var deployableRegions: [Swift.String]?
         /// The coverage of the control, if deployed. Scope is an enumerated type, with value Regional, or Global. A control with Global scope is effective in all Amazon Web Services Regions, regardless of the Region from which it is enabled, or to which it is deployed. A control implemented by an SCP is usually Global in scope. A control with Regional scope has operations that are restricted specifically to the Region from which it is enabled and to which it is deployed. Controls implemented by Config rules and CloudFormation hooks usually are Regional in scope. Security Hub controls usually are Regional in scope.
@@ -394,10 +395,9 @@ extension ControlCatalogClientTypes {
             self.scope = scope
         }
     }
-
 }
 
-public struct GetControlOutput {
+public struct GetControlOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the control.
     /// This member is required.
     public var arn: Swift.String?
@@ -430,7 +430,7 @@ public struct GetControlOutput {
     }
 }
 
-public struct ListControlsInput {
+public struct ListControlsInput: Swift.Sendable {
     /// The maximum number of results on a page or for an API request call.
     public var maxResults: Swift.Int?
     /// The pagination token that's used to fetch the next set of results.
@@ -447,8 +447,9 @@ public struct ListControlsInput {
 }
 
 extension ControlCatalogClientTypes {
+
     /// Overview of information about a control.
-    public struct ControlSummary {
+    public struct ControlSummary: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the control.
         /// This member is required.
         public var arn: Swift.String?
@@ -470,10 +471,9 @@ extension ControlCatalogClientTypes {
             self.name = name
         }
     }
-
 }
 
-public struct ListControlsOutput {
+public struct ListControlsOutput: Swift.Sendable {
     /// Returns a list of controls, given as structures of type controlSummary.
     /// This member is required.
     public var controls: [ControlCatalogClientTypes.ControlSummary]?
@@ -490,7 +490,7 @@ public struct ListControlsOutput {
     }
 }
 
-public struct ListDomainsInput {
+public struct ListDomainsInput: Swift.Sendable {
     /// The maximum number of results on a page or for an API request call.
     public var maxResults: Swift.Int?
     /// The pagination token that's used to fetch the next set of results.
@@ -507,8 +507,9 @@ public struct ListDomainsInput {
 }
 
 extension ControlCatalogClientTypes {
+
     /// A summary of metadata for a domain.
-    public struct DomainSummary {
+    public struct DomainSummary: Swift.Sendable {
         /// The Amazon Resource Name (ARN) that identifies the domain.
         /// This member is required.
         public var arn: Swift.String?
@@ -540,10 +541,9 @@ extension ControlCatalogClientTypes {
             self.name = name
         }
     }
-
 }
 
-public struct ListDomainsOutput {
+public struct ListDomainsOutput: Swift.Sendable {
     /// The list of domains that the ListDomains API returns.
     /// This member is required.
     public var domains: [ControlCatalogClientTypes.DomainSummary]?
@@ -561,8 +561,9 @@ public struct ListDomainsOutput {
 }
 
 extension ControlCatalogClientTypes {
+
     /// The domain resource that's being used as a filter.
-    public struct DomainResourceFilter {
+    public struct DomainResourceFilter: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the domain.
         public var arn: Swift.String?
 
@@ -573,12 +574,12 @@ extension ControlCatalogClientTypes {
             self.arn = arn
         }
     }
-
 }
 
 extension ControlCatalogClientTypes {
+
     /// An optional filter that narrows the list of objectives to a specific domain.
-    public struct ObjectiveFilter {
+    public struct ObjectiveFilter: Swift.Sendable {
         /// The domain that's used as filter criteria. You can use this parameter to specify one domain ARN at a time. Passing multiple ARNs in the ObjectiveFilter isn’t currently supported.
         public var domains: [ControlCatalogClientTypes.DomainResourceFilter]?
 
@@ -589,10 +590,9 @@ extension ControlCatalogClientTypes {
             self.domains = domains
         }
     }
-
 }
 
-public struct ListObjectivesInput {
+public struct ListObjectivesInput: Swift.Sendable {
     /// The maximum number of results on a page or for an API request call.
     public var maxResults: Swift.Int?
     /// The pagination token that's used to fetch the next set of results.
@@ -613,8 +613,9 @@ public struct ListObjectivesInput {
 }
 
 extension ControlCatalogClientTypes {
+
     /// A summary of metadata for an objective.
-    public struct ObjectiveSummary {
+    public struct ObjectiveSummary: Swift.Sendable {
         /// The Amazon Resource Name (ARN) that identifies the objective.
         /// This member is required.
         public var arn: Swift.String?
@@ -651,10 +652,9 @@ extension ControlCatalogClientTypes {
             self.name = name
         }
     }
-
 }
 
-public struct ListObjectivesOutput {
+public struct ListObjectivesOutput: Swift.Sendable {
     /// The pagination token that's used to fetch the next set of results.
     public var nextToken: Swift.String?
     /// The list of objectives that the ListObjectives API returns.

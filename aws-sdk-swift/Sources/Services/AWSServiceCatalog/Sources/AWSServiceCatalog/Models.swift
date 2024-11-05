@@ -104,7 +104,7 @@ public struct ResourceNotFoundException: ClientRuntime.ModeledError, AWSClientRu
 
 extension ServiceCatalogClientTypes {
 
-    public enum PortfolioShareType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum PortfolioShareType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case awsOrganizations
         case awsServicecatalog
         case imported
@@ -134,7 +134,7 @@ extension ServiceCatalogClientTypes {
     }
 }
 
-public struct AcceptPortfolioShareInput {
+public struct AcceptPortfolioShareInput: Swift.Sendable {
     /// The language code.
     ///
     /// * jp - Japanese
@@ -168,14 +168,14 @@ public struct AcceptPortfolioShareInput {
     }
 }
 
-public struct AcceptPortfolioShareOutput {
+public struct AcceptPortfolioShareOutput: Swift.Sendable {
 
     public init() { }
 }
 
 extension ServiceCatalogClientTypes {
 
-    public enum AccessLevelFilterKey: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AccessLevelFilterKey: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case account
         case role
         case user
@@ -206,8 +206,9 @@ extension ServiceCatalogClientTypes {
 }
 
 extension ServiceCatalogClientTypes {
+
     /// The access level to use to filter results.
-    public struct AccessLevelFilter {
+    public struct AccessLevelFilter: Swift.Sendable {
         /// The access level.
         ///
         /// * Account - Filter results based on the account.
@@ -228,12 +229,11 @@ extension ServiceCatalogClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension ServiceCatalogClientTypes {
 
-    public enum AccessStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AccessStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case disabled
         case enabled
         case underChange
@@ -264,8 +264,9 @@ extension ServiceCatalogClientTypes {
 }
 
 extension ServiceCatalogClientTypes {
+
     /// Information about a tag. A tag is a key-value pair. Tags are propagated to the resources created when provisioning a product.
-    public struct Tag {
+    public struct Tag: Swift.Sendable {
         /// The tag key.
         /// This member is required.
         public var key: Swift.String?
@@ -282,7 +283,6 @@ extension ServiceCatalogClientTypes {
             self.value = value
         }
     }
-
 }
 
 /// The specified resource is a duplicate.
@@ -309,7 +309,7 @@ public struct DuplicateResourceException: ClientRuntime.ModeledError, AWSClientR
     }
 }
 
-public struct AssociateBudgetWithResourceInput {
+public struct AssociateBudgetWithResourceInput: Swift.Sendable {
     /// The name of the budget you want to associate.
     /// This member is required.
     public var budgetName: Swift.String?
@@ -327,14 +327,14 @@ public struct AssociateBudgetWithResourceInput {
     }
 }
 
-public struct AssociateBudgetWithResourceOutput {
+public struct AssociateBudgetWithResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
 extension ServiceCatalogClientTypes {
 
-    public enum PrincipalType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum PrincipalType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case iam
         case iamPattern
         case sdkUnknown(Swift.String)
@@ -361,7 +361,7 @@ extension ServiceCatalogClientTypes {
     }
 }
 
-public struct AssociatePrincipalWithPortfolioInput {
+public struct AssociatePrincipalWithPortfolioInput: Swift.Sendable {
     /// The language code.
     ///
     /// * jp - Japanese
@@ -411,12 +411,12 @@ public struct AssociatePrincipalWithPortfolioInput {
     }
 }
 
-public struct AssociatePrincipalWithPortfolioOutput {
+public struct AssociatePrincipalWithPortfolioOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct AssociateProductWithPortfolioInput {
+public struct AssociateProductWithPortfolioInput: Swift.Sendable {
     /// The language code.
     ///
     /// * jp - Japanese
@@ -446,12 +446,12 @@ public struct AssociateProductWithPortfolioInput {
     }
 }
 
-public struct AssociateProductWithPortfolioOutput {
+public struct AssociateProductWithPortfolioOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct AssociateServiceActionWithProvisioningArtifactInput {
+public struct AssociateServiceActionWithProvisioningArtifactInput: Swift.Sendable {
     /// The language code.
     ///
     /// * jp - Japanese
@@ -486,7 +486,7 @@ public struct AssociateServiceActionWithProvisioningArtifactInput {
     }
 }
 
-public struct AssociateServiceActionWithProvisioningArtifactOutput {
+public struct AssociateServiceActionWithProvisioningArtifactOutput: Swift.Sendable {
 
     public init() { }
 }
@@ -539,7 +539,7 @@ public struct TagOptionNotMigratedException: ClientRuntime.ModeledError, AWSClie
     }
 }
 
-public struct AssociateTagOptionWithResourceInput {
+public struct AssociateTagOptionWithResourceInput: Swift.Sendable {
     /// The resource identifier.
     /// This member is required.
     public var resourceId: Swift.String?
@@ -557,14 +557,15 @@ public struct AssociateTagOptionWithResourceInput {
     }
 }
 
-public struct AssociateTagOptionWithResourceOutput {
+public struct AssociateTagOptionWithResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
 extension ServiceCatalogClientTypes {
+
     /// A self-service action association consisting of the Action ID, the Product ID, and the Provisioning Artifact ID.
-    public struct ServiceActionAssociation {
+    public struct ServiceActionAssociation: Swift.Sendable {
         /// The product identifier. For example, prod-abcdzk7xy33qa.
         /// This member is required.
         public var productId: Swift.String?
@@ -586,10 +587,9 @@ extension ServiceCatalogClientTypes {
             self.serviceActionId = serviceActionId
         }
     }
-
 }
 
-public struct BatchAssociateServiceActionWithProvisioningArtifactInput {
+public struct BatchAssociateServiceActionWithProvisioningArtifactInput: Swift.Sendable {
     /// The language code.
     ///
     /// * jp - Japanese
@@ -612,7 +612,7 @@ public struct BatchAssociateServiceActionWithProvisioningArtifactInput {
 
 extension ServiceCatalogClientTypes {
 
-    public enum ServiceActionAssociationErrorCode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ServiceActionAssociationErrorCode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case duplicateresourceexception
         case internalfailure
         case invalidparameterexception
@@ -652,8 +652,9 @@ extension ServiceCatalogClientTypes {
 }
 
 extension ServiceCatalogClientTypes {
+
     /// An object containing information about the error, along with identifying information about the self-service action and its associations.
-    public struct FailedServiceActionAssociation {
+    public struct FailedServiceActionAssociation: Swift.Sendable {
         /// The error code. Valid values are listed below.
         public var errorCode: ServiceCatalogClientTypes.ServiceActionAssociationErrorCode?
         /// A text description of the error.
@@ -680,10 +681,9 @@ extension ServiceCatalogClientTypes {
             self.serviceActionId = serviceActionId
         }
     }
-
 }
 
-public struct BatchAssociateServiceActionWithProvisioningArtifactOutput {
+public struct BatchAssociateServiceActionWithProvisioningArtifactOutput: Swift.Sendable {
     /// An object that contains a list of errors, along with information to help you identify the self-service action.
     public var failedServiceActionAssociations: [ServiceCatalogClientTypes.FailedServiceActionAssociation]?
 
@@ -695,7 +695,7 @@ public struct BatchAssociateServiceActionWithProvisioningArtifactOutput {
     }
 }
 
-public struct BatchDisassociateServiceActionFromProvisioningArtifactInput {
+public struct BatchDisassociateServiceActionFromProvisioningArtifactInput: Swift.Sendable {
     /// The language code.
     ///
     /// * jp - Japanese
@@ -716,7 +716,7 @@ public struct BatchDisassociateServiceActionFromProvisioningArtifactInput {
     }
 }
 
-public struct BatchDisassociateServiceActionFromProvisioningArtifactOutput {
+public struct BatchDisassociateServiceActionFromProvisioningArtifactOutput: Swift.Sendable {
     /// An object that contains a list of errors, along with information to help you identify the self-service action.
     public var failedServiceActionAssociations: [ServiceCatalogClientTypes.FailedServiceActionAssociation]?
 
@@ -730,7 +730,7 @@ public struct BatchDisassociateServiceActionFromProvisioningArtifactOutput {
 
 extension ServiceCatalogClientTypes {
 
-    public enum CopyOption: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum CopyOption: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case copytags
         case sdkUnknown(Swift.String)
 
@@ -756,7 +756,7 @@ extension ServiceCatalogClientTypes {
 
 extension ServiceCatalogClientTypes {
 
-    public enum ProvisioningArtifactPropertyName: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ProvisioningArtifactPropertyName: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case id
         case sdkUnknown(Swift.String)
 
@@ -780,7 +780,7 @@ extension ServiceCatalogClientTypes {
     }
 }
 
-public struct CopyProductInput {
+public struct CopyProductInput: Swift.Sendable {
     /// The language code.
     ///
     /// * jp - Japanese
@@ -822,7 +822,7 @@ public struct CopyProductInput {
     }
 }
 
-public struct CopyProductOutput {
+public struct CopyProductOutput: Swift.Sendable {
     /// The token to use to track the progress of the operation.
     public var copyProductToken: Swift.String?
 
@@ -834,7 +834,7 @@ public struct CopyProductOutput {
     }
 }
 
-public struct CreateConstraintInput {
+public struct CreateConstraintInput: Swift.Sendable {
     /// The language code.
     ///
     /// * jp - Japanese
@@ -890,8 +890,9 @@ public struct CreateConstraintInput {
 }
 
 extension ServiceCatalogClientTypes {
+
     /// Information about a constraint.
-    public struct ConstraintDetail {
+    public struct ConstraintDetail: Swift.Sendable {
         /// The identifier of the constraint.
         public var constraintId: Swift.String?
         /// The description of the constraint.
@@ -930,12 +931,11 @@ extension ServiceCatalogClientTypes {
             self.type = type
         }
     }
-
 }
 
 extension ServiceCatalogClientTypes {
 
-    public enum Status: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Status: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case available
         case creating
         case failed
@@ -965,7 +965,7 @@ extension ServiceCatalogClientTypes {
     }
 }
 
-public struct CreateConstraintOutput {
+public struct CreateConstraintOutput: Swift.Sendable {
     /// Information about the constraint.
     public var constraintDetail: ServiceCatalogClientTypes.ConstraintDetail?
     /// The constraint parameters.
@@ -985,7 +985,7 @@ public struct CreateConstraintOutput {
     }
 }
 
-public struct CreatePortfolioInput {
+public struct CreatePortfolioInput: Swift.Sendable {
     /// The language code.
     ///
     /// * jp - Japanese
@@ -1025,8 +1025,9 @@ public struct CreatePortfolioInput {
 }
 
 extension ServiceCatalogClientTypes {
+
     /// Information about a portfolio.
-    public struct PortfolioDetail {
+    public struct PortfolioDetail: Swift.Sendable {
         /// The ARN assigned to the portfolio.
         public var arn: Swift.String?
         /// The UTC time stamp of the creation time.
@@ -1057,10 +1058,9 @@ extension ServiceCatalogClientTypes {
             self.providerName = providerName
         }
     }
-
 }
 
-public struct CreatePortfolioOutput {
+public struct CreatePortfolioOutput: Swift.Sendable {
     /// Information about the portfolio.
     public var portfolioDetail: ServiceCatalogClientTypes.PortfolioDetail?
     /// Information about the tags associated with the portfolio.
@@ -1102,7 +1102,7 @@ public struct OperationNotSupportedException: ClientRuntime.ModeledError, AWSCli
 
 extension ServiceCatalogClientTypes {
 
-    public enum OrganizationNodeType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum OrganizationNodeType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case account
         case organization
         case organizationalUnit
@@ -1133,8 +1133,9 @@ extension ServiceCatalogClientTypes {
 }
 
 extension ServiceCatalogClientTypes {
+
     /// Information about the organization node.
-    public struct OrganizationNode {
+    public struct OrganizationNode: Swift.Sendable {
         /// The organization node type.
         public var type: ServiceCatalogClientTypes.OrganizationNodeType?
         /// The identifier of the organization node.
@@ -1149,10 +1150,9 @@ extension ServiceCatalogClientTypes {
             self.value = value
         }
     }
-
 }
 
-public struct CreatePortfolioShareInput {
+public struct CreatePortfolioShareInput: Swift.Sendable {
     /// The language code.
     ///
     /// * jp - Japanese
@@ -1189,7 +1189,7 @@ public struct CreatePortfolioShareInput {
     }
 }
 
-public struct CreatePortfolioShareOutput {
+public struct CreatePortfolioShareOutput: Swift.Sendable {
     /// The portfolio shares a unique identifier that only returns if the portfolio is shared to an organization node.
     public var portfolioShareToken: Swift.String?
 
@@ -1203,7 +1203,7 @@ public struct CreatePortfolioShareOutput {
 
 extension ServiceCatalogClientTypes {
 
-    public enum ProductType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ProductType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case cloudFormationTemplate
         case external
         case marketplace
@@ -1241,7 +1241,7 @@ extension ServiceCatalogClientTypes {
 
 extension ServiceCatalogClientTypes {
 
-    public enum ProvisioningArtifactType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ProvisioningArtifactType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case cloudFormationTemplate
         case external
         case marketplaceAmi
@@ -1281,8 +1281,9 @@ extension ServiceCatalogClientTypes {
 }
 
 extension ServiceCatalogClientTypes {
+
     /// Information about a provisioning artifact (also known as a version) for a product.
-    public struct ProvisioningArtifactProperties {
+    public struct ProvisioningArtifactProperties: Swift.Sendable {
         /// The description of the provisioning artifact, including how it differs from the previous provisioning artifact.
         public var description: Swift.String?
         /// If set to true, Service Catalog stops validating the specified provisioning artifact even if it is invalid. Service Catalog does not support template validation for the TERRAFORM_OS product type.
@@ -1317,12 +1318,12 @@ extension ServiceCatalogClientTypes {
             self.type = type
         }
     }
-
 }
 
 extension ServiceCatalogClientTypes {
+
     /// The subtype containing details about the Codestar connection Type.
-    public struct CodeStarParameters {
+    public struct CodeStarParameters: Swift.Sendable {
         /// The absolute path wehre the artifact resides within the repo and branch, formatted as "folder/file.json."
         /// This member is required.
         public var artifactPath: Swift.String?
@@ -1349,12 +1350,12 @@ extension ServiceCatalogClientTypes {
             self.repository = repository
         }
     }
-
 }
 
 extension ServiceCatalogClientTypes {
+
     /// Provides connection details.
-    public struct SourceConnectionParameters {
+    public struct SourceConnectionParameters: Swift.Sendable {
         /// Provides ConnectionType details.
         public var codeStar: ServiceCatalogClientTypes.CodeStarParameters?
 
@@ -1365,12 +1366,11 @@ extension ServiceCatalogClientTypes {
             self.codeStar = codeStar
         }
     }
-
 }
 
 extension ServiceCatalogClientTypes {
 
-    public enum SourceType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SourceType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case codestar
         case sdkUnknown(Swift.String)
 
@@ -1395,8 +1395,9 @@ extension ServiceCatalogClientTypes {
 }
 
 extension ServiceCatalogClientTypes {
+
     /// A top level ProductViewDetail response containing details about the product’s connection. Service Catalog returns this field for the CreateProduct, UpdateProduct, DescribeProductAsAdmin, and SearchProductAsAdmin APIs. This response contains the same fields as the ConnectionParameters request, with the addition of the LastSync response.
-    public struct SourceConnection {
+    public struct SourceConnection: Swift.Sendable {
         /// The connection details based on the connection Type.
         /// This member is required.
         public var connectionParameters: ServiceCatalogClientTypes.SourceConnectionParameters?
@@ -1412,10 +1413,9 @@ extension ServiceCatalogClientTypes {
             self.type = type
         }
     }
-
 }
 
-public struct CreateProductInput {
+public struct CreateProductInput: Swift.Sendable {
     /// The language code.
     ///
     /// * jp - Japanese
@@ -1488,8 +1488,9 @@ public struct CreateProductInput {
 }
 
 extension ServiceCatalogClientTypes {
+
     /// Summary information about a product view.
-    public struct ProductViewSummary {
+    public struct ProductViewSummary: Swift.Sendable {
         /// The distributor of the product. Contact the product administrator for the significance of this value.
         public var distributor: Swift.String?
         /// Indicates whether the product has a default path. If the product does not have a default path, call [ListLaunchPaths] to disambiguate between paths. Otherwise, [ListLaunchPaths] is not required, and the output of [ProductViewSummary] can be used directly with [DescribeProvisioningParameters].
@@ -1540,12 +1541,11 @@ extension ServiceCatalogClientTypes {
             self.type = type
         }
     }
-
 }
 
 extension ServiceCatalogClientTypes {
 
-    public enum LastSyncStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum LastSyncStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case failed
         case succeeded
         case sdkUnknown(Swift.String)
@@ -1573,6 +1573,7 @@ extension ServiceCatalogClientTypes {
 }
 
 extension ServiceCatalogClientTypes {
+
     /// Provides details about the product's connection sync and contains the following sub-fields.
     ///
     /// * LastSyncTime
@@ -1584,7 +1585,7 @@ extension ServiceCatalogClientTypes {
     /// * LastSuccessfulSyncTime
     ///
     /// * LastSuccessfulSyncProvisioningArtifactID
-    public struct LastSync {
+    public struct LastSync: Swift.Sendable {
         /// The ProvisioningArtifactID of the ProvisioningArtifact created from the latest successful sync.
         public var lastSuccessfulSyncProvisioningArtifactId: Swift.String?
         /// The time of the latest successful sync from the source repo artifact to the Service Catalog product.
@@ -1611,12 +1612,12 @@ extension ServiceCatalogClientTypes {
             self.lastSyncTime = lastSyncTime
         }
     }
-
 }
 
 extension ServiceCatalogClientTypes {
+
     /// Provides details about the configured SourceConnection.
-    public struct SourceConnectionDetail {
+    public struct SourceConnectionDetail: Swift.Sendable {
         /// The connection details based on the connection Type.
         public var connectionParameters: ServiceCatalogClientTypes.SourceConnectionParameters?
         /// Provides details about the product's connection sync and contains the following sub-fields.
@@ -1645,12 +1646,12 @@ extension ServiceCatalogClientTypes {
             self.type = type
         }
     }
-
 }
 
 extension ServiceCatalogClientTypes {
+
     /// Information about a product view.
-    public struct ProductViewDetail {
+    public struct ProductViewDetail: Swift.Sendable {
         /// The UTC time stamp of the creation time.
         public var createdTime: Foundation.Date?
         /// The ARN of the product.
@@ -1683,12 +1684,11 @@ extension ServiceCatalogClientTypes {
             self.status = status
         }
     }
-
 }
 
 extension ServiceCatalogClientTypes {
 
-    public enum ProvisioningArtifactGuidance: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ProvisioningArtifactGuidance: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case `default`
         case deprecated
         case sdkUnknown(Swift.String)
@@ -1716,8 +1716,9 @@ extension ServiceCatalogClientTypes {
 }
 
 extension ServiceCatalogClientTypes {
+
     /// Information about a provisioning artifact (also known as a version) for a product.
-    public struct ProvisioningArtifactDetail {
+    public struct ProvisioningArtifactDetail: Swift.Sendable {
         /// Indicates whether the product version is active.
         public var active: Swift.Bool?
         /// The UTC time stamp of the creation time.
@@ -1764,10 +1765,9 @@ extension ServiceCatalogClientTypes {
             self.type = type
         }
     }
-
 }
 
-public struct CreateProductOutput {
+public struct CreateProductOutput: Swift.Sendable {
     /// Information about the product view.
     public var productViewDetail: ServiceCatalogClientTypes.ProductViewDetail?
     /// Information about the provisioning artifact.
@@ -1789,7 +1789,7 @@ public struct CreateProductOutput {
 
 extension ServiceCatalogClientTypes {
 
-    public enum ProvisionedProductPlanType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ProvisionedProductPlanType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case cloudformation
         case sdkUnknown(Swift.String)
 
@@ -1814,8 +1814,9 @@ extension ServiceCatalogClientTypes {
 }
 
 extension ServiceCatalogClientTypes {
+
     /// The parameter key-value pair used to update a provisioned product.
-    public struct UpdateProvisioningParameter {
+    public struct UpdateProvisioningParameter: Swift.Sendable {
         /// The parameter key.
         public var key: Swift.String?
         /// If set to true, Value is ignored and the previous parameter value is kept.
@@ -1834,10 +1835,9 @@ extension ServiceCatalogClientTypes {
             self.value = value
         }
     }
-
 }
 
-public struct CreateProvisionedProductPlanInput {
+public struct CreateProvisionedProductPlanInput: Swift.Sendable {
     /// The language code.
     ///
     /// * jp - Japanese
@@ -1899,7 +1899,7 @@ public struct CreateProvisionedProductPlanInput {
     }
 }
 
-public struct CreateProvisionedProductPlanOutput {
+public struct CreateProvisionedProductPlanOutput: Swift.Sendable {
     /// The plan identifier.
     public var planId: Swift.String?
     /// The name of the plan.
@@ -1927,7 +1927,7 @@ public struct CreateProvisionedProductPlanOutput {
     }
 }
 
-public struct CreateProvisioningArtifactInput {
+public struct CreateProvisioningArtifactInput: Swift.Sendable {
     /// The language code.
     ///
     /// * jp - Japanese
@@ -1958,7 +1958,7 @@ public struct CreateProvisioningArtifactInput {
     }
 }
 
-public struct CreateProvisioningArtifactOutput {
+public struct CreateProvisioningArtifactOutput: Swift.Sendable {
     /// Specify the template source with one of the following options, but not both. Keys accepted: [ LoadTemplateFromURL, ImportFromPhysicalId ]. Use the URL of the CloudFormation template in Amazon S3 or GitHub in JSON format. LoadTemplateFromURL Use the URL of the CloudFormation template in Amazon S3 or GitHub in JSON format. ImportFromPhysicalId Use the physical id of the resource that contains the template; currently supports CloudFormation stack ARN.
     public var info: [Swift.String: Swift.String]?
     /// Information about the provisioning artifact.
@@ -1980,7 +1980,7 @@ public struct CreateProvisioningArtifactOutput {
 
 extension ServiceCatalogClientTypes {
 
-    public enum ServiceActionDefinitionKey: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ServiceActionDefinitionKey: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case assumerole
         case name
         case parameters
@@ -2015,7 +2015,7 @@ extension ServiceCatalogClientTypes {
 
 extension ServiceCatalogClientTypes {
 
-    public enum ServiceActionDefinitionType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ServiceActionDefinitionType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case ssmautomation
         case sdkUnknown(Swift.String)
 
@@ -2039,7 +2039,7 @@ extension ServiceCatalogClientTypes {
     }
 }
 
-public struct CreateServiceActionInput {
+public struct CreateServiceActionInput: Swift.Sendable {
     /// The language code.
     ///
     /// * jp - Japanese
@@ -2080,8 +2080,9 @@ public struct CreateServiceActionInput {
 }
 
 extension ServiceCatalogClientTypes {
+
     /// Detailed information about the self-service action.
-    public struct ServiceActionSummary {
+    public struct ServiceActionSummary: Swift.Sendable {
         /// The self-service action definition type. For example, SSM_AUTOMATION.
         public var definitionType: ServiceCatalogClientTypes.ServiceActionDefinitionType?
         /// The self-service action description.
@@ -2104,12 +2105,12 @@ extension ServiceCatalogClientTypes {
             self.name = name
         }
     }
-
 }
 
 extension ServiceCatalogClientTypes {
+
     /// An object containing detailed information about the self-service action.
-    public struct ServiceActionDetail {
+    public struct ServiceActionDetail: Swift.Sendable {
         /// A map that defines the self-service action.
         public var definition: [Swift.String: Swift.String]?
         /// Summary information about the self-service action.
@@ -2124,10 +2125,9 @@ extension ServiceCatalogClientTypes {
             self.serviceActionSummary = serviceActionSummary
         }
     }
-
 }
 
-public struct CreateServiceActionOutput {
+public struct CreateServiceActionOutput: Swift.Sendable {
     /// An object containing information about the self-service action.
     public var serviceActionDetail: ServiceCatalogClientTypes.ServiceActionDetail?
 
@@ -2139,7 +2139,7 @@ public struct CreateServiceActionOutput {
     }
 }
 
-public struct CreateTagOptionInput {
+public struct CreateTagOptionInput: Swift.Sendable {
     /// The TagOption key.
     /// This member is required.
     public var key: Swift.String?
@@ -2158,8 +2158,9 @@ public struct CreateTagOptionInput {
 }
 
 extension ServiceCatalogClientTypes {
+
     /// Information about a TagOption.
-    public struct TagOptionDetail {
+    public struct TagOptionDetail: Swift.Sendable {
         /// The TagOption active state.
         public var active: Swift.Bool?
         /// The TagOption identifier.
@@ -2186,10 +2187,9 @@ extension ServiceCatalogClientTypes {
             self.value = value
         }
     }
-
 }
 
-public struct CreateTagOptionOutput {
+public struct CreateTagOptionOutput: Swift.Sendable {
     /// Information about the TagOption.
     public var tagOptionDetail: ServiceCatalogClientTypes.TagOptionDetail?
 
@@ -2201,7 +2201,7 @@ public struct CreateTagOptionOutput {
     }
 }
 
-public struct DeleteConstraintInput {
+public struct DeleteConstraintInput: Swift.Sendable {
     /// The language code.
     ///
     /// * jp - Japanese
@@ -2222,7 +2222,7 @@ public struct DeleteConstraintInput {
     }
 }
 
-public struct DeleteConstraintOutput {
+public struct DeleteConstraintOutput: Swift.Sendable {
 
     public init() { }
 }
@@ -2251,7 +2251,7 @@ public struct ResourceInUseException: ClientRuntime.ModeledError, AWSClientRunti
     }
 }
 
-public struct DeletePortfolioInput {
+public struct DeletePortfolioInput: Swift.Sendable {
     /// The language code.
     ///
     /// * jp - Japanese
@@ -2272,12 +2272,12 @@ public struct DeletePortfolioInput {
     }
 }
 
-public struct DeletePortfolioOutput {
+public struct DeletePortfolioOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeletePortfolioShareInput {
+public struct DeletePortfolioShareInput: Swift.Sendable {
     /// The language code.
     ///
     /// * jp - Japanese
@@ -2306,7 +2306,7 @@ public struct DeletePortfolioShareInput {
     }
 }
 
-public struct DeletePortfolioShareOutput {
+public struct DeletePortfolioShareOutput: Swift.Sendable {
     /// The portfolio share unique identifier. This will only be returned if delete is made to an organization node.
     public var portfolioShareToken: Swift.String?
 
@@ -2318,7 +2318,7 @@ public struct DeletePortfolioShareOutput {
     }
 }
 
-public struct DeleteProductInput {
+public struct DeleteProductInput: Swift.Sendable {
     /// The language code.
     ///
     /// * jp - Japanese
@@ -2339,12 +2339,12 @@ public struct DeleteProductInput {
     }
 }
 
-public struct DeleteProductOutput {
+public struct DeleteProductOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteProvisionedProductPlanInput {
+public struct DeleteProvisionedProductPlanInput: Swift.Sendable {
     /// The language code.
     ///
     /// * jp - Japanese
@@ -2369,12 +2369,12 @@ public struct DeleteProvisionedProductPlanInput {
     }
 }
 
-public struct DeleteProvisionedProductPlanOutput {
+public struct DeleteProvisionedProductPlanOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteProvisioningArtifactInput {
+public struct DeleteProvisioningArtifactInput: Swift.Sendable {
     /// The language code.
     ///
     /// * jp - Japanese
@@ -2400,12 +2400,12 @@ public struct DeleteProvisioningArtifactInput {
     }
 }
 
-public struct DeleteProvisioningArtifactOutput {
+public struct DeleteProvisioningArtifactOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteServiceActionInput {
+public struct DeleteServiceActionInput: Swift.Sendable {
     /// The language code.
     ///
     /// * jp - Japanese
@@ -2430,12 +2430,12 @@ public struct DeleteServiceActionInput {
     }
 }
 
-public struct DeleteServiceActionOutput {
+public struct DeleteServiceActionOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteTagOptionInput {
+public struct DeleteTagOptionInput: Swift.Sendable {
     /// The TagOption identifier.
     /// This member is required.
     public var id: Swift.String?
@@ -2448,12 +2448,12 @@ public struct DeleteTagOptionInput {
     }
 }
 
-public struct DeleteTagOptionOutput {
+public struct DeleteTagOptionOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DescribeConstraintInput {
+public struct DescribeConstraintInput: Swift.Sendable {
     /// The language code.
     ///
     /// * jp - Japanese
@@ -2474,7 +2474,7 @@ public struct DescribeConstraintInput {
     }
 }
 
-public struct DescribeConstraintOutput {
+public struct DescribeConstraintOutput: Swift.Sendable {
     /// Information about the constraint.
     public var constraintDetail: ServiceCatalogClientTypes.ConstraintDetail?
     /// The constraint parameters.
@@ -2494,7 +2494,7 @@ public struct DescribeConstraintOutput {
     }
 }
 
-public struct DescribeCopyProductStatusInput {
+public struct DescribeCopyProductStatusInput: Swift.Sendable {
     /// The language code.
     ///
     /// * jp - Japanese
@@ -2517,7 +2517,7 @@ public struct DescribeCopyProductStatusInput {
 
 extension ServiceCatalogClientTypes {
 
-    public enum CopyProductStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum CopyProductStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case failed
         case inProgress
         case succeeded
@@ -2547,7 +2547,7 @@ extension ServiceCatalogClientTypes {
     }
 }
 
-public struct DescribeCopyProductStatusOutput {
+public struct DescribeCopyProductStatusOutput: Swift.Sendable {
     /// The status of the copy product operation.
     public var copyProductStatus: ServiceCatalogClientTypes.CopyProductStatus?
     /// The status message.
@@ -2567,7 +2567,7 @@ public struct DescribeCopyProductStatusOutput {
     }
 }
 
-public struct DescribePortfolioInput {
+public struct DescribePortfolioInput: Swift.Sendable {
     /// The language code.
     ///
     /// * jp - Japanese
@@ -2589,8 +2589,9 @@ public struct DescribePortfolioInput {
 }
 
 extension ServiceCatalogClientTypes {
+
     /// Information about a budget.
-    public struct BudgetDetail {
+    public struct BudgetDetail: Swift.Sendable {
         /// Name of the associated budget.
         public var budgetName: Swift.String?
 
@@ -2601,10 +2602,9 @@ extension ServiceCatalogClientTypes {
             self.budgetName = budgetName
         }
     }
-
 }
 
-public struct DescribePortfolioOutput {
+public struct DescribePortfolioOutput: Swift.Sendable {
     /// Information about the associated budgets.
     public var budgets: [ServiceCatalogClientTypes.BudgetDetail]?
     /// Information about the portfolio.
@@ -2630,7 +2630,7 @@ public struct DescribePortfolioOutput {
 
 extension ServiceCatalogClientTypes {
 
-    public enum DescribePortfolioShareType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DescribePortfolioShareType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case account
         case organization
         case organizationalUnit
@@ -2663,7 +2663,7 @@ extension ServiceCatalogClientTypes {
     }
 }
 
-public struct DescribePortfolioSharesInput {
+public struct DescribePortfolioSharesInput: Swift.Sendable {
     /// The maximum number of items to return with this call.
     public var pageSize: Swift.Int?
     /// The page token for the next set of results. To retrieve the first set of results, use null.
@@ -2690,8 +2690,9 @@ public struct DescribePortfolioSharesInput {
 }
 
 extension ServiceCatalogClientTypes {
+
     /// Information about the portfolio share.
-    public struct PortfolioShareDetail {
+    public struct PortfolioShareDetail: Swift.Sendable {
         /// Indicates whether the shared portfolio is imported by the recipient account. If the recipient is in an organization node, the share is automatically imported, and the field is always set to true.
         public var accepted: Swift.Bool
         /// The identifier of the recipient entity that received the portfolio share. The recipient entity can be one of the following: 1. An external account. 2. An organziation member account. 3. An organzational unit (OU). 4. The organization itself. (This shares with every account in the organization).
@@ -2718,10 +2719,9 @@ extension ServiceCatalogClientTypes {
             self.type = type
         }
     }
-
 }
 
-public struct DescribePortfolioSharesOutput {
+public struct DescribePortfolioSharesOutput: Swift.Sendable {
     /// The page token to use to retrieve the next set of results. If there are no additional results, this value is null.
     public var nextPageToken: Swift.String?
     /// Summaries about each of the portfolio shares.
@@ -2737,7 +2737,7 @@ public struct DescribePortfolioSharesOutput {
     }
 }
 
-public struct DescribePortfolioShareStatusInput {
+public struct DescribePortfolioShareStatusInput: Swift.Sendable {
     /// The token for the portfolio share operation. This token is returned either by CreatePortfolioShare or by DeletePortfolioShare.
     /// This member is required.
     public var portfolioShareToken: Swift.String?
@@ -2751,8 +2751,9 @@ public struct DescribePortfolioShareStatusInput {
 }
 
 extension ServiceCatalogClientTypes {
+
     /// Errors that occurred during the portfolio share operation.
-    public struct ShareError {
+    public struct ShareError: Swift.Sendable {
         /// List of accounts impacted by the error.
         public var accounts: [Swift.String]?
         /// Error type that happened when processing the operation.
@@ -2771,12 +2772,12 @@ extension ServiceCatalogClientTypes {
             self.message = message
         }
     }
-
 }
 
 extension ServiceCatalogClientTypes {
+
     /// Information about the portfolio share operation.
-    public struct ShareDetails {
+    public struct ShareDetails: Swift.Sendable {
         /// List of errors.
         public var shareErrors: [ServiceCatalogClientTypes.ShareError]?
         /// List of accounts for whom the operation succeeded.
@@ -2791,12 +2792,11 @@ extension ServiceCatalogClientTypes {
             self.successfulShares = successfulShares
         }
     }
-
 }
 
 extension ServiceCatalogClientTypes {
 
-    public enum ShareStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ShareStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case completed
         case completedWithErrors
         case error
@@ -2832,7 +2832,7 @@ extension ServiceCatalogClientTypes {
     }
 }
 
-public struct DescribePortfolioShareStatusOutput {
+public struct DescribePortfolioShareStatusOutput: Swift.Sendable {
     /// Organization node identifier. It can be either account id, organizational unit id or organization id.
     public var organizationNodeValue: Swift.String?
     /// The portfolio identifier.
@@ -2860,7 +2860,7 @@ public struct DescribePortfolioShareStatusOutput {
     }
 }
 
-public struct DescribeProductInput {
+public struct DescribeProductInput: Swift.Sendable {
     /// The language code.
     ///
     /// * jp - Japanese
@@ -2885,8 +2885,9 @@ public struct DescribeProductInput {
 }
 
 extension ServiceCatalogClientTypes {
+
     /// A launch path object.
-    public struct LaunchPath {
+    public struct LaunchPath: Swift.Sendable {
         /// The identifier of the launch path.
         public var id: Swift.String?
         /// The name of the launch path.
@@ -2901,12 +2902,12 @@ extension ServiceCatalogClientTypes {
             self.name = name
         }
     }
-
 }
 
 extension ServiceCatalogClientTypes {
+
     /// Information about a provisioning artifact. A provisioning artifact is also known as a product version.
-    public struct ProvisioningArtifact {
+    public struct ProvisioningArtifact: Swift.Sendable {
         /// The UTC time stamp of the creation time.
         public var createdTime: Foundation.Date?
         /// The description of the provisioning artifact.
@@ -2933,10 +2934,9 @@ extension ServiceCatalogClientTypes {
             self.name = name
         }
     }
-
 }
 
-public struct DescribeProductOutput {
+public struct DescribeProductOutput: Swift.Sendable {
     /// Information about the associated budgets.
     public var budgets: [ServiceCatalogClientTypes.BudgetDetail]?
     /// Information about the associated launch paths.
@@ -2960,7 +2960,7 @@ public struct DescribeProductOutput {
     }
 }
 
-public struct DescribeProductAsAdminInput {
+public struct DescribeProductAsAdminInput: Swift.Sendable {
     /// The language code.
     ///
     /// * jp - Japanese
@@ -2989,8 +2989,9 @@ public struct DescribeProductAsAdminInput {
 }
 
 extension ServiceCatalogClientTypes {
+
     /// Summary information about a provisioning artifact (also known as a version) for a product.
-    public struct ProvisioningArtifactSummary {
+    public struct ProvisioningArtifactSummary: Swift.Sendable {
         /// The UTC time stamp of the creation time.
         public var createdTime: Foundation.Date?
         /// The description of the provisioning artifact.
@@ -3017,10 +3018,9 @@ extension ServiceCatalogClientTypes {
             self.provisioningArtifactMetadata = provisioningArtifactMetadata
         }
     }
-
 }
 
-public struct DescribeProductAsAdminOutput {
+public struct DescribeProductAsAdminOutput: Swift.Sendable {
     /// Information about the associated budgets.
     public var budgets: [ServiceCatalogClientTypes.BudgetDetail]?
     /// Information about the product view.
@@ -3048,7 +3048,7 @@ public struct DescribeProductAsAdminOutput {
     }
 }
 
-public struct DescribeProductViewInput {
+public struct DescribeProductViewInput: Swift.Sendable {
     /// The language code.
     ///
     /// * jp - Japanese
@@ -3069,7 +3069,7 @@ public struct DescribeProductViewInput {
     }
 }
 
-public struct DescribeProductViewOutput {
+public struct DescribeProductViewOutput: Swift.Sendable {
     /// Summary information about the product.
     public var productViewSummary: ServiceCatalogClientTypes.ProductViewSummary?
     /// Information about the provisioning artifacts for the product.
@@ -3086,7 +3086,7 @@ public struct DescribeProductViewOutput {
 }
 
 /// DescribeProvisionedProductAPI input structure. AcceptLanguage - [Optional] The language code for localization. Id - [Optional] The provisioned product identifier. Name - [Optional] Another provisioned product identifier. Customers must provide either Id or Name.
-public struct DescribeProvisionedProductInput {
+public struct DescribeProvisionedProductInput: Swift.Sendable {
     /// The language code.
     ///
     /// * jp - Japanese
@@ -3111,8 +3111,9 @@ public struct DescribeProvisionedProductInput {
 }
 
 extension ServiceCatalogClientTypes {
+
     /// Information about a CloudWatch dashboard.
-    public struct CloudWatchDashboard {
+    public struct CloudWatchDashboard: Swift.Sendable {
         /// The name of the CloudWatch dashboard.
         public var name: Swift.String?
 
@@ -3123,12 +3124,11 @@ extension ServiceCatalogClientTypes {
             self.name = name
         }
     }
-
 }
 
 extension ServiceCatalogClientTypes {
 
-    public enum ProvisionedProductStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ProvisionedProductStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case available
         case error
         case planInProgress
@@ -3165,8 +3165,9 @@ extension ServiceCatalogClientTypes {
 }
 
 extension ServiceCatalogClientTypes {
+
     /// Information about a provisioned product.
-    public struct ProvisionedProductDetail {
+    public struct ProvisionedProductDetail: Swift.Sendable {
         /// The ARN of the provisioned product.
         public var arn: Swift.String?
         /// The UTC time stamp of the creation time.
@@ -3255,10 +3256,9 @@ extension ServiceCatalogClientTypes {
             self.type = type
         }
     }
-
 }
 
-public struct DescribeProvisionedProductOutput {
+public struct DescribeProvisionedProductOutput: Swift.Sendable {
     /// Any CloudWatch dashboards that were created when provisioning the product.
     public var cloudWatchDashboards: [ServiceCatalogClientTypes.CloudWatchDashboard]?
     /// Information about the provisioned product.
@@ -3274,7 +3274,7 @@ public struct DescribeProvisionedProductOutput {
     }
 }
 
-public struct DescribeProvisionedProductPlanInput {
+public struct DescribeProvisionedProductPlanInput: Swift.Sendable {
     /// The language code.
     ///
     /// * jp - Japanese
@@ -3305,7 +3305,7 @@ public struct DescribeProvisionedProductPlanInput {
 
 extension ServiceCatalogClientTypes {
 
-    public enum ProvisionedProductPlanStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ProvisionedProductPlanStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case createFailed
         case createInProgress
         case createSuccess
@@ -3345,8 +3345,9 @@ extension ServiceCatalogClientTypes {
 }
 
 extension ServiceCatalogClientTypes {
+
     /// Information about a plan.
-    public struct ProvisionedProductPlanDetails {
+    public struct ProvisionedProductPlanDetails: Swift.Sendable {
         /// The UTC time stamp of the creation time.
         public var createdTime: Foundation.Date?
         /// Passed to CloudFormation. The SNS topic ARNs to which to publish stack-related events.
@@ -3413,12 +3414,11 @@ extension ServiceCatalogClientTypes {
             self.updatedTime = updatedTime
         }
     }
-
 }
 
 extension ServiceCatalogClientTypes {
 
-    public enum ChangeAction: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ChangeAction: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case add
         case modify
         case remove
@@ -3450,7 +3450,7 @@ extension ServiceCatalogClientTypes {
 
 extension ServiceCatalogClientTypes {
 
-    public enum EvaluationType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum EvaluationType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case `dynamic`
         case `static`
         case sdkUnknown(Swift.String)
@@ -3479,7 +3479,7 @@ extension ServiceCatalogClientTypes {
 
 extension ServiceCatalogClientTypes {
 
-    public enum ResourceAttribute: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ResourceAttribute: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case creationpolicy
         case deletionpolicy
         case metadata
@@ -3520,7 +3520,7 @@ extension ServiceCatalogClientTypes {
 
 extension ServiceCatalogClientTypes {
 
-    public enum RequiresRecreation: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum RequiresRecreation: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case always
         case conditionally
         case never
@@ -3551,8 +3551,9 @@ extension ServiceCatalogClientTypes {
 }
 
 extension ServiceCatalogClientTypes {
+
     /// Information about a change to a resource attribute.
-    public struct ResourceTargetDefinition {
+    public struct ResourceTargetDefinition: Swift.Sendable {
         /// The attribute to be changed.
         public var attribute: ServiceCatalogClientTypes.ResourceAttribute?
         /// If the attribute is Properties, the value is the name of the property. Otherwise, the value is null.
@@ -3571,12 +3572,12 @@ extension ServiceCatalogClientTypes {
             self.requiresRecreation = requiresRecreation
         }
     }
-
 }
 
 extension ServiceCatalogClientTypes {
+
     /// Information about a change to a resource attribute.
-    public struct ResourceChangeDetail {
+    public struct ResourceChangeDetail: Swift.Sendable {
         /// The ID of the entity that caused the change.
         public var causingEntity: Swift.String?
         /// For static evaluations, the value of the resource attribute will change and the new value is known. For dynamic evaluations, the value might change, and any new value will be determined when the plan is updated.
@@ -3595,12 +3596,11 @@ extension ServiceCatalogClientTypes {
             self.target = target
         }
     }
-
 }
 
 extension ServiceCatalogClientTypes {
 
-    public enum Replacement: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Replacement: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case conditional
         case `false`
         case `true`
@@ -3631,8 +3631,9 @@ extension ServiceCatalogClientTypes {
 }
 
 extension ServiceCatalogClientTypes {
+
     /// Information about a resource change that will occur when a plan is executed.
-    public struct ResourceChange {
+    public struct ResourceChange: Swift.Sendable {
         /// The change action.
         public var action: ServiceCatalogClientTypes.ChangeAction?
         /// Information about the resource changes.
@@ -3667,10 +3668,9 @@ extension ServiceCatalogClientTypes {
             self.scope = scope
         }
     }
-
 }
 
-public struct DescribeProvisionedProductPlanOutput {
+public struct DescribeProvisionedProductPlanOutput: Swift.Sendable {
     /// The page token to use to retrieve the next set of results. If there are no additional results, this value is null.
     public var nextPageToken: Swift.String?
     /// Information about the plan.
@@ -3690,7 +3690,7 @@ public struct DescribeProvisionedProductPlanOutput {
     }
 }
 
-public struct DescribeProvisioningArtifactInput {
+public struct DescribeProvisioningArtifactInput: Swift.Sendable {
     /// The language code.
     ///
     /// * jp - Japanese
@@ -3731,8 +3731,9 @@ public struct DescribeProvisioningArtifactInput {
 }
 
 extension ServiceCatalogClientTypes {
+
     /// The constraints that the administrator has put on the parameter.
-    public struct ParameterConstraints {
+    public struct ParameterConstraints: Swift.Sendable {
         /// A regular expression that represents the patterns that allow for String types. The pattern must match the entire parameter value provided.
         public var allowedPattern: Swift.String?
         /// The values that the administrator has allowed for the parameter.
@@ -3767,12 +3768,12 @@ extension ServiceCatalogClientTypes {
             self.minValue = minValue
         }
     }
-
 }
 
 extension ServiceCatalogClientTypes {
+
     /// Information about a parameter used to provision a product.
-    public struct ProvisioningArtifactParameter {
+    public struct ProvisioningArtifactParameter: Swift.Sendable {
         /// The default value.
         public var defaultValue: Swift.String?
         /// The description of the parameter.
@@ -3803,10 +3804,9 @@ extension ServiceCatalogClientTypes {
             self.parameterType = parameterType
         }
     }
-
 }
 
-public struct DescribeProvisioningArtifactOutput {
+public struct DescribeProvisioningArtifactOutput: Swift.Sendable {
     /// The URL of the CloudFormation template in Amazon S3 or GitHub in JSON format.
     public var info: [Swift.String: Swift.String]?
     /// Information about the provisioning artifact.
@@ -3830,7 +3830,7 @@ public struct DescribeProvisioningArtifactOutput {
     }
 }
 
-public struct DescribeProvisioningParametersInput {
+public struct DescribeProvisioningParametersInput: Swift.Sendable {
     /// The language code.
     ///
     /// * jp - Japanese
@@ -3871,8 +3871,9 @@ public struct DescribeProvisioningParametersInput {
 }
 
 extension ServiceCatalogClientTypes {
+
     /// Summary information about a constraint.
-    public struct ConstraintSummary {
+    public struct ConstraintSummary: Swift.Sendable {
         /// The description of the constraint.
         public var description: Swift.String?
         /// The type of constraint.
@@ -3895,12 +3896,12 @@ extension ServiceCatalogClientTypes {
             self.type = type
         }
     }
-
 }
 
 extension ServiceCatalogClientTypes {
+
     /// Provisioning artifact output.
-    public struct ProvisioningArtifactOutput {
+    public struct ProvisioningArtifactOutput: Swift.Sendable {
         /// Description of the provisioning artifact output key.
         public var description: Swift.String?
         /// The provisioning artifact output key.
@@ -3915,12 +3916,12 @@ extension ServiceCatalogClientTypes {
             self.key = key
         }
     }
-
 }
 
 extension ServiceCatalogClientTypes {
+
     /// The user-defined preferences that will be applied during product provisioning, unless overridden by ProvisioningPreferences or UpdateProvisioningPreferences. For more information on maximum concurrent accounts and failure tolerance, see [Stack set operation options](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/stacksets-concepts.html#stackset-ops-options) in the CloudFormation User Guide.
-    public struct ProvisioningArtifactPreferences {
+    public struct ProvisioningArtifactPreferences: Swift.Sendable {
         /// One or more Amazon Web Services accounts where stack instances are deployed from the stack set. These accounts can be scoped in ProvisioningPreferences$StackSetAccounts and UpdateProvisioningPreferences$StackSetAccounts. Applicable only to a CFN_STACKSET provisioned product type.
         public var stackSetAccounts: [Swift.String]?
         /// One or more Amazon Web Services Regions where stack instances are deployed from the stack set. These Regions can be scoped in ProvisioningPreferences$StackSetRegions and UpdateProvisioningPreferences$StackSetRegions. Applicable only to a CFN_STACKSET provisioned product type.
@@ -3935,12 +3936,12 @@ extension ServiceCatalogClientTypes {
             self.stackSetRegions = stackSetRegions
         }
     }
-
 }
 
 extension ServiceCatalogClientTypes {
+
     /// Summary information about a TagOption.
-    public struct TagOptionSummary {
+    public struct TagOptionSummary: Swift.Sendable {
         /// The TagOption key.
         public var key: Swift.String?
         /// The TagOption value.
@@ -3955,12 +3956,12 @@ extension ServiceCatalogClientTypes {
             self.values = values
         }
     }
-
 }
 
 extension ServiceCatalogClientTypes {
+
     /// Additional information provided by the administrator.
-    public struct UsageInstruction {
+    public struct UsageInstruction: Swift.Sendable {
         /// The usage instruction type for the value.
         public var type: Swift.String?
         /// The usage instruction value for this type.
@@ -3975,10 +3976,9 @@ extension ServiceCatalogClientTypes {
             self.value = value
         }
     }
-
 }
 
-public struct DescribeProvisioningParametersOutput {
+public struct DescribeProvisioningParametersOutput: Swift.Sendable {
     /// Information about the constraints used to provision the product.
     public var constraintSummaries: [ServiceCatalogClientTypes.ConstraintSummary]?
     /// A list of the keys and descriptions of the outputs. These outputs can be referenced from a provisioned product launched from this provisioning artifact.
@@ -4015,7 +4015,7 @@ public struct DescribeProvisioningParametersOutput {
     }
 }
 
-public struct DescribeRecordInput {
+public struct DescribeRecordInput: Swift.Sendable {
     /// The language code.
     ///
     /// * jp - Japanese
@@ -4045,8 +4045,9 @@ public struct DescribeRecordInput {
 }
 
 extension ServiceCatalogClientTypes {
+
     /// The error code and description resulting from an operation.
-    public struct RecordError {
+    public struct RecordError: Swift.Sendable {
         /// The numeric value of the error.
         public var code: Swift.String?
         /// The description of the error.
@@ -4061,12 +4062,12 @@ extension ServiceCatalogClientTypes {
             self.description = description
         }
     }
-
 }
 
 extension ServiceCatalogClientTypes {
+
     /// Information about a tag, which is a key-value pair.
-    public struct RecordTag {
+    public struct RecordTag: Swift.Sendable {
         /// The key for this tag.
         public var key: Swift.String?
         /// The value for this tag.
@@ -4081,12 +4082,11 @@ extension ServiceCatalogClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension ServiceCatalogClientTypes {
 
-    public enum RecordStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum RecordStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case created
         case failed
         case inProgress
@@ -4123,8 +4123,9 @@ extension ServiceCatalogClientTypes {
 }
 
 extension ServiceCatalogClientTypes {
+
     /// Information about a request operation.
-    public struct RecordDetail {
+    public struct RecordDetail: Swift.Sendable {
         /// The UTC time stamp of the creation time.
         public var createdTime: Foundation.Date?
         /// The ARN of the launch role associated with the provisioned product.
@@ -4203,12 +4204,12 @@ extension ServiceCatalogClientTypes {
             self.updatedTime = updatedTime
         }
     }
-
 }
 
 extension ServiceCatalogClientTypes {
+
     /// The output for the product created as the result of a request. For example, the output for a CloudFormation-backed product that creates an S3 bucket would include the S3 bucket URL.
-    public struct RecordOutput {
+    public struct RecordOutput: Swift.Sendable {
         /// The description of the output.
         public var description: Swift.String?
         /// The output key.
@@ -4227,10 +4228,9 @@ extension ServiceCatalogClientTypes {
             self.outputValue = outputValue
         }
     }
-
 }
 
-public struct DescribeRecordOutput {
+public struct DescribeRecordOutput: Swift.Sendable {
     /// The page token to use to retrieve the next set of results. If there are no additional results, this value is null.
     public var nextPageToken: Swift.String?
     /// Information about the product.
@@ -4250,7 +4250,7 @@ public struct DescribeRecordOutput {
     }
 }
 
-public struct DescribeServiceActionInput {
+public struct DescribeServiceActionInput: Swift.Sendable {
     /// The language code.
     ///
     /// * jp - Japanese
@@ -4271,7 +4271,7 @@ public struct DescribeServiceActionInput {
     }
 }
 
-public struct DescribeServiceActionOutput {
+public struct DescribeServiceActionOutput: Swift.Sendable {
     /// Detailed information about the self-service action.
     public var serviceActionDetail: ServiceCatalogClientTypes.ServiceActionDetail?
 
@@ -4283,7 +4283,7 @@ public struct DescribeServiceActionOutput {
     }
 }
 
-public struct DescribeServiceActionExecutionParametersInput {
+public struct DescribeServiceActionExecutionParametersInput: Swift.Sendable {
     /// The language code.
     ///
     /// * jp - Japanese
@@ -4310,8 +4310,9 @@ public struct DescribeServiceActionExecutionParametersInput {
 }
 
 extension ServiceCatalogClientTypes {
+
     /// Details of an execution parameter value that is passed to a self-service action when executed on a provisioned product.
-    public struct ExecutionParameter {
+    public struct ExecutionParameter: Swift.Sendable {
         /// The default values for the execution parameter.
         public var defaultValues: [Swift.String]?
         /// The name of the execution parameter.
@@ -4330,10 +4331,9 @@ extension ServiceCatalogClientTypes {
             self.type = type
         }
     }
-
 }
 
-public struct DescribeServiceActionExecutionParametersOutput {
+public struct DescribeServiceActionExecutionParametersOutput: Swift.Sendable {
     /// The parameters of the self-service action.
     public var serviceActionParameters: [ServiceCatalogClientTypes.ExecutionParameter]?
 
@@ -4345,7 +4345,7 @@ public struct DescribeServiceActionExecutionParametersOutput {
     }
 }
 
-public struct DescribeTagOptionInput {
+public struct DescribeTagOptionInput: Swift.Sendable {
     /// The TagOption identifier.
     /// This member is required.
     public var id: Swift.String?
@@ -4358,7 +4358,7 @@ public struct DescribeTagOptionInput {
     }
 }
 
-public struct DescribeTagOptionOutput {
+public struct DescribeTagOptionOutput: Swift.Sendable {
     /// Information about the TagOption.
     public var tagOptionDetail: ServiceCatalogClientTypes.TagOptionDetail?
 
@@ -4370,17 +4370,17 @@ public struct DescribeTagOptionOutput {
     }
 }
 
-public struct DisableAWSOrganizationsAccessInput {
+public struct DisableAWSOrganizationsAccessInput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DisableAWSOrganizationsAccessOutput {
+public struct DisableAWSOrganizationsAccessOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DisassociateBudgetFromResourceInput {
+public struct DisassociateBudgetFromResourceInput: Swift.Sendable {
     /// The name of the budget you want to disassociate.
     /// This member is required.
     public var budgetName: Swift.String?
@@ -4398,12 +4398,12 @@ public struct DisassociateBudgetFromResourceInput {
     }
 }
 
-public struct DisassociateBudgetFromResourceOutput {
+public struct DisassociateBudgetFromResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DisassociatePrincipalFromPortfolioInput {
+public struct DisassociatePrincipalFromPortfolioInput: Swift.Sendable {
     /// The language code.
     ///
     /// * jp - Japanese
@@ -4433,12 +4433,12 @@ public struct DisassociatePrincipalFromPortfolioInput {
     }
 }
 
-public struct DisassociatePrincipalFromPortfolioOutput {
+public struct DisassociatePrincipalFromPortfolioOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DisassociateProductFromPortfolioInput {
+public struct DisassociateProductFromPortfolioInput: Swift.Sendable {
     /// The language code.
     ///
     /// * jp - Japanese
@@ -4464,12 +4464,12 @@ public struct DisassociateProductFromPortfolioInput {
     }
 }
 
-public struct DisassociateProductFromPortfolioOutput {
+public struct DisassociateProductFromPortfolioOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DisassociateServiceActionFromProvisioningArtifactInput {
+public struct DisassociateServiceActionFromProvisioningArtifactInput: Swift.Sendable {
     /// The language code.
     ///
     /// * jp - Japanese
@@ -4504,12 +4504,12 @@ public struct DisassociateServiceActionFromProvisioningArtifactInput {
     }
 }
 
-public struct DisassociateServiceActionFromProvisioningArtifactOutput {
+public struct DisassociateServiceActionFromProvisioningArtifactOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DisassociateTagOptionFromResourceInput {
+public struct DisassociateTagOptionFromResourceInput: Swift.Sendable {
     /// The resource identifier.
     /// This member is required.
     public var resourceId: Swift.String?
@@ -4527,22 +4527,22 @@ public struct DisassociateTagOptionFromResourceInput {
     }
 }
 
-public struct DisassociateTagOptionFromResourceOutput {
+public struct DisassociateTagOptionFromResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct EnableAWSOrganizationsAccessInput {
+public struct EnableAWSOrganizationsAccessInput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct EnableAWSOrganizationsAccessOutput {
+public struct EnableAWSOrganizationsAccessOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct ExecuteProvisionedProductPlanInput {
+public struct ExecuteProvisionedProductPlanInput: Swift.Sendable {
     /// The language code.
     ///
     /// * jp - Japanese
@@ -4568,7 +4568,7 @@ public struct ExecuteProvisionedProductPlanInput {
     }
 }
 
-public struct ExecuteProvisionedProductPlanOutput {
+public struct ExecuteProvisionedProductPlanOutput: Swift.Sendable {
     /// Information about the result of provisioning the product.
     public var recordDetail: ServiceCatalogClientTypes.RecordDetail?
 
@@ -4580,7 +4580,7 @@ public struct ExecuteProvisionedProductPlanOutput {
     }
 }
 
-public struct ExecuteProvisionedProductServiceActionInput {
+public struct ExecuteProvisionedProductServiceActionInput: Swift.Sendable {
     /// The language code.
     ///
     /// * jp - Japanese
@@ -4615,7 +4615,7 @@ public struct ExecuteProvisionedProductServiceActionInput {
     }
 }
 
-public struct ExecuteProvisionedProductServiceActionOutput {
+public struct ExecuteProvisionedProductServiceActionOutput: Swift.Sendable {
     /// An object containing detailed information about the result of provisioning the product.
     public var recordDetail: ServiceCatalogClientTypes.RecordDetail?
 
@@ -4627,12 +4627,12 @@ public struct ExecuteProvisionedProductServiceActionOutput {
     }
 }
 
-public struct GetAWSOrganizationsAccessStatusInput {
+public struct GetAWSOrganizationsAccessStatusInput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct GetAWSOrganizationsAccessStatusOutput {
+public struct GetAWSOrganizationsAccessStatusOutput: Swift.Sendable {
     /// The status of the portfolio share feature.
     public var accessStatus: ServiceCatalogClientTypes.AccessStatus?
 
@@ -4644,7 +4644,7 @@ public struct GetAWSOrganizationsAccessStatusOutput {
     }
 }
 
-public struct GetProvisionedProductOutputsInput {
+public struct GetProvisionedProductOutputsInput: Swift.Sendable {
     /// The language code.
     ///
     /// * jp - Japanese
@@ -4680,7 +4680,7 @@ public struct GetProvisionedProductOutputsInput {
     }
 }
 
-public struct GetProvisionedProductOutputsOutput {
+public struct GetProvisionedProductOutputsOutput: Swift.Sendable {
     /// The page token to use to retrieve the next set of results. If there are no additional results, this value is null.
     public var nextPageToken: Swift.String?
     /// Information about the product created as the result of a request. For example, the output for a CloudFormation-backed product that creates an S3 bucket would include the S3 bucket URL.
@@ -4696,7 +4696,7 @@ public struct GetProvisionedProductOutputsOutput {
     }
 }
 
-public struct ImportAsProvisionedProductInput {
+public struct ImportAsProvisionedProductInput: Swift.Sendable {
     /// The language code.
     ///
     /// * jp - Japanese
@@ -4737,7 +4737,7 @@ public struct ImportAsProvisionedProductInput {
     }
 }
 
-public struct ImportAsProvisionedProductOutput {
+public struct ImportAsProvisionedProductOutput: Swift.Sendable {
     /// Information about a request operation.
     public var recordDetail: ServiceCatalogClientTypes.RecordDetail?
 
@@ -4749,7 +4749,7 @@ public struct ImportAsProvisionedProductOutput {
     }
 }
 
-public struct ListAcceptedPortfolioSharesInput {
+public struct ListAcceptedPortfolioSharesInput: Swift.Sendable {
     /// The language code.
     ///
     /// * jp - Japanese
@@ -4783,7 +4783,7 @@ public struct ListAcceptedPortfolioSharesInput {
     }
 }
 
-public struct ListAcceptedPortfolioSharesOutput {
+public struct ListAcceptedPortfolioSharesOutput: Swift.Sendable {
     /// The page token to use to retrieve the next set of results. If there are no additional results, this value is null.
     public var nextPageToken: Swift.String?
     /// Information about the portfolios.
@@ -4799,7 +4799,7 @@ public struct ListAcceptedPortfolioSharesOutput {
     }
 }
 
-public struct ListBudgetsForResourceInput {
+public struct ListBudgetsForResourceInput: Swift.Sendable {
     /// The language code.
     ///
     /// * jp - Japanese
@@ -4828,7 +4828,7 @@ public struct ListBudgetsForResourceInput {
     }
 }
 
-public struct ListBudgetsForResourceOutput {
+public struct ListBudgetsForResourceOutput: Swift.Sendable {
     /// Information about the associated budgets.
     public var budgets: [ServiceCatalogClientTypes.BudgetDetail]?
     /// The page token to use to retrieve the next set of results. If there are no additional results, this value is null.
@@ -4844,7 +4844,7 @@ public struct ListBudgetsForResourceOutput {
     }
 }
 
-public struct ListConstraintsForPortfolioInput {
+public struct ListConstraintsForPortfolioInput: Swift.Sendable {
     /// The language code.
     ///
     /// * jp - Japanese
@@ -4877,7 +4877,7 @@ public struct ListConstraintsForPortfolioInput {
     }
 }
 
-public struct ListConstraintsForPortfolioOutput {
+public struct ListConstraintsForPortfolioOutput: Swift.Sendable {
     /// Information about the constraints.
     public var constraintDetails: [ServiceCatalogClientTypes.ConstraintDetail]?
     /// The page token to use to retrieve the next set of results. If there are no additional results, this value is null.
@@ -4893,7 +4893,7 @@ public struct ListConstraintsForPortfolioOutput {
     }
 }
 
-public struct ListLaunchPathsInput {
+public struct ListLaunchPathsInput: Swift.Sendable {
     /// The language code.
     ///
     /// * jp - Japanese
@@ -4923,8 +4923,9 @@ public struct ListLaunchPathsInput {
 }
 
 extension ServiceCatalogClientTypes {
+
     /// Summary information about a product path for a user.
-    public struct LaunchPathSummary {
+    public struct LaunchPathSummary: Swift.Sendable {
         /// The constraints on the portfolio-product relationship.
         public var constraintSummaries: [ServiceCatalogClientTypes.ConstraintSummary]?
         /// The identifier of the product path.
@@ -4947,10 +4948,9 @@ extension ServiceCatalogClientTypes {
             self.tags = tags
         }
     }
-
 }
 
-public struct ListLaunchPathsOutput {
+public struct ListLaunchPathsOutput: Swift.Sendable {
     /// Information about the launch path.
     public var launchPathSummaries: [ServiceCatalogClientTypes.LaunchPathSummary]?
     /// The page token to use to retrieve the next set of results. If there are no additional results, this value is null.
@@ -4966,7 +4966,7 @@ public struct ListLaunchPathsOutput {
     }
 }
 
-public struct ListOrganizationPortfolioAccessInput {
+public struct ListOrganizationPortfolioAccessInput: Swift.Sendable {
     /// The language code.
     ///
     /// * jp - Japanese
@@ -5006,7 +5006,7 @@ public struct ListOrganizationPortfolioAccessInput {
     }
 }
 
-public struct ListOrganizationPortfolioAccessOutput {
+public struct ListOrganizationPortfolioAccessOutput: Swift.Sendable {
     /// The page token to use to retrieve the next set of results. If there are no additional results, this value is null.
     public var nextPageToken: Swift.String?
     /// Displays information about the organization nodes.
@@ -5022,7 +5022,7 @@ public struct ListOrganizationPortfolioAccessOutput {
     }
 }
 
-public struct ListPortfolioAccessInput {
+public struct ListPortfolioAccessInput: Swift.Sendable {
     /// The language code.
     ///
     /// * jp - Japanese
@@ -5055,7 +5055,7 @@ public struct ListPortfolioAccessInput {
     }
 }
 
-public struct ListPortfolioAccessOutput {
+public struct ListPortfolioAccessOutput: Swift.Sendable {
     /// Information about the Amazon Web Services accounts with access to the portfolio.
     public var accountIds: [Swift.String]?
     /// The page token to use to retrieve the next set of results. If there are no additional results, this value is null.
@@ -5071,7 +5071,7 @@ public struct ListPortfolioAccessOutput {
     }
 }
 
-public struct ListPortfoliosInput {
+public struct ListPortfoliosInput: Swift.Sendable {
     /// The language code.
     ///
     /// * jp - Japanese
@@ -5095,7 +5095,7 @@ public struct ListPortfoliosInput {
     }
 }
 
-public struct ListPortfoliosOutput {
+public struct ListPortfoliosOutput: Swift.Sendable {
     /// The page token to use to retrieve the next set of results. If there are no additional results, this value is null.
     public var nextPageToken: Swift.String?
     /// Information about the portfolios.
@@ -5111,7 +5111,7 @@ public struct ListPortfoliosOutput {
     }
 }
 
-public struct ListPortfoliosForProductInput {
+public struct ListPortfoliosForProductInput: Swift.Sendable {
     /// The language code.
     ///
     /// * jp - Japanese
@@ -5140,7 +5140,7 @@ public struct ListPortfoliosForProductInput {
     }
 }
 
-public struct ListPortfoliosForProductOutput {
+public struct ListPortfoliosForProductOutput: Swift.Sendable {
     /// The page token to use to retrieve the next set of results. If there are no additional results, this value is null.
     public var nextPageToken: Swift.String?
     /// Information about the portfolios.
@@ -5156,7 +5156,7 @@ public struct ListPortfoliosForProductOutput {
     }
 }
 
-public struct ListPrincipalsForPortfolioInput {
+public struct ListPrincipalsForPortfolioInput: Swift.Sendable {
     /// The language code.
     ///
     /// * jp - Japanese
@@ -5186,8 +5186,9 @@ public struct ListPrincipalsForPortfolioInput {
 }
 
 extension ServiceCatalogClientTypes {
+
     /// Information about a principal.
-    public struct Principal {
+    public struct Principal: Swift.Sendable {
         /// The ARN of the principal (user, role, or group). This field allows for an ARN with no accountID, with or without wildcard characters if the PrincipalType is an IAM_PATTERN. For more information, review [associate-principal-with-portfolio](https://docs.aws.amazon.com/cli/latest/reference/servicecatalog/associate-principal-with-portfolio.html#options) in the Amazon Web Services CLI Command Reference.
         public var principalARN: Swift.String?
         /// The principal type. The supported value is IAM if you use a fully defined ARN, or IAM_PATTERN if you use an ARN with no accountID, with or without wildcard characters.
@@ -5202,10 +5203,9 @@ extension ServiceCatalogClientTypes {
             self.principalType = principalType
         }
     }
-
 }
 
-public struct ListPrincipalsForPortfolioOutput {
+public struct ListPrincipalsForPortfolioOutput: Swift.Sendable {
     /// The page token to use to retrieve the next set of results. If there are no additional results, this value is null.
     public var nextPageToken: Swift.String?
     /// The PrincipalARNs and corresponding PrincipalTypes associated with the portfolio.
@@ -5221,7 +5221,7 @@ public struct ListPrincipalsForPortfolioOutput {
     }
 }
 
-public struct ListProvisionedProductPlansInput {
+public struct ListProvisionedProductPlansInput: Swift.Sendable {
     /// The language code.
     ///
     /// * jp - Japanese
@@ -5254,8 +5254,9 @@ public struct ListProvisionedProductPlansInput {
 }
 
 extension ServiceCatalogClientTypes {
+
     /// Summary information about a plan.
-    public struct ProvisionedProductPlanSummary {
+    public struct ProvisionedProductPlanSummary: Swift.Sendable {
         /// The plan identifier.
         public var planId: Swift.String?
         /// The name of the plan.
@@ -5286,10 +5287,9 @@ extension ServiceCatalogClientTypes {
             self.provisioningArtifactId = provisioningArtifactId
         }
     }
-
 }
 
-public struct ListProvisionedProductPlansOutput {
+public struct ListProvisionedProductPlansOutput: Swift.Sendable {
     /// The page token to use to retrieve the next set of results. If there are no additional results, this value is null.
     public var nextPageToken: Swift.String?
     /// Information about the plans.
@@ -5305,7 +5305,7 @@ public struct ListProvisionedProductPlansOutput {
     }
 }
 
-public struct ListProvisioningArtifactsInput {
+public struct ListProvisioningArtifactsInput: Swift.Sendable {
     /// The language code.
     ///
     /// * jp - Japanese
@@ -5326,7 +5326,7 @@ public struct ListProvisioningArtifactsInput {
     }
 }
 
-public struct ListProvisioningArtifactsOutput {
+public struct ListProvisioningArtifactsOutput: Swift.Sendable {
     /// The page token to use to retrieve the next set of results. If there are no additional results, this value is null.
     public var nextPageToken: Swift.String?
     /// Information about the provisioning artifacts.
@@ -5342,7 +5342,7 @@ public struct ListProvisioningArtifactsOutput {
     }
 }
 
-public struct ListProvisioningArtifactsForServiceActionInput {
+public struct ListProvisioningArtifactsForServiceActionInput: Swift.Sendable {
     /// The language code.
     ///
     /// * jp - Japanese
@@ -5372,8 +5372,9 @@ public struct ListProvisioningArtifactsForServiceActionInput {
 }
 
 extension ServiceCatalogClientTypes {
+
     /// An object that contains summary information about a product view and a provisioning artifact.
-    public struct ProvisioningArtifactView {
+    public struct ProvisioningArtifactView: Swift.Sendable {
         /// Summary information about a product view.
         public var productViewSummary: ServiceCatalogClientTypes.ProductViewSummary?
         /// Information about a provisioning artifact. A provisioning artifact is also known as a product version.
@@ -5388,10 +5389,9 @@ extension ServiceCatalogClientTypes {
             self.provisioningArtifact = provisioningArtifact
         }
     }
-
 }
 
-public struct ListProvisioningArtifactsForServiceActionOutput {
+public struct ListProvisioningArtifactsForServiceActionOutput: Swift.Sendable {
     /// The page token to use to retrieve the next set of results. If there are no additional results, this value is null.
     public var nextPageToken: Swift.String?
     /// An array of objects with information about product views and provisioning artifacts.
@@ -5408,8 +5408,9 @@ public struct ListProvisioningArtifactsForServiceActionOutput {
 }
 
 extension ServiceCatalogClientTypes {
+
     /// The search filter to use when listing history records.
-    public struct ListRecordHistorySearchFilter {
+    public struct ListRecordHistorySearchFilter: Swift.Sendable {
         /// The filter key.
         ///
         /// * product - Filter results based on the specified product identifier.
@@ -5428,10 +5429,9 @@ extension ServiceCatalogClientTypes {
             self.value = value
         }
     }
-
 }
 
-public struct ListRecordHistoryInput {
+public struct ListRecordHistoryInput: Swift.Sendable {
     /// The language code.
     ///
     /// * jp - Japanese
@@ -5463,7 +5463,7 @@ public struct ListRecordHistoryInput {
     }
 }
 
-public struct ListRecordHistoryOutput {
+public struct ListRecordHistoryOutput: Swift.Sendable {
     /// The page token to use to retrieve the next set of results. If there are no additional results, this value is null.
     public var nextPageToken: Swift.String?
     /// The records, in reverse chronological order.
@@ -5479,7 +5479,7 @@ public struct ListRecordHistoryOutput {
     }
 }
 
-public struct ListResourcesForTagOptionInput {
+public struct ListResourcesForTagOptionInput: Swift.Sendable {
     /// The maximum number of items to return with this call.
     public var pageSize: Swift.Int?
     /// The page token for the next set of results. To retrieve the first set of results, use null.
@@ -5509,8 +5509,9 @@ public struct ListResourcesForTagOptionInput {
 }
 
 extension ServiceCatalogClientTypes {
+
     /// Information about a resource.
-    public struct ResourceDetail {
+    public struct ResourceDetail: Swift.Sendable {
         /// The ARN of the resource.
         public var arn: Swift.String?
         /// The creation time of the resource.
@@ -5537,10 +5538,9 @@ extension ServiceCatalogClientTypes {
             self.name = name
         }
     }
-
 }
 
-public struct ListResourcesForTagOptionOutput {
+public struct ListResourcesForTagOptionOutput: Swift.Sendable {
     /// The page token for the next set of results. To retrieve the first set of results, use null.
     public var pageToken: Swift.String?
     /// Information about the resources.
@@ -5556,7 +5556,7 @@ public struct ListResourcesForTagOptionOutput {
     }
 }
 
-public struct ListServiceActionsInput {
+public struct ListServiceActionsInput: Swift.Sendable {
     /// The language code.
     ///
     /// * jp - Japanese
@@ -5580,7 +5580,7 @@ public struct ListServiceActionsInput {
     }
 }
 
-public struct ListServiceActionsOutput {
+public struct ListServiceActionsOutput: Swift.Sendable {
     /// The page token to use to retrieve the next set of results. If there are no additional results, this value is null.
     public var nextPageToken: Swift.String?
     /// An object containing information about the service actions associated with the provisioning artifact.
@@ -5596,7 +5596,7 @@ public struct ListServiceActionsOutput {
     }
 }
 
-public struct ListServiceActionsForProvisioningArtifactInput {
+public struct ListServiceActionsForProvisioningArtifactInput: Swift.Sendable {
     /// The language code.
     ///
     /// * jp - Japanese
@@ -5630,7 +5630,7 @@ public struct ListServiceActionsForProvisioningArtifactInput {
     }
 }
 
-public struct ListServiceActionsForProvisioningArtifactOutput {
+public struct ListServiceActionsForProvisioningArtifactOutput: Swift.Sendable {
     /// The page token to use to retrieve the next set of results. If there are no additional results, this value is null.
     public var nextPageToken: Swift.String?
     /// An object containing information about the self-service actions associated with the provisioning artifact.
@@ -5646,7 +5646,7 @@ public struct ListServiceActionsForProvisioningArtifactOutput {
     }
 }
 
-public struct ListStackInstancesForProvisionedProductInput {
+public struct ListStackInstancesForProvisionedProductInput: Swift.Sendable {
     /// The language code.
     ///
     /// * jp - Japanese
@@ -5677,7 +5677,7 @@ public struct ListStackInstancesForProvisionedProductInput {
 
 extension ServiceCatalogClientTypes {
 
-    public enum StackInstanceStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum StackInstanceStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case current
         case inoperable
         case outdated
@@ -5708,8 +5708,9 @@ extension ServiceCatalogClientTypes {
 }
 
 extension ServiceCatalogClientTypes {
+
     /// An CloudFormation stack, in a specific account and Region, that's part of a stack set operation. A stack instance is a reference to an attempted or actual stack in a given account within a given Region. A stack instance can exist without a stack—for example, if the stack couldn't be created for some reason. A stack instance is associated with only one stack set. Each stack instance contains the ID of its associated stack set, as well as the ID of the actual stack and the stack status.
-    public struct StackInstance {
+    public struct StackInstance: Swift.Sendable {
         /// The name of the Amazon Web Services account that the stack instance is associated with.
         public var account: Swift.String?
         /// The name of the Amazon Web Services Region that the stack instance is associated with.
@@ -5734,10 +5735,9 @@ extension ServiceCatalogClientTypes {
             self.stackInstanceStatus = stackInstanceStatus
         }
     }
-
 }
 
-public struct ListStackInstancesForProvisionedProductOutput {
+public struct ListStackInstancesForProvisionedProductOutput: Swift.Sendable {
     /// The page token to use to retrieve the next set of results. If there are no additional results, this value is null.
     public var nextPageToken: Swift.String?
     /// List of stack instances.
@@ -5754,8 +5754,9 @@ public struct ListStackInstancesForProvisionedProductOutput {
 }
 
 extension ServiceCatalogClientTypes {
+
     /// Filters to use when listing TagOptions.
-    public struct ListTagOptionsFilters {
+    public struct ListTagOptionsFilters: Swift.Sendable {
         /// The active state.
         public var active: Swift.Bool?
         /// The TagOption key.
@@ -5774,10 +5775,9 @@ extension ServiceCatalogClientTypes {
             self.value = value
         }
     }
-
 }
 
-public struct ListTagOptionsInput {
+public struct ListTagOptionsInput: Swift.Sendable {
     /// The search filters. If no search filters are specified, the output includes all TagOptions.
     public var filters: ServiceCatalogClientTypes.ListTagOptionsFilters?
     /// The maximum number of items to return with this call.
@@ -5797,7 +5797,7 @@ public struct ListTagOptionsInput {
     }
 }
 
-public struct ListTagOptionsOutput {
+public struct ListTagOptionsOutput: Swift.Sendable {
     /// The page token for the next set of results. To retrieve the first set of results, use null.
     public var pageToken: Swift.String?
     /// Information about the TagOptions.
@@ -5814,8 +5814,9 @@ public struct ListTagOptionsOutput {
 }
 
 extension ServiceCatalogClientTypes {
+
     /// The unique key-value pair for a tag that identifies provisioned product resources.
-    public struct UniqueTagResourceIdentifier {
+    public struct UniqueTagResourceIdentifier: Swift.Sendable {
         /// A unique key that's attached to a resource.
         public var key: Swift.String?
         /// A unique value that's attached to a resource.
@@ -5830,12 +5831,12 @@ extension ServiceCatalogClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension ServiceCatalogClientTypes {
+
     /// The ID for the provisioned product resources that are part of a resource group.
-    public struct EngineWorkflowResourceIdentifier {
+    public struct EngineWorkflowResourceIdentifier: Swift.Sendable {
         /// The unique key-value pair for a tag that identifies provisioned product resources.
         public var uniqueTag: ServiceCatalogClientTypes.UniqueTagResourceIdentifier?
 
@@ -5846,12 +5847,11 @@ extension ServiceCatalogClientTypes {
             self.uniqueTag = uniqueTag
         }
     }
-
 }
 
 extension ServiceCatalogClientTypes {
 
-    public enum EngineWorkflowStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum EngineWorkflowStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case failed
         case succeeded
         case sdkUnknown(Swift.String)
@@ -5878,7 +5878,7 @@ extension ServiceCatalogClientTypes {
     }
 }
 
-public struct NotifyProvisionProductEngineWorkflowResultInput {
+public struct NotifyProvisionProductEngineWorkflowResultInput: Swift.Sendable {
     /// The reason why the provisioning engine execution failed.
     public var failureReason: Swift.String?
     /// The idempotency token that identifies the provisioning engine execution.
@@ -5918,12 +5918,12 @@ public struct NotifyProvisionProductEngineWorkflowResultInput {
     }
 }
 
-public struct NotifyProvisionProductEngineWorkflowResultOutput {
+public struct NotifyProvisionProductEngineWorkflowResultOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct NotifyTerminateProvisionedProductEngineWorkflowResultInput {
+public struct NotifyTerminateProvisionedProductEngineWorkflowResultInput: Swift.Sendable {
     /// The reason why the terminate engine execution failed.
     public var failureReason: Swift.String?
     /// The idempotency token that identifies the terminate engine execution.
@@ -5955,12 +5955,12 @@ public struct NotifyTerminateProvisionedProductEngineWorkflowResultInput {
     }
 }
 
-public struct NotifyTerminateProvisionedProductEngineWorkflowResultOutput {
+public struct NotifyTerminateProvisionedProductEngineWorkflowResultOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct NotifyUpdateProvisionedProductEngineWorkflowResultInput {
+public struct NotifyUpdateProvisionedProductEngineWorkflowResultInput: Swift.Sendable {
     /// The reason why the update engine execution failed.
     public var failureReason: Swift.String?
     /// The idempotency token that identifies the update engine execution.
@@ -5996,14 +5996,15 @@ public struct NotifyUpdateProvisionedProductEngineWorkflowResultInput {
     }
 }
 
-public struct NotifyUpdateProvisionedProductEngineWorkflowResultOutput {
+public struct NotifyUpdateProvisionedProductEngineWorkflowResultOutput: Swift.Sendable {
 
     public init() { }
 }
 
 extension ServiceCatalogClientTypes {
+
     /// Information about a parameter used to provision a product.
-    public struct ProvisioningParameter {
+    public struct ProvisioningParameter: Swift.Sendable {
         /// The parameter key.
         public var key: Swift.String?
         /// The parameter value.
@@ -6018,12 +6019,12 @@ extension ServiceCatalogClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension ServiceCatalogClientTypes {
+
     /// The user-defined preferences that will be applied when updating a provisioned product. Not all preferences are applicable to all provisioned product type One or more Amazon Web Services accounts that will have access to the provisioned product. Applicable only to a CFN_STACKSET provisioned product type. The Amazon Web Services accounts specified should be within the list of accounts in the STACKSET constraint. To get the list of accounts in the STACKSET constraint, use the DescribeProvisioningParameters operation. If no values are specified, the default value is all accounts from the STACKSET constraint.
-    public struct ProvisioningPreferences {
+    public struct ProvisioningPreferences: Swift.Sendable {
         /// One or more Amazon Web Services accounts where the provisioned product will be available. Applicable only to a CFN_STACKSET provisioned product type. The specified accounts should be within the list of accounts from the STACKSET constraint. To get the list of accounts in the STACKSET constraint, use the DescribeProvisioningParameters operation. If no values are specified, the default value is all acounts from the STACKSET constraint.
         public var stackSetAccounts: [Swift.String]?
         /// The number of accounts, per Region, for which this operation can fail before Service Catalog stops the operation in that Region. If the operation is stopped in a Region, Service Catalog doesn't attempt the operation in any subsequent Regions. Applicable only to a CFN_STACKSET provisioned product type. Conditional: You must specify either StackSetFailureToleranceCount or StackSetFailureTolerancePercentage, but not both. The default value is 0 if no value is specified.
@@ -6054,10 +6055,9 @@ extension ServiceCatalogClientTypes {
             self.stackSetRegions = stackSetRegions
         }
     }
-
 }
 
-public struct ProvisionProductInput {
+public struct ProvisionProductInput: Swift.Sendable {
     /// The language code.
     ///
     /// * jp - Japanese
@@ -6123,7 +6123,7 @@ public struct ProvisionProductInput {
     }
 }
 
-public struct ProvisionProductOutput {
+public struct ProvisionProductOutput: Swift.Sendable {
     /// Information about the result of provisioning the product.
     public var recordDetail: ServiceCatalogClientTypes.RecordDetail?
 
@@ -6135,7 +6135,7 @@ public struct ProvisionProductOutput {
     }
 }
 
-public struct RejectPortfolioShareInput {
+public struct RejectPortfolioShareInput: Swift.Sendable {
     /// The language code.
     ///
     /// * jp - Japanese
@@ -6169,12 +6169,12 @@ public struct RejectPortfolioShareInput {
     }
 }
 
-public struct RejectPortfolioShareOutput {
+public struct RejectPortfolioShareOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct ScanProvisionedProductsInput {
+public struct ScanProvisionedProductsInput: Swift.Sendable {
     /// The language code.
     ///
     /// * jp - Japanese
@@ -6202,7 +6202,7 @@ public struct ScanProvisionedProductsInput {
     }
 }
 
-public struct ScanProvisionedProductsOutput {
+public struct ScanProvisionedProductsOutput: Swift.Sendable {
     /// The page token to use to retrieve the next set of results. If there are no additional results, this value is null.
     public var nextPageToken: Swift.String?
     /// Information about the provisioned products.
@@ -6220,7 +6220,7 @@ public struct ScanProvisionedProductsOutput {
 
 extension ServiceCatalogClientTypes {
 
-    public enum ProductViewFilterBy: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ProductViewFilterBy: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case fulltextsearch
         case owner
         case producttype
@@ -6255,7 +6255,7 @@ extension ServiceCatalogClientTypes {
 
 extension ServiceCatalogClientTypes {
 
-    public enum ProductViewSortBy: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ProductViewSortBy: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case creationdate
         case title
         case versioncount
@@ -6287,7 +6287,7 @@ extension ServiceCatalogClientTypes {
 
 extension ServiceCatalogClientTypes {
 
-    public enum SortOrder: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SortOrder: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case ascending
         case descending
         case sdkUnknown(Swift.String)
@@ -6314,7 +6314,7 @@ extension ServiceCatalogClientTypes {
     }
 }
 
-public struct SearchProductsInput {
+public struct SearchProductsInput: Swift.Sendable {
     /// The language code.
     ///
     /// * jp - Japanese
@@ -6351,8 +6351,9 @@ public struct SearchProductsInput {
 }
 
 extension ServiceCatalogClientTypes {
+
     /// A single product view aggregation value/count pair, containing metadata about each product to which the calling user has access.
-    public struct ProductViewAggregationValue {
+    public struct ProductViewAggregationValue: Swift.Sendable {
         /// An approximate count of the products that match the value.
         public var approximateCount: Swift.Int
         /// The value of the product view aggregation.
@@ -6367,10 +6368,9 @@ extension ServiceCatalogClientTypes {
             self.value = value
         }
     }
-
 }
 
-public struct SearchProductsOutput {
+public struct SearchProductsOutput: Swift.Sendable {
     /// The page token to use to retrieve the next set of results. If there are no additional results, this value is null.
     public var nextPageToken: Swift.String?
     /// The product view aggregations.
@@ -6392,7 +6392,7 @@ public struct SearchProductsOutput {
 
 extension ServiceCatalogClientTypes {
 
-    public enum ProductSource: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ProductSource: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case account
         case sdkUnknown(Swift.String)
 
@@ -6416,7 +6416,7 @@ extension ServiceCatalogClientTypes {
     }
 }
 
-public struct SearchProductsAsAdminInput {
+public struct SearchProductsAsAdminInput: Swift.Sendable {
     /// The language code.
     ///
     /// * jp - Japanese
@@ -6460,7 +6460,7 @@ public struct SearchProductsAsAdminInput {
     }
 }
 
-public struct SearchProductsAsAdminOutput {
+public struct SearchProductsAsAdminOutput: Swift.Sendable {
     /// The page token to use to retrieve the next set of results. If there are no additional results, this value is null.
     public var nextPageToken: Swift.String?
     /// Information about the product views.
@@ -6478,7 +6478,7 @@ public struct SearchProductsAsAdminOutput {
 
 extension ServiceCatalogClientTypes {
 
-    public enum ProvisionedProductViewFilterBy: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ProvisionedProductViewFilterBy: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case searchquery
         case sdkUnknown(Swift.String)
 
@@ -6502,7 +6502,7 @@ extension ServiceCatalogClientTypes {
     }
 }
 
-public struct SearchProvisionedProductsInput {
+public struct SearchProvisionedProductsInput: Swift.Sendable {
     /// The language code.
     ///
     /// * jp - Japanese
@@ -6543,8 +6543,9 @@ public struct SearchProvisionedProductsInput {
 }
 
 extension ServiceCatalogClientTypes {
+
     /// Information about a provisioned product.
-    public struct ProvisionedProductAttribute {
+    public struct ProvisionedProductAttribute: Swift.Sendable {
         /// The ARN of the provisioned product.
         public var arn: Swift.String?
         /// The UTC time stamp of the creation time.
@@ -6653,10 +6654,9 @@ extension ServiceCatalogClientTypes {
             self.userArnSession = userArnSession
         }
     }
-
 }
 
-public struct SearchProvisionedProductsOutput {
+public struct SearchProvisionedProductsOutput: Swift.Sendable {
     /// The page token to use to retrieve the next set of results. If there are no additional results, this value is null.
     public var nextPageToken: Swift.String?
     /// Information about the provisioned products.
@@ -6676,7 +6676,7 @@ public struct SearchProvisionedProductsOutput {
     }
 }
 
-public struct TerminateProvisionedProductInput {
+public struct TerminateProvisionedProductInput: Swift.Sendable {
     /// The language code.
     ///
     /// * jp - Japanese
@@ -6713,7 +6713,7 @@ public struct TerminateProvisionedProductInput {
     }
 }
 
-public struct TerminateProvisionedProductOutput {
+public struct TerminateProvisionedProductOutput: Swift.Sendable {
     /// Information about the result of this request.
     public var recordDetail: ServiceCatalogClientTypes.RecordDetail?
 
@@ -6725,7 +6725,7 @@ public struct TerminateProvisionedProductOutput {
     }
 }
 
-public struct UpdateConstraintInput {
+public struct UpdateConstraintInput: Swift.Sendable {
     /// The language code.
     ///
     /// * jp - Japanese
@@ -6754,7 +6754,7 @@ public struct UpdateConstraintInput {
     }
 }
 
-public struct UpdateConstraintOutput {
+public struct UpdateConstraintOutput: Swift.Sendable {
     /// Information about the constraint.
     public var constraintDetail: ServiceCatalogClientTypes.ConstraintDetail?
     /// The constraint parameters.
@@ -6774,7 +6774,7 @@ public struct UpdateConstraintOutput {
     }
 }
 
-public struct UpdatePortfolioInput {
+public struct UpdatePortfolioInput: Swift.Sendable {
     /// The language code.
     ///
     /// * jp - Japanese
@@ -6815,7 +6815,7 @@ public struct UpdatePortfolioInput {
     }
 }
 
-public struct UpdatePortfolioOutput {
+public struct UpdatePortfolioOutput: Swift.Sendable {
     /// Information about the portfolio.
     public var portfolioDetail: ServiceCatalogClientTypes.PortfolioDetail?
     /// Information about the tags associated with the portfolio.
@@ -6831,7 +6831,7 @@ public struct UpdatePortfolioOutput {
     }
 }
 
-public struct UpdatePortfolioShareInput {
+public struct UpdatePortfolioShareInput: Swift.Sendable {
     /// The language code.
     ///
     /// * jp - Japanese
@@ -6868,7 +6868,7 @@ public struct UpdatePortfolioShareInput {
     }
 }
 
-public struct UpdatePortfolioShareOutput {
+public struct UpdatePortfolioShareOutput: Swift.Sendable {
     /// The token that tracks the status of the UpdatePortfolioShare operation for external account to account or organizational type sharing.
     public var portfolioShareToken: Swift.String?
     /// The status of UpdatePortfolioShare operation. You can also obtain the operation status using DescribePortfolioShareStatus API.
@@ -6884,7 +6884,7 @@ public struct UpdatePortfolioShareOutput {
     }
 }
 
-public struct UpdateProductInput {
+public struct UpdateProductInput: Swift.Sendable {
     /// The language code.
     ///
     /// * jp - Japanese
@@ -6949,7 +6949,7 @@ public struct UpdateProductInput {
     }
 }
 
-public struct UpdateProductOutput {
+public struct UpdateProductOutput: Swift.Sendable {
     /// Information about the product view.
     public var productViewDetail: ServiceCatalogClientTypes.ProductViewDetail?
     /// Information about the tags associated with the product.
@@ -6967,7 +6967,7 @@ public struct UpdateProductOutput {
 
 extension ServiceCatalogClientTypes {
 
-    public enum StackSetOperationType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum StackSetOperationType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case create
         case delete
         case update
@@ -6998,8 +6998,9 @@ extension ServiceCatalogClientTypes {
 }
 
 extension ServiceCatalogClientTypes {
+
     /// The user-defined preferences that will be applied when updating a provisioned product. Not all preferences are applicable to all provisioned product types.
-    public struct UpdateProvisioningPreferences {
+    public struct UpdateProvisioningPreferences: Swift.Sendable {
         /// One or more Amazon Web Services accounts that will have access to the provisioned product. Applicable only to a CFN_STACKSET provisioned product type. The Amazon Web Services accounts specified should be within the list of accounts in the STACKSET constraint. To get the list of accounts in the STACKSET constraint, use the DescribeProvisioningParameters operation. If no values are specified, the default value is all accounts from the STACKSET constraint.
         public var stackSetAccounts: [Swift.String]?
         /// The number of accounts, per Region, for which this operation can fail before Service Catalog stops the operation in that Region. If the operation is stopped in a Region, Service Catalog doesn't attempt the operation in any subsequent Regions. Applicable only to a CFN_STACKSET provisioned product type. Conditional: You must specify either StackSetFailureToleranceCount or StackSetFailureTolerancePercentage, but not both. The default value is 0 if no value is specified.
@@ -7034,10 +7035,9 @@ extension ServiceCatalogClientTypes {
             self.stackSetRegions = stackSetRegions
         }
     }
-
 }
 
-public struct UpdateProvisionedProductInput {
+public struct UpdateProvisionedProductInput: Swift.Sendable {
     /// The language code.
     ///
     /// * jp - Japanese
@@ -7102,7 +7102,7 @@ public struct UpdateProvisionedProductInput {
     }
 }
 
-public struct UpdateProvisionedProductOutput {
+public struct UpdateProvisionedProductOutput: Swift.Sendable {
     /// Information about the result of the request.
     public var recordDetail: ServiceCatalogClientTypes.RecordDetail?
 
@@ -7116,7 +7116,7 @@ public struct UpdateProvisionedProductOutput {
 
 extension ServiceCatalogClientTypes {
 
-    public enum PropertyKey: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum PropertyKey: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case launchrole
         case owner
         case sdkUnknown(Swift.String)
@@ -7143,7 +7143,7 @@ extension ServiceCatalogClientTypes {
     }
 }
 
-public struct UpdateProvisionedProductPropertiesInput {
+public struct UpdateProvisionedProductPropertiesInput: Swift.Sendable {
     /// The language code.
     ///
     /// * jp - Japanese
@@ -7174,7 +7174,7 @@ public struct UpdateProvisionedProductPropertiesInput {
     }
 }
 
-public struct UpdateProvisionedProductPropertiesOutput {
+public struct UpdateProvisionedProductPropertiesOutput: Swift.Sendable {
     /// The provisioned product identifier.
     public var provisionedProductId: Swift.String?
     /// A map that contains the properties updated.
@@ -7198,7 +7198,7 @@ public struct UpdateProvisionedProductPropertiesOutput {
     }
 }
 
-public struct UpdateProvisioningArtifactInput {
+public struct UpdateProvisioningArtifactInput: Swift.Sendable {
     /// The language code.
     ///
     /// * jp - Japanese
@@ -7240,7 +7240,7 @@ public struct UpdateProvisioningArtifactInput {
     }
 }
 
-public struct UpdateProvisioningArtifactOutput {
+public struct UpdateProvisioningArtifactOutput: Swift.Sendable {
     /// The URL of the CloudFormation template in Amazon S3 or GitHub in JSON format.
     public var info: [Swift.String: Swift.String]?
     /// Information about the provisioning artifact.
@@ -7260,7 +7260,7 @@ public struct UpdateProvisioningArtifactOutput {
     }
 }
 
-public struct UpdateServiceActionInput {
+public struct UpdateServiceActionInput: Swift.Sendable {
     /// The language code.
     ///
     /// * jp - Japanese
@@ -7293,7 +7293,7 @@ public struct UpdateServiceActionInput {
     }
 }
 
-public struct UpdateServiceActionOutput {
+public struct UpdateServiceActionOutput: Swift.Sendable {
     /// Detailed information about the self-service action.
     public var serviceActionDetail: ServiceCatalogClientTypes.ServiceActionDetail?
 
@@ -7305,7 +7305,7 @@ public struct UpdateServiceActionOutput {
     }
 }
 
-public struct UpdateTagOptionInput {
+public struct UpdateTagOptionInput: Swift.Sendable {
     /// The updated active state.
     public var active: Swift.Bool?
     /// The TagOption identifier.
@@ -7326,7 +7326,7 @@ public struct UpdateTagOptionInput {
     }
 }
 
-public struct UpdateTagOptionOutput {
+public struct UpdateTagOptionOutput: Swift.Sendable {
     /// Information about the TagOption.
     public var tagOptionDetail: ServiceCatalogClientTypes.TagOptionDetail?
 

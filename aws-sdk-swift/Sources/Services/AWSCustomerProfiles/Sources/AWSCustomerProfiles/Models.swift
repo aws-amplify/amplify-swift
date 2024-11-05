@@ -57,8 +57,9 @@ public struct AccessDeniedException: ClientRuntime.ModeledError, AWSClientRuntim
 }
 
 extension CustomerProfilesClientTypes {
+
     /// A data type pair that consists of a KeyName and Values list that is used in conjunction with the [KeyName](https://docs.aws.amazon.com/customerprofiles/latest/APIReference/API_SearchProfiles.html#customerprofiles-SearchProfiles-request-KeyName) and [Values](https://docs.aws.amazon.com/customerprofiles/latest/APIReference/API_SearchProfiles.html#customerprofiles-SearchProfiles-request-Values) parameters to search for profiles using the [SearchProfiles](https://docs.aws.amazon.com/customerprofiles/latest/APIReference/API_SearchProfiles.html) API.
-    public struct AdditionalSearchKey {
+    public struct AdditionalSearchKey: Swift.Sendable {
         /// A searchable identifier of a customer profile.
         /// This member is required.
         public var keyName: Swift.String?
@@ -75,7 +76,6 @@ extension CustomerProfilesClientTypes {
             self.values = values
         }
     }
-
 }
 
 /// The input you provided is invalid.
@@ -174,7 +174,7 @@ public struct ThrottlingException: ClientRuntime.ModeledError, AWSClientRuntime.
     }
 }
 
-public struct AddProfileKeyInput {
+public struct AddProfileKeyInput: Swift.Sendable {
     /// The unique name of the domain.
     /// This member is required.
     public var domainName: Swift.String?
@@ -202,7 +202,7 @@ public struct AddProfileKeyInput {
     }
 }
 
-public struct AddProfileKeyOutput {
+public struct AddProfileKeyOutput: Swift.Sendable {
     /// A searchable identifier of a customer profile.
     public var keyName: Swift.String?
     /// A list of key values.
@@ -219,8 +219,9 @@ public struct AddProfileKeyOutput {
 }
 
 extension CustomerProfilesClientTypes {
+
     /// A generic address associated with the customer that is not mailing, shipping, or billing.
-    public struct Address {
+    public struct Address: Swift.Sendable {
         /// The first line of a customer address.
         public var address1: Swift.String?
         /// The second line of a customer address.
@@ -267,7 +268,6 @@ extension CustomerProfilesClientTypes {
             self.state = state
         }
     }
-
 }
 
 extension CustomerProfilesClientTypes.Address: Swift.CustomDebugStringConvertible {
@@ -277,8 +277,9 @@ extension CustomerProfilesClientTypes.Address: Swift.CustomDebugStringConvertibl
 }
 
 extension CustomerProfilesClientTypes {
+
     /// Batch defines the boundaries for ingestion for each step in APPFLOW_INTEGRATION workflow. APPFLOW_INTEGRATION workflow splits ingestion based on these boundaries.
-    public struct Batch {
+    public struct Batch: Swift.Sendable {
         /// End time of batch to split ingestion.
         /// This member is required.
         public var endTime: Foundation.Date?
@@ -295,12 +296,11 @@ extension CustomerProfilesClientTypes {
             self.startTime = startTime
         }
     }
-
 }
 
 extension CustomerProfilesClientTypes {
 
-    public enum SourceConnectorType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SourceConnectorType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case marketo
         case s3
         case salesforce
@@ -337,8 +337,9 @@ extension CustomerProfilesClientTypes {
 }
 
 extension CustomerProfilesClientTypes {
+
     /// Specifies the configuration used when importing incremental records from the source.
-    public struct IncrementalPullConfig {
+    public struct IncrementalPullConfig: Swift.Sendable {
         /// A field that specifies the date time or timestamp field as the criteria to use when importing incremental records from the source.
         public var datetimeTypeFieldName: Swift.String?
 
@@ -349,12 +350,12 @@ extension CustomerProfilesClientTypes {
             self.datetimeTypeFieldName = datetimeTypeFieldName
         }
     }
-
 }
 
 extension CustomerProfilesClientTypes {
+
     /// The properties that are applied when Marketo is being used as a source.
-    public struct MarketoSourceProperties {
+    public struct MarketoSourceProperties: Swift.Sendable {
         /// The object specified in the Marketo flow source.
         /// This member is required.
         public var object: Swift.String?
@@ -366,12 +367,12 @@ extension CustomerProfilesClientTypes {
             self.object = object
         }
     }
-
 }
 
 extension CustomerProfilesClientTypes {
+
     /// The properties that are applied when Amazon S3 is being used as the flow source.
-    public struct S3SourceProperties {
+    public struct S3SourceProperties: Swift.Sendable {
         /// The Amazon S3 bucket name where the source files are stored.
         /// This member is required.
         public var bucketName: Swift.String?
@@ -387,12 +388,12 @@ extension CustomerProfilesClientTypes {
             self.bucketPrefix = bucketPrefix
         }
     }
-
 }
 
 extension CustomerProfilesClientTypes {
+
     /// The properties that are applied when Salesforce is being used as a source.
-    public struct SalesforceSourceProperties {
+    public struct SalesforceSourceProperties: Swift.Sendable {
         /// The flag that enables dynamic fetching of new (recently added) fields in the Salesforce objects while running a flow.
         public var enableDynamicFieldUpdate: Swift.Bool
         /// Indicates whether Amazon AppFlow includes deleted files in the flow run.
@@ -412,12 +413,12 @@ extension CustomerProfilesClientTypes {
             self.object = object
         }
     }
-
 }
 
 extension CustomerProfilesClientTypes {
+
     /// The properties that are applied when ServiceNow is being used as a source.
-    public struct ServiceNowSourceProperties {
+    public struct ServiceNowSourceProperties: Swift.Sendable {
         /// The object specified in the ServiceNow flow source.
         /// This member is required.
         public var object: Swift.String?
@@ -429,12 +430,12 @@ extension CustomerProfilesClientTypes {
             self.object = object
         }
     }
-
 }
 
 extension CustomerProfilesClientTypes {
+
     /// The properties that are applied when using Zendesk as a flow source.
-    public struct ZendeskSourceProperties {
+    public struct ZendeskSourceProperties: Swift.Sendable {
         /// The object specified in the Zendesk flow source.
         /// This member is required.
         public var object: Swift.String?
@@ -446,12 +447,12 @@ extension CustomerProfilesClientTypes {
             self.object = object
         }
     }
-
 }
 
 extension CustomerProfilesClientTypes {
+
     /// Specifies the information that is required to query a particular Amazon AppFlow connector. Customer Profiles supports Salesforce, Zendesk, Marketo, ServiceNow and Amazon S3.
-    public struct SourceConnectorProperties {
+    public struct SourceConnectorProperties: Swift.Sendable {
         /// The properties that are applied when Marketo is being used as a source.
         public var marketo: CustomerProfilesClientTypes.MarketoSourceProperties?
         /// The properties that are applied when Amazon S3 is being used as the flow source.
@@ -478,12 +479,12 @@ extension CustomerProfilesClientTypes {
             self.zendesk = zendesk
         }
     }
-
 }
 
 extension CustomerProfilesClientTypes {
+
     /// Contains information about the configuration of the source connector used in the flow.
-    public struct SourceFlowConfig {
+    public struct SourceFlowConfig: Swift.Sendable {
         /// The name of the AppFlow connector profile. This name must be unique for each connector profile in the AWS account.
         public var connectorProfileName: Swift.String?
         /// The type of connector, such as Salesforce, Marketo, and so on.
@@ -508,12 +509,11 @@ extension CustomerProfilesClientTypes {
             self.sourceConnectorProperties = sourceConnectorProperties
         }
     }
-
 }
 
 extension CustomerProfilesClientTypes {
 
-    public enum MarketoConnectorOperator: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum MarketoConnectorOperator: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case addition
         case between
         case division
@@ -584,7 +584,7 @@ extension CustomerProfilesClientTypes {
 
 extension CustomerProfilesClientTypes {
 
-    public enum S3ConnectorOperator: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum S3ConnectorOperator: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case addition
         case between
         case division
@@ -667,7 +667,7 @@ extension CustomerProfilesClientTypes {
 
 extension CustomerProfilesClientTypes {
 
-    public enum SalesforceConnectorOperator: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SalesforceConnectorOperator: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case addition
         case between
         case contains
@@ -753,7 +753,7 @@ extension CustomerProfilesClientTypes {
 
 extension CustomerProfilesClientTypes {
 
-    public enum ServiceNowConnectorOperator: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ServiceNowConnectorOperator: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case addition
         case between
         case contains
@@ -839,7 +839,7 @@ extension CustomerProfilesClientTypes {
 
 extension CustomerProfilesClientTypes {
 
-    public enum ZendeskConnectorOperator: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ZendeskConnectorOperator: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case addition
         case division
         case greaterThan
@@ -903,8 +903,9 @@ extension CustomerProfilesClientTypes {
 }
 
 extension CustomerProfilesClientTypes {
+
     /// The operation to be performed on the provided source fields.
-    public struct ConnectorOperator {
+    public struct ConnectorOperator: Swift.Sendable {
         /// The operation to be performed on the provided Marketo source fields.
         public var marketo: CustomerProfilesClientTypes.MarketoConnectorOperator?
         /// The operation to be performed on the provided Amazon S3 source fields.
@@ -931,12 +932,11 @@ extension CustomerProfilesClientTypes {
             self.zendesk = zendesk
         }
     }
-
 }
 
 extension CustomerProfilesClientTypes {
 
-    public enum OperatorPropertiesKeys: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum OperatorPropertiesKeys: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case concatFormat
         case dataType
         case destinationDataType
@@ -1001,7 +1001,7 @@ extension CustomerProfilesClientTypes {
 
 extension CustomerProfilesClientTypes {
 
-    public enum TaskType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum TaskType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case arithmetic
         case filter
         case map
@@ -1044,8 +1044,9 @@ extension CustomerProfilesClientTypes {
 }
 
 extension CustomerProfilesClientTypes {
+
     /// A class for modeling different type of tasks. Task implementation varies based on the TaskType.
-    public struct Task {
+    public struct Task: Swift.Sendable {
         /// The operation to be performed on the provided source fields.
         public var connectorOperator: CustomerProfilesClientTypes.ConnectorOperator?
         /// A field in a destination connector, or a field value against which Amazon AppFlow validates a source field.
@@ -1074,12 +1075,11 @@ extension CustomerProfilesClientTypes {
             self.taskType = taskType
         }
     }
-
 }
 
 extension CustomerProfilesClientTypes {
 
-    public enum DataPullMode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DataPullMode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case complete
         case incremental
         case sdkUnknown(Swift.String)
@@ -1107,8 +1107,9 @@ extension CustomerProfilesClientTypes {
 }
 
 extension CustomerProfilesClientTypes {
+
     /// Specifies the configuration details of a scheduled-trigger flow that you define. Currently, these settings only apply to the scheduled-trigger type.
-    public struct ScheduledTriggerProperties {
+    public struct ScheduledTriggerProperties: Swift.Sendable {
         /// Specifies whether a scheduled flow has an incremental data transfer or a complete data transfer for each flow run.
         public var dataPullMode: CustomerProfilesClientTypes.DataPullMode?
         /// Specifies the date range for the records to import from the connector in the first flow run.
@@ -1144,12 +1145,12 @@ extension CustomerProfilesClientTypes {
             self.timezone = timezone
         }
     }
-
 }
 
 extension CustomerProfilesClientTypes {
+
     /// Specifies the configuration details that control the trigger for a flow. Currently, these settings only apply to the Scheduled trigger type.
-    public struct TriggerProperties {
+    public struct TriggerProperties: Swift.Sendable {
         /// Specifies the configuration details of a schedule-triggered flow that you define.
         public var scheduled: CustomerProfilesClientTypes.ScheduledTriggerProperties?
 
@@ -1160,12 +1161,11 @@ extension CustomerProfilesClientTypes {
             self.scheduled = scheduled
         }
     }
-
 }
 
 extension CustomerProfilesClientTypes {
 
-    public enum TriggerType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum TriggerType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case event
         case ondemand
         case scheduled
@@ -1196,8 +1196,9 @@ extension CustomerProfilesClientTypes {
 }
 
 extension CustomerProfilesClientTypes {
+
     /// The trigger settings that determine how and when Amazon AppFlow runs the specified flow.
-    public struct TriggerConfig {
+    public struct TriggerConfig: Swift.Sendable {
         /// Specifies the configuration details of a schedule-triggered flow that you define. Currently, these settings only apply to the Scheduled trigger type.
         public var triggerProperties: CustomerProfilesClientTypes.TriggerProperties?
         /// Specifies the type of flow trigger. It can be OnDemand, Scheduled, or Event.
@@ -1213,12 +1214,12 @@ extension CustomerProfilesClientTypes {
             self.triggerType = triggerType
         }
     }
-
 }
 
 extension CustomerProfilesClientTypes {
+
     /// The configurations that control how Customer Profiles retrieves data from the source, Amazon AppFlow. Customer Profiles uses this information to create an AppFlow flow on behalf of customers.
-    public struct FlowDefinition {
+    public struct FlowDefinition: Swift.Sendable {
         /// A description of the flow you want to create.
         public var description: Swift.String?
         /// The specified name of the flow. Use underscores (_) or hyphens (-) only. Spaces are not allowed.
@@ -1254,7 +1255,6 @@ extension CustomerProfilesClientTypes {
             self.triggerConfig = triggerConfig
         }
     }
-
 }
 
 extension CustomerProfilesClientTypes.FlowDefinition: Swift.CustomDebugStringConvertible {
@@ -1264,8 +1264,9 @@ extension CustomerProfilesClientTypes.FlowDefinition: Swift.CustomDebugStringCon
 }
 
 extension CustomerProfilesClientTypes {
+
     /// Details for workflow of type APPFLOW_INTEGRATION.
-    public struct AppflowIntegration {
+    public struct AppflowIntegration: Swift.Sendable {
         /// Batches in workflow of type APPFLOW_INTEGRATION.
         public var batches: [CustomerProfilesClientTypes.Batch]?
         /// The configurations that control how Customer Profiles retrieves data from the source, Amazon AppFlow. Customer Profiles uses this information to create an AppFlow flow on behalf of customers.
@@ -1281,7 +1282,6 @@ extension CustomerProfilesClientTypes {
             self.flowDefinition = flowDefinition
         }
     }
-
 }
 
 extension CustomerProfilesClientTypes.AppflowIntegration: Swift.CustomDebugStringConvertible {
@@ -1290,8 +1290,9 @@ extension CustomerProfilesClientTypes.AppflowIntegration: Swift.CustomDebugStrin
 }
 
 extension CustomerProfilesClientTypes {
+
     /// Structure holding all APPFLOW_INTEGRATION specific workflow attributes.
-    public struct AppflowIntegrationWorkflowAttributes {
+    public struct AppflowIntegrationWorkflowAttributes: Swift.Sendable {
         /// The name of the AppFlow connector profile used for ingestion.
         /// This member is required.
         public var connectorProfileName: Swift.String?
@@ -1312,12 +1313,12 @@ extension CustomerProfilesClientTypes {
             self.sourceConnectorType = sourceConnectorType
         }
     }
-
 }
 
 extension CustomerProfilesClientTypes {
+
     /// Workflow specific execution metrics for APPFLOW_INTEGRATION workflow.
-    public struct AppflowIntegrationWorkflowMetrics {
+    public struct AppflowIntegrationWorkflowMetrics: Swift.Sendable {
         /// Number of records processed in APPFLOW_INTEGRATION workflow.
         /// This member is required.
         public var recordsProcessed: Swift.Int
@@ -1339,12 +1340,11 @@ extension CustomerProfilesClientTypes {
             self.totalSteps = totalSteps
         }
     }
-
 }
 
 extension CustomerProfilesClientTypes {
 
-    public enum Status: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Status: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case cancelled
         case complete
         case failed
@@ -1387,8 +1387,9 @@ extension CustomerProfilesClientTypes {
 }
 
 extension CustomerProfilesClientTypes {
+
     /// Workflow step details for APPFLOW_INTEGRATION workflow.
-    public struct AppflowIntegrationWorkflowStep {
+    public struct AppflowIntegrationWorkflowStep: Swift.Sendable {
         /// End datetime of records pulled in batch during execution of workflow step for APPFLOW_INTEGRATION workflow.
         /// This member is required.
         public var batchRecordsEndTime: Swift.String?
@@ -1435,12 +1436,12 @@ extension CustomerProfilesClientTypes {
             self.status = status
         }
     }
-
 }
 
 extension CustomerProfilesClientTypes {
+
     /// The details of a single attribute item specified in the mathematical expression.
-    public struct AttributeItem {
+    public struct AttributeItem: Swift.Sendable {
         /// The name of an attribute defined in a profile object type.
         /// This member is required.
         public var name: Swift.String?
@@ -1452,12 +1453,12 @@ extension CustomerProfilesClientTypes {
             self.name = name
         }
     }
-
 }
 
 extension CustomerProfilesClientTypes {
+
     /// Mathematical expression and a list of attribute items specified in that expression.
-    public struct AttributeDetails {
+    public struct AttributeDetails: Swift.Sendable {
         /// A list of attribute items specified in the mathematical expression.
         /// This member is required.
         public var attributes: [CustomerProfilesClientTypes.AttributeItem]?
@@ -1474,7 +1475,6 @@ extension CustomerProfilesClientTypes {
             self.expression = expression
         }
     }
-
 }
 
 extension CustomerProfilesClientTypes.AttributeDetails: Swift.CustomDebugStringConvertible {
@@ -1485,7 +1485,7 @@ extension CustomerProfilesClientTypes.AttributeDetails: Swift.CustomDebugStringC
 
 extension CustomerProfilesClientTypes {
 
-    public enum AttributeMatchingModel: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AttributeMatchingModel: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case manyToMany
         case oneToOne
         case sdkUnknown(Swift.String)
@@ -1513,6 +1513,7 @@ extension CustomerProfilesClientTypes {
 }
 
 extension CustomerProfilesClientTypes {
+
     /// Configuration information about the AttributeTypesSelector where the rule-based identity resolution uses to match profiles. You can choose how profiles are compared across attribute types and which attribute to use for matching from each type. There are three attribute types you can configure:
     ///
     /// * Email type
@@ -1538,7 +1539,7 @@ extension CustomerProfilesClientTypes {
     ///
     ///
     /// You can either choose ONE_TO_ONE or MANY_TO_MANY as the AttributeMatchingModel. When choosing MANY_TO_MANY, the system can match attribute across the sub-types of an attribute type. For example, if the value of the Email field of Profile A and the value of BusinessEmail field of Profile B matches, the two profiles are matched on the Email type. When choosing ONE_TO_ONE the system can only match if the sub-types are exact matches. For example, only when the value of the Email field of Profile A and the value of the Email field of Profile B matches, the two profiles are matched on the Email type.
-    public struct AttributeTypesSelector {
+    public struct AttributeTypesSelector: Swift.Sendable {
         /// The Address type. You can choose from Address, BusinessAddress, MaillingAddress, and ShippingAddress. You only can use the Address type in the MatchingRule. For example, if you want to match profile based on BusinessAddress.City or MaillingAddress.City, you need to choose the BusinessAddress and the MaillingAddress to represent the Address type and specify the Address.City on the matching rule.
         public var address: [Swift.String]?
         /// Configures the AttributeMatchingModel, you can either choose ONE_TO_ONE or MANY_TO_MANY.
@@ -1562,12 +1563,11 @@ extension CustomerProfilesClientTypes {
             self.phoneNumber = phoneNumber
         }
     }
-
 }
 
 extension CustomerProfilesClientTypes {
 
-    public enum ConflictResolvingModel: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ConflictResolvingModel: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case recency
         case source
         case sdkUnknown(Swift.String)
@@ -1595,8 +1595,9 @@ extension CustomerProfilesClientTypes {
 }
 
 extension CustomerProfilesClientTypes {
+
     /// How the auto-merging process should resolve conflicts between different profiles.
-    public struct ConflictResolution {
+    public struct ConflictResolution: Swift.Sendable {
         /// How the auto-merging process should resolve conflicts between different profiles.
         ///
         /// * RECENCY: Uses the data that was most recently updated.
@@ -1616,12 +1617,12 @@ extension CustomerProfilesClientTypes {
             self.sourceName = sourceName
         }
     }
-
 }
 
 extension CustomerProfilesClientTypes {
+
     /// The matching criteria to be used during the auto-merging process.
-    public struct Consolidation {
+    public struct Consolidation: Swift.Sendable {
         /// A list of matching criteria.
         /// This member is required.
         public var matchingAttributesList: [[Swift.String]]?
@@ -1633,12 +1634,12 @@ extension CustomerProfilesClientTypes {
             self.matchingAttributesList = matchingAttributesList
         }
     }
-
 }
 
 extension CustomerProfilesClientTypes {
+
     /// Configuration settings for how to perform the auto-merging of profiles.
-    public struct AutoMerging {
+    public struct AutoMerging: Swift.Sendable {
         /// How the auto-merging process should resolve conflicts between different profiles. For example, if Profile A and Profile B have the same FirstName and LastName (and that is the matching criteria), which EmailAddress should be used?
         public var conflictResolution: CustomerProfilesClientTypes.ConflictResolution?
         /// A list of matching attributes that represent matching criteria. If two profiles meet at least one of the requirements in the matching attributes list, they will be merged.
@@ -1662,12 +1663,12 @@ extension CustomerProfilesClientTypes {
             self.minAllowedConfidenceScoreForMerging = minAllowedConfidenceScoreForMerging
         }
     }
-
 }
 
 extension CustomerProfilesClientTypes {
+
     /// The details of a single calculated attribute definition.
-    public struct ListCalculatedAttributeDefinitionItem {
+    public struct ListCalculatedAttributeDefinitionItem: Swift.Sendable {
         /// The unique name of the calculated attribute.
         public var calculatedAttributeName: Swift.String?
         /// The threshold for the calculated attribute.
@@ -1698,7 +1699,6 @@ extension CustomerProfilesClientTypes {
             self.tags = tags
         }
     }
-
 }
 
 extension CustomerProfilesClientTypes.ListCalculatedAttributeDefinitionItem: Swift.CustomDebugStringConvertible {
@@ -1707,8 +1707,9 @@ extension CustomerProfilesClientTypes.ListCalculatedAttributeDefinitionItem: Swi
 }
 
 extension CustomerProfilesClientTypes {
+
     /// The details of a single calculated attribute for a profile.
-    public struct ListCalculatedAttributeForProfileItem {
+    public struct ListCalculatedAttributeForProfileItem: Swift.Sendable {
         /// The unique name of the calculated attribute.
         public var calculatedAttributeName: Swift.String?
         /// The display name of the calculated attribute.
@@ -1731,12 +1732,11 @@ extension CustomerProfilesClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension CustomerProfilesClientTypes {
 
-    public enum Unit: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Unit: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case days
         case sdkUnknown(Swift.String)
 
@@ -1761,8 +1761,9 @@ extension CustomerProfilesClientTypes {
 }
 
 extension CustomerProfilesClientTypes {
+
     /// The relative time period over which data is included in the aggregation.
-    public struct Range {
+    public struct Range: Swift.Sendable {
         /// The unit of time.
         /// This member is required.
         public var unit: CustomerProfilesClientTypes.Unit?
@@ -1779,12 +1780,11 @@ extension CustomerProfilesClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension CustomerProfilesClientTypes {
 
-    public enum Operator: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Operator: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case equalTo
         case greaterThan
         case lessThan
@@ -1818,8 +1818,9 @@ extension CustomerProfilesClientTypes {
 }
 
 extension CustomerProfilesClientTypes {
+
     /// The threshold for the calculated attribute.
-    public struct Threshold {
+    public struct Threshold: Swift.Sendable {
         /// The operator of the threshold.
         /// This member is required.
         public var `operator`: CustomerProfilesClientTypes.Operator?
@@ -1836,12 +1837,12 @@ extension CustomerProfilesClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension CustomerProfilesClientTypes {
+
     /// The conditions including range, object count, and threshold for the calculated attribute.
-    public struct Conditions {
+    public struct Conditions: Swift.Sendable {
         /// The number of profile objects used for the calculated attribute.
         public var objectCount: Swift.Int?
         /// The relative time period over which data is included in the aggregation.
@@ -1860,7 +1861,6 @@ extension CustomerProfilesClientTypes {
             self.threshold = threshold
         }
     }
-
 }
 
 extension CustomerProfilesClientTypes.Conditions: Swift.CustomDebugStringConvertible {
@@ -1871,7 +1871,7 @@ extension CustomerProfilesClientTypes.Conditions: Swift.CustomDebugStringConvert
 
 extension CustomerProfilesClientTypes {
 
-    public enum Statistic: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Statistic: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case average
         case count
         case firstOccurrence
@@ -1916,7 +1916,7 @@ extension CustomerProfilesClientTypes {
     }
 }
 
-public struct CreateCalculatedAttributeDefinitionInput {
+public struct CreateCalculatedAttributeDefinitionInput: Swift.Sendable {
     /// Mathematical expression and a list of attribute items specified in that expression.
     /// This member is required.
     public var attributeDetails: CustomerProfilesClientTypes.AttributeDetails?
@@ -1965,7 +1965,7 @@ extension CreateCalculatedAttributeDefinitionInput: Swift.CustomDebugStringConve
         "CreateCalculatedAttributeDefinitionInput(calculatedAttributeName: \(Swift.String(describing: calculatedAttributeName)), displayName: \(Swift.String(describing: displayName)), domainName: \(Swift.String(describing: domainName)), tags: \(Swift.String(describing: tags)), attributeDetails: \"CONTENT_REDACTED\", conditions: \"CONTENT_REDACTED\", description: \"CONTENT_REDACTED\", statistic: \"CONTENT_REDACTED\")"}
 }
 
-public struct CreateCalculatedAttributeDefinitionOutput {
+public struct CreateCalculatedAttributeDefinitionOutput: Swift.Sendable {
     /// Mathematical expression and a list of attribute items specified in that expression.
     public var attributeDetails: CustomerProfilesClientTypes.AttributeDetails?
     /// The unique name of the calculated attribute.
@@ -2015,8 +2015,9 @@ extension CreateCalculatedAttributeDefinitionOutput: Swift.CustomDebugStringConv
 }
 
 extension CustomerProfilesClientTypes {
+
     /// Configuration information about the S3 bucket where Identity Resolution Jobs write result files.
-    public struct S3ExportingConfig {
+    public struct S3ExportingConfig: Swift.Sendable {
         /// The name of the S3 bucket where Identity Resolution Jobs write result files.
         /// This member is required.
         public var s3BucketName: Swift.String?
@@ -2032,12 +2033,12 @@ extension CustomerProfilesClientTypes {
             self.s3KeyName = s3KeyName
         }
     }
-
 }
 
 extension CustomerProfilesClientTypes {
+
     /// Configuration information about the S3 bucket where Identity Resolution Jobs writes result files. You need to give Customer Profiles service principal write permission to your S3 bucket. Otherwise, you'll get an exception in the API response. For an example policy, see [Amazon Connect Customer Profiles cross-service confused deputy prevention](https://docs.aws.amazon.com/connect/latest/adminguide/cross-service-confused-deputy-prevention.html#customer-profiles-cross-service).
-    public struct ExportingConfig {
+    public struct ExportingConfig: Swift.Sendable {
         /// The S3 location where Identity Resolution Jobs write result files.
         public var s3Exporting: CustomerProfilesClientTypes.S3ExportingConfig?
 
@@ -2048,12 +2049,11 @@ extension CustomerProfilesClientTypes {
             self.s3Exporting = s3Exporting
         }
     }
-
 }
 
 extension CustomerProfilesClientTypes {
 
-    public enum JobScheduleDayOfTheWeek: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum JobScheduleDayOfTheWeek: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case friday
         case monday
         case saturday
@@ -2096,8 +2096,9 @@ extension CustomerProfilesClientTypes {
 }
 
 extension CustomerProfilesClientTypes {
+
     /// The day and time when do you want to start the Identity Resolution Job every week.
-    public struct JobSchedule {
+    public struct JobSchedule: Swift.Sendable {
         /// The day when the Identity Resolution Job should run every week.
         /// This member is required.
         public var dayOfTheWeek: CustomerProfilesClientTypes.JobScheduleDayOfTheWeek?
@@ -2114,12 +2115,12 @@ extension CustomerProfilesClientTypes {
             self.time = time
         }
     }
-
 }
 
 extension CustomerProfilesClientTypes {
+
     /// The flag that enables the matching process of duplicate profiles.
-    public struct MatchingRequest {
+    public struct MatchingRequest: Swift.Sendable {
         /// Configuration information about the auto-merging process.
         public var autoMerging: CustomerProfilesClientTypes.AutoMerging?
         /// The flag that enables the matching process of duplicate profiles.
@@ -2143,10 +2144,10 @@ extension CustomerProfilesClientTypes {
             self.jobSchedule = jobSchedule
         }
     }
-
 }
 
 extension CustomerProfilesClientTypes {
+
     /// Specifies how does the rule-based matching process should match profiles. You can choose from the following attributes to build the matching Rule:
     ///
     /// * AccountNumber
@@ -2182,7 +2183,7 @@ extension CustomerProfilesClientTypes {
     /// * PhoneNumber
     ///
     /// * Any customized profile attributes that start with the Attributes
-    public struct MatchingRule {
+    public struct MatchingRule: Swift.Sendable {
         /// A single rule level of the MatchRules. Configures how the rule-based matching process should match profiles.
         /// This member is required.
         public var rule: [Swift.String]?
@@ -2194,12 +2195,12 @@ extension CustomerProfilesClientTypes {
             self.rule = rule
         }
     }
-
 }
 
 extension CustomerProfilesClientTypes {
+
     /// The request to enable the rule-based matching.
-    public struct RuleBasedMatchingRequest {
+    public struct RuleBasedMatchingRequest: Swift.Sendable {
         /// Configures information about the AttributeTypesSelector where the rule-based identity resolution uses to match profiles.
         public var attributeTypesSelector: CustomerProfilesClientTypes.AttributeTypesSelector?
         /// How the auto-merging process should resolve conflicts between different profiles.
@@ -2235,10 +2236,9 @@ extension CustomerProfilesClientTypes {
             self.maxAllowedRuleLevelForMerging = maxAllowedRuleLevelForMerging
         }
     }
-
 }
 
-public struct CreateDomainInput {
+public struct CreateDomainInput: Swift.Sendable {
     /// The URL of the SQS dead letter queue, which is used for reporting errors associated with ingesting data from third party applications. You must set up a policy on the DeadLetterQueue for the SendMessage operation to enable Amazon Connect Customer Profiles to send messages to the DeadLetterQueue.
     public var deadLetterQueueUrl: Swift.String?
     /// The default encryption key, which is an AWS managed key, is used when no specific type of encryption key is specified. It is used to encrypt all data before it is placed in permanent or semi-permanent storage.
@@ -2277,8 +2277,9 @@ public struct CreateDomainInput {
 }
 
 extension CustomerProfilesClientTypes {
+
     /// The flag that enables the matching process of duplicate profiles.
-    public struct MatchingResponse {
+    public struct MatchingResponse: Swift.Sendable {
         /// Configuration information about the auto-merging process.
         public var autoMerging: CustomerProfilesClientTypes.AutoMerging?
         /// The flag that enables the matching process of duplicate profiles.
@@ -2301,12 +2302,11 @@ extension CustomerProfilesClientTypes {
             self.jobSchedule = jobSchedule
         }
     }
-
 }
 
 extension CustomerProfilesClientTypes {
 
-    public enum RuleBasedMatchingStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum RuleBasedMatchingStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case active
         case inProgress
         case pending
@@ -2337,8 +2337,9 @@ extension CustomerProfilesClientTypes {
 }
 
 extension CustomerProfilesClientTypes {
+
     /// The response of the Rule-based matching request.
-    public struct RuleBasedMatchingResponse {
+    public struct RuleBasedMatchingResponse: Swift.Sendable {
         /// Configures information about the AttributeTypesSelector where the rule-based identity resolution uses to match profiles.
         public var attributeTypesSelector: CustomerProfilesClientTypes.AttributeTypesSelector?
         /// How the auto-merging process should resolve conflicts between different profiles.
@@ -2389,10 +2390,9 @@ extension CustomerProfilesClientTypes {
             self.status = status
         }
     }
-
 }
 
-public struct CreateDomainOutput {
+public struct CreateDomainOutput: Swift.Sendable {
     /// The timestamp of when the domain was created.
     /// This member is required.
     public var createdAt: Foundation.Date?
@@ -2440,7 +2440,7 @@ public struct CreateDomainOutput {
     }
 }
 
-public struct CreateEventStreamInput {
+public struct CreateEventStreamInput: Swift.Sendable {
     /// The unique name of the domain.
     /// This member is required.
     public var domainName: Swift.String?
@@ -2467,7 +2467,7 @@ public struct CreateEventStreamInput {
     }
 }
 
-public struct CreateEventStreamOutput {
+public struct CreateEventStreamOutput: Swift.Sendable {
     /// A unique identifier for the event stream.
     /// This member is required.
     public var eventStreamArn: Swift.String?
@@ -2485,8 +2485,9 @@ public struct CreateEventStreamOutput {
 }
 
 extension CustomerProfilesClientTypes {
+
     /// Configuration data for integration workflow.
-    public struct IntegrationConfig {
+    public struct IntegrationConfig: Swift.Sendable {
         /// Configuration data for APPFLOW_INTEGRATION workflow type.
         public var appflowIntegration: CustomerProfilesClientTypes.AppflowIntegration?
 
@@ -2497,12 +2498,11 @@ extension CustomerProfilesClientTypes {
             self.appflowIntegration = appflowIntegration
         }
     }
-
 }
 
 extension CustomerProfilesClientTypes {
 
-    public enum WorkflowType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum WorkflowType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case appflowIntegration
         case sdkUnknown(Swift.String)
 
@@ -2526,7 +2526,7 @@ extension CustomerProfilesClientTypes {
     }
 }
 
-public struct CreateIntegrationWorkflowInput {
+public struct CreateIntegrationWorkflowInput: Swift.Sendable {
     /// The unique name of the domain.
     /// This member is required.
     public var domainName: Swift.String?
@@ -2563,7 +2563,7 @@ public struct CreateIntegrationWorkflowInput {
     }
 }
 
-public struct CreateIntegrationWorkflowOutput {
+public struct CreateIntegrationWorkflowOutput: Swift.Sendable {
     /// A message indicating create request was received.
     /// This member is required.
     public var message: Swift.String?
@@ -2584,7 +2584,7 @@ public struct CreateIntegrationWorkflowOutput {
 extension CustomerProfilesClientTypes {
 
     @available(*, deprecated)
-    public enum Gender: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Gender: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case female
         case male
         case unspecified
@@ -2617,7 +2617,7 @@ extension CustomerProfilesClientTypes {
 extension CustomerProfilesClientTypes {
 
     @available(*, deprecated)
-    public enum PartyType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum PartyType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case business
         case individual
         case other
@@ -2647,7 +2647,7 @@ extension CustomerProfilesClientTypes {
     }
 }
 
-public struct CreateProfileInput {
+public struct CreateProfileInput: Swift.Sendable {
     /// An account number that you have given to the customer.
     public var accountNumber: Swift.String?
     /// Any additional information relevant to the customer’s profile.
@@ -2759,7 +2759,7 @@ extension CreateProfileInput: Swift.CustomDebugStringConvertible {
         "CreateProfileInput(domainName: \(Swift.String(describing: domainName)), accountNumber: \"CONTENT_REDACTED\", additionalInformation: \"CONTENT_REDACTED\", address: \"CONTENT_REDACTED\", attributes: \"CONTENT_REDACTED\", billingAddress: \"CONTENT_REDACTED\", birthDate: \"CONTENT_REDACTED\", businessEmailAddress: \"CONTENT_REDACTED\", businessName: \"CONTENT_REDACTED\", businessPhoneNumber: \"CONTENT_REDACTED\", emailAddress: \"CONTENT_REDACTED\", firstName: \"CONTENT_REDACTED\", gender: \"CONTENT_REDACTED\", genderString: \"CONTENT_REDACTED\", homePhoneNumber: \"CONTENT_REDACTED\", lastName: \"CONTENT_REDACTED\", mailingAddress: \"CONTENT_REDACTED\", middleName: \"CONTENT_REDACTED\", mobilePhoneNumber: \"CONTENT_REDACTED\", partyType: \"CONTENT_REDACTED\", partyTypeString: \"CONTENT_REDACTED\", personalEmailAddress: \"CONTENT_REDACTED\", phoneNumber: \"CONTENT_REDACTED\", shippingAddress: \"CONTENT_REDACTED\")"}
 }
 
-public struct CreateProfileOutput {
+public struct CreateProfileOutput: Swift.Sendable {
     /// The unique identifier of a customer profile.
     /// This member is required.
     public var profileId: Swift.String?
@@ -2772,7 +2772,7 @@ public struct CreateProfileOutput {
     }
 }
 
-public struct DeleteCalculatedAttributeDefinitionInput {
+public struct DeleteCalculatedAttributeDefinitionInput: Swift.Sendable {
     /// The unique name of the calculated attribute.
     /// This member is required.
     public var calculatedAttributeName: Swift.String?
@@ -2790,12 +2790,12 @@ public struct DeleteCalculatedAttributeDefinitionInput {
     }
 }
 
-public struct DeleteCalculatedAttributeDefinitionOutput {
+public struct DeleteCalculatedAttributeDefinitionOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteDomainInput {
+public struct DeleteDomainInput: Swift.Sendable {
     /// The unique name of the domain.
     /// This member is required.
     public var domainName: Swift.String?
@@ -2808,7 +2808,7 @@ public struct DeleteDomainInput {
     }
 }
 
-public struct DeleteDomainOutput {
+public struct DeleteDomainOutput: Swift.Sendable {
     /// A message that indicates the delete request is done.
     /// This member is required.
     public var message: Swift.String?
@@ -2821,7 +2821,7 @@ public struct DeleteDomainOutput {
     }
 }
 
-public struct DeleteEventStreamInput {
+public struct DeleteEventStreamInput: Swift.Sendable {
     /// The unique name of the domain.
     /// This member is required.
     public var domainName: Swift.String?
@@ -2839,12 +2839,12 @@ public struct DeleteEventStreamInput {
     }
 }
 
-public struct DeleteEventStreamOutput {
+public struct DeleteEventStreamOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteIntegrationInput {
+public struct DeleteIntegrationInput: Swift.Sendable {
     /// The unique name of the domain.
     /// This member is required.
     public var domainName: Swift.String?
@@ -2862,7 +2862,7 @@ public struct DeleteIntegrationInput {
     }
 }
 
-public struct DeleteIntegrationOutput {
+public struct DeleteIntegrationOutput: Swift.Sendable {
     /// A message that indicates the delete request is done.
     /// This member is required.
     public var message: Swift.String?
@@ -2875,7 +2875,7 @@ public struct DeleteIntegrationOutput {
     }
 }
 
-public struct DeleteProfileInput {
+public struct DeleteProfileInput: Swift.Sendable {
     /// The unique name of the domain.
     /// This member is required.
     public var domainName: Swift.String?
@@ -2893,7 +2893,7 @@ public struct DeleteProfileInput {
     }
 }
 
-public struct DeleteProfileOutput {
+public struct DeleteProfileOutput: Swift.Sendable {
     /// A message that indicates the delete request is done.
     public var message: Swift.String?
 
@@ -2905,7 +2905,7 @@ public struct DeleteProfileOutput {
     }
 }
 
-public struct DeleteProfileKeyInput {
+public struct DeleteProfileKeyInput: Swift.Sendable {
     /// The unique name of the domain.
     /// This member is required.
     public var domainName: Swift.String?
@@ -2933,7 +2933,7 @@ public struct DeleteProfileKeyInput {
     }
 }
 
-public struct DeleteProfileKeyOutput {
+public struct DeleteProfileKeyOutput: Swift.Sendable {
     /// A message that indicates the delete request is done.
     public var message: Swift.String?
 
@@ -2945,7 +2945,7 @@ public struct DeleteProfileKeyOutput {
     }
 }
 
-public struct DeleteProfileObjectInput {
+public struct DeleteProfileObjectInput: Swift.Sendable {
     /// The unique name of the domain.
     /// This member is required.
     public var domainName: Swift.String?
@@ -2973,7 +2973,7 @@ public struct DeleteProfileObjectInput {
     }
 }
 
-public struct DeleteProfileObjectOutput {
+public struct DeleteProfileObjectOutput: Swift.Sendable {
     /// A message that indicates the delete request is done.
     public var message: Swift.String?
 
@@ -2985,7 +2985,7 @@ public struct DeleteProfileObjectOutput {
     }
 }
 
-public struct DeleteProfileObjectTypeInput {
+public struct DeleteProfileObjectTypeInput: Swift.Sendable {
     /// The unique name of the domain.
     /// This member is required.
     public var domainName: Swift.String?
@@ -3003,7 +3003,7 @@ public struct DeleteProfileObjectTypeInput {
     }
 }
 
-public struct DeleteProfileObjectTypeOutput {
+public struct DeleteProfileObjectTypeOutput: Swift.Sendable {
     /// A message that indicates the delete request is done.
     /// This member is required.
     public var message: Swift.String?
@@ -3016,7 +3016,7 @@ public struct DeleteProfileObjectTypeOutput {
     }
 }
 
-public struct DeleteWorkflowInput {
+public struct DeleteWorkflowInput: Swift.Sendable {
     /// The unique name of the domain.
     /// This member is required.
     public var domainName: Swift.String?
@@ -3034,12 +3034,12 @@ public struct DeleteWorkflowInput {
     }
 }
 
-public struct DeleteWorkflowOutput {
+public struct DeleteWorkflowOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DetectProfileObjectTypeInput {
+public struct DetectProfileObjectTypeInput: Swift.Sendable {
     /// The unique name of the domain.
     /// This member is required.
     public var domainName: Swift.String?
@@ -3064,7 +3064,7 @@ extension DetectProfileObjectTypeInput: Swift.CustomDebugStringConvertible {
 
 extension CustomerProfilesClientTypes {
 
-    public enum FieldContentType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum FieldContentType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case emailAddress
         case name
         case number
@@ -3101,8 +3101,9 @@ extension CustomerProfilesClientTypes {
 }
 
 extension CustomerProfilesClientTypes {
+
     /// Represents a field in a ProfileObjectType.
-    public struct ObjectTypeField {
+    public struct ObjectTypeField: Swift.Sendable {
         /// The content type of the field. Used for determining equality when searching.
         public var contentType: CustomerProfilesClientTypes.FieldContentType?
         /// A field of a ProfileObject. For example: _source.FirstName, where “_source” is a ProfileObjectType of a Zendesk user and “FirstName” is a field in that ObjectType.
@@ -3121,12 +3122,11 @@ extension CustomerProfilesClientTypes {
             self.target = target
         }
     }
-
 }
 
 extension CustomerProfilesClientTypes {
 
-    public enum StandardIdentifier: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum StandardIdentifier: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case asset
         case `case`
         case lookupOnly
@@ -3172,8 +3172,9 @@ extension CustomerProfilesClientTypes {
 }
 
 extension CustomerProfilesClientTypes {
+
     /// An object that defines the Key element of a ProfileObject. A Key is a special element that can be used to search for a customer profile.
-    public struct ObjectTypeKey {
+    public struct ObjectTypeKey: Swift.Sendable {
         /// The reference for the key name of the fields map.
         public var fieldNames: [Swift.String]?
         /// The types of keys that a ProfileObject can have. Each ProfileObject can have only 1 UNIQUE key but multiple PROFILE keys. PROFILE, ASSET, CASE, or ORDER means that this key can be used to tie an object to a PROFILE, ASSET, CASE, or ORDER respectively. UNIQUE means that it can be used to uniquely identify an object. If a key a is marked as SECONDARY, it will be used to search for profiles after all other PROFILE keys have been searched. A LOOKUP_ONLY key is only used to match a profile but is not persisted to be used for searching of the profile. A NEW_ONLY key is only used if the profile does not already exist before the object is ingested, otherwise it is only used for matching objects to profiles.
@@ -3188,12 +3189,12 @@ extension CustomerProfilesClientTypes {
             self.standardIdentifiers = standardIdentifiers
         }
     }
-
 }
 
 extension CustomerProfilesClientTypes {
+
     /// Contains ProfileObjectType mapping information from the model.
-    public struct DetectedProfileObjectType {
+    public struct DetectedProfileObjectType: Swift.Sendable {
         /// A map of the name and the ObjectType field.
         public var fields: [Swift.String: CustomerProfilesClientTypes.ObjectTypeField]?
         /// A list of unique keys that can be used to map data to a profile.
@@ -3212,7 +3213,6 @@ extension CustomerProfilesClientTypes {
             self.sourceLastUpdatedTimestampFormat = sourceLastUpdatedTimestampFormat
         }
     }
-
 }
 
 extension CustomerProfilesClientTypes.DetectedProfileObjectType: Swift.CustomDebugStringConvertible {
@@ -3220,7 +3220,7 @@ extension CustomerProfilesClientTypes.DetectedProfileObjectType: Swift.CustomDeb
         "DetectedProfileObjectType(sourceLastUpdatedTimestampFormat: \(Swift.String(describing: sourceLastUpdatedTimestampFormat)), fields: \"CONTENT_REDACTED\", keys: \"CONTENT_REDACTED\")"}
 }
 
-public struct DetectProfileObjectTypeOutput {
+public struct DetectProfileObjectTypeOutput: Swift.Sendable {
     /// Detected ProfileObjectType mappings from given objects. A maximum of one mapping is supported.
     public var detectedProfileObjectTypes: [CustomerProfilesClientTypes.DetectedProfileObjectType]?
 
@@ -3232,7 +3232,7 @@ public struct DetectProfileObjectTypeOutput {
     }
 }
 
-public struct GetAutoMergingPreviewInput {
+public struct GetAutoMergingPreviewInput: Swift.Sendable {
     /// How the auto-merging process should resolve conflicts between different profiles.
     /// This member is required.
     public var conflictResolution: CustomerProfilesClientTypes.ConflictResolution?
@@ -3259,7 +3259,7 @@ public struct GetAutoMergingPreviewInput {
     }
 }
 
-public struct GetAutoMergingPreviewOutput {
+public struct GetAutoMergingPreviewOutput: Swift.Sendable {
     /// The unique name of the domain.
     /// This member is required.
     public var domainName: Swift.String?
@@ -3284,7 +3284,7 @@ public struct GetAutoMergingPreviewOutput {
     }
 }
 
-public struct GetCalculatedAttributeDefinitionInput {
+public struct GetCalculatedAttributeDefinitionInput: Swift.Sendable {
     /// The unique name of the calculated attribute.
     /// This member is required.
     public var calculatedAttributeName: Swift.String?
@@ -3302,7 +3302,7 @@ public struct GetCalculatedAttributeDefinitionInput {
     }
 }
 
-public struct GetCalculatedAttributeDefinitionOutput {
+public struct GetCalculatedAttributeDefinitionOutput: Swift.Sendable {
     /// Mathematical expression and a list of attribute items specified in that expression.
     public var attributeDetails: CustomerProfilesClientTypes.AttributeDetails?
     /// The unique name of the calculated attribute.
@@ -3351,7 +3351,7 @@ extension GetCalculatedAttributeDefinitionOutput: Swift.CustomDebugStringConvert
         "GetCalculatedAttributeDefinitionOutput(calculatedAttributeName: \(Swift.String(describing: calculatedAttributeName)), createdAt: \(Swift.String(describing: createdAt)), displayName: \(Swift.String(describing: displayName)), lastUpdatedAt: \(Swift.String(describing: lastUpdatedAt)), tags: \(Swift.String(describing: tags)), attributeDetails: \"CONTENT_REDACTED\", conditions: \"CONTENT_REDACTED\", description: \"CONTENT_REDACTED\", statistic: \"CONTENT_REDACTED\")"}
 }
 
-public struct GetCalculatedAttributeForProfileInput {
+public struct GetCalculatedAttributeForProfileInput: Swift.Sendable {
     /// The unique name of the calculated attribute.
     /// This member is required.
     public var calculatedAttributeName: Swift.String?
@@ -3374,7 +3374,7 @@ public struct GetCalculatedAttributeForProfileInput {
     }
 }
 
-public struct GetCalculatedAttributeForProfileOutput {
+public struct GetCalculatedAttributeForProfileOutput: Swift.Sendable {
     /// The unique name of the calculated attribute.
     public var calculatedAttributeName: Swift.String?
     /// The display name of the calculated attribute.
@@ -3398,7 +3398,7 @@ public struct GetCalculatedAttributeForProfileOutput {
     }
 }
 
-public struct GetDomainInput {
+public struct GetDomainInput: Swift.Sendable {
     /// The unique name of the domain.
     /// This member is required.
     public var domainName: Swift.String?
@@ -3412,8 +3412,9 @@ public struct GetDomainInput {
 }
 
 extension CustomerProfilesClientTypes {
+
     /// Usage-specific statistics about the domain.
-    public struct DomainStats {
+    public struct DomainStats: Swift.Sendable {
         /// The number of profiles that you are currently paying for in the domain. If you have more than 100 objects associated with a single profile, that profile counts as two profiles. If you have more than 200 objects, that profile counts as three, and so on.
         public var meteringProfileCount: Swift.Int
         /// The total number of objects in domain.
@@ -3436,10 +3437,9 @@ extension CustomerProfilesClientTypes {
             self.totalSize = totalSize
         }
     }
-
 }
 
-public struct GetDomainOutput {
+public struct GetDomainOutput: Swift.Sendable {
     /// The timestamp of when the domain was created.
     /// This member is required.
     public var createdAt: Foundation.Date?
@@ -3490,7 +3490,7 @@ public struct GetDomainOutput {
     }
 }
 
-public struct GetEventStreamInput {
+public struct GetEventStreamInput: Swift.Sendable {
     /// The unique name of the domain.
     /// This member is required.
     public var domainName: Swift.String?
@@ -3510,7 +3510,7 @@ public struct GetEventStreamInput {
 
 extension CustomerProfilesClientTypes {
 
-    public enum EventStreamDestinationStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum EventStreamDestinationStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case healthy
         case unhealthy
         case sdkUnknown(Swift.String)
@@ -3538,8 +3538,9 @@ extension CustomerProfilesClientTypes {
 }
 
 extension CustomerProfilesClientTypes {
+
     /// Details of the destination being used for the EventStream.
-    public struct EventStreamDestinationDetails {
+    public struct EventStreamDestinationDetails: Swift.Sendable {
         /// The human-readable string that corresponds to the error or success while enabling the streaming destination.
         public var message: Swift.String?
         /// The status of enabling the Kinesis stream as a destination for export.
@@ -3564,12 +3565,11 @@ extension CustomerProfilesClientTypes {
             self.uri = uri
         }
     }
-
 }
 
 extension CustomerProfilesClientTypes {
 
-    public enum EventStreamState: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum EventStreamState: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case running
         case stopped
         case sdkUnknown(Swift.String)
@@ -3596,7 +3596,7 @@ extension CustomerProfilesClientTypes {
     }
 }
 
-public struct GetEventStreamOutput {
+public struct GetEventStreamOutput: Swift.Sendable {
     /// The timestamp of when the export was created.
     /// This member is required.
     public var createdAt: Foundation.Date?
@@ -3637,7 +3637,7 @@ public struct GetEventStreamOutput {
     }
 }
 
-public struct GetIdentityResolutionJobInput {
+public struct GetIdentityResolutionJobInput: Swift.Sendable {
     /// The unique name of the domain.
     /// This member is required.
     public var domainName: Swift.String?
@@ -3656,8 +3656,9 @@ public struct GetIdentityResolutionJobInput {
 }
 
 extension CustomerProfilesClientTypes {
+
     /// The S3 location where Identity Resolution Jobs write result files.
-    public struct S3ExportingLocation {
+    public struct S3ExportingLocation: Swift.Sendable {
         /// The name of the S3 bucket name where Identity Resolution Jobs write result files.
         public var s3BucketName: Swift.String?
         /// The S3 key name of the location where Identity Resolution Jobs write result files.
@@ -3672,12 +3673,12 @@ extension CustomerProfilesClientTypes {
             self.s3KeyName = s3KeyName
         }
     }
-
 }
 
 extension CustomerProfilesClientTypes {
+
     /// The S3 location where Identity Resolution Jobs write result files.
-    public struct ExportingLocation {
+    public struct ExportingLocation: Swift.Sendable {
         /// Information about the S3 location where Identity Resolution Jobs write result files.
         public var s3Exporting: CustomerProfilesClientTypes.S3ExportingLocation?
 
@@ -3688,12 +3689,12 @@ extension CustomerProfilesClientTypes {
             self.s3Exporting = s3Exporting
         }
     }
-
 }
 
 extension CustomerProfilesClientTypes {
+
     /// Statistics about the Identity Resolution Job.
-    public struct JobStats {
+    public struct JobStats: Swift.Sendable {
         /// The number of matches found.
         public var numberOfMatchesFound: Swift.Int
         /// The number of merges completed.
@@ -3712,12 +3713,11 @@ extension CustomerProfilesClientTypes {
             self.numberOfProfilesReviewed = numberOfProfilesReviewed
         }
     }
-
 }
 
 extension CustomerProfilesClientTypes {
 
-    public enum IdentityResolutionJobStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum IdentityResolutionJobStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case completed
         case failed
         case findMatching
@@ -3759,7 +3759,7 @@ extension CustomerProfilesClientTypes {
     }
 }
 
-public struct GetIdentityResolutionJobOutput {
+public struct GetIdentityResolutionJobOutput: Swift.Sendable {
     /// Configuration settings for how to perform the auto-merging of profiles.
     public var autoMerging: CustomerProfilesClientTypes.AutoMerging?
     /// The unique name of the domain.
@@ -3825,7 +3825,7 @@ public struct GetIdentityResolutionJobOutput {
     }
 }
 
-public struct GetIntegrationInput {
+public struct GetIntegrationInput: Swift.Sendable {
     /// The unique name of the domain.
     /// This member is required.
     public var domainName: Swift.String?
@@ -3843,7 +3843,7 @@ public struct GetIntegrationInput {
     }
 }
 
-public struct GetIntegrationOutput {
+public struct GetIntegrationOutput: Swift.Sendable {
     /// The timestamp of when the domain was created.
     /// This member is required.
     public var createdAt: Foundation.Date?
@@ -3859,6 +3859,8 @@ public struct GetIntegrationOutput {
     public var objectTypeName: Swift.String?
     /// A map in which each key is an event type from an external application such as Segment or Shopify, and each value is an ObjectTypeName (template) used to ingest the event. It supports the following event types: SegmentIdentify, ShopifyCreateCustomers, ShopifyUpdateCustomers, ShopifyCreateDraftOrders, ShopifyUpdateDraftOrders, ShopifyCreateOrders, and ShopifyUpdatedOrders.
     public var objectTypeNames: [Swift.String: Swift.String]?
+    /// The Amazon Resource Name (ARN) of the IAM role. The Integration uses this role to make Customer Profiles requests on your behalf.
+    public var roleArn: Swift.String?
     /// The tags used to organize, track, or control access for this resource.
     public var tags: [Swift.String: Swift.String]?
     /// The URI of the S3 bucket or any other type of data source.
@@ -3874,6 +3876,7 @@ public struct GetIntegrationOutput {
         lastUpdatedAt: Foundation.Date? = nil,
         objectTypeName: Swift.String? = nil,
         objectTypeNames: [Swift.String: Swift.String]? = nil,
+        roleArn: Swift.String? = nil,
         tags: [Swift.String: Swift.String]? = nil,
         uri: Swift.String? = nil,
         workflowId: Swift.String? = nil
@@ -3885,13 +3888,14 @@ public struct GetIntegrationOutput {
         self.lastUpdatedAt = lastUpdatedAt
         self.objectTypeName = objectTypeName
         self.objectTypeNames = objectTypeNames
+        self.roleArn = roleArn
         self.tags = tags
         self.uri = uri
         self.workflowId = workflowId
     }
 }
 
-public struct GetMatchesInput {
+public struct GetMatchesInput: Swift.Sendable {
     /// The unique name of the domain.
     /// This member is required.
     public var domainName: Swift.String?
@@ -3913,8 +3917,9 @@ public struct GetMatchesInput {
 }
 
 extension CustomerProfilesClientTypes {
+
     /// The Match group object.
-    public struct MatchItem {
+    public struct MatchItem: Swift.Sendable {
         /// A number between 0 and 1, where a higher score means higher similarity. Examining match confidence scores lets you distinguish between groups of similar records in which the system is highly confident (which you may decide to merge), groups of similar records about which the system is uncertain (which you may decide to have reviewed by a human), and groups of similar records that the system deems to be unlikely (which you may decide to reject). Given confidence scores vary as per the data input, it should not be used an absolute measure of matching quality.
         public var confidenceScore: Swift.Double?
         /// The unique identifiers for this group of profiles that match.
@@ -3933,10 +3938,9 @@ extension CustomerProfilesClientTypes {
             self.profileIds = profileIds
         }
     }
-
 }
 
-public struct GetMatchesOutput {
+public struct GetMatchesOutput: Swift.Sendable {
     /// The timestamp this version of Match Result generated.
     public var matchGenerationDate: Foundation.Date?
     /// The list of matched profiles for this instance.
@@ -3960,7 +3964,7 @@ public struct GetMatchesOutput {
     }
 }
 
-public struct GetProfileObjectTypeInput {
+public struct GetProfileObjectTypeInput: Swift.Sendable {
     /// The unique name of the domain.
     /// This member is required.
     public var domainName: Swift.String?
@@ -3978,7 +3982,7 @@ public struct GetProfileObjectTypeInput {
     }
 }
 
-public struct GetProfileObjectTypeOutput {
+public struct GetProfileObjectTypeOutput: Swift.Sendable {
     /// Indicates whether a profile should be created when data is received if one doesn’t exist for an object of this type. The default is FALSE. If the AllowProfileCreation flag is set to FALSE, then the service tries to fetch a standard profile and associate this object with the profile. If it is set to TRUE, and if no match is found, then the service creates a new standard profile.
     public var allowProfileCreation: Swift.Bool
     /// The timestamp of when the domain was created.
@@ -4049,7 +4053,7 @@ extension GetProfileObjectTypeOutput: Swift.CustomDebugStringConvertible {
         "GetProfileObjectTypeOutput(allowProfileCreation: \(Swift.String(describing: allowProfileCreation)), createdAt: \(Swift.String(describing: createdAt)), encryptionKey: \(Swift.String(describing: encryptionKey)), expirationDays: \(Swift.String(describing: expirationDays)), lastUpdatedAt: \(Swift.String(describing: lastUpdatedAt)), maxAvailableProfileObjectCount: \(Swift.String(describing: maxAvailableProfileObjectCount)), maxProfileObjectCount: \(Swift.String(describing: maxProfileObjectCount)), objectTypeName: \(Swift.String(describing: objectTypeName)), sourceLastUpdatedTimestampFormat: \(Swift.String(describing: sourceLastUpdatedTimestampFormat)), tags: \(Swift.String(describing: tags)), templateId: \(Swift.String(describing: templateId)), description: \"CONTENT_REDACTED\", fields: \"CONTENT_REDACTED\", keys: \"CONTENT_REDACTED\")"}
 }
 
-public struct GetProfileObjectTypeTemplateInput {
+public struct GetProfileObjectTypeTemplateInput: Swift.Sendable {
     /// A unique identifier for the object template.
     /// This member is required.
     public var templateId: Swift.String?
@@ -4062,7 +4066,7 @@ public struct GetProfileObjectTypeTemplateInput {
     }
 }
 
-public struct GetProfileObjectTypeTemplateOutput {
+public struct GetProfileObjectTypeTemplateOutput: Swift.Sendable {
     /// Indicates whether a profile should be created when data is received if one doesn’t exist for an object of this type. The default is FALSE. If the AllowProfileCreation flag is set to FALSE, then the service tries to fetch a standard profile and associate this object with the profile. If it is set to TRUE, and if no match is found, then the service creates a new standard profile.
     public var allowProfileCreation: Swift.Bool
     /// A map of the name and ObjectType field.
@@ -4105,7 +4109,7 @@ extension GetProfileObjectTypeTemplateOutput: Swift.CustomDebugStringConvertible
 
 extension CustomerProfilesClientTypes {
 
-    public enum MatchType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum MatchType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case mlBasedMatching
         case ruleBasedMatching
         case sdkUnknown(Swift.String)
@@ -4132,7 +4136,7 @@ extension CustomerProfilesClientTypes {
     }
 }
 
-public struct GetSimilarProfilesInput {
+public struct GetSimilarProfilesInput: Swift.Sendable {
     /// The unique name of the domain.
     /// This member is required.
     public var domainName: Swift.String?
@@ -4168,7 +4172,7 @@ public struct GetSimilarProfilesInput {
     }
 }
 
-public struct GetSimilarProfilesOutput {
+public struct GetSimilarProfilesOutput: Swift.Sendable {
     /// It only has value when the MatchType is ML_BASED_MATCHING.A number between 0 and 1, where a higher score means higher similarity. Examining match confidence scores lets you distinguish between groups of similar records in which the system is highly confident (which you may decide to merge), groups of similar records about which the system is uncertain (which you may decide to have reviewed by a human), and groups of similar records that the system deems to be unlikely (which you may decide to reject). Given confidence scores vary as per the data input, it should not be used as an absolute measure of matching quality.
     public var confidenceScore: Swift.Double?
     /// The string matchId that the similar profiles belong to.
@@ -4200,7 +4204,7 @@ public struct GetSimilarProfilesOutput {
     }
 }
 
-public struct GetWorkflowInput {
+public struct GetWorkflowInput: Swift.Sendable {
     /// The unique name of the domain.
     /// This member is required.
     public var domainName: Swift.String?
@@ -4219,8 +4223,9 @@ public struct GetWorkflowInput {
 }
 
 extension CustomerProfilesClientTypes {
+
     /// Structure to hold workflow attributes.
-    public struct WorkflowAttributes {
+    public struct WorkflowAttributes: Swift.Sendable {
         /// Workflow attributes specific to APPFLOW_INTEGRATION workflow.
         public var appflowIntegration: CustomerProfilesClientTypes.AppflowIntegrationWorkflowAttributes?
 
@@ -4231,12 +4236,12 @@ extension CustomerProfilesClientTypes {
             self.appflowIntegration = appflowIntegration
         }
     }
-
 }
 
 extension CustomerProfilesClientTypes {
+
     /// Generic object containing workflow execution metrics.
-    public struct WorkflowMetrics {
+    public struct WorkflowMetrics: Swift.Sendable {
         /// Workflow execution metrics for APPFLOW_INTEGRATION workflow.
         public var appflowIntegration: CustomerProfilesClientTypes.AppflowIntegrationWorkflowMetrics?
 
@@ -4247,10 +4252,9 @@ extension CustomerProfilesClientTypes {
             self.appflowIntegration = appflowIntegration
         }
     }
-
 }
 
-public struct GetWorkflowOutput {
+public struct GetWorkflowOutput: Swift.Sendable {
     /// Attributes provided for workflow execution.
     public var attributes: CustomerProfilesClientTypes.WorkflowAttributes?
     /// Workflow error messages during execution (if any).
@@ -4290,7 +4294,7 @@ public struct GetWorkflowOutput {
     }
 }
 
-public struct GetWorkflowStepsInput {
+public struct GetWorkflowStepsInput: Swift.Sendable {
     /// The unique name of the domain.
     /// This member is required.
     public var domainName: Swift.String?
@@ -4317,8 +4321,9 @@ public struct GetWorkflowStepsInput {
 }
 
 extension CustomerProfilesClientTypes {
+
     /// List containing steps in workflow.
-    public struct WorkflowStepItem {
+    public struct WorkflowStepItem: Swift.Sendable {
         /// Workflow step information specific to APPFLOW_INTEGRATION workflow.
         public var appflowIntegration: CustomerProfilesClientTypes.AppflowIntegrationWorkflowStep?
 
@@ -4329,10 +4334,9 @@ extension CustomerProfilesClientTypes {
             self.appflowIntegration = appflowIntegration
         }
     }
-
 }
 
-public struct GetWorkflowStepsOutput {
+public struct GetWorkflowStepsOutput: Swift.Sendable {
     /// List containing workflow step details.
     public var items: [CustomerProfilesClientTypes.WorkflowStepItem]?
     /// If there are additional results, this is the token for the next set of results.
@@ -4356,7 +4360,7 @@ public struct GetWorkflowStepsOutput {
     }
 }
 
-public struct ListAccountIntegrationsInput {
+public struct ListAccountIntegrationsInput: Swift.Sendable {
     /// Boolean to indicate if hidden integration should be returned. Defaults to False.
     public var includeHidden: Swift.Bool?
     /// The maximum number of objects returned per page.
@@ -4382,8 +4386,9 @@ public struct ListAccountIntegrationsInput {
 }
 
 extension CustomerProfilesClientTypes {
+
     /// An integration in list of integrations.
-    public struct ListIntegrationItem {
+    public struct ListIntegrationItem: Swift.Sendable {
         /// The timestamp of when the domain was created.
         /// This member is required.
         public var createdAt: Foundation.Date?
@@ -4399,6 +4404,8 @@ extension CustomerProfilesClientTypes {
         public var objectTypeName: Swift.String?
         /// A map in which each key is an event type from an external application such as Segment or Shopify, and each value is an ObjectTypeName (template) used to ingest the event. It supports the following event types: SegmentIdentify, ShopifyCreateCustomers, ShopifyUpdateCustomers, ShopifyCreateDraftOrders, ShopifyUpdateDraftOrders, ShopifyCreateOrders, and ShopifyUpdatedOrders.
         public var objectTypeNames: [Swift.String: Swift.String]?
+        /// The Amazon Resource Name (ARN) of the IAM role. The Integration uses this role to make Customer Profiles requests on your behalf.
+        public var roleArn: Swift.String?
         /// The tags used to organize, track, or control access for this resource.
         public var tags: [Swift.String: Swift.String]?
         /// The URI of the S3 bucket or any other type of data source.
@@ -4414,6 +4421,7 @@ extension CustomerProfilesClientTypes {
             lastUpdatedAt: Foundation.Date? = nil,
             objectTypeName: Swift.String? = nil,
             objectTypeNames: [Swift.String: Swift.String]? = nil,
+            roleArn: Swift.String? = nil,
             tags: [Swift.String: Swift.String]? = nil,
             uri: Swift.String? = nil,
             workflowId: Swift.String? = nil
@@ -4425,15 +4433,15 @@ extension CustomerProfilesClientTypes {
             self.lastUpdatedAt = lastUpdatedAt
             self.objectTypeName = objectTypeName
             self.objectTypeNames = objectTypeNames
+            self.roleArn = roleArn
             self.tags = tags
             self.uri = uri
             self.workflowId = workflowId
         }
     }
-
 }
 
-public struct ListAccountIntegrationsOutput {
+public struct ListAccountIntegrationsOutput: Swift.Sendable {
     /// The list of ListAccountIntegration instances.
     public var items: [CustomerProfilesClientTypes.ListIntegrationItem]?
     /// The pagination token from the previous ListAccountIntegrations API call.
@@ -4449,7 +4457,7 @@ public struct ListAccountIntegrationsOutput {
     }
 }
 
-public struct ListCalculatedAttributeDefinitionsInput {
+public struct ListCalculatedAttributeDefinitionsInput: Swift.Sendable {
     /// The unique name of the domain.
     /// This member is required.
     public var domainName: Swift.String?
@@ -4470,7 +4478,7 @@ public struct ListCalculatedAttributeDefinitionsInput {
     }
 }
 
-public struct ListCalculatedAttributeDefinitionsOutput {
+public struct ListCalculatedAttributeDefinitionsOutput: Swift.Sendable {
     /// The list of calculated attribute definitions.
     public var items: [CustomerProfilesClientTypes.ListCalculatedAttributeDefinitionItem]?
     /// The pagination token from the previous call to ListCalculatedAttributeDefinitions.
@@ -4491,7 +4499,7 @@ extension ListCalculatedAttributeDefinitionsOutput: Swift.CustomDebugStringConve
         "ListCalculatedAttributeDefinitionsOutput(nextToken: \(Swift.String(describing: nextToken)), items: \"CONTENT_REDACTED\")"}
 }
 
-public struct ListCalculatedAttributesForProfileInput {
+public struct ListCalculatedAttributesForProfileInput: Swift.Sendable {
     /// The unique name of the domain.
     /// This member is required.
     public var domainName: Swift.String?
@@ -4517,7 +4525,7 @@ public struct ListCalculatedAttributesForProfileInput {
     }
 }
 
-public struct ListCalculatedAttributesForProfileOutput {
+public struct ListCalculatedAttributesForProfileOutput: Swift.Sendable {
     /// The list of calculated attributes.
     public var items: [CustomerProfilesClientTypes.ListCalculatedAttributeForProfileItem]?
     /// The pagination token from the previous call to ListCalculatedAttributesForProfile.
@@ -4533,7 +4541,7 @@ public struct ListCalculatedAttributesForProfileOutput {
     }
 }
 
-public struct ListDomainsInput {
+public struct ListDomainsInput: Swift.Sendable {
     /// The maximum number of objects returned per page.
     public var maxResults: Swift.Int?
     /// The pagination token from the previous ListDomain API call.
@@ -4550,8 +4558,9 @@ public struct ListDomainsInput {
 }
 
 extension CustomerProfilesClientTypes {
+
     /// An object in a list that represents a domain.
-    public struct ListDomainItem {
+    public struct ListDomainItem: Swift.Sendable {
         /// The timestamp of when the domain was created.
         /// This member is required.
         public var createdAt: Foundation.Date?
@@ -4577,10 +4586,9 @@ extension CustomerProfilesClientTypes {
             self.tags = tags
         }
     }
-
 }
 
-public struct ListDomainsOutput {
+public struct ListDomainsOutput: Swift.Sendable {
     /// The list of ListDomains instances.
     public var items: [CustomerProfilesClientTypes.ListDomainItem]?
     /// The pagination token from the previous ListDomains API call.
@@ -4596,7 +4604,7 @@ public struct ListDomainsOutput {
     }
 }
 
-public struct ListEventStreamsInput {
+public struct ListEventStreamsInput: Swift.Sendable {
     /// The unique name of the domain.
     /// This member is required.
     public var domainName: Swift.String?
@@ -4618,8 +4626,9 @@ public struct ListEventStreamsInput {
 }
 
 extension CustomerProfilesClientTypes {
+
     /// Summary information about the Kinesis data stream
-    public struct DestinationSummary {
+    public struct DestinationSummary: Swift.Sendable {
         /// The status of enabling the Kinesis stream as a destination for export.
         /// This member is required.
         public var status: CustomerProfilesClientTypes.EventStreamDestinationStatus?
@@ -4640,12 +4649,12 @@ extension CustomerProfilesClientTypes {
             self.uri = uri
         }
     }
-
 }
 
 extension CustomerProfilesClientTypes {
+
     /// An instance of EventStream in a list of EventStreams.
-    public struct EventStreamSummary {
+    public struct EventStreamSummary: Swift.Sendable {
         /// Summary information about the Kinesis data stream.
         public var destinationSummary: CustomerProfilesClientTypes.DestinationSummary?
         /// The unique name of the domain.
@@ -4684,10 +4693,9 @@ extension CustomerProfilesClientTypes {
             self.tags = tags
         }
     }
-
 }
 
-public struct ListEventStreamsOutput {
+public struct ListEventStreamsOutput: Swift.Sendable {
     /// Contains summary information about an EventStream.
     public var items: [CustomerProfilesClientTypes.EventStreamSummary]?
     /// Identifies the next page of results to return.
@@ -4703,7 +4711,7 @@ public struct ListEventStreamsOutput {
     }
 }
 
-public struct ListIdentityResolutionJobsInput {
+public struct ListIdentityResolutionJobsInput: Swift.Sendable {
     /// The unique name of the domain.
     /// This member is required.
     public var domainName: Swift.String?
@@ -4725,8 +4733,9 @@ public struct ListIdentityResolutionJobsInput {
 }
 
 extension CustomerProfilesClientTypes {
+
     /// Information about the Identity Resolution Job.
-    public struct IdentityResolutionJob {
+    public struct IdentityResolutionJob: Swift.Sendable {
         /// The unique name of the domain.
         public var domainName: Swift.String?
         /// The S3 location where the Identity Resolution Job writes result files.
@@ -4779,10 +4788,9 @@ extension CustomerProfilesClientTypes {
             self.status = status
         }
     }
-
 }
 
-public struct ListIdentityResolutionJobsOutput {
+public struct ListIdentityResolutionJobsOutput: Swift.Sendable {
     /// A list of Identity Resolution Jobs.
     public var identityResolutionJobsList: [CustomerProfilesClientTypes.IdentityResolutionJob]?
     /// If there are additional results, this is the token for the next set of results.
@@ -4798,7 +4806,7 @@ public struct ListIdentityResolutionJobsOutput {
     }
 }
 
-public struct ListIntegrationsInput {
+public struct ListIntegrationsInput: Swift.Sendable {
     /// The unique name of the domain.
     /// This member is required.
     public var domainName: Swift.String?
@@ -4823,7 +4831,7 @@ public struct ListIntegrationsInput {
     }
 }
 
-public struct ListIntegrationsOutput {
+public struct ListIntegrationsOutput: Swift.Sendable {
     /// The list of ListIntegrations instances.
     public var items: [CustomerProfilesClientTypes.ListIntegrationItem]?
     /// The pagination token from the previous ListIntegrations API call.
@@ -4840,8 +4848,9 @@ public struct ListIntegrationsOutput {
 }
 
 extension CustomerProfilesClientTypes {
+
     /// The filter applied to ListProfileObjects response to include profile objects with the specified index values.
-    public struct ObjectFilter {
+    public struct ObjectFilter: Swift.Sendable {
         /// A searchable identifier of a profile object. The predefined keys you can use to search for _asset include: _assetId, _assetName, and _serialNumber. The predefined keys you can use to search for _case include: _caseId. The predefined keys you can use to search for _order include: _orderId.
         /// This member is required.
         public var keyName: Swift.String?
@@ -4858,10 +4867,9 @@ extension CustomerProfilesClientTypes {
             self.values = values
         }
     }
-
 }
 
-public struct ListProfileObjectsInput {
+public struct ListProfileObjectsInput: Swift.Sendable {
     /// The unique name of the domain.
     /// This member is required.
     public var domainName: Swift.String?
@@ -4897,8 +4905,9 @@ public struct ListProfileObjectsInput {
 }
 
 extension CustomerProfilesClientTypes {
+
     /// A ProfileObject in a list of ProfileObjects.
-    public struct ListProfileObjectsItem {
+    public struct ListProfileObjectsItem: Swift.Sendable {
         /// A JSON representation of a ProfileObject that belongs to a profile.
         public var object: Swift.String?
         /// Specifies the kind of object being added to a profile, such as "Salesforce-Account."
@@ -4917,7 +4926,6 @@ extension CustomerProfilesClientTypes {
             self.profileObjectUniqueKey = profileObjectUniqueKey
         }
     }
-
 }
 
 extension CustomerProfilesClientTypes.ListProfileObjectsItem: Swift.CustomDebugStringConvertible {
@@ -4925,7 +4933,7 @@ extension CustomerProfilesClientTypes.ListProfileObjectsItem: Swift.CustomDebugS
         "ListProfileObjectsItem(objectTypeName: \(Swift.String(describing: objectTypeName)), profileObjectUniqueKey: \(Swift.String(describing: profileObjectUniqueKey)), object: \"CONTENT_REDACTED\")"}
 }
 
-public struct ListProfileObjectsOutput {
+public struct ListProfileObjectsOutput: Swift.Sendable {
     /// The list of ListProfileObject instances.
     public var items: [CustomerProfilesClientTypes.ListProfileObjectsItem]?
     /// The pagination token from the previous call to ListProfileObjects.
@@ -4941,7 +4949,7 @@ public struct ListProfileObjectsOutput {
     }
 }
 
-public struct ListProfileObjectTypesInput {
+public struct ListProfileObjectTypesInput: Swift.Sendable {
     /// The unique name of the domain.
     /// This member is required.
     public var domainName: Swift.String?
@@ -4963,8 +4971,9 @@ public struct ListProfileObjectTypesInput {
 }
 
 extension CustomerProfilesClientTypes {
+
     /// A ProfileObjectType instance.
-    public struct ListProfileObjectTypeItem {
+    public struct ListProfileObjectTypeItem: Swift.Sendable {
         /// The timestamp of when the domain was created.
         public var createdAt: Foundation.Date?
         /// Description of the profile object type.
@@ -5001,10 +5010,9 @@ extension CustomerProfilesClientTypes {
             self.tags = tags
         }
     }
-
 }
 
-public struct ListProfileObjectTypesOutput {
+public struct ListProfileObjectTypesOutput: Swift.Sendable {
     /// The list of ListProfileObjectTypes instances.
     public var items: [CustomerProfilesClientTypes.ListProfileObjectTypeItem]?
     /// Identifies the next page of results to return.
@@ -5025,7 +5033,7 @@ extension ListProfileObjectTypesOutput: Swift.CustomDebugStringConvertible {
         "ListProfileObjectTypesOutput(nextToken: \(Swift.String(describing: nextToken)), items: \"CONTENT_REDACTED\")"}
 }
 
-public struct ListProfileObjectTypeTemplatesInput {
+public struct ListProfileObjectTypeTemplatesInput: Swift.Sendable {
     /// The maximum number of objects returned per page.
     public var maxResults: Swift.Int?
     /// The pagination token from the previous ListObjectTypeTemplates API call.
@@ -5042,8 +5050,9 @@ public struct ListProfileObjectTypeTemplatesInput {
 }
 
 extension CustomerProfilesClientTypes {
+
     /// A ProfileObjectTypeTemplate in a list of ProfileObjectTypeTemplates.
-    public struct ListProfileObjectTypeTemplateItem {
+    public struct ListProfileObjectTypeTemplateItem: Swift.Sendable {
         /// The name of the source of the object template.
         public var sourceName: Swift.String?
         /// The source of the object template.
@@ -5062,10 +5071,9 @@ extension CustomerProfilesClientTypes {
             self.templateId = templateId
         }
     }
-
 }
 
-public struct ListProfileObjectTypeTemplatesOutput {
+public struct ListProfileObjectTypeTemplatesOutput: Swift.Sendable {
     /// The list of ListProfileObjectType template instances.
     public var items: [CustomerProfilesClientTypes.ListProfileObjectTypeTemplateItem]?
     /// The pagination token from the previous ListObjectTypeTemplates API call.
@@ -5081,7 +5089,7 @@ public struct ListProfileObjectTypeTemplatesOutput {
     }
 }
 
-public struct ListRuleBasedMatchesInput {
+public struct ListRuleBasedMatchesInput: Swift.Sendable {
     /// The unique name of the domain.
     /// This member is required.
     public var domainName: Swift.String?
@@ -5102,7 +5110,7 @@ public struct ListRuleBasedMatchesInput {
     }
 }
 
-public struct ListRuleBasedMatchesOutput {
+public struct ListRuleBasedMatchesOutput: Swift.Sendable {
     /// The list of MatchIds for the given domain.
     public var matchIds: [Swift.String]?
     /// The pagination token from the previous ListRuleBasedMatches API call.
@@ -5118,7 +5126,7 @@ public struct ListRuleBasedMatchesOutput {
     }
 }
 
-public struct ListTagsForResourceInput {
+public struct ListTagsForResourceInput: Swift.Sendable {
     /// The ARN of the resource for which you want to view tags.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -5131,7 +5139,7 @@ public struct ListTagsForResourceInput {
     }
 }
 
-public struct ListTagsForResourceOutput {
+public struct ListTagsForResourceOutput: Swift.Sendable {
     /// The tags used to organize, track, or control access for this resource.
     public var tags: [Swift.String: Swift.String]?
 
@@ -5143,7 +5151,7 @@ public struct ListTagsForResourceOutput {
     }
 }
 
-public struct ListWorkflowsInput {
+public struct ListWorkflowsInput: Swift.Sendable {
     /// The unique name of the domain.
     /// This member is required.
     public var domainName: Swift.String?
@@ -5181,8 +5189,9 @@ public struct ListWorkflowsInput {
 }
 
 extension CustomerProfilesClientTypes {
+
     /// A workflow in list of workflows.
-    public struct ListWorkflowsItem {
+    public struct ListWorkflowsItem: Swift.Sendable {
         /// Creation timestamp for workflow.
         /// This member is required.
         public var createdAt: Foundation.Date?
@@ -5219,10 +5228,9 @@ extension CustomerProfilesClientTypes {
             self.workflowType = workflowType
         }
     }
-
 }
 
-public struct ListWorkflowsOutput {
+public struct ListWorkflowsOutput: Swift.Sendable {
     /// List containing workflow details.
     public var items: [CustomerProfilesClientTypes.ListWorkflowsItem]?
     /// If there are additional results, this is the token for the next set of results.
@@ -5239,8 +5247,9 @@ public struct ListWorkflowsOutput {
 }
 
 extension CustomerProfilesClientTypes {
+
     /// A duplicate customer profile that is to be merged into a main profile.
-    public struct FieldSourceProfileIds {
+    public struct FieldSourceProfileIds: Swift.Sendable {
         /// A unique identifier for the account number field to be merged.
         public var accountNumber: Swift.String?
         /// A unique identifier for the additional information field to be merged.
@@ -5331,10 +5340,9 @@ extension CustomerProfilesClientTypes {
             self.shippingAddress = shippingAddress
         }
     }
-
 }
 
-public struct MergeProfilesInput {
+public struct MergeProfilesInput: Swift.Sendable {
     /// The unique name of the domain.
     /// This member is required.
     public var domainName: Swift.String?
@@ -5361,7 +5369,7 @@ public struct MergeProfilesInput {
     }
 }
 
-public struct MergeProfilesOutput {
+public struct MergeProfilesOutput: Swift.Sendable {
     /// A message that indicates the merge request is complete.
     public var message: Swift.String?
 
@@ -5373,7 +5381,7 @@ public struct MergeProfilesOutput {
     }
 }
 
-public struct PutIntegrationInput {
+public struct PutIntegrationInput: Swift.Sendable {
     /// The unique name of the domain.
     /// This member is required.
     public var domainName: Swift.String?
@@ -5383,6 +5391,8 @@ public struct PutIntegrationInput {
     public var objectTypeName: Swift.String?
     /// A map in which each key is an event type from an external application such as Segment or Shopify, and each value is an ObjectTypeName (template) used to ingest the event. It supports the following event types: SegmentIdentify, ShopifyCreateCustomers, ShopifyUpdateCustomers, ShopifyCreateDraftOrders, ShopifyUpdateDraftOrders, ShopifyCreateOrders, and ShopifyUpdatedOrders.
     public var objectTypeNames: [Swift.String: Swift.String]?
+    /// The Amazon Resource Name (ARN) of the IAM role. The Integration uses this role to make Customer Profiles requests on your behalf.
+    public var roleArn: Swift.String?
     /// The tags used to organize, track, or control access for this resource.
     public var tags: [Swift.String: Swift.String]?
     /// The URI of the S3 bucket or any other type of data source.
@@ -5393,6 +5403,7 @@ public struct PutIntegrationInput {
         flowDefinition: CustomerProfilesClientTypes.FlowDefinition? = nil,
         objectTypeName: Swift.String? = nil,
         objectTypeNames: [Swift.String: Swift.String]? = nil,
+        roleArn: Swift.String? = nil,
         tags: [Swift.String: Swift.String]? = nil,
         uri: Swift.String? = nil
     )
@@ -5401,6 +5412,7 @@ public struct PutIntegrationInput {
         self.flowDefinition = flowDefinition
         self.objectTypeName = objectTypeName
         self.objectTypeNames = objectTypeNames
+        self.roleArn = roleArn
         self.tags = tags
         self.uri = uri
     }
@@ -5408,10 +5420,10 @@ public struct PutIntegrationInput {
 
 extension PutIntegrationInput: Swift.CustomDebugStringConvertible {
     public var debugDescription: Swift.String {
-        "PutIntegrationInput(domainName: \(Swift.String(describing: domainName)), objectTypeName: \(Swift.String(describing: objectTypeName)), objectTypeNames: \(Swift.String(describing: objectTypeNames)), tags: \(Swift.String(describing: tags)), uri: \(Swift.String(describing: uri)), flowDefinition: \"CONTENT_REDACTED\")"}
+        "PutIntegrationInput(domainName: \(Swift.String(describing: domainName)), objectTypeName: \(Swift.String(describing: objectTypeName)), objectTypeNames: \(Swift.String(describing: objectTypeNames)), roleArn: \(Swift.String(describing: roleArn)), tags: \(Swift.String(describing: tags)), uri: \(Swift.String(describing: uri)), flowDefinition: \"CONTENT_REDACTED\")"}
 }
 
-public struct PutIntegrationOutput {
+public struct PutIntegrationOutput: Swift.Sendable {
     /// The timestamp of when the domain was created.
     /// This member is required.
     public var createdAt: Foundation.Date?
@@ -5427,6 +5439,8 @@ public struct PutIntegrationOutput {
     public var objectTypeName: Swift.String?
     /// A map in which each key is an event type from an external application such as Segment or Shopify, and each value is an ObjectTypeName (template) used to ingest the event. It supports the following event types: SegmentIdentify, ShopifyCreateCustomers, ShopifyUpdateCustomers, ShopifyCreateDraftOrders, ShopifyUpdateDraftOrders, ShopifyCreateOrders, and ShopifyUpdatedOrders.
     public var objectTypeNames: [Swift.String: Swift.String]?
+    /// The Amazon Resource Name (ARN) of the IAM role. The Integration uses this role to make Customer Profiles requests on your behalf.
+    public var roleArn: Swift.String?
     /// The tags used to organize, track, or control access for this resource.
     public var tags: [Swift.String: Swift.String]?
     /// The URI of the S3 bucket or any other type of data source.
@@ -5442,6 +5456,7 @@ public struct PutIntegrationOutput {
         lastUpdatedAt: Foundation.Date? = nil,
         objectTypeName: Swift.String? = nil,
         objectTypeNames: [Swift.String: Swift.String]? = nil,
+        roleArn: Swift.String? = nil,
         tags: [Swift.String: Swift.String]? = nil,
         uri: Swift.String? = nil,
         workflowId: Swift.String? = nil
@@ -5453,13 +5468,14 @@ public struct PutIntegrationOutput {
         self.lastUpdatedAt = lastUpdatedAt
         self.objectTypeName = objectTypeName
         self.objectTypeNames = objectTypeNames
+        self.roleArn = roleArn
         self.tags = tags
         self.uri = uri
         self.workflowId = workflowId
     }
 }
 
-public struct PutProfileObjectInput {
+public struct PutProfileObjectInput: Swift.Sendable {
     /// The unique name of the domain.
     /// This member is required.
     public var domainName: Swift.String?
@@ -5487,7 +5503,7 @@ extension PutProfileObjectInput: Swift.CustomDebugStringConvertible {
         "PutProfileObjectInput(domainName: \(Swift.String(describing: domainName)), objectTypeName: \(Swift.String(describing: objectTypeName)), object: \"CONTENT_REDACTED\")"}
 }
 
-public struct PutProfileObjectOutput {
+public struct PutProfileObjectOutput: Swift.Sendable {
     /// The unique identifier of the profile object generated by the service.
     public var profileObjectUniqueKey: Swift.String?
 
@@ -5499,7 +5515,7 @@ public struct PutProfileObjectOutput {
     }
 }
 
-public struct PutProfileObjectTypeInput {
+public struct PutProfileObjectTypeInput: Swift.Sendable {
     /// Indicates whether a profile should be created when data is received if one doesn’t exist for an object of this type. The default is FALSE. If the AllowProfileCreation flag is set to FALSE, then the service tries to fetch a standard profile and associate this object with the profile. If it is set to TRUE, and if no match is found, then the service creates a new standard profile.
     public var allowProfileCreation: Swift.Bool?
     /// Description of the profile object type.
@@ -5563,7 +5579,7 @@ extension PutProfileObjectTypeInput: Swift.CustomDebugStringConvertible {
         "PutProfileObjectTypeInput(allowProfileCreation: \(Swift.String(describing: allowProfileCreation)), domainName: \(Swift.String(describing: domainName)), encryptionKey: \(Swift.String(describing: encryptionKey)), expirationDays: \(Swift.String(describing: expirationDays)), maxProfileObjectCount: \(Swift.String(describing: maxProfileObjectCount)), objectTypeName: \(Swift.String(describing: objectTypeName)), sourceLastUpdatedTimestampFormat: \(Swift.String(describing: sourceLastUpdatedTimestampFormat)), tags: \(Swift.String(describing: tags)), templateId: \(Swift.String(describing: templateId)), description: \"CONTENT_REDACTED\", fields: \"CONTENT_REDACTED\", keys: \"CONTENT_REDACTED\")"}
 }
 
-public struct PutProfileObjectTypeOutput {
+public struct PutProfileObjectTypeOutput: Swift.Sendable {
     /// Indicates whether a profile should be created when data is received if one doesn’t exist for an object of this type. The default is FALSE. If the AllowProfileCreation flag is set to FALSE, then the service tries to fetch a standard profile and associate this object with the profile. If it is set to TRUE, and if no match is found, then the service creates a new standard profile.
     public var allowProfileCreation: Swift.Bool
     /// The timestamp of when the domain was created.
@@ -5636,7 +5652,7 @@ extension PutProfileObjectTypeOutput: Swift.CustomDebugStringConvertible {
 
 extension CustomerProfilesClientTypes {
 
-    public enum LogicalOperator: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum LogicalOperator: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case and
         case or
         case sdkUnknown(Swift.String)
@@ -5663,7 +5679,7 @@ extension CustomerProfilesClientTypes {
     }
 }
 
-public struct SearchProfilesInput {
+public struct SearchProfilesInput: Swift.Sendable {
     /// A list of AdditionalSearchKey objects that are each searchable identifiers of a profile. Each AdditionalSearchKey object contains a KeyName and a list of Values associated with that specific key (i.e., a key-value(s) pair). These additional search keys will be used in conjunction with the LogicalOperator and the required KeyName and Values parameters to search for profiles that satisfy the search criteria.
     public var additionalSearchKeys: [CustomerProfilesClientTypes.AdditionalSearchKey]?
     /// The unique name of the domain.
@@ -5710,8 +5726,9 @@ public struct SearchProfilesInput {
 }
 
 extension CustomerProfilesClientTypes {
+
     /// A data type pair that consists of a KeyName and Values list that were used to find a profile returned in response to a [SearchProfiles](https://docs.aws.amazon.com/customerprofiles/latest/APIReference/API_SearchProfiles.html) request.
-    public struct FoundByKeyValue {
+    public struct FoundByKeyValue: Swift.Sendable {
         /// A searchable identifier of a customer profile.
         public var keyName: Swift.String?
         /// A list of key values.
@@ -5726,12 +5743,12 @@ extension CustomerProfilesClientTypes {
             self.values = values
         }
     }
-
 }
 
 extension CustomerProfilesClientTypes {
+
     /// The standard profile of a customer.
-    public struct Profile {
+    public struct Profile: Swift.Sendable {
         /// An account number that you have given to the customer.
         public var accountNumber: Swift.String?
         /// Any additional information relevant to the customer’s profile.
@@ -5847,7 +5864,6 @@ extension CustomerProfilesClientTypes {
             self.shippingAddress = shippingAddress
         }
     }
-
 }
 
 extension CustomerProfilesClientTypes.Profile: Swift.CustomDebugStringConvertible {
@@ -5855,7 +5871,7 @@ extension CustomerProfilesClientTypes.Profile: Swift.CustomDebugStringConvertibl
         "Profile(foundByItems: \(Swift.String(describing: foundByItems)), profileId: \(Swift.String(describing: profileId)), accountNumber: \"CONTENT_REDACTED\", additionalInformation: \"CONTENT_REDACTED\", address: \"CONTENT_REDACTED\", attributes: \"CONTENT_REDACTED\", billingAddress: \"CONTENT_REDACTED\", birthDate: \"CONTENT_REDACTED\", businessEmailAddress: \"CONTENT_REDACTED\", businessName: \"CONTENT_REDACTED\", businessPhoneNumber: \"CONTENT_REDACTED\", emailAddress: \"CONTENT_REDACTED\", firstName: \"CONTENT_REDACTED\", gender: \"CONTENT_REDACTED\", genderString: \"CONTENT_REDACTED\", homePhoneNumber: \"CONTENT_REDACTED\", lastName: \"CONTENT_REDACTED\", mailingAddress: \"CONTENT_REDACTED\", middleName: \"CONTENT_REDACTED\", mobilePhoneNumber: \"CONTENT_REDACTED\", partyType: \"CONTENT_REDACTED\", partyTypeString: \"CONTENT_REDACTED\", personalEmailAddress: \"CONTENT_REDACTED\", phoneNumber: \"CONTENT_REDACTED\", shippingAddress: \"CONTENT_REDACTED\")"}
 }
 
-public struct SearchProfilesOutput {
+public struct SearchProfilesOutput: Swift.Sendable {
     /// The list of Profiles matching the search criteria.
     public var items: [CustomerProfilesClientTypes.Profile]?
     /// The pagination token from the previous SearchProfiles API call.
@@ -5871,7 +5887,7 @@ public struct SearchProfilesOutput {
     }
 }
 
-public struct TagResourceInput {
+public struct TagResourceInput: Swift.Sendable {
     /// The ARN of the resource that you're adding tags to.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -5889,12 +5905,12 @@ public struct TagResourceInput {
     }
 }
 
-public struct TagResourceOutput {
+public struct TagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UntagResourceInput {
+public struct UntagResourceInput: Swift.Sendable {
     /// The ARN of the resource from which you are removing tags.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -5912,12 +5928,12 @@ public struct UntagResourceInput {
     }
 }
 
-public struct UntagResourceOutput {
+public struct UntagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdateCalculatedAttributeDefinitionInput {
+public struct UpdateCalculatedAttributeDefinitionInput: Swift.Sendable {
     /// The unique name of the calculated attribute.
     /// This member is required.
     public var calculatedAttributeName: Swift.String?
@@ -5952,7 +5968,7 @@ extension UpdateCalculatedAttributeDefinitionInput: Swift.CustomDebugStringConve
         "UpdateCalculatedAttributeDefinitionInput(calculatedAttributeName: \(Swift.String(describing: calculatedAttributeName)), displayName: \(Swift.String(describing: displayName)), domainName: \(Swift.String(describing: domainName)), conditions: \"CONTENT_REDACTED\", description: \"CONTENT_REDACTED\")"}
 }
 
-public struct UpdateCalculatedAttributeDefinitionOutput {
+public struct UpdateCalculatedAttributeDefinitionOutput: Swift.Sendable {
     /// The mathematical expression and a list of attribute items specified in that expression.
     public var attributeDetails: CustomerProfilesClientTypes.AttributeDetails?
     /// The unique name of the calculated attribute.
@@ -6001,7 +6017,7 @@ extension UpdateCalculatedAttributeDefinitionOutput: Swift.CustomDebugStringConv
         "UpdateCalculatedAttributeDefinitionOutput(calculatedAttributeName: \(Swift.String(describing: calculatedAttributeName)), createdAt: \(Swift.String(describing: createdAt)), displayName: \(Swift.String(describing: displayName)), lastUpdatedAt: \(Swift.String(describing: lastUpdatedAt)), tags: \(Swift.String(describing: tags)), attributeDetails: \"CONTENT_REDACTED\", conditions: \"CONTENT_REDACTED\", description: \"CONTENT_REDACTED\", statistic: \"CONTENT_REDACTED\")"}
 }
 
-public struct UpdateDomainInput {
+public struct UpdateDomainInput: Swift.Sendable {
     /// The URL of the SQS dead letter queue, which is used for reporting errors associated with ingesting data from third party applications. If specified as an empty string, it will clear any existing value. You must set up a policy on the DeadLetterQueue for the SendMessage operation to enable Amazon Connect Customer Profiles to send messages to the DeadLetterQueue.
     public var deadLetterQueueUrl: Swift.String?
     /// The default encryption key, which is an AWS managed key, is used when no specific type of encryption key is specified. It is used to encrypt all data before it is placed in permanent or semi-permanent storage. If specified as an empty string, it will clear any existing value.
@@ -6038,7 +6054,7 @@ public struct UpdateDomainInput {
     }
 }
 
-public struct UpdateDomainOutput {
+public struct UpdateDomainOutput: Swift.Sendable {
     /// The timestamp of when the domain was created.
     /// This member is required.
     public var createdAt: Foundation.Date?
@@ -6086,8 +6102,9 @@ public struct UpdateDomainOutput {
 }
 
 extension CustomerProfilesClientTypes {
+
     /// Updates associated with the address properties of a customer profile.
-    public struct UpdateAddress {
+    public struct UpdateAddress: Swift.Sendable {
         /// The first line of a customer address.
         public var address1: Swift.String?
         /// The second line of a customer address.
@@ -6134,7 +6151,6 @@ extension CustomerProfilesClientTypes {
             self.state = state
         }
     }
-
 }
 
 extension CustomerProfilesClientTypes.UpdateAddress: Swift.CustomDebugStringConvertible {
@@ -6143,7 +6159,7 @@ extension CustomerProfilesClientTypes.UpdateAddress: Swift.CustomDebugStringConv
     }
 }
 
-public struct UpdateProfileInput {
+public struct UpdateProfileInput: Swift.Sendable {
     /// An account number that you have given to the customer.
     public var accountNumber: Swift.String?
     /// Any additional information relevant to the customer’s profile.
@@ -6260,7 +6276,7 @@ extension UpdateProfileInput: Swift.CustomDebugStringConvertible {
         "UpdateProfileInput(domainName: \(Swift.String(describing: domainName)), profileId: \(Swift.String(describing: profileId)), accountNumber: \"CONTENT_REDACTED\", additionalInformation: \"CONTENT_REDACTED\", address: \"CONTENT_REDACTED\", attributes: \"CONTENT_REDACTED\", billingAddress: \"CONTENT_REDACTED\", birthDate: \"CONTENT_REDACTED\", businessEmailAddress: \"CONTENT_REDACTED\", businessName: \"CONTENT_REDACTED\", businessPhoneNumber: \"CONTENT_REDACTED\", emailAddress: \"CONTENT_REDACTED\", firstName: \"CONTENT_REDACTED\", gender: \"CONTENT_REDACTED\", genderString: \"CONTENT_REDACTED\", homePhoneNumber: \"CONTENT_REDACTED\", lastName: \"CONTENT_REDACTED\", mailingAddress: \"CONTENT_REDACTED\", middleName: \"CONTENT_REDACTED\", mobilePhoneNumber: \"CONTENT_REDACTED\", partyType: \"CONTENT_REDACTED\", partyTypeString: \"CONTENT_REDACTED\", personalEmailAddress: \"CONTENT_REDACTED\", phoneNumber: \"CONTENT_REDACTED\", shippingAddress: \"CONTENT_REDACTED\")"}
 }
 
-public struct UpdateProfileOutput {
+public struct UpdateProfileOutput: Swift.Sendable {
     /// The unique identifier of a customer profile.
     /// This member is required.
     public var profileId: Swift.String?
@@ -7320,6 +7336,7 @@ extension PutIntegrationInput {
         try writer["FlowDefinition"].write(value.flowDefinition, with: CustomerProfilesClientTypes.FlowDefinition.write(value:to:))
         try writer["ObjectTypeName"].write(value.objectTypeName)
         try writer["ObjectTypeNames"].writeMap(value.objectTypeNames, valueWritingClosure: SmithyReadWrite.WritingClosures.writeString(value:to:), keyNodeInfo: "key", valueNodeInfo: "value", isFlattened: false)
+        try writer["RoleArn"].write(value.roleArn)
         try writer["Tags"].writeMap(value.tags, valueWritingClosure: SmithyReadWrite.WritingClosures.writeString(value:to:), keyNodeInfo: "key", valueNodeInfo: "value", isFlattened: false)
         try writer["Uri"].write(value.uri)
     }
@@ -7744,6 +7761,7 @@ extension GetIntegrationOutput {
         value.lastUpdatedAt = try reader["LastUpdatedAt"].readTimestampIfPresent(format: SmithyTimestamps.TimestampFormat.epochSeconds) ?? SmithyTimestamps.TimestampFormatter(format: .dateTime).date(from: "1970-01-01T00:00:00Z")
         value.objectTypeName = try reader["ObjectTypeName"].readIfPresent()
         value.objectTypeNames = try reader["ObjectTypeNames"].readMapIfPresent(valueReadingClosure: SmithyReadWrite.ReadingClosures.readString(from:), keyNodeInfo: "key", valueNodeInfo: "value", isFlattened: false)
+        value.roleArn = try reader["RoleArn"].readIfPresent()
         value.tags = try reader["Tags"].readMapIfPresent(valueReadingClosure: SmithyReadWrite.ReadingClosures.readString(from:), keyNodeInfo: "key", valueNodeInfo: "value", isFlattened: false)
         value.uri = try reader["Uri"].readIfPresent() ?? ""
         value.workflowId = try reader["WorkflowId"].readIfPresent()
@@ -8053,6 +8071,7 @@ extension PutIntegrationOutput {
         value.lastUpdatedAt = try reader["LastUpdatedAt"].readTimestampIfPresent(format: SmithyTimestamps.TimestampFormat.epochSeconds) ?? SmithyTimestamps.TimestampFormatter(format: .dateTime).date(from: "1970-01-01T00:00:00Z")
         value.objectTypeName = try reader["ObjectTypeName"].readIfPresent()
         value.objectTypeNames = try reader["ObjectTypeNames"].readMapIfPresent(valueReadingClosure: SmithyReadWrite.ReadingClosures.readString(from:), keyNodeInfo: "key", valueNodeInfo: "value", isFlattened: false)
+        value.roleArn = try reader["RoleArn"].readIfPresent()
         value.tags = try reader["Tags"].readMapIfPresent(valueReadingClosure: SmithyReadWrite.ReadingClosures.readString(from:), keyNodeInfo: "key", valueNodeInfo: "value", isFlattened: false)
         value.uri = try reader["Uri"].readIfPresent() ?? ""
         value.workflowId = try reader["WorkflowId"].readIfPresent()
@@ -9627,6 +9646,7 @@ extension CustomerProfilesClientTypes.ListIntegrationItem {
         value.objectTypeNames = try reader["ObjectTypeNames"].readMapIfPresent(valueReadingClosure: SmithyReadWrite.ReadingClosures.readString(from:), keyNodeInfo: "key", valueNodeInfo: "value", isFlattened: false)
         value.workflowId = try reader["WorkflowId"].readIfPresent()
         value.isUnstructured = try reader["IsUnstructured"].readIfPresent()
+        value.roleArn = try reader["RoleArn"].readIfPresent()
         return value
     }
 }

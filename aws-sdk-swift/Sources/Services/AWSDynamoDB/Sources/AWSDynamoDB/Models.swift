@@ -30,19 +30,20 @@ import protocol ClientRuntime.ModeledError
 @_spi(UnknownAWSHTTPServiceError) import struct AWSClientRuntime.UnknownAWSHTTPServiceError
 @_spi(SmithyTimestamps) import struct SmithyTimestamps.TimestampFormatter
 
-public struct TagResourceOutput {
+
+public struct TagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UntagResourceOutput {
+public struct UntagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
 extension DynamoDBClientTypes {
 
-    public enum ApproximateCreationDateTimePrecision: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ApproximateCreationDateTimePrecision: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case microsecond
         case millisecond
         case sdkUnknown(Swift.String)
@@ -70,8 +71,9 @@ extension DynamoDBClientTypes {
 }
 
 extension DynamoDBClientTypes {
+
     /// Contains details of a table archival operation.
-    public struct ArchivalSummary {
+    public struct ArchivalSummary: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the backup the table was archived to, when applicable in the archival reason. If you wish to restore this backup to the same table name, you will need to delete the original table.
         public var archivalBackupArn: Swift.String?
         /// The date and time when table archival was initiated by DynamoDB, in UNIX epoch time format.
@@ -92,12 +94,11 @@ extension DynamoDBClientTypes {
             self.archivalReason = archivalReason
         }
     }
-
 }
 
 extension DynamoDBClientTypes {
 
-    public enum AttributeAction: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AttributeAction: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case add
         case delete
         case put
@@ -129,7 +130,7 @@ extension DynamoDBClientTypes {
 
 extension DynamoDBClientTypes {
 
-    public enum ScalarAttributeType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ScalarAttributeType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case b
         case n
         case s
@@ -160,8 +161,9 @@ extension DynamoDBClientTypes {
 }
 
 extension DynamoDBClientTypes {
+
     /// Represents an attribute for describing the schema for the table and indexes.
-    public struct AttributeDefinition {
+    public struct AttributeDefinition: Swift.Sendable {
         /// A name for the attribute.
         /// This member is required.
         public var attributeName: Swift.String?
@@ -184,12 +186,12 @@ extension DynamoDBClientTypes {
             self.attributeType = attributeType
         }
     }
-
 }
 
 extension DynamoDBClientTypes {
+
     /// Represents the properties of a target tracking scaling policy.
-    public struct AutoScalingTargetTrackingScalingPolicyConfigurationDescription {
+    public struct AutoScalingTargetTrackingScalingPolicyConfigurationDescription: Swift.Sendable {
         /// Indicates whether scale in by the target tracking policy is disabled. If the value is true, scale in is disabled and the target tracking policy won't remove capacity from the scalable resource. Otherwise, scale in is enabled and the target tracking policy can remove capacity from the scalable resource. The default value is false.
         public var disableScaleIn: Swift.Bool?
         /// The amount of time, in seconds, after a scale in activity completes before another scale in activity can start. The cooldown period is used to block subsequent scale in requests until it has expired. You should scale in conservatively to protect your application's availability. However, if another alarm triggers a scale out policy during the cooldown period after a scale-in, application auto scaling scales out your scalable target immediately.
@@ -213,12 +215,12 @@ extension DynamoDBClientTypes {
             self.targetValue = targetValue
         }
     }
-
 }
 
 extension DynamoDBClientTypes {
+
     /// Represents the properties of the scaling policy.
-    public struct AutoScalingPolicyDescription {
+    public struct AutoScalingPolicyDescription: Swift.Sendable {
         /// The name of the scaling policy.
         public var policyName: Swift.String?
         /// Represents a target tracking scaling policy configuration.
@@ -233,12 +235,12 @@ extension DynamoDBClientTypes {
             self.targetTrackingScalingPolicyConfiguration = targetTrackingScalingPolicyConfiguration
         }
     }
-
 }
 
 extension DynamoDBClientTypes {
+
     /// Represents the settings of a target tracking scaling policy that will be modified.
-    public struct AutoScalingTargetTrackingScalingPolicyConfigurationUpdate {
+    public struct AutoScalingTargetTrackingScalingPolicyConfigurationUpdate: Swift.Sendable {
         /// Indicates whether scale in by the target tracking policy is disabled. If the value is true, scale in is disabled and the target tracking policy won't remove capacity from the scalable resource. Otherwise, scale in is enabled and the target tracking policy can remove capacity from the scalable resource. The default value is false.
         public var disableScaleIn: Swift.Bool?
         /// The amount of time, in seconds, after a scale in activity completes before another scale in activity can start. The cooldown period is used to block subsequent scale in requests until it has expired. You should scale in conservatively to protect your application's availability. However, if another alarm triggers a scale out policy during the cooldown period after a scale-in, application auto scaling scales out your scalable target immediately.
@@ -262,12 +264,12 @@ extension DynamoDBClientTypes {
             self.targetValue = targetValue
         }
     }
-
 }
 
 extension DynamoDBClientTypes {
+
     /// Represents the auto scaling policy to be modified.
-    public struct AutoScalingPolicyUpdate {
+    public struct AutoScalingPolicyUpdate: Swift.Sendable {
         /// The name of the scaling policy.
         public var policyName: Swift.String?
         /// Represents a target tracking scaling policy configuration.
@@ -283,12 +285,12 @@ extension DynamoDBClientTypes {
             self.targetTrackingScalingPolicyConfiguration = targetTrackingScalingPolicyConfiguration
         }
     }
-
 }
 
 extension DynamoDBClientTypes {
+
     /// Represents the auto scaling settings for a global table or global secondary index.
-    public struct AutoScalingSettingsDescription {
+    public struct AutoScalingSettingsDescription: Swift.Sendable {
         /// Disabled auto scaling for this global table or global secondary index.
         public var autoScalingDisabled: Swift.Bool?
         /// Role ARN used for configuring the auto scaling policy.
@@ -315,12 +317,12 @@ extension DynamoDBClientTypes {
             self.scalingPolicies = scalingPolicies
         }
     }
-
 }
 
 extension DynamoDBClientTypes {
+
     /// Represents the auto scaling settings to be modified for a global table or global secondary index.
-    public struct AutoScalingSettingsUpdate {
+    public struct AutoScalingSettingsUpdate: Swift.Sendable {
         /// Disabled auto scaling for this global table or global secondary index.
         public var autoScalingDisabled: Swift.Bool?
         /// Role ARN used for configuring auto scaling policy.
@@ -347,12 +349,11 @@ extension DynamoDBClientTypes {
             self.scalingPolicyUpdate = scalingPolicyUpdate
         }
     }
-
 }
 
 extension DynamoDBClientTypes {
 
-    public enum BackupStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum BackupStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case available
         case creating
         case deleted
@@ -384,7 +385,7 @@ extension DynamoDBClientTypes {
 
 extension DynamoDBClientTypes {
 
-    public enum BackupType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum BackupType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case awsBackup
         case system
         case user
@@ -415,8 +416,9 @@ extension DynamoDBClientTypes {
 }
 
 extension DynamoDBClientTypes {
+
     /// Contains the details of the backup created for the table.
-    public struct BackupDetails {
+    public struct BackupDetails: Swift.Sendable {
         /// ARN associated with the backup.
         /// This member is required.
         public var backupArn: Swift.String?
@@ -462,12 +464,11 @@ extension DynamoDBClientTypes {
             self.backupType = backupType
         }
     }
-
 }
 
 extension DynamoDBClientTypes {
 
-    public enum BillingMode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum BillingMode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case payPerRequest
         case provisioned
         case sdkUnknown(Swift.String)
@@ -496,7 +497,7 @@ extension DynamoDBClientTypes {
 
 extension DynamoDBClientTypes {
 
-    public enum KeyType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum KeyType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case hash
         case range
         case sdkUnknown(Swift.String)
@@ -524,8 +525,9 @@ extension DynamoDBClientTypes {
 }
 
 extension DynamoDBClientTypes {
+
     /// Represents a single element of a key schema. A key schema specifies the attributes that make up the primary key of a table, or the key attributes of an index. A KeySchemaElement represents exactly one attribute of the primary key. For example, a simple primary key would be represented by one KeySchemaElement (for the partition key). A composite primary key would require one KeySchemaElement for the partition key, and another KeySchemaElement for the sort key. A KeySchemaElement must be a scalar, top-level attribute (not a nested attribute). The data type must be one of String, Number, or Binary. The attribute cannot be nested within a List or a Map.
-    public struct KeySchemaElement {
+    public struct KeySchemaElement: Swift.Sendable {
         /// The name of a key attribute.
         /// This member is required.
         public var attributeName: Swift.String?
@@ -549,12 +551,12 @@ extension DynamoDBClientTypes {
             self.keyType = keyType
         }
     }
-
 }
 
 extension DynamoDBClientTypes {
+
     /// Sets the maximum number of read and write units for the specified on-demand table. If you use this parameter, you must specify MaxReadRequestUnits, MaxWriteRequestUnits, or both.
-    public struct OnDemandThroughput {
+    public struct OnDemandThroughput: Swift.Sendable {
         /// Maximum number of read request units for the specified table. To specify a maximum OnDemandThroughput on your table, set the value of MaxReadRequestUnits as greater than or equal to 1. To remove the maximum OnDemandThroughput that is currently set on your table, set the value of MaxReadRequestUnits to -1.
         public var maxReadRequestUnits: Swift.Int?
         /// Maximum number of write request units for the specified table. To specify a maximum OnDemandThroughput on your table, set the value of MaxWriteRequestUnits as greater than or equal to 1. To remove the maximum OnDemandThroughput that is currently set on your table, set the value of MaxWriteRequestUnits to -1.
@@ -569,12 +571,12 @@ extension DynamoDBClientTypes {
             self.maxWriteRequestUnits = maxWriteRequestUnits
         }
     }
-
 }
 
 extension DynamoDBClientTypes {
+
     /// Represents the provisioned throughput settings for a specified table or index. The settings can be modified using the UpdateTable operation. For current minimum and maximum provisioned throughput values, see [Service, Account, and Table Quotas](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Limits.html) in the Amazon DynamoDB Developer Guide.
-    public struct ProvisionedThroughput {
+    public struct ProvisionedThroughput: Swift.Sendable {
         /// The maximum number of strongly consistent reads consumed per second before DynamoDB returns a ThrottlingException. For more information, see [Specifying Read and Write Requirements](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/ProvisionedThroughput.html) in the Amazon DynamoDB Developer Guide. If read/write capacity mode is PAY_PER_REQUEST the value is set to 0.
         /// This member is required.
         public var readCapacityUnits: Swift.Int?
@@ -591,12 +593,12 @@ extension DynamoDBClientTypes {
             self.writeCapacityUnits = writeCapacityUnits
         }
     }
-
 }
 
 extension DynamoDBClientTypes {
+
     /// Contains the details of the table when the backup was created.
-    public struct SourceTableDetails {
+    public struct SourceTableDetails: Swift.Sendable {
         /// Controls how you are charged for read and write throughput and how you manage capacity. This setting can be changed later.
         ///
         /// * PROVISIONED - Sets the read/write capacity mode to PROVISIONED. We recommend using PROVISIONED for predictable workloads.
@@ -652,12 +654,11 @@ extension DynamoDBClientTypes {
             self.tableSizeBytes = tableSizeBytes
         }
     }
-
 }
 
 extension DynamoDBClientTypes {
 
-    public enum ProjectionType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ProjectionType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case all
         case include
         case keysOnly
@@ -688,8 +689,9 @@ extension DynamoDBClientTypes {
 }
 
 extension DynamoDBClientTypes {
+
     /// Represents attributes that are copied (projected) from the table into an index. These are in addition to the primary key attributes and index key attributes, which are automatically projected.
-    public struct Projection {
+    public struct Projection: Swift.Sendable {
         /// Represents the non-key attribute names which will be projected into the index. For local secondary indexes, the total count of NonKeyAttributes summed across all of the local secondary indexes, must not exceed 100. If you project the same attribute into two different indexes, this counts as two distinct attributes when determining the total.
         public var nonKeyAttributes: [Swift.String]?
         /// The set of attributes that are projected into the index:
@@ -713,12 +715,12 @@ extension DynamoDBClientTypes {
             self.projectionType = projectionType
         }
     }
-
 }
 
 extension DynamoDBClientTypes {
+
     /// Represents the properties of a global secondary index for the table when the backup was created.
-    public struct GlobalSecondaryIndexInfo {
+    public struct GlobalSecondaryIndexInfo: Swift.Sendable {
         /// The name of the global secondary index.
         public var indexName: Swift.String?
         /// The complete key schema for a global secondary index, which consists of one or more pairs of attribute names and key types:
@@ -752,12 +754,12 @@ extension DynamoDBClientTypes {
             self.provisionedThroughput = provisionedThroughput
         }
     }
-
 }
 
 extension DynamoDBClientTypes {
+
     /// Represents the properties of a local secondary index for the table when the backup was created.
-    public struct LocalSecondaryIndexInfo {
+    public struct LocalSecondaryIndexInfo: Swift.Sendable {
         /// Represents the name of the local secondary index.
         public var indexName: Swift.String?
         /// The complete key schema for a local secondary index, which consists of one or more pairs of attribute names and key types:
@@ -783,12 +785,11 @@ extension DynamoDBClientTypes {
             self.projection = projection
         }
     }
-
 }
 
 extension DynamoDBClientTypes {
 
-    public enum SSEType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SSEType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case aes256
         case kms
         case sdkUnknown(Swift.String)
@@ -817,7 +818,7 @@ extension DynamoDBClientTypes {
 
 extension DynamoDBClientTypes {
 
-    public enum SSEStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SSEStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case disabled
         case disabling
         case enabled
@@ -854,8 +855,9 @@ extension DynamoDBClientTypes {
 }
 
 extension DynamoDBClientTypes {
+
     /// The description of the server-side encryption status on the specified table.
-    public struct SSEDescription {
+    public struct SSEDescription: Swift.Sendable {
         /// Indicates the time, in UNIX epoch date format, when DynamoDB detected that the table's KMS key was inaccessible. This attribute will automatically be cleared when DynamoDB detects that the table's KMS key is accessible again. DynamoDB will initiate the table archival process when table's KMS key remains inaccessible for more than seven days from this date.
         public var inaccessibleEncryptionDateTime: Foundation.Date?
         /// The KMS key ARN used for the KMS encryption.
@@ -884,12 +886,11 @@ extension DynamoDBClientTypes {
             self.status = status
         }
     }
-
 }
 
 extension DynamoDBClientTypes {
 
-    public enum StreamViewType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum StreamViewType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case keysOnly
         case newAndOldImages
         case newImage
@@ -923,8 +924,9 @@ extension DynamoDBClientTypes {
 }
 
 extension DynamoDBClientTypes {
+
     /// Represents the DynamoDB Streams configuration for a table in DynamoDB.
-    public struct StreamSpecification {
+    public struct StreamSpecification: Swift.Sendable {
         /// Indicates whether DynamoDB Streams is enabled (true) or disabled (false) on the table.
         /// This member is required.
         public var streamEnabled: Swift.Bool?
@@ -948,12 +950,11 @@ extension DynamoDBClientTypes {
             self.streamViewType = streamViewType
         }
     }
-
 }
 
 extension DynamoDBClientTypes {
 
-    public enum TimeToLiveStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum TimeToLiveStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case disabled
         case disabling
         case enabled
@@ -987,8 +988,9 @@ extension DynamoDBClientTypes {
 }
 
 extension DynamoDBClientTypes {
+
     /// The description of the Time to Live (TTL) status on the specified table.
-    public struct TimeToLiveDescription {
+    public struct TimeToLiveDescription: Swift.Sendable {
         /// The name of the TTL attribute for items in the table.
         public var attributeName: Swift.String?
         /// The TTL status for the table.
@@ -1003,12 +1005,12 @@ extension DynamoDBClientTypes {
             self.timeToLiveStatus = timeToLiveStatus
         }
     }
-
 }
 
 extension DynamoDBClientTypes {
+
     /// Contains the details of the features enabled on the table when the backup was created. For example, LSIs, GSIs, streams, TTL.
-    public struct SourceTableFeatureDetails {
+    public struct SourceTableFeatureDetails: Swift.Sendable {
         /// Represents the GSI properties for the table when the backup was created. It includes the IndexName, KeySchema, Projection, and ProvisionedThroughput for the GSIs on the table at the time of backup.
         public var globalSecondaryIndexes: [DynamoDBClientTypes.GlobalSecondaryIndexInfo]?
         /// Represents the LSI properties for the table when the backup was created. It includes the IndexName, KeySchema and Projection for the LSIs on the table at the time of backup.
@@ -1035,12 +1037,12 @@ extension DynamoDBClientTypes {
             self.timeToLiveDescription = timeToLiveDescription
         }
     }
-
 }
 
 extension DynamoDBClientTypes {
+
     /// Contains the description of the backup created for the table.
-    public struct BackupDescription {
+    public struct BackupDescription: Swift.Sendable {
         /// Contains the details of the backup created for the table.
         public var backupDetails: DynamoDBClientTypes.BackupDetails?
         /// Contains the details of the table when the backup was created.
@@ -1059,7 +1061,6 @@ extension DynamoDBClientTypes {
             self.sourceTableFeatureDetails = sourceTableFeatureDetails
         }
     }
-
 }
 
 /// There is another ongoing conflicting backup control plane operation on the table. The backup is either being created, deleted or restored to a table.
@@ -1111,8 +1112,9 @@ public struct BackupNotFoundException: ClientRuntime.ModeledError, AWSClientRunt
 }
 
 extension DynamoDBClientTypes {
+
     /// Contains details for the backup.
-    public struct BackupSummary {
+    public struct BackupSummary: Swift.Sendable {
         /// ARN associated with the backup.
         public var backupArn: Swift.String?
         /// Time at which the backup was created.
@@ -1165,12 +1167,11 @@ extension DynamoDBClientTypes {
             self.tableName = tableName
         }
     }
-
 }
 
 extension DynamoDBClientTypes {
 
-    public enum BackupTypeFilter: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum BackupTypeFilter: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case all
         case awsBackup
         case system
@@ -1261,7 +1262,7 @@ extension DynamoDBClientTypes {
     /// * TOTAL - The response includes only the aggregate ConsumedCapacity for the operation.
     ///
     /// * NONE - No ConsumedCapacity details are included in the response.
-    public enum ReturnConsumedCapacity: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ReturnConsumedCapacity: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case indexes
         case `none`
         case total
@@ -1293,7 +1294,7 @@ extension DynamoDBClientTypes {
 
 extension DynamoDBClientTypes {
 
-    public enum ReturnValuesOnConditionCheckFailure: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ReturnValuesOnConditionCheckFailure: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case allOld
         case `none`
         case sdkUnknown(Swift.String)
@@ -1321,8 +1322,9 @@ extension DynamoDBClientTypes {
 }
 
 extension DynamoDBClientTypes {
+
     /// Represents the amount of provisioned throughput capacity consumed on a table or an index.
-    public struct Capacity {
+    public struct Capacity: Swift.Sendable {
         /// The total number of capacity units consumed on a table or an index.
         public var capacityUnits: Swift.Double?
         /// The total number of read capacity units consumed on a table or an index.
@@ -1341,12 +1343,12 @@ extension DynamoDBClientTypes {
             self.writeCapacityUnits = writeCapacityUnits
         }
     }
-
 }
 
 extension DynamoDBClientTypes {
+
     /// The capacity units consumed by an operation. The data returned includes the total provisioned throughput consumed, along with statistics for the table and any indexes involved in the operation. ConsumedCapacity is only returned if the request asked for it. For more information, see [Provisioned capacity mode](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/provisioned-capacity-mode.html) in the Amazon DynamoDB Developer Guide.
-    public struct ConsumedCapacity {
+    public struct ConsumedCapacity: Swift.Sendable {
         /// The total number of capacity units consumed by the operation.
         public var capacityUnits: Swift.Double?
         /// The amount of throughput consumed on each global index affected by the operation.
@@ -1381,12 +1383,11 @@ extension DynamoDBClientTypes {
             self.writeCapacityUnits = writeCapacityUnits
         }
     }
-
 }
 
 extension DynamoDBClientTypes {
 
-    public enum BatchStatementErrorCodeEnum: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum BatchStatementErrorCodeEnum: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case accessdenied
         case conditionalcheckfailed
         case duplicateitem
@@ -1540,7 +1541,7 @@ public struct ItemCollectionSizeLimitExceededException: ClientRuntime.ModeledErr
 
 extension DynamoDBClientTypes {
 
-    public enum ReturnItemCollectionMetrics: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ReturnItemCollectionMetrics: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case `none`
         case size
         case sdkUnknown(Swift.String)
@@ -1568,8 +1569,9 @@ extension DynamoDBClientTypes {
 }
 
 extension DynamoDBClientTypes {
+
     /// Contains the details for the read/write capacity mode. This page talks about PROVISIONED and PAY_PER_REQUEST billing modes. For more information about these modes, see [Read/write capacity mode](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/HowItWorks.ReadWriteCapacityMode.html). You may need to switch to on-demand mode at least once in order to return a BillingModeSummary response.
-    public struct BillingModeSummary {
+    public struct BillingModeSummary: Swift.Sendable {
         /// Controls how you are charged for read and write throughput and how you manage capacity. This setting can be changed later.
         ///
         /// * PROVISIONED - Sets the read/write capacity mode to PROVISIONED. We recommend using PROVISIONED for predictable workloads.
@@ -1588,12 +1590,11 @@ extension DynamoDBClientTypes {
             self.lastUpdateToPayPerRequestDateTime = lastUpdateToPayPerRequestDateTime
         }
     }
-
 }
 
 extension DynamoDBClientTypes {
 
-    public enum ComparisonOperator: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ComparisonOperator: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case beginsWith
         case between
         case contains
@@ -1655,7 +1656,7 @@ extension DynamoDBClientTypes {
 
 extension DynamoDBClientTypes {
 
-    public enum ConditionalOperator: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ConditionalOperator: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case and
         case or
         case sdkUnknown(Swift.String)
@@ -1684,7 +1685,7 @@ extension DynamoDBClientTypes {
 
 extension DynamoDBClientTypes {
 
-    public enum ContinuousBackupsStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ContinuousBackupsStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case disabled
         case enabled
         case sdkUnknown(Swift.String)
@@ -1713,7 +1714,7 @@ extension DynamoDBClientTypes {
 
 extension DynamoDBClientTypes {
 
-    public enum PointInTimeRecoveryStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum PointInTimeRecoveryStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case disabled
         case enabled
         case sdkUnknown(Swift.String)
@@ -1741,8 +1742,9 @@ extension DynamoDBClientTypes {
 }
 
 extension DynamoDBClientTypes {
+
     /// The description of the point in time settings applied to the table.
-    public struct PointInTimeRecoveryDescription {
+    public struct PointInTimeRecoveryDescription: Swift.Sendable {
         /// Specifies the earliest point in time you can restore your table to. You can restore your table to any point in time during the last 35 days.
         public var earliestRestorableDateTime: Foundation.Date?
         /// LatestRestorableDateTime is typically 5 minutes before the current time.
@@ -1765,12 +1767,12 @@ extension DynamoDBClientTypes {
             self.pointInTimeRecoveryStatus = pointInTimeRecoveryStatus
         }
     }
-
 }
 
 extension DynamoDBClientTypes {
+
     /// Represents the continuous backups and point in time recovery settings on the table.
-    public struct ContinuousBackupsDescription {
+    public struct ContinuousBackupsDescription: Swift.Sendable {
         /// ContinuousBackupsStatus can be one of the following states: ENABLED, DISABLED
         /// This member is required.
         public var continuousBackupsStatus: DynamoDBClientTypes.ContinuousBackupsStatus?
@@ -1786,7 +1788,6 @@ extension DynamoDBClientTypes {
             self.pointInTimeRecoveryDescription = pointInTimeRecoveryDescription
         }
     }
-
 }
 
 /// Backups have not yet been enabled for this table.
@@ -1815,7 +1816,7 @@ public struct ContinuousBackupsUnavailableException: ClientRuntime.ModeledError,
 
 extension DynamoDBClientTypes {
 
-    public enum ContributorInsightsAction: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ContributorInsightsAction: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case disable
         case enable
         case sdkUnknown(Swift.String)
@@ -1844,7 +1845,7 @@ extension DynamoDBClientTypes {
 
 extension DynamoDBClientTypes {
 
-    public enum ContributorInsightsStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ContributorInsightsStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case disabled
         case disabling
         case enabled
@@ -1881,8 +1882,9 @@ extension DynamoDBClientTypes {
 }
 
 extension DynamoDBClientTypes {
+
     /// Represents a Contributor Insights summary entry.
-    public struct ContributorInsightsSummary {
+    public struct ContributorInsightsSummary: Swift.Sendable {
         /// Describes the current status for contributor insights for the given table and index, if applicable.
         public var contributorInsightsStatus: DynamoDBClientTypes.ContributorInsightsStatus?
         /// Name of the index associated with the summary, if any.
@@ -1901,7 +1903,6 @@ extension DynamoDBClientTypes {
             self.tableName = tableName
         }
     }
-
 }
 
 /// There is no limit to the number of daily on-demand backups that can be taken. For most purposes, up to 500 simultaneous table operations are allowed per account. These operations include CreateTable, UpdateTable, DeleteTable,UpdateTimeToLive, RestoreTableFromBackup, and RestoreTableToPointInTime. When you are creating a table with one or more secondary indexes, you can have up to 250 such requests running at a time. However, if the table or index specifications are complex, then DynamoDB might temporarily reduce the number of concurrent operations. When importing into DynamoDB, up to 50 simultaneous import table operations are allowed per account. There is a soft account quota of 2,500 tables. GetRecords was called with a value of more than 1000 for the limit request parameter. More than 2 processes are reading from the same streams shard at the same time. Exceeding this limit may result in request throttling.
@@ -1977,7 +1978,7 @@ public struct TableNotFoundException: ClientRuntime.ModeledError, AWSClientRunti
     }
 }
 
-public struct CreateBackupInput {
+public struct CreateBackupInput: Swift.Sendable {
     /// Specified name for the backup.
     /// This member is required.
     public var backupName: Swift.String?
@@ -1995,7 +1996,7 @@ public struct CreateBackupInput {
     }
 }
 
-public struct CreateBackupOutput {
+public struct CreateBackupOutput: Swift.Sendable {
     /// Contains the details of the backup created for the table.
     public var backupDetails: DynamoDBClientTypes.BackupDetails?
 
@@ -2008,8 +2009,9 @@ public struct CreateBackupOutput {
 }
 
 extension DynamoDBClientTypes {
+
     /// Represents a new global secondary index to be added to an existing table.
-    public struct CreateGlobalSecondaryIndexAction {
+    public struct CreateGlobalSecondaryIndexAction: Swift.Sendable {
         /// The name of the global secondary index to be created.
         /// This member is required.
         public var indexName: Swift.String?
@@ -2039,7 +2041,6 @@ extension DynamoDBClientTypes {
             self.provisionedThroughput = provisionedThroughput
         }
     }
-
 }
 
 /// The specified global table already exists.
@@ -2067,8 +2068,9 @@ public struct GlobalTableAlreadyExistsException: ClientRuntime.ModeledError, AWS
 }
 
 extension DynamoDBClientTypes {
+
     /// Represents the properties of a replica.
-    public struct Replica {
+    public struct Replica: Swift.Sendable {
         /// The Region where the replica needs to be created.
         public var regionName: Swift.String?
 
@@ -2079,10 +2081,9 @@ extension DynamoDBClientTypes {
             self.regionName = regionName
         }
     }
-
 }
 
-public struct CreateGlobalTableInput {
+public struct CreateGlobalTableInput: Swift.Sendable {
     /// The global table name.
     /// This member is required.
     public var globalTableName: Swift.String?
@@ -2102,7 +2103,7 @@ public struct CreateGlobalTableInput {
 
 extension DynamoDBClientTypes {
 
-    public enum GlobalTableStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum GlobalTableStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case active
         case creating
         case deleting
@@ -2136,8 +2137,9 @@ extension DynamoDBClientTypes {
 }
 
 extension DynamoDBClientTypes {
+
     /// Overrides the on-demand throughput settings for this replica table. If you don't specify a value for this parameter, it uses the source table's on-demand throughput settings.
-    public struct OnDemandThroughputOverride {
+    public struct OnDemandThroughputOverride: Swift.Sendable {
         /// Maximum number of read request units for the specified replica table.
         public var maxReadRequestUnits: Swift.Int?
 
@@ -2148,12 +2150,12 @@ extension DynamoDBClientTypes {
             self.maxReadRequestUnits = maxReadRequestUnits
         }
     }
-
 }
 
 extension DynamoDBClientTypes {
+
     /// Replica-specific provisioned throughput settings. If not specified, uses the source table's provisioned throughput settings.
-    public struct ProvisionedThroughputOverride {
+    public struct ProvisionedThroughputOverride: Swift.Sendable {
         /// Replica-specific read capacity units. If not specified, uses the source table's read capacity settings.
         public var readCapacityUnits: Swift.Int?
 
@@ -2164,12 +2166,12 @@ extension DynamoDBClientTypes {
             self.readCapacityUnits = readCapacityUnits
         }
     }
-
 }
 
 extension DynamoDBClientTypes {
+
     /// Represents the properties of a replica global secondary index.
-    public struct ReplicaGlobalSecondaryIndexDescription {
+    public struct ReplicaGlobalSecondaryIndexDescription: Swift.Sendable {
         /// The name of the global secondary index.
         public var indexName: Swift.String?
         /// Overrides the maximum on-demand throughput for the specified global secondary index in the specified replica table.
@@ -2188,12 +2190,11 @@ extension DynamoDBClientTypes {
             self.provisionedThroughputOverride = provisionedThroughputOverride
         }
     }
-
 }
 
 extension DynamoDBClientTypes {
 
-    public enum ReplicaStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ReplicaStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case active
         case creating
         case creationFailed
@@ -2237,7 +2238,7 @@ extension DynamoDBClientTypes {
 
 extension DynamoDBClientTypes {
 
-    public enum TableClass: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum TableClass: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case standard
         case standardInfrequentAccess
         case sdkUnknown(Swift.String)
@@ -2265,8 +2266,9 @@ extension DynamoDBClientTypes {
 }
 
 extension DynamoDBClientTypes {
+
     /// Contains details of the table class.
-    public struct TableClassSummary {
+    public struct TableClassSummary: Swift.Sendable {
         /// The date and time at which the table class was last updated.
         public var lastUpdateDateTime: Foundation.Date?
         /// The table class of the specified table. Valid values are STANDARD and STANDARD_INFREQUENT_ACCESS.
@@ -2281,12 +2283,12 @@ extension DynamoDBClientTypes {
             self.tableClass = tableClass
         }
     }
-
 }
 
 extension DynamoDBClientTypes {
+
     /// Contains the details of the replica.
-    public struct ReplicaDescription {
+    public struct ReplicaDescription: Swift.Sendable {
         /// Replica-specific global secondary index settings.
         public var globalSecondaryIndexes: [DynamoDBClientTypes.ReplicaGlobalSecondaryIndexDescription]?
         /// The KMS key of the replica that will be used for KMS encryption.
@@ -2345,12 +2347,12 @@ extension DynamoDBClientTypes {
             self.replicaTableClassSummary = replicaTableClassSummary
         }
     }
-
 }
 
 extension DynamoDBClientTypes {
+
     /// Contains details about the global table.
-    public struct GlobalTableDescription {
+    public struct GlobalTableDescription: Swift.Sendable {
         /// The creation time of the global table.
         public var creationDateTime: Foundation.Date?
         /// The unique identifier of the global table.
@@ -2385,10 +2387,9 @@ extension DynamoDBClientTypes {
             self.replicationGroup = replicationGroup
         }
     }
-
 }
 
-public struct CreateGlobalTableOutput {
+public struct CreateGlobalTableOutput: Swift.Sendable {
     /// Contains the details of the global table.
     public var globalTableDescription: DynamoDBClientTypes.GlobalTableDescription?
 
@@ -2401,8 +2402,9 @@ public struct CreateGlobalTableOutput {
 }
 
 extension DynamoDBClientTypes {
+
     /// Represents a replica to be added.
-    public struct CreateReplicaAction {
+    public struct CreateReplicaAction: Swift.Sendable {
         /// The Region of the replica to be added.
         /// This member is required.
         public var regionName: Swift.String?
@@ -2414,12 +2416,12 @@ extension DynamoDBClientTypes {
             self.regionName = regionName
         }
     }
-
 }
 
 extension DynamoDBClientTypes {
+
     /// Represents the properties of a replica global secondary index.
-    public struct ReplicaGlobalSecondaryIndex {
+    public struct ReplicaGlobalSecondaryIndex: Swift.Sendable {
         /// The name of the global secondary index.
         /// This member is required.
         public var indexName: Swift.String?
@@ -2439,12 +2441,12 @@ extension DynamoDBClientTypes {
             self.provisionedThroughputOverride = provisionedThroughputOverride
         }
     }
-
 }
 
 extension DynamoDBClientTypes {
+
     /// Represents a replica to be created.
-    public struct CreateReplicationGroupMemberAction {
+    public struct CreateReplicationGroupMemberAction: Swift.Sendable {
         /// Replica-specific global secondary index settings.
         public var globalSecondaryIndexes: [DynamoDBClientTypes.ReplicaGlobalSecondaryIndex]?
         /// The KMS key that should be used for KMS encryption in the new replica. To specify a key, use its key ID, Amazon Resource Name (ARN), alias name, or alias ARN. Note that you should only provide this parameter if the key is different from the default DynamoDB KMS key alias/aws/dynamodb.
@@ -2476,7 +2478,6 @@ extension DynamoDBClientTypes {
             self.tableClassOverride = tableClassOverride
         }
     }
-
 }
 
 /// The operation conflicts with the resource's availability. For example:
@@ -2514,8 +2515,9 @@ public struct ResourceInUseException: ClientRuntime.ModeledError, AWSClientRunti
 }
 
 extension DynamoDBClientTypes {
+
     /// Represents the properties of a global secondary index.
-    public struct GlobalSecondaryIndex {
+    public struct GlobalSecondaryIndex: Swift.Sendable {
         /// The name of the global secondary index. The name must be unique among all other indexes on this table.
         /// This member is required.
         public var indexName: Swift.String?
@@ -2552,12 +2554,12 @@ extension DynamoDBClientTypes {
             self.provisionedThroughput = provisionedThroughput
         }
     }
-
 }
 
 extension DynamoDBClientTypes {
+
     /// Represents the properties of a local secondary index.
-    public struct LocalSecondaryIndex {
+    public struct LocalSecondaryIndex: Swift.Sendable {
         /// The name of the local secondary index. The name must be unique among all other indexes on this table.
         /// This member is required.
         public var indexName: Swift.String?
@@ -2586,12 +2588,12 @@ extension DynamoDBClientTypes {
             self.projection = projection
         }
     }
-
 }
 
 extension DynamoDBClientTypes {
+
     /// Represents the settings used to enable server-side encryption.
-    public struct SSESpecification {
+    public struct SSESpecification: Swift.Sendable {
         /// Indicates whether server-side encryption is done using an Amazon Web Services managed key or an Amazon Web Services owned key. If enabled (true), server-side encryption type is set to KMS and an Amazon Web Services managed key is used (KMS charges apply). If disabled (false) or not specified, server-side encryption is set to Amazon Web Services owned key.
         public var enabled: Swift.Bool?
         /// The KMS key that should be used for the KMS encryption. To specify a key, use its key ID, Amazon Resource Name (ARN), alias name, or alias ARN. Note that you should only provide this parameter if the key is different from the default DynamoDB key alias/aws/dynamodb.
@@ -2612,12 +2614,12 @@ extension DynamoDBClientTypes {
             self.sseType = sseType
         }
     }
-
 }
 
 extension DynamoDBClientTypes {
+
     /// Describes a tag. A tag is a key-value pair. You can add up to 50 tags to a single DynamoDB table. Amazon Web Services-assigned tag names and values are automatically assigned the aws: prefix, which the user cannot assign. Amazon Web Services-assigned tag names do not count towards the tag limit of 50. User-assigned tag names have the prefix user: in the Cost Allocation Report. You cannot backdate the application of a tag. For an overview on tagging DynamoDB resources, see [Tagging for DynamoDB](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Tagging.html) in the Amazon DynamoDB Developer Guide.
-    public struct Tag {
+    public struct Tag: Swift.Sendable {
         /// The key of the tag. Tag keys are case sensitive. Each DynamoDB table can only have up to one tag with the same key. If you try to add an existing tag (same key), the existing tag value will be updated to the new value.
         /// This member is required.
         public var key: Swift.String?
@@ -2634,11 +2636,10 @@ extension DynamoDBClientTypes {
             self.value = value
         }
     }
-
 }
 
 /// Represents the input of a CreateTable operation.
-public struct CreateTableInput {
+public struct CreateTableInput: Swift.Sendable {
     /// An array of attributes that describe the key schema for the table and indexes.
     /// This member is required.
     public var attributeDefinitions: [DynamoDBClientTypes.AttributeDefinition]?
@@ -2780,7 +2781,7 @@ public struct CreateTableInput {
 
 extension DynamoDBClientTypes {
 
-    public enum IndexStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum IndexStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case active
         case creating
         case deleting
@@ -2814,8 +2815,9 @@ extension DynamoDBClientTypes {
 }
 
 extension DynamoDBClientTypes {
+
     /// Represents the provisioned throughput settings for the table, consisting of read and write capacity units, along with data about increases and decreases.
-    public struct ProvisionedThroughputDescription {
+    public struct ProvisionedThroughputDescription: Swift.Sendable {
         /// The date and time of the last provisioned throughput decrease for this table.
         public var lastDecreaseDateTime: Foundation.Date?
         /// The date and time of the last provisioned throughput increase for this table.
@@ -2842,12 +2844,12 @@ extension DynamoDBClientTypes {
             self.writeCapacityUnits = writeCapacityUnits
         }
     }
-
 }
 
 extension DynamoDBClientTypes {
+
     /// Represents the properties of a global secondary index.
-    public struct GlobalSecondaryIndexDescription {
+    public struct GlobalSecondaryIndexDescription: Swift.Sendable {
         /// Indicates whether the index is currently backfilling. Backfilling is the process of reading items from the table and determining whether they can be added to the index. (Not all items will qualify: For example, a partition key cannot have any duplicate values.) If an item can be added to the index, DynamoDB will do so. After all items have been processed, the backfilling operation is complete and Backfilling is false. You can delete an index that is being created during the Backfilling phase when IndexStatus is set to CREATING and Backfilling is true. You can't delete the index that is being created when IndexStatus is set to CREATING and Backfilling is false. For indexes that were created during a CreateTable operation, the Backfilling attribute does not appear in the DescribeTable output.
         public var backfilling: Swift.Bool?
         /// The Amazon Resource Name (ARN) that uniquely identifies the index.
@@ -2909,12 +2911,12 @@ extension DynamoDBClientTypes {
             self.provisionedThroughput = provisionedThroughput
         }
     }
-
 }
 
 extension DynamoDBClientTypes {
+
     /// Represents the properties of a local secondary index.
-    public struct LocalSecondaryIndexDescription {
+    public struct LocalSecondaryIndexDescription: Swift.Sendable {
         /// The Amazon Resource Name (ARN) that uniquely identifies the index.
         public var indexArn: Swift.String?
         /// Represents the name of the local secondary index.
@@ -2952,12 +2954,12 @@ extension DynamoDBClientTypes {
             self.projection = projection
         }
     }
-
 }
 
 extension DynamoDBClientTypes {
+
     /// Contains details for the restore.
-    public struct RestoreSummary {
+    public struct RestoreSummary: Swift.Sendable {
         /// Point in time or source backup time.
         /// This member is required.
         public var restoreDateTime: Foundation.Date?
@@ -2982,12 +2984,11 @@ extension DynamoDBClientTypes {
             self.sourceTableArn = sourceTableArn
         }
     }
-
 }
 
 extension DynamoDBClientTypes {
 
-    public enum TableStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum TableStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case active
         case archived
         case archiving
@@ -3030,8 +3031,9 @@ extension DynamoDBClientTypes {
 }
 
 extension DynamoDBClientTypes {
+
     /// Represents the properties of a table.
-    public struct TableDescription {
+    public struct TableDescription: Swift.Sendable {
         /// Contains information about the table archive.
         public var archivalSummary: DynamoDBClientTypes.ArchivalSummary?
         /// An array of AttributeDefinition objects. Each of these objects describes one attribute in the table and index key schema. Each AttributeDefinition object in this array is composed of:
@@ -3247,11 +3249,10 @@ extension DynamoDBClientTypes {
             self.tableStatus = tableStatus
         }
     }
-
 }
 
 /// Represents the output of a CreateTable operation.
-public struct CreateTableOutput {
+public struct CreateTableOutput: Swift.Sendable {
     /// Represents the properties of the table.
     public var tableDescription: DynamoDBClientTypes.TableDescription?
 
@@ -3264,8 +3265,9 @@ public struct CreateTableOutput {
 }
 
 extension DynamoDBClientTypes {
+
     /// Processing options for the CSV file being imported.
-    public struct CsvOptions {
+    public struct CsvOptions: Swift.Sendable {
         /// The delimiter used for separating items in the CSV file being imported.
         public var delimiter: Swift.String?
         /// List of the headers used to specify a common header for all source CSV files being imported. If this field is specified then the first line of each CSV file is treated as data instead of the header. If this field is not specified the the first line of each CSV file is treated as the header.
@@ -3280,10 +3282,9 @@ extension DynamoDBClientTypes {
             self.headerList = headerList
         }
     }
-
 }
 
-public struct DeleteBackupInput {
+public struct DeleteBackupInput: Swift.Sendable {
     /// The ARN associated with the backup.
     /// This member is required.
     public var backupArn: Swift.String?
@@ -3296,7 +3297,7 @@ public struct DeleteBackupInput {
     }
 }
 
-public struct DeleteBackupOutput {
+public struct DeleteBackupOutput: Swift.Sendable {
     /// Contains the description of the backup created for the table.
     public var backupDescription: DynamoDBClientTypes.BackupDescription?
 
@@ -3309,8 +3310,9 @@ public struct DeleteBackupOutput {
 }
 
 extension DynamoDBClientTypes {
+
     /// Represents a global secondary index to be deleted from an existing table.
-    public struct DeleteGlobalSecondaryIndexAction {
+    public struct DeleteGlobalSecondaryIndexAction: Swift.Sendable {
         /// The name of the global secondary index to be deleted.
         /// This member is required.
         public var indexName: Swift.String?
@@ -3322,7 +3324,6 @@ extension DynamoDBClientTypes {
             self.indexName = indexName
         }
     }
-
 }
 
 /// Operation was rejected because there is an ongoing transaction for the item.
@@ -3351,7 +3352,7 @@ public struct TransactionConflictException: ClientRuntime.ModeledError, AWSClien
 
 extension DynamoDBClientTypes {
 
-    public enum ReturnValue: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ReturnValue: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case allNew
         case allOld
         case `none`
@@ -3388,8 +3389,9 @@ extension DynamoDBClientTypes {
 }
 
 extension DynamoDBClientTypes {
+
     /// Represents a replica to be removed.
-    public struct DeleteReplicaAction {
+    public struct DeleteReplicaAction: Swift.Sendable {
         /// The Region of the replica to be removed.
         /// This member is required.
         public var regionName: Swift.String?
@@ -3401,12 +3403,12 @@ extension DynamoDBClientTypes {
             self.regionName = regionName
         }
     }
-
 }
 
 extension DynamoDBClientTypes {
+
     /// Represents a replica to be deleted.
-    public struct DeleteReplicationGroupMemberAction {
+    public struct DeleteReplicationGroupMemberAction: Swift.Sendable {
         /// The Region where the replica exists.
         /// This member is required.
         public var regionName: Swift.String?
@@ -3418,7 +3420,6 @@ extension DynamoDBClientTypes {
             self.regionName = regionName
         }
     }
-
 }
 
 /// The operation tried to access a nonexistent resource-based policy. If you specified an ExpectedRevisionId, it's possible that a policy is present for the resource but its revision ID didn't match the expected value.
@@ -3445,7 +3446,7 @@ public struct PolicyNotFoundException: ClientRuntime.ModeledError, AWSClientRunt
     }
 }
 
-public struct DeleteResourcePolicyInput {
+public struct DeleteResourcePolicyInput: Swift.Sendable {
     /// A string value that you can use to conditionally delete your policy. When you provide an expected revision ID, if the revision ID of the existing policy on the resource doesn't match or if there's no policy attached to the resource, the request will fail and return a PolicyNotFoundException.
     public var expectedRevisionId: Swift.String?
     /// The Amazon Resource Name (ARN) of the DynamoDB resource from which the policy will be removed. The resources you can specify include tables and streams. If you remove the policy of a table, it will also remove the permissions for the table's indexes defined in that policy document. This is because index permissions are defined in the table's policy.
@@ -3462,7 +3463,7 @@ public struct DeleteResourcePolicyInput {
     }
 }
 
-public struct DeleteResourcePolicyOutput {
+public struct DeleteResourcePolicyOutput: Swift.Sendable {
     /// A unique string that represents the revision ID of the policy. If you're comparing revision IDs, make sure to always use string comparison logic. This value will be empty if you make a request against a resource without a policy.
     public var revisionId: Swift.String?
 
@@ -3475,7 +3476,7 @@ public struct DeleteResourcePolicyOutput {
 }
 
 /// Represents the input of a DeleteTable operation.
-public struct DeleteTableInput {
+public struct DeleteTableInput: Swift.Sendable {
     /// The name of the table to delete. You can also provide the Amazon Resource Name (ARN) of the table in this parameter.
     /// This member is required.
     public var tableName: Swift.String?
@@ -3489,7 +3490,7 @@ public struct DeleteTableInput {
 }
 
 /// Represents the output of a DeleteTable operation.
-public struct DeleteTableOutput {
+public struct DeleteTableOutput: Swift.Sendable {
     /// Represents the properties of a table.
     public var tableDescription: DynamoDBClientTypes.TableDescription?
 
@@ -3501,7 +3502,7 @@ public struct DeleteTableOutput {
     }
 }
 
-public struct DescribeBackupInput {
+public struct DescribeBackupInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) associated with the backup.
     /// This member is required.
     public var backupArn: Swift.String?
@@ -3514,7 +3515,7 @@ public struct DescribeBackupInput {
     }
 }
 
-public struct DescribeBackupOutput {
+public struct DescribeBackupOutput: Swift.Sendable {
     /// Contains the description of the backup created for the table.
     public var backupDescription: DynamoDBClientTypes.BackupDescription?
 
@@ -3526,7 +3527,7 @@ public struct DescribeBackupOutput {
     }
 }
 
-public struct DescribeContinuousBackupsInput {
+public struct DescribeContinuousBackupsInput: Swift.Sendable {
     /// Name of the table for which the customer wants to check the continuous backups and point in time recovery settings. You can also provide the Amazon Resource Name (ARN) of the table in this parameter.
     /// This member is required.
     public var tableName: Swift.String?
@@ -3539,7 +3540,7 @@ public struct DescribeContinuousBackupsInput {
     }
 }
 
-public struct DescribeContinuousBackupsOutput {
+public struct DescribeContinuousBackupsOutput: Swift.Sendable {
     /// Represents the continuous backups and point in time recovery settings on the table.
     public var continuousBackupsDescription: DynamoDBClientTypes.ContinuousBackupsDescription?
 
@@ -3551,7 +3552,7 @@ public struct DescribeContinuousBackupsOutput {
     }
 }
 
-public struct DescribeContributorInsightsInput {
+public struct DescribeContributorInsightsInput: Swift.Sendable {
     /// The name of the global secondary index to describe, if applicable.
     public var indexName: Swift.String?
     /// The name of the table to describe. You can also provide the Amazon Resource Name (ARN) of the table in this parameter.
@@ -3569,8 +3570,9 @@ public struct DescribeContributorInsightsInput {
 }
 
 extension DynamoDBClientTypes {
+
     /// Represents a failure a contributor insights operation.
-    public struct FailureException {
+    public struct FailureException: Swift.Sendable {
         /// Description of the failure.
         public var exceptionDescription: Swift.String?
         /// Exception name.
@@ -3585,10 +3587,9 @@ extension DynamoDBClientTypes {
             self.exceptionName = exceptionName
         }
     }
-
 }
 
-public struct DescribeContributorInsightsOutput {
+public struct DescribeContributorInsightsOutput: Swift.Sendable {
     /// List of names of the associated contributor insights rules.
     public var contributorInsightsRuleList: [Swift.String]?
     /// Current status of contributor insights.
@@ -3628,14 +3629,15 @@ public struct DescribeContributorInsightsOutput {
     }
 }
 
-public struct DescribeEndpointsInput {
+public struct DescribeEndpointsInput: Swift.Sendable {
 
     public init() { }
 }
 
 extension DynamoDBClientTypes {
+
     /// An endpoint information details.
-    public struct Endpoint {
+    public struct Endpoint: Swift.Sendable {
         /// IP address of the endpoint.
         /// This member is required.
         public var address: Swift.String?
@@ -3652,10 +3654,9 @@ extension DynamoDBClientTypes {
             self.cachePeriodInMinutes = cachePeriodInMinutes
         }
     }
-
 }
 
-public struct DescribeEndpointsOutput {
+public struct DescribeEndpointsOutput: Swift.Sendable {
     /// List of endpoints.
     /// This member is required.
     public var endpoints: [DynamoDBClientTypes.Endpoint]?
@@ -3692,7 +3693,7 @@ public struct ExportNotFoundException: ClientRuntime.ModeledError, AWSClientRunt
     }
 }
 
-public struct DescribeExportInput {
+public struct DescribeExportInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) associated with the export.
     /// This member is required.
     public var exportArn: Swift.String?
@@ -3707,7 +3708,7 @@ public struct DescribeExportInput {
 
 extension DynamoDBClientTypes {
 
-    public enum ExportFormat: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ExportFormat: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case dynamodbJson
         case ion
         case sdkUnknown(Swift.String)
@@ -3736,7 +3737,7 @@ extension DynamoDBClientTypes {
 
 extension DynamoDBClientTypes {
 
-    public enum ExportStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ExportStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case completed
         case failed
         case inProgress
@@ -3768,7 +3769,7 @@ extension DynamoDBClientTypes {
 
 extension DynamoDBClientTypes {
 
-    public enum ExportType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ExportType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case fullExport
         case incrementalExport
         case sdkUnknown(Swift.String)
@@ -3797,7 +3798,7 @@ extension DynamoDBClientTypes {
 
 extension DynamoDBClientTypes {
 
-    public enum ExportViewType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ExportViewType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case newAndOldImages
         case newImage
         case sdkUnknown(Swift.String)
@@ -3825,8 +3826,9 @@ extension DynamoDBClientTypes {
 }
 
 extension DynamoDBClientTypes {
+
     /// Optional object containing the parameters specific to an incremental export.
-    public struct IncrementalExportSpecification {
+    public struct IncrementalExportSpecification: Swift.Sendable {
         /// Time in the past which provides the inclusive start range for the export table's data, counted in seconds from the start of the Unix epoch. The incremental export will reflect the table's state including and after this point in time.
         public var exportFromTime: Foundation.Date?
         /// Time in the past which provides the exclusive end range for the export table's data, counted in seconds from the start of the Unix epoch. The incremental export will reflect the table's state just prior to this point in time. If this is not provided, the latest time with data available will be used.
@@ -3845,12 +3847,11 @@ extension DynamoDBClientTypes {
             self.exportViewType = exportViewType
         }
     }
-
 }
 
 extension DynamoDBClientTypes {
 
-    public enum S3SseAlgorithm: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum S3SseAlgorithm: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case aes256
         case kms
         case sdkUnknown(Swift.String)
@@ -3878,8 +3879,9 @@ extension DynamoDBClientTypes {
 }
 
 extension DynamoDBClientTypes {
+
     /// Represents the properties of the exported table.
-    public struct ExportDescription {
+    public struct ExportDescription: Swift.Sendable {
         /// The billable size of the table export.
         public var billedSizeBytes: Swift.Int?
         /// The client token that was provided for the export task. A client token makes calls to ExportTableToPointInTimeInput idempotent, meaning that multiple identical calls have the same effect as one single call.
@@ -3974,10 +3976,9 @@ extension DynamoDBClientTypes {
             self.tableId = tableId
         }
     }
-
 }
 
-public struct DescribeExportOutput {
+public struct DescribeExportOutput: Swift.Sendable {
     /// Represents the properties of the export.
     public var exportDescription: DynamoDBClientTypes.ExportDescription?
 
@@ -4013,7 +4014,7 @@ public struct GlobalTableNotFoundException: ClientRuntime.ModeledError, AWSClien
     }
 }
 
-public struct DescribeGlobalTableInput {
+public struct DescribeGlobalTableInput: Swift.Sendable {
     /// The name of the global table.
     /// This member is required.
     public var globalTableName: Swift.String?
@@ -4026,7 +4027,7 @@ public struct DescribeGlobalTableInput {
     }
 }
 
-public struct DescribeGlobalTableOutput {
+public struct DescribeGlobalTableOutput: Swift.Sendable {
     /// Contains the details of the global table.
     public var globalTableDescription: DynamoDBClientTypes.GlobalTableDescription?
 
@@ -4038,7 +4039,7 @@ public struct DescribeGlobalTableOutput {
     }
 }
 
-public struct DescribeGlobalTableSettingsInput {
+public struct DescribeGlobalTableSettingsInput: Swift.Sendable {
     /// The name of the global table to describe.
     /// This member is required.
     public var globalTableName: Swift.String?
@@ -4052,8 +4053,9 @@ public struct DescribeGlobalTableSettingsInput {
 }
 
 extension DynamoDBClientTypes {
+
     /// Represents the properties of a global secondary index.
-    public struct ReplicaGlobalSecondaryIndexSettingsDescription {
+    public struct ReplicaGlobalSecondaryIndexSettingsDescription: Swift.Sendable {
         /// The name of the global secondary index. The name must be unique among all other indexes on this table.
         /// This member is required.
         public var indexName: Swift.String?
@@ -4093,12 +4095,12 @@ extension DynamoDBClientTypes {
             self.provisionedWriteCapacityUnits = provisionedWriteCapacityUnits
         }
     }
-
 }
 
 extension DynamoDBClientTypes {
+
     /// Represents the properties of a replica.
-    public struct ReplicaSettingsDescription {
+    public struct ReplicaSettingsDescription: Swift.Sendable {
         /// The Region name of the replica.
         /// This member is required.
         public var regionName: Swift.String?
@@ -4150,10 +4152,9 @@ extension DynamoDBClientTypes {
             self.replicaTableClassSummary = replicaTableClassSummary
         }
     }
-
 }
 
-public struct DescribeGlobalTableSettingsOutput {
+public struct DescribeGlobalTableSettingsOutput: Swift.Sendable {
     /// The name of the global table.
     public var globalTableName: Swift.String?
     /// The Region-specific settings for the global table.
@@ -4193,7 +4194,7 @@ public struct ImportNotFoundException: ClientRuntime.ModeledError, AWSClientRunt
     }
 }
 
-public struct DescribeImportInput {
+public struct DescribeImportInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) associated with the table you're importing to.
     /// This member is required.
     public var importArn: Swift.String?
@@ -4208,7 +4209,7 @@ public struct DescribeImportInput {
 
 extension DynamoDBClientTypes {
 
-    public enum ImportStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ImportStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case cancelled
         case cancelling
         case completed
@@ -4246,7 +4247,7 @@ extension DynamoDBClientTypes {
 
 extension DynamoDBClientTypes {
 
-    public enum InputCompressionType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum InputCompressionType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case gzip
         case `none`
         case zstd
@@ -4278,7 +4279,7 @@ extension DynamoDBClientTypes {
 
 extension DynamoDBClientTypes {
 
-    public enum InputFormat: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum InputFormat: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case csv
         case dynamodbJson
         case ion
@@ -4309,8 +4310,9 @@ extension DynamoDBClientTypes {
 }
 
 extension DynamoDBClientTypes {
+
     /// The format options for the data that was imported into the target table. There is one value, CsvOption.
-    public struct InputFormatOptions {
+    public struct InputFormatOptions: Swift.Sendable {
         /// The options for imported source files in CSV format. The values are Delimiter and HeaderList.
         public var csv: DynamoDBClientTypes.CsvOptions?
 
@@ -4321,12 +4323,12 @@ extension DynamoDBClientTypes {
             self.csv = csv
         }
     }
-
 }
 
 extension DynamoDBClientTypes {
+
     /// The S3 bucket that is being imported from.
-    public struct S3BucketSource {
+    public struct S3BucketSource: Swift.Sendable {
         /// The S3 bucket that is being imported from.
         /// This member is required.
         public var s3Bucket: Swift.String?
@@ -4346,12 +4348,12 @@ extension DynamoDBClientTypes {
             self.s3KeyPrefix = s3KeyPrefix
         }
     }
-
 }
 
 extension DynamoDBClientTypes {
+
     /// The parameters for the table created as part of the import operation.
-    public struct TableCreationParameters {
+    public struct TableCreationParameters: Swift.Sendable {
         /// The attributes of the table created as part of the import operation.
         /// This member is required.
         public var attributeDefinitions: [DynamoDBClientTypes.AttributeDefinition]?
@@ -4393,12 +4395,12 @@ extension DynamoDBClientTypes {
             self.tableName = tableName
         }
     }
-
 }
 
 extension DynamoDBClientTypes {
+
     /// Represents the properties of the table being imported into.
-    public struct ImportTableDescription {
+    public struct ImportTableDescription: Swift.Sendable {
         /// The client token that was provided for the import task. Reusing the client token on retry makes a call to ImportTable idempotent.
         public var clientToken: Swift.String?
         /// The Amazon Resource Number (ARN) of the Cloudwatch Log Group associated with the target table.
@@ -4481,10 +4483,9 @@ extension DynamoDBClientTypes {
             self.tableId = tableId
         }
     }
-
 }
 
-public struct DescribeImportOutput {
+public struct DescribeImportOutput: Swift.Sendable {
     /// Represents the properties of the table created for the import, and parameters of the import. The import parameters include import status, how many items were processed, and how many errors were encountered.
     /// This member is required.
     public var importTableDescription: DynamoDBClientTypes.ImportTableDescription?
@@ -4497,7 +4498,7 @@ public struct DescribeImportOutput {
     }
 }
 
-public struct DescribeKinesisStreamingDestinationInput {
+public struct DescribeKinesisStreamingDestinationInput: Swift.Sendable {
     /// The name of the table being described. You can also provide the Amazon Resource Name (ARN) of the table in this parameter.
     /// This member is required.
     public var tableName: Swift.String?
@@ -4512,7 +4513,7 @@ public struct DescribeKinesisStreamingDestinationInput {
 
 extension DynamoDBClientTypes {
 
-    public enum DestinationStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DestinationStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case active
         case disabled
         case disabling
@@ -4552,8 +4553,9 @@ extension DynamoDBClientTypes {
 }
 
 extension DynamoDBClientTypes {
+
     /// Describes a Kinesis data stream destination.
-    public struct KinesisDataStreamDestination {
+    public struct KinesisDataStreamDestination: Swift.Sendable {
         /// The precision of the Kinesis data stream timestamp. The values are either MILLISECOND or MICROSECOND.
         public var approximateCreationDateTimePrecision: DynamoDBClientTypes.ApproximateCreationDateTimePrecision?
         /// The current status of replication.
@@ -4576,10 +4578,9 @@ extension DynamoDBClientTypes {
             self.streamArn = streamArn
         }
     }
-
 }
 
-public struct DescribeKinesisStreamingDestinationOutput {
+public struct DescribeKinesisStreamingDestinationOutput: Swift.Sendable {
     /// The list of replica structures for the table being described.
     public var kinesisDataStreamDestinations: [DynamoDBClientTypes.KinesisDataStreamDestination]?
     /// The name of the table being described.
@@ -4596,13 +4597,13 @@ public struct DescribeKinesisStreamingDestinationOutput {
 }
 
 /// Represents the input of a DescribeLimits operation. Has no content.
-public struct DescribeLimitsInput {
+public struct DescribeLimitsInput: Swift.Sendable {
 
     public init() { }
 }
 
 /// Represents the output of a DescribeLimits operation.
-public struct DescribeLimitsOutput {
+public struct DescribeLimitsOutput: Swift.Sendable {
     /// The maximum total read capacity units that your account allows you to provision across all of your tables in this Region.
     public var accountMaxReadCapacityUnits: Swift.Int?
     /// The maximum total write capacity units that your account allows you to provision across all of your tables in this Region.
@@ -4627,7 +4628,7 @@ public struct DescribeLimitsOutput {
 }
 
 /// Represents the input of a DescribeTable operation.
-public struct DescribeTableInput {
+public struct DescribeTableInput: Swift.Sendable {
     /// The name of the table to describe. You can also provide the Amazon Resource Name (ARN) of the table in this parameter.
     /// This member is required.
     public var tableName: Swift.String?
@@ -4641,7 +4642,7 @@ public struct DescribeTableInput {
 }
 
 /// Represents the output of a DescribeTable operation.
-public struct DescribeTableOutput {
+public struct DescribeTableOutput: Swift.Sendable {
     /// The properties of the table.
     public var table: DynamoDBClientTypes.TableDescription?
 
@@ -4653,7 +4654,7 @@ public struct DescribeTableOutput {
     }
 }
 
-public struct DescribeTableReplicaAutoScalingInput {
+public struct DescribeTableReplicaAutoScalingInput: Swift.Sendable {
     /// The name of the table. You can also provide the Amazon Resource Name (ARN) of the table in this parameter.
     /// This member is required.
     public var tableName: Swift.String?
@@ -4667,8 +4668,9 @@ public struct DescribeTableReplicaAutoScalingInput {
 }
 
 extension DynamoDBClientTypes {
+
     /// Represents the auto scaling configuration for a replica global secondary index.
-    public struct ReplicaGlobalSecondaryIndexAutoScalingDescription {
+    public struct ReplicaGlobalSecondaryIndexAutoScalingDescription: Swift.Sendable {
         /// The name of the global secondary index.
         public var indexName: Swift.String?
         /// The current state of the replica global secondary index:
@@ -4699,12 +4701,12 @@ extension DynamoDBClientTypes {
             self.provisionedWriteCapacityAutoScalingSettings = provisionedWriteCapacityAutoScalingSettings
         }
     }
-
 }
 
 extension DynamoDBClientTypes {
+
     /// Represents the auto scaling settings of the replica.
-    public struct ReplicaAutoScalingDescription {
+    public struct ReplicaAutoScalingDescription: Swift.Sendable {
         /// Replica-specific global secondary index auto scaling settings.
         public var globalSecondaryIndexes: [DynamoDBClientTypes.ReplicaGlobalSecondaryIndexAutoScalingDescription]?
         /// The Region where the replica exists.
@@ -4739,12 +4741,12 @@ extension DynamoDBClientTypes {
             self.replicaStatus = replicaStatus
         }
     }
-
 }
 
 extension DynamoDBClientTypes {
+
     /// Represents the auto scaling configuration for a global table.
-    public struct TableAutoScalingDescription {
+    public struct TableAutoScalingDescription: Swift.Sendable {
         /// Represents replicas of the global table.
         public var replicas: [DynamoDBClientTypes.ReplicaAutoScalingDescription]?
         /// The name of the table.
@@ -4771,10 +4773,9 @@ extension DynamoDBClientTypes {
             self.tableStatus = tableStatus
         }
     }
-
 }
 
-public struct DescribeTableReplicaAutoScalingOutput {
+public struct DescribeTableReplicaAutoScalingOutput: Swift.Sendable {
     /// Represents the auto scaling properties of the table.
     public var tableAutoScalingDescription: DynamoDBClientTypes.TableAutoScalingDescription?
 
@@ -4786,7 +4787,7 @@ public struct DescribeTableReplicaAutoScalingOutput {
     }
 }
 
-public struct DescribeTimeToLiveInput {
+public struct DescribeTimeToLiveInput: Swift.Sendable {
     /// The name of the table to be described. You can also provide the Amazon Resource Name (ARN) of the table in this parameter.
     /// This member is required.
     public var tableName: Swift.String?
@@ -4799,7 +4800,7 @@ public struct DescribeTimeToLiveInput {
     }
 }
 
-public struct DescribeTimeToLiveOutput {
+public struct DescribeTimeToLiveOutput: Swift.Sendable {
     ///
     public var timeToLiveDescription: DynamoDBClientTypes.TimeToLiveDescription?
 
@@ -4812,8 +4813,9 @@ public struct DescribeTimeToLiveOutput {
 }
 
 extension DynamoDBClientTypes {
+
     /// Enables setting the configuration for Kinesis Streaming.
-    public struct EnableKinesisStreamingConfiguration {
+    public struct EnableKinesisStreamingConfiguration: Swift.Sendable {
         /// Toggle for the precision of Kinesis data stream timestamp. The values are either MILLISECOND or MICROSECOND.
         public var approximateCreationDateTimePrecision: DynamoDBClientTypes.ApproximateCreationDateTimePrecision?
 
@@ -4824,10 +4826,9 @@ extension DynamoDBClientTypes {
             self.approximateCreationDateTimePrecision = approximateCreationDateTimePrecision
         }
     }
-
 }
 
-public struct DisableKinesisStreamingDestinationInput {
+public struct DisableKinesisStreamingDestinationInput: Swift.Sendable {
     /// The source for the Kinesis streaming information that is being enabled.
     public var enableKinesisStreamingConfiguration: DynamoDBClientTypes.EnableKinesisStreamingConfiguration?
     /// The ARN for a Kinesis data stream.
@@ -4849,7 +4850,7 @@ public struct DisableKinesisStreamingDestinationInput {
     }
 }
 
-public struct DisableKinesisStreamingDestinationOutput {
+public struct DisableKinesisStreamingDestinationOutput: Swift.Sendable {
     /// The current status of the replication.
     public var destinationStatus: DynamoDBClientTypes.DestinationStatus?
     /// The destination for the Kinesis streaming information that is being enabled.
@@ -4897,7 +4898,7 @@ public struct DuplicateItemException: ClientRuntime.ModeledError, AWSClientRunti
     }
 }
 
-public struct EnableKinesisStreamingDestinationInput {
+public struct EnableKinesisStreamingDestinationInput: Swift.Sendable {
     /// The source for the Kinesis streaming information that is being enabled.
     public var enableKinesisStreamingConfiguration: DynamoDBClientTypes.EnableKinesisStreamingConfiguration?
     /// The ARN for a Kinesis data stream.
@@ -4919,7 +4920,7 @@ public struct EnableKinesisStreamingDestinationInput {
     }
 }
 
-public struct EnableKinesisStreamingDestinationOutput {
+public struct EnableKinesisStreamingDestinationOutput: Swift.Sendable {
     /// The current status of the replication.
     public var destinationStatus: DynamoDBClientTypes.DestinationStatus?
     /// The destination for the Kinesis streaming information that is being enabled.
@@ -5088,7 +5089,7 @@ public struct PointInTimeRecoveryUnavailableException: ClientRuntime.ModeledErro
     }
 }
 
-public struct ExportTableToPointInTimeInput {
+public struct ExportTableToPointInTimeInput: Swift.Sendable {
     /// Providing a ClientToken makes the call to ExportTableToPointInTimeInput idempotent, meaning that multiple identical calls have the same effect as one single call. A client token is valid for 8 hours after the first request that uses it is completed. After 8 hours, any request with the same client token is treated as a new request. Do not resubmit the same request with the same client token for more than 8 hours, or the result might not be idempotent. If you submit a request with the same client token but a change in other parameters within the 8-hour idempotency window, DynamoDB returns an ImportConflictException.
     public var clientToken: Swift.String?
     /// The format for the exported data. Valid values for ExportFormat are DYNAMODB_JSON or ION.
@@ -5146,7 +5147,7 @@ public struct ExportTableToPointInTimeInput {
     }
 }
 
-public struct ExportTableToPointInTimeOutput {
+public struct ExportTableToPointInTimeOutput: Swift.Sendable {
     /// Contains a description of the table export.
     public var exportDescription: DynamoDBClientTypes.ExportDescription?
 
@@ -5158,7 +5159,7 @@ public struct ExportTableToPointInTimeOutput {
     }
 }
 
-public struct GetResourcePolicyInput {
+public struct GetResourcePolicyInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the DynamoDB resource to which the policy is attached. The resources you can specify include tables and streams.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -5171,7 +5172,7 @@ public struct GetResourcePolicyInput {
     }
 }
 
-public struct GetResourcePolicyOutput {
+public struct GetResourcePolicyOutput: Swift.Sendable {
     /// The resource-based policy document attached to the resource, which can be a table or stream, in JSON format.
     public var policy: Swift.String?
     /// A unique string that represents the revision ID of the policy. If you're comparing revision IDs, make sure to always use string comparison logic.
@@ -5211,7 +5212,7 @@ public struct ImportConflictException: ClientRuntime.ModeledError, AWSClientRunt
     }
 }
 
-public struct ImportTableInput {
+public struct ImportTableInput: Swift.Sendable {
     /// Providing a ClientToken makes the call to ImportTableInput idempotent, meaning that multiple identical calls have the same effect as one single call. A client token is valid for 8 hours after the first request that uses it is completed. After 8 hours, any request with the same client token is treated as a new request. Do not resubmit the same request with the same client token for more than 8 hours, or the result might not be idempotent. If you submit a request with the same client token but a change in other parameters within the 8-hour idempotency window, DynamoDB returns an IdempotentParameterMismatch exception.
     public var clientToken: Swift.String?
     /// Type of compression to be used on the input coming from the imported table.
@@ -5246,7 +5247,7 @@ public struct ImportTableInput {
     }
 }
 
-public struct ImportTableOutput {
+public struct ImportTableOutput: Swift.Sendable {
     /// Represents the properties of the table created for the import, and parameters of the import. The import parameters include import status, how many items were processed, and how many errors were encountered.
     /// This member is required.
     public var importTableDescription: DynamoDBClientTypes.ImportTableDescription?
@@ -5259,7 +5260,7 @@ public struct ImportTableOutput {
     }
 }
 
-public struct ListBackupsInput {
+public struct ListBackupsInput: Swift.Sendable {
     /// The backups from the table specified by BackupType are listed. Where BackupType can be:
     ///
     /// * USER - On-demand backup created by you. (The default setting if no other backup types are specified.)
@@ -5297,7 +5298,7 @@ public struct ListBackupsInput {
     }
 }
 
-public struct ListBackupsOutput {
+public struct ListBackupsOutput: Swift.Sendable {
     /// List of BackupSummary objects.
     public var backupSummaries: [DynamoDBClientTypes.BackupSummary]?
     /// The ARN of the backup last evaluated when the current page of results was returned, inclusive of the current page of results. This value may be specified as the ExclusiveStartBackupArn of a new ListBackups operation in order to fetch the next page of results. If LastEvaluatedBackupArn is empty, then the last page of results has been processed and there are no more results to be retrieved. If LastEvaluatedBackupArn is not empty, this may or may not indicate that there is more data to be returned. All results are guaranteed to have been returned if and only if no value for LastEvaluatedBackupArn is returned.
@@ -5313,7 +5314,7 @@ public struct ListBackupsOutput {
     }
 }
 
-public struct ListContributorInsightsInput {
+public struct ListContributorInsightsInput: Swift.Sendable {
     /// Maximum number of results to return per page.
     public var maxResults: Swift.Int?
     /// A token to for the desired page, if there is one.
@@ -5333,7 +5334,7 @@ public struct ListContributorInsightsInput {
     }
 }
 
-public struct ListContributorInsightsOutput {
+public struct ListContributorInsightsOutput: Swift.Sendable {
     /// A list of ContributorInsightsSummary.
     public var contributorInsightsSummaries: [DynamoDBClientTypes.ContributorInsightsSummary]?
     /// A token to go to the next page if there is one.
@@ -5349,7 +5350,7 @@ public struct ListContributorInsightsOutput {
     }
 }
 
-public struct ListExportsInput {
+public struct ListExportsInput: Swift.Sendable {
     /// Maximum number of results to return per page.
     public var maxResults: Swift.Int?
     /// An optional string that, if supplied, must be copied from the output of a previous call to ListExports. When provided in this manner, the API fetches the next page of results.
@@ -5370,8 +5371,9 @@ public struct ListExportsInput {
 }
 
 extension DynamoDBClientTypes {
+
     /// Summary information about an export task.
-    public struct ExportSummary {
+    public struct ExportSummary: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the export.
         public var exportArn: Swift.String?
         /// Export can be in one of the following states: IN_PROGRESS, COMPLETED, or FAILED.
@@ -5390,10 +5392,9 @@ extension DynamoDBClientTypes {
             self.exportType = exportType
         }
     }
-
 }
 
-public struct ListExportsOutput {
+public struct ListExportsOutput: Swift.Sendable {
     /// A list of ExportSummary objects.
     public var exportSummaries: [DynamoDBClientTypes.ExportSummary]?
     /// If this value is returned, there are additional results to be displayed. To retrieve them, call ListExports again, with NextToken set to this value.
@@ -5409,7 +5410,7 @@ public struct ListExportsOutput {
     }
 }
 
-public struct ListGlobalTablesInput {
+public struct ListGlobalTablesInput: Swift.Sendable {
     /// The first global table name that this operation will evaluate.
     public var exclusiveStartGlobalTableName: Swift.String?
     /// The maximum number of table names to return, if the parameter is not specified DynamoDB defaults to 100. If the number of global tables DynamoDB finds reaches this limit, it stops the operation and returns the table names collected up to that point, with a table name in the LastEvaluatedGlobalTableName to apply in a subsequent operation to the ExclusiveStartGlobalTableName parameter.
@@ -5430,8 +5431,9 @@ public struct ListGlobalTablesInput {
 }
 
 extension DynamoDBClientTypes {
+
     /// Represents the properties of a global table.
-    public struct GlobalTable {
+    public struct GlobalTable: Swift.Sendable {
         /// The global table name.
         public var globalTableName: Swift.String?
         /// The Regions where the global table has replicas.
@@ -5446,10 +5448,9 @@ extension DynamoDBClientTypes {
             self.replicationGroup = replicationGroup
         }
     }
-
 }
 
-public struct ListGlobalTablesOutput {
+public struct ListGlobalTablesOutput: Swift.Sendable {
     /// List of global table names.
     public var globalTables: [DynamoDBClientTypes.GlobalTable]?
     /// Last evaluated global table name.
@@ -5465,7 +5466,7 @@ public struct ListGlobalTablesOutput {
     }
 }
 
-public struct ListImportsInput {
+public struct ListImportsInput: Swift.Sendable {
     /// An optional string that, if supplied, must be copied from the output of a previous call to ListImports. When provided in this manner, the API fetches the next page of results.
     public var nextToken: Swift.String?
     /// The number of ImportSummary objects returned in a single page.
@@ -5486,8 +5487,9 @@ public struct ListImportsInput {
 }
 
 extension DynamoDBClientTypes {
+
     /// Summary information about the source file for the import.
-    public struct ImportSummary {
+    public struct ImportSummary: Swift.Sendable {
         /// The Amazon Resource Number (ARN) of the Cloudwatch Log Group associated with this import task.
         public var cloudWatchLogGroupArn: Swift.String?
         /// The time at which this import task ended. (Does this include the successful complete creation of the table it was imported to?)
@@ -5526,10 +5528,9 @@ extension DynamoDBClientTypes {
             self.tableArn = tableArn
         }
     }
-
 }
 
-public struct ListImportsOutput {
+public struct ListImportsOutput: Swift.Sendable {
     /// A list of ImportSummary objects.
     public var importSummaryList: [DynamoDBClientTypes.ImportSummary]?
     /// If this value is returned, there are additional results to be displayed. To retrieve them, call ListImports again, with NextToken set to this value.
@@ -5546,7 +5547,7 @@ public struct ListImportsOutput {
 }
 
 /// Represents the input of a ListTables operation.
-public struct ListTablesInput {
+public struct ListTablesInput: Swift.Sendable {
     /// The first table name that this operation will evaluate. Use the value that was returned for LastEvaluatedTableName in a previous operation, so that you can obtain the next page of results.
     public var exclusiveStartTableName: Swift.String?
     /// A maximum number of table names to return. If this parameter is not specified, the limit is 100.
@@ -5563,7 +5564,7 @@ public struct ListTablesInput {
 }
 
 /// Represents the output of a ListTables operation.
-public struct ListTablesOutput {
+public struct ListTablesOutput: Swift.Sendable {
     /// The name of the last table in the current page of results. Use this value as the ExclusiveStartTableName in a new request to obtain the next page of results, until all the table names are returned. If you do not receive a LastEvaluatedTableName value in the response, this means that there are no more table names to be retrieved.
     public var lastEvaluatedTableName: Swift.String?
     /// The names of the tables associated with the current account at the current endpoint. The maximum size of this array is 100. If LastEvaluatedTableName also appears in the output, you can use this value as the ExclusiveStartTableName parameter in a subsequent ListTables request and obtain the next page of results.
@@ -5579,7 +5580,7 @@ public struct ListTablesOutput {
     }
 }
 
-public struct ListTagsOfResourceInput {
+public struct ListTagsOfResourceInput: Swift.Sendable {
     /// An optional string that, if supplied, must be copied from the output of a previous call to ListTagOfResource. When provided in this manner, this API fetches the next page of results.
     public var nextToken: Swift.String?
     /// The Amazon DynamoDB resource with tags to be listed. This value is an Amazon Resource Name (ARN).
@@ -5596,7 +5597,7 @@ public struct ListTagsOfResourceInput {
     }
 }
 
-public struct ListTagsOfResourceOutput {
+public struct ListTagsOfResourceOutput: Swift.Sendable {
     /// If this value is returned, there are additional results to be displayed. To retrieve them, call ListTagsOfResource again, with NextToken set to this value.
     public var nextToken: Swift.String?
     /// The tags currently associated with the Amazon DynamoDB resource.
@@ -5612,7 +5613,7 @@ public struct ListTagsOfResourceOutput {
     }
 }
 
-public struct PutResourcePolicyInput {
+public struct PutResourcePolicyInput: Swift.Sendable {
     /// Set this parameter to true to confirm that you want to remove your permissions to change the policy of this resource in the future.
     public var confirmRemoveSelfResourceAccess: Swift.Bool?
     /// A string value that you can use to conditionally update your policy. You can provide the revision ID of your existing policy to make mutating requests against that policy. When you provide an expected revision ID, if the revision ID of the existing policy on the resource doesn't match or if there's no policy attached to the resource, your request will be rejected with a PolicyNotFoundException. To conditionally attach a policy when no policy exists for the resource, specify NO_POLICY for the revision ID.
@@ -5645,7 +5646,7 @@ public struct PutResourcePolicyInput {
     }
 }
 
-public struct PutResourcePolicyOutput {
+public struct PutResourcePolicyOutput: Swift.Sendable {
     /// A unique string that represents the revision ID of the policy. If you're comparing revision IDs, make sure to always use string comparison logic.
     public var revisionId: Swift.String?
 
@@ -5659,7 +5660,7 @@ public struct PutResourcePolicyOutput {
 
 extension DynamoDBClientTypes {
 
-    public enum Select: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Select: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case allAttributes
         case allProjectedAttributes
         case count
@@ -5716,7 +5717,7 @@ public struct TableAlreadyExistsException: ClientRuntime.ModeledError, AWSClient
     }
 }
 
-public struct RestoreTableFromBackupInput {
+public struct RestoreTableFromBackupInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) associated with the backup.
     /// This member is required.
     public var backupArn: Swift.String?
@@ -5758,7 +5759,7 @@ public struct RestoreTableFromBackupInput {
     }
 }
 
-public struct RestoreTableFromBackupOutput {
+public struct RestoreTableFromBackupOutput: Swift.Sendable {
     /// The description of the table created from an existing backup.
     public var tableDescription: DynamoDBClientTypes.TableDescription?
 
@@ -5794,7 +5795,7 @@ public struct InvalidRestoreTimeException: ClientRuntime.ModeledError, AWSClient
     }
 }
 
-public struct RestoreTableToPointInTimeInput {
+public struct RestoreTableToPointInTimeInput: Swift.Sendable {
     /// The billing mode of the restored table.
     public var billingModeOverride: DynamoDBClientTypes.BillingMode?
     /// List of global secondary indexes for the restored table. The indexes provided should match existing secondary indexes. You can choose to exclude some or all of the indexes at the time of restore.
@@ -5847,7 +5848,7 @@ public struct RestoreTableToPointInTimeInput {
     }
 }
 
-public struct RestoreTableToPointInTimeOutput {
+public struct RestoreTableToPointInTimeOutput: Swift.Sendable {
     /// Represents the properties of a table.
     public var tableDescription: DynamoDBClientTypes.TableDescription?
 
@@ -5859,7 +5860,7 @@ public struct RestoreTableToPointInTimeOutput {
     }
 }
 
-public struct TagResourceInput {
+public struct TagResourceInput: Swift.Sendable {
     /// Identifies the Amazon DynamoDB resource to which tags should be added. This value is an Amazon Resource Name (ARN).
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -5877,7 +5878,7 @@ public struct TagResourceInput {
     }
 }
 
-public struct UntagResourceInput {
+public struct UntagResourceInput: Swift.Sendable {
     /// The DynamoDB resource that the tags will be removed from. This value is an Amazon Resource Name (ARN).
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -5896,8 +5897,9 @@ public struct UntagResourceInput {
 }
 
 extension DynamoDBClientTypes {
+
     /// Represents the settings used to enable point in time recovery.
-    public struct PointInTimeRecoverySpecification {
+    public struct PointInTimeRecoverySpecification: Swift.Sendable {
         /// Indicates whether point in time recovery is enabled (true) or disabled (false) on the table.
         /// This member is required.
         public var pointInTimeRecoveryEnabled: Swift.Bool?
@@ -5909,10 +5911,9 @@ extension DynamoDBClientTypes {
             self.pointInTimeRecoveryEnabled = pointInTimeRecoveryEnabled
         }
     }
-
 }
 
-public struct UpdateContinuousBackupsInput {
+public struct UpdateContinuousBackupsInput: Swift.Sendable {
     /// Represents the settings used to enable point in time recovery.
     /// This member is required.
     public var pointInTimeRecoverySpecification: DynamoDBClientTypes.PointInTimeRecoverySpecification?
@@ -5930,7 +5931,7 @@ public struct UpdateContinuousBackupsInput {
     }
 }
 
-public struct UpdateContinuousBackupsOutput {
+public struct UpdateContinuousBackupsOutput: Swift.Sendable {
     /// Represents the continuous backups and point in time recovery settings on the table.
     public var continuousBackupsDescription: DynamoDBClientTypes.ContinuousBackupsDescription?
 
@@ -5942,7 +5943,7 @@ public struct UpdateContinuousBackupsOutput {
     }
 }
 
-public struct UpdateContributorInsightsInput {
+public struct UpdateContributorInsightsInput: Swift.Sendable {
     /// Represents the contributor insights action.
     /// This member is required.
     public var contributorInsightsAction: DynamoDBClientTypes.ContributorInsightsAction?
@@ -5964,7 +5965,7 @@ public struct UpdateContributorInsightsInput {
     }
 }
 
-public struct UpdateContributorInsightsOutput {
+public struct UpdateContributorInsightsOutput: Swift.Sendable {
     /// The status of contributor insights
     public var contributorInsightsStatus: DynamoDBClientTypes.ContributorInsightsStatus?
     /// The name of the global secondary index, if applicable.
@@ -6033,6 +6034,7 @@ public struct ReplicaNotFoundException: ClientRuntime.ModeledError, AWSClientRun
 }
 
 extension DynamoDBClientTypes {
+
     /// Represents one of the following:
     ///
     /// * A new replica to be added to an existing global table.
@@ -6040,7 +6042,7 @@ extension DynamoDBClientTypes {
     /// * New parameters for an existing replica.
     ///
     /// * An existing replica to be removed from an existing global table.
-    public struct ReplicaUpdate {
+    public struct ReplicaUpdate: Swift.Sendable {
         /// The parameters required for creating a replica on an existing global table.
         public var create: DynamoDBClientTypes.CreateReplicaAction?
         /// The name of the existing replica to be removed.
@@ -6055,10 +6057,9 @@ extension DynamoDBClientTypes {
             self.delete = delete
         }
     }
-
 }
 
-public struct UpdateGlobalTableInput {
+public struct UpdateGlobalTableInput: Swift.Sendable {
     /// The global table name.
     /// This member is required.
     public var globalTableName: Swift.String?
@@ -6076,7 +6077,7 @@ public struct UpdateGlobalTableInput {
     }
 }
 
-public struct UpdateGlobalTableOutput {
+public struct UpdateGlobalTableOutput: Swift.Sendable {
     /// Contains the details of the global table.
     public var globalTableDescription: DynamoDBClientTypes.GlobalTableDescription?
 
@@ -6113,8 +6114,9 @@ public struct IndexNotFoundException: ClientRuntime.ModeledError, AWSClientRunti
 }
 
 extension DynamoDBClientTypes {
+
     /// Represents the settings of a global secondary index for a global table that will be modified.
-    public struct GlobalTableGlobalSecondaryIndexSettingsUpdate {
+    public struct GlobalTableGlobalSecondaryIndexSettingsUpdate: Swift.Sendable {
         /// The name of the global secondary index. The name must be unique among all other indexes on this table.
         /// This member is required.
         public var indexName: Swift.String?
@@ -6134,12 +6136,12 @@ extension DynamoDBClientTypes {
             self.provisionedWriteCapacityUnits = provisionedWriteCapacityUnits
         }
     }
-
 }
 
 extension DynamoDBClientTypes {
+
     /// Represents the settings of a global secondary index for a global table that will be modified.
-    public struct ReplicaGlobalSecondaryIndexSettingsUpdate {
+    public struct ReplicaGlobalSecondaryIndexSettingsUpdate: Swift.Sendable {
         /// The name of the global secondary index. The name must be unique among all other indexes on this table.
         /// This member is required.
         public var indexName: Swift.String?
@@ -6159,12 +6161,12 @@ extension DynamoDBClientTypes {
             self.provisionedReadCapacityUnits = provisionedReadCapacityUnits
         }
     }
-
 }
 
 extension DynamoDBClientTypes {
+
     /// Represents the settings for a global table in a Region that will be modified.
-    public struct ReplicaSettingsUpdate {
+    public struct ReplicaSettingsUpdate: Swift.Sendable {
         /// The Region of the replica to be added.
         /// This member is required.
         public var regionName: Swift.String?
@@ -6192,10 +6194,9 @@ extension DynamoDBClientTypes {
             self.replicaTableClass = replicaTableClass
         }
     }
-
 }
 
-public struct UpdateGlobalTableSettingsInput {
+public struct UpdateGlobalTableSettingsInput: Swift.Sendable {
     /// The billing mode of the global table. If GlobalTableBillingMode is not specified, the global table defaults to PROVISIONED capacity billing mode.
     ///
     /// * PROVISIONED - We recommend using PROVISIONED for predictable workloads. PROVISIONED sets the billing mode to [Provisioned capacity mode](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/provisioned-capacity-mode.html).
@@ -6232,7 +6233,7 @@ public struct UpdateGlobalTableSettingsInput {
     }
 }
 
-public struct UpdateGlobalTableSettingsOutput {
+public struct UpdateGlobalTableSettingsOutput: Swift.Sendable {
     /// The name of the global table.
     public var globalTableName: Swift.String?
     /// The Region-specific settings for the global table.
@@ -6249,8 +6250,9 @@ public struct UpdateGlobalTableSettingsOutput {
 }
 
 extension DynamoDBClientTypes {
+
     /// Enables updating the configuration for Kinesis Streaming.
-    public struct UpdateKinesisStreamingConfiguration {
+    public struct UpdateKinesisStreamingConfiguration: Swift.Sendable {
         /// Enables updating the precision of Kinesis data stream timestamp.
         public var approximateCreationDateTimePrecision: DynamoDBClientTypes.ApproximateCreationDateTimePrecision?
 
@@ -6261,10 +6263,9 @@ extension DynamoDBClientTypes {
             self.approximateCreationDateTimePrecision = approximateCreationDateTimePrecision
         }
     }
-
 }
 
-public struct UpdateKinesisStreamingDestinationInput {
+public struct UpdateKinesisStreamingDestinationInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) for the Kinesis stream input.
     /// This member is required.
     public var streamArn: Swift.String?
@@ -6286,7 +6287,7 @@ public struct UpdateKinesisStreamingDestinationInput {
     }
 }
 
-public struct UpdateKinesisStreamingDestinationOutput {
+public struct UpdateKinesisStreamingDestinationOutput: Swift.Sendable {
     /// The status of the attempt to update the Kinesis streaming destination output.
     public var destinationStatus: DynamoDBClientTypes.DestinationStatus?
     /// The ARN for the Kinesis stream input.
@@ -6311,8 +6312,9 @@ public struct UpdateKinesisStreamingDestinationOutput {
 }
 
 extension DynamoDBClientTypes {
+
     /// Represents the new provisioned throughput settings to be applied to a global secondary index.
-    public struct UpdateGlobalSecondaryIndexAction {
+    public struct UpdateGlobalSecondaryIndexAction: Swift.Sendable {
         /// The name of the global secondary index to be updated.
         /// This member is required.
         public var indexName: Swift.String?
@@ -6332,10 +6334,10 @@ extension DynamoDBClientTypes {
             self.provisionedThroughput = provisionedThroughput
         }
     }
-
 }
 
 extension DynamoDBClientTypes {
+
     /// Represents one of the following:
     ///
     /// * A new global secondary index to be added to an existing table.
@@ -6343,7 +6345,7 @@ extension DynamoDBClientTypes {
     /// * New provisioned throughput parameters for an existing global secondary index.
     ///
     /// * An existing global secondary index to be removed from an existing table.
-    public struct GlobalSecondaryIndexUpdate {
+    public struct GlobalSecondaryIndexUpdate: Swift.Sendable {
         /// The parameters required for creating a global secondary index on an existing table:
         ///
         /// * IndexName
@@ -6372,12 +6374,12 @@ extension DynamoDBClientTypes {
             self.update = update
         }
     }
-
 }
 
 extension DynamoDBClientTypes {
+
     /// Represents a replica to be modified.
-    public struct UpdateReplicationGroupMemberAction {
+    public struct UpdateReplicationGroupMemberAction: Swift.Sendable {
         /// Replica-specific global secondary index settings.
         public var globalSecondaryIndexes: [DynamoDBClientTypes.ReplicaGlobalSecondaryIndex]?
         /// The KMS key of the replica that should be used for KMS encryption. To specify a key, use its key ID, Amazon Resource Name (ARN), alias name, or alias ARN. Note that you should only provide this parameter if the key is different from the default DynamoDB KMS key alias/aws/dynamodb.
@@ -6409,10 +6411,10 @@ extension DynamoDBClientTypes {
             self.tableClassOverride = tableClassOverride
         }
     }
-
 }
 
 extension DynamoDBClientTypes {
+
     /// Represents one of the following:
     ///
     /// * A new replica to be added to an existing regional table or global table. This request invokes the CreateTableReplica action in the destination Region.
@@ -6423,7 +6425,7 @@ extension DynamoDBClientTypes {
     ///
     ///
     /// When you manually remove a table or global table replica, you do not automatically remove any associated scalable targets, scaling policies, or CloudWatch alarms.
-    public struct ReplicationGroupUpdate {
+    public struct ReplicationGroupUpdate: Swift.Sendable {
         /// The parameters required for creating a replica for the table.
         public var create: DynamoDBClientTypes.CreateReplicationGroupMemberAction?
         /// The parameters required for deleting a replica for the table.
@@ -6442,11 +6444,10 @@ extension DynamoDBClientTypes {
             self.update = update
         }
     }
-
 }
 
 /// Represents the input of an UpdateTable operation.
-public struct UpdateTableInput {
+public struct UpdateTableInput: Swift.Sendable {
     /// An array of attributes that describe the key schema for the table and indexes. If you are adding a new global secondary index to the table, AttributeDefinitions must include the key element(s) of the new index.
     public var attributeDefinitions: [DynamoDBClientTypes.AttributeDefinition]?
     /// Controls how you are charged for read and write throughput and how you manage capacity. When switching from pay-per-request to provisioned capacity, initial provisioned capacity values must be set. The initial provisioned capacity values are estimated based on the consumed read and write capacity of your table and global secondary indexes over the past 30 minutes.
@@ -6513,7 +6514,7 @@ public struct UpdateTableInput {
 }
 
 /// Represents the output of an UpdateTable operation.
-public struct UpdateTableOutput {
+public struct UpdateTableOutput: Swift.Sendable {
     /// Represents the properties of the table.
     public var tableDescription: DynamoDBClientTypes.TableDescription?
 
@@ -6526,8 +6527,9 @@ public struct UpdateTableOutput {
 }
 
 extension DynamoDBClientTypes {
+
     /// Represents the auto scaling settings of a global secondary index for a global table that will be modified.
-    public struct GlobalSecondaryIndexAutoScalingUpdate {
+    public struct GlobalSecondaryIndexAutoScalingUpdate: Swift.Sendable {
         /// The name of the global secondary index.
         public var indexName: Swift.String?
         /// Represents the auto scaling settings to be modified for a global table or global secondary index.
@@ -6542,12 +6544,12 @@ extension DynamoDBClientTypes {
             self.provisionedWriteCapacityAutoScalingUpdate = provisionedWriteCapacityAutoScalingUpdate
         }
     }
-
 }
 
 extension DynamoDBClientTypes {
+
     /// Represents the auto scaling settings of a global secondary index for a replica that will be modified.
-    public struct ReplicaGlobalSecondaryIndexAutoScalingUpdate {
+    public struct ReplicaGlobalSecondaryIndexAutoScalingUpdate: Swift.Sendable {
         /// The name of the global secondary index.
         public var indexName: Swift.String?
         /// Represents the auto scaling settings to be modified for a global table or global secondary index.
@@ -6562,12 +6564,12 @@ extension DynamoDBClientTypes {
             self.provisionedReadCapacityAutoScalingUpdate = provisionedReadCapacityAutoScalingUpdate
         }
     }
-
 }
 
 extension DynamoDBClientTypes {
+
     /// Represents the auto scaling settings of a replica that will be modified.
-    public struct ReplicaAutoScalingUpdate {
+    public struct ReplicaAutoScalingUpdate: Swift.Sendable {
         /// The Region where the replica exists.
         /// This member is required.
         public var regionName: Swift.String?
@@ -6587,10 +6589,9 @@ extension DynamoDBClientTypes {
             self.replicaProvisionedReadCapacityAutoScalingUpdate = replicaProvisionedReadCapacityAutoScalingUpdate
         }
     }
-
 }
 
-public struct UpdateTableReplicaAutoScalingInput {
+public struct UpdateTableReplicaAutoScalingInput: Swift.Sendable {
     /// Represents the auto scaling settings of the global secondary indexes of the replica to be updated.
     public var globalSecondaryIndexUpdates: [DynamoDBClientTypes.GlobalSecondaryIndexAutoScalingUpdate]?
     /// Represents the auto scaling settings to be modified for a global table or global secondary index.
@@ -6615,7 +6616,7 @@ public struct UpdateTableReplicaAutoScalingInput {
     }
 }
 
-public struct UpdateTableReplicaAutoScalingOutput {
+public struct UpdateTableReplicaAutoScalingOutput: Swift.Sendable {
     /// Returns information about the auto scaling settings of a table with replicas.
     public var tableAutoScalingDescription: DynamoDBClientTypes.TableAutoScalingDescription?
 
@@ -6628,8 +6629,9 @@ public struct UpdateTableReplicaAutoScalingOutput {
 }
 
 extension DynamoDBClientTypes {
+
     /// Represents the settings used to enable or disable Time to Live (TTL) for the specified table.
-    public struct TimeToLiveSpecification {
+    public struct TimeToLiveSpecification: Swift.Sendable {
         /// The name of the TTL attribute used to store the expiration time for items in the table.
         /// This member is required.
         public var attributeName: Swift.String?
@@ -6646,11 +6648,10 @@ extension DynamoDBClientTypes {
             self.enabled = enabled
         }
     }
-
 }
 
 /// Represents the input of an UpdateTimeToLive operation.
-public struct UpdateTimeToLiveInput {
+public struct UpdateTimeToLiveInput: Swift.Sendable {
     /// The name of the table to be configured. You can also provide the Amazon Resource Name (ARN) of the table in this parameter.
     /// This member is required.
     public var tableName: Swift.String?
@@ -6668,7 +6669,7 @@ public struct UpdateTimeToLiveInput {
     }
 }
 
-public struct UpdateTimeToLiveOutput {
+public struct UpdateTimeToLiveOutput: Swift.Sendable {
     /// Represents the output of an UpdateTimeToLive operation.
     public var timeToLiveSpecification: DynamoDBClientTypes.TimeToLiveSpecification?
 
@@ -6681,8 +6682,9 @@ public struct UpdateTimeToLiveOutput {
 }
 
 extension DynamoDBClientTypes {
+
     /// Represents the data for an attribute. Each attribute value is described as a name-value pair. The name is the data type, and the value is the data itself. For more information, see [Data Types](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/HowItWorks.NamingRulesDataTypes.html#HowItWorks.DataTypes) in the Amazon DynamoDB Developer Guide.
-    public indirect enum AttributeValue : Swift.Equatable {
+    public indirect enum AttributeValue: Swift.Sendable, Swift.Equatable {
         /// An attribute of type String. For example: "S": "Hello"
         case s(Swift.String)
         /// An attribute of type Number. For example: "N": "123.45" Numbers are sent across the network to DynamoDB as strings, to maximize compatibility across languages and libraries. However, DynamoDB treats them as number type attributes for mathematical operations.
@@ -6705,12 +6707,12 @@ extension DynamoDBClientTypes {
         case bool(Swift.Bool)
         case sdkUnknown(Swift.String)
     }
-
 }
 
 extension DynamoDBClientTypes {
+
     /// For the UpdateItem operation, represents the attributes to be modified, the action to perform on each, and the new value for each. You cannot use UpdateItem to update any primary key attributes. Instead, you will need to delete the item, and then use PutItem to create a new item with new attributes. Attribute values cannot be null; string and binary type attributes must have lengths greater than zero; and set type attributes must not be empty. Requests with empty values will be rejected with a ValidationException exception.
-    public struct AttributeValueUpdate {
+    public struct AttributeValueUpdate: Swift.Sendable {
         /// Specifies how to perform the update. Valid values are PUT (default), DELETE, and ADD. The behavior depends on whether the specified primary key already exists in the table. If an item with the specified Key is found in the table:
         ///
         /// * PUT - Adds the specified attribute to the item. If the attribute already exists, it is replaced by the new value.
@@ -6747,12 +6749,12 @@ extension DynamoDBClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension DynamoDBClientTypes {
+
     /// An error associated with a statement in a PartiQL batch that was run.
-    public struct BatchStatementError {
+    public struct BatchStatementError: Swift.Sendable {
         /// The error code associated with the failed PartiQL batch statement.
         public var code: DynamoDBClientTypes.BatchStatementErrorCodeEnum?
         /// The item which caused the condition check to fail. This will be set if ReturnValuesOnConditionCheckFailure is specified as ALL_OLD.
@@ -6771,12 +6773,12 @@ extension DynamoDBClientTypes {
             self.message = message
         }
     }
-
 }
 
 extension DynamoDBClientTypes {
+
     /// A PartiQL batch statement request.
-    public struct BatchStatementRequest {
+    public struct BatchStatementRequest: Swift.Sendable {
         /// The read consistency of the PartiQL batch request.
         public var consistentRead: Swift.Bool?
         /// The parameters associated with a PartiQL statement in the batch request.
@@ -6800,12 +6802,12 @@ extension DynamoDBClientTypes {
             self.statement = statement
         }
     }
-
 }
 
 extension DynamoDBClientTypes {
+
     /// An ordered list of errors for each item in the request which caused the transaction to get cancelled. The values of the list are ordered according to the ordering of the TransactWriteItems request parameter. If no error occurred for the associated item an error with a Null code and Null message will be present.
-    public struct CancellationReason {
+    public struct CancellationReason: Swift.Sendable {
         /// Status code for the result of the cancelled transaction.
         public var code: Swift.String?
         /// Item in the request which caused the transaction to get cancelled.
@@ -6824,16 +6826,16 @@ extension DynamoDBClientTypes {
             self.message = message
         }
     }
-
 }
 
 extension DynamoDBClientTypes {
+
     /// Represents the selection criteria for a Query or Scan operation:
     ///
     /// * For a Query operation, Condition is used for specifying the KeyConditions to use when querying a table or an index. For KeyConditions, only the following comparison operators are supported: EQ | LE | LT | GE | GT | BEGINS_WITH | BETWEENCondition is also used in a QueryFilter, which evaluates the query results and returns only the desired values.
     ///
     /// * For a Scan operation, Condition is used in a ScanFilter, which evaluates the scan results and returns only the desired values.
-    public struct Condition {
+    public struct Condition: Swift.Sendable {
         /// One or more values to evaluate against the supplied attribute. The number of values in the list depends on the ComparisonOperator being used. For type Number, value comparisons are numeric. String value comparisons for greater than, equals, or less than are based on ASCII character code values. For example, a is greater than A, and a is greater than B. For a list of code values, see [http://en.wikipedia.org/wiki/ASCII#ASCII_printable_characters](http://en.wikipedia.org/wiki/ASCII#ASCII_printable_characters). For Binary, DynamoDB treats each byte of the binary data as unsigned when it compares binary values.
         public var attributeValueList: [DynamoDBClientTypes.AttributeValue]?
         /// A comparator for evaluating attributes. For example, equals, greater than, less than, etc. The following comparison operators are available: EQ | NE | LE | LT | GE | GT | NOT_NULL | NULL | CONTAINS | NOT_CONTAINS | BEGINS_WITH | IN | BETWEEN The following are descriptions of each comparison operator.
@@ -6878,7 +6880,6 @@ extension DynamoDBClientTypes {
             self.comparisonOperator = comparisonOperator
         }
     }
-
 }
 
 /// A condition specified in the operation could not be evaluated.
@@ -6911,8 +6912,9 @@ public struct ConditionalCheckFailedException: ClientRuntime.ModeledError, AWSCl
 }
 
 extension DynamoDBClientTypes {
+
     /// Represents a request to perform a DeleteItem operation on an item.
-    public struct DeleteRequest {
+    public struct DeleteRequest: Swift.Sendable {
         /// A map of attribute name to attribute values, representing the primary key of the item to delete. All of the table's primary key attributes must be specified, and their data types must match those of the table's key schema.
         /// This member is required.
         public var key: [Swift.String: DynamoDBClientTypes.AttributeValue]?
@@ -6924,12 +6926,12 @@ extension DynamoDBClientTypes {
             self.key = key
         }
     }
-
 }
 
 extension DynamoDBClientTypes {
+
     /// Specifies an item and related attribute values to retrieve in a TransactGetItem object.
-    public struct Get {
+    public struct Get: Swift.Sendable {
         /// One or more substitution tokens for attribute names in the ProjectionExpression parameter.
         public var expressionAttributeNames: [Swift.String: Swift.String]?
         /// A map of attribute names to AttributeValue objects that specifies the primary key of the item to retrieve.
@@ -6954,12 +6956,12 @@ extension DynamoDBClientTypes {
             self.tableName = tableName
         }
     }
-
 }
 
 extension DynamoDBClientTypes {
+
     /// Information about item collections, if any, that were affected by the operation. ItemCollectionMetrics is only returned if the request asked for it. If the table does not have any local secondary indexes, this information is not returned in the response.
-    public struct ItemCollectionMetrics {
+    public struct ItemCollectionMetrics: Swift.Sendable {
         /// The partition key value of the item collection. This value is the same as the partition key value of the item.
         public var itemCollectionKey: [Swift.String: DynamoDBClientTypes.AttributeValue]?
         /// An estimate of item collection size, in gigabytes. This value is a two-element array containing a lower bound and an upper bound for the estimate. The estimate includes the size of all the items in the table, plus the size of all attributes projected into all of the local secondary indexes on that table. Use this estimate to measure whether a local secondary index is approaching its size limit. The estimate is subject to change over time; therefore, do not rely on the precision or accuracy of the estimate.
@@ -6974,12 +6976,12 @@ extension DynamoDBClientTypes {
             self.sizeEstimateRangeGB = sizeEstimateRangeGB
         }
     }
-
 }
 
 extension DynamoDBClientTypes {
+
     /// Details for the requested item.
-    public struct ItemResponse {
+    public struct ItemResponse: Swift.Sendable {
         /// Map of attribute data consisting of the data type and attribute value.
         public var item: [Swift.String: DynamoDBClientTypes.AttributeValue]?
 
@@ -6990,12 +6992,12 @@ extension DynamoDBClientTypes {
             self.item = item
         }
     }
-
 }
 
 extension DynamoDBClientTypes {
+
     /// Represents a PartiQL statement that uses parameters.
-    public struct ParameterizedStatement {
+    public struct ParameterizedStatement: Swift.Sendable {
         /// The parameter values.
         public var parameters: [DynamoDBClientTypes.AttributeValue]?
         /// An optional parameter that returns the item attributes for a PartiQL ParameterizedStatement operation that failed a condition check. There is no additional cost associated with requesting a return value aside from the small network and processing overhead of receiving a larger response. No read capacity units are consumed.
@@ -7015,12 +7017,12 @@ extension DynamoDBClientTypes {
             self.statement = statement
         }
     }
-
 }
 
 extension DynamoDBClientTypes {
+
     /// Represents a request to perform a PutItem operation on an item.
-    public struct PutRequest {
+    public struct PutRequest: Swift.Sendable {
         /// A map of attribute name to attribute values, representing the primary key of an item to be processed by PutItem. All of the table's primary key attributes must be specified, and their data types must match those of the table's key schema. If any attributes are present in the item that are part of an index key schema for the table, their types must match the index key schema.
         /// This member is required.
         public var item: [Swift.String: DynamoDBClientTypes.AttributeValue]?
@@ -7032,10 +7034,9 @@ extension DynamoDBClientTypes {
             self.item = item
         }
     }
-
 }
 
-public struct ExecuteStatementInput {
+public struct ExecuteStatementInput: Swift.Sendable {
     /// The consistency of a read operation. If set to true, then a strongly consistent read is used; otherwise, an eventually consistent read is used.
     public var consistentRead: Swift.Bool?
     /// The maximum number of items to evaluate (not necessarily the number of matching items). If DynamoDB processes the number of items up to the limit while processing the results, it stops the operation and returns the matching values up to that point, along with a key in LastEvaluatedKey to apply in a subsequent operation so you can pick up where you left off. Also, if the processed dataset size exceeds 1 MB before DynamoDB reaches this limit, it stops the operation and returns the matching values up to the limit, and a key in LastEvaluatedKey to apply in a subsequent operation to continue the operation.
@@ -7079,7 +7080,7 @@ public struct ExecuteStatementInput {
 }
 
 /// Represents the input of a GetItem operation.
-public struct GetItemInput {
+public struct GetItemInput: Swift.Sendable {
     /// This is a legacy parameter. Use ProjectionExpression instead. For more information, see [AttributesToGet](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/LegacyConditionalParameters.AttributesToGet.html) in the Amazon DynamoDB Developer Guide.
     public var attributesToGet: [Swift.String]?
     /// Determines the read consistency model: If set to true, then the operation uses strongly consistent reads; otherwise, the operation uses eventually consistent reads.
@@ -7148,7 +7149,7 @@ public struct GetItemInput {
 }
 
 /// Represents the output of a GetItem operation.
-public struct GetItemOutput {
+public struct GetItemOutput: Swift.Sendable {
     /// The capacity units consumed by the GetItem operation. The data returned includes the total provisioned throughput consumed, along with statistics for the table and any indexes involved in the operation. ConsumedCapacity is only returned if the ReturnConsumedCapacity parameter was specified. For more information, see [Capacity unit consumption for read operations](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/read-write-operations.html#read-operation-consumption) in the Amazon DynamoDB Developer Guide.
     public var consumedCapacity: DynamoDBClientTypes.ConsumedCapacity?
     /// A map of attribute names to AttributeValue objects, as specified by ProjectionExpression.
@@ -7165,8 +7166,9 @@ public struct GetItemOutput {
 }
 
 extension DynamoDBClientTypes {
+
     /// Represents a set of primary keys and, for each key, the attributes to retrieve from the table. For each primary key, you must provide all of the key attributes. For example, with a simple primary key, you only need to provide the partition key. For a composite primary key, you must provide both the partition key and the sort key.
-    public struct KeysAndAttributes {
+    public struct KeysAndAttributes: Swift.Sendable {
         /// This is a legacy parameter. Use ProjectionExpression instead. For more information, see [Legacy Conditional Parameters](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/LegacyConditionalParameters.html) in the Amazon DynamoDB Developer Guide.
         public var attributesToGet: [Swift.String]?
         /// The consistency of a read operation. If set to true, then a strongly consistent read is used; otherwise, an eventually consistent read is used.
@@ -7218,12 +7220,12 @@ extension DynamoDBClientTypes {
             self.projectionExpression = projectionExpression
         }
     }
-
 }
 
 extension DynamoDBClientTypes {
+
     /// Specifies an item to be retrieved as part of the transaction.
-    public struct TransactGetItem {
+    public struct TransactGetItem: Swift.Sendable {
         /// Contains the primary key that identifies the item to get, together with the name of the table that contains the item, and optionally the specific attributes of the item to retrieve.
         /// This member is required.
         public var `get`: DynamoDBClientTypes.Get?
@@ -7235,7 +7237,6 @@ extension DynamoDBClientTypes {
             self.`get` = `get`
         }
     }
-
 }
 
 /// The entire transaction request was canceled. DynamoDB cancels a TransactWriteItems request under the following circumstances:
@@ -7388,7 +7389,7 @@ public struct TransactionCanceledException: ClientRuntime.ModeledError, AWSClien
     }
 }
 
-public struct BatchExecuteStatementInput {
+public struct BatchExecuteStatementInput: Swift.Sendable {
     /// Determines the level of detail about either provisioned or on-demand throughput consumption that is returned in the response:
     ///
     /// * INDEXES - The response includes the aggregate ConsumedCapacity for the operation, together with ConsumedCapacity for each table and secondary index that was accessed. Note that some operations, such as GetItem and BatchGetItem, do not access any indexes at all. In these cases, specifying INDEXES will only return ConsumedCapacity information for table(s).
@@ -7411,7 +7412,7 @@ public struct BatchExecuteStatementInput {
     }
 }
 
-public struct ExecuteTransactionInput {
+public struct ExecuteTransactionInput: Swift.Sendable {
     /// Set this value to get remaining results, if NextToken was returned in the statement response.
     public var clientRequestToken: Swift.String?
     /// Determines the level of detail about either provisioned or on-demand throughput consumption that is returned in the response. For more information, see [TransactGetItems](https://docs.aws.amazon.com/amazondynamodb/latest/APIReference/API_TransactGetItems.html) and [TransactWriteItems](https://docs.aws.amazon.com/amazondynamodb/latest/APIReference/API_TransactWriteItems.html).
@@ -7432,7 +7433,7 @@ public struct ExecuteTransactionInput {
     }
 }
 
-public struct ExecuteTransactionOutput {
+public struct ExecuteTransactionOutput: Swift.Sendable {
     /// The capacity units consumed by the entire operation. The values of the list are ordered according to the ordering of the statements.
     public var consumedCapacity: [DynamoDBClientTypes.ConsumedCapacity]?
     /// The response to a PartiQL transaction.
@@ -7448,7 +7449,7 @@ public struct ExecuteTransactionOutput {
     }
 }
 
-public struct TransactGetItemsOutput {
+public struct TransactGetItemsOutput: Swift.Sendable {
     /// If the ReturnConsumedCapacity value was TOTAL, this is an array of ConsumedCapacity objects, one for each table addressed by TransactGetItem objects in the TransactItems parameter. These ConsumedCapacity objects report the read-capacity units consumed by the TransactGetItems call in that table.
     public var consumedCapacity: [DynamoDBClientTypes.ConsumedCapacity]?
     /// An ordered array of up to 100 ItemResponse objects, each of which corresponds to the TransactGetItem object in the same position in the TransactItems array. Each ItemResponse object contains a Map of the name-value pairs that are the projected attributes of the requested item. If a requested item could not be retrieved, the corresponding ItemResponse object is Null, or if the requested item has no projected attributes, the corresponding ItemResponse object is an empty Map.
@@ -7465,6 +7466,7 @@ public struct TransactGetItemsOutput {
 }
 
 extension DynamoDBClientTypes {
+
     /// Represents a condition to be compared with an attribute value. This condition can be used with DeleteItem, PutItem, or UpdateItem operations; if the comparison evaluates to true, the operation succeeds; if not, the operation fails. You can use ExpectedAttributeValue in one of two different ways:
     ///
     /// * Use AttributeValueList to specify one or more values to compare against an attribute. Use ComparisonOperator to specify how you want to perform the comparison. If the comparison evaluates to true, then the conditional operation succeeds.
@@ -7473,7 +7475,7 @@ extension DynamoDBClientTypes {
     ///
     ///
     /// Value and Exists are incompatible with AttributeValueList and ComparisonOperator. Note that if you use both sets of parameters at once, DynamoDB will return a ValidationException exception.
-    public struct ExpectedAttributeValue {
+    public struct ExpectedAttributeValue: Swift.Sendable {
         /// One or more values to evaluate against the supplied attribute. The number of values in the list depends on the ComparisonOperator being used. For type Number, value comparisons are numeric. String value comparisons for greater than, equals, or less than are based on ASCII character code values. For example, a is greater than A, and a is greater than B. For a list of code values, see [http://en.wikipedia.org/wiki/ASCII#ASCII_printable_characters](http://en.wikipedia.org/wiki/ASCII#ASCII_printable_characters). For Binary, DynamoDB treats each byte of the binary data as unsigned when it compares binary values. For information on specifying data types in JSON, see [JSON Data Format](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/DataFormat.html) in the Amazon DynamoDB Developer Guide.
         public var attributeValueList: [DynamoDBClientTypes.AttributeValue]?
         /// A comparator for evaluating attributes in the AttributeValueList. For example, equals, greater than, less than, etc. The following comparison operators are available: EQ | NE | LE | LT | GE | GT | NOT_NULL | NULL | CONTAINS | NOT_CONTAINS | BEGINS_WITH | IN | BETWEEN The following are descriptions of each comparison operator.
@@ -7533,11 +7535,10 @@ extension DynamoDBClientTypes {
             self.value = value
         }
     }
-
 }
 
 /// Represents the input of a BatchGetItem operation.
-public struct BatchGetItemInput {
+public struct BatchGetItemInput: Swift.Sendable {
     /// A map of one or more table names or table ARNs and, for each table, a map that describes one or more items to retrieve from that table. Each table name or ARN can be used only once per BatchGetItem request. Each element in the map of items to retrieve consists of the following:
     ///
     /// * ConsistentRead - If true, a strongly consistent read is used; if false (the default), an eventually consistent read is used.
@@ -7594,7 +7595,7 @@ public struct BatchGetItemInput {
     }
 }
 
-public struct TransactGetItemsInput {
+public struct TransactGetItemsInput: Swift.Sendable {
     /// A value of TOTAL causes consumed capacity information to be returned, and a value of NONE prevents that information from being returned. No other value is valid.
     public var returnConsumedCapacity: DynamoDBClientTypes.ReturnConsumedCapacity?
     /// An ordered array of up to 100 TransactGetItem objects, each of which contains a Get structure.
@@ -7611,7 +7612,7 @@ public struct TransactGetItemsInput {
     }
 }
 
-public struct TransactWriteItemsOutput {
+public struct TransactWriteItemsOutput: Swift.Sendable {
     /// The capacity units consumed by the entire TransactWriteItems operation. The values of the list are ordered according to the ordering of the TransactItems request parameter.
     public var consumedCapacity: [DynamoDBClientTypes.ConsumedCapacity]?
     /// A list of tables that were processed by TransactWriteItems and, for each table, information about any item collections that were affected by individual UpdateItem, PutItem, or DeleteItem operations.
@@ -7628,8 +7629,9 @@ public struct TransactWriteItemsOutput {
 }
 
 extension DynamoDBClientTypes {
+
     /// Represents a request to perform a check that an item exists or to check the condition of specific attributes of the item.
-    public struct ConditionCheck {
+    public struct ConditionCheck: Swift.Sendable {
         /// A condition that must be satisfied in order for a conditional update to succeed. For more information, see [Condition expressions](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Expressions.ConditionExpressions.html) in the Amazon DynamoDB Developer Guide.
         /// This member is required.
         public var conditionExpression: Swift.String?
@@ -7663,12 +7665,12 @@ extension DynamoDBClientTypes {
             self.tableName = tableName
         }
     }
-
 }
 
 extension DynamoDBClientTypes {
+
     /// Represents a request to perform a DeleteItem operation.
-    public struct Delete {
+    public struct Delete: Swift.Sendable {
         /// A condition that must be satisfied in order for a conditional delete to succeed.
         public var conditionExpression: Swift.String?
         /// One or more substitution tokens for attribute names in an expression.
@@ -7701,12 +7703,12 @@ extension DynamoDBClientTypes {
             self.tableName = tableName
         }
     }
-
 }
 
 extension DynamoDBClientTypes {
+
     /// Represents a request to perform a PutItem operation.
-    public struct Put {
+    public struct Put: Swift.Sendable {
         /// A condition that must be satisfied in order for a conditional update to succeed.
         public var conditionExpression: Swift.String?
         /// One or more substitution tokens for attribute names in an expression.
@@ -7739,12 +7741,12 @@ extension DynamoDBClientTypes {
             self.tableName = tableName
         }
     }
-
 }
 
 extension DynamoDBClientTypes {
+
     /// Represents a request to perform an UpdateItem operation.
-    public struct Update {
+    public struct Update: Swift.Sendable {
         /// A condition that must be satisfied in order for a conditional update to succeed.
         public var conditionExpression: Swift.String?
         /// One or more substitution tokens for attribute names in an expression.
@@ -7782,12 +7784,12 @@ extension DynamoDBClientTypes {
             self.updateExpression = updateExpression
         }
     }
-
 }
 
 extension DynamoDBClientTypes {
+
     /// A PartiQL batch statement response..
-    public struct BatchStatementResponse {
+    public struct BatchStatementResponse: Swift.Sendable {
         /// The error associated with a failed PartiQL batch statement.
         public var error: DynamoDBClientTypes.BatchStatementError?
         /// A DynamoDB item associated with a BatchStatementResponse
@@ -7806,11 +7808,10 @@ extension DynamoDBClientTypes {
             self.tableName = tableName
         }
     }
-
 }
 
 /// Represents the output of a DeleteItem operation.
-public struct DeleteItemOutput {
+public struct DeleteItemOutput: Swift.Sendable {
     /// A map of attribute names to AttributeValue objects, representing the item as it appeared before the DeleteItem operation. This map appears in the response only if ReturnValues was specified as ALL_OLD in the request.
     public var attributes: [Swift.String: DynamoDBClientTypes.AttributeValue]?
     /// The capacity units consumed by the DeleteItem operation. The data returned includes the total provisioned throughput consumed, along with statistics for the table and any indexes involved in the operation. ConsumedCapacity is only returned if the ReturnConsumedCapacity parameter was specified. For more information, see [Provisioned capacity mode](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/provisioned-capacity-mode.html) in the Amazon DynamoDB Developer Guide.
@@ -7834,7 +7835,7 @@ public struct DeleteItemOutput {
     }
 }
 
-public struct ExecuteStatementOutput {
+public struct ExecuteStatementOutput: Swift.Sendable {
     /// The capacity units consumed by an operation. The data returned includes the total provisioned throughput consumed, along with statistics for the table and any indexes involved in the operation. ConsumedCapacity is only returned if the request asked for it. For more information, see [Provisioned capacity mode](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/provisioned-capacity-mode.html) in the Amazon DynamoDB Developer Guide.
     public var consumedCapacity: DynamoDBClientTypes.ConsumedCapacity?
     /// If a read operation was used, this property will contain the result of the read operation; a map of attribute names and their values. For the write operations this value will be empty.
@@ -7859,7 +7860,7 @@ public struct ExecuteStatementOutput {
 }
 
 /// Represents the output of a PutItem operation.
-public struct PutItemOutput {
+public struct PutItemOutput: Swift.Sendable {
     /// The attribute values as they appeared before the PutItem operation, but only if ReturnValues is specified as ALL_OLD in the request. Each element consists of an attribute name and an attribute value.
     public var attributes: [Swift.String: DynamoDBClientTypes.AttributeValue]?
     /// The capacity units consumed by the PutItem operation. The data returned includes the total provisioned throughput consumed, along with statistics for the table and any indexes involved in the operation. ConsumedCapacity is only returned if the ReturnConsumedCapacity parameter was specified. For more information, see [Capacity unity consumption for write operations](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/read-write-operations.html#write-operation-consumption) in the Amazon DynamoDB Developer Guide.
@@ -7884,7 +7885,7 @@ public struct PutItemOutput {
 }
 
 /// Represents the output of a Query operation.
-public struct QueryOutput {
+public struct QueryOutput: Swift.Sendable {
     /// The capacity units consumed by the Query operation. The data returned includes the total provisioned throughput consumed, along with statistics for the table and any indexes involved in the operation. ConsumedCapacity is only returned if the ReturnConsumedCapacity parameter was specified. For more information, see [Capacity unit consumption for read operations](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/read-write-operations.html#read-operation-consumption) in the Amazon DynamoDB Developer Guide.
     public var consumedCapacity: DynamoDBClientTypes.ConsumedCapacity?
     /// The number of items in the response. If you used a QueryFilter in the request, then Count is the number of items returned after the filter was applied, and ScannedCount is the number of matching items before the filter was applied. If you did not use a filter in the request, then Count and ScannedCount are the same.
@@ -7913,7 +7914,7 @@ public struct QueryOutput {
 }
 
 /// Represents the output of a Scan operation.
-public struct ScanOutput {
+public struct ScanOutput: Swift.Sendable {
     /// The capacity units consumed by the Scan operation. The data returned includes the total provisioned throughput consumed, along with statistics for the table and any indexes involved in the operation. ConsumedCapacity is only returned if the ReturnConsumedCapacity parameter was specified. For more information, see [Capacity unit consumption for read operations](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/read-write-operations.html#read-operation-consumption) in the Amazon DynamoDB Developer Guide.
     public var consumedCapacity: DynamoDBClientTypes.ConsumedCapacity?
     /// The number of items in the response. If you set ScanFilter in the request, then Count is the number of items returned after the filter was applied, and ScannedCount is the number of matching items before the filter was applied. If you did not use a filter in the request, then Count is the same as ScannedCount.
@@ -7942,7 +7943,7 @@ public struct ScanOutput {
 }
 
 /// Represents the output of an UpdateItem operation.
-public struct UpdateItemOutput {
+public struct UpdateItemOutput: Swift.Sendable {
     /// A map of attribute values as they appear before or after the UpdateItem operation, as determined by the ReturnValues parameter. The Attributes map is only present if the update was successful and ReturnValues was specified as something other than NONE in the request. Each element represents one attribute.
     public var attributes: [Swift.String: DynamoDBClientTypes.AttributeValue]?
     /// The capacity units consumed by the UpdateItem operation. The data returned includes the total provisioned throughput consumed, along with statistics for the table and any indexes involved in the operation. ConsumedCapacity is only returned if the ReturnConsumedCapacity parameter was specified. For more information, see [Capacity unity consumption for write operations](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/read-write-operations.html#write-operation-consumption) in the Amazon DynamoDB Developer Guide.
@@ -7967,8 +7968,9 @@ public struct UpdateItemOutput {
 }
 
 extension DynamoDBClientTypes {
+
     /// Represents an operation to perform - either DeleteItem or PutItem. You can only request one of these operations, not both, in a single WriteRequest. If you do need to perform both of these operations, you need to provide two separate WriteRequest objects.
-    public struct WriteRequest {
+    public struct WriteRequest: Swift.Sendable {
         /// A request to perform a DeleteItem operation.
         public var deleteRequest: DynamoDBClientTypes.DeleteRequest?
         /// A request to perform a PutItem operation.
@@ -7983,10 +7985,9 @@ extension DynamoDBClientTypes {
             self.putRequest = putRequest
         }
     }
-
 }
 
-public struct BatchExecuteStatementOutput {
+public struct BatchExecuteStatementOutput: Swift.Sendable {
     /// The capacity units consumed by the entire operation. The values of the list are ordered according to the ordering of the statements.
     public var consumedCapacity: [DynamoDBClientTypes.ConsumedCapacity]?
     /// The response to each PartiQL statement in the batch. The values of the list are ordered according to the ordering of the request statements.
@@ -8003,7 +8004,7 @@ public struct BatchExecuteStatementOutput {
 }
 
 /// Represents the output of a BatchGetItem operation.
-public struct BatchGetItemOutput {
+public struct BatchGetItemOutput: Swift.Sendable {
     /// The read capacity units consumed by the entire BatchGetItem operation. Each element consists of:
     ///
     /// * TableName - The table that consumed the provisioned throughput.
@@ -8037,7 +8038,7 @@ public struct BatchGetItemOutput {
 }
 
 /// Represents the input of a Scan operation.
-public struct ScanInput {
+public struct ScanInput: Swift.Sendable {
     /// This is a legacy parameter. Use ProjectionExpression instead. For more information, see [AttributesToGet](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/LegacyConditionalParameters.AttributesToGet.html) in the Amazon DynamoDB Developer Guide.
     public var attributesToGet: [Swift.String]?
     /// This is a legacy parameter. Use FilterExpression instead. For more information, see [ConditionalOperator](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/LegacyConditionalParameters.ConditionalOperator.html) in the Amazon DynamoDB Developer Guide.
@@ -8159,7 +8160,7 @@ public struct ScanInput {
 }
 
 /// Represents the input of a BatchWriteItem operation.
-public struct BatchWriteItemInput {
+public struct BatchWriteItemInput: Swift.Sendable {
     /// A map of one or more table names or table ARNs and, for each table, a list of operations to be performed (DeleteRequest or PutRequest). Each element in the map consists of the following:
     ///
     /// * DeleteRequest - Perform a DeleteItem operation on the specified item. The item to be deleted is identified by a Key subelement:
@@ -8198,7 +8199,7 @@ public struct BatchWriteItemInput {
 }
 
 /// Represents the input of a DeleteItem operation.
-public struct DeleteItemInput {
+public struct DeleteItemInput: Swift.Sendable {
     /// A condition that must be satisfied in order for a conditional DeleteItem to succeed. An expression can contain any of the following:
     ///
     /// * Functions: attribute_exists | attribute_not_exists | attribute_type | contains | begins_with | size These function names are case-sensitive.
@@ -8299,7 +8300,7 @@ public struct DeleteItemInput {
 }
 
 /// Represents the input of a PutItem operation.
-public struct PutItemInput {
+public struct PutItemInput: Swift.Sendable {
     /// A condition that must be satisfied in order for a conditional PutItem operation to succeed. An expression can contain any of the following:
     ///
     /// * Functions: attribute_exists | attribute_not_exists | attribute_type | contains | begins_with | size These function names are case-sensitive.
@@ -8400,7 +8401,7 @@ public struct PutItemInput {
 }
 
 /// Represents the input of a Query operation.
-public struct QueryInput {
+public struct QueryInput: Swift.Sendable {
     /// This is a legacy parameter. Use ProjectionExpression instead. For more information, see [AttributesToGet](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/LegacyConditionalParameters.AttributesToGet.html) in the Amazon DynamoDB Developer Guide.
     public var attributesToGet: [Swift.String]?
     /// This is a legacy parameter. Use FilterExpression instead. For more information, see [ConditionalOperator](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/LegacyConditionalParameters.ConditionalOperator.html) in the Amazon DynamoDB Developer Guide.
@@ -8561,7 +8562,7 @@ public struct QueryInput {
 }
 
 /// Represents the output of a BatchWriteItem operation.
-public struct BatchWriteItemOutput {
+public struct BatchWriteItemOutput: Swift.Sendable {
     /// The capacity units consumed by the entire BatchWriteItem operation. Each element consists of:
     ///
     /// * TableName - The table that consumed the provisioned throughput.
@@ -8607,7 +8608,7 @@ public struct BatchWriteItemOutput {
 }
 
 /// Represents the input of an UpdateItem operation.
-public struct UpdateItemInput {
+public struct UpdateItemInput: Swift.Sendable {
     /// This is a legacy parameter. Use UpdateExpression instead. For more information, see [AttributeUpdates](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/LegacyConditionalParameters.AttributeUpdates.html) in the Amazon DynamoDB Developer Guide.
     public var attributeUpdates: [Swift.String: DynamoDBClientTypes.AttributeValueUpdate]?
     /// A condition that must be satisfied in order for a conditional update to succeed. An expression can contain any of the following:
@@ -8747,8 +8748,9 @@ public struct UpdateItemInput {
 }
 
 extension DynamoDBClientTypes {
+
     /// A list of requests that can perform update, put, delete, or check operations on multiple items in one or more tables atomically.
-    public struct TransactWriteItem {
+    public struct TransactWriteItem: Swift.Sendable {
         /// A request to perform a check item operation.
         public var conditionCheck: DynamoDBClientTypes.ConditionCheck?
         /// A request to perform a DeleteItem operation.
@@ -8771,10 +8773,9 @@ extension DynamoDBClientTypes {
             self.update = update
         }
     }
-
 }
 
-public struct TransactWriteItemsInput {
+public struct TransactWriteItemsInput: Swift.Sendable {
     /// Providing a ClientRequestToken makes the call to TransactWriteItems idempotent, meaning that multiple identical calls have the same effect as one single call. Although multiple identical calls using the same client request token produce the same result on the server (no side effects), the responses to the calls might not be the same. If the ReturnConsumedCapacity parameter is set, then the initial TransactWriteItems call returns the amount of write capacity units consumed in making the changes. Subsequent TransactWriteItems calls with the same client token return the number of read capacity units consumed in reading the item. A client request token is valid for 10 minutes after the first request that uses it is completed. After 10 minutes, any request with the same client token is treated as a new request. Do not resubmit the same request with the same client token for more than 10 minutes, or the result might not be idempotent. If you submit a request with the same client token but a change in other parameters within the 10-minute idempotency window, DynamoDB returns an IdempotentParameterMismatch exception.
     public var clientRequestToken: Swift.String?
     /// Determines the level of detail about either provisioned or on-demand throughput consumption that is returned in the response:

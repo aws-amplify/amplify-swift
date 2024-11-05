@@ -54,7 +54,7 @@ public struct AccessDeniedException: ClientRuntime.ModeledError, AWSClientRuntim
 
 extension NetworkMonitorClientTypes {
 
-    public enum AddressFamily: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AddressFamily: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case ipv4
         case ipv6
         case sdkUnknown(Swift.String)
@@ -203,7 +203,7 @@ public struct ValidationException: ClientRuntime.ModeledError, AWSClientRuntime.
 
 extension NetworkMonitorClientTypes {
 
-    public enum ModelProtocol: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ModelProtocol: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case icmp
         case tcp
         case sdkUnknown(Swift.String)
@@ -231,8 +231,9 @@ extension NetworkMonitorClientTypes {
 }
 
 extension NetworkMonitorClientTypes {
+
     /// Creates a monitor probe.
-    public struct CreateMonitorProbeInput {
+    public struct CreateMonitorProbeInput: Swift.Sendable {
         /// The destination IP address. This must be either IPV4 or IPV6.
         /// This member is required.
         public var destination: Swift.String?
@@ -266,10 +267,9 @@ extension NetworkMonitorClientTypes {
             self.sourceArn = sourceArn
         }
     }
-
 }
 
-public struct CreateMonitorInput {
+public struct CreateMonitorInput: Swift.Sendable {
     /// The time, in seconds, that metrics are aggregated and sent to Amazon CloudWatch. Valid values are either 30 or 60. 60 is the default if no period is chosen.
     public var aggregationPeriod: Swift.Int?
     /// Unique, case-sensitive identifier to ensure the idempotency of the request. Only returned if a client token was provided in the request.
@@ -300,7 +300,7 @@ public struct CreateMonitorInput {
 
 extension NetworkMonitorClientTypes {
 
-    public enum MonitorState: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum MonitorState: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case active
         case deleting
         case error
@@ -336,7 +336,7 @@ extension NetworkMonitorClientTypes {
     }
 }
 
-public struct CreateMonitorOutput {
+public struct CreateMonitorOutput: Swift.Sendable {
     /// The number of seconds that metrics are aggregated by and sent to Amazon CloudWatch. This will be either 30 or 60.
     public var aggregationPeriod: Swift.Int?
     /// The ARN of the monitor.
@@ -392,8 +392,9 @@ public struct ResourceNotFoundException: ClientRuntime.ModeledError, AWSClientRu
 }
 
 extension NetworkMonitorClientTypes {
+
     /// Defines a probe when creating a probe or monitor.
-    public struct ProbeInput {
+    public struct ProbeInput: Swift.Sendable {
         /// The destination IP address. This must be either IPV4 or IPV6.
         /// This member is required.
         public var destination: Swift.String?
@@ -427,10 +428,9 @@ extension NetworkMonitorClientTypes {
             self.tags = tags
         }
     }
-
 }
 
-public struct CreateProbeInput {
+public struct CreateProbeInput: Swift.Sendable {
     /// Unique, case-sensitive identifier to ensure the idempotency of the request. Only returned if a client token was provided in the request.
     public var clientToken: Swift.String?
     /// The name of the monitor to associated with the probe.
@@ -458,7 +458,7 @@ public struct CreateProbeInput {
 
 extension NetworkMonitorClientTypes {
 
-    public enum ProbeState: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ProbeState: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case active
         case deleted
         case deleting
@@ -497,7 +497,7 @@ extension NetworkMonitorClientTypes {
     }
 }
 
-public struct CreateProbeOutput {
+public struct CreateProbeOutput: Swift.Sendable {
     /// Indicates whether the IP address is IPV4 or IPV6.
     public var addressFamily: NetworkMonitorClientTypes.AddressFamily?
     /// The time and date that the probe was created.
@@ -560,7 +560,7 @@ public struct CreateProbeOutput {
     }
 }
 
-public struct DeleteMonitorInput {
+public struct DeleteMonitorInput: Swift.Sendable {
     /// The name of the monitor to delete.
     /// This member is required.
     public var monitorName: Swift.String?
@@ -573,12 +573,12 @@ public struct DeleteMonitorInput {
     }
 }
 
-public struct DeleteMonitorOutput {
+public struct DeleteMonitorOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteProbeInput {
+public struct DeleteProbeInput: Swift.Sendable {
     /// The name of the monitor to delete.
     /// This member is required.
     public var monitorName: Swift.String?
@@ -596,12 +596,12 @@ public struct DeleteProbeInput {
     }
 }
 
-public struct DeleteProbeOutput {
+public struct DeleteProbeOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct GetMonitorInput {
+public struct GetMonitorInput: Swift.Sendable {
     /// The name of the monitor that details are returned for.
     /// This member is required.
     public var monitorName: Swift.String?
@@ -615,8 +615,9 @@ public struct GetMonitorInput {
 }
 
 extension NetworkMonitorClientTypes {
+
     /// Describes information about a network monitor probe.
-    public struct Probe {
+    public struct Probe: Swift.Sendable {
         /// The IPv4 or IPv6 address for the probe.
         public var addressFamily: NetworkMonitorClientTypes.AddressFamily?
         /// The time and date the probe was created.
@@ -678,10 +679,9 @@ extension NetworkMonitorClientTypes {
             self.vpcId = vpcId
         }
     }
-
 }
 
-public struct GetMonitorOutput {
+public struct GetMonitorOutput: Swift.Sendable {
     /// The aggregation period for the specified monitor.
     /// This member is required.
     public var aggregationPeriod: Swift.Int?
@@ -727,7 +727,7 @@ public struct GetMonitorOutput {
     }
 }
 
-public struct GetProbeInput {
+public struct GetProbeInput: Swift.Sendable {
     /// The name of the monitor associated with the probe. Run ListMonitors to get a list of monitor names.
     /// This member is required.
     public var monitorName: Swift.String?
@@ -745,7 +745,7 @@ public struct GetProbeInput {
     }
 }
 
-public struct GetProbeOutput {
+public struct GetProbeOutput: Swift.Sendable {
     /// Indicates whether the IP address is IPV4 or IPV6.
     public var addressFamily: NetworkMonitorClientTypes.AddressFamily?
     /// The time and date that the probe was created.
@@ -808,7 +808,7 @@ public struct GetProbeOutput {
     }
 }
 
-public struct ListMonitorsInput {
+public struct ListMonitorsInput: Swift.Sendable {
     /// The maximum number of results to return with a single call. To retrieve the remaining results, make another call with the returned nextToken value. If MaxResults is given a value larger than 100, only 100 results are returned.
     public var maxResults: Swift.Int?
     /// The token for the next page of results.
@@ -829,8 +829,9 @@ public struct ListMonitorsInput {
 }
 
 extension NetworkMonitorClientTypes {
+
     /// Displays summary information about a monitor.
-    public struct MonitorSummary {
+    public struct MonitorSummary: Swift.Sendable {
         /// The time, in seconds, that metrics are collected and sent to Amazon CloudWatch. Valid values are either 30 or 60.
         public var aggregationPeriod: Swift.Int?
         /// The ARN of the monitor.
@@ -860,10 +861,9 @@ extension NetworkMonitorClientTypes {
             self.tags = tags
         }
     }
-
 }
 
-public struct ListMonitorsOutput {
+public struct ListMonitorsOutput: Swift.Sendable {
     /// Lists individual details about each of your monitors.
     /// This member is required.
     public var monitors: [NetworkMonitorClientTypes.MonitorSummary]?
@@ -880,7 +880,7 @@ public struct ListMonitorsOutput {
     }
 }
 
-public struct ListTagsForResourceInput {
+public struct ListTagsForResourceInput: Swift.Sendable {
     /// The
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -893,7 +893,7 @@ public struct ListTagsForResourceInput {
     }
 }
 
-public struct ListTagsForResourceOutput {
+public struct ListTagsForResourceOutput: Swift.Sendable {
     /// Lists the tags assigned to the resource.
     public var tags: [Swift.String: Swift.String]?
 
@@ -905,7 +905,7 @@ public struct ListTagsForResourceOutput {
     }
 }
 
-public struct UpdateMonitorInput {
+public struct UpdateMonitorInput: Swift.Sendable {
     /// The aggregation time, in seconds, to change to. This must be either 30 or 60.
     /// This member is required.
     public var aggregationPeriod: Swift.Int?
@@ -923,7 +923,7 @@ public struct UpdateMonitorInput {
     }
 }
 
-public struct UpdateMonitorOutput {
+public struct UpdateMonitorOutput: Swift.Sendable {
     /// The changed aggregation period.
     public var aggregationPeriod: Swift.Int?
     /// The ARN of the monitor that was updated.
@@ -954,7 +954,7 @@ public struct UpdateMonitorOutput {
     }
 }
 
-public struct UpdateProbeInput {
+public struct UpdateProbeInput: Swift.Sendable {
     /// The updated IP address for the probe destination. This must be either an IPv4 or IPv6 address.
     public var destination: Swift.String?
     /// The updated port for the probe destination. This is required only if the protocol is TCP and must be a number between 1 and 65536.
@@ -992,7 +992,7 @@ public struct UpdateProbeInput {
     }
 }
 
-public struct UpdateProbeOutput {
+public struct UpdateProbeOutput: Swift.Sendable {
     /// The updated IP address family. This must be either IPV4 or IPV6.
     public var addressFamily: NetworkMonitorClientTypes.AddressFamily?
     /// The time and date that the probe was created.
@@ -1055,7 +1055,7 @@ public struct UpdateProbeOutput {
     }
 }
 
-public struct TagResourceInput {
+public struct TagResourceInput: Swift.Sendable {
     /// The ARN of the monitor or probe to tag.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -1073,12 +1073,12 @@ public struct TagResourceInput {
     }
 }
 
-public struct TagResourceOutput {
+public struct TagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UntagResourceInput {
+public struct UntagResourceInput: Swift.Sendable {
     /// The ARN of the monitor or probe that the tag should be removed from.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -1096,7 +1096,7 @@ public struct UntagResourceInput {
     }
 }
 
-public struct UntagResourceOutput {
+public struct UntagResourceOutput: Swift.Sendable {
 
     public init() { }
 }

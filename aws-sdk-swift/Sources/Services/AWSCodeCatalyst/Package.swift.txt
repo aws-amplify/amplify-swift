@@ -12,10 +12,6 @@ let package = Package(
     ],
     dependencies: [
         .package(
-            id: "aws-sdk-swift.smithy-swift",
-            exact: "0.0.1"
-        ),
-        .package(
             id: "aws-sdk-swift.AWSClientRuntime",
             exact: "0.0.1"
         ),
@@ -23,11 +19,23 @@ let package = Package(
             id: "aws-sdk-swift.AWSSDKIdentity",
             exact: "0.0.1"
         ),
+        .package(
+            id: "aws-sdk-swift.smithy-swift",
+            exact: "0.0.1"
+        ),
     ],
     targets: [
         .target(
             name: "AWSCodeCatalyst",
             dependencies: [
+                .product(
+                    name: "AWSClientRuntime",
+                    package: "aws-sdk-swift.AWSClientRuntime"
+                ),
+                .product(
+                    name: "AWSSDKIdentity",
+                    package: "aws-sdk-swift.AWSSDKIdentity"
+                ),
                 .product(
                     name: "SmithyHTTPAuthAPI",
                     package: "aws-sdk-swift.smithy-swift"
@@ -39,10 +47,6 @@ let package = Package(
                 .product(
                     name: "ClientRuntime",
                     package: "aws-sdk-swift.smithy-swift"
-                ),
-                .product(
-                    name: "AWSClientRuntime",
-                    package: "aws-sdk-swift.AWSClientRuntime"
                 ),
                 .product(
                     name: "SmithyIdentity",
@@ -59,10 +63,6 @@ let package = Package(
                 .product(
                     name: "SmithyHTTPAuth",
                     package: "aws-sdk-swift.smithy-swift"
-                ),
-                .product(
-                    name: "AWSSDKIdentity",
-                    package: "aws-sdk-swift.AWSSDKIdentity"
                 ),
                 .product(
                     name: "SmithyJSON",

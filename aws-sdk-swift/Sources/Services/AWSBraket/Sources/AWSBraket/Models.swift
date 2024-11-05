@@ -53,8 +53,9 @@ public struct AccessDeniedException: ClientRuntime.ModeledError, AWSClientRuntim
 }
 
 extension BraketClientTypes {
+
     /// The container image used to create an Amazon Braket job.
-    public struct ContainerImage {
+    public struct ContainerImage: Swift.Sendable {
         /// The URI locating the container image.
         /// This member is required.
         public var uri: Swift.String?
@@ -66,12 +67,11 @@ extension BraketClientTypes {
             self.uri = uri
         }
     }
-
 }
 
 extension BraketClientTypes {
 
-    public enum CompressionType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum CompressionType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case gzip
         case `none`
         case sdkUnknown(Swift.String)
@@ -99,8 +99,9 @@ extension BraketClientTypes {
 }
 
 extension BraketClientTypes {
+
     /// Contains information about the Python scripts used for entry and by an Amazon Braket job.
-    public struct ScriptModeConfig {
+    public struct ScriptModeConfig: Swift.Sendable {
         /// The type of compression used by the Python scripts for an Amazon Braket job.
         public var compressionType: BraketClientTypes.CompressionType?
         /// The path to the Python script that serves as the entry point for an Amazon Braket job.
@@ -121,12 +122,12 @@ extension BraketClientTypes {
             self.s3Uri = s3Uri
         }
     }
-
 }
 
 extension BraketClientTypes {
+
     /// Defines the Amazon Braket job to be created. Specifies the container image the job uses and the paths to the Python scripts used for entry and training.
-    public struct AlgorithmSpecification {
+    public struct AlgorithmSpecification: Swift.Sendable {
         /// The container image used to create an Amazon Braket job.
         public var containerImage: BraketClientTypes.ContainerImage?
         /// Configures the paths to the Python scripts used for entry and training.
@@ -141,12 +142,11 @@ extension BraketClientTypes {
             self.scriptModeConfig = scriptModeConfig
         }
     }
-
 }
 
 extension BraketClientTypes {
 
-    public enum AssociationType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AssociationType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case reservationTimeWindowArn
         case sdkUnknown(Swift.String)
 
@@ -171,8 +171,9 @@ extension BraketClientTypes {
 }
 
 extension BraketClientTypes {
+
     /// The Amazon Braket resource and the association type.
-    public struct Association {
+    public struct Association: Swift.Sendable {
         /// The Amazon Braket resource arn.
         /// This member is required.
         public var arn: Swift.String?
@@ -189,7 +190,6 @@ extension BraketClientTypes {
             self.type = type
         }
     }
-
 }
 
 /// The request processing has failed because of an unknown error, exception, or failure.
@@ -288,7 +288,7 @@ public struct ValidationException: ClientRuntime.ModeledError, AWSClientRuntime.
     }
 }
 
-public struct GetDeviceInput {
+public struct GetDeviceInput: Swift.Sendable {
     /// The ARN of the device to retrieve.
     /// This member is required.
     public var deviceArn: Swift.String?
@@ -303,7 +303,7 @@ public struct GetDeviceInput {
 
 extension BraketClientTypes {
 
-    public enum QueueName: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum QueueName: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case jobsQueue
         case quantumTasksQueue
         case sdkUnknown(Swift.String)
@@ -332,7 +332,7 @@ extension BraketClientTypes {
 
 extension BraketClientTypes {
 
-    public enum QueuePriority: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum QueuePriority: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case normal
         case priority
         case sdkUnknown(Swift.String)
@@ -360,8 +360,9 @@ extension BraketClientTypes {
 }
 
 extension BraketClientTypes {
+
     /// Information about tasks and jobs queued on a device.
-    public struct DeviceQueueInfo {
+    public struct DeviceQueueInfo: Swift.Sendable {
         /// The name of the queue.
         /// This member is required.
         public var queue: BraketClientTypes.QueueName?
@@ -382,12 +383,11 @@ extension BraketClientTypes {
             self.queueSize = queueSize
         }
     }
-
 }
 
 extension BraketClientTypes {
 
-    public enum DeviceStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DeviceStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case offline
         case online
         case retired
@@ -419,7 +419,7 @@ extension BraketClientTypes {
 
 extension BraketClientTypes {
 
-    public enum DeviceType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DeviceType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case qpu
         case simulator
         case sdkUnknown(Swift.String)
@@ -446,7 +446,7 @@ extension BraketClientTypes {
     }
 }
 
-public struct GetDeviceOutput {
+public struct GetDeviceOutput: Swift.Sendable {
     /// The ARN of the device.
     /// This member is required.
     public var deviceArn: Swift.String?
@@ -489,8 +489,9 @@ public struct GetDeviceOutput {
 }
 
 extension BraketClientTypes {
+
     /// The filter to use for searching devices.
-    public struct SearchDevicesFilter {
+    public struct SearchDevicesFilter: Swift.Sendable {
         /// The name to use to filter results.
         /// This member is required.
         public var name: Swift.String?
@@ -507,10 +508,9 @@ extension BraketClientTypes {
             self.values = values
         }
     }
-
 }
 
-public struct SearchDevicesInput {
+public struct SearchDevicesInput: Swift.Sendable {
     /// The filter values to use to search for a device.
     /// This member is required.
     public var filters: [BraketClientTypes.SearchDevicesFilter]?
@@ -532,8 +532,9 @@ public struct SearchDevicesInput {
 }
 
 extension BraketClientTypes {
+
     /// Includes information about the device.
-    public struct DeviceSummary {
+    public struct DeviceSummary: Swift.Sendable {
         /// The ARN of the device.
         /// This member is required.
         public var deviceArn: Swift.String?
@@ -565,10 +566,9 @@ extension BraketClientTypes {
             self.providerName = providerName
         }
     }
-
 }
 
-public struct SearchDevicesOutput {
+public struct SearchDevicesOutput: Swift.Sendable {
     /// An array of DeviceSummary objects for devices that match the specified filter values.
     /// This member is required.
     public var devices: [BraketClientTypes.DeviceSummary]?
@@ -609,7 +609,7 @@ public struct ConflictException: ClientRuntime.ModeledError, AWSClientRuntime.AW
     }
 }
 
-public struct CancelJobInput {
+public struct CancelJobInput: Swift.Sendable {
     /// The ARN of the Amazon Braket job to cancel.
     /// This member is required.
     public var jobArn: Swift.String?
@@ -624,7 +624,7 @@ public struct CancelJobInput {
 
 extension BraketClientTypes {
 
-    public enum CancellationStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum CancellationStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case cancelled
         case cancelling
         case sdkUnknown(Swift.String)
@@ -651,7 +651,7 @@ extension BraketClientTypes {
     }
 }
 
-public struct CancelJobOutput {
+public struct CancelJobOutput: Swift.Sendable {
     /// The status of the job cancellation request.
     /// This member is required.
     public var cancellationStatus: BraketClientTypes.CancellationStatus?
@@ -742,8 +742,9 @@ public struct ServiceQuotaExceededException: ClientRuntime.ModeledError, AWSClie
 }
 
 extension BraketClientTypes {
+
     /// Contains information about the output locations for job checkpoint data.
-    public struct JobCheckpointConfig {
+    public struct JobCheckpointConfig: Swift.Sendable {
         /// (Optional) The local directory where checkpoints are written. The default directory is /opt/braket/checkpoints/.
         public var localPath: Swift.String?
         /// Identifies the S3 path where you want Amazon Braket to store checkpoints. For example, s3://bucket-name/key-name-prefix.
@@ -759,12 +760,12 @@ extension BraketClientTypes {
             self.s3Uri = s3Uri
         }
     }
-
 }
 
 extension BraketClientTypes {
+
     /// Configures the quantum processing units (QPUs) or simulator used to create and run an Amazon Braket job.
-    public struct DeviceConfig {
+    public struct DeviceConfig: Swift.Sendable {
         /// The primary quantum processing unit (QPU) or simulator used to create and run an Amazon Braket job.
         /// This member is required.
         public var device: Swift.String?
@@ -776,12 +777,12 @@ extension BraketClientTypes {
             self.device = device
         }
     }
-
 }
 
 extension BraketClientTypes {
+
     /// Information about the data stored in Amazon S3 used by the Amazon Braket job.
-    public struct S3DataSource {
+    public struct S3DataSource: Swift.Sendable {
         /// Depending on the value specified for the S3DataType, identifies either a key name prefix or a manifest that locates the S3 data source.
         /// This member is required.
         public var s3Uri: Swift.String?
@@ -793,12 +794,12 @@ extension BraketClientTypes {
             self.s3Uri = s3Uri
         }
     }
-
 }
 
 extension BraketClientTypes {
+
     /// Information about the source of the data used by the Amazon Braket job.
-    public struct DataSource {
+    public struct DataSource: Swift.Sendable {
         /// Information about the data stored in Amazon S3 used by the Amazon Braket job.
         /// This member is required.
         public var s3DataSource: BraketClientTypes.S3DataSource?
@@ -810,12 +811,12 @@ extension BraketClientTypes {
             self.s3DataSource = s3DataSource
         }
     }
-
 }
 
 extension BraketClientTypes {
+
     /// A list of parameters that specify the input channels, type of input data, and where it is located.
-    public struct InputFileConfig {
+    public struct InputFileConfig: Swift.Sendable {
         /// A named input source that an Amazon Braket job can consume.
         /// This member is required.
         public var channelName: Swift.String?
@@ -836,12 +837,11 @@ extension BraketClientTypes {
             self.dataSource = dataSource
         }
     }
-
 }
 
 extension BraketClientTypes {
 
-    public enum InstanceType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum InstanceType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case mlC42xlarge
         case mlC44xlarge
         case mlC48xlarge
@@ -980,8 +980,9 @@ extension BraketClientTypes {
 }
 
 extension BraketClientTypes {
+
     /// Configures the resource instances to use while running the Amazon Braket hybrid job on Amazon Braket.
-    public struct InstanceConfig {
+    public struct InstanceConfig: Swift.Sendable {
         /// Configures the number of resource instances to use while running an Amazon Braket job on Amazon Braket. The default value is 1.
         public var instanceCount: Swift.Int?
         /// Configures the type resource instances to use while running an Amazon Braket hybrid job.
@@ -1002,12 +1003,12 @@ extension BraketClientTypes {
             self.volumeSizeInGb = volumeSizeInGb
         }
     }
-
 }
 
 extension BraketClientTypes {
+
     /// Specifies the path to the S3 location where you want to store job artifacts and the encryption key used to store them.
-    public struct JobOutputDataConfig {
+    public struct JobOutputDataConfig: Swift.Sendable {
         /// The AWS Key Management Service (AWS KMS) key that Amazon Braket uses to encrypt the job training artifacts at rest using Amazon S3 server-side encryption.
         public var kmsKeyId: Swift.String?
         /// Identifies the S3 path where you want Amazon Braket to store the job training artifacts. For example, s3://bucket-name/key-name-prefix.
@@ -1023,12 +1024,12 @@ extension BraketClientTypes {
             self.s3Path = s3Path
         }
     }
-
 }
 
 extension BraketClientTypes {
+
     /// Specifies limits for how long an Amazon Braket job can run.
-    public struct JobStoppingCondition {
+    public struct JobStoppingCondition: Swift.Sendable {
         /// The maximum length of time, in seconds, that an Amazon Braket job can run.
         public var maxRuntimeInSeconds: Swift.Int?
 
@@ -1039,10 +1040,9 @@ extension BraketClientTypes {
             self.maxRuntimeInSeconds = maxRuntimeInSeconds
         }
     }
-
 }
 
-public struct CreateJobInput {
+public struct CreateJobInput: Swift.Sendable {
     /// Definition of the Amazon Braket job to be created. Specifies the container image the job uses and information about the Python scripts used for entry and training.
     /// This member is required.
     public var algorithmSpecification: BraketClientTypes.AlgorithmSpecification?
@@ -1109,7 +1109,7 @@ public struct CreateJobInput {
     }
 }
 
-public struct CreateJobOutput {
+public struct CreateJobOutput: Swift.Sendable {
     /// The ARN of the Amazon Braket job created.
     /// This member is required.
     public var jobArn: Swift.String?
@@ -1124,7 +1124,7 @@ public struct CreateJobOutput {
 
 extension BraketClientTypes {
 
-    public enum HybridJobAdditionalAttributeName: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum HybridJobAdditionalAttributeName: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case queueInfo
         case sdkUnknown(Swift.String)
 
@@ -1148,7 +1148,7 @@ extension BraketClientTypes {
     }
 }
 
-public struct GetJobInput {
+public struct GetJobInput: Swift.Sendable {
     /// A list of attributes to return information for.
     public var additionalAttributeNames: [BraketClientTypes.HybridJobAdditionalAttributeName]?
     /// The ARN of the job to retrieve.
@@ -1167,7 +1167,7 @@ public struct GetJobInput {
 
 extension BraketClientTypes {
 
-    public enum JobEventType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum JobEventType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case cancelled
         case completed
         case deprioritizedDueToInactivity
@@ -1222,8 +1222,9 @@ extension BraketClientTypes {
 }
 
 extension BraketClientTypes {
+
     /// Details about the type and time events occurred related to the Amazon Braket job.
-    public struct JobEventDetails {
+    public struct JobEventDetails: Swift.Sendable {
         /// The type of event that occurred related to the Amazon Braket job.
         public var eventType: BraketClientTypes.JobEventType?
         /// A message describing the event that occurred related to the Amazon Braket job.
@@ -1242,12 +1243,12 @@ extension BraketClientTypes {
             self.timeOfEvent = timeOfEvent
         }
     }
-
 }
 
 extension BraketClientTypes {
+
     /// Information about the queue for a specified job.
-    public struct HybridJobQueueInfo {
+    public struct HybridJobQueueInfo: Swift.Sendable {
         /// Optional. Provides more information about the queue position. For example, if the job is complete and no longer in the queue, the message field contains that information.
         public var message: Swift.String?
         /// Current position of the job in the jobs queue.
@@ -1268,12 +1269,11 @@ extension BraketClientTypes {
             self.queue = queue
         }
     }
-
 }
 
 extension BraketClientTypes {
 
-    public enum JobPrimaryStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum JobPrimaryStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case cancelled
         case cancelling
         case completed
@@ -1312,7 +1312,7 @@ extension BraketClientTypes {
     }
 }
 
-public struct GetJobOutput {
+public struct GetJobOutput: Swift.Sendable {
     /// Definition of the Amazon Braket job created. Specifies the container image the job uses, information about the Python scripts used for entry and training, and the user-defined metrics used to evaluation the job.
     /// This member is required.
     public var algorithmSpecification: BraketClientTypes.AlgorithmSpecification?
@@ -1414,7 +1414,7 @@ public struct GetJobOutput {
 
 extension BraketClientTypes {
 
-    public enum SearchJobsFilterOperator: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SearchJobsFilterOperator: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case between
         case contains
         case equal
@@ -1457,8 +1457,9 @@ extension BraketClientTypes {
 }
 
 extension BraketClientTypes {
+
     /// A filter used to search for Amazon Braket jobs.
-    public struct SearchJobsFilter {
+    public struct SearchJobsFilter: Swift.Sendable {
         /// The name to use for the jobs filter.
         /// This member is required.
         public var name: Swift.String?
@@ -1480,10 +1481,9 @@ extension BraketClientTypes {
             self.values = values
         }
     }
-
 }
 
-public struct SearchJobsInput {
+public struct SearchJobsInput: Swift.Sendable {
     /// The filter values to use when searching for a job.
     /// This member is required.
     public var filters: [BraketClientTypes.SearchJobsFilter]?
@@ -1505,8 +1505,9 @@ public struct SearchJobsInput {
 }
 
 extension BraketClientTypes {
+
     /// Provides summary information about an Amazon Braket job.
-    public struct JobSummary {
+    public struct JobSummary: Swift.Sendable {
         /// The date and time that the Amazon Braket job was created.
         /// This member is required.
         public var createdAt: Foundation.Date?
@@ -1550,10 +1551,9 @@ extension BraketClientTypes {
             self.tags = tags
         }
     }
-
 }
 
-public struct SearchJobsOutput {
+public struct SearchJobsOutput: Swift.Sendable {
     /// An array of JobSummary objects for devices that match the specified filter values.
     /// This member is required.
     public var jobs: [BraketClientTypes.JobSummary]?
@@ -1570,7 +1570,7 @@ public struct SearchJobsOutput {
     }
 }
 
-public struct ListTagsForResourceInput {
+public struct ListTagsForResourceInput: Swift.Sendable {
     /// Specify the resourceArn for the resource whose tags to display.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -1583,7 +1583,7 @@ public struct ListTagsForResourceInput {
     }
 }
 
-public struct ListTagsForResourceOutput {
+public struct ListTagsForResourceOutput: Swift.Sendable {
     /// Displays the key, value pairs of tags associated with this resource.
     public var tags: [Swift.String: Swift.String]?
 
@@ -1595,7 +1595,7 @@ public struct ListTagsForResourceOutput {
     }
 }
 
-public struct CancelQuantumTaskInput {
+public struct CancelQuantumTaskInput: Swift.Sendable {
     /// The client token associated with the request.
     /// This member is required.
     public var clientToken: Swift.String?
@@ -1613,7 +1613,7 @@ public struct CancelQuantumTaskInput {
     }
 }
 
-public struct CancelQuantumTaskOutput {
+public struct CancelQuantumTaskOutput: Swift.Sendable {
     /// The status of the cancellation request.
     /// This member is required.
     public var cancellationStatus: BraketClientTypes.CancellationStatus?
@@ -1631,7 +1631,7 @@ public struct CancelQuantumTaskOutput {
     }
 }
 
-public struct CreateQuantumTaskInput {
+public struct CreateQuantumTaskInput: Swift.Sendable {
     /// The action associated with the task.
     /// This member is required.
     public var action: Swift.String?
@@ -1685,7 +1685,7 @@ public struct CreateQuantumTaskInput {
     }
 }
 
-public struct CreateQuantumTaskOutput {
+public struct CreateQuantumTaskOutput: Swift.Sendable {
     /// The ARN of the task created by the request.
     /// This member is required.
     public var quantumTaskArn: Swift.String?
@@ -1700,7 +1700,7 @@ public struct CreateQuantumTaskOutput {
 
 extension BraketClientTypes {
 
-    public enum QuantumTaskAdditionalAttributeName: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum QuantumTaskAdditionalAttributeName: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case queueInfo
         case sdkUnknown(Swift.String)
 
@@ -1724,7 +1724,7 @@ extension BraketClientTypes {
     }
 }
 
-public struct GetQuantumTaskInput {
+public struct GetQuantumTaskInput: Swift.Sendable {
     /// A list of attributes to return information for.
     public var additionalAttributeNames: [BraketClientTypes.QuantumTaskAdditionalAttributeName]?
     /// The ARN of the task to retrieve.
@@ -1742,8 +1742,9 @@ public struct GetQuantumTaskInput {
 }
 
 extension BraketClientTypes {
+
     /// Information about the queue for the specified quantum task.
-    public struct QuantumTaskQueueInfo {
+    public struct QuantumTaskQueueInfo: Swift.Sendable {
         /// Optional. Provides more information about the queue position. For example, if the task is complete and no longer in the queue, the message field contains that information.
         public var message: Swift.String?
         /// Current position of the task in the quantum tasks queue.
@@ -1768,12 +1769,11 @@ extension BraketClientTypes {
             self.queuePriority = queuePriority
         }
     }
-
 }
 
 extension BraketClientTypes {
 
-    public enum QuantumTaskStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum QuantumTaskStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case cancelled
         case cancelling
         case completed
@@ -1815,7 +1815,7 @@ extension BraketClientTypes {
     }
 }
 
-public struct GetQuantumTaskOutput {
+public struct GetQuantumTaskOutput: Swift.Sendable {
     /// The list of Amazon Braket resources associated with the quantum task.
     public var associations: [BraketClientTypes.Association]?
     /// The time at which the task was created.
@@ -1889,7 +1889,7 @@ public struct GetQuantumTaskOutput {
 
 extension BraketClientTypes {
 
-    public enum SearchQuantumTasksFilterOperator: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SearchQuantumTasksFilterOperator: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case between
         case equal
         case gt
@@ -1929,8 +1929,9 @@ extension BraketClientTypes {
 }
 
 extension BraketClientTypes {
+
     /// A filter to use to search for tasks.
-    public struct SearchQuantumTasksFilter {
+    public struct SearchQuantumTasksFilter: Swift.Sendable {
         /// The name of the device used for the task.
         /// This member is required.
         public var name: Swift.String?
@@ -1952,10 +1953,9 @@ extension BraketClientTypes {
             self.values = values
         }
     }
-
 }
 
-public struct SearchQuantumTasksInput {
+public struct SearchQuantumTasksInput: Swift.Sendable {
     /// Array of SearchQuantumTasksFilter objects.
     /// This member is required.
     public var filters: [BraketClientTypes.SearchQuantumTasksFilter]?
@@ -1977,8 +1977,9 @@ public struct SearchQuantumTasksInput {
 }
 
 extension BraketClientTypes {
+
     /// Includes information about a quantum task.
-    public struct QuantumTaskSummary {
+    public struct QuantumTaskSummary: Swift.Sendable {
         /// The time at which the task was created.
         /// This member is required.
         public var createdAt: Foundation.Date?
@@ -2028,10 +2029,9 @@ extension BraketClientTypes {
             self.tags = tags
         }
     }
-
 }
 
-public struct SearchQuantumTasksOutput {
+public struct SearchQuantumTasksOutput: Swift.Sendable {
     /// A token used for pagination of results, or null if there are no additional results. Use the token value in a subsequent request to continue results where the previous request ended.
     public var nextToken: Swift.String?
     /// An array of QuantumTaskSummary objects for tasks that match the specified filters.
@@ -2048,7 +2048,7 @@ public struct SearchQuantumTasksOutput {
     }
 }
 
-public struct TagResourceInput {
+public struct TagResourceInput: Swift.Sendable {
     /// Specify the resourceArn of the resource to which a tag will be added.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -2066,12 +2066,12 @@ public struct TagResourceInput {
     }
 }
 
-public struct TagResourceOutput {
+public struct TagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UntagResourceInput {
+public struct UntagResourceInput: Swift.Sendable {
     /// Specify the resourceArn for the resource from which to remove the tags.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -2089,7 +2089,7 @@ public struct UntagResourceInput {
     }
 }
 
-public struct UntagResourceOutput {
+public struct UntagResourceOutput: Swift.Sendable {
 
     public init() { }
 }

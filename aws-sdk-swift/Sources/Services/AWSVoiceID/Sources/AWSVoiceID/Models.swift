@@ -26,22 +26,23 @@ import protocol ClientRuntime.ModeledError
 @_spi(UnknownAWSHTTPServiceError) import struct AWSClientRuntime.UnknownAWSHTTPServiceError
 @_spi(SmithyReadWrite) import struct SmithyReadWrite.ReadingClosureBox
 
-public struct DeleteDomainOutput {
+
+public struct DeleteDomainOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteFraudsterOutput {
+public struct DeleteFraudsterOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteSpeakerOutput {
+public struct DeleteSpeakerOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteWatchlistOutput {
+public struct DeleteWatchlistOutput: Swift.Sendable {
 
     public init() { }
 }
@@ -72,7 +73,7 @@ public struct AccessDeniedException: ClientRuntime.ModeledError, AWSClientRuntim
 
 extension VoiceIDClientTypes {
 
-    public enum ConflictType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ConflictType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case anotherActiveStream
         case cannotChangeSpeakerAfterEnrollment
         case cannotDeleteNonEmptyWatchlist
@@ -189,7 +190,7 @@ public struct InternalServerException: ClientRuntime.ModeledError, AWSClientRunt
 
 extension VoiceIDClientTypes {
 
-    public enum ResourceType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ResourceType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case batchJob
         case complianceConsent
         case domain
@@ -331,7 +332,7 @@ public struct ValidationException: ClientRuntime.ModeledError, AWSClientRuntime.
     }
 }
 
-public struct AssociateFraudsterInput {
+public struct AssociateFraudsterInput: Swift.Sendable {
     /// The identifier of the domain that contains the fraudster.
     /// This member is required.
     public var domainId: Swift.String?
@@ -360,8 +361,9 @@ extension AssociateFraudsterInput: Swift.CustomDebugStringConvertible {
 }
 
 extension VoiceIDClientTypes {
+
     /// Contains all the information about a fraudster.
-    public struct Fraudster {
+    public struct Fraudster: Swift.Sendable {
         /// The timestamp of when Voice ID identified the fraudster.
         public var createdAt: Foundation.Date?
         /// The identifier of the domain that contains the fraudster.
@@ -384,10 +386,9 @@ extension VoiceIDClientTypes {
             self.watchlistIds = watchlistIds
         }
     }
-
 }
 
-public struct AssociateFraudsterOutput {
+public struct AssociateFraudsterOutput: Swift.Sendable {
     /// Contains all the information about a fraudster.
     public var fraudster: VoiceIDClientTypes.Fraudster?
 
@@ -400,8 +401,9 @@ public struct AssociateFraudsterOutput {
 }
 
 extension VoiceIDClientTypes {
+
     /// The configuration used to authenticate a speaker during a session.
-    public struct AuthenticationConfiguration {
+    public struct AuthenticationConfiguration: Swift.Sendable {
         /// The minimum threshold needed to successfully authenticate a speaker.
         /// This member is required.
         public var acceptanceThreshold: Swift.Int?
@@ -413,12 +415,11 @@ extension VoiceIDClientTypes {
             self.acceptanceThreshold = acceptanceThreshold
         }
     }
-
 }
 
 extension VoiceIDClientTypes {
 
-    public enum AuthenticationDecision: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AuthenticationDecision: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case accept
         case notEnoughSpeech
         case reject
@@ -461,8 +462,9 @@ extension VoiceIDClientTypes {
 }
 
 extension VoiceIDClientTypes {
+
     /// The authentication result produced by Voice ID, processed against the current session state and streamed audio of the speaker.
-    public struct AuthenticationResult {
+    public struct AuthenticationResult: Swift.Sendable {
         /// A timestamp of when audio aggregation ended for this authentication result.
         public var audioAggregationEndedAt: Foundation.Date?
         /// A timestamp of when audio aggregation started for this authentication result.
@@ -501,7 +503,6 @@ extension VoiceIDClientTypes {
             self.score = score
         }
     }
-
 }
 
 extension VoiceIDClientTypes.AuthenticationResult: Swift.CustomDebugStringConvertible {
@@ -510,8 +511,9 @@ extension VoiceIDClientTypes.AuthenticationResult: Swift.CustomDebugStringConver
 }
 
 extension VoiceIDClientTypes {
+
     /// The configuration containing information about the customer managed key used for encrypting customer data.
-    public struct ServerSideEncryptionConfiguration {
+    public struct ServerSideEncryptionConfiguration: Swift.Sendable {
         /// The identifier of the KMS key to use to encrypt data stored by Voice ID. Voice ID doesn't support asymmetric customer managed keys.
         /// This member is required.
         public var kmsKeyId: Swift.String?
@@ -523,12 +525,12 @@ extension VoiceIDClientTypes {
             self.kmsKeyId = kmsKeyId
         }
     }
-
 }
 
 extension VoiceIDClientTypes {
+
     /// The tags used to organize, track, or control access for this resource. For example, { "tags": {"key1":"value1", "key2":"value2"} }.
-    public struct Tag {
+    public struct Tag: Swift.Sendable {
         /// The first part of a key:value pair that forms a tag associated with a given resource. For example, in the tag 'Department':'Sales', the key is 'Department'.
         /// This member is required.
         public var key: Swift.String?
@@ -545,7 +547,6 @@ extension VoiceIDClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension VoiceIDClientTypes.Tag: Swift.CustomDebugStringConvertible {
@@ -553,7 +554,7 @@ extension VoiceIDClientTypes.Tag: Swift.CustomDebugStringConvertible {
         "Tag(key: \"CONTENT_REDACTED\", value: \"CONTENT_REDACTED\")"}
 }
 
-public struct CreateDomainInput {
+public struct CreateDomainInput: Swift.Sendable {
     /// A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If not provided, the Amazon Web Services SDK populates this field. For more information about idempotency, see [Making retries safe with idempotent APIs](https://aws.amazon.com/builders-library/making-retries-safe-with-idempotent-APIs/).
     public var clientToken: Swift.String?
     /// A brief description of this domain.
@@ -590,7 +591,7 @@ extension CreateDomainInput: Swift.CustomDebugStringConvertible {
 
 extension VoiceIDClientTypes {
 
-    public enum DomainStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DomainStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case active
         case pending
         case suspended
@@ -622,7 +623,7 @@ extension VoiceIDClientTypes {
 
 extension VoiceIDClientTypes {
 
-    public enum ServerSideEncryptionUpdateStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ServerSideEncryptionUpdateStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case completed
         case failed
         case inProgress
@@ -653,8 +654,9 @@ extension VoiceIDClientTypes {
 }
 
 extension VoiceIDClientTypes {
+
     /// Details about the most recent server-side encryption configuration update. When the server-side encryption configuration is changed, dependency on the old KMS key is removed through an asynchronous process. When this update is complete, the domain’s data can only be accessed using the new KMS key.
-    public struct ServerSideEncryptionUpdateDetails {
+    public struct ServerSideEncryptionUpdateDetails: Swift.Sendable {
         /// Message explaining the current UpdateStatus. When the UpdateStatus is FAILED, this message explains the cause of the failure.
         public var message: Swift.String?
         /// The previous KMS key ID the domain was encrypted with, before ServerSideEncryptionConfiguration was updated to a new KMS key ID.
@@ -673,12 +675,12 @@ extension VoiceIDClientTypes {
             self.updateStatus = updateStatus
         }
     }
-
 }
 
 extension VoiceIDClientTypes {
+
     /// Details of the watchlists in a domain.
-    public struct WatchlistDetails {
+    public struct WatchlistDetails: Swift.Sendable {
         /// The identifier of the default watchlist.
         /// This member is required.
         public var defaultWatchlistId: Swift.String?
@@ -690,12 +692,12 @@ extension VoiceIDClientTypes {
             self.defaultWatchlistId = defaultWatchlistId
         }
     }
-
 }
 
 extension VoiceIDClientTypes {
+
     /// Contains all the information about a domain.
-    public struct Domain {
+    public struct Domain: Swift.Sendable {
         /// The Amazon Resource Name (ARN) for the domain.
         public var arn: Swift.String?
         /// The timestamp of when the domain was created.
@@ -742,7 +744,6 @@ extension VoiceIDClientTypes {
             self.watchlistDetails = watchlistDetails
         }
     }
-
 }
 
 extension VoiceIDClientTypes.Domain: Swift.CustomDebugStringConvertible {
@@ -750,7 +751,7 @@ extension VoiceIDClientTypes.Domain: Swift.CustomDebugStringConvertible {
         "Domain(arn: \(Swift.String(describing: arn)), createdAt: \(Swift.String(describing: createdAt)), domainId: \(Swift.String(describing: domainId)), domainStatus: \(Swift.String(describing: domainStatus)), serverSideEncryptionConfiguration: \(Swift.String(describing: serverSideEncryptionConfiguration)), serverSideEncryptionUpdateDetails: \(Swift.String(describing: serverSideEncryptionUpdateDetails)), updatedAt: \(Swift.String(describing: updatedAt)), watchlistDetails: \(Swift.String(describing: watchlistDetails)), description: \"CONTENT_REDACTED\", name: \"CONTENT_REDACTED\")"}
 }
 
-public struct CreateDomainOutput {
+public struct CreateDomainOutput: Swift.Sendable {
     /// Information about the newly created domain.
     public var domain: VoiceIDClientTypes.Domain?
 
@@ -762,7 +763,7 @@ public struct CreateDomainOutput {
     }
 }
 
-public struct CreateWatchlistInput {
+public struct CreateWatchlistInput: Swift.Sendable {
     /// A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If not provided, the Amazon Web Services SDK populates this field. For more information about idempotency, see [Making retries safe with idempotent APIs](https://aws.amazon.com/builders-library/making-retries-safe-with-idempotent-APIs/).
     public var clientToken: Swift.String?
     /// A brief description of this watchlist.
@@ -794,8 +795,9 @@ extension CreateWatchlistInput: Swift.CustomDebugStringConvertible {
 }
 
 extension VoiceIDClientTypes {
+
     /// Contains all the information about a watchlist.
-    public struct Watchlist {
+    public struct Watchlist: Swift.Sendable {
         /// The timestamp of when the watchlist was created.
         public var createdAt: Foundation.Date?
         /// Whether the specified watchlist is the default watchlist of a domain.
@@ -830,7 +832,6 @@ extension VoiceIDClientTypes {
             self.watchlistId = watchlistId
         }
     }
-
 }
 
 extension VoiceIDClientTypes.Watchlist: Swift.CustomDebugStringConvertible {
@@ -838,7 +839,7 @@ extension VoiceIDClientTypes.Watchlist: Swift.CustomDebugStringConvertible {
         "Watchlist(createdAt: \(Swift.String(describing: createdAt)), defaultWatchlist: \(Swift.String(describing: defaultWatchlist)), domainId: \(Swift.String(describing: domainId)), updatedAt: \(Swift.String(describing: updatedAt)), watchlistId: \(Swift.String(describing: watchlistId)), description: \"CONTENT_REDACTED\", name: \"CONTENT_REDACTED\")"}
 }
 
-public struct CreateWatchlistOutput {
+public struct CreateWatchlistOutput: Swift.Sendable {
     /// Information about the newly created watchlist.
     public var watchlist: VoiceIDClientTypes.Watchlist?
 
@@ -850,7 +851,7 @@ public struct CreateWatchlistOutput {
     }
 }
 
-public struct DeleteDomainInput {
+public struct DeleteDomainInput: Swift.Sendable {
     /// The identifier of the domain you want to delete.
     /// This member is required.
     public var domainId: Swift.String?
@@ -863,7 +864,7 @@ public struct DeleteDomainInput {
     }
 }
 
-public struct DeleteFraudsterInput {
+public struct DeleteFraudsterInput: Swift.Sendable {
     /// The identifier of the domain that contains the fraudster.
     /// This member is required.
     public var domainId: Swift.String?
@@ -886,7 +887,7 @@ extension DeleteFraudsterInput: Swift.CustomDebugStringConvertible {
         "DeleteFraudsterInput(domainId: \(Swift.String(describing: domainId)), fraudsterId: \"CONTENT_REDACTED\")"}
 }
 
-public struct DeleteSpeakerInput {
+public struct DeleteSpeakerInput: Swift.Sendable {
     /// The identifier of the domain that contains the speaker.
     /// This member is required.
     public var domainId: Swift.String?
@@ -909,7 +910,7 @@ extension DeleteSpeakerInput: Swift.CustomDebugStringConvertible {
         "DeleteSpeakerInput(domainId: \(Swift.String(describing: domainId)), speakerId: \"CONTENT_REDACTED\")"}
 }
 
-public struct DeleteWatchlistInput {
+public struct DeleteWatchlistInput: Swift.Sendable {
     /// The identifier of the domain that contains the watchlist.
     /// This member is required.
     public var domainId: Swift.String?
@@ -927,7 +928,7 @@ public struct DeleteWatchlistInput {
     }
 }
 
-public struct DescribeDomainInput {
+public struct DescribeDomainInput: Swift.Sendable {
     /// The identifier of the domain that you are describing.
     /// This member is required.
     public var domainId: Swift.String?
@@ -940,7 +941,7 @@ public struct DescribeDomainInput {
     }
 }
 
-public struct DescribeDomainOutput {
+public struct DescribeDomainOutput: Swift.Sendable {
     /// Information about the specified domain.
     public var domain: VoiceIDClientTypes.Domain?
 
@@ -952,7 +953,7 @@ public struct DescribeDomainOutput {
     }
 }
 
-public struct DescribeFraudsterInput {
+public struct DescribeFraudsterInput: Swift.Sendable {
     /// The identifier of the domain that contains the fraudster.
     /// This member is required.
     public var domainId: Swift.String?
@@ -975,7 +976,7 @@ extension DescribeFraudsterInput: Swift.CustomDebugStringConvertible {
         "DescribeFraudsterInput(domainId: \(Swift.String(describing: domainId)), fraudsterId: \"CONTENT_REDACTED\")"}
 }
 
-public struct DescribeFraudsterOutput {
+public struct DescribeFraudsterOutput: Swift.Sendable {
     /// Information about the specified fraudster.
     public var fraudster: VoiceIDClientTypes.Fraudster?
 
@@ -987,7 +988,7 @@ public struct DescribeFraudsterOutput {
     }
 }
 
-public struct DescribeFraudsterRegistrationJobInput {
+public struct DescribeFraudsterRegistrationJobInput: Swift.Sendable {
     /// The identifier of the domain that contains the fraudster registration job.
     /// This member is required.
     public var domainId: Swift.String?
@@ -1006,8 +1007,9 @@ public struct DescribeFraudsterRegistrationJobInput {
 }
 
 extension VoiceIDClientTypes {
+
     /// Contains error details for a failed batch job.
-    public struct FailureDetails {
+    public struct FailureDetails: Swift.Sendable {
         /// A description of the error that caused the batch job failure.
         public var message: Swift.String?
         /// An HTTP status code representing the nature of the error.
@@ -1022,12 +1024,12 @@ extension VoiceIDClientTypes {
             self.statusCode = statusCode
         }
     }
-
 }
 
 extension VoiceIDClientTypes {
+
     /// The configuration containing input file information for a batch job.
-    public struct InputDataConfig {
+    public struct InputDataConfig: Swift.Sendable {
         /// The S3 location for the input manifest file that contains the list of individual enrollment or registration job requests.
         /// This member is required.
         public var s3Uri: Swift.String?
@@ -1039,12 +1041,12 @@ extension VoiceIDClientTypes {
             self.s3Uri = s3Uri
         }
     }
-
 }
 
 extension VoiceIDClientTypes {
+
     /// Indicates the completion progress for a batch job.
-    public struct JobProgress {
+    public struct JobProgress: Swift.Sendable {
         /// Shows the completed percentage of enrollment or registration requests listed in the input file.
         public var percentComplete: Swift.Int?
 
@@ -1055,12 +1057,11 @@ extension VoiceIDClientTypes {
             self.percentComplete = percentComplete
         }
     }
-
 }
 
 extension VoiceIDClientTypes {
 
-    public enum FraudsterRegistrationJobStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum FraudsterRegistrationJobStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case completed
         case completedWithErrors
         case failed
@@ -1097,8 +1098,9 @@ extension VoiceIDClientTypes {
 }
 
 extension VoiceIDClientTypes {
+
     /// The configuration containing output file information for a batch job.
-    public struct OutputDataConfig {
+    public struct OutputDataConfig: Swift.Sendable {
         /// The identifier of the KMS key you want Voice ID to use to encrypt the output file of a speaker enrollment job/fraudster registration job.
         public var kmsKeyId: Swift.String?
         /// The S3 path of the folder where Voice ID writes the job output file. It has a *.out extension. For example, if the input file name is input-file.json and the output folder path is s3://output-bucket/output-folder, the full output file path is s3://output-bucket/output-folder/job-Id/input-file.json.out.
@@ -1114,12 +1116,11 @@ extension VoiceIDClientTypes {
             self.s3Uri = s3Uri
         }
     }
-
 }
 
 extension VoiceIDClientTypes {
 
-    public enum DuplicateRegistrationAction: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DuplicateRegistrationAction: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case registerAsNew
         case skip
         case sdkUnknown(Swift.String)
@@ -1147,8 +1148,9 @@ extension VoiceIDClientTypes {
 }
 
 extension VoiceIDClientTypes {
+
     /// The registration configuration to be used during the batch fraudster registration job.
-    public struct RegistrationConfig {
+    public struct RegistrationConfig: Swift.Sendable {
         /// The action to take when a fraudster is identified as a duplicate. The default action is SKIP, which skips registering the duplicate fraudster. Setting the value to REGISTER_AS_NEW always registers a new fraudster into the specified domain.
         public var duplicateRegistrationAction: VoiceIDClientTypes.DuplicateRegistrationAction?
         /// The minimum similarity score between the new and old fraudsters in order to consider the new fraudster a duplicate.
@@ -1167,12 +1169,12 @@ extension VoiceIDClientTypes {
             self.watchlistIds = watchlistIds
         }
     }
-
 }
 
 extension VoiceIDClientTypes {
+
     /// Contains all the information about a fraudster registration job.
-    public struct FraudsterRegistrationJob {
+    public struct FraudsterRegistrationJob: Swift.Sendable {
         /// A timestamp of when the fraudster registration job was created.
         public var createdAt: Foundation.Date?
         /// The IAM role Amazon Resource Name (ARN) that grants Voice ID permissions to access customer's buckets to read the input manifest file and write the job output file.
@@ -1227,7 +1229,6 @@ extension VoiceIDClientTypes {
             self.registrationConfig = registrationConfig
         }
     }
-
 }
 
 extension VoiceIDClientTypes.FraudsterRegistrationJob: Swift.CustomDebugStringConvertible {
@@ -1235,7 +1236,7 @@ extension VoiceIDClientTypes.FraudsterRegistrationJob: Swift.CustomDebugStringCo
         "FraudsterRegistrationJob(createdAt: \(Swift.String(describing: createdAt)), dataAccessRoleArn: \(Swift.String(describing: dataAccessRoleArn)), domainId: \(Swift.String(describing: domainId)), endedAt: \(Swift.String(describing: endedAt)), failureDetails: \(Swift.String(describing: failureDetails)), inputDataConfig: \(Swift.String(describing: inputDataConfig)), jobId: \(Swift.String(describing: jobId)), jobProgress: \(Swift.String(describing: jobProgress)), jobStatus: \(Swift.String(describing: jobStatus)), outputDataConfig: \(Swift.String(describing: outputDataConfig)), registrationConfig: \(Swift.String(describing: registrationConfig)), jobName: \"CONTENT_REDACTED\")"}
 }
 
-public struct DescribeFraudsterRegistrationJobOutput {
+public struct DescribeFraudsterRegistrationJobOutput: Swift.Sendable {
     /// Contains details about the specified fraudster registration job.
     public var job: VoiceIDClientTypes.FraudsterRegistrationJob?
 
@@ -1247,7 +1248,7 @@ public struct DescribeFraudsterRegistrationJobOutput {
     }
 }
 
-public struct DescribeSpeakerInput {
+public struct DescribeSpeakerInput: Swift.Sendable {
     /// The identifier of the domain that contains the speaker.
     /// This member is required.
     public var domainId: Swift.String?
@@ -1272,7 +1273,7 @@ extension DescribeSpeakerInput: Swift.CustomDebugStringConvertible {
 
 extension VoiceIDClientTypes {
 
-    public enum SpeakerStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SpeakerStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case enrolled
         case expired
         case optedOut
@@ -1306,8 +1307,9 @@ extension VoiceIDClientTypes {
 }
 
 extension VoiceIDClientTypes {
+
     /// Contains all the information about a speaker.
-    public struct Speaker {
+    public struct Speaker: Swift.Sendable {
         /// A timestamp of when the speaker was created.
         public var createdAt: Foundation.Date?
         /// The client-provided identifier for the speaker.
@@ -1342,7 +1344,6 @@ extension VoiceIDClientTypes {
             self.updatedAt = updatedAt
         }
     }
-
 }
 
 extension VoiceIDClientTypes.Speaker: Swift.CustomDebugStringConvertible {
@@ -1350,7 +1351,7 @@ extension VoiceIDClientTypes.Speaker: Swift.CustomDebugStringConvertible {
         "Speaker(createdAt: \(Swift.String(describing: createdAt)), domainId: \(Swift.String(describing: domainId)), generatedSpeakerId: \(Swift.String(describing: generatedSpeakerId)), lastAccessedAt: \(Swift.String(describing: lastAccessedAt)), status: \(Swift.String(describing: status)), updatedAt: \(Swift.String(describing: updatedAt)), customerSpeakerId: \"CONTENT_REDACTED\")"}
 }
 
-public struct DescribeSpeakerOutput {
+public struct DescribeSpeakerOutput: Swift.Sendable {
     /// Information about the specified speaker.
     public var speaker: VoiceIDClientTypes.Speaker?
 
@@ -1362,7 +1363,7 @@ public struct DescribeSpeakerOutput {
     }
 }
 
-public struct DescribeSpeakerEnrollmentJobInput {
+public struct DescribeSpeakerEnrollmentJobInput: Swift.Sendable {
     /// The identifier of the domain that contains the speaker enrollment job.
     /// This member is required.
     public var domainId: Swift.String?
@@ -1382,7 +1383,7 @@ public struct DescribeSpeakerEnrollmentJobInput {
 
 extension VoiceIDClientTypes {
 
-    public enum ExistingEnrollmentAction: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ExistingEnrollmentAction: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case overwrite
         case skip
         case sdkUnknown(Swift.String)
@@ -1411,7 +1412,7 @@ extension VoiceIDClientTypes {
 
 extension VoiceIDClientTypes {
 
-    public enum FraudDetectionAction: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum FraudDetectionAction: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case fail
         case ignore
         case sdkUnknown(Swift.String)
@@ -1439,8 +1440,9 @@ extension VoiceIDClientTypes {
 }
 
 extension VoiceIDClientTypes {
+
     /// The fraud detection configuration to be used during the batch speaker enrollment job.
-    public struct EnrollmentJobFraudDetectionConfig {
+    public struct EnrollmentJobFraudDetectionConfig: Swift.Sendable {
         /// The action to take when the given speaker is flagged by the fraud detection system. The default value is FAIL, which fails the speaker enrollment. Changing this value to IGNORE results in the speaker being enrolled even if they are flagged by the fraud detection system.
         public var fraudDetectionAction: VoiceIDClientTypes.FraudDetectionAction?
         /// Threshold value for determining whether the speaker is a high risk to be fraudulent. If the detected risk score calculated by Voice ID is greater than or equal to the threshold, the speaker is considered a fraudster.
@@ -1459,12 +1461,12 @@ extension VoiceIDClientTypes {
             self.watchlistIds = watchlistIds
         }
     }
-
 }
 
 extension VoiceIDClientTypes {
+
     /// Contains configurations defining enrollment behavior for the batch job.
-    public struct EnrollmentConfig {
+    public struct EnrollmentConfig: Swift.Sendable {
         /// The action to take when the specified speaker is already enrolled in the specified domain. The default value is SKIP, which skips the enrollment for the existing speaker. Setting the value to OVERWRITE replaces the existing voice prints and enrollment audio stored for that speaker with new data generated from the latest audio.
         public var existingEnrollmentAction: VoiceIDClientTypes.ExistingEnrollmentAction?
         /// The fraud detection configuration to use for the speaker enrollment job.
@@ -1479,12 +1481,11 @@ extension VoiceIDClientTypes {
             self.fraudDetectionConfig = fraudDetectionConfig
         }
     }
-
 }
 
 extension VoiceIDClientTypes {
 
-    public enum SpeakerEnrollmentJobStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SpeakerEnrollmentJobStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case completed
         case completedWithErrors
         case failed
@@ -1521,8 +1522,9 @@ extension VoiceIDClientTypes {
 }
 
 extension VoiceIDClientTypes {
+
     /// Contains all the information about a speaker enrollment job.
-    public struct SpeakerEnrollmentJob {
+    public struct SpeakerEnrollmentJob: Swift.Sendable {
         /// A timestamp of when the speaker enrollment job was created.
         public var createdAt: Foundation.Date?
         /// The IAM role Amazon Resource Name (ARN) that grants Voice ID permissions to access customer's buckets to read the input manifest file and write the job output file.
@@ -1577,7 +1579,6 @@ extension VoiceIDClientTypes {
             self.outputDataConfig = outputDataConfig
         }
     }
-
 }
 
 extension VoiceIDClientTypes.SpeakerEnrollmentJob: Swift.CustomDebugStringConvertible {
@@ -1585,7 +1586,7 @@ extension VoiceIDClientTypes.SpeakerEnrollmentJob: Swift.CustomDebugStringConver
         "SpeakerEnrollmentJob(createdAt: \(Swift.String(describing: createdAt)), dataAccessRoleArn: \(Swift.String(describing: dataAccessRoleArn)), domainId: \(Swift.String(describing: domainId)), endedAt: \(Swift.String(describing: endedAt)), enrollmentConfig: \(Swift.String(describing: enrollmentConfig)), failureDetails: \(Swift.String(describing: failureDetails)), inputDataConfig: \(Swift.String(describing: inputDataConfig)), jobId: \(Swift.String(describing: jobId)), jobProgress: \(Swift.String(describing: jobProgress)), jobStatus: \(Swift.String(describing: jobStatus)), outputDataConfig: \(Swift.String(describing: outputDataConfig)), jobName: \"CONTENT_REDACTED\")"}
 }
 
-public struct DescribeSpeakerEnrollmentJobOutput {
+public struct DescribeSpeakerEnrollmentJobOutput: Swift.Sendable {
     /// Contains details about the specified speaker enrollment job.
     public var job: VoiceIDClientTypes.SpeakerEnrollmentJob?
 
@@ -1597,7 +1598,7 @@ public struct DescribeSpeakerEnrollmentJobOutput {
     }
 }
 
-public struct DescribeWatchlistInput {
+public struct DescribeWatchlistInput: Swift.Sendable {
     /// The identifier of the domain that contains the watchlist.
     /// This member is required.
     public var domainId: Swift.String?
@@ -1615,7 +1616,7 @@ public struct DescribeWatchlistInput {
     }
 }
 
-public struct DescribeWatchlistOutput {
+public struct DescribeWatchlistOutput: Swift.Sendable {
     /// Information about the specified watchlist.
     public var watchlist: VoiceIDClientTypes.Watchlist?
 
@@ -1627,7 +1628,7 @@ public struct DescribeWatchlistOutput {
     }
 }
 
-public struct DisassociateFraudsterInput {
+public struct DisassociateFraudsterInput: Swift.Sendable {
     /// The identifier of the domain that contains the fraudster.
     /// This member is required.
     public var domainId: Swift.String?
@@ -1655,7 +1656,7 @@ extension DisassociateFraudsterInput: Swift.CustomDebugStringConvertible {
         "DisassociateFraudsterInput(domainId: \(Swift.String(describing: domainId)), watchlistId: \(Swift.String(describing: watchlistId)), fraudsterId: \"CONTENT_REDACTED\")"}
 }
 
-public struct DisassociateFraudsterOutput {
+public struct DisassociateFraudsterOutput: Swift.Sendable {
     /// Contains all the information about a fraudster.
     public var fraudster: VoiceIDClientTypes.Fraudster?
 
@@ -1667,7 +1668,7 @@ public struct DisassociateFraudsterOutput {
     }
 }
 
-public struct ListDomainsInput {
+public struct ListDomainsInput: Swift.Sendable {
     /// The maximum number of results that are returned per call. You can use NextToken to obtain more pages of results. The default is 100; the maximum allowed page size is also 100.
     public var maxResults: Swift.Int?
     /// If NextToken is returned, there are more results available. The value of NextToken is a unique pagination token for each page. Make the call again using the returned token to retrieve the next page. Keep all other arguments unchanged. Each pagination token expires after 24 hours.
@@ -1684,8 +1685,9 @@ public struct ListDomainsInput {
 }
 
 extension VoiceIDClientTypes {
+
     /// Contains a summary of information about a domain.
-    public struct DomainSummary {
+    public struct DomainSummary: Swift.Sendable {
         /// The Amazon Resource Name (ARN) for the domain.
         public var arn: Swift.String?
         /// The timestamp of when the domain was created.
@@ -1732,7 +1734,6 @@ extension VoiceIDClientTypes {
             self.watchlistDetails = watchlistDetails
         }
     }
-
 }
 
 extension VoiceIDClientTypes.DomainSummary: Swift.CustomDebugStringConvertible {
@@ -1740,7 +1741,7 @@ extension VoiceIDClientTypes.DomainSummary: Swift.CustomDebugStringConvertible {
         "DomainSummary(arn: \(Swift.String(describing: arn)), createdAt: \(Swift.String(describing: createdAt)), domainId: \(Swift.String(describing: domainId)), domainStatus: \(Swift.String(describing: domainStatus)), serverSideEncryptionConfiguration: \(Swift.String(describing: serverSideEncryptionConfiguration)), serverSideEncryptionUpdateDetails: \(Swift.String(describing: serverSideEncryptionUpdateDetails)), updatedAt: \(Swift.String(describing: updatedAt)), watchlistDetails: \(Swift.String(describing: watchlistDetails)), description: \"CONTENT_REDACTED\", name: \"CONTENT_REDACTED\")"}
 }
 
-public struct ListDomainsOutput {
+public struct ListDomainsOutput: Swift.Sendable {
     /// A list containing details about each domain in the Amazon Web Services account.
     public var domainSummaries: [VoiceIDClientTypes.DomainSummary]?
     /// If NextToken is returned, there are more results available. The value of NextToken is a unique pagination token for each page. Make the call again using the returned token to retrieve the next page. Keep all other arguments unchanged. Each pagination token expires after 24 hours.
@@ -1756,7 +1757,7 @@ public struct ListDomainsOutput {
     }
 }
 
-public struct UpdateDomainInput {
+public struct UpdateDomainInput: Swift.Sendable {
     /// A brief description about this domain.
     public var description: Swift.String?
     /// The identifier of the domain to be updated.
@@ -1788,7 +1789,7 @@ extension UpdateDomainInput: Swift.CustomDebugStringConvertible {
         "UpdateDomainInput(domainId: \(Swift.String(describing: domainId)), serverSideEncryptionConfiguration: \(Swift.String(describing: serverSideEncryptionConfiguration)), description: \"CONTENT_REDACTED\", name: \"CONTENT_REDACTED\")"}
 }
 
-public struct UpdateDomainOutput {
+public struct UpdateDomainOutput: Swift.Sendable {
     /// Details about the updated domain
     public var domain: VoiceIDClientTypes.Domain?
 
@@ -1800,7 +1801,7 @@ public struct UpdateDomainOutput {
     }
 }
 
-public struct EvaluateSessionInput {
+public struct EvaluateSessionInput: Swift.Sendable {
     /// The identifier of the domain where the session started.
     /// This member is required.
     public var domainId: Swift.String?
@@ -1819,8 +1820,9 @@ public struct EvaluateSessionInput {
 }
 
 extension VoiceIDClientTypes {
+
     /// The configuration used for performing fraud detection over a speaker during a session.
-    public struct FraudDetectionConfiguration {
+    public struct FraudDetectionConfiguration: Swift.Sendable {
         /// Threshold value for determining whether the speaker is a fraudster. If the detected risk score calculated by Voice ID is higher than the threshold, the speaker is considered a fraudster.
         public var riskThreshold: Swift.Int?
         /// The identifier of the watchlist against which fraud detection is performed.
@@ -1835,12 +1837,11 @@ extension VoiceIDClientTypes {
             self.watchlistId = watchlistId
         }
     }
-
 }
 
 extension VoiceIDClientTypes {
 
-    public enum FraudDetectionDecision: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum FraudDetectionDecision: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case highRisk
         case lowRisk
         case notEnoughSpeech
@@ -1872,7 +1873,7 @@ extension VoiceIDClientTypes {
 
 extension VoiceIDClientTypes {
 
-    public enum FraudDetectionReason: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum FraudDetectionReason: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case knownFraudster
         case voiceSpoofing
         case sdkUnknown(Swift.String)
@@ -1900,8 +1901,9 @@ extension VoiceIDClientTypes {
 }
 
 extension VoiceIDClientTypes {
+
     /// Contains details produced as a result of performing known fraudster risk analysis on a speaker.
-    public struct KnownFraudsterRisk {
+    public struct KnownFraudsterRisk: Swift.Sendable {
         /// The identifier of the fraudster that is the closest match to the speaker. If there are no fraudsters registered in a given domain, or if there are no fraudsters with a non-zero RiskScore, this value is null.
         public var generatedFraudsterId: Swift.String?
         /// The score indicating the likelihood the speaker is a known fraudster.
@@ -1917,12 +1919,12 @@ extension VoiceIDClientTypes {
             self.riskScore = riskScore
         }
     }
-
 }
 
 extension VoiceIDClientTypes {
+
     /// The details resulting from 'Voice Spoofing Risk' analysis of the speaker.
-    public struct VoiceSpoofingRisk {
+    public struct VoiceSpoofingRisk: Swift.Sendable {
         /// The score indicating the likelihood of speaker’s voice being spoofed.
         /// This member is required.
         public var riskScore: Swift.Int?
@@ -1934,12 +1936,12 @@ extension VoiceIDClientTypes {
             self.riskScore = riskScore
         }
     }
-
 }
 
 extension VoiceIDClientTypes {
+
     /// Details regarding various fraud risk analyses performed against the current session state and streamed audio of the speaker.
-    public struct FraudRiskDetails {
+    public struct FraudRiskDetails: Swift.Sendable {
         /// The details resulting from 'Known Fraudster Risk' analysis of the speaker.
         /// This member is required.
         public var knownFraudsterRisk: VoiceIDClientTypes.KnownFraudsterRisk?
@@ -1956,12 +1958,12 @@ extension VoiceIDClientTypes {
             self.voiceSpoofingRisk = voiceSpoofingRisk
         }
     }
-
 }
 
 extension VoiceIDClientTypes {
+
     /// The fraud detection result produced by Voice ID, processed against the current session state and streamed audio of the speaker.
-    public struct FraudDetectionResult {
+    public struct FraudDetectionResult: Swift.Sendable {
         /// A timestamp of when audio aggregation ended for this fraud detection result.
         public var audioAggregationEndedAt: Foundation.Date?
         /// A timestamp of when audio aggregation started for this fraud detection result.
@@ -1996,12 +1998,11 @@ extension VoiceIDClientTypes {
             self.riskDetails = riskDetails
         }
     }
-
 }
 
 extension VoiceIDClientTypes {
 
-    public enum StreamingStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum StreamingStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case ended
         case ongoing
         case pendingConfiguration
@@ -2031,7 +2032,7 @@ extension VoiceIDClientTypes {
     }
 }
 
-public struct EvaluateSessionOutput {
+public struct EvaluateSessionOutput: Swift.Sendable {
     /// Details resulting from the authentication process, such as authentication decision and authentication score.
     public var authenticationResult: VoiceIDClientTypes.AuthenticationResult?
     /// The identifier of the domain that contains the session.
@@ -2064,8 +2065,9 @@ public struct EvaluateSessionOutput {
 }
 
 extension VoiceIDClientTypes {
+
     /// Contains a summary of information about a fraudster registration job.
-    public struct FraudsterRegistrationJobSummary {
+    public struct FraudsterRegistrationJobSummary: Swift.Sendable {
         /// A timestamp of when the fraudster registration job was created.
         public var createdAt: Foundation.Date?
         /// The identifier of the domain that contains the fraudster registration job.
@@ -2104,7 +2106,6 @@ extension VoiceIDClientTypes {
             self.jobStatus = jobStatus
         }
     }
-
 }
 
 extension VoiceIDClientTypes.FraudsterRegistrationJobSummary: Swift.CustomDebugStringConvertible {
@@ -2113,8 +2114,9 @@ extension VoiceIDClientTypes.FraudsterRegistrationJobSummary: Swift.CustomDebugS
 }
 
 extension VoiceIDClientTypes {
+
     /// Contains a summary of information about a fraudster.
-    public struct FraudsterSummary {
+    public struct FraudsterSummary: Swift.Sendable {
         /// The timestamp of when the fraudster summary was created.
         public var createdAt: Foundation.Date?
         /// The identifier of the domain that contains the fraudster summary.
@@ -2137,10 +2139,9 @@ extension VoiceIDClientTypes {
             self.watchlistIds = watchlistIds
         }
     }
-
 }
 
-public struct ListFraudsterRegistrationJobsInput {
+public struct ListFraudsterRegistrationJobsInput: Swift.Sendable {
     /// The identifier of the domain that contains the fraudster registration Jobs.
     /// This member is required.
     public var domainId: Swift.String?
@@ -2165,7 +2166,7 @@ public struct ListFraudsterRegistrationJobsInput {
     }
 }
 
-public struct ListFraudsterRegistrationJobsOutput {
+public struct ListFraudsterRegistrationJobsOutput: Swift.Sendable {
     /// A list containing details about each specified fraudster registration job.
     public var jobSummaries: [VoiceIDClientTypes.FraudsterRegistrationJobSummary]?
     /// If NextToken is returned, there are more results available. The value of NextToken is a unique pagination token for each page. Make the call again using the returned token to retrieve the next page. Keep all other arguments unchanged. Each pagination token expires after 24 hours.
@@ -2181,7 +2182,7 @@ public struct ListFraudsterRegistrationJobsOutput {
     }
 }
 
-public struct ListFraudstersInput {
+public struct ListFraudstersInput: Swift.Sendable {
     /// The identifier of the domain.
     /// This member is required.
     public var domainId: Swift.String?
@@ -2206,7 +2207,7 @@ public struct ListFraudstersInput {
     }
 }
 
-public struct ListFraudstersOutput {
+public struct ListFraudstersOutput: Swift.Sendable {
     /// A list that contains details about each fraudster in the Amazon Web Services account.
     public var fraudsterSummaries: [VoiceIDClientTypes.FraudsterSummary]?
     /// If NextToken is returned, there are more results available. The value of NextToken is a unique pagination token for each page. Make the call again using the returned token to retrieve the next page. Keep all other arguments unchanged. Each pagination token expires after 24 hours.
@@ -2222,7 +2223,7 @@ public struct ListFraudstersOutput {
     }
 }
 
-public struct ListSpeakerEnrollmentJobsInput {
+public struct ListSpeakerEnrollmentJobsInput: Swift.Sendable {
     /// The identifier of the domain that contains the speaker enrollment jobs.
     /// This member is required.
     public var domainId: Swift.String?
@@ -2248,8 +2249,9 @@ public struct ListSpeakerEnrollmentJobsInput {
 }
 
 extension VoiceIDClientTypes {
+
     /// Contains a summary of information about a speaker enrollment job.
-    public struct SpeakerEnrollmentJobSummary {
+    public struct SpeakerEnrollmentJobSummary: Swift.Sendable {
         /// A timestamp of when of the speaker enrollment job was created.
         public var createdAt: Foundation.Date?
         /// The identifier of the domain that contains the speaker enrollment job.
@@ -2288,7 +2290,6 @@ extension VoiceIDClientTypes {
             self.jobStatus = jobStatus
         }
     }
-
 }
 
 extension VoiceIDClientTypes.SpeakerEnrollmentJobSummary: Swift.CustomDebugStringConvertible {
@@ -2296,7 +2297,7 @@ extension VoiceIDClientTypes.SpeakerEnrollmentJobSummary: Swift.CustomDebugStrin
         "SpeakerEnrollmentJobSummary(createdAt: \(Swift.String(describing: createdAt)), domainId: \(Swift.String(describing: domainId)), endedAt: \(Swift.String(describing: endedAt)), failureDetails: \(Swift.String(describing: failureDetails)), jobId: \(Swift.String(describing: jobId)), jobProgress: \(Swift.String(describing: jobProgress)), jobStatus: \(Swift.String(describing: jobStatus)), jobName: \"CONTENT_REDACTED\")"}
 }
 
-public struct ListSpeakerEnrollmentJobsOutput {
+public struct ListSpeakerEnrollmentJobsOutput: Swift.Sendable {
     /// A list containing details about each specified speaker enrollment job.
     public var jobSummaries: [VoiceIDClientTypes.SpeakerEnrollmentJobSummary]?
     /// If NextToken is returned, there are more results available. The value of NextToken is a unique pagination token for each page. Make the call again using the returned token to retrieve the next page. Keep all other arguments unchanged. Each pagination token expires after 24 hours.
@@ -2312,7 +2313,7 @@ public struct ListSpeakerEnrollmentJobsOutput {
     }
 }
 
-public struct ListSpeakersInput {
+public struct ListSpeakersInput: Swift.Sendable {
     /// The identifier of the domain.
     /// This member is required.
     public var domainId: Swift.String?
@@ -2334,8 +2335,9 @@ public struct ListSpeakersInput {
 }
 
 extension VoiceIDClientTypes {
+
     /// Contains a summary of information about a speaker.
-    public struct SpeakerSummary {
+    public struct SpeakerSummary: Swift.Sendable {
         /// A timestamp showing the speaker's creation time.
         public var createdAt: Foundation.Date?
         /// The client-provided identifier for the speaker.
@@ -2370,7 +2372,6 @@ extension VoiceIDClientTypes {
             self.updatedAt = updatedAt
         }
     }
-
 }
 
 extension VoiceIDClientTypes.SpeakerSummary: Swift.CustomDebugStringConvertible {
@@ -2378,7 +2379,7 @@ extension VoiceIDClientTypes.SpeakerSummary: Swift.CustomDebugStringConvertible 
         "SpeakerSummary(createdAt: \(Swift.String(describing: createdAt)), domainId: \(Swift.String(describing: domainId)), generatedSpeakerId: \(Swift.String(describing: generatedSpeakerId)), lastAccessedAt: \(Swift.String(describing: lastAccessedAt)), status: \(Swift.String(describing: status)), updatedAt: \(Swift.String(describing: updatedAt)), customerSpeakerId: \"CONTENT_REDACTED\")"}
 }
 
-public struct ListSpeakersOutput {
+public struct ListSpeakersOutput: Swift.Sendable {
     /// If NextToken is returned, there are more results available. The value of NextToken is a unique pagination token for each page. Make the call again using the returned token to retrieve the next page. Keep all other arguments unchanged. Each pagination token expires after 24 hours.
     public var nextToken: Swift.String?
     /// A list containing details about each speaker in the Amazon Web Services account.
@@ -2394,7 +2395,7 @@ public struct ListSpeakersOutput {
     }
 }
 
-public struct ListTagsForResourceInput {
+public struct ListTagsForResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the Voice ID resource for which you want to list the tags.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -2407,7 +2408,7 @@ public struct ListTagsForResourceInput {
     }
 }
 
-public struct ListTagsForResourceOutput {
+public struct ListTagsForResourceOutput: Swift.Sendable {
     /// The list of tags associated with the specified resource.
     public var tags: [VoiceIDClientTypes.Tag]?
 
@@ -2419,7 +2420,7 @@ public struct ListTagsForResourceOutput {
     }
 }
 
-public struct ListWatchlistsInput {
+public struct ListWatchlistsInput: Swift.Sendable {
     /// The identifier of the domain.
     /// This member is required.
     public var domainId: Swift.String?
@@ -2441,8 +2442,9 @@ public struct ListWatchlistsInput {
 }
 
 extension VoiceIDClientTypes {
+
     /// Contains a summary of information about a watchlist.
-    public struct WatchlistSummary {
+    public struct WatchlistSummary: Swift.Sendable {
         /// The timestamp of when the watchlist was created.
         public var createdAt: Foundation.Date?
         /// Whether the specified watchlist is the default watchlist of a domain.
@@ -2477,7 +2479,6 @@ extension VoiceIDClientTypes {
             self.watchlistId = watchlistId
         }
     }
-
 }
 
 extension VoiceIDClientTypes.WatchlistSummary: Swift.CustomDebugStringConvertible {
@@ -2485,7 +2486,7 @@ extension VoiceIDClientTypes.WatchlistSummary: Swift.CustomDebugStringConvertibl
         "WatchlistSummary(createdAt: \(Swift.String(describing: createdAt)), defaultWatchlist: \(Swift.String(describing: defaultWatchlist)), domainId: \(Swift.String(describing: domainId)), updatedAt: \(Swift.String(describing: updatedAt)), watchlistId: \(Swift.String(describing: watchlistId)), description: \"CONTENT_REDACTED\", name: \"CONTENT_REDACTED\")"}
 }
 
-public struct ListWatchlistsOutput {
+public struct ListWatchlistsOutput: Swift.Sendable {
     /// If NextToken is returned, there are more results available. The value of NextToken is a unique pagination token for each page. Make the call again using the returned token to retrieve the next page. Keep all other arguments unchanged. Each pagination token expires after 24 hours.
     public var nextToken: Swift.String?
     /// A list that contains details about each watchlist in the Amazon Web Services account.
@@ -2501,7 +2502,7 @@ public struct ListWatchlistsOutput {
     }
 }
 
-public struct OptOutSpeakerInput {
+public struct OptOutSpeakerInput: Swift.Sendable {
     /// The identifier of the domain that contains the speaker.
     /// This member is required.
     public var domainId: Swift.String?
@@ -2524,7 +2525,7 @@ extension OptOutSpeakerInput: Swift.CustomDebugStringConvertible {
         "OptOutSpeakerInput(domainId: \(Swift.String(describing: domainId)), speakerId: \"CONTENT_REDACTED\")"}
 }
 
-public struct OptOutSpeakerOutput {
+public struct OptOutSpeakerOutput: Swift.Sendable {
     /// Details about the opted-out speaker.
     public var speaker: VoiceIDClientTypes.Speaker?
 
@@ -2536,7 +2537,7 @@ public struct OptOutSpeakerOutput {
     }
 }
 
-public struct StartFraudsterRegistrationJobInput {
+public struct StartFraudsterRegistrationJobInput: Swift.Sendable {
     /// A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If not provided, the Amazon Web Services SDK populates this field. For more information about idempotency, see [Making retries safe with idempotent APIs](https://aws.amazon.com/builders-library/making-retries-safe-with-idempotent-APIs/).
     public var clientToken: Swift.String?
     /// The IAM role Amazon Resource Name (ARN) that grants Voice ID permissions to access customer's buckets to read the input manifest file and write the Job output file. Refer to the [Create and edit a fraudster watchlist](https://docs.aws.amazon.com/connect/latest/adminguide/voiceid-fraudster-watchlist.html) documentation for the permissions needed in this role.
@@ -2581,7 +2582,7 @@ extension StartFraudsterRegistrationJobInput: Swift.CustomDebugStringConvertible
         "StartFraudsterRegistrationJobInput(clientToken: \(Swift.String(describing: clientToken)), dataAccessRoleArn: \(Swift.String(describing: dataAccessRoleArn)), domainId: \(Swift.String(describing: domainId)), inputDataConfig: \(Swift.String(describing: inputDataConfig)), outputDataConfig: \(Swift.String(describing: outputDataConfig)), registrationConfig: \(Swift.String(describing: registrationConfig)), jobName: \"CONTENT_REDACTED\")"}
 }
 
-public struct StartFraudsterRegistrationJobOutput {
+public struct StartFraudsterRegistrationJobOutput: Swift.Sendable {
     /// Details about the started fraudster registration job.
     public var job: VoiceIDClientTypes.FraudsterRegistrationJob?
 
@@ -2593,7 +2594,7 @@ public struct StartFraudsterRegistrationJobOutput {
     }
 }
 
-public struct StartSpeakerEnrollmentJobInput {
+public struct StartSpeakerEnrollmentJobInput: Swift.Sendable {
     /// A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If not provided, the Amazon Web Services SDK populates this field. For more information about idempotency, see [Making retries safe with idempotent APIs](https://aws.amazon.com/builders-library/making-retries-safe-with-idempotent-APIs/).
     public var clientToken: Swift.String?
     /// The IAM role Amazon Resource Name (ARN) that grants Voice ID permissions to access customer's buckets to read the input manifest file and write the job output file. Refer to [Batch enrollment using audio data from prior calls](https://docs.aws.amazon.com/connect/latest/adminguide/voiceid-batch-enrollment.html) for the permissions needed in this role.
@@ -2638,7 +2639,7 @@ extension StartSpeakerEnrollmentJobInput: Swift.CustomDebugStringConvertible {
         "StartSpeakerEnrollmentJobInput(clientToken: \(Swift.String(describing: clientToken)), dataAccessRoleArn: \(Swift.String(describing: dataAccessRoleArn)), domainId: \(Swift.String(describing: domainId)), enrollmentConfig: \(Swift.String(describing: enrollmentConfig)), inputDataConfig: \(Swift.String(describing: inputDataConfig)), outputDataConfig: \(Swift.String(describing: outputDataConfig)), jobName: \"CONTENT_REDACTED\")"}
 }
 
-public struct StartSpeakerEnrollmentJobOutput {
+public struct StartSpeakerEnrollmentJobOutput: Swift.Sendable {
     /// Details about the started speaker enrollment job.
     public var job: VoiceIDClientTypes.SpeakerEnrollmentJob?
 
@@ -2650,7 +2651,7 @@ public struct StartSpeakerEnrollmentJobOutput {
     }
 }
 
-public struct TagResourceInput {
+public struct TagResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the Voice ID resource you want to tag.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -2668,12 +2669,12 @@ public struct TagResourceInput {
     }
 }
 
-public struct TagResourceOutput {
+public struct TagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UntagResourceInput {
+public struct UntagResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the Voice ID resource you want to remove tags from.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -2696,12 +2697,12 @@ extension UntagResourceInput: Swift.CustomDebugStringConvertible {
         "UntagResourceInput(resourceArn: \(Swift.String(describing: resourceArn)), tagKeys: \"CONTENT_REDACTED\")"}
 }
 
-public struct UntagResourceOutput {
+public struct UntagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdateWatchlistInput {
+public struct UpdateWatchlistInput: Swift.Sendable {
     /// A brief description about this watchlist.
     public var description: Swift.String?
     /// The identifier of the domain that contains the watchlist.
@@ -2732,7 +2733,7 @@ extension UpdateWatchlistInput: Swift.CustomDebugStringConvertible {
         "UpdateWatchlistInput(domainId: \(Swift.String(describing: domainId)), watchlistId: \(Swift.String(describing: watchlistId)), description: \"CONTENT_REDACTED\", name: \"CONTENT_REDACTED\")"}
 }
 
-public struct UpdateWatchlistOutput {
+public struct UpdateWatchlistOutput: Swift.Sendable {
     /// Details about the updated watchlist.
     public var watchlist: VoiceIDClientTypes.Watchlist?
 

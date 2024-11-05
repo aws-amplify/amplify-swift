@@ -700,7 +700,7 @@ extension TnbClient {
 
     /// Performs the `GetSolFunctionInstance` operation on the `TNB` service.
     ///
-    /// Gets the details of a network function instance, including the instantation state and metadata from the function package descriptor in the network function package. A network function instance is a function in a function package .
+    /// Gets the details of a network function instance, including the instantiation state and metadata from the function package descriptor in the network function package. A network function instance is a function in a function package .
     ///
     /// - Parameter GetSolFunctionInstanceInput : [no documentation found]
     ///
@@ -2267,7 +2267,7 @@ extension TnbClient {
 
     /// Performs the `UpdateSolNetworkInstance` operation on the `TNB` service.
     ///
-    /// Update a network instance. A network instance is a single network created in Amazon Web Services TNB that can be deployed and on which life-cycle operations (like terminate, update, and delete) can be performed.
+    /// Update a network instance. A network instance is a single network created in Amazon Web Services TNB that can be deployed and on which life-cycle operations (like terminate, update, and delete) can be performed. Choose the updateType parameter to target the necessary update of the network instance.
     ///
     /// - Parameter UpdateSolNetworkInstanceInput : [no documentation found]
     ///

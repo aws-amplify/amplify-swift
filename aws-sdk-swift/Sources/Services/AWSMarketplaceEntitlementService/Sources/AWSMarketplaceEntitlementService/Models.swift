@@ -99,7 +99,7 @@ public struct ThrottlingException: ClientRuntime.ModeledError, AWSClientRuntime.
 
 extension MarketplaceEntitlementClientTypes {
 
-    public enum GetEntitlementFilterName: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum GetEntitlementFilterName: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case customerIdentifier
         case dimension
         case sdkUnknown(Swift.String)
@@ -127,7 +127,7 @@ extension MarketplaceEntitlementClientTypes {
 }
 
 /// The GetEntitlementsRequest contains parameters for the GetEntitlements operation.
-public struct GetEntitlementsInput {
+public struct GetEntitlementsInput: Swift.Sendable {
     /// Filter is used to return entitlements for a specific customer or for a specific dimension. Filters are described as keys mapped to a lists of values. Filtered requests are unioned for each value in the value list, and then intersected for each filter key.
     public var filter: [Swift.String: [Swift.String]]?
     /// The maximum number of items to retrieve from the GetEntitlements operation. For pagination, use the NextToken field in subsequent calls to GetEntitlements.
@@ -153,8 +153,9 @@ public struct GetEntitlementsInput {
 }
 
 extension MarketplaceEntitlementClientTypes {
+
     /// The EntitlementValue represents the amount of capacity that the customer is entitled to for the product.
-    public struct EntitlementValue {
+    public struct EntitlementValue: Swift.Sendable {
         /// The BooleanValue field will be populated with a boolean value when the entitlement is a boolean type. Otherwise, the field will not be set.
         public var booleanValue: Swift.Bool?
         /// The DoubleValue field will be populated with a double value when the entitlement is a double type. Otherwise, the field will not be set.
@@ -177,12 +178,12 @@ extension MarketplaceEntitlementClientTypes {
             self.stringValue = stringValue
         }
     }
-
 }
 
 extension MarketplaceEntitlementClientTypes {
+
     /// An entitlement represents capacity in a product owned by the customer. For example, a customer might own some number of users or seats in an SaaS application or some amount of data capacity in a multi-tenant database.
-    public struct Entitlement {
+    public struct Entitlement: Swift.Sendable {
         /// The customer identifier is a handle to each unique customer in an application. Customer identifiers are obtained through the ResolveCustomer operation in AWS Marketplace Metering Service.
         public var customerIdentifier: Swift.String?
         /// The dimension for which the given entitlement applies. Dimensions represent categories of capacity in a product and are specified when the product is listed in AWS Marketplace.
@@ -209,11 +210,10 @@ extension MarketplaceEntitlementClientTypes {
             self.value = value
         }
     }
-
 }
 
 /// The GetEntitlementsRequest contains results from the GetEntitlements operation.
-public struct GetEntitlementsOutput {
+public struct GetEntitlementsOutput: Swift.Sendable {
     /// The set of entitlements found through the GetEntitlements operation. If the result contains an empty set of entitlements, NextToken might still be present and should be used.
     public var entitlements: [MarketplaceEntitlementClientTypes.Entitlement]?
     /// For paginated results, use NextToken in subsequent calls to GetEntitlements. If the result contains an empty set of entitlements, NextToken might still be present and should be used.

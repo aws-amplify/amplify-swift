@@ -27,7 +27,7 @@ import struct Smithy.URIQueryItem
 
 extension DirectoryServiceDataClientTypes {
 
-    public enum AccessDeniedReason: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AccessDeniedReason: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case dataDisabled
         case directoryAuth
         case iamAuth
@@ -111,7 +111,7 @@ public struct ConflictException: ClientRuntime.ModeledError, AWSClientRuntime.AW
 
 extension DirectoryServiceDataClientTypes {
 
-    public enum DirectoryUnavailableReason: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DirectoryUnavailableReason: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case directoryResourcesExceeded
         case directoryTimeout
         case invalidDirectoryState
@@ -254,7 +254,7 @@ public struct ThrottlingException: ClientRuntime.ModeledError, AWSClientRuntime.
 
 extension DirectoryServiceDataClientTypes {
 
-    public enum ValidationExceptionReason: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ValidationExceptionReason: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case attributeExists
         case duplicateAttribute
         case invalidAttributeForGroup
@@ -348,7 +348,7 @@ public struct ValidationException: ClientRuntime.ModeledError, AWSClientRuntime.
     }
 }
 
-public struct AddGroupMemberInput {
+public struct AddGroupMemberInput: Swift.Sendable {
     /// A unique and case-sensitive identifier that you provide to make sure the idempotency of the request, so multiple identical calls have the same effect as one single call. A client token is valid for 8 hours after the first request that uses it completes. After 8 hours, any request with the same client token is treated as a new request. If the request succeeds, any future uses of that token will be idempotent for another 8 hours. If you submit a request with the same client token but change one of the other parameters within the 8-hour idempotency window, Directory Service Data returns an ConflictException. This parameter is optional when using the CLI or SDK.
     public var clientToken: Swift.String?
     /// The identifier (ID) of the directory that's associated with the group.
@@ -379,14 +379,15 @@ public struct AddGroupMemberInput {
     }
 }
 
-public struct AddGroupMemberOutput {
+public struct AddGroupMemberOutput: Swift.Sendable {
 
     public init() { }
 }
 
 extension DirectoryServiceDataClientTypes {
+
     /// The data type for an attribute. Each attribute value is described as a name-value pair. The name is the AD schema name, and the value is the data itself. For a list of supported attributes, see [Directory Service Data Attributes](https://docs.aws.amazon.com/directoryservice/latest/admin-guide/ad_data_attributes.html).
-    public enum AttributeValue {
+    public enum AttributeValue: Swift.Sendable {
         /// Indicates that the attribute type value is a string. For example: "S": "S Group"
         case s(Swift.String)
         /// Indicates that the attribute type value is a number. For example: "N": "16"
@@ -397,12 +398,11 @@ extension DirectoryServiceDataClientTypes {
         case ss([Swift.String])
         case sdkUnknown(Swift.String)
     }
-
 }
 
 extension DirectoryServiceDataClientTypes {
 
-    public enum GroupScope: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum GroupScope: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case builtinLocal
         case domainLocal
         case global
@@ -437,7 +437,7 @@ extension DirectoryServiceDataClientTypes {
 
 extension DirectoryServiceDataClientTypes {
 
-    public enum GroupType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum GroupType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case distribution
         case security
         case sdkUnknown(Swift.String)
@@ -464,7 +464,7 @@ extension DirectoryServiceDataClientTypes {
     }
 }
 
-public struct CreateGroupInput {
+public struct CreateGroupInput: Swift.Sendable {
     /// A unique and case-sensitive identifier that you provide to make sure the idempotency of the request, so multiple identical calls have the same effect as one single call. A client token is valid for 8 hours after the first request that uses it completes. After 8 hours, any request with the same client token is treated as a new request. If the request succeeds, any future uses of that token will be idempotent for another 8 hours. If you submit a request with the same client token but change one of the other parameters within the 8-hour idempotency window, Directory Service Data returns an ConflictException. This parameter is optional when using the CLI or SDK.
     public var clientToken: Swift.String?
     /// The identifier (ID) of the directory that's associated with the group.
@@ -498,7 +498,7 @@ public struct CreateGroupInput {
     }
 }
 
-public struct CreateGroupOutput {
+public struct CreateGroupOutput: Swift.Sendable {
     /// The identifier (ID) of the directory that's associated with the group.
     public var directoryId: Swift.String?
     /// The name of the group.
@@ -518,7 +518,7 @@ public struct CreateGroupOutput {
     }
 }
 
-public struct CreateUserInput {
+public struct CreateUserInput: Swift.Sendable {
     /// A unique and case-sensitive identifier that you provide to make sure the idempotency of the request, so multiple identical calls have the same effect as one single call. A client token is valid for 8 hours after the first request that uses it completes. After 8 hours, any request with the same client token is treated as a new request. If the request succeeds, any future uses of that token will be idempotent for another 8 hours. If you submit a request with the same client token but change one of the other parameters within the 8-hour idempotency window, Directory Service Data returns an ConflictException. This parameter is optional when using the CLI or SDK.
     public var clientToken: Swift.String?
     /// The identifier (ID) of the directory that’s associated with the user.
@@ -561,7 +561,7 @@ extension CreateUserInput: Swift.CustomDebugStringConvertible {
         "CreateUserInput(clientToken: \(Swift.String(describing: clientToken)), directoryId: \(Swift.String(describing: directoryId)), otherAttributes: \(Swift.String(describing: otherAttributes)), samAccountName: \(Swift.String(describing: samAccountName)), emailAddress: \"CONTENT_REDACTED\", givenName: \"CONTENT_REDACTED\", surname: \"CONTENT_REDACTED\")"}
 }
 
-public struct CreateUserOutput {
+public struct CreateUserOutput: Swift.Sendable {
     /// The identifier (ID) of the directory where the address block is added.
     public var directoryId: Swift.String?
     /// The name of the user.
@@ -581,7 +581,7 @@ public struct CreateUserOutput {
     }
 }
 
-public struct DeleteGroupInput {
+public struct DeleteGroupInput: Swift.Sendable {
     /// A unique and case-sensitive identifier that you provide to make sure the idempotency of the request, so multiple identical calls have the same effect as one single call. A client token is valid for 8 hours after the first request that uses it completes. After 8 hours, any request with the same client token is treated as a new request. If the request succeeds, any future uses of that token will be idempotent for another 8 hours. If you submit a request with the same client token but change one of the other parameters within the 8-hour idempotency window, Directory Service Data returns an ConflictException. This parameter is optional when using the CLI or SDK.
     public var clientToken: Swift.String?
     /// The identifier (ID) of the directory that's associated with the group.
@@ -603,12 +603,12 @@ public struct DeleteGroupInput {
     }
 }
 
-public struct DeleteGroupOutput {
+public struct DeleteGroupOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteUserInput {
+public struct DeleteUserInput: Swift.Sendable {
     /// A unique and case-sensitive identifier that you provide to make sure the idempotency of the request, so multiple identical calls have the same effect as one single call. A client token is valid for 8 hours after the first request that uses it completes. After 8 hours, any request with the same client token is treated as a new request. If the request succeeds, any future uses of that token will be idempotent for another 8 hours. If you submit a request with the same client token but change one of the other parameters within the 8-hour idempotency window, Directory Service Data returns an ConflictException. This parameter is optional when using the CLI or SDK.
     public var clientToken: Swift.String?
     /// The identifier (ID) of the directory that's associated with the user.
@@ -630,12 +630,12 @@ public struct DeleteUserInput {
     }
 }
 
-public struct DeleteUserOutput {
+public struct DeleteUserOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DescribeGroupInput {
+public struct DescribeGroupInput: Swift.Sendable {
     /// The Identifier (ID) of the directory associated with the group.
     /// This member is required.
     public var directoryId: Swift.String?
@@ -661,7 +661,7 @@ public struct DescribeGroupInput {
     }
 }
 
-public struct DescribeGroupOutput {
+public struct DescribeGroupOutput: Swift.Sendable {
     /// The identifier (ID) of the directory that's associated with the group.
     public var directoryId: Swift.String?
     /// The [distinguished name](https://learn.microsoft.com/en-us/windows/win32/ad/object-names-and-identities#distinguished-name) of the object.
@@ -706,7 +706,7 @@ extension DescribeGroupOutput: Swift.CustomDebugStringConvertible {
         "DescribeGroupOutput(directoryId: \(Swift.String(describing: directoryId)), groupScope: \(Swift.String(describing: groupScope)), groupType: \(Swift.String(describing: groupType)), otherAttributes: \(Swift.String(describing: otherAttributes)), realm: \(Swift.String(describing: realm)), samAccountName: \(Swift.String(describing: samAccountName)), sid: \(Swift.String(describing: sid)), distinguishedName: \"CONTENT_REDACTED\")"}
 }
 
-public struct DescribeUserInput {
+public struct DescribeUserInput: Swift.Sendable {
     /// The identifier (ID) of the directory that's associated with the user.
     /// This member is required.
     public var directoryId: Swift.String?
@@ -732,7 +732,7 @@ public struct DescribeUserInput {
     }
 }
 
-public struct DescribeUserOutput {
+public struct DescribeUserOutput: Swift.Sendable {
     /// The identifier (ID) of the directory that's associated with the user.
     public var directoryId: Swift.String?
     /// The [distinguished name](https://learn.microsoft.com/en-us/windows/win32/ad/object-names-and-identities#distinguished-name) of the object.
@@ -789,7 +789,7 @@ extension DescribeUserOutput: Swift.CustomDebugStringConvertible {
         "DescribeUserOutput(directoryId: \(Swift.String(describing: directoryId)), enabled: \(Swift.String(describing: enabled)), otherAttributes: \(Swift.String(describing: otherAttributes)), realm: \(Swift.String(describing: realm)), samAccountName: \(Swift.String(describing: samAccountName)), sid: \(Swift.String(describing: sid)), distinguishedName: \"CONTENT_REDACTED\", emailAddress: \"CONTENT_REDACTED\", givenName: \"CONTENT_REDACTED\", surname: \"CONTENT_REDACTED\", userPrincipalName: \"CONTENT_REDACTED\")"}
 }
 
-public struct DisableUserInput {
+public struct DisableUserInput: Swift.Sendable {
     /// A unique and case-sensitive identifier that you provide to make sure the idempotency of the request, so multiple identical calls have the same effect as one single call. A client token is valid for 8 hours after the first request that uses it completes. After 8 hours, any request with the same client token is treated as a new request. If the request succeeds, any future uses of that token will be idempotent for another 8 hours. If you submit a request with the same client token but change one of the other parameters within the 8-hour idempotency window, Directory Service Data returns an ConflictException. This parameter is optional when using the CLI or SDK.
     public var clientToken: Swift.String?
     /// The identifier (ID) of the directory that's associated with the user.
@@ -811,12 +811,12 @@ public struct DisableUserInput {
     }
 }
 
-public struct DisableUserOutput {
+public struct DisableUserOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct ListGroupMembersInput {
+public struct ListGroupMembersInput: Swift.Sendable {
     /// The identifier (ID) of the directory that's associated with the group.
     /// This member is required.
     public var directoryId: Swift.String?
@@ -857,7 +857,7 @@ extension ListGroupMembersInput: Swift.CustomDebugStringConvertible {
 
 extension DirectoryServiceDataClientTypes {
 
-    public enum MemberType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum MemberType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case computer
         case group
         case user
@@ -888,8 +888,9 @@ extension DirectoryServiceDataClientTypes {
 }
 
 extension DirectoryServiceDataClientTypes {
+
     /// A member object that contains identifying information for a specified member.
-    public struct Member {
+    public struct Member: Swift.Sendable {
         /// The AD type of the member object.
         /// This member is required.
         public var memberType: DirectoryServiceDataClientTypes.MemberType?
@@ -911,10 +912,9 @@ extension DirectoryServiceDataClientTypes {
             self.sid = sid
         }
     }
-
 }
 
-public struct ListGroupMembersOutput {
+public struct ListGroupMembersOutput: Swift.Sendable {
     /// Identifier (ID) of the directory associated with the group.
     public var directoryId: Swift.String?
     /// The domain name that's associated with the member.
@@ -947,7 +947,7 @@ extension ListGroupMembersOutput: Swift.CustomDebugStringConvertible {
         "ListGroupMembersOutput(directoryId: \(Swift.String(describing: directoryId)), memberRealm: \(Swift.String(describing: memberRealm)), members: \(Swift.String(describing: members)), realm: \(Swift.String(describing: realm)), nextToken: \"CONTENT_REDACTED\")"}
 }
 
-public struct ListGroupsInput {
+public struct ListGroupsInput: Swift.Sendable {
     /// The identifier (ID) of the directory that's associated with the group.
     /// This member is required.
     public var directoryId: Swift.String?
@@ -978,8 +978,9 @@ extension ListGroupsInput: Swift.CustomDebugStringConvertible {
 }
 
 extension DirectoryServiceDataClientTypes {
+
     /// A structure containing a subset of fields of a group object from a directory.
-    public struct GroupSummary {
+    public struct GroupSummary: Swift.Sendable {
         /// The scope of the AD group. For details, see [Active Directory security groups](https://learn.microsoft.com/en-us/windows-server/identity/ad-ds/manage/understand-security-groups#group-scope).
         /// This member is required.
         public var groupScope: DirectoryServiceDataClientTypes.GroupScope?
@@ -1006,10 +1007,9 @@ extension DirectoryServiceDataClientTypes {
             self.sid = sid
         }
     }
-
 }
 
-public struct ListGroupsOutput {
+public struct ListGroupsOutput: Swift.Sendable {
     /// The identifier (ID) of the directory that's associated with the group.
     public var directoryId: Swift.String?
     /// The group information that the request returns.
@@ -1038,7 +1038,7 @@ extension ListGroupsOutput: Swift.CustomDebugStringConvertible {
         "ListGroupsOutput(directoryId: \(Swift.String(describing: directoryId)), groups: \(Swift.String(describing: groups)), realm: \(Swift.String(describing: realm)), nextToken: \"CONTENT_REDACTED\")"}
 }
 
-public struct ListGroupsForMemberInput {
+public struct ListGroupsForMemberInput: Swift.Sendable {
     /// The identifier (ID) of the directory that's associated with the member.
     /// This member is required.
     public var directoryId: Swift.String?
@@ -1077,7 +1077,7 @@ extension ListGroupsForMemberInput: Swift.CustomDebugStringConvertible {
         "ListGroupsForMemberInput(directoryId: \(Swift.String(describing: directoryId)), maxResults: \(Swift.String(describing: maxResults)), memberRealm: \(Swift.String(describing: memberRealm)), realm: \(Swift.String(describing: realm)), samAccountName: \(Swift.String(describing: samAccountName)), nextToken: \"CONTENT_REDACTED\")"}
 }
 
-public struct ListGroupsForMemberOutput {
+public struct ListGroupsForMemberOutput: Swift.Sendable {
     /// The identifier (ID) of the directory that's associated with the member.
     public var directoryId: Swift.String?
     /// The group information that the request returns.
@@ -1110,7 +1110,7 @@ extension ListGroupsForMemberOutput: Swift.CustomDebugStringConvertible {
         "ListGroupsForMemberOutput(directoryId: \(Swift.String(describing: directoryId)), groups: \(Swift.String(describing: groups)), memberRealm: \(Swift.String(describing: memberRealm)), realm: \(Swift.String(describing: realm)), nextToken: \"CONTENT_REDACTED\")"}
 }
 
-public struct ListUsersInput {
+public struct ListUsersInput: Swift.Sendable {
     /// The identifier (ID) of the directory that's associated with the user.
     /// This member is required.
     public var directoryId: Swift.String?
@@ -1141,8 +1141,9 @@ extension ListUsersInput: Swift.CustomDebugStringConvertible {
 }
 
 extension DirectoryServiceDataClientTypes {
+
     /// A structure containing a subset of the fields of a user object from a directory.
-    public struct UserSummary {
+    public struct UserSummary: Swift.Sendable {
         /// Indicates whether the user account is active.
         /// This member is required.
         public var enabled: Swift.Bool?
@@ -1172,7 +1173,6 @@ extension DirectoryServiceDataClientTypes {
             self.surname = surname
         }
     }
-
 }
 
 extension DirectoryServiceDataClientTypes.UserSummary: Swift.CustomDebugStringConvertible {
@@ -1180,7 +1180,7 @@ extension DirectoryServiceDataClientTypes.UserSummary: Swift.CustomDebugStringCo
         "UserSummary(enabled: \(Swift.String(describing: enabled)), samAccountName: \(Swift.String(describing: samAccountName)), sid: \(Swift.String(describing: sid)), givenName: \"CONTENT_REDACTED\", surname: \"CONTENT_REDACTED\")"}
 }
 
-public struct ListUsersOutput {
+public struct ListUsersOutput: Swift.Sendable {
     /// The identifier (ID) of the directory that's associated with the user.
     public var directoryId: Swift.String?
     /// An encoded paging token for paginated calls that can be passed back to retrieve the next page.
@@ -1209,7 +1209,7 @@ extension ListUsersOutput: Swift.CustomDebugStringConvertible {
         "ListUsersOutput(directoryId: \(Swift.String(describing: directoryId)), realm: \(Swift.String(describing: realm)), users: \(Swift.String(describing: users)), nextToken: \"CONTENT_REDACTED\")"}
 }
 
-public struct RemoveGroupMemberInput {
+public struct RemoveGroupMemberInput: Swift.Sendable {
     /// A unique and case-sensitive identifier that you provide to make sure the idempotency of the request, so multiple identical calls have the same effect as one single call. A client token is valid for 8 hours after the first request that uses it completes. After 8 hours, any request with the same client token is treated as a new request. If the request succeeds, any future uses of that token will be idempotent for another 8 hours. If you submit a request with the same client token but change one of the other parameters within the 8-hour idempotency window, Directory Service Data returns an ConflictException. This parameter is optional when using the CLI or SDK.
     public var clientToken: Swift.String?
     /// The identifier (ID) of the directory that's associated with the member.
@@ -1240,12 +1240,12 @@ public struct RemoveGroupMemberInput {
     }
 }
 
-public struct RemoveGroupMemberOutput {
+public struct RemoveGroupMemberOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct SearchGroupsInput {
+public struct SearchGroupsInput: Swift.Sendable {
     /// The identifier (ID) of the directory that's associated with the group.
     /// This member is required.
     public var directoryId: Swift.String?
@@ -1286,8 +1286,9 @@ extension SearchGroupsInput: Swift.CustomDebugStringConvertible {
 }
 
 extension DirectoryServiceDataClientTypes {
+
     /// A group object that contains identifying information and attributes for a specified group.
-    public struct Group {
+    public struct Group: Swift.Sendable {
         /// The [distinguished name](https://learn.microsoft.com/en-us/windows/win32/ad/object-names-and-identities#distinguished-name) of the object.
         public var distinguishedName: Swift.String?
         /// The scope of the AD group. For details, see [Active Directory security groups](https://learn.microsoft.com/en-us/windows-server/identity/ad-ds/manage/understand-security-groups#group-scope)
@@ -1319,7 +1320,6 @@ extension DirectoryServiceDataClientTypes {
             self.sid = sid
         }
     }
-
 }
 
 extension DirectoryServiceDataClientTypes.Group: Swift.CustomDebugStringConvertible {
@@ -1327,7 +1327,7 @@ extension DirectoryServiceDataClientTypes.Group: Swift.CustomDebugStringConverti
         "Group(groupScope: \(Swift.String(describing: groupScope)), groupType: \(Swift.String(describing: groupType)), otherAttributes: \(Swift.String(describing: otherAttributes)), samAccountName: \(Swift.String(describing: samAccountName)), sid: \(Swift.String(describing: sid)), distinguishedName: \"CONTENT_REDACTED\")"}
 }
 
-public struct SearchGroupsOutput {
+public struct SearchGroupsOutput: Swift.Sendable {
     /// The identifier (ID) of the directory that's associated with the group.
     public var directoryId: Swift.String?
     /// The group information that the request returns.
@@ -1356,7 +1356,7 @@ extension SearchGroupsOutput: Swift.CustomDebugStringConvertible {
         "SearchGroupsOutput(directoryId: \(Swift.String(describing: directoryId)), groups: \(Swift.String(describing: groups)), realm: \(Swift.String(describing: realm)), nextToken: \"CONTENT_REDACTED\")"}
 }
 
-public struct SearchUsersInput {
+public struct SearchUsersInput: Swift.Sendable {
     /// The identifier (ID) of the directory that's associated with the user.
     /// This member is required.
     public var directoryId: Swift.String?
@@ -1397,8 +1397,9 @@ extension SearchUsersInput: Swift.CustomDebugStringConvertible {
 }
 
 extension DirectoryServiceDataClientTypes {
+
     /// A user object that contains identifying information and attributes for a specified user.
-    public struct User {
+    public struct User: Swift.Sendable {
         /// The [distinguished name](https://learn.microsoft.com/en-us/windows/win32/ad/object-names-and-identities#distinguished-name) of the object.
         public var distinguishedName: Swift.String?
         /// The email address of the user.
@@ -1442,7 +1443,6 @@ extension DirectoryServiceDataClientTypes {
             self.userPrincipalName = userPrincipalName
         }
     }
-
 }
 
 extension DirectoryServiceDataClientTypes.User: Swift.CustomDebugStringConvertible {
@@ -1450,7 +1450,7 @@ extension DirectoryServiceDataClientTypes.User: Swift.CustomDebugStringConvertib
         "User(enabled: \(Swift.String(describing: enabled)), otherAttributes: \(Swift.String(describing: otherAttributes)), samAccountName: \(Swift.String(describing: samAccountName)), sid: \(Swift.String(describing: sid)), distinguishedName: \"CONTENT_REDACTED\", emailAddress: \"CONTENT_REDACTED\", givenName: \"CONTENT_REDACTED\", surname: \"CONTENT_REDACTED\", userPrincipalName: \"CONTENT_REDACTED\")"}
 }
 
-public struct SearchUsersOutput {
+public struct SearchUsersOutput: Swift.Sendable {
     /// The identifier (ID) of the directory where the address block is added.
     public var directoryId: Swift.String?
     /// An encoded paging token for paginated calls that can be passed back to retrieve the next page.
@@ -1481,7 +1481,7 @@ extension SearchUsersOutput: Swift.CustomDebugStringConvertible {
 
 extension DirectoryServiceDataClientTypes {
 
-    public enum UpdateType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum UpdateType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case add
         case remove
         case replace
@@ -1511,7 +1511,7 @@ extension DirectoryServiceDataClientTypes {
     }
 }
 
-public struct UpdateGroupInput {
+public struct UpdateGroupInput: Swift.Sendable {
     /// A unique and case-sensitive identifier that you provide to make sure the idempotency of the request, so multiple identical calls have the same effect as one single call. A client token is valid for 8 hours after the first request that uses it completes. After 8 hours, any request with the same client token is treated as a new request. If the request succeeds, any future uses of that token will be idempotent for another 8 hours. If you submit a request with the same client token but change one of the other parameters within the 8-hour idempotency window, Directory Service Data returns an ConflictException. This parameter is optional when using the CLI or SDK.
     public var clientToken: Swift.String?
     /// The identifier (ID) of the directory that's associated with the group.
@@ -1549,12 +1549,12 @@ public struct UpdateGroupInput {
     }
 }
 
-public struct UpdateGroupOutput {
+public struct UpdateGroupOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdateUserInput {
+public struct UpdateUserInput: Swift.Sendable {
     /// A unique and case-sensitive identifier that you provide to make sure the idempotency of the request, so multiple identical calls have the same effect as one single call. A client token is valid for 8 hours after the first request that uses it completes. After 8 hours, any request with the same client token is treated as a new request. If the request succeeds, any future uses of that token will be idempotent for another 8 hours. If you submit a request with the same client token but change one of the other parameters within the 8-hour idempotency window, Directory Service Data returns an ConflictException. This parameter is optional when using the CLI or SDK.
     public var clientToken: Swift.String?
     /// The identifier (ID) of the directory that's associated with the user.
@@ -1601,7 +1601,7 @@ extension UpdateUserInput: Swift.CustomDebugStringConvertible {
         "UpdateUserInput(clientToken: \(Swift.String(describing: clientToken)), directoryId: \(Swift.String(describing: directoryId)), otherAttributes: \(Swift.String(describing: otherAttributes)), samAccountName: \(Swift.String(describing: samAccountName)), updateType: \(Swift.String(describing: updateType)), emailAddress: \"CONTENT_REDACTED\", givenName: \"CONTENT_REDACTED\", surname: \"CONTENT_REDACTED\")"}
 }
 
-public struct UpdateUserOutput {
+public struct UpdateUserOutput: Swift.Sendable {
 
     public init() { }
 }

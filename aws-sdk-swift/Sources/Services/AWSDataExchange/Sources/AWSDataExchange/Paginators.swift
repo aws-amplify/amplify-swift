@@ -11,6 +11,36 @@ import protocol ClientRuntime.PaginateToken
 import struct ClientRuntime.PaginatorSequence
 
 extension DataExchangeClient {
+    /// Paginate over `[ListDataGrantsOutput]` results.
+    ///
+    /// When this operation is called, an `AsyncSequence` is created. AsyncSequences are lazy so no service
+    /// calls are made until the sequence is iterated over. This also means there is no guarantee that the request is valid
+    /// until then. If there are errors in your request, you will see the failures only after you start iterating.
+    /// - Parameters:
+    ///     - input: A `[ListDataGrantsInput]` to start pagination
+    /// - Returns: An `AsyncSequence` that can iterate over `ListDataGrantsOutput`
+    public func listDataGrantsPaginated(input: ListDataGrantsInput) -> ClientRuntime.PaginatorSequence<ListDataGrantsInput, ListDataGrantsOutput> {
+        return ClientRuntime.PaginatorSequence<ListDataGrantsInput, ListDataGrantsOutput>(input: input, inputKey: \.nextToken, outputKey: \.nextToken, paginationFunction: self.listDataGrants(input:))
+    }
+}
+
+extension ListDataGrantsInput: ClientRuntime.PaginateToken {
+    public func usingPaginationToken(_ token: Swift.String) -> ListDataGrantsInput {
+        return ListDataGrantsInput(
+            maxResults: self.maxResults,
+            nextToken: token
+        )}
+}
+
+extension PaginatorSequence where OperationStackInput == ListDataGrantsInput, OperationStackOutput == ListDataGrantsOutput {
+    /// This paginator transforms the `AsyncSequence` returned by `listDataGrantsPaginated`
+    /// to access the nested member `[DataExchangeClientTypes.DataGrantSummaryEntry]`
+    /// - Returns: `[DataExchangeClientTypes.DataGrantSummaryEntry]`
+    public func dataGrantSummaries() async throws -> [DataExchangeClientTypes.DataGrantSummaryEntry] {
+        return try await self.asyncCompactMap { item in item.dataGrantSummaries }
+    }
+}
+extension DataExchangeClient {
     /// Paginate over `[ListDataSetRevisionsOutput]` results.
     ///
     /// When this operation is called, an `AsyncSequence` is created. AsyncSequences are lazy so no service
@@ -133,6 +163,37 @@ extension PaginatorSequence where OperationStackInput == ListJobsInput, Operatio
     /// - Returns: `[DataExchangeClientTypes.JobEntry]`
     public func jobs() async throws -> [DataExchangeClientTypes.JobEntry] {
         return try await self.asyncCompactMap { item in item.jobs }
+    }
+}
+extension DataExchangeClient {
+    /// Paginate over `[ListReceivedDataGrantsOutput]` results.
+    ///
+    /// When this operation is called, an `AsyncSequence` is created. AsyncSequences are lazy so no service
+    /// calls are made until the sequence is iterated over. This also means there is no guarantee that the request is valid
+    /// until then. If there are errors in your request, you will see the failures only after you start iterating.
+    /// - Parameters:
+    ///     - input: A `[ListReceivedDataGrantsInput]` to start pagination
+    /// - Returns: An `AsyncSequence` that can iterate over `ListReceivedDataGrantsOutput`
+    public func listReceivedDataGrantsPaginated(input: ListReceivedDataGrantsInput) -> ClientRuntime.PaginatorSequence<ListReceivedDataGrantsInput, ListReceivedDataGrantsOutput> {
+        return ClientRuntime.PaginatorSequence<ListReceivedDataGrantsInput, ListReceivedDataGrantsOutput>(input: input, inputKey: \.nextToken, outputKey: \.nextToken, paginationFunction: self.listReceivedDataGrants(input:))
+    }
+}
+
+extension ListReceivedDataGrantsInput: ClientRuntime.PaginateToken {
+    public func usingPaginationToken(_ token: Swift.String) -> ListReceivedDataGrantsInput {
+        return ListReceivedDataGrantsInput(
+            acceptanceState: self.acceptanceState,
+            maxResults: self.maxResults,
+            nextToken: token
+        )}
+}
+
+extension PaginatorSequence where OperationStackInput == ListReceivedDataGrantsInput, OperationStackOutput == ListReceivedDataGrantsOutput {
+    /// This paginator transforms the `AsyncSequence` returned by `listReceivedDataGrantsPaginated`
+    /// to access the nested member `[DataExchangeClientTypes.ReceivedDataGrantSummariesEntry]`
+    /// - Returns: `[DataExchangeClientTypes.ReceivedDataGrantSummariesEntry]`
+    public func dataGrantSummaries() async throws -> [DataExchangeClientTypes.ReceivedDataGrantSummariesEntry] {
+        return try await self.asyncCompactMap { item in item.dataGrantSummaries }
     }
 }
 extension DataExchangeClient {

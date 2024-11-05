@@ -26,8 +26,9 @@ import struct Smithy.URIQueryItem
 @_spi(SmithyTimestamps) import struct SmithyTimestamps.TimestampFormatter
 
 extension IoTEventsDataClientTypes {
+
     /// Contains the configuration information of an acknowledge action.
-    public struct AcknowledgeActionConfiguration {
+    public struct AcknowledgeActionConfiguration: Swift.Sendable {
         /// The note that you can leave when you acknowledge the alarm.
         public var note: Swift.String?
 
@@ -38,12 +39,12 @@ extension IoTEventsDataClientTypes {
             self.note = note
         }
     }
-
 }
 
 extension IoTEventsDataClientTypes {
+
     /// Information needed to acknowledge the alarm.
-    public struct AcknowledgeAlarmActionRequest {
+    public struct AcknowledgeAlarmActionRequest: Swift.Sendable {
         /// The name of the alarm model.
         /// This member is required.
         public var alarmModelName: Swift.String?
@@ -68,12 +69,11 @@ extension IoTEventsDataClientTypes {
             self.requestId = requestId
         }
     }
-
 }
 
 extension IoTEventsDataClientTypes {
 
-    public enum CustomerActionName: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum CustomerActionName: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case acknowledge
         case disable
         case enable
@@ -110,8 +110,9 @@ extension IoTEventsDataClientTypes {
 }
 
 extension IoTEventsDataClientTypes {
+
     /// Contains the configuration information of a disable action.
-    public struct DisableActionConfiguration {
+    public struct DisableActionConfiguration: Swift.Sendable {
         /// The note that you can leave when you disable the alarm.
         public var note: Swift.String?
 
@@ -122,12 +123,12 @@ extension IoTEventsDataClientTypes {
             self.note = note
         }
     }
-
 }
 
 extension IoTEventsDataClientTypes {
+
     /// Contains the configuration information of an enable action.
-    public struct EnableActionConfiguration {
+    public struct EnableActionConfiguration: Swift.Sendable {
         /// The note that you can leave when you enable the alarm.
         public var note: Swift.String?
 
@@ -138,12 +139,12 @@ extension IoTEventsDataClientTypes {
             self.note = note
         }
     }
-
 }
 
 extension IoTEventsDataClientTypes {
+
     /// Contains the configuration information of a reset action.
-    public struct ResetActionConfiguration {
+    public struct ResetActionConfiguration: Swift.Sendable {
         /// The note that you can leave when you reset the alarm.
         public var note: Swift.String?
 
@@ -154,12 +155,12 @@ extension IoTEventsDataClientTypes {
             self.note = note
         }
     }
-
 }
 
 extension IoTEventsDataClientTypes {
+
     /// Contains the configuration information of a snooze action.
-    public struct SnoozeActionConfiguration {
+    public struct SnoozeActionConfiguration: Swift.Sendable {
         /// The note that you can leave when you snooze the alarm.
         public var note: Swift.String?
         /// The snooze time in seconds. The alarm automatically changes to the NORMAL state after this duration.
@@ -174,12 +175,12 @@ extension IoTEventsDataClientTypes {
             self.snoozeDuration = snoozeDuration
         }
     }
-
 }
 
 extension IoTEventsDataClientTypes {
+
     /// Contains information about the action that you can take to respond to the alarm.
-    public struct CustomerAction {
+    public struct CustomerAction: Swift.Sendable {
         /// Contains the configuration information of an acknowledge action.
         public var acknowledgeActionConfiguration: IoTEventsDataClientTypes.AcknowledgeActionConfiguration?
         /// The name of the action. The action name can be one of the following values:
@@ -223,12 +224,11 @@ extension IoTEventsDataClientTypes {
             self.snoozeActionConfiguration = snoozeActionConfiguration
         }
     }
-
 }
 
 extension IoTEventsDataClientTypes {
 
-    public enum ComparisonOperator: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ComparisonOperator: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case equal
         case greater
         case greaterOrEqual
@@ -268,8 +268,9 @@ extension IoTEventsDataClientTypes {
 }
 
 extension IoTEventsDataClientTypes {
+
     /// Information needed to compare two values with a comparison operator.
-    public struct SimpleRuleEvaluation {
+    public struct SimpleRuleEvaluation: Swift.Sendable {
         /// The value of the input property, on the left side of the comparison operator.
         public var inputPropertyValue: Swift.String?
         /// The comparison operator.
@@ -288,12 +289,12 @@ extension IoTEventsDataClientTypes {
             self.thresholdValue = thresholdValue
         }
     }
-
 }
 
 extension IoTEventsDataClientTypes {
+
     /// Information needed to evaluate data.
-    public struct RuleEvaluation {
+    public struct RuleEvaluation: Swift.Sendable {
         /// Information needed to compare two values with a comparison operator.
         public var simpleRuleEvaluation: IoTEventsDataClientTypes.SimpleRuleEvaluation?
 
@@ -304,12 +305,11 @@ extension IoTEventsDataClientTypes {
             self.simpleRuleEvaluation = simpleRuleEvaluation
         }
     }
-
 }
 
 extension IoTEventsDataClientTypes {
 
-    public enum AlarmStateName: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AlarmStateName: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case acknowledged
         case active
         case disabled
@@ -350,7 +350,7 @@ extension IoTEventsDataClientTypes {
 
 extension IoTEventsDataClientTypes {
 
-    public enum EventType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum EventType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case stateChange
         case sdkUnknown(Swift.String)
 
@@ -376,7 +376,7 @@ extension IoTEventsDataClientTypes {
 
 extension IoTEventsDataClientTypes {
 
-    public enum TriggerType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum TriggerType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case snoozeTimeout
         case sdkUnknown(Swift.String)
 
@@ -401,8 +401,9 @@ extension IoTEventsDataClientTypes {
 }
 
 extension IoTEventsDataClientTypes {
+
     /// Contains the configuration information of alarm state changes.
-    public struct StateChangeConfiguration {
+    public struct StateChangeConfiguration: Swift.Sendable {
         /// The trigger type. If the value is SNOOZE_TIMEOUT, the snooze duration ends and the alarm automatically changes to the NORMAL state.
         public var triggerType: IoTEventsDataClientTypes.TriggerType?
 
@@ -413,12 +414,12 @@ extension IoTEventsDataClientTypes {
             self.triggerType = triggerType
         }
     }
-
 }
 
 extension IoTEventsDataClientTypes {
+
     /// Contains information about alarm state changes.
-    public struct SystemEvent {
+    public struct SystemEvent: Swift.Sendable {
         /// The event type. If the value is STATE_CHANGE, the event contains information about alarm state changes.
         public var eventType: IoTEventsDataClientTypes.EventType?
         /// Contains the configuration information of alarm state changes.
@@ -433,12 +434,12 @@ extension IoTEventsDataClientTypes {
             self.stateChangeConfiguration = stateChangeConfiguration
         }
     }
-
 }
 
 extension IoTEventsDataClientTypes {
+
     /// Contains information about the current state of the alarm.
-    public struct AlarmState {
+    public struct AlarmState: Swift.Sendable {
         /// Contains information about the action that you can take to respond to the alarm.
         public var customerAction: IoTEventsDataClientTypes.CustomerAction?
         /// Information needed to evaluate data.
@@ -473,12 +474,12 @@ extension IoTEventsDataClientTypes {
             self.systemEvent = systemEvent
         }
     }
-
 }
 
 extension IoTEventsDataClientTypes {
+
     /// Contains information about an alarm.
-    public struct Alarm {
+    public struct Alarm: Swift.Sendable {
         /// The name of the alarm model.
         public var alarmModelName: Swift.String?
         /// The version of the alarm model.
@@ -513,12 +514,12 @@ extension IoTEventsDataClientTypes {
             self.severity = severity
         }
     }
-
 }
 
 extension IoTEventsDataClientTypes {
+
     /// Contains a summary of an alarm.
-    public struct AlarmSummary {
+    public struct AlarmSummary: Swift.Sendable {
         /// The name of the alarm model.
         public var alarmModelName: Swift.String?
         /// The version of the alarm model.
@@ -561,7 +562,6 @@ extension IoTEventsDataClientTypes {
             self.stateName = stateName
         }
     }
-
 }
 
 /// An internal failure occurred.
@@ -664,7 +664,7 @@ public struct ThrottlingException: ClientRuntime.ModeledError, AWSClientRuntime.
     }
 }
 
-public struct BatchAcknowledgeAlarmInput {
+public struct BatchAcknowledgeAlarmInput: Swift.Sendable {
     /// The list of acknowledge action requests. You can specify up to 10 requests per operation.
     /// This member is required.
     public var acknowledgeActionRequests: [IoTEventsDataClientTypes.AcknowledgeAlarmActionRequest]?
@@ -679,7 +679,7 @@ public struct BatchAcknowledgeAlarmInput {
 
 extension IoTEventsDataClientTypes {
 
-    public enum ErrorCode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ErrorCode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case internalfailureexception
         case invalidrequestexception
         case resourcenotfoundexception
@@ -716,6 +716,7 @@ extension IoTEventsDataClientTypes {
 }
 
 extension IoTEventsDataClientTypes {
+
     /// Contains error messages associated with one of the following requests:
     ///
     /// * [BatchAcknowledgeAlarm](https://docs.aws.amazon.com/iotevents/latest/apireference/API_iotevents-data_BatchAcknowledgeAlarm.html)
@@ -727,7 +728,7 @@ extension IoTEventsDataClientTypes {
     /// * [BatchResetAlarm](https://docs.aws.amazon.com/iotevents/latest/apireference/API_iotevents-data_BatchResetAlarm.html)
     ///
     /// * [BatchSnoozeAlarm](https://docs.aws.amazon.com/iotevents/latest/apireference/API_iotevents-data_BatchSnoozeAlarm.html)
-    public struct BatchAlarmActionErrorEntry {
+    public struct BatchAlarmActionErrorEntry: Swift.Sendable {
         /// The error code.
         public var errorCode: IoTEventsDataClientTypes.ErrorCode?
         /// A message that describes the error.
@@ -746,10 +747,9 @@ extension IoTEventsDataClientTypes {
             self.requestId = requestId
         }
     }
-
 }
 
-public struct BatchAcknowledgeAlarmOutput {
+public struct BatchAcknowledgeAlarmOutput: Swift.Sendable {
     /// A list of errors associated with the request, or null if there are no errors. Each error entry contains an entry ID that helps you identify the entry that failed.
     public var errorEntries: [IoTEventsDataClientTypes.BatchAlarmActionErrorEntry]?
 
@@ -762,8 +762,9 @@ public struct BatchAcknowledgeAlarmOutput {
 }
 
 extension IoTEventsDataClientTypes {
+
     /// Information used to delete the detector model.
-    public struct DeleteDetectorRequest {
+    public struct DeleteDetectorRequest: Swift.Sendable {
         /// The name of the detector model that was used to create the detector instance.
         /// This member is required.
         public var detectorModelName: Swift.String?
@@ -784,10 +785,9 @@ extension IoTEventsDataClientTypes {
             self.messageId = messageId
         }
     }
-
 }
 
-public struct BatchDeleteDetectorInput {
+public struct BatchDeleteDetectorInput: Swift.Sendable {
     /// The list of one or more detectors to be deleted.
     /// This member is required.
     public var detectors: [IoTEventsDataClientTypes.DeleteDetectorRequest]?
@@ -801,8 +801,9 @@ public struct BatchDeleteDetectorInput {
 }
 
 extension IoTEventsDataClientTypes {
+
     /// Contains error messages associated with the deletion request.
-    public struct BatchDeleteDetectorErrorEntry {
+    public struct BatchDeleteDetectorErrorEntry: Swift.Sendable {
         /// The error code.
         public var errorCode: IoTEventsDataClientTypes.ErrorCode?
         /// A message that describes the error.
@@ -821,10 +822,9 @@ extension IoTEventsDataClientTypes {
             self.messageId = messageId
         }
     }
-
 }
 
-public struct BatchDeleteDetectorOutput {
+public struct BatchDeleteDetectorOutput: Swift.Sendable {
     /// A list of errors associated with the request, or an empty array ([]) if there are no errors. Each error entry contains a messageId that helps you identify the entry that failed.
     public var batchDeleteDetectorErrorEntries: [IoTEventsDataClientTypes.BatchDeleteDetectorErrorEntry]?
 
@@ -837,8 +837,9 @@ public struct BatchDeleteDetectorOutput {
 }
 
 extension IoTEventsDataClientTypes {
+
     /// Information used to disable the alarm.
-    public struct DisableAlarmActionRequest {
+    public struct DisableAlarmActionRequest: Swift.Sendable {
         /// The name of the alarm model.
         /// This member is required.
         public var alarmModelName: Swift.String?
@@ -863,10 +864,9 @@ extension IoTEventsDataClientTypes {
             self.requestId = requestId
         }
     }
-
 }
 
-public struct BatchDisableAlarmInput {
+public struct BatchDisableAlarmInput: Swift.Sendable {
     /// The list of disable action requests. You can specify up to 10 requests per operation.
     /// This member is required.
     public var disableActionRequests: [IoTEventsDataClientTypes.DisableAlarmActionRequest]?
@@ -879,7 +879,7 @@ public struct BatchDisableAlarmInput {
     }
 }
 
-public struct BatchDisableAlarmOutput {
+public struct BatchDisableAlarmOutput: Swift.Sendable {
     /// A list of errors associated with the request, or null if there are no errors. Each error entry contains an entry ID that helps you identify the entry that failed.
     public var errorEntries: [IoTEventsDataClientTypes.BatchAlarmActionErrorEntry]?
 
@@ -892,8 +892,9 @@ public struct BatchDisableAlarmOutput {
 }
 
 extension IoTEventsDataClientTypes {
+
     /// Information needed to enable the alarm.
-    public struct EnableAlarmActionRequest {
+    public struct EnableAlarmActionRequest: Swift.Sendable {
         /// The name of the alarm model.
         /// This member is required.
         public var alarmModelName: Swift.String?
@@ -918,10 +919,9 @@ extension IoTEventsDataClientTypes {
             self.requestId = requestId
         }
     }
-
 }
 
-public struct BatchEnableAlarmInput {
+public struct BatchEnableAlarmInput: Swift.Sendable {
     /// The list of enable action requests. You can specify up to 10 requests per operation.
     /// This member is required.
     public var enableActionRequests: [IoTEventsDataClientTypes.EnableAlarmActionRequest]?
@@ -934,7 +934,7 @@ public struct BatchEnableAlarmInput {
     }
 }
 
-public struct BatchEnableAlarmOutput {
+public struct BatchEnableAlarmOutput: Swift.Sendable {
     /// A list of errors associated with the request, or null if there are no errors. Each error entry contains an entry ID that helps you identify the entry that failed.
     public var errorEntries: [IoTEventsDataClientTypes.BatchAlarmActionErrorEntry]?
 
@@ -947,8 +947,9 @@ public struct BatchEnableAlarmOutput {
 }
 
 extension IoTEventsDataClientTypes {
+
     /// Contains information about a timestamp.
-    public struct TimestampValue {
+    public struct TimestampValue: Swift.Sendable {
         /// The value of the timestamp, in the Unix epoch format.
         public var timeInMillis: Swift.Int?
 
@@ -959,12 +960,12 @@ extension IoTEventsDataClientTypes {
             self.timeInMillis = timeInMillis
         }
     }
-
 }
 
 extension IoTEventsDataClientTypes {
+
     /// Information about a message.
-    public struct Message {
+    public struct Message: Swift.Sendable {
         /// The name of the input into which the message payload is transformed.
         /// This member is required.
         public var inputName: Swift.String?
@@ -990,10 +991,9 @@ extension IoTEventsDataClientTypes {
             self.timestamp = timestamp
         }
     }
-
 }
 
-public struct BatchPutMessageInput {
+public struct BatchPutMessageInput: Swift.Sendable {
     /// The list of messages to send. Each message has the following format: '{ "messageId": "string", "inputName": "string", "payload": "string"}'
     /// This member is required.
     public var messages: [IoTEventsDataClientTypes.Message]?
@@ -1007,8 +1007,9 @@ public struct BatchPutMessageInput {
 }
 
 extension IoTEventsDataClientTypes {
+
     /// Contains information about the errors encountered.
-    public struct BatchPutMessageErrorEntry {
+    public struct BatchPutMessageErrorEntry: Swift.Sendable {
         /// The error code.
         public var errorCode: IoTEventsDataClientTypes.ErrorCode?
         /// A message that describes the error.
@@ -1027,10 +1028,9 @@ extension IoTEventsDataClientTypes {
             self.messageId = messageId
         }
     }
-
 }
 
-public struct BatchPutMessageOutput {
+public struct BatchPutMessageOutput: Swift.Sendable {
     /// A list of any errors encountered when sending the messages.
     public var batchPutMessageErrorEntries: [IoTEventsDataClientTypes.BatchPutMessageErrorEntry]?
 
@@ -1043,8 +1043,9 @@ public struct BatchPutMessageOutput {
 }
 
 extension IoTEventsDataClientTypes {
+
     /// Information needed to reset the alarm.
-    public struct ResetAlarmActionRequest {
+    public struct ResetAlarmActionRequest: Swift.Sendable {
         /// The name of the alarm model.
         /// This member is required.
         public var alarmModelName: Swift.String?
@@ -1069,10 +1070,9 @@ extension IoTEventsDataClientTypes {
             self.requestId = requestId
         }
     }
-
 }
 
-public struct BatchResetAlarmInput {
+public struct BatchResetAlarmInput: Swift.Sendable {
     /// The list of reset action requests. You can specify up to 10 requests per operation.
     /// This member is required.
     public var resetActionRequests: [IoTEventsDataClientTypes.ResetAlarmActionRequest]?
@@ -1085,7 +1085,7 @@ public struct BatchResetAlarmInput {
     }
 }
 
-public struct BatchResetAlarmOutput {
+public struct BatchResetAlarmOutput: Swift.Sendable {
     /// A list of errors associated with the request, or null if there are no errors. Each error entry contains an entry ID that helps you identify the entry that failed.
     public var errorEntries: [IoTEventsDataClientTypes.BatchAlarmActionErrorEntry]?
 
@@ -1098,8 +1098,9 @@ public struct BatchResetAlarmOutput {
 }
 
 extension IoTEventsDataClientTypes {
+
     /// Information needed to snooze the alarm.
-    public struct SnoozeAlarmActionRequest {
+    public struct SnoozeAlarmActionRequest: Swift.Sendable {
         /// The name of the alarm model.
         /// This member is required.
         public var alarmModelName: Swift.String?
@@ -1129,10 +1130,9 @@ extension IoTEventsDataClientTypes {
             self.snoozeDuration = snoozeDuration
         }
     }
-
 }
 
-public struct BatchSnoozeAlarmInput {
+public struct BatchSnoozeAlarmInput: Swift.Sendable {
     /// The list of snooze action requests. You can specify up to 10 requests per operation.
     /// This member is required.
     public var snoozeActionRequests: [IoTEventsDataClientTypes.SnoozeAlarmActionRequest]?
@@ -1145,7 +1145,7 @@ public struct BatchSnoozeAlarmInput {
     }
 }
 
-public struct BatchSnoozeAlarmOutput {
+public struct BatchSnoozeAlarmOutput: Swift.Sendable {
     /// A list of errors associated with the request, or null if there are no errors. Each error entry contains an entry ID that helps you identify the entry that failed.
     public var errorEntries: [IoTEventsDataClientTypes.BatchAlarmActionErrorEntry]?
 
@@ -1158,8 +1158,9 @@ public struct BatchSnoozeAlarmOutput {
 }
 
 extension IoTEventsDataClientTypes {
+
     /// The new setting of a timer.
-    public struct TimerDefinition {
+    public struct TimerDefinition: Swift.Sendable {
         /// The name of the timer.
         /// This member is required.
         public var name: Swift.String?
@@ -1176,12 +1177,12 @@ extension IoTEventsDataClientTypes {
             self.seconds = seconds
         }
     }
-
 }
 
 extension IoTEventsDataClientTypes {
+
     /// The new value of the variable.
-    public struct VariableDefinition {
+    public struct VariableDefinition: Swift.Sendable {
         /// The name of the variable.
         /// This member is required.
         public var name: Swift.String?
@@ -1198,12 +1199,12 @@ extension IoTEventsDataClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension IoTEventsDataClientTypes {
+
     /// The new state, variable values, and timer settings of the detector (instance).
-    public struct DetectorStateDefinition {
+    public struct DetectorStateDefinition: Swift.Sendable {
         /// The name of the new state of the detector (instance).
         /// This member is required.
         public var stateName: Swift.String?
@@ -1225,12 +1226,12 @@ extension IoTEventsDataClientTypes {
             self.variables = variables
         }
     }
-
 }
 
 extension IoTEventsDataClientTypes {
+
     /// Information used to update the detector (instance).
-    public struct UpdateDetectorRequest {
+    public struct UpdateDetectorRequest: Swift.Sendable {
         /// The name of the detector model that created the detectors (instances).
         /// This member is required.
         public var detectorModelName: Swift.String?
@@ -1256,10 +1257,9 @@ extension IoTEventsDataClientTypes {
             self.state = state
         }
     }
-
 }
 
-public struct BatchUpdateDetectorInput {
+public struct BatchUpdateDetectorInput: Swift.Sendable {
     /// The list of detectors (instances) to update, along with the values to update.
     /// This member is required.
     public var detectors: [IoTEventsDataClientTypes.UpdateDetectorRequest]?
@@ -1273,8 +1273,9 @@ public struct BatchUpdateDetectorInput {
 }
 
 extension IoTEventsDataClientTypes {
+
     /// Information about the error that occurred when attempting to update a detector.
-    public struct BatchUpdateDetectorErrorEntry {
+    public struct BatchUpdateDetectorErrorEntry: Swift.Sendable {
         /// The error code.
         public var errorCode: IoTEventsDataClientTypes.ErrorCode?
         /// A message that describes the error.
@@ -1293,10 +1294,9 @@ extension IoTEventsDataClientTypes {
             self.messageId = messageId
         }
     }
-
 }
 
-public struct BatchUpdateDetectorOutput {
+public struct BatchUpdateDetectorOutput: Swift.Sendable {
     /// A list of those detector updates that resulted in errors. (If an error is listed here, the specific update did not occur.)
     public var batchUpdateDetectorErrorEntries: [IoTEventsDataClientTypes.BatchUpdateDetectorErrorEntry]?
 
@@ -1333,7 +1333,7 @@ public struct ResourceNotFoundException: ClientRuntime.ModeledError, AWSClientRu
     }
 }
 
-public struct DescribeAlarmInput {
+public struct DescribeAlarmInput: Swift.Sendable {
     /// The name of the alarm model.
     /// This member is required.
     public var alarmModelName: Swift.String?
@@ -1350,7 +1350,7 @@ public struct DescribeAlarmInput {
     }
 }
 
-public struct DescribeAlarmOutput {
+public struct DescribeAlarmOutput: Swift.Sendable {
     /// Contains information about an alarm.
     public var alarm: IoTEventsDataClientTypes.Alarm?
 
@@ -1362,7 +1362,7 @@ public struct DescribeAlarmOutput {
     }
 }
 
-public struct DescribeDetectorInput {
+public struct DescribeDetectorInput: Swift.Sendable {
     /// The name of the detector model whose detectors (instances) you want information about.
     /// This member is required.
     public var detectorModelName: Swift.String?
@@ -1380,8 +1380,9 @@ public struct DescribeDetectorInput {
 }
 
 extension IoTEventsDataClientTypes {
+
     /// The current state of a timer.
-    public struct Timer {
+    public struct Timer: Swift.Sendable {
         /// The name of the timer.
         /// This member is required.
         public var name: Swift.String?
@@ -1398,12 +1399,12 @@ extension IoTEventsDataClientTypes {
             self.timestamp = timestamp
         }
     }
-
 }
 
 extension IoTEventsDataClientTypes {
+
     /// The current state of the variable.
-    public struct Variable {
+    public struct Variable: Swift.Sendable {
         /// The name of the variable.
         /// This member is required.
         public var name: Swift.String?
@@ -1420,12 +1421,12 @@ extension IoTEventsDataClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension IoTEventsDataClientTypes {
+
     /// Information about the current state of the detector instance.
-    public struct DetectorState {
+    public struct DetectorState: Swift.Sendable {
         /// The name of the state.
         /// This member is required.
         public var stateName: Swift.String?
@@ -1447,12 +1448,12 @@ extension IoTEventsDataClientTypes {
             self.variables = variables
         }
     }
-
 }
 
 extension IoTEventsDataClientTypes {
+
     /// Information about the detector (instance).
-    public struct Detector {
+    public struct Detector: Swift.Sendable {
         /// The time the detector (instance) was created.
         public var creationTime: Foundation.Date?
         /// The name of the detector model that created this detector (instance).
@@ -1483,10 +1484,9 @@ extension IoTEventsDataClientTypes {
             self.state = state
         }
     }
-
 }
 
-public struct DescribeDetectorOutput {
+public struct DescribeDetectorOutput: Swift.Sendable {
     /// Information about the detector (instance).
     public var detector: IoTEventsDataClientTypes.Detector?
 
@@ -1499,8 +1499,9 @@ public struct DescribeDetectorOutput {
 }
 
 extension IoTEventsDataClientTypes {
+
     /// Information about the detector state.
-    public struct DetectorStateSummary {
+    public struct DetectorStateSummary: Swift.Sendable {
         /// The name of the state.
         public var stateName: Swift.String?
 
@@ -1511,12 +1512,12 @@ extension IoTEventsDataClientTypes {
             self.stateName = stateName
         }
     }
-
 }
 
 extension IoTEventsDataClientTypes {
+
     /// Information about the detector (instance).
-    public struct DetectorSummary {
+    public struct DetectorSummary: Swift.Sendable {
         /// The time the detector (instance) was created.
         public var creationTime: Foundation.Date?
         /// The name of the detector model that created this detector (instance).
@@ -1547,10 +1548,9 @@ extension IoTEventsDataClientTypes {
             self.state = state
         }
     }
-
 }
 
-public struct ListAlarmsInput {
+public struct ListAlarmsInput: Swift.Sendable {
     /// The name of the alarm model.
     /// This member is required.
     public var alarmModelName: Swift.String?
@@ -1571,7 +1571,7 @@ public struct ListAlarmsInput {
     }
 }
 
-public struct ListAlarmsOutput {
+public struct ListAlarmsOutput: Swift.Sendable {
     /// A list that summarizes each alarm.
     public var alarmSummaries: [IoTEventsDataClientTypes.AlarmSummary]?
     /// The token that you can use to return the next set of results, or null if there are no more results.
@@ -1587,7 +1587,7 @@ public struct ListAlarmsOutput {
     }
 }
 
-public struct ListDetectorsInput {
+public struct ListDetectorsInput: Swift.Sendable {
     /// The name of the detector model whose detectors (instances) are listed.
     /// This member is required.
     public var detectorModelName: Swift.String?
@@ -1612,7 +1612,7 @@ public struct ListDetectorsInput {
     }
 }
 
-public struct ListDetectorsOutput {
+public struct ListDetectorsOutput: Swift.Sendable {
     /// A list of summary information about the detectors (instances).
     public var detectorSummaries: [IoTEventsDataClientTypes.DetectorSummary]?
     /// The token that you can use to return the next set of results, or null if there are no more results.

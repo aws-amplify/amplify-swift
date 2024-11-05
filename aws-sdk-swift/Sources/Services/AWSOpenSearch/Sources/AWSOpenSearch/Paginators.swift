@@ -187,6 +187,37 @@ extension GetUpgradeHistoryInput: ClientRuntime.PaginateToken {
         )}
 }
 extension OpenSearchClient {
+    /// Paginate over `[ListApplicationsOutput]` results.
+    ///
+    /// When this operation is called, an `AsyncSequence` is created. AsyncSequences are lazy so no service
+    /// calls are made until the sequence is iterated over. This also means there is no guarantee that the request is valid
+    /// until then. If there are errors in your request, you will see the failures only after you start iterating.
+    /// - Parameters:
+    ///     - input: A `[ListApplicationsInput]` to start pagination
+    /// - Returns: An `AsyncSequence` that can iterate over `ListApplicationsOutput`
+    public func listApplicationsPaginated(input: ListApplicationsInput) -> ClientRuntime.PaginatorSequence<ListApplicationsInput, ListApplicationsOutput> {
+        return ClientRuntime.PaginatorSequence<ListApplicationsInput, ListApplicationsOutput>(input: input, inputKey: \.nextToken, outputKey: \.nextToken, paginationFunction: self.listApplications(input:))
+    }
+}
+
+extension ListApplicationsInput: ClientRuntime.PaginateToken {
+    public func usingPaginationToken(_ token: Swift.String) -> ListApplicationsInput {
+        return ListApplicationsInput(
+            maxResults: self.maxResults,
+            nextToken: token,
+            statuses: self.statuses
+        )}
+}
+
+extension PaginatorSequence where OperationStackInput == ListApplicationsInput, OperationStackOutput == ListApplicationsOutput {
+    /// This paginator transforms the `AsyncSequence` returned by `listApplicationsPaginated`
+    /// to access the nested member `[OpenSearchClientTypes.ApplicationSummary]`
+    /// - Returns: `[OpenSearchClientTypes.ApplicationSummary]`
+    public func applicationSummaries() async throws -> [OpenSearchClientTypes.ApplicationSummary] {
+        return try await self.asyncCompactMap { item in item.applicationSummaries }
+    }
+}
+extension OpenSearchClient {
     /// Paginate over `[ListDomainMaintenancesOutput]` results.
     ///
     /// When this operation is called, an `AsyncSequence` is created. AsyncSequences are lazy so no service

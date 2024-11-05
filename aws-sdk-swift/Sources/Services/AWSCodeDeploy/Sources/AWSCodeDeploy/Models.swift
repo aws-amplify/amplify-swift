@@ -29,52 +29,53 @@ import protocol ClientRuntime.ModeledError
 @_spi(SmithyReadWrite) import struct SmithyReadWrite.ReadingClosureBox
 @_spi(SmithyReadWrite) import struct SmithyReadWrite.WritingClosureBox
 
-public struct AddTagsToOnPremisesInstancesOutput {
+
+public struct AddTagsToOnPremisesInstancesOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct ContinueDeploymentOutput {
+public struct ContinueDeploymentOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteApplicationOutput {
+public struct DeleteApplicationOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteDeploymentConfigOutput {
+public struct DeleteDeploymentConfigOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeregisterOnPremisesInstanceOutput {
+public struct DeregisterOnPremisesInstanceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct RegisterApplicationRevisionOutput {
+public struct RegisterApplicationRevisionOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct RegisterOnPremisesInstanceOutput {
+public struct RegisterOnPremisesInstanceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct RemoveTagsFromOnPremisesInstancesOutput {
+public struct RemoveTagsFromOnPremisesInstancesOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct SkipWaitTimeForInstanceTerminationOutput {
+public struct SkipWaitTimeForInstanceTerminationOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdateApplicationOutput {
+public struct UpdateApplicationOutput: Swift.Sendable {
 
     public init() { }
 }
@@ -255,8 +256,9 @@ public struct TagRequiredException: ClientRuntime.ModeledError, AWSClientRuntime
 }
 
 extension CodeDeployClientTypes {
+
     /// Information about a tag.
-    public struct Tag {
+    public struct Tag: Swift.Sendable {
         /// The tag's key.
         public var key: Swift.String?
         /// The tag's value.
@@ -271,11 +273,10 @@ extension CodeDeployClientTypes {
             self.value = value
         }
     }
-
 }
 
 /// Represents the input of, and adds tags to, an on-premises instance operation.
-public struct AddTagsToOnPremisesInstancesInput {
+public struct AddTagsToOnPremisesInstancesInput: Swift.Sendable {
     /// The names of the on-premises instances to which to add tags.
     /// This member is required.
     public var instanceNames: [Swift.String]?
@@ -294,8 +295,9 @@ public struct AddTagsToOnPremisesInstancesInput {
 }
 
 extension CodeDeployClientTypes {
+
     /// Information about an alarm.
-    public struct Alarm {
+    public struct Alarm: Swift.Sendable {
         /// The name of the alarm. Maximum length is 255 characters. Each alarm name can be used only once in a list of alarms.
         public var name: Swift.String?
 
@@ -306,12 +308,12 @@ extension CodeDeployClientTypes {
             self.name = name
         }
     }
-
 }
 
 extension CodeDeployClientTypes {
+
     /// Information about alarms associated with a deployment or deployment group.
-    public struct AlarmConfiguration {
+    public struct AlarmConfiguration: Swift.Sendable {
         /// A list of alarms configured for the deployment or deployment group. A maximum of 10 alarms can be added.
         public var alarms: [CodeDeployClientTypes.Alarm]?
         /// Indicates whether the alarm configuration is enabled.
@@ -334,7 +336,6 @@ extension CodeDeployClientTypes {
             self.ignorePollAlarmFailure = ignorePollAlarmFailure
         }
     }
-
 }
 
 /// The maximum number of alarms for a deployment group (10) was exceeded.
@@ -414,7 +415,7 @@ public struct ApplicationDoesNotExistException: ClientRuntime.ModeledError, AWSC
 
 extension CodeDeployClientTypes {
 
-    public enum ComputePlatform: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ComputePlatform: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case ecs
         case lambda
         case server
@@ -445,8 +446,9 @@ extension CodeDeployClientTypes {
 }
 
 extension CodeDeployClientTypes {
+
     /// Information about an application.
-    public struct ApplicationInfo {
+    public struct ApplicationInfo: Swift.Sendable {
         /// The application ID.
         public var applicationId: Swift.String?
         /// The application name.
@@ -477,7 +479,6 @@ extension CodeDeployClientTypes {
             self.linkedToGitHub = linkedToGitHub
         }
     }
-
 }
 
 /// More applications were attempted to be created than are allowed.
@@ -532,7 +533,7 @@ public struct ApplicationNameRequiredException: ClientRuntime.ModeledError, AWSC
 
 extension CodeDeployClientTypes {
 
-    public enum ApplicationRevisionSortBy: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ApplicationRevisionSortBy: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case firstusedtime
         case lastusedtime
         case registertime
@@ -563,8 +564,9 @@ extension CodeDeployClientTypes {
 }
 
 extension CodeDeployClientTypes {
+
     /// A revision for an Lambda or Amazon ECS deployment that is a YAML-formatted or JSON-formatted string. For Lambda and Amazon ECS deployments, the revision is the same as the AppSpec file. This method replaces the deprecated RawString data type.
-    public struct AppSpecContent {
+    public struct AppSpecContent: Swift.Sendable {
         /// The YAML-formatted or JSON-formatted revision string. For an Lambda deployment, the content includes a Lambda function name, the alias for its original version, and the alias for its replacement version. The deployment shifts traffic from the original version of the Lambda function to the replacement version. For an Amazon ECS deployment, the content includes the task name, information about the load balancer that serves traffic to the container, and more. For both types of deployments, the content can specify Lambda functions that run at specified hooks, such as BeforeInstall, during a deployment.
         public var content: Swift.String?
         /// The SHA256 hash value of the revision content.
@@ -579,7 +581,6 @@ extension CodeDeployClientTypes {
             self.sha256 = sha256
         }
     }
-
 }
 
 /// The specified ARN is not supported. For example, it might be an ARN for a resource that is not expected.
@@ -609,7 +610,7 @@ public struct ArnNotSupportedException: ClientRuntime.ModeledError, AWSClientRun
 
 extension CodeDeployClientTypes {
 
-    public enum AutoRollbackEvent: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AutoRollbackEvent: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case deploymentFailure
         case deploymentStopOnAlarm
         case deploymentStopOnRequest
@@ -640,8 +641,9 @@ extension CodeDeployClientTypes {
 }
 
 extension CodeDeployClientTypes {
+
     /// Information about a configuration for automatically rolling back to a previous version of an application revision when a deployment is not completed successfully.
-    public struct AutoRollbackConfiguration {
+    public struct AutoRollbackConfiguration: Swift.Sendable {
         /// Indicates whether a defined automatic rollback configuration is currently enabled.
         public var enabled: Swift.Bool
         /// The event type or types that trigger a rollback.
@@ -656,12 +658,12 @@ extension CodeDeployClientTypes {
             self.events = events
         }
     }
-
 }
 
 extension CodeDeployClientTypes {
+
     /// Information about an Auto Scaling group.
-    public struct AutoScalingGroup {
+    public struct AutoScalingGroup: Swift.Sendable {
         /// The name of the launch hook that CodeDeploy installed into the Auto Scaling group. For more information about the launch hook, see [How Amazon EC2 Auto Scaling works with CodeDeploy](https://docs.aws.amazon.com/codedeploy/latest/userguide/integrations-aws-auto-scaling.html#integrations-aws-auto-scaling-behaviors) in the CodeDeploy User Guide.
         public var hook: Swift.String?
         /// The Auto Scaling group name.
@@ -680,7 +682,6 @@ extension CodeDeployClientTypes {
             self.terminationHook = terminationHook
         }
     }
-
 }
 
 /// The maximum number of names or IDs allowed for this request (100) was exceeded.
@@ -784,8 +785,9 @@ public struct RevisionRequiredException: ClientRuntime.ModeledError, AWSClientRu
 }
 
 extension CodeDeployClientTypes {
+
     /// Information about the location of application artifacts stored in GitHub.
-    public struct GitHubLocation {
+    public struct GitHubLocation: Swift.Sendable {
         /// The SHA1 commit ID of the GitHub commit that represents the bundled artifacts for the application revision.
         public var commitId: Swift.String?
         /// The GitHub account and repository pair that stores a reference to the commit that represents the bundled artifacts for the application revision. Specified as account/repository.
@@ -800,12 +802,11 @@ extension CodeDeployClientTypes {
             self.repository = repository
         }
     }
-
 }
 
 extension CodeDeployClientTypes {
 
-    public enum RevisionLocationType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum RevisionLocationType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case appspeccontent
         case github
         case s3
@@ -840,7 +841,7 @@ extension CodeDeployClientTypes {
 
 extension CodeDeployClientTypes {
 
-    public enum BundleType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum BundleType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case json
         case tar
         case targzip
@@ -877,8 +878,9 @@ extension CodeDeployClientTypes {
 }
 
 extension CodeDeployClientTypes {
+
     /// Information about the location of application artifacts stored in Amazon S3.
-    public struct S3Location {
+    public struct S3Location: Swift.Sendable {
         /// The name of the Amazon S3 bucket where the application revision is stored.
         public var bucket: Swift.String?
         /// The file type of the application revision. Must be one of the following:
@@ -915,13 +917,13 @@ extension CodeDeployClientTypes {
             self.version = version
         }
     }
-
 }
 
 extension CodeDeployClientTypes {
+
     /// A revision for an Lambda deployment that is a YAML-formatted or JSON-formatted string. For Lambda deployments, the revision is the same as the AppSpec file.
     @available(*, deprecated, message: "RawString and String revision type are deprecated, use AppSpecContent type instead.")
-    public struct RawString {
+    public struct RawString: Swift.Sendable {
         /// The YAML-formatted or JSON-formatted revision string. It includes information about which Lambda function to update and optional Lambda functions that validate deployment lifecycle events.
         public var content: Swift.String?
         /// The SHA256 hash value of the revision content.
@@ -936,12 +938,12 @@ extension CodeDeployClientTypes {
             self.sha256 = sha256
         }
     }
-
 }
 
 extension CodeDeployClientTypes {
+
     /// Information about the location of an application revision.
-    public struct RevisionLocation {
+    public struct RevisionLocation: Swift.Sendable {
         /// The content of an AppSpec file for an Lambda or Amazon ECS deployment. The content is formatted as JSON or YAML and stored as a RawString.
         public var appSpecContent: CodeDeployClientTypes.AppSpecContent?
         /// Information about the location of application artifacts stored in GitHub.
@@ -977,11 +979,10 @@ extension CodeDeployClientTypes {
             self.string = string
         }
     }
-
 }
 
 /// Represents the input of a BatchGetApplicationRevisions operation.
-public struct BatchGetApplicationRevisionsInput {
+public struct BatchGetApplicationRevisionsInput: Swift.Sendable {
     /// The name of an CodeDeploy application about which to get revision information.
     /// This member is required.
     public var applicationName: Swift.String?
@@ -1000,8 +1001,9 @@ public struct BatchGetApplicationRevisionsInput {
 }
 
 extension CodeDeployClientTypes {
+
     /// Information about an application revision.
-    public struct GenericRevisionInfo {
+    public struct GenericRevisionInfo: Swift.Sendable {
         /// The deployment groups for which this is the current target revision.
         public var deploymentGroups: [Swift.String]?
         /// A comment about the revision.
@@ -1028,12 +1030,12 @@ extension CodeDeployClientTypes {
             self.registerTime = registerTime
         }
     }
-
 }
 
 extension CodeDeployClientTypes {
+
     /// Information about an application revision.
-    public struct RevisionInfo {
+    public struct RevisionInfo: Swift.Sendable {
         /// Information about an application revision, including usage details and associated deployment groups.
         public var genericRevisionInfo: CodeDeployClientTypes.GenericRevisionInfo?
         /// Information about the location and type of an application revision.
@@ -1048,11 +1050,10 @@ extension CodeDeployClientTypes {
             self.revisionLocation = revisionLocation
         }
     }
-
 }
 
 /// Represents the output of a BatchGetApplicationRevisions operation.
-public struct BatchGetApplicationRevisionsOutput {
+public struct BatchGetApplicationRevisionsOutput: Swift.Sendable {
     /// The name of the application that corresponds to the revisions.
     public var applicationName: Swift.String?
     /// Information about errors that might have occurred during the API call.
@@ -1073,7 +1074,7 @@ public struct BatchGetApplicationRevisionsOutput {
 }
 
 /// Represents the input of a BatchGetApplications operation.
-public struct BatchGetApplicationsInput {
+public struct BatchGetApplicationsInput: Swift.Sendable {
     /// A list of application names separated by spaces. The maximum number of application names you can specify is 100.
     /// This member is required.
     public var applicationNames: [Swift.String]?
@@ -1087,7 +1088,7 @@ public struct BatchGetApplicationsInput {
 }
 
 /// Represents the output of a BatchGetApplications operation.
-public struct BatchGetApplicationsOutput {
+public struct BatchGetApplicationsOutput: Swift.Sendable {
     /// Information about the applications.
     public var applicationsInfo: [CodeDeployClientTypes.ApplicationInfo]?
 
@@ -1175,7 +1176,7 @@ public struct InvalidDeploymentGroupNameException: ClientRuntime.ModeledError, A
 }
 
 /// Represents the input of a BatchGetDeploymentGroups operation.
-public struct BatchGetDeploymentGroupsInput {
+public struct BatchGetDeploymentGroupsInput: Swift.Sendable {
     /// The name of an CodeDeploy application associated with the applicable user or Amazon Web Services account.
     /// This member is required.
     public var applicationName: Swift.String?
@@ -1195,7 +1196,7 @@ public struct BatchGetDeploymentGroupsInput {
 
 extension CodeDeployClientTypes {
 
-    public enum DeploymentReadyAction: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DeploymentReadyAction: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case continueDeployment
         case stopDeployment
         case sdkUnknown(Swift.String)
@@ -1223,8 +1224,9 @@ extension CodeDeployClientTypes {
 }
 
 extension CodeDeployClientTypes {
+
     /// Information about how traffic is rerouted to instances in a replacement environment in a blue/green deployment.
-    public struct DeploymentReadyOption {
+    public struct DeploymentReadyOption: Swift.Sendable {
         /// Information about when to reroute traffic from an original environment to a replacement environment in a blue/green deployment.
         ///
         /// * CONTINUE_DEPLOYMENT: Register new instances with the load balancer immediately after the new application revision is installed on the instances in the replacement environment.
@@ -1243,12 +1245,11 @@ extension CodeDeployClientTypes {
             self.waitTimeInMinutes = waitTimeInMinutes
         }
     }
-
 }
 
 extension CodeDeployClientTypes {
 
-    public enum GreenFleetProvisioningAction: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum GreenFleetProvisioningAction: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case copyAutoScalingGroup
         case discoverExisting
         case sdkUnknown(Swift.String)
@@ -1276,8 +1277,9 @@ extension CodeDeployClientTypes {
 }
 
 extension CodeDeployClientTypes {
+
     /// Information about the instances that belong to the replacement environment in a blue/green deployment.
-    public struct GreenFleetProvisioningOption {
+    public struct GreenFleetProvisioningOption: Swift.Sendable {
         /// The method used to add instances to a replacement environment.
         ///
         /// * DISCOVER_EXISTING: Use instances that already exist or will be created manually.
@@ -1292,12 +1294,11 @@ extension CodeDeployClientTypes {
             self.action = action
         }
     }
-
 }
 
 extension CodeDeployClientTypes {
 
-    public enum InstanceAction: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum InstanceAction: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case keepAlive
         case terminate
         case sdkUnknown(Swift.String)
@@ -1325,8 +1326,9 @@ extension CodeDeployClientTypes {
 }
 
 extension CodeDeployClientTypes {
+
     /// Information about whether instances in the original environment are terminated when a blue/green deployment is successful. BlueInstanceTerminationOption does not apply to Lambda deployments.
-    public struct BlueInstanceTerminationOption {
+    public struct BlueInstanceTerminationOption: Swift.Sendable {
         /// The action to take on instances in the original environment after a successful blue/green deployment.
         ///
         /// * TERMINATE: Instances are terminated after a specified wait time.
@@ -1345,12 +1347,12 @@ extension CodeDeployClientTypes {
             self.terminationWaitTimeInMinutes = terminationWaitTimeInMinutes
         }
     }
-
 }
 
 extension CodeDeployClientTypes {
+
     /// Information about blue/green deployment options for a deployment group.
-    public struct BlueGreenDeploymentConfiguration {
+    public struct BlueGreenDeploymentConfiguration: Swift.Sendable {
         /// Information about the action to take when newly provisioned instances are ready to receive traffic in a blue/green deployment.
         public var deploymentReadyOption: CodeDeployClientTypes.DeploymentReadyOption?
         /// Information about how instances are provisioned for a replacement environment in a blue/green deployment.
@@ -1369,12 +1371,11 @@ extension CodeDeployClientTypes {
             self.terminateBlueInstancesOnDeploymentSuccess = terminateBlueInstancesOnDeploymentSuccess
         }
     }
-
 }
 
 extension CodeDeployClientTypes {
 
-    public enum DeploymentOption: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DeploymentOption: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case withoutTrafficControl
         case withTrafficControl
         case sdkUnknown(Swift.String)
@@ -1403,7 +1404,7 @@ extension CodeDeployClientTypes {
 
 extension CodeDeployClientTypes {
 
-    public enum DeploymentType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DeploymentType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case blueGreen
         case inPlace
         case sdkUnknown(Swift.String)
@@ -1431,8 +1432,9 @@ extension CodeDeployClientTypes {
 }
 
 extension CodeDeployClientTypes {
+
     /// Information about the type of deployment, either in-place or blue/green, you want to run and whether to route deployment traffic behind a load balancer.
-    public struct DeploymentStyle {
+    public struct DeploymentStyle: Swift.Sendable {
         /// Indicates whether to route deployment traffic behind a load balancer.
         public var deploymentOption: CodeDeployClientTypes.DeploymentOption?
         /// Indicates whether to run an in-place deployment or a blue/green deployment.
@@ -1447,12 +1449,11 @@ extension CodeDeployClientTypes {
             self.deploymentType = deploymentType
         }
     }
-
 }
 
 extension CodeDeployClientTypes {
 
-    public enum EC2TagFilterType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum EC2TagFilterType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case keyAndValue
         case keyOnly
         case valueOnly
@@ -1483,8 +1484,9 @@ extension CodeDeployClientTypes {
 }
 
 extension CodeDeployClientTypes {
+
     /// Information about an EC2 tag filter.
-    public struct EC2TagFilter {
+    public struct EC2TagFilter: Swift.Sendable {
         /// The tag filter key.
         public var key: Swift.String?
         /// The tag filter type:
@@ -1509,12 +1511,12 @@ extension CodeDeployClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension CodeDeployClientTypes {
+
     /// Information about groups of Amazon EC2 instance tags.
-    public struct EC2TagSet {
+    public struct EC2TagSet: Swift.Sendable {
         /// A list that contains other lists of Amazon EC2 instance tag groups. For an instance to be included in the deployment group, it must be identified by all of the tag groups in the list.
         public var ec2TagSetList: [[CodeDeployClientTypes.EC2TagFilter]]?
 
@@ -1525,12 +1527,12 @@ extension CodeDeployClientTypes {
             self.ec2TagSetList = ec2TagSetList
         }
     }
-
 }
 
 extension CodeDeployClientTypes {
+
     /// Contains the service and cluster names used to identify an Amazon ECS deployment's target.
-    public struct ECSService {
+    public struct ECSService: Swift.Sendable {
         /// The name of the cluster that the Amazon ECS service is associated with.
         public var clusterName: Swift.String?
         /// The name of the target Amazon ECS service.
@@ -1545,12 +1547,11 @@ extension CodeDeployClientTypes {
             self.serviceName = serviceName
         }
     }
-
 }
 
 extension CodeDeployClientTypes {
 
-    public enum DeploymentStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DeploymentStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case baking
         case created
         case failed
@@ -1596,8 +1597,9 @@ extension CodeDeployClientTypes {
 }
 
 extension CodeDeployClientTypes {
+
     /// Information about the most recent attempted or successful deployment to a deployment group.
-    public struct LastDeploymentInfo {
+    public struct LastDeploymentInfo: Swift.Sendable {
         /// A timestamp that indicates when the most recent deployment to the deployment group started.
         public var createTime: Foundation.Date?
         /// The unique ID of a deployment.
@@ -1620,12 +1622,12 @@ extension CodeDeployClientTypes {
             self.status = status
         }
     }
-
 }
 
 extension CodeDeployClientTypes {
+
     /// Information about a Classic Load Balancer in Elastic Load Balancing to use in a deployment. Instances are registered directly with a load balancer, and traffic is routed to the load balancer.
-    public struct ELBInfo {
+    public struct ELBInfo: Swift.Sendable {
         /// For blue/green deployments, the name of the Classic Load Balancer that is used to route traffic from original instances to replacement instances in a blue/green deployment. For in-place deployments, the name of the Classic Load Balancer that instances are deregistered from so they are not serving traffic during a deployment, and then re-registered with after the deployment is complete.
         public var name: Swift.String?
 
@@ -1636,12 +1638,12 @@ extension CodeDeployClientTypes {
             self.name = name
         }
     }
-
 }
 
 extension CodeDeployClientTypes {
+
     /// Information about a target group in Elastic Load Balancing to use in a deployment. Instances are registered as targets in a target group, and traffic is routed to the target group.
-    public struct TargetGroupInfo {
+    public struct TargetGroupInfo: Swift.Sendable {
         /// For blue/green deployments, the name of the target group that instances in the original environment are deregistered from, and instances in the replacement environment are registered with. For in-place deployments, the name of the target group that instances are deregistered from, so they are not serving traffic during a deployment, and then re-registered with after the deployment is complete.
         public var name: Swift.String?
 
@@ -1652,12 +1654,12 @@ extension CodeDeployClientTypes {
             self.name = name
         }
     }
-
 }
 
 extension CodeDeployClientTypes {
+
     /// Information about a listener. The listener contains the path used to route traffic that is received from the load balancer to a target group.
-    public struct TrafficRoute {
+    public struct TrafficRoute: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of one listener. The listener identifies the route between a target group and a load balancer. This is an array of strings with a maximum size of one.
         public var listenerArns: [Swift.String]?
 
@@ -1668,12 +1670,12 @@ extension CodeDeployClientTypes {
             self.listenerArns = listenerArns
         }
     }
-
 }
 
 extension CodeDeployClientTypes {
+
     /// Information about two target groups and how traffic is routed during an Amazon ECS deployment. An optional test traffic route can be specified.
-    public struct TargetGroupPairInfo {
+    public struct TargetGroupPairInfo: Swift.Sendable {
         /// The path used by a load balancer to route production traffic when an Amazon ECS deployment is complete.
         public var prodTrafficRoute: CodeDeployClientTypes.TrafficRoute?
         /// One pair of target groups. One is associated with the original task set. The second is associated with the task set that serves traffic after the deployment is complete.
@@ -1692,12 +1694,12 @@ extension CodeDeployClientTypes {
             self.testTrafficRoute = testTrafficRoute
         }
     }
-
 }
 
 extension CodeDeployClientTypes {
+
     /// Information about the Elastic Load Balancing load balancer or target group used in a deployment. You can use load balancers and target groups in combination. For example, if you have two Classic Load Balancers, and five target groups tied to an Application Load Balancer, you can specify the two Classic Load Balancers in elbInfoList, and the five target groups in targetGroupInfoList.
-    public struct LoadBalancerInfo {
+    public struct LoadBalancerInfo: Swift.Sendable {
         /// An array that contains information about the load balancers to use for load balancing in a deployment. If you're using Classic Load Balancers, specify those load balancers in this array. You can add up to 10 load balancers to the array. If you're using Application Load Balancers or Network Load Balancers, use the targetGroupInfoList array instead of this one.
         public var elbInfoList: [CodeDeployClientTypes.ELBInfo]?
         /// An array that contains information about the target groups to use for load balancing in a deployment. If you're using Application Load Balancers and Network Load Balancers, specify their associated target groups in this array. You can add up to 10 target groups to the array. If you're using Classic Load Balancers, use the elbInfoList array instead of this one.
@@ -1716,12 +1718,11 @@ extension CodeDeployClientTypes {
             self.targetGroupPairInfoList = targetGroupPairInfoList
         }
     }
-
 }
 
 extension CodeDeployClientTypes {
 
-    public enum TagFilterType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum TagFilterType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case keyAndValue
         case keyOnly
         case valueOnly
@@ -1752,8 +1753,9 @@ extension CodeDeployClientTypes {
 }
 
 extension CodeDeployClientTypes {
+
     /// Information about an on-premises instance tag filter.
-    public struct TagFilter {
+    public struct TagFilter: Swift.Sendable {
         /// The on-premises instance tag filter key.
         public var key: Swift.String?
         /// The on-premises instance tag filter type:
@@ -1778,12 +1780,12 @@ extension CodeDeployClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension CodeDeployClientTypes {
+
     /// Information about groups of on-premises instance tags.
-    public struct OnPremisesTagSet {
+    public struct OnPremisesTagSet: Swift.Sendable {
         /// A list that contains other lists of on-premises instance tag groups. For an instance to be included in the deployment group, it must be identified by all of the tag groups in the list.
         public var onPremisesTagSetList: [[CodeDeployClientTypes.TagFilter]]?
 
@@ -1794,12 +1796,11 @@ extension CodeDeployClientTypes {
             self.onPremisesTagSetList = onPremisesTagSetList
         }
     }
-
 }
 
 extension CodeDeployClientTypes {
 
-    public enum OutdatedInstancesStrategy: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum OutdatedInstancesStrategy: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case ignore
         case update
         case sdkUnknown(Swift.String)
@@ -1828,7 +1829,7 @@ extension CodeDeployClientTypes {
 
 extension CodeDeployClientTypes {
 
-    public enum TriggerEventType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum TriggerEventType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case deploymentFailure
         case deploymentReady
         case deploymentRollback
@@ -1880,8 +1881,9 @@ extension CodeDeployClientTypes {
 }
 
 extension CodeDeployClientTypes {
+
     /// Information about notification triggers for the deployment group.
-    public struct TriggerConfig {
+    public struct TriggerConfig: Swift.Sendable {
         /// The event type or types for which notifications are triggered.
         public var triggerEvents: [CodeDeployClientTypes.TriggerEventType]?
         /// The name of the notification trigger.
@@ -1900,12 +1902,12 @@ extension CodeDeployClientTypes {
             self.triggerTargetArn = triggerTargetArn
         }
     }
-
 }
 
 extension CodeDeployClientTypes {
+
     /// Information about a deployment group.
-    public struct DeploymentGroupInfo {
+    public struct DeploymentGroupInfo: Swift.Sendable {
         /// A list of alarms associated with the deployment group.
         public var alarmConfiguration: CodeDeployClientTypes.AlarmConfiguration?
         /// The application name.
@@ -2004,11 +2006,10 @@ extension CodeDeployClientTypes {
             self.triggerConfigurations = triggerConfigurations
         }
     }
-
 }
 
 /// Represents the output of a BatchGetDeploymentGroups operation.
-public struct BatchGetDeploymentGroupsOutput {
+public struct BatchGetDeploymentGroupsOutput: Swift.Sendable {
     /// Information about the deployment groups.
     public var deploymentGroupsInfo: [CodeDeployClientTypes.DeploymentGroupInfo]?
     /// Information about errors that might have occurred during the API call.
@@ -2151,7 +2152,7 @@ public struct InvalidDeploymentIdException: ClientRuntime.ModeledError, AWSClien
 }
 
 /// Represents the input of a BatchGetDeploymentInstances operation.
-public struct BatchGetDeploymentInstancesInput {
+public struct BatchGetDeploymentInstancesInput: Swift.Sendable {
     /// The unique ID of a deployment.
     /// This member is required.
     public var deploymentId: Swift.String?
@@ -2171,7 +2172,7 @@ public struct BatchGetDeploymentInstancesInput {
 
 extension CodeDeployClientTypes {
 
-    public enum InstanceType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum InstanceType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case blue
         case green
         case sdkUnknown(Swift.String)
@@ -2200,7 +2201,7 @@ extension CodeDeployClientTypes {
 
 extension CodeDeployClientTypes {
 
-    public enum LifecycleErrorCode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum LifecycleErrorCode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case scriptFailed
         case scriptMissing
         case scriptNotExecutable
@@ -2240,8 +2241,9 @@ extension CodeDeployClientTypes {
 }
 
 extension CodeDeployClientTypes {
+
     /// Diagnostic information about executable scripts that are part of a deployment.
-    public struct Diagnostics {
+    public struct Diagnostics: Swift.Sendable {
         /// The associated error code:
         ///
         /// * Success: The specified script ran.
@@ -2276,12 +2278,11 @@ extension CodeDeployClientTypes {
             self.scriptName = scriptName
         }
     }
-
 }
 
 extension CodeDeployClientTypes {
 
-    public enum LifecycleEventStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum LifecycleEventStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case failed
         case inProgress
         case pending
@@ -2321,8 +2322,9 @@ extension CodeDeployClientTypes {
 }
 
 extension CodeDeployClientTypes {
+
     /// Information about a deployment lifecycle event.
-    public struct LifecycleEvent {
+    public struct LifecycleEvent: Swift.Sendable {
         /// Diagnostic information about the deployment lifecycle event.
         public var diagnostics: CodeDeployClientTypes.Diagnostics?
         /// A timestamp that indicates when the deployment lifecycle event ended.
@@ -2361,13 +2363,12 @@ extension CodeDeployClientTypes {
             self.status = status
         }
     }
-
 }
 
 extension CodeDeployClientTypes {
 
     @available(*, deprecated, message: "InstanceStatus is deprecated, use TargetStatus instead.")
-    public enum InstanceStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum InstanceStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case failed
         case inProgress
         case pending
@@ -2410,9 +2411,10 @@ extension CodeDeployClientTypes {
 }
 
 extension CodeDeployClientTypes {
+
     /// Information about an instance in a deployment.
     @available(*, deprecated, message: "InstanceSummary is deprecated, use DeploymentTarget instead.")
-    public struct InstanceSummary {
+    public struct InstanceSummary: Swift.Sendable {
         /// The unique ID of a deployment.
         public var deploymentId: Swift.String?
         /// The instance ID.
@@ -2460,11 +2462,10 @@ extension CodeDeployClientTypes {
             self.status = status
         }
     }
-
 }
 
 /// Represents the output of a BatchGetDeploymentInstances operation.
-public struct BatchGetDeploymentInstancesOutput {
+public struct BatchGetDeploymentInstancesOutput: Swift.Sendable {
     /// Information about errors that might have occurred during the API call.
     public var errorMessage: Swift.String?
     /// Information about the instance.
@@ -2481,7 +2482,7 @@ public struct BatchGetDeploymentInstancesOutput {
 }
 
 /// Represents the input of a BatchGetDeployments operation.
-public struct BatchGetDeploymentsInput {
+public struct BatchGetDeploymentsInput: Swift.Sendable {
     /// A list of deployment IDs, separated by spaces. The maximum number of deployment IDs you can specify is 25.
     /// This member is required.
     public var deploymentIds: [Swift.String]?
@@ -2496,7 +2497,7 @@ public struct BatchGetDeploymentsInput {
 
 extension CodeDeployClientTypes {
 
-    public enum DeploymentCreator: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DeploymentCreator: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case autoscaling
         case autoscalingtermination
         case cloudformation
@@ -2542,8 +2543,9 @@ extension CodeDeployClientTypes {
 }
 
 extension CodeDeployClientTypes {
+
     /// Information about the deployment status of the instances in the deployment.
-    public struct DeploymentOverview {
+    public struct DeploymentOverview: Swift.Sendable {
         /// The number of instances in the deployment in a failed state.
         public var failed: Swift.Int
         /// The number of instances in which the deployment is in progress.
@@ -2574,12 +2576,11 @@ extension CodeDeployClientTypes {
             self.succeeded = succeeded
         }
     }
-
 }
 
 extension CodeDeployClientTypes {
 
-    public enum ErrorCode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ErrorCode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case agentIssue
         case alarmActive
         case applicationMissing
@@ -2703,8 +2704,9 @@ extension CodeDeployClientTypes {
 }
 
 extension CodeDeployClientTypes {
+
     /// Information about a deployment error.
-    public struct ErrorInformation {
+    public struct ErrorInformation: Swift.Sendable {
         /// For more information, see [Error Codes for CodeDeploy](https://docs.aws.amazon.com/codedeploy/latest/userguide/error-codes.html) in the [CodeDeploy User Guide](https://docs.aws.amazon.com/codedeploy/latest/userguide). The error code:
         ///
         /// * APPLICATION_MISSING: The application was missing. This error code is most likely raised if the application is deleted after the deployment is created, but before it is started.
@@ -2745,12 +2747,11 @@ extension CodeDeployClientTypes {
             self.message = message
         }
     }
-
 }
 
 extension CodeDeployClientTypes {
 
-    public enum FileExistsBehavior: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum FileExistsBehavior: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case disallow
         case overwrite
         case retain
@@ -2781,8 +2782,9 @@ extension CodeDeployClientTypes {
 }
 
 extension CodeDeployClientTypes {
+
     /// Information about deployments related to the specified deployment.
-    public struct RelatedDeployments {
+    public struct RelatedDeployments: Swift.Sendable {
         /// The deployment IDs of 'auto-update outdated instances' deployments triggered by this deployment.
         public var autoUpdateOutdatedInstancesDeploymentIds: [Swift.String]?
         /// The deployment ID of the root deployment that triggered this deployment.
@@ -2797,12 +2799,12 @@ extension CodeDeployClientTypes {
             self.autoUpdateOutdatedInstancesRootDeploymentId = autoUpdateOutdatedInstancesRootDeploymentId
         }
     }
-
 }
 
 extension CodeDeployClientTypes {
+
     /// Information about a deployment rollback.
-    public struct RollbackInfo {
+    public struct RollbackInfo: Swift.Sendable {
         /// The ID of the deployment rollback.
         public var rollbackDeploymentId: Swift.String?
         /// Information that describes the status of a deployment rollback (for example, whether the deployment can't be rolled back, is in progress, failed, or succeeded).
@@ -2821,12 +2823,12 @@ extension CodeDeployClientTypes {
             self.rollbackTriggeringDeploymentId = rollbackTriggeringDeploymentId
         }
     }
-
 }
 
 extension CodeDeployClientTypes {
+
     /// Information about the instances to be used in the replacement environment in a blue/green deployment.
-    public struct TargetInstances {
+    public struct TargetInstances: Swift.Sendable {
         /// The names of one or more Auto Scaling groups to identify a replacement environment for a blue/green deployment.
         public var autoScalingGroups: [Swift.String]?
         /// Information about the groups of Amazon EC2 instance tags that an instance must be identified by in order for it to be included in the replacement environment for a blue/green deployment. Cannot be used in the same call as tagFilters.
@@ -2845,12 +2847,12 @@ extension CodeDeployClientTypes {
             self.tagFilters = tagFilters
         }
     }
-
 }
 
 extension CodeDeployClientTypes {
+
     /// Information about a deployment.
-    public struct DeploymentInfo {
+    public struct DeploymentInfo: Swift.Sendable {
         /// Provides information about the results of a deployment, such as whether instances in the original environment in a blue/green deployment were not terminated.
         @available(*, deprecated, message: "AdditionalDeploymentStatusInfo is deprecated, use DeploymentStatusMessageList instead.")
         public var additionalDeploymentStatusInfo: Swift.String?
@@ -2992,11 +2994,10 @@ extension CodeDeployClientTypes {
             self.updateOutdatedInstancesOnly = updateOutdatedInstancesOnly
         }
     }
-
 }
 
 /// Represents the output of a BatchGetDeployments operation.
-public struct BatchGetDeploymentsOutput {
+public struct BatchGetDeploymentsOutput: Swift.Sendable {
     /// Information about the deployments.
     public var deploymentsInfo: [CodeDeployClientTypes.DeploymentInfo]?
 
@@ -3159,7 +3160,7 @@ public struct InvalidDeploymentTargetIdException: ClientRuntime.ModeledError, AW
     }
 }
 
-public struct BatchGetDeploymentTargetsInput {
+public struct BatchGetDeploymentTargetsInput: Swift.Sendable {
     /// The unique ID of a deployment.
     /// This member is required.
     public var deploymentId: Swift.String?
@@ -3187,7 +3188,7 @@ public struct BatchGetDeploymentTargetsInput {
 
 extension CodeDeployClientTypes {
 
-    public enum TargetStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum TargetStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case failed
         case inProgress
         case pending
@@ -3230,8 +3231,9 @@ extension CodeDeployClientTypes {
 }
 
 extension CodeDeployClientTypes {
+
     /// Information about the target to be updated by an CloudFormation blue/green deployment. This target type is used for all deployments initiated by a CloudFormation stack update.
-    public struct CloudFormationTarget {
+    public struct CloudFormationTarget: Swift.Sendable {
         /// The unique ID of an CloudFormation blue/green deployment.
         public var deploymentId: Swift.String?
         /// The date and time when the target application was updated by an CloudFormation blue/green deployment.
@@ -3266,12 +3268,11 @@ extension CodeDeployClientTypes {
             self.targetVersionWeight = targetVersionWeight
         }
     }
-
 }
 
 extension CodeDeployClientTypes {
 
-    public enum DeploymentTargetType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DeploymentTargetType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case cloudformationTarget
         case ecsTarget
         case instanceTarget
@@ -3306,7 +3307,7 @@ extension CodeDeployClientTypes {
 
 extension CodeDeployClientTypes {
 
-    public enum TargetLabel: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum TargetLabel: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case blue
         case green
         case sdkUnknown(Swift.String)
@@ -3334,8 +3335,9 @@ extension CodeDeployClientTypes {
 }
 
 extension CodeDeployClientTypes {
+
     /// Information about a set of Amazon ECS tasks in an CodeDeploy deployment. An Amazon ECS task set includes details such as the desired number of tasks, how many tasks are running, and whether the task set serves production traffic. An CodeDeploy application that uses the Amazon ECS compute platform deploys a containerized application in an Amazon ECS service as a task set.
-    public struct ECSTaskSet {
+    public struct ECSTaskSet: Swift.Sendable {
         /// The number of tasks in a task set. During a deployment that uses the Amazon ECS compute type, CodeDeploy instructs Amazon ECS to create a new task set and uses this value to determine how many tasks to create. After the updated task set is created, CodeDeploy shifts traffic to the new task set.
         public var desiredCount: Swift.Int
         /// A unique ID of an ECSTaskSet.
@@ -3380,12 +3382,12 @@ extension CodeDeployClientTypes {
             self.trafficWeight = trafficWeight
         }
     }
-
 }
 
 extension CodeDeployClientTypes {
+
     /// Information about the target of an Amazon ECS deployment.
-    public struct ECSTarget {
+    public struct ECSTarget: Swift.Sendable {
         /// The unique ID of a deployment.
         public var deploymentId: Swift.String?
         /// The date and time when the target Amazon ECS application was updated by a deployment.
@@ -3420,12 +3422,12 @@ extension CodeDeployClientTypes {
             self.taskSetsInfo = taskSetsInfo
         }
     }
-
 }
 
 extension CodeDeployClientTypes {
+
     /// A target Amazon EC2 or on-premises instance during a deployment that uses the EC2/On-premises compute platform.
-    public struct InstanceTarget {
+    public struct InstanceTarget: Swift.Sendable {
         /// The unique ID of a deployment.
         public var deploymentId: Swift.String?
         /// A label that identifies whether the instance is an original target (BLUE) or a replacement target (GREEN).
@@ -3460,12 +3462,12 @@ extension CodeDeployClientTypes {
             self.targetId = targetId
         }
     }
-
 }
 
 extension CodeDeployClientTypes {
+
     /// Information about a Lambda function specified in a deployment.
-    public struct LambdaFunctionInfo {
+    public struct LambdaFunctionInfo: Swift.Sendable {
         /// The version of a Lambda function that production traffic points to.
         public var currentVersion: Swift.String?
         /// The alias of a Lambda function. For more information, see [Lambda Function Aliases](https://docs.aws.amazon.com/lambda/latest/dg/aliases-intro.html) in the Lambda Developer Guide.
@@ -3492,12 +3494,12 @@ extension CodeDeployClientTypes {
             self.targetVersionWeight = targetVersionWeight
         }
     }
-
 }
 
 extension CodeDeployClientTypes {
+
     /// Information about the target Lambda function during an Lambda deployment.
-    public struct LambdaTarget {
+    public struct LambdaTarget: Swift.Sendable {
         /// The unique ID of a deployment.
         public var deploymentId: Swift.String?
         /// A LambdaFunctionInfo object that describes a target Lambda function.
@@ -3532,12 +3534,12 @@ extension CodeDeployClientTypes {
             self.targetId = targetId
         }
     }
-
 }
 
 extension CodeDeployClientTypes {
+
     /// Information about the deployment target.
-    public struct DeploymentTarget {
+    public struct DeploymentTarget: Swift.Sendable {
         /// Information about the target to be updated by an CloudFormation blue/green deployment. This target type is used for all deployments initiated by a CloudFormation stack update.
         public var cloudFormationTarget: CodeDeployClientTypes.CloudFormationTarget?
         /// The deployment type that is specific to the deployment's compute platform or deployments initiated by a CloudFormation stack update.
@@ -3564,10 +3566,9 @@ extension CodeDeployClientTypes {
             self.lambdaTarget = lambdaTarget
         }
     }
-
 }
 
-public struct BatchGetDeploymentTargetsOutput {
+public struct BatchGetDeploymentTargetsOutput: Swift.Sendable {
     /// A list of target objects for a deployment. Each target object contains details about the target, such as its status and lifecycle events. The type of the target objects depends on the deployment' compute platform.
     ///
     /// * EC2/On-premises: Each target object is an Amazon EC2 or on-premises instance.
@@ -3588,7 +3589,7 @@ public struct BatchGetDeploymentTargetsOutput {
 }
 
 /// Represents the input of a BatchGetOnPremisesInstances operation.
-public struct BatchGetOnPremisesInstancesInput {
+public struct BatchGetOnPremisesInstancesInput: Swift.Sendable {
     /// The names of the on-premises instances about which to get information. The maximum number of instance names you can specify is 25.
     /// This member is required.
     public var instanceNames: [Swift.String]?
@@ -3602,8 +3603,9 @@ public struct BatchGetOnPremisesInstancesInput {
 }
 
 extension CodeDeployClientTypes {
+
     /// Information about an on-premises instance.
-    public struct InstanceInfo {
+    public struct InstanceInfo: Swift.Sendable {
         /// If the on-premises instance was deregistered, the time at which the on-premises instance was deregistered.
         public var deregisterTime: Foundation.Date?
         /// The ARN of the IAM session associated with the on-premises instance.
@@ -3638,11 +3640,10 @@ extension CodeDeployClientTypes {
             self.tags = tags
         }
     }
-
 }
 
 /// Represents the output of a BatchGetOnPremisesInstances operation.
-public struct BatchGetOnPremisesInstancesOutput {
+public struct BatchGetOnPremisesInstancesOutput: Swift.Sendable {
     /// Information about the on-premises instances.
     public var instanceInfos: [CodeDeployClientTypes.InstanceInfo]?
 
@@ -3806,7 +3807,7 @@ public struct UnsupportedActionForDeploymentTypeException: ClientRuntime.Modeled
 
 extension CodeDeployClientTypes {
 
-    public enum DeploymentWaitType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DeploymentWaitType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case readyWait
         case terminationWait
         case sdkUnknown(Swift.String)
@@ -3833,7 +3834,7 @@ extension CodeDeployClientTypes {
     }
 }
 
-public struct ContinueDeploymentInput {
+public struct ContinueDeploymentInput: Swift.Sendable {
     /// The unique ID of a blue/green deployment for which you want to start rerouting traffic to the replacement environment.
     public var deploymentId: Swift.String?
     /// The status of the deployment's waiting period. READY_WAIT indicates that the deployment is ready to start shifting traffic. TERMINATION_WAIT indicates that the traffic is shifted, but the original target is not terminated.
@@ -3875,7 +3876,7 @@ public struct InvalidTagsToAddException: ClientRuntime.ModeledError, AWSClientRu
 }
 
 /// Represents the input of a CreateApplication operation.
-public struct CreateApplicationInput {
+public struct CreateApplicationInput: Swift.Sendable {
     /// The name of the application. This name must be unique with the applicable user or Amazon Web Services account.
     /// This member is required.
     public var applicationName: Swift.String?
@@ -3897,7 +3898,7 @@ public struct CreateApplicationInput {
 }
 
 /// Represents the output of a CreateApplication operation.
-public struct CreateApplicationOutput {
+public struct CreateApplicationOutput: Swift.Sendable {
     /// A unique application ID.
     public var applicationId: Swift.String?
 
@@ -4353,7 +4354,7 @@ public struct ThrottlingException: ClientRuntime.ModeledError, AWSClientRuntime.
 }
 
 /// Represents the input of a CreateDeployment operation.
-public struct CreateDeploymentInput {
+public struct CreateDeploymentInput: Swift.Sendable {
     /// The name of an CodeDeploy application associated with the user or Amazon Web Services account.
     /// This member is required.
     public var applicationName: Swift.String?
@@ -4413,7 +4414,7 @@ public struct CreateDeploymentInput {
 }
 
 /// Represents the output of a CreateDeployment operation.
-public struct CreateDeploymentOutput {
+public struct CreateDeploymentOutput: Swift.Sendable {
     /// The unique ID of a deployment.
     public var deploymentId: Swift.String?
 
@@ -4552,7 +4553,7 @@ public struct InvalidZonalDeploymentConfigurationException: ClientRuntime.Modele
 
 extension CodeDeployClientTypes {
 
-    public enum MinimumHealthyHostsType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum MinimumHealthyHostsType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case fleetPercent
         case hostCount
         case sdkUnknown(Swift.String)
@@ -4580,8 +4581,9 @@ extension CodeDeployClientTypes {
 }
 
 extension CodeDeployClientTypes {
+
     /// Information about the minimum number of healthy instances.
-    public struct MinimumHealthyHosts {
+    public struct MinimumHealthyHosts: Swift.Sendable {
         /// The minimum healthy instance type:
         ///
         /// * HOST_COUNT: The minimum number of healthy instances as an absolute value.
@@ -4603,12 +4605,12 @@ extension CodeDeployClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension CodeDeployClientTypes {
+
     /// A configuration that shifts traffic from one version of a Lambda function or Amazon ECS task set to another in two increments. The original and target Lambda function versions or ECS task sets are specified in the deployment's AppSpec file.
-    public struct TimeBasedCanary {
+    public struct TimeBasedCanary: Swift.Sendable {
         /// The number of minutes between the first and second traffic shifts of a TimeBasedCanary deployment.
         public var canaryInterval: Swift.Int
         /// The percentage of traffic to shift in the first increment of a TimeBasedCanary deployment.
@@ -4623,12 +4625,12 @@ extension CodeDeployClientTypes {
             self.canaryPercentage = canaryPercentage
         }
     }
-
 }
 
 extension CodeDeployClientTypes {
+
     /// A configuration that shifts traffic from one version of a Lambda function or ECS task set to another in equal increments, with an equal number of minutes between each increment. The original and target Lambda function versions or ECS task sets are specified in the deployment's AppSpec file.
-    public struct TimeBasedLinear {
+    public struct TimeBasedLinear: Swift.Sendable {
         /// The number of minutes between each incremental traffic shift of a TimeBasedLinear deployment.
         public var linearInterval: Swift.Int
         /// The percentage of traffic that is shifted at the start of each increment of a TimeBasedLinear deployment.
@@ -4643,12 +4645,11 @@ extension CodeDeployClientTypes {
             self.linearPercentage = linearPercentage
         }
     }
-
 }
 
 extension CodeDeployClientTypes {
 
-    public enum TrafficRoutingType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum TrafficRoutingType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case allatonce
         case timebasedcanary
         case timebasedlinear
@@ -4679,8 +4680,9 @@ extension CodeDeployClientTypes {
 }
 
 extension CodeDeployClientTypes {
+
     /// The configuration that specifies how traffic is shifted from one version of a Lambda function to another version during an Lambda deployment, or from one Amazon ECS task set to another during an Amazon ECS deployment.
-    public struct TrafficRoutingConfig {
+    public struct TrafficRoutingConfig: Swift.Sendable {
         /// A configuration that shifts traffic from one version of a Lambda function or ECS task set to another in two increments. The original and target Lambda function versions or ECS task sets are specified in the deployment's AppSpec file.
         public var timeBasedCanary: CodeDeployClientTypes.TimeBasedCanary?
         /// A configuration that shifts traffic from one version of a Lambda function or Amazon ECS task set to another in equal increments, with an equal number of minutes between each increment. The original and target Lambda function versions or Amazon ECS task sets are specified in the deployment's AppSpec file.
@@ -4699,12 +4701,11 @@ extension CodeDeployClientTypes {
             self.type = type
         }
     }
-
 }
 
 extension CodeDeployClientTypes {
 
-    public enum MinimumHealthyHostsPerZoneType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum MinimumHealthyHostsPerZoneType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case fleetPercent
         case hostCount
         case sdkUnknown(Swift.String)
@@ -4732,8 +4733,9 @@ extension CodeDeployClientTypes {
 }
 
 extension CodeDeployClientTypes {
+
     /// Information about the minimum number of healthy instances per Availability Zone.
-    public struct MinimumHealthyHostsPerZone {
+    public struct MinimumHealthyHostsPerZone: Swift.Sendable {
         /// The type associated with the MinimumHealthyHostsPerZone option.
         public var type: CodeDeployClientTypes.MinimumHealthyHostsPerZoneType?
         /// The value associated with the MinimumHealthyHostsPerZone option.
@@ -4748,12 +4750,12 @@ extension CodeDeployClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension CodeDeployClientTypes {
+
     /// Configure the ZonalConfig object if you want CodeDeploy to deploy your application to one [Availability Zone](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-regions-availability-zones.html#concepts-availability-zones) at a time, within an Amazon Web Services Region. By deploying to one Availability Zone at a time, you can expose your deployment to a progressively larger audience as confidence in the deployment's performance and viability grows. If you don't configure the ZonalConfig object, CodeDeploy deploys your application to a random selection of hosts across a Region. For more information about the zonal configuration feature, see [zonal configuration](https://docs.aws.amazon.com/codedeploy/latest/userguide/deployment-configurations-create.html#zonal-config) in the CodeDeploy User Guide.
-    public struct ZonalConfig {
+    public struct ZonalConfig: Swift.Sendable {
         /// The period of time, in seconds, that CodeDeploy must wait after completing a deployment to the first Availability Zone. CodeDeploy will wait this amount of time before starting a deployment to the second Availability Zone. You might set this option if you want to allow extra bake time for the first Availability Zone. If you don't specify a value for firstZoneMonitorDurationInSeconds, then CodeDeploy uses the monitorDurationInSeconds value for the first Availability Zone. For more information about the zonal configuration feature, see [zonal configuration](https://docs.aws.amazon.com/codedeploy/latest/userguide/deployment-configurations-create.html#zonal-config) in the CodeDeploy User Guide.
         public var firstZoneMonitorDurationInSeconds: Swift.Int?
         /// The number or percentage of instances that must remain available per Availability Zone during a deployment. This option works in conjunction with the MinimumHealthyHosts option. For more information, see [About the minimum number of healthy hosts per Availability Zone](https://docs.aws.amazon.com/codedeploy/latest/userguide/instances-health.html#minimum-healthy-hosts-az) in the CodeDeploy User Guide. If you don't specify the minimumHealthyHostsPerZone option, then CodeDeploy uses a default value of 0 percent. For more information about the zonal configuration feature, see [zonal configuration](https://docs.aws.amazon.com/codedeploy/latest/userguide/deployment-configurations-create.html#zonal-config) in the CodeDeploy User Guide.
@@ -4772,11 +4774,10 @@ extension CodeDeployClientTypes {
             self.monitorDurationInSeconds = monitorDurationInSeconds
         }
     }
-
 }
 
 /// Represents the input of a CreateDeploymentConfig operation.
-public struct CreateDeploymentConfigInput {
+public struct CreateDeploymentConfigInput: Swift.Sendable {
     /// The destination platform type for the deployment (Lambda, Server, or ECS).
     public var computePlatform: CodeDeployClientTypes.ComputePlatform?
     /// The name of the deployment configuration to create.
@@ -4813,7 +4814,7 @@ public struct CreateDeploymentConfigInput {
 }
 
 /// Represents the output of a CreateDeploymentConfig operation.
-public struct CreateDeploymentConfigOutput {
+public struct CreateDeploymentConfigOutput: Swift.Sendable {
     /// A unique deployment configuration ID.
     public var deploymentConfigId: Swift.String?
 
@@ -5226,7 +5227,7 @@ public struct TriggerTargetsLimitExceededException: ClientRuntime.ModeledError, 
 }
 
 /// Represents the input of a CreateDeploymentGroup operation.
-public struct CreateDeploymentGroupInput {
+public struct CreateDeploymentGroupInput: Swift.Sendable {
     /// Information to add about Amazon CloudWatch alarms when the deployment group is created.
     public var alarmConfiguration: CodeDeployClientTypes.AlarmConfiguration?
     /// The name of an CodeDeploy application associated with the user or Amazon Web Services account.
@@ -5314,7 +5315,7 @@ public struct CreateDeploymentGroupInput {
 }
 
 /// Represents the output of a CreateDeploymentGroup operation.
-public struct CreateDeploymentGroupOutput {
+public struct CreateDeploymentGroupOutput: Swift.Sendable {
     /// A unique deployment group ID.
     public var deploymentGroupId: Swift.String?
 
@@ -5327,7 +5328,7 @@ public struct CreateDeploymentGroupOutput {
 }
 
 /// Represents the input of a DeleteApplication operation.
-public struct DeleteApplicationInput {
+public struct DeleteApplicationInput: Swift.Sendable {
     /// The name of an CodeDeploy application associated with the user or Amazon Web Services account.
     /// This member is required.
     public var applicationName: Swift.String?
@@ -5391,7 +5392,7 @@ public struct InvalidOperationException: ClientRuntime.ModeledError, AWSClientRu
 }
 
 /// Represents the input of a DeleteDeploymentConfig operation.
-public struct DeleteDeploymentConfigInput {
+public struct DeleteDeploymentConfigInput: Swift.Sendable {
     /// The name of a deployment configuration associated with the user or Amazon Web Services account.
     /// This member is required.
     public var deploymentConfigName: Swift.String?
@@ -5405,7 +5406,7 @@ public struct DeleteDeploymentConfigInput {
 }
 
 /// Represents the input of a DeleteDeploymentGroup operation.
-public struct DeleteDeploymentGroupInput {
+public struct DeleteDeploymentGroupInput: Swift.Sendable {
     /// The name of an CodeDeploy application associated with the user or Amazon Web Services account.
     /// This member is required.
     public var applicationName: Swift.String?
@@ -5424,7 +5425,7 @@ public struct DeleteDeploymentGroupInput {
 }
 
 /// Represents the output of a DeleteDeploymentGroup operation.
-public struct DeleteDeploymentGroupOutput {
+public struct DeleteDeploymentGroupOutput: Swift.Sendable {
     /// If the output contains no data, and the corresponding deployment group contained at least one Auto Scaling group, CodeDeploy successfully removed all corresponding Auto Scaling lifecycle event hooks from the Amazon EC2 instances in the Auto Scaling group. If the output contains data, CodeDeploy could not remove some Auto Scaling lifecycle event hooks from the Amazon EC2 instances in the Auto Scaling group.
     public var hooksNotCleanedUp: [CodeDeployClientTypes.AutoScalingGroup]?
 
@@ -5562,7 +5563,7 @@ public struct ResourceValidationException: ClientRuntime.ModeledError, AWSClient
 }
 
 /// Represents the input of a DeleteGitHubAccount operation.
-public struct DeleteGitHubAccountTokenInput {
+public struct DeleteGitHubAccountTokenInput: Swift.Sendable {
     /// The name of the GitHub account connection to delete.
     public var tokenName: Swift.String?
 
@@ -5575,7 +5576,7 @@ public struct DeleteGitHubAccountTokenInput {
 }
 
 /// Represents the output of a DeleteGitHubAccountToken operation.
-public struct DeleteGitHubAccountTokenOutput {
+public struct DeleteGitHubAccountTokenOutput: Swift.Sendable {
     /// The name of the GitHub account connection that was deleted.
     public var tokenName: Swift.String?
 
@@ -5587,7 +5588,7 @@ public struct DeleteGitHubAccountTokenOutput {
     }
 }
 
-public struct DeleteResourcesByExternalIdInput {
+public struct DeleteResourcesByExternalIdInput: Swift.Sendable {
     /// The unique ID of an external resource (for example, a CloudFormation stack ID) that is linked to one or more CodeDeploy resources.
     public var externalId: Swift.String?
 
@@ -5599,13 +5600,13 @@ public struct DeleteResourcesByExternalIdInput {
     }
 }
 
-public struct DeleteResourcesByExternalIdOutput {
+public struct DeleteResourcesByExternalIdOutput: Swift.Sendable {
 
     public init() { }
 }
 
 /// Represents the input of a DeregisterOnPremisesInstance operation.
-public struct DeregisterOnPremisesInstanceInput {
+public struct DeregisterOnPremisesInstanceInput: Swift.Sendable {
     /// The name of the on-premises instance to deregister.
     /// This member is required.
     public var instanceName: Swift.String?
@@ -5619,7 +5620,7 @@ public struct DeregisterOnPremisesInstanceInput {
 }
 
 /// Represents the input of a GetApplication operation.
-public struct GetApplicationInput {
+public struct GetApplicationInput: Swift.Sendable {
     /// The name of an CodeDeploy application associated with the user or Amazon Web Services account.
     /// This member is required.
     public var applicationName: Swift.String?
@@ -5633,7 +5634,7 @@ public struct GetApplicationInput {
 }
 
 /// Represents the output of a GetApplication operation.
-public struct GetApplicationOutput {
+public struct GetApplicationOutput: Swift.Sendable {
     /// Information about the application.
     public var application: CodeDeployClientTypes.ApplicationInfo?
 
@@ -5646,7 +5647,7 @@ public struct GetApplicationOutput {
 }
 
 /// Represents the input of a GetApplicationRevision operation.
-public struct GetApplicationRevisionInput {
+public struct GetApplicationRevisionInput: Swift.Sendable {
     /// The name of the application that corresponds to the revision.
     /// This member is required.
     public var applicationName: Swift.String?
@@ -5665,7 +5666,7 @@ public struct GetApplicationRevisionInput {
 }
 
 /// Represents the output of a GetApplicationRevision operation.
-public struct GetApplicationRevisionOutput {
+public struct GetApplicationRevisionOutput: Swift.Sendable {
     /// The name of the application that corresponds to the revision.
     public var applicationName: Swift.String?
     /// Additional information about the revision, including type and location.
@@ -5686,7 +5687,7 @@ public struct GetApplicationRevisionOutput {
 }
 
 /// Represents the input of a GetDeployment operation.
-public struct GetDeploymentInput {
+public struct GetDeploymentInput: Swift.Sendable {
     /// The unique ID of a deployment associated with the user or Amazon Web Services account.
     /// This member is required.
     public var deploymentId: Swift.String?
@@ -5700,7 +5701,7 @@ public struct GetDeploymentInput {
 }
 
 /// Represents the output of a GetDeployment operation.
-public struct GetDeploymentOutput {
+public struct GetDeploymentOutput: Swift.Sendable {
     /// Information about the deployment.
     public var deploymentInfo: CodeDeployClientTypes.DeploymentInfo?
 
@@ -5713,7 +5714,7 @@ public struct GetDeploymentOutput {
 }
 
 /// Represents the input of a GetDeploymentConfig operation.
-public struct GetDeploymentConfigInput {
+public struct GetDeploymentConfigInput: Swift.Sendable {
     /// The name of a deployment configuration associated with the user or Amazon Web Services account.
     /// This member is required.
     public var deploymentConfigName: Swift.String?
@@ -5727,8 +5728,9 @@ public struct GetDeploymentConfigInput {
 }
 
 extension CodeDeployClientTypes {
+
     /// Information about a deployment configuration.
-    public struct DeploymentConfigInfo {
+    public struct DeploymentConfigInfo: Swift.Sendable {
         /// The destination platform type for the deployment (Lambda, Server, or ECS).
         public var computePlatform: CodeDeployClientTypes.ComputePlatform?
         /// The time at which the deployment configuration was created.
@@ -5763,11 +5765,10 @@ extension CodeDeployClientTypes {
             self.zonalConfig = zonalConfig
         }
     }
-
 }
 
 /// Represents the output of a GetDeploymentConfig operation.
-public struct GetDeploymentConfigOutput {
+public struct GetDeploymentConfigOutput: Swift.Sendable {
     /// Information about the deployment configuration.
     public var deploymentConfigInfo: CodeDeployClientTypes.DeploymentConfigInfo?
 
@@ -5780,7 +5781,7 @@ public struct GetDeploymentConfigOutput {
 }
 
 /// Represents the input of a GetDeploymentGroup operation.
-public struct GetDeploymentGroupInput {
+public struct GetDeploymentGroupInput: Swift.Sendable {
     /// The name of an CodeDeploy application associated with the user or Amazon Web Services account.
     /// This member is required.
     public var applicationName: Swift.String?
@@ -5799,7 +5800,7 @@ public struct GetDeploymentGroupInput {
 }
 
 /// Represents the output of a GetDeploymentGroup operation.
-public struct GetDeploymentGroupOutput {
+public struct GetDeploymentGroupOutput: Swift.Sendable {
     /// Information about the deployment group.
     public var deploymentGroupInfo: CodeDeployClientTypes.DeploymentGroupInfo?
 
@@ -5812,7 +5813,7 @@ public struct GetDeploymentGroupOutput {
 }
 
 /// Represents the input of a GetDeploymentInstance operation.
-public struct GetDeploymentInstanceInput {
+public struct GetDeploymentInstanceInput: Swift.Sendable {
     /// The unique ID of a deployment.
     /// This member is required.
     public var deploymentId: Swift.String?
@@ -5831,7 +5832,7 @@ public struct GetDeploymentInstanceInput {
 }
 
 /// Represents the output of a GetDeploymentInstance operation.
-public struct GetDeploymentInstanceOutput {
+public struct GetDeploymentInstanceOutput: Swift.Sendable {
     /// Information about the instance.
     @available(*, deprecated, message: "InstanceSummary is deprecated, use DeploymentTarget instead.")
     public var instanceSummary: CodeDeployClientTypes.InstanceSummary?
@@ -5844,7 +5845,7 @@ public struct GetDeploymentInstanceOutput {
     }
 }
 
-public struct GetDeploymentTargetInput {
+public struct GetDeploymentTargetInput: Swift.Sendable {
     /// The unique ID of a deployment.
     /// This member is required.
     public var deploymentId: Swift.String?
@@ -5862,7 +5863,7 @@ public struct GetDeploymentTargetInput {
     }
 }
 
-public struct GetDeploymentTargetOutput {
+public struct GetDeploymentTargetOutput: Swift.Sendable {
     /// A deployment target that contains information about a deployment such as its status, lifecycle events, and when it was last updated. It also contains metadata about the deployment target. The deployment target metadata depends on the deployment target's type (instanceTarget, lambdaTarget, or ecsTarget).
     public var deploymentTarget: CodeDeployClientTypes.DeploymentTarget?
 
@@ -5875,7 +5876,7 @@ public struct GetDeploymentTargetOutput {
 }
 
 /// Represents the input of a GetOnPremisesInstance operation.
-public struct GetOnPremisesInstanceInput {
+public struct GetOnPremisesInstanceInput: Swift.Sendable {
     /// The name of the on-premises instance about which to get information.
     /// This member is required.
     public var instanceName: Swift.String?
@@ -5889,7 +5890,7 @@ public struct GetOnPremisesInstanceInput {
 }
 
 /// Represents the output of a GetOnPremisesInstance operation.
-public struct GetOnPremisesInstanceOutput {
+public struct GetOnPremisesInstanceOutput: Swift.Sendable {
     /// Information about the on-premises instance.
     public var instanceInfo: CodeDeployClientTypes.InstanceInfo?
 
@@ -6053,7 +6054,7 @@ public struct InvalidSortOrderException: ClientRuntime.ModeledError, AWSClientRu
 
 extension CodeDeployClientTypes {
 
-    public enum ListStateFilterAction: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ListStateFilterAction: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case exclude
         case ignore
         case include
@@ -6085,7 +6086,7 @@ extension CodeDeployClientTypes {
 
 extension CodeDeployClientTypes {
 
-    public enum SortOrder: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SortOrder: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case ascending
         case descending
         case sdkUnknown(Swift.String)
@@ -6113,7 +6114,7 @@ extension CodeDeployClientTypes {
 }
 
 /// Represents the input of a ListApplicationRevisions operation.
-public struct ListApplicationRevisionsInput {
+public struct ListApplicationRevisionsInput: Swift.Sendable {
     /// The name of an CodeDeploy application associated with the user or Amazon Web Services account.
     /// This member is required.
     public var applicationName: Swift.String?
@@ -6173,7 +6174,7 @@ public struct ListApplicationRevisionsInput {
 }
 
 /// Represents the output of a ListApplicationRevisions operation.
-public struct ListApplicationRevisionsOutput {
+public struct ListApplicationRevisionsOutput: Swift.Sendable {
     /// If a large amount of information is returned, an identifier is also returned. It can be used in a subsequent list application revisions call to return the next set of application revisions in the list.
     public var nextToken: Swift.String?
     /// A list of locations that contain the matching revisions.
@@ -6190,7 +6191,7 @@ public struct ListApplicationRevisionsOutput {
 }
 
 /// Represents the input of a ListApplications operation.
-public struct ListApplicationsInput {
+public struct ListApplicationsInput: Swift.Sendable {
     /// An identifier returned from the previous list applications call. It can be used to return the next set of applications in the list.
     public var nextToken: Swift.String?
 
@@ -6203,7 +6204,7 @@ public struct ListApplicationsInput {
 }
 
 /// Represents the output of a ListApplications operation.
-public struct ListApplicationsOutput {
+public struct ListApplicationsOutput: Swift.Sendable {
     /// A list of application names.
     public var applications: [Swift.String]?
     /// If a large amount of information is returned, an identifier is also returned. It can be used in a subsequent list applications call to return the next set of applications in the list.
@@ -6220,7 +6221,7 @@ public struct ListApplicationsOutput {
 }
 
 /// Represents the input of a ListDeploymentConfigs operation.
-public struct ListDeploymentConfigsInput {
+public struct ListDeploymentConfigsInput: Swift.Sendable {
     /// An identifier returned from the previous ListDeploymentConfigs call. It can be used to return the next set of deployment configurations in the list.
     public var nextToken: Swift.String?
 
@@ -6233,7 +6234,7 @@ public struct ListDeploymentConfigsInput {
 }
 
 /// Represents the output of a ListDeploymentConfigs operation.
-public struct ListDeploymentConfigsOutput {
+public struct ListDeploymentConfigsOutput: Swift.Sendable {
     /// A list of deployment configurations, including built-in configurations such as CodeDeployDefault.OneAtATime.
     public var deploymentConfigsList: [Swift.String]?
     /// If a large amount of information is returned, an identifier is also returned. It can be used in a subsequent list deployment configurations call to return the next set of deployment configurations in the list.
@@ -6250,7 +6251,7 @@ public struct ListDeploymentConfigsOutput {
 }
 
 /// Represents the input of a ListDeploymentGroups operation.
-public struct ListDeploymentGroupsInput {
+public struct ListDeploymentGroupsInput: Swift.Sendable {
     /// The name of an CodeDeploy application associated with the user or Amazon Web Services account.
     /// This member is required.
     public var applicationName: Swift.String?
@@ -6268,7 +6269,7 @@ public struct ListDeploymentGroupsInput {
 }
 
 /// Represents the output of a ListDeploymentGroups operation.
-public struct ListDeploymentGroupsOutput {
+public struct ListDeploymentGroupsOutput: Swift.Sendable {
     /// The application name.
     public var applicationName: Swift.String?
     /// A list of deployment group names.
@@ -6389,7 +6390,7 @@ public struct InvalidTargetFilterNameException: ClientRuntime.ModeledError, AWSC
 }
 
 /// Represents the input of a ListDeploymentInstances operation.
-public struct ListDeploymentInstancesInput {
+public struct ListDeploymentInstancesInput: Swift.Sendable {
     /// The unique ID of a deployment.
     /// This member is required.
     public var deploymentId: Swift.String?
@@ -6427,7 +6428,7 @@ public struct ListDeploymentInstancesInput {
 }
 
 /// Represents the output of a ListDeploymentInstances operation.
-public struct ListDeploymentInstancesOutput {
+public struct ListDeploymentInstancesOutput: Swift.Sendable {
     /// A list of instance IDs.
     public var instancesList: [Swift.String]?
     /// If a large amount of information is returned, an identifier is also returned. It can be used in a subsequent list deployment instances call to return the next set of deployment instances in the list.
@@ -6494,8 +6495,9 @@ public struct InvalidTimeRangeException: ClientRuntime.ModeledError, AWSClientRu
 }
 
 extension CodeDeployClientTypes {
+
     /// Information about a time range.
-    public struct TimeRange {
+    public struct TimeRange: Swift.Sendable {
         /// The end time of the time range. Specify null to leave the end time open-ended.
         public var end: Foundation.Date?
         /// The start time of the time range. Specify null to leave the start time open-ended.
@@ -6510,11 +6512,10 @@ extension CodeDeployClientTypes {
             self.start = start
         }
     }
-
 }
 
 /// Represents the input of a ListDeployments operation.
-public struct ListDeploymentsInput {
+public struct ListDeploymentsInput: Swift.Sendable {
     /// The name of an CodeDeploy application associated with the user or Amazon Web Services account. If applicationName is specified, then deploymentGroupName must be specified. If it is not specified, then deploymentGroupName must not be specified.
     public var applicationName: Swift.String?
     /// A time range (start and end) for returning a subset of the list of deployments.
@@ -6559,7 +6560,7 @@ public struct ListDeploymentsInput {
 }
 
 /// Represents the output of a ListDeployments operation.
-public struct ListDeploymentsOutput {
+public struct ListDeploymentsOutput: Swift.Sendable {
     /// A list of deployment IDs.
     public var deployments: [Swift.String]?
     /// If a large amount of information is returned, an identifier is also returned. It can be used in a subsequent list deployments call to return the next set of deployments in the list.
@@ -6577,7 +6578,7 @@ public struct ListDeploymentsOutput {
 
 extension CodeDeployClientTypes {
 
-    public enum TargetFilterName: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum TargetFilterName: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case serverInstanceLabel
         case targetStatus
         case sdkUnknown(Swift.String)
@@ -6604,7 +6605,7 @@ extension CodeDeployClientTypes {
     }
 }
 
-public struct ListDeploymentTargetsInput {
+public struct ListDeploymentTargetsInput: Swift.Sendable {
     /// The unique ID of a deployment.
     /// This member is required.
     public var deploymentId: Swift.String?
@@ -6629,7 +6630,7 @@ public struct ListDeploymentTargetsInput {
     }
 }
 
-public struct ListDeploymentTargetsOutput {
+public struct ListDeploymentTargetsOutput: Swift.Sendable {
     /// If a large amount of information is returned, a token identifier is also returned. It can be used in a subsequent ListDeploymentTargets call to return the next set of deployment targets in the list.
     public var nextToken: Swift.String?
     /// The unique IDs of deployment targets.
@@ -6646,7 +6647,7 @@ public struct ListDeploymentTargetsOutput {
 }
 
 /// Represents the input of a ListGitHubAccountTokenNames operation.
-public struct ListGitHubAccountTokenNamesInput {
+public struct ListGitHubAccountTokenNamesInput: Swift.Sendable {
     /// An identifier returned from the previous ListGitHubAccountTokenNames call. It can be used to return the next set of names in the list.
     public var nextToken: Swift.String?
 
@@ -6659,7 +6660,7 @@ public struct ListGitHubAccountTokenNamesInput {
 }
 
 /// Represents the output of a ListGitHubAccountTokenNames operation.
-public struct ListGitHubAccountTokenNamesOutput {
+public struct ListGitHubAccountTokenNamesOutput: Swift.Sendable {
     /// If a large amount of information is returned, an identifier is also returned. It can be used in a subsequent ListGitHubAccountTokenNames call to return the next set of names in the list.
     public var nextToken: Swift.String?
     /// A list of names of connections to GitHub accounts.
@@ -6727,7 +6728,7 @@ public struct InvalidTagFilterException: ClientRuntime.ModeledError, AWSClientRu
 
 extension CodeDeployClientTypes {
 
-    public enum RegistrationStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum RegistrationStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case deregistered
         case registered
         case sdkUnknown(Swift.String)
@@ -6755,7 +6756,7 @@ extension CodeDeployClientTypes {
 }
 
 /// Represents the input of a ListOnPremisesInstances operation.
-public struct ListOnPremisesInstancesInput {
+public struct ListOnPremisesInstancesInput: Swift.Sendable {
     /// An identifier returned from the previous list on-premises instances call. It can be used to return the next set of on-premises instances in the list.
     public var nextToken: Swift.String?
     /// The registration status of the on-premises instances:
@@ -6780,7 +6781,7 @@ public struct ListOnPremisesInstancesInput {
 }
 
 /// Represents the output of the list on-premises instances operation.
-public struct ListOnPremisesInstancesOutput {
+public struct ListOnPremisesInstancesOutput: Swift.Sendable {
     /// The list of matching on-premises instance names.
     public var instanceNames: [Swift.String]?
     /// If a large amount of information is returned, an identifier is also returned. It can be used in a subsequent list on-premises instances call to return the next set of on-premises instances in the list.
@@ -6846,7 +6847,7 @@ public struct ResourceArnRequiredException: ClientRuntime.ModeledError, AWSClien
     }
 }
 
-public struct ListTagsForResourceInput {
+public struct ListTagsForResourceInput: Swift.Sendable {
     /// An identifier returned from the previous ListTagsForResource call. It can be used to return the next set of applications in the list.
     public var nextToken: Swift.String?
     /// The ARN of a CodeDeploy resource. ListTagsForResource returns all the tags associated with the resource that is identified by the ResourceArn.
@@ -6863,7 +6864,7 @@ public struct ListTagsForResourceInput {
     }
 }
 
-public struct ListTagsForResourceOutput {
+public struct ListTagsForResourceOutput: Swift.Sendable {
     /// If a large amount of information is returned, an identifier is also returned. It can be used in a subsequent list application revisions call to return the next set of application revisions in the list.
     public var nextToken: Swift.String?
     /// A list of tags returned by ListTagsForResource. The tags are associated with the resource identified by the input ResourceArn parameter.
@@ -6954,7 +6955,7 @@ public struct LifecycleEventAlreadyCompletedException: ClientRuntime.ModeledErro
     }
 }
 
-public struct PutLifecycleEventHookExecutionStatusInput {
+public struct PutLifecycleEventHookExecutionStatusInput: Swift.Sendable {
     /// The unique ID of a deployment. Pass this ID to a Lambda function that validates a deployment lifecycle event.
     public var deploymentId: Swift.String?
     /// The execution ID of a deployment's lifecycle hook. A deployment lifecycle hook is specified in the hooks section of the AppSpec file.
@@ -6974,7 +6975,7 @@ public struct PutLifecycleEventHookExecutionStatusInput {
     }
 }
 
-public struct PutLifecycleEventHookExecutionStatusOutput {
+public struct PutLifecycleEventHookExecutionStatusOutput: Swift.Sendable {
     /// The execution ID of the lifecycle event hook. A hook is specified in the hooks section of the deployment's AppSpec file.
     public var lifecycleEventHookExecutionId: Swift.String?
 
@@ -6987,7 +6988,7 @@ public struct PutLifecycleEventHookExecutionStatusOutput {
 }
 
 /// Represents the input of a RegisterApplicationRevision operation.
-public struct RegisterApplicationRevisionInput {
+public struct RegisterApplicationRevisionInput: Swift.Sendable {
     /// The name of an CodeDeploy application associated with the user or Amazon Web Services account.
     /// This member is required.
     public var applicationName: Swift.String?
@@ -7210,7 +7211,7 @@ public struct MultipleIamArnsProvidedException: ClientRuntime.ModeledError, AWSC
 }
 
 /// Represents the input of the register on-premises instance operation.
-public struct RegisterOnPremisesInstanceInput {
+public struct RegisterOnPremisesInstanceInput: Swift.Sendable {
     /// The ARN of the IAM session to associate with the on-premises instance.
     public var iamSessionArn: Swift.String?
     /// The ARN of the user to associate with the on-premises instance.
@@ -7232,7 +7233,7 @@ public struct RegisterOnPremisesInstanceInput {
 }
 
 /// Represents the input of a RemoveTagsFromOnPremisesInstances operation.
-public struct RemoveTagsFromOnPremisesInstancesInput {
+public struct RemoveTagsFromOnPremisesInstancesInput: Swift.Sendable {
     /// The names of the on-premises instances from which to remove tags.
     /// This member is required.
     public var instanceNames: [Swift.String]?
@@ -7250,7 +7251,7 @@ public struct RemoveTagsFromOnPremisesInstancesInput {
     }
 }
 
-public struct SkipWaitTimeForInstanceTerminationInput {
+public struct SkipWaitTimeForInstanceTerminationInput: Swift.Sendable {
     /// The unique ID of a blue/green deployment for which you want to skip the instance termination wait time.
     public var deploymentId: Swift.String?
 
@@ -7263,7 +7264,7 @@ public struct SkipWaitTimeForInstanceTerminationInput {
 }
 
 /// Represents the input of a StopDeployment operation.
-public struct StopDeploymentInput {
+public struct StopDeploymentInput: Swift.Sendable {
     /// Indicates, when a deployment is stopped, whether instances that have been updated should be rolled back to the previous version of the application revision.
     public var autoRollbackEnabled: Swift.Bool?
     /// The unique ID of a deployment.
@@ -7282,7 +7283,7 @@ public struct StopDeploymentInput {
 
 extension CodeDeployClientTypes {
 
-    public enum StopStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum StopStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case pending
         case succeeded
         case sdkUnknown(Swift.String)
@@ -7310,7 +7311,7 @@ extension CodeDeployClientTypes {
 }
 
 /// Represents the output of a StopDeployment operation.
-public struct StopDeploymentOutput {
+public struct StopDeploymentOutput: Swift.Sendable {
     /// The status of the stop deployment operation:
     ///
     /// * Pending: The stop operation is pending.
@@ -7330,7 +7331,7 @@ public struct StopDeploymentOutput {
     }
 }
 
-public struct TagResourceInput {
+public struct TagResourceInput: Swift.Sendable {
     /// The ARN of a resource, such as a CodeDeploy application or deployment group.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -7348,12 +7349,12 @@ public struct TagResourceInput {
     }
 }
 
-public struct TagResourceOutput {
+public struct TagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UntagResourceInput {
+public struct UntagResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) that specifies from which resource to disassociate the tags with the keys in the TagKeys input parameter.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -7371,13 +7372,13 @@ public struct UntagResourceInput {
     }
 }
 
-public struct UntagResourceOutput {
+public struct UntagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
 /// Represents the input of an UpdateApplication operation.
-public struct UpdateApplicationInput {
+public struct UpdateApplicationInput: Swift.Sendable {
     /// The current name of the application you want to change.
     public var applicationName: Swift.String?
     /// The new name to give the application.
@@ -7394,7 +7395,7 @@ public struct UpdateApplicationInput {
 }
 
 /// Represents the input of an UpdateDeploymentGroup operation.
-public struct UpdateDeploymentGroupInput {
+public struct UpdateDeploymentGroupInput: Swift.Sendable {
     /// Information to add or change about Amazon CloudWatch alarms when the deployment group is updated.
     public var alarmConfiguration: CodeDeployClientTypes.AlarmConfiguration?
     /// The application name that corresponds to the deployment group to update.
@@ -7485,7 +7486,7 @@ public struct UpdateDeploymentGroupInput {
 }
 
 /// Represents the output of an UpdateDeploymentGroup operation.
-public struct UpdateDeploymentGroupOutput {
+public struct UpdateDeploymentGroupOutput: Swift.Sendable {
     /// If the output contains no data, and the corresponding deployment group contained at least one Auto Scaling group, CodeDeploy successfully removed all corresponding Auto Scaling lifecycle event hooks from the Amazon Web Services account. If the output contains data, CodeDeploy could not remove some Auto Scaling lifecycle event hooks from the Amazon Web Services account.
     public var hooksNotCleanedUp: [CodeDeployClientTypes.AutoScalingGroup]?
 

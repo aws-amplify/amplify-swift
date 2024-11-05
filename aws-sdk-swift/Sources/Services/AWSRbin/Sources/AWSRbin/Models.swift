@@ -51,7 +51,7 @@ public struct InternalServerException: ClientRuntime.ModeledError, AWSClientRunt
 
 extension RbinClientTypes {
 
-    public enum ServiceQuotaExceededExceptionReason: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ServiceQuotaExceededExceptionReason: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case serviceQuotaExceeded
         case sdkUnknown(Swift.String)
 
@@ -105,7 +105,7 @@ public struct ServiceQuotaExceededException: ClientRuntime.ModeledError, AWSClie
 
 extension RbinClientTypes {
 
-    public enum ValidationExceptionReason: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ValidationExceptionReason: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case invalidPageToken
         case invalidParameterValue
         case sdkUnknown(Swift.String)
@@ -162,7 +162,7 @@ public struct ValidationException: ClientRuntime.ModeledError, AWSClientRuntime.
 
 extension RbinClientTypes {
 
-    public enum UnlockDelayUnit: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum UnlockDelayUnit: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case days
         case sdkUnknown(Swift.String)
 
@@ -187,8 +187,9 @@ extension RbinClientTypes {
 }
 
 extension RbinClientTypes {
+
     /// Information about the retention rule unlock delay. The unlock delay is the period after which a retention rule can be modified or edited after it has been unlocked by a user with the required permissions. The retention rule can't be modified or deleted during the unlock delay.
-    public struct UnlockDelay {
+    public struct UnlockDelay: Swift.Sendable {
         /// The unit of time in which to measure the unlock delay. Currently, the unlock delay can be measure only in days.
         /// This member is required.
         public var unlockDelayUnit: RbinClientTypes.UnlockDelayUnit?
@@ -205,12 +206,12 @@ extension RbinClientTypes {
             self.unlockDelayValue = unlockDelayValue
         }
     }
-
 }
 
 extension RbinClientTypes {
+
     /// Information about a retention rule lock configuration.
-    public struct LockConfiguration {
+    public struct LockConfiguration: Swift.Sendable {
         /// Information about the retention rule unlock delay.
         /// This member is required.
         public var unlockDelay: RbinClientTypes.UnlockDelay?
@@ -222,12 +223,12 @@ extension RbinClientTypes {
             self.unlockDelay = unlockDelay
         }
     }
-
 }
 
 extension RbinClientTypes {
+
     /// Information about the resource tags used to identify resources that are retained by the retention rule.
-    public struct ResourceTag {
+    public struct ResourceTag: Swift.Sendable {
         /// The tag key.
         /// This member is required.
         public var resourceTagKey: Swift.String?
@@ -243,12 +244,11 @@ extension RbinClientTypes {
             self.resourceTagValue = resourceTagValue
         }
     }
-
 }
 
 extension RbinClientTypes {
 
-    public enum ResourceType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ResourceType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case ebsSnapshot
         case ec2Image
         case sdkUnknown(Swift.String)
@@ -277,7 +277,7 @@ extension RbinClientTypes {
 
 extension RbinClientTypes {
 
-    public enum RetentionPeriodUnit: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum RetentionPeriodUnit: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case days
         case sdkUnknown(Swift.String)
 
@@ -302,8 +302,9 @@ extension RbinClientTypes {
 }
 
 extension RbinClientTypes {
+
     /// Information about the retention period for which the retention rule is to retain resources.
-    public struct RetentionPeriod {
+    public struct RetentionPeriod: Swift.Sendable {
         /// The unit of time in which the retention period is measured. Currently, only DAYS is supported.
         /// This member is required.
         public var retentionPeriodUnit: RbinClientTypes.RetentionPeriodUnit?
@@ -320,12 +321,12 @@ extension RbinClientTypes {
             self.retentionPeriodValue = retentionPeriodValue
         }
     }
-
 }
 
 extension RbinClientTypes {
+
     /// Information about the tags to assign to the retention rule.
-    public struct Tag {
+    public struct Tag: Swift.Sendable {
         /// The tag key.
         /// This member is required.
         public var key: Swift.String?
@@ -342,10 +343,9 @@ extension RbinClientTypes {
             self.value = value
         }
     }
-
 }
 
-public struct CreateRuleInput {
+public struct CreateRuleInput: Swift.Sendable {
     /// The retention rule description.
     public var description: Swift.String?
     /// Information about the retention rule lock configuration.
@@ -381,7 +381,7 @@ public struct CreateRuleInput {
 
 extension RbinClientTypes {
 
-    public enum LockState: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum LockState: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case locked
         case pendingUnlock
         case unlocked
@@ -413,7 +413,7 @@ extension RbinClientTypes {
 
 extension RbinClientTypes {
 
-    public enum RuleStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum RuleStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case available
         case pending
         case sdkUnknown(Swift.String)
@@ -440,7 +440,7 @@ extension RbinClientTypes {
     }
 }
 
-public struct CreateRuleOutput {
+public struct CreateRuleOutput: Swift.Sendable {
     /// The retention rule description.
     public var description: Swift.String?
     /// The unique ID of the retention rule.
@@ -498,7 +498,7 @@ public struct CreateRuleOutput {
 
 extension RbinClientTypes {
 
-    public enum ConflictExceptionReason: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ConflictExceptionReason: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case invalidRuleState
         case sdkUnknown(Swift.String)
 
@@ -552,7 +552,7 @@ public struct ConflictException: ClientRuntime.ModeledError, AWSClientRuntime.AW
 
 extension RbinClientTypes {
 
-    public enum ResourceNotFoundExceptionReason: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ResourceNotFoundExceptionReason: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case ruleNotFound
         case sdkUnknown(Swift.String)
 
@@ -604,7 +604,7 @@ public struct ResourceNotFoundException: ClientRuntime.ModeledError, AWSClientRu
     }
 }
 
-public struct DeleteRuleInput {
+public struct DeleteRuleInput: Swift.Sendable {
     /// The unique ID of the retention rule.
     /// This member is required.
     public var identifier: Swift.String?
@@ -617,12 +617,12 @@ public struct DeleteRuleInput {
     }
 }
 
-public struct DeleteRuleOutput {
+public struct DeleteRuleOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct GetRuleInput {
+public struct GetRuleInput: Swift.Sendable {
     /// The unique ID of the retention rule.
     /// This member is required.
     public var identifier: Swift.String?
@@ -635,7 +635,7 @@ public struct GetRuleInput {
     }
 }
 
-public struct GetRuleOutput {
+public struct GetRuleOutput: Swift.Sendable {
     /// The retention rule description.
     public var description: Swift.String?
     /// The unique ID of the retention rule.
@@ -691,7 +691,7 @@ public struct GetRuleOutput {
     }
 }
 
-public struct ListRulesInput {
+public struct ListRulesInput: Swift.Sendable {
     /// The lock state of the retention rules to list. Only retention rules with the specified lock state are returned.
     public var lockState: RbinClientTypes.LockState?
     /// The maximum number of results to return with a single call. To retrieve the remaining results, make another call with the returned NextToken value.
@@ -721,8 +721,9 @@ public struct ListRulesInput {
 }
 
 extension RbinClientTypes {
+
     /// Information about a Recycle Bin retention rule.
-    public struct RuleSummary {
+    public struct RuleSummary: Swift.Sendable {
         /// The retention rule description.
         public var description: Swift.String?
         /// The unique ID of the retention rule.
@@ -757,10 +758,9 @@ extension RbinClientTypes {
             self.ruleArn = ruleArn
         }
     }
-
 }
 
-public struct ListRulesOutput {
+public struct ListRulesOutput: Swift.Sendable {
     /// The token to use to retrieve the next page of results. This value is null when there are no more results to return.
     public var nextToken: Swift.String?
     /// Information about the retention rules.
@@ -776,7 +776,7 @@ public struct ListRulesOutput {
     }
 }
 
-public struct ListTagsForResourceInput {
+public struct ListTagsForResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the retention rule.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -789,7 +789,7 @@ public struct ListTagsForResourceInput {
     }
 }
 
-public struct ListTagsForResourceOutput {
+public struct ListTagsForResourceOutput: Swift.Sendable {
     /// Information about the tags assigned to the retention rule.
     public var tags: [RbinClientTypes.Tag]?
 
@@ -801,7 +801,7 @@ public struct ListTagsForResourceOutput {
     }
 }
 
-public struct LockRuleInput {
+public struct LockRuleInput: Swift.Sendable {
     /// The unique ID of the retention rule.
     /// This member is required.
     public var identifier: Swift.String?
@@ -819,7 +819,7 @@ public struct LockRuleInput {
     }
 }
 
-public struct LockRuleOutput {
+public struct LockRuleOutput: Swift.Sendable {
     /// The retention rule description.
     public var description: Swift.String?
     /// The unique ID of the retention rule.
@@ -871,7 +871,7 @@ public struct LockRuleOutput {
     }
 }
 
-public struct TagResourceInput {
+public struct TagResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the retention rule.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -889,12 +889,12 @@ public struct TagResourceInput {
     }
 }
 
-public struct TagResourceOutput {
+public struct TagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UnlockRuleInput {
+public struct UnlockRuleInput: Swift.Sendable {
     /// The unique ID of the retention rule.
     /// This member is required.
     public var identifier: Swift.String?
@@ -907,7 +907,7 @@ public struct UnlockRuleInput {
     }
 }
 
-public struct UnlockRuleOutput {
+public struct UnlockRuleOutput: Swift.Sendable {
     /// The retention rule description.
     public var description: Swift.String?
     /// The unique ID of the retention rule.
@@ -963,7 +963,7 @@ public struct UnlockRuleOutput {
     }
 }
 
-public struct UntagResourceInput {
+public struct UntagResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the retention rule.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -981,12 +981,12 @@ public struct UntagResourceInput {
     }
 }
 
-public struct UntagResourceOutput {
+public struct UntagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdateRuleInput {
+public struct UpdateRuleInput: Swift.Sendable {
     /// The retention rule description.
     public var description: Swift.String?
     /// The unique ID of the retention rule.
@@ -1015,7 +1015,7 @@ public struct UpdateRuleInput {
     }
 }
 
-public struct UpdateRuleOutput {
+public struct UpdateRuleOutput: Swift.Sendable {
     /// The retention rule description.
     public var description: Swift.String?
     /// The unique ID of the retention rule.

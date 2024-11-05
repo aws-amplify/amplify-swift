@@ -27,59 +27,60 @@ import protocol ClientRuntime.ModeledError
 @_spi(SmithyReadWrite) import struct SmithyReadWrite.WritingClosureBox
 @_spi(SmithyTimestamps) import struct SmithyTimestamps.TimestampFormatter
 
-public struct DeleteAssessmentRunOutput {
+
+public struct DeleteAssessmentRunOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteAssessmentTargetOutput {
+public struct DeleteAssessmentTargetOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteAssessmentTemplateOutput {
+public struct DeleteAssessmentTemplateOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DescribeCrossAccountAccessRoleInput {
+public struct DescribeCrossAccountAccessRoleInput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct RegisterCrossAccountAccessRoleOutput {
+public struct RegisterCrossAccountAccessRoleOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct SetTagsForResourceOutput {
+public struct SetTagsForResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct StopAssessmentRunOutput {
+public struct StopAssessmentRunOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct SubscribeToEventOutput {
+public struct SubscribeToEventOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UnsubscribeFromEventOutput {
+public struct UnsubscribeFromEventOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdateAssessmentTargetOutput {
+public struct UpdateAssessmentTargetOutput: Swift.Sendable {
 
     public init() { }
 }
 
 extension InspectorClientTypes {
 
-    public enum AccessDeniedErrorCode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AccessDeniedErrorCode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case accessDeniedToAssessmentRun
         case accessDeniedToAssessmentTarget
         case accessDeniedToAssessmentTemplate
@@ -193,7 +194,7 @@ public struct InternalException: ClientRuntime.ModeledError, AWSClientRuntime.AW
 
 extension InspectorClientTypes {
 
-    public enum InvalidInputErrorCode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum InvalidInputErrorCode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case assessmentTargetNameAlreadyTaken
         case assessmentTemplateNameAlreadyTaken
         case invalidAgentId
@@ -414,7 +415,7 @@ public struct InvalidInputException: ClientRuntime.ModeledError, AWSClientRuntim
 
 extension InspectorClientTypes {
 
-    public enum NoSuchEntityErrorCode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum NoSuchEntityErrorCode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case assessmentRunDoesNotExist
         case assessmentTargetDoesNotExist
         case assessmentTemplateDoesNotExist
@@ -527,8 +528,9 @@ public struct ServiceTemporarilyUnavailableException: ClientRuntime.ModeledError
 }
 
 extension InspectorClientTypes {
+
     /// This data type is used as a request parameter in the [AddAttributesToFindings] and [CreateAssessmentTemplate] actions.
-    public struct Attribute {
+    public struct Attribute: Swift.Sendable {
         /// The attribute key.
         /// This member is required.
         public var key: Swift.String?
@@ -544,10 +546,9 @@ extension InspectorClientTypes {
             self.value = value
         }
     }
-
 }
 
-public struct AddAttributesToFindingsInput {
+public struct AddAttributesToFindingsInput: Swift.Sendable {
     /// The array of attributes that you want to assign to specified findings.
     /// This member is required.
     public var attributes: [InspectorClientTypes.Attribute]?
@@ -567,7 +568,7 @@ public struct AddAttributesToFindingsInput {
 
 extension InspectorClientTypes {
 
-    public enum FailedItemErrorCode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum FailedItemErrorCode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case accessDenied
         case duplicateArn
         case internalError
@@ -607,8 +608,9 @@ extension InspectorClientTypes {
 }
 
 extension InspectorClientTypes {
+
     /// Includes details about the failed items.
-    public struct FailedItemDetails {
+    public struct FailedItemDetails: Swift.Sendable {
         /// The status code of a failed item.
         /// This member is required.
         public var failureCode: InspectorClientTypes.FailedItemErrorCode?
@@ -625,10 +627,9 @@ extension InspectorClientTypes {
             self.retryable = retryable
         }
     }
-
 }
 
-public struct AddAttributesToFindingsOutput {
+public struct AddAttributesToFindingsOutput: Swift.Sendable {
     /// Attribute details that cannot be described. An error code is provided for each failed item.
     /// This member is required.
     public var failedItems: [Swift.String: InspectorClientTypes.FailedItemDetails]?
@@ -642,8 +643,9 @@ public struct AddAttributesToFindingsOutput {
 }
 
 extension InspectorClientTypes {
+
     /// Used in the exception error that is thrown if you start an assessment run for an assessment target that includes an EC2 instance that is already participating in another started assessment run.
-    public struct AgentAlreadyRunningAssessment {
+    public struct AgentAlreadyRunningAssessment: Swift.Sendable {
         /// ID of the agent that is running on an EC2 instance that is already participating in another started assessment run.
         /// This member is required.
         public var agentId: Swift.String?
@@ -660,12 +662,11 @@ extension InspectorClientTypes {
             self.assessmentRunArn = assessmentRunArn
         }
     }
-
 }
 
 extension InspectorClientTypes {
 
-    public enum AgentHealthCode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AgentHealthCode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case idle
         case running
         case shutdown
@@ -706,7 +707,7 @@ extension InspectorClientTypes {
 
 extension InspectorClientTypes {
 
-    public enum AgentHealth: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AgentHealth: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case healthy
         case unhealthy
         case unknown
@@ -737,8 +738,9 @@ extension InspectorClientTypes {
 }
 
 extension InspectorClientTypes {
+
     /// Contains information about an Amazon Inspector agent. This data type is used as a request parameter in the [ListAssessmentRunAgents] action.
-    public struct AgentFilter {
+    public struct AgentFilter: Swift.Sendable {
         /// The detailed health state of the agent. Values can be set to IDLE, RUNNING, SHUTDOWN, UNHEALTHY, THROTTLED, and UNKNOWN.
         /// This member is required.
         public var agentHealthCodes: [InspectorClientTypes.AgentHealthCode]?
@@ -755,12 +757,12 @@ extension InspectorClientTypes {
             self.agentHealths = agentHealths
         }
     }
-
 }
 
 extension InspectorClientTypes {
+
     /// Used as a response element in the [PreviewAgents] action.
-    public struct AgentPreview {
+    public struct AgentPreview: Swift.Sendable {
         /// The health status of the Amazon Inspector Agent.
         public var agentHealth: InspectorClientTypes.AgentHealth?
         /// The ID of the EC2 instance where the agent is installed.
@@ -800,7 +802,6 @@ extension InspectorClientTypes {
             self.operatingSystem = operatingSystem
         }
     }
-
 }
 
 /// You started an assessment run, but one of the instances is already participating in another assessment run.
@@ -846,7 +847,7 @@ public struct AgentsAlreadyRunningAssessmentException: ClientRuntime.ModeledErro
 
 extension InspectorClientTypes {
 
-    public enum Severity: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Severity: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case high
         case informational
         case low
@@ -884,7 +885,7 @@ extension InspectorClientTypes {
 
 extension InspectorClientTypes {
 
-    public enum InspectorEvent: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum InspectorEvent: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case assessmentRunCompleted
         case assessmentRunStarted
         case assessmentRunStateChanged
@@ -922,7 +923,7 @@ extension InspectorClientTypes {
 
 extension InspectorClientTypes {
 
-    public enum AssessmentRunNotificationSnsStatusCode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AssessmentRunNotificationSnsStatusCode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case accessDenied
         case internalError
         case success
@@ -956,8 +957,9 @@ extension InspectorClientTypes {
 }
 
 extension InspectorClientTypes {
+
     /// Used as one of the elements of the [AssessmentRun] data type.
-    public struct AssessmentRunNotification {
+    public struct AssessmentRunNotification: Swift.Sendable {
         /// The date of the notification.
         /// This member is required.
         public var date: Foundation.Date?
@@ -991,12 +993,11 @@ extension InspectorClientTypes {
             self.snsTopicArn = snsTopicArn
         }
     }
-
 }
 
 extension InspectorClientTypes {
 
-    public enum AssessmentRunState: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AssessmentRunState: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case canceled
         case collectingData
         case completed
@@ -1057,8 +1058,9 @@ extension InspectorClientTypes {
 }
 
 extension InspectorClientTypes {
+
     /// Used as one of the elements of the [AssessmentRun] data type.
-    public struct AssessmentRunStateChange {
+    public struct AssessmentRunStateChange: Swift.Sendable {
         /// The assessment run state.
         /// This member is required.
         public var state: InspectorClientTypes.AssessmentRunState?
@@ -1075,12 +1077,12 @@ extension InspectorClientTypes {
             self.stateChangedAt = stateChangedAt
         }
     }
-
 }
 
 extension InspectorClientTypes {
+
     /// A snapshot of an Amazon Inspector assessment run that contains the findings of the assessment run . Used as the response element in the [DescribeAssessmentRuns] action.
-    public struct AssessmentRun {
+    public struct AssessmentRun: Swift.Sendable {
         /// The ARN of the assessment run.
         /// This member is required.
         public var arn: Swift.String?
@@ -1160,12 +1162,12 @@ extension InspectorClientTypes {
             self.userAttributesForFindings = userAttributesForFindings
         }
     }
-
 }
 
 extension InspectorClientTypes {
+
     /// The metadata about the Amazon Inspector application data metrics collected by the agent. This data type is used as the response element in the [GetTelemetryMetadata] action.
-    public struct TelemetryMetadata {
+    public struct TelemetryMetadata: Swift.Sendable {
         /// The count of messages that the agent sends to the Amazon Inspector service.
         /// This member is required.
         public var count: Swift.Int?
@@ -1186,12 +1188,12 @@ extension InspectorClientTypes {
             self.messageType = messageType
         }
     }
-
 }
 
 extension InspectorClientTypes {
+
     /// Contains information about an Amazon Inspector agent. This data type is used as a response element in the [ListAssessmentRunAgents] action.
-    public struct AssessmentRunAgent {
+    public struct AssessmentRunAgent: Swift.Sendable {
         /// The current health state of the agent.
         /// This member is required.
         public var agentHealth: InspectorClientTypes.AgentHealth?
@@ -1231,12 +1233,12 @@ extension InspectorClientTypes {
             self.telemetryMetadata = telemetryMetadata
         }
     }
-
 }
 
 extension InspectorClientTypes {
+
     /// This data type is used in the [AssessmentRunFilter] data type.
-    public struct TimestampRange {
+    public struct TimestampRange: Swift.Sendable {
         /// The minimum value of the timestamp range.
         public var beginDate: Foundation.Date?
         /// The maximum value of the timestamp range.
@@ -1251,12 +1253,12 @@ extension InspectorClientTypes {
             self.endDate = endDate
         }
     }
-
 }
 
 extension InspectorClientTypes {
+
     /// This data type is used in the [AssessmentTemplateFilter] data type.
-    public struct DurationRange {
+    public struct DurationRange: Swift.Sendable {
         /// The maximum value of the duration range. Must be less than or equal to 604800 seconds (1 week).
         public var maxSeconds: Swift.Int?
         /// The minimum value of the duration range. Must be greater than zero.
@@ -1271,12 +1273,12 @@ extension InspectorClientTypes {
             self.minSeconds = minSeconds
         }
     }
-
 }
 
 extension InspectorClientTypes {
+
     /// Used as the request parameter in the [ListAssessmentRuns] action.
-    public struct AssessmentRunFilter {
+    public struct AssessmentRunFilter: Swift.Sendable {
         /// For a record to match a filter, the value that is specified for this data type property must inclusively match any value between the specified minimum and maximum values of the completedAt property of the [AssessmentRun] data type.
         public var completionTimeRange: InspectorClientTypes.TimestampRange?
         /// For a record to match a filter, the value that is specified for this data type property must inclusively match any value between the specified minimum and maximum values of the durationInSeconds property of the [AssessmentRun] data type.
@@ -1311,7 +1313,6 @@ extension InspectorClientTypes {
             self.states = states
         }
     }
-
 }
 
 /// You cannot perform a specified action if an assessment run is currently in progress.
@@ -1356,8 +1357,9 @@ public struct AssessmentRunInProgressException: ClientRuntime.ModeledError, AWSC
 }
 
 extension InspectorClientTypes {
+
     /// Contains information about an Amazon Inspector application. This data type is used as the response element in the [DescribeAssessmentTargets] action.
-    public struct AssessmentTarget {
+    public struct AssessmentTarget: Swift.Sendable {
         /// The ARN that specifies the Amazon Inspector assessment target.
         /// This member is required.
         public var arn: Swift.String?
@@ -1388,12 +1390,12 @@ extension InspectorClientTypes {
             self.updatedAt = updatedAt
         }
     }
-
 }
 
 extension InspectorClientTypes {
+
     /// Used as the request parameter in the [ListAssessmentTargets] action.
-    public struct AssessmentTargetFilter {
+    public struct AssessmentTargetFilter: Swift.Sendable {
         /// For a record to match a filter, an explicit value or a string that contains a wildcard that is specified for this data type property must match the value of the assessmentTargetName property of the [AssessmentTarget] data type.
         public var assessmentTargetNamePattern: Swift.String?
 
@@ -1404,12 +1406,12 @@ extension InspectorClientTypes {
             self.assessmentTargetNamePattern = assessmentTargetNamePattern
         }
     }
-
 }
 
 extension InspectorClientTypes {
+
     /// Contains information about an Amazon Inspector assessment template. This data type is used as the response element in the [DescribeAssessmentTemplates] action.
-    public struct AssessmentTemplate {
+    public struct AssessmentTemplate: Swift.Sendable {
         /// The ARN of the assessment template.
         /// This member is required.
         public var arn: Swift.String?
@@ -1460,12 +1462,12 @@ extension InspectorClientTypes {
             self.userAttributesForFindings = userAttributesForFindings
         }
     }
-
 }
 
 extension InspectorClientTypes {
+
     /// Used as the request parameter in the [ListAssessmentTemplates] action.
-    public struct AssessmentTemplateFilter {
+    public struct AssessmentTemplateFilter: Swift.Sendable {
         /// For a record to match a filter, the value specified for this data type property must inclusively match any value between the specified minimum and maximum values of the durationInSeconds property of the [AssessmentTemplate] data type.
         public var durationRange: InspectorClientTypes.DurationRange?
         /// For a record to match a filter, an explicit value or a string that contains a wildcard that is specified for this data type property must match the value of the assessmentTemplateName property of the [AssessmentTemplate] data type.
@@ -1484,12 +1486,12 @@ extension InspectorClientTypes {
             self.rulesPackageArns = rulesPackageArns
         }
     }
-
 }
 
 extension InspectorClientTypes {
+
     /// Contains information about a private IP address associated with a network interface. This data type is used as a response element in the [DescribeFindings] action.
-    public struct PrivateIp {
+    public struct PrivateIp: Swift.Sendable {
         /// The DNS name of the private IP address.
         public var privateDnsName: Swift.String?
         /// The full IP address of the network inteface.
@@ -1504,12 +1506,12 @@ extension InspectorClientTypes {
             self.privateIpAddress = privateIpAddress
         }
     }
-
 }
 
 extension InspectorClientTypes {
+
     /// Contains information about a security group associated with a network interface. This data type is used as one of the elements of the [NetworkInterface] data type.
-    public struct SecurityGroup {
+    public struct SecurityGroup: Swift.Sendable {
         /// The ID of the security group.
         public var groupId: Swift.String?
         /// The name of the security group.
@@ -1524,12 +1526,12 @@ extension InspectorClientTypes {
             self.groupName = groupName
         }
     }
-
 }
 
 extension InspectorClientTypes {
+
     /// Contains information about the network interfaces interacting with an EC2 instance. This data type is used as one of the elements of the [AssetAttributes] data type.
-    public struct NetworkInterface {
+    public struct NetworkInterface: Swift.Sendable {
         /// The IP addresses associated with the network interface.
         public var ipv6Addresses: [Swift.String]?
         /// The ID of the network interface.
@@ -1576,12 +1578,12 @@ extension InspectorClientTypes {
             self.vpcId = vpcId
         }
     }
-
 }
 
 extension InspectorClientTypes {
+
     /// A key and value pair. This data type is used as a request parameter in the [SetTagsForResource] action and a response element in the [ListTagsForResource] action.
-    public struct Tag {
+    public struct Tag: Swift.Sendable {
         /// A tag key.
         /// This member is required.
         public var key: Swift.String?
@@ -1597,12 +1599,12 @@ extension InspectorClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension InspectorClientTypes {
+
     /// A collection of attributes of the host from which the finding is generated.
-    public struct AssetAttributes {
+    public struct AssetAttributes: Swift.Sendable {
         /// The ID of the agent that is installed on the EC2 instance where the finding is generated.
         public var agentId: Swift.String?
         /// The ID of the Amazon Machine Image (AMI) that is installed on the EC2 instance where the finding is generated.
@@ -1642,12 +1644,11 @@ extension InspectorClientTypes {
             self.tags = tags
         }
     }
-
 }
 
 extension InspectorClientTypes {
 
-    public enum AssetType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AssetType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case ec2Instance
         case sdkUnknown(Swift.String)
 
@@ -1673,7 +1674,7 @@ extension InspectorClientTypes {
 
 extension InspectorClientTypes {
 
-    public enum InvalidCrossAccountRoleErrorCode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum InvalidCrossAccountRoleErrorCode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case roleDoesNotExistOrInvalidTrustRelationship
         case roleDoesNotHaveCorrectPolicy
         case sdkUnknown(Swift.String)
@@ -1738,7 +1739,7 @@ public struct InvalidCrossAccountRoleException: ClientRuntime.ModeledError, AWSC
 
 extension InspectorClientTypes {
 
-    public enum LimitExceededErrorCode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum LimitExceededErrorCode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case assessmentRunLimitExceeded
         case assessmentTargetLimitExceeded
         case assessmentTemplateLimitExceeded
@@ -1810,7 +1811,7 @@ public struct LimitExceededException: ClientRuntime.ModeledError, AWSClientRunti
     }
 }
 
-public struct CreateAssessmentTargetInput {
+public struct CreateAssessmentTargetInput: Swift.Sendable {
     /// The user-defined name that identifies the assessment target that you want to create. The name must be unique within the AWS account.
     /// This member is required.
     public var assessmentTargetName: Swift.String?
@@ -1827,7 +1828,7 @@ public struct CreateAssessmentTargetInput {
     }
 }
 
-public struct CreateAssessmentTargetOutput {
+public struct CreateAssessmentTargetOutput: Swift.Sendable {
     /// The ARN that specifies the assessment target that is created.
     /// This member is required.
     public var assessmentTargetArn: Swift.String?
@@ -1840,7 +1841,7 @@ public struct CreateAssessmentTargetOutput {
     }
 }
 
-public struct CreateAssessmentTemplateInput {
+public struct CreateAssessmentTemplateInput: Swift.Sendable {
     /// The ARN that specifies the assessment target for which you want to create the assessment template.
     /// This member is required.
     public var assessmentTargetArn: Swift.String?
@@ -1872,7 +1873,7 @@ public struct CreateAssessmentTemplateInput {
     }
 }
 
-public struct CreateAssessmentTemplateOutput {
+public struct CreateAssessmentTemplateOutput: Swift.Sendable {
     /// The ARN that specifies the assessment template that is created.
     /// This member is required.
     public var assessmentTemplateArn: Swift.String?
@@ -1910,7 +1911,7 @@ public struct PreviewGenerationInProgressException: ClientRuntime.ModeledError, 
     }
 }
 
-public struct CreateExclusionsPreviewInput {
+public struct CreateExclusionsPreviewInput: Swift.Sendable {
     /// The ARN that specifies the assessment template for which you want to create an exclusions preview.
     /// This member is required.
     public var assessmentTemplateArn: Swift.String?
@@ -1923,7 +1924,7 @@ public struct CreateExclusionsPreviewInput {
     }
 }
 
-public struct CreateExclusionsPreviewOutput {
+public struct CreateExclusionsPreviewOutput: Swift.Sendable {
     /// Specifies the unique identifier of the requested exclusions preview. You can use the unique identifier to retrieve the exclusions preview when running the GetExclusionsPreview API.
     /// This member is required.
     public var previewToken: Swift.String?
@@ -1937,8 +1938,9 @@ public struct CreateExclusionsPreviewOutput {
 }
 
 extension InspectorClientTypes {
+
     /// This data type is used as one of the elements of the [ResourceGroup] data type.
-    public struct ResourceGroupTag {
+    public struct ResourceGroupTag: Swift.Sendable {
         /// A tag key.
         /// This member is required.
         public var key: Swift.String?
@@ -1954,10 +1956,9 @@ extension InspectorClientTypes {
             self.value = value
         }
     }
-
 }
 
-public struct CreateResourceGroupInput {
+public struct CreateResourceGroupInput: Swift.Sendable {
     /// A collection of keys and an array of possible values, '[{"key":"key1","values":["Value1","Value2"]},{"key":"Key2","values":["Value3"]}]'. For example,'[{"key":"Name","values":["TestEC2Instance"]}]'.
     /// This member is required.
     public var resourceGroupTags: [InspectorClientTypes.ResourceGroupTag]?
@@ -1970,7 +1971,7 @@ public struct CreateResourceGroupInput {
     }
 }
 
-public struct CreateResourceGroupOutput {
+public struct CreateResourceGroupOutput: Swift.Sendable {
     /// The ARN that specifies the resource group that is created.
     /// This member is required.
     public var resourceGroupArn: Swift.String?
@@ -1983,7 +1984,7 @@ public struct CreateResourceGroupOutput {
     }
 }
 
-public struct DeleteAssessmentRunInput {
+public struct DeleteAssessmentRunInput: Swift.Sendable {
     /// The ARN that specifies the assessment run that you want to delete.
     /// This member is required.
     public var assessmentRunArn: Swift.String?
@@ -1996,7 +1997,7 @@ public struct DeleteAssessmentRunInput {
     }
 }
 
-public struct DeleteAssessmentTargetInput {
+public struct DeleteAssessmentTargetInput: Swift.Sendable {
     /// The ARN that specifies the assessment target that you want to delete.
     /// This member is required.
     public var assessmentTargetArn: Swift.String?
@@ -2009,7 +2010,7 @@ public struct DeleteAssessmentTargetInput {
     }
 }
 
-public struct DeleteAssessmentTemplateInput {
+public struct DeleteAssessmentTemplateInput: Swift.Sendable {
     /// The ARN that specifies the assessment template that you want to delete.
     /// This member is required.
     public var assessmentTemplateArn: Swift.String?
@@ -2022,7 +2023,7 @@ public struct DeleteAssessmentTemplateInput {
     }
 }
 
-public struct DescribeAssessmentRunsInput {
+public struct DescribeAssessmentRunsInput: Swift.Sendable {
     /// The ARN that specifies the assessment run that you want to describe.
     /// This member is required.
     public var assessmentRunArns: [Swift.String]?
@@ -2035,7 +2036,7 @@ public struct DescribeAssessmentRunsInput {
     }
 }
 
-public struct DescribeAssessmentRunsOutput {
+public struct DescribeAssessmentRunsOutput: Swift.Sendable {
     /// Information about the assessment run.
     /// This member is required.
     public var assessmentRuns: [InspectorClientTypes.AssessmentRun]?
@@ -2053,7 +2054,7 @@ public struct DescribeAssessmentRunsOutput {
     }
 }
 
-public struct DescribeAssessmentTargetsInput {
+public struct DescribeAssessmentTargetsInput: Swift.Sendable {
     /// The ARNs that specifies the assessment targets that you want to describe.
     /// This member is required.
     public var assessmentTargetArns: [Swift.String]?
@@ -2066,7 +2067,7 @@ public struct DescribeAssessmentTargetsInput {
     }
 }
 
-public struct DescribeAssessmentTargetsOutput {
+public struct DescribeAssessmentTargetsOutput: Swift.Sendable {
     /// Information about the assessment targets.
     /// This member is required.
     public var assessmentTargets: [InspectorClientTypes.AssessmentTarget]?
@@ -2084,7 +2085,7 @@ public struct DescribeAssessmentTargetsOutput {
     }
 }
 
-public struct DescribeAssessmentTemplatesInput {
+public struct DescribeAssessmentTemplatesInput: Swift.Sendable {
     /// This member is required.
     public var assessmentTemplateArns: [Swift.String]?
 
@@ -2096,7 +2097,7 @@ public struct DescribeAssessmentTemplatesInput {
     }
 }
 
-public struct DescribeAssessmentTemplatesOutput {
+public struct DescribeAssessmentTemplatesOutput: Swift.Sendable {
     /// Information about the assessment templates.
     /// This member is required.
     public var assessmentTemplates: [InspectorClientTypes.AssessmentTemplate]?
@@ -2114,7 +2115,7 @@ public struct DescribeAssessmentTemplatesOutput {
     }
 }
 
-public struct DescribeCrossAccountAccessRoleOutput {
+public struct DescribeCrossAccountAccessRoleOutput: Swift.Sendable {
     /// The date when the cross-account access role was registered.
     /// This member is required.
     public var registeredAt: Foundation.Date?
@@ -2139,7 +2140,7 @@ public struct DescribeCrossAccountAccessRoleOutput {
 
 extension InspectorClientTypes {
 
-    public enum Locale: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Locale: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case enUs
         case sdkUnknown(Swift.String)
 
@@ -2163,7 +2164,7 @@ extension InspectorClientTypes {
     }
 }
 
-public struct DescribeExclusionsInput {
+public struct DescribeExclusionsInput: Swift.Sendable {
     /// The list of ARNs that specify the exclusions that you want to describe.
     /// This member is required.
     public var exclusionArns: [Swift.String]?
@@ -2182,7 +2183,7 @@ public struct DescribeExclusionsInput {
 
 extension InspectorClientTypes {
 
-    public enum ScopeType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ScopeType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case instanceId
         case rulesPackageArn
         case sdkUnknown(Swift.String)
@@ -2210,8 +2211,9 @@ extension InspectorClientTypes {
 }
 
 extension InspectorClientTypes {
+
     /// This data type contains key-value pairs that identify various Amazon resources.
-    public struct Scope {
+    public struct Scope: Swift.Sendable {
         /// The type of the scope.
         public var key: InspectorClientTypes.ScopeType?
         /// The resource identifier for the specified scope type.
@@ -2226,12 +2228,12 @@ extension InspectorClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension InspectorClientTypes {
+
     /// Contains information about what was excluded from an assessment run.
-    public struct Exclusion {
+    public struct Exclusion: Swift.Sendable {
         /// The ARN that specifies the exclusion.
         /// This member is required.
         public var arn: Swift.String?
@@ -2267,10 +2269,9 @@ extension InspectorClientTypes {
             self.title = title
         }
     }
-
 }
 
-public struct DescribeExclusionsOutput {
+public struct DescribeExclusionsOutput: Swift.Sendable {
     /// Information about the exclusions.
     /// This member is required.
     public var exclusions: [Swift.String: InspectorClientTypes.Exclusion]?
@@ -2288,7 +2289,7 @@ public struct DescribeExclusionsOutput {
     }
 }
 
-public struct DescribeFindingsInput {
+public struct DescribeFindingsInput: Swift.Sendable {
     /// The ARN that specifies the finding that you want to describe.
     /// This member is required.
     public var findingArns: [Swift.String]?
@@ -2306,8 +2307,9 @@ public struct DescribeFindingsInput {
 }
 
 extension InspectorClientTypes {
+
     /// This data type is used in the [Finding] data type.
-    public struct InspectorServiceAttributes {
+    public struct InspectorServiceAttributes: Swift.Sendable {
         /// The ARN of the assessment run during which the finding is generated.
         public var assessmentRunArn: Swift.String?
         /// The ARN of the rules package that is used to generate the finding.
@@ -2327,12 +2329,12 @@ extension InspectorClientTypes {
             self.schemaVersion = schemaVersion
         }
     }
-
 }
 
 extension InspectorClientTypes {
+
     /// Contains information about an Amazon Inspector finding. This data type is used as the response element in the [DescribeFindings] action.
-    public struct Finding {
+    public struct Finding: Swift.Sendable {
         /// The ARN that specifies the finding.
         /// This member is required.
         public var arn: Swift.String?
@@ -2416,10 +2418,9 @@ extension InspectorClientTypes {
             self.userAttributes = userAttributes
         }
     }
-
 }
 
-public struct DescribeFindingsOutput {
+public struct DescribeFindingsOutput: Swift.Sendable {
     /// Finding details that cannot be described. An error code is provided for each failed item.
     /// This member is required.
     public var failedItems: [Swift.String: InspectorClientTypes.FailedItemDetails]?
@@ -2437,7 +2438,7 @@ public struct DescribeFindingsOutput {
     }
 }
 
-public struct DescribeResourceGroupsInput {
+public struct DescribeResourceGroupsInput: Swift.Sendable {
     /// The ARN that specifies the resource group that you want to describe.
     /// This member is required.
     public var resourceGroupArns: [Swift.String]?
@@ -2451,8 +2452,9 @@ public struct DescribeResourceGroupsInput {
 }
 
 extension InspectorClientTypes {
+
     /// Contains information about a resource group. The resource group defines a set of tags that, when queried, identify the AWS resources that make up the assessment target. This data type is used as the response element in the [DescribeResourceGroups] action.
-    public struct ResourceGroup {
+    public struct ResourceGroup: Swift.Sendable {
         /// The ARN of the resource group.
         /// This member is required.
         public var arn: Swift.String?
@@ -2474,10 +2476,9 @@ extension InspectorClientTypes {
             self.tags = tags
         }
     }
-
 }
 
-public struct DescribeResourceGroupsOutput {
+public struct DescribeResourceGroupsOutput: Swift.Sendable {
     /// Resource group details that cannot be described. An error code is provided for each failed item.
     /// This member is required.
     public var failedItems: [Swift.String: InspectorClientTypes.FailedItemDetails]?
@@ -2495,7 +2496,7 @@ public struct DescribeResourceGroupsOutput {
     }
 }
 
-public struct DescribeRulesPackagesInput {
+public struct DescribeRulesPackagesInput: Swift.Sendable {
     /// The locale that you want to translate a rules package description into.
     public var locale: InspectorClientTypes.Locale?
     /// The ARN that specifies the rules package that you want to describe.
@@ -2513,8 +2514,9 @@ public struct DescribeRulesPackagesInput {
 }
 
 extension InspectorClientTypes {
+
     /// Contains information about an Amazon Inspector rules package. This data type is used as the response element in the [DescribeRulesPackages] action.
-    public struct RulesPackage {
+    public struct RulesPackage: Swift.Sendable {
         /// The ARN of the rules package.
         /// This member is required.
         public var arn: Swift.String?
@@ -2545,10 +2547,9 @@ extension InspectorClientTypes {
             self.version = version
         }
     }
-
 }
 
-public struct DescribeRulesPackagesOutput {
+public struct DescribeRulesPackagesOutput: Swift.Sendable {
     /// Rules package details that cannot be described. An error code is provided for each failed item.
     /// This member is required.
     public var failedItems: [Swift.String: InspectorClientTypes.FailedItemDetails]?
@@ -2567,8 +2568,9 @@ public struct DescribeRulesPackagesOutput {
 }
 
 extension InspectorClientTypes {
+
     /// This data type is used in the [Subscription] data type.
-    public struct EventSubscription {
+    public struct EventSubscription: Swift.Sendable {
         /// The event for which Amazon Simple Notification Service (SNS) notifications are sent.
         /// This member is required.
         public var event: InspectorClientTypes.InspectorEvent?
@@ -2585,12 +2587,12 @@ extension InspectorClientTypes {
             self.subscribedAt = subscribedAt
         }
     }
-
 }
 
 extension InspectorClientTypes {
+
     /// Contains information about what is excluded from an assessment run given the current state of the assessment template.
-    public struct ExclusionPreview {
+    public struct ExclusionPreview: Swift.Sendable {
         /// The system-defined attributes for the exclusion preview.
         public var attributes: [InspectorClientTypes.Attribute]?
         /// The description of the exclusion preview.
@@ -2621,12 +2623,12 @@ extension InspectorClientTypes {
             self.title = title
         }
     }
-
 }
 
 extension InspectorClientTypes {
+
     /// This data type is used as a request parameter in the [ListFindings] action.
-    public struct FindingFilter {
+    public struct FindingFilter: Swift.Sendable {
         /// For a record to match a filter, one of the values that is specified for this data type property must be the exact match of the value of the agentId property of the [Finding] data type.
         public var agentIds: [Swift.String]?
         /// For a record to match a filter, the list of values that are specified for this data type property must be contained in the list of values of the attributes property of the [Finding] data type.
@@ -2665,7 +2667,6 @@ extension InspectorClientTypes {
             self.userAttributes = userAttributes
         }
     }
-
 }
 
 /// Used by the [GetAssessmentReport] API. The request was rejected because you tried to generate a report for an assessment run that existed before reporting was supported in Amazon Inspector. You can only generate reports for assessment runs that took place or will take place after generating reports in Amazon Inspector became available.
@@ -2699,7 +2700,7 @@ public struct UnsupportedFeatureException: ClientRuntime.ModeledError, AWSClient
 
 extension InspectorClientTypes {
 
-    public enum ReportFileFormat: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ReportFileFormat: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case html
         case pdf
         case sdkUnknown(Swift.String)
@@ -2728,7 +2729,7 @@ extension InspectorClientTypes {
 
 extension InspectorClientTypes {
 
-    public enum ReportType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ReportType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case finding
         case full
         case sdkUnknown(Swift.String)
@@ -2755,7 +2756,7 @@ extension InspectorClientTypes {
     }
 }
 
-public struct GetAssessmentReportInput {
+public struct GetAssessmentReportInput: Swift.Sendable {
     /// The ARN that specifies the assessment run for which you want to generate a report.
     /// This member is required.
     public var assessmentRunArn: Swift.String?
@@ -2780,7 +2781,7 @@ public struct GetAssessmentReportInput {
 
 extension InspectorClientTypes {
 
-    public enum ReportStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ReportStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case completed
         case failed
         case workInProgress
@@ -2810,7 +2811,7 @@ extension InspectorClientTypes {
     }
 }
 
-public struct GetAssessmentReportOutput {
+public struct GetAssessmentReportOutput: Swift.Sendable {
     /// Specifies the status of the request to generate an assessment report.
     /// This member is required.
     public var status: InspectorClientTypes.ReportStatus?
@@ -2827,7 +2828,7 @@ public struct GetAssessmentReportOutput {
     }
 }
 
-public struct GetExclusionsPreviewInput {
+public struct GetExclusionsPreviewInput: Swift.Sendable {
     /// The ARN that specifies the assessment template for which the exclusions preview was requested.
     /// This member is required.
     public var assessmentTemplateArn: Swift.String?
@@ -2859,7 +2860,7 @@ public struct GetExclusionsPreviewInput {
 
 extension InspectorClientTypes {
 
-    public enum PreviewStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum PreviewStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case completed
         case workInProgress
         case sdkUnknown(Swift.String)
@@ -2886,7 +2887,7 @@ extension InspectorClientTypes {
     }
 }
 
-public struct GetExclusionsPreviewOutput {
+public struct GetExclusionsPreviewOutput: Swift.Sendable {
     /// Information about the exclusions included in the preview.
     public var exclusionPreviews: [InspectorClientTypes.ExclusionPreview]?
     /// When a response is generated, if there is more data to be listed, this parameters is present in the response and contains the value to use for the nextToken parameter in a subsequent pagination request. If there is no more data to be listed, this parameter is set to null.
@@ -2907,7 +2908,7 @@ public struct GetExclusionsPreviewOutput {
     }
 }
 
-public struct GetTelemetryMetadataInput {
+public struct GetTelemetryMetadataInput: Swift.Sendable {
     /// The ARN that specifies the assessment run that has the telemetry data that you want to obtain.
     /// This member is required.
     public var assessmentRunArn: Swift.String?
@@ -2920,7 +2921,7 @@ public struct GetTelemetryMetadataInput {
     }
 }
 
-public struct GetTelemetryMetadataOutput {
+public struct GetTelemetryMetadataOutput: Swift.Sendable {
     /// Telemetry details.
     /// This member is required.
     public var telemetryMetadata: [InspectorClientTypes.TelemetryMetadata]?
@@ -2933,7 +2934,7 @@ public struct GetTelemetryMetadataOutput {
     }
 }
 
-public struct ListAssessmentRunAgentsInput {
+public struct ListAssessmentRunAgentsInput: Swift.Sendable {
     /// The ARN that specifies the assessment run whose agents you want to list.
     /// This member is required.
     public var assessmentRunArn: Swift.String?
@@ -2958,7 +2959,7 @@ public struct ListAssessmentRunAgentsInput {
     }
 }
 
-public struct ListAssessmentRunAgentsOutput {
+public struct ListAssessmentRunAgentsOutput: Swift.Sendable {
     /// A list of ARNs that specifies the agents returned by the action.
     /// This member is required.
     public var assessmentRunAgents: [InspectorClientTypes.AssessmentRunAgent]?
@@ -2975,7 +2976,7 @@ public struct ListAssessmentRunAgentsOutput {
     }
 }
 
-public struct ListAssessmentRunsInput {
+public struct ListAssessmentRunsInput: Swift.Sendable {
     /// The ARNs that specify the assessment templates whose assessment runs you want to list.
     public var assessmentTemplateArns: [Swift.String]?
     /// You can use this parameter to specify a subset of data to be included in the action's response. For a record to match a filter, all specified filter attributes must match. When multiple values are specified for a filter attribute, any of the values can match.
@@ -2999,7 +3000,7 @@ public struct ListAssessmentRunsInput {
     }
 }
 
-public struct ListAssessmentRunsOutput {
+public struct ListAssessmentRunsOutput: Swift.Sendable {
     /// A list of ARNs that specifies the assessment runs that are returned by the action.
     /// This member is required.
     public var assessmentRunArns: [Swift.String]?
@@ -3016,7 +3017,7 @@ public struct ListAssessmentRunsOutput {
     }
 }
 
-public struct ListAssessmentTargetsInput {
+public struct ListAssessmentTargetsInput: Swift.Sendable {
     /// You can use this parameter to specify a subset of data to be included in the action's response. For a record to match a filter, all specified filter attributes must match. When multiple values are specified for a filter attribute, any of the values can match.
     public var filter: InspectorClientTypes.AssessmentTargetFilter?
     /// You can use this parameter to indicate the maximum number of items you want in the response. The default value is 10. The maximum value is 500.
@@ -3036,7 +3037,7 @@ public struct ListAssessmentTargetsInput {
     }
 }
 
-public struct ListAssessmentTargetsOutput {
+public struct ListAssessmentTargetsOutput: Swift.Sendable {
     /// A list of ARNs that specifies the assessment targets that are returned by the action.
     /// This member is required.
     public var assessmentTargetArns: [Swift.String]?
@@ -3053,7 +3054,7 @@ public struct ListAssessmentTargetsOutput {
     }
 }
 
-public struct ListAssessmentTemplatesInput {
+public struct ListAssessmentTemplatesInput: Swift.Sendable {
     /// A list of ARNs that specifies the assessment targets whose assessment templates you want to list.
     public var assessmentTargetArns: [Swift.String]?
     /// You can use this parameter to specify a subset of data to be included in the action's response. For a record to match a filter, all specified filter attributes must match. When multiple values are specified for a filter attribute, any of the values can match.
@@ -3077,7 +3078,7 @@ public struct ListAssessmentTemplatesInput {
     }
 }
 
-public struct ListAssessmentTemplatesOutput {
+public struct ListAssessmentTemplatesOutput: Swift.Sendable {
     /// A list of ARNs that specifies the assessment templates returned by the action.
     /// This member is required.
     public var assessmentTemplateArns: [Swift.String]?
@@ -3094,7 +3095,7 @@ public struct ListAssessmentTemplatesOutput {
     }
 }
 
-public struct ListEventSubscriptionsInput {
+public struct ListEventSubscriptionsInput: Swift.Sendable {
     /// You can use this parameter to indicate the maximum number of items you want in the response. The default value is 10. The maximum value is 500.
     public var maxResults: Swift.Int?
     /// You can use this parameter when paginating results. Set the value of this parameter to null on your first call to the ListEventSubscriptions action. Subsequent calls to the action fill nextToken in the request with the value of NextToken from the previous response to continue listing data.
@@ -3115,8 +3116,9 @@ public struct ListEventSubscriptionsInput {
 }
 
 extension InspectorClientTypes {
+
     /// This data type is used as a response element in the [ListEventSubscriptions] action.
-    public struct Subscription {
+    public struct Subscription: Swift.Sendable {
         /// The list of existing event subscriptions.
         /// This member is required.
         public var eventSubscriptions: [InspectorClientTypes.EventSubscription]?
@@ -3138,10 +3140,9 @@ extension InspectorClientTypes {
             self.topicArn = topicArn
         }
     }
-
 }
 
-public struct ListEventSubscriptionsOutput {
+public struct ListEventSubscriptionsOutput: Swift.Sendable {
     /// When a response is generated, if there is more data to be listed, this parameter is present in the response and contains the value to use for the nextToken parameter in a subsequent pagination request. If there is no more data to be listed, this parameter is set to null.
     public var nextToken: Swift.String?
     /// Details of the returned event subscriptions.
@@ -3158,7 +3159,7 @@ public struct ListEventSubscriptionsOutput {
     }
 }
 
-public struct ListExclusionsInput {
+public struct ListExclusionsInput: Swift.Sendable {
     /// The ARN of the assessment run that generated the exclusions that you want to list.
     /// This member is required.
     public var assessmentRunArn: Swift.String?
@@ -3179,7 +3180,7 @@ public struct ListExclusionsInput {
     }
 }
 
-public struct ListExclusionsOutput {
+public struct ListExclusionsOutput: Swift.Sendable {
     /// A list of exclusions' ARNs returned by the action.
     /// This member is required.
     public var exclusionArns: [Swift.String]?
@@ -3196,7 +3197,7 @@ public struct ListExclusionsOutput {
     }
 }
 
-public struct ListFindingsInput {
+public struct ListFindingsInput: Swift.Sendable {
     /// The ARNs of the assessment runs that generate the findings that you want to list.
     public var assessmentRunArns: [Swift.String]?
     /// You can use this parameter to specify a subset of data to be included in the action's response. For a record to match a filter, all specified filter attributes must match. When multiple values are specified for a filter attribute, any of the values can match.
@@ -3220,7 +3221,7 @@ public struct ListFindingsInput {
     }
 }
 
-public struct ListFindingsOutput {
+public struct ListFindingsOutput: Swift.Sendable {
     /// A list of ARNs that specifies the findings returned by the action.
     /// This member is required.
     public var findingArns: [Swift.String]?
@@ -3237,7 +3238,7 @@ public struct ListFindingsOutput {
     }
 }
 
-public struct ListRulesPackagesInput {
+public struct ListRulesPackagesInput: Swift.Sendable {
     /// You can use this parameter to indicate the maximum number of items you want in the response. The default value is 10. The maximum value is 500.
     public var maxResults: Swift.Int?
     /// You can use this parameter when paginating results. Set the value of this parameter to null on your first call to the ListRulesPackages action. Subsequent calls to the action fill nextToken in the request with the value of NextToken from the previous response to continue listing data.
@@ -3253,7 +3254,7 @@ public struct ListRulesPackagesInput {
     }
 }
 
-public struct ListRulesPackagesOutput {
+public struct ListRulesPackagesOutput: Swift.Sendable {
     /// When a response is generated, if there is more data to be listed, this parameter is present in the response and contains the value to use for the nextToken parameter in a subsequent pagination request. If there is no more data to be listed, this parameter is set to null.
     public var nextToken: Swift.String?
     /// The list of ARNs that specifies the rules packages returned by the action.
@@ -3270,7 +3271,7 @@ public struct ListRulesPackagesOutput {
     }
 }
 
-public struct ListTagsForResourceInput {
+public struct ListTagsForResourceInput: Swift.Sendable {
     /// The ARN that specifies the assessment template whose tags you want to list.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -3283,7 +3284,7 @@ public struct ListTagsForResourceInput {
     }
 }
 
-public struct ListTagsForResourceOutput {
+public struct ListTagsForResourceOutput: Swift.Sendable {
     /// A collection of key and value pairs.
     /// This member is required.
     public var tags: [InspectorClientTypes.Tag]?
@@ -3296,7 +3297,7 @@ public struct ListTagsForResourceOutput {
     }
 }
 
-public struct PreviewAgentsInput {
+public struct PreviewAgentsInput: Swift.Sendable {
     /// You can use this parameter to indicate the maximum number of items you want in the response. The default value is 10. The maximum value is 500.
     public var maxResults: Swift.Int?
     /// You can use this parameter when paginating results. Set the value of this parameter to null on your first call to the PreviewAgents action. Subsequent calls to the action fill nextToken in the request with the value of NextToken from the previous response to continue listing data.
@@ -3317,7 +3318,7 @@ public struct PreviewAgentsInput {
     }
 }
 
-public struct PreviewAgentsOutput {
+public struct PreviewAgentsOutput: Swift.Sendable {
     /// The resulting list of agents.
     /// This member is required.
     public var agentPreviews: [InspectorClientTypes.AgentPreview]?
@@ -3334,7 +3335,7 @@ public struct PreviewAgentsOutput {
     }
 }
 
-public struct RegisterCrossAccountAccessRoleInput {
+public struct RegisterCrossAccountAccessRoleInput: Swift.Sendable {
     /// The ARN of the IAM role that grants Amazon Inspector access to AWS Services needed to perform security assessments.
     /// This member is required.
     public var roleArn: Swift.String?
@@ -3347,7 +3348,7 @@ public struct RegisterCrossAccountAccessRoleInput {
     }
 }
 
-public struct RemoveAttributesFromFindingsInput {
+public struct RemoveAttributesFromFindingsInput: Swift.Sendable {
     /// The array of attribute keys that you want to remove from specified findings.
     /// This member is required.
     public var attributeKeys: [Swift.String]?
@@ -3365,7 +3366,7 @@ public struct RemoveAttributesFromFindingsInput {
     }
 }
 
-public struct RemoveAttributesFromFindingsOutput {
+public struct RemoveAttributesFromFindingsOutput: Swift.Sendable {
     /// Attributes details that cannot be described. An error code is provided for each failed item.
     /// This member is required.
     public var failedItems: [Swift.String: InspectorClientTypes.FailedItemDetails]?
@@ -3378,7 +3379,7 @@ public struct RemoveAttributesFromFindingsOutput {
     }
 }
 
-public struct SetTagsForResourceInput {
+public struct SetTagsForResourceInput: Swift.Sendable {
     /// The ARN of the assessment template that you want to set tags to.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -3395,7 +3396,7 @@ public struct SetTagsForResourceInput {
     }
 }
 
-public struct StartAssessmentRunInput {
+public struct StartAssessmentRunInput: Swift.Sendable {
     /// You can specify the name for the assessment run. The name must be unique for the assessment template whose ARN is used to start the assessment run.
     public var assessmentRunName: Swift.String?
     /// The ARN of the assessment template of the assessment run that you want to start.
@@ -3412,7 +3413,7 @@ public struct StartAssessmentRunInput {
     }
 }
 
-public struct StartAssessmentRunOutput {
+public struct StartAssessmentRunOutput: Swift.Sendable {
     /// The ARN of the assessment run that has been started.
     /// This member is required.
     public var assessmentRunArn: Swift.String?
@@ -3427,7 +3428,7 @@ public struct StartAssessmentRunOutput {
 
 extension InspectorClientTypes {
 
-    public enum StopAction: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum StopAction: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case skipEvaluation
         case startEvaluation
         case sdkUnknown(Swift.String)
@@ -3454,7 +3455,7 @@ extension InspectorClientTypes {
     }
 }
 
-public struct StopAssessmentRunInput {
+public struct StopAssessmentRunInput: Swift.Sendable {
     /// The ARN of the assessment run that you want to stop.
     /// This member is required.
     public var assessmentRunArn: Swift.String?
@@ -3471,7 +3472,7 @@ public struct StopAssessmentRunInput {
     }
 }
 
-public struct SubscribeToEventInput {
+public struct SubscribeToEventInput: Swift.Sendable {
     /// The event for which you want to receive SNS notifications.
     /// This member is required.
     public var event: InspectorClientTypes.InspectorEvent?
@@ -3494,7 +3495,7 @@ public struct SubscribeToEventInput {
     }
 }
 
-public struct UnsubscribeFromEventInput {
+public struct UnsubscribeFromEventInput: Swift.Sendable {
     /// The event for which you want to stop receiving SNS notifications.
     /// This member is required.
     public var event: InspectorClientTypes.InspectorEvent?
@@ -3517,7 +3518,7 @@ public struct UnsubscribeFromEventInput {
     }
 }
 
-public struct UpdateAssessmentTargetInput {
+public struct UpdateAssessmentTargetInput: Swift.Sendable {
     /// The ARN of the assessment target that you want to update.
     /// This member is required.
     public var assessmentTargetArn: Swift.String?

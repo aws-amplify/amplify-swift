@@ -202,8 +202,9 @@ public struct ThrottlingException: ClientRuntime.ModeledError, AWSClientRuntime.
 }
 
 extension Route53RecoveryClusterClientTypes {
+
     /// There was a validation error on the request.
-    public struct ValidationExceptionField {
+    public struct ValidationExceptionField: Swift.Sendable {
         /// Information about the validation exception.
         /// This member is required.
         public var message: Swift.String?
@@ -220,13 +221,12 @@ extension Route53RecoveryClusterClientTypes {
             self.name = name
         }
     }
-
 }
 
 extension Route53RecoveryClusterClientTypes {
 
     /// Reason the request failed validation
-    public enum ValidationExceptionReason: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ValidationExceptionReason: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case cannotParse
         case fieldValidationFailed
         case other
@@ -292,7 +292,7 @@ public struct ValidationException: ClientRuntime.ModeledError, AWSClientRuntime.
     }
 }
 
-public struct GetRoutingControlStateInput {
+public struct GetRoutingControlStateInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) for the routing control that you want to get the state for.
     /// This member is required.
     public var routingControlArn: Swift.String?
@@ -307,7 +307,7 @@ public struct GetRoutingControlStateInput {
 
 extension Route53RecoveryClusterClientTypes {
 
-    public enum RoutingControlState: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum RoutingControlState: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case off
         case on
         case sdkUnknown(Swift.String)
@@ -334,7 +334,7 @@ extension Route53RecoveryClusterClientTypes {
     }
 }
 
-public struct GetRoutingControlStateOutput {
+public struct GetRoutingControlStateOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the response.
     /// This member is required.
     public var routingControlArn: Swift.String?
@@ -356,7 +356,7 @@ public struct GetRoutingControlStateOutput {
     }
 }
 
-public struct ListRoutingControlsInput {
+public struct ListRoutingControlsInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the control panel of the routing controls to list.
     public var controlPanelArn: Swift.String?
     /// The number of routing controls objects that you want to return with this call. The default value is 500.
@@ -377,8 +377,9 @@ public struct ListRoutingControlsInput {
 }
 
 extension Route53RecoveryClusterClientTypes {
+
     /// A routing control, which is a simple on/off switch that you can use to route traffic to cells. When a routing control state is set to ON, traffic flows to a cell. When the state is set to OFF, traffic does not flow.
-    public struct RoutingControl {
+    public struct RoutingControl: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the control panel where the routing control is located.
         public var controlPanelArn: Swift.String?
         /// The name of the control panel where the routing control is located. Only ASCII characters are supported for control panel names.
@@ -409,10 +410,9 @@ extension Route53RecoveryClusterClientTypes {
             self.routingControlState = routingControlState
         }
     }
-
 }
 
-public struct ListRoutingControlsOutput {
+public struct ListRoutingControlsOutput: Swift.Sendable {
     /// The token for the next set of results. You receive this token from a previous call.
     public var nextToken: Swift.String?
     /// The list of routing controls.
@@ -472,7 +472,7 @@ public struct ServiceLimitExceededException: ClientRuntime.ModeledError, AWSClie
     }
 }
 
-public struct UpdateRoutingControlStateInput {
+public struct UpdateRoutingControlStateInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) for the routing control that you want to update the state for.
     /// This member is required.
     public var routingControlArn: Swift.String?
@@ -494,14 +494,15 @@ public struct UpdateRoutingControlStateInput {
     }
 }
 
-public struct UpdateRoutingControlStateOutput {
+public struct UpdateRoutingControlStateOutput: Swift.Sendable {
 
     public init() { }
 }
 
 extension Route53RecoveryClusterClientTypes {
+
     /// A routing control state entry.
-    public struct UpdateRoutingControlStateEntry {
+    public struct UpdateRoutingControlStateEntry: Swift.Sendable {
         /// The Amazon Resource Name (ARN) for a routing control state entry.
         /// This member is required.
         public var routingControlArn: Swift.String?
@@ -518,10 +519,9 @@ extension Route53RecoveryClusterClientTypes {
             self.routingControlState = routingControlState
         }
     }
-
 }
 
-public struct UpdateRoutingControlStatesInput {
+public struct UpdateRoutingControlStatesInput: Swift.Sendable {
     /// The Amazon Resource Names (ARNs) for the safety rules that you want to override when you're updating routing control states. You can override one safety rule or multiple safety rules by including one or more ARNs, separated by commas. For more information, see [ Override safety rules to reroute traffic](https://docs.aws.amazon.com/r53recovery/latest/dg/routing-control.override-safety-rule.html) in the Amazon Route 53 Application Recovery Controller Developer Guide.
     public var safetyRulesToOverride: [Swift.String]?
     /// A set of routing control entries that you want to update.
@@ -538,7 +538,7 @@ public struct UpdateRoutingControlStatesInput {
     }
 }
 
-public struct UpdateRoutingControlStatesOutput {
+public struct UpdateRoutingControlStatesOutput: Swift.Sendable {
 
     public init() { }
 }

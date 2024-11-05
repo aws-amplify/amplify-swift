@@ -23,7 +23,7 @@ open class AWSQueryProtocolGenerator : AWSHTTPBindingProtocolGenerator(AWSQueryC
         HttpBindingResolver = FormURLHttpBindingResolver(ctx, defaultContentType)
 
     override val shouldRenderEncodableConformance = true
-    override val testsToIgnore = setOf(
+    override val protocolTestsToIgnore = setOf(
         "SDKAppliedContentEncoding_awsQuery",
         "SDKAppendsGzipAndIgnoresHttpProvidedEncoding_awsQuery",
     )

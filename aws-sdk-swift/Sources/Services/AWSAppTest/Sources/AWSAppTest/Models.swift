@@ -153,8 +153,9 @@ public struct ThrottlingException: ClientRuntime.ModeledError, AWSClientRuntime.
 }
 
 extension AppTestClientTypes {
+
     /// Specifies a validation exception field.
-    public struct ValidationExceptionField {
+    public struct ValidationExceptionField: Swift.Sendable {
         /// The message stating reason for why service validation failed.
         /// This member is required.
         public var message: Swift.String?
@@ -171,12 +172,11 @@ extension AppTestClientTypes {
             self.name = name
         }
     }
-
 }
 
 extension AppTestClientTypes {
 
-    public enum ValidationExceptionReason: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ValidationExceptionReason: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case cannotParse
         case fieldValidationFailed
         case other
@@ -242,7 +242,7 @@ public struct ValidationException: ClientRuntime.ModeledError, AWSClientRuntime.
     }
 }
 
-public struct ListTagsForResourceInput {
+public struct ListTagsForResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the resource.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -255,7 +255,7 @@ public struct ListTagsForResourceInput {
     }
 }
 
-public struct ListTagsForResourceOutput {
+public struct ListTagsForResourceOutput: Swift.Sendable {
     /// The tags of the resource.
     /// This member is required.
     public var tags: [Swift.String: Swift.String]?
@@ -309,7 +309,7 @@ public struct ServiceQuotaExceededException: ClientRuntime.ModeledError, AWSClie
     }
 }
 
-public struct TagResourceInput {
+public struct TagResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the tag resource.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -327,7 +327,7 @@ public struct TagResourceInput {
     }
 }
 
-public struct TagResourceOutput {
+public struct TagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
@@ -367,7 +367,7 @@ public struct ConflictException: ClientRuntime.ModeledError, AWSClientRuntime.AW
 
 extension AppTestClientTypes {
 
-    public enum CaptureTool: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum CaptureTool: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case awsDms
         case precisely
         case sdkUnknown(Swift.String)
@@ -396,7 +396,7 @@ extension AppTestClientTypes {
 
 extension AppTestClientTypes {
 
-    public enum SourceDatabase: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SourceDatabase: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case zOsDb2
         case sdkUnknown(Swift.String)
 
@@ -421,8 +421,9 @@ extension AppTestClientTypes {
 }
 
 extension AppTestClientTypes {
+
     /// Specifies the source database metadata.
-    public struct SourceDatabaseMetadata {
+    public struct SourceDatabaseMetadata: Swift.Sendable {
         /// The capture tool of the source database metadata.
         /// This member is required.
         public var captureTool: AppTestClientTypes.CaptureTool?
@@ -439,12 +440,11 @@ extension AppTestClientTypes {
             self.type = type
         }
     }
-
 }
 
 extension AppTestClientTypes {
 
-    public enum TargetDatabase: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum TargetDatabase: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case postgresql
         case sdkUnknown(Swift.String)
 
@@ -469,8 +469,9 @@ extension AppTestClientTypes {
 }
 
 extension AppTestClientTypes {
+
     /// Specifies a target database metadata.
-    public struct TargetDatabaseMetadata {
+    public struct TargetDatabaseMetadata: Swift.Sendable {
         /// The capture tool of the target database metadata.
         /// This member is required.
         public var captureTool: AppTestClientTypes.CaptureTool?
@@ -487,12 +488,12 @@ extension AppTestClientTypes {
             self.type = type
         }
     }
-
 }
 
 extension AppTestClientTypes {
+
     /// Defines the Change Data Capture (CDC) of the database.
-    public struct DatabaseCDC {
+    public struct DatabaseCDC: Swift.Sendable {
         /// The source metadata of the database CDC.
         /// This member is required.
         public var sourceMetadata: AppTestClientTypes.SourceDatabaseMetadata?
@@ -509,12 +510,11 @@ extension AppTestClientTypes {
             self.targetMetadata = targetMetadata
         }
     }
-
 }
 
 extension AppTestClientTypes {
 
-    public enum Format: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Format: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case fixed
         case lineSequential
         case variable
@@ -546,7 +546,7 @@ extension AppTestClientTypes {
 
 extension AppTestClientTypes {
 
-    public enum DataSetType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DataSetType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case ps
         case sdkUnknown(Swift.String)
 
@@ -571,8 +571,9 @@ extension AppTestClientTypes {
 }
 
 extension AppTestClientTypes {
+
     /// Defines a data set.
-    public struct DataSet {
+    public struct DataSet: Swift.Sendable {
         /// The CCSID of the data set.
         /// This member is required.
         public var ccsid: Swift.String?
@@ -604,24 +605,24 @@ extension AppTestClientTypes {
             self.type = type
         }
     }
-
 }
 
 extension AppTestClientTypes {
+
     /// Specifies a file metadata.
-    public enum FileMetadata {
+    public enum FileMetadata: Swift.Sendable {
         /// The data sets of the file metadata.
         case datasets([AppTestClientTypes.DataSet])
         /// The database CDC of the file metadata.
         case databasecdc(AppTestClientTypes.DatabaseCDC)
         case sdkUnknown(Swift.String)
     }
-
 }
 
 extension AppTestClientTypes {
+
     /// Specifies the input file.
-    public struct InputFile {
+    public struct InputFile: Swift.Sendable {
         /// The file metadata of the input file.
         /// This member is required.
         public var fileMetadata: AppTestClientTypes.FileMetadata?
@@ -643,22 +644,22 @@ extension AppTestClientTypes {
             self.targetLocation = targetLocation
         }
     }
-
 }
 
 extension AppTestClientTypes {
+
     /// Specifies the input.
-    public enum Input {
+    public enum Input: Swift.Sendable {
         /// The file in the input.
         case file(AppTestClientTypes.InputFile)
         case sdkUnknown(Swift.String)
     }
-
 }
 
 extension AppTestClientTypes {
+
     /// Specifies an output file.
-    public struct OutputFile {
+    public struct OutputFile: Swift.Sendable {
         /// The file location of the output file.
         public var fileLocation: Swift.String?
 
@@ -669,22 +670,22 @@ extension AppTestClientTypes {
             self.fileLocation = fileLocation
         }
     }
-
 }
 
 extension AppTestClientTypes {
+
     /// Specifies an output.
-    public enum Output {
+    public enum Output: Swift.Sendable {
         /// The file of the output.
         case file(AppTestClientTypes.OutputFile)
         case sdkUnknown(Swift.String)
     }
-
 }
 
 extension AppTestClientTypes {
+
     /// Compares the action.
-    public struct CompareAction {
+    public struct CompareAction: Swift.Sendable {
         /// The input of the compare action.
         /// This member is required.
         public var input: AppTestClientTypes.Input?
@@ -700,12 +701,12 @@ extension AppTestClientTypes {
             self.output = output
         }
     }
-
 }
 
 extension AppTestClientTypes {
+
     /// Defines a batch.
-    public struct Batch {
+    public struct Batch: Swift.Sendable {
         /// The job name of the batch.
         /// This member is required.
         public var batchJobName: Swift.String?
@@ -725,12 +726,11 @@ extension AppTestClientTypes {
             self.exportDataSetNames = exportDataSetNames
         }
     }
-
 }
 
 extension AppTestClientTypes {
 
-    public enum ScriptType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ScriptType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case selenium
         case sdkUnknown(Swift.String)
 
@@ -755,8 +755,9 @@ extension AppTestClientTypes {
 }
 
 extension AppTestClientTypes {
+
     /// Specifies the script.
-    public struct Script {
+    public struct Script: Swift.Sendable {
         /// The script location of the scripts.
         /// This member is required.
         public var scriptLocation: Swift.String?
@@ -773,12 +774,12 @@ extension AppTestClientTypes {
             self.type = type
         }
     }
-
 }
 
 extension AppTestClientTypes {
+
     /// Specifies the TN3270 protocol.
-    public struct TN3270 {
+    public struct TN3270: Swift.Sendable {
         /// The data set names of the TN3270 protocol.
         public var exportDataSetNames: [Swift.String]?
         /// The script of the TN3270 protocol.
@@ -794,24 +795,24 @@ extension AppTestClientTypes {
             self.script = script
         }
     }
-
 }
 
 extension AppTestClientTypes {
+
     /// Specifies the mainframe action type.
-    public enum MainframeActionType {
+    public enum MainframeActionType: Swift.Sendable {
         /// The batch of the mainframe action type.
         case batch(AppTestClientTypes.Batch)
         /// The tn3270 port of the mainframe action type.
         case tn3270(AppTestClientTypes.TN3270)
         case sdkUnknown(Swift.String)
     }
-
 }
 
 extension AppTestClientTypes {
+
     /// Specifies the mainframe action properties.
-    public struct MainframeActionProperties {
+    public struct MainframeActionProperties: Swift.Sendable {
         /// The DMS task ARN of the mainframe action properties.
         public var dmsTaskArn: Swift.String?
 
@@ -822,12 +823,12 @@ extension AppTestClientTypes {
             self.dmsTaskArn = dmsTaskArn
         }
     }
-
 }
 
 extension AppTestClientTypes {
+
     /// Specifies the mainframe action.
-    public struct MainframeAction {
+    public struct MainframeAction: Swift.Sendable {
         /// The action type of the mainframe action.
         /// This member is required.
         public var actionType: AppTestClientTypes.MainframeActionType?
@@ -848,12 +849,11 @@ extension AppTestClientTypes {
             self.resource = resource
         }
     }
-
 }
 
 extension AppTestClientTypes {
 
-    public enum CloudFormationActionType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum CloudFormationActionType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case create
         case delete
         case sdkUnknown(Swift.String)
@@ -881,8 +881,9 @@ extension AppTestClientTypes {
 }
 
 extension AppTestClientTypes {
+
     /// Specifies the CloudFormation action.
-    public struct CloudFormationAction {
+    public struct CloudFormationAction: Swift.Sendable {
         /// The action type of the CloudFormation action.
         public var actionType: AppTestClientTypes.CloudFormationActionType?
         /// The resource of the CloudFormation action.
@@ -898,12 +899,11 @@ extension AppTestClientTypes {
             self.resource = resource
         }
     }
-
 }
 
 extension AppTestClientTypes {
 
-    public enum M2ManagedActionType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum M2ManagedActionType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case configure
         case deconfigure
         case sdkUnknown(Swift.String)
@@ -931,8 +931,9 @@ extension AppTestClientTypes {
 }
 
 extension AppTestClientTypes {
+
     /// Specifies the AWS Mainframe Modernization managed action properties.
-    public struct M2ManagedActionProperties {
+    public struct M2ManagedActionProperties: Swift.Sendable {
         /// Force stops the AWS Mainframe Modernization managed action properties.
         public var forceStop: Swift.Bool?
         /// The import data set location of the AWS Mainframe Modernization managed action properties.
@@ -947,12 +948,12 @@ extension AppTestClientTypes {
             self.importDataSetLocation = importDataSetLocation
         }
     }
-
 }
 
 extension AppTestClientTypes {
+
     /// Specifies the AWS Mainframe Modernization managed application action.
-    public struct M2ManagedApplicationAction {
+    public struct M2ManagedApplicationAction: Swift.Sendable {
         /// The action type of the AWS Mainframe Modernization managed application action.
         /// This member is required.
         public var actionType: AppTestClientTypes.M2ManagedActionType?
@@ -973,12 +974,11 @@ extension AppTestClientTypes {
             self.resource = resource
         }
     }
-
 }
 
 extension AppTestClientTypes {
 
-    public enum M2NonManagedActionType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum M2NonManagedActionType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case configure
         case deconfigure
         case sdkUnknown(Swift.String)
@@ -1006,8 +1006,9 @@ extension AppTestClientTypes {
 }
 
 extension AppTestClientTypes {
+
     /// Specifies the AWS Mainframe Modernization non-managed application action.
-    public struct M2NonManagedApplicationAction {
+    public struct M2NonManagedApplicationAction: Swift.Sendable {
         /// The action type of the AWS Mainframe Modernization non-managed application action.
         /// This member is required.
         public var actionType: AppTestClientTypes.M2NonManagedActionType?
@@ -1024,12 +1025,12 @@ extension AppTestClientTypes {
             self.resource = resource
         }
     }
-
 }
 
 extension AppTestClientTypes {
+
     /// Specifies a resource action.
-    public enum ResourceAction {
+    public enum ResourceAction: Swift.Sendable {
         /// The AWS Mainframe Modernization managed application action of the resource action.
         case m2managedapplicationaction(AppTestClientTypes.M2ManagedApplicationAction)
         /// The AWS Mainframe Modernization non-managed application action of the resource action.
@@ -1038,12 +1039,12 @@ extension AppTestClientTypes {
         case cloudformationaction(AppTestClientTypes.CloudFormationAction)
         case sdkUnknown(Swift.String)
     }
-
 }
 
 extension AppTestClientTypes {
+
     /// Specifies a step action.
-    public enum StepAction {
+    public enum StepAction: Swift.Sendable {
         /// The resource action of the step action.
         case resourceaction(AppTestClientTypes.ResourceAction)
         /// The mainframe action of the step action.
@@ -1052,12 +1053,12 @@ extension AppTestClientTypes {
         case compareaction(AppTestClientTypes.CompareAction)
         case sdkUnknown(Swift.String)
     }
-
 }
 
 extension AppTestClientTypes {
+
     /// Defines a step.
-    public struct Step {
+    public struct Step: Swift.Sendable {
         /// The action of the step.
         /// This member is required.
         public var action: AppTestClientTypes.StepAction?
@@ -1078,10 +1079,9 @@ extension AppTestClientTypes {
             self.name = name
         }
     }
-
 }
 
-public struct CreateTestCaseInput {
+public struct CreateTestCaseInput: Swift.Sendable {
     /// The client token of the test case.
     public var clientToken: Swift.String?
     /// The description of the test case.
@@ -1111,7 +1111,7 @@ public struct CreateTestCaseInput {
     }
 }
 
-public struct CreateTestCaseOutput {
+public struct CreateTestCaseOutput: Swift.Sendable {
     /// The test case ID of the test case.
     /// This member is required.
     public var testCaseId: Swift.String?
@@ -1129,7 +1129,7 @@ public struct CreateTestCaseOutput {
     }
 }
 
-public struct DeleteTestCaseInput {
+public struct DeleteTestCaseInput: Swift.Sendable {
     /// The test case ID of the test case.
     /// This member is required.
     public var testCaseId: Swift.String?
@@ -1142,12 +1142,12 @@ public struct DeleteTestCaseInput {
     }
 }
 
-public struct DeleteTestCaseOutput {
+public struct DeleteTestCaseOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct GetTestCaseInput {
+public struct GetTestCaseInput: Swift.Sendable {
     /// The request test ID of the test case.
     /// This member is required.
     public var testCaseId: Swift.String?
@@ -1166,7 +1166,7 @@ public struct GetTestCaseInput {
 
 extension AppTestClientTypes {
 
-    public enum TestCaseLifecycle: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum TestCaseLifecycle: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case active
         case deleting
         case sdkUnknown(Swift.String)
@@ -1194,8 +1194,9 @@ extension AppTestClientTypes {
 }
 
 extension AppTestClientTypes {
+
     /// Specifies the latest version of a test case.
-    public struct TestCaseLatestVersion {
+    public struct TestCaseLatestVersion: Swift.Sendable {
         /// The status of the test case latest version.
         /// This member is required.
         public var status: AppTestClientTypes.TestCaseLifecycle?
@@ -1216,10 +1217,9 @@ extension AppTestClientTypes {
             self.version = version
         }
     }
-
 }
 
-public struct GetTestCaseOutput {
+public struct GetTestCaseOutput: Swift.Sendable {
     /// The creation time of the test case.
     /// This member is required.
     public var creationTime: Foundation.Date?
@@ -1284,7 +1284,7 @@ public struct GetTestCaseOutput {
     }
 }
 
-public struct ListTestCasesInput {
+public struct ListTestCasesInput: Swift.Sendable {
     /// The maximum results of the test case.
     public var maxResults: Swift.Int?
     /// The next token of the test cases.
@@ -1305,8 +1305,9 @@ public struct ListTestCasesInput {
 }
 
 extension AppTestClientTypes {
+
     /// Specifies a test case summary.
-    public struct TestCaseSummary {
+    public struct TestCaseSummary: Swift.Sendable {
         /// The creation time of the test case summary.
         /// This member is required.
         public var creationTime: Foundation.Date?
@@ -1352,10 +1353,9 @@ extension AppTestClientTypes {
             self.testCaseId = testCaseId
         }
     }
-
 }
 
-public struct ListTestCasesOutput {
+public struct ListTestCasesOutput: Swift.Sendable {
     /// The next token in test cases.
     public var nextToken: Swift.String?
     /// The test cases in an application.
@@ -1372,7 +1372,7 @@ public struct ListTestCasesOutput {
     }
 }
 
-public struct UpdateTestCaseInput {
+public struct UpdateTestCaseInput: Swift.Sendable {
     /// The description of the test case.
     public var description: Swift.String?
     /// The steps of the test case.
@@ -1393,7 +1393,7 @@ public struct UpdateTestCaseInput {
     }
 }
 
-public struct UpdateTestCaseOutput {
+public struct UpdateTestCaseOutput: Swift.Sendable {
     /// The test case ID of the test case.
     /// This member is required.
     public var testCaseId: Swift.String?
@@ -1412,8 +1412,9 @@ public struct UpdateTestCaseOutput {
 }
 
 extension AppTestClientTypes {
+
     /// Specifies the CloudFormation template and its parameters.
-    public struct CloudFormation {
+    public struct CloudFormation: Swift.Sendable {
         /// The CloudFormation properties in the CloudFormation template.
         public var parameters: [Swift.String: Swift.String]?
         /// The template location of the CloudFormation template.
@@ -1429,12 +1430,11 @@ extension AppTestClientTypes {
             self.templateLocation = templateLocation
         }
     }
-
 }
 
 extension AppTestClientTypes {
 
-    public enum M2ManagedRuntime: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum M2ManagedRuntime: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case microfocus
         case sdkUnknown(Swift.String)
 
@@ -1459,8 +1459,9 @@ extension AppTestClientTypes {
 }
 
 extension AppTestClientTypes {
+
     /// Specifies the AWS Mainframe Modernization managed application.
-    public struct M2ManagedApplication {
+    public struct M2ManagedApplication: Swift.Sendable {
         /// The application ID of the AWS Mainframe Modernization managed application.
         /// This member is required.
         public var applicationId: Swift.String?
@@ -1485,12 +1486,11 @@ extension AppTestClientTypes {
             self.vpcEndpointServiceName = vpcEndpointServiceName
         }
     }
-
 }
 
 extension AppTestClientTypes {
 
-    public enum M2NonManagedRuntime: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum M2NonManagedRuntime: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case bluage
         case sdkUnknown(Swift.String)
 
@@ -1515,8 +1515,9 @@ extension AppTestClientTypes {
 }
 
 extension AppTestClientTypes {
+
     /// Specifies the AWS Mainframe Modernization non-managed application.
-    public struct M2NonManagedApplication {
+    public struct M2NonManagedApplication: Swift.Sendable {
         /// The listener port of the AWS Mainframe Modernization non-managed application.
         /// This member is required.
         public var listenerPort: Swift.String?
@@ -1542,12 +1543,12 @@ extension AppTestClientTypes {
             self.webAppName = webAppName
         }
     }
-
 }
 
 extension AppTestClientTypes {
+
     /// Specifies the resource type.
-    public enum ResourceType {
+    public enum ResourceType: Swift.Sendable {
         /// The CloudFormation template of the resource type.
         case cloudformation(AppTestClientTypes.CloudFormation)
         /// The AWS Mainframe Modernization managed application of the resource type.
@@ -1556,12 +1557,12 @@ extension AppTestClientTypes {
         case m2nonmanagedapplication(AppTestClientTypes.M2NonManagedApplication)
         case sdkUnknown(Swift.String)
     }
-
 }
 
 extension AppTestClientTypes {
+
     /// Specifies a resource.
-    public struct Resource {
+    public struct Resource: Swift.Sendable {
         /// The name of the resource.
         /// This member is required.
         public var name: Swift.String?
@@ -1578,12 +1579,12 @@ extension AppTestClientTypes {
             self.type = type
         }
     }
-
 }
 
 extension AppTestClientTypes {
+
     /// Specifies the service settings.
-    public struct ServiceSettings {
+    public struct ServiceSettings: Swift.Sendable {
         /// The KMS key ID of the service settings.
         public var kmsKeyId: Swift.String?
 
@@ -1594,10 +1595,9 @@ extension AppTestClientTypes {
             self.kmsKeyId = kmsKeyId
         }
     }
-
 }
 
-public struct CreateTestConfigurationInput {
+public struct CreateTestConfigurationInput: Swift.Sendable {
     /// The client token of the test configuration.
     public var clientToken: Swift.String?
     /// The description of the test configuration.
@@ -1635,7 +1635,7 @@ public struct CreateTestConfigurationInput {
     }
 }
 
-public struct CreateTestConfigurationOutput {
+public struct CreateTestConfigurationOutput: Swift.Sendable {
     /// The test configuration ID.
     /// This member is required.
     public var testConfigurationId: Swift.String?
@@ -1653,7 +1653,7 @@ public struct CreateTestConfigurationOutput {
     }
 }
 
-public struct DeleteTestConfigurationInput {
+public struct DeleteTestConfigurationInput: Swift.Sendable {
     /// The test ID of the test configuration.
     /// This member is required.
     public var testConfigurationId: Swift.String?
@@ -1666,12 +1666,12 @@ public struct DeleteTestConfigurationInput {
     }
 }
 
-public struct DeleteTestConfigurationOutput {
+public struct DeleteTestConfigurationOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct GetTestConfigurationInput {
+public struct GetTestConfigurationInput: Swift.Sendable {
     /// The request test configuration ID.
     /// This member is required.
     public var testConfigurationId: Swift.String?
@@ -1690,7 +1690,7 @@ public struct GetTestConfigurationInput {
 
 extension AppTestClientTypes {
 
-    public enum TestConfigurationLifecycle: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum TestConfigurationLifecycle: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case active
         case deleting
         case sdkUnknown(Swift.String)
@@ -1718,8 +1718,9 @@ extension AppTestClientTypes {
 }
 
 extension AppTestClientTypes {
+
     /// Specifies the latest version of the test configuration.
-    public struct TestConfigurationLatestVersion {
+    public struct TestConfigurationLatestVersion: Swift.Sendable {
         /// The status of the test configuration latest version.
         /// This member is required.
         public var status: AppTestClientTypes.TestConfigurationLifecycle?
@@ -1740,10 +1741,9 @@ extension AppTestClientTypes {
             self.version = version
         }
     }
-
 }
 
-public struct GetTestConfigurationOutput {
+public struct GetTestConfigurationOutput: Swift.Sendable {
     /// The creation time of the test configuration.
     /// This member is required.
     public var creationTime: Foundation.Date?
@@ -1817,7 +1817,7 @@ public struct GetTestConfigurationOutput {
     }
 }
 
-public struct ListTestConfigurationsInput {
+public struct ListTestConfigurationsInput: Swift.Sendable {
     /// The maximum results of the test configuration.
     public var maxResults: Swift.Int?
     /// The next token for the test configurations.
@@ -1838,8 +1838,9 @@ public struct ListTestConfigurationsInput {
 }
 
 extension AppTestClientTypes {
+
     /// Specifies a test configuration summary.
-    public struct TestConfigurationSummary {
+    public struct TestConfigurationSummary: Swift.Sendable {
         /// The creation time of the test configuration summary.
         /// This member is required.
         public var creationTime: Foundation.Date?
@@ -1885,10 +1886,9 @@ extension AppTestClientTypes {
             self.testConfigurationId = testConfigurationId
         }
     }
-
 }
 
-public struct ListTestConfigurationsOutput {
+public struct ListTestConfigurationsOutput: Swift.Sendable {
     /// The next token in the test configurations.
     public var nextToken: Swift.String?
     /// The test configurations.
@@ -1905,7 +1905,7 @@ public struct ListTestConfigurationsOutput {
     }
 }
 
-public struct UpdateTestConfigurationInput {
+public struct UpdateTestConfigurationInput: Swift.Sendable {
     /// The description of the test configuration.
     public var description: Swift.String?
     /// The properties of the test configuration.
@@ -1934,7 +1934,7 @@ public struct UpdateTestConfigurationInput {
     }
 }
 
-public struct UpdateTestConfigurationOutput {
+public struct UpdateTestConfigurationOutput: Swift.Sendable {
     /// The configuration ID of the test configuration.
     /// This member is required.
     public var testConfigurationId: Swift.String?
@@ -1952,7 +1952,7 @@ public struct UpdateTestConfigurationOutput {
     }
 }
 
-public struct DeleteTestRunInput {
+public struct DeleteTestRunInput: Swift.Sendable {
     /// The run ID of the test run.
     /// This member is required.
     public var testRunId: Swift.String?
@@ -1965,12 +1965,12 @@ public struct DeleteTestRunInput {
     }
 }
 
-public struct DeleteTestRunOutput {
+public struct DeleteTestRunOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct GetTestRunStepInput {
+public struct GetTestRunStepInput: Swift.Sendable {
     /// The step name of the test run step.
     /// This member is required.
     public var stepName: Swift.String?
@@ -1998,7 +1998,7 @@ public struct GetTestRunStepInput {
 
 extension AppTestClientTypes {
 
-    public enum StepRunStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum StepRunStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case failed
         case running
         case success
@@ -2029,8 +2029,9 @@ extension AppTestClientTypes {
 }
 
 extension AppTestClientTypes {
+
     /// Compares the database Change Data Capture (CDC) step input.
-    public struct CompareDatabaseCDCStepInput {
+    public struct CompareDatabaseCDCStepInput: Swift.Sendable {
         /// The output location of the compare database CDC step input.
         public var outputLocation: Swift.String?
         /// The source location of the compare database CDC step input.
@@ -2061,12 +2062,11 @@ extension AppTestClientTypes {
             self.targetMetadata = targetMetadata
         }
     }
-
 }
 
 extension AppTestClientTypes {
 
-    public enum ComparisonStatusEnum: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ComparisonStatusEnum: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case different
         case equal
         case equivalent
@@ -2097,8 +2097,9 @@ extension AppTestClientTypes {
 }
 
 extension AppTestClientTypes {
+
     /// Compares the database CDC step output.
-    public struct CompareDatabaseCDCStepOutput {
+    public struct CompareDatabaseCDCStepOutput: Swift.Sendable {
         /// The comparison output of the compare database CDC step output.
         /// This member is required.
         public var comparisonOutputLocation: Swift.String?
@@ -2115,12 +2116,12 @@ extension AppTestClientTypes {
             self.comparisonStatus = comparisonStatus
         }
     }
-
 }
 
 extension AppTestClientTypes {
+
     /// Compares the database CDC summary.
-    public struct CompareDatabaseCDCSummary {
+    public struct CompareDatabaseCDCSummary: Swift.Sendable {
         /// The step input of the compare database CDC summary.
         /// This member is required.
         public var stepInput: AppTestClientTypes.CompareDatabaseCDCStepInput?
@@ -2136,12 +2137,12 @@ extension AppTestClientTypes {
             self.stepOutput = stepOutput
         }
     }
-
 }
 
 extension AppTestClientTypes {
+
     /// Specifies the compare data sets step input.
-    public struct CompareDataSetsStepInput {
+    public struct CompareDataSetsStepInput: Swift.Sendable {
         /// The source data sets of the compare data sets step input location.
         /// This member is required.
         public var sourceDataSets: [AppTestClientTypes.DataSet]?
@@ -2168,12 +2169,12 @@ extension AppTestClientTypes {
             self.targetLocation = targetLocation
         }
     }
-
 }
 
 extension AppTestClientTypes {
+
     /// Specifies the compare data sets step output.
-    public struct CompareDataSetsStepOutput {
+    public struct CompareDataSetsStepOutput: Swift.Sendable {
         /// The comparison output location of the compare data sets step output.
         /// This member is required.
         public var comparisonOutputLocation: Swift.String?
@@ -2190,12 +2191,12 @@ extension AppTestClientTypes {
             self.comparisonStatus = comparisonStatus
         }
     }
-
 }
 
 extension AppTestClientTypes {
+
     /// Compares data sets summary.
-    public struct CompareDataSetsSummary {
+    public struct CompareDataSetsSummary: Swift.Sendable {
         /// The step input of the compare data sets summary.
         /// This member is required.
         public var stepInput: AppTestClientTypes.CompareDataSetsStepInput?
@@ -2211,34 +2212,34 @@ extension AppTestClientTypes {
             self.stepOutput = stepOutput
         }
     }
-
 }
 
 extension AppTestClientTypes {
+
     /// Compares the file type.
-    public enum CompareFileType {
+    public enum CompareFileType: Swift.Sendable {
         /// The data sets in the compare file type.
         case datasets(AppTestClientTypes.CompareDataSetsSummary)
         /// The database CDC of the compare file type.
         case databasecdc(AppTestClientTypes.CompareDatabaseCDCSummary)
         case sdkUnknown(Swift.String)
     }
-
 }
 
 extension AppTestClientTypes {
+
     /// Defines a file.
-    public enum File {
+    public enum File: Swift.Sendable {
         /// The file type of the file.
         case filetype(AppTestClientTypes.CompareFileType)
         case sdkUnknown(Swift.String)
     }
-
 }
 
 extension AppTestClientTypes {
+
     /// Specifies the compare action summary.
-    public struct CompareActionSummary {
+    public struct CompareActionSummary: Swift.Sendable {
         /// The type of the compare action summary.
         /// This member is required.
         public var type: AppTestClientTypes.File?
@@ -2250,12 +2251,12 @@ extension AppTestClientTypes {
             self.type = type
         }
     }
-
 }
 
 extension AppTestClientTypes {
+
     /// Specifies the AWS Mainframe Modernization managed application summary.
-    public struct M2ManagedApplicationSummary {
+    public struct M2ManagedApplicationSummary: Swift.Sendable {
         /// The application ID of the AWS Mainframe Modernization managed application summary.
         /// This member is required.
         public var applicationId: Swift.String?
@@ -2276,12 +2277,12 @@ extension AppTestClientTypes {
             self.runtime = runtime
         }
     }
-
 }
 
 extension AppTestClientTypes {
+
     /// Specifies the AWS Mainframe Modernization non-managed application summary.
-    public struct M2NonManagedApplicationSummary {
+    public struct M2NonManagedApplicationSummary: Swift.Sendable {
         /// The listener port of the AWS Mainframe Modernization non-managed application summary.
         /// This member is required.
         public var listenerPort: Swift.Int?
@@ -2307,24 +2308,24 @@ extension AppTestClientTypes {
             self.webAppName = webAppName
         }
     }
-
 }
 
 extension AppTestClientTypes {
+
     /// Specifies the mainframe resource summary.
-    public enum MainframeResourceSummary {
+    public enum MainframeResourceSummary: Swift.Sendable {
         /// The AWS Mainframe Modernization managed application in the mainframe resource summary.
         case m2managedapplication(AppTestClientTypes.M2ManagedApplicationSummary)
         /// The AWS Mainframe Modernization non-managed application in the mainframe resource summary.
         case m2nonmanagedapplication(AppTestClientTypes.M2NonManagedApplicationSummary)
         case sdkUnknown(Swift.String)
     }
-
 }
 
 extension AppTestClientTypes {
+
     /// Defines a batch step input.
-    public struct BatchStepInput {
+    public struct BatchStepInput: Swift.Sendable {
         /// The batch job name of the batch step input.
         /// This member is required.
         public var batchJobName: Swift.String?
@@ -2353,12 +2354,12 @@ extension AppTestClientTypes {
             self.resource = resource
         }
     }
-
 }
 
 extension AppTestClientTypes {
+
     /// Defines a batch step output.
-    public struct BatchStepOutput {
+    public struct BatchStepOutput: Swift.Sendable {
         /// The data set details of the batch step output.
         public var dataSetDetails: [AppTestClientTypes.DataSet]?
         /// The data set export location of the batch step output.
@@ -2377,12 +2378,12 @@ extension AppTestClientTypes {
             self.dmsOutputLocation = dmsOutputLocation
         }
     }
-
 }
 
 extension AppTestClientTypes {
+
     /// Summarizes a batch job.
-    public struct BatchSummary {
+    public struct BatchSummary: Swift.Sendable {
         /// The step input of the batch summary.
         /// This member is required.
         public var stepInput: AppTestClientTypes.BatchStepInput?
@@ -2398,12 +2399,12 @@ extension AppTestClientTypes {
             self.stepOutput = stepOutput
         }
     }
-
 }
 
 extension AppTestClientTypes {
+
     /// Specifies the scripts summary.
-    public struct ScriptSummary {
+    public struct ScriptSummary: Swift.Sendable {
         /// The script location of the script summary.
         /// This member is required.
         public var scriptLocation: Swift.String?
@@ -2420,12 +2421,12 @@ extension AppTestClientTypes {
             self.type = type
         }
     }
-
 }
 
 extension AppTestClientTypes {
+
     /// Specifies a TN3270 step input.
-    public struct TN3270StepInput {
+    public struct TN3270StepInput: Swift.Sendable {
         /// The export data set names of the TN3270 step input.
         public var exportDataSetNames: [Swift.String]?
         /// The properties of the TN3270 step input.
@@ -2450,12 +2451,12 @@ extension AppTestClientTypes {
             self.script = script
         }
     }
-
 }
 
 extension AppTestClientTypes {
+
     /// Specifies a TN3270 step output.
-    public struct TN3270StepOutput {
+    public struct TN3270StepOutput: Swift.Sendable {
         /// The data set details of the TN3270 step output.
         public var dataSetDetails: [AppTestClientTypes.DataSet]?
         /// The data set export location of the TN3270 step output.
@@ -2479,12 +2480,12 @@ extension AppTestClientTypes {
             self.scriptOutputLocation = scriptOutputLocation
         }
     }
-
 }
 
 extension AppTestClientTypes {
+
     /// Specifies a TN3270 summary.
-    public struct TN3270Summary {
+    public struct TN3270Summary: Swift.Sendable {
         /// The step input of the TN3270 summary.
         /// This member is required.
         public var stepInput: AppTestClientTypes.TN3270StepInput?
@@ -2500,24 +2501,24 @@ extension AppTestClientTypes {
             self.stepOutput = stepOutput
         }
     }
-
 }
 
 extension AppTestClientTypes {
+
     /// Specifies the mainframe action summary.
-    public enum MainframeActionSummary {
+    public enum MainframeActionSummary: Swift.Sendable {
         /// The batch of the mainframe action summary.
         case batch(AppTestClientTypes.BatchSummary)
         /// The tn3270 port of the mainframe action summary.
         case tn3270(AppTestClientTypes.TN3270Summary)
         case sdkUnknown(Swift.String)
     }
-
 }
 
 extension AppTestClientTypes {
+
     /// Creates the CloudFormation step input.
-    public struct CreateCloudFormationStepInput {
+    public struct CreateCloudFormationStepInput: Swift.Sendable {
         /// The CloudFormation properties of the CloudFormation step input.
         public var parameters: [Swift.String: Swift.String]?
         /// The template location of the CloudFormation step input.
@@ -2533,12 +2534,12 @@ extension AppTestClientTypes {
             self.templateLocation = templateLocation
         }
     }
-
 }
 
 extension AppTestClientTypes {
+
     /// Creates a CloudFormation step output.
-    public struct CreateCloudFormationStepOutput {
+    public struct CreateCloudFormationStepOutput: Swift.Sendable {
         /// The exports of the CloudFormation step output.
         public var exports: [Swift.String: Swift.String]?
         /// The stack ID of the CloudFormation step output.
@@ -2554,12 +2555,12 @@ extension AppTestClientTypes {
             self.stackId = stackId
         }
     }
-
 }
 
 extension AppTestClientTypes {
+
     /// Creates a CloudFormation summary.
-    public struct CreateCloudFormationSummary {
+    public struct CreateCloudFormationSummary: Swift.Sendable {
         /// The step input of the CloudFormation summary.
         /// This member is required.
         public var stepInput: AppTestClientTypes.CreateCloudFormationStepInput?
@@ -2575,12 +2576,12 @@ extension AppTestClientTypes {
             self.stepOutput = stepOutput
         }
     }
-
 }
 
 extension AppTestClientTypes {
+
     /// Deletes the CloudFormation step input.
-    public struct DeleteCloudFormationStepInput {
+    public struct DeleteCloudFormationStepInput: Swift.Sendable {
         /// The stack ID of the deleted CloudFormation step input.
         /// This member is required.
         public var stackId: Swift.String?
@@ -2592,21 +2593,21 @@ extension AppTestClientTypes {
             self.stackId = stackId
         }
     }
-
 }
 
 extension AppTestClientTypes {
+
     /// Deletes the CloudFormation summary step output.
-    public struct DeleteCloudFormationStepOutput {
+    public struct DeleteCloudFormationStepOutput: Swift.Sendable {
 
         public init() { }
     }
-
 }
 
 extension AppTestClientTypes {
+
     /// Deletes the CloudFormation summary.
-    public struct DeleteCloudFormationSummary {
+    public struct DeleteCloudFormationSummary: Swift.Sendable {
         /// The step input of the deleted CloudFormation summary.
         /// This member is required.
         public var stepInput: AppTestClientTypes.DeleteCloudFormationStepInput?
@@ -2622,24 +2623,24 @@ extension AppTestClientTypes {
             self.stepOutput = stepOutput
         }
     }
-
 }
 
 extension AppTestClientTypes {
+
     /// Specifies the CloudFormation step summary.
-    public enum CloudFormationStepSummary {
+    public enum CloudFormationStepSummary: Swift.Sendable {
         /// Creates the CloudFormation summary of the step.
         case createcloudformation(AppTestClientTypes.CreateCloudFormationSummary)
         /// Deletes the CloudFormation summary of the CloudFormation step summary.
         case deletecloudformation(AppTestClientTypes.DeleteCloudFormationSummary)
         case sdkUnknown(Swift.String)
     }
-
 }
 
 extension AppTestClientTypes {
+
     /// Specifies the AWS Mainframe Modernization managed application step input.
-    public struct M2ManagedApplicationStepInput {
+    public struct M2ManagedApplicationStepInput: Swift.Sendable {
         /// The action type of the AWS Mainframe Modernization managed application step input.
         /// This member is required.
         public var actionType: AppTestClientTypes.M2ManagedActionType?
@@ -2673,12 +2674,12 @@ extension AppTestClientTypes {
             self.vpcEndpointServiceName = vpcEndpointServiceName
         }
     }
-
 }
 
 extension AppTestClientTypes {
+
     /// Specifies the AWS Mainframe Modernization managed application step output.
-    public struct M2ManagedApplicationStepOutput {
+    public struct M2ManagedApplicationStepOutput: Swift.Sendable {
         /// The import data set summary of the AWS Mainframe Modernization managed application step output.
         public var importDataSetSummary: [Swift.String: Swift.String]?
 
@@ -2689,12 +2690,12 @@ extension AppTestClientTypes {
             self.importDataSetSummary = importDataSetSummary
         }
     }
-
 }
 
 extension AppTestClientTypes {
+
     /// Specifies the AWS Mainframe Modernization managed application step summary.
-    public struct M2ManagedApplicationStepSummary {
+    public struct M2ManagedApplicationStepSummary: Swift.Sendable {
         /// The step input of the AWS Mainframe Modernization managed application step summary.
         /// This member is required.
         public var stepInput: AppTestClientTypes.M2ManagedApplicationStepInput?
@@ -2710,12 +2711,12 @@ extension AppTestClientTypes {
             self.stepOutput = stepOutput
         }
     }
-
 }
 
 extension AppTestClientTypes {
+
     /// Specifies the AWS Mainframe Modernization non-managed application step input.
-    public struct M2NonManagedApplicationStepInput {
+    public struct M2NonManagedApplicationStepInput: Swift.Sendable {
         /// The action type of the AWS Mainframe Modernization non-managed application step input.
         /// This member is required.
         public var actionType: AppTestClientTypes.M2NonManagedActionType?
@@ -2746,21 +2747,21 @@ extension AppTestClientTypes {
             self.webAppName = webAppName
         }
     }
-
 }
 
 extension AppTestClientTypes {
+
     /// Specifies the AWS Mainframe Modernization non-managed application step output.
-    public struct M2NonManagedApplicationStepOutput {
+    public struct M2NonManagedApplicationStepOutput: Swift.Sendable {
 
         public init() { }
     }
-
 }
 
 extension AppTestClientTypes {
+
     /// Specifies the AWS Mainframe Modernization non-managed application step summary.
-    public struct M2NonManagedApplicationStepSummary {
+    public struct M2NonManagedApplicationStepSummary: Swift.Sendable {
         /// The step input of the AWS Mainframe Modernization non-managed application step summary.
         /// This member is required.
         public var stepInput: AppTestClientTypes.M2NonManagedApplicationStepInput?
@@ -2776,12 +2777,12 @@ extension AppTestClientTypes {
             self.stepOutput = stepOutput
         }
     }
-
 }
 
 extension AppTestClientTypes {
+
     /// Specifies the resource action summary.
-    public enum ResourceActionSummary {
+    public enum ResourceActionSummary: Swift.Sendable {
         /// The CloudFormation template of the resource action summary.
         case cloudformation(AppTestClientTypes.CloudFormationStepSummary)
         /// The AWS Mainframe Modernization managed application of the resource action summary.
@@ -2790,12 +2791,12 @@ extension AppTestClientTypes {
         case m2nonmanagedapplication(AppTestClientTypes.M2NonManagedApplicationStepSummary)
         case sdkUnknown(Swift.String)
     }
-
 }
 
 extension AppTestClientTypes {
+
     /// Defines the step run summary.
-    public enum StepRunSummary {
+    public enum StepRunSummary: Swift.Sendable {
         /// The mainframe action of the step run summary.
         case mainframeaction(AppTestClientTypes.MainframeActionSummary)
         /// The compare action of the step run summary.
@@ -2804,10 +2805,9 @@ extension AppTestClientTypes {
         case resourceaction(AppTestClientTypes.ResourceActionSummary)
         case sdkUnknown(Swift.String)
     }
-
 }
 
-public struct GetTestRunStepOutput {
+public struct GetTestRunStepOutput: Swift.Sendable {
     /// The after steps of the test run step.
     public var afterStep: Swift.Bool?
     /// The before steps of the test run step.
@@ -2871,7 +2871,7 @@ public struct GetTestRunStepOutput {
     }
 }
 
-public struct ListTestRunsInput {
+public struct ListTestRunsInput: Swift.Sendable {
     /// The maximum number of test runs to return in one page of results.
     public var maxResults: Swift.Int?
     /// The token from the previous request to retrieve the next page of test run results.
@@ -2897,7 +2897,7 @@ public struct ListTestRunsInput {
 
 extension AppTestClientTypes {
 
-    public enum TestRunStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum TestRunStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case deleting
         case failed
         case running
@@ -2931,8 +2931,9 @@ extension AppTestClientTypes {
 }
 
 extension AppTestClientTypes {
+
     /// Specifies a test run summary.
-    public struct TestRunSummary {
+    public struct TestRunSummary: Swift.Sendable {
         /// The run end time of the test run summary.
         public var runEndTime: Foundation.Date?
         /// The run start time of the test run summary.
@@ -2985,10 +2986,9 @@ extension AppTestClientTypes {
             self.testSuiteVersion = testSuiteVersion
         }
     }
-
 }
 
-public struct ListTestRunsOutput {
+public struct ListTestRunsOutput: Swift.Sendable {
     /// The token from the previous request to retrieve the next page of results.
     public var nextToken: Swift.String?
     /// The test runs of the response query.
@@ -3005,7 +3005,7 @@ public struct ListTestRunsOutput {
     }
 }
 
-public struct ListTestRunStepsInput {
+public struct ListTestRunStepsInput: Swift.Sendable {
     /// The maximum number of test run steps to return in one page of results.
     public var maxResults: Swift.Int?
     /// The token from a previous step to retrieve the next page of results.
@@ -3035,8 +3035,9 @@ public struct ListTestRunStepsInput {
 }
 
 extension AppTestClientTypes {
+
     /// Specifies a test run step summary.
-    public struct TestRunStepSummary {
+    public struct TestRunStepSummary: Swift.Sendable {
         /// The after step of the test run step summary.
         public var afterStep: Swift.Bool?
         /// The before step of the test run step summary.
@@ -3095,10 +3096,9 @@ extension AppTestClientTypes {
             self.testSuiteVersion = testSuiteVersion
         }
     }
-
 }
 
-public struct ListTestRunStepsOutput {
+public struct ListTestRunStepsOutput: Swift.Sendable {
     /// The token from a previous request to retrieve the next page of results.
     public var nextToken: Swift.String?
     /// The test run steps of the response query.
@@ -3115,7 +3115,7 @@ public struct ListTestRunStepsOutput {
     }
 }
 
-public struct ListTestRunTestCasesInput {
+public struct ListTestRunTestCasesInput: Swift.Sendable {
     /// The maximum number of test run test cases to return in one page of results.
     public var maxResults: Swift.Int?
     /// The token from a previous request to retrieve the next page of results.
@@ -3138,7 +3138,7 @@ public struct ListTestRunTestCasesInput {
 
 extension AppTestClientTypes {
 
-    public enum TestCaseRunStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum TestCaseRunStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case failed
         case running
         case success
@@ -3169,8 +3169,9 @@ extension AppTestClientTypes {
 }
 
 extension AppTestClientTypes {
+
     /// Specifies the test case run summary.
-    public struct TestCaseRunSummary {
+    public struct TestCaseRunSummary: Swift.Sendable {
         /// The run end time of the test case run summary.
         public var runEndTime: Foundation.Date?
         /// The run start time of the test case run summary.
@@ -3210,10 +3211,9 @@ extension AppTestClientTypes {
             self.testRunId = testRunId
         }
     }
-
 }
 
-public struct ListTestRunTestCasesOutput {
+public struct ListTestRunTestCasesOutput: Swift.Sendable {
     /// The token from a previous request to retrieve the next page of results.
     public var nextToken: Swift.String?
     /// The test run of the test cases.
@@ -3230,7 +3230,7 @@ public struct ListTestRunTestCasesOutput {
     }
 }
 
-public struct StartTestRunInput {
+public struct StartTestRunInput: Swift.Sendable {
     /// The client token of the test run.
     public var clientToken: Swift.String?
     /// The tags of the test run.
@@ -3255,7 +3255,7 @@ public struct StartTestRunInput {
     }
 }
 
-public struct StartTestRunOutput {
+public struct StartTestRunOutput: Swift.Sendable {
     /// The test run ID of the test run.
     /// This member is required.
     public var testRunId: Swift.String?
@@ -3274,16 +3274,16 @@ public struct StartTestRunOutput {
 }
 
 extension AppTestClientTypes {
+
     /// Specifies test cases.
-    public enum TestCases {
+    public enum TestCases: Swift.Sendable {
         /// The sequential of the test case.
         case sequential([Swift.String])
         case sdkUnknown(Swift.String)
     }
-
 }
 
-public struct CreateTestSuiteInput {
+public struct CreateTestSuiteInput: Swift.Sendable {
     /// The after steps of the test suite.
     public var afterSteps: [AppTestClientTypes.Step]?
     /// The before steps of the test suite.
@@ -3321,7 +3321,7 @@ public struct CreateTestSuiteInput {
     }
 }
 
-public struct CreateTestSuiteOutput {
+public struct CreateTestSuiteOutput: Swift.Sendable {
     /// The suite ID of the test suite.
     /// This member is required.
     public var testSuiteId: Swift.String?
@@ -3339,7 +3339,7 @@ public struct CreateTestSuiteOutput {
     }
 }
 
-public struct DeleteTestSuiteInput {
+public struct DeleteTestSuiteInput: Swift.Sendable {
     /// The test ID of the test suite.
     /// This member is required.
     public var testSuiteId: Swift.String?
@@ -3352,12 +3352,12 @@ public struct DeleteTestSuiteInput {
     }
 }
 
-public struct DeleteTestSuiteOutput {
+public struct DeleteTestSuiteOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct GetTestSuiteInput {
+public struct GetTestSuiteInput: Swift.Sendable {
     /// The ID of the test suite.
     /// This member is required.
     public var testSuiteId: Swift.String?
@@ -3376,7 +3376,7 @@ public struct GetTestSuiteInput {
 
 extension AppTestClientTypes {
 
-    public enum TestSuiteLifecycle: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum TestSuiteLifecycle: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case active
         case creating
         case deleting
@@ -3413,8 +3413,9 @@ extension AppTestClientTypes {
 }
 
 extension AppTestClientTypes {
+
     /// Specifies the latest version of a test suite.
-    public struct TestSuiteLatestVersion {
+    public struct TestSuiteLatestVersion: Swift.Sendable {
         /// The status of the test suite latest version.
         /// This member is required.
         public var status: AppTestClientTypes.TestSuiteLifecycle?
@@ -3435,10 +3436,9 @@ extension AppTestClientTypes {
             self.version = version
         }
     }
-
 }
 
-public struct GetTestSuiteOutput {
+public struct GetTestSuiteOutput: Swift.Sendable {
     /// The after steps of the test suite.
     /// This member is required.
     public var afterSteps: [AppTestClientTypes.Step]?
@@ -3512,7 +3512,7 @@ public struct GetTestSuiteOutput {
     }
 }
 
-public struct ListTestSuitesInput {
+public struct ListTestSuitesInput: Swift.Sendable {
     /// The maximum number of test suites to return in one page of results.
     public var maxResults: Swift.Int?
     /// The token from a previous request to retrieve the next page of results.
@@ -3533,8 +3533,9 @@ public struct ListTestSuitesInput {
 }
 
 extension AppTestClientTypes {
+
     /// Specifies the test suite summary.
-    public struct TestSuiteSummary {
+    public struct TestSuiteSummary: Swift.Sendable {
         /// The creation time of the test suite summary.
         /// This member is required.
         public var creationTime: Foundation.Date?
@@ -3580,10 +3581,9 @@ extension AppTestClientTypes {
             self.testSuiteId = testSuiteId
         }
     }
-
 }
 
-public struct ListTestSuitesOutput {
+public struct ListTestSuitesOutput: Swift.Sendable {
     /// The token from a previous request to retrieve the next page of test suites results.
     public var nextToken: Swift.String?
     /// The test suites returned with the response query.
@@ -3600,7 +3600,7 @@ public struct ListTestSuitesOutput {
     }
 }
 
-public struct UpdateTestSuiteInput {
+public struct UpdateTestSuiteInput: Swift.Sendable {
     /// The after steps of the test suite.
     public var afterSteps: [AppTestClientTypes.Step]?
     /// The before steps for the test suite.
@@ -3629,7 +3629,7 @@ public struct UpdateTestSuiteInput {
     }
 }
 
-public struct UpdateTestSuiteOutput {
+public struct UpdateTestSuiteOutput: Swift.Sendable {
     /// The test suite ID of the test suite.
     /// This member is required.
     public var testSuiteId: Swift.String?
@@ -3646,7 +3646,7 @@ public struct UpdateTestSuiteOutput {
     }
 }
 
-public struct UntagResourceInput {
+public struct UntagResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the resource.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -3664,7 +3664,7 @@ public struct UntagResourceInput {
     }
 }
 
-public struct UntagResourceOutput {
+public struct UntagResourceOutput: Swift.Sendable {
 
     public init() { }
 }

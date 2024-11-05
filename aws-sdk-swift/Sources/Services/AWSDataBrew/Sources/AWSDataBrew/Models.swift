@@ -52,8 +52,9 @@ public struct AccessDeniedException: ClientRuntime.ModeledError, AWSClientRuntim
 }
 
 extension DataBrewClientTypes {
+
     /// Configuration of statistics that are allowed to be run on columns that contain detected entities. When undefined, no statistics will be computed on columns that contain detected entities.
-    public struct AllowedStatistics {
+    public struct AllowedStatistics: Swift.Sendable {
         /// One or more column statistics to allow for columns that contain detected entities.
         /// This member is required.
         public var statistics: [Swift.String]?
@@ -65,12 +66,11 @@ extension DataBrewClientTypes {
             self.statistics = statistics
         }
     }
-
 }
 
 extension DataBrewClientTypes {
 
-    public enum AnalyticsMode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AnalyticsMode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case disable
         case enable
         case sdkUnknown(Swift.String)
@@ -169,7 +169,7 @@ public struct ValidationException: ClientRuntime.ModeledError, AWSClientRuntime.
     }
 }
 
-public struct BatchDeleteRecipeVersionInput {
+public struct BatchDeleteRecipeVersionInput: Swift.Sendable {
     /// The name of the recipe whose versions are to be deleted.
     /// This member is required.
     public var name: Swift.String?
@@ -188,8 +188,9 @@ public struct BatchDeleteRecipeVersionInput {
 }
 
 extension DataBrewClientTypes {
+
     /// Represents any errors encountered when attempting to delete multiple recipe versions.
-    public struct RecipeVersionErrorDetail {
+    public struct RecipeVersionErrorDetail: Swift.Sendable {
         /// The HTTP status code for the error.
         public var errorCode: Swift.String?
         /// The text of the error message.
@@ -208,10 +209,9 @@ extension DataBrewClientTypes {
             self.recipeVersion = recipeVersion
         }
     }
-
 }
 
-public struct BatchDeleteRecipeVersionOutput {
+public struct BatchDeleteRecipeVersionOutput: Swift.Sendable {
     /// Errors, if any, that occurred while attempting to delete the recipe versions.
     public var errors: [DataBrewClientTypes.RecipeVersionErrorDetail]?
     /// The name of the recipe that was modified.
@@ -254,7 +254,7 @@ public struct ServiceQuotaExceededException: ClientRuntime.ModeledError, AWSClie
 
 extension DataBrewClientTypes {
 
-    public enum InputFormat: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum InputFormat: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case csv
         case excel
         case json
@@ -291,8 +291,9 @@ extension DataBrewClientTypes {
 }
 
 extension DataBrewClientTypes {
+
     /// Represents a set of options that define how DataBrew will read a comma-separated value (CSV) file when creating a dataset from that file.
-    public struct CsvOptions {
+    public struct CsvOptions: Swift.Sendable {
         /// A single character that specifies the delimiter being used in the CSV file.
         public var delimiter: Swift.String?
         /// A variable that specifies whether the first row in the file is parsed as the header. If this value is false, column names are auto-generated.
@@ -307,12 +308,12 @@ extension DataBrewClientTypes {
             self.headerRow = headerRow
         }
     }
-
 }
 
 extension DataBrewClientTypes {
+
     /// Represents a set of options that define how DataBrew will interpret a Microsoft Excel file when creating a dataset from that file.
-    public struct ExcelOptions {
+    public struct ExcelOptions: Swift.Sendable {
         /// A variable that specifies whether the first row in the file is parsed as the header. If this value is false, column names are auto-generated.
         public var headerRow: Swift.Bool?
         /// One or more sheet numbers in the Excel file that will be included in the dataset.
@@ -331,12 +332,12 @@ extension DataBrewClientTypes {
             self.sheetNames = sheetNames
         }
     }
-
 }
 
 extension DataBrewClientTypes {
+
     /// Represents the JSON-specific options that define how input is to be interpreted by Glue DataBrew.
-    public struct JsonOptions {
+    public struct JsonOptions: Swift.Sendable {
         /// A value that specifies whether JSON input contains embedded new line characters.
         public var multiLine: Swift.Bool
 
@@ -347,12 +348,12 @@ extension DataBrewClientTypes {
             self.multiLine = multiLine
         }
     }
-
 }
 
 extension DataBrewClientTypes {
+
     /// Represents a set of options that define the structure of either comma-separated value (CSV), Excel, or JSON input.
-    public struct FormatOptions {
+    public struct FormatOptions: Swift.Sendable {
         /// Options that define how CSV input is to be interpreted by DataBrew.
         public var csv: DataBrewClientTypes.CsvOptions?
         /// Options that define how Excel input is to be interpreted by DataBrew.
@@ -371,12 +372,12 @@ extension DataBrewClientTypes {
             self.json = json
         }
     }
-
 }
 
 extension DataBrewClientTypes {
+
     /// Represents an Amazon S3 location (bucket name, bucket owner, and object key) where DataBrew can read input data, or write output from a job.
-    public struct S3Location {
+    public struct S3Location: Swift.Sendable {
         /// The Amazon S3 bucket name.
         /// This member is required.
         public var bucket: Swift.String?
@@ -396,12 +397,12 @@ extension DataBrewClientTypes {
             self.key = key
         }
     }
-
 }
 
 extension DataBrewClientTypes {
+
     /// Connection information for dataset input files stored in a database.
-    public struct DatabaseInputDefinition {
+    public struct DatabaseInputDefinition: Swift.Sendable {
         /// The table within the target database.
         public var databaseTableName: Swift.String?
         /// The Glue Connection that stores the connection information for the target database.
@@ -425,12 +426,12 @@ extension DataBrewClientTypes {
             self.tempDirectory = tempDirectory
         }
     }
-
 }
 
 extension DataBrewClientTypes {
+
     /// Represents how metadata stored in the Glue Data Catalog is defined in a DataBrew dataset.
-    public struct DataCatalogInputDefinition {
+    public struct DataCatalogInputDefinition: Swift.Sendable {
         /// The unique identifier of the Amazon Web Services account that holds the Data Catalog that stores the data.
         public var catalogId: Swift.String?
         /// The name of a database in the Data Catalog.
@@ -455,12 +456,12 @@ extension DataBrewClientTypes {
             self.tempDirectory = tempDirectory
         }
     }
-
 }
 
 extension DataBrewClientTypes {
+
     /// Contains additional resource information needed for specific datasets.
-    public struct Metadata {
+    public struct Metadata: Swift.Sendable {
         /// The Amazon Resource Name (ARN) associated with the dataset. Currently, DataBrew only supports ARNs from Amazon AppFlow.
         public var sourceArn: Swift.String?
 
@@ -471,12 +472,12 @@ extension DataBrewClientTypes {
             self.sourceArn = sourceArn
         }
     }
-
 }
 
 extension DataBrewClientTypes {
+
     /// Represents information on how DataBrew can find data, in either the Glue Data Catalog or Amazon S3.
-    public struct Input {
+    public struct Input: Swift.Sendable {
         /// The Glue Data Catalog parameters for the data.
         public var dataCatalogInputDefinition: DataBrewClientTypes.DataCatalogInputDefinition?
         /// Connection information for dataset input files stored in a database.
@@ -499,12 +500,11 @@ extension DataBrewClientTypes {
             self.s3InputDefinition = s3InputDefinition
         }
     }
-
 }
 
 extension DataBrewClientTypes {
 
-    public enum Order: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Order: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case ascending
         case descending
         case sdkUnknown(Swift.String)
@@ -533,7 +533,7 @@ extension DataBrewClientTypes {
 
 extension DataBrewClientTypes {
 
-    public enum OrderedBy: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum OrderedBy: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case lastModifiedDate
         case sdkUnknown(Swift.String)
 
@@ -558,8 +558,9 @@ extension DataBrewClientTypes {
 }
 
 extension DataBrewClientTypes {
+
     /// Represents a limit imposed on number of Amazon S3 files that should be selected for a dataset from a connected Amazon S3 path.
-    public struct FilesLimit {
+    public struct FilesLimit: Swift.Sendable {
         /// The number of Amazon S3 files to select.
         /// This member is required.
         public var maxFiles: Swift.Int?
@@ -579,12 +580,12 @@ extension DataBrewClientTypes {
             self.orderedBy = orderedBy
         }
     }
-
 }
 
 extension DataBrewClientTypes {
+
     /// Represents a structure for defining parameter conditions. Supported conditions are described here: [Supported conditions for dynamic datasets](https://docs.aws.amazon.com/databrew/latest/dg/datasets.multiple-files.html#conditions.for.dynamic.datasets) in the Glue DataBrew Developer Guide.
-    public struct FilterExpression {
+    public struct FilterExpression: Swift.Sendable {
         /// The expression which includes condition names followed by substitution variables, possibly grouped and combined with other conditions. For example, "(starts_with :prefix1 or starts_with :prefix2) and (ends_with :suffix1 or ends_with :suffix2)". Substitution variables should start with ':' symbol.
         /// This member is required.
         public var expression: Swift.String?
@@ -601,12 +602,12 @@ extension DataBrewClientTypes {
             self.valuesMap = valuesMap
         }
     }
-
 }
 
 extension DataBrewClientTypes {
+
     /// Represents additional options for correct interpretation of datetime parameters used in the Amazon S3 path of a dataset.
-    public struct DatetimeOptions {
+    public struct DatetimeOptions: Swift.Sendable {
         /// Required option, that defines the datetime format used for a date parameter in the Amazon S3 path. Should use only supported datetime specifiers and separation characters, all literal a-z or A-Z characters should be escaped with single quotes. E.g. "MM.dd.yyyy-'at'-HH:mm".
         /// This member is required.
         public var format: Swift.String?
@@ -626,12 +627,11 @@ extension DataBrewClientTypes {
             self.timezoneOffset = timezoneOffset
         }
     }
-
 }
 
 extension DataBrewClientTypes {
 
-    public enum ParameterType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ParameterType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case datetime
         case number
         case string
@@ -662,8 +662,9 @@ extension DataBrewClientTypes {
 }
 
 extension DataBrewClientTypes {
+
     /// Represents a dataset parameter that defines type and conditions for a parameter in the Amazon S3 path of the dataset.
-    public struct DatasetParameter {
+    public struct DatasetParameter: Swift.Sendable {
         /// Optional boolean value that defines whether the captured value of this parameter should be used to create a new column in a dataset.
         public var createColumn: Swift.Bool
         /// Additional parameter options such as a format and a timezone. Required for datetime parameters.
@@ -692,12 +693,12 @@ extension DataBrewClientTypes {
             self.type = type
         }
     }
-
 }
 
 extension DataBrewClientTypes {
+
     /// Represents a set of options that define how DataBrew selects files for a given Amazon S3 path in a dataset.
-    public struct PathOptions {
+    public struct PathOptions: Swift.Sendable {
         /// If provided, this structure imposes a limit on a number of files that should be selected.
         public var filesLimit: DataBrewClientTypes.FilesLimit?
         /// If provided, this structure defines a date range for matching Amazon S3 objects based on their LastModifiedDate attribute in Amazon S3.
@@ -716,10 +717,9 @@ extension DataBrewClientTypes {
             self.parameters = parameters
         }
     }
-
 }
 
-public struct CreateDatasetInput {
+public struct CreateDatasetInput: Swift.Sendable {
     /// The file format of a dataset that is created from an Amazon S3 file or folder.
     public var format: DataBrewClientTypes.InputFormat?
     /// Represents a set of options that define the structure of either comma-separated value (CSV), Excel, or JSON input.
@@ -753,7 +753,7 @@ public struct CreateDatasetInput {
     }
 }
 
-public struct CreateDatasetOutput {
+public struct CreateDatasetOutput: Swift.Sendable {
     /// The name of the dataset that you created.
     /// This member is required.
     public var name: Swift.String?
@@ -767,8 +767,9 @@ public struct CreateDatasetOutput {
 }
 
 extension DataBrewClientTypes {
+
     /// Selector of a column from a dataset for profile job configuration. One selector includes either a column name or a regular expression.
-    public struct ColumnSelector {
+    public struct ColumnSelector: Swift.Sendable {
         /// The name of a column from a dataset.
         public var name: Swift.String?
         /// A regular expression for selecting a column from a dataset.
@@ -783,12 +784,12 @@ extension DataBrewClientTypes {
             self.regex = regex
         }
     }
-
 }
 
 extension DataBrewClientTypes {
+
     /// Override of a particular evaluation for a profile job.
-    public struct StatisticOverride {
+    public struct StatisticOverride: Swift.Sendable {
         /// A map that includes overrides of an evaluation’s parameters.
         /// This member is required.
         public var parameters: [Swift.String: Swift.String]?
@@ -805,12 +806,12 @@ extension DataBrewClientTypes {
             self.statistic = statistic
         }
     }
-
 }
 
 extension DataBrewClientTypes {
+
     /// Configuration of evaluations for a profile job. This configuration can be used to select evaluations and override the parameters of selected evaluations.
-    public struct StatisticsConfiguration {
+    public struct StatisticsConfiguration: Swift.Sendable {
         /// List of included evaluations. When the list is undefined, all supported evaluations will be included.
         public var includedStatistics: [Swift.String]?
         /// List of overrides for evaluations.
@@ -825,12 +826,12 @@ extension DataBrewClientTypes {
             self.overrides = overrides
         }
     }
-
 }
 
 extension DataBrewClientTypes {
+
     /// Configuration for column evaluations for a profile job. ColumnStatisticsConfiguration can be used to select evaluations and override parameters of evaluations for particular columns.
-    public struct ColumnStatisticsConfiguration {
+    public struct ColumnStatisticsConfiguration: Swift.Sendable {
         /// List of column selectors. Selectors can be used to select columns from the dataset. When selectors are undefined, configuration will be applied to all supported columns.
         public var selectors: [DataBrewClientTypes.ColumnSelector]?
         /// Configuration for evaluations. Statistics can be used to select evaluations and override parameters of evaluations.
@@ -846,12 +847,12 @@ extension DataBrewClientTypes {
             self.statistics = statistics
         }
     }
-
 }
 
 extension DataBrewClientTypes {
+
     /// Configuration of entity detection for a profile job. When undefined, entity detection is disabled.
-    public struct EntityDetectorConfiguration {
+    public struct EntityDetectorConfiguration: Swift.Sendable {
         /// Configuration of statistics that are allowed to be run on columns that contain detected entities. When undefined, no statistics will be computed on columns that contain detected entities.
         public var allowedStatistics: [DataBrewClientTypes.AllowedStatistics]?
         /// Entity types to detect. Can be any of the following:
@@ -908,12 +909,12 @@ extension DataBrewClientTypes {
             self.entityTypes = entityTypes
         }
     }
-
 }
 
 extension DataBrewClientTypes {
+
     /// Configuration for profile jobs. Configuration can be used to select columns, do evaluations, and override default parameters of evaluations. When configuration is undefined, the profile job will apply default settings to all supported columns.
-    public struct ProfileConfiguration {
+    public struct ProfileConfiguration: Swift.Sendable {
         /// List of configurations for column evaluations. ColumnStatisticsConfigurations are used to select evaluations and override parameters of evaluations for particular columns. When ColumnStatisticsConfigurations is undefined, the profile job will profile all supported columns and run all supported evaluations.
         public var columnStatisticsConfigurations: [DataBrewClientTypes.ColumnStatisticsConfiguration]?
         /// Configuration for inter-column evaluations. Configuration can be used to select evaluations and override parameters of evaluations. When configuration is undefined, the profile job will run all supported inter-column evaluations.
@@ -936,12 +937,11 @@ extension DataBrewClientTypes {
             self.profileColumns = profileColumns
         }
     }
-
 }
 
 extension DataBrewClientTypes {
 
-    public enum EncryptionMode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum EncryptionMode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case ssekms
         case sses3
         case sdkUnknown(Swift.String)
@@ -970,7 +970,7 @@ extension DataBrewClientTypes {
 
 extension DataBrewClientTypes {
 
-    public enum SampleMode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SampleMode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case customRows
         case fullDataset
         case sdkUnknown(Swift.String)
@@ -998,8 +998,9 @@ extension DataBrewClientTypes {
 }
 
 extension DataBrewClientTypes {
+
     /// A sample configuration for profile jobs only, which determines the number of rows on which the profile job is run. If a JobSample value isn't provided, the default is used. The default value is CUSTOM_ROWS for the mode parameter and 20,000 for the size parameter.
-    public struct JobSample {
+    public struct JobSample: Swift.Sendable {
         /// A value that determines whether the profile job is run on the entire dataset or a specified number of rows. This value must be one of the following:
         ///
         /// * FULL_DATASET - The profile job is run on the entire dataset.
@@ -1018,12 +1019,11 @@ extension DataBrewClientTypes {
             self.size = size
         }
     }
-
 }
 
 extension DataBrewClientTypes {
 
-    public enum LogSubscription: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum LogSubscription: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case disable
         case enable
         case sdkUnknown(Swift.String)
@@ -1052,7 +1052,7 @@ extension DataBrewClientTypes {
 
 extension DataBrewClientTypes {
 
-    public enum ValidationMode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ValidationMode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case checkAll
         case sdkUnknown(Swift.String)
 
@@ -1077,8 +1077,9 @@ extension DataBrewClientTypes {
 }
 
 extension DataBrewClientTypes {
+
     /// Configuration for data quality validation. Used to select the Rulesets and Validation Mode to be used in the profile job. When ValidationConfiguration is null, the profile job will run without data quality validation.
-    public struct ValidationConfiguration {
+    public struct ValidationConfiguration: Swift.Sendable {
         /// The Amazon Resource Name (ARN) for the ruleset to be validated in the profile job. The TargetArn of the selected ruleset should be the same as the Amazon Resource Name (ARN) of the dataset that is associated with the profile job.
         /// This member is required.
         public var rulesetArn: Swift.String?
@@ -1094,10 +1095,9 @@ extension DataBrewClientTypes {
             self.validationMode = validationMode
         }
     }
-
 }
 
-public struct CreateProfileJobInput {
+public struct CreateProfileJobInput: Swift.Sendable {
     /// Configuration for profile jobs. Used to select columns, do evaluations, and override default parameters of evaluations. When configuration is null, the profile job will run with default settings.
     public var configuration: DataBrewClientTypes.ProfileConfiguration?
     /// The name of the dataset that this job is to act upon.
@@ -1169,7 +1169,7 @@ public struct CreateProfileJobInput {
     }
 }
 
-public struct CreateProfileJobOutput {
+public struct CreateProfileJobOutput: Swift.Sendable {
     /// The name of the job that was created.
     /// This member is required.
     public var name: Swift.String?
@@ -1208,7 +1208,7 @@ public struct InternalServerException: ClientRuntime.ModeledError, AWSClientRunt
 
 extension DataBrewClientTypes {
 
-    public enum SampleType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SampleType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case firstN
         case lastN
         case random
@@ -1239,8 +1239,9 @@ extension DataBrewClientTypes {
 }
 
 extension DataBrewClientTypes {
+
     /// Represents the sample size and sampling type for DataBrew to use for interactive data analysis.
-    public struct Sample {
+    public struct Sample: Swift.Sendable {
         /// The number of rows in the sample.
         public var size: Swift.Int?
         /// The way in which DataBrew obtains rows from a dataset.
@@ -1256,10 +1257,9 @@ extension DataBrewClientTypes {
             self.type = type
         }
     }
-
 }
 
-public struct CreateProjectInput {
+public struct CreateProjectInput: Swift.Sendable {
     /// The name of an existing dataset to associate this project with.
     /// This member is required.
     public var datasetName: Swift.String?
@@ -1295,7 +1295,7 @@ public struct CreateProjectInput {
     }
 }
 
-public struct CreateProjectOutput {
+public struct CreateProjectOutput: Swift.Sendable {
     /// The name of the project that you created.
     /// This member is required.
     public var name: Swift.String?
@@ -1309,8 +1309,9 @@ public struct CreateProjectOutput {
 }
 
 extension DataBrewClientTypes {
+
     /// Represents a transformation and associated parameters that are used to apply a change to a DataBrew dataset. For more information, see [Recipe actions reference](https://docs.aws.amazon.com/databrew/latest/dg/recipe-actions-reference.html).
-    public struct RecipeAction {
+    public struct RecipeAction: Swift.Sendable {
         /// The name of a valid DataBrew transformation to be performed on the data.
         /// This member is required.
         public var operation: Swift.String?
@@ -1326,12 +1327,12 @@ extension DataBrewClientTypes {
             self.parameters = parameters
         }
     }
-
 }
 
 extension DataBrewClientTypes {
+
     /// Represents an individual condition that evaluates to true or false. Conditions are used with recipe actions. The action is only performed for column values where the condition evaluates to true. If a recipe requires more than one condition, then the recipe must specify multiple ConditionExpression elements. Each condition is applied to the rows in a dataset first, before the recipe action is performed.
-    public struct ConditionExpression {
+    public struct ConditionExpression: Swift.Sendable {
         /// A specific condition to apply to a recipe action. For more information, see [Recipe structure](https://docs.aws.amazon.com/databrew/latest/dg/recipes.html#recipes.structure) in the Glue DataBrew Developer Guide.
         /// This member is required.
         public var condition: Swift.String?
@@ -1352,12 +1353,12 @@ extension DataBrewClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension DataBrewClientTypes {
+
     /// Represents a single step from a DataBrew recipe to be performed.
-    public struct RecipeStep {
+    public struct RecipeStep: Swift.Sendable {
         /// The particular action to be performed in the recipe step.
         /// This member is required.
         public var action: DataBrewClientTypes.RecipeAction?
@@ -1373,10 +1374,9 @@ extension DataBrewClientTypes {
             self.conditionExpressions = conditionExpressions
         }
     }
-
 }
 
-public struct CreateRecipeInput {
+public struct CreateRecipeInput: Swift.Sendable {
     /// A description for the recipe.
     public var description: Swift.String?
     /// A unique name for the recipe. Valid characters are alphanumeric (A-Z, a-z, 0-9), hyphen (-), period (.), and space.
@@ -1402,7 +1402,7 @@ public struct CreateRecipeInput {
     }
 }
 
-public struct CreateRecipeOutput {
+public struct CreateRecipeOutput: Swift.Sendable {
     /// The name of the recipe that you created.
     /// This member is required.
     public var name: Swift.String?
@@ -1416,8 +1416,9 @@ public struct CreateRecipeOutput {
 }
 
 extension DataBrewClientTypes {
+
     /// Represents options that specify how and where DataBrew writes the database output generated by recipe jobs.
-    public struct DatabaseTableOutputOptions {
+    public struct DatabaseTableOutputOptions: Swift.Sendable {
         /// A prefix for the name of a table DataBrew will create in the database.
         /// This member is required.
         public var tableName: Swift.String?
@@ -1433,12 +1434,11 @@ extension DataBrewClientTypes {
             self.tempDirectory = tempDirectory
         }
     }
-
 }
 
 extension DataBrewClientTypes {
 
-    public enum DatabaseOutputMode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DatabaseOutputMode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case newTable
         case sdkUnknown(Swift.String)
 
@@ -1463,8 +1463,9 @@ extension DataBrewClientTypes {
 }
 
 extension DataBrewClientTypes {
+
     /// Represents a JDBC database output object which defines the output destination for a DataBrew recipe job to write into.
-    public struct DatabaseOutput {
+    public struct DatabaseOutput: Swift.Sendable {
         /// Represents options that specify how and where DataBrew writes the database output generated by recipe jobs.
         /// This member is required.
         public var databaseOptions: DataBrewClientTypes.DatabaseTableOutputOptions?
@@ -1485,12 +1486,12 @@ extension DataBrewClientTypes {
             self.glueConnectionName = glueConnectionName
         }
     }
-
 }
 
 extension DataBrewClientTypes {
+
     /// Represents options that specify how and where DataBrew writes the Amazon S3 output generated by recipe jobs.
-    public struct S3TableOutputOptions {
+    public struct S3TableOutputOptions: Swift.Sendable {
         /// Represents an Amazon S3 location (bucket name and object key) where DataBrew can write output from a job.
         /// This member is required.
         public var location: DataBrewClientTypes.S3Location?
@@ -1502,12 +1503,12 @@ extension DataBrewClientTypes {
             self.location = location
         }
     }
-
 }
 
 extension DataBrewClientTypes {
+
     /// Represents options that specify how and where in the Glue Data Catalog DataBrew writes the output generated by recipe jobs.
-    public struct DataCatalogOutput {
+    public struct DataCatalogOutput: Swift.Sendable {
         /// The unique identifier of the Amazon Web Services account that holds the Data Catalog that stores the data.
         public var catalogId: Swift.String?
         /// The name of a database in the Data Catalog.
@@ -1540,12 +1541,11 @@ extension DataBrewClientTypes {
             self.tableName = tableName
         }
     }
-
 }
 
 extension DataBrewClientTypes {
 
-    public enum CompressionFormat: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum CompressionFormat: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case brotli
         case bzip2
         case deflate
@@ -1595,7 +1595,7 @@ extension DataBrewClientTypes {
 
 extension DataBrewClientTypes {
 
-    public enum OutputFormat: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum OutputFormat: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case avro
         case csv
         case glueparquet
@@ -1641,8 +1641,9 @@ extension DataBrewClientTypes {
 }
 
 extension DataBrewClientTypes {
+
     /// Represents a set of options that define how DataBrew will write a comma-separated value (CSV) file.
-    public struct CsvOutputOptions {
+    public struct CsvOutputOptions: Swift.Sendable {
         /// A single character that specifies the delimiter used to create CSV job output.
         public var delimiter: Swift.String?
 
@@ -1653,12 +1654,12 @@ extension DataBrewClientTypes {
             self.delimiter = delimiter
         }
     }
-
 }
 
 extension DataBrewClientTypes {
+
     /// Represents a set of options that define the structure of comma-separated (CSV) job output.
-    public struct OutputFormatOptions {
+    public struct OutputFormatOptions: Swift.Sendable {
         /// Represents a set of options that define the structure of comma-separated value (CSV) job output.
         public var csv: DataBrewClientTypes.CsvOutputOptions?
 
@@ -1669,12 +1670,12 @@ extension DataBrewClientTypes {
             self.csv = csv
         }
     }
-
 }
 
 extension DataBrewClientTypes {
+
     /// Represents options that specify how and where in Amazon S3 DataBrew writes the output generated by recipe jobs or profile jobs.
-    public struct Output {
+    public struct Output: Swift.Sendable {
         /// The compression algorithm used to compress the output text of the job.
         public var compressionFormat: DataBrewClientTypes.CompressionFormat?
         /// The data format of the output of the job.
@@ -1710,12 +1711,12 @@ extension DataBrewClientTypes {
             self.partitionColumns = partitionColumns
         }
     }
-
 }
 
 extension DataBrewClientTypes {
+
     /// Represents the name and version of a DataBrew recipe.
-    public struct RecipeReference {
+    public struct RecipeReference: Swift.Sendable {
         /// The name of the recipe.
         /// This member is required.
         public var name: Swift.String?
@@ -1731,10 +1732,9 @@ extension DataBrewClientTypes {
             self.recipeVersion = recipeVersion
         }
     }
-
 }
 
-public struct CreateRecipeJobInput {
+public struct CreateRecipeJobInput: Swift.Sendable {
     /// One or more artifacts that represent the Glue Data Catalog output from running the job.
     public var dataCatalogOutputs: [DataBrewClientTypes.DataCatalogOutput]?
     /// Represents a list of JDBC database output objects which defines the output destination for a DataBrew recipe job to write to.
@@ -1808,7 +1808,7 @@ public struct CreateRecipeJobInput {
     }
 }
 
-public struct CreateRecipeJobOutput {
+public struct CreateRecipeJobOutput: Swift.Sendable {
     /// The name of the job that you created.
     /// This member is required.
     public var name: Swift.String?
@@ -1823,7 +1823,7 @@ public struct CreateRecipeJobOutput {
 
 extension DataBrewClientTypes {
 
-    public enum ThresholdType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ThresholdType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case greaterThan
         case greaterThanOrEqual
         case lessThan
@@ -1858,7 +1858,7 @@ extension DataBrewClientTypes {
 
 extension DataBrewClientTypes {
 
-    public enum ThresholdUnit: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ThresholdUnit: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case count
         case percentage
         case sdkUnknown(Swift.String)
@@ -1886,8 +1886,9 @@ extension DataBrewClientTypes {
 }
 
 extension DataBrewClientTypes {
+
     /// The threshold used with a non-aggregate check expression. The non-aggregate check expression will be applied to each row in a specific column. Then the threshold will be used to determine whether the validation succeeds.
-    public struct Threshold {
+    public struct Threshold: Swift.Sendable {
         /// The type of a threshold. Used for comparison of an actual count of rows that satisfy the rule to the threshold value.
         public var type: DataBrewClientTypes.ThresholdType?
         /// Unit of threshold value. Can be either a COUNT or PERCENTAGE of the full sample size used for validation.
@@ -1907,12 +1908,12 @@ extension DataBrewClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension DataBrewClientTypes {
+
     /// Represents a single data quality requirement that should be validated in the scope of this dataset.
-    public struct Rule {
+    public struct Rule: Swift.Sendable {
         /// The expression which includes column references, condition names followed by variable references, possibly grouped and combined with other conditions. For example, (:col1 starts_with :prefix1 or :col1 starts_with :prefix2) and (:col1 ends_with :suffix1 or :col1 ends_with :suffix2). Column and value references are substitution variables that should start with the ':' symbol. Depending on the context, substitution variables' values can be either an actual value or a column name. These values are defined in the SubstitutionMap. If a CheckExpression starts with a column reference, then ColumnSelectors in the rule should be null. If ColumnSelectors has been defined, then there should be no column reference in the left side of a condition, for example, is_between :val1 and :val2. For more information, see [Available checks](https://docs.aws.amazon.com/databrew/latest/dg/profile.data-quality-available-checks.html)
         /// This member is required.
         public var checkExpression: Swift.String?
@@ -1945,10 +1946,9 @@ extension DataBrewClientTypes {
             self.threshold = threshold
         }
     }
-
 }
 
-public struct CreateRulesetInput {
+public struct CreateRulesetInput: Swift.Sendable {
     /// The description of the ruleset.
     public var description: Swift.String?
     /// The name of the ruleset to be created. Valid characters are alphanumeric (A-Z, a-z, 0-9), hyphen (-), period (.), and space.
@@ -1979,7 +1979,7 @@ public struct CreateRulesetInput {
     }
 }
 
-public struct CreateRulesetOutput {
+public struct CreateRulesetOutput: Swift.Sendable {
     /// The unique name of the created ruleset.
     /// This member is required.
     public var name: Swift.String?
@@ -1992,7 +1992,7 @@ public struct CreateRulesetOutput {
     }
 }
 
-public struct CreateScheduleInput {
+public struct CreateScheduleInput: Swift.Sendable {
     /// The date or dates and time or times when the jobs are to be run. For more information, see [Cron expressions](https://docs.aws.amazon.com/databrew/latest/dg/jobs.cron.html) in the Glue DataBrew Developer Guide.
     /// This member is required.
     public var cronExpression: Swift.String?
@@ -2018,7 +2018,7 @@ public struct CreateScheduleInput {
     }
 }
 
-public struct CreateScheduleOutput {
+public struct CreateScheduleOutput: Swift.Sendable {
     /// The name of the schedule that was created.
     /// This member is required.
     public var name: Swift.String?
@@ -2031,7 +2031,7 @@ public struct CreateScheduleOutput {
     }
 }
 
-public struct DeleteDatasetInput {
+public struct DeleteDatasetInput: Swift.Sendable {
     /// The name of the dataset to be deleted.
     /// This member is required.
     public var name: Swift.String?
@@ -2044,7 +2044,7 @@ public struct DeleteDatasetInput {
     }
 }
 
-public struct DeleteDatasetOutput {
+public struct DeleteDatasetOutput: Swift.Sendable {
     /// The name of the dataset that you deleted.
     /// This member is required.
     public var name: Swift.String?
@@ -2057,7 +2057,7 @@ public struct DeleteDatasetOutput {
     }
 }
 
-public struct DeleteJobInput {
+public struct DeleteJobInput: Swift.Sendable {
     /// The name of the job to be deleted.
     /// This member is required.
     public var name: Swift.String?
@@ -2070,7 +2070,7 @@ public struct DeleteJobInput {
     }
 }
 
-public struct DeleteJobOutput {
+public struct DeleteJobOutput: Swift.Sendable {
     /// The name of the job that you deleted.
     /// This member is required.
     public var name: Swift.String?
@@ -2083,7 +2083,7 @@ public struct DeleteJobOutput {
     }
 }
 
-public struct DeleteProjectInput {
+public struct DeleteProjectInput: Swift.Sendable {
     /// The name of the project to be deleted.
     /// This member is required.
     public var name: Swift.String?
@@ -2096,7 +2096,7 @@ public struct DeleteProjectInput {
     }
 }
 
-public struct DeleteProjectOutput {
+public struct DeleteProjectOutput: Swift.Sendable {
     /// The name of the project that you deleted.
     /// This member is required.
     public var name: Swift.String?
@@ -2109,7 +2109,7 @@ public struct DeleteProjectOutput {
     }
 }
 
-public struct DeleteRecipeVersionInput {
+public struct DeleteRecipeVersionInput: Swift.Sendable {
     /// The name of the recipe.
     /// This member is required.
     public var name: Swift.String?
@@ -2127,7 +2127,7 @@ public struct DeleteRecipeVersionInput {
     }
 }
 
-public struct DeleteRecipeVersionOutput {
+public struct DeleteRecipeVersionOutput: Swift.Sendable {
     /// The name of the recipe that was deleted.
     /// This member is required.
     public var name: Swift.String?
@@ -2145,7 +2145,7 @@ public struct DeleteRecipeVersionOutput {
     }
 }
 
-public struct DeleteRulesetInput {
+public struct DeleteRulesetInput: Swift.Sendable {
     /// The name of the ruleset to be deleted.
     /// This member is required.
     public var name: Swift.String?
@@ -2158,7 +2158,7 @@ public struct DeleteRulesetInput {
     }
 }
 
-public struct DeleteRulesetOutput {
+public struct DeleteRulesetOutput: Swift.Sendable {
     /// The name of the deleted ruleset.
     /// This member is required.
     public var name: Swift.String?
@@ -2171,7 +2171,7 @@ public struct DeleteRulesetOutput {
     }
 }
 
-public struct DeleteScheduleInput {
+public struct DeleteScheduleInput: Swift.Sendable {
     /// The name of the schedule to be deleted.
     /// This member is required.
     public var name: Swift.String?
@@ -2184,7 +2184,7 @@ public struct DeleteScheduleInput {
     }
 }
 
-public struct DeleteScheduleOutput {
+public struct DeleteScheduleOutput: Swift.Sendable {
     /// The name of the schedule that was deleted.
     /// This member is required.
     public var name: Swift.String?
@@ -2197,7 +2197,7 @@ public struct DeleteScheduleOutput {
     }
 }
 
-public struct DescribeDatasetInput {
+public struct DescribeDatasetInput: Swift.Sendable {
     /// The name of the dataset to be described.
     /// This member is required.
     public var name: Swift.String?
@@ -2212,7 +2212,7 @@ public struct DescribeDatasetInput {
 
 extension DataBrewClientTypes {
 
-    public enum Source: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Source: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case database
         case datacatalog
         case s3
@@ -2242,7 +2242,7 @@ extension DataBrewClientTypes {
     }
 }
 
-public struct DescribeDatasetOutput {
+public struct DescribeDatasetOutput: Swift.Sendable {
     /// The date and time that the dataset was created.
     public var createDate: Foundation.Date?
     /// The identifier (user name) of the user who created the dataset.
@@ -2300,7 +2300,7 @@ public struct DescribeDatasetOutput {
     }
 }
 
-public struct DescribeJobInput {
+public struct DescribeJobInput: Swift.Sendable {
     /// The name of the job to be described.
     /// This member is required.
     public var name: Swift.String?
@@ -2315,7 +2315,7 @@ public struct DescribeJobInput {
 
 extension DataBrewClientTypes {
 
-    public enum JobType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum JobType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case profile
         case recipe
         case sdkUnknown(Swift.String)
@@ -2342,7 +2342,7 @@ extension DataBrewClientTypes {
     }
 }
 
-public struct DescribeJobOutput {
+public struct DescribeJobOutput: Swift.Sendable {
     /// The date and time that the job was created.
     public var createDate: Foundation.Date?
     /// The identifier (user name) of the user associated with the creation of the job.
@@ -2455,7 +2455,7 @@ public struct DescribeJobOutput {
     }
 }
 
-public struct DescribeJobRunInput {
+public struct DescribeJobRunInput: Swift.Sendable {
     /// The name of the job being processed during this run.
     /// This member is required.
     public var name: Swift.String?
@@ -2475,7 +2475,7 @@ public struct DescribeJobRunInput {
 
 extension DataBrewClientTypes {
 
-    public enum JobRunState: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum JobRunState: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case failed
         case running
         case starting
@@ -2517,7 +2517,7 @@ extension DataBrewClientTypes {
     }
 }
 
-public struct DescribeJobRunOutput {
+public struct DescribeJobRunOutput: Swift.Sendable {
     /// The number of times that DataBrew has attempted to run the job.
     public var attempt: Swift.Int
     /// The date and time when the job completed processing.
@@ -2602,7 +2602,7 @@ public struct DescribeJobRunOutput {
     }
 }
 
-public struct DescribeProjectInput {
+public struct DescribeProjectInput: Swift.Sendable {
     /// The name of the project to be described.
     /// This member is required.
     public var name: Swift.String?
@@ -2617,7 +2617,7 @@ public struct DescribeProjectInput {
 
 extension DataBrewClientTypes {
 
-    public enum SessionStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SessionStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case assigned
         case failed
         case initializing
@@ -2668,7 +2668,7 @@ extension DataBrewClientTypes {
     }
 }
 
-public struct DescribeProjectOutput {
+public struct DescribeProjectOutput: Swift.Sendable {
     /// The date and time that the project was created.
     public var createDate: Foundation.Date?
     /// The identifier (user name) of the user who created the project.
@@ -2739,7 +2739,7 @@ public struct DescribeProjectOutput {
     }
 }
 
-public struct DescribeRecipeInput {
+public struct DescribeRecipeInput: Swift.Sendable {
     /// The name of the recipe to be described.
     /// This member is required.
     public var name: Swift.String?
@@ -2756,7 +2756,7 @@ public struct DescribeRecipeInput {
     }
 }
 
-public struct DescribeRecipeOutput {
+public struct DescribeRecipeOutput: Swift.Sendable {
     /// The date and time that the recipe was created.
     public var createDate: Foundation.Date?
     /// The identifier (user name) of the user who created the recipe.
@@ -2817,7 +2817,7 @@ public struct DescribeRecipeOutput {
     }
 }
 
-public struct DescribeRulesetInput {
+public struct DescribeRulesetInput: Swift.Sendable {
     /// The name of the ruleset to be described.
     /// This member is required.
     public var name: Swift.String?
@@ -2830,7 +2830,7 @@ public struct DescribeRulesetInput {
     }
 }
 
-public struct DescribeRulesetOutput {
+public struct DescribeRulesetOutput: Swift.Sendable {
     /// The date and time that the ruleset was created.
     public var createDate: Foundation.Date?
     /// The Amazon Resource Name (ARN) of the user who created the ruleset.
@@ -2879,7 +2879,7 @@ public struct DescribeRulesetOutput {
     }
 }
 
-public struct DescribeScheduleInput {
+public struct DescribeScheduleInput: Swift.Sendable {
     /// The name of the schedule to be described.
     /// This member is required.
     public var name: Swift.String?
@@ -2892,7 +2892,7 @@ public struct DescribeScheduleInput {
     }
 }
 
-public struct DescribeScheduleOutput {
+public struct DescribeScheduleOutput: Swift.Sendable {
     /// The date and time that the schedule was created.
     public var createDate: Foundation.Date?
     /// The identifier (user name) of the user who created the schedule.
@@ -2937,7 +2937,7 @@ public struct DescribeScheduleOutput {
     }
 }
 
-public struct ListDatasetsInput {
+public struct ListDatasetsInput: Swift.Sendable {
     /// The maximum number of results to return in this request.
     public var maxResults: Swift.Int?
     /// The token returned by a previous call to retrieve the next set of results.
@@ -2954,8 +2954,9 @@ public struct ListDatasetsInput {
 }
 
 extension DataBrewClientTypes {
+
     /// Represents a dataset that can be processed by DataBrew.
-    public struct Dataset {
+    public struct Dataset: Swift.Sendable {
         /// The ID of the Amazon Web Services account that owns the dataset.
         public var accountId: Swift.String?
         /// The date and time that the dataset was created.
@@ -3016,10 +3017,9 @@ extension DataBrewClientTypes {
             self.tags = tags
         }
     }
-
 }
 
-public struct ListDatasetsOutput {
+public struct ListDatasetsOutput: Swift.Sendable {
     /// A list of datasets that are defined.
     /// This member is required.
     public var datasets: [DataBrewClientTypes.Dataset]?
@@ -3036,7 +3036,7 @@ public struct ListDatasetsOutput {
     }
 }
 
-public struct ListJobRunsInput {
+public struct ListJobRunsInput: Swift.Sendable {
     /// The maximum number of results to return in this request.
     public var maxResults: Swift.Int?
     /// The name of the job.
@@ -3058,8 +3058,9 @@ public struct ListJobRunsInput {
 }
 
 extension DataBrewClientTypes {
+
     /// Represents one run of a DataBrew job.
-    public struct JobRun {
+    public struct JobRun: Swift.Sendable {
         /// The number of times that DataBrew has attempted to run the job.
         public var attempt: Swift.Int
         /// The date and time when the job completed processing.
@@ -3138,10 +3139,9 @@ extension DataBrewClientTypes {
             self.validationConfigurations = validationConfigurations
         }
     }
-
 }
 
-public struct ListJobRunsOutput {
+public struct ListJobRunsOutput: Swift.Sendable {
     /// A list of job runs that have occurred for the specified job.
     /// This member is required.
     public var jobRuns: [DataBrewClientTypes.JobRun]?
@@ -3158,7 +3158,7 @@ public struct ListJobRunsOutput {
     }
 }
 
-public struct ListJobsInput {
+public struct ListJobsInput: Swift.Sendable {
     /// The name of a dataset. Using this parameter indicates to return only those jobs that act on the specified dataset.
     public var datasetName: Swift.String?
     /// The maximum number of results to return in this request.
@@ -3183,8 +3183,9 @@ public struct ListJobsInput {
 }
 
 extension DataBrewClientTypes {
+
     /// Represents all of the attributes of a DataBrew job.
-    public struct Job {
+    public struct Job: Swift.Sendable {
         /// The ID of the Amazon Web Services account that owns the job.
         public var accountId: Swift.String?
         /// The date and time that the job was created.
@@ -3296,10 +3297,9 @@ extension DataBrewClientTypes {
             self.validationConfigurations = validationConfigurations
         }
     }
-
 }
 
-public struct ListJobsOutput {
+public struct ListJobsOutput: Swift.Sendable {
     /// A list of jobs that are defined.
     /// This member is required.
     public var jobs: [DataBrewClientTypes.Job]?
@@ -3316,7 +3316,7 @@ public struct ListJobsOutput {
     }
 }
 
-public struct ListProjectsInput {
+public struct ListProjectsInput: Swift.Sendable {
     /// The maximum number of results to return in this request.
     public var maxResults: Swift.Int?
     /// The token returned by a previous call to retrieve the next set of results.
@@ -3333,8 +3333,9 @@ public struct ListProjectsInput {
 }
 
 extension DataBrewClientTypes {
+
     /// Represents all of the attributes of a DataBrew project.
-    public struct Project {
+    public struct Project: Swift.Sendable {
         /// The ID of the Amazon Web Services account that owns the project.
         public var accountId: Swift.String?
         /// The date and time that the project was created.
@@ -3399,10 +3400,9 @@ extension DataBrewClientTypes {
             self.tags = tags
         }
     }
-
 }
 
-public struct ListProjectsOutput {
+public struct ListProjectsOutput: Swift.Sendable {
     /// A token that you can use in a subsequent call to retrieve the next set of results.
     public var nextToken: Swift.String?
     /// A list of projects that are defined .
@@ -3419,7 +3419,7 @@ public struct ListProjectsOutput {
     }
 }
 
-public struct ListRecipesInput {
+public struct ListRecipesInput: Swift.Sendable {
     /// The maximum number of results to return in this request.
     public var maxResults: Swift.Int?
     /// The token returned by a previous call to retrieve the next set of results.
@@ -3440,8 +3440,9 @@ public struct ListRecipesInput {
 }
 
 extension DataBrewClientTypes {
+
     /// Represents one or more actions to be performed on a DataBrew dataset.
-    public struct Recipe {
+    public struct Recipe: Swift.Sendable {
         /// The date and time that the recipe was created.
         public var createDate: Foundation.Date?
         /// The Amazon Resource Name (ARN) of the user who created the recipe.
@@ -3507,10 +3508,9 @@ extension DataBrewClientTypes {
             self.tags = tags
         }
     }
-
 }
 
-public struct ListRecipesOutput {
+public struct ListRecipesOutput: Swift.Sendable {
     /// A token that you can use in a subsequent call to retrieve the next set of results.
     public var nextToken: Swift.String?
     /// A list of recipes that are defined.
@@ -3527,7 +3527,7 @@ public struct ListRecipesOutput {
     }
 }
 
-public struct ListRecipeVersionsInput {
+public struct ListRecipeVersionsInput: Swift.Sendable {
     /// The maximum number of results to return in this request.
     public var maxResults: Swift.Int?
     /// The name of the recipe for which to return version information.
@@ -3548,7 +3548,7 @@ public struct ListRecipeVersionsInput {
     }
 }
 
-public struct ListRecipeVersionsOutput {
+public struct ListRecipeVersionsOutput: Swift.Sendable {
     /// A token that you can use in a subsequent call to retrieve the next set of results.
     public var nextToken: Swift.String?
     /// A list of versions for the specified recipe.
@@ -3565,7 +3565,7 @@ public struct ListRecipeVersionsOutput {
     }
 }
 
-public struct ListRulesetsInput {
+public struct ListRulesetsInput: Swift.Sendable {
     /// The maximum number of results to return in this request.
     public var maxResults: Swift.Int?
     /// A token generated by DataBrew that specifies where to continue pagination if a previous request was truncated. To get the next set of pages, pass in the NextToken value from the response object of the previous page call.
@@ -3586,8 +3586,9 @@ public struct ListRulesetsInput {
 }
 
 extension DataBrewClientTypes {
+
     /// Contains metadata about the ruleset.
-    public struct RulesetItem {
+    public struct RulesetItem: Swift.Sendable {
         /// The ID of the Amazon Web Services account that owns the ruleset.
         public var accountId: Swift.String?
         /// The date and time that the ruleset was created.
@@ -3640,10 +3641,9 @@ extension DataBrewClientTypes {
             self.targetArn = targetArn
         }
     }
-
 }
 
-public struct ListRulesetsOutput {
+public struct ListRulesetsOutput: Swift.Sendable {
     /// A token that you can use in a subsequent call to retrieve the next set of results.
     public var nextToken: Swift.String?
     /// A list of RulesetItem. RulesetItem contains meta data of a ruleset.
@@ -3660,7 +3660,7 @@ public struct ListRulesetsOutput {
     }
 }
 
-public struct ListSchedulesInput {
+public struct ListSchedulesInput: Swift.Sendable {
     /// The name of the job that these schedules apply to.
     public var jobName: Swift.String?
     /// The maximum number of results to return in this request.
@@ -3681,8 +3681,9 @@ public struct ListSchedulesInput {
 }
 
 extension DataBrewClientTypes {
+
     /// Represents one or more dates and times when a job is to run.
-    public struct Schedule {
+    public struct Schedule: Swift.Sendable {
         /// The ID of the Amazon Web Services account that owns the schedule.
         public var accountId: Swift.String?
         /// The date and time that the schedule was created.
@@ -3730,10 +3731,9 @@ extension DataBrewClientTypes {
             self.tags = tags
         }
     }
-
 }
 
-public struct ListSchedulesOutput {
+public struct ListSchedulesOutput: Swift.Sendable {
     /// A token that you can use in a subsequent call to retrieve the next set of results.
     public var nextToken: Swift.String?
     /// A list of schedules that are defined.
@@ -3750,7 +3750,7 @@ public struct ListSchedulesOutput {
     }
 }
 
-public struct ListTagsForResourceInput {
+public struct ListTagsForResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) string that uniquely identifies the DataBrew resource.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -3763,7 +3763,7 @@ public struct ListTagsForResourceInput {
     }
 }
 
-public struct ListTagsForResourceOutput {
+public struct ListTagsForResourceOutput: Swift.Sendable {
     /// A list of tags associated with the DataBrew resource.
     public var tags: [Swift.String: Swift.String]?
 
@@ -3775,7 +3775,7 @@ public struct ListTagsForResourceOutput {
     }
 }
 
-public struct PublishRecipeInput {
+public struct PublishRecipeInput: Swift.Sendable {
     /// A description of the recipe to be published, for this version of the recipe.
     public var description: Swift.String?
     /// The name of the recipe to be published.
@@ -3792,7 +3792,7 @@ public struct PublishRecipeInput {
     }
 }
 
-public struct PublishRecipeOutput {
+public struct PublishRecipeOutput: Swift.Sendable {
     /// The name of the recipe that you published.
     /// This member is required.
     public var name: Swift.String?
@@ -3806,8 +3806,9 @@ public struct PublishRecipeOutput {
 }
 
 extension DataBrewClientTypes {
+
     /// Represents the data being transformed during an action.
-    public struct ViewFrame {
+    public struct ViewFrame: Swift.Sendable {
         /// Controls if analytics computation is enabled or disabled. Enabled by default.
         public var analytics: DataBrewClientTypes.AnalyticsMode?
         /// The number of columns to include in the view frame, beginning with the StartColumnIndex value and ignoring any columns in the HiddenColumns list.
@@ -3839,10 +3840,9 @@ extension DataBrewClientTypes {
             self.startRowIndex = startRowIndex
         }
     }
-
 }
 
-public struct SendProjectSessionActionInput {
+public struct SendProjectSessionActionInput: Swift.Sendable {
     /// A unique identifier for an interactive session that's currently open and ready for work. The action will be performed on this session.
     public var clientSessionId: Swift.String?
     /// The name of the project to apply the action to.
@@ -3880,7 +3880,7 @@ extension SendProjectSessionActionInput: Swift.CustomDebugStringConvertible {
         "SendProjectSessionActionInput(name: \(Swift.String(describing: name)), preview: \(Swift.String(describing: preview)), recipeStep: \(Swift.String(describing: recipeStep)), stepIndex: \(Swift.String(describing: stepIndex)), viewFrame: \(Swift.String(describing: viewFrame)), clientSessionId: \"CONTENT_REDACTED\")"}
 }
 
-public struct SendProjectSessionActionOutput {
+public struct SendProjectSessionActionOutput: Swift.Sendable {
     /// A unique identifier for the action that was performed.
     public var actionId: Swift.Int?
     /// The name of the project that was affected by the action.
@@ -3901,7 +3901,7 @@ public struct SendProjectSessionActionOutput {
     }
 }
 
-public struct StartJobRunInput {
+public struct StartJobRunInput: Swift.Sendable {
     /// The name of the job to be run.
     /// This member is required.
     public var name: Swift.String?
@@ -3914,7 +3914,7 @@ public struct StartJobRunInput {
     }
 }
 
-public struct StartJobRunOutput {
+public struct StartJobRunOutput: Swift.Sendable {
     /// A system-generated identifier for this particular job run.
     /// This member is required.
     public var runId: Swift.String?
@@ -3927,7 +3927,7 @@ public struct StartJobRunOutput {
     }
 }
 
-public struct StartProjectSessionInput {
+public struct StartProjectSessionInput: Swift.Sendable {
     /// A value that, if true, enables you to take control of a session, even if a different client is currently accessing the project.
     public var assumeControl: Swift.Bool?
     /// The name of the project to act upon.
@@ -3944,7 +3944,7 @@ public struct StartProjectSessionInput {
     }
 }
 
-public struct StartProjectSessionOutput {
+public struct StartProjectSessionOutput: Swift.Sendable {
     /// A system-generated identifier for the session.
     public var clientSessionId: Swift.String?
     /// The name of the project to be acted upon.
@@ -3966,7 +3966,7 @@ extension StartProjectSessionOutput: Swift.CustomDebugStringConvertible {
         "StartProjectSessionOutput(name: \(Swift.String(describing: name)), clientSessionId: \"CONTENT_REDACTED\")"}
 }
 
-public struct StopJobRunInput {
+public struct StopJobRunInput: Swift.Sendable {
     /// The name of the job to be stopped.
     /// This member is required.
     public var name: Swift.String?
@@ -3984,7 +3984,7 @@ public struct StopJobRunInput {
     }
 }
 
-public struct StopJobRunOutput {
+public struct StopJobRunOutput: Swift.Sendable {
     /// The ID of the job run that you stopped.
     /// This member is required.
     public var runId: Swift.String?
@@ -3997,7 +3997,7 @@ public struct StopJobRunOutput {
     }
 }
 
-public struct TagResourceInput {
+public struct TagResourceInput: Swift.Sendable {
     /// The DataBrew resource to which tags should be added. The value for this parameter is an Amazon Resource Name (ARN). For DataBrew, you can tag a dataset, a job, a project, or a recipe.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -4015,12 +4015,12 @@ public struct TagResourceInput {
     }
 }
 
-public struct TagResourceOutput {
+public struct TagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UntagResourceInput {
+public struct UntagResourceInput: Swift.Sendable {
     /// A DataBrew resource from which you want to remove a tag or tags. The value for this parameter is an Amazon Resource Name (ARN).
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -4038,12 +4038,12 @@ public struct UntagResourceInput {
     }
 }
 
-public struct UntagResourceOutput {
+public struct UntagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdateDatasetInput {
+public struct UpdateDatasetInput: Swift.Sendable {
     /// The file format of a dataset that is created from an Amazon S3 file or folder.
     public var format: DataBrewClientTypes.InputFormat?
     /// Represents a set of options that define the structure of either comma-separated value (CSV), Excel, or JSON input.
@@ -4073,7 +4073,7 @@ public struct UpdateDatasetInput {
     }
 }
 
-public struct UpdateDatasetOutput {
+public struct UpdateDatasetOutput: Swift.Sendable {
     /// The name of the dataset that you updated.
     /// This member is required.
     public var name: Swift.String?
@@ -4086,7 +4086,7 @@ public struct UpdateDatasetOutput {
     }
 }
 
-public struct UpdateProfileJobInput {
+public struct UpdateProfileJobInput: Swift.Sendable {
     /// Configuration for profile jobs. Used to select columns, do evaluations, and override default parameters of evaluations. When configuration is null, the profile job will run with default settings.
     public var configuration: DataBrewClientTypes.ProfileConfiguration?
     /// The Amazon Resource Name (ARN) of an encryption key that is used to protect the job.
@@ -4149,7 +4149,7 @@ public struct UpdateProfileJobInput {
     }
 }
 
-public struct UpdateProfileJobOutput {
+public struct UpdateProfileJobOutput: Swift.Sendable {
     /// The name of the job that was updated.
     /// This member is required.
     public var name: Swift.String?
@@ -4162,7 +4162,7 @@ public struct UpdateProfileJobOutput {
     }
 }
 
-public struct UpdateProjectInput {
+public struct UpdateProjectInput: Swift.Sendable {
     /// The name of the project to be updated.
     /// This member is required.
     public var name: Swift.String?
@@ -4184,7 +4184,7 @@ public struct UpdateProjectInput {
     }
 }
 
-public struct UpdateProjectOutput {
+public struct UpdateProjectOutput: Swift.Sendable {
     /// The date and time that the project was last modified.
     public var lastModifiedDate: Foundation.Date?
     /// The name of the project that you updated.
@@ -4201,7 +4201,7 @@ public struct UpdateProjectOutput {
     }
 }
 
-public struct UpdateRecipeInput {
+public struct UpdateRecipeInput: Swift.Sendable {
     /// A description of the recipe.
     public var description: Swift.String?
     /// The name of the recipe to be updated.
@@ -4222,7 +4222,7 @@ public struct UpdateRecipeInput {
     }
 }
 
-public struct UpdateRecipeOutput {
+public struct UpdateRecipeOutput: Swift.Sendable {
     /// The name of the recipe that was updated.
     /// This member is required.
     public var name: Swift.String?
@@ -4235,7 +4235,7 @@ public struct UpdateRecipeOutput {
     }
 }
 
-public struct UpdateRecipeJobInput {
+public struct UpdateRecipeJobInput: Swift.Sendable {
     /// One or more artifacts that represent the Glue Data Catalog output from running the job.
     public var dataCatalogOutputs: [DataBrewClientTypes.DataCatalogOutput]?
     /// Represents a list of JDBC database output objects which defines the output destination for a DataBrew recipe job to write into.
@@ -4293,7 +4293,7 @@ public struct UpdateRecipeJobInput {
     }
 }
 
-public struct UpdateRecipeJobOutput {
+public struct UpdateRecipeJobOutput: Swift.Sendable {
     /// The name of the job that you updated.
     /// This member is required.
     public var name: Swift.String?
@@ -4306,7 +4306,7 @@ public struct UpdateRecipeJobOutput {
     }
 }
 
-public struct UpdateRulesetInput {
+public struct UpdateRulesetInput: Swift.Sendable {
     /// The description of the ruleset.
     public var description: Swift.String?
     /// The name of the ruleset to be updated.
@@ -4328,7 +4328,7 @@ public struct UpdateRulesetInput {
     }
 }
 
-public struct UpdateRulesetOutput {
+public struct UpdateRulesetOutput: Swift.Sendable {
     /// The name of the updated ruleset.
     /// This member is required.
     public var name: Swift.String?
@@ -4341,7 +4341,7 @@ public struct UpdateRulesetOutput {
     }
 }
 
-public struct UpdateScheduleInput {
+public struct UpdateScheduleInput: Swift.Sendable {
     /// The date or dates and time or times when the jobs are to be run. For more information, see [Cron expressions](https://docs.aws.amazon.com/databrew/latest/dg/jobs.cron.html) in the Glue DataBrew Developer Guide.
     /// This member is required.
     public var cronExpression: Swift.String?
@@ -4363,7 +4363,7 @@ public struct UpdateScheduleInput {
     }
 }
 
-public struct UpdateScheduleOutput {
+public struct UpdateScheduleOutput: Swift.Sendable {
     /// The name of the schedule that was updated.
     /// This member is required.
     public var name: Swift.String?

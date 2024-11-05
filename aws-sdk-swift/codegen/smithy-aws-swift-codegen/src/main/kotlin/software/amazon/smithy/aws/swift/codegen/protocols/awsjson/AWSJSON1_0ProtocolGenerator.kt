@@ -19,7 +19,7 @@ class AWSJSON1_0ProtocolGenerator : AWSHTTPBindingProtocolGenerator(AWSJSONCusto
     override val defaultContentType = "application/x-amz-json-1.0"
     override val protocol: ShapeId = AwsJson1_0Trait.ID
     override val shouldRenderEncodableConformance: Boolean = true
-    override val testsToIgnore = setOf(
+    override val protocolTestsToIgnore = setOf(
         "SDKAppliedContentEncoding_awsJson1_0",
         "SDKAppendsGzipAndIgnoresHttpProvidedEncoding_awsJson1_0",
     )

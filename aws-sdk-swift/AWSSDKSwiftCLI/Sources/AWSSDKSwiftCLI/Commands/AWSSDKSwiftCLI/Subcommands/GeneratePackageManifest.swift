@@ -32,9 +32,6 @@ struct GeneratePackageManifestCommand: ParsableCommand {
     @Option(help: "The names of the services to include in the package manifest. This defaults to all services located in aws-sdk-swift/Sources/Services")
     var services: [String] = []
 
-    @Flag(help: "If the package manifest should exclude AWS services.")
-    var excludeAWSServices = false
-
     @Flag(help: "If the package manifest should exclude runtime tests.")
     var excludeRuntimeTests = false
 
@@ -45,7 +42,6 @@ struct GeneratePackageManifestCommand: ParsableCommand {
             clientRuntimeVersion: clientRuntimeVersion,
             crtVersion: crtVersion,
             services: services.isEmpty ? nil : services,
-            excludeAWSServices: excludeAWSServices,
             excludeRuntimeTests: excludeRuntimeTests
         )
         try generatePackageManifest.run()
@@ -69,8 +65,6 @@ struct GeneratePackageManifest {
     /// The list of services to include as products
     /// If `nil` then the list is populated with the names of all items within the `Sources/Services` directory
     let services: [String]?
-    /// If the package manifest should exclude the AWS services.
-    let excludeAWSServices: Bool
     /// If the package manifest should exclude runtime unit tests.
     let excludeRuntimeTests: Bool
 
@@ -213,14 +207,12 @@ extension GeneratePackageManifest {
             clientRuntimeVersion: clientRuntimeVersion,
             crtVersion: crtVersion,
             services: services,
-            excludeAWSServices: excludeAWSServices,
             excludeRuntimeTests: excludeRuntimeTests
         ) { _clientRuntimeVersion, _crtVersion, _services in
             let builder = PackageManifestBuilder(
                 clientRuntimeVersion: _clientRuntimeVersion,
                 crtVersion: _crtVersion,
                 services: _services,
-                excludeAWSServices: excludeAWSServices,
                 excludeRuntimeTests: excludeRuntimeTests
             )
             return try builder.build()

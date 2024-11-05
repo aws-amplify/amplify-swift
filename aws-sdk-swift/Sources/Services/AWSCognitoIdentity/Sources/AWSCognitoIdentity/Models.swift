@@ -25,29 +25,30 @@ import protocol ClientRuntime.ModeledError
 @_spi(SmithyReadWrite) import struct AWSClientRuntime.AWSJSONError
 @_spi(UnknownAWSHTTPServiceError) import struct AWSClientRuntime.UnknownAWSHTTPServiceError
 
-public struct DeleteIdentityPoolOutput {
+
+public struct DeleteIdentityPoolOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct SetIdentityPoolRolesOutput {
+public struct SetIdentityPoolRolesOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UnlinkDeveloperIdentityOutput {
+public struct UnlinkDeveloperIdentityOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UnlinkIdentityOutput {
+public struct UnlinkIdentityOutput: Swift.Sendable {
 
     public init() { }
 }
 
 extension CognitoIdentityClientTypes {
 
-    public enum AmbiguousRoleResolutionType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AmbiguousRoleResolutionType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case authenticatedRole
         case deny
         case sdkUnknown(Swift.String)
@@ -225,8 +226,9 @@ public struct TooManyRequestsException: ClientRuntime.ModeledError, AWSClientRun
 }
 
 extension CognitoIdentityClientTypes {
+
     /// A provider representing an Amazon Cognito user pool and its client ID.
-    public struct CognitoIdentityProvider {
+    public struct CognitoIdentityProvider: Swift.Sendable {
         /// The client ID for the Amazon Cognito user pool.
         public var clientId: Swift.String?
         /// The provider name for an Amazon Cognito user pool. For example, cognito-idp.us-east-1.amazonaws.com/us-east-1_123456789.
@@ -245,11 +247,10 @@ extension CognitoIdentityClientTypes {
             self.serverSideTokenCheck = serverSideTokenCheck
         }
     }
-
 }
 
 /// Input to the CreateIdentityPool action.
-public struct CreateIdentityPoolInput {
+public struct CreateIdentityPoolInput: Swift.Sendable {
     /// Enables or disables the Basic (Classic) authentication flow. For more information, see [Identity Pools (Federated Identities) Authentication Flow](https://docs.aws.amazon.com/cognito/latest/developerguide/authentication-flow.html) in the Amazon Cognito Developer Guide.
     public var allowClassicFlow: Swift.Bool?
     /// TRUE if the identity pool supports unauthenticated logins.
@@ -296,7 +297,7 @@ public struct CreateIdentityPoolInput {
 }
 
 /// An object representing an Amazon Cognito identity pool.
-public struct CreateIdentityPoolOutput {
+public struct CreateIdentityPoolOutput: Swift.Sendable {
     /// Enables or disables the Basic (Classic) authentication flow. For more information, see [Identity Pools (Federated Identities) Authentication Flow](https://docs.aws.amazon.com/cognito/latest/developerguide/authentication-flow.html) in the Amazon Cognito Developer Guide.
     public var allowClassicFlow: Swift.Bool?
     /// TRUE if the identity pool supports unauthenticated logins.
@@ -348,7 +349,7 @@ public struct CreateIdentityPoolOutput {
 }
 
 /// Input to the DeleteIdentities action.
-public struct DeleteIdentitiesInput {
+public struct DeleteIdentitiesInput: Swift.Sendable {
     /// A list of 1-60 identities that you want to delete.
     /// This member is required.
     public var identityIdsToDelete: [Swift.String]?
@@ -363,7 +364,7 @@ public struct DeleteIdentitiesInput {
 
 extension CognitoIdentityClientTypes {
 
-    public enum ErrorCode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ErrorCode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case accessDenied
         case internalServerError
         case sdkUnknown(Swift.String)
@@ -391,8 +392,9 @@ extension CognitoIdentityClientTypes {
 }
 
 extension CognitoIdentityClientTypes {
+
     /// An array of UnprocessedIdentityId objects, each of which contains an ErrorCode and IdentityId.
-    public struct UnprocessedIdentityId {
+    public struct UnprocessedIdentityId: Swift.Sendable {
         /// The error code indicating the type of error that occurred.
         public var errorCode: CognitoIdentityClientTypes.ErrorCode?
         /// A unique identifier in the format REGION:GUID.
@@ -407,11 +409,10 @@ extension CognitoIdentityClientTypes {
             self.identityId = identityId
         }
     }
-
 }
 
 /// Returned in response to a successful DeleteIdentities operation.
-public struct DeleteIdentitiesOutput {
+public struct DeleteIdentitiesOutput: Swift.Sendable {
     /// An array of UnprocessedIdentityId objects, each of which contains an ErrorCode and IdentityId.
     public var unprocessedIdentityIds: [CognitoIdentityClientTypes.UnprocessedIdentityId]?
 
@@ -449,7 +450,7 @@ public struct ResourceNotFoundException: ClientRuntime.ModeledError, AWSClientRu
 }
 
 /// Input to the DeleteIdentityPool action.
-public struct DeleteIdentityPoolInput {
+public struct DeleteIdentityPoolInput: Swift.Sendable {
     /// An identity pool ID in the format REGION:GUID.
     /// This member is required.
     public var identityPoolId: Swift.String?
@@ -463,7 +464,7 @@ public struct DeleteIdentityPoolInput {
 }
 
 /// Input to the DescribeIdentity action.
-public struct DescribeIdentityInput {
+public struct DescribeIdentityInput: Swift.Sendable {
     /// A unique identifier in the format REGION:GUID.
     /// This member is required.
     public var identityId: Swift.String?
@@ -477,7 +478,7 @@ public struct DescribeIdentityInput {
 }
 
 /// A description of the identity.
-public struct DescribeIdentityOutput {
+public struct DescribeIdentityOutput: Swift.Sendable {
     /// Date on which the identity was created.
     public var creationDate: Foundation.Date?
     /// A unique identifier in the format REGION:GUID.
@@ -502,7 +503,7 @@ public struct DescribeIdentityOutput {
 }
 
 /// Input to the DescribeIdentityPool action.
-public struct DescribeIdentityPoolInput {
+public struct DescribeIdentityPoolInput: Swift.Sendable {
     /// An identity pool ID in the format REGION:GUID.
     /// This member is required.
     public var identityPoolId: Swift.String?
@@ -516,7 +517,7 @@ public struct DescribeIdentityPoolInput {
 }
 
 /// An object representing an Amazon Cognito identity pool.
-public struct DescribeIdentityPoolOutput {
+public struct DescribeIdentityPoolOutput: Swift.Sendable {
     /// Enables or disables the Basic (Classic) authentication flow. For more information, see [Identity Pools (Federated Identities) Authentication Flow](https://docs.aws.amazon.com/cognito/latest/developerguide/authentication-flow.html) in the Amazon Cognito Developer Guide.
     public var allowClassicFlow: Swift.Bool?
     /// TRUE if the identity pool supports unauthenticated logins.
@@ -618,7 +619,7 @@ public struct InvalidIdentityPoolConfigurationException: ClientRuntime.ModeledEr
 }
 
 /// Input to the GetCredentialsForIdentity action.
-public struct GetCredentialsForIdentityInput {
+public struct GetCredentialsForIdentityInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the role to be assumed when multiple roles were received in the token from the identity provider. For example, a SAML-based identity provider. This parameter is optional for identity providers that do not support role customization.
     public var customRoleArn: Swift.String?
     /// A unique identifier in the format REGION:GUID.
@@ -645,8 +646,9 @@ extension GetCredentialsForIdentityInput: Swift.CustomDebugStringConvertible {
 }
 
 extension CognitoIdentityClientTypes {
+
     /// Credentials for the provided identity ID.
-    public struct Credentials {
+    public struct Credentials: Swift.Sendable {
         /// The Access Key portion of the credentials.
         public var accessKeyId: Swift.String?
         /// The date at which these credentials will expire.
@@ -669,7 +671,6 @@ extension CognitoIdentityClientTypes {
             self.sessionToken = sessionToken
         }
     }
-
 }
 
 extension CognitoIdentityClientTypes.Credentials: Swift.CustomDebugStringConvertible {
@@ -678,7 +679,7 @@ extension CognitoIdentityClientTypes.Credentials: Swift.CustomDebugStringConvert
 }
 
 /// Returned in response to a successful GetCredentialsForIdentity operation.
-public struct GetCredentialsForIdentityOutput {
+public struct GetCredentialsForIdentityOutput: Swift.Sendable {
     /// Credentials for the provided identity ID.
     public var credentials: CognitoIdentityClientTypes.Credentials?
     /// A unique identifier in the format REGION:GUID.
@@ -695,7 +696,7 @@ public struct GetCredentialsForIdentityOutput {
 }
 
 /// Input to the GetId action.
-public struct GetIdInput {
+public struct GetIdInput: Swift.Sendable {
     /// A standard AWS account ID (9+ digits).
     public var accountId: Swift.String?
     /// An identity pool ID in the format REGION:GUID.
@@ -734,7 +735,7 @@ extension GetIdInput: Swift.CustomDebugStringConvertible {
 }
 
 /// Returned in response to a GetId request.
-public struct GetIdOutput {
+public struct GetIdOutput: Swift.Sendable {
     /// A unique identifier in the format REGION:GUID.
     public var identityId: Swift.String?
 
@@ -747,7 +748,7 @@ public struct GetIdOutput {
 }
 
 /// Input to the GetIdentityPoolRoles action.
-public struct GetIdentityPoolRolesInput {
+public struct GetIdentityPoolRolesInput: Swift.Sendable {
     /// An identity pool ID in the format REGION:GUID.
     /// This member is required.
     public var identityPoolId: Swift.String?
@@ -762,7 +763,7 @@ public struct GetIdentityPoolRolesInput {
 
 extension CognitoIdentityClientTypes {
 
-    public enum MappingRuleMatchType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum MappingRuleMatchType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case contains
         case equals
         case notEqual
@@ -796,8 +797,9 @@ extension CognitoIdentityClientTypes {
 }
 
 extension CognitoIdentityClientTypes {
+
     /// A rule that maps a claim name, a claim value, and a match type to a role ARN.
-    public struct MappingRule {
+    public struct MappingRule: Swift.Sendable {
         /// The claim name that must be present in the token, for example, "isAdmin" or "paid".
         /// This member is required.
         public var claim: Swift.String?
@@ -824,12 +826,12 @@ extension CognitoIdentityClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension CognitoIdentityClientTypes {
+
     /// A container for rules.
-    public struct RulesConfigurationType {
+    public struct RulesConfigurationType: Swift.Sendable {
         /// An array of rules. You can specify up to 25 rules per identity provider. Rules are evaluated in order. The first one to match specifies the role.
         /// This member is required.
         public var rules: [CognitoIdentityClientTypes.MappingRule]?
@@ -841,12 +843,11 @@ extension CognitoIdentityClientTypes {
             self.rules = rules
         }
     }
-
 }
 
 extension CognitoIdentityClientTypes {
 
-    public enum RoleMappingType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum RoleMappingType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case rules
         case token
         case sdkUnknown(Swift.String)
@@ -874,8 +875,9 @@ extension CognitoIdentityClientTypes {
 }
 
 extension CognitoIdentityClientTypes {
+
     /// A role mapping.
-    public struct RoleMapping {
+    public struct RoleMapping: Swift.Sendable {
         /// If you specify Token or Rules as the Type, AmbiguousRoleResolution is required. Specifies the action to be taken if either no rules match the claim value for the Rules type, or there is no cognito:preferred_role claim and there are multiple cognito:roles matches for the Token type.
         public var ambiguousRoleResolution: CognitoIdentityClientTypes.AmbiguousRoleResolutionType?
         /// The rules to be used for mapping users to roles. If you specify Rules as the role mapping type, RulesConfiguration is required.
@@ -895,11 +897,10 @@ extension CognitoIdentityClientTypes {
             self.type = type
         }
     }
-
 }
 
 /// Returned in response to a successful GetIdentityPoolRoles operation.
-public struct GetIdentityPoolRolesOutput {
+public struct GetIdentityPoolRolesOutput: Swift.Sendable {
     /// An identity pool ID in the format REGION:GUID.
     public var identityPoolId: Swift.String?
     /// How users for a specific identity provider are to mapped to roles. This is a String-to-[RoleMapping] object map. The string identifies the identity provider, for example, "graph.facebook.com" or "cognito-idp.us-east-1.amazonaws.com/us-east-1_abcdefghi:app_client_id".
@@ -920,7 +921,7 @@ public struct GetIdentityPoolRolesOutput {
 }
 
 /// Input to the GetOpenIdToken action.
-public struct GetOpenIdTokenInput {
+public struct GetOpenIdTokenInput: Swift.Sendable {
     /// A unique identifier in the format REGION:GUID.
     /// This member is required.
     public var identityId: Swift.String?
@@ -943,7 +944,7 @@ extension GetOpenIdTokenInput: Swift.CustomDebugStringConvertible {
 }
 
 /// Returned in response to a successful GetOpenIdToken request.
-public struct GetOpenIdTokenOutput {
+public struct GetOpenIdTokenOutput: Swift.Sendable {
     /// A unique identifier in the format REGION:GUID. Note that the IdentityId returned may not match the one passed on input.
     public var identityId: Swift.String?
     /// An OpenID token, valid for 10 minutes.
@@ -990,7 +991,7 @@ public struct DeveloperUserAlreadyRegisteredException: ClientRuntime.ModeledErro
 }
 
 /// Input to the GetOpenIdTokenForDeveloperIdentity action.
-public struct GetOpenIdTokenForDeveloperIdentityInput {
+public struct GetOpenIdTokenForDeveloperIdentityInput: Swift.Sendable {
     /// A unique identifier in the format REGION:GUID.
     public var identityId: Swift.String?
     /// An identity pool ID in the format REGION:GUID.
@@ -1026,7 +1027,7 @@ extension GetOpenIdTokenForDeveloperIdentityInput: Swift.CustomDebugStringConver
 }
 
 /// Returned in response to a successful GetOpenIdTokenForDeveloperIdentity request.
-public struct GetOpenIdTokenForDeveloperIdentityOutput {
+public struct GetOpenIdTokenForDeveloperIdentityOutput: Swift.Sendable {
     /// A unique identifier in the format REGION:GUID.
     public var identityId: Swift.String?
     /// An OpenID token.
@@ -1047,7 +1048,7 @@ extension GetOpenIdTokenForDeveloperIdentityOutput: Swift.CustomDebugStringConve
         "GetOpenIdTokenForDeveloperIdentityOutput(identityId: \(Swift.String(describing: identityId)), token: \"CONTENT_REDACTED\")"}
 }
 
-public struct GetPrincipalTagAttributeMapInput {
+public struct GetPrincipalTagAttributeMapInput: Swift.Sendable {
     /// You can use this operation to get the ID of the Identity Pool you setup attribute mappings for.
     /// This member is required.
     public var identityPoolId: Swift.String?
@@ -1065,7 +1066,7 @@ public struct GetPrincipalTagAttributeMapInput {
     }
 }
 
-public struct GetPrincipalTagAttributeMapOutput {
+public struct GetPrincipalTagAttributeMapOutput: Swift.Sendable {
     /// You can use this operation to get the ID of the Identity Pool you setup attribute mappings for.
     public var identityPoolId: Swift.String?
     /// You can use this operation to get the provider name.
@@ -1090,7 +1091,7 @@ public struct GetPrincipalTagAttributeMapOutput {
 }
 
 /// Input to the ListIdentities action.
-public struct ListIdentitiesInput {
+public struct ListIdentitiesInput: Swift.Sendable {
     /// An optional boolean parameter that allows you to hide disabled identities. If omitted, the ListIdentities API will include disabled identities in the response.
     public var hideDisabled: Swift.Bool?
     /// An identity pool ID in the format REGION:GUID.
@@ -1117,8 +1118,9 @@ public struct ListIdentitiesInput {
 }
 
 extension CognitoIdentityClientTypes {
+
     /// A description of the identity.
-    public struct IdentityDescription {
+    public struct IdentityDescription: Swift.Sendable {
         /// Date on which the identity was created.
         public var creationDate: Foundation.Date?
         /// A unique identifier in the format REGION:GUID.
@@ -1141,11 +1143,10 @@ extension CognitoIdentityClientTypes {
             self.logins = logins
         }
     }
-
 }
 
 /// The response to a ListIdentities request.
-public struct ListIdentitiesOutput {
+public struct ListIdentitiesOutput: Swift.Sendable {
     /// An object containing a set of identities and associated mappings.
     public var identities: [CognitoIdentityClientTypes.IdentityDescription]?
     /// An identity pool ID in the format REGION:GUID.
@@ -1166,7 +1167,7 @@ public struct ListIdentitiesOutput {
 }
 
 /// Input to the ListIdentityPools action.
-public struct ListIdentityPoolsInput {
+public struct ListIdentityPoolsInput: Swift.Sendable {
     /// The maximum number of identities to return.
     /// This member is required.
     public var maxResults: Swift.Int?
@@ -1184,8 +1185,9 @@ public struct ListIdentityPoolsInput {
 }
 
 extension CognitoIdentityClientTypes {
+
     /// A description of the identity pool.
-    public struct IdentityPoolShortDescription {
+    public struct IdentityPoolShortDescription: Swift.Sendable {
         /// An identity pool ID in the format REGION:GUID.
         public var identityPoolId: Swift.String?
         /// A string that you provide.
@@ -1200,11 +1202,10 @@ extension CognitoIdentityClientTypes {
             self.identityPoolName = identityPoolName
         }
     }
-
 }
 
 /// The result of a successful ListIdentityPools action.
-public struct ListIdentityPoolsOutput {
+public struct ListIdentityPoolsOutput: Swift.Sendable {
     /// The identity pools returned by the ListIdentityPools action.
     public var identityPools: [CognitoIdentityClientTypes.IdentityPoolShortDescription]?
     /// A pagination token.
@@ -1220,7 +1221,7 @@ public struct ListIdentityPoolsOutput {
     }
 }
 
-public struct ListTagsForResourceInput {
+public struct ListTagsForResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the identity pool that the tags are assigned to.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -1233,7 +1234,7 @@ public struct ListTagsForResourceInput {
     }
 }
 
-public struct ListTagsForResourceOutput {
+public struct ListTagsForResourceOutput: Swift.Sendable {
     /// The tags that are assigned to the identity pool.
     public var tags: [Swift.String: Swift.String]?
 
@@ -1246,7 +1247,7 @@ public struct ListTagsForResourceOutput {
 }
 
 /// Input to the LookupDeveloperIdentityInput action.
-public struct LookupDeveloperIdentityInput {
+public struct LookupDeveloperIdentityInput: Swift.Sendable {
     /// A unique ID used by your backend authentication process to identify a user. Typically, a developer identity provider would issue many developer user identifiers, in keeping with the number of users.
     public var developerUserIdentifier: Swift.String?
     /// A unique identifier in the format REGION:GUID.
@@ -1276,7 +1277,7 @@ public struct LookupDeveloperIdentityInput {
 }
 
 /// Returned in response to a successful LookupDeveloperIdentity action.
-public struct LookupDeveloperIdentityOutput {
+public struct LookupDeveloperIdentityOutput: Swift.Sendable {
     /// This is the list of developer user identifiers associated with an identity ID. Cognito supports the association of multiple developer user identifiers with an identity ID.
     public var developerUserIdentifierList: [Swift.String]?
     /// A unique identifier in the format REGION:GUID.
@@ -1297,7 +1298,7 @@ public struct LookupDeveloperIdentityOutput {
 }
 
 /// Input to the MergeDeveloperIdentities action.
-public struct MergeDeveloperIdentitiesInput {
+public struct MergeDeveloperIdentitiesInput: Swift.Sendable {
     /// User identifier for the destination user. The value should be a DeveloperUserIdentifier.
     /// This member is required.
     public var destinationUserIdentifier: Swift.String?
@@ -1326,7 +1327,7 @@ public struct MergeDeveloperIdentitiesInput {
 }
 
 /// Returned in response to a successful MergeDeveloperIdentities action.
-public struct MergeDeveloperIdentitiesOutput {
+public struct MergeDeveloperIdentitiesOutput: Swift.Sendable {
     /// A unique identifier in the format REGION:GUID.
     public var identityId: Swift.String?
 
@@ -1364,7 +1365,7 @@ public struct ConcurrentModificationException: ClientRuntime.ModeledError, AWSCl
 }
 
 /// Input to the SetIdentityPoolRoles action.
-public struct SetIdentityPoolRolesInput {
+public struct SetIdentityPoolRolesInput: Swift.Sendable {
     /// An identity pool ID in the format REGION:GUID.
     /// This member is required.
     public var identityPoolId: Swift.String?
@@ -1386,7 +1387,7 @@ public struct SetIdentityPoolRolesInput {
     }
 }
 
-public struct SetPrincipalTagAttributeMapInput {
+public struct SetPrincipalTagAttributeMapInput: Swift.Sendable {
     /// The ID of the Identity Pool you want to set attribute mappings for.
     /// This member is required.
     public var identityPoolId: Swift.String?
@@ -1412,7 +1413,7 @@ public struct SetPrincipalTagAttributeMapInput {
     }
 }
 
-public struct SetPrincipalTagAttributeMapOutput {
+public struct SetPrincipalTagAttributeMapOutput: Swift.Sendable {
     /// The ID of the Identity Pool you want to set attribute mappings for.
     public var identityPoolId: Swift.String?
     /// The provider name you want to use for attribute mappings.
@@ -1436,7 +1437,7 @@ public struct SetPrincipalTagAttributeMapOutput {
     }
 }
 
-public struct TagResourceInput {
+public struct TagResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the identity pool.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -1454,13 +1455,13 @@ public struct TagResourceInput {
     }
 }
 
-public struct TagResourceOutput {
+public struct TagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
 /// Input to the UnlinkDeveloperIdentity action.
-public struct UnlinkDeveloperIdentityInput {
+public struct UnlinkDeveloperIdentityInput: Swift.Sendable {
     /// The "domain" by which Cognito will refer to your users.
     /// This member is required.
     public var developerProviderName: Swift.String?
@@ -1489,7 +1490,7 @@ public struct UnlinkDeveloperIdentityInput {
 }
 
 /// Input to the UnlinkIdentity action.
-public struct UnlinkIdentityInput {
+public struct UnlinkIdentityInput: Swift.Sendable {
     /// A unique identifier in the format REGION:GUID.
     /// This member is required.
     public var identityId: Swift.String?
@@ -1517,7 +1518,7 @@ extension UnlinkIdentityInput: Swift.CustomDebugStringConvertible {
         "UnlinkIdentityInput(identityId: \(Swift.String(describing: identityId)), loginsToRemove: \(Swift.String(describing: loginsToRemove)), logins: [keys: \(Swift.String(describing: logins?.keys)), values: \"CONTENT_REDACTED\"])"}
 }
 
-public struct UntagResourceInput {
+public struct UntagResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the identity pool.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -1535,13 +1536,13 @@ public struct UntagResourceInput {
     }
 }
 
-public struct UntagResourceOutput {
+public struct UntagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
 /// An object representing an Amazon Cognito identity pool.
-public struct UpdateIdentityPoolInput {
+public struct UpdateIdentityPoolInput: Swift.Sendable {
     /// Enables or disables the Basic (Classic) authentication flow. For more information, see [Identity Pools (Federated Identities) Authentication Flow](https://docs.aws.amazon.com/cognito/latest/developerguide/authentication-flow.html) in the Amazon Cognito Developer Guide.
     public var allowClassicFlow: Swift.Bool?
     /// TRUE if the identity pool supports unauthenticated logins.
@@ -1593,7 +1594,7 @@ public struct UpdateIdentityPoolInput {
 }
 
 /// An object representing an Amazon Cognito identity pool.
-public struct UpdateIdentityPoolOutput {
+public struct UpdateIdentityPoolOutput: Swift.Sendable {
     /// Enables or disables the Basic (Classic) authentication flow. For more information, see [Identity Pools (Federated Identities) Authentication Flow](https://docs.aws.amazon.com/cognito/latest/developerguide/authentication-flow.html) in the Amazon Cognito Developer Guide.
     public var allowClassicFlow: Swift.Bool?
     /// TRUE if the identity pool supports unauthenticated logins.

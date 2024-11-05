@@ -73,6 +73,38 @@ extension PaginatorSequence where OperationStackInput == ListExecutionsInput, Op
     }
 }
 extension TransferClient {
+    /// Paginate over `[ListFileTransferResultsOutput]` results.
+    ///
+    /// When this operation is called, an `AsyncSequence` is created. AsyncSequences are lazy so no service
+    /// calls are made until the sequence is iterated over. This also means there is no guarantee that the request is valid
+    /// until then. If there are errors in your request, you will see the failures only after you start iterating.
+    /// - Parameters:
+    ///     - input: A `[ListFileTransferResultsInput]` to start pagination
+    /// - Returns: An `AsyncSequence` that can iterate over `ListFileTransferResultsOutput`
+    public func listFileTransferResultsPaginated(input: ListFileTransferResultsInput) -> ClientRuntime.PaginatorSequence<ListFileTransferResultsInput, ListFileTransferResultsOutput> {
+        return ClientRuntime.PaginatorSequence<ListFileTransferResultsInput, ListFileTransferResultsOutput>(input: input, inputKey: \.nextToken, outputKey: \.nextToken, paginationFunction: self.listFileTransferResults(input:))
+    }
+}
+
+extension ListFileTransferResultsInput: ClientRuntime.PaginateToken {
+    public func usingPaginationToken(_ token: Swift.String) -> ListFileTransferResultsInput {
+        return ListFileTransferResultsInput(
+            connectorId: self.connectorId,
+            maxResults: self.maxResults,
+            nextToken: token,
+            transferId: self.transferId
+        )}
+}
+
+extension PaginatorSequence where OperationStackInput == ListFileTransferResultsInput, OperationStackOutput == ListFileTransferResultsOutput {
+    /// This paginator transforms the `AsyncSequence` returned by `listFileTransferResultsPaginated`
+    /// to access the nested member `[TransferClientTypes.ConnectorFileTransferResult]`
+    /// - Returns: `[TransferClientTypes.ConnectorFileTransferResult]`
+    public func fileTransferResults() async throws -> [TransferClientTypes.ConnectorFileTransferResult] {
+        return try await self.asyncCompactMap { item in item.fileTransferResults }
+    }
+}
+extension TransferClient {
     /// Paginate over `[ListSecurityPoliciesOutput]` results.
     ///
     /// When this operation is called, an `AsyncSequence` is created. AsyncSequences are lazy so no service

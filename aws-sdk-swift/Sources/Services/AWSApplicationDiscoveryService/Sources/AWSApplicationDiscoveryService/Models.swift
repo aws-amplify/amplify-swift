@@ -28,14 +28,16 @@ import protocol ClientRuntime.ModeledError
 @_spi(SmithyReadWrite) import struct SmithyReadWrite.WritingClosureBox
 @_spi(SmithyTimestamps) import struct SmithyTimestamps.TimestampFormatter
 
-public struct ExportConfigurationsInput {
+
+public struct ExportConfigurationsInput: Swift.Sendable {
 
     public init() { }
 }
 
 extension ApplicationDiscoveryClientTypes {
+
     /// Information about agents that were instructed to start collecting data. Information includes the agent ID, a description of the operation, and whether the agent configuration was updated.
-    public struct AgentConfigurationStatus {
+    public struct AgentConfigurationStatus: Swift.Sendable {
         /// The agent ID.
         public var agentId: Swift.String?
         /// A description of the operation performed.
@@ -54,12 +56,12 @@ extension ApplicationDiscoveryClientTypes {
             self.operationSucceeded = operationSucceeded
         }
     }
-
 }
 
 extension ApplicationDiscoveryClientTypes {
+
     /// Network details about the host where the agent/collector resides.
-    public struct AgentNetworkInfo {
+    public struct AgentNetworkInfo: Swift.Sendable {
         /// The IP address for the host where the agent/collector resides.
         public var ipAddress: Swift.String?
         /// The MAC address for the host where the agent/collector resides.
@@ -74,7 +76,6 @@ extension ApplicationDiscoveryClientTypes {
             self.macAddress = macAddress
         }
     }
-
 }
 
 extension ApplicationDiscoveryClientTypes.AgentNetworkInfo: Swift.CustomDebugStringConvertible {
@@ -85,7 +86,7 @@ extension ApplicationDiscoveryClientTypes.AgentNetworkInfo: Swift.CustomDebugStr
 
 extension ApplicationDiscoveryClientTypes {
 
-    public enum AgentStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AgentStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case blacklisted
         case healthy
         case running
@@ -125,8 +126,9 @@ extension ApplicationDiscoveryClientTypes {
 }
 
 extension ApplicationDiscoveryClientTypes {
+
     /// Information about agents associated with the user’s Amazon Web Services account. Information includes agent IDs, IP addresses, media access control (MAC) addresses, agent or collector status, hostname where the agent resides, and agent version for each agent.
-    public struct AgentInfo {
+    public struct AgentInfo: Swift.Sendable {
         /// The agent or collector ID.
         public var agentId: Swift.String?
         /// Network details about the host where the agent or collector resides.
@@ -173,7 +175,6 @@ extension ApplicationDiscoveryClientTypes {
             self.version = version
         }
     }
-
 }
 
 extension ApplicationDiscoveryClientTypes.AgentInfo: Swift.CustomDebugStringConvertible {
@@ -301,7 +302,7 @@ public struct ServerInternalErrorException: ClientRuntime.ModeledError, AWSClien
     }
 }
 
-public struct AssociateConfigurationItemsToApplicationInput {
+public struct AssociateConfigurationItemsToApplicationInput: Swift.Sendable {
     /// The configuration ID of an application with which items are to be associated.
     /// This member is required.
     public var applicationConfigurationId: Swift.String?
@@ -319,14 +320,15 @@ public struct AssociateConfigurationItemsToApplicationInput {
     }
 }
 
-public struct AssociateConfigurationItemsToApplicationOutput {
+public struct AssociateConfigurationItemsToApplicationOutput: Swift.Sendable {
 
     public init() { }
 }
 
 extension ApplicationDiscoveryClientTypes {
+
     /// An object representing the agent or data collector to be deleted along with the optional configurations for error handling.
-    public struct DeleteAgent {
+    public struct DeleteAgent: Swift.Sendable {
         /// The ID of the agent or data collector to delete.
         /// This member is required.
         public var agentId: Swift.String?
@@ -342,10 +344,9 @@ extension ApplicationDiscoveryClientTypes {
             self.force = force
         }
     }
-
 }
 
-public struct BatchDeleteAgentsInput {
+public struct BatchDeleteAgentsInput: Swift.Sendable {
     /// The list of agents to delete.
     /// This member is required.
     public var deleteAgents: [ApplicationDiscoveryClientTypes.DeleteAgent]?
@@ -360,7 +361,7 @@ public struct BatchDeleteAgentsInput {
 
 extension ApplicationDiscoveryClientTypes {
 
-    public enum DeleteAgentErrorCode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DeleteAgentErrorCode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case agentInUse
         case internalServerError
         case notFound
@@ -391,8 +392,9 @@ extension ApplicationDiscoveryClientTypes {
 }
 
 extension ApplicationDiscoveryClientTypes {
+
     /// An object representing the agent or data collector that failed to delete, each containing agentId, errorMessage, and errorCode.
-    public struct BatchDeleteAgentError {
+    public struct BatchDeleteAgentError: Swift.Sendable {
         /// The ID of the agent or data collector to delete.
         /// This member is required.
         public var agentId: Swift.String?
@@ -414,10 +416,9 @@ extension ApplicationDiscoveryClientTypes {
             self.errorMessage = errorMessage
         }
     }
-
 }
 
-public struct BatchDeleteAgentsOutput {
+public struct BatchDeleteAgentsOutput: Swift.Sendable {
     /// A list of agent IDs that failed to delete during the deletion task, each paired with an error message.
     public var errors: [ApplicationDiscoveryClientTypes.BatchDeleteAgentError]?
 
@@ -429,7 +430,7 @@ public struct BatchDeleteAgentsOutput {
     }
 }
 
-public struct BatchDeleteImportDataInput {
+public struct BatchDeleteImportDataInput: Swift.Sendable {
     /// Set to true to remove the deleted import task from [DescribeImportTasks].
     public var deleteHistory: Swift.Bool?
     /// The IDs for the import tasks that you want to delete.
@@ -448,7 +449,7 @@ public struct BatchDeleteImportDataInput {
 
 extension ApplicationDiscoveryClientTypes {
 
-    public enum BatchDeleteImportDataErrorCode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum BatchDeleteImportDataErrorCode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case internalServerError
         case notFound
         case overLimit
@@ -479,8 +480,9 @@ extension ApplicationDiscoveryClientTypes {
 }
 
 extension ApplicationDiscoveryClientTypes {
+
     /// Error messages returned for each import task that you deleted as a response for this command.
-    public struct BatchDeleteImportDataError {
+    public struct BatchDeleteImportDataError: Swift.Sendable {
         /// The type of error that occurred for a specific import task.
         public var errorCode: ApplicationDiscoveryClientTypes.BatchDeleteImportDataErrorCode?
         /// The description of the error that occurred for a specific import task.
@@ -499,10 +501,9 @@ extension ApplicationDiscoveryClientTypes {
             self.importTaskId = importTaskId
         }
     }
-
 }
 
-public struct BatchDeleteImportDataOutput {
+public struct BatchDeleteImportDataOutput: Swift.Sendable {
     /// Error messages returned for each import task that you deleted as a response for this command.
     public var errors: [ApplicationDiscoveryClientTypes.BatchDeleteImportDataError]?
 
@@ -514,7 +515,7 @@ public struct BatchDeleteImportDataOutput {
     }
 }
 
-public struct CreateApplicationInput {
+public struct CreateApplicationInput: Swift.Sendable {
     /// Description of the application to be created.
     public var description: Swift.String?
     /// Name of the application to be created.
@@ -531,7 +532,7 @@ public struct CreateApplicationInput {
     }
 }
 
-public struct CreateApplicationOutput {
+public struct CreateApplicationOutput: Swift.Sendable {
     /// Configuration ID of an application to be created.
     public var configurationId: Swift.String?
 
@@ -568,8 +569,9 @@ public struct ResourceNotFoundException: ClientRuntime.ModeledError, AWSClientRu
 }
 
 extension ApplicationDiscoveryClientTypes {
+
     /// Metadata that help you categorize IT assets. Do not store sensitive information (like personal data) in tags.
-    public struct Tag {
+    public struct Tag: Swift.Sendable {
         /// The type of tag on which to filter.
         /// This member is required.
         public var key: Swift.String?
@@ -586,10 +588,9 @@ extension ApplicationDiscoveryClientTypes {
             self.value = value
         }
     }
-
 }
 
-public struct CreateTagsInput {
+public struct CreateTagsInput: Swift.Sendable {
     /// A list of configuration items that you want to tag.
     /// This member is required.
     public var configurationIds: [Swift.String]?
@@ -607,12 +608,12 @@ public struct CreateTagsInput {
     }
 }
 
-public struct CreateTagsOutput {
+public struct CreateTagsOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteApplicationsInput {
+public struct DeleteApplicationsInput: Swift.Sendable {
     /// Configuration ID of an application to be deleted.
     /// This member is required.
     public var configurationIds: [Swift.String]?
@@ -625,12 +626,12 @@ public struct DeleteApplicationsInput {
     }
 }
 
-public struct DeleteApplicationsOutput {
+public struct DeleteApplicationsOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteTagsInput {
+public struct DeleteTagsInput: Swift.Sendable {
     /// A list of configuration items with tags that you want to delete.
     /// This member is required.
     public var configurationIds: [Swift.String]?
@@ -647,14 +648,15 @@ public struct DeleteTagsInput {
     }
 }
 
-public struct DeleteTagsOutput {
+public struct DeleteTagsOutput: Swift.Sendable {
 
     public init() { }
 }
 
 extension ApplicationDiscoveryClientTypes {
+
     /// A filter that can use conditional operators. For more information about filters, see [Querying Discovered Configuration Items](https://docs.aws.amazon.com/application-discovery/latest/userguide/discovery-api-queries.html) in the Amazon Web Services Application Discovery Service User Guide.
-    public struct Filter {
+    public struct Filter: Swift.Sendable {
         /// A conditional operator. The following operators are valid: EQUALS, NOT_EQUALS, CONTAINS, NOT_CONTAINS. If you specify multiple filters, the system utilizes all filters as though concatenated by AND. If you specify multiple values for a particular filter, the system differentiates the values using OR. Calling either DescribeConfigurations or ListConfigurations returns attributes of matching configuration items.
         /// This member is required.
         public var condition: Swift.String?
@@ -676,10 +678,9 @@ extension ApplicationDiscoveryClientTypes {
             self.values = values
         }
     }
-
 }
 
-public struct DescribeAgentsInput {
+public struct DescribeAgentsInput: Swift.Sendable {
     /// The agent or the collector IDs for which you want information. If you specify no IDs, the system returns information about all agents/collectors associated with your user.
     public var agentIds: [Swift.String]?
     /// You can filter the request using various logical operators and a key-value format. For example: {"key": "collectionStatus", "value": "STARTED"}
@@ -703,7 +704,7 @@ public struct DescribeAgentsInput {
     }
 }
 
-public struct DescribeAgentsOutput {
+public struct DescribeAgentsOutput: Swift.Sendable {
     /// Lists agents or the collector by ID or lists all agents/collectors associated with your user, if you did not specify an agent/collector ID. The output includes agent/collector IDs, IP addresses, media access control (MAC) addresses, agent/collector health, host name where the agent/collector resides, and the version number of each agent/collector.
     public var agentsInfo: [ApplicationDiscoveryClientTypes.AgentInfo]?
     /// Token to retrieve the next set of results. For example, if you specified 100 IDs for DescribeAgentsRequest$agentIds but set DescribeAgentsRequest$maxResults to 10, you received a set of 10 results along with this token. Use this token in the next query to retrieve the next set of 10.
@@ -719,7 +720,7 @@ public struct DescribeAgentsOutput {
     }
 }
 
-public struct DescribeBatchDeleteConfigurationTaskInput {
+public struct DescribeBatchDeleteConfigurationTaskInput: Swift.Sendable {
     /// The ID of the task to delete.
     /// This member is required.
     public var taskId: Swift.String?
@@ -734,7 +735,7 @@ public struct DescribeBatchDeleteConfigurationTaskInput {
 
 extension ApplicationDiscoveryClientTypes {
 
-    public enum DeletionConfigurationItemType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DeletionConfigurationItemType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case server
         case sdkUnknown(Swift.String)
 
@@ -759,8 +760,9 @@ extension ApplicationDiscoveryClientTypes {
 }
 
 extension ApplicationDiscoveryClientTypes {
+
     /// A configuration ID paired with a warning message.
-    public struct DeletionWarning {
+    public struct DeletionWarning: Swift.Sendable {
         /// The unique identifier of the configuration that produced a warning.
         public var configurationId: Swift.String?
         /// The integer warning code associated with the warning message.
@@ -779,12 +781,12 @@ extension ApplicationDiscoveryClientTypes {
             self.warningText = warningText
         }
     }
-
 }
 
 extension ApplicationDiscoveryClientTypes {
+
     /// A configuration ID paired with an error message.
-    public struct FailedConfiguration {
+    public struct FailedConfiguration: Swift.Sendable {
         /// The unique identifier of the configuration the failed to delete.
         public var configurationId: Swift.String?
         /// A descriptive message indicating why the associated configuration failed to delete.
@@ -803,12 +805,11 @@ extension ApplicationDiscoveryClientTypes {
             self.errorStatusCode = errorStatusCode
         }
     }
-
 }
 
 extension ApplicationDiscoveryClientTypes {
 
-    public enum BatchDeleteConfigurationTaskStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum BatchDeleteConfigurationTaskStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case completed
         case deleting
         case failed
@@ -845,8 +846,9 @@ extension ApplicationDiscoveryClientTypes {
 }
 
 extension ApplicationDiscoveryClientTypes {
+
     /// A metadata object that represents the deletion task being executed.
-    public struct BatchDeleteConfigurationTask {
+    public struct BatchDeleteConfigurationTask: Swift.Sendable {
         /// The type of configuration item to delete. Supported types are: SERVER.
         public var configurationType: ApplicationDiscoveryClientTypes.DeletionConfigurationItemType?
         /// The list of configuration IDs that were successfully deleted by the deletion task.
@@ -889,10 +891,9 @@ extension ApplicationDiscoveryClientTypes {
             self.taskId = taskId
         }
     }
-
 }
 
-public struct DescribeBatchDeleteConfigurationTaskOutput {
+public struct DescribeBatchDeleteConfigurationTaskOutput: Swift.Sendable {
     /// The BatchDeleteConfigurationTask that represents the deletion task being executed.
     public var task: ApplicationDiscoveryClientTypes.BatchDeleteConfigurationTask?
 
@@ -904,7 +905,7 @@ public struct DescribeBatchDeleteConfigurationTaskOutput {
     }
 }
 
-public struct DescribeConfigurationsInput {
+public struct DescribeConfigurationsInput: Swift.Sendable {
     /// One or more configuration IDs.
     /// This member is required.
     public var configurationIds: [Swift.String]?
@@ -917,7 +918,7 @@ public struct DescribeConfigurationsInput {
     }
 }
 
-public struct DescribeConfigurationsOutput {
+public struct DescribeConfigurationsOutput: Swift.Sendable {
     /// A key in the response map. The value is an array of data.
     public var configurations: [[Swift.String: Swift.String]]?
 
@@ -953,7 +954,7 @@ public struct OperationNotPermittedException: ClientRuntime.ModeledError, AWSCli
     }
 }
 
-public struct DescribeContinuousExportsInput {
+public struct DescribeContinuousExportsInput: Swift.Sendable {
     /// The unique IDs assigned to the exports.
     public var exportIds: [Swift.String]?
     /// A number between 1 and 100 specifying the maximum number of continuous export descriptions returned.
@@ -975,7 +976,7 @@ public struct DescribeContinuousExportsInput {
 
 extension ApplicationDiscoveryClientTypes {
 
-    public enum DataSource: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DataSource: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case agent
         case sdkUnknown(Swift.String)
 
@@ -1001,7 +1002,7 @@ extension ApplicationDiscoveryClientTypes {
 
 extension ApplicationDiscoveryClientTypes {
 
-    public enum ContinuousExportStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ContinuousExportStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case active
         case error
         case inactive
@@ -1044,8 +1045,9 @@ extension ApplicationDiscoveryClientTypes {
 }
 
 extension ApplicationDiscoveryClientTypes {
+
     /// A list of continuous export descriptions.
-    public struct ContinuousExportDescription {
+    public struct ContinuousExportDescription: Swift.Sendable {
         /// The type of data collector used to gather this data (currently only offered for AGENT).
         public var dataSource: ApplicationDiscoveryClientTypes.DataSource?
         /// The unique ID assigned to this export.
@@ -1130,10 +1132,9 @@ extension ApplicationDiscoveryClientTypes {
             self.stopTime = stopTime
         }
     }
-
 }
 
-public struct DescribeContinuousExportsOutput {
+public struct DescribeContinuousExportsOutput: Swift.Sendable {
     /// A list of continuous export descriptions.
     public var descriptions: [ApplicationDiscoveryClientTypes.ContinuousExportDescription]?
     /// The token from the previous call to DescribeExportTasks.
@@ -1149,7 +1150,7 @@ public struct DescribeContinuousExportsOutput {
     }
 }
 
-public struct DescribeExportConfigurationsInput {
+public struct DescribeExportConfigurationsInput: Swift.Sendable {
     /// A list of continuous export IDs to search for.
     public var exportIds: [Swift.String]?
     /// A number between 1 and 100 specifying the maximum number of continuous export descriptions returned.
@@ -1171,7 +1172,7 @@ public struct DescribeExportConfigurationsInput {
 
 extension ApplicationDiscoveryClientTypes {
 
-    public enum ExportStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ExportStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case failed
         case inProgress
         case succeeded
@@ -1202,8 +1203,9 @@ extension ApplicationDiscoveryClientTypes {
 }
 
 extension ApplicationDiscoveryClientTypes {
+
     /// Information regarding the export status of discovered data. The value is an array of objects.
-    public struct ExportInfo {
+    public struct ExportInfo: Swift.Sendable {
         /// A URL for an Amazon S3 bucket where you can review the exported data. The URL is displayed only if the export succeeded.
         public var configurationsDownloadUrl: Swift.String?
         /// A unique identifier used to query an export.
@@ -1246,10 +1248,9 @@ extension ApplicationDiscoveryClientTypes {
             self.statusMessage = statusMessage
         }
     }
-
 }
 
-public struct DescribeExportConfigurationsOutput {
+public struct DescribeExportConfigurationsOutput: Swift.Sendable {
     ///
     public var exportsInfo: [ApplicationDiscoveryClientTypes.ExportInfo]?
     /// The token from the previous call to describe-export-tasks.
@@ -1266,8 +1267,9 @@ public struct DescribeExportConfigurationsOutput {
 }
 
 extension ApplicationDiscoveryClientTypes {
+
     /// Used to select which agent's data is to be exported. A single agent ID may be selected for export using the [StartExportTask](http://docs.aws.amazon.com/application-discovery/latest/APIReference/API_StartExportTask.html) action.
-    public struct ExportFilter {
+    public struct ExportFilter: Swift.Sendable {
         /// Supported condition: EQUALS
         /// This member is required.
         public var condition: Swift.String?
@@ -1289,10 +1291,9 @@ extension ApplicationDiscoveryClientTypes {
             self.values = values
         }
     }
-
 }
 
-public struct DescribeExportTasksInput {
+public struct DescribeExportTasksInput: Swift.Sendable {
     /// One or more unique identifiers used to query the status of an export request.
     public var exportIds: [Swift.String]?
     /// One or more filters.
@@ -1318,7 +1319,7 @@ public struct DescribeExportTasksInput {
     }
 }
 
-public struct DescribeExportTasksOutput {
+public struct DescribeExportTasksOutput: Swift.Sendable {
     /// Contains one or more sets of export request details. When the status of a request is SUCCEEDED, the response includes a URL for an Amazon S3 bucket where you can view the data in a CSV file.
     public var exportsInfo: [ApplicationDiscoveryClientTypes.ExportInfo]?
     /// The nextToken value to include in a future DescribeExportTasks request. When the results of a DescribeExportTasks request exceed maxResults, this value can be used to retrieve the next page of results. This value is null when there are no more results to return.
@@ -1336,7 +1337,7 @@ public struct DescribeExportTasksOutput {
 
 extension ApplicationDiscoveryClientTypes {
 
-    public enum ImportTaskFilterName: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ImportTaskFilterName: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case importTaskId
         case name
         case status
@@ -1367,8 +1368,9 @@ extension ApplicationDiscoveryClientTypes {
 }
 
 extension ApplicationDiscoveryClientTypes {
+
     /// A name-values pair of elements you can use to filter the results when querying your import tasks. Currently, wildcards are not supported for filters. When filtering by import status, all other filter values are ignored.
-    public struct ImportTaskFilter {
+    public struct ImportTaskFilter: Swift.Sendable {
         /// The name, status, or import task ID for a specific import task.
         public var name: ApplicationDiscoveryClientTypes.ImportTaskFilterName?
         /// An array of strings that you can provide to match against a specific name, status, or import task ID to filter the results for your import task queries.
@@ -1383,10 +1385,9 @@ extension ApplicationDiscoveryClientTypes {
             self.values = values
         }
     }
-
 }
 
-public struct DescribeImportTasksInput {
+public struct DescribeImportTasksInput: Swift.Sendable {
     /// An array of name-value pairs that you provide to filter the results for the DescribeImportTask request to a specific subset of results. Currently, wildcard values aren't supported for filters.
     public var filters: [ApplicationDiscoveryClientTypes.ImportTaskFilter]?
     /// The maximum number of results that you want this request to return, up to 100.
@@ -1408,7 +1409,7 @@ public struct DescribeImportTasksInput {
 
 extension ApplicationDiscoveryClientTypes {
 
-    public enum ImportStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ImportStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case deleteComplete
         case deleteFailed
         case deleteFailedLimitExceeded
@@ -1463,8 +1464,9 @@ extension ApplicationDiscoveryClientTypes {
 }
 
 extension ApplicationDiscoveryClientTypes {
+
     /// An array of information related to the import task request that includes status information, times, IDs, the Amazon S3 Object URL for the import file, and more.
-    public struct ImportTask {
+    public struct ImportTask: Swift.Sendable {
         /// The total number of application records in the import file that failed to be imported.
         public var applicationImportFailure: Swift.Int
         /// The total number of application records in the import file that were successfully imported.
@@ -1523,10 +1525,9 @@ extension ApplicationDiscoveryClientTypes {
             self.status = status
         }
     }
-
 }
 
-public struct DescribeImportTasksOutput {
+public struct DescribeImportTasksOutput: Swift.Sendable {
     /// The token to request the next page of results.
     public var nextToken: Swift.String?
     /// A returned array of import tasks that match any applied filters, up to the specified number of maximum results.
@@ -1543,8 +1544,9 @@ public struct DescribeImportTasksOutput {
 }
 
 extension ApplicationDiscoveryClientTypes {
+
     /// The tag filter. Valid names are: tagKey, tagValue, configurationId.
-    public struct TagFilter {
+    public struct TagFilter: Swift.Sendable {
         /// A name of the tag filter.
         /// This member is required.
         public var name: Swift.String?
@@ -1561,10 +1563,9 @@ extension ApplicationDiscoveryClientTypes {
             self.values = values
         }
     }
-
 }
 
-public struct DescribeTagsInput {
+public struct DescribeTagsInput: Swift.Sendable {
     /// You can filter the list using a key-value format. You can separate these items by using logical operators. Allowed filters include tagKey, tagValue, and configurationId.
     public var filters: [ApplicationDiscoveryClientTypes.TagFilter]?
     /// The total number of items to return in a single page of output. The maximum value is 100.
@@ -1586,7 +1587,7 @@ public struct DescribeTagsInput {
 
 extension ApplicationDiscoveryClientTypes {
 
-    public enum ConfigurationItemType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ConfigurationItemType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case application
         case connections
         case process
@@ -1620,8 +1621,9 @@ extension ApplicationDiscoveryClientTypes {
 }
 
 extension ApplicationDiscoveryClientTypes {
+
     /// Tags for a configuration item. Tags are metadata that help you categorize IT assets.
-    public struct ConfigurationTag {
+    public struct ConfigurationTag: Swift.Sendable {
         /// The configuration ID for the item to tag. You can specify a list of keys and values.
         public var configurationId: Swift.String?
         /// A type of IT asset to tag.
@@ -1648,10 +1650,9 @@ extension ApplicationDiscoveryClientTypes {
             self.value = value
         }
     }
-
 }
 
-public struct DescribeTagsOutput {
+public struct DescribeTagsOutput: Swift.Sendable {
     /// The call returns a token. Use this token to get the next set of results.
     public var nextToken: Swift.String?
     /// Depending on the input, this is a list of configuration items tagged with a specific tag, or a list of tags for a specific configuration item.
@@ -1667,7 +1668,7 @@ public struct DescribeTagsOutput {
     }
 }
 
-public struct DisassociateConfigurationItemsFromApplicationInput {
+public struct DisassociateConfigurationItemsFromApplicationInput: Swift.Sendable {
     /// Configuration ID of an application from which each item is disassociated.
     /// This member is required.
     public var applicationConfigurationId: Swift.String?
@@ -1685,12 +1686,12 @@ public struct DisassociateConfigurationItemsFromApplicationInput {
     }
 }
 
-public struct DisassociateConfigurationItemsFromApplicationOutput {
+public struct DisassociateConfigurationItemsFromApplicationOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct ExportConfigurationsOutput {
+public struct ExportConfigurationsOutput: Swift.Sendable {
     /// A unique identifier that you can use to query the export status.
     public var exportId: Swift.String?
 
@@ -1702,14 +1703,15 @@ public struct ExportConfigurationsOutput {
     }
 }
 
-public struct GetDiscoverySummaryInput {
+public struct GetDiscoverySummaryInput: Swift.Sendable {
 
     public init() { }
 }
 
 extension ApplicationDiscoveryClientTypes {
+
     /// The inventory data for installed Agentless Collector collectors.
-    public struct CustomerAgentlessCollectorInfo {
+    public struct CustomerAgentlessCollectorInfo: Swift.Sendable {
         /// The number of active Agentless Collector collectors.
         /// This member is required.
         public var activeAgentlessCollectors: Swift.Int
@@ -1751,12 +1753,12 @@ extension ApplicationDiscoveryClientTypes {
             self.unknownAgentlessCollectors = unknownAgentlessCollectors
         }
     }
-
 }
 
 extension ApplicationDiscoveryClientTypes {
+
     /// Inventory data for installed discovery agents.
-    public struct CustomerAgentInfo {
+    public struct CustomerAgentInfo: Swift.Sendable {
         /// Number of active discovery agents.
         /// This member is required.
         public var activeAgents: Swift.Int
@@ -1798,12 +1800,12 @@ extension ApplicationDiscoveryClientTypes {
             self.unknownAgents = unknownAgents
         }
     }
-
 }
 
 extension ApplicationDiscoveryClientTypes {
+
     /// Inventory data for installed discovery connectors.
-    public struct CustomerConnectorInfo {
+    public struct CustomerConnectorInfo: Swift.Sendable {
         /// Number of active discovery connectors.
         /// This member is required.
         public var activeConnectors: Swift.Int
@@ -1845,12 +1847,12 @@ extension ApplicationDiscoveryClientTypes {
             self.unknownConnectors = unknownConnectors
         }
     }
-
 }
 
 extension ApplicationDiscoveryClientTypes {
+
     /// The inventory data for installed Migration Evaluator collectors.
-    public struct CustomerMeCollectorInfo {
+    public struct CustomerMeCollectorInfo: Swift.Sendable {
         /// The number of active Migration Evaluator collectors.
         /// This member is required.
         public var activeMeCollectors: Swift.Int
@@ -1892,10 +1894,9 @@ extension ApplicationDiscoveryClientTypes {
             self.unknownMeCollectors = unknownMeCollectors
         }
     }
-
 }
 
-public struct GetDiscoverySummaryOutput {
+public struct GetDiscoverySummaryOutput: Swift.Sendable {
     /// Details about discovered agents, including agent status and health.
     public var agentSummary: ApplicationDiscoveryClientTypes.CustomerAgentInfo?
     /// Details about Agentless Collector collectors, including status.
@@ -1937,7 +1938,7 @@ public struct GetDiscoverySummaryOutput {
 
 extension ApplicationDiscoveryClientTypes {
 
-    public enum OrderString: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum OrderString: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case asc
         case desc
         case sdkUnknown(Swift.String)
@@ -1965,8 +1966,9 @@ extension ApplicationDiscoveryClientTypes {
 }
 
 extension ApplicationDiscoveryClientTypes {
+
     /// A field and direction for ordered output.
-    public struct OrderByElement {
+    public struct OrderByElement: Swift.Sendable {
         /// The field on which to order.
         /// This member is required.
         public var fieldName: Swift.String?
@@ -1982,10 +1984,9 @@ extension ApplicationDiscoveryClientTypes {
             self.sortOrder = sortOrder
         }
     }
-
 }
 
-public struct ListConfigurationsInput {
+public struct ListConfigurationsInput: Swift.Sendable {
     /// A valid configuration identified by Application Discovery Service.
     /// This member is required.
     public var configurationType: ApplicationDiscoveryClientTypes.ConfigurationItemType?
@@ -2014,7 +2015,7 @@ public struct ListConfigurationsInput {
     }
 }
 
-public struct ListConfigurationsOutput {
+public struct ListConfigurationsOutput: Swift.Sendable {
     /// Returns configuration details, including the configuration ID, attribute names, and attribute values.
     public var configurations: [[Swift.String: Swift.String]]?
     /// Token to retrieve the next set of results. For example, if your call to ListConfigurations returned 100 items, but you set ListConfigurationsRequest$maxResults to 10, you received a set of 10 results along with this token. Use this token in the next query to retrieve the next set of 10.
@@ -2030,7 +2031,7 @@ public struct ListConfigurationsOutput {
     }
 }
 
-public struct ListServerNeighborsInput {
+public struct ListServerNeighborsInput: Swift.Sendable {
     /// Configuration ID of the server for which neighbors are being listed.
     /// This member is required.
     public var configurationId: Swift.String?
@@ -2060,8 +2061,9 @@ public struct ListServerNeighborsInput {
 }
 
 extension ApplicationDiscoveryClientTypes {
+
     /// Details about neighboring servers.
-    public struct NeighborConnectionDetail {
+    public struct NeighborConnectionDetail: Swift.Sendable {
         /// The number of open network connections with the neighboring server.
         /// This member is required.
         public var connectionsCount: Swift.Int
@@ -2091,10 +2093,9 @@ extension ApplicationDiscoveryClientTypes {
             self.transportProtocol = transportProtocol
         }
     }
-
 }
 
-public struct ListServerNeighborsOutput {
+public struct ListServerNeighborsOutput: Swift.Sendable {
     /// Count of distinct servers that are one hop away from the given server.
     public var knownDependencyCount: Swift.Int
     /// List of distinct servers that are one hop away from the given server.
@@ -2139,7 +2140,7 @@ public struct LimitExceededException: ClientRuntime.ModeledError, AWSClientRunti
     }
 }
 
-public struct StartBatchDeleteConfigurationTaskInput {
+public struct StartBatchDeleteConfigurationTaskInput: Swift.Sendable {
     /// The list of configuration IDs that will be deleted by the task.
     /// This member is required.
     public var configurationIds: [Swift.String]?
@@ -2157,7 +2158,7 @@ public struct StartBatchDeleteConfigurationTaskInput {
     }
 }
 
-public struct StartBatchDeleteConfigurationTaskOutput {
+public struct StartBatchDeleteConfigurationTaskOutput: Swift.Sendable {
     /// The unique identifier associated with the newly started deletion task.
     public var taskId: Swift.String?
 
@@ -2217,12 +2218,12 @@ public struct ResourceInUseException: ClientRuntime.ModeledError, AWSClientRunti
     }
 }
 
-public struct StartContinuousExportInput {
+public struct StartContinuousExportInput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct StartContinuousExportOutput {
+public struct StartContinuousExportOutput: Swift.Sendable {
     /// The type of data collector used to gather this data (currently only offered for AGENT).
     public var dataSource: ApplicationDiscoveryClientTypes.DataSource?
     /// The unique ID assigned to this export.
@@ -2252,7 +2253,7 @@ public struct StartContinuousExportOutput {
     }
 }
 
-public struct StartDataCollectionByAgentIdsInput {
+public struct StartDataCollectionByAgentIdsInput: Swift.Sendable {
     /// The IDs of the agents from which to start collecting data. If you send a request to an agent ID that you do not have permission to contact, according to your Amazon Web Services account, the service does not throw an exception. Instead, it returns the error in the Description field. If you send a request to multiple agents and you do not have permission to contact some of those agents, the system does not throw an exception. Instead, the system shows Failed in the Description field.
     /// This member is required.
     public var agentIds: [Swift.String]?
@@ -2265,7 +2266,7 @@ public struct StartDataCollectionByAgentIdsInput {
     }
 }
 
-public struct StartDataCollectionByAgentIdsOutput {
+public struct StartDataCollectionByAgentIdsOutput: Swift.Sendable {
     /// Information about agents that were instructed to start collecting data. Information includes the agent ID, a description of the operation performed, and whether the agent configuration was updated.
     public var agentsConfigurationStatus: [ApplicationDiscoveryClientTypes.AgentConfigurationStatus]?
 
@@ -2279,7 +2280,7 @@ public struct StartDataCollectionByAgentIdsOutput {
 
 extension ApplicationDiscoveryClientTypes {
 
-    public enum ExportDataFormat: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ExportDataFormat: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case csv
         case sdkUnknown(Swift.String)
 
@@ -2304,8 +2305,9 @@ extension ApplicationDiscoveryClientTypes {
 }
 
 extension ApplicationDiscoveryClientTypes {
+
     /// Specifies the performance metrics to use for the server that is used for recommendations.
-    public struct UsageMetricBasis {
+    public struct UsageMetricBasis: Swift.Sendable {
         /// A utilization metric that is used by the recommendations.
         public var name: Swift.String?
         /// Specifies the percentage of the specified utilization metric that is used by the recommendations.
@@ -2320,12 +2322,11 @@ extension ApplicationDiscoveryClientTypes {
             self.percentageAdjust = percentageAdjust
         }
     }
-
 }
 
 extension ApplicationDiscoveryClientTypes {
 
-    public enum OfferingClass: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum OfferingClass: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case convertible
         case standard
         case sdkUnknown(Swift.String)
@@ -2354,7 +2355,7 @@ extension ApplicationDiscoveryClientTypes {
 
 extension ApplicationDiscoveryClientTypes {
 
-    public enum PurchasingOption: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum PurchasingOption: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case allUpfront
         case noUpfront
         case partialUpfront
@@ -2386,7 +2387,7 @@ extension ApplicationDiscoveryClientTypes {
 
 extension ApplicationDiscoveryClientTypes {
 
-    public enum TermLength: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum TermLength: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case oneYear
         case threeYear
         case sdkUnknown(Swift.String)
@@ -2414,8 +2415,9 @@ extension ApplicationDiscoveryClientTypes {
 }
 
 extension ApplicationDiscoveryClientTypes {
+
     /// Used to provide Reserved Instance preferences for the recommendation.
-    public struct ReservedInstanceOptions {
+    public struct ReservedInstanceOptions: Swift.Sendable {
         /// The flexibility to change the instance types needed for your Reserved Instance.
         /// This member is required.
         public var offeringClass: ApplicationDiscoveryClientTypes.OfferingClass?
@@ -2437,12 +2439,11 @@ extension ApplicationDiscoveryClientTypes {
             self.termLength = termLength
         }
     }
-
 }
 
 extension ApplicationDiscoveryClientTypes {
 
-    public enum Tenancy: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Tenancy: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case dedicated
         case shared
         case sdkUnknown(Swift.String)
@@ -2470,8 +2471,9 @@ extension ApplicationDiscoveryClientTypes {
 }
 
 extension ApplicationDiscoveryClientTypes {
+
     /// Indicates that the exported data must include EC2 instance type matches for on-premises servers that are discovered through Amazon Web Services Application Discovery Service.
-    public struct Ec2RecommendationsExportPreferences {
+    public struct Ec2RecommendationsExportPreferences: Swift.Sendable {
         /// The recommended EC2 instance type that matches the CPU usage metric of server performance data.
         public var cpuPerformanceMetricBasis: ApplicationDiscoveryClientTypes.UsageMetricBasis?
         /// If set to true, the export [preferences](https://docs.aws.amazon.com/application-discovery/latest/APIReference/API_StartExportTask.html#API_StartExportTask_RequestSyntax) is set to Ec2RecommendationsExportPreferences.
@@ -2506,20 +2508,19 @@ extension ApplicationDiscoveryClientTypes {
             self.tenancy = tenancy
         }
     }
-
 }
 
 extension ApplicationDiscoveryClientTypes {
+
     /// Indicates the type of data that is being exported. Only one ExportPreferences can be enabled for a [StartExportTask](https://docs.aws.amazon.com/application-discovery/latest/APIReference/API_StartExportTask.html) action.
-    public enum ExportPreferences {
+    public enum ExportPreferences: Swift.Sendable {
         /// If enabled, exported data includes EC2 instance type matches for on-premises servers discovered through Amazon Web Services Application Discovery Service.
         case ec2recommendationspreferences(ApplicationDiscoveryClientTypes.Ec2RecommendationsExportPreferences)
         case sdkUnknown(Swift.String)
     }
-
 }
 
-public struct StartExportTaskInput {
+public struct StartExportTaskInput: Swift.Sendable {
     /// The end timestamp for exported data from the single Application Discovery Agent selected in the filters. If no value is specified, exported data includes the most recent data collected by the agent.
     public var endTime: Foundation.Date?
     /// The file format for the returned export data. Default value is CSV. Note: The GRAPHML option has been deprecated.
@@ -2547,7 +2548,7 @@ public struct StartExportTaskInput {
     }
 }
 
-public struct StartExportTaskOutput {
+public struct StartExportTaskOutput: Swift.Sendable {
     /// A unique identifier used to query the status of an export request.
     public var exportId: Swift.String?
 
@@ -2559,7 +2560,7 @@ public struct StartExportTaskOutput {
     }
 }
 
-public struct StartImportTaskInput {
+public struct StartImportTaskInput: Swift.Sendable {
     /// Optional. A unique token that you can provide to prevent the same import request from occurring more than once. If you don't provide a token, a token is automatically generated. Sending more than one StartImportTask request with the same client request token will return information about the original import task with that client request token.
     public var clientRequestToken: Swift.String?
     /// The URL for your import file that you've uploaded to Amazon S3. If you're using the Amazon Web Services CLI, this URL is structured as follows: s3://BucketName/ImportFileName.CSV
@@ -2581,7 +2582,7 @@ public struct StartImportTaskInput {
     }
 }
 
-public struct StartImportTaskOutput {
+public struct StartImportTaskOutput: Swift.Sendable {
     /// An array of information related to the import task request including status information, times, IDs, the Amazon S3 Object URL for the import file, and more.
     public var task: ApplicationDiscoveryClientTypes.ImportTask?
 
@@ -2593,7 +2594,7 @@ public struct StartImportTaskOutput {
     }
 }
 
-public struct StopContinuousExportInput {
+public struct StopContinuousExportInput: Swift.Sendable {
     /// The unique ID assigned to this export.
     /// This member is required.
     public var exportId: Swift.String?
@@ -2606,7 +2607,7 @@ public struct StopContinuousExportInput {
     }
 }
 
-public struct StopContinuousExportOutput {
+public struct StopContinuousExportOutput: Swift.Sendable {
     /// Timestamp that represents when this continuous export started collecting data.
     public var startTime: Foundation.Date?
     /// Timestamp that represents when this continuous export was stopped.
@@ -2622,7 +2623,7 @@ public struct StopContinuousExportOutput {
     }
 }
 
-public struct StopDataCollectionByAgentIdsInput {
+public struct StopDataCollectionByAgentIdsInput: Swift.Sendable {
     /// The IDs of the agents from which to stop collecting data.
     /// This member is required.
     public var agentIds: [Swift.String]?
@@ -2635,7 +2636,7 @@ public struct StopDataCollectionByAgentIdsInput {
     }
 }
 
-public struct StopDataCollectionByAgentIdsOutput {
+public struct StopDataCollectionByAgentIdsOutput: Swift.Sendable {
     /// Information about the agents that were instructed to stop collecting data. Information includes the agent ID, a description of the operation performed, and whether the agent configuration was updated.
     public var agentsConfigurationStatus: [ApplicationDiscoveryClientTypes.AgentConfigurationStatus]?
 
@@ -2647,7 +2648,7 @@ public struct StopDataCollectionByAgentIdsOutput {
     }
 }
 
-public struct UpdateApplicationInput {
+public struct UpdateApplicationInput: Swift.Sendable {
     /// Configuration ID of the application to be updated.
     /// This member is required.
     public var configurationId: Swift.String?
@@ -2668,7 +2669,7 @@ public struct UpdateApplicationInput {
     }
 }
 
-public struct UpdateApplicationOutput {
+public struct UpdateApplicationOutput: Swift.Sendable {
 
     public init() { }
 }

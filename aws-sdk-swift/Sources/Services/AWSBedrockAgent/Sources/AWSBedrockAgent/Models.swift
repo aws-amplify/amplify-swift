@@ -25,6 +25,7 @@ import protocol ClientRuntime.ModeledError
 @_spi(SmithyReadWrite) import protocol SmithyReadWrite.SmithyWriter
 @_spi(SmithyReadWrite) import struct AWSClientRuntime.RestJSONError
 @_spi(UnknownAWSHTTPServiceError) import struct AWSClientRuntime.UnknownAWSHTTPServiceError
+import struct Smithy.Document
 import struct Smithy.URIQueryItem
 @_spi(SmithyReadWrite) import struct SmithyReadWrite.ReadingClosureBox
 @_spi(SmithyReadWrite) import struct SmithyReadWrite.WritingClosureBox
@@ -56,7 +57,7 @@ public struct AccessDeniedException: ClientRuntime.ModeledError, AWSClientRuntim
 
 extension BedrockAgentClientTypes {
 
-    public enum CustomControlMethod: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum CustomControlMethod: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case returnControl
         case sdkUnknown(Swift.String)
 
@@ -81,15 +82,15 @@ extension BedrockAgentClientTypes {
 }
 
 extension BedrockAgentClientTypes {
+
     /// Contains details about the Lambda function containing the business logic that is carried out upon invoking the action or the custom control method for handling the information elicited from the user.
-    public enum ActionGroupExecutor {
+    public enum ActionGroupExecutor: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the Lambda function containing the business logic that is carried out upon invoking the action.
         case lambda(Swift.String)
         /// To return the action group invocation results directly in the InvokeAgent response, specify RETURN_CONTROL.
         case customcontrol(BedrockAgentClientTypes.CustomControlMethod)
         case sdkUnknown(Swift.String)
     }
-
 }
 
 /// There was a conflict performing an operation.
@@ -213,8 +214,9 @@ public struct ThrottlingException: ClientRuntime.ModeledError, AWSClientRuntime.
 }
 
 extension BedrockAgentClientTypes {
+
     /// Stores information about a field passed inside a request that resulted in an validation error.
-    public struct ValidationExceptionField {
+    public struct ValidationExceptionField: Swift.Sendable {
         /// A message describing why this field failed validation.
         /// This member is required.
         public var message: Swift.String?
@@ -231,7 +233,6 @@ extension BedrockAgentClientTypes {
             self.name = name
         }
     }
-
 }
 
 /// Input validation failed. Check your request parameters and retry the request.
@@ -264,7 +265,7 @@ public struct ValidationException: ClientRuntime.ModeledError, AWSClientRuntime.
 
 extension BedrockAgentClientTypes {
 
-    public enum ActionGroupState: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ActionGroupState: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case disabled
         case enabled
         case sdkUnknown(Swift.String)
@@ -292,8 +293,9 @@ extension BedrockAgentClientTypes {
 }
 
 extension BedrockAgentClientTypes {
+
     /// The identifier information for an Amazon S3 bucket.
-    public struct S3Identifier {
+    public struct S3Identifier: Swift.Sendable {
         /// The name of the S3 bucket.
         public var s3BucketName: Swift.String?
         /// The S3 object key for the S3 resource.
@@ -308,24 +310,23 @@ extension BedrockAgentClientTypes {
             self.s3ObjectKey = s3ObjectKey
         }
     }
-
 }
 
 extension BedrockAgentClientTypes {
+
     /// Contains details about the OpenAPI schema for the action group. For more information, see [Action group OpenAPI schemas](https://docs.aws.amazon.com/bedrock/latest/userguide/agents-api-schema.html). You can either include the schema directly in the payload field or you can upload it to an S3 bucket and specify the S3 bucket location in the s3 field.
-    public enum APISchema {
+    public enum APISchema: Swift.Sendable {
         /// Contains details about the S3 object containing the OpenAPI schema for the action group. For more information, see [Action group OpenAPI schemas](https://docs.aws.amazon.com/bedrock/latest/userguide/agents-api-schema.html).
         case s3(BedrockAgentClientTypes.S3Identifier)
         /// The JSON or YAML-formatted payload defining the OpenAPI schema for the action group. For more information, see [Action group OpenAPI schemas](https://docs.aws.amazon.com/bedrock/latest/userguide/agents-api-schema.html).
         case payload(Swift.String)
         case sdkUnknown(Swift.String)
     }
-
 }
 
 extension BedrockAgentClientTypes {
 
-    public enum ModelType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ModelType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case array
         case boolean
         case integer
@@ -362,6 +363,7 @@ extension BedrockAgentClientTypes {
 }
 
 extension BedrockAgentClientTypes {
+
     /// Contains details about a parameter in a function for an action group. This data type is used in the following API operations:
     ///
     /// * [CreateAgentActionGroup request](https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent_CreateAgentActionGroup.html#API_agent_CreateAgentActionGroup_RequestSyntax)
@@ -373,7 +375,7 @@ extension BedrockAgentClientTypes {
     /// * [UpdateAgentActionGroup response](https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent_UpdateAgentActionGroup.html#API_agent_UpdateAgentActionGroup_ResponseSyntax)
     ///
     /// * [GetAgentActionGroup response](https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent_GetAgentActionGroup.html#API_agent_GetAgentActionGroup_ResponseSyntax)
-    public struct ParameterDetail {
+    public struct ParameterDetail: Swift.Sendable {
         /// A description of the parameter. Helps the foundation model determine how to elicit the parameters from the user.
         public var description: Swift.String?
         /// Whether the parameter is required for the agent to complete the function for action group invocation.
@@ -393,13 +395,12 @@ extension BedrockAgentClientTypes {
             self.type = type
         }
     }
-
 }
 
 extension BedrockAgentClientTypes {
 
     /// ENUM to check if action requires user confirmation
-    public enum RequireConfirmation: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum RequireConfirmation: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case disabled
         case enabled
         case sdkUnknown(Swift.String)
@@ -427,6 +428,7 @@ extension BedrockAgentClientTypes {
 }
 
 extension BedrockAgentClientTypes {
+
     /// Defines parameters that the agent needs to invoke from the user to complete the function. Corresponds to an action in an action group. This data type is used in the following API operations:
     ///
     /// * [CreateAgentActionGroup request](https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent_CreateAgentActionGroup.html#API_agent_CreateAgentActionGroup_RequestSyntax)
@@ -438,7 +440,7 @@ extension BedrockAgentClientTypes {
     /// * [UpdateAgentActionGroup response](https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent_UpdateAgentActionGroup.html#API_agent_UpdateAgentActionGroup_ResponseSyntax)
     ///
     /// * [GetAgentActionGroup response](https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent_GetAgentActionGroup.html#API_agent_GetAgentActionGroup_ResponseSyntax)
-    public struct Function {
+    public struct Function: Swift.Sendable {
         /// A description of the function and its purpose.
         public var description: Swift.String?
         /// A name for the function.
@@ -462,10 +464,10 @@ extension BedrockAgentClientTypes {
             self.requireConfirmation = requireConfirmation
         }
     }
-
 }
 
 extension BedrockAgentClientTypes {
+
     /// Defines functions that each define parameters that the agent needs to invoke from the user. Each function represents an action in an action group. This data type is used in the following API operations:
     ///
     /// * [CreateAgentActionGroup request](https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent_CreateAgentActionGroup.html#API_agent_CreateAgentActionGroup_RequestSyntax)
@@ -477,17 +479,16 @@ extension BedrockAgentClientTypes {
     /// * [UpdateAgentActionGroup response](https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent_UpdateAgentActionGroup.html#API_agent_UpdateAgentActionGroup_ResponseSyntax)
     ///
     /// * [GetAgentActionGroup response](https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent_GetAgentActionGroup.html#API_agent_GetAgentActionGroup_ResponseSyntax)
-    public enum FunctionSchema {
+    public enum FunctionSchema: Swift.Sendable {
         /// A list of functions that each define an action in the action group.
         case functions([BedrockAgentClientTypes.Function])
         case sdkUnknown(Swift.String)
     }
-
 }
 
 extension BedrockAgentClientTypes {
 
-    public enum ActionGroupSignature: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ActionGroupSignature: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case amazonCodeinterpreter
         case amazonUserinput
         case sdkUnknown(Swift.String)
@@ -514,7 +515,7 @@ extension BedrockAgentClientTypes {
     }
 }
 
-public struct CreateAgentActionGroupInput {
+public struct CreateAgentActionGroupInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the Lambda function containing the business logic that is carried out upon invoking the action or the custom control method for handling the information elicited from the user.
     public var actionGroupExecutor: BedrockAgentClientTypes.ActionGroupExecutor?
     /// The name to give the action group.
@@ -566,8 +567,9 @@ public struct CreateAgentActionGroupInput {
 }
 
 extension BedrockAgentClientTypes {
+
     /// Contains details about an action group.
-    public struct AgentActionGroup {
+    public struct AgentActionGroup: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the Lambda function containing the business logic that is carried out upon invoking the action or the custom control method for handling the information elicited from the user.
         public var actionGroupExecutor: BedrockAgentClientTypes.ActionGroupExecutor?
         /// The unique identifier of the action group.
@@ -633,10 +635,9 @@ extension BedrockAgentClientTypes {
             self.updatedAt = updatedAt
         }
     }
-
 }
 
-public struct CreateAgentActionGroupOutput {
+public struct CreateAgentActionGroupOutput: Swift.Sendable {
     /// Contains details about the action group that was created.
     /// This member is required.
     public var agentActionGroup: BedrockAgentClientTypes.AgentActionGroup?
@@ -649,7 +650,7 @@ public struct CreateAgentActionGroupOutput {
     }
 }
 
-public struct DeleteAgentActionGroupInput {
+public struct DeleteAgentActionGroupInput: Swift.Sendable {
     /// The unique identifier of the action group to delete.
     /// This member is required.
     public var actionGroupId: Swift.String?
@@ -676,12 +677,12 @@ public struct DeleteAgentActionGroupInput {
     }
 }
 
-public struct DeleteAgentActionGroupOutput {
+public struct DeleteAgentActionGroupOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct GetAgentActionGroupInput {
+public struct GetAgentActionGroupInput: Swift.Sendable {
     /// The unique identifier of the action group for which to get information.
     /// This member is required.
     public var actionGroupId: Swift.String?
@@ -704,7 +705,7 @@ public struct GetAgentActionGroupInput {
     }
 }
 
-public struct GetAgentActionGroupOutput {
+public struct GetAgentActionGroupOutput: Swift.Sendable {
     /// Contains details about the action group.
     /// This member is required.
     public var agentActionGroup: BedrockAgentClientTypes.AgentActionGroup?
@@ -717,7 +718,7 @@ public struct GetAgentActionGroupOutput {
     }
 }
 
-public struct ListAgentActionGroupsInput {
+public struct ListAgentActionGroupsInput: Swift.Sendable {
     /// The unique identifier of the agent.
     /// This member is required.
     public var agentId: Swift.String?
@@ -744,8 +745,9 @@ public struct ListAgentActionGroupsInput {
 }
 
 extension BedrockAgentClientTypes {
+
     /// Contains details about an action group.
-    public struct ActionGroupSummary {
+    public struct ActionGroupSummary: Swift.Sendable {
         /// The unique identifier of the action group.
         /// This member is required.
         public var actionGroupId: Swift.String?
@@ -776,10 +778,9 @@ extension BedrockAgentClientTypes {
             self.updatedAt = updatedAt
         }
     }
-
 }
 
-public struct ListAgentActionGroupsOutput {
+public struct ListAgentActionGroupsOutput: Swift.Sendable {
     /// A list of objects, each of which contains information about an action group.
     /// This member is required.
     public var actionGroupSummaries: [BedrockAgentClientTypes.ActionGroupSummary]?
@@ -796,7 +797,7 @@ public struct ListAgentActionGroupsOutput {
     }
 }
 
-public struct UpdateAgentActionGroupInput {
+public struct UpdateAgentActionGroupInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the Lambda function containing the business logic that is carried out upon invoking the action.
     public var actionGroupExecutor: BedrockAgentClientTypes.ActionGroupExecutor?
     /// The unique identifier of the action group.
@@ -848,7 +849,7 @@ public struct UpdateAgentActionGroupInput {
     }
 }
 
-public struct UpdateAgentActionGroupOutput {
+public struct UpdateAgentActionGroupOutput: Swift.Sendable {
     /// Contains details about the action group that was updated.
     /// This member is required.
     public var agentActionGroup: BedrockAgentClientTypes.AgentActionGroup?
@@ -863,7 +864,7 @@ public struct UpdateAgentActionGroupOutput {
 
 extension BedrockAgentClientTypes {
 
-    public enum AgentStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AgentStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case creating
         case deleting
         case failed
@@ -909,8 +910,9 @@ extension BedrockAgentClientTypes {
 }
 
 extension BedrockAgentClientTypes {
+
     /// Details about the guardrail associated with an agent.
-    public struct GuardrailConfiguration {
+    public struct GuardrailConfiguration: Swift.Sendable {
         /// The unique identifier of the guardrail.
         public var guardrailIdentifier: Swift.String?
         /// The version of the guardrail.
@@ -925,12 +927,11 @@ extension BedrockAgentClientTypes {
             self.guardrailVersion = guardrailVersion
         }
     }
-
 }
 
 extension BedrockAgentClientTypes {
 
-    public enum MemoryType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum MemoryType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case sessionSummary
         case sdkUnknown(Swift.String)
 
@@ -955,8 +956,9 @@ extension BedrockAgentClientTypes {
 }
 
 extension BedrockAgentClientTypes {
+
     /// Details of the memory configuration.
-    public struct MemoryConfiguration {
+    public struct MemoryConfiguration: Swift.Sendable {
         /// The type of memory that is stored.
         /// This member is required.
         public var enabledMemoryTypes: [BedrockAgentClientTypes.MemoryType]?
@@ -972,12 +974,12 @@ extension BedrockAgentClientTypes {
             self.storageDays = storageDays
         }
     }
-
 }
 
 extension BedrockAgentClientTypes {
+
     /// Contains inference parameters to use when the agent invokes a foundation model in the part of the agent sequence defined by the promptType. For more information, see [Inference parameters for foundation models](https://docs.aws.amazon.com/bedrock/latest/userguide/model-parameters.html).
-    public struct InferenceConfiguration {
+    public struct InferenceConfiguration: Swift.Sendable {
         /// The maximum number of tokens to allow in the generated response.
         public var maximumLength: Swift.Int?
         /// A list of stop sequences. A stop sequence is a sequence of characters that causes the model to stop generating the response.
@@ -1004,12 +1006,11 @@ extension BedrockAgentClientTypes {
             self.topp = topp
         }
     }
-
 }
 
 extension BedrockAgentClientTypes {
 
-    public enum CreationMode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum CreationMode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case `default`
         case overridden
         case sdkUnknown(Swift.String)
@@ -1038,7 +1039,7 @@ extension BedrockAgentClientTypes {
 
 extension BedrockAgentClientTypes {
 
-    public enum PromptState: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum PromptState: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case disabled
         case enabled
         case sdkUnknown(Swift.String)
@@ -1067,7 +1068,7 @@ extension BedrockAgentClientTypes {
 
 extension BedrockAgentClientTypes {
 
-    public enum PromptType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum PromptType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case knowledgeBaseResponseGeneration
         case orchestration
         case postProcessing
@@ -1101,8 +1102,9 @@ extension BedrockAgentClientTypes {
 }
 
 extension BedrockAgentClientTypes {
+
     /// Contains configurations to override a prompt template in one part of an agent sequence. For more information, see [Advanced prompts](https://docs.aws.amazon.com/bedrock/latest/userguide/advanced-prompts.html).
-    public struct PromptConfiguration {
+    public struct PromptConfiguration: Swift.Sendable {
         /// Defines the prompt template with which to replace the default prompt template. You can use placeholder variables in the base prompt template to customize the prompt. For more information, see [Prompt template placeholder variables](https://docs.aws.amazon.com/bedrock/latest/userguide/prompt-placeholders.html). For more information, see [Configure the prompt templates](https://docs.aws.amazon.com/bedrock/latest/userguide/advanced-prompts-configure.html).
         public var basePromptTemplate: Swift.String?
         /// Contains inference parameters to use when the agent invokes a foundation model in the part of the agent sequence defined by the promptType. For more information, see [Inference parameters for foundation models](https://docs.aws.amazon.com/bedrock/latest/userguide/model-parameters.html).
@@ -1141,7 +1143,6 @@ extension BedrockAgentClientTypes {
             self.promptType = promptType
         }
     }
-
 }
 
 extension BedrockAgentClientTypes.PromptConfiguration: Swift.CustomDebugStringConvertible {
@@ -1150,8 +1151,9 @@ extension BedrockAgentClientTypes.PromptConfiguration: Swift.CustomDebugStringCo
 }
 
 extension BedrockAgentClientTypes {
+
     /// Contains configurations to override prompts in different parts of an agent sequence. For more information, see [Advanced prompts](https://docs.aws.amazon.com/bedrock/latest/userguide/advanced-prompts.html).
-    public struct PromptOverrideConfiguration {
+    public struct PromptOverrideConfiguration: Swift.Sendable {
         /// The ARN of the Lambda function to use when parsing the raw foundation model output in parts of the agent sequence. If you specify this field, at least one of the promptConfigurations must contain a parserMode value that is set to OVERRIDDEN. For more information, see [Parser Lambda function in Amazon Bedrock Agents](https://docs.aws.amazon.com/bedrock/latest/userguide/lambda-parser.html).
         public var overrideLambda: Swift.String?
         /// Contains configurations to override a prompt template in one part of an agent sequence. For more information, see [Advanced prompts](https://docs.aws.amazon.com/bedrock/latest/userguide/advanced-prompts.html).
@@ -1167,7 +1169,6 @@ extension BedrockAgentClientTypes {
             self.promptConfigurations = promptConfigurations
         }
     }
-
 }
 
 extension BedrockAgentClientTypes.PromptOverrideConfiguration: Swift.CustomDebugStringConvertible {
@@ -1177,8 +1178,9 @@ extension BedrockAgentClientTypes.PromptOverrideConfiguration: Swift.CustomDebug
 }
 
 extension BedrockAgentClientTypes {
+
     /// Contains details about an agent.
-    public struct Agent {
+    public struct Agent: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the agent.
         /// This member is required.
         public var agentArn: Swift.String?
@@ -1288,7 +1290,6 @@ extension BedrockAgentClientTypes {
             self.updatedAt = updatedAt
         }
     }
-
 }
 
 extension BedrockAgentClientTypes.Agent: Swift.CustomDebugStringConvertible {
@@ -1297,8 +1298,9 @@ extension BedrockAgentClientTypes.Agent: Swift.CustomDebugStringConvertible {
 }
 
 extension BedrockAgentClientTypes {
+
     /// Contains details about the routing configuration of the alias.
-    public struct AgentAliasRoutingConfigurationListItem {
+    public struct AgentAliasRoutingConfigurationListItem: Swift.Sendable {
         /// The version of the agent with which the alias is associated.
         public var agentVersion: Swift.String?
         /// Information on the Provisioned Throughput assigned to an agent alias.
@@ -1313,12 +1315,12 @@ extension BedrockAgentClientTypes {
             self.provisionedThroughput = provisionedThroughput
         }
     }
-
 }
 
 extension BedrockAgentClientTypes {
+
     /// Contains details about the history of the alias.
-    public struct AgentAliasHistoryEvent {
+    public struct AgentAliasHistoryEvent: Swift.Sendable {
         /// The date that the alias stopped being associated to the version in the routingConfiguration object
         public var endDate: Foundation.Date?
         /// Contains details about the version of the agent with which the alias is associated.
@@ -1337,12 +1339,11 @@ extension BedrockAgentClientTypes {
             self.startDate = startDate
         }
     }
-
 }
 
 extension BedrockAgentClientTypes {
 
-    public enum AgentAliasStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AgentAliasStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case creating
         case deleting
         case failed
@@ -1379,8 +1380,9 @@ extension BedrockAgentClientTypes {
 }
 
 extension BedrockAgentClientTypes {
+
     /// Contains details about an alias of an agent.
-    public struct AgentAlias {
+    public struct AgentAlias: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the alias of the agent.
         /// This member is required.
         public var agentAliasArn: Swift.String?
@@ -1453,12 +1455,12 @@ extension BedrockAgentClientTypes {
             self.updatedAt = updatedAt
         }
     }
-
 }
 
 extension BedrockAgentClientTypes {
+
     /// Contains details about an alias of an agent.
-    public struct AgentAliasSummary {
+    public struct AgentAliasSummary: Swift.Sendable {
         /// Contains details about
         /// This member is required.
         public var agentAliasId: Swift.String?
@@ -1498,12 +1500,12 @@ extension BedrockAgentClientTypes {
             self.updatedAt = updatedAt
         }
     }
-
 }
 
 extension BedrockAgentClientTypes {
+
     /// Defines an agent node in your flow. You specify the agent to invoke at this point in the flow. For more information, see [Node types in Amazon Bedrock works](https://docs.aws.amazon.com/bedrock/latest/userguide/flows-nodes.html) in the Amazon Bedrock User Guide.
-    public struct AgentFlowNodeConfiguration {
+    public struct AgentFlowNodeConfiguration: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the alias of the agent to invoke.
         /// This member is required.
         public var agentAliasArn: Swift.String?
@@ -1515,12 +1517,11 @@ extension BedrockAgentClientTypes {
             self.agentAliasArn = agentAliasArn
         }
     }
-
 }
 
 extension BedrockAgentClientTypes {
 
-    public enum KnowledgeBaseState: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum KnowledgeBaseState: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case disabled
         case enabled
         case sdkUnknown(Swift.String)
@@ -1548,8 +1549,9 @@ extension BedrockAgentClientTypes {
 }
 
 extension BedrockAgentClientTypes {
+
     /// Contains details about a knowledge base that is associated with an agent.
-    public struct AgentKnowledgeBase {
+    public struct AgentKnowledgeBase: Swift.Sendable {
         /// The unique identifier of the agent with which the knowledge base is associated.
         /// This member is required.
         public var agentId: Swift.String?
@@ -1591,12 +1593,12 @@ extension BedrockAgentClientTypes {
             self.updatedAt = updatedAt
         }
     }
-
 }
 
 extension BedrockAgentClientTypes {
+
     /// Contains details about a knowledge base associated with an agent.
-    public struct AgentKnowledgeBaseSummary {
+    public struct AgentKnowledgeBaseSummary: Swift.Sendable {
         /// The description of the knowledge base associated with an agent.
         public var description: Swift.String?
         /// The unique identifier of the knowledge base associated with an agent.
@@ -1622,10 +1624,9 @@ extension BedrockAgentClientTypes {
             self.updatedAt = updatedAt
         }
     }
-
 }
 
-public struct CreateAgentInput {
+public struct CreateAgentInput: Swift.Sendable {
     /// A name for the agent that you create.
     /// This member is required.
     public var agentName: Swift.String?
@@ -1637,7 +1638,17 @@ public struct CreateAgentInput {
     public var customerEncryptionKeyArn: Swift.String?
     /// A description of the agent.
     public var description: Swift.String?
-    /// The Amazon Resource Name (ARN) of the foundation model to be used for orchestration by the agent you create.
+    /// The identifier for the model that you want to be used for orchestration by the agent you create. The modelId to provide depends on the type of model or throughput that you use:
+    ///
+    /// * If you use a base model, specify the model ID or its ARN. For a list of model IDs for base models, see [Amazon Bedrock base model IDs (on-demand throughput)](https://docs.aws.amazon.com/bedrock/latest/userguide/model-ids.html#model-ids-arns) in the Amazon Bedrock User Guide.
+    ///
+    /// * If you use an inference profile, specify the inference profile ID or its ARN. For a list of inference profile IDs, see [Supported Regions and models for cross-region inference](https://docs.aws.amazon.com/bedrock/latest/userguide/cross-region-inference-support.html) in the Amazon Bedrock User Guide.
+    ///
+    /// * If you use a provisioned model, specify the ARN of the Provisioned Throughput. For more information, see [Run inference using a Provisioned Throughput](https://docs.aws.amazon.com/bedrock/latest/userguide/prov-thru-use.html) in the Amazon Bedrock User Guide.
+    ///
+    /// * If you use a custom model, first purchase Provisioned Throughput for it. Then specify the ARN of the resulting provisioned model. For more information, see [Use a custom model in Amazon Bedrock](https://docs.aws.amazon.com/bedrock/latest/userguide/model-customization-use.html) in the Amazon Bedrock User Guide.
+    ///
+    /// * If you use an [imported model](https://docs.aws.amazon.com/bedrock/latest/userguide/model-customization-import-model.html), specify the ARN of the imported model. You can get the model ARN from a successful call to [CreateModelImportJob](https://docs.aws.amazon.com/bedrock/latest/APIReference/API_CreateModelImportJob.html) or from the Imported models page in the Amazon Bedrock console.
     public var foundationModel: Swift.String?
     /// The unique Guardrail configuration assigned to the agent when it is created.
     public var guardrailConfiguration: BedrockAgentClientTypes.GuardrailConfiguration?
@@ -1687,7 +1698,7 @@ extension CreateAgentInput: Swift.CustomDebugStringConvertible {
         "CreateAgentInput(agentName: \(Swift.String(describing: agentName)), agentResourceRoleArn: \(Swift.String(describing: agentResourceRoleArn)), clientToken: \(Swift.String(describing: clientToken)), customerEncryptionKeyArn: \(Swift.String(describing: customerEncryptionKeyArn)), description: \(Swift.String(describing: description)), foundationModel: \(Swift.String(describing: foundationModel)), guardrailConfiguration: \(Swift.String(describing: guardrailConfiguration)), idleSessionTTLInSeconds: \(Swift.String(describing: idleSessionTTLInSeconds)), memoryConfiguration: \(Swift.String(describing: memoryConfiguration)), tags: \(Swift.String(describing: tags)), instruction: \"CONTENT_REDACTED\", promptOverrideConfiguration: \"CONTENT_REDACTED\")"}
 }
 
-public struct CreateAgentOutput {
+public struct CreateAgentOutput: Swift.Sendable {
     /// Contains details about the agent created.
     /// This member is required.
     public var agent: BedrockAgentClientTypes.Agent?
@@ -1700,7 +1711,7 @@ public struct CreateAgentOutput {
     }
 }
 
-public struct DeleteAgentInput {
+public struct DeleteAgentInput: Swift.Sendable {
     /// The unique identifier of the agent to delete.
     /// This member is required.
     public var agentId: Swift.String?
@@ -1717,7 +1728,7 @@ public struct DeleteAgentInput {
     }
 }
 
-public struct DeleteAgentOutput {
+public struct DeleteAgentOutput: Swift.Sendable {
     /// The unique identifier of the agent that was deleted.
     /// This member is required.
     public var agentId: Swift.String?
@@ -1735,7 +1746,7 @@ public struct DeleteAgentOutput {
     }
 }
 
-public struct GetAgentInput {
+public struct GetAgentInput: Swift.Sendable {
     /// The unique identifier of the agent.
     /// This member is required.
     public var agentId: Swift.String?
@@ -1748,7 +1759,7 @@ public struct GetAgentInput {
     }
 }
 
-public struct GetAgentOutput {
+public struct GetAgentOutput: Swift.Sendable {
     /// Contains details about the agent.
     /// This member is required.
     public var agent: BedrockAgentClientTypes.Agent?
@@ -1761,7 +1772,7 @@ public struct GetAgentOutput {
     }
 }
 
-public struct ListAgentsInput {
+public struct ListAgentsInput: Swift.Sendable {
     /// The maximum number of results to return in the response. If the total number of results is greater than this value, use the token returned in the response in the nextToken field when making another request to return the next batch of results.
     public var maxResults: Swift.Int?
     /// If the total number of results is greater than the maxResults value provided in the request, enter the token returned in the nextToken field in the response in this field to return the next batch of results.
@@ -1778,8 +1789,9 @@ public struct ListAgentsInput {
 }
 
 extension BedrockAgentClientTypes {
+
     /// Contains details about an agent.
-    public struct AgentSummary {
+    public struct AgentSummary: Swift.Sendable {
         /// The unique identifier of the agent.
         /// This member is required.
         public var agentId: Swift.String?
@@ -1818,10 +1830,9 @@ extension BedrockAgentClientTypes {
             self.updatedAt = updatedAt
         }
     }
-
 }
 
-public struct ListAgentsOutput {
+public struct ListAgentsOutput: Swift.Sendable {
     /// A list of objects, each of which contains information about an agent.
     /// This member is required.
     public var agentSummaries: [BedrockAgentClientTypes.AgentSummary]?
@@ -1838,7 +1849,7 @@ public struct ListAgentsOutput {
     }
 }
 
-public struct PrepareAgentInput {
+public struct PrepareAgentInput: Swift.Sendable {
     /// The unique identifier of the agent for which to create a DRAFT version.
     /// This member is required.
     public var agentId: Swift.String?
@@ -1851,7 +1862,7 @@ public struct PrepareAgentInput {
     }
 }
 
-public struct PrepareAgentOutput {
+public struct PrepareAgentOutput: Swift.Sendable {
     /// The unique identifier of the agent for which the DRAFT version was created.
     /// This member is required.
     public var agentId: Swift.String?
@@ -1879,7 +1890,7 @@ public struct PrepareAgentOutput {
     }
 }
 
-public struct UpdateAgentInput {
+public struct UpdateAgentInput: Swift.Sendable {
     /// The unique identifier of the agent.
     /// This member is required.
     public var agentId: Swift.String?
@@ -1893,7 +1904,17 @@ public struct UpdateAgentInput {
     public var customerEncryptionKeyArn: Swift.String?
     /// Specifies a new description of the agent.
     public var description: Swift.String?
-    /// Specifies a new foundation model to be used for orchestration by the agent.
+    /// The identifier for the model that you want to be used for orchestration by the agent you create. The modelId to provide depends on the type of model or throughput that you use:
+    ///
+    /// * If you use a base model, specify the model ID or its ARN. For a list of model IDs for base models, see [Amazon Bedrock base model IDs (on-demand throughput)](https://docs.aws.amazon.com/bedrock/latest/userguide/model-ids.html#model-ids-arns) in the Amazon Bedrock User Guide.
+    ///
+    /// * If you use an inference profile, specify the inference profile ID or its ARN. For a list of inference profile IDs, see [Supported Regions and models for cross-region inference](https://docs.aws.amazon.com/bedrock/latest/userguide/cross-region-inference-support.html) in the Amazon Bedrock User Guide.
+    ///
+    /// * If you use a provisioned model, specify the ARN of the Provisioned Throughput. For more information, see [Run inference using a Provisioned Throughput](https://docs.aws.amazon.com/bedrock/latest/userguide/prov-thru-use.html) in the Amazon Bedrock User Guide.
+    ///
+    /// * If you use a custom model, first purchase Provisioned Throughput for it. Then specify the ARN of the resulting provisioned model. For more information, see [Use a custom model in Amazon Bedrock](https://docs.aws.amazon.com/bedrock/latest/userguide/model-customization-use.html) in the Amazon Bedrock User Guide.
+    ///
+    /// * If you use an [imported model](https://docs.aws.amazon.com/bedrock/latest/userguide/model-customization-import-model.html), specify the ARN of the imported model. You can get the model ARN from a successful call to [CreateModelImportJob](https://docs.aws.amazon.com/bedrock/latest/APIReference/API_CreateModelImportJob.html) or from the Imported models page in the Amazon Bedrock console.
     /// This member is required.
     public var foundationModel: Swift.String?
     /// The unique Guardrail configuration assigned to the agent when it is updated.
@@ -1940,7 +1961,7 @@ extension UpdateAgentInput: Swift.CustomDebugStringConvertible {
         "UpdateAgentInput(agentId: \(Swift.String(describing: agentId)), agentName: \(Swift.String(describing: agentName)), agentResourceRoleArn: \(Swift.String(describing: agentResourceRoleArn)), customerEncryptionKeyArn: \(Swift.String(describing: customerEncryptionKeyArn)), description: \(Swift.String(describing: description)), foundationModel: \(Swift.String(describing: foundationModel)), guardrailConfiguration: \(Swift.String(describing: guardrailConfiguration)), idleSessionTTLInSeconds: \(Swift.String(describing: idleSessionTTLInSeconds)), memoryConfiguration: \(Swift.String(describing: memoryConfiguration)), instruction: \"CONTENT_REDACTED\", promptOverrideConfiguration: \"CONTENT_REDACTED\")"}
 }
 
-public struct UpdateAgentOutput {
+public struct UpdateAgentOutput: Swift.Sendable {
     /// Contains details about the agent that was updated.
     /// This member is required.
     public var agent: BedrockAgentClientTypes.Agent?
@@ -1954,8 +1975,9 @@ public struct UpdateAgentOutput {
 }
 
 extension BedrockAgentClientTypes {
+
     /// Contains details about a version of an agent.
-    public struct AgentVersion {
+    public struct AgentVersion: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the agent that the version belongs to.
         /// This member is required.
         public var agentArn: Swift.String?
@@ -2043,7 +2065,6 @@ extension BedrockAgentClientTypes {
             self.version = version
         }
     }
-
 }
 
 extension BedrockAgentClientTypes.AgentVersion: Swift.CustomDebugStringConvertible {
@@ -2052,8 +2073,9 @@ extension BedrockAgentClientTypes.AgentVersion: Swift.CustomDebugStringConvertib
 }
 
 extension BedrockAgentClientTypes {
+
     /// Contains details about a version of an agent.
-    public struct AgentVersionSummary {
+    public struct AgentVersionSummary: Swift.Sendable {
         /// The name of the agent to which the version belongs.
         /// This member is required.
         public var agentName: Swift.String?
@@ -2093,10 +2115,9 @@ extension BedrockAgentClientTypes {
             self.updatedAt = updatedAt
         }
     }
-
 }
 
-public struct CreateAgentAliasInput {
+public struct CreateAgentAliasInput: Swift.Sendable {
     /// The name of the alias.
     /// This member is required.
     public var agentAliasName: Swift.String?
@@ -2130,7 +2151,7 @@ public struct CreateAgentAliasInput {
     }
 }
 
-public struct CreateAgentAliasOutput {
+public struct CreateAgentAliasOutput: Swift.Sendable {
     /// Contains details about the alias that was created.
     /// This member is required.
     public var agentAlias: BedrockAgentClientTypes.AgentAlias?
@@ -2143,7 +2164,7 @@ public struct CreateAgentAliasOutput {
     }
 }
 
-public struct DeleteAgentAliasInput {
+public struct DeleteAgentAliasInput: Swift.Sendable {
     /// The unique identifier of the alias to delete.
     /// This member is required.
     public var agentAliasId: Swift.String?
@@ -2161,7 +2182,7 @@ public struct DeleteAgentAliasInput {
     }
 }
 
-public struct DeleteAgentAliasOutput {
+public struct DeleteAgentAliasOutput: Swift.Sendable {
     /// The unique identifier of the alias that was deleted.
     /// This member is required.
     public var agentAliasId: Swift.String?
@@ -2184,7 +2205,7 @@ public struct DeleteAgentAliasOutput {
     }
 }
 
-public struct GetAgentAliasInput {
+public struct GetAgentAliasInput: Swift.Sendable {
     /// The unique identifier of the alias for which to get information.
     /// This member is required.
     public var agentAliasId: Swift.String?
@@ -2202,7 +2223,7 @@ public struct GetAgentAliasInput {
     }
 }
 
-public struct GetAgentAliasOutput {
+public struct GetAgentAliasOutput: Swift.Sendable {
     /// Contains information about the alias.
     /// This member is required.
     public var agentAlias: BedrockAgentClientTypes.AgentAlias?
@@ -2215,7 +2236,7 @@ public struct GetAgentAliasOutput {
     }
 }
 
-public struct ListAgentAliasesInput {
+public struct ListAgentAliasesInput: Swift.Sendable {
     /// The unique identifier of the agent.
     /// This member is required.
     public var agentId: Swift.String?
@@ -2236,7 +2257,7 @@ public struct ListAgentAliasesInput {
     }
 }
 
-public struct ListAgentAliasesOutput {
+public struct ListAgentAliasesOutput: Swift.Sendable {
     /// A list of objects, each of which contains information about an alias of the agent.
     /// This member is required.
     public var agentAliasSummaries: [BedrockAgentClientTypes.AgentAliasSummary]?
@@ -2253,7 +2274,7 @@ public struct ListAgentAliasesOutput {
     }
 }
 
-public struct UpdateAgentAliasInput {
+public struct UpdateAgentAliasInput: Swift.Sendable {
     /// The unique identifier of the alias.
     /// This member is required.
     public var agentAliasId: Swift.String?
@@ -2284,7 +2305,7 @@ public struct UpdateAgentAliasInput {
     }
 }
 
-public struct UpdateAgentAliasOutput {
+public struct UpdateAgentAliasOutput: Swift.Sendable {
     /// Contains details about the alias that was updated.
     /// This member is required.
     public var agentAlias: BedrockAgentClientTypes.AgentAlias?
@@ -2299,7 +2320,7 @@ public struct UpdateAgentAliasOutput {
 
 extension BedrockAgentClientTypes {
 
-    public enum DataDeletionPolicy: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DataDeletionPolicy: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case delete
         case retain
         case sdkUnknown(Swift.String)
@@ -2327,8 +2348,9 @@ extension BedrockAgentClientTypes {
 }
 
 extension BedrockAgentClientTypes {
+
     /// The specific filters applied to your data source content. You can filter out or include certain content.
-    public struct PatternObjectFilter {
+    public struct PatternObjectFilter: Swift.Sendable {
         /// A list of one or more exclusion regular expression patterns to exclude certain object types that adhere to the pattern. If you specify an inclusion and exclusion filter/pattern and both match a document, the exclusion filter takes precedence and the document isn’t crawled.
         public var exclusionFilters: [Swift.String]?
         /// A list of one or more inclusion regular expression patterns to include certain object types that adhere to the pattern. If you specify an inclusion and exclusion filter/pattern and both match a document, the exclusion filter takes precedence and the document isn’t crawled.
@@ -2348,7 +2370,6 @@ extension BedrockAgentClientTypes {
             self.objectType = objectType
         }
     }
-
 }
 
 extension BedrockAgentClientTypes.PatternObjectFilter: Swift.CustomDebugStringConvertible {
@@ -2357,8 +2378,9 @@ extension BedrockAgentClientTypes.PatternObjectFilter: Swift.CustomDebugStringCo
 }
 
 extension BedrockAgentClientTypes {
+
     /// The configuration of filtering certain objects or content types of the data source.
-    public struct PatternObjectFilterConfiguration {
+    public struct PatternObjectFilterConfiguration: Swift.Sendable {
         /// The configuration of specific filters applied to your data source content. You can filter out or include certain content.
         /// This member is required.
         public var filters: [BedrockAgentClientTypes.PatternObjectFilter]?
@@ -2370,7 +2392,6 @@ extension BedrockAgentClientTypes {
             self.filters = filters
         }
     }
-
 }
 
 extension BedrockAgentClientTypes.PatternObjectFilterConfiguration: Swift.CustomDebugStringConvertible {
@@ -2380,7 +2401,7 @@ extension BedrockAgentClientTypes.PatternObjectFilterConfiguration: Swift.Custom
 
 extension BedrockAgentClientTypes {
 
-    public enum CrawlFilterConfigurationType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum CrawlFilterConfigurationType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case pattern
         case sdkUnknown(Swift.String)
 
@@ -2405,8 +2426,9 @@ extension BedrockAgentClientTypes {
 }
 
 extension BedrockAgentClientTypes {
+
     /// The configuration of filtering the data source content. For example, configuring regular expression patterns to include or exclude certain content.
-    public struct CrawlFilterConfiguration {
+    public struct CrawlFilterConfiguration: Swift.Sendable {
         /// The configuration of filtering certain objects or content types of the data source.
         public var patternObjectFilter: BedrockAgentClientTypes.PatternObjectFilterConfiguration?
         /// The type of filtering that you want to apply to certain objects or content of the data source. For example, the PATTERN type is regular expression patterns you can apply to filter your content.
@@ -2422,12 +2444,12 @@ extension BedrockAgentClientTypes {
             self.type = type
         }
     }
-
 }
 
 extension BedrockAgentClientTypes {
+
     /// The configuration of the Confluence content. For example, configuring specific types of Confluence content.
-    public struct ConfluenceCrawlerConfiguration {
+    public struct ConfluenceCrawlerConfiguration: Swift.Sendable {
         /// The configuration of filtering the Confluence content. For example, configuring regular expression patterns to include or exclude certain content.
         public var filterConfiguration: BedrockAgentClientTypes.CrawlFilterConfiguration?
 
@@ -2438,12 +2460,11 @@ extension BedrockAgentClientTypes {
             self.filterConfiguration = filterConfiguration
         }
     }
-
 }
 
 extension BedrockAgentClientTypes {
 
-    public enum ConfluenceAuthType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ConfluenceAuthType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case basic
         case oauth2ClientCredentials
         case sdkUnknown(Swift.String)
@@ -2472,7 +2493,7 @@ extension BedrockAgentClientTypes {
 
 extension BedrockAgentClientTypes {
 
-    public enum ConfluenceHostType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ConfluenceHostType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case saas
         case sdkUnknown(Swift.String)
 
@@ -2497,8 +2518,9 @@ extension BedrockAgentClientTypes {
 }
 
 extension BedrockAgentClientTypes {
+
     /// The endpoint information to connect to your Confluence data source.
-    public struct ConfluenceSourceConfiguration {
+    public struct ConfluenceSourceConfiguration: Swift.Sendable {
         /// The supported authentication type to authenticate and connect to your Confluence instance.
         /// This member is required.
         public var authType: BedrockAgentClientTypes.ConfluenceAuthType?
@@ -2525,12 +2547,12 @@ extension BedrockAgentClientTypes {
             self.hostUrl = hostUrl
         }
     }
-
 }
 
 extension BedrockAgentClientTypes {
+
     /// The configuration information to connect to Confluence as your data source.
-    public struct ConfluenceDataSourceConfiguration {
+    public struct ConfluenceDataSourceConfiguration: Swift.Sendable {
         /// The configuration of the Confluence content. For example, configuring specific types of Confluence content.
         public var crawlerConfiguration: BedrockAgentClientTypes.ConfluenceCrawlerConfiguration?
         /// The endpoint information to connect to your Confluence data source.
@@ -2546,12 +2568,12 @@ extension BedrockAgentClientTypes {
             self.sourceConfiguration = sourceConfiguration
         }
     }
-
 }
 
 extension BedrockAgentClientTypes {
+
     /// The configuration information to connect to Amazon S3 as your data source.
-    public struct S3DataSourceConfiguration {
+    public struct S3DataSourceConfiguration: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the S3 bucket that contains your data.
         /// This member is required.
         public var bucketArn: Swift.String?
@@ -2571,7 +2593,6 @@ extension BedrockAgentClientTypes {
             self.inclusionPrefixes = inclusionPrefixes
         }
     }
-
 }
 
 extension BedrockAgentClientTypes.S3DataSourceConfiguration: Swift.CustomDebugStringConvertible {
@@ -2580,8 +2601,9 @@ extension BedrockAgentClientTypes.S3DataSourceConfiguration: Swift.CustomDebugSt
 }
 
 extension BedrockAgentClientTypes {
+
     /// The configuration of the Salesforce content. For example, configuring specific types of Salesforce content.
-    public struct SalesforceCrawlerConfiguration {
+    public struct SalesforceCrawlerConfiguration: Swift.Sendable {
         /// The configuration of filtering the Salesforce content. For example, configuring regular expression patterns to include or exclude certain content.
         public var filterConfiguration: BedrockAgentClientTypes.CrawlFilterConfiguration?
 
@@ -2592,12 +2614,11 @@ extension BedrockAgentClientTypes {
             self.filterConfiguration = filterConfiguration
         }
     }
-
 }
 
 extension BedrockAgentClientTypes {
 
-    public enum SalesforceAuthType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SalesforceAuthType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case oauth2ClientCredentials
         case sdkUnknown(Swift.String)
 
@@ -2622,8 +2643,9 @@ extension BedrockAgentClientTypes {
 }
 
 extension BedrockAgentClientTypes {
+
     /// The endpoint information to connect to your Salesforce data source.
-    public struct SalesforceSourceConfiguration {
+    public struct SalesforceSourceConfiguration: Swift.Sendable {
         /// The supported authentication type to authenticate and connect to your Salesforce instance.
         /// This member is required.
         public var authType: BedrockAgentClientTypes.SalesforceAuthType?
@@ -2645,12 +2667,12 @@ extension BedrockAgentClientTypes {
             self.hostUrl = hostUrl
         }
     }
-
 }
 
 extension BedrockAgentClientTypes {
+
     /// The configuration information to connect to Salesforce as your data source.
-    public struct SalesforceDataSourceConfiguration {
+    public struct SalesforceDataSourceConfiguration: Swift.Sendable {
         /// The configuration of the Salesforce content. For example, configuring specific types of Salesforce content.
         public var crawlerConfiguration: BedrockAgentClientTypes.SalesforceCrawlerConfiguration?
         /// The endpoint information to connect to your Salesforce data source.
@@ -2666,12 +2688,12 @@ extension BedrockAgentClientTypes {
             self.sourceConfiguration = sourceConfiguration
         }
     }
-
 }
 
 extension BedrockAgentClientTypes {
+
     /// The configuration of the SharePoint content. For example, configuring specific types of SharePoint content.
-    public struct SharePointCrawlerConfiguration {
+    public struct SharePointCrawlerConfiguration: Swift.Sendable {
         /// The configuration of filtering the SharePoint content. For example, configuring regular expression patterns to include or exclude certain content.
         public var filterConfiguration: BedrockAgentClientTypes.CrawlFilterConfiguration?
 
@@ -2682,12 +2704,11 @@ extension BedrockAgentClientTypes {
             self.filterConfiguration = filterConfiguration
         }
     }
-
 }
 
 extension BedrockAgentClientTypes {
 
-    public enum SharePointAuthType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SharePointAuthType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case oauth2ClientCredentials
         case sdkUnknown(Swift.String)
 
@@ -2713,7 +2734,7 @@ extension BedrockAgentClientTypes {
 
 extension BedrockAgentClientTypes {
 
-    public enum SharePointHostType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SharePointHostType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case online
         case sdkUnknown(Swift.String)
 
@@ -2738,8 +2759,9 @@ extension BedrockAgentClientTypes {
 }
 
 extension BedrockAgentClientTypes {
+
     /// The endpoint information to connect to your SharePoint data source.
-    public struct SharePointSourceConfiguration {
+    public struct SharePointSourceConfiguration: Swift.Sendable {
         /// The supported authentication type to authenticate and connect to your SharePoint site/sites.
         /// This member is required.
         public var authType: BedrockAgentClientTypes.SharePointAuthType?
@@ -2775,12 +2797,12 @@ extension BedrockAgentClientTypes {
             self.tenantId = tenantId
         }
     }
-
 }
 
 extension BedrockAgentClientTypes {
+
     /// The configuration information to connect to SharePoint as your data source.
-    public struct SharePointDataSourceConfiguration {
+    public struct SharePointDataSourceConfiguration: Swift.Sendable {
         /// The configuration of the SharePoint content. For example, configuring specific types of SharePoint content.
         public var crawlerConfiguration: BedrockAgentClientTypes.SharePointCrawlerConfiguration?
         /// The endpoint information to connect to your SharePoint data source.
@@ -2796,12 +2818,11 @@ extension BedrockAgentClientTypes {
             self.sourceConfiguration = sourceConfiguration
         }
     }
-
 }
 
 extension BedrockAgentClientTypes {
 
-    public enum DataSourceType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DataSourceType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case confluence
         case s3
         case salesforce
@@ -2838,8 +2859,9 @@ extension BedrockAgentClientTypes {
 }
 
 extension BedrockAgentClientTypes {
+
     /// The rate limits for the URLs that you want to crawl. You should be authorized to crawl the URLs.
-    public struct WebCrawlerLimits {
+    public struct WebCrawlerLimits: Swift.Sendable {
         /// The max rate at which pages are crawled, up to 300 per minute per host.
         public var rateLimit: Swift.Int?
 
@@ -2850,12 +2872,11 @@ extension BedrockAgentClientTypes {
             self.rateLimit = rateLimit
         }
     }
-
 }
 
 extension BedrockAgentClientTypes {
 
-    public enum WebScopeType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum WebScopeType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case hostOnly
         case subdomains
         case sdkUnknown(Swift.String)
@@ -2883,8 +2904,9 @@ extension BedrockAgentClientTypes {
 }
 
 extension BedrockAgentClientTypes {
+
     /// The configuration of web URLs that you want to crawl. You should be authorized to crawl the URLs.
-    public struct WebCrawlerConfiguration {
+    public struct WebCrawlerConfiguration: Swift.Sendable {
         /// The configuration of crawl limits for the web URLs.
         public var crawlerLimits: BedrockAgentClientTypes.WebCrawlerLimits?
         /// A list of one or more exclusion regular expression patterns to exclude certain URLs. If you specify an inclusion and exclusion filter/pattern and both match a URL, the exclusion filter takes precedence and the web content of the URL isn’t crawled.
@@ -2907,7 +2929,6 @@ extension BedrockAgentClientTypes {
             self.scope = scope
         }
     }
-
 }
 
 extension BedrockAgentClientTypes.WebCrawlerConfiguration: Swift.CustomDebugStringConvertible {
@@ -2916,8 +2937,9 @@ extension BedrockAgentClientTypes.WebCrawlerConfiguration: Swift.CustomDebugStri
 }
 
 extension BedrockAgentClientTypes {
+
     /// The seed or starting point URL. You should be authorized to crawl the URL.
-    public struct SeedUrl {
+    public struct SeedUrl: Swift.Sendable {
         /// A seed or starting point URL.
         public var url: Swift.String?
 
@@ -2928,12 +2950,12 @@ extension BedrockAgentClientTypes {
             self.url = url
         }
     }
-
 }
 
 extension BedrockAgentClientTypes {
+
     /// The configuration of web URLs that you want to crawl. You should be authorized to crawl the URLs.
-    public struct UrlConfiguration {
+    public struct UrlConfiguration: Swift.Sendable {
         /// One or more seed or starting point URLs.
         public var seedUrls: [BedrockAgentClientTypes.SeedUrl]?
 
@@ -2944,12 +2966,12 @@ extension BedrockAgentClientTypes {
             self.seedUrls = seedUrls
         }
     }
-
 }
 
 extension BedrockAgentClientTypes {
+
     /// The configuration of the URL/URLs for the web content that you want to crawl. You should be authorized to crawl the URLs.
-    public struct WebSourceConfiguration {
+    public struct WebSourceConfiguration: Swift.Sendable {
         /// The configuration of the URL/URLs.
         /// This member is required.
         public var urlConfiguration: BedrockAgentClientTypes.UrlConfiguration?
@@ -2961,12 +2983,12 @@ extension BedrockAgentClientTypes {
             self.urlConfiguration = urlConfiguration
         }
     }
-
 }
 
 extension BedrockAgentClientTypes {
+
     /// The configuration details for the web data source.
-    public struct WebDataSourceConfiguration {
+    public struct WebDataSourceConfiguration: Swift.Sendable {
         /// The Web Crawler configuration details for the web data source.
         public var crawlerConfiguration: BedrockAgentClientTypes.WebCrawlerConfiguration?
         /// The source configuration details for the web data source.
@@ -2982,12 +3004,12 @@ extension BedrockAgentClientTypes {
             self.sourceConfiguration = sourceConfiguration
         }
     }
-
 }
 
 extension BedrockAgentClientTypes {
+
     /// The connection configuration for the data source.
-    public struct DataSourceConfiguration {
+    public struct DataSourceConfiguration: Swift.Sendable {
         /// The configuration information to connect to Confluence as your data source. Confluence data source connector is in preview release and is subject to change.
         public var confluenceConfiguration: BedrockAgentClientTypes.ConfluenceDataSourceConfiguration?
         /// The configuration information to connect to Amazon S3 as your data source.
@@ -3019,12 +3041,12 @@ extension BedrockAgentClientTypes {
             self.webConfiguration = webConfiguration
         }
     }
-
 }
 
 extension BedrockAgentClientTypes {
+
     /// Contains the configuration for server-side encryption.
-    public struct ServerSideEncryptionConfiguration {
+    public struct ServerSideEncryptionConfiguration: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the KMS key used to encrypt the resource.
         public var kmsKeyArn: Swift.String?
 
@@ -3035,12 +3057,11 @@ extension BedrockAgentClientTypes {
             self.kmsKeyArn = kmsKeyArn
         }
     }
-
 }
 
 extension BedrockAgentClientTypes {
 
-    public enum ChunkingStrategy: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ChunkingStrategy: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case fixedSize
         case hierarchical
         case `none`
@@ -3074,8 +3095,9 @@ extension BedrockAgentClientTypes {
 }
 
 extension BedrockAgentClientTypes {
+
     /// Configurations for when you choose fixed-size chunking. If you set the chunkingStrategy as NONE, exclude this field.
-    public struct FixedSizeChunkingConfiguration {
+    public struct FixedSizeChunkingConfiguration: Swift.Sendable {
         /// The maximum number of tokens to include in a chunk.
         /// This member is required.
         public var maxTokens: Swift.Int?
@@ -3092,12 +3114,12 @@ extension BedrockAgentClientTypes {
             self.overlapPercentage = overlapPercentage
         }
     }
-
 }
 
 extension BedrockAgentClientTypes {
+
     /// Token settings for a layer in a hierarchical chunking configuration.
-    public struct HierarchicalChunkingLevelConfiguration {
+    public struct HierarchicalChunkingLevelConfiguration: Swift.Sendable {
         /// The maximum number of tokens that a chunk can contain in this layer.
         /// This member is required.
         public var maxTokens: Swift.Int?
@@ -3109,12 +3131,12 @@ extension BedrockAgentClientTypes {
             self.maxTokens = maxTokens
         }
     }
-
 }
 
 extension BedrockAgentClientTypes {
+
     /// Settings for hierarchical document chunking for a data source. Hierarchical chunking splits documents into layers of chunks where the first layer contains large chunks, and the second layer contains smaller chunks derived from the first layer. You configure the number of tokens to overlap, or repeat across adjacent chunks. For example, if you set overlap tokens to 60, the last 60 tokens in the first chunk are also included at the beginning of the second chunk. For each layer, you must also configure the maximum number of tokens in a chunk.
-    public struct HierarchicalChunkingConfiguration {
+    public struct HierarchicalChunkingConfiguration: Swift.Sendable {
         /// Token settings for each layer.
         /// This member is required.
         public var levelConfigurations: [BedrockAgentClientTypes.HierarchicalChunkingLevelConfiguration]?
@@ -3131,12 +3153,12 @@ extension BedrockAgentClientTypes {
             self.overlapTokens = overlapTokens
         }
     }
-
 }
 
 extension BedrockAgentClientTypes {
+
     /// Settings for semantic document chunking for a data source. Semantic chunking splits a document into into smaller documents based on groups of similar content derived from the text with natural language processing. With semantic chunking, each sentence is compared to the next to determine how similar they are. You specify a threshold in the form of a percentile, where adjacent sentences that are less similar than that percentage of sentence pairs are divided into separate chunks. For example, if you set the threshold to 90, then the 10 percent of sentence pairs that are least similar are split. So if you have 101 sentences, 100 sentence pairs are compared, and the 10 with the least similarity are split, creating 11 chunks. These chunks are further split if they exceed the max token size. You must also specify a buffer size, which determines whether sentences are compared in isolation, or within a moving context window that includes the previous and following sentence. For example, if you set the buffer size to 1, the embedding for sentence 10 is derived from sentences 9, 10, and 11 combined.
-    public struct SemanticChunkingConfiguration {
+    public struct SemanticChunkingConfiguration: Swift.Sendable {
         /// The dissimilarity threshold for splitting chunks.
         /// This member is required.
         public var breakpointPercentileThreshold: Swift.Int?
@@ -3158,12 +3180,12 @@ extension BedrockAgentClientTypes {
             self.maxTokens = maxTokens
         }
     }
-
 }
 
 extension BedrockAgentClientTypes {
+
     /// Details about how to chunk the documents in the data source. A chunk refers to an excerpt from a data source that is returned when the knowledge base that it belongs to is queried.
-    public struct ChunkingConfiguration {
+    public struct ChunkingConfiguration: Swift.Sendable {
         /// Knowledge base can split your source data into chunks. A chunk refers to an excerpt from a data source that is returned when the knowledge base that it belongs to is queried. You have the following options for chunking your data. If you opt for NONE, then you may want to pre-process your files by splitting them up such that each file corresponds to a chunk.
         ///
         /// * FIXED_SIZE – Amazon Bedrock splits your source data into chunks of the approximate size that you set in the fixedSizeChunkingConfiguration.
@@ -3195,12 +3217,12 @@ extension BedrockAgentClientTypes {
             self.semanticChunkingConfiguration = semanticChunkingConfiguration
         }
     }
-
 }
 
 extension BedrockAgentClientTypes {
+
     /// An Amazon S3 location.
-    public struct S3Location {
+    public struct S3Location: Swift.Sendable {
         /// The location's URI. For example, s3://my-bucket/chunk-processor/.
         /// This member is required.
         public var uri: Swift.String?
@@ -3212,12 +3234,12 @@ extension BedrockAgentClientTypes {
             self.uri = uri
         }
     }
-
 }
 
 extension BedrockAgentClientTypes {
+
     /// A location for storing content from data sources temporarily as it is processed by custom components in the ingestion pipeline.
-    public struct IntermediateStorage {
+    public struct IntermediateStorage: Swift.Sendable {
         /// An S3 bucket path.
         /// This member is required.
         public var s3Location: BedrockAgentClientTypes.S3Location?
@@ -3229,12 +3251,11 @@ extension BedrockAgentClientTypes {
             self.s3Location = s3Location
         }
     }
-
 }
 
 extension BedrockAgentClientTypes {
 
-    public enum StepType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum StepType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case postChunking
         case sdkUnknown(Swift.String)
 
@@ -3259,8 +3280,9 @@ extension BedrockAgentClientTypes {
 }
 
 extension BedrockAgentClientTypes {
+
     /// A Lambda function that processes documents.
-    public struct TransformationLambdaConfiguration {
+    public struct TransformationLambdaConfiguration: Swift.Sendable {
         /// The function's ARN identifier.
         /// This member is required.
         public var lambdaArn: Swift.String?
@@ -3272,12 +3294,12 @@ extension BedrockAgentClientTypes {
             self.lambdaArn = lambdaArn
         }
     }
-
 }
 
 extension BedrockAgentClientTypes {
+
     /// A Lambda function that processes documents.
-    public struct TransformationFunction {
+    public struct TransformationFunction: Swift.Sendable {
         /// The Lambda function.
         /// This member is required.
         public var transformationLambdaConfiguration: BedrockAgentClientTypes.TransformationLambdaConfiguration?
@@ -3289,12 +3311,12 @@ extension BedrockAgentClientTypes {
             self.transformationLambdaConfiguration = transformationLambdaConfiguration
         }
     }
-
 }
 
 extension BedrockAgentClientTypes {
+
     /// A custom processing step for documents moving through a data source ingestion pipeline. To process documents after they have been converted into chunks, set the step to apply to POST_CHUNKING.
-    public struct Transformation {
+    public struct Transformation: Swift.Sendable {
         /// When the service applies the transformation.
         /// This member is required.
         public var stepToApply: BedrockAgentClientTypes.StepType?
@@ -3311,12 +3333,12 @@ extension BedrockAgentClientTypes {
             self.transformationFunction = transformationFunction
         }
     }
-
 }
 
 extension BedrockAgentClientTypes {
+
     /// Settings for customizing steps in the data source content ingestion pipeline. You can configure the data source to process documents with a Lambda function after they are parsed and converted into chunks. When you add a post-chunking transformation, the service stores chunked documents in an S3 bucket and invokes a Lambda function to process them. To process chunked documents with a Lambda function, define an S3 bucket path for input and output objects, and a transformation that specifies the Lambda function to invoke. You can use the Lambda function to customize how chunks are split, and the metadata for each chunk.
-    public struct CustomTransformationConfiguration {
+    public struct CustomTransformationConfiguration: Swift.Sendable {
         /// An S3 bucket path for input and output objects.
         /// This member is required.
         public var intermediateStorage: BedrockAgentClientTypes.IntermediateStorage?
@@ -3333,12 +3355,12 @@ extension BedrockAgentClientTypes {
             self.transformations = transformations
         }
     }
-
 }
 
 extension BedrockAgentClientTypes {
+
     /// Instructions for interpreting the contents of a document.
-    public struct ParsingPrompt {
+    public struct ParsingPrompt: Swift.Sendable {
         /// Instructions for interpreting the contents of a document.
         /// This member is required.
         public var parsingPromptText: Swift.String?
@@ -3350,12 +3372,12 @@ extension BedrockAgentClientTypes {
             self.parsingPromptText = parsingPromptText
         }
     }
-
 }
 
 extension BedrockAgentClientTypes {
+
     /// Settings for a foundation model or [inference profile](https://docs.aws.amazon.com/bedrock/latest/userguide/cross-region-inference.html) used to parse documents for a data source.
-    public struct BedrockFoundationModelConfiguration {
+    public struct BedrockFoundationModelConfiguration: Swift.Sendable {
         /// The ARN of the foundation model or [inference profile](https://docs.aws.amazon.com/bedrock/latest/userguide/cross-region-inference.html).
         /// This member is required.
         public var modelArn: Swift.String?
@@ -3371,12 +3393,11 @@ extension BedrockAgentClientTypes {
             self.parsingPrompt = parsingPrompt
         }
     }
-
 }
 
 extension BedrockAgentClientTypes {
 
-    public enum ParsingStrategy: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ParsingStrategy: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case bedrockFoundationModel
         case sdkUnknown(Swift.String)
 
@@ -3401,6 +3422,7 @@ extension BedrockAgentClientTypes {
 }
 
 extension BedrockAgentClientTypes {
+
     /// Settings for parsing document contents. By default, the service converts the contents of each document into text before splitting it into chunks. To improve processing of PDF files with tables and images, you can configure the data source to convert the pages of text into images and use a model to describe the contents of each page. To use a model to parse PDF documents, set the parsing strategy to BEDROCK_FOUNDATION_MODEL and specify the model or [inference profile](https://docs.aws.amazon.com/bedrock/latest/userguide/cross-region-inference.html) to use by ARN. You can also override the default parsing prompt with instructions for how to interpret images and tables in your documents. The following models are supported.
     ///
     /// * Anthropic Claude 3 Sonnet - anthropic.claude-3-sonnet-20240229-v1:0
@@ -3409,7 +3431,7 @@ extension BedrockAgentClientTypes {
     ///
     ///
     /// You can get the ARN of a model with the [ListFoundationModels](https://docs.aws.amazon.com/bedrock/latest/APIReference/API_ListFoundationModels.html) action. Standard model usage charges apply for the foundation model parsing strategy.
-    public struct ParsingConfiguration {
+    public struct ParsingConfiguration: Swift.Sendable {
         /// Settings for a foundation model used to parse documents for a data source.
         public var bedrockFoundationModelConfiguration: BedrockAgentClientTypes.BedrockFoundationModelConfiguration?
         /// The parsing strategy for the data source.
@@ -3425,12 +3447,12 @@ extension BedrockAgentClientTypes {
             self.parsingStrategy = parsingStrategy
         }
     }
-
 }
 
 extension BedrockAgentClientTypes {
+
     /// Contains details about how to ingest the documents in a data source.
-    public struct VectorIngestionConfiguration {
+    public struct VectorIngestionConfiguration: Swift.Sendable {
         /// Details about how to chunk the documents in the data source. A chunk refers to an excerpt from a data source that is returned when the knowledge base that it belongs to is queried.
         public var chunkingConfiguration: BedrockAgentClientTypes.ChunkingConfiguration?
         /// A custom document transformer for parsed data source documents.
@@ -3449,10 +3471,9 @@ extension BedrockAgentClientTypes {
             self.parsingConfiguration = parsingConfiguration
         }
     }
-
 }
 
-public struct CreateDataSourceInput {
+public struct CreateDataSourceInput: Swift.Sendable {
     /// A unique, case-sensitive identifier to ensure that the API request completes no more than one time. If this token matches a previous request, Amazon Bedrock ignores the request, but does not return an error. For more information, see [Ensuring idempotency](https://docs.aws.amazon.com/AWSEC2/latest/APIReference/Run_Instance_Idempotency.html).
     public var clientToken: Swift.String?
     /// The data deletion policy for the data source. You can set the data deletion policy to:
@@ -3501,7 +3522,7 @@ public struct CreateDataSourceInput {
 
 extension BedrockAgentClientTypes {
 
-    public enum DataSourceStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DataSourceStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case available
         case deleteUnsuccessful
         case deleting
@@ -3532,8 +3553,9 @@ extension BedrockAgentClientTypes {
 }
 
 extension BedrockAgentClientTypes {
+
     /// Contains details about a data source.
-    public struct DataSource {
+    public struct DataSource: Swift.Sendable {
         /// The time at which the data source was created.
         /// This member is required.
         public var createdAt: Foundation.Date?
@@ -3599,10 +3621,9 @@ extension BedrockAgentClientTypes {
             self.vectorIngestionConfiguration = vectorIngestionConfiguration
         }
     }
-
 }
 
-public struct CreateDataSourceOutput {
+public struct CreateDataSourceOutput: Swift.Sendable {
     /// Contains details about the data source.
     /// This member is required.
     public var dataSource: BedrockAgentClientTypes.DataSource?
@@ -3615,7 +3636,7 @@ public struct CreateDataSourceOutput {
     }
 }
 
-public struct DeleteDataSourceInput {
+public struct DeleteDataSourceInput: Swift.Sendable {
     /// The unique identifier of the data source to delete.
     /// This member is required.
     public var dataSourceId: Swift.String?
@@ -3633,7 +3654,7 @@ public struct DeleteDataSourceInput {
     }
 }
 
-public struct DeleteDataSourceOutput {
+public struct DeleteDataSourceOutput: Swift.Sendable {
     /// The unique identifier of the data source that was deleted.
     /// This member is required.
     public var dataSourceId: Swift.String?
@@ -3656,11 +3677,11 @@ public struct DeleteDataSourceOutput {
     }
 }
 
-public struct GetDataSourceInput {
+public struct GetDataSourceInput: Swift.Sendable {
     /// The unique identifier of the data source.
     /// This member is required.
     public var dataSourceId: Swift.String?
-    /// The unique identifier of the knowledge base that the data source was added to.
+    /// The unique identifier of the knowledge base for the data source.
     /// This member is required.
     public var knowledgeBaseId: Swift.String?
 
@@ -3674,7 +3695,7 @@ public struct GetDataSourceInput {
     }
 }
 
-public struct GetDataSourceOutput {
+public struct GetDataSourceOutput: Swift.Sendable {
     /// Contains details about the data source.
     /// This member is required.
     public var dataSource: BedrockAgentClientTypes.DataSource?
@@ -3687,7 +3708,7 @@ public struct GetDataSourceOutput {
     }
 }
 
-public struct ListDataSourcesInput {
+public struct ListDataSourcesInput: Swift.Sendable {
     /// The unique identifier of the knowledge base for which to return a list of information.
     /// This member is required.
     public var knowledgeBaseId: Swift.String?
@@ -3709,8 +3730,9 @@ public struct ListDataSourcesInput {
 }
 
 extension BedrockAgentClientTypes {
+
     /// Contains details about a data source.
-    public struct DataSourceSummary {
+    public struct DataSourceSummary: Swift.Sendable {
         /// The unique identifier of the data source.
         /// This member is required.
         public var dataSourceId: Swift.String?
@@ -3746,10 +3768,9 @@ extension BedrockAgentClientTypes {
             self.updatedAt = updatedAt
         }
     }
-
 }
 
-public struct ListDataSourcesOutput {
+public struct ListDataSourcesOutput: Swift.Sendable {
     /// A list of objects, each of which contains information about a data source.
     /// This member is required.
     public var dataSourceSummaries: [BedrockAgentClientTypes.DataSourceSummary]?
@@ -3766,7 +3787,7 @@ public struct ListDataSourcesOutput {
     }
 }
 
-public struct UpdateDataSourceInput {
+public struct UpdateDataSourceInput: Swift.Sendable {
     /// The data deletion policy for the data source that you want to update.
     public var dataDeletionPolicy: BedrockAgentClientTypes.DataDeletionPolicy?
     /// The connection configuration for the data source that you want to update.
@@ -3810,7 +3831,7 @@ public struct UpdateDataSourceInput {
     }
 }
 
-public struct UpdateDataSourceOutput {
+public struct UpdateDataSourceOutput: Swift.Sendable {
     /// Contains details about the data source.
     /// This member is required.
     public var dataSource: BedrockAgentClientTypes.DataSource?
@@ -3824,8 +3845,9 @@ public struct UpdateDataSourceOutput {
 }
 
 extension BedrockAgentClientTypes {
+
     /// The configuration of a connection between a condition node and another node.
-    public struct FlowConditionalConnectionConfiguration {
+    public struct FlowConditionalConnectionConfiguration: Swift.Sendable {
         /// The condition that triggers this connection. For more information about how to write conditions, see the Condition node type in the [Node types](https://docs.aws.amazon.com/bedrock/latest/userguide/node-types.html) topic in the Amazon Bedrock User Guide.
         /// This member is required.
         public var condition: Swift.String?
@@ -3837,12 +3859,12 @@ extension BedrockAgentClientTypes {
             self.condition = condition
         }
     }
-
 }
 
 extension BedrockAgentClientTypes {
+
     /// The configuration of a connection originating from a node that isn't a Condition node.
-    public struct FlowDataConnectionConfiguration {
+    public struct FlowDataConnectionConfiguration: Swift.Sendable {
         /// The name of the output in the source node that the connection begins from.
         /// This member is required.
         public var sourceOutput: Swift.String?
@@ -3859,24 +3881,23 @@ extension BedrockAgentClientTypes {
             self.targetInput = targetInput
         }
     }
-
 }
 
 extension BedrockAgentClientTypes {
+
     /// The configuration of the connection.
-    public enum FlowConnectionConfiguration {
+    public enum FlowConnectionConfiguration: Swift.Sendable {
         /// The configuration of a connection originating from a node that isn't a Condition node.
         case data(BedrockAgentClientTypes.FlowDataConnectionConfiguration)
         /// The configuration of a connection originating from a Condition node.
         case conditional(BedrockAgentClientTypes.FlowConditionalConnectionConfiguration)
         case sdkUnknown(Swift.String)
     }
-
 }
 
 extension BedrockAgentClientTypes {
 
-    public enum FlowConnectionType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum FlowConnectionType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case conditional
         case data
         case sdkUnknown(Swift.String)
@@ -3904,8 +3925,9 @@ extension BedrockAgentClientTypes {
 }
 
 extension BedrockAgentClientTypes {
+
     /// Contains information about a connection between two nodes in the flow.
-    public struct FlowConnection {
+    public struct FlowConnection: Swift.Sendable {
         /// The configuration of the connection.
         public var configuration: BedrockAgentClientTypes.FlowConnectionConfiguration?
         /// A name for the connection that you can reference.
@@ -3936,21 +3958,21 @@ extension BedrockAgentClientTypes {
             self.type = type
         }
     }
-
 }
 
 extension BedrockAgentClientTypes {
+
     /// Defines a collector node in your flow. This node takes an iteration of inputs and consolidates them into an array in the output. For more information, see [Node types in Amazon Bedrock works](https://docs.aws.amazon.com/bedrock/latest/userguide/flows-nodes.html) in the Amazon Bedrock User Guide.
-    public struct CollectorFlowNodeConfiguration {
+    public struct CollectorFlowNodeConfiguration: Swift.Sendable {
 
         public init() { }
     }
-
 }
 
 extension BedrockAgentClientTypes {
+
     /// Defines a condition in the condition node.
-    public struct FlowCondition {
+    public struct FlowCondition: Swift.Sendable {
         /// Defines the condition. You must refer to at least one of the inputs in the condition. For more information, expand the Condition node section in [Node types in prompt flows](https://docs.aws.amazon.com/bedrock/latest/userguide/flows-how-it-works.html#flows-nodes).
         public var expression: Swift.String?
         /// A name for the condition that you can reference.
@@ -3966,18 +3988,17 @@ extension BedrockAgentClientTypes {
             self.name = name
         }
     }
-
 }
 
 extension BedrockAgentClientTypes.FlowCondition: Swift.CustomDebugStringConvertible {
     public var debugDescription: Swift.String {
-        "CONTENT_REDACTED"
-    }
+        "FlowCondition(name: \(Swift.String(describing: name)), expression: \"CONTENT_REDACTED\")"}
 }
 
 extension BedrockAgentClientTypes {
+
     /// Defines a condition node in your flow. You can specify conditions that determine which node comes next in the flow. For more information, see [Node types in Amazon Bedrock works](https://docs.aws.amazon.com/bedrock/latest/userguide/flows-nodes.html) in the Amazon Bedrock User Guide.
-    public struct ConditionFlowNodeConfiguration {
+    public struct ConditionFlowNodeConfiguration: Swift.Sendable {
         /// An array of conditions. Each member contains the name of a condition and an expression that defines the condition.
         /// This member is required.
         public var conditions: [BedrockAgentClientTypes.FlowCondition]?
@@ -3989,35 +4010,30 @@ extension BedrockAgentClientTypes {
             self.conditions = conditions
         }
     }
-
-}
-
-extension BedrockAgentClientTypes.ConditionFlowNodeConfiguration: Swift.CustomDebugStringConvertible {
-    public var debugDescription: Swift.String {
-        "ConditionFlowNodeConfiguration(conditions: \"CONTENT_REDACTED\")"}
 }
 
 extension BedrockAgentClientTypes {
+
     /// Contains configurations for the input flow node for a flow. This node takes the input from flow invocation and passes it to the next node in the data type that you specify.
-    public struct InputFlowNodeConfiguration {
+    public struct InputFlowNodeConfiguration: Swift.Sendable {
 
         public init() { }
     }
-
 }
 
 extension BedrockAgentClientTypes {
+
     /// Contains configurations for an iterator node in a flow. Takes an input that is an array and iteratively sends each item of the array as an output to the following node. The size of the array is also returned in the output. The output flow node at the end of the flow iteration will return a response for each member of the array. To return only one response, you can include a collector node downstream from the iterator node.
-    public struct IteratorFlowNodeConfiguration {
+    public struct IteratorFlowNodeConfiguration: Swift.Sendable {
 
         public init() { }
     }
-
 }
 
 extension BedrockAgentClientTypes {
+
     /// Contains configurations for a knowledge base node in a flow. This node takes a query as the input and returns, as the output, the retrieved responses directly (as an array) or a response generated based on the retrieved responses. For more information, see [Node types in Amazon Bedrock works](https://docs.aws.amazon.com/bedrock/latest/userguide/flows-nodes.html) in the Amazon Bedrock User Guide.
-    public struct KnowledgeBaseFlowNodeConfiguration {
+    public struct KnowledgeBaseFlowNodeConfiguration: Swift.Sendable {
         /// The unique identifier of the knowledge base to query.
         /// This member is required.
         public var knowledgeBaseId: Swift.String?
@@ -4033,12 +4049,12 @@ extension BedrockAgentClientTypes {
             self.modelId = modelId
         }
     }
-
 }
 
 extension BedrockAgentClientTypes {
+
     /// Contains configurations for a Lambda function node in the flow. You specify the Lambda function to invoke and the inputs into the function. The output is the response that is defined in the Lambda function. For more information, see [Node types in Amazon Bedrock works](https://docs.aws.amazon.com/bedrock/latest/userguide/flows-nodes.html) in the Amazon Bedrock User Guide.
-    public struct LambdaFunctionFlowNodeConfiguration {
+    public struct LambdaFunctionFlowNodeConfiguration: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the Lambda function to invoke.
         /// This member is required.
         public var lambdaArn: Swift.String?
@@ -4050,12 +4066,12 @@ extension BedrockAgentClientTypes {
             self.lambdaArn = lambdaArn
         }
     }
-
 }
 
 extension BedrockAgentClientTypes {
+
     /// Contains configurations for a Lex node in the flow. You specify a Amazon Lex bot to invoke. This node takes an utterance as the input and returns as the output the intent identified by the Amazon Lex bot. For more information, see [Node types in Amazon Bedrock works](https://docs.aws.amazon.com/bedrock/latest/userguide/flows-nodes.html) in the Amazon Bedrock User Guide.
-    public struct LexFlowNodeConfiguration {
+    public struct LexFlowNodeConfiguration: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the Amazon Lex bot alias to invoke.
         /// This member is required.
         public var botAliasArn: Swift.String?
@@ -4072,29 +4088,27 @@ extension BedrockAgentClientTypes {
             self.localeId = localeId
         }
     }
-
 }
 
 extension BedrockAgentClientTypes {
+
     /// Contains configurations for an output flow node in the flow. You specify the data type expected for the input into the node in the type field and how to return the final output in the expression field.
-    public struct OutputFlowNodeConfiguration {
+    public struct OutputFlowNodeConfiguration: Swift.Sendable {
 
         public init() { }
     }
-
 }
 
 extension BedrockAgentClientTypes {
+
     /// Contains inference configurations related to model inference for a prompt. For more information, see [Inference parameters](https://docs.aws.amazon.com/bedrock/latest/userguide/inference-parameters.html).
-    public struct PromptModelInferenceConfiguration {
+    public struct PromptModelInferenceConfiguration: Swift.Sendable {
         /// The maximum number of tokens to return in the response.
         public var maxTokens: Swift.Int?
         /// A list of strings that define sequences after which the model will stop generating.
         public var stopSequences: [Swift.String]?
         /// Controls the randomness of the response. Choose a lower value for more predictable outputs and a higher value for more surprising outputs.
         public var temperature: Swift.Float?
-        /// The number of most-likely candidates that the model considers for the next token during generation.
-        public var topk: Swift.Int?
         /// The percentage of most-likely candidates that the model considers for the next token.
         public var topp: Swift.Float?
 
@@ -4102,33 +4116,31 @@ extension BedrockAgentClientTypes {
             maxTokens: Swift.Int? = nil,
             stopSequences: [Swift.String]? = nil,
             temperature: Swift.Float? = nil,
-            topk: Swift.Int? = nil,
             topp: Swift.Float? = nil
         )
         {
             self.maxTokens = maxTokens
             self.stopSequences = stopSequences
             self.temperature = temperature
-            self.topk = topk
             self.topp = topp
         }
     }
-
 }
 
 extension BedrockAgentClientTypes {
+
     /// Contains inference configurations for the prompt.
-    public enum PromptInferenceConfiguration {
+    public enum PromptInferenceConfiguration: Swift.Sendable {
         /// Contains inference configurations for a text prompt.
         case text(BedrockAgentClientTypes.PromptModelInferenceConfiguration)
         case sdkUnknown(Swift.String)
     }
-
 }
 
 extension BedrockAgentClientTypes {
+
     /// Contains information about a variable in the prompt.
-    public struct PromptInputVariable {
+    public struct PromptInputVariable: Swift.Sendable {
         /// The name of the variable.
         public var name: Swift.String?
 
@@ -4139,12 +4151,12 @@ extension BedrockAgentClientTypes {
             self.name = name
         }
     }
-
 }
 
 extension BedrockAgentClientTypes {
+
     /// Contains configurations for a text prompt template. To include a variable, enclose a word in double curly braces as in {{variable}}.
-    public struct TextPromptTemplateConfiguration {
+    public struct TextPromptTemplateConfiguration: Swift.Sendable {
         /// An array of the variables in the prompt template.
         public var inputVariables: [BedrockAgentClientTypes.PromptInputVariable]?
         /// The message for the prompt.
@@ -4160,7 +4172,6 @@ extension BedrockAgentClientTypes {
             self.text = text
         }
     }
-
 }
 
 extension BedrockAgentClientTypes.TextPromptTemplateConfiguration: Swift.CustomDebugStringConvertible {
@@ -4170,18 +4181,18 @@ extension BedrockAgentClientTypes.TextPromptTemplateConfiguration: Swift.CustomD
 }
 
 extension BedrockAgentClientTypes {
+
     /// Contains the message for a prompt. For more information, see [Prompt management in Amazon Bedrock](https://docs.aws.amazon.com/bedrock/latest/userguide/prompt-management.html).
-    public enum PromptTemplateConfiguration {
+    public enum PromptTemplateConfiguration: Swift.Sendable {
         /// Contains configurations for the text in a message for a prompt.
         case text(BedrockAgentClientTypes.TextPromptTemplateConfiguration)
         case sdkUnknown(Swift.String)
     }
-
 }
 
 extension BedrockAgentClientTypes {
 
-    public enum PromptTemplateType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum PromptTemplateType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case text
         case sdkUnknown(Swift.String)
 
@@ -4206,8 +4217,11 @@ extension BedrockAgentClientTypes {
 }
 
 extension BedrockAgentClientTypes {
+
     /// Contains configurations for a prompt defined inline in the node.
-    public struct PromptFlowNodeInlineConfiguration {
+    public struct PromptFlowNodeInlineConfiguration: Swift.Sendable {
+        /// Contains model-specific inference configurations that aren't in the inferenceConfiguration field. To see model-specific inference parameters, see [Inference request parameters and response fields for foundation models](https://docs.aws.amazon.com/bedrock/latest/userguide/model-parameters.html).
+        public var additionalModelRequestFields: Smithy.Document?
         /// Contains inference configurations for the prompt.
         public var inferenceConfiguration: BedrockAgentClientTypes.PromptInferenceConfiguration?
         /// The unique identifier of the model or [inference profile](https://docs.aws.amazon.com/bedrock/latest/userguide/cross-region-inference.html) to run inference with.
@@ -4221,24 +4235,26 @@ extension BedrockAgentClientTypes {
         public var templateType: BedrockAgentClientTypes.PromptTemplateType?
 
         public init(
+            additionalModelRequestFields: Smithy.Document? = nil,
             inferenceConfiguration: BedrockAgentClientTypes.PromptInferenceConfiguration? = nil,
             modelId: Swift.String? = nil,
             templateConfiguration: BedrockAgentClientTypes.PromptTemplateConfiguration? = nil,
             templateType: BedrockAgentClientTypes.PromptTemplateType? = nil
         )
         {
+            self.additionalModelRequestFields = additionalModelRequestFields
             self.inferenceConfiguration = inferenceConfiguration
             self.modelId = modelId
             self.templateConfiguration = templateConfiguration
             self.templateType = templateType
         }
     }
-
 }
 
 extension BedrockAgentClientTypes {
+
     /// Contains configurations for a prompt from Prompt management to use in a node.
-    public struct PromptFlowNodeResourceConfiguration {
+    public struct PromptFlowNodeResourceConfiguration: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the prompt from Prompt management.
         /// This member is required.
         public var promptArn: Swift.String?
@@ -4250,24 +4266,24 @@ extension BedrockAgentClientTypes {
             self.promptArn = promptArn
         }
     }
-
 }
 
 extension BedrockAgentClientTypes {
+
     /// Contains configurations for a prompt and whether it is from Prompt management or defined inline.
-    public enum PromptFlowNodeSourceConfiguration {
+    public enum PromptFlowNodeSourceConfiguration: Swift.Sendable {
         /// Contains configurations for a prompt from Prompt management.
         case resource(BedrockAgentClientTypes.PromptFlowNodeResourceConfiguration)
         /// Contains configurations for a prompt that is defined inline
         case inline(BedrockAgentClientTypes.PromptFlowNodeInlineConfiguration)
         case sdkUnknown(Swift.String)
     }
-
 }
 
 extension BedrockAgentClientTypes {
+
     /// Contains configurations for a prompt node in the flow. You can use a prompt from Prompt management or you can define one in this node. If the prompt contains variables, the inputs into this node will fill in the variables. The output from this node is the response generated by the model. For more information, see [Node types in Amazon Bedrock works](https://docs.aws.amazon.com/bedrock/latest/userguide/flows-nodes.html) in the Amazon Bedrock User Guide.
-    public struct PromptFlowNodeConfiguration {
+    public struct PromptFlowNodeConfiguration: Swift.Sendable {
         /// Specifies whether the prompt is from Prompt management or defined inline.
         /// This member is required.
         public var sourceConfiguration: BedrockAgentClientTypes.PromptFlowNodeSourceConfiguration?
@@ -4279,12 +4295,12 @@ extension BedrockAgentClientTypes {
             self.sourceConfiguration = sourceConfiguration
         }
     }
-
 }
 
 extension BedrockAgentClientTypes {
+
     /// Contains configurations for the Amazon S3 location from which to retrieve data to return as the output from the node.
-    public struct RetrievalFlowNodeS3Configuration {
+    public struct RetrievalFlowNodeS3Configuration: Swift.Sendable {
         /// The name of the Amazon S3 bucket from which to retrieve data.
         /// This member is required.
         public var bucketName: Swift.String?
@@ -4296,22 +4312,22 @@ extension BedrockAgentClientTypes {
             self.bucketName = bucketName
         }
     }
-
 }
 
 extension BedrockAgentClientTypes {
+
     /// Contains configurations for the service to use for retrieving data to return as the output from the node.
-    public enum RetrievalFlowNodeServiceConfiguration {
+    public enum RetrievalFlowNodeServiceConfiguration: Swift.Sendable {
         /// Contains configurations for the Amazon S3 location from which to retrieve data to return as the output from the node.
         case s3(BedrockAgentClientTypes.RetrievalFlowNodeS3Configuration)
         case sdkUnknown(Swift.String)
     }
-
 }
 
 extension BedrockAgentClientTypes {
+
     /// Contains configurations for a Retrieval node in a flow. This node retrieves data from the Amazon S3 location that you specify and returns it as the output.
-    public struct RetrievalFlowNodeConfiguration {
+    public struct RetrievalFlowNodeConfiguration: Swift.Sendable {
         /// Contains configurations for the service to use for retrieving data to return as the output from the node.
         /// This member is required.
         public var serviceConfiguration: BedrockAgentClientTypes.RetrievalFlowNodeServiceConfiguration?
@@ -4323,12 +4339,12 @@ extension BedrockAgentClientTypes {
             self.serviceConfiguration = serviceConfiguration
         }
     }
-
 }
 
 extension BedrockAgentClientTypes {
+
     /// Contains configurations for the Amazon S3 location in which to store the input into the node.
-    public struct StorageFlowNodeS3Configuration {
+    public struct StorageFlowNodeS3Configuration: Swift.Sendable {
         /// The name of the Amazon S3 bucket in which to store the input into the node.
         /// This member is required.
         public var bucketName: Swift.String?
@@ -4340,22 +4356,22 @@ extension BedrockAgentClientTypes {
             self.bucketName = bucketName
         }
     }
-
 }
 
 extension BedrockAgentClientTypes {
+
     /// Contains configurations for the service to use for storing the input into the node.
-    public enum StorageFlowNodeServiceConfiguration {
+    public enum StorageFlowNodeServiceConfiguration: Swift.Sendable {
         /// Contains configurations for the Amazon S3 location in which to store the input into the node.
         case s3(BedrockAgentClientTypes.StorageFlowNodeS3Configuration)
         case sdkUnknown(Swift.String)
     }
-
 }
 
 extension BedrockAgentClientTypes {
+
     /// Contains configurations for a Storage node in a flow. This node stores the input in an Amazon S3 location that you specify.
-    public struct StorageFlowNodeConfiguration {
+    public struct StorageFlowNodeConfiguration: Swift.Sendable {
         /// Contains configurations for the service to use for storing the input into the node.
         /// This member is required.
         public var serviceConfiguration: BedrockAgentClientTypes.StorageFlowNodeServiceConfiguration?
@@ -4367,12 +4383,12 @@ extension BedrockAgentClientTypes {
             self.serviceConfiguration = serviceConfiguration
         }
     }
-
 }
 
 extension BedrockAgentClientTypes {
+
     /// Contains configurations for a node in your flow. For more information, see [Node types in Amazon Bedrock works](https://docs.aws.amazon.com/bedrock/latest/userguide/flows-nodes.html) in the Amazon Bedrock User Guide.
-    public enum FlowNodeConfiguration {
+    public enum FlowNodeConfiguration: Swift.Sendable {
         /// Contains configurations for an input flow node in your flow. The first node in the flow. inputs can't be specified for this node.
         case input(BedrockAgentClientTypes.InputFlowNodeConfiguration)
         /// Contains configurations for an output flow node in your flow. The last node in the flow. outputs can't be specified for this node.
@@ -4399,12 +4415,11 @@ extension BedrockAgentClientTypes {
         case collector(BedrockAgentClientTypes.CollectorFlowNodeConfiguration)
         case sdkUnknown(Swift.String)
     }
-
 }
 
 extension BedrockAgentClientTypes {
 
-    public enum FlowNodeIODataType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum FlowNodeIODataType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case array
         case boolean
         case number
@@ -4441,8 +4456,9 @@ extension BedrockAgentClientTypes {
 }
 
 extension BedrockAgentClientTypes {
+
     /// Contains configurations for an input to a node.
-    public struct FlowNodeInput {
+    public struct FlowNodeInput: Swift.Sendable {
         /// An expression that formats the input for the node. For an explanation of how to create expressions, see [Expressions in Prompt flows in Amazon Bedrock](https://docs.aws.amazon.com/bedrock/latest/userguide/flows-expressions.html).
         /// This member is required.
         public var expression: Swift.String?
@@ -4464,7 +4480,6 @@ extension BedrockAgentClientTypes {
             self.type = type
         }
     }
-
 }
 
 extension BedrockAgentClientTypes.FlowNodeInput: Swift.CustomDebugStringConvertible {
@@ -4473,8 +4488,9 @@ extension BedrockAgentClientTypes.FlowNodeInput: Swift.CustomDebugStringConverti
 }
 
 extension BedrockAgentClientTypes {
+
     /// Contains configurations for an output from a node.
-    public struct FlowNodeOutput {
+    public struct FlowNodeOutput: Swift.Sendable {
         /// A name for the output that you can reference.
         /// This member is required.
         public var name: Swift.String?
@@ -4491,12 +4507,11 @@ extension BedrockAgentClientTypes {
             self.type = type
         }
     }
-
 }
 
 extension BedrockAgentClientTypes {
 
-    public enum FlowNodeType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum FlowNodeType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case agent
         case collector
         case condition
@@ -4554,8 +4569,9 @@ extension BedrockAgentClientTypes {
 }
 
 extension BedrockAgentClientTypes {
+
     /// Contains configurations about a node in the flow.
-    public struct FlowNode {
+    public struct FlowNode: Swift.Sendable {
         /// Contains configurations for the node.
         public var configuration: BedrockAgentClientTypes.FlowNodeConfiguration?
         /// An array of objects, each of which contains information about an input into the node.
@@ -4584,12 +4600,12 @@ extension BedrockAgentClientTypes {
             self.type = type
         }
     }
-
 }
 
 extension BedrockAgentClientTypes {
+
     /// The definition of the nodes and connections between nodes in the flow.
-    public struct FlowDefinition {
+    public struct FlowDefinition: Swift.Sendable {
         /// An array of connection definitions in the flow.
         public var connections: [BedrockAgentClientTypes.FlowConnection]?
         /// An array of node definitions in the flow.
@@ -4604,15 +4620,15 @@ extension BedrockAgentClientTypes {
             self.nodes = nodes
         }
     }
-
 }
 
 extension BedrockAgentClientTypes.FlowDefinition: Swift.CustomDebugStringConvertible {
     public var debugDescription: Swift.String {
-        "FlowDefinition(connections: \(Swift.String(describing: connections)), nodes: \"CONTENT_REDACTED\")"}
+        "CONTENT_REDACTED"
+    }
 }
 
-public struct CreateFlowInput {
+public struct CreateFlowInput: Swift.Sendable {
     /// A unique, case-sensitive identifier to ensure that the API request completes no more than one time. If this token matches a previous request, Amazon Bedrock ignores the request, but does not return an error. For more information, see [Ensuring idempotency](https://docs.aws.amazon.com/AWSEC2/latest/APIReference/Run_Instance_Idempotency.html).
     public var clientToken: Swift.String?
     /// The Amazon Resource Name (ARN) of the KMS key to encrypt the flow.
@@ -4650,9 +4666,14 @@ public struct CreateFlowInput {
     }
 }
 
+extension CreateFlowInput: Swift.CustomDebugStringConvertible {
+    public var debugDescription: Swift.String {
+        "CreateFlowInput(clientToken: \(Swift.String(describing: clientToken)), customerEncryptionKeyArn: \(Swift.String(describing: customerEncryptionKeyArn)), description: \(Swift.String(describing: description)), executionRoleArn: \(Swift.String(describing: executionRoleArn)), name: \(Swift.String(describing: name)), tags: \(Swift.String(describing: tags)), definition: \"CONTENT_REDACTED\")"}
+}
+
 extension BedrockAgentClientTypes {
 
-    public enum FlowStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum FlowStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case failed
         case notPrepared
         case prepared
@@ -4685,7 +4706,7 @@ extension BedrockAgentClientTypes {
     }
 }
 
-public struct CreateFlowOutput {
+public struct CreateFlowOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the flow.
     /// This member is required.
     public var arn: Swift.String?
@@ -4745,7 +4766,12 @@ public struct CreateFlowOutput {
     }
 }
 
-public struct DeleteFlowInput {
+extension CreateFlowOutput: Swift.CustomDebugStringConvertible {
+    public var debugDescription: Swift.String {
+        "CreateFlowOutput(arn: \(Swift.String(describing: arn)), createdAt: \(Swift.String(describing: createdAt)), customerEncryptionKeyArn: \(Swift.String(describing: customerEncryptionKeyArn)), description: \(Swift.String(describing: description)), executionRoleArn: \(Swift.String(describing: executionRoleArn)), id: \(Swift.String(describing: id)), name: \(Swift.String(describing: name)), status: \(Swift.String(describing: status)), updatedAt: \(Swift.String(describing: updatedAt)), version: \(Swift.String(describing: version)), definition: \"CONTENT_REDACTED\")"}
+}
+
+public struct DeleteFlowInput: Swift.Sendable {
     /// The unique identifier of the flow.
     /// This member is required.
     public var flowIdentifier: Swift.String?
@@ -4762,7 +4788,7 @@ public struct DeleteFlowInput {
     }
 }
 
-public struct DeleteFlowOutput {
+public struct DeleteFlowOutput: Swift.Sendable {
     /// The unique identifier of the flow.
     /// This member is required.
     public var id: Swift.String?
@@ -4776,8 +4802,9 @@ public struct DeleteFlowOutput {
 }
 
 extension BedrockAgentClientTypes {
+
     /// Contains information about a version that the alias maps to.
-    public struct FlowAliasRoutingConfigurationListItem {
+    public struct FlowAliasRoutingConfigurationListItem: Swift.Sendable {
         /// The version that the alias maps to.
         public var flowVersion: Swift.String?
 
@@ -4788,10 +4815,9 @@ extension BedrockAgentClientTypes {
             self.flowVersion = flowVersion
         }
     }
-
 }
 
-public struct CreateFlowAliasInput {
+public struct CreateFlowAliasInput: Swift.Sendable {
     /// A unique, case-sensitive identifier to ensure that the API request completes no more than one time. If this token matches a previous request, Amazon Bedrock ignores the request, but does not return an error. For more information, see [Ensuring idempotency](https://docs.aws.amazon.com/AWSEC2/latest/APIReference/Run_Instance_Idempotency.html).
     public var clientToken: Swift.String?
     /// A description for the alias.
@@ -4826,7 +4852,7 @@ public struct CreateFlowAliasInput {
     }
 }
 
-public struct CreateFlowAliasOutput {
+public struct CreateFlowAliasOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the alias.
     /// This member is required.
     public var arn: Swift.String?
@@ -4873,7 +4899,7 @@ public struct CreateFlowAliasOutput {
     }
 }
 
-public struct DeleteFlowAliasInput {
+public struct DeleteFlowAliasInput: Swift.Sendable {
     /// The unique identifier of the alias to be deleted.
     /// This member is required.
     public var aliasIdentifier: Swift.String?
@@ -4891,7 +4917,7 @@ public struct DeleteFlowAliasInput {
     }
 }
 
-public struct DeleteFlowAliasOutput {
+public struct DeleteFlowAliasOutput: Swift.Sendable {
     /// The unique identifier of the flow that the alias belongs to.
     /// This member is required.
     public var flowId: Swift.String?
@@ -4909,7 +4935,7 @@ public struct DeleteFlowAliasOutput {
     }
 }
 
-public struct GetFlowAliasInput {
+public struct GetFlowAliasInput: Swift.Sendable {
     /// The unique identifier of the alias for which to retrieve information.
     /// This member is required.
     public var aliasIdentifier: Swift.String?
@@ -4927,7 +4953,7 @@ public struct GetFlowAliasInput {
     }
 }
 
-public struct GetFlowAliasOutput {
+public struct GetFlowAliasOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the flow.
     /// This member is required.
     public var arn: Swift.String?
@@ -4974,7 +5000,7 @@ public struct GetFlowAliasOutput {
     }
 }
 
-public struct ListFlowAliasesInput {
+public struct ListFlowAliasesInput: Swift.Sendable {
     /// The unique identifier of the flow for which aliases are being returned.
     /// This member is required.
     public var flowIdentifier: Swift.String?
@@ -4996,10 +5022,11 @@ public struct ListFlowAliasesInput {
 }
 
 extension BedrockAgentClientTypes {
+
     /// Contains information about an alias of a flow. This data type is used in the following API operations:
     ///
     /// * [ListFlowAliases response](https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent_ListFlowAliases.html#API_agent_ListFlowAliases_ResponseSyntax)
-    public struct FlowAliasSummary {
+    public struct FlowAliasSummary: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the alias.
         /// This member is required.
         public var arn: Swift.String?
@@ -5045,10 +5072,9 @@ extension BedrockAgentClientTypes {
             self.updatedAt = updatedAt
         }
     }
-
 }
 
-public struct ListFlowAliasesOutput {
+public struct ListFlowAliasesOutput: Swift.Sendable {
     /// A list, each member of which contains information about an alias.
     /// This member is required.
     public var flowAliasSummaries: [BedrockAgentClientTypes.FlowAliasSummary]?
@@ -5065,7 +5091,7 @@ public struct ListFlowAliasesOutput {
     }
 }
 
-public struct UpdateFlowAliasInput {
+public struct UpdateFlowAliasInput: Swift.Sendable {
     /// The unique identifier of the alias.
     /// This member is required.
     public var aliasIdentifier: Swift.String?
@@ -5097,7 +5123,7 @@ public struct UpdateFlowAliasInput {
     }
 }
 
-public struct UpdateFlowAliasOutput {
+public struct UpdateFlowAliasOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the flow.
     /// This member is required.
     public var arn: Swift.String?
@@ -5144,7 +5170,7 @@ public struct UpdateFlowAliasOutput {
     }
 }
 
-public struct CreateFlowVersionInput {
+public struct CreateFlowVersionInput: Swift.Sendable {
     /// A unique, case-sensitive identifier to ensure that the API request completes no more than one time. If this token matches a previous request, Amazon Bedrock ignores the request, but does not return an error. For more information, see [Ensuring idempotency](https://docs.aws.amazon.com/AWSEC2/latest/APIReference/Run_Instance_Idempotency.html).
     public var clientToken: Swift.String?
     /// A description of the version of the flow.
@@ -5165,7 +5191,7 @@ public struct CreateFlowVersionInput {
     }
 }
 
-public struct CreateFlowVersionOutput {
+public struct CreateFlowVersionOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the flow.
     /// This member is required.
     public var arn: Swift.String?
@@ -5220,7 +5246,12 @@ public struct CreateFlowVersionOutput {
     }
 }
 
-public struct DeleteFlowVersionInput {
+extension CreateFlowVersionOutput: Swift.CustomDebugStringConvertible {
+    public var debugDescription: Swift.String {
+        "CreateFlowVersionOutput(arn: \(Swift.String(describing: arn)), createdAt: \(Swift.String(describing: createdAt)), customerEncryptionKeyArn: \(Swift.String(describing: customerEncryptionKeyArn)), description: \(Swift.String(describing: description)), executionRoleArn: \(Swift.String(describing: executionRoleArn)), id: \(Swift.String(describing: id)), name: \(Swift.String(describing: name)), status: \(Swift.String(describing: status)), version: \(Swift.String(describing: version)), definition: \"CONTENT_REDACTED\")"}
+}
+
+public struct DeleteFlowVersionInput: Swift.Sendable {
     /// The unique identifier of the flow whose version that you want to delete
     /// This member is required.
     public var flowIdentifier: Swift.String?
@@ -5242,7 +5273,7 @@ public struct DeleteFlowVersionInput {
     }
 }
 
-public struct DeleteFlowVersionOutput {
+public struct DeleteFlowVersionOutput: Swift.Sendable {
     /// The unique identifier of the flow.
     /// This member is required.
     public var id: Swift.String?
@@ -5260,7 +5291,7 @@ public struct DeleteFlowVersionOutput {
     }
 }
 
-public struct GetFlowVersionInput {
+public struct GetFlowVersionInput: Swift.Sendable {
     /// The unique identifier of the flow for which to get information.
     /// This member is required.
     public var flowIdentifier: Swift.String?
@@ -5278,7 +5309,7 @@ public struct GetFlowVersionInput {
     }
 }
 
-public struct GetFlowVersionOutput {
+public struct GetFlowVersionOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the flow.
     /// This member is required.
     public var arn: Swift.String?
@@ -5333,7 +5364,12 @@ public struct GetFlowVersionOutput {
     }
 }
 
-public struct ListFlowVersionsInput {
+extension GetFlowVersionOutput: Swift.CustomDebugStringConvertible {
+    public var debugDescription: Swift.String {
+        "GetFlowVersionOutput(arn: \(Swift.String(describing: arn)), createdAt: \(Swift.String(describing: createdAt)), customerEncryptionKeyArn: \(Swift.String(describing: customerEncryptionKeyArn)), description: \(Swift.String(describing: description)), executionRoleArn: \(Swift.String(describing: executionRoleArn)), id: \(Swift.String(describing: id)), name: \(Swift.String(describing: name)), status: \(Swift.String(describing: status)), version: \(Swift.String(describing: version)), definition: \"CONTENT_REDACTED\")"}
+}
+
+public struct ListFlowVersionsInput: Swift.Sendable {
     /// The unique identifier of the flow.
     /// This member is required.
     public var flowIdentifier: Swift.String?
@@ -5355,10 +5391,11 @@ public struct ListFlowVersionsInput {
 }
 
 extension BedrockAgentClientTypes {
+
     /// Contains information about a version of a flow. This data type is used in the following API operations:
     ///
     /// * [ListFlowVersions response](https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent_ListFlowVersions.html#API_agent_ListFlowVersions_ResponseSyntax)
-    public struct FlowVersionSummary {
+    public struct FlowVersionSummary: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the flow that the version belongs to.
         /// This member is required.
         public var arn: Swift.String?
@@ -5390,10 +5427,9 @@ extension BedrockAgentClientTypes {
             self.version = version
         }
     }
-
 }
 
-public struct ListFlowVersionsOutput {
+public struct ListFlowVersionsOutput: Swift.Sendable {
     /// A list, each member of which contains information about a flow.
     /// This member is required.
     public var flowVersionSummaries: [BedrockAgentClientTypes.FlowVersionSummary]?
@@ -5410,7 +5446,7 @@ public struct ListFlowVersionsOutput {
     }
 }
 
-public struct GetFlowInput {
+public struct GetFlowInput: Swift.Sendable {
     /// The unique identifier of the flow.
     /// This member is required.
     public var flowIdentifier: Swift.String?
@@ -5425,7 +5461,7 @@ public struct GetFlowInput {
 
 extension BedrockAgentClientTypes {
 
-    public enum FlowValidationSeverity: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum FlowValidationSeverity: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case error
         case warning
         case sdkUnknown(Swift.String)
@@ -5453,12 +5489,13 @@ extension BedrockAgentClientTypes {
 }
 
 extension BedrockAgentClientTypes {
+
     /// Contains information about validation of the flow. This data type is used in the following API operations:
     ///
     /// * [GetFlow response](https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent_GetFlow.html#API_agent_GetFlow_ResponseSyntax)
     ///
     /// * [GetFlowVersion response](https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent_GetFlowVersion.html#API_agent_GetFlowVersion_ResponseSyntax)
-    public struct FlowValidation {
+    public struct FlowValidation: Swift.Sendable {
         /// A message describing the validation error.
         /// This member is required.
         public var message: Swift.String?
@@ -5475,10 +5512,9 @@ extension BedrockAgentClientTypes {
             self.severity = severity
         }
     }
-
 }
 
-public struct GetFlowOutput {
+public struct GetFlowOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the flow.
     /// This member is required.
     public var arn: Swift.String?
@@ -5550,7 +5586,12 @@ public struct GetFlowOutput {
     }
 }
 
-public struct ListFlowsInput {
+extension GetFlowOutput: Swift.CustomDebugStringConvertible {
+    public var debugDescription: Swift.String {
+        "GetFlowOutput(arn: \(Swift.String(describing: arn)), createdAt: \(Swift.String(describing: createdAt)), customerEncryptionKeyArn: \(Swift.String(describing: customerEncryptionKeyArn)), description: \(Swift.String(describing: description)), executionRoleArn: \(Swift.String(describing: executionRoleArn)), id: \(Swift.String(describing: id)), name: \(Swift.String(describing: name)), status: \(Swift.String(describing: status)), updatedAt: \(Swift.String(describing: updatedAt)), validations: \(Swift.String(describing: validations)), version: \(Swift.String(describing: version)), definition: \"CONTENT_REDACTED\")"}
+}
+
+public struct ListFlowsInput: Swift.Sendable {
     /// The maximum number of results to return in the response. If the total number of results is greater than this value, use the token returned in the response in the nextToken field when making another request to return the next batch of results.
     public var maxResults: Swift.Int?
     /// If the total number of results is greater than the maxResults value provided in the request, enter the token returned in the nextToken field in the response in this field to return the next batch of results.
@@ -5567,8 +5608,9 @@ public struct ListFlowsInput {
 }
 
 extension BedrockAgentClientTypes {
+
     /// Contains the definition of a flow.
-    public struct FlowSummary {
+    public struct FlowSummary: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the flow.
         /// This member is required.
         public var arn: Swift.String?
@@ -5622,10 +5664,9 @@ extension BedrockAgentClientTypes {
             self.version = version
         }
     }
-
 }
 
-public struct ListFlowsOutput {
+public struct ListFlowsOutput: Swift.Sendable {
     /// A list, each member of which contains information about a flow.
     /// This member is required.
     public var flowSummaries: [BedrockAgentClientTypes.FlowSummary]?
@@ -5642,7 +5683,7 @@ public struct ListFlowsOutput {
     }
 }
 
-public struct PrepareFlowInput {
+public struct PrepareFlowInput: Swift.Sendable {
     /// The unique identifier of the flow.
     /// This member is required.
     public var flowIdentifier: Swift.String?
@@ -5655,7 +5696,7 @@ public struct PrepareFlowInput {
     }
 }
 
-public struct PrepareFlowOutput {
+public struct PrepareFlowOutput: Swift.Sendable {
     /// The unique identifier of the flow.
     /// This member is required.
     public var id: Swift.String?
@@ -5673,7 +5714,7 @@ public struct PrepareFlowOutput {
     }
 }
 
-public struct UpdateFlowInput {
+public struct UpdateFlowInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the KMS key to encrypt the flow.
     public var customerEncryptionKeyArn: Swift.String?
     /// A definition of the nodes and the connections between the nodes in the flow.
@@ -5708,7 +5749,12 @@ public struct UpdateFlowInput {
     }
 }
 
-public struct UpdateFlowOutput {
+extension UpdateFlowInput: Swift.CustomDebugStringConvertible {
+    public var debugDescription: Swift.String {
+        "UpdateFlowInput(customerEncryptionKeyArn: \(Swift.String(describing: customerEncryptionKeyArn)), description: \(Swift.String(describing: description)), executionRoleArn: \(Swift.String(describing: executionRoleArn)), flowIdentifier: \(Swift.String(describing: flowIdentifier)), name: \(Swift.String(describing: name)), definition: \"CONTENT_REDACTED\")"}
+}
+
+public struct UpdateFlowOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the flow.
     /// This member is required.
     public var arn: Swift.String?
@@ -5768,14 +5814,19 @@ public struct UpdateFlowOutput {
     }
 }
 
-public struct GetIngestionJobInput {
-    /// The unique identifier of the data source in the ingestion job.
+extension UpdateFlowOutput: Swift.CustomDebugStringConvertible {
+    public var debugDescription: Swift.String {
+        "UpdateFlowOutput(arn: \(Swift.String(describing: arn)), createdAt: \(Swift.String(describing: createdAt)), customerEncryptionKeyArn: \(Swift.String(describing: customerEncryptionKeyArn)), description: \(Swift.String(describing: description)), executionRoleArn: \(Swift.String(describing: executionRoleArn)), id: \(Swift.String(describing: id)), name: \(Swift.String(describing: name)), status: \(Swift.String(describing: status)), updatedAt: \(Swift.String(describing: updatedAt)), version: \(Swift.String(describing: version)), definition: \"CONTENT_REDACTED\")"}
+}
+
+public struct GetIngestionJobInput: Swift.Sendable {
+    /// The unique identifier of the data source for the data ingestion job you want to get information on.
     /// This member is required.
     public var dataSourceId: Swift.String?
-    /// The unique identifier of the ingestion job.
+    /// The unique identifier of the data ingestion job you want to get information on.
     /// This member is required.
     public var ingestionJobId: Swift.String?
-    /// The unique identifier of the knowledge base for which the ingestion job applies.
+    /// The unique identifier of the knowledge base for the data ingestion job you want to get information on.
     /// This member is required.
     public var knowledgeBaseId: Swift.String?
 
@@ -5792,9 +5843,10 @@ public struct GetIngestionJobInput {
 }
 
 extension BedrockAgentClientTypes {
-    /// Contains the statistics for the ingestion job.
-    public struct IngestionJobStatistics {
-        /// The number of source documents that was deleted.
+
+    /// Contains the statistics for the data ingestion job.
+    public struct IngestionJobStatistics: Swift.Sendable {
+        /// The number of source documents that were deleted.
         public var numberOfDocumentsDeleted: Swift.Int
         /// The number of source documents that failed to be ingested.
         public var numberOfDocumentsFailed: Swift.Int
@@ -5828,16 +5880,17 @@ extension BedrockAgentClientTypes {
             self.numberOfNewDocumentsIndexed = numberOfNewDocumentsIndexed
         }
     }
-
 }
 
 extension BedrockAgentClientTypes {
 
-    public enum IngestionJobStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum IngestionJobStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case complete
         case failed
         case inProgress
         case starting
+        case stopped
+        case stopping
         case sdkUnknown(Swift.String)
 
         public static var allCases: [IngestionJobStatus] {
@@ -5845,7 +5898,9 @@ extension BedrockAgentClientTypes {
                 .complete,
                 .failed,
                 .inProgress,
-                .starting
+                .starting,
+                .stopped,
+                .stopping
             ]
         }
 
@@ -5860,6 +5915,8 @@ extension BedrockAgentClientTypes {
             case .failed: return "FAILED"
             case .inProgress: return "IN_PROGRESS"
             case .starting: return "STARTING"
+            case .stopped: return "STOPPED"
+            case .stopping: return "STOPPING"
             case let .sdkUnknown(s): return s
             }
         }
@@ -5867,36 +5924,37 @@ extension BedrockAgentClientTypes {
 }
 
 extension BedrockAgentClientTypes {
-    /// Contains details about an ingestion job, which converts a data source to embeddings for a vector store in knowledge base. This data type is used in the following API operations:
+
+    /// Contains details about a data ingestion job. Data sources are ingested into a knowledge base so that Large Language Models (LLMs) can use your data. This data type is used in the following API operations:
     ///
     /// * [StartIngestionJob response](https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent_StartIngestionJob.html#API_agent_StartIngestionJob_ResponseSyntax)
     ///
     /// * [GetIngestionJob response](https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent_GetIngestionJob.html#API_agent_GetIngestionJob_ResponseSyntax)
     ///
     /// * [ListIngestionJob response](https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent_ListIngestionJobs.html#API_agent_ListIngestionJobs_ResponseSyntax)
-    public struct IngestionJob {
-        /// The unique identifier of the ingested data source.
+    public struct IngestionJob: Swift.Sendable {
+        /// The unique identifier of the data source for the data ingestion job.
         /// This member is required.
         public var dataSourceId: Swift.String?
-        /// The description of the ingestion job.
+        /// The description of the data ingestion job.
         public var description: Swift.String?
-        /// A list of reasons that the ingestion job failed.
+        /// A list of reasons that the data ingestion job failed.
         public var failureReasons: [Swift.String]?
-        /// The unique identifier of the ingestion job.
+        /// The unique identifier of the data ingestion job.
         /// This member is required.
         public var ingestionJobId: Swift.String?
-        /// The unique identifier of the knowledge base to which the data source is being added.
+        /// The unique identifier of the knowledge for the data ingestion job.
         /// This member is required.
         public var knowledgeBaseId: Swift.String?
-        /// The time at which the ingestion job started.
+        /// The time the data ingestion job started. If you stop a data ingestion job, the startedAt time is the time the job was started before the job was stopped.
         /// This member is required.
         public var startedAt: Foundation.Date?
-        /// Contains statistics about the ingestion job.
+        /// Contains statistics about the data ingestion job.
         public var statistics: BedrockAgentClientTypes.IngestionJobStatistics?
-        /// The status of the ingestion job.
+        /// The status of the data ingestion job.
         /// This member is required.
         public var status: BedrockAgentClientTypes.IngestionJobStatus?
-        /// The time at which the ingestion job was last updated.
+        /// The time the data ingestion job was last updated. If you stop a data ingestion job, the updatedAt time is the time the job was stopped.
         /// This member is required.
         public var updatedAt: Foundation.Date?
 
@@ -5923,11 +5981,10 @@ extension BedrockAgentClientTypes {
             self.updatedAt = updatedAt
         }
     }
-
 }
 
-public struct GetIngestionJobOutput {
-    /// Contains details about the ingestion job.
+public struct GetIngestionJobOutput: Swift.Sendable {
+    /// Contains details about the data ingestion job.
     /// This member is required.
     public var ingestionJob: BedrockAgentClientTypes.IngestionJob?
 
@@ -5941,7 +5998,7 @@ public struct GetIngestionJobOutput {
 
 extension BedrockAgentClientTypes {
 
-    public enum IngestionJobFilterAttribute: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum IngestionJobFilterAttribute: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case status
         case sdkUnknown(Swift.String)
 
@@ -5967,7 +6024,7 @@ extension BedrockAgentClientTypes {
 
 extension BedrockAgentClientTypes {
 
-    public enum IngestionJobFilterOperator: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum IngestionJobFilterOperator: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case eq
         case sdkUnknown(Swift.String)
 
@@ -5992,15 +6049,16 @@ extension BedrockAgentClientTypes {
 }
 
 extension BedrockAgentClientTypes {
-    /// Defines a filter by which to filter the results.
-    public struct IngestionJobFilter {
-        /// The attribute by which to filter the results.
+
+    /// The definition of a filter to filter the data.
+    public struct IngestionJobFilter: Swift.Sendable {
+        /// The name of field or attribute to apply the filter.
         /// This member is required.
         public var attribute: BedrockAgentClientTypes.IngestionJobFilterAttribute?
-        /// The operation to carry out between the attribute and the values.
+        /// The operation to apply to the field or attribute.
         /// This member is required.
         public var `operator`: BedrockAgentClientTypes.IngestionJobFilterOperator?
-        /// A list of values for the attribute.
+        /// A list of values that belong to the field or attribute.
         /// This member is required.
         public var values: [Swift.String]?
 
@@ -6015,12 +6073,11 @@ extension BedrockAgentClientTypes {
             self.values = values
         }
     }
-
 }
 
 extension BedrockAgentClientTypes {
 
-    public enum IngestionJobSortByAttribute: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum IngestionJobSortByAttribute: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case startedAt
         case status
         case sdkUnknown(Swift.String)
@@ -6049,7 +6106,7 @@ extension BedrockAgentClientTypes {
 
 extension BedrockAgentClientTypes {
 
-    public enum SortOrder: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SortOrder: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case ascending
         case descending
         case sdkUnknown(Swift.String)
@@ -6077,12 +6134,13 @@ extension BedrockAgentClientTypes {
 }
 
 extension BedrockAgentClientTypes {
-    /// Parameters by which to sort the results.
-    public struct IngestionJobSortBy {
-        /// The attribute by which to sort the results.
+
+    /// The parameters of sorting the data.
+    public struct IngestionJobSortBy: Swift.Sendable {
+        /// The name of field or attribute to apply sorting of data.
         /// This member is required.
         public var attribute: BedrockAgentClientTypes.IngestionJobSortByAttribute?
-        /// The order by which to sort the results.
+        /// The order for sorting the data.
         /// This member is required.
         public var order: BedrockAgentClientTypes.SortOrder?
 
@@ -6095,23 +6153,22 @@ extension BedrockAgentClientTypes {
             self.order = order
         }
     }
-
 }
 
-public struct ListIngestionJobsInput {
-    /// The unique identifier of the data source for which to return ingestion jobs.
+public struct ListIngestionJobsInput: Swift.Sendable {
+    /// The unique identifier of the data source for the list of data ingestion jobs.
     /// This member is required.
     public var dataSourceId: Swift.String?
-    /// Contains a definition of a filter for which to filter the results.
+    /// Contains information about the filters for filtering the data.
     public var filters: [BedrockAgentClientTypes.IngestionJobFilter]?
-    /// The unique identifier of the knowledge base for which to return ingestion jobs.
+    /// The unique identifier of the knowledge base for the list of data ingestion jobs.
     /// This member is required.
     public var knowledgeBaseId: Swift.String?
     /// The maximum number of results to return in the response. If the total number of results is greater than this value, use the token returned in the response in the nextToken field when making another request to return the next batch of results.
     public var maxResults: Swift.Int?
     /// If the total number of results is greater than the maxResults value provided in the request, enter the token returned in the nextToken field in the response in this field to return the next batch of results.
     public var nextToken: Swift.String?
-    /// Contains details about how to sort the results.
+    /// Contains details about how to sort the data.
     public var sortBy: BedrockAgentClientTypes.IngestionJobSortBy?
 
     public init(
@@ -6133,28 +6190,29 @@ public struct ListIngestionJobsInput {
 }
 
 extension BedrockAgentClientTypes {
-    /// Contains details about an ingestion job.
-    public struct IngestionJobSummary {
-        /// The unique identifier of the data source in the ingestion job.
+
+    /// Contains details about a data ingestion job.
+    public struct IngestionJobSummary: Swift.Sendable {
+        /// The unique identifier of the data source for the data ingestion job.
         /// This member is required.
         public var dataSourceId: Swift.String?
-        /// The description of the ingestion job.
+        /// The description of the data ingestion job.
         public var description: Swift.String?
-        /// The unique identifier of the ingestion job.
+        /// The unique identifier of the data ingestion job.
         /// This member is required.
         public var ingestionJobId: Swift.String?
-        /// The unique identifier of the knowledge base to which the data source is added.
+        /// The unique identifier of the knowledge base for the data ingestion job.
         /// This member is required.
         public var knowledgeBaseId: Swift.String?
-        /// The time at which the ingestion job was started.
+        /// The time the data ingestion job started.
         /// This member is required.
         public var startedAt: Foundation.Date?
-        /// Contains statistics for the ingestion job.
+        /// Contains statistics for the data ingestion job.
         public var statistics: BedrockAgentClientTypes.IngestionJobStatistics?
-        /// The status of the ingestion job.
+        /// The status of the data ingestion job.
         /// This member is required.
         public var status: BedrockAgentClientTypes.IngestionJobStatus?
-        /// The time at which the ingestion job was last updated.
+        /// The time the data ingestion job was last updated.
         /// This member is required.
         public var updatedAt: Foundation.Date?
 
@@ -6179,11 +6237,10 @@ extension BedrockAgentClientTypes {
             self.updatedAt = updatedAt
         }
     }
-
 }
 
-public struct ListIngestionJobsOutput {
-    /// A list of objects, each of which contains information about an ingestion job.
+public struct ListIngestionJobsOutput: Swift.Sendable {
+    /// A list of data ingestion jobs with information about each job.
     /// This member is required.
     public var ingestionJobSummaries: [BedrockAgentClientTypes.IngestionJobSummary]?
     /// If the total number of results is greater than the maxResults value provided in the request, use this token when making another request in the nextToken field to return the next batch of results.
@@ -6199,15 +6256,15 @@ public struct ListIngestionJobsOutput {
     }
 }
 
-public struct StartIngestionJobInput {
+public struct StartIngestionJobInput: Swift.Sendable {
     /// A unique, case-sensitive identifier to ensure that the API request completes no more than one time. If this token matches a previous request, Amazon Bedrock ignores the request, but does not return an error. For more information, see [Ensuring idempotency](https://docs.aws.amazon.com/AWSEC2/latest/APIReference/Run_Instance_Idempotency.html).
     public var clientToken: Swift.String?
-    /// The unique identifier of the data source to ingest.
+    /// The unique identifier of the data source you want to ingest into your knowledge base.
     /// This member is required.
     public var dataSourceId: Swift.String?
-    /// A description of the ingestion job.
+    /// A description of the data ingestion job.
     public var description: Swift.String?
-    /// The unique identifier of the knowledge base to which to add the data source.
+    /// The unique identifier of the knowledge base for the data ingestion job.
     /// This member is required.
     public var knowledgeBaseId: Swift.String?
 
@@ -6225,8 +6282,8 @@ public struct StartIngestionJobInput {
     }
 }
 
-public struct StartIngestionJobOutput {
-    /// An object containing information about the ingestion job.
+public struct StartIngestionJobOutput: Swift.Sendable {
+    /// Contains information about the data ingestion job.
     /// This member is required.
     public var ingestionJob: BedrockAgentClientTypes.IngestionJob?
 
@@ -6238,7 +6295,43 @@ public struct StartIngestionJobOutput {
     }
 }
 
-public struct AssociateAgentKnowledgeBaseInput {
+public struct StopIngestionJobInput: Swift.Sendable {
+    /// The unique identifier of the data source for the data ingestion job you want to stop.
+    /// This member is required.
+    public var dataSourceId: Swift.String?
+    /// The unique identifier of the data ingestion job you want to stop.
+    /// This member is required.
+    public var ingestionJobId: Swift.String?
+    /// The unique identifier of the knowledge base for the data ingestion job you want to stop.
+    /// This member is required.
+    public var knowledgeBaseId: Swift.String?
+
+    public init(
+        dataSourceId: Swift.String? = nil,
+        ingestionJobId: Swift.String? = nil,
+        knowledgeBaseId: Swift.String? = nil
+    )
+    {
+        self.dataSourceId = dataSourceId
+        self.ingestionJobId = ingestionJobId
+        self.knowledgeBaseId = knowledgeBaseId
+    }
+}
+
+public struct StopIngestionJobOutput: Swift.Sendable {
+    /// Contains information about the stopped data ingestion job.
+    /// This member is required.
+    public var ingestionJob: BedrockAgentClientTypes.IngestionJob?
+
+    public init(
+        ingestionJob: BedrockAgentClientTypes.IngestionJob? = nil
+    )
+    {
+        self.ingestionJob = ingestionJob
+    }
+}
+
+public struct AssociateAgentKnowledgeBaseInput: Swift.Sendable {
     /// The unique identifier of the agent with which you want to associate the knowledge base.
     /// This member is required.
     public var agentId: Swift.String?
@@ -6270,7 +6363,7 @@ public struct AssociateAgentKnowledgeBaseInput {
     }
 }
 
-public struct AssociateAgentKnowledgeBaseOutput {
+public struct AssociateAgentKnowledgeBaseOutput: Swift.Sendable {
     /// Contains details about the knowledge base that has been associated with the agent.
     /// This member is required.
     public var agentKnowledgeBase: BedrockAgentClientTypes.AgentKnowledgeBase?
@@ -6285,7 +6378,7 @@ public struct AssociateAgentKnowledgeBaseOutput {
 
 extension BedrockAgentClientTypes {
 
-    public enum KnowledgeBaseType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum KnowledgeBaseType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case vector
         case sdkUnknown(Swift.String)
 
@@ -6310,8 +6403,9 @@ extension BedrockAgentClientTypes {
 }
 
 extension BedrockAgentClientTypes {
+
     /// The vector configuration details for the Bedrock embeddings model.
-    public struct BedrockEmbeddingModelConfiguration {
+    public struct BedrockEmbeddingModelConfiguration: Swift.Sendable {
         /// The dimensions details for the vector configuration used on the Bedrock embeddings model.
         public var dimensions: Swift.Int?
 
@@ -6322,12 +6416,12 @@ extension BedrockAgentClientTypes {
             self.dimensions = dimensions
         }
     }
-
 }
 
 extension BedrockAgentClientTypes {
+
     /// The configuration details for the embeddings model.
-    public struct EmbeddingModelConfiguration {
+    public struct EmbeddingModelConfiguration: Swift.Sendable {
         /// The vector configuration details on the Bedrock embeddings model.
         public var bedrockEmbeddingModelConfiguration: BedrockAgentClientTypes.BedrockEmbeddingModelConfiguration?
 
@@ -6338,13 +6432,13 @@ extension BedrockAgentClientTypes {
             self.bedrockEmbeddingModelConfiguration = bedrockEmbeddingModelConfiguration
         }
     }
-
 }
 
 extension BedrockAgentClientTypes {
+
     /// Contains details about the model used to create vector embeddings for the knowledge base.
-    public struct VectorKnowledgeBaseConfiguration {
-        /// The Amazon Resource Name (ARN) of the model used to create vector embeddings for the knowledge base.
+    public struct VectorKnowledgeBaseConfiguration: Swift.Sendable {
+        /// The Amazon Resource Name (ARN) of the model or inference profile used to create vector embeddings for the knowledge base.
         /// This member is required.
         public var embeddingModelArn: Swift.String?
         /// The embeddings model configuration details for the vector model used in Knowledge Base.
@@ -6359,16 +6453,16 @@ extension BedrockAgentClientTypes {
             self.embeddingModelConfiguration = embeddingModelConfiguration
         }
     }
-
 }
 
 extension BedrockAgentClientTypes {
-    /// Contains details about the embeddings configuration of the knowledge base.
-    public struct KnowledgeBaseConfiguration {
+
+    /// Contains details about the vector embeddings configuration of the knowledge base.
+    public struct KnowledgeBaseConfiguration: Swift.Sendable {
         /// The type of data that the data source is converted into for the knowledge base.
         /// This member is required.
         public var type: BedrockAgentClientTypes.KnowledgeBaseType?
-        /// Contains details about the embeddings model that'sused to convert the data source.
+        /// Contains details about the model that's used to convert the data source into vector embeddings.
         public var vectorKnowledgeBaseConfiguration: BedrockAgentClientTypes.VectorKnowledgeBaseConfiguration?
 
         public init(
@@ -6380,12 +6474,12 @@ extension BedrockAgentClientTypes {
             self.vectorKnowledgeBaseConfiguration = vectorKnowledgeBaseConfiguration
         }
     }
-
 }
 
 extension BedrockAgentClientTypes {
+
     /// Contains the names of the fields to which to map information about the vector store.
-    public struct MongoDbAtlasFieldMapping {
+    public struct MongoDbAtlasFieldMapping: Swift.Sendable {
         /// The name of the field in which Amazon Bedrock stores metadata about the vector store.
         /// This member is required.
         public var metadataField: Swift.String?
@@ -6407,12 +6501,12 @@ extension BedrockAgentClientTypes {
             self.vectorField = vectorField
         }
     }
-
 }
 
 extension BedrockAgentClientTypes {
+
     /// Contains details about the storage configuration of the knowledge base in MongoDB Atlas.
-    public struct MongoDbAtlasConfiguration {
+    public struct MongoDbAtlasConfiguration: Swift.Sendable {
         /// The collection name of the knowledge base in MongoDB Atlas.
         /// This member is required.
         public var collectionName: Swift.String?
@@ -6453,12 +6547,12 @@ extension BedrockAgentClientTypes {
             self.vectorIndexName = vectorIndexName
         }
     }
-
 }
 
 extension BedrockAgentClientTypes {
+
     /// Contains the names of the fields to which to map information about the vector store.
-    public struct OpenSearchServerlessFieldMapping {
+    public struct OpenSearchServerlessFieldMapping: Swift.Sendable {
         /// The name of the field in which Amazon Bedrock stores metadata about the vector store.
         /// This member is required.
         public var metadataField: Swift.String?
@@ -6480,12 +6574,12 @@ extension BedrockAgentClientTypes {
             self.vectorField = vectorField
         }
     }
-
 }
 
 extension BedrockAgentClientTypes {
+
     /// Contains details about the storage configuration of the knowledge base in Amazon OpenSearch Service. For more information, see [Create a vector index in Amazon OpenSearch Service](https://docs.aws.amazon.com/bedrock/latest/userguide/knowledge-base-setup-oss.html).
-    public struct OpenSearchServerlessConfiguration {
+    public struct OpenSearchServerlessConfiguration: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the OpenSearch Service vector store.
         /// This member is required.
         public var collectionArn: Swift.String?
@@ -6507,12 +6601,12 @@ extension BedrockAgentClientTypes {
             self.vectorIndexName = vectorIndexName
         }
     }
-
 }
 
 extension BedrockAgentClientTypes {
+
     /// Contains the names of the fields to which to map information about the vector store.
-    public struct PineconeFieldMapping {
+    public struct PineconeFieldMapping: Swift.Sendable {
         /// The name of the field in which Amazon Bedrock stores metadata about the vector store.
         /// This member is required.
         public var metadataField: Swift.String?
@@ -6529,12 +6623,12 @@ extension BedrockAgentClientTypes {
             self.textField = textField
         }
     }
-
 }
 
 extension BedrockAgentClientTypes {
+
     /// Contains details about the storage configuration of the knowledge base in Pinecone. For more information, see [Create a vector index in Pinecone](https://docs.aws.amazon.com/bedrock/latest/userguide/knowledge-base-setup-pinecone.html).
-    public struct PineconeConfiguration {
+    public struct PineconeConfiguration: Swift.Sendable {
         /// The endpoint URL for your index management page.
         /// This member is required.
         public var connectionString: Swift.String?
@@ -6560,12 +6654,12 @@ extension BedrockAgentClientTypes {
             self.namespace = namespace
         }
     }
-
 }
 
 extension BedrockAgentClientTypes {
+
     /// Contains the names of the fields to which to map information about the vector store.
-    public struct RdsFieldMapping {
+    public struct RdsFieldMapping: Swift.Sendable {
         /// The name of the field in which Amazon Bedrock stores metadata about the vector store.
         /// This member is required.
         public var metadataField: Swift.String?
@@ -6592,12 +6686,12 @@ extension BedrockAgentClientTypes {
             self.vectorField = vectorField
         }
     }
-
 }
 
 extension BedrockAgentClientTypes {
+
     /// Contains details about the storage configuration of the knowledge base in Amazon RDS. For more information, see [Create a vector index in Amazon RDS](https://docs.aws.amazon.com/bedrock/latest/userguide/knowledge-base-setup-rds.html).
-    public struct RdsConfiguration {
+    public struct RdsConfiguration: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the secret that you created in Secrets Manager that is linked to your Amazon RDS database.
         /// This member is required.
         public var credentialsSecretArn: Swift.String?
@@ -6629,12 +6723,12 @@ extension BedrockAgentClientTypes {
             self.tableName = tableName
         }
     }
-
 }
 
 extension BedrockAgentClientTypes {
+
     /// Contains the names of the fields to which to map information about the vector store.
-    public struct RedisEnterpriseCloudFieldMapping {
+    public struct RedisEnterpriseCloudFieldMapping: Swift.Sendable {
         /// The name of the field in which Amazon Bedrock stores metadata about the vector store.
         /// This member is required.
         public var metadataField: Swift.String?
@@ -6656,12 +6750,12 @@ extension BedrockAgentClientTypes {
             self.vectorField = vectorField
         }
     }
-
 }
 
 extension BedrockAgentClientTypes {
+
     /// Contains details about the storage configuration of the knowledge base in Redis Enterprise Cloud. For more information, see [Create a vector index in Redis Enterprise Cloud](https://docs.aws.amazon.com/bedrock/latest/userguide/knowledge-base-setup-oss.html).
-    public struct RedisEnterpriseCloudConfiguration {
+    public struct RedisEnterpriseCloudConfiguration: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the secret that you created in Secrets Manager that is linked to your Redis Enterprise Cloud database.
         /// This member is required.
         public var credentialsSecretArn: Swift.String?
@@ -6688,12 +6782,11 @@ extension BedrockAgentClientTypes {
             self.vectorIndexName = vectorIndexName
         }
     }
-
 }
 
 extension BedrockAgentClientTypes {
 
-    public enum KnowledgeBaseStorageType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum KnowledgeBaseStorageType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case mongoDbAtlas
         case opensearchServerless
         case pinecone
@@ -6730,8 +6823,9 @@ extension BedrockAgentClientTypes {
 }
 
 extension BedrockAgentClientTypes {
+
     /// Contains the storage configuration of the knowledge base.
-    public struct StorageConfiguration {
+    public struct StorageConfiguration: Swift.Sendable {
         /// Contains the storage configuration of the knowledge base in MongoDB Atlas.
         public var mongoDbAtlasConfiguration: BedrockAgentClientTypes.MongoDbAtlasConfiguration?
         /// Contains the storage configuration of the knowledge base in Amazon OpenSearch Service.
@@ -6763,10 +6857,9 @@ extension BedrockAgentClientTypes {
             self.type = type
         }
     }
-
 }
 
-public struct CreateKnowledgeBaseInput {
+public struct CreateKnowledgeBaseInput: Swift.Sendable {
     /// A unique, case-sensitive identifier to ensure that the API request completes no more than one time. If this token matches a previous request, Amazon Bedrock ignores the request, but does not return an error. For more information, see [Ensuring idempotency](https://docs.aws.amazon.com/AWSEC2/latest/APIReference/Run_Instance_Idempotency.html).
     public var clientToken: Swift.String?
     /// A description of the knowledge base.
@@ -6808,7 +6901,7 @@ public struct CreateKnowledgeBaseInput {
 
 extension BedrockAgentClientTypes {
 
-    public enum KnowledgeBaseStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum KnowledgeBaseStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case active
         case creating
         case deleteUnsuccessful
@@ -6848,9 +6941,10 @@ extension BedrockAgentClientTypes {
 }
 
 extension BedrockAgentClientTypes {
+
     /// Contains information about a knowledge base.
-    public struct KnowledgeBase {
-        /// The time at which the knowledge base was created.
+    public struct KnowledgeBase: Swift.Sendable {
+        /// The time the knowledge base was created.
         /// This member is required.
         public var createdAt: Foundation.Date?
         /// The description of the knowledge base.
@@ -6888,7 +6982,7 @@ extension BedrockAgentClientTypes {
         /// Contains details about the storage configuration of the knowledge base.
         /// This member is required.
         public var storageConfiguration: BedrockAgentClientTypes.StorageConfiguration?
-        /// The time at which the knowledge base was last updated.
+        /// The time the knowledge base was last updated.
         /// This member is required.
         public var updatedAt: Foundation.Date?
 
@@ -6919,10 +7013,9 @@ extension BedrockAgentClientTypes {
             self.updatedAt = updatedAt
         }
     }
-
 }
 
-public struct CreateKnowledgeBaseOutput {
+public struct CreateKnowledgeBaseOutput: Swift.Sendable {
     /// Contains details about the knowledge base.
     /// This member is required.
     public var knowledgeBase: BedrockAgentClientTypes.KnowledgeBase?
@@ -6935,7 +7028,7 @@ public struct CreateKnowledgeBaseOutput {
     }
 }
 
-public struct DeleteKnowledgeBaseInput {
+public struct DeleteKnowledgeBaseInput: Swift.Sendable {
     /// The unique identifier of the knowledge base to delete.
     /// This member is required.
     public var knowledgeBaseId: Swift.String?
@@ -6948,7 +7041,7 @@ public struct DeleteKnowledgeBaseInput {
     }
 }
 
-public struct DeleteKnowledgeBaseOutput {
+public struct DeleteKnowledgeBaseOutput: Swift.Sendable {
     /// The unique identifier of the knowledge base that was deleted.
     /// This member is required.
     public var knowledgeBaseId: Swift.String?
@@ -6966,7 +7059,7 @@ public struct DeleteKnowledgeBaseOutput {
     }
 }
 
-public struct DisassociateAgentKnowledgeBaseInput {
+public struct DisassociateAgentKnowledgeBaseInput: Swift.Sendable {
     /// The unique identifier of the agent from which to disassociate the knowledge base.
     /// This member is required.
     public var agentId: Swift.String?
@@ -6989,12 +7082,12 @@ public struct DisassociateAgentKnowledgeBaseInput {
     }
 }
 
-public struct DisassociateAgentKnowledgeBaseOutput {
+public struct DisassociateAgentKnowledgeBaseOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct GetAgentKnowledgeBaseInput {
+public struct GetAgentKnowledgeBaseInput: Swift.Sendable {
     /// The unique identifier of the agent with which the knowledge base is associated.
     /// This member is required.
     public var agentId: Swift.String?
@@ -7017,7 +7110,7 @@ public struct GetAgentKnowledgeBaseInput {
     }
 }
 
-public struct GetAgentKnowledgeBaseOutput {
+public struct GetAgentKnowledgeBaseOutput: Swift.Sendable {
     /// Contains details about a knowledge base attached to an agent.
     /// This member is required.
     public var agentKnowledgeBase: BedrockAgentClientTypes.AgentKnowledgeBase?
@@ -7030,8 +7123,8 @@ public struct GetAgentKnowledgeBaseOutput {
     }
 }
 
-public struct GetKnowledgeBaseInput {
-    /// The unique identifier of the knowledge base for which to get information.
+public struct GetKnowledgeBaseInput: Swift.Sendable {
+    /// The unique identifier of the knowledge base you want to get information on.
     /// This member is required.
     public var knowledgeBaseId: Swift.String?
 
@@ -7043,7 +7136,7 @@ public struct GetKnowledgeBaseInput {
     }
 }
 
-public struct GetKnowledgeBaseOutput {
+public struct GetKnowledgeBaseOutput: Swift.Sendable {
     /// Contains details about the knowledge base.
     /// This member is required.
     public var knowledgeBase: BedrockAgentClientTypes.KnowledgeBase?
@@ -7056,7 +7149,7 @@ public struct GetKnowledgeBaseOutput {
     }
 }
 
-public struct ListAgentKnowledgeBasesInput {
+public struct ListAgentKnowledgeBasesInput: Swift.Sendable {
     /// The unique identifier of the agent for which to return information about knowledge bases associated with it.
     /// This member is required.
     public var agentId: Swift.String?
@@ -7082,7 +7175,7 @@ public struct ListAgentKnowledgeBasesInput {
     }
 }
 
-public struct ListAgentKnowledgeBasesOutput {
+public struct ListAgentKnowledgeBasesOutput: Swift.Sendable {
     /// A list of objects, each of which contains information about a knowledge base associated with the agent.
     /// This member is required.
     public var agentKnowledgeBaseSummaries: [BedrockAgentClientTypes.AgentKnowledgeBaseSummary]?
@@ -7099,7 +7192,7 @@ public struct ListAgentKnowledgeBasesOutput {
     }
 }
 
-public struct ListKnowledgeBasesInput {
+public struct ListKnowledgeBasesInput: Swift.Sendable {
     /// The maximum number of results to return in the response. If the total number of results is greater than this value, use the token returned in the response in the nextToken field when making another request to return the next batch of results.
     public var maxResults: Swift.Int?
     /// If the total number of results is greater than the maxResults value provided in the request, enter the token returned in the nextToken field in the response in this field to return the next batch of results.
@@ -7116,8 +7209,9 @@ public struct ListKnowledgeBasesInput {
 }
 
 extension BedrockAgentClientTypes {
+
     /// Contains details about a knowledge base.
-    public struct KnowledgeBaseSummary {
+    public struct KnowledgeBaseSummary: Swift.Sendable {
         /// The description of the knowledge base.
         public var description: Swift.String?
         /// The unique identifier of the knowledge base.
@@ -7129,7 +7223,7 @@ extension BedrockAgentClientTypes {
         /// The status of the knowledge base.
         /// This member is required.
         public var status: BedrockAgentClientTypes.KnowledgeBaseStatus?
-        /// The time at which the knowledge base was last updated.
+        /// The time the knowledge base was last updated.
         /// This member is required.
         public var updatedAt: Foundation.Date?
 
@@ -7148,11 +7242,10 @@ extension BedrockAgentClientTypes {
             self.updatedAt = updatedAt
         }
     }
-
 }
 
-public struct ListKnowledgeBasesOutput {
-    /// A list of objects, each of which contains information about a knowledge base.
+public struct ListKnowledgeBasesOutput: Swift.Sendable {
+    /// A list of knowledge bases with information about each knowledge base.
     /// This member is required.
     public var knowledgeBaseSummaries: [BedrockAgentClientTypes.KnowledgeBaseSummary]?
     /// If the total number of results is greater than the maxResults value provided in the request, use this token when making another request in the nextToken field to return the next batch of results.
@@ -7168,7 +7261,7 @@ public struct ListKnowledgeBasesOutput {
     }
 }
 
-public struct UpdateAgentKnowledgeBaseInput {
+public struct UpdateAgentKnowledgeBaseInput: Swift.Sendable {
     /// The unique identifier of the agent associated with the knowledge base that you want to update.
     /// This member is required.
     public var agentId: Swift.String?
@@ -7199,7 +7292,7 @@ public struct UpdateAgentKnowledgeBaseInput {
     }
 }
 
-public struct UpdateAgentKnowledgeBaseOutput {
+public struct UpdateAgentKnowledgeBaseOutput: Swift.Sendable {
     /// Contains details about the knowledge base that has been associated with an agent.
     /// This member is required.
     public var agentKnowledgeBase: BedrockAgentClientTypes.AgentKnowledgeBase?
@@ -7212,7 +7305,7 @@ public struct UpdateAgentKnowledgeBaseOutput {
     }
 }
 
-public struct UpdateKnowledgeBaseInput {
+public struct UpdateKnowledgeBaseInput: Swift.Sendable {
     /// Specifies a new description for the knowledge base.
     public var description: Swift.String?
     /// Specifies the configuration for the embeddings model used for the knowledge base. You must use the same configuration as when the knowledge base was created.
@@ -7249,7 +7342,7 @@ public struct UpdateKnowledgeBaseInput {
     }
 }
 
-public struct UpdateKnowledgeBaseOutput {
+public struct UpdateKnowledgeBaseOutput: Swift.Sendable {
     /// Contains details about the knowledge base.
     /// This member is required.
     public var knowledgeBase: BedrockAgentClientTypes.KnowledgeBase?
@@ -7263,8 +7356,9 @@ public struct UpdateKnowledgeBaseOutput {
 }
 
 extension BedrockAgentClientTypes {
+
     /// Contains a key-value pair that defines a metadata tag and value to attach to a prompt variant. For more information, see [Create a prompt using Prompt management](https://docs.aws.amazon.com/bedrock/latest/userguide/prompt-management-create.html).
-    public struct PromptMetadataEntry {
+    public struct PromptMetadataEntry: Swift.Sendable {
         /// The key of a metadata tag for a prompt variant.
         /// This member is required.
         public var key: Swift.String?
@@ -7281,7 +7375,6 @@ extension BedrockAgentClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension BedrockAgentClientTypes.PromptMetadataEntry: Swift.CustomDebugStringConvertible {
@@ -7291,8 +7384,11 @@ extension BedrockAgentClientTypes.PromptMetadataEntry: Swift.CustomDebugStringCo
 }
 
 extension BedrockAgentClientTypes {
+
     /// Contains details about a variant of the prompt.
-    public struct PromptVariant {
+    public struct PromptVariant: Swift.Sendable {
+        /// Contains model-specific inference configurations that aren't in the inferenceConfiguration field. To see model-specific inference parameters, see [Inference request parameters and response fields for foundation models](https://docs.aws.amazon.com/bedrock/latest/userguide/model-parameters.html).
+        public var additionalModelRequestFields: Smithy.Document?
         /// Contains inference configurations for the prompt variant.
         public var inferenceConfiguration: BedrockAgentClientTypes.PromptInferenceConfiguration?
         /// An array of objects, each containing a key-value pair that defines a metadata tag and value to attach to a prompt variant. For more information, see [Create a prompt using Prompt management](https://docs.aws.amazon.com/bedrock/latest/userguide/prompt-management-create.html).
@@ -7303,12 +7399,14 @@ extension BedrockAgentClientTypes {
         /// This member is required.
         public var name: Swift.String?
         /// Contains configurations for the prompt template.
+        /// This member is required.
         public var templateConfiguration: BedrockAgentClientTypes.PromptTemplateConfiguration?
         /// The type of prompt template to use.
         /// This member is required.
         public var templateType: BedrockAgentClientTypes.PromptTemplateType?
 
         public init(
+            additionalModelRequestFields: Smithy.Document? = nil,
             inferenceConfiguration: BedrockAgentClientTypes.PromptInferenceConfiguration? = nil,
             metadata: [BedrockAgentClientTypes.PromptMetadataEntry]? = nil,
             modelId: Swift.String? = nil,
@@ -7317,6 +7415,7 @@ extension BedrockAgentClientTypes {
             templateType: BedrockAgentClientTypes.PromptTemplateType? = nil
         )
         {
+            self.additionalModelRequestFields = additionalModelRequestFields
             self.inferenceConfiguration = inferenceConfiguration
             self.metadata = metadata
             self.modelId = modelId
@@ -7325,7 +7424,6 @@ extension BedrockAgentClientTypes {
             self.templateType = templateType
         }
     }
-
 }
 
 extension BedrockAgentClientTypes.PromptVariant: Swift.CustomDebugStringConvertible {
@@ -7334,7 +7432,7 @@ extension BedrockAgentClientTypes.PromptVariant: Swift.CustomDebugStringConverti
     }
 }
 
-public struct CreatePromptInput {
+public struct CreatePromptInput: Swift.Sendable {
     /// A unique, case-sensitive identifier to ensure that the API request completes no more than one time. If this token matches a previous request, Amazon Bedrock ignores the request, but does not return an error. For more information, see [Ensuring idempotency](https://docs.aws.amazon.com/AWSEC2/latest/APIReference/Run_Instance_Idempotency.html).
     public var clientToken: Swift.String?
     /// The Amazon Resource Name (ARN) of the KMS key to encrypt the prompt.
@@ -7376,7 +7474,7 @@ extension CreatePromptInput: Swift.CustomDebugStringConvertible {
         "CreatePromptInput(clientToken: \(Swift.String(describing: clientToken)), customerEncryptionKeyArn: \(Swift.String(describing: customerEncryptionKeyArn)), defaultVariant: \(Swift.String(describing: defaultVariant)), description: \(Swift.String(describing: description)), name: \(Swift.String(describing: name)), tags: \(Swift.String(describing: tags)), variants: \"CONTENT_REDACTED\")"}
 }
 
-public struct CreatePromptOutput {
+public struct CreatePromptOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the prompt.
     /// This member is required.
     public var arn: Swift.String?
@@ -7435,7 +7533,7 @@ extension CreatePromptOutput: Swift.CustomDebugStringConvertible {
         "CreatePromptOutput(arn: \(Swift.String(describing: arn)), createdAt: \(Swift.String(describing: createdAt)), customerEncryptionKeyArn: \(Swift.String(describing: customerEncryptionKeyArn)), defaultVariant: \(Swift.String(describing: defaultVariant)), description: \(Swift.String(describing: description)), id: \(Swift.String(describing: id)), name: \(Swift.String(describing: name)), updatedAt: \(Swift.String(describing: updatedAt)), version: \(Swift.String(describing: version)), variants: \"CONTENT_REDACTED\")"}
 }
 
-public struct CreatePromptVersionInput {
+public struct CreatePromptVersionInput: Swift.Sendable {
     /// A unique, case-sensitive identifier to ensure that the API request completes no more than one time. If this token matches a previous request, Amazon Bedrock ignores the request, but does not return an error. For more information, see [Ensuring idempotency](https://docs.aws.amazon.com/AWSEC2/latest/APIReference/Run_Instance_Idempotency.html).
     public var clientToken: Swift.String?
     /// A description for the version of the prompt.
@@ -7460,7 +7558,7 @@ public struct CreatePromptVersionInput {
     }
 }
 
-public struct CreatePromptVersionOutput {
+public struct CreatePromptVersionOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the version of the prompt.
     /// This member is required.
     public var arn: Swift.String?
@@ -7519,7 +7617,7 @@ extension CreatePromptVersionOutput: Swift.CustomDebugStringConvertible {
         "CreatePromptVersionOutput(arn: \(Swift.String(describing: arn)), createdAt: \(Swift.String(describing: createdAt)), customerEncryptionKeyArn: \(Swift.String(describing: customerEncryptionKeyArn)), defaultVariant: \(Swift.String(describing: defaultVariant)), description: \(Swift.String(describing: description)), id: \(Swift.String(describing: id)), name: \(Swift.String(describing: name)), updatedAt: \(Swift.String(describing: updatedAt)), version: \(Swift.String(describing: version)), variants: \"CONTENT_REDACTED\")"}
 }
 
-public struct DeletePromptInput {
+public struct DeletePromptInput: Swift.Sendable {
     /// The unique identifier of the prompt.
     /// This member is required.
     public var promptIdentifier: Swift.String?
@@ -7536,7 +7634,7 @@ public struct DeletePromptInput {
     }
 }
 
-public struct DeletePromptOutput {
+public struct DeletePromptOutput: Swift.Sendable {
     /// The unique identifier of the prompt that was deleted.
     /// This member is required.
     public var id: Swift.String?
@@ -7553,7 +7651,7 @@ public struct DeletePromptOutput {
     }
 }
 
-public struct GetPromptInput {
+public struct GetPromptInput: Swift.Sendable {
     /// The unique identifier of the prompt.
     /// This member is required.
     public var promptIdentifier: Swift.String?
@@ -7570,7 +7668,7 @@ public struct GetPromptInput {
     }
 }
 
-public struct GetPromptOutput {
+public struct GetPromptOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the prompt or the prompt version (if you specified a version in the request).
     /// This member is required.
     public var arn: Swift.String?
@@ -7629,7 +7727,7 @@ extension GetPromptOutput: Swift.CustomDebugStringConvertible {
         "GetPromptOutput(arn: \(Swift.String(describing: arn)), createdAt: \(Swift.String(describing: createdAt)), customerEncryptionKeyArn: \(Swift.String(describing: customerEncryptionKeyArn)), defaultVariant: \(Swift.String(describing: defaultVariant)), description: \(Swift.String(describing: description)), id: \(Swift.String(describing: id)), name: \(Swift.String(describing: name)), updatedAt: \(Swift.String(describing: updatedAt)), version: \(Swift.String(describing: version)), variants: \"CONTENT_REDACTED\")"}
 }
 
-public struct ListPromptsInput {
+public struct ListPromptsInput: Swift.Sendable {
     /// The maximum number of results to return in the response. If the total number of results is greater than this value, use the token returned in the response in the nextToken field when making another request to return the next batch of results.
     public var maxResults: Swift.Int?
     /// If the total number of results is greater than the maxResults value provided in the request, enter the token returned in the nextToken field in the response in this field to return the next batch of results.
@@ -7650,10 +7748,11 @@ public struct ListPromptsInput {
 }
 
 extension BedrockAgentClientTypes {
+
     /// Contains information about a prompt in your Prompt management tool. This data type is used in the following API operations:
     ///
     /// * [ListPrompts response](https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent_ListPrompts.html#API_agent_ListPrompts_ResponseSyntax)
-    public struct PromptSummary {
+    public struct PromptSummary: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the prompt or the prompt version (if you specified a version in the request).
         /// This member is required.
         public var arn: Swift.String?
@@ -7694,10 +7793,9 @@ extension BedrockAgentClientTypes {
             self.version = version
         }
     }
-
 }
 
-public struct ListPromptsOutput {
+public struct ListPromptsOutput: Swift.Sendable {
     /// If the total number of results is greater than the maxResults value provided in the request, use this token when making another request in the nextToken field to return the next batch of results.
     public var nextToken: Swift.String?
     /// A list, each member of which contains information about a prompt using Prompt management.
@@ -7714,7 +7812,7 @@ public struct ListPromptsOutput {
     }
 }
 
-public struct UpdatePromptInput {
+public struct UpdatePromptInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the KMS key to encrypt the prompt.
     public var customerEncryptionKeyArn: Swift.String?
     /// The name of the default variant for the prompt. This value must match the name field in the relevant [PromptVariant](https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent_PromptVariant.html) object.
@@ -7753,7 +7851,7 @@ extension UpdatePromptInput: Swift.CustomDebugStringConvertible {
         "UpdatePromptInput(customerEncryptionKeyArn: \(Swift.String(describing: customerEncryptionKeyArn)), defaultVariant: \(Swift.String(describing: defaultVariant)), description: \(Swift.String(describing: description)), name: \(Swift.String(describing: name)), promptIdentifier: \(Swift.String(describing: promptIdentifier)), variants: \"CONTENT_REDACTED\")"}
 }
 
-public struct UpdatePromptOutput {
+public struct UpdatePromptOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the prompt.
     /// This member is required.
     public var arn: Swift.String?
@@ -7812,7 +7910,7 @@ extension UpdatePromptOutput: Swift.CustomDebugStringConvertible {
         "UpdatePromptOutput(arn: \(Swift.String(describing: arn)), createdAt: \(Swift.String(describing: createdAt)), customerEncryptionKeyArn: \(Swift.String(describing: customerEncryptionKeyArn)), defaultVariant: \(Swift.String(describing: defaultVariant)), description: \(Swift.String(describing: description)), id: \(Swift.String(describing: id)), name: \(Swift.String(describing: name)), updatedAt: \(Swift.String(describing: updatedAt)), version: \(Swift.String(describing: version)), variants: \"CONTENT_REDACTED\")"}
 }
 
-public struct ListTagsForResourceInput {
+public struct ListTagsForResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the resource for which to list tags.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -7825,7 +7923,7 @@ public struct ListTagsForResourceInput {
     }
 }
 
-public struct ListTagsForResourceOutput {
+public struct ListTagsForResourceOutput: Swift.Sendable {
     /// The key-value pairs for the tags associated with the resource.
     public var tags: [Swift.String: Swift.String]?
 
@@ -7837,7 +7935,7 @@ public struct ListTagsForResourceOutput {
     }
 }
 
-public struct TagResourceInput {
+public struct TagResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the resource to tag.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -7855,12 +7953,12 @@ public struct TagResourceInput {
     }
 }
 
-public struct TagResourceOutput {
+public struct TagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UntagResourceInput {
+public struct UntagResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the resource from which to remove tags.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -7878,12 +7976,12 @@ public struct UntagResourceInput {
     }
 }
 
-public struct UntagResourceOutput {
+public struct UntagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteAgentVersionInput {
+public struct DeleteAgentVersionInput: Swift.Sendable {
     /// The unique identifier of the agent that the version belongs to.
     /// This member is required.
     public var agentId: Swift.String?
@@ -7905,7 +8003,7 @@ public struct DeleteAgentVersionInput {
     }
 }
 
-public struct DeleteAgentVersionOutput {
+public struct DeleteAgentVersionOutput: Swift.Sendable {
     /// The unique identifier of the agent that the version belongs to.
     /// This member is required.
     public var agentId: Swift.String?
@@ -7928,7 +8026,7 @@ public struct DeleteAgentVersionOutput {
     }
 }
 
-public struct GetAgentVersionInput {
+public struct GetAgentVersionInput: Swift.Sendable {
     /// The unique identifier of the agent.
     /// This member is required.
     public var agentId: Swift.String?
@@ -7946,7 +8044,7 @@ public struct GetAgentVersionInput {
     }
 }
 
-public struct GetAgentVersionOutput {
+public struct GetAgentVersionOutput: Swift.Sendable {
     /// Contains details about the version of the agent.
     /// This member is required.
     public var agentVersion: BedrockAgentClientTypes.AgentVersion?
@@ -7959,7 +8057,7 @@ public struct GetAgentVersionOutput {
     }
 }
 
-public struct ListAgentVersionsInput {
+public struct ListAgentVersionsInput: Swift.Sendable {
     /// The unique identifier of the agent.
     /// This member is required.
     public var agentId: Swift.String?
@@ -7980,7 +8078,7 @@ public struct ListAgentVersionsInput {
     }
 }
 
-public struct ListAgentVersionsOutput {
+public struct ListAgentVersionsOutput: Swift.Sendable {
     /// A list of objects, each of which contains information about a version of the agent.
     /// This member is required.
     public var agentVersionSummaries: [BedrockAgentClientTypes.AgentVersionSummary]?
@@ -8700,6 +8798,22 @@ extension StartIngestionJobInput {
             return nil
         }
         return "/knowledgebases/\(knowledgeBaseId.urlPercentEncoding())/datasources/\(dataSourceId.urlPercentEncoding())/ingestionjobs"
+    }
+}
+
+extension StopIngestionJobInput {
+
+    static func urlPathProvider(_ value: StopIngestionJobInput) -> Swift.String? {
+        guard let knowledgeBaseId = value.knowledgeBaseId else {
+            return nil
+        }
+        guard let dataSourceId = value.dataSourceId else {
+            return nil
+        }
+        guard let ingestionJobId = value.ingestionJobId else {
+            return nil
+        }
+        return "/knowledgebases/\(knowledgeBaseId.urlPercentEncoding())/datasources/\(dataSourceId.urlPercentEncoding())/ingestionjobs/\(ingestionJobId.urlPercentEncoding())/stop"
     }
 }
 
@@ -9890,6 +10004,18 @@ extension StartIngestionJobOutput {
     }
 }
 
+extension StopIngestionJobOutput {
+
+    static func httpOutput(from httpResponse: SmithyHTTPAPI.HTTPResponse) async throws -> StopIngestionJobOutput {
+        let data = try await httpResponse.data()
+        let responseReader = try SmithyJSON.Reader.from(data: data)
+        let reader = responseReader
+        var value = StopIngestionJobOutput()
+        value.ingestionJob = try reader["ingestionJob"].readIfPresent(with: BedrockAgentClientTypes.IngestionJob.read(from:))
+        return value
+    }
+}
+
 extension TagResourceOutput {
 
     static func httpOutput(from httpResponse: SmithyHTTPAPI.HTTPResponse) async throws -> TagResourceOutput {
@@ -10962,6 +11088,25 @@ enum StartIngestionJobOutputError {
             case "InternalServerException": return try InternalServerException.makeError(baseError: baseError)
             case "ResourceNotFoundException": return try ResourceNotFoundException.makeError(baseError: baseError)
             case "ServiceQuotaExceededException": return try ServiceQuotaExceededException.makeError(baseError: baseError)
+            case "ThrottlingException": return try ThrottlingException.makeError(baseError: baseError)
+            case "ValidationException": return try ValidationException.makeError(baseError: baseError)
+            default: return try AWSClientRuntime.UnknownAWSHTTPServiceError.makeError(baseError: baseError)
+        }
+    }
+}
+
+enum StopIngestionJobOutputError {
+
+    static func httpError(from httpResponse: SmithyHTTPAPI.HTTPResponse) async throws -> Swift.Error {
+        let data = try await httpResponse.data()
+        let responseReader = try SmithyJSON.Reader.from(data: data)
+        let baseError = try AWSClientRuntime.RestJSONError(httpResponse: httpResponse, responseReader: responseReader, noErrorWrapping: false)
+        if let error = baseError.customError() { return error }
+        switch baseError.code {
+            case "AccessDeniedException": return try AccessDeniedException.makeError(baseError: baseError)
+            case "ConflictException": return try ConflictException.makeError(baseError: baseError)
+            case "InternalServerException": return try InternalServerException.makeError(baseError: baseError)
+            case "ResourceNotFoundException": return try ResourceNotFoundException.makeError(baseError: baseError)
             case "ThrottlingException": return try ThrottlingException.makeError(baseError: baseError)
             case "ValidationException": return try ValidationException.makeError(baseError: baseError)
             default: return try AWSClientRuntime.UnknownAWSHTTPServiceError.makeError(baseError: baseError)
@@ -12707,6 +12852,7 @@ extension BedrockAgentClientTypes.PromptFlowNodeInlineConfiguration {
 
     static func write(value: BedrockAgentClientTypes.PromptFlowNodeInlineConfiguration?, to writer: SmithyJSON.Writer) throws {
         guard let value else { return }
+        try writer["additionalModelRequestFields"].write(value.additionalModelRequestFields)
         try writer["inferenceConfiguration"].write(value.inferenceConfiguration, with: BedrockAgentClientTypes.PromptInferenceConfiguration.write(value:to:))
         try writer["modelId"].write(value.modelId)
         try writer["templateConfiguration"].write(value.templateConfiguration, with: BedrockAgentClientTypes.PromptTemplateConfiguration.write(value:to:))
@@ -12720,6 +12866,7 @@ extension BedrockAgentClientTypes.PromptFlowNodeInlineConfiguration {
         value.templateConfiguration = try reader["templateConfiguration"].readIfPresent(with: BedrockAgentClientTypes.PromptTemplateConfiguration.read(from:))
         value.modelId = try reader["modelId"].readIfPresent() ?? ""
         value.inferenceConfiguration = try reader["inferenceConfiguration"].readIfPresent(with: BedrockAgentClientTypes.PromptInferenceConfiguration.read(from:))
+        value.additionalModelRequestFields = try reader["additionalModelRequestFields"].readIfPresent()
         return value
     }
 }
@@ -12755,7 +12902,6 @@ extension BedrockAgentClientTypes.PromptModelInferenceConfiguration {
         try writer["maxTokens"].write(value.maxTokens)
         try writer["stopSequences"].writeList(value.stopSequences, memberWritingClosure: SmithyReadWrite.WritingClosures.writeString(value:to:), memberNodeInfo: "member", isFlattened: false)
         try writer["temperature"].write(value.temperature)
-        try writer["topK"].write(value.topk)
         try writer["topP"].write(value.topp)
     }
 
@@ -12764,7 +12910,6 @@ extension BedrockAgentClientTypes.PromptModelInferenceConfiguration {
         var value = BedrockAgentClientTypes.PromptModelInferenceConfiguration()
         value.temperature = try reader["temperature"].readIfPresent()
         value.topp = try reader["topP"].readIfPresent()
-        value.topk = try reader["topK"].readIfPresent()
         value.maxTokens = try reader["maxTokens"].readIfPresent()
         value.stopSequences = try reader["stopSequences"].readListIfPresent(memberReadingClosure: SmithyReadWrite.ReadingClosures.readString(from:), memberNodeInfo: "member", isFlattened: false)
         return value
@@ -13268,6 +13413,7 @@ extension BedrockAgentClientTypes.PromptVariant {
 
     static func write(value: BedrockAgentClientTypes.PromptVariant?, to writer: SmithyJSON.Writer) throws {
         guard let value else { return }
+        try writer["additionalModelRequestFields"].write(value.additionalModelRequestFields)
         try writer["inferenceConfiguration"].write(value.inferenceConfiguration, with: BedrockAgentClientTypes.PromptInferenceConfiguration.write(value:to:))
         try writer["metadata"].writeList(value.metadata, memberWritingClosure: BedrockAgentClientTypes.PromptMetadataEntry.write(value:to:), memberNodeInfo: "member", isFlattened: false)
         try writer["modelId"].write(value.modelId)
@@ -13285,6 +13431,7 @@ extension BedrockAgentClientTypes.PromptVariant {
         value.modelId = try reader["modelId"].readIfPresent()
         value.inferenceConfiguration = try reader["inferenceConfiguration"].readIfPresent(with: BedrockAgentClientTypes.PromptInferenceConfiguration.read(from:))
         value.metadata = try reader["metadata"].readListIfPresent(memberReadingClosure: BedrockAgentClientTypes.PromptMetadataEntry.read(from:), memberNodeInfo: "member", isFlattened: false)
+        value.additionalModelRequestFields = try reader["additionalModelRequestFields"].readIfPresent()
         return value
     }
 }

@@ -564,8 +564,9 @@ public struct UnsupportedOperationException: ClientRuntime.ModeledError, AWSClie
 }
 
 extension CloudTrailClientTypes {
+
     /// A custom key-value pair associated with a resource such as a CloudTrail trail, event data store, or channel.
-    public struct Tag {
+    public struct Tag: Swift.Sendable {
         /// The key in a key-value pair. The key must be must be no longer than 128 Unicode characters. The key must be unique for the resource to which it applies.
         /// This member is required.
         public var key: Swift.String?
@@ -581,11 +582,10 @@ extension CloudTrailClientTypes {
             self.value = value
         }
     }
-
 }
 
 /// Specifies the tags to add to a trail, event data store, or channel.
-public struct AddTagsInput {
+public struct AddTagsInput: Swift.Sendable {
     /// Specifies the ARN of the trail, event data store, or channel to which one or more tags will be added. The format of a trail ARN is: arn:aws:cloudtrail:us-east-2:123456789012:trail/MyTrail The format of an event data store ARN is: arn:aws:cloudtrail:us-east-2:123456789012:eventdatastore/EXAMPLE-f852-4e8f-8bd1-bcf6cEXAMPLE The format of a channel ARN is: arn:aws:cloudtrail:us-east-2:123456789012:channel/01234567890
     /// This member is required.
     public var resourceId: Swift.String?
@@ -604,31 +604,45 @@ public struct AddTagsInput {
 }
 
 /// Returns the objects or data if successful. Otherwise, returns an error.
-public struct AddTagsOutput {
+public struct AddTagsOutput: Swift.Sendable {
 
     public init() { }
 }
 
 extension CloudTrailClientTypes {
+
     /// A single selector statement in an advanced event selector.
-    public struct AdvancedFieldSelector {
+    public struct AdvancedFieldSelector: Swift.Sendable {
         /// An operator that includes events that match the last few characters of the event record field specified as the value of Field.
         public var endsWith: [Swift.String]?
         /// An operator that includes events that match the exact value of the event record field specified as the value of Field. This is the only valid operator that you can use with the readOnly, eventCategory, and resources.type fields.
         public var equals: [Swift.String]?
-        /// A field in a CloudTrail event record on which to filter events to be logged. For event data stores for CloudTrail Insights events, Config configuration items, Audit Manager evidence, or events outside of Amazon Web Services, the field is used only for selecting events as filtering is not supported. For CloudTrail management events, supported fields include readOnly, eventCategory, and eventSource. For CloudTrail data events, supported fields include readOnly, eventCategory, eventName, resources.type, and resources.ARN. For event data stores for CloudTrail Insights events, Config configuration items, Audit Manager evidence, or events outside of Amazon Web Services, the only supported field is eventCategory.
+        /// A field in a CloudTrail event record on which to filter events to be logged. For event data stores for CloudTrail Insights events, Config configuration items, Audit Manager evidence, or events outside of Amazon Web Services, the field is used only for selecting events as filtering is not supported. For CloudTrail management events, supported fields include eventCategory (required), eventSource, and readOnly. For CloudTrail data events, supported fields include eventCategory (required), resources.type (required), eventName, readOnly, and resources.ARN. For CloudTrail network activity events, supported fields include eventCategory (required), eventSource (required), eventName, errorCode, and vpcEndpointId. For event data stores for CloudTrail Insights events, Config configuration items, Audit Manager evidence, or events outside of Amazon Web Services, the only supported field is eventCategory.
         ///
-        /// * readOnly - Optional. Can be set to Equals a value of true or false. If you do not add this field, CloudTrail logs both read and write events. A value of true logs only read events. A value of false logs only write events.
+        /// * readOnly - This is an optional field that is only used for management events and data events. This field can be set to Equals with a value of true or false. If you do not add this field, CloudTrail logs both read and write events. A value of true logs only read events. A value of false logs only write events.
         ///
-        /// * eventSource - For filtering management events only. This can be set to NotEqualskms.amazonaws.com or NotEqualsrdsdata.amazonaws.com.
+        /// * eventSource - This field is only used for management events and network activity events. For management events, this is an optional field that can be set to NotEqualskms.amazonaws.com to exclude KMS management events, or NotEqualsrdsdata.amazonaws.com to exclude RDS management events. For network activity events, this is a required field that only uses the Equals operator. Set this field to the event source for which you want to log network activity events. If you want to log network activity events for multiple event sources, you must create a separate field selector for each event source. The following are valid values for network activity events:
         ///
-        /// * eventName - Can use any operator. You can use it to ﬁlter in or ﬁlter out any data event logged to CloudTrail, such as PutBucket or GetSnapshotBlock. You can have multiple values for this ﬁeld, separated by commas.
+        /// * cloudtrail.amazonaws.com
         ///
-        /// * eventCategory - This is required and must be set to Equals.
+        /// * ec2.amazonaws.com
+        ///
+        /// * kms.amazonaws.com
+        ///
+        /// * secretsmanager.amazonaws.com
+        ///
+        ///
+        ///
+        ///
+        /// * eventName - This is an optional field that is only used for data events and network activity events. You can use any operator with eventName. You can use it to ﬁlter in or ﬁlter out specific events. You can have multiple values for this ﬁeld, separated by commas.
+        ///
+        /// * eventCategory - This field is required and must be set to Equals.
         ///
         /// * For CloudTrail management events, the value must be Management.
         ///
         /// * For CloudTrail data events, the value must be Data.
+        ///
+        /// * For CloudTrail network activity events, the value must be NetworkActivity.
         ///
         ///
         /// The following are used only for event data stores:
@@ -644,19 +658,19 @@ extension CloudTrailClientTypes {
         ///
         ///
         ///
-        /// * resources.type - This ﬁeld is required for CloudTrail data events. resources.type can only use the Equals operator, and the value can be one of the following:
+        /// * errorCode - This ﬁeld is only used to filter CloudTrail network activity events and is optional. This is the error code to filter on. Currently, the only valid errorCode is VpceAccessDenied. errorCode can only use the Equals operator.
         ///
-        /// * AWS::DynamoDB::Table
-        ///
-        /// * AWS::Lambda::Function
-        ///
-        /// * AWS::S3::Object
+        /// * resources.type - This ﬁeld is required for CloudTrail data events. resources.type can only use the Equals operator. The value can be one of the following:
         ///
         /// * AWS::AppConfig::Configuration
         ///
         /// * AWS::B2BI::Transformer
         ///
         /// * AWS::Bedrock::AgentAlias
+        ///
+        /// * AWS::Bedrock::FlowAlias
+        ///
+        /// * AWS::Bedrock::Guardrail
         ///
         /// * AWS::Bedrock::KnowledgeBase
         ///
@@ -666,6 +680,8 @@ extension CloudTrailClientTypes {
         ///
         /// * AWS::CloudTrail::Channel
         ///
+        /// * AWS::CloudWatch::Metric
+        ///
         /// * AWS::CodeWhisperer::Customization
         ///
         /// * AWS::CodeWhisperer::Profile
@@ -673,6 +689,8 @@ extension CloudTrailClientTypes {
         /// * AWS::Cognito::IdentityPool
         ///
         /// * AWS::DynamoDB::Stream
+        ///
+        /// * AWS::DynamoDB::Table
         ///
         /// * AWS::EC2::Snapshot
         ///
@@ -702,7 +720,15 @@ extension CloudTrailClientTypes {
         ///
         /// * AWS::KendraRanking::ExecutionPlan
         ///
+        /// * AWS::Kinesis::Stream
+        ///
+        /// * AWS::Kinesis::StreamConsumer
+        ///
         /// * AWS::KinesisVideo::Stream
+        ///
+        /// * AWS::Lambda::Function
+        ///
+        /// * AWS::MachineLearning::MlModel
         ///
         /// * AWS::ManagedBlockchain::Network
         ///
@@ -712,7 +738,17 @@ extension CloudTrailClientTypes {
         ///
         /// * AWS::NeptuneGraph::Graph
         ///
+        /// * AWS::One::UKey
+        ///
+        /// * AWS::One::User
+        ///
+        /// * AWS::PaymentCryptography::Alias
+        ///
+        /// * AWS::PaymentCryptography::Key
+        ///
         /// * AWS::PCAConnectorAD::Connector
+        ///
+        /// * AWS::PCAConnectorSCEP::Connector
         ///
         /// * AWS::QApps:QApp
         ///
@@ -726,7 +762,13 @@ extension CloudTrailClientTypes {
         ///
         /// * AWS::RDS::DBCluster
         ///
+        /// * AWS::RUM::AppMonitor
+        ///
         /// * AWS::S3::AccessPoint
+        ///
+        /// * AWS::S3::Object
+        ///
+        /// * AWS::S3Express::Object
         ///
         /// * AWS::S3ObjectLambda::AccessPoint
         ///
@@ -754,6 +796,8 @@ extension CloudTrailClientTypes {
         ///
         /// * AWS::SSMMessages::ControlChannel
         ///
+        /// * AWS::StepFunctions::StateMachine
+        ///
         /// * AWS::SWF::Domain
         ///
         /// * AWS::ThinClient::Device
@@ -769,312 +813,11 @@ extension CloudTrailClientTypes {
         /// * AWS::XRay::Trace
         ///
         ///
-        /// You can have only one resources.type ﬁeld per selector. To log data events on more than one resource type, add another selector.
+        /// You can have only one resources.type ﬁeld per selector. To log events on more than one resource type, add another selector.
         ///
-        /// * resources.ARN - You can use any operator with resources.ARN, but if you use Equals or NotEquals, the value must exactly match the ARN of a valid resource of the type you've speciﬁed in the template as the value of resources.type. You can't use the resources.ARN field to filter resource types that do not have ARNs. The resources.ARN field can be set one of the following. If resources.type equals AWS::S3::Object, the ARN must be in one of the following formats. To log all data events for all objects in a specific S3 bucket, use the StartsWith operator, and include only the bucket ARN as the matching value. The trailing slash is intentional; do not exclude it. Replace the text between less than and greater than symbols (<>) with resource-specific information.
+        /// * resources.ARN - The resources.ARN is an optional field for data events. You can use any operator with resources.ARN, but if you use Equals or NotEquals, the value must exactly match the ARN of a valid resource of the type you've speciﬁed in the template as the value of resources.type. To log all data events for all objects in a specific S3 bucket, use the StartsWith operator, and include only the bucket ARN as the matching value. For information about filtering data events on the resources.ARN field, see [Filtering data events by resources.ARN](https://docs.aws.amazon.com/awscloudtrail/latest/userguide/filtering-data-events.html#filtering-data-events-resourcearn) in the CloudTrail User Guide. You can't use the resources.ARN field to filter resource types that do not have ARNs.
         ///
-        /// * arn::s3:::/
-        ///
-        /// * arn::s3::://
-        ///
-        ///
-        /// When resources.type equals AWS::DynamoDB::Table, and the operator is set to Equals or NotEquals, the ARN must be in the following format:
-        ///
-        /// * arn::dynamodb:::table/
-        ///
-        ///
-        /// When resources.type equals AWS::Lambda::Function, and the operator is set to Equals or NotEquals, the ARN must be in the following format:
-        ///
-        /// * arn::lambda:::function:
-        ///
-        ///
-        /// When resources.type equals AWS::AppConfig::Configuration, and the operator is set to Equals or NotEquals, the ARN must be in the following format:
-        ///
-        /// * arn::appconfig:::application//environment//configuration/
-        ///
-        ///
-        /// When resources.type equals AWS::B2BI::Transformer, and the operator is set to Equals or NotEquals, the ARN must be in the following format:
-        ///
-        /// * arn::b2bi:::transformer/
-        ///
-        ///
-        /// When resources.type equals AWS::Bedrock::AgentAlias, and the operator is set to Equals or NotEquals, the ARN must be in the following format:
-        ///
-        /// * arn::bedrock:::agent-alias//
-        ///
-        ///
-        /// When resources.type equals AWS::Bedrock::KnowledgeBase, and the operator is set to Equals or NotEquals, the ARN must be in the following format:
-        ///
-        /// * arn::bedrock:::knowledge-base/
-        ///
-        ///
-        /// When resources.type equals AWS::Cassandra::Table, and the operator is set to Equals or NotEquals, the ARN must be in the following format:
-        ///
-        /// * arn::cassandra:::/keyspace//table/
-        ///
-        ///
-        /// When resources.type equals AWS::CloudFront::KeyValueStore, and the operator is set to Equals or NotEquals, the ARN must be in the following format:
-        ///
-        /// * arn::cloudfront:::key-value-store/
-        ///
-        ///
-        /// When resources.type equals AWS::CloudTrail::Channel, and the operator is set to Equals or NotEquals, the ARN must be in the following format:
-        ///
-        /// * arn::cloudtrail:::channel/
-        ///
-        ///
-        /// When resources.type equals AWS::CodeWhisperer::Customization, and the operator is set to Equals or NotEquals, the ARN must be in the following format:
-        ///
-        /// * arn::codewhisperer:::customization/
-        ///
-        ///
-        /// When resources.type equals AWS::CodeWhisperer::Profile, and the operator is set to Equals or NotEquals, the ARN must be in the following format:
-        ///
-        /// * arn::codewhisperer:::profile/
-        ///
-        ///
-        /// When resources.type equals AWS::Cognito::IdentityPool, and the operator is set to Equals or NotEquals, the ARN must be in the following format:
-        ///
-        /// * arn::cognito-identity:::identitypool/
-        ///
-        ///
-        /// When resources.type equals AWS::DynamoDB::Stream, and the operator is set to Equals or NotEquals, the ARN must be in the following format:
-        ///
-        /// * arn::dynamodb:::table//stream/
-        ///
-        ///
-        /// When resources.type equals AWS::EC2::Snapshot, and the operator is set to Equals or NotEquals, the ARN must be in the following format:
-        ///
-        /// * arn::ec2:::snapshot/
-        ///
-        ///
-        /// When resources.type equals AWS::EMRWAL::Workspace, and the operator is set to Equals or NotEquals, the ARN must be in the following format:
-        ///
-        /// * arn::emrwal:::workspace/
-        ///
-        ///
-        /// When resources.type equals AWS::FinSpace::Environment, and the operator is set to Equals or NotEquals, the ARN must be in the following format:
-        ///
-        /// * arn::finspace:::environment/
-        ///
-        ///
-        /// When resources.type equals AWS::Glue::Table, and the operator is set to Equals or NotEquals, the ARN must be in the following format:
-        ///
-        /// * arn::glue:::table//
-        ///
-        ///
-        /// When resources.type equals AWS::GreengrassV2::ComponentVersion, and the operator is set to Equals or NotEquals, the ARN must be in the following format:
-        ///
-        /// * arn::greengrass:::components/
-        ///
-        ///
-        /// When resources.type equals AWS::GreengrassV2::Deployment, and the operator is set to Equals or NotEquals, the ARN must be in the following format:
-        ///
-        /// * arn::greengrass:::deployments/
-        ///
-        ///
-        /// When resources.type equals AWS::GuardDuty::Detector, and the operator is set to Equals or NotEquals, the ARN must be in the following format:
-        ///
-        /// * arn::guardduty:::detector/
-        ///
-        ///
-        /// When resources.type equals AWS::IoT::Certificate, and the operator is set to Equals or NotEquals, the ARN must be in the following format:
-        ///
-        /// * arn::iot:::cert/
-        ///
-        ///
-        /// When resources.type equals AWS::IoT::Thing, and the operator is set to Equals or NotEquals, the ARN must be in the following format:
-        ///
-        /// * arn::iot:::thing/
-        ///
-        ///
-        /// When resources.type equals AWS::IoTSiteWise::Asset, and the operator is set to Equals or NotEquals, the ARN must be in the following format:
-        ///
-        /// * arn::iotsitewise:::asset/
-        ///
-        ///
-        /// When resources.type equals AWS::IoTSiteWise::TimeSeries, and the operator is set to Equals or NotEquals, the ARN must be in the following format:
-        ///
-        /// * arn::iotsitewise:::timeseries/
-        ///
-        ///
-        /// When resources.type equals AWS::IoTTwinMaker::Entity, and the operator is set to Equals or NotEquals, the ARN must be in the following format:
-        ///
-        /// * arn::iottwinmaker:::workspace//entity/
-        ///
-        ///
-        /// When resources.type equals AWS::IoTTwinMaker::Workspace, and the operator is set to Equals or NotEquals, the ARN must be in the following format:
-        ///
-        /// * arn::iottwinmaker:::workspace/
-        ///
-        ///
-        /// When resources.type equals AWS::KendraRanking::ExecutionPlan, and the operator is set to Equals or NotEquals, the ARN must be in the following format:
-        ///
-        /// * arn::kendra-ranking:::rescore-execution-plan/
-        ///
-        ///
-        /// When resources.type equals AWS::KinesisVideo::Stream, and the operator is set to Equals or NotEquals, the ARN must be in the following format:
-        ///
-        /// * arn::kinesisvideo:::stream//
-        ///
-        ///
-        /// When resources.type equals AWS::ManagedBlockchain::Network, and the operator is set to Equals or NotEquals, the ARN must be in the following format:
-        ///
-        /// * arn::managedblockchain:::networks/
-        ///
-        ///
-        /// When resources.type equals AWS::ManagedBlockchain::Node, and the operator is set to Equals or NotEquals, the ARN must be in the following format:
-        ///
-        /// * arn::managedblockchain:::nodes/
-        ///
-        ///
-        /// When resources.type equals AWS::MedicalImaging::Datastore, and the operator is set to Equals or NotEquals, the ARN must be in the following format:
-        ///
-        /// * arn::medical-imaging:::datastore/
-        ///
-        ///
-        /// When resources.type equals AWS::NeptuneGraph::Graph, and the operator is set to Equals or NotEquals, the ARN must be in the following format:
-        ///
-        /// * arn::neptune-graph:::graph/
-        ///
-        ///
-        /// When resources.type equals AWS::PCAConnectorAD::Connector, and the operator is set to Equals or NotEquals, the ARN must be in the following format:
-        ///
-        /// * arn::pca-connector-ad:::connector/
-        ///
-        ///
-        /// When resources.type equals AWS::QApps:QApp, and the operator is set to Equals or NotEquals, the ARN must be in the following format:
-        ///
-        /// * arn::qapps:::application//qapp/
-        ///
-        ///
-        /// When resources.type equals AWS::QBusiness::Application, and the operator is set to Equals or NotEquals, the ARN must be in the following format:
-        ///
-        /// * arn::qbusiness:::application/
-        ///
-        ///
-        /// When resources.type equals AWS::QBusiness::DataSource, and the operator is set to Equals or NotEquals, the ARN must be in the following format:
-        ///
-        /// * arn::qbusiness:::application//index//data-source/
-        ///
-        ///
-        /// When resources.type equals AWS::QBusiness::Index, and the operator is set to Equals or NotEquals, the ARN must be in the following format:
-        ///
-        /// * arn::qbusiness:::application//index/
-        ///
-        ///
-        /// When resources.type equals AWS::QBusiness::WebExperience, and the operator is set to Equals or NotEquals, the ARN must be in the following format:
-        ///
-        /// * arn::qbusiness:::application//web-experience/
-        ///
-        ///
-        /// When resources.type equals AWS::RDS::DBCluster, and the operator is set to Equals or NotEquals, the ARN must be in the following format:
-        ///
-        /// * arn::rds:::cluster/
-        ///
-        ///
-        /// When resources.type equals AWS::S3::AccessPoint, and the operator is set to Equals or NotEquals, the ARN must be in one of the following formats. To log events on all objects in an S3 access point, we recommend that you use only the access point ARN, don’t include the object path, and use the StartsWith or NotStartsWith operators.
-        ///
-        /// * arn::s3:::accesspoint/
-        ///
-        /// * arn::s3:::accesspoint//object/
-        ///
-        ///
-        /// When resources.type equals AWS::S3ObjectLambda::AccessPoint, and the operator is set to Equals or NotEquals, the ARN must be in the following format:
-        ///
-        /// * arn::s3-object-lambda:::accesspoint/
-        ///
-        ///
-        /// When resources.type equals AWS::S3Outposts::Object, and the operator is set to Equals or NotEquals, the ARN must be in the following format:
-        ///
-        /// * arn::s3-outposts:::
-        ///
-        ///
-        /// When resources.type equals AWS::SageMaker::Endpoint, and the operator is set to Equals or NotEquals, the ARN must be in the following format:
-        ///
-        /// * arn::sagemaker:::endpoint/
-        ///
-        ///
-        /// When resources.type equals AWS::SageMaker::ExperimentTrialComponent, and the operator is set to Equals or NotEquals, the ARN must be in the following format:
-        ///
-        /// * arn::sagemaker:::experiment-trial-component/
-        ///
-        ///
-        /// When resources.type equals AWS::SageMaker::FeatureGroup, and the operator is set to Equals or NotEquals, the ARN must be in the following format:
-        ///
-        /// * arn::sagemaker:::feature-group/
-        ///
-        ///
-        /// When resources.type equals AWS::SCN::Instance, and the operator is set to Equals or NotEquals, the ARN must be in the following format:
-        ///
-        /// * arn::scn:::instance/
-        ///
-        ///
-        /// When resources.type equals AWS::ServiceDiscovery::Namespace, and the operator is set to Equals or NotEquals, the ARN must be in the following format:
-        ///
-        /// * arn::servicediscovery:::namespace/
-        ///
-        ///
-        /// When resources.type equals AWS::ServiceDiscovery::Service, and the operator is set to Equals or NotEquals, the ARN must be in the following format:
-        ///
-        /// * arn::servicediscovery:::service/
-        ///
-        ///
-        /// When resources.type equals AWS::SNS::PlatformEndpoint, and the operator is set to Equals or NotEquals, the ARN must be in the following format:
-        ///
-        /// * arn::sns:::endpoint///
-        ///
-        ///
-        /// When resources.type equals AWS::SNS::Topic, and the operator is set to Equals or NotEquals, the ARN must be in the following format:
-        ///
-        /// * arn::sns:::
-        ///
-        ///
-        /// When resources.type equals AWS::SQS::Queue, and the operator is set to Equals or NotEquals, the ARN must be in the following format:
-        ///
-        /// * arn::sqs:::
-        ///
-        ///
-        /// When resources.type equals AWS::SSM::ManagedNode, and the operator is set to Equals or NotEquals, the ARN must be in one of the following formats:
-        ///
-        /// * arn::ssm:::managed-instance/
-        ///
-        /// * arn::ec2:::instance/
-        ///
-        ///
-        /// When resources.type equals AWS::SSMMessages::ControlChannel, and the operator is set to Equals or NotEquals, the ARN must be in the following format:
-        ///
-        /// * arn::ssmmessages:::control-channel/
-        ///
-        ///
-        /// When resources.type equals AWS::SWF::Domain, and the operator is set to Equals or NotEquals, the ARN must be in the following format:
-        ///
-        /// * arn::swf:::domain/
-        ///
-        ///
-        /// When resources.type equals AWS::ThinClient::Device, and the operator is set to Equals or NotEquals, the ARN must be in the following format:
-        ///
-        /// * arn::thinclient:::device/
-        ///
-        ///
-        /// When resources.type equals AWS::ThinClient::Environment, and the operator is set to Equals or NotEquals, the ARN must be in the following format:
-        ///
-        /// * arn::thinclient:::environment/
-        ///
-        ///
-        /// When resources.type equals AWS::Timestream::Database, and the operator is set to Equals or NotEquals, the ARN must be in the following format:
-        ///
-        /// * arn::timestream:::database/
-        ///
-        ///
-        /// When resources.type equals AWS::Timestream::Table, and the operator is set to Equals or NotEquals, the ARN must be in the following format:
-        ///
-        /// * arn::timestream:::database//table/
-        ///
-        ///
-        /// When resources.type equals AWS::VerifiedPermissions::PolicyStore, and the operator is set to Equals or NotEquals, the ARN must be in the following format:
-        ///
-        /// * arn::verifiedpermissions:::policy-store/
+        /// * vpcEndpointId - This ﬁeld is only used to filter CloudTrail network activity events and is optional. This field identifies the VPC endpoint that the request passed through. You can use any operator with vpcEndpointId.
         /// This member is required.
         public var field: Swift.String?
         /// An operator that excludes events that match the last few characters of the event record field specified as the value of Field.
@@ -1105,11 +848,11 @@ extension CloudTrailClientTypes {
             self.startsWith = startsWith
         }
     }
-
 }
 
 extension CloudTrailClientTypes {
-    /// Advanced event selectors let you create fine-grained selectors for CloudTrail management and data events. They help you control costs by logging only those events that are important to you. For more information about advanced event selectors, see [Logging management events](https://docs.aws.amazon.com/awscloudtrail/latest/userguide/logging-management-events-with-cloudtrail.html) and [Logging data events](https://docs.aws.amazon.com/awscloudtrail/latest/userguide/logging-data-events-with-cloudtrail.html) in the CloudTrail User Guide. You cannot apply both event selectors and advanced event selectors to a trail. Supported CloudTrail event record fields for management events
+
+    /// Advanced event selectors let you create fine-grained selectors for CloudTrail management, data, and network activity events. They help you control costs by logging only those events that are important to you. For more information about configuring advanced event selectors, see the [Logging data events](https://docs.aws.amazon.com/awscloudtrail/latest/userguide/logging-data-events-with-cloudtrail.html), [Logging network activity events](https://docs.aws.amazon.com/awscloudtrail/latest/userguide/logging-network-events-with-cloudtrail.html), and [Logging management events](https://docs.aws.amazon.com/awscloudtrail/latest/userguide/logging-management-events-with-cloudtrail.html) topics in the CloudTrail User Guide. You cannot apply both event selectors and advanced event selectors to a trail. Supported CloudTrail event record fields for management events
     ///
     /// * eventCategory (required)
     ///
@@ -1131,8 +874,21 @@ extension CloudTrailClientTypes {
     /// * resources.ARN
     ///
     ///
+    /// Supported CloudTrail event record fields for network activity events Network activity events is in preview release for CloudTrail and is subject to change.
+    ///
+    /// * eventCategory (required)
+    ///
+    /// * eventSource (required)
+    ///
+    /// * eventName
+    ///
+    /// * errorCode - The only valid value for errorCode is VpceAccessDenied.
+    ///
+    /// * vpcEndpointId
+    ///
+    ///
     /// For event data stores for CloudTrail Insights events, Config configuration items, Audit Manager evidence, or events outside of Amazon Web Services, the only supported field is eventCategory.
-    public struct AdvancedEventSelector {
+    public struct AdvancedEventSelector: Swift.Sendable {
         /// Contains all selector statements in an advanced event selector.
         /// This member is required.
         public var fieldSelectors: [CloudTrailClientTypes.AdvancedFieldSelector]?
@@ -1148,12 +904,11 @@ extension CloudTrailClientTypes {
             self.name = name
         }
     }
-
 }
 
 extension CloudTrailClientTypes {
 
-    public enum BillingMode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum BillingMode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case extendableRetentionPricing
         case fixedRetentionPricing
         case sdkUnknown(Swift.String)
@@ -1255,7 +1010,7 @@ public struct QueryIdNotFoundException: ClientRuntime.ModeledError, AWSClientRun
     }
 }
 
-public struct CancelQueryInput {
+public struct CancelQueryInput: Swift.Sendable {
     /// The ARN (or the ID suffix of the ARN) of an event data store on which the specified query is running.
     @available(*, deprecated, message: "EventDataStore is no longer required by CancelQueryRequest")
     public var eventDataStore: Swift.String?
@@ -1275,7 +1030,7 @@ public struct CancelQueryInput {
 
 extension CloudTrailClientTypes {
 
-    public enum QueryStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum QueryStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case cancelled
         case failed
         case finished
@@ -1314,7 +1069,7 @@ extension CloudTrailClientTypes {
     }
 }
 
-public struct CancelQueryOutput {
+public struct CancelQueryOutput: Swift.Sendable {
     /// The ID of the canceled query.
     /// This member is required.
     public var queryId: Swift.String?
@@ -1358,8 +1113,9 @@ public struct CannotDelegateManagementAccountException: ClientRuntime.ModeledErr
 }
 
 extension CloudTrailClientTypes {
+
     /// Contains information about a returned CloudTrail channel.
-    public struct Channel {
+    public struct Channel: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of a channel.
         public var channelArn: Swift.String?
         /// The name of the CloudTrail channel. For service-linked channels, the name is aws-service-channel/service-name/custom-suffix where service-name represents the name of the Amazon Web Services service that created the channel and custom-suffix represents the suffix created by the Amazon Web Services service.
@@ -1374,7 +1130,6 @@ extension CloudTrailClientTypes {
             self.name = name
         }
     }
-
 }
 
 /// This exception is thrown when the provided channel already exists.
@@ -1504,7 +1259,7 @@ public struct InvalidSourceException: ClientRuntime.ModeledError, AWSClientRunti
 
 extension CloudTrailClientTypes {
 
-    public enum DestinationType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DestinationType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case awsService
         case eventDataStore
         case sdkUnknown(Swift.String)
@@ -1532,8 +1287,9 @@ extension CloudTrailClientTypes {
 }
 
 extension CloudTrailClientTypes {
+
     /// Contains information about the destination receiving events.
-    public struct Destination {
+    public struct Destination: Swift.Sendable {
         /// For channels used for a CloudTrail Lake integration, the location is the ARN of an event data store that receives events from a channel. For service-linked channels, the location is the name of the Amazon Web Services service.
         /// This member is required.
         public var location: Swift.String?
@@ -1550,10 +1306,9 @@ extension CloudTrailClientTypes {
             self.type = type
         }
     }
-
 }
 
-public struct CreateChannelInput {
+public struct CreateChannelInput: Swift.Sendable {
     /// One or more event data stores to which events arriving through a channel will be logged.
     /// This member is required.
     public var destinations: [CloudTrailClientTypes.Destination]?
@@ -1580,7 +1335,7 @@ public struct CreateChannelInput {
     }
 }
 
-public struct CreateChannelOutput {
+public struct CreateChannelOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the new channel.
     public var channelArn: Swift.String?
     /// The event data stores that log the events arriving through the channel.
@@ -1891,7 +1646,7 @@ public struct OrganizationsNotInUseException: ClientRuntime.ModeledError, AWSCli
     }
 }
 
-public struct CreateEventDataStoreInput {
+public struct CreateEventDataStoreInput: Swift.Sendable {
     /// The advanced event selectors to use to select the events for the data store. You can configure up to five advanced event selectors for each event data store. For more information about how to use advanced event selectors to log CloudTrail events, see [Log events by using advanced event selectors](https://docs.aws.amazon.com/awscloudtrail/latest/userguide/logging-data-events-with-cloudtrail.html#creating-data-event-selectors-advanced) in the CloudTrail User Guide. For more information about how to use advanced event selectors to include Config configuration items in your event data store, see [Create an event data store for Config configuration items](https://docs.aws.amazon.com/awscloudtrail/latest/userguide/lake-eds-cli.html#lake-cli-create-eds-config) in the CloudTrail User Guide. For more information about how to use advanced event selectors to include events outside of Amazon Web Services events in your event data store, see [Create an integration to log events from outside Amazon Web Services](https://docs.aws.amazon.com/awscloudtrail/latest/userguide/lake-integrations-cli.html#lake-cli-create-integration) in the CloudTrail User Guide.
     public var advancedEventSelectors: [CloudTrailClientTypes.AdvancedEventSelector]?
     /// The billing mode for the event data store determines the cost for ingesting events and the default and maximum retention period for the event data store. The following are the possible values:
@@ -1957,7 +1712,7 @@ public struct CreateEventDataStoreInput {
 
 extension CloudTrailClientTypes {
 
-    public enum EventDataStoreStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum EventDataStoreStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case created
         case enabled
         case pendingDeletion
@@ -1996,7 +1751,7 @@ extension CloudTrailClientTypes {
     }
 }
 
-public struct CreateEventDataStoreOutput {
+public struct CreateEventDataStoreOutput: Swift.Sendable {
     /// The advanced event selectors that were used to select the events for the data store.
     public var advancedEventSelectors: [CloudTrailClientTypes.AdvancedEventSelector]?
     /// The billing mode for the event data store.
@@ -2458,7 +2213,7 @@ public struct TrailNotProvidedException: ClientRuntime.ModeledError, AWSClientRu
 }
 
 /// Specifies the settings for each trail.
-public struct CreateTrailInput {
+public struct CreateTrailInput: Swift.Sendable {
     /// Specifies a log group name using an Amazon Resource Name (ARN), a unique identifier that represents the log group to which CloudTrail logs will be delivered. You must use a log group that exists in your account. Not required unless you specify CloudWatchLogsRoleArn.
     public var cloudWatchLogsLogGroupArn: Swift.String?
     /// Specifies the role for the CloudWatch Logs endpoint to assume to write to a user's log group. You must use a role that exists in your account.
@@ -2535,7 +2290,7 @@ public struct CreateTrailInput {
 }
 
 /// Returns the objects or data listed below if successful. Otherwise, returns an error.
-public struct CreateTrailOutput {
+public struct CreateTrailOutput: Swift.Sendable {
     /// Specifies the Amazon Resource Name (ARN) of the log group to which CloudTrail logs will be delivered.
     public var cloudWatchLogsLogGroupArn: Swift.String?
     /// Specifies the role for the CloudWatch Logs endpoint to assume to write to a user's log group.
@@ -2596,7 +2351,7 @@ public struct CreateTrailOutput {
     }
 }
 
-public struct DeleteChannelInput {
+public struct DeleteChannelInput: Swift.Sendable {
     /// The ARN or the UUID value of the channel that you want to delete.
     /// This member is required.
     public var channel: Swift.String?
@@ -2609,7 +2364,7 @@ public struct DeleteChannelInput {
     }
 }
 
-public struct DeleteChannelOutput {
+public struct DeleteChannelOutput: Swift.Sendable {
 
     public init() { }
 }
@@ -2689,7 +2444,7 @@ public struct EventDataStoreTerminationProtectedException: ClientRuntime.Modeled
     }
 }
 
-public struct DeleteEventDataStoreInput {
+public struct DeleteEventDataStoreInput: Swift.Sendable {
     /// The ARN (or the ID suffix of the ARN) of the event data store to delete.
     /// This member is required.
     public var eventDataStore: Swift.String?
@@ -2702,7 +2457,7 @@ public struct DeleteEventDataStoreInput {
     }
 }
 
-public struct DeleteEventDataStoreOutput {
+public struct DeleteEventDataStoreOutput: Swift.Sendable {
 
     public init() { }
 }
@@ -2757,7 +2512,7 @@ public struct ResourcePolicyNotFoundException: ClientRuntime.ModeledError, AWSCl
     }
 }
 
-public struct DeleteResourcePolicyInput {
+public struct DeleteResourcePolicyInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the CloudTrail channel you're deleting the resource-based policy from. The following is the format of a resource ARN: arn:aws:cloudtrail:us-east-2:123456789012:channel/MyChannel.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -2770,7 +2525,7 @@ public struct DeleteResourcePolicyInput {
     }
 }
 
-public struct DeleteResourcePolicyOutput {
+public struct DeleteResourcePolicyOutput: Swift.Sendable {
 
     public init() { }
 }
@@ -2826,7 +2581,7 @@ public struct TrailNotFoundException: ClientRuntime.ModeledError, AWSClientRunti
 }
 
 /// The request that specifies the name of a trail to delete.
-public struct DeleteTrailInput {
+public struct DeleteTrailInput: Swift.Sendable {
     /// Specifies the name or the CloudTrail ARN of the trail to be deleted. The following is the format of a trail ARN. arn:aws:cloudtrail:us-east-2:123456789012:trail/MyTrail
     /// This member is required.
     public var name: Swift.String?
@@ -2840,7 +2595,7 @@ public struct DeleteTrailInput {
 }
 
 /// Returns the objects or data listed below if successful. Otherwise, returns an error.
-public struct DeleteTrailOutput {
+public struct DeleteTrailOutput: Swift.Sendable {
 
     public init() { }
 }
@@ -2871,7 +2626,7 @@ public struct NotOrganizationManagementAccountException: ClientRuntime.ModeledEr
 }
 
 /// Removes CloudTrail delegated administrator permissions from a specified member account in an organization that is currently designated as a delegated administrator.
-public struct DeregisterOrganizationDelegatedAdminInput {
+public struct DeregisterOrganizationDelegatedAdminInput: Swift.Sendable {
     /// A delegated administrator account ID. This is a member account in an organization that is currently designated as a delegated administrator.
     /// This member is required.
     public var delegatedAdminAccountId: Swift.String?
@@ -2885,12 +2640,12 @@ public struct DeregisterOrganizationDelegatedAdminInput {
 }
 
 /// Returns the following response if successful. Otherwise, returns an error.
-public struct DeregisterOrganizationDelegatedAdminOutput {
+public struct DeregisterOrganizationDelegatedAdminOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DescribeQueryInput {
+public struct DescribeQueryInput: Swift.Sendable {
     /// The ARN (or the ID suffix of the ARN) of an event data store on which the specified query was run.
     @available(*, deprecated, message: "EventDataStore is no longer required by DescribeQueryRequest")
     public var eventDataStore: Swift.String?
@@ -2913,7 +2668,7 @@ public struct DescribeQueryInput {
 
 extension CloudTrailClientTypes {
 
-    public enum DeliveryStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DeliveryStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case accessDenied
         case accessDeniedSigningFile
         case cancelled
@@ -2962,8 +2717,9 @@ extension CloudTrailClientTypes {
 }
 
 extension CloudTrailClientTypes {
+
     /// Gets metadata about a query, including the number of events that were matched, the total number of events scanned, the query run time in milliseconds, and the query's creation time.
-    public struct QueryStatisticsForDescribeQuery {
+    public struct QueryStatisticsForDescribeQuery: Swift.Sendable {
         /// The total bytes that the query scanned in the event data store. This value matches the number of bytes for which your account is billed for the query, unless the query is still running.
         public var bytesScanned: Swift.Int?
         /// The creation time of the query.
@@ -2990,10 +2746,9 @@ extension CloudTrailClientTypes {
             self.executionTimeInMillis = executionTimeInMillis
         }
     }
-
 }
 
-public struct DescribeQueryOutput {
+public struct DescribeQueryOutput: Swift.Sendable {
     /// The URI for the S3 bucket where CloudTrail delivered query results, if applicable.
     public var deliveryS3Uri: Swift.String?
     /// The delivery status.
@@ -3030,7 +2785,7 @@ public struct DescribeQueryOutput {
 }
 
 /// Returns information about the trail.
-public struct DescribeTrailsInput {
+public struct DescribeTrailsInput: Swift.Sendable {
     /// Specifies whether to include shadow trails in the response. A shadow trail is the replication in a Region of a trail that was created in a different Region, or in the case of an organization trail, the replication of an organization trail in member accounts. If you do not include shadow trails, organization trails in a member account and Region replication trails will not be returned. The default is true.
     public var includeShadowTrails: Swift.Bool?
     /// Specifies a list of trail names, trail ARNs, or both, of the trails to describe. The format of a trail ARN is: arn:aws:cloudtrail:us-east-2:123456789012:trail/MyTrail If an empty list is specified, information for the trail in the current Region is returned.
@@ -3054,8 +2809,9 @@ public struct DescribeTrailsInput {
 }
 
 extension CloudTrailClientTypes {
+
     /// The settings for a trail.
-    public struct Trail {
+    public struct Trail: Swift.Sendable {
         /// Specifies an Amazon Resource Name (ARN), a unique identifier that represents the log group to which CloudTrail logs will be delivered.
         public var cloudWatchLogsLogGroupArn: Swift.String?
         /// Specifies the role for the CloudWatch Logs endpoint to assume to write to a user's log group.
@@ -3127,11 +2883,10 @@ extension CloudTrailClientTypes {
             self.trailARN = trailARN
         }
     }
-
 }
 
 /// Returns the objects or data listed below if successful. Otherwise, returns an error.
-public struct DescribeTrailsOutput {
+public struct DescribeTrailsOutput: Swift.Sendable {
     /// The list of trail objects. Trail objects with string values are only returned if values for the objects exist in a trail's configuration. For example, SNSTopicName and SNSTopicARN are only returned in results if a trail is configured to send SNS notifications. Similarly, KMSKeyId only appears in results if a trail's log files are encrypted with KMS customer managed keys.
     public var trailList: [CloudTrailClientTypes.Trail]?
 
@@ -3168,7 +2923,7 @@ public struct ConcurrentModificationException: ClientRuntime.ModeledError, AWSCl
     }
 }
 
-public struct DisableFederationInput {
+public struct DisableFederationInput: Swift.Sendable {
     /// The ARN (or ID suffix of the ARN) of the event data store for which you want to disable Lake query federation.
     /// This member is required.
     public var eventDataStore: Swift.String?
@@ -3183,7 +2938,7 @@ public struct DisableFederationInput {
 
 extension CloudTrailClientTypes {
 
-    public enum FederationStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum FederationStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case disabled
         case disabling
         case enabled
@@ -3216,7 +2971,7 @@ extension CloudTrailClientTypes {
     }
 }
 
-public struct DisableFederationOutput {
+public struct DisableFederationOutput: Swift.Sendable {
     /// The ARN of the event data store for which you disabled Lake query federation.
     public var eventDataStoreArn: Swift.String?
     /// The federation status.
@@ -3232,7 +2987,7 @@ public struct DisableFederationOutput {
     }
 }
 
-public struct EnableFederationInput {
+public struct EnableFederationInput: Swift.Sendable {
     /// The ARN (or ID suffix of the ARN) of the event data store for which you want to enable Lake query federation.
     /// This member is required.
     public var eventDataStore: Swift.String?
@@ -3250,7 +3005,7 @@ public struct EnableFederationInput {
     }
 }
 
-public struct EnableFederationOutput {
+public struct EnableFederationOutput: Swift.Sendable {
     /// The ARN of the event data store for which you enabled Lake query federation.
     public var eventDataStoreArn: Swift.String?
     /// The ARN of the federation role.
@@ -3270,7 +3025,7 @@ public struct EnableFederationOutput {
     }
 }
 
-public struct GetChannelInput {
+public struct GetChannelInput: Swift.Sendable {
     /// The ARN or UUID of a channel.
     /// This member is required.
     public var channel: Swift.String?
@@ -3284,8 +3039,9 @@ public struct GetChannelInput {
 }
 
 extension CloudTrailClientTypes {
+
     /// A table showing information about the most recent successful and failed attempts to ingest events.
-    public struct IngestionStatus {
+    public struct IngestionStatus: Swift.Sendable {
         /// The event ID of the most recent attempt to ingest events.
         public var latestIngestionAttemptEventID: Swift.String?
         /// The time stamp of the most recent attempt to ingest events on the channel.
@@ -3312,12 +3068,12 @@ extension CloudTrailClientTypes {
             self.latestIngestionSuccessTime = latestIngestionSuccessTime
         }
     }
-
 }
 
 extension CloudTrailClientTypes {
+
     /// Contains configuration information about the channel.
-    public struct SourceConfig {
+    public struct SourceConfig: Swift.Sendable {
         /// The advanced event selectors that are configured for the channel.
         public var advancedEventSelectors: [CloudTrailClientTypes.AdvancedEventSelector]?
         /// Specifies whether the channel applies to a single Region or to all Regions.
@@ -3332,10 +3088,9 @@ extension CloudTrailClientTypes {
             self.applyToAllRegions = applyToAllRegions
         }
     }
-
 }
 
-public struct GetChannelOutput {
+public struct GetChannelOutput: Swift.Sendable {
     /// The ARN of an channel returned by a GetChannel request.
     public var channelArn: Swift.String?
     /// The destinations for the channel. For channels created for integrations, the destinations are the event data stores that log events arriving through the channel. For service-linked channels, the destination is the Amazon Web Services service that created the service-linked channel to receive events.
@@ -3367,7 +3122,7 @@ public struct GetChannelOutput {
     }
 }
 
-public struct GetEventDataStoreInput {
+public struct GetEventDataStoreInput: Swift.Sendable {
     /// The ARN (or ID suffix of the ARN) of the event data store about which you want information.
     /// This member is required.
     public var eventDataStore: Swift.String?
@@ -3381,8 +3136,9 @@ public struct GetEventDataStoreInput {
 }
 
 extension CloudTrailClientTypes {
+
     /// Contains information about a partition key for an event data store.
-    public struct PartitionKey {
+    public struct PartitionKey: Swift.Sendable {
         /// The name of the partition key.
         /// This member is required.
         public var name: Swift.String?
@@ -3399,10 +3155,9 @@ extension CloudTrailClientTypes {
             self.type = type
         }
     }
-
 }
 
-public struct GetEventDataStoreOutput {
+public struct GetEventDataStoreOutput: Swift.Sendable {
     /// The advanced event selectors used to select events for the data store.
     public var advancedEventSelectors: [CloudTrailClientTypes.AdvancedEventSelector]?
     /// The billing mode for the event data store.
@@ -3470,7 +3225,7 @@ public struct GetEventDataStoreOutput {
     }
 }
 
-public struct GetEventSelectorsInput {
+public struct GetEventSelectorsInput: Swift.Sendable {
     /// Specifies the name of the trail or trail ARN. If you specify a trail name, the string must meet the following requirements:
     ///
     /// * Contain only ASCII letters (a-z, A-Z), numbers (0-9), periods (.), underscores (_), or dashes (-)
@@ -3497,7 +3252,8 @@ public struct GetEventSelectorsInput {
 }
 
 extension CloudTrailClientTypes {
-    /// Data events provide information about the resource operations performed on or within a resource itself. These are also known as data plane operations. You can specify up to 250 data resources for a trail. Configure the DataResource to specify the resource type and resource ARNs for which you want to log data events. You can specify the following resource types in your event selectors for your trail:
+
+    /// You can configure the DataResource in an EventSelector to log data events for the following three resource types:
     ///
     /// * AWS::DynamoDB::Table
     ///
@@ -3506,13 +3262,13 @@ extension CloudTrailClientTypes {
     /// * AWS::S3::Object
     ///
     ///
-    /// The total number of allowed data resources is 250. This number can be distributed between 1 and 5 event selectors, but the total cannot exceed 250 across all selectors for the trail. If you are using advanced event selectors, the maximum total number of values for all conditions, across all advanced event selectors for the trail, is 500. The following example demonstrates how logging works when you configure logging of all data events for an S3 bucket named bucket-1. In this example, the CloudTrail user specified an empty prefix, and the option to log both Read and Write data events.
+    /// To log data events for all other resource types including objects stored in [directory buckets](https://docs.aws.amazon.com/AmazonS3/latest/userguide/directory-buckets-overview.html), you must use [AdvancedEventSelectors](https://docs.aws.amazon.com/awscloudtrail/latest/APIReference/API_AdvancedEventSelector.html). You must also use AdvancedEventSelectors if you want to filter on the eventName field. Configure the DataResource to specify the resource type and resource ARNs for which you want to log data events. The total number of allowed data resources is 250. This number can be distributed between 1 and 5 event selectors, but the total cannot exceed 250 across all selectors for the trail. The following example demonstrates how logging works when you configure logging of all data events for a general purpose bucket named amzn-s3-demo-bucket1. In this example, the CloudTrail user specified an empty prefix, and the option to log both Read and Write data events.
     ///
-    /// * A user uploads an image file to bucket-1.
+    /// * A user uploads an image file to amzn-s3-demo-bucket1.
     ///
     /// * The PutObject API operation is an Amazon S3 object-level API. It is recorded as a data event in CloudTrail. Because the CloudTrail user specified an S3 bucket with an empty prefix, events that occur on any object in that bucket are logged. The trail processes and logs the event.
     ///
-    /// * A user uploads an object to an Amazon S3 bucket named arn:aws:s3:::bucket-2.
+    /// * A user uploads an object to an Amazon S3 bucket named arn:aws:s3:::amzn-s3-demo-bucket1.
     ///
     /// * The PutObject API operation occurred for an object in an S3 bucket that the CloudTrail user didn't specify for the trail. The trail doesn’t log the event.
     ///
@@ -3524,7 +3280,7 @@ extension CloudTrailClientTypes {
     /// * The Invoke API operation on MyLambdaFunction is an Lambda API. It is recorded as a data event in CloudTrail. Because the CloudTrail user specified logging data events for MyLambdaFunction, any invocations of that function are logged. The trail processes and logs the event.
     ///
     /// * The Invoke API operation on MyOtherLambdaFunction is an Lambda API. Because the CloudTrail user did not specify logging data events for all Lambda functions, the Invoke operation for MyOtherLambdaFunction does not match the function specified for the trail. The trail doesn’t log the event.
-    public struct DataResource {
+    public struct DataResource: Swift.Sendable {
         /// The resource type in which you want to log data events. You can specify the following basic event selector resource types:
         ///
         /// * AWS::DynamoDB::Table
@@ -3540,9 +3296,9 @@ extension CloudTrailClientTypes {
         ///
         /// * To log data events for all objects in all S3 buckets in your Amazon Web Services account, specify the prefix as arn:aws:s3. This also enables logging of data event activity performed by any user or role in your Amazon Web Services account, even if that activity is performed on a bucket that belongs to another Amazon Web Services account.
         ///
-        /// * To log data events for all objects in an S3 bucket, specify the bucket and an empty object prefix such as arn:aws:s3:::bucket-1/. The trail logs data events for all objects in this S3 bucket.
+        /// * To log data events for all objects in an S3 bucket, specify the bucket and an empty object prefix such as arn:aws:s3:::amzn-s3-demo-bucket1/. The trail logs data events for all objects in this S3 bucket.
         ///
-        /// * To log data events for specific objects, specify the S3 bucket and object prefix such as arn:aws:s3:::bucket-1/example-images. The trail logs data events for objects in this S3 bucket that match the prefix.
+        /// * To log data events for specific objects, specify the S3 bucket and object prefix such as arn:aws:s3:::amzn-s3-demo-bucket1/example-images. The trail logs data events for objects in this S3 bucket that match the prefix.
         ///
         /// * To log data events for all Lambda functions in your Amazon Web Services account, specify the prefix as arn:aws:lambda. This also enables logging of Invoke activity performed by any user or role in your Amazon Web Services account, even if that activity is performed on a function that belongs to another Amazon Web Services account.
         ///
@@ -3560,12 +3316,11 @@ extension CloudTrailClientTypes {
             self.values = values
         }
     }
-
 }
 
 extension CloudTrailClientTypes {
 
-    public enum ReadWriteType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ReadWriteType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case all
         case readonly
         case writeonly
@@ -3596,9 +3351,10 @@ extension CloudTrailClientTypes {
 }
 
 extension CloudTrailClientTypes {
+
     /// Use event selectors to further specify the management and data event settings for your trail. By default, trails created without specific event selectors will be configured to log all read and write management events, and no data events. When an event occurs in your account, CloudTrail evaluates the event selector for all trails. For each trail, if the event matches any event selector, the trail processes and logs the event. If the event doesn't match any event selector, the trail doesn't log the event. You can configure up to five event selectors for a trail. You cannot apply both event selectors and advanced event selectors to a trail.
-    public struct EventSelector {
-        /// CloudTrail supports data event logging for Amazon S3 objects, Lambda functions, and Amazon DynamoDB tables with basic event selectors. You can specify up to 250 resources for an individual event selector, but the total number of data resources cannot exceed 250 across all event selectors in a trail. This limit does not apply if you configure resource logging for all data events. For more information, see [Data Events](https://docs.aws.amazon.com/awscloudtrail/latest/userguide/logging-data-events-with-cloudtrail.html) and [Limits in CloudTrail](https://docs.aws.amazon.com/awscloudtrail/latest/userguide/WhatIsCloudTrail-Limits.html) in the CloudTrail User Guide.
+    public struct EventSelector: Swift.Sendable {
+        /// CloudTrail supports data event logging for Amazon S3 objects in standard S3 buckets, Lambda functions, and Amazon DynamoDB tables with basic event selectors. You can specify up to 250 resources for an individual event selector, but the total number of data resources cannot exceed 250 across all event selectors in a trail. This limit does not apply if you configure resource logging for all data events. For more information, see [Data Events](https://docs.aws.amazon.com/awscloudtrail/latest/userguide/logging-data-events-with-cloudtrail.html) and [Limits in CloudTrail](https://docs.aws.amazon.com/awscloudtrail/latest/userguide/WhatIsCloudTrail-Limits.html) in the CloudTrail User Guide. To log data events for all other resource types including objects stored in [directory buckets](https://docs.aws.amazon.com/AmazonS3/latest/userguide/directory-buckets-overview.html), you must use [AdvancedEventSelectors](https://docs.aws.amazon.com/awscloudtrail/latest/APIReference/API_AdvancedEventSelector.html). You must also use AdvancedEventSelectors if you want to filter on the eventName field.
         public var dataResources: [CloudTrailClientTypes.DataResource]?
         /// An optional list of service event sources from which you do not want management events to be logged on your trail. In this release, the list can be empty (disables the filter), or it can filter out Key Management Service or Amazon RDS Data API events by containing kms.amazonaws.com or rdsdata.amazonaws.com. By default, ExcludeManagementEventSources is empty, and KMS and Amazon RDS Data API events are logged to your trail. You can exclude management event sources only in Regions that support the event source.
         public var excludeManagementEventSources: [Swift.String]?
@@ -3620,10 +3376,9 @@ extension CloudTrailClientTypes {
             self.readWriteType = readWriteType
         }
     }
-
 }
 
-public struct GetEventSelectorsOutput {
+public struct GetEventSelectorsOutput: Swift.Sendable {
     /// The advanced event selectors that are configured for the trail.
     public var advancedEventSelectors: [CloudTrailClientTypes.AdvancedEventSelector]?
     /// The event selectors that are configured for the trail.
@@ -3668,7 +3423,7 @@ public struct ImportNotFoundException: ClientRuntime.ModeledError, AWSClientRunt
     }
 }
 
-public struct GetImportInput {
+public struct GetImportInput: Swift.Sendable {
     /// The ID for the import.
     /// This member is required.
     public var importId: Swift.String?
@@ -3682,8 +3437,9 @@ public struct GetImportInput {
 }
 
 extension CloudTrailClientTypes {
+
     /// The settings for the source S3 bucket.
-    public struct S3ImportSource {
+    public struct S3ImportSource: Swift.Sendable {
         /// The IAM ARN role used to access the source S3 bucket.
         /// This member is required.
         public var s3BucketAccessRoleArn: Swift.String?
@@ -3705,12 +3461,12 @@ extension CloudTrailClientTypes {
             self.s3LocationUri = s3LocationUri
         }
     }
-
 }
 
 extension CloudTrailClientTypes {
+
     /// The import source.
-    public struct ImportSource {
+    public struct ImportSource: Swift.Sendable {
         /// The source S3 bucket.
         /// This member is required.
         public var s3: CloudTrailClientTypes.S3ImportSource?
@@ -3722,12 +3478,12 @@ extension CloudTrailClientTypes {
             self.s3 = s3
         }
     }
-
 }
 
 extension CloudTrailClientTypes {
+
     /// Provides statistics for the specified ImportID. CloudTrail does not update import statistics in real-time. Returned values for parameters such as EventsCompleted may be lower than the actual value, because CloudTrail updates statistics incrementally over the course of the import.
-    public struct ImportStatistics {
+    public struct ImportStatistics: Swift.Sendable {
         /// The number of trail events imported into the event data store.
         public var eventsCompleted: Swift.Int?
         /// The number of failed entries.
@@ -3754,12 +3510,11 @@ extension CloudTrailClientTypes {
             self.prefixesFound = prefixesFound
         }
     }
-
 }
 
 extension CloudTrailClientTypes {
 
-    public enum ImportStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ImportStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case completed
         case failed
         case initializing
@@ -3795,7 +3550,7 @@ extension CloudTrailClientTypes {
     }
 }
 
-public struct GetImportOutput {
+public struct GetImportOutput: Swift.Sendable {
     /// The timestamp of the import's creation.
     public var createdTimestamp: Foundation.Date?
     /// The ARN of the destination event data store.
@@ -3864,7 +3619,7 @@ public struct InsightNotEnabledException: ClientRuntime.ModeledError, AWSClientR
     }
 }
 
-public struct GetInsightSelectorsInput {
+public struct GetInsightSelectorsInput: Swift.Sendable {
     /// Specifies the ARN (or ID suffix of the ARN) of the event data store for which you want to get Insights selectors. You cannot use this parameter with the TrailName parameter.
     public var eventDataStore: Swift.String?
     /// Specifies the name of the trail or trail ARN. If you specify a trail name, the string must meet the following requirements:
@@ -3895,7 +3650,7 @@ public struct GetInsightSelectorsInput {
 
 extension CloudTrailClientTypes {
 
-    public enum InsightType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum InsightType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case apicallrateinsight
         case apierrorrateinsight
         case sdkUnknown(Swift.String)
@@ -3923,8 +3678,9 @@ extension CloudTrailClientTypes {
 }
 
 extension CloudTrailClientTypes {
+
     /// A JSON string that contains a list of Insights types that are logged on a trail or event data store.
-    public struct InsightSelector {
+    public struct InsightSelector: Swift.Sendable {
         /// The type of Insights events to log on a trail or event data store. ApiCallRateInsight and ApiErrorRateInsight are valid Insight types. The ApiCallRateInsight Insights type analyzes write-only management API calls that are aggregated per minute against a baseline API call volume. The ApiErrorRateInsight Insights type analyzes management API calls that result in error codes. The error is shown if the API call is unsuccessful.
         public var insightType: CloudTrailClientTypes.InsightType?
 
@@ -3935,10 +3691,9 @@ extension CloudTrailClientTypes {
             self.insightType = insightType
         }
     }
-
 }
 
-public struct GetInsightSelectorsOutput {
+public struct GetInsightSelectorsOutput: Swift.Sendable {
     /// The ARN of the source event data store that enabled Insights events.
     public var eventDataStoreArn: Swift.String?
     /// A JSON string that contains the Insight types you want to log on a trail or event data store. ApiErrorRateInsight and ApiCallRateInsight are supported as Insights types.
@@ -4012,7 +3767,7 @@ public struct InvalidNextTokenException: ClientRuntime.ModeledError, AWSClientRu
     }
 }
 
-public struct GetQueryResultsInput {
+public struct GetQueryResultsInput: Swift.Sendable {
     /// The ARN (or ID suffix of the ARN) of the event data store against which the query was run.
     @available(*, deprecated, message: "EventDataStore is no longer required by GetQueryResultsRequest")
     public var eventDataStore: Swift.String?
@@ -4039,8 +3794,9 @@ public struct GetQueryResultsInput {
 }
 
 extension CloudTrailClientTypes {
+
     /// Metadata about a query, such as the number of results.
-    public struct QueryStatistics {
+    public struct QueryStatistics: Swift.Sendable {
         /// The total bytes that the query scanned in the event data store. This value matches the number of bytes for which your account is billed for the query, unless the query is still running.
         public var bytesScanned: Swift.Int?
         /// The number of results returned.
@@ -4059,10 +3815,9 @@ extension CloudTrailClientTypes {
             self.totalResultsCount = totalResultsCount
         }
     }
-
 }
 
-public struct GetQueryResultsOutput {
+public struct GetQueryResultsOutput: Swift.Sendable {
     /// The error message returned if a query failed.
     public var errorMessage: Swift.String?
     /// A token you can use to get the next page of query results.
@@ -4090,7 +3845,7 @@ public struct GetQueryResultsOutput {
     }
 }
 
-public struct GetResourcePolicyInput {
+public struct GetResourcePolicyInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the CloudTrail channel attached to the resource-based policy. The following is the format of a resource ARN: arn:aws:cloudtrail:us-east-2:123456789012:channel/MyChannel.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -4103,7 +3858,7 @@ public struct GetResourcePolicyInput {
     }
 }
 
-public struct GetResourcePolicyOutput {
+public struct GetResourcePolicyOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the CloudTrail channel attached to resource-based policy.
     public var resourceArn: Swift.String?
     /// A JSON-formatted string that contains the resource-based policy attached to the CloudTrail channel.
@@ -4119,7 +3874,7 @@ public struct GetResourcePolicyOutput {
     }
 }
 
-public struct GetTrailInput {
+public struct GetTrailInput: Swift.Sendable {
     /// The name or the Amazon Resource Name (ARN) of the trail for which you want to retrieve settings information.
     /// This member is required.
     public var name: Swift.String?
@@ -4132,7 +3887,7 @@ public struct GetTrailInput {
     }
 }
 
-public struct GetTrailOutput {
+public struct GetTrailOutput: Swift.Sendable {
     /// The settings for a trail.
     public var trail: CloudTrailClientTypes.Trail?
 
@@ -4145,7 +3900,7 @@ public struct GetTrailOutput {
 }
 
 /// The name of a trail about which you want the current status.
-public struct GetTrailStatusInput {
+public struct GetTrailStatusInput: Swift.Sendable {
     /// Specifies the name or the CloudTrail ARN of the trail for which you are requesting status. To get the status of a shadow trail (a replication of the trail in another Region), you must specify its ARN. The following is the format of a trail ARN. arn:aws:cloudtrail:us-east-2:123456789012:trail/MyTrail
     /// This member is required.
     public var name: Swift.String?
@@ -4159,7 +3914,7 @@ public struct GetTrailStatusInput {
 }
 
 /// Returns the objects or data listed below if successful. Otherwise, returns an error.
-public struct GetTrailStatusOutput {
+public struct GetTrailStatusOutput: Swift.Sendable {
     /// Whether the CloudTrail trail is currently logging Amazon Web Services API calls.
     public var isLogging: Swift.Bool?
     /// Displays any CloudWatch Logs error that CloudTrail encountered when attempting to deliver logs to CloudWatch Logs.
@@ -4235,7 +3990,7 @@ public struct GetTrailStatusOutput {
     }
 }
 
-public struct ListChannelsInput {
+public struct ListChannelsInput: Swift.Sendable {
     /// The maximum number of CloudTrail channels to display on a single page.
     public var maxResults: Swift.Int?
     /// The token to use to get the next page of results after a previous API call. This token must be passed in with the same parameters that were specified in the original call. For example, if the original call specified an AttributeKey of 'Username' with a value of 'root', the call with NextToken should include those same parameters.
@@ -4251,7 +4006,7 @@ public struct ListChannelsInput {
     }
 }
 
-public struct ListChannelsOutput {
+public struct ListChannelsOutput: Swift.Sendable {
     /// The list of channels in the account.
     public var channels: [CloudTrailClientTypes.Channel]?
     /// The token to use to get the next page of results after a previous API call.
@@ -4267,7 +4022,7 @@ public struct ListChannelsOutput {
     }
 }
 
-public struct ListEventDataStoresInput {
+public struct ListEventDataStoresInput: Swift.Sendable {
     /// The maximum number of event data stores to display on a single page.
     public var maxResults: Swift.Int?
     /// A token you can use to get the next page of event data store results.
@@ -4284,8 +4039,9 @@ public struct ListEventDataStoresInput {
 }
 
 extension CloudTrailClientTypes {
+
     /// A storage lake of event data against which you can run complex SQL-based queries. An event data store can include events that you have logged on your account. To select events for an event data store, use [advanced event selectors](https://docs.aws.amazon.com/awscloudtrail/latest/userguide/cloudtrail-lake-concepts.html#adv-event-selectors).
-    public struct EventDataStore {
+    public struct EventDataStore: Swift.Sendable {
         /// The advanced event selectors that were used to select events for the data store.
         @available(*, deprecated, message: "AdvancedEventSelectors is no longer returned by ListEventDataStores")
         public var advancedEventSelectors: [CloudTrailClientTypes.AdvancedEventSelector]?
@@ -4340,10 +4096,9 @@ extension CloudTrailClientTypes {
             self.updatedTimestamp = updatedTimestamp
         }
     }
-
 }
 
-public struct ListEventDataStoresOutput {
+public struct ListEventDataStoresOutput: Swift.Sendable {
     /// Contains information about event data stores in the account, in the current Region.
     public var eventDataStores: [CloudTrailClientTypes.EventDataStore]?
     /// A token you can use to get the next page of results.
@@ -4359,7 +4114,7 @@ public struct ListEventDataStoresOutput {
     }
 }
 
-public struct ListImportFailuresInput {
+public struct ListImportFailuresInput: Swift.Sendable {
     /// The ID of the import.
     /// This member is required.
     public var importId: Swift.String?
@@ -4382,7 +4137,7 @@ public struct ListImportFailuresInput {
 
 extension CloudTrailClientTypes {
 
-    public enum ImportFailureStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ImportFailureStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case failed
         case retry
         case succeeded
@@ -4413,8 +4168,9 @@ extension CloudTrailClientTypes {
 }
 
 extension CloudTrailClientTypes {
+
     /// Provides information about an import failure.
-    public struct ImportFailureListItem {
+    public struct ImportFailureListItem: Swift.Sendable {
         /// Provides the reason the import failed.
         public var errorMessage: Swift.String?
         /// The type of import error.
@@ -4441,10 +4197,9 @@ extension CloudTrailClientTypes {
             self.status = status
         }
     }
-
 }
 
-public struct ListImportFailuresOutput {
+public struct ListImportFailuresOutput: Swift.Sendable {
     /// Contains information about the import failures.
     public var failures: [CloudTrailClientTypes.ImportFailureListItem]?
     /// A token you can use to get the next page of results.
@@ -4460,7 +4215,7 @@ public struct ListImportFailuresOutput {
     }
 }
 
-public struct ListImportsInput {
+public struct ListImportsInput: Swift.Sendable {
     /// The ARN of the destination event data store.
     public var destination: Swift.String?
     /// The status of the import.
@@ -4485,8 +4240,9 @@ public struct ListImportsInput {
 }
 
 extension CloudTrailClientTypes {
+
     /// Contains information about an import that was returned by a lookup request.
-    public struct ImportsListItem {
+    public struct ImportsListItem: Swift.Sendable {
         /// The timestamp of the import's creation.
         public var createdTimestamp: Foundation.Date?
         /// The ARN of the destination event data store.
@@ -4513,10 +4269,9 @@ extension CloudTrailClientTypes {
             self.updatedTimestamp = updatedTimestamp
         }
     }
-
 }
 
-public struct ListImportsOutput {
+public struct ListImportsOutput: Swift.Sendable {
     /// The list of returned imports.
     public var imports: [CloudTrailClientTypes.ImportsListItem]?
     /// A token you can use to get the next page of import results.
@@ -4534,7 +4289,7 @@ public struct ListImportsOutput {
 
 extension CloudTrailClientTypes {
 
-    public enum InsightsMetricDataType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum InsightsMetricDataType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case fillWithZeros
         case nonZeroData
         case sdkUnknown(Swift.String)
@@ -4561,7 +4316,7 @@ extension CloudTrailClientTypes {
     }
 }
 
-public struct ListInsightsMetricDataInput {
+public struct ListInsightsMetricDataInput: Swift.Sendable {
     /// Type of datapoints to return. Valid values are NonZeroData and FillWithZeros. The default is NonZeroData.
     public var dataType: CloudTrailClientTypes.InsightsMetricDataType?
     /// Specifies, in UTC, the end time for time-series data. The value specified is exclusive; results include data points up to the specified time stamp. The default is the time of request.
@@ -4612,7 +4367,7 @@ public struct ListInsightsMetricDataInput {
     }
 }
 
-public struct ListInsightsMetricDataOutput {
+public struct ListInsightsMetricDataOutput: Swift.Sendable {
     /// Only returned if InsightType parameter was set to ApiErrorRateInsight. If returning metrics for the ApiErrorRateInsight Insights type, this is the error to retrieve data for. For example, AccessDenied.
     public var errorCode: Swift.String?
     /// The name of the event, typically the Amazon Web Services API on which unusual levels of activity were recorded.
@@ -4699,7 +4454,7 @@ public struct InvalidTokenException: ClientRuntime.ModeledError, AWSClientRuntim
 }
 
 /// Requests the public keys for a specified time range.
-public struct ListPublicKeysInput {
+public struct ListPublicKeysInput: Swift.Sendable {
     /// Optionally specifies, in UTC, the end of the time range to look up public keys for CloudTrail digest files. If not specified, the current time is used.
     public var endTime: Foundation.Date?
     /// Reserved for future use.
@@ -4720,8 +4475,9 @@ public struct ListPublicKeysInput {
 }
 
 extension CloudTrailClientTypes {
+
     /// Contains information about a returned public key.
-    public struct PublicKey {
+    public struct PublicKey: Swift.Sendable {
         /// The fingerprint of the public key.
         public var fingerprint: Swift.String?
         /// The ending time of validity of the public key.
@@ -4744,11 +4500,10 @@ extension CloudTrailClientTypes {
             self.value = value
         }
     }
-
 }
 
 /// Returns the objects or data listed below if successful. Otherwise, returns an error.
-public struct ListPublicKeysOutput {
+public struct ListPublicKeysOutput: Swift.Sendable {
     /// Reserved for future use.
     public var nextToken: Swift.String?
     /// Contains an array of PublicKey objects. The returned public keys may have validity time ranges that overlap.
@@ -4814,7 +4569,7 @@ public struct InvalidQueryStatusException: ClientRuntime.ModeledError, AWSClient
     }
 }
 
-public struct ListQueriesInput {
+public struct ListQueriesInput: Swift.Sendable {
     /// Use with StartTime to bound a ListQueries request, and limit its results to only those queries run within a specified time period.
     public var endTime: Foundation.Date?
     /// The ARN (or the ID suffix of the ARN) of an event data store on which queries were run.
@@ -4848,8 +4603,9 @@ public struct ListQueriesInput {
 }
 
 extension CloudTrailClientTypes {
+
     /// A SQL string of criteria about events that you want to collect in an event data store.
-    public struct Query {
+    public struct Query: Swift.Sendable {
         /// The creation time of a query.
         public var creationTime: Foundation.Date?
         /// The ID of a query.
@@ -4868,10 +4624,9 @@ extension CloudTrailClientTypes {
             self.queryStatus = queryStatus
         }
     }
-
 }
 
-public struct ListQueriesOutput {
+public struct ListQueriesOutput: Swift.Sendable {
     /// A token you can use to get the next page of results.
     public var nextToken: Swift.String?
     /// Lists matching query results, and shows query ID, status, and creation time of each query.
@@ -4888,7 +4643,7 @@ public struct ListQueriesOutput {
 }
 
 /// Specifies a list of tags to return.
-public struct ListTagsInput {
+public struct ListTagsInput: Swift.Sendable {
     /// Reserved for future use.
     public var nextToken: Swift.String?
     /// Specifies a list of trail, event data store, or channel ARNs whose tags will be listed. The list has a limit of 20 ARNs. Example trail ARN format: arn:aws:cloudtrail:us-east-2:123456789012:trail/MyTrail Example event data store ARN format: arn:aws:cloudtrail:us-east-2:123456789012:eventdatastore/EXAMPLE-f852-4e8f-8bd1-bcf6cEXAMPLE Example channel ARN format: arn:aws:cloudtrail:us-east-2:123456789012:channel/01234567890
@@ -4906,8 +4661,9 @@ public struct ListTagsInput {
 }
 
 extension CloudTrailClientTypes {
+
     /// A resource tag.
-    public struct ResourceTag {
+    public struct ResourceTag: Swift.Sendable {
         /// Specifies the ARN of the resource.
         public var resourceId: Swift.String?
         /// A list of tags.
@@ -4922,11 +4678,10 @@ extension CloudTrailClientTypes {
             self.tagsList = tagsList
         }
     }
-
 }
 
 /// Returns the objects or data listed below if successful. Otherwise, returns an error.
-public struct ListTagsOutput {
+public struct ListTagsOutput: Swift.Sendable {
     /// Reserved for future use.
     public var nextToken: Swift.String?
     /// A list of resource tags.
@@ -4942,7 +4697,7 @@ public struct ListTagsOutput {
     }
 }
 
-public struct ListTrailsInput {
+public struct ListTrailsInput: Swift.Sendable {
     /// The token to use to get the next page of results after a previous API call. This token must be passed in with the same parameters that were specified in the original call. For example, if the original call specified an AttributeKey of 'Username' with a value of 'root', the call with NextToken should include those same parameters.
     public var nextToken: Swift.String?
 
@@ -4955,8 +4710,9 @@ public struct ListTrailsInput {
 }
 
 extension CloudTrailClientTypes {
+
     /// Information about a CloudTrail trail, including the trail's name, home Region, and Amazon Resource Name (ARN).
-    public struct TrailInfo {
+    public struct TrailInfo: Swift.Sendable {
         /// The Amazon Web Services Region in which a trail was created.
         public var homeRegion: Swift.String?
         /// The name of a trail.
@@ -4975,10 +4731,9 @@ extension CloudTrailClientTypes {
             self.trailARN = trailARN
         }
     }
-
 }
 
-public struct ListTrailsOutput {
+public struct ListTrailsOutput: Swift.Sendable {
     /// The token to use to get the next page of results after a previous API call. If the token does not appear, there are no more results to return. The token must be passed in with the same parameters as the previous call. For example, if the original call specified an AttributeKey of 'Username' with a value of 'root', the call with NextToken should include those same parameters.
     public var nextToken: Swift.String?
     /// Returns the name, ARN, and home Region of trails in the current account.
@@ -5046,7 +4801,7 @@ public struct InvalidLookupAttributesException: ClientRuntime.ModeledError, AWSC
 
 extension CloudTrailClientTypes {
 
-    public enum EventCategory: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum EventCategory: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case insight
         case sdkUnknown(Swift.String)
 
@@ -5072,7 +4827,7 @@ extension CloudTrailClientTypes {
 
 extension CloudTrailClientTypes {
 
-    public enum LookupAttributeKey: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum LookupAttributeKey: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case accessKeyId
         case eventId
         case eventName
@@ -5118,8 +4873,9 @@ extension CloudTrailClientTypes {
 }
 
 extension CloudTrailClientTypes {
+
     /// Specifies an attribute and value that filter the events returned.
-    public struct LookupAttribute {
+    public struct LookupAttribute: Swift.Sendable {
         /// Specifies an attribute on which to filter the events returned.
         /// This member is required.
         public var attributeKey: CloudTrailClientTypes.LookupAttributeKey?
@@ -5136,11 +4892,10 @@ extension CloudTrailClientTypes {
             self.attributeValue = attributeValue
         }
     }
-
 }
 
 /// Contains a request for LookupEvents.
-public struct LookupEventsInput {
+public struct LookupEventsInput: Swift.Sendable {
     /// Specifies that only events that occur before or at the specified time are returned. If the specified end time is before the specified start time, an error is returned.
     public var endTime: Foundation.Date?
     /// Specifies the event category. If you do not specify an event category, events of the category are not returned in the response. For example, if you do not specify insight as the value of EventCategory, no Insights events are returned.
@@ -5173,8 +4928,9 @@ public struct LookupEventsInput {
 }
 
 extension CloudTrailClientTypes {
+
     /// Specifies the type and name of a resource referenced by an event.
-    public struct Resource {
+    public struct Resource: Swift.Sendable {
         /// The name of the resource referenced by the event returned. These are user-created names whose values will depend on the environment. For example, the resource name might be "auto-scaling-test-group" for an Auto Scaling Group or "i-1234567" for an EC2 Instance.
         public var resourceName: Swift.String?
         /// The type of a resource referenced by the event returned. When the resource type cannot be determined, null is returned. Some examples of resource types are: Instance for EC2, Trail for CloudTrail, DBInstance for Amazon RDS, and AccessKey for IAM. To learn more about how to look up and filter events by the resource types supported for a service, see [Filtering CloudTrail Events](https://docs.aws.amazon.com/awscloudtrail/latest/userguide/view-cloudtrail-events-console.html#filtering-cloudtrail-events).
@@ -5189,12 +4945,12 @@ extension CloudTrailClientTypes {
             self.resourceType = resourceType
         }
     }
-
 }
 
 extension CloudTrailClientTypes {
+
     /// Contains information about an event that was returned by a lookup request. The result includes a representation of a CloudTrail event.
-    public struct Event {
+    public struct Event: Swift.Sendable {
         /// The Amazon Web Services access key ID that was used to sign the request. If the request was made with temporary security credentials, this is the access key ID of the temporary credentials.
         public var accessKeyId: Swift.String?
         /// A JSON string that contains a representation of the event returned.
@@ -5237,11 +4993,10 @@ extension CloudTrailClientTypes {
             self.username = username
         }
     }
-
 }
 
 /// Contains a response to a LookupEvents action.
-public struct LookupEventsOutput {
+public struct LookupEventsOutput: Swift.Sendable {
     /// A list of events returned based on the lookup attributes specified and the CloudTrail event. The events list is sorted by time. The most recent event is listed first.
     public var events: [CloudTrailClientTypes.Event]?
     /// The token to use to get the next page of results after a previous API call. If the token does not appear, there are no more results to return. The token must be passed in with the same parameters as the previous call. For example, if the original call specified an AttributeKey of 'Username' with a value of 'root', the call with NextToken should include those same parameters.
@@ -5257,10 +5012,19 @@ public struct LookupEventsOutput {
     }
 }
 
-public struct PutEventSelectorsInput {
-    /// Specifies the settings for advanced event selectors. You can add advanced event selectors, and conditions for your advanced event selectors, up to a maximum of 500 values for all conditions and selectors on a trail. You can use either AdvancedEventSelectors or EventSelectors, but not both. If you apply AdvancedEventSelectors to a trail, any existing EventSelectors are overwritten. For more information about advanced event selectors, see [Logging data events](https://docs.aws.amazon.com/awscloudtrail/latest/userguide/logging-data-events-with-cloudtrail.html) in the CloudTrail User Guide.
+public struct PutEventSelectorsInput: Swift.Sendable {
+    /// Specifies the settings for advanced event selectors. You can use advanced event selectors to log management events, data events for all resource types, and network activity events. You can add advanced event selectors, and conditions for your advanced event selectors, up to a maximum of 500 values for all conditions and selectors on a trail. You can use either AdvancedEventSelectors or EventSelectors, but not both. If you apply AdvancedEventSelectors to a trail, any existing EventSelectors are overwritten. For more information about advanced event selectors, see [Logging data events](https://docs.aws.amazon.com/awscloudtrail/latest/userguide/logging-data-events-with-cloudtrail.html) and [Logging network activity events](https://docs.aws.amazon.com/awscloudtrail/latest/userguide/logging-network-events-with-cloudtrail.html) in the CloudTrail User Guide.
     public var advancedEventSelectors: [CloudTrailClientTypes.AdvancedEventSelector]?
-    /// Specifies the settings for your event selectors. You can configure up to five event selectors for a trail. You can use either EventSelectors or AdvancedEventSelectors in a PutEventSelectors request, but not both. If you apply EventSelectors to a trail, any existing AdvancedEventSelectors are overwritten.
+    /// Specifies the settings for your event selectors. You can use event selectors to log management events and data events for the following resource types:
+    ///
+    /// * AWS::DynamoDB::Table
+    ///
+    /// * AWS::Lambda::Function
+    ///
+    /// * AWS::S3::Object
+    ///
+    ///
+    /// You can't use event selectors to log network activity events. You can configure up to five event selectors for a trail. You can use either EventSelectors or AdvancedEventSelectors in a PutEventSelectors request, but not both. If you apply EventSelectors to a trail, any existing AdvancedEventSelectors are overwritten.
     public var eventSelectors: [CloudTrailClientTypes.EventSelector]?
     /// Specifies the name of the trail or trail ARN. If you specify a trail name, the string must meet the following requirements:
     ///
@@ -5291,7 +5055,7 @@ public struct PutEventSelectorsInput {
     }
 }
 
-public struct PutEventSelectorsOutput {
+public struct PutEventSelectorsOutput: Swift.Sendable {
     /// Specifies the advanced event selectors configured for your trail.
     public var advancedEventSelectors: [CloudTrailClientTypes.AdvancedEventSelector]?
     /// Specifies the event selectors configured for your trail.
@@ -5336,7 +5100,7 @@ public struct InvalidInsightSelectorsException: ClientRuntime.ModeledError, AWSC
     }
 }
 
-public struct PutInsightSelectorsInput {
+public struct PutInsightSelectorsInput: Swift.Sendable {
     /// The ARN (or ID suffix of the ARN) of the source event data store for which you want to change or add Insights selectors. To enable Insights on an event data store, you must provide both the EventDataStore and InsightsDestination parameters. You cannot use this parameter with the TrailName parameter.
     public var eventDataStore: Swift.String?
     /// A JSON string that contains the Insights types you want to log on a trail or event data store. ApiCallRateInsight and ApiErrorRateInsight are valid Insight types. The ApiCallRateInsight Insights type analyzes write-only management API calls that are aggregated per minute against a baseline API call volume. The ApiErrorRateInsight Insights type analyzes management API calls that result in error codes. The error is shown if the API call is unsuccessful.
@@ -5361,7 +5125,7 @@ public struct PutInsightSelectorsInput {
     }
 }
 
-public struct PutInsightSelectorsOutput {
+public struct PutInsightSelectorsOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the source event data store for which you want to change or add Insights selectors.
     public var eventDataStoreArn: Swift.String?
     /// A JSON string that contains the Insights event types that you want to log on a trail or event data store. The valid Insights types are ApiErrorRateInsight and ApiCallRateInsight.
@@ -5416,7 +5180,7 @@ public struct ResourcePolicyNotValidException: ClientRuntime.ModeledError, AWSCl
     }
 }
 
-public struct PutResourcePolicyInput {
+public struct PutResourcePolicyInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the CloudTrail channel attached to the resource-based policy. The following is the format of a resource ARN: arn:aws:cloudtrail:us-east-2:123456789012:channel/MyChannel.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -5440,7 +5204,7 @@ public struct PutResourcePolicyInput {
     }
 }
 
-public struct PutResourcePolicyOutput {
+public struct PutResourcePolicyOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the CloudTrail channel attached to the resource-based policy.
     public var resourceArn: Swift.String?
     /// The JSON-formatted string of the Amazon Web Services resource-based policy attached to the CloudTrail channel.
@@ -5482,7 +5246,7 @@ public struct DelegatedAdminAccountLimitExceededException: ClientRuntime.Modeled
 }
 
 /// Specifies an organization member account ID as a CloudTrail delegated administrator.
-public struct RegisterOrganizationDelegatedAdminInput {
+public struct RegisterOrganizationDelegatedAdminInput: Swift.Sendable {
     /// An organization member account ID that you want to designate as a delegated administrator.
     /// This member is required.
     public var memberAccountId: Swift.String?
@@ -5496,13 +5260,13 @@ public struct RegisterOrganizationDelegatedAdminInput {
 }
 
 /// Returns the following response if successful. Otherwise, returns an error.
-public struct RegisterOrganizationDelegatedAdminOutput {
+public struct RegisterOrganizationDelegatedAdminOutput: Swift.Sendable {
 
     public init() { }
 }
 
 /// Specifies the tags to remove from a trail, event data store, or channel.
-public struct RemoveTagsInput {
+public struct RemoveTagsInput: Swift.Sendable {
     /// Specifies the ARN of the trail, event data store, or channel from which tags should be removed. Example trail ARN format: arn:aws:cloudtrail:us-east-2:123456789012:trail/MyTrail Example event data store ARN format: arn:aws:cloudtrail:us-east-2:123456789012:eventdatastore/EXAMPLE-f852-4e8f-8bd1-bcf6cEXAMPLE Example channel ARN format: arn:aws:cloudtrail:us-east-2:123456789012:channel/01234567890
     /// This member is required.
     public var resourceId: Swift.String?
@@ -5521,7 +5285,7 @@ public struct RemoveTagsInput {
 }
 
 /// Returns the objects or data listed below if successful. Otherwise, returns an error.
-public struct RemoveTagsOutput {
+public struct RemoveTagsOutput: Swift.Sendable {
 
     public init() { }
 }
@@ -5551,7 +5315,7 @@ public struct InvalidEventDataStoreStatusException: ClientRuntime.ModeledError, 
     }
 }
 
-public struct RestoreEventDataStoreInput {
+public struct RestoreEventDataStoreInput: Swift.Sendable {
     /// The ARN (or the ID suffix of the ARN) of the event data store that you want to restore.
     /// This member is required.
     public var eventDataStore: Swift.String?
@@ -5564,7 +5328,7 @@ public struct RestoreEventDataStoreInput {
     }
 }
 
-public struct RestoreEventDataStoreOutput {
+public struct RestoreEventDataStoreOutput: Swift.Sendable {
     /// The advanced event selectors that were used to select events.
     public var advancedEventSelectors: [CloudTrailClientTypes.AdvancedEventSelector]?
     /// The billing mode for the event data store.
@@ -5620,7 +5384,7 @@ public struct RestoreEventDataStoreOutput {
     }
 }
 
-public struct StartEventDataStoreIngestionInput {
+public struct StartEventDataStoreIngestionInput: Swift.Sendable {
     /// The ARN (or ID suffix of the ARN) of the event data store for which you want to start ingestion.
     /// This member is required.
     public var eventDataStore: Swift.String?
@@ -5633,7 +5397,7 @@ public struct StartEventDataStoreIngestionInput {
     }
 }
 
-public struct StartEventDataStoreIngestionOutput {
+public struct StartEventDataStoreIngestionOutput: Swift.Sendable {
 
     public init() { }
 }
@@ -5663,7 +5427,7 @@ public struct InvalidImportSourceException: ClientRuntime.ModeledError, AWSClien
     }
 }
 
-public struct StartImportInput {
+public struct StartImportInput: Swift.Sendable {
     /// The ARN of the destination event data store. Use this parameter for a new import.
     public var destinations: [Swift.String]?
     /// Use with StartEventTime to bound a StartImport request, and limit imported trail events to only those events logged within a specified time period. When you specify a time range, CloudTrail checks the prefix and log file names to verify the names contain a date between the specified StartEventTime and EndEventTime before attempting to import events.
@@ -5691,7 +5455,7 @@ public struct StartImportInput {
     }
 }
 
-public struct StartImportOutput {
+public struct StartImportOutput: Swift.Sendable {
     /// The timestamp for the import's creation.
     public var createdTimestamp: Foundation.Date?
     /// The ARN of the destination event data store.
@@ -5732,7 +5496,7 @@ public struct StartImportOutput {
 }
 
 /// The request to CloudTrail to start logging Amazon Web Services API calls for an account.
-public struct StartLoggingInput {
+public struct StartLoggingInput: Swift.Sendable {
     /// Specifies the name or the CloudTrail ARN of the trail for which CloudTrail logs Amazon Web Services API calls. The following is the format of a trail ARN. arn:aws:cloudtrail:us-east-2:123456789012:trail/MyTrail
     /// This member is required.
     public var name: Swift.String?
@@ -5746,7 +5510,7 @@ public struct StartLoggingInput {
 }
 
 /// Returns the objects or data listed below if successful. Otherwise, returns an error.
-public struct StartLoggingOutput {
+public struct StartLoggingOutput: Swift.Sendable {
 
     public init() { }
 }
@@ -5801,7 +5565,7 @@ public struct MaxConcurrentQueriesException: ClientRuntime.ModeledError, AWSClie
     }
 }
 
-public struct StartQueryInput {
+public struct StartQueryInput: Swift.Sendable {
     /// The URI for the S3 bucket where CloudTrail delivers the query results.
     public var deliveryS3Uri: Swift.String?
     /// The alias that identifies a query template.
@@ -5825,7 +5589,7 @@ public struct StartQueryInput {
     }
 }
 
-public struct StartQueryOutput {
+public struct StartQueryOutput: Swift.Sendable {
     /// The ID of the started query.
     public var queryId: Swift.String?
 
@@ -5837,7 +5601,7 @@ public struct StartQueryOutput {
     }
 }
 
-public struct StopEventDataStoreIngestionInput {
+public struct StopEventDataStoreIngestionInput: Swift.Sendable {
     /// The ARN (or ID suffix of the ARN) of the event data store for which you want to stop ingestion.
     /// This member is required.
     public var eventDataStore: Swift.String?
@@ -5850,12 +5614,12 @@ public struct StopEventDataStoreIngestionInput {
     }
 }
 
-public struct StopEventDataStoreIngestionOutput {
+public struct StopEventDataStoreIngestionOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct StopImportInput {
+public struct StopImportInput: Swift.Sendable {
     /// The ID of the import.
     /// This member is required.
     public var importId: Swift.String?
@@ -5868,7 +5632,7 @@ public struct StopImportInput {
     }
 }
 
-public struct StopImportOutput {
+public struct StopImportOutput: Swift.Sendable {
     /// The timestamp of the import's creation.
     public var createdTimestamp: Foundation.Date?
     /// The ARN of the destination event data store.
@@ -5913,7 +5677,7 @@ public struct StopImportOutput {
 }
 
 /// Passes the request to CloudTrail to stop logging Amazon Web Services API calls for the specified account.
-public struct StopLoggingInput {
+public struct StopLoggingInput: Swift.Sendable {
     /// Specifies the name or the CloudTrail ARN of the trail for which CloudTrail will stop logging Amazon Web Services API calls. The following is the format of a trail ARN. arn:aws:cloudtrail:us-east-2:123456789012:trail/MyTrail
     /// This member is required.
     public var name: Swift.String?
@@ -5927,12 +5691,12 @@ public struct StopLoggingInput {
 }
 
 /// Returns the objects or data listed below if successful. Otherwise, returns an error.
-public struct StopLoggingOutput {
+public struct StopLoggingOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdateChannelInput {
+public struct UpdateChannelInput: Swift.Sendable {
     /// The ARN or ID (the ARN suffix) of the channel that you want to update.
     /// This member is required.
     public var channel: Swift.String?
@@ -5953,7 +5717,7 @@ public struct UpdateChannelInput {
     }
 }
 
-public struct UpdateChannelOutput {
+public struct UpdateChannelOutput: Swift.Sendable {
     /// The ARN of the channel that was updated.
     public var channelArn: Swift.String?
     /// The event data stores that log events arriving through the channel.
@@ -5977,7 +5741,7 @@ public struct UpdateChannelOutput {
     }
 }
 
-public struct UpdateEventDataStoreInput {
+public struct UpdateEventDataStoreInput: Swift.Sendable {
     /// The advanced event selectors used to select events for the event data store. You can configure up to five advanced event selectors for each event data store.
     public var advancedEventSelectors: [CloudTrailClientTypes.AdvancedEventSelector]?
     /// You can't change the billing mode from EXTENDABLE_RETENTION_PRICING to FIXED_RETENTION_PRICING. If BillingMode is set to EXTENDABLE_RETENTION_PRICING and you want to use FIXED_RETENTION_PRICING instead, you'll need to stop ingestion on the event data store and create a new event data store that uses FIXED_RETENTION_PRICING. The billing mode for the event data store determines the cost for ingesting events and the default and maximum retention period for the event data store. The following are the possible values:
@@ -6037,7 +5801,7 @@ public struct UpdateEventDataStoreInput {
     }
 }
 
-public struct UpdateEventDataStoreOutput {
+public struct UpdateEventDataStoreOutput: Swift.Sendable {
     /// The advanced event selectors that are applied to the event data store.
     public var advancedEventSelectors: [CloudTrailClientTypes.AdvancedEventSelector]?
     /// The billing mode for the event data store.
@@ -6102,7 +5866,7 @@ public struct UpdateEventDataStoreOutput {
 }
 
 /// Specifies settings to update for the trail.
-public struct UpdateTrailInput {
+public struct UpdateTrailInput: Swift.Sendable {
     /// Specifies a log group name using an Amazon Resource Name (ARN), a unique identifier that represents the log group to which CloudTrail logs are delivered. You must use a log group that exists in your account. Not required unless you specify CloudWatchLogsRoleArn.
     public var cloudWatchLogsLogGroupArn: Swift.String?
     /// Specifies the role for the CloudWatch Logs endpoint to assume to write to a user's log group. You must use a role that exists in your account.
@@ -6177,7 +5941,7 @@ public struct UpdateTrailInput {
 }
 
 /// Returns the objects or data listed below if successful. Otherwise, returns an error.
-public struct UpdateTrailOutput {
+public struct UpdateTrailOutput: Swift.Sendable {
     /// Specifies the Amazon Resource Name (ARN) of the log group to which CloudTrail logs are delivered.
     public var cloudWatchLogsLogGroupArn: Swift.String?
     /// Specifies the role for the CloudWatch Logs endpoint to assume to write to a user's log group.
@@ -9146,11 +8910,11 @@ extension QueryIdNotFoundException {
     }
 }
 
-extension InvalidSourceException {
+extension ChannelMaxLimitExceededException {
 
-    static func makeError(baseError: AWSClientRuntime.AWSJSONError) throws -> InvalidSourceException {
+    static func makeError(baseError: AWSClientRuntime.AWSJSONError) throws -> ChannelMaxLimitExceededException {
         let reader = baseError.errorBodyReader
-        var value = InvalidSourceException()
+        var value = ChannelMaxLimitExceededException()
         value.properties.message = try reader["Message"].readIfPresent()
         value.httpResponse = baseError.httpResponse
         value.requestID = baseError.requestID
@@ -9159,11 +8923,11 @@ extension InvalidSourceException {
     }
 }
 
-extension ChannelMaxLimitExceededException {
+extension InvalidSourceException {
 
-    static func makeError(baseError: AWSClientRuntime.AWSJSONError) throws -> ChannelMaxLimitExceededException {
+    static func makeError(baseError: AWSClientRuntime.AWSJSONError) throws -> InvalidSourceException {
         let reader = baseError.errorBodyReader
-        var value = ChannelMaxLimitExceededException()
+        var value = InvalidSourceException()
         value.properties.message = try reader["Message"].readIfPresent()
         value.httpResponse = baseError.httpResponse
         value.requestID = baseError.requestID
@@ -9926,11 +9690,11 @@ extension InvalidEventDataStoreStatusException {
     }
 }
 
-extension InvalidImportSourceException {
+extension AccountHasOngoingImportException {
 
-    static func makeError(baseError: AWSClientRuntime.AWSJSONError) throws -> InvalidImportSourceException {
+    static func makeError(baseError: AWSClientRuntime.AWSJSONError) throws -> AccountHasOngoingImportException {
         let reader = baseError.errorBodyReader
-        var value = InvalidImportSourceException()
+        var value = AccountHasOngoingImportException()
         value.properties.message = try reader["Message"].readIfPresent()
         value.httpResponse = baseError.httpResponse
         value.requestID = baseError.requestID
@@ -9939,11 +9703,11 @@ extension InvalidImportSourceException {
     }
 }
 
-extension AccountHasOngoingImportException {
+extension InvalidImportSourceException {
 
-    static func makeError(baseError: AWSClientRuntime.AWSJSONError) throws -> AccountHasOngoingImportException {
+    static func makeError(baseError: AWSClientRuntime.AWSJSONError) throws -> InvalidImportSourceException {
         let reader = baseError.errorBodyReader
-        var value = AccountHasOngoingImportException()
+        var value = InvalidImportSourceException()
         value.properties.message = try reader["Message"].readIfPresent()
         value.httpResponse = baseError.httpResponse
         value.requestID = baseError.requestID

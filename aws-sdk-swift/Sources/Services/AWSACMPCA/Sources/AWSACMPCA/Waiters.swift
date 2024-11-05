@@ -39,7 +39,7 @@ extension ACMPCAClient {
                 return (error as? ClientRuntime.ServiceError)?.typeName == "AccessDeniedException"
             }),
         ]
-        return try SmithyWaitersAPI.WaiterConfiguration<DescribeCertificateAuthorityAuditReportInput, DescribeCertificateAuthorityAuditReportOutput>(acceptors: acceptors, minDelay: 3.0, maxDelay: 120.0)
+        return try SmithyWaitersAPI.WaiterConfiguration<DescribeCertificateAuthorityAuditReportInput, DescribeCertificateAuthorityAuditReportOutput>(acceptors: acceptors, minDelay: 3.0, maxDelay: 180.0)
     }
 
     /// Initiates waiting for the AuditReportCreated event on the describeCertificateAuthorityAuditReport operation.
@@ -75,7 +75,7 @@ extension ACMPCAClient {
                 return (error as? ClientRuntime.ServiceError)?.typeName == "AccessDeniedException"
             }),
         ]
-        return try SmithyWaitersAPI.WaiterConfiguration<GetCertificateInput, GetCertificateOutput>(acceptors: acceptors, minDelay: 1.0, maxDelay: 120.0)
+        return try SmithyWaitersAPI.WaiterConfiguration<GetCertificateInput, GetCertificateOutput>(acceptors: acceptors, minDelay: 1.0, maxDelay: 60.0)
     }
 
     /// Initiates waiting for the CertificateIssued event on the getCertificate operation.
@@ -111,7 +111,7 @@ extension ACMPCAClient {
                 return (error as? ClientRuntime.ServiceError)?.typeName == "AccessDeniedException"
             }),
         ]
-        return try SmithyWaitersAPI.WaiterConfiguration<GetCertificateAuthorityCsrInput, GetCertificateAuthorityCsrOutput>(acceptors: acceptors, minDelay: 3.0, maxDelay: 120.0)
+        return try SmithyWaitersAPI.WaiterConfiguration<GetCertificateAuthorityCsrInput, GetCertificateAuthorityCsrOutput>(acceptors: acceptors, minDelay: 3.0, maxDelay: 180.0)
     }
 
     /// Initiates waiting for the CertificateAuthorityCSRCreated event on the getCertificateAuthorityCsr operation.

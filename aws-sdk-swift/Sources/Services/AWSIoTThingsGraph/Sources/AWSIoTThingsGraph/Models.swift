@@ -123,7 +123,7 @@ public struct ThrottlingException: ClientRuntime.ModeledError, AWSClientRuntime.
     }
 }
 
-public struct AssociateEntityToThingInput {
+public struct AssociateEntityToThingInput: Swift.Sendable {
     /// The ID of the device to be associated with the thing. The ID should be in the following format. urn:tdm:REGION/ACCOUNT ID/default:device:DEVICENAME
     /// This member is required.
     public var entityId: Swift.String?
@@ -145,7 +145,7 @@ public struct AssociateEntityToThingInput {
     }
 }
 
-public struct AssociateEntityToThingOutput {
+public struct AssociateEntityToThingOutput: Swift.Sendable {
 
     public init() { }
 }
@@ -200,7 +200,7 @@ public struct ResourceAlreadyExistsException: ClientRuntime.ModeledError, AWSCli
 
 extension IoTThingsGraphClientTypes {
 
-    public enum DefinitionLanguage: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DefinitionLanguage: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case graphql
         case sdkUnknown(Swift.String)
 
@@ -225,8 +225,9 @@ extension IoTThingsGraphClientTypes {
 }
 
 extension IoTThingsGraphClientTypes {
+
     /// A document that defines an entity.
-    public struct DefinitionDocument {
+    public struct DefinitionDocument: Swift.Sendable {
         /// The language used to define the entity. GRAPHQL is the only valid value.
         /// This member is required.
         public var language: IoTThingsGraphClientTypes.DefinitionLanguage?
@@ -243,10 +244,9 @@ extension IoTThingsGraphClientTypes {
             self.text = text
         }
     }
-
 }
 
-public struct CreateFlowTemplateInput {
+public struct CreateFlowTemplateInput: Swift.Sendable {
     /// The namespace version in which the workflow is to be created. If no value is specified, the latest version is used by default.
     public var compatibleNamespaceVersion: Swift.Int?
     /// The workflow DefinitionDocument.
@@ -264,8 +264,9 @@ public struct CreateFlowTemplateInput {
 }
 
 extension IoTThingsGraphClientTypes {
+
     /// An object that contains summary information about a workflow.
-    public struct FlowTemplateSummary {
+    public struct FlowTemplateSummary: Swift.Sendable {
         /// The ARN of the workflow.
         public var arn: Swift.String?
         /// The date when the workflow was created.
@@ -288,10 +289,9 @@ extension IoTThingsGraphClientTypes {
             self.revisionNumber = revisionNumber
         }
     }
-
 }
 
-public struct CreateFlowTemplateOutput {
+public struct CreateFlowTemplateOutput: Swift.Sendable {
     /// The summary object that describes the created workflow.
     public var summary: IoTThingsGraphClientTypes.FlowTemplateSummary?
 
@@ -304,8 +304,9 @@ public struct CreateFlowTemplateOutput {
 }
 
 extension IoTThingsGraphClientTypes {
+
     /// An object that specifies whether cloud metrics are collected in a deployment and, if so, what role is used to collect metrics.
-    public struct MetricsConfiguration {
+    public struct MetricsConfiguration: Swift.Sendable {
         /// A Boolean that specifies whether cloud metrics are collected.
         public var cloudMetricEnabled: Swift.Bool
         /// The ARN of the role that is used to collect cloud metrics.
@@ -320,12 +321,12 @@ extension IoTThingsGraphClientTypes {
             self.metricRuleRoleArn = metricRuleRoleArn
         }
     }
-
 }
 
 extension IoTThingsGraphClientTypes {
+
     /// Metadata assigned to an AWS IoT Things Graph resource consisting of a key-value pair.
-    public struct Tag {
+    public struct Tag: Swift.Sendable {
         /// The required name of the tag. The string value can be from 1 to 128 Unicode characters in length.
         /// This member is required.
         public var key: Swift.String?
@@ -342,12 +343,11 @@ extension IoTThingsGraphClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension IoTThingsGraphClientTypes {
 
-    public enum DeploymentTarget: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DeploymentTarget: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case cloud
         case greengrass
         case sdkUnknown(Swift.String)
@@ -374,7 +374,7 @@ extension IoTThingsGraphClientTypes {
     }
 }
 
-public struct CreateSystemInstanceInput {
+public struct CreateSystemInstanceInput: Swift.Sendable {
     /// A document that defines an entity.
     /// This member is required.
     public var definition: IoTThingsGraphClientTypes.DefinitionDocument?
@@ -414,7 +414,7 @@ public struct CreateSystemInstanceInput {
 
 extension IoTThingsGraphClientTypes {
 
-    public enum SystemInstanceDeploymentStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SystemInstanceDeploymentStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case bootstrap
         case deletedInTarget
         case deployedInTarget
@@ -460,8 +460,9 @@ extension IoTThingsGraphClientTypes {
 }
 
 extension IoTThingsGraphClientTypes {
+
     /// An object that contains summary information about a system instance.
-    public struct SystemInstanceSummary {
+    public struct SystemInstanceSummary: Swift.Sendable {
         /// The ARN of the system instance.
         public var arn: Swift.String?
         /// The date when the system instance was created.
@@ -504,10 +505,9 @@ extension IoTThingsGraphClientTypes {
             self.updatedAt = updatedAt
         }
     }
-
 }
 
-public struct CreateSystemInstanceOutput {
+public struct CreateSystemInstanceOutput: Swift.Sendable {
     /// The summary object that describes the new system instance.
     public var summary: IoTThingsGraphClientTypes.SystemInstanceSummary?
 
@@ -519,7 +519,7 @@ public struct CreateSystemInstanceOutput {
     }
 }
 
-public struct CreateSystemTemplateInput {
+public struct CreateSystemTemplateInput: Swift.Sendable {
     /// The namespace version in which the system is to be created. If no value is specified, the latest version is used by default.
     public var compatibleNamespaceVersion: Swift.Int?
     /// The DefinitionDocument used to create the system.
@@ -537,8 +537,9 @@ public struct CreateSystemTemplateInput {
 }
 
 extension IoTThingsGraphClientTypes {
+
     /// An object that contains information about a system.
-    public struct SystemTemplateSummary {
+    public struct SystemTemplateSummary: Swift.Sendable {
         /// The ARN of the system.
         public var arn: Swift.String?
         /// The date when the system was created.
@@ -561,10 +562,9 @@ extension IoTThingsGraphClientTypes {
             self.revisionNumber = revisionNumber
         }
     }
-
 }
 
-public struct CreateSystemTemplateOutput {
+public struct CreateSystemTemplateOutput: Swift.Sendable {
     /// The summary object that describes the created system.
     public var summary: IoTThingsGraphClientTypes.SystemTemplateSummary?
 
@@ -600,7 +600,7 @@ public struct ResourceInUseException: ClientRuntime.ModeledError, AWSClientRunti
     }
 }
 
-public struct DeleteFlowTemplateInput {
+public struct DeleteFlowTemplateInput: Swift.Sendable {
     /// The ID of the workflow to be deleted. The ID should be in the following format. urn:tdm:REGION/ACCOUNT ID/default:workflow:WORKFLOWNAME
     /// This member is required.
     public var id: Swift.String?
@@ -613,17 +613,17 @@ public struct DeleteFlowTemplateInput {
     }
 }
 
-public struct DeleteFlowTemplateOutput {
+public struct DeleteFlowTemplateOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteNamespaceInput {
+public struct DeleteNamespaceInput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteNamespaceOutput {
+public struct DeleteNamespaceOutput: Swift.Sendable {
     /// The ARN of the namespace to be deleted.
     public var namespaceArn: Swift.String?
     /// The name of the namespace to be deleted.
@@ -639,7 +639,7 @@ public struct DeleteNamespaceOutput {
     }
 }
 
-public struct DeleteSystemInstanceInput {
+public struct DeleteSystemInstanceInput: Swift.Sendable {
     /// The ID of the system instance to be deleted.
     public var id: Swift.String?
 
@@ -651,12 +651,12 @@ public struct DeleteSystemInstanceInput {
     }
 }
 
-public struct DeleteSystemInstanceOutput {
+public struct DeleteSystemInstanceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteSystemTemplateInput {
+public struct DeleteSystemTemplateInput: Swift.Sendable {
     /// The ID of the system to be deleted. The ID should be in the following format. urn:tdm:REGION/ACCOUNT ID/default:system:SYSTEMNAME
     /// This member is required.
     public var id: Swift.String?
@@ -669,14 +669,15 @@ public struct DeleteSystemTemplateInput {
     }
 }
 
-public struct DeleteSystemTemplateOutput {
+public struct DeleteSystemTemplateOutput: Swift.Sendable {
 
     public init() { }
 }
 
 extension IoTThingsGraphClientTypes {
+
     /// An object that contains the ID and revision number of a workflow or system that is part of a deployment.
-    public struct DependencyRevision {
+    public struct DependencyRevision: Swift.Sendable {
         /// The ID of the workflow or system.
         public var id: Swift.String?
         /// The revision number of the workflow or system.
@@ -691,10 +692,9 @@ extension IoTThingsGraphClientTypes {
             self.revisionNumber = revisionNumber
         }
     }
-
 }
 
-public struct DeploySystemInstanceInput {
+public struct DeploySystemInstanceInput: Swift.Sendable {
     /// The ID of the system instance. This value is returned by the CreateSystemInstance action. The ID should be in the following format. urn:tdm:REGION/ACCOUNT ID/default:deployment:DEPLOYMENTNAME
     public var id: Swift.String?
 
@@ -706,7 +706,7 @@ public struct DeploySystemInstanceInput {
     }
 }
 
-public struct DeploySystemInstanceOutput {
+public struct DeploySystemInstanceOutput: Swift.Sendable {
     /// The ID of the Greengrass deployment used to deploy the system instance.
     public var greengrassDeploymentId: Swift.String?
     /// An object that contains summary information about a system instance that was deployed.
@@ -723,7 +723,7 @@ public struct DeploySystemInstanceOutput {
     }
 }
 
-public struct DeprecateFlowTemplateInput {
+public struct DeprecateFlowTemplateInput: Swift.Sendable {
     /// The ID of the workflow to be deleted. The ID should be in the following format. urn:tdm:REGION/ACCOUNT ID/default:workflow:WORKFLOWNAME
     /// This member is required.
     public var id: Swift.String?
@@ -736,12 +736,12 @@ public struct DeprecateFlowTemplateInput {
     }
 }
 
-public struct DeprecateFlowTemplateOutput {
+public struct DeprecateFlowTemplateOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeprecateSystemTemplateInput {
+public struct DeprecateSystemTemplateInput: Swift.Sendable {
     /// The ID of the system to delete. The ID should be in the following format. urn:tdm:REGION/ACCOUNT ID/default:system:SYSTEMNAME
     /// This member is required.
     public var id: Swift.String?
@@ -754,12 +754,12 @@ public struct DeprecateSystemTemplateInput {
     }
 }
 
-public struct DeprecateSystemTemplateOutput {
+public struct DeprecateSystemTemplateOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DescribeNamespaceInput {
+public struct DescribeNamespaceInput: Swift.Sendable {
     /// The name of the user's namespace. Set this to aws to get the public namespace.
     public var namespaceName: Swift.String?
 
@@ -771,7 +771,7 @@ public struct DescribeNamespaceInput {
     }
 }
 
-public struct DescribeNamespaceOutput {
+public struct DescribeNamespaceOutput: Swift.Sendable {
     /// The ARN of the namespace.
     public var namespaceArn: Swift.String?
     /// The name of the namespace.
@@ -801,7 +801,7 @@ public struct DescribeNamespaceOutput {
 
 extension IoTThingsGraphClientTypes {
 
-    public enum EntityType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum EntityType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case action
         case capability
         case device
@@ -852,7 +852,7 @@ extension IoTThingsGraphClientTypes {
     }
 }
 
-public struct DissociateEntityFromThingInput {
+public struct DissociateEntityFromThingInput: Swift.Sendable {
     /// The entity type from which to disassociate the thing.
     /// This member is required.
     public var entityType: IoTThingsGraphClientTypes.EntityType?
@@ -870,14 +870,15 @@ public struct DissociateEntityFromThingInput {
     }
 }
 
-public struct DissociateEntityFromThingOutput {
+public struct DissociateEntityFromThingOutput: Swift.Sendable {
 
     public init() { }
 }
 
 extension IoTThingsGraphClientTypes {
+
     /// Describes the properties of an entity.
-    public struct EntityDescription {
+    public struct EntityDescription: Swift.Sendable {
         /// The entity ARN.
         public var arn: Swift.String?
         /// The time at which the entity was created.
@@ -904,12 +905,11 @@ extension IoTThingsGraphClientTypes {
             self.type = type
         }
     }
-
 }
 
 extension IoTThingsGraphClientTypes {
 
-    public enum EntityFilterName: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum EntityFilterName: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case name
         case namespace
         case referencedEntityId
@@ -943,8 +943,9 @@ extension IoTThingsGraphClientTypes {
 }
 
 extension IoTThingsGraphClientTypes {
+
     /// An object that filters an entity search. Multiple filters function as OR criteria in the search. For example a search that includes a NAMESPACE and a REFERENCED_ENTITY_ID filter searches for entities in the specified namespace that use the entity specified by the value of REFERENCED_ENTITY_ID.
-    public struct EntityFilter {
+    public struct EntityFilter: Swift.Sendable {
         /// The name of the entity search filter field. REFERENCED_ENTITY_ID filters on entities that are used by the entity in the result set. For example, you can filter on the ID of a property that is used in a state.
         public var name: IoTThingsGraphClientTypes.EntityFilterName?
         /// An array of string values for the search filter field. Multiple values function as AND criteria in the search.
@@ -959,12 +960,11 @@ extension IoTThingsGraphClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension IoTThingsGraphClientTypes {
 
-    public enum FlowExecutionEventType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum FlowExecutionEventType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case acknowledgeTaskMessage
         case activityFailed
         case activityScheduled
@@ -1037,8 +1037,9 @@ extension IoTThingsGraphClientTypes {
 }
 
 extension IoTThingsGraphClientTypes {
+
     /// An object that contains information about a flow event.
-    public struct FlowExecutionMessage {
+    public struct FlowExecutionMessage: Swift.Sendable {
         /// The type of flow event .
         public var eventType: IoTThingsGraphClientTypes.FlowExecutionEventType?
         /// The unique identifier of the message.
@@ -1061,12 +1062,11 @@ extension IoTThingsGraphClientTypes {
             self.timestamp = timestamp
         }
     }
-
 }
 
 extension IoTThingsGraphClientTypes {
 
-    public enum FlowExecutionStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum FlowExecutionStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case aborted
         case failed
         case running
@@ -1100,8 +1100,9 @@ extension IoTThingsGraphClientTypes {
 }
 
 extension IoTThingsGraphClientTypes {
+
     /// An object that contains summary information about a flow execution.
-    public struct FlowExecutionSummary {
+    public struct FlowExecutionSummary: Swift.Sendable {
         /// The date and time when the flow execution summary was created.
         public var createdAt: Foundation.Date?
         /// The ID of the flow execution.
@@ -1132,12 +1133,12 @@ extension IoTThingsGraphClientTypes {
             self.updatedAt = updatedAt
         }
     }
-
 }
 
 extension IoTThingsGraphClientTypes {
+
     /// An object that contains a workflow's definition and summary information.
-    public struct FlowTemplateDescription {
+    public struct FlowTemplateDescription: Swift.Sendable {
         /// A workflow's definition document.
         public var definition: IoTThingsGraphClientTypes.DefinitionDocument?
         /// An object that contains summary information about a workflow.
@@ -1156,12 +1157,11 @@ extension IoTThingsGraphClientTypes {
             self.validatedNamespaceVersion = validatedNamespaceVersion
         }
     }
-
 }
 
 extension IoTThingsGraphClientTypes {
 
-    public enum FlowTemplateFilterName: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum FlowTemplateFilterName: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case deviceModelId
         case sdkUnknown(Swift.String)
 
@@ -1186,8 +1186,9 @@ extension IoTThingsGraphClientTypes {
 }
 
 extension IoTThingsGraphClientTypes {
+
     /// An object that filters a workflow search.
-    public struct FlowTemplateFilter {
+    public struct FlowTemplateFilter: Swift.Sendable {
         /// The name of the search filter field.
         /// This member is required.
         public var name: IoTThingsGraphClientTypes.FlowTemplateFilterName?
@@ -1204,10 +1205,9 @@ extension IoTThingsGraphClientTypes {
             self.value = value
         }
     }
-
 }
 
-public struct GetEntitiesInput {
+public struct GetEntitiesInput: Swift.Sendable {
     /// An array of entity IDs. The IDs should be in the following format. urn:tdm:REGION/ACCOUNT ID/default:device:DEVICENAME
     /// This member is required.
     public var ids: [Swift.String]?
@@ -1224,7 +1224,7 @@ public struct GetEntitiesInput {
     }
 }
 
-public struct GetEntitiesOutput {
+public struct GetEntitiesOutput: Swift.Sendable {
     /// An array of descriptions for the specified entities.
     public var descriptions: [IoTThingsGraphClientTypes.EntityDescription]?
 
@@ -1236,7 +1236,7 @@ public struct GetEntitiesOutput {
     }
 }
 
-public struct GetFlowTemplateInput {
+public struct GetFlowTemplateInput: Swift.Sendable {
     /// The ID of the workflow. The ID should be in the following format. urn:tdm:REGION/ACCOUNT ID/default:workflow:WORKFLOWNAME
     /// This member is required.
     public var id: Swift.String?
@@ -1253,7 +1253,7 @@ public struct GetFlowTemplateInput {
     }
 }
 
-public struct GetFlowTemplateOutput {
+public struct GetFlowTemplateOutput: Swift.Sendable {
     /// The object that describes the specified workflow.
     public var description: IoTThingsGraphClientTypes.FlowTemplateDescription?
 
@@ -1265,7 +1265,7 @@ public struct GetFlowTemplateOutput {
     }
 }
 
-public struct GetFlowTemplateRevisionsInput {
+public struct GetFlowTemplateRevisionsInput: Swift.Sendable {
     /// The ID of the workflow. The ID should be in the following format. urn:tdm:REGION/ACCOUNT ID/default:workflow:WORKFLOWNAME
     /// This member is required.
     public var id: Swift.String?
@@ -1286,7 +1286,7 @@ public struct GetFlowTemplateRevisionsInput {
     }
 }
 
-public struct GetFlowTemplateRevisionsOutput {
+public struct GetFlowTemplateRevisionsOutput: Swift.Sendable {
     /// The string to specify as nextToken when you request the next page of results.
     public var nextToken: Swift.String?
     /// An array of objects that provide summary data about each revision.
@@ -1302,14 +1302,14 @@ public struct GetFlowTemplateRevisionsOutput {
     }
 }
 
-public struct GetNamespaceDeletionStatusInput {
+public struct GetNamespaceDeletionStatusInput: Swift.Sendable {
 
     public init() { }
 }
 
 extension IoTThingsGraphClientTypes {
 
-    public enum NamespaceDeletionStatusErrorCodes: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum NamespaceDeletionStatusErrorCodes: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case validationFailed
         case sdkUnknown(Swift.String)
 
@@ -1335,7 +1335,7 @@ extension IoTThingsGraphClientTypes {
 
 extension IoTThingsGraphClientTypes {
 
-    public enum NamespaceDeletionStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum NamespaceDeletionStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case failed
         case inProgress
         case succeeded
@@ -1365,7 +1365,7 @@ extension IoTThingsGraphClientTypes {
     }
 }
 
-public struct GetNamespaceDeletionStatusOutput {
+public struct GetNamespaceDeletionStatusOutput: Swift.Sendable {
     /// An error code returned by the namespace deletion task.
     public var errorCode: IoTThingsGraphClientTypes.NamespaceDeletionStatusErrorCodes?
     /// An error code returned by the namespace deletion task.
@@ -1393,7 +1393,7 @@ public struct GetNamespaceDeletionStatusOutput {
     }
 }
 
-public struct GetSystemInstanceInput {
+public struct GetSystemInstanceInput: Swift.Sendable {
     /// The ID of the system deployment instance. This value is returned by CreateSystemInstance. The ID should be in the following format. urn:tdm:REGION/ACCOUNT ID/default:deployment:DEPLOYMENTNAME
     /// This member is required.
     public var id: Swift.String?
@@ -1407,8 +1407,9 @@ public struct GetSystemInstanceInput {
 }
 
 extension IoTThingsGraphClientTypes {
+
     /// An object that contains a system instance definition and summary information.
-    public struct SystemInstanceDescription {
+    public struct SystemInstanceDescription: Swift.Sendable {
         /// A document that defines an entity.
         public var definition: IoTThingsGraphClientTypes.DefinitionDocument?
         /// The AWS Identity and Access Management (IAM) role that AWS IoT Things Graph assumes during flow execution in a cloud deployment. This role must have read and write permissionss to AWS Lambda and AWS IoT and to any other AWS services that the flow uses.
@@ -1443,10 +1444,9 @@ extension IoTThingsGraphClientTypes {
             self.validatedNamespaceVersion = validatedNamespaceVersion
         }
     }
-
 }
 
-public struct GetSystemInstanceOutput {
+public struct GetSystemInstanceOutput: Swift.Sendable {
     /// An object that describes the system instance.
     public var description: IoTThingsGraphClientTypes.SystemInstanceDescription?
 
@@ -1458,7 +1458,7 @@ public struct GetSystemInstanceOutput {
     }
 }
 
-public struct GetSystemTemplateInput {
+public struct GetSystemTemplateInput: Swift.Sendable {
     /// The ID of the system to get. This ID must be in the user's namespace. The ID should be in the following format. urn:tdm:REGION/ACCOUNT ID/default:system:SYSTEMNAME
     /// This member is required.
     public var id: Swift.String?
@@ -1476,8 +1476,9 @@ public struct GetSystemTemplateInput {
 }
 
 extension IoTThingsGraphClientTypes {
+
     /// An object that contains a system's definition document and summary information.
-    public struct SystemTemplateDescription {
+    public struct SystemTemplateDescription: Swift.Sendable {
         /// The definition document of a system.
         public var definition: IoTThingsGraphClientTypes.DefinitionDocument?
         /// An object that contains summary information about a system.
@@ -1496,10 +1497,9 @@ extension IoTThingsGraphClientTypes {
             self.validatedNamespaceVersion = validatedNamespaceVersion
         }
     }
-
 }
 
-public struct GetSystemTemplateOutput {
+public struct GetSystemTemplateOutput: Swift.Sendable {
     /// An object that contains summary data about the system.
     public var description: IoTThingsGraphClientTypes.SystemTemplateDescription?
 
@@ -1511,7 +1511,7 @@ public struct GetSystemTemplateOutput {
     }
 }
 
-public struct GetSystemTemplateRevisionsInput {
+public struct GetSystemTemplateRevisionsInput: Swift.Sendable {
     /// The ID of the system template. The ID should be in the following format. urn:tdm:REGION/ACCOUNT ID/default:system:SYSTEMNAME
     /// This member is required.
     public var id: Swift.String?
@@ -1532,7 +1532,7 @@ public struct GetSystemTemplateRevisionsInput {
     }
 }
 
-public struct GetSystemTemplateRevisionsOutput {
+public struct GetSystemTemplateRevisionsOutput: Swift.Sendable {
     /// The string to specify as nextToken when you request the next page of results.
     public var nextToken: Swift.String?
     /// An array of objects that contain summary data about the system template revisions.
@@ -1548,7 +1548,7 @@ public struct GetSystemTemplateRevisionsOutput {
     }
 }
 
-public struct GetUploadStatusInput {
+public struct GetUploadStatusInput: Swift.Sendable {
     /// The ID of the upload. This value is returned by the UploadEntityDefinitions action.
     /// This member is required.
     public var uploadId: Swift.String?
@@ -1563,7 +1563,7 @@ public struct GetUploadStatusInput {
 
 extension IoTThingsGraphClientTypes {
 
-    public enum UploadStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum UploadStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case failed
         case inProgress
         case succeeded
@@ -1593,7 +1593,7 @@ extension IoTThingsGraphClientTypes {
     }
 }
 
-public struct GetUploadStatusOutput {
+public struct GetUploadStatusOutput: Swift.Sendable {
     /// The date at which the upload was created.
     /// This member is required.
     public var createdDate: Foundation.Date?
@@ -1632,7 +1632,7 @@ public struct GetUploadStatusOutput {
     }
 }
 
-public struct ListFlowExecutionMessagesInput {
+public struct ListFlowExecutionMessagesInput: Swift.Sendable {
     /// The ID of the flow execution.
     /// This member is required.
     public var flowExecutionId: Swift.String?
@@ -1653,7 +1653,7 @@ public struct ListFlowExecutionMessagesInput {
     }
 }
 
-public struct ListFlowExecutionMessagesOutput {
+public struct ListFlowExecutionMessagesOutput: Swift.Sendable {
     /// A list of objects that contain information about events in the specified flow execution.
     public var messages: [IoTThingsGraphClientTypes.FlowExecutionMessage]?
     /// The string to specify as nextToken when you request the next page of results.
@@ -1669,7 +1669,7 @@ public struct ListFlowExecutionMessagesOutput {
     }
 }
 
-public struct ListTagsForResourceInput {
+public struct ListTagsForResourceInput: Swift.Sendable {
     /// The maximum number of tags to return.
     public var maxResults: Swift.Int?
     /// The token that specifies the next page of results to return.
@@ -1690,7 +1690,7 @@ public struct ListTagsForResourceInput {
     }
 }
 
-public struct ListTagsForResourceOutput {
+public struct ListTagsForResourceOutput: Swift.Sendable {
     /// The token that specifies the next page of results to return.
     public var nextToken: Swift.String?
     /// List of tags returned by the ListTagsForResource operation.
@@ -1706,7 +1706,7 @@ public struct ListTagsForResourceOutput {
     }
 }
 
-public struct SearchEntitiesInput {
+public struct SearchEntitiesInput: Swift.Sendable {
     /// The entity types for which to search.
     /// This member is required.
     public var entityTypes: [IoTThingsGraphClientTypes.EntityType]?
@@ -1735,7 +1735,7 @@ public struct SearchEntitiesInput {
     }
 }
 
-public struct SearchEntitiesOutput {
+public struct SearchEntitiesOutput: Swift.Sendable {
     /// An array of descriptions for each entity returned in the search result.
     public var descriptions: [IoTThingsGraphClientTypes.EntityDescription]?
     /// The string to specify as nextToken when you request the next page of results.
@@ -1751,7 +1751,7 @@ public struct SearchEntitiesOutput {
     }
 }
 
-public struct SearchFlowExecutionsInput {
+public struct SearchFlowExecutionsInput: Swift.Sendable {
     /// The date and time of the latest flow execution to return.
     public var endTime: Foundation.Date?
     /// The ID of a flow execution.
@@ -1784,7 +1784,7 @@ public struct SearchFlowExecutionsInput {
     }
 }
 
-public struct SearchFlowExecutionsOutput {
+public struct SearchFlowExecutionsOutput: Swift.Sendable {
     /// The string to specify as nextToken when you request the next page of results.
     public var nextToken: Swift.String?
     /// An array of objects that contain summary information about each workflow execution in the result set.
@@ -1800,7 +1800,7 @@ public struct SearchFlowExecutionsOutput {
     }
 }
 
-public struct SearchFlowTemplatesInput {
+public struct SearchFlowTemplatesInput: Swift.Sendable {
     /// An array of objects that limit the result set. The only valid filter is DEVICE_MODEL_ID.
     public var filters: [IoTThingsGraphClientTypes.FlowTemplateFilter]?
     /// The maximum number of results to return in the response.
@@ -1820,7 +1820,7 @@ public struct SearchFlowTemplatesInput {
     }
 }
 
-public struct SearchFlowTemplatesOutput {
+public struct SearchFlowTemplatesOutput: Swift.Sendable {
     /// The string to specify as nextToken when you request the next page of results.
     public var nextToken: Swift.String?
     /// An array of objects that contain summary information about each workflow in the result set.
@@ -1838,7 +1838,7 @@ public struct SearchFlowTemplatesOutput {
 
 extension IoTThingsGraphClientTypes {
 
-    public enum SystemInstanceFilterName: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SystemInstanceFilterName: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case greengrassGroupName
         case status
         case systemTemplateId
@@ -1869,8 +1869,9 @@ extension IoTThingsGraphClientTypes {
 }
 
 extension IoTThingsGraphClientTypes {
+
     /// An object that filters a system instance search. Multiple filters function as OR criteria in the search. For example a search that includes a GREENGRASS_GROUP_NAME and a STATUS filter searches for system instances in the specified Greengrass group that have the specified status.
-    public struct SystemInstanceFilter {
+    public struct SystemInstanceFilter: Swift.Sendable {
         /// The name of the search filter field.
         public var name: IoTThingsGraphClientTypes.SystemInstanceFilterName?
         /// An array of string values for the search filter field. Multiple values function as AND criteria in the search.
@@ -1885,10 +1886,9 @@ extension IoTThingsGraphClientTypes {
             self.value = value
         }
     }
-
 }
 
-public struct SearchSystemInstancesInput {
+public struct SearchSystemInstancesInput: Swift.Sendable {
     /// Optional filter to apply to the search. Valid filters are SYSTEM_TEMPLATE_ID, STATUS, and GREENGRASS_GROUP_NAME. Multiple filters function as OR criteria in the query. Multiple values passed inside the filter function as AND criteria.
     public var filters: [IoTThingsGraphClientTypes.SystemInstanceFilter]?
     /// The maximum number of results to return in the response.
@@ -1908,7 +1908,7 @@ public struct SearchSystemInstancesInput {
     }
 }
 
-public struct SearchSystemInstancesOutput {
+public struct SearchSystemInstancesOutput: Swift.Sendable {
     /// The string to specify as nextToken when you request the next page of results.
     public var nextToken: Swift.String?
     /// An array of objects that contain summary data abour the system instances in the result set.
@@ -1926,7 +1926,7 @@ public struct SearchSystemInstancesOutput {
 
 extension IoTThingsGraphClientTypes {
 
-    public enum SystemTemplateFilterName: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SystemTemplateFilterName: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case flowTemplateId
         case sdkUnknown(Swift.String)
 
@@ -1951,8 +1951,9 @@ extension IoTThingsGraphClientTypes {
 }
 
 extension IoTThingsGraphClientTypes {
+
     /// An object that filters a system search.
-    public struct SystemTemplateFilter {
+    public struct SystemTemplateFilter: Swift.Sendable {
         /// The name of the system search filter field.
         /// This member is required.
         public var name: IoTThingsGraphClientTypes.SystemTemplateFilterName?
@@ -1969,10 +1970,9 @@ extension IoTThingsGraphClientTypes {
             self.value = value
         }
     }
-
 }
 
-public struct SearchSystemTemplatesInput {
+public struct SearchSystemTemplatesInput: Swift.Sendable {
     /// An array of filters that limit the result set. The only valid filter is FLOW_TEMPLATE_ID.
     public var filters: [IoTThingsGraphClientTypes.SystemTemplateFilter]?
     /// The maximum number of results to return in the response.
@@ -1992,7 +1992,7 @@ public struct SearchSystemTemplatesInput {
     }
 }
 
-public struct SearchSystemTemplatesOutput {
+public struct SearchSystemTemplatesOutput: Swift.Sendable {
     /// The string to specify as nextToken when you request the next page of results.
     public var nextToken: Swift.String?
     /// An array of objects that contain summary information about each system deployment in the result set.
@@ -2008,7 +2008,7 @@ public struct SearchSystemTemplatesOutput {
     }
 }
 
-public struct SearchThingsInput {
+public struct SearchThingsInput: Swift.Sendable {
     /// The ID of the entity to which the things are associated. The IDs should be in the following format. urn:tdm:REGION/ACCOUNT ID/default:device:DEVICENAME
     /// This member is required.
     public var entityId: Swift.String?
@@ -2034,8 +2034,9 @@ public struct SearchThingsInput {
 }
 
 extension IoTThingsGraphClientTypes {
+
     /// An AWS IoT thing.
-    public struct Thing {
+    public struct Thing: Swift.Sendable {
         /// The ARN of the thing.
         public var thingArn: Swift.String?
         /// The name of the thing.
@@ -2050,10 +2051,9 @@ extension IoTThingsGraphClientTypes {
             self.thingName = thingName
         }
     }
-
 }
 
-public struct SearchThingsOutput {
+public struct SearchThingsOutput: Swift.Sendable {
     /// The string to specify as nextToken when you request the next page of results.
     public var nextToken: Swift.String?
     /// An array of things in the result set.
@@ -2069,7 +2069,7 @@ public struct SearchThingsOutput {
     }
 }
 
-public struct TagResourceInput {
+public struct TagResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the resource whose tags are returned.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -2087,12 +2087,12 @@ public struct TagResourceInput {
     }
 }
 
-public struct TagResourceOutput {
+public struct TagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UndeploySystemInstanceInput {
+public struct UndeploySystemInstanceInput: Swift.Sendable {
     /// The ID of the system instance to remove from its target.
     public var id: Swift.String?
 
@@ -2104,7 +2104,7 @@ public struct UndeploySystemInstanceInput {
     }
 }
 
-public struct UndeploySystemInstanceOutput {
+public struct UndeploySystemInstanceOutput: Swift.Sendable {
     /// An object that contains summary information about the system instance that was removed from its target.
     public var summary: IoTThingsGraphClientTypes.SystemInstanceSummary?
 
@@ -2116,7 +2116,7 @@ public struct UndeploySystemInstanceOutput {
     }
 }
 
-public struct UntagResourceInput {
+public struct UntagResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the resource whose tags are to be removed.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -2134,12 +2134,12 @@ public struct UntagResourceInput {
     }
 }
 
-public struct UntagResourceOutput {
+public struct UntagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdateFlowTemplateInput {
+public struct UpdateFlowTemplateInput: Swift.Sendable {
     /// The version of the user's namespace. If no value is specified, the latest version is used by default. Use the GetFlowTemplateRevisions if you want to find earlier revisions of the flow to update.
     public var compatibleNamespaceVersion: Swift.Int?
     /// The DefinitionDocument that contains the updated workflow definition.
@@ -2161,7 +2161,7 @@ public struct UpdateFlowTemplateInput {
     }
 }
 
-public struct UpdateFlowTemplateOutput {
+public struct UpdateFlowTemplateOutput: Swift.Sendable {
     /// An object containing summary information about the updated workflow.
     public var summary: IoTThingsGraphClientTypes.FlowTemplateSummary?
 
@@ -2173,7 +2173,7 @@ public struct UpdateFlowTemplateOutput {
     }
 }
 
-public struct UpdateSystemTemplateInput {
+public struct UpdateSystemTemplateInput: Swift.Sendable {
     /// The version of the user's namespace. Defaults to the latest version of the user's namespace. If no value is specified, the latest version is used by default.
     public var compatibleNamespaceVersion: Swift.Int?
     /// The DefinitionDocument that contains the updated system definition.
@@ -2195,7 +2195,7 @@ public struct UpdateSystemTemplateInput {
     }
 }
 
-public struct UpdateSystemTemplateOutput {
+public struct UpdateSystemTemplateOutput: Swift.Sendable {
     /// An object containing summary information about the updated system.
     public var summary: IoTThingsGraphClientTypes.SystemTemplateSummary?
 
@@ -2207,7 +2207,7 @@ public struct UpdateSystemTemplateOutput {
     }
 }
 
-public struct UploadEntityDefinitionsInput {
+public struct UploadEntityDefinitionsInput: Swift.Sendable {
     /// A Boolean that specifies whether to deprecate all entities in the latest version before uploading the new DefinitionDocument. If set to true, the upload will create a new namespace version.
     public var deprecateExistingEntities: Swift.Bool?
     /// The DefinitionDocument that defines the updated entities.
@@ -2227,7 +2227,7 @@ public struct UploadEntityDefinitionsInput {
     }
 }
 
-public struct UploadEntityDefinitionsOutput {
+public struct UploadEntityDefinitionsOutput: Swift.Sendable {
     /// The ID that specifies the upload action. You can use this to track the status of the upload.
     /// This member is required.
     public var uploadId: Swift.String?

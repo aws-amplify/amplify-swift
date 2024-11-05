@@ -27,7 +27,7 @@ import struct Smithy.URIQueryItem
 
 extension AppConfigDataClientTypes {
 
-    public enum InvalidParameterProblem: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum InvalidParameterProblem: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         /// The parameter was corrupted and could not be understood by the service.
         case corrupted
         /// The parameter was expired and can no longer be used.
@@ -61,8 +61,9 @@ extension AppConfigDataClientTypes {
 }
 
 extension AppConfigDataClientTypes {
+
     /// Information about an invalid parameter.
-    public struct InvalidParameterDetail {
+    public struct InvalidParameterDetail: Swift.Sendable {
         /// The reason the parameter is invalid.
         public var problem: AppConfigDataClientTypes.InvalidParameterProblem?
 
@@ -73,22 +74,21 @@ extension AppConfigDataClientTypes {
             self.problem = problem
         }
     }
-
 }
 
 extension AppConfigDataClientTypes {
+
     /// Detailed information about the input that failed to satisfy the constraints specified by a call.
-    public enum BadRequestDetails {
+    public enum BadRequestDetails: Swift.Sendable {
         /// One or more specified parameters are not valid for the call.
         case invalidparameters([Swift.String: AppConfigDataClientTypes.InvalidParameterDetail])
         case sdkUnknown(Swift.String)
     }
-
 }
 
 extension AppConfigDataClientTypes {
 
-    public enum BadRequestReason: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum BadRequestReason: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         /// Indicates there was a problem with one or more of the parameters. See InvalidParameters in the BadRequestDetails for more information.
         case invalidParameters
         case sdkUnknown(Swift.String)
@@ -171,7 +171,7 @@ public struct InternalServerException: ClientRuntime.ModeledError, AWSClientRunt
 
 extension AppConfigDataClientTypes {
 
-    public enum ResourceType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ResourceType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         /// Resource type value for the Application resource.
         case application
         /// Resource type value for the Configuration resource.
@@ -268,7 +268,7 @@ public struct ThrottlingException: ClientRuntime.ModeledError, AWSClientRuntime.
     }
 }
 
-public struct StartConfigurationSessionInput {
+public struct StartConfigurationSessionInput: Swift.Sendable {
     /// The application ID or the application name.
     /// This member is required.
     public var applicationIdentifier: Swift.String?
@@ -295,7 +295,7 @@ public struct StartConfigurationSessionInput {
     }
 }
 
-public struct StartConfigurationSessionOutput {
+public struct StartConfigurationSessionOutput: Swift.Sendable {
     /// Token encapsulating state about the configuration session. Provide this token to the GetLatestConfiguration API to retrieve configuration data. This token should only be used once in your first call to GetLatestConfiguration. You must use the new token in the GetLatestConfiguration response (NextPollConfigurationToken) in each subsequent call to GetLatestConfiguration. The InitialConfigurationToken and NextPollConfigurationToken should only be used once. To support long poll use cases, the tokens are valid for up to 24 hours. If a GetLatestConfiguration call uses an expired token, the system returns BadRequestException.
     public var initialConfigurationToken: Swift.String?
 
@@ -307,7 +307,7 @@ public struct StartConfigurationSessionOutput {
     }
 }
 
-public struct GetLatestConfigurationInput {
+public struct GetLatestConfigurationInput: Swift.Sendable {
     /// Token describing the current state of the configuration session. To obtain a token, first call the [StartConfigurationSession] API. Note that every call to GetLatestConfiguration will return a new ConfigurationToken (NextPollConfigurationToken in the response) and must be provided to subsequent GetLatestConfiguration API calls. This token should only be used once. To support long poll use cases, the token is valid for up to 24 hours. If a GetLatestConfiguration call uses an expired token, the system returns BadRequestException.
     /// This member is required.
     public var configurationToken: Swift.String?
@@ -320,7 +320,7 @@ public struct GetLatestConfigurationInput {
     }
 }
 
-public struct GetLatestConfigurationOutput {
+public struct GetLatestConfigurationOutput: Swift.Sendable {
     /// The data of the configuration. This may be empty if the client already has the latest version of configuration.
     public var configuration: Foundation.Data?
     /// A standard MIME type describing the format of the configuration content.

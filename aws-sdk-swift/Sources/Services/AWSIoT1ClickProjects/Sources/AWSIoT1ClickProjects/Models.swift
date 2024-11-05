@@ -144,7 +144,7 @@ public struct ResourceNotFoundException: ClientRuntime.ModeledError, AWSClientRu
     }
 }
 
-public struct AssociateDeviceWithPlacementInput {
+public struct AssociateDeviceWithPlacementInput: Swift.Sendable {
     /// The ID of the physical device to be associated with the given placement in the project. Note that a mandatory 4 character prefix is required for all deviceId values.
     /// This member is required.
     public var deviceId: Swift.String?
@@ -172,12 +172,12 @@ public struct AssociateDeviceWithPlacementInput {
     }
 }
 
-public struct AssociateDeviceWithPlacementOutput {
+public struct AssociateDeviceWithPlacementOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct CreatePlacementInput {
+public struct CreatePlacementInput: Swift.Sendable {
     /// Optional user-defined key/value pairs providing contextual data (such as location or function) for the placement.
     public var attributes: [Swift.String: Swift.String]?
     /// The name of the placement to be created.
@@ -199,14 +199,15 @@ public struct CreatePlacementInput {
     }
 }
 
-public struct CreatePlacementOutput {
+public struct CreatePlacementOutput: Swift.Sendable {
 
     public init() { }
 }
 
 extension IoT1ClickProjectsClientTypes {
+
     /// An object representing a device for a placement template (see [PlacementTemplate]).
-    public struct DeviceTemplate {
+    public struct DeviceTemplate: Swift.Sendable {
         /// An optional Lambda function to invoke instead of the default Lambda function provided by the placement template.
         public var callbackOverrides: [Swift.String: Swift.String]?
         /// The device type, which currently must be "button".
@@ -221,12 +222,12 @@ extension IoT1ClickProjectsClientTypes {
             self.deviceType = deviceType
         }
     }
-
 }
 
 extension IoT1ClickProjectsClientTypes {
+
     /// An object defining the template for a placement.
-    public struct PlacementTemplate {
+    public struct PlacementTemplate: Swift.Sendable {
         /// The default attributes (key/value pairs) to be applied to all placements using this template.
         public var defaultAttributes: [Swift.String: Swift.String]?
         /// An object specifying the [DeviceTemplate] for all placements using this ([PlacementTemplate]) template.
@@ -241,10 +242,9 @@ extension IoT1ClickProjectsClientTypes {
             self.deviceTemplates = deviceTemplates
         }
     }
-
 }
 
-public struct CreateProjectInput {
+public struct CreateProjectInput: Swift.Sendable {
     /// An optional description for the project.
     public var description: Swift.String?
     /// The schema defining the placement to be created. A placement template defines placement default attributes and device templates. You cannot add or remove device templates after the project has been created. However, you can update callbackOverrides for the device templates using the UpdateProject API.
@@ -269,7 +269,7 @@ public struct CreateProjectInput {
     }
 }
 
-public struct CreateProjectOutput {
+public struct CreateProjectOutput: Swift.Sendable {
 
     public init() { }
 }
@@ -303,7 +303,7 @@ public struct TooManyRequestsException: ClientRuntime.ModeledError, AWSClientRun
     }
 }
 
-public struct DeletePlacementInput {
+public struct DeletePlacementInput: Swift.Sendable {
     /// The name of the empty placement to delete.
     /// This member is required.
     public var placementName: Swift.String?
@@ -321,12 +321,12 @@ public struct DeletePlacementInput {
     }
 }
 
-public struct DeletePlacementOutput {
+public struct DeletePlacementOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteProjectInput {
+public struct DeleteProjectInput: Swift.Sendable {
     /// The name of the empty project to delete.
     /// This member is required.
     public var projectName: Swift.String?
@@ -339,12 +339,12 @@ public struct DeleteProjectInput {
     }
 }
 
-public struct DeleteProjectOutput {
+public struct DeleteProjectOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DescribePlacementInput {
+public struct DescribePlacementInput: Swift.Sendable {
     /// The name of the placement within a project.
     /// This member is required.
     public var placementName: Swift.String?
@@ -363,8 +363,9 @@ public struct DescribePlacementInput {
 }
 
 extension IoT1ClickProjectsClientTypes {
+
     /// An object describing a project's placement.
-    public struct PlacementDescription {
+    public struct PlacementDescription: Swift.Sendable {
         /// The user-defined attributes associated with the placement.
         /// This member is required.
         public var attributes: [Swift.String: Swift.String]?
@@ -396,10 +397,9 @@ extension IoT1ClickProjectsClientTypes {
             self.updatedDate = updatedDate
         }
     }
-
 }
 
-public struct DescribePlacementOutput {
+public struct DescribePlacementOutput: Swift.Sendable {
     /// An object describing the placement.
     /// This member is required.
     public var placement: IoT1ClickProjectsClientTypes.PlacementDescription?
@@ -412,7 +412,7 @@ public struct DescribePlacementOutput {
     }
 }
 
-public struct DescribeProjectInput {
+public struct DescribeProjectInput: Swift.Sendable {
     /// The name of the project to be described.
     /// This member is required.
     public var projectName: Swift.String?
@@ -426,8 +426,9 @@ public struct DescribeProjectInput {
 }
 
 extension IoT1ClickProjectsClientTypes {
+
     /// An object providing detailed information for a particular project associated with an AWS account and region.
-    public struct ProjectDescription {
+    public struct ProjectDescription: Swift.Sendable {
         /// The ARN of the project.
         public var arn: Swift.String?
         /// The date when the project was originally created, in UNIX epoch time format.
@@ -465,10 +466,9 @@ extension IoT1ClickProjectsClientTypes {
             self.updatedDate = updatedDate
         }
     }
-
 }
 
-public struct DescribeProjectOutput {
+public struct DescribeProjectOutput: Swift.Sendable {
     /// An object describing the project.
     /// This member is required.
     public var project: IoT1ClickProjectsClientTypes.ProjectDescription?
@@ -481,7 +481,7 @@ public struct DescribeProjectOutput {
     }
 }
 
-public struct DisassociateDeviceFromPlacementInput {
+public struct DisassociateDeviceFromPlacementInput: Swift.Sendable {
     /// The device ID that should be removed from the placement.
     /// This member is required.
     public var deviceTemplateName: Swift.String?
@@ -504,12 +504,12 @@ public struct DisassociateDeviceFromPlacementInput {
     }
 }
 
-public struct DisassociateDeviceFromPlacementOutput {
+public struct DisassociateDeviceFromPlacementOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct GetDevicesInPlacementInput {
+public struct GetDevicesInPlacementInput: Swift.Sendable {
     /// The name of the placement to get the devices from.
     /// This member is required.
     public var placementName: Swift.String?
@@ -527,7 +527,7 @@ public struct GetDevicesInPlacementInput {
     }
 }
 
-public struct GetDevicesInPlacementOutput {
+public struct GetDevicesInPlacementOutput: Swift.Sendable {
     /// An object containing the devices (zero or more) within the placement.
     /// This member is required.
     public var devices: [Swift.String: Swift.String]?
@@ -540,7 +540,7 @@ public struct GetDevicesInPlacementOutput {
     }
 }
 
-public struct ListPlacementsInput {
+public struct ListPlacementsInput: Swift.Sendable {
     /// The maximum number of results to return per request. If not set, a default value of 100 is used.
     public var maxResults: Swift.Int?
     /// The token to retrieve the next set of results.
@@ -562,8 +562,9 @@ public struct ListPlacementsInput {
 }
 
 extension IoT1ClickProjectsClientTypes {
+
     /// An object providing summary information for a particular placement.
-    public struct PlacementSummary {
+    public struct PlacementSummary: Swift.Sendable {
         /// The date when the placement was originally created, in UNIX epoch time format.
         /// This member is required.
         public var createdDate: Foundation.Date?
@@ -590,10 +591,9 @@ extension IoT1ClickProjectsClientTypes {
             self.updatedDate = updatedDate
         }
     }
-
 }
 
-public struct ListPlacementsOutput {
+public struct ListPlacementsOutput: Swift.Sendable {
     /// The token used to retrieve the next set of results - will be effectively empty if there are no further results.
     public var nextToken: Swift.String?
     /// An object listing the requested placements.
@@ -610,7 +610,7 @@ public struct ListPlacementsOutput {
     }
 }
 
-public struct ListProjectsInput {
+public struct ListProjectsInput: Swift.Sendable {
     /// The maximum number of results to return per request. If not set, a default value of 100 is used.
     public var maxResults: Swift.Int?
     /// The token to retrieve the next set of results.
@@ -627,8 +627,9 @@ public struct ListProjectsInput {
 }
 
 extension IoT1ClickProjectsClientTypes {
+
     /// An object providing summary information for a particular project for an associated AWS account and region.
-    public struct ProjectSummary {
+    public struct ProjectSummary: Swift.Sendable {
         /// The ARN of the project.
         public var arn: Swift.String?
         /// The date when the project was originally created, in UNIX epoch time format.
@@ -658,10 +659,9 @@ extension IoT1ClickProjectsClientTypes {
             self.updatedDate = updatedDate
         }
     }
-
 }
 
-public struct ListProjectsOutput {
+public struct ListProjectsOutput: Swift.Sendable {
     /// The token used to retrieve the next set of results - will be effectively empty if there are no further results.
     public var nextToken: Swift.String?
     /// An object containing the list of projects.
@@ -678,7 +678,7 @@ public struct ListProjectsOutput {
     }
 }
 
-public struct ListTagsForResourceInput {
+public struct ListTagsForResourceInput: Swift.Sendable {
     /// The ARN of the resource whose tags you want to list.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -691,7 +691,7 @@ public struct ListTagsForResourceInput {
     }
 }
 
-public struct ListTagsForResourceOutput {
+public struct ListTagsForResourceOutput: Swift.Sendable {
     /// The tags (metadata key/value pairs) which you have assigned to the resource.
     public var tags: [Swift.String: Swift.String]?
 
@@ -703,7 +703,7 @@ public struct ListTagsForResourceOutput {
     }
 }
 
-public struct TagResourceInput {
+public struct TagResourceInput: Swift.Sendable {
     /// The ARN of the resouce for which tag(s) should be added or modified.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -721,12 +721,12 @@ public struct TagResourceInput {
     }
 }
 
-public struct TagResourceOutput {
+public struct TagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UntagResourceInput {
+public struct UntagResourceInput: Swift.Sendable {
     /// The ARN of the resource whose tag you want to remove.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -744,12 +744,12 @@ public struct UntagResourceInput {
     }
 }
 
-public struct UntagResourceOutput {
+public struct UntagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdatePlacementInput {
+public struct UpdatePlacementInput: Swift.Sendable {
     /// The user-defined object of attributes used to update the placement. The maximum number of key/value pairs is 50.
     public var attributes: [Swift.String: Swift.String]?
     /// The name of the placement to update.
@@ -771,12 +771,12 @@ public struct UpdatePlacementInput {
     }
 }
 
-public struct UpdatePlacementOutput {
+public struct UpdatePlacementOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdateProjectInput {
+public struct UpdateProjectInput: Swift.Sendable {
     /// An optional user-defined description for the project.
     public var description: Swift.String?
     /// An object defining the project update. Once a project has been created, you cannot add device template names to the project. However, for a given placementTemplate, you can update the associated callbackOverrides for the device definition using this API.
@@ -797,7 +797,7 @@ public struct UpdateProjectInput {
     }
 }
 
-public struct UpdateProjectOutput {
+public struct UpdateProjectOutput: Swift.Sendable {
 
     public init() { }
 }

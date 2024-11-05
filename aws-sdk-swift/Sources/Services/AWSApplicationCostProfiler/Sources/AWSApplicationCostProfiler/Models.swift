@@ -121,7 +121,7 @@ public struct ValidationException: ClientRuntime.ModeledError, AWSClientRuntime.
     }
 }
 
-public struct DeleteReportDefinitionInput {
+public struct DeleteReportDefinitionInput: Swift.Sendable {
     /// Required. ID of the report to delete.
     /// This member is required.
     public var reportId: Swift.String?
@@ -134,7 +134,7 @@ public struct DeleteReportDefinitionInput {
     }
 }
 
-public struct DeleteReportDefinitionOutput {
+public struct DeleteReportDefinitionOutput: Swift.Sendable {
     /// ID of the report that was deleted.
     public var reportId: Swift.String?
 
@@ -146,7 +146,7 @@ public struct DeleteReportDefinitionOutput {
     }
 }
 
-public struct GetReportDefinitionInput {
+public struct GetReportDefinitionInput: Swift.Sendable {
     /// ID of the report to retrieve.
     /// This member is required.
     public var reportId: Swift.String?
@@ -160,8 +160,9 @@ public struct GetReportDefinitionInput {
 }
 
 extension ApplicationCostProfilerClientTypes {
+
     /// Represents the Amazon Simple Storage Service (Amazon S3) location where AWS Application Cost Profiler reports are generated and then written to.
-    public struct S3Location {
+    public struct S3Location: Swift.Sendable {
         /// Name of the S3 bucket.
         /// This member is required.
         public var bucket: Swift.String?
@@ -178,12 +179,11 @@ extension ApplicationCostProfilerClientTypes {
             self.`prefix` = `prefix`
         }
     }
-
 }
 
 extension ApplicationCostProfilerClientTypes {
 
-    public enum Format: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Format: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case csv
         case parquet
         case sdkUnknown(Swift.String)
@@ -212,7 +212,7 @@ extension ApplicationCostProfilerClientTypes {
 
 extension ApplicationCostProfilerClientTypes {
 
-    public enum ReportFrequency: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ReportFrequency: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case all
         case daily
         case monthly
@@ -242,7 +242,7 @@ extension ApplicationCostProfilerClientTypes {
     }
 }
 
-public struct GetReportDefinitionOutput {
+public struct GetReportDefinitionOutput: Swift.Sendable {
     /// Timestamp (milliseconds) when this report definition was created.
     /// This member is required.
     public var createdAt: Foundation.Date?
@@ -287,7 +287,7 @@ public struct GetReportDefinitionOutput {
 
 extension ApplicationCostProfilerClientTypes {
 
-    public enum S3BucketRegion: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum S3BucketRegion: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case afSouth1
         case apEast1
         case euSouth1
@@ -321,8 +321,9 @@ extension ApplicationCostProfilerClientTypes {
 }
 
 extension ApplicationCostProfilerClientTypes {
+
     /// Represents the Amazon Simple Storage Service (Amazon S3) location where usage data is read from.
-    public struct SourceS3Location {
+    public struct SourceS3Location: Swift.Sendable {
         /// Name of the bucket.
         /// This member is required.
         public var bucket: Swift.String?
@@ -343,10 +344,9 @@ extension ApplicationCostProfilerClientTypes {
             self.region = region
         }
     }
-
 }
 
-public struct ImportApplicationUsageInput {
+public struct ImportApplicationUsageInput: Swift.Sendable {
     /// Amazon S3 location to import application usage data from.
     /// This member is required.
     public var sourceS3Location: ApplicationCostProfilerClientTypes.SourceS3Location?
@@ -359,7 +359,7 @@ public struct ImportApplicationUsageInput {
     }
 }
 
-public struct ImportApplicationUsageOutput {
+public struct ImportApplicationUsageOutput: Swift.Sendable {
     /// ID of the import request.
     /// This member is required.
     public var importId: Swift.String?
@@ -372,7 +372,7 @@ public struct ImportApplicationUsageOutput {
     }
 }
 
-public struct ListReportDefinitionsInput {
+public struct ListReportDefinitionsInput: Swift.Sendable {
     /// The maximum number of results to return.
     public var maxResults: Swift.Int?
     /// The token value from a previous call to access the next page of results.
@@ -389,8 +389,9 @@ public struct ListReportDefinitionsInput {
 }
 
 extension ApplicationCostProfilerClientTypes {
+
     /// The configuration of a report in AWS Application Cost Profiler.
-    public struct ReportDefinition {
+    public struct ReportDefinition: Swift.Sendable {
         /// Timestamp (milliseconds) when this report definition was created.
         public var createdAt: Foundation.Date?
         /// The location in Amazon Simple Storage Service (Amazon S3) the reports should be saved to.
@@ -425,10 +426,9 @@ extension ApplicationCostProfilerClientTypes {
             self.reportId = reportId
         }
     }
-
 }
 
-public struct ListReportDefinitionsOutput {
+public struct ListReportDefinitionsOutput: Swift.Sendable {
     /// The value of the next token, if it exists. Null if there are no more results.
     public var nextToken: Swift.String?
     /// The retrieved reports.
@@ -468,7 +468,7 @@ public struct ServiceQuotaExceededException: ClientRuntime.ModeledError, AWSClie
     }
 }
 
-public struct PutReportDefinitionInput {
+public struct PutReportDefinitionInput: Swift.Sendable {
     /// Required. Amazon Simple Storage Service (Amazon S3) location where Application Cost Profiler uploads the report.
     /// This member is required.
     public var destinationS3Location: ApplicationCostProfilerClientTypes.S3Location?
@@ -501,7 +501,7 @@ public struct PutReportDefinitionInput {
     }
 }
 
-public struct PutReportDefinitionOutput {
+public struct PutReportDefinitionOutput: Swift.Sendable {
     /// ID of the report.
     public var reportId: Swift.String?
 
@@ -513,7 +513,7 @@ public struct PutReportDefinitionOutput {
     }
 }
 
-public struct UpdateReportDefinitionInput {
+public struct UpdateReportDefinitionInput: Swift.Sendable {
     /// Required. Amazon Simple Storage Service (Amazon S3) location where Application Cost Profiler uploads the report.
     /// This member is required.
     public var destinationS3Location: ApplicationCostProfilerClientTypes.S3Location?
@@ -546,7 +546,7 @@ public struct UpdateReportDefinitionInput {
     }
 }
 
-public struct UpdateReportDefinitionOutput {
+public struct UpdateReportDefinitionOutput: Swift.Sendable {
     /// ID of the report.
     public var reportId: Swift.String?
 

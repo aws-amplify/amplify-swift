@@ -28,7 +28,7 @@ import protocol ClientRuntime.ModeledError
 
 extension ApplicationAutoScalingClientTypes {
 
-    public enum AdjustmentType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AdjustmentType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case changeincapacity
         case exactcapacity
         case percentchangeincapacity
@@ -59,8 +59,9 @@ extension ApplicationAutoScalingClientTypes {
 }
 
 extension ApplicationAutoScalingClientTypes {
+
     /// Represents a CloudWatch alarm associated with a scaling policy.
-    public struct Alarm {
+    public struct Alarm: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the alarm.
         /// This member is required.
         public var alarmARN: Swift.String?
@@ -77,7 +78,6 @@ extension ApplicationAutoScalingClientTypes {
             self.alarmName = alarmName
         }
     }
-
 }
 
 /// Concurrent updates caused an exception, for example, if you request an update to an Application Auto Scaling resource that already has a pending update.
@@ -178,7 +178,7 @@ public struct ValidationException: ClientRuntime.ModeledError, AWSClientRuntime.
 
 extension ApplicationAutoScalingClientTypes {
 
-    public enum ScalableDimension: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ScalableDimension: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case appstreamfleetdesiredcapacity
         case cassandratablereadcapacityunits
         case cassandratablewritecapacityunits
@@ -270,7 +270,7 @@ extension ApplicationAutoScalingClientTypes {
 
 extension ApplicationAutoScalingClientTypes {
 
-    public enum ServiceNamespace: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ServiceNamespace: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case appstream
         case cassandra
         case comprehend
@@ -336,7 +336,7 @@ extension ApplicationAutoScalingClientTypes {
     }
 }
 
-public struct DeleteScalingPolicyInput {
+public struct DeleteScalingPolicyInput: Swift.Sendable {
     /// The name of the scaling policy.
     /// This member is required.
     public var policyName: Swift.String?
@@ -448,12 +448,12 @@ public struct DeleteScalingPolicyInput {
     }
 }
 
-public struct DeleteScalingPolicyOutput {
+public struct DeleteScalingPolicyOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteScheduledActionInput {
+public struct DeleteScheduledActionInput: Swift.Sendable {
     /// The identifier of the resource associated with the scheduled action. This string consists of the resource type and unique identifier.
     ///
     /// * ECS service - The resource type is service and the unique identifier is the cluster name and service name. Example: service/my-cluster/my-service.
@@ -565,12 +565,12 @@ public struct DeleteScheduledActionInput {
     }
 }
 
-public struct DeleteScheduledActionOutput {
+public struct DeleteScheduledActionOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeregisterScalableTargetInput {
+public struct DeregisterScalableTargetInput: Swift.Sendable {
     /// The identifier of the resource associated with the scalable target. This string consists of the resource type and unique identifier.
     ///
     /// * ECS service - The resource type is service and the unique identifier is the cluster name and service name. Example: service/my-cluster/my-service.
@@ -677,7 +677,7 @@ public struct DeregisterScalableTargetInput {
     }
 }
 
-public struct DeregisterScalableTargetOutput {
+public struct DeregisterScalableTargetOutput: Swift.Sendable {
 
     public init() { }
 }
@@ -706,7 +706,7 @@ public struct InvalidNextTokenException: ClientRuntime.ModeledError, AWSClientRu
     }
 }
 
-public struct DescribeScalableTargetsInput {
+public struct DescribeScalableTargetsInput: Swift.Sendable {
     /// The maximum number of scalable targets. This value can be between 1 and 50. The default value is 50. If this parameter is used, the operation returns up to MaxResults results at a time, along with a NextToken value. To get the next set of results, include the NextToken value in a subsequent call. If this parameter is not used, the operation returns up to 50 results and a NextToken value, if applicable.
     public var maxResults: Swift.Int?
     /// The token for the next set of results.
@@ -820,8 +820,9 @@ public struct DescribeScalableTargetsInput {
 }
 
 extension ApplicationAutoScalingClientTypes {
+
     /// Specifies whether the scaling activities for a scalable target are in a suspended state.
-    public struct SuspendedState {
+    public struct SuspendedState: Swift.Sendable {
         /// Whether scale in by a target tracking scaling policy or a step scaling policy is suspended. Set the value to true if you don't want Application Auto Scaling to remove capacity when a scaling policy is triggered. The default is false.
         public var dynamicScalingInSuspended: Swift.Bool?
         /// Whether scale out by a target tracking scaling policy or a step scaling policy is suspended. Set the value to true if you don't want Application Auto Scaling to add capacity when a scaling policy is triggered. The default is false.
@@ -840,12 +841,12 @@ extension ApplicationAutoScalingClientTypes {
             self.scheduledScalingSuspended = scheduledScalingSuspended
         }
     }
-
 }
 
 extension ApplicationAutoScalingClientTypes {
+
     /// Represents a scalable target.
-    public struct ScalableTarget {
+    public struct ScalableTarget: Swift.Sendable {
         /// The Unix timestamp for when the scalable target was created.
         /// This member is required.
         public var creationTime: Foundation.Date?
@@ -979,10 +980,9 @@ extension ApplicationAutoScalingClientTypes {
             self.suspendedState = suspendedState
         }
     }
-
 }
 
-public struct DescribeScalableTargetsOutput {
+public struct DescribeScalableTargetsOutput: Swift.Sendable {
     /// The token required to get the next set of results. This value is null if there are no more results to return.
     public var nextToken: Swift.String?
     /// The scalable targets that match the request parameters.
@@ -998,7 +998,7 @@ public struct DescribeScalableTargetsOutput {
     }
 }
 
-public struct DescribeScalingActivitiesInput {
+public struct DescribeScalingActivitiesInput: Swift.Sendable {
     /// Specifies whether to include activities that aren't scaled (not scaled activities) in the response. Not scaled activities are activities that aren't completed or started for various reasons, such as preventing infinite scaling loops. For help interpreting the not scaled reason details in the response, see [Scaling activities for Application Auto Scaling](https://docs.aws.amazon.com/autoscaling/application/userguide/application-auto-scaling-scaling-activities.html).
     public var includeNotScaledActivities: Swift.Bool?
     /// The maximum number of scalable targets. This value can be between 1 and 50. The default value is 50. If this parameter is used, the operation returns up to MaxResults results at a time, along with a NextToken value. To get the next set of results, include the NextToken value in a subsequent call. If this parameter is not used, the operation returns up to 50 results and a NextToken value, if applicable.
@@ -1116,8 +1116,9 @@ public struct DescribeScalingActivitiesInput {
 }
 
 extension ApplicationAutoScalingClientTypes {
+
     /// Describes the reason for an activity that isn't scaled (not scaled activity), in machine-readable format. For help interpreting the not scaled reason details, see [Scaling activities for Application Auto Scaling](https://docs.aws.amazon.com/autoscaling/application/userguide/application-auto-scaling-scaling-activities.html) in the Application Auto Scaling User Guide.
-    public struct NotScaledReason {
+    public struct NotScaledReason: Swift.Sendable {
         /// A code that represents the reason for not scaling. Valid values:
         ///
         /// * AutoScalingAnticipatedFlapping
@@ -1151,12 +1152,11 @@ extension ApplicationAutoScalingClientTypes {
             self.minCapacity = minCapacity
         }
     }
-
 }
 
 extension ApplicationAutoScalingClientTypes {
 
-    public enum ScalingActivityStatusCode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ScalingActivityStatusCode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case failed
         case inprogress
         case overridden
@@ -1196,8 +1196,9 @@ extension ApplicationAutoScalingClientTypes {
 }
 
 extension ApplicationAutoScalingClientTypes {
+
     /// Represents a scaling activity.
-    public struct ScalingActivity {
+    public struct ScalingActivity: Swift.Sendable {
         /// The unique identifier of the scaling activity.
         /// This member is required.
         public var activityId: Swift.String?
@@ -1344,10 +1345,9 @@ extension ApplicationAutoScalingClientTypes {
             self.statusMessage = statusMessage
         }
     }
-
 }
 
-public struct DescribeScalingActivitiesOutput {
+public struct DescribeScalingActivitiesOutput: Swift.Sendable {
     /// The token required to get the next set of results. This value is null if there are no more results to return.
     public var nextToken: Swift.String?
     /// A list of scaling activity objects.
@@ -1387,7 +1387,7 @@ public struct FailedResourceAccessException: ClientRuntime.ModeledError, AWSClie
     }
 }
 
-public struct DescribeScalingPoliciesInput {
+public struct DescribeScalingPoliciesInput: Swift.Sendable {
     /// The maximum number of scalable targets. This value can be between 1 and 10. The default value is 10. If this parameter is used, the operation returns up to MaxResults results at a time, along with a NextToken value. To get the next set of results, include the NextToken value in a subsequent call. If this parameter is not used, the operation returns up to 10 results and a NextToken value, if applicable.
     public var maxResults: Swift.Int?
     /// The token for the next set of results.
@@ -1506,7 +1506,7 @@ public struct DescribeScalingPoliciesInput {
 
 extension ApplicationAutoScalingClientTypes {
 
-    public enum PolicyType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum PolicyType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case stepscaling
         case targettrackingscaling
         case sdkUnknown(Swift.String)
@@ -1535,7 +1535,7 @@ extension ApplicationAutoScalingClientTypes {
 
 extension ApplicationAutoScalingClientTypes {
 
-    public enum MetricAggregationType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum MetricAggregationType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case average
         case maximum
         case minimum
@@ -1566,6 +1566,7 @@ extension ApplicationAutoScalingClientTypes {
 }
 
 extension ApplicationAutoScalingClientTypes {
+
     /// Represents a step adjustment for a [StepScalingPolicyConfiguration](https://docs.aws.amazon.com/autoscaling/application/APIReference/API_StepScalingPolicyConfiguration.html). Describes an adjustment based on the difference between the value of the aggregated CloudWatch metric and the breach threshold that you've defined for the alarm. For the following examples, suppose that you have an alarm with a breach threshold of 50:
     ///
     /// * To initiate the adjustment when the metric is greater than or equal to 50 and less than 60, specify a lower bound of 0 and an upper bound of 10.
@@ -1582,7 +1583,7 @@ extension ApplicationAutoScalingClientTypes {
     /// * At most one step adjustment can have a null upper bound. If one step adjustment has a positive upper bound, then there must be a step adjustment with a null upper bound.
     ///
     /// * The upper and lower bound can't be null in the same step adjustment.
-    public struct StepAdjustment {
+    public struct StepAdjustment: Swift.Sendable {
         /// The lower bound for the difference between the alarm threshold and the CloudWatch metric. If the metric value is above the breach threshold, the lower bound is inclusive (the metric must be greater than or equal to the threshold plus the lower bound). Otherwise, it's exclusive (the metric must be greater than the threshold plus the lower bound). A null value indicates negative infinity.
         public var metricIntervalLowerBound: Swift.Double?
         /// The upper bound for the difference between the alarm threshold and the CloudWatch metric. If the metric value is above the breach threshold, the upper bound is exclusive (the metric must be less than the threshold plus the upper bound). Otherwise, it's inclusive (the metric must be less than or equal to the threshold plus the upper bound). A null value indicates positive infinity. The upper bound must be greater than the lower bound.
@@ -1602,12 +1603,12 @@ extension ApplicationAutoScalingClientTypes {
             self.scalingAdjustment = scalingAdjustment
         }
     }
-
 }
 
 extension ApplicationAutoScalingClientTypes {
+
     /// Represents a step scaling policy configuration to use with Application Auto Scaling. For more information, see [Step scaling policies](https://docs.aws.amazon.com/autoscaling/application/userguide/application-auto-scaling-step-scaling-policies.html) in the Application Auto Scaling User Guide.
-    public struct StepScalingPolicyConfiguration {
+    public struct StepScalingPolicyConfiguration: Swift.Sendable {
         /// Specifies how the ScalingAdjustment value in a [StepAdjustment](https://docs.aws.amazon.com/autoscaling/application/APIReference/API_StepAdjustment.html) is interpreted (for example, an absolute number or a percentage). The valid values are ChangeInCapacity, ExactCapacity, and PercentChangeInCapacity. AdjustmentType is required if you are adding a new step scaling policy configuration.
         public var adjustmentType: ApplicationAutoScalingClientTypes.AdjustmentType?
         /// The amount of time, in seconds, to wait for a previous scaling activity to take effect. If not specified, the default value is 300. For more information, see [Cooldown period](https://docs.aws.amazon.com/autoscaling/application/userguide/step-scaling-policy-overview.html#step-scaling-cooldown) in the Application Auto Scaling User Guide.
@@ -1634,12 +1635,12 @@ extension ApplicationAutoScalingClientTypes {
             self.stepAdjustments = stepAdjustments
         }
     }
-
 }
 
 extension ApplicationAutoScalingClientTypes {
+
     /// Describes the dimension names and values associated with a metric.
-    public struct MetricDimension {
+    public struct MetricDimension: Swift.Sendable {
         /// The name of the dimension.
         /// This member is required.
         public var name: Swift.String?
@@ -1656,12 +1657,12 @@ extension ApplicationAutoScalingClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension ApplicationAutoScalingClientTypes {
+
     /// Describes the dimension of a metric.
-    public struct TargetTrackingMetricDimension {
+    public struct TargetTrackingMetricDimension: Swift.Sendable {
         /// The name of the dimension.
         /// This member is required.
         public var name: Swift.String?
@@ -1678,12 +1679,12 @@ extension ApplicationAutoScalingClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension ApplicationAutoScalingClientTypes {
+
     /// Represents a specific metric. Metric is a property of the [TargetTrackingMetricStat] object.
-    public struct TargetTrackingMetric {
+    public struct TargetTrackingMetric: Swift.Sendable {
         /// The dimensions for the metric. For the list of available dimensions, see the Amazon Web Services documentation available from the table in [Amazon Web Services services that publish CloudWatch metrics ](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/aws-services-cloudwatch-metrics.html) in the Amazon CloudWatch User Guide. Conditional: If you published your metric with dimensions, you must specify the same dimensions in your scaling policy.
         public var dimensions: [ApplicationAutoScalingClientTypes.TargetTrackingMetricDimension]?
         /// The name of the metric.
@@ -1702,12 +1703,12 @@ extension ApplicationAutoScalingClientTypes {
             self.namespace = namespace
         }
     }
-
 }
 
 extension ApplicationAutoScalingClientTypes {
+
     /// This structure defines the CloudWatch metric to return, along with the statistic and unit. For more information about the CloudWatch terminology below, see [Amazon CloudWatch concepts](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/cloudwatch_concepts.html) in the Amazon CloudWatch User Guide.
-    public struct TargetTrackingMetricStat {
+    public struct TargetTrackingMetricStat: Swift.Sendable {
         /// The CloudWatch metric to return, including the metric name, namespace, and dimensions. To get the exact metric name, namespace, and dimensions, inspect the [Metric](https://docs.aws.amazon.com/AmazonCloudWatch/latest/APIReference/API_Metric.html) object that is returned by a call to [ListMetrics](https://docs.aws.amazon.com/AmazonCloudWatch/latest/APIReference/API_ListMetrics.html).
         /// This member is required.
         public var metric: ApplicationAutoScalingClientTypes.TargetTrackingMetric?
@@ -1728,12 +1729,12 @@ extension ApplicationAutoScalingClientTypes {
             self.unit = unit
         }
     }
-
 }
 
 extension ApplicationAutoScalingClientTypes {
+
     /// The metric data to return. Also defines whether this call is returning data for one metric only, or whether it is performing a math expression on the values of returned metric statistics to create a new time series. A time series is a series of data points, each of which is associated with a timestamp. For more information and examples, see [Create a target tracking scaling policy for Application Auto Scaling using metric math](https://docs.aws.amazon.com/autoscaling/application/userguide/application-auto-scaling-target-tracking-metric-math.html) in the Application Auto Scaling User Guide.
-    public struct TargetTrackingMetricDataQuery {
+    public struct TargetTrackingMetricDataQuery: Swift.Sendable {
         /// The math expression to perform on the returned data, if this object is performing a math expression. This expression can use the Id of the other metrics to refer to those metrics, and can also use the Id of other expressions to use the result of those expressions. Conditional: Within each TargetTrackingMetricDataQuery object, you must specify either Expression or MetricStat, but not both.
         public var expression: Swift.String?
         /// A short name that identifies the object's results in the response. This name must be unique among all MetricDataQuery objects specified for a single scaling policy. If you are performing math expressions on this set of data, this name represents that data and can serve as a variable in the mathematical expression. The valid characters are letters, numbers, and underscores. The first character must be a lowercase letter.
@@ -1761,12 +1762,11 @@ extension ApplicationAutoScalingClientTypes {
             self.returnData = returnData
         }
     }
-
 }
 
 extension ApplicationAutoScalingClientTypes {
 
-    public enum MetricStatistic: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum MetricStatistic: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case average
         case maximum
         case minimum
@@ -1803,6 +1803,7 @@ extension ApplicationAutoScalingClientTypes {
 }
 
 extension ApplicationAutoScalingClientTypes {
+
     /// Represents a CloudWatch metric of your choosing for a target tracking scaling policy to use with Application Auto Scaling. For information about the available metrics for a service, see [Amazon Web Services services that publish CloudWatch metrics](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/aws-services-cloudwatch-metrics.html) in the Amazon CloudWatch User Guide. To create your customized metric specification:
     ///
     /// * Add values for each required parameter from CloudWatch. You can use an existing metric, or a new metric that you create. To use your own metric, you must first publish the metric to CloudWatch. For more information, see [Publish custom metrics](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/publishingMetrics.html) in the Amazon CloudWatch User Guide.
@@ -1811,7 +1812,7 @@ extension ApplicationAutoScalingClientTypes {
     ///
     ///
     /// For more information about the CloudWatch terminology below, see [Amazon CloudWatch concepts](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/cloudwatch_concepts.html) in the Amazon CloudWatch User Guide.
-    public struct CustomizedMetricSpecification {
+    public struct CustomizedMetricSpecification: Swift.Sendable {
         /// The dimensions of the metric. Conditional: If you published your metric with dimensions, you must specify the same dimensions in your scaling policy.
         public var dimensions: [ApplicationAutoScalingClientTypes.MetricDimension]?
         /// The name of the metric. To get the exact metric name, namespace, and dimensions, inspect the [Metric](https://docs.aws.amazon.com/AmazonCloudWatch/latest/APIReference/API_Metric.html) object that's returned by a call to [ListMetrics](https://docs.aws.amazon.com/AmazonCloudWatch/latest/APIReference/API_ListMetrics.html).
@@ -1842,12 +1843,11 @@ extension ApplicationAutoScalingClientTypes {
             self.unit = unit
         }
     }
-
 }
 
 extension ApplicationAutoScalingClientTypes {
 
-    public enum MetricType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum MetricType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case albrequestcountpertarget
         case appstreamaveragecapacityutilization
         case cassandrareadcapacityutilization
@@ -1869,7 +1869,9 @@ extension ApplicationAutoScalingClientTypes {
         case neptunereaderaveragecpuutilization
         case rdsreaderaveragecpuutilization
         case rdsreaderaveragedatabaseconnections
+        case sagemakerinferencecomponentconcurrentrequestspercopyhighresolution
         case sagemakerinferencecomponentinvocationspercopy
+        case sagemakervariantconcurrentrequestspermodelhighresolution
         case sagemakervariantinvocationsperinstance
         case sagemakervariantprovisionedconcurrencyutilization
         case workspacesaverageusersessionscapacityutilization
@@ -1898,7 +1900,9 @@ extension ApplicationAutoScalingClientTypes {
                 .neptunereaderaveragecpuutilization,
                 .rdsreaderaveragecpuutilization,
                 .rdsreaderaveragedatabaseconnections,
+                .sagemakerinferencecomponentconcurrentrequestspercopyhighresolution,
                 .sagemakerinferencecomponentinvocationspercopy,
+                .sagemakervariantconcurrentrequestspermodelhighresolution,
                 .sagemakervariantinvocationsperinstance,
                 .sagemakervariantprovisionedconcurrencyutilization,
                 .workspacesaverageusersessionscapacityutilization
@@ -1933,7 +1937,9 @@ extension ApplicationAutoScalingClientTypes {
             case .neptunereaderaveragecpuutilization: return "NeptuneReaderAverageCPUUtilization"
             case .rdsreaderaveragecpuutilization: return "RDSReaderAverageCPUUtilization"
             case .rdsreaderaveragedatabaseconnections: return "RDSReaderAverageDatabaseConnections"
+            case .sagemakerinferencecomponentconcurrentrequestspercopyhighresolution: return "SageMakerInferenceComponentConcurrentRequestsPerCopyHighResolution"
             case .sagemakerinferencecomponentinvocationspercopy: return "SageMakerInferenceComponentInvocationsPerCopy"
+            case .sagemakervariantconcurrentrequestspermodelhighresolution: return "SageMakerVariantConcurrentRequestsPerModelHighResolution"
             case .sagemakervariantinvocationsperinstance: return "SageMakerVariantInvocationsPerInstance"
             case .sagemakervariantprovisionedconcurrencyutilization: return "SageMakerVariantProvisionedConcurrencyUtilization"
             case .workspacesaverageusersessionscapacityutilization: return "WorkSpacesAverageUserSessionsCapacityUtilization"
@@ -1944,8 +1950,9 @@ extension ApplicationAutoScalingClientTypes {
 }
 
 extension ApplicationAutoScalingClientTypes {
+
     /// Represents a predefined metric for a target tracking scaling policy to use with Application Auto Scaling. For more information, [Predefined metrics for target tracking scaling policies](https://docs.aws.amazon.com/autoscaling/application/userguide/monitor-cloudwatch-metrics.html#predefined-metrics) in the Application Auto Scaling User Guide.
-    public struct PredefinedMetricSpecification {
+    public struct PredefinedMetricSpecification: Swift.Sendable {
         /// The metric type. The ALBRequestCountPerTarget metric type applies only to Spot Fleets and ECS services.
         /// This member is required.
         public var predefinedMetricType: ApplicationAutoScalingClientTypes.MetricType?
@@ -1968,12 +1975,12 @@ extension ApplicationAutoScalingClientTypes {
             self.resourceLabel = resourceLabel
         }
     }
-
 }
 
 extension ApplicationAutoScalingClientTypes {
+
     /// Represents a target tracking scaling policy configuration to use with Application Auto Scaling. For more information, see [Target tracking scaling policies](https://docs.aws.amazon.com/autoscaling/application/userguide/application-auto-scaling-target-tracking.html) in the Application Auto Scaling User Guide.
-    public struct TargetTrackingScalingPolicyConfiguration {
+    public struct TargetTrackingScalingPolicyConfiguration: Swift.Sendable {
         /// A customized metric. You can specify either a predefined metric or a customized metric.
         public var customizedMetricSpecification: ApplicationAutoScalingClientTypes.CustomizedMetricSpecification?
         /// Indicates whether scale in by the target tracking scaling policy is disabled. If the value is true, scale in is disabled and the target tracking scaling policy won't remove capacity from the scalable target. Otherwise, scale in is enabled and the target tracking scaling policy can remove capacity from the scalable target. The default value is false.
@@ -2005,12 +2012,12 @@ extension ApplicationAutoScalingClientTypes {
             self.targetValue = targetValue
         }
     }
-
 }
 
 extension ApplicationAutoScalingClientTypes {
+
     /// Represents a scaling policy to use with Application Auto Scaling. For more information about configuring scaling policies for a specific service, see [Amazon Web Services services that you can use with Application Auto Scaling](https://docs.aws.amazon.com/autoscaling/application/userguide/integrated-services-list.html) in the Application Auto Scaling User Guide.
-    public struct ScalingPolicy {
+    public struct ScalingPolicy: Swift.Sendable {
         /// The CloudWatch alarms associated with the scaling policy.
         public var alarms: [ApplicationAutoScalingClientTypes.Alarm]?
         /// The Unix timestamp for when the scaling policy was created.
@@ -2148,10 +2155,9 @@ extension ApplicationAutoScalingClientTypes {
             self.targetTrackingScalingPolicyConfiguration = targetTrackingScalingPolicyConfiguration
         }
     }
-
 }
 
-public struct DescribeScalingPoliciesOutput {
+public struct DescribeScalingPoliciesOutput: Swift.Sendable {
     /// The token required to get the next set of results. This value is null if there are no more results to return.
     public var nextToken: Swift.String?
     /// Information about the scaling policies.
@@ -2167,7 +2173,7 @@ public struct DescribeScalingPoliciesOutput {
     }
 }
 
-public struct DescribeScheduledActionsInput {
+public struct DescribeScheduledActionsInput: Swift.Sendable {
     /// The maximum number of scheduled action results. This value can be between 1 and 50. The default value is 50. If this parameter is used, the operation returns up to MaxResults results at a time, along with a NextToken value. To get the next set of results, include the NextToken value in a subsequent call. If this parameter is not used, the operation returns up to 50 results and a NextToken value, if applicable.
     public var maxResults: Swift.Int?
     /// The token for the next set of results.
@@ -2285,8 +2291,9 @@ public struct DescribeScheduledActionsInput {
 }
 
 extension ApplicationAutoScalingClientTypes {
+
     /// Represents the minimum and maximum capacity for a scheduled action.
-    public struct ScalableTargetAction {
+    public struct ScalableTargetAction: Swift.Sendable {
         /// The maximum capacity. Although you can specify a large maximum capacity, note that service quotas may impose lower limits. Each service has its own default quotas for the maximum capacity of the resource. If you want to specify a higher limit, you can request an increase. For more information, consult the documentation for that service. For information about the default quotas for each service, see [Service endpoints and quotas](https://docs.aws.amazon.com/general/latest/gr/aws-service-information.html) in the Amazon Web Services General Reference.
         public var maxCapacity: Swift.Int?
         /// The minimum capacity. When the scheduled action runs, the resource will have at least this much capacity, but it might have more depending on other settings, such as the target utilization level of a target tracking scaling policy.
@@ -2301,12 +2308,12 @@ extension ApplicationAutoScalingClientTypes {
             self.minCapacity = minCapacity
         }
     }
-
 }
 
 extension ApplicationAutoScalingClientTypes {
+
     /// Represents a scheduled action.
-    public struct ScheduledAction {
+    public struct ScheduledAction: Swift.Sendable {
         /// The date and time that the scheduled action was created.
         /// This member is required.
         public var creationTime: Foundation.Date?
@@ -2456,10 +2463,9 @@ extension ApplicationAutoScalingClientTypes {
             self.timezone = timezone
         }
     }
-
 }
 
-public struct DescribeScheduledActionsOutput {
+public struct DescribeScheduledActionsOutput: Swift.Sendable {
     /// The token required to get the next set of results. This value is null if there are no more results to return.
     public var nextToken: Swift.String?
     /// Information about the scheduled actions.
@@ -2503,7 +2509,7 @@ public struct ResourceNotFoundException: ClientRuntime.ModeledError, AWSClientRu
     }
 }
 
-public struct ListTagsForResourceInput {
+public struct ListTagsForResourceInput: Swift.Sendable {
     /// Specify the ARN of the scalable target. For example: arn:aws:application-autoscaling:us-east-1:123456789012:scalable-target/1234abcd56ab78cd901ef1234567890ab123 To get the ARN for a scalable target, use [DescribeScalableTargets].
     /// This member is required.
     public var resourceARN: Swift.String?
@@ -2516,7 +2522,7 @@ public struct ListTagsForResourceInput {
     }
 }
 
-public struct ListTagsForResourceOutput {
+public struct ListTagsForResourceOutput: Swift.Sendable {
     /// A list of tags. Each tag consists of a tag key and a tag value.
     public var tags: [Swift.String: Swift.String]?
 
@@ -2552,7 +2558,7 @@ public struct LimitExceededException: ClientRuntime.ModeledError, AWSClientRunti
     }
 }
 
-public struct PutScalingPolicyInput {
+public struct PutScalingPolicyInput: Swift.Sendable {
     /// The name of the scaling policy. You cannot change the name of a scaling policy, but you can delete the original scaling policy and create a new scaling policy with the same settings and a different name.
     /// This member is required.
     public var policyName: Swift.String?
@@ -2676,7 +2682,7 @@ public struct PutScalingPolicyInput {
     }
 }
 
-public struct PutScalingPolicyOutput {
+public struct PutScalingPolicyOutput: Swift.Sendable {
     /// The CloudWatch alarms created for the target tracking scaling policy.
     public var alarms: [ApplicationAutoScalingClientTypes.Alarm]?
     /// The Amazon Resource Name (ARN) of the resulting scaling policy.
@@ -2693,7 +2699,7 @@ public struct PutScalingPolicyOutput {
     }
 }
 
-public struct PutScheduledActionInput {
+public struct PutScheduledActionInput: Swift.Sendable {
     /// The date and time for the recurring schedule to end, in UTC.
     public var endTime: Foundation.Date?
     /// The identifier of the resource associated with the scheduled action. This string consists of the resource type and unique identifier.
@@ -2834,12 +2840,12 @@ public struct PutScheduledActionInput {
     }
 }
 
-public struct PutScheduledActionOutput {
+public struct PutScheduledActionOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct RegisterScalableTargetInput {
+public struct RegisterScalableTargetInput: Swift.Sendable {
     /// The maximum value that you plan to scale out to. When a scaling policy is in effect, Application Auto Scaling can scale out (expand) as needed to the maximum capacity limit in response to changing demand. This property is required when registering a new scalable target. Although you can specify a large maximum capacity, note that service quotas might impose lower limits. Each service has its own default quotas for the maximum capacity of the resource. If you want to specify a higher limit, you can request an increase. For more information, consult the documentation for that service. For information about the default quotas for each service, see [Service endpoints and quotas](https://docs.aws.amazon.com/general/latest/gr/aws-service-information.html) in the Amazon Web Services General Reference.
     public var maxCapacity: Swift.Int?
     /// The minimum value that you plan to scale in to. When a scaling policy is in effect, Application Auto Scaling can scale in (contract) as needed to the minimum capacity limit in response to changing demand. This property is required when registering a new scalable target. For the following resources, the minimum value allowed is 0.
@@ -2998,7 +3004,7 @@ public struct RegisterScalableTargetInput {
     }
 }
 
-public struct RegisterScalableTargetOutput {
+public struct RegisterScalableTargetOutput: Swift.Sendable {
     /// The ARN of the scalable target.
     public var scalableTargetARN: Swift.String?
 
@@ -3038,7 +3044,7 @@ public struct TooManyTagsException: ClientRuntime.ModeledError, AWSClientRuntime
     }
 }
 
-public struct TagResourceInput {
+public struct TagResourceInput: Swift.Sendable {
     /// Identifies the Application Auto Scaling scalable target that you want to apply tags to. For example: arn:aws:application-autoscaling:us-east-1:123456789012:scalable-target/1234abcd56ab78cd901ef1234567890ab123 To get the ARN for a scalable target, use [DescribeScalableTargets].
     /// This member is required.
     public var resourceARN: Swift.String?
@@ -3056,12 +3062,12 @@ public struct TagResourceInput {
     }
 }
 
-public struct TagResourceOutput {
+public struct TagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UntagResourceInput {
+public struct UntagResourceInput: Swift.Sendable {
     /// Identifies the Application Auto Scaling scalable target from which to remove tags. For example: arn:aws:application-autoscaling:us-east-1:123456789012:scalable-target/1234abcd56ab78cd901ef1234567890ab123 To get the ARN for a scalable target, use [DescribeScalableTargets].
     /// This member is required.
     public var resourceARN: Swift.String?
@@ -3079,7 +3085,7 @@ public struct UntagResourceInput {
     }
 }
 
-public struct UntagResourceOutput {
+public struct UntagResourceOutput: Swift.Sendable {
 
     public init() { }
 }

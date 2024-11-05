@@ -55,7 +55,7 @@ public struct AccessDeniedException: ClientRuntime.ModeledError, AWSClientRuntim
 
 extension WorkSpacesThinClientClientTypes {
 
-    public enum ApplyTimeOf: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ApplyTimeOf: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case device
         case utc
         case sdkUnknown(Swift.String)
@@ -251,8 +251,9 @@ public struct ThrottlingException: ClientRuntime.ModeledError, AWSClientRuntime.
 }
 
 extension WorkSpacesThinClientClientTypes {
+
     /// Describes a validation exception.
-    public struct ValidationExceptionField {
+    public struct ValidationExceptionField: Swift.Sendable {
         /// A message that describes the reason for the exception.
         /// This member is required.
         public var message: Swift.String?
@@ -269,12 +270,11 @@ extension WorkSpacesThinClientClientTypes {
             self.name = name
         }
     }
-
 }
 
 extension WorkSpacesThinClientClientTypes {
 
-    public enum ValidationExceptionReason: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ValidationExceptionReason: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case cannotParse
         case fieldValidationFailed
         case other
@@ -341,7 +341,7 @@ public struct ValidationException: ClientRuntime.ModeledError, AWSClientRuntime.
 
 extension WorkSpacesThinClientClientTypes {
 
-    public enum DayOfWeek: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DayOfWeek: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case friday
         case monday
         case saturday
@@ -385,7 +385,7 @@ extension WorkSpacesThinClientClientTypes {
 
 extension WorkSpacesThinClientClientTypes {
 
-    public enum MaintenanceWindowType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum MaintenanceWindowType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case custom
         case system
         case sdkUnknown(Swift.String)
@@ -413,8 +413,9 @@ extension WorkSpacesThinClientClientTypes {
 }
 
 extension WorkSpacesThinClientClientTypes {
+
     /// Describes the maintenance window for a thin client device.
-    public struct MaintenanceWindow {
+    public struct MaintenanceWindow: Swift.Sendable {
         /// The option to set the maintenance window during the device local time or Universal Coordinated Time (UTC).
         public var applyTimeOf: WorkSpacesThinClientClientTypes.ApplyTimeOf?
         /// The days of the week during which the maintenance window is open.
@@ -449,12 +450,11 @@ extension WorkSpacesThinClientClientTypes {
             self.type = type
         }
     }
-
 }
 
 extension WorkSpacesThinClientClientTypes {
 
-    public enum SoftwareSetUpdateMode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SoftwareSetUpdateMode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case useDesired
         case useLatest
         case sdkUnknown(Swift.String)
@@ -483,7 +483,7 @@ extension WorkSpacesThinClientClientTypes {
 
 extension WorkSpacesThinClientClientTypes {
 
-    public enum SoftwareSetUpdateSchedule: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SoftwareSetUpdateSchedule: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case applyImmediately
         case useMaintenanceWindow
         case sdkUnknown(Swift.String)
@@ -510,7 +510,7 @@ extension WorkSpacesThinClientClientTypes {
     }
 }
 
-public struct CreateEnvironmentInput {
+public struct CreateEnvironmentInput: Swift.Sendable {
     /// Specifies a unique, case-sensitive identifier that you provide to ensure the idempotency of the request. This lets you safely retry the request without accidentally performing the same operation a second time. Passing the same value to a later call to an operation requires that you also pass the same value for all other parameters. We recommend that you use a [UUID type of value](https://wikipedia.org/wiki/Universally_unique_identifier). If you don't provide this value, then Amazon Web Services generates a random one for you. If you retry the operation with the same ClientToken, but with different parameters, the retry fails with an IdempotentParameterMismatch error.
     public var clientToken: Swift.String?
     /// The ID of the software set to apply.
@@ -570,7 +570,7 @@ extension CreateEnvironmentInput: Swift.CustomDebugStringConvertible {
 
 extension WorkSpacesThinClientClientTypes {
 
-    public enum DesktopType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DesktopType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case appstream
         case workspaces
         case workspacesWeb
@@ -601,8 +601,9 @@ extension WorkSpacesThinClientClientTypes {
 }
 
 extension WorkSpacesThinClientClientTypes {
+
     /// Describes an environment.
-    public struct EnvironmentSummary {
+    public struct EnvironmentSummary: Swift.Sendable {
         /// The activation code to register a device to the environment.
         public var activationCode: Swift.String?
         /// The Amazon Resource Name (ARN) of the environment.
@@ -665,7 +666,6 @@ extension WorkSpacesThinClientClientTypes {
             self.updatedAt = updatedAt
         }
     }
-
 }
 
 extension WorkSpacesThinClientClientTypes.EnvironmentSummary: Swift.CustomDebugStringConvertible {
@@ -673,7 +673,7 @@ extension WorkSpacesThinClientClientTypes.EnvironmentSummary: Swift.CustomDebugS
         "EnvironmentSummary(activationCode: \(Swift.String(describing: activationCode)), arn: \(Swift.String(describing: arn)), createdAt: \(Swift.String(describing: createdAt)), desiredSoftwareSetId: \(Swift.String(describing: desiredSoftwareSetId)), desktopArn: \(Swift.String(describing: desktopArn)), desktopType: \(Swift.String(describing: desktopType)), id: \(Swift.String(describing: id)), maintenanceWindow: \(Swift.String(describing: maintenanceWindow)), pendingSoftwareSetId: \(Swift.String(describing: pendingSoftwareSetId)), softwareSetUpdateMode: \(Swift.String(describing: softwareSetUpdateMode)), softwareSetUpdateSchedule: \(Swift.String(describing: softwareSetUpdateSchedule)), updatedAt: \(Swift.String(describing: updatedAt)), desktopEndpoint: \"CONTENT_REDACTED\", name: \"CONTENT_REDACTED\")"}
 }
 
-public struct CreateEnvironmentOutput {
+public struct CreateEnvironmentOutput: Swift.Sendable {
     /// Describes an environment.
     public var environment: WorkSpacesThinClientClientTypes.EnvironmentSummary?
 
@@ -685,7 +685,7 @@ public struct CreateEnvironmentOutput {
     }
 }
 
-public struct DeleteDeviceInput {
+public struct DeleteDeviceInput: Swift.Sendable {
     /// Specifies a unique, case-sensitive identifier that you provide to ensure the idempotency of the request. This lets you safely retry the request without accidentally performing the same operation a second time. Passing the same value to a later call to an operation requires that you also pass the same value for all other parameters. We recommend that you use a [UUID type of value](https://wikipedia.org/wiki/Universally_unique_identifier). If you don't provide this value, then Amazon Web Services generates a random one for you. If you retry the operation with the same ClientToken, but with different parameters, the retry fails with an IdempotentParameterMismatch error.
     public var clientToken: Swift.String?
     /// The ID of the device to delete.
@@ -702,12 +702,12 @@ public struct DeleteDeviceInput {
     }
 }
 
-public struct DeleteDeviceOutput {
+public struct DeleteDeviceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteEnvironmentInput {
+public struct DeleteEnvironmentInput: Swift.Sendable {
     /// Specifies a unique, case-sensitive identifier that you provide to ensure the idempotency of the request. This lets you safely retry the request without accidentally performing the same operation a second time. Passing the same value to a later call to an operation requires that you also pass the same value for all other parameters. We recommend that you use a [UUID type of value](https://wikipedia.org/wiki/Universally_unique_identifier). If you don't provide this value, then Amazon Web Services generates a random one for you. If you retry the operation with the same ClientToken, but with different parameters, the retry fails with an IdempotentParameterMismatch error.
     public var clientToken: Swift.String?
     /// The ID of the environment to delete.
@@ -724,14 +724,14 @@ public struct DeleteEnvironmentInput {
     }
 }
 
-public struct DeleteEnvironmentOutput {
+public struct DeleteEnvironmentOutput: Swift.Sendable {
 
     public init() { }
 }
 
 extension WorkSpacesThinClientClientTypes {
 
-    public enum TargetDeviceStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum TargetDeviceStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case archived
         case deregistered
         case sdkUnknown(Swift.String)
@@ -758,7 +758,7 @@ extension WorkSpacesThinClientClientTypes {
     }
 }
 
-public struct DeregisterDeviceInput {
+public struct DeregisterDeviceInput: Swift.Sendable {
     /// Specifies a unique, case-sensitive identifier that you provide to ensure the idempotency of the request. This lets you safely retry the request without accidentally performing the same operation a second time. Passing the same value to a later call to an operation requires that you also pass the same value for all other parameters. We recommend that you use a [UUID type of value](https://wikipedia.org/wiki/Universally_unique_identifier). If you don't provide this value, then Amazon Web Services generates a random one for you. If you retry the operation with the same ClientToken, but with different parameters, the retry fails with an IdempotentParameterMismatch error.
     public var clientToken: Swift.String?
     /// The ID of the device to deregister.
@@ -779,14 +779,14 @@ public struct DeregisterDeviceInput {
     }
 }
 
-public struct DeregisterDeviceOutput {
+public struct DeregisterDeviceOutput: Swift.Sendable {
 
     public init() { }
 }
 
 extension WorkSpacesThinClientClientTypes {
 
-    public enum DeviceSoftwareSetComplianceStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DeviceSoftwareSetComplianceStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case compliant
         case `none`
         case notCompliant
@@ -818,7 +818,7 @@ extension WorkSpacesThinClientClientTypes {
 
 extension WorkSpacesThinClientClientTypes {
 
-    public enum SoftwareSetUpdateStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SoftwareSetUpdateStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case available
         case inProgress
         case upToDate
@@ -850,7 +850,7 @@ extension WorkSpacesThinClientClientTypes {
 
 extension WorkSpacesThinClientClientTypes {
 
-    public enum DeviceStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DeviceStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case archived
         case deregistered
         case deregistering
@@ -884,8 +884,9 @@ extension WorkSpacesThinClientClientTypes {
 }
 
 extension WorkSpacesThinClientClientTypes {
+
     /// Describes a thin client device.
-    public struct Device {
+    public struct Device: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the device.
         public var arn: Swift.String?
         /// The timestamp of when the device was created.
@@ -976,7 +977,6 @@ extension WorkSpacesThinClientClientTypes {
             self.updatedAt = updatedAt
         }
     }
-
 }
 
 extension WorkSpacesThinClientClientTypes.Device: Swift.CustomDebugStringConvertible {
@@ -985,8 +985,9 @@ extension WorkSpacesThinClientClientTypes.Device: Swift.CustomDebugStringConvert
 }
 
 extension WorkSpacesThinClientClientTypes {
+
     /// Describes a thin client device.
-    public struct DeviceSummary {
+    public struct DeviceSummary: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the device.
         public var arn: Swift.String?
         /// The timestamp of when the device was created.
@@ -1053,7 +1054,6 @@ extension WorkSpacesThinClientClientTypes {
             self.updatedAt = updatedAt
         }
     }
-
 }
 
 extension WorkSpacesThinClientClientTypes.DeviceSummary: Swift.CustomDebugStringConvertible {
@@ -1063,7 +1063,7 @@ extension WorkSpacesThinClientClientTypes.DeviceSummary: Swift.CustomDebugString
 
 extension WorkSpacesThinClientClientTypes {
 
-    public enum EnvironmentSoftwareSetComplianceStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum EnvironmentSoftwareSetComplianceStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case compliant
         case notCompliant
         case noRegisteredDevices
@@ -1094,8 +1094,9 @@ extension WorkSpacesThinClientClientTypes {
 }
 
 extension WorkSpacesThinClientClientTypes {
+
     /// Describes an environment.
-    public struct Environment {
+    public struct Environment: Swift.Sendable {
         /// The activation code to register a device to the environment.
         public var activationCode: Swift.String?
         /// The Amazon Resource Name (ARN) of the environment.
@@ -1110,7 +1111,7 @@ extension WorkSpacesThinClientClientTypes {
         public var desktopEndpoint: Swift.String?
         /// The type of streaming desktop for the environment.
         public var desktopType: WorkSpacesThinClientClientTypes.DesktopType?
-        /// "The tag keys and optional values for the newly created devices for this environment."
+        /// The tag keys and optional values for the newly created devices for this environment.
         public var deviceCreationTags: [Swift.String: Swift.String]?
         /// The ID of the environment.
         public var id: Swift.String?
@@ -1182,7 +1183,6 @@ extension WorkSpacesThinClientClientTypes {
             self.updatedAt = updatedAt
         }
     }
-
 }
 
 extension WorkSpacesThinClientClientTypes.Environment: Swift.CustomDebugStringConvertible {
@@ -1190,7 +1190,7 @@ extension WorkSpacesThinClientClientTypes.Environment: Swift.CustomDebugStringCo
         "Environment(activationCode: \(Swift.String(describing: activationCode)), arn: \(Swift.String(describing: arn)), createdAt: \(Swift.String(describing: createdAt)), desiredSoftwareSetId: \(Swift.String(describing: desiredSoftwareSetId)), desktopArn: \(Swift.String(describing: desktopArn)), desktopType: \(Swift.String(describing: desktopType)), id: \(Swift.String(describing: id)), kmsKeyArn: \(Swift.String(describing: kmsKeyArn)), maintenanceWindow: \(Swift.String(describing: maintenanceWindow)), pendingSoftwareSetId: \(Swift.String(describing: pendingSoftwareSetId)), pendingSoftwareSetVersion: \(Swift.String(describing: pendingSoftwareSetVersion)), registeredDevicesCount: \(Swift.String(describing: registeredDevicesCount)), softwareSetComplianceStatus: \(Swift.String(describing: softwareSetComplianceStatus)), softwareSetUpdateMode: \(Swift.String(describing: softwareSetUpdateMode)), softwareSetUpdateSchedule: \(Swift.String(describing: softwareSetUpdateSchedule)), updatedAt: \(Swift.String(describing: updatedAt)), desktopEndpoint: \"CONTENT_REDACTED\", deviceCreationTags: \"CONTENT_REDACTED\", name: \"CONTENT_REDACTED\", tags: \"CONTENT_REDACTED\")"}
 }
 
-public struct GetDeviceInput {
+public struct GetDeviceInput: Swift.Sendable {
     /// The ID of the device for which to return information.
     /// This member is required.
     public var id: Swift.String?
@@ -1203,7 +1203,7 @@ public struct GetDeviceInput {
     }
 }
 
-public struct GetDeviceOutput {
+public struct GetDeviceOutput: Swift.Sendable {
     /// Describes an device.
     public var device: WorkSpacesThinClientClientTypes.Device?
 
@@ -1215,7 +1215,7 @@ public struct GetDeviceOutput {
     }
 }
 
-public struct GetEnvironmentInput {
+public struct GetEnvironmentInput: Swift.Sendable {
     /// The ID of the environment for which to return information.
     /// This member is required.
     public var id: Swift.String?
@@ -1228,7 +1228,7 @@ public struct GetEnvironmentInput {
     }
 }
 
-public struct GetEnvironmentOutput {
+public struct GetEnvironmentOutput: Swift.Sendable {
     /// Describes an environment.
     public var environment: WorkSpacesThinClientClientTypes.Environment?
 
@@ -1240,7 +1240,7 @@ public struct GetEnvironmentOutput {
     }
 }
 
-public struct GetSoftwareSetInput {
+public struct GetSoftwareSetInput: Swift.Sendable {
     /// The ID of the software set for which to return information.
     /// This member is required.
     public var id: Swift.String?
@@ -1254,8 +1254,9 @@ public struct GetSoftwareSetInput {
 }
 
 extension WorkSpacesThinClientClientTypes {
+
     /// Describes software.
-    public struct Software {
+    public struct Software: Swift.Sendable {
         /// The name of the software component.
         public var name: Swift.String?
         /// The version of the software component.
@@ -1270,12 +1271,11 @@ extension WorkSpacesThinClientClientTypes {
             self.version = version
         }
     }
-
 }
 
 extension WorkSpacesThinClientClientTypes {
 
-    public enum SoftwareSetValidationStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SoftwareSetValidationStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case notValidated
         case validated
         case sdkUnknown(Swift.String)
@@ -1303,8 +1303,9 @@ extension WorkSpacesThinClientClientTypes {
 }
 
 extension WorkSpacesThinClientClientTypes {
+
     /// Describes a software set.
-    public struct SoftwareSet {
+    public struct SoftwareSet: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the software set.
         public var arn: Swift.String?
         /// The ID of the software set.
@@ -1343,7 +1344,6 @@ extension WorkSpacesThinClientClientTypes {
             self.version = version
         }
     }
-
 }
 
 extension WorkSpacesThinClientClientTypes.SoftwareSet: Swift.CustomDebugStringConvertible {
@@ -1351,7 +1351,7 @@ extension WorkSpacesThinClientClientTypes.SoftwareSet: Swift.CustomDebugStringCo
         "SoftwareSet(arn: \(Swift.String(describing: arn)), id: \(Swift.String(describing: id)), releasedAt: \(Swift.String(describing: releasedAt)), software: \(Swift.String(describing: software)), supportedUntil: \(Swift.String(describing: supportedUntil)), validationStatus: \(Swift.String(describing: validationStatus)), version: \(Swift.String(describing: version)), tags: \"CONTENT_REDACTED\")"}
 }
 
-public struct GetSoftwareSetOutput {
+public struct GetSoftwareSetOutput: Swift.Sendable {
     /// Describes a software set.
     public var softwareSet: WorkSpacesThinClientClientTypes.SoftwareSet?
 
@@ -1363,7 +1363,7 @@ public struct GetSoftwareSetOutput {
     }
 }
 
-public struct ListDevicesInput {
+public struct ListDevicesInput: Swift.Sendable {
     /// The maximum number of results that are returned per call. You can use nextToken to obtain further pages of results. This is only an upper limit. The actual number of results returned per call might be fewer than the specified maximum.
     public var maxResults: Swift.Int?
     /// If nextToken is returned, there are more results available. The value of nextToken is a unique pagination token for each page. Make the call again using the returned token to retrieve the next page. Keep all other arguments unchanged. Each pagination token expires after 24 hours. Using an expired pagination token will return an HTTP 400 InvalidToken error.
@@ -1379,7 +1379,7 @@ public struct ListDevicesInput {
     }
 }
 
-public struct ListDevicesOutput {
+public struct ListDevicesOutput: Swift.Sendable {
     /// Describes devices.
     public var devices: [WorkSpacesThinClientClientTypes.DeviceSummary]?
     /// If nextToken is returned, there are more results available. The value of nextToken is a unique pagination token for each page. Make the call again using the returned token to retrieve the next page. Keep all other arguments unchanged. Each pagination token expires after 24 hours. Using an expired pagination token will return an HTTP 400 InvalidToken error.
@@ -1395,7 +1395,7 @@ public struct ListDevicesOutput {
     }
 }
 
-public struct ListEnvironmentsInput {
+public struct ListEnvironmentsInput: Swift.Sendable {
     /// The maximum number of results that are returned per call. You can use nextToken to obtain further pages of results. This is only an upper limit. The actual number of results returned per call might be fewer than the specified maximum.
     public var maxResults: Swift.Int?
     /// If nextToken is returned, there are more results available. The value of nextToken is a unique pagination token for each page. Make the call again using the returned token to retrieve the next page. Keep all other arguments unchanged. Each pagination token expires after 24 hours. Using an expired pagination token will return an HTTP 400 InvalidToken error.
@@ -1411,7 +1411,7 @@ public struct ListEnvironmentsInput {
     }
 }
 
-public struct ListEnvironmentsOutput {
+public struct ListEnvironmentsOutput: Swift.Sendable {
     /// Describes environments.
     public var environments: [WorkSpacesThinClientClientTypes.EnvironmentSummary]?
     /// If nextToken is returned, there are more results available. The value of nextToken is a unique pagination token for each page. Make the call again using the returned token to retrieve the next page. Keep all other arguments unchanged. Each pagination token expires after 24 hours. Using an expired pagination token will return an HTTP 400 InvalidToken error.
@@ -1427,7 +1427,7 @@ public struct ListEnvironmentsOutput {
     }
 }
 
-public struct ListSoftwareSetsInput {
+public struct ListSoftwareSetsInput: Swift.Sendable {
     /// The maximum number of results that are returned per call. You can use nextToken to obtain further pages of results. This is only an upper limit. The actual number of results returned per call might be fewer than the specified maximum.
     public var maxResults: Swift.Int?
     /// If nextToken is returned, there are more results available. The value of nextToken is a unique pagination token for each page. Make the call again using the returned token to retrieve the next page. Keep all other arguments unchanged. Each pagination token expires after 24 hours. Using an expired pagination token will return an HTTP 400 InvalidToken error.
@@ -1444,8 +1444,9 @@ public struct ListSoftwareSetsInput {
 }
 
 extension WorkSpacesThinClientClientTypes {
+
     /// Describes a software set.
-    public struct SoftwareSetSummary {
+    public struct SoftwareSetSummary: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the software set.
         public var arn: Swift.String?
         /// The ID of the software set.
@@ -1476,10 +1477,9 @@ extension WorkSpacesThinClientClientTypes {
             self.version = version
         }
     }
-
 }
 
-public struct ListSoftwareSetsOutput {
+public struct ListSoftwareSetsOutput: Swift.Sendable {
     /// If nextToken is returned, there are more results available. The value of nextToken is a unique pagination token for each page. Make the call again using the returned token to retrieve the next page. Keep all other arguments unchanged. Each pagination token expires after 24 hours. Using an expired pagination token will return an HTTP 400 InvalidToken error.
     public var nextToken: Swift.String?
     /// Describes software sets.
@@ -1495,7 +1495,7 @@ public struct ListSoftwareSetsOutput {
     }
 }
 
-public struct ListTagsForResourceInput {
+public struct ListTagsForResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the resource for which you want to retrieve tags.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -1508,7 +1508,7 @@ public struct ListTagsForResourceInput {
     }
 }
 
-public struct ListTagsForResourceOutput {
+public struct ListTagsForResourceOutput: Swift.Sendable {
     /// A map of the key-value pairs for the tag or tags assigned to the specified resource.
     public var tags: [Swift.String: Swift.String]?
 
@@ -1525,7 +1525,7 @@ extension ListTagsForResourceOutput: Swift.CustomDebugStringConvertible {
         "ListTagsForResourceOutput(tags: \"CONTENT_REDACTED\")"}
 }
 
-public struct TagResourceInput {
+public struct TagResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the resource that you want to tag.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -1548,12 +1548,12 @@ extension TagResourceInput: Swift.CustomDebugStringConvertible {
         "TagResourceInput(resourceArn: \(Swift.String(describing: resourceArn)), tags: \"CONTENT_REDACTED\")"}
 }
 
-public struct TagResourceOutput {
+public struct TagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UntagResourceInput {
+public struct UntagResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the resource that you want to untag.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -1576,12 +1576,12 @@ extension UntagResourceInput: Swift.CustomDebugStringConvertible {
         "UntagResourceInput(resourceArn: \(Swift.String(describing: resourceArn)), tagKeys: \"CONTENT_REDACTED\")"}
 }
 
-public struct UntagResourceOutput {
+public struct UntagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdateDeviceInput {
+public struct UpdateDeviceInput: Swift.Sendable {
     /// The ID of the software set to apply.
     public var desiredSoftwareSetId: Swift.String?
     /// The ID of the device to update.
@@ -1611,7 +1611,7 @@ extension UpdateDeviceInput: Swift.CustomDebugStringConvertible {
         "UpdateDeviceInput(desiredSoftwareSetId: \(Swift.String(describing: desiredSoftwareSetId)), id: \(Swift.String(describing: id)), softwareSetUpdateSchedule: \(Swift.String(describing: softwareSetUpdateSchedule)), name: \"CONTENT_REDACTED\")"}
 }
 
-public struct UpdateDeviceOutput {
+public struct UpdateDeviceOutput: Swift.Sendable {
     /// Describes a device.
     public var device: WorkSpacesThinClientClientTypes.DeviceSummary?
 
@@ -1623,7 +1623,7 @@ public struct UpdateDeviceOutput {
     }
 }
 
-public struct UpdateEnvironmentInput {
+public struct UpdateEnvironmentInput: Swift.Sendable {
     /// The ID of the software set to apply.
     public var desiredSoftwareSetId: Swift.String?
     /// The Amazon Resource Name (ARN) of the desktop to stream from Amazon WorkSpaces, WorkSpaces Web, or AppStream 2.0.
@@ -1673,7 +1673,7 @@ extension UpdateEnvironmentInput: Swift.CustomDebugStringConvertible {
         "UpdateEnvironmentInput(desiredSoftwareSetId: \(Swift.String(describing: desiredSoftwareSetId)), desktopArn: \(Swift.String(describing: desktopArn)), id: \(Swift.String(describing: id)), maintenanceWindow: \(Swift.String(describing: maintenanceWindow)), softwareSetUpdateMode: \(Swift.String(describing: softwareSetUpdateMode)), softwareSetUpdateSchedule: \(Swift.String(describing: softwareSetUpdateSchedule)), desktopEndpoint: \"CONTENT_REDACTED\", deviceCreationTags: \"CONTENT_REDACTED\", name: \"CONTENT_REDACTED\")"}
 }
 
-public struct UpdateEnvironmentOutput {
+public struct UpdateEnvironmentOutput: Swift.Sendable {
     /// Describes an environment.
     public var environment: WorkSpacesThinClientClientTypes.EnvironmentSummary?
 
@@ -1685,7 +1685,7 @@ public struct UpdateEnvironmentOutput {
     }
 }
 
-public struct UpdateSoftwareSetInput {
+public struct UpdateSoftwareSetInput: Swift.Sendable {
     /// The ID of the software set to update.
     /// This member is required.
     public var id: Swift.String?
@@ -1703,7 +1703,7 @@ public struct UpdateSoftwareSetInput {
     }
 }
 
-public struct UpdateSoftwareSetOutput {
+public struct UpdateSoftwareSetOutput: Swift.Sendable {
 
     public init() { }
 }

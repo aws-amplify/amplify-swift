@@ -35,7 +35,7 @@ import struct SmithyHTTPAPI.Headers
 
 extension CodeGuruProfilerClientTypes {
 
-    public enum ActionGroup: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ActionGroup: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         /// Permission group type for Agent APIs - ConfigureAgent, PostAgentProfile
         case agentPermissions
         case sdkUnknown(Swift.String)
@@ -212,7 +212,7 @@ public struct ValidationException: ClientRuntime.ModeledError, AWSClientRuntime.
 
 extension CodeGuruProfilerClientTypes {
 
-    public enum EventPublisher: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum EventPublisher: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         /// Notifications for Anomaly Detection
         case anomalyDetection
         case sdkUnknown(Swift.String)
@@ -238,8 +238,9 @@ extension CodeGuruProfilerClientTypes {
 }
 
 extension CodeGuruProfilerClientTypes {
+
     /// Notification medium for users to get alerted for events that occur in application profile. We support SNS topic as a notification channel.
-    public struct Channel {
+    public struct Channel: Swift.Sendable {
         /// List of publishers for different type of events that may be detected in an application from the profile. Anomaly detection is the only event publisher in Profiler.
         /// This member is required.
         public var eventPublishers: [CodeGuruProfilerClientTypes.EventPublisher]?
@@ -260,11 +261,10 @@ extension CodeGuruProfilerClientTypes {
             self.uri = uri
         }
     }
-
 }
 
 /// The structure representing the AddNotificationChannelsRequest.
-public struct AddNotificationChannelsInput {
+public struct AddNotificationChannelsInput: Swift.Sendable {
     /// One or 2 channels to report to when anomalies are detected.
     /// This member is required.
     public var channels: [CodeGuruProfilerClientTypes.Channel]?
@@ -283,8 +283,9 @@ public struct AddNotificationChannelsInput {
 }
 
 extension CodeGuruProfilerClientTypes {
+
     /// The configuration for notifications stored for each profiling group. This includes up to to two channels and a list of event publishers associated with each channel.
-    public struct NotificationConfiguration {
+    public struct NotificationConfiguration: Swift.Sendable {
         /// List of up to two channels to be used for sending notifications for events detected from the application profile.
         public var channels: [CodeGuruProfilerClientTypes.Channel]?
 
@@ -295,11 +296,10 @@ extension CodeGuruProfilerClientTypes {
             self.channels = channels
         }
     }
-
 }
 
 /// The structure representing the AddNotificationChannelsResponse.
-public struct AddNotificationChannelsOutput {
+public struct AddNotificationChannelsOutput: Swift.Sendable {
     /// The new notification configuration for this profiling group.
     public var notificationConfiguration: CodeGuruProfilerClientTypes.NotificationConfiguration?
 
@@ -313,7 +313,7 @@ public struct AddNotificationChannelsOutput {
 
 extension CodeGuruProfilerClientTypes {
 
-    public enum AgentParameterField: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AgentParameterField: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         /// Maximum stack depth to be captured by the CodeGuru Profiler.
         case maxStackDepth
         /// Percentage of memory to be used by CodeGuru profiler. Minimum of 30MB is required for the agent.
@@ -355,8 +355,9 @@ extension CodeGuruProfilerClientTypes {
 }
 
 extension CodeGuruProfilerClientTypes {
+
     /// The response of [ConfigureAgent](https://docs.aws.amazon.com/codeguru/latest/profiler-api/API_ConfigureAgent.html) that specifies if an agent profiles or not and for how long to return profiling data.
-    public struct AgentConfiguration {
+    public struct AgentConfiguration: Swift.Sendable {
         /// Parameters used by the profiler. The valid parameters are:
         ///
         /// * MaxStackDepth - The maximum depth of the stacks in the code that is represented in the profile. For example, if CodeGuru Profiler finds a method A, which calls method B, which calls method C, which calls method D, then the depth is 4. If the maxDepth is set to 2, then the profiler evaluates A and B.
@@ -387,12 +388,12 @@ extension CodeGuruProfilerClientTypes {
             self.shouldProfile = shouldProfile
         }
     }
-
 }
 
 extension CodeGuruProfilerClientTypes {
+
     /// Specifies whether profiling is enabled or disabled for a profiling group. It is used by [ConfigureAgent](https://docs.aws.amazon.com/codeguru/latest/profiler-api/API_ConfigureAgent.html) to enable or disable profiling for a profiling group.
-    public struct AgentOrchestrationConfig {
+    public struct AgentOrchestrationConfig: Swift.Sendable {
         /// A Boolean that specifies whether the profiling agent collects profiling data or not. Set to true to enable profiling.
         /// This member is required.
         public var profilingEnabled: Swift.Bool?
@@ -404,12 +405,11 @@ extension CodeGuruProfilerClientTypes {
             self.profilingEnabled = profilingEnabled
         }
     }
-
 }
 
 extension CodeGuruProfilerClientTypes {
 
-    public enum AggregationPeriod: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AggregationPeriod: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         /// Period of one day.
         case p1d
         /// Period of one hour.
@@ -443,8 +443,9 @@ extension CodeGuruProfilerClientTypes {
 }
 
 extension CodeGuruProfilerClientTypes {
+
     /// Specifies the aggregation period and aggregation start time for an aggregated profile. An aggregated profile is used to collect posted agent profiles during an aggregation period. There are three possible aggregation periods (1 day, 1 hour, or 5 minutes).
-    public struct AggregatedProfileTime {
+    public struct AggregatedProfileTime: Swift.Sendable {
         /// The aggregation period. This indicates the period during which an aggregation profile collects posted agent profiles for a profiling group. Use one of three valid durations that are specified using the ISO 8601 format.
         ///
         /// * P1D — 1 day
@@ -465,12 +466,11 @@ extension CodeGuruProfilerClientTypes {
             self.start = start
         }
     }
-
 }
 
 extension CodeGuruProfilerClientTypes {
 
-    public enum FeedbackType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum FeedbackType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         /// Profiler recommendation flagged as not useful.
         case negative
         /// Profiler recommendation flagged as useful.
@@ -500,8 +500,9 @@ extension CodeGuruProfilerClientTypes {
 }
 
 extension CodeGuruProfilerClientTypes {
+
     /// Feedback that can be submitted for each instance of an anomaly by the user. Feedback is be used for improvements in generating recommendations for the application.
-    public struct UserFeedback {
+    public struct UserFeedback: Swift.Sendable {
         /// Optional Positive or Negative feedback submitted by the user about whether the recommendation is useful or not.
         /// This member is required.
         public var type: CodeGuruProfilerClientTypes.FeedbackType?
@@ -513,12 +514,12 @@ extension CodeGuruProfilerClientTypes {
             self.type = type
         }
     }
-
 }
 
 extension CodeGuruProfilerClientTypes {
+
     /// The specific duration in which the metric is flagged as anomalous.
-    public struct AnomalyInstance {
+    public struct AnomalyInstance: Swift.Sendable {
         /// The end time of the period during which the metric is flagged as anomalous. This is specified using the ISO 8601 format. For example, 2020-06-01T13:15:02.001Z represents 1 millisecond past June 1, 2020 1:15:02 PM UTC.
         public var endTime: Foundation.Date?
         /// The universally unique identifier (UUID) of an instance of an anomaly in a metric.
@@ -543,12 +544,11 @@ extension CodeGuruProfilerClientTypes {
             self.userFeedback = userFeedback
         }
     }
-
 }
 
 extension CodeGuruProfilerClientTypes {
 
-    public enum MetricType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum MetricType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         /// Metric value aggregated for all instances of a frame name in a profile relative to the root frame.
         case aggregatedrelativetotaltime
         case sdkUnknown(Swift.String)
@@ -574,8 +574,9 @@ extension CodeGuruProfilerClientTypes {
 }
 
 extension CodeGuruProfilerClientTypes {
+
     /// Details about the metric that the analysis used when it detected the anomaly. The metric what is analyzed to create recommendations. It includes the name of the frame that was analyzed and the type and thread states used to derive the metric value for that frame.
-    public struct Metric {
+    public struct Metric: Swift.Sendable {
         /// The name of the method that appears as a frame in any stack in a profile.
         /// This member is required.
         public var frameName: Swift.String?
@@ -597,12 +598,12 @@ extension CodeGuruProfilerClientTypes {
             self.type = type
         }
     }
-
 }
 
 extension CodeGuruProfilerClientTypes {
+
     /// Details about an anomaly in a specific metric of application profile. The anomaly is detected using analysis of the metric data over a period of time.
-    public struct Anomaly {
+    public struct Anomaly: Swift.Sendable {
         /// A list of the instances of the detected anomalies during the requested period.
         /// This member is required.
         public var instances: [CodeGuruProfilerClientTypes.AnomalyInstance]?
@@ -624,12 +625,12 @@ extension CodeGuruProfilerClientTypes {
             self.reason = reason
         }
     }
-
 }
 
 extension CodeGuruProfilerClientTypes {
+
     /// The frame name, metric type, and thread states. These are used to derive the value of the metric for the frame.
-    public struct FrameMetric {
+    public struct FrameMetric: Swift.Sendable {
         /// Name of the method common across the multiple occurrences of a frame in an application profile.
         /// This member is required.
         public var frameName: Swift.String?
@@ -651,11 +652,10 @@ extension CodeGuruProfilerClientTypes {
             self.type = type
         }
     }
-
 }
 
 /// The structure representing the BatchGetFrameMetricDataRequest.
-public struct BatchGetFrameMetricDataInput {
+public struct BatchGetFrameMetricDataInput: Swift.Sendable {
     /// The end time of the time period for the returned time series values. This is specified using the ISO 8601 format. For example, 2020-06-01T13:15:02.001Z represents 1 millisecond past June 1, 2020 1:15:02 PM UTC.
     public var endTime: Foundation.Date?
     /// The details of the metrics that are used to request a time series of values. The metric includes the name of the frame, the aggregation type to calculate the metric value for the frame, and the thread states to use to get the count for the metric value of the frame.
@@ -695,8 +695,9 @@ public struct BatchGetFrameMetricDataInput {
 }
 
 extension CodeGuruProfilerClientTypes {
+
     /// A data type that contains a Timestamp object. This is specified using the ISO 8601 format. For example, 2020-06-01T13:15:02.001Z represents 1 millisecond past June 1, 2020 1:15:02 PM UTC.
-    public struct TimestampStructure {
+    public struct TimestampStructure: Swift.Sendable {
         /// A Timestamp. This is specified using the ISO 8601 format. For example, 2020-06-01T13:15:02.001Z represents 1 millisecond past June 1, 2020 1:15:02 PM UTC.
         /// This member is required.
         public var value: Foundation.Date?
@@ -708,12 +709,12 @@ extension CodeGuruProfilerClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension CodeGuruProfilerClientTypes {
+
     /// Information about a frame metric and its values.
-    public struct FrameMetricDatum {
+    public struct FrameMetricDatum: Swift.Sendable {
         /// The frame name, metric type, and thread states. These are used to derive the value of the metric for the frame.
         /// This member is required.
         public var frameMetric: CodeGuruProfilerClientTypes.FrameMetric?
@@ -730,11 +731,10 @@ extension CodeGuruProfilerClientTypes {
             self.values = values
         }
     }
-
 }
 
 /// The structure representing the BatchGetFrameMetricDataResponse.
-public struct BatchGetFrameMetricDataOutput {
+public struct BatchGetFrameMetricDataOutput: Swift.Sendable {
     /// The end time of the time period for the returned time series values. This is specified using the ISO 8601 format. For example, 2020-06-01T13:15:02.001Z represents 1 millisecond past June 1, 2020 1:15:02 PM UTC.
     /// This member is required.
     public var endTime: Foundation.Date?
@@ -779,7 +779,7 @@ public struct BatchGetFrameMetricDataOutput {
 }
 
 /// The structure representing the GetFindingsReportAccountSummaryRequest.
-public struct GetFindingsReportAccountSummaryInput {
+public struct GetFindingsReportAccountSummaryInput: Swift.Sendable {
     /// A Boolean value indicating whether to only return reports from daily profiles. If set to True, only analysis data from daily profiles is returned. If set to False, analysis data is returned from smaller time windows (for example, one hour).
     public var dailyReportsOnly: Swift.Bool?
     /// The maximum number of results returned by  GetFindingsReportAccountSummary in paginated output. When this parameter is used, GetFindingsReportAccountSummary only returns maxResults results in a single page along with a nextToken response element. The remaining results of the initial request can be seen by sending another GetFindingsReportAccountSummary request with the returned nextToken value.
@@ -800,8 +800,9 @@ public struct GetFindingsReportAccountSummaryInput {
 }
 
 extension CodeGuruProfilerClientTypes {
+
     /// Information about potential recommendations that might be created from the analysis of profiling data.
-    public struct FindingsReportSummary {
+    public struct FindingsReportSummary: Swift.Sendable {
         /// The universally unique identifier (UUID) of the recommendation report.
         public var id: Swift.String?
         /// The end time of the period during which the metric is flagged as anomalous. This is specified using the ISO 8601 format. For example, 2020-06-01T13:15:02.001Z represents 1 millisecond past June 1, 2020 1:15:02 PM UTC.
@@ -828,11 +829,10 @@ extension CodeGuruProfilerClientTypes {
             self.totalNumberOfFindings = totalNumberOfFindings
         }
     }
-
 }
 
 /// The structure representing the GetFindingsReportAccountSummaryResponse.
-public struct GetFindingsReportAccountSummaryOutput {
+public struct GetFindingsReportAccountSummaryOutput: Swift.Sendable {
     /// The nextToken value to include in a future GetFindingsReportAccountSummary request. When the results of a GetFindingsReportAccountSummary request exceed maxResults, this value can be used to retrieve the next page of results. This value is null when there are no more results to return.
     public var nextToken: Swift.String?
     /// The return list of [FindingsReportSummary](https://docs.aws.amazon.com/codeguru/latest/profiler-api/API_FindingsReportSummary.html) objects taht contain summaries of analysis results for all profiling groups in your AWS account.
@@ -849,7 +849,7 @@ public struct GetFindingsReportAccountSummaryOutput {
     }
 }
 
-public struct ListTagsForResourceInput {
+public struct ListTagsForResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the resource that contains the tags to return.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -862,7 +862,7 @@ public struct ListTagsForResourceInput {
     }
 }
 
-public struct ListTagsForResourceOutput {
+public struct ListTagsForResourceOutput: Swift.Sendable {
     /// The list of tags assigned to the specified resource. This is the list of tags returned in the response.
     public var tags: [Swift.String: Swift.String]?
 
@@ -876,7 +876,7 @@ public struct ListTagsForResourceOutput {
 
 extension CodeGuruProfilerClientTypes {
 
-    public enum MetadataField: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum MetadataField: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         /// Unique identifier for the agent instance.
         case agentId
         /// AWS requestId of the Lambda invocation.
@@ -934,7 +934,7 @@ extension CodeGuruProfilerClientTypes {
 }
 
 /// The structure representing the configureAgentRequest.
-public struct ConfigureAgentInput {
+public struct ConfigureAgentInput: Swift.Sendable {
     /// A universally unique identifier (UUID) for a profiling instance. For example, if the profiling instance is an Amazon EC2 instance, it is the instance ID. If it is an AWS Fargate container, it is the container's task ID.
     public var fleetInstanceId: Swift.String?
     /// Metadata captured about the compute platform the agent is running on. It includes information about sampling and reporting. The valid fields are:
@@ -974,7 +974,7 @@ public struct ConfigureAgentInput {
 }
 
 /// The structure representing the configureAgentResponse.
-public struct ConfigureAgentOutput {
+public struct ConfigureAgentOutput: Swift.Sendable {
     /// An [AgentConfiguration](https://docs.aws.amazon.com/codeguru/latest/profiler-api/API_AgentConfiguration.html) object that specifies if an agent profiles or not and for how long to return profiling data.
     /// This member is required.
     public var configuration: CodeGuruProfilerClientTypes.AgentConfiguration?
@@ -989,7 +989,7 @@ public struct ConfigureAgentOutput {
 
 extension CodeGuruProfilerClientTypes {
 
-    public enum ComputePlatform: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ComputePlatform: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         /// Compute platform meant to used for AWS Lambda.
         case awslambda
         /// Compute platform meant to used for all usecases (like EC2, Fargate, physical servers etc.) but AWS Lambda.
@@ -1019,7 +1019,7 @@ extension CodeGuruProfilerClientTypes {
 }
 
 /// The structure representing the createProfiliingGroupRequest.
-public struct CreateProfilingGroupInput {
+public struct CreateProfilingGroupInput: Swift.Sendable {
     /// Specifies whether profiling is enabled or disabled for the created profiling group.
     public var agentOrchestrationConfig: CodeGuruProfilerClientTypes.AgentOrchestrationConfig?
     /// Amazon CodeGuru Profiler uses this universally unique identifier (UUID) to prevent the accidental creation of duplicate profiling groups if there are failures and retries.
@@ -1050,8 +1050,9 @@ public struct CreateProfilingGroupInput {
 }
 
 extension CodeGuruProfilerClientTypes {
+
     /// Profiling status includes information about the last time a profile agent pinged back, the last time a profile was received, and the aggregation period and start time for the most recent aggregated profile.
-    public struct ProfilingStatus {
+    public struct ProfilingStatus: Swift.Sendable {
         /// The date and time when the profiling agent most recently pinged back. Specify using the ISO 8601 format. For example, 2020-06-01T13:15:02.001Z represents 1 millisecond past June 1, 2020 1:15:02 PM UTC.
         public var latestAgentOrchestratedAt: Foundation.Date?
         /// The date and time when the most recent profile was received. Specify using the ISO 8601 format. For example, 2020-06-01T13:15:02.001Z represents 1 millisecond past June 1, 2020 1:15:02 PM UTC.
@@ -1070,12 +1071,12 @@ extension CodeGuruProfilerClientTypes {
             self.latestAggregatedProfile = latestAggregatedProfile
         }
     }
-
 }
 
 extension CodeGuruProfilerClientTypes {
+
     /// Contains information about a profiling group.
-    public struct ProfilingGroupDescription {
+    public struct ProfilingGroupDescription: Swift.Sendable {
         /// An [AgentOrchestrationConfig](https://docs.aws.amazon.com/codeguru/latest/profiler-api/API_AgentOrchestrationConfig.html) object that indicates if the profiling group is enabled for profiled or not.
         public var agentOrchestrationConfig: CodeGuruProfilerClientTypes.AgentOrchestrationConfig?
         /// The Amazon Resource Name (ARN) identifying the profiling group resource.
@@ -1114,11 +1115,10 @@ extension CodeGuruProfilerClientTypes {
             self.updatedAt = updatedAt
         }
     }
-
 }
 
 /// The structure representing the createProfilingGroupResponse.
-public struct CreateProfilingGroupOutput {
+public struct CreateProfilingGroupOutput: Swift.Sendable {
     /// The returned [ProfilingGroupDescription](https://docs.aws.amazon.com/codeguru/latest/profiler-api/API_ProfilingGroupDescription.html) object that contains information about the created profiling group.
     /// This member is required.
     public var profilingGroup: CodeGuruProfilerClientTypes.ProfilingGroupDescription?
@@ -1132,7 +1132,7 @@ public struct CreateProfilingGroupOutput {
 }
 
 /// The structure representing the deleteProfilingGroupRequest.
-public struct DeleteProfilingGroupInput {
+public struct DeleteProfilingGroupInput: Swift.Sendable {
     /// The name of the profiling group to delete.
     /// This member is required.
     public var profilingGroupName: Swift.String?
@@ -1146,13 +1146,13 @@ public struct DeleteProfilingGroupInput {
 }
 
 /// The structure representing the deleteProfilingGroupResponse.
-public struct DeleteProfilingGroupOutput {
+public struct DeleteProfilingGroupOutput: Swift.Sendable {
 
     public init() { }
 }
 
 /// The structure representing the describeProfilingGroupRequest.
-public struct DescribeProfilingGroupInput {
+public struct DescribeProfilingGroupInput: Swift.Sendable {
     /// The name of the profiling group to get information about.
     /// This member is required.
     public var profilingGroupName: Swift.String?
@@ -1166,7 +1166,7 @@ public struct DescribeProfilingGroupInput {
 }
 
 /// The structure representing the describeProfilingGroupResponse.
-public struct DescribeProfilingGroupOutput {
+public struct DescribeProfilingGroupOutput: Swift.Sendable {
     /// The returned [ProfilingGroupDescription](https://docs.aws.amazon.com/codeguru/latest/profiler-api/API_ProfilingGroupDescription.html) object that contains information about the requested profiling group.
     /// This member is required.
     public var profilingGroup: CodeGuruProfilerClientTypes.ProfilingGroupDescription?
@@ -1180,7 +1180,7 @@ public struct DescribeProfilingGroupOutput {
 }
 
 /// The structure representing the GetNotificationConfigurationRequest.
-public struct GetNotificationConfigurationInput {
+public struct GetNotificationConfigurationInput: Swift.Sendable {
     /// The name of the profiling group we want to get the notification configuration for.
     /// This member is required.
     public var profilingGroupName: Swift.String?
@@ -1194,7 +1194,7 @@ public struct GetNotificationConfigurationInput {
 }
 
 /// The structure representing the GetNotificationConfigurationResponse.
-public struct GetNotificationConfigurationOutput {
+public struct GetNotificationConfigurationOutput: Swift.Sendable {
     /// The current notification configuration for this profiling group.
     /// This member is required.
     public var notificationConfiguration: CodeGuruProfilerClientTypes.NotificationConfiguration?
@@ -1208,7 +1208,7 @@ public struct GetNotificationConfigurationOutput {
 }
 
 /// The structure representing the getPolicyRequest.
-public struct GetPolicyInput {
+public struct GetPolicyInput: Swift.Sendable {
     /// The name of the profiling group.
     /// This member is required.
     public var profilingGroupName: Swift.String?
@@ -1222,7 +1222,7 @@ public struct GetPolicyInput {
 }
 
 /// The structure representing the getPolicyResponse.
-public struct GetPolicyOutput {
+public struct GetPolicyOutput: Swift.Sendable {
     /// The JSON-formatted resource-based policy attached to the ProfilingGroup.
     /// This member is required.
     public var policy: Swift.String?
@@ -1241,7 +1241,7 @@ public struct GetPolicyOutput {
 }
 
 /// The structure representing the getProfileRequest.
-public struct GetProfileInput {
+public struct GetProfileInput: Swift.Sendable {
     /// The format of the returned profiling data. The format maps to the Accept and Content-Type headers of the HTTP request. You can specify one of the following: or the default .
     ///
     /// * application/json — standard JSON format
@@ -1279,7 +1279,7 @@ public struct GetProfileInput {
 }
 
 /// The structure representing the getProfileResponse.
-public struct GetProfileOutput {
+public struct GetProfileOutput: Swift.Sendable {
     /// The content encoding of the profile.
     public var contentEncoding: Swift.String?
     /// The content type of the profile in the payload. It is either application/json or the default application/x-amzn-ion.
@@ -1302,7 +1302,7 @@ public struct GetProfileOutput {
 }
 
 /// The structure representing the GetRecommendationsRequest.
-public struct GetRecommendationsInput {
+public struct GetRecommendationsInput: Swift.Sendable {
     /// The start time of the profile to get analysis data about. You must specify startTime and endTime. This is specified using the ISO 8601 format. For example, 2020-06-01T13:15:02.001Z represents 1 millisecond past June 1, 2020 1:15:02 PM UTC.
     /// This member is required.
     public var endTime: Foundation.Date?
@@ -1352,8 +1352,9 @@ public struct GetRecommendationsInput {
 }
 
 extension CodeGuruProfilerClientTypes {
+
     /// A set of rules used to make a recommendation during an analysis.
-    public struct Pattern {
+    public struct Pattern: Swift.Sendable {
         /// A list of the different counters used to determine if there is a match.
         public var countersToAggregate: [Swift.String]?
         /// The description of the recommendation. This explains a potential inefficiency in a profiled application.
@@ -1388,12 +1389,12 @@ extension CodeGuruProfilerClientTypes {
             self.thresholdPercent = thresholdPercent
         }
     }
-
 }
 
 extension CodeGuruProfilerClientTypes {
+
     /// The part of a profile that contains a recommendation found during analysis.
-    public struct Match {
+    public struct Match: Swift.Sendable {
         /// The location in the profiling graph that contains a recommendation found during analysis.
         public var frameAddress: Swift.String?
         /// The target frame that triggered a match.
@@ -1412,12 +1413,12 @@ extension CodeGuruProfilerClientTypes {
             self.thresholdBreachValue = thresholdBreachValue
         }
     }
-
 }
 
 extension CodeGuruProfilerClientTypes {
+
     /// A potential improvement that was found from analyzing the profiling data.
-    public struct Recommendation {
+    public struct Recommendation: Swift.Sendable {
         /// How many different places in the profile graph triggered a match.
         /// This member is required.
         public var allMatchesCount: Swift.Int?
@@ -1454,11 +1455,10 @@ extension CodeGuruProfilerClientTypes {
             self.topMatches = topMatches
         }
     }
-
 }
 
 /// The structure representing the GetRecommendationsResponse.
-public struct GetRecommendationsOutput {
+public struct GetRecommendationsOutput: Swift.Sendable {
     /// The list of anomalies that the analysis has found for this profile.
     /// This member is required.
     public var anomalies: [CodeGuruProfilerClientTypes.Anomaly]?
@@ -1492,7 +1492,7 @@ public struct GetRecommendationsOutput {
 }
 
 /// The structure representing the ListFindingsReportsRequest.
-public struct ListFindingsReportsInput {
+public struct ListFindingsReportsInput: Swift.Sendable {
     /// A Boolean value indicating whether to only return reports from daily profiles. If set to True, only analysis data from daily profiles is returned. If set to False, analysis data is returned from smaller time windows (for example, one hour).
     public var dailyReportsOnly: Swift.Bool?
     /// The end time of the profile to get analysis data about. You must specify startTime and endTime. This is specified using the ISO 8601 format. For example, 2020-06-01T13:15:02.001Z represents 1 millisecond past June 1, 2020 1:15:02 PM UTC.
@@ -1528,7 +1528,7 @@ public struct ListFindingsReportsInput {
 }
 
 /// The structure representing the ListFindingsReportsResponse.
-public struct ListFindingsReportsOutput {
+public struct ListFindingsReportsOutput: Swift.Sendable {
     /// The list of analysis results summaries.
     /// This member is required.
     public var findingsReportSummaries: [CodeGuruProfilerClientTypes.FindingsReportSummary]?
@@ -1547,7 +1547,7 @@ public struct ListFindingsReportsOutput {
 
 extension CodeGuruProfilerClientTypes {
 
-    public enum OrderBy: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum OrderBy: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         /// Order by timestamp in ascending order.
         case timestampAscending
         /// Order by timestamp in descending order.
@@ -1577,7 +1577,7 @@ extension CodeGuruProfilerClientTypes {
 }
 
 /// The structure representing the listProfileTimesRequest.
-public struct ListProfileTimesInput {
+public struct ListProfileTimesInput: Swift.Sendable {
     /// The end time of the time range from which to list the profiles.
     /// This member is required.
     public var endTime: Foundation.Date?
@@ -1624,8 +1624,9 @@ public struct ListProfileTimesInput {
 }
 
 extension CodeGuruProfilerClientTypes {
+
     /// Contains the start time of a profile.
-    public struct ProfileTime {
+    public struct ProfileTime: Swift.Sendable {
         /// The start time of a profile. It is specified using the ISO 8601 format. For example, 2020-06-01T13:15:02.001Z represents 1 millisecond past June 1, 2020 1:15:02 PM UTC.
         public var start: Foundation.Date?
 
@@ -1636,11 +1637,10 @@ extension CodeGuruProfilerClientTypes {
             self.start = start
         }
     }
-
 }
 
 /// The structure representing the listProfileTimesResponse.
-public struct ListProfileTimesOutput {
+public struct ListProfileTimesOutput: Swift.Sendable {
     /// The nextToken value to include in a future ListProfileTimes request. When the results of a ListProfileTimes request exceed maxResults, this value can be used to retrieve the next page of results. This value is null when there are no more results to return.
     public var nextToken: Swift.String?
     /// The list of start times of the available profiles for the aggregation period in the specified time range.
@@ -1658,7 +1658,7 @@ public struct ListProfileTimesOutput {
 }
 
 /// The structure representing the listProfilingGroupsRequest.
-public struct ListProfilingGroupsInput {
+public struct ListProfilingGroupsInput: Swift.Sendable {
     /// A Boolean value indicating whether to include a description. If true, then a list of [ProfilingGroupDescription](https://docs.aws.amazon.com/codeguru/latest/profiler-api/API_ProfilingGroupDescription.html) objects that contain detailed information about profiling groups is returned. If false, then a list of profiling group names is returned.
     public var includeDescription: Swift.Bool?
     /// The maximum number of profiling groups results returned by ListProfilingGroups in paginated output. When this parameter is used, ListProfilingGroups only returns maxResults results in a single page along with a nextToken response element. The remaining results of the initial request can be seen by sending another ListProfilingGroups request with the returned nextToken value.
@@ -1679,7 +1679,7 @@ public struct ListProfilingGroupsInput {
 }
 
 /// The structure representing the listProfilingGroupsResponse.
-public struct ListProfilingGroupsOutput {
+public struct ListProfilingGroupsOutput: Swift.Sendable {
     /// The nextToken value to include in a future ListProfilingGroups request. When the results of a ListProfilingGroups request exceed maxResults, this value can be used to retrieve the next page of results. This value is null when there are no more results to return.
     public var nextToken: Swift.String?
     /// A returned list of profiling group names. A list of the names is returned only if includeDescription is false, otherwise a list of [ProfilingGroupDescription](https://docs.aws.amazon.com/codeguru/latest/profiler-api/API_ProfilingGroupDescription.html) objects is returned.
@@ -1701,7 +1701,7 @@ public struct ListProfilingGroupsOutput {
 }
 
 /// The structure representing the postAgentProfileRequest.
-public struct PostAgentProfileInput {
+public struct PostAgentProfileInput: Swift.Sendable {
     /// The submitted profiling data.
     /// This member is required.
     public var agentProfile: Foundation.Data?
@@ -1733,13 +1733,13 @@ public struct PostAgentProfileInput {
 }
 
 /// The structure representing the postAgentProfileResponse.
-public struct PostAgentProfileOutput {
+public struct PostAgentProfileOutput: Swift.Sendable {
 
     public init() { }
 }
 
 /// The structure representing the putPermissionRequest.
-public struct PutPermissionInput {
+public struct PutPermissionInput: Swift.Sendable {
     /// Specifies an action group that contains permissions to add to a profiling group resource. One action group is supported, agentPermissions, which grants permission to perform actions required by the profiling agent, ConfigureAgent and PostAgentProfile permissions.
     /// This member is required.
     public var actionGroup: CodeGuruProfilerClientTypes.ActionGroup?
@@ -1767,7 +1767,7 @@ public struct PutPermissionInput {
 }
 
 /// The structure representing the putPermissionResponse.
-public struct PutPermissionOutput {
+public struct PutPermissionOutput: Swift.Sendable {
     /// The JSON-formatted resource-based policy on the profiling group that includes the added permissions.
     /// This member is required.
     public var policy: Swift.String?
@@ -1786,7 +1786,7 @@ public struct PutPermissionOutput {
 }
 
 /// The structure representing the RemoveNotificationChannelRequest.
-public struct RemoveNotificationChannelInput {
+public struct RemoveNotificationChannelInput: Swift.Sendable {
     /// The id of the channel that we want to stop receiving notifications.
     /// This member is required.
     public var channelId: Swift.String?
@@ -1805,7 +1805,7 @@ public struct RemoveNotificationChannelInput {
 }
 
 /// The structure representing the RemoveNotificationChannelResponse.
-public struct RemoveNotificationChannelOutput {
+public struct RemoveNotificationChannelOutput: Swift.Sendable {
     /// The new notification configuration for this profiling group.
     public var notificationConfiguration: CodeGuruProfilerClientTypes.NotificationConfiguration?
 
@@ -1818,7 +1818,7 @@ public struct RemoveNotificationChannelOutput {
 }
 
 /// The structure representing the removePermissionRequest.
-public struct RemovePermissionInput {
+public struct RemovePermissionInput: Swift.Sendable {
     /// Specifies an action group that contains the permissions to remove from a profiling group's resource-based policy. One action group is supported, agentPermissions, which grants ConfigureAgent and PostAgentProfile permissions.
     /// This member is required.
     public var actionGroup: CodeGuruProfilerClientTypes.ActionGroup?
@@ -1842,7 +1842,7 @@ public struct RemovePermissionInput {
 }
 
 /// The structure representing the removePermissionResponse.
-public struct RemovePermissionOutput {
+public struct RemovePermissionOutput: Swift.Sendable {
     /// The JSON-formatted resource-based policy on the profiling group after the specified permissions were removed.
     /// This member is required.
     public var policy: Swift.String?
@@ -1861,7 +1861,7 @@ public struct RemovePermissionOutput {
 }
 
 /// The structure representing the SubmitFeedbackRequest.
-public struct SubmitFeedbackInput {
+public struct SubmitFeedbackInput: Swift.Sendable {
     /// The universally unique identifier (UUID) of the [AnomalyInstance](https://docs.aws.amazon.com/codeguru/latest/profiler-api/API_AnomalyInstance.html) object that is included in the analysis data.
     /// This member is required.
     public var anomalyInstanceId: Swift.String?
@@ -1889,13 +1889,13 @@ public struct SubmitFeedbackInput {
 }
 
 /// The structure representing the SubmitFeedbackResponse.
-public struct SubmitFeedbackOutput {
+public struct SubmitFeedbackOutput: Swift.Sendable {
 
     public init() { }
 }
 
 /// The structure representing the updateProfilingGroupRequest.
-public struct UpdateProfilingGroupInput {
+public struct UpdateProfilingGroupInput: Swift.Sendable {
     /// Specifies whether profiling is enabled or disabled for a profiling group.
     /// This member is required.
     public var agentOrchestrationConfig: CodeGuruProfilerClientTypes.AgentOrchestrationConfig?
@@ -1914,7 +1914,7 @@ public struct UpdateProfilingGroupInput {
 }
 
 /// The structure representing the updateProfilingGroupResponse.
-public struct UpdateProfilingGroupOutput {
+public struct UpdateProfilingGroupOutput: Swift.Sendable {
     /// A [ProfilingGroupDescription](https://docs.aws.amazon.com/codeguru/latest/profiler-api/API_ProfilingGroupDescription.html) that contains information about the returned updated profiling group.
     /// This member is required.
     public var profilingGroup: CodeGuruProfilerClientTypes.ProfilingGroupDescription?
@@ -1927,7 +1927,7 @@ public struct UpdateProfilingGroupOutput {
     }
 }
 
-public struct TagResourceInput {
+public struct TagResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the resource that the tags are added to.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -1945,12 +1945,12 @@ public struct TagResourceInput {
     }
 }
 
-public struct TagResourceOutput {
+public struct TagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UntagResourceInput {
+public struct UntagResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the resource that contains the tags to remove.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -1968,7 +1968,7 @@ public struct UntagResourceInput {
     }
 }
 
-public struct UntagResourceOutput {
+public struct UntagResourceOutput: Swift.Sendable {
 
     public init() { }
 }

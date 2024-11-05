@@ -31,27 +31,28 @@ import struct Smithy.URIQueryItem
 import struct SmithyHTTPAPI.Header
 import struct SmithyHTTPAPI.Headers
 
-public struct DeletePropertygraphStatisticsInput {
+
+public struct DeletePropertygraphStatisticsInput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteSparqlStatisticsInput {
+public struct DeleteSparqlStatisticsInput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct GetEngineStatusInput {
+public struct GetEngineStatusInput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct GetPropertygraphStatisticsInput {
+public struct GetPropertygraphStatisticsInput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct GetSparqlStatisticsInput {
+public struct GetSparqlStatisticsInput: Swift.Sendable {
 
     public init() { }
 }
@@ -94,7 +95,7 @@ public struct AccessDeniedException: ClientRuntime.ModeledError, AWSClientRuntim
 
 extension NeptunedataClientTypes {
 
-    public enum Action: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Action: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case initializeReset
         case performReset
         case sdkUnknown(Swift.String)
@@ -625,7 +626,7 @@ public struct UnsupportedOperationException: ClientRuntime.ModeledError, AWSClie
     }
 }
 
-public struct CancelGremlinQueryInput {
+public struct CancelGremlinQueryInput: Swift.Sendable {
     /// The unique identifier that identifies the query to be canceled.
     /// This member is required.
     public var queryId: Swift.String?
@@ -638,7 +639,7 @@ public struct CancelGremlinQueryInput {
     }
 }
 
-public struct CancelGremlinQueryOutput {
+public struct CancelGremlinQueryOutput: Swift.Sendable {
     /// The status of the cancelation
     public var status: Swift.String?
 
@@ -758,7 +759,7 @@ public struct LoadUrlAccessDeniedException: ClientRuntime.ModeledError, AWSClien
     }
 }
 
-public struct CancelLoaderJobInput {
+public struct CancelLoaderJobInput: Swift.Sendable {
     /// The ID of the load job to be deleted.
     /// This member is required.
     public var loadId: Swift.String?
@@ -771,7 +772,7 @@ public struct CancelLoaderJobInput {
     }
 }
 
-public struct CancelLoaderJobOutput {
+public struct CancelLoaderJobOutput: Swift.Sendable {
     /// The cancellation status.
     public var status: Swift.String?
 
@@ -819,7 +820,7 @@ public struct MLResourceNotFoundException: ClientRuntime.ModeledError, AWSClient
     }
 }
 
-public struct CancelMLDataProcessingJobInput {
+public struct CancelMLDataProcessingJobInput: Swift.Sendable {
     /// If set to TRUE, this flag specifies that all Neptune ML S3 artifacts should be deleted when the job is stopped. The default is FALSE.
     public var clean: Swift.Bool?
     /// The unique identifier of the data-processing job.
@@ -840,7 +841,7 @@ public struct CancelMLDataProcessingJobInput {
     }
 }
 
-public struct CancelMLDataProcessingJobOutput {
+public struct CancelMLDataProcessingJobOutput: Swift.Sendable {
     /// The status of the cancellation request.
     public var status: Swift.String?
 
@@ -852,7 +853,7 @@ public struct CancelMLDataProcessingJobOutput {
     }
 }
 
-public struct CancelMLModelTrainingJobInput {
+public struct CancelMLModelTrainingJobInput: Swift.Sendable {
     /// If set to TRUE, this flag specifies that all Amazon S3 artifacts should be deleted when the job is stopped. The default is FALSE.
     public var clean: Swift.Bool?
     /// The unique identifier of the model-training job to be canceled.
@@ -873,7 +874,7 @@ public struct CancelMLModelTrainingJobInput {
     }
 }
 
-public struct CancelMLModelTrainingJobOutput {
+public struct CancelMLModelTrainingJobOutput: Swift.Sendable {
     /// The status of the cancellation.
     public var status: Swift.String?
 
@@ -885,7 +886,7 @@ public struct CancelMLModelTrainingJobOutput {
     }
 }
 
-public struct CancelMLModelTransformJobInput {
+public struct CancelMLModelTransformJobInput: Swift.Sendable {
     /// If this flag is set to TRUE, all Neptune ML S3 artifacts should be deleted when the job is stopped. The default is FALSE.
     public var clean: Swift.Bool?
     /// The unique ID of the model transform job to be canceled.
@@ -906,7 +907,7 @@ public struct CancelMLModelTransformJobInput {
     }
 }
 
-public struct CancelMLModelTransformJobOutput {
+public struct CancelMLModelTransformJobOutput: Swift.Sendable {
     /// the status of the cancelation.
     public var status: Swift.String?
 
@@ -954,7 +955,7 @@ public struct InvalidNumericDataException: ClientRuntime.ModeledError, AWSClient
     }
 }
 
-public struct CancelOpenCypherQueryInput {
+public struct CancelOpenCypherQueryInput: Swift.Sendable {
     /// The unique ID of the openCypher query to cancel.
     /// This member is required.
     public var queryId: Swift.String?
@@ -971,7 +972,7 @@ public struct CancelOpenCypherQueryInput {
     }
 }
 
-public struct CancelOpenCypherQueryOutput {
+public struct CancelOpenCypherQueryOutput: Swift.Sendable {
     /// The cancelation payload for the openCypher query.
     public var payload: Swift.Bool?
     /// The cancellation status of the openCypher query.
@@ -987,7 +988,7 @@ public struct CancelOpenCypherQueryOutput {
     }
 }
 
-public struct CreateMLEndpointInput {
+public struct CreateMLEndpointInput: Swift.Sendable {
     /// A unique identifier for the new inference endpoint. The default is an autogenerated timestamped name.
     public var id: Swift.String?
     /// The minimum number of Amazon EC2 instances to deploy to an endpoint for prediction. The default is 1
@@ -1031,7 +1032,7 @@ public struct CreateMLEndpointInput {
     }
 }
 
-public struct CreateMLEndpointOutput {
+public struct CreateMLEndpointOutput: Swift.Sendable {
     /// The ARN for the new inference endpoint.
     public var arn: Swift.String?
     /// The endpoint creation time, in milliseconds.
@@ -1051,7 +1052,7 @@ public struct CreateMLEndpointOutput {
     }
 }
 
-public struct DeleteMLEndpointInput {
+public struct DeleteMLEndpointInput: Swift.Sendable {
     /// If this flag is set to TRUE, all Neptune ML S3 artifacts should be deleted when the job is stopped. The default is FALSE.
     public var clean: Swift.Bool?
     /// The unique identifier of the inference endpoint.
@@ -1072,7 +1073,7 @@ public struct DeleteMLEndpointInput {
     }
 }
 
-public struct DeleteMLEndpointOutput {
+public struct DeleteMLEndpointOutput: Swift.Sendable {
     /// The status of the cancellation.
     public var status: Swift.String?
 
@@ -1157,8 +1158,9 @@ public struct StatisticsNotAvailableException: ClientRuntime.ModeledError, AWSCl
 }
 
 extension NeptunedataClientTypes {
+
     /// The payload for DeleteStatistics.
-    public struct DeleteStatisticsValueMap {
+    public struct DeleteStatisticsValueMap: Swift.Sendable {
         /// The current status of the statistics.
         public var active: Swift.Bool?
         /// The ID of the statistics generation run that is currently occurring.
@@ -1173,10 +1175,9 @@ extension NeptunedataClientTypes {
             self.statisticsId = statisticsId
         }
     }
-
 }
 
-public struct DeletePropertygraphStatisticsOutput {
+public struct DeletePropertygraphStatisticsOutput: Swift.Sendable {
     /// The deletion payload.
     public var payload: NeptunedataClientTypes.DeleteStatisticsValueMap?
     /// The cancel status.
@@ -1196,7 +1197,7 @@ public struct DeletePropertygraphStatisticsOutput {
     }
 }
 
-public struct DeleteSparqlStatisticsOutput {
+public struct DeleteSparqlStatisticsOutput: Swift.Sendable {
     /// The deletion payload.
     public var payload: NeptunedataClientTypes.DeleteStatisticsValueMap?
     /// The cancel status.
@@ -1288,7 +1289,7 @@ public struct ServerShutdownException: ClientRuntime.ModeledError, AWSClientRunt
     }
 }
 
-public struct ExecuteFastResetInput {
+public struct ExecuteFastResetInput: Swift.Sendable {
     /// The fast reset action. One of the following values:
     ///
     /// * initiateDatabaseReset – This action generates a unique token needed to actually perform the fast reset.
@@ -1310,8 +1311,9 @@ public struct ExecuteFastResetInput {
 }
 
 extension NeptunedataClientTypes {
+
     /// A structure containing the fast reset token used to initiate a fast reset.
-    public struct FastResetToken {
+    public struct FastResetToken: Swift.Sendable {
         /// A UUID generated by the database in the initiateDatabaseReset action, and then consumed by the performDatabaseReset to reset the database.
         public var token: Swift.String?
 
@@ -1322,10 +1324,9 @@ extension NeptunedataClientTypes {
             self.token = token
         }
     }
-
 }
 
-public struct ExecuteFastResetOutput {
+public struct ExecuteFastResetOutput: Swift.Sendable {
     /// The payload is only returned by the initiateDatabaseReset action, and contains the unique token to use with the performDatabaseReset action to make the reset occur.
     public var payload: NeptunedataClientTypes.FastResetToken?
     /// The status is only returned for the performDatabaseReset action, and indicates whether or not the fast reset rquest is accepted.
@@ -1558,7 +1559,7 @@ public struct QueryTooLargeException: ClientRuntime.ModeledError, AWSClientRunti
     }
 }
 
-public struct ExecuteGremlinExplainQueryInput {
+public struct ExecuteGremlinExplainQueryInput: Swift.Sendable {
     /// The Gremlin explain query string.
     /// This member is required.
     public var gremlinQuery: Swift.String?
@@ -1571,7 +1572,7 @@ public struct ExecuteGremlinExplainQueryInput {
     }
 }
 
-public struct ExecuteGremlinExplainQueryOutput {
+public struct ExecuteGremlinExplainQueryOutput: Swift.Sendable {
     /// A text blob containing the Gremlin explain result, as described in [Tuning Gremlin queries](https://docs.aws.amazon.com/neptune/latest/userguide/gremlin-traversal-tuning.html).
     public var output: Foundation.Data?
 
@@ -1583,7 +1584,7 @@ public struct ExecuteGremlinExplainQueryOutput {
     }
 }
 
-public struct ExecuteGremlinProfileQueryInput {
+public struct ExecuteGremlinProfileQueryInput: Swift.Sendable {
     /// If non-zero, causes the results string to be truncated at that number of characters. If set to zero, the string contains all the results.
     public var chop: Swift.Int?
     /// The Gremlin query string to profile.
@@ -1612,7 +1613,7 @@ public struct ExecuteGremlinProfileQueryInput {
     }
 }
 
-public struct ExecuteGremlinProfileQueryOutput {
+public struct ExecuteGremlinProfileQueryOutput: Swift.Sendable {
     /// A text blob containing the Gremlin Profile result. See [Gremlin profile API in Neptune](https://docs.aws.amazon.com/neptune/latest/userguide/gremlin-profile-api.html) for details.
     public var output: Foundation.Data?
 
@@ -1624,7 +1625,7 @@ public struct ExecuteGremlinProfileQueryOutput {
     }
 }
 
-public struct ExecuteGremlinQueryInput {
+public struct ExecuteGremlinQueryInput: Swift.Sendable {
     /// Using this API, you can run Gremlin queries in string format much as you can using the HTTP endpoint. The interface is compatible with whatever Gremlin version your DB cluster is using (see the [Tinkerpop client section](https://docs.aws.amazon.com/neptune/latest/userguide/access-graph-gremlin-client.html#best-practices-gremlin-java-latest) to determine which Gremlin releases your engine version supports).
     /// This member is required.
     public var gremlinQuery: Swift.String?
@@ -1642,8 +1643,9 @@ public struct ExecuteGremlinQueryInput {
 }
 
 extension NeptunedataClientTypes {
+
     /// Contains status components of a Gremlin query.
-    public struct GremlinQueryStatusAttributes {
+    public struct GremlinQueryStatusAttributes: Swift.Sendable {
         /// Attributes of the Gremlin query status.
         public var attributes: Smithy.Document?
         /// The HTTP response code returned fro the Gremlin query request..
@@ -1662,10 +1664,9 @@ extension NeptunedataClientTypes {
             self.message = message
         }
     }
-
 }
 
-public struct ExecuteGremlinQueryOutput {
+public struct ExecuteGremlinQueryOutput: Swift.Sendable {
     /// Metadata about the Gremlin query.
     public var meta: Smithy.Document?
     /// The unique identifier of the Gremlin query.
@@ -1691,7 +1692,7 @@ public struct ExecuteGremlinQueryOutput {
 
 extension NeptunedataClientTypes {
 
-    public enum OpenCypherExplainMode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum OpenCypherExplainMode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case details
         case `dynamic`
         case `static`
@@ -1721,7 +1722,7 @@ extension NeptunedataClientTypes {
     }
 }
 
-public struct ExecuteOpenCypherExplainQueryInput {
+public struct ExecuteOpenCypherExplainQueryInput: Swift.Sendable {
     /// The openCypher explain mode. Can be one of: static, dynamic, or details.
     /// This member is required.
     public var explainMode: NeptunedataClientTypes.OpenCypherExplainMode?
@@ -1743,7 +1744,7 @@ public struct ExecuteOpenCypherExplainQueryInput {
     }
 }
 
-public struct ExecuteOpenCypherExplainQueryOutput {
+public struct ExecuteOpenCypherExplainQueryOutput: Swift.Sendable {
     /// A text blob containing the openCypher explain results.
     /// This member is required.
     public var results: Foundation.Data?
@@ -1756,7 +1757,7 @@ public struct ExecuteOpenCypherExplainQueryOutput {
     }
 }
 
-public struct ExecuteOpenCypherQueryInput {
+public struct ExecuteOpenCypherQueryInput: Swift.Sendable {
     /// The openCypher query string to be executed.
     /// This member is required.
     public var openCypherQuery: Swift.String?
@@ -1773,7 +1774,7 @@ public struct ExecuteOpenCypherQueryInput {
     }
 }
 
-public struct ExecuteOpenCypherQueryOutput {
+public struct ExecuteOpenCypherQueryOutput: Swift.Sendable {
     /// The openCypherquery results.
     /// This member is required.
     public var results: Smithy.Document?
@@ -1787,8 +1788,9 @@ public struct ExecuteOpenCypherQueryOutput {
 }
 
 extension NeptunedataClientTypes {
+
     /// Structure for expressing the query language version.
-    public struct QueryLanguageVersion {
+    public struct QueryLanguageVersion: Swift.Sendable {
         /// The version of the query language.
         /// This member is required.
         public var version: Swift.String?
@@ -1800,10 +1802,9 @@ extension NeptunedataClientTypes {
             self.version = version
         }
     }
-
 }
 
-public struct GetEngineStatusOutput {
+public struct GetEngineStatusOutput: Swift.Sendable {
     /// Set to the Neptune engine version running on your DB cluster. If this engine version has been manually patched since it was released, the version number is prefixed by Patch-.
     public var dbEngineVersion: Swift.String?
     /// Set to enabled if the DFE engine is fully enabled, or to viaQueryHint (the default) if the DFE engine is only used with queries that have the useDFE query hint set to true.
@@ -1863,7 +1864,7 @@ public struct GetEngineStatusOutput {
     }
 }
 
-public struct GetGremlinQueryStatusInput {
+public struct GetGremlinQueryStatusInput: Swift.Sendable {
     /// The unique identifier that identifies the Gremlin query.
     /// This member is required.
     public var queryId: Swift.String?
@@ -1877,8 +1878,9 @@ public struct GetGremlinQueryStatusInput {
 }
 
 extension NeptunedataClientTypes {
+
     /// Structure to capture query statistics such as how many queries are running, accepted or waiting and their details.
-    public struct QueryEvalStats {
+    public struct QueryEvalStats: Swift.Sendable {
         /// Set to TRUE if the query was cancelled, or FALSE otherwise.
         public var cancelled: Swift.Bool?
         /// The number of milliseconds the query has been running so far.
@@ -1901,10 +1903,9 @@ extension NeptunedataClientTypes {
             self.waited = waited
         }
     }
-
 }
 
-public struct GetGremlinQueryStatusOutput {
+public struct GetGremlinQueryStatusOutput: Swift.Sendable {
     /// The evaluation status of the Gremlin query.
     public var queryEvalStats: NeptunedataClientTypes.QueryEvalStats?
     /// The ID of the query for which status is being returned.
@@ -1924,7 +1925,7 @@ public struct GetGremlinQueryStatusOutput {
     }
 }
 
-public struct GetLoaderJobStatusInput {
+public struct GetLoaderJobStatusInput: Swift.Sendable {
     /// Flag indicating whether or not to include details beyond the overall status (TRUE or FALSE; the default is FALSE).
     public var details: Swift.Bool?
     /// Flag indicating whether or not to include a list of errors encountered (TRUE or FALSE; the default is FALSE). The list of errors is paged. The page and errorsPerPage parameters allow you to page through all the errors.
@@ -1953,7 +1954,7 @@ public struct GetLoaderJobStatusInput {
     }
 }
 
-public struct GetLoaderJobStatusOutput {
+public struct GetLoaderJobStatusOutput: Swift.Sendable {
     /// Status information about the load job, in a layout that could look like this:
     /// This member is required.
     public var payload: Smithy.Document?
@@ -1971,7 +1972,7 @@ public struct GetLoaderJobStatusOutput {
     }
 }
 
-public struct GetMLDataProcessingJobInput {
+public struct GetMLDataProcessingJobInput: Swift.Sendable {
     /// The unique identifier of the data-processing job to be retrieved.
     /// This member is required.
     public var id: Swift.String?
@@ -1989,8 +1990,9 @@ public struct GetMLDataProcessingJobInput {
 }
 
 extension NeptunedataClientTypes {
+
     /// Defines a Neptune ML resource.
-    public struct MlResourceDefinition {
+    public struct MlResourceDefinition: Swift.Sendable {
         /// The resource ARN.
         public var arn: Swift.String?
         /// The CloudWatch log URL for the resource.
@@ -2021,10 +2023,9 @@ extension NeptunedataClientTypes {
             self.status = status
         }
     }
-
 }
 
-public struct GetMLDataProcessingJobOutput {
+public struct GetMLDataProcessingJobOutput: Swift.Sendable {
     /// The unique identifier of this data-processing job.
     public var id: Swift.String?
     /// Definition of the data processing job.
@@ -2044,7 +2045,7 @@ public struct GetMLDataProcessingJobOutput {
     }
 }
 
-public struct GetMLEndpointInput {
+public struct GetMLEndpointInput: Swift.Sendable {
     /// The unique identifier of the inference endpoint.
     /// This member is required.
     public var id: Swift.String?
@@ -2062,8 +2063,9 @@ public struct GetMLEndpointInput {
 }
 
 extension NeptunedataClientTypes {
+
     /// Contains a Neptune ML configuration.
-    public struct MlConfigDefinition {
+    public struct MlConfigDefinition: Swift.Sendable {
         /// The ARN for the configuration.
         public var arn: Swift.String?
         /// The configuration name.
@@ -2078,10 +2080,9 @@ extension NeptunedataClientTypes {
             self.name = name
         }
     }
-
 }
 
-public struct GetMLEndpointOutput {
+public struct GetMLEndpointOutput: Swift.Sendable {
     /// The endpoint definition.
     public var endpoint: NeptunedataClientTypes.MlResourceDefinition?
     /// The endpoint configuration
@@ -2105,7 +2106,7 @@ public struct GetMLEndpointOutput {
     }
 }
 
-public struct GetMLModelTrainingJobInput {
+public struct GetMLModelTrainingJobInput: Swift.Sendable {
     /// The unique identifier of the model-training job to retrieve.
     /// This member is required.
     public var id: Swift.String?
@@ -2122,7 +2123,7 @@ public struct GetMLModelTrainingJobInput {
     }
 }
 
-public struct GetMLModelTrainingJobOutput {
+public struct GetMLModelTrainingJobOutput: Swift.Sendable {
     /// The HPO job.
     public var hpoJob: NeptunedataClientTypes.MlResourceDefinition?
     /// The unique identifier of this model-training job.
@@ -2154,7 +2155,7 @@ public struct GetMLModelTrainingJobOutput {
     }
 }
 
-public struct GetMLModelTransformJobInput {
+public struct GetMLModelTransformJobInput: Swift.Sendable {
     /// The unique identifier of the model-transform job to be reetrieved.
     /// This member is required.
     public var id: Swift.String?
@@ -2171,7 +2172,7 @@ public struct GetMLModelTransformJobInput {
     }
 }
 
-public struct GetMLModelTransformJobOutput {
+public struct GetMLModelTransformJobOutput: Swift.Sendable {
     /// The base data processing job.
     public var baseProcessingJob: NeptunedataClientTypes.MlResourceDefinition?
     /// The unique identifier of the model-transform job to be retrieved.
@@ -2199,7 +2200,7 @@ public struct GetMLModelTransformJobOutput {
     }
 }
 
-public struct GetOpenCypherQueryStatusInput {
+public struct GetOpenCypherQueryStatusInput: Swift.Sendable {
     /// The unique ID of the openCypher query for which to retrieve the query status.
     /// This member is required.
     public var queryId: Swift.String?
@@ -2212,7 +2213,7 @@ public struct GetOpenCypherQueryStatusInput {
     }
 }
 
-public struct GetOpenCypherQueryStatusOutput {
+public struct GetOpenCypherQueryStatusOutput: Swift.Sendable {
     /// The openCypher query evaluation status.
     public var queryEvalStats: NeptunedataClientTypes.QueryEvalStats?
     /// The unique ID of the query for which status is being returned.
@@ -2233,8 +2234,9 @@ public struct GetOpenCypherQueryStatusOutput {
 }
 
 extension NeptunedataClientTypes {
+
     /// Information about the characteristic sets generated in the statistics.
-    public struct StatisticsSummary {
+    public struct StatisticsSummary: Swift.Sendable {
         /// The total number of characteristic-set instances.
         public var instanceCount: Swift.Int?
         /// The total number of unique predicates.
@@ -2253,12 +2255,12 @@ extension NeptunedataClientTypes {
             self.signatureCount = signatureCount
         }
     }
-
 }
 
 extension NeptunedataClientTypes {
+
     /// Contains statistics information. The DFE engine uses information about the data in your Neptune graph to make effective trade-offs when planning query execution. This information takes the form of statistics that include so-called characteristic sets and predicate statistics that can guide query planning. See [Managing statistics for the Neptune DFE to use](https://docs.aws.amazon.com/neptune/latest/userguide/neptune-dfe-statistics.html).
-    public struct Statistics {
+    public struct Statistics: Swift.Sendable {
         /// Indicates whether or not DFE statistics generation is enabled at all.
         public var active: Swift.Bool?
         /// Indicates whether or not automatic statistics generation is enabled.
@@ -2295,10 +2297,9 @@ extension NeptunedataClientTypes {
             self.statisticsId = statisticsId
         }
     }
-
 }
 
-public struct GetPropertygraphStatisticsOutput {
+public struct GetPropertygraphStatisticsOutput: Swift.Sendable {
     /// Statistics for property-graph data.
     /// This member is required.
     public var payload: NeptunedataClientTypes.Statistics?
@@ -2426,7 +2427,7 @@ public struct ThrottlingException: ClientRuntime.ModeledError, AWSClientRuntime.
 
 extension NeptunedataClientTypes {
 
-    public enum Encoding: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Encoding: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case gzip
         case sdkUnknown(Swift.String)
 
@@ -2452,7 +2453,7 @@ extension NeptunedataClientTypes {
 
 extension NeptunedataClientTypes {
 
-    public enum IteratorType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum IteratorType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case afterSequenceNumber
         case atSequenceNumber
         case latest
@@ -2485,7 +2486,7 @@ extension NeptunedataClientTypes {
     }
 }
 
-public struct GetPropertygraphStreamInput {
+public struct GetPropertygraphStreamInput: Swift.Sendable {
     /// The commit number of the starting record to read from the change-log stream. This parameter is required when iteratorType isAT_SEQUENCE_NUMBER or AFTER_SEQUENCE_NUMBER, and ignored when iteratorType is TRIM_HORIZON or LATEST.
     public var commitNum: Swift.Int?
     /// If set to TRUE, Neptune compresses the response using gzip encoding.
@@ -2522,8 +2523,9 @@ public struct GetPropertygraphStreamInput {
 }
 
 extension NeptunedataClientTypes {
+
     /// A Gremlin or openCypher change record.
-    public struct PropertygraphData {
+    public struct PropertygraphData: Swift.Sendable {
         /// If this is an edge (type = e), the ID of the corresponding from vertex or source node.
         public var from: Swift.String?
         /// The ID of the Gremlin or openCypher element.
@@ -2566,12 +2568,12 @@ extension NeptunedataClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension NeptunedataClientTypes {
+
     /// Structure of a property graph record.
-    public struct PropertygraphRecord {
+    public struct PropertygraphRecord: Swift.Sendable {
         /// The time at which the commit for the transaction was requested, in milliseconds from the Unix epoch.
         /// This member is required.
         public var commitTimestampInMillis: Swift.Int?
@@ -2602,10 +2604,9 @@ extension NeptunedataClientTypes {
             self.op = op
         }
     }
-
 }
 
-public struct GetPropertygraphStreamOutput {
+public struct GetPropertygraphStreamOutput: Swift.Sendable {
     /// Serialization format for the change records being returned. Currently, the only supported value is PG_JSON.
     /// This member is required.
     public var format: Swift.String?
@@ -2640,7 +2641,7 @@ public struct GetPropertygraphStreamOutput {
 
 extension NeptunedataClientTypes {
 
-    public enum GraphSummaryType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum GraphSummaryType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case basic
         case detailed
         case sdkUnknown(Swift.String)
@@ -2667,7 +2668,7 @@ extension NeptunedataClientTypes {
     }
 }
 
-public struct GetPropertygraphSummaryInput {
+public struct GetPropertygraphSummaryInput: Swift.Sendable {
     /// Mode can take one of two values: BASIC (the default), and DETAILED.
     public var mode: NeptunedataClientTypes.GraphSummaryType?
 
@@ -2680,8 +2681,9 @@ public struct GetPropertygraphSummaryInput {
 }
 
 extension NeptunedataClientTypes {
+
     /// An edge structure.
-    public struct EdgeStructure {
+    public struct EdgeStructure: Swift.Sendable {
         /// The number of edges that have this specific structure.
         public var count: Swift.Int?
         /// A list of edge properties present in this specific structure.
@@ -2696,12 +2698,12 @@ extension NeptunedataClientTypes {
             self.edgeProperties = edgeProperties
         }
     }
-
 }
 
 extension NeptunedataClientTypes {
+
     /// A node structure.
-    public struct NodeStructure {
+    public struct NodeStructure: Swift.Sendable {
         /// Number of nodes that have this specific structure.
         public var count: Swift.Int?
         /// A list of distinct outgoing edge labels present in this specific structure.
@@ -2720,12 +2722,12 @@ extension NeptunedataClientTypes {
             self.nodeProperties = nodeProperties
         }
     }
-
 }
 
 extension NeptunedataClientTypes {
+
     /// The graph summary API returns a read-only list of node and edge labels and property keys, along with counts of nodes, edges, and properties. See [Graph summary response for a property graph (PG)](https://docs.aws.amazon.com/neptune/latest/userguide/neptune-graph-summary.html#neptune-graph-summary-pg-response).
-    public struct PropertygraphSummary {
+    public struct PropertygraphSummary: Swift.Sendable {
         /// A list of the distinct edge labels in the graph.
         public var edgeLabels: [Swift.String]?
         /// A list of the distinct edge properties in the graph, along with the count of edges where each property is used.
@@ -2788,12 +2790,12 @@ extension NeptunedataClientTypes {
             self.totalNodePropertyValues = totalNodePropertyValues
         }
     }
-
 }
 
 extension NeptunedataClientTypes {
+
     /// Payload for the property graph summary response.
-    public struct PropertygraphSummaryValueMap {
+    public struct PropertygraphSummaryValueMap: Swift.Sendable {
         /// The graph summary.
         public var graphSummary: NeptunedataClientTypes.PropertygraphSummary?
         /// The timestamp, in ISO 8601 format, of the time at which Neptune last computed statistics.
@@ -2812,10 +2814,9 @@ extension NeptunedataClientTypes {
             self.version = version
         }
     }
-
 }
 
-public struct GetPropertygraphSummaryOutput {
+public struct GetPropertygraphSummaryOutput: Swift.Sendable {
     /// Payload containing the property graph summary response.
     public var payload: NeptunedataClientTypes.PropertygraphSummaryValueMap?
     /// The HTTP return code of the request. If the request succeeded, the code is 200.
@@ -2831,7 +2832,7 @@ public struct GetPropertygraphSummaryOutput {
     }
 }
 
-public struct GetRDFGraphSummaryInput {
+public struct GetRDFGraphSummaryInput: Swift.Sendable {
     /// Mode can take one of two values: BASIC (the default), and DETAILED.
     public var mode: NeptunedataClientTypes.GraphSummaryType?
 
@@ -2844,8 +2845,9 @@ public struct GetRDFGraphSummaryInput {
 }
 
 extension NeptunedataClientTypes {
+
     /// A subject structure.
-    public struct SubjectStructure {
+    public struct SubjectStructure: Swift.Sendable {
         /// Number of occurrences of this specific structure.
         public var count: Swift.Int?
         /// A list of predicates present in this specific structure.
@@ -2860,12 +2862,12 @@ extension NeptunedataClientTypes {
             self.predicates = predicates
         }
     }
-
 }
 
 extension NeptunedataClientTypes {
+
     /// The RDF graph summary API returns a read-only list of classes and predicate keys, along with counts of quads, subjects, and predicates.
-    public struct RDFGraphSummary {
+    public struct RDFGraphSummary: Swift.Sendable {
         /// A list of the classes in the graph.
         public var classes: [Swift.String]?
         /// The number of classes in the graph.
@@ -2900,12 +2902,12 @@ extension NeptunedataClientTypes {
             self.subjectStructures = subjectStructures
         }
     }
-
 }
 
 extension NeptunedataClientTypes {
+
     /// Payload for an RDF graph summary response.
-    public struct RDFGraphSummaryValueMap {
+    public struct RDFGraphSummaryValueMap: Swift.Sendable {
         /// The graph summary of an RDF graph. See [Graph summary response for an RDF graph](https://docs.aws.amazon.com/neptune/latest/userguide/neptune-graph-summary.html#neptune-graph-summary-rdf-response).
         public var graphSummary: NeptunedataClientTypes.RDFGraphSummary?
         /// The timestamp, in ISO 8601 format, of the time at which Neptune last computed statistics.
@@ -2924,10 +2926,9 @@ extension NeptunedataClientTypes {
             self.version = version
         }
     }
-
 }
 
-public struct GetRDFGraphSummaryOutput {
+public struct GetRDFGraphSummaryOutput: Swift.Sendable {
     /// Payload for an RDF graph summary response
     public var payload: NeptunedataClientTypes.RDFGraphSummaryValueMap?
     /// The HTTP return code of the request. If the request succeeded, the code is 200.
@@ -2943,7 +2944,7 @@ public struct GetRDFGraphSummaryOutput {
     }
 }
 
-public struct GetSparqlStatisticsOutput {
+public struct GetSparqlStatisticsOutput: Swift.Sendable {
     /// Statistics for RDF data.
     /// This member is required.
     public var payload: NeptunedataClientTypes.Statistics?
@@ -2961,7 +2962,7 @@ public struct GetSparqlStatisticsOutput {
     }
 }
 
-public struct GetSparqlStreamInput {
+public struct GetSparqlStreamInput: Swift.Sendable {
     /// The commit number of the starting record to read from the change-log stream. This parameter is required when iteratorType isAT_SEQUENCE_NUMBER or AFTER_SEQUENCE_NUMBER, and ignored when iteratorType is TRIM_HORIZON or LATEST.
     public var commitNum: Swift.Int?
     /// If set to TRUE, Neptune compresses the response using gzip encoding.
@@ -2998,8 +2999,9 @@ public struct GetSparqlStreamInput {
 }
 
 extension NeptunedataClientTypes {
+
     /// Neptune logs are converted to SPARQL quads in the graph using the Resource Description Framework (RDF) [N-QUADS](https://www.w3.org/TR/n-quads/) language defined in the W3C RDF 1.1 N-Quads specification
-    public struct SparqlData {
+    public struct SparqlData: Swift.Sendable {
         /// Holds an [N-QUADS](https://www.w3.org/TR/n-quads/) statement expressing the changed quad.
         /// This member is required.
         public var stmt: Swift.String?
@@ -3011,12 +3013,12 @@ extension NeptunedataClientTypes {
             self.stmt = stmt
         }
     }
-
 }
 
 extension NeptunedataClientTypes {
+
     /// A serialized SPARQL stream record capturing a change-log entry for the RDF graph.
-    public struct SparqlRecord {
+    public struct SparqlRecord: Swift.Sendable {
         /// The time at which the commit for the transaction was requested, in milliseconds from the Unix epoch.
         /// This member is required.
         public var commitTimestampInMillis: Swift.Int?
@@ -3047,10 +3049,9 @@ extension NeptunedataClientTypes {
             self.op = op
         }
     }
-
 }
 
-public struct GetSparqlStreamOutput {
+public struct GetSparqlStreamOutput: Swift.Sendable {
     /// Serialization format for the change records being returned. Currently, the only supported value is NQUADS.
     /// This member is required.
     public var format: Swift.String?
@@ -3083,7 +3084,7 @@ public struct GetSparqlStreamOutput {
     }
 }
 
-public struct ListGremlinQueriesInput {
+public struct ListGremlinQueriesInput: Swift.Sendable {
     /// If set to TRUE, the list returned includes waiting queries. The default is FALSE;
     public var includeWaiting: Swift.Bool?
 
@@ -3096,8 +3097,9 @@ public struct ListGremlinQueriesInput {
 }
 
 extension NeptunedataClientTypes {
+
     /// Captures the status of a Gremlin query (see the [Gremlin query status API](https://docs.aws.amazon.com/neptune/latest/userguide/gremlin-api-status.html) page).
-    public struct GremlinQueryStatus {
+    public struct GremlinQueryStatus: Swift.Sendable {
         /// The query statistics of the Gremlin query.
         public var queryEvalStats: NeptunedataClientTypes.QueryEvalStats?
         /// The ID of the Gremlin query.
@@ -3116,10 +3118,9 @@ extension NeptunedataClientTypes {
             self.queryString = queryString
         }
     }
-
 }
 
-public struct ListGremlinQueriesOutput {
+public struct ListGremlinQueriesOutput: Swift.Sendable {
     /// The number of queries that have been accepted but not yet completed, including queries in the queue.
     public var acceptedQueryCount: Swift.Int?
     /// A list of the current queries.
@@ -3139,7 +3140,7 @@ public struct ListGremlinQueriesOutput {
     }
 }
 
-public struct ListLoaderJobsInput {
+public struct ListLoaderJobsInput: Swift.Sendable {
     /// An optional parameter that can be used to exclude the load IDs of queued load requests when requesting a list of load IDs by setting the parameter to FALSE. The default value is TRUE.
     public var includeQueuedLoads: Swift.Bool?
     /// The number of load IDs to list. Must be a positive integer greater than zero and not more than 100 (which is the default).
@@ -3156,8 +3157,9 @@ public struct ListLoaderJobsInput {
 }
 
 extension NeptunedataClientTypes {
+
     /// Contains a list of load IDs.
-    public struct LoaderIdResult {
+    public struct LoaderIdResult: Swift.Sendable {
         /// A list of load IDs.
         public var loadIds: [Swift.String]?
 
@@ -3168,10 +3170,9 @@ extension NeptunedataClientTypes {
             self.loadIds = loadIds
         }
     }
-
 }
 
-public struct ListLoaderJobsOutput {
+public struct ListLoaderJobsOutput: Swift.Sendable {
     /// The requested list of job IDs.
     /// This member is required.
     public var payload: NeptunedataClientTypes.LoaderIdResult?
@@ -3189,7 +3190,7 @@ public struct ListLoaderJobsOutput {
     }
 }
 
-public struct ListMLDataProcessingJobsInput {
+public struct ListMLDataProcessingJobsInput: Swift.Sendable {
     /// The maximum number of items to return (from 1 to 1024; the default is 10).
     public var maxItems: Swift.Int?
     /// The ARN of an IAM role that provides Neptune access to SageMaker and Amazon S3 resources. This must be listed in your DB cluster parameter group or an error will occur.
@@ -3205,7 +3206,7 @@ public struct ListMLDataProcessingJobsInput {
     }
 }
 
-public struct ListMLDataProcessingJobsOutput {
+public struct ListMLDataProcessingJobsOutput: Swift.Sendable {
     /// A page listing data processing job IDs.
     public var ids: [Swift.String]?
 
@@ -3217,7 +3218,7 @@ public struct ListMLDataProcessingJobsOutput {
     }
 }
 
-public struct ListMLEndpointsInput {
+public struct ListMLEndpointsInput: Swift.Sendable {
     /// The maximum number of items to return (from 1 to 1024; the default is 10.
     public var maxItems: Swift.Int?
     /// The ARN of an IAM role that provides Neptune access to SageMaker and Amazon S3 resources. This must be listed in your DB cluster parameter group or an error will occur.
@@ -3233,7 +3234,7 @@ public struct ListMLEndpointsInput {
     }
 }
 
-public struct ListMLEndpointsOutput {
+public struct ListMLEndpointsOutput: Swift.Sendable {
     /// A page from the list of inference endpoint IDs.
     public var ids: [Swift.String]?
 
@@ -3245,7 +3246,7 @@ public struct ListMLEndpointsOutput {
     }
 }
 
-public struct ListMLModelTrainingJobsInput {
+public struct ListMLModelTrainingJobsInput: Swift.Sendable {
     /// The maximum number of items to return (from 1 to 1024; the default is 10).
     public var maxItems: Swift.Int?
     /// The ARN of an IAM role that provides Neptune access to SageMaker and Amazon S3 resources. This must be listed in your DB cluster parameter group or an error will occur.
@@ -3261,7 +3262,7 @@ public struct ListMLModelTrainingJobsInput {
     }
 }
 
-public struct ListMLModelTrainingJobsOutput {
+public struct ListMLModelTrainingJobsOutput: Swift.Sendable {
     /// A page of the list of model training job IDs.
     public var ids: [Swift.String]?
 
@@ -3273,7 +3274,7 @@ public struct ListMLModelTrainingJobsOutput {
     }
 }
 
-public struct ListMLModelTransformJobsInput {
+public struct ListMLModelTransformJobsInput: Swift.Sendable {
     /// The maximum number of items to return (from 1 to 1024; the default is 10).
     public var maxItems: Swift.Int?
     /// The ARN of an IAM role that provides Neptune access to SageMaker and Amazon S3 resources. This must be listed in your DB cluster parameter group or an error will occur.
@@ -3289,7 +3290,7 @@ public struct ListMLModelTransformJobsInput {
     }
 }
 
-public struct ListMLModelTransformJobsOutput {
+public struct ListMLModelTransformJobsOutput: Swift.Sendable {
     /// A page from the list of model transform IDs.
     public var ids: [Swift.String]?
 
@@ -3301,7 +3302,7 @@ public struct ListMLModelTransformJobsOutput {
     }
 }
 
-public struct ListOpenCypherQueriesInput {
+public struct ListOpenCypherQueriesInput: Swift.Sendable {
     /// When set to TRUE and other parameters are not present, causes status information to be returned for waiting queries as well as for running queries.
     public var includeWaiting: Swift.Bool?
 
@@ -3313,7 +3314,7 @@ public struct ListOpenCypherQueriesInput {
     }
 }
 
-public struct ListOpenCypherQueriesOutput {
+public struct ListOpenCypherQueriesOutput: Swift.Sendable {
     /// The number of queries that have been accepted but not yet completed, including queries in the queue.
     public var acceptedQueryCount: Swift.Int?
     /// A list of current openCypher queries.
@@ -3335,7 +3336,7 @@ public struct ListOpenCypherQueriesOutput {
 
 extension NeptunedataClientTypes {
 
-    public enum StatisticsAutoGenerationMode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum StatisticsAutoGenerationMode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case disableAutocompute
         case enableAutocompute
         case refresh
@@ -3365,7 +3366,7 @@ extension NeptunedataClientTypes {
     }
 }
 
-public struct ManagePropertygraphStatisticsInput {
+public struct ManagePropertygraphStatisticsInput: Swift.Sendable {
     /// The statistics generation mode. One of: DISABLE_AUTOCOMPUTE, ENABLE_AUTOCOMPUTE, or REFRESH, the last of which manually triggers DFE statistics generation.
     public var mode: NeptunedataClientTypes.StatisticsAutoGenerationMode?
 
@@ -3378,8 +3379,9 @@ public struct ManagePropertygraphStatisticsInput {
 }
 
 extension NeptunedataClientTypes {
+
     /// Statistics for REFRESH mode.
-    public struct RefreshStatisticsIdMap {
+    public struct RefreshStatisticsIdMap: Swift.Sendable {
         /// The ID of the statistics generation run that is currently occurring.
         public var statisticsId: Swift.String?
 
@@ -3390,10 +3392,9 @@ extension NeptunedataClientTypes {
             self.statisticsId = statisticsId
         }
     }
-
 }
 
-public struct ManagePropertygraphStatisticsOutput {
+public struct ManagePropertygraphStatisticsOutput: Swift.Sendable {
     /// This is only returned for refresh mode.
     public var payload: NeptunedataClientTypes.RefreshStatisticsIdMap?
     /// The HTTP return code of the request. If the request succeeded, the code is 200.
@@ -3410,7 +3411,7 @@ public struct ManagePropertygraphStatisticsOutput {
     }
 }
 
-public struct ManageSparqlStatisticsInput {
+public struct ManageSparqlStatisticsInput: Swift.Sendable {
     /// The statistics generation mode. One of: DISABLE_AUTOCOMPUTE, ENABLE_AUTOCOMPUTE, or REFRESH, the last of which manually triggers DFE statistics generation.
     public var mode: NeptunedataClientTypes.StatisticsAutoGenerationMode?
 
@@ -3422,7 +3423,7 @@ public struct ManageSparqlStatisticsInput {
     }
 }
 
-public struct ManageSparqlStatisticsOutput {
+public struct ManageSparqlStatisticsOutput: Swift.Sendable {
     /// This is only returned for refresh mode.
     public var payload: NeptunedataClientTypes.RefreshStatisticsIdMap?
     /// The HTTP return code of the request. If the request succeeded, the code is 200.
@@ -3477,7 +3478,7 @@ public struct S3Exception: ClientRuntime.ModeledError, AWSClientRuntime.AWSServi
 
 extension NeptunedataClientTypes {
 
-    public enum Format: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Format: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case csv
         case nquads
         case ntriples
@@ -3518,7 +3519,7 @@ extension NeptunedataClientTypes {
 
 extension NeptunedataClientTypes {
 
-    public enum Mode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Mode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case auto
         case new
         case resume
@@ -3550,7 +3551,7 @@ extension NeptunedataClientTypes {
 
 extension NeptunedataClientTypes {
 
-    public enum Parallelism: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Parallelism: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case high
         case low
         case medium
@@ -3585,7 +3586,7 @@ extension NeptunedataClientTypes {
 
 extension NeptunedataClientTypes {
 
-    public enum S3BucketRegion: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum S3BucketRegion: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case afSouth1
         case apEast1
         case apNortheast1
@@ -3675,7 +3676,7 @@ extension NeptunedataClientTypes {
     }
 }
 
-public struct StartLoaderJobInput {
+public struct StartLoaderJobInput: Swift.Sendable {
     /// This is an optional parameter that can make a queued load request contingent on the successful completion of one or more previous jobs in the queue. Neptune can queue up as many as 64 load requests at a time, if their queueRequest parameters are set to "TRUE". The dependencies parameter lets you make execution of such a queued request dependent on the successful completion of one or more specified previous requests in the queue. For example, if load Job-A and Job-B are independent of each other, but load Job-C needs Job-A and Job-B to be finished before it begins, proceed as follows:
     ///
     /// * Submit load-job-A and load-job-B one after another in any order, and save their load-ids.
@@ -3786,7 +3787,7 @@ public struct StartLoaderJobInput {
     }
 }
 
-public struct StartLoaderJobOutput {
+public struct StartLoaderJobOutput: Swift.Sendable {
     /// Contains a loadId name-value pair that provides an identifier for the load operation.
     /// This member is required.
     public var payload: [Swift.String: Swift.String]?
@@ -3804,7 +3805,7 @@ public struct StartLoaderJobOutput {
     }
 }
 
-public struct StartMLDataProcessingJobInput {
+public struct StartMLDataProcessingJobInput: Swift.Sendable {
     /// A data specification file that describes how to load the exported graph data for training. The file is automatically generated by the Neptune export toolkit. The default is training-data-configuration.json.
     public var configFileName: Swift.String?
     /// A unique identifier for the new job. The default is an autogenerated UUID.
@@ -3874,7 +3875,7 @@ public struct StartMLDataProcessingJobInput {
     }
 }
 
-public struct StartMLDataProcessingJobOutput {
+public struct StartMLDataProcessingJobOutput: Swift.Sendable {
     /// The ARN of the data processing job.
     public var arn: Swift.String?
     /// The time it took to create the new processing job, in milliseconds.
@@ -3895,8 +3896,9 @@ public struct StartMLDataProcessingJobOutput {
 }
 
 extension NeptunedataClientTypes {
+
     /// Contains custom model training parameters. See [Custom models in Neptune ML](https://docs.aws.amazon.com/neptune/latest/userguide/machine-learning-custom-models.html).
-    public struct CustomModelTrainingParameters {
+    public struct CustomModelTrainingParameters: Swift.Sendable {
         /// The path to the Amazon S3 location where the Python module implementing your model is located. This must point to a valid existing Amazon S3 location that contains, at a minimum, a training script, a transform script, and a model-hpo-configuration.json file.
         /// This member is required.
         public var sourceS3DirectoryPath: Swift.String?
@@ -3916,10 +3918,9 @@ extension NeptunedataClientTypes {
             self.transformEntryPointScript = transformEntryPointScript
         }
     }
-
 }
 
-public struct StartMLModelTrainingJobInput {
+public struct StartMLModelTrainingJobInput: Swift.Sendable {
     /// The type of ML instance used in preparing and managing training of ML models. This is a CPU instance chosen based on memory requirements for processing the training data and model.
     public var baseProcessingInstanceType: Swift.String?
     /// The configuration for custom model training. This is a JSON object.
@@ -4001,7 +4002,7 @@ public struct StartMLModelTrainingJobInput {
     }
 }
 
-public struct StartMLModelTrainingJobOutput {
+public struct StartMLModelTrainingJobOutput: Swift.Sendable {
     /// The ARN of the new model training job.
     public var arn: Swift.String?
     /// The model training job creation time, in milliseconds.
@@ -4022,8 +4023,9 @@ public struct StartMLModelTrainingJobOutput {
 }
 
 extension NeptunedataClientTypes {
+
     /// Contains custom model transform parameters. See [Use a trained model to generate new model artifacts](https://docs.aws.amazon.com/neptune/latest/userguide/machine-learning-model-transform.html).
-    public struct CustomModelTransformParameters {
+    public struct CustomModelTransformParameters: Swift.Sendable {
         /// The path to the Amazon S3 location where the Python module implementing your model is located. This must point to a valid existing Amazon S3 location that contains, at a minimum, a training script, a transform script, and a model-hpo-configuration.json file.
         /// This member is required.
         public var sourceS3DirectoryPath: Swift.String?
@@ -4039,10 +4041,9 @@ extension NeptunedataClientTypes {
             self.transformEntryPointScript = transformEntryPointScript
         }
     }
-
 }
 
-public struct StartMLModelTransformJobInput {
+public struct StartMLModelTransformJobInput: Swift.Sendable {
     /// The type of ML instance used in preparing and managing training of ML models. This is an ML compute instance chosen based on memory requirements for processing the training data and model.
     public var baseProcessingInstanceType: Swift.String?
     /// The disk volume size of the training instance in gigabytes. The default is 0. Both input data and the output model are stored on disk, so the volume size must be large enough to hold both data sets. If not specified or 0, Neptune ML selects a disk volume size based on the recommendation generated in the data processing step.
@@ -4107,7 +4108,7 @@ public struct StartMLModelTransformJobInput {
     }
 }
 
-public struct StartMLModelTransformJobOutput {
+public struct StartMLModelTransformJobOutput: Swift.Sendable {
     /// The ARN of the model transform job.
     public var arn: Swift.String?
     /// The creation time of the model transform job, in milliseconds.
@@ -7181,6 +7182,21 @@ extension QueryTooLargeException {
     }
 }
 
+extension ExpiredStreamException {
+
+    static func makeError(baseError: AWSClientRuntime.RestJSONError) throws -> ExpiredStreamException {
+        let reader = baseError.errorBodyReader
+        var value = ExpiredStreamException()
+        value.properties.code = try reader["code"].readIfPresent() ?? ""
+        value.properties.detailedMessage = try reader["detailedMessage"].readIfPresent() ?? ""
+        value.properties.requestId = try reader["requestId"].readIfPresent() ?? ""
+        value.httpResponse = baseError.httpResponse
+        value.requestID = baseError.requestID
+        value.message = baseError.message
+        return value
+    }
+}
+
 extension ThrottlingException {
 
     static func makeError(baseError: AWSClientRuntime.RestJSONError) throws -> ThrottlingException {
@@ -7201,21 +7217,6 @@ extension StreamRecordsNotFoundException {
     static func makeError(baseError: AWSClientRuntime.RestJSONError) throws -> StreamRecordsNotFoundException {
         let reader = baseError.errorBodyReader
         var value = StreamRecordsNotFoundException()
-        value.properties.code = try reader["code"].readIfPresent() ?? ""
-        value.properties.detailedMessage = try reader["detailedMessage"].readIfPresent() ?? ""
-        value.properties.requestId = try reader["requestId"].readIfPresent() ?? ""
-        value.httpResponse = baseError.httpResponse
-        value.requestID = baseError.requestID
-        value.message = baseError.message
-        return value
-    }
-}
-
-extension ExpiredStreamException {
-
-    static func makeError(baseError: AWSClientRuntime.RestJSONError) throws -> ExpiredStreamException {
-        let reader = baseError.errorBodyReader
-        var value = ExpiredStreamException()
         value.properties.code = try reader["code"].readIfPresent() ?? ""
         value.properties.detailedMessage = try reader["detailedMessage"].readIfPresent() ?? ""
         value.properties.requestId = try reader["requestId"].readIfPresent() ?? ""

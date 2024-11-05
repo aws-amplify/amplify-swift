@@ -42,6 +42,67 @@ extension PaginatorSequence where OperationStackInput == ListApiKeysInput, Opera
     }
 }
 extension AppSyncClient {
+    /// Paginate over `[ListApisOutput]` results.
+    ///
+    /// When this operation is called, an `AsyncSequence` is created. AsyncSequences are lazy so no service
+    /// calls are made until the sequence is iterated over. This also means there is no guarantee that the request is valid
+    /// until then. If there are errors in your request, you will see the failures only after you start iterating.
+    /// - Parameters:
+    ///     - input: A `[ListApisInput]` to start pagination
+    /// - Returns: An `AsyncSequence` that can iterate over `ListApisOutput`
+    public func listApisPaginated(input: ListApisInput) -> ClientRuntime.PaginatorSequence<ListApisInput, ListApisOutput> {
+        return ClientRuntime.PaginatorSequence<ListApisInput, ListApisOutput>(input: input, inputKey: \.nextToken, outputKey: \.nextToken, paginationFunction: self.listApis(input:))
+    }
+}
+
+extension ListApisInput: ClientRuntime.PaginateToken {
+    public func usingPaginationToken(_ token: Swift.String) -> ListApisInput {
+        return ListApisInput(
+            maxResults: self.maxResults,
+            nextToken: token
+        )}
+}
+
+extension PaginatorSequence where OperationStackInput == ListApisInput, OperationStackOutput == ListApisOutput {
+    /// This paginator transforms the `AsyncSequence` returned by `listApisPaginated`
+    /// to access the nested member `[AppSyncClientTypes.Api]`
+    /// - Returns: `[AppSyncClientTypes.Api]`
+    public func apis() async throws -> [AppSyncClientTypes.Api] {
+        return try await self.asyncCompactMap { item in item.apis }
+    }
+}
+extension AppSyncClient {
+    /// Paginate over `[ListChannelNamespacesOutput]` results.
+    ///
+    /// When this operation is called, an `AsyncSequence` is created. AsyncSequences are lazy so no service
+    /// calls are made until the sequence is iterated over. This also means there is no guarantee that the request is valid
+    /// until then. If there are errors in your request, you will see the failures only after you start iterating.
+    /// - Parameters:
+    ///     - input: A `[ListChannelNamespacesInput]` to start pagination
+    /// - Returns: An `AsyncSequence` that can iterate over `ListChannelNamespacesOutput`
+    public func listChannelNamespacesPaginated(input: ListChannelNamespacesInput) -> ClientRuntime.PaginatorSequence<ListChannelNamespacesInput, ListChannelNamespacesOutput> {
+        return ClientRuntime.PaginatorSequence<ListChannelNamespacesInput, ListChannelNamespacesOutput>(input: input, inputKey: \.nextToken, outputKey: \.nextToken, paginationFunction: self.listChannelNamespaces(input:))
+    }
+}
+
+extension ListChannelNamespacesInput: ClientRuntime.PaginateToken {
+    public func usingPaginationToken(_ token: Swift.String) -> ListChannelNamespacesInput {
+        return ListChannelNamespacesInput(
+            apiId: self.apiId,
+            maxResults: self.maxResults,
+            nextToken: token
+        )}
+}
+
+extension PaginatorSequence where OperationStackInput == ListChannelNamespacesInput, OperationStackOutput == ListChannelNamespacesOutput {
+    /// This paginator transforms the `AsyncSequence` returned by `listChannelNamespacesPaginated`
+    /// to access the nested member `[AppSyncClientTypes.ChannelNamespace]`
+    /// - Returns: `[AppSyncClientTypes.ChannelNamespace]`
+    public func channelNamespaces() async throws -> [AppSyncClientTypes.ChannelNamespace] {
+        return try await self.asyncCompactMap { item in item.channelNamespaces }
+    }
+}
+extension AppSyncClient {
     /// Paginate over `[ListDataSourcesOutput]` results.
     ///
     /// When this operation is called, an `AsyncSequence` is created. AsyncSequences are lazy so no service

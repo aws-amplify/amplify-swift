@@ -2222,7 +2222,7 @@ extension ResiliencehubClient {
 
     /// Performs the `ListAppAssessmentComplianceDrifts` operation on the `AwsResilienceHub` service.
     ///
-    /// List of compliance drifts that were detected while running an assessment.
+    /// Indicates the list of compliance drifts that were detected while running an assessment.
     ///
     /// - Parameter ListAppAssessmentComplianceDriftsInput : [no documentation found]
     ///

@@ -29,7 +29,7 @@ import protocol ClientRuntime.ModeledError
 
 extension MediaStoreClientTypes {
 
-    public enum MethodName: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum MethodName: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case delete
         case `get`
         case head
@@ -64,7 +64,7 @@ extension MediaStoreClientTypes {
 
 extension MediaStoreClientTypes {
 
-    public enum ContainerStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ContainerStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case active
         case creating
         case deleting
@@ -95,8 +95,9 @@ extension MediaStoreClientTypes {
 }
 
 extension MediaStoreClientTypes {
+
     /// This section describes operations that you can perform on an AWS Elemental MediaStore container.
-    public struct Container {
+    public struct Container: Swift.Sendable {
         /// The state of access logging on the container. This value is false by default, indicating that AWS Elemental MediaStore does not send access logs to Amazon CloudWatch Logs. When you enable access logging on the container, MediaStore changes this value to true, indicating that the service delivers access logs for objects stored in that container to CloudWatch Logs.
         public var accessLoggingEnabled: Swift.Bool?
         /// The Amazon Resource Name (ARN) of the container. The ARN has the following format: arn:aws:::container/ For example: arn:aws:mediastore:us-west-2:111122223333:container/movies
@@ -127,7 +128,6 @@ extension MediaStoreClientTypes {
             self.status = status
         }
     }
-
 }
 
 /// The container that you specified in the request already exists or is being updated.
@@ -156,7 +156,7 @@ public struct ContainerInUseException: ClientRuntime.ModeledError, AWSClientRunt
 
 extension MediaStoreClientTypes {
 
-    public enum ContainerLevelMetrics: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ContainerLevelMetrics: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case disabled
         case enabled
         case sdkUnknown(Swift.String)
@@ -208,8 +208,9 @@ public struct ContainerNotFoundException: ClientRuntime.ModeledError, AWSClientR
 }
 
 extension MediaStoreClientTypes {
+
     /// A rule for a CORS policy. You can add up to 100 rules to a CORS policy. If more than one rule applies, the service uses the first applicable rule listed.
-    public struct CorsRule {
+    public struct CorsRule: Swift.Sendable {
         /// Specifies which headers are allowed in a preflight OPTIONS request through the Access-Control-Request-Headers header. Each header name that is specified in Access-Control-Request-Headers must have a corresponding entry in the rule. Only the headers that were requested are sent back. This element can contain only one wildcard character (*).
         /// This member is required.
         public var allowedHeaders: [Swift.String]?
@@ -238,7 +239,6 @@ extension MediaStoreClientTypes {
             self.maxAgeSeconds = maxAgeSeconds
         }
     }
-
 }
 
 /// The CORS policy that you specified in the request does not exist.
@@ -314,8 +314,9 @@ public struct LimitExceededException: ClientRuntime.ModeledError, AWSClientRunti
 }
 
 extension MediaStoreClientTypes {
+
     /// A collection of tags associated with a container. Each tag consists of a key:value pair, which can be anything you define. Typically, the tag key represents a category (such as "environment") and the tag value represents a specific value within that category (such as "test," "development," or "production"). You can add up to 50 tags to each container. For more information about tagging, including naming and usage conventions, see [Tagging Resources in MediaStore](https://docs.aws.amazon.com/mediastore/latest/ug/tagging.html).
-    public struct Tag {
+    public struct Tag: Swift.Sendable {
         /// Part of the key:value pair that defines a tag. You can use a tag key to describe a category of information, such as "customer." Tag keys are case-sensitive.
         /// This member is required.
         public var key: Swift.String?
@@ -331,10 +332,9 @@ extension MediaStoreClientTypes {
             self.value = value
         }
     }
-
 }
 
-public struct CreateContainerInput {
+public struct CreateContainerInput: Swift.Sendable {
     /// The name for the container. The name must be from 1 to 255 characters. Container names must be unique to your AWS account within a specific region. As an example, you could create a container named movies in every region, as long as you don’t have an existing container with that name.
     /// This member is required.
     public var containerName: Swift.String?
@@ -351,7 +351,7 @@ public struct CreateContainerInput {
     }
 }
 
-public struct CreateContainerOutput {
+public struct CreateContainerOutput: Swift.Sendable {
     /// ContainerARN: The Amazon Resource Name (ARN) of the newly created container. The ARN has the following format: arn:aws:::container/. For example: arn:aws:mediastore:us-west-2:111122223333:container/movies ContainerName: The container name as specified in the request. CreationTime: Unix time stamp. Status: The status of container creation or deletion. The status is one of the following: CREATING, ACTIVE, or DELETING. While the service is creating the container, the status is CREATING. When an endpoint is available, the status changes to ACTIVE. The return value does not include the container's endpoint. To make downstream requests, you must obtain this value by using [DescribeContainer] or [ListContainers].
     /// This member is required.
     public var container: MediaStoreClientTypes.Container?
@@ -364,7 +364,7 @@ public struct CreateContainerOutput {
     }
 }
 
-public struct DeleteContainerInput {
+public struct DeleteContainerInput: Swift.Sendable {
     /// The name of the container to delete.
     /// This member is required.
     public var containerName: Swift.String?
@@ -377,7 +377,7 @@ public struct DeleteContainerInput {
     }
 }
 
-public struct DeleteContainerOutput {
+public struct DeleteContainerOutput: Swift.Sendable {
 
     public init() { }
 }
@@ -406,7 +406,7 @@ public struct PolicyNotFoundException: ClientRuntime.ModeledError, AWSClientRunt
     }
 }
 
-public struct DeleteContainerPolicyInput {
+public struct DeleteContainerPolicyInput: Swift.Sendable {
     /// The name of the container that holds the policy.
     /// This member is required.
     public var containerName: Swift.String?
@@ -419,12 +419,12 @@ public struct DeleteContainerPolicyInput {
     }
 }
 
-public struct DeleteContainerPolicyOutput {
+public struct DeleteContainerPolicyOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteCorsPolicyInput {
+public struct DeleteCorsPolicyInput: Swift.Sendable {
     /// The name of the container to remove the policy from.
     /// This member is required.
     public var containerName: Swift.String?
@@ -437,12 +437,12 @@ public struct DeleteCorsPolicyInput {
     }
 }
 
-public struct DeleteCorsPolicyOutput {
+public struct DeleteCorsPolicyOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteLifecyclePolicyInput {
+public struct DeleteLifecyclePolicyInput: Swift.Sendable {
     /// The name of the container that holds the object lifecycle policy.
     /// This member is required.
     public var containerName: Swift.String?
@@ -455,12 +455,12 @@ public struct DeleteLifecyclePolicyInput {
     }
 }
 
-public struct DeleteLifecyclePolicyOutput {
+public struct DeleteLifecyclePolicyOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteMetricPolicyInput {
+public struct DeleteMetricPolicyInput: Swift.Sendable {
     /// The name of the container that is associated with the metric policy that you want to delete.
     /// This member is required.
     public var containerName: Swift.String?
@@ -473,12 +473,12 @@ public struct DeleteMetricPolicyInput {
     }
 }
 
-public struct DeleteMetricPolicyOutput {
+public struct DeleteMetricPolicyOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DescribeContainerInput {
+public struct DescribeContainerInput: Swift.Sendable {
     /// The name of the container to query.
     public var containerName: Swift.String?
 
@@ -490,7 +490,7 @@ public struct DescribeContainerInput {
     }
 }
 
-public struct DescribeContainerOutput {
+public struct DescribeContainerOutput: Swift.Sendable {
     /// The name of the queried container.
     public var container: MediaStoreClientTypes.Container?
 
@@ -502,7 +502,7 @@ public struct DescribeContainerOutput {
     }
 }
 
-public struct GetContainerPolicyInput {
+public struct GetContainerPolicyInput: Swift.Sendable {
     /// The name of the container.
     /// This member is required.
     public var containerName: Swift.String?
@@ -515,7 +515,7 @@ public struct GetContainerPolicyInput {
     }
 }
 
-public struct GetContainerPolicyOutput {
+public struct GetContainerPolicyOutput: Swift.Sendable {
     /// The contents of the access policy.
     /// This member is required.
     public var policy: Swift.String?
@@ -528,7 +528,7 @@ public struct GetContainerPolicyOutput {
     }
 }
 
-public struct GetCorsPolicyInput {
+public struct GetCorsPolicyInput: Swift.Sendable {
     /// The name of the container that the policy is assigned to.
     /// This member is required.
     public var containerName: Swift.String?
@@ -541,7 +541,7 @@ public struct GetCorsPolicyInput {
     }
 }
 
-public struct GetCorsPolicyOutput {
+public struct GetCorsPolicyOutput: Swift.Sendable {
     /// The CORS policy assigned to the container.
     /// This member is required.
     public var corsPolicy: [MediaStoreClientTypes.CorsRule]?
@@ -554,7 +554,7 @@ public struct GetCorsPolicyOutput {
     }
 }
 
-public struct GetLifecyclePolicyInput {
+public struct GetLifecyclePolicyInput: Swift.Sendable {
     /// The name of the container that the object lifecycle policy is assigned to.
     /// This member is required.
     public var containerName: Swift.String?
@@ -567,7 +567,7 @@ public struct GetLifecyclePolicyInput {
     }
 }
 
-public struct GetLifecyclePolicyOutput {
+public struct GetLifecyclePolicyOutput: Swift.Sendable {
     /// The object lifecycle policy that is assigned to the container.
     /// This member is required.
     public var lifecyclePolicy: Swift.String?
@@ -580,7 +580,7 @@ public struct GetLifecyclePolicyOutput {
     }
 }
 
-public struct GetMetricPolicyInput {
+public struct GetMetricPolicyInput: Swift.Sendable {
     /// The name of the container that is associated with the metric policy.
     /// This member is required.
     public var containerName: Swift.String?
@@ -594,8 +594,9 @@ public struct GetMetricPolicyInput {
 }
 
 extension MediaStoreClientTypes {
+
     /// A setting that enables metrics at the object level. Each rule contains an object group and an object group name. If the policy includes the MetricPolicyRules parameter, you must include at least one rule. Each metric policy can include up to five rules by default. You can also [request a quota increase](https://console.aws.amazon.com/servicequotas/home?region=us-east-1#!/services/mediastore/quotas) to allow up to 300 rules per policy.
-    public struct MetricPolicyRule {
+    public struct MetricPolicyRule: Swift.Sendable {
         /// A path or file name that defines which objects to include in the group. Wildcards (*) are acceptable.
         /// This member is required.
         public var objectGroup: Swift.String?
@@ -612,12 +613,12 @@ extension MediaStoreClientTypes {
             self.objectGroupName = objectGroupName
         }
     }
-
 }
 
 extension MediaStoreClientTypes {
+
     /// The metric policy that is associated with the container. A metric policy allows AWS Elemental MediaStore to send metrics to Amazon CloudWatch. In the policy, you must indicate whether you want MediaStore to send container-level metrics. You can also include rules to define groups of objects that you want MediaStore to send object-level metrics for. To view examples of how to construct a metric policy for your use case, see [Example Metric Policies](https://docs.aws.amazon.com/mediastore/latest/ug/policies-metric-examples.html).
-    public struct MetricPolicy {
+    public struct MetricPolicy: Swift.Sendable {
         /// A setting to enable or disable metrics at the container level.
         /// This member is required.
         public var containerLevelMetrics: MediaStoreClientTypes.ContainerLevelMetrics?
@@ -633,10 +634,9 @@ extension MediaStoreClientTypes {
             self.metricPolicyRules = metricPolicyRules
         }
     }
-
 }
 
-public struct GetMetricPolicyOutput {
+public struct GetMetricPolicyOutput: Swift.Sendable {
     /// The metric policy that is associated with the specific container.
     /// This member is required.
     public var metricPolicy: MediaStoreClientTypes.MetricPolicy?
@@ -649,7 +649,7 @@ public struct GetMetricPolicyOutput {
     }
 }
 
-public struct ListContainersInput {
+public struct ListContainersInput: Swift.Sendable {
     /// Enter the maximum number of containers in the response. Use from 1 to 255 characters.
     public var maxResults: Swift.Int?
     /// Only if you used MaxResults in the first command, enter the token (which was included in the previous response) to obtain the next set of containers. This token is included in a response only if there actually are more containers to list.
@@ -665,7 +665,7 @@ public struct ListContainersInput {
     }
 }
 
-public struct ListContainersOutput {
+public struct ListContainersOutput: Swift.Sendable {
     /// The names of the containers.
     /// This member is required.
     public var containers: [MediaStoreClientTypes.Container]?
@@ -682,7 +682,7 @@ public struct ListContainersOutput {
     }
 }
 
-public struct ListTagsForResourceInput {
+public struct ListTagsForResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) for the container.
     /// This member is required.
     public var resource: Swift.String?
@@ -695,7 +695,7 @@ public struct ListTagsForResourceInput {
     }
 }
 
-public struct ListTagsForResourceOutput {
+public struct ListTagsForResourceOutput: Swift.Sendable {
     /// An array of key:value pairs that are assigned to the container.
     public var tags: [MediaStoreClientTypes.Tag]?
 
@@ -707,7 +707,7 @@ public struct ListTagsForResourceOutput {
     }
 }
 
-public struct PutContainerPolicyInput {
+public struct PutContainerPolicyInput: Swift.Sendable {
     /// The name of the container.
     /// This member is required.
     public var containerName: Swift.String?
@@ -729,12 +729,12 @@ public struct PutContainerPolicyInput {
     }
 }
 
-public struct PutContainerPolicyOutput {
+public struct PutContainerPolicyOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct PutCorsPolicyInput {
+public struct PutCorsPolicyInput: Swift.Sendable {
     /// The name of the container that you want to assign the CORS policy to.
     /// This member is required.
     public var containerName: Swift.String?
@@ -752,12 +752,12 @@ public struct PutCorsPolicyInput {
     }
 }
 
-public struct PutCorsPolicyOutput {
+public struct PutCorsPolicyOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct PutLifecyclePolicyInput {
+public struct PutLifecyclePolicyInput: Swift.Sendable {
     /// The name of the container that you want to assign the object lifecycle policy to.
     /// This member is required.
     public var containerName: Swift.String?
@@ -775,12 +775,12 @@ public struct PutLifecyclePolicyInput {
     }
 }
 
-public struct PutLifecyclePolicyOutput {
+public struct PutLifecyclePolicyOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct PutMetricPolicyInput {
+public struct PutMetricPolicyInput: Swift.Sendable {
     /// The name of the container that you want to add the metric policy to.
     /// This member is required.
     public var containerName: Swift.String?
@@ -802,12 +802,12 @@ public struct PutMetricPolicyInput {
     }
 }
 
-public struct PutMetricPolicyOutput {
+public struct PutMetricPolicyOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct StartAccessLoggingInput {
+public struct StartAccessLoggingInput: Swift.Sendable {
     /// The name of the container that you want to start access logging on.
     /// This member is required.
     public var containerName: Swift.String?
@@ -820,12 +820,12 @@ public struct StartAccessLoggingInput {
     }
 }
 
-public struct StartAccessLoggingOutput {
+public struct StartAccessLoggingOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct StopAccessLoggingInput {
+public struct StopAccessLoggingInput: Swift.Sendable {
     /// The name of the container that you want to stop access logging on.
     /// This member is required.
     public var containerName: Swift.String?
@@ -838,12 +838,12 @@ public struct StopAccessLoggingInput {
     }
 }
 
-public struct StopAccessLoggingOutput {
+public struct StopAccessLoggingOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct TagResourceInput {
+public struct TagResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) for the container.
     /// This member is required.
     public var resource: Swift.String?
@@ -861,12 +861,12 @@ public struct TagResourceInput {
     }
 }
 
-public struct TagResourceOutput {
+public struct TagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UntagResourceInput {
+public struct UntagResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) for the container.
     /// This member is required.
     public var resource: Swift.String?
@@ -884,7 +884,7 @@ public struct UntagResourceInput {
     }
 }
 
-public struct UntagResourceOutput {
+public struct UntagResourceOutput: Swift.Sendable {
 
     public init() { }
 }

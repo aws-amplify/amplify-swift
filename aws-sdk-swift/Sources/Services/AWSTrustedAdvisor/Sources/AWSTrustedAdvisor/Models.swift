@@ -27,12 +27,13 @@ import struct Smithy.URIQueryItem
 @_spi(SmithyReadWrite) import struct SmithyReadWrite.ReadingClosureBox
 @_spi(SmithyTimestamps) import struct SmithyTimestamps.TimestampFormatter
 
-public struct UpdateOrganizationRecommendationLifecycleOutput {
+
+public struct UpdateOrganizationRecommendationLifecycleOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdateRecommendationLifecycleOutput {
+public struct UpdateRecommendationLifecycleOutput: Swift.Sendable {
 
     public init() { }
 }
@@ -64,7 +65,7 @@ public struct AccessDeniedException: ClientRuntime.ModeledError, AWSClientRuntim
 
 extension TrustedAdvisorClientTypes {
 
-    public enum RecommendationLifecycleStage: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum RecommendationLifecycleStage: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case dismissed
         case inProgress
         case pendingResponse
@@ -99,7 +100,7 @@ extension TrustedAdvisorClientTypes {
 
 extension TrustedAdvisorClientTypes {
 
-    public enum UpdateRecommendationLifecycleStageReasonCode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum UpdateRecommendationLifecycleStageReasonCode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case lowPriority
         case nonCriticalAccount
         case notApplicable
@@ -142,8 +143,9 @@ extension TrustedAdvisorClientTypes {
 }
 
 extension TrustedAdvisorClientTypes {
+
     /// Summary of an AccountRecommendationLifecycle for an Organization Recommendation
-    public struct AccountRecommendationLifecycleSummary {
+    public struct AccountRecommendationLifecycleSummary: Swift.Sendable {
         /// The AWS account ID
         public var accountId: Swift.String?
         /// The Recommendation ARN
@@ -182,7 +184,6 @@ extension TrustedAdvisorClientTypes {
             self.updatedOnBehalfOfJobTitle = updatedOnBehalfOfJobTitle
         }
     }
-
 }
 
 extension TrustedAdvisorClientTypes.AccountRecommendationLifecycleSummary: Swift.CustomDebugStringConvertible {
@@ -291,8 +292,9 @@ public struct ValidationException: ClientRuntime.ModeledError, AWSClientRuntime.
 }
 
 extension TrustedAdvisorClientTypes {
+
     /// The request entry for Recommendation Resource exclusion. Each entry is a combination of Recommendation Resource ARN and corresponding exclusion status
-    public struct RecommendationResourceExclusion {
+    public struct RecommendationResourceExclusion: Swift.Sendable {
         /// The ARN of the Recommendation Resource
         /// This member is required.
         public var arn: Swift.String?
@@ -309,10 +311,9 @@ extension TrustedAdvisorClientTypes {
             self.isExcluded = isExcluded
         }
     }
-
 }
 
-public struct BatchUpdateRecommendationResourceExclusionInput {
+public struct BatchUpdateRecommendationResourceExclusionInput: Swift.Sendable {
     /// A list of recommendation resource ARNs and exclusion status to update
     /// This member is required.
     public var recommendationResourceExclusions: [TrustedAdvisorClientTypes.RecommendationResourceExclusion]?
@@ -326,8 +327,9 @@ public struct BatchUpdateRecommendationResourceExclusionInput {
 }
 
 extension TrustedAdvisorClientTypes {
+
     /// The error entry for Recommendation Resource exclusion. Each entry is a combination of Recommendation Resource ARN, error code and error message
-    public struct UpdateRecommendationResourceExclusionError {
+    public struct UpdateRecommendationResourceExclusionError: Swift.Sendable {
         /// The ARN of the Recommendation Resource
         public var arn: Swift.String?
         /// The error code
@@ -346,10 +348,9 @@ extension TrustedAdvisorClientTypes {
             self.errorMessage = errorMessage
         }
     }
-
 }
 
-public struct BatchUpdateRecommendationResourceExclusionOutput {
+public struct BatchUpdateRecommendationResourceExclusionOutput: Swift.Sendable {
     /// A list of recommendation resource ARNs whose exclusion status failed to update, if any
     /// This member is required.
     public var batchUpdateRecommendationResourceExclusionErrors: [TrustedAdvisorClientTypes.UpdateRecommendationResourceExclusionError]?
@@ -364,7 +365,7 @@ public struct BatchUpdateRecommendationResourceExclusionOutput {
 
 extension TrustedAdvisorClientTypes {
 
-    public enum RecommendationPillar: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum RecommendationPillar: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case costOptimizing
         case faultTolerance
         case operationalExcellence
@@ -405,7 +406,7 @@ extension TrustedAdvisorClientTypes {
 
 extension TrustedAdvisorClientTypes {
 
-    public enum RecommendationSource: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum RecommendationSource: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case awsConfig
         case computeOptimizer
         case costExplorer
@@ -466,8 +467,9 @@ extension TrustedAdvisorClientTypes {
 }
 
 extension TrustedAdvisorClientTypes {
+
     /// A summary of an AWS Trusted Advisor Check
-    public struct CheckSummary {
+    public struct CheckSummary: Swift.Sendable {
         /// The ARN of the AWS Trusted Advisor Check
         /// This member is required.
         public var arn: Swift.String?
@@ -514,12 +516,11 @@ extension TrustedAdvisorClientTypes {
             self.source = source
         }
     }
-
 }
 
 extension TrustedAdvisorClientTypes {
 
-    public enum ExclusionStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ExclusionStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case excluded
         case included
         case sdkUnknown(Swift.String)
@@ -571,7 +572,7 @@ public struct ResourceNotFoundException: ClientRuntime.ModeledError, AWSClientRu
     }
 }
 
-public struct GetOrganizationRecommendationInput {
+public struct GetOrganizationRecommendationInput: Swift.Sendable {
     /// The Recommendation identifier
     /// This member is required.
     public var organizationRecommendationIdentifier: Swift.String?
@@ -585,8 +586,9 @@ public struct GetOrganizationRecommendationInput {
 }
 
 extension TrustedAdvisorClientTypes {
+
     /// Cost optimizing aggregates for a Recommendation
-    public struct RecommendationCostOptimizingAggregates {
+    public struct RecommendationCostOptimizingAggregates: Swift.Sendable {
         /// The estimated monthly savings
         /// This member is required.
         public var estimatedMonthlySavings: Swift.Double?
@@ -603,12 +605,12 @@ extension TrustedAdvisorClientTypes {
             self.estimatedPercentMonthlySavings = estimatedPercentMonthlySavings
         }
     }
-
 }
 
 extension TrustedAdvisorClientTypes {
+
     /// Recommendation pillar aggregates
-    public struct RecommendationPillarSpecificAggregates {
+    public struct RecommendationPillarSpecificAggregates: Swift.Sendable {
         /// Cost optimizing aggregates
         public var costOptimizing: TrustedAdvisorClientTypes.RecommendationCostOptimizingAggregates?
 
@@ -619,12 +621,12 @@ extension TrustedAdvisorClientTypes {
             self.costOptimizing = costOptimizing
         }
     }
-
 }
 
 extension TrustedAdvisorClientTypes {
+
     /// Aggregation of Recommendation Resources
-    public struct RecommendationResourcesAggregates {
+    public struct RecommendationResourcesAggregates: Swift.Sendable {
         /// The number of AWS resources that were flagged to have errors according to the Trusted Advisor check
         /// This member is required.
         public var errorCount: Swift.Int?
@@ -646,12 +648,11 @@ extension TrustedAdvisorClientTypes {
             self.warningCount = warningCount
         }
     }
-
 }
 
 extension TrustedAdvisorClientTypes {
 
-    public enum RecommendationStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum RecommendationStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case error
         case ok
         case warning
@@ -683,7 +684,7 @@ extension TrustedAdvisorClientTypes {
 
 extension TrustedAdvisorClientTypes {
 
-    public enum RecommendationType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum RecommendationType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case priority
         case standard
         case sdkUnknown(Swift.String)
@@ -711,8 +712,9 @@ extension TrustedAdvisorClientTypes {
 }
 
 extension TrustedAdvisorClientTypes {
+
     /// A Recommendation for accounts within an Organization
-    public struct OrganizationRecommendation {
+    public struct OrganizationRecommendation: Swift.Sendable {
         /// The ARN of the Recommendation
         /// This member is required.
         public var arn: Swift.String?
@@ -812,7 +814,6 @@ extension TrustedAdvisorClientTypes {
             self.updatedOnBehalfOfJobTitle = updatedOnBehalfOfJobTitle
         }
     }
-
 }
 
 extension TrustedAdvisorClientTypes.OrganizationRecommendation: Swift.CustomDebugStringConvertible {
@@ -820,7 +821,7 @@ extension TrustedAdvisorClientTypes.OrganizationRecommendation: Swift.CustomDebu
         "OrganizationRecommendation(arn: \(Swift.String(describing: arn)), awsServices: \(Swift.String(describing: awsServices)), checkArn: \(Swift.String(describing: checkArn)), createdAt: \(Swift.String(describing: createdAt)), createdBy: \(Swift.String(describing: createdBy)), description: \(Swift.String(describing: description)), id: \(Swift.String(describing: id)), lastUpdatedAt: \(Swift.String(describing: lastUpdatedAt)), lifecycleStage: \(Swift.String(describing: lifecycleStage)), name: \(Swift.String(describing: name)), pillarSpecificAggregates: \(Swift.String(describing: pillarSpecificAggregates)), pillars: \(Swift.String(describing: pillars)), resolvedAt: \(Swift.String(describing: resolvedAt)), resourcesAggregates: \(Swift.String(describing: resourcesAggregates)), source: \(Swift.String(describing: source)), status: \(Swift.String(describing: status)), type: \(Swift.String(describing: type)), updateReasonCode: \(Swift.String(describing: updateReasonCode)), updatedOnBehalfOf: \(Swift.String(describing: updatedOnBehalfOf)), updatedOnBehalfOfJobTitle: \(Swift.String(describing: updatedOnBehalfOfJobTitle)), updateReason: \"CONTENT_REDACTED\")"}
 }
 
-public struct GetOrganizationRecommendationOutput {
+public struct GetOrganizationRecommendationOutput: Swift.Sendable {
     /// The Recommendation
     public var organizationRecommendation: TrustedAdvisorClientTypes.OrganizationRecommendation?
 
@@ -832,7 +833,7 @@ public struct GetOrganizationRecommendationOutput {
     }
 }
 
-public struct GetRecommendationInput {
+public struct GetRecommendationInput: Swift.Sendable {
     /// The Recommendation identifier
     /// This member is required.
     public var recommendationIdentifier: Swift.String?
@@ -846,8 +847,9 @@ public struct GetRecommendationInput {
 }
 
 extension TrustedAdvisorClientTypes {
+
     /// A Recommendation for an Account
-    public struct Recommendation {
+    public struct Recommendation: Swift.Sendable {
         /// The ARN of the Recommendation
         /// This member is required.
         public var arn: Swift.String?
@@ -947,7 +949,6 @@ extension TrustedAdvisorClientTypes {
             self.updatedOnBehalfOfJobTitle = updatedOnBehalfOfJobTitle
         }
     }
-
 }
 
 extension TrustedAdvisorClientTypes.Recommendation: Swift.CustomDebugStringConvertible {
@@ -955,7 +956,7 @@ extension TrustedAdvisorClientTypes.Recommendation: Swift.CustomDebugStringConve
         "Recommendation(arn: \(Swift.String(describing: arn)), awsServices: \(Swift.String(describing: awsServices)), checkArn: \(Swift.String(describing: checkArn)), createdAt: \(Swift.String(describing: createdAt)), createdBy: \(Swift.String(describing: createdBy)), description: \(Swift.String(describing: description)), id: \(Swift.String(describing: id)), lastUpdatedAt: \(Swift.String(describing: lastUpdatedAt)), lifecycleStage: \(Swift.String(describing: lifecycleStage)), name: \(Swift.String(describing: name)), pillarSpecificAggregates: \(Swift.String(describing: pillarSpecificAggregates)), pillars: \(Swift.String(describing: pillars)), resolvedAt: \(Swift.String(describing: resolvedAt)), resourcesAggregates: \(Swift.String(describing: resourcesAggregates)), source: \(Swift.String(describing: source)), status: \(Swift.String(describing: status)), type: \(Swift.String(describing: type)), updateReasonCode: \(Swift.String(describing: updateReasonCode)), updatedOnBehalfOf: \(Swift.String(describing: updatedOnBehalfOf)), updatedOnBehalfOfJobTitle: \(Swift.String(describing: updatedOnBehalfOfJobTitle)), updateReason: \"CONTENT_REDACTED\")"}
 }
 
-public struct GetRecommendationOutput {
+public struct GetRecommendationOutput: Swift.Sendable {
     /// The Recommendation
     public var recommendation: TrustedAdvisorClientTypes.Recommendation?
 
@@ -969,7 +970,7 @@ public struct GetRecommendationOutput {
 
 extension TrustedAdvisorClientTypes {
 
-    public enum RecommendationLanguage: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum RecommendationLanguage: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case bahasaIndonesia
         case brazilianPortuguese
         case chinese
@@ -1023,7 +1024,7 @@ extension TrustedAdvisorClientTypes {
     }
 }
 
-public struct ListChecksInput {
+public struct ListChecksInput: Swift.Sendable {
     /// The aws service associated with the check
     public var awsService: Swift.String?
     /// The ISO 639-1 code for the language that you want your checks to appear in.
@@ -1055,7 +1056,7 @@ public struct ListChecksInput {
     }
 }
 
-public struct ListChecksOutput {
+public struct ListChecksOutput: Swift.Sendable {
     /// The list of Checks
     /// This member is required.
     public var checkSummaries: [TrustedAdvisorClientTypes.CheckSummary]?
@@ -1072,7 +1073,7 @@ public struct ListChecksOutput {
     }
 }
 
-public struct ListOrganizationRecommendationAccountsInput {
+public struct ListOrganizationRecommendationAccountsInput: Swift.Sendable {
     /// An account affected by this organization recommendation
     public var affectedAccountId: Swift.String?
     /// The maximum number of results to return per page.
@@ -1097,7 +1098,7 @@ public struct ListOrganizationRecommendationAccountsInput {
     }
 }
 
-public struct ListOrganizationRecommendationAccountsOutput {
+public struct ListOrganizationRecommendationAccountsOutput: Swift.Sendable {
     /// The account recommendations lifecycles that are applicable to the Recommendation
     /// This member is required.
     public var accountRecommendationLifecycleSummaries: [TrustedAdvisorClientTypes.AccountRecommendationLifecycleSummary]?
@@ -1116,7 +1117,7 @@ public struct ListOrganizationRecommendationAccountsOutput {
 
 extension TrustedAdvisorClientTypes {
 
-    public enum ResourceStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ResourceStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case error
         case ok
         case warning
@@ -1146,7 +1147,7 @@ extension TrustedAdvisorClientTypes {
     }
 }
 
-public struct ListOrganizationRecommendationResourcesInput {
+public struct ListOrganizationRecommendationResourcesInput: Swift.Sendable {
     /// An account affected by this organization recommendation
     public var affectedAccountId: Swift.String?
     /// The exclusion status of the resource
@@ -1184,8 +1185,9 @@ public struct ListOrganizationRecommendationResourcesInput {
 }
 
 extension TrustedAdvisorClientTypes {
+
     /// Organization Recommendation Resource Summary
-    public struct OrganizationRecommendationResourceSummary {
+    public struct OrganizationRecommendationResourceSummary: Swift.Sendable {
         /// The AWS account ID
         public var accountId: Swift.String?
         /// The ARN of the Recommendation Resource
@@ -1240,10 +1242,9 @@ extension TrustedAdvisorClientTypes {
             self.status = status
         }
     }
-
 }
 
-public struct ListOrganizationRecommendationResourcesOutput {
+public struct ListOrganizationRecommendationResourcesOutput: Swift.Sendable {
     /// The token for the next set of results. Use the value returned in the previous response in the next request to retrieve the next set of results.
     public var nextToken: Swift.String?
     /// A list of Recommendation Resources
@@ -1260,7 +1261,7 @@ public struct ListOrganizationRecommendationResourcesOutput {
     }
 }
 
-public struct ListOrganizationRecommendationsInput {
+public struct ListOrganizationRecommendationsInput: Swift.Sendable {
     /// After the last update of the Recommendation
     public var afterLastUpdatedAt: Foundation.Date?
     /// The aws service associated with the Recommendation
@@ -1309,8 +1310,9 @@ public struct ListOrganizationRecommendationsInput {
 }
 
 extension TrustedAdvisorClientTypes {
+
     /// Summary of recommendation for accounts within an Organization
-    public struct OrganizationRecommendationSummary {
+    public struct OrganizationRecommendationSummary: Swift.Sendable {
         /// The ARN of the Recommendation
         /// This member is required.
         public var arn: Swift.String?
@@ -1381,10 +1383,9 @@ extension TrustedAdvisorClientTypes {
             self.type = type
         }
     }
-
 }
 
-public struct ListOrganizationRecommendationsOutput {
+public struct ListOrganizationRecommendationsOutput: Swift.Sendable {
     /// The token for the next set of results. Use the value returned in the previous response in the next request to retrieve the next set of results.
     public var nextToken: Swift.String?
     /// The list of Recommendations
@@ -1401,7 +1402,7 @@ public struct ListOrganizationRecommendationsOutput {
     }
 }
 
-public struct ListRecommendationResourcesInput {
+public struct ListRecommendationResourcesInput: Swift.Sendable {
     /// The exclusion status of the resource
     public var exclusionStatus: TrustedAdvisorClientTypes.ExclusionStatus?
     /// The maximum number of results to return per page.
@@ -1435,8 +1436,9 @@ public struct ListRecommendationResourcesInput {
 }
 
 extension TrustedAdvisorClientTypes {
+
     /// Summary of a Recommendation Resource
-    public struct RecommendationResourceSummary {
+    public struct RecommendationResourceSummary: Swift.Sendable {
         /// The ARN of the Recommendation Resource
         /// This member is required.
         public var arn: Swift.String?
@@ -1487,10 +1489,9 @@ extension TrustedAdvisorClientTypes {
             self.status = status
         }
     }
-
 }
 
-public struct ListRecommendationResourcesOutput {
+public struct ListRecommendationResourcesOutput: Swift.Sendable {
     /// The token for the next set of results. Use the value returned in the previous response in the next request to retrieve the next set of results.
     public var nextToken: Swift.String?
     /// A list of Recommendation Resources
@@ -1507,7 +1508,7 @@ public struct ListRecommendationResourcesOutput {
     }
 }
 
-public struct ListRecommendationsInput {
+public struct ListRecommendationsInput: Swift.Sendable {
     /// After the last update of the Recommendation
     public var afterLastUpdatedAt: Foundation.Date?
     /// The aws service associated with the Recommendation
@@ -1556,8 +1557,9 @@ public struct ListRecommendationsInput {
 }
 
 extension TrustedAdvisorClientTypes {
+
     /// Summary of Recommendation for an Account
-    public struct RecommendationSummary {
+    public struct RecommendationSummary: Swift.Sendable {
         /// The ARN of the Recommendation
         /// This member is required.
         public var arn: Swift.String?
@@ -1628,10 +1630,9 @@ extension TrustedAdvisorClientTypes {
             self.type = type
         }
     }
-
 }
 
-public struct ListRecommendationsOutput {
+public struct ListRecommendationsOutput: Swift.Sendable {
     /// The token for the next set of results. Use the value returned in the previous response in the next request to retrieve the next set of results.
     public var nextToken: Swift.String?
     /// The list of Recommendations
@@ -1650,7 +1651,7 @@ public struct ListRecommendationsOutput {
 
 extension TrustedAdvisorClientTypes {
 
-    public enum UpdateRecommendationLifecycleStage: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum UpdateRecommendationLifecycleStage: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case dismissed
         case inProgress
         case pendingResponse
@@ -1683,7 +1684,7 @@ extension TrustedAdvisorClientTypes {
     }
 }
 
-public struct UpdateOrganizationRecommendationLifecycleInput {
+public struct UpdateOrganizationRecommendationLifecycleInput: Swift.Sendable {
     /// The new lifecycle stage
     /// This member is required.
     public var lifecycleStage: TrustedAdvisorClientTypes.UpdateRecommendationLifecycleStage?
@@ -1714,7 +1715,7 @@ extension UpdateOrganizationRecommendationLifecycleInput: Swift.CustomDebugStrin
         "UpdateOrganizationRecommendationLifecycleInput(lifecycleStage: \(Swift.String(describing: lifecycleStage)), organizationRecommendationIdentifier: \(Swift.String(describing: organizationRecommendationIdentifier)), updateReasonCode: \(Swift.String(describing: updateReasonCode)), updateReason: \"CONTENT_REDACTED\")"}
 }
 
-public struct UpdateRecommendationLifecycleInput {
+public struct UpdateRecommendationLifecycleInput: Swift.Sendable {
     /// The new lifecycle stage
     /// This member is required.
     public var lifecycleStage: TrustedAdvisorClientTypes.UpdateRecommendationLifecycleStage?

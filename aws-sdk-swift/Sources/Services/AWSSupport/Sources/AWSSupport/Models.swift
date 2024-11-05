@@ -152,8 +152,9 @@ public struct InternalServerError: ClientRuntime.ModeledError, AWSClientRuntime.
 }
 
 extension SupportClientTypes {
+
     /// An attachment to a case communication. The attachment consists of the file name and the content of the file. Each attachment file size should not exceed 5 MB. File types that are supported include the following: pdf, jpeg,.doc, .log, .text
-    public struct Attachment {
+    public struct Attachment: Swift.Sendable {
         /// The content of the attachment file.
         public var data: Foundation.Data?
         /// The name of the attachment file.
@@ -168,10 +169,9 @@ extension SupportClientTypes {
             self.fileName = fileName
         }
     }
-
 }
 
-public struct AddAttachmentsToSetInput {
+public struct AddAttachmentsToSetInput: Swift.Sendable {
     /// The ID of the attachment set. If an attachmentSetId is not specified, a new attachment set is created, and the ID of the set is returned in the response. If an attachmentSetId is specified, the attachments are added to the specified set, if it exists.
     public var attachmentSetId: Swift.String?
     /// One or more attachments to add to the set. You can add up to three attachments per set. The size limit is 5 MB per attachment. In the Attachment object, use the data parameter to specify the contents of the attachment file. In the previous request syntax, the value for data appear as blob, which is represented as a base64-encoded string. The value for fileName is the name of the attachment, such as troubleshoot-screenshot.png.
@@ -189,7 +189,7 @@ public struct AddAttachmentsToSetInput {
 }
 
 /// The ID and expiry time of the attachment set returned by the [AddAttachmentsToSet] operation.
-public struct AddAttachmentsToSetOutput {
+public struct AddAttachmentsToSetOutput: Swift.Sendable {
     /// The ID of the attachment set. If an attachmentSetId was not specified, a new attachment set is created, and the ID of the set is returned in the response. If an attachmentSetId was specified, the attachments are added to the specified set, if it exists.
     public var attachmentSetId: Swift.String?
     /// The time and date when the attachment set expires.
@@ -230,7 +230,7 @@ public struct CaseIdNotFound: ClientRuntime.ModeledError, AWSClientRuntime.AWSSe
     }
 }
 
-public struct AddCommunicationToCaseInput {
+public struct AddCommunicationToCaseInput: Swift.Sendable {
     /// The ID of a set of one or more attachments for the communication to add to the case. Create the set by calling [AddAttachmentsToSet]
     public var attachmentSetId: Swift.String?
     /// The support case ID requested or returned in the call. The case ID is an alphanumeric string formatted as shown in this example: case-12345678910-2013-c4c1d2bf33c5cf47
@@ -256,7 +256,7 @@ public struct AddCommunicationToCaseInput {
 }
 
 /// The result of the [AddCommunicationToCase] operation.
-public struct AddCommunicationToCaseOutput {
+public struct AddCommunicationToCaseOutput: Swift.Sendable {
     /// True if [AddCommunicationToCase] succeeds. Otherwise, returns an error.
     public var result: Swift.Bool
 
@@ -269,8 +269,9 @@ public struct AddCommunicationToCaseOutput {
 }
 
 extension SupportClientTypes {
+
     /// The file name and ID of an attachment to a case communication. You can use the ID to retrieve the attachment with the [DescribeAttachment] operation.
-    public struct AttachmentDetails {
+    public struct AttachmentDetails: Swift.Sendable {
         /// The ID of the attachment.
         public var attachmentId: Swift.String?
         /// The file name of the attachment.
@@ -285,7 +286,6 @@ extension SupportClientTypes {
             self.fileName = fileName
         }
     }
-
 }
 
 /// An attachment with the specified ID could not be found.
@@ -338,7 +338,7 @@ public struct CaseCreationLimitExceeded: ClientRuntime.ModeledError, AWSClientRu
     }
 }
 
-public struct CreateCaseInput {
+public struct CreateCaseInput: Swift.Sendable {
     /// The ID of a set of one or more attachments for the case. Create the set by using the [AddAttachmentsToSet] operation.
     public var attachmentSetId: Swift.String?
     /// The category of problem for the support case. You also use the [DescribeServices] operation to get the category code for a service. Each Amazon Web Services service defines its own set of category codes.
@@ -385,7 +385,7 @@ public struct CreateCaseInput {
 }
 
 /// The support case ID returned by a successful completion of the [CreateCase] operation.
-public struct CreateCaseOutput {
+public struct CreateCaseOutput: Swift.Sendable {
     /// The support case ID requested or returned in the call. The case ID is an alphanumeric string in the following format: case-12345678910-2013-c4c1d2bf33c5cf47
     public var caseId: Swift.String?
 
@@ -422,7 +422,7 @@ public struct DescribeAttachmentLimitExceeded: ClientRuntime.ModeledError, AWSCl
     }
 }
 
-public struct DescribeAttachmentInput {
+public struct DescribeAttachmentInput: Swift.Sendable {
     /// The ID of the attachment to return. Attachment IDs are returned by the [DescribeCommunications] operation.
     /// This member is required.
     public var attachmentId: Swift.String?
@@ -436,7 +436,7 @@ public struct DescribeAttachmentInput {
 }
 
 /// The content and file name of the attachment returned by the [DescribeAttachment] operation.
-public struct DescribeAttachmentOutput {
+public struct DescribeAttachmentOutput: Swift.Sendable {
     /// This object includes the attachment content and file name. In the previous response syntax, the value for the data parameter appears as blob, which is represented as a base64-encoded string. The value for fileName is the name of the attachment, such as troubleshoot-screenshot.png.
     public var attachment: SupportClientTypes.Attachment?
 
@@ -448,7 +448,7 @@ public struct DescribeAttachmentOutput {
     }
 }
 
-public struct DescribeCasesInput {
+public struct DescribeCasesInput: Swift.Sendable {
     /// The start date for a filtered date search on support case communications. Case communications are available for 12 months after creation.
     public var afterTime: Swift.String?
     /// The end date for a filtered date search on support case communications. Case communications are available for 12 months after creation.
@@ -493,8 +493,9 @@ public struct DescribeCasesInput {
 }
 
 extension SupportClientTypes {
+
     /// A communication associated with a support case. The communication consists of the case ID, the message body, attachment information, the submitter of the communication, and the date and time of the communication.
-    public struct Communication {
+    public struct Communication: Swift.Sendable {
         /// Information about the attachments to the case communication.
         public var attachmentSet: [SupportClientTypes.AttachmentDetails]?
         /// The text of the communication between the customer and Amazon Web Services Support.
@@ -521,12 +522,12 @@ extension SupportClientTypes {
             self.timeCreated = timeCreated
         }
     }
-
 }
 
 extension SupportClientTypes {
+
     /// The five most recent communications associated with the case.
-    public struct RecentCaseCommunications {
+    public struct RecentCaseCommunications: Swift.Sendable {
         /// The five most recent communications associated with the case.
         public var communications: [SupportClientTypes.Communication]?
         /// A resumption point for pagination.
@@ -541,10 +542,10 @@ extension SupportClientTypes {
             self.nextToken = nextToken
         }
     }
-
 }
 
 extension SupportClientTypes {
+
     /// A JSON-formatted object that contains the metadata for a support case. It is contained in the response from a [DescribeCases] request. CaseDetails contains the following fields:
     ///
     /// * caseId - The support case ID requested or returned in the call. The case ID is an alphanumeric string formatted as shown in this example: case-12345678910-2013-c4c1d2bf33c5cf47.
@@ -589,7 +590,7 @@ extension SupportClientTypes {
     /// * submittedBy - The email address of the account that submitted the case.
     ///
     /// * timeCreated - The time the case was created, in ISO-8601 format.
-    public struct CaseDetails {
+    public struct CaseDetails: Swift.Sendable {
         /// The support case ID requested or returned in the call. The case ID is an alphanumeric string formatted as shown in this example: case-12345678910-2013-c4c1d2bf33c5cf47
         public var caseId: Swift.String?
         /// The category of problem for the support case.
@@ -660,11 +661,10 @@ extension SupportClientTypes {
             self.timeCreated = timeCreated
         }
     }
-
 }
 
 /// Returns an array of [CaseDetails](https://docs.aws.amazon.com/awssupport/latest/APIReference/API_CaseDetails.html) objects and a nextToken that defines a point for pagination in the result set.
-public struct DescribeCasesOutput {
+public struct DescribeCasesOutput: Swift.Sendable {
     /// The details for the cases that match the request.
     public var cases: [SupportClientTypes.CaseDetails]?
     /// A resumption point for pagination.
@@ -680,7 +680,7 @@ public struct DescribeCasesOutput {
     }
 }
 
-public struct DescribeCommunicationsInput {
+public struct DescribeCommunicationsInput: Swift.Sendable {
     /// The start date for a filtered date search on support case communications. Case communications are available for 12 months after creation.
     public var afterTime: Swift.String?
     /// The end date for a filtered date search on support case communications. Case communications are available for 12 months after creation.
@@ -710,7 +710,7 @@ public struct DescribeCommunicationsInput {
 }
 
 /// The communications returned by the [DescribeCommunications] operation.
-public struct DescribeCommunicationsOutput {
+public struct DescribeCommunicationsOutput: Swift.Sendable {
     /// The communications for the case.
     public var communications: [SupportClientTypes.Communication]?
     /// A resumption point for pagination.
@@ -750,7 +750,7 @@ public struct ThrottlingException: ClientRuntime.ModeledError, AWSClientRuntime.
     }
 }
 
-public struct DescribeCreateCaseOptionsInput {
+public struct DescribeCreateCaseOptionsInput: Swift.Sendable {
     /// The category of problem for the support case. You also use the [DescribeServices] operation to get the category code for a service. Each Amazon Web Services service defines its own set of category codes.
     /// This member is required.
     public var categoryCode: Swift.String?
@@ -779,8 +779,9 @@ public struct DescribeCreateCaseOptionsInput {
 }
 
 extension SupportClientTypes {
+
     /// Date and time (UTC) format in RFC 3339 : 'yyyy-MM-dd'T'HH:mm:ss.SSSZZ'.
-    public struct DateInterval {
+    public struct DateInterval: Swift.Sendable {
         /// End Date Time (UTC). RFC 3339 format : 'yyyy-MM-dd'T'HH:mm:ss.SSSZZ'.
         public var endDateTime: Swift.String?
         /// A JSON object containing start and date time (UTC). Date and time format is RFC 3339 : 'yyyy-MM-dd'T'HH:mm:ss.SSSZZ'.
@@ -795,12 +796,12 @@ extension SupportClientTypes {
             self.startDateTime = startDateTime
         }
     }
-
 }
 
 extension SupportClientTypes {
+
     /// Time range object with startTime and endTime range in RFC 3339 format. 'HH:mm:ss.SSS'.
-    public struct SupportedHour {
+    public struct SupportedHour: Swift.Sendable {
         /// End Time. RFC 3339 format 'HH:mm:ss.SSS'.
         public var endTime: Swift.String?
         /// Start Time. RFC 3339 format 'HH:mm:ss.SSS'.
@@ -815,10 +816,10 @@ extension SupportClientTypes {
             self.startTime = startTime
         }
     }
-
 }
 
 extension SupportClientTypes {
+
     /// A JSON-formatted object that contains the CommunicationTypeOptions for creating a case for a certain communication channel. It is contained in the response from a [DescribeCreateCaseOptions] request. CommunicationTypeOptions contains the following fields:
     ///
     /// * datesWithoutSupport - A JSON-formatted list containing date and time ranges for periods without support in UTC time. Date and time format is RFC 3339 : 'yyyy-MM-dd'T'HH:mm:ss.SSSZZ'.
@@ -826,7 +827,7 @@ extension SupportClientTypes {
     /// * supportedHours - A JSON-formatted list containing time ranges when support are available. Time format is RFC 3339 : 'HH:mm:ss.SSS'.
     ///
     /// * type - A string value indicating the communication type that the aforementioned rules apply to. At the moment the type value can assume one of 3 values at the moment chat, web and call.
-    public struct CommunicationTypeOptions {
+    public struct CommunicationTypeOptions: Swift.Sendable {
         /// A JSON-formatted list containing date and time ranges for periods without support
         public var datesWithoutSupport: [SupportClientTypes.DateInterval]?
         /// A JSON-formatted list containing time ranges when support is available.
@@ -845,10 +846,9 @@ extension SupportClientTypes {
             self.type = type
         }
     }
-
 }
 
-public struct DescribeCreateCaseOptionsOutput {
+public struct DescribeCreateCaseOptionsOutput: Swift.Sendable {
     /// A JSON-formatted array that contains the available communication type options, along with the available support timeframes for the given inputs.
     public var communicationTypes: [SupportClientTypes.CommunicationTypeOptions]?
     /// Language availability can be any of the following:
@@ -870,7 +870,7 @@ public struct DescribeCreateCaseOptionsOutput {
     }
 }
 
-public struct DescribeServicesInput {
+public struct DescribeServicesInput: Swift.Sendable {
     /// The language in which Amazon Web Services Support handles the case. Amazon Web Services Support currently supports Chinese (“zh”), English ("en"), Japanese ("ja") and Korean (“ko”). You must specify the ISO 639-1 code for the language parameter if you want support in that language.
     public var language: Swift.String?
     /// A JSON-formatted list of service codes available for Amazon Web Services services.
@@ -887,8 +887,9 @@ public struct DescribeServicesInput {
 }
 
 extension SupportClientTypes {
+
     /// A JSON-formatted name/value pair that represents the category name and category code of the problem, selected from the [DescribeServices] response for each Amazon Web Services service.
-    public struct Category {
+    public struct Category: Swift.Sendable {
         /// The category code for the support case.
         public var code: Swift.String?
         /// The category name for the support case.
@@ -903,12 +904,12 @@ extension SupportClientTypes {
             self.name = name
         }
     }
-
 }
 
 extension SupportClientTypes {
+
     /// Information about an Amazon Web Services service returned by the [DescribeServices] operation.
-    public struct Service {
+    public struct Service: Swift.Sendable {
         /// A list of categories that describe the type of support issue a case describes. Categories consist of a category name and a category code. Category names and codes are passed to Amazon Web Services Support when you call [CreateCase].
         public var categories: [SupportClientTypes.Category]?
         /// The code for an Amazon Web Services service returned by the [DescribeServices] response. The name element contains the corresponding friendly name.
@@ -927,11 +928,10 @@ extension SupportClientTypes {
             self.name = name
         }
     }
-
 }
 
 /// The list of Amazon Web Services services returned by the [DescribeServices] operation.
-public struct DescribeServicesOutput {
+public struct DescribeServicesOutput: Swift.Sendable {
     /// A JSON-formatted list of Amazon Web Services services.
     public var services: [SupportClientTypes.Service]?
 
@@ -943,7 +943,7 @@ public struct DescribeServicesOutput {
     }
 }
 
-public struct DescribeSeverityLevelsInput {
+public struct DescribeSeverityLevelsInput: Swift.Sendable {
     /// The language in which Amazon Web Services Support handles the case. Amazon Web Services Support currently supports Chinese (“zh”), English ("en"), Japanese ("ja") and Korean (“ko”). You must specify the ISO 639-1 code for the language parameter if you want support in that language.
     public var language: Swift.String?
 
@@ -956,8 +956,9 @@ public struct DescribeSeverityLevelsInput {
 }
 
 extension SupportClientTypes {
+
     /// A code and name pair that represents the severity level of a support case. The available values depend on the support plan for the account. For more information, see [Choosing a severity](https://docs.aws.amazon.com/awssupport/latest/user/case-management.html#choosing-severity) in the Amazon Web Services Support User Guide.
-    public struct SeverityLevel {
+    public struct SeverityLevel: Swift.Sendable {
         /// The code for case severity level. Valid values: low | normal | high | urgent | critical
         public var code: Swift.String?
         /// The name of the severity level that corresponds to the severity level code. The values returned by the API are different from the values that appear in the Amazon Web Services Support Center. For example, the API uses the code low, but the name appears as General guidance in Support Center. The following are the API code names and how they appear in the console:
@@ -985,11 +986,10 @@ extension SupportClientTypes {
             self.name = name
         }
     }
-
 }
 
 /// The list of severity levels returned by the [DescribeSeverityLevels] operation.
-public struct DescribeSeverityLevelsOutput {
+public struct DescribeSeverityLevelsOutput: Swift.Sendable {
     /// The available severity levels for the support case. Available severity levels are defined by your service level agreement with Amazon Web Services.
     public var severityLevels: [SupportClientTypes.SeverityLevel]?
 
@@ -1001,7 +1001,7 @@ public struct DescribeSeverityLevelsOutput {
     }
 }
 
-public struct DescribeSupportedLanguagesInput {
+public struct DescribeSupportedLanguagesInput: Swift.Sendable {
     /// The category of problem for the support case. You also use the [DescribeServices] operation to get the category code for a service. Each Amazon Web Services service defines its own set of category codes.
     /// This member is required.
     public var categoryCode: Swift.String?
@@ -1025,8 +1025,9 @@ public struct DescribeSupportedLanguagesInput {
 }
 
 extension SupportClientTypes {
+
     /// A JSON-formatted object that contains the available ISO 639-1 language code, language name and langauge display value. The language code is what should be used in the [CreateCase] call.
-    public struct SupportedLanguage {
+    public struct SupportedLanguage: Swift.Sendable {
         /// 2 digit ISO 639-1 code. e.g. en
         public var code: Swift.String?
         /// Language display value e.g. ENGLISH
@@ -1045,10 +1046,9 @@ extension SupportClientTypes {
             self.language = language
         }
     }
-
 }
 
-public struct DescribeSupportedLanguagesOutput {
+public struct DescribeSupportedLanguagesOutput: Swift.Sendable {
     /// A JSON-formatted array that contains the available ISO 639-1 language codes.
     public var supportedLanguages: [SupportClientTypes.SupportedLanguage]?
 
@@ -1060,7 +1060,7 @@ public struct DescribeSupportedLanguagesOutput {
     }
 }
 
-public struct DescribeTrustedAdvisorCheckRefreshStatusesInput {
+public struct DescribeTrustedAdvisorCheckRefreshStatusesInput: Swift.Sendable {
     /// The IDs of the Trusted Advisor checks to get the status. If you specify the check ID of a check that is automatically refreshed, you might see an InvalidParameterValue error.
     /// This member is required.
     public var checkIds: [Swift.String?]?
@@ -1074,8 +1074,9 @@ public struct DescribeTrustedAdvisorCheckRefreshStatusesInput {
 }
 
 extension SupportClientTypes {
+
     /// The refresh status of a Trusted Advisor check.
-    public struct TrustedAdvisorCheckRefreshStatus {
+    public struct TrustedAdvisorCheckRefreshStatus: Swift.Sendable {
         /// The unique identifier for the Trusted Advisor check.
         /// This member is required.
         public var checkId: Swift.String?
@@ -1107,11 +1108,10 @@ extension SupportClientTypes {
             self.status = status
         }
     }
-
 }
 
 /// The statuses of the Trusted Advisor checks returned by the [DescribeTrustedAdvisorCheckRefreshStatuses] operation.
-public struct DescribeTrustedAdvisorCheckRefreshStatusesOutput {
+public struct DescribeTrustedAdvisorCheckRefreshStatusesOutput: Swift.Sendable {
     /// The refresh status of the specified Trusted Advisor checks.
     /// This member is required.
     public var statuses: [SupportClientTypes.TrustedAdvisorCheckRefreshStatus]?
@@ -1125,7 +1125,7 @@ public struct DescribeTrustedAdvisorCheckRefreshStatusesOutput {
 }
 
 ///
-public struct DescribeTrustedAdvisorCheckResultInput {
+public struct DescribeTrustedAdvisorCheckResultInput: Swift.Sendable {
     /// The unique identifier for the Trusted Advisor check.
     /// This member is required.
     public var checkId: Swift.String?
@@ -1165,8 +1165,9 @@ public struct DescribeTrustedAdvisorCheckResultInput {
 }
 
 extension SupportClientTypes {
+
     /// The estimated cost savings that might be realized if the recommended operations are taken.
-    public struct TrustedAdvisorCostOptimizingSummary {
+    public struct TrustedAdvisorCostOptimizingSummary: Swift.Sendable {
         /// The estimated monthly savings that might be realized if the recommended operations are taken.
         /// This member is required.
         public var estimatedMonthlySavings: Swift.Double
@@ -1183,12 +1184,12 @@ extension SupportClientTypes {
             self.estimatedPercentMonthlySavings = estimatedPercentMonthlySavings
         }
     }
-
 }
 
 extension SupportClientTypes {
+
     /// The container for summary information that relates to the category of the Trusted Advisor check.
-    public struct TrustedAdvisorCategorySpecificSummary {
+    public struct TrustedAdvisorCategorySpecificSummary: Swift.Sendable {
         /// The summary information about cost savings for a Trusted Advisor check that is in the Cost Optimizing category.
         public var costOptimizing: SupportClientTypes.TrustedAdvisorCostOptimizingSummary?
 
@@ -1199,12 +1200,12 @@ extension SupportClientTypes {
             self.costOptimizing = costOptimizing
         }
     }
-
 }
 
 extension SupportClientTypes {
+
     /// Contains information about a resource identified by a Trusted Advisor check.
-    public struct TrustedAdvisorResourceDetail {
+    public struct TrustedAdvisorResourceDetail: Swift.Sendable {
         /// Specifies whether the Amazon Web Services resource was ignored by Trusted Advisor because it was marked as suppressed by the user.
         public var isSuppressed: Swift.Bool
         /// Additional information about the identified resource. The exact metadata and its order can be obtained by inspecting the [TrustedAdvisorCheckDescription] object returned by the call to [DescribeTrustedAdvisorChecks]. Metadata contains all the data that is shown in the Excel download, even in those cases where the UI shows just summary data.
@@ -1234,12 +1235,12 @@ extension SupportClientTypes {
             self.status = status
         }
     }
-
 }
 
 extension SupportClientTypes {
+
     /// Details about Amazon Web Services resources that were analyzed in a call to Trusted Advisor [DescribeTrustedAdvisorCheckSummaries].
-    public struct TrustedAdvisorResourcesSummary {
+    public struct TrustedAdvisorResourcesSummary: Swift.Sendable {
         /// The number of Amazon Web Services resources that were flagged (listed) by the Trusted Advisor check.
         /// This member is required.
         public var resourcesFlagged: Swift.Int
@@ -1266,12 +1267,12 @@ extension SupportClientTypes {
             self.resourcesSuppressed = resourcesSuppressed
         }
     }
-
 }
 
 extension SupportClientTypes {
+
     /// The results of a Trusted Advisor check returned by [DescribeTrustedAdvisorCheckResult].
-    public struct TrustedAdvisorCheckResult {
+    public struct TrustedAdvisorCheckResult: Swift.Sendable {
         /// Summary information that relates to the category of the check. Cost Optimizing is the only category that is currently supported.
         /// This member is required.
         public var categorySpecificSummary: SupportClientTypes.TrustedAdvisorCategorySpecificSummary?
@@ -1308,11 +1309,10 @@ extension SupportClientTypes {
             self.timestamp = timestamp
         }
     }
-
 }
 
 /// The result of the Trusted Advisor check returned by the [DescribeTrustedAdvisorCheckResult] operation.
-public struct DescribeTrustedAdvisorCheckResultOutput {
+public struct DescribeTrustedAdvisorCheckResultOutput: Swift.Sendable {
     /// The detailed results of the Trusted Advisor check.
     public var result: SupportClientTypes.TrustedAdvisorCheckResult?
 
@@ -1324,7 +1324,7 @@ public struct DescribeTrustedAdvisorCheckResultOutput {
     }
 }
 
-public struct DescribeTrustedAdvisorChecksInput {
+public struct DescribeTrustedAdvisorChecksInput: Swift.Sendable {
     /// The ISO 639-1 code for the language that you want your checks to appear in. The Amazon Web Services Support API currently supports the following languages for Trusted Advisor:
     ///
     /// * Chinese, Simplified - zh
@@ -1360,8 +1360,9 @@ public struct DescribeTrustedAdvisorChecksInput {
 }
 
 extension SupportClientTypes {
+
     /// The description and metadata for a Trusted Advisor check.
-    public struct TrustedAdvisorCheckDescription {
+    public struct TrustedAdvisorCheckDescription: Swift.Sendable {
         /// The category of the Trusted Advisor check.
         /// This member is required.
         public var category: Swift.String?
@@ -1393,11 +1394,10 @@ extension SupportClientTypes {
             self.name = name
         }
     }
-
 }
 
 /// Information about the Trusted Advisor checks returned by the [DescribeTrustedAdvisorChecks] operation.
-public struct DescribeTrustedAdvisorChecksOutput {
+public struct DescribeTrustedAdvisorChecksOutput: Swift.Sendable {
     /// Information about all available Trusted Advisor checks.
     /// This member is required.
     public var checks: [SupportClientTypes.TrustedAdvisorCheckDescription]?
@@ -1410,7 +1410,7 @@ public struct DescribeTrustedAdvisorChecksOutput {
     }
 }
 
-public struct DescribeTrustedAdvisorCheckSummariesInput {
+public struct DescribeTrustedAdvisorCheckSummariesInput: Swift.Sendable {
     /// The IDs of the Trusted Advisor checks.
     /// This member is required.
     public var checkIds: [Swift.String?]?
@@ -1424,8 +1424,9 @@ public struct DescribeTrustedAdvisorCheckSummariesInput {
 }
 
 extension SupportClientTypes {
+
     /// A summary of a Trusted Advisor check result, including the alert status, last refresh, and number of resources examined.
-    public struct TrustedAdvisorCheckSummary {
+    public struct TrustedAdvisorCheckSummary: Swift.Sendable {
         /// Summary information that relates to the category of the check. Cost Optimizing is the only category that is currently supported.
         /// This member is required.
         public var categorySpecificSummary: SupportClientTypes.TrustedAdvisorCategorySpecificSummary?
@@ -1461,11 +1462,10 @@ extension SupportClientTypes {
             self.timestamp = timestamp
         }
     }
-
 }
 
 /// The summaries of the Trusted Advisor checks returned by the [DescribeTrustedAdvisorCheckSummaries] operation.
-public struct DescribeTrustedAdvisorCheckSummariesOutput {
+public struct DescribeTrustedAdvisorCheckSummariesOutput: Swift.Sendable {
     /// The summary information for the requested Trusted Advisor checks.
     /// This member is required.
     public var summaries: [SupportClientTypes.TrustedAdvisorCheckSummary]?
@@ -1479,7 +1479,7 @@ public struct DescribeTrustedAdvisorCheckSummariesOutput {
 }
 
 ///
-public struct RefreshTrustedAdvisorCheckInput {
+public struct RefreshTrustedAdvisorCheckInput: Swift.Sendable {
     /// The unique identifier for the Trusted Advisor check to refresh. Specifying the check ID of a check that is automatically refreshed causes an InvalidParameterValue error.
     /// This member is required.
     public var checkId: Swift.String?
@@ -1493,7 +1493,7 @@ public struct RefreshTrustedAdvisorCheckInput {
 }
 
 /// The current refresh status of a Trusted Advisor check.
-public struct RefreshTrustedAdvisorCheckOutput {
+public struct RefreshTrustedAdvisorCheckOutput: Swift.Sendable {
     /// The current refresh status for a check, including the amount of time until the check is eligible for refresh.
     /// This member is required.
     public var status: SupportClientTypes.TrustedAdvisorCheckRefreshStatus?
@@ -1506,7 +1506,7 @@ public struct RefreshTrustedAdvisorCheckOutput {
     }
 }
 
-public struct ResolveCaseInput {
+public struct ResolveCaseInput: Swift.Sendable {
     /// The support case ID requested or returned in the call. The case ID is an alphanumeric string formatted as shown in this example: case-12345678910-2013-c4c1d2bf33c5cf47
     public var caseId: Swift.String?
 
@@ -1519,7 +1519,7 @@ public struct ResolveCaseInput {
 }
 
 /// The status of the case returned by the [ResolveCase] operation.
-public struct ResolveCaseOutput {
+public struct ResolveCaseOutput: Swift.Sendable {
     /// The status of the case after the [ResolveCase] request was processed.
     public var finalCaseStatus: Swift.String?
     /// The status of the case when the [ResolveCase] request was sent.

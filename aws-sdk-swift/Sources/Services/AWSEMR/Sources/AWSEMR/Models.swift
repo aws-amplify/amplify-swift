@@ -28,74 +28,75 @@ import protocol ClientRuntime.ModeledError
 @_spi(SmithyReadWrite) import struct SmithyReadWrite.WritingClosureBox
 @_spi(SmithyTimestamps) import struct SmithyTimestamps.TimestampFormatter
 
-public struct CreateStudioSessionMappingOutput {
+
+public struct CreateStudioSessionMappingOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteStudioOutput {
+public struct DeleteStudioOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteStudioSessionMappingOutput {
+public struct DeleteStudioSessionMappingOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct ModifyInstanceFleetOutput {
+public struct ModifyInstanceFleetOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct ModifyInstanceGroupsOutput {
+public struct ModifyInstanceGroupsOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct SetKeepJobFlowAliveWhenNoStepsOutput {
+public struct SetKeepJobFlowAliveWhenNoStepsOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct SetTerminationProtectionOutput {
+public struct SetTerminationProtectionOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct SetUnhealthyNodeReplacementOutput {
+public struct SetUnhealthyNodeReplacementOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct SetVisibleToAllUsersOutput {
+public struct SetVisibleToAllUsersOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct StopNotebookExecutionOutput {
+public struct StopNotebookExecutionOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct TerminateJobFlowsOutput {
+public struct TerminateJobFlowsOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdateStudioOutput {
+public struct UpdateStudioOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdateStudioSessionMappingOutput {
+public struct UpdateStudioSessionMappingOutput: Swift.Sendable {
 
     public init() { }
 }
 
 extension EMRClientTypes {
 
-    public enum ActionOnFailure: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ActionOnFailure: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case cancelAndWait
         case `continue`
         case terminateCluster
@@ -184,7 +185,7 @@ public struct InvalidRequestException: ClientRuntime.ModeledError, AWSClientRunt
 
 extension EMRClientTypes {
 
-    public enum InstanceFleetType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum InstanceFleetType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case core
         case master
         case task
@@ -215,8 +216,9 @@ extension EMRClientTypes {
 }
 
 extension EMRClientTypes {
+
     /// EBS volume specifications such as volume type, IOPS, size (GiB) and throughput (MiB/s) that are requested for the EBS volume attached to an Amazon EC2 instance in the cluster.
-    public struct VolumeSpecification {
+    public struct VolumeSpecification: Swift.Sendable {
         /// The number of I/O operations per second (IOPS) that the volume supports.
         public var iops: Swift.Int?
         /// The volume size, in gibibytes (GiB). This can be a number from 1 - 1024. If the volume type is EBS-optimized, the minimum value is 10.
@@ -241,12 +243,12 @@ extension EMRClientTypes {
             self.volumeType = volumeType
         }
     }
-
 }
 
 extension EMRClientTypes {
+
     /// Configuration of requested EBS block device associated with the instance group with count of volumes that are associated to every instance.
-    public struct EbsBlockDeviceConfig {
+    public struct EbsBlockDeviceConfig: Swift.Sendable {
         /// EBS volume specifications such as volume type, IOPS, size (GiB) and throughput (MiB/s) that are requested for the EBS volume attached to an Amazon EC2 instance in the cluster.
         /// This member is required.
         public var volumeSpecification: EMRClientTypes.VolumeSpecification?
@@ -262,12 +264,12 @@ extension EMRClientTypes {
             self.volumesPerInstance = volumesPerInstance
         }
     }
-
 }
 
 extension EMRClientTypes {
+
     /// The Amazon EBS configuration of a cluster instance.
-    public struct EbsConfiguration {
+    public struct EbsConfiguration: Swift.Sendable {
         /// An array of Amazon EBS volume specifications attached to a cluster instance.
         public var ebsBlockDeviceConfigs: [EMRClientTypes.EbsBlockDeviceConfig]?
         /// Indicates whether an Amazon EBS volume is EBS-optimized.
@@ -282,12 +284,11 @@ extension EMRClientTypes {
             self.ebsOptimized = ebsOptimized
         }
     }
-
 }
 
 extension EMRClientTypes {
 
-    public enum OnDemandProvisioningAllocationStrategy: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum OnDemandProvisioningAllocationStrategy: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case lowestPrice
         case prioritized
         case sdkUnknown(Swift.String)
@@ -316,7 +317,7 @@ extension EMRClientTypes {
 
 extension EMRClientTypes {
 
-    public enum OnDemandCapacityReservationPreference: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum OnDemandCapacityReservationPreference: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case `none`
         case `open`
         case sdkUnknown(Swift.String)
@@ -345,7 +346,7 @@ extension EMRClientTypes {
 
 extension EMRClientTypes {
 
-    public enum OnDemandCapacityReservationUsageStrategy: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum OnDemandCapacityReservationUsageStrategy: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case useCapacityReservationsFirst
         case sdkUnknown(Swift.String)
 
@@ -370,8 +371,9 @@ extension EMRClientTypes {
 }
 
 extension EMRClientTypes {
+
     /// Describes the strategy for using unused Capacity Reservations for fulfilling On-Demand capacity.
-    public struct OnDemandCapacityReservationOptions {
+    public struct OnDemandCapacityReservationOptions: Swift.Sendable {
         /// Indicates the instance's Capacity Reservation preferences. Possible preferences include:
         ///
         /// * open - The instance can run in any open Capacity Reservation that has matching attributes (instance type, platform, Availability Zone).
@@ -394,12 +396,12 @@ extension EMRClientTypes {
             self.usageStrategy = usageStrategy
         }
     }
-
 }
 
 extension EMRClientTypes {
+
     /// The launch specification for On-Demand Instances in the instance fleet, which determines the allocation strategy. The instance fleet configuration is available only in Amazon EMR releases 4.8.0 and later, excluding 5.0.x versions. On-Demand Instances allocation strategy is available in Amazon EMR releases 5.12.1 and later.
-    public struct OnDemandProvisioningSpecification {
+    public struct OnDemandProvisioningSpecification: Swift.Sendable {
         /// Specifies the strategy to use in launching On-Demand instance fleets. Available options are lowest-price and prioritized. lowest-price specifies to launch the instances with the lowest price first, and prioritized specifies that Amazon EMR should launch the instances with the highest priority first. The default is lowest-price.
         /// This member is required.
         public var allocationStrategy: EMRClientTypes.OnDemandProvisioningAllocationStrategy?
@@ -415,12 +417,11 @@ extension EMRClientTypes {
             self.capacityReservationOptions = capacityReservationOptions
         }
     }
-
 }
 
 extension EMRClientTypes {
 
-    public enum SpotProvisioningAllocationStrategy: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SpotProvisioningAllocationStrategy: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case capacityOptimized
         case capacityOptimizedPrioritized
         case diversified
@@ -458,7 +459,7 @@ extension EMRClientTypes {
 
 extension EMRClientTypes {
 
-    public enum SpotProvisioningTimeoutAction: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SpotProvisioningTimeoutAction: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case switchToOnDemand
         case terminateCluster
         case sdkUnknown(Swift.String)
@@ -486,8 +487,9 @@ extension EMRClientTypes {
 }
 
 extension EMRClientTypes {
+
     /// The launch specification for Spot Instances in the instance fleet, which determines the defined duration, provisioning timeout behavior, and allocation strategy. The instance fleet configuration is available only in Amazon EMR releases 4.8.0 and later, excluding 5.0.x versions. Spot Instance allocation strategy is available in Amazon EMR releases 5.12.1 and later. Spot Instances with a defined duration (also known as Spot blocks) are no longer available to new customers from July 1, 2021. For customers who have previously used the feature, we will continue to support Spot Instances with a defined duration until December 31, 2022.
-    public struct SpotProvisioningSpecification {
+    public struct SpotProvisioningSpecification: Swift.Sendable {
         /// Specifies one of the following strategies to launch Spot Instance fleets: capacity-optimized, price-capacity-optimized, lowest-price, or diversified, and capacity-optimized-prioritized. For more information on the provisioning strategies, see [Allocation strategies for Spot Instances](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-fleet-allocation-strategy.html) in the Amazon EC2 User Guide for Linux Instances. When you launch a Spot Instance fleet with the old console, it automatically launches with the capacity-optimized strategy. You can't change the allocation strategy from the old console.
         public var allocationStrategy: EMRClientTypes.SpotProvisioningAllocationStrategy?
         /// The defined duration for Spot Instances (also known as Spot blocks) in minutes. When specified, the Spot Instance does not terminate before the defined duration expires, and defined duration pricing for Spot Instances applies. Valid values are 60, 120, 180, 240, 300, or 360. The duration period starts as soon as a Spot Instance receives its instance ID. At the end of the duration, Amazon EC2 marks the Spot Instance for termination and provides a Spot Instance termination notice, which gives the instance a two-minute warning before it terminates. Spot Instances with a defined duration (also known as Spot blocks) are no longer available to new customers from July 1, 2021. For customers who have previously used the feature, we will continue to support Spot Instances with a defined duration until December 31, 2022.
@@ -512,12 +514,12 @@ extension EMRClientTypes {
             self.timeoutDurationMinutes = timeoutDurationMinutes
         }
     }
-
 }
 
 extension EMRClientTypes {
+
     /// The launch specification for On-Demand and Spot Instances in the fleet. The instance fleet configuration is available only in Amazon EMR releases 4.8.0 and later, excluding 5.0.x versions. On-Demand and Spot instance allocation strategies are available in Amazon EMR releases 5.12.1 and later.
-    public struct InstanceFleetProvisioningSpecifications {
+    public struct InstanceFleetProvisioningSpecifications: Swift.Sendable {
         /// The launch specification for On-Demand Instances in the instance fleet, which determines the allocation strategy and capacity reservation options. The instance fleet configuration is available only in Amazon EMR releases 4.8.0 and later, excluding 5.0.x versions. On-Demand Instances allocation strategy is available in Amazon EMR releases 5.12.1 and later.
         public var onDemandSpecification: EMRClientTypes.OnDemandProvisioningSpecification?
         /// The launch specification for Spot instances in the fleet, which determines the allocation strategy, defined duration, and provisioning timeout behavior.
@@ -532,12 +534,12 @@ extension EMRClientTypes {
             self.spotSpecification = spotSpecification
         }
     }
-
 }
 
 extension EMRClientTypes {
+
     /// The resize specification for On-Demand Instances in the instance fleet, which contains the resize timeout period.
-    public struct OnDemandResizingSpecification {
+    public struct OnDemandResizingSpecification: Swift.Sendable {
         /// Specifies the allocation strategy to use to launch On-Demand instances during a resize. The default is lowest-price.
         public var allocationStrategy: EMRClientTypes.OnDemandProvisioningAllocationStrategy?
         /// Describes the strategy for using unused Capacity Reservations for fulfilling On-Demand capacity.
@@ -556,12 +558,12 @@ extension EMRClientTypes {
             self.timeoutDurationMinutes = timeoutDurationMinutes
         }
     }
-
 }
 
 extension EMRClientTypes {
+
     /// The resize specification for Spot Instances in the instance fleet, which contains the resize timeout period.
-    public struct SpotResizingSpecification {
+    public struct SpotResizingSpecification: Swift.Sendable {
         /// Specifies the allocation strategy to use to launch Spot instances during a resize. If you run Amazon EMR releases 6.9.0 or higher, the default is price-capacity-optimized. If you run Amazon EMR releases 6.8.0 or lower, the default is capacity-optimized.
         public var allocationStrategy: EMRClientTypes.SpotProvisioningAllocationStrategy?
         /// Spot resize timeout in minutes. If Spot Instances are not provisioned within this time, the resize workflow will stop provisioning of Spot instances. Minimum value is 5 minutes and maximum value is 10,080 minutes (7 days). The timeout applies to all resize workflows on the Instance Fleet. The resize could be triggered by Amazon EMR Managed Scaling or by the customer (via Amazon EMR Console, Amazon EMR CLI modify-instance-fleet or Amazon EMR SDK ModifyInstanceFleet API) or by Amazon EMR due to Amazon EC2 Spot Reclamation.
@@ -576,12 +578,12 @@ extension EMRClientTypes {
             self.timeoutDurationMinutes = timeoutDurationMinutes
         }
     }
-
 }
 
 extension EMRClientTypes {
+
     /// The resize specification for On-Demand and Spot Instances in the fleet.
-    public struct InstanceFleetResizingSpecifications {
+    public struct InstanceFleetResizingSpecifications: Swift.Sendable {
         /// The resize specification for On-Demand Instances in the instance fleet, which contains the allocation strategy, capacity reservation options, and the resize timeout period.
         public var onDemandResizeSpecification: EMRClientTypes.OnDemandResizingSpecification?
         /// The resize specification for Spot Instances in the instance fleet, which contains the allocation strategy and the resize timeout period.
@@ -596,10 +598,9 @@ extension EMRClientTypes {
             self.spotResizeSpecification = spotResizeSpecification
         }
     }
-
 }
 
-public struct AddInstanceFleetOutput {
+public struct AddInstanceFleetOutput: Swift.Sendable {
     /// The Amazon Resource Name of the cluster.
     public var clusterArn: Swift.String?
     /// The unique identifier of the cluster.
@@ -633,8 +634,9 @@ public struct InternalServerError: ClientRuntime.ModeledError, AWSClientRuntime.
 }
 
 extension EMRClientTypes {
+
     /// The upper and lower Amazon EC2 instance limits for an automatic scaling policy. Automatic scaling activities triggered by automatic scaling rules will not cause an instance group to grow above or below these limits.
-    public struct ScalingConstraints {
+    public struct ScalingConstraints: Swift.Sendable {
         /// The upper boundary of Amazon EC2 instances in an instance group beyond which scaling activities are not allowed to grow. Scale-out activities will not add instances beyond this boundary.
         /// This member is required.
         public var maxCapacity: Swift.Int?
@@ -651,12 +653,11 @@ extension EMRClientTypes {
             self.minCapacity = minCapacity
         }
     }
-
 }
 
 extension EMRClientTypes {
 
-    public enum MarketType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum MarketType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case onDemand
         case spot
         case sdkUnknown(Swift.String)
@@ -685,7 +686,7 @@ extension EMRClientTypes {
 
 extension EMRClientTypes {
 
-    public enum AdjustmentType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AdjustmentType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case changeInCapacity
         case exactCapacity
         case percentChangeInCapacity
@@ -716,8 +717,9 @@ extension EMRClientTypes {
 }
 
 extension EMRClientTypes {
+
     /// An automatic scaling configuration, which describes how the policy adds or removes instances, the cooldown period, and the number of Amazon EC2 instances that will be added each time the CloudWatch metric alarm condition is satisfied.
-    public struct SimpleScalingPolicyConfiguration {
+    public struct SimpleScalingPolicyConfiguration: Swift.Sendable {
         /// The way in which Amazon EC2 instances are added (if ScalingAdjustment is a positive number) or terminated (if ScalingAdjustment is a negative number) each time the scaling activity is triggered. CHANGE_IN_CAPACITY is the default. CHANGE_IN_CAPACITY indicates that the Amazon EC2 instance count increments or decrements by ScalingAdjustment, which should be expressed as an integer. PERCENT_CHANGE_IN_CAPACITY indicates the instance count increments or decrements by the percentage specified by ScalingAdjustment, which should be expressed as an integer. For example, 20 indicates an increase in 20% increments of cluster capacity. EXACT_CAPACITY indicates the scaling activity results in an instance group with the number of Amazon EC2 instances specified by ScalingAdjustment, which should be expressed as a positive integer.
         public var adjustmentType: EMRClientTypes.AdjustmentType?
         /// The amount of time, in seconds, after a scaling activity completes before any further trigger-related scaling activities can start. The default value is 0.
@@ -737,12 +739,12 @@ extension EMRClientTypes {
             self.scalingAdjustment = scalingAdjustment
         }
     }
-
 }
 
 extension EMRClientTypes {
+
     /// The type of adjustment the automatic scaling activity makes when triggered, and the periodicity of the adjustment.
-    public struct ScalingAction {
+    public struct ScalingAction: Swift.Sendable {
         /// Not available for instance groups. Instance groups use the market type specified for the group.
         public var market: EMRClientTypes.MarketType?
         /// The type of adjustment the automatic scaling activity makes when triggered, and the periodicity of the adjustment.
@@ -758,12 +760,11 @@ extension EMRClientTypes {
             self.simpleScalingPolicyConfiguration = simpleScalingPolicyConfiguration
         }
     }
-
 }
 
 extension EMRClientTypes {
 
-    public enum ComparisonOperator: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ComparisonOperator: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case greaterThan
         case greaterThanOrEqual
         case lessThan
@@ -797,8 +798,9 @@ extension EMRClientTypes {
 }
 
 extension EMRClientTypes {
+
     /// A CloudWatch dimension, which is specified using a Key (known as a Name in CloudWatch), Value pair. By default, Amazon EMR uses one dimension whose Key is JobFlowID and Value is a variable representing the cluster ID, which is ${emr.clusterId}. This enables the rule to bootstrap when the cluster ID becomes available.
-    public struct MetricDimension {
+    public struct MetricDimension: Swift.Sendable {
         /// The dimension name.
         public var key: Swift.String?
         /// The dimension value.
@@ -813,12 +815,11 @@ extension EMRClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension EMRClientTypes {
 
-    public enum Statistic: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Statistic: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case average
         case maximum
         case minimum
@@ -856,7 +857,7 @@ extension EMRClientTypes {
 
 extension EMRClientTypes {
 
-    public enum Unit: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Unit: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case bits
         case bitsPerSecond
         case bytes
@@ -959,8 +960,9 @@ extension EMRClientTypes {
 }
 
 extension EMRClientTypes {
+
     /// The definition of a CloudWatch metric alarm, which determines when an automatic scaling activity is triggered. When the defined alarm conditions are satisfied, scaling activity begins.
-    public struct CloudWatchAlarmDefinition {
+    public struct CloudWatchAlarmDefinition: Swift.Sendable {
         /// Determines how the metric specified by MetricName is compared to the value specified by Threshold.
         /// This member is required.
         public var comparisonOperator: EMRClientTypes.ComparisonOperator?
@@ -1007,12 +1009,12 @@ extension EMRClientTypes {
             self.unit = unit
         }
     }
-
 }
 
 extension EMRClientTypes {
+
     /// The conditions that trigger an automatic scaling activity.
-    public struct ScalingTrigger {
+    public struct ScalingTrigger: Swift.Sendable {
         /// The definition of a CloudWatch metric alarm. When the defined alarm conditions are met along with other trigger parameters, scaling activity begins.
         /// This member is required.
         public var cloudWatchAlarmDefinition: EMRClientTypes.CloudWatchAlarmDefinition?
@@ -1024,12 +1026,12 @@ extension EMRClientTypes {
             self.cloudWatchAlarmDefinition = cloudWatchAlarmDefinition
         }
     }
-
 }
 
 extension EMRClientTypes {
+
     /// A scale-in or scale-out rule that defines scaling activity, including the CloudWatch metric alarm that triggers activity, how Amazon EC2 instances are added or removed, and the periodicity of adjustments. The automatic scaling policy for an instance group can comprise one or more automatic scaling rules.
-    public struct ScalingRule {
+    public struct ScalingRule: Swift.Sendable {
         /// The conditions that trigger an automatic scaling activity.
         /// This member is required.
         public var action: EMRClientTypes.ScalingAction?
@@ -1055,12 +1057,12 @@ extension EMRClientTypes {
             self.trigger = trigger
         }
     }
-
 }
 
 extension EMRClientTypes {
+
     /// An automatic scaling policy for a core instance group or task instance group in an Amazon EMR cluster. An automatic scaling policy defines how an instance group dynamically adds and terminates Amazon EC2 instances in response to the value of a CloudWatch metric. See [PutAutoScalingPolicy].
-    public struct AutoScalingPolicy {
+    public struct AutoScalingPolicy: Swift.Sendable {
         /// The upper and lower Amazon EC2 instance limits for an automatic scaling policy. Automatic scaling activity will not cause an instance group to grow above or below these limits.
         /// This member is required.
         public var constraints: EMRClientTypes.ScalingConstraints?
@@ -1077,12 +1079,11 @@ extension EMRClientTypes {
             self.rules = rules
         }
     }
-
 }
 
 extension EMRClientTypes {
 
-    public enum InstanceRoleType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum InstanceRoleType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case core
         case master
         case task
@@ -1113,7 +1114,7 @@ extension EMRClientTypes {
 }
 
 /// Output from an AddInstanceGroups call.
-public struct AddInstanceGroupsOutput {
+public struct AddInstanceGroupsOutput: Swift.Sendable {
     /// The Amazon Resource Name of the cluster.
     public var clusterArn: Swift.String?
     /// Instance group IDs of the newly created instance groups.
@@ -1134,8 +1135,9 @@ public struct AddInstanceGroupsOutput {
 }
 
 extension EMRClientTypes {
+
     /// A key-value pair.
-    public struct KeyValue {
+    public struct KeyValue: Swift.Sendable {
         /// The unique identifier of a key-value pair.
         public var key: Swift.String?
         /// The value part of the identified key.
@@ -1150,12 +1152,12 @@ extension EMRClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension EMRClientTypes {
+
     /// A job flow step consisting of a JAR file whose main function will be executed. The main function submits a job for Hadoop to execute and waits for the job to finish or fail.
-    public struct HadoopJarStepConfig {
+    public struct HadoopJarStepConfig: Swift.Sendable {
         /// A list of command line arguments passed to the JAR file's main function when executed.
         public var args: [Swift.String]?
         /// A path to a JAR file run during the step.
@@ -1179,12 +1181,12 @@ extension EMRClientTypes {
             self.properties = properties
         }
     }
-
 }
 
 extension EMRClientTypes {
+
     /// Specification for a cluster (job flow) step.
-    public struct StepConfig {
+    public struct StepConfig: Swift.Sendable {
         /// The action to take when the step fails. Use one of the following values:
         ///
         /// * TERMINATE_CLUSTER - Shuts down the cluster.
@@ -1216,11 +1218,10 @@ extension EMRClientTypes {
             self.name = name
         }
     }
-
 }
 
 /// The input argument to the [AddJobFlowSteps] operation.
-public struct AddJobFlowStepsInput {
+public struct AddJobFlowStepsInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the runtime role for a step on the cluster. The runtime role can be a cross-account IAM role. The runtime role ARN is a combination of account ID, role name, and role type using the following format: arn:partition:service:region:account:resource. For example, arn:aws:IAM::1234567890:role/ReadOnly is a correctly formatted runtime role ARN.
     public var executionRoleArn: Swift.String?
     /// A string that uniquely identifies the job flow. This identifier is returned by [RunJobFlow] and can also be obtained from [ListClusters].
@@ -1243,7 +1244,7 @@ public struct AddJobFlowStepsInput {
 }
 
 /// The output for the [AddJobFlowSteps] operation.
-public struct AddJobFlowStepsOutput {
+public struct AddJobFlowStepsOutput: Swift.Sendable {
     /// The identifiers of the list of steps added to the job flow.
     public var stepIds: [Swift.String]?
 
@@ -1256,8 +1257,9 @@ public struct AddJobFlowStepsOutput {
 }
 
 extension EMRClientTypes {
+
     /// A key-value pair containing user-defined metadata that you can associate with an Amazon EMR resource. Tags make it easier to associate clusters in various ways, such as grouping clusters to track your Amazon EMR resource allocation costs. For more information, see [Tag Clusters](https://docs.aws.amazon.com/emr/latest/ManagementGuide/emr-plan-tags.html).
-    public struct Tag {
+    public struct Tag: Swift.Sendable {
         /// A user-defined key, which is the minimum required information for a valid tag. For more information, see [Tag](https://docs.aws.amazon.com/emr/latest/ManagementGuide/emr-plan-tags.html).
         public var key: Swift.String?
         /// A user-defined value, which is optional in a tag. For more information, see [Tag Clusters](https://docs.aws.amazon.com/emr/latest/ManagementGuide/emr-plan-tags.html).
@@ -1272,11 +1274,10 @@ extension EMRClientTypes {
             self.value = value
         }
     }
-
 }
 
 /// This input identifies an Amazon EMR resource and a list of tags to attach.
-public struct AddTagsInput {
+public struct AddTagsInput: Swift.Sendable {
     /// The Amazon EMR resource identifier to which tags will be added. For example, a cluster identifier or an Amazon EMR Studio ID.
     /// This member is required.
     public var resourceId: Swift.String?
@@ -1295,14 +1296,15 @@ public struct AddTagsInput {
 }
 
 /// This output indicates the result of adding tags to a resource.
-public struct AddTagsOutput {
+public struct AddTagsOutput: Swift.Sendable {
 
     public init() { }
 }
 
 extension EMRClientTypes {
+
     /// With Amazon EMR release version 4.0 and later, the only accepted parameter is the application name. To pass arguments to applications, you use configuration classifications specified using configuration JSON objects. For more information, see [Configuring Applications](https://docs.aws.amazon.com/emr/latest/ReleaseGuide/emr-configure-apps.html). With earlier Amazon EMR releases, the application is any Amazon or third-party software that you can add to the cluster. This structure contains a list of strings that indicates the software to use with the cluster and accepts a user argument list. Amazon EMR accepts and forwards the argument list to the corresponding installation script as bootstrap action argument.
-    public struct Application {
+    public struct Application: Swift.Sendable {
         /// This option is for advanced users only. This is meta information about third-party applications that third-party vendors use for testing purposes.
         public var additionalInfo: [Swift.String: Swift.String]?
         /// Arguments for Amazon EMR to pass to the application.
@@ -1325,12 +1327,11 @@ extension EMRClientTypes {
             self.version = version
         }
     }
-
 }
 
 extension EMRClientTypes {
 
-    public enum AuthMode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AuthMode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case iam
         case sso
         case sdkUnknown(Swift.String)
@@ -1359,7 +1360,7 @@ extension EMRClientTypes {
 
 extension EMRClientTypes {
 
-    public enum AutoScalingPolicyState: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AutoScalingPolicyState: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case attached
         case attaching
         case detached
@@ -1400,7 +1401,7 @@ extension EMRClientTypes {
 
 extension EMRClientTypes {
 
-    public enum AutoScalingPolicyStateChangeReasonCode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AutoScalingPolicyStateChangeReasonCode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case cleanupFailure
         case provisionFailure
         case userRequest
@@ -1431,8 +1432,9 @@ extension EMRClientTypes {
 }
 
 extension EMRClientTypes {
+
     /// The reason for an [AutoScalingPolicyStatus] change.
-    public struct AutoScalingPolicyStateChangeReason {
+    public struct AutoScalingPolicyStateChangeReason: Swift.Sendable {
         /// The code indicating the reason for the change in status.USER_REQUEST indicates that the scaling policy status was changed by a user. PROVISION_FAILURE indicates that the status change was because the policy failed to provision. CLEANUP_FAILURE indicates an error.
         public var code: EMRClientTypes.AutoScalingPolicyStateChangeReasonCode?
         /// A friendly, more verbose message that accompanies an automatic scaling policy state change.
@@ -1447,12 +1449,12 @@ extension EMRClientTypes {
             self.message = message
         }
     }
-
 }
 
 extension EMRClientTypes {
+
     /// The status of an automatic scaling policy.
-    public struct AutoScalingPolicyStatus {
+    public struct AutoScalingPolicyStatus: Swift.Sendable {
         /// Indicates the status of the automatic scaling policy.
         public var state: EMRClientTypes.AutoScalingPolicyState?
         /// The reason for a change in status.
@@ -1467,12 +1469,12 @@ extension EMRClientTypes {
             self.stateChangeReason = stateChangeReason
         }
     }
-
 }
 
 extension EMRClientTypes {
+
     /// An automatic scaling policy for a core instance group or task instance group in an Amazon EMR cluster. The automatic scaling policy defines how an instance group dynamically adds and terminates Amazon EC2 instances in response to the value of a CloudWatch metric. See [PutAutoScalingPolicy].
-    public struct AutoScalingPolicyDescription {
+    public struct AutoScalingPolicyDescription: Swift.Sendable {
         /// The upper and lower Amazon EC2 instance limits for an automatic scaling policy. Automatic scaling activity will not cause an instance group to grow above or below these limits.
         public var constraints: EMRClientTypes.ScalingConstraints?
         /// The scale-in and scale-out rules that comprise the automatic scaling policy.
@@ -1491,12 +1493,12 @@ extension EMRClientTypes {
             self.status = status
         }
     }
-
 }
 
 extension EMRClientTypes {
+
     /// An auto-termination policy for an Amazon EMR cluster. An auto-termination policy defines the amount of idle time in seconds after which a cluster automatically terminates. For alternative cluster termination options, see [Control cluster termination](https://docs.aws.amazon.com/emr/latest/ManagementGuide/emr-plan-termination.html).
-    public struct AutoTerminationPolicy {
+    public struct AutoTerminationPolicy: Swift.Sendable {
         /// Specifies the amount of idle time in seconds after which the cluster automatically terminates. You can specify a minimum of 60 seconds and a maximum of 604800 seconds (seven days).
         public var idleTimeout: Swift.Int?
 
@@ -1507,12 +1509,12 @@ extension EMRClientTypes {
             self.idleTimeout = idleTimeout
         }
     }
-
 }
 
 extension EMRClientTypes {
+
     /// A list of port ranges that are permitted to allow inbound traffic from all public IP addresses. To specify a single port, use the same value for MinRange and MaxRange.
-    public struct PortRange {
+    public struct PortRange: Swift.Sendable {
         /// The smallest port number in a specified range of port numbers.
         public var maxRange: Swift.Int?
         /// The smallest port number in a specified range of port numbers.
@@ -1528,12 +1530,12 @@ extension EMRClientTypes {
             self.minRange = minRange
         }
     }
-
 }
 
 extension EMRClientTypes {
+
     /// Properties that describe the Amazon Web Services principal that created the BlockPublicAccessConfiguration using the PutBlockPublicAccessConfiguration action as well as the date and time that the configuration was created. Each time a configuration for block public access is updated, Amazon EMR updates this metadata.
-    public struct BlockPublicAccessConfigurationMetadata {
+    public struct BlockPublicAccessConfigurationMetadata: Swift.Sendable {
         /// The Amazon Resource Name that created or last modified the configuration.
         /// This member is required.
         public var createdByArn: Swift.String?
@@ -1550,12 +1552,12 @@ extension EMRClientTypes {
             self.creationDateTime = creationDateTime
         }
     }
-
 }
 
 extension EMRClientTypes {
+
     /// Configuration of the script to run during a bootstrap action.
-    public struct ScriptBootstrapActionConfig {
+    public struct ScriptBootstrapActionConfig: Swift.Sendable {
         /// A list of command line arguments to pass to the bootstrap action script.
         public var args: [Swift.String]?
         /// Location in Amazon S3 of the script to run during a bootstrap action.
@@ -1571,12 +1573,12 @@ extension EMRClientTypes {
             self.path = path
         }
     }
-
 }
 
 extension EMRClientTypes {
+
     /// Configuration of a bootstrap action.
-    public struct BootstrapActionConfig {
+    public struct BootstrapActionConfig: Swift.Sendable {
         /// The name of the bootstrap action.
         /// This member is required.
         public var name: Swift.String?
@@ -1593,12 +1595,12 @@ extension EMRClientTypes {
             self.scriptBootstrapAction = scriptBootstrapAction
         }
     }
-
 }
 
 extension EMRClientTypes {
+
     /// Reports the configuration of a bootstrap action in a cluster (job flow).
-    public struct BootstrapActionDetail {
+    public struct BootstrapActionDetail: Swift.Sendable {
         /// A description of the bootstrap action.
         public var bootstrapActionConfig: EMRClientTypes.BootstrapActionConfig?
 
@@ -1609,12 +1611,11 @@ extension EMRClientTypes {
             self.bootstrapActionConfig = bootstrapActionConfig
         }
     }
-
 }
 
 extension EMRClientTypes {
 
-    public enum StepCancellationOption: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum StepCancellationOption: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case sendInterrupt
         case terminateProcess
         case sdkUnknown(Swift.String)
@@ -1642,7 +1643,7 @@ extension EMRClientTypes {
 }
 
 /// The input argument to the [CancelSteps] operation.
-public struct CancelStepsInput {
+public struct CancelStepsInput: Swift.Sendable {
     /// The ClusterID for the specified steps that will be canceled. Use [RunJobFlow] and [ListClusters] to get ClusterIDs.
     /// This member is required.
     public var clusterId: Swift.String?
@@ -1666,7 +1667,7 @@ public struct CancelStepsInput {
 
 extension EMRClientTypes {
 
-    public enum CancelStepsRequestStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum CancelStepsRequestStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case failed
         case submitted
         case sdkUnknown(Swift.String)
@@ -1694,8 +1695,9 @@ extension EMRClientTypes {
 }
 
 extension EMRClientTypes {
+
     /// Specification of the status of a CancelSteps request. Available only in Amazon EMR version 4.8.0 and later, excluding version 5.0.0.
-    public struct CancelStepsInfo {
+    public struct CancelStepsInfo: Swift.Sendable {
         /// The reason for the failure if the CancelSteps request fails.
         public var reason: Swift.String?
         /// The status of a CancelSteps Request. The value may be SUBMITTED or FAILED.
@@ -1714,11 +1716,10 @@ extension EMRClientTypes {
             self.stepId = stepId
         }
     }
-
 }
 
 /// The output for the [CancelSteps] operation.
-public struct CancelStepsOutput {
+public struct CancelStepsOutput: Swift.Sendable {
     /// A list of [CancelStepsInfo], which shows the status of specified cancel requests for each StepID specified.
     public var cancelStepsInfoList: [EMRClientTypes.CancelStepsInfo]?
 
@@ -1731,8 +1732,9 @@ public struct CancelStepsOutput {
 }
 
 extension EMRClientTypes {
+
     /// Provides information about the Amazon EC2 instances in a cluster grouped by category. For example, key name, subnet ID, IAM instance profile, and so on.
-    public struct Ec2InstanceAttributes {
+    public struct Ec2InstanceAttributes: Swift.Sendable {
         /// A list of additional Amazon EC2 security group IDs for the master node.
         public var additionalMasterSecurityGroups: [Swift.String]?
         /// A list of additional Amazon EC2 security group IDs for the core and task nodes.
@@ -1783,12 +1785,11 @@ extension EMRClientTypes {
             self.serviceAccessSecurityGroup = serviceAccessSecurityGroup
         }
     }
-
 }
 
 extension EMRClientTypes {
 
-    public enum InstanceCollectionType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum InstanceCollectionType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case instanceFleet
         case instanceGroup
         case sdkUnknown(Swift.String)
@@ -1816,8 +1817,9 @@ extension EMRClientTypes {
 }
 
 extension EMRClientTypes {
+
     /// Attributes for Kerberos configuration when Kerberos authentication is enabled using a security configuration. For more information see [Use Kerberos Authentication](https://docs.aws.amazon.com/emr/latest/ManagementGuide/emr-kerberos.html) in the Amazon EMR Management Guide.
-    public struct KerberosAttributes {
+    public struct KerberosAttributes: Swift.Sendable {
         /// The Active Directory password for ADDomainJoinUser.
         public var adDomainJoinPassword: Swift.String?
         /// Required only when establishing a cross-realm trust with an Active Directory domain. A user with sufficient privileges to join resources to the domain.
@@ -1846,12 +1848,11 @@ extension EMRClientTypes {
             self.realm = realm
         }
     }
-
 }
 
 extension EMRClientTypes {
 
-    public enum PlacementGroupStrategy: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum PlacementGroupStrategy: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case cluster
         case `none`
         case partition
@@ -1885,8 +1886,9 @@ extension EMRClientTypes {
 }
 
 extension EMRClientTypes {
+
     /// Placement group configuration for an Amazon EMR cluster. The configuration specifies the placement strategy that can be applied to instance roles during cluster creation. To use this configuration, consider attaching managed policy AmazonElasticMapReducePlacementGroupPolicy to the Amazon EMR role.
-    public struct PlacementGroupConfig {
+    public struct PlacementGroupConfig: Swift.Sendable {
         /// Role of the instance in the cluster. Starting with Amazon EMR release 5.23.0, the only supported instance role is MASTER.
         /// This member is required.
         public var instanceRole: EMRClientTypes.InstanceRoleType?
@@ -1902,12 +1904,11 @@ extension EMRClientTypes {
             self.placementStrategy = placementStrategy
         }
     }
-
 }
 
 extension EMRClientTypes {
 
-    public enum RepoUpgradeOnBoot: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum RepoUpgradeOnBoot: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case `none`
         case security
         case sdkUnknown(Swift.String)
@@ -1936,7 +1937,7 @@ extension EMRClientTypes {
 
 extension EMRClientTypes {
 
-    public enum ScaleDownBehavior: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ScaleDownBehavior: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case terminateAtInstanceHour
         case terminateAtTaskCompletion
         case sdkUnknown(Swift.String)
@@ -1964,8 +1965,9 @@ extension EMRClientTypes {
 }
 
 extension EMRClientTypes {
+
     /// A tuple that provides information about an error that caused a cluster to terminate.
-    public struct ErrorDetail {
+    public struct ErrorDetail: Swift.Sendable {
         /// The name or code associated with the error.
         public var errorCode: Swift.String?
         /// A list of key value pairs that provides contextual information about why an error occured.
@@ -1984,12 +1986,11 @@ extension EMRClientTypes {
             self.errorMessage = errorMessage
         }
     }
-
 }
 
 extension EMRClientTypes {
 
-    public enum ClusterState: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ClusterState: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case bootstrapping
         case running
         case starting
@@ -2033,7 +2034,7 @@ extension EMRClientTypes {
 
 extension EMRClientTypes {
 
-    public enum ClusterStateChangeReasonCode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ClusterStateChangeReasonCode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case allStepsCompleted
         case bootstrapFailure
         case instanceFailure
@@ -2079,8 +2080,9 @@ extension EMRClientTypes {
 }
 
 extension EMRClientTypes {
+
     /// The reason that the cluster changed to its current state.
-    public struct ClusterStateChangeReason {
+    public struct ClusterStateChangeReason: Swift.Sendable {
         /// The programmatic code for the state change reason.
         public var code: EMRClientTypes.ClusterStateChangeReasonCode?
         /// The descriptive message for the state change reason.
@@ -2095,12 +2097,12 @@ extension EMRClientTypes {
             self.message = message
         }
     }
-
 }
 
 extension EMRClientTypes {
+
     /// Represents the timeline of the cluster's lifecycle.
-    public struct ClusterTimeline {
+    public struct ClusterTimeline: Swift.Sendable {
         /// The creation date and time of the cluster.
         public var creationDateTime: Foundation.Date?
         /// The date and time when the cluster was terminated.
@@ -2119,12 +2121,12 @@ extension EMRClientTypes {
             self.readyDateTime = readyDateTime
         }
     }
-
 }
 
 extension EMRClientTypes {
+
     /// The detailed status of the cluster.
-    public struct ClusterStatus {
+    public struct ClusterStatus: Swift.Sendable {
         /// A list of tuples that provides information about the errors that caused a cluster to terminate. This structure can contain up to 10 different ErrorDetail tuples.
         public var errorDetails: [EMRClientTypes.ErrorDetail]?
         /// The current state of the cluster.
@@ -2147,12 +2149,12 @@ extension EMRClientTypes {
             self.timeline = timeline
         }
     }
-
 }
 
 extension EMRClientTypes {
+
     /// The summary description of the cluster.
-    public struct ClusterSummary {
+    public struct ClusterSummary: Swift.Sendable {
         /// The Amazon Resource Name of the cluster.
         public var clusterArn: Swift.String?
         /// The unique identifier for the cluster.
@@ -2183,12 +2185,12 @@ extension EMRClientTypes {
             self.status = status
         }
     }
-
 }
 
 extension EMRClientTypes {
+
     /// An entity describing an executable that runs on a cluster.
-    public struct Command {
+    public struct Command: Swift.Sendable {
         /// Arguments for Amazon EMR to pass to the command for execution.
         public var args: [Swift.String]?
         /// The name of the command.
@@ -2207,12 +2209,11 @@ extension EMRClientTypes {
             self.scriptPath = scriptPath
         }
     }
-
 }
 
 extension EMRClientTypes {
 
-    public enum ComputeLimitsUnitType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ComputeLimitsUnitType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case instancefleetunits
         case instances
         case vcpu
@@ -2243,8 +2244,9 @@ extension EMRClientTypes {
 }
 
 extension EMRClientTypes {
+
     /// The Amazon EC2 unit limits for a managed scaling policy. The managed scaling activity of a cluster can not be above or below these limits. The limit only applies to the core and task nodes. The master node cannot be scaled after initial configuration.
-    public struct ComputeLimits {
+    public struct ComputeLimits: Swift.Sendable {
         /// The upper boundary of Amazon EC2 units. It is measured through vCPU cores or instances for instance groups and measured through units for instance fleets. Managed scaling activities are not allowed beyond this boundary. The limit only applies to the core and task nodes. The master node cannot be scaled after initial configuration.
         /// This member is required.
         public var maximumCapacityUnits: Swift.Int?
@@ -2274,10 +2276,9 @@ extension EMRClientTypes {
             self.unitType = unitType
         }
     }
-
 }
 
-public struct CreateSecurityConfigurationInput {
+public struct CreateSecurityConfigurationInput: Swift.Sendable {
     /// The name of the security configuration.
     /// This member is required.
     public var name: Swift.String?
@@ -2295,7 +2296,7 @@ public struct CreateSecurityConfigurationInput {
     }
 }
 
-public struct CreateSecurityConfigurationOutput {
+public struct CreateSecurityConfigurationOutput: Swift.Sendable {
     /// The date and time the security configuration was created.
     /// This member is required.
     public var creationDateTime: Foundation.Date?
@@ -2315,7 +2316,7 @@ public struct CreateSecurityConfigurationOutput {
 
 extension EMRClientTypes {
 
-    public enum IdcUserAssignment: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum IdcUserAssignment: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case `optional`
         case `required`
         case sdkUnknown(Swift.String)
@@ -2342,7 +2343,7 @@ extension EMRClientTypes {
     }
 }
 
-public struct CreateStudioInput {
+public struct CreateStudioInput: Swift.Sendable {
     /// Specifies whether the Studio authenticates users using IAM or IAM Identity Center.
     /// This member is required.
     public var authMode: EMRClientTypes.AuthMode?
@@ -2426,7 +2427,7 @@ public struct CreateStudioInput {
     }
 }
 
-public struct CreateStudioOutput {
+public struct CreateStudioOutput: Swift.Sendable {
     /// The ID of the Amazon EMR Studio.
     public var studioId: Swift.String?
     /// The unique Studio access URL.
@@ -2444,7 +2445,7 @@ public struct CreateStudioOutput {
 
 extension EMRClientTypes {
 
-    public enum IdentityType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum IdentityType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case group
         case user
         case sdkUnknown(Swift.String)
@@ -2471,7 +2472,7 @@ extension EMRClientTypes {
     }
 }
 
-public struct CreateStudioSessionMappingInput {
+public struct CreateStudioSessionMappingInput: Swift.Sendable {
     /// The globally unique identifier (GUID) of the user or group from the IAM Identity Center Identity Store. For more information, see [UserId](https://docs.aws.amazon.com/singlesignon/latest/IdentityStoreAPIReference/API_User.html#singlesignon-Type-User-UserId) and [GroupId](https://docs.aws.amazon.com/singlesignon/latest/IdentityStoreAPIReference/API_Group.html#singlesignon-Type-Group-GroupId) in the IAM Identity Center Identity Store API Reference. Either IdentityName or IdentityId must be specified, but not both.
     public var identityId: Swift.String?
     /// The name of the user or group. For more information, see [UserName](https://docs.aws.amazon.com/singlesignon/latest/IdentityStoreAPIReference/API_User.html#singlesignon-Type-User-UserName) and [DisplayName](https://docs.aws.amazon.com/singlesignon/latest/IdentityStoreAPIReference/API_Group.html#singlesignon-Type-Group-DisplayName) in the IAM Identity Center Identity Store API Reference. Either IdentityName or IdentityId must be specified, but not both.
@@ -2503,8 +2504,9 @@ public struct CreateStudioSessionMappingInput {
 }
 
 extension EMRClientTypes {
+
     /// The username and password that you use to connect to cluster endpoints.
-    public struct UsernamePassword {
+    public struct UsernamePassword: Swift.Sendable {
         /// The password associated with the temporary credentials that you use to connect to cluster endpoints.
         public var password: Swift.String?
         /// The username associated with the temporary credentials that you use to connect to cluster endpoints.
@@ -2519,7 +2521,6 @@ extension EMRClientTypes {
             self.username = username
         }
     }
-
 }
 
 extension EMRClientTypes.UsernamePassword: Swift.CustomDebugStringConvertible {
@@ -2529,16 +2530,16 @@ extension EMRClientTypes.UsernamePassword: Swift.CustomDebugStringConvertible {
 }
 
 extension EMRClientTypes {
+
     /// The credentials that you can use to connect to cluster endpoints. Credentials consist of a username and a password.
-    public enum Credentials {
+    public enum Credentials: Swift.Sendable {
         /// The username and password that you use to connect to cluster endpoints.
         case usernamepassword(EMRClientTypes.UsernamePassword)
         case sdkUnknown(Swift.String)
     }
-
 }
 
-public struct DeleteSecurityConfigurationInput {
+public struct DeleteSecurityConfigurationInput: Swift.Sendable {
     /// The name of the security configuration.
     /// This member is required.
     public var name: Swift.String?
@@ -2551,12 +2552,12 @@ public struct DeleteSecurityConfigurationInput {
     }
 }
 
-public struct DeleteSecurityConfigurationOutput {
+public struct DeleteSecurityConfigurationOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteStudioInput {
+public struct DeleteStudioInput: Swift.Sendable {
     /// The ID of the Amazon EMR Studio.
     /// This member is required.
     public var studioId: Swift.String?
@@ -2569,7 +2570,7 @@ public struct DeleteStudioInput {
     }
 }
 
-public struct DeleteStudioSessionMappingInput {
+public struct DeleteStudioSessionMappingInput: Swift.Sendable {
     /// The globally unique identifier (GUID) of the user or group to remove from the Amazon EMR Studio. For more information, see [UserId](https://docs.aws.amazon.com/singlesignon/latest/IdentityStoreAPIReference/API_User.html#singlesignon-Type-User-UserId) and [GroupId](https://docs.aws.amazon.com/singlesignon/latest/IdentityStoreAPIReference/API_Group.html#singlesignon-Type-Group-GroupId) in the IAM Identity Center Identity Store API Reference. Either IdentityName or IdentityId must be specified.
     public var identityId: Swift.String?
     /// The name of the user name or group to remove from the Amazon EMR Studio. For more information, see [UserName](https://docs.aws.amazon.com/singlesignon/latest/IdentityStoreAPIReference/API_User.html#singlesignon-Type-User-UserName) and [DisplayName](https://docs.aws.amazon.com/singlesignon/latest/IdentityStoreAPIReference/API_Group.html#singlesignon-Type-Group-DisplayName) in the IAM Identity Center Store API Reference. Either IdentityName or IdentityId must be specified.
@@ -2596,7 +2597,7 @@ public struct DeleteStudioSessionMappingInput {
 }
 
 /// This input determines which cluster to describe.
-public struct DescribeClusterInput {
+public struct DescribeClusterInput: Swift.Sendable {
     /// The identifier of the cluster to describe.
     /// This member is required.
     public var clusterId: Swift.String?
@@ -2612,7 +2613,7 @@ public struct DescribeClusterInput {
 extension EMRClientTypes {
 
     /// The type of instance.
-    public enum JobFlowExecutionState: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum JobFlowExecutionState: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case bootstrapping
         case completed
         case failed
@@ -2658,7 +2659,7 @@ extension EMRClientTypes {
 }
 
 /// The input for the [DescribeJobFlows] operation.
-public struct DescribeJobFlowsInput {
+public struct DescribeJobFlowsInput: Swift.Sendable {
     /// Return only job flows created after this date and time.
     public var createdAfter: Foundation.Date?
     /// Return only job flows created before this date and time.
@@ -2683,8 +2684,9 @@ public struct DescribeJobFlowsInput {
 }
 
 extension EMRClientTypes {
+
     /// Describes the status of the cluster (job flow).
-    public struct JobFlowExecutionStatusDetail {
+    public struct JobFlowExecutionStatusDetail: Swift.Sendable {
         /// The creation date and time of the job flow.
         /// This member is required.
         public var creationDateTime: Foundation.Date?
@@ -2717,12 +2719,11 @@ extension EMRClientTypes {
             self.state = state
         }
     }
-
 }
 
 extension EMRClientTypes {
 
-    public enum InstanceGroupState: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum InstanceGroupState: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case arrested
         case bootstrapping
         case ended
@@ -2777,8 +2778,9 @@ extension EMRClientTypes {
 }
 
 extension EMRClientTypes {
+
     /// Detailed information about an instance group.
-    public struct InstanceGroupDetail {
+    public struct InstanceGroupDetail: Swift.Sendable {
         /// If specified, indicates that the instance group uses Spot Instances. This is the maximum price you are willing to pay for Spot Instances. Specify OnDemandPrice to set the amount equal to the On-Demand price, or specify an amount in USD.
         public var bidPrice: Swift.String?
         /// The date/time the instance group was created.
@@ -2852,12 +2854,12 @@ extension EMRClientTypes {
             self.state = state
         }
     }
-
 }
 
 extension EMRClientTypes {
+
     /// The Amazon EC2 Availability Zone configuration of the cluster (job flow).
-    public struct PlacementType {
+    public struct PlacementType: Swift.Sendable {
         /// The Amazon EC2 Availability Zone for the cluster. AvailabilityZone is used for uniform instance groups, while AvailabilityZones (plural) is used for instance fleets.
         public var availabilityZone: Swift.String?
         /// When multiple Availability Zones are specified, Amazon EMR evaluates them and launches instances in the optimal Availability Zone. AvailabilityZones is used for instance fleets, while AvailabilityZone (singular) is used for uniform instance groups. The instance fleet configuration is available only in Amazon EMR releases 4.8.0 and later, excluding 5.0.x versions.
@@ -2872,12 +2874,12 @@ extension EMRClientTypes {
             self.availabilityZones = availabilityZones
         }
     }
-
 }
 
 extension EMRClientTypes {
+
     /// Specify the type of Amazon EC2 instances that the cluster (job flow) runs on.
-    public struct JobFlowInstancesDetail {
+    public struct JobFlowInstancesDetail: Swift.Sendable {
         /// The name of an Amazon EC2 key pair that can be used to connect to the master node using SSH.
         public var ec2KeyName: Swift.String?
         /// For clusters launched within Amazon Virtual Private Cloud, this is the identifier of the subnet where the cluster was launched.
@@ -2943,12 +2945,11 @@ extension EMRClientTypes {
             self.unhealthyNodeReplacement = unhealthyNodeReplacement
         }
     }
-
 }
 
 extension EMRClientTypes {
 
-    public enum StepExecutionState: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum StepExecutionState: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case cancelled
         case completed
         case `continue`
@@ -2991,8 +2992,9 @@ extension EMRClientTypes {
 }
 
 extension EMRClientTypes {
+
     /// The execution state of a step.
-    public struct StepExecutionStatusDetail {
+    public struct StepExecutionStatusDetail: Swift.Sendable {
         /// The creation date and time of the step.
         /// This member is required.
         public var creationDateTime: Foundation.Date?
@@ -3021,12 +3023,12 @@ extension EMRClientTypes {
             self.state = state
         }
     }
-
 }
 
 extension EMRClientTypes {
+
     /// Combines the execution state and configuration of a step.
-    public struct StepDetail {
+    public struct StepDetail: Swift.Sendable {
         /// The description of the step status.
         /// This member is required.
         public var executionStatusDetail: EMRClientTypes.StepExecutionStatusDetail?
@@ -3043,12 +3045,12 @@ extension EMRClientTypes {
             self.stepConfig = stepConfig
         }
     }
-
 }
 
 extension EMRClientTypes {
+
     /// A description of a cluster (job flow).
-    public struct JobFlowDetail {
+    public struct JobFlowDetail: Swift.Sendable {
         /// Applies only to Amazon EMR AMI versions 3.x and 2.x. For Amazon EMR releases 4.0 and later, ReleaseLabel is used. To specify a custom AMI, use CustomAmiID.
         public var amiVersion: Swift.String?
         /// An IAM role for automatic scaling policies. The default role is EMR_AutoScaling_DefaultRole. The IAM role provides a way for the automatic scaling feature to get the required permissions it needs to launch and terminate Amazon EC2 instances in an instance group.
@@ -3119,11 +3121,10 @@ extension EMRClientTypes {
             self.visibleToAllUsers = visibleToAllUsers
         }
     }
-
 }
 
 /// The output for the [DescribeJobFlows] operation.
-public struct DescribeJobFlowsOutput {
+public struct DescribeJobFlowsOutput: Swift.Sendable {
     /// A list of job flows matching the parameters supplied.
     public var jobFlows: [EMRClientTypes.JobFlowDetail]?
 
@@ -3135,7 +3136,7 @@ public struct DescribeJobFlowsOutput {
     }
 }
 
-public struct DescribeNotebookExecutionInput {
+public struct DescribeNotebookExecutionInput: Swift.Sendable {
     /// The unique identifier of the notebook execution.
     /// This member is required.
     public var notebookExecutionId: Swift.String?
@@ -3150,7 +3151,7 @@ public struct DescribeNotebookExecutionInput {
 
 extension EMRClientTypes {
 
-    public enum ExecutionEngineType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ExecutionEngineType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case emr
         case sdkUnknown(Swift.String)
 
@@ -3175,8 +3176,9 @@ extension EMRClientTypes {
 }
 
 extension EMRClientTypes {
+
     /// Specifies the execution engine (cluster) to run the notebook and perform the notebook execution, for example, an Amazon EMR cluster.
-    public struct ExecutionEngineConfig {
+    public struct ExecutionEngineConfig: Swift.Sendable {
         /// The execution role ARN required for the notebook execution.
         public var executionRoleArn: Swift.String?
         /// The unique identifier of the execution engine. For an Amazon EMR cluster, this is the cluster ID.
@@ -3200,12 +3202,12 @@ extension EMRClientTypes {
             self.type = type
         }
     }
-
 }
 
 extension EMRClientTypes {
+
     /// The Amazon S3 location that stores the notebook execution input.
-    public struct NotebookS3LocationForOutput {
+    public struct NotebookS3LocationForOutput: Swift.Sendable {
         /// The Amazon S3 bucket that stores the notebook execution input.
         public var bucket: Swift.String?
         /// The key to the Amazon S3 location that stores the notebook execution input.
@@ -3220,12 +3222,11 @@ extension EMRClientTypes {
             self.key = key
         }
     }
-
 }
 
 extension EMRClientTypes {
 
-    public enum OutputNotebookFormat: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum OutputNotebookFormat: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case html
         case sdkUnknown(Swift.String)
 
@@ -3250,8 +3251,9 @@ extension EMRClientTypes {
 }
 
 extension EMRClientTypes {
+
     /// The Amazon S3 location that stores the notebook execution output.
-    public struct OutputNotebookS3LocationForOutput {
+    public struct OutputNotebookS3LocationForOutput: Swift.Sendable {
         /// The Amazon S3 bucket that stores the notebook execution output.
         public var bucket: Swift.String?
         /// The key to the Amazon S3 location that stores the notebook execution output.
@@ -3266,12 +3268,11 @@ extension EMRClientTypes {
             self.key = key
         }
     }
-
 }
 
 extension EMRClientTypes {
 
-    public enum NotebookExecutionStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum NotebookExecutionStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case failed
         case failing
         case finished
@@ -3323,8 +3324,9 @@ extension EMRClientTypes {
 }
 
 extension EMRClientTypes {
+
     /// A notebook execution. An execution is a specific instance that an Amazon EMR Notebook is run using the StartNotebookExecution action.
-    public struct NotebookExecution {
+    public struct NotebookExecution: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the notebook execution.
         public var arn: Swift.String?
         /// The unique identifier of the Amazon EMR Notebook that is used for the notebook execution.
@@ -3419,10 +3421,9 @@ extension EMRClientTypes {
             self.tags = tags
         }
     }
-
 }
 
-public struct DescribeNotebookExecutionOutput {
+public struct DescribeNotebookExecutionOutput: Swift.Sendable {
     /// Properties of the notebook execution.
     public var notebookExecution: EMRClientTypes.NotebookExecution?
 
@@ -3434,7 +3435,7 @@ public struct DescribeNotebookExecutionOutput {
     }
 }
 
-public struct DescribeReleaseLabelInput {
+public struct DescribeReleaseLabelInput: Swift.Sendable {
     /// Reserved for future use. Currently set to null.
     public var maxResults: Swift.Int?
     /// The pagination token. Reserved for future use. Currently set to null.
@@ -3455,8 +3456,9 @@ public struct DescribeReleaseLabelInput {
 }
 
 extension EMRClientTypes {
+
     /// The returned release label application names or versions.
-    public struct SimplifiedApplication {
+    public struct SimplifiedApplication: Swift.Sendable {
         /// The returned release label application name. For example, hadoop.
         public var name: Swift.String?
         /// The returned release label application version. For example, 3.2.1.
@@ -3471,12 +3473,12 @@ extension EMRClientTypes {
             self.version = version
         }
     }
-
 }
 
 extension EMRClientTypes {
+
     /// The Amazon Linux release specified for a cluster in the RunJobFlow request.
-    public struct OSRelease {
+    public struct OSRelease: Swift.Sendable {
         /// The Amazon Linux release specified for a cluster in the RunJobFlow request. The format is as shown in [ Amazon Linux 2 Release Notes ](https://docs.aws.amazon.com/AL2/latest/relnotes/relnotes-20220218.html). For example, 2.0.20220218.1.
         public var label: Swift.String?
 
@@ -3487,10 +3489,9 @@ extension EMRClientTypes {
             self.label = label
         }
     }
-
 }
 
-public struct DescribeReleaseLabelOutput {
+public struct DescribeReleaseLabelOutput: Swift.Sendable {
     /// The list of applications available for the target release label. Name is the name of the application. Version is the concise version of the application.
     public var applications: [EMRClientTypes.SimplifiedApplication]?
     /// The list of available Amazon Linux release versions for an Amazon EMR release. Contains a Label field that is formatted as shown in [ Amazon Linux 2 Release Notes ](https://docs.aws.amazon.com/AL2/latest/relnotes/relnotes-al2.html). For example, [2.0.20220218.1](https://docs.aws.amazon.com/AL2/latest/relnotes/relnotes-20220218.html).
@@ -3514,7 +3515,7 @@ public struct DescribeReleaseLabelOutput {
     }
 }
 
-public struct DescribeSecurityConfigurationInput {
+public struct DescribeSecurityConfigurationInput: Swift.Sendable {
     /// The name of the security configuration.
     /// This member is required.
     public var name: Swift.String?
@@ -3527,7 +3528,7 @@ public struct DescribeSecurityConfigurationInput {
     }
 }
 
-public struct DescribeSecurityConfigurationOutput {
+public struct DescribeSecurityConfigurationOutput: Swift.Sendable {
     /// The date and time the security configuration was created
     public var creationDateTime: Foundation.Date?
     /// The name of the security configuration.
@@ -3548,7 +3549,7 @@ public struct DescribeSecurityConfigurationOutput {
 }
 
 /// This input determines which step to describe.
-public struct DescribeStepInput {
+public struct DescribeStepInput: Swift.Sendable {
     /// The identifier of the cluster with steps to describe.
     /// This member is required.
     public var clusterId: Swift.String?
@@ -3567,8 +3568,9 @@ public struct DescribeStepInput {
 }
 
 extension EMRClientTypes {
+
     /// A cluster step consisting of a JAR file whose main function will be executed. The main function submits a job for Hadoop to execute and waits for the job to finish or fail.
-    public struct HadoopStepConfig {
+    public struct HadoopStepConfig: Swift.Sendable {
         /// The list of command line arguments to pass to the JAR file's main function for execution.
         public var args: [Swift.String]?
         /// The path to the JAR file that runs during the step.
@@ -3591,12 +3593,12 @@ extension EMRClientTypes {
             self.properties = properties
         }
     }
-
 }
 
 extension EMRClientTypes {
+
     /// The details of the step failure. The service attempts to detect the root cause for many common failures.
-    public struct FailureDetails {
+    public struct FailureDetails: Swift.Sendable {
         /// The path to the log file where the step failure root cause was originally recorded.
         public var logFile: Swift.String?
         /// The descriptive message including the error the Amazon EMR service has identified as the cause of step failure. This is text from an error log that describes the root cause of the failure.
@@ -3615,12 +3617,11 @@ extension EMRClientTypes {
             self.reason = reason
         }
     }
-
 }
 
 extension EMRClientTypes {
 
-    public enum StepState: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum StepState: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case cancelled
         case cancelPending
         case completed
@@ -3664,7 +3665,7 @@ extension EMRClientTypes {
 
 extension EMRClientTypes {
 
-    public enum StepStateChangeReasonCode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum StepStateChangeReasonCode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case `none`
         case sdkUnknown(Swift.String)
 
@@ -3689,8 +3690,9 @@ extension EMRClientTypes {
 }
 
 extension EMRClientTypes {
+
     /// The details of the step state change reason.
-    public struct StepStateChangeReason {
+    public struct StepStateChangeReason: Swift.Sendable {
         /// The programmable code for the state change reason. Note: Currently, the service provides no code for the state change.
         public var code: EMRClientTypes.StepStateChangeReasonCode?
         /// The descriptive message for the state change reason.
@@ -3705,12 +3707,12 @@ extension EMRClientTypes {
             self.message = message
         }
     }
-
 }
 
 extension EMRClientTypes {
+
     /// The timeline of the cluster step lifecycle.
-    public struct StepTimeline {
+    public struct StepTimeline: Swift.Sendable {
         /// The date and time when the cluster step was created.
         public var creationDateTime: Foundation.Date?
         /// The date and time when the cluster step execution completed or failed.
@@ -3729,12 +3731,12 @@ extension EMRClientTypes {
             self.startDateTime = startDateTime
         }
     }
-
 }
 
 extension EMRClientTypes {
+
     /// The execution status details of the cluster step.
-    public struct StepStatus {
+    public struct StepStatus: Swift.Sendable {
         /// The details for the step failure including reason, message, and log file path where the root cause was identified.
         public var failureDetails: EMRClientTypes.FailureDetails?
         /// The execution state of the cluster step.
@@ -3757,12 +3759,12 @@ extension EMRClientTypes {
             self.timeline = timeline
         }
     }
-
 }
 
 extension EMRClientTypes {
+
     /// This represents a step in a cluster.
-    public struct Step {
+    public struct Step: Swift.Sendable {
         /// The action to take when the cluster step fails. Possible values are TERMINATE_CLUSTER, CANCEL_AND_WAIT, and CONTINUE. TERMINATE_JOB_FLOW is provided for backward compatibility. We recommend using TERMINATE_CLUSTER instead. If a cluster's StepConcurrencyLevel is greater than 1, do not use AddJobFlowSteps to submit a step with this parameter set to CANCEL_AND_WAIT or TERMINATE_CLUSTER. The step is not submitted and the action fails with a message that the ActionOnFailure setting is not valid. If you change a cluster's StepConcurrencyLevel to be greater than 1 while a step is running, the ActionOnFailure parameter may not behave as you expect. In this case, for a step that fails with this parameter set to CANCEL_AND_WAIT, pending steps and the running step are not canceled; for a step that fails with this parameter set to TERMINATE_CLUSTER, the cluster does not terminate.
         public var actionOnFailure: EMRClientTypes.ActionOnFailure?
         /// The Hadoop job configuration of the cluster step.
@@ -3793,11 +3795,10 @@ extension EMRClientTypes {
             self.status = status
         }
     }
-
 }
 
 /// This output contains the description of the cluster step.
-public struct DescribeStepOutput {
+public struct DescribeStepOutput: Swift.Sendable {
     /// The step details for the requested step identifier.
     public var step: EMRClientTypes.Step?
 
@@ -3809,7 +3810,7 @@ public struct DescribeStepOutput {
     }
 }
 
-public struct DescribeStudioInput {
+public struct DescribeStudioInput: Swift.Sendable {
     /// The Amazon EMR Studio ID.
     /// This member is required.
     public var studioId: Swift.String?
@@ -3823,8 +3824,9 @@ public struct DescribeStudioInput {
 }
 
 extension EMRClientTypes {
+
     /// Details for an Amazon EMR Studio including ID, creation time, name, and so on.
-    public struct Studio {
+    public struct Studio: Swift.Sendable {
         /// Specifies whether the Amazon EMR Studio authenticates users with IAM or IAM Identity Center.
         public var authMode: EMRClientTypes.AuthMode?
         /// The time the Amazon EMR Studio was created.
@@ -3915,10 +3917,9 @@ extension EMRClientTypes {
             self.workspaceSecurityGroupId = workspaceSecurityGroupId
         }
     }
-
 }
 
-public struct DescribeStudioOutput {
+public struct DescribeStudioOutput: Swift.Sendable {
     /// The Amazon EMR Studio details.
     public var studio: EMRClientTypes.Studio?
 
@@ -3931,8 +3932,9 @@ public struct DescribeStudioOutput {
 }
 
 extension EMRClientTypes {
+
     /// Configuration of requested EBS block device associated with the instance group.
-    public struct EbsBlockDevice {
+    public struct EbsBlockDevice: Swift.Sendable {
         /// The device name that is exposed to the instance, such as /dev/sdh.
         public var device: Swift.String?
         /// EBS volume specifications such as volume type, IOPS, size (GiB) and throughput (MiB/s) that are requested for the EBS volume attached to an Amazon EC2 instance in the cluster.
@@ -3947,12 +3949,12 @@ extension EMRClientTypes {
             self.volumeSpecification = volumeSpecification
         }
     }
-
 }
 
 extension EMRClientTypes {
+
     /// EBS block device that's attached to an Amazon EC2 instance.
-    public struct EbsVolume {
+    public struct EbsVolume: Swift.Sendable {
         /// The device name that is exposed to the instance, such as /dev/sdh.
         public var device: Swift.String?
         /// The volume identifier of the EBS volume.
@@ -3967,10 +3969,9 @@ extension EMRClientTypes {
             self.volumeId = volumeId
         }
     }
-
 }
 
-public struct GetAutoTerminationPolicyInput {
+public struct GetAutoTerminationPolicyInput: Swift.Sendable {
     /// Specifies the ID of the Amazon EMR cluster for which the auto-termination policy will be fetched.
     /// This member is required.
     public var clusterId: Swift.String?
@@ -3983,7 +3984,7 @@ public struct GetAutoTerminationPolicyInput {
     }
 }
 
-public struct GetAutoTerminationPolicyOutput {
+public struct GetAutoTerminationPolicyOutput: Swift.Sendable {
     /// Specifies the auto-termination policy that is attached to an Amazon EMR cluster.
     public var autoTerminationPolicy: EMRClientTypes.AutoTerminationPolicy?
 
@@ -3995,12 +3996,12 @@ public struct GetAutoTerminationPolicyOutput {
     }
 }
 
-public struct GetBlockPublicAccessConfigurationInput {
+public struct GetBlockPublicAccessConfigurationInput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct GetClusterSessionCredentialsInput {
+public struct GetClusterSessionCredentialsInput: Swift.Sendable {
     /// The unique identifier of the cluster.
     /// This member is required.
     public var clusterId: Swift.String?
@@ -4017,7 +4018,7 @@ public struct GetClusterSessionCredentialsInput {
     }
 }
 
-public struct GetClusterSessionCredentialsOutput {
+public struct GetClusterSessionCredentialsOutput: Swift.Sendable {
     /// The credentials that you can use to connect to cluster endpoints that support username and password authentication.
     public var credentials: EMRClientTypes.Credentials?
     /// The time when the credentials that are returned by the GetClusterSessionCredentials API expire.
@@ -4033,7 +4034,7 @@ public struct GetClusterSessionCredentialsOutput {
     }
 }
 
-public struct GetManagedScalingPolicyInput {
+public struct GetManagedScalingPolicyInput: Swift.Sendable {
     /// Specifies the ID of the cluster for which the managed scaling policy will be fetched.
     /// This member is required.
     public var clusterId: Swift.String?
@@ -4047,8 +4048,9 @@ public struct GetManagedScalingPolicyInput {
 }
 
 extension EMRClientTypes {
+
     /// Managed scaling policy for an Amazon EMR cluster. The policy specifies the limits for resources that can be added or terminated from a cluster. The policy only applies to the core and task nodes. The master node cannot be scaled after initial configuration.
-    public struct ManagedScalingPolicy {
+    public struct ManagedScalingPolicy: Swift.Sendable {
         /// The Amazon EC2 unit limits for a managed scaling policy. The managed scaling activity of a cluster is not allowed to go above or below these limits. The limit only applies to the core and task nodes. The master node cannot be scaled after initial configuration.
         public var computeLimits: EMRClientTypes.ComputeLimits?
 
@@ -4059,10 +4061,9 @@ extension EMRClientTypes {
             self.computeLimits = computeLimits
         }
     }
-
 }
 
-public struct GetManagedScalingPolicyOutput {
+public struct GetManagedScalingPolicyOutput: Swift.Sendable {
     /// Specifies the managed scaling policy that is attached to an Amazon EMR cluster.
     public var managedScalingPolicy: EMRClientTypes.ManagedScalingPolicy?
 
@@ -4074,7 +4075,7 @@ public struct GetManagedScalingPolicyOutput {
     }
 }
 
-public struct GetStudioSessionMappingInput {
+public struct GetStudioSessionMappingInput: Swift.Sendable {
     /// The globally unique identifier (GUID) of the user or group. For more information, see [UserId](https://docs.aws.amazon.com/singlesignon/latest/IdentityStoreAPIReference/API_User.html#singlesignon-Type-User-UserId) and [GroupId](https://docs.aws.amazon.com/singlesignon/latest/IdentityStoreAPIReference/API_Group.html#singlesignon-Type-Group-GroupId) in the IAM Identity Center Identity Store API Reference. Either IdentityName or IdentityId must be specified.
     public var identityId: Swift.String?
     /// The name of the user or group to fetch. For more information, see [UserName](https://docs.aws.amazon.com/singlesignon/latest/IdentityStoreAPIReference/API_User.html#singlesignon-Type-User-UserName) and [DisplayName](https://docs.aws.amazon.com/singlesignon/latest/IdentityStoreAPIReference/API_Group.html#singlesignon-Type-Group-DisplayName) in the IAM Identity Center Identity Store API Reference. Either IdentityName or IdentityId must be specified.
@@ -4101,8 +4102,9 @@ public struct GetStudioSessionMappingInput {
 }
 
 extension EMRClientTypes {
+
     /// Details for an Amazon EMR Studio session mapping including creation time, user or group ID, Studio ID, and so on.
-    public struct SessionMappingDetail {
+    public struct SessionMappingDetail: Swift.Sendable {
         /// The time the session mapping was created.
         public var creationTime: Foundation.Date?
         /// The globally unique identifier (GUID) of the user or group.
@@ -4137,10 +4139,9 @@ extension EMRClientTypes {
             self.studioId = studioId
         }
     }
-
 }
 
-public struct GetStudioSessionMappingOutput {
+public struct GetStudioSessionMappingOutput: Swift.Sendable {
     /// The session mapping details for the specified Amazon EMR Studio and identity, including session policy ARN and creation time.
     public var sessionMapping: EMRClientTypes.SessionMappingDetail?
 
@@ -4153,7 +4154,7 @@ public struct GetStudioSessionMappingOutput {
 }
 
 /// This input determines which bootstrap actions to retrieve.
-public struct ListBootstrapActionsInput {
+public struct ListBootstrapActionsInput: Swift.Sendable {
     /// The cluster identifier for the bootstrap actions to list.
     /// This member is required.
     public var clusterId: Swift.String?
@@ -4171,7 +4172,7 @@ public struct ListBootstrapActionsInput {
 }
 
 /// This output contains the bootstrap actions detail.
-public struct ListBootstrapActionsOutput {
+public struct ListBootstrapActionsOutput: Swift.Sendable {
     /// The bootstrap actions associated with the cluster.
     public var bootstrapActions: [EMRClientTypes.Command]?
     /// The pagination token that indicates the next set of results to retrieve.
@@ -4188,7 +4189,7 @@ public struct ListBootstrapActionsOutput {
 }
 
 /// This input determines how the ListClusters action filters the list of clusters that it returns.
-public struct ListClustersInput {
+public struct ListClustersInput: Swift.Sendable {
     /// The cluster state filters to apply when listing clusters. Clusters that change state while this action runs may be not be returned as expected in the list of clusters.
     public var clusterStates: [EMRClientTypes.ClusterState]?
     /// The creation date and time beginning value filter for listing clusters.
@@ -4213,7 +4214,7 @@ public struct ListClustersInput {
 }
 
 /// This contains a ClusterSummaryList with the cluster details; for example, the cluster IDs, names, and status.
-public struct ListClustersOutput {
+public struct ListClustersOutput: Swift.Sendable {
     /// The list of clusters for the account based on the given filters.
     public var clusters: [EMRClientTypes.ClusterSummary]?
     /// The pagination token that indicates the next set of results to retrieve.
@@ -4229,7 +4230,7 @@ public struct ListClustersOutput {
     }
 }
 
-public struct ListInstanceFleetsInput {
+public struct ListInstanceFleetsInput: Swift.Sendable {
     /// The unique identifier of the cluster.
     /// This member is required.
     public var clusterId: Swift.String?
@@ -4248,7 +4249,7 @@ public struct ListInstanceFleetsInput {
 
 extension EMRClientTypes {
 
-    public enum InstanceFleetState: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum InstanceFleetState: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case bootstrapping
         case provisioning
         case resizing
@@ -4292,7 +4293,7 @@ extension EMRClientTypes {
 
 extension EMRClientTypes {
 
-    public enum InstanceFleetStateChangeReasonCode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum InstanceFleetStateChangeReasonCode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case clusterTerminated
         case instanceFailure
         case internalError
@@ -4326,8 +4327,9 @@ extension EMRClientTypes {
 }
 
 extension EMRClientTypes {
+
     /// Provides status change reason details for the instance fleet. The instance fleet configuration is available only in Amazon EMR releases 4.8.0 and later, excluding 5.0.x versions.
-    public struct InstanceFleetStateChangeReason {
+    public struct InstanceFleetStateChangeReason: Swift.Sendable {
         /// A code corresponding to the reason the state change occurred.
         public var code: EMRClientTypes.InstanceFleetStateChangeReasonCode?
         /// An explanatory message.
@@ -4342,12 +4344,12 @@ extension EMRClientTypes {
             self.message = message
         }
     }
-
 }
 
 extension EMRClientTypes {
+
     /// Provides historical timestamps for the instance fleet, including the time of creation, the time it became ready to run jobs, and the time of termination. The instance fleet configuration is available only in Amazon EMR releases 4.8.0 and later, excluding 5.0.x versions.
-    public struct InstanceFleetTimeline {
+    public struct InstanceFleetTimeline: Swift.Sendable {
         /// The time and date the instance fleet was created.
         public var creationDateTime: Foundation.Date?
         /// The time and date the instance fleet terminated.
@@ -4366,12 +4368,12 @@ extension EMRClientTypes {
             self.readyDateTime = readyDateTime
         }
     }
-
 }
 
 extension EMRClientTypes {
+
     /// The status of the instance fleet. The instance fleet configuration is available only in Amazon EMR releases 4.8.0 and later, excluding 5.0.x versions.
-    public struct InstanceFleetStatus {
+    public struct InstanceFleetStatus: Swift.Sendable {
         /// A code representing the instance fleet status.
         ///
         /// * PROVISIONING—The instance fleet is provisioning Amazon EC2 resources and is not yet ready to run jobs.
@@ -4404,11 +4406,10 @@ extension EMRClientTypes {
             self.timeline = timeline
         }
     }
-
 }
 
 /// This input determines which instance groups to retrieve.
-public struct ListInstanceGroupsInput {
+public struct ListInstanceGroupsInput: Swift.Sendable {
     /// The identifier of the cluster for which to list the instance groups.
     /// This member is required.
     public var clusterId: Swift.String?
@@ -4427,7 +4428,7 @@ public struct ListInstanceGroupsInput {
 
 extension EMRClientTypes {
 
-    public enum InstanceGroupType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum InstanceGroupType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case core
         case master
         case task
@@ -4458,8 +4459,9 @@ extension EMRClientTypes {
 }
 
 extension EMRClientTypes {
+
     /// Custom policy for requesting termination protection or termination of specific instances when shrinking an instance group.
-    public struct InstanceResizePolicy {
+    public struct InstanceResizePolicy: Swift.Sendable {
         /// Decommissioning timeout override for the specific list of instances to be terminated.
         public var instanceTerminationTimeout: Swift.Int?
         /// Specific list of instances to be protected when shrinking an instance group.
@@ -4478,12 +4480,12 @@ extension EMRClientTypes {
             self.instancesToTerminate = instancesToTerminate
         }
     }
-
 }
 
 extension EMRClientTypes {
+
     /// Policy for customizing shrink operations. Allows configuration of decommissioning timeout and targeted instance shrinking.
-    public struct ShrinkPolicy {
+    public struct ShrinkPolicy: Swift.Sendable {
         /// The desired timeout for decommissioning an instance. Overrides the default YARN decommissioning timeout.
         public var decommissionTimeout: Swift.Int?
         /// Custom policy for requesting termination protection or termination of specific instances when shrinking an instance group.
@@ -4498,12 +4500,11 @@ extension EMRClientTypes {
             self.instanceResizePolicy = instanceResizePolicy
         }
     }
-
 }
 
 extension EMRClientTypes {
 
-    public enum InstanceGroupStateChangeReasonCode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum InstanceGroupStateChangeReasonCode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case clusterTerminated
         case instanceFailure
         case internalError
@@ -4537,8 +4538,9 @@ extension EMRClientTypes {
 }
 
 extension EMRClientTypes {
+
     /// The status change reason details for the instance group.
-    public struct InstanceGroupStateChangeReason {
+    public struct InstanceGroupStateChangeReason: Swift.Sendable {
         /// The programmable code for the state change reason.
         public var code: EMRClientTypes.InstanceGroupStateChangeReasonCode?
         /// The status change reason description.
@@ -4553,12 +4555,12 @@ extension EMRClientTypes {
             self.message = message
         }
     }
-
 }
 
 extension EMRClientTypes {
+
     /// The timeline of the instance group lifecycle.
-    public struct InstanceGroupTimeline {
+    public struct InstanceGroupTimeline: Swift.Sendable {
         /// The creation date and time of the instance group.
         public var creationDateTime: Foundation.Date?
         /// The date and time when the instance group terminated.
@@ -4577,12 +4579,12 @@ extension EMRClientTypes {
             self.readyDateTime = readyDateTime
         }
     }
-
 }
 
 extension EMRClientTypes {
+
     /// The details of the instance group status.
-    public struct InstanceGroupStatus {
+    public struct InstanceGroupStatus: Swift.Sendable {
         /// The current state of the instance group.
         public var state: EMRClientTypes.InstanceGroupState?
         /// The status change reason details for the instance group.
@@ -4601,12 +4603,11 @@ extension EMRClientTypes {
             self.timeline = timeline
         }
     }
-
 }
 
 extension EMRClientTypes {
 
-    public enum InstanceState: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum InstanceState: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case awaitingFulfillment
         case bootstrapping
         case provisioning
@@ -4643,7 +4644,7 @@ extension EMRClientTypes {
 }
 
 /// This input determines which instances to list.
-public struct ListInstancesInput {
+public struct ListInstancesInput: Swift.Sendable {
     /// The identifier of the cluster for which to list the instances.
     /// This member is required.
     public var clusterId: Swift.String?
@@ -4682,7 +4683,7 @@ public struct ListInstancesInput {
 
 extension EMRClientTypes {
 
-    public enum InstanceStateChangeReasonCode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum InstanceStateChangeReasonCode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case bootstrapFailure
         case clusterTerminated
         case instanceFailure
@@ -4719,8 +4720,9 @@ extension EMRClientTypes {
 }
 
 extension EMRClientTypes {
+
     /// The details of the status change reason for the instance.
-    public struct InstanceStateChangeReason {
+    public struct InstanceStateChangeReason: Swift.Sendable {
         /// The programmable code for the state change reason.
         public var code: EMRClientTypes.InstanceStateChangeReasonCode?
         /// The status change reason description.
@@ -4735,12 +4737,12 @@ extension EMRClientTypes {
             self.message = message
         }
     }
-
 }
 
 extension EMRClientTypes {
+
     /// The timeline of the instance lifecycle.
-    public struct InstanceTimeline {
+    public struct InstanceTimeline: Swift.Sendable {
         /// The creation date and time of the instance.
         public var creationDateTime: Foundation.Date?
         /// The date and time when the instance was terminated.
@@ -4759,12 +4761,12 @@ extension EMRClientTypes {
             self.readyDateTime = readyDateTime
         }
     }
-
 }
 
 extension EMRClientTypes {
+
     /// The instance status details.
-    public struct InstanceStatus {
+    public struct InstanceStatus: Swift.Sendable {
         /// The current state of the instance.
         public var state: EMRClientTypes.InstanceState?
         /// The details of the status change reason for the instance.
@@ -4783,12 +4785,12 @@ extension EMRClientTypes {
             self.timeline = timeline
         }
     }
-
 }
 
 extension EMRClientTypes {
+
     /// Represents an Amazon EC2 instance provisioned as part of cluster.
-    public struct Instance {
+    public struct Instance: Swift.Sendable {
         /// The list of Amazon EBS volumes that are attached to this instance.
         public var ebsVolumes: [EMRClientTypes.EbsVolume]?
         /// The unique identifier of the instance in Amazon EC2.
@@ -4843,11 +4845,10 @@ extension EMRClientTypes {
             self.status = status
         }
     }
-
 }
 
 /// This output contains the list of instances.
-public struct ListInstancesOutput {
+public struct ListInstancesOutput: Swift.Sendable {
     /// The list of instances for the cluster and given filters.
     public var instances: [EMRClientTypes.Instance]?
     /// The pagination token that indicates the next set of results to retrieve.
@@ -4863,7 +4864,7 @@ public struct ListInstancesOutput {
     }
 }
 
-public struct ListNotebookExecutionsInput {
+public struct ListNotebookExecutionsInput: Swift.Sendable {
     /// The unique ID of the editor associated with the notebook execution.
     public var editorId: Swift.String?
     /// The unique ID of the execution engine.
@@ -4916,8 +4917,9 @@ public struct ListNotebookExecutionsInput {
 }
 
 extension EMRClientTypes {
+
     /// Details for a notebook execution. The details include information such as the unique ID and status of the notebook execution.
-    public struct NotebookExecutionSummary {
+    public struct NotebookExecutionSummary: Swift.Sendable {
         /// The unique identifier of the editor associated with the notebook execution.
         public var editorId: Swift.String?
         /// The timestamp when notebook execution started.
@@ -4976,10 +4978,9 @@ extension EMRClientTypes {
             self.status = status
         }
     }
-
 }
 
-public struct ListNotebookExecutionsOutput {
+public struct ListNotebookExecutionsOutput: Swift.Sendable {
     /// A pagination token that a subsequent ListNotebookExecutions can use to determine the next set of results to retrieve.
     public var marker: Swift.String?
     /// A list of notebook executions.
@@ -4996,8 +4997,9 @@ public struct ListNotebookExecutionsOutput {
 }
 
 extension EMRClientTypes {
+
     /// The release label filters by application or version prefix.
-    public struct ReleaseLabelFilter {
+    public struct ReleaseLabelFilter: Swift.Sendable {
         /// Optional release label application filter. For example, spark@2.1.0.
         public var application: Swift.String?
         /// Optional release label version prefix filter. For example, emr-5.
@@ -5012,10 +5014,9 @@ extension EMRClientTypes {
             self.`prefix` = `prefix`
         }
     }
-
 }
 
-public struct ListReleaseLabelsInput {
+public struct ListReleaseLabelsInput: Swift.Sendable {
     /// Filters the results of the request. Prefix specifies the prefix of release labels to return. Application specifies the application (with/without version) of release labels to return.
     public var filters: EMRClientTypes.ReleaseLabelFilter?
     /// Defines the maximum number of release labels to return in a single response. The default is 100.
@@ -5035,7 +5036,7 @@ public struct ListReleaseLabelsInput {
     }
 }
 
-public struct ListReleaseLabelsOutput {
+public struct ListReleaseLabelsOutput: Swift.Sendable {
     /// Used to paginate the next page of results if specified in the next ListReleaseLabels request.
     public var nextToken: Swift.String?
     /// The returned release labels.
@@ -5051,7 +5052,7 @@ public struct ListReleaseLabelsOutput {
     }
 }
 
-public struct ListSecurityConfigurationsInput {
+public struct ListSecurityConfigurationsInput: Swift.Sendable {
     /// The pagination token that indicates the set of results to retrieve.
     public var marker: Swift.String?
 
@@ -5064,8 +5065,9 @@ public struct ListSecurityConfigurationsInput {
 }
 
 extension EMRClientTypes {
+
     /// The creation date and time, and name, of a security configuration.
-    public struct SecurityConfigurationSummary {
+    public struct SecurityConfigurationSummary: Swift.Sendable {
         /// The date and time the security configuration was created.
         public var creationDateTime: Foundation.Date?
         /// The name of the security configuration.
@@ -5080,10 +5082,9 @@ extension EMRClientTypes {
             self.name = name
         }
     }
-
 }
 
-public struct ListSecurityConfigurationsOutput {
+public struct ListSecurityConfigurationsOutput: Swift.Sendable {
     /// A pagination token that indicates the next set of results to retrieve. Include the marker in the next ListSecurityConfiguration call to retrieve the next page of results, if required.
     public var marker: Swift.String?
     /// The creation date and time, and name, of each security configuration.
@@ -5100,7 +5101,7 @@ public struct ListSecurityConfigurationsOutput {
 }
 
 /// This input determines which steps to list.
-public struct ListStepsInput {
+public struct ListStepsInput: Swift.Sendable {
     /// The identifier of the cluster for which to list the steps.
     /// This member is required.
     public var clusterId: Swift.String?
@@ -5126,8 +5127,9 @@ public struct ListStepsInput {
 }
 
 extension EMRClientTypes {
+
     /// The summary of the cluster step.
-    public struct StepSummary {
+    public struct StepSummary: Swift.Sendable {
         /// The action to take when the cluster step fails. Possible values are TERMINATE_CLUSTER, CANCEL_AND_WAIT, and CONTINUE. TERMINATE_JOB_FLOW is available for backward compatibility.
         public var actionOnFailure: EMRClientTypes.ActionOnFailure?
         /// The Hadoop job configuration of the cluster step.
@@ -5154,11 +5156,10 @@ extension EMRClientTypes {
             self.status = status
         }
     }
-
 }
 
 /// This output contains the list of steps returned in reverse order. This means that the last step is the first element in the list.
-public struct ListStepsOutput {
+public struct ListStepsOutput: Swift.Sendable {
     /// The maximum number of steps that a single ListSteps action returns is 50. To return a longer list of steps, use multiple ListSteps actions along with the Marker parameter, which is a pagination token that indicates the next set of results to retrieve.
     public var marker: Swift.String?
     /// The filtered list of steps for the cluster.
@@ -5174,7 +5175,7 @@ public struct ListStepsOutput {
     }
 }
 
-public struct ListStudiosInput {
+public struct ListStudiosInput: Swift.Sendable {
     /// The pagination token that indicates the set of results to retrieve.
     public var marker: Swift.String?
 
@@ -5187,8 +5188,9 @@ public struct ListStudiosInput {
 }
 
 extension EMRClientTypes {
+
     /// Details for an Amazon EMR Studio, including ID, Name, VPC, and Description. To fetch additional details such as subnets, IAM roles, security groups, and tags for the Studio, use the [DescribeStudio] API.
-    public struct StudioSummary {
+    public struct StudioSummary: Swift.Sendable {
         /// Specifies whether the Studio authenticates users using IAM or IAM Identity Center.
         public var authMode: EMRClientTypes.AuthMode?
         /// The time when the Amazon EMR Studio was created.
@@ -5223,10 +5225,9 @@ extension EMRClientTypes {
             self.vpcId = vpcId
         }
     }
-
 }
 
-public struct ListStudiosOutput {
+public struct ListStudiosOutput: Swift.Sendable {
     /// The pagination token that indicates the next set of results to retrieve.
     public var marker: Swift.String?
     /// The list of Studio summary objects.
@@ -5242,7 +5243,7 @@ public struct ListStudiosOutput {
     }
 }
 
-public struct ListStudioSessionMappingsInput {
+public struct ListStudioSessionMappingsInput: Swift.Sendable {
     /// Specifies whether to return session mappings for users or groups. If not specified, the results include session mapping details for both users and groups.
     public var identityType: EMRClientTypes.IdentityType?
     /// The pagination token that indicates the set of results to retrieve.
@@ -5263,8 +5264,9 @@ public struct ListStudioSessionMappingsInput {
 }
 
 extension EMRClientTypes {
+
     /// Details for an Amazon EMR Studio session mapping. The details do not include the time the session mapping was last modified.
-    public struct SessionMappingSummary {
+    public struct SessionMappingSummary: Swift.Sendable {
         /// The time the session mapping was created.
         public var creationTime: Foundation.Date?
         /// The globally unique identifier (GUID) of the user or group from the IAM Identity Center Identity Store.
@@ -5295,10 +5297,9 @@ extension EMRClientTypes {
             self.studioId = studioId
         }
     }
-
 }
 
-public struct ListStudioSessionMappingsOutput {
+public struct ListStudioSessionMappingsOutput: Swift.Sendable {
     /// The pagination token that indicates the next set of results to retrieve.
     public var marker: Swift.String?
     /// A list of session mapping summary objects. Each object includes session mapping details such as creation time, identity type (user or group), and Amazon EMR Studio ID.
@@ -5314,7 +5315,7 @@ public struct ListStudioSessionMappingsOutput {
     }
 }
 
-public struct ListSupportedInstanceTypesInput {
+public struct ListSupportedInstanceTypesInput: Swift.Sendable {
     /// The pagination token that marks the next set of results to retrieve.
     public var marker: Swift.String?
     /// The Amazon EMR release label determines the [versions of open-source application packages](https://docs.aws.amazon.com/emr/latest/ReleaseGuide/emr-release-app-versions-6.x.html) that Amazon EMR has installed on the cluster. Release labels are in the format emr-x.x.x, where x.x.x is an Amazon EMR release number such as emr-6.10.0. For more information about Amazon EMR releases and their included application versions and features, see the [Amazon EMR Release Guide](https://docs.aws.amazon.com/emr/latest/ReleaseGuide/emr-release-components.html) .
@@ -5332,8 +5333,9 @@ public struct ListSupportedInstanceTypesInput {
 }
 
 extension EMRClientTypes {
+
     /// An instance type that the specified Amazon EMR release supports.
-    public struct SupportedInstanceType {
+    public struct SupportedInstanceType: Swift.Sendable {
         /// The CPU architecture, for example X86_64 or AARCH64.
         public var architecture: Swift.String?
         /// Indicates whether the SupportedInstanceType supports Amazon EBS optimization.
@@ -5384,10 +5386,9 @@ extension EMRClientTypes {
             self.vcpu = vcpu
         }
     }
-
 }
 
-public struct ListSupportedInstanceTypesOutput {
+public struct ListSupportedInstanceTypesOutput: Swift.Sendable {
     /// The pagination token that marks the next set of results to retrieve.
     public var marker: Swift.String?
     /// The list of instance types that the release specified in ListSupportedInstanceTypesInput$ReleaseLabel supports, filtered by Amazon Web Services Region.
@@ -5403,7 +5404,7 @@ public struct ListSupportedInstanceTypesOutput {
     }
 }
 
-public struct ModifyClusterInput {
+public struct ModifyClusterInput: Swift.Sendable {
     /// The unique identifier of the cluster.
     /// This member is required.
     public var clusterId: Swift.String?
@@ -5420,7 +5421,7 @@ public struct ModifyClusterInput {
     }
 }
 
-public struct ModifyClusterOutput {
+public struct ModifyClusterOutput: Swift.Sendable {
     /// The number of steps that can be executed concurrently.
     public var stepConcurrencyLevel: Swift.Int?
 
@@ -5434,7 +5435,7 @@ public struct ModifyClusterOutput {
 
 extension EMRClientTypes {
 
-    public enum ReconfigurationType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ReconfigurationType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case merge
         case overwrite
         case sdkUnknown(Swift.String)
@@ -5461,7 +5462,7 @@ extension EMRClientTypes {
     }
 }
 
-public struct PutAutoScalingPolicyInput {
+public struct PutAutoScalingPolicyInput: Swift.Sendable {
     /// Specifies the definition of the automatic scaling policy.
     /// This member is required.
     public var autoScalingPolicy: EMRClientTypes.AutoScalingPolicy?
@@ -5484,7 +5485,7 @@ public struct PutAutoScalingPolicyInput {
     }
 }
 
-public struct PutAutoScalingPolicyOutput {
+public struct PutAutoScalingPolicyOutput: Swift.Sendable {
     /// The automatic scaling policy definition.
     public var autoScalingPolicy: EMRClientTypes.AutoScalingPolicyDescription?
     /// The Amazon Resource Name (ARN) of the cluster.
@@ -5508,7 +5509,7 @@ public struct PutAutoScalingPolicyOutput {
     }
 }
 
-public struct PutAutoTerminationPolicyInput {
+public struct PutAutoTerminationPolicyInput: Swift.Sendable {
     /// Specifies the auto-termination policy to attach to the cluster.
     public var autoTerminationPolicy: EMRClientTypes.AutoTerminationPolicy?
     /// Specifies the ID of the Amazon EMR cluster to which the auto-termination policy will be attached.
@@ -5525,17 +5526,17 @@ public struct PutAutoTerminationPolicyInput {
     }
 }
 
-public struct PutAutoTerminationPolicyOutput {
+public struct PutAutoTerminationPolicyOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct PutBlockPublicAccessConfigurationOutput {
+public struct PutBlockPublicAccessConfigurationOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct PutManagedScalingPolicyInput {
+public struct PutManagedScalingPolicyInput: Swift.Sendable {
     /// Specifies the ID of an Amazon EMR cluster where the managed scaling policy is attached.
     /// This member is required.
     public var clusterId: Swift.String?
@@ -5553,12 +5554,12 @@ public struct PutManagedScalingPolicyInput {
     }
 }
 
-public struct PutManagedScalingPolicyOutput {
+public struct PutManagedScalingPolicyOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct RemoveAutoScalingPolicyInput {
+public struct RemoveAutoScalingPolicyInput: Swift.Sendable {
     /// Specifies the ID of a cluster. The instance group to which the automatic scaling policy is applied is within this cluster.
     /// This member is required.
     public var clusterId: Swift.String?
@@ -5576,12 +5577,12 @@ public struct RemoveAutoScalingPolicyInput {
     }
 }
 
-public struct RemoveAutoScalingPolicyOutput {
+public struct RemoveAutoScalingPolicyOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct RemoveAutoTerminationPolicyInput {
+public struct RemoveAutoTerminationPolicyInput: Swift.Sendable {
     /// Specifies the ID of the Amazon EMR cluster from which the auto-termination policy will be removed.
     /// This member is required.
     public var clusterId: Swift.String?
@@ -5594,12 +5595,12 @@ public struct RemoveAutoTerminationPolicyInput {
     }
 }
 
-public struct RemoveAutoTerminationPolicyOutput {
+public struct RemoveAutoTerminationPolicyOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct RemoveManagedScalingPolicyInput {
+public struct RemoveManagedScalingPolicyInput: Swift.Sendable {
     /// Specifies the ID of the cluster from which the managed scaling policy will be removed.
     /// This member is required.
     public var clusterId: Swift.String?
@@ -5612,13 +5613,13 @@ public struct RemoveManagedScalingPolicyInput {
     }
 }
 
-public struct RemoveManagedScalingPolicyOutput {
+public struct RemoveManagedScalingPolicyOutput: Swift.Sendable {
 
     public init() { }
 }
 
 /// This input identifies an Amazon EMR resource and a list of tags to remove.
-public struct RemoveTagsInput {
+public struct RemoveTagsInput: Swift.Sendable {
     /// The Amazon EMR resource identifier from which tags will be removed. For example, a cluster identifier or an Amazon EMR Studio ID.
     /// This member is required.
     public var resourceId: Swift.String?
@@ -5637,14 +5638,15 @@ public struct RemoveTagsInput {
 }
 
 /// This output indicates the result of removing tags from the resource.
-public struct RemoveTagsOutput {
+public struct RemoveTagsOutput: Swift.Sendable {
 
     public init() { }
 }
 
 extension EMRClientTypes {
+
     /// The list of supported product configurations that allow user-supplied arguments. Amazon EMR accepts these arguments and forwards them to the corresponding installation script as bootstrap action arguments.
-    public struct SupportedProductConfig {
+    public struct SupportedProductConfig: Swift.Sendable {
         /// The list of user-supplied arguments.
         public var args: [Swift.String]?
         /// The name of the product configuration.
@@ -5659,11 +5661,10 @@ extension EMRClientTypes {
             self.name = name
         }
     }
-
 }
 
 /// The result of the [RunJobFlow] operation.
-public struct RunJobFlowOutput {
+public struct RunJobFlowOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the cluster.
     public var clusterArn: Swift.String?
     /// A unique identifier for the job flow.
@@ -5679,7 +5680,7 @@ public struct RunJobFlowOutput {
     }
 }
 
-public struct SetKeepJobFlowAliveWhenNoStepsInput {
+public struct SetKeepJobFlowAliveWhenNoStepsInput: Swift.Sendable {
     /// A list of strings that uniquely identify the clusters to protect. This identifier is returned by [RunJobFlow](https://docs.aws.amazon.com/emr/latest/APIReference/API_RunJobFlow.html) and can also be obtained from [DescribeJobFlows](https://docs.aws.amazon.com/emr/latest/APIReference/API_DescribeJobFlows.html).
     /// This member is required.
     public var jobFlowIds: [Swift.String]?
@@ -5698,7 +5699,7 @@ public struct SetKeepJobFlowAliveWhenNoStepsInput {
 }
 
 /// The input argument to the [TerminationProtection] operation.
-public struct SetTerminationProtectionInput {
+public struct SetTerminationProtectionInput: Swift.Sendable {
     /// A list of strings that uniquely identify the clusters to protect. This identifier is returned by [RunJobFlow] and can also be obtained from [DescribeJobFlows] .
     /// This member is required.
     public var jobFlowIds: [Swift.String]?
@@ -5716,7 +5717,7 @@ public struct SetTerminationProtectionInput {
     }
 }
 
-public struct SetUnhealthyNodeReplacementInput {
+public struct SetUnhealthyNodeReplacementInput: Swift.Sendable {
     /// The list of strings that uniquely identify the clusters for which to turn on unhealthy node replacement. You can get these identifiers by running the [RunJobFlow] or the [DescribeJobFlows] operations.
     /// This member is required.
     public var jobFlowIds: [Swift.String]?
@@ -5735,7 +5736,7 @@ public struct SetUnhealthyNodeReplacementInput {
 }
 
 /// The input to the SetVisibleToAllUsers action.
-public struct SetVisibleToAllUsersInput {
+public struct SetVisibleToAllUsersInput: Swift.Sendable {
     /// The unique identifier of the job flow (cluster).
     /// This member is required.
     public var jobFlowIds: [Swift.String]?
@@ -5754,8 +5755,9 @@ public struct SetVisibleToAllUsersInput {
 }
 
 extension EMRClientTypes {
+
     /// The Amazon S3 location that stores the notebook execution input.
-    public struct NotebookS3LocationFromInput {
+    public struct NotebookS3LocationFromInput: Swift.Sendable {
         /// The Amazon S3 bucket that stores the notebook execution input.
         public var bucket: Swift.String?
         /// The key to the Amazon S3 location that stores the notebook execution input.
@@ -5770,12 +5772,12 @@ extension EMRClientTypes {
             self.key = key
         }
     }
-
 }
 
 extension EMRClientTypes {
+
     /// The Amazon S3 location that stores the notebook execution output.
-    public struct OutputNotebookS3LocationFromInput {
+    public struct OutputNotebookS3LocationFromInput: Swift.Sendable {
         /// The Amazon S3 bucket that stores the notebook execution output.
         public var bucket: Swift.String?
         /// The key to the Amazon S3 location that stores the notebook execution output.
@@ -5790,10 +5792,9 @@ extension EMRClientTypes {
             self.key = key
         }
     }
-
 }
 
-public struct StartNotebookExecutionInput {
+public struct StartNotebookExecutionInput: Swift.Sendable {
     /// The unique identifier of the Amazon EMR Notebook to use for notebook execution.
     public var editorId: Swift.String?
     /// The environment variables associated with the notebook execution.
@@ -5851,7 +5852,7 @@ public struct StartNotebookExecutionInput {
     }
 }
 
-public struct StartNotebookExecutionOutput {
+public struct StartNotebookExecutionOutput: Swift.Sendable {
     /// The unique identifier of the notebook execution.
     public var notebookExecutionId: Swift.String?
 
@@ -5863,7 +5864,7 @@ public struct StartNotebookExecutionOutput {
     }
 }
 
-public struct StopNotebookExecutionInput {
+public struct StopNotebookExecutionInput: Swift.Sendable {
     /// The unique identifier of the notebook execution.
     /// This member is required.
     public var notebookExecutionId: Swift.String?
@@ -5877,7 +5878,7 @@ public struct StopNotebookExecutionInput {
 }
 
 /// Input to the [TerminateJobFlows] operation.
-public struct TerminateJobFlowsInput {
+public struct TerminateJobFlowsInput: Swift.Sendable {
     /// A list of job flows to be shut down.
     /// This member is required.
     public var jobFlowIds: [Swift.String]?
@@ -5890,7 +5891,7 @@ public struct TerminateJobFlowsInput {
     }
 }
 
-public struct UpdateStudioInput {
+public struct UpdateStudioInput: Swift.Sendable {
     /// The Amazon S3 location to back up Workspaces and notebook files for the Amazon EMR Studio.
     public var defaultS3Location: Swift.String?
     /// A detailed description to assign to the Amazon EMR Studio.
@@ -5923,7 +5924,7 @@ public struct UpdateStudioInput {
     }
 }
 
-public struct UpdateStudioSessionMappingInput {
+public struct UpdateStudioSessionMappingInput: Swift.Sendable {
     /// The globally unique identifier (GUID) of the user or group. For more information, see [UserId](https://docs.aws.amazon.com/singlesignon/latest/IdentityStoreAPIReference/API_User.html#singlesignon-Type-User-UserId) and [GroupId](https://docs.aws.amazon.com/singlesignon/latest/IdentityStoreAPIReference/API_Group.html#singlesignon-Type-Group-GroupId) in the IAM Identity Center Identity Store API Reference. Either IdentityName or IdentityId must be specified.
     public var identityId: Swift.String?
     /// The name of the user or group to update. For more information, see [UserName](https://docs.aws.amazon.com/singlesignon/latest/IdentityStoreAPIReference/API_User.html#singlesignon-Type-User-UserName) and [DisplayName](https://docs.aws.amazon.com/singlesignon/latest/IdentityStoreAPIReference/API_Group.html#singlesignon-Type-Group-DisplayName) in the IAM Identity Center Identity Store API Reference. Either IdentityName or IdentityId must be specified.
@@ -5955,8 +5956,9 @@ public struct UpdateStudioSessionMappingInput {
 }
 
 extension EMRClientTypes {
+
     /// Amazon EMR releases 4.x or later. An optional configuration specification to be used when provisioning cluster instances, which can include configurations for applications and software bundled with Amazon EMR. A configuration consists of a classification, properties, and optional nested configurations. A classification refers to an application-specific configuration file. Properties are the settings you want to change in that file. For more information, see [Configuring Applications](https://docs.aws.amazon.com/emr/latest/ReleaseGuide/emr-configure-apps.html).
-    public struct Configuration {
+    public struct Configuration: Swift.Sendable {
         /// The classification within a configuration.
         public var classification: Swift.String?
         /// A list of additional configurations to apply within a configuration object.
@@ -5975,12 +5977,12 @@ extension EMRClientTypes {
             self.properties = properties
         }
     }
-
 }
 
 extension EMRClientTypes {
+
     /// A configuration for Amazon EMR block public access. When BlockPublicSecurityGroupRules is set to true, Amazon EMR prevents cluster creation if one of the cluster's security groups has a rule that allows inbound traffic from 0.0.0.0/0 or ::/0 on a port, unless the port is specified as an exception using PermittedPublicSecurityGroupRuleRanges.
-    public struct BlockPublicAccessConfiguration {
+    public struct BlockPublicAccessConfiguration: Swift.Sendable {
         /// Indicates whether Amazon EMR block public access is enabled (true) or disabled (false). By default, the value is false for accounts that have created Amazon EMR clusters before July 2019. For accounts created after this, the default is true.
         /// This member is required.
         public var blockPublicSecurityGroupRules: Swift.Bool?
@@ -6008,12 +6010,12 @@ extension EMRClientTypes {
             self.properties = properties
         }
     }
-
 }
 
 extension EMRClientTypes {
+
     /// The detailed description of the cluster.
-    public struct Cluster {
+    public struct Cluster: Swift.Sendable {
         /// The applications installed on this cluster.
         public var applications: [EMRClientTypes.Application]?
         /// An IAM role for automatic scaling policies. The default role is EMR_AutoScaling_DefaultRole. The IAM role provides permissions that the automatic scaling feature requires to launch and terminate Amazon EC2 instances in an instance group.
@@ -6156,12 +6158,12 @@ extension EMRClientTypes {
             self.visibleToAllUsers = visibleToAllUsers
         }
     }
-
 }
 
 extension EMRClientTypes {
+
     /// Configuration defining a new instance group.
-    public struct InstanceGroupConfig {
+    public struct InstanceGroupConfig: Swift.Sendable {
         /// An automatic scaling policy for a core instance group or task instance group in an Amazon EMR cluster. The automatic scaling policy defines how an instance group dynamically adds and terminates Amazon EC2 instances in response to the value of a CloudWatch metric. See [PutAutoScalingPolicy].
         public var autoScalingPolicy: EMRClientTypes.AutoScalingPolicy?
         /// If specified, indicates that the instance group uses Spot Instances. This is the maximum price you are willing to pay for Spot Instances. Specify OnDemandPrice to set the amount equal to the On-Demand price, or specify an amount in USD.
@@ -6211,12 +6213,12 @@ extension EMRClientTypes {
             self.name = name
         }
     }
-
 }
 
 extension EMRClientTypes {
+
     /// Modify the size or configurations of an instance group.
-    public struct InstanceGroupModifyConfig {
+    public struct InstanceGroupModifyConfig: Swift.Sendable {
         /// A list of new or modified configurations to apply for an instance group.
         public var configurations: [EMRClientTypes.Configuration]?
         /// The Amazon EC2 InstanceIds to terminate. After you terminate the instances, the instance group will not return to its original requested size.
@@ -6248,12 +6250,12 @@ extension EMRClientTypes {
             self.shrinkPolicy = shrinkPolicy
         }
     }
-
 }
 
 extension EMRClientTypes {
+
     /// An instance type configuration for each instance type in an instance fleet, which determines the Amazon EC2 instances Amazon EMR attempts to provision to fulfill On-Demand and Spot target capacities. When you use an allocation strategy, you can include a maximum of 30 instance type configurations for a fleet. For more information about how to use an allocation strategy, see [Configure Instance Fleets](https://docs.aws.amazon.com/emr/latest/ManagementGuide/emr-instance-fleet.html). Without an allocation strategy, you may specify a maximum of five instance type configurations for a fleet. The instance fleet configuration is available only in Amazon EMR releases 4.8.0 and later, excluding 5.0.x versions.
-    public struct InstanceTypeConfig {
+    public struct InstanceTypeConfig: Swift.Sendable {
         /// The bid price for each Amazon EC2 Spot Instance type as defined by InstanceType. Expressed in USD. If neither BidPrice nor BidPriceAsPercentageOfOnDemandPrice is provided, BidPriceAsPercentageOfOnDemandPrice defaults to 100%.
         public var bidPrice: Swift.String?
         /// The bid price, as a percentage of On-Demand price, for each Amazon EC2 Spot Instance as defined by InstanceType. Expressed as a number (for example, 20 specifies 20%). If neither BidPrice nor BidPriceAsPercentageOfOnDemandPrice is provided, BidPriceAsPercentageOfOnDemandPrice defaults to 100%.
@@ -6293,12 +6295,12 @@ extension EMRClientTypes {
             self.weightedCapacity = weightedCapacity
         }
     }
-
 }
 
 extension EMRClientTypes {
+
     /// The configuration specification for each instance type in an instance fleet. The instance fleet configuration is available only in Amazon EMR releases 4.8.0 and later, excluding 5.0.x versions.
-    public struct InstanceTypeSpecification {
+    public struct InstanceTypeSpecification: Swift.Sendable {
         /// The bid price for each Amazon EC2 Spot Instance type as defined by InstanceType. Expressed in USD.
         public var bidPrice: Swift.String?
         /// The bid price, as a percentage of On-Demand price, for each Amazon EC2 Spot Instance as defined by InstanceType. Expressed as a number (for example, 20 specifies 20%).
@@ -6341,11 +6343,10 @@ extension EMRClientTypes {
             self.weightedCapacity = weightedCapacity
         }
     }
-
 }
 
 /// This output contains the description of the cluster.
-public struct DescribeClusterOutput {
+public struct DescribeClusterOutput: Swift.Sendable {
     /// This output contains the details for the requested cluster.
     public var cluster: EMRClientTypes.Cluster?
 
@@ -6357,7 +6358,7 @@ public struct DescribeClusterOutput {
     }
 }
 
-public struct GetBlockPublicAccessConfigurationOutput {
+public struct GetBlockPublicAccessConfigurationOutput: Swift.Sendable {
     /// A configuration for Amazon EMR block public access. The configuration applies to all clusters created in your account for the current Region. The configuration specifies whether block public access is enabled. If block public access is enabled, security groups associated with the cluster cannot have rules that allow inbound traffic from 0.0.0.0/0 or ::/0 on a port, unless the port is specified as an exception using PermittedPublicSecurityGroupRuleRanges in the BlockPublicAccessConfiguration. By default, Port 22 (SSH) is an exception, and public access is allowed on this port. You can change this by updating the block public access configuration to remove the exception. For accounts that created clusters in a Region before November 25, 2019, block public access is disabled by default in that Region. To use this feature, you must manually enable and configure it. For accounts that did not create an Amazon EMR cluster in a Region before this date, block public access is enabled by default in that Region.
     /// This member is required.
     public var blockPublicAccessConfiguration: EMRClientTypes.BlockPublicAccessConfiguration?
@@ -6375,7 +6376,7 @@ public struct GetBlockPublicAccessConfigurationOutput {
     }
 }
 
-public struct PutBlockPublicAccessConfigurationInput {
+public struct PutBlockPublicAccessConfigurationInput: Swift.Sendable {
     /// A configuration for Amazon EMR block public access. The configuration applies to all clusters created in your account for the current Region. The configuration specifies whether block public access is enabled. If block public access is enabled, security groups associated with the cluster cannot have rules that allow inbound traffic from 0.0.0.0/0 or ::/0 on a port, unless the port is specified as an exception using PermittedPublicSecurityGroupRuleRanges in the BlockPublicAccessConfiguration. By default, Port 22 (SSH) is an exception, and public access is allowed on this port. You can change this by updating BlockPublicSecurityGroupRules to remove the exception. For accounts that created clusters in a Region before November 25, 2019, block public access is disabled by default in that Region. To use this feature, you must manually enable and configure it. For accounts that did not create an Amazon EMR cluster in a Region before this date, block public access is enabled by default in that Region.
     /// This member is required.
     public var blockPublicAccessConfiguration: EMRClientTypes.BlockPublicAccessConfiguration?
@@ -6389,8 +6390,11 @@ public struct PutBlockPublicAccessConfigurationInput {
 }
 
 extension EMRClientTypes {
+
     /// Describes an instance fleet, which is a group of Amazon EC2 instances that host a particular node type (master, core, or task) in an Amazon EMR cluster. Instance fleets can consist of a mix of instance types and On-Demand and Spot Instances, which are provisioned to meet a defined target capacity. The instance fleet configuration is available only in Amazon EMR releases 4.8.0 and later, excluding 5.0.x versions.
-    public struct InstanceFleet {
+    public struct InstanceFleet: Swift.Sendable {
+        /// Reserved.
+        public var context: Swift.String?
         /// The unique identifier of the instance fleet.
         public var id: Swift.String?
         /// The node type that the instance fleet hosts. Valid values are MASTER, CORE, or TASK.
@@ -6415,6 +6419,7 @@ extension EMRClientTypes {
         public var targetSpotCapacity: Swift.Int?
 
         public init(
+            context: Swift.String? = nil,
             id: Swift.String? = nil,
             instanceFleetType: EMRClientTypes.InstanceFleetType? = nil,
             instanceTypeSpecifications: [EMRClientTypes.InstanceTypeSpecification]? = nil,
@@ -6428,6 +6433,7 @@ extension EMRClientTypes {
             targetSpotCapacity: Swift.Int? = nil
         )
         {
+            self.context = context
             self.id = id
             self.instanceFleetType = instanceFleetType
             self.instanceTypeSpecifications = instanceTypeSpecifications
@@ -6441,12 +6447,14 @@ extension EMRClientTypes {
             self.targetSpotCapacity = targetSpotCapacity
         }
     }
-
 }
 
 extension EMRClientTypes {
+
     /// The configuration that defines an instance fleet. The instance fleet configuration is available only in Amazon EMR releases 4.8.0 and later, excluding 5.0.x versions.
-    public struct InstanceFleetConfig {
+    public struct InstanceFleetConfig: Swift.Sendable {
+        /// Reserved.
+        public var context: Swift.String?
         /// The node type that the instance fleet hosts. Valid values are MASTER, CORE, and TASK.
         /// This member is required.
         public var instanceFleetType: EMRClientTypes.InstanceFleetType?
@@ -6464,6 +6472,7 @@ extension EMRClientTypes {
         public var targetSpotCapacity: Swift.Int?
 
         public init(
+            context: Swift.String? = nil,
             instanceFleetType: EMRClientTypes.InstanceFleetType? = nil,
             instanceTypeConfigs: [EMRClientTypes.InstanceTypeConfig]? = nil,
             launchSpecifications: EMRClientTypes.InstanceFleetProvisioningSpecifications? = nil,
@@ -6473,6 +6482,7 @@ extension EMRClientTypes {
             targetSpotCapacity: Swift.Int? = nil
         )
         {
+            self.context = context
             self.instanceFleetType = instanceFleetType
             self.instanceTypeConfigs = instanceTypeConfigs
             self.launchSpecifications = launchSpecifications
@@ -6482,12 +6492,14 @@ extension EMRClientTypes {
             self.targetSpotCapacity = targetSpotCapacity
         }
     }
-
 }
 
 extension EMRClientTypes {
+
     /// Configuration parameters for an instance fleet modification request. The instance fleet configuration is available only in Amazon EMR releases 4.8.0 and later, excluding 5.0.x versions.
-    public struct InstanceFleetModifyConfig {
+    public struct InstanceFleetModifyConfig: Swift.Sendable {
+        /// Reserved.
+        public var context: Swift.String?
         /// A unique identifier for the instance fleet.
         /// This member is required.
         public var instanceFleetId: Swift.String?
@@ -6501,6 +6513,7 @@ extension EMRClientTypes {
         public var targetSpotCapacity: Swift.Int?
 
         public init(
+            context: Swift.String? = nil,
             instanceFleetId: Swift.String? = nil,
             instanceTypeConfigs: [EMRClientTypes.InstanceTypeConfig]? = nil,
             resizeSpecifications: EMRClientTypes.InstanceFleetResizingSpecifications? = nil,
@@ -6508,6 +6521,7 @@ extension EMRClientTypes {
             targetSpotCapacity: Swift.Int? = nil
         )
         {
+            self.context = context
             self.instanceFleetId = instanceFleetId
             self.instanceTypeConfigs = instanceTypeConfigs
             self.resizeSpecifications = resizeSpecifications
@@ -6515,11 +6529,10 @@ extension EMRClientTypes {
             self.targetSpotCapacity = targetSpotCapacity
         }
     }
-
 }
 
 /// Input to an AddInstanceGroups call.
-public struct AddInstanceGroupsInput {
+public struct AddInstanceGroupsInput: Swift.Sendable {
     /// Instance groups to add.
     /// This member is required.
     public var instanceGroups: [EMRClientTypes.InstanceGroupConfig]?
@@ -6538,7 +6551,7 @@ public struct AddInstanceGroupsInput {
 }
 
 /// Change the size of some instance groups.
-public struct ModifyInstanceGroupsInput {
+public struct ModifyInstanceGroupsInput: Swift.Sendable {
     /// The ID of the cluster to which the instance group belongs.
     public var clusterId: Swift.String?
     /// Instance groups to change.
@@ -6555,8 +6568,9 @@ public struct ModifyInstanceGroupsInput {
 }
 
 extension EMRClientTypes {
+
     /// This entity represents an instance group, which is a group of instances that have common purpose. For example, CORE instance group is used for HDFS.
-    public struct InstanceGroup {
+    public struct InstanceGroup: Swift.Sendable {
         /// An automatic scaling policy for a core instance group or task instance group in an Amazon EMR cluster. The automatic scaling policy defines how an instance group dynamically adds and terminates Amazon EC2 instances in response to the value of a CloudWatch metric. See PutAutoScalingPolicy.
         public var autoScalingPolicy: EMRClientTypes.AutoScalingPolicyDescription?
         /// If specified, indicates that the instance group uses Spot Instances. This is the maximum price you are willing to pay for Spot Instances. Specify OnDemandPrice to set the amount equal to the On-Demand price, or specify an amount in USD.
@@ -6635,10 +6649,9 @@ extension EMRClientTypes {
             self.status = status
         }
     }
-
 }
 
-public struct AddInstanceFleetInput {
+public struct AddInstanceFleetInput: Swift.Sendable {
     /// The unique identifier of the cluster.
     /// This member is required.
     public var clusterId: Swift.String?
@@ -6656,7 +6669,7 @@ public struct AddInstanceFleetInput {
     }
 }
 
-public struct ModifyInstanceFleetInput {
+public struct ModifyInstanceFleetInput: Swift.Sendable {
     /// The unique identifier of the cluster.
     /// This member is required.
     public var clusterId: Swift.String?
@@ -6674,7 +6687,7 @@ public struct ModifyInstanceFleetInput {
     }
 }
 
-public struct ListInstanceFleetsOutput {
+public struct ListInstanceFleetsOutput: Swift.Sendable {
     /// The list of instance fleets for the cluster and given filters.
     public var instanceFleets: [EMRClientTypes.InstanceFleet]?
     /// The pagination token that indicates the next set of results to retrieve.
@@ -6691,7 +6704,7 @@ public struct ListInstanceFleetsOutput {
 }
 
 /// This input determines which instance groups to retrieve.
-public struct ListInstanceGroupsOutput {
+public struct ListInstanceGroupsOutput: Swift.Sendable {
     /// The list of instance groups for the cluster and given filters.
     public var instanceGroups: [EMRClientTypes.InstanceGroup]?
     /// The pagination token that indicates the next set of results to retrieve.
@@ -6708,8 +6721,9 @@ public struct ListInstanceGroupsOutput {
 }
 
 extension EMRClientTypes {
+
     /// A description of the Amazon EC2 instance on which the cluster (job flow) runs. A valid JobFlowInstancesConfig must contain either InstanceGroups or InstanceFleets. They cannot be used together. You may also have MasterInstanceType, SlaveInstanceType, and InstanceCount (all three must be present), but we don't recommend this configuration.
-    public struct JobFlowInstancesConfig {
+    public struct JobFlowInstancesConfig: Swift.Sendable {
         /// A list of additional Amazon EC2 security group IDs for the master node.
         public var additionalMasterSecurityGroups: [Swift.String]?
         /// A list of additional Amazon EC2 security group IDs for the core and task nodes.
@@ -6788,11 +6802,10 @@ extension EMRClientTypes {
             self.unhealthyNodeReplacement = unhealthyNodeReplacement
         }
     }
-
 }
 
 /// Input to the [RunJobFlow] operation.
-public struct RunJobFlowInput {
+public struct RunJobFlowInput: Swift.Sendable {
     /// A JSON string for selecting additional features.
     public var additionalInfo: Swift.String?
     /// Applies only to Amazon EMR AMI versions 3.x and 2.x. For Amazon EMR releases 4.0 and later, ReleaseLabel is used. To specify a custom AMI, use CustomAmiID.
@@ -10191,6 +10204,7 @@ extension EMRClientTypes.InstanceFleet {
         value.instanceTypeSpecifications = try reader["InstanceTypeSpecifications"].readListIfPresent(memberReadingClosure: EMRClientTypes.InstanceTypeSpecification.read(from:), memberNodeInfo: "member", isFlattened: false)
         value.launchSpecifications = try reader["LaunchSpecifications"].readIfPresent(with: EMRClientTypes.InstanceFleetProvisioningSpecifications.read(from:))
         value.resizeSpecifications = try reader["ResizeSpecifications"].readIfPresent(with: EMRClientTypes.InstanceFleetResizingSpecifications.read(from:))
+        value.context = try reader["Context"].readIfPresent()
         return value
     }
 }
@@ -10840,6 +10854,7 @@ extension EMRClientTypes.InstanceFleetConfig {
 
     static func write(value: EMRClientTypes.InstanceFleetConfig?, to writer: SmithyJSON.Writer) throws {
         guard let value else { return }
+        try writer["Context"].write(value.context)
         try writer["InstanceFleetType"].write(value.instanceFleetType)
         try writer["InstanceTypeConfigs"].writeList(value.instanceTypeConfigs, memberWritingClosure: EMRClientTypes.InstanceTypeConfig.write(value:to:), memberNodeInfo: "member", isFlattened: false)
         try writer["LaunchSpecifications"].write(value.launchSpecifications, with: EMRClientTypes.InstanceFleetProvisioningSpecifications.write(value:to:))
@@ -10922,6 +10937,7 @@ extension EMRClientTypes.InstanceFleetModifyConfig {
 
     static func write(value: EMRClientTypes.InstanceFleetModifyConfig?, to writer: SmithyJSON.Writer) throws {
         guard let value else { return }
+        try writer["Context"].write(value.context)
         try writer["InstanceFleetId"].write(value.instanceFleetId)
         try writer["InstanceTypeConfigs"].writeList(value.instanceTypeConfigs, memberWritingClosure: EMRClientTypes.InstanceTypeConfig.write(value:to:), memberNodeInfo: "member", isFlattened: false)
         try writer["ResizeSpecifications"].write(value.resizeSpecifications, with: EMRClientTypes.InstanceFleetResizingSpecifications.write(value:to:))

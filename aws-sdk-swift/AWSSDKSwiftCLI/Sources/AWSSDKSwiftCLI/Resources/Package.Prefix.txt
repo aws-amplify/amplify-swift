@@ -1,0 +1,14 @@
+// swift-tools-version:5.9
+
+//
+// Copyright Amazon.com Inc. or its affiliates.
+// All Rights Reserved.
+//
+// SPDX-License-Identifier: Apache-2.0
+//
+
+// This manifest is auto-generated.  Do not commit edits to this file;
+// they will be overwritten.
+
+import Foundation
+import PackageDescription

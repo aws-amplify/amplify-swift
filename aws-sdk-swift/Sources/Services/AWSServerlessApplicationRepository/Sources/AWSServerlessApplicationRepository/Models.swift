@@ -25,19 +25,21 @@ import protocol ClientRuntime.ModeledError
 import struct Smithy.URIQueryItem
 @_spi(SmithyReadWrite) import struct SmithyReadWrite.ReadingClosureBox
 
-public struct DeleteApplicationOutput {
+
+public struct DeleteApplicationOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UnshareApplicationOutput {
+public struct UnshareApplicationOutput: Swift.Sendable {
 
     public init() { }
 }
 
 extension ServerlessApplicationRepositoryClientTypes {
+
     /// A nested application summary.
-    public struct ApplicationDependencySummary {
+    public struct ApplicationDependencySummary: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the nested application.
         /// This member is required.
         public var applicationId: Swift.String?
@@ -54,12 +56,12 @@ extension ServerlessApplicationRepositoryClientTypes {
             self.semanticVersion = semanticVersion
         }
     }
-
 }
 
 extension ServerlessApplicationRepositoryClientTypes {
+
     /// Policy statement applied to the application.
-    public struct ApplicationPolicyStatement {
+    public struct ApplicationPolicyStatement: Swift.Sendable {
         /// For the list of actions supported for this operation, see [Application Permissions](https://docs.aws.amazon.com/serverlessrepo/latest/devguide/access-control-resource-based.html#application-permissions).
         /// This member is required.
         public var actions: [Swift.String]?
@@ -84,12 +86,12 @@ extension ServerlessApplicationRepositoryClientTypes {
             self.statementId = statementId
         }
     }
-
 }
 
 extension ServerlessApplicationRepositoryClientTypes {
+
     /// Summary of details about the application.
-    public struct ApplicationSummary {
+    public struct ApplicationSummary: Swift.Sendable {
         /// The application Amazon Resource Name (ARN).
         /// This member is required.
         public var applicationId: Swift.String?
@@ -132,13 +134,12 @@ extension ServerlessApplicationRepositoryClientTypes {
             self.spdxLicenseId = spdxLicenseId
         }
     }
-
 }
 
 extension ServerlessApplicationRepositoryClientTypes {
 
     /// Values that must be specified in order to deploy some applications.
-    public enum Capability: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Capability: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case capabilityAutoExpand
         case capabilityIam
         case capabilityNamedIam
@@ -172,8 +173,9 @@ extension ServerlessApplicationRepositoryClientTypes {
 }
 
 extension ServerlessApplicationRepositoryClientTypes {
+
     /// Parameters supported by the application.
-    public struct ParameterDefinition {
+    public struct ParameterDefinition: Swift.Sendable {
         /// A regular expression that represents the patterns to allow for String types.
         public var allowedPattern: Swift.String?
         /// An array containing the list of values allowed for the parameter.
@@ -234,12 +236,12 @@ extension ServerlessApplicationRepositoryClientTypes {
             self.type = type
         }
     }
-
 }
 
 extension ServerlessApplicationRepositoryClientTypes {
+
     /// Parameter value of the application.
-    public struct ParameterValue {
+    public struct ParameterValue: Swift.Sendable {
         /// The key associated with the parameter. If you don't specify a key and value for a particular parameter, AWS CloudFormation uses the default value that is specified in your template.
         /// This member is required.
         public var name: Swift.String?
@@ -256,12 +258,12 @@ extension ServerlessApplicationRepositoryClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension ServerlessApplicationRepositoryClientTypes {
+
     /// This property corresponds to the AWS CloudFormation [RollbackTrigger](https://docs.aws.amazon.com/goto/WebAPI/cloudformation-2010-05-15/RollbackTrigger) Data Type.
-    public struct RollbackTrigger {
+    public struct RollbackTrigger: Swift.Sendable {
         /// This property corresponds to the content of the same name for the AWS CloudFormation [RollbackTrigger](https://docs.aws.amazon.com/goto/WebAPI/cloudformation-2010-05-15/RollbackTrigger) Data Type.
         /// This member is required.
         public var arn: Swift.String?
@@ -278,12 +280,12 @@ extension ServerlessApplicationRepositoryClientTypes {
             self.type = type
         }
     }
-
 }
 
 extension ServerlessApplicationRepositoryClientTypes {
+
     /// This property corresponds to the AWS CloudFormation [Tag](https://docs.aws.amazon.com/goto/WebAPI/cloudformation-2010-05-15/Tag) Data Type.
-    public struct Tag {
+    public struct Tag: Swift.Sendable {
         /// This property corresponds to the content of the same name for the AWS CloudFormation [Tag](https://docs.aws.amazon.com/goto/WebAPI/cloudformation-2010-05-15/Tag) Data Type.
         /// This member is required.
         public var key: Swift.String?
@@ -300,12 +302,12 @@ extension ServerlessApplicationRepositoryClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension ServerlessApplicationRepositoryClientTypes {
+
     /// An application version summary.
-    public struct VersionSummary {
+    public struct VersionSummary: Swift.Sendable {
         /// The application Amazon Resource Name (ARN).
         /// This member is required.
         public var applicationId: Swift.String?
@@ -331,7 +333,6 @@ extension ServerlessApplicationRepositoryClientTypes {
             self.sourceCodeUrl = sourceCodeUrl
         }
     }
-
 }
 
 /// One of the parameters in the request is invalid.
@@ -479,7 +480,7 @@ public struct TooManyRequestsException: ClientRuntime.ModeledError, AWSClientRun
     }
 }
 
-public struct CreateApplicationInput {
+public struct CreateApplicationInput: Swift.Sendable {
     /// The name of the author publishing the app.Minimum length=1. Maximum length=127.Pattern "^[a-z0-9](([a-z0-9]|-(?!-))*[a-z0-9])?$";
     /// This member is required.
     public var author: Swift.String?
@@ -551,8 +552,9 @@ public struct CreateApplicationInput {
 }
 
 extension ServerlessApplicationRepositoryClientTypes {
+
     /// Application version details.
-    public struct Version {
+    public struct Version: Swift.Sendable {
         /// The application Amazon Resource Name (ARN).
         /// This member is required.
         public var applicationId: Swift.String?
@@ -602,10 +604,9 @@ extension ServerlessApplicationRepositoryClientTypes {
             self.templateUrl = templateUrl
         }
     }
-
 }
 
-public struct CreateApplicationOutput {
+public struct CreateApplicationOutput: Swift.Sendable {
     /// The application Amazon Resource Name (ARN).
     public var applicationId: Swift.String?
     /// The name of the author publishing the app.Minimum length=1. Maximum length=127.Pattern "^[a-z0-9](([a-z0-9]|-(?!-))*[a-z0-9])?$";
@@ -665,7 +666,7 @@ public struct CreateApplicationOutput {
     }
 }
 
-public struct CreateApplicationVersionInput {
+public struct CreateApplicationVersionInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the application.
     /// This member is required.
     public var applicationId: Swift.String?
@@ -699,7 +700,7 @@ public struct CreateApplicationVersionInput {
     }
 }
 
-public struct CreateApplicationVersionOutput {
+public struct CreateApplicationVersionOutput: Swift.Sendable {
     /// The application Amazon Resource Name (ARN).
     public var applicationId: Swift.String?
     /// The date and time this resource was created.
@@ -744,8 +745,9 @@ public struct CreateApplicationVersionOutput {
 }
 
 extension ServerlessApplicationRepositoryClientTypes {
+
     /// This property corresponds to the AWS CloudFormation [RollbackConfiguration](https://docs.aws.amazon.com/goto/WebAPI/cloudformation-2010-05-15/RollbackConfiguration) Data Type.
-    public struct RollbackConfiguration {
+    public struct RollbackConfiguration: Swift.Sendable {
         /// This property corresponds to the content of the same name for the AWS CloudFormation [RollbackConfiguration](https://docs.aws.amazon.com/goto/WebAPI/cloudformation-2010-05-15/RollbackConfiguration) Data Type.
         public var monitoringTimeInMinutes: Swift.Int?
         /// This property corresponds to the content of the same name for the AWS CloudFormation [RollbackConfiguration](https://docs.aws.amazon.com/goto/WebAPI/cloudformation-2010-05-15/RollbackConfiguration) Data Type.
@@ -760,10 +762,9 @@ extension ServerlessApplicationRepositoryClientTypes {
             self.rollbackTriggers = rollbackTriggers
         }
     }
-
 }
 
-public struct CreateCloudFormationChangeSetInput {
+public struct CreateCloudFormationChangeSetInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the application.
     /// This member is required.
     public var applicationId: Swift.String?
@@ -825,7 +826,7 @@ public struct CreateCloudFormationChangeSetInput {
     }
 }
 
-public struct CreateCloudFormationChangeSetOutput {
+public struct CreateCloudFormationChangeSetOutput: Swift.Sendable {
     /// The application Amazon Resource Name (ARN).
     public var applicationId: Swift.String?
     /// The Amazon Resource Name (ARN) of the change set.Length constraints: Minimum length of 1.Pattern: ARN:[-a-zA-Z0-9:/]*
@@ -878,7 +879,7 @@ public struct NotFoundException: ClientRuntime.ModeledError, AWSClientRuntime.AW
     }
 }
 
-public struct CreateCloudFormationTemplateInput {
+public struct CreateCloudFormationTemplateInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the application.
     /// This member is required.
     public var applicationId: Swift.String?
@@ -897,7 +898,7 @@ public struct CreateCloudFormationTemplateInput {
 
 extension ServerlessApplicationRepositoryClientTypes {
 
-    public enum Status: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Status: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case active
         case expired
         case preparing
@@ -927,7 +928,7 @@ extension ServerlessApplicationRepositoryClientTypes {
     }
 }
 
-public struct CreateCloudFormationTemplateOutput {
+public struct CreateCloudFormationTemplateOutput: Swift.Sendable {
     /// The application Amazon Resource Name (ARN).
     public var applicationId: Swift.String?
     /// The date and time this resource was created.
@@ -963,7 +964,7 @@ public struct CreateCloudFormationTemplateOutput {
     }
 }
 
-public struct DeleteApplicationInput {
+public struct DeleteApplicationInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the application.
     /// This member is required.
     public var applicationId: Swift.String?
@@ -976,7 +977,7 @@ public struct DeleteApplicationInput {
     }
 }
 
-public struct GetApplicationInput {
+public struct GetApplicationInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the application.
     /// This member is required.
     public var applicationId: Swift.String?
@@ -993,7 +994,7 @@ public struct GetApplicationInput {
     }
 }
 
-public struct GetApplicationOutput {
+public struct GetApplicationOutput: Swift.Sendable {
     /// The application Amazon Resource Name (ARN).
     public var applicationId: Swift.String?
     /// The name of the author publishing the app.Minimum length=1. Maximum length=127.Pattern "^[a-z0-9](([a-z0-9]|-(?!-))*[a-z0-9])?$";
@@ -1053,7 +1054,7 @@ public struct GetApplicationOutput {
     }
 }
 
-public struct GetApplicationPolicyInput {
+public struct GetApplicationPolicyInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the application.
     /// This member is required.
     public var applicationId: Swift.String?
@@ -1066,7 +1067,7 @@ public struct GetApplicationPolicyInput {
     }
 }
 
-public struct GetApplicationPolicyOutput {
+public struct GetApplicationPolicyOutput: Swift.Sendable {
     /// An array of policy statements applied to the application.
     public var statements: [ServerlessApplicationRepositoryClientTypes.ApplicationPolicyStatement]?
 
@@ -1078,7 +1079,7 @@ public struct GetApplicationPolicyOutput {
     }
 }
 
-public struct GetCloudFormationTemplateInput {
+public struct GetCloudFormationTemplateInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the application.
     /// This member is required.
     public var applicationId: Swift.String?
@@ -1096,7 +1097,7 @@ public struct GetCloudFormationTemplateInput {
     }
 }
 
-public struct GetCloudFormationTemplateOutput {
+public struct GetCloudFormationTemplateOutput: Swift.Sendable {
     /// The application Amazon Resource Name (ARN).
     public var applicationId: Swift.String?
     /// The date and time this resource was created.
@@ -1132,7 +1133,7 @@ public struct GetCloudFormationTemplateOutput {
     }
 }
 
-public struct ListApplicationDependenciesInput {
+public struct ListApplicationDependenciesInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the application.
     /// This member is required.
     public var applicationId: Swift.String?
@@ -1157,7 +1158,7 @@ public struct ListApplicationDependenciesInput {
     }
 }
 
-public struct ListApplicationDependenciesOutput {
+public struct ListApplicationDependenciesOutput: Swift.Sendable {
     /// An array of application summaries nested in the application.
     public var dependencies: [ServerlessApplicationRepositoryClientTypes.ApplicationDependencySummary]?
     /// The token to request the next page of results.
@@ -1173,7 +1174,7 @@ public struct ListApplicationDependenciesOutput {
     }
 }
 
-public struct ListApplicationsInput {
+public struct ListApplicationsInput: Swift.Sendable {
     /// The total number of items to return.
     public var maxItems: Swift.Int?
     /// A token to specify where to start paginating.
@@ -1189,7 +1190,7 @@ public struct ListApplicationsInput {
     }
 }
 
-public struct ListApplicationsOutput {
+public struct ListApplicationsOutput: Swift.Sendable {
     /// An array of application summaries.
     public var applications: [ServerlessApplicationRepositoryClientTypes.ApplicationSummary]?
     /// The token to request the next page of results.
@@ -1205,7 +1206,7 @@ public struct ListApplicationsOutput {
     }
 }
 
-public struct ListApplicationVersionsInput {
+public struct ListApplicationVersionsInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the application.
     /// This member is required.
     public var applicationId: Swift.String?
@@ -1226,7 +1227,7 @@ public struct ListApplicationVersionsInput {
     }
 }
 
-public struct ListApplicationVersionsOutput {
+public struct ListApplicationVersionsOutput: Swift.Sendable {
     /// The token to request the next page of results.
     public var nextToken: Swift.String?
     /// An array of version summaries for the application.
@@ -1242,7 +1243,7 @@ public struct ListApplicationVersionsOutput {
     }
 }
 
-public struct PutApplicationPolicyInput {
+public struct PutApplicationPolicyInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the application.
     /// This member is required.
     public var applicationId: Swift.String?
@@ -1260,7 +1261,7 @@ public struct PutApplicationPolicyInput {
     }
 }
 
-public struct PutApplicationPolicyOutput {
+public struct PutApplicationPolicyOutput: Swift.Sendable {
     /// An array of policy statements applied to the application.
     public var statements: [ServerlessApplicationRepositoryClientTypes.ApplicationPolicyStatement]?
 
@@ -1272,7 +1273,7 @@ public struct PutApplicationPolicyOutput {
     }
 }
 
-public struct UnshareApplicationInput {
+public struct UnshareApplicationInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the application.
     /// This member is required.
     public var applicationId: Swift.String?
@@ -1290,7 +1291,7 @@ public struct UnshareApplicationInput {
     }
 }
 
-public struct UpdateApplicationInput {
+public struct UpdateApplicationInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the application.
     /// This member is required.
     public var applicationId: Swift.String?
@@ -1327,7 +1328,7 @@ public struct UpdateApplicationInput {
     }
 }
 
-public struct UpdateApplicationOutput {
+public struct UpdateApplicationOutput: Swift.Sendable {
     /// The application Amazon Resource Name (ARN).
     public var applicationId: Swift.String?
     /// The name of the author publishing the app.Minimum length=1. Maximum length=127.Pattern "^[a-z0-9](([a-z0-9]|-(?!-))*[a-z0-9])?$";

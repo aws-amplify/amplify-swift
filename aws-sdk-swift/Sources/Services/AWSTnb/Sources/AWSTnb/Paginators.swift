@@ -118,7 +118,8 @@ extension ListSolNetworkOperationsInput: ClientRuntime.PaginateToken {
     public func usingPaginationToken(_ token: Swift.String) -> ListSolNetworkOperationsInput {
         return ListSolNetworkOperationsInput(
             maxResults: self.maxResults,
-            nextToken: token
+            nextToken: token,
+            nsInstanceId: self.nsInstanceId
         )}
 }
 

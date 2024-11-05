@@ -54,8 +54,9 @@ public struct AccessDeniedException: ClientRuntime.ModeledError, AWSClientRuntim
 }
 
 extension LookoutMetricsClientTypes {
+
     /// Contains information about a Lambda configuration.
-    public struct LambdaConfiguration {
+    public struct LambdaConfiguration: Swift.Sendable {
         /// The ARN of the Lambda function.
         /// This member is required.
         public var lambdaArn: Swift.String?
@@ -72,12 +73,11 @@ extension LookoutMetricsClientTypes {
             self.roleArn = roleArn
         }
     }
-
 }
 
 extension LookoutMetricsClientTypes {
 
-    public enum SnsFormat: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SnsFormat: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case json
         case longText
         case shortText
@@ -108,8 +108,9 @@ extension LookoutMetricsClientTypes {
 }
 
 extension LookoutMetricsClientTypes {
+
     /// Contains information about the SNS topic to which you want to send your alerts and the IAM role that has access to that topic.
-    public struct SNSConfiguration {
+    public struct SNSConfiguration: Swift.Sendable {
         /// The ARN of the IAM role that has access to the target SNS topic.
         /// This member is required.
         public var roleArn: Swift.String?
@@ -136,12 +137,12 @@ extension LookoutMetricsClientTypes {
             self.snsTopicArn = snsTopicArn
         }
     }
-
 }
 
 extension LookoutMetricsClientTypes {
+
     /// A configuration that specifies the action to perform when anomalies are detected.
-    public struct Action {
+    public struct Action: Swift.Sendable {
         /// A configuration for an AWS Lambda channel.
         public var lambdaConfiguration: LookoutMetricsClientTypes.LambdaConfiguration?
         /// A configuration for an Amazon SNS channel.
@@ -156,7 +157,6 @@ extension LookoutMetricsClientTypes {
             self.snsConfiguration = snsConfiguration
         }
     }
-
 }
 
 /// There was a conflict processing the request. Try your request again.
@@ -276,8 +276,9 @@ public struct TooManyRequestsException: ClientRuntime.ModeledError, AWSClientRun
 }
 
 extension LookoutMetricsClientTypes {
+
     /// Contains information about a a field in a validation exception.
-    public struct ValidationExceptionField {
+    public struct ValidationExceptionField: Swift.Sendable {
         /// The message with more information about the validation exception.
         /// This member is required.
         public var message: Swift.String?
@@ -294,12 +295,11 @@ extension LookoutMetricsClientTypes {
             self.name = name
         }
     }
-
 }
 
 extension LookoutMetricsClientTypes {
 
-    public enum ValidationExceptionReason: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ValidationExceptionReason: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case cannotParse
         case fieldValidationFailed
         case other
@@ -365,7 +365,7 @@ public struct ValidationException: ClientRuntime.ModeledError, AWSClientRuntime.
     }
 }
 
-public struct ActivateAnomalyDetectorInput {
+public struct ActivateAnomalyDetectorInput: Swift.Sendable {
     /// The ARN of the anomaly detector.
     /// This member is required.
     public var anomalyDetectorArn: Swift.String?
@@ -378,14 +378,14 @@ public struct ActivateAnomalyDetectorInput {
     }
 }
 
-public struct ActivateAnomalyDetectorOutput {
+public struct ActivateAnomalyDetectorOutput: Swift.Sendable {
 
     public init() { }
 }
 
 extension LookoutMetricsClientTypes {
 
-    public enum AggregationFunction: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AggregationFunction: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case avg
         case sum
         case sdkUnknown(Swift.String)
@@ -413,8 +413,9 @@ extension LookoutMetricsClientTypes {
 }
 
 extension LookoutMetricsClientTypes {
+
     /// The dimension filter, containing DimensionName and DimensionValueList.
-    public struct DimensionFilter {
+    public struct DimensionFilter: Swift.Sendable {
         /// The name of the dimension to filter on.
         public var dimensionName: Swift.String?
         /// The list of values for the dimension specified in DimensionName that you want to filter on.
@@ -429,12 +430,12 @@ extension LookoutMetricsClientTypes {
             self.dimensionValueList = dimensionValueList
         }
     }
-
 }
 
 extension LookoutMetricsClientTypes {
+
     /// The configuration of the alert filters.
-    public struct AlertFilters {
+    public struct AlertFilters: Swift.Sendable {
         /// The list of DimensionFilter objects that are used for dimension-based filtering.
         public var dimensionFilterList: [LookoutMetricsClientTypes.DimensionFilter]?
         /// The list of measures that you want to get alerts for.
@@ -449,12 +450,11 @@ extension LookoutMetricsClientTypes {
             self.metricList = metricList
         }
     }
-
 }
 
 extension LookoutMetricsClientTypes {
 
-    public enum AlertStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AlertStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case active
         case inactive
         case sdkUnknown(Swift.String)
@@ -483,7 +483,7 @@ extension LookoutMetricsClientTypes {
 
 extension LookoutMetricsClientTypes {
 
-    public enum AlertType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AlertType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case lambda
         case sns
         case sdkUnknown(Swift.String)
@@ -511,8 +511,9 @@ extension LookoutMetricsClientTypes {
 }
 
 extension LookoutMetricsClientTypes {
+
     /// A configuration for Amazon SNS-integrated notifications.
-    public struct Alert {
+    public struct Alert: Swift.Sendable {
         /// Action that will be triggered when there is an alert.
         public var action: LookoutMetricsClientTypes.Action?
         /// The ARN of the alert.
@@ -563,12 +564,12 @@ extension LookoutMetricsClientTypes {
             self.lastModificationTime = lastModificationTime
         }
     }
-
 }
 
 extension LookoutMetricsClientTypes {
+
     /// Provides a summary of an alert's configuration.
-    public struct AlertSummary {
+    public struct AlertSummary: Swift.Sendable {
         /// The ARN of the alert.
         public var alertArn: Swift.String?
         /// The name of the alert.
@@ -611,12 +612,11 @@ extension LookoutMetricsClientTypes {
             self.tags = tags
         }
     }
-
 }
 
 extension LookoutMetricsClientTypes {
 
-    public enum AnomalyDetectionTaskStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AnomalyDetectionTaskStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case completed
         case failed
         case failedToSchedule
@@ -654,7 +654,7 @@ extension LookoutMetricsClientTypes {
 
 extension LookoutMetricsClientTypes {
 
-    public enum Frequency: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Frequency: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case p1d
         case pt10m
         case pt1h
@@ -688,8 +688,9 @@ extension LookoutMetricsClientTypes {
 }
 
 extension LookoutMetricsClientTypes {
+
     /// Contains information about a detector's configuration.
-    public struct AnomalyDetectorConfig {
+    public struct AnomalyDetectorConfig: Swift.Sendable {
         /// The frequency at which the detector analyzes its source data.
         public var anomalyDetectorFrequency: LookoutMetricsClientTypes.Frequency?
 
@@ -700,12 +701,12 @@ extension LookoutMetricsClientTypes {
             self.anomalyDetectorFrequency = anomalyDetectorFrequency
         }
     }
-
 }
 
 extension LookoutMetricsClientTypes {
+
     /// Contains information about a detector's configuration.
-    public struct AnomalyDetectorConfigSummary {
+    public struct AnomalyDetectorConfigSummary: Swift.Sendable {
         /// The interval at which the detector analyzes its source data.
         public var anomalyDetectorFrequency: LookoutMetricsClientTypes.Frequency?
 
@@ -716,12 +717,11 @@ extension LookoutMetricsClientTypes {
             self.anomalyDetectorFrequency = anomalyDetectorFrequency
         }
     }
-
 }
 
 extension LookoutMetricsClientTypes {
 
-    public enum DataQualityMetricType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DataQualityMetricType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case backtestInferenceDataEndTimeStamp
         case backtestInferenceDataStartTimeStamp
         case backtestTrainingDataEndTimeStamp
@@ -773,8 +773,9 @@ extension LookoutMetricsClientTypes {
 }
 
 extension LookoutMetricsClientTypes {
+
     /// An array that describes a data quality metric. Each DataQualityMetric object contains the data quality metric name, its value, a description of the metric, and the affected column.
-    public struct DataQualityMetric {
+    public struct DataQualityMetric: Swift.Sendable {
         /// A description of the data quality metric.
         public var metricDescription: Swift.String?
         /// The name of the data quality metric.
@@ -797,12 +798,12 @@ extension LookoutMetricsClientTypes {
             self.relatedColumnName = relatedColumnName
         }
     }
-
 }
 
 extension LookoutMetricsClientTypes {
+
     /// An array of DataQualityMetric objects that describes one or more data quality metrics.
-    public struct MetricSetDataQualityMetric {
+    public struct MetricSetDataQualityMetric: Swift.Sendable {
         /// The array of data quality metrics contained in the data quality metric set.
         public var dataQualityMetricList: [LookoutMetricsClientTypes.DataQualityMetric]?
         /// The Amazon Resource Name (ARN) of the data quality metric array.
@@ -817,12 +818,12 @@ extension LookoutMetricsClientTypes {
             self.metricSetArn = metricSetArn
         }
     }
-
 }
 
 extension LookoutMetricsClientTypes {
+
     /// Aggregated details about the data quality metrics collected for the AnomalyDetectorArn provided in the [GetDataQualityMetrics] object.
-    public struct AnomalyDetectorDataQualityMetric {
+    public struct AnomalyDetectorDataQualityMetric: Swift.Sendable {
         /// An array of DataQualityMetricList objects. Each object in the array contains information about a data quality metric.
         public var metricSetDataQualityMetricList: [LookoutMetricsClientTypes.MetricSetDataQualityMetric]?
         /// The start time for the data quality metrics collection.
@@ -837,12 +838,11 @@ extension LookoutMetricsClientTypes {
             self.startTimestamp = startTimestamp
         }
     }
-
 }
 
 extension LookoutMetricsClientTypes {
 
-    public enum AnomalyDetectorFailureType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AnomalyDetectorFailureType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case activationFailure
         case backTestActivationFailure
         case deactivationFailure
@@ -877,7 +877,7 @@ extension LookoutMetricsClientTypes {
 
 extension LookoutMetricsClientTypes {
 
-    public enum AnomalyDetectorStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AnomalyDetectorStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case activating
         case active
         case backTestActivating
@@ -932,8 +932,9 @@ extension LookoutMetricsClientTypes {
 }
 
 extension LookoutMetricsClientTypes {
+
     /// Contains information about an an anomaly detector.
-    public struct AnomalyDetectorSummary {
+    public struct AnomalyDetectorSummary: Swift.Sendable {
         /// The ARN of the detector.
         public var anomalyDetectorArn: Swift.String?
         /// A description of the detector.
@@ -968,12 +969,12 @@ extension LookoutMetricsClientTypes {
             self.tags = tags
         }
     }
-
 }
 
 extension LookoutMetricsClientTypes {
+
     /// The severity of a value of a dimension that contributed to an anomaly.
-    public struct DimensionValueContribution {
+    public struct DimensionValueContribution: Swift.Sendable {
         /// The severity score of the value.
         public var contributionScore: Swift.Double?
         /// The value of the dimension.
@@ -988,12 +989,12 @@ extension LookoutMetricsClientTypes {
             self.dimensionValue = dimensionValue
         }
     }
-
 }
 
 extension LookoutMetricsClientTypes {
+
     /// Details about a dimension that contributed to an anomaly.
-    public struct DimensionContribution {
+    public struct DimensionContribution: Swift.Sendable {
         /// The name of the dimension.
         public var dimensionName: Swift.String?
         /// A list of dimension values that contributed to the anomaly.
@@ -1008,12 +1009,12 @@ extension LookoutMetricsClientTypes {
             self.dimensionValueContributionList = dimensionValueContributionList
         }
     }
-
 }
 
 extension LookoutMetricsClientTypes {
+
     /// Details about dimensions that contributed to an anomaly.
-    public struct ContributionMatrix {
+    public struct ContributionMatrix: Swift.Sendable {
         /// A list of contributing dimensions.
         public var dimensionContributionList: [LookoutMetricsClientTypes.DimensionContribution]?
 
@@ -1024,12 +1025,12 @@ extension LookoutMetricsClientTypes {
             self.dimensionContributionList = dimensionContributionList
         }
     }
-
 }
 
 extension LookoutMetricsClientTypes {
+
     /// Details about a measure affected by an anomaly.
-    public struct MetricLevelImpact {
+    public struct MetricLevelImpact: Swift.Sendable {
         /// Details about the dimensions that contributed to the anomaly.
         public var contributionMatrix: LookoutMetricsClientTypes.ContributionMatrix?
         /// The name of the measure.
@@ -1048,12 +1049,12 @@ extension LookoutMetricsClientTypes {
             self.numTimeSeries = numTimeSeries
         }
     }
-
 }
 
 extension LookoutMetricsClientTypes {
+
     /// A group of anomalous metrics
-    public struct AnomalyGroup {
+    public struct AnomalyGroup: Swift.Sendable {
         /// The ID of the anomaly group.
         public var anomalyGroupId: Swift.String?
         /// The severity score of the group.
@@ -1084,12 +1085,12 @@ extension LookoutMetricsClientTypes {
             self.startTime = startTime
         }
     }
-
 }
 
 extension LookoutMetricsClientTypes {
+
     /// Aggregated statistics about a measure affected by an anomaly.
-    public struct ItemizedMetricStats {
+    public struct ItemizedMetricStats: Swift.Sendable {
         /// The name of the measure.
         public var metricName: Swift.String?
         /// The number of times that the measure appears.
@@ -1104,12 +1105,12 @@ extension LookoutMetricsClientTypes {
             self.occurrenceCount = occurrenceCount
         }
     }
-
 }
 
 extension LookoutMetricsClientTypes {
+
     /// Aggregated statistics for a group of anomalous metrics.
-    public struct AnomalyGroupStatistics {
+    public struct AnomalyGroupStatistics: Swift.Sendable {
         /// The start of the time range that was searched.
         public var evaluationStartDate: Swift.String?
         /// Statistics for individual metrics within the group.
@@ -1128,12 +1129,12 @@ extension LookoutMetricsClientTypes {
             self.totalCount = totalCount
         }
     }
-
 }
 
 extension LookoutMetricsClientTypes {
+
     /// Details about a group of anomalous metrics.
-    public struct AnomalyGroupSummary {
+    public struct AnomalyGroupSummary: Swift.Sendable {
         /// The ID of the anomaly group.
         public var anomalyGroupId: Swift.String?
         /// The severity score of the group.
@@ -1160,12 +1161,12 @@ extension LookoutMetricsClientTypes {
             self.startTime = startTime
         }
     }
-
 }
 
 extension LookoutMetricsClientTypes {
+
     /// An anomalous metric in an anomaly group.
-    public struct AnomalyGroupTimeSeries {
+    public struct AnomalyGroupTimeSeries: Swift.Sendable {
         /// The ID of the anomaly group.
         /// This member is required.
         public var anomalyGroupId: Swift.String?
@@ -1181,12 +1182,12 @@ extension LookoutMetricsClientTypes {
             self.timeSeriesId = timeSeriesId
         }
     }
-
 }
 
 extension LookoutMetricsClientTypes {
+
     /// Feedback for an anomalous metric.
-    public struct AnomalyGroupTimeSeriesFeedback {
+    public struct AnomalyGroupTimeSeriesFeedback: Swift.Sendable {
         /// The ID of the anomaly group.
         /// This member is required.
         public var anomalyGroupId: Swift.String?
@@ -1208,12 +1209,12 @@ extension LookoutMetricsClientTypes {
             self.timeSeriesId = timeSeriesId
         }
     }
-
 }
 
 extension LookoutMetricsClientTypes {
+
     /// Details about an Amazon AppFlow flow datasource.
-    public struct AppFlowConfig {
+    public struct AppFlowConfig: Swift.Sendable {
         /// name of the flow.
         public var flowName: Swift.String?
         /// An IAM role that gives Amazon Lookout for Metrics permission to access the flow.
@@ -1228,12 +1229,12 @@ extension LookoutMetricsClientTypes {
             self.roleArn = roleArn
         }
     }
-
 }
 
 extension LookoutMetricsClientTypes {
+
     /// Settings for backtest mode.
-    public struct BackTestConfiguration {
+    public struct BackTestConfiguration: Swift.Sendable {
         /// Run a backtest instead of monitoring new data.
         /// This member is required.
         public var runBackTestMode: Swift.Bool?
@@ -1245,12 +1246,12 @@ extension LookoutMetricsClientTypes {
             self.runBackTestMode = runBackTestMode
         }
     }
-
 }
 
 extension LookoutMetricsClientTypes {
+
     /// Details about an Amazon Athena datasource.
-    public struct AthenaSourceConfig {
+    public struct AthenaSourceConfig: Swift.Sendable {
         /// Settings for backtest mode.
         public var backTestConfiguration: LookoutMetricsClientTypes.BackTestConfiguration?
         /// The database's data catalog.
@@ -1285,12 +1286,12 @@ extension LookoutMetricsClientTypes {
             self.workGroupName = workGroupName
         }
     }
-
 }
 
 extension LookoutMetricsClientTypes {
+
     /// An attribute value.
-    public struct AttributeValue {
+    public struct AttributeValue: Swift.Sendable {
         /// A binary value.
         public var b: Swift.String?
         /// A list of binary values.
@@ -1321,12 +1322,12 @@ extension LookoutMetricsClientTypes {
             self.ss = ss
         }
     }
-
 }
 
 extension LookoutMetricsClientTypes {
+
     /// An auto detection source config.
-    public struct AutoDetectionS3SourceConfig {
+    public struct AutoDetectionS3SourceConfig: Swift.Sendable {
         /// The config's historical data path list.
         public var historicalDataPathList: [Swift.String]?
         /// The config's templated path list.
@@ -1341,12 +1342,12 @@ extension LookoutMetricsClientTypes {
             self.templatedPathList = templatedPathList
         }
     }
-
 }
 
 extension LookoutMetricsClientTypes {
+
     /// An auto detection metric source.
-    public struct AutoDetectionMetricSource {
+    public struct AutoDetectionMetricSource: Swift.Sendable {
         /// The source's source config.
         public var s3SourceConfig: LookoutMetricsClientTypes.AutoDetectionS3SourceConfig?
 
@@ -1357,10 +1358,9 @@ extension LookoutMetricsClientTypes {
             self.s3SourceConfig = s3SourceConfig
         }
     }
-
 }
 
-public struct BackTestAnomalyDetectorInput {
+public struct BackTestAnomalyDetectorInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the anomaly detector.
     /// This member is required.
     public var anomalyDetectorArn: Swift.String?
@@ -1373,14 +1373,15 @@ public struct BackTestAnomalyDetectorInput {
     }
 }
 
-public struct BackTestAnomalyDetectorOutput {
+public struct BackTestAnomalyDetectorOutput: Swift.Sendable {
 
     public init() { }
 }
 
 extension LookoutMetricsClientTypes {
+
     /// Details about an Amazon CloudWatch datasource.
-    public struct CloudWatchConfig {
+    public struct CloudWatchConfig: Swift.Sendable {
         /// Settings for backtest mode.
         public var backTestConfiguration: LookoutMetricsClientTypes.BackTestConfiguration?
         /// An IAM role that gives Amazon Lookout for Metrics permission to access data in Amazon CloudWatch.
@@ -1395,12 +1396,11 @@ extension LookoutMetricsClientTypes {
             self.roleArn = roleArn
         }
     }
-
 }
 
 extension LookoutMetricsClientTypes {
 
-    public enum Confidence: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Confidence: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case high
         case low
         case `none`
@@ -1471,7 +1471,7 @@ public struct ServiceQuotaExceededException: ClientRuntime.ModeledError, AWSClie
     }
 }
 
-public struct CreateAlertInput {
+public struct CreateAlertInput: Swift.Sendable {
     /// Action that will be triggered when there is an alert.
     /// This member is required.
     public var action: LookoutMetricsClientTypes.Action?
@@ -1510,7 +1510,7 @@ public struct CreateAlertInput {
     }
 }
 
-public struct CreateAlertOutput {
+public struct CreateAlertOutput: Swift.Sendable {
     /// The ARN of the alert.
     public var alertArn: Swift.String?
 
@@ -1522,7 +1522,7 @@ public struct CreateAlertOutput {
     }
 }
 
-public struct CreateAnomalyDetectorInput {
+public struct CreateAnomalyDetectorInput: Swift.Sendable {
     /// Contains information about the configuration of the anomaly detector.
     /// This member is required.
     public var anomalyDetectorConfig: LookoutMetricsClientTypes.AnomalyDetectorConfig?
@@ -1552,7 +1552,7 @@ public struct CreateAnomalyDetectorInput {
     }
 }
 
-public struct CreateAnomalyDetectorOutput {
+public struct CreateAnomalyDetectorOutput: Swift.Sendable {
     /// The ARN of the detector.
     public var anomalyDetectorArn: Swift.String?
 
@@ -1566,7 +1566,7 @@ public struct CreateAnomalyDetectorOutput {
 
 extension LookoutMetricsClientTypes {
 
-    public enum FilterOperation: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum FilterOperation: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case equals
         case sdkUnknown(Swift.String)
 
@@ -1591,8 +1591,9 @@ extension LookoutMetricsClientTypes {
 }
 
 extension LookoutMetricsClientTypes {
+
     /// Describes a filter for choosing a subset of dimension values. Each filter consists of the dimension that you want to include and the condition statement. The condition statement is specified in the FilterOperation object.
-    public struct Filter {
+    public struct Filter: Swift.Sendable {
         /// The value that you want to include in the filter.
         public var dimensionValue: Swift.String?
         /// The condition to apply.
@@ -1607,12 +1608,12 @@ extension LookoutMetricsClientTypes {
             self.filterOperation = filterOperation
         }
     }
-
 }
 
 extension LookoutMetricsClientTypes {
+
     /// Describes a list of filters for choosing a subset of dimension values. Each filter consists of the dimension and one of its values that you want to include. When multiple dimensions or values are specified, the dimensions are joined with an AND operation and the values are joined with an OR operation.
-    public struct MetricSetDimensionFilter {
+    public struct MetricSetDimensionFilter: Swift.Sendable {
         /// The list of filters that you are applying.
         public var filterList: [LookoutMetricsClientTypes.Filter]?
         /// The dimension that you want to filter on.
@@ -1627,12 +1628,12 @@ extension LookoutMetricsClientTypes {
             self.name = name
         }
     }
-
 }
 
 extension LookoutMetricsClientTypes {
+
     /// A calculation made by contrasting a measure and a dimension from your source data.
-    public struct Metric {
+    public struct Metric: Swift.Sendable {
         /// The function with which the metric is calculated.
         /// This member is required.
         public var aggregationFunction: LookoutMetricsClientTypes.AggregationFunction?
@@ -1653,12 +1654,12 @@ extension LookoutMetricsClientTypes {
             self.namespace = namespace
         }
     }
-
 }
 
 extension LookoutMetricsClientTypes {
+
     /// Contains configuration information about the Amazon Virtual Private Cloud (VPC).
-    public struct VpcConfiguration {
+    public struct VpcConfiguration: Swift.Sendable {
         /// An array of strings containing the list of security groups.
         /// This member is required.
         public var securityGroupIdList: [Swift.String]?
@@ -1675,12 +1676,12 @@ extension LookoutMetricsClientTypes {
             self.subnetIdList = subnetIdList
         }
     }
-
 }
 
 extension LookoutMetricsClientTypes {
+
     /// Contains information about the Amazon Relational Database Service (RDS) configuration.
-    public struct RDSSourceConfig {
+    public struct RDSSourceConfig: Swift.Sendable {
         /// The host name of the database.
         public var databaseHost: Swift.String?
         /// The name of the RDS database.
@@ -1719,12 +1720,12 @@ extension LookoutMetricsClientTypes {
             self.vpcConfiguration = vpcConfiguration
         }
     }
-
 }
 
 extension LookoutMetricsClientTypes {
+
     /// Provides information about the Amazon Redshift database configuration.
-    public struct RedshiftSourceConfig {
+    public struct RedshiftSourceConfig: Swift.Sendable {
         /// A string identifying the Redshift cluster.
         public var clusterIdentifier: Swift.String?
         /// The name of the database host.
@@ -1763,12 +1764,11 @@ extension LookoutMetricsClientTypes {
             self.vpcConfiguration = vpcConfiguration
         }
     }
-
 }
 
 extension LookoutMetricsClientTypes {
 
-    public enum CSVFileCompression: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum CSVFileCompression: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case gzip
         case `none`
         case sdkUnknown(Swift.String)
@@ -1796,8 +1796,9 @@ extension LookoutMetricsClientTypes {
 }
 
 extension LookoutMetricsClientTypes {
+
     /// Contains information about how a source CSV data file should be analyzed.
-    public struct CsvFormatDescriptor {
+    public struct CsvFormatDescriptor: Swift.Sendable {
         /// The character set in which the source CSV file is written.
         public var charset: Swift.String?
         /// Whether or not the source CSV file contains a header.
@@ -1828,12 +1829,11 @@ extension LookoutMetricsClientTypes {
             self.quoteSymbol = quoteSymbol
         }
     }
-
 }
 
 extension LookoutMetricsClientTypes {
 
-    public enum JsonFileCompression: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum JsonFileCompression: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case gzip
         case `none`
         case sdkUnknown(Swift.String)
@@ -1861,8 +1861,9 @@ extension LookoutMetricsClientTypes {
 }
 
 extension LookoutMetricsClientTypes {
+
     /// Contains information about how a source JSON data file should be analyzed.
-    public struct JsonFormatDescriptor {
+    public struct JsonFormatDescriptor: Swift.Sendable {
         /// The character set in which the source JSON file is written.
         public var charset: Swift.String?
         /// The level of compression of the source CSV file.
@@ -1877,12 +1878,12 @@ extension LookoutMetricsClientTypes {
             self.fileCompression = fileCompression
         }
     }
-
 }
 
 extension LookoutMetricsClientTypes {
+
     /// Contains information about a source file's formatting.
-    public struct FileFormatDescriptor {
+    public struct FileFormatDescriptor: Swift.Sendable {
         /// Contains information about how a source CSV data file should be analyzed.
         public var csvFormatDescriptor: LookoutMetricsClientTypes.CsvFormatDescriptor?
         /// Contains information about how a source JSON data file should be analyzed.
@@ -1897,12 +1898,12 @@ extension LookoutMetricsClientTypes {
             self.jsonFormatDescriptor = jsonFormatDescriptor
         }
     }
-
 }
 
 extension LookoutMetricsClientTypes {
+
     /// Contains information about the configuration of the S3 bucket that contains source files.
-    public struct S3SourceConfig {
+    public struct S3SourceConfig: Swift.Sendable {
         /// Contains information about a source file's formatting.
         public var fileFormatDescriptor: LookoutMetricsClientTypes.FileFormatDescriptor?
         /// A list of paths to the historical data files.
@@ -1925,12 +1926,12 @@ extension LookoutMetricsClientTypes {
             self.templatedPathList = templatedPathList
         }
     }
-
 }
 
 extension LookoutMetricsClientTypes {
+
     /// Contains information about source data used to generate metrics.
-    public struct MetricSource {
+    public struct MetricSource: Swift.Sendable {
         /// Details about an AppFlow datasource.
         public var appFlowConfig: LookoutMetricsClientTypes.AppFlowConfig?
         /// Details about an Amazon Athena datasource.
@@ -1961,12 +1962,12 @@ extension LookoutMetricsClientTypes {
             self.s3SourceConfig = s3SourceConfig
         }
     }
-
 }
 
 extension LookoutMetricsClientTypes {
+
     /// Contains information about the column used to track time in a source data file.
-    public struct TimestampColumn {
+    public struct TimestampColumn: Swift.Sendable {
         /// The format of the timestamp column.
         public var columnFormat: Swift.String?
         /// The name of the timestamp column.
@@ -1981,10 +1982,9 @@ extension LookoutMetricsClientTypes {
             self.columnName = columnName
         }
     }
-
 }
 
-public struct CreateMetricSetInput {
+public struct CreateMetricSetInput: Swift.Sendable {
     /// The ARN of the anomaly detector that will use the dataset.
     /// This member is required.
     public var anomalyDetectorArn: Swift.String?
@@ -2044,7 +2044,7 @@ public struct CreateMetricSetInput {
     }
 }
 
-public struct CreateMetricSetOutput {
+public struct CreateMetricSetOutput: Swift.Sendable {
     /// The ARN of the dataset.
     public var metricSetArn: Swift.String?
 
@@ -2056,7 +2056,7 @@ public struct CreateMetricSetOutput {
     }
 }
 
-public struct DeactivateAnomalyDetectorInput {
+public struct DeactivateAnomalyDetectorInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the anomaly detector.
     /// This member is required.
     public var anomalyDetectorArn: Swift.String?
@@ -2069,12 +2069,12 @@ public struct DeactivateAnomalyDetectorInput {
     }
 }
 
-public struct DeactivateAnomalyDetectorOutput {
+public struct DeactivateAnomalyDetectorOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteAlertInput {
+public struct DeleteAlertInput: Swift.Sendable {
     /// The ARN of the alert to delete.
     /// This member is required.
     public var alertArn: Swift.String?
@@ -2087,12 +2087,12 @@ public struct DeleteAlertInput {
     }
 }
 
-public struct DeleteAlertOutput {
+public struct DeleteAlertOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteAnomalyDetectorInput {
+public struct DeleteAnomalyDetectorInput: Swift.Sendable {
     /// The ARN of the detector to delete.
     /// This member is required.
     public var anomalyDetectorArn: Swift.String?
@@ -2105,12 +2105,12 @@ public struct DeleteAnomalyDetectorInput {
     }
 }
 
-public struct DeleteAnomalyDetectorOutput {
+public struct DeleteAnomalyDetectorOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DescribeAlertInput {
+public struct DescribeAlertInput: Swift.Sendable {
     /// The ARN of the alert to describe.
     /// This member is required.
     public var alertArn: Swift.String?
@@ -2123,7 +2123,7 @@ public struct DescribeAlertInput {
     }
 }
 
-public struct DescribeAlertOutput {
+public struct DescribeAlertOutput: Swift.Sendable {
     /// Contains information about an alert.
     public var alert: LookoutMetricsClientTypes.Alert?
 
@@ -2135,7 +2135,7 @@ public struct DescribeAlertOutput {
     }
 }
 
-public struct DescribeAnomalyDetectionExecutionsInput {
+public struct DescribeAnomalyDetectionExecutionsInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the anomaly detector.
     /// This member is required.
     public var anomalyDetectorArn: Swift.String?
@@ -2161,8 +2161,9 @@ public struct DescribeAnomalyDetectionExecutionsInput {
 }
 
 extension LookoutMetricsClientTypes {
+
     /// The status of an anomaly detector run.
-    public struct ExecutionStatus {
+    public struct ExecutionStatus: Swift.Sendable {
         /// The reason that the run failed, if applicable.
         public var failureReason: Swift.String?
         /// The run's status.
@@ -2181,10 +2182,9 @@ extension LookoutMetricsClientTypes {
             self.timestamp = timestamp
         }
     }
-
 }
 
-public struct DescribeAnomalyDetectionExecutionsOutput {
+public struct DescribeAnomalyDetectionExecutionsOutput: Swift.Sendable {
     /// A list of detection jobs.
     public var executionList: [LookoutMetricsClientTypes.ExecutionStatus]?
     /// The pagination token that's included if more results are available.
@@ -2200,7 +2200,7 @@ public struct DescribeAnomalyDetectionExecutionsOutput {
     }
 }
 
-public struct DescribeAnomalyDetectorInput {
+public struct DescribeAnomalyDetectorInput: Swift.Sendable {
     /// The ARN of the detector to describe.
     /// This member is required.
     public var anomalyDetectorArn: Swift.String?
@@ -2213,7 +2213,7 @@ public struct DescribeAnomalyDetectorInput {
     }
 }
 
-public struct DescribeAnomalyDetectorOutput {
+public struct DescribeAnomalyDetectorOutput: Swift.Sendable {
     /// The ARN of the detector.
     public var anomalyDetectorArn: Swift.String?
     /// Contains information about the detector's configuration.
@@ -2261,7 +2261,7 @@ public struct DescribeAnomalyDetectorOutput {
     }
 }
 
-public struct DescribeMetricSetInput {
+public struct DescribeMetricSetInput: Swift.Sendable {
     /// The ARN of the dataset.
     /// This member is required.
     public var metricSetArn: Swift.String?
@@ -2274,7 +2274,7 @@ public struct DescribeMetricSetInput {
     }
 }
 
-public struct DescribeMetricSetOutput {
+public struct DescribeMetricSetOutput: Swift.Sendable {
     /// The ARN of the detector that contains the dataset.
     public var anomalyDetectorArn: Swift.String?
     /// The time at which the dataset was created.
@@ -2339,8 +2339,9 @@ public struct DescribeMetricSetOutput {
 }
 
 extension LookoutMetricsClientTypes {
+
     /// An inferred field.
-    public struct DetectedField {
+    public struct DetectedField: Swift.Sendable {
         /// The field's confidence.
         public var confidence: LookoutMetricsClientTypes.Confidence?
         /// The field's message.
@@ -2359,12 +2360,12 @@ extension LookoutMetricsClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension LookoutMetricsClientTypes {
+
     /// Properties of an inferred CSV format.
-    public struct DetectedCsvFormatDescriptor {
+    public struct DetectedCsvFormatDescriptor: Swift.Sendable {
         /// The format's charset.
         public var charset: LookoutMetricsClientTypes.DetectedField?
         /// Whether the format includes a header.
@@ -2395,12 +2396,12 @@ extension LookoutMetricsClientTypes {
             self.quoteSymbol = quoteSymbol
         }
     }
-
 }
 
 extension LookoutMetricsClientTypes {
+
     /// A detected JSON format descriptor.
-    public struct DetectedJsonFormatDescriptor {
+    public struct DetectedJsonFormatDescriptor: Swift.Sendable {
         /// The format's character set.
         public var charset: LookoutMetricsClientTypes.DetectedField?
         /// The format's file compression.
@@ -2415,12 +2416,12 @@ extension LookoutMetricsClientTypes {
             self.fileCompression = fileCompression
         }
     }
-
 }
 
 extension LookoutMetricsClientTypes {
+
     /// Properties of an inferred data format.
-    public struct DetectedFileFormatDescriptor {
+    public struct DetectedFileFormatDescriptor: Swift.Sendable {
         /// Details about a CSV format.
         public var csvFormatDescriptor: LookoutMetricsClientTypes.DetectedCsvFormatDescriptor?
         /// Details about a JSON format.
@@ -2435,12 +2436,12 @@ extension LookoutMetricsClientTypes {
             self.jsonFormatDescriptor = jsonFormatDescriptor
         }
     }
-
 }
 
 extension LookoutMetricsClientTypes {
+
     /// An inferred source configuration.
-    public struct DetectedS3SourceConfig {
+    public struct DetectedS3SourceConfig: Swift.Sendable {
         /// The source's file format descriptor.
         public var fileFormatDescriptor: LookoutMetricsClientTypes.DetectedFileFormatDescriptor?
 
@@ -2451,12 +2452,12 @@ extension LookoutMetricsClientTypes {
             self.fileFormatDescriptor = fileFormatDescriptor
         }
     }
-
 }
 
 extension LookoutMetricsClientTypes {
+
     /// An inferred data source.
-    public struct DetectedMetricSource {
+    public struct DetectedMetricSource: Swift.Sendable {
         /// The data source's source configuration.
         public var s3SourceConfig: LookoutMetricsClientTypes.DetectedS3SourceConfig?
 
@@ -2467,12 +2468,12 @@ extension LookoutMetricsClientTypes {
             self.s3SourceConfig = s3SourceConfig
         }
     }
-
 }
 
 extension LookoutMetricsClientTypes {
+
     /// An inferred dataset configuration.
-    public struct DetectedMetricSetConfig {
+    public struct DetectedMetricSetConfig: Swift.Sendable {
         /// The dataset's interval.
         public var metricSetFrequency: LookoutMetricsClientTypes.DetectedField?
         /// The dataset's data source.
@@ -2491,10 +2492,9 @@ extension LookoutMetricsClientTypes {
             self.offset = offset
         }
     }
-
 }
 
-public struct DetectMetricSetConfigInput {
+public struct DetectMetricSetConfigInput: Swift.Sendable {
     /// An anomaly detector ARN.
     /// This member is required.
     public var anomalyDetectorArn: Swift.String?
@@ -2512,7 +2512,7 @@ public struct DetectMetricSetConfigInput {
     }
 }
 
-public struct DetectMetricSetConfigOutput {
+public struct DetectMetricSetConfigOutput: Swift.Sendable {
     /// The inferred dataset configuration for the datasource.
     public var detectedMetricSetConfig: LookoutMetricsClientTypes.DetectedMetricSetConfig?
 
@@ -2525,8 +2525,9 @@ public struct DetectMetricSetConfigOutput {
 }
 
 extension LookoutMetricsClientTypes {
+
     /// A dimension name and value.
-    public struct DimensionNameValue {
+    public struct DimensionNameValue: Swift.Sendable {
         /// The name of the dimension.
         /// This member is required.
         public var dimensionName: Swift.String?
@@ -2543,10 +2544,9 @@ extension LookoutMetricsClientTypes {
             self.dimensionValue = dimensionValue
         }
     }
-
 }
 
-public struct GetAnomalyGroupInput {
+public struct GetAnomalyGroupInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the anomaly detector.
     /// This member is required.
     public var anomalyDetectorArn: Swift.String?
@@ -2564,7 +2564,7 @@ public struct GetAnomalyGroupInput {
     }
 }
 
-public struct GetAnomalyGroupOutput {
+public struct GetAnomalyGroupOutput: Swift.Sendable {
     /// Details about the anomaly group.
     public var anomalyGroup: LookoutMetricsClientTypes.AnomalyGroup?
 
@@ -2576,7 +2576,7 @@ public struct GetAnomalyGroupOutput {
     }
 }
 
-public struct GetDataQualityMetricsInput {
+public struct GetDataQualityMetricsInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the anomaly detector that you want to investigate.
     /// This member is required.
     public var anomalyDetectorArn: Swift.String?
@@ -2593,7 +2593,7 @@ public struct GetDataQualityMetricsInput {
     }
 }
 
-public struct GetDataQualityMetricsOutput {
+public struct GetDataQualityMetricsOutput: Swift.Sendable {
     /// A list of the data quality metrics for the AnomalyDetectorArn that you requested.
     public var anomalyDetectorDataQualityMetricList: [LookoutMetricsClientTypes.AnomalyDetectorDataQualityMetric]?
 
@@ -2605,7 +2605,7 @@ public struct GetDataQualityMetricsOutput {
     }
 }
 
-public struct GetFeedbackInput {
+public struct GetFeedbackInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the anomaly detector.
     /// This member is required.
     public var anomalyDetectorArn: Swift.String?
@@ -2632,8 +2632,9 @@ public struct GetFeedbackInput {
 }
 
 extension LookoutMetricsClientTypes {
+
     /// Details about feedback submitted for an anomalous metric.
-    public struct TimeSeriesFeedback {
+    public struct TimeSeriesFeedback: Swift.Sendable {
         /// Feedback on whether the metric is a legitimate anomaly.
         public var isAnomaly: Swift.Bool?
         /// The ID of the metric.
@@ -2648,10 +2649,9 @@ extension LookoutMetricsClientTypes {
             self.timeSeriesId = timeSeriesId
         }
     }
-
 }
 
-public struct GetFeedbackOutput {
+public struct GetFeedbackOutput: Swift.Sendable {
     /// Feedback for an anomalous metric.
     public var anomalyGroupTimeSeriesFeedback: [LookoutMetricsClientTypes.TimeSeriesFeedback]?
     /// The pagination token that's included if more results are available.
@@ -2668,8 +2668,9 @@ public struct GetFeedbackOutput {
 }
 
 extension LookoutMetricsClientTypes {
+
     /// Contains information about the source configuration in Amazon S3.
-    public struct SampleDataS3SourceConfig {
+    public struct SampleDataS3SourceConfig: Swift.Sendable {
         /// Contains information about a source file's formatting.
         /// This member is required.
         public var fileFormatDescriptor: LookoutMetricsClientTypes.FileFormatDescriptor?
@@ -2694,10 +2695,9 @@ extension LookoutMetricsClientTypes {
             self.templatedPathList = templatedPathList
         }
     }
-
 }
 
-public struct GetSampleDataInput {
+public struct GetSampleDataInput: Swift.Sendable {
     /// A datasource bucket in Amazon S3.
     public var s3SourceConfig: LookoutMetricsClientTypes.SampleDataS3SourceConfig?
 
@@ -2709,7 +2709,7 @@ public struct GetSampleDataInput {
     }
 }
 
-public struct GetSampleDataOutput {
+public struct GetSampleDataOutput: Swift.Sendable {
     /// A list of header labels for the records.
     public var headerValues: [Swift.String]?
     /// A list of records.
@@ -2727,7 +2727,7 @@ public struct GetSampleDataOutput {
 
 extension LookoutMetricsClientTypes {
 
-    public enum RelationshipType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum RelationshipType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case causeOfInputAnomalyGroup
         case effectOfInputAnomalyGroup
         case sdkUnknown(Swift.String)
@@ -2755,8 +2755,9 @@ extension LookoutMetricsClientTypes {
 }
 
 extension LookoutMetricsClientTypes {
+
     /// Aggregated details about the measures contributing to the anomaly group, and the measures potentially impacted by the anomaly group.
-    public struct InterMetricImpactDetails {
+    public struct InterMetricImpactDetails: Swift.Sendable {
         /// The ID of the anomaly group.
         public var anomalyGroupId: Swift.String?
         /// For potential causes (CAUSE_OF_INPUT_ANOMALY_GROUP), the percentage contribution the measure has in causing the anomalies.
@@ -2779,10 +2780,9 @@ extension LookoutMetricsClientTypes {
             self.relationshipType = relationshipType
         }
     }
-
 }
 
-public struct ListAlertsInput {
+public struct ListAlertsInput: Swift.Sendable {
     /// The ARN of the alert's detector.
     public var anomalyDetectorArn: Swift.String?
     /// The maximum number of results that will be displayed by the request.
@@ -2802,7 +2802,7 @@ public struct ListAlertsInput {
     }
 }
 
-public struct ListAlertsOutput {
+public struct ListAlertsOutput: Swift.Sendable {
     /// Contains information about an alert.
     public var alertSummaryList: [LookoutMetricsClientTypes.AlertSummary]?
     /// If the response is truncated, the service returns this token. To retrieve the next set of results, use this token in the next request.
@@ -2818,7 +2818,7 @@ public struct ListAlertsOutput {
     }
 }
 
-public struct ListAnomalyDetectorsInput {
+public struct ListAnomalyDetectorsInput: Swift.Sendable {
     /// The maximum number of results to return.
     public var maxResults: Swift.Int?
     /// If the result of the previous request was truncated, the response includes a NextToken. To retrieve the next set of results, use the token in the next request. Tokens expire after 24 hours.
@@ -2834,7 +2834,7 @@ public struct ListAnomalyDetectorsInput {
     }
 }
 
-public struct ListAnomalyDetectorsOutput {
+public struct ListAnomalyDetectorsOutput: Swift.Sendable {
     /// A list of anomaly detectors in the account in the current region.
     public var anomalyDetectorSummaryList: [LookoutMetricsClientTypes.AnomalyDetectorSummary]?
     /// If the response is truncated, the service returns this token. To retrieve the next set of results, use the token in the next request.
@@ -2850,7 +2850,7 @@ public struct ListAnomalyDetectorsOutput {
     }
 }
 
-public struct ListAnomalyGroupRelatedMetricsInput {
+public struct ListAnomalyGroupRelatedMetricsInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the anomaly detector.
     /// This member is required.
     public var anomalyDetectorArn: Swift.String?
@@ -2880,7 +2880,7 @@ public struct ListAnomalyGroupRelatedMetricsInput {
     }
 }
 
-public struct ListAnomalyGroupRelatedMetricsOutput {
+public struct ListAnomalyGroupRelatedMetricsOutput: Swift.Sendable {
     /// Aggregated details about the measures contributing to the anomaly group, and the measures potentially impacted by the anomaly group.
     public var interMetricImpactList: [LookoutMetricsClientTypes.InterMetricImpactDetails]?
     /// The pagination token that's included if more results are available.
@@ -2896,7 +2896,7 @@ public struct ListAnomalyGroupRelatedMetricsOutput {
     }
 }
 
-public struct ListAnomalyGroupSummariesInput {
+public struct ListAnomalyGroupSummariesInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the anomaly detector.
     /// This member is required.
     public var anomalyDetectorArn: Swift.String?
@@ -2922,7 +2922,7 @@ public struct ListAnomalyGroupSummariesInput {
     }
 }
 
-public struct ListAnomalyGroupSummariesOutput {
+public struct ListAnomalyGroupSummariesOutput: Swift.Sendable {
     /// Aggregated details about the anomaly groups.
     public var anomalyGroupStatistics: LookoutMetricsClientTypes.AnomalyGroupStatistics?
     /// A list of anomaly group summaries.
@@ -2942,7 +2942,7 @@ public struct ListAnomalyGroupSummariesOutput {
     }
 }
 
-public struct ListAnomalyGroupTimeSeriesInput {
+public struct ListAnomalyGroupTimeSeriesInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the anomaly detector.
     /// This member is required.
     public var anomalyDetectorArn: Swift.String?
@@ -2974,8 +2974,9 @@ public struct ListAnomalyGroupTimeSeriesInput {
 }
 
 extension LookoutMetricsClientTypes {
+
     /// Details about a metric. A metric is an aggregation of the values of a measure for a dimension value, such as availability in the us-east-1 Region.
-    public struct TimeSeries {
+    public struct TimeSeries: Swift.Sendable {
         /// The dimensions of the metric.
         /// This member is required.
         public var dimensionList: [LookoutMetricsClientTypes.DimensionNameValue]?
@@ -2997,10 +2998,9 @@ extension LookoutMetricsClientTypes {
             self.timeSeriesId = timeSeriesId
         }
     }
-
 }
 
-public struct ListAnomalyGroupTimeSeriesOutput {
+public struct ListAnomalyGroupTimeSeriesOutput: Swift.Sendable {
     /// The ID of the anomaly group.
     public var anomalyGroupId: Swift.String?
     /// The name of the measure field.
@@ -3028,7 +3028,7 @@ public struct ListAnomalyGroupTimeSeriesOutput {
     }
 }
 
-public struct ListMetricSetsInput {
+public struct ListMetricSetsInput: Swift.Sendable {
     /// The ARN of the anomaly detector containing the metrics sets to list.
     public var anomalyDetectorArn: Swift.String?
     /// The maximum number of results to return.
@@ -3049,8 +3049,9 @@ public struct ListMetricSetsInput {
 }
 
 extension LookoutMetricsClientTypes {
+
     /// Contains information about a dataset.
-    public struct MetricSetSummary {
+    public struct MetricSetSummary: Swift.Sendable {
         /// The ARN of the detector to which the dataset belongs.
         public var anomalyDetectorArn: Swift.String?
         /// The time at which the dataset was created.
@@ -3085,10 +3086,9 @@ extension LookoutMetricsClientTypes {
             self.tags = tags
         }
     }
-
 }
 
-public struct ListMetricSetsOutput {
+public struct ListMetricSetsOutput: Swift.Sendable {
     /// A list of the datasets in the AWS Region, with configuration details for each.
     public var metricSetSummaryList: [LookoutMetricsClientTypes.MetricSetSummary]?
     /// If the response is truncated, the list call returns this token. To retrieve the next set of results, use the token in the next list request.
@@ -3104,7 +3104,7 @@ public struct ListMetricSetsOutput {
     }
 }
 
-public struct ListTagsForResourceInput {
+public struct ListTagsForResourceInput: Swift.Sendable {
     /// The resource's Amazon Resource Name (ARN).
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -3117,7 +3117,7 @@ public struct ListTagsForResourceInput {
     }
 }
 
-public struct ListTagsForResourceOutput {
+public struct ListTagsForResourceOutput: Swift.Sendable {
     /// The resource's tags.
     public var tags: [Swift.String: Swift.String]?
 
@@ -3129,7 +3129,7 @@ public struct ListTagsForResourceOutput {
     }
 }
 
-public struct PutFeedbackInput {
+public struct PutFeedbackInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the anomaly detector.
     /// This member is required.
     public var anomalyDetectorArn: Swift.String?
@@ -3147,12 +3147,12 @@ public struct PutFeedbackInput {
     }
 }
 
-public struct PutFeedbackOutput {
+public struct PutFeedbackOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct TagResourceInput {
+public struct TagResourceInput: Swift.Sendable {
     /// The resource's Amazon Resource Name (ARN).
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -3170,12 +3170,12 @@ public struct TagResourceInput {
     }
 }
 
-public struct TagResourceOutput {
+public struct TagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UntagResourceInput {
+public struct UntagResourceInput: Swift.Sendable {
     /// The resource's Amazon Resource Name (ARN).
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -3193,12 +3193,12 @@ public struct UntagResourceInput {
     }
 }
 
-public struct UntagResourceOutput {
+public struct UntagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdateAlertInput {
+public struct UpdateAlertInput: Swift.Sendable {
     /// Action that will be triggered when there is an alert.
     public var action: LookoutMetricsClientTypes.Action?
     /// The ARN of the alert to update.
@@ -3227,7 +3227,7 @@ public struct UpdateAlertInput {
     }
 }
 
-public struct UpdateAlertOutput {
+public struct UpdateAlertOutput: Swift.Sendable {
     /// The ARN of the updated alert.
     public var alertArn: Swift.String?
 
@@ -3239,7 +3239,7 @@ public struct UpdateAlertOutput {
     }
 }
 
-public struct UpdateAnomalyDetectorInput {
+public struct UpdateAnomalyDetectorInput: Swift.Sendable {
     /// The ARN of the detector to update.
     /// This member is required.
     public var anomalyDetectorArn: Swift.String?
@@ -3264,7 +3264,7 @@ public struct UpdateAnomalyDetectorInput {
     }
 }
 
-public struct UpdateAnomalyDetectorOutput {
+public struct UpdateAnomalyDetectorOutput: Swift.Sendable {
     /// The ARN of the updated detector.
     public var anomalyDetectorArn: Swift.String?
 
@@ -3276,7 +3276,7 @@ public struct UpdateAnomalyDetectorOutput {
     }
 }
 
-public struct UpdateMetricSetInput {
+public struct UpdateMetricSetInput: Swift.Sendable {
     /// Describes a list of filters for choosing specific dimensions and specific values. Each filter consists of the dimension and one of its values that you want to include. When multiple dimensions or values are specified, the dimensions are joined with an AND operation and the values are joined with an OR operation.
     public var dimensionFilterList: [LookoutMetricsClientTypes.MetricSetDimensionFilter]?
     /// The dimension list.
@@ -3321,7 +3321,7 @@ public struct UpdateMetricSetInput {
     }
 }
 
-public struct UpdateMetricSetOutput {
+public struct UpdateMetricSetOutput: Swift.Sendable {
     /// The ARN of the dataset.
     public var metricSetArn: Swift.String?
 

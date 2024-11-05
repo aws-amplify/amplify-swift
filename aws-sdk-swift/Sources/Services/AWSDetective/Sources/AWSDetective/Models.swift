@@ -30,64 +30,65 @@ import struct Smithy.URIQueryItem
 @_spi(SmithyReadWrite) import struct SmithyReadWrite.ReadingClosureBox
 @_spi(SmithyReadWrite) import struct SmithyReadWrite.WritingClosureBox
 
-public struct AcceptInvitationOutput {
+
+public struct AcceptInvitationOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteGraphOutput {
+public struct DeleteGraphOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DisableOrganizationAdminAccountInput {
+public struct DisableOrganizationAdminAccountInput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DisableOrganizationAdminAccountOutput {
+public struct DisableOrganizationAdminAccountOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DisassociateMembershipOutput {
+public struct DisassociateMembershipOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct EnableOrganizationAdminAccountOutput {
+public struct EnableOrganizationAdminAccountOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct RejectInvitationOutput {
+public struct RejectInvitationOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct StartMonitoringMemberOutput {
+public struct StartMonitoringMemberOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdateDatasourcePackagesOutput {
+public struct UpdateDatasourcePackagesOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdateInvestigationStateOutput {
+public struct UpdateInvestigationStateOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdateOrganizationConfigurationOutput {
+public struct UpdateOrganizationConfigurationOutput: Swift.Sendable {
 
     public init() { }
 }
 
 extension DetectiveClientTypes {
 
-    public enum ErrorCode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ErrorCode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case internalerror
         case invalidgrapharn
         case invalidrequestbody
@@ -261,7 +262,7 @@ public struct ValidationException: ClientRuntime.ModeledError, AWSClientRuntime.
     }
 }
 
-public struct AcceptInvitationInput {
+public struct AcceptInvitationInput: Swift.Sendable {
     /// The ARN of the behavior graph that the member account is accepting the invitation for. The member account status in the behavior graph must be INVITED.
     /// This member is required.
     public var graphArn: Swift.String?
@@ -275,8 +276,9 @@ public struct AcceptInvitationInput {
 }
 
 extension DetectiveClientTypes {
+
     /// An Amazon Web Services account that is the administrator account of or a member of a behavior graph.
-    public struct Account {
+    public struct Account: Swift.Sendable {
         /// The account identifier of the Amazon Web Services account.
         /// This member is required.
         public var accountId: Swift.String?
@@ -293,7 +295,6 @@ extension DetectiveClientTypes {
             self.emailAddress = emailAddress
         }
     }
-
 }
 
 extension DetectiveClientTypes.Account: Swift.CustomDebugStringConvertible {
@@ -302,8 +303,9 @@ extension DetectiveClientTypes.Account: Swift.CustomDebugStringConvertible {
 }
 
 extension DetectiveClientTypes {
+
     /// Information about the Detective administrator account for an organization.
-    public struct Administrator {
+    public struct Administrator: Swift.Sendable {
         /// The Amazon Web Services account identifier of the Detective administrator account for the organization.
         public var accountId: Swift.String?
         /// The date and time when the Detective administrator account was enabled. The value is an ISO8601 formatted string. For example, 2021-08-18T16:35:56.284Z.
@@ -322,10 +324,9 @@ extension DetectiveClientTypes {
             self.graphArn = graphArn
         }
     }
-
 }
 
-public struct BatchGetGraphMemberDatasourcesInput {
+public struct BatchGetGraphMemberDatasourcesInput: Swift.Sendable {
     /// The list of Amazon Web Services accounts to get data source package information on.
     /// This member is required.
     public var accountIds: [Swift.String]?
@@ -345,7 +346,7 @@ public struct BatchGetGraphMemberDatasourcesInput {
 
 extension DetectiveClientTypes {
 
-    public enum DatasourcePackage: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DatasourcePackage: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case asffSecurityhubFinding
         case detectiveCore
         case eksAudit
@@ -377,7 +378,7 @@ extension DetectiveClientTypes {
 
 extension DetectiveClientTypes {
 
-    public enum DatasourcePackageIngestState: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DatasourcePackageIngestState: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case disabled
         case started
         case stopped
@@ -408,8 +409,9 @@ extension DetectiveClientTypes {
 }
 
 extension DetectiveClientTypes {
+
     /// Details on when data collection began for a source package.
-    public struct TimestampForCollection {
+    public struct TimestampForCollection: Swift.Sendable {
         /// The data and time when data collection began for a source package. The value is an ISO8601 formatted string. For example, 2021-08-18T16:35:56.284Z.
         public var timestamp: Foundation.Date?
 
@@ -420,12 +422,12 @@ extension DetectiveClientTypes {
             self.timestamp = timestamp
         }
     }
-
 }
 
 extension DetectiveClientTypes {
+
     /// Details on data source packages for members of the behavior graph.
-    public struct MembershipDatasources {
+    public struct MembershipDatasources: Swift.Sendable {
         /// The account identifier of the Amazon Web Services account.
         public var accountId: Swift.String?
         /// Details on when a data source package was added to a behavior graph.
@@ -444,12 +446,12 @@ extension DetectiveClientTypes {
             self.graphArn = graphArn
         }
     }
-
 }
 
 extension DetectiveClientTypes {
+
     /// A member account that was included in a request but for which the request could not be processed.
-    public struct UnprocessedAccount {
+    public struct UnprocessedAccount: Swift.Sendable {
         /// The Amazon Web Services account identifier of the member account that was not processed.
         public var accountId: Swift.String?
         /// The reason that the member account request could not be processed.
@@ -464,10 +466,9 @@ extension DetectiveClientTypes {
             self.reason = reason
         }
     }
-
 }
 
-public struct BatchGetGraphMemberDatasourcesOutput {
+public struct BatchGetGraphMemberDatasourcesOutput: Swift.Sendable {
     /// Details on the status of data source packages for members of the behavior graph.
     public var memberDatasources: [DetectiveClientTypes.MembershipDatasources]?
     /// Accounts that data source package information could not be retrieved for.
@@ -483,7 +484,7 @@ public struct BatchGetGraphMemberDatasourcesOutput {
     }
 }
 
-public struct BatchGetMembershipDatasourcesInput {
+public struct BatchGetMembershipDatasourcesInput: Swift.Sendable {
     /// The ARN of the behavior graph.
     /// This member is required.
     public var graphArns: [Swift.String]?
@@ -497,8 +498,9 @@ public struct BatchGetMembershipDatasourcesInput {
 }
 
 extension DetectiveClientTypes {
+
     /// Behavior graphs that could not be processed in the request.
-    public struct UnprocessedGraph {
+    public struct UnprocessedGraph: Swift.Sendable {
         /// The ARN of the organization behavior graph.
         public var graphArn: Swift.String?
         /// The reason data source package information could not be processed for a behavior graph.
@@ -513,10 +515,9 @@ extension DetectiveClientTypes {
             self.reason = reason
         }
     }
-
 }
 
-public struct BatchGetMembershipDatasourcesOutput {
+public struct BatchGetMembershipDatasourcesOutput: Swift.Sendable {
     /// Details on the data source package history for an member of the behavior graph.
     public var membershipDatasources: [DetectiveClientTypes.MembershipDatasources]?
     /// Graphs that data source package information could not be retrieved for.
@@ -564,7 +565,7 @@ public struct ServiceQuotaExceededException: ClientRuntime.ModeledError, AWSClie
     }
 }
 
-public struct CreateGraphInput {
+public struct CreateGraphInput: Swift.Sendable {
     /// The tags to assign to the new behavior graph. You can add up to 50 tags. For each tag, you provide the tag key and the tag value. Each tag key can contain up to 128 characters. Each tag value can contain up to 256 characters.
     public var tags: [Swift.String: Swift.String]?
 
@@ -576,7 +577,7 @@ public struct CreateGraphInput {
     }
 }
 
-public struct CreateGraphOutput {
+public struct CreateGraphOutput: Swift.Sendable {
     /// The ARN of the new behavior graph.
     public var graphArn: Swift.String?
 
@@ -588,7 +589,7 @@ public struct CreateGraphOutput {
     }
 }
 
-public struct CreateMembersInput {
+public struct CreateMembersInput: Swift.Sendable {
     /// The list of Amazon Web Services accounts to invite or to enable. You can invite or enable up to 50 accounts at a time. For each invited account, the account list contains the account identifier and the Amazon Web Services account root user email address. For organization accounts in the organization behavior graph, the email address is not required.
     /// This member is required.
     public var accounts: [DetectiveClientTypes.Account]?
@@ -621,7 +622,7 @@ extension CreateMembersInput: Swift.CustomDebugStringConvertible {
 
 extension DetectiveClientTypes {
 
-    public enum MemberDisabledReason: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum MemberDisabledReason: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case volumeTooHigh
         case volumeUnknown
         case sdkUnknown(Swift.String)
@@ -650,7 +651,7 @@ extension DetectiveClientTypes {
 
 extension DetectiveClientTypes {
 
-    public enum InvitationType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum InvitationType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case invitation
         case organization
         case sdkUnknown(Swift.String)
@@ -679,7 +680,7 @@ extension DetectiveClientTypes {
 
 extension DetectiveClientTypes {
 
-    public enum MemberStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum MemberStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case acceptedButDisabled
         case enabled
         case invited
@@ -716,8 +717,9 @@ extension DetectiveClientTypes {
 }
 
 extension DetectiveClientTypes {
+
     /// Information on the usage of a data source package in the behavior graph.
-    public struct DatasourcePackageUsageInfo {
+    public struct DatasourcePackageUsageInfo: Swift.Sendable {
         /// Total volume of data in bytes per day ingested for a given data source package.
         public var volumeUsageInBytes: Swift.Int?
         /// The data and time when the member account data volume was last updated. The value is an ISO8601 formatted string. For example, 2021-08-18T16:35:56.284Z.
@@ -732,12 +734,12 @@ extension DetectiveClientTypes {
             self.volumeUsageUpdateTime = volumeUsageUpdateTime
         }
     }
-
 }
 
 extension DetectiveClientTypes {
+
     /// Details about a member account in a behavior graph.
-    public struct MemberDetail {
+    public struct MemberDetail: Swift.Sendable {
         /// The Amazon Web Services account identifier for the member account.
         public var accountId: Swift.String?
         /// The Amazon Web Services account identifier of the administrator account for the behavior graph.
@@ -830,7 +832,6 @@ extension DetectiveClientTypes {
             self.volumeUsageUpdatedTime = volumeUsageUpdatedTime
         }
     }
-
 }
 
 extension DetectiveClientTypes.MemberDetail: Swift.CustomDebugStringConvertible {
@@ -838,7 +839,7 @@ extension DetectiveClientTypes.MemberDetail: Swift.CustomDebugStringConvertible 
         "MemberDetail(accountId: \(Swift.String(describing: accountId)), administratorId: \(Swift.String(describing: administratorId)), datasourcePackageIngestStates: \(Swift.String(describing: datasourcePackageIngestStates)), disabledReason: \(Swift.String(describing: disabledReason)), graphArn: \(Swift.String(describing: graphArn)), invitationType: \(Swift.String(describing: invitationType)), invitedTime: \(Swift.String(describing: invitedTime)), masterId: \(Swift.String(describing: masterId)), percentOfGraphUtilization: \(Swift.String(describing: percentOfGraphUtilization)), percentOfGraphUtilizationUpdatedTime: \(Swift.String(describing: percentOfGraphUtilizationUpdatedTime)), status: \(Swift.String(describing: status)), updatedTime: \(Swift.String(describing: updatedTime)), volumeUsageByDatasourcePackage: \(Swift.String(describing: volumeUsageByDatasourcePackage)), volumeUsageInBytes: \(Swift.String(describing: volumeUsageInBytes)), volumeUsageUpdatedTime: \(Swift.String(describing: volumeUsageUpdatedTime)), emailAddress: \"CONTENT_REDACTED\")"}
 }
 
-public struct CreateMembersOutput {
+public struct CreateMembersOutput: Swift.Sendable {
     /// The set of member account invitation or enablement requests that Detective was able to process. This includes accounts that are being verified, that failed verification, and that passed verification and are being sent an invitation or are being enabled.
     public var members: [DetectiveClientTypes.MemberDetail]?
     /// The list of accounts for which Detective was unable to process the invitation or enablement request. For each account, the list provides the reason why the request could not be processed. The list includes accounts that are already member accounts in the behavior graph.
@@ -854,7 +855,7 @@ public struct CreateMembersOutput {
     }
 }
 
-public struct DeleteGraphInput {
+public struct DeleteGraphInput: Swift.Sendable {
     /// The ARN of the behavior graph to disable.
     /// This member is required.
     public var graphArn: Swift.String?
@@ -867,7 +868,7 @@ public struct DeleteGraphInput {
     }
 }
 
-public struct DeleteMembersInput {
+public struct DeleteMembersInput: Swift.Sendable {
     /// The list of Amazon Web Services account identifiers for the member accounts to remove from the behavior graph. You can remove up to 50 member accounts at a time.
     /// This member is required.
     public var accountIds: [Swift.String]?
@@ -885,7 +886,7 @@ public struct DeleteMembersInput {
     }
 }
 
-public struct DeleteMembersOutput {
+public struct DeleteMembersOutput: Swift.Sendable {
     /// The list of Amazon Web Services account identifiers for the member accounts that Detective successfully removed from the behavior graph.
     public var accountIds: [Swift.String]?
     /// The list of member accounts that Detective was not able to remove from the behavior graph. For each member account, provides the reason that the deletion could not be processed.
@@ -925,7 +926,7 @@ public struct TooManyRequestsException: ClientRuntime.ModeledError, AWSClientRun
     }
 }
 
-public struct DescribeOrganizationConfigurationInput {
+public struct DescribeOrganizationConfigurationInput: Swift.Sendable {
     /// The ARN of the organization behavior graph.
     /// This member is required.
     public var graphArn: Swift.String?
@@ -938,7 +939,7 @@ public struct DescribeOrganizationConfigurationInput {
     }
 }
 
-public struct DescribeOrganizationConfigurationOutput {
+public struct DescribeOrganizationConfigurationOutput: Swift.Sendable {
     /// Indicates whether to automatically enable new organization accounts as member accounts in the organization behavior graph.
     public var autoEnable: Swift.Bool
 
@@ -950,7 +951,7 @@ public struct DescribeOrganizationConfigurationOutput {
     }
 }
 
-public struct DisassociateMembershipInput {
+public struct DisassociateMembershipInput: Swift.Sendable {
     /// The ARN of the behavior graph to remove the member account from. The member account's member status in the behavior graph must be ENABLED.
     /// This member is required.
     public var graphArn: Swift.String?
@@ -963,7 +964,7 @@ public struct DisassociateMembershipInput {
     }
 }
 
-public struct EnableOrganizationAdminAccountInput {
+public struct EnableOrganizationAdminAccountInput: Swift.Sendable {
     /// The Amazon Web Services account identifier of the account to designate as the Detective administrator account for the organization.
     /// This member is required.
     public var accountId: Swift.String?
@@ -976,7 +977,7 @@ public struct EnableOrganizationAdminAccountInput {
     }
 }
 
-public struct GetInvestigationInput {
+public struct GetInvestigationInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the behavior graph.
     /// This member is required.
     public var graphArn: Swift.String?
@@ -996,7 +997,7 @@ public struct GetInvestigationInput {
 
 extension DetectiveClientTypes {
 
-    public enum EntityType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum EntityType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case iamRole
         case iamUser
         case sdkUnknown(Swift.String)
@@ -1025,7 +1026,7 @@ extension DetectiveClientTypes {
 
 extension DetectiveClientTypes {
 
-    public enum Severity: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Severity: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case critical
         case high
         case informational
@@ -1063,7 +1064,7 @@ extension DetectiveClientTypes {
 
 extension DetectiveClientTypes {
 
-    public enum State: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum State: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case active
         case archived
         case sdkUnknown(Swift.String)
@@ -1092,7 +1093,7 @@ extension DetectiveClientTypes {
 
 extension DetectiveClientTypes {
 
-    public enum Status: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Status: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case failed
         case running
         case successful
@@ -1122,7 +1123,7 @@ extension DetectiveClientTypes {
     }
 }
 
-public struct GetInvestigationOutput {
+public struct GetInvestigationOutput: Swift.Sendable {
     /// The creation time of the investigation report in UTC time stamp format.
     public var createdTime: Foundation.Date?
     /// The unique Amazon Resource Name (ARN). Detective supports IAM user ARNs and IAM role ARNs.
@@ -1170,7 +1171,7 @@ public struct GetInvestigationOutput {
     }
 }
 
-public struct GetMembersInput {
+public struct GetMembersInput: Swift.Sendable {
     /// The list of Amazon Web Services account identifiers for the member account for which to return member details. You can request details for up to 50 member accounts at a time. You cannot use GetMembers to retrieve information about member accounts that were removed from the behavior graph.
     /// This member is required.
     public var accountIds: [Swift.String]?
@@ -1188,7 +1189,7 @@ public struct GetMembersInput {
     }
 }
 
-public struct GetMembersOutput {
+public struct GetMembersOutput: Swift.Sendable {
     /// The member account details that Detective is returning in response to the request.
     public var memberDetails: [DetectiveClientTypes.MemberDetail]?
     /// The requested member accounts for which Detective was unable to return member details. For each account, provides the reason why the request could not be processed.
@@ -1204,7 +1205,7 @@ public struct GetMembersOutput {
     }
 }
 
-public struct ListDatasourcePackagesInput {
+public struct ListDatasourcePackagesInput: Swift.Sendable {
     /// The ARN of the behavior graph.
     /// This member is required.
     public var graphArn: Swift.String?
@@ -1226,8 +1227,9 @@ public struct ListDatasourcePackagesInput {
 }
 
 extension DetectiveClientTypes {
+
     /// Details about the data source packages ingested by your behavior graph.
-    public struct DatasourcePackageIngestDetail {
+    public struct DatasourcePackageIngestDetail: Swift.Sendable {
         /// Details on which data source packages are ingested for a member account.
         public var datasourcePackageIngestState: DetectiveClientTypes.DatasourcePackageIngestState?
         /// The date a data source package was enabled for this account
@@ -1242,10 +1244,9 @@ extension DetectiveClientTypes {
             self.lastIngestStateChange = lastIngestStateChange
         }
     }
-
 }
 
-public struct ListDatasourcePackagesOutput {
+public struct ListDatasourcePackagesOutput: Swift.Sendable {
     /// Details on the data source packages active in the behavior graph.
     public var datasourcePackages: [Swift.String: DetectiveClientTypes.DatasourcePackageIngestDetail]?
     /// For requests to get the next page of results, the pagination token that was returned with the previous set of results. The initial request does not include a pagination token.
@@ -1261,7 +1262,7 @@ public struct ListDatasourcePackagesOutput {
     }
 }
 
-public struct ListGraphsInput {
+public struct ListGraphsInput: Swift.Sendable {
     /// The maximum number of graphs to return at a time. The total must be less than the overall limit on the number of results to return, which is currently 200.
     public var maxResults: Swift.Int?
     /// For requests to get the next page of results, the pagination token that was returned with the previous set of results. The initial request does not include a pagination token.
@@ -1278,8 +1279,9 @@ public struct ListGraphsInput {
 }
 
 extension DetectiveClientTypes {
+
     /// A behavior graph in Detective.
-    public struct Graph {
+    public struct Graph: Swift.Sendable {
         /// The ARN of the behavior graph.
         public var arn: Swift.String?
         /// The date and time that the behavior graph was created. The value is an ISO8601 formatted string. For example, 2021-08-18T16:35:56.284Z.
@@ -1294,10 +1296,9 @@ extension DetectiveClientTypes {
             self.createdTime = createdTime
         }
     }
-
 }
 
-public struct ListGraphsOutput {
+public struct ListGraphsOutput: Swift.Sendable {
     /// A list of behavior graphs that the account is an administrator account for.
     public var graphList: [DetectiveClientTypes.Graph]?
     /// If there are more behavior graphs remaining in the results, then this is the pagination token to use to request the next page of behavior graphs.
@@ -1315,7 +1316,7 @@ public struct ListGraphsOutput {
 
 extension DetectiveClientTypes {
 
-    public enum IndicatorType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum IndicatorType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case flaggedIpAddress
         case impossibleTravel
         case newAso
@@ -1360,7 +1361,7 @@ extension DetectiveClientTypes {
     }
 }
 
-public struct ListIndicatorsInput {
+public struct ListIndicatorsInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the behavior graph.
     /// This member is required.
     public var graphArn: Swift.String?
@@ -1392,7 +1393,7 @@ public struct ListIndicatorsInput {
 
 extension DetectiveClientTypes {
 
-    public enum Reason: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Reason: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case awsThreatIntelligence
         case sdkUnknown(Swift.String)
 
@@ -1417,8 +1418,9 @@ extension DetectiveClientTypes {
 }
 
 extension DetectiveClientTypes {
+
     /// Contains information on suspicious IP addresses identified as indicators of compromise. This indicator is derived from Amazon Web Services threat intelligence.
-    public struct FlaggedIpAddressDetail {
+    public struct FlaggedIpAddressDetail: Swift.Sendable {
         /// IP address of the suspicious entity.
         public var ipAddress: Swift.String?
         /// Details the reason the IP address was flagged as suspicious.
@@ -1433,12 +1435,12 @@ extension DetectiveClientTypes {
             self.reason = reason
         }
     }
-
 }
 
 extension DetectiveClientTypes {
+
     /// Contains information on unusual and impossible travel in an account.
-    public struct ImpossibleTravelDetail {
+    public struct ImpossibleTravelDetail: Swift.Sendable {
         /// IP address where the resource was last used in the impossible travel.
         public var endingIpAddress: Swift.String?
         /// Location where the resource was last used in the impossible travel.
@@ -1465,12 +1467,12 @@ extension DetectiveClientTypes {
             self.startingLocation = startingLocation
         }
     }
-
 }
 
 extension DetectiveClientTypes {
+
     /// Details new Autonomous System Organizations (ASOs) used either at the resource or account level.
-    public struct NewAsoDetail {
+    public struct NewAsoDetail: Swift.Sendable {
         /// Details about the new Autonomous System Organization (ASO).
         public var aso: Swift.String?
         /// Checks if the Autonomous System Organization (ASO) is new for the entire account.
@@ -1485,12 +1487,12 @@ extension DetectiveClientTypes {
             self.isNewForEntireAccount = isNewForEntireAccount
         }
     }
-
 }
 
 extension DetectiveClientTypes {
+
     /// Details new geolocations used either at the resource or account level. For example, lists an observed geolocation that is an infrequent or unused location based on previous user activity.
-    public struct NewGeolocationDetail {
+    public struct NewGeolocationDetail: Swift.Sendable {
         /// IP address using which the resource was accessed.
         public var ipAddress: Swift.String?
         /// Checks if the geolocation is new for the entire account.
@@ -1509,12 +1511,12 @@ extension DetectiveClientTypes {
             self.location = location
         }
     }
-
 }
 
 extension DetectiveClientTypes {
+
     /// Details new user agents used either at the resource or account level.
-    public struct NewUserAgentDetail {
+    public struct NewUserAgentDetail: Swift.Sendable {
         /// Checks if the user agent is new for the entire account.
         public var isNewForEntireAccount: Swift.Bool
         /// New user agent which accessed the resource.
@@ -1529,12 +1531,12 @@ extension DetectiveClientTypes {
             self.userAgent = userAgent
         }
     }
-
 }
 
 extension DetectiveClientTypes {
+
     /// Details related activities associated with a potential security event. Lists all distinct categories of evidence that are connected to the resource or the finding group.
-    public struct RelatedFindingDetail {
+    public struct RelatedFindingDetail: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the related finding.
         public var arn: Swift.String?
         /// The IP address of the finding.
@@ -1553,12 +1555,12 @@ extension DetectiveClientTypes {
             self.type = type
         }
     }
-
 }
 
 extension DetectiveClientTypes {
+
     /// Details multiple activities as they related to a potential security event. Detective uses graph analysis technique that infers relationships between findings and entities, and groups them together as a finding group.
-    public struct RelatedFindingGroupDetail {
+    public struct RelatedFindingGroupDetail: Swift.Sendable {
         /// The unique identifier for the finding group.
         public var id: Swift.String?
 
@@ -1569,12 +1571,12 @@ extension DetectiveClientTypes {
             self.id = id
         }
     }
-
 }
 
 extension DetectiveClientTypes {
+
     /// Details tactics, techniques, and procedures (TTPs) used in a potential security event. Tactics are based on [MITRE ATT&CK Matrix for Enterprise](https://attack.mitre.org/matrices/enterprise/).
-    public struct TTPsObservedDetail {
+    public struct TTPsObservedDetail: Swift.Sendable {
         /// The total number of failed API requests.
         public var apiFailureCount: Swift.Int
         /// The name of the API where the tactics, techniques, and procedure (TTP) was observed.
@@ -1609,12 +1611,12 @@ extension DetectiveClientTypes {
             self.technique = technique
         }
     }
-
 }
 
 extension DetectiveClientTypes {
+
     /// Details about the indicators of compromise which are used to determine if a resource is involved in a security incident. An indicator of compromise (IOC) is an artifact observed in or on a network, system, or environment that can (with a high level of confidence) identify malicious activity or a security incident. For the list of indicators of compromise that are generated by Detective investigations, see [Detective investigations](https://docs.aws.amazon.com/detective/latest/userguide/detective-investigations.html).
-    public struct IndicatorDetail {
+    public struct IndicatorDetail: Swift.Sendable {
         /// Suspicious IP addresses that are flagged, which indicates critical or severe threats based on threat intelligence by Detective. This indicator is derived from Amazon Web Services threat intelligence.
         public var flaggedIpAddressDetail: DetectiveClientTypes.FlaggedIpAddressDetail?
         /// Identifies unusual and impossible user activity for an account.
@@ -1653,12 +1655,12 @@ extension DetectiveClientTypes {
             self.ttPsObservedDetail = ttPsObservedDetail
         }
     }
-
 }
 
 extension DetectiveClientTypes {
+
     /// Detective investigations triages indicators of compromises such as a finding and surfaces only the most critical and suspicious issues, so you can focus on high-level investigations. An Indicator lets you determine if an Amazon Web Services resource is involved in unusual activity that could indicate malicious behavior and its impact.
-    public struct Indicator {
+    public struct Indicator: Swift.Sendable {
         /// Details about the indicators of compromise that are used to determine if a resource is involved in a security incident. An indicator of compromise (IOC) is an artifact observed in or on a network, system, or environment that can (with a high level of confidence) identify malicious activity or a security incident.
         public var indicatorDetail: DetectiveClientTypes.IndicatorDetail?
         /// The type of indicator.
@@ -1673,10 +1675,9 @@ extension DetectiveClientTypes {
             self.indicatorType = indicatorType
         }
     }
-
 }
 
-public struct ListIndicatorsOutput {
+public struct ListIndicatorsOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the behavior graph.
     public var graphArn: Swift.String?
     /// Lists the indicators of compromise.
@@ -1701,8 +1702,9 @@ public struct ListIndicatorsOutput {
 }
 
 extension DetectiveClientTypes {
+
     /// Contains details on the time range used to filter data.
-    public struct DateFilter {
+    public struct DateFilter: Swift.Sendable {
         /// A timestamp representing the end date of the time period until when data is filtered, including the end date.
         /// This member is required.
         public var endInclusive: Foundation.Date?
@@ -1719,12 +1721,12 @@ extension DetectiveClientTypes {
             self.startInclusive = startInclusive
         }
     }
-
 }
 
 extension DetectiveClientTypes {
+
     /// A string for filtering Detective investigations.
-    public struct StringFilter {
+    public struct StringFilter: Swift.Sendable {
         /// The string filter value.
         /// This member is required.
         public var value: Swift.String?
@@ -1736,12 +1738,12 @@ extension DetectiveClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension DetectiveClientTypes {
+
     /// Details on the criteria used to define the filter for investigation results.
-    public struct FilterCriteria {
+    public struct FilterCriteria: Swift.Sendable {
         /// Filter the investigation results based on when the investigation was created.
         public var createdTime: DetectiveClientTypes.DateFilter?
         /// Filter the investigation results based on the Amazon Resource Name (ARN) of the entity.
@@ -1768,12 +1770,11 @@ extension DetectiveClientTypes {
             self.status = status
         }
     }
-
 }
 
 extension DetectiveClientTypes {
 
-    public enum Field: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Field: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case createdTime
         case severity
         case status
@@ -1805,7 +1806,7 @@ extension DetectiveClientTypes {
 
 extension DetectiveClientTypes {
 
-    public enum SortOrder: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SortOrder: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case asc
         case desc
         case sdkUnknown(Swift.String)
@@ -1833,8 +1834,9 @@ extension DetectiveClientTypes {
 }
 
 extension DetectiveClientTypes {
+
     /// Details about the criteria used for sorting investigations.
-    public struct SortCriteria {
+    public struct SortCriteria: Swift.Sendable {
         /// Represents the Field attribute to sort investigations.
         public var field: DetectiveClientTypes.Field?
         /// The order by which the sorted findings are displayed.
@@ -1849,10 +1851,9 @@ extension DetectiveClientTypes {
             self.sortOrder = sortOrder
         }
     }
-
 }
 
-public struct ListInvestigationsInput {
+public struct ListInvestigationsInput: Swift.Sendable {
     /// Filters the investigation results based on a criteria.
     public var filterCriteria: DetectiveClientTypes.FilterCriteria?
     /// The Amazon Resource Name (ARN) of the behavior graph.
@@ -1882,8 +1883,9 @@ public struct ListInvestigationsInput {
 }
 
 extension DetectiveClientTypes {
+
     /// Details about the investigation related to a potential security event identified by Detective.
-    public struct InvestigationDetail {
+    public struct InvestigationDetail: Swift.Sendable {
         /// The time stamp of the creation time of the investigation report. The value is an UTC ISO8601 formatted string. For example, 2021-08-18T16:35:56.284Z.
         public var createdTime: Foundation.Date?
         /// The unique Amazon Resource Name (ARN) of the IAM user and IAM role.
@@ -1918,10 +1920,9 @@ extension DetectiveClientTypes {
             self.status = status
         }
     }
-
 }
 
-public struct ListInvestigationsOutput {
+public struct ListInvestigationsOutput: Swift.Sendable {
     /// Lists the summary of uncommon behavior or malicious activity which indicates a compromise.
     public var investigationDetails: [DetectiveClientTypes.InvestigationDetail]?
     /// Lists if there are more results available. The value of nextToken is a unique pagination token for each page. Repeat the call using the returned token to retrieve the next page. Keep all other arguments unchanged. Each pagination token expires after 24 hours.
@@ -1937,7 +1938,7 @@ public struct ListInvestigationsOutput {
     }
 }
 
-public struct ListInvitationsInput {
+public struct ListInvitationsInput: Swift.Sendable {
     /// The maximum number of behavior graph invitations to return in the response. The total must be less than the overall limit on the number of results to return, which is currently 200.
     public var maxResults: Swift.Int?
     /// For requests to retrieve the next page of results, the pagination token that was returned with the previous page of results. The initial request does not include a pagination token.
@@ -1953,7 +1954,7 @@ public struct ListInvitationsInput {
     }
 }
 
-public struct ListInvitationsOutput {
+public struct ListInvitationsOutput: Swift.Sendable {
     /// The list of behavior graphs for which the member account has open or accepted invitations.
     public var invitations: [DetectiveClientTypes.MemberDetail]?
     /// If there are more behavior graphs remaining in the results, then this is the pagination token to use to request the next page of behavior graphs.
@@ -1969,7 +1970,7 @@ public struct ListInvitationsOutput {
     }
 }
 
-public struct ListMembersInput {
+public struct ListMembersInput: Swift.Sendable {
     /// The ARN of the behavior graph for which to retrieve the list of member accounts.
     /// This member is required.
     public var graphArn: Swift.String?
@@ -1990,7 +1991,7 @@ public struct ListMembersInput {
     }
 }
 
-public struct ListMembersOutput {
+public struct ListMembersOutput: Swift.Sendable {
     /// The list of member accounts in the behavior graph. For invited accounts, the results include member accounts that did not pass verification and member accounts that have not yet accepted the invitation to the behavior graph. The results do not include member accounts that were removed from the behavior graph. For the organization behavior graph, the results do not include organization accounts that the Detective administrator account has not enabled as member accounts.
     public var memberDetails: [DetectiveClientTypes.MemberDetail]?
     /// If there are more member accounts remaining in the results, then use this pagination token to request the next page of member accounts.
@@ -2006,7 +2007,7 @@ public struct ListMembersOutput {
     }
 }
 
-public struct ListOrganizationAdminAccountsInput {
+public struct ListOrganizationAdminAccountsInput: Swift.Sendable {
     /// The maximum number of results to return.
     public var maxResults: Swift.Int?
     /// For requests to get the next page of results, the pagination token that was returned with the previous set of results. The initial request does not include a pagination token.
@@ -2022,7 +2023,7 @@ public struct ListOrganizationAdminAccountsInput {
     }
 }
 
-public struct ListOrganizationAdminAccountsOutput {
+public struct ListOrganizationAdminAccountsOutput: Swift.Sendable {
     /// The list of Detective administrator accounts.
     public var administrators: [DetectiveClientTypes.Administrator]?
     /// If there are more accounts remaining in the results, then this is the pagination token to use to request the next page of accounts.
@@ -2038,7 +2039,7 @@ public struct ListOrganizationAdminAccountsOutput {
     }
 }
 
-public struct ListTagsForResourceInput {
+public struct ListTagsForResourceInput: Swift.Sendable {
     /// The ARN of the behavior graph for which to retrieve the tag values.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -2051,7 +2052,7 @@ public struct ListTagsForResourceInput {
     }
 }
 
-public struct ListTagsForResourceOutput {
+public struct ListTagsForResourceOutput: Swift.Sendable {
     /// The tag values that are assigned to the behavior graph. The request returns up to 50 tag values.
     public var tags: [Swift.String: Swift.String]?
 
@@ -2063,7 +2064,7 @@ public struct ListTagsForResourceOutput {
     }
 }
 
-public struct RejectInvitationInput {
+public struct RejectInvitationInput: Swift.Sendable {
     /// The ARN of the behavior graph to reject the invitation to. The member account's current member status in the behavior graph must be INVITED.
     /// This member is required.
     public var graphArn: Swift.String?
@@ -2076,7 +2077,7 @@ public struct RejectInvitationInput {
     }
 }
 
-public struct StartInvestigationInput {
+public struct StartInvestigationInput: Swift.Sendable {
     /// The unique Amazon Resource Name (ARN) of the IAM user and IAM role.
     /// This member is required.
     public var entityArn: Swift.String?
@@ -2104,7 +2105,7 @@ public struct StartInvestigationInput {
     }
 }
 
-public struct StartInvestigationOutput {
+public struct StartInvestigationOutput: Swift.Sendable {
     /// The investigation ID of the investigation report.
     public var investigationId: Swift.String?
 
@@ -2116,7 +2117,7 @@ public struct StartInvestigationOutput {
     }
 }
 
-public struct StartMonitoringMemberInput {
+public struct StartMonitoringMemberInput: Swift.Sendable {
     /// The account ID of the member account to try to enable. The account must be an invited member account with a status of ACCEPTED_BUT_DISABLED.
     /// This member is required.
     public var accountId: Swift.String?
@@ -2134,7 +2135,7 @@ public struct StartMonitoringMemberInput {
     }
 }
 
-public struct TagResourceInput {
+public struct TagResourceInput: Swift.Sendable {
     /// The ARN of the behavior graph to assign the tags to.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -2152,12 +2153,12 @@ public struct TagResourceInput {
     }
 }
 
-public struct TagResourceOutput {
+public struct TagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UntagResourceInput {
+public struct UntagResourceInput: Swift.Sendable {
     /// The ARN of the behavior graph to remove the tags from.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -2175,12 +2176,12 @@ public struct UntagResourceInput {
     }
 }
 
-public struct UntagResourceOutput {
+public struct UntagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdateDatasourcePackagesInput {
+public struct UpdateDatasourcePackagesInput: Swift.Sendable {
     /// The data source package start for the behavior graph.
     /// This member is required.
     public var datasourcePackages: [DetectiveClientTypes.DatasourcePackage]?
@@ -2198,7 +2199,7 @@ public struct UpdateDatasourcePackagesInput {
     }
 }
 
-public struct UpdateInvestigationStateInput {
+public struct UpdateInvestigationStateInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the behavior graph.
     /// This member is required.
     public var graphArn: Swift.String?
@@ -2221,7 +2222,7 @@ public struct UpdateInvestigationStateInput {
     }
 }
 
-public struct UpdateOrganizationConfigurationInput {
+public struct UpdateOrganizationConfigurationInput: Swift.Sendable {
     /// Indicates whether to automatically enable new organization accounts as member accounts in the organization behavior graph.
     public var autoEnable: Swift.Bool?
     /// The ARN of the organization behavior graph.

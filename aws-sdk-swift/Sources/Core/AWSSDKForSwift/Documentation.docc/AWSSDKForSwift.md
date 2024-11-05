@@ -4,8 +4,6 @@ A pure-Swift SDK for accessing all published AWS services.
 
 ## Overview
 
-**The AWS SDK for Swift is currently in developer preview and is intended strictly for feedback purposes only. Do not use this SDK for production workloads. Refer to the SDK [stability guidelines](docs/stability.md) for more detail.**
-
 This SDK is open-source.  Code is available on Github [here](https://github.com/awslabs/aws-sdk-swift).
 
 
@@ -229,7 +227,11 @@ This SDK is open-source.  Code is available on Github [here](https://github.com/
 
 [AWSCodePipeline](../../../../../swift/api/awscodepipeline/latest)
 
+[AWSCodeStarconnections](../../../../../swift/api/awscodestarconnections/latest)
+
 [AWSCodeartifact](../../../../../swift/api/awscodeartifact/latest)
+
+[AWSCodestarnotifications](../../../../../swift/api/awscodestarnotifications/latest)
 
 [AWSCognitoIdentity](../../../../../swift/api/awscognitoidentity/latest)
 
@@ -372,6 +374,12 @@ This SDK is open-source.  Code is available on Github [here](https://github.com/
 [AWSFreeTier](../../../../../swift/api/awsfreetier/latest)
 
 [AWSGameLift](../../../../../swift/api/awsgamelift/latest)
+
+[AWSGeoMaps](../../../../../swift/api/awsgeomaps/latest)
+
+[AWSGeoPlaces](../../../../../swift/api/awsgeoplaces/latest)
+
+[AWSGeoRoutes](../../../../../swift/api/awsgeoroutes/latest)
 
 [AWSGlacier](../../../../../swift/api/awsglacier/latest)
 
@@ -531,6 +539,8 @@ This SDK is open-source.  Code is available on Github [here](https://github.com/
 
 [AWSMarketplaceMetering](../../../../../swift/api/awsmarketplacemetering/latest)
 
+[AWSMarketplaceReporting](../../../../../swift/api/awsmarketplacereporting/latest)
+
 [AWSMediaConnect](../../../../../swift/api/awsmediaconnect/latest)
 
 [AWSMediaConvert](../../../../../swift/api/awsmediaconvert/latest)
@@ -578,8 +588,6 @@ This SDK is open-source.  Code is available on Github [here](https://github.com/
 [AWSNetworkManager](../../../../../swift/api/awsnetworkmanager/latest)
 
 [AWSNetworkMonitor](../../../../../swift/api/awsnetworkmonitor/latest)
-
-[AWSNimble](../../../../../swift/api/awsnimble/latest)
 
 [AWSOAM](../../../../../swift/api/awsoam/latest)
 
@@ -777,6 +785,8 @@ This SDK is open-source.  Code is available on Github [here](https://github.com/
 
 [AWSSnowball](../../../../../swift/api/awssnowball/latest)
 
+[AWSSocialMessaging](../../../../../swift/api/awssocialmessaging/latest)
+
 [AWSSsmSap](../../../../../swift/api/awsssmsap/latest)
 
 [AWSStorageGateway](../../../../../swift/api/awsstoragegateway/latest)
@@ -828,8 +838,6 @@ This SDK is open-source.  Code is available on Github [here](https://github.com/
 [AWSWisdom](../../../../../swift/api/awswisdom/latest)
 
 [AWSWorkDocs](../../../../../swift/api/awsworkdocs/latest)
-
-[AWSWorkLink](../../../../../swift/api/awsworklink/latest)
 
 [AWSWorkMail](../../../../../swift/api/awsworkmail/latest)
 

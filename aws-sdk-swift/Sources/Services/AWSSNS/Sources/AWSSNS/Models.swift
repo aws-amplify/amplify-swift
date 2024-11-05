@@ -26,57 +26,58 @@ import protocol ClientRuntime.ModeledError
 @_spi(UnknownAWSHTTPServiceError) import struct AWSClientRuntime.UnknownAWSHTTPServiceError
 @_spi(SmithyReadWrite) import struct SmithyReadWrite.ReadingClosureBox
 
-public struct AddPermissionOutput {
+
+public struct AddPermissionOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteEndpointOutput {
+public struct DeleteEndpointOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeletePlatformApplicationOutput {
+public struct DeletePlatformApplicationOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteTopicOutput {
+public struct DeleteTopicOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct PutDataProtectionPolicyOutput {
+public struct PutDataProtectionPolicyOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct RemovePermissionOutput {
+public struct RemovePermissionOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct SetEndpointAttributesOutput {
+public struct SetEndpointAttributesOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct SetPlatformApplicationAttributesOutput {
+public struct SetPlatformApplicationAttributesOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct SetSubscriptionAttributesOutput {
+public struct SetSubscriptionAttributesOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct SetTopicAttributesOutput {
+public struct SetTopicAttributesOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UnsubscribeOutput {
+public struct UnsubscribeOutput: Swift.Sendable {
 
     public init() { }
 }
@@ -177,7 +178,7 @@ public struct NotFoundException: ClientRuntime.ModeledError, AWSClientRuntime.AW
     }
 }
 
-public struct AddPermissionInput {
+public struct AddPermissionInput: Swift.Sendable {
     /// The action you want to allow for the specified principal(s). Valid values: Any Amazon SNS action name, for example Publish.
     /// This member is required.
     public var actionName: [Swift.String]?
@@ -231,7 +232,7 @@ public struct ThrottledException: ClientRuntime.ModeledError, AWSClientRuntime.A
 }
 
 /// The input for the CheckIfPhoneNumberIsOptedOut action.
-public struct CheckIfPhoneNumberIsOptedOutInput {
+public struct CheckIfPhoneNumberIsOptedOutInput: Swift.Sendable {
     /// The phone number for which you want to check the opt out status.
     /// This member is required.
     public var phoneNumber: Swift.String?
@@ -250,7 +251,7 @@ extension CheckIfPhoneNumberIsOptedOutInput: Swift.CustomDebugStringConvertible 
 }
 
 /// The response from the CheckIfPhoneNumberIsOptedOut action.
-public struct CheckIfPhoneNumberIsOptedOutOutput {
+public struct CheckIfPhoneNumberIsOptedOutOutput: Swift.Sendable {
     /// Indicates whether the phone number is opted out:
     ///
     /// * true – The phone number is opted out, meaning you cannot publish SMS messages to it.
@@ -339,7 +340,7 @@ public struct SubscriptionLimitExceededException: ClientRuntime.ModeledError, AW
 }
 
 /// Input for ConfirmSubscription action.
-public struct ConfirmSubscriptionInput {
+public struct ConfirmSubscriptionInput: Swift.Sendable {
     /// Disallows unauthenticated unsubscribes of the subscription. If the value of this parameter is true and the request has an Amazon Web Services signature, then only the topic owner and the subscription owner can unsubscribe the endpoint. The unsubscribe action requires Amazon Web Services authentication.
     public var authenticateOnUnsubscribe: Swift.String?
     /// Short-lived token sent to an endpoint during the Subscribe action.
@@ -362,7 +363,7 @@ public struct ConfirmSubscriptionInput {
 }
 
 /// Response for ConfirmSubscriptions action.
-public struct ConfirmSubscriptionOutput {
+public struct ConfirmSubscriptionOutput: Swift.Sendable {
     /// The ARN of the created subscription.
     public var subscriptionArn: Swift.String?
 
@@ -375,7 +376,7 @@ public struct ConfirmSubscriptionOutput {
 }
 
 /// Input for CreatePlatformApplication action.
-public struct CreatePlatformApplicationInput {
+public struct CreatePlatformApplicationInput: Swift.Sendable {
     /// For a list of attributes, see [SetPlatformApplicationAttributes](https://docs.aws.amazon.com/sns/latest/api/API_SetPlatformApplicationAttributes.html).
     /// This member is required.
     public var attributes: [Swift.String: Swift.String]?
@@ -399,7 +400,7 @@ public struct CreatePlatformApplicationInput {
 }
 
 /// Response from CreatePlatformApplication action.
-public struct CreatePlatformApplicationOutput {
+public struct CreatePlatformApplicationOutput: Swift.Sendable {
     /// PlatformApplicationArn is returned.
     public var platformApplicationArn: Swift.String?
 
@@ -412,7 +413,7 @@ public struct CreatePlatformApplicationOutput {
 }
 
 /// Input for CreatePlatformEndpoint action.
-public struct CreatePlatformEndpointInput {
+public struct CreatePlatformEndpointInput: Swift.Sendable {
     /// For a list of attributes, see [SetEndpointAttributes](https://docs.aws.amazon.com/sns/latest/api/API_SetEndpointAttributes.html).
     public var attributes: [Swift.String: Swift.String]?
     /// Arbitrary user data to associate with the endpoint. Amazon SNS does not use this data. The data must be in UTF-8 format and less than 2KB.
@@ -439,7 +440,7 @@ public struct CreatePlatformEndpointInput {
 }
 
 /// Response from CreateEndpoint action.
-public struct CreatePlatformEndpointOutput {
+public struct CreatePlatformEndpointOutput: Swift.Sendable {
     /// EndpointArn returned from CreateEndpoint action.
     public var endpointArn: Swift.String?
 
@@ -502,7 +503,7 @@ public struct UserErrorException: ClientRuntime.ModeledError, AWSClientRuntime.A
 extension SNSClientTypes {
 
     /// Supported language code for sending OTP message
-    public enum LanguageCodeString: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum LanguageCodeString: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case deDe
         case enGb
         case enUs
@@ -562,7 +563,7 @@ extension SNSClientTypes {
     }
 }
 
-public struct CreateSMSSandboxPhoneNumberInput {
+public struct CreateSMSSandboxPhoneNumberInput: Swift.Sendable {
     /// The language to use for sending the OTP. The default value is en-US.
     public var languageCode: SNSClientTypes.LanguageCodeString?
     /// The destination phone number to verify. On verification, Amazon SNS adds this phone number to the list of verified phone numbers that you can send SMS messages to.
@@ -584,7 +585,7 @@ extension CreateSMSSandboxPhoneNumberInput: Swift.CustomDebugStringConvertible {
         "CreateSMSSandboxPhoneNumberInput(languageCode: \(Swift.String(describing: languageCode)), phoneNumber: \"CONTENT_REDACTED\")"}
 }
 
-public struct CreateSMSSandboxPhoneNumberOutput {
+public struct CreateSMSSandboxPhoneNumberOutput: Swift.Sendable {
 
     public init() { }
 }
@@ -734,8 +735,9 @@ public struct TopicLimitExceededException: ClientRuntime.ModeledError, AWSClient
 }
 
 extension SNSClientTypes {
+
     /// The list of tags to be added to the specified topic.
-    public struct Tag {
+    public struct Tag: Swift.Sendable {
         /// The required key portion of the tag.
         /// This member is required.
         public var key: Swift.String?
@@ -752,11 +754,10 @@ extension SNSClientTypes {
             self.value = value
         }
     }
-
 }
 
 /// Input for CreateTopic action.
-public struct CreateTopicInput {
+public struct CreateTopicInput: Swift.Sendable {
     /// A map of attributes with their corresponding values. The following lists names, descriptions, and values of the special request parameters that the CreateTopic action uses:
     ///
     /// * DeliveryPolicy – The policy that defines how Amazon SNS retries failed deliveries to HTTP/S endpoints.
@@ -812,7 +813,7 @@ public struct CreateTopicInput {
 }
 
 /// Response from CreateTopic action.
-public struct CreateTopicOutput {
+public struct CreateTopicOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) assigned to the created topic.
     public var topicArn: Swift.String?
 
@@ -825,7 +826,7 @@ public struct CreateTopicOutput {
 }
 
 /// Input for DeleteEndpoint action.
-public struct DeleteEndpointInput {
+public struct DeleteEndpointInput: Swift.Sendable {
     /// EndpointArn of endpoint to delete.
     /// This member is required.
     public var endpointArn: Swift.String?
@@ -839,7 +840,7 @@ public struct DeleteEndpointInput {
 }
 
 /// Input for DeletePlatformApplication action.
-public struct DeletePlatformApplicationInput {
+public struct DeletePlatformApplicationInput: Swift.Sendable {
     /// PlatformApplicationArn of platform application object to delete.
     /// This member is required.
     public var platformApplicationArn: Swift.String?
@@ -876,7 +877,7 @@ public struct ResourceNotFoundException: ClientRuntime.ModeledError, AWSClientRu
     }
 }
 
-public struct DeleteSMSSandboxPhoneNumberInput {
+public struct DeleteSMSSandboxPhoneNumberInput: Swift.Sendable {
     /// The destination phone number to delete.
     /// This member is required.
     public var phoneNumber: Swift.String?
@@ -894,7 +895,7 @@ extension DeleteSMSSandboxPhoneNumberInput: Swift.CustomDebugStringConvertible {
         "DeleteSMSSandboxPhoneNumberInput(phoneNumber: \"CONTENT_REDACTED\")"}
 }
 
-public struct DeleteSMSSandboxPhoneNumberOutput {
+public struct DeleteSMSSandboxPhoneNumberOutput: Swift.Sendable {
 
     public init() { }
 }
@@ -923,7 +924,7 @@ public struct InvalidStateException: ClientRuntime.ModeledError, AWSClientRuntim
     }
 }
 
-public struct DeleteTopicInput {
+public struct DeleteTopicInput: Swift.Sendable {
     /// The ARN of the topic you want to delete.
     /// This member is required.
     public var topicArn: Swift.String?
@@ -936,7 +937,7 @@ public struct DeleteTopicInput {
     }
 }
 
-public struct GetDataProtectionPolicyInput {
+public struct GetDataProtectionPolicyInput: Swift.Sendable {
     /// The ARN of the topic whose DataProtectionPolicy you want to get. For more information about ARNs, see [Amazon Resource Names (ARNs)](https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html) in the Amazon Web Services General Reference.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -949,7 +950,7 @@ public struct GetDataProtectionPolicyInput {
     }
 }
 
-public struct GetDataProtectionPolicyOutput {
+public struct GetDataProtectionPolicyOutput: Swift.Sendable {
     /// Retrieves the DataProtectionPolicy in JSON string format.
     public var dataProtectionPolicy: Swift.String?
 
@@ -962,7 +963,7 @@ public struct GetDataProtectionPolicyOutput {
 }
 
 /// Input for GetEndpointAttributes action.
-public struct GetEndpointAttributesInput {
+public struct GetEndpointAttributesInput: Swift.Sendable {
     /// EndpointArn for GetEndpointAttributes input.
     /// This member is required.
     public var endpointArn: Swift.String?
@@ -976,7 +977,7 @@ public struct GetEndpointAttributesInput {
 }
 
 /// Response from GetEndpointAttributes of the EndpointArn.
-public struct GetEndpointAttributesOutput {
+public struct GetEndpointAttributesOutput: Swift.Sendable {
     /// Attributes include the following:
     ///
     /// * CustomUserData – arbitrary user data to associate with the endpoint. Amazon SNS does not use this data. The data must be in UTF-8 format and less than 2KB.
@@ -995,7 +996,7 @@ public struct GetEndpointAttributesOutput {
 }
 
 /// Input for GetPlatformApplicationAttributes action.
-public struct GetPlatformApplicationAttributesInput {
+public struct GetPlatformApplicationAttributesInput: Swift.Sendable {
     /// PlatformApplicationArn for GetPlatformApplicationAttributesInput.
     /// This member is required.
     public var platformApplicationArn: Swift.String?
@@ -1009,7 +1010,7 @@ public struct GetPlatformApplicationAttributesInput {
 }
 
 /// Response for GetPlatformApplicationAttributes action.
-public struct GetPlatformApplicationAttributesOutput {
+public struct GetPlatformApplicationAttributesOutput: Swift.Sendable {
     /// Attributes include the following:
     ///
     /// * AppleCertificateExpiryDate – The expiry date of the SSL certificate used to configure certificate-based authentication.
@@ -1045,7 +1046,7 @@ public struct GetPlatformApplicationAttributesOutput {
 }
 
 /// The input for the GetSMSAttributes request.
-public struct GetSMSAttributesInput {
+public struct GetSMSAttributesInput: Swift.Sendable {
     /// A list of the individual attribute names, such as MonthlySpendLimit, for which you want values. For all attribute names, see [SetSMSAttributes](https://docs.aws.amazon.com/sns/latest/api/API_SetSMSAttributes.html). If you don't use this parameter, Amazon SNS returns all SMS attributes.
     public var attributes: [Swift.String]?
 
@@ -1058,7 +1059,7 @@ public struct GetSMSAttributesInput {
 }
 
 /// The response from the GetSMSAttributes request.
-public struct GetSMSAttributesOutput {
+public struct GetSMSAttributesOutput: Swift.Sendable {
     /// The SMS attribute names and their values.
     public var attributes: [Swift.String: Swift.String]?
 
@@ -1070,12 +1071,12 @@ public struct GetSMSAttributesOutput {
     }
 }
 
-public struct GetSMSSandboxAccountStatusInput {
+public struct GetSMSSandboxAccountStatusInput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct GetSMSSandboxAccountStatusOutput {
+public struct GetSMSSandboxAccountStatusOutput: Swift.Sendable {
     /// Indicates whether the calling Amazon Web Services account is in the SMS sandbox.
     /// This member is required.
     public var isInSandbox: Swift.Bool
@@ -1089,7 +1090,7 @@ public struct GetSMSSandboxAccountStatusOutput {
 }
 
 /// Input for GetSubscriptionAttributes.
-public struct GetSubscriptionAttributesInput {
+public struct GetSubscriptionAttributesInput: Swift.Sendable {
     /// The ARN of the subscription whose properties you want to get.
     /// This member is required.
     public var subscriptionArn: Swift.String?
@@ -1103,7 +1104,7 @@ public struct GetSubscriptionAttributesInput {
 }
 
 /// Response for GetSubscriptionAttributes action.
-public struct GetSubscriptionAttributesOutput {
+public struct GetSubscriptionAttributesOutput: Swift.Sendable {
     /// A map of the subscription's attributes. Attributes in this map include the following:
     ///
     /// * ConfirmationWasAuthenticated – true if the subscription confirmation request was authenticated.
@@ -1157,7 +1158,7 @@ public struct GetSubscriptionAttributesOutput {
 }
 
 /// Input for GetTopicAttributes action.
-public struct GetTopicAttributesInput {
+public struct GetTopicAttributesInput: Swift.Sendable {
     /// The ARN of the topic whose properties you want to get.
     /// This member is required.
     public var topicArn: Swift.String?
@@ -1171,7 +1172,7 @@ public struct GetTopicAttributesInput {
 }
 
 /// Response for GetTopicAttributes action.
-public struct GetTopicAttributesOutput {
+public struct GetTopicAttributesOutput: Swift.Sendable {
     /// A map of the topic's attributes. Attributes in this map include the following:
     ///
     /// * DeliveryPolicy – The JSON serialization of the topic's delivery policy.
@@ -1229,7 +1230,7 @@ public struct GetTopicAttributesOutput {
 }
 
 /// Input for ListEndpointsByPlatformApplication action.
-public struct ListEndpointsByPlatformApplicationInput {
+public struct ListEndpointsByPlatformApplicationInput: Swift.Sendable {
     /// NextToken string is used when calling ListEndpointsByPlatformApplication action to retrieve additional records that are available after the first page results.
     public var nextToken: Swift.String?
     /// PlatformApplicationArn for ListEndpointsByPlatformApplicationInput action.
@@ -1247,8 +1248,9 @@ public struct ListEndpointsByPlatformApplicationInput {
 }
 
 extension SNSClientTypes {
+
     /// The endpoint for mobile app and device.
-    public struct Endpoint {
+    public struct Endpoint: Swift.Sendable {
         /// Attributes for endpoint.
         public var attributes: [Swift.String: Swift.String]?
         /// The EndpointArn for mobile app and device.
@@ -1263,11 +1265,10 @@ extension SNSClientTypes {
             self.endpointArn = endpointArn
         }
     }
-
 }
 
 /// Response for ListEndpointsByPlatformApplication action.
-public struct ListEndpointsByPlatformApplicationOutput {
+public struct ListEndpointsByPlatformApplicationOutput: Swift.Sendable {
     /// Endpoints returned for ListEndpointsByPlatformApplication action.
     public var endpoints: [SNSClientTypes.Endpoint]?
     /// NextToken string is returned when calling ListEndpointsByPlatformApplication action if additional records are available after the first page results.
@@ -1308,7 +1309,7 @@ public struct ValidationException: ClientRuntime.ModeledError, AWSClientRuntime.
     }
 }
 
-public struct ListOriginationNumbersInput {
+public struct ListOriginationNumbersInput: Swift.Sendable {
     /// The maximum number of origination numbers to return.
     public var maxResults: Swift.Int?
     /// Token that the previous ListOriginationNumbers request returns.
@@ -1327,7 +1328,7 @@ public struct ListOriginationNumbersInput {
 extension SNSClientTypes {
 
     /// Enum listing out all supported number capabilities.
-    public enum NumberCapability: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum NumberCapability: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case mms
         case sms
         case voice
@@ -1360,7 +1361,7 @@ extension SNSClientTypes {
 extension SNSClientTypes {
 
     /// Enum listing out all supported route types. The following enum values are supported. 1. Transactional : Non-marketing traffic 2. Promotional : Marketing 3. Premium : Premium routes for OTP delivery to the carriers
-    public enum RouteType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum RouteType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case premium
         case promotional
         case transactional
@@ -1391,8 +1392,9 @@ extension SNSClientTypes {
 }
 
 extension SNSClientTypes {
+
     /// A list of phone numbers and their metadata.
-    public struct PhoneNumberInformation {
+    public struct PhoneNumberInformation: Swift.Sendable {
         /// The date and time when the phone number was created.
         public var createdAt: Foundation.Date?
         /// The two-character code for the country or region, in ISO 3166-1 alpha-2 format.
@@ -1423,7 +1425,6 @@ extension SNSClientTypes {
             self.status = status
         }
     }
-
 }
 
 extension SNSClientTypes.PhoneNumberInformation: Swift.CustomDebugStringConvertible {
@@ -1431,7 +1432,7 @@ extension SNSClientTypes.PhoneNumberInformation: Swift.CustomDebugStringConverti
         "PhoneNumberInformation(createdAt: \(Swift.String(describing: createdAt)), iso2CountryCode: \(Swift.String(describing: iso2CountryCode)), numberCapabilities: \(Swift.String(describing: numberCapabilities)), routeType: \(Swift.String(describing: routeType)), status: \(Swift.String(describing: status)), phoneNumber: \"CONTENT_REDACTED\")"}
 }
 
-public struct ListOriginationNumbersOutput {
+public struct ListOriginationNumbersOutput: Swift.Sendable {
     /// A NextToken string is returned when you call the ListOriginationNumbers operation if additional pages of records are available.
     public var nextToken: Swift.String?
     /// A list of the calling account's verified and pending origination numbers.
@@ -1448,7 +1449,7 @@ public struct ListOriginationNumbersOutput {
 }
 
 /// The input for the ListPhoneNumbersOptedOut action.
-public struct ListPhoneNumbersOptedOutInput {
+public struct ListPhoneNumbersOptedOutInput: Swift.Sendable {
     /// A NextToken string is used when you call the ListPhoneNumbersOptedOut action to retrieve additional records that are available after the first page of results.
     public var nextToken: Swift.String?
 
@@ -1461,7 +1462,7 @@ public struct ListPhoneNumbersOptedOutInput {
 }
 
 /// The response from the ListPhoneNumbersOptedOut action.
-public struct ListPhoneNumbersOptedOutOutput {
+public struct ListPhoneNumbersOptedOutOutput: Swift.Sendable {
     /// A NextToken string is returned when you call the ListPhoneNumbersOptedOut action if additional records are available after the first page of results.
     public var nextToken: Swift.String?
     /// A list of phone numbers that are opted out of receiving SMS messages. The list is paginated, and each page can contain up to 100 phone numbers.
@@ -1483,7 +1484,7 @@ extension ListPhoneNumbersOptedOutOutput: Swift.CustomDebugStringConvertible {
 }
 
 /// Input for ListPlatformApplications action.
-public struct ListPlatformApplicationsInput {
+public struct ListPlatformApplicationsInput: Swift.Sendable {
     /// NextToken string is used when calling ListPlatformApplications action to retrieve additional records that are available after the first page results.
     public var nextToken: Swift.String?
 
@@ -1496,8 +1497,9 @@ public struct ListPlatformApplicationsInput {
 }
 
 extension SNSClientTypes {
+
     /// Platform application object.
-    public struct PlatformApplication {
+    public struct PlatformApplication: Swift.Sendable {
         /// Attributes for platform application object.
         public var attributes: [Swift.String: Swift.String]?
         /// PlatformApplicationArn for platform application object.
@@ -1512,11 +1514,10 @@ extension SNSClientTypes {
             self.platformApplicationArn = platformApplicationArn
         }
     }
-
 }
 
 /// Response for ListPlatformApplications action.
-public struct ListPlatformApplicationsOutput {
+public struct ListPlatformApplicationsOutput: Swift.Sendable {
     /// NextToken string is returned when calling ListPlatformApplications action if additional records are available after the first page results.
     public var nextToken: Swift.String?
     /// Platform applications returned when calling ListPlatformApplications action.
@@ -1532,7 +1533,7 @@ public struct ListPlatformApplicationsOutput {
     }
 }
 
-public struct ListSMSSandboxPhoneNumbersInput {
+public struct ListSMSSandboxPhoneNumbersInput: Swift.Sendable {
     /// The maximum number of phone numbers to return.
     public var maxResults: Swift.Int?
     /// Token that the previous ListSMSSandboxPhoneNumbersInput request returns.
@@ -1551,7 +1552,7 @@ public struct ListSMSSandboxPhoneNumbersInput {
 extension SNSClientTypes {
 
     /// Enum listing out all supported destination phone number verification statuses. The following enum values are supported. 1. PENDING : The destination phone number is pending verification. 2. VERIFIED : The destination phone number is verified.
-    public enum SMSSandboxPhoneNumberVerificationStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SMSSandboxPhoneNumberVerificationStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case pending
         case verified
         case sdkUnknown(Swift.String)
@@ -1579,8 +1580,9 @@ extension SNSClientTypes {
 }
 
 extension SNSClientTypes {
+
     /// A verified or pending destination phone number in the SMS sandbox. When you start using Amazon SNS to send SMS messages, your Amazon Web Services account is in the SMS sandbox. The SMS sandbox provides a safe environment for you to try Amazon SNS features without risking your reputation as an SMS sender. While your Amazon Web Services account is in the SMS sandbox, you can use all of the features of Amazon SNS. However, you can send SMS messages only to verified destination phone numbers. For more information, including how to move out of the sandbox to send messages without restrictions, see [SMS sandbox](https://docs.aws.amazon.com/sns/latest/dg/sns-sms-sandbox.html) in the Amazon SNS Developer Guide.
-    public struct SMSSandboxPhoneNumber {
+    public struct SMSSandboxPhoneNumber: Swift.Sendable {
         /// The destination phone number.
         public var phoneNumber: Swift.String?
         /// The destination phone number's verification status.
@@ -1595,7 +1597,6 @@ extension SNSClientTypes {
             self.status = status
         }
     }
-
 }
 
 extension SNSClientTypes.SMSSandboxPhoneNumber: Swift.CustomDebugStringConvertible {
@@ -1603,7 +1604,7 @@ extension SNSClientTypes.SMSSandboxPhoneNumber: Swift.CustomDebugStringConvertib
         "SMSSandboxPhoneNumber(status: \(Swift.String(describing: status)), phoneNumber: \"CONTENT_REDACTED\")"}
 }
 
-public struct ListSMSSandboxPhoneNumbersOutput {
+public struct ListSMSSandboxPhoneNumbersOutput: Swift.Sendable {
     /// A NextToken string is returned when you call the ListSMSSandboxPhoneNumbersInput operation if additional pages of records are available.
     public var nextToken: Swift.String?
     /// A list of the calling account's pending and verified phone numbers.
@@ -1621,7 +1622,7 @@ public struct ListSMSSandboxPhoneNumbersOutput {
 }
 
 /// Input for ListSubscriptions action.
-public struct ListSubscriptionsInput {
+public struct ListSubscriptionsInput: Swift.Sendable {
     /// Token returned by the previous ListSubscriptions request.
     public var nextToken: Swift.String?
 
@@ -1634,8 +1635,9 @@ public struct ListSubscriptionsInput {
 }
 
 extension SNSClientTypes {
+
     /// A wrapper type for the attributes of an Amazon SNS subscription.
-    public struct Subscription {
+    public struct Subscription: Swift.Sendable {
         /// The subscription's endpoint (format depends on the protocol).
         public var endpoint: Swift.String?
         /// The subscription's owner.
@@ -1662,11 +1664,10 @@ extension SNSClientTypes {
             self.topicArn = topicArn
         }
     }
-
 }
 
 /// Response for ListSubscriptions action
-public struct ListSubscriptionsOutput {
+public struct ListSubscriptionsOutput: Swift.Sendable {
     /// Token to pass along to the next ListSubscriptions request. This element is returned if there are more subscriptions to retrieve.
     public var nextToken: Swift.String?
     /// A list of subscriptions.
@@ -1683,7 +1684,7 @@ public struct ListSubscriptionsOutput {
 }
 
 /// Input for ListSubscriptionsByTopic action.
-public struct ListSubscriptionsByTopicInput {
+public struct ListSubscriptionsByTopicInput: Swift.Sendable {
     /// Token returned by the previous ListSubscriptionsByTopic request.
     public var nextToken: Swift.String?
     /// The ARN of the topic for which you wish to find subscriptions.
@@ -1701,7 +1702,7 @@ public struct ListSubscriptionsByTopicInput {
 }
 
 /// Response for ListSubscriptionsByTopic action.
-public struct ListSubscriptionsByTopicOutput {
+public struct ListSubscriptionsByTopicOutput: Swift.Sendable {
     /// Token to pass along to the next ListSubscriptionsByTopic request. This element is returned if there are more subscriptions to retrieve.
     public var nextToken: Swift.String?
     /// A list of subscriptions.
@@ -1717,7 +1718,7 @@ public struct ListSubscriptionsByTopicOutput {
     }
 }
 
-public struct ListTagsForResourceInput {
+public struct ListTagsForResourceInput: Swift.Sendable {
     /// The ARN of the topic for which to list tags.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -1730,7 +1731,7 @@ public struct ListTagsForResourceInput {
     }
 }
 
-public struct ListTagsForResourceOutput {
+public struct ListTagsForResourceOutput: Swift.Sendable {
     /// The tags associated with the specified topic.
     public var tags: [SNSClientTypes.Tag]?
 
@@ -1742,7 +1743,7 @@ public struct ListTagsForResourceOutput {
     }
 }
 
-public struct ListTopicsInput {
+public struct ListTopicsInput: Swift.Sendable {
     /// Token returned by the previous ListTopics request.
     public var nextToken: Swift.String?
 
@@ -1755,8 +1756,9 @@ public struct ListTopicsInput {
 }
 
 extension SNSClientTypes {
+
     /// A wrapper type for the topic's Amazon Resource Name (ARN). To retrieve a topic's attributes, use GetTopicAttributes.
-    public struct Topic {
+    public struct Topic: Swift.Sendable {
         /// The topic's ARN.
         public var topicArn: Swift.String?
 
@@ -1767,11 +1769,10 @@ extension SNSClientTypes {
             self.topicArn = topicArn
         }
     }
-
 }
 
 /// Response for ListTopics action.
-public struct ListTopicsOutput {
+public struct ListTopicsOutput: Swift.Sendable {
     /// Token to pass along to the next ListTopics request. This element is returned if there are additional topics to retrieve.
     public var nextToken: Swift.String?
     /// A list of topic ARNs.
@@ -1788,7 +1789,7 @@ public struct ListTopicsOutput {
 }
 
 /// Input for the OptInPhoneNumber action.
-public struct OptInPhoneNumberInput {
+public struct OptInPhoneNumberInput: Swift.Sendable {
     /// The phone number to opt in. Use E.164 format.
     /// This member is required.
     public var phoneNumber: Swift.String?
@@ -1807,7 +1808,7 @@ extension OptInPhoneNumberInput: Swift.CustomDebugStringConvertible {
 }
 
 /// The response for the OptInPhoneNumber action.
-public struct OptInPhoneNumberOutput {
+public struct OptInPhoneNumberOutput: Swift.Sendable {
 
     public init() { }
 }
@@ -2032,8 +2033,9 @@ public struct PlatformApplicationDisabledException: ClientRuntime.ModeledError, 
 }
 
 extension SNSClientTypes {
+
     /// The user-specified message attribute value. For string data types, the value attribute has the same restrictions on the content as the message body. For more information, see [Publish](https://docs.aws.amazon.com/sns/latest/api/API_Publish.html). Name, type, and value must not be empty or null. In addition, the message body should not be empty or null. All parts of the message attribute, including name, type, and value, are included in the message size restriction, which is currently 256 KB (262,144 bytes). For more information, see [Amazon SNS message attributes](https://docs.aws.amazon.com/sns/latest/dg/SNSMessageAttributes.html) and [Publishing to a mobile phone](https://docs.aws.amazon.com/sns/latest/dg/sms_publish-to-phone.html) in the Amazon SNS Developer Guide.
-    public struct MessageAttributeValue {
+    public struct MessageAttributeValue: Swift.Sendable {
         /// Binary type attributes can store any binary data, for example, compressed data, encrypted data, or images.
         public var binaryValue: Foundation.Data?
         /// Amazon SNS supports the following logical data types: String, String.Array, Number, and Binary. For more information, see [Message Attribute Data Types](https://docs.aws.amazon.com/sns/latest/dg/SNSMessageAttributes.html#SNSMessageAttributes.DataTypes).
@@ -2053,11 +2055,10 @@ extension SNSClientTypes {
             self.stringValue = stringValue
         }
     }
-
 }
 
 /// Input for Publish action.
-public struct PublishInput {
+public struct PublishInput: Swift.Sendable {
     /// The message you want to send. If you are publishing to a topic and you want to send the same message to all transport protocols, include the text of the message as a String value. If you want to send different messages for each transport protocol, set the value of the MessageStructure parameter to json and use a JSON object for the Message parameter. Constraints:
     ///
     /// * With the exception of SMS, messages must be UTF-8 encoded strings and at most 256 KB in size (262,144 bytes, not 262,144 characters).
@@ -2140,7 +2141,7 @@ extension PublishInput: Swift.CustomDebugStringConvertible {
 }
 
 /// Response for Publish action.
-public struct PublishOutput {
+public struct PublishOutput: Swift.Sendable {
     /// Unique identifier assigned to the published message. Length Constraint: Maximum 100 characters
     public var messageId: Swift.String?
     /// This response element applies only to FIFO (first-in-first-out) topics. The sequence number is a large, non-consecutive number that Amazon SNS assigns to each message. The length of SequenceNumber is 128 bits. SequenceNumber continues to increase for each MessageGroupId.
@@ -2277,8 +2278,9 @@ public struct TooManyEntriesInBatchRequestException: ClientRuntime.ModeledError,
 }
 
 extension SNSClientTypes {
+
     /// Contains the details of a single Amazon SNS message along with an Id that identifies a message within the batch.
-    public struct PublishBatchRequestEntry {
+    public struct PublishBatchRequestEntry: Swift.Sendable {
         /// An identifier for the message in this batch. The Ids of a batch request must be unique within a request. This identifier can have up to 80 characters. The following characters are accepted: alphanumeric characters, hyphens(-), and underscores (_).
         /// This member is required.
         public var id: Swift.String?
@@ -2342,10 +2344,9 @@ extension SNSClientTypes {
             self.subject = subject
         }
     }
-
 }
 
-public struct PublishBatchInput {
+public struct PublishBatchInput: Swift.Sendable {
     /// A list of PublishBatch request entries to be sent to the SNS topic.
     /// This member is required.
     public var publishBatchRequestEntries: [SNSClientTypes.PublishBatchRequestEntry]?
@@ -2364,8 +2365,9 @@ public struct PublishBatchInput {
 }
 
 extension SNSClientTypes {
+
     /// Gives a detailed description of failed messages in the batch.
-    public struct BatchResultErrorEntry {
+    public struct BatchResultErrorEntry: Swift.Sendable {
         /// An error code representing why the action failed on this entry.
         /// This member is required.
         public var code: Swift.String?
@@ -2391,12 +2393,12 @@ extension SNSClientTypes {
             self.senderFault = senderFault
         }
     }
-
 }
 
 extension SNSClientTypes {
+
     /// Encloses data related to a successful message in a batch request for topic.
-    public struct PublishBatchResultEntry {
+    public struct PublishBatchResultEntry: Swift.Sendable {
         /// The Id of an entry in a batch request.
         public var id: Swift.String?
         /// An identifier for the message.
@@ -2415,10 +2417,9 @@ extension SNSClientTypes {
             self.sequenceNumber = sequenceNumber
         }
     }
-
 }
 
-public struct PublishBatchOutput {
+public struct PublishBatchOutput: Swift.Sendable {
     /// A list of failed PublishBatch responses.
     public var failed: [SNSClientTypes.BatchResultErrorEntry]?
     /// A list of successful PublishBatch responses.
@@ -2434,7 +2435,7 @@ public struct PublishBatchOutput {
     }
 }
 
-public struct PutDataProtectionPolicyInput {
+public struct PutDataProtectionPolicyInput: Swift.Sendable {
     /// The JSON serialization of the topic's DataProtectionPolicy. The DataProtectionPolicy must be in JSON string format. Length Constraints: Maximum length of 30,720.
     /// This member is required.
     public var dataProtectionPolicy: Swift.String?
@@ -2453,7 +2454,7 @@ public struct PutDataProtectionPolicyInput {
 }
 
 /// Input for RemovePermission action.
-public struct RemovePermissionInput {
+public struct RemovePermissionInput: Swift.Sendable {
     /// The unique label of the statement you want to remove.
     /// This member is required.
     public var label: Swift.String?
@@ -2472,7 +2473,7 @@ public struct RemovePermissionInput {
 }
 
 /// Input for SetEndpointAttributes action.
-public struct SetEndpointAttributesInput {
+public struct SetEndpointAttributesInput: Swift.Sendable {
     /// A map of the endpoint attributes. Attributes in this map include the following:
     ///
     /// * CustomUserData – arbitrary user data to associate with the endpoint. Amazon SNS does not use this data. The data must be in UTF-8 format and less than 2KB.
@@ -2497,7 +2498,7 @@ public struct SetEndpointAttributesInput {
 }
 
 /// Input for SetPlatformApplicationAttributes action.
-public struct SetPlatformApplicationAttributesInput {
+public struct SetPlatformApplicationAttributesInput: Swift.Sendable {
     /// A map of the platform application attributes. Attributes in this map include the following:
     ///
     /// * PlatformCredential – The credential received from the notification service.
@@ -2571,7 +2572,7 @@ public struct SetPlatformApplicationAttributesInput {
 }
 
 /// The input for the SetSMSAttributes action.
-public struct SetSMSAttributesInput {
+public struct SetSMSAttributesInput: Swift.Sendable {
     /// The default settings for sending SMS messages from your Amazon Web Services account. You can set values for the following attribute names: MonthlySpendLimit – The maximum amount in USD that you are willing to spend each month to send SMS messages. When Amazon SNS determines that sending an SMS message would incur a cost that exceeds this limit, it stops sending SMS messages within minutes. Amazon SNS stops sending SMS messages within minutes of the limit being crossed. During that interval, if you continue to send SMS messages, you will incur costs that exceed your limit. By default, the spend limit is set to the maximum allowed by Amazon SNS. If you want to raise the limit, submit an [SNS Limit Increase case](https://console.aws.amazon.com/support/home#/case/create?issueType=service-limit-increase&limitType=service-code-sns). For New limit value, enter your desired monthly spend limit. In the Use Case Description field, explain that you are requesting an SMS monthly spend limit increase. DeliveryStatusIAMRole – The ARN of the IAM role that allows Amazon SNS to write logs about SMS deliveries in CloudWatch Logs. For each SMS message that you send, Amazon SNS writes a log that includes the message price, the success or failure status, the reason for failure (if the message failed), the message dwell time, and other information. DeliveryStatusSuccessSamplingRate – The percentage of successful SMS deliveries for which Amazon SNS will write logs in CloudWatch Logs. The value can be an integer from 0 - 100. For example, to write logs only for failed deliveries, set this value to 0. To write logs for 10% of your successful deliveries, set it to 10. DefaultSenderID – A string, such as your business brand, that is displayed as the sender on the receiving device. Support for sender IDs varies by country. The sender ID can be 1 - 11 alphanumeric characters, and it must contain at least one letter. DefaultSMSType – The type of SMS message that you will send by default. You can assign the following values:
     ///
     /// * Promotional – (Default) Noncritical messages, such as marketing messages. Amazon SNS optimizes the message delivery to incur the lowest cost.
@@ -2611,13 +2612,13 @@ public struct SetSMSAttributesInput {
 }
 
 /// The response for the SetSMSAttributes action.
-public struct SetSMSAttributesOutput {
+public struct SetSMSAttributesOutput: Swift.Sendable {
 
     public init() { }
 }
 
 /// Input for SetSubscriptionAttributes action.
-public struct SetSubscriptionAttributesInput {
+public struct SetSubscriptionAttributesInput: Swift.Sendable {
     /// A map of attributes with their corresponding values. The following lists the names, descriptions, and values of the special request parameters that this action uses:
     ///
     /// * DeliveryPolicy – The policy that defines how Amazon SNS retries failed deliveries to HTTP/S endpoints.
@@ -2669,7 +2670,7 @@ public struct SetSubscriptionAttributesInput {
 }
 
 /// Input for SetTopicAttributes action.
-public struct SetTopicAttributesInput {
+public struct SetTopicAttributesInput: Swift.Sendable {
     /// A map of attributes with their corresponding values. The following lists the names, descriptions, and values of the special request parameters that the SetTopicAttributes action uses:
     ///
     /// * ApplicationSuccessFeedbackRoleArn – Indicates failed message delivery status for an Amazon SNS topic that is subscribed to a platform application endpoint.
@@ -2773,7 +2774,7 @@ public struct SetTopicAttributesInput {
 }
 
 /// Input for Subscribe action.
-public struct SubscribeInput {
+public struct SubscribeInput: Swift.Sendable {
     /// A map of attributes with their corresponding values. The following lists the names, descriptions, and values of the special request parameters that the Subscribe action uses:
     ///
     /// * DeliveryPolicy – The policy that defines how Amazon SNS retries failed deliveries to HTTP/S endpoints.
@@ -2884,7 +2885,7 @@ public struct SubscribeInput {
 }
 
 /// Response for Subscribe action.
-public struct SubscribeOutput {
+public struct SubscribeOutput: Swift.Sendable {
     /// The ARN of the subscription if it is confirmed, or the string "pending confirmation" if the subscription requires confirmation. However, if the API request parameter ReturnSubscriptionArn is true, then the value is always the subscription ARN, even if the subscription requires confirmation.
     public var subscriptionArn: Swift.String?
 
@@ -2896,7 +2897,7 @@ public struct SubscribeOutput {
     }
 }
 
-public struct TagResourceInput {
+public struct TagResourceInput: Swift.Sendable {
     /// The ARN of the topic to which to add tags.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -2914,13 +2915,13 @@ public struct TagResourceInput {
     }
 }
 
-public struct TagResourceOutput {
+public struct TagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
 /// Input for Unsubscribe action.
-public struct UnsubscribeInput {
+public struct UnsubscribeInput: Swift.Sendable {
     /// The ARN of the subscription to be deleted.
     /// This member is required.
     public var subscriptionArn: Swift.String?
@@ -2933,7 +2934,7 @@ public struct UnsubscribeInput {
     }
 }
 
-public struct UntagResourceInput {
+public struct UntagResourceInput: Swift.Sendable {
     /// The ARN of the topic from which to remove tags.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -2951,7 +2952,7 @@ public struct UntagResourceInput {
     }
 }
 
-public struct UntagResourceOutput {
+public struct UntagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
@@ -2986,7 +2987,7 @@ public struct VerificationException: ClientRuntime.ModeledError, AWSClientRuntim
     }
 }
 
-public struct VerifySMSSandboxPhoneNumberInput {
+public struct VerifySMSSandboxPhoneNumberInput: Swift.Sendable {
     /// The OTP sent to the destination number from the CreateSMSSandBoxPhoneNumber call.
     /// This member is required.
     public var oneTimePassword: Swift.String?
@@ -3010,7 +3011,7 @@ extension VerifySMSSandboxPhoneNumberInput: Swift.CustomDebugStringConvertible {
 }
 
 /// The destination phone number's verification status.
-public struct VerifySMSSandboxPhoneNumberOutput {
+public struct VerifySMSSandboxPhoneNumberOutput: Swift.Sendable {
 
     public init() { }
 }

@@ -151,8 +151,9 @@ public struct UnsupportedOperationException: ClientRuntime.ModeledError, AWSClie
 }
 
 extension KinesisAnalyticsClientTypes {
+
     /// Provides a description of CloudWatch logging options, including the log stream Amazon Resource Name (ARN) and the role ARN.
-    public struct CloudWatchLoggingOption {
+    public struct CloudWatchLoggingOption: Swift.Sendable {
         /// ARN of the CloudWatch log to receive application messages.
         /// This member is required.
         public var logStreamARN: Swift.String?
@@ -169,10 +170,9 @@ extension KinesisAnalyticsClientTypes {
             self.roleARN = roleARN
         }
     }
-
 }
 
-public struct AddApplicationCloudWatchLoggingOptionInput {
+public struct AddApplicationCloudWatchLoggingOptionInput: Swift.Sendable {
     /// The Kinesis Analytics application name.
     /// This member is required.
     public var applicationName: Swift.String?
@@ -195,7 +195,7 @@ public struct AddApplicationCloudWatchLoggingOptionInput {
     }
 }
 
-public struct AddApplicationCloudWatchLoggingOptionOutput {
+public struct AddApplicationCloudWatchLoggingOptionOutput: Swift.Sendable {
 
     public init() { }
 }
@@ -226,8 +226,9 @@ public struct CodeValidationException: ClientRuntime.ModeledError, AWSClientRunt
 }
 
 extension KinesisAnalyticsClientTypes {
+
     /// Describes the number of in-application streams to create for a given streaming source. For information about parallelism, see [Configuring Application Input](https://docs.aws.amazon.com/kinesisanalytics/latest/dev/how-it-works-input.html).
-    public struct InputParallelism {
+    public struct InputParallelism: Swift.Sendable {
         /// Number of in-application streams to create. For more information, see [Limits](https://docs.aws.amazon.com/kinesisanalytics/latest/dev/limits.html).
         public var count: Swift.Int?
 
@@ -238,12 +239,12 @@ extension KinesisAnalyticsClientTypes {
             self.count = count
         }
     }
-
 }
 
 extension KinesisAnalyticsClientTypes {
+
     /// An object that contains the Amazon Resource Name (ARN) of the [AWS Lambda](https://docs.aws.amazon.com/lambda/) function that is used to preprocess records in the stream, and the ARN of the IAM role that is used to access the AWS Lambda function.
-    public struct InputLambdaProcessor {
+    public struct InputLambdaProcessor: Swift.Sendable {
         /// The ARN of the [AWS Lambda](https://docs.aws.amazon.com/lambda/) function that operates on records in the stream. To specify an earlier version of the Lambda function than the latest, include the Lambda function version in the Lambda function ARN. For more information about Lambda ARNs, see [Example ARNs: AWS Lambda]
         /// This member is required.
         public var resourceARN: Swift.String?
@@ -260,12 +261,12 @@ extension KinesisAnalyticsClientTypes {
             self.roleARN = roleARN
         }
     }
-
 }
 
 extension KinesisAnalyticsClientTypes {
+
     /// Provides a description of a processor that is used to preprocess the records in the stream before being processed by your application code. Currently, the only input processor available is [AWS Lambda](https://docs.aws.amazon.com/lambda/).
-    public struct InputProcessingConfiguration {
+    public struct InputProcessingConfiguration: Swift.Sendable {
         /// The [InputLambdaProcessor](https://docs.aws.amazon.com/kinesisanalytics/latest/dev/API_InputLambdaProcessor.html) that is used to preprocess the records in the stream before being processed by your application code.
         /// This member is required.
         public var inputLambdaProcessor: KinesisAnalyticsClientTypes.InputLambdaProcessor?
@@ -277,12 +278,12 @@ extension KinesisAnalyticsClientTypes {
             self.inputLambdaProcessor = inputLambdaProcessor
         }
     }
-
 }
 
 extension KinesisAnalyticsClientTypes {
+
     /// Describes the mapping of each data element in the streaming source to the corresponding column in the in-application stream. Also used to describe the format of the reference data source.
-    public struct RecordColumn {
+    public struct RecordColumn: Swift.Sendable {
         /// Reference to the data element in the streaming input or the reference data source. This element is required if the [RecordFormatType](https://docs.aws.amazon.com/kinesisanalytics/latest/dev/API_RecordFormat.html#analytics-Type-RecordFormat-RecordFormatTypel) is JSON.
         public var mapping: Swift.String?
         /// Name of the column created in the in-application input stream or reference table.
@@ -303,13 +304,13 @@ extension KinesisAnalyticsClientTypes {
             self.sqlType = sqlType
         }
     }
-
 }
 
 extension KinesisAnalyticsClientTypes {
+
     /// Provides additional mapping information when the record format uses delimiters, such as CSV. For example, the following sample records use CSV format, where the records use the '\n' as the row delimiter and a comma (",") as the column delimiter: "name1", "address1"
     ///     "name2", "address2"
-    public struct CSVMappingParameters {
+    public struct CSVMappingParameters: Swift.Sendable {
         /// Column delimiter. For example, in a CSV format, a comma (",") is the typical column delimiter.
         /// This member is required.
         public var recordColumnDelimiter: Swift.String?
@@ -326,12 +327,12 @@ extension KinesisAnalyticsClientTypes {
             self.recordRowDelimiter = recordRowDelimiter
         }
     }
-
 }
 
 extension KinesisAnalyticsClientTypes {
+
     /// Provides additional mapping information when JSON is the record format on the streaming source.
-    public struct JSONMappingParameters {
+    public struct JSONMappingParameters: Swift.Sendable {
         /// Path to the top-level parent that contains the records.
         /// This member is required.
         public var recordRowPath: Swift.String?
@@ -343,12 +344,12 @@ extension KinesisAnalyticsClientTypes {
             self.recordRowPath = recordRowPath
         }
     }
-
 }
 
 extension KinesisAnalyticsClientTypes {
+
     /// When configuring application input at the time of creating or updating an application, provides additional mapping information specific to the record format (such as JSON, CSV, or record fields delimited by some delimiter) on the streaming source.
-    public struct MappingParameters {
+    public struct MappingParameters: Swift.Sendable {
         /// Provides additional mapping information when the record format uses delimiters (for example, CSV).
         public var csvMappingParameters: KinesisAnalyticsClientTypes.CSVMappingParameters?
         /// Provides additional mapping information when JSON is the record format on the streaming source.
@@ -363,12 +364,11 @@ extension KinesisAnalyticsClientTypes {
             self.jsonMappingParameters = jsonMappingParameters
         }
     }
-
 }
 
 extension KinesisAnalyticsClientTypes {
 
-    public enum RecordFormatType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum RecordFormatType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case csv
         case json
         case sdkUnknown(Swift.String)
@@ -396,8 +396,9 @@ extension KinesisAnalyticsClientTypes {
 }
 
 extension KinesisAnalyticsClientTypes {
+
     /// Describes the record format and relevant mapping information that should be applied to schematize the records on the stream.
-    public struct RecordFormat {
+    public struct RecordFormat: Swift.Sendable {
         /// When configuring application input at the time of creating or updating an application, provides additional mapping information specific to the record format (such as JSON, CSV, or record fields delimited by some delimiter) on the streaming source.
         public var mappingParameters: KinesisAnalyticsClientTypes.MappingParameters?
         /// The type of record format.
@@ -413,12 +414,12 @@ extension KinesisAnalyticsClientTypes {
             self.recordFormatType = recordFormatType
         }
     }
-
 }
 
 extension KinesisAnalyticsClientTypes {
+
     /// Describes the format of the data in the streaming source, and how each data element maps to corresponding columns created in the in-application stream.
-    public struct SourceSchema {
+    public struct SourceSchema: Swift.Sendable {
         /// A list of RecordColumn objects.
         /// This member is required.
         public var recordColumns: [KinesisAnalyticsClientTypes.RecordColumn]?
@@ -439,12 +440,12 @@ extension KinesisAnalyticsClientTypes {
             self.recordFormat = recordFormat
         }
     }
-
 }
 
 extension KinesisAnalyticsClientTypes {
+
     /// Identifies an Amazon Kinesis Firehose delivery stream as the streaming source. You provide the delivery stream's Amazon Resource Name (ARN) and an IAM role ARN that enables Amazon Kinesis Analytics to access the stream on your behalf.
-    public struct KinesisFirehoseInput {
+    public struct KinesisFirehoseInput: Swift.Sendable {
         /// ARN of the input delivery stream.
         /// This member is required.
         public var resourceARN: Swift.String?
@@ -461,12 +462,12 @@ extension KinesisAnalyticsClientTypes {
             self.roleARN = roleARN
         }
     }
-
 }
 
 extension KinesisAnalyticsClientTypes {
+
     /// Identifies an Amazon Kinesis stream as the streaming source. You provide the stream's Amazon Resource Name (ARN) and an IAM role ARN that enables Amazon Kinesis Analytics to access the stream on your behalf.
-    public struct KinesisStreamsInput {
+    public struct KinesisStreamsInput: Swift.Sendable {
         /// ARN of the input Amazon Kinesis stream to read.
         /// This member is required.
         public var resourceARN: Swift.String?
@@ -483,12 +484,12 @@ extension KinesisAnalyticsClientTypes {
             self.roleARN = roleARN
         }
     }
-
 }
 
 extension KinesisAnalyticsClientTypes {
+
     /// When you configure the application input, you specify the streaming source, the in-application stream name that is created, and the mapping between the two. For more information, see [Configuring Application Input](https://docs.aws.amazon.com/kinesisanalytics/latest/dev/how-it-works-input.html).
-    public struct Input {
+    public struct Input: Swift.Sendable {
         /// Describes the number of in-application streams to create. Data from your source is routed to these in-application input streams. (see [Configuring Application Input](https://docs.aws.amazon.com/kinesisanalytics/latest/dev/how-it-works-input.html).
         public var inputParallelism: KinesisAnalyticsClientTypes.InputParallelism?
         /// The [InputProcessingConfiguration](https://docs.aws.amazon.com/kinesisanalytics/latest/dev/API_InputProcessingConfiguration.html) for the input. An input processor transforms records as they are received from the stream, before the application's SQL code executes. Currently, the only input processing configuration available is [InputLambdaProcessor](https://docs.aws.amazon.com/kinesisanalytics/latest/dev/API_InputLambdaProcessor.html).
@@ -521,11 +522,10 @@ extension KinesisAnalyticsClientTypes {
             self.namePrefix = namePrefix
         }
     }
-
 }
 
 ///
-public struct AddApplicationInputInput {
+public struct AddApplicationInputInput: Swift.Sendable {
     /// Name of your existing Amazon Kinesis Analytics application to which you want to add the streaming source.
     /// This member is required.
     public var applicationName: Swift.String?
@@ -549,12 +549,12 @@ public struct AddApplicationInputInput {
 }
 
 ///
-public struct AddApplicationInputOutput {
+public struct AddApplicationInputOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct AddApplicationInputProcessingConfigurationInput {
+public struct AddApplicationInputProcessingConfigurationInput: Swift.Sendable {
     /// Name of the application to which you want to add the input processing configuration.
     /// This member is required.
     public var applicationName: Swift.String?
@@ -582,14 +582,15 @@ public struct AddApplicationInputProcessingConfigurationInput {
     }
 }
 
-public struct AddApplicationInputProcessingConfigurationOutput {
+public struct AddApplicationInputProcessingConfigurationOutput: Swift.Sendable {
 
     public init() { }
 }
 
 extension KinesisAnalyticsClientTypes {
+
     /// Describes the data format when records are written to the destination. For more information, see [Configuring Application Output](https://docs.aws.amazon.com/kinesisanalytics/latest/dev/how-it-works-output.html).
-    public struct DestinationSchema {
+    public struct DestinationSchema: Swift.Sendable {
         /// Specifies the format of the records on the output stream.
         /// This member is required.
         public var recordFormatType: KinesisAnalyticsClientTypes.RecordFormatType?
@@ -601,12 +602,12 @@ extension KinesisAnalyticsClientTypes {
             self.recordFormatType = recordFormatType
         }
     }
-
 }
 
 extension KinesisAnalyticsClientTypes {
+
     /// When configuring application output, identifies an Amazon Kinesis Firehose delivery stream as the destination. You provide the stream Amazon Resource Name (ARN) and an IAM role that enables Amazon Kinesis Analytics to write to the stream on your behalf.
-    public struct KinesisFirehoseOutput {
+    public struct KinesisFirehoseOutput: Swift.Sendable {
         /// ARN of the destination Amazon Kinesis Firehose delivery stream to write to.
         /// This member is required.
         public var resourceARN: Swift.String?
@@ -623,12 +624,12 @@ extension KinesisAnalyticsClientTypes {
             self.roleARN = roleARN
         }
     }
-
 }
 
 extension KinesisAnalyticsClientTypes {
+
     /// When configuring application output, identifies an Amazon Kinesis stream as the destination. You provide the stream Amazon Resource Name (ARN) and also an IAM role ARN that Amazon Kinesis Analytics can use to write to the stream on your behalf.
-    public struct KinesisStreamsOutput {
+    public struct KinesisStreamsOutput: Swift.Sendable {
         /// ARN of the destination Amazon Kinesis stream to write to.
         /// This member is required.
         public var resourceARN: Swift.String?
@@ -645,12 +646,12 @@ extension KinesisAnalyticsClientTypes {
             self.roleARN = roleARN
         }
     }
-
 }
 
 extension KinesisAnalyticsClientTypes {
+
     /// When configuring application output, identifies an AWS Lambda function as the destination. You provide the function Amazon Resource Name (ARN) and also an IAM role ARN that Amazon Kinesis Analytics can use to write to the function on your behalf.
-    public struct LambdaOutput {
+    public struct LambdaOutput: Swift.Sendable {
         /// Amazon Resource Name (ARN) of the destination Lambda function to write to. To specify an earlier version of the Lambda function than the latest, include the Lambda function version in the Lambda function ARN. For more information about Lambda ARNs, see [Example ARNs: AWS Lambda]
         /// This member is required.
         public var resourceARN: Swift.String?
@@ -667,12 +668,12 @@ extension KinesisAnalyticsClientTypes {
             self.roleARN = roleARN
         }
     }
-
 }
 
 extension KinesisAnalyticsClientTypes {
+
     /// Describes application output configuration in which you identify an in-application stream and a destination where you want the in-application stream data to be written. The destination can be an Amazon Kinesis stream or an Amazon Kinesis Firehose delivery stream. For limits on how many destinations an application can write and other limitations, see [Limits](https://docs.aws.amazon.com/kinesisanalytics/latest/dev/limits.html).
-    public struct Output {
+    public struct Output: Swift.Sendable {
         /// Describes the data format when records are written to the destination. For more information, see [Configuring Application Output](https://docs.aws.amazon.com/kinesisanalytics/latest/dev/how-it-works-output.html).
         /// This member is required.
         public var destinationSchema: KinesisAnalyticsClientTypes.DestinationSchema?
@@ -701,11 +702,10 @@ extension KinesisAnalyticsClientTypes {
             self.name = name
         }
     }
-
 }
 
 ///
-public struct AddApplicationOutputInput {
+public struct AddApplicationOutputInput: Swift.Sendable {
     /// Name of the application to which you want to add the output configuration.
     /// This member is required.
     public var applicationName: Swift.String?
@@ -729,14 +729,15 @@ public struct AddApplicationOutputInput {
 }
 
 ///
-public struct AddApplicationOutputOutput {
+public struct AddApplicationOutputOutput: Swift.Sendable {
 
     public init() { }
 }
 
 extension KinesisAnalyticsClientTypes {
+
     /// Identifies the S3 bucket and object that contains the reference data. Also identifies the IAM role Amazon Kinesis Analytics can assume to read this object on your behalf. An Amazon Kinesis Analytics application loads reference data only once. If the data changes, you call the [UpdateApplication](https://docs.aws.amazon.com/kinesisanalytics/latest/dev/API_UpdateApplication.html) operation to trigger reloading of data into your application.
-    public struct S3ReferenceDataSource {
+    public struct S3ReferenceDataSource: Swift.Sendable {
         /// Amazon Resource Name (ARN) of the S3 bucket.
         /// This member is required.
         public var bucketARN: Swift.String?
@@ -758,12 +759,12 @@ extension KinesisAnalyticsClientTypes {
             self.referenceRoleARN = referenceRoleARN
         }
     }
-
 }
 
 extension KinesisAnalyticsClientTypes {
+
     /// Describes the reference data source by providing the source information (S3 bucket name and object key name), the resulting in-application table name that is created, and the necessary schema to map the data elements in the Amazon S3 object to the in-application table.
-    public struct ReferenceDataSource {
+    public struct ReferenceDataSource: Swift.Sendable {
         /// Describes the format of the data in the streaming source, and how each data element maps to corresponding columns created in the in-application stream.
         /// This member is required.
         public var referenceSchema: KinesisAnalyticsClientTypes.SourceSchema?
@@ -784,11 +785,10 @@ extension KinesisAnalyticsClientTypes {
             self.tableName = tableName
         }
     }
-
 }
 
 ///
-public struct AddApplicationReferenceDataSourceInput {
+public struct AddApplicationReferenceDataSourceInput: Swift.Sendable {
     /// Name of an existing application.
     /// This member is required.
     public var applicationName: Swift.String?
@@ -812,14 +812,14 @@ public struct AddApplicationReferenceDataSourceInput {
 }
 
 ///
-public struct AddApplicationReferenceDataSourceOutput {
+public struct AddApplicationReferenceDataSourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
 extension KinesisAnalyticsClientTypes {
 
-    public enum ApplicationStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ApplicationStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case deleting
         case ready
         case running
@@ -859,8 +859,9 @@ extension KinesisAnalyticsClientTypes {
 }
 
 extension KinesisAnalyticsClientTypes {
+
     /// Description of the CloudWatch logging option.
-    public struct CloudWatchLoggingOptionDescription {
+    public struct CloudWatchLoggingOptionDescription: Swift.Sendable {
         /// ID of the CloudWatch logging option description.
         public var cloudWatchLoggingOptionId: Swift.String?
         /// ARN of the CloudWatch log to receive application messages.
@@ -881,12 +882,12 @@ extension KinesisAnalyticsClientTypes {
             self.roleARN = roleARN
         }
     }
-
 }
 
 extension KinesisAnalyticsClientTypes {
+
     /// An object that contains the Amazon Resource Name (ARN) of the [AWS Lambda](https://docs.aws.amazon.com/lambda/) function that is used to preprocess records in the stream, and the ARN of the IAM role that is used to access the AWS Lambda expression.
-    public struct InputLambdaProcessorDescription {
+    public struct InputLambdaProcessorDescription: Swift.Sendable {
         /// The ARN of the [AWS Lambda](https://docs.aws.amazon.com/lambda/) function that is used to preprocess the records in the stream.
         public var resourceARN: Swift.String?
         /// The ARN of the IAM role that is used to access the AWS Lambda function.
@@ -901,12 +902,12 @@ extension KinesisAnalyticsClientTypes {
             self.roleARN = roleARN
         }
     }
-
 }
 
 extension KinesisAnalyticsClientTypes {
+
     /// Provides configuration information about an input processor. Currently, the only input processor available is [AWS Lambda](https://docs.aws.amazon.com/lambda/).
-    public struct InputProcessingConfigurationDescription {
+    public struct InputProcessingConfigurationDescription: Swift.Sendable {
         /// Provides configuration information about the associated [InputLambdaProcessorDescription](https://docs.aws.amazon.com/kinesisanalytics/latest/dev/API_InputLambdaProcessorDescription.html).
         public var inputLambdaProcessorDescription: KinesisAnalyticsClientTypes.InputLambdaProcessorDescription?
 
@@ -917,12 +918,11 @@ extension KinesisAnalyticsClientTypes {
             self.inputLambdaProcessorDescription = inputLambdaProcessorDescription
         }
     }
-
 }
 
 extension KinesisAnalyticsClientTypes {
 
-    public enum InputStartingPosition: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum InputStartingPosition: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case lastStoppedPoint
         case now
         case trimHorizon
@@ -953,8 +953,9 @@ extension KinesisAnalyticsClientTypes {
 }
 
 extension KinesisAnalyticsClientTypes {
+
     /// Describes the point at which the application reads from the streaming source.
-    public struct InputStartingPositionConfiguration {
+    public struct InputStartingPositionConfiguration: Swift.Sendable {
         /// The starting position on the stream.
         ///
         /// * NOW - Start reading just after the most recent record in the stream, start at the request time stamp that the customer issued.
@@ -971,12 +972,12 @@ extension KinesisAnalyticsClientTypes {
             self.inputStartingPosition = inputStartingPosition
         }
     }
-
 }
 
 extension KinesisAnalyticsClientTypes {
+
     /// Describes the Amazon Kinesis Firehose delivery stream that is configured as the streaming source in the application input configuration.
-    public struct KinesisFirehoseInputDescription {
+    public struct KinesisFirehoseInputDescription: Swift.Sendable {
         /// Amazon Resource Name (ARN) of the Amazon Kinesis Firehose delivery stream.
         public var resourceARN: Swift.String?
         /// ARN of the IAM role that Amazon Kinesis Analytics assumes to access the stream.
@@ -991,12 +992,12 @@ extension KinesisAnalyticsClientTypes {
             self.roleARN = roleARN
         }
     }
-
 }
 
 extension KinesisAnalyticsClientTypes {
+
     /// Describes the Amazon Kinesis stream that is configured as the streaming source in the application input configuration.
-    public struct KinesisStreamsInputDescription {
+    public struct KinesisStreamsInputDescription: Swift.Sendable {
         /// Amazon Resource Name (ARN) of the Amazon Kinesis stream.
         public var resourceARN: Swift.String?
         /// ARN of the IAM role that Amazon Kinesis Analytics can assume to access the stream.
@@ -1011,12 +1012,12 @@ extension KinesisAnalyticsClientTypes {
             self.roleARN = roleARN
         }
     }
-
 }
 
 extension KinesisAnalyticsClientTypes {
+
     /// Describes the application input configuration. For more information, see [Configuring Application Input](https://docs.aws.amazon.com/kinesisanalytics/latest/dev/how-it-works-input.html).
-    public struct InputDescription {
+    public struct InputDescription: Swift.Sendable {
         /// Returns the in-application stream names that are mapped to the stream source.
         public var inAppStreamNames: [Swift.String]?
         /// Input ID associated with the application input. This is the ID that Amazon Kinesis Analytics assigns to each input configuration you add to your application.
@@ -1059,12 +1060,12 @@ extension KinesisAnalyticsClientTypes {
             self.namePrefix = namePrefix
         }
     }
-
 }
 
 extension KinesisAnalyticsClientTypes {
+
     /// For an application output, describes the Amazon Kinesis Firehose delivery stream configured as its destination.
-    public struct KinesisFirehoseOutputDescription {
+    public struct KinesisFirehoseOutputDescription: Swift.Sendable {
         /// Amazon Resource Name (ARN) of the Amazon Kinesis Firehose delivery stream.
         public var resourceARN: Swift.String?
         /// ARN of the IAM role that Amazon Kinesis Analytics can assume to access the stream.
@@ -1079,12 +1080,12 @@ extension KinesisAnalyticsClientTypes {
             self.roleARN = roleARN
         }
     }
-
 }
 
 extension KinesisAnalyticsClientTypes {
+
     /// For an application output, describes the Amazon Kinesis stream configured as its destination.
-    public struct KinesisStreamsOutputDescription {
+    public struct KinesisStreamsOutputDescription: Swift.Sendable {
         /// Amazon Resource Name (ARN) of the Amazon Kinesis stream.
         public var resourceARN: Swift.String?
         /// ARN of the IAM role that Amazon Kinesis Analytics can assume to access the stream.
@@ -1099,12 +1100,12 @@ extension KinesisAnalyticsClientTypes {
             self.roleARN = roleARN
         }
     }
-
 }
 
 extension KinesisAnalyticsClientTypes {
+
     /// For an application output, describes the AWS Lambda function configured as its destination.
-    public struct LambdaOutputDescription {
+    public struct LambdaOutputDescription: Swift.Sendable {
         /// Amazon Resource Name (ARN) of the destination Lambda function.
         public var resourceARN: Swift.String?
         /// ARN of the IAM role that Amazon Kinesis Analytics can assume to write to the destination function.
@@ -1119,12 +1120,12 @@ extension KinesisAnalyticsClientTypes {
             self.roleARN = roleARN
         }
     }
-
 }
 
 extension KinesisAnalyticsClientTypes {
+
     /// Describes the application output configuration, which includes the in-application stream name and the destination where the stream data is written. The destination can be an Amazon Kinesis stream or an Amazon Kinesis Firehose delivery stream.
-    public struct OutputDescription {
+    public struct OutputDescription: Swift.Sendable {
         /// Data format used for writing data to the destination.
         public var destinationSchema: KinesisAnalyticsClientTypes.DestinationSchema?
         /// Describes the Amazon Kinesis Firehose delivery stream configured as the destination where output is written.
@@ -1155,12 +1156,12 @@ extension KinesisAnalyticsClientTypes {
             self.outputId = outputId
         }
     }
-
 }
 
 extension KinesisAnalyticsClientTypes {
+
     /// Provides the bucket name and object key name that stores the reference data.
-    public struct S3ReferenceDataSourceDescription {
+    public struct S3ReferenceDataSourceDescription: Swift.Sendable {
         /// Amazon Resource Name (ARN) of the S3 bucket.
         /// This member is required.
         public var bucketARN: Swift.String?
@@ -1182,12 +1183,12 @@ extension KinesisAnalyticsClientTypes {
             self.referenceRoleARN = referenceRoleARN
         }
     }
-
 }
 
 extension KinesisAnalyticsClientTypes {
+
     /// Describes the reference data source configured for an application.
-    public struct ReferenceDataSourceDescription {
+    public struct ReferenceDataSourceDescription: Swift.Sendable {
         /// ID of the reference data source. This is the ID that Amazon Kinesis Analytics assigns when you add the reference data source to your application using the [AddApplicationReferenceDataSource](https://docs.aws.amazon.com/kinesisanalytics/latest/dev/API_AddApplicationReferenceDataSource.html) operation.
         /// This member is required.
         public var referenceId: Swift.String?
@@ -1213,12 +1214,12 @@ extension KinesisAnalyticsClientTypes {
             self.tableName = tableName
         }
     }
-
 }
 
 extension KinesisAnalyticsClientTypes {
+
     /// This documentation is for version 1 of the Amazon Kinesis Data Analytics API, which only supports SQL applications. Version 2 of the API supports SQL and Java applications. For more information about version 2, see [Amazon Kinesis Data Analytics API V2 Documentation]. Provides a description of the application, including the application Amazon Resource Name (ARN), status, latest version, and input and output configuration.
-    public struct ApplicationDetail {
+    public struct ApplicationDetail: Swift.Sendable {
         /// ARN of the application.
         /// This member is required.
         public var applicationARN: Swift.String?
@@ -1277,12 +1278,12 @@ extension KinesisAnalyticsClientTypes {
             self.referenceDataSourceDescriptions = referenceDataSourceDescriptions
         }
     }
-
 }
 
 extension KinesisAnalyticsClientTypes {
+
     /// This documentation is for version 1 of the Amazon Kinesis Data Analytics API, which only supports SQL applications. Version 2 of the API supports SQL and Java applications. For more information about version 2, see [Amazon Kinesis Data Analytics API V2 Documentation]. Provides application summary information, including the application Amazon Resource Name (ARN), name, and status.
-    public struct ApplicationSummary {
+    public struct ApplicationSummary: Swift.Sendable {
         /// ARN of the application.
         /// This member is required.
         public var applicationARN: Swift.String?
@@ -1304,12 +1305,12 @@ extension KinesisAnalyticsClientTypes {
             self.applicationStatus = applicationStatus
         }
     }
-
 }
 
 extension KinesisAnalyticsClientTypes {
+
     /// Describes CloudWatch logging option updates.
-    public struct CloudWatchLoggingOptionUpdate {
+    public struct CloudWatchLoggingOptionUpdate: Swift.Sendable {
         /// ID of the CloudWatch logging option to update
         /// This member is required.
         public var cloudWatchLoggingOptionId: Swift.String?
@@ -1329,12 +1330,12 @@ extension KinesisAnalyticsClientTypes {
             self.roleARNUpdate = roleARNUpdate
         }
     }
-
 }
 
 extension KinesisAnalyticsClientTypes {
+
     /// Provides updates to the parallelism count.
-    public struct InputParallelismUpdate {
+    public struct InputParallelismUpdate: Swift.Sendable {
         /// Number of in-application streams to create for the specified streaming source.
         public var countUpdate: Swift.Int?
 
@@ -1345,12 +1346,12 @@ extension KinesisAnalyticsClientTypes {
             self.countUpdate = countUpdate
         }
     }
-
 }
 
 extension KinesisAnalyticsClientTypes {
+
     /// Represents an update to the [InputLambdaProcessor](https://docs.aws.amazon.com/kinesisanalytics/latest/dev/API_InputLambdaProcessor.html) that is used to preprocess the records in the stream.
-    public struct InputLambdaProcessorUpdate {
+    public struct InputLambdaProcessorUpdate: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the new [AWS Lambda](https://docs.aws.amazon.com/lambda/) function that is used to preprocess the records in the stream. To specify an earlier version of the Lambda function than the latest, include the Lambda function version in the Lambda function ARN. For more information about Lambda ARNs, see [Example ARNs: AWS Lambda]
         public var resourceARNUpdate: Swift.String?
         /// The ARN of the new IAM role that is used to access the AWS Lambda function.
@@ -1365,12 +1366,12 @@ extension KinesisAnalyticsClientTypes {
             self.roleARNUpdate = roleARNUpdate
         }
     }
-
 }
 
 extension KinesisAnalyticsClientTypes {
+
     /// Describes updates to an [InputProcessingConfiguration](https://docs.aws.amazon.com/kinesisanalytics/latest/dev/API_InputProcessingConfiguration.html).
-    public struct InputProcessingConfigurationUpdate {
+    public struct InputProcessingConfigurationUpdate: Swift.Sendable {
         /// Provides update information for an [InputLambdaProcessor](https://docs.aws.amazon.com/kinesisanalytics/latest/dev/API_InputLambdaProcessor.html).
         /// This member is required.
         public var inputLambdaProcessorUpdate: KinesisAnalyticsClientTypes.InputLambdaProcessorUpdate?
@@ -1382,12 +1383,12 @@ extension KinesisAnalyticsClientTypes {
             self.inputLambdaProcessorUpdate = inputLambdaProcessorUpdate
         }
     }
-
 }
 
 extension KinesisAnalyticsClientTypes {
+
     /// Describes updates for the application's input schema.
-    public struct InputSchemaUpdate {
+    public struct InputSchemaUpdate: Swift.Sendable {
         /// A list of RecordColumn objects. Each object describes the mapping of the streaming source element to the corresponding column in the in-application stream.
         public var recordColumnUpdates: [KinesisAnalyticsClientTypes.RecordColumn]?
         /// Specifies the encoding of the records in the streaming source. For example, UTF-8.
@@ -1406,12 +1407,12 @@ extension KinesisAnalyticsClientTypes {
             self.recordFormatUpdate = recordFormatUpdate
         }
     }
-
 }
 
 extension KinesisAnalyticsClientTypes {
+
     /// When updating application input configuration, provides information about an Amazon Kinesis Firehose delivery stream as the streaming source.
-    public struct KinesisFirehoseInputUpdate {
+    public struct KinesisFirehoseInputUpdate: Swift.Sendable {
         /// Amazon Resource Name (ARN) of the input Amazon Kinesis Firehose delivery stream to read.
         public var resourceARNUpdate: Swift.String?
         /// ARN of the IAM role that Amazon Kinesis Analytics can assume to access the stream on your behalf. You need to grant the necessary permissions to this role.
@@ -1426,12 +1427,12 @@ extension KinesisAnalyticsClientTypes {
             self.roleARNUpdate = roleARNUpdate
         }
     }
-
 }
 
 extension KinesisAnalyticsClientTypes {
+
     /// When updating application input configuration, provides information about an Amazon Kinesis stream as the streaming source.
-    public struct KinesisStreamsInputUpdate {
+    public struct KinesisStreamsInputUpdate: Swift.Sendable {
         /// Amazon Resource Name (ARN) of the input Amazon Kinesis stream to read.
         public var resourceARNUpdate: Swift.String?
         /// ARN of the IAM role that Amazon Kinesis Analytics can assume to access the stream on your behalf. You need to grant the necessary permissions to this role.
@@ -1446,12 +1447,12 @@ extension KinesisAnalyticsClientTypes {
             self.roleARNUpdate = roleARNUpdate
         }
     }
-
 }
 
 extension KinesisAnalyticsClientTypes {
+
     /// Describes updates to a specific input configuration (identified by the InputId of an application).
-    public struct InputUpdate {
+    public struct InputUpdate: Swift.Sendable {
         /// Input ID of the application input to be updated.
         /// This member is required.
         public var inputId: Swift.String?
@@ -1487,12 +1488,12 @@ extension KinesisAnalyticsClientTypes {
             self.namePrefixUpdate = namePrefixUpdate
         }
     }
-
 }
 
 extension KinesisAnalyticsClientTypes {
+
     /// When updating an output configuration using the [UpdateApplication](https://docs.aws.amazon.com/kinesisanalytics/latest/dev/API_UpdateApplication.html) operation, provides information about an Amazon Kinesis Firehose delivery stream configured as the destination.
-    public struct KinesisFirehoseOutputUpdate {
+    public struct KinesisFirehoseOutputUpdate: Swift.Sendable {
         /// Amazon Resource Name (ARN) of the Amazon Kinesis Firehose delivery stream to write to.
         public var resourceARNUpdate: Swift.String?
         /// ARN of the IAM role that Amazon Kinesis Analytics can assume to access the stream on your behalf. You need to grant the necessary permissions to this role.
@@ -1507,12 +1508,12 @@ extension KinesisAnalyticsClientTypes {
             self.roleARNUpdate = roleARNUpdate
         }
     }
-
 }
 
 extension KinesisAnalyticsClientTypes {
+
     /// When updating an output configuration using the [UpdateApplication](https://docs.aws.amazon.com/kinesisanalytics/latest/dev/API_UpdateApplication.html) operation, provides information about an Amazon Kinesis stream configured as the destination.
-    public struct KinesisStreamsOutputUpdate {
+    public struct KinesisStreamsOutputUpdate: Swift.Sendable {
         /// Amazon Resource Name (ARN) of the Amazon Kinesis stream where you want to write the output.
         public var resourceARNUpdate: Swift.String?
         /// ARN of the IAM role that Amazon Kinesis Analytics can assume to access the stream on your behalf. You need to grant the necessary permissions to this role.
@@ -1527,12 +1528,12 @@ extension KinesisAnalyticsClientTypes {
             self.roleARNUpdate = roleARNUpdate
         }
     }
-
 }
 
 extension KinesisAnalyticsClientTypes {
+
     /// When updating an output configuration using the [UpdateApplication](https://docs.aws.amazon.com/kinesisanalytics/latest/dev/API_UpdateApplication.html) operation, provides information about an AWS Lambda function configured as the destination.
-    public struct LambdaOutputUpdate {
+    public struct LambdaOutputUpdate: Swift.Sendable {
         /// Amazon Resource Name (ARN) of the destination Lambda function. To specify an earlier version of the Lambda function than the latest, include the Lambda function version in the Lambda function ARN. For more information about Lambda ARNs, see [Example ARNs: AWS Lambda]
         public var resourceARNUpdate: Swift.String?
         /// ARN of the IAM role that Amazon Kinesis Analytics can assume to write to the destination function on your behalf. You need to grant the necessary permissions to this role.
@@ -1547,12 +1548,12 @@ extension KinesisAnalyticsClientTypes {
             self.roleARNUpdate = roleARNUpdate
         }
     }
-
 }
 
 extension KinesisAnalyticsClientTypes {
+
     /// Describes updates to the output configuration identified by the OutputId.
-    public struct OutputUpdate {
+    public struct OutputUpdate: Swift.Sendable {
         /// Describes the data format when records are written to the destination. For more information, see [Configuring Application Output](https://docs.aws.amazon.com/kinesisanalytics/latest/dev/how-it-works-output.html).
         public var destinationSchemaUpdate: KinesisAnalyticsClientTypes.DestinationSchema?
         /// Describes an Amazon Kinesis Firehose delivery stream as the destination for the output.
@@ -1584,12 +1585,12 @@ extension KinesisAnalyticsClientTypes {
             self.outputId = outputId
         }
     }
-
 }
 
 extension KinesisAnalyticsClientTypes {
+
     /// Describes the S3 bucket name, object key name, and IAM role that Amazon Kinesis Analytics can assume to read the Amazon S3 object on your behalf and populate the in-application reference table.
-    public struct S3ReferenceDataSourceUpdate {
+    public struct S3ReferenceDataSourceUpdate: Swift.Sendable {
         /// Amazon Resource Name (ARN) of the S3 bucket.
         public var bucketARNUpdate: Swift.String?
         /// Object key name.
@@ -1608,12 +1609,12 @@ extension KinesisAnalyticsClientTypes {
             self.referenceRoleARNUpdate = referenceRoleARNUpdate
         }
     }
-
 }
 
 extension KinesisAnalyticsClientTypes {
+
     /// When you update a reference data source configuration for an application, this object provides all the updated values (such as the source bucket name and object key name), the in-application table name that is created, and updated mapping information that maps the data in the Amazon S3 object to the in-application reference table that is created.
-    public struct ReferenceDataSourceUpdate {
+    public struct ReferenceDataSourceUpdate: Swift.Sendable {
         /// ID of the reference data source being updated. You can use the [DescribeApplication](https://docs.aws.amazon.com/kinesisanalytics/latest/dev/API_DescribeApplication.html) operation to get this value.
         /// This member is required.
         public var referenceId: Swift.String?
@@ -1637,12 +1638,12 @@ extension KinesisAnalyticsClientTypes {
             self.tableNameUpdate = tableNameUpdate
         }
     }
-
 }
 
 extension KinesisAnalyticsClientTypes {
+
     /// Describes updates to apply to an existing Amazon Kinesis Analytics application.
-    public struct ApplicationUpdate {
+    public struct ApplicationUpdate: Swift.Sendable {
         /// Describes application code updates.
         public var applicationCodeUpdate: Swift.String?
         /// Describes application CloudWatch logging option updates.
@@ -1669,7 +1670,6 @@ extension KinesisAnalyticsClientTypes {
             self.referenceDataSourceUpdates = referenceDataSourceUpdates
         }
     }
-
 }
 
 /// Exceeded the number of applications allowed.
@@ -1722,8 +1722,9 @@ public struct TooManyTagsException: ClientRuntime.ModeledError, AWSClientRuntime
 }
 
 extension KinesisAnalyticsClientTypes {
+
     /// A key-value pair (the value is optional) that you can define and assign to AWS resources. If you specify a tag that already exists, the tag value is replaced with the value that you specify in the request. Note that the maximum number of application tags includes system tags. The maximum number of user-defined application tags is 50. For more information, see [Using Tagging](https://docs.aws.amazon.com/kinesisanalytics/latest/dev/how-tagging.html).
-    public struct Tag {
+    public struct Tag: Swift.Sendable {
         /// The key of the key-value tag.
         /// This member is required.
         public var key: Swift.String?
@@ -1739,11 +1740,10 @@ extension KinesisAnalyticsClientTypes {
             self.value = value
         }
     }
-
 }
 
 /// TBD
-public struct CreateApplicationInput {
+public struct CreateApplicationInput: Swift.Sendable {
     /// One or more SQL statements that read input data, transform it, and generate output. For example, you can write a SQL statement that reads data from one in-application stream, generates a running average of the number of advertisement clicks by vendor, and insert resulting rows in another in-application stream using pumps. For more information about the typical pattern, see [Application Code](https://docs.aws.amazon.com/kinesisanalytics/latest/dev/how-it-works-app-code.html). You can provide such series of SQL statements, where output of one statement can be used as the input for the next statement. You store intermediate results by creating in-application streams and pumps. Note that the application code must create the streams with names specified in the Outputs. For example, if your Outputs defines output streams named ExampleOutputStream1 and ExampleOutputStream2, then your application code must create these streams.
     public var applicationCode: Swift.String?
     /// Summary description of the application.
@@ -1781,7 +1781,7 @@ public struct CreateApplicationInput {
 }
 
 /// TBD
-public struct CreateApplicationOutput {
+public struct CreateApplicationOutput: Swift.Sendable {
     /// In response to your CreateApplication request, Amazon Kinesis Analytics returns a response with a summary of the application it created, including the application Amazon Resource Name (ARN), name, and status.
     /// This member is required.
     public var applicationSummary: KinesisAnalyticsClientTypes.ApplicationSummary?
@@ -1795,7 +1795,7 @@ public struct CreateApplicationOutput {
 }
 
 ///
-public struct DeleteApplicationInput {
+public struct DeleteApplicationInput: Swift.Sendable {
     /// Name of the Amazon Kinesis Analytics application to delete.
     /// This member is required.
     public var applicationName: Swift.String?
@@ -1814,12 +1814,12 @@ public struct DeleteApplicationInput {
 }
 
 ///
-public struct DeleteApplicationOutput {
+public struct DeleteApplicationOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteApplicationCloudWatchLoggingOptionInput {
+public struct DeleteApplicationCloudWatchLoggingOptionInput: Swift.Sendable {
     /// The Kinesis Analytics application name.
     /// This member is required.
     public var applicationName: Swift.String?
@@ -1842,12 +1842,12 @@ public struct DeleteApplicationCloudWatchLoggingOptionInput {
     }
 }
 
-public struct DeleteApplicationCloudWatchLoggingOptionOutput {
+public struct DeleteApplicationCloudWatchLoggingOptionOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteApplicationInputProcessingConfigurationInput {
+public struct DeleteApplicationInputProcessingConfigurationInput: Swift.Sendable {
     /// The Kinesis Analytics application name.
     /// This member is required.
     public var applicationName: Swift.String?
@@ -1870,13 +1870,13 @@ public struct DeleteApplicationInputProcessingConfigurationInput {
     }
 }
 
-public struct DeleteApplicationInputProcessingConfigurationOutput {
+public struct DeleteApplicationInputProcessingConfigurationOutput: Swift.Sendable {
 
     public init() { }
 }
 
 ///
-public struct DeleteApplicationOutputInput {
+public struct DeleteApplicationOutputInput: Swift.Sendable {
     /// Amazon Kinesis Analytics application name.
     /// This member is required.
     public var applicationName: Swift.String?
@@ -1900,12 +1900,12 @@ public struct DeleteApplicationOutputInput {
 }
 
 ///
-public struct DeleteApplicationOutputOutput {
+public struct DeleteApplicationOutputOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteApplicationReferenceDataSourceInput {
+public struct DeleteApplicationReferenceDataSourceInput: Swift.Sendable {
     /// Name of an existing application.
     /// This member is required.
     public var applicationName: Swift.String?
@@ -1928,13 +1928,13 @@ public struct DeleteApplicationReferenceDataSourceInput {
     }
 }
 
-public struct DeleteApplicationReferenceDataSourceOutput {
+public struct DeleteApplicationReferenceDataSourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
 ///
-public struct DescribeApplicationInput {
+public struct DescribeApplicationInput: Swift.Sendable {
     /// Name of the application.
     /// This member is required.
     public var applicationName: Swift.String?
@@ -1948,7 +1948,7 @@ public struct DescribeApplicationInput {
 }
 
 ///
-public struct DescribeApplicationOutput {
+public struct DescribeApplicationOutput: Swift.Sendable {
     /// Provides a description of the application, such as the application Amazon Resource Name (ARN), status, latest version, and input and output configuration details.
     /// This member is required.
     public var applicationDetail: KinesisAnalyticsClientTypes.ApplicationDetail?
@@ -2040,8 +2040,9 @@ public struct UnableToDetectSchemaException: ClientRuntime.ModeledError, AWSClie
 }
 
 extension KinesisAnalyticsClientTypes {
+
     /// Provides a description of an Amazon S3 data source, including the Amazon Resource Name (ARN) of the S3 bucket, the ARN of the IAM role that is used to access the bucket, and the name of the Amazon S3 object that contains the data.
-    public struct S3Configuration {
+    public struct S3Configuration: Swift.Sendable {
         /// ARN of the S3 bucket that contains the data.
         /// This member is required.
         public var bucketARN: Swift.String?
@@ -2063,10 +2064,9 @@ extension KinesisAnalyticsClientTypes {
             self.roleARN = roleARN
         }
     }
-
 }
 
-public struct DiscoverInputSchemaInput {
+public struct DiscoverInputSchemaInput: Swift.Sendable {
     /// The [InputProcessingConfiguration](https://docs.aws.amazon.com/kinesisanalytics/latest/dev/API_InputProcessingConfiguration.html) to use to preprocess the records before discovering the schema of the records.
     public var inputProcessingConfiguration: KinesisAnalyticsClientTypes.InputProcessingConfiguration?
     /// Point at which you want Amazon Kinesis Analytics to start reading records from the specified streaming source discovery purposes.
@@ -2095,7 +2095,7 @@ public struct DiscoverInputSchemaInput {
 }
 
 ///
-public struct DiscoverInputSchemaOutput {
+public struct DiscoverInputSchemaOutput: Swift.Sendable {
     /// Schema inferred from the streaming source. It identifies the format of the data in the streaming source and how each data element maps to corresponding columns in the in-application stream that you can create.
     public var inputSchema: KinesisAnalyticsClientTypes.SourceSchema?
     /// An array of elements, where each element corresponds to a row in a stream record (a stream record can have more than one row).
@@ -2120,8 +2120,9 @@ public struct DiscoverInputSchemaOutput {
 }
 
 extension KinesisAnalyticsClientTypes {
+
     /// When you start your application, you provide this configuration, which identifies the input source and the point in the input source at which you want the application to start processing records.
-    public struct InputConfiguration {
+    public struct InputConfiguration: Swift.Sendable {
         /// Input source ID. You can get this ID by calling the [DescribeApplication](https://docs.aws.amazon.com/kinesisanalytics/latest/dev/API_DescribeApplication.html) operation.
         /// This member is required.
         public var id: Swift.String?
@@ -2138,7 +2139,6 @@ extension KinesisAnalyticsClientTypes {
             self.inputStartingPositionConfiguration = inputStartingPositionConfiguration
         }
     }
-
 }
 
 /// User-provided application configuration is not valid.
@@ -2167,7 +2167,7 @@ public struct InvalidApplicationConfigurationException: ClientRuntime.ModeledErr
 }
 
 ///
-public struct ListApplicationsInput {
+public struct ListApplicationsInput: Swift.Sendable {
     /// Name of the application to start the list with. When using pagination to retrieve the list, you don't need to specify this parameter in the first request. However, in subsequent requests, you add the last application name from the previous response to get the next page of applications.
     public var exclusiveStartApplicationName: Swift.String?
     /// Maximum number of applications to list.
@@ -2184,7 +2184,7 @@ public struct ListApplicationsInput {
 }
 
 ///
-public struct ListApplicationsOutput {
+public struct ListApplicationsOutput: Swift.Sendable {
     /// List of ApplicationSummary objects.
     /// This member is required.
     public var applicationSummaries: [KinesisAnalyticsClientTypes.ApplicationSummary]?
@@ -2202,7 +2202,7 @@ public struct ListApplicationsOutput {
     }
 }
 
-public struct ListTagsForResourceInput {
+public struct ListTagsForResourceInput: Swift.Sendable {
     /// The ARN of the application for which to retrieve tags.
     /// This member is required.
     public var resourceARN: Swift.String?
@@ -2215,7 +2215,7 @@ public struct ListTagsForResourceInput {
     }
 }
 
-public struct ListTagsForResourceOutput {
+public struct ListTagsForResourceOutput: Swift.Sendable {
     /// The key-value tags assigned to the application.
     public var tags: [KinesisAnalyticsClientTypes.Tag]?
 
@@ -2228,7 +2228,7 @@ public struct ListTagsForResourceOutput {
 }
 
 ///
-public struct StartApplicationInput {
+public struct StartApplicationInput: Swift.Sendable {
     /// Name of the application.
     /// This member is required.
     public var applicationName: Swift.String?
@@ -2247,13 +2247,13 @@ public struct StartApplicationInput {
 }
 
 ///
-public struct StartApplicationOutput {
+public struct StartApplicationOutput: Swift.Sendable {
 
     public init() { }
 }
 
 ///
-public struct StopApplicationInput {
+public struct StopApplicationInput: Swift.Sendable {
     /// Name of the running application to stop.
     /// This member is required.
     public var applicationName: Swift.String?
@@ -2267,12 +2267,12 @@ public struct StopApplicationInput {
 }
 
 ///
-public struct StopApplicationOutput {
+public struct StopApplicationOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct TagResourceInput {
+public struct TagResourceInput: Swift.Sendable {
     /// The ARN of the application to assign the tags.
     /// This member is required.
     public var resourceARN: Swift.String?
@@ -2290,12 +2290,12 @@ public struct TagResourceInput {
     }
 }
 
-public struct TagResourceOutput {
+public struct TagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UntagResourceInput {
+public struct UntagResourceInput: Swift.Sendable {
     /// The ARN of the Kinesis Analytics application from which to remove the tags.
     /// This member is required.
     public var resourceARN: Swift.String?
@@ -2313,12 +2313,12 @@ public struct UntagResourceInput {
     }
 }
 
-public struct UntagResourceOutput {
+public struct UntagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdateApplicationInput {
+public struct UpdateApplicationInput: Swift.Sendable {
     /// Name of the Amazon Kinesis Analytics application to update.
     /// This member is required.
     public var applicationName: Swift.String?
@@ -2341,7 +2341,7 @@ public struct UpdateApplicationInput {
     }
 }
 
-public struct UpdateApplicationOutput {
+public struct UpdateApplicationOutput: Swift.Sendable {
 
     public init() { }
 }

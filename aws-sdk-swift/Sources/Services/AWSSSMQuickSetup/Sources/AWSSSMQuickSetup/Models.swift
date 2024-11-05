@@ -28,42 +28,43 @@ import protocol ClientRuntime.ModeledError
 import struct Smithy.URIQueryItem
 @_spi(SmithyTimestamps) import struct SmithyTimestamps.TimestampFormatter
 
-public struct DeleteConfigurationManagerOutput {
+
+public struct DeleteConfigurationManagerOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct GetServiceSettingsInput {
+public struct GetServiceSettingsInput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct ListQuickSetupTypesInput {
+public struct ListQuickSetupTypesInput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct TagResourceOutput {
+public struct TagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UntagResourceOutput {
+public struct UntagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdateConfigurationDefinitionOutput {
+public struct UpdateConfigurationDefinitionOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdateConfigurationManagerOutput {
+public struct UpdateConfigurationManagerOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdateServiceSettingsOutput {
+public struct UpdateServiceSettingsOutput: Swift.Sendable {
 
     public init() { }
 }
@@ -93,8 +94,9 @@ public struct AccessDeniedException: ClientRuntime.ModeledError, AWSClientRuntim
 }
 
 extension SSMQuickSetupClientTypes {
+
     /// The definition of a Quick Setup configuration.
-    public struct ConfigurationDefinition {
+    public struct ConfigurationDefinition: Swift.Sendable {
         /// The ID of the configuration definition.
         public var id: Swift.String?
         /// The ARN of the IAM role used to administrate local configuration deployments.
@@ -127,12 +129,12 @@ extension SSMQuickSetupClientTypes {
             self.typeVersion = typeVersion
         }
     }
-
 }
 
 extension SSMQuickSetupClientTypes {
+
     /// Defines the preferences and options for a configuration definition.
-    public struct ConfigurationDefinitionInput {
+    public struct ConfigurationDefinitionInput: Swift.Sendable {
         /// The ARN of the IAM role used to administrate local configuration deployments.
         public var localDeploymentAdministrationRoleArn: Swift.String?
         /// The name of the IAM role used to deploy local configurations.
@@ -884,12 +886,12 @@ extension SSMQuickSetupClientTypes {
             self.typeVersion = typeVersion
         }
     }
-
 }
 
 extension SSMQuickSetupClientTypes {
+
     /// A summarized definition of a Quick Setup configuration definition.
-    public struct ConfigurationDefinitionSummary {
+    public struct ConfigurationDefinitionSummary: Swift.Sendable {
         /// The common parameters and values for the configuration definition.
         public var firstClassParameters: [Swift.String: Swift.String]?
         /// The ID of the configuration definition.
@@ -912,12 +914,11 @@ extension SSMQuickSetupClientTypes {
             self.typeVersion = typeVersion
         }
     }
-
 }
 
 extension SSMQuickSetupClientTypes {
 
-    public enum Status: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Status: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case deleteFailed
         case deleting
         case deploying
@@ -970,7 +971,7 @@ extension SSMQuickSetupClientTypes {
 
 extension SSMQuickSetupClientTypes {
 
-    public enum StatusType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum StatusType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case asyncExecutions
         case deployment
         case sdkUnknown(Swift.String)
@@ -998,8 +999,9 @@ extension SSMQuickSetupClientTypes {
 }
 
 extension SSMQuickSetupClientTypes {
+
     /// A summarized description of the status.
-    public struct StatusSummary {
+    public struct StatusSummary: Swift.Sendable {
         /// The datetime stamp when the status was last updated.
         /// This member is required.
         public var lastUpdatedAt: Foundation.Date?
@@ -1028,12 +1030,12 @@ extension SSMQuickSetupClientTypes {
             self.statusType = statusType
         }
     }
-
 }
 
 extension SSMQuickSetupClientTypes {
+
     /// A summary of a Quick Setup configuration manager.
-    public struct ConfigurationManagerSummary {
+    public struct ConfigurationManagerSummary: Swift.Sendable {
         /// A summary of the Quick Setup configuration definition.
         public var configurationDefinitionSummaries: [SSMQuickSetupClientTypes.ConfigurationDefinitionSummary]?
         /// The description of the configuration.
@@ -1061,7 +1063,6 @@ extension SSMQuickSetupClientTypes {
             self.statusSummaries = statusSummaries
         }
     }
-
 }
 
 /// Another request is being processed. Wait a few minutes and try again.
@@ -1161,7 +1162,7 @@ public struct ValidationException: ClientRuntime.ModeledError, AWSClientRuntime.
     }
 }
 
-public struct CreateConfigurationManagerInput {
+public struct CreateConfigurationManagerInput: Swift.Sendable {
     /// The definition of the Quick Setup configuration that the configuration manager deploys.
     /// This member is required.
     public var configurationDefinitions: [SSMQuickSetupClientTypes.ConfigurationDefinitionInput]?
@@ -1191,7 +1192,7 @@ extension CreateConfigurationManagerInput: Swift.CustomDebugStringConvertible {
         "CreateConfigurationManagerInput(configurationDefinitions: \(Swift.String(describing: configurationDefinitions)), description: \(Swift.String(describing: description)), name: \(Swift.String(describing: name)), tags: \"CONTENT_REDACTED\")"}
 }
 
-public struct CreateConfigurationManagerOutput {
+public struct CreateConfigurationManagerOutput: Swift.Sendable {
     /// The ARN for the newly created configuration manager.
     /// This member is required.
     public var managerArn: Swift.String?
@@ -1228,7 +1229,7 @@ public struct ResourceNotFoundException: ClientRuntime.ModeledError, AWSClientRu
     }
 }
 
-public struct DeleteConfigurationManagerInput {
+public struct DeleteConfigurationManagerInput: Swift.Sendable {
     /// The ID of the configuration manager.
     /// This member is required.
     public var managerArn: Swift.String?
@@ -1242,8 +1243,9 @@ public struct DeleteConfigurationManagerInput {
 }
 
 extension SSMQuickSetupClientTypes {
+
     /// A key-value pair to filter results.
-    public struct Filter {
+    public struct Filter: Swift.Sendable {
         /// The key for the filter.
         /// This member is required.
         public var key: Swift.String?
@@ -1260,10 +1262,9 @@ extension SSMQuickSetupClientTypes {
             self.values = values
         }
     }
-
 }
 
-public struct GetConfigurationManagerInput {
+public struct GetConfigurationManagerInput: Swift.Sendable {
     /// The ARN of the configuration manager.
     /// This member is required.
     public var managerArn: Swift.String?
@@ -1276,7 +1277,7 @@ public struct GetConfigurationManagerInput {
     }
 }
 
-public struct GetConfigurationManagerOutput {
+public struct GetConfigurationManagerOutput: Swift.Sendable {
     /// The configuration definitions association with the configuration manager.
     public var configurationDefinitions: [SSMQuickSetupClientTypes.ConfigurationDefinition]?
     /// The datetime stamp when the configuration manager was created.
@@ -1323,8 +1324,9 @@ extension GetConfigurationManagerOutput: Swift.CustomDebugStringConvertible {
 }
 
 extension SSMQuickSetupClientTypes {
+
     /// Settings configured for Quick Setup.
-    public struct ServiceSettings {
+    public struct ServiceSettings: Swift.Sendable {
         /// The IAM role used to enable Explorer.
         public var explorerEnablingRoleArn: Swift.String?
 
@@ -1335,10 +1337,9 @@ extension SSMQuickSetupClientTypes {
             self.explorerEnablingRoleArn = explorerEnablingRoleArn
         }
     }
-
 }
 
-public struct GetServiceSettingsOutput {
+public struct GetServiceSettingsOutput: Swift.Sendable {
     /// Returns details about the settings for Quick Setup in the requesting Amazon Web Services account and Amazon Web Services Region.
     public var serviceSettings: SSMQuickSetupClientTypes.ServiceSettings?
 
@@ -1350,7 +1351,7 @@ public struct GetServiceSettingsOutput {
     }
 }
 
-public struct ListConfigurationManagersInput {
+public struct ListConfigurationManagersInput: Swift.Sendable {
     /// Filters the results returned by the request.
     public var filters: [SSMQuickSetupClientTypes.Filter]?
     /// Specifies the maximum number of configuration managers that are returned by the request.
@@ -1370,7 +1371,7 @@ public struct ListConfigurationManagersInput {
     }
 }
 
-public struct ListConfigurationManagersOutput {
+public struct ListConfigurationManagersOutput: Swift.Sendable {
     /// The configuration managers returned by the request.
     public var configurationManagersList: [SSMQuickSetupClientTypes.ConfigurationManagerSummary]?
     /// The token to use when requesting the next set of configuration managers. If there are no additional operations to return, the string is empty.
@@ -1387,8 +1388,9 @@ public struct ListConfigurationManagersOutput {
 }
 
 extension SSMQuickSetupClientTypes {
+
     /// Information about the Quick Setup type.
-    public struct QuickSetupTypeOutput {
+    public struct QuickSetupTypeOutput: Swift.Sendable {
         /// The latest version number of the configuration.
         public var latestVersion: Swift.String?
         /// The type of the Quick Setup configuration.
@@ -1403,10 +1405,9 @@ extension SSMQuickSetupClientTypes {
             self.type = type
         }
     }
-
 }
 
-public struct ListQuickSetupTypesOutput {
+public struct ListQuickSetupTypesOutput: Swift.Sendable {
     /// An array of Quick Setup types.
     public var quickSetupTypeList: [SSMQuickSetupClientTypes.QuickSetupTypeOutput]?
 
@@ -1418,7 +1419,7 @@ public struct ListQuickSetupTypesOutput {
     }
 }
 
-public struct ListTagsForResourceInput {
+public struct ListTagsForResourceInput: Swift.Sendable {
     /// The ARN of the resource the tag is assigned to.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -1432,8 +1433,9 @@ public struct ListTagsForResourceInput {
 }
 
 extension SSMQuickSetupClientTypes {
+
     /// Key-value pairs of metadata.
-    public struct TagEntry {
+    public struct TagEntry: Swift.Sendable {
         /// The key for the tag.
         public var key: Swift.String?
         /// The value for the tag.
@@ -1448,7 +1450,6 @@ extension SSMQuickSetupClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension SSMQuickSetupClientTypes.TagEntry: Swift.CustomDebugStringConvertible {
@@ -1457,7 +1458,7 @@ extension SSMQuickSetupClientTypes.TagEntry: Swift.CustomDebugStringConvertible 
     }
 }
 
-public struct ListTagsForResourceOutput {
+public struct ListTagsForResourceOutput: Swift.Sendable {
     /// Key-value pairs of metadata assigned to the resource.
     public var tags: [SSMQuickSetupClientTypes.TagEntry]?
 
@@ -1474,7 +1475,7 @@ extension ListTagsForResourceOutput: Swift.CustomDebugStringConvertible {
         "ListTagsForResourceOutput(tags: \"CONTENT_REDACTED\")"}
 }
 
-public struct TagResourceInput {
+public struct TagResourceInput: Swift.Sendable {
     /// The ARN of the resource to tag.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -1497,7 +1498,7 @@ extension TagResourceInput: Swift.CustomDebugStringConvertible {
         "TagResourceInput(resourceArn: \(Swift.String(describing: resourceArn)), tags: \"CONTENT_REDACTED\")"}
 }
 
-public struct UntagResourceInput {
+public struct UntagResourceInput: Swift.Sendable {
     /// The ARN of the resource to remove tags from.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -1515,7 +1516,7 @@ public struct UntagResourceInput {
     }
 }
 
-public struct UpdateConfigurationDefinitionInput {
+public struct UpdateConfigurationDefinitionInput: Swift.Sendable {
     /// The ID of the configuration definition you want to update.
     /// This member is required.
     public var id: Swift.String?
@@ -1549,7 +1550,7 @@ public struct UpdateConfigurationDefinitionInput {
     }
 }
 
-public struct UpdateConfigurationManagerInput {
+public struct UpdateConfigurationManagerInput: Swift.Sendable {
     /// A description of the configuration manager.
     public var description: Swift.String?
     /// The ARN of the configuration manager.
@@ -1570,7 +1571,7 @@ public struct UpdateConfigurationManagerInput {
     }
 }
 
-public struct UpdateServiceSettingsInput {
+public struct UpdateServiceSettingsInput: Swift.Sendable {
     /// The IAM role used to enable Explorer.
     public var explorerEnablingRoleArn: Swift.String?
 

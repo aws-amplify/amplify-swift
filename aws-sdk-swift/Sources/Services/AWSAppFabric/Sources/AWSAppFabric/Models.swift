@@ -53,8 +53,9 @@ public struct AccessDeniedException: ClientRuntime.ModeledError, AWSClientRuntim
 }
 
 extension AppFabricClientTypes {
+
     /// Contains API key credential information.
-    public struct ApiKeyCredential {
+    public struct ApiKeyCredential: Swift.Sendable {
         /// An API key for an application.
         /// This member is required.
         public var apiKey: Swift.String?
@@ -66,7 +67,6 @@ extension AppFabricClientTypes {
             self.apiKey = apiKey
         }
     }
-
 }
 
 extension AppFabricClientTypes.ApiKeyCredential: Swift.CustomDebugStringConvertible {
@@ -76,7 +76,7 @@ extension AppFabricClientTypes.ApiKeyCredential: Swift.CustomDebugStringConverti
 
 extension AppFabricClientTypes {
 
-    public enum AuthType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AuthType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case apiKey
         case oauth2
         case sdkUnknown(Swift.String)
@@ -105,7 +105,7 @@ extension AppFabricClientTypes {
 
 extension AppFabricClientTypes {
 
-    public enum Persona: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Persona: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case admin
         case enduser
         case sdkUnknown(Swift.String)
@@ -134,7 +134,7 @@ extension AppFabricClientTypes {
 
 extension AppFabricClientTypes {
 
-    public enum AppAuthorizationStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AppAuthorizationStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case connected
         case connectionValidationFailed
         case pendingConnect
@@ -168,8 +168,9 @@ extension AppFabricClientTypes {
 }
 
 extension AppFabricClientTypes {
+
     /// Contains information about an application tenant.
-    public struct Tenant {
+    public struct Tenant: Swift.Sendable {
         /// The display name of the tenant.
         /// This member is required.
         public var tenantDisplayName: Swift.String?
@@ -186,12 +187,12 @@ extension AppFabricClientTypes {
             self.tenantIdentifier = tenantIdentifier
         }
     }
-
 }
 
 extension AppFabricClientTypes {
+
     /// Contains information about an app authorization.
-    public struct AppAuthorization {
+    public struct AppAuthorization: Swift.Sendable {
         /// The name of the application.
         /// This member is required.
         public var app: Swift.String?
@@ -254,12 +255,12 @@ extension AppFabricClientTypes {
             self.updatedAt = updatedAt
         }
     }
-
 }
 
 extension AppFabricClientTypes {
+
     /// Contains a summary of an app authorization.
-    public struct AppAuthorizationSummary {
+    public struct AppAuthorizationSummary: Swift.Sendable {
         /// The name of the application.
         /// This member is required.
         public var app: Swift.String?
@@ -304,12 +305,12 @@ extension AppFabricClientTypes {
             self.updatedAt = updatedAt
         }
     }
-
 }
 
 extension AppFabricClientTypes {
+
     /// Contains information about an app bundle.
-    public struct AppBundle {
+    public struct AppBundle: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the app bundle.
         /// This member is required.
         public var arn: Swift.String?
@@ -325,12 +326,12 @@ extension AppFabricClientTypes {
             self.customerManagedKeyArn = customerManagedKeyArn
         }
     }
-
 }
 
 extension AppFabricClientTypes {
+
     /// Contains a summary of an app bundle.
-    public struct AppBundleSummary {
+    public struct AppBundleSummary: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the app bundle.
         /// This member is required.
         public var arn: Swift.String?
@@ -342,12 +343,12 @@ extension AppFabricClientTypes {
             self.arn = arn
         }
     }
-
 }
 
 extension AppFabricClientTypes {
+
     /// Contains information about an Amazon Kinesis Data Firehose delivery stream.
-    public struct FirehoseStream {
+    public struct FirehoseStream: Swift.Sendable {
         /// The name of the Amazon Kinesis Data Firehose delivery stream.
         /// This member is required.
         public var streamName: Swift.String?
@@ -359,12 +360,12 @@ extension AppFabricClientTypes {
             self.streamName = streamName
         }
     }
-
 }
 
 extension AppFabricClientTypes {
+
     /// Contains information about an Amazon S3 bucket.
-    public struct S3Bucket {
+    public struct S3Bucket: Swift.Sendable {
         /// The name of the Amazon S3 bucket.
         /// This member is required.
         public var bucketName: Swift.String?
@@ -380,24 +381,24 @@ extension AppFabricClientTypes {
             self.`prefix` = `prefix`
         }
     }
-
 }
 
 extension AppFabricClientTypes {
+
     /// Contains information about an audit log destination.
-    public enum Destination {
+    public enum Destination: Swift.Sendable {
         /// Contains information about an Amazon S3 bucket.
         case s3bucket(AppFabricClientTypes.S3Bucket)
         /// Contains information about an Amazon Kinesis Data Firehose delivery stream.
         case firehosestream(AppFabricClientTypes.FirehoseStream)
         case sdkUnknown(Swift.String)
     }
-
 }
 
 extension AppFabricClientTypes {
+
     /// Contains information about an audit log destination configuration.
-    public struct AuditLogDestinationConfiguration {
+    public struct AuditLogDestinationConfiguration: Swift.Sendable {
         /// Contains information about an audit log destination.
         /// This member is required.
         public var destination: AppFabricClientTypes.Destination?
@@ -409,12 +410,11 @@ extension AppFabricClientTypes {
             self.destination = destination
         }
     }
-
 }
 
 extension AppFabricClientTypes {
 
-    public enum Format: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Format: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case json
         case parquet
         case sdkUnknown(Swift.String)
@@ -443,7 +443,7 @@ extension AppFabricClientTypes {
 
 extension AppFabricClientTypes {
 
-    public enum Schema: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Schema: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case ocsf
         case raw
         case sdkUnknown(Swift.String)
@@ -471,8 +471,9 @@ extension AppFabricClientTypes {
 }
 
 extension AppFabricClientTypes {
+
     /// Contains information about an audit log processing configuration.
-    public struct AuditLogProcessingConfiguration {
+    public struct AuditLogProcessingConfiguration: Swift.Sendable {
         /// The format in which the audit logs need to be formatted.
         /// This member is required.
         public var format: AppFabricClientTypes.Format?
@@ -489,12 +490,12 @@ extension AppFabricClientTypes {
             self.schema = schema
         }
     }
-
 }
 
 extension AppFabricClientTypes {
+
     /// Contains authorization request information, which is required for Amazon Web Services AppFabric to get the OAuth2 access token for an application.
-    public struct AuthRequest {
+    public struct AuthRequest: Swift.Sendable {
         /// The authorization code returned by the application after permission is granted in the application OAuth page (after clicking on the AuthURL).
         /// This member is required.
         public var code: Swift.String?
@@ -511,7 +512,6 @@ extension AppFabricClientTypes {
             self.redirectUri = redirectUri
         }
     }
-
 }
 
 extension AppFabricClientTypes.AuthRequest: Swift.CustomDebugStringConvertible {
@@ -621,8 +621,9 @@ public struct ThrottlingException: ClientRuntime.ModeledError, AWSClientRuntime.
 }
 
 extension AppFabricClientTypes {
+
     /// The input failed to meet the constraints specified by the Amazon Web Services service in a specified field.
-    public struct ValidationExceptionField {
+    public struct ValidationExceptionField: Swift.Sendable {
         /// A message about the validation exception.
         /// This member is required.
         public var message: Swift.String?
@@ -639,12 +640,11 @@ extension AppFabricClientTypes {
             self.name = name
         }
     }
-
 }
 
 extension AppFabricClientTypes {
 
-    public enum ValidationExceptionReason: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ValidationExceptionReason: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case cannotParse
         case fieldValidationFailed
         case other
@@ -711,7 +711,7 @@ public struct ValidationException: ClientRuntime.ModeledError, AWSClientRuntime.
     }
 }
 
-public struct BatchGetUserAccessTasksInput {
+public struct BatchGetUserAccessTasksInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) or Universal Unique Identifier (UUID) of the app bundle to use for the request.
     /// This member is required.
     public var appBundleIdentifier: Swift.String?
@@ -731,7 +731,7 @@ public struct BatchGetUserAccessTasksInput {
 
 extension AppFabricClientTypes {
 
-    public enum ResultStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ResultStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case completed
         case expired
         case failed
@@ -765,8 +765,9 @@ extension AppFabricClientTypes {
 }
 
 extension AppFabricClientTypes {
+
     /// Contains information about an error returned from a user access task.
-    public struct TaskError {
+    public struct TaskError: Swift.Sendable {
         /// The code of the error.
         public var errorCode: Swift.String?
         /// The message of the error.
@@ -781,12 +782,12 @@ extension AppFabricClientTypes {
             self.errorMessage = errorMessage
         }
     }
-
 }
 
 extension AppFabricClientTypes {
+
     /// Contains information about a user's access to an application.
-    public struct UserAccessResultItem {
+    public struct UserAccessResultItem: Swift.Sendable {
         /// The name of the application.
         public var app: Swift.String?
         /// The email address of the target user.
@@ -849,7 +850,6 @@ extension AppFabricClientTypes {
             self.userStatus = userStatus
         }
     }
-
 }
 
 extension AppFabricClientTypes.UserAccessResultItem: Swift.CustomDebugStringConvertible {
@@ -857,7 +857,7 @@ extension AppFabricClientTypes.UserAccessResultItem: Swift.CustomDebugStringConv
         "UserAccessResultItem(app: \(Swift.String(describing: app)), resultStatus: \(Swift.String(describing: resultStatus)), taskError: \(Swift.String(describing: taskError)), taskId: \(Swift.String(describing: taskId)), tenantDisplayName: \(Swift.String(describing: tenantDisplayName)), tenantId: \(Swift.String(describing: tenantId)), userStatus: \(Swift.String(describing: userStatus)), email: \"CONTENT_REDACTED\", userFirstName: \"CONTENT_REDACTED\", userFullName: \"CONTENT_REDACTED\", userId: \"CONTENT_REDACTED\", userLastName: \"CONTENT_REDACTED\")"}
 }
 
-public struct BatchGetUserAccessTasksOutput {
+public struct BatchGetUserAccessTasksOutput: Swift.Sendable {
     /// Contains a list of user access results.
     public var userAccessResultsList: [AppFabricClientTypes.UserAccessResultItem]?
 
@@ -904,7 +904,7 @@ public struct ConflictException: ClientRuntime.ModeledError, AWSClientRuntime.AW
     }
 }
 
-public struct ConnectAppAuthorizationInput {
+public struct ConnectAppAuthorizationInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) or Universal Unique Identifier (UUID) of the app authorization to use for the request.
     /// This member is required.
     public var appAuthorizationIdentifier: Swift.String?
@@ -926,7 +926,7 @@ public struct ConnectAppAuthorizationInput {
     }
 }
 
-public struct ConnectAppAuthorizationOutput {
+public struct ConnectAppAuthorizationOutput: Swift.Sendable {
     /// Contains a summary of the app authorization.
     /// This member is required.
     public var appAuthorizationSummary: AppFabricClientTypes.AppAuthorizationSummary?
@@ -985,8 +985,9 @@ public struct ServiceQuotaExceededException: ClientRuntime.ModeledError, AWSClie
 }
 
 extension AppFabricClientTypes {
+
     /// Contains OAuth2 client credential information.
-    public struct Oauth2Credential {
+    public struct Oauth2Credential: Swift.Sendable {
         /// The client ID of the client application.
         /// This member is required.
         public var clientId: Swift.String?
@@ -1003,7 +1004,6 @@ extension AppFabricClientTypes {
             self.clientSecret = clientSecret
         }
     }
-
 }
 
 extension AppFabricClientTypes.Oauth2Credential: Swift.CustomDebugStringConvertible {
@@ -1012,20 +1012,21 @@ extension AppFabricClientTypes.Oauth2Credential: Swift.CustomDebugStringConverti
 }
 
 extension AppFabricClientTypes {
+
     /// Contains credential information for an application.
-    public enum Credential {
+    public enum Credential: Swift.Sendable {
         /// Contains OAuth2 client credential information.
         case oauth2credential(AppFabricClientTypes.Oauth2Credential)
         /// Contains API key credential information.
         case apikeycredential(AppFabricClientTypes.ApiKeyCredential)
         case sdkUnknown(Swift.String)
     }
-
 }
 
 extension AppFabricClientTypes {
+
     /// The key or keys of the key-value pairs for the tag or tags assigned to a resource.
-    public struct Tag {
+    public struct Tag: Swift.Sendable {
         /// Tag key.
         /// This member is required.
         public var key: Swift.String?
@@ -1042,10 +1043,9 @@ extension AppFabricClientTypes {
             self.value = value
         }
     }
-
 }
 
-public struct CreateAppAuthorizationInput {
+public struct CreateAppAuthorizationInput: Swift.Sendable {
     /// The name of the application. Valid values are:
     ///
     /// * SLACK
@@ -1110,7 +1110,7 @@ public struct CreateAppAuthorizationInput {
     }
 }
 
-public struct CreateAppAuthorizationOutput {
+public struct CreateAppAuthorizationOutput: Swift.Sendable {
     /// Contains information about an app authorization.
     /// This member is required.
     public var appAuthorization: AppFabricClientTypes.AppAuthorization?
@@ -1123,7 +1123,7 @@ public struct CreateAppAuthorizationOutput {
     }
 }
 
-public struct CreateAppBundleInput {
+public struct CreateAppBundleInput: Swift.Sendable {
     /// Specifies a unique, case-sensitive identifier that you provide to ensure the idempotency of the request. This lets you safely retry the request without accidentally performing the same operation a second time. Passing the same value to a later call to an operation requires that you also pass the same value for all other parameters. We recommend that you use a [UUID type of value](https://wikipedia.org/wiki/Universally_unique_identifier). If you don't provide this value, then Amazon Web Services generates a random one for you. If you retry the operation with the same ClientToken, but with different parameters, the retry fails with an IdempotentParameterMismatch error.
     public var clientToken: Swift.String?
     /// The Amazon Resource Name (ARN) of the Key Management Service (KMS) key to use to encrypt the application data. If this is not specified, an Amazon Web Services owned key is used for encryption.
@@ -1143,7 +1143,7 @@ public struct CreateAppBundleInput {
     }
 }
 
-public struct CreateAppBundleOutput {
+public struct CreateAppBundleOutput: Swift.Sendable {
     /// Contains information about an app bundle.
     /// This member is required.
     public var appBundle: AppFabricClientTypes.AppBundle?
@@ -1158,7 +1158,7 @@ public struct CreateAppBundleOutput {
 
 extension AppFabricClientTypes {
 
-    public enum IngestionType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum IngestionType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case auditLog
         case sdkUnknown(Swift.String)
 
@@ -1182,7 +1182,7 @@ extension AppFabricClientTypes {
     }
 }
 
-public struct CreateIngestionInput {
+public struct CreateIngestionInput: Swift.Sendable {
     /// The name of the application. Valid values are:
     ///
     /// * SLACK
@@ -1244,7 +1244,7 @@ public struct CreateIngestionInput {
 
 extension AppFabricClientTypes {
 
-    public enum IngestionState: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum IngestionState: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case disabled
         case enabled
         case sdkUnknown(Swift.String)
@@ -1272,8 +1272,9 @@ extension AppFabricClientTypes {
 }
 
 extension AppFabricClientTypes {
+
     /// Contains information about an ingestion.
-    public struct Ingestion {
+    public struct Ingestion: Swift.Sendable {
         /// The name of the application.
         /// This member is required.
         public var app: Swift.String?
@@ -1320,10 +1321,9 @@ extension AppFabricClientTypes {
             self.updatedAt = updatedAt
         }
     }
-
 }
 
-public struct CreateIngestionOutput {
+public struct CreateIngestionOutput: Swift.Sendable {
     /// Contains information about an ingestion.
     /// This member is required.
     public var ingestion: AppFabricClientTypes.Ingestion?
@@ -1337,26 +1337,26 @@ public struct CreateIngestionOutput {
 }
 
 extension AppFabricClientTypes {
+
     /// Contains information about the destination of ingested data.
-    public enum DestinationConfiguration {
+    public enum DestinationConfiguration: Swift.Sendable {
         /// Contains information about an audit log destination configuration.
         case auditlog(AppFabricClientTypes.AuditLogDestinationConfiguration)
         case sdkUnknown(Swift.String)
     }
-
 }
 
 extension AppFabricClientTypes {
+
     /// Contains information about how ingested data is processed.
-    public enum ProcessingConfiguration {
+    public enum ProcessingConfiguration: Swift.Sendable {
         /// Contains information about an audit log processing configuration.
         case auditlog(AppFabricClientTypes.AuditLogProcessingConfiguration)
         case sdkUnknown(Swift.String)
     }
-
 }
 
-public struct CreateIngestionDestinationInput {
+public struct CreateIngestionDestinationInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) or Universal Unique Identifier (UUID) of the app bundle to use for the request.
     /// This member is required.
     public var appBundleIdentifier: Swift.String?
@@ -1394,7 +1394,7 @@ public struct CreateIngestionDestinationInput {
 
 extension AppFabricClientTypes {
 
-    public enum IngestionDestinationStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum IngestionDestinationStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case active
         case failed
         case sdkUnknown(Swift.String)
@@ -1422,8 +1422,9 @@ extension AppFabricClientTypes {
 }
 
 extension AppFabricClientTypes {
+
     /// Contains information about an ingestion destination.
-    public struct IngestionDestination {
+    public struct IngestionDestination: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the ingestion destination.
         /// This member is required.
         public var arn: Swift.String?
@@ -1470,10 +1471,9 @@ extension AppFabricClientTypes {
             self.updatedAt = updatedAt
         }
     }
-
 }
 
-public struct CreateIngestionDestinationOutput {
+public struct CreateIngestionDestinationOutput: Swift.Sendable {
     /// Contains information about an ingestion destination.
     /// This member is required.
     public var ingestionDestination: AppFabricClientTypes.IngestionDestination?
@@ -1486,7 +1486,7 @@ public struct CreateIngestionDestinationOutput {
     }
 }
 
-public struct DeleteAppAuthorizationInput {
+public struct DeleteAppAuthorizationInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) or Universal Unique Identifier (UUID) of the app authorization to use for the request.
     /// This member is required.
     public var appAuthorizationIdentifier: Swift.String?
@@ -1504,12 +1504,12 @@ public struct DeleteAppAuthorizationInput {
     }
 }
 
-public struct DeleteAppAuthorizationOutput {
+public struct DeleteAppAuthorizationOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteAppBundleInput {
+public struct DeleteAppBundleInput: Swift.Sendable {
     /// The ID or Amazon Resource Name (ARN) of the app bundle that needs to be deleted.
     /// This member is required.
     public var appBundleIdentifier: Swift.String?
@@ -1522,12 +1522,12 @@ public struct DeleteAppBundleInput {
     }
 }
 
-public struct DeleteAppBundleOutput {
+public struct DeleteAppBundleOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteIngestionInput {
+public struct DeleteIngestionInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) or Universal Unique Identifier (UUID) of the app bundle to use for the request.
     /// This member is required.
     public var appBundleIdentifier: Swift.String?
@@ -1545,12 +1545,12 @@ public struct DeleteIngestionInput {
     }
 }
 
-public struct DeleteIngestionOutput {
+public struct DeleteIngestionOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteIngestionDestinationInput {
+public struct DeleteIngestionDestinationInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) or Universal Unique Identifier (UUID) of the app bundle to use for the request.
     /// This member is required.
     public var appBundleIdentifier: Swift.String?
@@ -1573,12 +1573,12 @@ public struct DeleteIngestionDestinationInput {
     }
 }
 
-public struct DeleteIngestionDestinationOutput {
+public struct DeleteIngestionDestinationOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct GetAppAuthorizationInput {
+public struct GetAppAuthorizationInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) or Universal Unique Identifier (UUID) of the app authorization to use for the request.
     /// This member is required.
     public var appAuthorizationIdentifier: Swift.String?
@@ -1596,7 +1596,7 @@ public struct GetAppAuthorizationInput {
     }
 }
 
-public struct GetAppAuthorizationOutput {
+public struct GetAppAuthorizationOutput: Swift.Sendable {
     /// Contains information about an app authorization.
     /// This member is required.
     public var appAuthorization: AppFabricClientTypes.AppAuthorization?
@@ -1609,7 +1609,7 @@ public struct GetAppAuthorizationOutput {
     }
 }
 
-public struct GetAppBundleInput {
+public struct GetAppBundleInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) or Universal Unique Identifier (UUID) of the app bundle to use for the request.
     /// This member is required.
     public var appBundleIdentifier: Swift.String?
@@ -1622,7 +1622,7 @@ public struct GetAppBundleInput {
     }
 }
 
-public struct GetAppBundleOutput {
+public struct GetAppBundleOutput: Swift.Sendable {
     /// Contains information about an app bundle.
     /// This member is required.
     public var appBundle: AppFabricClientTypes.AppBundle?
@@ -1635,7 +1635,7 @@ public struct GetAppBundleOutput {
     }
 }
 
-public struct GetIngestionInput {
+public struct GetIngestionInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) or Universal Unique Identifier (UUID) of the app bundle to use for the request.
     /// This member is required.
     public var appBundleIdentifier: Swift.String?
@@ -1653,7 +1653,7 @@ public struct GetIngestionInput {
     }
 }
 
-public struct GetIngestionOutput {
+public struct GetIngestionOutput: Swift.Sendable {
     /// Contains information about an ingestion.
     /// This member is required.
     public var ingestion: AppFabricClientTypes.Ingestion?
@@ -1666,7 +1666,7 @@ public struct GetIngestionOutput {
     }
 }
 
-public struct GetIngestionDestinationInput {
+public struct GetIngestionDestinationInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) or Universal Unique Identifier (UUID) of the app bundle to use for the request.
     /// This member is required.
     public var appBundleIdentifier: Swift.String?
@@ -1689,7 +1689,7 @@ public struct GetIngestionDestinationInput {
     }
 }
 
-public struct GetIngestionDestinationOutput {
+public struct GetIngestionDestinationOutput: Swift.Sendable {
     /// Contains information about an ingestion destination.
     /// This member is required.
     public var ingestionDestination: AppFabricClientTypes.IngestionDestination?
@@ -1702,7 +1702,7 @@ public struct GetIngestionDestinationOutput {
     }
 }
 
-public struct ListAppAuthorizationsInput {
+public struct ListAppAuthorizationsInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) or Universal Unique Identifier (UUID) of the app bundle to use for the request.
     /// This member is required.
     public var appBundleIdentifier: Swift.String?
@@ -1723,7 +1723,7 @@ public struct ListAppAuthorizationsInput {
     }
 }
 
-public struct ListAppAuthorizationsOutput {
+public struct ListAppAuthorizationsOutput: Swift.Sendable {
     /// Contains a list of app authorization summaries.
     /// This member is required.
     public var appAuthorizationSummaryList: [AppFabricClientTypes.AppAuthorizationSummary]?
@@ -1740,7 +1740,7 @@ public struct ListAppAuthorizationsOutput {
     }
 }
 
-public struct ListAppBundlesInput {
+public struct ListAppBundlesInput: Swift.Sendable {
     /// The maximum number of results that are returned per call. You can use nextToken to obtain further pages of results. This is only an upper limit. The actual number of results returned per call might be fewer than the specified maximum.
     public var maxResults: Swift.Int?
     /// If nextToken is returned, there are more results available. The value of nextToken is a unique pagination token for each page. Make the call again using the returned token to retrieve the next page. Keep all other arguments unchanged. Each pagination token expires after 24 hours. Using an expired pagination token will return an HTTP 400 InvalidToken error.
@@ -1756,7 +1756,7 @@ public struct ListAppBundlesInput {
     }
 }
 
-public struct ListAppBundlesOutput {
+public struct ListAppBundlesOutput: Swift.Sendable {
     /// Contains a list of app bundle summaries.
     /// This member is required.
     public var appBundleSummaryList: [AppFabricClientTypes.AppBundleSummary]?
@@ -1773,7 +1773,7 @@ public struct ListAppBundlesOutput {
     }
 }
 
-public struct ListIngestionDestinationsInput {
+public struct ListIngestionDestinationsInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) or Universal Unique Identifier (UUID) of the app bundle to use for the request.
     /// This member is required.
     public var appBundleIdentifier: Swift.String?
@@ -1800,8 +1800,9 @@ public struct ListIngestionDestinationsInput {
 }
 
 extension AppFabricClientTypes {
+
     /// Contains a summary of an ingestion destination.
-    public struct IngestionDestinationSummary {
+    public struct IngestionDestinationSummary: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the ingestion destination.
         /// This member is required.
         public var arn: Swift.String?
@@ -1813,10 +1814,9 @@ extension AppFabricClientTypes {
             self.arn = arn
         }
     }
-
 }
 
-public struct ListIngestionDestinationsOutput {
+public struct ListIngestionDestinationsOutput: Swift.Sendable {
     /// Contains a list of ingestion destination summaries.
     /// This member is required.
     public var ingestionDestinations: [AppFabricClientTypes.IngestionDestinationSummary]?
@@ -1833,7 +1833,7 @@ public struct ListIngestionDestinationsOutput {
     }
 }
 
-public struct ListIngestionsInput {
+public struct ListIngestionsInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) or Universal Unique Identifier (UUID) of the app bundle to use for the request.
     /// This member is required.
     public var appBundleIdentifier: Swift.String?
@@ -1855,8 +1855,9 @@ public struct ListIngestionsInput {
 }
 
 extension AppFabricClientTypes {
+
     /// Contains a summary of an ingestion.
-    public struct IngestionSummary {
+    public struct IngestionSummary: Swift.Sendable {
         /// The name of the application.
         /// This member is required.
         public var app: Swift.String?
@@ -1883,10 +1884,9 @@ extension AppFabricClientTypes {
             self.tenantId = tenantId
         }
     }
-
 }
 
-public struct ListIngestionsOutput {
+public struct ListIngestionsOutput: Swift.Sendable {
     /// Contains a list of ingestion summaries.
     /// This member is required.
     public var ingestions: [AppFabricClientTypes.IngestionSummary]?
@@ -1903,7 +1903,7 @@ public struct ListIngestionsOutput {
     }
 }
 
-public struct ListTagsForResourceInput {
+public struct ListTagsForResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the resource for which you want to retrieve tags.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -1916,7 +1916,7 @@ public struct ListTagsForResourceInput {
     }
 }
 
-public struct ListTagsForResourceOutput {
+public struct ListTagsForResourceOutput: Swift.Sendable {
     /// A map of the key-value pairs for the tag or tags assigned to the specified resource.
     public var tags: [AppFabricClientTypes.Tag]?
 
@@ -1928,7 +1928,7 @@ public struct ListTagsForResourceOutput {
     }
 }
 
-public struct StartIngestionInput {
+public struct StartIngestionInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) or Universal Unique Identifier (UUID) of the app bundle to use for the request.
     /// This member is required.
     public var appBundleIdentifier: Swift.String?
@@ -1946,12 +1946,12 @@ public struct StartIngestionInput {
     }
 }
 
-public struct StartIngestionOutput {
+public struct StartIngestionOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct StartUserAccessTasksInput {
+public struct StartUserAccessTasksInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) or Universal Unique Identifier (UUID) of the app bundle to use for the request.
     /// This member is required.
     public var appBundleIdentifier: Swift.String?
@@ -1975,8 +1975,9 @@ extension StartUserAccessTasksInput: Swift.CustomDebugStringConvertible {
 }
 
 extension AppFabricClientTypes {
+
     /// Contains information about a user access task.
-    public struct UserAccessTaskItem {
+    public struct UserAccessTaskItem: Swift.Sendable {
         /// The name of the application.
         /// This member is required.
         public var app: Swift.String?
@@ -2001,10 +2002,9 @@ extension AppFabricClientTypes {
             self.tenantId = tenantId
         }
     }
-
 }
 
-public struct StartUserAccessTasksOutput {
+public struct StartUserAccessTasksOutput: Swift.Sendable {
     /// Contains a list of user access task information.
     public var userAccessTasksList: [AppFabricClientTypes.UserAccessTaskItem]?
 
@@ -2016,7 +2016,7 @@ public struct StartUserAccessTasksOutput {
     }
 }
 
-public struct StopIngestionInput {
+public struct StopIngestionInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) or Universal Unique Identifier (UUID) of the app bundle to use for the request.
     /// This member is required.
     public var appBundleIdentifier: Swift.String?
@@ -2034,12 +2034,12 @@ public struct StopIngestionInput {
     }
 }
 
-public struct StopIngestionOutput {
+public struct StopIngestionOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct TagResourceInput {
+public struct TagResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the resource that you want to tag.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -2057,12 +2057,12 @@ public struct TagResourceInput {
     }
 }
 
-public struct TagResourceOutput {
+public struct TagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UntagResourceInput {
+public struct UntagResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the resource that you want to untag.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -2080,12 +2080,12 @@ public struct UntagResourceInput {
     }
 }
 
-public struct UntagResourceOutput {
+public struct UntagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdateAppAuthorizationInput {
+public struct UpdateAppAuthorizationInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) or Universal Unique Identifier (UUID) of the app authorization to use for the request.
     /// This member is required.
     public var appAuthorizationIdentifier: Swift.String?
@@ -2111,7 +2111,7 @@ public struct UpdateAppAuthorizationInput {
     }
 }
 
-public struct UpdateAppAuthorizationOutput {
+public struct UpdateAppAuthorizationOutput: Swift.Sendable {
     /// Contains information about an app authorization.
     /// This member is required.
     public var appAuthorization: AppFabricClientTypes.AppAuthorization?
@@ -2124,7 +2124,7 @@ public struct UpdateAppAuthorizationOutput {
     }
 }
 
-public struct UpdateIngestionDestinationInput {
+public struct UpdateIngestionDestinationInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) or Universal Unique Identifier (UUID) of the app bundle to use for the request.
     /// This member is required.
     public var appBundleIdentifier: Swift.String?
@@ -2152,7 +2152,7 @@ public struct UpdateIngestionDestinationInput {
     }
 }
 
-public struct UpdateIngestionDestinationOutput {
+public struct UpdateIngestionDestinationOutput: Swift.Sendable {
     /// Contains information about an ingestion destination.
     /// This member is required.
     public var ingestionDestination: AppFabricClientTypes.IngestionDestination?

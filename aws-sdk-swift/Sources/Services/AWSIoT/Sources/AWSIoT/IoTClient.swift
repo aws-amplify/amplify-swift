@@ -416,7 +416,7 @@ extension IoTClient {
 
     /// Performs the `AssociateSbomWithPackageVersion` operation on the `AWSIotService` service.
     ///
-    /// Associates a software bill of materials (SBOM) with a specific software package version. Requires permission to access the [AssociateSbomWithPackageVersion](https://docs.aws.amazon.com/service-authorization/latest/reference/list_awsiot.html#awsiot-actions-as-permissions) action.
+    /// Associates the selected software bill of materials (SBOM) with a specific software package version. Requires permission to access the [AssociateSbomWithPackageVersion](https://docs.aws.amazon.com/service-authorization/latest/reference/list_awsiot.html#awsiot-actions-as-permissions) action.
     ///
     /// - Parameter AssociateSbomWithPackageVersionInput : [no documentation found]
     ///
@@ -1586,7 +1586,7 @@ extension IoTClient {
 
     /// Performs the `CreateBillingGroup` operation on the `AWSIotService` service.
     ///
-    /// Creates a billing group. Requires permission to access the [CreateBillingGroup](https://docs.aws.amazon.com/service-authorization/latest/reference/list_awsiot.html#awsiot-actions-as-permissions) action.
+    /// Creates a billing group. If this call is made multiple times using the same billing group name and configuration, the call will succeed. If this call is made with the same billing group name but different configuration a ResourceAlreadyExistsException is thrown. Requires permission to access the [CreateBillingGroup](https://docs.aws.amazon.com/service-authorization/latest/reference/list_awsiot.html#awsiot-actions-as-permissions) action.
     ///
     /// - Parameter CreateBillingGroupInput : [no documentation found]
     ///
@@ -3077,7 +3077,7 @@ extension IoTClient {
 
     /// Performs the `CreateRoleAlias` operation on the `AWSIotService` service.
     ///
-    /// Creates a role alias. Requires permission to access the [CreateRoleAlias](https://docs.aws.amazon.com/service-authorization/latest/reference/list_awsiot.html#awsiot-actions-as-permissions) action.
+    /// Creates a role alias. Requires permission to access the [CreateRoleAlias](https://docs.aws.amazon.com/service-authorization/latest/reference/list_awsiot.html#awsiot-actions-as-permissions) action. The value of [credentialDurationSeconds](https://docs.aws.amazon.com/iot/latest/apireference/API_CreateRoleAlias.html#iot-CreateRoleAlias-request-credentialDurationSeconds) must be less than or equal to the maximum session duration of the IAM role that the role alias references. For more information, see [ Modifying a role maximum session duration (Amazon Web Services API)](https://docs.aws.amazon.com/IAM/latest/UserGuide/roles-managingrole-editing-api.html#roles-modify_max-session-duration-api) from the Amazon Web Services Identity and Access Management User Guide.
     ///
     /// - Parameter CreateRoleAliasInput : [no documentation found]
     ///
@@ -3520,7 +3520,7 @@ extension IoTClient {
 
     /// Performs the `CreateThingType` operation on the `AWSIotService` service.
     ///
-    /// Creates a new thing type. Requires permission to access the [CreateThingType](https://docs.aws.amazon.com/service-authorization/latest/reference/list_awsiot.html#awsiot-actions-as-permissions) action.
+    /// Creates a new thing type. If this call is made multiple times using the same thing type name and configuration, the call will succeed. If this call is made with the same thing type name but different configuration a ResourceAlreadyExistsException is thrown. Requires permission to access the [CreateThingType](https://docs.aws.amazon.com/service-authorization/latest/reference/list_awsiot.html#awsiot-actions-as-permissions) action.
     ///
     /// - Parameter CreateThingTypeInput : The input for the CreateThingType operation.
     ///
@@ -8958,7 +8958,7 @@ extension IoTClient {
 
     /// Performs the `DisassociateSbomFromPackageVersion` operation on the `AWSIotService` service.
     ///
-    /// Disassociates a software bill of materials (SBOM) from a specific software package version. Requires permission to access the [DisassociateSbomWithPackageVersion](https://docs.aws.amazon.com/service-authorization/latest/reference/list_awsiot.html#awsiot-actions-as-permissions) action.
+    /// Disassociates the selected software bill of materials (SBOM) from a specific software package version. Requires permission to access the [DisassociateSbomWithPackageVersion](https://docs.aws.amazon.com/service-authorization/latest/reference/list_awsiot.html#awsiot-actions-as-permissions) action.
     ///
     /// - Parameter DisassociateSbomFromPackageVersionInput : [no documentation found]
     ///
@@ -18085,7 +18085,7 @@ extension IoTClient {
 
     /// Performs the `UpdateRoleAlias` operation on the `AWSIotService` service.
     ///
-    /// Updates a role alias. Requires permission to access the [UpdateRoleAlias](https://docs.aws.amazon.com/service-authorization/latest/reference/list_awsiot.html#awsiot-actions-as-permissions) action.
+    /// Updates a role alias. Requires permission to access the [UpdateRoleAlias](https://docs.aws.amazon.com/service-authorization/latest/reference/list_awsiot.html#awsiot-actions-as-permissions) action. The value of [credentialDurationSeconds](https://docs.aws.amazon.com/iot/latest/apireference/API_UpdateRoleAlias.html#iot-UpdateRoleAlias-request-credentialDurationSeconds) must be less than or equal to the maximum session duration of the IAM role that the role alias references. For more information, see [ Modifying a role maximum session duration (Amazon Web Services API)](https://docs.aws.amazon.com/IAM/latest/UserGuide/roles-managingrole-editing-api.html#roles-modify_max-session-duration-api) from the Amazon Web Services Identity and Access Management User Guide.
     ///
     /// - Parameter UpdateRoleAliasInput : [no documentation found]
     ///

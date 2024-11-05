@@ -57,7 +57,7 @@ public struct AccessDeniedException: ClientRuntime.ModeledError, AWSClientRuntim
 
 extension SSMIncidentsClientTypes {
 
-    public enum VariableType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum VariableType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case incidentRecordArn
         case involvedResources
         case sdkUnknown(Swift.String)
@@ -85,18 +85,18 @@ extension SSMIncidentsClientTypes {
 }
 
 extension SSMIncidentsClientTypes {
+
     /// The dynamic SSM parameter value.
-    public enum DynamicSsmParameterValue {
+    public enum DynamicSsmParameterValue: Swift.Sendable {
         /// Variable dynamic parameters. A parameter value is determined when an incident is created.
         case variable(SSMIncidentsClientTypes.VariableType)
         case sdkUnknown(Swift.String)
     }
-
 }
 
 extension SSMIncidentsClientTypes {
 
-    public enum SsmTargetAccount: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SsmTargetAccount: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case impactedAccount
         case responsePlanOwnerAccount
         case sdkUnknown(Swift.String)
@@ -124,8 +124,9 @@ extension SSMIncidentsClientTypes {
 }
 
 extension SSMIncidentsClientTypes {
+
     /// Details about the Systems Manager automation document that will be used as a runbook during an incident.
-    public struct SsmAutomation {
+    public struct SsmAutomation: Swift.Sendable {
         /// The automation document's name.
         /// This member is required.
         public var documentName: Swift.String?
@@ -158,22 +159,22 @@ extension SSMIncidentsClientTypes {
             self.targetAccount = targetAccount
         }
     }
-
 }
 
 extension SSMIncidentsClientTypes {
+
     /// The action that starts at the beginning of an incident. The response plan defines the action.
-    public enum Action {
+    public enum Action: Swift.Sendable {
         /// The Systems Manager automation document to start as the runbook at the beginning of the incident.
         case ssmautomation(SSMIncidentsClientTypes.SsmAutomation)
         case sdkUnknown(Swift.String)
     }
-
 }
 
 extension SSMIncidentsClientTypes {
+
     /// Defines the Amazon Web Services Region and KMS key to add to the replication set.
-    public struct AddRegionAction {
+    public struct AddRegionAction: Swift.Sendable {
         /// The Amazon Web Services Region name to add to the replication set.
         /// This member is required.
         public var regionName: Swift.String?
@@ -189,29 +190,28 @@ extension SSMIncidentsClientTypes {
             self.sseKmsKeyId = sseKmsKeyId
         }
     }
-
 }
 
 extension SSMIncidentsClientTypes {
+
     /// Use the AttributeValueList to filter by string or integer values.
-    public enum AttributeValueList {
+    public enum AttributeValueList: Swift.Sendable {
         /// The list of string values that the filter matches.
         case stringvalues([Swift.String])
         /// The list of integer values that the filter matches.
         case integervalues([Swift.Int])
         case sdkUnknown(Swift.String)
     }
-
 }
 
 extension SSMIncidentsClientTypes {
+
     /// The Systems Manager automation document process to start as the runbook at the beginning of the incident.
-    public enum AutomationExecution {
+    public enum AutomationExecution: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the automation process.
         case ssmexecutionarn(Swift.String)
         case sdkUnknown(Swift.String)
     }
-
 }
 
 /// The request processing has failed because of an unknown error, exception or failure.
@@ -241,7 +241,7 @@ public struct InternalServerException: ClientRuntime.ModeledError, AWSClientRunt
 
 extension SSMIncidentsClientTypes {
 
-    public enum ResourceType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ResourceType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case incidentRecord
         case replicationSet
         case resourcePolicy
@@ -312,7 +312,7 @@ public struct ResourceNotFoundException: ClientRuntime.ModeledError, AWSClientRu
 
 extension SSMIncidentsClientTypes {
 
-    public enum ServiceCode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ServiceCode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case ssmIncidents
         case sdkUnknown(Swift.String)
 
@@ -396,7 +396,7 @@ public struct ValidationException: ClientRuntime.ModeledError, AWSClientRuntime.
     }
 }
 
-public struct BatchGetIncidentFindingsInput {
+public struct BatchGetIncidentFindingsInput: Swift.Sendable {
     /// A list of IDs of findings for which you want to view details.
     /// This member is required.
     public var findingIds: [Swift.String]?
@@ -415,8 +415,9 @@ public struct BatchGetIncidentFindingsInput {
 }
 
 extension SSMIncidentsClientTypes {
+
     /// Details about an error returned for a [BatchGetIncidentFindings] operation.
-    public struct BatchGetIncidentFindingsError {
+    public struct BatchGetIncidentFindingsError: Swift.Sendable {
         /// The code associated with an error that was returned for a BatchGetIncidentFindings operation.
         /// This member is required.
         public var code: Swift.String?
@@ -438,12 +439,12 @@ extension SSMIncidentsClientTypes {
             self.message = message
         }
     }
-
 }
 
 extension SSMIncidentsClientTypes {
+
     /// Information about an CloudFormation stack creation or update that occurred around the time of an incident and could be a potential cause of the incident.
-    public struct CloudFormationStackUpdate {
+    public struct CloudFormationStackUpdate: Swift.Sendable {
         /// The timestamp for when the CloudFormation stack creation or update ended. Not reported for deployments that are still in progress.
         public var endTime: Foundation.Date?
         /// The Amazon Resource Name (ARN) of the CloudFormation stack involved in the update.
@@ -464,12 +465,12 @@ extension SSMIncidentsClientTypes {
             self.startTime = startTime
         }
     }
-
 }
 
 extension SSMIncidentsClientTypes {
+
     /// Information about a CodeDeploy deployment that occurred around the time of an incident and could be a possible cause of the incident.
-    public struct CodeDeployDeployment {
+    public struct CodeDeployDeployment: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the CodeDeploy deployment group associated with the deployment.
         /// This member is required.
         public var deploymentGroupArn: Swift.String?
@@ -495,24 +496,24 @@ extension SSMIncidentsClientTypes {
             self.startTime = startTime
         }
     }
-
 }
 
 extension SSMIncidentsClientTypes {
+
     /// Extended textual information about the finding.
-    public enum FindingDetails {
+    public enum FindingDetails: Swift.Sendable {
         /// Information about the CodeDeploy deployment associated with the finding.
         case codedeploydeployment(SSMIncidentsClientTypes.CodeDeployDeployment)
         /// Information about the CloudFormation stack creation or update associated with the finding.
         case cloudformationstackupdate(SSMIncidentsClientTypes.CloudFormationStackUpdate)
         case sdkUnknown(Swift.String)
     }
-
 }
 
 extension SSMIncidentsClientTypes {
+
     /// Information about a specific CodeDeploy deployment or CloudFormation stack creation or update that occurred around the time of a reported incident. These activities can be investigated as a potential cause of the incident.
-    public struct Finding {
+    public struct Finding: Swift.Sendable {
         /// The timestamp for when a finding was created.
         /// This member is required.
         public var creationTime: Foundation.Date?
@@ -538,10 +539,9 @@ extension SSMIncidentsClientTypes {
             self.lastModifiedTime = lastModifiedTime
         }
     }
-
 }
 
-public struct BatchGetIncidentFindingsOutput {
+public struct BatchGetIncidentFindingsOutput: Swift.Sendable {
     /// A list of errors encountered during the operation.
     /// This member is required.
     public var errors: [SSMIncidentsClientTypes.BatchGetIncidentFindingsError]?
@@ -560,29 +560,30 @@ public struct BatchGetIncidentFindingsOutput {
 }
 
 extension SSMIncidentsClientTypes {
+
     /// Used to remove the chat channel from an incident record or response plan.
-    public struct EmptyChatChannel {
+    public struct EmptyChatChannel: Swift.Sendable {
 
         public init() { }
     }
-
 }
 
 extension SSMIncidentsClientTypes {
+
     /// The Chatbot chat channel used for collaboration during an incident.
-    public enum ChatChannel {
+    public enum ChatChannel: Swift.Sendable {
         /// Used to remove the chat channel from an incident record or response plan.
         case empty(SSMIncidentsClientTypes.EmptyChatChannel)
         /// The Amazon SNS targets that Chatbot uses to notify the chat channel of updates to an incident. You can also make updates to the incident through the chat channel by using the Amazon SNS topics.
         case chatbotsns([Swift.String])
         case sdkUnknown(Swift.String)
     }
-
 }
 
 extension SSMIncidentsClientTypes {
+
     /// A conditional statement with which to compare a value, after a timestamp, before a timestamp, or equal to a string or integer. If multiple conditions are specified, the conditionals become an ANDed statement. If multiple values are specified for a conditional, the values are ORd.
-    public enum Condition {
+    public enum Condition: Swift.Sendable {
         /// Before the specified timestamp
         case before(Foundation.Date)
         /// After the specified timestamp.
@@ -591,7 +592,6 @@ extension SSMIncidentsClientTypes {
         case equals(SSMIncidentsClientTypes.AttributeValueList)
         case sdkUnknown(Swift.String)
     }
-
 }
 
 /// Updating or deleting a resource causes an inconsistent state.
@@ -675,8 +675,9 @@ public struct ServiceQuotaExceededException: ClientRuntime.ModeledError, AWSClie
 }
 
 extension SSMIncidentsClientTypes {
+
     /// The mapping between a Amazon Web Services Region and the key that's used to encrypt the data.
-    public struct RegionMapInputValue {
+    public struct RegionMapInputValue: Swift.Sendable {
         /// The KMS key used to encrypt the data in your replication set.
         public var sseKmsKeyId: Swift.String?
 
@@ -687,10 +688,9 @@ extension SSMIncidentsClientTypes {
             self.sseKmsKeyId = sseKmsKeyId
         }
     }
-
 }
 
-public struct CreateReplicationSetInput {
+public struct CreateReplicationSetInput: Swift.Sendable {
     /// A token that ensures that the operation is called only once with the specified details.
     public var clientToken: Swift.String?
     /// The Regions that Incident Manager replicates your data to. You can have up to three Regions in your replication set.
@@ -711,7 +711,7 @@ public struct CreateReplicationSetInput {
     }
 }
 
-public struct CreateReplicationSetOutput {
+public struct CreateReplicationSetOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the replication set.
     /// This member is required.
     public var arn: Swift.String?
@@ -725,18 +725,19 @@ public struct CreateReplicationSetOutput {
 }
 
 extension SSMIncidentsClientTypes {
+
     /// The SNS targets that are notified when updates are made to an incident.
-    public enum NotificationTargetItem {
+    public enum NotificationTargetItem: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the SNS topic.
         case snstopicarn(Swift.String)
         case sdkUnknown(Swift.String)
     }
-
 }
 
 extension SSMIncidentsClientTypes {
+
     /// Basic details used in creating a response plan. The response plan is then used to create an incident record.
-    public struct IncidentTemplate {
+    public struct IncidentTemplate: Swift.Sendable {
         /// The string Incident Manager uses to prevent the same root cause from creating multiple incidents in the same account. A deduplication string is a term or phrase the system uses to check for duplicate incidents. If you specify a deduplication string, Incident Manager searches for open incidents that contain the same string in the dedupeString field when it creates the incident. If a duplicate is detected, Incident Manager deduplicates the newer incident into the existing incident. By default, Incident Manager automatically deduplicates multiple incidents created by the same Amazon CloudWatch alarm or Amazon EventBridge event. You don't have to enter your own deduplication string to prevent duplication for these resource types.
         public var dedupeString: Swift.String?
         /// The impact of the incident on your customers and applications. Supported impact codes
@@ -779,12 +780,12 @@ extension SSMIncidentsClientTypes {
             self.title = title
         }
     }
-
 }
 
 extension SSMIncidentsClientTypes {
+
     /// Details about the PagerDuty service where the response plan creates an incident.
-    public struct PagerDutyIncidentConfiguration {
+    public struct PagerDutyIncidentConfiguration: Swift.Sendable {
         /// The ID of the PagerDuty service that the response plan associates with an incident when it launches.
         /// This member is required.
         public var serviceId: Swift.String?
@@ -796,12 +797,12 @@ extension SSMIncidentsClientTypes {
             self.serviceId = serviceId
         }
     }
-
 }
 
 extension SSMIncidentsClientTypes {
+
     /// Details about the PagerDuty configuration for a response plan.
-    public struct PagerDutyConfiguration {
+    public struct PagerDutyConfiguration: Swift.Sendable {
         /// The name of the PagerDuty configuration.
         /// This member is required.
         public var name: Swift.String?
@@ -823,20 +824,19 @@ extension SSMIncidentsClientTypes {
             self.secretId = secretId
         }
     }
-
 }
 
 extension SSMIncidentsClientTypes {
+
     /// Information about third-party services integrated into a response plan.
-    public enum Integration {
+    public enum Integration: Swift.Sendable {
         /// Information about the PagerDuty service where the response plan creates an incident.
         case pagerdutyconfiguration(SSMIncidentsClientTypes.PagerDutyConfiguration)
         case sdkUnknown(Swift.String)
     }
-
 }
 
-public struct CreateResponsePlanInput {
+public struct CreateResponsePlanInput: Swift.Sendable {
     /// The actions that the response plan starts at the beginning of an incident.
     public var actions: [SSMIncidentsClientTypes.Action]?
     /// The Chatbot chat channel used for collaboration during an incident.
@@ -882,7 +882,7 @@ public struct CreateResponsePlanInput {
     }
 }
 
-public struct CreateResponsePlanOutput {
+public struct CreateResponsePlanOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the response plan.
     /// This member is required.
     public var arn: Swift.String?
@@ -896,18 +896,18 @@ public struct CreateResponsePlanOutput {
 }
 
 extension SSMIncidentsClientTypes {
+
     /// An item referenced in a TimelineEvent that is involved in or somehow associated with an incident. You can specify an Amazon Resource Name (ARN) for an Amazon Web Services resource or a RelatedItem ID.
-    public enum EventReference {
+    public enum EventReference: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of an Amazon Web Services resource referenced in a TimelineEvent.
         case resource(Swift.String)
         /// The ID of a RelatedItem referenced in a TimelineEvent.
         case relateditemid(Swift.String)
         case sdkUnknown(Swift.String)
     }
-
 }
 
-public struct CreateTimelineEventInput {
+public struct CreateTimelineEventInput: Swift.Sendable {
     /// A token that ensures that a client calls the action only once with the specified details.
     public var clientToken: Swift.String?
     /// A short description of the event.
@@ -943,7 +943,7 @@ public struct CreateTimelineEventInput {
     }
 }
 
-public struct CreateTimelineEventOutput {
+public struct CreateTimelineEventOutput: Swift.Sendable {
     /// The ID of the event for easy reference later.
     /// This member is required.
     public var eventId: Swift.String?
@@ -961,7 +961,7 @@ public struct CreateTimelineEventOutput {
     }
 }
 
-public struct DeleteIncidentRecordInput {
+public struct DeleteIncidentRecordInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the incident record you are deleting.
     /// This member is required.
     public var arn: Swift.String?
@@ -974,14 +974,15 @@ public struct DeleteIncidentRecordInput {
     }
 }
 
-public struct DeleteIncidentRecordOutput {
+public struct DeleteIncidentRecordOutput: Swift.Sendable {
 
     public init() { }
 }
 
 extension SSMIncidentsClientTypes {
+
     /// Defines the information about the Amazon Web Services Region you're deleting from your replication set.
-    public struct DeleteRegionAction {
+    public struct DeleteRegionAction: Swift.Sendable {
         /// The name of the Amazon Web Services Region you're deleting from the replication set.
         /// This member is required.
         public var regionName: Swift.String?
@@ -993,10 +994,9 @@ extension SSMIncidentsClientTypes {
             self.regionName = regionName
         }
     }
-
 }
 
-public struct DeleteReplicationSetInput {
+public struct DeleteReplicationSetInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the replication set you're deleting.
     /// This member is required.
     public var arn: Swift.String?
@@ -1009,12 +1009,12 @@ public struct DeleteReplicationSetInput {
     }
 }
 
-public struct DeleteReplicationSetOutput {
+public struct DeleteReplicationSetOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteResourcePolicyInput {
+public struct DeleteResourcePolicyInput: Swift.Sendable {
     /// The ID of the resource policy you're deleting.
     /// This member is required.
     public var policyId: Swift.String?
@@ -1032,12 +1032,12 @@ public struct DeleteResourcePolicyInput {
     }
 }
 
-public struct DeleteResourcePolicyOutput {
+public struct DeleteResourcePolicyOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteResponsePlanInput {
+public struct DeleteResponsePlanInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the response plan.
     /// This member is required.
     public var arn: Swift.String?
@@ -1050,12 +1050,12 @@ public struct DeleteResponsePlanInput {
     }
 }
 
-public struct DeleteResponsePlanOutput {
+public struct DeleteResponsePlanOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteTimelineEventInput {
+public struct DeleteTimelineEventInput: Swift.Sendable {
     /// The ID of the event to update. You can use ListTimelineEvents to find an event's ID.
     /// This member is required.
     public var eventId: Swift.String?
@@ -1073,14 +1073,15 @@ public struct DeleteTimelineEventInput {
     }
 }
 
-public struct DeleteTimelineEventOutput {
+public struct DeleteTimelineEventOutput: Swift.Sendable {
 
     public init() { }
 }
 
 extension SSMIncidentsClientTypes {
+
     /// Details about a timeline event during an incident.
-    public struct EventSummary {
+    public struct EventSummary: Swift.Sendable {
         /// The timeline event ID.
         /// This member is required.
         public var eventId: Swift.String?
@@ -1116,12 +1117,12 @@ extension SSMIncidentsClientTypes {
             self.incidentRecordArn = incidentRecordArn
         }
     }
-
 }
 
 extension SSMIncidentsClientTypes {
+
     /// Filter the selection by using a condition.
-    public struct Filter {
+    public struct Filter: Swift.Sendable {
         /// The condition accepts before or after a specified time, equal to a string, or equal to an integer.
         /// This member is required.
         public var condition: SSMIncidentsClientTypes.Condition?
@@ -1138,12 +1139,12 @@ extension SSMIncidentsClientTypes {
             self.key = key
         }
     }
-
 }
 
 extension SSMIncidentsClientTypes {
+
     /// Identifying information about the finding.
-    public struct FindingSummary {
+    public struct FindingSummary: Swift.Sendable {
         /// The ID of the finding.
         /// This member is required.
         public var id: Swift.String?
@@ -1160,10 +1161,9 @@ extension SSMIncidentsClientTypes {
             self.lastModifiedTime = lastModifiedTime
         }
     }
-
 }
 
-public struct GetIncidentRecordInput {
+public struct GetIncidentRecordInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the incident record.
     /// This member is required.
     public var arn: Swift.String?
@@ -1177,8 +1177,9 @@ public struct GetIncidentRecordInput {
 }
 
 extension SSMIncidentsClientTypes {
+
     /// Details about what created the incident record and when it was created.
-    public struct IncidentRecordSource {
+    public struct IncidentRecordSource: Swift.Sendable {
         /// The principal that started the incident.
         /// This member is required.
         public var createdBy: Swift.String?
@@ -1203,12 +1204,11 @@ extension SSMIncidentsClientTypes {
             self.source = source
         }
     }
-
 }
 
 extension SSMIncidentsClientTypes {
 
-    public enum IncidentRecordStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum IncidentRecordStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case `open`
         case resolved
         case sdkUnknown(Swift.String)
@@ -1236,8 +1236,9 @@ extension SSMIncidentsClientTypes {
 }
 
 extension SSMIncidentsClientTypes {
+
     /// The record of the incident that's created when an incident occurs.
-    public struct IncidentRecord {
+    public struct IncidentRecord: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the incident record.
         /// This member is required.
         public var arn: Swift.String?
@@ -1319,10 +1320,9 @@ extension SSMIncidentsClientTypes {
             self.title = title
         }
     }
-
 }
 
-public struct GetIncidentRecordOutput {
+public struct GetIncidentRecordOutput: Swift.Sendable {
     /// Details the structure of the incident record.
     /// This member is required.
     public var incidentRecord: SSMIncidentsClientTypes.IncidentRecord?
@@ -1335,7 +1335,7 @@ public struct GetIncidentRecordOutput {
     }
 }
 
-public struct GetReplicationSetInput {
+public struct GetReplicationSetInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the replication set you want to retrieve.
     /// This member is required.
     public var arn: Swift.String?
@@ -1350,7 +1350,7 @@ public struct GetReplicationSetInput {
 
 extension SSMIncidentsClientTypes {
 
-    public enum RegionStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum RegionStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         /// All operations have completed successfully and the region is ready to use
         case active
         /// The region is in the process of being created.
@@ -1388,8 +1388,9 @@ extension SSMIncidentsClientTypes {
 }
 
 extension SSMIncidentsClientTypes {
+
     /// Information about a Amazon Web Services Region in your replication set.
-    public struct RegionInfo {
+    public struct RegionInfo: Swift.Sendable {
         /// The ID of the KMS key used to encrypt the data in this Amazon Web Services Region.
         public var sseKmsKeyId: Swift.String?
         /// The status of the Amazon Web Services Region in the replication set.
@@ -1414,12 +1415,11 @@ extension SSMIncidentsClientTypes {
             self.statusUpdateDateTime = statusUpdateDateTime
         }
     }
-
 }
 
 extension SSMIncidentsClientTypes {
 
-    public enum ReplicationSetStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ReplicationSetStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         /// All operations have completed successfully and the replication set is ready to use
         case active
         /// Replication set is in the process of being created.
@@ -1461,8 +1461,9 @@ extension SSMIncidentsClientTypes {
 }
 
 extension SSMIncidentsClientTypes {
+
     /// The set of Amazon Web Services Region that your Incident Manager data will be replicated to and the KMS key used to encrypt the data.
-    public struct ReplicationSet {
+    public struct ReplicationSet: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the replication set.
         public var arn: Swift.String?
         /// Details about who created the replication set.
@@ -1508,10 +1509,9 @@ extension SSMIncidentsClientTypes {
             self.status = status
         }
     }
-
 }
 
-public struct GetReplicationSetOutput {
+public struct GetReplicationSetOutput: Swift.Sendable {
     /// Details of the replication set.
     /// This member is required.
     public var replicationSet: SSMIncidentsClientTypes.ReplicationSet?
@@ -1524,7 +1524,7 @@ public struct GetReplicationSetOutput {
     }
 }
 
-public struct GetResourcePoliciesInput {
+public struct GetResourcePoliciesInput: Swift.Sendable {
     /// The maximum number of resource policies to display for each page of results.
     public var maxResults: Swift.Int?
     /// The pagination token for the next set of items to return. (You received this token from a previous call.)
@@ -1546,8 +1546,9 @@ public struct GetResourcePoliciesInput {
 }
 
 extension SSMIncidentsClientTypes {
+
     /// The resource policy that allows Incident Manager to perform actions on resources on your behalf.
-    public struct ResourcePolicy {
+    public struct ResourcePolicy: Swift.Sendable {
         /// The JSON blob that describes the policy.
         /// This member is required.
         public var policyDocument: Swift.String?
@@ -1569,10 +1570,9 @@ extension SSMIncidentsClientTypes {
             self.ramResourceShareRegion = ramResourceShareRegion
         }
     }
-
 }
 
-public struct GetResourcePoliciesOutput {
+public struct GetResourcePoliciesOutput: Swift.Sendable {
     /// The pagination token to use when requesting the next set of items. If there are no additional items to return, the string is null.
     public var nextToken: Swift.String?
     /// Details about the resource policy attached to the response plan.
@@ -1589,7 +1589,7 @@ public struct GetResourcePoliciesOutput {
     }
 }
 
-public struct GetResponsePlanInput {
+public struct GetResponsePlanInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the response plan.
     /// This member is required.
     public var arn: Swift.String?
@@ -1602,7 +1602,7 @@ public struct GetResponsePlanInput {
     }
 }
 
-public struct GetResponsePlanOutput {
+public struct GetResponsePlanOutput: Swift.Sendable {
     /// The actions that this response plan takes at the beginning of the incident.
     public var actions: [SSMIncidentsClientTypes.Action]?
     /// The ARN of the response plan.
@@ -1645,7 +1645,7 @@ public struct GetResponsePlanOutput {
     }
 }
 
-public struct GetTimelineEventInput {
+public struct GetTimelineEventInput: Swift.Sendable {
     /// The ID of the event. You can get an event's ID when you create it, or by using ListTimelineEvents.
     /// This member is required.
     public var eventId: Swift.String?
@@ -1664,8 +1664,9 @@ public struct GetTimelineEventInput {
 }
 
 extension SSMIncidentsClientTypes {
+
     /// A significant event that happened during the incident.
-    public struct TimelineEvent {
+    public struct TimelineEvent: Swift.Sendable {
         /// A short description of the event.
         /// This member is required.
         public var eventData: Swift.String?
@@ -1706,10 +1707,9 @@ extension SSMIncidentsClientTypes {
             self.incidentRecordArn = incidentRecordArn
         }
     }
-
 }
 
-public struct GetTimelineEventOutput {
+public struct GetTimelineEventOutput: Swift.Sendable {
     /// Details about the timeline event.
     /// This member is required.
     public var event: SSMIncidentsClientTypes.TimelineEvent?
@@ -1723,8 +1723,9 @@ public struct GetTimelineEventOutput {
 }
 
 extension SSMIncidentsClientTypes {
+
     /// Details describing an incident record.
-    public struct IncidentRecordSummary {
+    public struct IncidentRecordSummary: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the incident.
         /// This member is required.
         public var arn: Swift.String?
@@ -1765,12 +1766,11 @@ extension SSMIncidentsClientTypes {
             self.title = title
         }
     }
-
 }
 
 extension SSMIncidentsClientTypes {
 
-    public enum ItemType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ItemType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case analysis
         case attachment
         case automation
@@ -1819,8 +1819,9 @@ extension SSMIncidentsClientTypes {
 }
 
 extension SSMIncidentsClientTypes {
+
     /// Details about the PagerDuty incident associated with an incident created by an Incident Manager response plan.
-    public struct PagerDutyIncidentDetail {
+    public struct PagerDutyIncidentDetail: Swift.Sendable {
         /// Indicates whether to resolve the PagerDuty incident when you resolve the associated Incident Manager incident.
         public var autoResolve: Swift.Bool?
         /// The ID of the incident associated with the PagerDuty service for the response plan.
@@ -1840,12 +1841,12 @@ extension SSMIncidentsClientTypes {
             self.secretId = secretId
         }
     }
-
 }
 
 extension SSMIncidentsClientTypes {
+
     /// Describes a related item.
-    public enum ItemValue {
+    public enum ItemValue: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the related item, if the related item is an Amazon resource.
         case arn(Swift.String)
         /// The URL, if the related item is a non-Amazon Web Services resource.
@@ -1856,12 +1857,12 @@ extension SSMIncidentsClientTypes {
         case pagerdutyincidentdetail(SSMIncidentsClientTypes.PagerDutyIncidentDetail)
         case sdkUnknown(Swift.String)
     }
-
 }
 
 extension SSMIncidentsClientTypes {
+
     /// Details and type of a related item.
-    public struct ItemIdentifier {
+    public struct ItemIdentifier: Swift.Sendable {
         /// The type of related item.
         /// This member is required.
         public var type: SSMIncidentsClientTypes.ItemType?
@@ -1878,10 +1879,9 @@ extension SSMIncidentsClientTypes {
             self.value = value
         }
     }
-
 }
 
-public struct ListIncidentFindingsInput {
+public struct ListIncidentFindingsInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the incident for which you want to view associated findings.
     /// This member is required.
     public var incidentRecordArn: Swift.String?
@@ -1902,7 +1902,7 @@ public struct ListIncidentFindingsInput {
     }
 }
 
-public struct ListIncidentFindingsOutput {
+public struct ListIncidentFindingsOutput: Swift.Sendable {
     /// A list of findings that represent deployments that might be the potential cause of the incident.
     /// This member is required.
     public var findings: [SSMIncidentsClientTypes.FindingSummary]?
@@ -1919,7 +1919,7 @@ public struct ListIncidentFindingsOutput {
     }
 }
 
-public struct ListIncidentRecordsInput {
+public struct ListIncidentRecordsInput: Swift.Sendable {
     /// Filters the list of incident records you want to search through. You can filter on the following keys:
     ///
     /// * creationTime
@@ -1956,7 +1956,7 @@ public struct ListIncidentRecordsInput {
     }
 }
 
-public struct ListIncidentRecordsOutput {
+public struct ListIncidentRecordsOutput: Swift.Sendable {
     /// The details of each listed incident record.
     /// This member is required.
     public var incidentRecordSummaries: [SSMIncidentsClientTypes.IncidentRecordSummary]?
@@ -1973,7 +1973,7 @@ public struct ListIncidentRecordsOutput {
     }
 }
 
-public struct ListRelatedItemsInput {
+public struct ListRelatedItemsInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the incident record containing the listed related items.
     /// This member is required.
     public var incidentRecordArn: Swift.String?
@@ -1995,8 +1995,9 @@ public struct ListRelatedItemsInput {
 }
 
 extension SSMIncidentsClientTypes {
+
     /// Resources that responders use to triage and mitigate the incident.
-    public struct RelatedItem {
+    public struct RelatedItem: Swift.Sendable {
         /// A unique ID for a RelatedItem. Don't specify this parameter when you add a RelatedItem by using the [UpdateRelatedItems] API action.
         public var generatedId: Swift.String?
         /// Details about the related item.
@@ -2016,10 +2017,9 @@ extension SSMIncidentsClientTypes {
             self.title = title
         }
     }
-
 }
 
-public struct ListRelatedItemsOutput {
+public struct ListRelatedItemsOutput: Swift.Sendable {
     /// The pagination token to use when requesting the next set of items. If there are no additional items to return, the string is null.
     public var nextToken: Swift.String?
     /// Details about each related item.
@@ -2036,7 +2036,7 @@ public struct ListRelatedItemsOutput {
     }
 }
 
-public struct ListReplicationSetsInput {
+public struct ListReplicationSetsInput: Swift.Sendable {
     /// The maximum number of results per page.
     public var maxResults: Swift.Int?
     /// The pagination token for the next set of items to return. (You received this token from a previous call.)
@@ -2052,7 +2052,7 @@ public struct ListReplicationSetsInput {
     }
 }
 
-public struct ListReplicationSetsOutput {
+public struct ListReplicationSetsOutput: Swift.Sendable {
     /// The pagination token to use when requesting the next set of items. If there are no additional items to return, the string is null.
     public var nextToken: Swift.String?
     /// The Amazon Resource Name (ARN) of the list replication set.
@@ -2069,7 +2069,7 @@ public struct ListReplicationSetsOutput {
     }
 }
 
-public struct ListResponsePlansInput {
+public struct ListResponsePlansInput: Swift.Sendable {
     /// The maximum number of response plans per page.
     public var maxResults: Swift.Int?
     /// The pagination token for the next set of items to return. (You received this token from a previous call.)
@@ -2086,8 +2086,9 @@ public struct ListResponsePlansInput {
 }
 
 extension SSMIncidentsClientTypes {
+
     /// Details of the response plan that are used when creating an incident.
-    public struct ResponsePlanSummary {
+    public struct ResponsePlanSummary: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the response plan.
         /// This member is required.
         public var arn: Swift.String?
@@ -2108,10 +2109,9 @@ extension SSMIncidentsClientTypes {
             self.name = name
         }
     }
-
 }
 
-public struct ListResponsePlansOutput {
+public struct ListResponsePlansOutput: Swift.Sendable {
     /// The pagination token to use when requesting the next set of items. If there are no additional items to return, the string is null.
     public var nextToken: Swift.String?
     /// Details of each response plan.
@@ -2128,7 +2128,7 @@ public struct ListResponsePlansOutput {
     }
 }
 
-public struct ListTagsForResourceInput {
+public struct ListTagsForResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the response plan or incident.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -2141,7 +2141,7 @@ public struct ListTagsForResourceInput {
     }
 }
 
-public struct ListTagsForResourceOutput {
+public struct ListTagsForResourceOutput: Swift.Sendable {
     /// A list of tags for the response plan or incident.
     /// This member is required.
     public var tags: [Swift.String: Swift.String]?
@@ -2156,7 +2156,7 @@ public struct ListTagsForResourceOutput {
 
 extension SSMIncidentsClientTypes {
 
-    public enum TimelineEventSort: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum TimelineEventSort: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case eventTime
         case sdkUnknown(Swift.String)
 
@@ -2182,7 +2182,7 @@ extension SSMIncidentsClientTypes {
 
 extension SSMIncidentsClientTypes {
 
-    public enum SortOrder: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SortOrder: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case ascending
         case descending
         case sdkUnknown(Swift.String)
@@ -2209,7 +2209,7 @@ extension SSMIncidentsClientTypes {
     }
 }
 
-public struct ListTimelineEventsInput {
+public struct ListTimelineEventsInput: Swift.Sendable {
     /// Filters the timeline events based on the provided conditional values. You can filter timeline events with the following keys:
     ///
     /// * eventReference
@@ -2257,7 +2257,7 @@ public struct ListTimelineEventsInput {
     }
 }
 
-public struct ListTimelineEventsOutput {
+public struct ListTimelineEventsOutput: Swift.Sendable {
     /// Details about each event that occurred during the incident.
     /// This member is required.
     public var eventSummaries: [SSMIncidentsClientTypes.EventSummary]?
@@ -2274,7 +2274,7 @@ public struct ListTimelineEventsOutput {
     }
 }
 
-public struct PutResourcePolicyInput {
+public struct PutResourcePolicyInput: Swift.Sendable {
     /// Details of the resource policy.
     /// This member is required.
     public var policy: Swift.String?
@@ -2292,7 +2292,7 @@ public struct PutResourcePolicyInput {
     }
 }
 
-public struct PutResourcePolicyOutput {
+public struct PutResourcePolicyOutput: Swift.Sendable {
     /// The ID of the resource policy.
     /// This member is required.
     public var policyId: Swift.String?
@@ -2306,20 +2306,21 @@ public struct PutResourcePolicyOutput {
 }
 
 extension SSMIncidentsClientTypes {
+
     /// Details about the related item you're adding.
-    public enum RelatedItemsUpdate {
+    public enum RelatedItemsUpdate: Swift.Sendable {
         /// Details about the related item you're adding.
         case itemtoadd(SSMIncidentsClientTypes.RelatedItem)
         /// Details about the related item you're deleting.
         case itemtoremove(SSMIncidentsClientTypes.ItemIdentifier)
         case sdkUnknown(Swift.String)
     }
-
 }
 
 extension SSMIncidentsClientTypes {
+
     /// Details about what caused the incident to be created in Incident Manager.
-    public struct TriggerDetails {
+    public struct TriggerDetails: Swift.Sendable {
         /// Raw data passed from either Amazon EventBridge, Amazon CloudWatch, or Incident Manager when an incident is created.
         public var rawData: Swift.String?
         /// Identifies the service that sourced the event. All events sourced from within Amazon Web Services begin with "aws." Customer-generated events can have any value here, as long as it doesn't begin with "aws." We recommend the use of Java package-name style reverse domain-name strings.
@@ -2344,10 +2345,9 @@ extension SSMIncidentsClientTypes {
             self.triggerArn = triggerArn
         }
     }
-
 }
 
-public struct StartIncidentInput {
+public struct StartIncidentInput: Swift.Sendable {
     /// A token ensuring that the operation is called only once with the specified details.
     public var clientToken: Swift.String?
     /// Defines the impact to the customers. Providing an impact overwrites the impact provided by a response plan. Supported impact codes
@@ -2390,7 +2390,7 @@ public struct StartIncidentInput {
     }
 }
 
-public struct StartIncidentOutput {
+public struct StartIncidentOutput: Swift.Sendable {
     /// The ARN of the newly created incident record.
     /// This member is required.
     public var incidentRecordArn: Swift.String?
@@ -2403,7 +2403,7 @@ public struct StartIncidentOutput {
     }
 }
 
-public struct TagResourceInput {
+public struct TagResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the response plan you're adding the tags to.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -2421,12 +2421,12 @@ public struct TagResourceInput {
     }
 }
 
-public struct TagResourceOutput {
+public struct TagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UntagResourceInput {
+public struct UntagResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the response plan you're removing a tag from.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -2444,12 +2444,12 @@ public struct UntagResourceInput {
     }
 }
 
-public struct UntagResourceOutput {
+public struct UntagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdateDeletionProtectionInput {
+public struct UpdateDeletionProtectionInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the replication set to update.
     /// This member is required.
     public var arn: Swift.String?
@@ -2471,12 +2471,12 @@ public struct UpdateDeletionProtectionInput {
     }
 }
 
-public struct UpdateDeletionProtectionOutput {
+public struct UpdateDeletionProtectionOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdateIncidentRecordInput {
+public struct UpdateIncidentRecordInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the incident record you are updating.
     /// This member is required.
     public var arn: Swift.String?
@@ -2527,12 +2527,12 @@ public struct UpdateIncidentRecordInput {
     }
 }
 
-public struct UpdateIncidentRecordOutput {
+public struct UpdateIncidentRecordOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdateRelatedItemsInput {
+public struct UpdateRelatedItemsInput: Swift.Sendable {
     /// A token that ensures that a client calls the operation only once with the specified details.
     public var clientToken: Swift.String?
     /// The Amazon Resource Name (ARN) of the incident record that contains the related items that you update.
@@ -2554,24 +2554,24 @@ public struct UpdateRelatedItemsInput {
     }
 }
 
-public struct UpdateRelatedItemsOutput {
+public struct UpdateRelatedItemsOutput: Swift.Sendable {
 
     public init() { }
 }
 
 extension SSMIncidentsClientTypes {
+
     /// Details used when updating the replication set.
-    public enum UpdateReplicationSetAction {
+    public enum UpdateReplicationSetAction: Swift.Sendable {
         /// Details about the Amazon Web Services Region that you're adding to the replication set.
         case addregionaction(SSMIncidentsClientTypes.AddRegionAction)
         /// Details about the Amazon Web Services Region that you're deleting to the replication set.
         case deleteregionaction(SSMIncidentsClientTypes.DeleteRegionAction)
         case sdkUnknown(Swift.String)
     }
-
 }
 
-public struct UpdateReplicationSetInput {
+public struct UpdateReplicationSetInput: Swift.Sendable {
     /// An action to add or delete a Region.
     /// This member is required.
     public var actions: [SSMIncidentsClientTypes.UpdateReplicationSetAction]?
@@ -2593,12 +2593,12 @@ public struct UpdateReplicationSetInput {
     }
 }
 
-public struct UpdateReplicationSetOutput {
+public struct UpdateReplicationSetOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdateResponsePlanInput {
+public struct UpdateResponsePlanInput: Swift.Sendable {
     /// The actions that this response plan takes at the beginning of an incident.
     public var actions: [SSMIncidentsClientTypes.Action]?
     /// The Amazon Resource Name (ARN) of the response plan.
@@ -2669,12 +2669,12 @@ public struct UpdateResponsePlanInput {
     }
 }
 
-public struct UpdateResponsePlanOutput {
+public struct UpdateResponsePlanOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdateTimelineEventInput {
+public struct UpdateTimelineEventInput: Swift.Sendable {
     /// A token that ensures that a client calls the operation only once with the specified details.
     public var clientToken: Swift.String?
     /// A short description of the event.
@@ -2712,7 +2712,7 @@ public struct UpdateTimelineEventInput {
     }
 }
 
-public struct UpdateTimelineEventOutput {
+public struct UpdateTimelineEventOutput: Swift.Sendable {
 
     public init() { }
 }

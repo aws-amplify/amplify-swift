@@ -30,8 +30,9 @@ import struct Smithy.URIQueryItem
 @_spi(SmithyReadWrite) import struct SmithyReadWrite.WritingClosureBox
 
 extension DLMClientTypes {
+
     /// [Event-based policies only] Specifies the encryption settings for cross-Region snapshot copies created by event-based policies.
-    public struct EncryptionConfiguration {
+    public struct EncryptionConfiguration: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the KMS key to use for EBS encryption. If this parameter is not specified, the default KMS key for the account is used.
         public var cmkArn: Swift.String?
         /// To encrypt a copy of an unencrypted snapshot when encryption by default is not enabled, enable encryption using this parameter. Copies of encrypted snapshots are encrypted, even if this parameter is false or when encryption by default is not enabled.
@@ -47,12 +48,11 @@ extension DLMClientTypes {
             self.encrypted = encrypted
         }
     }
-
 }
 
 extension DLMClientTypes {
 
-    public enum RetentionIntervalUnitValues: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum RetentionIntervalUnitValues: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case days
         case months
         case weeks
@@ -86,8 +86,9 @@ extension DLMClientTypes {
 }
 
 extension DLMClientTypes {
+
     /// Specifies a retention rule for cross-Region snapshot copies created by snapshot or event-based policies, or cross-Region AMI copies created by AMI policies. After the retention period expires, the cross-Region copy is deleted.
-    public struct CrossRegionCopyRetainRule {
+    public struct CrossRegionCopyRetainRule: Swift.Sendable {
         /// The amount of time to retain a cross-Region snapshot or AMI copy. The maximum is 100 years. This is equivalent to 1200 months, 5200 weeks, or 36500 days.
         public var interval: Swift.Int?
         /// The unit of time for time-based retention. For example, to retain a cross-Region copy for 3 months, specify Interval=3 and IntervalUnit=MONTHS.
@@ -102,12 +103,12 @@ extension DLMClientTypes {
             self.intervalUnit = intervalUnit
         }
     }
-
 }
 
 extension DLMClientTypes {
+
     /// [Event-based policies only] Specifies a cross-Region copy action for event-based policies. To specify a cross-Region copy rule for snapshot and AMI policies, use [CrossRegionCopyRule](https://docs.aws.amazon.com/dlm/latest/APIReference/API_CrossRegionCopyRule.html).
-    public struct CrossRegionCopyAction {
+    public struct CrossRegionCopyAction: Swift.Sendable {
         /// The encryption settings for the copied snapshot.
         /// This member is required.
         public var encryptionConfiguration: DLMClientTypes.EncryptionConfiguration?
@@ -128,12 +129,12 @@ extension DLMClientTypes {
             self.target = target
         }
     }
-
 }
 
 extension DLMClientTypes {
+
     /// [Event-based policies only] Specifies an action for an event-based policy.
-    public struct Action {
+    public struct Action: Swift.Sendable {
         /// The rule for copying shared snapshots across Regions.
         /// This member is required.
         public var crossRegionCopy: [DLMClientTypes.CrossRegionCopyAction]?
@@ -150,12 +151,12 @@ extension DLMClientTypes {
             self.name = name
         }
     }
-
 }
 
 extension DLMClientTypes {
+
     /// [Custom snapshot policies only] Describes the retention rule for archived snapshots. Once the archive retention threshold is met, the snapshots are permanently deleted from the archive tier. The archive retention rule must retain snapshots in the archive tier for a minimum of 90 days. For count-based schedules, you must specify Count. For age-based schedules, you must specify Interval and IntervalUnit. For more information about using snapshot archiving, see [Considerations for snapshot lifecycle policies](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/snapshot-ami-policy.html#dlm-archive).
-    public struct RetentionArchiveTier {
+    public struct RetentionArchiveTier: Swift.Sendable {
         /// The maximum number of snapshots to retain in the archive storage tier for each volume. The count must ensure that each snapshot remains in the archive tier for at least 90 days. For example, if the schedule creates snapshots every 30 days, you must specify a count of 3 or more to ensure that each snapshot is archived for at least 90 days.
         public var count: Swift.Int?
         /// Specifies the period of time to retain snapshots in the archive tier. After this period expires, the snapshot is permanently deleted.
@@ -174,12 +175,12 @@ extension DLMClientTypes {
             self.intervalUnit = intervalUnit
         }
     }
-
 }
 
 extension DLMClientTypes {
+
     /// [Custom snapshot policies only] Specifies information about the archive storage tier retention period.
-    public struct ArchiveRetainRule {
+    public struct ArchiveRetainRule: Swift.Sendable {
         /// Information about retention period in the Amazon EBS Snapshots Archive. For more information, see [Archive Amazon EBS snapshots](https://docs.aws.amazon.com/AWSEC2/latest/WindowsGuide/snapshot-archive.html).
         /// This member is required.
         public var retentionArchiveTier: DLMClientTypes.RetentionArchiveTier?
@@ -191,12 +192,12 @@ extension DLMClientTypes {
             self.retentionArchiveTier = retentionArchiveTier
         }
     }
-
 }
 
 extension DLMClientTypes {
+
     /// [Custom snapshot policies only] Specifies a snapshot archiving rule for a schedule.
-    public struct ArchiveRule {
+    public struct ArchiveRule: Swift.Sendable {
         /// Information about the retention period for the snapshot archiving rule.
         /// This member is required.
         public var retainRule: DLMClientTypes.ArchiveRetainRule?
@@ -208,7 +209,6 @@ extension DLMClientTypes {
             self.retainRule = retainRule
         }
     }
-
 }
 
 /// The service failed in an unexpected way.
@@ -305,8 +305,9 @@ public struct LimitExceededException: ClientRuntime.ModeledError, AWSClientRunti
 }
 
 extension DLMClientTypes {
+
     /// [Default policies only] Specifies a destination Region for cross-Region copy actions.
-    public struct CrossRegionCopyTarget {
+    public struct CrossRegionCopyTarget: Swift.Sendable {
         /// The target Region, for example us-east-1.
         public var targetRegion: Swift.String?
 
@@ -317,12 +318,11 @@ extension DLMClientTypes {
             self.targetRegion = targetRegion
         }
     }
-
 }
 
 extension DLMClientTypes {
 
-    public enum DefaultPolicyTypeValues: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DefaultPolicyTypeValues: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case instance
         case volume
         case sdkUnknown(Swift.String)
@@ -350,8 +350,9 @@ extension DLMClientTypes {
 }
 
 extension DLMClientTypes {
+
     /// Specifies a tag for a resource.
-    public struct Tag {
+    public struct Tag: Swift.Sendable {
         /// The tag key.
         /// This member is required.
         public var key: Swift.String?
@@ -368,12 +369,12 @@ extension DLMClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension DLMClientTypes {
+
     /// [Default policies only] Specifies exclusion parameters for volumes or instances for which you do not want to create snapshots or AMIs. The policy will not create snapshots or AMIs for target resources that match any of the specified exclusion parameters.
-    public struct Exclusions {
+    public struct Exclusions: Swift.Sendable {
         /// [Default policies for EBS snapshots only] Indicates whether to exclude volumes that are attached to instances as the boot volume. If you exclude boot volumes, only volumes attached as data (non-boot) volumes will be backed up by the policy. To exclude boot volumes, specify true.
         public var excludeBootVolumes: Swift.Bool?
         /// [Default policies for EBS-backed AMIs only] Specifies whether to exclude volumes that have specific tags.
@@ -392,12 +393,11 @@ extension DLMClientTypes {
             self.excludeVolumeTypes = excludeVolumeTypes
         }
     }
-
 }
 
 extension DLMClientTypes {
 
-    public enum EventTypeValues: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum EventTypeValues: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case shareSnapshot
         case sdkUnknown(Swift.String)
 
@@ -422,8 +422,9 @@ extension DLMClientTypes {
 }
 
 extension DLMClientTypes {
+
     /// [Event-based policies only] Specifies an event that activates an event-based policy.
-    public struct EventParameters {
+    public struct EventParameters: Swift.Sendable {
         /// The snapshot description that can trigger the policy. The description pattern is specified using a regular expression. The policy runs only if a snapshot with a description that matches the specified pattern is shared with your account. For example, specifying ^.*Created for policy: policy-1234567890abcdef0.*$ configures the policy to run only if snapshots created by policy policy-1234567890abcdef0 are shared with your account.
         /// This member is required.
         public var descriptionRegex: Swift.String?
@@ -445,12 +446,11 @@ extension DLMClientTypes {
             self.snapshotOwner = snapshotOwner
         }
     }
-
 }
 
 extension DLMClientTypes {
 
-    public enum EventSourceValues: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum EventSourceValues: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case managedCwe
         case sdkUnknown(Swift.String)
 
@@ -475,8 +475,9 @@ extension DLMClientTypes {
 }
 
 extension DLMClientTypes {
+
     /// [Event-based policies only] Specifies an event that activates an event-based policy.
-    public struct EventSource {
+    public struct EventSource: Swift.Sendable {
         /// Information about the event.
         public var parameters: DLMClientTypes.EventParameters?
         /// The source of the event. Currently only managed CloudWatch Events rules are supported.
@@ -492,12 +493,12 @@ extension DLMClientTypes {
             self.type = type
         }
     }
-
 }
 
 extension DLMClientTypes {
+
     /// [Custom snapshot and AMI policies only] Specifies optional parameters for snapshot and AMI policies. The set of valid parameters depends on the combination of policy type and target resource type. If you choose to exclude boot volumes and you specify tags that consequently exclude all of the additional data volumes attached to an instance, then Amazon Data Lifecycle Manager will not create any snapshots for the affected instance, and it will emit a SnapshotsCreateFailed Amazon CloudWatch metric. For more information, see [Monitor your policies using Amazon CloudWatch](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/monitor-dlm-cw-metrics.html).
-    public struct Parameters {
+    public struct Parameters: Swift.Sendable {
         /// [Custom snapshot policies that target instances only] Indicates whether to exclude the root volume from multi-volume snapshot sets. The default is false. If you specify true, then the root volumes attached to targeted instances will be excluded from the multi-volume snapshot sets created by the policy.
         public var excludeBootVolume: Swift.Bool?
         /// [Custom snapshot policies that target instances only] The tags used to identify data (non-root) volumes to exclude from multi-volume snapshot sets. If you create a snapshot lifecycle policy that targets instances and you specify tags for this parameter, then data volumes with the specified tags that are attached to targeted instances will be excluded from the multi-volume snapshot sets created by the policy.
@@ -516,12 +517,11 @@ extension DLMClientTypes {
             self.noReboot = noReboot
         }
     }
-
 }
 
 extension DLMClientTypes {
 
-    public enum PolicyLanguageValues: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum PolicyLanguageValues: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case simplified
         case standard
         case sdkUnknown(Swift.String)
@@ -550,7 +550,7 @@ extension DLMClientTypes {
 
 extension DLMClientTypes {
 
-    public enum PolicyTypeValues: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum PolicyTypeValues: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case ebsSnapshotManagement
         case eventBasedPolicy
         case imageManagement
@@ -582,7 +582,7 @@ extension DLMClientTypes {
 
 extension DLMClientTypes {
 
-    public enum ResourceLocationValues: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ResourceLocationValues: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case cloud
         case outpost
         case sdkUnknown(Swift.String)
@@ -611,7 +611,7 @@ extension DLMClientTypes {
 
 extension DLMClientTypes {
 
-    public enum ResourceTypeValues: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ResourceTypeValues: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case instance
         case volume
         case sdkUnknown(Swift.String)
@@ -640,7 +640,7 @@ extension DLMClientTypes {
 
 extension DLMClientTypes {
 
-    public enum IntervalUnitValues: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum IntervalUnitValues: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case hours
         case sdkUnknown(Swift.String)
 
@@ -666,7 +666,7 @@ extension DLMClientTypes {
 
 extension DLMClientTypes {
 
-    public enum LocationValues: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum LocationValues: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case cloud
         case outpostLocal
         case sdkUnknown(Swift.String)
@@ -695,7 +695,7 @@ extension DLMClientTypes {
 
 extension DLMClientTypes {
 
-    public enum ExecutionHandlerServiceValues: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ExecutionHandlerServiceValues: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case awsSystemsManager
         case sdkUnknown(Swift.String)
 
@@ -721,7 +721,7 @@ extension DLMClientTypes {
 
 extension DLMClientTypes {
 
-    public enum StageValues: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum StageValues: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case post
         case pre
         case sdkUnknown(Swift.String)
@@ -749,8 +749,9 @@ extension DLMClientTypes {
 }
 
 extension DLMClientTypes {
+
     /// [Custom snapshot policies that target instances only] Information about pre and/or post scripts for a snapshot lifecycle policy that targets instances. For more information, see [ Automating application-consistent snapshots with pre and post scripts](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/automate-app-consistent-backups.html).
-    public struct Script {
+    public struct Script: Swift.Sendable {
         /// Indicates whether Amazon Data Lifecycle Manager should default to crash-consistent snapshots if the pre script fails.
         ///
         /// * To default to crash consistent snapshot if the pre script fails, specify true.
@@ -818,16 +819,16 @@ extension DLMClientTypes {
             self.stages = stages
         }
     }
-
 }
 
 extension DLMClientTypes {
+
     /// [Custom snapshot and AMI policies only] Specifies when the policy should create snapshots or AMIs.
     ///
     /// * You must specify either CronExpression, or Interval, IntervalUnit, and Times.
     ///
     /// * If you need to specify an [ArchiveRule](https://docs.aws.amazon.com/dlm/latest/APIReference/API_ArchiveRule.html) for the schedule, then you must specify a creation frequency of at least 28 days.
-    public struct CreateRule {
+    public struct CreateRule: Swift.Sendable {
         /// The schedule, as a Cron expression. The schedule interval must be between 1 hour and 1 year. For more information, see [Cron expressions](https://docs.aws.amazon.com/AmazonCloudWatch/latest/events/ScheduledEvents.html#CronExpressions) in the Amazon CloudWatch User Guide.
         public var cronExpression: Swift.String?
         /// The interval between snapshots. The supported values are 1, 2, 3, 4, 6, 8, 12, and 24.
@@ -858,12 +859,12 @@ extension DLMClientTypes {
             self.times = times
         }
     }
-
 }
 
 extension DLMClientTypes {
+
     /// [Custom AMI policies only] Specifies an AMI deprecation rule for cross-Region AMI copies created by an AMI policy.
-    public struct CrossRegionCopyDeprecateRule {
+    public struct CrossRegionCopyDeprecateRule: Swift.Sendable {
         /// The period after which to deprecate the cross-Region AMI copies. The period must be less than or equal to the cross-Region AMI copy retention period, and it can't be greater than 10 years. This is equivalent to 120 months, 520 weeks, or 3650 days.
         public var interval: Swift.Int?
         /// The unit of time in which to measure the Interval. For example, to deprecate a cross-Region AMI copy after 3 months, specify Interval=3 and IntervalUnit=MONTHS.
@@ -878,12 +879,12 @@ extension DLMClientTypes {
             self.intervalUnit = intervalUnit
         }
     }
-
 }
 
 extension DLMClientTypes {
+
     /// [Custom snapshot and AMI policies only] Specifies a cross-Region copy rule for a snapshot and AMI policies. To specify a cross-Region copy action for event-based polices, use [CrossRegionCopyAction](https://docs.aws.amazon.com/dlm/latest/APIReference/API_CrossRegionCopyAction.html).
-    public struct CrossRegionCopyRule {
+    public struct CrossRegionCopyRule: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the KMS key to use for EBS encryption. If this parameter is not specified, the default KMS key for the account is used.
         public var cmkArn: Swift.String?
         /// Indicates whether to copy all user-defined tags from the source snapshot or AMI to the cross-Region copy.
@@ -919,12 +920,12 @@ extension DLMClientTypes {
             self.targetRegion = targetRegion
         }
     }
-
 }
 
 extension DLMClientTypes {
+
     /// [Custom AMI policies only] Specifies an AMI deprecation rule for AMIs created by an AMI lifecycle policy. For age-based schedules, you must specify Interval and IntervalUnit. For count-based schedules, you must specify Count.
-    public struct DeprecateRule {
+    public struct DeprecateRule: Swift.Sendable {
         /// If the schedule has a count-based retention rule, this parameter specifies the number of oldest AMIs to deprecate. The count must be less than or equal to the schedule's retention count, and it can't be greater than 1000.
         public var count: Swift.Int?
         /// If the schedule has an age-based retention rule, this parameter specifies the period after which to deprecate AMIs created by the schedule. The period must be less than or equal to the schedule's retention period, and it can't be greater than 10 years. This is equivalent to 120 months, 520 weeks, or 3650 days.
@@ -943,12 +944,12 @@ extension DLMClientTypes {
             self.intervalUnit = intervalUnit
         }
     }
-
 }
 
 extension DLMClientTypes {
+
     /// [Custom snapshot policies only] Specifies a rule for enabling fast snapshot restore for snapshots created by snapshot policies. You can enable fast snapshot restore based on either a count or a time interval.
-    public struct FastRestoreRule {
+    public struct FastRestoreRule: Swift.Sendable {
         /// The Availability Zones in which to enable fast snapshot restore.
         /// This member is required.
         public var availabilityZones: [Swift.String]?
@@ -972,16 +973,16 @@ extension DLMClientTypes {
             self.intervalUnit = intervalUnit
         }
     }
-
 }
 
 extension DLMClientTypes {
+
     /// [Custom snapshot and AMI policies only] Specifies a retention rule for snapshots created by snapshot policies, or for AMIs created by AMI policies. For snapshot policies that have an [ArchiveRule](https://docs.aws.amazon.com/dlm/latest/APIReference/API_ArchiveRule.html), this retention rule applies to standard tier retention. When the retention threshold is met, snapshots are moved from the standard to the archive tier. For snapshot policies that do not have an ArchiveRule, snapshots are permanently deleted when this retention threshold is met. You can retain snapshots based on either a count or a time interval.
     ///
     /// * Count-based retention You must specify Count. If you specify an [ArchiveRule](https://docs.aws.amazon.com/dlm/latest/APIReference/API_ArchiveRule.html) for the schedule, then you can specify a retention count of 0 to archive snapshots immediately after creation. If you specify a [FastRestoreRule](https://docs.aws.amazon.com/dlm/latest/APIReference/API_FastRestoreRule.html), [ShareRule](https://docs.aws.amazon.com/dlm/latest/APIReference/API_ShareRule.html), or a [CrossRegionCopyRule](https://docs.aws.amazon.com/dlm/latest/APIReference/API_CrossRegionCopyRule.html), then you must specify a retention count of 1 or more.
     ///
     /// * Age-based retention You must specify Interval and IntervalUnit. If you specify an [ArchiveRule](https://docs.aws.amazon.com/dlm/latest/APIReference/API_ArchiveRule.html) for the schedule, then you can specify a retention interval of 0 days to archive snapshots immediately after creation. If you specify a [FastRestoreRule](https://docs.aws.amazon.com/dlm/latest/APIReference/API_FastRestoreRule.html), [ShareRule](https://docs.aws.amazon.com/dlm/latest/APIReference/API_ShareRule.html), or a [CrossRegionCopyRule](https://docs.aws.amazon.com/dlm/latest/APIReference/API_CrossRegionCopyRule.html), then you must specify a retention interval of 1 day or more.
-    public struct RetainRule {
+    public struct RetainRule: Swift.Sendable {
         /// The number of snapshots to retain for each volume, up to a maximum of 1000. For example if you want to retain a maximum of three snapshots, specify 3. When the fourth snapshot is created, the oldest retained snapshot is deleted, or it is moved to the archive tier if you have specified an [ArchiveRule](https://docs.aws.amazon.com/dlm/latest/APIReference/API_ArchiveRule.html).
         public var count: Swift.Int?
         /// The amount of time to retain each snapshot. The maximum is 100 years. This is equivalent to 1200 months, 5200 weeks, or 36500 days.
@@ -1000,12 +1001,12 @@ extension DLMClientTypes {
             self.intervalUnit = intervalUnit
         }
     }
-
 }
 
 extension DLMClientTypes {
+
     /// [Custom snapshot policies only] Specifies a rule for sharing snapshots across Amazon Web Services accounts.
-    public struct ShareRule {
+    public struct ShareRule: Swift.Sendable {
         /// The IDs of the Amazon Web Services accounts with which to share the snapshots.
         /// This member is required.
         public var targetAccounts: [Swift.String]?
@@ -1025,12 +1026,12 @@ extension DLMClientTypes {
             self.unshareIntervalUnit = unshareIntervalUnit
         }
     }
-
 }
 
 extension DLMClientTypes {
+
     /// [Custom snapshot and AMI policies only] Specifies a schedule for a snapshot or AMI lifecycle policy.
-    public struct Schedule {
+    public struct Schedule: Swift.Sendable {
         /// [Custom snapshot policies that target volumes only] The snapshot archiving rule for the schedule. When you specify an archiving rule, snapshots are automatically moved from the standard tier to the archive tier once the schedule's retention threshold is met. Snapshots are then retained in the archive tier for the archive retention period that you specify. For more information about using snapshot archiving, see [Considerations for snapshot lifecycle policies](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/snapshot-ami-policy.html#dlm-archive).
         public var archiveRule: DLMClientTypes.ArchiveRule?
         /// Copy all user-defined tags on a source volume to snapshots of the volume created by this policy.
@@ -1081,12 +1082,12 @@ extension DLMClientTypes {
             self.variableTags = variableTags
         }
     }
-
 }
 
 extension DLMClientTypes {
+
     /// Specifies the configuration of a lifecycle policy.
-    public struct PolicyDetails {
+    public struct PolicyDetails: Swift.Sendable {
         /// [Event-based policies only] The actions to be performed when the event-based policy is activated. You can specify only one action per policy.
         public var actions: [DLMClientTypes.Action]?
         /// [Default policies only] Indicates whether the policy should copy tags from the source resource to the snapshot or AMI. If you do not specify a value, the default is false. Default: false
@@ -1172,12 +1173,11 @@ extension DLMClientTypes {
             self.targetTags = targetTags
         }
     }
-
 }
 
 extension DLMClientTypes {
 
-    public enum SettablePolicyStateValues: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SettablePolicyStateValues: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case disabled
         case enabled
         case sdkUnknown(Swift.String)
@@ -1204,7 +1204,7 @@ extension DLMClientTypes {
     }
 }
 
-public struct CreateLifecyclePolicyInput {
+public struct CreateLifecyclePolicyInput: Swift.Sendable {
     /// [Default policies only] Indicates whether the policy should copy tags from the source resource to the snapshot or AMI. If you do not specify a value, the default is false. Default: false
     public var copyTags: Swift.Bool?
     /// [Default policies only] Specifies how often the policy should run and create snapshots or AMIs. The creation frequency can range from 1 to 7 days. If you do not specify a value, the default is 1. Default: 1
@@ -1274,7 +1274,7 @@ public struct CreateLifecyclePolicyInput {
     }
 }
 
-public struct CreateLifecyclePolicyOutput {
+public struct CreateLifecyclePolicyOutput: Swift.Sendable {
     /// The identifier of the lifecycle policy.
     public var policyId: Swift.String?
 
@@ -1288,7 +1288,7 @@ public struct CreateLifecyclePolicyOutput {
 
 extension DLMClientTypes {
 
-    public enum DefaultPoliciesTypeValues: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DefaultPoliciesTypeValues: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case all
         case instance
         case volume
@@ -1353,7 +1353,7 @@ public struct ResourceNotFoundException: ClientRuntime.ModeledError, AWSClientRu
     }
 }
 
-public struct DeleteLifecyclePolicyInput {
+public struct DeleteLifecyclePolicyInput: Swift.Sendable {
     /// The identifier of the lifecycle policy.
     /// This member is required.
     public var policyId: Swift.String?
@@ -1366,14 +1366,14 @@ public struct DeleteLifecyclePolicyInput {
     }
 }
 
-public struct DeleteLifecyclePolicyOutput {
+public struct DeleteLifecyclePolicyOutput: Swift.Sendable {
 
     public init() { }
 }
 
 extension DLMClientTypes {
 
-    public enum GettablePolicyStateValues: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum GettablePolicyStateValues: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case disabled
         case enabled
         case error
@@ -1403,7 +1403,7 @@ extension DLMClientTypes {
     }
 }
 
-public struct GetLifecyclePoliciesInput {
+public struct GetLifecyclePoliciesInput: Swift.Sendable {
     /// [Default policies only] Specifies the type of default policy to get. Specify one of the following:
     ///
     /// * VOLUME - To get only the default policy for EBS snapshots
@@ -1442,8 +1442,9 @@ public struct GetLifecyclePoliciesInput {
 }
 
 extension DLMClientTypes {
+
     /// Summary information about a lifecycle policy.
-    public struct LifecyclePolicySummary {
+    public struct LifecyclePolicySummary: Swift.Sendable {
         /// [Default policies only] The type of default policy. Values include:
         ///
         /// * VOLUME - Default policy for EBS snapshots
@@ -1478,10 +1479,9 @@ extension DLMClientTypes {
             self.tags = tags
         }
     }
-
 }
 
-public struct GetLifecyclePoliciesOutput {
+public struct GetLifecyclePoliciesOutput: Swift.Sendable {
     /// Summary information about the lifecycle policies.
     public var policies: [DLMClientTypes.LifecyclePolicySummary]?
 
@@ -1493,7 +1493,7 @@ public struct GetLifecyclePoliciesOutput {
     }
 }
 
-public struct GetLifecyclePolicyInput {
+public struct GetLifecyclePolicyInput: Swift.Sendable {
     /// The identifier of the lifecycle policy.
     /// This member is required.
     public var policyId: Swift.String?
@@ -1507,8 +1507,9 @@ public struct GetLifecyclePolicyInput {
 }
 
 extension DLMClientTypes {
+
     /// [Custom policies only] Detailed information about a snapshot, AMI, or event-based lifecycle policy.
-    public struct LifecyclePolicy {
+    public struct LifecyclePolicy: Swift.Sendable {
         /// The local date and time when the lifecycle policy was created.
         public var dateCreated: Foundation.Date?
         /// The local date and time when the lifecycle policy was last modified.
@@ -1563,10 +1564,9 @@ extension DLMClientTypes {
             self.tags = tags
         }
     }
-
 }
 
-public struct GetLifecyclePolicyOutput {
+public struct GetLifecyclePolicyOutput: Swift.Sendable {
     /// Detailed information about the lifecycle policy.
     public var policy: DLMClientTypes.LifecyclePolicy?
 
@@ -1578,7 +1578,7 @@ public struct GetLifecyclePolicyOutput {
     }
 }
 
-public struct ListTagsForResourceInput {
+public struct ListTagsForResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the resource.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -1591,7 +1591,7 @@ public struct ListTagsForResourceInput {
     }
 }
 
-public struct ListTagsForResourceOutput {
+public struct ListTagsForResourceOutput: Swift.Sendable {
     /// Information about the tags.
     public var tags: [Swift.String: Swift.String]?
 
@@ -1603,7 +1603,7 @@ public struct ListTagsForResourceOutput {
     }
 }
 
-public struct TagResourceInput {
+public struct TagResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the resource.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -1621,12 +1621,12 @@ public struct TagResourceInput {
     }
 }
 
-public struct TagResourceOutput {
+public struct TagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UntagResourceInput {
+public struct UntagResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the resource.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -1644,12 +1644,12 @@ public struct UntagResourceInput {
     }
 }
 
-public struct UntagResourceOutput {
+public struct UntagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdateLifecyclePolicyInput {
+public struct UpdateLifecyclePolicyInput: Swift.Sendable {
     /// [Default policies only] Indicates whether the policy should copy tags from the source resource to the snapshot or AMI.
     public var copyTags: Swift.Bool?
     /// [Default policies only] Specifies how often the policy should run and create snapshots or AMIs. The creation frequency can range from 1 to 7 days.
@@ -1709,7 +1709,7 @@ public struct UpdateLifecyclePolicyInput {
     }
 }
 
-public struct UpdateLifecyclePolicyOutput {
+public struct UpdateLifecyclePolicyOutput: Swift.Sendable {
 
     public init() { }
 }

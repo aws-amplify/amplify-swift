@@ -102,3 +102,34 @@ extension PaginatorSequence where OperationStackInput == ListTagsForResourceInpu
         return try await self.asyncCompactMap { item in item.tags }
     }
 }
+extension KeyspacesClient {
+    /// Paginate over `[ListTypesOutput]` results.
+    ///
+    /// When this operation is called, an `AsyncSequence` is created. AsyncSequences are lazy so no service
+    /// calls are made until the sequence is iterated over. This also means there is no guarantee that the request is valid
+    /// until then. If there are errors in your request, you will see the failures only after you start iterating.
+    /// - Parameters:
+    ///     - input: A `[ListTypesInput]` to start pagination
+    /// - Returns: An `AsyncSequence` that can iterate over `ListTypesOutput`
+    public func listTypesPaginated(input: ListTypesInput) -> ClientRuntime.PaginatorSequence<ListTypesInput, ListTypesOutput> {
+        return ClientRuntime.PaginatorSequence<ListTypesInput, ListTypesOutput>(input: input, inputKey: \.nextToken, outputKey: \.nextToken, paginationFunction: self.listTypes(input:))
+    }
+}
+
+extension ListTypesInput: ClientRuntime.PaginateToken {
+    public func usingPaginationToken(_ token: Swift.String) -> ListTypesInput {
+        return ListTypesInput(
+            keyspaceName: self.keyspaceName,
+            maxResults: self.maxResults,
+            nextToken: token
+        )}
+}
+
+extension PaginatorSequence where OperationStackInput == ListTypesInput, OperationStackOutput == ListTypesOutput {
+    /// This paginator transforms the `AsyncSequence` returned by `listTypesPaginated`
+    /// to access the nested member `[Swift.String]`
+    /// - Returns: `[Swift.String]`
+    public func types() async throws -> [Swift.String] {
+        return try await self.asyncCompactMap { item in item.types }
+    }
+}

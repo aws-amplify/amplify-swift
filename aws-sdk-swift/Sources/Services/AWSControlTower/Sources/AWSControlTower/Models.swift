@@ -167,7 +167,7 @@ public struct ValidationException: ClientRuntime.ModeledError, AWSClientRuntime.
     }
 }
 
-public struct GetBaselineOperationInput {
+public struct GetBaselineOperationInput: Swift.Sendable {
     /// The operation ID returned from mutating asynchronous APIs (Enable, Disable, Update, Reset).
     /// This member is required.
     public var operationIdentifier: Swift.String?
@@ -182,7 +182,7 @@ public struct GetBaselineOperationInput {
 
 extension ControlTowerClientTypes {
 
-    public enum BaselineOperationType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum BaselineOperationType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case disableBaseline
         case enableBaseline
         case resetEnabledBaseline
@@ -217,7 +217,7 @@ extension ControlTowerClientTypes {
 
 extension ControlTowerClientTypes {
 
-    public enum BaselineOperationStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum BaselineOperationStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case failed
         case inProgress
         case succeeded
@@ -248,8 +248,9 @@ extension ControlTowerClientTypes {
 }
 
 extension ControlTowerClientTypes {
+
     /// An object of shape BaselineOperation, returning details about the specified Baseline operation ID.
-    public struct BaselineOperation {
+    public struct BaselineOperation: Swift.Sendable {
         /// The end time of the operation (if applicable), in ISO 8601 format.
         public var endTime: Foundation.Date?
         /// The identifier of the specified operation.
@@ -280,10 +281,9 @@ extension ControlTowerClientTypes {
             self.statusMessage = statusMessage
         }
     }
-
 }
 
-public struct GetBaselineOperationOutput {
+public struct GetBaselineOperationOutput: Swift.Sendable {
     /// A baselineOperation object that shows information about the specified operation ID.
     /// This member is required.
     public var baselineOperation: ControlTowerClientTypes.BaselineOperation?
@@ -296,7 +296,7 @@ public struct GetBaselineOperationOutput {
     }
 }
 
-public struct GetBaselineInput {
+public struct GetBaselineInput: Swift.Sendable {
     /// The ARN of the Baseline resource to be retrieved.
     /// This member is required.
     public var baselineIdentifier: Swift.String?
@@ -309,7 +309,7 @@ public struct GetBaselineInput {
     }
 }
 
-public struct GetBaselineOutput {
+public struct GetBaselineOutput: Swift.Sendable {
     /// The baseline ARN.
     /// This member is required.
     public var arn: Swift.String?
@@ -331,7 +331,7 @@ public struct GetBaselineOutput {
     }
 }
 
-public struct ListBaselinesInput {
+public struct ListBaselinesInput: Swift.Sendable {
     /// The maximum number of results to be shown.
     public var maxResults: Swift.Int?
     /// A pagination token.
@@ -348,8 +348,9 @@ public struct ListBaselinesInput {
 }
 
 extension ControlTowerClientTypes {
+
     /// Returns a summary of information about a Baseline object.
-    public struct BaselineSummary {
+    public struct BaselineSummary: Swift.Sendable {
         /// The full ARN of a Baseline.
         /// This member is required.
         public var arn: Swift.String?
@@ -370,10 +371,9 @@ extension ControlTowerClientTypes {
             self.name = name
         }
     }
-
 }
 
-public struct ListBaselinesOutput {
+public struct ListBaselinesOutput: Swift.Sendable {
     /// A list of Baseline object details.
     /// This member is required.
     public var baselines: [ControlTowerClientTypes.BaselineSummary]?
@@ -390,7 +390,7 @@ public struct ListBaselinesOutput {
     }
 }
 
-public struct GetControlOperationInput {
+public struct GetControlOperationInput: Swift.Sendable {
     /// The ID of the asynchronous operation, which is used to track status. The operation is available for 90 days.
     /// This member is required.
     public var operationIdentifier: Swift.String?
@@ -405,7 +405,7 @@ public struct GetControlOperationInput {
 
 extension ControlTowerClientTypes {
 
-    public enum ControlOperationType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ControlOperationType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case disableControl
         case enableControl
         case updateEnabledControl
@@ -437,7 +437,7 @@ extension ControlTowerClientTypes {
 
 extension ControlTowerClientTypes {
 
-    public enum ControlOperationStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ControlOperationStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case failed
         case inProgress
         case succeeded
@@ -468,8 +468,9 @@ extension ControlTowerClientTypes {
 }
 
 extension ControlTowerClientTypes {
+
     /// An operation performed by the control.
-    public struct ControlOperation {
+    public struct ControlOperation: Swift.Sendable {
         /// The controlIdentifier of the control for the operation.
         public var controlIdentifier: Swift.String?
         /// The controlIdentifier of the enabled control.
@@ -512,10 +513,9 @@ extension ControlTowerClientTypes {
             self.targetIdentifier = targetIdentifier
         }
     }
-
 }
 
-public struct GetControlOperationOutput {
+public struct GetControlOperationOutput: Swift.Sendable {
     /// An operation performed by the control.
     /// This member is required.
     public var controlOperation: ControlTowerClientTypes.ControlOperation?
@@ -529,8 +529,9 @@ public struct GetControlOperationOutput {
 }
 
 extension ControlTowerClientTypes {
+
     /// A filter object that lets you call ListControlOperations with a specific filter.
-    public struct ControlOperationFilter {
+    public struct ControlOperationFilter: Swift.Sendable {
         /// The set of controlIdentifier returned by the filter.
         public var controlIdentifiers: [Swift.String]?
         /// The set of ControlOperation objects returned by the filter.
@@ -557,10 +558,9 @@ extension ControlTowerClientTypes {
             self.targetIdentifiers = targetIdentifiers
         }
     }
-
 }
 
-public struct ListControlOperationsInput {
+public struct ListControlOperationsInput: Swift.Sendable {
     /// An input filter for the ListControlOperations API that lets you select the types of control operations to view.
     public var filter: ControlTowerClientTypes.ControlOperationFilter?
     /// The maximum number of results to be shown.
@@ -581,8 +581,9 @@ public struct ListControlOperationsInput {
 }
 
 extension ControlTowerClientTypes {
+
     /// A summary of information about the specified control operation.
-    public struct ControlOperationSummary {
+    public struct ControlOperationSummary: Swift.Sendable {
         /// The controlIdentifier of a control.
         public var controlIdentifier: Swift.String?
         /// The controlIdentifier of an enabled control.
@@ -625,10 +626,9 @@ extension ControlTowerClientTypes {
             self.targetIdentifier = targetIdentifier
         }
     }
-
 }
 
-public struct ListControlOperationsOutput {
+public struct ListControlOperationsOutput: Swift.Sendable {
     /// Returns a list of output from control operations.
     /// This member is required.
     public var controlOperations: [ControlTowerClientTypes.ControlOperationSummary]?
@@ -695,7 +695,7 @@ public struct ServiceQuotaExceededException: ClientRuntime.ModeledError, AWSClie
     }
 }
 
-public struct DisableControlInput {
+public struct DisableControlInput: Swift.Sendable {
     /// The ARN of the control. Only Strongly recommended and Elective controls are permitted, with the exception of the Region deny control. For information on how to find the controlIdentifier, see [the overview page](https://docs.aws.amazon.com/controltower/latest/APIReference/Welcome.html).
     /// This member is required.
     public var controlIdentifier: Swift.String?
@@ -713,7 +713,7 @@ public struct DisableControlInput {
     }
 }
 
-public struct DisableControlOutput {
+public struct DisableControlOutput: Swift.Sendable {
     /// The ID of the asynchronous operation, which is used to track status. The operation is available for 90 days.
     /// This member is required.
     public var operationIdentifier: Swift.String?
@@ -726,7 +726,7 @@ public struct DisableControlOutput {
     }
 }
 
-public struct DisableBaselineInput {
+public struct DisableBaselineInput: Swift.Sendable {
     /// Identifier of the EnabledBaseline resource to be deactivated, in ARN format.
     /// This member is required.
     public var enabledBaselineIdentifier: Swift.String?
@@ -739,7 +739,7 @@ public struct DisableBaselineInput {
     }
 }
 
-public struct DisableBaselineOutput {
+public struct DisableBaselineOutput: Swift.Sendable {
     /// The ID (in UUID format) of the asynchronous DisableBaseline operation. This operationIdentifier is used to track status through calls to the GetBaselineOperation API.
     /// This member is required.
     public var operationIdentifier: Swift.String?
@@ -753,8 +753,9 @@ public struct DisableBaselineOutput {
 }
 
 extension ControlTowerClientTypes {
+
     /// A key-value parameter to an EnabledBaseline resource.
-    public struct EnabledBaselineParameter {
+    public struct EnabledBaselineParameter: Swift.Sendable {
         /// A string denoting the parameter key.
         /// This member is required.
         public var key: Swift.String?
@@ -771,10 +772,9 @@ extension ControlTowerClientTypes {
             self.value = value
         }
     }
-
 }
 
-public struct EnableBaselineInput {
+public struct EnableBaselineInput: Swift.Sendable {
     /// The ARN of the baseline to be enabled.
     /// This member is required.
     public var baselineIdentifier: Swift.String?
@@ -805,7 +805,7 @@ public struct EnableBaselineInput {
     }
 }
 
-public struct EnableBaselineOutput {
+public struct EnableBaselineOutput: Swift.Sendable {
     /// The ARN of the EnabledBaseline resource.
     /// This member is required.
     public var arn: Swift.String?
@@ -823,7 +823,7 @@ public struct EnableBaselineOutput {
     }
 }
 
-public struct GetEnabledBaselineInput {
+public struct GetEnabledBaselineInput: Swift.Sendable {
     /// Identifier of the EnabledBaseline resource to be retrieved, in ARN format.
     /// This member is required.
     public var enabledBaselineIdentifier: Swift.String?
@@ -837,8 +837,9 @@ public struct GetEnabledBaselineInput {
 }
 
 extension ControlTowerClientTypes {
+
     /// Summary of an applied parameter to an EnabledBaseline resource.
-    public struct EnabledBaselineParameterSummary {
+    public struct EnabledBaselineParameterSummary: Swift.Sendable {
         /// A string denoting the parameter key.
         /// This member is required.
         public var key: Swift.String?
@@ -855,12 +856,11 @@ extension ControlTowerClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension ControlTowerClientTypes {
 
-    public enum EnablementStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum EnablementStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case failed
         case succeeded
         case underChange
@@ -891,8 +891,9 @@ extension ControlTowerClientTypes {
 }
 
 extension ControlTowerClientTypes {
+
     /// The deployment summary of an EnabledControl or EnabledBaseline resource.
-    public struct EnablementStatusSummary {
+    public struct EnablementStatusSummary: Swift.Sendable {
         /// The last operation identifier for the enabled resource.
         public var lastOperationIdentifier: Swift.String?
         /// The deployment status of the enabled resource. Valid values:
@@ -913,12 +914,12 @@ extension ControlTowerClientTypes {
             self.status = status
         }
     }
-
 }
 
 extension ControlTowerClientTypes {
+
     /// Details of the EnabledBaseline resource.
-    public struct EnabledBaselineDetails {
+    public struct EnabledBaselineDetails: Swift.Sendable {
         /// The ARN of the EnabledBaseline resource.
         /// This member is required.
         public var arn: Swift.String?
@@ -953,10 +954,9 @@ extension ControlTowerClientTypes {
             self.targetIdentifier = targetIdentifier
         }
     }
-
 }
 
-public struct GetEnabledBaselineOutput {
+public struct GetEnabledBaselineOutput: Swift.Sendable {
     /// Details of the EnabledBaseline resource.
     public var enabledBaselineDetails: ControlTowerClientTypes.EnabledBaselineDetails?
 
@@ -969,8 +969,9 @@ public struct GetEnabledBaselineOutput {
 }
 
 extension ControlTowerClientTypes {
+
     /// A filter applied on the ListEnabledBaseline operation. Allowed filters are baselineIdentifiers and targetIdentifiers. The filter can be applied for either, or both.
-    public struct EnabledBaselineFilter {
+    public struct EnabledBaselineFilter: Swift.Sendable {
         /// Identifiers for the Baseline objects returned as part of the filter operation.
         public var baselineIdentifiers: [Swift.String]?
         /// Identifiers for the targets of the Baseline filter operation.
@@ -985,10 +986,9 @@ extension ControlTowerClientTypes {
             self.targetIdentifiers = targetIdentifiers
         }
     }
-
 }
 
-public struct ListEnabledBaselinesInput {
+public struct ListEnabledBaselinesInput: Swift.Sendable {
     /// A filter applied on the ListEnabledBaseline operation. Allowed filters are baselineIdentifiers and targetIdentifiers. The filter can be applied for either, or both.
     public var filter: ControlTowerClientTypes.EnabledBaselineFilter?
     /// The maximum number of results to be shown.
@@ -1009,8 +1009,9 @@ public struct ListEnabledBaselinesInput {
 }
 
 extension ControlTowerClientTypes {
+
     /// Returns a summary of information about an EnabledBaseline object.
-    public struct EnabledBaselineSummary {
+    public struct EnabledBaselineSummary: Swift.Sendable {
         /// The ARN of the EnabledBaseline resource
         /// This member is required.
         public var arn: Swift.String?
@@ -1041,10 +1042,9 @@ extension ControlTowerClientTypes {
             self.targetIdentifier = targetIdentifier
         }
     }
-
 }
 
-public struct ListEnabledBaselinesOutput {
+public struct ListEnabledBaselinesOutput: Swift.Sendable {
     /// Retuens a list of summaries of EnabledBaseline resources.
     /// This member is required.
     public var enabledBaselines: [ControlTowerClientTypes.EnabledBaselineSummary]?
@@ -1061,7 +1061,7 @@ public struct ListEnabledBaselinesOutput {
     }
 }
 
-public struct ResetEnabledBaselineInput {
+public struct ResetEnabledBaselineInput: Swift.Sendable {
     /// Specifies the ID of the EnabledBaseline resource to be re-enabled, in ARN format.
     /// This member is required.
     public var enabledBaselineIdentifier: Swift.String?
@@ -1074,7 +1074,7 @@ public struct ResetEnabledBaselineInput {
     }
 }
 
-public struct ResetEnabledBaselineOutput {
+public struct ResetEnabledBaselineOutput: Swift.Sendable {
     /// The ID (in UUID format) of the asynchronous ResetEnabledBaseline operation. This operationIdentifier is used to track status through calls to the GetBaselineOperation API.
     /// This member is required.
     public var operationIdentifier: Swift.String?
@@ -1087,7 +1087,7 @@ public struct ResetEnabledBaselineOutput {
     }
 }
 
-public struct UpdateEnabledBaselineInput {
+public struct UpdateEnabledBaselineInput: Swift.Sendable {
     /// Specifies the new Baseline version, to which the EnabledBaseline should be updated.
     /// This member is required.
     public var baselineVersion: Swift.String?
@@ -1109,7 +1109,7 @@ public struct UpdateEnabledBaselineInput {
     }
 }
 
-public struct UpdateEnabledBaselineOutput {
+public struct UpdateEnabledBaselineOutput: Swift.Sendable {
     /// The ID (in UUID format) of the asynchronous UpdateEnabledBaseline operation. This operationIdentifier is used to track status through calls to the GetBaselineOperation API.
     /// This member is required.
     public var operationIdentifier: Swift.String?
@@ -1123,8 +1123,9 @@ public struct UpdateEnabledBaselineOutput {
 }
 
 extension ControlTowerClientTypes {
+
     /// A key/value pair, where Key is of type String and Value is of type Document.
-    public struct EnabledControlParameter {
+    public struct EnabledControlParameter: Swift.Sendable {
         /// The key of a key/value pair.
         /// This member is required.
         public var key: Swift.String?
@@ -1141,10 +1142,9 @@ extension ControlTowerClientTypes {
             self.value = value
         }
     }
-
 }
 
-public struct EnableControlInput {
+public struct EnableControlInput: Swift.Sendable {
     /// The ARN of the control. Only Strongly recommended and Elective controls are permitted, with the exception of the Region deny control. For information on how to find the controlIdentifier, see [the overview page](https://docs.aws.amazon.com/controltower/latest/APIReference/Welcome.html).
     /// This member is required.
     public var controlIdentifier: Swift.String?
@@ -1170,7 +1170,7 @@ public struct EnableControlInput {
     }
 }
 
-public struct EnableControlOutput {
+public struct EnableControlOutput: Swift.Sendable {
     /// The ARN of the EnabledControl resource.
     public var arn: Swift.String?
     /// The ID of the asynchronous operation, which is used to track status. The operation is available for 90 days.
@@ -1187,7 +1187,7 @@ public struct EnableControlOutput {
     }
 }
 
-public struct GetEnabledControlInput {
+public struct GetEnabledControlInput: Swift.Sendable {
     /// The controlIdentifier of the enabled control.
     /// This member is required.
     public var enabledControlIdentifier: Swift.String?
@@ -1202,7 +1202,7 @@ public struct GetEnabledControlInput {
 
 extension ControlTowerClientTypes {
 
-    public enum DriftStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DriftStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case drifted
         case inSync
         case notChecking
@@ -1236,8 +1236,9 @@ extension ControlTowerClientTypes {
 }
 
 extension ControlTowerClientTypes {
+
     /// The drift summary of the enabled control. Amazon Web Services Control Tower expects the enabled control configuration to include all supported and governed Regions. If the enabled control differs from the expected configuration, it is defined to be in a state of drift. You can repair this drift by resetting the enabled control.
-    public struct DriftStatusSummary {
+    public struct DriftStatusSummary: Swift.Sendable {
         /// The drift status of the enabled control. Valid values:
         ///
         /// * DRIFTED: The enabledControl deployed in this configuration doesn’t match the configuration that Amazon Web Services Control Tower expected.
@@ -1256,12 +1257,12 @@ extension ControlTowerClientTypes {
             self.driftStatus = driftStatus
         }
     }
-
 }
 
 extension ControlTowerClientTypes {
+
     /// Returns a summary of information about the parameters of an enabled control.
-    public struct EnabledControlParameterSummary {
+    public struct EnabledControlParameterSummary: Swift.Sendable {
         /// The key of a key/value pair.
         /// This member is required.
         public var key: Swift.String?
@@ -1278,12 +1279,12 @@ extension ControlTowerClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension ControlTowerClientTypes {
+
     /// An Amazon Web Services Region in which Amazon Web Services Control Tower expects to find the control deployed. The expected Regions are based on the Regions that are governed by the landing zone. In certain cases, a control is not actually enabled in the Region as expected, such as during drift, or [mixed governance](https://docs.aws.amazon.com/controltower/latest/userguide/region-how.html#mixed-governance).
-    public struct Region {
+    public struct Region: Swift.Sendable {
         /// The Amazon Web Services Region name.
         public var name: Swift.String?
 
@@ -1294,12 +1295,12 @@ extension ControlTowerClientTypes {
             self.name = name
         }
     }
-
 }
 
 extension ControlTowerClientTypes {
+
     /// Information about the enabled control.
-    public struct EnabledControlDetails {
+    public struct EnabledControlDetails: Swift.Sendable {
         /// The ARN of the enabled control.
         public var arn: Swift.String?
         /// The control identifier of the enabled control. For information on how to find the controlIdentifier, see [the overview page](https://docs.aws.amazon.com/controltower/latest/APIReference/Welcome.html).
@@ -1334,10 +1335,9 @@ extension ControlTowerClientTypes {
             self.targetRegions = targetRegions
         }
     }
-
 }
 
-public struct GetEnabledControlOutput {
+public struct GetEnabledControlOutput: Swift.Sendable {
     /// Information about the enabled control.
     /// This member is required.
     public var enabledControlDetails: ControlTowerClientTypes.EnabledControlDetails?
@@ -1351,8 +1351,9 @@ public struct GetEnabledControlOutput {
 }
 
 extension ControlTowerClientTypes {
+
     /// A structure that returns a set of control identifiers, the control status for each control in the set, and the drift status for each control in the set.
-    public struct EnabledControlFilter {
+    public struct EnabledControlFilter: Swift.Sendable {
         /// The set of controlIdentifier returned by the filter.
         public var controlIdentifiers: [Swift.String]?
         /// A list of DriftStatus items.
@@ -1371,10 +1372,9 @@ extension ControlTowerClientTypes {
             self.statuses = statuses
         }
     }
-
 }
 
-public struct ListEnabledControlsInput {
+public struct ListEnabledControlsInput: Swift.Sendable {
     /// An input filter for the ListEnabledControls API that lets you select the types of control operations to view.
     public var filter: ControlTowerClientTypes.EnabledControlFilter?
     /// How many results to return per API call.
@@ -1399,8 +1399,9 @@ public struct ListEnabledControlsInput {
 }
 
 extension ControlTowerClientTypes {
+
     /// Returns a summary of information about an enabled control.
-    public struct EnabledControlSummary {
+    public struct EnabledControlSummary: Swift.Sendable {
         /// The ARN of the enabled control.
         public var arn: Swift.String?
         /// The controlIdentifier of the enabled control.
@@ -1427,10 +1428,9 @@ extension ControlTowerClientTypes {
             self.targetIdentifier = targetIdentifier
         }
     }
-
 }
 
-public struct ListEnabledControlsOutput {
+public struct ListEnabledControlsOutput: Swift.Sendable {
     /// Lists the controls enabled by Amazon Web Services Control Tower on the specified organizational unit and the accounts it contains.
     /// This member is required.
     public var enabledControls: [ControlTowerClientTypes.EnabledControlSummary]?
@@ -1447,7 +1447,7 @@ public struct ListEnabledControlsOutput {
     }
 }
 
-public struct UpdateEnabledControlInput {
+public struct UpdateEnabledControlInput: Swift.Sendable {
     /// The ARN of the enabled control that will be updated.
     /// This member is required.
     public var enabledControlIdentifier: Swift.String?
@@ -1465,7 +1465,7 @@ public struct UpdateEnabledControlInput {
     }
 }
 
-public struct UpdateEnabledControlOutput {
+public struct UpdateEnabledControlOutput: Swift.Sendable {
     /// The operation identifier for this UpdateEnabledControl operation.
     /// This member is required.
     public var operationIdentifier: Swift.String?
@@ -1478,7 +1478,7 @@ public struct UpdateEnabledControlOutput {
     }
 }
 
-public struct GetLandingZoneOperationInput {
+public struct GetLandingZoneOperationInput: Swift.Sendable {
     /// A unique identifier assigned to a landing zone operation.
     /// This member is required.
     public var operationIdentifier: Swift.String?
@@ -1493,7 +1493,7 @@ public struct GetLandingZoneOperationInput {
 
 extension ControlTowerClientTypes {
 
-    public enum LandingZoneOperationType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum LandingZoneOperationType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case create
         case delete
         case reset
@@ -1528,7 +1528,7 @@ extension ControlTowerClientTypes {
 
 extension ControlTowerClientTypes {
 
-    public enum LandingZoneOperationStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum LandingZoneOperationStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case failed
         case inProgress
         case succeeded
@@ -1559,8 +1559,9 @@ extension ControlTowerClientTypes {
 }
 
 extension ControlTowerClientTypes {
+
     /// Information about a landing zone operation.
-    public struct LandingZoneOperationDetail {
+    public struct LandingZoneOperationDetail: Swift.Sendable {
         /// The landing zone operation end time.
         public var endTime: Foundation.Date?
         /// The operationIdentifier of the landing zone operation.
@@ -1605,10 +1606,9 @@ extension ControlTowerClientTypes {
             self.statusMessage = statusMessage
         }
     }
-
 }
 
-public struct GetLandingZoneOperationOutput {
+public struct GetLandingZoneOperationOutput: Swift.Sendable {
     /// Details about a landing zone operation.
     /// This member is required.
     public var operationDetails: ControlTowerClientTypes.LandingZoneOperationDetail?
@@ -1622,8 +1622,9 @@ public struct GetLandingZoneOperationOutput {
 }
 
 extension ControlTowerClientTypes {
+
     /// A filter object that lets you call ListLandingZoneOperations with a specific filter.
-    public struct LandingZoneOperationFilter {
+    public struct LandingZoneOperationFilter: Swift.Sendable {
         /// The statuses of the set of landing zone operations selected by the filter.
         public var statuses: [ControlTowerClientTypes.LandingZoneOperationStatus]?
         /// The set of landing zone operation types selected by the filter.
@@ -1638,10 +1639,9 @@ extension ControlTowerClientTypes {
             self.types = types
         }
     }
-
 }
 
-public struct ListLandingZoneOperationsInput {
+public struct ListLandingZoneOperationsInput: Swift.Sendable {
     /// An input filter for the ListLandingZoneOperations API that lets you select the types of landing zone operations to view.
     public var filter: ControlTowerClientTypes.LandingZoneOperationFilter?
     /// How many results to return per API call.
@@ -1662,8 +1662,9 @@ public struct ListLandingZoneOperationsInput {
 }
 
 extension ControlTowerClientTypes {
+
     /// Returns a summary of information about a landing zone operation.
-    public struct LandingZoneOperationSummary {
+    public struct LandingZoneOperationSummary: Swift.Sendable {
         /// The operationIdentifier of the landing zone operation.
         public var operationIdentifier: Swift.String?
         /// The type of the landing zone operation.
@@ -1682,10 +1683,9 @@ extension ControlTowerClientTypes {
             self.status = status
         }
     }
-
 }
 
-public struct ListLandingZoneOperationsOutput {
+public struct ListLandingZoneOperationsOutput: Swift.Sendable {
     /// Lists landing zone operations.
     /// This member is required.
     public var landingZoneOperations: [ControlTowerClientTypes.LandingZoneOperationSummary]?
@@ -1702,7 +1702,7 @@ public struct ListLandingZoneOperationsOutput {
     }
 }
 
-public struct CreateLandingZoneInput {
+public struct CreateLandingZoneInput: Swift.Sendable {
     /// The manifest JSON file is a text file that describes your Amazon Web Services resources. For examples, review [Launch your landing zone](https://docs.aws.amazon.com/controltower/latest/userguide/lz-api-launch).
     /// This member is required.
     public var manifest: Smithy.Document?
@@ -1724,7 +1724,7 @@ public struct CreateLandingZoneInput {
     }
 }
 
-public struct CreateLandingZoneOutput {
+public struct CreateLandingZoneOutput: Swift.Sendable {
     /// The ARN of the landing zone resource.
     /// This member is required.
     public var arn: Swift.String?
@@ -1742,7 +1742,7 @@ public struct CreateLandingZoneOutput {
     }
 }
 
-public struct DeleteLandingZoneInput {
+public struct DeleteLandingZoneInput: Swift.Sendable {
     /// The unique identifier of the landing zone.
     /// This member is required.
     public var landingZoneIdentifier: Swift.String?
@@ -1755,7 +1755,7 @@ public struct DeleteLandingZoneInput {
     }
 }
 
-public struct DeleteLandingZoneOutput {
+public struct DeleteLandingZoneOutput: Swift.Sendable {
     /// >A unique identifier assigned to a DeleteLandingZone operation. You can use this identifier as an input parameter of GetLandingZoneOperation to check the operation's status.
     /// This member is required.
     public var operationIdentifier: Swift.String?
@@ -1768,7 +1768,7 @@ public struct DeleteLandingZoneOutput {
     }
 }
 
-public struct GetLandingZoneInput {
+public struct GetLandingZoneInput: Swift.Sendable {
     /// The unique identifier of the landing zone.
     /// This member is required.
     public var landingZoneIdentifier: Swift.String?
@@ -1783,7 +1783,7 @@ public struct GetLandingZoneInput {
 
 extension ControlTowerClientTypes {
 
-    public enum LandingZoneDriftStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum LandingZoneDriftStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case drifted
         case inSync
         case sdkUnknown(Swift.String)
@@ -1811,8 +1811,9 @@ extension ControlTowerClientTypes {
 }
 
 extension ControlTowerClientTypes {
+
     /// The drift status summary of the landing zone. If the landing zone differs from the expected configuration, it is defined to be in a state of drift. You can repair this drift by resetting the landing zone.
-    public struct LandingZoneDriftStatusSummary {
+    public struct LandingZoneDriftStatusSummary: Swift.Sendable {
         /// The drift status of the landing zone. Valid values:
         ///
         /// * DRIFTED: The landing zone deployed in this configuration does not match the configuration that Amazon Web Services Control Tower expected.
@@ -1827,12 +1828,11 @@ extension ControlTowerClientTypes {
             self.status = status
         }
     }
-
 }
 
 extension ControlTowerClientTypes {
 
-    public enum LandingZoneStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum LandingZoneStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case active
         case failed
         case processing
@@ -1863,8 +1863,9 @@ extension ControlTowerClientTypes {
 }
 
 extension ControlTowerClientTypes {
+
     /// Information about the landing zone.
-    public struct LandingZoneDetail {
+    public struct LandingZoneDetail: Swift.Sendable {
         /// The ARN of the landing zone.
         public var arn: Swift.String?
         /// The drift status of the landing zone.
@@ -1897,10 +1898,9 @@ extension ControlTowerClientTypes {
             self.version = version
         }
     }
-
 }
 
-public struct GetLandingZoneOutput {
+public struct GetLandingZoneOutput: Swift.Sendable {
     /// Information about the landing zone.
     /// This member is required.
     public var landingZone: ControlTowerClientTypes.LandingZoneDetail?
@@ -1913,7 +1913,7 @@ public struct GetLandingZoneOutput {
     }
 }
 
-public struct ListLandingZonesInput {
+public struct ListLandingZonesInput: Swift.Sendable {
     /// The maximum number of returned landing zone ARNs, which is one.
     public var maxResults: Swift.Int?
     /// The token to continue the list from a previous API call with the same parameters.
@@ -1930,8 +1930,9 @@ public struct ListLandingZonesInput {
 }
 
 extension ControlTowerClientTypes {
+
     /// Returns a summary of information about a landing zone.
-    public struct LandingZoneSummary {
+    public struct LandingZoneSummary: Swift.Sendable {
         /// The ARN of the landing zone.
         public var arn: Swift.String?
 
@@ -1942,10 +1943,9 @@ extension ControlTowerClientTypes {
             self.arn = arn
         }
     }
-
 }
 
-public struct ListLandingZonesOutput {
+public struct ListLandingZonesOutput: Swift.Sendable {
     /// The ARN of the landing zone.
     /// This member is required.
     public var landingZones: [ControlTowerClientTypes.LandingZoneSummary]?
@@ -1962,7 +1962,7 @@ public struct ListLandingZonesOutput {
     }
 }
 
-public struct ResetLandingZoneInput {
+public struct ResetLandingZoneInput: Swift.Sendable {
     /// The unique identifier of the landing zone.
     /// This member is required.
     public var landingZoneIdentifier: Swift.String?
@@ -1975,7 +1975,7 @@ public struct ResetLandingZoneInput {
     }
 }
 
-public struct ResetLandingZoneOutput {
+public struct ResetLandingZoneOutput: Swift.Sendable {
     /// A unique identifier assigned to a ResetLandingZone operation. You can use this identifier as an input parameter of GetLandingZoneOperation to check the operation's status.
     /// This member is required.
     public var operationIdentifier: Swift.String?
@@ -1988,7 +1988,7 @@ public struct ResetLandingZoneOutput {
     }
 }
 
-public struct UpdateLandingZoneInput {
+public struct UpdateLandingZoneInput: Swift.Sendable {
     /// The unique identifier of the landing zone.
     /// This member is required.
     public var landingZoneIdentifier: Swift.String?
@@ -2011,7 +2011,7 @@ public struct UpdateLandingZoneInput {
     }
 }
 
-public struct UpdateLandingZoneOutput {
+public struct UpdateLandingZoneOutput: Swift.Sendable {
     /// A unique identifier assigned to a UpdateLandingZone operation. You can use this identifier as an input of GetLandingZoneOperation to check the operation's status.
     /// This member is required.
     public var operationIdentifier: Swift.String?
@@ -2024,7 +2024,7 @@ public struct UpdateLandingZoneOutput {
     }
 }
 
-public struct ListTagsForResourceInput {
+public struct ListTagsForResourceInput: Swift.Sendable {
     /// The ARN of the resource.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -2037,7 +2037,7 @@ public struct ListTagsForResourceInput {
     }
 }
 
-public struct ListTagsForResourceOutput {
+public struct ListTagsForResourceOutput: Swift.Sendable {
     /// A list of tags, as key:value strings.
     /// This member is required.
     public var tags: [Swift.String: Swift.String]?
@@ -2050,7 +2050,7 @@ public struct ListTagsForResourceOutput {
     }
 }
 
-public struct TagResourceInput {
+public struct TagResourceInput: Swift.Sendable {
     /// The ARN of the resource to be tagged.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -2068,12 +2068,12 @@ public struct TagResourceInput {
     }
 }
 
-public struct TagResourceOutput {
+public struct TagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UntagResourceInput {
+public struct UntagResourceInput: Swift.Sendable {
     /// The ARN of the resource.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -2091,7 +2091,7 @@ public struct UntagResourceInput {
     }
 }
 
-public struct UntagResourceOutput {
+public struct UntagResourceOutput: Swift.Sendable {
 
     public init() { }
 }

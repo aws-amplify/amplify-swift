@@ -188,8 +188,9 @@ public struct ThrottlingException: ClientRuntime.ModeledError, AWSClientRuntime.
 }
 
 extension NetworkManagerClientTypes {
+
     /// Describes a validation exception for a field.
-    public struct ValidationExceptionField {
+    public struct ValidationExceptionField: Swift.Sendable {
         /// The message for the field.
         /// This member is required.
         public var message: Swift.String?
@@ -206,12 +207,11 @@ extension NetworkManagerClientTypes {
             self.name = name
         }
     }
-
 }
 
 extension NetworkManagerClientTypes {
 
-    public enum ValidationExceptionReason: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ValidationExceptionReason: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case cannotParse
         case fieldValidationFailed
         case other
@@ -277,7 +277,7 @@ public struct ValidationException: ClientRuntime.ModeledError, AWSClientRuntime.
     }
 }
 
-public struct AcceptAttachmentInput {
+public struct AcceptAttachmentInput: Swift.Sendable {
     /// The ID of the attachment.
     /// This member is required.
     public var attachmentId: Swift.String?
@@ -292,7 +292,7 @@ public struct AcceptAttachmentInput {
 
 extension NetworkManagerClientTypes {
 
-    public enum AttachmentType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AttachmentType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case connect
         case siteToSiteVpn
         case transitGatewayRouteTable
@@ -327,7 +327,7 @@ extension NetworkManagerClientTypes {
 
 extension NetworkManagerClientTypes {
 
-    public enum AttachmentErrorCode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AttachmentErrorCode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case maximumNoEncapLimitExceeded
         case subnetDuplicatedInAvailabilityZone
         case subnetNotFound
@@ -373,8 +373,9 @@ extension NetworkManagerClientTypes {
 }
 
 extension NetworkManagerClientTypes {
+
     /// Describes the error associated with an attachment request.
-    public struct AttachmentError {
+    public struct AttachmentError: Swift.Sendable {
         /// The error code for the attachment request.
         public var code: NetworkManagerClientTypes.AttachmentErrorCode?
         /// The message associated with the error code.
@@ -397,12 +398,12 @@ extension NetworkManagerClientTypes {
             self.resourceArn = resourceArn
         }
     }
-
 }
 
 extension NetworkManagerClientTypes {
+
     /// Describes a tag.
-    public struct Tag {
+    public struct Tag: Swift.Sendable {
         /// The tag key. Constraints: Maximum length of 128 characters.
         public var key: Swift.String?
         /// The tag value. Constraints: Maximum length of 256 characters.
@@ -417,12 +418,12 @@ extension NetworkManagerClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension NetworkManagerClientTypes {
+
     /// Describes proposed changes to a network function group.
-    public struct ProposedNetworkFunctionGroupChange {
+    public struct ProposedNetworkFunctionGroupChange: Swift.Sendable {
         /// The proposed new attachment policy rule number for the network function group.
         public var attachmentPolicyRuleNumber: Swift.Int?
         /// The proposed name change for the network function group name.
@@ -441,12 +442,12 @@ extension NetworkManagerClientTypes {
             self.tags = tags
         }
     }
-
 }
 
 extension NetworkManagerClientTypes {
+
     /// Describes a proposed segment change. In some cases, the segment change must first be evaluated and accepted.
-    public struct ProposedSegmentChange {
+    public struct ProposedSegmentChange: Swift.Sendable {
         /// The rule number in the policy document that applies to this change.
         public var attachmentPolicyRuleNumber: Swift.Int?
         /// The name of the segment to change.
@@ -465,12 +466,11 @@ extension NetworkManagerClientTypes {
             self.tags = tags
         }
     }
-
 }
 
 extension NetworkManagerClientTypes {
 
-    public enum AttachmentState: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AttachmentState: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case available
         case creating
         case deleting
@@ -519,8 +519,9 @@ extension NetworkManagerClientTypes {
 }
 
 extension NetworkManagerClientTypes {
+
     /// Describes a core network attachment.
-    public struct Attachment {
+    public struct Attachment: Swift.Sendable {
         /// The ID of the attachment.
         public var attachmentId: Swift.String?
         /// The policy rule number associated with the attachment.
@@ -595,10 +596,9 @@ extension NetworkManagerClientTypes {
             self.updatedAt = updatedAt
         }
     }
-
 }
 
-public struct AcceptAttachmentOutput {
+public struct AcceptAttachmentOutput: Swift.Sendable {
     /// The response to the attachment request.
     public var attachment: NetworkManagerClientTypes.Attachment?
 
@@ -611,8 +611,9 @@ public struct AcceptAttachmentOutput {
 }
 
 extension NetworkManagerClientTypes {
+
     /// Describes the current status of an account within an Amazon Web Services Organization, including service-linked roles (SLRs).
-    public struct AccountStatus {
+    public struct AccountStatus: Swift.Sendable {
         /// The ID of an account within the Amazon Web Services Organization.
         public var accountId: Swift.String?
         /// The status of SLR deployment for the account.
@@ -627,7 +628,6 @@ extension NetworkManagerClientTypes {
             self.slrDeploymentStatus = slrDeploymentStatus
         }
     }
-
 }
 
 /// A service limit was exceeded.
@@ -674,7 +674,7 @@ public struct ServiceQuotaExceededException: ClientRuntime.ModeledError, AWSClie
     }
 }
 
-public struct AssociateConnectPeerInput {
+public struct AssociateConnectPeerInput: Swift.Sendable {
     /// The ID of the Connect peer.
     /// This member is required.
     public var connectPeerId: Swift.String?
@@ -703,7 +703,7 @@ public struct AssociateConnectPeerInput {
 
 extension NetworkManagerClientTypes {
 
-    public enum ConnectPeerAssociationState: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ConnectPeerAssociationState: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case available
         case deleted
         case deleting
@@ -737,8 +737,9 @@ extension NetworkManagerClientTypes {
 }
 
 extension NetworkManagerClientTypes {
+
     /// Describes a core network Connect peer association.
-    public struct ConnectPeerAssociation {
+    public struct ConnectPeerAssociation: Swift.Sendable {
         /// The ID of the Connect peer.
         public var connectPeerId: Swift.String?
         /// The ID of the device to connect to.
@@ -765,10 +766,9 @@ extension NetworkManagerClientTypes {
             self.state = state
         }
     }
-
 }
 
-public struct AssociateConnectPeerOutput {
+public struct AssociateConnectPeerOutput: Swift.Sendable {
     /// The response to the Connect peer request.
     public var connectPeerAssociation: NetworkManagerClientTypes.ConnectPeerAssociation?
 
@@ -780,7 +780,7 @@ public struct AssociateConnectPeerOutput {
     }
 }
 
-public struct AssociateCustomerGatewayInput {
+public struct AssociateCustomerGatewayInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the customer gateway.
     /// This member is required.
     public var customerGatewayArn: Swift.String?
@@ -809,7 +809,7 @@ public struct AssociateCustomerGatewayInput {
 
 extension NetworkManagerClientTypes {
 
-    public enum CustomerGatewayAssociationState: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum CustomerGatewayAssociationState: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case available
         case deleted
         case deleting
@@ -843,8 +843,9 @@ extension NetworkManagerClientTypes {
 }
 
 extension NetworkManagerClientTypes {
+
     /// Describes the association between a customer gateway, a device, and a link.
-    public struct CustomerGatewayAssociation {
+    public struct CustomerGatewayAssociation: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the customer gateway.
         public var customerGatewayArn: Swift.String?
         /// The ID of the device.
@@ -871,10 +872,9 @@ extension NetworkManagerClientTypes {
             self.state = state
         }
     }
-
 }
 
-public struct AssociateCustomerGatewayOutput {
+public struct AssociateCustomerGatewayOutput: Swift.Sendable {
     /// The customer gateway association.
     public var customerGatewayAssociation: NetworkManagerClientTypes.CustomerGatewayAssociation?
 
@@ -886,7 +886,7 @@ public struct AssociateCustomerGatewayOutput {
     }
 }
 
-public struct AssociateLinkInput {
+public struct AssociateLinkInput: Swift.Sendable {
     /// The ID of the device.
     /// This member is required.
     public var deviceId: Swift.String?
@@ -911,7 +911,7 @@ public struct AssociateLinkInput {
 
 extension NetworkManagerClientTypes {
 
-    public enum LinkAssociationState: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum LinkAssociationState: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case available
         case deleted
         case deleting
@@ -945,8 +945,9 @@ extension NetworkManagerClientTypes {
 }
 
 extension NetworkManagerClientTypes {
+
     /// Describes the association between a device and a link.
-    public struct LinkAssociation {
+    public struct LinkAssociation: Swift.Sendable {
         /// The device ID for the link association.
         public var deviceId: Swift.String?
         /// The ID of the global network.
@@ -969,10 +970,9 @@ extension NetworkManagerClientTypes {
             self.linkId = linkId
         }
     }
-
 }
 
-public struct AssociateLinkOutput {
+public struct AssociateLinkOutput: Swift.Sendable {
     /// The link association.
     public var linkAssociation: NetworkManagerClientTypes.LinkAssociation?
 
@@ -984,7 +984,7 @@ public struct AssociateLinkOutput {
     }
 }
 
-public struct AssociateTransitGatewayConnectPeerInput {
+public struct AssociateTransitGatewayConnectPeerInput: Swift.Sendable {
     /// The ID of the device.
     /// This member is required.
     public var deviceId: Swift.String?
@@ -1013,7 +1013,7 @@ public struct AssociateTransitGatewayConnectPeerInput {
 
 extension NetworkManagerClientTypes {
 
-    public enum TransitGatewayConnectPeerAssociationState: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum TransitGatewayConnectPeerAssociationState: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case available
         case deleted
         case deleting
@@ -1047,8 +1047,9 @@ extension NetworkManagerClientTypes {
 }
 
 extension NetworkManagerClientTypes {
+
     /// Describes a transit gateway Connect peer association.
-    public struct TransitGatewayConnectPeerAssociation {
+    public struct TransitGatewayConnectPeerAssociation: Swift.Sendable {
         /// The ID of the device.
         public var deviceId: Swift.String?
         /// The ID of the global network.
@@ -1075,10 +1076,9 @@ extension NetworkManagerClientTypes {
             self.transitGatewayConnectPeerArn = transitGatewayConnectPeerArn
         }
     }
-
 }
 
-public struct AssociateTransitGatewayConnectPeerOutput {
+public struct AssociateTransitGatewayConnectPeerOutput: Swift.Sendable {
     /// The transit gateway Connect peer association.
     public var transitGatewayConnectPeerAssociation: NetworkManagerClientTypes.TransitGatewayConnectPeerAssociation?
 
@@ -1091,8 +1091,9 @@ public struct AssociateTransitGatewayConnectPeerOutput {
 }
 
 extension NetworkManagerClientTypes {
+
     /// Specifies a location in Amazon Web Services.
-    public struct AWSLocation {
+    public struct AWSLocation: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the subnet that the device is located in.
         public var subnetArn: Swift.String?
         /// The Zone that the device is located in. Specify the ID of an Availability Zone, Local Zone, Wavelength Zone, or an Outpost.
@@ -1107,12 +1108,12 @@ extension NetworkManagerClientTypes {
             self.zone = zone
         }
     }
-
 }
 
 extension NetworkManagerClientTypes {
+
     /// Describes bandwidth information.
-    public struct Bandwidth {
+    public struct Bandwidth: Swift.Sendable {
         /// Download speed in Mbps.
         public var downloadSpeed: Swift.Int?
         /// Upload speed in Mbps.
@@ -1127,12 +1128,12 @@ extension NetworkManagerClientTypes {
             self.uploadSpeed = uploadSpeed
         }
     }
-
 }
 
 extension NetworkManagerClientTypes {
+
     /// Describes the BGP options.
-    public struct BgpOptions {
+    public struct BgpOptions: Swift.Sendable {
         /// The Peer ASN of the BGP.
         public var peerAsn: Swift.Int?
 
@@ -1143,12 +1144,11 @@ extension NetworkManagerClientTypes {
             self.peerAsn = peerAsn
         }
     }
-
 }
 
 extension NetworkManagerClientTypes {
 
-    public enum ChangeAction: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ChangeAction: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case add
         case modify
         case remove
@@ -1180,7 +1180,7 @@ extension NetworkManagerClientTypes {
 
 extension NetworkManagerClientTypes {
 
-    public enum ChangeSetState: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ChangeSetState: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case executing
         case executionSucceeded
         case failedGeneration
@@ -1221,7 +1221,7 @@ extension NetworkManagerClientTypes {
 
 extension NetworkManagerClientTypes {
 
-    public enum ChangeStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ChangeStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case complete
         case failed
         case inProgress
@@ -1256,7 +1256,7 @@ extension NetworkManagerClientTypes {
 
 extension NetworkManagerClientTypes {
 
-    public enum ChangeType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ChangeType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case attachmentMapping
         case attachmentPoliciesConfiguration
         case attachmentRoutePropagation
@@ -1309,7 +1309,7 @@ extension NetworkManagerClientTypes {
 
 extension NetworkManagerClientTypes {
 
-    public enum TunnelProtocol: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum TunnelProtocol: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case gre
         case noEncap
         case sdkUnknown(Swift.String)
@@ -1337,8 +1337,9 @@ extension NetworkManagerClientTypes {
 }
 
 extension NetworkManagerClientTypes {
+
     /// Describes a core network Connect attachment options.
-    public struct ConnectAttachmentOptions {
+    public struct ConnectAttachmentOptions: Swift.Sendable {
         /// The protocol used for the attachment connection.
         public var `protocol`: NetworkManagerClientTypes.TunnelProtocol?
 
@@ -1349,12 +1350,12 @@ extension NetworkManagerClientTypes {
             self.`protocol` = `protocol`
         }
     }
-
 }
 
 extension NetworkManagerClientTypes {
+
     /// Describes a core network Connect attachment.
-    public struct ConnectAttachment {
+    public struct ConnectAttachment: Swift.Sendable {
         /// The attachment details.
         public var attachment: NetworkManagerClientTypes.Attachment?
         /// Options for connecting an attachment.
@@ -1373,12 +1374,11 @@ extension NetworkManagerClientTypes {
             self.transportAttachmentId = transportAttachmentId
         }
     }
-
 }
 
 extension NetworkManagerClientTypes {
 
-    public enum ConnectionState: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ConnectionState: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case available
         case deleting
         case pending
@@ -1412,8 +1412,9 @@ extension NetworkManagerClientTypes {
 }
 
 extension NetworkManagerClientTypes {
+
     /// Describes a connection.
-    public struct Connection {
+    public struct Connection: Swift.Sendable {
         /// The ID of the second device in the connection.
         public var connectedDeviceId: Swift.String?
         /// The ID of the link for the second device in the connection.
@@ -1464,12 +1465,11 @@ extension NetworkManagerClientTypes {
             self.tags = tags
         }
     }
-
 }
 
 extension NetworkManagerClientTypes {
 
-    public enum ConnectionStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ConnectionStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case down
         case up
         case sdkUnknown(Swift.String)
@@ -1498,7 +1498,7 @@ extension NetworkManagerClientTypes {
 
 extension NetworkManagerClientTypes {
 
-    public enum ConnectionType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ConnectionType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case bgp
         case ipsec
         case sdkUnknown(Swift.String)
@@ -1526,8 +1526,9 @@ extension NetworkManagerClientTypes {
 }
 
 extension NetworkManagerClientTypes {
+
     /// Describes connection health.
-    public struct ConnectionHealth {
+    public struct ConnectionHealth: Swift.Sendable {
         /// The connection status.
         public var status: NetworkManagerClientTypes.ConnectionStatus?
         /// The time the status was last updated.
@@ -1546,12 +1547,12 @@ extension NetworkManagerClientTypes {
             self.type = type
         }
     }
-
 }
 
 extension NetworkManagerClientTypes {
+
     /// Describes a core network BGP configuration.
-    public struct ConnectPeerBgpConfiguration {
+    public struct ConnectPeerBgpConfiguration: Swift.Sendable {
         /// The address of a core network.
         public var coreNetworkAddress: Swift.String?
         /// The ASN of the Coret Network.
@@ -1574,12 +1575,12 @@ extension NetworkManagerClientTypes {
             self.peerAsn = peerAsn
         }
     }
-
 }
 
 extension NetworkManagerClientTypes {
+
     /// Describes a core network Connect peer configuration.
-    public struct ConnectPeerConfiguration {
+    public struct ConnectPeerConfiguration: Swift.Sendable {
         /// The Connect peer BGP configurations.
         public var bgpConfigurations: [NetworkManagerClientTypes.ConnectPeerBgpConfiguration]?
         /// The IP address of a core network.
@@ -1606,12 +1607,11 @@ extension NetworkManagerClientTypes {
             self.`protocol` = `protocol`
         }
     }
-
 }
 
 extension NetworkManagerClientTypes {
 
-    public enum ConnectPeerErrorCode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ConnectPeerErrorCode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case edgeLocationNoFreeIps
         case edgeLocationPeerDuplicate
         case invalidInsideCidrBlock
@@ -1651,8 +1651,9 @@ extension NetworkManagerClientTypes {
 }
 
 extension NetworkManagerClientTypes {
+
     /// Describes an error associated with a Connect peer request
-    public struct ConnectPeerError {
+    public struct ConnectPeerError: Swift.Sendable {
         /// The error code for the Connect peer request.
         public var code: NetworkManagerClientTypes.ConnectPeerErrorCode?
         /// The message associated with the error code.
@@ -1675,12 +1676,11 @@ extension NetworkManagerClientTypes {
             self.resourceArn = resourceArn
         }
     }
-
 }
 
 extension NetworkManagerClientTypes {
 
-    public enum ConnectPeerState: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ConnectPeerState: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case available
         case creating
         case deleting
@@ -1714,8 +1714,9 @@ extension NetworkManagerClientTypes {
 }
 
 extension NetworkManagerClientTypes {
+
     /// Describes a core network Connect peer.
-    public struct ConnectPeer {
+    public struct ConnectPeer: Swift.Sendable {
         /// The configuration of the Connect peer.
         public var configuration: NetworkManagerClientTypes.ConnectPeerConfiguration?
         /// The ID of the attachment to connect.
@@ -1762,12 +1763,12 @@ extension NetworkManagerClientTypes {
             self.tags = tags
         }
     }
-
 }
 
 extension NetworkManagerClientTypes {
+
     /// Summary description of a Connect peer.
-    public struct ConnectPeerSummary {
+    public struct ConnectPeerSummary: Swift.Sendable {
         /// The ID of a Connect peer attachment.
         public var connectAttachmentId: Swift.String?
         /// The ID of a Connect peer.
@@ -1806,12 +1807,12 @@ extension NetworkManagerClientTypes {
             self.tags = tags
         }
     }
-
 }
 
 extension NetworkManagerClientTypes {
+
     /// Describes a core network edge.
-    public struct CoreNetworkEdge {
+    public struct CoreNetworkEdge: Swift.Sendable {
         /// The ASN of a core network edge.
         public var asn: Swift.Int?
         /// The Region where a core network edge is located.
@@ -1830,12 +1831,12 @@ extension NetworkManagerClientTypes {
             self.insideCidrBlocks = insideCidrBlocks
         }
     }
-
 }
 
 extension NetworkManagerClientTypes {
+
     /// Describes the segments associated with the service insertion action.
-    public struct ServiceInsertionSegments {
+    public struct ServiceInsertionSegments: Swift.Sendable {
         /// The list of segments associated with the send-to action.
         public var sendTo: [Swift.String]?
         /// The list of segments associated with the send-via action.
@@ -1850,12 +1851,12 @@ extension NetworkManagerClientTypes {
             self.sendVia = sendVia
         }
     }
-
 }
 
 extension NetworkManagerClientTypes {
+
     /// Describes a network function group.
-    public struct CoreNetworkNetworkFunctionGroup {
+    public struct CoreNetworkNetworkFunctionGroup: Swift.Sendable {
         /// The core network edge locations.
         public var edgeLocations: [Swift.String]?
         /// The name of the network function group.
@@ -1874,12 +1875,12 @@ extension NetworkManagerClientTypes {
             self.segments = segments
         }
     }
-
 }
 
 extension NetworkManagerClientTypes {
+
     /// Describes a core network segment, which are dedicated routes. Only attachments within this segment can communicate with each other.
-    public struct CoreNetworkSegment {
+    public struct CoreNetworkSegment: Swift.Sendable {
         /// The Regions where the edges are located.
         public var edgeLocations: [Swift.String]?
         /// The name of a core network segment.
@@ -1898,12 +1899,11 @@ extension NetworkManagerClientTypes {
             self.sharedSegments = sharedSegments
         }
     }
-
 }
 
 extension NetworkManagerClientTypes {
 
-    public enum CoreNetworkState: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum CoreNetworkState: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case available
         case creating
         case deleting
@@ -1937,8 +1937,9 @@ extension NetworkManagerClientTypes {
 }
 
 extension NetworkManagerClientTypes {
+
     /// Describes a core network.
-    public struct CoreNetwork {
+    public struct CoreNetwork: Swift.Sendable {
         /// The ARN of a core network.
         public var coreNetworkArn: Swift.String?
         /// The ID of a core network.
@@ -1985,12 +1986,11 @@ extension NetworkManagerClientTypes {
             self.tags = tags
         }
     }
-
 }
 
 extension NetworkManagerClientTypes {
 
-    public enum SegmentActionServiceInsertion: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SegmentActionServiceInsertion: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case sendTo
         case sendVia
         case sdkUnknown(Swift.String)
@@ -2019,7 +2019,7 @@ extension NetworkManagerClientTypes {
 
 extension NetworkManagerClientTypes {
 
-    public enum SendViaMode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SendViaMode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case dualHop
         case singleHop
         case sdkUnknown(Swift.String)
@@ -2047,8 +2047,9 @@ extension NetworkManagerClientTypes {
 }
 
 extension NetworkManagerClientTypes {
+
     /// Describes a network function group for service insertion.
-    public struct NetworkFunctionGroup {
+    public struct NetworkFunctionGroup: Swift.Sendable {
         /// The name of the network function group.
         public var name: Swift.String?
 
@@ -2059,12 +2060,12 @@ extension NetworkManagerClientTypes {
             self.name = name
         }
     }
-
 }
 
 extension NetworkManagerClientTypes {
+
     /// Describes the edge that's used for the override.
-    public struct EdgeOverride {
+    public struct EdgeOverride: Swift.Sendable {
         /// The list of edge locations.
         public var edgeSets: [[Swift.String]]?
         /// The edge that should be used when overriding the current edge order.
@@ -2079,12 +2080,12 @@ extension NetworkManagerClientTypes {
             self.useEdge = useEdge
         }
     }
-
 }
 
 extension NetworkManagerClientTypes {
+
     /// The list of network function groups and edge overrides for the service insertion action. Used for both the send-to and send-via actions.
-    public struct Via {
+    public struct Via: Swift.Sendable {
         /// The list of network function groups associated with the service insertion action.
         public var networkFunctionGroups: [NetworkManagerClientTypes.NetworkFunctionGroup]?
         /// Describes any edge overrides. An edge override is a specific edge to be used for traffic.
@@ -2099,12 +2100,12 @@ extension NetworkManagerClientTypes {
             self.withEdgeOverrides = withEdgeOverrides
         }
     }
-
 }
 
 extension NetworkManagerClientTypes {
+
     /// Displays a list of the destination segments. Used only when the service insertion action is send-to.
-    public struct WhenSentTo {
+    public struct WhenSentTo: Swift.Sendable {
         /// The list of destination segments when the service insertion action is send-to.
         public var whenSentToSegmentsList: [Swift.String]?
 
@@ -2115,12 +2116,12 @@ extension NetworkManagerClientTypes {
             self.whenSentToSegmentsList = whenSentToSegmentsList
         }
     }
-
 }
 
 extension NetworkManagerClientTypes {
+
     /// Describes the action that the service insertion will take for any segments associated with it.
-    public struct ServiceInsertionAction {
+    public struct ServiceInsertionAction: Swift.Sendable {
         /// The action the service insertion takes for traffic. send-via sends east-west traffic between attachments. send-to sends north-south traffic to the security appliance, and then from that to either the Internet or to an on-premesis location.
         public var action: NetworkManagerClientTypes.SegmentActionServiceInsertion?
         /// Describes the mode packets take for the send-via action. This is not used when the action is send-to. dual-hop packets traverse attachments in both the source to the destination core network edges. This mode requires that an inspection attachment must be present in all Regions of the service insertion-enabled segments. For single-hop, packets traverse a single intermediate inserted attachment. You can use EdgeOverride to specify a specific edge to use.
@@ -2143,12 +2144,12 @@ extension NetworkManagerClientTypes {
             self.whenSentTo = whenSentTo
         }
     }
-
 }
 
 extension NetworkManagerClientTypes {
+
     /// Describes a core network change.
-    public struct CoreNetworkChangeValues {
+    public struct CoreNetworkChangeValues: Swift.Sendable {
         /// The ASN of a core network.
         public var asn: Swift.Int?
         /// The IP addresses used for a core network.
@@ -2191,12 +2192,12 @@ extension NetworkManagerClientTypes {
             self.sharedSegments = sharedSegments
         }
     }
-
 }
 
 extension NetworkManagerClientTypes {
+
     /// Details describing a core network change.
-    public struct CoreNetworkChange {
+    public struct CoreNetworkChange: Swift.Sendable {
         /// The action to take for a core network.
         public var action: NetworkManagerClientTypes.ChangeAction?
         /// The resource identifier.
@@ -2227,12 +2228,12 @@ extension NetworkManagerClientTypes {
             self.type = type
         }
     }
-
 }
 
 extension NetworkManagerClientTypes {
+
     /// Describes a core network change event.
-    public struct CoreNetworkChangeEventValues {
+    public struct CoreNetworkChangeEventValues: Swift.Sendable {
         /// The ID of the attachment if the change event is associated with an attachment.
         public var attachmentId: Swift.String?
         /// For a STATIC_ROUTE event, this is the IP address.
@@ -2259,12 +2260,12 @@ extension NetworkManagerClientTypes {
             self.segmentName = segmentName
         }
     }
-
 }
 
 extension NetworkManagerClientTypes {
+
     /// Describes a core network change event. This can be a change to a segment, attachment, route, etc.
-    public struct CoreNetworkChangeEvent {
+    public struct CoreNetworkChangeEvent: Swift.Sendable {
         /// The action taken for the change event.
         public var action: NetworkManagerClientTypes.ChangeAction?
         /// The timestamp for an event change in status.
@@ -2295,12 +2296,12 @@ extension NetworkManagerClientTypes {
             self.values = values
         }
     }
-
 }
 
 extension NetworkManagerClientTypes {
+
     /// Describes a core network
-    public struct CoreNetworkNetworkFunctionGroupIdentifier {
+    public struct CoreNetworkNetworkFunctionGroupIdentifier: Swift.Sendable {
         /// The ID of the core network.
         public var coreNetworkId: Swift.String?
         /// The location for the core network edge.
@@ -2319,12 +2320,11 @@ extension NetworkManagerClientTypes {
             self.networkFunctionGroupName = networkFunctionGroupName
         }
     }
-
 }
 
 extension NetworkManagerClientTypes {
 
-    public enum CoreNetworkPolicyAlias: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum CoreNetworkPolicyAlias: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case latest
         case live
         case sdkUnknown(Swift.String)
@@ -2352,8 +2352,9 @@ extension NetworkManagerClientTypes {
 }
 
 extension NetworkManagerClientTypes {
+
     /// Provides details about an error in a core network policy.
-    public struct CoreNetworkPolicyError {
+    public struct CoreNetworkPolicyError: Swift.Sendable {
         /// The error code associated with a core network policy error.
         /// This member is required.
         public var errorCode: Swift.String?
@@ -2374,12 +2375,12 @@ extension NetworkManagerClientTypes {
             self.path = path
         }
     }
-
 }
 
 extension NetworkManagerClientTypes {
+
     /// Describes a core network policy. You can have only one LIVE Core Policy.
-    public struct CoreNetworkPolicy {
+    public struct CoreNetworkPolicy: Swift.Sendable {
         /// Whether a core network policy is the current LIVE policy or the most recently submitted policy.
         public var alias: NetworkManagerClientTypes.CoreNetworkPolicyAlias?
         /// The state of a core network policy.
@@ -2418,7 +2419,6 @@ extension NetworkManagerClientTypes {
             self.policyVersionId = policyVersionId
         }
     }
-
 }
 
 /// Describes a core network policy exception.
@@ -2451,8 +2451,9 @@ public struct CoreNetworkPolicyException: ClientRuntime.ModeledError, AWSClientR
 }
 
 extension NetworkManagerClientTypes {
+
     /// Describes a core network policy version.
-    public struct CoreNetworkPolicyVersion {
+    public struct CoreNetworkPolicyVersion: Swift.Sendable {
         /// Whether a core network policy is the current policy or the most recently submitted policy.
         public var alias: NetworkManagerClientTypes.CoreNetworkPolicyAlias?
         /// The status of the policy version change set.
@@ -2483,12 +2484,12 @@ extension NetworkManagerClientTypes {
             self.policyVersionId = policyVersionId
         }
     }
-
 }
 
 extension NetworkManagerClientTypes {
+
     /// Returns details about a core network edge.
-    public struct CoreNetworkSegmentEdgeIdentifier {
+    public struct CoreNetworkSegmentEdgeIdentifier: Swift.Sendable {
         /// The ID of a core network.
         public var coreNetworkId: Swift.String?
         /// The Region where the segment edge is located.
@@ -2507,12 +2508,12 @@ extension NetworkManagerClientTypes {
             self.segmentName = segmentName
         }
     }
-
 }
 
 extension NetworkManagerClientTypes {
+
     /// Returns summary information about a core network.
-    public struct CoreNetworkSummary {
+    public struct CoreNetworkSummary: Swift.Sendable {
         /// a core network ARN.
         public var coreNetworkArn: Swift.String?
         /// The ID of a core network.
@@ -2547,10 +2548,9 @@ extension NetworkManagerClientTypes {
             self.tags = tags
         }
     }
-
 }
 
-public struct CreateConnectAttachmentInput {
+public struct CreateConnectAttachmentInput: Swift.Sendable {
     /// The client token associated with the request.
     public var clientToken: Swift.String?
     /// The ID of a core network where you want to create the attachment.
@@ -2586,7 +2586,7 @@ public struct CreateConnectAttachmentInput {
     }
 }
 
-public struct CreateConnectAttachmentOutput {
+public struct CreateConnectAttachmentOutput: Swift.Sendable {
     /// The response to a Connect attachment request.
     public var connectAttachment: NetworkManagerClientTypes.ConnectAttachment?
 
@@ -2598,7 +2598,7 @@ public struct CreateConnectAttachmentOutput {
     }
 }
 
-public struct CreateConnectionInput {
+public struct CreateConnectionInput: Swift.Sendable {
     /// The ID of the second device in the connection.
     /// This member is required.
     public var connectedDeviceId: Swift.String?
@@ -2637,7 +2637,7 @@ public struct CreateConnectionInput {
     }
 }
 
-public struct CreateConnectionOutput {
+public struct CreateConnectionOutput: Swift.Sendable {
     /// Information about the connection.
     public var connection: NetworkManagerClientTypes.Connection?
 
@@ -2649,7 +2649,7 @@ public struct CreateConnectionOutput {
     }
 }
 
-public struct CreateConnectPeerInput {
+public struct CreateConnectPeerInput: Swift.Sendable {
     /// The Connect peer BGP options. This only applies only when the protocol is GRE.
     public var bgpOptions: NetworkManagerClientTypes.BgpOptions?
     /// The client token associated with the request.
@@ -2691,7 +2691,7 @@ public struct CreateConnectPeerInput {
     }
 }
 
-public struct CreateConnectPeerOutput {
+public struct CreateConnectPeerOutput: Swift.Sendable {
     /// The response to the request.
     public var connectPeer: NetworkManagerClientTypes.ConnectPeer?
 
@@ -2703,7 +2703,7 @@ public struct CreateConnectPeerOutput {
     }
 }
 
-public struct CreateCoreNetworkInput {
+public struct CreateCoreNetworkInput: Swift.Sendable {
     /// The client token associated with a core network request.
     public var clientToken: Swift.String?
     /// The description of a core network.
@@ -2732,7 +2732,7 @@ public struct CreateCoreNetworkInput {
     }
 }
 
-public struct CreateCoreNetworkOutput {
+public struct CreateCoreNetworkOutput: Swift.Sendable {
     /// Returns details about a core network.
     public var coreNetwork: NetworkManagerClientTypes.CoreNetwork?
 
@@ -2745,8 +2745,9 @@ public struct CreateCoreNetworkOutput {
 }
 
 extension NetworkManagerClientTypes {
+
     /// Describes a location.
-    public struct Location {
+    public struct Location: Swift.Sendable {
         /// The physical address.
         public var address: Swift.String?
         /// The latitude.
@@ -2765,7 +2766,6 @@ extension NetworkManagerClientTypes {
             self.longitude = longitude
         }
     }
-
 }
 
 extension NetworkManagerClientTypes.Location: Swift.CustomDebugStringConvertible {
@@ -2774,7 +2774,7 @@ extension NetworkManagerClientTypes.Location: Swift.CustomDebugStringConvertible
     }
 }
 
-public struct CreateDeviceInput {
+public struct CreateDeviceInput: Swift.Sendable {
     /// The Amazon Web Services location of the device, if applicable. For an on-premises device, you can omit this parameter.
     public var awsLocation: NetworkManagerClientTypes.AWSLocation?
     /// A description of the device. Constraints: Maximum length of 256 characters.
@@ -2830,7 +2830,7 @@ extension CreateDeviceInput: Swift.CustomDebugStringConvertible {
 
 extension NetworkManagerClientTypes {
 
-    public enum DeviceState: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DeviceState: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case available
         case deleting
         case pending
@@ -2864,8 +2864,9 @@ extension NetworkManagerClientTypes {
 }
 
 extension NetworkManagerClientTypes {
+
     /// Describes a device.
-    public struct Device {
+    public struct Device: Swift.Sendable {
         /// The Amazon Web Services location of the device.
         public var awsLocation: NetworkManagerClientTypes.AWSLocation?
         /// The date and time that the site was created.
@@ -2928,7 +2929,6 @@ extension NetworkManagerClientTypes {
             self.vendor = vendor
         }
     }
-
 }
 
 extension NetworkManagerClientTypes.Device: Swift.CustomDebugStringConvertible {
@@ -2936,7 +2936,7 @@ extension NetworkManagerClientTypes.Device: Swift.CustomDebugStringConvertible {
         "Device(awsLocation: \(Swift.String(describing: awsLocation)), createdAt: \(Swift.String(describing: createdAt)), description: \(Swift.String(describing: description)), deviceArn: \(Swift.String(describing: deviceArn)), deviceId: \(Swift.String(describing: deviceId)), globalNetworkId: \(Swift.String(describing: globalNetworkId)), model: \(Swift.String(describing: model)), serialNumber: \(Swift.String(describing: serialNumber)), siteId: \(Swift.String(describing: siteId)), state: \(Swift.String(describing: state)), tags: \(Swift.String(describing: tags)), type: \(Swift.String(describing: type)), vendor: \(Swift.String(describing: vendor)), location: \"CONTENT_REDACTED\")"}
 }
 
-public struct CreateDeviceOutput {
+public struct CreateDeviceOutput: Swift.Sendable {
     /// Information about the device.
     public var device: NetworkManagerClientTypes.Device?
 
@@ -2948,7 +2948,7 @@ public struct CreateDeviceOutput {
     }
 }
 
-public struct CreateGlobalNetworkInput {
+public struct CreateGlobalNetworkInput: Swift.Sendable {
     /// A description of the global network. Constraints: Maximum length of 256 characters.
     public var description: Swift.String?
     /// The tags to apply to the resource during creation.
@@ -2966,7 +2966,7 @@ public struct CreateGlobalNetworkInput {
 
 extension NetworkManagerClientTypes {
 
-    public enum GlobalNetworkState: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum GlobalNetworkState: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case available
         case deleting
         case pending
@@ -3000,8 +3000,9 @@ extension NetworkManagerClientTypes {
 }
 
 extension NetworkManagerClientTypes {
+
     /// Describes a global network. This is a single private network acting as a high-level container for your network objects, including an Amazon Web Services-managed Core Network.
-    public struct GlobalNetwork {
+    public struct GlobalNetwork: Swift.Sendable {
         /// The date and time that the global network was created.
         public var createdAt: Foundation.Date?
         /// The description of the global network.
@@ -3032,10 +3033,9 @@ extension NetworkManagerClientTypes {
             self.tags = tags
         }
     }
-
 }
 
-public struct CreateGlobalNetworkOutput {
+public struct CreateGlobalNetworkOutput: Swift.Sendable {
     /// Information about the global network object.
     public var globalNetwork: NetworkManagerClientTypes.GlobalNetwork?
 
@@ -3047,7 +3047,7 @@ public struct CreateGlobalNetworkOutput {
     }
 }
 
-public struct CreateLinkInput {
+public struct CreateLinkInput: Swift.Sendable {
     /// The upload speed and download speed in Mbps.
     /// This member is required.
     public var bandwidth: NetworkManagerClientTypes.Bandwidth?
@@ -3088,7 +3088,7 @@ public struct CreateLinkInput {
 
 extension NetworkManagerClientTypes {
 
-    public enum LinkState: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum LinkState: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case available
         case deleting
         case pending
@@ -3122,8 +3122,9 @@ extension NetworkManagerClientTypes {
 }
 
 extension NetworkManagerClientTypes {
+
     /// Describes a link.
-    public struct Link {
+    public struct Link: Swift.Sendable {
         /// The bandwidth for the link.
         public var bandwidth: NetworkManagerClientTypes.Bandwidth?
         /// The date and time that the link was created.
@@ -3174,10 +3175,9 @@ extension NetworkManagerClientTypes {
             self.type = type
         }
     }
-
 }
 
-public struct CreateLinkOutput {
+public struct CreateLinkOutput: Swift.Sendable {
     /// Information about the link.
     public var link: NetworkManagerClientTypes.Link?
 
@@ -3189,7 +3189,7 @@ public struct CreateLinkOutput {
     }
 }
 
-public struct CreateSiteInput {
+public struct CreateSiteInput: Swift.Sendable {
     /// A description of your site. Constraints: Maximum length of 256 characters.
     public var description: Swift.String?
     /// The ID of the global network.
@@ -3227,7 +3227,7 @@ extension CreateSiteInput: Swift.CustomDebugStringConvertible {
 
 extension NetworkManagerClientTypes {
 
-    public enum SiteState: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SiteState: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case available
         case deleting
         case pending
@@ -3261,8 +3261,9 @@ extension NetworkManagerClientTypes {
 }
 
 extension NetworkManagerClientTypes {
+
     /// Describes a site.
-    public struct Site {
+    public struct Site: Swift.Sendable {
         /// The date and time that the site was created.
         public var createdAt: Foundation.Date?
         /// The description of the site.
@@ -3301,7 +3302,6 @@ extension NetworkManagerClientTypes {
             self.tags = tags
         }
     }
-
 }
 
 extension NetworkManagerClientTypes.Site: Swift.CustomDebugStringConvertible {
@@ -3309,7 +3309,7 @@ extension NetworkManagerClientTypes.Site: Swift.CustomDebugStringConvertible {
         "Site(createdAt: \(Swift.String(describing: createdAt)), description: \(Swift.String(describing: description)), globalNetworkId: \(Swift.String(describing: globalNetworkId)), siteArn: \(Swift.String(describing: siteArn)), siteId: \(Swift.String(describing: siteId)), state: \(Swift.String(describing: state)), tags: \(Swift.String(describing: tags)), location: \"CONTENT_REDACTED\")"}
 }
 
-public struct CreateSiteOutput {
+public struct CreateSiteOutput: Swift.Sendable {
     /// Information about the site.
     public var site: NetworkManagerClientTypes.Site?
 
@@ -3321,7 +3321,7 @@ public struct CreateSiteOutput {
     }
 }
 
-public struct CreateSiteToSiteVpnAttachmentInput {
+public struct CreateSiteToSiteVpnAttachmentInput: Swift.Sendable {
     /// The client token associated with the request.
     public var clientToken: Swift.String?
     /// The ID of a core network where you're creating a site-to-site VPN attachment.
@@ -3348,8 +3348,9 @@ public struct CreateSiteToSiteVpnAttachmentInput {
 }
 
 extension NetworkManagerClientTypes {
+
     /// Creates a site-to-site VPN attachment.
-    public struct SiteToSiteVpnAttachment {
+    public struct SiteToSiteVpnAttachment: Swift.Sendable {
         /// Provides details about a site-to-site VPN attachment.
         public var attachment: NetworkManagerClientTypes.Attachment?
         /// The ARN of the site-to-site VPN attachment.
@@ -3364,10 +3365,9 @@ extension NetworkManagerClientTypes {
             self.vpnConnectionArn = vpnConnectionArn
         }
     }
-
 }
 
-public struct CreateSiteToSiteVpnAttachmentOutput {
+public struct CreateSiteToSiteVpnAttachmentOutput: Swift.Sendable {
     /// Details about a site-to-site VPN attachment.
     public var siteToSiteVpnAttachment: NetworkManagerClientTypes.SiteToSiteVpnAttachment?
 
@@ -3379,7 +3379,7 @@ public struct CreateSiteToSiteVpnAttachmentOutput {
     }
 }
 
-public struct CreateTransitGatewayPeeringInput {
+public struct CreateTransitGatewayPeeringInput: Swift.Sendable {
     /// The client token associated with the request.
     public var clientToken: Swift.String?
     /// The ID of a core network.
@@ -3407,7 +3407,7 @@ public struct CreateTransitGatewayPeeringInput {
 
 extension NetworkManagerClientTypes {
 
-    public enum PeeringErrorCode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum PeeringErrorCode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case edgeLocationPeerDuplicate
         case internalError
         case invalidTransitGatewayState
@@ -3447,8 +3447,9 @@ extension NetworkManagerClientTypes {
 }
 
 extension NetworkManagerClientTypes {
+
     /// Describes additional information about missing permissions.
-    public struct PermissionsErrorContext {
+    public struct PermissionsErrorContext: Swift.Sendable {
         /// The missing permissions.
         public var missingPermission: Swift.String?
 
@@ -3459,12 +3460,12 @@ extension NetworkManagerClientTypes {
             self.missingPermission = missingPermission
         }
     }
-
 }
 
 extension NetworkManagerClientTypes {
+
     /// Describes an error associated with a peering request.
-    public struct PeeringError {
+    public struct PeeringError: Swift.Sendable {
         /// The error code for the peering request.
         public var code: NetworkManagerClientTypes.PeeringErrorCode?
         /// The message associated with the error code.
@@ -3491,12 +3492,11 @@ extension NetworkManagerClientTypes {
             self.resourceArn = resourceArn
         }
     }
-
 }
 
 extension NetworkManagerClientTypes {
 
-    public enum PeeringType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum PeeringType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case transitGateway
         case sdkUnknown(Swift.String)
 
@@ -3522,7 +3522,7 @@ extension NetworkManagerClientTypes {
 
 extension NetworkManagerClientTypes {
 
-    public enum PeeringState: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum PeeringState: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case available
         case creating
         case deleting
@@ -3556,8 +3556,9 @@ extension NetworkManagerClientTypes {
 }
 
 extension NetworkManagerClientTypes {
+
     /// Describes a peering connection.
-    public struct Peering {
+    public struct Peering: Swift.Sendable {
         /// The ARN of a core network.
         public var coreNetworkArn: Swift.String?
         /// The ID of the core network for the peering request.
@@ -3608,12 +3609,12 @@ extension NetworkManagerClientTypes {
             self.tags = tags
         }
     }
-
 }
 
 extension NetworkManagerClientTypes {
+
     /// Describes a transit gateway peering attachment.
-    public struct TransitGatewayPeering {
+    public struct TransitGatewayPeering: Swift.Sendable {
         /// Describes a transit gateway peer connection.
         public var peering: NetworkManagerClientTypes.Peering?
         /// The ARN of the transit gateway.
@@ -3632,10 +3633,9 @@ extension NetworkManagerClientTypes {
             self.transitGatewayPeeringAttachmentId = transitGatewayPeeringAttachmentId
         }
     }
-
 }
 
-public struct CreateTransitGatewayPeeringOutput {
+public struct CreateTransitGatewayPeeringOutput: Swift.Sendable {
     /// Returns information about the transit gateway peering connection request.
     public var transitGatewayPeering: NetworkManagerClientTypes.TransitGatewayPeering?
 
@@ -3647,7 +3647,7 @@ public struct CreateTransitGatewayPeeringOutput {
     }
 }
 
-public struct CreateTransitGatewayRouteTableAttachmentInput {
+public struct CreateTransitGatewayRouteTableAttachmentInput: Swift.Sendable {
     /// The client token associated with the request.
     public var clientToken: Swift.String?
     /// The ID of the peer for the
@@ -3674,8 +3674,9 @@ public struct CreateTransitGatewayRouteTableAttachmentInput {
 }
 
 extension NetworkManagerClientTypes {
+
     /// Describes a transit gateway route table attachment.
-    public struct TransitGatewayRouteTableAttachment {
+    public struct TransitGatewayRouteTableAttachment: Swift.Sendable {
         /// Describes a core network attachment.
         public var attachment: NetworkManagerClientTypes.Attachment?
         /// The ID of the peering attachment.
@@ -3694,10 +3695,9 @@ extension NetworkManagerClientTypes {
             self.transitGatewayRouteTableArn = transitGatewayRouteTableArn
         }
     }
-
 }
 
-public struct CreateTransitGatewayRouteTableAttachmentOutput {
+public struct CreateTransitGatewayRouteTableAttachmentOutput: Swift.Sendable {
     /// The route table associated with the create transit gateway route table attachment request.
     public var transitGatewayRouteTableAttachment: NetworkManagerClientTypes.TransitGatewayRouteTableAttachment?
 
@@ -3710,8 +3710,9 @@ public struct CreateTransitGatewayRouteTableAttachmentOutput {
 }
 
 extension NetworkManagerClientTypes {
+
     /// Describes the VPC options.
-    public struct VpcOptions {
+    public struct VpcOptions: Swift.Sendable {
         /// Indicates whether appliance mode is supported. If enabled, traffic flow between a source and destination use the same Availability Zone for the VPC attachment for the lifetime of that flow. The default value is false.
         public var applianceModeSupport: Swift.Bool
         /// Indicates whether IPv6 is supported.
@@ -3726,10 +3727,9 @@ extension NetworkManagerClientTypes {
             self.ipv6Support = ipv6Support
         }
     }
-
 }
 
-public struct CreateVpcAttachmentInput {
+public struct CreateVpcAttachmentInput: Swift.Sendable {
     /// The client token associated with the request.
     public var clientToken: Swift.String?
     /// The ID of a core network for the VPC attachment.
@@ -3765,8 +3765,9 @@ public struct CreateVpcAttachmentInput {
 }
 
 extension NetworkManagerClientTypes {
+
     /// Describes a VPC attachment.
-    public struct VpcAttachment {
+    public struct VpcAttachment: Swift.Sendable {
         /// Provides details about the VPC attachment.
         public var attachment: NetworkManagerClientTypes.Attachment?
         /// Provides details about the VPC attachment.
@@ -3785,10 +3786,9 @@ extension NetworkManagerClientTypes {
             self.subnetArns = subnetArns
         }
     }
-
 }
 
-public struct CreateVpcAttachmentOutput {
+public struct CreateVpcAttachmentOutput: Swift.Sendable {
     /// Provides details about the VPC attachment.
     public var vpcAttachment: NetworkManagerClientTypes.VpcAttachment?
 
@@ -3800,7 +3800,7 @@ public struct CreateVpcAttachmentOutput {
     }
 }
 
-public struct DeleteAttachmentInput {
+public struct DeleteAttachmentInput: Swift.Sendable {
     /// The ID of the attachment to delete.
     /// This member is required.
     public var attachmentId: Swift.String?
@@ -3813,7 +3813,7 @@ public struct DeleteAttachmentInput {
     }
 }
 
-public struct DeleteAttachmentOutput {
+public struct DeleteAttachmentOutput: Swift.Sendable {
     /// Information about the deleted attachment.
     public var attachment: NetworkManagerClientTypes.Attachment?
 
@@ -3825,7 +3825,7 @@ public struct DeleteAttachmentOutput {
     }
 }
 
-public struct DeleteConnectionInput {
+public struct DeleteConnectionInput: Swift.Sendable {
     /// The ID of the connection.
     /// This member is required.
     public var connectionId: Swift.String?
@@ -3843,7 +3843,7 @@ public struct DeleteConnectionInput {
     }
 }
 
-public struct DeleteConnectionOutput {
+public struct DeleteConnectionOutput: Swift.Sendable {
     /// Information about the connection.
     public var connection: NetworkManagerClientTypes.Connection?
 
@@ -3855,7 +3855,7 @@ public struct DeleteConnectionOutput {
     }
 }
 
-public struct DeleteConnectPeerInput {
+public struct DeleteConnectPeerInput: Swift.Sendable {
     /// The ID of the deleted Connect peer.
     /// This member is required.
     public var connectPeerId: Swift.String?
@@ -3868,7 +3868,7 @@ public struct DeleteConnectPeerInput {
     }
 }
 
-public struct DeleteConnectPeerOutput {
+public struct DeleteConnectPeerOutput: Swift.Sendable {
     /// Information about the deleted Connect peer.
     public var connectPeer: NetworkManagerClientTypes.ConnectPeer?
 
@@ -3880,7 +3880,7 @@ public struct DeleteConnectPeerOutput {
     }
 }
 
-public struct DeleteCoreNetworkInput {
+public struct DeleteCoreNetworkInput: Swift.Sendable {
     /// The network ID of the deleted core network.
     /// This member is required.
     public var coreNetworkId: Swift.String?
@@ -3893,7 +3893,7 @@ public struct DeleteCoreNetworkInput {
     }
 }
 
-public struct DeleteCoreNetworkOutput {
+public struct DeleteCoreNetworkOutput: Swift.Sendable {
     /// Information about the deleted core network.
     public var coreNetwork: NetworkManagerClientTypes.CoreNetwork?
 
@@ -3905,7 +3905,7 @@ public struct DeleteCoreNetworkOutput {
     }
 }
 
-public struct DeleteCoreNetworkPolicyVersionInput {
+public struct DeleteCoreNetworkPolicyVersionInput: Swift.Sendable {
     /// The ID of a core network for the deleted policy.
     /// This member is required.
     public var coreNetworkId: Swift.String?
@@ -3923,7 +3923,7 @@ public struct DeleteCoreNetworkPolicyVersionInput {
     }
 }
 
-public struct DeleteCoreNetworkPolicyVersionOutput {
+public struct DeleteCoreNetworkPolicyVersionOutput: Swift.Sendable {
     /// Returns information about the deleted policy version.
     public var coreNetworkPolicy: NetworkManagerClientTypes.CoreNetworkPolicy?
 
@@ -3935,7 +3935,7 @@ public struct DeleteCoreNetworkPolicyVersionOutput {
     }
 }
 
-public struct DeleteDeviceInput {
+public struct DeleteDeviceInput: Swift.Sendable {
     /// The ID of the device.
     /// This member is required.
     public var deviceId: Swift.String?
@@ -3953,7 +3953,7 @@ public struct DeleteDeviceInput {
     }
 }
 
-public struct DeleteDeviceOutput {
+public struct DeleteDeviceOutput: Swift.Sendable {
     /// Information about the device.
     public var device: NetworkManagerClientTypes.Device?
 
@@ -3965,7 +3965,7 @@ public struct DeleteDeviceOutput {
     }
 }
 
-public struct DeleteGlobalNetworkInput {
+public struct DeleteGlobalNetworkInput: Swift.Sendable {
     /// The ID of the global network.
     /// This member is required.
     public var globalNetworkId: Swift.String?
@@ -3978,7 +3978,7 @@ public struct DeleteGlobalNetworkInput {
     }
 }
 
-public struct DeleteGlobalNetworkOutput {
+public struct DeleteGlobalNetworkOutput: Swift.Sendable {
     /// Information about the global network.
     public var globalNetwork: NetworkManagerClientTypes.GlobalNetwork?
 
@@ -3990,7 +3990,7 @@ public struct DeleteGlobalNetworkOutput {
     }
 }
 
-public struct DeleteLinkInput {
+public struct DeleteLinkInput: Swift.Sendable {
     /// The ID of the global network.
     /// This member is required.
     public var globalNetworkId: Swift.String?
@@ -4008,7 +4008,7 @@ public struct DeleteLinkInput {
     }
 }
 
-public struct DeleteLinkOutput {
+public struct DeleteLinkOutput: Swift.Sendable {
     /// Information about the link.
     public var link: NetworkManagerClientTypes.Link?
 
@@ -4020,7 +4020,7 @@ public struct DeleteLinkOutput {
     }
 }
 
-public struct DeletePeeringInput {
+public struct DeletePeeringInput: Swift.Sendable {
     /// The ID of the peering connection to delete.
     /// This member is required.
     public var peeringId: Swift.String?
@@ -4033,7 +4033,7 @@ public struct DeletePeeringInput {
     }
 }
 
-public struct DeletePeeringOutput {
+public struct DeletePeeringOutput: Swift.Sendable {
     /// Information about a deleted peering connection.
     public var peering: NetworkManagerClientTypes.Peering?
 
@@ -4045,7 +4045,7 @@ public struct DeletePeeringOutput {
     }
 }
 
-public struct DeleteResourcePolicyInput {
+public struct DeleteResourcePolicyInput: Swift.Sendable {
     /// The ARN of the policy to delete.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -4058,12 +4058,12 @@ public struct DeleteResourcePolicyInput {
     }
 }
 
-public struct DeleteResourcePolicyOutput {
+public struct DeleteResourcePolicyOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteSiteInput {
+public struct DeleteSiteInput: Swift.Sendable {
     /// The ID of the global network.
     /// This member is required.
     public var globalNetworkId: Swift.String?
@@ -4081,7 +4081,7 @@ public struct DeleteSiteInput {
     }
 }
 
-public struct DeleteSiteOutput {
+public struct DeleteSiteOutput: Swift.Sendable {
     /// Information about the site.
     public var site: NetworkManagerClientTypes.Site?
 
@@ -4093,7 +4093,7 @@ public struct DeleteSiteOutput {
     }
 }
 
-public struct DeregisterTransitGatewayInput {
+public struct DeregisterTransitGatewayInput: Swift.Sendable {
     /// The ID of the global network.
     /// This member is required.
     public var globalNetworkId: Swift.String?
@@ -4113,7 +4113,7 @@ public struct DeregisterTransitGatewayInput {
 
 extension NetworkManagerClientTypes {
 
-    public enum TransitGatewayRegistrationState: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum TransitGatewayRegistrationState: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case available
         case deleted
         case deleting
@@ -4150,8 +4150,9 @@ extension NetworkManagerClientTypes {
 }
 
 extension NetworkManagerClientTypes {
+
     /// Describes the status of a transit gateway registration.
-    public struct TransitGatewayRegistrationStateReason {
+    public struct TransitGatewayRegistrationStateReason: Swift.Sendable {
         /// The code for the state reason.
         public var code: NetworkManagerClientTypes.TransitGatewayRegistrationState?
         /// The message for the state reason.
@@ -4166,12 +4167,12 @@ extension NetworkManagerClientTypes {
             self.message = message
         }
     }
-
 }
 
 extension NetworkManagerClientTypes {
+
     /// Describes the registration of a transit gateway to a global network.
-    public struct TransitGatewayRegistration {
+    public struct TransitGatewayRegistration: Swift.Sendable {
         /// The ID of the global network.
         public var globalNetworkId: Swift.String?
         /// The state of the transit gateway registration.
@@ -4190,10 +4191,9 @@ extension NetworkManagerClientTypes {
             self.transitGatewayArn = transitGatewayArn
         }
     }
-
 }
 
-public struct DeregisterTransitGatewayOutput {
+public struct DeregisterTransitGatewayOutput: Swift.Sendable {
     /// The transit gateway registration information.
     public var transitGatewayRegistration: NetworkManagerClientTypes.TransitGatewayRegistration?
 
@@ -4205,7 +4205,7 @@ public struct DeregisterTransitGatewayOutput {
     }
 }
 
-public struct DescribeGlobalNetworksInput {
+public struct DescribeGlobalNetworksInput: Swift.Sendable {
     /// The IDs of one or more global networks. The maximum is 10.
     public var globalNetworkIds: [Swift.String]?
     /// The maximum number of results to return.
@@ -4225,7 +4225,7 @@ public struct DescribeGlobalNetworksInput {
     }
 }
 
-public struct DescribeGlobalNetworksOutput {
+public struct DescribeGlobalNetworksOutput: Swift.Sendable {
     /// Information about the global networks.
     public var globalNetworks: [NetworkManagerClientTypes.GlobalNetwork]?
     /// The token for the next page of results.
@@ -4241,7 +4241,7 @@ public struct DescribeGlobalNetworksOutput {
     }
 }
 
-public struct DisassociateConnectPeerInput {
+public struct DisassociateConnectPeerInput: Swift.Sendable {
     /// The ID of the Connect peer to disassociate from a device.
     /// This member is required.
     public var connectPeerId: Swift.String?
@@ -4259,7 +4259,7 @@ public struct DisassociateConnectPeerInput {
     }
 }
 
-public struct DisassociateConnectPeerOutput {
+public struct DisassociateConnectPeerOutput: Swift.Sendable {
     /// Describes the Connect peer association.
     public var connectPeerAssociation: NetworkManagerClientTypes.ConnectPeerAssociation?
 
@@ -4271,7 +4271,7 @@ public struct DisassociateConnectPeerOutput {
     }
 }
 
-public struct DisassociateCustomerGatewayInput {
+public struct DisassociateCustomerGatewayInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the customer gateway.
     /// This member is required.
     public var customerGatewayArn: Swift.String?
@@ -4289,7 +4289,7 @@ public struct DisassociateCustomerGatewayInput {
     }
 }
 
-public struct DisassociateCustomerGatewayOutput {
+public struct DisassociateCustomerGatewayOutput: Swift.Sendable {
     /// Information about the customer gateway association.
     public var customerGatewayAssociation: NetworkManagerClientTypes.CustomerGatewayAssociation?
 
@@ -4301,7 +4301,7 @@ public struct DisassociateCustomerGatewayOutput {
     }
 }
 
-public struct DisassociateLinkInput {
+public struct DisassociateLinkInput: Swift.Sendable {
     /// The ID of the device.
     /// This member is required.
     public var deviceId: Swift.String?
@@ -4324,7 +4324,7 @@ public struct DisassociateLinkInput {
     }
 }
 
-public struct DisassociateLinkOutput {
+public struct DisassociateLinkOutput: Swift.Sendable {
     /// Information about the link association.
     public var linkAssociation: NetworkManagerClientTypes.LinkAssociation?
 
@@ -4336,7 +4336,7 @@ public struct DisassociateLinkOutput {
     }
 }
 
-public struct DisassociateTransitGatewayConnectPeerInput {
+public struct DisassociateTransitGatewayConnectPeerInput: Swift.Sendable {
     /// The ID of the global network.
     /// This member is required.
     public var globalNetworkId: Swift.String?
@@ -4354,7 +4354,7 @@ public struct DisassociateTransitGatewayConnectPeerInput {
     }
 }
 
-public struct DisassociateTransitGatewayConnectPeerOutput {
+public struct DisassociateTransitGatewayConnectPeerOutput: Swift.Sendable {
     /// The transit gateway Connect peer association.
     public var transitGatewayConnectPeerAssociation: NetworkManagerClientTypes.TransitGatewayConnectPeerAssociation?
 
@@ -4366,7 +4366,7 @@ public struct DisassociateTransitGatewayConnectPeerOutput {
     }
 }
 
-public struct ExecuteCoreNetworkChangeSetInput {
+public struct ExecuteCoreNetworkChangeSetInput: Swift.Sendable {
     /// The ID of a core network.
     /// This member is required.
     public var coreNetworkId: Swift.String?
@@ -4384,12 +4384,12 @@ public struct ExecuteCoreNetworkChangeSetInput {
     }
 }
 
-public struct ExecuteCoreNetworkChangeSetOutput {
+public struct ExecuteCoreNetworkChangeSetOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct GetConnectAttachmentInput {
+public struct GetConnectAttachmentInput: Swift.Sendable {
     /// The ID of the attachment.
     /// This member is required.
     public var attachmentId: Swift.String?
@@ -4402,7 +4402,7 @@ public struct GetConnectAttachmentInput {
     }
 }
 
-public struct GetConnectAttachmentOutput {
+public struct GetConnectAttachmentOutput: Swift.Sendable {
     /// Details about the Connect attachment.
     public var connectAttachment: NetworkManagerClientTypes.ConnectAttachment?
 
@@ -4414,7 +4414,7 @@ public struct GetConnectAttachmentOutput {
     }
 }
 
-public struct GetConnectionsInput {
+public struct GetConnectionsInput: Swift.Sendable {
     /// One or more connection IDs.
     public var connectionIds: [Swift.String]?
     /// The ID of the device.
@@ -4443,7 +4443,7 @@ public struct GetConnectionsInput {
     }
 }
 
-public struct GetConnectionsOutput {
+public struct GetConnectionsOutput: Swift.Sendable {
     /// Information about the connections.
     public var connections: [NetworkManagerClientTypes.Connection]?
     /// The token to use for the next page of results.
@@ -4459,7 +4459,7 @@ public struct GetConnectionsOutput {
     }
 }
 
-public struct GetConnectPeerInput {
+public struct GetConnectPeerInput: Swift.Sendable {
     /// The ID of the Connect peer.
     /// This member is required.
     public var connectPeerId: Swift.String?
@@ -4472,7 +4472,7 @@ public struct GetConnectPeerInput {
     }
 }
 
-public struct GetConnectPeerOutput {
+public struct GetConnectPeerOutput: Swift.Sendable {
     /// Returns information about a core network Connect peer.
     public var connectPeer: NetworkManagerClientTypes.ConnectPeer?
 
@@ -4484,7 +4484,7 @@ public struct GetConnectPeerOutput {
     }
 }
 
-public struct GetConnectPeerAssociationsInput {
+public struct GetConnectPeerAssociationsInput: Swift.Sendable {
     /// The IDs of the Connect peers.
     public var connectPeerIds: [Swift.String]?
     /// The ID of the global network.
@@ -4509,7 +4509,7 @@ public struct GetConnectPeerAssociationsInput {
     }
 }
 
-public struct GetConnectPeerAssociationsOutput {
+public struct GetConnectPeerAssociationsOutput: Swift.Sendable {
     /// Displays a list of Connect peer associations.
     public var connectPeerAssociations: [NetworkManagerClientTypes.ConnectPeerAssociation]?
     /// The token for the next page of results.
@@ -4525,7 +4525,7 @@ public struct GetConnectPeerAssociationsOutput {
     }
 }
 
-public struct GetCoreNetworkInput {
+public struct GetCoreNetworkInput: Swift.Sendable {
     /// The ID of a core network.
     /// This member is required.
     public var coreNetworkId: Swift.String?
@@ -4538,7 +4538,7 @@ public struct GetCoreNetworkInput {
     }
 }
 
-public struct GetCoreNetworkOutput {
+public struct GetCoreNetworkOutput: Swift.Sendable {
     /// Details about a core network.
     public var coreNetwork: NetworkManagerClientTypes.CoreNetwork?
 
@@ -4550,7 +4550,7 @@ public struct GetCoreNetworkOutput {
     }
 }
 
-public struct GetCoreNetworkChangeEventsInput {
+public struct GetCoreNetworkChangeEventsInput: Swift.Sendable {
     /// The ID of a core network.
     /// This member is required.
     public var coreNetworkId: Swift.String?
@@ -4576,7 +4576,7 @@ public struct GetCoreNetworkChangeEventsInput {
     }
 }
 
-public struct GetCoreNetworkChangeEventsOutput {
+public struct GetCoreNetworkChangeEventsOutput: Swift.Sendable {
     /// The response to GetCoreNetworkChangeEventsRequest.
     public var coreNetworkChangeEvents: [NetworkManagerClientTypes.CoreNetworkChangeEvent]?
     /// The token for the next page of results.
@@ -4592,7 +4592,7 @@ public struct GetCoreNetworkChangeEventsOutput {
     }
 }
 
-public struct GetCoreNetworkChangeSetInput {
+public struct GetCoreNetworkChangeSetInput: Swift.Sendable {
     /// The ID of a core network.
     /// This member is required.
     public var coreNetworkId: Swift.String?
@@ -4618,7 +4618,7 @@ public struct GetCoreNetworkChangeSetInput {
     }
 }
 
-public struct GetCoreNetworkChangeSetOutput {
+public struct GetCoreNetworkChangeSetOutput: Swift.Sendable {
     /// Describes a core network changes.
     public var coreNetworkChanges: [NetworkManagerClientTypes.CoreNetworkChange]?
     /// The token for the next page of results.
@@ -4634,7 +4634,7 @@ public struct GetCoreNetworkChangeSetOutput {
     }
 }
 
-public struct GetCoreNetworkPolicyInput {
+public struct GetCoreNetworkPolicyInput: Swift.Sendable {
     /// The alias of a core network policy
     public var alias: NetworkManagerClientTypes.CoreNetworkPolicyAlias?
     /// The ID of a core network.
@@ -4655,7 +4655,7 @@ public struct GetCoreNetworkPolicyInput {
     }
 }
 
-public struct GetCoreNetworkPolicyOutput {
+public struct GetCoreNetworkPolicyOutput: Swift.Sendable {
     /// The details about a core network policy.
     public var coreNetworkPolicy: NetworkManagerClientTypes.CoreNetworkPolicy?
 
@@ -4667,7 +4667,7 @@ public struct GetCoreNetworkPolicyOutput {
     }
 }
 
-public struct GetCustomerGatewayAssociationsInput {
+public struct GetCustomerGatewayAssociationsInput: Swift.Sendable {
     /// One or more customer gateway Amazon Resource Names (ARNs). The maximum is 10.
     public var customerGatewayArns: [Swift.String]?
     /// The ID of the global network.
@@ -4692,7 +4692,7 @@ public struct GetCustomerGatewayAssociationsInput {
     }
 }
 
-public struct GetCustomerGatewayAssociationsOutput {
+public struct GetCustomerGatewayAssociationsOutput: Swift.Sendable {
     /// The customer gateway associations.
     public var customerGatewayAssociations: [NetworkManagerClientTypes.CustomerGatewayAssociation]?
     /// The token for the next page of results.
@@ -4708,7 +4708,7 @@ public struct GetCustomerGatewayAssociationsOutput {
     }
 }
 
-public struct GetDevicesInput {
+public struct GetDevicesInput: Swift.Sendable {
     /// One or more device IDs. The maximum is 10.
     public var deviceIds: [Swift.String]?
     /// The ID of the global network.
@@ -4737,7 +4737,7 @@ public struct GetDevicesInput {
     }
 }
 
-public struct GetDevicesOutput {
+public struct GetDevicesOutput: Swift.Sendable {
     /// The devices.
     public var devices: [NetworkManagerClientTypes.Device]?
     /// The token for the next page of results.
@@ -4753,7 +4753,7 @@ public struct GetDevicesOutput {
     }
 }
 
-public struct GetLinkAssociationsInput {
+public struct GetLinkAssociationsInput: Swift.Sendable {
     /// The ID of the device.
     public var deviceId: Swift.String?
     /// The ID of the global network.
@@ -4782,7 +4782,7 @@ public struct GetLinkAssociationsInput {
     }
 }
 
-public struct GetLinkAssociationsOutput {
+public struct GetLinkAssociationsOutput: Swift.Sendable {
     /// The link associations.
     public var linkAssociations: [NetworkManagerClientTypes.LinkAssociation]?
     /// The token for the next page of results.
@@ -4798,7 +4798,7 @@ public struct GetLinkAssociationsOutput {
     }
 }
 
-public struct GetLinksInput {
+public struct GetLinksInput: Swift.Sendable {
     /// The ID of the global network.
     /// This member is required.
     public var globalNetworkId: Swift.String?
@@ -4835,7 +4835,7 @@ public struct GetLinksInput {
     }
 }
 
-public struct GetLinksOutput {
+public struct GetLinksOutput: Swift.Sendable {
     /// The links.
     public var links: [NetworkManagerClientTypes.Link]?
     /// The token for the next page of results.
@@ -4851,7 +4851,7 @@ public struct GetLinksOutput {
     }
 }
 
-public struct GetNetworkResourceCountsInput {
+public struct GetNetworkResourceCountsInput: Swift.Sendable {
     /// The ID of the global network.
     /// This member is required.
     public var globalNetworkId: Swift.String?
@@ -4917,8 +4917,9 @@ public struct GetNetworkResourceCountsInput {
 }
 
 extension NetworkManagerClientTypes {
+
     /// Describes a resource count.
-    public struct NetworkResourceCount {
+    public struct NetworkResourceCount: Swift.Sendable {
         /// The resource count.
         public var count: Swift.Int?
         /// The resource type.
@@ -4933,10 +4934,9 @@ extension NetworkManagerClientTypes {
             self.resourceType = resourceType
         }
     }
-
 }
 
-public struct GetNetworkResourceCountsOutput {
+public struct GetNetworkResourceCountsOutput: Swift.Sendable {
     /// The count of resources.
     public var networkResourceCounts: [NetworkManagerClientTypes.NetworkResourceCount]?
     /// The token for the next page of results.
@@ -4952,7 +4952,7 @@ public struct GetNetworkResourceCountsOutput {
     }
 }
 
-public struct GetNetworkResourceRelationshipsInput {
+public struct GetNetworkResourceRelationshipsInput: Swift.Sendable {
     /// The Amazon Web Services account ID.
     public var accountId: Swift.String?
     /// The Amazon Web Services Region.
@@ -5038,8 +5038,9 @@ public struct GetNetworkResourceRelationshipsInput {
 }
 
 extension NetworkManagerClientTypes {
+
     /// Describes a resource relationship.
-    public struct Relationship {
+    public struct Relationship: Swift.Sendable {
         /// The ARN of the resource.
         public var from: Swift.String?
         /// The ARN of the resource.
@@ -5054,10 +5055,9 @@ extension NetworkManagerClientTypes {
             self.to = to
         }
     }
-
 }
 
-public struct GetNetworkResourceRelationshipsOutput {
+public struct GetNetworkResourceRelationshipsOutput: Swift.Sendable {
     /// The token for the next page of results.
     public var nextToken: Swift.String?
     /// The resource relationships.
@@ -5073,7 +5073,7 @@ public struct GetNetworkResourceRelationshipsOutput {
     }
 }
 
-public struct GetNetworkResourcesInput {
+public struct GetNetworkResourcesInput: Swift.Sendable {
     /// The Amazon Web Services account ID.
     public var accountId: Swift.String?
     /// The Amazon Web Services Region.
@@ -5159,8 +5159,9 @@ public struct GetNetworkResourcesInput {
 }
 
 extension NetworkManagerClientTypes {
+
     /// Describes a network resource.
-    public struct NetworkResource {
+    public struct NetworkResource: Swift.Sendable {
         /// The Amazon Web Services account ID.
         public var accountId: Swift.String?
         /// The Amazon Web Services Region.
@@ -5251,10 +5252,9 @@ extension NetworkManagerClientTypes {
             self.tags = tags
         }
     }
-
 }
 
-public struct GetNetworkResourcesOutput {
+public struct GetNetworkResourcesOutput: Swift.Sendable {
     /// The network resources.
     public var networkResources: [NetworkManagerClientTypes.NetworkResource]?
     /// The token for the next page of results.
@@ -5271,8 +5271,9 @@ public struct GetNetworkResourcesOutput {
 }
 
 extension NetworkManagerClientTypes {
+
     /// Describes a route table.
-    public struct RouteTableIdentifier {
+    public struct RouteTableIdentifier: Swift.Sendable {
         /// The route table identifier associated with the network function group.
         public var coreNetworkNetworkFunctionGroup: NetworkManagerClientTypes.CoreNetworkNetworkFunctionGroupIdentifier?
         /// The segment edge in a core network.
@@ -5291,12 +5292,11 @@ extension NetworkManagerClientTypes {
             self.transitGatewayRouteTableArn = transitGatewayRouteTableArn
         }
     }
-
 }
 
 extension NetworkManagerClientTypes {
 
-    public enum RouteState: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum RouteState: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case active
         case blackhole
         case sdkUnknown(Swift.String)
@@ -5325,7 +5325,7 @@ extension NetworkManagerClientTypes {
 
 extension NetworkManagerClientTypes {
 
-    public enum RouteType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum RouteType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case propagated
         case `static`
         case sdkUnknown(Swift.String)
@@ -5352,7 +5352,7 @@ extension NetworkManagerClientTypes {
     }
 }
 
-public struct GetNetworkRoutesInput {
+public struct GetNetworkRoutesInput: Swift.Sendable {
     /// Filter by route table destination. Possible Values: TRANSIT_GATEWAY_ATTACHMENT_ID, RESOURCE_ID, or RESOURCE_TYPE.
     public var destinationFilters: [Swift.String: [Swift.String]]?
     /// An exact CIDR block.
@@ -5403,8 +5403,9 @@ public struct GetNetworkRoutesInput {
 }
 
 extension NetworkManagerClientTypes {
+
     /// Describes the destination of a network route.
-    public struct NetworkRouteDestination {
+    public struct NetworkRouteDestination: Swift.Sendable {
         /// The ID of a core network attachment.
         public var coreNetworkAttachmentId: Swift.String?
         /// The edge location for the network destination.
@@ -5439,12 +5440,12 @@ extension NetworkManagerClientTypes {
             self.transitGatewayAttachmentId = transitGatewayAttachmentId
         }
     }
-
 }
 
 extension NetworkManagerClientTypes {
+
     /// Describes a network route.
-    public struct NetworkRoute {
+    public struct NetworkRoute: Swift.Sendable {
         /// A unique identifier for the route, such as a CIDR block.
         public var destinationCidrBlock: Swift.String?
         /// The destinations.
@@ -5471,12 +5472,11 @@ extension NetworkManagerClientTypes {
             self.type = type
         }
     }
-
 }
 
 extension NetworkManagerClientTypes {
 
-    public enum RouteTableType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum RouteTableType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case coreNetworkSegment
         case networkFunctionGroup
         case transitGatewayRouteTable
@@ -5506,7 +5506,7 @@ extension NetworkManagerClientTypes {
     }
 }
 
-public struct GetNetworkRoutesOutput {
+public struct GetNetworkRoutesOutput: Swift.Sendable {
     /// Describes a core network segment edge.
     public var coreNetworkSegmentEdge: NetworkManagerClientTypes.CoreNetworkSegmentEdgeIdentifier?
     /// The network routes.
@@ -5534,7 +5534,7 @@ public struct GetNetworkRoutesOutput {
     }
 }
 
-public struct GetNetworkTelemetryInput {
+public struct GetNetworkTelemetryInput: Swift.Sendable {
     /// The Amazon Web Services account ID.
     public var accountId: Swift.String?
     /// The Amazon Web Services Region.
@@ -5586,8 +5586,9 @@ public struct GetNetworkTelemetryInput {
 }
 
 extension NetworkManagerClientTypes {
+
     /// Describes the telemetry information for a resource.
-    public struct NetworkTelemetry {
+    public struct NetworkTelemetry: Swift.Sendable {
         /// The Amazon Web Services account ID.
         public var accountId: Swift.String?
         /// The address.
@@ -5630,10 +5631,9 @@ extension NetworkManagerClientTypes {
             self.resourceType = resourceType
         }
     }
-
 }
 
-public struct GetNetworkTelemetryOutput {
+public struct GetNetworkTelemetryOutput: Swift.Sendable {
     /// The network telemetry.
     public var networkTelemetry: [NetworkManagerClientTypes.NetworkTelemetry]?
     /// The token for the next page of results.
@@ -5649,7 +5649,7 @@ public struct GetNetworkTelemetryOutput {
     }
 }
 
-public struct GetResourcePolicyInput {
+public struct GetResourcePolicyInput: Swift.Sendable {
     /// The ARN of the resource.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -5662,7 +5662,7 @@ public struct GetResourcePolicyInput {
     }
 }
 
-public struct GetResourcePolicyOutput {
+public struct GetResourcePolicyOutput: Swift.Sendable {
     /// The resource policy document.
     public var policyDocument: Swift.String?
 
@@ -5674,7 +5674,7 @@ public struct GetResourcePolicyOutput {
     }
 }
 
-public struct GetRouteAnalysisInput {
+public struct GetRouteAnalysisInput: Swift.Sendable {
     /// The ID of the global network.
     /// This member is required.
     public var globalNetworkId: Swift.String?
@@ -5693,8 +5693,9 @@ public struct GetRouteAnalysisInput {
 }
 
 extension NetworkManagerClientTypes {
+
     /// Describes a source or a destination.
-    public struct RouteAnalysisEndpointOptions {
+    public struct RouteAnalysisEndpointOptions: Swift.Sendable {
         /// The IP address.
         public var ipAddress: Swift.String?
         /// The ARN of the transit gateway.
@@ -5713,12 +5714,11 @@ extension NetworkManagerClientTypes {
             self.transitGatewayAttachmentArn = transitGatewayAttachmentArn
         }
     }
-
 }
 
 extension NetworkManagerClientTypes {
 
-    public enum RouteAnalysisCompletionReasonCode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum RouteAnalysisCompletionReasonCode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case blackholeRouteForDestinationFound
         case cyclicPathDetected
         case inactiveRouteForDestinationFound
@@ -5774,7 +5774,7 @@ extension NetworkManagerClientTypes {
 
 extension NetworkManagerClientTypes {
 
-    public enum RouteAnalysisCompletionResultCode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum RouteAnalysisCompletionResultCode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case connected
         case notConnected
         case sdkUnknown(Swift.String)
@@ -5802,8 +5802,9 @@ extension NetworkManagerClientTypes {
 }
 
 extension NetworkManagerClientTypes {
+
     /// Describes the status of an analysis at completion.
-    public struct RouteAnalysisCompletion {
+    public struct RouteAnalysisCompletion: Swift.Sendable {
         /// The reason code. Available only if a connection is not found.
         ///
         /// * BLACKHOLE_ROUTE_FOR_DESTINATION_FOUND - Found a black hole route with the destination CIDR block.
@@ -5840,12 +5841,12 @@ extension NetworkManagerClientTypes {
             self.resultCode = resultCode
         }
     }
-
 }
 
 extension NetworkManagerClientTypes {
+
     /// Describes a network resource.
-    public struct NetworkResourceSummary {
+    public struct NetworkResourceSummary: Swift.Sendable {
         /// Information about the resource, in JSON format. Network Manager gets this information by describing the resource using its Describe API call.
         public var definition: Swift.String?
         /// Indicates whether this is a middlebox appliance.
@@ -5876,12 +5877,12 @@ extension NetworkManagerClientTypes {
             self.resourceType = resourceType
         }
     }
-
 }
 
 extension NetworkManagerClientTypes {
+
     /// Describes a path component.
-    public struct PathComponent {
+    public struct PathComponent: Swift.Sendable {
         /// The destination CIDR block in the route table.
         public var destinationCidrBlock: Swift.String?
         /// The resource.
@@ -5900,12 +5901,12 @@ extension NetworkManagerClientTypes {
             self.sequence = sequence
         }
     }
-
 }
 
 extension NetworkManagerClientTypes {
+
     /// Describes a route analysis path.
-    public struct RouteAnalysisPath {
+    public struct RouteAnalysisPath: Swift.Sendable {
         /// The status of the analysis at completion.
         public var completionStatus: NetworkManagerClientTypes.RouteAnalysisCompletion?
         /// The route analysis path.
@@ -5920,12 +5921,11 @@ extension NetworkManagerClientTypes {
             self.path = path
         }
     }
-
 }
 
 extension NetworkManagerClientTypes {
 
-    public enum RouteAnalysisStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum RouteAnalysisStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case completed
         case failed
         case running
@@ -5956,8 +5956,9 @@ extension NetworkManagerClientTypes {
 }
 
 extension NetworkManagerClientTypes {
+
     /// Describes a route analysis.
-    public struct RouteAnalysis {
+    public struct RouteAnalysis: Swift.Sendable {
         /// The destination.
         public var destination: NetworkManagerClientTypes.RouteAnalysisEndpointOptions?
         /// The forward path.
@@ -6008,10 +6009,9 @@ extension NetworkManagerClientTypes {
             self.useMiddleboxes = useMiddleboxes
         }
     }
-
 }
 
-public struct GetRouteAnalysisOutput {
+public struct GetRouteAnalysisOutput: Swift.Sendable {
     /// The route analysis.
     public var routeAnalysis: NetworkManagerClientTypes.RouteAnalysis?
 
@@ -6023,7 +6023,7 @@ public struct GetRouteAnalysisOutput {
     }
 }
 
-public struct GetSitesInput {
+public struct GetSitesInput: Swift.Sendable {
     /// The ID of the global network.
     /// This member is required.
     public var globalNetworkId: Swift.String?
@@ -6048,7 +6048,7 @@ public struct GetSitesInput {
     }
 }
 
-public struct GetSitesOutput {
+public struct GetSitesOutput: Swift.Sendable {
     /// The token for the next page of results.
     public var nextToken: Swift.String?
     /// The sites.
@@ -6064,7 +6064,7 @@ public struct GetSitesOutput {
     }
 }
 
-public struct GetSiteToSiteVpnAttachmentInput {
+public struct GetSiteToSiteVpnAttachmentInput: Swift.Sendable {
     /// The ID of the attachment.
     /// This member is required.
     public var attachmentId: Swift.String?
@@ -6077,7 +6077,7 @@ public struct GetSiteToSiteVpnAttachmentInput {
     }
 }
 
-public struct GetSiteToSiteVpnAttachmentOutput {
+public struct GetSiteToSiteVpnAttachmentOutput: Swift.Sendable {
     /// Describes the site-to-site attachment.
     public var siteToSiteVpnAttachment: NetworkManagerClientTypes.SiteToSiteVpnAttachment?
 
@@ -6089,7 +6089,7 @@ public struct GetSiteToSiteVpnAttachmentOutput {
     }
 }
 
-public struct GetTransitGatewayConnectPeerAssociationsInput {
+public struct GetTransitGatewayConnectPeerAssociationsInput: Swift.Sendable {
     /// The ID of the global network.
     /// This member is required.
     public var globalNetworkId: Swift.String?
@@ -6114,7 +6114,7 @@ public struct GetTransitGatewayConnectPeerAssociationsInput {
     }
 }
 
-public struct GetTransitGatewayConnectPeerAssociationsOutput {
+public struct GetTransitGatewayConnectPeerAssociationsOutput: Swift.Sendable {
     /// The token to use for the next page of results.
     public var nextToken: Swift.String?
     /// Information about the transit gateway Connect peer associations.
@@ -6130,7 +6130,7 @@ public struct GetTransitGatewayConnectPeerAssociationsOutput {
     }
 }
 
-public struct GetTransitGatewayPeeringInput {
+public struct GetTransitGatewayPeeringInput: Swift.Sendable {
     /// The ID of the peering request.
     /// This member is required.
     public var peeringId: Swift.String?
@@ -6143,7 +6143,7 @@ public struct GetTransitGatewayPeeringInput {
     }
 }
 
-public struct GetTransitGatewayPeeringOutput {
+public struct GetTransitGatewayPeeringOutput: Swift.Sendable {
     /// Returns information about a transit gateway peering.
     public var transitGatewayPeering: NetworkManagerClientTypes.TransitGatewayPeering?
 
@@ -6155,7 +6155,7 @@ public struct GetTransitGatewayPeeringOutput {
     }
 }
 
-public struct GetTransitGatewayRegistrationsInput {
+public struct GetTransitGatewayRegistrationsInput: Swift.Sendable {
     /// The ID of the global network.
     /// This member is required.
     public var globalNetworkId: Swift.String?
@@ -6180,7 +6180,7 @@ public struct GetTransitGatewayRegistrationsInput {
     }
 }
 
-public struct GetTransitGatewayRegistrationsOutput {
+public struct GetTransitGatewayRegistrationsOutput: Swift.Sendable {
     /// The token for the next page of results.
     public var nextToken: Swift.String?
     /// The transit gateway registrations.
@@ -6196,7 +6196,7 @@ public struct GetTransitGatewayRegistrationsOutput {
     }
 }
 
-public struct GetTransitGatewayRouteTableAttachmentInput {
+public struct GetTransitGatewayRouteTableAttachmentInput: Swift.Sendable {
     /// The ID of the transit gateway route table attachment.
     /// This member is required.
     public var attachmentId: Swift.String?
@@ -6209,7 +6209,7 @@ public struct GetTransitGatewayRouteTableAttachmentInput {
     }
 }
 
-public struct GetTransitGatewayRouteTableAttachmentOutput {
+public struct GetTransitGatewayRouteTableAttachmentOutput: Swift.Sendable {
     /// Returns information about the transit gateway route table attachment.
     public var transitGatewayRouteTableAttachment: NetworkManagerClientTypes.TransitGatewayRouteTableAttachment?
 
@@ -6221,7 +6221,7 @@ public struct GetTransitGatewayRouteTableAttachmentOutput {
     }
 }
 
-public struct GetVpcAttachmentInput {
+public struct GetVpcAttachmentInput: Swift.Sendable {
     /// The ID of the attachment.
     /// This member is required.
     public var attachmentId: Swift.String?
@@ -6234,7 +6234,7 @@ public struct GetVpcAttachmentInput {
     }
 }
 
-public struct GetVpcAttachmentOutput {
+public struct GetVpcAttachmentOutput: Swift.Sendable {
     /// Returns details about a VPC attachment.
     public var vpcAttachment: NetworkManagerClientTypes.VpcAttachment?
 
@@ -6246,7 +6246,7 @@ public struct GetVpcAttachmentOutput {
     }
 }
 
-public struct ListAttachmentsInput {
+public struct ListAttachmentsInput: Swift.Sendable {
     /// The type of attachment.
     public var attachmentType: NetworkManagerClientTypes.AttachmentType?
     /// The ID of a core network.
@@ -6278,7 +6278,7 @@ public struct ListAttachmentsInput {
     }
 }
 
-public struct ListAttachmentsOutput {
+public struct ListAttachmentsOutput: Swift.Sendable {
     /// Describes the list of attachments.
     public var attachments: [NetworkManagerClientTypes.Attachment]?
     /// The token for the next page of results.
@@ -6294,7 +6294,7 @@ public struct ListAttachmentsOutput {
     }
 }
 
-public struct ListConnectPeersInput {
+public struct ListConnectPeersInput: Swift.Sendable {
     /// The ID of the attachment.
     public var connectAttachmentId: Swift.String?
     /// The ID of a core network.
@@ -6318,7 +6318,7 @@ public struct ListConnectPeersInput {
     }
 }
 
-public struct ListConnectPeersOutput {
+public struct ListConnectPeersOutput: Swift.Sendable {
     /// Describes the Connect peers.
     public var connectPeers: [NetworkManagerClientTypes.ConnectPeerSummary]?
     /// The token for the next page of results.
@@ -6334,7 +6334,7 @@ public struct ListConnectPeersOutput {
     }
 }
 
-public struct ListCoreNetworkPolicyVersionsInput {
+public struct ListCoreNetworkPolicyVersionsInput: Swift.Sendable {
     /// The ID of a core network.
     /// This member is required.
     public var coreNetworkId: Swift.String?
@@ -6355,7 +6355,7 @@ public struct ListCoreNetworkPolicyVersionsInput {
     }
 }
 
-public struct ListCoreNetworkPolicyVersionsOutput {
+public struct ListCoreNetworkPolicyVersionsOutput: Swift.Sendable {
     /// Describes core network policy versions.
     public var coreNetworkPolicyVersions: [NetworkManagerClientTypes.CoreNetworkPolicyVersion]?
     /// The token for the next page of results.
@@ -6371,7 +6371,7 @@ public struct ListCoreNetworkPolicyVersionsOutput {
     }
 }
 
-public struct ListCoreNetworksInput {
+public struct ListCoreNetworksInput: Swift.Sendable {
     /// The maximum number of results to return.
     public var maxResults: Swift.Int?
     /// The token for the next page of results.
@@ -6387,7 +6387,7 @@ public struct ListCoreNetworksInput {
     }
 }
 
-public struct ListCoreNetworksOutput {
+public struct ListCoreNetworksOutput: Swift.Sendable {
     /// Describes the list of core networks.
     public var coreNetworks: [NetworkManagerClientTypes.CoreNetworkSummary]?
     /// The token for the next page of results.
@@ -6403,7 +6403,7 @@ public struct ListCoreNetworksOutput {
     }
 }
 
-public struct ListOrganizationServiceAccessStatusInput {
+public struct ListOrganizationServiceAccessStatusInput: Swift.Sendable {
     /// The maximum number of results to return.
     public var maxResults: Swift.Int?
     /// The token for the next page of results.
@@ -6420,8 +6420,9 @@ public struct ListOrganizationServiceAccessStatusInput {
 }
 
 extension NetworkManagerClientTypes {
+
     /// The status of an Amazon Web Services Organization and the accounts within that organization.
-    public struct OrganizationStatus {
+    public struct OrganizationStatus: Swift.Sendable {
         /// The current service-linked role (SLR) deployment status for an Amazon Web Services Organization's accounts. This will be either SUCCEEDED or IN_PROGRESS.
         public var accountStatusList: [NetworkManagerClientTypes.AccountStatus]?
         /// The status of the organization's AWS service access. This will be ENABLED or DISABLED.
@@ -6444,10 +6445,9 @@ extension NetworkManagerClientTypes {
             self.slrDeploymentStatus = slrDeploymentStatus
         }
     }
-
 }
 
-public struct ListOrganizationServiceAccessStatusOutput {
+public struct ListOrganizationServiceAccessStatusOutput: Swift.Sendable {
     /// The token for the next page of results.
     public var nextToken: Swift.String?
     /// Displays the status of an Amazon Web Services Organization.
@@ -6463,7 +6463,7 @@ public struct ListOrganizationServiceAccessStatusOutput {
     }
 }
 
-public struct ListPeeringsInput {
+public struct ListPeeringsInput: Swift.Sendable {
     /// The ID of a core network.
     public var coreNetworkId: Swift.String?
     /// Returns a list edge locations for the
@@ -6495,7 +6495,7 @@ public struct ListPeeringsInput {
     }
 }
 
-public struct ListPeeringsOutput {
+public struct ListPeeringsOutput: Swift.Sendable {
     /// The token for the next page of results.
     public var nextToken: Swift.String?
     /// Lists the transit gateway peerings for the ListPeerings request.
@@ -6511,7 +6511,7 @@ public struct ListPeeringsOutput {
     }
 }
 
-public struct ListTagsForResourceInput {
+public struct ListTagsForResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the resource.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -6524,7 +6524,7 @@ public struct ListTagsForResourceInput {
     }
 }
 
-public struct ListTagsForResourceOutput {
+public struct ListTagsForResourceOutput: Swift.Sendable {
     /// The list of tags.
     public var tagList: [NetworkManagerClientTypes.Tag]?
 
@@ -6536,7 +6536,7 @@ public struct ListTagsForResourceOutput {
     }
 }
 
-public struct PutCoreNetworkPolicyInput {
+public struct PutCoreNetworkPolicyInput: Swift.Sendable {
     /// The client token associated with the request.
     public var clientToken: Swift.String?
     /// The ID of a core network.
@@ -6566,7 +6566,7 @@ public struct PutCoreNetworkPolicyInput {
     }
 }
 
-public struct PutCoreNetworkPolicyOutput {
+public struct PutCoreNetworkPolicyOutput: Swift.Sendable {
     /// Describes the changed core network policy.
     public var coreNetworkPolicy: NetworkManagerClientTypes.CoreNetworkPolicy?
 
@@ -6578,7 +6578,7 @@ public struct PutCoreNetworkPolicyOutput {
     }
 }
 
-public struct PutResourcePolicyInput {
+public struct PutResourcePolicyInput: Swift.Sendable {
     /// The JSON resource policy document.
     /// This member is required.
     public var policyDocument: Swift.String?
@@ -6596,12 +6596,12 @@ public struct PutResourcePolicyInput {
     }
 }
 
-public struct PutResourcePolicyOutput {
+public struct PutResourcePolicyOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct RegisterTransitGatewayInput {
+public struct RegisterTransitGatewayInput: Swift.Sendable {
     /// The ID of the global network.
     /// This member is required.
     public var globalNetworkId: Swift.String?
@@ -6619,7 +6619,7 @@ public struct RegisterTransitGatewayInput {
     }
 }
 
-public struct RegisterTransitGatewayOutput {
+public struct RegisterTransitGatewayOutput: Swift.Sendable {
     /// Information about the transit gateway registration.
     public var transitGatewayRegistration: NetworkManagerClientTypes.TransitGatewayRegistration?
 
@@ -6631,7 +6631,7 @@ public struct RegisterTransitGatewayOutput {
     }
 }
 
-public struct RejectAttachmentInput {
+public struct RejectAttachmentInput: Swift.Sendable {
     /// The ID of the attachment.
     /// This member is required.
     public var attachmentId: Swift.String?
@@ -6644,7 +6644,7 @@ public struct RejectAttachmentInput {
     }
 }
 
-public struct RejectAttachmentOutput {
+public struct RejectAttachmentOutput: Swift.Sendable {
     /// Describes the rejected attachment request.
     public var attachment: NetworkManagerClientTypes.Attachment?
 
@@ -6656,7 +6656,7 @@ public struct RejectAttachmentOutput {
     }
 }
 
-public struct RestoreCoreNetworkPolicyVersionInput {
+public struct RestoreCoreNetworkPolicyVersionInput: Swift.Sendable {
     /// The ID of a core network.
     /// This member is required.
     public var coreNetworkId: Swift.String?
@@ -6674,7 +6674,7 @@ public struct RestoreCoreNetworkPolicyVersionInput {
     }
 }
 
-public struct RestoreCoreNetworkPolicyVersionOutput {
+public struct RestoreCoreNetworkPolicyVersionOutput: Swift.Sendable {
     /// Describes the restored core network policy.
     public var coreNetworkPolicy: NetworkManagerClientTypes.CoreNetworkPolicy?
 
@@ -6686,7 +6686,7 @@ public struct RestoreCoreNetworkPolicyVersionOutput {
     }
 }
 
-public struct StartOrganizationServiceAccessUpdateInput {
+public struct StartOrganizationServiceAccessUpdateInput: Swift.Sendable {
     /// The action to take for the update request. This can be either ENABLE or DISABLE.
     /// This member is required.
     public var action: Swift.String?
@@ -6699,7 +6699,7 @@ public struct StartOrganizationServiceAccessUpdateInput {
     }
 }
 
-public struct StartOrganizationServiceAccessUpdateOutput {
+public struct StartOrganizationServiceAccessUpdateOutput: Swift.Sendable {
     /// The status of the service access update request for an Amazon Web Services Organization.
     public var organizationStatus: NetworkManagerClientTypes.OrganizationStatus?
 
@@ -6712,8 +6712,9 @@ public struct StartOrganizationServiceAccessUpdateOutput {
 }
 
 extension NetworkManagerClientTypes {
+
     /// Describes a source or a destination.
-    public struct RouteAnalysisEndpointOptionsSpecification {
+    public struct RouteAnalysisEndpointOptionsSpecification: Swift.Sendable {
         /// The IP address.
         public var ipAddress: Swift.String?
         /// The ARN of the transit gateway attachment.
@@ -6728,10 +6729,9 @@ extension NetworkManagerClientTypes {
             self.transitGatewayAttachmentArn = transitGatewayAttachmentArn
         }
     }
-
 }
 
-public struct StartRouteAnalysisInput {
+public struct StartRouteAnalysisInput: Swift.Sendable {
     /// The destination.
     /// This member is required.
     public var destination: NetworkManagerClientTypes.RouteAnalysisEndpointOptionsSpecification?
@@ -6762,7 +6762,7 @@ public struct StartRouteAnalysisInput {
     }
 }
 
-public struct StartRouteAnalysisOutput {
+public struct StartRouteAnalysisOutput: Swift.Sendable {
     /// The route analysis.
     public var routeAnalysis: NetworkManagerClientTypes.RouteAnalysis?
 
@@ -6774,7 +6774,7 @@ public struct StartRouteAnalysisOutput {
     }
 }
 
-public struct TagResourceInput {
+public struct TagResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the resource.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -6792,12 +6792,12 @@ public struct TagResourceInput {
     }
 }
 
-public struct TagResourceOutput {
+public struct TagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UntagResourceInput {
+public struct UntagResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the resource.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -6815,12 +6815,12 @@ public struct UntagResourceInput {
     }
 }
 
-public struct UntagResourceOutput {
+public struct UntagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdateConnectionInput {
+public struct UpdateConnectionInput: Swift.Sendable {
     /// The ID of the link for the second device in the connection.
     public var connectedLinkId: Swift.String?
     /// The ID of the connection.
@@ -6850,7 +6850,7 @@ public struct UpdateConnectionInput {
     }
 }
 
-public struct UpdateConnectionOutput {
+public struct UpdateConnectionOutput: Swift.Sendable {
     /// Information about the connection.
     public var connection: NetworkManagerClientTypes.Connection?
 
@@ -6862,7 +6862,7 @@ public struct UpdateConnectionOutput {
     }
 }
 
-public struct UpdateCoreNetworkInput {
+public struct UpdateCoreNetworkInput: Swift.Sendable {
     /// The ID of a core network.
     /// This member is required.
     public var coreNetworkId: Swift.String?
@@ -6879,7 +6879,7 @@ public struct UpdateCoreNetworkInput {
     }
 }
 
-public struct UpdateCoreNetworkOutput {
+public struct UpdateCoreNetworkOutput: Swift.Sendable {
     /// Returns information about a core network update.
     public var coreNetwork: NetworkManagerClientTypes.CoreNetwork?
 
@@ -6891,7 +6891,7 @@ public struct UpdateCoreNetworkOutput {
     }
 }
 
-public struct UpdateDeviceInput {
+public struct UpdateDeviceInput: Swift.Sendable {
     /// The Amazon Web Services location of the device, if applicable. For an on-premises device, you can omit this parameter.
     public var awsLocation: NetworkManagerClientTypes.AWSLocation?
     /// A description of the device. Constraints: Maximum length of 256 characters.
@@ -6946,7 +6946,7 @@ extension UpdateDeviceInput: Swift.CustomDebugStringConvertible {
         "UpdateDeviceInput(awsLocation: \(Swift.String(describing: awsLocation)), description: \(Swift.String(describing: description)), deviceId: \(Swift.String(describing: deviceId)), globalNetworkId: \(Swift.String(describing: globalNetworkId)), model: \(Swift.String(describing: model)), serialNumber: \(Swift.String(describing: serialNumber)), siteId: \(Swift.String(describing: siteId)), type: \(Swift.String(describing: type)), vendor: \(Swift.String(describing: vendor)), location: \"CONTENT_REDACTED\")"}
 }
 
-public struct UpdateDeviceOutput {
+public struct UpdateDeviceOutput: Swift.Sendable {
     /// Information about the device.
     public var device: NetworkManagerClientTypes.Device?
 
@@ -6958,7 +6958,7 @@ public struct UpdateDeviceOutput {
     }
 }
 
-public struct UpdateGlobalNetworkInput {
+public struct UpdateGlobalNetworkInput: Swift.Sendable {
     /// A description of the global network. Constraints: Maximum length of 256 characters.
     public var description: Swift.String?
     /// The ID of your global network.
@@ -6975,7 +6975,7 @@ public struct UpdateGlobalNetworkInput {
     }
 }
 
-public struct UpdateGlobalNetworkOutput {
+public struct UpdateGlobalNetworkOutput: Swift.Sendable {
     /// Information about the global network object.
     public var globalNetwork: NetworkManagerClientTypes.GlobalNetwork?
 
@@ -6987,7 +6987,7 @@ public struct UpdateGlobalNetworkOutput {
     }
 }
 
-public struct UpdateLinkInput {
+public struct UpdateLinkInput: Swift.Sendable {
     /// The upload and download speed in Mbps.
     public var bandwidth: NetworkManagerClientTypes.Bandwidth?
     /// A description of the link. Constraints: Maximum length of 256 characters.
@@ -7021,7 +7021,7 @@ public struct UpdateLinkInput {
     }
 }
 
-public struct UpdateLinkOutput {
+public struct UpdateLinkOutput: Swift.Sendable {
     /// Information about the link.
     public var link: NetworkManagerClientTypes.Link?
 
@@ -7033,7 +7033,7 @@ public struct UpdateLinkOutput {
     }
 }
 
-public struct UpdateNetworkResourceMetadataInput {
+public struct UpdateNetworkResourceMetadataInput: Swift.Sendable {
     /// The ID of the global network.
     /// This member is required.
     public var globalNetworkId: Swift.String?
@@ -7056,7 +7056,7 @@ public struct UpdateNetworkResourceMetadataInput {
     }
 }
 
-public struct UpdateNetworkResourceMetadataOutput {
+public struct UpdateNetworkResourceMetadataOutput: Swift.Sendable {
     /// The updated resource metadata.
     public var metadata: [Swift.String: Swift.String]?
     /// The ARN of the resource.
@@ -7072,7 +7072,7 @@ public struct UpdateNetworkResourceMetadataOutput {
     }
 }
 
-public struct UpdateSiteInput {
+public struct UpdateSiteInput: Swift.Sendable {
     /// A description of your site. Constraints: Maximum length of 256 characters.
     public var description: Swift.String?
     /// The ID of the global network.
@@ -7109,7 +7109,7 @@ extension UpdateSiteInput: Swift.CustomDebugStringConvertible {
         "UpdateSiteInput(description: \(Swift.String(describing: description)), globalNetworkId: \(Swift.String(describing: globalNetworkId)), siteId: \(Swift.String(describing: siteId)), location: \"CONTENT_REDACTED\")"}
 }
 
-public struct UpdateSiteOutput {
+public struct UpdateSiteOutput: Swift.Sendable {
     /// Information about the site.
     public var site: NetworkManagerClientTypes.Site?
 
@@ -7121,7 +7121,7 @@ public struct UpdateSiteOutput {
     }
 }
 
-public struct UpdateVpcAttachmentInput {
+public struct UpdateVpcAttachmentInput: Swift.Sendable {
     /// Adds a subnet ARN to the VPC attachment.
     public var addSubnetArns: [Swift.String]?
     /// The ID of the attachment.
@@ -7146,7 +7146,7 @@ public struct UpdateVpcAttachmentInput {
     }
 }
 
-public struct UpdateVpcAttachmentOutput {
+public struct UpdateVpcAttachmentOutput: Swift.Sendable {
     /// Describes the updated VPC attachment.
     public var vpcAttachment: NetworkManagerClientTypes.VpcAttachment?
 

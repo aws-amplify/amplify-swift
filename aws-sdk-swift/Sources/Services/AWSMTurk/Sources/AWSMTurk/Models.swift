@@ -80,7 +80,7 @@ public struct ServiceFault: ClientRuntime.ModeledError, AWSClientRuntime.AWSServ
     }
 }
 
-public struct AcceptQualificationRequestInput {
+public struct AcceptQualificationRequestInput: Swift.Sendable {
     /// The value of the Qualification. You can omit this value if you are using the presence or absence of the Qualification as the basis for a HIT requirement.
     public var integerValue: Swift.Int?
     /// The ID of the Qualification request, as returned by the GetQualificationRequests operation.
@@ -97,12 +97,12 @@ public struct AcceptQualificationRequestInput {
     }
 }
 
-public struct AcceptQualificationRequestOutput {
+public struct AcceptQualificationRequestOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct ApproveAssignmentInput {
+public struct ApproveAssignmentInput: Swift.Sendable {
     /// The ID of the assignment. The assignment must correspond to a HIT created by the Requester.
     /// This member is required.
     public var assignmentId: Swift.String?
@@ -123,14 +123,14 @@ public struct ApproveAssignmentInput {
     }
 }
 
-public struct ApproveAssignmentOutput {
+public struct ApproveAssignmentOutput: Swift.Sendable {
 
     public init() { }
 }
 
 extension MTurkClientTypes {
 
-    public enum AssignmentStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AssignmentStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case approved
         case rejected
         case submitted
@@ -161,8 +161,9 @@ extension MTurkClientTypes {
 }
 
 extension MTurkClientTypes {
+
     /// The Assignment data structure represents a single assignment of a HIT to a Worker. The assignment tracks the Worker's efforts to complete the HIT, and contains the results for later retrieval.
-    public struct Assignment {
+    public struct Assignment: Swift.Sendable {
         /// The date and time the Worker accepted the assignment.
         public var acceptTime: Foundation.Date?
         /// The Worker's answers submitted for the HIT contained in a QuestionFormAnswers document, if the Worker provides an answer. If the Worker does not provide any answers, Answer may contain a QuestionFormAnswers document, or Answer may be empty.
@@ -217,10 +218,9 @@ extension MTurkClientTypes {
             self.workerId = workerId
         }
     }
-
 }
 
-public struct AssociateQualificationWithWorkerInput {
+public struct AssociateQualificationWithWorkerInput: Swift.Sendable {
     /// The value of the Qualification to assign.
     public var integerValue: Swift.Int?
     /// The ID of the Qualification type to use for the assigned Qualification.
@@ -246,14 +246,15 @@ public struct AssociateQualificationWithWorkerInput {
     }
 }
 
-public struct AssociateQualificationWithWorkerOutput {
+public struct AssociateQualificationWithWorkerOutput: Swift.Sendable {
 
     public init() { }
 }
 
 extension MTurkClientTypes {
+
     /// An object representing a Bonus payment paid to a Worker.
-    public struct BonusPayment {
+    public struct BonusPayment: Swift.Sendable {
         /// The ID of the assignment associated with this bonus payment.
         public var assignmentId: Swift.String?
         /// A string representing a currency amount.
@@ -280,12 +281,11 @@ extension MTurkClientTypes {
             self.workerId = workerId
         }
     }
-
 }
 
 extension MTurkClientTypes {
 
-    public enum Comparator: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Comparator: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case doesnotexist
         case equalto
         case exists
@@ -336,7 +336,7 @@ extension MTurkClientTypes {
     }
 }
 
-public struct CreateAdditionalAssignmentsForHITInput {
+public struct CreateAdditionalAssignmentsForHITInput: Swift.Sendable {
     /// The ID of the HIT to extend.
     /// This member is required.
     public var hitId: Swift.String?
@@ -358,14 +358,15 @@ public struct CreateAdditionalAssignmentsForHITInput {
     }
 }
 
-public struct CreateAdditionalAssignmentsForHITOutput {
+public struct CreateAdditionalAssignmentsForHITOutput: Swift.Sendable {
 
     public init() { }
 }
 
 extension MTurkClientTypes {
+
     /// This data structure is the data type for the AnswerKey parameter of the ScoreMyKnownAnswers/2011-09-01 Review Policy.
-    public struct ParameterMapEntry {
+    public struct ParameterMapEntry: Swift.Sendable {
         /// The QuestionID from the HIT that is used to identify which question requires Mechanical Turk to score as part of the ScoreMyKnownAnswers/2011-09-01 Review Policy.
         public var key: Swift.String?
         /// The list of answers to the question specified in the MapEntry Key element. The Worker must match all values in order for the answer to be scored correctly.
@@ -380,12 +381,12 @@ extension MTurkClientTypes {
             self.values = values
         }
     }
-
 }
 
 extension MTurkClientTypes {
+
     /// Name of the parameter from the Review policy.
-    public struct PolicyParameter {
+    public struct PolicyParameter: Swift.Sendable {
         /// Name of the parameter from the list of Review Polices.
         public var key: Swift.String?
         /// List of ParameterMapEntry objects.
@@ -404,12 +405,12 @@ extension MTurkClientTypes {
             self.values = values
         }
     }
-
 }
 
 extension MTurkClientTypes {
+
     /// HIT Review Policy data structures represent HIT review policies, which you specify when you create a HIT.
-    public struct ReviewPolicy {
+    public struct ReviewPolicy: Swift.Sendable {
         /// Name of the parameter from the Review policy.
         public var parameters: [MTurkClientTypes.PolicyParameter]?
         /// Name of a Review Policy: SimplePlurality/2011-09-01 or ScoreMyKnownAnswers/2011-09-01
@@ -425,12 +426,12 @@ extension MTurkClientTypes {
             self.policyName = policyName
         }
     }
-
 }
 
 extension MTurkClientTypes {
+
     /// The HITLayoutParameter data structure defines parameter values used with a HITLayout. A HITLayout is a reusable Amazon Mechanical Turk project template used to provide Human Intelligence Task (HIT) question data for CreateHIT.
-    public struct HITLayoutParameter {
+    public struct HITLayoutParameter: Swift.Sendable {
         /// The name of the parameter in the HITLayout.
         /// This member is required.
         public var name: Swift.String?
@@ -447,12 +448,11 @@ extension MTurkClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension MTurkClientTypes {
 
-    public enum HITAccessActions: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum HITAccessActions: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case accept
         case discoverpreviewandaccept
         case previewandaccept
@@ -483,8 +483,9 @@ extension MTurkClientTypes {
 }
 
 extension MTurkClientTypes {
+
     /// The Locale data structure represents a geographical region or location.
-    public struct Locale {
+    public struct Locale: Swift.Sendable {
         /// The country of the locale. Must be a valid ISO 3166 country code. For example, the code US refers to the United States of America.
         /// This member is required.
         public var country: Swift.String?
@@ -500,12 +501,12 @@ extension MTurkClientTypes {
             self.subdivision = subdivision
         }
     }
-
 }
 
 extension MTurkClientTypes {
+
     /// The QualificationRequirement data structure describes a Qualification that a Worker must have before the Worker is allowed to accept a HIT. A requirement may optionally state that a Worker must have the Qualification in order to preview the HIT, or see the HIT in search results.
-    public struct QualificationRequirement {
+    public struct QualificationRequirement: Swift.Sendable {
         /// Setting this attribute prevents Workers whose Qualifications do not meet this QualificationRequirement from taking the specified action. Valid arguments include "Accept" (Worker cannot accept the HIT, but can preview the HIT and see it in their search results), "PreviewAndAccept" (Worker cannot accept or preview the HIT, but can see the HIT in their search results), and "DiscoverPreviewAndAccept" (Worker cannot accept, preview, or see the HIT in their search results). It's possible for you to create a HIT with multiple QualificationRequirements (which can have different values for the ActionGuarded attribute). In this case, the Worker is only permitted to perform an action when they have met all QualificationRequirements guarding the action. The actions in the order of least restrictive to most restrictive are Discover, Preview and Accept. For example, if a Worker meets all QualificationRequirements that are set to DiscoverPreviewAndAccept, but do not meet all requirements that are set with PreviewAndAccept, then the Worker will be able to Discover, i.e. see the HIT in their search result, but will not be able to Preview or Accept the HIT. ActionsGuarded should not be used in combination with the RequiredToPreview field.
         public var actionsGuarded: MTurkClientTypes.HITAccessActions?
         /// The kind of comparison to make against a Qualification's value. You can compare a Qualification's value to an IntegerValue to see if it is LessThan, LessThanOrEqualTo, GreaterThan, GreaterThanOrEqualTo, EqualTo, or NotEqualTo the IntegerValue. You can compare it to a LocaleValue to see if it is EqualTo, or NotEqualTo the LocaleValue. You can check to see if the value is In or NotIn a set of IntegerValue or LocaleValue values. Lastly, a Qualification requirement can also test if a Qualification Exists or DoesNotExist in the user's profile, regardless of its value.
@@ -539,10 +540,9 @@ extension MTurkClientTypes {
             self.requiredToPreview = requiredToPreview
         }
     }
-
 }
 
-public struct CreateHITInput {
+public struct CreateHITInput: Swift.Sendable {
     /// The amount of time, in seconds, that a Worker has to complete the HIT after accepting it. If a Worker does not complete the assignment within the specified duration, the assignment is considered abandoned. If the HIT is still active (that is, its lifetime has not elapsed), the assignment becomes available for other users to find and accept.
     /// This member is required.
     public var assignmentDurationInSeconds: Swift.Int?
@@ -621,7 +621,7 @@ public struct CreateHITInput {
 
 extension MTurkClientTypes {
 
-    public enum HITReviewStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum HITReviewStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case markedforreview
         case notreviewed
         case reviewedappropriate
@@ -656,7 +656,7 @@ extension MTurkClientTypes {
 
 extension MTurkClientTypes {
 
-    public enum HITStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum HITStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case assignable
         case disposed
         case reviewable
@@ -693,8 +693,9 @@ extension MTurkClientTypes {
 }
 
 extension MTurkClientTypes {
+
     /// The HIT data structure represents a single HIT, including all the information necessary for a Worker to accept and complete the HIT.
-    public struct HIT {
+    public struct HIT: Swift.Sendable {
         /// The length of time, in seconds, that a Worker has to complete the HIT after accepting it.
         public var assignmentDurationInSeconds: Swift.Int?
         /// The amount of time, in seconds, after the Worker submits an assignment for the HIT that the results are automatically approved by Amazon Mechanical Turk. This is the amount of time the Requester has to reject an assignment submitted by a Worker before the assignment is auto-approved and the Worker is paid.
@@ -785,10 +786,9 @@ extension MTurkClientTypes {
             self.title = title
         }
     }
-
 }
 
-public struct CreateHITOutput {
+public struct CreateHITOutput: Swift.Sendable {
     /// Contains the newly created HIT data. For a description of the HIT data structure as it appears in responses, see the HIT Data Structure documentation.
     public var hit: MTurkClientTypes.HIT?
 
@@ -800,7 +800,7 @@ public struct CreateHITOutput {
     }
 }
 
-public struct CreateHITTypeInput {
+public struct CreateHITTypeInput: Swift.Sendable {
     /// The amount of time, in seconds, that a Worker has to complete the HIT after accepting it. If a Worker does not complete the assignment within the specified duration, the assignment is considered abandoned. If the HIT is still active (that is, its lifetime has not elapsed), the assignment becomes available for other users to find and accept.
     /// This member is required.
     public var assignmentDurationInSeconds: Swift.Int?
@@ -840,7 +840,7 @@ public struct CreateHITTypeInput {
     }
 }
 
-public struct CreateHITTypeOutput {
+public struct CreateHITTypeOutput: Swift.Sendable {
     /// The ID of the newly registered HIT type.
     public var hitTypeId: Swift.String?
 
@@ -852,7 +852,7 @@ public struct CreateHITTypeOutput {
     }
 }
 
-public struct CreateHITWithHITTypeInput {
+public struct CreateHITWithHITTypeInput: Swift.Sendable {
     /// The Assignment-level Review Policy applies to the assignments under the HIT. You can specify for Mechanical Turk to take various actions based on the policy.
     public var assignmentReviewPolicy: MTurkClientTypes.ReviewPolicy?
     /// The HITLayoutId allows you to use a pre-existing HIT design with placeholder values and create an additional HIT by providing those values as HITLayoutParameters. Constraints: Either a Question parameter or a HITLayoutId parameter must be provided.
@@ -902,7 +902,7 @@ public struct CreateHITWithHITTypeInput {
     }
 }
 
-public struct CreateHITWithHITTypeOutput {
+public struct CreateHITWithHITTypeOutput: Swift.Sendable {
     /// Contains the newly created HIT data. For a description of the HIT data structure as it appears in responses, see the HIT Data Structure documentation.
     public var hit: MTurkClientTypes.HIT?
 
@@ -916,7 +916,7 @@ public struct CreateHITWithHITTypeOutput {
 
 extension MTurkClientTypes {
 
-    public enum QualificationTypeStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum QualificationTypeStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case active
         case inactive
         case sdkUnknown(Swift.String)
@@ -943,7 +943,7 @@ extension MTurkClientTypes {
     }
 }
 
-public struct CreateQualificationTypeInput {
+public struct CreateQualificationTypeInput: Swift.Sendable {
     /// The answers to the Qualification test specified in the Test parameter, in the form of an AnswerKey data structure. Constraints: Must not be longer than 65535 bytes. Constraints: None. If not specified, you must process Qualification requests manually.
     public var answerKey: Swift.String?
     /// Specifies whether requests for the Qualification type are granted immediately, without prompting the Worker with a Qualification test. Constraints: If the Test parameter is specified, this parameter cannot be true.
@@ -995,8 +995,9 @@ public struct CreateQualificationTypeInput {
 }
 
 extension MTurkClientTypes {
+
     /// The QualificationType data structure represents a Qualification type, a description of a property of a Worker that must match the requirements of a HIT for the Worker to be able to accept the HIT. The type also describes how a Worker can obtain a Qualification of that type, such as through a Qualification test.
-    public struct QualificationType {
+    public struct QualificationType: Swift.Sendable {
         /// The answers to the Qualification test specified in the Test parameter.
         public var answerKey: Swift.String?
         /// Specifies that requests for the Qualification type are granted immediately, without prompting the Worker with a Qualification test. Valid values are True | False.
@@ -1055,10 +1056,9 @@ extension MTurkClientTypes {
             self.testDurationInSeconds = testDurationInSeconds
         }
     }
-
 }
 
-public struct CreateQualificationTypeOutput {
+public struct CreateQualificationTypeOutput: Swift.Sendable {
     /// The created Qualification type, returned as a QualificationType data structure.
     public var qualificationType: MTurkClientTypes.QualificationType?
 
@@ -1070,7 +1070,7 @@ public struct CreateQualificationTypeOutput {
     }
 }
 
-public struct CreateWorkerBlockInput {
+public struct CreateWorkerBlockInput: Swift.Sendable {
     /// A message explaining the reason for blocking the Worker. This parameter enables you to keep track of your Workers. The Worker does not see this message.
     /// This member is required.
     public var reason: Swift.String?
@@ -1088,12 +1088,12 @@ public struct CreateWorkerBlockInput {
     }
 }
 
-public struct CreateWorkerBlockOutput {
+public struct CreateWorkerBlockOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteHITInput {
+public struct DeleteHITInput: Swift.Sendable {
     /// The ID of the HIT to be deleted.
     /// This member is required.
     public var hitId: Swift.String?
@@ -1106,12 +1106,12 @@ public struct DeleteHITInput {
     }
 }
 
-public struct DeleteHITOutput {
+public struct DeleteHITOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteQualificationTypeInput {
+public struct DeleteQualificationTypeInput: Swift.Sendable {
     /// The ID of the QualificationType to dispose.
     /// This member is required.
     public var qualificationTypeId: Swift.String?
@@ -1124,12 +1124,12 @@ public struct DeleteQualificationTypeInput {
     }
 }
 
-public struct DeleteQualificationTypeOutput {
+public struct DeleteQualificationTypeOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteWorkerBlockInput {
+public struct DeleteWorkerBlockInput: Swift.Sendable {
     /// A message that explains the reason for unblocking the Worker. The Worker does not see this message.
     public var reason: Swift.String?
     /// The ID of the Worker to unblock.
@@ -1146,12 +1146,12 @@ public struct DeleteWorkerBlockInput {
     }
 }
 
-public struct DeleteWorkerBlockOutput {
+public struct DeleteWorkerBlockOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DisassociateQualificationFromWorkerInput {
+public struct DisassociateQualificationFromWorkerInput: Swift.Sendable {
     /// The ID of the Qualification type of the Qualification to be revoked.
     /// This member is required.
     public var qualificationTypeId: Swift.String?
@@ -1173,14 +1173,14 @@ public struct DisassociateQualificationFromWorkerInput {
     }
 }
 
-public struct DisassociateQualificationFromWorkerOutput {
+public struct DisassociateQualificationFromWorkerOutput: Swift.Sendable {
 
     public init() { }
 }
 
 extension MTurkClientTypes {
 
-    public enum EventType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum EventType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case assignmentabandoned
         case assignmentaccepted
         case assignmentapproved
@@ -1237,12 +1237,12 @@ extension MTurkClientTypes {
     }
 }
 
-public struct GetAccountBalanceInput {
+public struct GetAccountBalanceInput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct GetAccountBalanceOutput {
+public struct GetAccountBalanceOutput: Swift.Sendable {
     /// A string representing a currency amount.
     public var availableBalance: Swift.String?
     /// A string representing a currency amount.
@@ -1258,7 +1258,7 @@ public struct GetAccountBalanceOutput {
     }
 }
 
-public struct GetAssignmentInput {
+public struct GetAssignmentInput: Swift.Sendable {
     /// The ID of the Assignment to be retrieved.
     /// This member is required.
     public var assignmentId: Swift.String?
@@ -1271,7 +1271,7 @@ public struct GetAssignmentInput {
     }
 }
 
-public struct GetAssignmentOutput {
+public struct GetAssignmentOutput: Swift.Sendable {
     /// The assignment. The response includes one Assignment element.
     public var assignment: MTurkClientTypes.Assignment?
     /// The HIT associated with this assignment. The response includes one HIT element.
@@ -1287,7 +1287,7 @@ public struct GetAssignmentOutput {
     }
 }
 
-public struct GetFileUploadURLInput {
+public struct GetFileUploadURLInput: Swift.Sendable {
     /// The ID of the assignment that contains the question with a FileUploadAnswer.
     /// This member is required.
     public var assignmentId: Swift.String?
@@ -1305,7 +1305,7 @@ public struct GetFileUploadURLInput {
     }
 }
 
-public struct GetFileUploadURLOutput {
+public struct GetFileUploadURLOutput: Swift.Sendable {
     /// A temporary URL for the file that the Worker uploaded for the answer.
     public var fileUploadURL: Swift.String?
 
@@ -1317,7 +1317,7 @@ public struct GetFileUploadURLOutput {
     }
 }
 
-public struct GetHITInput {
+public struct GetHITInput: Swift.Sendable {
     /// The ID of the HIT to be retrieved.
     /// This member is required.
     public var hitId: Swift.String?
@@ -1330,7 +1330,7 @@ public struct GetHITInput {
     }
 }
 
-public struct GetHITOutput {
+public struct GetHITOutput: Swift.Sendable {
     /// Contains the requested HIT data.
     public var hit: MTurkClientTypes.HIT?
 
@@ -1342,7 +1342,7 @@ public struct GetHITOutput {
     }
 }
 
-public struct GetQualificationScoreInput {
+public struct GetQualificationScoreInput: Swift.Sendable {
     /// The ID of the QualificationType.
     /// This member is required.
     public var qualificationTypeId: Swift.String?
@@ -1362,7 +1362,7 @@ public struct GetQualificationScoreInput {
 
 extension MTurkClientTypes {
 
-    public enum QualificationStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum QualificationStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case granted
         case revoked
         case sdkUnknown(Swift.String)
@@ -1390,8 +1390,9 @@ extension MTurkClientTypes {
 }
 
 extension MTurkClientTypes {
+
     /// The Qualification data structure represents a Qualification assigned to a user, including the Qualification type and the value (score).
-    public struct Qualification {
+    public struct Qualification: Swift.Sendable {
         /// The date and time the Qualification was granted to the Worker. If the Worker's Qualification was revoked, and then re-granted based on a new Qualification request, GrantTime is the date and time of the last call to the AcceptQualificationRequest operation.
         public var grantTime: Foundation.Date?
         /// The value (score) of the Qualification, if the Qualification has an integer value.
@@ -1422,10 +1423,9 @@ extension MTurkClientTypes {
             self.workerId = workerId
         }
     }
-
 }
 
-public struct GetQualificationScoreOutput {
+public struct GetQualificationScoreOutput: Swift.Sendable {
     /// The Qualification data structure of the Qualification assigned to a user, including the Qualification type and the value (score).
     public var qualification: MTurkClientTypes.Qualification?
 
@@ -1437,7 +1437,7 @@ public struct GetQualificationScoreOutput {
     }
 }
 
-public struct GetQualificationTypeInput {
+public struct GetQualificationTypeInput: Swift.Sendable {
     /// The ID of the QualificationType.
     /// This member is required.
     public var qualificationTypeId: Swift.String?
@@ -1450,7 +1450,7 @@ public struct GetQualificationTypeInput {
     }
 }
 
-public struct GetQualificationTypeOutput {
+public struct GetQualificationTypeOutput: Swift.Sendable {
     /// The returned Qualification Type
     public var qualificationType: MTurkClientTypes.QualificationType?
 
@@ -1462,7 +1462,7 @@ public struct GetQualificationTypeOutput {
     }
 }
 
-public struct ListAssignmentsForHITInput {
+public struct ListAssignmentsForHITInput: Swift.Sendable {
     /// The status of the assignments to return: Submitted | Approved | Rejected
     public var assignmentStatuses: [MTurkClientTypes.AssignmentStatus]?
     /// The ID of the HIT.
@@ -1486,7 +1486,7 @@ public struct ListAssignmentsForHITInput {
     }
 }
 
-public struct ListAssignmentsForHITOutput {
+public struct ListAssignmentsForHITOutput: Swift.Sendable {
     /// The collection of Assignment data structures returned by this call.
     public var assignments: [MTurkClientTypes.Assignment]?
     /// If the previous response was incomplete (because there is more data to retrieve), Amazon Mechanical Turk returns a pagination token in the response. You can use this pagination token to retrieve the next set of results.
@@ -1506,7 +1506,7 @@ public struct ListAssignmentsForHITOutput {
     }
 }
 
-public struct ListBonusPaymentsInput {
+public struct ListBonusPaymentsInput: Swift.Sendable {
     /// The ID of the assignment associated with the bonus payments to retrieve. If specified, only bonus payments for the given assignment are returned. Either the HITId parameter or the AssignmentId parameter must be specified
     public var assignmentId: Swift.String?
     /// The ID of the HIT associated with the bonus payments to retrieve. If not specified, all bonus payments for all assignments for the given HIT are returned. Either the HITId parameter or the AssignmentId parameter must be specified
@@ -1529,7 +1529,7 @@ public struct ListBonusPaymentsInput {
     }
 }
 
-public struct ListBonusPaymentsOutput {
+public struct ListBonusPaymentsOutput: Swift.Sendable {
     /// A successful request to the ListBonusPayments operation returns a list of BonusPayment objects.
     public var bonusPayments: [MTurkClientTypes.BonusPayment]?
     /// If the previous response was incomplete (because there is more data to retrieve), Amazon Mechanical Turk returns a pagination token in the response. You can use this pagination token to retrieve the next set of results.
@@ -1549,7 +1549,7 @@ public struct ListBonusPaymentsOutput {
     }
 }
 
-public struct ListHITsInput {
+public struct ListHITsInput: Swift.Sendable {
     public var maxResults: Swift.Int?
     /// Pagination token
     public var nextToken: Swift.String?
@@ -1564,7 +1564,7 @@ public struct ListHITsInput {
     }
 }
 
-public struct ListHITsOutput {
+public struct ListHITsOutput: Swift.Sendable {
     /// The list of HIT elements returned by the query.
     public var hiTs: [MTurkClientTypes.HIT]?
     /// If the previous response was incomplete (because there is more data to retrieve), Amazon Mechanical Turk returns a pagination token in the response. You can use this pagination token to retrieve the next set of results.
@@ -1584,7 +1584,7 @@ public struct ListHITsOutput {
     }
 }
 
-public struct ListHITsForQualificationTypeInput {
+public struct ListHITsForQualificationTypeInput: Swift.Sendable {
     /// Limit the number of results returned.
     public var maxResults: Swift.Int?
     /// Pagination Token
@@ -1605,7 +1605,7 @@ public struct ListHITsForQualificationTypeInput {
     }
 }
 
-public struct ListHITsForQualificationTypeOutput {
+public struct ListHITsForQualificationTypeOutput: Swift.Sendable {
     /// The list of HIT elements returned by the query.
     public var hiTs: [MTurkClientTypes.HIT]?
     /// If the previous response was incomplete (because there is more data to retrieve), Amazon Mechanical Turk returns a pagination token in the response. You can use this pagination token to retrieve the next set of results.
@@ -1625,7 +1625,7 @@ public struct ListHITsForQualificationTypeOutput {
     }
 }
 
-public struct ListQualificationRequestsInput {
+public struct ListQualificationRequestsInput: Swift.Sendable {
     /// The maximum number of results to return in a single call.
     public var maxResults: Swift.Int?
     /// If the previous response was incomplete (because there is more data to retrieve), Amazon Mechanical Turk returns a pagination token in the response. You can use this pagination token to retrieve the next set of results.
@@ -1646,8 +1646,9 @@ public struct ListQualificationRequestsInput {
 }
 
 extension MTurkClientTypes {
+
     /// The QualificationRequest data structure represents a request a Worker has made for a Qualification.
-    public struct QualificationRequest {
+    public struct QualificationRequest: Swift.Sendable {
         /// The Worker's answers for the Qualification type's test contained in a QuestionFormAnswers document, if the type has a test and the Worker has submitted answers. If the Worker does not provide any answers, Answer may be empty.
         public var answer: Swift.String?
         /// The ID of the Qualification request, a unique identifier generated when the request was submitted.
@@ -1678,10 +1679,9 @@ extension MTurkClientTypes {
             self.workerId = workerId
         }
     }
-
 }
 
-public struct ListQualificationRequestsOutput {
+public struct ListQualificationRequestsOutput: Swift.Sendable {
     /// If the previous response was incomplete (because there is more data to retrieve), Amazon Mechanical Turk returns a pagination token in the response. You can use this pagination token to retrieve the next set of results.
     public var nextToken: Swift.String?
     /// The number of Qualification requests on this page in the filtered results list, equivalent to the number of Qualification requests being returned by this call.
@@ -1701,7 +1701,7 @@ public struct ListQualificationRequestsOutput {
     }
 }
 
-public struct ListQualificationTypesInput {
+public struct ListQualificationTypesInput: Swift.Sendable {
     /// The maximum number of results to return in a single call.
     public var maxResults: Swift.Int?
     /// Specifies that only Qualification types that the Requester created are returned. If false, the operation returns all Qualification types.
@@ -1730,7 +1730,7 @@ public struct ListQualificationTypesInput {
     }
 }
 
-public struct ListQualificationTypesOutput {
+public struct ListQualificationTypesOutput: Swift.Sendable {
     /// If the previous response was incomplete (because there is more data to retrieve), Amazon Mechanical Turk returns a pagination token in the response. You can use this pagination token to retrieve the next set of results.
     public var nextToken: Swift.String?
     /// The number of Qualification types on this page in the filtered results list, equivalent to the number of types this operation returns.
@@ -1752,7 +1752,7 @@ public struct ListQualificationTypesOutput {
 
 extension MTurkClientTypes {
 
-    public enum ReviewableHITStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ReviewableHITStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case reviewable
         case reviewing
         case sdkUnknown(Swift.String)
@@ -1779,7 +1779,7 @@ extension MTurkClientTypes {
     }
 }
 
-public struct ListReviewableHITsInput {
+public struct ListReviewableHITsInput: Swift.Sendable {
     /// The ID of the HIT type of the HITs to consider for the query. If not specified, all HITs for the Reviewer are considered
     public var hitTypeId: Swift.String?
     /// Limit the number of results returned.
@@ -1803,7 +1803,7 @@ public struct ListReviewableHITsInput {
     }
 }
 
-public struct ListReviewableHITsOutput {
+public struct ListReviewableHITsOutput: Swift.Sendable {
     /// The list of HIT elements returned by the query.
     public var hiTs: [MTurkClientTypes.HIT]?
     /// If the previous response was incomplete (because there is more data to retrieve), Amazon Mechanical Turk returns a pagination token in the response. You can use this pagination token to retrieve the next set of results.
@@ -1825,7 +1825,7 @@ public struct ListReviewableHITsOutput {
 
 extension MTurkClientTypes {
 
-    public enum ReviewPolicyLevel: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ReviewPolicyLevel: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case assignment
         case hit
         case sdkUnknown(Swift.String)
@@ -1852,7 +1852,7 @@ extension MTurkClientTypes {
     }
 }
 
-public struct ListReviewPolicyResultsForHITInput {
+public struct ListReviewPolicyResultsForHITInput: Swift.Sendable {
     /// The unique identifier of the HIT to retrieve review results for.
     /// This member is required.
     public var hitId: Swift.String?
@@ -1887,7 +1887,7 @@ public struct ListReviewPolicyResultsForHITInput {
 
 extension MTurkClientTypes {
 
-    public enum ReviewActionStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ReviewActionStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case cancelled
         case failed
         case intended
@@ -1921,8 +1921,9 @@ extension MTurkClientTypes {
 }
 
 extension MTurkClientTypes {
+
     /// Both the AssignmentReviewReport and the HITReviewReport elements contains the ReviewActionDetail data structure. This structure is returned multiple times for each action specified in the Review Policy.
-    public struct ReviewActionDetail {
+    public struct ReviewActionDetail: Swift.Sendable {
         /// The unique identifier for the action.
         public var actionId: Swift.String?
         /// The nature of the action itself. The Review Policy is responsible for examining the HIT and Assignments, emitting results, and deciding which other actions will be necessary.
@@ -1961,12 +1962,12 @@ extension MTurkClientTypes {
             self.targetType = targetType
         }
     }
-
 }
 
 extension MTurkClientTypes {
+
     /// This data structure is returned multiple times for each result specified in the Review Policy.
-    public struct ReviewResultDetail {
+    public struct ReviewResultDetail: Swift.Sendable {
         /// A unique identifier of the Review action result.
         public var actionId: Swift.String?
         /// Key identifies the particular piece of reviewed information.
@@ -1997,12 +1998,12 @@ extension MTurkClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension MTurkClientTypes {
+
     /// Contains both ReviewResult and ReviewAction elements for a particular HIT.
-    public struct ReviewReport {
+    public struct ReviewReport: Swift.Sendable {
         /// A list of ReviewAction objects for each action specified in the Review Policy.
         public var reviewActions: [MTurkClientTypes.ReviewActionDetail]?
         /// A list of ReviewResults objects for each action specified in the Review Policy.
@@ -2017,10 +2018,9 @@ extension MTurkClientTypes {
             self.reviewResults = reviewResults
         }
     }
-
 }
 
-public struct ListReviewPolicyResultsForHITOutput {
+public struct ListReviewPolicyResultsForHITOutput: Swift.Sendable {
     /// The name of the Assignment-level Review Policy. This contains only the PolicyName element.
     public var assignmentReviewPolicy: MTurkClientTypes.ReviewPolicy?
     /// Contains both ReviewResult and ReviewAction elements for an Assignment.
@@ -2052,7 +2052,7 @@ public struct ListReviewPolicyResultsForHITOutput {
     }
 }
 
-public struct ListWorkerBlocksInput {
+public struct ListWorkerBlocksInput: Swift.Sendable {
     public var maxResults: Swift.Int?
     /// Pagination token
     public var nextToken: Swift.String?
@@ -2068,8 +2068,9 @@ public struct ListWorkerBlocksInput {
 }
 
 extension MTurkClientTypes {
+
     /// The WorkerBlock data structure represents a Worker who has been blocked. It has two elements: the WorkerId and the Reason for the block.
-    public struct WorkerBlock {
+    public struct WorkerBlock: Swift.Sendable {
         /// A message explaining the reason the Worker was blocked.
         public var reason: Swift.String?
         /// The ID of the Worker who accepted the HIT.
@@ -2084,10 +2085,9 @@ extension MTurkClientTypes {
             self.workerId = workerId
         }
     }
-
 }
 
-public struct ListWorkerBlocksOutput {
+public struct ListWorkerBlocksOutput: Swift.Sendable {
     /// If the previous response was incomplete (because there is more data to retrieve), Amazon Mechanical Turk returns a pagination token in the response. You can use this pagination token to retrieve the next set of results.
     public var nextToken: Swift.String?
     /// The number of assignments on the page in the filtered results list, equivalent to the number of assignments returned by this call.
@@ -2107,7 +2107,7 @@ public struct ListWorkerBlocksOutput {
     }
 }
 
-public struct ListWorkersWithQualificationTypeInput {
+public struct ListWorkersWithQualificationTypeInput: Swift.Sendable {
     /// Limit the number of results returned.
     public var maxResults: Swift.Int?
     /// Pagination Token
@@ -2132,7 +2132,7 @@ public struct ListWorkersWithQualificationTypeInput {
     }
 }
 
-public struct ListWorkersWithQualificationTypeOutput {
+public struct ListWorkersWithQualificationTypeOutput: Swift.Sendable {
     /// If the previous response was incomplete (because there is more data to retrieve), Amazon Mechanical Turk returns a pagination token in the response. You can use this pagination token to retrieve the next set of results.
     public var nextToken: Swift.String?
     /// The number of Qualifications on this page in the filtered results list, equivalent to the number of Qualifications being returned by this call.
@@ -2152,7 +2152,7 @@ public struct ListWorkersWithQualificationTypeOutput {
     }
 }
 
-public struct NotifyWorkersInput {
+public struct NotifyWorkersInput: Swift.Sendable {
     /// The text of the email message to send. Can include up to 4,096 characters
     /// This member is required.
     public var messageText: Swift.String?
@@ -2177,7 +2177,7 @@ public struct NotifyWorkersInput {
 
 extension MTurkClientTypes {
 
-    public enum NotifyWorkersFailureCode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum NotifyWorkersFailureCode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case hardfailure
         case softfailure
         case sdkUnknown(Swift.String)
@@ -2205,8 +2205,9 @@ extension MTurkClientTypes {
 }
 
 extension MTurkClientTypes {
+
     /// When MTurk encounters an issue with notifying the Workers you specified, it returns back this object with failure details.
-    public struct NotifyWorkersFailureStatus {
+    public struct NotifyWorkersFailureStatus: Swift.Sendable {
         /// Encoded value for the failure type.
         public var notifyWorkersFailureCode: MTurkClientTypes.NotifyWorkersFailureCode?
         /// A message detailing the reason the Worker could not be notified.
@@ -2225,10 +2226,9 @@ extension MTurkClientTypes {
             self.workerId = workerId
         }
     }
-
 }
 
-public struct NotifyWorkersOutput {
+public struct NotifyWorkersOutput: Swift.Sendable {
     /// When MTurk sends notifications to the list of Workers, it returns back any failures it encounters in this list of NotifyWorkersFailureStatus objects.
     public var notifyWorkersFailureStatuses: [MTurkClientTypes.NotifyWorkersFailureStatus]?
 
@@ -2240,7 +2240,7 @@ public struct NotifyWorkersOutput {
     }
 }
 
-public struct RejectAssignmentInput {
+public struct RejectAssignmentInput: Swift.Sendable {
     /// The ID of the assignment. The assignment must correspond to a HIT created by the Requester.
     /// This member is required.
     public var assignmentId: Swift.String?
@@ -2258,12 +2258,12 @@ public struct RejectAssignmentInput {
     }
 }
 
-public struct RejectAssignmentOutput {
+public struct RejectAssignmentOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct RejectQualificationRequestInput {
+public struct RejectQualificationRequestInput: Swift.Sendable {
     /// The ID of the Qualification request, as returned by the ListQualificationRequests operation.
     /// This member is required.
     public var qualificationRequestId: Swift.String?
@@ -2280,12 +2280,12 @@ public struct RejectQualificationRequestInput {
     }
 }
 
-public struct RejectQualificationRequestOutput {
+public struct RejectQualificationRequestOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct SendBonusInput {
+public struct SendBonusInput: Swift.Sendable {
     /// The ID of the assignment for which this bonus is paid.
     /// This member is required.
     public var assignmentId: Swift.String?
@@ -2317,14 +2317,14 @@ public struct SendBonusInput {
     }
 }
 
-public struct SendBonusOutput {
+public struct SendBonusOutput: Swift.Sendable {
 
     public init() { }
 }
 
 extension MTurkClientTypes {
 
-    public enum NotificationTransport: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum NotificationTransport: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case email
         case sns
         case sqs
@@ -2355,8 +2355,9 @@ extension MTurkClientTypes {
 }
 
 extension MTurkClientTypes {
+
     /// The NotificationSpecification data structure describes a HIT event notification for a HIT type.
-    public struct NotificationSpecification {
+    public struct NotificationSpecification: Swift.Sendable {
         /// The target for notification messages. The Destination’s format is determined by the specified Transport:
         ///
         /// * When Transport is Email, the Destination is your email address.
@@ -2389,10 +2390,9 @@ extension MTurkClientTypes {
             self.version = version
         }
     }
-
 }
 
-public struct SendTestEventNotificationInput {
+public struct SendTestEventNotificationInput: Swift.Sendable {
     /// The notification specification to test. This value is identical to the value you would provide to the UpdateNotificationSettings operation when you establish the notification specification for a HIT type.
     /// This member is required.
     public var notification: MTurkClientTypes.NotificationSpecification?
@@ -2410,12 +2410,12 @@ public struct SendTestEventNotificationInput {
     }
 }
 
-public struct SendTestEventNotificationOutput {
+public struct SendTestEventNotificationOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdateExpirationForHITInput {
+public struct UpdateExpirationForHITInput: Swift.Sendable {
     /// The date and time at which you want the HIT to expire
     /// This member is required.
     public var expireAt: Foundation.Date?
@@ -2433,12 +2433,12 @@ public struct UpdateExpirationForHITInput {
     }
 }
 
-public struct UpdateExpirationForHITOutput {
+public struct UpdateExpirationForHITOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdateHITReviewStatusInput {
+public struct UpdateHITReviewStatusInput: Swift.Sendable {
     /// The ID of the HIT to update.
     /// This member is required.
     public var hitId: Swift.String?
@@ -2459,12 +2459,12 @@ public struct UpdateHITReviewStatusInput {
     }
 }
 
-public struct UpdateHITReviewStatusOutput {
+public struct UpdateHITReviewStatusOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdateHITTypeOfHITInput {
+public struct UpdateHITTypeOfHITInput: Swift.Sendable {
     /// The HIT to update.
     /// This member is required.
     public var hitId: Swift.String?
@@ -2482,12 +2482,12 @@ public struct UpdateHITTypeOfHITInput {
     }
 }
 
-public struct UpdateHITTypeOfHITOutput {
+public struct UpdateHITTypeOfHITOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdateNotificationSettingsInput {
+public struct UpdateNotificationSettingsInput: Swift.Sendable {
     /// Specifies whether notifications are sent for HITs of this HIT type, according to the notification specification. You must specify either the Notification parameter or the Active parameter for the call to UpdateNotificationSettings to succeed.
     public var active: Swift.Bool?
     /// The ID of the HIT type whose notification specification is being updated.
@@ -2508,12 +2508,12 @@ public struct UpdateNotificationSettingsInput {
     }
 }
 
-public struct UpdateNotificationSettingsOutput {
+public struct UpdateNotificationSettingsOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdateQualificationTypeInput {
+public struct UpdateQualificationTypeInput: Swift.Sendable {
     /// The answers to the Qualification test specified in the Test parameter, in the form of an AnswerKey data structure.
     public var answerKey: Swift.String?
     /// Specifies whether requests for the Qualification type are granted immediately, without prompting the Worker with a Qualification test. Constraints: If the Test parameter is specified, this parameter cannot be true.
@@ -2558,7 +2558,7 @@ public struct UpdateQualificationTypeInput {
     }
 }
 
-public struct UpdateQualificationTypeOutput {
+public struct UpdateQualificationTypeOutput: Swift.Sendable {
     /// Contains a QualificationType data structure.
     public var qualificationType: MTurkClientTypes.QualificationType?
 

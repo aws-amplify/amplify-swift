@@ -26,14 +26,16 @@ import protocol ClientRuntime.ModeledError
 import struct Smithy.URIQueryItem
 @_spi(SmithyTimestamps) import struct SmithyTimestamps.TimestampFormatter
 
-public struct PutLoggingOptionsOutput {
+
+public struct PutLoggingOptionsOutput: Swift.Sendable {
 
     public init() { }
 }
 
 extension IoTEventsClientTypes {
+
     /// Specifies whether to get notified for alarm state changes.
-    public struct AcknowledgeFlow {
+    public struct AcknowledgeFlow: Swift.Sendable {
         /// The value must be TRUE or FALSE. If TRUE, you receive a notification when the alarm state changes. You must choose to acknowledge the notification before the alarm state can return to NORMAL. If FALSE, you won't receive notifications. The alarm automatically changes to the NORMAL state when the input property value returns to the specified range.
         /// This member is required.
         public var enabled: Swift.Bool?
@@ -45,12 +47,12 @@ extension IoTEventsClientTypes {
             self.enabled = enabled
         }
     }
-
 }
 
 extension IoTEventsClientTypes {
+
     /// Information needed to clear the timer.
-    public struct ClearTimerAction {
+    public struct ClearTimerAction: Swift.Sendable {
         /// The name of the timer to clear.
         /// This member is required.
         public var timerName: Swift.String?
@@ -62,12 +64,11 @@ extension IoTEventsClientTypes {
             self.timerName = timerName
         }
     }
-
 }
 
 extension IoTEventsClientTypes {
 
-    public enum PayloadType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum PayloadType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case json
         case string
         case sdkUnknown(Swift.String)
@@ -95,8 +96,9 @@ extension IoTEventsClientTypes {
 }
 
 extension IoTEventsClientTypes {
+
     /// Information needed to configure the payload. By default, AWS IoT Events generates a standard payload in JSON for any action. This action payload contains all attribute-value pairs that have the information about the detector model instance and the event triggered the action. To configure the action payload, you can use contentExpression.
-    public struct Payload {
+    public struct Payload: Swift.Sendable {
         /// The content of the payload. You can use a string expression that includes quoted strings (''), variables ($variable.), input values ($input..), string concatenations, and quoted strings that contain ${} as the content. The recommended maximum size of a content expression is 1 KB.
         /// This member is required.
         public var contentExpression: Swift.String?
@@ -113,10 +115,10 @@ extension IoTEventsClientTypes {
             self.type = type
         }
     }
-
 }
 
 extension IoTEventsClientTypes {
+
     /// Defines an action to write to the Amazon DynamoDB table that you created. The standard action payload contains all the information about the detector model instance and the event that triggered the action. You can customize the [payload](https://docs.aws.amazon.com/iotevents/latest/apireference/API_Payload.html). One column of the DynamoDB table receives all attribute-value pairs in the payload that you specify. You must use expressions for all parameters in DynamoDBAction. The expressions accept literals, operators, functions, references, and substitution templates. Examples
     ///
     /// * For literal values, the expressions must contain single quotes. For example, the value for the hashKeyType parameter can be 'STRING'.
@@ -129,7 +131,7 @@ extension IoTEventsClientTypes {
     ///
     ///
     /// For more information, see [Expressions](https://docs.aws.amazon.com/iotevents/latest/developerguide/iotevents-expressions.html) in the AWS IoT Events Developer Guide. If the defined payload type is a string, DynamoDBAction writes non-JSON data to the DynamoDB table as binary data. The DynamoDB console displays the data as Base64-encoded text. The value for the payloadField parameter is _raw.
-    public struct DynamoDBAction {
+    public struct DynamoDBAction: Swift.Sendable {
         /// The name of the hash key (also called the partition key). The hashKeyField value must match the partition key of the target DynamoDB table.
         /// This member is required.
         public var hashKeyField: Swift.String?
@@ -202,10 +204,10 @@ extension IoTEventsClientTypes {
             self.tableName = tableName
         }
     }
-
 }
 
 extension IoTEventsClientTypes {
+
     /// Defines an action to write to the Amazon DynamoDB table that you created. The default action payload contains all the information about the detector model instance and the event that triggered the action. You can customize the [payload](https://docs.aws.amazon.com/iotevents/latest/apireference/API_Payload.html). A separate column of the DynamoDB table receives one attribute-value pair in the payload that you specify. You must use expressions for all parameters in DynamoDBv2Action. The expressions accept literals, operators, functions, references, and substitution templates. Examples
     ///
     /// * For literal values, the expressions must contain single quotes. For example, the value for the tableName parameter can be 'GreenhouseTemperatureTable'.
@@ -218,7 +220,7 @@ extension IoTEventsClientTypes {
     ///
     ///
     /// For more information, see [Expressions](https://docs.aws.amazon.com/iotevents/latest/developerguide/iotevents-expressions.html) in the AWS IoT Events Developer Guide. The value for the type parameter in Payload must be JSON.
-    public struct DynamoDBv2Action {
+    public struct DynamoDBv2Action: Swift.Sendable {
         /// Information needed to configure the payload. By default, AWS IoT Events generates a standard payload in JSON for any action. This action payload contains all attribute-value pairs that have the information about the detector model instance and the event triggered the action. To configure the action payload, you can use contentExpression.
         public var payload: IoTEventsClientTypes.Payload?
         /// The name of the DynamoDB table.
@@ -234,12 +236,12 @@ extension IoTEventsClientTypes {
             self.tableName = tableName
         }
     }
-
 }
 
 extension IoTEventsClientTypes {
+
     /// Sends information about the detector model instance and the event that triggered the action to an Amazon Kinesis Data Firehose delivery stream.
-    public struct FirehoseAction {
+    public struct FirehoseAction: Swift.Sendable {
         /// The name of the Kinesis Data Firehose delivery stream where the data is written.
         /// This member is required.
         public var deliveryStreamName: Swift.String?
@@ -259,12 +261,12 @@ extension IoTEventsClientTypes {
             self.separator = separator
         }
     }
-
 }
 
 extension IoTEventsClientTypes {
+
     /// Sends an AWS IoT Events input, passing in information about the detector model instance and the event that triggered the action.
-    public struct IotEventsAction {
+    public struct IotEventsAction: Swift.Sendable {
         /// The name of the AWS IoT Events input where the data is sent.
         /// This member is required.
         public var inputName: Swift.String?
@@ -280,10 +282,10 @@ extension IoTEventsClientTypes {
             self.payload = payload
         }
     }
-
 }
 
 extension IoTEventsClientTypes {
+
     /// A structure that contains timestamp information. For more information, see [TimeInNanos](https://docs.aws.amazon.com/iot-sitewise/latest/APIReference/API_TimeInNanos.html) in the AWS IoT SiteWise API Reference. You must use expressions for all parameters in AssetPropertyTimestamp. The expressions accept literals, operators, functions, references, and substitution templates. Examples
     ///
     /// * For literal values, the expressions must contain single quotes. For example, the value for the timeInSeconds parameter can be '1586400675'.
@@ -294,7 +296,7 @@ extension IoTEventsClientTypes {
     ///
     ///
     /// For more information, see [Expressions](https://docs.aws.amazon.com/iotevents/latest/developerguide/iotevents-expressions.html) in the AWS IoT Events Developer Guide.
-    public struct AssetPropertyTimestamp {
+    public struct AssetPropertyTimestamp: Swift.Sendable {
         /// The nanosecond offset converted from timeInSeconds. The valid range is between 0-999999999.
         public var offsetInNanos: Swift.String?
         /// The timestamp, in seconds, in the Unix epoch format. The valid range is between 1-31556889864403199.
@@ -310,10 +312,10 @@ extension IoTEventsClientTypes {
             self.timeInSeconds = timeInSeconds
         }
     }
-
 }
 
 extension IoTEventsClientTypes {
+
     /// A structure that contains an asset property value. For more information, see [Variant](https://docs.aws.amazon.com/iot-sitewise/latest/APIReference/API_Variant.html) in the AWS IoT SiteWise API Reference. You must use expressions for all parameters in AssetPropertyVariant. The expressions accept literals, operators, functions, references, and substitution templates. Examples
     ///
     /// * For literal values, the expressions must contain single quotes. For example, the value for the integerValue parameter can be '100'.
@@ -324,7 +326,7 @@ extension IoTEventsClientTypes {
     ///
     ///
     /// For more information, see [Expressions](https://docs.aws.amazon.com/iotevents/latest/developerguide/iotevents-expressions.html) in the AWS IoT Events Developer Guide. You must specify one of the following value types, depending on the dataType of the specified asset property. For more information, see [AssetProperty](https://docs.aws.amazon.com/iot-sitewise/latest/APIReference/API_AssetProperty.html) in the AWS IoT SiteWise API Reference.
-    public struct AssetPropertyVariant {
+    public struct AssetPropertyVariant: Swift.Sendable {
         /// The asset property value is a Boolean value that must be 'TRUE' or 'FALSE'. You must use an expression, and the evaluated result should be a Boolean value.
         public var booleanValue: Swift.String?
         /// The asset property value is a double. You must use an expression, and the evaluated result should be a double.
@@ -347,10 +349,10 @@ extension IoTEventsClientTypes {
             self.stringValue = stringValue
         }
     }
-
 }
 
 extension IoTEventsClientTypes {
+
     /// A structure that contains value information. For more information, see [AssetPropertyValue](https://docs.aws.amazon.com/iot-sitewise/latest/APIReference/API_AssetPropertyValue.html) in the AWS IoT SiteWise API Reference. You must use expressions for all parameters in AssetPropertyValue. The expressions accept literals, operators, functions, references, and substitution templates. Examples
     ///
     /// * For literal values, the expressions must contain single quotes. For example, the value for the quality parameter can be 'GOOD'.
@@ -359,7 +361,7 @@ extension IoTEventsClientTypes {
     ///
     ///
     /// For more information, see [Expressions](https://docs.aws.amazon.com/iotevents/latest/developerguide/iotevents-expressions.html) in the AWS IoT Events Developer Guide.
-    public struct AssetPropertyValue {
+    public struct AssetPropertyValue: Swift.Sendable {
         /// The quality of the asset property value. The value must be 'GOOD', 'BAD', or 'UNCERTAIN'.
         public var quality: Swift.String?
         /// The timestamp associated with the asset property value. The default is the current event time.
@@ -378,10 +380,10 @@ extension IoTEventsClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension IoTEventsClientTypes {
+
     /// Sends information about the detector model instance and the event that triggered the action to a specified asset property in AWS IoT SiteWise. You must use expressions for all parameters in IotSiteWiseAction. The expressions accept literals, operators, functions, references, and substitutions templates. Examples
     ///
     /// * For literal values, the expressions must contain single quotes. For example, the value for the propertyAlias parameter can be '/company/windfarm/3/turbine/7/temperature'.
@@ -392,7 +394,7 @@ extension IoTEventsClientTypes {
     ///
     ///
     /// You must specify either propertyAlias or both assetId and propertyId to identify the target asset property in AWS IoT SiteWise. For more information, see [Expressions](https://docs.aws.amazon.com/iotevents/latest/developerguide/iotevents-expressions.html) in the AWS IoT Events Developer Guide.
-    public struct IotSiteWiseAction {
+    public struct IotSiteWiseAction: Swift.Sendable {
         /// The ID of the asset that has the specified property.
         public var assetId: Swift.String?
         /// A unique identifier for this entry. You can use the entry ID to track which data entry causes an error in case of failure. The default is a new unique identifier.
@@ -419,12 +421,12 @@ extension IoTEventsClientTypes {
             self.propertyValue = propertyValue
         }
     }
-
 }
 
 extension IoTEventsClientTypes {
+
     /// Information required to publish the MQTT message through the AWS IoT message broker.
-    public struct IotTopicPublishAction {
+    public struct IotTopicPublishAction: Swift.Sendable {
         /// The MQTT topic of the message. You can use a string expression that includes variables ($variable.) and input values ($input..) as the topic string.
         /// This member is required.
         public var mqttTopic: Swift.String?
@@ -440,12 +442,12 @@ extension IoTEventsClientTypes {
             self.payload = payload
         }
     }
-
 }
 
 extension IoTEventsClientTypes {
+
     /// Calls a Lambda function, passing in information about the detector model instance and the event that triggered the action.
-    public struct LambdaAction {
+    public struct LambdaAction: Swift.Sendable {
         /// The ARN of the Lambda function that is executed.
         /// This member is required.
         public var functionArn: Swift.String?
@@ -461,12 +463,12 @@ extension IoTEventsClientTypes {
             self.payload = payload
         }
     }
-
 }
 
 extension IoTEventsClientTypes {
+
     /// Information required to reset the timer. The timer is reset to the previously evaluated result of the duration. The duration expression isn't reevaluated when you reset the timer.
-    public struct ResetTimerAction {
+    public struct ResetTimerAction: Swift.Sendable {
         /// The name of the timer to reset.
         /// This member is required.
         public var timerName: Swift.String?
@@ -478,12 +480,12 @@ extension IoTEventsClientTypes {
             self.timerName = timerName
         }
     }
-
 }
 
 extension IoTEventsClientTypes {
+
     /// Information needed to set the timer.
-    public struct SetTimerAction {
+    public struct SetTimerAction: Swift.Sendable {
         /// The duration of the timer, in seconds. You can use a string expression that includes numbers, variables ($variable.), and input values ($input..) as the duration. The range of the duration is 1-31622400 seconds. To ensure accuracy, the minimum duration is 60 seconds. The evaluated result of the duration is rounded down to the nearest whole number.
         public var durationExpression: Swift.String?
         /// The number of seconds until the timer expires. The minimum value is 60 seconds to ensure accuracy. The maximum value is 31622400 seconds.
@@ -504,12 +506,12 @@ extension IoTEventsClientTypes {
             self.timerName = timerName
         }
     }
-
 }
 
 extension IoTEventsClientTypes {
+
     /// Information about the variable and its new value.
-    public struct SetVariableAction {
+    public struct SetVariableAction: Swift.Sendable {
         /// The new value of the variable.
         /// This member is required.
         public var value: Swift.String?
@@ -526,12 +528,12 @@ extension IoTEventsClientTypes {
             self.variableName = variableName
         }
     }
-
 }
 
 extension IoTEventsClientTypes {
+
     /// Information required to publish the Amazon SNS message.
-    public struct SNSTopicPublishAction {
+    public struct SNSTopicPublishAction: Swift.Sendable {
         /// You can configure the action payload when you send a message as an Amazon SNS push notification.
         public var payload: IoTEventsClientTypes.Payload?
         /// The ARN of the Amazon SNS target where the message is sent.
@@ -547,12 +549,12 @@ extension IoTEventsClientTypes {
             self.targetArn = targetArn
         }
     }
-
 }
 
 extension IoTEventsClientTypes {
+
     /// Sends information about the detector model instance and the event that triggered the action to an Amazon SQS queue.
-    public struct SqsAction {
+    public struct SqsAction: Swift.Sendable {
         /// You can configure the action payload when you send a message to an Amazon SQS queue.
         public var payload: IoTEventsClientTypes.Payload?
         /// The URL of the SQS queue where the data is written.
@@ -572,12 +574,12 @@ extension IoTEventsClientTypes {
             self.useBase64 = useBase64
         }
     }
-
 }
 
 extension IoTEventsClientTypes {
+
     /// An action to be performed when the condition is TRUE.
-    public struct Action {
+    public struct Action: Swift.Sendable {
         /// Information needed to clear the timer.
         public var clearTimer: IoTEventsClientTypes.ClearTimerAction?
         /// Writes to the DynamoDB table that you created. The default action payload contains all attribute-value pairs that have the information about the detector model instance and the event that triggered the action. You can customize the [payload](https://docs.aws.amazon.com/iotevents/latest/apireference/API_Payload.html). One column of the DynamoDB table receives all attribute-value pairs in the payload that you specify. For more information, see [Actions](https://docs.aws.amazon.com/iotevents/latest/developerguide/iotevents-event-actions.html) in AWS IoT Events Developer Guide.
@@ -636,12 +638,12 @@ extension IoTEventsClientTypes {
             self.sqs = sqs
         }
     }
-
 }
 
 extension IoTEventsClientTypes {
+
     /// Specifies one of the following actions to receive notifications when the alarm state changes.
-    public struct AlarmAction {
+    public struct AlarmAction: Swift.Sendable {
         /// Defines an action to write to the Amazon DynamoDB table that you created. The standard action payload contains all the information about the detector model instance and the event that triggered the action. You can customize the [payload](https://docs.aws.amazon.com/iotevents/latest/apireference/API_Payload.html). One column of the DynamoDB table receives all attribute-value pairs in the payload that you specify. You must use expressions for all parameters in DynamoDBAction. The expressions accept literals, operators, functions, references, and substitution templates. Examples
         ///
         /// * For literal values, the expressions must contain single quotes. For example, the value for the hashKeyType parameter can be 'STRING'.
@@ -715,12 +717,12 @@ extension IoTEventsClientTypes {
             self.sqs = sqs
         }
     }
-
 }
 
 extension IoTEventsClientTypes {
+
     /// Specifies the default alarm state. The configuration applies to all alarms that were created based on this alarm model.
-    public struct InitializationConfiguration {
+    public struct InitializationConfiguration: Swift.Sendable {
         /// The value must be TRUE or FALSE. If FALSE, all alarm instances created based on the alarm model are activated. The default value is TRUE.
         /// This member is required.
         public var disabledOnInitialization: Swift.Bool?
@@ -732,12 +734,12 @@ extension IoTEventsClientTypes {
             self.disabledOnInitialization = disabledOnInitialization
         }
     }
-
 }
 
 extension IoTEventsClientTypes {
+
     /// Contains the configuration information of alarm state changes.
-    public struct AlarmCapabilities {
+    public struct AlarmCapabilities: Swift.Sendable {
         /// Specifies whether to get notified for alarm state changes.
         public var acknowledgeFlow: IoTEventsClientTypes.AcknowledgeFlow?
         /// Specifies the default alarm state. The configuration applies to all alarms that were created based on this alarm model.
@@ -752,12 +754,12 @@ extension IoTEventsClientTypes {
             self.initializationConfiguration = initializationConfiguration
         }
     }
-
 }
 
 extension IoTEventsClientTypes {
+
     /// Contains information about one or more alarm actions.
-    public struct AlarmEventActions {
+    public struct AlarmEventActions: Swift.Sendable {
         /// Specifies one or more supported actions to receive notifications when the alarm state changes.
         public var alarmActions: [IoTEventsClientTypes.AlarmAction]?
 
@@ -768,12 +770,12 @@ extension IoTEventsClientTypes {
             self.alarmActions = alarmActions
         }
     }
-
 }
 
 extension IoTEventsClientTypes {
+
     /// Contains a summary of an alarm model.
-    public struct AlarmModelSummary {
+    public struct AlarmModelSummary: Swift.Sendable {
         /// The description of the alarm model.
         public var alarmModelDescription: Swift.String?
         /// The name of the alarm model.
@@ -792,12 +794,11 @@ extension IoTEventsClientTypes {
             self.creationTime = creationTime
         }
     }
-
 }
 
 extension IoTEventsClientTypes {
 
-    public enum AlarmModelVersionStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AlarmModelVersionStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case activating
         case active
         case failed
@@ -831,8 +832,9 @@ extension IoTEventsClientTypes {
 }
 
 extension IoTEventsClientTypes {
+
     /// Contains a summary of an alarm model version.
-    public struct AlarmModelVersionSummary {
+    public struct AlarmModelVersionSummary: Swift.Sendable {
         /// The ARN of the alarm model. For more information, see [Amazon Resource Names (ARNs)](https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html) in the AWS General Reference.
         public var alarmModelArn: Swift.String?
         /// The name of the alarm model.
@@ -879,12 +881,12 @@ extension IoTEventsClientTypes {
             self.statusMessage = statusMessage
         }
     }
-
 }
 
 extension IoTEventsClientTypes {
+
     /// Specifies an AWS Lambda function to manage alarm notifications. You can create one or use the [AWS Lambda function provided by AWS IoT Events](https://docs.aws.amazon.com/iotevents/latest/developerguide/lambda-support.html).
-    public struct NotificationTargetActions {
+    public struct NotificationTargetActions: Swift.Sendable {
         /// Calls a Lambda function, passing in information about the detector model instance and the event that triggered the action.
         public var lambdaAction: IoTEventsClientTypes.LambdaAction?
 
@@ -895,12 +897,12 @@ extension IoTEventsClientTypes {
             self.lambdaAction = lambdaAction
         }
     }
-
 }
 
 extension IoTEventsClientTypes {
+
     /// Contains the subject and message of an email.
-    public struct EmailContent {
+    public struct EmailContent: Swift.Sendable {
         /// The message that you want to send. The message can be up to 200 characters.
         public var additionalMessage: Swift.String?
         /// The subject of the email.
@@ -915,12 +917,12 @@ extension IoTEventsClientTypes {
             self.subject = subject
         }
     }
-
 }
 
 extension IoTEventsClientTypes {
+
     /// Contains information about your identity source in AWS Single Sign-On. For more information, see the [AWS Single Sign-On User Guide](https://docs.aws.amazon.com/singlesignon/latest/userguide/what-is.html).
-    public struct SSOIdentity {
+    public struct SSOIdentity: Swift.Sendable {
         /// The ID of the AWS SSO identity store.
         /// This member is required.
         public var identityStoreId: Swift.String?
@@ -936,12 +938,12 @@ extension IoTEventsClientTypes {
             self.userId = userId
         }
     }
-
 }
 
 extension IoTEventsClientTypes {
+
     /// The information that identifies the recipient.
-    public struct RecipientDetail {
+    public struct RecipientDetail: Swift.Sendable {
         /// The AWS Single Sign-On (AWS SSO) authentication information.
         public var ssoIdentity: IoTEventsClientTypes.SSOIdentity?
 
@@ -952,12 +954,12 @@ extension IoTEventsClientTypes {
             self.ssoIdentity = ssoIdentity
         }
     }
-
 }
 
 extension IoTEventsClientTypes {
+
     /// Contains the information of one or more recipients who receive the emails. You must [add the users that receive emails to your AWS SSO store](https://docs.aws.amazon.com/singlesignon/latest/userguide/addusers.html).
-    public struct EmailRecipients {
+    public struct EmailRecipients: Swift.Sendable {
         /// Specifies one or more recipients who receive the email.
         public var to: [IoTEventsClientTypes.RecipientDetail]?
 
@@ -968,12 +970,12 @@ extension IoTEventsClientTypes {
             self.to = to
         }
     }
-
 }
 
 extension IoTEventsClientTypes {
+
     /// Contains the configuration information of email notifications.
-    public struct EmailConfiguration {
+    public struct EmailConfiguration: Swift.Sendable {
         /// Contains the subject and message of an email.
         public var content: IoTEventsClientTypes.EmailContent?
         /// The email address that sends emails. If you use the AWS IoT Events managed AWS Lambda function to manage your emails, you must [verify the email address that sends emails in Amazon SES](https://docs.aws.amazon.com/ses/latest/DeveloperGuide/verify-email-addresses.html).
@@ -994,12 +996,12 @@ extension IoTEventsClientTypes {
             self.recipients = recipients
         }
     }
-
 }
 
 extension IoTEventsClientTypes {
+
     /// Contains the configuration information of SMS notifications.
-    public struct SMSConfiguration {
+    public struct SMSConfiguration: Swift.Sendable {
         /// The message that you want to send. The message can be up to 200 characters.
         public var additionalMessage: Swift.String?
         /// Specifies one or more recipients who receive the message. You must [add the users that receive SMS messages to your AWS SSO store](https://docs.aws.amazon.com/singlesignon/latest/userguide/addusers.html).
@@ -1019,12 +1021,12 @@ extension IoTEventsClientTypes {
             self.senderId = senderId
         }
     }
-
 }
 
 extension IoTEventsClientTypes {
+
     /// Contains the notification settings of an alarm model. The settings apply to all alarms that were created based on this alarm model.
-    public struct NotificationAction {
+    public struct NotificationAction: Swift.Sendable {
         /// Specifies an AWS Lambda function to manage alarm notifications. You can create one or use the [AWS Lambda function provided by AWS IoT Events](https://docs.aws.amazon.com/iotevents/latest/developerguide/lambda-support.html).
         /// This member is required.
         public var action: IoTEventsClientTypes.NotificationTargetActions?
@@ -1044,12 +1046,12 @@ extension IoTEventsClientTypes {
             self.smsConfigurations = smsConfigurations
         }
     }
-
 }
 
 extension IoTEventsClientTypes {
+
     /// Contains information about one or more notification actions.
-    public struct AlarmNotification {
+    public struct AlarmNotification: Swift.Sendable {
         /// Contains the notification settings of an alarm model. The settings apply to all alarms that were created based on this alarm model.
         public var notificationActions: [IoTEventsClientTypes.NotificationAction]?
 
@@ -1060,12 +1062,11 @@ extension IoTEventsClientTypes {
             self.notificationActions = notificationActions
         }
     }
-
 }
 
 extension IoTEventsClientTypes {
 
-    public enum ComparisonOperator: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ComparisonOperator: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case equal
         case greater
         case greaterOrEqual
@@ -1105,8 +1106,9 @@ extension IoTEventsClientTypes {
 }
 
 extension IoTEventsClientTypes {
+
     /// A rule that compares an input property value to a threshold value with a comparison operator.
-    public struct SimpleRule {
+    public struct SimpleRule: Swift.Sendable {
         /// The comparison operator.
         /// This member is required.
         public var comparisonOperator: IoTEventsClientTypes.ComparisonOperator?
@@ -1128,12 +1130,12 @@ extension IoTEventsClientTypes {
             self.threshold = threshold
         }
     }
-
 }
 
 extension IoTEventsClientTypes {
+
     /// Defines when your alarm is invoked.
-    public struct AlarmRule {
+    public struct AlarmRule: Swift.Sendable {
         /// A rule that compares an input property value to a threshold value with a comparison operator.
         public var simpleRule: IoTEventsClientTypes.SimpleRule?
 
@@ -1144,12 +1146,11 @@ extension IoTEventsClientTypes {
             self.simpleRule = simpleRule
         }
     }
-
 }
 
 extension IoTEventsClientTypes {
 
-    public enum AnalysisResultLevel: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AnalysisResultLevel: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case error
         case info
         case warning
@@ -1180,8 +1181,9 @@ extension IoTEventsClientTypes {
 }
 
 extension IoTEventsClientTypes {
+
     /// Contains information that you can use to locate the field in your detector model that the analysis result references.
-    public struct AnalysisResultLocation {
+    public struct AnalysisResultLocation: Swift.Sendable {
         /// A [JsonPath](https://github.com/json-path/JsonPath) expression that identifies the error field in your detector model.
         public var path: Swift.String?
 
@@ -1192,12 +1194,12 @@ extension IoTEventsClientTypes {
             self.path = path
         }
     }
-
 }
 
 extension IoTEventsClientTypes {
+
     /// Contains the result of the analysis.
-    public struct AnalysisResult {
+    public struct AnalysisResult: Swift.Sendable {
         /// The severity level of the analysis result. Based on the severity level, analysis results fall into three general categories:
         ///
         /// * INFO - An information result tells you about a significant field in your detector model. This type of result usually doesn't require immediate action.
@@ -1243,12 +1245,11 @@ extension IoTEventsClientTypes {
             self.type = type
         }
     }
-
 }
 
 extension IoTEventsClientTypes {
 
-    public enum AnalysisStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AnalysisStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case complete
         case failed
         case running
@@ -1279,8 +1280,9 @@ extension IoTEventsClientTypes {
 }
 
 extension IoTEventsClientTypes {
+
     /// The attributes from the JSON payload that are made available by the input. Inputs are derived from messages sent to the AWS IoT Events system using BatchPutMessage. Each such message contains a JSON payload. Those attributes (and their paired values) specified here are available for use in the condition expressions used by detectors.
-    public struct Attribute {
+    public struct Attribute: Swift.Sendable {
         /// An expression that specifies an attribute-value pair in a JSON structure. Use this to specify an attribute from the JSON payload that is made available by the input. Inputs are derived from messages sent to AWS IoT Events (BatchPutMessage). Each such message contains a JSON payload. The attribute (and its paired value) specified here are available for use in the condition expressions used by detectors. Syntax: ....
         /// This member is required.
         public var jsonPath: Swift.String?
@@ -1292,7 +1294,6 @@ extension IoTEventsClientTypes {
             self.jsonPath = jsonPath
         }
     }
-
 }
 
 /// An internal failure occurred.
@@ -1479,8 +1480,9 @@ public struct ThrottlingException: ClientRuntime.ModeledError, AWSClientRuntime.
 }
 
 extension IoTEventsClientTypes {
+
     /// Metadata that can be used to manage the resource.
-    public struct Tag {
+    public struct Tag: Swift.Sendable {
         /// The tag's key.
         /// This member is required.
         public var key: Swift.String?
@@ -1497,10 +1499,9 @@ extension IoTEventsClientTypes {
             self.value = value
         }
     }
-
 }
 
-public struct CreateAlarmModelInput {
+public struct CreateAlarmModelInput: Swift.Sendable {
     /// Contains the configuration information of alarm state changes.
     public var alarmCapabilities: IoTEventsClientTypes.AlarmCapabilities?
     /// Contains information about one or more alarm actions.
@@ -1551,7 +1552,7 @@ public struct CreateAlarmModelInput {
     }
 }
 
-public struct CreateAlarmModelOutput {
+public struct CreateAlarmModelOutput: Swift.Sendable {
     /// The ARN of the alarm model. For more information, see [Amazon Resource Names (ARNs)](https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html) in the AWS General Reference.
     public var alarmModelArn: Swift.String?
     /// The version of the alarm model.
@@ -1588,8 +1589,9 @@ public struct CreateAlarmModelOutput {
 }
 
 extension IoTEventsClientTypes {
+
     /// Specifies the actions to be performed when the condition evaluates to TRUE.
-    public struct Event {
+    public struct Event: Swift.Sendable {
         /// The actions to be performed.
         public var actions: [IoTEventsClientTypes.Action]?
         /// Optional. The Boolean expression that, when TRUE, causes the actions to be performed. If not present, the actions are performed (=TRUE). If the expression result is not a Boolean value, the actions are not performed (=FALSE).
@@ -1609,12 +1611,12 @@ extension IoTEventsClientTypes {
             self.eventName = eventName
         }
     }
-
 }
 
 extension IoTEventsClientTypes {
+
     /// When entering this state, perform these actions if the condition is TRUE.
-    public struct OnEnterLifecycle {
+    public struct OnEnterLifecycle: Swift.Sendable {
         /// Specifies the actions that are performed when the state is entered and the condition is TRUE.
         public var events: [IoTEventsClientTypes.Event]?
 
@@ -1625,12 +1627,12 @@ extension IoTEventsClientTypes {
             self.events = events
         }
     }
-
 }
 
 extension IoTEventsClientTypes {
+
     /// When exiting this state, perform these actions if the specified condition is TRUE.
-    public struct OnExitLifecycle {
+    public struct OnExitLifecycle: Swift.Sendable {
         /// Specifies the actions that are performed when the state is exited and the condition is TRUE.
         public var events: [IoTEventsClientTypes.Event]?
 
@@ -1641,12 +1643,12 @@ extension IoTEventsClientTypes {
             self.events = events
         }
     }
-
 }
 
 extension IoTEventsClientTypes {
+
     /// Specifies the actions performed and the next state entered when a condition evaluates to TRUE.
-    public struct TransitionEvent {
+    public struct TransitionEvent: Swift.Sendable {
         /// The actions to be performed.
         public var actions: [IoTEventsClientTypes.Action]?
         /// Required. A Boolean expression that when TRUE causes the actions to be performed and the nextState to be entered.
@@ -1672,12 +1674,12 @@ extension IoTEventsClientTypes {
             self.nextState = nextState
         }
     }
-
 }
 
 extension IoTEventsClientTypes {
+
     /// Specifies the actions performed when the condition evaluates to TRUE.
-    public struct OnInputLifecycle {
+    public struct OnInputLifecycle: Swift.Sendable {
         /// Specifies the actions performed when the condition evaluates to TRUE.
         public var events: [IoTEventsClientTypes.Event]?
         /// Specifies the actions performed, and the next state entered, when a condition evaluates to TRUE.
@@ -1692,12 +1694,12 @@ extension IoTEventsClientTypes {
             self.transitionEvents = transitionEvents
         }
     }
-
 }
 
 extension IoTEventsClientTypes {
+
     /// Information that defines a state of a detector.
-    public struct State {
+    public struct State: Swift.Sendable {
         /// When entering this state, perform these actions if the condition is TRUE.
         public var onEnter: IoTEventsClientTypes.OnEnterLifecycle?
         /// When exiting this state, perform these actions if the specified condition is TRUE.
@@ -1721,12 +1723,12 @@ extension IoTEventsClientTypes {
             self.stateName = stateName
         }
     }
-
 }
 
 extension IoTEventsClientTypes {
+
     /// Information that defines how a detector operates.
-    public struct DetectorModelDefinition {
+    public struct DetectorModelDefinition: Swift.Sendable {
         /// The state that is entered at the creation of each detector (instance).
         /// This member is required.
         public var initialStateName: Swift.String?
@@ -1743,12 +1745,11 @@ extension IoTEventsClientTypes {
             self.states = states
         }
     }
-
 }
 
 extension IoTEventsClientTypes {
 
-    public enum EvaluationMethod: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum EvaluationMethod: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case batch
         case serial
         case sdkUnknown(Swift.String)
@@ -1775,7 +1776,7 @@ extension IoTEventsClientTypes {
     }
 }
 
-public struct CreateDetectorModelInput {
+public struct CreateDetectorModelInput: Swift.Sendable {
     /// Information that defines how the detectors operate.
     /// This member is required.
     public var detectorModelDefinition: IoTEventsClientTypes.DetectorModelDefinition?
@@ -1816,7 +1817,7 @@ public struct CreateDetectorModelInput {
 
 extension IoTEventsClientTypes {
 
-    public enum DetectorModelVersionStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DetectorModelVersionStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case activating
         case active
         case deprecated
@@ -1859,8 +1860,9 @@ extension IoTEventsClientTypes {
 }
 
 extension IoTEventsClientTypes {
+
     /// Information about how the detector model is configured.
-    public struct DetectorModelConfiguration {
+    public struct DetectorModelConfiguration: Swift.Sendable {
         /// The time the detector model was created.
         public var creationTime: Foundation.Date?
         /// The ARN of the detector model.
@@ -1907,10 +1909,9 @@ extension IoTEventsClientTypes {
             self.status = status
         }
     }
-
 }
 
-public struct CreateDetectorModelOutput {
+public struct CreateDetectorModelOutput: Swift.Sendable {
     /// Information about how the detector model is configured.
     public var detectorModelConfiguration: IoTEventsClientTypes.DetectorModelConfiguration?
 
@@ -1923,8 +1924,9 @@ public struct CreateDetectorModelOutput {
 }
 
 extension IoTEventsClientTypes {
+
     /// The definition of the input.
-    public struct InputDefinition {
+    public struct InputDefinition: Swift.Sendable {
         /// The attributes from the JSON payload that are made available by the input. Inputs are derived from messages sent to the AWS IoT Events system using BatchPutMessage. Each such message contains a JSON payload, and those attributes (and their paired values) specified here are available for use in the condition expressions used by detectors that monitor this input.
         /// This member is required.
         public var attributes: [IoTEventsClientTypes.Attribute]?
@@ -1936,10 +1938,9 @@ extension IoTEventsClientTypes {
             self.attributes = attributes
         }
     }
-
 }
 
-public struct CreateInputInput {
+public struct CreateInputInput: Swift.Sendable {
     /// The definition of the input.
     /// This member is required.
     public var inputDefinition: IoTEventsClientTypes.InputDefinition?
@@ -1967,7 +1968,7 @@ public struct CreateInputInput {
 
 extension IoTEventsClientTypes {
 
-    public enum InputStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum InputStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case active
         case creating
         case deleting
@@ -2001,8 +2002,9 @@ extension IoTEventsClientTypes {
 }
 
 extension IoTEventsClientTypes {
+
     /// Information about the configuration of an input.
-    public struct InputConfiguration {
+    public struct InputConfiguration: Swift.Sendable {
         /// The time the input was created.
         /// This member is required.
         public var creationTime: Foundation.Date?
@@ -2038,10 +2040,9 @@ extension IoTEventsClientTypes {
             self.status = status
         }
     }
-
 }
 
-public struct CreateInputOutput {
+public struct CreateInputOutput: Swift.Sendable {
     /// Information about the configuration of the input.
     public var inputConfiguration: IoTEventsClientTypes.InputConfiguration?
 
@@ -2078,7 +2079,7 @@ public struct ResourceNotFoundException: ClientRuntime.ModeledError, AWSClientRu
     }
 }
 
-public struct DeleteAlarmModelInput {
+public struct DeleteAlarmModelInput: Swift.Sendable {
     /// The name of the alarm model.
     /// This member is required.
     public var alarmModelName: Swift.String?
@@ -2091,12 +2092,12 @@ public struct DeleteAlarmModelInput {
     }
 }
 
-public struct DeleteAlarmModelOutput {
+public struct DeleteAlarmModelOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteDetectorModelInput {
+public struct DeleteDetectorModelInput: Swift.Sendable {
     /// The name of the detector model to be deleted.
     /// This member is required.
     public var detectorModelName: Swift.String?
@@ -2109,12 +2110,12 @@ public struct DeleteDetectorModelInput {
     }
 }
 
-public struct DeleteDetectorModelOutput {
+public struct DeleteDetectorModelOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteInputInput {
+public struct DeleteInputInput: Swift.Sendable {
     /// The name of the input to delete.
     /// This member is required.
     public var inputName: Swift.String?
@@ -2127,12 +2128,12 @@ public struct DeleteInputInput {
     }
 }
 
-public struct DeleteInputOutput {
+public struct DeleteInputOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DescribeAlarmModelInput {
+public struct DescribeAlarmModelInput: Swift.Sendable {
     /// The name of the alarm model.
     /// This member is required.
     public var alarmModelName: Swift.String?
@@ -2149,7 +2150,7 @@ public struct DescribeAlarmModelInput {
     }
 }
 
-public struct DescribeAlarmModelOutput {
+public struct DescribeAlarmModelOutput: Swift.Sendable {
     /// Contains the configuration information of alarm state changes.
     public var alarmCapabilities: IoTEventsClientTypes.AlarmCapabilities?
     /// Contains information about one or more alarm actions.
@@ -2225,7 +2226,7 @@ public struct DescribeAlarmModelOutput {
     }
 }
 
-public struct DescribeDetectorModelInput {
+public struct DescribeDetectorModelInput: Swift.Sendable {
     /// The name of the detector model.
     /// This member is required.
     public var detectorModelName: Swift.String?
@@ -2243,8 +2244,9 @@ public struct DescribeDetectorModelInput {
 }
 
 extension IoTEventsClientTypes {
+
     /// Information about the detector model.
-    public struct DetectorModel {
+    public struct DetectorModel: Swift.Sendable {
         /// Information about how the detector is configured.
         public var detectorModelConfiguration: IoTEventsClientTypes.DetectorModelConfiguration?
         /// Information that defines how a detector operates.
@@ -2259,10 +2261,9 @@ extension IoTEventsClientTypes {
             self.detectorModelDefinition = detectorModelDefinition
         }
     }
-
 }
 
-public struct DescribeDetectorModelOutput {
+public struct DescribeDetectorModelOutput: Swift.Sendable {
     /// Information about the detector model.
     public var detectorModel: IoTEventsClientTypes.DetectorModel?
 
@@ -2274,7 +2275,7 @@ public struct DescribeDetectorModelOutput {
     }
 }
 
-public struct DescribeDetectorModelAnalysisInput {
+public struct DescribeDetectorModelAnalysisInput: Swift.Sendable {
     /// The ID of the analysis result that you want to retrieve.
     /// This member is required.
     public var analysisId: Swift.String?
@@ -2287,7 +2288,7 @@ public struct DescribeDetectorModelAnalysisInput {
     }
 }
 
-public struct DescribeDetectorModelAnalysisOutput {
+public struct DescribeDetectorModelAnalysisOutput: Swift.Sendable {
     /// The status of the analysis activity. The status can be one of the following values:
     ///
     /// * RUNNING - AWS IoT Events is analyzing your detector model. This process can take several minutes to complete.
@@ -2305,7 +2306,7 @@ public struct DescribeDetectorModelAnalysisOutput {
     }
 }
 
-public struct DescribeInputInput {
+public struct DescribeInputInput: Swift.Sendable {
     /// The name of the input.
     /// This member is required.
     public var inputName: Swift.String?
@@ -2319,8 +2320,9 @@ public struct DescribeInputInput {
 }
 
 extension IoTEventsClientTypes {
+
     /// Information about the input.
-    public struct Input {
+    public struct Input: Swift.Sendable {
         /// Information about the configuration of an input.
         public var inputConfiguration: IoTEventsClientTypes.InputConfiguration?
         /// The definition of the input.
@@ -2335,10 +2337,9 @@ extension IoTEventsClientTypes {
             self.inputDefinition = inputDefinition
         }
     }
-
 }
 
-public struct DescribeInputOutput {
+public struct DescribeInputOutput: Swift.Sendable {
     /// Information about the input.
     public var input: IoTEventsClientTypes.Input?
 
@@ -2375,14 +2376,15 @@ public struct UnsupportedOperationException: ClientRuntime.ModeledError, AWSClie
     }
 }
 
-public struct DescribeLoggingOptionsInput {
+public struct DescribeLoggingOptionsInput: Swift.Sendable {
 
     public init() { }
 }
 
 extension IoTEventsClientTypes {
+
     /// The detector model and the specific detectors (instances) for which the logging level is given.
-    public struct DetectorDebugOption {
+    public struct DetectorDebugOption: Swift.Sendable {
         /// The name of the detector model.
         /// This member is required.
         public var detectorModelName: Swift.String?
@@ -2398,12 +2400,11 @@ extension IoTEventsClientTypes {
             self.keyValue = keyValue
         }
     }
-
 }
 
 extension IoTEventsClientTypes {
 
-    public enum LoggingLevel: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum LoggingLevel: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case debug
         case error
         case info
@@ -2434,8 +2435,9 @@ extension IoTEventsClientTypes {
 }
 
 extension IoTEventsClientTypes {
+
     /// The values of the AWS IoT Events logging options.
-    public struct LoggingOptions {
+    public struct LoggingOptions: Swift.Sendable {
         /// Information that identifies those detector models and their detectors (instances) for which the logging level is given.
         public var detectorDebugOptions: [IoTEventsClientTypes.DetectorDebugOption]?
         /// If TRUE, logging is enabled for AWS IoT Events.
@@ -2461,10 +2463,9 @@ extension IoTEventsClientTypes {
             self.roleArn = roleArn
         }
     }
-
 }
 
-public struct DescribeLoggingOptionsOutput {
+public struct DescribeLoggingOptionsOutput: Swift.Sendable {
     /// The current settings of the AWS IoT Events logging options.
     public var loggingOptions: IoTEventsClientTypes.LoggingOptions?
 
@@ -2477,8 +2478,9 @@ public struct DescribeLoggingOptionsOutput {
 }
 
 extension IoTEventsClientTypes {
+
     /// Information about the detector model.
-    public struct DetectorModelSummary {
+    public struct DetectorModelSummary: Swift.Sendable {
         /// The time the detector model was created.
         public var creationTime: Foundation.Date?
         /// A brief description of the detector model.
@@ -2497,12 +2499,12 @@ extension IoTEventsClientTypes {
             self.detectorModelName = detectorModelName
         }
     }
-
 }
 
 extension IoTEventsClientTypes {
+
     /// Information about the detector model version.
-    public struct DetectorModelVersionSummary {
+    public struct DetectorModelVersionSummary: Swift.Sendable {
         /// The time the detector model version was created.
         public var creationTime: Foundation.Date?
         /// The ARN of the detector model version.
@@ -2541,10 +2543,9 @@ extension IoTEventsClientTypes {
             self.status = status
         }
     }
-
 }
 
-public struct GetDetectorModelAnalysisResultsInput {
+public struct GetDetectorModelAnalysisResultsInput: Swift.Sendable {
     /// The ID of the analysis result that you want to retrieve.
     /// This member is required.
     public var analysisId: Swift.String?
@@ -2565,7 +2566,7 @@ public struct GetDetectorModelAnalysisResultsInput {
     }
 }
 
-public struct GetDetectorModelAnalysisResultsOutput {
+public struct GetDetectorModelAnalysisResultsOutput: Swift.Sendable {
     /// Contains information about one or more analysis results.
     public var analysisResults: [IoTEventsClientTypes.AnalysisResult]?
     /// The token that you can use to return the next set of results, or null if there are no more results.
@@ -2582,8 +2583,9 @@ public struct GetDetectorModelAnalysisResultsOutput {
 }
 
 extension IoTEventsClientTypes {
+
     /// The identifier of the input routed to AWS IoT Events.
-    public struct IotEventsInputIdentifier {
+    public struct IotEventsInputIdentifier: Swift.Sendable {
         /// The name of the input routed to AWS IoT Events.
         /// This member is required.
         public var inputName: Swift.String?
@@ -2595,12 +2597,12 @@ extension IoTEventsClientTypes {
             self.inputName = inputName
         }
     }
-
 }
 
 extension IoTEventsClientTypes {
+
     /// The asset model property identifer of the input routed from AWS IoT SiteWise.
-    public struct IotSiteWiseAssetModelPropertyIdentifier {
+    public struct IotSiteWiseAssetModelPropertyIdentifier: Swift.Sendable {
         /// The ID of the AWS IoT SiteWise asset model.
         /// This member is required.
         public var assetModelId: Swift.String?
@@ -2617,12 +2619,12 @@ extension IoTEventsClientTypes {
             self.propertyId = propertyId
         }
     }
-
 }
 
 extension IoTEventsClientTypes {
+
     /// The identifer of the input routed from AWS IoT SiteWise.
-    public struct IotSiteWiseInputIdentifier {
+    public struct IotSiteWiseInputIdentifier: Swift.Sendable {
         /// The identifier of the AWS IoT SiteWise asset model property.
         public var iotSiteWiseAssetModelPropertyIdentifier: IoTEventsClientTypes.IotSiteWiseAssetModelPropertyIdentifier?
 
@@ -2633,12 +2635,12 @@ extension IoTEventsClientTypes {
             self.iotSiteWiseAssetModelPropertyIdentifier = iotSiteWiseAssetModelPropertyIdentifier
         }
     }
-
 }
 
 extension IoTEventsClientTypes {
+
     /// The identifer of the input.
-    public struct InputIdentifier {
+    public struct InputIdentifier: Swift.Sendable {
         /// The identifier of the input routed to AWS IoT Events.
         public var iotEventsInputIdentifier: IoTEventsClientTypes.IotEventsInputIdentifier?
         /// The identifer of the input routed from AWS IoT SiteWise.
@@ -2653,12 +2655,12 @@ extension IoTEventsClientTypes {
             self.iotSiteWiseInputIdentifier = iotSiteWiseInputIdentifier
         }
     }
-
 }
 
 extension IoTEventsClientTypes {
+
     /// Information about the input.
-    public struct InputSummary {
+    public struct InputSummary: Swift.Sendable {
         /// The time the input was created.
         public var creationTime: Foundation.Date?
         /// The ARN of the input.
@@ -2689,10 +2691,9 @@ extension IoTEventsClientTypes {
             self.status = status
         }
     }
-
 }
 
-public struct ListAlarmModelsInput {
+public struct ListAlarmModelsInput: Swift.Sendable {
     /// The maximum number of results to be returned per request.
     public var maxResults: Swift.Int?
     /// The token that you can use to return the next set of results.
@@ -2708,7 +2709,7 @@ public struct ListAlarmModelsInput {
     }
 }
 
-public struct ListAlarmModelsOutput {
+public struct ListAlarmModelsOutput: Swift.Sendable {
     /// A list that summarizes each alarm model.
     public var alarmModelSummaries: [IoTEventsClientTypes.AlarmModelSummary]?
     /// The token that you can use to return the next set of results, or null if there are no more results.
@@ -2724,7 +2725,7 @@ public struct ListAlarmModelsOutput {
     }
 }
 
-public struct ListAlarmModelVersionsInput {
+public struct ListAlarmModelVersionsInput: Swift.Sendable {
     /// The name of the alarm model.
     /// This member is required.
     public var alarmModelName: Swift.String?
@@ -2745,7 +2746,7 @@ public struct ListAlarmModelVersionsInput {
     }
 }
 
-public struct ListAlarmModelVersionsOutput {
+public struct ListAlarmModelVersionsOutput: Swift.Sendable {
     /// A list that summarizes each alarm model version.
     public var alarmModelVersionSummaries: [IoTEventsClientTypes.AlarmModelVersionSummary]?
     /// The token that you can use to return the next set of results, or null if there are no more results.
@@ -2761,7 +2762,7 @@ public struct ListAlarmModelVersionsOutput {
     }
 }
 
-public struct ListDetectorModelsInput {
+public struct ListDetectorModelsInput: Swift.Sendable {
     /// The maximum number of results to be returned per request.
     public var maxResults: Swift.Int?
     /// The token that you can use to return the next set of results.
@@ -2777,7 +2778,7 @@ public struct ListDetectorModelsInput {
     }
 }
 
-public struct ListDetectorModelsOutput {
+public struct ListDetectorModelsOutput: Swift.Sendable {
     /// Summary information about the detector models.
     public var detectorModelSummaries: [IoTEventsClientTypes.DetectorModelSummary]?
     /// The token that you can use to return the next set of results, or null if there are no more results.
@@ -2793,7 +2794,7 @@ public struct ListDetectorModelsOutput {
     }
 }
 
-public struct ListDetectorModelVersionsInput {
+public struct ListDetectorModelVersionsInput: Swift.Sendable {
     /// The name of the detector model whose versions are returned.
     /// This member is required.
     public var detectorModelName: Swift.String?
@@ -2814,7 +2815,7 @@ public struct ListDetectorModelVersionsInput {
     }
 }
 
-public struct ListDetectorModelVersionsOutput {
+public struct ListDetectorModelVersionsOutput: Swift.Sendable {
     /// Summary information about the detector model versions.
     public var detectorModelVersionSummaries: [IoTEventsClientTypes.DetectorModelVersionSummary]?
     /// The token that you can use to return the next set of results, or null if there are no more results.
@@ -2830,7 +2831,7 @@ public struct ListDetectorModelVersionsOutput {
     }
 }
 
-public struct ListInputRoutingsInput {
+public struct ListInputRoutingsInput: Swift.Sendable {
     /// The identifer of the routed input.
     /// This member is required.
     public var inputIdentifier: IoTEventsClientTypes.InputIdentifier?
@@ -2852,8 +2853,9 @@ public struct ListInputRoutingsInput {
 }
 
 extension IoTEventsClientTypes {
+
     /// Contains information about the routed resource.
-    public struct RoutedResource {
+    public struct RoutedResource: Swift.Sendable {
         /// The ARN of the routed resource. For more information, see [Amazon Resource Names (ARNs)](https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html) in the AWS General Reference.
         public var arn: Swift.String?
         /// The name of the routed resource.
@@ -2868,10 +2870,9 @@ extension IoTEventsClientTypes {
             self.name = name
         }
     }
-
 }
 
-public struct ListInputRoutingsOutput {
+public struct ListInputRoutingsOutput: Swift.Sendable {
     /// The token that you can use to return the next set of results, or null if there are no more results.
     public var nextToken: Swift.String?
     /// Summary information about the routed resources.
@@ -2887,7 +2888,7 @@ public struct ListInputRoutingsOutput {
     }
 }
 
-public struct ListInputsInput {
+public struct ListInputsInput: Swift.Sendable {
     /// The maximum number of results to be returned per request.
     public var maxResults: Swift.Int?
     /// The token that you can use to return the next set of results.
@@ -2903,7 +2904,7 @@ public struct ListInputsInput {
     }
 }
 
-public struct ListInputsOutput {
+public struct ListInputsOutput: Swift.Sendable {
     /// Summary information about the inputs.
     public var inputSummaries: [IoTEventsClientTypes.InputSummary]?
     /// The token that you can use to return the next set of results, or null if there are no more results.
@@ -2919,7 +2920,7 @@ public struct ListInputsOutput {
     }
 }
 
-public struct ListTagsForResourceInput {
+public struct ListTagsForResourceInput: Swift.Sendable {
     /// The ARN of the resource.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -2932,7 +2933,7 @@ public struct ListTagsForResourceInput {
     }
 }
 
-public struct ListTagsForResourceOutput {
+public struct ListTagsForResourceOutput: Swift.Sendable {
     /// The list of tags assigned to the resource.
     public var tags: [IoTEventsClientTypes.Tag]?
 
@@ -2944,7 +2945,7 @@ public struct ListTagsForResourceOutput {
     }
 }
 
-public struct PutLoggingOptionsInput {
+public struct PutLoggingOptionsInput: Swift.Sendable {
     /// The new values of the AWS IoT Events logging options.
     /// This member is required.
     public var loggingOptions: IoTEventsClientTypes.LoggingOptions?
@@ -2957,7 +2958,7 @@ public struct PutLoggingOptionsInput {
     }
 }
 
-public struct StartDetectorModelAnalysisInput {
+public struct StartDetectorModelAnalysisInput: Swift.Sendable {
     /// Information that defines how a detector operates.
     /// This member is required.
     public var detectorModelDefinition: IoTEventsClientTypes.DetectorModelDefinition?
@@ -2970,7 +2971,7 @@ public struct StartDetectorModelAnalysisInput {
     }
 }
 
-public struct StartDetectorModelAnalysisOutput {
+public struct StartDetectorModelAnalysisOutput: Swift.Sendable {
     /// The ID that you can use to retrieve the analysis result.
     public var analysisId: Swift.String?
 
@@ -2982,7 +2983,7 @@ public struct StartDetectorModelAnalysisOutput {
     }
 }
 
-public struct TagResourceInput {
+public struct TagResourceInput: Swift.Sendable {
     /// The ARN of the resource.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -3000,12 +3001,12 @@ public struct TagResourceInput {
     }
 }
 
-public struct TagResourceOutput {
+public struct TagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UntagResourceInput {
+public struct UntagResourceInput: Swift.Sendable {
     /// The ARN of the resource.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -3023,12 +3024,12 @@ public struct UntagResourceInput {
     }
 }
 
-public struct UntagResourceOutput {
+public struct UntagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdateAlarmModelInput {
+public struct UpdateAlarmModelInput: Swift.Sendable {
     /// Contains the configuration information of alarm state changes.
     public var alarmCapabilities: IoTEventsClientTypes.AlarmCapabilities?
     /// Contains information about one or more alarm actions.
@@ -3071,7 +3072,7 @@ public struct UpdateAlarmModelInput {
     }
 }
 
-public struct UpdateAlarmModelOutput {
+public struct UpdateAlarmModelOutput: Swift.Sendable {
     /// The ARN of the alarm model. For more information, see [Amazon Resource Names (ARNs)](https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html) in the AWS General Reference.
     public var alarmModelArn: Swift.String?
     /// The version of the alarm model.
@@ -3107,7 +3108,7 @@ public struct UpdateAlarmModelOutput {
     }
 }
 
-public struct UpdateDetectorModelInput {
+public struct UpdateDetectorModelInput: Swift.Sendable {
     /// Information that defines how a detector operates.
     /// This member is required.
     public var detectorModelDefinition: IoTEventsClientTypes.DetectorModelDefinition?
@@ -3138,7 +3139,7 @@ public struct UpdateDetectorModelInput {
     }
 }
 
-public struct UpdateDetectorModelOutput {
+public struct UpdateDetectorModelOutput: Swift.Sendable {
     /// Information about how the detector model is configured.
     public var detectorModelConfiguration: IoTEventsClientTypes.DetectorModelConfiguration?
 
@@ -3150,7 +3151,7 @@ public struct UpdateDetectorModelOutput {
     }
 }
 
-public struct UpdateInputInput {
+public struct UpdateInputInput: Swift.Sendable {
     /// The definition of the input.
     /// This member is required.
     public var inputDefinition: IoTEventsClientTypes.InputDefinition?
@@ -3172,7 +3173,7 @@ public struct UpdateInputInput {
     }
 }
 
-public struct UpdateInputOutput {
+public struct UpdateInputOutput: Swift.Sendable {
     /// Information about the configuration of the input.
     public var inputConfiguration: IoTEventsClientTypes.InputConfiguration?
 

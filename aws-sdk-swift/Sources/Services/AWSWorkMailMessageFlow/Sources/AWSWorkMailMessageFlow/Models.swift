@@ -45,7 +45,7 @@ public struct ResourceNotFoundException: ClientRuntime.ModeledError, AWSClientRu
     }
 }
 
-public struct GetRawMessageContentInput {
+public struct GetRawMessageContentInput: Swift.Sendable {
     /// The identifier of the email message to retrieve.
     /// This member is required.
     public var messageId: Swift.String?
@@ -58,7 +58,7 @@ public struct GetRawMessageContentInput {
     }
 }
 
-public struct GetRawMessageContentOutput {
+public struct GetRawMessageContentOutput: Swift.Sendable {
     /// The raw content of the email message, in MIME format.
     /// This member is required.
     public var messageContent: Smithy.ByteStream?
@@ -150,8 +150,9 @@ public struct MessageRejected: ClientRuntime.ModeledError, AWSClientRuntime.AWSS
 }
 
 extension WorkMailMessageFlowClientTypes {
+
     /// Amazon S3 object representing the updated message content, in MIME format. The region for the S3 bucket containing the S3 object must match the region used for WorkMail operations. Also, for WorkMail to process an S3 object, it must have permission to access that object. For more information, see [ Updating message content with AWS Lambda](https://docs.aws.amazon.com/workmail/latest/adminguide/update-with-lambda.html).
-    public struct S3Reference {
+    public struct S3Reference: Swift.Sendable {
         /// The S3 bucket name.
         /// This member is required.
         public var bucket: Swift.String?
@@ -172,10 +173,10 @@ extension WorkMailMessageFlowClientTypes {
             self.objectVersion = objectVersion
         }
     }
-
 }
 
 extension WorkMailMessageFlowClientTypes {
+
     /// Provides the MIME content of the updated email message as an S3 object. All MIME content must meet the following criteria:
     ///
     /// * Each part of a multipart MIME message must be formatted properly.
@@ -191,7 +192,7 @@ extension WorkMailMessageFlowClientTypes {
     /// * The value of immutable headers must remain unchanged. Check the returned error message for more information.
     ///
     /// * Certain unique headers can only appear once. Check the returned error message for more information.
-    public struct RawMessageContent {
+    public struct RawMessageContent: Swift.Sendable {
         /// The S3 reference of an email message.
         /// This member is required.
         public var s3Reference: WorkMailMessageFlowClientTypes.S3Reference?
@@ -203,10 +204,9 @@ extension WorkMailMessageFlowClientTypes {
             self.s3Reference = s3Reference
         }
     }
-
 }
 
-public struct PutRawMessageContentInput {
+public struct PutRawMessageContentInput: Swift.Sendable {
     /// Describes the raw message content of the updated email message.
     /// This member is required.
     public var content: WorkMailMessageFlowClientTypes.RawMessageContent?
@@ -224,7 +224,7 @@ public struct PutRawMessageContentInput {
     }
 }
 
-public struct PutRawMessageContentOutput {
+public struct PutRawMessageContentOutput: Swift.Sendable {
 
     public init() { }
 }

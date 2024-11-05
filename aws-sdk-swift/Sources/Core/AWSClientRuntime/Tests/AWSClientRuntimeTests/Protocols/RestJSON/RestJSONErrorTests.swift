@@ -17,20 +17,7 @@ class RestJSONErrorTests: HttpResponseTestBase {
     let host = "myapi.host.com"
 
     func testRestJsonComplexError() async throws {
-        guard let httpResponse = buildHttpResponse(
-            code: 400,
-            headers: [
-                "Content-Type": "application/json",
-                "X-Header": "Header",
-                "X-Amzn-Errortype": "ComplexError"
-            ],
-            content: ByteStream.data("""
-            {\"TopLevel\": \"Top level\"}
-            """.data(using: .utf8))
-            ) else {
-                XCTFail("Something is wrong with the created http response")
-                return
-        }
+        let httpResponse = try httpResponse(errorCode: "my.protocoltests.restjson#ComplexError:http://my.fake.com")
 
         let greetingWithErrorsError = try await GreetingWithErrorsError.httpError(from:)(httpResponse)
 
@@ -47,16 +34,35 @@ class RestJSONErrorTests: HttpResponseTestBase {
         }
     }
 
-    func testSanitizeErrorName() {
-        let errorNames = [
+    private func httpResponse(errorCode: String) throws -> HTTPResponse {
+        guard let response = buildHttpResponse(
+            code: 400,
+            headers: [
+                "Content-Type": "application/json",
+                "X-Header": "Header",
+                "X-Amzn-Errortype": errorCode,
+            ],
+            content: ByteStream.data(Data("{\"TopLevel\": \"Top level\"}".utf8))
+        ) else {
+            throw TestError("Something is wrong with the created http response")
+        }
+        return response
+    }
+
+    func testSanitizeErrorName() async throws {
+        let errorCodes = [
+            "FooError",
             "   FooError  ",
-            "FooError:http://my.fake.com/",
-            "my.protocoltests.restjson#FooError",
-            "my.protocoltests.restjson#FooError:http://my.fake.com"
+            "FooError:http://internal.amazon.com/coral/com.amazon.coral.validate/",
+            "aws.protocoltests.restjson#FooError",
+            "aws.protocoltests.restjson#FooError:http://internal.amazon.com/coral/com.amazon.coral.validate/"
         ]
 
-        for errorName in errorNames {
-            XCTAssertEqual(sanitizeErrorType(errorName), "FooError")
+        for errorCode in errorCodes {
+            let httpResponse = try httpResponse(errorCode: errorCode)
+            let reader = try await Reader.from(data: httpResponse.body.readData() ?? Data())
+            let restJSONError = try RestJSONError(httpResponse: httpResponse, responseReader: reader, noErrorWrapping: true)
+            XCTAssertEqual(restJSONError.code, "FooError", "Error code '\(errorCode)' was not sanitized correctly, result was '\(restJSONError.code)'")
         }
     }
 }

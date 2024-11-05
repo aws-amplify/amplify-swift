@@ -52,7 +52,7 @@ public struct AccessDeniedException: ClientRuntime.ModeledError, AWSClientRuntim
 
 extension CodeConnectionsClientTypes {
 
-    public enum BlockerStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum BlockerStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case active
         case resolved
         case sdkUnknown(Swift.String)
@@ -81,7 +81,7 @@ extension CodeConnectionsClientTypes {
 
 extension CodeConnectionsClientTypes {
 
-    public enum BlockerType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum BlockerType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case automated
         case sdkUnknown(Swift.String)
 
@@ -179,7 +179,7 @@ public struct ResourceUnavailableException: ClientRuntime.ModeledError, AWSClien
 
 extension CodeConnectionsClientTypes {
 
-    public enum ProviderType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ProviderType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case bitbucket
         case github
         case githubEnterpriseServer
@@ -216,8 +216,9 @@ extension CodeConnectionsClientTypes {
 }
 
 extension CodeConnectionsClientTypes {
+
     /// A tag is a key-value pair that is used to manage the resource. This tag is available for use by Amazon Web Services services that support tags.
-    public struct Tag {
+    public struct Tag: Swift.Sendable {
         /// The tag's key.
         /// This member is required.
         public var key: Swift.String?
@@ -234,10 +235,9 @@ extension CodeConnectionsClientTypes {
             self.value = value
         }
     }
-
 }
 
-public struct CreateConnectionInput {
+public struct CreateConnectionInput: Swift.Sendable {
     /// The name of the connection to be created.
     /// This member is required.
     public var connectionName: Swift.String?
@@ -262,7 +262,7 @@ public struct CreateConnectionInput {
     }
 }
 
-public struct CreateConnectionOutput {
+public struct CreateConnectionOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the connection to be created. The ARN is used as the connection reference when the connection is shared between Amazon Web Services services. The ARN is never reused if the connection is deleted.
     /// This member is required.
     public var connectionArn: Swift.String?
@@ -280,8 +280,9 @@ public struct CreateConnectionOutput {
 }
 
 extension CodeConnectionsClientTypes {
+
     /// The VPC configuration provisioned for the host.
-    public struct VpcConfiguration {
+    public struct VpcConfiguration: Swift.Sendable {
         /// The ID of the security group or security groups associated with the Amazon VPC connected to the infrastructure where your provider type is installed.
         /// This member is required.
         public var securityGroupIds: [Swift.String]?
@@ -307,10 +308,9 @@ extension CodeConnectionsClientTypes {
             self.vpcId = vpcId
         }
     }
-
 }
 
-public struct CreateHostInput {
+public struct CreateHostInput: Swift.Sendable {
     /// The name of the host to be created.
     /// This member is required.
     public var name: Swift.String?
@@ -341,7 +341,7 @@ public struct CreateHostInput {
     }
 }
 
-public struct CreateHostOutput {
+public struct CreateHostOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the host to be created.
     public var hostArn: Swift.String?
     /// Tags for the created host.
@@ -477,7 +477,7 @@ public struct ThrottlingException: ClientRuntime.ModeledError, AWSClientRuntime.
     }
 }
 
-public struct CreateRepositoryLinkInput {
+public struct CreateRepositoryLinkInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the connection to be associated with the repository link.
     /// This member is required.
     public var connectionArn: Swift.String?
@@ -509,8 +509,9 @@ public struct CreateRepositoryLinkInput {
 }
 
 extension CodeConnectionsClientTypes {
+
     /// Information about the repository link resource, such as the repository link ARN, the associated connection ARN, encryption key ARN, and owner ID.
-    public struct RepositoryLinkInfo {
+    public struct RepositoryLinkInfo: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the connection associated with the repository link.
         /// This member is required.
         public var connectionArn: Swift.String?
@@ -551,10 +552,9 @@ extension CodeConnectionsClientTypes {
             self.repositoryName = repositoryName
         }
     }
-
 }
 
-public struct CreateRepositoryLinkOutput {
+public struct CreateRepositoryLinkOutput: Swift.Sendable {
     /// The returned information about the created repository link.
     /// This member is required.
     public var repositoryLinkInfo: CodeConnectionsClientTypes.RepositoryLinkInfo?
@@ -569,7 +569,7 @@ public struct CreateRepositoryLinkOutput {
 
 extension CodeConnectionsClientTypes {
 
-    public enum PublishDeploymentStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum PublishDeploymentStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case disabled
         case enabled
         case sdkUnknown(Swift.String)
@@ -598,7 +598,7 @@ extension CodeConnectionsClientTypes {
 
 extension CodeConnectionsClientTypes {
 
-    public enum PullRequestComment: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum PullRequestComment: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case disabled
         case enabled
         case sdkUnknown(Swift.String)
@@ -627,7 +627,7 @@ extension CodeConnectionsClientTypes {
 
 extension CodeConnectionsClientTypes {
 
-    public enum SyncConfigurationType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SyncConfigurationType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case cfnStackSync
         case sdkUnknown(Swift.String)
 
@@ -653,7 +653,7 @@ extension CodeConnectionsClientTypes {
 
 extension CodeConnectionsClientTypes {
 
-    public enum TriggerResourceUpdateOn: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum TriggerResourceUpdateOn: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case anyChange
         case fileChange
         case sdkUnknown(Swift.String)
@@ -680,7 +680,7 @@ extension CodeConnectionsClientTypes {
     }
 }
 
-public struct CreateSyncConfigurationInput {
+public struct CreateSyncConfigurationInput: Swift.Sendable {
     /// The branch in the repository from which changes will be synced.
     /// This member is required.
     public var branch: Swift.String?
@@ -731,8 +731,9 @@ public struct CreateSyncConfigurationInput {
 }
 
 extension CodeConnectionsClientTypes {
+
     /// Information, such as repository, branch, provider, and resource names for a specific sync configuration.
-    public struct SyncConfiguration {
+    public struct SyncConfiguration: Swift.Sendable {
         /// The branch associated with a specific sync configuration.
         /// This member is required.
         public var branch: Swift.String?
@@ -795,10 +796,9 @@ extension CodeConnectionsClientTypes {
             self.triggerResourceUpdateOn = triggerResourceUpdateOn
         }
     }
-
 }
 
-public struct CreateSyncConfigurationOutput {
+public struct CreateSyncConfigurationOutput: Swift.Sendable {
     /// The created sync configuration for the connection. A sync configuration allows Amazon Web Services to sync content from a Git repository to update a specified Amazon Web Services resource.
     /// This member is required.
     public var syncConfiguration: CodeConnectionsClientTypes.SyncConfiguration?
@@ -811,7 +811,7 @@ public struct CreateSyncConfigurationOutput {
     }
 }
 
-public struct DeleteConnectionInput {
+public struct DeleteConnectionInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the connection to be deleted. The ARN is never reused if the connection is deleted.
     /// This member is required.
     public var connectionArn: Swift.String?
@@ -824,12 +824,12 @@ public struct DeleteConnectionInput {
     }
 }
 
-public struct DeleteConnectionOutput {
+public struct DeleteConnectionOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteHostInput {
+public struct DeleteHostInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the host to be deleted.
     /// This member is required.
     public var hostArn: Swift.String?
@@ -842,7 +842,7 @@ public struct DeleteHostInput {
     }
 }
 
-public struct DeleteHostOutput {
+public struct DeleteHostOutput: Swift.Sendable {
 
     public init() { }
 }
@@ -895,7 +895,7 @@ public struct UnsupportedProviderTypeException: ClientRuntime.ModeledError, AWSC
     }
 }
 
-public struct DeleteRepositoryLinkInput {
+public struct DeleteRepositoryLinkInput: Swift.Sendable {
     /// The ID of the repository link to be deleted.
     /// This member is required.
     public var repositoryLinkId: Swift.String?
@@ -908,12 +908,12 @@ public struct DeleteRepositoryLinkInput {
     }
 }
 
-public struct DeleteRepositoryLinkOutput {
+public struct DeleteRepositoryLinkOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteSyncConfigurationInput {
+public struct DeleteSyncConfigurationInput: Swift.Sendable {
     /// The name of the Amazon Web Services resource associated with the sync configuration to be deleted.
     /// This member is required.
     public var resourceName: Swift.String?
@@ -931,12 +931,12 @@ public struct DeleteSyncConfigurationInput {
     }
 }
 
-public struct DeleteSyncConfigurationOutput {
+public struct DeleteSyncConfigurationOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct GetConnectionInput {
+public struct GetConnectionInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of a connection.
     /// This member is required.
     public var connectionArn: Swift.String?
@@ -951,7 +951,7 @@ public struct GetConnectionInput {
 
 extension CodeConnectionsClientTypes {
 
-    public enum ConnectionStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ConnectionStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case available
         case error
         case pending
@@ -982,8 +982,9 @@ extension CodeConnectionsClientTypes {
 }
 
 extension CodeConnectionsClientTypes {
+
     /// A resource that is used to connect third-party source providers with services like CodePipeline. Note: A connection created through CloudFormation, the CLI, or the SDK is in `PENDING` status by default. You can make its status `AVAILABLE` by updating the connection in the console.
-    public struct Connection {
+    public struct Connection: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the connection. The ARN is used as the connection reference when the connection is shared between Amazon Web Servicesservices. The ARN is never reused if the connection is deleted.
         public var connectionArn: Swift.String?
         /// The name of the connection. Connection names must be unique in an Amazon Web Services account.
@@ -1014,10 +1015,9 @@ extension CodeConnectionsClientTypes {
             self.providerType = providerType
         }
     }
-
 }
 
-public struct GetConnectionOutput {
+public struct GetConnectionOutput: Swift.Sendable {
     /// The connection details, such as status, owner, and provider type.
     public var connection: CodeConnectionsClientTypes.Connection?
 
@@ -1029,7 +1029,7 @@ public struct GetConnectionOutput {
     }
 }
 
-public struct GetHostInput {
+public struct GetHostInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the requested host.
     /// This member is required.
     public var hostArn: Swift.String?
@@ -1042,7 +1042,7 @@ public struct GetHostInput {
     }
 }
 
-public struct GetHostOutput {
+public struct GetHostOutput: Swift.Sendable {
     /// The name of the requested host.
     public var name: Swift.String?
     /// The endpoint of the infrastructure represented by the requested host.
@@ -1070,7 +1070,7 @@ public struct GetHostOutput {
     }
 }
 
-public struct GetRepositoryLinkInput {
+public struct GetRepositoryLinkInput: Swift.Sendable {
     /// The ID of the repository link to get.
     /// This member is required.
     public var repositoryLinkId: Swift.String?
@@ -1083,7 +1083,7 @@ public struct GetRepositoryLinkInput {
     }
 }
 
-public struct GetRepositoryLinkOutput {
+public struct GetRepositoryLinkOutput: Swift.Sendable {
     /// The information returned for a specified repository link.
     /// This member is required.
     public var repositoryLinkInfo: CodeConnectionsClientTypes.RepositoryLinkInfo?
@@ -1096,7 +1096,7 @@ public struct GetRepositoryLinkOutput {
     }
 }
 
-public struct GetRepositorySyncStatusInput {
+public struct GetRepositorySyncStatusInput: Swift.Sendable {
     /// The branch of the repository link for the requested repository sync status.
     /// This member is required.
     public var branch: Swift.String?
@@ -1120,8 +1120,9 @@ public struct GetRepositorySyncStatusInput {
 }
 
 extension CodeConnectionsClientTypes {
+
     /// Information about a repository sync event.
-    public struct RepositorySyncEvent {
+    public struct RepositorySyncEvent: Swift.Sendable {
         /// A description of a repository sync event.
         /// This member is required.
         public var event: Swift.String?
@@ -1147,12 +1148,11 @@ extension CodeConnectionsClientTypes {
             self.type = type
         }
     }
-
 }
 
 extension CodeConnectionsClientTypes {
 
-    public enum RepositorySyncStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum RepositorySyncStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case failed
         case initiated
         case inProgress
@@ -1189,8 +1189,9 @@ extension CodeConnectionsClientTypes {
 }
 
 extension CodeConnectionsClientTypes {
+
     /// Information about a repository sync attempt for a repository with a sync configuration.
-    public struct RepositorySyncAttempt {
+    public struct RepositorySyncAttempt: Swift.Sendable {
         /// The events associated with a specific sync attempt.
         /// This member is required.
         public var events: [CodeConnectionsClientTypes.RepositorySyncEvent]?
@@ -1222,10 +1223,9 @@ extension CodeConnectionsClientTypes {
             self.status = status
         }
     }
-
 }
 
-public struct GetRepositorySyncStatusOutput {
+public struct GetRepositorySyncStatusOutput: Swift.Sendable {
     /// The status of the latest sync returned for a specified repository and branch.
     /// This member is required.
     public var latestSync: CodeConnectionsClientTypes.RepositorySyncAttempt?
@@ -1238,7 +1238,7 @@ public struct GetRepositorySyncStatusOutput {
     }
 }
 
-public struct GetResourceSyncStatusInput {
+public struct GetResourceSyncStatusInput: Swift.Sendable {
     /// The name of the Amazon Web Services resource for the sync status with the Git repository.
     /// This member is required.
     public var resourceName: Swift.String?
@@ -1257,8 +1257,9 @@ public struct GetResourceSyncStatusInput {
 }
 
 extension CodeConnectionsClientTypes {
+
     /// Information about the revision for a specific sync event, such as the branch, owner ID, and name of the repository.
-    public struct Revision {
+    public struct Revision: Swift.Sendable {
         /// The branch name for a specific revision.
         /// This member is required.
         public var branch: Swift.String?
@@ -1295,12 +1296,12 @@ extension CodeConnectionsClientTypes {
             self.sha = sha
         }
     }
-
 }
 
 extension CodeConnectionsClientTypes {
+
     /// Information about a resource sync event for the resource associated with a sync configuration.
-    public struct ResourceSyncEvent {
+    public struct ResourceSyncEvent: Swift.Sendable {
         /// The event for a resource sync event.
         /// This member is required.
         public var event: Swift.String?
@@ -1326,12 +1327,11 @@ extension CodeConnectionsClientTypes {
             self.type = type
         }
     }
-
 }
 
 extension CodeConnectionsClientTypes {
 
-    public enum ResourceSyncStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ResourceSyncStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case failed
         case initiated
         case inProgress
@@ -1365,8 +1365,9 @@ extension CodeConnectionsClientTypes {
 }
 
 extension CodeConnectionsClientTypes {
+
     /// Information about a resource sync attempt.
-    public struct ResourceSyncAttempt {
+    public struct ResourceSyncAttempt: Swift.Sendable {
         /// The events related to a resource sync attempt.
         /// This member is required.
         public var events: [CodeConnectionsClientTypes.ResourceSyncEvent]?
@@ -1411,10 +1412,9 @@ extension CodeConnectionsClientTypes {
             self.targetRevision = targetRevision
         }
     }
-
 }
 
-public struct GetResourceSyncStatusOutput {
+public struct GetResourceSyncStatusOutput: Swift.Sendable {
     /// The desired state of the Amazon Web Services resource for the sync status with the Git repository.
     public var desiredState: CodeConnectionsClientTypes.Revision?
     /// The latest successful sync for the sync status with the Git repository.
@@ -1435,7 +1435,7 @@ public struct GetResourceSyncStatusOutput {
     }
 }
 
-public struct GetSyncBlockerSummaryInput {
+public struct GetSyncBlockerSummaryInput: Swift.Sendable {
     /// The name of the Amazon Web Services resource currently blocked from automatically being synced from a Git repository.
     /// This member is required.
     public var resourceName: Swift.String?
@@ -1454,8 +1454,9 @@ public struct GetSyncBlockerSummaryInput {
 }
 
 extension CodeConnectionsClientTypes {
+
     /// The context for a specific sync blocker.
-    public struct SyncBlockerContext {
+    public struct SyncBlockerContext: Swift.Sendable {
         /// The key provided for a context key-value pair for a specific sync blocker.
         /// This member is required.
         public var key: Swift.String?
@@ -1472,12 +1473,12 @@ extension CodeConnectionsClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension CodeConnectionsClientTypes {
+
     /// Information about a blocker for a sync event.
-    public struct SyncBlocker {
+    public struct SyncBlocker: Swift.Sendable {
         /// The contexts for a specific sync blocker.
         public var contexts: [CodeConnectionsClientTypes.SyncBlockerContext]?
         /// The creation time for a specific sync blocker.
@@ -1521,12 +1522,12 @@ extension CodeConnectionsClientTypes {
             self.type = type
         }
     }
-
 }
 
 extension CodeConnectionsClientTypes {
+
     /// A summary for sync blockers.
-    public struct SyncBlockerSummary {
+    public struct SyncBlockerSummary: Swift.Sendable {
         /// The latest events for a sync blocker summary.
         public var latestBlockers: [CodeConnectionsClientTypes.SyncBlocker]?
         /// The parent resource name for a sync blocker summary.
@@ -1546,10 +1547,9 @@ extension CodeConnectionsClientTypes {
             self.resourceName = resourceName
         }
     }
-
 }
 
-public struct GetSyncBlockerSummaryOutput {
+public struct GetSyncBlockerSummaryOutput: Swift.Sendable {
     /// The list of sync blockers for a specified resource.
     /// This member is required.
     public var syncBlockerSummary: CodeConnectionsClientTypes.SyncBlockerSummary?
@@ -1562,7 +1562,7 @@ public struct GetSyncBlockerSummaryOutput {
     }
 }
 
-public struct GetSyncConfigurationInput {
+public struct GetSyncConfigurationInput: Swift.Sendable {
     /// The name of the Amazon Web Services resource for the sync configuration for which you want to retrieve information.
     /// This member is required.
     public var resourceName: Swift.String?
@@ -1580,7 +1580,7 @@ public struct GetSyncConfigurationInput {
     }
 }
 
-public struct GetSyncConfigurationOutput {
+public struct GetSyncConfigurationOutput: Swift.Sendable {
     /// The details about the sync configuration for which you want to retrieve information.
     /// This member is required.
     public var syncConfiguration: CodeConnectionsClientTypes.SyncConfiguration?
@@ -1593,7 +1593,7 @@ public struct GetSyncConfigurationOutput {
     }
 }
 
-public struct ListConnectionsInput {
+public struct ListConnectionsInput: Swift.Sendable {
     /// Filters the list of connections to those associated with a specified host.
     public var hostArnFilter: Swift.String?
     /// The maximum number of results to return in a single call. To retrieve the remaining results, make another call with the returned nextToken value.
@@ -1617,7 +1617,7 @@ public struct ListConnectionsInput {
     }
 }
 
-public struct ListConnectionsOutput {
+public struct ListConnectionsOutput: Swift.Sendable {
     /// A list of connections and the details for each connection, such as status, owner, and provider type.
     public var connections: [CodeConnectionsClientTypes.Connection]?
     /// A token that can be used in the next ListConnections call. To view all items in the list, continue to call this operation with each subsequent token until no more nextToken values are returned.
@@ -1633,7 +1633,7 @@ public struct ListConnectionsOutput {
     }
 }
 
-public struct ListHostsInput {
+public struct ListHostsInput: Swift.Sendable {
     /// The maximum number of results to return in a single call. To retrieve the remaining results, make another call with the returned nextToken value.
     public var maxResults: Swift.Int?
     /// The token that was returned from the previous ListHosts call, which can be used to return the next set of hosts in the list.
@@ -1650,8 +1650,9 @@ public struct ListHostsInput {
 }
 
 extension CodeConnectionsClientTypes {
+
     /// A resource that represents the infrastructure where a third-party provider is installed. The host is used when you create connections to an installed third-party provider type, such as GitHub Enterprise Server. You create one host for all connections to that provider. A host created through the CLI or the SDK is in `PENDING` status by default. You can make its status `AVAILABLE` by setting up the host in the console.
-    public struct Host {
+    public struct Host: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the host.
         public var hostArn: Swift.String?
         /// The name of the host.
@@ -1686,10 +1687,9 @@ extension CodeConnectionsClientTypes {
             self.vpcConfiguration = vpcConfiguration
         }
     }
-
 }
 
-public struct ListHostsOutput {
+public struct ListHostsOutput: Swift.Sendable {
     /// A list of hosts and the details for each host, such as status, endpoint, and provider type.
     public var hosts: [CodeConnectionsClientTypes.Host]?
     /// A token that can be used in the next ListHosts call. To view all items in the list, continue to call this operation with each subsequent token until no more nextToken values are returned.
@@ -1705,7 +1705,7 @@ public struct ListHostsOutput {
     }
 }
 
-public struct ListRepositoryLinksInput {
+public struct ListRepositoryLinksInput: Swift.Sendable {
     /// A non-zero, non-negative integer used to limit the number of returned results.
     public var maxResults: Swift.Int?
     /// An enumeration token that, when provided in a request, returns the next batch of the results.
@@ -1721,7 +1721,7 @@ public struct ListRepositoryLinksInput {
     }
 }
 
-public struct ListRepositoryLinksOutput {
+public struct ListRepositoryLinksOutput: Swift.Sendable {
     /// An enumeration token that allows the operation to batch the results of the operation.
     public var nextToken: Swift.String?
     /// Lists the repository links called by the list repository links operation.
@@ -1738,7 +1738,7 @@ public struct ListRepositoryLinksOutput {
     }
 }
 
-public struct ListRepositorySyncDefinitionsInput {
+public struct ListRepositorySyncDefinitionsInput: Swift.Sendable {
     /// The ID of the repository link for the sync definition for which you want to retrieve information.
     /// This member is required.
     public var repositoryLinkId: Swift.String?
@@ -1757,8 +1757,9 @@ public struct ListRepositorySyncDefinitionsInput {
 }
 
 extension CodeConnectionsClientTypes {
+
     /// The definition for a repository with a sync configuration.
-    public struct RepositorySyncDefinition {
+    public struct RepositorySyncDefinition: Swift.Sendable {
         /// The branch specified for a repository sync definition.
         /// This member is required.
         public var branch: Swift.String?
@@ -1785,10 +1786,9 @@ extension CodeConnectionsClientTypes {
             self.target = target
         }
     }
-
 }
 
-public struct ListRepositorySyncDefinitionsOutput {
+public struct ListRepositorySyncDefinitionsOutput: Swift.Sendable {
     /// An enumeration token that, when provided in a request, returns the next batch of the results.
     public var nextToken: Swift.String?
     /// The list of repository sync definitions returned by the request. A RepositorySyncDefinition is a mapping from a repository branch to all the Amazon Web Services resources that are being synced from that branch.
@@ -1805,7 +1805,7 @@ public struct ListRepositorySyncDefinitionsOutput {
     }
 }
 
-public struct ListSyncConfigurationsInput {
+public struct ListSyncConfigurationsInput: Swift.Sendable {
     /// A non-zero, non-negative integer used to limit the number of returned results.
     public var maxResults: Swift.Int?
     /// An enumeration token that allows the operation to batch the results of the operation.
@@ -1831,7 +1831,7 @@ public struct ListSyncConfigurationsInput {
     }
 }
 
-public struct ListSyncConfigurationsOutput {
+public struct ListSyncConfigurationsOutput: Swift.Sendable {
     /// An enumeration token that allows the operation to batch the next results of the operation.
     public var nextToken: Swift.String?
     /// The list of repository sync definitions returned by the request.
@@ -1848,7 +1848,7 @@ public struct ListSyncConfigurationsOutput {
     }
 }
 
-public struct ListTagsForResourceInput {
+public struct ListTagsForResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the resource for which you want to get information about tags, if any.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -1861,7 +1861,7 @@ public struct ListTagsForResourceInput {
     }
 }
 
-public struct ListTagsForResourceOutput {
+public struct ListTagsForResourceOutput: Swift.Sendable {
     /// A list of tag key and value pairs associated with the specified resource.
     public var tags: [CodeConnectionsClientTypes.Tag]?
 
@@ -1873,7 +1873,7 @@ public struct ListTagsForResourceOutput {
     }
 }
 
-public struct TagResourceInput {
+public struct TagResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the resource to which you want to add or update tags.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -1891,12 +1891,12 @@ public struct TagResourceInput {
     }
 }
 
-public struct TagResourceOutput {
+public struct TagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UntagResourceInput {
+public struct UntagResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the resource to remove tags from.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -1914,7 +1914,7 @@ public struct UntagResourceInput {
     }
 }
 
-public struct UntagResourceOutput {
+public struct UntagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
@@ -1967,7 +1967,7 @@ public struct UnsupportedOperationException: ClientRuntime.ModeledError, AWSClie
     }
 }
 
-public struct UpdateHostInput {
+public struct UpdateHostInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the host to be updated.
     /// This member is required.
     public var hostArn: Swift.String?
@@ -1988,7 +1988,7 @@ public struct UpdateHostInput {
     }
 }
 
-public struct UpdateHostOutput {
+public struct UpdateHostOutput: Swift.Sendable {
 
     public init() { }
 }
@@ -2041,7 +2041,7 @@ public struct UpdateOutOfSyncException: ClientRuntime.ModeledError, AWSClientRun
     }
 }
 
-public struct UpdateRepositoryLinkInput {
+public struct UpdateRepositoryLinkInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the connection for the repository link to be updated. The updated connection ARN must have the same providerType (such as GitHub) as the original connection ARN for the repo link.
     public var connectionArn: Swift.String?
     /// The Amazon Resource Name (ARN) of the encryption key for the repository link to be updated.
@@ -2062,7 +2062,7 @@ public struct UpdateRepositoryLinkInput {
     }
 }
 
-public struct UpdateRepositoryLinkOutput {
+public struct UpdateRepositoryLinkOutput: Swift.Sendable {
     /// Information about the repository link to be updated.
     /// This member is required.
     public var repositoryLinkInfo: CodeConnectionsClientTypes.RepositoryLinkInfo?
@@ -2123,7 +2123,7 @@ public struct SyncBlockerDoesNotExistException: ClientRuntime.ModeledError, AWSC
     }
 }
 
-public struct UpdateSyncBlockerInput {
+public struct UpdateSyncBlockerInput: Swift.Sendable {
     /// The ID of the sync blocker to be updated.
     /// This member is required.
     public var id: Swift.String?
@@ -2151,7 +2151,7 @@ public struct UpdateSyncBlockerInput {
     }
 }
 
-public struct UpdateSyncBlockerOutput {
+public struct UpdateSyncBlockerOutput: Swift.Sendable {
     /// The parent resource name for the sync blocker.
     public var parentResourceName: Swift.String?
     /// The resource name for the sync blocker.
@@ -2173,7 +2173,7 @@ public struct UpdateSyncBlockerOutput {
     }
 }
 
-public struct UpdateSyncConfigurationInput {
+public struct UpdateSyncConfigurationInput: Swift.Sendable {
     /// The branch for the sync configuration to be updated.
     public var branch: Swift.String?
     /// The configuration file for the sync configuration to be updated.
@@ -2219,7 +2219,7 @@ public struct UpdateSyncConfigurationInput {
     }
 }
 
-public struct UpdateSyncConfigurationOutput {
+public struct UpdateSyncConfigurationOutput: Swift.Sendable {
     /// The information returned for the sync configuration to be updated.
     /// This member is required.
     public var syncConfiguration: CodeConnectionsClientTypes.SyncConfiguration?

@@ -28,12 +28,13 @@ import protocol ClientRuntime.ModeledError
 import struct Smithy.URIQueryItem
 @_spi(SmithyReadWrite) import struct SmithyReadWrite.WritingClosureBox
 
-public struct DeleteLoggingConfigurationOutput {
+
+public struct DeleteLoggingConfigurationOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteRoomOutput {
+public struct DeleteRoomOutput: Swift.Sendable {
 
     public init() { }
 }
@@ -90,7 +91,7 @@ public struct PendingVerification: ClientRuntime.ModeledError, AWSClientRuntime.
 
 extension IvschatClientTypes {
 
-    public enum ResourceType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ResourceType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case room
         case sdkUnknown(Swift.String)
 
@@ -150,8 +151,9 @@ public struct ResourceNotFoundException: ClientRuntime.ModeledError, AWSClientRu
 }
 
 extension IvschatClientTypes {
+
     /// This object is used in the ValidationException error.
-    public struct ValidationExceptionField {
+    public struct ValidationExceptionField: Swift.Sendable {
         /// Explanation of the reason for the validation error.
         /// This member is required.
         public var message: Swift.String?
@@ -168,12 +170,11 @@ extension IvschatClientTypes {
             self.name = name
         }
     }
-
 }
 
 extension IvschatClientTypes {
 
-    public enum ValidationExceptionReason: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ValidationExceptionReason: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case fieldValidationFailed
         case other
         case unknownOperation
@@ -239,7 +240,7 @@ public struct ValidationException: ClientRuntime.ModeledError, AWSClientRuntime.
 
 extension IvschatClientTypes {
 
-    public enum ChatTokenCapability: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ChatTokenCapability: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case deleteMessage
         case disconnectUser
         case sendMessage
@@ -269,7 +270,7 @@ extension IvschatClientTypes {
     }
 }
 
-public struct CreateChatTokenInput {
+public struct CreateChatTokenInput: Swift.Sendable {
     /// Application-provided attributes to encode into the token and attach to a chat session. Map keys and values can contain UTF-8 encoded text. The maximum length of this field is 1 KB total.
     public var attributes: [Swift.String: Swift.String]?
     /// Set of capabilities that the user is allowed to perform in the room. Default: None (the capability to view messages is implicitly included in all requests).
@@ -304,7 +305,7 @@ extension CreateChatTokenInput: Swift.CustomDebugStringConvertible {
         "CreateChatTokenInput(capabilities: \(Swift.String(describing: capabilities)), roomIdentifier: \(Swift.String(describing: roomIdentifier)), sessionDurationInMinutes: \(Swift.String(describing: sessionDurationInMinutes)), attributes: \"CONTENT_REDACTED\", userId: \"CONTENT_REDACTED\")"}
 }
 
-public struct CreateChatTokenOutput {
+public struct CreateChatTokenOutput: Swift.Sendable {
     /// Time after which an end user's session is no longer valid. This is an ISO 8601 timestamp; note that this is returned as a string.
     public var sessionExpirationTime: Foundation.Date?
     /// The issued client token, encrypted.
@@ -405,8 +406,9 @@ public struct ServiceQuotaExceededException: ClientRuntime.ModeledError, AWSClie
 }
 
 extension IvschatClientTypes {
+
     /// Specifies a CloudWatch Logs location where chat logs will be stored.
-    public struct CloudWatchLogsDestinationConfiguration {
+    public struct CloudWatchLogsDestinationConfiguration: Swift.Sendable {
         /// Name of the Amazon Cloudwatch Logs destination where chat activity will be logged.
         /// This member is required.
         public var logGroupName: Swift.String?
@@ -418,12 +420,12 @@ extension IvschatClientTypes {
             self.logGroupName = logGroupName
         }
     }
-
 }
 
 extension IvschatClientTypes {
+
     /// Specifies a Kinesis Firehose location where chat logs will be stored.
-    public struct FirehoseDestinationConfiguration {
+    public struct FirehoseDestinationConfiguration: Swift.Sendable {
         /// Name of the Amazon Kinesis Firehose delivery stream where chat activity will be logged.
         /// This member is required.
         public var deliveryStreamName: Swift.String?
@@ -435,12 +437,12 @@ extension IvschatClientTypes {
             self.deliveryStreamName = deliveryStreamName
         }
     }
-
 }
 
 extension IvschatClientTypes {
+
     /// Specifies an S3 location where chat logs will be stored.
-    public struct S3DestinationConfiguration {
+    public struct S3DestinationConfiguration: Swift.Sendable {
         /// Name of the Amazon S3 bucket where chat activity will be logged.
         /// This member is required.
         public var bucketName: Swift.String?
@@ -452,12 +454,12 @@ extension IvschatClientTypes {
             self.bucketName = bucketName
         }
     }
-
 }
 
 extension IvschatClientTypes {
+
     /// A complex type that describes a location where chat logs will be stored. Each member represents the configuration of one log destination. For logging, you define only one type of destination (for CloudWatch Logs, Kinesis Firehose, or S3).
-    public enum DestinationConfiguration {
+    public enum DestinationConfiguration: Swift.Sendable {
         /// An Amazon S3 destination configuration where chat activity will be logged.
         case s3(IvschatClientTypes.S3DestinationConfiguration)
         /// An Amazon CloudWatch Logs destination configuration where chat activity will be logged.
@@ -466,10 +468,9 @@ extension IvschatClientTypes {
         case firehose(IvschatClientTypes.FirehoseDestinationConfiguration)
         case sdkUnknown(Swift.String)
     }
-
 }
 
-public struct CreateLoggingConfigurationInput {
+public struct CreateLoggingConfigurationInput: Swift.Sendable {
     /// A complex type that contains a destination configuration for where chat content will be logged. There can be only one type of destination (cloudWatchLogs, firehose, or s3) in a destinationConfiguration.
     /// This member is required.
     public var destinationConfiguration: IvschatClientTypes.DestinationConfiguration?
@@ -492,7 +493,7 @@ public struct CreateLoggingConfigurationInput {
 
 extension IvschatClientTypes {
 
-    public enum CreateLoggingConfigurationState: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum CreateLoggingConfigurationState: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case active
         case sdkUnknown(Swift.String)
 
@@ -516,7 +517,7 @@ extension IvschatClientTypes {
     }
 }
 
-public struct CreateLoggingConfigurationOutput {
+public struct CreateLoggingConfigurationOutput: Swift.Sendable {
     /// Logging-configuration ARN, assigned by the system.
     public var arn: Swift.String?
     /// Time when the logging configuration was created. This is an ISO 8601 timestamp; note that this is returned as a string.
@@ -558,7 +559,7 @@ public struct CreateLoggingConfigurationOutput {
 
 extension IvschatClientTypes {
 
-    public enum FallbackResult: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum FallbackResult: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case allow
         case deny
         case sdkUnknown(Swift.String)
@@ -586,8 +587,9 @@ extension IvschatClientTypes {
 }
 
 extension IvschatClientTypes {
+
     /// Configuration information for optional message review.
-    public struct MessageReviewHandler {
+    public struct MessageReviewHandler: Swift.Sendable {
         /// Specifies the fallback behavior (whether the message is allowed or denied) if the handler does not return a valid response, encounters an error, or times out. (For the timeout period, see [ Service Quotas](https://docs.aws.amazon.com/ivs/latest/userguide/service-quotas.html).) If allowed, the message is delivered with returned content to all users connected to the room. If denied, the message is not delivered to any user. Default: ALLOW.
         public var fallbackResult: IvschatClientTypes.FallbackResult?
         /// Identifier of the message review handler. Currently this must be an ARN of a lambda function.
@@ -602,10 +604,9 @@ extension IvschatClientTypes {
             self.uri = uri
         }
     }
-
 }
 
-public struct CreateRoomInput {
+public struct CreateRoomInput: Swift.Sendable {
     /// Array of logging-configuration identifiers attached to the room.
     public var loggingConfigurationIdentifiers: [Swift.String]?
     /// Maximum number of characters in a single message. Messages are expected to be UTF-8 encoded and this limit applies specifically to rune/code-point count, not number of bytes. Default: 500.
@@ -637,7 +638,7 @@ public struct CreateRoomInput {
     }
 }
 
-public struct CreateRoomOutput {
+public struct CreateRoomOutput: Swift.Sendable {
     /// Room ARN, assigned by the system.
     public var arn: Swift.String?
     /// Time when the room was created. This is an ISO 8601 timestamp; note that this is returned as a string.
@@ -685,7 +686,7 @@ public struct CreateRoomOutput {
     }
 }
 
-public struct DeleteLoggingConfigurationInput {
+public struct DeleteLoggingConfigurationInput: Swift.Sendable {
     /// Identifier of the logging configuration to be deleted.
     /// This member is required.
     public var identifier: Swift.String?
@@ -738,7 +739,7 @@ public struct ThrottlingException: ClientRuntime.ModeledError, AWSClientRuntime.
     }
 }
 
-public struct DeleteMessageInput {
+public struct DeleteMessageInput: Swift.Sendable {
     /// ID of the message to be deleted. This is the Id field in the received message (see [ Message (Subscribe)](https://docs.aws.amazon.com/ivs/latest/chatmsgapireference/actions-message-subscribe.html) in the Chat Messaging API).
     /// This member is required.
     public var id: Swift.String?
@@ -760,7 +761,7 @@ public struct DeleteMessageInput {
     }
 }
 
-public struct DeleteMessageOutput {
+public struct DeleteMessageOutput: Swift.Sendable {
     /// Operation identifier, generated by Amazon IVS Chat.
     public var id: Swift.String?
 
@@ -772,7 +773,7 @@ public struct DeleteMessageOutput {
     }
 }
 
-public struct DeleteRoomInput {
+public struct DeleteRoomInput: Swift.Sendable {
     /// Identifier of the room to be deleted. Currently this must be an ARN.
     /// This member is required.
     public var identifier: Swift.String?
@@ -785,7 +786,7 @@ public struct DeleteRoomInput {
     }
 }
 
-public struct DisconnectUserInput {
+public struct DisconnectUserInput: Swift.Sendable {
     /// Reason for disconnecting the user.
     public var reason: Swift.String?
     /// Identifier of the room from which the user's clients should be disconnected. Currently this must be an ARN.
@@ -812,12 +813,12 @@ extension DisconnectUserInput: Swift.CustomDebugStringConvertible {
         "DisconnectUserInput(reason: \(Swift.String(describing: reason)), roomIdentifier: \(Swift.String(describing: roomIdentifier)), userId: \"CONTENT_REDACTED\")"}
 }
 
-public struct DisconnectUserOutput {
+public struct DisconnectUserOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct GetLoggingConfigurationInput {
+public struct GetLoggingConfigurationInput: Swift.Sendable {
     /// Identifier of the logging configuration to be retrieved.
     /// This member is required.
     public var identifier: Swift.String?
@@ -832,7 +833,7 @@ public struct GetLoggingConfigurationInput {
 
 extension IvschatClientTypes {
 
-    public enum LoggingConfigurationState: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum LoggingConfigurationState: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case active
         case createFailed
         case creating
@@ -874,7 +875,7 @@ extension IvschatClientTypes {
     }
 }
 
-public struct GetLoggingConfigurationOutput {
+public struct GetLoggingConfigurationOutput: Swift.Sendable {
     /// Logging-configuration ARN, from the request (if identifier was an ARN).
     public var arn: Swift.String?
     /// Time when the logging configuration was created. This is an ISO 8601 timestamp; note that this is returned as a string.
@@ -914,7 +915,7 @@ public struct GetLoggingConfigurationOutput {
     }
 }
 
-public struct GetRoomInput {
+public struct GetRoomInput: Swift.Sendable {
     /// Identifier of the room for which the configuration is to be retrieved. Currently this must be an ARN.
     /// This member is required.
     public var identifier: Swift.String?
@@ -927,7 +928,7 @@ public struct GetRoomInput {
     }
 }
 
-public struct GetRoomOutput {
+public struct GetRoomOutput: Swift.Sendable {
     /// Room ARN, from the request (if identifier was an ARN).
     public var arn: Swift.String?
     /// Time when the room was created. This is an ISO 8601 timestamp; note that this is returned as a string.
@@ -975,7 +976,7 @@ public struct GetRoomOutput {
     }
 }
 
-public struct ListLoggingConfigurationsInput {
+public struct ListLoggingConfigurationsInput: Swift.Sendable {
     /// Maximum number of logging configurations to return. Default: 50.
     public var maxResults: Swift.Int?
     /// The first logging configurations to retrieve. This is used for pagination; see the nextToken response field.
@@ -992,8 +993,9 @@ public struct ListLoggingConfigurationsInput {
 }
 
 extension IvschatClientTypes {
+
     /// Summary information about a logging configuration.
-    public struct LoggingConfigurationSummary {
+    public struct LoggingConfigurationSummary: Swift.Sendable {
         /// Logging-configuration ARN.
         public var arn: Swift.String?
         /// Time when the logging configuration was created. This is an ISO 8601 timestamp; note that this is returned as a string.
@@ -1032,10 +1034,9 @@ extension IvschatClientTypes {
             self.updateTime = updateTime
         }
     }
-
 }
 
-public struct ListLoggingConfigurationsOutput {
+public struct ListLoggingConfigurationsOutput: Swift.Sendable {
     /// List of the matching logging configurations (summary information only). There is only one type of destination (cloudWatchLogs, firehose, or s3) in a destinationConfiguration.
     /// This member is required.
     public var loggingConfigurations: [IvschatClientTypes.LoggingConfigurationSummary]?
@@ -1052,7 +1053,7 @@ public struct ListLoggingConfigurationsOutput {
     }
 }
 
-public struct ListRoomsInput {
+public struct ListRoomsInput: Swift.Sendable {
     /// Logging-configuration identifier.
     public var loggingConfigurationIdentifier: Swift.String?
     /// Maximum number of rooms to return. Default: 50.
@@ -1081,8 +1082,9 @@ public struct ListRoomsInput {
 }
 
 extension IvschatClientTypes {
+
     /// Summary information about a room.
-    public struct RoomSummary {
+    public struct RoomSummary: Swift.Sendable {
         /// Room ARN.
         public var arn: Swift.String?
         /// Time when the room was created. This is an ISO 8601 timestamp; note that this is returned as a string.
@@ -1121,10 +1123,9 @@ extension IvschatClientTypes {
             self.updateTime = updateTime
         }
     }
-
 }
 
-public struct ListRoomsOutput {
+public struct ListRoomsOutput: Swift.Sendable {
     /// If there are more rooms than maxResults, use nextToken in the request to get the next set.
     public var nextToken: Swift.String?
     /// List of the matching rooms (summary information only).
@@ -1166,7 +1167,7 @@ public struct InternalServerException: ClientRuntime.ModeledError, AWSClientRunt
     }
 }
 
-public struct ListTagsForResourceInput {
+public struct ListTagsForResourceInput: Swift.Sendable {
     /// The ARN of the resource to be retrieved. The ARN must be URL-encoded.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -1179,7 +1180,7 @@ public struct ListTagsForResourceInput {
     }
 }
 
-public struct ListTagsForResourceOutput {
+public struct ListTagsForResourceOutput: Swift.Sendable {
     /// Tags attached to the resource. Array of maps, each of the form string:string (key:value).
     /// This member is required.
     public var tags: [Swift.String: Swift.String]?
@@ -1192,7 +1193,7 @@ public struct ListTagsForResourceOutput {
     }
 }
 
-public struct SendEventInput {
+public struct SendEventInput: Swift.Sendable {
     /// Application-defined metadata to attach to the event sent to clients. The maximum length of the metadata is 1 KB total.
     public var attributes: [Swift.String: Swift.String]?
     /// Application-defined name of the event to send to clients.
@@ -1214,7 +1215,7 @@ public struct SendEventInput {
     }
 }
 
-public struct SendEventOutput {
+public struct SendEventOutput: Swift.Sendable {
     /// An identifier generated by Amazon IVS Chat. This identifier must be used in subsequent operations for this message, such as DeleteMessage.
     public var id: Swift.String?
 
@@ -1226,7 +1227,7 @@ public struct SendEventOutput {
     }
 }
 
-public struct TagResourceInput {
+public struct TagResourceInput: Swift.Sendable {
     /// The ARN of the resource to be tagged. The ARN must be URL-encoded.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -1244,12 +1245,12 @@ public struct TagResourceInput {
     }
 }
 
-public struct TagResourceOutput {
+public struct TagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UntagResourceInput {
+public struct UntagResourceInput: Swift.Sendable {
     /// The ARN of the resource to be untagged. The ARN must be URL-encoded.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -1267,12 +1268,12 @@ public struct UntagResourceInput {
     }
 }
 
-public struct UntagResourceOutput {
+public struct UntagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdateLoggingConfigurationInput {
+public struct UpdateLoggingConfigurationInput: Swift.Sendable {
     /// A complex type that contains a destination configuration for where chat content will be logged. There can be only one type of destination (cloudWatchLogs, firehose, or s3) in a destinationConfiguration.
     public var destinationConfiguration: IvschatClientTypes.DestinationConfiguration?
     /// Identifier of the logging configuration to be updated.
@@ -1295,7 +1296,7 @@ public struct UpdateLoggingConfigurationInput {
 
 extension IvschatClientTypes {
 
-    public enum UpdateLoggingConfigurationState: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum UpdateLoggingConfigurationState: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case active
         case sdkUnknown(Swift.String)
 
@@ -1319,7 +1320,7 @@ extension IvschatClientTypes {
     }
 }
 
-public struct UpdateLoggingConfigurationOutput {
+public struct UpdateLoggingConfigurationOutput: Swift.Sendable {
     /// Logging-configuration ARN, from the request (if identifier was an ARN).
     public var arn: Swift.String?
     /// Time when the logging configuration was created. This is an ISO 8601 timestamp; note that this is returned as a string.
@@ -1359,7 +1360,7 @@ public struct UpdateLoggingConfigurationOutput {
     }
 }
 
-public struct UpdateRoomInput {
+public struct UpdateRoomInput: Swift.Sendable {
     /// Identifier of the room to be updated. Currently this must be an ARN.
     /// This member is required.
     public var identifier: Swift.String?
@@ -1392,7 +1393,7 @@ public struct UpdateRoomInput {
     }
 }
 
-public struct UpdateRoomOutput {
+public struct UpdateRoomOutput: Swift.Sendable {
     /// Room ARN, from the request (if identifier was an ARN).
     public var arn: Swift.String?
     /// Time when the room was created. This is an ISO 8601 timestamp; note that this is returned as a string.

@@ -24,8 +24,9 @@ import protocol ClientRuntime.ModeledError
 import struct Smithy.URIQueryItem
 
 extension CloudTrailDataClientTypes {
+
     /// An event from a source outside of Amazon Web Services that you want CloudTrail to log.
-    public struct AuditEvent {
+    public struct AuditEvent: Swift.Sendable {
         /// The content of an audit event that comes from the event, such as userIdentity, userAgent, and eventSource.
         /// This member is required.
         public var eventData: Swift.String?
@@ -46,12 +47,12 @@ extension CloudTrailDataClientTypes {
             self.id = id
         }
     }
-
 }
 
 extension CloudTrailDataClientTypes {
+
     /// A response that includes successful and failed event results.
-    public struct AuditEventResultEntry {
+    public struct AuditEventResultEntry: Swift.Sendable {
         /// The event ID assigned by CloudTrail.
         /// This member is required.
         public var eventID: Swift.String?
@@ -68,7 +69,6 @@ extension CloudTrailDataClientTypes {
             self.id = id
         }
     }
-
 }
 
 /// The caller's account ID must be the same as the channel owner's account ID.
@@ -215,7 +215,7 @@ public struct UnsupportedOperationException: ClientRuntime.ModeledError, AWSClie
     }
 }
 
-public struct PutAuditEventsInput {
+public struct PutAuditEventsInput: Swift.Sendable {
     /// The JSON payload of events that you want to ingest. You can also point to the JSON event payload in a file.
     /// This member is required.
     public var auditEvents: [CloudTrailDataClientTypes.AuditEvent]?
@@ -238,8 +238,9 @@ public struct PutAuditEventsInput {
 }
 
 extension CloudTrailDataClientTypes {
+
     /// Includes the error code and error message for events that could not be ingested by CloudTrail.
-    public struct ResultErrorEntry {
+    public struct ResultErrorEntry: Swift.Sendable {
         /// The error code for events that could not be ingested by CloudTrail. Possible error codes include: FieldTooLong, FieldNotFound, InvalidChecksum, InvalidData, InvalidRecipient, InvalidEventSource, AccountNotSubscribed, Throttling, and InternalFailure.
         /// This member is required.
         public var errorCode: Swift.String?
@@ -261,10 +262,9 @@ extension CloudTrailDataClientTypes {
             self.id = id
         }
     }
-
 }
 
-public struct PutAuditEventsOutput {
+public struct PutAuditEventsOutput: Swift.Sendable {
     /// Lists events in the provided event payload that could not be ingested into CloudTrail, and includes the error code and error message returned for events that could not be ingested.
     /// This member is required.
     public var failed: [CloudTrailDataClientTypes.ResultErrorEntry]?

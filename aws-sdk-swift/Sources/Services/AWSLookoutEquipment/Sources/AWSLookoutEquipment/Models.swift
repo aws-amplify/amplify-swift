@@ -25,57 +25,58 @@ import protocol ClientRuntime.ModeledError
 @_spi(SmithyReadWrite) import struct AWSClientRuntime.AWSJSONError
 @_spi(UnknownAWSHTTPServiceError) import struct AWSClientRuntime.UnknownAWSHTTPServiceError
 
-public struct DeleteDatasetOutput {
+
+public struct DeleteDatasetOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteInferenceSchedulerOutput {
+public struct DeleteInferenceSchedulerOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteLabelGroupOutput {
+public struct DeleteLabelGroupOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteLabelOutput {
+public struct DeleteLabelOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteModelOutput {
+public struct DeleteModelOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteResourcePolicyOutput {
+public struct DeleteResourcePolicyOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteRetrainingSchedulerOutput {
+public struct DeleteRetrainingSchedulerOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdateInferenceSchedulerOutput {
+public struct UpdateInferenceSchedulerOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdateLabelGroupOutput {
+public struct UpdateLabelGroupOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdateModelOutput {
+public struct UpdateModelOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdateRetrainingSchedulerOutput {
+public struct UpdateRetrainingSchedulerOutput: Swift.Sendable {
 
     public init() { }
 }
@@ -107,7 +108,7 @@ public struct AccessDeniedException: ClientRuntime.ModeledError, AWSClientRuntim
 
 extension LookoutEquipmentClientTypes {
 
-    public enum AutoPromotionResult: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AutoPromotionResult: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case modelNotPromoted
         case modelPromoted
         case retrainingCancelled
@@ -269,8 +270,9 @@ public struct ValidationException: ClientRuntime.ModeledError, AWSClientRuntime.
 }
 
 extension LookoutEquipmentClientTypes {
+
     /// Provides information about the data schema used with the given dataset.
-    public struct DatasetSchema {
+    public struct DatasetSchema: Swift.Sendable {
         /// The data schema used within the given dataset.
         public var inlineDataSchema: Swift.String?
 
@@ -281,12 +283,12 @@ extension LookoutEquipmentClientTypes {
             self.inlineDataSchema = inlineDataSchema
         }
     }
-
 }
 
 extension LookoutEquipmentClientTypes {
+
     /// A tag is a key-value pair that can be added to a resource as metadata.
-    public struct Tag {
+    public struct Tag: Swift.Sendable {
         /// The key for the specified tag.
         /// This member is required.
         public var key: Swift.String?
@@ -303,10 +305,9 @@ extension LookoutEquipmentClientTypes {
             self.value = value
         }
     }
-
 }
 
-public struct CreateDatasetInput {
+public struct CreateDatasetInput: Swift.Sendable {
     /// A unique identifier for the request. If you do not set the client request token, Amazon Lookout for Equipment generates one.
     /// This member is required.
     public var clientToken: Swift.String?
@@ -338,7 +339,7 @@ public struct CreateDatasetInput {
 
 extension LookoutEquipmentClientTypes {
 
-    public enum DatasetStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DatasetStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case active
         case created
         case importInProgress
@@ -371,7 +372,7 @@ extension LookoutEquipmentClientTypes {
     }
 }
 
-public struct CreateDatasetOutput {
+public struct CreateDatasetOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the dataset being created.
     public var datasetArn: Swift.String?
     /// The name of the dataset being created.
@@ -417,8 +418,9 @@ public struct ResourceNotFoundException: ClientRuntime.ModeledError, AWSClientRu
 }
 
 extension LookoutEquipmentClientTypes {
+
     /// Specifies configuration information for the input data for the inference, including timestamp format and delimiter.
-    public struct InferenceInputNameConfiguration {
+    public struct InferenceInputNameConfiguration: Swift.Sendable {
         /// Indicates the delimiter character used between items in the data.
         public var componentTimestampDelimiter: Swift.String?
         /// The format of the timestamp, whether Epoch time, or standard, with or without hyphens (-).
@@ -433,12 +435,12 @@ extension LookoutEquipmentClientTypes {
             self.timestampFormat = timestampFormat
         }
     }
-
 }
 
 extension LookoutEquipmentClientTypes {
+
     /// Specifies configuration information for the input data for the inference, including input data S3 location.
-    public struct InferenceS3InputConfiguration {
+    public struct InferenceS3InputConfiguration: Swift.Sendable {
         /// The bucket containing the input dataset for the inference.
         /// This member is required.
         public var bucket: Swift.String?
@@ -454,12 +456,12 @@ extension LookoutEquipmentClientTypes {
             self.`prefix` = `prefix`
         }
     }
-
 }
 
 extension LookoutEquipmentClientTypes {
+
     /// Specifies configuration information for the input data for the inference, including Amazon S3 location of input data..
-    public struct InferenceInputConfiguration {
+    public struct InferenceInputConfiguration: Swift.Sendable {
         /// Specifies configuration information for the input data for the inference, including timestamp format and delimiter.
         public var inferenceInputNameConfiguration: LookoutEquipmentClientTypes.InferenceInputNameConfiguration?
         /// Indicates the difference between your time zone and Coordinated Universal Time (UTC).
@@ -478,12 +480,12 @@ extension LookoutEquipmentClientTypes {
             self.s3InputConfiguration = s3InputConfiguration
         }
     }
-
 }
 
 extension LookoutEquipmentClientTypes {
+
     /// Specifies configuration information for the output results from the inference, including output S3 location.
-    public struct InferenceS3OutputConfiguration {
+    public struct InferenceS3OutputConfiguration: Swift.Sendable {
         /// The bucket containing the output results from the inference
         /// This member is required.
         public var bucket: Swift.String?
@@ -499,12 +501,12 @@ extension LookoutEquipmentClientTypes {
             self.`prefix` = `prefix`
         }
     }
-
 }
 
 extension LookoutEquipmentClientTypes {
+
     /// Specifies configuration information for the output results from for the inference, including KMS key ID and output S3 location.
-    public struct InferenceOutputConfiguration {
+    public struct InferenceOutputConfiguration: Swift.Sendable {
         /// The ID number for the KMS key key used to encrypt the inference output.
         public var kmsKeyId: Swift.String?
         /// Specifies configuration information for the output results from for the inference, output S3 location.
@@ -520,12 +522,11 @@ extension LookoutEquipmentClientTypes {
             self.s3OutputConfiguration = s3OutputConfiguration
         }
     }
-
 }
 
 extension LookoutEquipmentClientTypes {
 
-    public enum DataUploadFrequency: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DataUploadFrequency: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case pt10m
         case pt15m
         case pt1h
@@ -561,7 +562,7 @@ extension LookoutEquipmentClientTypes {
     }
 }
 
-public struct CreateInferenceSchedulerInput {
+public struct CreateInferenceSchedulerInput: Swift.Sendable {
     /// A unique identifier for the request. If you do not set the client request token, Amazon Lookout for Equipment generates one.
     /// This member is required.
     public var clientToken: Swift.String?
@@ -618,7 +619,7 @@ public struct CreateInferenceSchedulerInput {
 
 extension LookoutEquipmentClientTypes {
 
-    public enum ModelQuality: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ModelQuality: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case cannotDetermineQuality
         case poorQualityDetected
         case qualityThresholdMet
@@ -650,7 +651,7 @@ extension LookoutEquipmentClientTypes {
 
 extension LookoutEquipmentClientTypes {
 
-    public enum InferenceSchedulerStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum InferenceSchedulerStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case pending
         case running
         case stopped
@@ -683,7 +684,7 @@ extension LookoutEquipmentClientTypes {
     }
 }
 
-public struct CreateInferenceSchedulerOutput {
+public struct CreateInferenceSchedulerOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the inference scheduler being created.
     public var inferenceSchedulerArn: Swift.String?
     /// The name of inference scheduler being created.
@@ -709,7 +710,7 @@ public struct CreateInferenceSchedulerOutput {
 
 extension LookoutEquipmentClientTypes {
 
-    public enum LabelRating: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum LabelRating: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case anomaly
         case neutral
         case noAnomaly
@@ -739,7 +740,7 @@ extension LookoutEquipmentClientTypes {
     }
 }
 
-public struct CreateLabelInput {
+public struct CreateLabelInput: Swift.Sendable {
     /// A unique identifier for the request to create a label. If you do not set the client request token, Lookout for Equipment generates one.
     /// This member is required.
     public var clientToken: Swift.String?
@@ -784,7 +785,7 @@ public struct CreateLabelInput {
     }
 }
 
-public struct CreateLabelOutput {
+public struct CreateLabelOutput: Swift.Sendable {
     /// The ID of the label that you have created.
     public var labelId: Swift.String?
 
@@ -796,7 +797,7 @@ public struct CreateLabelOutput {
     }
 }
 
-public struct CreateLabelGroupInput {
+public struct CreateLabelGroupInput: Swift.Sendable {
     /// A unique identifier for the request to create a label group. If you do not set the client request token, Lookout for Equipment generates one.
     /// This member is required.
     public var clientToken: Swift.String?
@@ -822,7 +823,7 @@ public struct CreateLabelGroupInput {
     }
 }
 
-public struct CreateLabelGroupOutput {
+public struct CreateLabelGroupOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the label group that you have created.
     public var labelGroupArn: Swift.String?
     /// The name of the label group that you have created. Data in this field will be retained for service usage. Follow best practices for the security of your data.
@@ -840,7 +841,7 @@ public struct CreateLabelGroupOutput {
 
 extension LookoutEquipmentClientTypes {
 
-    public enum TargetSamplingRate: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum TargetSamplingRate: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case pt10m
         case pt10s
         case pt15m
@@ -895,8 +896,9 @@ extension LookoutEquipmentClientTypes {
 }
 
 extension LookoutEquipmentClientTypes {
+
     /// The configuration is the TargetSamplingRate, which is the sampling rate of the data after post processing by Amazon Lookout for Equipment. For example, if you provide data that has been collected at a 1 second level and you want the system to resample the data at a 1 minute rate before training, the TargetSamplingRate is 1 minute. When providing a value for the TargetSamplingRate, you must attach the prefix "PT" to the rate you want. The value for a 1 second rate is therefore PT1S, the value for a 15 minute rate is PT15M, and the value for a 1 hour rate is PT1H
-    public struct DataPreProcessingConfiguration {
+    public struct DataPreProcessingConfiguration: Swift.Sendable {
         /// The sampling rate of the data after post processing by Amazon Lookout for Equipment. For example, if you provide data that has been collected at a 1 second level and you want the system to resample the data at a 1 minute rate before training, the TargetSamplingRate is 1 minute. When providing a value for the TargetSamplingRate, you must attach the prefix "PT" to the rate you want. The value for a 1 second rate is therefore PT1S, the value for a 15 minute rate is PT15M, and the value for a 1 hour rate is PT1H
         public var targetSamplingRate: LookoutEquipmentClientTypes.TargetSamplingRate?
 
@@ -907,12 +909,12 @@ extension LookoutEquipmentClientTypes {
             self.targetSamplingRate = targetSamplingRate
         }
     }
-
 }
 
 extension LookoutEquipmentClientTypes {
+
     /// The location information (prefix and bucket name) for the s3 location being used for label data.
-    public struct LabelsS3InputConfiguration {
+    public struct LabelsS3InputConfiguration: Swift.Sendable {
         /// The name of the S3 bucket holding the label data.
         /// This member is required.
         public var bucket: Swift.String?
@@ -928,12 +930,12 @@ extension LookoutEquipmentClientTypes {
             self.`prefix` = `prefix`
         }
     }
-
 }
 
 extension LookoutEquipmentClientTypes {
+
     /// Contains the configuration information for the S3 location being used to hold label data.
-    public struct LabelsInputConfiguration {
+    public struct LabelsInputConfiguration: Swift.Sendable {
         /// The name of the label group to be used for label data.
         public var labelGroupName: Swift.String?
         /// Contains location information for the S3 location being used for label data.
@@ -948,12 +950,12 @@ extension LookoutEquipmentClientTypes {
             self.s3InputConfiguration = s3InputConfiguration
         }
     }
-
 }
 
 extension LookoutEquipmentClientTypes {
+
     /// The Amazon S3 location for the pointwise model diagnostics for an Amazon Lookout for Equipment model.
-    public struct ModelDiagnosticsS3OutputConfiguration {
+    public struct ModelDiagnosticsS3OutputConfiguration: Swift.Sendable {
         /// The name of the Amazon S3 bucket where the pointwise model diagnostics are located. You must be the owner of the Amazon S3 bucket.
         /// This member is required.
         public var bucket: Swift.String?
@@ -969,12 +971,12 @@ extension LookoutEquipmentClientTypes {
             self.`prefix` = `prefix`
         }
     }
-
 }
 
 extension LookoutEquipmentClientTypes {
+
     /// Output configuration information for the pointwise model diagnostics for an Amazon Lookout for Equipment model.
-    public struct ModelDiagnosticsOutputConfiguration {
+    public struct ModelDiagnosticsOutputConfiguration: Swift.Sendable {
         /// The Amazon Web Services Key Management Service (KMS) key identifier to encrypt the pointwise model diagnostics files.
         public var kmsKeyId: Swift.String?
         /// The Amazon S3 location for the pointwise model diagnostics.
@@ -990,10 +992,9 @@ extension LookoutEquipmentClientTypes {
             self.s3OutputConfiguration = s3OutputConfiguration
         }
     }
-
 }
 
-public struct CreateModelInput {
+public struct CreateModelInput: Swift.Sendable {
     /// A unique identifier for the request. If you do not set the client request token, Amazon Lookout for Equipment generates one.
     /// This member is required.
     public var clientToken: Swift.String?
@@ -1066,7 +1067,7 @@ public struct CreateModelInput {
 
 extension LookoutEquipmentClientTypes {
 
-    public enum ModelStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ModelStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case failed
         case importInProgress
         case inProgress
@@ -1099,7 +1100,7 @@ extension LookoutEquipmentClientTypes {
     }
 }
 
-public struct CreateModelOutput {
+public struct CreateModelOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the model being created.
     public var modelArn: Swift.String?
     /// Indicates the status of the CreateModel operation.
@@ -1117,7 +1118,7 @@ public struct CreateModelOutput {
 
 extension LookoutEquipmentClientTypes {
 
-    public enum ModelPromoteMode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ModelPromoteMode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case managed
         case manual
         case sdkUnknown(Swift.String)
@@ -1144,7 +1145,7 @@ extension LookoutEquipmentClientTypes {
     }
 }
 
-public struct CreateRetrainingSchedulerInput {
+public struct CreateRetrainingSchedulerInput: Swift.Sendable {
     /// A unique identifier for the request. If you do not set the client request token, Amazon Lookout for Equipment generates one.
     /// This member is required.
     public var clientToken: Swift.String?
@@ -1188,7 +1189,7 @@ public struct CreateRetrainingSchedulerInput {
 
 extension LookoutEquipmentClientTypes {
 
-    public enum RetrainingSchedulerStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum RetrainingSchedulerStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case pending
         case running
         case stopped
@@ -1221,7 +1222,7 @@ extension LookoutEquipmentClientTypes {
     }
 }
 
-public struct CreateRetrainingSchedulerOutput {
+public struct CreateRetrainingSchedulerOutput: Swift.Sendable {
     /// The ARN of the model that you added the retraining scheduler to.
     public var modelArn: Swift.String?
     /// The name of the model that you added the retraining scheduler to.
@@ -1241,7 +1242,7 @@ public struct CreateRetrainingSchedulerOutput {
     }
 }
 
-public struct DeleteDatasetInput {
+public struct DeleteDatasetInput: Swift.Sendable {
     /// The name of the dataset to be deleted.
     /// This member is required.
     public var datasetName: Swift.String?
@@ -1254,7 +1255,7 @@ public struct DeleteDatasetInput {
     }
 }
 
-public struct DeleteInferenceSchedulerInput {
+public struct DeleteInferenceSchedulerInput: Swift.Sendable {
     /// The name of the inference scheduler to be deleted.
     /// This member is required.
     public var inferenceSchedulerName: Swift.String?
@@ -1267,7 +1268,7 @@ public struct DeleteInferenceSchedulerInput {
     }
 }
 
-public struct DeleteLabelInput {
+public struct DeleteLabelInput: Swift.Sendable {
     /// The name of the label group that contains the label that you want to delete. Data in this field will be retained for service usage. Follow best practices for the security of your data.
     /// This member is required.
     public var labelGroupName: Swift.String?
@@ -1285,7 +1286,7 @@ public struct DeleteLabelInput {
     }
 }
 
-public struct DeleteLabelGroupInput {
+public struct DeleteLabelGroupInput: Swift.Sendable {
     /// The name of the label group that you want to delete. Data in this field will be retained for service usage. Follow best practices for the security of your data.
     /// This member is required.
     public var labelGroupName: Swift.String?
@@ -1298,7 +1299,7 @@ public struct DeleteLabelGroupInput {
     }
 }
 
-public struct DeleteModelInput {
+public struct DeleteModelInput: Swift.Sendable {
     /// The name of the machine learning model to be deleted.
     /// This member is required.
     public var modelName: Swift.String?
@@ -1311,7 +1312,7 @@ public struct DeleteModelInput {
     }
 }
 
-public struct DeleteResourcePolicyInput {
+public struct DeleteResourcePolicyInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the resource for which the resource policy should be deleted.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -1324,7 +1325,7 @@ public struct DeleteResourcePolicyInput {
     }
 }
 
-public struct DeleteRetrainingSchedulerInput {
+public struct DeleteRetrainingSchedulerInput: Swift.Sendable {
     /// The name of the model whose retraining scheduler you want to delete.
     /// This member is required.
     public var modelName: Swift.String?
@@ -1337,7 +1338,7 @@ public struct DeleteRetrainingSchedulerInput {
     }
 }
 
-public struct DescribeDataIngestionJobInput {
+public struct DescribeDataIngestionJobInput: Swift.Sendable {
     /// The job ID of the data ingestion job.
     /// This member is required.
     public var jobId: Swift.String?
@@ -1351,8 +1352,9 @@ public struct DescribeDataIngestionJobInput {
 }
 
 extension LookoutEquipmentClientTypes {
+
     /// Entity that comprises information abount duplicate timestamps in the dataset.
-    public struct DuplicateTimestamps {
+    public struct DuplicateTimestamps: Swift.Sendable {
         /// Indicates the total number of duplicate timestamps.
         /// This member is required.
         public var totalNumberOfDuplicateTimestamps: Swift.Int?
@@ -1364,12 +1366,12 @@ extension LookoutEquipmentClientTypes {
             self.totalNumberOfDuplicateTimestamps = totalNumberOfDuplicateTimestamps
         }
     }
-
 }
 
 extension LookoutEquipmentClientTypes {
+
     /// Entity that comprises information on sensors that have sensor data completely missing.
-    public struct MissingCompleteSensorData {
+    public struct MissingCompleteSensorData: Swift.Sendable {
         /// Indicates the number of sensors that have data missing completely.
         /// This member is required.
         public var affectedSensorCount: Swift.Int?
@@ -1381,12 +1383,12 @@ extension LookoutEquipmentClientTypes {
             self.affectedSensorCount = affectedSensorCount
         }
     }
-
 }
 
 extension LookoutEquipmentClientTypes {
+
     /// Entity that comprises information on sensors that have shorter date range.
-    public struct SensorsWithShortDateRange {
+    public struct SensorsWithShortDateRange: Swift.Sendable {
         /// Indicates the number of sensors that have less than 14 days of data.
         /// This member is required.
         public var affectedSensorCount: Swift.Int?
@@ -1398,12 +1400,12 @@ extension LookoutEquipmentClientTypes {
             self.affectedSensorCount = affectedSensorCount
         }
     }
-
 }
 
 extension LookoutEquipmentClientTypes {
+
     /// Entity that comprises aggregated information on sensors having insufficient data.
-    public struct InsufficientSensorData {
+    public struct InsufficientSensorData: Swift.Sendable {
         /// Parameter that describes the total number of sensors that have data completely missing for it.
         /// This member is required.
         public var missingCompleteSensorData: LookoutEquipmentClientTypes.MissingCompleteSensorData?
@@ -1420,12 +1422,12 @@ extension LookoutEquipmentClientTypes {
             self.sensorsWithShortDateRange = sensorsWithShortDateRange
         }
     }
-
 }
 
 extension LookoutEquipmentClientTypes {
+
     /// Entity that comprises aggregated information on sensors having insufficient data.
-    public struct InvalidSensorData {
+    public struct InvalidSensorData: Swift.Sendable {
         /// Indicates the number of sensors that have at least some invalid values.
         /// This member is required.
         public var affectedSensorCount: Swift.Int?
@@ -1442,12 +1444,12 @@ extension LookoutEquipmentClientTypes {
             self.totalNumberOfInvalidValues = totalNumberOfInvalidValues
         }
     }
-
 }
 
 extension LookoutEquipmentClientTypes {
+
     /// Entity that comprises aggregated information on sensors having missing data.
-    public struct MissingSensorData {
+    public struct MissingSensorData: Swift.Sendable {
         /// Indicates the number of sensors that have atleast some data missing.
         /// This member is required.
         public var affectedSensorCount: Swift.Int?
@@ -1464,12 +1466,12 @@ extension LookoutEquipmentClientTypes {
             self.totalNumberOfMissingValues = totalNumberOfMissingValues
         }
     }
-
 }
 
 extension LookoutEquipmentClientTypes {
+
     /// Entity that comprises information abount unsupported timestamps in the dataset.
-    public struct UnsupportedTimestamps {
+    public struct UnsupportedTimestamps: Swift.Sendable {
         /// Indicates the total number of unsupported timestamps across the ingested data.
         /// This member is required.
         public var totalNumberOfUnsupportedTimestamps: Swift.Int?
@@ -1481,12 +1483,12 @@ extension LookoutEquipmentClientTypes {
             self.totalNumberOfUnsupportedTimestamps = totalNumberOfUnsupportedTimestamps
         }
     }
-
 }
 
 extension LookoutEquipmentClientTypes {
+
     /// DataQualitySummary gives aggregated statistics over all the sensors about a completed ingestion job. It primarily gives more information about statistics over different incorrect data like MissingCompleteSensorData, MissingSensorData, UnsupportedDateFormats, InsufficientSensorData, DuplicateTimeStamps.
-    public struct DataQualitySummary {
+    public struct DataQualitySummary: Swift.Sendable {
         /// Parameter that gives information about duplicate timestamps in the input data.
         /// This member is required.
         public var duplicateTimestamps: LookoutEquipmentClientTypes.DuplicateTimestamps?
@@ -1518,12 +1520,12 @@ extension LookoutEquipmentClientTypes {
             self.unsupportedTimestamps = unsupportedTimestamps
         }
     }
-
 }
 
 extension LookoutEquipmentClientTypes {
+
     /// Contains information about an S3 bucket.
-    public struct S3Object {
+    public struct S3Object: Swift.Sendable {
         /// The name of the specific S3 bucket.
         /// This member is required.
         public var bucket: Swift.String?
@@ -1540,12 +1542,12 @@ extension LookoutEquipmentClientTypes {
             self.key = key
         }
     }
-
 }
 
 extension LookoutEquipmentClientTypes {
+
     /// Gives statistics about how many files have been ingested, and which files have not been ingested, for a particular ingestion job.
-    public struct IngestedFilesSummary {
+    public struct IngestedFilesSummary: Swift.Sendable {
         /// Indicates the number of files that were discarded. A file could be discarded because its format is invalid (for example, a jpg or pdf) or not readable.
         public var discardedFiles: [LookoutEquipmentClientTypes.S3Object]?
         /// Indicates the number of files that were successfully ingested.
@@ -1566,12 +1568,12 @@ extension LookoutEquipmentClientTypes {
             self.totalNumberOfFiles = totalNumberOfFiles
         }
     }
-
 }
 
 extension LookoutEquipmentClientTypes {
+
     /// Specifies S3 configuration information for the input data for the data ingestion job.
-    public struct IngestionS3InputConfiguration {
+    public struct IngestionS3InputConfiguration: Swift.Sendable {
         /// The name of the S3 bucket used for the input data for the data ingestion.
         /// This member is required.
         public var bucket: Swift.String?
@@ -1591,12 +1593,12 @@ extension LookoutEquipmentClientTypes {
             self.`prefix` = `prefix`
         }
     }
-
 }
 
 extension LookoutEquipmentClientTypes {
+
     /// Specifies configuration information for the input data for the data ingestion job, including input data S3 location.
-    public struct IngestionInputConfiguration {
+    public struct IngestionInputConfiguration: Swift.Sendable {
         /// The location information for the S3 bucket used for input data for the data ingestion.
         /// This member is required.
         public var s3InputConfiguration: LookoutEquipmentClientTypes.IngestionS3InputConfiguration?
@@ -1608,12 +1610,11 @@ extension LookoutEquipmentClientTypes {
             self.s3InputConfiguration = s3InputConfiguration
         }
     }
-
 }
 
 extension LookoutEquipmentClientTypes {
 
-    public enum IngestionJobStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum IngestionJobStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case failed
         case importInProgress
         case inProgress
@@ -1646,7 +1647,7 @@ extension LookoutEquipmentClientTypes {
     }
 }
 
-public struct DescribeDataIngestionJobOutput {
+public struct DescribeDataIngestionJobOutput: Swift.Sendable {
     /// The time at which the data ingestion job was created.
     public var createdAt: Foundation.Date?
     /// Indicates the latest timestamp corresponding to data that was successfully ingested during this specific ingestion job.
@@ -1710,7 +1711,7 @@ public struct DescribeDataIngestionJobOutput {
     }
 }
 
-public struct DescribeDatasetInput {
+public struct DescribeDatasetInput: Swift.Sendable {
     /// The name of the dataset to be described.
     /// This member is required.
     public var datasetName: Swift.String?
@@ -1723,7 +1724,7 @@ public struct DescribeDatasetInput {
     }
 }
 
-public struct DescribeDatasetOutput {
+public struct DescribeDatasetOutput: Swift.Sendable {
     /// Specifies the time the dataset was created in Lookout for Equipment.
     public var createdAt: Foundation.Date?
     /// Indicates the latest timestamp corresponding to data that was successfully ingested during the most recent ingestion of this particular dataset.
@@ -1787,7 +1788,7 @@ public struct DescribeDatasetOutput {
     }
 }
 
-public struct DescribeInferenceSchedulerInput {
+public struct DescribeInferenceSchedulerInput: Swift.Sendable {
     /// The name of the inference scheduler being described.
     /// This member is required.
     public var inferenceSchedulerName: Swift.String?
@@ -1802,7 +1803,7 @@ public struct DescribeInferenceSchedulerInput {
 
 extension LookoutEquipmentClientTypes {
 
-    public enum LatestInferenceResult: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum LatestInferenceResult: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case anomalous
         case normal
         case sdkUnknown(Swift.String)
@@ -1829,7 +1830,7 @@ extension LookoutEquipmentClientTypes {
     }
 }
 
-public struct DescribeInferenceSchedulerOutput {
+public struct DescribeInferenceSchedulerOutput: Swift.Sendable {
     /// Specifies the time at which the inference scheduler was created.
     public var createdAt: Foundation.Date?
     /// A period of time (in minutes) by which inference on the data is delayed after the data starts. For instance, if you select an offset delay time of five minutes, inference will not begin on the data until the first data measurement after the five minute mark. For example, if five minutes is selected, the inference scheduler will wake up at the configured frequency with the additional five minute delay time to check the customer S3 bucket. The customer can upload data at the same frequency and they don't need to stop and restart the scheduler when uploading new data.
@@ -1893,7 +1894,7 @@ public struct DescribeInferenceSchedulerOutput {
     }
 }
 
-public struct DescribeLabelInput {
+public struct DescribeLabelInput: Swift.Sendable {
     /// Returns the name of the group containing the label.
     /// This member is required.
     public var labelGroupName: Swift.String?
@@ -1911,7 +1912,7 @@ public struct DescribeLabelInput {
     }
 }
 
-public struct DescribeLabelOutput {
+public struct DescribeLabelOutput: Swift.Sendable {
     /// The time at which the label was created.
     public var createdAt: Foundation.Date?
     /// The end time of the requested label.
@@ -1959,7 +1960,7 @@ public struct DescribeLabelOutput {
     }
 }
 
-public struct DescribeLabelGroupInput {
+public struct DescribeLabelGroupInput: Swift.Sendable {
     /// Returns the name of the label group.
     /// This member is required.
     public var labelGroupName: Swift.String?
@@ -1972,7 +1973,7 @@ public struct DescribeLabelGroupInput {
     }
 }
 
-public struct DescribeLabelGroupOutput {
+public struct DescribeLabelGroupOutput: Swift.Sendable {
     /// The time at which the label group was created.
     public var createdAt: Foundation.Date?
     /// Codes indicating the type of anomaly associated with the labels in the lagbel group.
@@ -2000,7 +2001,7 @@ public struct DescribeLabelGroupOutput {
     }
 }
 
-public struct DescribeModelInput {
+public struct DescribeModelInput: Swift.Sendable {
     /// The name of the machine learning model to be described.
     /// This member is required.
     public var modelName: Swift.String?
@@ -2015,7 +2016,7 @@ public struct DescribeModelInput {
 
 extension LookoutEquipmentClientTypes {
 
-    public enum ModelVersionStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ModelVersionStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case canceled
         case failed
         case importInProgress
@@ -2051,7 +2052,7 @@ extension LookoutEquipmentClientTypes {
     }
 }
 
-public struct DescribeModelOutput {
+public struct DescribeModelOutput: Swift.Sendable {
     /// Indicates the end time of the inference data that has been accumulated.
     public var accumulatedInferenceDataEndTime: Foundation.Date?
     /// Indicates the start time of the inference data that has been accumulated.
@@ -2227,7 +2228,7 @@ public struct DescribeModelOutput {
     }
 }
 
-public struct DescribeModelVersionInput {
+public struct DescribeModelVersionInput: Swift.Sendable {
     /// The name of the machine learning model that this version belongs to.
     /// This member is required.
     public var modelName: Swift.String?
@@ -2247,7 +2248,7 @@ public struct DescribeModelVersionInput {
 
 extension LookoutEquipmentClientTypes {
 
-    public enum ModelVersionSourceType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ModelVersionSourceType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case `import`
         case retraining
         case training
@@ -2277,7 +2278,7 @@ extension LookoutEquipmentClientTypes {
     }
 }
 
-public struct DescribeModelVersionOutput {
+public struct DescribeModelVersionOutput: Swift.Sendable {
     /// Indicates whether the model version was promoted to be the active version after retraining or if there was an error with or cancellation of the retraining.
     public var autoPromotionResult: LookoutEquipmentClientTypes.AutoPromotionResult?
     /// Indicates the reason for the AutoPromotionResult. For example, a model might not be promoted if its performance was worse than the active version, if there was an error during training, or if the retraining scheduler was using MANUAL promote mode. The model will be promoted in MANAGED promote mode if the performance is better than the previous model.
@@ -2425,7 +2426,7 @@ public struct DescribeModelVersionOutput {
     }
 }
 
-public struct DescribeResourcePolicyInput {
+public struct DescribeResourcePolicyInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the resource that is associated with the resource policy.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -2438,7 +2439,7 @@ public struct DescribeResourcePolicyInput {
     }
 }
 
-public struct DescribeResourcePolicyOutput {
+public struct DescribeResourcePolicyOutput: Swift.Sendable {
     /// The time when the resource policy was created.
     public var creationTime: Foundation.Date?
     /// The time when the resource policy was last modified.
@@ -2462,7 +2463,7 @@ public struct DescribeResourcePolicyOutput {
     }
 }
 
-public struct DescribeRetrainingSchedulerInput {
+public struct DescribeRetrainingSchedulerInput: Swift.Sendable {
     /// The name of the model that the retraining scheduler is attached to.
     /// This member is required.
     public var modelName: Swift.String?
@@ -2475,7 +2476,7 @@ public struct DescribeRetrainingSchedulerInput {
     }
 }
 
-public struct DescribeRetrainingSchedulerOutput {
+public struct DescribeRetrainingSchedulerOutput: Swift.Sendable {
     /// Indicates the time and date at which the retraining scheduler was created.
     public var createdAt: Foundation.Date?
     /// The number of past days of data used for retraining.
@@ -2519,7 +2520,7 @@ public struct DescribeRetrainingSchedulerOutput {
     }
 }
 
-public struct ImportDatasetInput {
+public struct ImportDatasetInput: Swift.Sendable {
     /// A unique identifier for the request. If you do not set the client request token, Amazon Lookout for Equipment generates one.
     /// This member is required.
     public var clientToken: Swift.String?
@@ -2549,7 +2550,7 @@ public struct ImportDatasetInput {
     }
 }
 
-public struct ImportDatasetOutput {
+public struct ImportDatasetOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the dataset that was imported.
     public var datasetArn: Swift.String?
     /// The name of the created machine learning dataset.
@@ -2575,7 +2576,7 @@ public struct ImportDatasetOutput {
 
 extension LookoutEquipmentClientTypes {
 
-    public enum InferenceDataImportStrategy: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum InferenceDataImportStrategy: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case addWhenEmpty
         case noImport
         case overwrite
@@ -2605,7 +2606,7 @@ extension LookoutEquipmentClientTypes {
     }
 }
 
-public struct ImportModelVersionInput {
+public struct ImportModelVersionInput: Swift.Sendable {
     /// A unique identifier for the request. If you do not set the client request token, Amazon Lookout for Equipment generates one.
     /// This member is required.
     public var clientToken: Swift.String?
@@ -2658,7 +2659,7 @@ public struct ImportModelVersionInput {
     }
 }
 
-public struct ImportModelVersionOutput {
+public struct ImportModelVersionOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the model being created.
     public var modelArn: Swift.String?
     /// The name for the machine learning model.
@@ -2686,7 +2687,7 @@ public struct ImportModelVersionOutput {
     }
 }
 
-public struct ListDataIngestionJobsInput {
+public struct ListDataIngestionJobsInput: Swift.Sendable {
     /// The name of the dataset being used for the data ingestion job.
     public var datasetName: Swift.String?
     /// Specifies the maximum number of data ingestion jobs to list.
@@ -2711,8 +2712,9 @@ public struct ListDataIngestionJobsInput {
 }
 
 extension LookoutEquipmentClientTypes {
+
     /// Provides information about a specified data ingestion job, including dataset information, data ingestion configuration, and status.
-    public struct DataIngestionJobSummary {
+    public struct DataIngestionJobSummary: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the dataset used in the data ingestion job.
         public var datasetArn: Swift.String?
         /// The name of the dataset used for the data ingestion job.
@@ -2739,10 +2741,9 @@ extension LookoutEquipmentClientTypes {
             self.status = status
         }
     }
-
 }
 
-public struct ListDataIngestionJobsOutput {
+public struct ListDataIngestionJobsOutput: Swift.Sendable {
     /// Specifies information about the specific data ingestion job, including dataset name and status.
     public var dataIngestionJobSummaries: [LookoutEquipmentClientTypes.DataIngestionJobSummary]?
     /// An opaque pagination token indicating where to continue the listing of data ingestion jobs.
@@ -2758,7 +2759,7 @@ public struct ListDataIngestionJobsOutput {
     }
 }
 
-public struct ListDatasetsInput {
+public struct ListDatasetsInput: Swift.Sendable {
     /// The beginning of the name of the datasets to be listed.
     public var datasetNameBeginsWith: Swift.String?
     /// Specifies the maximum number of datasets to list.
@@ -2779,8 +2780,9 @@ public struct ListDatasetsInput {
 }
 
 extension LookoutEquipmentClientTypes {
+
     /// Contains information about the specific data set, including name, ARN, and status.
-    public struct DatasetSummary {
+    public struct DatasetSummary: Swift.Sendable {
         /// The time at which the dataset was created in Amazon Lookout for Equipment.
         public var createdAt: Foundation.Date?
         /// The Amazon Resource Name (ARN) of the specified dataset.
@@ -2803,10 +2805,9 @@ extension LookoutEquipmentClientTypes {
             self.status = status
         }
     }
-
 }
 
-public struct ListDatasetsOutput {
+public struct ListDatasetsOutput: Swift.Sendable {
     /// Provides information about the specified dataset, including creation time, dataset ARN, and status.
     public var datasetSummaries: [LookoutEquipmentClientTypes.DatasetSummary]?
     /// An opaque pagination token indicating where to continue the listing of datasets.
@@ -2822,7 +2823,7 @@ public struct ListDatasetsOutput {
     }
 }
 
-public struct ListInferenceEventsInput {
+public struct ListInferenceEventsInput: Swift.Sendable {
     /// The name of the inference scheduler for the inference events listed.
     /// This member is required.
     public var inferenceSchedulerName: Swift.String?
@@ -2854,8 +2855,9 @@ public struct ListInferenceEventsInput {
 }
 
 extension LookoutEquipmentClientTypes {
+
     /// Contains information about the specific inference event, including start and end time, diagnostics information, event duration and so on.
-    public struct InferenceEventSummary {
+    public struct InferenceEventSummary: Swift.Sendable {
         /// An array which specifies the names and values of all sensors contributing to an inference event.
         public var diagnostics: Swift.String?
         /// Indicates the size of an inference event in seconds.
@@ -2886,10 +2888,9 @@ extension LookoutEquipmentClientTypes {
             self.inferenceSchedulerName = inferenceSchedulerName
         }
     }
-
 }
 
-public struct ListInferenceEventsOutput {
+public struct ListInferenceEventsOutput: Swift.Sendable {
     /// Provides an array of information about the individual inference events returned from the ListInferenceEvents operation, including scheduler used, event start time, event end time, diagnostics, and so on.
     public var inferenceEventSummaries: [LookoutEquipmentClientTypes.InferenceEventSummary]?
     /// An opaque pagination token indicating where to continue the listing of inference executions.
@@ -2907,7 +2908,7 @@ public struct ListInferenceEventsOutput {
 
 extension LookoutEquipmentClientTypes {
 
-    public enum InferenceExecutionStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum InferenceExecutionStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case failed
         case inProgress
         case success
@@ -2937,7 +2938,7 @@ extension LookoutEquipmentClientTypes {
     }
 }
 
-public struct ListInferenceExecutionsInput {
+public struct ListInferenceExecutionsInput: Swift.Sendable {
     /// The time reference in the inferenced dataset before which Amazon Lookout for Equipment stopped the inference execution.
     public var dataEndTimeBefore: Foundation.Date?
     /// The time reference in the inferenced dataset after which Amazon Lookout for Equipment started the inference execution.
@@ -2971,8 +2972,9 @@ public struct ListInferenceExecutionsInput {
 }
 
 extension LookoutEquipmentClientTypes {
+
     /// Contains information about the specific inference execution, including input and output data configuration, inference scheduling information, status, and so on.
-    public struct InferenceExecutionSummary {
+    public struct InferenceExecutionSummary: Swift.Sendable {
         /// The S3 object that the inference execution results were uploaded to.
         public var customerResultObject: LookoutEquipmentClientTypes.S3Object?
         /// Indicates the time reference in the dataset at which the inference execution stopped.
@@ -3035,10 +3037,9 @@ extension LookoutEquipmentClientTypes {
             self.status = status
         }
     }
-
 }
 
-public struct ListInferenceExecutionsOutput {
+public struct ListInferenceExecutionsOutput: Swift.Sendable {
     /// Provides an array of information about the individual inference executions returned from the ListInferenceExecutions operation, including model used, inference scheduler, data configuration, and so on. If you don't supply the InferenceSchedulerName request parameter, or if you supply the name of an inference scheduler that doesn't exist, ListInferenceExecutions returns an empty array in InferenceExecutionSummaries.
     public var inferenceExecutionSummaries: [LookoutEquipmentClientTypes.InferenceExecutionSummary]?
     /// An opaque pagination token indicating where to continue the listing of inference executions.
@@ -3054,7 +3055,7 @@ public struct ListInferenceExecutionsOutput {
     }
 }
 
-public struct ListInferenceSchedulersInput {
+public struct ListInferenceSchedulersInput: Swift.Sendable {
     /// The beginning of the name of the inference schedulers to be listed.
     public var inferenceSchedulerNameBeginsWith: Swift.String?
     /// Specifies the maximum number of inference schedulers to list.
@@ -3083,8 +3084,9 @@ public struct ListInferenceSchedulersInput {
 }
 
 extension LookoutEquipmentClientTypes {
+
     /// Contains information about the specific inference scheduler, including data delay offset, model name and ARN, status, and so on.
-    public struct InferenceSchedulerSummary {
+    public struct InferenceSchedulerSummary: Swift.Sendable {
         /// A period of time (in minutes) by which inference on the data is delayed after the data starts. For instance, if an offset delay time of five minutes was selected, inference will not begin on the data until the first data measurement after the five minute mark. For example, if five minutes is selected, the inference scheduler will wake up at the configured frequency with the additional five minute delay time to check the customer S3 bucket. The customer can upload data at the same frequency and they don't need to stop and restart the scheduler when uploading new data.
         public var dataDelayOffsetInMinutes: Swift.Int?
         /// How often data is uploaded to the source S3 bucket for the input data. This value is the length of time between data uploads. For instance, if you select 5 minutes, Amazon Lookout for Equipment will upload the real-time data to the source bucket once every 5 minutes. This frequency also determines how often Amazon Lookout for Equipment starts a scheduled inference on your data. In this example, it starts once every 5 minutes.
@@ -3123,10 +3125,9 @@ extension LookoutEquipmentClientTypes {
             self.status = status
         }
     }
-
 }
 
-public struct ListInferenceSchedulersOutput {
+public struct ListInferenceSchedulersOutput: Swift.Sendable {
     /// Provides information about the specified inference scheduler, including data upload frequency, model name and ARN, and status.
     public var inferenceSchedulerSummaries: [LookoutEquipmentClientTypes.InferenceSchedulerSummary]?
     /// An opaque pagination token indicating where to continue the listing of inference schedulers.
@@ -3142,7 +3143,7 @@ public struct ListInferenceSchedulersOutput {
     }
 }
 
-public struct ListLabelGroupsInput {
+public struct ListLabelGroupsInput: Swift.Sendable {
     /// The beginning of the name of the label groups to be listed.
     public var labelGroupNameBeginsWith: Swift.String?
     /// Specifies the maximum number of label groups to list.
@@ -3163,8 +3164,9 @@ public struct ListLabelGroupsInput {
 }
 
 extension LookoutEquipmentClientTypes {
+
     /// Contains information about the label group.
-    public struct LabelGroupSummary {
+    public struct LabelGroupSummary: Swift.Sendable {
         /// The time at which the label group was created.
         public var createdAt: Foundation.Date?
         /// The Amazon Resource Name (ARN) of the label group.
@@ -3187,10 +3189,9 @@ extension LookoutEquipmentClientTypes {
             self.updatedAt = updatedAt
         }
     }
-
 }
 
-public struct ListLabelGroupsOutput {
+public struct ListLabelGroupsOutput: Swift.Sendable {
     /// A summary of the label groups.
     public var labelGroupSummaries: [LookoutEquipmentClientTypes.LabelGroupSummary]?
     /// An opaque pagination token indicating where to continue the listing of label groups.
@@ -3206,7 +3207,7 @@ public struct ListLabelGroupsOutput {
     }
 }
 
-public struct ListLabelsInput {
+public struct ListLabelsInput: Swift.Sendable {
     /// Lists the labels that pertain to a particular piece of equipment.
     public var equipment: Swift.String?
     /// Returns labels with a particular fault code.
@@ -3244,8 +3245,9 @@ public struct ListLabelsInput {
 }
 
 extension LookoutEquipmentClientTypes {
+
     /// Information about the label.
-    public struct LabelSummary {
+    public struct LabelSummary: Swift.Sendable {
         /// The time at which the label was created.
         public var createdAt: Foundation.Date?
         /// The timestamp indicating the end of the label.
@@ -3288,10 +3290,9 @@ extension LookoutEquipmentClientTypes {
             self.startTime = startTime
         }
     }
-
 }
 
-public struct ListLabelsOutput {
+public struct ListLabelsOutput: Swift.Sendable {
     /// A summary of the items in the label group. If you don't supply the LabelGroupName request parameter, or if you supply the name of a label group that doesn't exist, ListLabels returns an empty array in LabelSummaries.
     public var labelSummaries: [LookoutEquipmentClientTypes.LabelSummary]?
     /// An opaque pagination token indicating where to continue the listing of datasets.
@@ -3307,7 +3308,7 @@ public struct ListLabelsOutput {
     }
 }
 
-public struct ListModelsInput {
+public struct ListModelsInput: Swift.Sendable {
     /// The beginning of the name of the dataset of the machine learning models to be listed.
     public var datasetNameBeginsWith: Swift.String?
     /// Specifies the maximum number of machine learning models to list.
@@ -3336,8 +3337,9 @@ public struct ListModelsInput {
 }
 
 extension LookoutEquipmentClientTypes {
+
     /// Provides information about the specified machine learning model, including dataset and model names and ARNs, as well as status.
-    public struct ModelSummary {
+    public struct ModelSummary: Swift.Sendable {
         /// The model version that the inference scheduler uses to run an inference execution.
         public var activeModelVersion: Swift.Int?
         /// The Amazon Resource Name (ARN) of the model version that is set as active. The active model version is the model version that the inference scheduler uses to run an inference execution.
@@ -3404,10 +3406,9 @@ extension LookoutEquipmentClientTypes {
             self.status = status
         }
     }
-
 }
 
-public struct ListModelsOutput {
+public struct ListModelsOutput: Swift.Sendable {
     /// Provides information on the specified model, including created time, model and dataset ARNs, and status.
     public var modelSummaries: [LookoutEquipmentClientTypes.ModelSummary]?
     /// An opaque pagination token indicating where to continue the listing of machine learning models.
@@ -3423,7 +3424,7 @@ public struct ListModelsOutput {
     }
 }
 
-public struct ListModelVersionsInput {
+public struct ListModelVersionsInput: Swift.Sendable {
     /// Filter results to return all the model versions created before this time.
     public var createdAtEndTime: Foundation.Date?
     /// Filter results to return all the model versions created after this time.
@@ -3469,8 +3470,9 @@ public struct ListModelVersionsInput {
 }
 
 extension LookoutEquipmentClientTypes {
+
     /// Contains information about the specific model version.
-    public struct ModelVersionSummary {
+    public struct ModelVersionSummary: Swift.Sendable {
         /// The time when this model version was created.
         public var createdAt: Foundation.Date?
         /// The Amazon Resource Name (ARN) of the model that this model version is a version of.
@@ -3509,10 +3511,9 @@ extension LookoutEquipmentClientTypes {
             self.status = status
         }
     }
-
 }
 
-public struct ListModelVersionsOutput {
+public struct ListModelVersionsOutput: Swift.Sendable {
     /// Provides information on the specified model version, including the created time, model and dataset ARNs, and status. If you don't supply the ModelName request parameter, or if you supply the name of a model that doesn't exist, ListModelVersions returns an empty array in ModelVersionSummaries.
     public var modelVersionSummaries: [LookoutEquipmentClientTypes.ModelVersionSummary]?
     /// If the total number of results exceeds the limit that the response can display, the response returns an opaque pagination token indicating where to continue the listing of machine learning model versions. Use this token in the NextToken field in the request to list the next page of results.
@@ -3528,7 +3529,7 @@ public struct ListModelVersionsOutput {
     }
 }
 
-public struct ListRetrainingSchedulersInput {
+public struct ListRetrainingSchedulersInput: Swift.Sendable {
     /// Specifies the maximum number of retraining schedulers to list.
     public var maxResults: Swift.Int?
     /// Specify this field to only list retraining schedulers whose machine learning models begin with the value you specify.
@@ -3553,8 +3554,9 @@ public struct ListRetrainingSchedulersInput {
 }
 
 extension LookoutEquipmentClientTypes {
+
     /// Provides information about the specified retraining scheduler, including model name, status, start date, frequency, and lookback window.
-    public struct RetrainingSchedulerSummary {
+    public struct RetrainingSchedulerSummary: Swift.Sendable {
         /// The number of past days of data used for retraining.
         public var lookbackWindow: Swift.String?
         /// The ARN of the model that the retraining scheduler is attached to.
@@ -3585,10 +3587,9 @@ extension LookoutEquipmentClientTypes {
             self.status = status
         }
     }
-
 }
 
-public struct ListRetrainingSchedulersOutput {
+public struct ListRetrainingSchedulersOutput: Swift.Sendable {
     /// If the number of results exceeds the maximum, this pagination token is returned. Use this token in the request to show the next page of retraining schedulers.
     public var nextToken: Swift.String?
     /// Provides information on the specified retraining scheduler, including the model name, model ARN, status, and start date.
@@ -3604,7 +3605,7 @@ public struct ListRetrainingSchedulersOutput {
     }
 }
 
-public struct ListSensorStatisticsInput {
+public struct ListSensorStatisticsInput: Swift.Sendable {
     /// The name of the dataset associated with the list of Sensor Statistics.
     /// This member is required.
     public var datasetName: Swift.String?
@@ -3631,7 +3632,7 @@ public struct ListSensorStatisticsInput {
 
 extension LookoutEquipmentClientTypes {
 
-    public enum StatisticalIssueStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum StatisticalIssueStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case noIssueDetected
         case potentialIssueDetected
         case sdkUnknown(Swift.String)
@@ -3659,8 +3660,9 @@ extension LookoutEquipmentClientTypes {
 }
 
 extension LookoutEquipmentClientTypes {
+
     /// Entity that comprises information on categorical values in data.
-    public struct CategoricalValues {
+    public struct CategoricalValues: Swift.Sendable {
         /// Indicates the number of categories in the data.
         public var numberOfCategory: Swift.Int?
         /// Indicates whether there is a potential data issue related to categorical values.
@@ -3676,12 +3678,12 @@ extension LookoutEquipmentClientTypes {
             self.status = status
         }
     }
-
 }
 
 extension LookoutEquipmentClientTypes {
+
     /// Entity that comprises information of count and percentage.
-    public struct CountPercent {
+    public struct CountPercent: Swift.Sendable {
         /// Indicates the count of occurences of the given statistic.
         /// This member is required.
         public var count: Swift.Int?
@@ -3698,12 +3700,12 @@ extension LookoutEquipmentClientTypes {
             self.percentage = percentage
         }
     }
-
 }
 
 extension LookoutEquipmentClientTypes {
+
     /// Entity that comprises information on large gaps between consecutive timestamps in data.
-    public struct LargeTimestampGaps {
+    public struct LargeTimestampGaps: Swift.Sendable {
         /// Indicates the size of the largest timestamp gap, in days.
         public var maxTimestampGapInDays: Swift.Int?
         /// Indicates the number of large timestamp gaps, if there are any.
@@ -3723,12 +3725,11 @@ extension LookoutEquipmentClientTypes {
             self.status = status
         }
     }
-
 }
 
 extension LookoutEquipmentClientTypes {
 
-    public enum Monotonicity: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Monotonicity: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case decreasing
         case increasing
         case `static`
@@ -3759,8 +3760,9 @@ extension LookoutEquipmentClientTypes {
 }
 
 extension LookoutEquipmentClientTypes {
+
     /// Entity that comprises information on monotonic values in the data.
-    public struct MonotonicValues {
+    public struct MonotonicValues: Swift.Sendable {
         /// Indicates the monotonicity of values. Can be INCREASING, DECREASING, or STATIC.
         public var monotonicity: LookoutEquipmentClientTypes.Monotonicity?
         /// Indicates whether there is a potential data issue related to having monotonic values.
@@ -3776,12 +3778,12 @@ extension LookoutEquipmentClientTypes {
             self.status = status
         }
     }
-
 }
 
 extension LookoutEquipmentClientTypes {
+
     /// Entity that comprises information on operating modes in data.
-    public struct MultipleOperatingModes {
+    public struct MultipleOperatingModes: Swift.Sendable {
         /// Indicates whether there is a potential data issue related to having multiple operating modes.
         /// This member is required.
         public var status: LookoutEquipmentClientTypes.StatisticalIssueStatus?
@@ -3793,12 +3795,12 @@ extension LookoutEquipmentClientTypes {
             self.status = status
         }
     }
-
 }
 
 extension LookoutEquipmentClientTypes {
+
     /// Summary of ingestion statistics like whether data exists, number of missing values, number of invalid values and so on related to the particular sensor.
-    public struct SensorStatisticsSummary {
+    public struct SensorStatisticsSummary: Swift.Sendable {
         /// Parameter that describes potential risk about whether data associated with the sensor is categorical.
         public var categoricalValues: LookoutEquipmentClientTypes.CategoricalValues?
         /// Name of the component to which the particular sensor belongs for which the statistics belong to.
@@ -3857,10 +3859,9 @@ extension LookoutEquipmentClientTypes {
             self.sensorName = sensorName
         }
     }
-
 }
 
-public struct ListSensorStatisticsOutput {
+public struct ListSensorStatisticsOutput: Swift.Sendable {
     /// An opaque pagination token indicating where to continue the listing of sensor statistics.
     public var nextToken: Swift.String?
     /// Provides ingestion-based statistics regarding the specified sensor with respect to various validation types, such as whether data exists, the number and percentage of missing values, and the number and percentage of duplicate timestamps.
@@ -3876,7 +3877,7 @@ public struct ListSensorStatisticsOutput {
     }
 }
 
-public struct ListTagsForResourceInput {
+public struct ListTagsForResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the resource (such as the dataset or model) that is the focus of the ListTagsForResource operation.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -3889,7 +3890,7 @@ public struct ListTagsForResourceInput {
     }
 }
 
-public struct ListTagsForResourceOutput {
+public struct ListTagsForResourceOutput: Swift.Sendable {
     /// Any tags associated with the resource.
     public var tags: [LookoutEquipmentClientTypes.Tag]?
 
@@ -3901,7 +3902,7 @@ public struct ListTagsForResourceOutput {
     }
 }
 
-public struct PutResourcePolicyInput {
+public struct PutResourcePolicyInput: Swift.Sendable {
     /// A unique identifier for the request. If you do not set the client request token, Amazon Lookout for Equipment generates one.
     /// This member is required.
     public var clientToken: Swift.String?
@@ -3928,7 +3929,7 @@ public struct PutResourcePolicyInput {
     }
 }
 
-public struct PutResourcePolicyOutput {
+public struct PutResourcePolicyOutput: Swift.Sendable {
     /// A unique identifier for a revision of the resource policy.
     public var policyRevisionId: Swift.String?
     /// The Amazon Resource Name (ARN) of the resource for which the policy was created.
@@ -3944,7 +3945,7 @@ public struct PutResourcePolicyOutput {
     }
 }
 
-public struct StartDataIngestionJobInput {
+public struct StartDataIngestionJobInput: Swift.Sendable {
     /// A unique identifier for the request. If you do not set the client request token, Amazon Lookout for Equipment generates one.
     /// This member is required.
     public var clientToken: Swift.String?
@@ -3972,7 +3973,7 @@ public struct StartDataIngestionJobInput {
     }
 }
 
-public struct StartDataIngestionJobOutput {
+public struct StartDataIngestionJobOutput: Swift.Sendable {
     /// Indicates the job ID of the data ingestion job.
     public var jobId: Swift.String?
     /// Indicates the status of the StartDataIngestionJob operation.
@@ -3988,7 +3989,7 @@ public struct StartDataIngestionJobOutput {
     }
 }
 
-public struct StartInferenceSchedulerInput {
+public struct StartInferenceSchedulerInput: Swift.Sendable {
     /// The name of the inference scheduler to be started.
     /// This member is required.
     public var inferenceSchedulerName: Swift.String?
@@ -4001,7 +4002,7 @@ public struct StartInferenceSchedulerInput {
     }
 }
 
-public struct StartInferenceSchedulerOutput {
+public struct StartInferenceSchedulerOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the inference scheduler being started.
     public var inferenceSchedulerArn: Swift.String?
     /// The name of the inference scheduler being started.
@@ -4029,7 +4030,7 @@ public struct StartInferenceSchedulerOutput {
     }
 }
 
-public struct StartRetrainingSchedulerInput {
+public struct StartRetrainingSchedulerInput: Swift.Sendable {
     /// The name of the model whose retraining scheduler you want to start.
     /// This member is required.
     public var modelName: Swift.String?
@@ -4042,7 +4043,7 @@ public struct StartRetrainingSchedulerInput {
     }
 }
 
-public struct StartRetrainingSchedulerOutput {
+public struct StartRetrainingSchedulerOutput: Swift.Sendable {
     /// The ARN of the model whose retraining scheduler is being started.
     public var modelArn: Swift.String?
     /// The name of the model whose retraining scheduler is being started.
@@ -4062,7 +4063,7 @@ public struct StartRetrainingSchedulerOutput {
     }
 }
 
-public struct StopInferenceSchedulerInput {
+public struct StopInferenceSchedulerInput: Swift.Sendable {
     /// The name of the inference scheduler to be stopped.
     /// This member is required.
     public var inferenceSchedulerName: Swift.String?
@@ -4075,7 +4076,7 @@ public struct StopInferenceSchedulerInput {
     }
 }
 
-public struct StopInferenceSchedulerOutput {
+public struct StopInferenceSchedulerOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the inference schedule being stopped.
     public var inferenceSchedulerArn: Swift.String?
     /// The name of the inference scheduler being stopped.
@@ -4103,7 +4104,7 @@ public struct StopInferenceSchedulerOutput {
     }
 }
 
-public struct StopRetrainingSchedulerInput {
+public struct StopRetrainingSchedulerInput: Swift.Sendable {
     /// The name of the model whose retraining scheduler you want to stop.
     /// This member is required.
     public var modelName: Swift.String?
@@ -4116,7 +4117,7 @@ public struct StopRetrainingSchedulerInput {
     }
 }
 
-public struct StopRetrainingSchedulerOutput {
+public struct StopRetrainingSchedulerOutput: Swift.Sendable {
     /// The ARN of the model whose retraining scheduler is being stopped.
     public var modelArn: Swift.String?
     /// The name of the model whose retraining scheduler is being stopped.
@@ -4136,7 +4137,7 @@ public struct StopRetrainingSchedulerOutput {
     }
 }
 
-public struct TagResourceInput {
+public struct TagResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the specific resource to which the tag should be associated.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -4154,12 +4155,12 @@ public struct TagResourceInput {
     }
 }
 
-public struct TagResourceOutput {
+public struct TagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UntagResourceInput {
+public struct UntagResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the resource to which the tag is currently associated.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -4177,12 +4178,12 @@ public struct UntagResourceInput {
     }
 }
 
-public struct UntagResourceOutput {
+public struct UntagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdateActiveModelVersionInput {
+public struct UpdateActiveModelVersionInput: Swift.Sendable {
     /// The name of the machine learning model for which the active model version is being set.
     /// This member is required.
     public var modelName: Swift.String?
@@ -4200,7 +4201,7 @@ public struct UpdateActiveModelVersionInput {
     }
 }
 
-public struct UpdateActiveModelVersionOutput {
+public struct UpdateActiveModelVersionOutput: Swift.Sendable {
     /// The version that is currently active of the machine learning model for which the active model version was set.
     public var currentActiveVersion: Swift.Int?
     /// The Amazon Resource Name (ARN) of the machine learning model version that is the current active model version.
@@ -4232,7 +4233,7 @@ public struct UpdateActiveModelVersionOutput {
     }
 }
 
-public struct UpdateInferenceSchedulerInput {
+public struct UpdateInferenceSchedulerInput: Swift.Sendable {
     /// A period of time (in minutes) by which inference on the data is delayed after the data starts. For instance, if you select an offset delay time of five minutes, inference will not begin on the data until the first data measurement after the five minute mark. For example, if five minutes is selected, the inference scheduler will wake up at the configured frequency with the additional five minute delay time to check the customer S3 bucket. The customer can upload data at the same frequency and they don't need to stop and restart the scheduler when uploading new data.
     public var dataDelayOffsetInMinutes: Swift.Int?
     /// Specifies information for the input data for the inference scheduler, including delimiter, format, and dataset location.
@@ -4265,7 +4266,7 @@ public struct UpdateInferenceSchedulerInput {
     }
 }
 
-public struct UpdateLabelGroupInput {
+public struct UpdateLabelGroupInput: Swift.Sendable {
     /// Updates the code indicating the type of anomaly associated with the label. Data in this field will be retained for service usage. Follow best practices for the security of your data.
     public var faultCodes: [Swift.String]?
     /// The name of the label group to be updated.
@@ -4282,7 +4283,7 @@ public struct UpdateLabelGroupInput {
     }
 }
 
-public struct UpdateModelInput {
+public struct UpdateModelInput: Swift.Sendable {
     /// Contains the configuration information for the S3 location being used to hold label data.
     public var labelsInputConfiguration: LookoutEquipmentClientTypes.LabelsInputConfiguration?
     /// The Amazon S3 location where you want Amazon Lookout for Equipment to save the pointwise model diagnostics for the model. You must also specify the RoleArn request parameter.
@@ -4307,7 +4308,7 @@ public struct UpdateModelInput {
     }
 }
 
-public struct UpdateRetrainingSchedulerInput {
+public struct UpdateRetrainingSchedulerInput: Swift.Sendable {
     /// The number of past days of data that will be used for retraining.
     public var lookbackWindow: Swift.String?
     /// The name of the model whose retraining scheduler you want to update.

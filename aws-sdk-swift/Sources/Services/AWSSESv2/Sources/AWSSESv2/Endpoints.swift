@@ -36,6 +36,12 @@ public struct EndpointParams {
         self.useDualStack = useDualStack
         self.useFIPS = useFIPS
     }
+    public init (authSchemeParams: SESv2AuthSchemeResolverParameters) {
+        self.endpoint = authSchemeParams.endpoint
+        self.region = authSchemeParams.region
+        self.useDualStack = authSchemeParams.useDualStack
+        self.useFIPS = authSchemeParams.useFIPS
+    }
 }
 
 extension EndpointParams: ClientRuntime.EndpointsRequestContextProviding {

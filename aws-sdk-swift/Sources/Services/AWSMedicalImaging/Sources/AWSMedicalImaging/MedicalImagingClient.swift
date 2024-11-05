@@ -243,6 +243,7 @@ extension MedicalImagingClient {
         }
         builder.interceptors.add(ClientRuntime.URLPathMiddleware<CopyImageSetInput, CopyImageSetOutput>(CopyImageSetInput.urlPathProvider(_:)))
         builder.interceptors.add(ClientRuntime.URLHostMiddleware<CopyImageSetInput, CopyImageSetOutput>(hostPrefix: "runtime-"))
+        builder.serialize(ClientRuntime.QueryItemMiddleware<CopyImageSetInput, CopyImageSetOutput>(CopyImageSetInput.queryItemProvider(_:)))
         builder.interceptors.add(ClientRuntime.ContentTypeMiddleware<CopyImageSetInput, CopyImageSetOutput>(contentType: "application/json"))
         builder.serialize(ClientRuntime.PayloadBodyMiddleware<CopyImageSetInput, CopyImageSetOutput, MedicalImagingClientTypes.CopyImageSetInformation, SmithyJSON.Writer>(rootNodeInfo: "", inputWritingClosure: MedicalImagingClientTypes.CopyImageSetInformation.write(value:to:), keyPath: \.copyImageSetInformation, defaultBody: "{}"))
         builder.interceptors.add(ClientRuntime.ContentLengthMiddleware<CopyImageSetInput, CopyImageSetOutput>())

@@ -26,8 +26,9 @@ import protocol ClientRuntime.ModeledError
 @_spi(UnknownAWSHTTPServiceError) import struct AWSClientRuntime.UnknownAWSHTTPServiceError
 
 extension OpsWorksCMClientTypes {
+
     /// Stores account attributes.
-    public struct AccountAttribute {
+    public struct AccountAttribute: Swift.Sendable {
         /// The maximum allowed value.
         public var maximum: Swift.Int?
         /// The attribute name. The following are supported attribute names.
@@ -50,7 +51,6 @@ extension OpsWorksCMClientTypes {
             self.used = used
         }
     }
-
 }
 
 /// The resource is in a state that does not allow you to perform a specified action.
@@ -129,8 +129,9 @@ public struct ValidationException: ClientRuntime.ModeledError, AWSClientRuntime.
 }
 
 extension OpsWorksCMClientTypes {
+
     /// A name and value pair that is specific to the engine of the server.
-    public struct EngineAttribute {
+    public struct EngineAttribute: Swift.Sendable {
         /// The name of the engine attribute.
         public var name: Swift.String?
         /// The value of the engine attribute.
@@ -145,7 +146,6 @@ extension OpsWorksCMClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension OpsWorksCMClientTypes.EngineAttribute: Swift.CustomDebugStringConvertible {
@@ -153,7 +153,7 @@ extension OpsWorksCMClientTypes.EngineAttribute: Swift.CustomDebugStringConverti
         "EngineAttribute(name: \(Swift.String(describing: name)), value: \"CONTENT_REDACTED\")"}
 }
 
-public struct AssociateNodeInput {
+public struct AssociateNodeInput: Swift.Sendable {
     /// Engine attributes used for associating the node. Attributes accepted in a AssociateNode request for Chef
     ///
     /// * CHEF_ORGANIZATION: The Chef organization with which the node is associated. By default only one organization named default can exist.
@@ -185,7 +185,7 @@ public struct AssociateNodeInput {
     }
 }
 
-public struct AssociateNodeOutput {
+public struct AssociateNodeOutput: Swift.Sendable {
     /// Contains a token which can be passed to the DescribeNodeAssociationStatus API call to get the status of the association request.
     public var nodeAssociationStatusToken: Swift.String?
 
@@ -199,7 +199,7 @@ public struct AssociateNodeOutput {
 
 extension OpsWorksCMClientTypes {
 
-    public enum BackupType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum BackupType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case automated
         case manual
         case sdkUnknown(Swift.String)
@@ -228,7 +228,7 @@ extension OpsWorksCMClientTypes {
 
 extension OpsWorksCMClientTypes {
 
-    public enum BackupStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum BackupStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case deleting
         case failed
         case inProgress
@@ -262,8 +262,9 @@ extension OpsWorksCMClientTypes {
 }
 
 extension OpsWorksCMClientTypes {
+
     /// Describes a single backup.
-    public struct Backup {
+    public struct Backup: Swift.Sendable {
         /// The ARN of the backup.
         public var backupArn: Swift.String?
         /// The generated ID of the backup. Example: myServerName-yyyyMMddHHmmssSSS
@@ -368,7 +369,6 @@ extension OpsWorksCMClientTypes {
             self.userArn = userArn
         }
     }
-
 }
 
 /// The limit of servers or backups has been reached.
@@ -397,8 +397,9 @@ public struct LimitExceededException: ClientRuntime.ModeledError, AWSClientRunti
 }
 
 extension OpsWorksCMClientTypes {
+
     /// A map that contains tag keys and tag values to attach to an AWS OpsWorks for Chef Automate or AWS OpsWorks for Puppet Enterprise server. Leading and trailing white spaces are trimmed from both the key and value. A maximum of 50 user-applied tags is allowed for tag-supported AWS OpsWorks-CM resources.
-    public struct Tag {
+    public struct Tag: Swift.Sendable {
         /// A tag key, such as Stage or Name. A tag key cannot be empty. The key can be a maximum of 127 characters, and can contain only Unicode letters, numbers, or separators, or the following special characters: + - = . _ : /
         /// This member is required.
         public var key: Swift.String?
@@ -415,10 +416,9 @@ extension OpsWorksCMClientTypes {
             self.value = value
         }
     }
-
 }
 
-public struct CreateBackupInput {
+public struct CreateBackupInput: Swift.Sendable {
     /// A user-defined description of the backup.
     public var description: Swift.String?
     /// The name of the server that you want to back up.
@@ -449,7 +449,7 @@ public struct CreateBackupInput {
     }
 }
 
-public struct CreateBackupOutput {
+public struct CreateBackupOutput: Swift.Sendable {
     /// Backup created by request.
     public var backup: OpsWorksCMClientTypes.Backup?
 
@@ -486,7 +486,7 @@ public struct ResourceAlreadyExistsException: ClientRuntime.ModeledError, AWSCli
     }
 }
 
-public struct CreateServerInput {
+public struct CreateServerInput: Swift.Sendable {
     /// Associate a public IP address with a server that you are launching. Valid values are true or false. The default value is true.
     public var associatePublicIpAddress: Swift.Bool?
     /// If you specify this field, AWS OpsWorks CM creates the server by using the backup represented by BackupId.
@@ -630,7 +630,7 @@ extension CreateServerInput: Swift.CustomDebugStringConvertible {
 
 extension OpsWorksCMClientTypes {
 
-    public enum MaintenanceStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum MaintenanceStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case failed
         case success
         case sdkUnknown(Swift.String)
@@ -659,7 +659,7 @@ extension OpsWorksCMClientTypes {
 
 extension OpsWorksCMClientTypes {
 
-    public enum ServerStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ServerStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case backingUp
         case connectionLost
         case creating
@@ -720,8 +720,9 @@ extension OpsWorksCMClientTypes {
 }
 
 extension OpsWorksCMClientTypes {
+
     /// Describes a configuration management server.
-    public struct Server {
+    public struct Server: Swift.Sendable {
         /// Associate a public IP address with a server that you are launching.
         public var associatePublicIpAddress: Swift.Bool?
         /// The number of automated backups to keep.
@@ -835,10 +836,9 @@ extension OpsWorksCMClientTypes {
             self.subnetIds = subnetIds
         }
     }
-
 }
 
-public struct CreateServerOutput {
+public struct CreateServerOutput: Swift.Sendable {
     /// The server that is created by the request.
     public var server: OpsWorksCMClientTypes.Server?
 
@@ -850,7 +850,7 @@ public struct CreateServerOutput {
     }
 }
 
-public struct DeleteBackupInput {
+public struct DeleteBackupInput: Swift.Sendable {
     /// The ID of the backup to delete. Run the DescribeBackups command to get a list of backup IDs. Backup IDs are in the format ServerName-yyyyMMddHHmmssSSS.
     /// This member is required.
     public var backupId: Swift.String?
@@ -863,12 +863,12 @@ public struct DeleteBackupInput {
     }
 }
 
-public struct DeleteBackupOutput {
+public struct DeleteBackupOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteServerInput {
+public struct DeleteServerInput: Swift.Sendable {
     /// The ID of the server to delete.
     /// This member is required.
     public var serverName: Swift.String?
@@ -881,17 +881,17 @@ public struct DeleteServerInput {
     }
 }
 
-public struct DeleteServerOutput {
+public struct DeleteServerOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DescribeAccountAttributesInput {
+public struct DescribeAccountAttributesInput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DescribeAccountAttributesOutput {
+public struct DescribeAccountAttributesOutput: Swift.Sendable {
     /// The attributes that are currently set for the account.
     public var attributes: [OpsWorksCMClientTypes.AccountAttribute]?
 
@@ -928,7 +928,7 @@ public struct InvalidNextTokenException: ClientRuntime.ModeledError, AWSClientRu
     }
 }
 
-public struct DescribeBackupsInput {
+public struct DescribeBackupsInput: Swift.Sendable {
     /// Describes a single backup.
     public var backupId: Swift.String?
     /// This is not currently implemented for DescribeBackups requests.
@@ -952,7 +952,7 @@ public struct DescribeBackupsInput {
     }
 }
 
-public struct DescribeBackupsOutput {
+public struct DescribeBackupsOutput: Swift.Sendable {
     /// Contains the response to a DescribeBackups request.
     public var backups: [OpsWorksCMClientTypes.Backup]?
     /// This is not currently implemented for DescribeBackups requests.
@@ -968,7 +968,7 @@ public struct DescribeBackupsOutput {
     }
 }
 
-public struct DescribeEventsInput {
+public struct DescribeEventsInput: Swift.Sendable {
     /// To receive a paginated response, use this parameter to specify the maximum number of results to be returned with a single call. If the number of available results exceeds this maximum, the response includes a NextToken value that you can assign to the NextToken request parameter to get the next set of results.
     public var maxResults: Swift.Int?
     /// NextToken is a string that is returned in some command responses. It indicates that not all entries have been returned, and that you must run at least one more request to get remaining items. To get remaining results, call DescribeEvents again, and assign the token from the previous results as the value of the nextToken parameter. If there are no more results, the response object's nextToken parameter value is null. Setting a nextToken value that was not returned in your previous results causes an InvalidNextTokenException to occur.
@@ -990,8 +990,9 @@ public struct DescribeEventsInput {
 }
 
 extension OpsWorksCMClientTypes {
+
     /// An event that is related to the server, such as the start of maintenance or backup.
-    public struct ServerEvent {
+    public struct ServerEvent: Swift.Sendable {
         /// The time when the event occurred.
         public var createdAt: Foundation.Date?
         /// The Amazon S3 URL of the event's log file.
@@ -1014,10 +1015,9 @@ extension OpsWorksCMClientTypes {
             self.serverName = serverName
         }
     }
-
 }
 
-public struct DescribeEventsOutput {
+public struct DescribeEventsOutput: Swift.Sendable {
     /// NextToken is a string that is returned in some command responses. It indicates that not all entries have been returned, and that you must run at least one more request to get remaining items. To get remaining results, call DescribeEvents again, and assign the token from the previous results as the value of the nextToken parameter. If there are no more results, the response object's nextToken parameter value is null. Setting a nextToken value that was not returned in your previous results causes an InvalidNextTokenException to occur.
     public var nextToken: Swift.String?
     /// Contains the response to a DescribeEvents request.
@@ -1033,7 +1033,7 @@ public struct DescribeEventsOutput {
     }
 }
 
-public struct DescribeNodeAssociationStatusInput {
+public struct DescribeNodeAssociationStatusInput: Swift.Sendable {
     /// The token returned in either the AssociateNodeResponse or the DisassociateNodeResponse.
     /// This member is required.
     public var nodeAssociationStatusToken: Swift.String?
@@ -1060,7 +1060,7 @@ extension OpsWorksCMClientTypes {
     /// * FAILED: The association or disassociation failed.
     ///
     /// * IN_PROGRESS: The association or disassociation is still in progress.
-    public enum NodeAssociationStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum NodeAssociationStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case failed
         case inProgress
         case success
@@ -1090,7 +1090,7 @@ extension OpsWorksCMClientTypes {
     }
 }
 
-public struct DescribeNodeAssociationStatusOutput {
+public struct DescribeNodeAssociationStatusOutput: Swift.Sendable {
     /// Attributes specific to the node association. In Puppet, the attibute PUPPET_NODE_CERT contains the signed certificate (the result of the CSR).
     public var engineAttributes: [OpsWorksCMClientTypes.EngineAttribute]?
     /// The status of the association or disassociation request. Possible values:
@@ -1112,7 +1112,7 @@ public struct DescribeNodeAssociationStatusOutput {
     }
 }
 
-public struct DescribeServersInput {
+public struct DescribeServersInput: Swift.Sendable {
     /// This is not currently implemented for DescribeServers requests.
     public var maxResults: Swift.Int?
     /// This is not currently implemented for DescribeServers requests.
@@ -1132,7 +1132,7 @@ public struct DescribeServersInput {
     }
 }
 
-public struct DescribeServersOutput {
+public struct DescribeServersOutput: Swift.Sendable {
     /// This is not currently implemented for DescribeServers requests.
     public var nextToken: Swift.String?
     /// Contains the response to a DescribeServers request. For Chef Automate servers: If DescribeServersResponse$Servers$EngineAttributes includes CHEF_MAJOR_UPGRADE_AVAILABLE, you can upgrade the Chef Automate server to Chef Automate 2. To be eligible for upgrade, a server running Chef Automate 1 must have had at least one successful maintenance run after November 1, 2019. For Puppet servers: DescribeServersResponse$Servers$EngineAttributes contains the following two responses:
@@ -1152,7 +1152,7 @@ public struct DescribeServersOutput {
     }
 }
 
-public struct DisassociateNodeInput {
+public struct DisassociateNodeInput: Swift.Sendable {
     /// Engine attributes that are used for disassociating the node. No attributes are required for Puppet. Attributes required in a DisassociateNode request for Chef
     ///
     /// * CHEF_ORGANIZATION: The Chef organization with which the node was associated. By default only one organization named default can exist.
@@ -1176,7 +1176,7 @@ public struct DisassociateNodeInput {
     }
 }
 
-public struct DisassociateNodeOutput {
+public struct DisassociateNodeOutput: Swift.Sendable {
     /// Contains a token which can be passed to the DescribeNodeAssociationStatus API call to get the status of the disassociation request.
     public var nodeAssociationStatusToken: Swift.String?
 
@@ -1188,7 +1188,7 @@ public struct DisassociateNodeOutput {
     }
 }
 
-public struct ExportServerEngineAttributeInput {
+public struct ExportServerEngineAttributeInput: Swift.Sendable {
     /// The name of the export attribute. Currently, the supported export attribute is Userdata. This exports a user data script that includes parameters and values provided in the InputAttributes list.
     /// This member is required.
     public var exportAttributeName: Swift.String?
@@ -1218,7 +1218,7 @@ public struct ExportServerEngineAttributeInput {
     }
 }
 
-public struct ExportServerEngineAttributeOutput {
+public struct ExportServerEngineAttributeOutput: Swift.Sendable {
     /// The requested engine attribute pair with attribute name and value.
     public var engineAttribute: OpsWorksCMClientTypes.EngineAttribute?
     /// The server name used in the request.
@@ -1234,7 +1234,7 @@ public struct ExportServerEngineAttributeOutput {
     }
 }
 
-public struct ListTagsForResourceInput {
+public struct ListTagsForResourceInput: Swift.Sendable {
     /// To receive a paginated response, use this parameter to specify the maximum number of results to be returned with a single call. If the number of available results exceeds this maximum, the response includes a NextToken value that you can assign to the NextToken request parameter to get the next set of results.
     public var maxResults: Swift.Int?
     /// NextToken is a string that is returned in some command responses. It indicates that not all entries have been returned, and that you must run at least one more request to get remaining items. To get remaining results, call ListTagsForResource again, and assign the token from the previous results as the value of the nextToken parameter. If there are no more results, the response object's nextToken parameter value is null. Setting a nextToken value that was not returned in your previous results causes an InvalidNextTokenException to occur.
@@ -1255,7 +1255,7 @@ public struct ListTagsForResourceInput {
     }
 }
 
-public struct ListTagsForResourceOutput {
+public struct ListTagsForResourceOutput: Swift.Sendable {
     /// A token that you can use as the value of NextToken in subsequent calls to the API to show more results.
     public var nextToken: Swift.String?
     /// Tags that have been applied to the resource.
@@ -1271,7 +1271,7 @@ public struct ListTagsForResourceOutput {
     }
 }
 
-public struct RestoreServerInput {
+public struct RestoreServerInput: Swift.Sendable {
     /// The ID of the backup that you want to use to restore a server.
     /// This member is required.
     public var backupId: Swift.String?
@@ -1297,7 +1297,7 @@ public struct RestoreServerInput {
     }
 }
 
-public struct RestoreServerOutput {
+public struct RestoreServerOutput: Swift.Sendable {
     /// Describes a configuration management server.
     public var server: OpsWorksCMClientTypes.Server?
 
@@ -1309,7 +1309,7 @@ public struct RestoreServerOutput {
     }
 }
 
-public struct StartMaintenanceInput {
+public struct StartMaintenanceInput: Swift.Sendable {
     /// Engine attributes that are specific to the server on which you want to run maintenance. Attributes accepted in a StartMaintenance request for Chef
     ///
     /// * CHEF_MAJOR_UPGRADE: If a Chef Automate server is eligible for upgrade to Chef Automate 2, add this engine attribute to a StartMaintenance request and set the value to true to upgrade the server to Chef Automate 2. For more information, see [Upgrade an AWS OpsWorks for Chef Automate Server to Chef Automate 2](https://docs.aws.amazon.com/opsworks/latest/userguide/opscm-a2upgrade.html).
@@ -1328,7 +1328,7 @@ public struct StartMaintenanceInput {
     }
 }
 
-public struct StartMaintenanceOutput {
+public struct StartMaintenanceOutput: Swift.Sendable {
     /// Contains the response to a StartMaintenance request.
     public var server: OpsWorksCMClientTypes.Server?
 
@@ -1340,7 +1340,7 @@ public struct StartMaintenanceOutput {
     }
 }
 
-public struct TagResourceInput {
+public struct TagResourceInput: Swift.Sendable {
     /// The Amazon Resource Number (ARN) of a resource to which you want to apply tags. For example, arn:aws:opsworks-cm:us-west-2:123456789012:server/test-owcm-server/EXAMPLE-66b0-4196-8274-d1a2bEXAMPLE.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -1368,12 +1368,12 @@ public struct TagResourceInput {
     }
 }
 
-public struct TagResourceOutput {
+public struct TagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UntagResourceInput {
+public struct UntagResourceInput: Swift.Sendable {
     /// The Amazon Resource Number (ARN) of a resource from which you want to remove tags. For example, arn:aws:opsworks-cm:us-west-2:123456789012:server/test-owcm-server/EXAMPLE-66b0-4196-8274-d1a2bEXAMPLE.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -1391,12 +1391,12 @@ public struct UntagResourceInput {
     }
 }
 
-public struct UntagResourceOutput {
+public struct UntagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdateServerInput {
+public struct UpdateServerInput: Swift.Sendable {
     /// Sets the number of automated backups that you want to keep.
     public var backupRetentionCount: Swift.Int?
     /// Setting DisableAutomatedBackup to true disables automated or scheduled backups. Automated backups are enabled by default.
@@ -1425,7 +1425,7 @@ public struct UpdateServerInput {
     }
 }
 
-public struct UpdateServerOutput {
+public struct UpdateServerOutput: Swift.Sendable {
     /// Contains the response to a UpdateServer request.
     public var server: OpsWorksCMClientTypes.Server?
 
@@ -1437,7 +1437,7 @@ public struct UpdateServerOutput {
     }
 }
 
-public struct UpdateServerEngineAttributesInput {
+public struct UpdateServerEngineAttributesInput: Swift.Sendable {
     /// The name of the engine attribute to update.
     /// This member is required.
     public var attributeName: Swift.String?
@@ -1459,7 +1459,7 @@ public struct UpdateServerEngineAttributesInput {
     }
 }
 
-public struct UpdateServerEngineAttributesOutput {
+public struct UpdateServerEngineAttributesOutput: Swift.Sendable {
     /// Contains the response to an UpdateServerEngineAttributes request.
     public var server: OpsWorksCMClientTypes.Server?
 

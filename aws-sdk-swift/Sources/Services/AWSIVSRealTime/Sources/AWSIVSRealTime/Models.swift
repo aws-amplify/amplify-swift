@@ -205,15 +205,16 @@ public struct ValidationException: ClientRuntime.ModeledError, AWSClientRuntime.
 }
 
 extension IVSRealTimeClientTypes {
+
     /// Settings for video.
-    public struct Video {
+    public struct Video: Swift.Sendable {
         /// Bitrate for generated output, in bps. Default: 2500000.
         public var bitrate: Swift.Int?
         /// Video frame rate, in fps. Default: 30.
         public var framerate: Swift.Float?
-        /// Video-resolution height. Note that the maximum value is determined by width times height, such that the maximum total pixels is 2073600 (1920x1080 or 1080x1920). Default: 720.
+        /// Video-resolution height. This must be an even number. Note that the maximum value is determined by width times height, such that the maximum total pixels is 2073600 (1920x1080 or 1080x1920). Default: 720.
         public var height: Swift.Int?
-        /// Video-resolution width. Note that the maximum value is determined by width times height, such that the maximum total pixels is 2073600 (1920x1080 or 1080x1920). Default: 1280.
+        /// Video-resolution width. This must be an even number. Note that the maximum value is determined by width times height, such that the maximum total pixels is 2073600 (1920x1080 or 1080x1920). Default: 1280.
         public var width: Swift.Int?
 
         public init(
@@ -229,10 +230,9 @@ extension IVSRealTimeClientTypes {
             self.width = width
         }
     }
-
 }
 
-public struct CreateEncoderConfigurationInput {
+public struct CreateEncoderConfigurationInput: Swift.Sendable {
     /// Optional name to identify the resource.
     public var name: Swift.String?
     /// Tags attached to the resource. Array of maps, each of the form string:string (key:value). See [Best practices and strategies](https://docs.aws.amazon.com/tag-editor/latest/userguide/best-practices-and-strats.html) in Tagging AWS Resources and Tag Editor for details, including restrictions that apply to tags and "Tag naming limits and requirements"; Amazon IVS has no constraints on tags beyond what is documented there.
@@ -253,8 +253,9 @@ public struct CreateEncoderConfigurationInput {
 }
 
 extension IVSRealTimeClientTypes {
+
     /// Settings for transcoding.
-    public struct EncoderConfiguration {
+    public struct EncoderConfiguration: Swift.Sendable {
         /// ARN of the EncoderConfiguration resource.
         /// This member is required.
         public var arn: Swift.String?
@@ -278,10 +279,9 @@ extension IVSRealTimeClientTypes {
             self.video = video
         }
     }
-
 }
 
-public struct CreateEncoderConfigurationOutput {
+public struct CreateEncoderConfigurationOutput: Swift.Sendable {
     /// The EncoderConfiguration that was created.
     public var encoderConfiguration: IVSRealTimeClientTypes.EncoderConfiguration?
 
@@ -295,7 +295,7 @@ public struct CreateEncoderConfigurationOutput {
 
 extension IVSRealTimeClientTypes {
 
-    public enum IngestProtocol: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum IngestProtocol: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case rtmp
         case rtmps
         case sdkUnknown(Swift.String)
@@ -322,7 +322,7 @@ extension IVSRealTimeClientTypes {
     }
 }
 
-public struct CreateIngestConfigurationInput {
+public struct CreateIngestConfigurationInput: Swift.Sendable {
     /// Application-provided attributes to store in the IngestConfiguration and attach to a stage. Map keys and values can contain UTF-8 encoded text. The maximum length of this field is 1 KB total. This field is exposed to all stage participants and should not be used for personally identifying, confidential, or sensitive information.
     public var attributes: [Swift.String: Swift.String]?
     /// Type of ingest protocol that the user employs to broadcast. If this is set to RTMP, insecureIngest must be set to true.
@@ -361,7 +361,7 @@ public struct CreateIngestConfigurationInput {
 
 extension IVSRealTimeClientTypes {
 
-    public enum IngestConfigurationState: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum IngestConfigurationState: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case active
         case inactive
         case sdkUnknown(Swift.String)
@@ -389,8 +389,9 @@ extension IVSRealTimeClientTypes {
 }
 
 extension IVSRealTimeClientTypes {
+
     /// Object specifying an ingest configuration.
-    public struct IngestConfiguration {
+    public struct IngestConfiguration: Swift.Sendable {
         /// Ingest configuration ARN.
         /// This member is required.
         public var arn: Swift.String?
@@ -443,7 +444,6 @@ extension IVSRealTimeClientTypes {
             self.userId = userId
         }
     }
-
 }
 
 extension IVSRealTimeClientTypes.IngestConfiguration: Swift.CustomDebugStringConvertible {
@@ -451,7 +451,7 @@ extension IVSRealTimeClientTypes.IngestConfiguration: Swift.CustomDebugStringCon
         "IngestConfiguration(arn: \(Swift.String(describing: arn)), attributes: \(Swift.String(describing: attributes)), ingestProtocol: \(Swift.String(describing: ingestProtocol)), name: \(Swift.String(describing: name)), participantId: \(Swift.String(describing: participantId)), stageArn: \(Swift.String(describing: stageArn)), state: \(Swift.String(describing: state)), tags: \(Swift.String(describing: tags)), userId: \(Swift.String(describing: userId)), streamKey: \"CONTENT_REDACTED\")"}
 }
 
-public struct CreateIngestConfigurationOutput {
+public struct CreateIngestConfigurationOutput: Swift.Sendable {
     /// The IngestConfiguration that was created.
     public var ingestConfiguration: IVSRealTimeClientTypes.IngestConfiguration?
 
@@ -465,7 +465,7 @@ public struct CreateIngestConfigurationOutput {
 
 extension IVSRealTimeClientTypes {
 
-    public enum ParticipantTokenCapability: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ParticipantTokenCapability: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case publish
         case subscribe
         case sdkUnknown(Swift.String)
@@ -492,7 +492,7 @@ extension IVSRealTimeClientTypes {
     }
 }
 
-public struct CreateParticipantTokenInput {
+public struct CreateParticipantTokenInput: Swift.Sendable {
     /// Application-provided attributes to encode into the token and attach to a stage. Map keys and values can contain UTF-8 encoded text. The maximum length of this field is 1 KB total. This field is exposed to all stage participants and should not be used for personally identifying, confidential, or sensitive information.
     public var attributes: [Swift.String: Swift.String]?
     /// Set of capabilities that the user is allowed to perform in the stage. Default: PUBLISH, SUBSCRIBE.
@@ -522,8 +522,9 @@ public struct CreateParticipantTokenInput {
 }
 
 extension IVSRealTimeClientTypes {
+
     /// Object specifying a participant token in a stage. Important: Treat tokens as opaque; i.e., do not build functionality based on token contents. The format of tokens could change in the future.
-    public struct ParticipantToken {
+    public struct ParticipantToken: Swift.Sendable {
         /// Application-provided attributes to encode into the token and attach to a stage. This field is exposed to all stage participants and should not be used for personally identifying, confidential, or sensitive information.
         public var attributes: [Swift.String: Swift.String]?
         /// Set of capabilities that the user is allowed to perform in the stage.
@@ -558,7 +559,6 @@ extension IVSRealTimeClientTypes {
             self.userId = userId
         }
     }
-
 }
 
 extension IVSRealTimeClientTypes.ParticipantToken: Swift.CustomDebugStringConvertible {
@@ -566,7 +566,7 @@ extension IVSRealTimeClientTypes.ParticipantToken: Swift.CustomDebugStringConver
         "ParticipantToken(attributes: \(Swift.String(describing: attributes)), capabilities: \(Swift.String(describing: capabilities)), duration: \(Swift.String(describing: duration)), expirationTime: \(Swift.String(describing: expirationTime)), participantId: \(Swift.String(describing: participantId)), userId: \(Swift.String(describing: userId)), token: \"CONTENT_REDACTED\")"}
 }
 
-public struct CreateParticipantTokenOutput {
+public struct CreateParticipantTokenOutput: Swift.Sendable {
     /// The participant token that was created.
     public var participantToken: IVSRealTimeClientTypes.ParticipantToken?
 
@@ -580,7 +580,7 @@ public struct CreateParticipantTokenOutput {
 
 extension IVSRealTimeClientTypes {
 
-    public enum ParticipantRecordingMediaType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ParticipantRecordingMediaType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case audioOnly
         case audioVideo
         case sdkUnknown(Swift.String)
@@ -608,8 +608,9 @@ extension IVSRealTimeClientTypes {
 }
 
 extension IVSRealTimeClientTypes {
+
     /// Object specifying a configuration for individual participant recording.
-    public struct AutoParticipantRecordingConfiguration {
+    public struct AutoParticipantRecordingConfiguration: Swift.Sendable {
         /// Types of media to be recorded. Default: AUDIO_VIDEO.
         public var mediaTypes: [IVSRealTimeClientTypes.ParticipantRecordingMediaType]?
         /// ARN of the [StorageConfiguration] resource to use for individual participant recording. Default: "" (empty string, no storage configuration is specified). Individual participant recording cannot be started unless a storage configuration is specified, when a [Stage] is created or updated.
@@ -625,12 +626,12 @@ extension IVSRealTimeClientTypes {
             self.storageConfigurationArn = storageConfigurationArn
         }
     }
-
 }
 
 extension IVSRealTimeClientTypes {
+
     /// Object specifying a participant token configuration in a stage.
-    public struct ParticipantTokenConfiguration {
+    public struct ParticipantTokenConfiguration: Swift.Sendable {
         /// Application-provided attributes to encode into the corresponding participant token and attach to a stage. Map keys and values can contain UTF-8 encoded text. The maximum length of this field is 1 KB total. This field is exposed to all stage participants and should not be used for personally identifying, confidential, or sensitive information.
         public var attributes: [Swift.String: Swift.String]?
         /// Set of capabilities that the user is allowed to perform in the stage.
@@ -653,10 +654,9 @@ extension IVSRealTimeClientTypes {
             self.userId = userId
         }
     }
-
 }
 
-public struct CreateStageInput {
+public struct CreateStageInput: Swift.Sendable {
     /// Configuration object for individual participant recording, to attach to the new stage.
     public var autoParticipantRecordingConfiguration: IVSRealTimeClientTypes.AutoParticipantRecordingConfiguration?
     /// Optional name that can be specified for the stage being created.
@@ -681,8 +681,9 @@ public struct CreateStageInput {
 }
 
 extension IVSRealTimeClientTypes {
+
     /// Summary information about various endpoints for a stage. We recommend that you cache these values at stage creation; the values can be cached for up to 14 days.
-    public struct StageEndpoints {
+    public struct StageEndpoints: Swift.Sendable {
         /// Events endpoint.
         public var events: Swift.String?
         /// The endpoint to be used for IVS real-time streaming using the RTMP protocol.
@@ -705,12 +706,12 @@ extension IVSRealTimeClientTypes {
             self.whip = whip
         }
     }
-
 }
 
 extension IVSRealTimeClientTypes {
+
     /// Object specifying a stage.
-    public struct Stage {
+    public struct Stage: Swift.Sendable {
         /// ID of the active session within the stage.
         public var activeSessionId: Swift.String?
         /// Stage ARN.
@@ -742,10 +743,9 @@ extension IVSRealTimeClientTypes {
             self.tags = tags
         }
     }
-
 }
 
-public struct CreateStageOutput {
+public struct CreateStageOutput: Swift.Sendable {
     /// Participant tokens attached to the stage. These correspond to the participants in the request.
     public var participantTokens: [IVSRealTimeClientTypes.ParticipantToken]?
     /// The stage that was created.
@@ -762,8 +762,9 @@ public struct CreateStageOutput {
 }
 
 extension IVSRealTimeClientTypes {
+
     /// A complex type that describes an S3 location where recorded videos will be stored.
-    public struct S3StorageConfiguration {
+    public struct S3StorageConfiguration: Swift.Sendable {
         /// Location (S3 bucket name) where recorded videos will be stored. Note that the StorageConfiguration and S3 bucket must be in the same region as the Composition.
         /// This member is required.
         public var bucketName: Swift.String?
@@ -775,10 +776,9 @@ extension IVSRealTimeClientTypes {
             self.bucketName = bucketName
         }
     }
-
 }
 
-public struct CreateStorageConfigurationInput {
+public struct CreateStorageConfigurationInput: Swift.Sendable {
     /// Storage configuration name. The value does not need to be unique.
     public var name: Swift.String?
     /// A complex type that contains a storage configuration for where recorded video will be stored.
@@ -800,8 +800,9 @@ public struct CreateStorageConfigurationInput {
 }
 
 extension IVSRealTimeClientTypes {
+
     /// A complex type that describes a location where recorded videos will be stored.
-    public struct StorageConfiguration {
+    public struct StorageConfiguration: Swift.Sendable {
         /// ARN of the storage configuration.
         /// This member is required.
         public var arn: Swift.String?
@@ -825,10 +826,9 @@ extension IVSRealTimeClientTypes {
             self.tags = tags
         }
     }
-
 }
 
-public struct CreateStorageConfigurationOutput {
+public struct CreateStorageConfigurationOutput: Swift.Sendable {
     /// The StorageConfiguration that was created.
     public var storageConfiguration: IVSRealTimeClientTypes.StorageConfiguration?
 
@@ -840,7 +840,7 @@ public struct CreateStorageConfigurationOutput {
     }
 }
 
-public struct DeleteEncoderConfigurationInput {
+public struct DeleteEncoderConfigurationInput: Swift.Sendable {
     /// ARN of the EncoderConfiguration.
     /// This member is required.
     public var arn: Swift.String?
@@ -853,12 +853,12 @@ public struct DeleteEncoderConfigurationInput {
     }
 }
 
-public struct DeleteEncoderConfigurationOutput {
+public struct DeleteEncoderConfigurationOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteIngestConfigurationInput {
+public struct DeleteIngestConfigurationInput: Swift.Sendable {
     /// ARN of the IngestConfiguration.
     /// This member is required.
     public var arn: Swift.String?
@@ -875,12 +875,12 @@ public struct DeleteIngestConfigurationInput {
     }
 }
 
-public struct DeleteIngestConfigurationOutput {
+public struct DeleteIngestConfigurationOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeletePublicKeyInput {
+public struct DeletePublicKeyInput: Swift.Sendable {
     /// ARN of the public key to be deleted.
     /// This member is required.
     public var arn: Swift.String?
@@ -893,12 +893,12 @@ public struct DeletePublicKeyInput {
     }
 }
 
-public struct DeletePublicKeyOutput {
+public struct DeletePublicKeyOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteStageInput {
+public struct DeleteStageInput: Swift.Sendable {
     /// ARN of the stage to be deleted.
     /// This member is required.
     public var arn: Swift.String?
@@ -911,12 +911,12 @@ public struct DeleteStageInput {
     }
 }
 
-public struct DeleteStageOutput {
+public struct DeleteStageOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteStorageConfigurationInput {
+public struct DeleteStorageConfigurationInput: Swift.Sendable {
     /// ARN of the storage configuration to be deleted.
     /// This member is required.
     public var arn: Swift.String?
@@ -929,12 +929,12 @@ public struct DeleteStorageConfigurationInput {
     }
 }
 
-public struct DeleteStorageConfigurationOutput {
+public struct DeleteStorageConfigurationOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DisconnectParticipantInput {
+public struct DisconnectParticipantInput: Swift.Sendable {
     /// Identifier of the participant to be disconnected. IVS assigns this; it is returned by [CreateParticipantToken] (for streams using WebRTC ingest) or [CreateIngestConfiguration] (for streams using RTMP ingest).
     /// This member is required.
     public var participantId: Swift.String?
@@ -956,12 +956,12 @@ public struct DisconnectParticipantInput {
     }
 }
 
-public struct DisconnectParticipantOutput {
+public struct DisconnectParticipantOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct GetCompositionInput {
+public struct GetCompositionInput: Swift.Sendable {
     /// ARN of the Composition resource.
     /// This member is required.
     public var arn: Swift.String?
@@ -975,8 +975,9 @@ public struct GetCompositionInput {
 }
 
 extension IVSRealTimeClientTypes {
+
     /// Object specifying a channel as a destination.
-    public struct ChannelDestinationConfiguration {
+    public struct ChannelDestinationConfiguration: Swift.Sendable {
         /// ARN of the channel to use for broadcasting. The channel and stage resources must be in the same AWS account and region. The channel must be offline (not broadcasting).
         /// This member is required.
         public var channelArn: Swift.String?
@@ -992,12 +993,11 @@ extension IVSRealTimeClientTypes {
             self.encoderConfigurationArn = encoderConfigurationArn
         }
     }
-
 }
 
 extension IVSRealTimeClientTypes {
 
-    public enum RecordingConfigurationFormat: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum RecordingConfigurationFormat: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case hls
         case sdkUnknown(Swift.String)
 
@@ -1022,8 +1022,9 @@ extension IVSRealTimeClientTypes {
 }
 
 extension IVSRealTimeClientTypes {
+
     /// An object representing a configuration to record a stage stream.
-    public struct RecordingConfiguration {
+    public struct RecordingConfiguration: Swift.Sendable {
         /// The recording format for storing a recording in Amazon S3.
         public var format: IVSRealTimeClientTypes.RecordingConfigurationFormat?
 
@@ -1034,12 +1035,12 @@ extension IVSRealTimeClientTypes {
             self.format = format
         }
     }
-
 }
 
 extension IVSRealTimeClientTypes {
+
     /// A complex type that describes an S3 location where recorded videos will be stored.
-    public struct S3DestinationConfiguration {
+    public struct S3DestinationConfiguration: Swift.Sendable {
         /// ARNs of the [EncoderConfiguration] resource. The encoder configuration and stage resources must be in the same AWS account and region.
         /// This member is required.
         public var encoderConfigurationArns: [Swift.String]?
@@ -1060,12 +1061,12 @@ extension IVSRealTimeClientTypes {
             self.storageConfigurationArn = storageConfigurationArn
         }
     }
-
 }
 
 extension IVSRealTimeClientTypes {
+
     /// Complex data type that defines destination-configuration objects.
-    public struct DestinationConfiguration {
+    public struct DestinationConfiguration: Swift.Sendable {
         /// An IVS channel to be used for broadcasting, for server-side composition. Either a channel or an s3 must be specified.
         public var channel: IVSRealTimeClientTypes.ChannelDestinationConfiguration?
         /// Name that can be specified to help identify the destination.
@@ -1084,12 +1085,12 @@ extension IVSRealTimeClientTypes {
             self.s3 = s3
         }
     }
-
 }
 
 extension IVSRealTimeClientTypes {
+
     /// Complex data type that defines S3Detail objects.
-    public struct S3Detail {
+    public struct S3Detail: Swift.Sendable {
         /// The S3 bucket prefix under which the recording is stored.
         /// This member is required.
         public var recordingPrefix: Swift.String?
@@ -1101,12 +1102,12 @@ extension IVSRealTimeClientTypes {
             self.recordingPrefix = recordingPrefix
         }
     }
-
 }
 
 extension IVSRealTimeClientTypes {
+
     /// Complex data type that defines destination-detail objects.
-    public struct DestinationDetail {
+    public struct DestinationDetail: Swift.Sendable {
         /// An S3 detail object to return information about the S3 destination.
         public var s3: IVSRealTimeClientTypes.S3Detail?
 
@@ -1117,12 +1118,11 @@ extension IVSRealTimeClientTypes {
             self.s3 = s3
         }
     }
-
 }
 
 extension IVSRealTimeClientTypes {
 
-    public enum DestinationState: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DestinationState: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case active
         case failed
         case reconnecting
@@ -1162,8 +1162,9 @@ extension IVSRealTimeClientTypes {
 }
 
 extension IVSRealTimeClientTypes {
+
     /// Object specifying the status of a Destination.
-    public struct Destination {
+    public struct Destination: Swift.Sendable {
         /// Configuration used to create this destination.
         /// This member is required.
         public var configuration: IVSRealTimeClientTypes.DestinationConfiguration?
@@ -1197,12 +1198,11 @@ extension IVSRealTimeClientTypes {
             self.state = state
         }
     }
-
 }
 
 extension IVSRealTimeClientTypes {
 
-    public enum VideoAspectRatio: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum VideoAspectRatio: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case auto
         case portrait
         case square
@@ -1237,7 +1237,7 @@ extension IVSRealTimeClientTypes {
 
 extension IVSRealTimeClientTypes {
 
-    public enum VideoFillMode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum VideoFillMode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case contain
         case cover
         case fill
@@ -1268,8 +1268,9 @@ extension IVSRealTimeClientTypes {
 }
 
 extension IVSRealTimeClientTypes {
+
     /// Configuration information specific to Grid layout, for server-side composition. See "Layouts" in [Server-Side Composition](https://docs.aws.amazon.com/ivs/latest/RealTimeUserGuide/server-side-composition.html).
-    public struct GridConfiguration {
+    public struct GridConfiguration: Swift.Sendable {
         /// This attribute name identifies the featured slot. A participant with this attribute set to "true" (as a string value) in [ParticipantTokenConfiguration] is placed in the featured slot. Default: "" (no featured participant).
         public var featuredParticipantAttribute: Swift.String?
         /// Specifies the spacing between participant tiles in pixels. Default: 2.
@@ -1296,12 +1297,11 @@ extension IVSRealTimeClientTypes {
             self.videoFillMode = videoFillMode
         }
     }
-
 }
 
 extension IVSRealTimeClientTypes {
 
-    public enum PipBehavior: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum PipBehavior: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case `dynamic`
         case `static`
         case sdkUnknown(Swift.String)
@@ -1330,7 +1330,7 @@ extension IVSRealTimeClientTypes {
 
 extension IVSRealTimeClientTypes {
 
-    public enum PipPosition: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum PipPosition: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case bottomLeft
         case bottomRight
         case topLeft
@@ -1364,8 +1364,9 @@ extension IVSRealTimeClientTypes {
 }
 
 extension IVSRealTimeClientTypes {
+
     /// Configuration information specific to Picture-in-Picture (PiP) layout, for [server-side composition](https://docs.aws.amazon.com/ivs/latest/RealTimeUserGuide/server-side-composition.html).
-    public struct PipConfiguration {
+    public struct PipConfiguration: Swift.Sendable {
         /// This attribute name identifies the featured slot. A participant with this attribute set to "true" (as a string value) in [ParticipantTokenConfiguration] is placed in the featured slot. Default: "" (no featured participant).
         public var featuredParticipantAttribute: Swift.String?
         /// Specifies the spacing between participant tiles in pixels. Default: 0.
@@ -1412,12 +1413,12 @@ extension IVSRealTimeClientTypes {
             self.videoFillMode = videoFillMode
         }
     }
-
 }
 
 extension IVSRealTimeClientTypes {
+
     /// Configuration information of supported layouts for server-side composition.
-    public struct LayoutConfiguration {
+    public struct LayoutConfiguration: Swift.Sendable {
         /// Configuration related to grid layout. Default: Grid layout.
         public var grid: IVSRealTimeClientTypes.GridConfiguration?
         /// Configuration related to PiP layout.
@@ -1432,12 +1433,11 @@ extension IVSRealTimeClientTypes {
             self.pip = pip
         }
     }
-
 }
 
 extension IVSRealTimeClientTypes {
 
-    public enum CompositionState: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum CompositionState: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case active
         case failed
         case starting
@@ -1474,8 +1474,9 @@ extension IVSRealTimeClientTypes {
 }
 
 extension IVSRealTimeClientTypes {
+
     /// Object specifying a Composition resource.
-    public struct Composition {
+    public struct Composition: Swift.Sendable {
         /// ARN of the Composition resource.
         /// This member is required.
         public var arn: Swift.String?
@@ -1519,10 +1520,9 @@ extension IVSRealTimeClientTypes {
             self.tags = tags
         }
     }
-
 }
 
-public struct GetCompositionOutput {
+public struct GetCompositionOutput: Swift.Sendable {
     /// The Composition that was returned.
     public var composition: IVSRealTimeClientTypes.Composition?
 
@@ -1534,7 +1534,7 @@ public struct GetCompositionOutput {
     }
 }
 
-public struct GetEncoderConfigurationInput {
+public struct GetEncoderConfigurationInput: Swift.Sendable {
     /// ARN of the EncoderConfiguration resource.
     /// This member is required.
     public var arn: Swift.String?
@@ -1547,7 +1547,7 @@ public struct GetEncoderConfigurationInput {
     }
 }
 
-public struct GetEncoderConfigurationOutput {
+public struct GetEncoderConfigurationOutput: Swift.Sendable {
     /// The EncoderConfiguration that was returned.
     public var encoderConfiguration: IVSRealTimeClientTypes.EncoderConfiguration?
 
@@ -1559,7 +1559,7 @@ public struct GetEncoderConfigurationOutput {
     }
 }
 
-public struct GetIngestConfigurationInput {
+public struct GetIngestConfigurationInput: Swift.Sendable {
     /// ARN of the ingest for which the information is to be retrieved.
     /// This member is required.
     public var arn: Swift.String?
@@ -1572,7 +1572,7 @@ public struct GetIngestConfigurationInput {
     }
 }
 
-public struct GetIngestConfigurationOutput {
+public struct GetIngestConfigurationOutput: Swift.Sendable {
     /// The IngestConfiguration that was returned.
     public var ingestConfiguration: IVSRealTimeClientTypes.IngestConfiguration?
 
@@ -1584,7 +1584,7 @@ public struct GetIngestConfigurationOutput {
     }
 }
 
-public struct GetParticipantInput {
+public struct GetParticipantInput: Swift.Sendable {
     /// Unique identifier for the participant. This is assigned by IVS and returned by [CreateParticipantToken].
     /// This member is required.
     public var participantId: Swift.String?
@@ -1609,7 +1609,7 @@ public struct GetParticipantInput {
 
 extension IVSRealTimeClientTypes {
 
-    public enum ParticipantProtocol: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ParticipantProtocol: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case rtmp
         case rtmps
         case unknown
@@ -1644,7 +1644,7 @@ extension IVSRealTimeClientTypes {
 
 extension IVSRealTimeClientTypes {
 
-    public enum ParticipantRecordingState: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ParticipantRecordingState: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case active
         case disabled
         case failed
@@ -1685,7 +1685,7 @@ extension IVSRealTimeClientTypes {
 
 extension IVSRealTimeClientTypes {
 
-    public enum ParticipantState: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ParticipantState: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case connected
         case disconnected
         case sdkUnknown(Swift.String)
@@ -1713,8 +1713,9 @@ extension IVSRealTimeClientTypes {
 }
 
 extension IVSRealTimeClientTypes {
+
     /// Object describing a participant that has joined a stage.
-    public struct Participant {
+    public struct Participant: Swift.Sendable {
         /// Application-provided attributes to encode into the token and attach to a stage. Map keys and values can contain UTF-8 encoded text. The maximum length of this field is 1 KB total. This field is exposed to all stage participants and should not be used for personally identifying, confidential, or sensitive information.
         public var attributes: [Swift.String: Swift.String]?
         /// The participant’s browser.
@@ -1785,10 +1786,9 @@ extension IVSRealTimeClientTypes {
             self.userId = userId
         }
     }
-
 }
 
-public struct GetParticipantOutput {
+public struct GetParticipantOutput: Swift.Sendable {
     /// The participant that is returned.
     public var participant: IVSRealTimeClientTypes.Participant?
 
@@ -1800,7 +1800,7 @@ public struct GetParticipantOutput {
     }
 }
 
-public struct GetPublicKeyInput {
+public struct GetPublicKeyInput: Swift.Sendable {
     /// ARN of the public key for which the information is to be retrieved.
     /// This member is required.
     public var arn: Swift.String?
@@ -1814,8 +1814,9 @@ public struct GetPublicKeyInput {
 }
 
 extension IVSRealTimeClientTypes {
+
     /// Object specifying a public key used to sign stage participant tokens.
-    public struct PublicKey {
+    public struct PublicKey: Swift.Sendable {
         /// Public key ARN.
         public var arn: Swift.String?
         /// The public key fingerprint, a short string used to identify or verify the full public key.
@@ -1842,10 +1843,9 @@ extension IVSRealTimeClientTypes {
             self.tags = tags
         }
     }
-
 }
 
-public struct GetPublicKeyOutput {
+public struct GetPublicKeyOutput: Swift.Sendable {
     /// The public key that is returned.
     public var publicKey: IVSRealTimeClientTypes.PublicKey?
 
@@ -1857,7 +1857,7 @@ public struct GetPublicKeyOutput {
     }
 }
 
-public struct GetStageInput {
+public struct GetStageInput: Swift.Sendable {
     /// ARN of the stage for which the information is to be retrieved.
     /// This member is required.
     public var arn: Swift.String?
@@ -1870,7 +1870,7 @@ public struct GetStageInput {
     }
 }
 
-public struct GetStageOutput {
+public struct GetStageOutput: Swift.Sendable {
     /// The stage that is returned.
     public var stage: IVSRealTimeClientTypes.Stage?
 
@@ -1882,7 +1882,7 @@ public struct GetStageOutput {
     }
 }
 
-public struct GetStageSessionInput {
+public struct GetStageSessionInput: Swift.Sendable {
     /// ID of a session within the stage.
     /// This member is required.
     public var sessionId: Swift.String?
@@ -1901,8 +1901,9 @@ public struct GetStageSessionInput {
 }
 
 extension IVSRealTimeClientTypes {
+
     /// A stage session begins when the first participant joins a stage and ends after the last participant leaves the stage. A stage session helps with debugging stages by grouping events and participants into shorter periods of time (i.e., a session), which is helpful when stages are used over long periods of time.
-    public struct StageSession {
+    public struct StageSession: Swift.Sendable {
         /// ISO 8601 timestamp (returned as a string) when the stage session ended. This is null if the stage is active.
         public var endTime: Foundation.Date?
         /// ID of the session within the stage.
@@ -1921,10 +1922,9 @@ extension IVSRealTimeClientTypes {
             self.startTime = startTime
         }
     }
-
 }
 
-public struct GetStageSessionOutput {
+public struct GetStageSessionOutput: Swift.Sendable {
     /// The stage session that is returned.
     public var stageSession: IVSRealTimeClientTypes.StageSession?
 
@@ -1936,7 +1936,7 @@ public struct GetStageSessionOutput {
     }
 }
 
-public struct GetStorageConfigurationInput {
+public struct GetStorageConfigurationInput: Swift.Sendable {
     /// ARN of the storage configuration to be retrieved.
     /// This member is required.
     public var arn: Swift.String?
@@ -1949,7 +1949,7 @@ public struct GetStorageConfigurationInput {
     }
 }
 
-public struct GetStorageConfigurationOutput {
+public struct GetStorageConfigurationOutput: Swift.Sendable {
     /// The StorageConfiguration that was returned.
     public var storageConfiguration: IVSRealTimeClientTypes.StorageConfiguration?
 
@@ -1961,7 +1961,7 @@ public struct GetStorageConfigurationOutput {
     }
 }
 
-public struct ImportPublicKeyInput {
+public struct ImportPublicKeyInput: Swift.Sendable {
     /// Name of the public key to be imported.
     public var name: Swift.String?
     /// The content of the public key to be imported.
@@ -1982,7 +1982,7 @@ public struct ImportPublicKeyInput {
     }
 }
 
-public struct ImportPublicKeyOutput {
+public struct ImportPublicKeyOutput: Swift.Sendable {
     /// The public key that was imported.
     public var publicKey: IVSRealTimeClientTypes.PublicKey?
 
@@ -1994,7 +1994,7 @@ public struct ImportPublicKeyOutput {
     }
 }
 
-public struct ListCompositionsInput {
+public struct ListCompositionsInput: Swift.Sendable {
     /// Filters the Composition list to match the specified EncoderConfiguration attached to at least one of its output.
     public var filterByEncoderConfigurationArn: Swift.String?
     /// Filters the Composition list to match the specified Stage ARN.
@@ -2019,8 +2019,9 @@ public struct ListCompositionsInput {
 }
 
 extension IVSRealTimeClientTypes {
+
     /// Summary information about a Destination.
-    public struct DestinationSummary {
+    public struct DestinationSummary: Swift.Sendable {
         /// UTC time of the destination end. This is an ISO 8601 timestamp; note that this is returned as a string.
         public var endTime: Foundation.Date?
         /// Unique identifier for this destination, assigned by IVS.
@@ -2045,12 +2046,12 @@ extension IVSRealTimeClientTypes {
             self.state = state
         }
     }
-
 }
 
 extension IVSRealTimeClientTypes {
+
     /// Summary information about a Composition.
-    public struct CompositionSummary {
+    public struct CompositionSummary: Swift.Sendable {
         /// ARN of the Composition resource.
         /// This member is required.
         public var arn: Swift.String?
@@ -2089,10 +2090,9 @@ extension IVSRealTimeClientTypes {
             self.tags = tags
         }
     }
-
 }
 
-public struct ListCompositionsOutput {
+public struct ListCompositionsOutput: Swift.Sendable {
     /// List of the matching Compositions (summary information only).
     /// This member is required.
     public var compositions: [IVSRealTimeClientTypes.CompositionSummary]?
@@ -2109,7 +2109,7 @@ public struct ListCompositionsOutput {
     }
 }
 
-public struct ListEncoderConfigurationsInput {
+public struct ListEncoderConfigurationsInput: Swift.Sendable {
     /// Maximum number of results to return. Default: 100.
     public var maxResults: Swift.Int?
     /// The first encoder configuration to retrieve. This is used for pagination; see the nextToken response field.
@@ -2126,8 +2126,9 @@ public struct ListEncoderConfigurationsInput {
 }
 
 extension IVSRealTimeClientTypes {
+
     /// Summary information about an EncoderConfiguration.
-    public struct EncoderConfigurationSummary {
+    public struct EncoderConfigurationSummary: Swift.Sendable {
         /// ARN of the EncoderConfiguration resource.
         /// This member is required.
         public var arn: Swift.String?
@@ -2147,10 +2148,9 @@ extension IVSRealTimeClientTypes {
             self.tags = tags
         }
     }
-
 }
 
-public struct ListEncoderConfigurationsOutput {
+public struct ListEncoderConfigurationsOutput: Swift.Sendable {
     /// List of the matching EncoderConfigurations (summary information only).
     /// This member is required.
     public var encoderConfigurations: [IVSRealTimeClientTypes.EncoderConfigurationSummary]?
@@ -2167,7 +2167,7 @@ public struct ListEncoderConfigurationsOutput {
     }
 }
 
-public struct ListIngestConfigurationsInput {
+public struct ListIngestConfigurationsInput: Swift.Sendable {
     /// Filters the response list to match the specified stage ARN. Only one filter (by stage ARN or by state) can be used at a time.
     public var filterByStageArn: Swift.String?
     /// Filters the response list to match the specified state. Only one filter (by stage ARN or by state) can be used at a time.
@@ -2192,8 +2192,9 @@ public struct ListIngestConfigurationsInput {
 }
 
 extension IVSRealTimeClientTypes {
+
     /// Summary information about an IngestConfiguration.
-    public struct IngestConfigurationSummary {
+    public struct IngestConfigurationSummary: Swift.Sendable {
         /// Ingest configuration ARN.
         /// This member is required.
         public var arn: Swift.String?
@@ -2233,10 +2234,9 @@ extension IVSRealTimeClientTypes {
             self.userId = userId
         }
     }
-
 }
 
-public struct ListIngestConfigurationsOutput {
+public struct ListIngestConfigurationsOutput: Swift.Sendable {
     /// List of the matching ingest configurations (summary information only).
     /// This member is required.
     public var ingestConfigurations: [IVSRealTimeClientTypes.IngestConfigurationSummary]?
@@ -2253,7 +2253,7 @@ public struct ListIngestConfigurationsOutput {
     }
 }
 
-public struct ListParticipantEventsInput {
+public struct ListParticipantEventsInput: Swift.Sendable {
     /// Maximum number of results to return. Default: 50.
     public var maxResults: Swift.Int?
     /// The first participant event to retrieve. This is used for pagination; see the nextToken response field.
@@ -2286,10 +2286,13 @@ public struct ListParticipantEventsInput {
 
 extension IVSRealTimeClientTypes {
 
-    public enum EventErrorCode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum EventErrorCode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case bitrateExceeded
+        case bFramePresent
         case insufficientCapabilities
+        case internalServerException
         case invalidAudioCodec
+        case invalidInput
         case invalidProtocol
         case invalidStreamKey
         case invalidVideoCodec
@@ -2303,8 +2306,11 @@ extension IVSRealTimeClientTypes {
         public static var allCases: [EventErrorCode] {
             return [
                 .bitrateExceeded,
+                .bFramePresent,
                 .insufficientCapabilities,
+                .internalServerException,
                 .invalidAudioCodec,
+                .invalidInput,
                 .invalidProtocol,
                 .invalidStreamKey,
                 .invalidVideoCodec,
@@ -2324,8 +2330,11 @@ extension IVSRealTimeClientTypes {
         public var rawValue: Swift.String {
             switch self {
             case .bitrateExceeded: return "BITRATE_EXCEEDED"
+            case .bFramePresent: return "B_FRAME_PRESENT"
             case .insufficientCapabilities: return "INSUFFICIENT_CAPABILITIES"
+            case .internalServerException: return "INTERNAL_SERVER_EXCEPTION"
             case .invalidAudioCodec: return "INVALID_AUDIO_CODEC"
+            case .invalidInput: return "INVALID_INPUT"
             case .invalidProtocol: return "INVALID_PROTOCOL"
             case .invalidStreamKey: return "INVALID_STREAM_KEY"
             case .invalidVideoCodec: return "INVALID_VIDEO_CODEC"
@@ -2342,7 +2351,7 @@ extension IVSRealTimeClientTypes {
 
 extension IVSRealTimeClientTypes {
 
-    public enum EventName: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum EventName: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case joined
         case joinError
         case `left`
@@ -2391,9 +2400,38 @@ extension IVSRealTimeClientTypes {
 }
 
 extension IVSRealTimeClientTypes {
+
     /// An occurrence during a stage session.
-    public struct Event {
-        /// If the event is an error event, the error code is provided to give insight into the specific error that occurred. If the event is not an error event, this field is null. INSUFFICIENT_CAPABILITIES indicates that the participant tried to take an action that the participant’s token is not allowed to do. For more information about participant capabilities, see the capabilities field in [CreateParticipantToken]. QUOTA_EXCEEDED indicates that the number of participants who want to publish/subscribe to a stage exceeds the quota; for more information, see [Service Quotas](https://docs.aws.amazon.com/ivs/latest/RealTimeUserGuide/service-quotas.html). PUBLISHER_NOT_FOUND indicates that the participant tried to subscribe to a publisher that doesn’t exist.
+    public struct Event: Swift.Sendable {
+        /// If the event is an error event, the error code is provided to give insight into the specific error that occurred. If the event is not an error event, this field is null.
+        ///
+        /// * B_FRAME_PRESENT — The participant's stream includes B-frames. For details, see [ IVS RTMP Publishing](https://docs.aws.amazon.com/ivs/latest/RealTimeUserGuide/rt-rtmp-publishing.html).
+        ///
+        /// * BITRATE_EXCEEDED — The participant exceeded the maximum supported bitrate. For details, see [ Service Quotas](https://docs.aws.amazon.com/ivs/latest/RealTimeUserGuide/service-quotas.html).
+        ///
+        /// * INSUFFICIENT_CAPABILITIES — The participant tried to take an action that the participant’s token is not allowed to do. For details on participant capabilities, see the capabilities field in [CreateParticipantToken].
+        ///
+        /// * INTERNAL_SERVER_EXCEPTION — The participant failed to publish to the stage due to an internal server error.
+        ///
+        /// * INVALID_AUDIO_CODEC — The participant is using an invalid audio codec. For details, see [ Stream Ingest](https://docs.aws.amazon.com/ivs/latest/RealTimeUserGuide/rt-stream-ingest.html).
+        ///
+        /// * INVALID_INPUT — The participant is using an invalid input stream.
+        ///
+        /// * INVALID_PROTOCOL — The participant's IngestConfiguration resource is configured for RTMPS but they tried streaming with RTMP. For details, see [ IVS RTMP Publishing](https://docs.aws.amazon.com/ivs/latest/RealTimeUserGuide/rt-rtmp-publishing.html).
+        ///
+        /// * INVALID_STREAM_KEY — The participant is using an invalid stream key. For details, see [ IVS RTMP Publishing](https://docs.aws.amazon.com/ivs/latest/RealTimeUserGuide/rt-rtmp-publishing.html).
+        ///
+        /// * INVALID_VIDEO_CODEC — The participant is using an invalid video codec. For details, see [ Stream Ingest](https://docs.aws.amazon.com/ivs/latest/RealTimeUserGuide/rt-stream-ingest.html).
+        ///
+        /// * PUBLISHER_NOT_FOUND — The participant tried to subscribe to a publisher that doesn’t exist.
+        ///
+        /// * QUOTA_EXCEEDED — The number of participants who want to publish/subscribe to a stage exceeds the quota. For details, see [ Service Quotas](https://docs.aws.amazon.com/ivs/latest/RealTimeUserGuide/service-quotas.html).
+        ///
+        /// * RESOLUTION_EXCEEDED — The participant exceeded the maximum supported resolution. For details, see [ Service Quotas](https://docs.aws.amazon.com/ivs/latest/RealTimeUserGuide/service-quotas.html).
+        ///
+        /// * REUSE_OF_STREAM_KEY — The participant tried to use a stream key that is associated with another active stage session.
+        ///
+        /// * STREAM_DURATION_EXCEEDED — The participant exceeded the maximum allowed stream duration. For details, see [ Service Quotas](https://docs.aws.amazon.com/ivs/latest/RealTimeUserGuide/service-quotas.html).
         public var errorCode: IVSRealTimeClientTypes.EventErrorCode?
         /// ISO 8601 timestamp (returned as a string) for when the event occurred.
         public var eventTime: Foundation.Date?
@@ -2419,10 +2457,9 @@ extension IVSRealTimeClientTypes {
             self.remoteParticipantId = remoteParticipantId
         }
     }
-
 }
 
-public struct ListParticipantEventsOutput {
+public struct ListParticipantEventsOutput: Swift.Sendable {
     /// List of the matching events.
     /// This member is required.
     public var events: [IVSRealTimeClientTypes.Event]?
@@ -2441,7 +2478,7 @@ public struct ListParticipantEventsOutput {
 
 extension IVSRealTimeClientTypes {
 
-    public enum ParticipantRecordingFilterByRecordingState: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ParticipantRecordingFilterByRecordingState: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case active
         case failed
         case starting
@@ -2477,7 +2514,7 @@ extension IVSRealTimeClientTypes {
     }
 }
 
-public struct ListParticipantsInput {
+public struct ListParticipantsInput: Swift.Sendable {
     /// Filters the response list to only show participants who published during the stage session. Only one of filterByUserId, filterByPublished, filterByState, or filterByRecordingState can be provided per request.
     public var filterByPublished: Swift.Bool?
     /// Filters the response list to only show participants with the specified recording state. Only one of filterByUserId, filterByPublished, filterByState, or filterByRecordingState can be provided per request.
@@ -2520,8 +2557,9 @@ public struct ListParticipantsInput {
 }
 
 extension IVSRealTimeClientTypes {
+
     /// Summary object describing a participant that has joined a stage.
-    public struct ParticipantSummary {
+    public struct ParticipantSummary: Swift.Sendable {
         /// ISO 8601 timestamp (returned as a string) when the participant first joined the stage session.
         public var firstJoinTime: Foundation.Date?
         /// Unique identifier for this participant, assigned by IVS.
@@ -2552,10 +2590,9 @@ extension IVSRealTimeClientTypes {
             self.userId = userId
         }
     }
-
 }
 
-public struct ListParticipantsOutput {
+public struct ListParticipantsOutput: Swift.Sendable {
     /// If there are more participants than maxResults, use nextToken in the request to get the next set.
     public var nextToken: Swift.String?
     /// List of the matching participants (summary information only).
@@ -2572,7 +2609,7 @@ public struct ListParticipantsOutput {
     }
 }
 
-public struct ListPublicKeysInput {
+public struct ListPublicKeysInput: Swift.Sendable {
     /// Maximum number of results to return. Default: 50.
     public var maxResults: Swift.Int?
     /// The first public key to retrieve. This is used for pagination; see the nextToken response field.
@@ -2589,8 +2626,9 @@ public struct ListPublicKeysInput {
 }
 
 extension IVSRealTimeClientTypes {
+
     /// Summary information about a public key.
-    public struct PublicKeySummary {
+    public struct PublicKeySummary: Swift.Sendable {
         /// Public key ARN.
         public var arn: Swift.String?
         /// Public key name.
@@ -2609,10 +2647,9 @@ extension IVSRealTimeClientTypes {
             self.tags = tags
         }
     }
-
 }
 
-public struct ListPublicKeysOutput {
+public struct ListPublicKeysOutput: Swift.Sendable {
     /// If there are more public keys than maxResults, use nextToken in the request to get the next set.
     public var nextToken: Swift.String?
     /// List of the matching public keys (summary information only).
@@ -2629,7 +2666,7 @@ public struct ListPublicKeysOutput {
     }
 }
 
-public struct ListStagesInput {
+public struct ListStagesInput: Swift.Sendable {
     /// Maximum number of results to return. Default: 50.
     public var maxResults: Swift.Int?
     /// The first stage to retrieve. This is used for pagination; see the nextToken response field.
@@ -2646,8 +2683,9 @@ public struct ListStagesInput {
 }
 
 extension IVSRealTimeClientTypes {
+
     /// Summary information about a stage.
-    public struct StageSummary {
+    public struct StageSummary: Swift.Sendable {
         /// ID of the active session within the stage.
         public var activeSessionId: Swift.String?
         /// Stage ARN.
@@ -2671,10 +2709,9 @@ extension IVSRealTimeClientTypes {
             self.tags = tags
         }
     }
-
 }
 
-public struct ListStagesOutput {
+public struct ListStagesOutput: Swift.Sendable {
     /// If there are more stages than maxResults, use nextToken in the request to get the next set.
     public var nextToken: Swift.String?
     /// List of the matching stages (summary information only).
@@ -2691,7 +2728,7 @@ public struct ListStagesOutput {
     }
 }
 
-public struct ListStageSessionsInput {
+public struct ListStageSessionsInput: Swift.Sendable {
     /// Maximum number of results to return. Default: 50.
     public var maxResults: Swift.Int?
     /// The first stage session to retrieve. This is used for pagination; see the nextToken response field.
@@ -2713,8 +2750,9 @@ public struct ListStageSessionsInput {
 }
 
 extension IVSRealTimeClientTypes {
+
     /// Summary information about a stage session.
-    public struct StageSessionSummary {
+    public struct StageSessionSummary: Swift.Sendable {
         /// ISO 8601 timestamp (returned as a string) when the stage session ended. This is null if the stage is active.
         public var endTime: Foundation.Date?
         /// ID of the session within the stage.
@@ -2733,10 +2771,9 @@ extension IVSRealTimeClientTypes {
             self.startTime = startTime
         }
     }
-
 }
 
-public struct ListStageSessionsOutput {
+public struct ListStageSessionsOutput: Swift.Sendable {
     /// If there are more stage sessions than maxResults, use nextToken in the request to get the next set.
     public var nextToken: Swift.String?
     /// List of matching stage sessions.
@@ -2753,7 +2790,7 @@ public struct ListStageSessionsOutput {
     }
 }
 
-public struct ListStorageConfigurationsInput {
+public struct ListStorageConfigurationsInput: Swift.Sendable {
     /// Maximum number of storage configurations to return. Default: your service quota or 100, whichever is smaller.
     public var maxResults: Swift.Int?
     /// The first storage configuration to retrieve. This is used for pagination; see the nextToken response field.
@@ -2770,8 +2807,9 @@ public struct ListStorageConfigurationsInput {
 }
 
 extension IVSRealTimeClientTypes {
+
     /// Summary information about a storage configuration.
-    public struct StorageConfigurationSummary {
+    public struct StorageConfigurationSummary: Swift.Sendable {
         /// ARN of the storage configuration.
         /// This member is required.
         public var arn: Swift.String?
@@ -2795,10 +2833,9 @@ extension IVSRealTimeClientTypes {
             self.tags = tags
         }
     }
-
 }
 
-public struct ListStorageConfigurationsOutput {
+public struct ListStorageConfigurationsOutput: Swift.Sendable {
     /// If there are more storage configurations than maxResults, use nextToken in the request to get the next set.
     public var nextToken: Swift.String?
     /// List of the matching storage configurations.
@@ -2815,7 +2852,7 @@ public struct ListStorageConfigurationsOutput {
     }
 }
 
-public struct ListTagsForResourceInput {
+public struct ListTagsForResourceInput: Swift.Sendable {
     /// The ARN of the resource to be retrieved. The ARN must be URL-encoded.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -2828,7 +2865,7 @@ public struct ListTagsForResourceInput {
     }
 }
 
-public struct ListTagsForResourceOutput {
+public struct ListTagsForResourceOutput: Swift.Sendable {
     /// Tags attached to the resource. Array of maps, each of the form string:string (key:value).
     /// This member is required.
     public var tags: [Swift.String: Swift.String]?
@@ -2841,7 +2878,7 @@ public struct ListTagsForResourceOutput {
     }
 }
 
-public struct StartCompositionInput {
+public struct StartCompositionInput: Swift.Sendable {
     /// Array of destination configuration.
     /// This member is required.
     public var destinations: [IVSRealTimeClientTypes.DestinationConfiguration]?
@@ -2871,7 +2908,7 @@ public struct StartCompositionInput {
     }
 }
 
-public struct StartCompositionOutput {
+public struct StartCompositionOutput: Swift.Sendable {
     /// The Composition that was created.
     public var composition: IVSRealTimeClientTypes.Composition?
 
@@ -2883,7 +2920,7 @@ public struct StartCompositionOutput {
     }
 }
 
-public struct StopCompositionInput {
+public struct StopCompositionInput: Swift.Sendable {
     /// ARN of the Composition.
     /// This member is required.
     public var arn: Swift.String?
@@ -2896,12 +2933,12 @@ public struct StopCompositionInput {
     }
 }
 
-public struct StopCompositionOutput {
+public struct StopCompositionOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct TagResourceInput {
+public struct TagResourceInput: Swift.Sendable {
     /// The ARN of the resource to be tagged. The ARN must be URL-encoded.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -2919,12 +2956,12 @@ public struct TagResourceInput {
     }
 }
 
-public struct TagResourceOutput {
+public struct TagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UntagResourceInput {
+public struct UntagResourceInput: Swift.Sendable {
     /// The ARN of the resource to be untagged. The ARN must be URL-encoded.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -2942,12 +2979,12 @@ public struct UntagResourceInput {
     }
 }
 
-public struct UntagResourceOutput {
+public struct UntagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdateIngestConfigurationInput {
+public struct UpdateIngestConfigurationInput: Swift.Sendable {
     /// ARN of the IngestConfiguration, for which the related stage ARN needs to be updated.
     /// This member is required.
     public var arn: Swift.String?
@@ -2964,7 +3001,7 @@ public struct UpdateIngestConfigurationInput {
     }
 }
 
-public struct UpdateIngestConfigurationOutput {
+public struct UpdateIngestConfigurationOutput: Swift.Sendable {
     /// The updated IngestConfiguration.
     public var ingestConfiguration: IVSRealTimeClientTypes.IngestConfiguration?
 
@@ -2976,7 +3013,7 @@ public struct UpdateIngestConfigurationOutput {
     }
 }
 
-public struct UpdateStageInput {
+public struct UpdateStageInput: Swift.Sendable {
     /// ARN of the stage to be updated.
     /// This member is required.
     public var arn: Swift.String?
@@ -2997,7 +3034,7 @@ public struct UpdateStageInput {
     }
 }
 
-public struct UpdateStageOutput {
+public struct UpdateStageOutput: Swift.Sendable {
     /// The updated stage.
     public var stage: IVSRealTimeClientTypes.Stage?
 

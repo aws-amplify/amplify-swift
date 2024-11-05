@@ -27,7 +27,7 @@ import struct Smithy.URIQueryItem
 
 extension IoTFleetHubClientTypes {
 
-    public enum ApplicationState: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ApplicationState: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case active
         case createFailed
         case creating
@@ -64,8 +64,9 @@ extension IoTFleetHubClientTypes {
 }
 
 extension IoTFleetHubClientTypes {
+
     /// A summary of information about a Fleet Hub for IoT Device Management web application.
-    public struct ApplicationSummary {
+    public struct ApplicationSummary: Swift.Sendable {
         /// The date (in Unix epoch time) when the web application was created.
         public var applicationCreationDate: Swift.Int
         /// An optional description of the web application.
@@ -103,7 +104,6 @@ extension IoTFleetHubClientTypes {
             self.applicationUrl = applicationUrl
         }
     }
-
 }
 
 /// An unexpected error has occurred.
@@ -202,7 +202,7 @@ public struct ThrottlingException: ClientRuntime.ModeledError, AWSClientRuntime.
     }
 }
 
-public struct CreateApplicationInput {
+public struct CreateApplicationInput: Swift.Sendable {
     /// An optional description of the web application.
     public var applicationDescription: Swift.String?
     /// The name of the web application.
@@ -232,7 +232,7 @@ public struct CreateApplicationInput {
     }
 }
 
-public struct CreateApplicationOutput {
+public struct CreateApplicationOutput: Swift.Sendable {
     /// The ARN of the web application.
     /// This member is required.
     public var applicationArn: Swift.String?
@@ -274,7 +274,7 @@ public struct ResourceNotFoundException: ClientRuntime.ModeledError, AWSClientRu
     }
 }
 
-public struct DeleteApplicationInput {
+public struct DeleteApplicationInput: Swift.Sendable {
     /// The unique Id of the web application.
     /// This member is required.
     public var applicationId: Swift.String?
@@ -291,12 +291,12 @@ public struct DeleteApplicationInput {
     }
 }
 
-public struct DeleteApplicationOutput {
+public struct DeleteApplicationOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DescribeApplicationInput {
+public struct DescribeApplicationInput: Swift.Sendable {
     /// The unique Id of the web application.
     /// This member is required.
     public var applicationId: Swift.String?
@@ -309,7 +309,7 @@ public struct DescribeApplicationInput {
     }
 }
 
-public struct DescribeApplicationOutput {
+public struct DescribeApplicationOutput: Swift.Sendable {
     /// The ARN of the web application.
     /// This member is required.
     public var applicationArn: Swift.String?
@@ -373,7 +373,7 @@ public struct DescribeApplicationOutput {
     }
 }
 
-public struct ListApplicationsInput {
+public struct ListApplicationsInput: Swift.Sendable {
     /// A token used to get the next set of results.
     public var nextToken: Swift.String?
 
@@ -385,7 +385,7 @@ public struct ListApplicationsInput {
     }
 }
 
-public struct ListApplicationsOutput {
+public struct ListApplicationsOutput: Swift.Sendable {
     /// An array of objects that provide summaries of information about the web applications in the list.
     public var applicationSummaries: [IoTFleetHubClientTypes.ApplicationSummary]?
     /// A token used to get the next set of results.
@@ -401,7 +401,7 @@ public struct ListApplicationsOutput {
     }
 }
 
-public struct ListTagsForResourceInput {
+public struct ListTagsForResourceInput: Swift.Sendable {
     /// The ARN of the resource.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -414,7 +414,7 @@ public struct ListTagsForResourceInput {
     }
 }
 
-public struct ListTagsForResourceOutput {
+public struct ListTagsForResourceOutput: Swift.Sendable {
     /// The list of tags assigned to the resource.
     public var tags: [Swift.String: Swift.String]?
 
@@ -426,7 +426,7 @@ public struct ListTagsForResourceOutput {
     }
 }
 
-public struct TagResourceInput {
+public struct TagResourceInput: Swift.Sendable {
     /// The ARN of the resource.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -444,12 +444,12 @@ public struct TagResourceInput {
     }
 }
 
-public struct TagResourceOutput {
+public struct TagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UntagResourceInput {
+public struct UntagResourceInput: Swift.Sendable {
     /// The ARN of the resource.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -467,7 +467,7 @@ public struct UntagResourceInput {
     }
 }
 
-public struct UntagResourceOutput {
+public struct UntagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
@@ -496,7 +496,7 @@ public struct ConflictException: ClientRuntime.ModeledError, AWSClientRuntime.AW
     }
 }
 
-public struct UpdateApplicationInput {
+public struct UpdateApplicationInput: Swift.Sendable {
     /// An optional description of the web application.
     public var applicationDescription: Swift.String?
     /// The unique Id of the web application.
@@ -521,7 +521,7 @@ public struct UpdateApplicationInput {
     }
 }
 
-public struct UpdateApplicationOutput {
+public struct UpdateApplicationOutput: Swift.Sendable {
 
     public init() { }
 }

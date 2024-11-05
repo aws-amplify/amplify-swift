@@ -47,7 +47,7 @@ public struct AccessDeniedException: ClientRuntime.ModeledError, AWSClientRuntim
 
 extension SupportAppClientTypes {
 
-    public enum AccountType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AccountType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case management
         case member
         case sdkUnknown(Swift.String)
@@ -184,7 +184,7 @@ public struct ValidationException: ClientRuntime.ModeledError, AWSClientRuntime.
 
 extension SupportAppClientTypes {
 
-    public enum NotificationSeverityLevel: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum NotificationSeverityLevel: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case all
         case high
         case `none`
@@ -214,7 +214,7 @@ extension SupportAppClientTypes {
     }
 }
 
-public struct CreateSlackChannelConfigurationInput {
+public struct CreateSlackChannelConfigurationInput: Swift.Sendable {
     /// The channel ID in Slack. This ID identifies a channel within a Slack workspace.
     /// This member is required.
     public var channelId: Swift.String?
@@ -276,7 +276,7 @@ public struct CreateSlackChannelConfigurationInput {
     }
 }
 
-public struct CreateSlackChannelConfigurationOutput {
+public struct CreateSlackChannelConfigurationOutput: Swift.Sendable {
 
     public init() { }
 }
@@ -305,17 +305,17 @@ public struct ResourceNotFoundException: ClientRuntime.ModeledError, AWSClientRu
     }
 }
 
-public struct DeleteAccountAliasInput {
+public struct DeleteAccountAliasInput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteAccountAliasOutput {
+public struct DeleteAccountAliasOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteSlackChannelConfigurationInput {
+public struct DeleteSlackChannelConfigurationInput: Swift.Sendable {
     /// The channel ID in Slack. This ID identifies a channel within a Slack workspace.
     /// This member is required.
     public var channelId: Swift.String?
@@ -333,12 +333,12 @@ public struct DeleteSlackChannelConfigurationInput {
     }
 }
 
-public struct DeleteSlackChannelConfigurationOutput {
+public struct DeleteSlackChannelConfigurationOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteSlackWorkspaceConfigurationInput {
+public struct DeleteSlackWorkspaceConfigurationInput: Swift.Sendable {
     /// The team ID in Slack. This ID uniquely identifies a Slack workspace, such as T012ABCDEFG.
     /// This member is required.
     public var teamId: Swift.String?
@@ -351,17 +351,17 @@ public struct DeleteSlackWorkspaceConfigurationInput {
     }
 }
 
-public struct DeleteSlackWorkspaceConfigurationOutput {
+public struct DeleteSlackWorkspaceConfigurationOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct GetAccountAliasInput {
+public struct GetAccountAliasInput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct GetAccountAliasOutput {
+public struct GetAccountAliasOutput: Swift.Sendable {
     /// An alias or short name for an Amazon Web Services account.
     public var accountAlias: Swift.String?
 
@@ -373,7 +373,7 @@ public struct GetAccountAliasOutput {
     }
 }
 
-public struct ListSlackChannelConfigurationsInput {
+public struct ListSlackChannelConfigurationsInput: Swift.Sendable {
     /// If the results of a search are large, the API only returns a portion of the results and includes a nextToken pagination token in the response. To retrieve the next batch of results, reissue the search request and include the returned token. When the API returns the last set of results, the response doesn't include a pagination token value.
     public var nextToken: Swift.String?
 
@@ -386,8 +386,9 @@ public struct ListSlackChannelConfigurationsInput {
 }
 
 extension SupportAppClientTypes {
+
     /// The configuration for a Slack channel that you added for your Amazon Web Services account.
-    public struct SlackChannelConfiguration {
+    public struct SlackChannelConfiguration: Swift.Sendable {
         /// The channel ID in Slack. This ID identifies a channel within a Slack workspace.
         /// This member is required.
         public var channelId: Swift.String?
@@ -428,10 +429,9 @@ extension SupportAppClientTypes {
             self.teamId = teamId
         }
     }
-
 }
 
-public struct ListSlackChannelConfigurationsOutput {
+public struct ListSlackChannelConfigurationsOutput: Swift.Sendable {
     /// The point where pagination should resume when the response returns only partial results.
     public var nextToken: Swift.String?
     /// The configurations for a Slack channel.
@@ -448,7 +448,7 @@ public struct ListSlackChannelConfigurationsOutput {
     }
 }
 
-public struct ListSlackWorkspaceConfigurationsInput {
+public struct ListSlackWorkspaceConfigurationsInput: Swift.Sendable {
     /// If the results of a search are large, the API only returns a portion of the results and includes a nextToken pagination token in the response. To retrieve the next batch of results, reissue the search request and include the returned token. When the API returns the last set of results, the response doesn't include a pagination token value.
     public var nextToken: Swift.String?
 
@@ -461,8 +461,9 @@ public struct ListSlackWorkspaceConfigurationsInput {
 }
 
 extension SupportAppClientTypes {
+
     /// The configuration for a Slack workspace that you added to an Amazon Web Services account.
-    public struct SlackWorkspaceConfiguration {
+    public struct SlackWorkspaceConfiguration: Swift.Sendable {
         /// Whether to allow member accounts to authorize Slack workspaces. Member accounts must be part of an organization in Organizations.
         public var allowOrganizationMemberAccount: Swift.Bool?
         /// The team ID in Slack. This ID uniquely identifies a Slack workspace, such as T012ABCDEFG.
@@ -482,10 +483,9 @@ extension SupportAppClientTypes {
             self.teamName = teamName
         }
     }
-
 }
 
-public struct ListSlackWorkspaceConfigurationsOutput {
+public struct ListSlackWorkspaceConfigurationsOutput: Swift.Sendable {
     /// The point where pagination should resume when the response returns only partial results.
     public var nextToken: Swift.String?
     /// The configurations for a Slack workspace.
@@ -501,7 +501,7 @@ public struct ListSlackWorkspaceConfigurationsOutput {
     }
 }
 
-public struct PutAccountAliasInput {
+public struct PutAccountAliasInput: Swift.Sendable {
     /// An alias or short name for an Amazon Web Services account.
     /// This member is required.
     public var accountAlias: Swift.String?
@@ -514,12 +514,12 @@ public struct PutAccountAliasInput {
     }
 }
 
-public struct PutAccountAliasOutput {
+public struct PutAccountAliasOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct RegisterSlackWorkspaceForOrganizationInput {
+public struct RegisterSlackWorkspaceForOrganizationInput: Swift.Sendable {
     /// The team ID in Slack. This ID uniquely identifies a Slack workspace, such as T012ABCDEFG. Specify the Slack workspace that you want to use for your organization.
     /// This member is required.
     public var teamId: Swift.String?
@@ -532,7 +532,7 @@ public struct RegisterSlackWorkspaceForOrganizationInput {
     }
 }
 
-public struct RegisterSlackWorkspaceForOrganizationOutput {
+public struct RegisterSlackWorkspaceForOrganizationOutput: Swift.Sendable {
     /// Whether the Amazon Web Services account is a management or member account that's part of an organization in Organizations.
     public var accountType: SupportAppClientTypes.AccountType?
     /// The team ID in Slack. This ID uniquely identifies a Slack workspace, such as T012ABCDEFG.
@@ -552,7 +552,7 @@ public struct RegisterSlackWorkspaceForOrganizationOutput {
     }
 }
 
-public struct UpdateSlackChannelConfigurationInput {
+public struct UpdateSlackChannelConfigurationInput: Swift.Sendable {
     /// The channel ID in Slack. This ID identifies a channel within a Slack workspace.
     /// This member is required.
     public var channelId: Swift.String?
@@ -612,7 +612,7 @@ public struct UpdateSlackChannelConfigurationInput {
     }
 }
 
-public struct UpdateSlackChannelConfigurationOutput {
+public struct UpdateSlackChannelConfigurationOutput: Swift.Sendable {
     /// The channel ID in Slack. This ID identifies a channel within a Slack workspace.
     public var channelId: Swift.String?
     /// The name of the Slack channel that you configure for the Amazon Web Services Support App.

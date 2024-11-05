@@ -123,7 +123,7 @@ public struct ValidationException: ClientRuntime.ModeledError, AWSClientRuntime.
     }
 }
 
-public struct DeleteHumanLoopInput {
+public struct DeleteHumanLoopInput: Swift.Sendable {
     /// The name of the human loop that you want to delete.
     /// This member is required.
     public var humanLoopName: Swift.String?
@@ -136,12 +136,12 @@ public struct DeleteHumanLoopInput {
     }
 }
 
-public struct DeleteHumanLoopOutput {
+public struct DeleteHumanLoopOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DescribeHumanLoopInput {
+public struct DescribeHumanLoopInput: Swift.Sendable {
     /// The name of the human loop that you want information about.
     /// This member is required.
     public var humanLoopName: Swift.String?
@@ -155,8 +155,9 @@ public struct DescribeHumanLoopInput {
 }
 
 extension SageMakerA2IRuntimeClientTypes {
+
     /// Information about where the human output will be stored.
-    public struct HumanLoopOutput {
+    public struct HumanLoopOutput: Swift.Sendable {
         /// The location of the Amazon S3 object where Amazon Augmented AI stores your human loop output.
         /// This member is required.
         public var outputS3Uri: Swift.String?
@@ -168,12 +169,11 @@ extension SageMakerA2IRuntimeClientTypes {
             self.outputS3Uri = outputS3Uri
         }
     }
-
 }
 
 extension SageMakerA2IRuntimeClientTypes {
 
-    public enum HumanLoopStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum HumanLoopStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case completed
         case failed
         case inProgress
@@ -209,7 +209,7 @@ extension SageMakerA2IRuntimeClientTypes {
     }
 }
 
-public struct DescribeHumanLoopOutput {
+public struct DescribeHumanLoopOutput: Swift.Sendable {
     /// The creation time when Amazon Augmented AI created the human loop.
     /// This member is required.
     public var creationTime: Foundation.Date?
@@ -256,7 +256,7 @@ public struct DescribeHumanLoopOutput {
 
 extension SageMakerA2IRuntimeClientTypes {
 
-    public enum SortOrder: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SortOrder: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case ascending
         case descending
         case sdkUnknown(Swift.String)
@@ -283,7 +283,7 @@ extension SageMakerA2IRuntimeClientTypes {
     }
 }
 
-public struct ListHumanLoopsInput {
+public struct ListHumanLoopsInput: Swift.Sendable {
     /// (Optional) The timestamp of the date when you want the human loops to begin in ISO 8601 format. For example, 2020-02-24.
     public var creationTimeAfter: Foundation.Date?
     /// (Optional) The timestamp of the date before which you want the human loops to begin in ISO 8601 format. For example, 2020-02-24.
@@ -317,8 +317,9 @@ public struct ListHumanLoopsInput {
 }
 
 extension SageMakerA2IRuntimeClientTypes {
+
     /// Summary information about the human loop.
-    public struct HumanLoopSummary {
+    public struct HumanLoopSummary: Swift.Sendable {
         /// When Amazon Augmented AI created the human loop.
         public var creationTime: Foundation.Date?
         /// The reason why the human loop failed. A failure reason is returned when the status of the human loop is Failed.
@@ -345,10 +346,9 @@ extension SageMakerA2IRuntimeClientTypes {
             self.humanLoopStatus = humanLoopStatus
         }
     }
-
 }
 
-public struct ListHumanLoopsOutput {
+public struct ListHumanLoopsOutput: Swift.Sendable {
     /// An array of objects that contain information about the human loops.
     /// This member is required.
     public var humanLoopSummaries: [SageMakerA2IRuntimeClientTypes.HumanLoopSummary]?
@@ -415,7 +415,7 @@ public struct ServiceQuotaExceededException: ClientRuntime.ModeledError, AWSClie
 
 extension SageMakerA2IRuntimeClientTypes {
 
-    public enum ContentClassifier: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ContentClassifier: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case freeOfAdultContent
         case freeOfPersonallyIdentifiableInformation
         case sdkUnknown(Swift.String)
@@ -443,8 +443,9 @@ extension SageMakerA2IRuntimeClientTypes {
 }
 
 extension SageMakerA2IRuntimeClientTypes {
+
     /// Attributes of the data specified by the customer. Use these to describe the data to be labeled.
-    public struct HumanLoopDataAttributes {
+    public struct HumanLoopDataAttributes: Swift.Sendable {
         /// Declares that your content is free of personally identifiable information or adult content. Amazon SageMaker can restrict the Amazon Mechanical Turk workers who can view your task based on this information.
         /// This member is required.
         public var contentClassifiers: [SageMakerA2IRuntimeClientTypes.ContentClassifier]?
@@ -456,12 +457,12 @@ extension SageMakerA2IRuntimeClientTypes {
             self.contentClassifiers = contentClassifiers
         }
     }
-
 }
 
 extension SageMakerA2IRuntimeClientTypes {
+
     /// An object containing the human loop input in JSON format.
-    public struct HumanLoopInput {
+    public struct HumanLoopInput: Swift.Sendable {
         /// Serialized input from the human loop. The input must be a string representation of a file in JSON format.
         /// This member is required.
         public var inputContent: Swift.String?
@@ -473,10 +474,9 @@ extension SageMakerA2IRuntimeClientTypes {
             self.inputContent = inputContent
         }
     }
-
 }
 
-public struct StartHumanLoopInput {
+public struct StartHumanLoopInput: Swift.Sendable {
     /// Attributes of the specified data. Use DataAttributes to specify if your data is free of personally identifiable information and/or free of adult content.
     public var dataAttributes: SageMakerA2IRuntimeClientTypes.HumanLoopDataAttributes?
     /// The Amazon Resource Name (ARN) of the flow definition associated with this human loop.
@@ -503,7 +503,7 @@ public struct StartHumanLoopInput {
     }
 }
 
-public struct StartHumanLoopOutput {
+public struct StartHumanLoopOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the human loop.
     public var humanLoopArn: Swift.String?
 
@@ -515,7 +515,7 @@ public struct StartHumanLoopOutput {
     }
 }
 
-public struct StopHumanLoopInput {
+public struct StopHumanLoopInput: Swift.Sendable {
     /// The name of the human loop that you want to stop.
     /// This member is required.
     public var humanLoopName: Swift.String?
@@ -528,7 +528,7 @@ public struct StopHumanLoopInput {
     }
 }
 
-public struct StopHumanLoopOutput {
+public struct StopHumanLoopOutput: Swift.Sendable {
 
     public init() { }
 }

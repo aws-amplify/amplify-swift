@@ -101,7 +101,7 @@ public struct ValidationException: ClientRuntime.ModeledError, AWSClientRuntime.
 
 extension FreeTierClientTypes {
 
-    public enum Dimension: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Dimension: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case description
         case freeTierType
         case operation
@@ -145,7 +145,7 @@ extension FreeTierClientTypes {
 
 extension FreeTierClientTypes {
 
-    public enum MatchOption: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum MatchOption: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case contains
         case endsWith
         case equals
@@ -182,8 +182,9 @@ extension FreeTierClientTypes {
 }
 
 extension FreeTierClientTypes {
+
     /// Contains the specifications for the filters to use for your request.
-    public struct DimensionValues {
+    public struct DimensionValues: Swift.Sendable {
         /// The name of the dimension that you want to filter on.
         /// This member is required.
         public var key: FreeTierClientTypes.Dimension?
@@ -205,12 +206,12 @@ extension FreeTierClientTypes {
             self.values = values
         }
     }
-
 }
 
 extension FreeTierClientTypes {
+
     /// Consists of a Amazon Web Services Free Tier offer’s metadata and your data usage for the offer.
-    public struct FreeTierUsage {
+    public struct FreeTierUsage: Swift.Sendable {
         /// Describes the actual usage accrued month-to-day (MTD) that you've used so far.
         public var actualUsageAmount: Swift.Double
         /// The description of the Free Tier offer.
@@ -257,10 +258,9 @@ extension FreeTierClientTypes {
             self.usageType = usageType
         }
     }
-
 }
 
-public struct GetFreeTierUsageOutput {
+public struct GetFreeTierUsageOutput: Swift.Sendable {
     /// The list of Free Tier usage objects that meet your filter expression.
     /// This member is required.
     public var freeTierUsages: [FreeTierClientTypes.FreeTierUsage]?
@@ -278,6 +278,7 @@ public struct GetFreeTierUsageOutput {
 }
 
 extension FreeTierClientTypes {
+
     /// Use Expression to filter in the GetFreeTierUsage API operation. You can use the following patterns:
     ///
     /// * Simple dimension values (Dimensions root operator)
@@ -286,7 +287,7 @@ extension FreeTierClientTypes {
     ///
     ///
     /// For simple dimension values, you can set the dimension name, values, and match type for the filters that you plan to use. Example for simple dimension values You can filter to match exactly for REGION==us-east-1 OR REGION==us-west-1. The corresponding Expression appears like the following: { "Dimensions": { "Key": "REGION", "Values": [ "us-east-1", "us-west-1" ], "MatchOptions": ["EQUALS"] } } As shown in the previous example, lists of dimension values are combined with OR when you apply the filter. For complex expressions with logical operators, you can have nested expressions to use the logical operators and specify advanced filtering. Example for complex expressions with logical operators You can filter by ((REGION == us-east-1 OR REGION == us-west-1) OR (SERVICE CONTAINS AWSLambda)) AND (USAGE_TYPE !CONTAINS DataTransfer). The corresponding Expression appears like the following: { "And": [ {"Or": [ {"Dimensions": { "Key": "REGION", "Values": [ "us-east-1", "us-west-1" ], "MatchOptions": ["EQUALS"] }}, {"Dimensions": { "Key": "SERVICE", "Values": ["AWSLambda"], "MatchOptions": ["CONTAINS"] } } ]}, {"Not": {"Dimensions": { "Key": "USAGE_TYPE", "Values": ["DataTransfer"], "MatchOptions": ["CONTAINS"] }}} ] } In the following Contents, you must specify exactly one of the following root operators.
-    public struct Expression {
+    public struct Expression: Swift.Sendable {
         /// Return results that match all Expressions that you specified in the array.
         public var and: [FreeTierClientTypes.Expression]?
         /// The specific dimension, values, and match type to filter objects with.
@@ -309,10 +310,9 @@ extension FreeTierClientTypes {
             self.or = or
         }
     }
-
 }
 
-public struct GetFreeTierUsageInput {
+public struct GetFreeTierUsageInput: Swift.Sendable {
     /// An expression that specifies the conditions that you want each FreeTierUsage object to meet.
     public var filter: FreeTierClientTypes.Expression?
     /// The maximum number of results to return in the response. MaxResults means that there can be up to the specified number of values, but there might be fewer results based on your filters.

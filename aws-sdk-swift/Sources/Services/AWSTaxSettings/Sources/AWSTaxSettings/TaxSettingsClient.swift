@@ -291,15 +291,19 @@ extension TaxSettingsClient {
     ///
     /// Malaysia
     ///
-    /// * If you use this operation to set a tax registration number (TRN) in Malaysia, only resellers with a valid sales and service tax (SST) number are required to provide tax registration information.
+    /// * The sector valid values are Business and Individual.
     ///
-    /// * By using this API operation to set a TRN in Malaysia, Amazon Web Services will regard you as self-declaring that you're an authorized business reseller registered with the Royal Malaysia Customs Department (RMCD) and have a valid SST number.
+    /// * RegistrationType valid values are NRIC for individual, and TIN and sales and service tax (SST) for Business.
+    ///
+    /// * For individual, you can specify the taxInformationNumber in MalaysiaAdditionalInfo with NRIC type, and a valid MyKad or NRIC number.
+    ///
+    /// * For business, you must specify a businessRegistrationNumber in MalaysiaAdditionalInfo with a TIN type and tax identification number.
+    ///
+    /// * For business resellers, you must specify a businessRegistrationNumber and taxInformationNumber in MalaysiaAdditionalInfo with a sales and service tax (SST) type and a valid SST number.
+    ///
+    /// * For business resellers with service codes, you must specify businessRegistrationNumber, taxInformationNumber, and distinct serviceTaxCodes in MalaysiaAdditionalInfo with a SST type and valid sales and service tax (SST) number. By using this API operation, Amazon Web Services registers your self-declaration that you’re an authorized business reseller registered with the Royal Malaysia Customs Department (RMCD), and have a valid SST number.
     ///
     /// * Amazon Web Services reserves the right to seek additional information and/or take other actions to support your self-declaration as appropriate.
-    ///
-    /// * If you're not a reseller of Amazon Web Services, we don't recommend that you use this operation to set the TRN in Malaysia.
-    ///
-    /// * Only use this API operation to upload the TRNs for accounts through which you're reselling Amazon Web Services.
     ///
     /// * Amazon Web Services is currently registered under the following service tax codes. You must include at least one of the service tax codes in the service tax code strings to declare yourself as an authorized registered business reseller. Taxable service and service tax codes: Consultancy - 9907061674 Training or coaching service - 9907071685 IT service - 9907101676 Digital services and electronic medium - 9907121690
     ///
@@ -411,6 +415,78 @@ extension TaxSettingsClient {
         var metricsAttributes = Smithy.Attributes()
         metricsAttributes.set(key: ClientRuntime.OrchestratorMetricsAttributesKeys.service, value: "TaxSettings")
         metricsAttributes.set(key: ClientRuntime.OrchestratorMetricsAttributesKeys.method, value: "BatchPutTaxRegistration")
+        let op = builder.attributes(context)
+            .telemetry(ClientRuntime.OrchestratorTelemetry(
+                telemetryProvider: config.telemetryProvider,
+                metricsAttributes: metricsAttributes,
+                meterScope: serviceName,
+                tracerScope: serviceName
+            ))
+            .executeRequest(client)
+            .build()
+        return try await op.execute(input: input)
+    }
+
+    /// Performs the `DeleteSupplementalTaxRegistration` operation on the `TaxSettings` service.
+    ///
+    /// Deletes a supplemental tax registration for a single account.
+    ///
+    /// - Parameter DeleteSupplementalTaxRegistrationInput : [no documentation found]
+    ///
+    /// - Returns: `DeleteSupplementalTaxRegistrationOutput` : [no documentation found]
+    ///
+    /// - Throws: One of the exceptions listed below __Possible Exceptions__.
+    ///
+    /// __Possible Exceptions:__
+    /// - `ConflictException` : The exception when the input is creating conflict with the given state.
+    /// - `InternalServerException` : The exception thrown when an unexpected error occurs when processing a request.
+    /// - `ResourceNotFoundException` : The exception thrown when the input doesn't have a resource associated to it.
+    /// - `ValidationException` : The exception when the input doesn't pass validation for at least one of the input parameters.
+    public func deleteSupplementalTaxRegistration(input: DeleteSupplementalTaxRegistrationInput) async throws -> DeleteSupplementalTaxRegistrationOutput {
+        let context = Smithy.ContextBuilder()
+                      .withMethod(value: .post)
+                      .withServiceName(value: serviceName)
+                      .withOperation(value: "deleteSupplementalTaxRegistration")
+                      .withIdempotencyTokenGenerator(value: config.idempotencyTokenGenerator)
+                      .withLogger(value: config.logger)
+                      .withPartitionID(value: config.partitionID)
+                      .withAuthSchemes(value: config.authSchemes ?? [])
+                      .withAuthSchemeResolver(value: config.authSchemeResolver)
+                      .withUnsignedPayloadTrait(value: false)
+                      .withSocketTimeout(value: config.httpClientConfiguration.socketTimeout)
+                      .withIdentityResolver(value: config.bearerTokenIdentityResolver, schemeID: "smithy.api#httpBearerAuth")
+                      .withIdentityResolver(value: config.awsCredentialIdentityResolver, schemeID: "aws.auth#sigv4")
+                      .withIdentityResolver(value: config.awsCredentialIdentityResolver, schemeID: "aws.auth#sigv4a")
+                      .withRegion(value: config.region)
+                      .withSigningName(value: "tax")
+                      .withSigningRegion(value: config.signingRegion)
+                      .build()
+        let builder = ClientRuntime.OrchestratorBuilder<DeleteSupplementalTaxRegistrationInput, DeleteSupplementalTaxRegistrationOutput, SmithyHTTPAPI.HTTPRequest, SmithyHTTPAPI.HTTPResponse>()
+        config.interceptorProviders.forEach { provider in
+            builder.interceptors.add(provider.create())
+        }
+        config.httpInterceptorProviders.forEach { provider in
+            builder.interceptors.add(provider.create())
+        }
+        builder.interceptors.add(ClientRuntime.URLPathMiddleware<DeleteSupplementalTaxRegistrationInput, DeleteSupplementalTaxRegistrationOutput>(DeleteSupplementalTaxRegistrationInput.urlPathProvider(_:)))
+        builder.interceptors.add(ClientRuntime.URLHostMiddleware<DeleteSupplementalTaxRegistrationInput, DeleteSupplementalTaxRegistrationOutput>())
+        builder.interceptors.add(ClientRuntime.ContentTypeMiddleware<DeleteSupplementalTaxRegistrationInput, DeleteSupplementalTaxRegistrationOutput>(contentType: "application/json"))
+        builder.serialize(ClientRuntime.BodyMiddleware<DeleteSupplementalTaxRegistrationInput, DeleteSupplementalTaxRegistrationOutput, SmithyJSON.Writer>(rootNodeInfo: "", inputWritingClosure: DeleteSupplementalTaxRegistrationInput.write(value:to:)))
+        builder.interceptors.add(ClientRuntime.ContentLengthMiddleware<DeleteSupplementalTaxRegistrationInput, DeleteSupplementalTaxRegistrationOutput>())
+        builder.deserialize(ClientRuntime.DeserializeMiddleware<DeleteSupplementalTaxRegistrationOutput>(DeleteSupplementalTaxRegistrationOutput.httpOutput(from:), DeleteSupplementalTaxRegistrationOutputError.httpError(from:)))
+        builder.interceptors.add(ClientRuntime.LoggerMiddleware<DeleteSupplementalTaxRegistrationInput, DeleteSupplementalTaxRegistrationOutput>(clientLogMode: config.clientLogMode))
+        builder.retryStrategy(SmithyRetries.DefaultRetryStrategy(options: config.retryStrategyOptions))
+        builder.retryErrorInfoProvider(AWSClientRuntime.AWSRetryErrorInfoProvider.errorInfo(for:))
+        builder.applySigner(ClientRuntime.SignerMiddleware<DeleteSupplementalTaxRegistrationOutput>())
+        let endpointParams = EndpointParams(endpoint: config.endpoint, region: config.region, useDualStack: config.useDualStack ?? false, useFIPS: config.useFIPS ?? false)
+        builder.applyEndpoint(AWSClientRuntime.EndpointResolverMiddleware<DeleteSupplementalTaxRegistrationOutput, EndpointParams>(endpointResolverBlock: { [config] in try config.endpointResolver.resolve(params: $0) }, endpointParams: endpointParams))
+        builder.interceptors.add(AWSClientRuntime.UserAgentMiddleware<DeleteSupplementalTaxRegistrationInput, DeleteSupplementalTaxRegistrationOutput>(serviceID: serviceName, version: "1.0", config: config))
+        builder.selectAuthScheme(ClientRuntime.AuthSchemeMiddleware<DeleteSupplementalTaxRegistrationOutput>())
+        builder.interceptors.add(AWSClientRuntime.AmzSdkInvocationIdMiddleware<DeleteSupplementalTaxRegistrationInput, DeleteSupplementalTaxRegistrationOutput>())
+        builder.interceptors.add(AWSClientRuntime.AmzSdkRequestMiddleware<DeleteSupplementalTaxRegistrationInput, DeleteSupplementalTaxRegistrationOutput>(maxRetries: config.retryStrategyOptions.maxRetriesBase))
+        var metricsAttributes = Smithy.Attributes()
+        metricsAttributes.set(key: ClientRuntime.OrchestratorMetricsAttributesKeys.service, value: "TaxSettings")
+        metricsAttributes.set(key: ClientRuntime.OrchestratorMetricsAttributesKeys.method, value: "DeleteSupplementalTaxRegistration")
         let op = builder.attributes(context)
             .telemetry(ClientRuntime.OrchestratorTelemetry(
                 telemetryProvider: config.telemetryProvider,
@@ -636,6 +712,77 @@ extension TaxSettingsClient {
         return try await op.execute(input: input)
     }
 
+    /// Performs the `ListSupplementalTaxRegistrations` operation on the `TaxSettings` service.
+    ///
+    /// Retrieves supplemental tax registrations for a single account.
+    ///
+    /// - Parameter ListSupplementalTaxRegistrationsInput : [no documentation found]
+    ///
+    /// - Returns: `ListSupplementalTaxRegistrationsOutput` : [no documentation found]
+    ///
+    /// - Throws: One of the exceptions listed below __Possible Exceptions__.
+    ///
+    /// __Possible Exceptions:__
+    /// - `InternalServerException` : The exception thrown when an unexpected error occurs when processing a request.
+    /// - `ResourceNotFoundException` : The exception thrown when the input doesn't have a resource associated to it.
+    /// - `ValidationException` : The exception when the input doesn't pass validation for at least one of the input parameters.
+    public func listSupplementalTaxRegistrations(input: ListSupplementalTaxRegistrationsInput) async throws -> ListSupplementalTaxRegistrationsOutput {
+        let context = Smithy.ContextBuilder()
+                      .withMethod(value: .post)
+                      .withServiceName(value: serviceName)
+                      .withOperation(value: "listSupplementalTaxRegistrations")
+                      .withIdempotencyTokenGenerator(value: config.idempotencyTokenGenerator)
+                      .withLogger(value: config.logger)
+                      .withPartitionID(value: config.partitionID)
+                      .withAuthSchemes(value: config.authSchemes ?? [])
+                      .withAuthSchemeResolver(value: config.authSchemeResolver)
+                      .withUnsignedPayloadTrait(value: false)
+                      .withSocketTimeout(value: config.httpClientConfiguration.socketTimeout)
+                      .withIdentityResolver(value: config.bearerTokenIdentityResolver, schemeID: "smithy.api#httpBearerAuth")
+                      .withIdentityResolver(value: config.awsCredentialIdentityResolver, schemeID: "aws.auth#sigv4")
+                      .withIdentityResolver(value: config.awsCredentialIdentityResolver, schemeID: "aws.auth#sigv4a")
+                      .withRegion(value: config.region)
+                      .withSigningName(value: "tax")
+                      .withSigningRegion(value: config.signingRegion)
+                      .build()
+        let builder = ClientRuntime.OrchestratorBuilder<ListSupplementalTaxRegistrationsInput, ListSupplementalTaxRegistrationsOutput, SmithyHTTPAPI.HTTPRequest, SmithyHTTPAPI.HTTPResponse>()
+        config.interceptorProviders.forEach { provider in
+            builder.interceptors.add(provider.create())
+        }
+        config.httpInterceptorProviders.forEach { provider in
+            builder.interceptors.add(provider.create())
+        }
+        builder.interceptors.add(ClientRuntime.URLPathMiddleware<ListSupplementalTaxRegistrationsInput, ListSupplementalTaxRegistrationsOutput>(ListSupplementalTaxRegistrationsInput.urlPathProvider(_:)))
+        builder.interceptors.add(ClientRuntime.URLHostMiddleware<ListSupplementalTaxRegistrationsInput, ListSupplementalTaxRegistrationsOutput>())
+        builder.interceptors.add(ClientRuntime.ContentTypeMiddleware<ListSupplementalTaxRegistrationsInput, ListSupplementalTaxRegistrationsOutput>(contentType: "application/json"))
+        builder.serialize(ClientRuntime.BodyMiddleware<ListSupplementalTaxRegistrationsInput, ListSupplementalTaxRegistrationsOutput, SmithyJSON.Writer>(rootNodeInfo: "", inputWritingClosure: ListSupplementalTaxRegistrationsInput.write(value:to:)))
+        builder.interceptors.add(ClientRuntime.ContentLengthMiddleware<ListSupplementalTaxRegistrationsInput, ListSupplementalTaxRegistrationsOutput>())
+        builder.deserialize(ClientRuntime.DeserializeMiddleware<ListSupplementalTaxRegistrationsOutput>(ListSupplementalTaxRegistrationsOutput.httpOutput(from:), ListSupplementalTaxRegistrationsOutputError.httpError(from:)))
+        builder.interceptors.add(ClientRuntime.LoggerMiddleware<ListSupplementalTaxRegistrationsInput, ListSupplementalTaxRegistrationsOutput>(clientLogMode: config.clientLogMode))
+        builder.retryStrategy(SmithyRetries.DefaultRetryStrategy(options: config.retryStrategyOptions))
+        builder.retryErrorInfoProvider(AWSClientRuntime.AWSRetryErrorInfoProvider.errorInfo(for:))
+        builder.applySigner(ClientRuntime.SignerMiddleware<ListSupplementalTaxRegistrationsOutput>())
+        let endpointParams = EndpointParams(endpoint: config.endpoint, region: config.region, useDualStack: config.useDualStack ?? false, useFIPS: config.useFIPS ?? false)
+        builder.applyEndpoint(AWSClientRuntime.EndpointResolverMiddleware<ListSupplementalTaxRegistrationsOutput, EndpointParams>(endpointResolverBlock: { [config] in try config.endpointResolver.resolve(params: $0) }, endpointParams: endpointParams))
+        builder.interceptors.add(AWSClientRuntime.UserAgentMiddleware<ListSupplementalTaxRegistrationsInput, ListSupplementalTaxRegistrationsOutput>(serviceID: serviceName, version: "1.0", config: config))
+        builder.selectAuthScheme(ClientRuntime.AuthSchemeMiddleware<ListSupplementalTaxRegistrationsOutput>())
+        builder.interceptors.add(AWSClientRuntime.AmzSdkInvocationIdMiddleware<ListSupplementalTaxRegistrationsInput, ListSupplementalTaxRegistrationsOutput>())
+        builder.interceptors.add(AWSClientRuntime.AmzSdkRequestMiddleware<ListSupplementalTaxRegistrationsInput, ListSupplementalTaxRegistrationsOutput>(maxRetries: config.retryStrategyOptions.maxRetriesBase))
+        var metricsAttributes = Smithy.Attributes()
+        metricsAttributes.set(key: ClientRuntime.OrchestratorMetricsAttributesKeys.service, value: "TaxSettings")
+        metricsAttributes.set(key: ClientRuntime.OrchestratorMetricsAttributesKeys.method, value: "ListSupplementalTaxRegistrations")
+        let op = builder.attributes(context)
+            .telemetry(ClientRuntime.OrchestratorTelemetry(
+                telemetryProvider: config.telemetryProvider,
+                metricsAttributes: metricsAttributes,
+                meterScope: serviceName,
+                tracerScope: serviceName
+            ))
+            .executeRequest(client)
+            .build()
+        return try await op.execute(input: input)
+    }
+
     /// Performs the `ListTaxRegistrations` operation on the `TaxSettings` service.
     ///
     /// Retrieves the tax registration of accounts listed in a consolidated billing family. This can be used to retrieve up to 100 accounts' tax registrations in one call (default 50).
@@ -707,6 +854,77 @@ extension TaxSettingsClient {
         return try await op.execute(input: input)
     }
 
+    /// Performs the `PutSupplementalTaxRegistration` operation on the `TaxSettings` service.
+    ///
+    /// Stores supplemental tax registration for a single account.
+    ///
+    /// - Parameter PutSupplementalTaxRegistrationInput : [no documentation found]
+    ///
+    /// - Returns: `PutSupplementalTaxRegistrationOutput` : [no documentation found]
+    ///
+    /// - Throws: One of the exceptions listed below __Possible Exceptions__.
+    ///
+    /// __Possible Exceptions:__
+    /// - `ConflictException` : The exception when the input is creating conflict with the given state.
+    /// - `InternalServerException` : The exception thrown when an unexpected error occurs when processing a request.
+    /// - `ValidationException` : The exception when the input doesn't pass validation for at least one of the input parameters.
+    public func putSupplementalTaxRegistration(input: PutSupplementalTaxRegistrationInput) async throws -> PutSupplementalTaxRegistrationOutput {
+        let context = Smithy.ContextBuilder()
+                      .withMethod(value: .post)
+                      .withServiceName(value: serviceName)
+                      .withOperation(value: "putSupplementalTaxRegistration")
+                      .withIdempotencyTokenGenerator(value: config.idempotencyTokenGenerator)
+                      .withLogger(value: config.logger)
+                      .withPartitionID(value: config.partitionID)
+                      .withAuthSchemes(value: config.authSchemes ?? [])
+                      .withAuthSchemeResolver(value: config.authSchemeResolver)
+                      .withUnsignedPayloadTrait(value: false)
+                      .withSocketTimeout(value: config.httpClientConfiguration.socketTimeout)
+                      .withIdentityResolver(value: config.bearerTokenIdentityResolver, schemeID: "smithy.api#httpBearerAuth")
+                      .withIdentityResolver(value: config.awsCredentialIdentityResolver, schemeID: "aws.auth#sigv4")
+                      .withIdentityResolver(value: config.awsCredentialIdentityResolver, schemeID: "aws.auth#sigv4a")
+                      .withRegion(value: config.region)
+                      .withSigningName(value: "tax")
+                      .withSigningRegion(value: config.signingRegion)
+                      .build()
+        let builder = ClientRuntime.OrchestratorBuilder<PutSupplementalTaxRegistrationInput, PutSupplementalTaxRegistrationOutput, SmithyHTTPAPI.HTTPRequest, SmithyHTTPAPI.HTTPResponse>()
+        config.interceptorProviders.forEach { provider in
+            builder.interceptors.add(provider.create())
+        }
+        config.httpInterceptorProviders.forEach { provider in
+            builder.interceptors.add(provider.create())
+        }
+        builder.interceptors.add(ClientRuntime.URLPathMiddleware<PutSupplementalTaxRegistrationInput, PutSupplementalTaxRegistrationOutput>(PutSupplementalTaxRegistrationInput.urlPathProvider(_:)))
+        builder.interceptors.add(ClientRuntime.URLHostMiddleware<PutSupplementalTaxRegistrationInput, PutSupplementalTaxRegistrationOutput>())
+        builder.interceptors.add(ClientRuntime.ContentTypeMiddleware<PutSupplementalTaxRegistrationInput, PutSupplementalTaxRegistrationOutput>(contentType: "application/json"))
+        builder.serialize(ClientRuntime.BodyMiddleware<PutSupplementalTaxRegistrationInput, PutSupplementalTaxRegistrationOutput, SmithyJSON.Writer>(rootNodeInfo: "", inputWritingClosure: PutSupplementalTaxRegistrationInput.write(value:to:)))
+        builder.interceptors.add(ClientRuntime.ContentLengthMiddleware<PutSupplementalTaxRegistrationInput, PutSupplementalTaxRegistrationOutput>())
+        builder.deserialize(ClientRuntime.DeserializeMiddleware<PutSupplementalTaxRegistrationOutput>(PutSupplementalTaxRegistrationOutput.httpOutput(from:), PutSupplementalTaxRegistrationOutputError.httpError(from:)))
+        builder.interceptors.add(ClientRuntime.LoggerMiddleware<PutSupplementalTaxRegistrationInput, PutSupplementalTaxRegistrationOutput>(clientLogMode: config.clientLogMode))
+        builder.retryStrategy(SmithyRetries.DefaultRetryStrategy(options: config.retryStrategyOptions))
+        builder.retryErrorInfoProvider(AWSClientRuntime.AWSRetryErrorInfoProvider.errorInfo(for:))
+        builder.applySigner(ClientRuntime.SignerMiddleware<PutSupplementalTaxRegistrationOutput>())
+        let endpointParams = EndpointParams(endpoint: config.endpoint, region: config.region, useDualStack: config.useDualStack ?? false, useFIPS: config.useFIPS ?? false)
+        builder.applyEndpoint(AWSClientRuntime.EndpointResolverMiddleware<PutSupplementalTaxRegistrationOutput, EndpointParams>(endpointResolverBlock: { [config] in try config.endpointResolver.resolve(params: $0) }, endpointParams: endpointParams))
+        builder.interceptors.add(AWSClientRuntime.UserAgentMiddleware<PutSupplementalTaxRegistrationInput, PutSupplementalTaxRegistrationOutput>(serviceID: serviceName, version: "1.0", config: config))
+        builder.selectAuthScheme(ClientRuntime.AuthSchemeMiddleware<PutSupplementalTaxRegistrationOutput>())
+        builder.interceptors.add(AWSClientRuntime.AmzSdkInvocationIdMiddleware<PutSupplementalTaxRegistrationInput, PutSupplementalTaxRegistrationOutput>())
+        builder.interceptors.add(AWSClientRuntime.AmzSdkRequestMiddleware<PutSupplementalTaxRegistrationInput, PutSupplementalTaxRegistrationOutput>(maxRetries: config.retryStrategyOptions.maxRetriesBase))
+        var metricsAttributes = Smithy.Attributes()
+        metricsAttributes.set(key: ClientRuntime.OrchestratorMetricsAttributesKeys.service, value: "TaxSettings")
+        metricsAttributes.set(key: ClientRuntime.OrchestratorMetricsAttributesKeys.method, value: "PutSupplementalTaxRegistration")
+        let op = builder.attributes(context)
+            .telemetry(ClientRuntime.OrchestratorTelemetry(
+                telemetryProvider: config.telemetryProvider,
+                metricsAttributes: metricsAttributes,
+                meterScope: serviceName,
+                tracerScope: serviceName
+            ))
+            .executeRequest(client)
+            .build()
+        return try await op.execute(input: input)
+    }
+
     /// Performs the `PutTaxRegistration` operation on the `TaxSettings` service.
     ///
     /// Adds or updates tax registration for a single account. You can't set a TRN if there's a pending TRN. You'll need to delete the pending TRN first. To call this API operation for specific countries, see the following country-specific requirements. Bangladesh
@@ -735,15 +953,19 @@ extension TaxSettingsClient {
     ///
     /// Malaysia
     ///
-    /// * If you use this operation to set a tax registration number (TRN) in Malaysia, only resellers with a valid sales and service tax (SST) number are required to provide tax registration information.
+    /// * The sector valid values are Business and Individual.
     ///
-    /// * By using this API operation to set a TRN in Malaysia, Amazon Web Services will regard you as self-declaring that you're an authorized business reseller registered with the Royal Malaysia Customs Department (RMCD) and have a valid SST number.
+    /// * RegistrationType valid values are NRIC for individual, and TIN and sales and service tax (SST) for Business.
+    ///
+    /// * For individual, you can specify the taxInformationNumber in MalaysiaAdditionalInfo with NRIC type, and a valid MyKad or NRIC number.
+    ///
+    /// * For business, you must specify a businessRegistrationNumber in MalaysiaAdditionalInfo with a TIN type and tax identification number.
+    ///
+    /// * For business resellers, you must specify a businessRegistrationNumber and taxInformationNumber in MalaysiaAdditionalInfo with a sales and service tax (SST) type and a valid SST number.
+    ///
+    /// * For business resellers with service codes, you must specify businessRegistrationNumber, taxInformationNumber, and distinct serviceTaxCodes in MalaysiaAdditionalInfo with a SST type and valid sales and service tax (SST) number. By using this API operation, Amazon Web Services registers your self-declaration that you’re an authorized business reseller registered with the Royal Malaysia Customs Department (RMCD), and have a valid SST number.
     ///
     /// * Amazon Web Services reserves the right to seek additional information and/or take other actions to support your self-declaration as appropriate.
-    ///
-    /// * If you're not a reseller of Amazon Web Services, we don't recommend that you use this operation to set the TRN in Malaysia.
-    ///
-    /// * Only use this API operation to upload the TRNs for accounts through which you're reselling Amazon Web Services.
     ///
     /// * Amazon Web Services is currently registered under the following service tax codes. You must include at least one of the service tax codes in the service tax code strings to declare yourself as an authorized registered business reseller. Taxable service and service tax codes: Consultancy - 9907061674 Training or coaching service - 9907071685 IT service - 9907101676 Digital services and electronic medium - 9907121690
     ///

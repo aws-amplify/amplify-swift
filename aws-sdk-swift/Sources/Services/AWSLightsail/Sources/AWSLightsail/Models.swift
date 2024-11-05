@@ -66,7 +66,7 @@ public struct AccessDeniedException: ClientRuntime.ModeledError, AWSClientRuntim
 
 extension LightsailClientTypes {
 
-    public enum AccessDirection: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AccessDirection: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case inbound
         case outbound
         case sdkUnknown(Swift.String)
@@ -94,8 +94,9 @@ extension LightsailClientTypes {
 }
 
 extension LightsailClientTypes {
+
     /// Describes the last time an access key was used. This object does not include data in the response of a [CreateBucketAccessKey](https://docs.aws.amazon.com/lightsail/2016-11-28/api-reference/API_CreateBucketAccessKey.html) action.
-    public struct AccessKeyLastUsed {
+    public struct AccessKeyLastUsed: Swift.Sendable {
         /// The date and time when the access key was most recently used. This value is null if the access key has not been used.
         public var lastUsedDate: Foundation.Date?
         /// The Amazon Web Services Region where this access key was most recently used. This value is N/A if the access key has not been used.
@@ -114,12 +115,11 @@ extension LightsailClientTypes {
             self.serviceName = serviceName
         }
     }
-
 }
 
 extension LightsailClientTypes {
 
-    public enum StatusType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum StatusType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case active
         case inactive
         case sdkUnknown(Swift.String)
@@ -147,8 +147,9 @@ extension LightsailClientTypes {
 }
 
 extension LightsailClientTypes {
+
     /// Describes an access key for an Amazon Lightsail bucket. Access keys grant full programmatic access to the specified bucket and its objects. You can have a maximum of two access keys per bucket. Use the [CreateBucketAccessKey](https://docs.aws.amazon.com/lightsail/2016-11-28/api-reference/API_CreateBucketAccessKey.html) action to create an access key for a specific bucket. For more information about access keys, see [Creating access keys for a bucket in Amazon Lightsail](https://lightsail.aws.amazon.com/ls/docs/en_us/articles/amazon-lightsail-creating-bucket-access-keys) in the Amazon Lightsail Developer Guide. The secretAccessKey value is returned only in response to the CreateBucketAccessKey action. You can get a secret access key only when you first create an access key; you cannot get the secret access key later. If you lose the secret access key, you must create a new access key.
-    public struct AccessKey {
+    public struct AccessKey: Swift.Sendable {
         /// The ID of the access key.
         public var accessKeyId: Swift.String?
         /// The timestamp when the access key was created.
@@ -175,7 +176,6 @@ extension LightsailClientTypes {
             self.status = status
         }
     }
-
 }
 
 extension LightsailClientTypes.AccessKey: Swift.CustomDebugStringConvertible {
@@ -184,8 +184,9 @@ extension LightsailClientTypes.AccessKey: Swift.CustomDebugStringConvertible {
 }
 
 extension LightsailClientTypes {
+
     /// Describes an Amazon Lightsail instance that has access to a Lightsail bucket.
-    public struct ResourceReceivingAccess {
+    public struct ResourceReceivingAccess: Swift.Sendable {
         /// The name of the Lightsail instance.
         public var name: Swift.String?
         /// The Lightsail resource type (for example, Instance).
@@ -200,12 +201,11 @@ extension LightsailClientTypes {
             self.resourceType = resourceType
         }
     }
-
 }
 
 extension LightsailClientTypes {
 
-    public enum AccessType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AccessType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case `private`
         case `public`
         case sdkUnknown(Swift.String)
@@ -233,8 +233,9 @@ extension LightsailClientTypes {
 }
 
 extension LightsailClientTypes {
+
     /// Describes the anonymous access permissions for an Amazon Lightsail bucket and its objects. For more information about bucket access permissions, see [Understanding bucket permissions in Amazon Lightsail](https://lightsail.aws.amazon.com/ls/docs/en_us/articles/amazon-lightsail-understanding-bucket-permissions) in the Amazon Lightsail Developer Guide.
-    public struct AccessRules {
+    public struct AccessRules: Swift.Sendable {
         /// A Boolean value that indicates whether the access control list (ACL) permissions that are applied to individual objects override the getObject option that is currently specified. When this is true, you can use the [PutObjectAcl](https://docs.aws.amazon.com/AmazonS3/latest/API/API_PutObjectAcl.html) Amazon S3 API action to set individual objects to public (read-only) using the public-read ACL, or to private using the private ACL.
         public var allowPublicOverrides: Swift.Bool?
         /// Specifies the anonymous access to all objects in a bucket. The following options can be specified:
@@ -253,12 +254,11 @@ extension LightsailClientTypes {
             self.getObject = getObject
         }
     }
-
 }
 
 extension LightsailClientTypes {
 
-    public enum BPAStatusMessage: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum BPAStatusMessage: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case defaultedForSlrMissing
         case defaultedForSlrMissingOnHold
         case syncOnHold
@@ -293,7 +293,7 @@ extension LightsailClientTypes {
 
 extension LightsailClientTypes {
 
-    public enum AccountLevelBpaSyncStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AccountLevelBpaSyncStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case defaulted
         case failed
         case insync
@@ -327,8 +327,9 @@ extension LightsailClientTypes {
 }
 
 extension LightsailClientTypes {
+
     /// Describes the synchronization status of the Amazon Simple Storage Service (Amazon S3) account-level block public access (BPA) feature for your Lightsail buckets. The account-level BPA feature of Amazon S3 provides centralized controls to limit public access to all Amazon S3 buckets in an account. BPA can make all Amazon S3 buckets in an Amazon Web Services account private regardless of the individual bucket and object permissions that are configured. Lightsail buckets take into account the Amazon S3 account-level BPA configuration when allowing or denying public access. To do this, Lightsail periodically fetches the account-level BPA configuration from Amazon S3. When the account-level BPA status is InSync, the Amazon S3 account-level BPA configuration is synchronized and it applies to your Lightsail buckets. For more information about Amazon Simple Storage Service account-level BPA and how it affects Lightsail buckets, see [Block public access for buckets in Amazon Lightsail](https://lightsail.aws.amazon.com/ls/docs/en_us/articles/amazon-lightsail-block-public-access-for-buckets) in the Amazon Lightsail Developer Guide.
-    public struct AccountLevelBpaSync {
+    public struct AccountLevelBpaSync: Swift.Sendable {
         /// A Boolean value that indicates whether account-level block public access is affecting your Lightsail buckets.
         public var bpaImpactsLightsail: Swift.Bool?
         /// The timestamp of when the account-level BPA configuration was last synchronized. This value is null when the account-level BPA configuration has not been synchronized.
@@ -370,7 +371,6 @@ extension LightsailClientTypes {
             self.status = status
         }
     }
-
 }
 
 /// Lightsail throws this exception when an account is still in the setup in progress state.
@@ -407,8 +407,9 @@ public struct AccountSetupInProgressException: ClientRuntime.ModeledError, AWSCl
 }
 
 extension LightsailClientTypes {
+
     /// Describes an add-on that is enabled for an Amazon Lightsail resource.
-    public struct AddOn {
+    public struct AddOn: Swift.Sendable {
         /// The amount of idle time in minutes after which your virtual computer will automatically stop. This add-on only applies to Lightsail for Research resources.
         public var duration: Swift.String?
         /// The name of the add-on.
@@ -439,12 +440,11 @@ extension LightsailClientTypes {
             self.threshold = threshold
         }
     }
-
 }
 
 extension LightsailClientTypes {
 
-    public enum AddOnType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AddOnType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case autosnapshot
         case stopinstanceonidle
         case sdkUnknown(Swift.String)
@@ -472,6 +472,7 @@ extension LightsailClientTypes {
 }
 
 extension LightsailClientTypes {
+
     /// Describes a request to enable or modify the automatic snapshot add-on for an Amazon Lightsail instance or disk. When you modify the automatic snapshot time for a resource, it is typically effective immediately except under the following conditions:
     ///
     /// * If an automatic snapshot has been created for the current day, and you change the snapshot time to a later time of day, then the new snapshot time will be effective the following day. This ensures that two snapshots are not created for the current day.
@@ -481,7 +482,7 @@ extension LightsailClientTypes {
     /// * If an automatic snapshot has not yet been created for the current day, and you change the snapshot time to a time that is within 30 minutes from your current time, then the new snapshot time will be effective the following day and a snapshot is automatically created at the previously set time for the current day. This ensures that a snapshot is created for the current day, because 30 minutes is required between your current time and the new snapshot time that you specify.
     ///
     /// * If an automatic snapshot is scheduled to be created within 30 minutes from your current time and you change the snapshot time, then the new snapshot time will be effective the following day and a snapshot is automatically created at the previously set time for the current day. This ensures that a snapshot is created for the current day, because 30 minutes is required between your current time and the new snapshot time that you specify.
-    public struct AutoSnapshotAddOnRequest {
+    public struct AutoSnapshotAddOnRequest: Swift.Sendable {
         /// The daily time when an automatic snapshot will be created. Constraints:
         ///
         /// * Must be in HH:00 format, and in an hourly increment.
@@ -498,12 +499,12 @@ extension LightsailClientTypes {
             self.snapshotTimeOfDay = snapshotTimeOfDay
         }
     }
-
 }
 
 extension LightsailClientTypes {
+
     /// Describes a request to create or edit the StopInstanceOnIdle add-on. This add-on only applies to Lightsail for Research resources.
-    public struct StopInstanceOnIdleRequest {
+    public struct StopInstanceOnIdleRequest: Swift.Sendable {
         /// The amount of idle time in minutes after which your virtual computer will automatically stop.
         public var duration: Swift.String?
         /// The value to compare with the duration.
@@ -518,12 +519,12 @@ extension LightsailClientTypes {
             self.threshold = threshold
         }
     }
-
 }
 
 extension LightsailClientTypes {
+
     /// Describes a request to enable, modify, or disable an add-on for an Amazon Lightsail resource. An additional cost may be associated with enabling add-ons. For more information, see the [Lightsail pricing page](https://aws.amazon.com/lightsail/pricing/).
-    public struct AddOnRequest {
+    public struct AddOnRequest: Swift.Sendable {
         /// The add-on type.
         /// This member is required.
         public var addOnType: LightsailClientTypes.AddOnType?
@@ -543,12 +544,11 @@ extension LightsailClientTypes {
             self.stopInstanceOnIdleRequest = stopInstanceOnIdleRequest
         }
     }
-
 }
 
 extension LightsailClientTypes {
 
-    public enum ComparisonOperator: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ComparisonOperator: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case greaterthanorequaltothreshold
         case greaterthanthreshold
         case lessthanorequaltothreshold
@@ -583,7 +583,7 @@ extension LightsailClientTypes {
 
 extension LightsailClientTypes {
 
-    public enum ContactProtocol: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ContactProtocol: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case email
         case sms
         case sdkUnknown(Swift.String)
@@ -612,7 +612,7 @@ extension LightsailClientTypes {
 
 extension LightsailClientTypes {
 
-    public enum RegionName: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum RegionName: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case apNortheast1
         case apNortheast2
         case apSoutheast1
@@ -679,8 +679,9 @@ extension LightsailClientTypes {
 }
 
 extension LightsailClientTypes {
+
     /// Describes the resource location.
-    public struct ResourceLocation {
+    public struct ResourceLocation: Swift.Sendable {
         /// The Availability Zone. Follows the format us-east-2a (case-sensitive).
         public var availabilityZone: Swift.String?
         /// The Amazon Web Services Region name.
@@ -695,12 +696,11 @@ extension LightsailClientTypes {
             self.regionName = regionName
         }
     }
-
 }
 
 extension LightsailClientTypes {
 
-    public enum MetricName: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum MetricName: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case burstcapacitypercentage
         case burstcapacitytime
         case cpuutilization
@@ -798,7 +798,7 @@ extension LightsailClientTypes {
 
 extension LightsailClientTypes {
 
-    public enum ResourceType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ResourceType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case alarm
         case bucket
         case certificate
@@ -880,8 +880,9 @@ extension LightsailClientTypes {
 }
 
 extension LightsailClientTypes {
+
     /// Describes resource being monitored by an alarm. An alarm is a way to monitor your Amazon Lightsail resource metrics. For more information, see [Alarms in Amazon Lightsail](https://lightsail.aws.amazon.com/ls/docs/en_us/articles/amazon-lightsail-alarms).
-    public struct MonitoredResourceInfo {
+    public struct MonitoredResourceInfo: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the resource being monitored.
         public var arn: Swift.String?
         /// The name of the Lightsail resource being monitored.
@@ -900,12 +901,11 @@ extension LightsailClientTypes {
             self.resourceType = resourceType
         }
     }
-
 }
 
 extension LightsailClientTypes {
 
-    public enum AlarmState: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AlarmState: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case alarm
         case insufficientData
         case ok
@@ -937,7 +937,7 @@ extension LightsailClientTypes {
 
 extension LightsailClientTypes {
 
-    public enum MetricStatistic: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum MetricStatistic: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case average
         case maximum
         case minimum
@@ -975,7 +975,7 @@ extension LightsailClientTypes {
 
 extension LightsailClientTypes {
 
-    public enum TreatMissingData: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum TreatMissingData: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case breaching
         case ignore
         case missing
@@ -1010,7 +1010,7 @@ extension LightsailClientTypes {
 
 extension LightsailClientTypes {
 
-    public enum MetricUnit: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum MetricUnit: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case bits
         case bitssecond
         case bytes
@@ -1113,8 +1113,9 @@ extension LightsailClientTypes {
 }
 
 extension LightsailClientTypes {
+
     /// Describes an alarm. An alarm is a way to monitor your Lightsail resource metrics. For more information, see [Alarms in Amazon Lightsail](https://lightsail.aws.amazon.com/ls/docs/en_us/articles/amazon-lightsail-alarms).
-    public struct Alarm {
+    public struct Alarm: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the alarm.
         public var arn: Swift.String?
         /// The arithmetic operation used when comparing the specified statistic and threshold.
@@ -1225,7 +1226,6 @@ extension LightsailClientTypes {
             self.unit = unit
         }
     }
-
 }
 
 /// Lightsail throws this exception when user input does not conform to the validation rules of an input field. Domain and distribution APIs are only available in the N. Virginia (us-east-1) Amazon Web Services Region. Please set your Amazon Web Services Region configuration to us-east-1 to create, view, or edit these resources.
@@ -1393,7 +1393,7 @@ public struct UnauthenticatedException: ClientRuntime.ModeledError, AWSClientRun
     }
 }
 
-public struct AllocateStaticIpInput {
+public struct AllocateStaticIpInput: Swift.Sendable {
     /// The name of the static IP address.
     /// This member is required.
     public var staticIpName: Swift.String?
@@ -1408,7 +1408,7 @@ public struct AllocateStaticIpInput {
 
 extension LightsailClientTypes {
 
-    public enum OperationType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum OperationType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case allocatestaticip
         case attachcertificatetodistribution
         case attachdisk
@@ -1680,7 +1680,7 @@ extension LightsailClientTypes {
 
 extension LightsailClientTypes {
 
-    public enum OperationStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum OperationStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case completed
         case failed
         case notstarted
@@ -1717,8 +1717,9 @@ extension LightsailClientTypes {
 }
 
 extension LightsailClientTypes {
+
     /// Describes the API operation.
-    public struct Operation {
+    public struct Operation: Swift.Sendable {
         /// The timestamp when the operation was initialized (1479816991.349).
         public var createdAt: Foundation.Date?
         /// The error code.
@@ -1773,10 +1774,9 @@ extension LightsailClientTypes {
             self.statusChangedAt = statusChangedAt
         }
     }
-
 }
 
-public struct AllocateStaticIpOutput {
+public struct AllocateStaticIpOutput: Swift.Sendable {
     /// An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.
     public var operations: [LightsailClientTypes.Operation]?
 
@@ -1790,7 +1790,7 @@ public struct AllocateStaticIpOutput {
 
 extension LightsailClientTypes {
 
-    public enum AppCategory: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AppCategory: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case lfr
         case sdkUnknown(Swift.String)
 
@@ -1814,7 +1814,7 @@ extension LightsailClientTypes {
     }
 }
 
-public struct AttachCertificateToDistributionInput {
+public struct AttachCertificateToDistributionInput: Swift.Sendable {
     /// The name of the certificate to attach to a distribution. Only certificates with a status of ISSUED can be attached to a distribution. Use the GetCertificates action to get a list of certificate names that you can specify. This is the name of the certificate resource type and is used only to reference the certificate in other API actions. It can be different than the domain name of the certificate. For example, your certificate name might be WordPress-Blog-Certificate and the domain name of the certificate might be example.com.
     /// This member is required.
     public var certificateName: Swift.String?
@@ -1832,7 +1832,7 @@ public struct AttachCertificateToDistributionInput {
     }
 }
 
-public struct AttachCertificateToDistributionOutput {
+public struct AttachCertificateToDistributionOutput: Swift.Sendable {
     /// An object that describes the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.
     public var operation: LightsailClientTypes.Operation?
 
@@ -1844,7 +1844,7 @@ public struct AttachCertificateToDistributionOutput {
     }
 }
 
-public struct AttachDiskInput {
+public struct AttachDiskInput: Swift.Sendable {
     /// A Boolean value used to determine the automatic mounting of a storage volume to a virtual computer. The default value is False. This value only applies to Lightsail for Research resources.
     public var autoMounting: Swift.Bool?
     /// The unique Lightsail disk name (my-disk).
@@ -1871,7 +1871,7 @@ public struct AttachDiskInput {
     }
 }
 
-public struct AttachDiskOutput {
+public struct AttachDiskOutput: Swift.Sendable {
     /// An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.
     public var operations: [LightsailClientTypes.Operation]?
 
@@ -1884,8 +1884,9 @@ public struct AttachDiskOutput {
 }
 
 extension LightsailClientTypes {
+
     /// Describes a block storage disk that is attached to an instance, and is included in an automatic snapshot.
-    public struct AttachedDisk {
+    public struct AttachedDisk: Swift.Sendable {
         /// The path of the disk (/dev/xvdf).
         public var path: Swift.String?
         /// The size of the disk in GB.
@@ -1900,12 +1901,12 @@ extension LightsailClientTypes {
             self.sizeInGb = sizeInGb
         }
     }
-
 }
 
 extension LightsailClientTypes {
+
     /// Describes a block storage disk mapping.
-    public struct DiskMap {
+    public struct DiskMap: Swift.Sendable {
         /// The new disk name (my-new-disk).
         public var newDiskName: Swift.String?
         /// The original disk path exposed to the instance (for example, /dev/sdh).
@@ -1920,10 +1921,9 @@ extension LightsailClientTypes {
             self.originalDiskPath = originalDiskPath
         }
     }
-
 }
 
-public struct AttachInstancesToLoadBalancerInput {
+public struct AttachInstancesToLoadBalancerInput: Swift.Sendable {
     /// An array of strings representing the instance name(s) you want to attach to your load balancer. An instance must be running before you can attach it to your load balancer. There are no additional limits on the number of instances you can attach to your load balancer, aside from the limit of Lightsail instances you can create in your account (20).
     /// This member is required.
     public var instanceNames: [Swift.String]?
@@ -1941,7 +1941,7 @@ public struct AttachInstancesToLoadBalancerInput {
     }
 }
 
-public struct AttachInstancesToLoadBalancerOutput {
+public struct AttachInstancesToLoadBalancerOutput: Swift.Sendable {
     /// An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.
     public var operations: [LightsailClientTypes.Operation]?
 
@@ -1953,7 +1953,7 @@ public struct AttachInstancesToLoadBalancerOutput {
     }
 }
 
-public struct AttachLoadBalancerTlsCertificateInput {
+public struct AttachLoadBalancerTlsCertificateInput: Swift.Sendable {
     /// The name of your SSL/TLS certificate.
     /// This member is required.
     public var certificateName: Swift.String?
@@ -1971,7 +1971,7 @@ public struct AttachLoadBalancerTlsCertificateInput {
     }
 }
 
-public struct AttachLoadBalancerTlsCertificateOutput {
+public struct AttachLoadBalancerTlsCertificateOutput: Swift.Sendable {
     /// An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request. These SSL/TLS certificates are only usable by Lightsail load balancers. You can't get the certificate and use it for another purpose.
     public var operations: [LightsailClientTypes.Operation]?
 
@@ -1983,7 +1983,7 @@ public struct AttachLoadBalancerTlsCertificateOutput {
     }
 }
 
-public struct AttachStaticIpInput {
+public struct AttachStaticIpInput: Swift.Sendable {
     /// The instance name to which you want to attach the static IP address.
     /// This member is required.
     public var instanceName: Swift.String?
@@ -2001,7 +2001,7 @@ public struct AttachStaticIpInput {
     }
 }
 
-public struct AttachStaticIpOutput {
+public struct AttachStaticIpOutput: Swift.Sendable {
     /// An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.
     public var operations: [LightsailClientTypes.Operation]?
 
@@ -2015,7 +2015,7 @@ public struct AttachStaticIpOutput {
 
 extension LightsailClientTypes {
 
-    public enum AutoMountStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AutoMountStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case failed
         case mounted
         case notmounted
@@ -2050,7 +2050,7 @@ extension LightsailClientTypes {
 
 extension LightsailClientTypes {
 
-    public enum AutoSnapshotStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AutoSnapshotStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case failed
         case inProgress
         case notFound
@@ -2084,8 +2084,9 @@ extension LightsailClientTypes {
 }
 
 extension LightsailClientTypes {
+
     /// Describes an automatic snapshot.
-    public struct AutoSnapshotDetails {
+    public struct AutoSnapshotDetails: Swift.Sendable {
         /// The timestamp when the automatic snapshot was created.
         public var createdAt: Foundation.Date?
         /// The date of the automatic snapshot in YYYY-MM-DD format.
@@ -2108,12 +2109,12 @@ extension LightsailClientTypes {
             self.status = status
         }
     }
-
 }
 
 extension LightsailClientTypes {
+
     /// Describes an Availability Zone. This is returned only as part of a GetRegions request.
-    public struct AvailabilityZone {
+    public struct AvailabilityZone: Swift.Sendable {
         /// The state of the Availability Zone.
         public var state: Swift.String?
         /// The name of the Availability Zone. The format is us-east-2a (case-sensitive).
@@ -2128,12 +2129,11 @@ extension LightsailClientTypes {
             self.zoneName = zoneName
         }
     }
-
 }
 
 extension LightsailClientTypes {
 
-    public enum BehaviorEnum: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum BehaviorEnum: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case cachesetting
         case dontcachesetting
         case sdkUnknown(Swift.String)
@@ -2162,7 +2162,7 @@ extension LightsailClientTypes {
 
 extension LightsailClientTypes {
 
-    public enum InstancePlatform: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum InstancePlatform: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case linuxunix
         case windows
         case sdkUnknown(Swift.String)
@@ -2191,7 +2191,7 @@ extension LightsailClientTypes {
 
 extension LightsailClientTypes {
 
-    public enum BlueprintType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum BlueprintType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case app
         case os
         case sdkUnknown(Swift.String)
@@ -2219,8 +2219,9 @@ extension LightsailClientTypes {
 }
 
 extension LightsailClientTypes {
+
     /// Describes a blueprint (a virtual private server image).
-    public struct Blueprint {
+    public struct Blueprint: Swift.Sendable {
         /// Virtual computer blueprints that are supported by Lightsail for Research. This parameter only applies to Lightsail for Research resources.
         public var appCategory: LightsailClientTypes.AppCategory?
         /// The ID for the virtual private server image (app_wordpress_x_x or app_lamp_x_x).
@@ -2279,12 +2280,12 @@ extension LightsailClientTypes {
             self.versionCode = versionCode
         }
     }
-
 }
 
 extension LightsailClientTypes {
+
     /// Describes the access log configuration for a bucket in the Amazon Lightsail object storage service. For more information about bucket access logs, see [Logging bucket requests using access logging in Amazon Lightsail](https://lightsail.aws.amazon.com/ls/docs/en_us/articles/amazon-lightsail-bucket-access-logs) in the Amazon Lightsail Developer Guide.
-    public struct BucketAccessLogConfig {
+    public struct BucketAccessLogConfig: Swift.Sendable {
         /// The name of the bucket where the access logs are saved. The destination can be a Lightsail bucket in the same account, and in the same Amazon Web Services Region as the source bucket. This parameter is required when enabling the access log for a bucket, and should be omitted when disabling the access log.
         public var destination: Swift.String?
         /// A Boolean value that indicates whether bucket access logging is enabled for the bucket.
@@ -2304,12 +2305,12 @@ extension LightsailClientTypes {
             self.`prefix` = `prefix`
         }
     }
-
 }
 
 extension LightsailClientTypes {
+
     /// Describes the state of an Amazon Lightsail bucket.
-    public struct BucketState {
+    public struct BucketState: Swift.Sendable {
         /// The state code of the bucket. The following codes are possible:
         ///
         /// * OK - The bucket is in a running state.
@@ -2328,12 +2329,12 @@ extension LightsailClientTypes {
             self.message = message
         }
     }
-
 }
 
 extension LightsailClientTypes {
+
     /// Describes a tag key and optional value assigned to an Amazon Lightsail resource. For more information about tags in Lightsail, see the [Amazon Lightsail Developer Guide](https://lightsail.aws.amazon.com/ls/docs/en_us/articles/amazon-lightsail-tags).
-    public struct Tag {
+    public struct Tag: Swift.Sendable {
         /// The key of the tag. Constraints: Tag keys accept a maximum of 128 letters, numbers, spaces in UTF-8, or the following characters: + - = . _ : / @
         public var key: Swift.String?
         /// The value of the tag. Constraints: Tag values accept a maximum of 256 letters, numbers, spaces in UTF-8, or the following characters: + - = . _ : / @
@@ -2348,12 +2349,12 @@ extension LightsailClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension LightsailClientTypes {
+
     /// Describes an Amazon Lightsail bucket.
-    public struct Bucket {
+    public struct Bucket: Swift.Sendable {
         /// Indicates whether the bundle that is currently applied to a bucket can be changed to another bundle. You can update a bucket's bundle only one time within a monthly Amazon Web Services billing cycle. Use the [UpdateBucketBundle](https://docs.aws.amazon.com/lightsail/2016-11-28/api-reference/API_UpdateBucketBundle.html) action to change a bucket's bundle.
         public var ableToUpdateBundle: Swift.Bool?
         /// An object that describes the access log configuration for the bucket.
@@ -2430,12 +2431,12 @@ extension LightsailClientTypes {
             self.url = url
         }
     }
-
 }
 
 extension LightsailClientTypes {
+
     /// Describes the specifications of a bundle that can be applied to an Amazon Lightsail bucket. A bucket bundle specifies the monthly cost, storage space, and data transfer quota for a bucket.
-    public struct BucketBundle {
+    public struct BucketBundle: Swift.Sendable {
         /// The ID of the bundle.
         public var bundleId: Swift.String?
         /// Indicates whether the bundle is active. Use for a new or existing bucket.
@@ -2466,12 +2467,11 @@ extension LightsailClientTypes {
             self.transferPerMonthInGb = transferPerMonthInGb
         }
     }
-
 }
 
 extension LightsailClientTypes {
 
-    public enum BucketMetricName: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum BucketMetricName: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case bucketsizebytes
         case numberofobjects
         case sdkUnknown(Swift.String)
@@ -2499,8 +2499,9 @@ extension LightsailClientTypes {
 }
 
 extension LightsailClientTypes {
+
     /// Describes a bundle, which is a set of specs describing your virtual private server (or instance).
-    public struct Bundle {
+    public struct Bundle: Swift.Sendable {
         /// The bundle ID (micro_x_x).
         public var bundleId: Swift.String?
         /// The number of vCPUs included in the bundle (2).
@@ -2559,12 +2560,12 @@ extension LightsailClientTypes {
             self.transferPerMonthInGb = transferPerMonthInGb
         }
     }
-
 }
 
 extension LightsailClientTypes {
+
     /// Describes the default cache behavior of an Amazon Lightsail content delivery network (CDN) distribution.
-    public struct CacheBehavior {
+    public struct CacheBehavior: Swift.Sendable {
         /// The cache behavior of the distribution. The following cache behaviors can be specified:
         ///
         /// * cache - This option is best for static sites. When specified, your distribution caches and serves your entire website as static content. This behavior is ideal for websites with static content that doesn't change depending on who views it, or for websites that don't use cookies, headers, or query strings to personalize content.
@@ -2579,12 +2580,12 @@ extension LightsailClientTypes {
             self.behavior = behavior
         }
     }
-
 }
 
 extension LightsailClientTypes {
+
     /// Describes the per-path cache behavior of an Amazon Lightsail content delivery network (CDN) distribution. A per-path cache behavior is used to override, or add an exception to, the default cache behavior of a distribution. For example, if the cacheBehavior is set to cache, then a per-path cache behavior can be used to specify a directory, file, or file type that your distribution will cache. Alternately, if the distribution's cacheBehavior is dont-cache, then a per-path cache behavior can be used to specify a directory, file, or file type that your distribution will not cache.
-    public struct CacheBehaviorPerPath {
+    public struct CacheBehaviorPerPath: Swift.Sendable {
         /// The cache behavior for the specified path. You can specify one of the following per-path cache behaviors:
         ///
         /// * cache - This behavior caches the specified path.
@@ -2611,12 +2612,11 @@ extension LightsailClientTypes {
             self.path = path
         }
     }
-
 }
 
 extension LightsailClientTypes {
 
-    public enum ForwardValues: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ForwardValues: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case all
         case allowlist
         case `none`
@@ -2647,8 +2647,9 @@ extension LightsailClientTypes {
 }
 
 extension LightsailClientTypes {
+
     /// Describes whether an Amazon Lightsail content delivery network (CDN) distribution forwards cookies to the origin and, if so, which ones. For the cookies that you specify, your distribution caches separate versions of the specified content based on the cookie values in viewer requests.
-    public struct CookieObject {
+    public struct CookieObject: Swift.Sendable {
         /// The specific cookies to forward to your distribution's origin.
         public var cookiesAllowList: [Swift.String]?
         /// Specifies which cookies to forward to the distribution's origin for a cache behavior: all, none, or allow-list to forward only the cookies specified in the cookiesAllowList parameter.
@@ -2663,12 +2664,11 @@ extension LightsailClientTypes {
             self.option = option
         }
     }
-
 }
 
 extension LightsailClientTypes {
 
-    public enum HeaderEnum: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum HeaderEnum: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case accept
         case acceptcharset
         case acceptdatetime
@@ -2735,8 +2735,9 @@ extension LightsailClientTypes {
 }
 
 extension LightsailClientTypes {
+
     /// Describes the request headers that a Lightsail distribution bases caching on. For the headers that you specify, your distribution caches separate versions of the specified content based on the header values in viewer requests. For example, suppose viewer requests for logo.jpg contain a custom product header that has a value of either acme or apex, and you configure your distribution to cache your content based on values in the product header. Your distribution forwards the product header to the origin and caches the response from the origin once for each header value.
-    public struct HeaderObject {
+    public struct HeaderObject: Swift.Sendable {
         /// The specific headers to forward to your distribution's origin.
         public var headersAllowList: [LightsailClientTypes.HeaderEnum]?
         /// The headers that you want your distribution to forward to your origin and base caching on. You can configure your distribution to do one of the following:
@@ -2757,12 +2758,12 @@ extension LightsailClientTypes {
             self.option = option
         }
     }
-
 }
 
 extension LightsailClientTypes {
+
     /// Describes the query string parameters that an Amazon Lightsail content delivery network (CDN) distribution to bases caching on. For the query strings that you specify, your distribution caches separate versions of the specified content based on the query string values in viewer requests.
-    public struct QueryStringObject {
+    public struct QueryStringObject: Swift.Sendable {
         /// Indicates whether the distribution forwards and caches based on query strings.
         public var option: Swift.Bool?
         /// The specific query strings that the distribution forwards to the origin. Your distribution will cache content based on the specified query strings. If the option parameter is true, then your distribution forwards all query strings, regardless of what you specify using the queryStringsAllowList parameter.
@@ -2777,12 +2778,12 @@ extension LightsailClientTypes {
             self.queryStringsAllowList = queryStringsAllowList
         }
     }
-
 }
 
 extension LightsailClientTypes {
+
     /// Describes the cache settings of an Amazon Lightsail content delivery network (CDN) distribution. These settings apply only to your distribution's cacheBehaviors (including the defaultCacheBehavior) that have a behavior of cache.
-    public struct CacheSettings {
+    public struct CacheSettings: Swift.Sendable {
         /// The HTTP methods that are processed and forwarded to the distribution's origin. You can specify the following options:
         ///
         /// * GET,HEAD - The distribution forwards the GET and HEAD methods.
@@ -2834,12 +2835,11 @@ extension LightsailClientTypes {
             self.minimumTTL = minimumTTL
         }
     }
-
 }
 
 extension LightsailClientTypes {
 
-    public enum DnsRecordCreationStateCode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DnsRecordCreationStateCode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case failed
         case started
         case succeeded
@@ -2870,8 +2870,9 @@ extension LightsailClientTypes {
 }
 
 extension LightsailClientTypes {
+
     /// Describes the creation state of the canonical name (CNAME) records that are automatically added by Amazon Lightsail to the DNS of a domain to validate domain ownership for an SSL/TLS certificate. When you create an SSL/TLS certificate for a Lightsail resource, you must add a set of CNAME records to the DNS of the domains for the certificate to validate that you own the domains. Lightsail can automatically add the CNAME records to the DNS of the domain if the DNS zone for the domain exists within your Lightsail account. If automatic record addition fails, or if you manage the DNS of your domain using a third-party service, then you must manually add the CNAME records to the DNS of your domain. For more information, see [Verify an SSL/TLS certificate in Amazon Lightsail](https://lightsail.aws.amazon.com/ls/docs/en_us/articles/verify-tls-ssl-certificate-using-dns-cname-https) in the Amazon Lightsail Developer Guide.
-    public struct DnsRecordCreationState {
+    public struct DnsRecordCreationState: Swift.Sendable {
         /// The status code for the automated DNS record creation. Following are the possible values:
         ///
         /// * SUCCEEDED - The validation records were successfully added to the domain.
@@ -2892,12 +2893,12 @@ extension LightsailClientTypes {
             self.message = message
         }
     }
-
 }
 
 extension LightsailClientTypes {
+
     /// Describes the domain name system (DNS) records to add to your domain's DNS to validate it for an Amazon Lightsail certificate.
-    public struct ResourceRecord {
+    public struct ResourceRecord: Swift.Sendable {
         /// The name of the record.
         public var name: Swift.String?
         /// The DNS record type.
@@ -2916,12 +2917,11 @@ extension LightsailClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension LightsailClientTypes {
 
-    public enum CertificateDomainValidationStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum CertificateDomainValidationStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case failed
         case pendingvalidation
         case success
@@ -2952,8 +2952,9 @@ extension LightsailClientTypes {
 }
 
 extension LightsailClientTypes {
+
     /// Describes the domain name system (DNS) records that you must add to the DNS of your registered domain to validate ownership for an Amazon Lightsail SSL/TLS certificate.
-    public struct DomainValidationRecord {
+    public struct DomainValidationRecord: Swift.Sendable {
         /// An object that describes the state of the canonical name (CNAME) records that are automatically added by Lightsail to the DNS of the domain to validate domain ownership.
         public var dnsRecordCreationState: LightsailClientTypes.DnsRecordCreationState?
         /// The domain name of the certificate validation record. For example, example.com or www.example.com.
@@ -2976,12 +2977,11 @@ extension LightsailClientTypes {
             self.validationStatus = validationStatus
         }
     }
-
 }
 
 extension LightsailClientTypes {
 
-    public enum RenewalStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum RenewalStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case failed
         case pendingautorenewal
         case pendingvalidation
@@ -3015,8 +3015,9 @@ extension LightsailClientTypes {
 }
 
 extension LightsailClientTypes {
+
     /// Describes the status of a SSL/TLS certificate renewal managed by Amazon Lightsail.
-    public struct RenewalSummary {
+    public struct RenewalSummary: Swift.Sendable {
         /// An array of objects that describe the domain validation records of the certificate.
         public var domainValidationRecords: [LightsailClientTypes.DomainValidationRecord]?
         /// The renewal status of the certificate. The following renewal status are possible:
@@ -3047,12 +3048,11 @@ extension LightsailClientTypes {
             self.updatedAt = updatedAt
         }
     }
-
 }
 
 extension LightsailClientTypes {
 
-    public enum CertificateStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum CertificateStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case expired
         case failed
         case inactive
@@ -3095,8 +3095,9 @@ extension LightsailClientTypes {
 }
 
 extension LightsailClientTypes {
+
     /// Describes the full details of an Amazon Lightsail SSL/TLS certificate. To get a summary of a certificate, use the GetCertificates action and omit includeCertificateDetails from your request. The response will include only the certificate Amazon Resource Name (ARN), certificate name, domain name, and tags.
-    public struct Certificate {
+    public struct Certificate: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the certificate.
         public var arn: Swift.String?
         /// The timestamp when the certificate was created.
@@ -3197,12 +3198,11 @@ extension LightsailClientTypes {
             self.tags = tags
         }
     }
-
 }
 
 extension LightsailClientTypes {
 
-    public enum CertificateProvider: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum CertificateProvider: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case letsencrypt
         case sdkUnknown(Swift.String)
 
@@ -3227,8 +3227,9 @@ extension LightsailClientTypes {
 }
 
 extension LightsailClientTypes {
+
     /// Describes an Amazon Lightsail SSL/TLS certificate.
-    public struct CertificateSummary {
+    public struct CertificateSummary: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the certificate.
         public var certificateArn: Swift.String?
         /// An object that describes a certificate in detail.
@@ -3255,12 +3256,11 @@ extension LightsailClientTypes {
             self.tags = tags
         }
     }
-
 }
 
 extension LightsailClientTypes {
 
-    public enum NetworkProtocol: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum NetworkProtocol: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case all
         case icmp
         case icmpv6
@@ -3297,8 +3297,9 @@ extension LightsailClientTypes {
 }
 
 extension LightsailClientTypes {
+
     /// Describes ports to open on an instance, the IP addresses allowed to connect to the instance through the ports, and the protocol.
-    public struct PortInfo {
+    public struct PortInfo: Swift.Sendable {
         /// An alias that defines access for a preconfigured range of IP addresses. The only alias currently supported is lightsail-connect, which allows IP addresses of the browser-based RDP/SSH client in the Lightsail console to connect to your instance.
         public var cidrListAliases: [Swift.String]?
         /// The IPv4 address, or range of IPv4 addresses (in CIDR notation) that are allowed to connect to an instance through the ports, and the protocol. The ipv6Cidrs parameter lists the IPv6 addresses that are allowed to connect to an instance. Examples:
@@ -3358,10 +3359,9 @@ extension LightsailClientTypes {
             self.toPort = toPort
         }
     }
-
 }
 
-public struct CloseInstancePublicPortsInput {
+public struct CloseInstancePublicPortsInput: Swift.Sendable {
     /// The name of the instance for which to close ports.
     /// This member is required.
     public var instanceName: Swift.String?
@@ -3379,7 +3379,7 @@ public struct CloseInstancePublicPortsInput {
     }
 }
 
-public struct CloseInstancePublicPortsOutput {
+public struct CloseInstancePublicPortsOutput: Swift.Sendable {
     /// An object that describes the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.
     public var operation: LightsailClientTypes.Operation?
 
@@ -3392,8 +3392,9 @@ public struct CloseInstancePublicPortsOutput {
 }
 
 extension LightsailClientTypes {
+
     /// Describes the destination of a record.
-    public struct DestinationInfo {
+    public struct DestinationInfo: Swift.Sendable {
         /// The ID of the resource created at the destination.
         public var id: Swift.String?
         /// The destination service of the record.
@@ -3408,12 +3409,11 @@ extension LightsailClientTypes {
             self.service = service
         }
     }
-
 }
 
 extension LightsailClientTypes {
 
-    public enum CloudFormationStackRecordSourceType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum CloudFormationStackRecordSourceType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case exportsnapshotrecord
         case sdkUnknown(Swift.String)
 
@@ -3438,8 +3438,9 @@ extension LightsailClientTypes {
 }
 
 extension LightsailClientTypes {
+
     /// Describes the source of a CloudFormation stack record (i.e., the export snapshot record).
-    public struct CloudFormationStackRecordSourceInfo {
+    public struct CloudFormationStackRecordSourceInfo: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the export snapshot record.
         public var arn: Swift.String?
         /// The name of the record.
@@ -3458,12 +3459,11 @@ extension LightsailClientTypes {
             self.resourceType = resourceType
         }
     }
-
 }
 
 extension LightsailClientTypes {
 
-    public enum RecordState: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum RecordState: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case failed
         case started
         case succeeded
@@ -3494,8 +3494,9 @@ extension LightsailClientTypes {
 }
 
 extension LightsailClientTypes {
+
     /// Describes a CloudFormation stack record created as a result of the create cloud formation stack action. A CloudFormation stack record provides information about the AWS CloudFormation stack used to create a new Amazon Elastic Compute Cloud instance from an exported Lightsail instance snapshot.
-    public struct CloudFormationStackRecord {
+    public struct CloudFormationStackRecord: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the CloudFormation stack record.
         public var arn: Swift.String?
         /// The date when the CloudFormation stack record was created.
@@ -3534,12 +3535,11 @@ extension LightsailClientTypes {
             self.state = state
         }
     }
-
 }
 
 extension LightsailClientTypes {
 
-    public enum ContactMethodStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ContactMethodStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case invalid
         case pendingverification
         case valid
@@ -3570,8 +3570,9 @@ extension LightsailClientTypes {
 }
 
 extension LightsailClientTypes {
+
     /// Describes a contact method. A contact method is a way to send you notifications. For more information, see [Notifications in Amazon Lightsail](https://lightsail.aws.amazon.com/ls/docs/en_us/articles/amazon-lightsail-notifications).
-    public struct ContactMethod {
+    public struct ContactMethod: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the contact method.
         public var arn: Swift.String?
         /// The destination of the contact method, such as an email address or a mobile phone number.
@@ -3620,12 +3621,11 @@ extension LightsailClientTypes {
             self.supportCode = supportCode
         }
     }
-
 }
 
 extension LightsailClientTypes {
 
-    public enum ContactMethodVerificationProtocol: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ContactMethodVerificationProtocol: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case email
         case sdkUnknown(Swift.String)
 
@@ -3651,7 +3651,7 @@ extension LightsailClientTypes {
 
 extension LightsailClientTypes {
 
-    public enum ContainerServiceProtocol: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ContainerServiceProtocol: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case http
         case https
         case tcp
@@ -3685,8 +3685,9 @@ extension LightsailClientTypes {
 }
 
 extension LightsailClientTypes {
+
     /// Describes the settings of a container that will be launched, or that is launched, to an Amazon Lightsail container service.
-    public struct Container {
+    public struct Container: Swift.Sendable {
         /// The launch command for the container.
         public var command: [Swift.String]?
         /// The environment variables of the container.
@@ -3709,12 +3710,12 @@ extension LightsailClientTypes {
             self.ports = ports
         }
     }
-
 }
 
 extension LightsailClientTypes {
+
     /// Describes a container image that is registered to an Amazon Lightsail container service.
-    public struct ContainerImage {
+    public struct ContainerImage: Swift.Sendable {
         /// The timestamp when the container image was created.
         public var createdAt: Foundation.Date?
         /// The digest of the container image.
@@ -3733,12 +3734,12 @@ extension LightsailClientTypes {
             self.image = image
         }
     }
-
 }
 
 extension LightsailClientTypes {
+
     /// Describes the health check configuration of an Amazon Lightsail container service.
-    public struct ContainerServiceHealthCheckConfig {
+    public struct ContainerServiceHealthCheckConfig: Swift.Sendable {
         /// The number of consecutive health checks successes required before moving the container to the Healthy state. The default value is 2.
         public var healthyThreshold: Swift.Int?
         /// The approximate interval, in seconds, between health checks of an individual container. You can specify between 5 and 300 seconds. The default value is 5.
@@ -3769,12 +3770,12 @@ extension LightsailClientTypes {
             self.unhealthyThreshold = unhealthyThreshold
         }
     }
-
 }
 
 extension LightsailClientTypes {
+
     /// Describes the public endpoint configuration of a deployment of an Amazon Lightsail container service.
-    public struct ContainerServiceEndpoint {
+    public struct ContainerServiceEndpoint: Swift.Sendable {
         /// The name of the container entry of the deployment that the endpoint configuration applies to.
         public var containerName: Swift.String?
         /// The port of the specified container to which traffic is forwarded to.
@@ -3793,12 +3794,11 @@ extension LightsailClientTypes {
             self.healthCheck = healthCheck
         }
     }
-
 }
 
 extension LightsailClientTypes {
 
-    public enum ContainerServiceDeploymentState: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ContainerServiceDeploymentState: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case activating
         case active
         case failed
@@ -3832,8 +3832,9 @@ extension LightsailClientTypes {
 }
 
 extension LightsailClientTypes {
+
     /// Describes a container deployment configuration of an Amazon Lightsail container service. A deployment specifies the settings, such as the ports and launch command, of containers that are deployed to your container service.
-    public struct ContainerServiceDeployment {
+    public struct ContainerServiceDeployment: Swift.Sendable {
         /// An object that describes the configuration for the containers of the deployment.
         public var containers: [Swift.String: LightsailClientTypes.Container]?
         /// The timestamp when the deployment was created.
@@ -3868,12 +3869,11 @@ extension LightsailClientTypes {
             self.version = version
         }
     }
-
 }
 
 extension LightsailClientTypes {
 
-    public enum ContainerServicePowerName: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ContainerServicePowerName: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case large
         case medium
         case micro
@@ -3913,8 +3913,9 @@ extension LightsailClientTypes {
 }
 
 extension LightsailClientTypes {
+
     /// Describes the activation status of the role that you can use to grant an Amazon Lightsail container service access to Amazon Elastic Container Registry (Amazon ECR) private repositories. When activated, Lightsail creates an Identity and Access Management (IAM) role for the specified Lightsail container service. You can use the ARN of the role to create a trust relationship between your Lightsail container service and an Amazon ECR private repository in your Amazon Web Services account. This allows your container service to pull images from Amazon ECR private repositories. For more information, see [Configuring access to an Amazon ECR private repository for an Amazon Lightsail container service](https://lightsail.aws.amazon.com/ls/docs/en_us/articles/amazon-lightsail-container-service-ecr-private-repo-access) in the Amazon Lightsail Developer Guide.
-    public struct ContainerServiceECRImagePullerRole {
+    public struct ContainerServiceECRImagePullerRole: Swift.Sendable {
         /// A Boolean value that indicates whether the role is activated.
         public var isActive: Swift.Bool?
         /// The Amazon Resource Name (ARN) of the role, if it is activated.
@@ -3929,12 +3930,12 @@ extension LightsailClientTypes {
             self.principalArn = principalArn
         }
     }
-
 }
 
 extension LightsailClientTypes {
+
     /// Describes the configuration for an Amazon Lightsail container service to access private container image repositories, such as Amazon Elastic Container Registry (Amazon ECR) private repositories. For more information, see [Configuring access to an Amazon ECR private repository for an Amazon Lightsail container service](https://lightsail.aws.amazon.com/ls/docs/en_us/articles/amazon-lightsail-container-service-ecr-private-repo-access) in the Amazon Lightsail Developer Guide.
-    public struct PrivateRegistryAccess {
+    public struct PrivateRegistryAccess: Swift.Sendable {
         /// An object that describes the activation status of the role that you can use to grant a Lightsail container service access to Amazon ECR private repositories. If the role is activated, the Amazon Resource Name (ARN) of the role is also listed.
         public var ecrImagePullerRole: LightsailClientTypes.ContainerServiceECRImagePullerRole?
 
@@ -3945,12 +3946,11 @@ extension LightsailClientTypes {
             self.ecrImagePullerRole = ecrImagePullerRole
         }
     }
-
 }
 
 extension LightsailClientTypes {
 
-    public enum ContainerServiceState: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ContainerServiceState: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case deleting
         case deploying
         case disabled
@@ -3994,7 +3994,7 @@ extension LightsailClientTypes {
 
 extension LightsailClientTypes {
 
-    public enum ContainerServiceStateDetailCode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ContainerServiceStateDetailCode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case activatingDeployment
         case certificateLimitExceeded
         case creatingDeployment
@@ -4043,8 +4043,9 @@ extension LightsailClientTypes {
 }
 
 extension LightsailClientTypes {
+
     /// Describes the current state of a container service.
-    public struct ContainerServiceStateDetail {
+    public struct ContainerServiceStateDetail: Swift.Sendable {
         /// The state code of the container service. The following state codes are possible:
         ///
         /// * The following state codes are possible if your container service is in a DEPLOYING or UPDATING state:
@@ -4084,12 +4085,12 @@ extension LightsailClientTypes {
             self.message = message
         }
     }
-
 }
 
 extension LightsailClientTypes {
+
     /// Describes an Amazon Lightsail container service.
-    public struct ContainerService {
+    public struct ContainerService: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the container service.
         public var arn: Swift.String?
         /// The name of the container service.
@@ -4186,12 +4187,12 @@ extension LightsailClientTypes {
             self.url = url
         }
     }
-
 }
 
 extension LightsailClientTypes {
+
     /// Describes the settings of a public endpoint for an Amazon Lightsail container service.
-    public struct EndpointRequest {
+    public struct EndpointRequest: Swift.Sendable {
         /// The name of the container for the endpoint.
         /// This member is required.
         public var containerName: Swift.String?
@@ -4212,12 +4213,12 @@ extension LightsailClientTypes {
             self.healthCheck = healthCheck
         }
     }
-
 }
 
 extension LightsailClientTypes {
+
     /// Describes a container deployment configuration of an Amazon Lightsail container service. A deployment specifies the settings, such as the ports and launch command, of containers that are deployed to your container service.
-    public struct ContainerServiceDeploymentRequest {
+    public struct ContainerServiceDeploymentRequest: Swift.Sendable {
         /// An object that describes the configuration for the containers of the deployment.
         public var containers: [Swift.String: LightsailClientTypes.Container]?
         /// An object that describes the endpoint of the deployment.
@@ -4232,12 +4233,12 @@ extension LightsailClientTypes {
             self.publicEndpoint = publicEndpoint
         }
     }
-
 }
 
 extension LightsailClientTypes {
+
     /// Describes a request to activate or deactivate the role that you can use to grant an Amazon Lightsail container service access to Amazon Elastic Container Registry (Amazon ECR) private repositories. When activated, Lightsail creates an Identity and Access Management (IAM) role for the specified Lightsail container service. You can use the ARN of the role to create a trust relationship between your Lightsail container service and an Amazon ECR private repository in your Amazon Web Services account. This allows your container service to pull images from Amazon ECR private repositories. For more information, see [Configuring access to an Amazon ECR private repository for an Amazon Lightsail container service](https://lightsail.aws.amazon.com/ls/docs/en_us/articles/amazon-lightsail-container-service-ecr-private-repo-access) in the Amazon Lightsail Developer Guide.
-    public struct ContainerServiceECRImagePullerRoleRequest {
+    public struct ContainerServiceECRImagePullerRoleRequest: Swift.Sendable {
         /// A Boolean value that indicates whether to activate the role.
         public var isActive: Swift.Bool?
 
@@ -4248,12 +4249,12 @@ extension LightsailClientTypes {
             self.isActive = isActive
         }
     }
-
 }
 
 extension LightsailClientTypes {
+
     /// Describes the log events of a container of an Amazon Lightsail container service.
-    public struct ContainerServiceLogEvent {
+    public struct ContainerServiceLogEvent: Swift.Sendable {
         /// The timestamp when the container service log event was created.
         public var createdAt: Foundation.Date?
         /// The message of the container service log event.
@@ -4268,12 +4269,11 @@ extension LightsailClientTypes {
             self.message = message
         }
     }
-
 }
 
 extension LightsailClientTypes {
 
-    public enum ContainerServiceMetricName: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ContainerServiceMetricName: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case cpuutilization
         case memoryutilization
         case sdkUnknown(Swift.String)
@@ -4301,8 +4301,9 @@ extension LightsailClientTypes {
 }
 
 extension LightsailClientTypes {
+
     /// Describes the powers that can be specified for an Amazon Lightsail container service. The power specifies the amount of RAM, the number of vCPUs, and the base price of the container service.
-    public struct ContainerServicePower {
+    public struct ContainerServicePower: Swift.Sendable {
         /// The number of vCPUs included in the power.
         public var cpuCount: Swift.Float?
         /// A Boolean value indicating whether the power is active and can be specified for container services.
@@ -4333,12 +4334,12 @@ extension LightsailClientTypes {
             self.ramSizeInGb = ramSizeInGb
         }
     }
-
 }
 
 extension LightsailClientTypes {
+
     /// Describes the sign-in credentials for the container image registry of an Amazon Lightsail account.
-    public struct ContainerServiceRegistryLogin {
+    public struct ContainerServiceRegistryLogin: Swift.Sendable {
         /// The timestamp of when the container image registry sign-in credentials expire. The log in credentials expire 12 hours after they are created, at which point you will need to create a new set of log in credentials using the CreateContainerServiceRegistryLogin action.
         public var expiresAt: Foundation.Date?
         /// The container service registry password to use to push container images to the container image registry of a Lightsail account
@@ -4361,10 +4362,9 @@ extension LightsailClientTypes {
             self.username = username
         }
     }
-
 }
 
-public struct CopySnapshotInput {
+public struct CopySnapshotInput: Swift.Sendable {
     /// The date of the source automatic snapshot to copy. Use the get auto snapshots operation to identify the dates of the available automatic snapshots. Constraints:
     ///
     /// * Must be specified in YYYY-MM-DD format.
@@ -4412,7 +4412,7 @@ public struct CopySnapshotInput {
     }
 }
 
-public struct CopySnapshotOutput {
+public struct CopySnapshotOutput: Swift.Sendable {
     /// An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.
     public var operations: [LightsailClientTypes.Operation]?
 
@@ -4426,7 +4426,7 @@ public struct CopySnapshotOutput {
 
 extension LightsailClientTypes {
 
-    public enum Currency: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Currency: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case usd
         case sdkUnknown(Swift.String)
 
@@ -4452,7 +4452,7 @@ extension LightsailClientTypes {
 
 extension LightsailClientTypes {
 
-    public enum PricingUnit: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum PricingUnit: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case bundles
         case gb
         case gbmo
@@ -4489,8 +4489,9 @@ extension LightsailClientTypes {
 }
 
 extension LightsailClientTypes {
+
     /// Sets the start date and end date for retrieving a cost estimate. The start date is inclusive, but the end date is exclusive. For example, if start is 2017-01-01 and end is 2017-05-01, then the cost and usage data is retrieved from 2017-01-01 up to and including 2017-04-30 but not including 2017-05-01.
-    public struct TimePeriod {
+    public struct TimePeriod: Swift.Sendable {
         /// The end of the time period. The end date is exclusive. For example, if end is 2017-05-01, Lightsail for Research retrieves cost and usage data from the start date up to, but not including, 2017-05-01.
         public var end: Foundation.Date?
         /// The beginning of the time period. The start date is inclusive. For example, if start is 2017-01-01, Lightsail for Research retrieves cost and usage data starting at 2017-01-01 up to the end date. The start date must be equal to or no later than the current date to avoid a validation error.
@@ -4505,12 +4506,12 @@ extension LightsailClientTypes {
             self.start = start
         }
     }
-
 }
 
 extension LightsailClientTypes {
+
     /// An estimate that's associated with a time period.
-    public struct EstimateByTime {
+    public struct EstimateByTime: Swift.Sendable {
         /// The currency of the estimate in USD.
         public var currency: LightsailClientTypes.Currency?
         /// The unit of measurement that's used for the cost estimate.
@@ -4537,12 +4538,12 @@ extension LightsailClientTypes {
             self.usageCost = usageCost
         }
     }
-
 }
 
 extension LightsailClientTypes {
+
     /// Describes the estimated cost for resources in your Lightsail for Research account.
-    public struct CostEstimate {
+    public struct CostEstimate: Swift.Sendable {
         /// The cost estimate result that's associated with a time period.
         public var resultsByTime: [LightsailClientTypes.EstimateByTime]?
         /// The types of usage that are included in the estimate, such as costs, usage, or data transfer.
@@ -4557,10 +4558,9 @@ extension LightsailClientTypes {
             self.usageType = usageType
         }
     }
-
 }
 
-public struct CreateBucketInput {
+public struct CreateBucketInput: Swift.Sendable {
     /// The name for the bucket. For more information about bucket names, see [Bucket naming rules in Amazon Lightsail](https://lightsail.aws.amazon.com/ls/docs/en_us/articles/bucket-naming-rules-in-amazon-lightsail) in the Amazon Lightsail Developer Guide.
     /// This member is required.
     public var bucketName: Swift.String?
@@ -4586,7 +4586,7 @@ public struct CreateBucketInput {
     }
 }
 
-public struct CreateBucketOutput {
+public struct CreateBucketOutput: Swift.Sendable {
     /// An object that describes the bucket that is created.
     public var bucket: LightsailClientTypes.Bucket?
     /// An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.
@@ -4602,7 +4602,7 @@ public struct CreateBucketOutput {
     }
 }
 
-public struct CreateBucketAccessKeyInput {
+public struct CreateBucketAccessKeyInput: Swift.Sendable {
     /// The name of the bucket that the new access key will belong to, and grant access to.
     /// This member is required.
     public var bucketName: Swift.String?
@@ -4615,7 +4615,7 @@ public struct CreateBucketAccessKeyInput {
     }
 }
 
-public struct CreateBucketAccessKeyOutput {
+public struct CreateBucketAccessKeyOutput: Swift.Sendable {
     /// An object that describes the access key that is created.
     public var accessKey: LightsailClientTypes.AccessKey?
     /// An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.
@@ -4631,7 +4631,7 @@ public struct CreateBucketAccessKeyOutput {
     }
 }
 
-public struct CreateCertificateInput {
+public struct CreateCertificateInput: Swift.Sendable {
     /// The name for the certificate.
     /// This member is required.
     public var certificateName: Swift.String?
@@ -4657,7 +4657,7 @@ public struct CreateCertificateInput {
     }
 }
 
-public struct CreateCertificateOutput {
+public struct CreateCertificateOutput: Swift.Sendable {
     /// An object that describes the certificate created.
     public var certificate: LightsailClientTypes.CertificateSummary?
     /// An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.
@@ -4675,7 +4675,7 @@ public struct CreateCertificateOutput {
 
 extension LightsailClientTypes {
 
-    public enum PortInfoSourceType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum PortInfoSourceType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case closed
         case `default`
         case instance
@@ -4709,8 +4709,9 @@ extension LightsailClientTypes {
 }
 
 extension LightsailClientTypes {
+
     /// Describes the Amazon Elastic Compute Cloud instance and related resources to be created using the create cloud formation stack operation.
-    public struct InstanceEntry {
+    public struct InstanceEntry: Swift.Sendable {
         /// The Availability Zone for the new Amazon EC2 instance.
         /// This member is required.
         public var availabilityZone: Swift.String?
@@ -4752,10 +4753,9 @@ extension LightsailClientTypes {
             self.userData = userData
         }
     }
-
 }
 
-public struct CreateCloudFormationStackInput {
+public struct CreateCloudFormationStackInput: Swift.Sendable {
     /// An array of parameters that will be used to create the new Amazon EC2 instance. You can only pass one instance entry at a time in this array. You will get an invalid parameter error if you pass more than one instance entry in this array.
     /// This member is required.
     public var instances: [LightsailClientTypes.InstanceEntry]?
@@ -4768,7 +4768,7 @@ public struct CreateCloudFormationStackInput {
     }
 }
 
-public struct CreateCloudFormationStackOutput {
+public struct CreateCloudFormationStackOutput: Swift.Sendable {
     /// An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.
     public var operations: [LightsailClientTypes.Operation]?
 
@@ -4780,7 +4780,7 @@ public struct CreateCloudFormationStackOutput {
     }
 }
 
-public struct CreateContactMethodInput {
+public struct CreateContactMethodInput: Swift.Sendable {
     /// The destination of the contact method, such as an email address or a mobile phone number. Use the E.164 format when specifying a mobile phone number. E.164 is a standard for the phone number structure used for international telecommunication. Phone numbers that follow this format can have a maximum of 15 digits, and they are prefixed with the plus character (+) and the country code. For example, a U.S. phone number in E.164 format would be specified as +1XXX5550100. For more information, see [E.164](https://en.wikipedia.org/wiki/E.164) on Wikipedia.
     /// This member is required.
     public var contactEndpoint: Swift.String?
@@ -4813,7 +4813,7 @@ public struct CreateContactMethodInput {
     }
 }
 
-public struct CreateContactMethodOutput {
+public struct CreateContactMethodOutput: Swift.Sendable {
     /// An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.
     public var operations: [LightsailClientTypes.Operation]?
 
@@ -4826,8 +4826,9 @@ public struct CreateContactMethodOutput {
 }
 
 extension LightsailClientTypes {
+
     /// Describes a request to configure an Amazon Lightsail container service to access private container image repositories, such as Amazon Elastic Container Registry (Amazon ECR) private repositories. For more information, see [Configuring access to an Amazon ECR private repository for an Amazon Lightsail container service](https://lightsail.aws.amazon.com/ls/docs/en_us/articles/amazon-lightsail-container-service-ecr-private-repo-access) in the Amazon Lightsail Developer Guide.
-    public struct PrivateRegistryAccessRequest {
+    public struct PrivateRegistryAccessRequest: Swift.Sendable {
         /// An object to describe a request to activate or deactivate the role that you can use to grant an Amazon Lightsail container service access to Amazon Elastic Container Registry (Amazon ECR) private repositories.
         public var ecrImagePullerRole: LightsailClientTypes.ContainerServiceECRImagePullerRoleRequest?
 
@@ -4838,10 +4839,9 @@ extension LightsailClientTypes {
             self.ecrImagePullerRole = ecrImagePullerRole
         }
     }
-
 }
 
-public struct CreateContainerServiceInput {
+public struct CreateContainerServiceInput: Swift.Sendable {
     /// An object that describes a deployment for the container service. A deployment specifies the containers that will be launched on the container service and their settings, such as the ports to open, the environment variables to apply, and the launch command to run. It also specifies the container that will serve as the public endpoint of the deployment and its settings, such as the HTTP or HTTPS port to use, and the health check configuration.
     public var deployment: LightsailClientTypes.ContainerServiceDeploymentRequest?
     /// The power specification for the container service. The power specifies the amount of memory, vCPUs, and base monthly cost of each node of the container service. The power and scale of a container service makes up its configured capacity. To determine the monthly price of your container service, multiply the base price of the power with the scale (the number of nodes) of the service. Use the GetContainerServicePowers action to get a list of power options that you can specify using this parameter, and their base monthly cost.
@@ -4888,7 +4888,7 @@ public struct CreateContainerServiceInput {
     }
 }
 
-public struct CreateContainerServiceOutput {
+public struct CreateContainerServiceOutput: Swift.Sendable {
     /// An object that describes a container service.
     public var containerService: LightsailClientTypes.ContainerService?
 
@@ -4900,7 +4900,7 @@ public struct CreateContainerServiceOutput {
     }
 }
 
-public struct CreateContainerServiceDeploymentInput {
+public struct CreateContainerServiceDeploymentInput: Swift.Sendable {
     /// An object that describes the settings of the containers that will be launched on the container service.
     public var containers: [Swift.String: LightsailClientTypes.Container]?
     /// An object that describes the settings of the public endpoint for the container service.
@@ -4921,7 +4921,7 @@ public struct CreateContainerServiceDeploymentInput {
     }
 }
 
-public struct CreateContainerServiceDeploymentOutput {
+public struct CreateContainerServiceDeploymentOutput: Swift.Sendable {
     /// An object that describes a container service.
     public var containerService: LightsailClientTypes.ContainerService?
 
@@ -4933,12 +4933,12 @@ public struct CreateContainerServiceDeploymentOutput {
     }
 }
 
-public struct CreateContainerServiceRegistryLoginInput {
+public struct CreateContainerServiceRegistryLoginInput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct CreateContainerServiceRegistryLoginOutput {
+public struct CreateContainerServiceRegistryLoginOutput: Swift.Sendable {
     /// An object that describes the log in information for the container service registry of your Lightsail account.
     public var registryLogin: LightsailClientTypes.ContainerServiceRegistryLogin?
 
@@ -4950,7 +4950,7 @@ public struct CreateContainerServiceRegistryLoginOutput {
     }
 }
 
-public struct CreateDiskInput {
+public struct CreateDiskInput: Swift.Sendable {
     /// An array of objects that represent the add-ons to enable for the new disk.
     public var addOns: [LightsailClientTypes.AddOnRequest]?
     /// The Availability Zone where you want to create the disk (us-east-2a). Use the same Availability Zone as the Lightsail instance to which you want to attach the disk. Use the get regions operation to list the Availability Zones where Lightsail is currently available.
@@ -4981,7 +4981,7 @@ public struct CreateDiskInput {
     }
 }
 
-public struct CreateDiskOutput {
+public struct CreateDiskOutput: Swift.Sendable {
     /// An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.
     public var operations: [LightsailClientTypes.Operation]?
 
@@ -4993,7 +4993,7 @@ public struct CreateDiskOutput {
     }
 }
 
-public struct CreateDiskFromSnapshotInput {
+public struct CreateDiskFromSnapshotInput: Swift.Sendable {
     /// An array of objects that represent the add-ons to enable for the new disk.
     public var addOns: [LightsailClientTypes.AddOnRequest]?
     /// The Availability Zone where you want to create the disk (us-east-2a). Choose the same Availability Zone as the Lightsail instance where you want to create the disk. Use the GetRegions operation to list the Availability Zones where Lightsail is currently available.
@@ -5056,7 +5056,7 @@ public struct CreateDiskFromSnapshotInput {
     }
 }
 
-public struct CreateDiskFromSnapshotOutput {
+public struct CreateDiskFromSnapshotOutput: Swift.Sendable {
     /// An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.
     public var operations: [LightsailClientTypes.Operation]?
 
@@ -5068,7 +5068,7 @@ public struct CreateDiskFromSnapshotOutput {
     }
 }
 
-public struct CreateDiskSnapshotInput {
+public struct CreateDiskSnapshotInput: Swift.Sendable {
     /// The unique name of the source disk (Disk-Virginia-1). This parameter cannot be defined together with the instance name parameter. The disk name and instance name parameters are mutually exclusive.
     public var diskName: Swift.String?
     /// The name of the destination disk snapshot (my-disk-snapshot) based on the source disk.
@@ -5093,7 +5093,7 @@ public struct CreateDiskSnapshotInput {
     }
 }
 
-public struct CreateDiskSnapshotOutput {
+public struct CreateDiskSnapshotOutput: Swift.Sendable {
     /// An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.
     public var operations: [LightsailClientTypes.Operation]?
 
@@ -5107,7 +5107,7 @@ public struct CreateDiskSnapshotOutput {
 
 extension LightsailClientTypes {
 
-    public enum IpAddressType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum IpAddressType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case dualstack
         case ipv4
         case ipv6
@@ -5139,7 +5139,7 @@ extension LightsailClientTypes {
 
 extension LightsailClientTypes {
 
-    public enum OriginProtocolPolicyEnum: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum OriginProtocolPolicyEnum: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case httponly
         case httpsonly
         case sdkUnknown(Swift.String)
@@ -5167,8 +5167,9 @@ extension LightsailClientTypes {
 }
 
 extension LightsailClientTypes {
+
     /// Describes the origin resource of an Amazon Lightsail content delivery network (CDN) distribution. An origin can be a Lightsail instance, bucket, container service, or load balancer. A distribution pulls content from an origin, caches it, and serves it to viewers via a worldwide network of edge servers.
-    public struct InputOrigin {
+    public struct InputOrigin: Swift.Sendable {
         /// The name of the origin resource.
         public var name: Swift.String?
         /// The protocol that your Amazon Lightsail distribution uses when establishing a connection with your origin to pull content.
@@ -5191,12 +5192,11 @@ extension LightsailClientTypes {
             self.responseTimeout = responseTimeout
         }
     }
-
 }
 
 extension LightsailClientTypes {
 
-    public enum ViewerMinimumTlsProtocolVersionEnum: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ViewerMinimumTlsProtocolVersionEnum: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case tlsv112016
         case tlsv122018
         case tlsv122019
@@ -5229,7 +5229,7 @@ extension LightsailClientTypes {
     }
 }
 
-public struct CreateDistributionInput {
+public struct CreateDistributionInput: Swift.Sendable {
     /// The bundle ID to use for the distribution. A distribution bundle describes the specifications of your distribution, such as the monthly cost and monthly network transfer quota. Use the GetDistributionBundles action to get a list of distribution bundle IDs that you can specify.
     /// This member is required.
     public var bundleId: Swift.String?
@@ -5282,8 +5282,9 @@ public struct CreateDistributionInput {
 }
 
 extension LightsailClientTypes {
+
     /// Describes the origin resource of an Amazon Lightsail content delivery network (CDN) distribution. An origin can be a Lightsail instance, bucket, or load balancer. A distribution pulls content from an origin, caches it, and serves it to viewers via a worldwide network of edge servers.
-    public struct Origin {
+    public struct Origin: Swift.Sendable {
         /// The name of the origin resource.
         public var name: Swift.String?
         /// The protocol that your Amazon Lightsail distribution uses when establishing a connection with your origin to pull content.
@@ -5310,12 +5311,12 @@ extension LightsailClientTypes {
             self.responseTimeout = responseTimeout
         }
     }
-
 }
 
 extension LightsailClientTypes {
+
     /// Describes an Amazon Lightsail content delivery network (CDN) distribution.
-    public struct LightsailDistribution {
+    public struct LightsailDistribution: Swift.Sendable {
         /// Indicates whether the bundle that is currently applied to your distribution, specified using the distributionName parameter, can be changed to another bundle. Use the UpdateDistributionBundle action to change your distribution's bundle.
         public var ableToUpdateBundle: Swift.Bool?
         /// The alternate domain names of the distribution.
@@ -5406,10 +5407,9 @@ extension LightsailClientTypes {
             self.viewerMinimumTlsProtocolVersion = viewerMinimumTlsProtocolVersion
         }
     }
-
 }
 
-public struct CreateDistributionOutput {
+public struct CreateDistributionOutput: Swift.Sendable {
     /// An object that describes the distribution created.
     public var distribution: LightsailClientTypes.LightsailDistribution?
     /// An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.
@@ -5425,7 +5425,7 @@ public struct CreateDistributionOutput {
     }
 }
 
-public struct CreateDomainInput {
+public struct CreateDomainInput: Swift.Sendable {
     /// The domain name to manage (example.com).
     /// This member is required.
     public var domainName: Swift.String?
@@ -5442,7 +5442,7 @@ public struct CreateDomainInput {
     }
 }
 
-public struct CreateDomainOutput {
+public struct CreateDomainOutput: Swift.Sendable {
     /// An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.
     public var operation: LightsailClientTypes.Operation?
 
@@ -5455,8 +5455,9 @@ public struct CreateDomainOutput {
 }
 
 extension LightsailClientTypes {
+
     /// Describes a domain recordset entry.
-    public struct DomainEntry {
+    public struct DomainEntry: Swift.Sendable {
         /// The ID of the domain recordset entry.
         public var id: Swift.String?
         /// When true, specifies whether the domain entry is an alias used by the Lightsail load balancer, Lightsail container service, Lightsail content delivery network (CDN) distribution, or another Amazon Web Services resource. You can include an alias (A type) record in your request, which points to the DNS name of a load balancer, container service, CDN distribution, or other Amazon Web Services resource and routes traffic to that resource.
@@ -5504,10 +5505,9 @@ extension LightsailClientTypes {
             self.type = type
         }
     }
-
 }
 
-public struct CreateDomainEntryInput {
+public struct CreateDomainEntryInput: Swift.Sendable {
     /// An array of key-value pairs containing information about the domain entry request.
     /// This member is required.
     public var domainEntry: LightsailClientTypes.DomainEntry?
@@ -5525,7 +5525,7 @@ public struct CreateDomainEntryInput {
     }
 }
 
-public struct CreateDomainEntryOutput {
+public struct CreateDomainEntryOutput: Swift.Sendable {
     /// An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.
     public var operation: LightsailClientTypes.Operation?
 
@@ -5537,7 +5537,7 @@ public struct CreateDomainEntryOutput {
     }
 }
 
-public struct CreateGUISessionAccessDetailsInput {
+public struct CreateGUISessionAccessDetailsInput: Swift.Sendable {
     /// The resource name.
     /// This member is required.
     public var resourceName: Swift.String?
@@ -5551,8 +5551,9 @@ public struct CreateGUISessionAccessDetailsInput {
 }
 
 extension LightsailClientTypes {
+
     /// Describes a web-based, remote graphical user interface (GUI), NICE DCV session. The session is used to access a virtual computer’s operating system or application.
-    public struct Session {
+    public struct Session: Swift.Sendable {
         /// When true, this Boolean value indicates the primary session for the specified resource.
         public var isPrimary: Swift.Bool?
         /// The session name.
@@ -5571,7 +5572,6 @@ extension LightsailClientTypes {
             self.url = url
         }
     }
-
 }
 
 extension LightsailClientTypes.Session: Swift.CustomDebugStringConvertible {
@@ -5581,7 +5581,7 @@ extension LightsailClientTypes.Session: Swift.CustomDebugStringConvertible {
 
 extension LightsailClientTypes {
 
-    public enum Status: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Status: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case failedinstancecreation
         case failedstartingguisession
         case failedstoppingguisession
@@ -5632,7 +5632,7 @@ extension LightsailClientTypes {
     }
 }
 
-public struct CreateGUISessionAccessDetailsOutput {
+public struct CreateGUISessionAccessDetailsOutput: Swift.Sendable {
     /// The reason the operation failed.
     public var failureReason: Swift.String?
     /// The percentage of completion for the operation.
@@ -5660,7 +5660,7 @@ public struct CreateGUISessionAccessDetailsOutput {
     }
 }
 
-public struct CreateInstancesInput {
+public struct CreateInstancesInput: Swift.Sendable {
     /// An array of objects representing the add-ons to enable for the new instance.
     public var addOns: [LightsailClientTypes.AddOnRequest]?
     /// The Availability Zone in which to create your instance. Use the following format: us-east-2a (case sensitive). You can get a list of Availability Zones by using the [get regions](http://docs.aws.amazon.com/lightsail/2016-11-28/api-reference/API_GetRegions.html) operation. Be sure to add the include Availability Zones parameter to your request.
@@ -5713,7 +5713,7 @@ public struct CreateInstancesInput {
     }
 }
 
-public struct CreateInstancesOutput {
+public struct CreateInstancesOutput: Swift.Sendable {
     /// An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.
     public var operations: [LightsailClientTypes.Operation]?
 
@@ -5725,7 +5725,7 @@ public struct CreateInstancesOutput {
     }
 }
 
-public struct CreateInstancesFromSnapshotInput {
+public struct CreateInstancesFromSnapshotInput: Swift.Sendable {
     /// An array of objects representing the add-ons to enable for the new instance.
     public var addOns: [LightsailClientTypes.AddOnRequest]?
     /// An object containing information about one or more disk mappings.
@@ -5804,7 +5804,7 @@ public struct CreateInstancesFromSnapshotInput {
     }
 }
 
-public struct CreateInstancesFromSnapshotOutput {
+public struct CreateInstancesFromSnapshotOutput: Swift.Sendable {
     /// An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.
     public var operations: [LightsailClientTypes.Operation]?
 
@@ -5816,7 +5816,7 @@ public struct CreateInstancesFromSnapshotOutput {
     }
 }
 
-public struct CreateInstanceSnapshotInput {
+public struct CreateInstanceSnapshotInput: Swift.Sendable {
     /// The Lightsail instance on which to base your snapshot.
     /// This member is required.
     public var instanceName: Swift.String?
@@ -5838,7 +5838,7 @@ public struct CreateInstanceSnapshotInput {
     }
 }
 
-public struct CreateInstanceSnapshotOutput {
+public struct CreateInstanceSnapshotOutput: Swift.Sendable {
     /// An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.
     public var operations: [LightsailClientTypes.Operation]?
 
@@ -5850,7 +5850,7 @@ public struct CreateInstanceSnapshotOutput {
     }
 }
 
-public struct CreateKeyPairInput {
+public struct CreateKeyPairInput: Swift.Sendable {
     /// The name for your new key pair.
     /// This member is required.
     public var keyPairName: Swift.String?
@@ -5868,8 +5868,9 @@ public struct CreateKeyPairInput {
 }
 
 extension LightsailClientTypes {
+
     /// Describes an SSH key pair.
-    public struct KeyPair {
+    public struct KeyPair: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the key pair (arn:aws:lightsail:us-east-2:123456789101:KeyPair/05859e3d-331d-48ba-9034-12345EXAMPLE).
         public var arn: Swift.String?
         /// The timestamp when the key pair was created (1479816991.349).
@@ -5908,10 +5909,9 @@ extension LightsailClientTypes {
             self.tags = tags
         }
     }
-
 }
 
-public struct CreateKeyPairOutput {
+public struct CreateKeyPairOutput: Swift.Sendable {
     /// An array of key-value pairs containing information about the new key pair you just created.
     public var keyPair: LightsailClientTypes.KeyPair?
     /// An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.
@@ -5935,7 +5935,7 @@ public struct CreateKeyPairOutput {
     }
 }
 
-public struct CreateLoadBalancerInput {
+public struct CreateLoadBalancerInput: Swift.Sendable {
     /// The optional alternative domains and subdomains to use with your SSL/TLS certificate (www.example.com, example.com, m.example.com, blog.example.com).
     public var certificateAlternativeNames: [Swift.String]?
     /// The domain name with which your certificate is associated (example.com). If you specify certificateDomainName, then certificateName is required (and vice-versa).
@@ -5981,7 +5981,7 @@ public struct CreateLoadBalancerInput {
     }
 }
 
-public struct CreateLoadBalancerOutput {
+public struct CreateLoadBalancerOutput: Swift.Sendable {
     /// An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.
     public var operations: [LightsailClientTypes.Operation]?
 
@@ -5993,7 +5993,7 @@ public struct CreateLoadBalancerOutput {
     }
 }
 
-public struct CreateLoadBalancerTlsCertificateInput {
+public struct CreateLoadBalancerTlsCertificateInput: Swift.Sendable {
     /// An array of strings listing alternative domains and subdomains for your SSL/TLS certificate. Lightsail will de-dupe the names for you. You can have a maximum of 9 alternative names (in addition to the 1 primary domain). We do not support wildcards (*.example.com).
     public var certificateAlternativeNames: [Swift.String]?
     /// The domain name (example.com) for your SSL/TLS certificate.
@@ -6024,7 +6024,7 @@ public struct CreateLoadBalancerTlsCertificateInput {
     }
 }
 
-public struct CreateLoadBalancerTlsCertificateOutput {
+public struct CreateLoadBalancerTlsCertificateOutput: Swift.Sendable {
     /// An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.
     public var operations: [LightsailClientTypes.Operation]?
 
@@ -6036,7 +6036,7 @@ public struct CreateLoadBalancerTlsCertificateOutput {
     }
 }
 
-public struct CreateRelationalDatabaseInput {
+public struct CreateRelationalDatabaseInput: Swift.Sendable {
     /// The Availability Zone in which to create your new database. Use the us-east-2a case-sensitive format. You can get a list of Availability Zones by using the get regions operation. Be sure to add the include relational database Availability Zones parameter to your request.
     public var availabilityZone: Swift.String?
     /// The meaning of this parameter differs according to the database engine you use. MySQL The name of the database to create when the Lightsail database resource is created. If this parameter isn't specified, no database is created in the database resource. Constraints:
@@ -6154,7 +6154,7 @@ extension CreateRelationalDatabaseInput: Swift.CustomDebugStringConvertible {
         "CreateRelationalDatabaseInput(availabilityZone: \(Swift.String(describing: availabilityZone)), masterDatabaseName: \(Swift.String(describing: masterDatabaseName)), masterUsername: \(Swift.String(describing: masterUsername)), preferredBackupWindow: \(Swift.String(describing: preferredBackupWindow)), preferredMaintenanceWindow: \(Swift.String(describing: preferredMaintenanceWindow)), publiclyAccessible: \(Swift.String(describing: publiclyAccessible)), relationalDatabaseBlueprintId: \(Swift.String(describing: relationalDatabaseBlueprintId)), relationalDatabaseBundleId: \(Swift.String(describing: relationalDatabaseBundleId)), relationalDatabaseName: \(Swift.String(describing: relationalDatabaseName)), tags: \(Swift.String(describing: tags)), masterUserPassword: \"CONTENT_REDACTED\")"}
 }
 
-public struct CreateRelationalDatabaseOutput {
+public struct CreateRelationalDatabaseOutput: Swift.Sendable {
     /// An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.
     public var operations: [LightsailClientTypes.Operation]?
 
@@ -6166,7 +6166,7 @@ public struct CreateRelationalDatabaseOutput {
     }
 }
 
-public struct CreateRelationalDatabaseFromSnapshotInput {
+public struct CreateRelationalDatabaseFromSnapshotInput: Swift.Sendable {
     /// The Availability Zone in which to create your new database. Use the us-east-2a case-sensitive format. You can get a list of Availability Zones by using the get regions operation. Be sure to add the include relational database Availability Zones parameter to your request.
     public var availabilityZone: Swift.String?
     /// Specifies the accessibility options for your new database. A value of true specifies a database that is available to resources outside of your Lightsail account. A value of false specifies a database that is available only to your Lightsail resources in the same region as your database.
@@ -6223,7 +6223,7 @@ public struct CreateRelationalDatabaseFromSnapshotInput {
     }
 }
 
-public struct CreateRelationalDatabaseFromSnapshotOutput {
+public struct CreateRelationalDatabaseFromSnapshotOutput: Swift.Sendable {
     /// An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.
     public var operations: [LightsailClientTypes.Operation]?
 
@@ -6235,7 +6235,7 @@ public struct CreateRelationalDatabaseFromSnapshotOutput {
     }
 }
 
-public struct CreateRelationalDatabaseSnapshotInput {
+public struct CreateRelationalDatabaseSnapshotInput: Swift.Sendable {
     /// The name of the database on which to base your new snapshot.
     /// This member is required.
     public var relationalDatabaseName: Swift.String?
@@ -6261,7 +6261,7 @@ public struct CreateRelationalDatabaseSnapshotInput {
     }
 }
 
-public struct CreateRelationalDatabaseSnapshotOutput {
+public struct CreateRelationalDatabaseSnapshotOutput: Swift.Sendable {
     /// An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.
     public var operations: [LightsailClientTypes.Operation]?
 
@@ -6273,7 +6273,7 @@ public struct CreateRelationalDatabaseSnapshotOutput {
     }
 }
 
-public struct DeleteAlarmInput {
+public struct DeleteAlarmInput: Swift.Sendable {
     /// The name of the alarm to delete.
     /// This member is required.
     public var alarmName: Swift.String?
@@ -6286,7 +6286,7 @@ public struct DeleteAlarmInput {
     }
 }
 
-public struct DeleteAlarmOutput {
+public struct DeleteAlarmOutput: Swift.Sendable {
     /// An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.
     public var operations: [LightsailClientTypes.Operation]?
 
@@ -6298,7 +6298,7 @@ public struct DeleteAlarmOutput {
     }
 }
 
-public struct DeleteAutoSnapshotInput {
+public struct DeleteAutoSnapshotInput: Swift.Sendable {
     /// The date of the automatic snapshot to delete in YYYY-MM-DD format. Use the get auto snapshots operation to get the available automatic snapshots for a resource.
     /// This member is required.
     public var date: Swift.String?
@@ -6316,7 +6316,7 @@ public struct DeleteAutoSnapshotInput {
     }
 }
 
-public struct DeleteAutoSnapshotOutput {
+public struct DeleteAutoSnapshotOutput: Swift.Sendable {
     /// An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.
     public var operations: [LightsailClientTypes.Operation]?
 
@@ -6328,7 +6328,7 @@ public struct DeleteAutoSnapshotOutput {
     }
 }
 
-public struct DeleteBucketInput {
+public struct DeleteBucketInput: Swift.Sendable {
     /// The name of the bucket to delete. Use the [GetBuckets](https://docs.aws.amazon.com/lightsail/2016-11-28/api-reference/API_GetBuckets.html) action to get a list of bucket names that you can specify.
     /// This member is required.
     public var bucketName: Swift.String?
@@ -6356,7 +6356,7 @@ public struct DeleteBucketInput {
     }
 }
 
-public struct DeleteBucketOutput {
+public struct DeleteBucketOutput: Swift.Sendable {
     /// An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.
     public var operations: [LightsailClientTypes.Operation]?
 
@@ -6368,7 +6368,7 @@ public struct DeleteBucketOutput {
     }
 }
 
-public struct DeleteBucketAccessKeyInput {
+public struct DeleteBucketAccessKeyInput: Swift.Sendable {
     /// The ID of the access key to delete. Use the [GetBucketAccessKeys](https://docs.aws.amazon.com/lightsail/2016-11-28/api-reference/API_GetBucketAccessKeys.html) action to get a list of access key IDs that you can specify.
     /// This member is required.
     public var accessKeyId: Swift.String?
@@ -6386,7 +6386,7 @@ public struct DeleteBucketAccessKeyInput {
     }
 }
 
-public struct DeleteBucketAccessKeyOutput {
+public struct DeleteBucketAccessKeyOutput: Swift.Sendable {
     /// An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.
     public var operations: [LightsailClientTypes.Operation]?
 
@@ -6398,7 +6398,7 @@ public struct DeleteBucketAccessKeyOutput {
     }
 }
 
-public struct DeleteCertificateInput {
+public struct DeleteCertificateInput: Swift.Sendable {
     /// The name of the certificate to delete. Use the GetCertificates action to get a list of certificate names that you can specify.
     /// This member is required.
     public var certificateName: Swift.String?
@@ -6411,7 +6411,7 @@ public struct DeleteCertificateInput {
     }
 }
 
-public struct DeleteCertificateOutput {
+public struct DeleteCertificateOutput: Swift.Sendable {
     /// An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.
     public var operations: [LightsailClientTypes.Operation]?
 
@@ -6423,7 +6423,7 @@ public struct DeleteCertificateOutput {
     }
 }
 
-public struct DeleteContactMethodInput {
+public struct DeleteContactMethodInput: Swift.Sendable {
     /// The protocol that will be deleted, such as Email or SMS (text messaging). To delete an Email and an SMS contact method if you added both, you must run separate DeleteContactMethod actions to delete each protocol.
     /// This member is required.
     public var `protocol`: LightsailClientTypes.ContactProtocol?
@@ -6436,7 +6436,7 @@ public struct DeleteContactMethodInput {
     }
 }
 
-public struct DeleteContactMethodOutput {
+public struct DeleteContactMethodOutput: Swift.Sendable {
     /// An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.
     public var operations: [LightsailClientTypes.Operation]?
 
@@ -6448,7 +6448,7 @@ public struct DeleteContactMethodOutput {
     }
 }
 
-public struct DeleteContainerImageInput {
+public struct DeleteContainerImageInput: Swift.Sendable {
     /// The name of the container image to delete from the container service. Use the GetContainerImages action to get the name of the container images that are registered to a container service. Container images sourced from your Lightsail container service, that are registered and stored on your service, start with a colon (:). For example, :container-service-1.mystaticwebsite.1. Container images sourced from a public registry like Docker Hub don't start with a colon. For example, nginx:latest or nginx.
     /// This member is required.
     public var image: Swift.String?
@@ -6466,12 +6466,12 @@ public struct DeleteContainerImageInput {
     }
 }
 
-public struct DeleteContainerImageOutput {
+public struct DeleteContainerImageOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteContainerServiceInput {
+public struct DeleteContainerServiceInput: Swift.Sendable {
     /// The name of the container service to delete.
     /// This member is required.
     public var serviceName: Swift.String?
@@ -6484,12 +6484,12 @@ public struct DeleteContainerServiceInput {
     }
 }
 
-public struct DeleteContainerServiceOutput {
+public struct DeleteContainerServiceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteDiskInput {
+public struct DeleteDiskInput: Swift.Sendable {
     /// The unique name of the disk you want to delete (my-disk).
     /// This member is required.
     public var diskName: Swift.String?
@@ -6506,7 +6506,7 @@ public struct DeleteDiskInput {
     }
 }
 
-public struct DeleteDiskOutput {
+public struct DeleteDiskOutput: Swift.Sendable {
     /// An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.
     public var operations: [LightsailClientTypes.Operation]?
 
@@ -6518,7 +6518,7 @@ public struct DeleteDiskOutput {
     }
 }
 
-public struct DeleteDiskSnapshotInput {
+public struct DeleteDiskSnapshotInput: Swift.Sendable {
     /// The name of the disk snapshot you want to delete (my-disk-snapshot).
     /// This member is required.
     public var diskSnapshotName: Swift.String?
@@ -6531,7 +6531,7 @@ public struct DeleteDiskSnapshotInput {
     }
 }
 
-public struct DeleteDiskSnapshotOutput {
+public struct DeleteDiskSnapshotOutput: Swift.Sendable {
     /// An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.
     public var operations: [LightsailClientTypes.Operation]?
 
@@ -6543,7 +6543,7 @@ public struct DeleteDiskSnapshotOutput {
     }
 }
 
-public struct DeleteDistributionInput {
+public struct DeleteDistributionInput: Swift.Sendable {
     /// The name of the distribution to delete. Use the GetDistributions action to get a list of distribution names that you can specify.
     public var distributionName: Swift.String?
 
@@ -6555,7 +6555,7 @@ public struct DeleteDistributionInput {
     }
 }
 
-public struct DeleteDistributionOutput {
+public struct DeleteDistributionOutput: Swift.Sendable {
     /// An object that describes the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.
     public var operation: LightsailClientTypes.Operation?
 
@@ -6567,7 +6567,7 @@ public struct DeleteDistributionOutput {
     }
 }
 
-public struct DeleteDomainInput {
+public struct DeleteDomainInput: Swift.Sendable {
     /// The specific domain name to delete.
     /// This member is required.
     public var domainName: Swift.String?
@@ -6580,7 +6580,7 @@ public struct DeleteDomainInput {
     }
 }
 
-public struct DeleteDomainOutput {
+public struct DeleteDomainOutput: Swift.Sendable {
     /// An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.
     public var operation: LightsailClientTypes.Operation?
 
@@ -6592,7 +6592,7 @@ public struct DeleteDomainOutput {
     }
 }
 
-public struct DeleteDomainEntryInput {
+public struct DeleteDomainEntryInput: Swift.Sendable {
     /// An array of key-value pairs containing information about your domain entries.
     /// This member is required.
     public var domainEntry: LightsailClientTypes.DomainEntry?
@@ -6610,7 +6610,7 @@ public struct DeleteDomainEntryInput {
     }
 }
 
-public struct DeleteDomainEntryOutput {
+public struct DeleteDomainEntryOutput: Swift.Sendable {
     /// An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.
     public var operation: LightsailClientTypes.Operation?
 
@@ -6622,7 +6622,7 @@ public struct DeleteDomainEntryOutput {
     }
 }
 
-public struct DeleteInstanceInput {
+public struct DeleteInstanceInput: Swift.Sendable {
     /// A Boolean value to indicate whether to delete all add-ons for the instance.
     public var forceDeleteAddOns: Swift.Bool?
     /// The name of the instance to delete.
@@ -6639,7 +6639,7 @@ public struct DeleteInstanceInput {
     }
 }
 
-public struct DeleteInstanceOutput {
+public struct DeleteInstanceOutput: Swift.Sendable {
     /// An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.
     public var operations: [LightsailClientTypes.Operation]?
 
@@ -6651,7 +6651,7 @@ public struct DeleteInstanceOutput {
     }
 }
 
-public struct DeleteInstanceSnapshotInput {
+public struct DeleteInstanceSnapshotInput: Swift.Sendable {
     /// The name of the snapshot to delete.
     /// This member is required.
     public var instanceSnapshotName: Swift.String?
@@ -6664,7 +6664,7 @@ public struct DeleteInstanceSnapshotInput {
     }
 }
 
-public struct DeleteInstanceSnapshotOutput {
+public struct DeleteInstanceSnapshotOutput: Swift.Sendable {
     /// An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.
     public var operations: [LightsailClientTypes.Operation]?
 
@@ -6676,7 +6676,7 @@ public struct DeleteInstanceSnapshotOutput {
     }
 }
 
-public struct DeleteKeyPairInput {
+public struct DeleteKeyPairInput: Swift.Sendable {
     /// The RSA fingerprint of the Lightsail default key pair to delete. The expectedFingerprint parameter is required only when specifying to delete a Lightsail default key pair.
     public var expectedFingerprint: Swift.String?
     /// The name of the key pair to delete.
@@ -6693,7 +6693,7 @@ public struct DeleteKeyPairInput {
     }
 }
 
-public struct DeleteKeyPairOutput {
+public struct DeleteKeyPairOutput: Swift.Sendable {
     /// An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.
     public var operation: LightsailClientTypes.Operation?
 
@@ -6705,7 +6705,7 @@ public struct DeleteKeyPairOutput {
     }
 }
 
-public struct DeleteKnownHostKeysInput {
+public struct DeleteKnownHostKeysInput: Swift.Sendable {
     /// The name of the instance for which you want to reset the host key or certificate.
     /// This member is required.
     public var instanceName: Swift.String?
@@ -6718,7 +6718,7 @@ public struct DeleteKnownHostKeysInput {
     }
 }
 
-public struct DeleteKnownHostKeysOutput {
+public struct DeleteKnownHostKeysOutput: Swift.Sendable {
     /// An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.
     public var operations: [LightsailClientTypes.Operation]?
 
@@ -6730,7 +6730,7 @@ public struct DeleteKnownHostKeysOutput {
     }
 }
 
-public struct DeleteLoadBalancerInput {
+public struct DeleteLoadBalancerInput: Swift.Sendable {
     /// The name of the load balancer you want to delete.
     /// This member is required.
     public var loadBalancerName: Swift.String?
@@ -6743,7 +6743,7 @@ public struct DeleteLoadBalancerInput {
     }
 }
 
-public struct DeleteLoadBalancerOutput {
+public struct DeleteLoadBalancerOutput: Swift.Sendable {
     /// An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.
     public var operations: [LightsailClientTypes.Operation]?
 
@@ -6755,7 +6755,7 @@ public struct DeleteLoadBalancerOutput {
     }
 }
 
-public struct DeleteLoadBalancerTlsCertificateInput {
+public struct DeleteLoadBalancerTlsCertificateInput: Swift.Sendable {
     /// The SSL/TLS certificate name.
     /// This member is required.
     public var certificateName: Swift.String?
@@ -6777,7 +6777,7 @@ public struct DeleteLoadBalancerTlsCertificateInput {
     }
 }
 
-public struct DeleteLoadBalancerTlsCertificateOutput {
+public struct DeleteLoadBalancerTlsCertificateOutput: Swift.Sendable {
     /// An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.
     public var operations: [LightsailClientTypes.Operation]?
 
@@ -6789,7 +6789,7 @@ public struct DeleteLoadBalancerTlsCertificateOutput {
     }
 }
 
-public struct DeleteRelationalDatabaseInput {
+public struct DeleteRelationalDatabaseInput: Swift.Sendable {
     /// The name of the database snapshot created if skip final snapshot is false, which is the default value for that parameter. Specifying this parameter and also specifying the skip final snapshot parameter to true results in an error. Constraints:
     ///
     /// * Must contain from 2 to 255 alphanumeric characters, or hyphens.
@@ -6814,7 +6814,7 @@ public struct DeleteRelationalDatabaseInput {
     }
 }
 
-public struct DeleteRelationalDatabaseOutput {
+public struct DeleteRelationalDatabaseOutput: Swift.Sendable {
     /// An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.
     public var operations: [LightsailClientTypes.Operation]?
 
@@ -6826,7 +6826,7 @@ public struct DeleteRelationalDatabaseOutput {
     }
 }
 
-public struct DeleteRelationalDatabaseSnapshotInput {
+public struct DeleteRelationalDatabaseSnapshotInput: Swift.Sendable {
     /// The name of the database snapshot that you are deleting.
     /// This member is required.
     public var relationalDatabaseSnapshotName: Swift.String?
@@ -6839,7 +6839,7 @@ public struct DeleteRelationalDatabaseSnapshotInput {
     }
 }
 
-public struct DeleteRelationalDatabaseSnapshotOutput {
+public struct DeleteRelationalDatabaseSnapshotOutput: Swift.Sendable {
     /// An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.
     public var operations: [LightsailClientTypes.Operation]?
 
@@ -6851,7 +6851,7 @@ public struct DeleteRelationalDatabaseSnapshotOutput {
     }
 }
 
-public struct DetachCertificateFromDistributionInput {
+public struct DetachCertificateFromDistributionInput: Swift.Sendable {
     /// The name of the distribution from which to detach the certificate. Use the GetDistributions action to get a list of distribution names that you can specify.
     /// This member is required.
     public var distributionName: Swift.String?
@@ -6864,7 +6864,7 @@ public struct DetachCertificateFromDistributionInput {
     }
 }
 
-public struct DetachCertificateFromDistributionOutput {
+public struct DetachCertificateFromDistributionOutput: Swift.Sendable {
     /// An object that describes the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.
     public var operation: LightsailClientTypes.Operation?
 
@@ -6876,7 +6876,7 @@ public struct DetachCertificateFromDistributionOutput {
     }
 }
 
-public struct DetachDiskInput {
+public struct DetachDiskInput: Swift.Sendable {
     /// The unique name of the disk you want to detach from your instance (my-disk).
     /// This member is required.
     public var diskName: Swift.String?
@@ -6889,7 +6889,7 @@ public struct DetachDiskInput {
     }
 }
 
-public struct DetachDiskOutput {
+public struct DetachDiskOutput: Swift.Sendable {
     /// An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.
     public var operations: [LightsailClientTypes.Operation]?
 
@@ -6901,7 +6901,7 @@ public struct DetachDiskOutput {
     }
 }
 
-public struct DetachInstancesFromLoadBalancerInput {
+public struct DetachInstancesFromLoadBalancerInput: Swift.Sendable {
     /// An array of strings containing the names of the instances you want to detach from the load balancer.
     /// This member is required.
     public var instanceNames: [Swift.String]?
@@ -6919,7 +6919,7 @@ public struct DetachInstancesFromLoadBalancerInput {
     }
 }
 
-public struct DetachInstancesFromLoadBalancerOutput {
+public struct DetachInstancesFromLoadBalancerOutput: Swift.Sendable {
     /// An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.
     public var operations: [LightsailClientTypes.Operation]?
 
@@ -6931,7 +6931,7 @@ public struct DetachInstancesFromLoadBalancerOutput {
     }
 }
 
-public struct DetachStaticIpInput {
+public struct DetachStaticIpInput: Swift.Sendable {
     /// The name of the static IP to detach from the instance.
     /// This member is required.
     public var staticIpName: Swift.String?
@@ -6944,7 +6944,7 @@ public struct DetachStaticIpInput {
     }
 }
 
-public struct DetachStaticIpOutput {
+public struct DetachStaticIpOutput: Swift.Sendable {
     /// An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.
     public var operations: [LightsailClientTypes.Operation]?
 
@@ -6956,7 +6956,7 @@ public struct DetachStaticIpOutput {
     }
 }
 
-public struct DisableAddOnInput {
+public struct DisableAddOnInput: Swift.Sendable {
     /// The add-on type to disable.
     /// This member is required.
     public var addOnType: LightsailClientTypes.AddOnType?
@@ -6974,7 +6974,7 @@ public struct DisableAddOnInput {
     }
 }
 
-public struct DisableAddOnOutput {
+public struct DisableAddOnOutput: Swift.Sendable {
     /// An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.
     public var operations: [LightsailClientTypes.Operation]?
 
@@ -6988,7 +6988,7 @@ public struct DisableAddOnOutput {
 
 extension LightsailClientTypes {
 
-    public enum DiskState: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DiskState: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case available
         case error
         case inuse
@@ -7025,8 +7025,9 @@ extension LightsailClientTypes {
 }
 
 extension LightsailClientTypes {
+
     /// Describes a block storage disk.
-    public struct Disk {
+    public struct Disk: Swift.Sendable {
         /// An array of objects representing the add-ons enabled on the disk.
         public var addOns: [LightsailClientTypes.AddOn]?
         /// The Amazon Resource Name (ARN) of the disk.
@@ -7107,12 +7108,12 @@ extension LightsailClientTypes {
             self.tags = tags
         }
     }
-
 }
 
 extension LightsailClientTypes {
+
     /// Describes a disk.
-    public struct DiskInfo {
+    public struct DiskInfo: Swift.Sendable {
         /// A Boolean value indicating whether this disk is a system disk (has an operating system loaded on it).
         public var isSystemDisk: Swift.Bool?
         /// The disk name.
@@ -7135,12 +7136,11 @@ extension LightsailClientTypes {
             self.sizeInGb = sizeInGb
         }
     }
-
 }
 
 extension LightsailClientTypes {
 
-    public enum DiskSnapshotState: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DiskSnapshotState: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case completed
         case error
         case pending
@@ -7174,8 +7174,9 @@ extension LightsailClientTypes {
 }
 
 extension LightsailClientTypes {
+
     /// Describes a block storage disk snapshot.
-    public struct DiskSnapshot {
+    public struct DiskSnapshot: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the disk snapshot.
         public var arn: Swift.String?
         /// The date when the disk snapshot was created.
@@ -7242,12 +7243,12 @@ extension LightsailClientTypes {
             self.tags = tags
         }
     }
-
 }
 
 extension LightsailClientTypes {
+
     /// Describes a disk snapshot.
-    public struct DiskSnapshotInfo {
+    public struct DiskSnapshotInfo: Swift.Sendable {
         /// The size of the disk in GB (32).
         public var sizeInGb: Swift.Int?
 
@@ -7258,12 +7259,12 @@ extension LightsailClientTypes {
             self.sizeInGb = sizeInGb
         }
     }
-
 }
 
 extension LightsailClientTypes {
+
     /// Describes the specifications of a distribution bundle.
-    public struct DistributionBundle {
+    public struct DistributionBundle: Swift.Sendable {
         /// The ID of the bundle.
         public var bundleId: Swift.String?
         /// Indicates whether the bundle is active, and can be specified for a new or existing distribution.
@@ -7290,12 +7291,11 @@ extension LightsailClientTypes {
             self.transferPerMonthInGb = transferPerMonthInGb
         }
     }
-
 }
 
 extension LightsailClientTypes {
 
-    public enum DistributionMetricName: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DistributionMetricName: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case bytesdownloaded
         case bytesuploaded
         case http4xxerrorrate
@@ -7336,7 +7336,7 @@ extension LightsailClientTypes {
 
 extension LightsailClientTypes {
 
-    public enum NameServersUpdateStateCode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum NameServersUpdateStateCode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case failed
         case pending
         case started
@@ -7370,8 +7370,9 @@ extension LightsailClientTypes {
 }
 
 extension LightsailClientTypes {
+
     /// Describes the state of the name server records update made by Amazon Lightsail to an Amazon Route 53 registered domain. For more information, see [DNS in Amazon Lightsail](https://lightsail.aws.amazon.com/ls/docs/en_us/articles/understanding-dns-in-amazon-lightsail) in the Amazon Lightsail Developer Guide.
-    public struct NameServersUpdateState {
+    public struct NameServersUpdateState: Swift.Sendable {
         /// The status code for the name servers update. Following are the possible values:
         ///
         /// * SUCCEEDED - The name server records were successfully updated.
@@ -7394,12 +7395,11 @@ extension LightsailClientTypes {
             self.message = message
         }
     }
-
 }
 
 extension LightsailClientTypes {
 
-    public enum R53HostedZoneDeletionStateCode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum R53HostedZoneDeletionStateCode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case failed
         case pending
         case started
@@ -7433,8 +7433,9 @@ extension LightsailClientTypes {
 }
 
 extension LightsailClientTypes {
+
     /// Describes the deletion state of an Amazon Route 53 hosted zone for a domain that is being automatically delegated to an Amazon Lightsail DNS zone.
-    public struct R53HostedZoneDeletionState {
+    public struct R53HostedZoneDeletionState: Swift.Sendable {
         /// The status code for the deletion state. Following are the possible values:
         ///
         /// * SUCCEEDED - The hosted zone was successfully deleted.
@@ -7457,10 +7458,10 @@ extension LightsailClientTypes {
             self.message = message
         }
     }
-
 }
 
 extension LightsailClientTypes {
+
     /// Describes the delegation state of an Amazon Route 53 registered domain to Amazon Lightsail. When you delegate an Amazon Route 53 registered domain to Lightsail, you can manage the DNS of the domain using a Lightsail DNS zone. You no longer use the Route 53 hosted zone to manage the DNS of the domain. To delegate the domain, Lightsail automatically updates the domain's name servers in Route 53 to the name servers of the Lightsail DNS zone. Then, Lightsail automatically deletes the Route 53 hosted zone for the domain. All of the following conditions must be true for automatic domain delegation to be successful:
     ///
     /// * The registered domain must be in the same Amazon Web Services account as the Lightsail account making the request.
@@ -7471,7 +7472,7 @@ extension LightsailClientTypes {
     ///
     ///
     /// If automatic domain delegation fails, or if you manage the DNS of your domain using a service other than Route 53, then you must manually add the Lightsail DNS zone name servers to your domain in order to delegate management of its DNS to Lightsail. For more information, see [Creating a DNS zone to manage your domain’s records in Amazon Lightsail](https://lightsail.aws.amazon.com/ls/docs/en_us/articles/lightsail-how-to-create-dns-entry) in the Amazon Lightsail Developer Guide.
-    public struct RegisteredDomainDelegationInfo {
+    public struct RegisteredDomainDelegationInfo: Swift.Sendable {
         /// An object that describes the state of the name server records that are automatically added to the Route 53 domain by Lightsail.
         public var nameServersUpdateState: LightsailClientTypes.NameServersUpdateState?
         /// Describes the deletion state of an Amazon Route 53 hosted zone for a domain that is being automatically delegated to an Amazon Lightsail DNS zone.
@@ -7486,12 +7487,12 @@ extension LightsailClientTypes {
             self.r53HostedZoneDeletionState = r53HostedZoneDeletionState
         }
     }
-
 }
 
 extension LightsailClientTypes {
+
     /// Describes a domain where you are storing recordsets.
-    public struct Domain {
+    public struct Domain: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the domain recordset (arn:aws:lightsail:global:123456789101:Domain/824cede0-abc7-4f84-8dbc-12345EXAMPLE).
         public var arn: Swift.String?
         /// The date when the domain recordset was created.
@@ -7534,15 +7535,14 @@ extension LightsailClientTypes {
             self.tags = tags
         }
     }
-
 }
 
-public struct DownloadDefaultKeyPairInput {
+public struct DownloadDefaultKeyPairInput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DownloadDefaultKeyPairOutput {
+public struct DownloadDefaultKeyPairOutput: Swift.Sendable {
     /// The timestamp when the default key pair was created.
     public var createdAt: Foundation.Date?
     /// A base64-encoded RSA private key.
@@ -7562,7 +7562,7 @@ public struct DownloadDefaultKeyPairOutput {
     }
 }
 
-public struct EnableAddOnInput {
+public struct EnableAddOnInput: Swift.Sendable {
     /// An array of strings representing the add-on to enable or modify.
     /// This member is required.
     public var addOnRequest: LightsailClientTypes.AddOnRequest?
@@ -7580,7 +7580,7 @@ public struct EnableAddOnInput {
     }
 }
 
-public struct EnableAddOnOutput {
+public struct EnableAddOnOutput: Swift.Sendable {
     /// An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.
     public var operations: [LightsailClientTypes.Operation]?
 
@@ -7592,7 +7592,7 @@ public struct EnableAddOnOutput {
     }
 }
 
-public struct ExportSnapshotInput {
+public struct ExportSnapshotInput: Swift.Sendable {
     /// The name of the instance or disk snapshot to be exported to Amazon EC2.
     /// This member is required.
     public var sourceSnapshotName: Swift.String?
@@ -7605,7 +7605,7 @@ public struct ExportSnapshotInput {
     }
 }
 
-public struct ExportSnapshotOutput {
+public struct ExportSnapshotOutput: Swift.Sendable {
     /// An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.
     public var operations: [LightsailClientTypes.Operation]?
 
@@ -7618,8 +7618,9 @@ public struct ExportSnapshotOutput {
 }
 
 extension LightsailClientTypes {
+
     /// Describes an instance snapshot.
-    public struct InstanceSnapshotInfo {
+    public struct InstanceSnapshotInfo: Swift.Sendable {
         /// The blueprint ID from which the source instance (amazon_linux_2023).
         public var fromBlueprintId: Swift.String?
         /// The bundle ID from which the source instance was created (micro_x_x).
@@ -7638,12 +7639,11 @@ extension LightsailClientTypes {
             self.fromDiskInfo = fromDiskInfo
         }
     }
-
 }
 
 extension LightsailClientTypes {
 
-    public enum ExportSnapshotRecordSourceType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ExportSnapshotRecordSourceType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case disksnapshot
         case instancesnapshot
         case sdkUnknown(Swift.String)
@@ -7671,8 +7671,9 @@ extension LightsailClientTypes {
 }
 
 extension LightsailClientTypes {
+
     /// Describes the source of an export snapshot record.
-    public struct ExportSnapshotRecordSourceInfo {
+    public struct ExportSnapshotRecordSourceInfo: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the source instance or disk snapshot.
         public var arn: Swift.String?
         /// The date when the source instance or disk snapshot was created.
@@ -7711,12 +7712,12 @@ extension LightsailClientTypes {
             self.resourceType = resourceType
         }
     }
-
 }
 
 extension LightsailClientTypes {
+
     /// Describes an export snapshot record.
-    public struct ExportSnapshotRecord {
+    public struct ExportSnapshotRecord: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the export snapshot record.
         public var arn: Swift.String?
         /// The date when the export snapshot record was created.
@@ -7755,10 +7756,9 @@ extension LightsailClientTypes {
             self.state = state
         }
     }
-
 }
 
-public struct GetActiveNamesInput {
+public struct GetActiveNamesInput: Swift.Sendable {
     /// The token to advance to the next page of results from your request. To get a page token, perform an initial GetActiveNames request. If your results are paginated, the response will return a next page token that you can specify as the page token in a subsequent request.
     public var pageToken: Swift.String?
 
@@ -7770,7 +7770,7 @@ public struct GetActiveNamesInput {
     }
 }
 
-public struct GetActiveNamesOutput {
+public struct GetActiveNamesOutput: Swift.Sendable {
     /// The list of active names returned by the get active names request.
     public var activeNames: [Swift.String]?
     /// The token to advance to the next page of results from your request. A next page token is not returned if there are no more results to display. To get the next page of results, perform another GetActiveNames request and specify the next page token using the pageToken parameter.
@@ -7786,7 +7786,7 @@ public struct GetActiveNamesOutput {
     }
 }
 
-public struct GetAlarmsInput {
+public struct GetAlarmsInput: Swift.Sendable {
     /// The name of the alarm. Specify an alarm name to return information about a specific alarm.
     public var alarmName: Swift.String?
     /// The name of the Lightsail resource being monitored by the alarm. Specify a monitored resource name to return information about all alarms for a specific resource.
@@ -7806,7 +7806,7 @@ public struct GetAlarmsInput {
     }
 }
 
-public struct GetAlarmsOutput {
+public struct GetAlarmsOutput: Swift.Sendable {
     /// An array of objects that describe the alarms.
     public var alarms: [LightsailClientTypes.Alarm]?
     /// The token to advance to the next page of results from your request. A next page token is not returned if there are no more results to display. To get the next page of results, perform another GetAlarms request and specify the next page token using the pageToken parameter.
@@ -7822,7 +7822,7 @@ public struct GetAlarmsOutput {
     }
 }
 
-public struct GetAutoSnapshotsInput {
+public struct GetAutoSnapshotsInput: Swift.Sendable {
     /// The name of the source instance or disk from which to get automatic snapshot information.
     /// This member is required.
     public var resourceName: Swift.String?
@@ -7835,7 +7835,7 @@ public struct GetAutoSnapshotsInput {
     }
 }
 
-public struct GetAutoSnapshotsOutput {
+public struct GetAutoSnapshotsOutput: Swift.Sendable {
     /// An array of objects that describe the automatic snapshots that are available for the specified source instance or disk.
     public var autoSnapshots: [LightsailClientTypes.AutoSnapshotDetails]?
     /// The name of the source instance or disk for the automatic snapshots.
@@ -7855,7 +7855,7 @@ public struct GetAutoSnapshotsOutput {
     }
 }
 
-public struct GetBlueprintsInput {
+public struct GetBlueprintsInput: Swift.Sendable {
     /// Returns a list of blueprints that are specific to Lightsail for Research. You must use this parameter to view Lightsail for Research blueprints.
     public var appCategory: LightsailClientTypes.AppCategory?
     /// A Boolean value that indicates whether to include inactive (unavailable) blueprints in the response of your request.
@@ -7875,7 +7875,7 @@ public struct GetBlueprintsInput {
     }
 }
 
-public struct GetBlueprintsOutput {
+public struct GetBlueprintsOutput: Swift.Sendable {
     /// An array of key-value pairs that contains information about the available blueprints.
     public var blueprints: [LightsailClientTypes.Blueprint]?
     /// The token to advance to the next page of results from your request. A next page token is not returned if there are no more results to display. To get the next page of results, perform another GetBlueprints request and specify the next page token using the pageToken parameter.
@@ -7891,7 +7891,7 @@ public struct GetBlueprintsOutput {
     }
 }
 
-public struct GetBucketAccessKeysInput {
+public struct GetBucketAccessKeysInput: Swift.Sendable {
     /// The name of the bucket for which to return access keys.
     /// This member is required.
     public var bucketName: Swift.String?
@@ -7904,7 +7904,7 @@ public struct GetBucketAccessKeysInput {
     }
 }
 
-public struct GetBucketAccessKeysOutput {
+public struct GetBucketAccessKeysOutput: Swift.Sendable {
     /// An object that describes the access keys for the specified bucket.
     public var accessKeys: [LightsailClientTypes.AccessKey]?
 
@@ -7916,7 +7916,7 @@ public struct GetBucketAccessKeysOutput {
     }
 }
 
-public struct GetBucketBundlesInput {
+public struct GetBucketBundlesInput: Swift.Sendable {
     /// A Boolean value that indicates whether to include inactive (unavailable) bundles in the response of your request.
     public var includeInactive: Swift.Bool?
 
@@ -7928,7 +7928,7 @@ public struct GetBucketBundlesInput {
     }
 }
 
-public struct GetBucketBundlesOutput {
+public struct GetBucketBundlesOutput: Swift.Sendable {
     /// An object that describes bucket bundles.
     public var bundles: [LightsailClientTypes.BucketBundle]?
 
@@ -7940,7 +7940,7 @@ public struct GetBucketBundlesOutput {
     }
 }
 
-public struct GetBucketMetricDataInput {
+public struct GetBucketMetricDataInput: Swift.Sendable {
     /// The name of the bucket for which to get metric data.
     /// This member is required.
     public var bucketName: Swift.String?
@@ -7998,8 +7998,9 @@ public struct GetBucketMetricDataInput {
 }
 
 extension LightsailClientTypes {
+
     /// Describes the metric data point.
-    public struct MetricDatapoint {
+    public struct MetricDatapoint: Swift.Sendable {
         /// The average.
         public var average: Swift.Double?
         /// The maximum.
@@ -8034,10 +8035,9 @@ extension LightsailClientTypes {
             self.unit = unit
         }
     }
-
 }
 
-public struct GetBucketMetricDataOutput {
+public struct GetBucketMetricDataOutput: Swift.Sendable {
     /// An array of objects that describe the metric data returned.
     public var metricData: [LightsailClientTypes.MetricDatapoint]?
     /// The name of the metric returned.
@@ -8053,7 +8053,7 @@ public struct GetBucketMetricDataOutput {
     }
 }
 
-public struct GetBucketsInput {
+public struct GetBucketsInput: Swift.Sendable {
     /// The name of the bucket for which to return information. When omitted, the response includes all of your buckets in the Amazon Web Services Region where the request is made.
     public var bucketName: Swift.String?
     /// A Boolean value that indicates whether to include Lightsail instances that were given access to the bucket using the [SetResourceAccessForBucket](https://docs.aws.amazon.com/lightsail/2016-11-28/api-reference/API_SetResourceAccessForBucket.html) action.
@@ -8073,7 +8073,7 @@ public struct GetBucketsInput {
     }
 }
 
-public struct GetBucketsOutput {
+public struct GetBucketsOutput: Swift.Sendable {
     /// An object that describes the synchronization status of the Amazon S3 account-level block public access feature for your Lightsail buckets. For more information about this feature and how it affects Lightsail buckets, see [Block public access for buckets in Amazon Lightsail](https://lightsail.aws.amazon.com/ls/docs/en_us/articles/amazon-lightsail-block-public-access-for-buckets).
     public var accountLevelBpaSync: LightsailClientTypes.AccountLevelBpaSync?
     /// An array of objects that describe buckets.
@@ -8093,7 +8093,7 @@ public struct GetBucketsOutput {
     }
 }
 
-public struct GetBundlesInput {
+public struct GetBundlesInput: Swift.Sendable {
     /// Returns a list of bundles that are specific to Lightsail for Research. You must use this parameter to view Lightsail for Research bundles.
     public var appCategory: LightsailClientTypes.AppCategory?
     /// A Boolean value that indicates whether to include inactive (unavailable) bundles in the response of your request.
@@ -8113,7 +8113,7 @@ public struct GetBundlesInput {
     }
 }
 
-public struct GetBundlesOutput {
+public struct GetBundlesOutput: Swift.Sendable {
     /// An array of key-value pairs that contains information about the available bundles.
     public var bundles: [LightsailClientTypes.Bundle]?
     /// The token to advance to the next page of results from your request. A next page token is not returned if there are no more results to display. To get the next page of results, perform another GetBundles request and specify the next page token using the pageToken parameter.
@@ -8129,7 +8129,7 @@ public struct GetBundlesOutput {
     }
 }
 
-public struct GetCertificatesInput {
+public struct GetCertificatesInput: Swift.Sendable {
     /// The name for the certificate for which to return information. When omitted, the response includes all of your certificates in the Amazon Web Services Region where the request is made.
     public var certificateName: Swift.String?
     /// The status of the certificates for which to return information. For example, specify ISSUED to return only certificates with an ISSUED status. When omitted, the response includes all of your certificates in the Amazon Web Services Region where the request is made, regardless of their current status.
@@ -8153,7 +8153,7 @@ public struct GetCertificatesInput {
     }
 }
 
-public struct GetCertificatesOutput {
+public struct GetCertificatesOutput: Swift.Sendable {
     /// An object that describes certificates.
     public var certificates: [LightsailClientTypes.CertificateSummary]?
     /// If NextPageToken is returned there are more results available. The value of NextPageToken is a unique pagination token for each page. Make the call again using the returned token to retrieve the next page. Keep all other arguments unchanged.
@@ -8169,7 +8169,7 @@ public struct GetCertificatesOutput {
     }
 }
 
-public struct GetCloudFormationStackRecordsInput {
+public struct GetCloudFormationStackRecordsInput: Swift.Sendable {
     /// The token to advance to the next page of results from your request. To get a page token, perform an initial GetClouFormationStackRecords request. If your results are paginated, the response will return a next page token that you can specify as the page token in a subsequent request.
     public var pageToken: Swift.String?
 
@@ -8181,7 +8181,7 @@ public struct GetCloudFormationStackRecordsInput {
     }
 }
 
-public struct GetCloudFormationStackRecordsOutput {
+public struct GetCloudFormationStackRecordsOutput: Swift.Sendable {
     /// A list of objects describing the CloudFormation stack records.
     public var cloudFormationStackRecords: [LightsailClientTypes.CloudFormationStackRecord]?
     /// The token to advance to the next page of results from your request. A next page token is not returned if there are no more results to display. To get the next page of results, perform another GetCloudFormationStackRecords request and specify the next page token using the pageToken parameter.
@@ -8197,7 +8197,7 @@ public struct GetCloudFormationStackRecordsOutput {
     }
 }
 
-public struct GetContactMethodsInput {
+public struct GetContactMethodsInput: Swift.Sendable {
     /// The protocols used to send notifications, such as Email, or SMS (text messaging). Specify a protocol in your request to return information about a specific contact method protocol.
     public var protocols: [LightsailClientTypes.ContactProtocol]?
 
@@ -8209,7 +8209,7 @@ public struct GetContactMethodsInput {
     }
 }
 
-public struct GetContactMethodsOutput {
+public struct GetContactMethodsOutput: Swift.Sendable {
     /// An array of objects that describe the contact methods.
     public var contactMethods: [LightsailClientTypes.ContactMethod]?
 
@@ -8221,12 +8221,12 @@ public struct GetContactMethodsOutput {
     }
 }
 
-public struct GetContainerAPIMetadataInput {
+public struct GetContainerAPIMetadataInput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct GetContainerAPIMetadataOutput {
+public struct GetContainerAPIMetadataOutput: Swift.Sendable {
     /// Metadata about Lightsail containers, such as the current version of the Lightsail Control (lightsailctl) plugin.
     public var metadata: [[Swift.String: Swift.String]]?
 
@@ -8238,7 +8238,7 @@ public struct GetContainerAPIMetadataOutput {
     }
 }
 
-public struct GetContainerImagesInput {
+public struct GetContainerImagesInput: Swift.Sendable {
     /// The name of the container service for which to return registered container images.
     /// This member is required.
     public var serviceName: Swift.String?
@@ -8251,7 +8251,7 @@ public struct GetContainerImagesInput {
     }
 }
 
-public struct GetContainerImagesOutput {
+public struct GetContainerImagesOutput: Swift.Sendable {
     /// An array of objects that describe container images that are registered to the container service.
     public var containerImages: [LightsailClientTypes.ContainerImage]?
 
@@ -8263,7 +8263,7 @@ public struct GetContainerImagesOutput {
     }
 }
 
-public struct GetContainerLogInput {
+public struct GetContainerLogInput: Swift.Sendable {
     /// The name of the container that is either running or previously ran on the container service for which to return a log.
     /// This member is required.
     public var containerName: Swift.String?
@@ -8321,7 +8321,7 @@ public struct GetContainerLogInput {
     }
 }
 
-public struct GetContainerLogOutput {
+public struct GetContainerLogOutput: Swift.Sendable {
     /// An array of objects that describe the log events of a container.
     public var logEvents: [LightsailClientTypes.ContainerServiceLogEvent]?
     /// The token to advance to the next page of results from your request. A next page token is not returned if there are no more results to display. To get the next page of results, perform another GetContainerLog request and specify the next page token using the pageToken parameter.
@@ -8337,7 +8337,7 @@ public struct GetContainerLogOutput {
     }
 }
 
-public struct GetContainerServiceDeploymentsInput {
+public struct GetContainerServiceDeploymentsInput: Swift.Sendable {
     /// The name of the container service for which to return deployments.
     /// This member is required.
     public var serviceName: Swift.String?
@@ -8350,7 +8350,7 @@ public struct GetContainerServiceDeploymentsInput {
     }
 }
 
-public struct GetContainerServiceDeploymentsOutput {
+public struct GetContainerServiceDeploymentsOutput: Swift.Sendable {
     /// An array of objects that describe deployments for a container service.
     public var deployments: [LightsailClientTypes.ContainerServiceDeployment]?
 
@@ -8362,7 +8362,7 @@ public struct GetContainerServiceDeploymentsOutput {
     }
 }
 
-public struct GetContainerServiceMetricDataInput {
+public struct GetContainerServiceMetricDataInput: Swift.Sendable {
     /// The end time of the time period.
     /// This member is required.
     public var endTime: Foundation.Date?
@@ -8414,7 +8414,7 @@ public struct GetContainerServiceMetricDataInput {
     }
 }
 
-public struct GetContainerServiceMetricDataOutput {
+public struct GetContainerServiceMetricDataOutput: Swift.Sendable {
     /// An array of objects that describe the metric data returned.
     public var metricData: [LightsailClientTypes.MetricDatapoint]?
     /// The name of the metric returned.
@@ -8430,12 +8430,12 @@ public struct GetContainerServiceMetricDataOutput {
     }
 }
 
-public struct GetContainerServicePowersInput {
+public struct GetContainerServicePowersInput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct GetContainerServicePowersOutput {
+public struct GetContainerServicePowersOutput: Swift.Sendable {
     /// An array of objects that describe the powers that can be specified for a container service.
     public var powers: [LightsailClientTypes.ContainerServicePower]?
 
@@ -8447,7 +8447,7 @@ public struct GetContainerServicePowersOutput {
     }
 }
 
-public struct GetContainerServicesInput {
+public struct GetContainerServicesInput: Swift.Sendable {
     /// The name of the container service for which to return information. When omitted, the response includes all of your container services in the Amazon Web Services Region where the request is made.
     public var serviceName: Swift.String?
 
@@ -8459,7 +8459,7 @@ public struct GetContainerServicesInput {
     }
 }
 
-public struct GetContainerServicesOutput {
+public struct GetContainerServicesOutput: Swift.Sendable {
     /// An array of objects that describe one or more container services.
     public var containerServices: [LightsailClientTypes.ContainerService]?
 
@@ -8471,7 +8471,7 @@ public struct GetContainerServicesOutput {
     }
 }
 
-public struct GetCostEstimateInput {
+public struct GetCostEstimateInput: Swift.Sendable {
     /// The cost estimate end time. Constraints:
     ///
     /// * Specified in Coordinated Universal Time (UTC).
@@ -8509,8 +8509,9 @@ public struct GetCostEstimateInput {
 }
 
 extension LightsailClientTypes {
+
     /// Describes the estimated cost or usage that a budget tracks.
-    public struct ResourceBudgetEstimate {
+    public struct ResourceBudgetEstimate: Swift.Sendable {
         /// The cost estimate for the specified budget.
         public var costEstimates: [LightsailClientTypes.CostEstimate]?
         /// The estimate end time.
@@ -8537,10 +8538,9 @@ extension LightsailClientTypes {
             self.startTime = startTime
         }
     }
-
 }
 
-public struct GetCostEstimateOutput {
+public struct GetCostEstimateOutput: Swift.Sendable {
     /// Returns the estimate's forecasted cost or usage.
     public var resourcesBudgetEstimate: [LightsailClientTypes.ResourceBudgetEstimate]?
 
@@ -8552,7 +8552,7 @@ public struct GetCostEstimateOutput {
     }
 }
 
-public struct GetDiskInput {
+public struct GetDiskInput: Swift.Sendable {
     /// The name of the disk (my-disk).
     /// This member is required.
     public var diskName: Swift.String?
@@ -8565,7 +8565,7 @@ public struct GetDiskInput {
     }
 }
 
-public struct GetDiskOutput {
+public struct GetDiskOutput: Swift.Sendable {
     /// An object containing information about the disk.
     public var disk: LightsailClientTypes.Disk?
 
@@ -8577,7 +8577,7 @@ public struct GetDiskOutput {
     }
 }
 
-public struct GetDisksInput {
+public struct GetDisksInput: Swift.Sendable {
     /// The token to advance to the next page of results from your request. To get a page token, perform an initial GetDisks request. If your results are paginated, the response will return a next page token that you can specify as the page token in a subsequent request.
     public var pageToken: Swift.String?
 
@@ -8589,7 +8589,7 @@ public struct GetDisksInput {
     }
 }
 
-public struct GetDisksOutput {
+public struct GetDisksOutput: Swift.Sendable {
     /// An array of objects containing information about all block storage disks.
     public var disks: [LightsailClientTypes.Disk]?
     /// The token to advance to the next page of results from your request. A next page token is not returned if there are no more results to display. To get the next page of results, perform another GetDisks request and specify the next page token using the pageToken parameter.
@@ -8605,7 +8605,7 @@ public struct GetDisksOutput {
     }
 }
 
-public struct GetDiskSnapshotInput {
+public struct GetDiskSnapshotInput: Swift.Sendable {
     /// The name of the disk snapshot (my-disk-snapshot).
     /// This member is required.
     public var diskSnapshotName: Swift.String?
@@ -8618,7 +8618,7 @@ public struct GetDiskSnapshotInput {
     }
 }
 
-public struct GetDiskSnapshotOutput {
+public struct GetDiskSnapshotOutput: Swift.Sendable {
     /// An object containing information about the disk snapshot.
     public var diskSnapshot: LightsailClientTypes.DiskSnapshot?
 
@@ -8630,7 +8630,7 @@ public struct GetDiskSnapshotOutput {
     }
 }
 
-public struct GetDiskSnapshotsInput {
+public struct GetDiskSnapshotsInput: Swift.Sendable {
     /// The token to advance to the next page of results from your request. To get a page token, perform an initial GetDiskSnapshots request. If your results are paginated, the response will return a next page token that you can specify as the page token in a subsequent request.
     public var pageToken: Swift.String?
 
@@ -8642,7 +8642,7 @@ public struct GetDiskSnapshotsInput {
     }
 }
 
-public struct GetDiskSnapshotsOutput {
+public struct GetDiskSnapshotsOutput: Swift.Sendable {
     /// An array of objects containing information about all block storage disk snapshots.
     public var diskSnapshots: [LightsailClientTypes.DiskSnapshot]?
     /// The token to advance to the next page of results from your request. A next page token is not returned if there are no more results to display. To get the next page of results, perform another GetDiskSnapshots request and specify the next page token using the pageToken parameter.
@@ -8658,12 +8658,12 @@ public struct GetDiskSnapshotsOutput {
     }
 }
 
-public struct GetDistributionBundlesInput {
+public struct GetDistributionBundlesInput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct GetDistributionBundlesOutput {
+public struct GetDistributionBundlesOutput: Swift.Sendable {
     /// An object that describes a distribution bundle.
     public var bundles: [LightsailClientTypes.DistributionBundle]?
 
@@ -8675,7 +8675,7 @@ public struct GetDistributionBundlesOutput {
     }
 }
 
-public struct GetDistributionLatestCacheResetInput {
+public struct GetDistributionLatestCacheResetInput: Swift.Sendable {
     /// The name of the distribution for which to return the timestamp of the last cache reset. Use the GetDistributions action to get a list of distribution names that you can specify. When omitted, the response includes the latest cache reset timestamp of all your distributions.
     public var distributionName: Swift.String?
 
@@ -8687,7 +8687,7 @@ public struct GetDistributionLatestCacheResetInput {
     }
 }
 
-public struct GetDistributionLatestCacheResetOutput {
+public struct GetDistributionLatestCacheResetOutput: Swift.Sendable {
     /// The timestamp of the last cache reset (1479734909.17) in Unix time format.
     public var createTime: Foundation.Date?
     /// The status of the last cache reset.
@@ -8703,7 +8703,7 @@ public struct GetDistributionLatestCacheResetOutput {
     }
 }
 
-public struct GetDistributionMetricDataInput {
+public struct GetDistributionMetricDataInput: Swift.Sendable {
     /// The name of the distribution for which to get metric data. Use the GetDistributions action to get a list of distribution names that you can specify.
     /// This member is required.
     public var distributionName: Swift.String?
@@ -8782,7 +8782,7 @@ public struct GetDistributionMetricDataInput {
     }
 }
 
-public struct GetDistributionMetricDataOutput {
+public struct GetDistributionMetricDataOutput: Swift.Sendable {
     /// An array of objects that describe the metric data returned.
     public var metricData: [LightsailClientTypes.MetricDatapoint]?
     /// The name of the metric returned.
@@ -8798,7 +8798,7 @@ public struct GetDistributionMetricDataOutput {
     }
 }
 
-public struct GetDistributionsInput {
+public struct GetDistributionsInput: Swift.Sendable {
     /// The name of the distribution for which to return information. When omitted, the response includes all of your distributions in the Amazon Web Services Region where the request is made.
     public var distributionName: Swift.String?
     /// The token to advance to the next page of results from your request. To get a page token, perform an initial GetDistributions request. If your results are paginated, the response will return a next page token that you can specify as the page token in a subsequent request.
@@ -8814,7 +8814,7 @@ public struct GetDistributionsInput {
     }
 }
 
-public struct GetDistributionsOutput {
+public struct GetDistributionsOutput: Swift.Sendable {
     /// An array of objects that describe your distributions.
     public var distributions: [LightsailClientTypes.LightsailDistribution]?
     /// The token to advance to the next page of results from your request. A next page token is not returned if there are no more results to display. To get the next page of results, perform another GetDistributions request and specify the next page token using the pageToken parameter.
@@ -8830,7 +8830,7 @@ public struct GetDistributionsOutput {
     }
 }
 
-public struct GetDomainInput {
+public struct GetDomainInput: Swift.Sendable {
     /// The domain name for which your want to return information about.
     /// This member is required.
     public var domainName: Swift.String?
@@ -8843,7 +8843,7 @@ public struct GetDomainInput {
     }
 }
 
-public struct GetDomainOutput {
+public struct GetDomainOutput: Swift.Sendable {
     /// An array of key-value pairs containing information about your get domain request.
     public var domain: LightsailClientTypes.Domain?
 
@@ -8855,7 +8855,7 @@ public struct GetDomainOutput {
     }
 }
 
-public struct GetDomainsInput {
+public struct GetDomainsInput: Swift.Sendable {
     /// The token to advance to the next page of results from your request. To get a page token, perform an initial GetDomains request. If your results are paginated, the response will return a next page token that you can specify as the page token in a subsequent request.
     public var pageToken: Swift.String?
 
@@ -8867,7 +8867,7 @@ public struct GetDomainsInput {
     }
 }
 
-public struct GetDomainsOutput {
+public struct GetDomainsOutput: Swift.Sendable {
     /// An array of key-value pairs containing information about each of the domain entries in the user's account.
     public var domains: [LightsailClientTypes.Domain]?
     /// The token to advance to the next page of results from your request. A next page token is not returned if there are no more results to display. To get the next page of results, perform another GetDomains request and specify the next page token using the pageToken parameter.
@@ -8883,7 +8883,7 @@ public struct GetDomainsOutput {
     }
 }
 
-public struct GetExportSnapshotRecordsInput {
+public struct GetExportSnapshotRecordsInput: Swift.Sendable {
     /// The token to advance to the next page of results from your request. To get a page token, perform an initial GetExportSnapshotRecords request. If your results are paginated, the response will return a next page token that you can specify as the page token in a subsequent request.
     public var pageToken: Swift.String?
 
@@ -8895,7 +8895,7 @@ public struct GetExportSnapshotRecordsInput {
     }
 }
 
-public struct GetExportSnapshotRecordsOutput {
+public struct GetExportSnapshotRecordsOutput: Swift.Sendable {
     /// A list of objects describing the export snapshot records.
     public var exportSnapshotRecords: [LightsailClientTypes.ExportSnapshotRecord]?
     /// The token to advance to the next page of results from your request. A next page token is not returned if there are no more results to display. To get the next page of results, perform another GetExportSnapshotRecords request and specify the next page token using the pageToken parameter.
@@ -8911,7 +8911,7 @@ public struct GetExportSnapshotRecordsOutput {
     }
 }
 
-public struct GetInstanceInput {
+public struct GetInstanceInput: Swift.Sendable {
     /// The name of the instance.
     /// This member is required.
     public var instanceName: Swift.String?
@@ -8925,8 +8925,9 @@ public struct GetInstanceInput {
 }
 
 extension LightsailClientTypes {
+
     /// Describes the hardware for the instance.
-    public struct InstanceHardware {
+    public struct InstanceHardware: Swift.Sendable {
         /// The number of vCPUs the instance has.
         public var cpuCount: Swift.Int?
         /// The disks attached to the instance.
@@ -8945,12 +8946,11 @@ extension LightsailClientTypes {
             self.ramSizeInGb = ramSizeInGb
         }
     }
-
 }
 
 extension LightsailClientTypes {
 
-    public enum HttpEndpoint: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum HttpEndpoint: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case disabled
         case enabled
         case sdkUnknown(Swift.String)
@@ -8979,7 +8979,7 @@ extension LightsailClientTypes {
 
 extension LightsailClientTypes {
 
-    public enum HttpProtocolIpv6: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum HttpProtocolIpv6: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case disabled
         case enabled
         case sdkUnknown(Swift.String)
@@ -9008,7 +9008,7 @@ extension LightsailClientTypes {
 
 extension LightsailClientTypes {
 
-    public enum HttpTokens: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum HttpTokens: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case `optional`
         case `required`
         case sdkUnknown(Swift.String)
@@ -9037,7 +9037,7 @@ extension LightsailClientTypes {
 
 extension LightsailClientTypes {
 
-    public enum InstanceMetadataState: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum InstanceMetadataState: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case applied
         case pending
         case sdkUnknown(Swift.String)
@@ -9065,8 +9065,9 @@ extension LightsailClientTypes {
 }
 
 extension LightsailClientTypes {
+
     /// The metadata options for the instance.
-    public struct InstanceMetadataOptions {
+    public struct InstanceMetadataOptions: Swift.Sendable {
         /// Indicates whether the HTTP metadata endpoint on your instances is enabled or disabled. If the value is disabled, you cannot access your instance metadata.
         public var httpEndpoint: LightsailClientTypes.HttpEndpoint?
         /// Indicates whether the IPv6 endpoint for the instance metadata service is enabled or disabled.
@@ -9097,12 +9098,12 @@ extension LightsailClientTypes {
             self.state = state
         }
     }
-
 }
 
 extension LightsailClientTypes {
+
     /// Describes the monthly data transfer in and out of your virtual private server (or instance).
-    public struct MonthlyTransfer {
+    public struct MonthlyTransfer: Swift.Sendable {
         /// The amount allocated per month (in GB).
         public var gbPerMonthAllocated: Swift.Int?
 
@@ -9113,12 +9114,11 @@ extension LightsailClientTypes {
             self.gbPerMonthAllocated = gbPerMonthAllocated
         }
     }
-
 }
 
 extension LightsailClientTypes {
 
-    public enum PortAccessType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum PortAccessType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case `private`
         case `public`
         case sdkUnknown(Swift.String)
@@ -9146,8 +9146,9 @@ extension LightsailClientTypes {
 }
 
 extension LightsailClientTypes {
+
     /// Describes information about ports for an Amazon Lightsail instance.
-    public struct InstancePortInfo {
+    public struct InstancePortInfo: Swift.Sendable {
         /// The access direction (inbound or outbound). Lightsail currently supports only inbound access direction.
         public var accessDirection: LightsailClientTypes.AccessDirection?
         /// The location from which access is allowed. For example, Anywhere (0.0.0.0/0), or Custom if a specific IP address or range of IP addresses is allowed.
@@ -9216,12 +9217,12 @@ extension LightsailClientTypes {
             self.toPort = toPort
         }
     }
-
 }
 
 extension LightsailClientTypes {
+
     /// Describes monthly data transfer rates and port information for an instance.
-    public struct InstanceNetworking {
+    public struct InstanceNetworking: Swift.Sendable {
         /// The amount of data in GB allocated for monthly data transfers.
         public var monthlyTransfer: LightsailClientTypes.MonthlyTransfer?
         /// An array of key-value pairs containing information about the ports on the instance.
@@ -9236,12 +9237,12 @@ extension LightsailClientTypes {
             self.ports = ports
         }
     }
-
 }
 
 extension LightsailClientTypes {
+
     /// Describes the virtual private server (or instance) status.
-    public struct InstanceState {
+    public struct InstanceState: Swift.Sendable {
         /// The status code for the instance.
         public var code: Swift.Int?
         /// The state of the instance (running or pending).
@@ -9256,12 +9257,12 @@ extension LightsailClientTypes {
             self.name = name
         }
     }
-
 }
 
 extension LightsailClientTypes {
+
     /// Describes an instance (a virtual private server).
-    public struct Instance {
+    public struct Instance: Swift.Sendable {
         /// An array of objects representing the add-ons enabled on the instance.
         public var addOns: [LightsailClientTypes.AddOn]?
         /// The Amazon Resource Name (ARN) of the instance (arn:aws:lightsail:us-east-2:123456789101:Instance/244ad76f-8aad-4741-809f-12345EXAMPLE).
@@ -9356,10 +9357,9 @@ extension LightsailClientTypes {
             self.username = username
         }
     }
-
 }
 
-public struct GetInstanceOutput {
+public struct GetInstanceOutput: Swift.Sendable {
     /// An array of key-value pairs containing information about the specified instance.
     public var instance: LightsailClientTypes.Instance?
 
@@ -9373,7 +9373,7 @@ public struct GetInstanceOutput {
 
 extension LightsailClientTypes {
 
-    public enum InstanceAccessProtocol: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum InstanceAccessProtocol: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case rdp
         case ssh
         case sdkUnknown(Swift.String)
@@ -9400,7 +9400,7 @@ extension LightsailClientTypes {
     }
 }
 
-public struct GetInstanceAccessDetailsInput {
+public struct GetInstanceAccessDetailsInput: Swift.Sendable {
     /// The name of the instance to access.
     /// This member is required.
     public var instanceName: Swift.String?
@@ -9418,8 +9418,9 @@ public struct GetInstanceAccessDetailsInput {
 }
 
 extension LightsailClientTypes {
+
     /// Describes the public SSH host keys or the RDP certificate.
-    public struct HostKeyAttributes {
+    public struct HostKeyAttributes: Swift.Sendable {
         /// The SSH host key algorithm or the RDP certificate format. For SSH host keys, the algorithm may be ssh-rsa, ecdsa-sha2-nistp256, ssh-ed25519, etc. For RDP certificates, the algorithm is always x509-cert.
         public var algorithm: Swift.String?
         /// The SHA-1 fingerprint of the returned SSH host key or RDP certificate.
@@ -9462,12 +9463,12 @@ extension LightsailClientTypes {
             self.witnessedAt = witnessedAt
         }
     }
-
 }
 
 extension LightsailClientTypes {
+
     /// The password data for the Windows Server-based instance, including the ciphertext and the key pair name.
-    public struct PasswordData {
+    public struct PasswordData: Swift.Sendable {
         /// The encrypted password. Ciphertext will be an empty string if access to your new instance is not ready yet. When you create an instance, it can take up to 15 minutes for the instance to be ready. If you use the default key pair (LightsailDefaultKeyPair), the decrypted password will be available in the password field. If you are using a custom key pair, you need to use your own means of decryption. If you change the Administrator password on the instance, Lightsail will continue to return the original ciphertext value. When accessing the instance using RDP, you need to manually enter the Administrator password after changing it from the default.
         public var ciphertext: Swift.String?
         /// The name of the key pair that you used when creating your instance. If no key pair name was specified when creating the instance, Lightsail uses the default key pair (LightsailDefaultKeyPair). If you are using a custom key pair, you need to use your own means of decrypting your password using the ciphertext. Lightsail creates the ciphertext by encrypting your password with the public key part of this key pair.
@@ -9482,12 +9483,12 @@ extension LightsailClientTypes {
             self.keyPairName = keyPairName
         }
     }
-
 }
 
 extension LightsailClientTypes {
+
     /// The parameters for gaining temporary access to one of your Amazon Lightsail instances.
-    public struct InstanceAccessDetails {
+    public struct InstanceAccessDetails: Swift.Sendable {
         /// For SSH access, the public key to use when accessing your instance For OpenSSH clients (command line SSH), you should save this value to tempkey-cert.pub.
         public var certKey: Swift.String?
         /// For SSH access, the date on which the temporary keys expire.
@@ -9538,10 +9539,9 @@ extension LightsailClientTypes {
             self.username = username
         }
     }
-
 }
 
-public struct GetInstanceAccessDetailsOutput {
+public struct GetInstanceAccessDetailsOutput: Swift.Sendable {
     /// An array of key-value pairs containing information about a get instance access request.
     public var accessDetails: LightsailClientTypes.InstanceAccessDetails?
 
@@ -9555,7 +9555,7 @@ public struct GetInstanceAccessDetailsOutput {
 
 extension LightsailClientTypes {
 
-    public enum InstanceMetricName: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum InstanceMetricName: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case burstcapacitypercentage
         case burstcapacitytime
         case cpuutilization
@@ -9603,7 +9603,7 @@ extension LightsailClientTypes {
     }
 }
 
-public struct GetInstanceMetricDataInput {
+public struct GetInstanceMetricDataInput: Swift.Sendable {
     /// The end time of the time period.
     /// This member is required.
     public var endTime: Foundation.Date?
@@ -9674,7 +9674,7 @@ public struct GetInstanceMetricDataInput {
     }
 }
 
-public struct GetInstanceMetricDataOutput {
+public struct GetInstanceMetricDataOutput: Swift.Sendable {
     /// An array of objects that describe the metric data returned.
     public var metricData: [LightsailClientTypes.MetricDatapoint]?
     /// The name of the metric returned.
@@ -9690,7 +9690,7 @@ public struct GetInstanceMetricDataOutput {
     }
 }
 
-public struct GetInstancePortStatesInput {
+public struct GetInstancePortStatesInput: Swift.Sendable {
     /// The name of the instance for which to return firewall port states.
     /// This member is required.
     public var instanceName: Swift.String?
@@ -9705,7 +9705,7 @@ public struct GetInstancePortStatesInput {
 
 extension LightsailClientTypes {
 
-    public enum PortState: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum PortState: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case closed
         case `open`
         case sdkUnknown(Swift.String)
@@ -9733,8 +9733,9 @@ extension LightsailClientTypes {
 }
 
 extension LightsailClientTypes {
+
     /// Describes open ports on an instance, the IP addresses allowed to connect to the instance through the ports, and the protocol.
-    public struct InstancePortState {
+    public struct InstancePortState: Swift.Sendable {
         /// An alias that defines access for a preconfigured range of IP addresses. The only alias currently supported is lightsail-connect, which allows IP addresses of the browser-based RDP/SSH client in the Lightsail console to connect to your instance.
         public var cidrListAliases: [Swift.String]?
         /// The IPv4 address, or range of IPv4 addresses (in CIDR notation) that are allowed to connect to an instance through the ports, and the protocol. The ipv6Cidrs parameter lists the IPv6 addresses that are allowed to connect to an instance. For more information about CIDR block notation, see [Classless Inter-Domain Routing](https://en.wikipedia.org/wiki/Classless_Inter-Domain_Routing#CIDR_notation) on Wikipedia.
@@ -9791,10 +9792,9 @@ extension LightsailClientTypes {
             self.toPort = toPort
         }
     }
-
 }
 
-public struct GetInstancePortStatesOutput {
+public struct GetInstancePortStatesOutput: Swift.Sendable {
     /// An array of objects that describe the firewall port states for the specified instance.
     public var portStates: [LightsailClientTypes.InstancePortState]?
 
@@ -9806,7 +9806,7 @@ public struct GetInstancePortStatesOutput {
     }
 }
 
-public struct GetInstancesInput {
+public struct GetInstancesInput: Swift.Sendable {
     /// The token to advance to the next page of results from your request. To get a page token, perform an initial GetInstances request. If your results are paginated, the response will return a next page token that you can specify as the page token in a subsequent request.
     public var pageToken: Swift.String?
 
@@ -9818,7 +9818,7 @@ public struct GetInstancesInput {
     }
 }
 
-public struct GetInstancesOutput {
+public struct GetInstancesOutput: Swift.Sendable {
     /// An array of key-value pairs containing information about your instances.
     public var instances: [LightsailClientTypes.Instance]?
     /// The token to advance to the next page of results from your request. A next page token is not returned if there are no more results to display. To get the next page of results, perform another GetInstances request and specify the next page token using the pageToken parameter.
@@ -9834,7 +9834,7 @@ public struct GetInstancesOutput {
     }
 }
 
-public struct GetInstanceSnapshotInput {
+public struct GetInstanceSnapshotInput: Swift.Sendable {
     /// The name of the snapshot for which you are requesting information.
     /// This member is required.
     public var instanceSnapshotName: Swift.String?
@@ -9849,7 +9849,7 @@ public struct GetInstanceSnapshotInput {
 
 extension LightsailClientTypes {
 
-    public enum InstanceSnapshotState: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum InstanceSnapshotState: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case available
         case error
         case pending
@@ -9880,8 +9880,9 @@ extension LightsailClientTypes {
 }
 
 extension LightsailClientTypes {
+
     /// Describes an instance snapshot.
-    public struct InstanceSnapshot {
+    public struct InstanceSnapshot: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the snapshot (arn:aws:lightsail:us-east-2:123456789101:InstanceSnapshot/d23b5706-3322-4d83-81e5-12345EXAMPLE).
         public var arn: Swift.String?
         /// The timestamp when the snapshot was created (1479907467.024).
@@ -9952,10 +9953,9 @@ extension LightsailClientTypes {
             self.tags = tags
         }
     }
-
 }
 
-public struct GetInstanceSnapshotOutput {
+public struct GetInstanceSnapshotOutput: Swift.Sendable {
     /// An array of key-value pairs containing information about the results of your get instance snapshot request.
     public var instanceSnapshot: LightsailClientTypes.InstanceSnapshot?
 
@@ -9967,7 +9967,7 @@ public struct GetInstanceSnapshotOutput {
     }
 }
 
-public struct GetInstanceSnapshotsInput {
+public struct GetInstanceSnapshotsInput: Swift.Sendable {
     /// The token to advance to the next page of results from your request. To get a page token, perform an initial GetInstanceSnapshots request. If your results are paginated, the response will return a next page token that you can specify as the page token in a subsequent request.
     public var pageToken: Swift.String?
 
@@ -9979,7 +9979,7 @@ public struct GetInstanceSnapshotsInput {
     }
 }
 
-public struct GetInstanceSnapshotsOutput {
+public struct GetInstanceSnapshotsOutput: Swift.Sendable {
     /// An array of key-value pairs containing information about the results of your get instance snapshots request.
     public var instanceSnapshots: [LightsailClientTypes.InstanceSnapshot]?
     /// The token to advance to the next page of results from your request. A next page token is not returned if there are no more results to display. To get the next page of results, perform another GetInstanceSnapshots request and specify the next page token using the pageToken parameter.
@@ -9995,7 +9995,7 @@ public struct GetInstanceSnapshotsOutput {
     }
 }
 
-public struct GetInstanceStateInput {
+public struct GetInstanceStateInput: Swift.Sendable {
     /// The name of the instance to get state information about.
     /// This member is required.
     public var instanceName: Swift.String?
@@ -10008,7 +10008,7 @@ public struct GetInstanceStateInput {
     }
 }
 
-public struct GetInstanceStateOutput {
+public struct GetInstanceStateOutput: Swift.Sendable {
     /// The state of the instance.
     public var state: LightsailClientTypes.InstanceState?
 
@@ -10020,7 +10020,7 @@ public struct GetInstanceStateOutput {
     }
 }
 
-public struct GetKeyPairInput {
+public struct GetKeyPairInput: Swift.Sendable {
     /// The name of the key pair for which you are requesting information.
     /// This member is required.
     public var keyPairName: Swift.String?
@@ -10033,7 +10033,7 @@ public struct GetKeyPairInput {
     }
 }
 
-public struct GetKeyPairOutput {
+public struct GetKeyPairOutput: Swift.Sendable {
     /// An array of key-value pairs containing information about the key pair.
     public var keyPair: LightsailClientTypes.KeyPair?
 
@@ -10045,7 +10045,7 @@ public struct GetKeyPairOutput {
     }
 }
 
-public struct GetKeyPairsInput {
+public struct GetKeyPairsInput: Swift.Sendable {
     /// A Boolean value that indicates whether to include the default key pair in the response of your request.
     public var includeDefaultKeyPair: Swift.Bool?
     /// The token to advance to the next page of results from your request. To get a page token, perform an initial GetKeyPairs request. If your results are paginated, the response will return a next page token that you can specify as the page token in a subsequent request.
@@ -10061,7 +10061,7 @@ public struct GetKeyPairsInput {
     }
 }
 
-public struct GetKeyPairsOutput {
+public struct GetKeyPairsOutput: Swift.Sendable {
     /// An array of key-value pairs containing information about the key pairs.
     public var keyPairs: [LightsailClientTypes.KeyPair]?
     /// The token to advance to the next page of results from your request. A next page token is not returned if there are no more results to display. To get the next page of results, perform another GetKeyPairs request and specify the next page token using the pageToken parameter.
@@ -10077,7 +10077,7 @@ public struct GetKeyPairsOutput {
     }
 }
 
-public struct GetLoadBalancerInput {
+public struct GetLoadBalancerInput: Swift.Sendable {
     /// The name of the load balancer.
     /// This member is required.
     public var loadBalancerName: Swift.String?
@@ -10092,7 +10092,7 @@ public struct GetLoadBalancerInput {
 
 extension LightsailClientTypes {
 
-    public enum LoadBalancerAttributeName: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum LoadBalancerAttributeName: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case healthcheckpath
         case httpsredirectionenabled
         case sessionstickinessenabled
@@ -10130,7 +10130,7 @@ extension LightsailClientTypes {
 
 extension LightsailClientTypes {
 
-    public enum InstanceHealthState: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum InstanceHealthState: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case draining
         case healthy
         case initial
@@ -10171,7 +10171,7 @@ extension LightsailClientTypes {
 
 extension LightsailClientTypes {
 
-    public enum InstanceHealthReason: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum InstanceHealthReason: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case instancederegistrationinprogress
         case instancefailedhealthchecks
         case instanceinvalidstate
@@ -10226,8 +10226,9 @@ extension LightsailClientTypes {
 }
 
 extension LightsailClientTypes {
+
     /// Describes information about the health of the instance.
-    public struct InstanceHealthSummary {
+    public struct InstanceHealthSummary: Swift.Sendable {
         /// Describes the overall instance health. Valid values are below.
         public var instanceHealth: LightsailClientTypes.InstanceHealthState?
         /// More information about the instance health. If the instanceHealth is healthy, then an instanceHealthReason value is not provided. If instanceHealth is initial, the instanceHealthReason value can be one of the following:
@@ -10277,12 +10278,11 @@ extension LightsailClientTypes {
             self.instanceName = instanceName
         }
     }
-
 }
 
 extension LightsailClientTypes {
 
-    public enum LoadBalancerProtocol: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum LoadBalancerProtocol: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case http
         case httpHttps
         case sdkUnknown(Swift.String)
@@ -10311,7 +10311,7 @@ extension LightsailClientTypes {
 
 extension LightsailClientTypes {
 
-    public enum LoadBalancerState: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum LoadBalancerState: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case active
         case activeimpaired
         case failed
@@ -10348,8 +10348,9 @@ extension LightsailClientTypes {
 }
 
 extension LightsailClientTypes {
+
     /// Provides a summary of SSL/TLS certificate metadata.
-    public struct LoadBalancerTlsCertificateSummary {
+    public struct LoadBalancerTlsCertificateSummary: Swift.Sendable {
         /// When true, the SSL/TLS certificate is attached to the Lightsail load balancer.
         public var isAttached: Swift.Bool?
         /// The name of the SSL/TLS certificate.
@@ -10364,12 +10365,12 @@ extension LightsailClientTypes {
             self.name = name
         }
     }
-
 }
 
 extension LightsailClientTypes {
+
     /// Describes a load balancer.
-    public struct LoadBalancer {
+    public struct LoadBalancer: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the load balancer.
         public var arn: Swift.String?
         /// A string to string map of the configuration options for your load balancer. Valid values are listed below.
@@ -10452,10 +10453,9 @@ extension LightsailClientTypes {
             self.tlsPolicyName = tlsPolicyName
         }
     }
-
 }
 
-public struct GetLoadBalancerOutput {
+public struct GetLoadBalancerOutput: Swift.Sendable {
     /// An object containing information about your load balancer.
     public var loadBalancer: LightsailClientTypes.LoadBalancer?
 
@@ -10469,7 +10469,7 @@ public struct GetLoadBalancerOutput {
 
 extension LightsailClientTypes {
 
-    public enum LoadBalancerMetricName: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum LoadBalancerMetricName: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case clienttlsnegotiationerrorcount
         case httpcodeInstance2xxCount
         case httpcodeInstance3xxCount
@@ -10526,7 +10526,7 @@ extension LightsailClientTypes {
     }
 }
 
-public struct GetLoadBalancerMetricDataInput {
+public struct GetLoadBalancerMetricDataInput: Swift.Sendable {
     /// The end time of the period.
     /// This member is required.
     public var endTime: Foundation.Date?
@@ -10603,7 +10603,7 @@ public struct GetLoadBalancerMetricDataInput {
     }
 }
 
-public struct GetLoadBalancerMetricDataOutput {
+public struct GetLoadBalancerMetricDataOutput: Swift.Sendable {
     /// An array of objects that describe the metric data returned.
     public var metricData: [LightsailClientTypes.MetricDatapoint]?
     /// The name of the metric returned.
@@ -10619,7 +10619,7 @@ public struct GetLoadBalancerMetricDataOutput {
     }
 }
 
-public struct GetLoadBalancersInput {
+public struct GetLoadBalancersInput: Swift.Sendable {
     /// The token to advance to the next page of results from your request. To get a page token, perform an initial GetLoadBalancers request. If your results are paginated, the response will return a next page token that you can specify as the page token in a subsequent request.
     public var pageToken: Swift.String?
 
@@ -10631,7 +10631,7 @@ public struct GetLoadBalancersInput {
     }
 }
 
-public struct GetLoadBalancersOutput {
+public struct GetLoadBalancersOutput: Swift.Sendable {
     /// An array of LoadBalancer objects describing your load balancers.
     public var loadBalancers: [LightsailClientTypes.LoadBalancer]?
     /// The token to advance to the next page of results from your request. A next page token is not returned if there are no more results to display. To get the next page of results, perform another GetLoadBalancers request and specify the next page token using the pageToken parameter.
@@ -10647,7 +10647,7 @@ public struct GetLoadBalancersOutput {
     }
 }
 
-public struct GetLoadBalancerTlsCertificatesInput {
+public struct GetLoadBalancerTlsCertificatesInput: Swift.Sendable {
     /// The name of the load balancer you associated with your SSL/TLS certificate.
     /// This member is required.
     public var loadBalancerName: Swift.String?
@@ -10662,7 +10662,7 @@ public struct GetLoadBalancerTlsCertificatesInput {
 
 extension LightsailClientTypes {
 
-    public enum LoadBalancerTlsCertificateDnsRecordCreationStateCode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum LoadBalancerTlsCertificateDnsRecordCreationStateCode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case failed
         case started
         case succeeded
@@ -10693,8 +10693,9 @@ extension LightsailClientTypes {
 }
 
 extension LightsailClientTypes {
+
     /// An object that describes the state of the canonical name (CNAME) records that are automatically added by Lightsail to the DNS of the domain to validate domain ownership.
-    public struct LoadBalancerTlsCertificateDnsRecordCreationState {
+    public struct LoadBalancerTlsCertificateDnsRecordCreationState: Swift.Sendable {
         /// The status code for the automated DNS record creation. Following are the possible values:
         ///
         /// * SUCCEEDED - The validation records were successfully added.
@@ -10715,12 +10716,11 @@ extension LightsailClientTypes {
             self.message = message
         }
     }
-
 }
 
 extension LightsailClientTypes {
 
-    public enum LoadBalancerTlsCertificateDomainStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum LoadBalancerTlsCertificateDomainStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case failed
         case pendingvalidation
         case success
@@ -10751,8 +10751,9 @@ extension LightsailClientTypes {
 }
 
 extension LightsailClientTypes {
+
     /// Describes the validation record of each domain name in the SSL/TLS certificate.
-    public struct LoadBalancerTlsCertificateDomainValidationRecord {
+    public struct LoadBalancerTlsCertificateDomainValidationRecord: Swift.Sendable {
         /// An object that describes the state of the canonical name (CNAME) records that are automatically added by Lightsail to the DNS of a domain to validate domain ownership.
         public var dnsRecordCreationState: LightsailClientTypes.LoadBalancerTlsCertificateDnsRecordCreationState?
         /// The domain name against which your SSL/TLS certificate was validated.
@@ -10783,12 +10784,11 @@ extension LightsailClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension LightsailClientTypes {
 
-    public enum LoadBalancerTlsCertificateFailureReason: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum LoadBalancerTlsCertificateFailureReason: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case additionalverificationrequired
         case domainnotallowed
         case invalidpublicdomain
@@ -10825,8 +10825,9 @@ extension LightsailClientTypes {
 }
 
 extension LightsailClientTypes {
+
     /// Contains information about the domain names on an SSL/TLS certificate that you will use to validate domain ownership.
-    public struct LoadBalancerTlsCertificateDomainValidationOption {
+    public struct LoadBalancerTlsCertificateDomainValidationOption: Swift.Sendable {
         /// The fully qualified domain name in the certificate request.
         public var domainName: Swift.String?
         /// The status of the domain validation. Valid values are listed below.
@@ -10841,12 +10842,11 @@ extension LightsailClientTypes {
             self.validationStatus = validationStatus
         }
     }
-
 }
 
 extension LightsailClientTypes {
 
-    public enum LoadBalancerTlsCertificateRenewalStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum LoadBalancerTlsCertificateRenewalStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case failed
         case pendingautorenewal
         case pendingvalidation
@@ -10880,6 +10880,7 @@ extension LightsailClientTypes {
 }
 
 extension LightsailClientTypes {
+
     /// Contains information about the status of Lightsail's managed renewal for the certificate. The renewal status of the certificate. The following renewal status are possible:
     ///
     /// * PendingAutoRenewal - Lightsail is attempting to automatically validate the domain names in the certificate. No further action is required.
@@ -10889,7 +10890,7 @@ extension LightsailClientTypes {
     /// * Success - All domain names in the certificate are validated, and Lightsail renewed the certificate. No further action is required.
     ///
     /// * Failed - One or more domain names were not validated before the certificate expired, and Lightsail did not renew the certificate. You can request a new certificate using the CreateCertificate action.
-    public struct LoadBalancerTlsCertificateRenewalSummary {
+    public struct LoadBalancerTlsCertificateRenewalSummary: Swift.Sendable {
         /// Contains information about the validation of each domain name in the certificate, as it pertains to Lightsail's managed renewal. This is different from the initial validation that occurs as a result of the RequestCertificate request.
         public var domainValidationOptions: [LightsailClientTypes.LoadBalancerTlsCertificateDomainValidationOption]?
         /// The renewal status of the certificate. The following renewal status are possible:
@@ -10912,12 +10913,11 @@ extension LightsailClientTypes {
             self.renewalStatus = renewalStatus
         }
     }
-
 }
 
 extension LightsailClientTypes {
 
-    public enum LoadBalancerTlsCertificateRevocationReason: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum LoadBalancerTlsCertificateRevocationReason: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case aacompromise
         case affiliationchanged
         case cacompromise
@@ -10970,7 +10970,7 @@ extension LightsailClientTypes {
 
 extension LightsailClientTypes {
 
-    public enum LoadBalancerTlsCertificateStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum LoadBalancerTlsCertificateStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case expired
         case failed
         case inactive
@@ -11016,8 +11016,9 @@ extension LightsailClientTypes {
 }
 
 extension LightsailClientTypes {
+
     /// Describes a load balancer SSL/TLS certificate. TLS is just an updated, more secure version of Secure Socket Layer (SSL).
-    public struct LoadBalancerTlsCertificate {
+    public struct LoadBalancerTlsCertificate: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the SSL/TLS certificate.
         public var arn: Swift.String?
         /// The time when you created your SSL/TLS certificate.
@@ -11154,10 +11155,9 @@ extension LightsailClientTypes {
             self.tags = tags
         }
     }
-
 }
 
-public struct GetLoadBalancerTlsCertificatesOutput {
+public struct GetLoadBalancerTlsCertificatesOutput: Swift.Sendable {
     /// An array of LoadBalancerTlsCertificate objects describing your SSL/TLS certificates.
     public var tlsCertificates: [LightsailClientTypes.LoadBalancerTlsCertificate]?
 
@@ -11169,7 +11169,7 @@ public struct GetLoadBalancerTlsCertificatesOutput {
     }
 }
 
-public struct GetLoadBalancerTlsPoliciesInput {
+public struct GetLoadBalancerTlsPoliciesInput: Swift.Sendable {
     /// The token to advance to the next page of results from your request. To get a page token, perform an initial GetLoadBalancerTlsPolicies request. If your results are paginated, the response will return a next page token that you can specify as the page token in a subsequent request.
     public var pageToken: Swift.String?
 
@@ -11182,8 +11182,9 @@ public struct GetLoadBalancerTlsPoliciesInput {
 }
 
 extension LightsailClientTypes {
+
     /// Describes the TLS security policies that are available for Lightsail load balancers. For more information about load balancer TLS security policies, see [Configuring TLS security policies on your Amazon Lightsail load balancers](https://lightsail.aws.amazon.com/ls/docs/en_us/articles/amazon-lightsail-configure-load-balancer-tls-security-policy) in the Amazon Lightsail Developer Guide.
-    public struct LoadBalancerTlsPolicy {
+    public struct LoadBalancerTlsPolicy: Swift.Sendable {
         /// The ciphers used by the TLS security policy. The ciphers are listed in order of preference.
         public var ciphers: [Swift.String]?
         /// The description of the TLS security policy.
@@ -11210,10 +11211,9 @@ extension LightsailClientTypes {
             self.protocols = protocols
         }
     }
-
 }
 
-public struct GetLoadBalancerTlsPoliciesOutput {
+public struct GetLoadBalancerTlsPoliciesOutput: Swift.Sendable {
     /// The token to advance to the next page of results from your request. A next page token is not returned if there are no more results to display. To get the next page of results, perform another GetLoadBalancerTlsPolicies request and specify the next page token using the pageToken parameter.
     public var nextPageToken: Swift.String?
     /// An array of objects that describe the TLS security policies that are available.
@@ -11229,7 +11229,7 @@ public struct GetLoadBalancerTlsPoliciesOutput {
     }
 }
 
-public struct GetOperationInput {
+public struct GetOperationInput: Swift.Sendable {
     /// A GUID used to identify the operation.
     /// This member is required.
     public var operationId: Swift.String?
@@ -11242,7 +11242,7 @@ public struct GetOperationInput {
     }
 }
 
-public struct GetOperationOutput {
+public struct GetOperationOutput: Swift.Sendable {
     /// An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.
     public var operation: LightsailClientTypes.Operation?
 
@@ -11254,7 +11254,7 @@ public struct GetOperationOutput {
     }
 }
 
-public struct GetOperationsInput {
+public struct GetOperationsInput: Swift.Sendable {
     /// The token to advance to the next page of results from your request. To get a page token, perform an initial GetOperations request. If your results are paginated, the response will return a next page token that you can specify as the page token in a subsequent request.
     public var pageToken: Swift.String?
 
@@ -11266,7 +11266,7 @@ public struct GetOperationsInput {
     }
 }
 
-public struct GetOperationsOutput {
+public struct GetOperationsOutput: Swift.Sendable {
     /// The token to advance to the next page of results from your request. A next page token is not returned if there are no more results to display. To get the next page of results, perform another GetOperations request and specify the next page token using the pageToken parameter.
     public var nextPageToken: Swift.String?
     /// An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.
@@ -11282,7 +11282,7 @@ public struct GetOperationsOutput {
     }
 }
 
-public struct GetOperationsForResourceInput {
+public struct GetOperationsForResourceInput: Swift.Sendable {
     /// The token to advance to the next page of results from your request. To get a page token, perform an initial GetOperationsForResource request. If your results are paginated, the response will return a next page token that you can specify as the page token in a subsequent request.
     public var pageToken: Swift.String?
     /// The name of the resource for which you are requesting information.
@@ -11299,7 +11299,7 @@ public struct GetOperationsForResourceInput {
     }
 }
 
-public struct GetOperationsForResourceOutput {
+public struct GetOperationsForResourceOutput: Swift.Sendable {
     /// (Discontinued) Returns the number of pages of results that remain. In releases prior to June 12, 2017, this parameter returned null by the API. It is now discontinued, and the API returns the next page token parameter instead.
     @available(*, deprecated)
     public var nextPageCount: Swift.String?
@@ -11320,7 +11320,7 @@ public struct GetOperationsForResourceOutput {
     }
 }
 
-public struct GetRegionsInput {
+public struct GetRegionsInput: Swift.Sendable {
     /// A Boolean value indicating whether to also include Availability Zones in your get regions request. Availability Zones are indicated with a letter: us-east-2a.
     public var includeAvailabilityZones: Swift.Bool?
     /// A Boolean value indicating whether to also include Availability Zones for databases in your get regions request. Availability Zones are indicated with a letter (us-east-2a).
@@ -11337,8 +11337,9 @@ public struct GetRegionsInput {
 }
 
 extension LightsailClientTypes {
+
     /// Describes the Amazon Web Services Region.
-    public struct Region {
+    public struct Region: Swift.Sendable {
         /// The Availability Zones. Follows the format us-east-2a (case-sensitive).
         public var availabilityZones: [LightsailClientTypes.AvailabilityZone]?
         /// The continent code (NA, meaning North America).
@@ -11369,10 +11370,9 @@ extension LightsailClientTypes {
             self.relationalDatabaseAvailabilityZones = relationalDatabaseAvailabilityZones
         }
     }
-
 }
 
-public struct GetRegionsOutput {
+public struct GetRegionsOutput: Swift.Sendable {
     /// An array of key-value pairs containing information about your get regions request.
     public var regions: [LightsailClientTypes.Region]?
 
@@ -11384,7 +11384,7 @@ public struct GetRegionsOutput {
     }
 }
 
-public struct GetRelationalDatabaseInput {
+public struct GetRelationalDatabaseInput: Swift.Sendable {
     /// The name of the database that you are looking up.
     /// This member is required.
     public var relationalDatabaseName: Swift.String?
@@ -11398,8 +11398,9 @@ public struct GetRelationalDatabaseInput {
 }
 
 extension LightsailClientTypes {
+
     /// Describes the hardware of a database.
-    public struct RelationalDatabaseHardware {
+    public struct RelationalDatabaseHardware: Swift.Sendable {
         /// The number of vCPUs for the database.
         public var cpuCount: Swift.Int?
         /// The size of the disk for the database.
@@ -11418,12 +11419,12 @@ extension LightsailClientTypes {
             self.ramSizeInGb = ramSizeInGb
         }
     }
-
 }
 
 extension LightsailClientTypes {
+
     /// Describes an endpoint for a database.
-    public struct RelationalDatabaseEndpoint {
+    public struct RelationalDatabaseEndpoint: Swift.Sendable {
         /// Specifies the DNS address of the database.
         public var address: Swift.String?
         /// Specifies the port that the database is listening on.
@@ -11438,12 +11439,12 @@ extension LightsailClientTypes {
             self.port = port
         }
     }
-
 }
 
 extension LightsailClientTypes {
+
     /// Describes a pending database maintenance action.
-    public struct PendingMaintenanceAction {
+    public struct PendingMaintenanceAction: Swift.Sendable {
         /// The type of pending database maintenance action.
         public var action: Swift.String?
         /// The effective date of the pending database maintenance action.
@@ -11462,12 +11463,12 @@ extension LightsailClientTypes {
             self.description = description
         }
     }
-
 }
 
 extension LightsailClientTypes {
+
     /// Describes a pending database value modification.
-    public struct PendingModifiedRelationalDatabaseValues {
+    public struct PendingModifiedRelationalDatabaseValues: Swift.Sendable {
         /// A Boolean value indicating whether automated backup retention is enabled.
         public var backupRetentionEnabled: Swift.Bool?
         /// The database engine version.
@@ -11486,12 +11487,12 @@ extension LightsailClientTypes {
             self.masterUserPassword = masterUserPassword
         }
     }
-
 }
 
 extension LightsailClientTypes {
+
     /// Describes a database.
-    public struct RelationalDatabase {
+    public struct RelationalDatabase: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the database.
         public var arn: Swift.String?
         /// A Boolean value indicating whether automated backup retention is enabled for the database.
@@ -11602,10 +11603,9 @@ extension LightsailClientTypes {
             self.tags = tags
         }
     }
-
 }
 
-public struct GetRelationalDatabaseOutput {
+public struct GetRelationalDatabaseOutput: Swift.Sendable {
     /// An object describing the specified database.
     public var relationalDatabase: LightsailClientTypes.RelationalDatabase?
 
@@ -11617,7 +11617,7 @@ public struct GetRelationalDatabaseOutput {
     }
 }
 
-public struct GetRelationalDatabaseBlueprintsInput {
+public struct GetRelationalDatabaseBlueprintsInput: Swift.Sendable {
     /// The token to advance to the next page of results from your request. To get a page token, perform an initial GetRelationalDatabaseBlueprints request. If your results are paginated, the response will return a next page token that you can specify as the page token in a subsequent request.
     public var pageToken: Swift.String?
 
@@ -11631,7 +11631,7 @@ public struct GetRelationalDatabaseBlueprintsInput {
 
 extension LightsailClientTypes {
 
-    public enum RelationalDatabaseEngine: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum RelationalDatabaseEngine: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case mysql
         case sdkUnknown(Swift.String)
 
@@ -11656,8 +11656,9 @@ extension LightsailClientTypes {
 }
 
 extension LightsailClientTypes {
+
     /// Describes a database image, or blueprint. A blueprint describes the major engine version of a database.
-    public struct RelationalDatabaseBlueprint {
+    public struct RelationalDatabaseBlueprint: Swift.Sendable {
         /// The ID for the database blueprint.
         public var blueprintId: Swift.String?
         /// The database software of the database blueprint (for example, MySQL).
@@ -11688,10 +11689,9 @@ extension LightsailClientTypes {
             self.isEngineDefault = isEngineDefault
         }
     }
-
 }
 
-public struct GetRelationalDatabaseBlueprintsOutput {
+public struct GetRelationalDatabaseBlueprintsOutput: Swift.Sendable {
     /// An object describing the result of your get relational database blueprints request.
     public var blueprints: [LightsailClientTypes.RelationalDatabaseBlueprint]?
     /// The token to advance to the next page of results from your request. A next page token is not returned if there are no more results to display. To get the next page of results, perform another GetRelationalDatabaseBlueprints request and specify the next page token using the pageToken parameter.
@@ -11707,7 +11707,7 @@ public struct GetRelationalDatabaseBlueprintsOutput {
     }
 }
 
-public struct GetRelationalDatabaseBundlesInput {
+public struct GetRelationalDatabaseBundlesInput: Swift.Sendable {
     /// A Boolean value that indicates whether to include inactive (unavailable) bundles in the response of your request.
     public var includeInactive: Swift.Bool?
     /// The token to advance to the next page of results from your request. To get a page token, perform an initial GetRelationalDatabaseBundles request. If your results are paginated, the response will return a next page token that you can specify as the page token in a subsequent request.
@@ -11724,8 +11724,9 @@ public struct GetRelationalDatabaseBundlesInput {
 }
 
 extension LightsailClientTypes {
+
     /// Describes a database bundle. A bundle describes the performance specifications of the database.
-    public struct RelationalDatabaseBundle {
+    public struct RelationalDatabaseBundle: Swift.Sendable {
         /// The ID for the database bundle.
         public var bundleId: Swift.String?
         /// The number of virtual CPUs (vCPUs) for the database bundle.
@@ -11768,10 +11769,9 @@ extension LightsailClientTypes {
             self.transferPerMonthInGb = transferPerMonthInGb
         }
     }
-
 }
 
-public struct GetRelationalDatabaseBundlesOutput {
+public struct GetRelationalDatabaseBundlesOutput: Swift.Sendable {
     /// An object describing the result of your get relational database bundles request.
     public var bundles: [LightsailClientTypes.RelationalDatabaseBundle]?
     /// The token to advance to the next page of results from your request. A next page token is not returned if there are no more results to display. To get the next page of results, perform another GetRelationalDatabaseBundles request and specify the next page token using the pageToken parameter.
@@ -11787,7 +11787,7 @@ public struct GetRelationalDatabaseBundlesOutput {
     }
 }
 
-public struct GetRelationalDatabaseEventsInput {
+public struct GetRelationalDatabaseEventsInput: Swift.Sendable {
     /// The number of minutes in the past from which to retrieve events. For example, to get all events from the past 2 hours, enter 120. Default: 60 The minimum is 1 and the maximum is 14 days (20160 minutes).
     public var durationInMinutes: Swift.Int?
     /// The token to advance to the next page of results from your request. To get a page token, perform an initial GetRelationalDatabaseEvents request. If your results are paginated, the response will return a next page token that you can specify as the page token in a subsequent request.
@@ -11809,8 +11809,9 @@ public struct GetRelationalDatabaseEventsInput {
 }
 
 extension LightsailClientTypes {
+
     /// Describes an event for a database.
-    public struct RelationalDatabaseEvent {
+    public struct RelationalDatabaseEvent: Swift.Sendable {
         /// The timestamp when the database event was created.
         public var createdAt: Foundation.Date?
         /// The category that the database event belongs to.
@@ -11833,10 +11834,9 @@ extension LightsailClientTypes {
             self.resource = resource
         }
     }
-
 }
 
-public struct GetRelationalDatabaseEventsOutput {
+public struct GetRelationalDatabaseEventsOutput: Swift.Sendable {
     /// The token to advance to the next page of results from your request. A next page token is not returned if there are no more results to display. To get the next page of results, perform another GetRelationalDatabaseEvents request and specify the next page token using the pageToken parameter.
     public var nextPageToken: Swift.String?
     /// An object describing the result of your get relational database events request.
@@ -11852,7 +11852,7 @@ public struct GetRelationalDatabaseEventsOutput {
     }
 }
 
-public struct GetRelationalDatabaseLogEventsInput {
+public struct GetRelationalDatabaseLogEventsInput: Swift.Sendable {
     /// The end of the time interval from which to get log events. Constraints:
     ///
     /// * Specified in Coordinated Universal Time (UTC).
@@ -11895,8 +11895,9 @@ public struct GetRelationalDatabaseLogEventsInput {
 }
 
 extension LightsailClientTypes {
+
     /// Describes a database log event.
-    public struct LogEvent {
+    public struct LogEvent: Swift.Sendable {
         /// The timestamp when the database log event was created.
         public var createdAt: Foundation.Date?
         /// The message of the database log event.
@@ -11911,10 +11912,9 @@ extension LightsailClientTypes {
             self.message = message
         }
     }
-
 }
 
-public struct GetRelationalDatabaseLogEventsOutput {
+public struct GetRelationalDatabaseLogEventsOutput: Swift.Sendable {
     /// A token used for advancing to the previous page of results from your get relational database log events request.
     public var nextBackwardToken: Swift.String?
     /// A token used for advancing to the next page of results from your get relational database log events request.
@@ -11934,7 +11934,7 @@ public struct GetRelationalDatabaseLogEventsOutput {
     }
 }
 
-public struct GetRelationalDatabaseLogStreamsInput {
+public struct GetRelationalDatabaseLogStreamsInput: Swift.Sendable {
     /// The name of your database for which to get log streams.
     /// This member is required.
     public var relationalDatabaseName: Swift.String?
@@ -11947,7 +11947,7 @@ public struct GetRelationalDatabaseLogStreamsInput {
     }
 }
 
-public struct GetRelationalDatabaseLogStreamsOutput {
+public struct GetRelationalDatabaseLogStreamsOutput: Swift.Sendable {
     /// An object describing the result of your get relational database log streams request.
     public var logStreams: [Swift.String]?
 
@@ -11961,7 +11961,7 @@ public struct GetRelationalDatabaseLogStreamsOutput {
 
 extension LightsailClientTypes {
 
-    public enum RelationalDatabasePasswordVersion: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum RelationalDatabasePasswordVersion: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case current
         case pending
         case previous
@@ -11991,7 +11991,7 @@ extension LightsailClientTypes {
     }
 }
 
-public struct GetRelationalDatabaseMasterUserPasswordInput {
+public struct GetRelationalDatabaseMasterUserPasswordInput: Swift.Sendable {
     /// The password version to return. Specifying CURRENT or PREVIOUS returns the current or previous passwords respectively. Specifying PENDING returns the newest version of the password that will rotate to CURRENT. After the PENDING password rotates to CURRENT, the PENDING password is no longer available. Default: CURRENT
     public var passwordVersion: LightsailClientTypes.RelationalDatabasePasswordVersion?
     /// The name of your database for which to get the master user password.
@@ -12008,7 +12008,7 @@ public struct GetRelationalDatabaseMasterUserPasswordInput {
     }
 }
 
-public struct GetRelationalDatabaseMasterUserPasswordOutput {
+public struct GetRelationalDatabaseMasterUserPasswordOutput: Swift.Sendable {
     /// The timestamp when the specified version of the master user password was created.
     public var createdAt: Foundation.Date?
     /// The master user password for the password version specified.
@@ -12031,7 +12031,7 @@ extension GetRelationalDatabaseMasterUserPasswordOutput: Swift.CustomDebugString
 
 extension LightsailClientTypes {
 
-    public enum RelationalDatabaseMetricName: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum RelationalDatabaseMetricName: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case cpuutilization
         case databaseconnections
         case diskqueuedepth
@@ -12070,7 +12070,7 @@ extension LightsailClientTypes {
     }
 }
 
-public struct GetRelationalDatabaseMetricDataInput {
+public struct GetRelationalDatabaseMetricDataInput: Swift.Sendable {
     /// The end of the time interval from which to get metric data. Constraints:
     ///
     /// * Specified in Coordinated Universal Time (UTC).
@@ -12143,7 +12143,7 @@ public struct GetRelationalDatabaseMetricDataInput {
     }
 }
 
-public struct GetRelationalDatabaseMetricDataOutput {
+public struct GetRelationalDatabaseMetricDataOutput: Swift.Sendable {
     /// An array of objects that describe the metric data returned.
     public var metricData: [LightsailClientTypes.MetricDatapoint]?
     /// The name of the metric returned.
@@ -12159,7 +12159,7 @@ public struct GetRelationalDatabaseMetricDataOutput {
     }
 }
 
-public struct GetRelationalDatabaseParametersInput {
+public struct GetRelationalDatabaseParametersInput: Swift.Sendable {
     /// The token to advance to the next page of results from your request. To get a page token, perform an initial GetRelationalDatabaseParameters request. If your results are paginated, the response will return a next page token that you can specify as the page token in a subsequent request.
     public var pageToken: Swift.String?
     /// The name of your database for which to get parameters.
@@ -12177,8 +12177,9 @@ public struct GetRelationalDatabaseParametersInput {
 }
 
 extension LightsailClientTypes {
+
     /// Describes the parameters of a database.
-    public struct RelationalDatabaseParameter {
+    public struct RelationalDatabaseParameter: Swift.Sendable {
         /// Specifies the valid range of values for the parameter.
         public var allowedValues: Swift.String?
         /// Indicates when parameter updates are applied. Can be immediate or pending-reboot.
@@ -12217,10 +12218,9 @@ extension LightsailClientTypes {
             self.parameterValue = parameterValue
         }
     }
-
 }
 
-public struct GetRelationalDatabaseParametersOutput {
+public struct GetRelationalDatabaseParametersOutput: Swift.Sendable {
     /// The token to advance to the next page of results from your request. A next page token is not returned if there are no more results to display. To get the next page of results, perform another GetRelationalDatabaseParameters request and specify the next page token using the pageToken parameter.
     public var nextPageToken: Swift.String?
     /// An object describing the result of your get relational database parameters request.
@@ -12236,7 +12236,7 @@ public struct GetRelationalDatabaseParametersOutput {
     }
 }
 
-public struct GetRelationalDatabasesInput {
+public struct GetRelationalDatabasesInput: Swift.Sendable {
     /// The token to advance to the next page of results from your request. To get a page token, perform an initial GetRelationalDatabases request. If your results are paginated, the response will return a next page token that you can specify as the page token in a subsequent request.
     public var pageToken: Swift.String?
 
@@ -12248,7 +12248,7 @@ public struct GetRelationalDatabasesInput {
     }
 }
 
-public struct GetRelationalDatabasesOutput {
+public struct GetRelationalDatabasesOutput: Swift.Sendable {
     /// The token to advance to the next page of results from your request. A next page token is not returned if there are no more results to display. To get the next page of results, perform another GetRelationalDatabases request and specify the next page token using the pageToken parameter.
     public var nextPageToken: Swift.String?
     /// An object describing the result of your get relational databases request.
@@ -12264,7 +12264,7 @@ public struct GetRelationalDatabasesOutput {
     }
 }
 
-public struct GetRelationalDatabaseSnapshotInput {
+public struct GetRelationalDatabaseSnapshotInput: Swift.Sendable {
     /// The name of the database snapshot for which to get information.
     /// This member is required.
     public var relationalDatabaseSnapshotName: Swift.String?
@@ -12278,8 +12278,9 @@ public struct GetRelationalDatabaseSnapshotInput {
 }
 
 extension LightsailClientTypes {
+
     /// Describes a database snapshot.
-    public struct RelationalDatabaseSnapshot {
+    public struct RelationalDatabaseSnapshot: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the database snapshot.
         public var arn: Swift.String?
         /// The timestamp when the database snapshot was created.
@@ -12346,10 +12347,9 @@ extension LightsailClientTypes {
             self.tags = tags
         }
     }
-
 }
 
-public struct GetRelationalDatabaseSnapshotOutput {
+public struct GetRelationalDatabaseSnapshotOutput: Swift.Sendable {
     /// An object describing the specified database snapshot.
     public var relationalDatabaseSnapshot: LightsailClientTypes.RelationalDatabaseSnapshot?
 
@@ -12361,7 +12361,7 @@ public struct GetRelationalDatabaseSnapshotOutput {
     }
 }
 
-public struct GetRelationalDatabaseSnapshotsInput {
+public struct GetRelationalDatabaseSnapshotsInput: Swift.Sendable {
     /// The token to advance to the next page of results from your request. To get a page token, perform an initial GetRelationalDatabaseSnapshots request. If your results are paginated, the response will return a next page token that you can specify as the page token in a subsequent request.
     public var pageToken: Swift.String?
 
@@ -12373,7 +12373,7 @@ public struct GetRelationalDatabaseSnapshotsInput {
     }
 }
 
-public struct GetRelationalDatabaseSnapshotsOutput {
+public struct GetRelationalDatabaseSnapshotsOutput: Swift.Sendable {
     /// The token to advance to the next page of results from your request. A next page token is not returned if there are no more results to display. To get the next page of results, perform another GetRelationalDatabaseSnapshots request and specify the next page token using the pageToken parameter.
     public var nextPageToken: Swift.String?
     /// An object describing the result of your get relational database snapshots request.
@@ -12389,7 +12389,7 @@ public struct GetRelationalDatabaseSnapshotsOutput {
     }
 }
 
-public struct GetSetupHistoryInput {
+public struct GetSetupHistoryInput: Swift.Sendable {
     /// The token to advance to the next page of results from your request. To get a page token, perform an initial GetSetupHistory request. If your results are paginated, the response will return a next page token that you can specify as the page token in a subsequent request.
     public var pageToken: Swift.String?
     /// The name of the resource for which you are requesting information.
@@ -12408,7 +12408,7 @@ public struct GetSetupHistoryInput {
 
 extension LightsailClientTypes {
 
-    public enum SetupStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SetupStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case failed
         case inprogress
         case succeeded
@@ -12439,8 +12439,9 @@ extension LightsailClientTypes {
 }
 
 extension LightsailClientTypes {
+
     /// Returns details about the commands that were run.
-    public struct SetupExecutionDetails {
+    public struct SetupExecutionDetails: Swift.Sendable {
         /// The command that was executed.
         public var command: Swift.String?
         /// The timestamp for when the request was run.
@@ -12475,12 +12476,12 @@ extension LightsailClientTypes {
             self.version = version
         }
     }
-
 }
 
 extension LightsailClientTypes {
+
     /// Returns information that was submitted during the SetupInstanceHttps request. Email information is redacted for privacy.
-    public struct SetupRequest {
+    public struct SetupRequest: Swift.Sendable {
         /// The Certificate Authority (CA) that issues the SSL/TLS certificate.
         public var certificateProvider: LightsailClientTypes.CertificateProvider?
         /// The name of the domain and subdomains that the SSL/TLS certificate secures.
@@ -12499,12 +12500,12 @@ extension LightsailClientTypes {
             self.instanceName = instanceName
         }
     }
-
 }
 
 extension LightsailClientTypes {
+
     /// The Lightsail resource that SetupHistory was ran on.
-    public struct SetupHistoryResource {
+    public struct SetupHistoryResource: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the Lightsail resource.
         public var arn: Swift.String?
         /// The timestamp for when the resource was created.
@@ -12531,12 +12532,12 @@ extension LightsailClientTypes {
             self.resourceType = resourceType
         }
     }
-
 }
 
 extension LightsailClientTypes {
+
     /// Returns a list of the commands that were ran on the target resource. The status of each command is also returned.
-    public struct SetupHistory {
+    public struct SetupHistory: Swift.Sendable {
         /// Describes the full details of the request.
         public var executionDetails: [LightsailClientTypes.SetupExecutionDetails]?
         /// A GUID that's used to identify the operation.
@@ -12563,10 +12564,9 @@ extension LightsailClientTypes {
             self.status = status
         }
     }
-
 }
 
-public struct GetSetupHistoryOutput {
+public struct GetSetupHistoryOutput: Swift.Sendable {
     /// The token to advance to the next page of results from your request. A next page token is not returned if there are no more results to display. To get the next page of results, perform another GetSetupHistory request and specify the next page token using the pageToken parameter.
     public var nextPageToken: Swift.String?
     /// The historical information that's returned.
@@ -12582,7 +12582,7 @@ public struct GetSetupHistoryOutput {
     }
 }
 
-public struct GetStaticIpInput {
+public struct GetStaticIpInput: Swift.Sendable {
     /// The name of the static IP in Lightsail.
     /// This member is required.
     public var staticIpName: Swift.String?
@@ -12596,8 +12596,9 @@ public struct GetStaticIpInput {
 }
 
 extension LightsailClientTypes {
+
     /// Describes a static IP.
-    public struct StaticIp {
+    public struct StaticIp: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the static IP (arn:aws:lightsail:us-east-2:123456789101:StaticIp/9cbb4a9e-f8e3-4dfe-b57e-12345EXAMPLE).
         public var arn: Swift.String?
         /// The instance where the static IP is attached (Amazon_Linux-1GB-Ohio-1).
@@ -12640,10 +12641,9 @@ extension LightsailClientTypes {
             self.supportCode = supportCode
         }
     }
-
 }
 
-public struct GetStaticIpOutput {
+public struct GetStaticIpOutput: Swift.Sendable {
     /// An array of key-value pairs containing information about the requested static IP.
     public var staticIp: LightsailClientTypes.StaticIp?
 
@@ -12655,7 +12655,7 @@ public struct GetStaticIpOutput {
     }
 }
 
-public struct GetStaticIpsInput {
+public struct GetStaticIpsInput: Swift.Sendable {
     /// The token to advance to the next page of results from your request. To get a page token, perform an initial GetStaticIps request. If your results are paginated, the response will return a next page token that you can specify as the page token in a subsequent request.
     public var pageToken: Swift.String?
 
@@ -12667,7 +12667,7 @@ public struct GetStaticIpsInput {
     }
 }
 
-public struct GetStaticIpsOutput {
+public struct GetStaticIpsOutput: Swift.Sendable {
     /// The token to advance to the next page of results from your request. A next page token is not returned if there are no more results to display. To get the next page of results, perform another GetStaticIps request and specify the next page token using the pageToken parameter.
     public var nextPageToken: Swift.String?
     /// An array of key-value pairs containing information about your get static IPs request.
@@ -12683,7 +12683,7 @@ public struct GetStaticIpsOutput {
     }
 }
 
-public struct ImportKeyPairInput {
+public struct ImportKeyPairInput: Swift.Sendable {
     /// The name of the key pair for which you want to import the public key.
     /// This member is required.
     public var keyPairName: Swift.String?
@@ -12701,7 +12701,7 @@ public struct ImportKeyPairInput {
     }
 }
 
-public struct ImportKeyPairOutput {
+public struct ImportKeyPairOutput: Swift.Sendable {
     /// An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.
     public var operation: LightsailClientTypes.Operation?
 
@@ -12713,12 +12713,12 @@ public struct ImportKeyPairOutput {
     }
 }
 
-public struct IsVpcPeeredInput {
+public struct IsVpcPeeredInput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct IsVpcPeeredOutput {
+public struct IsVpcPeeredOutput: Swift.Sendable {
     /// Returns true if the Lightsail VPC is peered; otherwise, false.
     public var isPeered: Swift.Bool?
 
@@ -12730,7 +12730,7 @@ public struct IsVpcPeeredOutput {
     }
 }
 
-public struct OpenInstancePublicPortsInput {
+public struct OpenInstancePublicPortsInput: Swift.Sendable {
     /// The name of the instance for which to open ports.
     /// This member is required.
     public var instanceName: Swift.String?
@@ -12748,7 +12748,7 @@ public struct OpenInstancePublicPortsInput {
     }
 }
 
-public struct OpenInstancePublicPortsOutput {
+public struct OpenInstancePublicPortsOutput: Swift.Sendable {
     /// An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.
     public var operation: LightsailClientTypes.Operation?
 
@@ -12760,12 +12760,12 @@ public struct OpenInstancePublicPortsOutput {
     }
 }
 
-public struct PeerVpcInput {
+public struct PeerVpcInput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct PeerVpcOutput {
+public struct PeerVpcOutput: Swift.Sendable {
     /// An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.
     public var operation: LightsailClientTypes.Operation?
 
@@ -12777,7 +12777,7 @@ public struct PeerVpcOutput {
     }
 }
 
-public struct PutAlarmInput {
+public struct PutAlarmInput: Swift.Sendable {
     /// The name for the alarm. Specify the name of an existing alarm to update, and overwrite the previous configuration of the alarm.
     /// This member is required.
     public var alarmName: Swift.String?
@@ -12871,7 +12871,7 @@ public struct PutAlarmInput {
     }
 }
 
-public struct PutAlarmOutput {
+public struct PutAlarmOutput: Swift.Sendable {
     /// An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.
     public var operations: [LightsailClientTypes.Operation]?
 
@@ -12883,7 +12883,7 @@ public struct PutAlarmOutput {
     }
 }
 
-public struct PutInstancePublicPortsInput {
+public struct PutInstancePublicPortsInput: Swift.Sendable {
     /// The name of the instance for which to open ports.
     /// This member is required.
     public var instanceName: Swift.String?
@@ -12901,7 +12901,7 @@ public struct PutInstancePublicPortsInput {
     }
 }
 
-public struct PutInstancePublicPortsOutput {
+public struct PutInstancePublicPortsOutput: Swift.Sendable {
     /// An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.
     public var operation: LightsailClientTypes.Operation?
 
@@ -12913,7 +12913,7 @@ public struct PutInstancePublicPortsOutput {
     }
 }
 
-public struct RebootInstanceInput {
+public struct RebootInstanceInput: Swift.Sendable {
     /// The name of the instance to reboot.
     /// This member is required.
     public var instanceName: Swift.String?
@@ -12926,7 +12926,7 @@ public struct RebootInstanceInput {
     }
 }
 
-public struct RebootInstanceOutput {
+public struct RebootInstanceOutput: Swift.Sendable {
     /// An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.
     public var operations: [LightsailClientTypes.Operation]?
 
@@ -12938,7 +12938,7 @@ public struct RebootInstanceOutput {
     }
 }
 
-public struct RebootRelationalDatabaseInput {
+public struct RebootRelationalDatabaseInput: Swift.Sendable {
     /// The name of your database to reboot.
     /// This member is required.
     public var relationalDatabaseName: Swift.String?
@@ -12951,7 +12951,7 @@ public struct RebootRelationalDatabaseInput {
     }
 }
 
-public struct RebootRelationalDatabaseOutput {
+public struct RebootRelationalDatabaseOutput: Swift.Sendable {
     /// An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.
     public var operations: [LightsailClientTypes.Operation]?
 
@@ -12963,7 +12963,7 @@ public struct RebootRelationalDatabaseOutput {
     }
 }
 
-public struct RegisterContainerImageInput {
+public struct RegisterContainerImageInput: Swift.Sendable {
     /// The digest of the container image to be registered.
     /// This member is required.
     public var digest: Swift.String?
@@ -12991,7 +12991,7 @@ public struct RegisterContainerImageInput {
     }
 }
 
-public struct RegisterContainerImageOutput {
+public struct RegisterContainerImageOutput: Swift.Sendable {
     /// An object that describes a container image that is registered to a Lightsail container service
     public var containerImage: LightsailClientTypes.ContainerImage?
 
@@ -13003,7 +13003,7 @@ public struct RegisterContainerImageOutput {
     }
 }
 
-public struct ReleaseStaticIpInput {
+public struct ReleaseStaticIpInput: Swift.Sendable {
     /// The name of the static IP to delete.
     /// This member is required.
     public var staticIpName: Swift.String?
@@ -13016,7 +13016,7 @@ public struct ReleaseStaticIpInput {
     }
 }
 
-public struct ReleaseStaticIpOutput {
+public struct ReleaseStaticIpOutput: Swift.Sendable {
     /// An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.
     public var operations: [LightsailClientTypes.Operation]?
 
@@ -13028,7 +13028,7 @@ public struct ReleaseStaticIpOutput {
     }
 }
 
-public struct ResetDistributionCacheInput {
+public struct ResetDistributionCacheInput: Swift.Sendable {
     /// The name of the distribution for which to reset cache. Use the GetDistributions action to get a list of distribution names that you can specify.
     public var distributionName: Swift.String?
 
@@ -13040,7 +13040,7 @@ public struct ResetDistributionCacheInput {
     }
 }
 
-public struct ResetDistributionCacheOutput {
+public struct ResetDistributionCacheOutput: Swift.Sendable {
     /// The timestamp of the reset cache request (1479734909.17) in Unix time format.
     public var createTime: Foundation.Date?
     /// An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.
@@ -13060,7 +13060,7 @@ public struct ResetDistributionCacheOutput {
     }
 }
 
-public struct SendContactMethodVerificationInput {
+public struct SendContactMethodVerificationInput: Swift.Sendable {
     /// The protocol to verify, such as Email or SMS (text messaging).
     /// This member is required.
     public var `protocol`: LightsailClientTypes.ContactMethodVerificationProtocol?
@@ -13073,7 +13073,7 @@ public struct SendContactMethodVerificationInput {
     }
 }
 
-public struct SendContactMethodVerificationOutput {
+public struct SendContactMethodVerificationOutput: Swift.Sendable {
     /// An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.
     public var operations: [LightsailClientTypes.Operation]?
 
@@ -13085,7 +13085,7 @@ public struct SendContactMethodVerificationOutput {
     }
 }
 
-public struct SetIpAddressTypeInput {
+public struct SetIpAddressTypeInput: Swift.Sendable {
     /// Required parameter to accept the instance bundle update when changing to, and from, IPv6-only. An instance bundle will change when switching from dual-stack or ipv4, to ipv6. It also changes when switching from ipv6, to dual-stack or ipv4. You must include this parameter in the command to update the bundle. For example, if you switch from dual-stack to ipv6, the bundle will be updated, and billing for the IPv6-only instance bundle begins immediately.
     public var acceptBundleUpdate: Swift.Bool?
     /// The IP address type to set for the specified resource. The possible values are ipv4 for IPv4 only, ipv6 for IPv6 only, and dualstack for IPv4 and IPv6.
@@ -13112,7 +13112,7 @@ public struct SetIpAddressTypeInput {
     }
 }
 
-public struct SetIpAddressTypeOutput {
+public struct SetIpAddressTypeOutput: Swift.Sendable {
     /// An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.
     public var operations: [LightsailClientTypes.Operation]?
 
@@ -13126,7 +13126,7 @@ public struct SetIpAddressTypeOutput {
 
 extension LightsailClientTypes {
 
-    public enum ResourceBucketAccess: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ResourceBucketAccess: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case allow
         case deny
         case sdkUnknown(Swift.String)
@@ -13153,7 +13153,7 @@ extension LightsailClientTypes {
     }
 }
 
-public struct SetResourceAccessForBucketInput {
+public struct SetResourceAccessForBucketInput: Swift.Sendable {
     /// The access setting. The following access settings are available:
     ///
     /// * allow - Allows access to the bucket and its objects.
@@ -13180,7 +13180,7 @@ public struct SetResourceAccessForBucketInput {
     }
 }
 
-public struct SetResourceAccessForBucketOutput {
+public struct SetResourceAccessForBucketOutput: Swift.Sendable {
     /// An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.
     public var operations: [LightsailClientTypes.Operation]?
 
@@ -13192,7 +13192,7 @@ public struct SetResourceAccessForBucketOutput {
     }
 }
 
-public struct SetupInstanceHttpsInput {
+public struct SetupInstanceHttpsInput: Swift.Sendable {
     /// The certificate authority that issues the SSL/TLS certificate.
     /// This member is required.
     public var certificateProvider: LightsailClientTypes.CertificateProvider?
@@ -13225,7 +13225,7 @@ extension SetupInstanceHttpsInput: Swift.CustomDebugStringConvertible {
         "SetupInstanceHttpsInput(certificateProvider: \(Swift.String(describing: certificateProvider)), domainNames: \(Swift.String(describing: domainNames)), instanceName: \(Swift.String(describing: instanceName)), emailAddress: \"CONTENT_REDACTED\")"}
 }
 
-public struct SetupInstanceHttpsOutput {
+public struct SetupInstanceHttpsOutput: Swift.Sendable {
     /// The available API operations for SetupInstanceHttps.
     public var operations: [LightsailClientTypes.Operation]?
 
@@ -13237,7 +13237,7 @@ public struct SetupInstanceHttpsOutput {
     }
 }
 
-public struct StartGUISessionInput {
+public struct StartGUISessionInput: Swift.Sendable {
     /// The resource name.
     /// This member is required.
     public var resourceName: Swift.String?
@@ -13250,7 +13250,7 @@ public struct StartGUISessionInput {
     }
 }
 
-public struct StartGUISessionOutput {
+public struct StartGUISessionOutput: Swift.Sendable {
     /// The available API operations.
     public var operations: [LightsailClientTypes.Operation]?
 
@@ -13262,7 +13262,7 @@ public struct StartGUISessionOutput {
     }
 }
 
-public struct StartInstanceInput {
+public struct StartInstanceInput: Swift.Sendable {
     /// The name of the instance (a virtual private server) to start.
     /// This member is required.
     public var instanceName: Swift.String?
@@ -13275,7 +13275,7 @@ public struct StartInstanceInput {
     }
 }
 
-public struct StartInstanceOutput {
+public struct StartInstanceOutput: Swift.Sendable {
     /// An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.
     public var operations: [LightsailClientTypes.Operation]?
 
@@ -13287,7 +13287,7 @@ public struct StartInstanceOutput {
     }
 }
 
-public struct StartRelationalDatabaseInput {
+public struct StartRelationalDatabaseInput: Swift.Sendable {
     /// The name of your database to start.
     /// This member is required.
     public var relationalDatabaseName: Swift.String?
@@ -13300,7 +13300,7 @@ public struct StartRelationalDatabaseInput {
     }
 }
 
-public struct StartRelationalDatabaseOutput {
+public struct StartRelationalDatabaseOutput: Swift.Sendable {
     /// An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.
     public var operations: [LightsailClientTypes.Operation]?
 
@@ -13312,7 +13312,7 @@ public struct StartRelationalDatabaseOutput {
     }
 }
 
-public struct StopGUISessionInput {
+public struct StopGUISessionInput: Swift.Sendable {
     /// The resource name.
     /// This member is required.
     public var resourceName: Swift.String?
@@ -13325,7 +13325,7 @@ public struct StopGUISessionInput {
     }
 }
 
-public struct StopGUISessionOutput {
+public struct StopGUISessionOutput: Swift.Sendable {
     /// The available API operations.
     public var operations: [LightsailClientTypes.Operation]?
 
@@ -13337,7 +13337,7 @@ public struct StopGUISessionOutput {
     }
 }
 
-public struct StopInstanceInput {
+public struct StopInstanceInput: Swift.Sendable {
     /// When set to True, forces a Lightsail instance that is stuck in a stopping state to stop. Only use the force parameter if your instance is stuck in the stopping state. In any other state, your instance should stop normally without adding this parameter to your API request.
     public var force: Swift.Bool?
     /// The name of the instance (a virtual private server) to stop.
@@ -13354,7 +13354,7 @@ public struct StopInstanceInput {
     }
 }
 
-public struct StopInstanceOutput {
+public struct StopInstanceOutput: Swift.Sendable {
     /// An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.
     public var operations: [LightsailClientTypes.Operation]?
 
@@ -13366,7 +13366,7 @@ public struct StopInstanceOutput {
     }
 }
 
-public struct StopRelationalDatabaseInput {
+public struct StopRelationalDatabaseInput: Swift.Sendable {
     /// The name of your database to stop.
     /// This member is required.
     public var relationalDatabaseName: Swift.String?
@@ -13383,7 +13383,7 @@ public struct StopRelationalDatabaseInput {
     }
 }
 
-public struct StopRelationalDatabaseOutput {
+public struct StopRelationalDatabaseOutput: Swift.Sendable {
     /// An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.
     public var operations: [LightsailClientTypes.Operation]?
 
@@ -13395,7 +13395,7 @@ public struct StopRelationalDatabaseOutput {
     }
 }
 
-public struct TagResourceInput {
+public struct TagResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the resource to which you want to add a tag.
     public var resourceArn: Swift.String?
     /// The name of the resource to which you are adding tags.
@@ -13417,7 +13417,7 @@ public struct TagResourceInput {
     }
 }
 
-public struct TagResourceOutput {
+public struct TagResourceOutput: Swift.Sendable {
     /// An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.
     public var operations: [LightsailClientTypes.Operation]?
 
@@ -13429,7 +13429,7 @@ public struct TagResourceOutput {
     }
 }
 
-public struct TestAlarmInput {
+public struct TestAlarmInput: Swift.Sendable {
     /// The name of the alarm to test.
     /// This member is required.
     public var alarmName: Swift.String?
@@ -13453,7 +13453,7 @@ public struct TestAlarmInput {
     }
 }
 
-public struct TestAlarmOutput {
+public struct TestAlarmOutput: Swift.Sendable {
     /// An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.
     public var operations: [LightsailClientTypes.Operation]?
 
@@ -13465,12 +13465,12 @@ public struct TestAlarmOutput {
     }
 }
 
-public struct UnpeerVpcInput {
+public struct UnpeerVpcInput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UnpeerVpcOutput {
+public struct UnpeerVpcOutput: Swift.Sendable {
     /// An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.
     public var operation: LightsailClientTypes.Operation?
 
@@ -13482,7 +13482,7 @@ public struct UnpeerVpcOutput {
     }
 }
 
-public struct UntagResourceInput {
+public struct UntagResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the resource from which you want to remove a tag.
     public var resourceArn: Swift.String?
     /// The name of the resource from which you are removing a tag.
@@ -13504,7 +13504,7 @@ public struct UntagResourceInput {
     }
 }
 
-public struct UntagResourceOutput {
+public struct UntagResourceOutput: Swift.Sendable {
     /// An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.
     public var operations: [LightsailClientTypes.Operation]?
 
@@ -13516,7 +13516,7 @@ public struct UntagResourceOutput {
     }
 }
 
-public struct UpdateBucketInput {
+public struct UpdateBucketInput: Swift.Sendable {
     /// An object that describes the access log configuration for the bucket.
     public var accessLogConfig: LightsailClientTypes.BucketAccessLogConfig?
     /// An object that sets the public accessibility of objects in the specified bucket.
@@ -13549,7 +13549,7 @@ public struct UpdateBucketInput {
     }
 }
 
-public struct UpdateBucketOutput {
+public struct UpdateBucketOutput: Swift.Sendable {
     /// An object that describes the bucket that is updated.
     public var bucket: LightsailClientTypes.Bucket?
     /// An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.
@@ -13565,7 +13565,7 @@ public struct UpdateBucketOutput {
     }
 }
 
-public struct UpdateBucketBundleInput {
+public struct UpdateBucketBundleInput: Swift.Sendable {
     /// The name of the bucket for which to update the bundle.
     /// This member is required.
     public var bucketName: Swift.String?
@@ -13583,7 +13583,7 @@ public struct UpdateBucketBundleInput {
     }
 }
 
-public struct UpdateBucketBundleOutput {
+public struct UpdateBucketBundleOutput: Swift.Sendable {
     /// An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.
     public var operations: [LightsailClientTypes.Operation]?
 
@@ -13595,7 +13595,7 @@ public struct UpdateBucketBundleOutput {
     }
 }
 
-public struct UpdateContainerServiceInput {
+public struct UpdateContainerServiceInput: Swift.Sendable {
     /// A Boolean value to indicate whether the container service is disabled.
     public var isDisabled: Swift.Bool?
     /// The power for the container service. The power specifies the amount of memory, vCPUs, and base monthly cost of each node of the container service. The power and scale of a container service makes up its configured capacity. To determine the monthly price of your container service, multiply the base price of the power with the scale (the number of nodes) of the service. Use the GetContainerServicePowers action to view the specifications of each power option.
@@ -13628,7 +13628,7 @@ public struct UpdateContainerServiceInput {
     }
 }
 
-public struct UpdateContainerServiceOutput {
+public struct UpdateContainerServiceOutput: Swift.Sendable {
     /// An object that describes a container service.
     public var containerService: LightsailClientTypes.ContainerService?
 
@@ -13640,7 +13640,7 @@ public struct UpdateContainerServiceOutput {
     }
 }
 
-public struct UpdateDistributionInput {
+public struct UpdateDistributionInput: Swift.Sendable {
     /// An object that describes the cache behavior settings for the distribution. The cacheBehaviorSettings specified in your UpdateDistributionRequest will replace your distribution's existing settings.
     public var cacheBehaviorSettings: LightsailClientTypes.CacheSettings?
     /// An array of objects that describe the per-path cache behavior for the distribution.
@@ -13685,7 +13685,7 @@ public struct UpdateDistributionInput {
     }
 }
 
-public struct UpdateDistributionOutput {
+public struct UpdateDistributionOutput: Swift.Sendable {
     /// An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.
     public var operation: LightsailClientTypes.Operation?
 
@@ -13697,7 +13697,7 @@ public struct UpdateDistributionOutput {
     }
 }
 
-public struct UpdateDistributionBundleInput {
+public struct UpdateDistributionBundleInput: Swift.Sendable {
     /// The bundle ID of the new bundle to apply to your distribution. Use the GetDistributionBundles action to get a list of distribution bundle IDs that you can specify.
     public var bundleId: Swift.String?
     /// The name of the distribution for which to update the bundle. Use the GetDistributions action to get a list of distribution names that you can specify.
@@ -13713,7 +13713,7 @@ public struct UpdateDistributionBundleInput {
     }
 }
 
-public struct UpdateDistributionBundleOutput {
+public struct UpdateDistributionBundleOutput: Swift.Sendable {
     /// An object that describes the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.
     public var operation: LightsailClientTypes.Operation?
 
@@ -13725,7 +13725,7 @@ public struct UpdateDistributionBundleOutput {
     }
 }
 
-public struct UpdateDomainEntryInput {
+public struct UpdateDomainEntryInput: Swift.Sendable {
     /// An array of key-value pairs containing information about the domain entry.
     /// This member is required.
     public var domainEntry: LightsailClientTypes.DomainEntry?
@@ -13743,7 +13743,7 @@ public struct UpdateDomainEntryInput {
     }
 }
 
-public struct UpdateDomainEntryOutput {
+public struct UpdateDomainEntryOutput: Swift.Sendable {
     /// An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.
     public var operations: [LightsailClientTypes.Operation]?
 
@@ -13755,7 +13755,7 @@ public struct UpdateDomainEntryOutput {
     }
 }
 
-public struct UpdateInstanceMetadataOptionsInput {
+public struct UpdateInstanceMetadataOptionsInput: Swift.Sendable {
     /// Enables or disables the HTTP metadata endpoint on your instances. If this parameter is not specified, the existing state is maintained. If you specify a value of disabled, you cannot access your instance metadata.
     public var httpEndpoint: LightsailClientTypes.HttpEndpoint?
     /// Enables or disables the IPv6 endpoint for the instance metadata service. This setting applies only when the HTTP metadata endpoint is enabled. This parameter is available only for instances in the Europe (Stockholm) Amazon Web Services Region (eu-north-1).
@@ -13784,7 +13784,7 @@ public struct UpdateInstanceMetadataOptionsInput {
     }
 }
 
-public struct UpdateInstanceMetadataOptionsOutput {
+public struct UpdateInstanceMetadataOptionsOutput: Swift.Sendable {
     /// An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.
     public var operation: LightsailClientTypes.Operation?
 
@@ -13796,7 +13796,7 @@ public struct UpdateInstanceMetadataOptionsOutput {
     }
 }
 
-public struct UpdateLoadBalancerAttributeInput {
+public struct UpdateLoadBalancerAttributeInput: Swift.Sendable {
     /// The name of the attribute you want to update.
     /// This member is required.
     public var attributeName: LightsailClientTypes.LoadBalancerAttributeName?
@@ -13829,7 +13829,7 @@ public struct UpdateLoadBalancerAttributeInput {
     }
 }
 
-public struct UpdateLoadBalancerAttributeOutput {
+public struct UpdateLoadBalancerAttributeOutput: Swift.Sendable {
     /// An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.
     public var operations: [LightsailClientTypes.Operation]?
 
@@ -13841,7 +13841,7 @@ public struct UpdateLoadBalancerAttributeOutput {
     }
 }
 
-public struct UpdateRelationalDatabaseInput {
+public struct UpdateRelationalDatabaseInput: Swift.Sendable {
     /// When true, applies changes immediately. When false, applies changes during the preferred maintenance window. Some changes may cause an outage. Default: false
     public var applyImmediately: Swift.Bool?
     /// Indicates the certificate that needs to be associated with the database.
@@ -13917,7 +13917,7 @@ extension UpdateRelationalDatabaseInput: Swift.CustomDebugStringConvertible {
         "UpdateRelationalDatabaseInput(applyImmediately: \(Swift.String(describing: applyImmediately)), caCertificateIdentifier: \(Swift.String(describing: caCertificateIdentifier)), disableBackupRetention: \(Swift.String(describing: disableBackupRetention)), enableBackupRetention: \(Swift.String(describing: enableBackupRetention)), preferredBackupWindow: \(Swift.String(describing: preferredBackupWindow)), preferredMaintenanceWindow: \(Swift.String(describing: preferredMaintenanceWindow)), publiclyAccessible: \(Swift.String(describing: publiclyAccessible)), relationalDatabaseBlueprintId: \(Swift.String(describing: relationalDatabaseBlueprintId)), relationalDatabaseName: \(Swift.String(describing: relationalDatabaseName)), rotateMasterUserPassword: \(Swift.String(describing: rotateMasterUserPassword)), masterUserPassword: \"CONTENT_REDACTED\")"}
 }
 
-public struct UpdateRelationalDatabaseOutput {
+public struct UpdateRelationalDatabaseOutput: Swift.Sendable {
     /// An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.
     public var operations: [LightsailClientTypes.Operation]?
 
@@ -13929,7 +13929,7 @@ public struct UpdateRelationalDatabaseOutput {
     }
 }
 
-public struct UpdateRelationalDatabaseParametersInput {
+public struct UpdateRelationalDatabaseParametersInput: Swift.Sendable {
     /// The database parameters to update.
     /// This member is required.
     public var parameters: [LightsailClientTypes.RelationalDatabaseParameter]?
@@ -13947,7 +13947,7 @@ public struct UpdateRelationalDatabaseParametersInput {
     }
 }
 
-public struct UpdateRelationalDatabaseParametersOutput {
+public struct UpdateRelationalDatabaseParametersOutput: Swift.Sendable {
     /// An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.
     public var operations: [LightsailClientTypes.Operation]?
 

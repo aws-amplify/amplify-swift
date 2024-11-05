@@ -36,8 +36,8 @@ abstract class AWSHTTPBindingProtocolGenerator(
     val requestTestBuilder = HttpProtocolUnitTestRequestGenerator.Builder()
     val responseTestBuilder = HttpProtocolUnitTestResponseGenerator.Builder()
     val errorTestBuilder = HttpProtocolUnitTestErrorGenerator.Builder()
-    open val testsToIgnore: Set<String> = setOf()
-    open val tagsToIgnore: Set<String> = setOf()
+    open val protocolTestsToIgnore: Set<String> = setOf()
+    open val protocolTestTagsToIgnore: Set<String> = setOf()
 
     override val shouldRenderEncodableConformance = false
     override fun generateProtocolUnitTests(ctx: ProtocolGenerator.GenerationContext): Int {
@@ -48,9 +48,13 @@ abstract class AWSHTTPBindingProtocolGenerator(
             errorTestBuilder,
             customizations,
             getProtocolHttpBindingResolver(ctx, defaultContentType),
-            testsToIgnore,
-            tagsToIgnore,
+            protocolTestsToIgnore,
+            protocolTestTagsToIgnore,
         ).generateProtocolTests() + renderEndpointsTests(ctx)
+    }
+
+    override fun generateSmokeTests(ctx: ProtocolGenerator.GenerationContext) {
+        return AWSSmokeTestGenerator(ctx).generateSmokeTests()
     }
 
     fun renderEndpointsTests(ctx: ProtocolGenerator.GenerationContext): Int {

@@ -29,19 +29,21 @@ import struct Smithy.URIQueryItem
 @_spi(SmithyReadWrite) import struct SmithyReadWrite.ReadingClosureBox
 @_spi(SmithyTimestamps) import struct SmithyTimestamps.TimestampFormatter
 
-public struct CreateTagsOutput {
+
+public struct CreateTagsOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteTagsOutput {
+public struct DeleteTagsOutput: Swift.Sendable {
 
     public init() { }
 }
 
 extension MqClientTypes {
+
     /// Action required for a broker.
-    public struct ActionRequired {
+    public struct ActionRequired: Swift.Sendable {
         /// The code you can use to find instructions on the action required to resolve your broker issue.
         public var actionRequiredCode: Swift.String?
         /// Information about the action required to resolve your broker issue.
@@ -56,12 +58,12 @@ extension MqClientTypes {
             self.actionRequiredInfo = actionRequiredInfo
         }
     }
-
 }
 
 extension MqClientTypes {
+
     /// Name of the availability zone.
-    public struct AvailabilityZone {
+    public struct AvailabilityZone: Swift.Sendable {
         /// Id for the availability zone.
         public var name: Swift.String?
 
@@ -72,13 +74,12 @@ extension MqClientTypes {
             self.name = name
         }
     }
-
 }
 
 extension MqClientTypes {
 
     /// The type of broker engine. Amazon MQ supports ActiveMQ and RabbitMQ.
-    public enum EngineType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum EngineType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case activemq
         case rabbitmq
         case sdkUnknown(Swift.String)
@@ -106,8 +107,9 @@ extension MqClientTypes {
 }
 
 extension MqClientTypes {
+
     /// Id of the engine version.
-    public struct EngineVersion {
+    public struct EngineVersion: Swift.Sendable {
         /// Id for the version.
         public var name: Swift.String?
 
@@ -118,12 +120,12 @@ extension MqClientTypes {
             self.name = name
         }
     }
-
 }
 
 extension MqClientTypes {
+
     /// Types of broker engines.
-    public struct BrokerEngineType {
+    public struct BrokerEngineType: Swift.Sendable {
         /// The broker's engine type.
         public var engineType: MqClientTypes.EngineType?
         /// The list of engine versions.
@@ -138,12 +140,12 @@ extension MqClientTypes {
             self.engineVersions = engineVersions
         }
     }
-
 }
 
 extension MqClientTypes {
+
     /// Returns information about all brokers.
-    public struct BrokerInstance {
+    public struct BrokerInstance: Swift.Sendable {
         /// The brokers web console URL.
         public var consoleURL: Swift.String?
         /// The broker's wire-level protocol endpoints.
@@ -162,13 +164,12 @@ extension MqClientTypes {
             self.ipAddress = ipAddress
         }
     }
-
 }
 
 extension MqClientTypes {
 
     /// The broker's storage type. EFS is not supported for RabbitMQ engine type.
-    public enum BrokerStorageType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum BrokerStorageType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case ebs
         case efs
         case sdkUnknown(Swift.String)
@@ -198,7 +199,7 @@ extension MqClientTypes {
 extension MqClientTypes {
 
     /// The broker's deployment mode.
-    public enum DeploymentMode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DeploymentMode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case activeStandbyMultiAz
         case clusterMultiAz
         case singleInstance
@@ -229,8 +230,9 @@ extension MqClientTypes {
 }
 
 extension MqClientTypes {
+
     /// Option for host instance type.
-    public struct BrokerInstanceOption {
+    public struct BrokerInstanceOption: Swift.Sendable {
         /// The list of available az.
         public var availabilityZones: [MqClientTypes.AvailabilityZone]?
         /// The broker's engine type.
@@ -261,13 +263,12 @@ extension MqClientTypes {
             self.supportedEngineVersions = supportedEngineVersions
         }
     }
-
 }
 
 extension MqClientTypes {
 
     /// The broker's status.
-    public enum BrokerState: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum BrokerState: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case creationFailed
         case creationInProgress
         case criticalActionRequired
@@ -310,8 +311,9 @@ extension MqClientTypes {
 }
 
 extension MqClientTypes {
+
     /// Returns information about all brokers.
-    public struct BrokerSummary {
+    public struct BrokerSummary: Swift.Sendable {
         /// The broker's Amazon Resource Name (ARN).
         public var brokerArn: Swift.String?
         /// The unique ID that Amazon MQ generates for the broker.
@@ -352,13 +354,12 @@ extension MqClientTypes {
             self.hostInstanceType = hostInstanceType
         }
     }
-
 }
 
 extension MqClientTypes {
 
     /// Optional. The authentication strategy used to secure the broker. The default is SIMPLE.
-    public enum AuthenticationStrategy: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AuthenticationStrategy: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case ldap
         case simple
         case sdkUnknown(Swift.String)
@@ -386,8 +387,9 @@ extension MqClientTypes {
 }
 
 extension MqClientTypes {
+
     /// Returns information about the specified configuration revision.
-    public struct ConfigurationRevision {
+    public struct ConfigurationRevision: Swift.Sendable {
         /// Required. The date and time of the configuration revision.
         /// This member is required.
         public var created: Foundation.Date?
@@ -408,12 +410,12 @@ extension MqClientTypes {
             self.revision = revision
         }
     }
-
 }
 
 extension MqClientTypes {
+
     /// Returns information about all configurations.
-    public struct Configuration {
+    public struct Configuration: Swift.Sendable {
         /// Required. The ARN of the configuration.
         /// This member is required.
         public var arn: Swift.String?
@@ -469,12 +471,12 @@ extension MqClientTypes {
             self.tags = tags
         }
     }
-
 }
 
 extension MqClientTypes {
+
     /// A list of information about the configuration.
-    public struct ConfigurationId {
+    public struct ConfigurationId: Swift.Sendable {
         /// Required. The unique ID that Amazon MQ generates for the configuration.
         /// This member is required.
         public var id: Swift.String?
@@ -490,13 +492,12 @@ extension MqClientTypes {
             self.revision = revision
         }
     }
-
 }
 
 extension MqClientTypes {
 
     /// The reason for which the configuration elements or attributes were sanitized.
-    public enum SanitizationWarningReason: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SanitizationWarningReason: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case disallowedAttributeRemoved
         case disallowedElementRemoved
         case invalidAttributeValueRemoved
@@ -527,8 +528,9 @@ extension MqClientTypes {
 }
 
 extension MqClientTypes {
+
     /// Returns information about the configuration element or attribute that was sanitized in the configuration.
-    public struct SanitizationWarning {
+    public struct SanitizationWarning: Swift.Sendable {
         /// The name of the configuration attribute that has been sanitized.
         public var attributeName: Swift.String?
         /// The name of the configuration element that has been sanitized.
@@ -548,12 +550,12 @@ extension MqClientTypes {
             self.reason = reason
         }
     }
-
 }
 
 extension MqClientTypes {
+
     /// A user associated with the broker. For Amazon MQ for RabbitMQ brokers, one and only one administrative user is accepted and created when a broker is first provisioned. All subsequent broker users are created by making RabbitMQ API calls directly to brokers or via the RabbitMQ web console.
-    public struct User {
+    public struct User: Swift.Sendable {
         /// Enables access to the ActiveMQ Web Console for the ActiveMQ user. Does not apply to RabbitMQ brokers.
         public var consoleAccess: Swift.Bool?
         /// The list of groups (20 maximum) to which the ActiveMQ user belongs. This value can contain only alphanumeric characters, dashes, periods, underscores, and tildes (- . _ ~). This value must be 2-100 characters long. Does not apply to RabbitMQ brokers.
@@ -589,13 +591,12 @@ extension MqClientTypes {
             self.username = username
         }
     }
-
 }
 
 extension MqClientTypes {
 
     /// The type of change pending for the ActiveMQ user.
-    public enum ChangeType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ChangeType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case create
         case delete
         case update
@@ -626,8 +627,9 @@ extension MqClientTypes {
 }
 
 extension MqClientTypes {
+
     /// Returns a list of all broker users. Does not apply to RabbitMQ brokers.
-    public struct UserSummary {
+    public struct UserSummary: Swift.Sendable {
         /// The type of change pending for the broker user.
         public var pendingChange: MqClientTypes.ChangeType?
         /// Required. The username of the broker user. This value can contain only alphanumeric characters, dashes, periods, underscores, and tildes (- . _ ~). This value must be 2-100 characters long.
@@ -643,7 +645,6 @@ extension MqClientTypes {
             self.username = username
         }
     }
-
 }
 
 /// Returns information about an error.
@@ -676,8 +677,9 @@ public struct BadRequestException: ClientRuntime.ModeledError, AWSClientRuntime.
 }
 
 extension MqClientTypes {
+
     /// Broker configuration information
-    public struct Configurations {
+    public struct Configurations: Swift.Sendable {
         /// The broker's current configuration.
         public var current: MqClientTypes.ConfigurationId?
         /// The history of configurations applied to the broker.
@@ -696,7 +698,6 @@ extension MqClientTypes {
             self.pending = pending
         }
     }
-
 }
 
 /// Returns information about an error.
@@ -818,7 +819,7 @@ public struct UnauthorizedException: ClientRuntime.ModeledError, AWSClientRuntim
 extension MqClientTypes {
 
     /// Specifies whether a broker is a part of a data replication pair.
-    public enum DataReplicationMode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DataReplicationMode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case crdr
         case `none`
         case sdkUnknown(Swift.String)
@@ -846,8 +847,9 @@ extension MqClientTypes {
 }
 
 extension MqClientTypes {
+
     /// Encryption options for the broker.
-    public struct EncryptionOptions {
+    public struct EncryptionOptions: Swift.Sendable {
         /// The customer master key (CMK) to use for the A KMS (KMS). This key is used to encrypt your data at rest. If not provided, Amazon MQ will use a default CMK to encrypt your data.
         public var kmsKeyId: Swift.String?
         /// Enables the use of an Amazon Web Services owned CMK using KMS (KMS). Set to true by default, if no value is provided, for example, for RabbitMQ brokers.
@@ -863,12 +865,12 @@ extension MqClientTypes {
             self.useAwsOwnedKey = useAwsOwnedKey
         }
     }
-
 }
 
 extension MqClientTypes {
+
     /// Optional. The metadata of the LDAP server used to authenticate and authorize connections to the broker. Does not apply to RabbitMQ brokers.
-    public struct LdapServerMetadataInput {
+    public struct LdapServerMetadataInput: Swift.Sendable {
         /// Specifies the location of the LDAP server such as Directory Service for Microsoft Active Directory. Optional failover server.
         /// This member is required.
         public var hosts: [Swift.String]?
@@ -926,12 +928,12 @@ extension MqClientTypes {
             self.userSearchSubtree = userSearchSubtree
         }
     }
-
 }
 
 extension MqClientTypes {
+
     /// The list of information about logs to be enabled for the specified broker.
-    public struct Logs {
+    public struct Logs: Swift.Sendable {
         /// Enables audit logging. Every user management action made using JMX or the ActiveMQ Web Console is logged. Does not apply to RabbitMQ brokers.
         public var audit: Swift.Bool?
         /// Enables general logging.
@@ -946,12 +948,11 @@ extension MqClientTypes {
             self.general = general
         }
     }
-
 }
 
 extension MqClientTypes {
 
-    public enum DayOfWeek: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DayOfWeek: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case friday
         case monday
         case saturday
@@ -994,8 +995,9 @@ extension MqClientTypes {
 }
 
 extension MqClientTypes {
+
     /// The scheduled time period relative to UTC during which Amazon MQ begins to apply pending updates or patches to the broker.
-    public struct WeeklyStartTime {
+    public struct WeeklyStartTime: Swift.Sendable {
         /// Required. The day of the week.
         /// This member is required.
         public var dayOfWeek: MqClientTypes.DayOfWeek?
@@ -1016,11 +1018,10 @@ extension MqClientTypes {
             self.timeZone = timeZone
         }
     }
-
 }
 
 /// Creates a broker using the specified properties.
-public struct CreateBrokerInput {
+public struct CreateBrokerInput: Swift.Sendable {
     /// Optional. The authentication strategy used to secure the broker. The default is SIMPLE.
     public var authenticationStrategy: MqClientTypes.AuthenticationStrategy?
     /// Enables automatic upgrades to new patch versions for brokers as new versions are released and supported by Amazon MQ. Automatic upgrades occur during the scheduled maintenance window or after a manual broker reboot. Set to true by default, if no value is specified. Must be set to true for ActiveMQ brokers version 5.18 and above and for RabbitMQ brokers version 3.13 and above.
@@ -1118,7 +1119,7 @@ public struct CreateBrokerInput {
     }
 }
 
-public struct CreateBrokerOutput {
+public struct CreateBrokerOutput: Swift.Sendable {
     /// The broker's Amazon Resource Name (ARN).
     public var brokerArn: Swift.String?
     /// The unique ID that Amazon MQ generates for the broker.
@@ -1135,7 +1136,7 @@ public struct CreateBrokerOutput {
 }
 
 /// Creates a new configuration for the specified configuration name. Amazon MQ uses the default configuration (the engine type and version).
-public struct CreateConfigurationInput {
+public struct CreateConfigurationInput: Swift.Sendable {
     /// Optional. The authentication strategy associated with the configuration. The default is SIMPLE.
     public var authenticationStrategy: MqClientTypes.AuthenticationStrategy?
     /// Required. The type of broker engine. Currently, Amazon MQ supports ACTIVEMQ and RABBITMQ.
@@ -1165,7 +1166,7 @@ public struct CreateConfigurationInput {
     }
 }
 
-public struct CreateConfigurationOutput {
+public struct CreateConfigurationOutput: Swift.Sendable {
     /// Required. The Amazon Resource Name (ARN) of the configuration.
     public var arn: Swift.String?
     /// Optional. The authentication strategy associated with the configuration. The default is SIMPLE.
@@ -1227,7 +1228,7 @@ public struct NotFoundException: ClientRuntime.ModeledError, AWSClientRuntime.AW
 }
 
 /// A map of the key-value pairs for the resource tag.
-public struct CreateTagsInput {
+public struct CreateTagsInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the resource tag.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -1245,7 +1246,7 @@ public struct CreateTagsInput {
 }
 
 /// Creates a new ActiveMQ user.
-public struct CreateUserInput {
+public struct CreateUserInput: Swift.Sendable {
     /// The unique ID that Amazon MQ generates for the broker.
     /// This member is required.
     public var brokerId: Swift.String?
@@ -1280,14 +1281,15 @@ public struct CreateUserInput {
     }
 }
 
-public struct CreateUserOutput {
+public struct CreateUserOutput: Swift.Sendable {
 
     public init() { }
 }
 
 extension MqClientTypes {
+
     /// Specifies a broker in a data replication pair.
-    public struct DataReplicationCounterpart {
+    public struct DataReplicationCounterpart: Swift.Sendable {
         /// Required. The unique broker id generated by Amazon MQ.
         /// This member is required.
         public var brokerId: Swift.String?
@@ -1304,12 +1306,12 @@ extension MqClientTypes {
             self.region = region
         }
     }
-
 }
 
 extension MqClientTypes {
+
     /// The replication details of the data replication-enabled broker. Only returned if dataReplicationMode or pendingDataReplicationMode is set to CRDR.
-    public struct DataReplicationMetadataOutput {
+    public struct DataReplicationMetadataOutput: Swift.Sendable {
         /// Describes the replica/primary broker. Only returned if this broker is currently set as a primary or replica in the broker's dataReplicationRole property.
         public var dataReplicationCounterpart: MqClientTypes.DataReplicationCounterpart?
         /// Defines the role of this broker in a data replication pair. When a replica broker is promoted to primary, this role is interchanged.
@@ -1325,10 +1327,9 @@ extension MqClientTypes {
             self.dataReplicationRole = dataReplicationRole
         }
     }
-
 }
 
-public struct DeleteBrokerInput {
+public struct DeleteBrokerInput: Swift.Sendable {
     /// The unique ID that Amazon MQ generates for the broker.
     /// This member is required.
     public var brokerId: Swift.String?
@@ -1341,7 +1342,7 @@ public struct DeleteBrokerInput {
     }
 }
 
-public struct DeleteBrokerOutput {
+public struct DeleteBrokerOutput: Swift.Sendable {
     /// The unique ID that Amazon MQ generates for the broker.
     public var brokerId: Swift.String?
 
@@ -1353,7 +1354,7 @@ public struct DeleteBrokerOutput {
     }
 }
 
-public struct DeleteTagsInput {
+public struct DeleteTagsInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the resource tag.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -1371,7 +1372,7 @@ public struct DeleteTagsInput {
     }
 }
 
-public struct DeleteUserInput {
+public struct DeleteUserInput: Swift.Sendable {
     /// The unique ID that Amazon MQ generates for the broker.
     /// This member is required.
     public var brokerId: Swift.String?
@@ -1389,12 +1390,12 @@ public struct DeleteUserInput {
     }
 }
 
-public struct DeleteUserOutput {
+public struct DeleteUserOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DescribeBrokerInput {
+public struct DescribeBrokerInput: Swift.Sendable {
     /// The unique ID that Amazon MQ generates for the broker.
     /// This member is required.
     public var brokerId: Swift.String?
@@ -1408,8 +1409,9 @@ public struct DescribeBrokerInput {
 }
 
 extension MqClientTypes {
+
     /// Optional. The metadata of the LDAP server used to authenticate and authorize connections to the broker.
-    public struct LdapServerMetadataOutput {
+    public struct LdapServerMetadataOutput: Swift.Sendable {
         /// Specifies the location of the LDAP server such as Directory Service for Microsoft Active Directory. Optional failover server.
         /// This member is required.
         public var hosts: [Swift.String]?
@@ -1462,12 +1464,12 @@ extension MqClientTypes {
             self.userSearchSubtree = userSearchSubtree
         }
     }
-
 }
 
 extension MqClientTypes {
+
     /// The list of information about logs to be enabled for the specified broker.
-    public struct PendingLogs {
+    public struct PendingLogs: Swift.Sendable {
         /// Enables audit logging. Every user management action made using JMX or the ActiveMQ Web Console is logged.
         public var audit: Swift.Bool?
         /// Enables general logging.
@@ -1482,12 +1484,12 @@ extension MqClientTypes {
             self.general = general
         }
     }
-
 }
 
 extension MqClientTypes {
+
     /// The list of information about logs currently enabled and pending to be deployed for the specified broker.
-    public struct LogsSummary {
+    public struct LogsSummary: Swift.Sendable {
         /// Enables audit logging. Every user management action made using JMX or the ActiveMQ Web Console is logged.
         public var audit: Swift.Bool?
         /// The location of the CloudWatch Logs log group where audit logs are sent.
@@ -1516,10 +1518,9 @@ extension MqClientTypes {
             self.pending = pending
         }
     }
-
 }
 
-public struct DescribeBrokerOutput {
+public struct DescribeBrokerOutput: Swift.Sendable {
     /// Actions required for a broker.
     public var actionsRequired: [MqClientTypes.ActionRequired]?
     /// The authentication strategy used to secure the broker. The default is SIMPLE.
@@ -1659,7 +1660,7 @@ public struct DescribeBrokerOutput {
     }
 }
 
-public struct DescribeBrokerEngineTypesInput {
+public struct DescribeBrokerEngineTypesInput: Swift.Sendable {
     /// Filter response by engine type.
     public var engineType: Swift.String?
     /// The maximum number of brokers that Amazon MQ can return per page (20 by default). This value must be an integer from 5 to 100.
@@ -1679,7 +1680,7 @@ public struct DescribeBrokerEngineTypesInput {
     }
 }
 
-public struct DescribeBrokerEngineTypesOutput {
+public struct DescribeBrokerEngineTypesOutput: Swift.Sendable {
     /// List of available engine types and versions.
     public var brokerEngineTypes: [MqClientTypes.BrokerEngineType]?
     /// Required. The maximum number of engine types that can be returned per page (20 by default). This value must be an integer from 5 to 100.
@@ -1699,7 +1700,7 @@ public struct DescribeBrokerEngineTypesOutput {
     }
 }
 
-public struct DescribeBrokerInstanceOptionsInput {
+public struct DescribeBrokerInstanceOptionsInput: Swift.Sendable {
     /// Filter response by engine type.
     public var engineType: Swift.String?
     /// Filter response by host instance type.
@@ -1727,7 +1728,7 @@ public struct DescribeBrokerInstanceOptionsInput {
     }
 }
 
-public struct DescribeBrokerInstanceOptionsOutput {
+public struct DescribeBrokerInstanceOptionsOutput: Swift.Sendable {
     /// List of available broker instance options.
     public var brokerInstanceOptions: [MqClientTypes.BrokerInstanceOption]?
     /// Required. The maximum number of instance options that can be returned per page (20 by default). This value must be an integer from 5 to 100.
@@ -1747,7 +1748,7 @@ public struct DescribeBrokerInstanceOptionsOutput {
     }
 }
 
-public struct DescribeConfigurationInput {
+public struct DescribeConfigurationInput: Swift.Sendable {
     /// The unique ID that Amazon MQ generates for the configuration.
     /// This member is required.
     public var configurationId: Swift.String?
@@ -1760,7 +1761,7 @@ public struct DescribeConfigurationInput {
     }
 }
 
-public struct DescribeConfigurationOutput {
+public struct DescribeConfigurationOutput: Swift.Sendable {
     /// Required. The ARN of the configuration.
     public var arn: Swift.String?
     /// Optional. The authentication strategy associated with the configuration. The default is SIMPLE.
@@ -1808,7 +1809,7 @@ public struct DescribeConfigurationOutput {
     }
 }
 
-public struct DescribeConfigurationRevisionInput {
+public struct DescribeConfigurationRevisionInput: Swift.Sendable {
     /// The unique ID that Amazon MQ generates for the configuration.
     /// This member is required.
     public var configurationId: Swift.String?
@@ -1826,7 +1827,7 @@ public struct DescribeConfigurationRevisionInput {
     }
 }
 
-public struct DescribeConfigurationRevisionOutput {
+public struct DescribeConfigurationRevisionOutput: Swift.Sendable {
     /// Required. The unique ID that Amazon MQ generates for the configuration.
     public var configurationId: Swift.String?
     /// Required. The date and time of the configuration.
@@ -1850,7 +1851,7 @@ public struct DescribeConfigurationRevisionOutput {
     }
 }
 
-public struct DescribeUserInput {
+public struct DescribeUserInput: Swift.Sendable {
     /// The unique ID that Amazon MQ generates for the broker.
     /// This member is required.
     public var brokerId: Swift.String?
@@ -1869,8 +1870,9 @@ public struct DescribeUserInput {
 }
 
 extension MqClientTypes {
+
     /// Returns information about the status of the changes pending for the ActiveMQ user.
-    public struct UserPendingChanges {
+    public struct UserPendingChanges: Swift.Sendable {
         /// Enables access to the the ActiveMQ Web Console for the ActiveMQ user.
         public var consoleAccess: Swift.Bool?
         /// The list of groups (20 maximum) to which the ActiveMQ user belongs. This value can contain only alphanumeric characters, dashes, periods, underscores, and tildes (- . _ ~). This value must be 2-100 characters long.
@@ -1890,10 +1892,9 @@ extension MqClientTypes {
             self.pendingChange = pendingChange
         }
     }
-
 }
 
-public struct DescribeUserOutput {
+public struct DescribeUserOutput: Swift.Sendable {
     /// Required. The unique ID that Amazon MQ generates for the broker.
     public var brokerId: Swift.String?
     /// Enables access to the the ActiveMQ Web Console for the ActiveMQ user.
@@ -1925,7 +1926,7 @@ public struct DescribeUserOutput {
     }
 }
 
-public struct ListBrokersInput {
+public struct ListBrokersInput: Swift.Sendable {
     /// The maximum number of brokers that Amazon MQ can return per page (20 by default). This value must be an integer from 5 to 100.
     public var maxResults: Swift.Int?
     /// The token that specifies the next page of results Amazon MQ should return. To request the first page, leave nextToken empty.
@@ -1941,7 +1942,7 @@ public struct ListBrokersInput {
     }
 }
 
-public struct ListBrokersOutput {
+public struct ListBrokersOutput: Swift.Sendable {
     /// A list of information about all brokers.
     public var brokerSummaries: [MqClientTypes.BrokerSummary]?
     /// The token that specifies the next page of results Amazon MQ should return. To request the first page, leave nextToken empty.
@@ -1957,7 +1958,7 @@ public struct ListBrokersOutput {
     }
 }
 
-public struct ListConfigurationRevisionsInput {
+public struct ListConfigurationRevisionsInput: Swift.Sendable {
     /// The unique ID that Amazon MQ generates for the configuration.
     /// This member is required.
     public var configurationId: Swift.String?
@@ -1978,7 +1979,7 @@ public struct ListConfigurationRevisionsInput {
     }
 }
 
-public struct ListConfigurationRevisionsOutput {
+public struct ListConfigurationRevisionsOutput: Swift.Sendable {
     /// The unique ID that Amazon MQ generates for the configuration.
     public var configurationId: Swift.String?
     /// The maximum number of configuration revisions that can be returned per page (20 by default). This value must be an integer from 5 to 100.
@@ -2002,7 +2003,7 @@ public struct ListConfigurationRevisionsOutput {
     }
 }
 
-public struct ListConfigurationsInput {
+public struct ListConfigurationsInput: Swift.Sendable {
     /// The maximum number of brokers that Amazon MQ can return per page (20 by default). This value must be an integer from 5 to 100.
     public var maxResults: Swift.Int?
     /// The token that specifies the next page of results Amazon MQ should return. To request the first page, leave nextToken empty.
@@ -2018,7 +2019,7 @@ public struct ListConfigurationsInput {
     }
 }
 
-public struct ListConfigurationsOutput {
+public struct ListConfigurationsOutput: Swift.Sendable {
     /// The list of all revisions for the specified configuration.
     public var configurations: [MqClientTypes.Configuration]?
     /// The maximum number of configurations that Amazon MQ can return per page (20 by default). This value must be an integer from 5 to 100.
@@ -2038,7 +2039,7 @@ public struct ListConfigurationsOutput {
     }
 }
 
-public struct ListTagsInput {
+public struct ListTagsInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the resource tag.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -2051,7 +2052,7 @@ public struct ListTagsInput {
     }
 }
 
-public struct ListTagsOutput {
+public struct ListTagsOutput: Swift.Sendable {
     /// The key-value pair for the resource tag.
     public var tags: [Swift.String: Swift.String]?
 
@@ -2063,7 +2064,7 @@ public struct ListTagsOutput {
     }
 }
 
-public struct ListUsersInput {
+public struct ListUsersInput: Swift.Sendable {
     /// The unique ID that Amazon MQ generates for the broker.
     /// This member is required.
     public var brokerId: Swift.String?
@@ -2084,7 +2085,7 @@ public struct ListUsersInput {
     }
 }
 
-public struct ListUsersOutput {
+public struct ListUsersOutput: Swift.Sendable {
     /// Required. The unique ID that Amazon MQ generates for the broker.
     public var brokerId: Swift.String?
     /// Required. The maximum number of ActiveMQ users that can be returned per page (20 by default). This value must be an integer from 5 to 100.
@@ -2111,7 +2112,7 @@ public struct ListUsersOutput {
 extension MqClientTypes {
 
     /// The Promote mode requested.
-    public enum PromoteMode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum PromoteMode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case failover
         case switchover
         case sdkUnknown(Swift.String)
@@ -2139,7 +2140,7 @@ extension MqClientTypes {
 }
 
 /// Promotes a data replication replica broker to the primary broker role.
-public struct PromoteInput {
+public struct PromoteInput: Swift.Sendable {
     /// The unique ID that Amazon MQ generates for the broker.
     /// This member is required.
     public var brokerId: Swift.String?
@@ -2157,7 +2158,7 @@ public struct PromoteInput {
     }
 }
 
-public struct PromoteOutput {
+public struct PromoteOutput: Swift.Sendable {
     /// The unique ID that Amazon MQ generates for the broker.
     public var brokerId: Swift.String?
 
@@ -2169,7 +2170,7 @@ public struct PromoteOutput {
     }
 }
 
-public struct RebootBrokerInput {
+public struct RebootBrokerInput: Swift.Sendable {
     /// The unique ID that Amazon MQ generates for the broker.
     /// This member is required.
     public var brokerId: Swift.String?
@@ -2182,13 +2183,13 @@ public struct RebootBrokerInput {
     }
 }
 
-public struct RebootBrokerOutput {
+public struct RebootBrokerOutput: Swift.Sendable {
 
     public init() { }
 }
 
 /// Updates the broker using the specified properties.
-public struct UpdateBrokerInput {
+public struct UpdateBrokerInput: Swift.Sendable {
     /// Optional. The authentication strategy used to secure the broker. The default is SIMPLE.
     public var authenticationStrategy: MqClientTypes.AuthenticationStrategy?
     /// Enables automatic upgrades to new patch versions for brokers as new versions are released and supported by Amazon MQ. Automatic upgrades occur during the scheduled maintenance window or after a manual broker reboot. Must be set to true for ActiveMQ brokers version 5.18 and above and for RabbitMQ brokers version 3.13 and above.
@@ -2241,7 +2242,7 @@ public struct UpdateBrokerInput {
     }
 }
 
-public struct UpdateBrokerOutput {
+public struct UpdateBrokerOutput: Swift.Sendable {
     /// Optional. The authentication strategy used to secure the broker. The default is SIMPLE.
     public var authenticationStrategy: MqClientTypes.AuthenticationStrategy?
     /// Enables automatic upgrades to new patch versions for brokers as new versions are released and supported by Amazon MQ. Automatic upgrades occur during the scheduled maintenance window or after a manual broker reboot.
@@ -2306,7 +2307,7 @@ public struct UpdateBrokerOutput {
 }
 
 /// Updates the specified configuration.
-public struct UpdateConfigurationInput {
+public struct UpdateConfigurationInput: Swift.Sendable {
     /// The unique ID that Amazon MQ generates for the configuration.
     /// This member is required.
     public var configurationId: Swift.String?
@@ -2328,7 +2329,7 @@ public struct UpdateConfigurationInput {
     }
 }
 
-public struct UpdateConfigurationOutput {
+public struct UpdateConfigurationOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the configuration.
     public var arn: Swift.String?
     /// Required. The date and time of the configuration.
@@ -2361,7 +2362,7 @@ public struct UpdateConfigurationOutput {
 }
 
 /// Updates the information for an ActiveMQ user.
-public struct UpdateUserInput {
+public struct UpdateUserInput: Swift.Sendable {
     /// The unique ID that Amazon MQ generates for the broker.
     /// This member is required.
     public var brokerId: Swift.String?
@@ -2395,7 +2396,7 @@ public struct UpdateUserInput {
     }
 }
 
-public struct UpdateUserOutput {
+public struct UpdateUserOutput: Swift.Sendable {
 
     public init() { }
 }

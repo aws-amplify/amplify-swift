@@ -111,8 +111,9 @@ public struct InvalidRequestException: ClientRuntime.ModeledError, AWSClientRunt
 }
 
 extension CloudHSMClientTypes {
+
     /// A key-value pair that identifies or specifies metadata about an AWS CloudHSM resource.
-    public struct Tag {
+    public struct Tag: Swift.Sendable {
         /// The key of the tag.
         /// This member is required.
         public var key: Swift.String?
@@ -129,10 +130,9 @@ extension CloudHSMClientTypes {
             self.value = value
         }
     }
-
 }
 
-public struct AddTagsToResourceInput {
+public struct AddTagsToResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the AWS CloudHSM resource to tag.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -150,7 +150,7 @@ public struct AddTagsToResourceInput {
     }
 }
 
-public struct AddTagsToResourceOutput {
+public struct AddTagsToResourceOutput: Swift.Sendable {
     /// The status of the operation.
     /// This member is required.
     public var status: Swift.String?
@@ -165,7 +165,7 @@ public struct AddTagsToResourceOutput {
 
 extension CloudHSMClientTypes {
 
-    public enum ClientVersion: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ClientVersion: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case fiveOne
         case fiveThree
         case sdkUnknown(Swift.String)
@@ -193,7 +193,7 @@ extension CloudHSMClientTypes {
 }
 
 /// Contains the inputs for the [CreateHapgRequest] action.
-public struct CreateHapgInput {
+public struct CreateHapgInput: Swift.Sendable {
     /// The label of the new high-availability partition group.
     /// This member is required.
     public var label: Swift.String?
@@ -207,7 +207,7 @@ public struct CreateHapgInput {
 }
 
 /// Contains the output of the [CreateHAPartitionGroup] action.
-public struct CreateHapgOutput {
+public struct CreateHapgOutput: Swift.Sendable {
     /// The ARN of the high-availability partition group.
     public var hapgArn: Swift.String?
 
@@ -226,7 +226,7 @@ extension CloudHSMClientTypes {
     /// * PRODUCTION - The HSM is being used in a production environment.
     ///
     /// * TRIAL - The HSM is being used in a product trial.
-    public enum SubscriptionType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SubscriptionType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case production
         case sdkUnknown(Swift.String)
 
@@ -251,7 +251,7 @@ extension CloudHSMClientTypes {
 }
 
 /// Contains the inputs for the CreateHsm operation.
-public struct CreateHsmInput {
+public struct CreateHsmInput: Swift.Sendable {
     /// A user-defined token to ensure idempotence. Subsequent calls to this operation with the same token will be ignored.
     public var clientToken: Swift.String?
     /// The IP address to assign to the HSM's ENI. If an IP address is not specified, an IP address will be randomly chosen from the CIDR range of the subnet.
@@ -300,7 +300,7 @@ public struct CreateHsmInput {
 }
 
 /// Contains the output of the CreateHsm operation.
-public struct CreateHsmOutput {
+public struct CreateHsmOutput: Swift.Sendable {
     /// The ARN of the HSM.
     public var hsmArn: Swift.String?
 
@@ -313,7 +313,7 @@ public struct CreateHsmOutput {
 }
 
 /// Contains the inputs for the [CreateLunaClient] action.
-public struct CreateLunaClientInput {
+public struct CreateLunaClientInput: Swift.Sendable {
     /// The contents of a Base64-Encoded X.509 v3 certificate to be installed on the HSMs used by this client.
     /// This member is required.
     public var certificate: Swift.String?
@@ -331,7 +331,7 @@ public struct CreateLunaClientInput {
 }
 
 /// Contains the output of the [CreateLunaClient] action.
-public struct CreateLunaClientOutput {
+public struct CreateLunaClientOutput: Swift.Sendable {
     /// The ARN of the client.
     public var clientArn: Swift.String?
 
@@ -344,7 +344,7 @@ public struct CreateLunaClientOutput {
 }
 
 /// Contains the inputs for the [DeleteHapg] action.
-public struct DeleteHapgInput {
+public struct DeleteHapgInput: Swift.Sendable {
     /// The ARN of the high-availability partition group to delete.
     /// This member is required.
     public var hapgArn: Swift.String?
@@ -358,7 +358,7 @@ public struct DeleteHapgInput {
 }
 
 /// Contains the output of the [DeleteHapg] action.
-public struct DeleteHapgOutput {
+public struct DeleteHapgOutput: Swift.Sendable {
     /// The status of the action.
     /// This member is required.
     public var status: Swift.String?
@@ -372,7 +372,7 @@ public struct DeleteHapgOutput {
 }
 
 /// Contains the inputs for the [DeleteHsm] operation.
-public struct DeleteHsmInput {
+public struct DeleteHsmInput: Swift.Sendable {
     /// The ARN of the HSM to delete.
     /// This member is required.
     public var hsmArn: Swift.String?
@@ -386,7 +386,7 @@ public struct DeleteHsmInput {
 }
 
 /// Contains the output of the [DeleteHsm] operation.
-public struct DeleteHsmOutput {
+public struct DeleteHsmOutput: Swift.Sendable {
     /// The status of the operation.
     /// This member is required.
     public var status: Swift.String?
@@ -399,7 +399,7 @@ public struct DeleteHsmOutput {
     }
 }
 
-public struct DeleteLunaClientInput {
+public struct DeleteLunaClientInput: Swift.Sendable {
     /// The ARN of the client to delete.
     /// This member is required.
     public var clientArn: Swift.String?
@@ -412,7 +412,7 @@ public struct DeleteLunaClientInput {
     }
 }
 
-public struct DeleteLunaClientOutput {
+public struct DeleteLunaClientOutput: Swift.Sendable {
     /// The status of the action.
     /// This member is required.
     public var status: Swift.String?
@@ -426,7 +426,7 @@ public struct DeleteLunaClientOutput {
 }
 
 /// Contains the inputs for the [DescribeHapg] action.
-public struct DescribeHapgInput {
+public struct DescribeHapgInput: Swift.Sendable {
     /// The ARN of the high-availability partition group to describe.
     /// This member is required.
     public var hapgArn: Swift.String?
@@ -441,7 +441,7 @@ public struct DescribeHapgInput {
 
 extension CloudHSMClientTypes {
 
-    public enum CloudHsmObjectState: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum CloudHsmObjectState: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case degraded
         case ready
         case updating
@@ -472,7 +472,7 @@ extension CloudHSMClientTypes {
 }
 
 /// Contains the output of the [DescribeHapg] action.
-public struct DescribeHapgOutput {
+public struct DescribeHapgOutput: Swift.Sendable {
     /// The ARN of the high-availability partition group.
     public var hapgArn: Swift.String?
     /// The serial number of the high-availability partition group.
@@ -517,7 +517,7 @@ public struct DescribeHapgOutput {
 }
 
 /// Contains the inputs for the [DescribeHsm] operation.
-public struct DescribeHsmInput {
+public struct DescribeHsmInput: Swift.Sendable {
     /// The ARN of the HSM. Either the HsmArn or the SerialNumber parameter must be specified.
     public var hsmArn: Swift.String?
     /// The serial number of the HSM. Either the HsmArn or the HsmSerialNumber parameter must be specified.
@@ -535,7 +535,7 @@ public struct DescribeHsmInput {
 
 extension CloudHSMClientTypes {
 
-    public enum HsmStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum HsmStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case degraded
         case pending
         case running
@@ -578,7 +578,7 @@ extension CloudHSMClientTypes {
 }
 
 /// Contains the output of the [DescribeHsm] operation.
-public struct DescribeHsmOutput {
+public struct DescribeHsmOutput: Swift.Sendable {
     /// The Availability Zone that the HSM is in.
     public var availabilityZone: Swift.String?
     /// The identifier of the elastic network interface (ENI) attached to the HSM.
@@ -674,7 +674,7 @@ public struct DescribeHsmOutput {
     }
 }
 
-public struct DescribeLunaClientInput {
+public struct DescribeLunaClientInput: Swift.Sendable {
     /// The certificate fingerprint.
     public var certificateFingerprint: Swift.String?
     /// The ARN of the client.
@@ -690,7 +690,7 @@ public struct DescribeLunaClientInput {
     }
 }
 
-public struct DescribeLunaClientOutput {
+public struct DescribeLunaClientOutput: Swift.Sendable {
     /// The certificate installed on the HSMs used by this client.
     public var certificate: Swift.String?
     /// The certificate fingerprint.
@@ -718,7 +718,7 @@ public struct DescribeLunaClientOutput {
     }
 }
 
-public struct GetConfigInput {
+public struct GetConfigInput: Swift.Sendable {
     /// The ARN of the client.
     /// This member is required.
     public var clientArn: Swift.String?
@@ -741,7 +741,7 @@ public struct GetConfigInput {
     }
 }
 
-public struct GetConfigOutput {
+public struct GetConfigOutput: Swift.Sendable {
     /// The certificate file containing the server.pem files of the HSMs.
     public var configCred: Swift.String?
     /// The chrystoki.conf configuration file.
@@ -762,12 +762,12 @@ public struct GetConfigOutput {
 }
 
 /// Contains the inputs for the [ListAvailableZones] action.
-public struct ListAvailableZonesInput {
+public struct ListAvailableZonesInput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct ListAvailableZonesOutput {
+public struct ListAvailableZonesOutput: Swift.Sendable {
     /// The list of Availability Zones that have available AWS CloudHSM capacity.
     public var azList: [Swift.String]?
 
@@ -779,7 +779,7 @@ public struct ListAvailableZonesOutput {
     }
 }
 
-public struct ListHapgsInput {
+public struct ListHapgsInput: Swift.Sendable {
     /// The NextToken value from a previous call to ListHapgs. Pass null if this is the first call.
     public var nextToken: Swift.String?
 
@@ -791,7 +791,7 @@ public struct ListHapgsInput {
     }
 }
 
-public struct ListHapgsOutput {
+public struct ListHapgsOutput: Swift.Sendable {
     /// The list of high-availability partition groups.
     /// This member is required.
     public var hapgList: [Swift.String]?
@@ -808,7 +808,7 @@ public struct ListHapgsOutput {
     }
 }
 
-public struct ListHsmsInput {
+public struct ListHsmsInput: Swift.Sendable {
     /// The NextToken value from a previous call to ListHsms. Pass null if this is the first call.
     public var nextToken: Swift.String?
 
@@ -821,7 +821,7 @@ public struct ListHsmsInput {
 }
 
 /// Contains the output of the ListHsms operation.
-public struct ListHsmsOutput {
+public struct ListHsmsOutput: Swift.Sendable {
     /// The list of ARNs that identify the HSMs.
     public var hsmList: [Swift.String]?
     /// If not null, more results are available. Pass this value to ListHsms to retrieve the next set of items.
@@ -837,7 +837,7 @@ public struct ListHsmsOutput {
     }
 }
 
-public struct ListLunaClientsInput {
+public struct ListLunaClientsInput: Swift.Sendable {
     /// The NextToken value from a previous call to ListLunaClients. Pass null if this is the first call.
     public var nextToken: Swift.String?
 
@@ -849,7 +849,7 @@ public struct ListLunaClientsInput {
     }
 }
 
-public struct ListLunaClientsOutput {
+public struct ListLunaClientsOutput: Swift.Sendable {
     /// The list of clients.
     /// This member is required.
     public var clientList: [Swift.String]?
@@ -866,7 +866,7 @@ public struct ListLunaClientsOutput {
     }
 }
 
-public struct ListTagsForResourceInput {
+public struct ListTagsForResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the AWS CloudHSM resource.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -879,7 +879,7 @@ public struct ListTagsForResourceInput {
     }
 }
 
-public struct ListTagsForResourceOutput {
+public struct ListTagsForResourceOutput: Swift.Sendable {
     /// One or more tags.
     /// This member is required.
     public var tagList: [CloudHSMClientTypes.Tag]?
@@ -892,7 +892,7 @@ public struct ListTagsForResourceOutput {
     }
 }
 
-public struct ModifyHapgInput {
+public struct ModifyHapgInput: Swift.Sendable {
     /// The ARN of the high-availability partition group to modify.
     /// This member is required.
     public var hapgArn: Swift.String?
@@ -913,7 +913,7 @@ public struct ModifyHapgInput {
     }
 }
 
-public struct ModifyHapgOutput {
+public struct ModifyHapgOutput: Swift.Sendable {
     /// The ARN of the high-availability partition group.
     public var hapgArn: Swift.String?
 
@@ -926,7 +926,7 @@ public struct ModifyHapgOutput {
 }
 
 /// Contains the inputs for the [ModifyHsm] operation.
-public struct ModifyHsmInput {
+public struct ModifyHsmInput: Swift.Sendable {
     /// The new IP address for the elastic network interface (ENI) attached to the HSM. If the HSM is moved to a different subnet, and an IP address is not specified, an IP address will be randomly chosen from the CIDR range of the new subnet.
     public var eniIp: Swift.String?
     /// The new external ID.
@@ -960,7 +960,7 @@ public struct ModifyHsmInput {
 }
 
 /// Contains the output of the [ModifyHsm] operation.
-public struct ModifyHsmOutput {
+public struct ModifyHsmOutput: Swift.Sendable {
     /// The ARN of the HSM.
     public var hsmArn: Swift.String?
 
@@ -972,7 +972,7 @@ public struct ModifyHsmOutput {
     }
 }
 
-public struct ModifyLunaClientInput {
+public struct ModifyLunaClientInput: Swift.Sendable {
     /// The new certificate for the client.
     /// This member is required.
     public var certificate: Swift.String?
@@ -990,7 +990,7 @@ public struct ModifyLunaClientInput {
     }
 }
 
-public struct ModifyLunaClientOutput {
+public struct ModifyLunaClientOutput: Swift.Sendable {
     /// The ARN of the client.
     public var clientArn: Swift.String?
 
@@ -1002,7 +1002,7 @@ public struct ModifyLunaClientOutput {
     }
 }
 
-public struct RemoveTagsFromResourceInput {
+public struct RemoveTagsFromResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the AWS CloudHSM resource.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -1020,7 +1020,7 @@ public struct RemoveTagsFromResourceInput {
     }
 }
 
-public struct RemoveTagsFromResourceOutput {
+public struct RemoveTagsFromResourceOutput: Swift.Sendable {
     /// The status of the operation.
     /// This member is required.
     public var status: Swift.String?

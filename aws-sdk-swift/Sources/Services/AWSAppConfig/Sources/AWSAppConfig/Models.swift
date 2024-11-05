@@ -32,62 +32,64 @@ import struct SmithyHTTPAPI.Header
 import struct SmithyHTTPAPI.Headers
 @_spi(SmithyReadWrite) import struct SmithyReadWrite.ReadingClosureBox
 
-public struct DeleteApplicationOutput {
+
+public struct DeleteApplicationOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteConfigurationProfileOutput {
+public struct DeleteConfigurationProfileOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteDeploymentStrategyOutput {
+public struct DeleteDeploymentStrategyOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteEnvironmentOutput {
+public struct DeleteEnvironmentOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteExtensionAssociationOutput {
+public struct DeleteExtensionAssociationOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteExtensionOutput {
+public struct DeleteExtensionOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteHostedConfigurationVersionOutput {
+public struct DeleteHostedConfigurationVersionOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct GetAccountSettingsInput {
+public struct GetAccountSettingsInput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct TagResourceOutput {
+public struct TagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UntagResourceOutput {
+public struct UntagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct ValidateConfigurationOutput {
+public struct ValidateConfigurationOutput: Swift.Sendable {
 
     public init() { }
 }
 
 extension AppConfigClientTypes {
+
     /// A parameter to configure deletion protection. If enabled, deletion protection prevents a user from deleting a configuration profile or an environment if AppConfig has called either [GetLatestConfiguration](https://docs.aws.amazon.com/appconfig/2019-10-09/APIReference/API_appconfigdata_GetLatestConfiguration.html) or for the configuration profile or from the environment during the specified interval. This setting uses the following default values:
     ///
     /// * Deletion protection is disabled by default.
@@ -95,7 +97,7 @@ extension AppConfigClientTypes {
     /// * The default interval specified by ProtectionPeriodInMinutes is 60.
     ///
     /// * DeletionProtectionCheck skips configuration profiles and environments that were created in the past hour.
-    public struct DeletionProtectionSettings {
+    public struct DeletionProtectionSettings: Swift.Sendable {
         /// A parameter that indicates if deletion protection is enabled or not.
         public var enabled: Swift.Bool?
         /// The time interval during which AppConfig monitors for calls to [GetLatestConfiguration](https://docs.aws.amazon.com/appconfig/2019-10-09/APIReference/API_appconfigdata_GetLatestConfiguration.html) or for a configuration profile or from an environment. AppConfig returns an error if a user calls or for the designated configuration profile or environment. To bypass the error and delete a configuration profile or an environment, specify BYPASS for the DeletionProtectionCheck parameter for either or .
@@ -110,10 +112,10 @@ extension AppConfigClientTypes {
             self.protectionPeriodInMinutes = protectionPeriodInMinutes
         }
     }
-
 }
 
 extension AppConfigClientTypes {
+
     /// An action defines the tasks that the extension performs during the AppConfig workflow. Each action includes an action point such as ON_CREATE_HOSTED_CONFIGURATION, PRE_DEPLOYMENT, or ON_DEPLOYMENT. Each action also includes a name, a URI to an Lambda function, and an Amazon Resource Name (ARN) for an Identity and Access Management assume role. You specify the name, URI, and ARN for each action point defined in the extension. You can specify the following actions for an extension:
     ///
     /// * PRE_CREATE_HOSTED_CONFIGURATION_VERSION
@@ -129,7 +131,7 @@ extension AppConfigClientTypes {
     /// * ON_DEPLOYMENT_COMPLETE
     ///
     /// * ON_DEPLOYMENT_ROLLED_BACK
-    public struct Action {
+    public struct Action: Swift.Sendable {
         /// Information about the action.
         public var description: Swift.String?
         /// The action name.
@@ -152,12 +154,12 @@ extension AppConfigClientTypes {
             self.uri = uri
         }
     }
-
 }
 
 extension AppConfigClientTypes {
+
     /// An extension that was invoked as part of a deployment event.
-    public struct ActionInvocation {
+    public struct ActionInvocation: Swift.Sendable {
         /// The name of the action.
         public var actionName: Swift.String?
         /// The error code when an extension invocation fails.
@@ -192,12 +194,11 @@ extension AppConfigClientTypes {
             self.uri = uri
         }
     }
-
 }
 
 extension AppConfigClientTypes {
 
-    public enum ActionPoint: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ActionPoint: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case onDeploymentBaking
         case onDeploymentComplete
         case onDeploymentRolledBack
@@ -240,8 +241,9 @@ extension AppConfigClientTypes {
 }
 
 extension AppConfigClientTypes {
+
     /// Detailed information about the bad request exception error when creating a hosted configuration version.
-    public struct InvalidConfigurationDetail {
+    public struct InvalidConfigurationDetail: Swift.Sendable {
         /// The invalid or out-of-range validation constraint in your JSON schema that failed validation.
         public var constraint: Swift.String?
         /// Location of the validation constraint in the configuration JSON schema that failed validation.
@@ -268,22 +270,21 @@ extension AppConfigClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension AppConfigClientTypes {
+
     /// Detailed information about the input that failed to satisfy the constraints specified by a call.
-    public enum BadRequestDetails {
+    public enum BadRequestDetails: Swift.Sendable {
         /// Detailed information about the bad request exception error when creating a hosted configuration version.
         case invalidconfiguration([AppConfigClientTypes.InvalidConfigurationDetail])
         case sdkUnknown(Swift.String)
     }
-
 }
 
 extension AppConfigClientTypes {
 
-    public enum BadRequestReason: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum BadRequestReason: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case invalidConfiguration
         case sdkUnknown(Swift.String)
 
@@ -386,7 +387,7 @@ public struct ServiceQuotaExceededException: ClientRuntime.ModeledError, AWSClie
     }
 }
 
-public struct CreateApplicationInput {
+public struct CreateApplicationInput: Swift.Sendable {
     /// A description of the application.
     public var description: Swift.String?
     /// A name for the application.
@@ -407,7 +408,7 @@ public struct CreateApplicationInput {
     }
 }
 
-public struct CreateApplicationOutput {
+public struct CreateApplicationOutput: Swift.Sendable {
     /// The description of the application.
     public var description: Swift.String?
     /// The application ID.
@@ -456,7 +457,7 @@ public struct ResourceNotFoundException: ClientRuntime.ModeledError, AWSClientRu
 
 extension AppConfigClientTypes {
 
-    public enum ValidatorType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ValidatorType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case jsonSchema
         case lambda
         case sdkUnknown(Swift.String)
@@ -484,8 +485,9 @@ extension AppConfigClientTypes {
 }
 
 extension AppConfigClientTypes {
+
     /// A validator provides a syntactic or semantic check to ensure the configuration that you want to deploy functions as intended. To validate your application configuration data, you provide a schema or an Amazon Web Services Lambda function that runs against the configuration. The configuration deployment or update can only proceed when the configuration data is valid. For more information, see [About validators](https://docs.aws.amazon.com/appconfig/latest/userguide/appconfig-creating-configuration-profile.html#appconfig-creating-configuration-and-profile-validators) in the AppConfig User Guide.
-    public struct Validator {
+    public struct Validator: Swift.Sendable {
         /// Either the JSON Schema content or the Amazon Resource Name (ARN) of an Lambda function.
         /// This member is required.
         public var content: Swift.String?
@@ -502,7 +504,6 @@ extension AppConfigClientTypes {
             self.type = type
         }
     }
-
 }
 
 extension AppConfigClientTypes.Validator: Swift.CustomDebugStringConvertible {
@@ -510,7 +511,7 @@ extension AppConfigClientTypes.Validator: Swift.CustomDebugStringConvertible {
         "Validator(type: \(Swift.String(describing: type)), content: \"CONTENT_REDACTED\")"}
 }
 
-public struct CreateConfigurationProfileInput {
+public struct CreateConfigurationProfileInput: Swift.Sendable {
     /// The application ID.
     /// This member is required.
     public var applicationId: Swift.String?
@@ -570,7 +571,7 @@ public struct CreateConfigurationProfileInput {
     }
 }
 
-public struct CreateConfigurationProfileOutput {
+public struct CreateConfigurationProfileOutput: Swift.Sendable {
     /// The application ID.
     public var applicationId: Swift.String?
     /// The configuration profile description.
@@ -621,7 +622,7 @@ public struct CreateConfigurationProfileOutput {
 
 extension AppConfigClientTypes {
 
-    public enum GrowthType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum GrowthType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case exponential
         case linear
         case sdkUnknown(Swift.String)
@@ -650,7 +651,7 @@ extension AppConfigClientTypes {
 
 extension AppConfigClientTypes {
 
-    public enum ReplicateTo: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ReplicateTo: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case `none`
         case ssmDocument
         case sdkUnknown(Swift.String)
@@ -677,7 +678,7 @@ extension AppConfigClientTypes {
     }
 }
 
-public struct CreateDeploymentStrategyInput {
+public struct CreateDeploymentStrategyInput: Swift.Sendable {
     /// Total amount of time for a deployment to last.
     /// This member is required.
     public var deploymentDurationInMinutes: Swift.Int?
@@ -723,7 +724,7 @@ public struct CreateDeploymentStrategyInput {
     }
 }
 
-public struct CreateDeploymentStrategyOutput {
+public struct CreateDeploymentStrategyOutput: Swift.Sendable {
     /// Total amount of time the deployment lasted.
     public var deploymentDurationInMinutes: Swift.Int
     /// The description of the deployment strategy.
@@ -764,8 +765,9 @@ public struct CreateDeploymentStrategyOutput {
 }
 
 extension AppConfigClientTypes {
+
     /// Amazon CloudWatch alarms to monitor during the deployment process.
-    public struct Monitor {
+    public struct Monitor: Swift.Sendable {
         /// Amazon Resource Name (ARN) of the Amazon CloudWatch alarm.
         /// This member is required.
         public var alarmArn: Swift.String?
@@ -781,10 +783,9 @@ extension AppConfigClientTypes {
             self.alarmRoleArn = alarmRoleArn
         }
     }
-
 }
 
-public struct CreateEnvironmentInput {
+public struct CreateEnvironmentInput: Swift.Sendable {
     /// The application ID.
     /// This member is required.
     public var applicationId: Swift.String?
@@ -816,9 +817,10 @@ public struct CreateEnvironmentInput {
 
 extension AppConfigClientTypes {
 
-    public enum EnvironmentState: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum EnvironmentState: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case deploying
         case readyForDeployment
+        case reverted
         case rolledBack
         case rollingBack
         case sdkUnknown(Swift.String)
@@ -827,6 +829,7 @@ extension AppConfigClientTypes {
             return [
                 .deploying,
                 .readyForDeployment,
+                .reverted,
                 .rolledBack,
                 .rollingBack
             ]
@@ -841,6 +844,7 @@ extension AppConfigClientTypes {
             switch self {
             case .deploying: return "DEPLOYING"
             case .readyForDeployment: return "READY_FOR_DEPLOYMENT"
+            case .reverted: return "REVERTED"
             case .rolledBack: return "ROLLED_BACK"
             case .rollingBack: return "ROLLING_BACK"
             case let .sdkUnknown(s): return s
@@ -849,7 +853,7 @@ extension AppConfigClientTypes {
     }
 }
 
-public struct CreateEnvironmentOutput {
+public struct CreateEnvironmentOutput: Swift.Sendable {
     /// The application ID.
     public var applicationId: Swift.String?
     /// The description of the environment.
@@ -906,8 +910,9 @@ public struct ConflictException: ClientRuntime.ModeledError, AWSClientRuntime.AW
 }
 
 extension AppConfigClientTypes {
+
     /// A value such as an Amazon Resource Name (ARN) or an Amazon Simple Notification Service topic entered in an extension when invoked. Parameter values are specified in an extension association. For more information about extensions, see [Extending workflows](https://docs.aws.amazon.com/appconfig/latest/userguide/working-with-appconfig-extensions.html) in the AppConfig User Guide.
-    public struct Parameter {
+    public struct Parameter: Swift.Sendable {
         /// Information about the parameter.
         public var description: Swift.String?
         /// Indicates whether this parameter's value can be supplied at the extension's action point instead of during extension association. Dynamic parameters can't be marked Required.
@@ -926,10 +931,9 @@ extension AppConfigClientTypes {
             self.`required` = `required`
         }
     }
-
 }
 
-public struct CreateExtensionInput {
+public struct CreateExtensionInput: Swift.Sendable {
     /// The actions defined in the extension.
     /// This member is required.
     public var actions: [Swift.String: [AppConfigClientTypes.Action]]?
@@ -963,7 +967,7 @@ public struct CreateExtensionInput {
     }
 }
 
-public struct CreateExtensionOutput {
+public struct CreateExtensionOutput: Swift.Sendable {
     /// The actions defined in the extension.
     public var actions: [Swift.String: [AppConfigClientTypes.Action]]?
     /// The system-generated Amazon Resource Name (ARN) for the extension.
@@ -999,7 +1003,7 @@ public struct CreateExtensionOutput {
     }
 }
 
-public struct CreateExtensionAssociationInput {
+public struct CreateExtensionAssociationInput: Swift.Sendable {
     /// The name, the ID, or the Amazon Resource Name (ARN) of the extension.
     /// This member is required.
     public var extensionIdentifier: Swift.String?
@@ -1029,7 +1033,7 @@ public struct CreateExtensionAssociationInput {
     }
 }
 
-public struct CreateExtensionAssociationOutput {
+public struct CreateExtensionAssociationOutput: Swift.Sendable {
     /// The system-generated Amazon Resource Name (ARN) for the extension.
     public var arn: Swift.String?
     /// The ARN of the extension defined in the association.
@@ -1063,7 +1067,7 @@ public struct CreateExtensionAssociationOutput {
 
 extension AppConfigClientTypes {
 
-    public enum BytesMeasure: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum BytesMeasure: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case kilobytes
         case sdkUnknown(Swift.String)
 
@@ -1120,7 +1124,7 @@ public struct PayloadTooLargeException: ClientRuntime.ModeledError, AWSClientRun
     }
 }
 
-public struct CreateHostedConfigurationVersionInput {
+public struct CreateHostedConfigurationVersionInput: Swift.Sendable {
     /// The application ID.
     /// This member is required.
     public var applicationId: Swift.String?
@@ -1165,7 +1169,7 @@ extension CreateHostedConfigurationVersionInput: Swift.CustomDebugStringConverti
         "CreateHostedConfigurationVersionInput(applicationId: \(Swift.String(describing: applicationId)), configurationProfileId: \(Swift.String(describing: configurationProfileId)), contentType: \(Swift.String(describing: contentType)), description: \(Swift.String(describing: description)), latestVersionNumber: \(Swift.String(describing: latestVersionNumber)), versionLabel: \(Swift.String(describing: versionLabel)), content: \"CONTENT_REDACTED\")"}
 }
 
-public struct CreateHostedConfigurationVersionOutput {
+public struct CreateHostedConfigurationVersionOutput: Swift.Sendable {
     /// The application ID.
     public var applicationId: Swift.String?
     /// The configuration profile ID.
@@ -1210,7 +1214,7 @@ extension CreateHostedConfigurationVersionOutput: Swift.CustomDebugStringConvert
         "CreateHostedConfigurationVersionOutput(applicationId: \(Swift.String(describing: applicationId)), configurationProfileId: \(Swift.String(describing: configurationProfileId)), contentType: \(Swift.String(describing: contentType)), description: \(Swift.String(describing: description)), kmsKeyArn: \(Swift.String(describing: kmsKeyArn)), versionLabel: \(Swift.String(describing: versionLabel)), versionNumber: \(Swift.String(describing: versionNumber)), content: \"CONTENT_REDACTED\")"}
 }
 
-public struct DeleteApplicationInput {
+public struct DeleteApplicationInput: Swift.Sendable {
     /// The ID of the application to delete.
     /// This member is required.
     public var applicationId: Swift.String?
@@ -1225,7 +1229,7 @@ public struct DeleteApplicationInput {
 
 extension AppConfigClientTypes {
 
-    public enum DeletionProtectionCheck: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DeletionProtectionCheck: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case accountDefault
         case apply
         case bypass
@@ -1255,7 +1259,7 @@ extension AppConfigClientTypes {
     }
 }
 
-public struct DeleteConfigurationProfileInput {
+public struct DeleteConfigurationProfileInput: Swift.Sendable {
     /// The application ID that includes the configuration profile you want to delete.
     /// This member is required.
     public var applicationId: Swift.String?
@@ -1283,7 +1287,7 @@ public struct DeleteConfigurationProfileInput {
     }
 }
 
-public struct DeleteDeploymentStrategyInput {
+public struct DeleteDeploymentStrategyInput: Swift.Sendable {
     /// The ID of the deployment strategy you want to delete.
     /// This member is required.
     public var deploymentStrategyId: Swift.String?
@@ -1296,7 +1300,7 @@ public struct DeleteDeploymentStrategyInput {
     }
 }
 
-public struct DeleteEnvironmentInput {
+public struct DeleteEnvironmentInput: Swift.Sendable {
     /// The application ID that includes the environment that you want to delete.
     /// This member is required.
     public var applicationId: Swift.String?
@@ -1324,7 +1328,7 @@ public struct DeleteEnvironmentInput {
     }
 }
 
-public struct DeleteExtensionInput {
+public struct DeleteExtensionInput: Swift.Sendable {
     /// The name, ID, or Amazon Resource Name (ARN) of the extension you want to delete.
     /// This member is required.
     public var extensionIdentifier: Swift.String?
@@ -1341,7 +1345,7 @@ public struct DeleteExtensionInput {
     }
 }
 
-public struct DeleteExtensionAssociationInput {
+public struct DeleteExtensionAssociationInput: Swift.Sendable {
     /// The ID of the extension association to delete.
     /// This member is required.
     public var extensionAssociationId: Swift.String?
@@ -1354,7 +1358,7 @@ public struct DeleteExtensionAssociationInput {
     }
 }
 
-public struct DeleteHostedConfigurationVersionInput {
+public struct DeleteHostedConfigurationVersionInput: Swift.Sendable {
     /// The application ID.
     /// This member is required.
     public var applicationId: Swift.String?
@@ -1377,7 +1381,7 @@ public struct DeleteHostedConfigurationVersionInput {
     }
 }
 
-public struct GetAccountSettingsOutput {
+public struct GetAccountSettingsOutput: Swift.Sendable {
     /// A parameter to configure deletion protection. If enabled, deletion protection prevents a user from deleting a configuration profile or an environment if AppConfig has called either [GetLatestConfiguration](https://docs.aws.amazon.com/appconfig/2019-10-09/APIReference/API_appconfigdata_GetLatestConfiguration.html) or for the configuration profile or from the environment during the specified interval. Deletion protection is disabled by default. The default interval for ProtectionPeriodInMinutes is 60.
     public var deletionProtection: AppConfigClientTypes.DeletionProtectionSettings?
 
@@ -1389,7 +1393,7 @@ public struct GetAccountSettingsOutput {
     }
 }
 
-public struct GetApplicationInput {
+public struct GetApplicationInput: Swift.Sendable {
     /// The ID of the application you want to get.
     /// This member is required.
     public var applicationId: Swift.String?
@@ -1402,7 +1406,7 @@ public struct GetApplicationInput {
     }
 }
 
-public struct GetApplicationOutput {
+public struct GetApplicationOutput: Swift.Sendable {
     /// The description of the application.
     public var description: Swift.String?
     /// The application ID.
@@ -1422,11 +1426,11 @@ public struct GetApplicationOutput {
     }
 }
 
-public struct GetConfigurationInput {
+public struct GetConfigurationInput: Swift.Sendable {
     /// The application to get. Specify either the application name or the application ID.
     /// This member is required.
     public var application: Swift.String?
-    /// The configuration version returned in the most recent [GetConfiguration] response. AppConfig uses the value of the ClientConfigurationVersion parameter to identify the configuration version on your clients. If you don’t send ClientConfigurationVersion with each call to [GetConfiguration], your clients receive the current configuration. You are charged each time your clients receive a configuration. To avoid excess charges, we recommend you use the [StartConfigurationSession](https://docs.aws.amazon.com/appconfig/2019-10-09/APIReference/StartConfigurationSession.html) and [GetLatestConfiguration](https://docs.aws.amazon.com/appconfig/2019-10-09/APIReference/GetLatestConfiguration.html) APIs, which track the client configuration version on your behalf. If you choose to continue using [GetConfiguration], we recommend that you include the ClientConfigurationVersion value with every call to [GetConfiguration]. The value to use for ClientConfigurationVersion comes from the ConfigurationVersion attribute returned by [GetConfiguration] when there is new or updated data, and should be saved for subsequent calls to [GetConfiguration]. For more information about working with configurations, see [Retrieving the Configuration](http://docs.aws.amazon.com/appconfig/latest/userguide/appconfig-retrieving-the-configuration.html) in the AppConfig User Guide.
+    /// The configuration version returned in the most recent [GetConfiguration] response. AppConfig uses the value of the ClientConfigurationVersion parameter to identify the configuration version on your clients. If you don’t send ClientConfigurationVersion with each call to [GetConfiguration], your clients receive the current configuration. You are charged each time your clients receive a configuration. To avoid excess charges, we recommend you use the [StartConfigurationSession](https://docs.aws.amazon.com/appconfig/2019-10-09/APIReference/StartConfigurationSession.html) and [GetLatestConfiguration](https://docs.aws.amazon.com/appconfig/2019-10-09/APIReference/GetLatestConfiguration.html) APIs, which track the client configuration version on your behalf. If you choose to continue using [GetConfiguration], we recommend that you include the ClientConfigurationVersion value with every call to [GetConfiguration]. The value to use for ClientConfigurationVersion comes from the ConfigurationVersion attribute returned by [GetConfiguration] when there is new or updated data, and should be saved for subsequent calls to [GetConfiguration]. For more information about working with configurations, see [Retrieving feature flags and configuration data in AppConfig](http://docs.aws.amazon.com/appconfig/latest/userguide/retrieving-feature-flags.html) in the AppConfig User Guide.
     public var clientConfigurationVersion: Swift.String?
     /// The clientId parameter in the following command is a unique, user-specified ID to identify the client for the configuration. This ID enables AppConfig to deploy the configuration in intervals, as defined in the deployment strategy.
     /// This member is required.
@@ -1454,7 +1458,7 @@ public struct GetConfigurationInput {
     }
 }
 
-public struct GetConfigurationOutput {
+public struct GetConfigurationOutput: Swift.Sendable {
     /// The configuration version.
     public var configurationVersion: Swift.String?
     /// The content of the configuration or the configuration data. The Content attribute only contains data if the system finds new or updated configuration data. If there is no new or updated data and ClientConfigurationVersion matches the version of the current configuration, AppConfig returns a 204 No Content HTTP response code and the Content value will be empty.
@@ -1479,7 +1483,7 @@ extension GetConfigurationOutput: Swift.CustomDebugStringConvertible {
         "GetConfigurationOutput(configurationVersion: \(Swift.String(describing: configurationVersion)), contentType: \(Swift.String(describing: contentType)), content: \"CONTENT_REDACTED\")"}
 }
 
-public struct GetConfigurationProfileInput {
+public struct GetConfigurationProfileInput: Swift.Sendable {
     /// The ID of the application that includes the configuration profile you want to get.
     /// This member is required.
     public var applicationId: Swift.String?
@@ -1497,7 +1501,7 @@ public struct GetConfigurationProfileInput {
     }
 }
 
-public struct GetConfigurationProfileOutput {
+public struct GetConfigurationProfileOutput: Swift.Sendable {
     /// The application ID.
     public var applicationId: Swift.String?
     /// The configuration profile description.
@@ -1546,7 +1550,7 @@ public struct GetConfigurationProfileOutput {
     }
 }
 
-public struct GetDeploymentInput {
+public struct GetDeploymentInput: Swift.Sendable {
     /// The ID of the application that includes the deployment you want to get.
     /// This member is required.
     public var applicationId: Swift.String?
@@ -1570,8 +1574,9 @@ public struct GetDeploymentInput {
 }
 
 extension AppConfigClientTypes {
+
     /// An extension that was invoked during a deployment.
-    public struct AppliedExtension {
+    public struct AppliedExtension: Swift.Sendable {
         /// The system-generated ID for the association.
         public var extensionAssociationId: Swift.String?
         /// The system-generated ID of the extension.
@@ -1594,16 +1599,16 @@ extension AppConfigClientTypes {
             self.versionNumber = versionNumber
         }
     }
-
 }
 
 extension AppConfigClientTypes {
 
-    public enum DeploymentEventType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DeploymentEventType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case bakeTimeStarted
         case deploymentCompleted
         case deploymentStarted
         case percentageUpdated
+        case revertCompleted
         case rollbackCompleted
         case rollbackStarted
         case sdkUnknown(Swift.String)
@@ -1614,6 +1619,7 @@ extension AppConfigClientTypes {
                 .deploymentCompleted,
                 .deploymentStarted,
                 .percentageUpdated,
+                .revertCompleted,
                 .rollbackCompleted,
                 .rollbackStarted
             ]
@@ -1630,6 +1636,7 @@ extension AppConfigClientTypes {
             case .deploymentCompleted: return "DEPLOYMENT_COMPLETED"
             case .deploymentStarted: return "DEPLOYMENT_STARTED"
             case .percentageUpdated: return "PERCENTAGE_UPDATED"
+            case .revertCompleted: return "REVERT_COMPLETED"
             case .rollbackCompleted: return "ROLLBACK_COMPLETED"
             case .rollbackStarted: return "ROLLBACK_STARTED"
             case let .sdkUnknown(s): return s
@@ -1640,7 +1647,7 @@ extension AppConfigClientTypes {
 
 extension AppConfigClientTypes {
 
-    public enum TriggeredBy: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum TriggeredBy: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case appconfig
         case cloudwatchAlarm
         case internalError
@@ -1674,8 +1681,9 @@ extension AppConfigClientTypes {
 }
 
 extension AppConfigClientTypes {
+
     /// An object that describes a deployment event.
-    public struct DeploymentEvent {
+    public struct DeploymentEvent: Swift.Sendable {
         /// The list of extensions that were invoked as part of the deployment.
         public var actionInvocations: [AppConfigClientTypes.ActionInvocation]?
         /// A description of the deployment event. Descriptions include, but are not limited to, the following:
@@ -1708,15 +1716,15 @@ extension AppConfigClientTypes {
             self.triggeredBy = triggeredBy
         }
     }
-
 }
 
 extension AppConfigClientTypes {
 
-    public enum DeploymentState: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DeploymentState: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case baking
         case complete
         case deploying
+        case reverted
         case rolledBack
         case rollingBack
         case validating
@@ -1727,6 +1735,7 @@ extension AppConfigClientTypes {
                 .baking,
                 .complete,
                 .deploying,
+                .reverted,
                 .rolledBack,
                 .rollingBack,
                 .validating
@@ -1743,6 +1752,7 @@ extension AppConfigClientTypes {
             case .baking: return "BAKING"
             case .complete: return "COMPLETE"
             case .deploying: return "DEPLOYING"
+            case .reverted: return "REVERTED"
             case .rolledBack: return "ROLLED_BACK"
             case .rollingBack: return "ROLLING_BACK"
             case .validating: return "VALIDATING"
@@ -1752,7 +1762,7 @@ extension AppConfigClientTypes {
     }
 }
 
-public struct GetDeploymentOutput {
+public struct GetDeploymentOutput: Swift.Sendable {
     /// The ID of the application that was deployed.
     public var applicationId: Swift.String?
     /// A list of extensions that were processed as part of the deployment. The extensions that were previously associated to the configuration profile, environment, or the application when StartDeployment was called.
@@ -1848,7 +1858,7 @@ public struct GetDeploymentOutput {
     }
 }
 
-public struct GetDeploymentStrategyInput {
+public struct GetDeploymentStrategyInput: Swift.Sendable {
     /// The ID of the deployment strategy to get.
     /// This member is required.
     public var deploymentStrategyId: Swift.String?
@@ -1861,7 +1871,7 @@ public struct GetDeploymentStrategyInput {
     }
 }
 
-public struct GetDeploymentStrategyOutput {
+public struct GetDeploymentStrategyOutput: Swift.Sendable {
     /// Total amount of time the deployment lasted.
     public var deploymentDurationInMinutes: Swift.Int
     /// The description of the deployment strategy.
@@ -1901,7 +1911,7 @@ public struct GetDeploymentStrategyOutput {
     }
 }
 
-public struct GetEnvironmentInput {
+public struct GetEnvironmentInput: Swift.Sendable {
     /// The ID of the application that includes the environment you want to get.
     /// This member is required.
     public var applicationId: Swift.String?
@@ -1919,7 +1929,7 @@ public struct GetEnvironmentInput {
     }
 }
 
-public struct GetEnvironmentOutput {
+public struct GetEnvironmentOutput: Swift.Sendable {
     /// The application ID.
     public var applicationId: Swift.String?
     /// The description of the environment.
@@ -1951,7 +1961,7 @@ public struct GetEnvironmentOutput {
     }
 }
 
-public struct GetExtensionInput {
+public struct GetExtensionInput: Swift.Sendable {
     /// The name, the ID, or the Amazon Resource Name (ARN) of the extension.
     /// This member is required.
     public var extensionIdentifier: Swift.String?
@@ -1968,7 +1978,7 @@ public struct GetExtensionInput {
     }
 }
 
-public struct GetExtensionOutput {
+public struct GetExtensionOutput: Swift.Sendable {
     /// The actions defined in the extension.
     public var actions: [Swift.String: [AppConfigClientTypes.Action]]?
     /// The system-generated Amazon Resource Name (ARN) for the extension.
@@ -2004,7 +2014,7 @@ public struct GetExtensionOutput {
     }
 }
 
-public struct GetExtensionAssociationInput {
+public struct GetExtensionAssociationInput: Swift.Sendable {
     /// The extension association ID to get.
     /// This member is required.
     public var extensionAssociationId: Swift.String?
@@ -2017,7 +2027,7 @@ public struct GetExtensionAssociationInput {
     }
 }
 
-public struct GetExtensionAssociationOutput {
+public struct GetExtensionAssociationOutput: Swift.Sendable {
     /// The system-generated Amazon Resource Name (ARN) for the extension.
     public var arn: Swift.String?
     /// The ARN of the extension defined in the association.
@@ -2049,7 +2059,7 @@ public struct GetExtensionAssociationOutput {
     }
 }
 
-public struct GetHostedConfigurationVersionInput {
+public struct GetHostedConfigurationVersionInput: Swift.Sendable {
     /// The application ID.
     /// This member is required.
     public var applicationId: Swift.String?
@@ -2072,7 +2082,7 @@ public struct GetHostedConfigurationVersionInput {
     }
 }
 
-public struct GetHostedConfigurationVersionOutput {
+public struct GetHostedConfigurationVersionOutput: Swift.Sendable {
     /// The application ID.
     public var applicationId: Swift.String?
     /// The configuration profile ID.
@@ -2117,7 +2127,7 @@ extension GetHostedConfigurationVersionOutput: Swift.CustomDebugStringConvertibl
         "GetHostedConfigurationVersionOutput(applicationId: \(Swift.String(describing: applicationId)), configurationProfileId: \(Swift.String(describing: configurationProfileId)), contentType: \(Swift.String(describing: contentType)), description: \(Swift.String(describing: description)), kmsKeyArn: \(Swift.String(describing: kmsKeyArn)), versionLabel: \(Swift.String(describing: versionLabel)), versionNumber: \(Swift.String(describing: versionNumber)), content: \"CONTENT_REDACTED\")"}
 }
 
-public struct ListApplicationsInput {
+public struct ListApplicationsInput: Swift.Sendable {
     /// The maximum number of items to return for this call. The call also returns a token that you can specify in a subsequent call to get the next set of results.
     public var maxResults: Swift.Int?
     /// A token to start the list. Next token is a pagination token generated by AppConfig to describe what page the previous List call ended on. For the first List request, the nextToken should not be set. On subsequent calls, the nextToken parameter should be set to the previous responses nextToken value. Use this token to get the next set of results.
@@ -2134,7 +2144,8 @@ public struct ListApplicationsInput {
 }
 
 extension AppConfigClientTypes {
-    public struct Application {
+
+    public struct Application: Swift.Sendable {
         /// The description of the application.
         public var description: Swift.String?
         /// The application ID.
@@ -2153,10 +2164,9 @@ extension AppConfigClientTypes {
             self.name = name
         }
     }
-
 }
 
-public struct ListApplicationsOutput {
+public struct ListApplicationsOutput: Swift.Sendable {
     /// The elements from this collection.
     public var items: [AppConfigClientTypes.Application]?
     /// The token for the next set of items to return. Use this token to get the next set of results.
@@ -2172,7 +2182,7 @@ public struct ListApplicationsOutput {
     }
 }
 
-public struct ListConfigurationProfilesInput {
+public struct ListConfigurationProfilesInput: Swift.Sendable {
     /// The application ID.
     /// This member is required.
     public var applicationId: Swift.String?
@@ -2198,8 +2208,9 @@ public struct ListConfigurationProfilesInput {
 }
 
 extension AppConfigClientTypes {
+
     /// A summary of a configuration profile.
-    public struct ConfigurationProfileSummary {
+    public struct ConfigurationProfileSummary: Swift.Sendable {
         /// The application ID.
         public var applicationId: Swift.String?
         /// The ID of the configuration profile.
@@ -2231,10 +2242,9 @@ extension AppConfigClientTypes {
             self.validatorTypes = validatorTypes
         }
     }
-
 }
 
-public struct ListConfigurationProfilesOutput {
+public struct ListConfigurationProfilesOutput: Swift.Sendable {
     /// The elements from this collection.
     public var items: [AppConfigClientTypes.ConfigurationProfileSummary]?
     /// The token for the next set of items to return. Use this token to get the next set of results.
@@ -2250,7 +2260,7 @@ public struct ListConfigurationProfilesOutput {
     }
 }
 
-public struct ListDeploymentsInput {
+public struct ListDeploymentsInput: Swift.Sendable {
     /// The application ID.
     /// This member is required.
     public var applicationId: Swift.String?
@@ -2277,8 +2287,9 @@ public struct ListDeploymentsInput {
 }
 
 extension AppConfigClientTypes {
+
     /// Information about the deployment.
-    public struct DeploymentSummary {
+    public struct DeploymentSummary: Swift.Sendable {
         /// Time the deployment completed.
         public var completedAt: Foundation.Date?
         /// The name of the configuration.
@@ -2333,10 +2344,9 @@ extension AppConfigClientTypes {
             self.versionLabel = versionLabel
         }
     }
-
 }
 
-public struct ListDeploymentsOutput {
+public struct ListDeploymentsOutput: Swift.Sendable {
     /// The elements from this collection.
     public var items: [AppConfigClientTypes.DeploymentSummary]?
     /// The token for the next set of items to return. Use this token to get the next set of results.
@@ -2352,7 +2362,7 @@ public struct ListDeploymentsOutput {
     }
 }
 
-public struct ListDeploymentStrategiesInput {
+public struct ListDeploymentStrategiesInput: Swift.Sendable {
     /// The maximum number of items to return for this call. The call also returns a token that you can specify in a subsequent call to get the next set of results.
     public var maxResults: Swift.Int?
     /// A token to start the list. Use this token to get the next set of results.
@@ -2369,7 +2379,8 @@ public struct ListDeploymentStrategiesInput {
 }
 
 extension AppConfigClientTypes {
-    public struct DeploymentStrategy {
+
+    public struct DeploymentStrategy: Swift.Sendable {
         /// Total amount of time the deployment lasted.
         public var deploymentDurationInMinutes: Swift.Int
         /// The description of the deployment strategy.
@@ -2408,10 +2419,9 @@ extension AppConfigClientTypes {
             self.replicateTo = replicateTo
         }
     }
-
 }
 
-public struct ListDeploymentStrategiesOutput {
+public struct ListDeploymentStrategiesOutput: Swift.Sendable {
     /// The elements from this collection.
     public var items: [AppConfigClientTypes.DeploymentStrategy]?
     /// The token for the next set of items to return. Use this token to get the next set of results.
@@ -2427,7 +2437,7 @@ public struct ListDeploymentStrategiesOutput {
     }
 }
 
-public struct ListEnvironmentsInput {
+public struct ListEnvironmentsInput: Swift.Sendable {
     /// The application ID.
     /// This member is required.
     public var applicationId: Swift.String?
@@ -2449,7 +2459,8 @@ public struct ListEnvironmentsInput {
 }
 
 extension AppConfigClientTypes {
-    public struct Environment {
+
+    public struct Environment: Swift.Sendable {
         /// The application ID.
         public var applicationId: Swift.String?
         /// The description of the environment.
@@ -2480,10 +2491,9 @@ extension AppConfigClientTypes {
             self.state = state
         }
     }
-
 }
 
-public struct ListEnvironmentsOutput {
+public struct ListEnvironmentsOutput: Swift.Sendable {
     /// The elements from this collection.
     public var items: [AppConfigClientTypes.Environment]?
     /// The token for the next set of items to return. Use this token to get the next set of results.
@@ -2499,7 +2509,7 @@ public struct ListEnvironmentsOutput {
     }
 }
 
-public struct ListExtensionAssociationsInput {
+public struct ListExtensionAssociationsInput: Swift.Sendable {
     /// The name, the ID, or the Amazon Resource Name (ARN) of the extension.
     public var extensionIdentifier: Swift.String?
     /// The version number for the extension defined in the association.
@@ -2528,8 +2538,9 @@ public struct ListExtensionAssociationsInput {
 }
 
 extension AppConfigClientTypes {
+
     /// Information about an association between an extension and an AppConfig resource such as an application, environment, or configuration profile. Call GetExtensionAssociation to get more information about an association.
-    public struct ExtensionAssociationSummary {
+    public struct ExtensionAssociationSummary: Swift.Sendable {
         /// The system-generated Amazon Resource Name (ARN) for the extension.
         public var extensionArn: Swift.String?
         /// The extension association ID. This ID is used to call other ExtensionAssociation API actions such as GetExtensionAssociation or DeleteExtensionAssociation.
@@ -2548,10 +2559,9 @@ extension AppConfigClientTypes {
             self.resourceArn = resourceArn
         }
     }
-
 }
 
-public struct ListExtensionAssociationsOutput {
+public struct ListExtensionAssociationsOutput: Swift.Sendable {
     /// The list of extension associations. Each item represents an extension association to an application, environment, or configuration profile.
     public var items: [AppConfigClientTypes.ExtensionAssociationSummary]?
     /// The token for the next set of items to return. Use this token to get the next set of results.
@@ -2567,7 +2577,7 @@ public struct ListExtensionAssociationsOutput {
     }
 }
 
-public struct ListExtensionsInput {
+public struct ListExtensionsInput: Swift.Sendable {
     /// The maximum number of items to return for this call. The call also returns a token that you can specify in a subsequent call to get the next set of results.
     public var maxResults: Swift.Int?
     /// The extension name.
@@ -2588,8 +2598,9 @@ public struct ListExtensionsInput {
 }
 
 extension AppConfigClientTypes {
+
     /// Information about an extension. Call GetExtension to get more information about an extension.
-    public struct ExtensionSummary {
+    public struct ExtensionSummary: Swift.Sendable {
         /// The system-generated Amazon Resource Name (ARN) for the extension.
         public var arn: Swift.String?
         /// Information about the extension.
@@ -2616,10 +2627,9 @@ extension AppConfigClientTypes {
             self.versionNumber = versionNumber
         }
     }
-
 }
 
-public struct ListExtensionsOutput {
+public struct ListExtensionsOutput: Swift.Sendable {
     /// The list of available extensions. The list includes Amazon Web Services authored and user-created extensions.
     public var items: [AppConfigClientTypes.ExtensionSummary]?
     /// The token for the next set of items to return. Use this token to get the next set of results.
@@ -2635,7 +2645,7 @@ public struct ListExtensionsOutput {
     }
 }
 
-public struct ListHostedConfigurationVersionsInput {
+public struct ListHostedConfigurationVersionsInput: Swift.Sendable {
     /// The application ID.
     /// This member is required.
     public var applicationId: Swift.String?
@@ -2666,8 +2676,9 @@ public struct ListHostedConfigurationVersionsInput {
 }
 
 extension AppConfigClientTypes {
+
     /// Information about the configuration.
-    public struct HostedConfigurationVersionSummary {
+    public struct HostedConfigurationVersionSummary: Swift.Sendable {
         /// The application ID.
         public var applicationId: Swift.String?
         /// The configuration profile ID.
@@ -2702,10 +2713,9 @@ extension AppConfigClientTypes {
             self.versionNumber = versionNumber
         }
     }
-
 }
 
-public struct ListHostedConfigurationVersionsOutput {
+public struct ListHostedConfigurationVersionsOutput: Swift.Sendable {
     /// The elements from this collection.
     public var items: [AppConfigClientTypes.HostedConfigurationVersionSummary]?
     /// The token for the next set of items to return. Use this token to get the next set of results.
@@ -2721,7 +2731,7 @@ public struct ListHostedConfigurationVersionsOutput {
     }
 }
 
-public struct ListTagsForResourceInput {
+public struct ListTagsForResourceInput: Swift.Sendable {
     /// The resource ARN.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -2734,7 +2744,7 @@ public struct ListTagsForResourceInput {
     }
 }
 
-public struct ListTagsForResourceOutput {
+public struct ListTagsForResourceOutput: Swift.Sendable {
     /// Metadata to assign to AppConfig resources. Tags help organize and categorize your AppConfig resources. Each tag consists of a key and an optional value, both of which you define.
     public var tags: [Swift.String: Swift.String]?
 
@@ -2746,7 +2756,7 @@ public struct ListTagsForResourceOutput {
     }
 }
 
-public struct StartDeploymentInput {
+public struct StartDeploymentInput: Swift.Sendable {
     /// The application ID.
     /// This member is required.
     public var applicationId: Swift.String?
@@ -2795,7 +2805,7 @@ public struct StartDeploymentInput {
     }
 }
 
-public struct StartDeploymentOutput {
+public struct StartDeploymentOutput: Swift.Sendable {
     /// The ID of the application that was deployed.
     public var applicationId: Swift.String?
     /// A list of extensions that were processed as part of the deployment. The extensions that were previously associated to the configuration profile, environment, or the application when StartDeployment was called.
@@ -2891,7 +2901,9 @@ public struct StartDeploymentOutput {
     }
 }
 
-public struct StopDeploymentInput {
+public struct StopDeploymentInput: Swift.Sendable {
+    /// A Boolean that enables AppConfig to rollback a COMPLETED deployment to the previous configuration version. This action moves the deployment to a status of REVERTED.
+    public var allowRevert: Swift.Bool?
     /// The application ID.
     /// This member is required.
     public var applicationId: Swift.String?
@@ -2903,18 +2915,20 @@ public struct StopDeploymentInput {
     public var environmentId: Swift.String?
 
     public init(
+        allowRevert: Swift.Bool? = false,
         applicationId: Swift.String? = nil,
         deploymentNumber: Swift.Int? = 0,
         environmentId: Swift.String? = nil
     )
     {
+        self.allowRevert = allowRevert
         self.applicationId = applicationId
         self.deploymentNumber = deploymentNumber
         self.environmentId = environmentId
     }
 }
 
-public struct StopDeploymentOutput {
+public struct StopDeploymentOutput: Swift.Sendable {
     /// The ID of the application that was deployed.
     public var applicationId: Swift.String?
     /// A list of extensions that were processed as part of the deployment. The extensions that were previously associated to the configuration profile, environment, or the application when StartDeployment was called.
@@ -3010,7 +3024,7 @@ public struct StopDeploymentOutput {
     }
 }
 
-public struct TagResourceInput {
+public struct TagResourceInput: Swift.Sendable {
     /// The ARN of the resource for which to retrieve tags.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -3028,7 +3042,7 @@ public struct TagResourceInput {
     }
 }
 
-public struct UntagResourceInput {
+public struct UntagResourceInput: Swift.Sendable {
     /// The ARN of the resource for which to remove tags.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -3046,7 +3060,7 @@ public struct UntagResourceInput {
     }
 }
 
-public struct UpdateAccountSettingsInput {
+public struct UpdateAccountSettingsInput: Swift.Sendable {
     /// A parameter to configure deletion protection. If enabled, deletion protection prevents a user from deleting a configuration profile or an environment if AppConfig has called either [GetLatestConfiguration](https://docs.aws.amazon.com/appconfig/2019-10-09/APIReference/API_appconfigdata_GetLatestConfiguration.html) or for the configuration profile or from the environment during the specified interval. Deletion protection is disabled by default. The default interval for ProtectionPeriodInMinutes is 60.
     public var deletionProtection: AppConfigClientTypes.DeletionProtectionSettings?
 
@@ -3058,7 +3072,7 @@ public struct UpdateAccountSettingsInput {
     }
 }
 
-public struct UpdateAccountSettingsOutput {
+public struct UpdateAccountSettingsOutput: Swift.Sendable {
     /// A parameter to configure deletion protection. If enabled, deletion protection prevents a user from deleting a configuration profile or an environment if AppConfig has called either [GetLatestConfiguration](https://docs.aws.amazon.com/appconfig/2019-10-09/APIReference/API_appconfigdata_GetLatestConfiguration.html) or for the configuration profile or from the environment during the specified interval. Deletion protection is disabled by default. The default interval for ProtectionPeriodInMinutes is 60.
     public var deletionProtection: AppConfigClientTypes.DeletionProtectionSettings?
 
@@ -3070,7 +3084,7 @@ public struct UpdateAccountSettingsOutput {
     }
 }
 
-public struct UpdateApplicationInput {
+public struct UpdateApplicationInput: Swift.Sendable {
     /// The application ID.
     /// This member is required.
     public var applicationId: Swift.String?
@@ -3091,7 +3105,7 @@ public struct UpdateApplicationInput {
     }
 }
 
-public struct UpdateApplicationOutput {
+public struct UpdateApplicationOutput: Swift.Sendable {
     /// The description of the application.
     public var description: Swift.String?
     /// The application ID.
@@ -3111,7 +3125,7 @@ public struct UpdateApplicationOutput {
     }
 }
 
-public struct UpdateConfigurationProfileInput {
+public struct UpdateConfigurationProfileInput: Swift.Sendable {
     /// The application ID.
     /// This member is required.
     public var applicationId: Swift.String?
@@ -3149,7 +3163,7 @@ public struct UpdateConfigurationProfileInput {
     }
 }
 
-public struct UpdateConfigurationProfileOutput {
+public struct UpdateConfigurationProfileOutput: Swift.Sendable {
     /// The application ID.
     public var applicationId: Swift.String?
     /// The configuration profile description.
@@ -3198,7 +3212,7 @@ public struct UpdateConfigurationProfileOutput {
     }
 }
 
-public struct UpdateDeploymentStrategyInput {
+public struct UpdateDeploymentStrategyInput: Swift.Sendable {
     /// Total amount of time for a deployment to last.
     public var deploymentDurationInMinutes: Swift.Int?
     /// The deployment strategy ID.
@@ -3234,7 +3248,7 @@ public struct UpdateDeploymentStrategyInput {
     }
 }
 
-public struct UpdateDeploymentStrategyOutput {
+public struct UpdateDeploymentStrategyOutput: Swift.Sendable {
     /// Total amount of time the deployment lasted.
     public var deploymentDurationInMinutes: Swift.Int
     /// The description of the deployment strategy.
@@ -3274,7 +3288,7 @@ public struct UpdateDeploymentStrategyOutput {
     }
 }
 
-public struct UpdateEnvironmentInput {
+public struct UpdateEnvironmentInput: Swift.Sendable {
     /// The application ID.
     /// This member is required.
     public var applicationId: Swift.String?
@@ -3304,7 +3318,7 @@ public struct UpdateEnvironmentInput {
     }
 }
 
-public struct UpdateEnvironmentOutput {
+public struct UpdateEnvironmentOutput: Swift.Sendable {
     /// The application ID.
     public var applicationId: Swift.String?
     /// The description of the environment.
@@ -3336,7 +3350,7 @@ public struct UpdateEnvironmentOutput {
     }
 }
 
-public struct UpdateExtensionInput {
+public struct UpdateExtensionInput: Swift.Sendable {
     /// The actions defined in the extension.
     public var actions: [Swift.String: [AppConfigClientTypes.Action]]?
     /// Information about the extension.
@@ -3365,7 +3379,7 @@ public struct UpdateExtensionInput {
     }
 }
 
-public struct UpdateExtensionOutput {
+public struct UpdateExtensionOutput: Swift.Sendable {
     /// The actions defined in the extension.
     public var actions: [Swift.String: [AppConfigClientTypes.Action]]?
     /// The system-generated Amazon Resource Name (ARN) for the extension.
@@ -3401,7 +3415,7 @@ public struct UpdateExtensionOutput {
     }
 }
 
-public struct UpdateExtensionAssociationInput {
+public struct UpdateExtensionAssociationInput: Swift.Sendable {
     /// The system-generated ID for the association.
     /// This member is required.
     public var extensionAssociationId: Swift.String?
@@ -3418,7 +3432,7 @@ public struct UpdateExtensionAssociationInput {
     }
 }
 
-public struct UpdateExtensionAssociationOutput {
+public struct UpdateExtensionAssociationOutput: Swift.Sendable {
     /// The system-generated Amazon Resource Name (ARN) for the extension.
     public var arn: Swift.String?
     /// The ARN of the extension defined in the association.
@@ -3450,7 +3464,7 @@ public struct UpdateExtensionAssociationOutput {
     }
 }
 
-public struct ValidateConfigurationInput {
+public struct ValidateConfigurationInput: Swift.Sendable {
     /// The application ID.
     /// This member is required.
     public var applicationId: Swift.String?
@@ -4094,6 +4108,17 @@ extension StopDeploymentInput {
             return nil
         }
         return "/applications/\(applicationId.urlPercentEncoding())/environments/\(environmentId.urlPercentEncoding())/deployments/\(deploymentNumber)"
+    }
+}
+
+extension StopDeploymentInput {
+
+    static func headerProvider(_ value: StopDeploymentInput) -> SmithyHTTPAPI.Headers {
+        var items = SmithyHTTPAPI.Headers()
+        if let allowRevert = value.allowRevert {
+            items.add(SmithyHTTPAPI.Header(name: "Allow-Revert", value: Swift.String(allowRevert)))
+        }
+        return items
     }
 }
 

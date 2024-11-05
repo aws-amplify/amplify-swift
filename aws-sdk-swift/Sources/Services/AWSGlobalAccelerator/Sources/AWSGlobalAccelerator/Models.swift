@@ -27,64 +27,66 @@ import protocol ClientRuntime.ModeledError
 @_spi(SmithyReadWrite) import struct SmithyReadWrite.ReadingClosureBox
 @_spi(SmithyReadWrite) import struct SmithyReadWrite.WritingClosureBox
 
-public struct AllowCustomRoutingTrafficOutput {
+
+public struct AllowCustomRoutingTrafficOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteAcceleratorOutput {
+public struct DeleteAcceleratorOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteCrossAccountAttachmentOutput {
+public struct DeleteCrossAccountAttachmentOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteCustomRoutingAcceleratorOutput {
+public struct DeleteCustomRoutingAcceleratorOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteCustomRoutingEndpointGroupOutput {
+public struct DeleteCustomRoutingEndpointGroupOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteCustomRoutingListenerOutput {
+public struct DeleteCustomRoutingListenerOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteEndpointGroupOutput {
+public struct DeleteEndpointGroupOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteListenerOutput {
+public struct DeleteListenerOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DenyCustomRoutingTrafficOutput {
+public struct DenyCustomRoutingTrafficOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct RemoveCustomRoutingEndpointsOutput {
+public struct RemoveCustomRoutingEndpointsOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct RemoveEndpointsOutput {
+public struct RemoveEndpointsOutput: Swift.Sendable {
 
     public init() { }
 }
 
 extension GlobalAcceleratorClientTypes {
+
     /// A complex type that contains a Timestamp value and Message for changes that you make to an accelerator in Global Accelerator. Messages stored here provide progress or error information when you update an accelerator from IPv4 to dual-stack, or from dual-stack to IPv4. Global Accelerator stores a maximum of ten event messages.
-    public struct AcceleratorEvent {
+    public struct AcceleratorEvent: Swift.Sendable {
         /// A string that contains an Event message describing changes or errors when you update an accelerator in Global Accelerator from IPv4 to dual-stack, or dual-stack to IPv4.
         public var message: Swift.String?
         /// A timestamp for when you update an accelerator in Global Accelerator from IPv4 to dual-stack, or dual-stack to IPv4.
@@ -99,12 +101,11 @@ extension GlobalAcceleratorClientTypes {
             self.timestamp = timestamp
         }
     }
-
 }
 
 extension GlobalAcceleratorClientTypes {
 
-    public enum IpAddressType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum IpAddressType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case dualStack
         case ipv4
         case sdkUnknown(Swift.String)
@@ -133,7 +134,7 @@ extension GlobalAcceleratorClientTypes {
 
 extension GlobalAcceleratorClientTypes {
 
-    public enum IpAddressFamily: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum IpAddressFamily: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case ipv4
         case ipv6
         case sdkUnknown(Swift.String)
@@ -161,8 +162,9 @@ extension GlobalAcceleratorClientTypes {
 }
 
 extension GlobalAcceleratorClientTypes {
+
     /// A complex type for the set of IP addresses for an accelerator.
-    public struct IpSet {
+    public struct IpSet: Swift.Sendable {
         /// The types of IP addresses included in this IP set.
         public var ipAddressFamily: GlobalAcceleratorClientTypes.IpAddressFamily?
         /// The array of IP addresses in the IP address set. An IP address set can have a maximum of two IP addresses.
@@ -182,12 +184,11 @@ extension GlobalAcceleratorClientTypes {
             self.ipFamily = ipFamily
         }
     }
-
 }
 
 extension GlobalAcceleratorClientTypes {
 
-    public enum AcceleratorStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AcceleratorStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case deployed
         case inProgress
         case sdkUnknown(Swift.String)
@@ -215,8 +216,9 @@ extension GlobalAcceleratorClientTypes {
 }
 
 extension GlobalAcceleratorClientTypes {
+
     /// An accelerator is a complex type that includes one or more listeners that process inbound connections and then direct traffic to one or more endpoint groups, each of which includes endpoints, such as load balancers.
-    public struct Accelerator {
+    public struct Accelerator: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the accelerator.
         public var acceleratorArn: Swift.String?
         /// The date and time that the accelerator was created.
@@ -267,12 +269,12 @@ extension GlobalAcceleratorClientTypes {
             self.status = status
         }
     }
-
 }
 
 extension GlobalAcceleratorClientTypes {
+
     /// Attributes of an accelerator.
-    public struct AcceleratorAttributes {
+    public struct AcceleratorAttributes: Swift.Sendable {
         /// Indicates whether flow logs are enabled. The default value is false. If the value is true, FlowLogsS3Bucket and FlowLogsS3Prefix must be specified. For more information, see [Flow logs](https://docs.aws.amazon.com/global-accelerator/latest/dg/monitoring-global-accelerator.flow-logs.html) in the Global Accelerator Developer Guide.
         public var flowLogsEnabled: Swift.Bool?
         /// The name of the Amazon S3 bucket for the flow logs. Attribute is required if FlowLogsEnabled is true. The bucket must exist and have a bucket policy that grants Global Accelerator permission to write to the bucket.
@@ -291,7 +293,6 @@ extension GlobalAcceleratorClientTypes {
             self.flowLogsS3Prefix = flowLogsS3Prefix
         }
     }
-
 }
 
 /// The accelerator that you specified could not be disabled.
@@ -511,8 +512,9 @@ public struct LimitExceededException: ClientRuntime.ModeledError, AWSClientRunti
 }
 
 extension GlobalAcceleratorClientTypes {
+
     /// The list of endpoint objects. For custom routing, this is a list of virtual private cloud (VPC) subnet IDs.
-    public struct CustomRoutingEndpointConfiguration {
+    public struct CustomRoutingEndpointConfiguration: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the cross-account attachment that specifies the endpoints (resources) that can be added to accelerators and principals that have permission to add the endpoints.
         public var attachmentArn: Swift.String?
         /// An ID for the endpoint. For custom routing accelerators, this is the virtual private cloud (VPC) subnet ID.
@@ -527,10 +529,9 @@ extension GlobalAcceleratorClientTypes {
             self.endpointId = endpointId
         }
     }
-
 }
 
-public struct AddCustomRoutingEndpointsInput {
+public struct AddCustomRoutingEndpointsInput: Swift.Sendable {
     /// The list of endpoint objects to add to a custom routing accelerator.
     /// This member is required.
     public var endpointConfigurations: [GlobalAcceleratorClientTypes.CustomRoutingEndpointConfiguration]?
@@ -549,8 +550,9 @@ public struct AddCustomRoutingEndpointsInput {
 }
 
 extension GlobalAcceleratorClientTypes {
+
     /// A complex type for an endpoint for a custom routing accelerator. Each endpoint group can include one or more endpoints, which are virtual private cloud (VPC) subnets.
-    public struct CustomRoutingEndpointDescription {
+    public struct CustomRoutingEndpointDescription: Swift.Sendable {
         /// An ID for the endpoint. For custom routing accelerators, this is the virtual private cloud (VPC) subnet ID.
         public var endpointId: Swift.String?
 
@@ -561,10 +563,9 @@ extension GlobalAcceleratorClientTypes {
             self.endpointId = endpointId
         }
     }
-
 }
 
-public struct AddCustomRoutingEndpointsOutput {
+public struct AddCustomRoutingEndpointsOutput: Swift.Sendable {
     /// The endpoint objects added to the custom routing accelerator.
     public var endpointDescriptions: [GlobalAcceleratorClientTypes.CustomRoutingEndpointDescription]?
     /// The Amazon Resource Name (ARN) of the endpoint group for the custom routing endpoint.
@@ -605,8 +606,9 @@ public struct TransactionInProgressException: ClientRuntime.ModeledError, AWSCli
 }
 
 extension GlobalAcceleratorClientTypes {
+
     /// A complex type for endpoints. A resource must be valid and active when you add it as an endpoint.
-    public struct EndpointConfiguration {
+    public struct EndpointConfiguration: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the cross-account attachment that specifies the endpoints (resources) that can be added to accelerators and principals that have permission to add the endpoints.
         public var attachmentArn: Swift.String?
         /// Indicates whether client IP address preservation is enabled for an endpoint. The value is true or false. The default value is true for Application Load Balancer endpoints. If the value is set to true, the client's IP address is preserved in the X-Forwarded-For request header as traffic travels to applications on the endpoint fronted by the accelerator. Client IP address preservation is supported, in specific Amazon Web Services Regions, for endpoints that are Application Load Balancers, Amazon EC2 instances, and Network Load Balancers with security groups. IMPORTANT: You cannot use client IP address preservation with Network Load Balancers with TLS listeners. For more information, see [ Preserve client IP addresses in Global Accelerator](https://docs.aws.amazon.com/global-accelerator/latest/dg/preserve-client-ip-address.html) in the Global Accelerator Developer Guide.
@@ -629,10 +631,9 @@ extension GlobalAcceleratorClientTypes {
             self.weight = weight
         }
     }
-
 }
 
-public struct AddEndpointsInput {
+public struct AddEndpointsInput: Swift.Sendable {
     /// The list of endpoint objects.
     /// This member is required.
     public var endpointConfigurations: [GlobalAcceleratorClientTypes.EndpointConfiguration]?
@@ -652,7 +653,7 @@ public struct AddEndpointsInput {
 
 extension GlobalAcceleratorClientTypes {
 
-    public enum HealthState: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum HealthState: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case healthy
         case initial
         case unhealthy
@@ -683,8 +684,9 @@ extension GlobalAcceleratorClientTypes {
 }
 
 extension GlobalAcceleratorClientTypes {
+
     /// A complex type for an endpoint. Each endpoint group can include one or more endpoints, such as load balancers.
-    public struct EndpointDescription {
+    public struct EndpointDescription: Swift.Sendable {
         /// Indicates whether client IP address preservation is enabled for an endpoint. The value is true or false. The default value is true for Application Load Balancers endpoints. If the value is set to true, the client's IP address is preserved in the X-Forwarded-For request header as traffic travels to applications on the endpoint fronted by the accelerator. Client IP address preservation is supported, in specific Amazon Web Services Regions, for endpoints that are Application Load Balancers, Amazon EC2 instances, and Network Load Balancers with security groups. IMPORTANT: You cannot use client IP address preservation with Network Load Balancers with TLS listeners. For more information, see [ Preserve client IP addresses in Global Accelerator](https://docs.aws.amazon.com/global-accelerator/latest/dg/preserve-client-ip-address.html) in the Global Accelerator Developer Guide.
         public var clientIPPreservationEnabled: Swift.Bool?
         /// An ID for the endpoint. If the endpoint is a Network Load Balancer or Application Load Balancer, this is the Amazon Resource Name (ARN) of the resource. If the endpoint is an Elastic IP address, this is the Elastic IP address allocation ID. For Amazon EC2 instances, this is the EC2 instance ID. An Application Load Balancer can be either internal or internet-facing.
@@ -711,10 +713,9 @@ extension GlobalAcceleratorClientTypes {
             self.weight = weight
         }
     }
-
 }
 
-public struct AddEndpointsOutput {
+public struct AddEndpointsOutput: Swift.Sendable {
     /// The list of endpoint objects.
     public var endpointDescriptions: [GlobalAcceleratorClientTypes.EndpointDescription]?
     /// The Amazon Resource Name (ARN) of the endpoint group.
@@ -778,7 +779,7 @@ public struct IncorrectCidrStateException: ClientRuntime.ModeledError, AWSClient
     }
 }
 
-public struct AdvertiseByoipCidrInput {
+public struct AdvertiseByoipCidrInput: Swift.Sendable {
     /// The address range, in CIDR notation. This must be the exact range that you provisioned. You can't advertise only a portion of the provisioned range. For more information, see [Bring your own IP addresses (BYOIP)](https://docs.aws.amazon.com/global-accelerator/latest/dg/using-byoip.html) in the Global Accelerator Developer Guide.
     /// This member is required.
     public var cidr: Swift.String?
@@ -792,8 +793,9 @@ public struct AdvertiseByoipCidrInput {
 }
 
 extension GlobalAcceleratorClientTypes {
+
     /// A complex type that contains a Message and a Timestamp value for changes that you make in the status of an IP address range that you bring to Global Accelerator through bring your own IP address (BYOIP).
-    public struct ByoipCidrEvent {
+    public struct ByoipCidrEvent: Swift.Sendable {
         /// A string that contains an Event message describing changes that you make in the status of an IP address range that you bring to Global Accelerator through bring your own IP address (BYOIP).
         public var message: Swift.String?
         /// A timestamp for when you make a status change for an IP address range that you bring to Global Accelerator through bring your own IP address (BYOIP).
@@ -808,12 +810,11 @@ extension GlobalAcceleratorClientTypes {
             self.timestamp = timestamp
         }
     }
-
 }
 
 extension GlobalAcceleratorClientTypes {
 
-    public enum ByoipCidrState: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ByoipCidrState: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case advertising
         case deprovisioned
         case failedAdvertising
@@ -868,6 +869,7 @@ extension GlobalAcceleratorClientTypes {
 }
 
 extension GlobalAcceleratorClientTypes {
+
     /// Information about an IP address range that is provisioned for use with your Amazon Web Services resources through bring your own IP address (BYOIP). The following describes each BYOIP State that your IP address range can be in.
     ///
     /// * PENDING_PROVISIONING — You’ve submitted a request to provision an IP address range but it is not yet provisioned with Global Accelerator.
@@ -891,7 +893,7 @@ extension GlobalAcceleratorClientTypes {
     /// * FAILED_WITHDRAW — The request to withdraw the address range from advertising by Global Accelerator was not successful. Please make sure that you provide all of the correct information, and try again. If the request fails a second time, contact Amazon Web Services support.
     ///
     /// * FAILED_DEPROVISION — The request to deprovision the address range from Global Accelerator was not successful. Please make sure that you provide all of the correct information, and try again. If the request fails a second time, contact Amazon Web Services support.
-    public struct ByoipCidr {
+    public struct ByoipCidr: Swift.Sendable {
         /// The address range, in CIDR notation. For more information, see [Bring your own IP addresses (BYOIP)](https://docs.aws.amazon.com/global-accelerator/latest/dg/using-byoip.html) in the Global Accelerator Developer Guide.
         public var cidr: Swift.String?
         /// A history of status changes for an IP address range that you bring to Global Accelerator through bring your own IP address (BYOIP).
@@ -910,10 +912,9 @@ extension GlobalAcceleratorClientTypes {
             self.state = state
         }
     }
-
 }
 
-public struct AdvertiseByoipCidrOutput {
+public struct AdvertiseByoipCidrOutput: Swift.Sendable {
     /// Information about the address range.
     public var byoipCidr: GlobalAcceleratorClientTypes.ByoipCidr?
 
@@ -925,7 +926,7 @@ public struct AdvertiseByoipCidrOutput {
     }
 }
 
-public struct AllowCustomRoutingTrafficInput {
+public struct AllowCustomRoutingTrafficInput: Swift.Sendable {
     /// Indicates whether all destination IP addresses and ports for a specified VPC subnet endpoint can receive traffic from a custom routing accelerator. The value is TRUE or FALSE. When set to TRUE, all destinations in the custom routing VPC subnet can receive traffic. Note that you cannot specify destination IP addresses and ports when the value is set to TRUE. When set to FALSE (or not specified), you must specify a list of destination IP addresses that are allowed to receive traffic. A list of ports is optional. If you don't specify a list of ports, the ports that can accept traffic is the same as the ports configured for the endpoint group. The default value is FALSE.
     public var allowAllTrafficToEndpoint: Swift.Bool?
     /// A list of specific Amazon EC2 instance IP addresses (destination addresses) in a subnet that you want to allow to receive traffic. The IP addresses must be a subset of the IP addresses that you specified for the endpoint group. DestinationAddresses is required if AllowAllTrafficToEndpoint is FALSE or is not specified.
@@ -1004,8 +1005,9 @@ public struct AssociatedListenerFoundException: ClientRuntime.ModeledError, AWSC
 }
 
 extension GlobalAcceleratorClientTypes {
+
     /// A resource is one of the following: the ARN for an Amazon Web Services resource that is supported by Global Accelerator to be added as an endpoint, or a CIDR range that specifies a bring your own IP (BYOIP) address pool.
-    public struct Resource {
+    public struct Resource: Swift.Sendable {
         /// An IP address range, in CIDR format, that is specified as resource. The address must be provisioned and advertised in Global Accelerator by following the bring your own IP address (BYOIP) process for Global Accelerator For more information, see [Bring your own IP addresses (BYOIP)](https://docs.aws.amazon.com/global-accelerator/latest/dg/using-byoip.html) in the Global Accelerator Developer Guide.
         public var cidr: Swift.String?
         /// The endpoint ID for the endpoint that is specified as a Amazon Web Services resource. An endpoint ID for the cross-account feature is the ARN of an Amazon Web Services resource, such as a Network Load Balancer, that Global Accelerator supports as an endpoint for an accelerator.
@@ -1024,12 +1026,12 @@ extension GlobalAcceleratorClientTypes {
             self.region = region
         }
     }
-
 }
 
 extension GlobalAcceleratorClientTypes {
+
     /// A cross-account attachment in Global Accelerator. A cross-account attachment specifies the principals who have permission to work with resources in your account, which you also list in the attachment.
-    public struct Attachment {
+    public struct Attachment: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the cross-account attachment.
         public var attachmentArn: Swift.String?
         /// The date and time that the cross-account attachment was created.
@@ -1060,7 +1062,6 @@ extension GlobalAcceleratorClientTypes {
             self.resources = resources
         }
     }
-
 }
 
 /// No cross-account attachment was found.
@@ -1088,8 +1089,9 @@ public struct AttachmentNotFoundException: ClientRuntime.ModeledError, AWSClient
 }
 
 extension GlobalAcceleratorClientTypes {
+
     /// Provides authorization for Amazon to bring a specific IP address range to a specific Amazon Web Services account using bring your own IP addresses (BYOIP). For more information, see [Bring your own IP addresses (BYOIP)](https://docs.aws.amazon.com/global-accelerator/latest/dg/using-byoip.html) in the Global Accelerator Developer Guide.
-    public struct CidrAuthorizationContext {
+    public struct CidrAuthorizationContext: Swift.Sendable {
         /// The plain-text authorization message for the prefix and account.
         /// This member is required.
         public var message: Swift.String?
@@ -1106,12 +1108,11 @@ extension GlobalAcceleratorClientTypes {
             self.signature = signature
         }
     }
-
 }
 
 extension GlobalAcceleratorClientTypes {
 
-    public enum ClientAffinity: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ClientAffinity: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case `none`
         case sourceIp
         case sdkUnknown(Swift.String)
@@ -1139,8 +1140,9 @@ extension GlobalAcceleratorClientTypes {
 }
 
 extension GlobalAcceleratorClientTypes {
+
     /// A complex type that contains a Tag key and Tag value.
-    public struct Tag {
+    public struct Tag: Swift.Sendable {
         /// A string that contains a Tag key.
         /// This member is required.
         public var key: Swift.String?
@@ -1157,10 +1159,9 @@ extension GlobalAcceleratorClientTypes {
             self.value = value
         }
     }
-
 }
 
-public struct CreateAcceleratorInput {
+public struct CreateAcceleratorInput: Swift.Sendable {
     /// Indicates whether an accelerator is enabled. The value is true or false. The default value is true. If the value is set to true, an accelerator cannot be deleted. If set to false, the accelerator can be deleted.
     public var enabled: Swift.Bool?
     /// A unique, case-sensitive identifier that you provide to ensure the idempotency—that is, the uniqueness—of an accelerator.
@@ -1194,7 +1195,7 @@ public struct CreateAcceleratorInput {
     }
 }
 
-public struct CreateAcceleratorOutput {
+public struct CreateAcceleratorOutput: Swift.Sendable {
     /// The accelerator that is created by specifying a listener and the supported IP address types.
     public var accelerator: GlobalAcceleratorClientTypes.Accelerator?
 
@@ -1206,7 +1207,7 @@ public struct CreateAcceleratorOutput {
     }
 }
 
-public struct CreateCrossAccountAttachmentInput {
+public struct CreateCrossAccountAttachmentInput: Swift.Sendable {
     /// A unique, case-sensitive identifier that you provide to ensure the idempotency—that is, the uniqueness—of the request.
     /// This member is required.
     public var idempotencyToken: Swift.String?
@@ -1236,7 +1237,7 @@ public struct CreateCrossAccountAttachmentInput {
     }
 }
 
-public struct CreateCrossAccountAttachmentOutput {
+public struct CreateCrossAccountAttachmentOutput: Swift.Sendable {
     /// Information about the cross-account attachment.
     public var crossAccountAttachment: GlobalAcceleratorClientTypes.Attachment?
 
@@ -1248,7 +1249,7 @@ public struct CreateCrossAccountAttachmentOutput {
     }
 }
 
-public struct CreateCustomRoutingAcceleratorInput {
+public struct CreateCustomRoutingAcceleratorInput: Swift.Sendable {
     /// Indicates whether an accelerator is enabled. The value is true or false. The default value is true. If the value is set to true, an accelerator cannot be deleted. If set to false, the accelerator can be deleted.
     public var enabled: Swift.Bool?
     /// A unique, case-sensitive identifier that you provide to ensure the idempotency—that is, the uniqueness—of the request.
@@ -1284,7 +1285,7 @@ public struct CreateCustomRoutingAcceleratorInput {
 
 extension GlobalAcceleratorClientTypes {
 
-    public enum CustomRoutingAcceleratorStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum CustomRoutingAcceleratorStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case deployed
         case inProgress
         case sdkUnknown(Swift.String)
@@ -1312,8 +1313,9 @@ extension GlobalAcceleratorClientTypes {
 }
 
 extension GlobalAcceleratorClientTypes {
+
     /// Attributes of a custom routing accelerator.
-    public struct CustomRoutingAccelerator {
+    public struct CustomRoutingAccelerator: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the custom routing accelerator.
         public var acceleratorArn: Swift.String?
         /// The date and time that the accelerator was created.
@@ -1356,10 +1358,9 @@ extension GlobalAcceleratorClientTypes {
             self.status = status
         }
     }
-
 }
 
-public struct CreateCustomRoutingAcceleratorOutput {
+public struct CreateCustomRoutingAcceleratorOutput: Swift.Sendable {
     /// The accelerator that is created.
     public var accelerator: GlobalAcceleratorClientTypes.CustomRoutingAccelerator?
 
@@ -1445,7 +1446,7 @@ public struct ListenerNotFoundException: ClientRuntime.ModeledError, AWSClientRu
 
 extension GlobalAcceleratorClientTypes {
 
-    public enum CustomRoutingProtocol: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum CustomRoutingProtocol: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case tcp
         case udp
         case sdkUnknown(Swift.String)
@@ -1473,8 +1474,9 @@ extension GlobalAcceleratorClientTypes {
 }
 
 extension GlobalAcceleratorClientTypes {
+
     /// For a custom routing accelerator, sets the port range and protocol for all endpoints (virtual private cloud subnets) in an endpoint group to accept client traffic on.
-    public struct CustomRoutingDestinationConfiguration {
+    public struct CustomRoutingDestinationConfiguration: Swift.Sendable {
         /// The first port, inclusive, in the range of ports for the endpoint group that is associated with a custom routing accelerator.
         /// This member is required.
         public var fromPort: Swift.Int?
@@ -1496,10 +1498,9 @@ extension GlobalAcceleratorClientTypes {
             self.toPort = toPort
         }
     }
-
 }
 
-public struct CreateCustomRoutingEndpointGroupInput {
+public struct CreateCustomRoutingEndpointGroupInput: Swift.Sendable {
     /// Sets the port range and protocol for all endpoints (virtual private cloud subnets) in a custom routing endpoint group to accept client traffic on.
     /// This member is required.
     public var destinationConfigurations: [GlobalAcceleratorClientTypes.CustomRoutingDestinationConfiguration]?
@@ -1529,7 +1530,7 @@ public struct CreateCustomRoutingEndpointGroupInput {
 
 extension GlobalAcceleratorClientTypes {
 
-    public enum ModelProtocol: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ModelProtocol: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case tcp
         case udp
         case sdkUnknown(Swift.String)
@@ -1557,8 +1558,9 @@ extension GlobalAcceleratorClientTypes {
 }
 
 extension GlobalAcceleratorClientTypes {
+
     /// For a custom routing accelerator, describes the port range and protocol for all endpoints (virtual private cloud subnets) in an endpoint group to accept client traffic on.
-    public struct CustomRoutingDestinationDescription {
+    public struct CustomRoutingDestinationDescription: Swift.Sendable {
         /// The first port, inclusive, in the range of ports for the endpoint group that is associated with a custom routing accelerator.
         public var fromPort: Swift.Int?
         /// The protocol for the endpoint group that is associated with a custom routing accelerator. The protocol can be either TCP or UDP.
@@ -1577,12 +1579,12 @@ extension GlobalAcceleratorClientTypes {
             self.toPort = toPort
         }
     }
-
 }
 
 extension GlobalAcceleratorClientTypes {
+
     /// A complex type for the endpoint group for a custom routing accelerator. An Amazon Web Services Region can have only one endpoint group for a specific listener.
-    public struct CustomRoutingEndpointGroup {
+    public struct CustomRoutingEndpointGroup: Swift.Sendable {
         /// For a custom routing accelerator, describes the port range and protocol for all endpoints (virtual private cloud subnets) in an endpoint group to accept client traffic on.
         public var destinationDescriptions: [GlobalAcceleratorClientTypes.CustomRoutingDestinationDescription]?
         /// For a custom routing accelerator, describes the endpoints (virtual private cloud subnets) in an endpoint group to accept client traffic on.
@@ -1605,10 +1607,9 @@ extension GlobalAcceleratorClientTypes {
             self.endpointGroupRegion = endpointGroupRegion
         }
     }
-
 }
 
-public struct CreateCustomRoutingEndpointGroupOutput {
+public struct CreateCustomRoutingEndpointGroupOutput: Swift.Sendable {
     /// The information about the endpoint group created for a custom routing accelerator.
     public var endpointGroup: GlobalAcceleratorClientTypes.CustomRoutingEndpointGroup?
 
@@ -1621,8 +1622,9 @@ public struct CreateCustomRoutingEndpointGroupOutput {
 }
 
 extension GlobalAcceleratorClientTypes {
+
     /// A complex type for a range of ports for a listener.
-    public struct PortRange {
+    public struct PortRange: Swift.Sendable {
         /// The first port in the range of ports, inclusive.
         public var fromPort: Swift.Int?
         /// The last port in the range of ports, inclusive.
@@ -1637,10 +1639,9 @@ extension GlobalAcceleratorClientTypes {
             self.toPort = toPort
         }
     }
-
 }
 
-public struct CreateCustomRoutingListenerInput {
+public struct CreateCustomRoutingListenerInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the accelerator for a custom routing listener.
     /// This member is required.
     public var acceleratorArn: Swift.String?
@@ -1664,8 +1665,9 @@ public struct CreateCustomRoutingListenerInput {
 }
 
 extension GlobalAcceleratorClientTypes {
+
     /// A complex type for a listener for a custom routing accelerator.
-    public struct CustomRoutingListener {
+    public struct CustomRoutingListener: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the listener.
         public var listenerArn: Swift.String?
         /// The port range to support for connections from clients to your accelerator. Separately, you set port ranges for endpoints. For more information, see [About endpoints for custom routing accelerators](https://docs.aws.amazon.com/global-accelerator/latest/dg/about-custom-routing-endpoints.html).
@@ -1680,10 +1682,9 @@ extension GlobalAcceleratorClientTypes {
             self.portRanges = portRanges
         }
     }
-
 }
 
-public struct CreateCustomRoutingListenerOutput {
+public struct CreateCustomRoutingListenerOutput: Swift.Sendable {
     /// The listener that you've created for a custom routing accelerator.
     public var listener: GlobalAcceleratorClientTypes.CustomRoutingListener?
 
@@ -1697,7 +1698,7 @@ public struct CreateCustomRoutingListenerOutput {
 
 extension GlobalAcceleratorClientTypes {
 
-    public enum HealthCheckProtocol: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum HealthCheckProtocol: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case http
         case https
         case tcp
@@ -1728,8 +1729,9 @@ extension GlobalAcceleratorClientTypes {
 }
 
 extension GlobalAcceleratorClientTypes {
+
     /// Override specific listener ports used to route traffic to endpoints that are part of an endpoint group. For example, you can create a port override in which the listener receives user traffic on ports 80 and 443, but your accelerator routes that traffic to ports 1080 and 1443, respectively, on the endpoints. For more information, see [ Overriding listener ports](https://docs.aws.amazon.com/global-accelerator/latest/dg/about-endpoint-groups-port-override.html) in the Global Accelerator Developer Guide.
-    public struct PortOverride {
+    public struct PortOverride: Swift.Sendable {
         /// The endpoint port that you want a listener port to be mapped to. This is the port on the endpoint, such as the Application Load Balancer or Amazon EC2 instance.
         public var endpointPort: Swift.Int?
         /// The listener port that you want to map to a specific endpoint port. This is the port that user traffic arrives to the Global Accelerator on.
@@ -1744,10 +1746,9 @@ extension GlobalAcceleratorClientTypes {
             self.listenerPort = listenerPort
         }
     }
-
 }
 
-public struct CreateEndpointGroupInput {
+public struct CreateEndpointGroupInput: Swift.Sendable {
     /// The list of endpoint objects.
     public var endpointConfigurations: [GlobalAcceleratorClientTypes.EndpointConfiguration]?
     /// The Amazon Web Services Region where the endpoint group is located. A listener can have only one endpoint group in a specific Region.
@@ -1803,8 +1804,9 @@ public struct CreateEndpointGroupInput {
 }
 
 extension GlobalAcceleratorClientTypes {
+
     /// A complex type for the endpoint group. An Amazon Web Services Region can have only one endpoint group for a specific listener.
-    public struct EndpointGroup {
+    public struct EndpointGroup: Swift.Sendable {
         /// The list of endpoint objects.
         public var endpointDescriptions: [GlobalAcceleratorClientTypes.EndpointDescription]?
         /// The Amazon Resource Name (ARN) of the endpoint group.
@@ -1851,10 +1853,9 @@ extension GlobalAcceleratorClientTypes {
             self.trafficDialPercentage = trafficDialPercentage
         }
     }
-
 }
 
-public struct CreateEndpointGroupOutput {
+public struct CreateEndpointGroupOutput: Swift.Sendable {
     /// The information about the endpoint group that was created.
     public var endpointGroup: GlobalAcceleratorClientTypes.EndpointGroup?
 
@@ -1866,7 +1867,7 @@ public struct CreateEndpointGroupOutput {
     }
 }
 
-public struct CreateListenerInput {
+public struct CreateListenerInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of your accelerator.
     /// This member is required.
     public var acceleratorArn: Swift.String?
@@ -1899,8 +1900,9 @@ public struct CreateListenerInput {
 }
 
 extension GlobalAcceleratorClientTypes {
+
     /// A complex type for a listener.
-    public struct Listener {
+    public struct Listener: Swift.Sendable {
         /// Client affinity lets you direct all requests from a user to the same endpoint, if you have stateful applications, regardless of the port and protocol of the client request. Client affinity gives you control over whether to always route each client to the same specific endpoint. Global Accelerator uses a consistent-flow hashing algorithm to choose the optimal endpoint for a connection. If client affinity is NONE, Global Accelerator uses the "five-tuple" (5-tuple) properties—source IP address, source port, destination IP address, destination port, and protocol—to select the hash value, and then chooses the best endpoint. However, with this setting, if someone uses different ports to connect to Global Accelerator, their connections might not be always routed to the same endpoint because the hash value changes. If you want a given client to always be routed to the same endpoint, set client affinity to SOURCE_IP instead. When you use the SOURCE_IP setting, Global Accelerator uses the "two-tuple" (2-tuple) properties— source (client) IP address and destination IP address—to select the hash value. The default value is NONE.
         public var clientAffinity: GlobalAcceleratorClientTypes.ClientAffinity?
         /// The Amazon Resource Name (ARN) of the listener.
@@ -1923,10 +1925,9 @@ extension GlobalAcceleratorClientTypes {
             self.`protocol` = `protocol`
         }
     }
-
 }
 
-public struct CreateListenerOutput {
+public struct CreateListenerOutput: Swift.Sendable {
     /// The listener that you've created.
     public var listener: GlobalAcceleratorClientTypes.Listener?
 
@@ -1939,8 +1940,9 @@ public struct CreateListenerOutput {
 }
 
 extension GlobalAcceleratorClientTypes {
+
     /// An endpoint (Amazon Web Services resource) or an IP address range, in CIDR format, that is listed in a cross-account attachment. A cross-account resource can be added to an accelerator by specified principals, which are also listed in the attachment. For more information, see [ Working with cross-account attachments and resources in Global Accelerator](https://docs.aws.amazon.com/global-accelerator/latest/dg/cross-account-resources.html) in the Global Accelerator Developer Guide.
-    public struct CrossAccountResource {
+    public struct CrossAccountResource: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the cross-account attachment that specifies the resources (endpoints or CIDR range) that can be added to accelerators and principals that have permission to add them.
         public var attachmentArn: Swift.String?
         /// An IP address range, in CIDR format, that is specified as an Amazon Web Services resource. The address must be provisioned and advertised in Global Accelerator by following the bring your own IP address (BYOIP) process for Global Accelerator. For more information, see [Bring your own IP addresses (BYOIP)](https://docs.aws.amazon.com/global-accelerator/latest/dg/using-byoip.html) in the Global Accelerator Developer Guide.
@@ -1959,12 +1961,12 @@ extension GlobalAcceleratorClientTypes {
             self.endpointId = endpointId
         }
     }
-
 }
 
 extension GlobalAcceleratorClientTypes {
+
     /// Attributes of a custom routing accelerator.
-    public struct CustomRoutingAcceleratorAttributes {
+    public struct CustomRoutingAcceleratorAttributes: Swift.Sendable {
         /// Indicates whether flow logs are enabled. The default value is false. If the value is true, FlowLogsS3Bucket and FlowLogsS3Prefix must be specified. For more information, see [Flow logs](https://docs.aws.amazon.com/global-accelerator/latest/dg/monitoring-global-accelerator.flow-logs.html) in the Global Accelerator Developer Guide.
         public var flowLogsEnabled: Swift.Bool?
         /// The name of the Amazon S3 bucket for the flow logs. Attribute is required if FlowLogsEnabled is true. The bucket must exist and have a bucket policy that grants Global Accelerator permission to write to the bucket.
@@ -1983,12 +1985,11 @@ extension GlobalAcceleratorClientTypes {
             self.flowLogsS3Prefix = flowLogsS3Prefix
         }
     }
-
 }
 
 extension GlobalAcceleratorClientTypes {
 
-    public enum CustomRoutingDestinationTrafficState: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum CustomRoutingDestinationTrafficState: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case allow
         case deny
         case sdkUnknown(Swift.String)
@@ -2015,7 +2016,7 @@ extension GlobalAcceleratorClientTypes {
     }
 }
 
-public struct DeleteAcceleratorInput {
+public struct DeleteAcceleratorInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of an accelerator.
     /// This member is required.
     public var acceleratorArn: Swift.String?
@@ -2028,7 +2029,7 @@ public struct DeleteAcceleratorInput {
     }
 }
 
-public struct DeleteCrossAccountAttachmentInput {
+public struct DeleteCrossAccountAttachmentInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) for the cross-account attachment to delete.
     /// This member is required.
     public var attachmentArn: Swift.String?
@@ -2041,7 +2042,7 @@ public struct DeleteCrossAccountAttachmentInput {
     }
 }
 
-public struct DeleteCustomRoutingAcceleratorInput {
+public struct DeleteCustomRoutingAcceleratorInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the custom routing accelerator to delete.
     /// This member is required.
     public var acceleratorArn: Swift.String?
@@ -2054,7 +2055,7 @@ public struct DeleteCustomRoutingAcceleratorInput {
     }
 }
 
-public struct DeleteCustomRoutingEndpointGroupInput {
+public struct DeleteCustomRoutingEndpointGroupInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the endpoint group to delete.
     /// This member is required.
     public var endpointGroupArn: Swift.String?
@@ -2067,7 +2068,7 @@ public struct DeleteCustomRoutingEndpointGroupInput {
     }
 }
 
-public struct DeleteCustomRoutingListenerInput {
+public struct DeleteCustomRoutingListenerInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the listener to delete.
     /// This member is required.
     public var listenerArn: Swift.String?
@@ -2080,7 +2081,7 @@ public struct DeleteCustomRoutingListenerInput {
     }
 }
 
-public struct DeleteEndpointGroupInput {
+public struct DeleteEndpointGroupInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the endpoint group to delete.
     /// This member is required.
     public var endpointGroupArn: Swift.String?
@@ -2093,7 +2094,7 @@ public struct DeleteEndpointGroupInput {
     }
 }
 
-public struct DeleteListenerInput {
+public struct DeleteListenerInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the listener.
     /// This member is required.
     public var listenerArn: Swift.String?
@@ -2106,7 +2107,7 @@ public struct DeleteListenerInput {
     }
 }
 
-public struct DenyCustomRoutingTrafficInput {
+public struct DenyCustomRoutingTrafficInput: Swift.Sendable {
     /// Indicates whether all destination IP addresses and ports for a specified VPC subnet endpoint cannot receive traffic from a custom routing accelerator. The value is TRUE or FALSE. When set to TRUE, no destinations in the custom routing VPC subnet can receive traffic. Note that you cannot specify destination IP addresses and ports when the value is set to TRUE. When set to FALSE (or not specified), you must specify a list of destination IP addresses that cannot receive traffic. A list of ports is optional. If you don't specify a list of ports, the ports that can accept traffic is the same as the ports configured for the endpoint group. The default value is FALSE.
     public var denyAllTrafficToEndpoint: Swift.Bool?
     /// A list of specific Amazon EC2 instance IP addresses (destination addresses) in a subnet that you want to prevent from receiving traffic. The IP addresses must be a subset of the IP addresses allowed for the VPC subnet associated with the endpoint group.
@@ -2136,7 +2137,7 @@ public struct DenyCustomRoutingTrafficInput {
     }
 }
 
-public struct DeprovisionByoipCidrInput {
+public struct DeprovisionByoipCidrInput: Swift.Sendable {
     /// The address range, in CIDR notation. The prefix must be the same prefix that you specified when you provisioned the address range. For more information, see [Bring your own IP addresses (BYOIP)](https://docs.aws.amazon.com/global-accelerator/latest/dg/using-byoip.html) in the Global Accelerator Developer Guide.
     /// This member is required.
     public var cidr: Swift.String?
@@ -2149,7 +2150,7 @@ public struct DeprovisionByoipCidrInput {
     }
 }
 
-public struct DeprovisionByoipCidrOutput {
+public struct DeprovisionByoipCidrOutput: Swift.Sendable {
     /// Information about the address range.
     public var byoipCidr: GlobalAcceleratorClientTypes.ByoipCidr?
 
@@ -2161,7 +2162,7 @@ public struct DeprovisionByoipCidrOutput {
     }
 }
 
-public struct DescribeAcceleratorInput {
+public struct DescribeAcceleratorInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the accelerator to describe.
     /// This member is required.
     public var acceleratorArn: Swift.String?
@@ -2174,7 +2175,7 @@ public struct DescribeAcceleratorInput {
     }
 }
 
-public struct DescribeAcceleratorOutput {
+public struct DescribeAcceleratorOutput: Swift.Sendable {
     /// The description of the accelerator.
     public var accelerator: GlobalAcceleratorClientTypes.Accelerator?
 
@@ -2186,7 +2187,7 @@ public struct DescribeAcceleratorOutput {
     }
 }
 
-public struct DescribeAcceleratorAttributesInput {
+public struct DescribeAcceleratorAttributesInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the accelerator with the attributes that you want to describe.
     /// This member is required.
     public var acceleratorArn: Swift.String?
@@ -2199,7 +2200,7 @@ public struct DescribeAcceleratorAttributesInput {
     }
 }
 
-public struct DescribeAcceleratorAttributesOutput {
+public struct DescribeAcceleratorAttributesOutput: Swift.Sendable {
     /// The attributes of the accelerator.
     public var acceleratorAttributes: GlobalAcceleratorClientTypes.AcceleratorAttributes?
 
@@ -2211,7 +2212,7 @@ public struct DescribeAcceleratorAttributesOutput {
     }
 }
 
-public struct DescribeCrossAccountAttachmentInput {
+public struct DescribeCrossAccountAttachmentInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) for the cross-account attachment to describe.
     /// This member is required.
     public var attachmentArn: Swift.String?
@@ -2224,7 +2225,7 @@ public struct DescribeCrossAccountAttachmentInput {
     }
 }
 
-public struct DescribeCrossAccountAttachmentOutput {
+public struct DescribeCrossAccountAttachmentOutput: Swift.Sendable {
     /// Information about the cross-account attachment.
     public var crossAccountAttachment: GlobalAcceleratorClientTypes.Attachment?
 
@@ -2236,7 +2237,7 @@ public struct DescribeCrossAccountAttachmentOutput {
     }
 }
 
-public struct DescribeCustomRoutingAcceleratorInput {
+public struct DescribeCustomRoutingAcceleratorInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the accelerator to describe.
     /// This member is required.
     public var acceleratorArn: Swift.String?
@@ -2249,7 +2250,7 @@ public struct DescribeCustomRoutingAcceleratorInput {
     }
 }
 
-public struct DescribeCustomRoutingAcceleratorOutput {
+public struct DescribeCustomRoutingAcceleratorOutput: Swift.Sendable {
     /// The description of the custom routing accelerator.
     public var accelerator: GlobalAcceleratorClientTypes.CustomRoutingAccelerator?
 
@@ -2261,7 +2262,7 @@ public struct DescribeCustomRoutingAcceleratorOutput {
     }
 }
 
-public struct DescribeCustomRoutingAcceleratorAttributesInput {
+public struct DescribeCustomRoutingAcceleratorAttributesInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the custom routing accelerator to describe the attributes for.
     /// This member is required.
     public var acceleratorArn: Swift.String?
@@ -2274,7 +2275,7 @@ public struct DescribeCustomRoutingAcceleratorAttributesInput {
     }
 }
 
-public struct DescribeCustomRoutingAcceleratorAttributesOutput {
+public struct DescribeCustomRoutingAcceleratorAttributesOutput: Swift.Sendable {
     /// The attributes of the custom routing accelerator.
     public var acceleratorAttributes: GlobalAcceleratorClientTypes.CustomRoutingAcceleratorAttributes?
 
@@ -2286,7 +2287,7 @@ public struct DescribeCustomRoutingAcceleratorAttributesOutput {
     }
 }
 
-public struct DescribeCustomRoutingEndpointGroupInput {
+public struct DescribeCustomRoutingEndpointGroupInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the endpoint group to describe.
     /// This member is required.
     public var endpointGroupArn: Swift.String?
@@ -2299,7 +2300,7 @@ public struct DescribeCustomRoutingEndpointGroupInput {
     }
 }
 
-public struct DescribeCustomRoutingEndpointGroupOutput {
+public struct DescribeCustomRoutingEndpointGroupOutput: Swift.Sendable {
     /// The description of an endpoint group for a custom routing accelerator.
     public var endpointGroup: GlobalAcceleratorClientTypes.CustomRoutingEndpointGroup?
 
@@ -2311,7 +2312,7 @@ public struct DescribeCustomRoutingEndpointGroupOutput {
     }
 }
 
-public struct DescribeCustomRoutingListenerInput {
+public struct DescribeCustomRoutingListenerInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the listener to describe.
     /// This member is required.
     public var listenerArn: Swift.String?
@@ -2324,7 +2325,7 @@ public struct DescribeCustomRoutingListenerInput {
     }
 }
 
-public struct DescribeCustomRoutingListenerOutput {
+public struct DescribeCustomRoutingListenerOutput: Swift.Sendable {
     /// The description of a listener for a custom routing accelerator.
     public var listener: GlobalAcceleratorClientTypes.CustomRoutingListener?
 
@@ -2336,7 +2337,7 @@ public struct DescribeCustomRoutingListenerOutput {
     }
 }
 
-public struct DescribeEndpointGroupInput {
+public struct DescribeEndpointGroupInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the endpoint group to describe.
     /// This member is required.
     public var endpointGroupArn: Swift.String?
@@ -2349,7 +2350,7 @@ public struct DescribeEndpointGroupInput {
     }
 }
 
-public struct DescribeEndpointGroupOutput {
+public struct DescribeEndpointGroupOutput: Swift.Sendable {
     /// The description of an endpoint group.
     public var endpointGroup: GlobalAcceleratorClientTypes.EndpointGroup?
 
@@ -2361,7 +2362,7 @@ public struct DescribeEndpointGroupOutput {
     }
 }
 
-public struct DescribeListenerInput {
+public struct DescribeListenerInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the listener to describe.
     /// This member is required.
     public var listenerArn: Swift.String?
@@ -2374,7 +2375,7 @@ public struct DescribeListenerInput {
     }
 }
 
-public struct DescribeListenerOutput {
+public struct DescribeListenerOutput: Swift.Sendable {
     /// The description of a listener.
     public var listener: GlobalAcceleratorClientTypes.Listener?
 
@@ -2387,8 +2388,9 @@ public struct DescribeListenerOutput {
 }
 
 extension GlobalAcceleratorClientTypes {
+
     /// An IP address/port combination.
-    public struct SocketAddress {
+    public struct SocketAddress: Swift.Sendable {
         /// The IP address for the socket address.
         public var ipAddress: Swift.String?
         /// The port for the socket address.
@@ -2403,12 +2405,12 @@ extension GlobalAcceleratorClientTypes {
             self.port = port
         }
     }
-
 }
 
 extension GlobalAcceleratorClientTypes {
+
     /// The port mappings for a specified endpoint IP address (destination).
-    public struct DestinationPortMapping {
+    public struct DestinationPortMapping: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the custom routing accelerator that you have port mappings for.
         public var acceleratorArn: Swift.String?
         /// The IP address/port combinations (sockets) that map to a given destination socket address.
@@ -2447,12 +2449,12 @@ extension GlobalAcceleratorClientTypes {
             self.ipAddressType = ipAddressType
         }
     }
-
 }
 
 extension GlobalAcceleratorClientTypes {
+
     /// A complex type for an endpoint. Specifies information about the endpoint to remove from the endpoint group.
-    public struct EndpointIdentifier {
+    public struct EndpointIdentifier: Swift.Sendable {
         /// Indicates whether client IP address preservation is enabled for an endpoint. The value is true or false. If the value is set to true, the client's IP address is preserved in the X-Forwarded-For request header as traffic travels to applications on the endpoint fronted by the accelerator.
         public var clientIPPreservationEnabled: Swift.Bool?
         /// An ID for the endpoint. If the endpoint is a Network Load Balancer or Application Load Balancer, this is the Amazon Resource Name (ARN) of the resource. If the endpoint is an Elastic IP address, this is the Elastic IP address allocation ID. For Amazon EC2 instances, this is the EC2 instance ID. An Application Load Balancer can be either internal or internet-facing.
@@ -2468,7 +2470,6 @@ extension GlobalAcceleratorClientTypes {
             self.endpointId = endpointId
         }
     }
-
 }
 
 /// The endpoint that you specified doesn't exist.
@@ -2519,7 +2520,7 @@ public struct InvalidNextTokenException: ClientRuntime.ModeledError, AWSClientRu
     }
 }
 
-public struct ListAcceleratorsInput {
+public struct ListAcceleratorsInput: Swift.Sendable {
     /// The number of Global Accelerator objects that you want to return with this call. The default value is 10.
     public var maxResults: Swift.Int?
     /// The token for the next set of results. You receive this token from a previous call.
@@ -2535,7 +2536,7 @@ public struct ListAcceleratorsInput {
     }
 }
 
-public struct ListAcceleratorsOutput {
+public struct ListAcceleratorsOutput: Swift.Sendable {
     /// The list of accelerators for a customer account.
     public var accelerators: [GlobalAcceleratorClientTypes.Accelerator]?
     /// The token for the next set of results. You receive this token from a previous call.
@@ -2551,7 +2552,7 @@ public struct ListAcceleratorsOutput {
     }
 }
 
-public struct ListByoipCidrsInput {
+public struct ListByoipCidrsInput: Swift.Sendable {
     /// The maximum number of results to return with a single call. To retrieve the remaining results, make another call with the returned nextToken value.
     public var maxResults: Swift.Int?
     /// The token for the next page of results.
@@ -2567,7 +2568,7 @@ public struct ListByoipCidrsInput {
     }
 }
 
-public struct ListByoipCidrsOutput {
+public struct ListByoipCidrsOutput: Swift.Sendable {
     /// Information about your address ranges.
     public var byoipCidrs: [GlobalAcceleratorClientTypes.ByoipCidr]?
     /// The token for the next page of results.
@@ -2583,7 +2584,7 @@ public struct ListByoipCidrsOutput {
     }
 }
 
-public struct ListCrossAccountAttachmentsInput {
+public struct ListCrossAccountAttachmentsInput: Swift.Sendable {
     /// The number of cross-account attachment objects that you want to return with this call. The default value is 10.
     public var maxResults: Swift.Int?
     /// The token for the next set of results. You receive this token from a previous call.
@@ -2599,7 +2600,7 @@ public struct ListCrossAccountAttachmentsInput {
     }
 }
 
-public struct ListCrossAccountAttachmentsOutput {
+public struct ListCrossAccountAttachmentsOutput: Swift.Sendable {
     /// Information about the cross-account attachments.
     public var crossAccountAttachments: [GlobalAcceleratorClientTypes.Attachment]?
     /// The token for the next set of results. You receive this token from a previous call.
@@ -2615,12 +2616,12 @@ public struct ListCrossAccountAttachmentsOutput {
     }
 }
 
-public struct ListCrossAccountResourceAccountsInput {
+public struct ListCrossAccountResourceAccountsInput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct ListCrossAccountResourceAccountsOutput {
+public struct ListCrossAccountResourceAccountsOutput: Swift.Sendable {
     /// The account IDs of principals (resource owners) in a cross-account attachment who can work with resources listed in the same attachment.
     public var resourceOwnerAwsAccountIds: [Swift.String]?
 
@@ -2632,7 +2633,7 @@ public struct ListCrossAccountResourceAccountsOutput {
     }
 }
 
-public struct ListCrossAccountResourcesInput {
+public struct ListCrossAccountResourcesInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of an accelerator in a cross-account attachment.
     public var acceleratorArn: Swift.String?
     /// The number of cross-account resource objects that you want to return with this call. The default value is 10.
@@ -2657,7 +2658,7 @@ public struct ListCrossAccountResourcesInput {
     }
 }
 
-public struct ListCrossAccountResourcesOutput {
+public struct ListCrossAccountResourcesOutput: Swift.Sendable {
     /// The cross-account resources used with an accelerator.
     public var crossAccountResources: [GlobalAcceleratorClientTypes.CrossAccountResource]?
     /// The token for the next set of results. You receive this token from a previous call.
@@ -2673,7 +2674,7 @@ public struct ListCrossAccountResourcesOutput {
     }
 }
 
-public struct ListCustomRoutingAcceleratorsInput {
+public struct ListCustomRoutingAcceleratorsInput: Swift.Sendable {
     /// The number of custom routing Global Accelerator objects that you want to return with this call. The default value is 10.
     public var maxResults: Swift.Int?
     /// The token for the next set of results. You receive this token from a previous call.
@@ -2689,7 +2690,7 @@ public struct ListCustomRoutingAcceleratorsInput {
     }
 }
 
-public struct ListCustomRoutingAcceleratorsOutput {
+public struct ListCustomRoutingAcceleratorsOutput: Swift.Sendable {
     /// The list of custom routing accelerators for a customer account.
     public var accelerators: [GlobalAcceleratorClientTypes.CustomRoutingAccelerator]?
     /// The token for the next set of results. You receive this token from a previous call.
@@ -2705,7 +2706,7 @@ public struct ListCustomRoutingAcceleratorsOutput {
     }
 }
 
-public struct ListCustomRoutingEndpointGroupsInput {
+public struct ListCustomRoutingEndpointGroupsInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the listener to list endpoint groups for.
     /// This member is required.
     public var listenerArn: Swift.String?
@@ -2726,7 +2727,7 @@ public struct ListCustomRoutingEndpointGroupsInput {
     }
 }
 
-public struct ListCustomRoutingEndpointGroupsOutput {
+public struct ListCustomRoutingEndpointGroupsOutput: Swift.Sendable {
     /// The list of the endpoint groups associated with a listener for a custom routing accelerator.
     public var endpointGroups: [GlobalAcceleratorClientTypes.CustomRoutingEndpointGroup]?
     /// The token for the next set of results. You receive this token from a previous call.
@@ -2742,7 +2743,7 @@ public struct ListCustomRoutingEndpointGroupsOutput {
     }
 }
 
-public struct ListCustomRoutingListenersInput {
+public struct ListCustomRoutingListenersInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the accelerator to list listeners for.
     /// This member is required.
     public var acceleratorArn: Swift.String?
@@ -2763,7 +2764,7 @@ public struct ListCustomRoutingListenersInput {
     }
 }
 
-public struct ListCustomRoutingListenersOutput {
+public struct ListCustomRoutingListenersOutput: Swift.Sendable {
     /// The list of listeners for a custom routing accelerator.
     public var listeners: [GlobalAcceleratorClientTypes.CustomRoutingListener]?
     /// The token for the next set of results. You receive this token from a previous call.
@@ -2779,7 +2780,7 @@ public struct ListCustomRoutingListenersOutput {
     }
 }
 
-public struct ListCustomRoutingPortMappingsInput {
+public struct ListCustomRoutingPortMappingsInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the accelerator to list the custom routing port mappings for.
     /// This member is required.
     public var acceleratorArn: Swift.String?
@@ -2805,8 +2806,9 @@ public struct ListCustomRoutingPortMappingsInput {
 }
 
 extension GlobalAcceleratorClientTypes {
+
     /// Returns the ports and associated IP addresses and ports of Amazon EC2 instances in your virtual private cloud (VPC) subnets. Custom routing is a port mapping protocol in Global Accelerator that statically associates port ranges with VPC subnets, which allows Global Accelerator to route to specific instances and ports within one or more subnets.
-    public struct PortMapping {
+    public struct PortMapping: Swift.Sendable {
         /// The accelerator port.
         public var acceleratorPort: Swift.Int?
         /// The EC2 instance IP address and port number in the virtual private cloud (VPC) subnet.
@@ -2837,10 +2839,9 @@ extension GlobalAcceleratorClientTypes {
             self.protocols = protocols
         }
     }
-
 }
 
-public struct ListCustomRoutingPortMappingsOutput {
+public struct ListCustomRoutingPortMappingsOutput: Swift.Sendable {
     /// The token for the next set of results. You receive this token from a previous call.
     public var nextToken: Swift.String?
     /// The port mappings for a custom routing accelerator.
@@ -2856,7 +2857,7 @@ public struct ListCustomRoutingPortMappingsOutput {
     }
 }
 
-public struct ListCustomRoutingPortMappingsByDestinationInput {
+public struct ListCustomRoutingPortMappingsByDestinationInput: Swift.Sendable {
     /// The endpoint IP address in a virtual private cloud (VPC) subnet for which you want to receive back port mappings.
     /// This member is required.
     public var destinationAddress: Swift.String?
@@ -2882,7 +2883,7 @@ public struct ListCustomRoutingPortMappingsByDestinationInput {
     }
 }
 
-public struct ListCustomRoutingPortMappingsByDestinationOutput {
+public struct ListCustomRoutingPortMappingsByDestinationOutput: Swift.Sendable {
     /// The port mappings for the endpoint IP address that you specified in the request.
     public var destinationPortMappings: [GlobalAcceleratorClientTypes.DestinationPortMapping]?
     /// The token for the next set of results. You receive this token from a previous call.
@@ -2898,7 +2899,7 @@ public struct ListCustomRoutingPortMappingsByDestinationOutput {
     }
 }
 
-public struct ListEndpointGroupsInput {
+public struct ListEndpointGroupsInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the listener.
     /// This member is required.
     public var listenerArn: Swift.String?
@@ -2919,7 +2920,7 @@ public struct ListEndpointGroupsInput {
     }
 }
 
-public struct ListEndpointGroupsOutput {
+public struct ListEndpointGroupsOutput: Swift.Sendable {
     /// The list of the endpoint groups associated with a listener.
     public var endpointGroups: [GlobalAcceleratorClientTypes.EndpointGroup]?
     /// The token for the next set of results. You receive this token from a previous call.
@@ -2935,7 +2936,7 @@ public struct ListEndpointGroupsOutput {
     }
 }
 
-public struct ListListenersInput {
+public struct ListListenersInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the accelerator for which you want to list listener objects.
     /// This member is required.
     public var acceleratorArn: Swift.String?
@@ -2956,7 +2957,7 @@ public struct ListListenersInput {
     }
 }
 
-public struct ListListenersOutput {
+public struct ListListenersOutput: Swift.Sendable {
     /// The list of listeners for an accelerator.
     public var listeners: [GlobalAcceleratorClientTypes.Listener]?
     /// The token for the next set of results. You receive this token from a previous call.
@@ -2972,7 +2973,7 @@ public struct ListListenersOutput {
     }
 }
 
-public struct ListTagsForResourceInput {
+public struct ListTagsForResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the accelerator to list tags for. An ARN uniquely identifies an accelerator.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -2985,7 +2986,7 @@ public struct ListTagsForResourceInput {
     }
 }
 
-public struct ListTagsForResourceOutput {
+public struct ListTagsForResourceOutput: Swift.Sendable {
     /// Root level tag for the Tags parameters.
     public var tags: [GlobalAcceleratorClientTypes.Tag]?
 
@@ -2997,7 +2998,7 @@ public struct ListTagsForResourceOutput {
     }
 }
 
-public struct ProvisionByoipCidrInput {
+public struct ProvisionByoipCidrInput: Swift.Sendable {
     /// The public IPv4 address range, in CIDR notation. The most specific IP prefix that you can specify is /24. The address range cannot overlap with another address range that you've brought to this Amazon Web Services Region or another Region. For more information, see [Bring your own IP addresses (BYOIP)](https://docs.aws.amazon.com/global-accelerator/latest/dg/using-byoip.html) in the Global Accelerator Developer Guide.
     /// This member is required.
     public var cidr: Swift.String?
@@ -3015,7 +3016,7 @@ public struct ProvisionByoipCidrInput {
     }
 }
 
-public struct ProvisionByoipCidrOutput {
+public struct ProvisionByoipCidrOutput: Swift.Sendable {
     /// Information about the address range.
     public var byoipCidr: GlobalAcceleratorClientTypes.ByoipCidr?
 
@@ -3027,7 +3028,7 @@ public struct ProvisionByoipCidrOutput {
     }
 }
 
-public struct RemoveCustomRoutingEndpointsInput {
+public struct RemoveCustomRoutingEndpointsInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the endpoint group to remove endpoints from.
     /// This member is required.
     public var endpointGroupArn: Swift.String?
@@ -3045,7 +3046,7 @@ public struct RemoveCustomRoutingEndpointsInput {
     }
 }
 
-public struct RemoveEndpointsInput {
+public struct RemoveEndpointsInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the endpoint group.
     /// This member is required.
     public var endpointGroupArn: Swift.String?
@@ -3063,7 +3064,7 @@ public struct RemoveEndpointsInput {
     }
 }
 
-public struct TagResourceInput {
+public struct TagResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the Global Accelerator resource to add tags to. An ARN uniquely identifies a resource.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -3081,12 +3082,12 @@ public struct TagResourceInput {
     }
 }
 
-public struct TagResourceOutput {
+public struct TagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UntagResourceInput {
+public struct UntagResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the Global Accelerator resource to remove tags from. An ARN uniquely identifies a resource.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -3104,12 +3105,12 @@ public struct UntagResourceInput {
     }
 }
 
-public struct UntagResourceOutput {
+public struct UntagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdateAcceleratorInput {
+public struct UpdateAcceleratorInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the accelerator to update.
     /// This member is required.
     public var acceleratorArn: Swift.String?
@@ -3138,7 +3139,7 @@ public struct UpdateAcceleratorInput {
     }
 }
 
-public struct UpdateAcceleratorOutput {
+public struct UpdateAcceleratorOutput: Swift.Sendable {
     /// Information about the updated accelerator.
     public var accelerator: GlobalAcceleratorClientTypes.Accelerator?
 
@@ -3150,7 +3151,7 @@ public struct UpdateAcceleratorOutput {
     }
 }
 
-public struct UpdateAcceleratorAttributesInput {
+public struct UpdateAcceleratorAttributesInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the accelerator that you want to update.
     /// This member is required.
     public var acceleratorArn: Swift.String?
@@ -3175,7 +3176,7 @@ public struct UpdateAcceleratorAttributesInput {
     }
 }
 
-public struct UpdateAcceleratorAttributesOutput {
+public struct UpdateAcceleratorAttributesOutput: Swift.Sendable {
     /// Updated attributes for the accelerator.
     public var acceleratorAttributes: GlobalAcceleratorClientTypes.AcceleratorAttributes?
 
@@ -3187,7 +3188,7 @@ public struct UpdateAcceleratorAttributesOutput {
     }
 }
 
-public struct UpdateCrossAccountAttachmentInput {
+public struct UpdateCrossAccountAttachmentInput: Swift.Sendable {
     /// The principals to add to the cross-account attachment. A principal is an account or the Amazon Resource Name (ARN) of an accelerator that the attachment gives permission to work with resources from another account. The resources are also listed in the attachment. To add more than one principal, separate the account numbers or accelerator ARNs, or both, with commas.
     public var addPrincipals: [Swift.String]?
     /// The resources to add to the cross-account attachment. A resource listed in a cross-account attachment can be used with an accelerator by the principals that are listed in the attachment. To add more than one resource, separate the resource ARNs with commas.
@@ -3220,7 +3221,7 @@ public struct UpdateCrossAccountAttachmentInput {
     }
 }
 
-public struct UpdateCrossAccountAttachmentOutput {
+public struct UpdateCrossAccountAttachmentOutput: Swift.Sendable {
     /// Information about the updated cross-account attachment.
     public var crossAccountAttachment: GlobalAcceleratorClientTypes.Attachment?
 
@@ -3232,7 +3233,7 @@ public struct UpdateCrossAccountAttachmentOutput {
     }
 }
 
-public struct UpdateCustomRoutingAcceleratorInput {
+public struct UpdateCustomRoutingAcceleratorInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the accelerator to update.
     /// This member is required.
     public var acceleratorArn: Swift.String?
@@ -3261,7 +3262,7 @@ public struct UpdateCustomRoutingAcceleratorInput {
     }
 }
 
-public struct UpdateCustomRoutingAcceleratorOutput {
+public struct UpdateCustomRoutingAcceleratorOutput: Swift.Sendable {
     /// Information about the updated custom routing accelerator.
     public var accelerator: GlobalAcceleratorClientTypes.CustomRoutingAccelerator?
 
@@ -3273,7 +3274,7 @@ public struct UpdateCustomRoutingAcceleratorOutput {
     }
 }
 
-public struct UpdateCustomRoutingAcceleratorAttributesInput {
+public struct UpdateCustomRoutingAcceleratorAttributesInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the custom routing accelerator to update attributes for.
     /// This member is required.
     public var acceleratorArn: Swift.String?
@@ -3298,7 +3299,7 @@ public struct UpdateCustomRoutingAcceleratorAttributesInput {
     }
 }
 
-public struct UpdateCustomRoutingAcceleratorAttributesOutput {
+public struct UpdateCustomRoutingAcceleratorAttributesOutput: Swift.Sendable {
     /// Updated custom routing accelerator.
     public var acceleratorAttributes: GlobalAcceleratorClientTypes.CustomRoutingAcceleratorAttributes?
 
@@ -3310,7 +3311,7 @@ public struct UpdateCustomRoutingAcceleratorAttributesOutput {
     }
 }
 
-public struct UpdateCustomRoutingListenerInput {
+public struct UpdateCustomRoutingListenerInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the listener to update.
     /// This member is required.
     public var listenerArn: Swift.String?
@@ -3328,7 +3329,7 @@ public struct UpdateCustomRoutingListenerInput {
     }
 }
 
-public struct UpdateCustomRoutingListenerOutput {
+public struct UpdateCustomRoutingListenerOutput: Swift.Sendable {
     /// Information for the updated listener for a custom routing accelerator.
     public var listener: GlobalAcceleratorClientTypes.CustomRoutingListener?
 
@@ -3340,7 +3341,7 @@ public struct UpdateCustomRoutingListenerOutput {
     }
 }
 
-public struct UpdateEndpointGroupInput {
+public struct UpdateEndpointGroupInput: Swift.Sendable {
     /// The list of endpoint objects. A resource must be valid and active when you add it as an endpoint.
     public var endpointConfigurations: [GlobalAcceleratorClientTypes.EndpointConfiguration]?
     /// The Amazon Resource Name (ARN) of the endpoint group.
@@ -3385,7 +3386,7 @@ public struct UpdateEndpointGroupInput {
     }
 }
 
-public struct UpdateEndpointGroupOutput {
+public struct UpdateEndpointGroupOutput: Swift.Sendable {
     /// The information about the endpoint group that was updated.
     public var endpointGroup: GlobalAcceleratorClientTypes.EndpointGroup?
 
@@ -3397,7 +3398,7 @@ public struct UpdateEndpointGroupOutput {
     }
 }
 
-public struct UpdateListenerInput {
+public struct UpdateListenerInput: Swift.Sendable {
     /// Client affinity lets you direct all requests from a user to the same endpoint, if you have stateful applications, regardless of the port and protocol of the client request. Client affinity gives you control over whether to always route each client to the same specific endpoint. Global Accelerator uses a consistent-flow hashing algorithm to choose the optimal endpoint for a connection. If client affinity is NONE, Global Accelerator uses the "five-tuple" (5-tuple) properties—source IP address, source port, destination IP address, destination port, and protocol—to select the hash value, and then chooses the best endpoint. However, with this setting, if someone uses different ports to connect to Global Accelerator, their connections might not be always routed to the same endpoint because the hash value changes. If you want a given client to always be routed to the same endpoint, set client affinity to SOURCE_IP instead. When you use the SOURCE_IP setting, Global Accelerator uses the "two-tuple" (2-tuple) properties— source (client) IP address and destination IP address—to select the hash value. The default value is NONE.
     public var clientAffinity: GlobalAcceleratorClientTypes.ClientAffinity?
     /// The Amazon Resource Name (ARN) of the listener to update.
@@ -3422,7 +3423,7 @@ public struct UpdateListenerInput {
     }
 }
 
-public struct UpdateListenerOutput {
+public struct UpdateListenerOutput: Swift.Sendable {
     /// Information for the updated listener.
     public var listener: GlobalAcceleratorClientTypes.Listener?
 
@@ -3434,7 +3435,7 @@ public struct UpdateListenerOutput {
     }
 }
 
-public struct WithdrawByoipCidrInput {
+public struct WithdrawByoipCidrInput: Swift.Sendable {
     /// The address range, in CIDR notation. For more information, see [Bring your own IP addresses (BYOIP)](https://docs.aws.amazon.com/global-accelerator/latest/dg/using-byoip.html) in the Global Accelerator Developer Guide.
     /// This member is required.
     public var cidr: Swift.String?
@@ -3447,7 +3448,7 @@ public struct WithdrawByoipCidrInput {
     }
 }
 
-public struct WithdrawByoipCidrOutput {
+public struct WithdrawByoipCidrOutput: Swift.Sendable {
     /// Information about the BYOIP address pool.
     public var byoipCidr: GlobalAcceleratorClientTypes.ByoipCidr?
 

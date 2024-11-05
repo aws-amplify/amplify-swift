@@ -102,7 +102,7 @@ public struct ServiceFailureException: ClientRuntime.ModeledError, AWSClientRunt
     }
 }
 
-public struct DeleteLexiconInput {
+public struct DeleteLexiconInput: Swift.Sendable {
     /// The name of the lexicon to delete. Must be an existing lexicon in the region.
     /// This member is required.
     public var name: Swift.String?
@@ -115,7 +115,7 @@ public struct DeleteLexiconInput {
     }
 }
 
-public struct DeleteLexiconOutput {
+public struct DeleteLexiconOutput: Swift.Sendable {
 
     public init() { }
 }
@@ -146,7 +146,7 @@ public struct InvalidNextTokenException: ClientRuntime.ModeledError, AWSClientRu
 
 extension PollyClientTypes {
 
-    public enum Engine: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Engine: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case generative
         case longForm
         case neural
@@ -181,7 +181,7 @@ extension PollyClientTypes {
 
 extension PollyClientTypes {
 
-    public enum LanguageCode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum LanguageCode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case arAe
         case arb
         case caEs
@@ -325,7 +325,7 @@ extension PollyClientTypes {
     }
 }
 
-public struct DescribeVoicesInput {
+public struct DescribeVoicesInput: Swift.Sendable {
     /// Specifies the engine (standard, neural, long-form or generative) used by Amazon Polly when processing input text for speech synthesis.
     public var engine: PollyClientTypes.Engine?
     /// Boolean value indicating whether to return any bilingual voices that use the specified language as an additional language. For instance, if you request all languages that use US English (es-US), and there is an Italian voice that speaks both Italian (it-IT) and US English, that voice will be included if you specify yes but not if you specify no.
@@ -351,7 +351,7 @@ public struct DescribeVoicesInput {
 
 extension PollyClientTypes {
 
-    public enum Gender: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Gender: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case female
         case male
         case sdkUnknown(Swift.String)
@@ -380,7 +380,7 @@ extension PollyClientTypes {
 
 extension PollyClientTypes {
 
-    public enum VoiceId: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum VoiceId: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case aditi
         case adriano
         case amy
@@ -696,8 +696,9 @@ extension PollyClientTypes {
 }
 
 extension PollyClientTypes {
+
     /// Description of the voice.
-    public struct Voice {
+    public struct Voice: Swift.Sendable {
         /// Additional codes for languages available for the specified voice in addition to its default language. For example, the default language for Aditi is Indian English (en-IN) because it was first used for that language. Since Aditi is bilingual and fluent in both Indian English and Hindi, this parameter would show the code hi-IN.
         public var additionalLanguageCodes: [PollyClientTypes.LanguageCode]?
         /// Gender of the voice.
@@ -732,10 +733,9 @@ extension PollyClientTypes {
             self.supportedEngines = supportedEngines
         }
     }
-
 }
 
-public struct DescribeVoicesOutput {
+public struct DescribeVoicesOutput: Swift.Sendable {
     /// The pagination token to use in the next request to continue the listing of voices. NextToken is returned only if the response is truncated.
     public var nextToken: Swift.String?
     /// A list of voices with their properties.
@@ -775,7 +775,7 @@ public struct EngineNotSupportedException: ClientRuntime.ModeledError, AWSClient
     }
 }
 
-public struct GetLexiconInput {
+public struct GetLexiconInput: Swift.Sendable {
     /// Name of the lexicon.
     /// This member is required.
     public var name: Swift.String?
@@ -789,8 +789,9 @@ public struct GetLexiconInput {
 }
 
 extension PollyClientTypes {
+
     /// Provides lexicon name and lexicon content in string format. For more information, see [Pronunciation Lexicon Specification (PLS) Version 1.0](https://www.w3.org/TR/pronunciation-lexicon/).
-    public struct Lexicon {
+    public struct Lexicon: Swift.Sendable {
         /// Lexicon content in string format. The content of a lexicon must be in PLS format.
         public var content: Swift.String?
         /// Name of the lexicon.
@@ -805,7 +806,6 @@ extension PollyClientTypes {
             self.name = name
         }
     }
-
 }
 
 extension PollyClientTypes.Lexicon: Swift.CustomDebugStringConvertible {
@@ -814,8 +814,9 @@ extension PollyClientTypes.Lexicon: Swift.CustomDebugStringConvertible {
 }
 
 extension PollyClientTypes {
+
     /// Contains metadata describing the lexicon such as the number of lexemes, language code, and so on. For more information, see [Managing Lexicons](https://docs.aws.amazon.com/polly/latest/dg/managing-lexicons.html).
-    public struct LexiconAttributes {
+    public struct LexiconAttributes: Swift.Sendable {
         /// Phonetic alphabet used in the lexicon. Valid values are ipa and x-sampa.
         public var alphabet: Swift.String?
         /// Language code that the lexicon applies to. A lexicon with a language code such as "en" would be applied to all English languages (en-GB, en-US, en-AUS, en-WLS, and so on.
@@ -846,10 +847,9 @@ extension PollyClientTypes {
             self.size = size
         }
     }
-
 }
 
-public struct GetLexiconOutput {
+public struct GetLexiconOutput: Swift.Sendable {
     /// Lexicon object that provides name and the string content of the lexicon.
     public var lexicon: PollyClientTypes.Lexicon?
     /// Metadata of the lexicon, including phonetic alphabetic used, language code, lexicon ARN, number of lexemes defined in the lexicon, and size of lexicon in bytes.
@@ -913,7 +913,7 @@ public struct SynthesisTaskNotFoundException: ClientRuntime.ModeledError, AWSCli
     }
 }
 
-public struct GetSpeechSynthesisTaskInput {
+public struct GetSpeechSynthesisTaskInput: Swift.Sendable {
     /// The Amazon Polly generated identifier for a speech synthesis task.
     /// This member is required.
     public var taskId: Swift.String?
@@ -928,7 +928,7 @@ public struct GetSpeechSynthesisTaskInput {
 
 extension PollyClientTypes {
 
-    public enum OutputFormat: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum OutputFormat: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case json
         case mp3
         case oggVorbis
@@ -963,7 +963,7 @@ extension PollyClientTypes {
 
 extension PollyClientTypes {
 
-    public enum SpeechMarkType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SpeechMarkType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case sentence
         case ssml
         case viseme
@@ -998,7 +998,7 @@ extension PollyClientTypes {
 
 extension PollyClientTypes {
 
-    public enum TaskStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum TaskStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case completed
         case failed
         case inProgress
@@ -1033,7 +1033,7 @@ extension PollyClientTypes {
 
 extension PollyClientTypes {
 
-    public enum TextType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum TextType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case ssml
         case text
         case sdkUnknown(Swift.String)
@@ -1061,8 +1061,9 @@ extension PollyClientTypes {
 }
 
 extension PollyClientTypes {
+
     /// SynthesisTask object that provides information about a speech synthesis task.
-    public struct SynthesisTask {
+    public struct SynthesisTask: Swift.Sendable {
         /// Timestamp for the time the synthesis task was started.
         public var creationTime: Foundation.Date?
         /// Specifies the engine (standard, neural, long-form or generative) for Amazon Polly to use when processing input text for speech synthesis. Using a voice that is not supported for the engine selected will result in an error.
@@ -1129,10 +1130,9 @@ extension PollyClientTypes {
             self.voiceId = voiceId
         }
     }
-
 }
 
-public struct GetSpeechSynthesisTaskOutput {
+public struct GetSpeechSynthesisTaskOutput: Swift.Sendable {
     /// SynthesisTask object that provides information from the requested task, including output format, creation time, task status, and so on.
     public var synthesisTask: PollyClientTypes.SynthesisTask?
 
@@ -1313,8 +1313,9 @@ public struct LanguageNotSupportedException: ClientRuntime.ModeledError, AWSClie
 }
 
 extension PollyClientTypes {
+
     /// Describes the content of the lexicon.
-    public struct LexiconDescription {
+    public struct LexiconDescription: Swift.Sendable {
         /// Provides lexicon metadata.
         public var attributes: PollyClientTypes.LexiconAttributes?
         /// Name of the lexicon.
@@ -1329,7 +1330,6 @@ extension PollyClientTypes {
             self.name = name
         }
     }
-
 }
 
 /// The maximum size of the specified lexicon would be exceeded by this operation.
@@ -1356,7 +1356,7 @@ public struct LexiconSizeExceededException: ClientRuntime.ModeledError, AWSClien
     }
 }
 
-public struct ListLexiconsInput {
+public struct ListLexiconsInput: Swift.Sendable {
     /// An opaque pagination token returned from previous ListLexicons operation. If present, indicates where to continue the list of lexicons.
     public var nextToken: Swift.String?
 
@@ -1368,7 +1368,7 @@ public struct ListLexiconsInput {
     }
 }
 
-public struct ListLexiconsOutput {
+public struct ListLexiconsOutput: Swift.Sendable {
     /// A list of lexicon names and attributes.
     public var lexicons: [PollyClientTypes.LexiconDescription]?
     /// The pagination token to use in the next request to continue the listing of lexicons. NextToken is returned only if the response is truncated.
@@ -1384,7 +1384,7 @@ public struct ListLexiconsOutput {
     }
 }
 
-public struct ListSpeechSynthesisTasksInput {
+public struct ListSpeechSynthesisTasksInput: Swift.Sendable {
     /// Maximum number of speech synthesis tasks returned in a List operation.
     public var maxResults: Swift.Int?
     /// The pagination token to use in the next request to continue the listing of speech synthesis tasks.
@@ -1404,7 +1404,7 @@ public struct ListSpeechSynthesisTasksInput {
     }
 }
 
-public struct ListSpeechSynthesisTasksOutput {
+public struct ListSpeechSynthesisTasksOutput: Swift.Sendable {
     /// An opaque pagination token returned from the previous List operation in this request. If present, this indicates where to continue the listing.
     public var nextToken: Swift.String?
     /// List of SynthesisTask objects that provides information from the specified task in the list request, including output format, creation time, task status, and so on.
@@ -1540,7 +1540,7 @@ public struct UnsupportedPlsLanguageException: ClientRuntime.ModeledError, AWSCl
     }
 }
 
-public struct PutLexiconInput {
+public struct PutLexiconInput: Swift.Sendable {
     /// Content of the PLS lexicon as string data.
     /// This member is required.
     public var content: Swift.String?
@@ -1563,7 +1563,7 @@ extension PutLexiconInput: Swift.CustomDebugStringConvertible {
         "PutLexiconInput(name: \(Swift.String(describing: name)), content: \"CONTENT_REDACTED\")"}
 }
 
-public struct PutLexiconOutput {
+public struct PutLexiconOutput: Swift.Sendable {
 
     public init() { }
 }
@@ -1616,7 +1616,7 @@ public struct TextLengthExceededException: ClientRuntime.ModeledError, AWSClient
     }
 }
 
-public struct StartSpeechSynthesisTaskInput {
+public struct StartSpeechSynthesisTaskInput: Swift.Sendable {
     /// Specifies the engine (standard, neural, long-form or generative) for Amazon Polly to use when processing input text for speech synthesis. Using a voice that is not supported for the engine selected will result in an error.
     public var engine: PollyClientTypes.Engine?
     /// Optional language code for the Speech Synthesis request. This is only necessary if using a bilingual voice, such as Aditi, which can be used for either Indian English (en-IN) or Hindi (hi-IN). If a bilingual voice is used and no language code is specified, Amazon Polly uses the default language of the bilingual voice. The default language for any voice is the one returned by the [DescribeVoices](https://docs.aws.amazon.com/polly/latest/dg/API_DescribeVoices.html) operation for the LanguageCode parameter. For example, if no language code is specified, Aditi will use Indian English rather than Hindi.
@@ -1676,7 +1676,7 @@ public struct StartSpeechSynthesisTaskInput {
     }
 }
 
-public struct StartSpeechSynthesisTaskOutput {
+public struct StartSpeechSynthesisTaskOutput: Swift.Sendable {
     /// SynthesisTask object that provides information and attributes about a newly submitted speech synthesis task.
     public var synthesisTask: PollyClientTypes.SynthesisTask?
 
@@ -1688,7 +1688,7 @@ public struct StartSpeechSynthesisTaskOutput {
     }
 }
 
-public struct SynthesizeSpeechInput {
+public struct SynthesizeSpeechInput: Swift.Sendable {
     /// Specifies the engine (standard, neural, long-form, or generative) for Amazon Polly to use when processing input text for speech synthesis. Provide an engine that is supported by the voice you select. If you don't provide an engine, the standard engine is selected by default. If a chosen voice isn't supported by the standard engine, this will result in an error. For information on Amazon Polly voices and which voices are available for each engine, see [Available Voices](https://docs.aws.amazon.com/polly/latest/dg/voicelist.html). Type: String Valid Values: standard | neural | long-form | generative Required: Yes
     public var engine: PollyClientTypes.Engine?
     /// Optional language code for the Synthesize Speech request. This is only necessary if using a bilingual voice, such as Aditi, which can be used for either Indian English (en-IN) or Hindi (hi-IN). If a bilingual voice is used and no language code is specified, Amazon Polly uses the default language of the bilingual voice. The default language for any voice is the one returned by the [DescribeVoices](https://docs.aws.amazon.com/polly/latest/dg/API_DescribeVoices.html) operation for the LanguageCode parameter. For example, if no language code is specified, Aditi will use Indian English rather than Hindi.
@@ -1735,7 +1735,7 @@ public struct SynthesizeSpeechInput {
     }
 }
 
-public struct SynthesizeSpeechOutput {
+public struct SynthesizeSpeechOutput: Swift.Sendable {
     /// Stream containing the synthesized speech.
     public var audioStream: Smithy.ByteStream?
     /// Specifies the type audio stream. This should reflect the OutputFormat parameter in your request.
@@ -2363,19 +2363,6 @@ extension InvalidSnsTopicArnException {
     }
 }
 
-extension InvalidSsmlException {
-
-    static func makeError(baseError: AWSClientRuntime.RestJSONError) throws -> InvalidSsmlException {
-        let reader = baseError.errorBodyReader
-        var value = InvalidSsmlException()
-        value.properties.message = try reader["message"].readIfPresent()
-        value.httpResponse = baseError.httpResponse
-        value.requestID = baseError.requestID
-        value.message = baseError.message
-        return value
-    }
-}
-
 extension SsmlMarksNotSupportedForTextTypeException {
 
     static func makeError(baseError: AWSClientRuntime.RestJSONError) throws -> SsmlMarksNotSupportedForTextTypeException {
@@ -2402,6 +2389,32 @@ extension InvalidSampleRateException {
     }
 }
 
+extension TextLengthExceededException {
+
+    static func makeError(baseError: AWSClientRuntime.RestJSONError) throws -> TextLengthExceededException {
+        let reader = baseError.errorBodyReader
+        var value = TextLengthExceededException()
+        value.properties.message = try reader["message"].readIfPresent()
+        value.httpResponse = baseError.httpResponse
+        value.requestID = baseError.requestID
+        value.message = baseError.message
+        return value
+    }
+}
+
+extension InvalidSsmlException {
+
+    static func makeError(baseError: AWSClientRuntime.RestJSONError) throws -> InvalidSsmlException {
+        let reader = baseError.errorBodyReader
+        var value = InvalidSsmlException()
+        value.properties.message = try reader["message"].readIfPresent()
+        value.httpResponse = baseError.httpResponse
+        value.requestID = baseError.requestID
+        value.message = baseError.message
+        return value
+    }
+}
+
 extension LanguageNotSupportedException {
 
     static func makeError(baseError: AWSClientRuntime.RestJSONError) throws -> LanguageNotSupportedException {
@@ -2420,19 +2433,6 @@ extension EngineNotSupportedException {
     static func makeError(baseError: AWSClientRuntime.RestJSONError) throws -> EngineNotSupportedException {
         let reader = baseError.errorBodyReader
         var value = EngineNotSupportedException()
-        value.properties.message = try reader["message"].readIfPresent()
-        value.httpResponse = baseError.httpResponse
-        value.requestID = baseError.requestID
-        value.message = baseError.message
-        return value
-    }
-}
-
-extension TextLengthExceededException {
-
-    static func makeError(baseError: AWSClientRuntime.RestJSONError) throws -> TextLengthExceededException {
-        let reader = baseError.errorBodyReader
-        var value = TextLengthExceededException()
         value.properties.message = try reader["message"].readIfPresent()
         value.httpResponse = baseError.httpResponse
         value.requestID = baseError.requestID

@@ -150,7 +150,7 @@ public struct UnauthorizedException: ClientRuntime.ModeledError, AWSClientRuntim
 
 extension AmplifyClientTypes {
 
-    public enum Stage: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Stage: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case beta
         case development
         case experimental
@@ -187,8 +187,9 @@ extension AmplifyClientTypes {
 }
 
 extension AmplifyClientTypes {
+
     /// Describes the automated branch creation configuration.
-    public struct AutoBranchCreationConfig {
+    public struct AutoBranchCreationConfig: Swift.Sendable {
         /// The basic authorization credentials for the autocreated branch. You must base64-encode the authorization credentials and provide them in the format user:password.
         public var basicAuthCredentials: Swift.String?
         /// The build specification (build spec) for the autocreated branch.
@@ -235,7 +236,6 @@ extension AmplifyClientTypes {
             self.stage = stage
         }
     }
-
 }
 
 extension AmplifyClientTypes.AutoBranchCreationConfig: Swift.CustomDebugStringConvertible {
@@ -245,7 +245,7 @@ extension AmplifyClientTypes.AutoBranchCreationConfig: Swift.CustomDebugStringCo
 
 extension AmplifyClientTypes {
 
-    public enum CacheConfigType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum CacheConfigType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case amplifyManaged
         case amplifyManagedNoCookies
         case sdkUnknown(Swift.String)
@@ -273,8 +273,9 @@ extension AmplifyClientTypes {
 }
 
 extension AmplifyClientTypes {
+
     /// Describes the cache configuration for an Amplify app. For more information about how Amplify applies an optimal cache configuration for your app based on the type of content that is being served, see [Managing cache configuration](https://docs.aws.amazon.com/amplify/latest/userguide/managing-cache-configuration) in the Amplify User guide.
-    public struct CacheConfig {
+    public struct CacheConfig: Swift.Sendable {
         /// The type of cache configuration to use for an Amplify app. The AMPLIFY_MANAGED cache configuration automatically applies an optimized cache configuration for your app based on its platform, routing rules, and rewrite rules. This is the default setting. The AMPLIFY_MANAGED_NO_COOKIES cache configuration type is the same as AMPLIFY_MANAGED, except that it excludes all cookies from the cache key.
         /// This member is required.
         public var type: AmplifyClientTypes.CacheConfigType?
@@ -286,12 +287,12 @@ extension AmplifyClientTypes {
             self.type = type
         }
     }
-
 }
 
 extension AmplifyClientTypes {
+
     /// Describes a custom rewrite or redirect rule.
-    public struct CustomRule {
+    public struct CustomRule: Swift.Sendable {
         /// The condition for a URL rewrite or redirect rule, such as a country code.
         public var condition: Swift.String?
         /// The source pattern for a URL rewrite or redirect rule.
@@ -316,12 +317,11 @@ extension AmplifyClientTypes {
             self.target = target
         }
     }
-
 }
 
 extension AmplifyClientTypes {
 
-    public enum Platform: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Platform: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case web
         case webCompute
         case webDynamic
@@ -352,7 +352,7 @@ extension AmplifyClientTypes {
 }
 
 /// The request structure used to create apps in Amplify.
-public struct CreateAppInput {
+public struct CreateAppInput: Swift.Sendable {
     /// The personal access token for a GitHub repository for an Amplify app. The personal access token is used to authorize access to a GitHub repository using the Amplify GitHub App. The token is not stored. Use accessToken for GitHub repositories only. To authorize access to a repository provider such as Bitbucket or CodeCommit, use oauthToken. You must specify either accessToken or oauthToken when you create a new app. Existing Amplify apps deployed from a GitHub repository using OAuth continue to work with CI/CD. However, we strongly recommend that you migrate these apps to use the GitHub App. For more information, see [Migrating an existing OAuth app to the Amplify GitHub App](https://docs.aws.amazon.com/amplify/latest/userguide/setting-up-GitHub-access.html#migrating-to-github-app-auth) in the Amplify User Guide .
     public var accessToken: Swift.String?
     /// The automated branch creation configuration for an Amplify app.
@@ -447,8 +447,9 @@ extension CreateAppInput: Swift.CustomDebugStringConvertible {
 }
 
 extension AmplifyClientTypes {
+
     /// Describes the information about a production branch for an Amplify app.
-    public struct ProductionBranch {
+    public struct ProductionBranch: Swift.Sendable {
         /// The branch name for the production branch.
         public var branchName: Swift.String?
         /// The last deploy time of the production branch.
@@ -471,12 +472,11 @@ extension AmplifyClientTypes {
             self.thumbnailUrl = thumbnailUrl
         }
     }
-
 }
 
 extension AmplifyClientTypes {
 
-    public enum RepositoryCloneMethod: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum RepositoryCloneMethod: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case sigv4
         case ssh
         case token
@@ -507,8 +507,9 @@ extension AmplifyClientTypes {
 }
 
 extension AmplifyClientTypes {
+
     /// Represents the different branches of a repository for building, deploying, and hosting an Amplify app.
-    public struct App {
+    public struct App: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the Amplify app.
         /// This member is required.
         public var appArn: Swift.String?
@@ -627,7 +628,6 @@ extension AmplifyClientTypes {
             self.updateTime = updateTime
         }
     }
-
 }
 
 extension AmplifyClientTypes.App: Swift.CustomDebugStringConvertible {
@@ -635,7 +635,7 @@ extension AmplifyClientTypes.App: Swift.CustomDebugStringConvertible {
         "App(appArn: \(Swift.String(describing: appArn)), appId: \(Swift.String(describing: appId)), autoBranchCreationConfig: \(Swift.String(describing: autoBranchCreationConfig)), autoBranchCreationPatterns: \(Swift.String(describing: autoBranchCreationPatterns)), cacheConfig: \(Swift.String(describing: cacheConfig)), createTime: \(Swift.String(describing: createTime)), customHeaders: \(Swift.String(describing: customHeaders)), customRules: \(Swift.String(describing: customRules)), defaultDomain: \(Swift.String(describing: defaultDomain)), description: \(Swift.String(describing: description)), enableAutoBranchCreation: \(Swift.String(describing: enableAutoBranchCreation)), enableBasicAuth: \(Swift.String(describing: enableBasicAuth)), enableBranchAutoBuild: \(Swift.String(describing: enableBranchAutoBuild)), enableBranchAutoDeletion: \(Swift.String(describing: enableBranchAutoDeletion)), environmentVariables: \(Swift.String(describing: environmentVariables)), iamServiceRoleArn: \(Swift.String(describing: iamServiceRoleArn)), name: \(Swift.String(describing: name)), platform: \(Swift.String(describing: platform)), productionBranch: \(Swift.String(describing: productionBranch)), repository: \(Swift.String(describing: repository)), repositoryCloneMethod: \(Swift.String(describing: repositoryCloneMethod)), tags: \(Swift.String(describing: tags)), updateTime: \(Swift.String(describing: updateTime)), basicAuthCredentials: \"CONTENT_REDACTED\", buildSpec: \"CONTENT_REDACTED\")"}
 }
 
-public struct CreateAppOutput {
+public struct CreateAppOutput: Swift.Sendable {
     /// Represents the different branches of a repository for building, deploying, and hosting an Amplify app.
     /// This member is required.
     public var app: AmplifyClientTypes.App?
@@ -673,7 +673,7 @@ public struct NotFoundException: ClientRuntime.ModeledError, AWSClientRuntime.AW
 }
 
 /// The request structure for the backend environment create request.
-public struct CreateBackendEnvironmentInput {
+public struct CreateBackendEnvironmentInput: Swift.Sendable {
     /// The unique ID for an Amplify app.
     /// This member is required.
     public var appId: Swift.String?
@@ -700,8 +700,9 @@ public struct CreateBackendEnvironmentInput {
 }
 
 extension AmplifyClientTypes {
+
     /// Describes the backend environment associated with a Branch of a Gen 1 Amplify app. Amplify Gen 1 applications are created using Amplify Studio or the Amplify command line interface (CLI).
-    public struct BackendEnvironment {
+    public struct BackendEnvironment: Swift.Sendable {
         /// The Amazon Resource Name (ARN) for a backend environment that is part of an Amplify app.
         /// This member is required.
         public var backendEnvironmentArn: Swift.String?
@@ -736,11 +737,10 @@ extension AmplifyClientTypes {
             self.updateTime = updateTime
         }
     }
-
 }
 
 /// The result structure for the create backend environment request.
-public struct CreateBackendEnvironmentOutput {
+public struct CreateBackendEnvironmentOutput: Swift.Sendable {
     /// Describes the backend environment for an Amplify app.
     /// This member is required.
     public var backendEnvironment: AmplifyClientTypes.BackendEnvironment?
@@ -754,8 +754,9 @@ public struct CreateBackendEnvironmentOutput {
 }
 
 extension AmplifyClientTypes {
+
     /// Describes the backend associated with an Amplify Branch. This property is available to Amplify Gen 2 apps only. When you deploy an application with Amplify Gen 2, you provision the app's backend infrastructure using Typescript code.
-    public struct Backend {
+    public struct Backend: Swift.Sendable {
         /// The Amazon Resource Name (ARN) for the CloudFormation stack.
         public var stackArn: Swift.String?
 
@@ -766,11 +767,10 @@ extension AmplifyClientTypes {
             self.stackArn = stackArn
         }
     }
-
 }
 
 /// The request structure for the create branch request.
-public struct CreateBranchInput {
+public struct CreateBranchInput: Swift.Sendable {
     /// The unique ID for an Amplify app.
     /// This member is required.
     public var appId: Swift.String?
@@ -862,8 +862,9 @@ extension CreateBranchInput: Swift.CustomDebugStringConvertible {
 }
 
 extension AmplifyClientTypes {
+
     /// The branch for an Amplify app, which maps to a third-party repository branch.
-    public struct Branch {
+    public struct Branch: Swift.Sendable {
         /// The ID of the active job for a branch of an Amplify app.
         /// This member is required.
         public var activeJobId: Swift.String?
@@ -999,7 +1000,6 @@ extension AmplifyClientTypes {
             self.updateTime = updateTime
         }
     }
-
 }
 
 extension AmplifyClientTypes.Branch: Swift.CustomDebugStringConvertible {
@@ -1008,7 +1008,7 @@ extension AmplifyClientTypes.Branch: Swift.CustomDebugStringConvertible {
 }
 
 /// The result structure for create branch request.
-public struct CreateBranchOutput {
+public struct CreateBranchOutput: Swift.Sendable {
     /// Describes the branch for an Amplify app, which maps to a third-party repository branch.
     /// This member is required.
     public var branch: AmplifyClientTypes.Branch?
@@ -1022,7 +1022,7 @@ public struct CreateBranchOutput {
 }
 
 /// The request structure for the create a new deployment request.
-public struct CreateDeploymentInput {
+public struct CreateDeploymentInput: Swift.Sendable {
     /// The unique ID for an Amplify app.
     /// This member is required.
     public var appId: Swift.String?
@@ -1045,7 +1045,7 @@ public struct CreateDeploymentInput {
 }
 
 /// The result structure for the create a new deployment request.
-public struct CreateDeploymentOutput {
+public struct CreateDeploymentOutput: Swift.Sendable {
     /// When the fileMap argument is provided in the request, fileUploadUrls will contain a map of file names to upload URLs.
     /// This member is required.
     public var fileUploadUrls: [Swift.String: Swift.String]?
@@ -1069,7 +1069,7 @@ public struct CreateDeploymentOutput {
 
 extension AmplifyClientTypes {
 
-    public enum CertificateType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum CertificateType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case amplifyManaged
         case custom
         case sdkUnknown(Swift.String)
@@ -1097,8 +1097,9 @@ extension AmplifyClientTypes {
 }
 
 extension AmplifyClientTypes {
+
     /// The type of SSL/TLS certificate to use for your custom domain. If a certificate type isn't specified, Amplify uses the default AMPLIFY_MANAGED certificate.
-    public struct CertificateSettings {
+    public struct CertificateSettings: Swift.Sendable {
         /// The Amazon resource name (ARN) for the custom certificate that you have already added to Certificate Manager in your Amazon Web Services account. This field is required only when the certificate type is CUSTOM.
         public var customCertificateArn: Swift.String?
         /// The certificate type. Specify AMPLIFY_MANAGED to use the default certificate that Amplify provisions for you. Specify CUSTOM to use your own certificate that you have already added to Certificate Manager in your Amazon Web Services account. Make sure you request (or import) the certificate in the US East (N. Virginia) Region (us-east-1). For more information about using ACM, see [Importing certificates into Certificate Manager](https://docs.aws.amazon.com/acm/latest/userguide/import-certificate.html) in the ACM User guide.
@@ -1114,12 +1115,12 @@ extension AmplifyClientTypes {
             self.type = type
         }
     }
-
 }
 
 extension AmplifyClientTypes {
+
     /// Describes the settings for the subdomain.
-    public struct SubDomainSetting {
+    public struct SubDomainSetting: Swift.Sendable {
         /// The branch name setting for the subdomain.
         /// This member is required.
         public var branchName: Swift.String?
@@ -1136,11 +1137,10 @@ extension AmplifyClientTypes {
             self.`prefix` = `prefix`
         }
     }
-
 }
 
 /// The request structure for the create domain association request.
-public struct CreateDomainAssociationInput {
+public struct CreateDomainAssociationInput: Swift.Sendable {
     /// The unique ID for an Amplify app.
     /// This member is required.
     public var appId: Swift.String?
@@ -1180,8 +1180,9 @@ public struct CreateDomainAssociationInput {
 }
 
 extension AmplifyClientTypes {
+
     /// Describes the current SSL/TLS certificate that is in use for the domain. If you are using CreateDomainAssociation to create a new domain association, Certificate describes the new certificate that you are creating.
-    public struct Certificate {
+    public struct Certificate: Swift.Sendable {
         /// The DNS record for certificate verification.
         public var certificateVerificationDNSRecord: Swift.String?
         /// The Amazon resource name (ARN) for a custom certificate that you have already added to Certificate Manager in your Amazon Web Services account. This field is required only when the certificate type is CUSTOM.
@@ -1201,12 +1202,11 @@ extension AmplifyClientTypes {
             self.type = type
         }
     }
-
 }
 
 extension AmplifyClientTypes {
 
-    public enum DomainStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DomainStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case available
         case awaitingAppCname
         case creating
@@ -1258,8 +1258,9 @@ extension AmplifyClientTypes {
 }
 
 extension AmplifyClientTypes {
+
     /// The subdomain for the domain association.
-    public struct SubDomain {
+    public struct SubDomain: Swift.Sendable {
         /// The DNS record for the subdomain.
         /// This member is required.
         public var dnsRecord: Swift.String?
@@ -1281,12 +1282,11 @@ extension AmplifyClientTypes {
             self.verified = verified
         }
     }
-
 }
 
 extension AmplifyClientTypes {
 
-    public enum UpdateStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum UpdateStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case awaitingAppCname
         case importingCustomCertificate
         case pendingDeployment
@@ -1329,8 +1329,9 @@ extension AmplifyClientTypes {
 }
 
 extension AmplifyClientTypes {
+
     /// Describes the association between a custom domain and an Amplify app.
-    public struct DomainAssociation {
+    public struct DomainAssociation: Swift.Sendable {
         /// Sets branch patterns for automatic subdomain creation.
         public var autoSubDomainCreationPatterns: [Swift.String]?
         /// The required AWS Identity and Access Management (IAM) service role for the Amazon Resource Name (ARN) for automatically creating subdomains.
@@ -1387,11 +1388,10 @@ extension AmplifyClientTypes {
             self.updateStatus = updateStatus
         }
     }
-
 }
 
 /// The result structure for the create domain association request.
-public struct CreateDomainAssociationOutput {
+public struct CreateDomainAssociationOutput: Swift.Sendable {
     /// Describes the structure of a domain association, which associates a custom domain with an Amplify app.
     /// This member is required.
     public var domainAssociation: AmplifyClientTypes.DomainAssociation?
@@ -1405,7 +1405,7 @@ public struct CreateDomainAssociationOutput {
 }
 
 /// The request structure for the create webhook request.
-public struct CreateWebhookInput {
+public struct CreateWebhookInput: Swift.Sendable {
     /// The unique ID for an Amplify app.
     /// This member is required.
     public var appId: Swift.String?
@@ -1428,8 +1428,9 @@ public struct CreateWebhookInput {
 }
 
 extension AmplifyClientTypes {
+
     /// Describes a webhook that connects repository events to an Amplify app.
-    public struct Webhook {
+    public struct Webhook: Swift.Sendable {
         /// The name for a branch that is part of an Amplify app.
         /// This member is required.
         public var branchName: Swift.String?
@@ -1471,11 +1472,10 @@ extension AmplifyClientTypes {
             self.webhookUrl = webhookUrl
         }
     }
-
 }
 
 /// The result structure for the create webhook request.
-public struct CreateWebhookOutput {
+public struct CreateWebhookOutput: Swift.Sendable {
     /// Describes a webhook that connects repository events to an Amplify app.
     /// This member is required.
     public var webhook: AmplifyClientTypes.Webhook?
@@ -1489,7 +1489,7 @@ public struct CreateWebhookOutput {
 }
 
 /// Describes the request structure for the delete app request.
-public struct DeleteAppInput {
+public struct DeleteAppInput: Swift.Sendable {
     /// The unique ID for an Amplify app.
     /// This member is required.
     public var appId: Swift.String?
@@ -1503,7 +1503,7 @@ public struct DeleteAppInput {
 }
 
 /// The result structure for the delete app request.
-public struct DeleteAppOutput {
+public struct DeleteAppOutput: Swift.Sendable {
     /// Represents the different branches of a repository for building, deploying, and hosting an Amplify app.
     /// This member is required.
     public var app: AmplifyClientTypes.App?
@@ -1517,7 +1517,7 @@ public struct DeleteAppOutput {
 }
 
 /// The request structure for the delete backend environment request.
-public struct DeleteBackendEnvironmentInput {
+public struct DeleteBackendEnvironmentInput: Swift.Sendable {
     /// The unique ID of an Amplify app.
     /// This member is required.
     public var appId: Swift.String?
@@ -1536,7 +1536,7 @@ public struct DeleteBackendEnvironmentInput {
 }
 
 /// The result structure of the delete backend environment result.
-public struct DeleteBackendEnvironmentOutput {
+public struct DeleteBackendEnvironmentOutput: Swift.Sendable {
     /// Describes the backend environment for an Amplify app.
     /// This member is required.
     public var backendEnvironment: AmplifyClientTypes.BackendEnvironment?
@@ -1550,7 +1550,7 @@ public struct DeleteBackendEnvironmentOutput {
 }
 
 /// The request structure for the delete branch request.
-public struct DeleteBranchInput {
+public struct DeleteBranchInput: Swift.Sendable {
     /// The unique ID for an Amplify app.
     /// This member is required.
     public var appId: Swift.String?
@@ -1569,7 +1569,7 @@ public struct DeleteBranchInput {
 }
 
 /// The result structure for the delete branch request.
-public struct DeleteBranchOutput {
+public struct DeleteBranchOutput: Swift.Sendable {
     /// The branch for an Amplify app, which maps to a third-party repository branch.
     /// This member is required.
     public var branch: AmplifyClientTypes.Branch?
@@ -1583,7 +1583,7 @@ public struct DeleteBranchOutput {
 }
 
 /// The request structure for the delete domain association request.
-public struct DeleteDomainAssociationInput {
+public struct DeleteDomainAssociationInput: Swift.Sendable {
     /// The unique id for an Amplify app.
     /// This member is required.
     public var appId: Swift.String?
@@ -1601,7 +1601,7 @@ public struct DeleteDomainAssociationInput {
     }
 }
 
-public struct DeleteDomainAssociationOutput {
+public struct DeleteDomainAssociationOutput: Swift.Sendable {
     /// Describes the association between a custom domain and an Amplify app.
     /// This member is required.
     public var domainAssociation: AmplifyClientTypes.DomainAssociation?
@@ -1615,7 +1615,7 @@ public struct DeleteDomainAssociationOutput {
 }
 
 /// The request structure for the delete job request.
-public struct DeleteJobInput {
+public struct DeleteJobInput: Swift.Sendable {
     /// The unique ID for an Amplify app.
     /// This member is required.
     public var appId: Swift.String?
@@ -1640,7 +1640,7 @@ public struct DeleteJobInput {
 
 extension AmplifyClientTypes {
 
-    public enum JobType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum JobType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case manual
         case release
         case retry
@@ -1675,7 +1675,36 @@ extension AmplifyClientTypes {
 
 extension AmplifyClientTypes {
 
-    public enum JobStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SourceUrlType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+        case bucketPrefix
+        case zip
+        case sdkUnknown(Swift.String)
+
+        public static var allCases: [SourceUrlType] {
+            return [
+                .bucketPrefix,
+                .zip
+            ]
+        }
+
+        public init?(rawValue: Swift.String) {
+            let value = Self.allCases.first(where: { $0.rawValue == rawValue })
+            self = value ?? Self.sdkUnknown(rawValue)
+        }
+
+        public var rawValue: Swift.String {
+            switch self {
+            case .bucketPrefix: return "BUCKET_PREFIX"
+            case .zip: return "ZIP"
+            case let .sdkUnknown(s): return s
+            }
+        }
+    }
+}
+
+extension AmplifyClientTypes {
+
+    public enum JobStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case cancelled
         case cancelling
         case failed
@@ -1718,8 +1747,9 @@ extension AmplifyClientTypes {
 }
 
 extension AmplifyClientTypes {
+
     /// Describes the summary for an execution job for an Amplify app.
-    public struct JobSummary {
+    public struct JobSummary: Swift.Sendable {
         /// The commit ID from a third-party repository provider for the job.
         /// This member is required.
         public var commitId: Swift.String?
@@ -1737,9 +1767,13 @@ extension AmplifyClientTypes {
         /// The unique ID for the job.
         /// This member is required.
         public var jobId: Swift.String?
-        /// The type for the job. If the value is RELEASE, the job was manually released from its source by using the StartJob API. If the value is RETRY, the job was manually retried using the StartJob API. If the value is WEB_HOOK, the job was automatically triggered by webhooks.
+        /// The type for the job. If the value is RELEASE, the job was manually released from its source by using the StartJob API. This value is available only for apps that are connected to a repository. If the value is RETRY, the job was manually retried using the StartJob API. If the value is WEB_HOOK, the job was automatically triggered by webhooks. If the value is MANUAL, the job is for a manually deployed app. Manually deployed apps are not connected to a Git repository.
         /// This member is required.
         public var jobType: AmplifyClientTypes.JobType?
+        /// The source URL for the files to deploy. The source URL can be either an HTTP GET URL that is publicly accessible and downloads a single .zip file, or an Amazon S3 bucket and prefix.
+        public var sourceUrl: Swift.String?
+        /// The type of source specified by the sourceURL. If the value is ZIP, the source is a .zip file. If the value is BUCKET_PREFIX, the source is an Amazon S3 bucket and prefix. If no value is specified, the default is ZIP.
+        public var sourceUrlType: AmplifyClientTypes.SourceUrlType?
         /// The start date and time for the job.
         /// This member is required.
         public var startTime: Foundation.Date?
@@ -1755,6 +1789,8 @@ extension AmplifyClientTypes {
             jobArn: Swift.String? = nil,
             jobId: Swift.String? = nil,
             jobType: AmplifyClientTypes.JobType? = nil,
+            sourceUrl: Swift.String? = nil,
+            sourceUrlType: AmplifyClientTypes.SourceUrlType? = nil,
             startTime: Foundation.Date? = nil,
             status: AmplifyClientTypes.JobStatus? = nil
         )
@@ -1766,15 +1802,16 @@ extension AmplifyClientTypes {
             self.jobArn = jobArn
             self.jobId = jobId
             self.jobType = jobType
+            self.sourceUrl = sourceUrl
+            self.sourceUrlType = sourceUrlType
             self.startTime = startTime
             self.status = status
         }
     }
-
 }
 
 /// The result structure for the delete job request.
-public struct DeleteJobOutput {
+public struct DeleteJobOutput: Swift.Sendable {
     /// Describes the summary for an execution job for an Amplify app.
     /// This member is required.
     public var jobSummary: AmplifyClientTypes.JobSummary?
@@ -1788,7 +1825,7 @@ public struct DeleteJobOutput {
 }
 
 /// The request structure for the delete webhook request.
-public struct DeleteWebhookInput {
+public struct DeleteWebhookInput: Swift.Sendable {
     /// The unique ID for a webhook.
     /// This member is required.
     public var webhookId: Swift.String?
@@ -1802,7 +1839,7 @@ public struct DeleteWebhookInput {
 }
 
 /// The result structure for the delete webhook request.
-public struct DeleteWebhookOutput {
+public struct DeleteWebhookOutput: Swift.Sendable {
     /// Describes a webhook that connects repository events to an Amplify app.
     /// This member is required.
     public var webhook: AmplifyClientTypes.Webhook?
@@ -1816,7 +1853,7 @@ public struct DeleteWebhookOutput {
 }
 
 /// The request structure for the generate access logs request.
-public struct GenerateAccessLogsInput {
+public struct GenerateAccessLogsInput: Swift.Sendable {
     /// The unique ID for an Amplify app.
     /// This member is required.
     public var appId: Swift.String?
@@ -1843,7 +1880,7 @@ public struct GenerateAccessLogsInput {
 }
 
 /// The result structure for the generate access logs request.
-public struct GenerateAccessLogsOutput {
+public struct GenerateAccessLogsOutput: Swift.Sendable {
     /// The pre-signed URL for the requested access logs.
     public var logUrl: Swift.String?
 
@@ -1856,7 +1893,7 @@ public struct GenerateAccessLogsOutput {
 }
 
 /// The request structure for the get app request.
-public struct GetAppInput {
+public struct GetAppInput: Swift.Sendable {
     /// The unique ID for an Amplify app.
     /// This member is required.
     public var appId: Swift.String?
@@ -1869,7 +1906,7 @@ public struct GetAppInput {
     }
 }
 
-public struct GetAppOutput {
+public struct GetAppOutput: Swift.Sendable {
     /// Represents the different branches of a repository for building, deploying, and hosting an Amplify app.
     /// This member is required.
     public var app: AmplifyClientTypes.App?
@@ -1883,7 +1920,7 @@ public struct GetAppOutput {
 }
 
 /// Returns the request structure for the get artifact request.
-public struct GetArtifactUrlInput {
+public struct GetArtifactUrlInput: Swift.Sendable {
     /// The unique ID for an artifact.
     /// This member is required.
     public var artifactId: Swift.String?
@@ -1897,7 +1934,7 @@ public struct GetArtifactUrlInput {
 }
 
 /// Returns the result structure for the get artifact request.
-public struct GetArtifactUrlOutput {
+public struct GetArtifactUrlOutput: Swift.Sendable {
     /// The unique ID for an artifact.
     /// This member is required.
     public var artifactId: Swift.String?
@@ -1916,7 +1953,7 @@ public struct GetArtifactUrlOutput {
 }
 
 /// The request structure for the get backend environment request.
-public struct GetBackendEnvironmentInput {
+public struct GetBackendEnvironmentInput: Swift.Sendable {
     /// The unique id for an Amplify app.
     /// This member is required.
     public var appId: Swift.String?
@@ -1935,7 +1972,7 @@ public struct GetBackendEnvironmentInput {
 }
 
 /// The result structure for the get backend environment result.
-public struct GetBackendEnvironmentOutput {
+public struct GetBackendEnvironmentOutput: Swift.Sendable {
     /// Describes the backend environment for an Amplify app.
     /// This member is required.
     public var backendEnvironment: AmplifyClientTypes.BackendEnvironment?
@@ -1949,7 +1986,7 @@ public struct GetBackendEnvironmentOutput {
 }
 
 /// The request structure for the get branch request.
-public struct GetBranchInput {
+public struct GetBranchInput: Swift.Sendable {
     /// The unique ID for an Amplify app.
     /// This member is required.
     public var appId: Swift.String?
@@ -1967,7 +2004,7 @@ public struct GetBranchInput {
     }
 }
 
-public struct GetBranchOutput {
+public struct GetBranchOutput: Swift.Sendable {
     /// The branch for an Amplify app, which maps to a third-party repository branch.
     /// This member is required.
     public var branch: AmplifyClientTypes.Branch?
@@ -1981,7 +2018,7 @@ public struct GetBranchOutput {
 }
 
 /// The request structure for the get domain association request.
-public struct GetDomainAssociationInput {
+public struct GetDomainAssociationInput: Swift.Sendable {
     /// The unique id for an Amplify app.
     /// This member is required.
     public var appId: Swift.String?
@@ -2000,7 +2037,7 @@ public struct GetDomainAssociationInput {
 }
 
 /// The result structure for the get domain association request.
-public struct GetDomainAssociationOutput {
+public struct GetDomainAssociationOutput: Swift.Sendable {
     /// Describes the structure of a domain association, which associates a custom domain with an Amplify app.
     /// This member is required.
     public var domainAssociation: AmplifyClientTypes.DomainAssociation?
@@ -2014,7 +2051,7 @@ public struct GetDomainAssociationOutput {
 }
 
 /// The request structure for the get job request.
-public struct GetJobInput {
+public struct GetJobInput: Swift.Sendable {
     /// The unique ID for an Amplify app.
     /// This member is required.
     public var appId: Swift.String?
@@ -2038,8 +2075,9 @@ public struct GetJobInput {
 }
 
 extension AmplifyClientTypes {
+
     /// Describes an execution step, for an execution job, for an Amplify app.
-    public struct Step {
+    public struct Step: Swift.Sendable {
         /// The URL to the artifact for the execution step.
         public var artifactsUrl: Swift.String?
         /// The context for the current step. Includes a build image if the step is build.
@@ -2094,12 +2132,12 @@ extension AmplifyClientTypes {
             self.testConfigUrl = testConfigUrl
         }
     }
-
 }
 
 extension AmplifyClientTypes {
+
     /// Describes an execution job for an Amplify app.
-    public struct Job {
+    public struct Job: Swift.Sendable {
         /// The execution steps for an execution job, for an Amplify app.
         /// This member is required.
         public var steps: [AmplifyClientTypes.Step]?
@@ -2116,10 +2154,9 @@ extension AmplifyClientTypes {
             self.summary = summary
         }
     }
-
 }
 
-public struct GetJobOutput {
+public struct GetJobOutput: Swift.Sendable {
     /// Describes an execution job for an Amplify app.
     /// This member is required.
     public var job: AmplifyClientTypes.Job?
@@ -2133,7 +2170,7 @@ public struct GetJobOutput {
 }
 
 /// The request structure for the get webhook request.
-public struct GetWebhookInput {
+public struct GetWebhookInput: Swift.Sendable {
     /// The unique ID for a webhook.
     /// This member is required.
     public var webhookId: Swift.String?
@@ -2147,7 +2184,7 @@ public struct GetWebhookInput {
 }
 
 /// The result structure for the get webhook request.
-public struct GetWebhookOutput {
+public struct GetWebhookOutput: Swift.Sendable {
     /// Describes the structure of a webhook.
     /// This member is required.
     public var webhook: AmplifyClientTypes.Webhook?
@@ -2161,7 +2198,7 @@ public struct GetWebhookOutput {
 }
 
 /// The request structure for the list apps request.
-public struct ListAppsInput {
+public struct ListAppsInput: Swift.Sendable {
     /// The maximum number of records to list in a single response.
     public var maxResults: Swift.Int?
     /// A pagination token. If non-null, the pagination token is returned in a result. Pass its value in another request to retrieve more entries.
@@ -2178,7 +2215,7 @@ public struct ListAppsInput {
 }
 
 /// The result structure for an Amplify app list request.
-public struct ListAppsOutput {
+public struct ListAppsOutput: Swift.Sendable {
     /// A list of Amplify apps.
     /// This member is required.
     public var apps: [AmplifyClientTypes.App]?
@@ -2196,7 +2233,7 @@ public struct ListAppsOutput {
 }
 
 /// Describes the request structure for the list artifacts request.
-public struct ListArtifactsInput {
+public struct ListArtifactsInput: Swift.Sendable {
     /// The unique ID for an Amplify app.
     /// This member is required.
     public var appId: Swift.String?
@@ -2228,8 +2265,9 @@ public struct ListArtifactsInput {
 }
 
 extension AmplifyClientTypes {
+
     /// Describes an artifact.
-    public struct Artifact {
+    public struct Artifact: Swift.Sendable {
         /// The file name for the artifact.
         /// This member is required.
         public var artifactFileName: Swift.String?
@@ -2246,11 +2284,10 @@ extension AmplifyClientTypes {
             self.artifactId = artifactId
         }
     }
-
 }
 
 /// The result structure for the list artifacts request.
-public struct ListArtifactsOutput {
+public struct ListArtifactsOutput: Swift.Sendable {
     /// A list of artifacts.
     /// This member is required.
     public var artifacts: [AmplifyClientTypes.Artifact]?
@@ -2268,7 +2305,7 @@ public struct ListArtifactsOutput {
 }
 
 /// The request structure for the list backend environments request.
-public struct ListBackendEnvironmentsInput {
+public struct ListBackendEnvironmentsInput: Swift.Sendable {
     /// The unique ID for an Amplify app.
     /// This member is required.
     public var appId: Swift.String?
@@ -2294,7 +2331,7 @@ public struct ListBackendEnvironmentsInput {
 }
 
 /// The result structure for the list backend environments result.
-public struct ListBackendEnvironmentsOutput {
+public struct ListBackendEnvironmentsOutput: Swift.Sendable {
     /// The list of backend environments for an Amplify app.
     /// This member is required.
     public var backendEnvironments: [AmplifyClientTypes.BackendEnvironment]?
@@ -2312,7 +2349,7 @@ public struct ListBackendEnvironmentsOutput {
 }
 
 /// The request structure for the list branches request.
-public struct ListBranchesInput {
+public struct ListBranchesInput: Swift.Sendable {
     /// The unique ID for an Amplify app.
     /// This member is required.
     public var appId: Swift.String?
@@ -2334,7 +2371,7 @@ public struct ListBranchesInput {
 }
 
 /// The result structure for the list branches request.
-public struct ListBranchesOutput {
+public struct ListBranchesOutput: Swift.Sendable {
     /// A list of branches for an Amplify app.
     /// This member is required.
     public var branches: [AmplifyClientTypes.Branch]?
@@ -2352,7 +2389,7 @@ public struct ListBranchesOutput {
 }
 
 /// The request structure for the list domain associations request.
-public struct ListDomainAssociationsInput {
+public struct ListDomainAssociationsInput: Swift.Sendable {
     /// The unique ID for an Amplify app.
     /// This member is required.
     public var appId: Swift.String?
@@ -2374,7 +2411,7 @@ public struct ListDomainAssociationsInput {
 }
 
 /// The result structure for the list domain association request.
-public struct ListDomainAssociationsOutput {
+public struct ListDomainAssociationsOutput: Swift.Sendable {
     /// A list of domain associations.
     /// This member is required.
     public var domainAssociations: [AmplifyClientTypes.DomainAssociation]?
@@ -2392,7 +2429,7 @@ public struct ListDomainAssociationsOutput {
 }
 
 /// The request structure for the list jobs request.
-public struct ListJobsInput {
+public struct ListJobsInput: Swift.Sendable {
     /// The unique ID for an Amplify app.
     /// This member is required.
     public var appId: Swift.String?
@@ -2419,7 +2456,7 @@ public struct ListJobsInput {
 }
 
 /// The maximum number of records to list in a single response.
-public struct ListJobsOutput {
+public struct ListJobsOutput: Swift.Sendable {
     /// The result structure for the list job result request.
     /// This member is required.
     public var jobSummaries: [AmplifyClientTypes.JobSummary]?
@@ -2466,7 +2503,7 @@ public struct ResourceNotFoundException: ClientRuntime.ModeledError, AWSClientRu
 }
 
 /// The request structure to use to list tags for a resource.
-public struct ListTagsForResourceInput {
+public struct ListTagsForResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) to use to list tags.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -2480,7 +2517,7 @@ public struct ListTagsForResourceInput {
 }
 
 /// The response for the list tags for resource request.
-public struct ListTagsForResourceOutput {
+public struct ListTagsForResourceOutput: Swift.Sendable {
     /// A list of tags for the specified The Amazon Resource Name (ARN).
     public var tags: [Swift.String: Swift.String]?
 
@@ -2493,7 +2530,7 @@ public struct ListTagsForResourceOutput {
 }
 
 /// The request structure for the list webhooks request.
-public struct ListWebhooksInput {
+public struct ListWebhooksInput: Swift.Sendable {
     /// The unique ID for an Amplify app.
     /// This member is required.
     public var appId: Swift.String?
@@ -2515,7 +2552,7 @@ public struct ListWebhooksInput {
 }
 
 /// The result structure for the list webhooks request.
-public struct ListWebhooksOutput {
+public struct ListWebhooksOutput: Swift.Sendable {
     /// A pagination token. If non-null, the pagination token is returned in a result. Pass its value in another request to retrieve more entries.
     public var nextToken: Swift.String?
     /// A list of webhooks.
@@ -2533,34 +2570,38 @@ public struct ListWebhooksOutput {
 }
 
 /// The request structure for the start a deployment request.
-public struct StartDeploymentInput {
+public struct StartDeploymentInput: Swift.Sendable {
     /// The unique ID for an Amplify app.
     /// This member is required.
     public var appId: Swift.String?
-    /// The name of the branch to use for the job.
+    /// The name of the branch to use for the deployment job.
     /// This member is required.
     public var branchName: Swift.String?
-    /// The job ID for this deployment, generated by the create deployment request.
+    /// The job ID for this deployment that is generated by the CreateDeployment request.
     public var jobId: Swift.String?
-    /// The source URL for this deployment, used when calling start deployment without create deployment. The source URL can be any HTTP GET URL that is publicly accessible and downloads a single .zip file.
+    /// The source URL for the deployment that is used when calling StartDeployment without CreateDeployment. The source URL can be either an HTTP GET URL that is publicly accessible and downloads a single .zip file, or an Amazon S3 bucket and prefix.
     public var sourceUrl: Swift.String?
+    /// The type of source specified by the sourceURL. If the value is ZIP, the source is a .zip file. If the value is BUCKET_PREFIX, the source is an Amazon S3 bucket and prefix. If no value is specified, the default is ZIP.
+    public var sourceUrlType: AmplifyClientTypes.SourceUrlType?
 
     public init(
         appId: Swift.String? = nil,
         branchName: Swift.String? = nil,
         jobId: Swift.String? = nil,
-        sourceUrl: Swift.String? = nil
+        sourceUrl: Swift.String? = nil,
+        sourceUrlType: AmplifyClientTypes.SourceUrlType? = nil
     )
     {
         self.appId = appId
         self.branchName = branchName
         self.jobId = jobId
         self.sourceUrl = sourceUrl
+        self.sourceUrlType = sourceUrlType
     }
 }
 
 /// The result structure for the start a deployment request.
-public struct StartDeploymentOutput {
+public struct StartDeploymentOutput: Swift.Sendable {
     /// The summary for the job.
     /// This member is required.
     public var jobSummary: AmplifyClientTypes.JobSummary?
@@ -2574,7 +2615,7 @@ public struct StartDeploymentOutput {
 }
 
 /// The request structure for the start job request.
-public struct StartJobInput {
+public struct StartJobInput: Swift.Sendable {
     /// The unique ID for an Amplify app.
     /// This member is required.
     public var appId: Swift.String?
@@ -2618,7 +2659,7 @@ public struct StartJobInput {
 }
 
 /// The result structure for the run job request.
-public struct StartJobOutput {
+public struct StartJobOutput: Swift.Sendable {
     /// The summary for the job.
     /// This member is required.
     public var jobSummary: AmplifyClientTypes.JobSummary?
@@ -2632,7 +2673,7 @@ public struct StartJobOutput {
 }
 
 /// The request structure for the stop job request.
-public struct StopJobInput {
+public struct StopJobInput: Swift.Sendable {
     /// The unique ID for an Amplify app.
     /// This member is required.
     public var appId: Swift.String?
@@ -2656,7 +2697,7 @@ public struct StopJobInput {
 }
 
 /// The result structure for the stop job request.
-public struct StopJobOutput {
+public struct StopJobOutput: Swift.Sendable {
     /// The summary for the job.
     /// This member is required.
     public var jobSummary: AmplifyClientTypes.JobSummary?
@@ -2670,7 +2711,7 @@ public struct StopJobOutput {
 }
 
 /// The request structure to tag a resource with a tag key and value.
-public struct TagResourceInput {
+public struct TagResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) to use to tag a resource.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -2689,13 +2730,13 @@ public struct TagResourceInput {
 }
 
 /// The response for the tag resource request.
-public struct TagResourceOutput {
+public struct TagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
 /// The request structure for the untag resource request.
-public struct UntagResourceInput {
+public struct UntagResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) to use to untag a resource.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -2714,13 +2755,13 @@ public struct UntagResourceInput {
 }
 
 /// The response for the untag resource request.
-public struct UntagResourceOutput {
+public struct UntagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
 /// The request structure for the update app request.
-public struct UpdateAppInput {
+public struct UpdateAppInput: Swift.Sendable {
     /// The personal access token for a GitHub repository for an Amplify app. The personal access token is used to authorize access to a GitHub repository using the Amplify GitHub App. The token is not stored. Use accessToken for GitHub repositories only. To authorize access to a repository provider such as Bitbucket or CodeCommit, use oauthToken. You must specify either accessToken or oauthToken when you update an app. Existing Amplify apps deployed from a GitHub repository using OAuth continue to work with CI/CD. However, we strongly recommend that you migrate these apps to use the GitHub App. For more information, see [Migrating an existing OAuth app to the Amplify GitHub App](https://docs.aws.amazon.com/amplify/latest/userguide/setting-up-GitHub-access.html#migrating-to-github-app-auth) in the Amplify User Guide .
     public var accessToken: Swift.String?
     /// The unique ID for an Amplify app.
@@ -2815,7 +2856,7 @@ extension UpdateAppInput: Swift.CustomDebugStringConvertible {
 }
 
 /// The result structure for an Amplify app update request.
-public struct UpdateAppOutput {
+public struct UpdateAppOutput: Swift.Sendable {
     /// Represents the updated Amplify app.
     /// This member is required.
     public var app: AmplifyClientTypes.App?
@@ -2829,7 +2870,7 @@ public struct UpdateAppOutput {
 }
 
 /// The request structure for the update branch request.
-public struct UpdateBranchInput {
+public struct UpdateBranchInput: Swift.Sendable {
     /// The unique ID for an Amplify app.
     /// This member is required.
     public var appId: Swift.String?
@@ -2917,7 +2958,7 @@ extension UpdateBranchInput: Swift.CustomDebugStringConvertible {
 }
 
 /// The result structure for the update branch request.
-public struct UpdateBranchOutput {
+public struct UpdateBranchOutput: Swift.Sendable {
     /// The branch for an Amplify app, which maps to a third-party repository branch.
     /// This member is required.
     public var branch: AmplifyClientTypes.Branch?
@@ -2931,7 +2972,7 @@ public struct UpdateBranchOutput {
 }
 
 /// The request structure for the update domain association request.
-public struct UpdateDomainAssociationInput {
+public struct UpdateDomainAssociationInput: Swift.Sendable {
     /// The unique ID for an Amplify app.
     /// This member is required.
     public var appId: Swift.String?
@@ -2970,7 +3011,7 @@ public struct UpdateDomainAssociationInput {
 }
 
 /// The result structure for the update domain association request.
-public struct UpdateDomainAssociationOutput {
+public struct UpdateDomainAssociationOutput: Swift.Sendable {
     /// Describes a domain association, which associates a custom domain with an Amplify app.
     /// This member is required.
     public var domainAssociation: AmplifyClientTypes.DomainAssociation?
@@ -2984,7 +3025,7 @@ public struct UpdateDomainAssociationOutput {
 }
 
 /// The request structure for the update webhook request.
-public struct UpdateWebhookInput {
+public struct UpdateWebhookInput: Swift.Sendable {
     /// The name for a branch that is part of an Amplify app.
     public var branchName: Swift.String?
     /// The description for a webhook.
@@ -3006,7 +3047,7 @@ public struct UpdateWebhookInput {
 }
 
 /// The result structure for the update webhook request.
-public struct UpdateWebhookOutput {
+public struct UpdateWebhookOutput: Swift.Sendable {
     /// Describes a webhook that connects repository events to an Amplify app.
     /// This member is required.
     public var webhook: AmplifyClientTypes.Webhook?
@@ -3683,6 +3724,7 @@ extension StartDeploymentInput {
         guard let value else { return }
         try writer["jobId"].write(value.jobId)
         try writer["sourceUrl"].write(value.sourceUrl)
+        try writer["sourceUrlType"].write(value.sourceUrlType)
     }
 }
 
@@ -5232,6 +5274,8 @@ extension AmplifyClientTypes.JobSummary {
         value.status = try reader["status"].readIfPresent() ?? .sdkUnknown("")
         value.endTime = try reader["endTime"].readTimestampIfPresent(format: SmithyTimestamps.TimestampFormat.epochSeconds)
         value.jobType = try reader["jobType"].readIfPresent() ?? .sdkUnknown("")
+        value.sourceUrl = try reader["sourceUrl"].readIfPresent()
+        value.sourceUrlType = try reader["sourceUrlType"].readIfPresent()
         return value
     }
 }

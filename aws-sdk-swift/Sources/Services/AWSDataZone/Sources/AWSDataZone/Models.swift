@@ -31,39 +31,41 @@ import struct Smithy.URIQueryItem
 @_spi(SmithyReadWrite) import struct SmithyReadWrite.WritingClosureBox
 @_spi(SmithyTimestamps) import struct SmithyTimestamps.TimestampFormatter
 
-public struct DeleteAssetFilterOutput {
+
+public struct DeleteAssetFilterOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteEnvironmentActionOutput {
+public struct DeleteEnvironmentActionOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteEnvironmentOutput {
+public struct DeleteEnvironmentOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteEnvironmentProfileOutput {
+public struct DeleteEnvironmentProfileOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteSubscriptionRequestOutput {
+public struct DeleteSubscriptionRequestOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteSubscriptionTargetOutput {
+public struct DeleteSubscriptionTargetOutput: Swift.Sendable {
 
     public init() { }
 }
 
 extension DataZoneClientTypes {
+
     /// Specifies the prediction (aka, the automatically generated piece of metadata) and the target (for example, a column name) that can be accepted.
-    public struct AcceptChoice {
+    public struct AcceptChoice: Swift.Sendable {
         /// The edit of the prediction.
         public var editedValue: Swift.String?
         /// Specifies the prediction (aka, the automatically generated piece of metadata) that can be accepted.
@@ -83,7 +85,6 @@ extension DataZoneClientTypes {
             self.predictionTarget = predictionTarget
         }
     }
-
 }
 
 extension DataZoneClientTypes.AcceptChoice: Swift.CustomDebugStringConvertible {
@@ -92,8 +93,9 @@ extension DataZoneClientTypes.AcceptChoice: Swift.CustomDebugStringConvertible {
 }
 
 extension DataZoneClientTypes {
+
     /// The accepted asset scope.
-    public struct AcceptedAssetScope {
+    public struct AcceptedAssetScope: Swift.Sendable {
         /// The asset ID of the accepted asset scope.
         /// This member is required.
         public var assetId: Swift.String?
@@ -110,7 +112,6 @@ extension DataZoneClientTypes {
             self.filterIds = filterIds
         }
     }
-
 }
 
 /// You do not have sufficient access to perform this action.
@@ -265,7 +266,7 @@ public struct ValidationException: ClientRuntime.ModeledError, AWSClientRuntime.
 
 extension DataZoneClientTypes {
 
-    public enum AcceptRuleBehavior: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AcceptRuleBehavior: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case all
         case `none`
         case sdkUnknown(Swift.String)
@@ -293,8 +294,9 @@ extension DataZoneClientTypes {
 }
 
 extension DataZoneClientTypes {
+
     /// Specifies the rule and the threshold under which a prediction can be accepted.
-    public struct AcceptRule {
+    public struct AcceptRule: Swift.Sendable {
         /// Specifies whether you want to accept the top prediction for all targets or none.
         public var rule: DataZoneClientTypes.AcceptRuleBehavior?
         /// The confidence score that specifies the condition at which a prediction can be accepted.
@@ -309,10 +311,9 @@ extension DataZoneClientTypes {
             self.threshold = threshold
         }
     }
-
 }
 
-public struct AcceptPredictionsInput {
+public struct AcceptPredictionsInput: Swift.Sendable {
     /// Specifies the prediction (aka, the automatically generated piece of metadata) and the target (for example, a column name) that can be accepted.
     public var acceptChoices: [DataZoneClientTypes.AcceptChoice]?
     /// Specifies the rule (or the conditions) under which a prediction can be accepted.
@@ -346,7 +347,7 @@ public struct AcceptPredictionsInput {
     }
 }
 
-public struct AcceptPredictionsOutput {
+public struct AcceptPredictionsOutput: Swift.Sendable {
     /// The ID of the asset.
     /// This member is required.
     public var assetId: Swift.String?
@@ -369,7 +370,7 @@ public struct AcceptPredictionsOutput {
     }
 }
 
-public struct AcceptSubscriptionRequestInput {
+public struct AcceptSubscriptionRequestInput: Swift.Sendable {
     /// The asset scopes of the accept subscription request.
     public var assetScopes: [DataZoneClientTypes.AcceptedAssetScope]?
     /// A description that specifies the reason for accepting the specified subscription request.
@@ -402,7 +403,7 @@ extension AcceptSubscriptionRequestInput: Swift.CustomDebugStringConvertible {
 
 extension DataZoneClientTypes {
 
-    public enum SubscriptionRequestStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SubscriptionRequestStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case accepted
         case pending
         case rejected
@@ -433,8 +434,9 @@ extension DataZoneClientTypes {
 }
 
 extension DataZoneClientTypes {
+
     /// The asset scope.
-    public struct AssetScope {
+    public struct AssetScope: Swift.Sendable {
         /// The asset ID of the asset scope.
         /// This member is required.
         public var assetId: Swift.String?
@@ -460,12 +462,12 @@ extension DataZoneClientTypes {
             self.status = status
         }
     }
-
 }
 
 extension DataZoneClientTypes {
+
     /// Details of a glossary term attached to the inventory asset.
-    public struct DetailedGlossaryTerm {
+    public struct DetailedGlossaryTerm: Swift.Sendable {
         /// The name of a glossary term attached to the inventory asset.
         public var name: Swift.String?
         /// The shoft description of a glossary term attached to the inventory asset.
@@ -480,7 +482,6 @@ extension DataZoneClientTypes {
             self.shortDescription = shortDescription
         }
     }
-
 }
 
 extension DataZoneClientTypes.DetailedGlossaryTerm: Swift.CustomDebugStringConvertible {
@@ -489,8 +490,9 @@ extension DataZoneClientTypes.DetailedGlossaryTerm: Swift.CustomDebugStringConve
 }
 
 extension DataZoneClientTypes {
+
     /// The details of the published asset for which the subscription grant is created.
-    public struct SubscribedAssetListing {
+    public struct SubscribedAssetListing: Swift.Sendable {
         /// The asset scope of the subscribed asset listing.
         public var assetScope: DataZoneClientTypes.AssetScope?
         /// The identifier of the published asset for which the subscription grant is created.
@@ -521,12 +523,12 @@ extension DataZoneClientTypes {
             self.glossaryTerms = glossaryTerms
         }
     }
-
 }
 
 extension DataZoneClientTypes {
+
     /// The listing of the asset in a data product.
-    public struct AssetInDataProductListingItem {
+    public struct AssetInDataProductListingItem: Swift.Sendable {
         /// The entity ID of the listing of the asset in a data product.
         public var entityId: Swift.String?
         /// The entity revision of the listing of the asset in a data product.
@@ -545,12 +547,12 @@ extension DataZoneClientTypes {
             self.entityType = entityType
         }
     }
-
 }
 
 extension DataZoneClientTypes {
+
     /// The data product listing.
-    public struct SubscribedProductListing {
+    public struct SubscribedProductListing: Swift.Sendable {
         /// The data assets of the data product listing.
         public var assetListings: [DataZoneClientTypes.AssetInDataProductListingItem]?
         /// The description of the data product listing.
@@ -581,24 +583,24 @@ extension DataZoneClientTypes {
             self.name = name
         }
     }
-
 }
 
 extension DataZoneClientTypes {
+
     /// The published asset for which the subscription grant is created.
-    public enum SubscribedListingItem {
+    public enum SubscribedListingItem: Swift.Sendable {
         /// The asset for which the subscription grant is created.
         case assetlisting(DataZoneClientTypes.SubscribedAssetListing)
         /// The data product listing.
         case productlisting(DataZoneClientTypes.SubscribedProductListing)
         case sdkUnknown(Swift.String)
     }
-
 }
 
 extension DataZoneClientTypes {
+
     /// The details of the published asset for which the subscription grant is created.
-    public struct SubscribedListing {
+    public struct SubscribedListing: Swift.Sendable {
         /// The description of the published asset for which the subscription grant is created.
         /// This member is required.
         public var description: Swift.String?
@@ -638,7 +640,6 @@ extension DataZoneClientTypes {
             self.revision = revision
         }
     }
-
 }
 
 extension DataZoneClientTypes.SubscribedListing: Swift.CustomDebugStringConvertible {
@@ -647,8 +648,9 @@ extension DataZoneClientTypes.SubscribedListing: Swift.CustomDebugStringConverti
 }
 
 extension DataZoneClientTypes {
+
     /// The project that has the subscription grant.
-    public struct SubscribedProject {
+    public struct SubscribedProject: Swift.Sendable {
         /// The identifier of the project that has the subscription grant.
         public var id: Swift.String?
         /// The name of the project that has the subscription grant.
@@ -663,7 +665,6 @@ extension DataZoneClientTypes {
             self.name = name
         }
     }
-
 }
 
 extension DataZoneClientTypes.SubscribedProject: Swift.CustomDebugStringConvertible {
@@ -672,16 +673,16 @@ extension DataZoneClientTypes.SubscribedProject: Swift.CustomDebugStringConverti
 }
 
 extension DataZoneClientTypes {
+
     /// The principal that has the subscription grant for the asset.
-    public enum SubscribedPrincipal {
+    public enum SubscribedPrincipal: Swift.Sendable {
         /// The project that has the subscription grant.
         case project(DataZoneClientTypes.SubscribedProject)
         case sdkUnknown(Swift.String)
     }
-
 }
 
-public struct AcceptSubscriptionRequestOutput {
+public struct AcceptSubscriptionRequestOutput: Swift.Sendable {
     /// The timestamp that specifies when the subscription request was accepted.
     /// This member is required.
     public var createdAt: Foundation.Date?
@@ -752,8 +753,9 @@ extension AcceptSubscriptionRequestOutput: Swift.CustomDebugStringConvertible {
 }
 
 extension DataZoneClientTypes {
+
     /// The parameters of the console link specified as part of the environment action.
-    public struct AwsConsoleLinkParameters {
+    public struct AwsConsoleLinkParameters: Swift.Sendable {
         /// The URI of the console link specified as part of the environment action.
         public var uri: Swift.String?
 
@@ -764,17 +766,16 @@ extension DataZoneClientTypes {
             self.uri = uri
         }
     }
-
 }
 
 extension DataZoneClientTypes {
+
     /// The parameters of the environment action.
-    public enum ActionParameters {
+    public enum ActionParameters: Swift.Sendable {
         /// The console link specified as part of the environment action.
         case awsconsolelink(DataZoneClientTypes.AwsConsoleLinkParameters)
         case sdkUnknown(Swift.String)
     }
-
 }
 
 /// The request has exceeded the specified service quota.
@@ -804,7 +805,7 @@ public struct ServiceQuotaExceededException: ClientRuntime.ModeledError, AWSClie
 
 extension DataZoneClientTypes {
 
-    public enum DataZoneEntityType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DataZoneEntityType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case domainUnit
         case sdkUnknown(Swift.String)
 
@@ -829,8 +830,9 @@ extension DataZoneClientTypes {
 }
 
 extension DataZoneClientTypes {
+
     /// The properties of the domain unit owners group.
-    public struct OwnerGroupProperties {
+    public struct OwnerGroupProperties: Swift.Sendable {
         /// The ID of the domain unit owners group.
         /// This member is required.
         public var groupIdentifier: Swift.String?
@@ -842,12 +844,12 @@ extension DataZoneClientTypes {
             self.groupIdentifier = groupIdentifier
         }
     }
-
 }
 
 extension DataZoneClientTypes {
+
     /// The properties of the owner user.
-    public struct OwnerUserProperties {
+    public struct OwnerUserProperties: Swift.Sendable {
         /// The ID of the owner user.
         /// This member is required.
         public var userIdentifier: Swift.String?
@@ -859,22 +861,21 @@ extension DataZoneClientTypes {
             self.userIdentifier = userIdentifier
         }
     }
-
 }
 
 extension DataZoneClientTypes {
+
     /// The properties of a domain unit's owner.
-    public enum OwnerProperties {
+    public enum OwnerProperties: Swift.Sendable {
         /// Specifies that the domain unit owner is a user.
         case user(DataZoneClientTypes.OwnerUserProperties)
         /// Specifies that the domain unit owner is a group.
         case group(DataZoneClientTypes.OwnerGroupProperties)
         case sdkUnknown(Swift.String)
     }
-
 }
 
-public struct AddEntityOwnerInput {
+public struct AddEntityOwnerInput: Swift.Sendable {
     /// A unique, case-sensitive identifier that is provided to ensure the idempotency of the request.
     public var clientToken: Swift.String?
     /// The ID of the domain in which you want to add the entity owner.
@@ -906,14 +907,15 @@ public struct AddEntityOwnerInput {
     }
 }
 
-public struct AddEntityOwnerOutput {
+public struct AddEntityOwnerOutput: Swift.Sendable {
 
     public init() { }
 }
 
 extension DataZoneClientTypes {
+
     /// The details of the policy grant.
-    public struct AddToProjectMemberPoolPolicyGrantDetail {
+    public struct AddToProjectMemberPoolPolicyGrantDetail: Swift.Sendable {
         /// Specifies whether the policy grant is applied to child domain units.
         public var includeChildDomainUnits: Swift.Bool?
 
@@ -924,12 +926,12 @@ extension DataZoneClientTypes {
             self.includeChildDomainUnits = includeChildDomainUnits
         }
     }
-
 }
 
 extension DataZoneClientTypes {
+
     /// The details of the policy grant.
-    public struct CreateAssetTypePolicyGrantDetail {
+    public struct CreateAssetTypePolicyGrantDetail: Swift.Sendable {
         /// Specifies whether the policy grant is applied to child domain units.
         public var includeChildDomainUnits: Swift.Bool?
 
@@ -940,12 +942,12 @@ extension DataZoneClientTypes {
             self.includeChildDomainUnits = includeChildDomainUnits
         }
     }
-
 }
 
 extension DataZoneClientTypes {
+
     /// The details of the policy grant.
-    public struct CreateDomainUnitPolicyGrantDetail {
+    public struct CreateDomainUnitPolicyGrantDetail: Swift.Sendable {
         /// Specifies whether the policy grant is applied to child domain units.
         public var includeChildDomainUnits: Swift.Bool?
 
@@ -956,21 +958,21 @@ extension DataZoneClientTypes {
             self.includeChildDomainUnits = includeChildDomainUnits
         }
     }
-
 }
 
 extension DataZoneClientTypes {
+
     /// The details of the policy of creating an environment.
-    public struct Unit {
+    public struct Unit: Swift.Sendable {
 
         public init() { }
     }
-
 }
 
 extension DataZoneClientTypes {
+
     /// The details of the policy grant.
-    public struct CreateEnvironmentProfilePolicyGrantDetail {
+    public struct CreateEnvironmentProfilePolicyGrantDetail: Swift.Sendable {
         /// The ID of the domain unit.
         public var domainUnitId: Swift.String?
 
@@ -981,12 +983,12 @@ extension DataZoneClientTypes {
             self.domainUnitId = domainUnitId
         }
     }
-
 }
 
 extension DataZoneClientTypes {
+
     /// The details of the policy grant.
-    public struct CreateFormTypePolicyGrantDetail {
+    public struct CreateFormTypePolicyGrantDetail: Swift.Sendable {
         /// Specifies whether the policy grant is applied to child domain units.
         public var includeChildDomainUnits: Swift.Bool?
 
@@ -997,12 +999,12 @@ extension DataZoneClientTypes {
             self.includeChildDomainUnits = includeChildDomainUnits
         }
     }
-
 }
 
 extension DataZoneClientTypes {
+
     /// The details of the policy grant.
-    public struct CreateGlossaryPolicyGrantDetail {
+    public struct CreateGlossaryPolicyGrantDetail: Swift.Sendable {
         /// Specifies whether the policy grant is applied to child domain units.
         public var includeChildDomainUnits: Swift.Bool?
 
@@ -1013,12 +1015,12 @@ extension DataZoneClientTypes {
             self.includeChildDomainUnits = includeChildDomainUnits
         }
     }
-
 }
 
 extension DataZoneClientTypes {
+
     /// The details of the policy grant.
-    public struct CreateProjectPolicyGrantDetail {
+    public struct CreateProjectPolicyGrantDetail: Swift.Sendable {
         /// Specifies whether the policy grant is applied to child domain units.
         public var includeChildDomainUnits: Swift.Bool?
 
@@ -1029,12 +1031,12 @@ extension DataZoneClientTypes {
             self.includeChildDomainUnits = includeChildDomainUnits
         }
     }
-
 }
 
 extension DataZoneClientTypes {
+
     /// The grant details of the override domain unit owners policy.
-    public struct OverrideDomainUnitOwnersPolicyGrantDetail {
+    public struct OverrideDomainUnitOwnersPolicyGrantDetail: Swift.Sendable {
         /// Specifies whether the policy is inherited by child domain units.
         public var includeChildDomainUnits: Swift.Bool?
 
@@ -1045,12 +1047,12 @@ extension DataZoneClientTypes {
             self.includeChildDomainUnits = includeChildDomainUnits
         }
     }
-
 }
 
 extension DataZoneClientTypes {
+
     /// The details of the override project owners policy grant.
-    public struct OverrideProjectOwnersPolicyGrantDetail {
+    public struct OverrideProjectOwnersPolicyGrantDetail: Swift.Sendable {
         /// Specifies whether the policy is inherited by child domain units.
         public var includeChildDomainUnits: Swift.Bool?
 
@@ -1061,12 +1063,12 @@ extension DataZoneClientTypes {
             self.includeChildDomainUnits = includeChildDomainUnits
         }
     }
-
 }
 
 extension DataZoneClientTypes {
+
     /// The details of the policy grant.
-    public enum PolicyGrantDetail {
+    public enum PolicyGrantDetail: Swift.Sendable {
         /// Specifies that this is a create domain unit policy.
         case createdomainunit(DataZoneClientTypes.CreateDomainUnitPolicyGrantDetail)
         /// Specifies whether to override domain unit owners.
@@ -1091,12 +1093,11 @@ extension DataZoneClientTypes {
         case createenvironment(DataZoneClientTypes.Unit)
         case sdkUnknown(Swift.String)
     }
-
 }
 
 extension DataZoneClientTypes {
 
-    public enum TargetEntityType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum TargetEntityType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case domainUnit
         case environmentBlueprintConfiguration
         case environmentProfile
@@ -1128,7 +1129,7 @@ extension DataZoneClientTypes {
 
 extension DataZoneClientTypes {
 
-    public enum ManagedPolicyType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ManagedPolicyType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case addToProjectMemberPool
         case createAssetType
         case createDomainUnit
@@ -1184,7 +1185,7 @@ extension DataZoneClientTypes {
 
 extension DataZoneClientTypes {
 
-    public enum DomainUnitDesignation: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DomainUnitDesignation: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case owner
         case sdkUnknown(Swift.String)
 
@@ -1209,27 +1210,28 @@ extension DataZoneClientTypes {
 }
 
 extension DataZoneClientTypes {
+
     /// The grant filter for all domain units.
-    public struct AllDomainUnitsGrantFilter {
+    public struct AllDomainUnitsGrantFilter: Swift.Sendable {
 
         public init() { }
     }
-
 }
 
 extension DataZoneClientTypes {
+
     /// The grant filter for the domain unit. In the current release of Amazon DataZone, the only supported filter is the allDomainUnitsGrantFilter.
-    public enum DomainUnitGrantFilter {
+    public enum DomainUnitGrantFilter: Swift.Sendable {
         /// Specifies a grant filter containing all domain units.
         case alldomainunitsgrantfilter(DataZoneClientTypes.AllDomainUnitsGrantFilter)
         case sdkUnknown(Swift.String)
     }
-
 }
 
 extension DataZoneClientTypes {
+
     /// The domain unit principal to whom the policy is granted.
-    public struct DomainUnitPolicyGrantPrincipal {
+    public struct DomainUnitPolicyGrantPrincipal: Swift.Sendable {
         /// Specifes the designation of the domain unit users.
         /// This member is required.
         public var domainUnitDesignation: DataZoneClientTypes.DomainUnitDesignation?
@@ -1249,30 +1251,31 @@ extension DataZoneClientTypes {
             self.domainUnitIdentifier = domainUnitIdentifier
         }
     }
-
 }
 
 extension DataZoneClientTypes {
+
     /// The group principal to whom the policy is granted.
-    public enum GroupPolicyGrantPrincipal {
+    public enum GroupPolicyGrantPrincipal: Swift.Sendable {
         /// The ID Of the group of the group principal.
         case groupidentifier(Swift.String)
         case sdkUnknown(Swift.String)
     }
-
 }
 
 extension DataZoneClientTypes {
 
-    public enum ProjectDesignation: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ProjectDesignation: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case contributor
         case owner
+        case projectCatalogSteward
         case sdkUnknown(Swift.String)
 
         public static var allCases: [ProjectDesignation] {
             return [
                 .contributor,
-                .owner
+                .owner,
+                .projectCatalogSteward
             ]
         }
 
@@ -1285,6 +1288,7 @@ extension DataZoneClientTypes {
             switch self {
             case .contributor: return "CONTRIBUTOR"
             case .owner: return "OWNER"
+            case .projectCatalogSteward: return "PROJECT_CATALOG_STEWARD"
             case let .sdkUnknown(s): return s
             }
         }
@@ -1292,8 +1296,9 @@ extension DataZoneClientTypes {
 }
 
 extension DataZoneClientTypes {
+
     /// The domain unit filter of the project grant filter.
-    public struct DomainUnitFilterForProject {
+    public struct DomainUnitFilterForProject: Swift.Sendable {
         /// The domain unit ID to use in the filter.
         /// This member is required.
         public var domainUnit: Swift.String?
@@ -1309,22 +1314,22 @@ extension DataZoneClientTypes {
             self.includeChildDomainUnits = includeChildDomainUnits
         }
     }
-
 }
 
 extension DataZoneClientTypes {
+
     /// The project grant filter.
-    public enum ProjectGrantFilter {
+    public enum ProjectGrantFilter: Swift.Sendable {
         /// The domain unit filter of the project grant filter.
         case domainunitfilter(DataZoneClientTypes.DomainUnitFilterForProject)
         case sdkUnknown(Swift.String)
     }
-
 }
 
 extension DataZoneClientTypes {
+
     /// The project policy grant principal.
-    public struct ProjectPolicyGrantPrincipal {
+    public struct ProjectPolicyGrantPrincipal: Swift.Sendable {
         /// The project designation of the project policy grant principal.
         /// This member is required.
         public var projectDesignation: DataZoneClientTypes.ProjectDesignation?
@@ -1344,33 +1349,33 @@ extension DataZoneClientTypes {
             self.projectIdentifier = projectIdentifier
         }
     }
-
 }
 
 extension DataZoneClientTypes {
+
     /// The all users grant filter.
-    public struct AllUsersGrantFilter {
+    public struct AllUsersGrantFilter: Swift.Sendable {
 
         public init() { }
     }
-
 }
 
 extension DataZoneClientTypes {
+
     /// The user policy grant principal.
-    public enum UserPolicyGrantPrincipal {
+    public enum UserPolicyGrantPrincipal: Swift.Sendable {
         /// The user ID of the user policy grant principal.
         case useridentifier(Swift.String)
         /// The all users grant filter of the user policy grant principal.
         case allusersgrantfilter(DataZoneClientTypes.AllUsersGrantFilter)
         case sdkUnknown(Swift.String)
     }
-
 }
 
 extension DataZoneClientTypes {
+
     /// The policy grant principal.
-    public enum PolicyGrantPrincipal {
+    public enum PolicyGrantPrincipal: Swift.Sendable {
         /// The user of the policy grant principal.
         case user(DataZoneClientTypes.UserPolicyGrantPrincipal)
         /// The group of the policy grant principal.
@@ -1381,10 +1386,9 @@ extension DataZoneClientTypes {
         case domainunit(DataZoneClientTypes.DomainUnitPolicyGrantPrincipal)
         case sdkUnknown(Swift.String)
     }
-
 }
 
-public struct AddPolicyGrantInput {
+public struct AddPolicyGrantInput: Swift.Sendable {
     /// A unique, case-sensitive identifier that is provided to ensure the idempotency of the request.
     public var clientToken: Swift.String?
     /// The details of the policy grant.
@@ -1426,14 +1430,14 @@ public struct AddPolicyGrantInput {
     }
 }
 
-public struct AddPolicyGrantOutput {
+public struct AddPolicyGrantOutput: Swift.Sendable {
 
     public init() { }
 }
 
 extension DataZoneClientTypes {
 
-    public enum ListingStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ListingStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case active
         case creating
         case inactive
@@ -1464,8 +1468,9 @@ extension DataZoneClientTypes {
 }
 
 extension DataZoneClientTypes {
+
     /// The details of an asset published in an Amazon DataZone catalog.
-    public struct AssetListingDetails {
+    public struct AssetListingDetails: Swift.Sendable {
         /// The identifier of an asset published in an Amazon DataZone catalog.
         /// This member is required.
         public var listingId: Swift.String?
@@ -1482,12 +1487,12 @@ extension DataZoneClientTypes {
             self.listingStatus = listingStatus
         }
     }
-
 }
 
 extension DataZoneClientTypes {
+
     /// The details of a metadata form.
-    public struct FormInput {
+    public struct FormInput: Swift.Sendable {
         /// The content of the metadata form.
         public var content: Swift.String?
         /// The name of the metadata form.
@@ -1511,7 +1516,6 @@ extension DataZoneClientTypes {
             self.typeRevision = typeRevision
         }
     }
-
 }
 
 extension DataZoneClientTypes.FormInput: Swift.CustomDebugStringConvertible {
@@ -1521,8 +1525,9 @@ extension DataZoneClientTypes.FormInput: Swift.CustomDebugStringConvertible {
 }
 
 extension DataZoneClientTypes {
+
     /// The configuration of the business name generation.
-    public struct BusinessNameGenerationConfiguration {
+    public struct BusinessNameGenerationConfiguration: Swift.Sendable {
         /// Specifies whether the business name generation is enabled.
         public var enabled: Swift.Bool?
 
@@ -1533,12 +1538,12 @@ extension DataZoneClientTypes {
             self.enabled = enabled
         }
     }
-
 }
 
 extension DataZoneClientTypes {
+
     /// The configuration of the prediction.
-    public struct PredictionConfiguration {
+    public struct PredictionConfiguration: Swift.Sendable {
         /// The business name generation mechanism.
         public var businessNameGeneration: DataZoneClientTypes.BusinessNameGenerationConfiguration?
 
@@ -1549,10 +1554,9 @@ extension DataZoneClientTypes {
             self.businessNameGeneration = businessNameGeneration
         }
     }
-
 }
 
-public struct CreateAssetInput {
+public struct CreateAssetInput: Swift.Sendable {
     /// A unique, case-sensitive identifier that is provided to ensure the idempotency of the request.
     public var clientToken: Swift.String?
     /// Asset description.
@@ -1614,8 +1618,9 @@ extension CreateAssetInput: Swift.CustomDebugStringConvertible {
 }
 
 extension DataZoneClientTypes {
+
     /// The details of a metadata form.
-    public struct FormOutput {
+    public struct FormOutput: Swift.Sendable {
         /// The content of the metadata form.
         public var content: Swift.String?
         /// The name of the metadata form.
@@ -1639,7 +1644,6 @@ extension DataZoneClientTypes {
             self.typeRevision = typeRevision
         }
     }
-
 }
 
 extension DataZoneClientTypes.FormOutput: Swift.CustomDebugStringConvertible {
@@ -1648,8 +1652,9 @@ extension DataZoneClientTypes.FormOutput: Swift.CustomDebugStringConvertible {
 }
 
 extension DataZoneClientTypes {
+
     /// The summary of the time series data points form.
-    public struct TimeSeriesDataPointSummaryFormOutput {
+    public struct TimeSeriesDataPointSummaryFormOutput: Swift.Sendable {
         /// The content of the summary of the time series data points form.
         public var contentSummary: Swift.String?
         /// The name of the time series data points summary form.
@@ -1683,10 +1688,9 @@ extension DataZoneClientTypes {
             self.typeRevision = typeRevision
         }
     }
-
 }
 
-public struct CreateAssetOutput {
+public struct CreateAssetOutput: Swift.Sendable {
     /// The timestamp of when the asset was created.
     public var createdAt: Foundation.Date?
     /// The Amazon DataZone user that created this asset in the catalog.
@@ -1783,7 +1787,7 @@ extension CreateAssetOutput: Swift.CustomDebugStringConvertible {
         "CreateAssetOutput(createdAt: \(Swift.String(describing: createdAt)), createdBy: \(Swift.String(describing: createdBy)), domainId: \(Swift.String(describing: domainId)), firstRevisionCreatedAt: \(Swift.String(describing: firstRevisionCreatedAt)), firstRevisionCreatedBy: \(Swift.String(describing: firstRevisionCreatedBy)), formsOutput: \(Swift.String(describing: formsOutput)), glossaryTerms: \(Swift.String(describing: glossaryTerms)), id: \(Swift.String(describing: id)), latestTimeSeriesDataPointFormsOutput: \(Swift.String(describing: latestTimeSeriesDataPointFormsOutput)), listing: \(Swift.String(describing: listing)), owningProjectId: \(Swift.String(describing: owningProjectId)), predictionConfiguration: \(Swift.String(describing: predictionConfiguration)), readOnlyFormsOutput: \(Swift.String(describing: readOnlyFormsOutput)), revision: \(Swift.String(describing: revision)), typeIdentifier: \(Swift.String(describing: typeIdentifier)), typeRevision: \(Swift.String(describing: typeRevision)), description: \"CONTENT_REDACTED\", externalIdentifier: \"CONTENT_REDACTED\", name: \"CONTENT_REDACTED\")"}
 }
 
-public struct CreateAssetRevisionInput {
+public struct CreateAssetRevisionInput: Swift.Sendable {
     /// A unique, case-sensitive identifier that is provided to ensure the idempotency of the request.
     public var clientToken: Swift.String?
     /// The revised description of the asset.
@@ -1835,7 +1839,7 @@ extension CreateAssetRevisionInput: Swift.CustomDebugStringConvertible {
         "CreateAssetRevisionInput(clientToken: \(Swift.String(describing: clientToken)), domainIdentifier: \(Swift.String(describing: domainIdentifier)), glossaryTerms: \(Swift.String(describing: glossaryTerms)), identifier: \(Swift.String(describing: identifier)), predictionConfiguration: \(Swift.String(describing: predictionConfiguration)), typeRevision: \(Swift.String(describing: typeRevision)), description: \"CONTENT_REDACTED\", formsInput: \"CONTENT_REDACTED\", name: \"CONTENT_REDACTED\")"}
 }
 
-public struct CreateAssetRevisionOutput {
+public struct CreateAssetRevisionOutput: Swift.Sendable {
     /// The timestamp of when the asset revision occured.
     public var createdAt: Foundation.Date?
     /// The Amazon DataZone user who performed the asset revision.
@@ -1932,7 +1936,7 @@ extension CreateAssetRevisionOutput: Swift.CustomDebugStringConvertible {
         "CreateAssetRevisionOutput(createdAt: \(Swift.String(describing: createdAt)), createdBy: \(Swift.String(describing: createdBy)), domainId: \(Swift.String(describing: domainId)), firstRevisionCreatedAt: \(Swift.String(describing: firstRevisionCreatedAt)), firstRevisionCreatedBy: \(Swift.String(describing: firstRevisionCreatedBy)), formsOutput: \(Swift.String(describing: formsOutput)), glossaryTerms: \(Swift.String(describing: glossaryTerms)), id: \(Swift.String(describing: id)), latestTimeSeriesDataPointFormsOutput: \(Swift.String(describing: latestTimeSeriesDataPointFormsOutput)), listing: \(Swift.String(describing: listing)), owningProjectId: \(Swift.String(describing: owningProjectId)), predictionConfiguration: \(Swift.String(describing: predictionConfiguration)), readOnlyFormsOutput: \(Swift.String(describing: readOnlyFormsOutput)), revision: \(Swift.String(describing: revision)), typeIdentifier: \(Swift.String(describing: typeIdentifier)), typeRevision: \(Swift.String(describing: typeRevision)), description: \"CONTENT_REDACTED\", externalIdentifier: \"CONTENT_REDACTED\", name: \"CONTENT_REDACTED\")"}
 }
 
-public struct DeleteAssetInput {
+public struct DeleteAssetInput: Swift.Sendable {
     /// The ID of the Amazon DataZone domain in which the asset is deleted.
     /// This member is required.
     public var domainIdentifier: Swift.String?
@@ -1950,12 +1954,12 @@ public struct DeleteAssetInput {
     }
 }
 
-public struct DeleteAssetOutput {
+public struct DeleteAssetOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct GetAssetInput {
+public struct GetAssetInput: Swift.Sendable {
     /// The ID of the Amazon DataZone domain to which the asset belongs.
     /// This member is required.
     public var domainIdentifier: Swift.String?
@@ -1977,7 +1981,7 @@ public struct GetAssetInput {
     }
 }
 
-public struct GetAssetOutput {
+public struct GetAssetOutput: Swift.Sendable {
     /// The timestamp of when the asset was created.
     public var createdAt: Foundation.Date?
     /// The Amazon DataZone user who created the asset.
@@ -2071,8 +2075,9 @@ extension GetAssetOutput: Swift.CustomDebugStringConvertible {
 }
 
 extension DataZoneClientTypes {
+
     /// The column configuration of the asset filter.
-    public struct ColumnFilterConfiguration {
+    public struct ColumnFilterConfiguration: Swift.Sendable {
         /// Specifies whether to include column names.
         public var includedColumnNames: [Swift.String]?
 
@@ -2083,12 +2088,12 @@ extension DataZoneClientTypes {
             self.includedColumnNames = includedColumnNames
         }
     }
-
 }
 
 extension DataZoneClientTypes {
+
     /// Specifies whether the value is equal to an expression.
-    public struct EqualToExpression {
+    public struct EqualToExpression: Swift.Sendable {
         /// The name of the column.
         /// This member is required.
         public var columnName: Swift.String?
@@ -2105,12 +2110,12 @@ extension DataZoneClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension DataZoneClientTypes {
+
     /// Specifies whether the value is greater than an expression.
-    public struct GreaterThanExpression {
+    public struct GreaterThanExpression: Swift.Sendable {
         /// The name of the column.
         /// This member is required.
         public var columnName: Swift.String?
@@ -2127,12 +2132,12 @@ extension DataZoneClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension DataZoneClientTypes {
+
     /// Specifies whether the value is greater than or equal to an expression.
-    public struct GreaterThanOrEqualToExpression {
+    public struct GreaterThanOrEqualToExpression: Swift.Sendable {
         /// The name of the column.
         /// This member is required.
         public var columnName: Swift.String?
@@ -2149,12 +2154,12 @@ extension DataZoneClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension DataZoneClientTypes {
+
     /// Specifies whether values are in the expression.
-    public struct InExpression {
+    public struct InExpression: Swift.Sendable {
         /// The name of the column.
         /// This member is required.
         public var columnName: Swift.String?
@@ -2171,12 +2176,12 @@ extension DataZoneClientTypes {
             self.values = values
         }
     }
-
 }
 
 extension DataZoneClientTypes {
+
     /// Specifies that the expression is not null.
-    public struct IsNotNullExpression {
+    public struct IsNotNullExpression: Swift.Sendable {
         /// The name of the column.
         /// This member is required.
         public var columnName: Swift.String?
@@ -2188,12 +2193,12 @@ extension DataZoneClientTypes {
             self.columnName = columnName
         }
     }
-
 }
 
 extension DataZoneClientTypes {
+
     /// Specifies that the expression is null.
-    public struct IsNullExpression {
+    public struct IsNullExpression: Swift.Sendable {
         /// The name of the column.
         /// This member is required.
         public var columnName: Swift.String?
@@ -2205,12 +2210,12 @@ extension DataZoneClientTypes {
             self.columnName = columnName
         }
     }
-
 }
 
 extension DataZoneClientTypes {
+
     /// Specifies that a value is less than an expression.
-    public struct LessThanExpression {
+    public struct LessThanExpression: Swift.Sendable {
         /// The name of the column.
         /// This member is required.
         public var columnName: Swift.String?
@@ -2227,12 +2232,12 @@ extension DataZoneClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension DataZoneClientTypes {
+
     /// Specifies that a value is less than or equal to an expression.
-    public struct LessThanOrEqualToExpression {
+    public struct LessThanOrEqualToExpression: Swift.Sendable {
         /// The name of the column.
         /// This member is required.
         public var columnName: Swift.String?
@@ -2249,12 +2254,12 @@ extension DataZoneClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension DataZoneClientTypes {
+
     /// Specifies that a value is like the expression.
-    public struct LikeExpression {
+    public struct LikeExpression: Swift.Sendable {
         /// The name of the column.
         /// This member is required.
         public var columnName: Swift.String?
@@ -2271,12 +2276,12 @@ extension DataZoneClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension DataZoneClientTypes {
+
     /// Specifies that a value is not equal to the expression.
-    public struct NotEqualToExpression {
+    public struct NotEqualToExpression: Swift.Sendable {
         /// The name of the column.
         /// This member is required.
         public var columnName: Swift.String?
@@ -2293,12 +2298,12 @@ extension DataZoneClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension DataZoneClientTypes {
+
     /// Specifies that a value is not in the expression.
-    public struct NotInExpression {
+    public struct NotInExpression: Swift.Sendable {
         /// The name of the column.
         /// This member is required.
         public var columnName: Swift.String?
@@ -2315,12 +2320,12 @@ extension DataZoneClientTypes {
             self.values = values
         }
     }
-
 }
 
 extension DataZoneClientTypes {
+
     /// Specifies that a value might be not like the expression.
-    public struct NotLikeExpression {
+    public struct NotLikeExpression: Swift.Sendable {
         /// The name of the column.
         /// This member is required.
         public var columnName: Swift.String?
@@ -2337,12 +2342,12 @@ extension DataZoneClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension DataZoneClientTypes {
+
     /// The row filter expression.
-    public enum RowFilterExpression {
+    public enum RowFilterExpression: Swift.Sendable {
         /// The 'equal to' clause of the row filter expression.
         case equalto(DataZoneClientTypes.EqualToExpression)
         /// The 'no equal to' clause of the row filter expression.
@@ -2369,12 +2374,11 @@ extension DataZoneClientTypes {
         case notlike(DataZoneClientTypes.NotLikeExpression)
         case sdkUnknown(Swift.String)
     }
-
 }
 
 extension DataZoneClientTypes {
 
-    public enum FilterStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum FilterStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case invalid
         case valid
         case sdkUnknown(Swift.String)
@@ -2402,8 +2406,9 @@ extension DataZoneClientTypes {
 }
 
 extension DataZoneClientTypes {
+
     /// The summary of the asset filter.
-    public struct AssetFilterSummary {
+    public struct AssetFilterSummary: Swift.Sendable {
         /// The ID of the data asset.
         /// This member is required.
         public var assetId: Swift.String?
@@ -2454,7 +2459,6 @@ extension DataZoneClientTypes {
             self.status = status
         }
     }
-
 }
 
 extension DataZoneClientTypes.AssetFilterSummary: Swift.CustomDebugStringConvertible {
@@ -2463,8 +2467,9 @@ extension DataZoneClientTypes.AssetFilterSummary: Swift.CustomDebugStringConvert
 }
 
 extension DataZoneClientTypes {
+
     /// The additional attributes of an inventory asset.
-    public struct AssetItemAdditionalAttributes {
+    public struct AssetItemAdditionalAttributes: Swift.Sendable {
         /// The forms included in the additional attributes of an inventory asset.
         public var formsOutput: [DataZoneClientTypes.FormOutput]?
         /// The latest time series data points forms included in the additional attributes of an asset.
@@ -2483,12 +2488,12 @@ extension DataZoneClientTypes {
             self.readOnlyFormsOutput = readOnlyFormsOutput
         }
     }
-
 }
 
 extension DataZoneClientTypes {
+
     /// A Amazon DataZone inventory asset.
-    public struct AssetItem {
+    public struct AssetItem: Swift.Sendable {
         /// The additional attributes of a Amazon DataZone inventory asset.
         public var additionalAttributes: DataZoneClientTypes.AssetItemAdditionalAttributes?
         /// The timestamp of when the Amazon DataZone inventory asset was created.
@@ -2557,7 +2562,6 @@ extension DataZoneClientTypes {
             self.typeRevision = typeRevision
         }
     }
-
 }
 
 extension DataZoneClientTypes.AssetItem: Swift.CustomDebugStringConvertible {
@@ -2566,8 +2570,9 @@ extension DataZoneClientTypes.AssetItem: Swift.CustomDebugStringConvertible {
 }
 
 extension DataZoneClientTypes {
+
     /// An asset published in an Amazon DataZone catalog.
-    public struct AssetListing {
+    public struct AssetListing: Swift.Sendable {
         /// The identifier of an asset published in an Amazon DataZone catalog.
         public var assetId: Swift.String?
         /// The revision of an asset published in an Amazon DataZone catalog.
@@ -2606,12 +2611,12 @@ extension DataZoneClientTypes {
             self.owningProjectId = owningProjectId
         }
     }
-
 }
 
 extension DataZoneClientTypes {
+
     /// Additional attributes of an inventory asset.
-    public struct AssetListingItemAdditionalAttributes {
+    public struct AssetListingItemAdditionalAttributes: Swift.Sendable {
         /// The metadata forms that form additional attributes of the metadata asset.
         public var forms: Swift.String?
         /// The latest time series data points forms included in the additional attributes of an asset.
@@ -2626,12 +2631,12 @@ extension DataZoneClientTypes {
             self.latestTimeSeriesDataPointForms = latestTimeSeriesDataPointForms
         }
     }
-
 }
 
 extension DataZoneClientTypes {
+
     /// The details of an asset published in an Amazon DataZone catalog.
-    public struct AssetListingItem {
+    public struct AssetListingItem: Swift.Sendable {
         /// The additional attributes of an asset published in an Amazon DataZone catalog.
         public var additionalAttributes: DataZoneClientTypes.AssetListingItemAdditionalAttributes?
         /// The timestamp of when an asset published in an Amazon DataZone catalog was created.
@@ -2690,7 +2695,6 @@ extension DataZoneClientTypes {
             self.owningProjectId = owningProjectId
         }
     }
-
 }
 
 extension DataZoneClientTypes.AssetListingItem: Swift.CustomDebugStringConvertible {
@@ -2699,8 +2703,9 @@ extension DataZoneClientTypes.AssetListingItem: Swift.CustomDebugStringConvertib
 }
 
 extension DataZoneClientTypes {
+
     /// The revision of an inventory asset.
-    public struct AssetRevision {
+    public struct AssetRevision: Swift.Sendable {
         /// The timestamp of when an inventory asset revison was created.
         public var createdAt: Foundation.Date?
         /// The Amazon DataZone user who created the asset revision.
@@ -2727,12 +2732,12 @@ extension DataZoneClientTypes {
             self.revision = revision
         }
     }
-
 }
 
 extension DataZoneClientTypes {
+
     /// The name map for assets.
-    public struct AssetTargetNameMap {
+    public struct AssetTargetNameMap: Swift.Sendable {
         /// The identifier of the inventory asset.
         /// This member is required.
         public var assetId: Swift.String?
@@ -2749,12 +2754,12 @@ extension DataZoneClientTypes {
             self.targetName = targetName
         }
     }
-
 }
 
 extension DataZoneClientTypes {
+
     /// The details of the form entry.
-    public struct FormEntryInput {
+    public struct FormEntryInput: Swift.Sendable {
         /// Specifies whether a form entry is required.
         public var `required`: Swift.Bool?
         /// The type ID of the form entry.
@@ -2775,10 +2780,9 @@ extension DataZoneClientTypes {
             self.typeRevision = typeRevision
         }
     }
-
 }
 
-public struct CreateAssetTypeInput {
+public struct CreateAssetTypeInput: Swift.Sendable {
     /// The descripton of the custom asset type.
     public var description: Swift.String?
     /// The unique identifier of the Amazon DataZone domain where the custom asset type is being created.
@@ -2816,8 +2820,9 @@ extension CreateAssetTypeInput: Swift.CustomDebugStringConvertible {
 }
 
 extension DataZoneClientTypes {
+
     /// The details of the form entry.
-    public struct FormEntryOutput {
+    public struct FormEntryOutput: Swift.Sendable {
         /// Specifies whether a form entry is required.
         public var `required`: Swift.Bool?
         /// The name of the type of the form entry.
@@ -2838,7 +2843,6 @@ extension DataZoneClientTypes {
             self.typeRevision = typeRevision
         }
     }
-
 }
 
 extension DataZoneClientTypes.FormEntryOutput: Swift.CustomDebugStringConvertible {
@@ -2846,7 +2850,7 @@ extension DataZoneClientTypes.FormEntryOutput: Swift.CustomDebugStringConvertibl
         "FormEntryOutput(required: \(Swift.String(describing: `required`)), typeRevision: \(Swift.String(describing: typeRevision)), typeName: \"CONTENT_REDACTED\")"}
 }
 
-public struct CreateAssetTypeOutput {
+public struct CreateAssetTypeOutput: Swift.Sendable {
     /// The timestamp of when the asset type is to be created.
     public var createdAt: Foundation.Date?
     /// The Amazon DataZone user who creates this custom asset type.
@@ -2911,7 +2915,7 @@ extension CreateAssetTypeOutput: Swift.CustomDebugStringConvertible {
         "CreateAssetTypeOutput(createdAt: \(Swift.String(describing: createdAt)), createdBy: \(Swift.String(describing: createdBy)), domainId: \(Swift.String(describing: domainId)), formsOutput: \(Swift.String(describing: formsOutput)), name: \(Swift.String(describing: name)), originDomainId: \(Swift.String(describing: originDomainId)), originProjectId: \(Swift.String(describing: originProjectId)), owningProjectId: \(Swift.String(describing: owningProjectId)), revision: \(Swift.String(describing: revision)), updatedAt: \(Swift.String(describing: updatedAt)), updatedBy: \(Swift.String(describing: updatedBy)), description: \"CONTENT_REDACTED\")"}
 }
 
-public struct DeleteAssetTypeInput {
+public struct DeleteAssetTypeInput: Swift.Sendable {
     /// The ID of the Amazon DataZone domain in which the asset type is deleted.
     /// This member is required.
     public var domainIdentifier: Swift.String?
@@ -2929,12 +2933,12 @@ public struct DeleteAssetTypeInput {
     }
 }
 
-public struct DeleteAssetTypeOutput {
+public struct DeleteAssetTypeOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct GetAssetTypeInput {
+public struct GetAssetTypeInput: Swift.Sendable {
     /// The ID of the Amazon DataZone domain in which the asset type exists.
     /// This member is required.
     public var domainIdentifier: Swift.String?
@@ -2956,7 +2960,7 @@ public struct GetAssetTypeInput {
     }
 }
 
-public struct GetAssetTypeOutput {
+public struct GetAssetTypeOutput: Swift.Sendable {
     /// The timestamp of when the asset type was created.
     public var createdAt: Foundation.Date?
     /// The Amazon DataZone user who created the asset type.
@@ -3023,8 +3027,9 @@ extension GetAssetTypeOutput: Swift.CustomDebugStringConvertible {
 }
 
 extension DataZoneClientTypes {
+
     /// The details of the asset type.
-    public struct AssetTypeItem {
+    public struct AssetTypeItem: Swift.Sendable {
         /// The timestamp of when the asset type was created.
         public var createdAt: Foundation.Date?
         /// The Amazon DataZone user who created the asset type.
@@ -3084,7 +3089,6 @@ extension DataZoneClientTypes {
             self.updatedBy = updatedBy
         }
     }
-
 }
 
 extension DataZoneClientTypes.AssetTypeItem: Swift.CustomDebugStringConvertible {
@@ -3092,7 +3096,7 @@ extension DataZoneClientTypes.AssetTypeItem: Swift.CustomDebugStringConvertible 
         "AssetTypeItem(createdAt: \(Swift.String(describing: createdAt)), createdBy: \(Swift.String(describing: createdBy)), domainId: \(Swift.String(describing: domainId)), formsOutput: \(Swift.String(describing: formsOutput)), name: \(Swift.String(describing: name)), originDomainId: \(Swift.String(describing: originDomainId)), originProjectId: \(Swift.String(describing: originProjectId)), owningProjectId: \(Swift.String(describing: owningProjectId)), revision: \(Swift.String(describing: revision)), updatedAt: \(Swift.String(describing: updatedAt)), updatedBy: \(Swift.String(describing: updatedBy)), description: \"CONTENT_REDACTED\")"}
 }
 
-public struct AssociateEnvironmentRoleInput {
+public struct AssociateEnvironmentRoleInput: Swift.Sendable {
     /// The ID of the Amazon DataZone domain in which the environment role is associated.
     /// This member is required.
     public var domainIdentifier: Swift.String?
@@ -3115,14 +3119,14 @@ public struct AssociateEnvironmentRoleInput {
     }
 }
 
-public struct AssociateEnvironmentRoleOutput {
+public struct AssociateEnvironmentRoleOutput: Swift.Sendable {
 
     public init() { }
 }
 
 extension DataZoneClientTypes {
 
-    public enum AuthType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AuthType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case disabled
         case iamIdc
         case sdkUnknown(Swift.String)
@@ -3149,7 +3153,7 @@ extension DataZoneClientTypes {
     }
 }
 
-public struct CancelMetadataGenerationRunInput {
+public struct CancelMetadataGenerationRunInput: Swift.Sendable {
     /// The ID of the Amazon DataZone domain in which the metadata generation run is to be cancelled.
     /// This member is required.
     public var domainIdentifier: Swift.String?
@@ -3167,12 +3171,12 @@ public struct CancelMetadataGenerationRunInput {
     }
 }
 
-public struct CancelMetadataGenerationRunOutput {
+public struct CancelMetadataGenerationRunOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct CancelSubscriptionInput {
+public struct CancelSubscriptionInput: Swift.Sendable {
     /// The unique identifier of the Amazon DataZone domain where the subscription request is being cancelled.
     /// This member is required.
     public var domainIdentifier: Swift.String?
@@ -3192,7 +3196,7 @@ public struct CancelSubscriptionInput {
 
 extension DataZoneClientTypes {
 
-    public enum SubscriptionStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SubscriptionStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case approved
         case cancelled
         case revoked
@@ -3222,7 +3226,7 @@ extension DataZoneClientTypes {
     }
 }
 
-public struct CancelSubscriptionOutput {
+public struct CancelSubscriptionOutput: Swift.Sendable {
     /// The timestamp that specifies when the request to cancel the subscription was created.
     /// This member is required.
     public var createdAt: Foundation.Date?
@@ -3284,7 +3288,7 @@ public struct CancelSubscriptionOutput {
 
 extension DataZoneClientTypes {
 
-    public enum ChangeAction: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ChangeAction: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case publish
         case unpublish
         case sdkUnknown(Swift.String)
@@ -3312,8 +3316,9 @@ extension DataZoneClientTypes {
 }
 
 extension DataZoneClientTypes {
+
     /// Part of the provisioning properties of the environment blueprint.
-    public struct CloudFormationProperties {
+    public struct CloudFormationProperties: Swift.Sendable {
         /// The template URL of the cloud formation provisioning properties of the environment blueprint.
         /// This member is required.
         public var templateUrl: Swift.String?
@@ -3325,12 +3330,12 @@ extension DataZoneClientTypes {
             self.templateUrl = templateUrl
         }
     }
-
 }
 
 extension DataZoneClientTypes {
+
     /// The details of the parameters for the configurable environment action.
-    public struct ConfigurableActionParameter {
+    public struct ConfigurableActionParameter: Swift.Sendable {
         /// The key of the configurable action parameter.
         public var key: Swift.String?
         /// The value of the configurable action parameter.
@@ -3345,12 +3350,11 @@ extension DataZoneClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension DataZoneClientTypes {
 
-    public enum ConfigurableActionTypeAuthorization: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ConfigurableActionTypeAuthorization: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case https
         case iam
         case sdkUnknown(Swift.String)
@@ -3378,8 +3382,9 @@ extension DataZoneClientTypes {
 }
 
 extension DataZoneClientTypes {
+
     /// The configurable action of a Amazon DataZone environment.
-    public struct ConfigurableEnvironmentAction {
+    public struct ConfigurableEnvironmentAction: Swift.Sendable {
         /// The authentication type of a configurable action of a Amazon DataZone environment.
         public var auth: DataZoneClientTypes.ConfigurableActionTypeAuthorization?
         /// The parameters of a configurable action in a Amazon DataZone environment.
@@ -3400,12 +3405,11 @@ extension DataZoneClientTypes {
             self.type = type
         }
     }
-
 }
 
 extension DataZoneClientTypes {
 
-    public enum DataProductItemType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DataProductItemType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case asset
         case sdkUnknown(Swift.String)
 
@@ -3430,8 +3434,9 @@ extension DataZoneClientTypes {
 }
 
 extension DataZoneClientTypes {
+
     /// The data product.
-    public struct DataProductItem {
+    public struct DataProductItem: Swift.Sendable {
         /// The glossary terms of the data product.
         public var glossaryTerms: [Swift.String]?
         /// The ID of the data product.
@@ -3456,10 +3461,9 @@ extension DataZoneClientTypes {
             self.revision = revision
         }
     }
-
 }
 
-public struct CreateDataProductInput {
+public struct CreateDataProductInput: Swift.Sendable {
     /// A unique, case-sensitive identifier that is provided to ensure the idempotency of the request.
     public var clientToken: Swift.String?
     /// The description of the data product.
@@ -3509,7 +3513,7 @@ extension CreateDataProductInput: Swift.CustomDebugStringConvertible {
 
 extension DataZoneClientTypes {
 
-    public enum DataProductStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DataProductStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case created
         case createFailed
         case creating
@@ -3539,7 +3543,7 @@ extension DataZoneClientTypes {
     }
 }
 
-public struct CreateDataProductOutput {
+public struct CreateDataProductOutput: Swift.Sendable {
     /// The timestamp at which the data product was created.
     public var createdAt: Foundation.Date?
     /// The user who created the data product.
@@ -3614,7 +3618,7 @@ extension CreateDataProductOutput: Swift.CustomDebugStringConvertible {
         "CreateDataProductOutput(createdAt: \(Swift.String(describing: createdAt)), createdBy: \(Swift.String(describing: createdBy)), domainId: \(Swift.String(describing: domainId)), firstRevisionCreatedAt: \(Swift.String(describing: firstRevisionCreatedAt)), firstRevisionCreatedBy: \(Swift.String(describing: firstRevisionCreatedBy)), formsOutput: \(Swift.String(describing: formsOutput)), glossaryTerms: \(Swift.String(describing: glossaryTerms)), id: \(Swift.String(describing: id)), items: \(Swift.String(describing: items)), owningProjectId: \(Swift.String(describing: owningProjectId)), revision: \(Swift.String(describing: revision)), status: \(Swift.String(describing: status)), description: \"CONTENT_REDACTED\", name: \"CONTENT_REDACTED\")"}
 }
 
-public struct CreateDataProductRevisionInput {
+public struct CreateDataProductRevisionInput: Swift.Sendable {
     /// A unique, case-sensitive identifier that is provided to ensure the idempotency of the request.
     public var clientToken: Swift.String?
     /// The description of the data product revision.
@@ -3662,7 +3666,7 @@ extension CreateDataProductRevisionInput: Swift.CustomDebugStringConvertible {
         "CreateDataProductRevisionInput(clientToken: \(Swift.String(describing: clientToken)), domainIdentifier: \(Swift.String(describing: domainIdentifier)), glossaryTerms: \(Swift.String(describing: glossaryTerms)), identifier: \(Swift.String(describing: identifier)), items: \(Swift.String(describing: items)), description: \"CONTENT_REDACTED\", formsInput: \"CONTENT_REDACTED\", name: \"CONTENT_REDACTED\")"}
 }
 
-public struct CreateDataProductRevisionOutput {
+public struct CreateDataProductRevisionOutput: Swift.Sendable {
     /// The timestamp at which the data product revision is created.
     public var createdAt: Foundation.Date?
     /// The user who created the data product revision.
@@ -3739,7 +3743,7 @@ extension CreateDataProductRevisionOutput: Swift.CustomDebugStringConvertible {
 
 extension DataZoneClientTypes {
 
-    public enum FilterExpressionType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum FilterExpressionType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case exclude
         case include
         case sdkUnknown(Swift.String)
@@ -3767,8 +3771,9 @@ extension DataZoneClientTypes {
 }
 
 extension DataZoneClientTypes {
+
     /// A filter expression in Amazon DataZone.
-    public struct FilterExpression {
+    public struct FilterExpression: Swift.Sendable {
         /// The search filter expression.
         /// This member is required.
         public var expression: Swift.String?
@@ -3785,12 +3790,12 @@ extension DataZoneClientTypes {
             self.type = type
         }
     }
-
 }
 
 extension DataZoneClientTypes {
+
     /// The relational filter configuration for the data source.
-    public struct RelationalFilterConfiguration {
+    public struct RelationalFilterConfiguration: Swift.Sendable {
         /// The database name specified in the relational filter configuration for the data source.
         /// This member is required.
         public var databaseName: Swift.String?
@@ -3810,12 +3815,12 @@ extension DataZoneClientTypes {
             self.schemaName = schemaName
         }
     }
-
 }
 
 extension DataZoneClientTypes {
+
     /// The configuration details of the Amazon Web Services Glue data source.
-    public struct GlueRunConfigurationInput {
+    public struct GlueRunConfigurationInput: Swift.Sendable {
         /// Specifies whether to automatically import data quality metrics as part of the data source run.
         public var autoImportDataQualityResult: Swift.Bool?
         /// The data access role included in the configuration details of the Amazon Web Services Glue data source.
@@ -3835,12 +3840,12 @@ extension DataZoneClientTypes {
             self.relationalFilterConfigurations = relationalFilterConfigurations
         }
     }
-
 }
 
 extension DataZoneClientTypes {
+
     /// The details of the credentials required to access an Amazon Redshift cluster.
-    public struct RedshiftCredentialConfiguration {
+    public struct RedshiftCredentialConfiguration: Swift.Sendable {
         /// The ARN of a secret manager for an Amazon Redshift cluster.
         /// This member is required.
         public var secretManagerArn: Swift.String?
@@ -3852,12 +3857,12 @@ extension DataZoneClientTypes {
             self.secretManagerArn = secretManagerArn
         }
     }
-
 }
 
 extension DataZoneClientTypes {
+
     /// The details of the Amazon Redshift cluster storage.
-    public struct RedshiftClusterStorage {
+    public struct RedshiftClusterStorage: Swift.Sendable {
         /// The name of an Amazon Redshift cluster.
         /// This member is required.
         public var clusterName: Swift.String?
@@ -3869,12 +3874,12 @@ extension DataZoneClientTypes {
             self.clusterName = clusterName
         }
     }
-
 }
 
 extension DataZoneClientTypes {
+
     /// The details of the Amazon Redshift Serverless workgroup storage.
-    public struct RedshiftServerlessStorage {
+    public struct RedshiftServerlessStorage: Swift.Sendable {
         /// The name of the Amazon Redshift Serverless workgroup.
         /// This member is required.
         public var workgroupName: Swift.String?
@@ -3886,24 +3891,24 @@ extension DataZoneClientTypes {
             self.workgroupName = workgroupName
         }
     }
-
 }
 
 extension DataZoneClientTypes {
+
     /// The details of the Amazon Redshift storage as part of the configuration of an Amazon Redshift data source run.
-    public enum RedshiftStorage {
+    public enum RedshiftStorage: Swift.Sendable {
         /// The details of the Amazon Redshift cluster source.
         case redshiftclustersource(DataZoneClientTypes.RedshiftClusterStorage)
         /// The details of the Amazon Redshift Serverless workgroup source.
         case redshiftserverlesssource(DataZoneClientTypes.RedshiftServerlessStorage)
         case sdkUnknown(Swift.String)
     }
-
 }
 
 extension DataZoneClientTypes {
+
     /// The configuration details of the Amazon Redshift data source.
-    public struct RedshiftRunConfigurationInput {
+    public struct RedshiftRunConfigurationInput: Swift.Sendable {
         /// The data access role included in the configuration details of the Amazon Redshift data source.
         public var dataAccessRole: Swift.String?
         /// The details of the credentials required to access an Amazon Redshift cluster.
@@ -3929,24 +3934,23 @@ extension DataZoneClientTypes {
             self.relationalFilterConfigurations = relationalFilterConfigurations
         }
     }
-
 }
 
 extension DataZoneClientTypes {
+
     /// The configuration of the data source.
-    public enum DataSourceConfigurationInput {
+    public enum DataSourceConfigurationInput: Swift.Sendable {
         /// The configuration of the Amazon Web Services Glue data source.
         case gluerunconfiguration(DataZoneClientTypes.GlueRunConfigurationInput)
         /// The configuration of the Amazon Redshift data source.
         case redshiftrunconfiguration(DataZoneClientTypes.RedshiftRunConfigurationInput)
         case sdkUnknown(Swift.String)
     }
-
 }
 
 extension DataZoneClientTypes {
 
-    public enum EnableSetting: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum EnableSetting: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case disabled
         case enabled
         case sdkUnknown(Swift.String)
@@ -3974,8 +3978,9 @@ extension DataZoneClientTypes {
 }
 
 extension DataZoneClientTypes {
+
     /// The recommendation to be updated as part of the UpdateDataSource action.
-    public struct RecommendationConfiguration {
+    public struct RecommendationConfiguration: Swift.Sendable {
         /// Specifies whether automatic business name generation is to be enabled or not as part of the recommendation configuration.
         public var enableBusinessNameGeneration: Swift.Bool?
 
@@ -3986,12 +3991,11 @@ extension DataZoneClientTypes {
             self.enableBusinessNameGeneration = enableBusinessNameGeneration
         }
     }
-
 }
 
 extension DataZoneClientTypes {
 
-    public enum Timezone: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Timezone: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case africaJohannesburg
         case americaMontreal
         case americaSaoPaulo
@@ -4205,8 +4209,9 @@ extension DataZoneClientTypes {
 }
 
 extension DataZoneClientTypes {
+
     /// The details of the schedule of the data source runs.
-    public struct ScheduleConfiguration {
+    public struct ScheduleConfiguration: Swift.Sendable {
         /// The schedule of the data source runs.
         public var schedule: Swift.String?
         /// The timezone of the data source run.
@@ -4221,7 +4226,6 @@ extension DataZoneClientTypes {
             self.timezone = timezone
         }
     }
-
 }
 
 extension DataZoneClientTypes.ScheduleConfiguration: Swift.CustomDebugStringConvertible {
@@ -4230,7 +4234,7 @@ extension DataZoneClientTypes.ScheduleConfiguration: Swift.CustomDebugStringConv
     }
 }
 
-public struct CreateDataSourceInput {
+public struct CreateDataSourceInput: Swift.Sendable {
     /// The metadata forms that are to be attached to the assets that this data source works with.
     public var assetFormsInput: [DataZoneClientTypes.FormInput]?
     /// A unique, case-sensitive identifier that is provided to ensure the idempotency of the request.
@@ -4301,8 +4305,9 @@ extension CreateDataSourceInput: Swift.CustomDebugStringConvertible {
 }
 
 extension DataZoneClientTypes {
+
     /// The configuration details of the Amazon Web Services Glue data source.
-    public struct GlueRunConfigurationOutput {
+    public struct GlueRunConfigurationOutput: Swift.Sendable {
         /// The Amazon Web Services account ID included in the configuration details of the Amazon Web Services Glue data source.
         public var accountId: Swift.String?
         /// Specifies whether to automatically import data quality metrics as part of the data source run.
@@ -4330,12 +4335,12 @@ extension DataZoneClientTypes {
             self.relationalFilterConfigurations = relationalFilterConfigurations
         }
     }
-
 }
 
 extension DataZoneClientTypes {
+
     /// The configuration details of the Amazon Redshift data source.
-    public struct RedshiftRunConfigurationOutput {
+    public struct RedshiftRunConfigurationOutput: Swift.Sendable {
         /// The ID of the Amazon Web Services account included in the configuration details of the Amazon Redshift data source.
         public var accountId: Swift.String?
         /// The data access role included in the configuration details of the Amazon Redshift data source.
@@ -4369,24 +4374,23 @@ extension DataZoneClientTypes {
             self.relationalFilterConfigurations = relationalFilterConfigurations
         }
     }
-
 }
 
 extension DataZoneClientTypes {
+
     /// The configuration of the data source.
-    public enum DataSourceConfigurationOutput {
+    public enum DataSourceConfigurationOutput: Swift.Sendable {
         /// The configuration of the Amazon Web Services Glue data source.
         case gluerunconfiguration(DataZoneClientTypes.GlueRunConfigurationOutput)
         /// The configuration of the Amazon Redshift data source.
         case redshiftrunconfiguration(DataZoneClientTypes.RedshiftRunConfigurationOutput)
         case sdkUnknown(Swift.String)
     }
-
 }
 
 extension DataZoneClientTypes {
 
-    public enum DataSourceErrorType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DataSourceErrorType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case accessDeniedException
         case conflictException
         case internalServerException
@@ -4429,8 +4433,9 @@ extension DataZoneClientTypes {
 }
 
 extension DataZoneClientTypes {
+
     /// The details of the error message that is returned if the operation cannot be successfully completed.
-    public struct DataSourceErrorMessage {
+    public struct DataSourceErrorMessage: Swift.Sendable {
         /// The details of the error message that is returned if the operation cannot be successfully completed.
         public var errorDetail: Swift.String?
         /// The type of the error message that is returned if the operation cannot be successfully completed.
@@ -4446,12 +4451,11 @@ extension DataZoneClientTypes {
             self.errorType = errorType
         }
     }
-
 }
 
 extension DataZoneClientTypes {
 
-    public enum DataSourceRunStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DataSourceRunStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case failed
         case partiallySucceeded
         case requested
@@ -4489,7 +4493,7 @@ extension DataZoneClientTypes {
 
 extension DataZoneClientTypes {
 
-    public enum DataSourceStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DataSourceStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case creating
         case deleting
         case failedCreation
@@ -4534,7 +4538,7 @@ extension DataZoneClientTypes {
     }
 }
 
-public struct CreateDataSourceOutput {
+public struct CreateDataSourceOutput: Swift.Sendable {
     /// The metadata forms attached to the assets that this data source creates.
     public var assetFormsOutput: [DataZoneClientTypes.FormOutput]?
     /// Specifies the configuration of the data source. It can be set to either glueRunConfiguration or redshiftRunConfiguration.
@@ -4634,7 +4638,7 @@ extension CreateDataSourceOutput: Swift.CustomDebugStringConvertible {
 
 extension DataZoneClientTypes {
 
-    public enum UserAssignment: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum UserAssignment: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case automatic
         case manual
         case sdkUnknown(Swift.String)
@@ -4662,8 +4666,9 @@ extension DataZoneClientTypes {
 }
 
 extension DataZoneClientTypes {
+
     /// The single sign-on details in Amazon DataZone.
-    public struct SingleSignOn {
+    public struct SingleSignOn: Swift.Sendable {
         /// The type of single sign-on in Amazon DataZone.
         public var type: DataZoneClientTypes.AuthType?
         /// The single sign-on user assignment in Amazon DataZone.
@@ -4678,10 +4683,9 @@ extension DataZoneClientTypes {
             self.userAssignment = userAssignment
         }
     }
-
 }
 
-public struct CreateDomainInput {
+public struct CreateDomainInput: Swift.Sendable {
     /// A unique, case-sensitive identifier that is provided to ensure the idempotency of the request.
     public var clientToken: Swift.String?
     /// The description of the Amazon DataZone domain.
@@ -4721,7 +4725,7 @@ public struct CreateDomainInput {
 
 extension DataZoneClientTypes {
 
-    public enum DomainStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DomainStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case available
         case creating
         case creationFailed
@@ -4760,7 +4764,7 @@ extension DataZoneClientTypes {
     }
 }
 
-public struct CreateDomainOutput {
+public struct CreateDomainOutput: Swift.Sendable {
     /// The ARN of the Amazon DataZone domain.
     public var arn: Swift.String?
     /// The description of the Amazon DataZone domain.
@@ -4813,7 +4817,7 @@ public struct CreateDomainOutput {
     }
 }
 
-public struct CreateDomainUnitInput {
+public struct CreateDomainUnitInput: Swift.Sendable {
     /// A unique, case-sensitive identifier that is provided to ensure the idempotency of the request.
     public var clientToken: Swift.String?
     /// The description of the domain unit.
@@ -4850,8 +4854,9 @@ extension CreateDomainUnitInput: Swift.CustomDebugStringConvertible {
 }
 
 extension DataZoneClientTypes {
+
     /// The properties of a domain unit group.
-    public struct DomainUnitGroupProperties {
+    public struct DomainUnitGroupProperties: Swift.Sendable {
         /// The ID of the domain unit group.
         public var groupId: Swift.String?
 
@@ -4862,12 +4867,12 @@ extension DataZoneClientTypes {
             self.groupId = groupId
         }
     }
-
 }
 
 extension DataZoneClientTypes {
+
     /// The properties of the domain unit user.
-    public struct DomainUnitUserProperties {
+    public struct DomainUnitUserProperties: Swift.Sendable {
         /// The ID of teh domain unit user.
         public var userId: Swift.String?
 
@@ -4878,22 +4883,21 @@ extension DataZoneClientTypes {
             self.userId = userId
         }
     }
-
 }
 
 extension DataZoneClientTypes {
+
     /// The properties of the domain unit owner.
-    public enum DomainUnitOwnerProperties {
+    public enum DomainUnitOwnerProperties: Swift.Sendable {
         /// Indicates that the domain unit owner is a user.
         case user(DataZoneClientTypes.DomainUnitUserProperties)
         /// Indicates that the domain unit owner is a group.
         case group(DataZoneClientTypes.DomainUnitGroupProperties)
         case sdkUnknown(Swift.String)
     }
-
 }
 
-public struct CreateDomainUnitOutput {
+public struct CreateDomainUnitOutput: Swift.Sendable {
     /// The IDs of the ancestor domain units.
     /// This member is required.
     public var ancestorDomainUnitIds: [Swift.String]?
@@ -4948,8 +4952,9 @@ extension CreateDomainUnitOutput: Swift.CustomDebugStringConvertible {
 }
 
 extension DataZoneClientTypes {
+
     /// The parameter details of an evironment profile.
-    public struct EnvironmentParameter {
+    public struct EnvironmentParameter: Swift.Sendable {
         /// The name of an environment profile parameter.
         public var name: Swift.String?
         /// The value of an environment profile parameter.
@@ -4964,10 +4969,9 @@ extension DataZoneClientTypes {
             self.value = value
         }
     }
-
 }
 
-public struct CreateEnvironmentInput {
+public struct CreateEnvironmentInput: Swift.Sendable {
     /// The description of the Amazon DataZone environment.
     public var description: Swift.String?
     /// The identifier of the Amazon DataZone domain in which the environment is created.
@@ -5020,8 +5024,9 @@ public struct CreateEnvironmentInput {
 }
 
 extension DataZoneClientTypes {
+
     /// The deployment properties of the Amazon DataZone blueprint.
-    public struct DeploymentProperties {
+    public struct DeploymentProperties: Swift.Sendable {
         /// The end timeout of the environment blueprint deployment.
         public var endTimeoutMinutes: Swift.Int?
         /// The start timeout of the environment blueprint deployment.
@@ -5036,12 +5041,11 @@ extension DataZoneClientTypes {
             self.startTimeoutMinutes = startTimeoutMinutes
         }
     }
-
 }
 
 extension DataZoneClientTypes {
 
-    public enum DeploymentStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DeploymentStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case failed
         case inProgress
         case pendingDeployment
@@ -5076,7 +5080,7 @@ extension DataZoneClientTypes {
 
 extension DataZoneClientTypes {
 
-    public enum DeploymentType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DeploymentType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case create
         case delete
         case update
@@ -5107,8 +5111,9 @@ extension DataZoneClientTypes {
 }
 
 extension DataZoneClientTypes {
+
     /// The failure reasons for the environment deployment.
-    public struct EnvironmentError {
+    public struct EnvironmentError: Swift.Sendable {
         /// The error code for the failure reason for the environment deployment.
         public var code: Swift.String?
         /// The error message for the failure reason for the environment deployment.
@@ -5124,12 +5129,12 @@ extension DataZoneClientTypes {
             self.message = message
         }
     }
-
 }
 
 extension DataZoneClientTypes {
+
     /// The details of the last deployment of the environment.
-    public struct Deployment {
+    public struct Deployment: Swift.Sendable {
         /// The identifier of the last deployment of the environment.
         public var deploymentId: Swift.String?
         /// The status of the last deployment of the environment.
@@ -5160,12 +5165,12 @@ extension DataZoneClientTypes {
             self.messages = messages
         }
     }
-
 }
 
 extension DataZoneClientTypes {
+
     /// The details of a provisioned resource of this Amazon DataZone environment.
-    public struct Resource {
+    public struct Resource: Swift.Sendable {
         /// The name of a provisioned resource of this Amazon DataZone environment.
         public var name: Swift.String?
         /// The provider of a provisioned resource of this Amazon DataZone environment.
@@ -5190,22 +5195,21 @@ extension DataZoneClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension DataZoneClientTypes {
+
     /// The provisioning properties of an environment blueprint.
-    public enum ProvisioningProperties {
+    public enum ProvisioningProperties: Swift.Sendable {
         /// The cloud formation properties included as part of the provisioning properties of an environment blueprint.
         case cloudformation(DataZoneClientTypes.CloudFormationProperties)
         case sdkUnknown(Swift.String)
     }
-
 }
 
 extension DataZoneClientTypes {
 
-    public enum EnvironmentStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum EnvironmentStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case active
         case createFailed
         case creating
@@ -5266,8 +5270,9 @@ extension DataZoneClientTypes {
 }
 
 extension DataZoneClientTypes {
+
     /// The details of user parameters of an environment blueprint.
-    public struct CustomParameter {
+    public struct CustomParameter: Swift.Sendable {
         /// The default value of the parameter.
         public var defaultValue: Swift.String?
         /// The description of the parameter.
@@ -5300,7 +5305,6 @@ extension DataZoneClientTypes {
             self.keyName = keyName
         }
     }
-
 }
 
 extension DataZoneClientTypes.CustomParameter: Swift.CustomDebugStringConvertible {
@@ -5308,7 +5312,7 @@ extension DataZoneClientTypes.CustomParameter: Swift.CustomDebugStringConvertibl
         "CustomParameter(defaultValue: \(Swift.String(describing: defaultValue)), fieldType: \(Swift.String(describing: fieldType)), isEditable: \(Swift.String(describing: isEditable)), isOptional: \(Swift.String(describing: isOptional)), keyName: \(Swift.String(describing: keyName)), description: \"CONTENT_REDACTED\")"}
 }
 
-public struct CreateEnvironmentOutput {
+public struct CreateEnvironmentOutput: Swift.Sendable {
     /// The Amazon Web Services account in which the Amazon DataZone environment is created.
     public var awsAccountId: Swift.String?
     /// The Amazon Web Services region in which the Amazon DataZone environment is created.
@@ -5410,7 +5414,7 @@ extension CreateEnvironmentOutput: Swift.CustomDebugStringConvertible {
         "CreateEnvironmentOutput(awsAccountId: \(Swift.String(describing: awsAccountId)), awsAccountRegion: \(Swift.String(describing: awsAccountRegion)), createdAt: \(Swift.String(describing: createdAt)), createdBy: \(Swift.String(describing: createdBy)), deploymentProperties: \(Swift.String(describing: deploymentProperties)), domainId: \(Swift.String(describing: domainId)), environmentActions: \(Swift.String(describing: environmentActions)), environmentBlueprintId: \(Swift.String(describing: environmentBlueprintId)), environmentProfileId: \(Swift.String(describing: environmentProfileId)), glossaryTerms: \(Swift.String(describing: glossaryTerms)), id: \(Swift.String(describing: id)), lastDeployment: \(Swift.String(describing: lastDeployment)), projectId: \(Swift.String(describing: projectId)), provider: \(Swift.String(describing: provider)), provisionedResources: \(Swift.String(describing: provisionedResources)), provisioningProperties: \(Swift.String(describing: provisioningProperties)), status: \(Swift.String(describing: status)), updatedAt: \(Swift.String(describing: updatedAt)), userParameters: \(Swift.String(describing: userParameters)), description: \"CONTENT_REDACTED\", name: \"CONTENT_REDACTED\")"}
 }
 
-public struct CreateEnvironmentActionInput {
+public struct CreateEnvironmentActionInput: Swift.Sendable {
     /// The description of the environment action that is being created in the environment.
     public var description: Swift.String?
     /// The ID of the Amazon DataZone domain in which the environment action is created.
@@ -5442,7 +5446,7 @@ public struct CreateEnvironmentActionInput {
     }
 }
 
-public struct CreateEnvironmentActionOutput {
+public struct CreateEnvironmentActionOutput: Swift.Sendable {
     /// The description of the environment action.
     public var description: Swift.String?
     /// The ID of the domain in which the environment action is created.
@@ -5479,7 +5483,7 @@ public struct CreateEnvironmentActionOutput {
     }
 }
 
-public struct CreateEnvironmentProfileInput {
+public struct CreateEnvironmentProfileInput: Swift.Sendable {
     /// The Amazon Web Services account in which the Amazon DataZone environment is created.
     public var awsAccountId: Swift.String?
     /// The Amazon Web Services region in which this environment profile is created.
@@ -5528,7 +5532,7 @@ extension CreateEnvironmentProfileInput: Swift.CustomDebugStringConvertible {
         "CreateEnvironmentProfileInput(awsAccountId: \(Swift.String(describing: awsAccountId)), awsAccountRegion: \(Swift.String(describing: awsAccountRegion)), domainIdentifier: \(Swift.String(describing: domainIdentifier)), environmentBlueprintIdentifier: \(Swift.String(describing: environmentBlueprintIdentifier)), projectIdentifier: \(Swift.String(describing: projectIdentifier)), userParameters: \(Swift.String(describing: userParameters)), description: \"CONTENT_REDACTED\", name: \"CONTENT_REDACTED\")"}
 }
 
-public struct CreateEnvironmentProfileOutput {
+public struct CreateEnvironmentProfileOutput: Swift.Sendable {
     /// The Amazon Web Services account ID in which this Amazon DataZone environment profile is created.
     public var awsAccountId: Swift.String?
     /// The Amazon Web Services region in which this Amazon DataZone environment profile is created.
@@ -5595,18 +5599,18 @@ extension CreateEnvironmentProfileOutput: Swift.CustomDebugStringConvertible {
 }
 
 extension DataZoneClientTypes {
+
     /// The model of the API.
-    public enum Model {
+    public enum Model: Swift.Sendable {
         /// Indicates the smithy model of the API.
         case smithy(Swift.String)
         case sdkUnknown(Swift.String)
     }
-
 }
 
 extension DataZoneClientTypes {
 
-    public enum FormTypeStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum FormTypeStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case disabled
         case enabled
         case sdkUnknown(Swift.String)
@@ -5633,7 +5637,7 @@ extension DataZoneClientTypes {
     }
 }
 
-public struct CreateFormTypeInput {
+public struct CreateFormTypeInput: Swift.Sendable {
     /// The description of this Amazon DataZone metadata form type.
     public var description: Swift.String?
     /// The ID of the Amazon DataZone domain in which this metadata form type is created.
@@ -5674,7 +5678,7 @@ extension CreateFormTypeInput: Swift.CustomDebugStringConvertible {
         "CreateFormTypeInput(domainIdentifier: \(Swift.String(describing: domainIdentifier)), owningProjectIdentifier: \(Swift.String(describing: owningProjectIdentifier)), status: \(Swift.String(describing: status)), description: \"CONTENT_REDACTED\", model: \"CONTENT_REDACTED\", name: \"CONTENT_REDACTED\")"}
 }
 
-public struct CreateFormTypeOutput {
+public struct CreateFormTypeOutput: Swift.Sendable {
     /// The description of this Amazon DataZone metadata form type.
     public var description: Swift.String?
     /// The ID of the Amazon DataZone domain in which this metadata form type is created.
@@ -5720,7 +5724,7 @@ extension CreateFormTypeOutput: Swift.CustomDebugStringConvertible {
 
 extension DataZoneClientTypes {
 
-    public enum GlossaryStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum GlossaryStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case disabled
         case enabled
         case sdkUnknown(Swift.String)
@@ -5747,7 +5751,7 @@ extension DataZoneClientTypes {
     }
 }
 
-public struct CreateGlossaryInput {
+public struct CreateGlossaryInput: Swift.Sendable {
     /// A unique, case-sensitive identifier that is provided to ensure the idempotency of the request.
     public var clientToken: Swift.String?
     /// The description of this business glossary.
@@ -5787,7 +5791,7 @@ extension CreateGlossaryInput: Swift.CustomDebugStringConvertible {
         "CreateGlossaryInput(clientToken: \(Swift.String(describing: clientToken)), domainIdentifier: \(Swift.String(describing: domainIdentifier)), owningProjectIdentifier: \(Swift.String(describing: owningProjectIdentifier)), status: \(Swift.String(describing: status)), description: \"CONTENT_REDACTED\", name: \"CONTENT_REDACTED\")"}
 }
 
-public struct CreateGlossaryOutput {
+public struct CreateGlossaryOutput: Swift.Sendable {
     /// The description of this business glossary.
     public var description: Swift.String?
     /// The ID of the Amazon DataZone domain in which this business glossary is created.
@@ -5830,7 +5834,7 @@ extension CreateGlossaryOutput: Swift.CustomDebugStringConvertible {
 
 extension DataZoneClientTypes {
 
-    public enum GlossaryTermStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum GlossaryTermStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case disabled
         case enabled
         case sdkUnknown(Swift.String)
@@ -5858,8 +5862,9 @@ extension DataZoneClientTypes {
 }
 
 extension DataZoneClientTypes {
+
     /// The details of the term relations.
-    public struct TermRelations {
+    public struct TermRelations: Swift.Sendable {
         /// The classifies of the term relations.
         public var classifies: [Swift.String]?
         /// The isA property of the term relations.
@@ -5874,10 +5879,9 @@ extension DataZoneClientTypes {
             self.isa = isa
         }
     }
-
 }
 
-public struct CreateGlossaryTermInput {
+public struct CreateGlossaryTermInput: Swift.Sendable {
     /// A unique, case-sensitive identifier that is provided to ensure the idempotency of the request.
     public var clientToken: Swift.String?
     /// The ID of the Amazon DataZone domain in which this business glossary term is created.
@@ -5925,7 +5929,7 @@ extension CreateGlossaryTermInput: Swift.CustomDebugStringConvertible {
         "CreateGlossaryTermInput(clientToken: \(Swift.String(describing: clientToken)), domainIdentifier: \(Swift.String(describing: domainIdentifier)), glossaryIdentifier: \(Swift.String(describing: glossaryIdentifier)), status: \(Swift.String(describing: status)), termRelations: \(Swift.String(describing: termRelations)), longDescription: \"CONTENT_REDACTED\", name: \"CONTENT_REDACTED\", shortDescription: \"CONTENT_REDACTED\")"}
 }
 
-public struct CreateGlossaryTermOutput {
+public struct CreateGlossaryTermOutput: Swift.Sendable {
     /// The ID of the Amazon DataZone domain in which this business glossary term is created.
     /// This member is required.
     public var domainId: Swift.String?
@@ -5975,7 +5979,7 @@ extension CreateGlossaryTermOutput: Swift.CustomDebugStringConvertible {
         "CreateGlossaryTermOutput(domainId: \(Swift.String(describing: domainId)), glossaryId: \(Swift.String(describing: glossaryId)), id: \(Swift.String(describing: id)), status: \(Swift.String(describing: status)), termRelations: \(Swift.String(describing: termRelations)), longDescription: \"CONTENT_REDACTED\", name: \"CONTENT_REDACTED\", shortDescription: \"CONTENT_REDACTED\")"}
 }
 
-public struct CreateGroupProfileInput {
+public struct CreateGroupProfileInput: Swift.Sendable {
     /// A unique, case-sensitive identifier that is provided to ensure the idempotency of the request.
     public var clientToken: Swift.String?
     /// The identifier of the Amazon DataZone domain in which the group profile is created.
@@ -5999,7 +6003,7 @@ public struct CreateGroupProfileInput {
 
 extension DataZoneClientTypes {
 
-    public enum GroupProfileStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum GroupProfileStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case assigned
         case notAssigned
         case sdkUnknown(Swift.String)
@@ -6026,7 +6030,7 @@ extension DataZoneClientTypes {
     }
 }
 
-public struct CreateGroupProfileOutput {
+public struct CreateGroupProfileOutput: Swift.Sendable {
     /// The identifier of the Amazon DataZone domain in which the group profile is created.
     public var domainId: Swift.String?
     /// The name of the group for which group profile is created.
@@ -6057,7 +6061,7 @@ extension CreateGroupProfileOutput: Swift.CustomDebugStringConvertible {
 
 extension DataZoneClientTypes {
 
-    public enum EntityType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum EntityType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case asset
         case dataProduct
         case sdkUnknown(Swift.String)
@@ -6084,7 +6088,7 @@ extension DataZoneClientTypes {
     }
 }
 
-public struct CreateListingChangeSetInput {
+public struct CreateListingChangeSetInput: Swift.Sendable {
     /// Specifies whether to publish or unpublish a listing.
     /// This member is required.
     public var action: DataZoneClientTypes.ChangeAction?
@@ -6120,7 +6124,7 @@ public struct CreateListingChangeSetInput {
     }
 }
 
-public struct CreateListingChangeSetOutput {
+public struct CreateListingChangeSetOutput: Swift.Sendable {
     /// The ID of the listing (a record of an asset at a given time).
     /// This member is required.
     public var listingId: Swift.String?
@@ -6143,7 +6147,7 @@ public struct CreateListingChangeSetOutput {
     }
 }
 
-public struct CreateProjectInput {
+public struct CreateProjectInput: Swift.Sendable {
     /// The description of the Amazon DataZone project.
     public var description: Swift.String?
     /// The ID of the Amazon DataZone domain in which this project is created.
@@ -6179,8 +6183,9 @@ extension CreateProjectInput: Swift.CustomDebugStringConvertible {
 }
 
 extension DataZoneClientTypes {
+
     /// Specifies the error message that is returned if the operation cannot be successfully completed.
-    public struct ProjectDeletionError {
+    public struct ProjectDeletionError: Swift.Sendable {
         /// The code of the project deletion error.
         public var code: Swift.String?
         /// The message of the project deletion error.
@@ -6195,12 +6200,11 @@ extension DataZoneClientTypes {
             self.message = message
         }
     }
-
 }
 
 extension DataZoneClientTypes {
 
-    public enum ProjectStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ProjectStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case active
         case deleteFailed
         case deleting
@@ -6230,7 +6234,7 @@ extension DataZoneClientTypes {
     }
 }
 
-public struct CreateProjectOutput {
+public struct CreateProjectOutput: Swift.Sendable {
     /// The timestamp of when the project was created.
     public var createdAt: Foundation.Date?
     /// The Amazon DataZone user who created the project.
@@ -6293,13 +6297,19 @@ extension CreateProjectOutput: Swift.CustomDebugStringConvertible {
 
 extension DataZoneClientTypes {
 
-    public enum UserDesignation: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum UserDesignation: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+        case projectCatalogConsumer
+        case projectCatalogSteward
+        case projectCatalogViewer
         case projectContributor
         case projectOwner
         case sdkUnknown(Swift.String)
 
         public static var allCases: [UserDesignation] {
             return [
+                .projectCatalogConsumer,
+                .projectCatalogSteward,
+                .projectCatalogViewer,
                 .projectContributor,
                 .projectOwner
             ]
@@ -6312,6 +6322,9 @@ extension DataZoneClientTypes {
 
         public var rawValue: Swift.String {
             switch self {
+            case .projectCatalogConsumer: return "PROJECT_CATALOG_CONSUMER"
+            case .projectCatalogSteward: return "PROJECT_CATALOG_STEWARD"
+            case .projectCatalogViewer: return "PROJECT_CATALOG_VIEWER"
             case .projectContributor: return "PROJECT_CONTRIBUTOR"
             case .projectOwner: return "PROJECT_OWNER"
             case let .sdkUnknown(s): return s
@@ -6321,18 +6334,18 @@ extension DataZoneClientTypes {
 }
 
 extension DataZoneClientTypes {
+
     /// The details about a project member.
-    public enum Member {
+    public enum Member: Swift.Sendable {
         /// The user ID of a project member.
         case useridentifier(Swift.String)
         /// The ID of the group of a project member.
         case groupidentifier(Swift.String)
         case sdkUnknown(Swift.String)
     }
-
 }
 
-public struct CreateProjectMembershipInput {
+public struct CreateProjectMembershipInput: Swift.Sendable {
     /// The designation of the project membership.
     /// This member is required.
     public var designation: DataZoneClientTypes.UserDesignation?
@@ -6360,14 +6373,15 @@ public struct CreateProjectMembershipInput {
     }
 }
 
-public struct CreateProjectMembershipOutput {
+public struct CreateProjectMembershipOutput: Swift.Sendable {
 
     public init() { }
 }
 
 extension DataZoneClientTypes {
+
     /// A revision to be made to an asset published in a Amazon DataZone catalog.
-    public struct ListingRevisionInput {
+    public struct ListingRevisionInput: Swift.Sendable {
         /// An identifier of revision to be made to an asset published in a Amazon DataZone catalog.
         /// This member is required.
         public var identifier: Swift.String?
@@ -6384,20 +6398,19 @@ extension DataZoneClientTypes {
             self.revision = revision
         }
     }
-
 }
 
 extension DataZoneClientTypes {
+
     /// The details of a listing for which a subscription is to be granted.
-    public enum GrantedEntityInput {
+    public enum GrantedEntityInput: Swift.Sendable {
         /// The listing for which a subscription is to be granted.
         case listing(DataZoneClientTypes.ListingRevisionInput)
         case sdkUnknown(Swift.String)
     }
-
 }
 
-public struct CreateSubscriptionGrantInput {
+public struct CreateSubscriptionGrantInput: Swift.Sendable {
     /// The names of the assets for which the subscription grant is created.
     public var assetTargetNames: [DataZoneClientTypes.AssetTargetNameMap]?
     /// A unique, case-sensitive identifier that is provided to ensure the idempotency of the request.
@@ -6434,8 +6447,9 @@ public struct CreateSubscriptionGrantInput {
 }
 
 extension DataZoneClientTypes {
+
     /// Specifies the error message that is returned if the operation cannot be successfully completed.
-    public struct FailureCause {
+    public struct FailureCause: Swift.Sendable {
         /// The description of the error message.
         public var message: Swift.String?
 
@@ -6446,12 +6460,11 @@ extension DataZoneClientTypes {
             self.message = message
         }
     }
-
 }
 
 extension DataZoneClientTypes {
 
-    public enum SubscriptionGrantStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SubscriptionGrantStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case granted
         case grantFailed
         case grantInProgress
@@ -6497,8 +6510,9 @@ extension DataZoneClientTypes {
 }
 
 extension DataZoneClientTypes {
+
     /// The details of the asset for which the subscription grant is created.
-    public struct SubscribedAsset {
+    public struct SubscribedAsset: Swift.Sendable {
         /// The identifier of the asset for which the subscription grant is created.
         /// This member is required.
         public var assetId: Swift.String?
@@ -6540,12 +6554,12 @@ extension DataZoneClientTypes {
             self.targetName = targetName
         }
     }
-
 }
 
 extension DataZoneClientTypes {
+
     /// A revision of an asset published in a Amazon DataZone catalog.
-    public struct ListingRevision {
+    public struct ListingRevision: Swift.Sendable {
         /// An identifier of a revision of an asset published in a Amazon DataZone catalog.
         /// This member is required.
         public var id: Swift.String?
@@ -6562,22 +6576,21 @@ extension DataZoneClientTypes {
             self.revision = revision
         }
     }
-
 }
 
 extension DataZoneClientTypes {
+
     /// The details of a listing for which a subscription is granted.
-    public enum GrantedEntity {
+    public enum GrantedEntity: Swift.Sendable {
         /// The listing for which a subscription is granted.
         case listing(DataZoneClientTypes.ListingRevision)
         case sdkUnknown(Swift.String)
     }
-
 }
 
 extension DataZoneClientTypes {
 
-    public enum SubscriptionGrantOverallStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SubscriptionGrantOverallStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case completed
         case grantAndRevokeFailed
         case grantFailed
@@ -6619,7 +6632,7 @@ extension DataZoneClientTypes {
     }
 }
 
-public struct CreateSubscriptionGrantOutput {
+public struct CreateSubscriptionGrantOutput: Swift.Sendable {
     /// The assets for which the subscription grant is created.
     public var assets: [DataZoneClientTypes.SubscribedAsset]?
     /// A timestamp of when the subscription grant is created.
@@ -6681,8 +6694,9 @@ public struct CreateSubscriptionGrantOutput {
 }
 
 extension DataZoneClientTypes {
+
     /// The published asset for which the subscription grant is to be created.
-    public struct SubscribedListingInput {
+    public struct SubscribedListingInput: Swift.Sendable {
         /// The identifier of the published asset for which the subscription grant is to be created.
         /// This member is required.
         public var identifier: Swift.String?
@@ -6694,12 +6708,12 @@ extension DataZoneClientTypes {
             self.identifier = identifier
         }
     }
-
 }
 
 extension DataZoneClientTypes {
+
     /// The project that is to be given a subscription grant.
-    public struct SubscribedProjectInput {
+    public struct SubscribedProjectInput: Swift.Sendable {
         /// The identifier of the project that is to be given a subscription grant.
         public var identifier: Swift.String?
 
@@ -6710,20 +6724,19 @@ extension DataZoneClientTypes {
             self.identifier = identifier
         }
     }
-
 }
 
 extension DataZoneClientTypes {
+
     /// The principal that is to be given a subscriptiong grant.
-    public enum SubscribedPrincipalInput {
+    public enum SubscribedPrincipalInput: Swift.Sendable {
         /// The project that is to be given a subscription grant.
         case project(DataZoneClientTypes.SubscribedProjectInput)
         case sdkUnknown(Swift.String)
     }
-
 }
 
-public struct CreateSubscriptionRequestInput {
+public struct CreateSubscriptionRequestInput: Swift.Sendable {
     /// A unique, case-sensitive identifier that is provided to ensure the idempotency of the request.
     public var clientToken: Swift.String?
     /// The ID of the Amazon DataZone domain in which the subscription request is created.
@@ -6760,7 +6773,7 @@ extension CreateSubscriptionRequestInput: Swift.CustomDebugStringConvertible {
         "CreateSubscriptionRequestInput(clientToken: \(Swift.String(describing: clientToken)), domainIdentifier: \(Swift.String(describing: domainIdentifier)), subscribedListings: \(Swift.String(describing: subscribedListings)), subscribedPrincipals: \(Swift.String(describing: subscribedPrincipals)), requestReason: \"CONTENT_REDACTED\")"}
 }
 
-public struct CreateSubscriptionRequestOutput {
+public struct CreateSubscriptionRequestOutput: Swift.Sendable {
     /// A timestamp of when the subscription request is created.
     /// This member is required.
     public var createdAt: Foundation.Date?
@@ -6831,8 +6844,9 @@ extension CreateSubscriptionRequestOutput: Swift.CustomDebugStringConvertible {
 }
 
 extension DataZoneClientTypes {
+
     /// The details of the subscription target configuration.
-    public struct SubscriptionTargetForm {
+    public struct SubscriptionTargetForm: Swift.Sendable {
         /// The content of the subscription target configuration.
         /// This member is required.
         public var content: Swift.String?
@@ -6849,10 +6863,9 @@ extension DataZoneClientTypes {
             self.formName = formName
         }
     }
-
 }
 
-public struct CreateSubscriptionTargetInput {
+public struct CreateSubscriptionTargetInput: Swift.Sendable {
     /// The asset types that can be included in the subscription target.
     /// This member is required.
     public var applicableAssetTypes: [Swift.String]?
@@ -6913,7 +6926,7 @@ extension CreateSubscriptionTargetInput: Swift.CustomDebugStringConvertible {
         "CreateSubscriptionTargetInput(applicableAssetTypes: \(Swift.String(describing: applicableAssetTypes)), authorizedPrincipals: \(Swift.String(describing: authorizedPrincipals)), clientToken: \(Swift.String(describing: clientToken)), domainIdentifier: \(Swift.String(describing: domainIdentifier)), environmentIdentifier: \(Swift.String(describing: environmentIdentifier)), manageAccessRole: \(Swift.String(describing: manageAccessRole)), provider: \(Swift.String(describing: provider)), subscriptionTargetConfig: \(Swift.String(describing: subscriptionTargetConfig)), type: \(Swift.String(describing: type)), name: \"CONTENT_REDACTED\")"}
 }
 
-public struct CreateSubscriptionTargetOutput {
+public struct CreateSubscriptionTargetOutput: Swift.Sendable {
     /// The asset types that can be included in the subscription target.
     /// This member is required.
     public var applicableAssetTypes: [Swift.String]?
@@ -7001,7 +7014,7 @@ extension CreateSubscriptionTargetOutput: Swift.CustomDebugStringConvertible {
 
 extension DataZoneClientTypes {
 
-    public enum UserType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum UserType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case iamRole
         case iamUser
         case ssoUser
@@ -7031,7 +7044,7 @@ extension DataZoneClientTypes {
     }
 }
 
-public struct CreateUserProfileInput {
+public struct CreateUserProfileInput: Swift.Sendable {
     /// A unique, case-sensitive identifier that is provided to ensure the idempotency of the request.
     public var clientToken: Swift.String?
     /// The identifier of the Amazon DataZone domain in which a user profile is created.
@@ -7058,8 +7071,9 @@ public struct CreateUserProfileInput {
 }
 
 extension DataZoneClientTypes {
+
     /// The details of an IAM user profile in Amazon DataZone.
-    public struct IamUserProfileDetails {
+    public struct IamUserProfileDetails: Swift.Sendable {
         /// The ARN of an IAM user profile in Amazon DataZone.
         public var arn: Swift.String?
 
@@ -7070,12 +7084,12 @@ extension DataZoneClientTypes {
             self.arn = arn
         }
     }
-
 }
 
 extension DataZoneClientTypes {
+
     /// The single sign-on details of the user profile.
-    public struct SsoUserProfileDetails {
+    public struct SsoUserProfileDetails: Swift.Sendable {
         /// The first name included in the single sign-on details of the user profile.
         public var firstName: Swift.String?
         /// The last name included in the single sign-on details of the user profile.
@@ -7094,7 +7108,6 @@ extension DataZoneClientTypes {
             self.username = username
         }
     }
-
 }
 
 extension DataZoneClientTypes.SsoUserProfileDetails: Swift.CustomDebugStringConvertible {
@@ -7103,20 +7116,20 @@ extension DataZoneClientTypes.SsoUserProfileDetails: Swift.CustomDebugStringConv
 }
 
 extension DataZoneClientTypes {
+
     /// The details of the user profile in Amazon DataZone.
-    public enum UserProfileDetails {
+    public enum UserProfileDetails: Swift.Sendable {
         /// The IAM details included in the user profile details.
         case iam(DataZoneClientTypes.IamUserProfileDetails)
         /// The single sign-on details included in the user profile details.
         case sso(DataZoneClientTypes.SsoUserProfileDetails)
         case sdkUnknown(Swift.String)
     }
-
 }
 
 extension DataZoneClientTypes {
 
-    public enum UserProfileStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum UserProfileStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case activated
         case assigned
         case deactivated
@@ -7151,7 +7164,7 @@ extension DataZoneClientTypes {
 
 extension DataZoneClientTypes {
 
-    public enum UserProfileType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum UserProfileType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case iam
         case sso
         case sdkUnknown(Swift.String)
@@ -7178,7 +7191,7 @@ extension DataZoneClientTypes {
     }
 }
 
-public struct CreateUserProfileOutput {
+public struct CreateUserProfileOutput: Swift.Sendable {
     /// The details of the user profile in Amazon DataZone.
     public var details: DataZoneClientTypes.UserProfileDetails?
     /// The identifier of the Amazon DataZone domain in which a user profile is created.
@@ -7208,7 +7221,7 @@ public struct CreateUserProfileOutput {
 
 extension DataZoneClientTypes {
 
-    public enum DataAssetActivityStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DataAssetActivityStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case failed
         case publishingFailed
         case skippedAlreadyImported
@@ -7253,7 +7266,7 @@ extension DataZoneClientTypes {
     }
 }
 
-public struct DeleteDataProductInput {
+public struct DeleteDataProductInput: Swift.Sendable {
     /// The ID of the Amazon DataZone domain in which the data product is deleted.
     /// This member is required.
     public var domainIdentifier: Swift.String?
@@ -7271,12 +7284,12 @@ public struct DeleteDataProductInput {
     }
 }
 
-public struct DeleteDataProductOutput {
+public struct DeleteDataProductOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct GetDataProductInput {
+public struct GetDataProductInput: Swift.Sendable {
     /// The ID of the domain where the data product lives.
     /// This member is required.
     public var domainIdentifier: Swift.String?
@@ -7298,7 +7311,7 @@ public struct GetDataProductInput {
     }
 }
 
-public struct GetDataProductOutput {
+public struct GetDataProductOutput: Swift.Sendable {
     /// The timestamp at which the data product is created.
     public var createdAt: Foundation.Date?
     /// The user who created the data product.
@@ -7374,8 +7387,9 @@ extension GetDataProductOutput: Swift.CustomDebugStringConvertible {
 }
 
 extension DataZoneClientTypes {
+
     /// The summary of the listing of the data product.
-    public struct ListingSummary {
+    public struct ListingSummary: Swift.Sendable {
         /// The glossary terms of the data product.
         public var glossaryTerms: [DataZoneClientTypes.DetailedGlossaryTerm]?
         /// The ID of the data product listing.
@@ -7394,12 +7408,12 @@ extension DataZoneClientTypes {
             self.listingRevision = listingRevision
         }
     }
-
 }
 
 extension DataZoneClientTypes {
+
     /// The data product listing.
-    public struct DataProductListing {
+    public struct DataProductListing: Swift.Sendable {
         /// The timestamp at which the data product listing was created.
         public var createdAt: Foundation.Date?
         /// The ID of the data product listing.
@@ -7434,12 +7448,12 @@ extension DataZoneClientTypes {
             self.owningProjectId = owningProjectId
         }
     }
-
 }
 
 extension DataZoneClientTypes {
+
     /// The additional attributes of the asset of the data product.
-    public struct DataProductListingItemAdditionalAttributes {
+    public struct DataProductListingItemAdditionalAttributes: Swift.Sendable {
         /// The metadata forms of the asset of the data product.
         public var forms: Swift.String?
 
@@ -7450,12 +7464,12 @@ extension DataZoneClientTypes {
             self.forms = forms
         }
     }
-
 }
 
 extension DataZoneClientTypes {
+
     /// The results of the data product summary.
-    public struct ListingSummaryItem {
+    public struct ListingSummaryItem: Swift.Sendable {
         /// The glossary terms of the data product listing.
         public var glossaryTerms: [DataZoneClientTypes.DetailedGlossaryTerm]?
         /// The ID of the data product listing.
@@ -7474,12 +7488,12 @@ extension DataZoneClientTypes {
             self.listingRevision = listingRevision
         }
     }
-
 }
 
 extension DataZoneClientTypes {
+
     /// The asset of the data product listing.
-    public struct DataProductListingItem {
+    public struct DataProductListingItem: Swift.Sendable {
         /// The additional attributes of the asset of the data product.
         public var additionalAttributes: DataZoneClientTypes.DataProductListingItemAdditionalAttributes?
         /// The timestamp at which the asset of the data product listing was created.
@@ -7538,7 +7552,6 @@ extension DataZoneClientTypes {
             self.owningProjectId = owningProjectId
         }
     }
-
 }
 
 extension DataZoneClientTypes.DataProductListingItem: Swift.CustomDebugStringConvertible {
@@ -7547,8 +7560,9 @@ extension DataZoneClientTypes.DataProductListingItem: Swift.CustomDebugStringCon
 }
 
 extension DataZoneClientTypes {
+
     /// The data product.
-    public struct DataProductResultItem {
+    public struct DataProductResultItem: Swift.Sendable {
         /// The timestamp at which the data product was created.
         public var createdAt: Foundation.Date?
         /// The user who created the data product.
@@ -7599,7 +7613,6 @@ extension DataZoneClientTypes {
             self.owningProjectId = owningProjectId
         }
     }
-
 }
 
 extension DataZoneClientTypes.DataProductResultItem: Swift.CustomDebugStringConvertible {
@@ -7608,8 +7621,9 @@ extension DataZoneClientTypes.DataProductResultItem: Swift.CustomDebugStringConv
 }
 
 extension DataZoneClientTypes {
+
     /// The data product revision.
-    public struct DataProductRevision {
+    public struct DataProductRevision: Swift.Sendable {
         /// The timestamp at which the data product revision was created.
         public var createdAt: Foundation.Date?
         /// The user who created the data product revision.
@@ -7636,10 +7650,9 @@ extension DataZoneClientTypes {
             self.revision = revision
         }
     }
-
 }
 
-public struct DeleteDataSourceInput {
+public struct DeleteDataSourceInput: Swift.Sendable {
     /// A unique, case-sensitive identifier that is provided to ensure the idempotency of the request.
     public var clientToken: Swift.String?
     /// The ID of the Amazon DataZone domain in which the data source is deleted.
@@ -7667,7 +7680,7 @@ public struct DeleteDataSourceInput {
 
 extension DataZoneClientTypes {
 
-    public enum SelfGrantStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SelfGrantStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case granted
         case grantFailed
         case grantInProgress
@@ -7710,8 +7723,9 @@ extension DataZoneClientTypes {
 }
 
 extension DataZoneClientTypes {
+
     /// The details for the self granting status.
-    public struct SelfGrantStatusDetail {
+    public struct SelfGrantStatusDetail: Swift.Sendable {
         /// The name of the database used for the data source.
         /// This member is required.
         public var databaseName: Swift.String?
@@ -7736,12 +7750,12 @@ extension DataZoneClientTypes {
             self.status = status
         }
     }
-
 }
 
 extension DataZoneClientTypes {
+
     /// The details of the self granting status.
-    public struct GlueSelfGrantStatusOutput {
+    public struct GlueSelfGrantStatusOutput: Swift.Sendable {
         /// The details for the self granting status for a Glue data source.
         /// This member is required.
         public var selfGrantStatusDetails: [DataZoneClientTypes.SelfGrantStatusDetail]?
@@ -7753,12 +7767,12 @@ extension DataZoneClientTypes {
             self.selfGrantStatusDetails = selfGrantStatusDetails
         }
     }
-
 }
 
 extension DataZoneClientTypes {
+
     /// The details for the self granting status for an Amazon Redshift data source.
-    public struct RedshiftSelfGrantStatusOutput {
+    public struct RedshiftSelfGrantStatusOutput: Swift.Sendable {
         /// The details for the self granting status for an Amazon Redshift data source.
         /// This member is required.
         public var selfGrantStatusDetails: [DataZoneClientTypes.SelfGrantStatusDetail]?
@@ -7770,22 +7784,21 @@ extension DataZoneClientTypes {
             self.selfGrantStatusDetails = selfGrantStatusDetails
         }
     }
-
 }
 
 extension DataZoneClientTypes {
+
     /// The details for the self granting status for a data source.
-    public enum SelfGrantStatusOutput {
+    public enum SelfGrantStatusOutput: Swift.Sendable {
         /// The details for the self granting status for a Glue data source.
         case glueselfgrantstatus(DataZoneClientTypes.GlueSelfGrantStatusOutput)
         /// The details for the self granting status for an Amazon Redshift data source.
         case redshiftselfgrantstatus(DataZoneClientTypes.RedshiftSelfGrantStatusOutput)
         case sdkUnknown(Swift.String)
     }
-
 }
 
-public struct DeleteDataSourceOutput {
+public struct DeleteDataSourceOutput: Swift.Sendable {
     /// The asset data forms associated with this data source.
     public var assetFormsOutput: [DataZoneClientTypes.FormOutput]?
     /// The configuration of the data source that is deleted.
@@ -7887,7 +7900,7 @@ extension DeleteDataSourceOutput: Swift.CustomDebugStringConvertible {
         "DeleteDataSourceOutput(assetFormsOutput: \(Swift.String(describing: assetFormsOutput)), configuration: \(Swift.String(describing: configuration)), createdAt: \(Swift.String(describing: createdAt)), domainId: \(Swift.String(describing: domainId)), enableSetting: \(Swift.String(describing: enableSetting)), environmentId: \(Swift.String(describing: environmentId)), errorMessage: \(Swift.String(describing: errorMessage)), id: \(Swift.String(describing: id)), lastRunAt: \(Swift.String(describing: lastRunAt)), lastRunErrorMessage: \(Swift.String(describing: lastRunErrorMessage)), lastRunStatus: \(Swift.String(describing: lastRunStatus)), projectId: \(Swift.String(describing: projectId)), publishOnImport: \(Swift.String(describing: publishOnImport)), retainPermissionsOnRevokeFailure: \(Swift.String(describing: retainPermissionsOnRevokeFailure)), selfGrantStatus: \(Swift.String(describing: selfGrantStatus)), status: \(Swift.String(describing: status)), type: \(Swift.String(describing: type)), updatedAt: \(Swift.String(describing: updatedAt)), description: \"CONTENT_REDACTED\", name: \"CONTENT_REDACTED\", schedule: \"CONTENT_REDACTED\")"}
 }
 
-public struct GetDataSourceInput {
+public struct GetDataSourceInput: Swift.Sendable {
     /// The ID of the Amazon DataZone domain in which the data source exists.
     /// This member is required.
     public var domainIdentifier: Swift.String?
@@ -7905,7 +7918,7 @@ public struct GetDataSourceInput {
     }
 }
 
-public struct GetDataSourceOutput {
+public struct GetDataSourceOutput: Swift.Sendable {
     /// The metadata forms attached to the assets created by this data source.
     public var assetFormsOutput: [DataZoneClientTypes.FormOutput]?
     /// The configuration of the data source.
@@ -8011,7 +8024,7 @@ extension GetDataSourceOutput: Swift.CustomDebugStringConvertible {
         "GetDataSourceOutput(assetFormsOutput: \(Swift.String(describing: assetFormsOutput)), configuration: \(Swift.String(describing: configuration)), createdAt: \(Swift.String(describing: createdAt)), domainId: \(Swift.String(describing: domainId)), enableSetting: \(Swift.String(describing: enableSetting)), environmentId: \(Swift.String(describing: environmentId)), errorMessage: \(Swift.String(describing: errorMessage)), id: \(Swift.String(describing: id)), lastRunAssetCount: \(Swift.String(describing: lastRunAssetCount)), lastRunAt: \(Swift.String(describing: lastRunAt)), lastRunErrorMessage: \(Swift.String(describing: lastRunErrorMessage)), lastRunStatus: \(Swift.String(describing: lastRunStatus)), projectId: \(Swift.String(describing: projectId)), publishOnImport: \(Swift.String(describing: publishOnImport)), recommendation: \(Swift.String(describing: recommendation)), selfGrantStatus: \(Swift.String(describing: selfGrantStatus)), status: \(Swift.String(describing: status)), type: \(Swift.String(describing: type)), updatedAt: \(Swift.String(describing: updatedAt)), description: \"CONTENT_REDACTED\", name: \"CONTENT_REDACTED\", schedule: \"CONTENT_REDACTED\")"}
 }
 
-public struct ListDataSourcesInput {
+public struct ListDataSourcesInput: Swift.Sendable {
     /// The identifier of the Amazon DataZone domain in which to list the data sources.
     /// This member is required.
     public var domainIdentifier: Swift.String?
@@ -8059,8 +8072,9 @@ extension ListDataSourcesInput: Swift.CustomDebugStringConvertible {
 }
 
 extension DataZoneClientTypes {
+
     /// The details of the data source.
-    public struct DataSourceSummary {
+    public struct DataSourceSummary: Swift.Sendable {
         /// The timestamp of when the data source was created.
         public var createdAt: Foundation.Date?
         /// The ID of the data source.
@@ -8129,7 +8143,6 @@ extension DataZoneClientTypes {
             self.updatedAt = updatedAt
         }
     }
-
 }
 
 extension DataZoneClientTypes.DataSourceSummary: Swift.CustomDebugStringConvertible {
@@ -8137,7 +8150,7 @@ extension DataZoneClientTypes.DataSourceSummary: Swift.CustomDebugStringConverti
         "DataSourceSummary(createdAt: \(Swift.String(describing: createdAt)), dataSourceId: \(Swift.String(describing: dataSourceId)), domainId: \(Swift.String(describing: domainId)), enableSetting: \(Swift.String(describing: enableSetting)), environmentId: \(Swift.String(describing: environmentId)), lastRunAssetCount: \(Swift.String(describing: lastRunAssetCount)), lastRunAt: \(Swift.String(describing: lastRunAt)), lastRunErrorMessage: \(Swift.String(describing: lastRunErrorMessage)), lastRunStatus: \(Swift.String(describing: lastRunStatus)), status: \(Swift.String(describing: status)), type: \(Swift.String(describing: type)), updatedAt: \(Swift.String(describing: updatedAt)), name: \"CONTENT_REDACTED\", schedule: \"CONTENT_REDACTED\")"}
 }
 
-public struct ListDataSourcesOutput {
+public struct ListDataSourcesOutput: Swift.Sendable {
     /// The results of the ListDataSources action.
     /// This member is required.
     public var items: [DataZoneClientTypes.DataSourceSummary]?
@@ -8154,7 +8167,7 @@ public struct ListDataSourcesOutput {
     }
 }
 
-public struct UpdateDataSourceInput {
+public struct UpdateDataSourceInput: Swift.Sendable {
     /// The asset forms to be updated as part of the UpdateDataSource action.
     public var assetFormsInput: [DataZoneClientTypes.FormInput]?
     /// The configuration to be updated as part of the UpdateDataSource action.
@@ -8213,7 +8226,7 @@ extension UpdateDataSourceInput: Swift.CustomDebugStringConvertible {
         "UpdateDataSourceInput(configuration: \(Swift.String(describing: configuration)), domainIdentifier: \(Swift.String(describing: domainIdentifier)), enableSetting: \(Swift.String(describing: enableSetting)), identifier: \(Swift.String(describing: identifier)), publishOnImport: \(Swift.String(describing: publishOnImport)), recommendation: \(Swift.String(describing: recommendation)), retainPermissionsOnRevokeFailure: \(Swift.String(describing: retainPermissionsOnRevokeFailure)), assetFormsInput: \"CONTENT_REDACTED\", description: \"CONTENT_REDACTED\", name: \"CONTENT_REDACTED\", schedule: \"CONTENT_REDACTED\")"}
 }
 
-public struct UpdateDataSourceOutput {
+public struct UpdateDataSourceOutput: Swift.Sendable {
     /// The asset forms to be updated as part of the UpdateDataSource action.
     public var assetFormsOutput: [DataZoneClientTypes.FormOutput]?
     /// The configuration to be updated as part of the UpdateDataSource action.
@@ -8321,7 +8334,7 @@ extension UpdateDataSourceOutput: Swift.CustomDebugStringConvertible {
 
 extension DataZoneClientTypes {
 
-    public enum DataSourceRunType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DataSourceRunType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case prioritized
         case scheduled
         case sdkUnknown(Swift.String)
@@ -8348,7 +8361,7 @@ extension DataZoneClientTypes {
     }
 }
 
-public struct GetDataSourceRunInput {
+public struct GetDataSourceRunInput: Swift.Sendable {
     /// The ID of the domain in which this data source run was performed.
     /// This member is required.
     public var domainIdentifier: Swift.String?
@@ -8367,8 +8380,9 @@ public struct GetDataSourceRunInput {
 }
 
 extension DataZoneClientTypes {
+
     /// The asset statistics from the data source run.
-    public struct RunStatisticsForAssets {
+    public struct RunStatisticsForAssets: Swift.Sendable {
         /// The added statistic for the data source run.
         public var added: Swift.Int?
         /// The failed statistic for the data source run.
@@ -8395,10 +8409,9 @@ extension DataZoneClientTypes {
             self.updated = updated
         }
     }
-
 }
 
-public struct GetDataSourceRunOutput {
+public struct GetDataSourceRunOutput: Swift.Sendable {
     /// The timestamp of when the data source run was created.
     /// This member is required.
     public var createdAt: Foundation.Date?
@@ -8466,7 +8479,7 @@ public struct GetDataSourceRunOutput {
     }
 }
 
-public struct ListDataSourceRunsInput {
+public struct ListDataSourceRunsInput: Swift.Sendable {
     /// The identifier of the data source.
     /// This member is required.
     public var dataSourceIdentifier: Swift.String?
@@ -8497,8 +8510,9 @@ public struct ListDataSourceRunsInput {
 }
 
 extension DataZoneClientTypes {
+
     /// The details of a data source run.
-    public struct DataSourceRunSummary {
+    public struct DataSourceRunSummary: Swift.Sendable {
         /// The timestamp of when a data source run was created.
         /// This member is required.
         public var createdAt: Foundation.Date?
@@ -8556,10 +8570,9 @@ extension DataZoneClientTypes {
             self.updatedAt = updatedAt
         }
     }
-
 }
 
-public struct ListDataSourceRunsOutput {
+public struct ListDataSourceRunsOutput: Swift.Sendable {
     /// The results of the ListDataSourceRuns action.
     /// This member is required.
     public var items: [DataZoneClientTypes.DataSourceRunSummary]?
@@ -8576,7 +8589,7 @@ public struct ListDataSourceRunsOutput {
     }
 }
 
-public struct StartDataSourceRunInput {
+public struct StartDataSourceRunInput: Swift.Sendable {
     /// A unique, case-sensitive identifier that is provided to ensure the idempotency of the request.
     public var clientToken: Swift.String?
     /// The identifier of the data source.
@@ -8598,7 +8611,7 @@ public struct StartDataSourceRunInput {
     }
 }
 
-public struct StartDataSourceRunOutput {
+public struct StartDataSourceRunOutput: Swift.Sendable {
     /// The timestamp of when data source run was created.
     /// This member is required.
     public var createdAt: Foundation.Date?
@@ -8667,8 +8680,9 @@ public struct StartDataSourceRunOutput {
 }
 
 extension DataZoneClientTypes {
+
     /// The activity details of the data source run.
-    public struct DataSourceRunActivity {
+    public struct DataSourceRunActivity: Swift.Sendable {
         /// The timestamp of when data source run activity was created.
         /// This member is required.
         public var createdAt: Foundation.Date?
@@ -8722,7 +8736,6 @@ extension DataZoneClientTypes {
             self.updatedAt = updatedAt
         }
     }
-
 }
 
 extension DataZoneClientTypes.DataSourceRunActivity: Swift.CustomDebugStringConvertible {
@@ -8730,7 +8743,7 @@ extension DataZoneClientTypes.DataSourceRunActivity: Swift.CustomDebugStringConv
         "DataSourceRunActivity(createdAt: \(Swift.String(describing: createdAt)), dataAssetId: \(Swift.String(describing: dataAssetId)), dataAssetStatus: \(Swift.String(describing: dataAssetStatus)), dataSourceRunId: \(Swift.String(describing: dataSourceRunId)), errorMessage: \(Swift.String(describing: errorMessage)), projectId: \(Swift.String(describing: projectId)), updatedAt: \(Swift.String(describing: updatedAt)), database: \"CONTENT_REDACTED\", technicalDescription: \"CONTENT_REDACTED\", technicalName: \"CONTENT_REDACTED\")"}
 }
 
-public struct DeleteAssetFilterInput {
+public struct DeleteAssetFilterInput: Swift.Sendable {
     /// The ID of the data asset.
     /// This member is required.
     public var assetIdentifier: Swift.String?
@@ -8753,7 +8766,7 @@ public struct DeleteAssetFilterInput {
     }
 }
 
-public struct DeleteEnvironmentInput {
+public struct DeleteEnvironmentInput: Swift.Sendable {
     /// The ID of the Amazon DataZone domain in which the environment is deleted.
     /// This member is required.
     public var domainIdentifier: Swift.String?
@@ -8771,7 +8784,7 @@ public struct DeleteEnvironmentInput {
     }
 }
 
-public struct DeleteEnvironmentActionInput {
+public struct DeleteEnvironmentActionInput: Swift.Sendable {
     /// The ID of the Amazon DataZone domain in which an environment action is deleted.
     /// This member is required.
     public var domainIdentifier: Swift.String?
@@ -8794,7 +8807,7 @@ public struct DeleteEnvironmentActionInput {
     }
 }
 
-public struct DeleteEnvironmentProfileInput {
+public struct DeleteEnvironmentProfileInput: Swift.Sendable {
     /// The ID of the Amazon DataZone domain in which the environment profile is deleted.
     /// This member is required.
     public var domainIdentifier: Swift.String?
@@ -8812,7 +8825,7 @@ public struct DeleteEnvironmentProfileInput {
     }
 }
 
-public struct DeleteProjectInput {
+public struct DeleteProjectInput: Swift.Sendable {
     /// The ID of the Amazon DataZone domain in which the project is deleted.
     /// This member is required.
     public var domainIdentifier: Swift.String?
@@ -8834,12 +8847,12 @@ public struct DeleteProjectInput {
     }
 }
 
-public struct DeleteProjectOutput {
+public struct DeleteProjectOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteProjectMembershipInput {
+public struct DeleteProjectMembershipInput: Swift.Sendable {
     /// The ID of the Amazon DataZone domain where project membership is deleted.
     /// This member is required.
     public var domainIdentifier: Swift.String?
@@ -8862,12 +8875,12 @@ public struct DeleteProjectMembershipInput {
     }
 }
 
-public struct DeleteProjectMembershipOutput {
+public struct DeleteProjectMembershipOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteSubscriptionGrantInput {
+public struct DeleteSubscriptionGrantInput: Swift.Sendable {
     /// The ID of the Amazon DataZone domain where the subscription grant is deleted.
     /// This member is required.
     public var domainIdentifier: Swift.String?
@@ -8885,7 +8898,7 @@ public struct DeleteSubscriptionGrantInput {
     }
 }
 
-public struct DeleteSubscriptionGrantOutput {
+public struct DeleteSubscriptionGrantOutput: Swift.Sendable {
     /// The assets for which the subsctiption grant that is deleted gave access.
     public var assets: [DataZoneClientTypes.SubscribedAsset]?
     /// The timestamp of when the subscription grant that is deleted was created.
@@ -8946,7 +8959,7 @@ public struct DeleteSubscriptionGrantOutput {
     }
 }
 
-public struct DeleteSubscriptionRequestInput {
+public struct DeleteSubscriptionRequestInput: Swift.Sendable {
     /// The ID of the Amazon DataZone domain in which the subscription request is deleted.
     /// This member is required.
     public var domainIdentifier: Swift.String?
@@ -8964,7 +8977,7 @@ public struct DeleteSubscriptionRequestInput {
     }
 }
 
-public struct DeleteSubscriptionTargetInput {
+public struct DeleteSubscriptionTargetInput: Swift.Sendable {
     /// The ID of the Amazon DataZone domain in which the subscription target is deleted.
     /// This member is required.
     public var domainIdentifier: Swift.String?
@@ -8989,7 +9002,7 @@ public struct DeleteSubscriptionTargetInput {
 
 extension DataZoneClientTypes {
 
-    public enum TimeSeriesEntityType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum TimeSeriesEntityType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case asset
         case listing
         case sdkUnknown(Swift.String)
@@ -9016,7 +9029,7 @@ extension DataZoneClientTypes {
     }
 }
 
-public struct DeleteTimeSeriesDataPointsInput {
+public struct DeleteTimeSeriesDataPointsInput: Swift.Sendable {
     /// A unique, case-sensitive identifier to ensure idempotency of the request. This field is automatically populated if not provided.
     public var clientToken: Swift.String?
     /// The ID of the Amazon DataZone domain that houses the asset for which you want to delete a time series form.
@@ -9048,12 +9061,12 @@ public struct DeleteTimeSeriesDataPointsInput {
     }
 }
 
-public struct DeleteTimeSeriesDataPointsOutput {
+public struct DeleteTimeSeriesDataPointsOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DisassociateEnvironmentRoleInput {
+public struct DisassociateEnvironmentRoleInput: Swift.Sendable {
     /// The ID of the Amazon DataZone domain in which an environment role is disassociated.
     /// This member is required.
     public var domainIdentifier: Swift.String?
@@ -9076,12 +9089,12 @@ public struct DisassociateEnvironmentRoleInput {
     }
 }
 
-public struct DisassociateEnvironmentRoleOutput {
+public struct DisassociateEnvironmentRoleOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteDomainInput {
+public struct DeleteDomainInput: Swift.Sendable {
     /// A unique, case-sensitive identifier that is provided to ensure the idempotency of the request.
     public var clientToken: Swift.String?
     /// The identifier of the Amazon Web Services domain that is to be deleted.
@@ -9102,7 +9115,7 @@ public struct DeleteDomainInput {
     }
 }
 
-public struct DeleteDomainOutput {
+public struct DeleteDomainOutput: Swift.Sendable {
     /// The status of the domain.
     /// This member is required.
     public var status: DataZoneClientTypes.DomainStatus?
@@ -9115,7 +9128,7 @@ public struct DeleteDomainOutput {
     }
 }
 
-public struct GetDomainInput {
+public struct GetDomainInput: Swift.Sendable {
     /// The identifier of the specified Amazon DataZone domain.
     /// This member is required.
     public var identifier: Swift.String?
@@ -9128,7 +9141,7 @@ public struct GetDomainInput {
     }
 }
 
-public struct GetDomainOutput {
+public struct GetDomainOutput: Swift.Sendable {
     /// The ARN of the specified Amazon DataZone domain.
     public var arn: Swift.String?
     /// The timestamp of when the Amazon DataZone domain was created.
@@ -9191,7 +9204,7 @@ public struct GetDomainOutput {
     }
 }
 
-public struct ListDomainsInput {
+public struct ListDomainsInput: Swift.Sendable {
     /// The maximum number of domains to return in a single call to ListDomains. When the number of domains to be listed is greater than the value of MaxResults, the response contains a NextToken value that you can use in a subsequent call to ListDomains to list the next set of domains.
     public var maxResults: Swift.Int?
     /// When the number of domains is greater than the default value for the MaxResults parameter, or if you explicitly specify a value for MaxResults that is less than the number of domains, the response includes a pagination token named NextToken. You can specify this NextToken value in a subsequent call to ListDomains to list the next set of domains.
@@ -9212,8 +9225,9 @@ public struct ListDomainsInput {
 }
 
 extension DataZoneClientTypes {
+
     /// A summary of a Amazon DataZone domain.
-    public struct DomainSummary {
+    public struct DomainSummary: Swift.Sendable {
         /// The ARN of the Amazon DataZone domain.
         /// This member is required.
         public var arn: Swift.String?
@@ -9262,7 +9276,6 @@ extension DataZoneClientTypes {
             self.status = status
         }
     }
-
 }
 
 extension DataZoneClientTypes.DomainSummary: Swift.CustomDebugStringConvertible {
@@ -9270,7 +9283,7 @@ extension DataZoneClientTypes.DomainSummary: Swift.CustomDebugStringConvertible 
         "DomainSummary(arn: \(Swift.String(describing: arn)), createdAt: \(Swift.String(describing: createdAt)), id: \(Swift.String(describing: id)), lastUpdatedAt: \(Swift.String(describing: lastUpdatedAt)), managedAccountId: \(Swift.String(describing: managedAccountId)), portalUrl: \(Swift.String(describing: portalUrl)), status: \(Swift.String(describing: status)), description: \"CONTENT_REDACTED\", name: \"CONTENT_REDACTED\")"}
 }
 
-public struct ListDomainsOutput {
+public struct ListDomainsOutput: Swift.Sendable {
     /// The results of the ListDomains action.
     /// This member is required.
     public var items: [DataZoneClientTypes.DomainSummary]?
@@ -9287,7 +9300,7 @@ public struct ListDomainsOutput {
     }
 }
 
-public struct UpdateDomainInput {
+public struct UpdateDomainInput: Swift.Sendable {
     /// A unique, case-sensitive identifier that is provided to ensure the idempotency of the request.
     public var clientToken: Swift.String?
     /// The description to be updated as part of the UpdateDomain action.
@@ -9320,7 +9333,7 @@ public struct UpdateDomainInput {
     }
 }
 
-public struct UpdateDomainOutput {
+public struct UpdateDomainOutput: Swift.Sendable {
     /// The description to be updated as part of the UpdateDomain action.
     public var description: Swift.String?
     /// The domain execution role to be updated as part of the UpdateDomain action.
@@ -9357,7 +9370,7 @@ public struct UpdateDomainOutput {
     }
 }
 
-public struct DeleteDomainUnitInput {
+public struct DeleteDomainUnitInput: Swift.Sendable {
     /// The ID of the domain where you want to delete a domain unit.
     /// This member is required.
     public var domainIdentifier: Swift.String?
@@ -9375,12 +9388,12 @@ public struct DeleteDomainUnitInput {
     }
 }
 
-public struct DeleteDomainUnitOutput {
+public struct DeleteDomainUnitOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct GetDomainUnitInput {
+public struct GetDomainUnitInput: Swift.Sendable {
     /// The ID of the domain where you want to get a domain unit.
     /// This member is required.
     public var domainIdentifier: Swift.String?
@@ -9398,7 +9411,7 @@ public struct GetDomainUnitInput {
     }
 }
 
-public struct GetDomainUnitOutput {
+public struct GetDomainUnitOutput: Swift.Sendable {
     /// The time stamp at which the domain unit was created.
     public var createdAt: Foundation.Date?
     /// The user who created the domain unit.
@@ -9455,7 +9468,7 @@ extension GetDomainUnitOutput: Swift.CustomDebugStringConvertible {
         "GetDomainUnitOutput(createdAt: \(Swift.String(describing: createdAt)), createdBy: \(Swift.String(describing: createdBy)), domainId: \(Swift.String(describing: domainId)), id: \(Swift.String(describing: id)), lastUpdatedAt: \(Swift.String(describing: lastUpdatedAt)), lastUpdatedBy: \(Swift.String(describing: lastUpdatedBy)), owners: \(Swift.String(describing: owners)), parentDomainUnitId: \(Swift.String(describing: parentDomainUnitId)), description: \"CONTENT_REDACTED\", name: \"CONTENT_REDACTED\")"}
 }
 
-public struct ListDomainUnitsForParentInput {
+public struct ListDomainUnitsForParentInput: Swift.Sendable {
     /// The ID of the domain in which you want to list domain units for a parent domain unit.
     /// This member is required.
     public var domainIdentifier: Swift.String?
@@ -9482,8 +9495,9 @@ public struct ListDomainUnitsForParentInput {
 }
 
 extension DataZoneClientTypes {
+
     /// The summary of the domain unit.
-    public struct DomainUnitSummary {
+    public struct DomainUnitSummary: Swift.Sendable {
         /// The ID of the domain unit summary.
         /// This member is required.
         public var id: Swift.String?
@@ -9500,10 +9514,9 @@ extension DataZoneClientTypes {
             self.name = name
         }
     }
-
 }
 
-public struct ListDomainUnitsForParentOutput {
+public struct ListDomainUnitsForParentOutput: Swift.Sendable {
     /// The results returned by this action.
     /// This member is required.
     public var items: [DataZoneClientTypes.DomainUnitSummary]?
@@ -9520,7 +9533,7 @@ public struct ListDomainUnitsForParentOutput {
     }
 }
 
-public struct UpdateDomainUnitInput {
+public struct UpdateDomainUnitInput: Swift.Sendable {
     /// The description of the domain unit that you want to update.
     public var description: Swift.String?
     /// The ID of the domain where you want to update a domain unit.
@@ -9551,7 +9564,7 @@ extension UpdateDomainUnitInput: Swift.CustomDebugStringConvertible {
         "UpdateDomainUnitInput(domainIdentifier: \(Swift.String(describing: domainIdentifier)), identifier: \(Swift.String(describing: identifier)), description: \"CONTENT_REDACTED\", name: \"CONTENT_REDACTED\")"}
 }
 
-public struct UpdateDomainUnitOutput {
+public struct UpdateDomainUnitOutput: Swift.Sendable {
     /// The time stamp at which the domain unit that you want to update was created.
     public var createdAt: Foundation.Date?
     /// The user who created the domain unit that you want to update.
@@ -9608,7 +9621,7 @@ extension UpdateDomainUnitOutput: Swift.CustomDebugStringConvertible {
         "UpdateDomainUnitOutput(createdAt: \(Swift.String(describing: createdAt)), createdBy: \(Swift.String(describing: createdBy)), domainId: \(Swift.String(describing: domainId)), id: \(Swift.String(describing: id)), lastUpdatedAt: \(Swift.String(describing: lastUpdatedAt)), lastUpdatedBy: \(Swift.String(describing: lastUpdatedBy)), owners: \(Swift.String(describing: owners)), parentDomainUnitId: \(Swift.String(describing: parentDomainUnitId)), description: \"CONTENT_REDACTED\", name: \"CONTENT_REDACTED\")"}
 }
 
-public struct DeleteEnvironmentBlueprintConfigurationInput {
+public struct DeleteEnvironmentBlueprintConfigurationInput: Swift.Sendable {
     /// The ID of the Amazon DataZone domain in which the blueprint configuration is deleted.
     /// This member is required.
     public var domainIdentifier: Swift.String?
@@ -9626,12 +9639,12 @@ public struct DeleteEnvironmentBlueprintConfigurationInput {
     }
 }
 
-public struct DeleteEnvironmentBlueprintConfigurationOutput {
+public struct DeleteEnvironmentBlueprintConfigurationOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct GetEnvironmentBlueprintConfigurationInput {
+public struct GetEnvironmentBlueprintConfigurationInput: Swift.Sendable {
     /// The ID of the Amazon DataZone domain where this blueprint exists.
     /// This member is required.
     public var domainIdentifier: Swift.String?
@@ -9650,8 +9663,9 @@ public struct GetEnvironmentBlueprintConfigurationInput {
 }
 
 extension DataZoneClientTypes {
+
     /// The Lake Formation configuration of the Data Lake blueprint.
-    public struct LakeFormationConfiguration {
+    public struct LakeFormationConfiguration: Swift.Sendable {
         /// Specifies certain Amazon S3 locations if you do not want Amazon DataZone to automatically register them in hybrid mode.
         public var locationRegistrationExcludeS3Locations: [Swift.String]?
         /// The role that is used to manage read/write access to the chosen Amazon S3 bucket(s) for Data Lake using AWS Lake Formation hybrid access mode.
@@ -9666,20 +9680,19 @@ extension DataZoneClientTypes {
             self.locationRegistrationRole = locationRegistrationRole
         }
     }
-
 }
 
 extension DataZoneClientTypes {
+
     /// The provisioning configuration of the blueprint.
-    public enum ProvisioningConfiguration {
+    public enum ProvisioningConfiguration: Swift.Sendable {
         /// The Lake Formation configuration of the Data Lake blueprint.
         case lakeformationconfiguration(DataZoneClientTypes.LakeFormationConfiguration)
         case sdkUnknown(Swift.String)
     }
-
 }
 
-public struct GetEnvironmentBlueprintConfigurationOutput {
+public struct GetEnvironmentBlueprintConfigurationOutput: Swift.Sendable {
     /// The timestamp of when this blueprint was created.
     public var createdAt: Foundation.Date?
     /// The ID of the Amazon DataZone domain where this blueprint exists.
@@ -9725,7 +9738,7 @@ public struct GetEnvironmentBlueprintConfigurationOutput {
     }
 }
 
-public struct ListEnvironmentBlueprintConfigurationsInput {
+public struct ListEnvironmentBlueprintConfigurationsInput: Swift.Sendable {
     /// The identifier of the Amazon DataZone domain.
     /// This member is required.
     public var domainIdentifier: Swift.String?
@@ -9747,8 +9760,9 @@ public struct ListEnvironmentBlueprintConfigurationsInput {
 }
 
 extension DataZoneClientTypes {
+
     /// The configuration details of an environment blueprint.
-    public struct EnvironmentBlueprintConfigurationItem {
+    public struct EnvironmentBlueprintConfigurationItem: Swift.Sendable {
         /// The timestamp of when an environment blueprint was created.
         public var createdAt: Foundation.Date?
         /// The identifier of the Amazon DataZone domain in which an environment blueprint exists.
@@ -9793,10 +9807,9 @@ extension DataZoneClientTypes {
             self.updatedAt = updatedAt
         }
     }
-
 }
 
-public struct ListEnvironmentBlueprintConfigurationsOutput {
+public struct ListEnvironmentBlueprintConfigurationsOutput: Swift.Sendable {
     /// The results of the ListEnvironmentBlueprintConfigurations action.
     public var items: [DataZoneClientTypes.EnvironmentBlueprintConfigurationItem]?
     /// When the number of blueprint configurations is greater than the default value for the MaxResults parameter, or if you explicitly specify a value for MaxResults that is less than the number of configurations, the response includes a pagination token named NextToken. You can specify this NextToken value in a subsequent call to ListEnvironmentBlueprintConfigurations to list the next set of configurations.
@@ -9812,7 +9825,7 @@ public struct ListEnvironmentBlueprintConfigurationsOutput {
     }
 }
 
-public struct PutEnvironmentBlueprintConfigurationInput {
+public struct PutEnvironmentBlueprintConfigurationInput: Swift.Sendable {
     /// The identifier of the Amazon DataZone domain.
     /// This member is required.
     public var domainIdentifier: Swift.String?
@@ -9851,7 +9864,7 @@ public struct PutEnvironmentBlueprintConfigurationInput {
     }
 }
 
-public struct PutEnvironmentBlueprintConfigurationOutput {
+public struct PutEnvironmentBlueprintConfigurationOutput: Swift.Sendable {
     /// The timestamp of when the environment blueprint was created.
     public var createdAt: Foundation.Date?
     /// The identifier of the Amazon DataZone domain.
@@ -9897,7 +9910,7 @@ public struct PutEnvironmentBlueprintConfigurationOutput {
     }
 }
 
-public struct DeleteFormTypeInput {
+public struct DeleteFormTypeInput: Swift.Sendable {
     /// The ID of the Amazon DataZone domain in which the metadata form type is deleted.
     /// This member is required.
     public var domainIdentifier: Swift.String?
@@ -9915,12 +9928,12 @@ public struct DeleteFormTypeInput {
     }
 }
 
-public struct DeleteFormTypeOutput {
+public struct DeleteFormTypeOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct GetFormTypeInput {
+public struct GetFormTypeInput: Swift.Sendable {
     /// The ID of the Amazon DataZone domain in which this metadata form type exists.
     /// This member is required.
     public var domainIdentifier: Swift.String?
@@ -9943,8 +9956,9 @@ public struct GetFormTypeInput {
 }
 
 extension DataZoneClientTypes {
+
     /// The details of the import of the metadata form type.
-    public struct Import {
+    public struct Import: Swift.Sendable {
         /// The name of the import.
         /// This member is required.
         public var name: Swift.String?
@@ -9961,7 +9975,6 @@ extension DataZoneClientTypes {
             self.revision = revision
         }
     }
-
 }
 
 extension DataZoneClientTypes.Import: Swift.CustomDebugStringConvertible {
@@ -9969,7 +9982,7 @@ extension DataZoneClientTypes.Import: Swift.CustomDebugStringConvertible {
         "Import(revision: \(Swift.String(describing: revision)), name: \"CONTENT_REDACTED\")"}
 }
 
-public struct GetFormTypeOutput {
+public struct GetFormTypeOutput: Swift.Sendable {
     /// The timestamp of when this metadata form type was created.
     public var createdAt: Foundation.Date?
     /// The Amazon DataZone user who created this metadata form type.
@@ -10034,7 +10047,7 @@ extension GetFormTypeOutput: Swift.CustomDebugStringConvertible {
         "GetFormTypeOutput(createdAt: \(Swift.String(describing: createdAt)), createdBy: \(Swift.String(describing: createdBy)), domainId: \(Swift.String(describing: domainId)), imports: \(Swift.String(describing: imports)), originDomainId: \(Swift.String(describing: originDomainId)), originProjectId: \(Swift.String(describing: originProjectId)), owningProjectId: \(Swift.String(describing: owningProjectId)), revision: \(Swift.String(describing: revision)), status: \(Swift.String(describing: status)), description: \"CONTENT_REDACTED\", model: \"CONTENT_REDACTED\", name: \"CONTENT_REDACTED\")"}
 }
 
-public struct GetAssetFilterInput {
+public struct GetAssetFilterInput: Swift.Sendable {
     /// The ID of the data asset.
     /// This member is required.
     public var assetIdentifier: Swift.String?
@@ -10057,7 +10070,7 @@ public struct GetAssetFilterInput {
     }
 }
 
-public struct GetEnvironmentInput {
+public struct GetEnvironmentInput: Swift.Sendable {
     /// The ID of the Amazon DataZone domain where the environment exists.
     /// This member is required.
     public var domainIdentifier: Swift.String?
@@ -10075,7 +10088,7 @@ public struct GetEnvironmentInput {
     }
 }
 
-public struct GetEnvironmentOutput {
+public struct GetEnvironmentOutput: Swift.Sendable {
     /// The ID of the Amazon Web Services account where the environment exists.
     public var awsAccountId: Swift.String?
     /// The Amazon Web Services region where the environment exists.
@@ -10177,7 +10190,7 @@ extension GetEnvironmentOutput: Swift.CustomDebugStringConvertible {
         "GetEnvironmentOutput(awsAccountId: \(Swift.String(describing: awsAccountId)), awsAccountRegion: \(Swift.String(describing: awsAccountRegion)), createdAt: \(Swift.String(describing: createdAt)), createdBy: \(Swift.String(describing: createdBy)), deploymentProperties: \(Swift.String(describing: deploymentProperties)), domainId: \(Swift.String(describing: domainId)), environmentActions: \(Swift.String(describing: environmentActions)), environmentBlueprintId: \(Swift.String(describing: environmentBlueprintId)), environmentProfileId: \(Swift.String(describing: environmentProfileId)), glossaryTerms: \(Swift.String(describing: glossaryTerms)), id: \(Swift.String(describing: id)), lastDeployment: \(Swift.String(describing: lastDeployment)), projectId: \(Swift.String(describing: projectId)), provider: \(Swift.String(describing: provider)), provisionedResources: \(Swift.String(describing: provisionedResources)), provisioningProperties: \(Swift.String(describing: provisioningProperties)), status: \(Swift.String(describing: status)), updatedAt: \(Swift.String(describing: updatedAt)), userParameters: \(Swift.String(describing: userParameters)), description: \"CONTENT_REDACTED\", name: \"CONTENT_REDACTED\")"}
 }
 
-public struct GetEnvironmentActionInput {
+public struct GetEnvironmentActionInput: Swift.Sendable {
     /// The ID of the Amazon DataZone domain in which the GetEnvironmentAction API is invoked.
     /// This member is required.
     public var domainIdentifier: Swift.String?
@@ -10200,7 +10213,7 @@ public struct GetEnvironmentActionInput {
     }
 }
 
-public struct GetEnvironmentActionOutput {
+public struct GetEnvironmentActionOutput: Swift.Sendable {
     /// The description of the environment action.
     public var description: Swift.String?
     /// The ID of the Amazon DataZone domain in which the environment action lives.
@@ -10237,7 +10250,7 @@ public struct GetEnvironmentActionOutput {
     }
 }
 
-public struct GetEnvironmentBlueprintInput {
+public struct GetEnvironmentBlueprintInput: Swift.Sendable {
     /// The identifier of the domain in which this blueprint exists.
     /// This member is required.
     public var domainIdentifier: Swift.String?
@@ -10255,7 +10268,7 @@ public struct GetEnvironmentBlueprintInput {
     }
 }
 
-public struct GetEnvironmentBlueprintOutput {
+public struct GetEnvironmentBlueprintOutput: Swift.Sendable {
     /// A timestamp of when this blueprint was created.
     public var createdAt: Foundation.Date?
     /// The deployment properties of this Amazon DataZone blueprint.
@@ -10312,7 +10325,7 @@ extension GetEnvironmentBlueprintOutput: Swift.CustomDebugStringConvertible {
         "GetEnvironmentBlueprintOutput(createdAt: \(Swift.String(describing: createdAt)), deploymentProperties: \(Swift.String(describing: deploymentProperties)), glossaryTerms: \(Swift.String(describing: glossaryTerms)), id: \(Swift.String(describing: id)), name: \(Swift.String(describing: name)), provider: \(Swift.String(describing: provider)), provisioningProperties: \(Swift.String(describing: provisioningProperties)), updatedAt: \(Swift.String(describing: updatedAt)), userParameters: \(Swift.String(describing: userParameters)), description: \"CONTENT_REDACTED\")"}
 }
 
-public struct GetEnvironmentCredentialsInput {
+public struct GetEnvironmentCredentialsInput: Swift.Sendable {
     /// The ID of the Amazon DataZone domain in which this environment and its credentials exist.
     /// This member is required.
     public var domainIdentifier: Swift.String?
@@ -10330,7 +10343,7 @@ public struct GetEnvironmentCredentialsInput {
     }
 }
 
-public struct GetEnvironmentCredentialsOutput {
+public struct GetEnvironmentCredentialsOutput: Swift.Sendable {
     /// The access key ID of the environment.
     public var accessKeyId: Swift.String?
     /// The expiration timestamp of the environment credentials.
@@ -10360,7 +10373,7 @@ extension GetEnvironmentCredentialsOutput: Swift.CustomDebugStringConvertible {
     }
 }
 
-public struct GetEnvironmentProfileInput {
+public struct GetEnvironmentProfileInput: Swift.Sendable {
     /// The ID of the Amazon DataZone domain in which this environment profile exists.
     /// This member is required.
     public var domainIdentifier: Swift.String?
@@ -10378,7 +10391,7 @@ public struct GetEnvironmentProfileInput {
     }
 }
 
-public struct GetEnvironmentProfileOutput {
+public struct GetEnvironmentProfileOutput: Swift.Sendable {
     /// The ID of the Amazon Web Services account where this environment profile exists.
     public var awsAccountId: Swift.String?
     /// The Amazon Web Services region where this environment profile exists.
@@ -10444,7 +10457,7 @@ extension GetEnvironmentProfileOutput: Swift.CustomDebugStringConvertible {
         "GetEnvironmentProfileOutput(awsAccountId: \(Swift.String(describing: awsAccountId)), awsAccountRegion: \(Swift.String(describing: awsAccountRegion)), createdAt: \(Swift.String(describing: createdAt)), createdBy: \(Swift.String(describing: createdBy)), domainId: \(Swift.String(describing: domainId)), environmentBlueprintId: \(Swift.String(describing: environmentBlueprintId)), id: \(Swift.String(describing: id)), projectId: \(Swift.String(describing: projectId)), updatedAt: \(Swift.String(describing: updatedAt)), userParameters: \(Swift.String(describing: userParameters)), description: \"CONTENT_REDACTED\", name: \"CONTENT_REDACTED\")"}
 }
 
-public struct GetGroupProfileInput {
+public struct GetGroupProfileInput: Swift.Sendable {
     /// The identifier of the Amazon DataZone domain in which the group profile exists.
     /// This member is required.
     public var domainIdentifier: Swift.String?
@@ -10462,7 +10475,7 @@ public struct GetGroupProfileInput {
     }
 }
 
-public struct GetGroupProfileOutput {
+public struct GetGroupProfileOutput: Swift.Sendable {
     /// The identifier of the Amazon DataZone domain in which the group profile exists.
     public var domainId: Swift.String?
     /// The name of the group for which the specified group profile exists.
@@ -10491,7 +10504,7 @@ extension GetGroupProfileOutput: Swift.CustomDebugStringConvertible {
         "GetGroupProfileOutput(domainId: \(Swift.String(describing: domainId)), id: \(Swift.String(describing: id)), status: \(Swift.String(describing: status)), groupName: \"CONTENT_REDACTED\")"}
 }
 
-public struct GetIamPortalLoginUrlInput {
+public struct GetIamPortalLoginUrlInput: Swift.Sendable {
     /// the ID of the Amazon DataZone domain the data portal of which you want to get.
     /// This member is required.
     public var domainIdentifier: Swift.String?
@@ -10504,7 +10517,7 @@ public struct GetIamPortalLoginUrlInput {
     }
 }
 
-public struct GetIamPortalLoginUrlOutput {
+public struct GetIamPortalLoginUrlOutput: Swift.Sendable {
     /// The data portal URL of the specified Amazon DataZone domain.
     public var authCodeUrl: Swift.String?
     /// The ID of the user profile.
@@ -10521,7 +10534,7 @@ public struct GetIamPortalLoginUrlOutput {
     }
 }
 
-public struct GetLineageNodeInput {
+public struct GetLineageNodeInput: Swift.Sendable {
     /// The ID of the domain in which you want to get the data lineage node.
     /// This member is required.
     public var domainIdentifier: Swift.String?
@@ -10544,8 +10557,9 @@ public struct GetLineageNodeInput {
 }
 
 extension DataZoneClientTypes {
+
     /// The reference details for the data lineage node.
-    public struct LineageNodeReference {
+    public struct LineageNodeReference: Swift.Sendable {
         /// The event timestamp of the data lineage node.
         public var eventTimestamp: Foundation.Date?
         /// The ID of the data lineage node.
@@ -10560,10 +10574,9 @@ extension DataZoneClientTypes {
             self.id = id
         }
     }
-
 }
 
-public struct GetLineageNodeOutput {
+public struct GetLineageNodeOutput: Swift.Sendable {
     /// The timestamp at which the data lineage node was created.
     public var createdAt: Foundation.Date?
     /// The user who created the data lineage node.
@@ -10634,7 +10647,7 @@ public struct GetLineageNodeOutput {
     }
 }
 
-public struct GetProjectInput {
+public struct GetProjectInput: Swift.Sendable {
     /// The ID of the Amazon DataZone domain in which the project exists.
     /// This member is required.
     public var domainIdentifier: Swift.String?
@@ -10652,7 +10665,7 @@ public struct GetProjectInput {
     }
 }
 
-public struct GetProjectOutput {
+public struct GetProjectOutput: Swift.Sendable {
     /// The timestamp of when the project was created.
     public var createdAt: Foundation.Date?
     /// The Amazon DataZone user who created the project.
@@ -10713,7 +10726,7 @@ extension GetProjectOutput: Swift.CustomDebugStringConvertible {
         "GetProjectOutput(createdAt: \(Swift.String(describing: createdAt)), createdBy: \(Swift.String(describing: createdBy)), domainId: \(Swift.String(describing: domainId)), domainUnitId: \(Swift.String(describing: domainUnitId)), failureReasons: \(Swift.String(describing: failureReasons)), glossaryTerms: \(Swift.String(describing: glossaryTerms)), id: \(Swift.String(describing: id)), lastUpdatedAt: \(Swift.String(describing: lastUpdatedAt)), projectStatus: \(Swift.String(describing: projectStatus)), description: \"CONTENT_REDACTED\", name: \"CONTENT_REDACTED\")"}
 }
 
-public struct GetSubscriptionInput {
+public struct GetSubscriptionInput: Swift.Sendable {
     /// The ID of the Amazon DataZone domain in which the subscription exists.
     /// This member is required.
     public var domainIdentifier: Swift.String?
@@ -10731,7 +10744,7 @@ public struct GetSubscriptionInput {
     }
 }
 
-public struct GetSubscriptionOutput {
+public struct GetSubscriptionOutput: Swift.Sendable {
     /// The timestamp of when the subscription was created.
     /// This member is required.
     public var createdAt: Foundation.Date?
@@ -10791,7 +10804,7 @@ public struct GetSubscriptionOutput {
     }
 }
 
-public struct GetSubscriptionGrantInput {
+public struct GetSubscriptionGrantInput: Swift.Sendable {
     /// The ID of the Amazon DataZone domain in which the subscription grant exists.
     /// This member is required.
     public var domainIdentifier: Swift.String?
@@ -10809,7 +10822,7 @@ public struct GetSubscriptionGrantInput {
     }
 }
 
-public struct GetSubscriptionGrantOutput {
+public struct GetSubscriptionGrantOutput: Swift.Sendable {
     /// The assets for which the subscription grant is created.
     public var assets: [DataZoneClientTypes.SubscribedAsset]?
     /// The timestamp of when the subscription grant is created.
@@ -10870,7 +10883,7 @@ public struct GetSubscriptionGrantOutput {
     }
 }
 
-public struct GetSubscriptionRequestDetailsInput {
+public struct GetSubscriptionRequestDetailsInput: Swift.Sendable {
     /// The identifier of the Amazon DataZone domain in which to get the subscription request details.
     /// This member is required.
     public var domainIdentifier: Swift.String?
@@ -10888,7 +10901,7 @@ public struct GetSubscriptionRequestDetailsInput {
     }
 }
 
-public struct GetSubscriptionRequestDetailsOutput {
+public struct GetSubscriptionRequestDetailsOutput: Swift.Sendable {
     /// The timestamp of when the specified subscription request was created.
     /// This member is required.
     public var createdAt: Foundation.Date?
@@ -10958,7 +10971,7 @@ extension GetSubscriptionRequestDetailsOutput: Swift.CustomDebugStringConvertibl
         "GetSubscriptionRequestDetailsOutput(createdAt: \(Swift.String(describing: createdAt)), createdBy: \(Swift.String(describing: createdBy)), domainId: \(Swift.String(describing: domainId)), id: \(Swift.String(describing: id)), reviewerId: \(Swift.String(describing: reviewerId)), status: \(Swift.String(describing: status)), subscribedListings: \(Swift.String(describing: subscribedListings)), subscribedPrincipals: \(Swift.String(describing: subscribedPrincipals)), updatedAt: \(Swift.String(describing: updatedAt)), updatedBy: \(Swift.String(describing: updatedBy)), decisionComment: \"CONTENT_REDACTED\", requestReason: \"CONTENT_REDACTED\")"}
 }
 
-public struct GetSubscriptionTargetInput {
+public struct GetSubscriptionTargetInput: Swift.Sendable {
     /// The ID of the Amazon DataZone domain in which the subscription target exists.
     /// This member is required.
     public var domainIdentifier: Swift.String?
@@ -10981,7 +10994,7 @@ public struct GetSubscriptionTargetInput {
     }
 }
 
-public struct GetSubscriptionTargetOutput {
+public struct GetSubscriptionTargetOutput: Swift.Sendable {
     /// The asset types associated with the subscription target.
     /// This member is required.
     public var applicableAssetTypes: [Swift.String]?
@@ -11067,7 +11080,7 @@ extension GetSubscriptionTargetOutput: Swift.CustomDebugStringConvertible {
         "GetSubscriptionTargetOutput(applicableAssetTypes: \(Swift.String(describing: applicableAssetTypes)), authorizedPrincipals: \(Swift.String(describing: authorizedPrincipals)), createdAt: \(Swift.String(describing: createdAt)), createdBy: \(Swift.String(describing: createdBy)), domainId: \(Swift.String(describing: domainId)), environmentId: \(Swift.String(describing: environmentId)), id: \(Swift.String(describing: id)), manageAccessRole: \(Swift.String(describing: manageAccessRole)), projectId: \(Swift.String(describing: projectId)), provider: \(Swift.String(describing: provider)), subscriptionTargetConfig: \(Swift.String(describing: subscriptionTargetConfig)), type: \(Swift.String(describing: type)), updatedAt: \(Swift.String(describing: updatedAt)), updatedBy: \(Swift.String(describing: updatedBy)), name: \"CONTENT_REDACTED\")"}
 }
 
-public struct GetTimeSeriesDataPointInput {
+public struct GetTimeSeriesDataPointInput: Swift.Sendable {
     /// The ID of the Amazon DataZone domain that houses the asset for which you want to get the data point.
     /// This member is required.
     public var domainIdentifier: Swift.String?
@@ -11101,8 +11114,9 @@ public struct GetTimeSeriesDataPointInput {
 }
 
 extension DataZoneClientTypes {
+
     /// The time series data points form.
-    public struct TimeSeriesDataPointFormOutput {
+    public struct TimeSeriesDataPointFormOutput: Swift.Sendable {
         /// The content of the time series data points form.
         public var content: Swift.String?
         /// The name of the time series data points form.
@@ -11136,10 +11150,9 @@ extension DataZoneClientTypes {
             self.typeRevision = typeRevision
         }
     }
-
 }
 
-public struct GetTimeSeriesDataPointOutput {
+public struct GetTimeSeriesDataPointOutput: Swift.Sendable {
     /// The ID of the Amazon DataZone domain that houses the asset data point that you want to get.
     public var domainId: Swift.String?
     /// The ID of the asset for which you want to get the data point.
@@ -11167,7 +11180,7 @@ public struct GetTimeSeriesDataPointOutput {
     }
 }
 
-public struct GetUserProfileInput {
+public struct GetUserProfileInput: Swift.Sendable {
     /// the ID of the Amazon DataZone domain the data portal of which you want to get.
     /// This member is required.
     public var domainIdentifier: Swift.String?
@@ -11189,7 +11202,7 @@ public struct GetUserProfileInput {
     }
 }
 
-public struct GetUserProfileOutput {
+public struct GetUserProfileOutput: Swift.Sendable {
     /// The details of the user profile in Amazon DataZone.
     public var details: DataZoneClientTypes.UserProfileDetails?
     /// the identifier of the Amazon DataZone domain of which you want to get the user profile.
@@ -11217,7 +11230,7 @@ public struct GetUserProfileOutput {
     }
 }
 
-public struct DeleteGlossaryInput {
+public struct DeleteGlossaryInput: Swift.Sendable {
     /// The ID of the Amazon DataZone domain in which the business glossary is deleted.
     /// This member is required.
     public var domainIdentifier: Swift.String?
@@ -11235,12 +11248,12 @@ public struct DeleteGlossaryInput {
     }
 }
 
-public struct DeleteGlossaryOutput {
+public struct DeleteGlossaryOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct GetGlossaryInput {
+public struct GetGlossaryInput: Swift.Sendable {
     /// The ID of the Amazon DataZone domain in which this business glossary exists.
     /// This member is required.
     public var domainIdentifier: Swift.String?
@@ -11258,7 +11271,7 @@ public struct GetGlossaryInput {
     }
 }
 
-public struct GetGlossaryOutput {
+public struct GetGlossaryOutput: Swift.Sendable {
     /// The timestamp of when this business glossary was created.
     public var createdAt: Foundation.Date?
     /// The Amazon DataZone user who created this business glossary.
@@ -11316,7 +11329,7 @@ extension GetGlossaryOutput: Swift.CustomDebugStringConvertible {
         "GetGlossaryOutput(createdAt: \(Swift.String(describing: createdAt)), createdBy: \(Swift.String(describing: createdBy)), domainId: \(Swift.String(describing: domainId)), id: \(Swift.String(describing: id)), owningProjectId: \(Swift.String(describing: owningProjectId)), status: \(Swift.String(describing: status)), updatedAt: \(Swift.String(describing: updatedAt)), updatedBy: \(Swift.String(describing: updatedBy)), description: \"CONTENT_REDACTED\", name: \"CONTENT_REDACTED\")"}
 }
 
-public struct UpdateGlossaryInput {
+public struct UpdateGlossaryInput: Swift.Sendable {
     /// A unique, case-sensitive identifier that is provided to ensure the idempotency of the request.
     public var clientToken: Swift.String?
     /// The description to be updated as part of the UpdateGlossary action.
@@ -11355,7 +11368,7 @@ extension UpdateGlossaryInput: Swift.CustomDebugStringConvertible {
         "UpdateGlossaryInput(clientToken: \(Swift.String(describing: clientToken)), domainIdentifier: \(Swift.String(describing: domainIdentifier)), identifier: \(Swift.String(describing: identifier)), status: \(Swift.String(describing: status)), description: \"CONTENT_REDACTED\", name: \"CONTENT_REDACTED\")"}
 }
 
-public struct UpdateGlossaryOutput {
+public struct UpdateGlossaryOutput: Swift.Sendable {
     /// The description to be updated as part of the UpdateGlossary action.
     public var description: Swift.String?
     /// The identifier of the Amazon DataZone domain in which a business glossary is to be updated.
@@ -11396,7 +11409,7 @@ extension UpdateGlossaryOutput: Swift.CustomDebugStringConvertible {
         "UpdateGlossaryOutput(domainId: \(Swift.String(describing: domainId)), id: \(Swift.String(describing: id)), owningProjectId: \(Swift.String(describing: owningProjectId)), status: \(Swift.String(describing: status)), description: \"CONTENT_REDACTED\", name: \"CONTENT_REDACTED\")"}
 }
 
-public struct DeleteGlossaryTermInput {
+public struct DeleteGlossaryTermInput: Swift.Sendable {
     /// The ID of the Amazon DataZone domain in which the business glossary term is deleted.
     /// This member is required.
     public var domainIdentifier: Swift.String?
@@ -11414,12 +11427,12 @@ public struct DeleteGlossaryTermInput {
     }
 }
 
-public struct DeleteGlossaryTermOutput {
+public struct DeleteGlossaryTermOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct GetGlossaryTermInput {
+public struct GetGlossaryTermInput: Swift.Sendable {
     /// The ID of the Amazon DataZone domain in which this business glossary term exists.
     /// This member is required.
     public var domainIdentifier: Swift.String?
@@ -11437,7 +11450,7 @@ public struct GetGlossaryTermInput {
     }
 }
 
-public struct GetGlossaryTermOutput {
+public struct GetGlossaryTermOutput: Swift.Sendable {
     /// The timestamp of when the business glossary term was created.
     public var createdAt: Foundation.Date?
     /// The Amazon DataZone user who created the business glossary.
@@ -11503,7 +11516,7 @@ extension GetGlossaryTermOutput: Swift.CustomDebugStringConvertible {
         "GetGlossaryTermOutput(createdAt: \(Swift.String(describing: createdAt)), createdBy: \(Swift.String(describing: createdBy)), domainId: \(Swift.String(describing: domainId)), glossaryId: \(Swift.String(describing: glossaryId)), id: \(Swift.String(describing: id)), status: \(Swift.String(describing: status)), termRelations: \(Swift.String(describing: termRelations)), updatedAt: \(Swift.String(describing: updatedAt)), updatedBy: \(Swift.String(describing: updatedBy)), longDescription: \"CONTENT_REDACTED\", name: \"CONTENT_REDACTED\", shortDescription: \"CONTENT_REDACTED\")"}
 }
 
-public struct UpdateGlossaryTermInput {
+public struct UpdateGlossaryTermInput: Swift.Sendable {
     /// The identifier of the Amazon DataZone domain in which a business glossary term is to be updated.
     /// This member is required.
     public var domainIdentifier: Swift.String?
@@ -11550,7 +11563,7 @@ extension UpdateGlossaryTermInput: Swift.CustomDebugStringConvertible {
         "UpdateGlossaryTermInput(domainIdentifier: \(Swift.String(describing: domainIdentifier)), glossaryIdentifier: \(Swift.String(describing: glossaryIdentifier)), identifier: \(Swift.String(describing: identifier)), status: \(Swift.String(describing: status)), termRelations: \(Swift.String(describing: termRelations)), longDescription: \"CONTENT_REDACTED\", name: \"CONTENT_REDACTED\", shortDescription: \"CONTENT_REDACTED\")"}
 }
 
-public struct UpdateGlossaryTermOutput {
+public struct UpdateGlossaryTermOutput: Swift.Sendable {
     /// The identifier of the Amazon DataZone domain in which a business glossary term is to be updated.
     /// This member is required.
     public var domainId: Swift.String?
@@ -11600,7 +11613,7 @@ extension UpdateGlossaryTermOutput: Swift.CustomDebugStringConvertible {
         "UpdateGlossaryTermOutput(domainId: \(Swift.String(describing: domainId)), glossaryId: \(Swift.String(describing: glossaryId)), id: \(Swift.String(describing: id)), status: \(Swift.String(describing: status)), termRelations: \(Swift.String(describing: termRelations)), longDescription: \"CONTENT_REDACTED\", name: \"CONTENT_REDACTED\", shortDescription: \"CONTENT_REDACTED\")"}
 }
 
-public struct ListAssetFiltersInput {
+public struct ListAssetFiltersInput: Swift.Sendable {
     /// The ID of the data asset.
     /// This member is required.
     public var assetIdentifier: Swift.String?
@@ -11630,7 +11643,7 @@ public struct ListAssetFiltersInput {
     }
 }
 
-public struct ListAssetFiltersOutput {
+public struct ListAssetFiltersOutput: Swift.Sendable {
     /// The results of the ListAssetFilters action.
     /// This member is required.
     public var items: [DataZoneClientTypes.AssetFilterSummary]?
@@ -11647,7 +11660,7 @@ public struct ListAssetFiltersOutput {
     }
 }
 
-public struct ListAssetRevisionsInput {
+public struct ListAssetRevisionsInput: Swift.Sendable {
     /// The identifier of the domain.
     /// This member is required.
     public var domainIdentifier: Swift.String?
@@ -11673,7 +11686,7 @@ public struct ListAssetRevisionsInput {
     }
 }
 
-public struct ListAssetRevisionsOutput {
+public struct ListAssetRevisionsOutput: Swift.Sendable {
     /// The results of the ListAssetRevisions action.
     public var items: [DataZoneClientTypes.AssetRevision]?
     /// When the number of revisions is greater than the default value for the MaxResults parameter, or if you explicitly specify a value for MaxResults that is less than the number of revisions, the response includes a pagination token named NextToken. You can specify this NextToken value in a subsequent call to ListAssetRevisions to list the next set of revisions.
@@ -11689,7 +11702,7 @@ public struct ListAssetRevisionsOutput {
     }
 }
 
-public struct ListDataProductRevisionsInput {
+public struct ListDataProductRevisionsInput: Swift.Sendable {
     /// The ID of the domain of the data product revisions that you want to list.
     /// This member is required.
     public var domainIdentifier: Swift.String?
@@ -11715,7 +11728,7 @@ public struct ListDataProductRevisionsInput {
     }
 }
 
-public struct ListDataProductRevisionsOutput {
+public struct ListDataProductRevisionsOutput: Swift.Sendable {
     /// The results of the ListDataProductRevisions action.
     /// This member is required.
     public var items: [DataZoneClientTypes.DataProductRevision]?
@@ -11732,7 +11745,7 @@ public struct ListDataProductRevisionsOutput {
     }
 }
 
-public struct ListDataSourceRunActivitiesInput {
+public struct ListDataSourceRunActivitiesInput: Swift.Sendable {
     /// The identifier of the Amazon DataZone domain in which to list data source run activities.
     /// This member is required.
     public var domainIdentifier: Swift.String?
@@ -11762,7 +11775,7 @@ public struct ListDataSourceRunActivitiesInput {
     }
 }
 
-public struct ListDataSourceRunActivitiesOutput {
+public struct ListDataSourceRunActivitiesOutput: Swift.Sendable {
     /// The results of the ListDataSourceRunActivities action.
     /// This member is required.
     public var items: [DataZoneClientTypes.DataSourceRunActivity]?
@@ -11779,7 +11792,7 @@ public struct ListDataSourceRunActivitiesOutput {
     }
 }
 
-public struct ListEntityOwnersInput {
+public struct ListEntityOwnersInput: Swift.Sendable {
     /// The ID of the domain where you want to list entity owners.
     /// This member is required.
     public var domainIdentifier: Swift.String?
@@ -11811,8 +11824,9 @@ public struct ListEntityOwnersInput {
 }
 
 extension DataZoneClientTypes {
+
     /// The properties of the domain unit owners group.
-    public struct OwnerGroupPropertiesOutput {
+    public struct OwnerGroupPropertiesOutput: Swift.Sendable {
         /// The ID of the domain unit owners group.
         public var groupId: Swift.String?
 
@@ -11823,12 +11837,12 @@ extension DataZoneClientTypes {
             self.groupId = groupId
         }
     }
-
 }
 
 extension DataZoneClientTypes {
+
     /// The properties of the owner user.
-    public struct OwnerUserPropertiesOutput {
+    public struct OwnerUserPropertiesOutput: Swift.Sendable {
         /// The ID of the owner user.
         public var userId: Swift.String?
 
@@ -11839,22 +11853,21 @@ extension DataZoneClientTypes {
             self.userId = userId
         }
     }
-
 }
 
 extension DataZoneClientTypes {
+
     /// The ID of the domain unit owners group.
-    public enum OwnerPropertiesOutput {
+    public enum OwnerPropertiesOutput: Swift.Sendable {
         /// Specifies that the domain unit owner is a user.
         case user(DataZoneClientTypes.OwnerUserPropertiesOutput)
         /// Specifies that the domain unit owner is a group.
         case group(DataZoneClientTypes.OwnerGroupPropertiesOutput)
         case sdkUnknown(Swift.String)
     }
-
 }
 
-public struct ListEntityOwnersOutput {
+public struct ListEntityOwnersOutput: Swift.Sendable {
     /// When the number of entities is greater than the default value for the MaxResults parameter, or if you explicitly specify a value for MaxResults that is less than the number of entities, the response includes a pagination token named NextToken. You can specify this NextToken value in a subsequent call to ListEntityOwners to list the next set of entities.
     public var nextToken: Swift.String?
     /// The owners of the entity.
@@ -11871,7 +11884,7 @@ public struct ListEntityOwnersOutput {
     }
 }
 
-public struct ListEnvironmentActionsInput {
+public struct ListEnvironmentActionsInput: Swift.Sendable {
     /// The ID of the Amazon DataZone domain in which the environment actions are listed.
     /// This member is required.
     public var domainIdentifier: Swift.String?
@@ -11898,8 +11911,9 @@ public struct ListEnvironmentActionsInput {
 }
 
 extension DataZoneClientTypes {
+
     /// The details about the specified action configured for an environment. For example, the details of the specified console links for an analytics tool that is available in this environment.
-    public struct EnvironmentActionSummary {
+    public struct EnvironmentActionSummary: Swift.Sendable {
         /// The environment action description.
         public var description: Swift.String?
         /// The Amazon DataZone domain ID of the environment action.
@@ -11935,10 +11949,9 @@ extension DataZoneClientTypes {
             self.parameters = parameters
         }
     }
-
 }
 
-public struct ListEnvironmentActionsOutput {
+public struct ListEnvironmentActionsOutput: Swift.Sendable {
     /// The results of ListEnvironmentActions.
     public var items: [DataZoneClientTypes.EnvironmentActionSummary]?
     /// When the number of environment actions is greater than the default value for the MaxResults parameter, or if you explicitly specify a value for MaxResults that is less than the number of environment actions, the response includes a pagination token named NextToken. You can specify this NextToken value in a subsequent call to ListEnvironmentActions to list the next set of environment actions.
@@ -11954,7 +11967,7 @@ public struct ListEnvironmentActionsOutput {
     }
 }
 
-public struct ListEnvironmentBlueprintsInput {
+public struct ListEnvironmentBlueprintsInput: Swift.Sendable {
     /// The identifier of the Amazon DataZone domain.
     /// This member is required.
     public var domainIdentifier: Swift.String?
@@ -11984,8 +11997,9 @@ public struct ListEnvironmentBlueprintsInput {
 }
 
 extension DataZoneClientTypes {
+
     /// The details of an environment blueprint summary.
-    public struct EnvironmentBlueprintSummary {
+    public struct EnvironmentBlueprintSummary: Swift.Sendable {
         /// The timestamp of when an environment blueprint was created.
         public var createdAt: Foundation.Date?
         /// The description of a blueprint.
@@ -12024,7 +12038,6 @@ extension DataZoneClientTypes {
             self.updatedAt = updatedAt
         }
     }
-
 }
 
 extension DataZoneClientTypes.EnvironmentBlueprintSummary: Swift.CustomDebugStringConvertible {
@@ -12032,7 +12045,7 @@ extension DataZoneClientTypes.EnvironmentBlueprintSummary: Swift.CustomDebugStri
         "EnvironmentBlueprintSummary(createdAt: \(Swift.String(describing: createdAt)), id: \(Swift.String(describing: id)), name: \(Swift.String(describing: name)), provider: \(Swift.String(describing: provider)), provisioningProperties: \(Swift.String(describing: provisioningProperties)), updatedAt: \(Swift.String(describing: updatedAt)), description: \"CONTENT_REDACTED\")"}
 }
 
-public struct ListEnvironmentBlueprintsOutput {
+public struct ListEnvironmentBlueprintsOutput: Swift.Sendable {
     /// The results of the ListEnvironmentBlueprints action.
     /// This member is required.
     public var items: [DataZoneClientTypes.EnvironmentBlueprintSummary]?
@@ -12049,7 +12062,7 @@ public struct ListEnvironmentBlueprintsOutput {
     }
 }
 
-public struct ListEnvironmentProfilesInput {
+public struct ListEnvironmentProfilesInput: Swift.Sendable {
     /// The identifier of the Amazon Web Services account where you want to list environment profiles.
     public var awsAccountId: Swift.String?
     /// The Amazon Web Services region where you want to list environment profiles.
@@ -12096,8 +12109,9 @@ extension ListEnvironmentProfilesInput: Swift.CustomDebugStringConvertible {
 }
 
 extension DataZoneClientTypes {
+
     /// The details of an environment profile.
-    public struct EnvironmentProfileSummary {
+    public struct EnvironmentProfileSummary: Swift.Sendable {
         /// The identifier of an Amazon Web Services account in which an environment profile exists.
         public var awsAccountId: Swift.String?
         /// The Amazon Web Services Region in which an environment profile exists.
@@ -12153,7 +12167,6 @@ extension DataZoneClientTypes {
             self.updatedAt = updatedAt
         }
     }
-
 }
 
 extension DataZoneClientTypes.EnvironmentProfileSummary: Swift.CustomDebugStringConvertible {
@@ -12161,7 +12174,7 @@ extension DataZoneClientTypes.EnvironmentProfileSummary: Swift.CustomDebugString
         "EnvironmentProfileSummary(awsAccountId: \(Swift.String(describing: awsAccountId)), awsAccountRegion: \(Swift.String(describing: awsAccountRegion)), createdAt: \(Swift.String(describing: createdAt)), createdBy: \(Swift.String(describing: createdBy)), domainId: \(Swift.String(describing: domainId)), environmentBlueprintId: \(Swift.String(describing: environmentBlueprintId)), id: \(Swift.String(describing: id)), projectId: \(Swift.String(describing: projectId)), updatedAt: \(Swift.String(describing: updatedAt)), description: \"CONTENT_REDACTED\", name: \"CONTENT_REDACTED\")"}
 }
 
-public struct ListEnvironmentProfilesOutput {
+public struct ListEnvironmentProfilesOutput: Swift.Sendable {
     /// The results of the ListEnvironmentProfiles action.
     /// This member is required.
     public var items: [DataZoneClientTypes.EnvironmentProfileSummary]?
@@ -12178,7 +12191,7 @@ public struct ListEnvironmentProfilesOutput {
     }
 }
 
-public struct ListEnvironmentsInput {
+public struct ListEnvironmentsInput: Swift.Sendable {
     /// The identifier of the Amazon Web Services account where you want to list environments.
     public var awsAccountId: Swift.String?
     /// The Amazon Web Services region where you want to list environments.
@@ -12233,8 +12246,9 @@ public struct ListEnvironmentsInput {
 }
 
 extension DataZoneClientTypes {
+
     /// The details of an environment.
-    public struct EnvironmentSummary {
+    public struct EnvironmentSummary: Swift.Sendable {
         /// The identifier of the Amazon Web Services account in which an environment exists.
         public var awsAccountId: Swift.String?
         /// The Amazon Web Services Region in which an environment exists.
@@ -12298,7 +12312,6 @@ extension DataZoneClientTypes {
             self.updatedAt = updatedAt
         }
     }
-
 }
 
 extension DataZoneClientTypes.EnvironmentSummary: Swift.CustomDebugStringConvertible {
@@ -12306,7 +12319,7 @@ extension DataZoneClientTypes.EnvironmentSummary: Swift.CustomDebugStringConvert
         "EnvironmentSummary(awsAccountId: \(Swift.String(describing: awsAccountId)), awsAccountRegion: \(Swift.String(describing: awsAccountRegion)), createdAt: \(Swift.String(describing: createdAt)), createdBy: \(Swift.String(describing: createdBy)), domainId: \(Swift.String(describing: domainId)), environmentProfileId: \(Swift.String(describing: environmentProfileId)), id: \(Swift.String(describing: id)), projectId: \(Swift.String(describing: projectId)), provider: \(Swift.String(describing: provider)), status: \(Swift.String(describing: status)), updatedAt: \(Swift.String(describing: updatedAt)), description: \"CONTENT_REDACTED\", name: \"CONTENT_REDACTED\")"}
 }
 
-public struct ListEnvironmentsOutput {
+public struct ListEnvironmentsOutput: Swift.Sendable {
     /// The results of the ListEnvironments action.
     /// This member is required.
     public var items: [DataZoneClientTypes.EnvironmentSummary]?
@@ -12323,7 +12336,7 @@ public struct ListEnvironmentsOutput {
     }
 }
 
-public struct DeleteListingInput {
+public struct DeleteListingInput: Swift.Sendable {
     /// The ID of the Amazon DataZone domain.
     /// This member is required.
     public var domainIdentifier: Swift.String?
@@ -12341,12 +12354,12 @@ public struct DeleteListingInput {
     }
 }
 
-public struct DeleteListingOutput {
+public struct DeleteListingOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct GetListingInput {
+public struct GetListingInput: Swift.Sendable {
     /// The ID of the Amazon DataZone domain.
     /// This member is required.
     public var domainIdentifier: Swift.String?
@@ -12369,18 +12382,18 @@ public struct GetListingInput {
 }
 
 extension DataZoneClientTypes {
+
     /// The details of a listing (aka asset published in a Amazon DataZone catalog).
-    public enum ListingItem {
+    public enum ListingItem: Swift.Sendable {
         /// An asset published in an Amazon DataZone catalog.
         case assetlisting(DataZoneClientTypes.AssetListing)
         /// The data product listing.
         case dataproductlisting(DataZoneClientTypes.DataProductListing)
         case sdkUnknown(Swift.String)
     }
-
 }
 
-public struct GetListingOutput {
+public struct GetListingOutput: Swift.Sendable {
     /// The timestamp of when the listing was created.
     public var createdAt: Foundation.Date?
     /// The Amazon DataZone user who created the listing.
@@ -12442,7 +12455,7 @@ extension GetListingOutput: Swift.CustomDebugStringConvertible {
 
 extension DataZoneClientTypes {
 
-    public enum EdgeDirection: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum EdgeDirection: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case downstream
         case upstream
         case sdkUnknown(Swift.String)
@@ -12471,7 +12484,7 @@ extension DataZoneClientTypes {
 
 extension DataZoneClientTypes {
 
-    public enum SortOrder: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SortOrder: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case ascending
         case descending
         case sdkUnknown(Swift.String)
@@ -12498,7 +12511,7 @@ extension DataZoneClientTypes {
     }
 }
 
-public struct ListLineageNodeHistoryInput {
+public struct ListLineageNodeHistoryInput: Swift.Sendable {
     /// The direction of the data lineage node refers to the lineage node having neighbors in that direction. For example, if direction is UPSTREAM, the ListLineageNodeHistory API responds with historical versions with upstream neighbors only.
     public var direction: DataZoneClientTypes.EdgeDirection?
     /// The ID of the domain where you want to list the history of the specified data lineage node.
@@ -12541,8 +12554,9 @@ public struct ListLineageNodeHistoryInput {
 }
 
 extension DataZoneClientTypes {
+
     /// The summary of the data lineage node.
-    public struct LineageNodeSummary {
+    public struct LineageNodeSummary: Swift.Sendable {
         /// The timestamp at which the data lineage node was created.
         public var createdAt: Foundation.Date?
         /// The user who created the data lineage node.
@@ -12600,10 +12614,9 @@ extension DataZoneClientTypes {
             self.updatedBy = updatedBy
         }
     }
-
 }
 
-public struct ListLineageNodeHistoryOutput {
+public struct ListLineageNodeHistoryOutput: Swift.Sendable {
     /// When the number of history items is greater than the default value for the MaxResults parameter, or if you explicitly specify a value for MaxResults that is less than the number of items, the response includes a pagination token named NextToken. You can specify this NextToken value in a subsequent call to ListLineageNodeHistory to list the next set of items.
     public var nextToken: Swift.String?
     /// The nodes returned by the ListLineageNodeHistory action.
@@ -12621,7 +12634,7 @@ public struct ListLineageNodeHistoryOutput {
 
 extension DataZoneClientTypes {
 
-    public enum TaskStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum TaskStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case active
         case inactive
         case sdkUnknown(Swift.String)
@@ -12650,7 +12663,7 @@ extension DataZoneClientTypes {
 
 extension DataZoneClientTypes {
 
-    public enum NotificationType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum NotificationType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case event
         case task
         case sdkUnknown(Swift.String)
@@ -12677,7 +12690,7 @@ extension DataZoneClientTypes {
     }
 }
 
-public struct ListNotificationsInput {
+public struct ListNotificationsInput: Swift.Sendable {
     /// The time after which you want to list notifications.
     public var afterTimestamp: Foundation.Date?
     /// The time before which you want to list notifications.
@@ -12721,7 +12734,7 @@ public struct ListNotificationsInput {
 
 extension DataZoneClientTypes {
 
-    public enum NotificationResourceType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum NotificationResourceType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case project
         case sdkUnknown(Swift.String)
 
@@ -12746,8 +12759,9 @@ extension DataZoneClientTypes {
 }
 
 extension DataZoneClientTypes {
+
     /// The details of the resource mentioned in a notification.
-    public struct NotificationResource {
+    public struct NotificationResource: Swift.Sendable {
         /// The ID of the resource mentioned in a notification.
         /// This member is required.
         public var id: Swift.String?
@@ -12768,12 +12782,11 @@ extension DataZoneClientTypes {
             self.type = type
         }
     }
-
 }
 
 extension DataZoneClientTypes {
 
-    public enum NotificationRole: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum NotificationRole: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case domainOwner
         case projectContributor
         case projectOwner
@@ -12810,8 +12823,9 @@ extension DataZoneClientTypes {
 }
 
 extension DataZoneClientTypes {
+
     /// The topic of the notification.
-    public struct Topic {
+    public struct Topic: Swift.Sendable {
         /// The details of the resource mentioned in a notification.
         /// This member is required.
         public var resource: DataZoneClientTypes.NotificationResource?
@@ -12833,12 +12847,12 @@ extension DataZoneClientTypes {
             self.subject = subject
         }
     }
-
 }
 
 extension DataZoneClientTypes {
+
     /// The details of a notification generated in Amazon DataZone.
-    public struct NotificationOutput {
+    public struct NotificationOutput: Swift.Sendable {
         /// The action link included in the notification.
         /// This member is required.
         public var actionLink: Swift.String?
@@ -12898,7 +12912,6 @@ extension DataZoneClientTypes {
             self.type = type
         }
     }
-
 }
 
 extension DataZoneClientTypes.NotificationOutput: Swift.CustomDebugStringConvertible {
@@ -12906,7 +12919,7 @@ extension DataZoneClientTypes.NotificationOutput: Swift.CustomDebugStringConvert
         "NotificationOutput(creationTimestamp: \(Swift.String(describing: creationTimestamp)), domainIdentifier: \(Swift.String(describing: domainIdentifier)), identifier: \(Swift.String(describing: identifier)), lastUpdatedTimestamp: \(Swift.String(describing: lastUpdatedTimestamp)), metadata: \(Swift.String(describing: metadata)), status: \(Swift.String(describing: status)), topic: \(Swift.String(describing: topic)), type: \(Swift.String(describing: type)), actionLink: \"CONTENT_REDACTED\", message: \"CONTENT_REDACTED\", title: \"CONTENT_REDACTED\")"}
 }
 
-public struct ListNotificationsOutput {
+public struct ListNotificationsOutput: Swift.Sendable {
     /// When the number of notifications is greater than the default value for the MaxResults parameter, or if you explicitly specify a value for MaxResults that is less than the number of notifications, the response includes a pagination token named NextToken. You can specify this NextToken value in a subsequent call to ListNotifications to list the next set of notifications.
     public var nextToken: Swift.String?
     /// The results of the ListNotifications action.
@@ -12922,7 +12935,7 @@ public struct ListNotificationsOutput {
     }
 }
 
-public struct ListPolicyGrantsInput {
+public struct ListPolicyGrantsInput: Swift.Sendable {
     /// The ID of the domain where you want to list policy grants.
     /// This member is required.
     public var domainIdentifier: Swift.String?
@@ -12959,8 +12972,9 @@ public struct ListPolicyGrantsInput {
 }
 
 extension DataZoneClientTypes {
+
     /// A member of the policy grant list.
-    public struct PolicyGrantMember {
+    public struct PolicyGrantMember: Swift.Sendable {
         /// Specifies the timestamp at which policy grant member was created.
         public var createdAt: Foundation.Date?
         /// Specifies the user who created the policy grant member.
@@ -12983,10 +12997,9 @@ extension DataZoneClientTypes {
             self.principal = principal
         }
     }
-
 }
 
-public struct ListPolicyGrantsOutput {
+public struct ListPolicyGrantsOutput: Swift.Sendable {
     /// The results of this action - the listed grants.
     /// This member is required.
     public var grantList: [DataZoneClientTypes.PolicyGrantMember]?
@@ -13005,7 +13018,7 @@ public struct ListPolicyGrantsOutput {
 
 extension DataZoneClientTypes {
 
-    public enum SortFieldProject: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SortFieldProject: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case name
         case sdkUnknown(Swift.String)
 
@@ -13029,7 +13042,7 @@ extension DataZoneClientTypes {
     }
 }
 
-public struct ListProjectMembershipsInput {
+public struct ListProjectMembershipsInput: Swift.Sendable {
     /// The identifier of the Amazon DataZone domain in which you want to list project memberships.
     /// This member is required.
     public var domainIdentifier: Swift.String?
@@ -13064,8 +13077,9 @@ public struct ListProjectMembershipsInput {
 }
 
 extension DataZoneClientTypes {
+
     /// The details of a group in Amazon DataZone.
-    public struct GroupDetails {
+    public struct GroupDetails: Swift.Sendable {
         /// The identifier of the group in Amazon DataZone.
         /// This member is required.
         public var groupId: Swift.String?
@@ -13077,12 +13091,12 @@ extension DataZoneClientTypes {
             self.groupId = groupId
         }
     }
-
 }
 
 extension DataZoneClientTypes {
+
     /// The user details of a project member.
-    public struct UserDetails {
+    public struct UserDetails: Swift.Sendable {
         /// The identifier of the Amazon DataZone user.
         /// This member is required.
         public var userId: Swift.String?
@@ -13094,24 +13108,24 @@ extension DataZoneClientTypes {
             self.userId = userId
         }
     }
-
 }
 
 extension DataZoneClientTypes {
+
     /// The details about a project member.
-    public enum MemberDetails {
+    public enum MemberDetails: Swift.Sendable {
         /// The user details of a project member.
         case user(DataZoneClientTypes.UserDetails)
         /// The group details of a project member.
         case group(DataZoneClientTypes.GroupDetails)
         case sdkUnknown(Swift.String)
     }
-
 }
 
 extension DataZoneClientTypes {
+
     /// The details of a project member.
-    public struct ProjectMember {
+    public struct ProjectMember: Swift.Sendable {
         /// The designated role of a project member.
         /// This member is required.
         public var designation: DataZoneClientTypes.UserDesignation?
@@ -13128,10 +13142,9 @@ extension DataZoneClientTypes {
             self.memberDetails = memberDetails
         }
     }
-
 }
 
-public struct ListProjectMembershipsOutput {
+public struct ListProjectMembershipsOutput: Swift.Sendable {
     /// The members of the project.
     /// This member is required.
     public var members: [DataZoneClientTypes.ProjectMember]?
@@ -13148,7 +13161,7 @@ public struct ListProjectMembershipsOutput {
     }
 }
 
-public struct ListProjectsInput {
+public struct ListProjectsInput: Swift.Sendable {
     /// The identifier of the Amazon DataZone domain.
     /// This member is required.
     public var domainIdentifier: Swift.String?
@@ -13187,8 +13200,9 @@ extension ListProjectsInput: Swift.CustomDebugStringConvertible {
 }
 
 extension DataZoneClientTypes {
+
     /// The details of a Amazon DataZone project.
-    public struct ProjectSummary {
+    public struct ProjectSummary: Swift.Sendable {
         /// The timestamp of when a project was created.
         public var createdAt: Foundation.Date?
         /// The Amazon DataZone user who created the project.
@@ -13239,7 +13253,6 @@ extension DataZoneClientTypes {
             self.updatedAt = updatedAt
         }
     }
-
 }
 
 extension DataZoneClientTypes.ProjectSummary: Swift.CustomDebugStringConvertible {
@@ -13247,7 +13260,7 @@ extension DataZoneClientTypes.ProjectSummary: Swift.CustomDebugStringConvertible
         "ProjectSummary(createdAt: \(Swift.String(describing: createdAt)), createdBy: \(Swift.String(describing: createdBy)), domainId: \(Swift.String(describing: domainId)), domainUnitId: \(Swift.String(describing: domainUnitId)), failureReasons: \(Swift.String(describing: failureReasons)), id: \(Swift.String(describing: id)), projectStatus: \(Swift.String(describing: projectStatus)), updatedAt: \(Swift.String(describing: updatedAt)), description: \"CONTENT_REDACTED\", name: \"CONTENT_REDACTED\")"}
 }
 
-public struct ListProjectsOutput {
+public struct ListProjectsOutput: Swift.Sendable {
     /// The results of the ListProjects action.
     public var items: [DataZoneClientTypes.ProjectSummary]?
     /// When the number of projects is greater than the default value for the MaxResults parameter, or if you explicitly specify a value for MaxResults that is less than the number of projects, the response includes a pagination token named NextToken. You can specify this NextToken value in a subsequent call to ListProjects to list the next set of projects.
@@ -13265,7 +13278,7 @@ public struct ListProjectsOutput {
 
 extension DataZoneClientTypes {
 
-    public enum SortKey: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SortKey: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case createdAt
         case updatedAt
         case sdkUnknown(Swift.String)
@@ -13292,7 +13305,7 @@ extension DataZoneClientTypes {
     }
 }
 
-public struct ListSubscriptionGrantsInput {
+public struct ListSubscriptionGrantsInput: Swift.Sendable {
     /// The identifier of the Amazon DataZone domain.
     /// This member is required.
     public var domainIdentifier: Swift.String?
@@ -13342,8 +13355,9 @@ public struct ListSubscriptionGrantsInput {
 }
 
 extension DataZoneClientTypes {
+
     /// The details of the subscription grant.
-    public struct SubscriptionGrantSummary {
+    public struct SubscriptionGrantSummary: Swift.Sendable {
         /// The assets included in the subscription grant.
         public var assets: [DataZoneClientTypes.SubscribedAsset]?
         /// The timestamp of when a subscription grant was created.
@@ -13403,10 +13417,9 @@ extension DataZoneClientTypes {
             self.updatedBy = updatedBy
         }
     }
-
 }
 
-public struct ListSubscriptionGrantsOutput {
+public struct ListSubscriptionGrantsOutput: Swift.Sendable {
     /// The results of the ListSubscriptionGrants action.
     /// This member is required.
     public var items: [DataZoneClientTypes.SubscriptionGrantSummary]?
@@ -13423,7 +13436,7 @@ public struct ListSubscriptionGrantsOutput {
     }
 }
 
-public struct ListSubscriptionRequestsInput {
+public struct ListSubscriptionRequestsInput: Swift.Sendable {
     /// The identifier of the subscription request approver's project.
     public var approverProjectId: Swift.String?
     /// The identifier of the Amazon DataZone domain.
@@ -13469,8 +13482,9 @@ public struct ListSubscriptionRequestsInput {
 }
 
 extension DataZoneClientTypes {
+
     /// The details of the subscription request.
-    public struct SubscriptionRequestSummary {
+    public struct SubscriptionRequestSummary: Swift.Sendable {
         /// The timestamp of when a subscription request was created.
         /// This member is required.
         public var createdAt: Foundation.Date?
@@ -13534,7 +13548,6 @@ extension DataZoneClientTypes {
             self.updatedBy = updatedBy
         }
     }
-
 }
 
 extension DataZoneClientTypes.SubscriptionRequestSummary: Swift.CustomDebugStringConvertible {
@@ -13542,7 +13555,7 @@ extension DataZoneClientTypes.SubscriptionRequestSummary: Swift.CustomDebugStrin
         "SubscriptionRequestSummary(createdAt: \(Swift.String(describing: createdAt)), createdBy: \(Swift.String(describing: createdBy)), domainId: \(Swift.String(describing: domainId)), id: \(Swift.String(describing: id)), reviewerId: \(Swift.String(describing: reviewerId)), status: \(Swift.String(describing: status)), subscribedListings: \(Swift.String(describing: subscribedListings)), subscribedPrincipals: \(Swift.String(describing: subscribedPrincipals)), updatedAt: \(Swift.String(describing: updatedAt)), updatedBy: \(Swift.String(describing: updatedBy)), decisionComment: \"CONTENT_REDACTED\", requestReason: \"CONTENT_REDACTED\")"}
 }
 
-public struct ListSubscriptionRequestsOutput {
+public struct ListSubscriptionRequestsOutput: Swift.Sendable {
     /// The results of the ListSubscriptionRequests action.
     /// This member is required.
     public var items: [DataZoneClientTypes.SubscriptionRequestSummary]?
@@ -13559,7 +13572,7 @@ public struct ListSubscriptionRequestsOutput {
     }
 }
 
-public struct ListSubscriptionsInput {
+public struct ListSubscriptionsInput: Swift.Sendable {
     /// The identifier of the project for the subscription's approver.
     public var approverProjectId: Swift.String?
     /// The identifier of the Amazon DataZone domain.
@@ -13609,8 +13622,9 @@ public struct ListSubscriptionsInput {
 }
 
 extension DataZoneClientTypes {
+
     /// The details of the subscription.
-    public struct SubscriptionSummary {
+    public struct SubscriptionSummary: Swift.Sendable {
         /// The timestamp of when the subscription was created.
         /// This member is required.
         public var createdAt: Foundation.Date?
@@ -13669,10 +13683,9 @@ extension DataZoneClientTypes {
             self.updatedBy = updatedBy
         }
     }
-
 }
 
-public struct ListSubscriptionsOutput {
+public struct ListSubscriptionsOutput: Swift.Sendable {
     /// The results of the ListSubscriptions action.
     /// This member is required.
     public var items: [DataZoneClientTypes.SubscriptionSummary]?
@@ -13689,7 +13702,7 @@ public struct ListSubscriptionsOutput {
     }
 }
 
-public struct ListSubscriptionTargetsInput {
+public struct ListSubscriptionTargetsInput: Swift.Sendable {
     /// The identifier of the Amazon DataZone domain where you want to list subscription targets.
     /// This member is required.
     public var domainIdentifier: Swift.String?
@@ -13724,8 +13737,9 @@ public struct ListSubscriptionTargetsInput {
 }
 
 extension DataZoneClientTypes {
+
     /// The details of the subscription target.
-    public struct SubscriptionTargetSummary {
+    public struct SubscriptionTargetSummary: Swift.Sendable {
         /// The asset types included in the subscription target.
         /// This member is required.
         public var applicableAssetTypes: [Swift.String]?
@@ -13805,7 +13819,6 @@ extension DataZoneClientTypes {
             self.updatedBy = updatedBy
         }
     }
-
 }
 
 extension DataZoneClientTypes.SubscriptionTargetSummary: Swift.CustomDebugStringConvertible {
@@ -13813,7 +13826,7 @@ extension DataZoneClientTypes.SubscriptionTargetSummary: Swift.CustomDebugString
         "SubscriptionTargetSummary(applicableAssetTypes: \(Swift.String(describing: applicableAssetTypes)), authorizedPrincipals: \(Swift.String(describing: authorizedPrincipals)), createdAt: \(Swift.String(describing: createdAt)), createdBy: \(Swift.String(describing: createdBy)), domainId: \(Swift.String(describing: domainId)), environmentId: \(Swift.String(describing: environmentId)), id: \(Swift.String(describing: id)), manageAccessRole: \(Swift.String(describing: manageAccessRole)), projectId: \(Swift.String(describing: projectId)), provider: \(Swift.String(describing: provider)), subscriptionTargetConfig: \(Swift.String(describing: subscriptionTargetConfig)), type: \(Swift.String(describing: type)), updatedAt: \(Swift.String(describing: updatedAt)), updatedBy: \(Swift.String(describing: updatedBy)), name: \"CONTENT_REDACTED\")"}
 }
 
-public struct ListSubscriptionTargetsOutput {
+public struct ListSubscriptionTargetsOutput: Swift.Sendable {
     /// The results of the ListSubscriptionTargets action.
     /// This member is required.
     public var items: [DataZoneClientTypes.SubscriptionTargetSummary]?
@@ -13830,7 +13843,7 @@ public struct ListSubscriptionTargetsOutput {
     }
 }
 
-public struct ListTagsForResourceInput {
+public struct ListTagsForResourceInput: Swift.Sendable {
     /// The ARN of the resource whose tags you want to list.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -13843,7 +13856,7 @@ public struct ListTagsForResourceInput {
     }
 }
 
-public struct ListTagsForResourceOutput {
+public struct ListTagsForResourceOutput: Swift.Sendable {
     /// The tags of the specified resource.
     public var tags: [Swift.String: Swift.String]?
 
@@ -13855,7 +13868,7 @@ public struct ListTagsForResourceOutput {
     }
 }
 
-public struct ListTimeSeriesDataPointsInput {
+public struct ListTimeSeriesDataPointsInput: Swift.Sendable {
     /// The ID of the Amazon DataZone domain that houses the assets for which you want to list time series data points.
     /// This member is required.
     public var domainIdentifier: Swift.String?
@@ -13899,7 +13912,7 @@ public struct ListTimeSeriesDataPointsInput {
     }
 }
 
-public struct ListTimeSeriesDataPointsOutput {
+public struct ListTimeSeriesDataPointsOutput: Swift.Sendable {
     /// The results of the ListTimeSeriesDataPoints action.
     public var items: [DataZoneClientTypes.TimeSeriesDataPointSummaryFormOutput]?
     /// When the number of data points is greater than the default value for the MaxResults parameter, or if you explicitly specify a value for MaxResults that is less than the number of data points, the response includes a pagination token named NextToken. You can specify this NextToken value in a subsequent call to ListTimeSeriesDataPoints to list the next set of data points.
@@ -13915,7 +13928,7 @@ public struct ListTimeSeriesDataPointsOutput {
     }
 }
 
-public struct GetMetadataGenerationRunInput {
+public struct GetMetadataGenerationRunInput: Swift.Sendable {
     /// The ID of the Amazon DataZone domain the metadata generation run of which you want to get.
     /// This member is required.
     public var domainIdentifier: Swift.String?
@@ -13935,7 +13948,7 @@ public struct GetMetadataGenerationRunInput {
 
 extension DataZoneClientTypes {
 
-    public enum MetadataGenerationRunStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum MetadataGenerationRunStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case canceled
         case failed
         case inProgress
@@ -13973,7 +13986,7 @@ extension DataZoneClientTypes {
 
 extension DataZoneClientTypes {
 
-    public enum MetadataGenerationTargetType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum MetadataGenerationTargetType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case asset
         case sdkUnknown(Swift.String)
 
@@ -13998,8 +14011,9 @@ extension DataZoneClientTypes {
 }
 
 extension DataZoneClientTypes {
+
     /// The asset for which metadata was generated.
-    public struct MetadataGenerationRunTarget {
+    public struct MetadataGenerationRunTarget: Swift.Sendable {
         /// The ID of the metadata generation run's target.
         /// This member is required.
         public var identifier: Swift.String?
@@ -14020,12 +14034,11 @@ extension DataZoneClientTypes {
             self.type = type
         }
     }
-
 }
 
 extension DataZoneClientTypes {
 
-    public enum MetadataGenerationRunType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum MetadataGenerationRunType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case businessDescriptions
         case sdkUnknown(Swift.String)
 
@@ -14049,7 +14062,7 @@ extension DataZoneClientTypes {
     }
 }
 
-public struct GetMetadataGenerationRunOutput {
+public struct GetMetadataGenerationRunOutput: Swift.Sendable {
     /// The timestamp of when the metadata generation run was start.
     public var createdAt: Foundation.Date?
     /// The Amazon DataZone user who started the metadata generation run.
@@ -14092,7 +14105,7 @@ public struct GetMetadataGenerationRunOutput {
     }
 }
 
-public struct ListMetadataGenerationRunsInput {
+public struct ListMetadataGenerationRunsInput: Swift.Sendable {
     /// The ID of the Amazon DataZone domain where you want to list metadata generation runs.
     /// This member is required.
     public var domainIdentifier: Swift.String?
@@ -14122,8 +14135,9 @@ public struct ListMetadataGenerationRunsInput {
 }
 
 extension DataZoneClientTypes {
+
     /// The metadata generation run.
-    public struct MetadataGenerationRunItem {
+    public struct MetadataGenerationRunItem: Swift.Sendable {
         /// The timestamp at which the metadata generation run was created.
         public var createdAt: Foundation.Date?
         /// The user who created the metadata generation run.
@@ -14165,10 +14179,9 @@ extension DataZoneClientTypes {
             self.type = type
         }
     }
-
 }
 
-public struct ListMetadataGenerationRunsOutput {
+public struct ListMetadataGenerationRunsOutput: Swift.Sendable {
     /// The results of the ListMetadataGenerationRuns action.
     public var items: [DataZoneClientTypes.MetadataGenerationRunItem]?
     /// When the number of metadata generation runs is greater than the default value for the MaxResults parameter, or if you explicitly specify a value for MaxResults that is less than the number of metadata generation runs, the response includes a pagination token named NextToken. You can specify this NextToken value in a subsequent call to ListMetadataGenerationRuns to list the next set of revisions.
@@ -14184,7 +14197,7 @@ public struct ListMetadataGenerationRunsOutput {
     }
 }
 
-public struct StartMetadataGenerationRunInput {
+public struct StartMetadataGenerationRunInput: Swift.Sendable {
     /// A unique, case-sensitive identifier to ensure idempotency of the request. This field is automatically populated if not provided.
     public var clientToken: Swift.String?
     /// The ID of the Amazon DataZone domain where you want to start a metadata generation run.
@@ -14216,7 +14229,7 @@ public struct StartMetadataGenerationRunInput {
     }
 }
 
-public struct StartMetadataGenerationRunOutput {
+public struct StartMetadataGenerationRunOutput: Swift.Sendable {
     /// The timestamp at which the metadata generation run was started.
     public var createdAt: Foundation.Date?
     /// The ID of the user who started the metadata generation run.
@@ -14254,7 +14267,7 @@ public struct StartMetadataGenerationRunOutput {
     }
 }
 
-public struct PostLineageEventInput {
+public struct PostLineageEventInput: Swift.Sendable {
     /// A unique, case-sensitive identifier that is provided to ensure the idempotency of the request.
     public var clientToken: Swift.String?
     /// The ID of the domain where you want to post a data lineage event.
@@ -14281,14 +14294,15 @@ extension PostLineageEventInput: Swift.CustomDebugStringConvertible {
         "PostLineageEventInput(clientToken: \(Swift.String(describing: clientToken)), domainIdentifier: \(Swift.String(describing: domainIdentifier)), event: \"CONTENT_REDACTED\")"}
 }
 
-public struct PostLineageEventOutput {
+public struct PostLineageEventOutput: Swift.Sendable {
 
     public init() { }
 }
 
 extension DataZoneClientTypes {
+
     /// The time series data points form.
-    public struct TimeSeriesDataPointFormInput {
+    public struct TimeSeriesDataPointFormInput: Swift.Sendable {
         /// The content of the time series data points form.
         public var content: Swift.String?
         /// The name of the time series data points form.
@@ -14318,10 +14332,9 @@ extension DataZoneClientTypes {
             self.typeRevision = typeRevision
         }
     }
-
 }
 
-public struct PostTimeSeriesDataPointsInput {
+public struct PostTimeSeriesDataPointsInput: Swift.Sendable {
     /// A unique, case-sensitive identifier that is provided to ensure the idempotency of the request.
     public var clientToken: Swift.String?
     /// The ID of the Amazon DataZone domain in which you want to post time series data points.
@@ -14353,7 +14366,7 @@ public struct PostTimeSeriesDataPointsInput {
     }
 }
 
-public struct PostTimeSeriesDataPointsOutput {
+public struct PostTimeSeriesDataPointsOutput: Swift.Sendable {
     /// The ID of the Amazon DataZone domain in which you want to post time series data points.
     public var domainId: Swift.String?
     /// The ID of the asset for which you want to post time series data points.
@@ -14378,8 +14391,9 @@ public struct PostTimeSeriesDataPointsOutput {
 }
 
 extension DataZoneClientTypes {
+
     /// The details of the automatically generated business metadata that is rejected.
-    public struct RejectChoice {
+    public struct RejectChoice: Swift.Sendable {
         /// Specifies the the automatically generated business metadata that can be rejected.
         public var predictionChoices: [Swift.Int]?
         /// Specifies the target (for example, a column name) where a prediction can be rejected.
@@ -14395,12 +14409,11 @@ extension DataZoneClientTypes {
             self.predictionTarget = predictionTarget
         }
     }
-
 }
 
 extension DataZoneClientTypes {
 
-    public enum RejectRuleBehavior: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum RejectRuleBehavior: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case all
         case `none`
         case sdkUnknown(Swift.String)
@@ -14428,8 +14441,9 @@ extension DataZoneClientTypes {
 }
 
 extension DataZoneClientTypes {
+
     /// Specifies the rule and the threshold under which a prediction can be rejected.
-    public struct RejectRule {
+    public struct RejectRule: Swift.Sendable {
         /// Specifies whether you want to reject the top prediction for all targets or none.
         public var rule: DataZoneClientTypes.RejectRuleBehavior?
         /// The confidence score that specifies the condition at which a prediction can be rejected.
@@ -14444,10 +14458,9 @@ extension DataZoneClientTypes {
             self.threshold = threshold
         }
     }
-
 }
 
-public struct RejectPredictionsInput {
+public struct RejectPredictionsInput: Swift.Sendable {
     /// A unique, case-sensitive identifier that is provided to ensure the idempotency of the request.
     public var clientToken: Swift.String?
     /// The identifier of the Amazon DataZone domain.
@@ -14481,7 +14494,7 @@ public struct RejectPredictionsInput {
     }
 }
 
-public struct RejectPredictionsOutput {
+public struct RejectPredictionsOutput: Swift.Sendable {
     /// The ID of the asset.
     /// This member is required.
     public var assetId: Swift.String?
@@ -14504,7 +14517,7 @@ public struct RejectPredictionsOutput {
     }
 }
 
-public struct RejectSubscriptionRequestInput {
+public struct RejectSubscriptionRequestInput: Swift.Sendable {
     /// The decision comment of the rejected subscription request.
     public var decisionComment: Swift.String?
     /// The identifier of the Amazon DataZone domain in which the subscription request was rejected.
@@ -14531,7 +14544,7 @@ extension RejectSubscriptionRequestInput: Swift.CustomDebugStringConvertible {
         "RejectSubscriptionRequestInput(domainIdentifier: \(Swift.String(describing: domainIdentifier)), identifier: \(Swift.String(describing: identifier)), decisionComment: \"CONTENT_REDACTED\")"}
 }
 
-public struct RejectSubscriptionRequestOutput {
+public struct RejectSubscriptionRequestOutput: Swift.Sendable {
     /// The timestamp of when the subscription request was rejected.
     /// This member is required.
     public var createdAt: Foundation.Date?
@@ -14601,7 +14614,7 @@ extension RejectSubscriptionRequestOutput: Swift.CustomDebugStringConvertible {
         "RejectSubscriptionRequestOutput(createdAt: \(Swift.String(describing: createdAt)), createdBy: \(Swift.String(describing: createdBy)), domainId: \(Swift.String(describing: domainId)), id: \(Swift.String(describing: id)), reviewerId: \(Swift.String(describing: reviewerId)), status: \(Swift.String(describing: status)), subscribedListings: \(Swift.String(describing: subscribedListings)), subscribedPrincipals: \(Swift.String(describing: subscribedPrincipals)), updatedAt: \(Swift.String(describing: updatedAt)), updatedBy: \(Swift.String(describing: updatedBy)), decisionComment: \"CONTENT_REDACTED\", requestReason: \"CONTENT_REDACTED\")"}
 }
 
-public struct RemoveEntityOwnerInput {
+public struct RemoveEntityOwnerInput: Swift.Sendable {
     /// A unique, case-sensitive identifier that is provided to ensure the idempotency of the request.
     public var clientToken: Swift.String?
     /// The ID of the domain where you want to remove an owner from an entity.
@@ -14633,12 +14646,12 @@ public struct RemoveEntityOwnerInput {
     }
 }
 
-public struct RemoveEntityOwnerOutput {
+public struct RemoveEntityOwnerOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct RemovePolicyGrantInput {
+public struct RemovePolicyGrantInput: Swift.Sendable {
     /// A unique, case-sensitive identifier that is provided to ensure the idempotency of the request.
     public var clientToken: Swift.String?
     /// The ID of the domain where you want to remove a policy grant.
@@ -14675,12 +14688,12 @@ public struct RemovePolicyGrantInput {
     }
 }
 
-public struct RemovePolicyGrantOutput {
+public struct RemovePolicyGrantOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct RevokeSubscriptionInput {
+public struct RevokeSubscriptionInput: Swift.Sendable {
     /// The identifier of the Amazon DataZone domain where you want to revoke a subscription.
     /// This member is required.
     public var domainIdentifier: Swift.String?
@@ -14702,7 +14715,7 @@ public struct RevokeSubscriptionInput {
     }
 }
 
-public struct RevokeSubscriptionOutput {
+public struct RevokeSubscriptionOutput: Swift.Sendable {
     /// The timestamp of when the subscription was revoked.
     /// This member is required.
     public var createdAt: Foundation.Date?
@@ -14764,7 +14777,7 @@ public struct RevokeSubscriptionOutput {
 
 extension DataZoneClientTypes {
 
-    public enum SearchOutputAdditionalAttribute: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SearchOutputAdditionalAttribute: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case forms
         case timeSeriesDataPointForms
         case sdkUnknown(Swift.String)
@@ -14792,8 +14805,9 @@ extension DataZoneClientTypes {
 }
 
 extension DataZoneClientTypes {
+
     /// A search filter in Amazon DataZone.
-    public struct Filter {
+    public struct Filter: Swift.Sendable {
         /// A search filter attribute in Amazon DataZone.
         /// This member is required.
         public var attribute: Swift.String?
@@ -14810,12 +14824,12 @@ extension DataZoneClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension DataZoneClientTypes {
+
     /// The details of the search.
-    public struct SearchInItem {
+    public struct SearchInItem: Swift.Sendable {
         /// The search attribute.
         /// This member is required.
         public var attribute: Swift.String?
@@ -14827,12 +14841,11 @@ extension DataZoneClientTypes {
             self.attribute = attribute
         }
     }
-
 }
 
 extension DataZoneClientTypes {
 
-    public enum InventorySearchScope: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum InventorySearchScope: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case asset
         case dataProduct
         case glossary
@@ -14866,8 +14879,9 @@ extension DataZoneClientTypes {
 }
 
 extension DataZoneClientTypes {
+
     /// The details of the way to sort search results.
-    public struct SearchSort {
+    public struct SearchSort: Swift.Sendable {
         /// The attribute detail of the way to sort search results.
         /// This member is required.
         public var attribute: Swift.String?
@@ -14883,12 +14897,12 @@ extension DataZoneClientTypes {
             self.order = order
         }
     }
-
 }
 
 extension DataZoneClientTypes {
+
     /// The details of a business glossary.
-    public struct GlossaryItem {
+    public struct GlossaryItem: Swift.Sendable {
         /// The timestamp of when the glossary was created.
         public var createdAt: Foundation.Date?
         /// The Amazon DataZone user who created the glossary.
@@ -14940,7 +14954,6 @@ extension DataZoneClientTypes {
             self.updatedBy = updatedBy
         }
     }
-
 }
 
 extension DataZoneClientTypes.GlossaryItem: Swift.CustomDebugStringConvertible {
@@ -14949,8 +14962,9 @@ extension DataZoneClientTypes.GlossaryItem: Swift.CustomDebugStringConvertible {
 }
 
 extension DataZoneClientTypes {
+
     /// The details of a business glossary term.
-    public struct GlossaryTermItem {
+    public struct GlossaryTermItem: Swift.Sendable {
         /// The timestamp of when a business glossary term was created.
         public var createdAt: Foundation.Date?
         /// The Amazon DataZone user who created the business glossary.
@@ -15010,7 +15024,6 @@ extension DataZoneClientTypes {
             self.updatedBy = updatedBy
         }
     }
-
 }
 
 extension DataZoneClientTypes.GlossaryTermItem: Swift.CustomDebugStringConvertible {
@@ -15019,8 +15032,9 @@ extension DataZoneClientTypes.GlossaryTermItem: Swift.CustomDebugStringConvertib
 }
 
 extension DataZoneClientTypes {
+
     /// The details of the search results.
-    public enum SearchInventoryResultItem {
+    public enum SearchInventoryResultItem: Swift.Sendable {
         /// The glossary item included in the search results.
         case glossaryitem(DataZoneClientTypes.GlossaryItem)
         /// The glossary term item included in the search results.
@@ -15031,10 +15045,9 @@ extension DataZoneClientTypes {
         case dataproductitem(DataZoneClientTypes.DataProductResultItem)
         case sdkUnknown(Swift.String)
     }
-
 }
 
-public struct SearchOutput {
+public struct SearchOutput: Swift.Sendable {
     /// The results of the Search action.
     public var items: [DataZoneClientTypes.SearchInventoryResultItem]?
     /// When the number of results is greater than the default value for the MaxResults parameter, or if you explicitly specify a value for MaxResults that is less than the number of results, the response includes a pagination token named NextToken. You can specify this NextToken value in a subsequent call to Search to list the next set of results.
@@ -15056,7 +15069,7 @@ public struct SearchOutput {
 
 extension DataZoneClientTypes {
 
-    public enum GroupSearchType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum GroupSearchType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case datazoneSsoGroup
         case ssoGroup
         case sdkUnknown(Swift.String)
@@ -15083,7 +15096,7 @@ extension DataZoneClientTypes {
     }
 }
 
-public struct SearchGroupProfilesInput {
+public struct SearchGroupProfilesInput: Swift.Sendable {
     /// The identifier of the Amazon DataZone domain in which you want to search group profiles.
     /// This member is required.
     public var domainIdentifier: Swift.String?
@@ -15119,8 +15132,9 @@ extension SearchGroupProfilesInput: Swift.CustomDebugStringConvertible {
 }
 
 extension DataZoneClientTypes {
+
     /// The details of a group profile.
-    public struct GroupProfileSummary {
+    public struct GroupProfileSummary: Swift.Sendable {
         /// The ID of the Amazon DataZone domain of a group profile.
         public var domainId: Swift.String?
         /// The group name of a group profile.
@@ -15143,7 +15157,6 @@ extension DataZoneClientTypes {
             self.status = status
         }
     }
-
 }
 
 extension DataZoneClientTypes.GroupProfileSummary: Swift.CustomDebugStringConvertible {
@@ -15151,7 +15164,7 @@ extension DataZoneClientTypes.GroupProfileSummary: Swift.CustomDebugStringConver
         "GroupProfileSummary(domainId: \(Swift.String(describing: domainId)), id: \(Swift.String(describing: id)), status: \(Swift.String(describing: status)), groupName: \"CONTENT_REDACTED\")"}
 }
 
-public struct SearchGroupProfilesOutput {
+public struct SearchGroupProfilesOutput: Swift.Sendable {
     /// The results of the SearchGroupProfiles action.
     public var items: [DataZoneClientTypes.GroupProfileSummary]?
     /// When the number of results is greater than the default value for the MaxResults parameter, or if you explicitly specify a value for MaxResults that is less than the number of results, the response includes a pagination token named NextToken. You can specify this NextToken value in a subsequent call to SearchGroupProfiles to list the next set of results.
@@ -15168,18 +15181,18 @@ public struct SearchGroupProfilesOutput {
 }
 
 extension DataZoneClientTypes {
+
     /// The details of the results of the SearchListings action.
-    public enum SearchResultItem {
+    public enum SearchResultItem: Swift.Sendable {
         /// The asset listing included in the results of the SearchListings action.
         case assetlisting(DataZoneClientTypes.AssetListingItem)
         /// The data product listing.
         case dataproductlisting(DataZoneClientTypes.DataProductListingItem)
         case sdkUnknown(Swift.String)
     }
-
 }
 
-public struct SearchListingsOutput {
+public struct SearchListingsOutput: Swift.Sendable {
     /// The results of the SearchListings action.
     public var items: [DataZoneClientTypes.SearchResultItem]?
     /// When the number of results is greater than the default value for the MaxResults parameter, or if you explicitly specify a value for MaxResults that is less than the number of results, the response includes a pagination token named NextToken. You can specify this NextToken value in a subsequent call to SearchListings to list the next set of results.
@@ -15201,7 +15214,7 @@ public struct SearchListingsOutput {
 
 extension DataZoneClientTypes {
 
-    public enum TypesSearchScope: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum TypesSearchScope: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case assetType
         case formType
         case lineageNodeType
@@ -15232,8 +15245,9 @@ extension DataZoneClientTypes {
 }
 
 extension DataZoneClientTypes {
+
     /// The details of the metadata form type.
-    public struct FormTypeData {
+    public struct FormTypeData: Swift.Sendable {
         /// The timestamp of when the metadata form type was created.
         public var createdAt: Foundation.Date?
         /// The Amazon DataZone user who created teh metadata form type.
@@ -15291,7 +15305,6 @@ extension DataZoneClientTypes {
             self.status = status
         }
     }
-
 }
 
 extension DataZoneClientTypes.FormTypeData: Swift.CustomDebugStringConvertible {
@@ -15300,8 +15313,9 @@ extension DataZoneClientTypes.FormTypeData: Swift.CustomDebugStringConvertible {
 }
 
 extension DataZoneClientTypes {
+
     /// The details of a data lineage node type.
-    public struct LineageNodeTypeItem {
+    public struct LineageNodeTypeItem: Swift.Sendable {
         /// The timestamp at which the data lineage node type was created.
         public var createdAt: Foundation.Date?
         /// The user who created the data lineage node type.
@@ -15347,12 +15361,12 @@ extension DataZoneClientTypes {
             self.updatedBy = updatedBy
         }
     }
-
 }
 
 extension DataZoneClientTypes {
+
     /// The details of the results of the SearchTypes action.
-    public enum SearchTypesResultItem {
+    public enum SearchTypesResultItem: Swift.Sendable {
         /// The asset type included in the results of the SearchTypes action.
         case assettypeitem(DataZoneClientTypes.AssetTypeItem)
         /// The form type included in the results of the SearchTypes action.
@@ -15361,10 +15375,9 @@ extension DataZoneClientTypes {
         case lineagenodetypeitem(DataZoneClientTypes.LineageNodeTypeItem)
         case sdkUnknown(Swift.String)
     }
-
 }
 
-public struct SearchTypesOutput {
+public struct SearchTypesOutput: Swift.Sendable {
     /// The results of the SearchTypes action.
     public var items: [DataZoneClientTypes.SearchTypesResultItem]?
     /// When the number of results is greater than the default value for the MaxResults parameter, or if you explicitly specify a value for MaxResults that is less than the number of results, the response includes a pagination token named NextToken. You can specify this NextToken value in a subsequent call to SearchTypes to list the next set of results.
@@ -15386,7 +15399,7 @@ public struct SearchTypesOutput {
 
 extension DataZoneClientTypes {
 
-    public enum UserSearchType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum UserSearchType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case datazoneIamUser
         case datazoneSsoUser
         case datazoneUser
@@ -15419,7 +15432,7 @@ extension DataZoneClientTypes {
     }
 }
 
-public struct SearchUserProfilesInput {
+public struct SearchUserProfilesInput: Swift.Sendable {
     /// The identifier of the Amazon DataZone domain in which you want to search user profiles.
     /// This member is required.
     public var domainIdentifier: Swift.String?
@@ -15455,8 +15468,9 @@ extension SearchUserProfilesInput: Swift.CustomDebugStringConvertible {
 }
 
 extension DataZoneClientTypes {
+
     /// The details of the user profile.
-    public struct UserProfileSummary {
+    public struct UserProfileSummary: Swift.Sendable {
         /// The details of the user profile.
         public var details: DataZoneClientTypes.UserProfileDetails?
         /// The ID of the Amazon DataZone domain of the user profile.
@@ -15483,10 +15497,9 @@ extension DataZoneClientTypes {
             self.type = type
         }
     }
-
 }
 
-public struct SearchUserProfilesOutput {
+public struct SearchUserProfilesOutput: Swift.Sendable {
     /// The results of the SearchUserProfiles action.
     public var items: [DataZoneClientTypes.UserProfileSummary]?
     /// When the number of results is greater than the default value for the MaxResults parameter, or if you explicitly specify a value for MaxResults that is less than the number of results, the response includes a pagination token named NextToken. You can specify this NextToken value in a subsequent call to SearchUserProfiles to list the next set of results.
@@ -15502,7 +15515,7 @@ public struct SearchUserProfilesOutput {
     }
 }
 
-public struct TagResourceInput {
+public struct TagResourceInput: Swift.Sendable {
     /// The ARN of the resource to be tagged in Amazon DataZone.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -15520,7 +15533,7 @@ public struct TagResourceInput {
     }
 }
 
-public struct TagResourceOutput {
+public struct TagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
@@ -15550,7 +15563,7 @@ public struct UnauthorizedException: ClientRuntime.ModeledError, AWSClientRuntim
     }
 }
 
-public struct UntagResourceInput {
+public struct UntagResourceInput: Swift.Sendable {
     /// The ARN of the resource to be untagged in Amazon DataZone.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -15568,12 +15581,12 @@ public struct UntagResourceInput {
     }
 }
 
-public struct UntagResourceOutput {
+public struct UntagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdateEnvironmentInput {
+public struct UpdateEnvironmentInput: Swift.Sendable {
     /// The description to be updated as part of the UpdateEnvironment action.
     public var description: Swift.String?
     /// The identifier of the domain in which the environment is to be updated.
@@ -15603,7 +15616,7 @@ public struct UpdateEnvironmentInput {
     }
 }
 
-public struct UpdateEnvironmentOutput {
+public struct UpdateEnvironmentOutput: Swift.Sendable {
     /// The identifier of the Amazon Web Services account in which the environment is to be updated.
     public var awsAccountId: Swift.String?
     /// The Amazon Web Services Region in which the environment is updated.
@@ -15705,7 +15718,7 @@ extension UpdateEnvironmentOutput: Swift.CustomDebugStringConvertible {
         "UpdateEnvironmentOutput(awsAccountId: \(Swift.String(describing: awsAccountId)), awsAccountRegion: \(Swift.String(describing: awsAccountRegion)), createdAt: \(Swift.String(describing: createdAt)), createdBy: \(Swift.String(describing: createdBy)), deploymentProperties: \(Swift.String(describing: deploymentProperties)), domainId: \(Swift.String(describing: domainId)), environmentActions: \(Swift.String(describing: environmentActions)), environmentBlueprintId: \(Swift.String(describing: environmentBlueprintId)), environmentProfileId: \(Swift.String(describing: environmentProfileId)), glossaryTerms: \(Swift.String(describing: glossaryTerms)), id: \(Swift.String(describing: id)), lastDeployment: \(Swift.String(describing: lastDeployment)), projectId: \(Swift.String(describing: projectId)), provider: \(Swift.String(describing: provider)), provisionedResources: \(Swift.String(describing: provisionedResources)), provisioningProperties: \(Swift.String(describing: provisioningProperties)), status: \(Swift.String(describing: status)), updatedAt: \(Swift.String(describing: updatedAt)), userParameters: \(Swift.String(describing: userParameters)), description: \"CONTENT_REDACTED\", name: \"CONTENT_REDACTED\")"}
 }
 
-public struct UpdateEnvironmentActionInput {
+public struct UpdateEnvironmentActionInput: Swift.Sendable {
     /// The description of the environment action.
     public var description: Swift.String?
     /// The domain ID of the environment action.
@@ -15740,7 +15753,7 @@ public struct UpdateEnvironmentActionInput {
     }
 }
 
-public struct UpdateEnvironmentActionOutput {
+public struct UpdateEnvironmentActionOutput: Swift.Sendable {
     /// The description of the environment action.
     public var description: Swift.String?
     /// The domain ID of the environment action.
@@ -15777,7 +15790,7 @@ public struct UpdateEnvironmentActionOutput {
     }
 }
 
-public struct UpdateEnvironmentProfileInput {
+public struct UpdateEnvironmentProfileInput: Swift.Sendable {
     /// The Amazon Web Services account in which a specified environment profile is to be udpated.
     public var awsAccountId: Swift.String?
     /// The Amazon Web Services Region in which a specified environment profile is to be updated.
@@ -15820,7 +15833,7 @@ extension UpdateEnvironmentProfileInput: Swift.CustomDebugStringConvertible {
         "UpdateEnvironmentProfileInput(awsAccountId: \(Swift.String(describing: awsAccountId)), awsAccountRegion: \(Swift.String(describing: awsAccountRegion)), description: \(Swift.String(describing: description)), domainIdentifier: \(Swift.String(describing: domainIdentifier)), identifier: \(Swift.String(describing: identifier)), userParameters: \(Swift.String(describing: userParameters)), name: \"CONTENT_REDACTED\")"}
 }
 
-public struct UpdateEnvironmentProfileOutput {
+public struct UpdateEnvironmentProfileOutput: Swift.Sendable {
     /// The Amazon Web Services account in which a specified environment profile is to be udpated.
     public var awsAccountId: Swift.String?
     /// The Amazon Web Services Region in which a specified environment profile is to be updated.
@@ -15886,7 +15899,7 @@ extension UpdateEnvironmentProfileOutput: Swift.CustomDebugStringConvertible {
         "UpdateEnvironmentProfileOutput(awsAccountId: \(Swift.String(describing: awsAccountId)), awsAccountRegion: \(Swift.String(describing: awsAccountRegion)), createdAt: \(Swift.String(describing: createdAt)), createdBy: \(Swift.String(describing: createdBy)), domainId: \(Swift.String(describing: domainId)), environmentBlueprintId: \(Swift.String(describing: environmentBlueprintId)), id: \(Swift.String(describing: id)), projectId: \(Swift.String(describing: projectId)), updatedAt: \(Swift.String(describing: updatedAt)), userParameters: \(Swift.String(describing: userParameters)), description: \"CONTENT_REDACTED\", name: \"CONTENT_REDACTED\")"}
 }
 
-public struct UpdateGroupProfileInput {
+public struct UpdateGroupProfileInput: Swift.Sendable {
     /// The identifier of the Amazon DataZone domain in which a group profile is updated.
     /// This member is required.
     public var domainIdentifier: Swift.String?
@@ -15909,7 +15922,7 @@ public struct UpdateGroupProfileInput {
     }
 }
 
-public struct UpdateGroupProfileOutput {
+public struct UpdateGroupProfileOutput: Swift.Sendable {
     /// The identifier of the Amazon DataZone domain in which a group profile is updated.
     public var domainId: Swift.String?
     /// The name of the group profile that is updated.
@@ -15938,7 +15951,7 @@ extension UpdateGroupProfileOutput: Swift.CustomDebugStringConvertible {
         "UpdateGroupProfileOutput(domainId: \(Swift.String(describing: domainId)), id: \(Swift.String(describing: id)), status: \(Swift.String(describing: status)), groupName: \"CONTENT_REDACTED\")"}
 }
 
-public struct UpdateProjectInput {
+public struct UpdateProjectInput: Swift.Sendable {
     /// The description to be updated as part of the UpdateProject action.
     public var description: Swift.String?
     /// The ID of the Amazon DataZone domain where a project is being updated.
@@ -15973,7 +15986,7 @@ extension UpdateProjectInput: Swift.CustomDebugStringConvertible {
         "UpdateProjectInput(domainIdentifier: \(Swift.String(describing: domainIdentifier)), glossaryTerms: \(Swift.String(describing: glossaryTerms)), identifier: \(Swift.String(describing: identifier)), description: \"CONTENT_REDACTED\", name: \"CONTENT_REDACTED\")"}
 }
 
-public struct UpdateProjectOutput {
+public struct UpdateProjectOutput: Swift.Sendable {
     /// The timestamp of when the project was created.
     public var createdAt: Foundation.Date?
     /// The Amazon DataZone user who created the project.
@@ -16034,7 +16047,7 @@ extension UpdateProjectOutput: Swift.CustomDebugStringConvertible {
         "UpdateProjectOutput(createdAt: \(Swift.String(describing: createdAt)), createdBy: \(Swift.String(describing: createdBy)), domainId: \(Swift.String(describing: domainId)), domainUnitId: \(Swift.String(describing: domainUnitId)), failureReasons: \(Swift.String(describing: failureReasons)), glossaryTerms: \(Swift.String(describing: glossaryTerms)), id: \(Swift.String(describing: id)), lastUpdatedAt: \(Swift.String(describing: lastUpdatedAt)), projectStatus: \(Swift.String(describing: projectStatus)), description: \"CONTENT_REDACTED\", name: \"CONTENT_REDACTED\")"}
 }
 
-public struct UpdateSubscriptionGrantStatusInput {
+public struct UpdateSubscriptionGrantStatusInput: Swift.Sendable {
     /// The identifier of the asset the subscription grant status of which is to be updated.
     /// This member is required.
     public var assetIdentifier: Swift.String?
@@ -16070,7 +16083,7 @@ public struct UpdateSubscriptionGrantStatusInput {
     }
 }
 
-public struct UpdateSubscriptionGrantStatusOutput {
+public struct UpdateSubscriptionGrantStatusOutput: Swift.Sendable {
     /// The details of the asset for which the subscription grant is created.
     public var assets: [DataZoneClientTypes.SubscribedAsset]?
     /// The timestamp of when the subscription grant status was created.
@@ -16131,7 +16144,7 @@ public struct UpdateSubscriptionGrantStatusOutput {
     }
 }
 
-public struct UpdateSubscriptionRequestInput {
+public struct UpdateSubscriptionRequestInput: Swift.Sendable {
     /// The identifier of the Amazon DataZone domain in which a subscription request is to be updated.
     /// This member is required.
     public var domainIdentifier: Swift.String?
@@ -16159,7 +16172,7 @@ extension UpdateSubscriptionRequestInput: Swift.CustomDebugStringConvertible {
         "UpdateSubscriptionRequestInput(domainIdentifier: \(Swift.String(describing: domainIdentifier)), identifier: \(Swift.String(describing: identifier)), requestReason: \"CONTENT_REDACTED\")"}
 }
 
-public struct UpdateSubscriptionRequestOutput {
+public struct UpdateSubscriptionRequestOutput: Swift.Sendable {
     /// The timestamp of when the subscription request was created.
     /// This member is required.
     public var createdAt: Foundation.Date?
@@ -16229,7 +16242,7 @@ extension UpdateSubscriptionRequestOutput: Swift.CustomDebugStringConvertible {
         "UpdateSubscriptionRequestOutput(createdAt: \(Swift.String(describing: createdAt)), createdBy: \(Swift.String(describing: createdBy)), domainId: \(Swift.String(describing: domainId)), id: \(Swift.String(describing: id)), reviewerId: \(Swift.String(describing: reviewerId)), status: \(Swift.String(describing: status)), subscribedListings: \(Swift.String(describing: subscribedListings)), subscribedPrincipals: \(Swift.String(describing: subscribedPrincipals)), updatedAt: \(Swift.String(describing: updatedAt)), updatedBy: \(Swift.String(describing: updatedBy)), decisionComment: \"CONTENT_REDACTED\", requestReason: \"CONTENT_REDACTED\")"}
 }
 
-public struct UpdateSubscriptionTargetInput {
+public struct UpdateSubscriptionTargetInput: Swift.Sendable {
     /// The applicable asset types to be updated as part of the UpdateSubscriptionTarget action.
     public var applicableAssetTypes: [Swift.String]?
     /// The authorized principals to be updated as part of the UpdateSubscriptionTarget action.
@@ -16281,7 +16294,7 @@ extension UpdateSubscriptionTargetInput: Swift.CustomDebugStringConvertible {
         "UpdateSubscriptionTargetInput(applicableAssetTypes: \(Swift.String(describing: applicableAssetTypes)), authorizedPrincipals: \(Swift.String(describing: authorizedPrincipals)), domainIdentifier: \(Swift.String(describing: domainIdentifier)), environmentIdentifier: \(Swift.String(describing: environmentIdentifier)), identifier: \(Swift.String(describing: identifier)), manageAccessRole: \(Swift.String(describing: manageAccessRole)), provider: \(Swift.String(describing: provider)), subscriptionTargetConfig: \(Swift.String(describing: subscriptionTargetConfig)), name: \"CONTENT_REDACTED\")"}
 }
 
-public struct UpdateSubscriptionTargetOutput {
+public struct UpdateSubscriptionTargetOutput: Swift.Sendable {
     /// The applicable asset types to be updated as part of the UpdateSubscriptionTarget action.
     /// This member is required.
     public var applicableAssetTypes: [Swift.String]?
@@ -16367,7 +16380,7 @@ extension UpdateSubscriptionTargetOutput: Swift.CustomDebugStringConvertible {
         "UpdateSubscriptionTargetOutput(applicableAssetTypes: \(Swift.String(describing: applicableAssetTypes)), authorizedPrincipals: \(Swift.String(describing: authorizedPrincipals)), createdAt: \(Swift.String(describing: createdAt)), createdBy: \(Swift.String(describing: createdBy)), domainId: \(Swift.String(describing: domainId)), environmentId: \(Swift.String(describing: environmentId)), id: \(Swift.String(describing: id)), manageAccessRole: \(Swift.String(describing: manageAccessRole)), projectId: \(Swift.String(describing: projectId)), provider: \(Swift.String(describing: provider)), subscriptionTargetConfig: \(Swift.String(describing: subscriptionTargetConfig)), type: \(Swift.String(describing: type)), updatedAt: \(Swift.String(describing: updatedAt)), updatedBy: \(Swift.String(describing: updatedBy)), name: \"CONTENT_REDACTED\")"}
 }
 
-public struct UpdateUserProfileInput {
+public struct UpdateUserProfileInput: Swift.Sendable {
     /// The identifier of the Amazon DataZone domain in which a user profile is updated.
     /// This member is required.
     public var domainIdentifier: Swift.String?
@@ -16394,7 +16407,7 @@ public struct UpdateUserProfileInput {
     }
 }
 
-public struct UpdateUserProfileOutput {
+public struct UpdateUserProfileOutput: Swift.Sendable {
     /// The details of the user profile in Amazon DataZone.
     public var details: DataZoneClientTypes.UserProfileDetails?
     /// The identifier of the Amazon DataZone domain in which a user profile is updated.
@@ -16423,8 +16436,9 @@ public struct UpdateUserProfileOutput {
 }
 
 extension DataZoneClientTypes {
+
     /// A search filter clause in Amazon DataZone.
-    public indirect enum FilterClause {
+    public indirect enum FilterClause: Swift.Sendable {
         /// A search filter in Amazon DataZone.
         case filter(DataZoneClientTypes.Filter)
         /// The 'and' search filter clause in Amazon DataZone.
@@ -16433,12 +16447,12 @@ extension DataZoneClientTypes {
         case or([DataZoneClientTypes.FilterClause])
         case sdkUnknown(Swift.String)
     }
-
 }
 
 extension DataZoneClientTypes {
+
     /// The row filter.
-    public indirect enum RowFilter {
+    public indirect enum RowFilter: Swift.Sendable {
         /// The expression of the row filter.
         case expression(DataZoneClientTypes.RowFilterExpression)
         /// The 'and' clause of the row filter.
@@ -16447,12 +16461,12 @@ extension DataZoneClientTypes {
         case or([DataZoneClientTypes.RowFilter])
         case sdkUnknown(Swift.String)
     }
-
 }
 
 extension DataZoneClientTypes {
+
     /// The row filter configuration details.
-    public struct RowFilterConfiguration {
+    public struct RowFilterConfiguration: Swift.Sendable {
         /// The row filter.
         /// This member is required.
         public var rowFilter: DataZoneClientTypes.RowFilter?
@@ -16468,10 +16482,9 @@ extension DataZoneClientTypes {
             self.sensitive = sensitive
         }
     }
-
 }
 
-public struct SearchInput {
+public struct SearchInput: Swift.Sendable {
     /// Specifies additional attributes for the Search action.
     public var additionalAttributes: [DataZoneClientTypes.SearchOutputAdditionalAttribute]?
     /// The identifier of the Amazon DataZone domain.
@@ -16521,7 +16534,7 @@ public struct SearchInput {
     }
 }
 
-public struct SearchListingsInput {
+public struct SearchListingsInput: Swift.Sendable {
     /// Specifies additional attributes for the search.
     public var additionalAttributes: [DataZoneClientTypes.SearchOutputAdditionalAttribute]?
     /// The identifier of the domain in which to search listings.
@@ -16562,7 +16575,7 @@ public struct SearchListingsInput {
     }
 }
 
-public struct SearchTypesInput {
+public struct SearchTypesInput: Swift.Sendable {
     /// The identifier of the Amazon DataZone domain in which to invoke the SearchTypes action.
     /// This member is required.
     public var domainIdentifier: Swift.String?
@@ -16610,18 +16623,18 @@ public struct SearchTypesInput {
 }
 
 extension DataZoneClientTypes {
+
     /// The configuration details of the asset filter.
-    public indirect enum AssetFilterConfiguration {
+    public indirect enum AssetFilterConfiguration: Swift.Sendable {
         /// The column configuration of the asset filter.
         case columnconfiguration(DataZoneClientTypes.ColumnFilterConfiguration)
         /// The row configuration of the asset filter.
         case rowconfiguration(DataZoneClientTypes.RowFilterConfiguration)
         case sdkUnknown(Swift.String)
     }
-
 }
 
-public struct CreateAssetFilterInput {
+public struct CreateAssetFilterInput: Swift.Sendable {
     /// The ID of the data asset.
     /// This member is required.
     public var assetIdentifier: Swift.String?
@@ -16662,7 +16675,7 @@ extension CreateAssetFilterInput: Swift.CustomDebugStringConvertible {
         "CreateAssetFilterInput(assetIdentifier: \(Swift.String(describing: assetIdentifier)), clientToken: \(Swift.String(describing: clientToken)), configuration: \(Swift.String(describing: configuration)), domainIdentifier: \(Swift.String(describing: domainIdentifier)), description: \"CONTENT_REDACTED\", name: \"CONTENT_REDACTED\")"}
 }
 
-public struct CreateAssetFilterOutput {
+public struct CreateAssetFilterOutput: Swift.Sendable {
     /// The ID of the asset.
     /// This member is required.
     public var assetId: Swift.String?
@@ -16724,7 +16737,7 @@ extension CreateAssetFilterOutput: Swift.CustomDebugStringConvertible {
         "CreateAssetFilterOutput(assetId: \(Swift.String(describing: assetId)), configuration: \(Swift.String(describing: configuration)), createdAt: \(Swift.String(describing: createdAt)), domainId: \(Swift.String(describing: domainId)), effectiveColumnNames: \(Swift.String(describing: effectiveColumnNames)), effectiveRowFilter: \(Swift.String(describing: effectiveRowFilter)), errorMessage: \(Swift.String(describing: errorMessage)), id: \(Swift.String(describing: id)), status: \(Swift.String(describing: status)), description: \"CONTENT_REDACTED\", name: \"CONTENT_REDACTED\")"}
 }
 
-public struct GetAssetFilterOutput {
+public struct GetAssetFilterOutput: Swift.Sendable {
     /// The ID of the data asset.
     /// This member is required.
     public var assetId: Swift.String?
@@ -16786,7 +16799,7 @@ extension GetAssetFilterOutput: Swift.CustomDebugStringConvertible {
         "GetAssetFilterOutput(assetId: \(Swift.String(describing: assetId)), configuration: \(Swift.String(describing: configuration)), createdAt: \(Swift.String(describing: createdAt)), domainId: \(Swift.String(describing: domainId)), effectiveColumnNames: \(Swift.String(describing: effectiveColumnNames)), effectiveRowFilter: \(Swift.String(describing: effectiveRowFilter)), errorMessage: \(Swift.String(describing: errorMessage)), id: \(Swift.String(describing: id)), status: \(Swift.String(describing: status)), description: \"CONTENT_REDACTED\", name: \"CONTENT_REDACTED\")"}
 }
 
-public struct UpdateAssetFilterInput {
+public struct UpdateAssetFilterInput: Swift.Sendable {
     /// The ID of the data asset.
     /// This member is required.
     public var assetIdentifier: Swift.String?
@@ -16826,7 +16839,7 @@ extension UpdateAssetFilterInput: Swift.CustomDebugStringConvertible {
         "UpdateAssetFilterInput(assetIdentifier: \(Swift.String(describing: assetIdentifier)), configuration: \(Swift.String(describing: configuration)), domainIdentifier: \(Swift.String(describing: domainIdentifier)), identifier: \(Swift.String(describing: identifier)), name: \(Swift.String(describing: name)), description: \"CONTENT_REDACTED\")"}
 }
 
-public struct UpdateAssetFilterOutput {
+public struct UpdateAssetFilterOutput: Swift.Sendable {
     /// The ID of the data asset.
     /// This member is required.
     public var assetId: Swift.String?

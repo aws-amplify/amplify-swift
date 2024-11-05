@@ -27,22 +27,23 @@ import protocol ClientRuntime.ModeledError
 @_spi(UnknownAWSHTTPServiceError) import struct AWSClientRuntime.UnknownAWSHTTPServiceError
 import struct Smithy.URIQueryItem
 
-public struct DeleteChallengeOutput {
+
+public struct DeleteChallengeOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteConnectorOutput {
+public struct DeleteConnectorOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct TagResourceOutput {
+public struct TagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UntagResourceOutput {
+public struct UntagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
@@ -98,8 +99,9 @@ public struct BadRequestException: ClientRuntime.ModeledError, AWSClientRuntime.
 }
 
 extension PcaConnectorScepClientTypes {
+
     /// For Connector for SCEP for general-purpose. An object containing information about the specified connector's SCEP challenge passwords.
-    public struct Challenge {
+    public struct Challenge: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the challenge.
         public var arn: Swift.String?
         /// The Amazon Resource Name (ARN) of the connector.
@@ -126,7 +128,6 @@ extension PcaConnectorScepClientTypes {
             self.updatedAt = updatedAt
         }
     }
-
 }
 
 extension PcaConnectorScepClientTypes.Challenge: Swift.CustomDebugStringConvertible {
@@ -135,8 +136,9 @@ extension PcaConnectorScepClientTypes.Challenge: Swift.CustomDebugStringConverti
 }
 
 extension PcaConnectorScepClientTypes {
+
     /// Contains details about the connector's challenge.
-    public struct ChallengeMetadata {
+    public struct ChallengeMetadata: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the challenge.
         public var arn: Swift.String?
         /// The Amazon Resource Name (ARN) of the connector.
@@ -159,12 +161,12 @@ extension PcaConnectorScepClientTypes {
             self.updatedAt = updatedAt
         }
     }
-
 }
 
 extension PcaConnectorScepClientTypes {
+
     /// Details about the specified challenge, returned by the [GetChallengeMetadata](https://docs.aws.amazon.com/C4SCEP_API/pca-connector-scep/latest/APIReference/API_GetChallengeMetadata.html) action.
-    public struct ChallengeMetadataSummary {
+    public struct ChallengeMetadataSummary: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the challenge.
         public var arn: Swift.String?
         /// The Amazon Resource Name (ARN) of the connector.
@@ -187,7 +189,6 @@ extension PcaConnectorScepClientTypes {
             self.updatedAt = updatedAt
         }
     }
-
 }
 
 /// This request can't be completed for one of the following reasons because the requested resource was being concurrently modified by another request.
@@ -352,7 +353,7 @@ public struct ThrottlingException: ClientRuntime.ModeledError, AWSClientRuntime.
 
 extension PcaConnectorScepClientTypes {
 
-    public enum ValidationExceptionReason: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ValidationExceptionReason: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case caCertValidityTooShort
         case invalidCaUsageMode
         case invalidConnectorType
@@ -423,7 +424,7 @@ public struct ValidationException: ClientRuntime.ModeledError, AWSClientRuntime.
     }
 }
 
-public struct CreateChallengeInput {
+public struct CreateChallengeInput: Swift.Sendable {
     /// Custom string that can be used to distinguish between calls to the [CreateChallenge](https://docs.aws.amazon.com/C4SCEP_API/pca-connector-scep/latest/APIReference/API_CreateChallenge.html) action. Client tokens for CreateChallenge time out after five minutes. Therefore, if you call CreateChallenge multiple times with the same client token within five minutes, Connector for SCEP recognizes that you are requesting only one challenge and will only respond with one. If you change the client token for each call, Connector for SCEP recognizes that you are requesting multiple challenge passwords.
     public var clientToken: Swift.String?
     /// The Amazon Resource Name (ARN) of the connector that you want to create a challenge for.
@@ -444,7 +445,7 @@ public struct CreateChallengeInput {
     }
 }
 
-public struct CreateChallengeOutput {
+public struct CreateChallengeOutput: Swift.Sendable {
     /// Returns the challenge details for the specified connector.
     public var challenge: PcaConnectorScepClientTypes.Challenge?
 
@@ -456,7 +457,7 @@ public struct CreateChallengeOutput {
     }
 }
 
-public struct DeleteChallengeInput {
+public struct DeleteChallengeInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the challenge password to delete.
     /// This member is required.
     public var challengeArn: Swift.String?
@@ -469,7 +470,7 @@ public struct DeleteChallengeInput {
     }
 }
 
-public struct GetChallengeMetadataInput {
+public struct GetChallengeMetadataInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the challenge.
     /// This member is required.
     public var challengeArn: Swift.String?
@@ -482,7 +483,7 @@ public struct GetChallengeMetadataInput {
     }
 }
 
-public struct GetChallengeMetadataOutput {
+public struct GetChallengeMetadataOutput: Swift.Sendable {
     /// The metadata for the challenge.
     public var challengeMetadata: PcaConnectorScepClientTypes.ChallengeMetadata?
 
@@ -494,7 +495,7 @@ public struct GetChallengeMetadataOutput {
     }
 }
 
-public struct GetChallengePasswordInput {
+public struct GetChallengePasswordInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the challenge.
     /// This member is required.
     public var challengeArn: Swift.String?
@@ -507,7 +508,7 @@ public struct GetChallengePasswordInput {
     }
 }
 
-public struct GetChallengePasswordOutput {
+public struct GetChallengePasswordOutput: Swift.Sendable {
     /// The SCEP challenge password.
     public var password: Swift.String?
 
@@ -524,7 +525,7 @@ extension GetChallengePasswordOutput: Swift.CustomDebugStringConvertible {
         "GetChallengePasswordOutput(password: \"CONTENT_REDACTED\")"}
 }
 
-public struct ListChallengeMetadataInput {
+public struct ListChallengeMetadataInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the connector.
     /// This member is required.
     public var connectorArn: Swift.String?
@@ -545,7 +546,7 @@ public struct ListChallengeMetadataInput {
     }
 }
 
-public struct ListChallengeMetadataOutput {
+public struct ListChallengeMetadataOutput: Swift.Sendable {
     /// The challenge metadata for the challenges belonging to your Amazon Web Services account.
     public var challenges: [PcaConnectorScepClientTypes.ChallengeMetadataSummary]?
     /// When you request a list of objects with a MaxResults setting, if the number of objects that are still available for retrieval exceeds the maximum you requested, Connector for SCEP returns a NextToken value in the response. To retrieve the next batch of objects, use the token returned from the prior request in your next request.
@@ -562,8 +563,9 @@ public struct ListChallengeMetadataOutput {
 }
 
 extension PcaConnectorScepClientTypes {
+
     /// Contains configuration details for use with Microsoft Intune. For information about using Connector for SCEP for Microsoft Intune, see [Using Connector for SCEP for Microsoft Intune](https://docs.aws.amazon.com/privateca/latest/userguide/scep-connector.htmlconnector-for-scep-intune.html). When you use Connector for SCEP for Microsoft Intune, certain functionalities are enabled by accessing Microsoft Intune through the Microsoft API. Your use of the Connector for SCEP and accompanying Amazon Web Services services doesn't remove your need to have a valid license for your use of the Microsoft Intune service. You should also review the [Microsoft Intune® App Protection Policies](https://learn.microsoft.com/en-us/mem/intune/apps/app-protection-policy).
-    public struct IntuneConfiguration {
+    public struct IntuneConfiguration: Swift.Sendable {
         /// The directory (tenant) ID from your Microsoft Entra ID app registration.
         /// This member is required.
         public var azureApplicationId: Swift.String?
@@ -580,22 +582,22 @@ extension PcaConnectorScepClientTypes {
             self.domain = domain
         }
     }
-
 }
 
 extension PcaConnectorScepClientTypes {
+
     /// If you don't supply a value, by default Connector for SCEP creates a connector for general-purpose use. A general-purpose connector is designed to work with clients or endpoints that support the SCEP protocol, except Connector for SCEP for Microsoft Intune. For information about considerations and limitations with using Connector for SCEP, see [Considerations and Limitations](https://docs.aws.amazon.com/privateca/latest/userguide/scep-connector.htmlc4scep-considerations-limitations.html). If you provide an IntuneConfiguration, Connector for SCEP creates a connector for use with Microsoft Intune, and you manage the challenge passwords using Microsoft Intune. For more information, see [Using Connector for SCEP for Microsoft Intune](https://docs.aws.amazon.com/privateca/latest/userguide/scep-connector.htmlconnector-for-scep-intune.html).
-    public enum MobileDeviceManagement {
+    public enum MobileDeviceManagement: Swift.Sendable {
         /// Configuration settings for use with Microsoft Intune. For information about using Connector for SCEP for Microsoft Intune, see [Using Connector for SCEP for Microsoft Intune](https://docs.aws.amazon.com/privateca/latest/userguide/scep-connector.htmlconnector-for-scep-intune.html).
         case intune(PcaConnectorScepClientTypes.IntuneConfiguration)
         case sdkUnknown(Swift.String)
     }
-
 }
 
 extension PcaConnectorScepClientTypes {
+
     /// Contains OpenID Connect (OIDC) parameters for use with Microsoft Intune. For more information about using Connector for SCEP for Microsoft Intune, see [Using Connector for SCEP for Microsoft Intune](https://docs.aws.amazon.com/privateca/latest/userguide/scep-connector.htmlconnector-for-scep-intune.html).
-    public struct OpenIdConfiguration {
+    public struct OpenIdConfiguration: Swift.Sendable {
         /// The audience value to copy into your Microsoft Entra app registration's OIDC.
         public var audience: Swift.String?
         /// The issuer value to copy into your Microsoft Entra app registration's OIDC.
@@ -614,12 +616,11 @@ extension PcaConnectorScepClientTypes {
             self.subject = subject
         }
     }
-
 }
 
 extension PcaConnectorScepClientTypes {
 
-    public enum ConnectorStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ConnectorStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case active
         case creating
         case deleting
@@ -654,7 +655,7 @@ extension PcaConnectorScepClientTypes {
 
 extension PcaConnectorScepClientTypes {
 
-    public enum ConnectorStatusReason: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ConnectorStatusReason: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case internalFailure
         case privatecaAccessDenied
         case privatecaInvalidState
@@ -689,7 +690,7 @@ extension PcaConnectorScepClientTypes {
 
 extension PcaConnectorScepClientTypes {
 
-    public enum ConnectorType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ConnectorType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case generalPurpose
         case intune
         case sdkUnknown(Swift.String)
@@ -717,8 +718,9 @@ extension PcaConnectorScepClientTypes {
 }
 
 extension PcaConnectorScepClientTypes {
+
     /// Connector for SCEP is a service that links Amazon Web Services Private Certificate Authority to your SCEP-enabled devices. The connector brokers the exchange of certificates from Amazon Web Services Private CA to your SCEP-enabled devices and mobile device management systems. The connector is a complex type that contains the connector's configuration settings.
-    public struct Connector {
+    public struct Connector: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the connector.
         public var arn: Swift.String?
         /// The Amazon Resource Name (ARN) of the certificate authority associated with the connector.
@@ -765,12 +767,12 @@ extension PcaConnectorScepClientTypes {
             self.updatedAt = updatedAt
         }
     }
-
 }
 
 extension PcaConnectorScepClientTypes {
+
     /// Lists the Amazon Web Services Private CA SCEP connectors belonging to your Amazon Web Services account.
-    public struct ConnectorSummary {
+    public struct ConnectorSummary: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the connector.
         public var arn: Swift.String?
         /// The Amazon Resource Name (ARN) of the connector's associated certificate authority.
@@ -817,10 +819,9 @@ extension PcaConnectorScepClientTypes {
             self.updatedAt = updatedAt
         }
     }
-
 }
 
-public struct CreateConnectorInput {
+public struct CreateConnectorInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the Amazon Web Services Private Certificate Authority certificate authority to use with this connector. Due to security vulnerabilities present in the SCEP protocol, we recommend using a private CA that's dedicated for use with the connector. To retrieve the private CAs associated with your account, you can call [ListCertificateAuthorities](https://docs.aws.amazon.com/privateca/latest/APIReference/API_ListCertificateAuthorities.html) using the Amazon Web Services Private CA API.
     /// This member is required.
     public var certificateAuthorityArn: Swift.String?
@@ -845,7 +846,7 @@ public struct CreateConnectorInput {
     }
 }
 
-public struct CreateConnectorOutput {
+public struct CreateConnectorOutput: Swift.Sendable {
     /// Returns the Amazon Resource Name (ARN) of the connector.
     public var connectorArn: Swift.String?
 
@@ -857,7 +858,7 @@ public struct CreateConnectorOutput {
     }
 }
 
-public struct DeleteConnectorInput {
+public struct DeleteConnectorInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the connector to delete.
     /// This member is required.
     public var connectorArn: Swift.String?
@@ -870,7 +871,7 @@ public struct DeleteConnectorInput {
     }
 }
 
-public struct GetConnectorInput {
+public struct GetConnectorInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the connector.
     /// This member is required.
     public var connectorArn: Swift.String?
@@ -883,7 +884,7 @@ public struct GetConnectorInput {
     }
 }
 
-public struct GetConnectorOutput {
+public struct GetConnectorOutput: Swift.Sendable {
     /// The properties of the connector.
     public var connector: PcaConnectorScepClientTypes.Connector?
 
@@ -895,7 +896,7 @@ public struct GetConnectorOutput {
     }
 }
 
-public struct ListConnectorsInput {
+public struct ListConnectorsInput: Swift.Sendable {
     /// The maximum number of objects that you want Connector for SCEP to return for this request. If more objects are available, in the response, Connector for SCEP provides a NextToken value that you can use in a subsequent call to get the next batch of objects.
     public var maxResults: Swift.Int?
     /// When you request a list of objects with a MaxResults setting, if the number of objects that are still available for retrieval exceeds the maximum you requested, Connector for SCEP returns a NextToken value in the response. To retrieve the next batch of objects, use the token returned from the prior request in your next request.
@@ -911,7 +912,7 @@ public struct ListConnectorsInput {
     }
 }
 
-public struct ListConnectorsOutput {
+public struct ListConnectorsOutput: Swift.Sendable {
     /// The connectors belonging to your Amazon Web Services account.
     public var connectors: [PcaConnectorScepClientTypes.ConnectorSummary]?
     /// When you request a list of objects with a MaxResults setting, if the number of objects that are still available for retrieval exceeds the maximum you requested, Connector for SCEP returns a NextToken value in the response. To retrieve the next batch of objects, use the token returned from the prior request in your next request.
@@ -927,7 +928,7 @@ public struct ListConnectorsOutput {
     }
 }
 
-public struct ListTagsForResourceInput {
+public struct ListTagsForResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the resource.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -940,7 +941,7 @@ public struct ListTagsForResourceInput {
     }
 }
 
-public struct ListTagsForResourceOutput {
+public struct ListTagsForResourceOutput: Swift.Sendable {
     /// The key-value pairs to associate with the resource.
     public var tags: [Swift.String: Swift.String]?
 
@@ -952,7 +953,7 @@ public struct ListTagsForResourceOutput {
     }
 }
 
-public struct TagResourceInput {
+public struct TagResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the resource.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -970,7 +971,7 @@ public struct TagResourceInput {
     }
 }
 
-public struct UntagResourceInput {
+public struct UntagResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the resource.
     /// This member is required.
     public var resourceArn: Swift.String?

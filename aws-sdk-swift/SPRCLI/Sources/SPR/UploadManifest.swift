@@ -15,7 +15,7 @@ extension SPRPublisher {
 
     func uploadManifest() async throws {
         let packageFileURL = URL(fileURLWithPath: path).standardizedFileURL
-        let manifestFileURL = packageFileURL.appending(component: "Package.swift")
+        let manifestFileURL = packageFileURL.appendingPathComponent("Package.swift")
         let s3Client = try S3Client(region: region)
         try await verify(s3Client: s3Client)
         try await upload(s3Client: s3Client, manifestFileURL: manifestFileURL)

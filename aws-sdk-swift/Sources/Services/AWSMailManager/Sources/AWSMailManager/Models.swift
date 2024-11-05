@@ -30,7 +30,7 @@ import protocol ClientRuntime.ModeledError
 
 extension MailManagerClientTypes {
 
-    public enum AcceptAction: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AcceptAction: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case allow
         case deny
         case sdkUnknown(Swift.String)
@@ -83,7 +83,7 @@ public struct AccessDeniedException: ClientRuntime.ModeledError, AWSClientRuntim
 
 extension MailManagerClientTypes {
 
-    public enum ActionFailurePolicy: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ActionFailurePolicy: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case `continue`
         case drop
         case sdkUnknown(Swift.String)
@@ -111,8 +111,9 @@ extension MailManagerClientTypes {
 }
 
 extension MailManagerClientTypes {
+
     /// The action to add a header to a message. When executed, this action will add the given header to the message.
-    public struct AddHeaderAction {
+    public struct AddHeaderAction: Swift.Sendable {
         /// The name of the header to add to an email. The header must be prefixed with "X-". Headers are added regardless of whether the header name pre-existed in the email.
         /// This member is required.
         public var headerName: Swift.String?
@@ -129,12 +130,12 @@ extension MailManagerClientTypes {
             self.headerValue = headerValue
         }
     }
-
 }
 
 extension MailManagerClientTypes {
+
     /// An Add On instance represents a specific configuration of an Add On.
-    public struct AddonInstance {
+    public struct AddonInstance: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the Add On instance.
         public var addonInstanceArn: Swift.String?
         /// The unique ID of the Add On instance.
@@ -161,7 +162,6 @@ extension MailManagerClientTypes {
             self.createdTimestamp = createdTimestamp
         }
     }
-
 }
 
 /// The request configuration has conflicts. For details, see the accompanying error message.
@@ -261,8 +261,9 @@ public struct ValidationException: ClientRuntime.ModeledError, AWSClientRuntime.
 }
 
 extension MailManagerClientTypes {
+
     /// A key-value pair (the value is optional), that you can define and assign to Amazon Web Services resources.
-    public struct Tag {
+    public struct Tag: Swift.Sendable {
         /// The key of the key-value tag.
         /// This member is required.
         public var key: Swift.String?
@@ -279,7 +280,6 @@ extension MailManagerClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension MailManagerClientTypes.Tag: Swift.CustomDebugStringConvertible {
@@ -287,7 +287,7 @@ extension MailManagerClientTypes.Tag: Swift.CustomDebugStringConvertible {
         "Tag(key: \"CONTENT_REDACTED\", value: \"CONTENT_REDACTED\")"}
 }
 
-public struct CreateAddonInstanceInput {
+public struct CreateAddonInstanceInput: Swift.Sendable {
     /// The unique ID of a previously created subscription that an Add On instance is created for. You can only have one instance per subscription.
     /// This member is required.
     public var addonSubscriptionId: Swift.String?
@@ -308,7 +308,7 @@ public struct CreateAddonInstanceInput {
     }
 }
 
-public struct CreateAddonInstanceOutput {
+public struct CreateAddonInstanceOutput: Swift.Sendable {
     /// The unique ID of the Add On instance created by this API.
     /// This member is required.
     public var addonInstanceId: Swift.String?
@@ -321,7 +321,7 @@ public struct CreateAddonInstanceOutput {
     }
 }
 
-public struct DeleteAddonInstanceInput {
+public struct DeleteAddonInstanceInput: Swift.Sendable {
     /// The Add On instance ID to delete.
     /// This member is required.
     public var addonInstanceId: Swift.String?
@@ -334,12 +334,12 @@ public struct DeleteAddonInstanceInput {
     }
 }
 
-public struct DeleteAddonInstanceOutput {
+public struct DeleteAddonInstanceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct GetAddonInstanceInput {
+public struct GetAddonInstanceInput: Swift.Sendable {
     /// The Add On instance ID to retrieve information for.
     /// This member is required.
     public var addonInstanceId: Swift.String?
@@ -352,7 +352,7 @@ public struct GetAddonInstanceInput {
     }
 }
 
-public struct GetAddonInstanceOutput {
+public struct GetAddonInstanceOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the Add On instance.
     public var addonInstanceArn: Swift.String?
     /// The name of the Add On provider associated to the subscription of the instance.
@@ -376,7 +376,7 @@ public struct GetAddonInstanceOutput {
     }
 }
 
-public struct ListAddonInstancesInput {
+public struct ListAddonInstancesInput: Swift.Sendable {
     /// If you received a pagination token from a previous call to this API, you can provide it here to continue paginating through the next page of results.
     public var nextToken: Swift.String?
     /// The maximum number of ingress endpoint resources that are returned per call. You can use NextToken to obtain further ingress endpoints.
@@ -392,7 +392,7 @@ public struct ListAddonInstancesInput {
     }
 }
 
-public struct ListAddonInstancesOutput {
+public struct ListAddonInstancesOutput: Swift.Sendable {
     /// The list of ingress endpoints.
     public var addonInstances: [MailManagerClientTypes.AddonInstance]?
     /// If NextToken is returned, there are more results available. The value of NextToken is a unique pagination token for each page. Make the call again using the returned token to retrieve the next page.
@@ -409,8 +409,9 @@ public struct ListAddonInstancesOutput {
 }
 
 extension MailManagerClientTypes {
+
     /// A subscription for an Add On representing the acceptance of its terms of use and additional pricing.
-    public struct AddonSubscription {
+    public struct AddonSubscription: Swift.Sendable {
         /// The name of the Add On.
         public var addonName: Swift.String?
         /// The Amazon Resource Name (ARN) of the Add On subscription.
@@ -433,10 +434,9 @@ extension MailManagerClientTypes {
             self.createdTimestamp = createdTimestamp
         }
     }
-
 }
 
-public struct CreateAddonSubscriptionInput {
+public struct CreateAddonSubscriptionInput: Swift.Sendable {
     /// The name of the Add On to subscribe to. You can only have one subscription for each Add On name.
     /// This member is required.
     public var addonName: Swift.String?
@@ -457,7 +457,7 @@ public struct CreateAddonSubscriptionInput {
     }
 }
 
-public struct CreateAddonSubscriptionOutput {
+public struct CreateAddonSubscriptionOutput: Swift.Sendable {
     /// The unique ID of the Add On subscription created by this API.
     /// This member is required.
     public var addonSubscriptionId: Swift.String?
@@ -470,7 +470,7 @@ public struct CreateAddonSubscriptionOutput {
     }
 }
 
-public struct DeleteAddonSubscriptionInput {
+public struct DeleteAddonSubscriptionInput: Swift.Sendable {
     /// The Add On subscription ID to delete.
     /// This member is required.
     public var addonSubscriptionId: Swift.String?
@@ -483,12 +483,12 @@ public struct DeleteAddonSubscriptionInput {
     }
 }
 
-public struct DeleteAddonSubscriptionOutput {
+public struct DeleteAddonSubscriptionOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct GetAddonSubscriptionInput {
+public struct GetAddonSubscriptionInput: Swift.Sendable {
     /// The Add On subscription ID to retrieve information for.
     /// This member is required.
     public var addonSubscriptionId: Swift.String?
@@ -501,7 +501,7 @@ public struct GetAddonSubscriptionInput {
     }
 }
 
-public struct GetAddonSubscriptionOutput {
+public struct GetAddonSubscriptionOutput: Swift.Sendable {
     /// The name of the Add On for the subscription.
     public var addonName: Swift.String?
     /// Amazon Resource Name (ARN) for the subscription.
@@ -521,7 +521,7 @@ public struct GetAddonSubscriptionOutput {
     }
 }
 
-public struct ListAddonSubscriptionsInput {
+public struct ListAddonSubscriptionsInput: Swift.Sendable {
     /// If you received a pagination token from a previous call to this API, you can provide it here to continue paginating through the next page of results.
     public var nextToken: Swift.String?
     /// The maximum number of ingress endpoint resources that are returned per call. You can use NextToken to obtain further ingress endpoints.
@@ -537,7 +537,7 @@ public struct ListAddonSubscriptionsInput {
     }
 }
 
-public struct ListAddonSubscriptionsOutput {
+public struct ListAddonSubscriptionsOutput: Swift.Sendable {
     /// The list of ingress endpoints.
     public var addonSubscriptions: [MailManagerClientTypes.AddonSubscription]?
     /// If NextToken is returned, there are more results available. The value of NextToken is a unique pagination token for each page. Make the call again using the returned token to retrieve the next page.
@@ -554,8 +554,9 @@ public struct ListAddonSubscriptionsOutput {
 }
 
 extension MailManagerClientTypes {
+
     /// The result of an analysis can be used in conditions to trigger actions. Analyses can inspect the email content and report a certain aspect of the email.
-    public struct Analysis {
+    public struct Analysis: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of an Add On.
         /// This member is required.
         public var analyzer: Swift.String?
@@ -572,12 +573,11 @@ extension MailManagerClientTypes {
             self.resultField = resultField
         }
     }
-
 }
 
 extension MailManagerClientTypes {
 
-    public enum ArchiveState: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ArchiveState: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case active
         case pendingDeletion
         case sdkUnknown(Swift.String)
@@ -605,8 +605,9 @@ extension MailManagerClientTypes {
 }
 
 extension MailManagerClientTypes {
+
     /// An archive resource for storing and retaining emails.
-    public struct Archive {
+    public struct Archive: Swift.Sendable {
         /// The unique identifier of the archive.
         /// This member is required.
         public var archiveId: Swift.String?
@@ -634,12 +635,12 @@ extension MailManagerClientTypes {
             self.lastUpdatedTimestamp = lastUpdatedTimestamp
         }
     }
-
 }
 
 extension MailManagerClientTypes {
+
     /// The action to archive the email by delivering the email to an Amazon SES archive.
-    public struct ArchiveAction {
+    public struct ArchiveAction: Swift.Sendable {
         /// A policy that states what to do in the case of failure. The action will fail if there are configuration errors. For example, the specified archive has been deleted.
         public var actionFailurePolicy: MailManagerClientTypes.ActionFailurePolicy?
         /// The identifier of the archive to send the email to.
@@ -655,12 +656,11 @@ extension MailManagerClientTypes {
             self.targetArchive = targetArchive
         }
     }
-
 }
 
 extension MailManagerClientTypes {
 
-    public enum ArchiveBooleanEmailAttribute: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ArchiveBooleanEmailAttribute: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case hasAttachments
         case sdkUnknown(Swift.String)
 
@@ -685,18 +685,18 @@ extension MailManagerClientTypes {
 }
 
 extension MailManagerClientTypes {
+
     /// The attribute to evaluate in a boolean expression.
-    public enum ArchiveBooleanToEvaluate {
+    public enum ArchiveBooleanToEvaluate: Swift.Sendable {
         /// The name of the email attribute to evaluate.
         case attribute(MailManagerClientTypes.ArchiveBooleanEmailAttribute)
         case sdkUnknown(Swift.String)
     }
-
 }
 
 extension MailManagerClientTypes {
 
-    public enum ArchiveBooleanOperator: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ArchiveBooleanOperator: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case isFalse
         case isTrue
         case sdkUnknown(Swift.String)
@@ -724,8 +724,9 @@ extension MailManagerClientTypes {
 }
 
 extension MailManagerClientTypes {
+
     /// A boolean expression to evaluate email attribute values.
-    public struct ArchiveBooleanExpression {
+    public struct ArchiveBooleanExpression: Swift.Sendable {
         /// The email attribute value to evaluate.
         /// This member is required.
         public var evaluate: MailManagerClientTypes.ArchiveBooleanToEvaluate?
@@ -742,13 +743,14 @@ extension MailManagerClientTypes {
             self.`operator` = `operator`
         }
     }
-
 }
 
 extension MailManagerClientTypes {
 
-    public enum ArchiveStringEmailAttribute: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ArchiveStringEmailAttribute: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case cc
+        case envelopeFrom
+        case envelopeTo
         case from
         case subject
         case to
@@ -757,6 +759,8 @@ extension MailManagerClientTypes {
         public static var allCases: [ArchiveStringEmailAttribute] {
             return [
                 .cc,
+                .envelopeFrom,
+                .envelopeTo,
                 .from,
                 .subject,
                 .to
@@ -771,6 +775,8 @@ extension MailManagerClientTypes {
         public var rawValue: Swift.String {
             switch self {
             case .cc: return "CC"
+            case .envelopeFrom: return "ENVELOPE_FROM"
+            case .envelopeTo: return "ENVELOPE_TO"
             case .from: return "FROM"
             case .subject: return "SUBJECT"
             case .to: return "TO"
@@ -781,18 +787,18 @@ extension MailManagerClientTypes {
 }
 
 extension MailManagerClientTypes {
+
     /// Specifies the email attribute to evaluate in a string expression.
-    public enum ArchiveStringToEvaluate {
+    public enum ArchiveStringToEvaluate: Swift.Sendable {
         /// The name of the email attribute to evaluate.
         case attribute(MailManagerClientTypes.ArchiveStringEmailAttribute)
         case sdkUnknown(Swift.String)
     }
-
 }
 
 extension MailManagerClientTypes {
 
-    public enum ArchiveStringOperator: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ArchiveStringOperator: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case contains
         case sdkUnknown(Swift.String)
 
@@ -817,8 +823,9 @@ extension MailManagerClientTypes {
 }
 
 extension MailManagerClientTypes {
+
     /// A string expression to evaluate an email attribute value against one or more string values.
-    public struct ArchiveStringExpression {
+    public struct ArchiveStringExpression: Swift.Sendable {
         /// The attribute of the email to evaluate.
         /// This member is required.
         public var evaluate: MailManagerClientTypes.ArchiveStringToEvaluate?
@@ -840,24 +847,24 @@ extension MailManagerClientTypes {
             self.values = values
         }
     }
-
 }
 
 extension MailManagerClientTypes {
+
     /// A filter condition used to include or exclude emails when exporting from or searching an archive.
-    public enum ArchiveFilterCondition {
+    public enum ArchiveFilterCondition: Swift.Sendable {
         /// A string expression to evaluate against email attributes.
         case stringexpression(MailManagerClientTypes.ArchiveStringExpression)
         /// A boolean expression to evaluate against email attributes.
         case booleanexpression(MailManagerClientTypes.ArchiveBooleanExpression)
         case sdkUnknown(Swift.String)
     }
-
 }
 
 extension MailManagerClientTypes {
+
     /// A set of filter conditions to include and/or exclude emails.
-    public struct ArchiveFilters {
+    public struct ArchiveFilters: Swift.Sendable {
         /// The filter conditions for emails to include.
         public var include: [MailManagerClientTypes.ArchiveFilterCondition]?
         /// The filter conditions for emails to exclude.
@@ -872,12 +879,11 @@ extension MailManagerClientTypes {
             self.unless = unless
         }
     }
-
 }
 
 extension MailManagerClientTypes {
 
-    public enum RetentionPeriod: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum RetentionPeriod: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case eighteenMonths
         case eightYears
         case fiveYears
@@ -947,13 +953,13 @@ extension MailManagerClientTypes {
 }
 
 extension MailManagerClientTypes {
+
     /// The retention policy for an email archive that specifies how long emails are kept before being automatically deleted.
-    public enum ArchiveRetention {
+    public enum ArchiveRetention: Swift.Sendable {
         /// The enum value sets the period for retaining emails in an archive.
         case retentionperiod(MailManagerClientTypes.RetentionPeriod)
         case sdkUnknown(Swift.String)
     }
-
 }
 
 /// Occurs when a service's request rate limit is exceeded, resulting in throttling of further requests.
@@ -981,7 +987,7 @@ public struct ThrottlingException: ClientRuntime.ModeledError, AWSClientRuntime.
 }
 
 /// The request to create a new email archive.
-public struct CreateArchiveInput {
+public struct CreateArchiveInput: Swift.Sendable {
     /// A unique name for the new archive.
     /// This member is required.
     public var archiveName: Swift.String?
@@ -1011,7 +1017,7 @@ public struct CreateArchiveInput {
 }
 
 /// The response from creating a new email archive.
-public struct CreateArchiveOutput {
+public struct CreateArchiveOutput: Swift.Sendable {
     /// The unique identifier for the newly created archive.
     /// This member is required.
     public var archiveId: Swift.String?
@@ -1025,7 +1031,7 @@ public struct CreateArchiveOutput {
 }
 
 /// The request to initiate deletion of an email archive.
-public struct DeleteArchiveInput {
+public struct DeleteArchiveInput: Swift.Sendable {
     /// The identifier of the archive to delete.
     /// This member is required.
     public var archiveId: Swift.String?
@@ -1039,13 +1045,13 @@ public struct DeleteArchiveInput {
 }
 
 /// The response indicating if the archive deletion was successfully initiated. On success, returns an HTTP 200 status code. On failure, returns an error message.
-public struct DeleteArchiveOutput {
+public struct DeleteArchiveOutput: Swift.Sendable {
 
     public init() { }
 }
 
 /// The request to retrieve details of an email archive.
-public struct GetArchiveInput {
+public struct GetArchiveInput: Swift.Sendable {
     /// The identifier of the archive to retrieve.
     /// This member is required.
     public var archiveId: Swift.String?
@@ -1059,7 +1065,7 @@ public struct GetArchiveInput {
 }
 
 /// The response containing details of the requested archive.
-public struct GetArchiveOutput {
+public struct GetArchiveOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the archive.
     /// This member is required.
     public var archiveArn: Swift.String?
@@ -1109,7 +1115,7 @@ public struct GetArchiveOutput {
 }
 
 /// The request to list email archives in your account.
-public struct ListArchivesInput {
+public struct ListArchivesInput: Swift.Sendable {
     /// If NextToken is returned, there are more results available. The value of NextToken is a unique pagination token for each page. Make the call again using the returned token to retrieve the next page.
     public var nextToken: Swift.String?
     /// The maximum number of archives that are returned per call. You can use NextToken to obtain further pages of archives.
@@ -1126,7 +1132,7 @@ public struct ListArchivesInput {
 }
 
 /// The response containing a list of your email archives.
-public struct ListArchivesOutput {
+public struct ListArchivesOutput: Swift.Sendable {
     /// The list of archive details.
     /// This member is required.
     public var archives: [MailManagerClientTypes.Archive]?
@@ -1144,7 +1150,7 @@ public struct ListArchivesOutput {
 }
 
 /// The request to update properties of an existing email archive.
-public struct UpdateArchiveInput {
+public struct UpdateArchiveInput: Swift.Sendable {
     /// The identifier of the archive to update.
     /// This member is required.
     public var archiveId: Swift.String?
@@ -1166,26 +1172,26 @@ public struct UpdateArchiveInput {
 }
 
 /// The response indicating if the archive update succeeded or failed. On success, returns an HTTP 200 status code. On failure, returns an error message.
-public struct UpdateArchiveOutput {
+public struct UpdateArchiveOutput: Swift.Sendable {
 
     public init() { }
 }
 
 extension MailManagerClientTypes {
+
     /// The configuration of the ingress endpoint resource.
-    public enum IngressPointConfiguration {
+    public enum IngressPointConfiguration: Swift.Sendable {
         /// The password of the ingress endpoint resource.
         case smtppassword(Swift.String)
         /// The SecretsManager::Secret ARN of the ingress endpoint resource.
         case secretarn(Swift.String)
         case sdkUnknown(Swift.String)
     }
-
 }
 
 extension MailManagerClientTypes {
 
-    public enum IngressPointType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum IngressPointType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case auth
         case `open`
         case sdkUnknown(Swift.String)
@@ -1212,7 +1218,7 @@ extension MailManagerClientTypes {
     }
 }
 
-public struct CreateIngressPointInput {
+public struct CreateIngressPointInput: Swift.Sendable {
     /// A unique token that Amazon SES uses to recognize subsequent retries of the same request.
     public var clientToken: Swift.String?
     /// If you choose an Authenticated ingress endpoint, you must configure either an SMTP password or a secret ARN.
@@ -1252,7 +1258,7 @@ public struct CreateIngressPointInput {
     }
 }
 
-public struct CreateIngressPointOutput {
+public struct CreateIngressPointOutput: Swift.Sendable {
     /// The unique identifier for a previously created ingress endpoint.
     /// This member is required.
     public var ingressPointId: Swift.String?
@@ -1266,27 +1272,27 @@ public struct CreateIngressPointOutput {
 }
 
 extension MailManagerClientTypes {
+
     /// Explicitly indicate that the relay destination server does not require SMTP credential authentication.
-    public struct NoAuthentication {
+    public struct NoAuthentication: Swift.Sendable {
 
         public init() { }
     }
-
 }
 
 extension MailManagerClientTypes {
+
     /// Authentication for the relay destination server—specify the secretARN where the SMTP credentials are stored, or specify an empty NoAuthentication structure if the relay destination server does not require SMTP credential authentication.
-    public enum RelayAuthentication {
+    public enum RelayAuthentication: Swift.Sendable {
         /// The ARN of the secret created in secrets manager where the relay server's SMTP credentials are stored.
         case secretarn(Swift.String)
         /// Keep an empty structure if the relay destination server does not require SMTP credential authentication.
         case noauthentication(MailManagerClientTypes.NoAuthentication)
         case sdkUnknown(Swift.String)
     }
-
 }
 
-public struct CreateRelayInput {
+public struct CreateRelayInput: Swift.Sendable {
     /// Authentication for the relay destination server—specify the secretARN where the SMTP credentials are stored.
     /// This member is required.
     public var authentication: MailManagerClientTypes.RelayAuthentication?
@@ -1322,7 +1328,7 @@ public struct CreateRelayInput {
     }
 }
 
-public struct CreateRelayOutput {
+public struct CreateRelayOutput: Swift.Sendable {
     /// A unique identifier of the created relay resource.
     /// This member is required.
     public var relayId: Swift.String?
@@ -1336,8 +1342,9 @@ public struct CreateRelayOutput {
 }
 
 extension MailManagerClientTypes {
+
     /// This action to delivers an email to a mailbox.
-    public struct DeliverToMailboxAction {
+    public struct DeliverToMailboxAction: Swift.Sendable {
         /// A policy that states what to do in the case of failure. The action will fail if there are configuration errors. For example, the mailbox ARN is no longer valid.
         public var actionFailurePolicy: MailManagerClientTypes.ActionFailurePolicy?
         /// The Amazon Resource Name (ARN) of a WorkMail organization to deliver the email to.
@@ -1358,21 +1365,20 @@ extension MailManagerClientTypes {
             self.roleArn = roleArn
         }
     }
-
 }
 
 extension MailManagerClientTypes {
+
     /// This action causes processing to stop and the email to be dropped. If the action applies only to certain recipients, only those recipients are dropped, and processing continues for other recipients.
-    public struct DropAction {
+    public struct DropAction: Swift.Sendable {
 
         public init() { }
     }
-
 }
 
 extension MailManagerClientTypes {
 
-    public enum MailFrom: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum MailFrom: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case preserve
         case replace
         case sdkUnknown(Swift.String)
@@ -1400,8 +1406,9 @@ extension MailManagerClientTypes {
 }
 
 extension MailManagerClientTypes {
+
     /// The action relays the email via SMTP to another specific SMTP server.
-    public struct RelayAction {
+    public struct RelayAction: Swift.Sendable {
         /// A policy that states what to do in the case of failure. The action will fail if there are configuration errors. For example, the specified relay has been deleted.
         public var actionFailurePolicy: MailManagerClientTypes.ActionFailurePolicy?
         /// This action specifies whether to preserve or replace original mail from address while relaying received emails to a destination server.
@@ -1421,12 +1428,12 @@ extension MailManagerClientTypes {
             self.relay = relay
         }
     }
-
 }
 
 extension MailManagerClientTypes {
+
     /// This action replaces the email envelope recipients with the given list of recipients. If the condition of this action applies only to a subset of recipients, only those recipients are replaced with the recipients specified in the action. The message contents and headers are unaffected by this action, only the envelope recipients are updated.
-    public struct ReplaceRecipientAction {
+    public struct ReplaceRecipientAction: Swift.Sendable {
         /// This action specifies the replacement recipient email addresses to insert.
         public var replaceWith: [Swift.String]?
 
@@ -1437,7 +1444,6 @@ extension MailManagerClientTypes {
             self.replaceWith = replaceWith
         }
     }
-
 }
 
 extension MailManagerClientTypes.ReplaceRecipientAction: Swift.CustomDebugStringConvertible {
@@ -1446,8 +1452,9 @@ extension MailManagerClientTypes.ReplaceRecipientAction: Swift.CustomDebugString
 }
 
 extension MailManagerClientTypes {
+
     /// Sends the email to the internet using the ses:SendRawEmail API.
-    public struct SendAction {
+    public struct SendAction: Swift.Sendable {
         /// A policy that states what to do in the case of failure. The action will fail if there are configuration errors. For example, the caller does not have the permissions to call the sendRawEmail API.
         public var actionFailurePolicy: MailManagerClientTypes.ActionFailurePolicy?
         /// The Amazon Resource Name (ARN) of the role to use for this action. This role must have access to the ses:SendRawEmail API.
@@ -1463,12 +1470,12 @@ extension MailManagerClientTypes {
             self.roleArn = roleArn
         }
     }
-
 }
 
 extension MailManagerClientTypes {
+
     /// Writes the MIME content of the email to an S3 bucket.
-    public struct S3Action {
+    public struct S3Action: Swift.Sendable {
         /// A policy that states what to do in the case of failure. The action will fail if there are configuration errors. For example, the specified the bucket has been deleted.
         public var actionFailurePolicy: MailManagerClientTypes.ActionFailurePolicy?
         /// The Amazon Resource Name (ARN) of the IAM Role to use while writing to S3. This role must have access to the s3:PutObject, kms:Encrypt, and kms:GenerateDataKey APIs for the given bucket.
@@ -1497,12 +1504,12 @@ extension MailManagerClientTypes {
             self.s3SseKmsKeyId = s3SseKmsKeyId
         }
     }
-
 }
 
 extension MailManagerClientTypes {
+
     /// The action for a rule to take. Only one of the contained actions can be set.
-    public enum RuleAction {
+    public enum RuleAction: Swift.Sendable {
         /// This action terminates the evaluation of rules in the rule set.
         case drop(MailManagerClientTypes.DropAction)
         /// This action relays the email to another SMTP server.
@@ -1521,12 +1528,11 @@ extension MailManagerClientTypes {
         case delivertomailbox(MailManagerClientTypes.DeliverToMailboxAction)
         case sdkUnknown(Swift.String)
     }
-
 }
 
 extension MailManagerClientTypes {
 
-    public enum RuleBooleanEmailAttribute: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum RuleBooleanEmailAttribute: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case readReceiptRequested
         case tls
         case tlsWrapped
@@ -1557,18 +1563,18 @@ extension MailManagerClientTypes {
 }
 
 extension MailManagerClientTypes {
+
     /// The union type representing the allowed types of operands for a boolean condition.
-    public enum RuleBooleanToEvaluate {
+    public enum RuleBooleanToEvaluate: Swift.Sendable {
         /// The boolean type representing the allowed attribute types for an email.
         case attribute(MailManagerClientTypes.RuleBooleanEmailAttribute)
         case sdkUnknown(Swift.String)
     }
-
 }
 
 extension MailManagerClientTypes {
 
-    public enum RuleBooleanOperator: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum RuleBooleanOperator: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case isFalse
         case isTrue
         case sdkUnknown(Swift.String)
@@ -1596,8 +1602,9 @@ extension MailManagerClientTypes {
 }
 
 extension MailManagerClientTypes {
+
     /// A boolean expression to be used in a rule condition.
-    public struct RuleBooleanExpression {
+    public struct RuleBooleanExpression: Swift.Sendable {
         /// The operand on which to perform a boolean condition operation.
         /// This member is required.
         public var evaluate: MailManagerClientTypes.RuleBooleanToEvaluate?
@@ -1614,12 +1621,11 @@ extension MailManagerClientTypes {
             self.`operator` = `operator`
         }
     }
-
 }
 
 extension MailManagerClientTypes {
 
-    public enum RuleDmarcOperator: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum RuleDmarcOperator: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case equals
         case notEquals
         case sdkUnknown(Swift.String)
@@ -1648,7 +1654,7 @@ extension MailManagerClientTypes {
 
 extension MailManagerClientTypes {
 
-    public enum RuleDmarcPolicy: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum RuleDmarcPolicy: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case `none`
         case quarantine
         case reject
@@ -1679,8 +1685,9 @@ extension MailManagerClientTypes {
 }
 
 extension MailManagerClientTypes {
+
     /// A DMARC policy expression. The condition matches if the given DMARC policy matches that of the incoming email.
-    public struct RuleDmarcExpression {
+    public struct RuleDmarcExpression: Swift.Sendable {
         /// The operator to apply to the DMARC policy of the incoming email.
         /// This member is required.
         public var `operator`: MailManagerClientTypes.RuleDmarcOperator?
@@ -1697,12 +1704,11 @@ extension MailManagerClientTypes {
             self.values = values
         }
     }
-
 }
 
 extension MailManagerClientTypes {
 
-    public enum RuleIpEmailAttribute: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum RuleIpEmailAttribute: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case sourceIp
         case sdkUnknown(Swift.String)
 
@@ -1727,18 +1733,18 @@ extension MailManagerClientTypes {
 }
 
 extension MailManagerClientTypes {
+
     /// The IP address to evaluate for this condition.
-    public enum RuleIpToEvaluate {
+    public enum RuleIpToEvaluate: Swift.Sendable {
         /// The attribute of the email to evaluate.
         case attribute(MailManagerClientTypes.RuleIpEmailAttribute)
         case sdkUnknown(Swift.String)
     }
-
 }
 
 extension MailManagerClientTypes {
 
-    public enum RuleIpOperator: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum RuleIpOperator: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case cidrMatches
         case notCidrMatches
         case sdkUnknown(Swift.String)
@@ -1766,8 +1772,9 @@ extension MailManagerClientTypes {
 }
 
 extension MailManagerClientTypes {
+
     /// An IP address expression matching certain IP addresses within a given range of IP addresses.
-    public struct RuleIpExpression {
+    public struct RuleIpExpression: Swift.Sendable {
         /// The IP address to evaluate in this condition.
         /// This member is required.
         public var evaluate: MailManagerClientTypes.RuleIpToEvaluate?
@@ -1789,12 +1796,11 @@ extension MailManagerClientTypes {
             self.values = values
         }
     }
-
 }
 
 extension MailManagerClientTypes {
 
-    public enum RuleNumberEmailAttribute: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum RuleNumberEmailAttribute: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case messageSize
         case sdkUnknown(Swift.String)
 
@@ -1819,18 +1825,18 @@ extension MailManagerClientTypes {
 }
 
 extension MailManagerClientTypes {
+
     /// The number to evaluate in a numeric condition expression.
-    public enum RuleNumberToEvaluate {
+    public enum RuleNumberToEvaluate: Swift.Sendable {
         /// An email attribute that is used as the number to evaluate.
         case attribute(MailManagerClientTypes.RuleNumberEmailAttribute)
         case sdkUnknown(Swift.String)
     }
-
 }
 
 extension MailManagerClientTypes {
 
-    public enum RuleNumberOperator: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum RuleNumberOperator: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case equals
         case greaterThan
         case greaterThanOrEqual
@@ -1870,8 +1876,9 @@ extension MailManagerClientTypes {
 }
 
 extension MailManagerClientTypes {
+
     /// A number expression to match numeric conditions with integers from the incoming email.
-    public struct RuleNumberExpression {
+    public struct RuleNumberExpression: Swift.Sendable {
         /// The number to evaluate in a numeric condition expression.
         /// This member is required.
         public var evaluate: MailManagerClientTypes.RuleNumberToEvaluate?
@@ -1893,12 +1900,11 @@ extension MailManagerClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension MailManagerClientTypes {
 
-    public enum RuleStringEmailAttribute: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum RuleStringEmailAttribute: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case cc
         case from
         case helo
@@ -1944,20 +1950,20 @@ extension MailManagerClientTypes {
 }
 
 extension MailManagerClientTypes {
+
     /// The string to evaluate in a string condition expression.
-    public enum RuleStringToEvaluate {
+    public enum RuleStringToEvaluate: Swift.Sendable {
         /// The email attribute to evaluate in a string condition expression.
         case attribute(MailManagerClientTypes.RuleStringEmailAttribute)
         /// The email MIME X-Header attribute to evaluate in a string condition expression.
         case mimeheaderattribute(Swift.String)
         case sdkUnknown(Swift.String)
     }
-
 }
 
 extension MailManagerClientTypes {
 
-    public enum RuleStringOperator: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum RuleStringOperator: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case contains
         case endsWith
         case equals
@@ -1994,8 +2000,9 @@ extension MailManagerClientTypes {
 }
 
 extension MailManagerClientTypes {
+
     /// A string expression is evaluated against strings or substrings of the email.
-    public struct RuleStringExpression {
+    public struct RuleStringExpression: Swift.Sendable {
         /// The string to evaluate in a string condition expression.
         /// This member is required.
         public var evaluate: MailManagerClientTypes.RuleStringToEvaluate?
@@ -2017,12 +2024,11 @@ extension MailManagerClientTypes {
             self.values = values
         }
     }
-
 }
 
 extension MailManagerClientTypes {
 
-    public enum RuleVerdictAttribute: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum RuleVerdictAttribute: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case dkim
         case spf
         case sdkUnknown(Swift.String)
@@ -2050,20 +2056,20 @@ extension MailManagerClientTypes {
 }
 
 extension MailManagerClientTypes {
+
     /// The verdict to evaluate in a verdict condition expression.
-    public enum RuleVerdictToEvaluate {
+    public enum RuleVerdictToEvaluate: Swift.Sendable {
         /// The email verdict attribute to evaluate in a string verdict expression.
         case attribute(MailManagerClientTypes.RuleVerdictAttribute)
         /// The Add On ARN and its returned value to evaluate in a verdict condition expression.
         case analysis(MailManagerClientTypes.Analysis)
         case sdkUnknown(Swift.String)
     }
-
 }
 
 extension MailManagerClientTypes {
 
-    public enum RuleVerdictOperator: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum RuleVerdictOperator: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case equals
         case notEquals
         case sdkUnknown(Swift.String)
@@ -2092,7 +2098,7 @@ extension MailManagerClientTypes {
 
 extension MailManagerClientTypes {
 
-    public enum RuleVerdict: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum RuleVerdict: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case fail
         case gray
         case pass
@@ -2126,8 +2132,9 @@ extension MailManagerClientTypes {
 }
 
 extension MailManagerClientTypes {
+
     /// A verdict expression is evaluated against verdicts of the email.
-    public struct RuleVerdictExpression {
+    public struct RuleVerdictExpression: Swift.Sendable {
         /// The verdict to evaluate in a verdict condition expression.
         /// This member is required.
         public var evaluate: MailManagerClientTypes.RuleVerdictToEvaluate?
@@ -2149,12 +2156,12 @@ extension MailManagerClientTypes {
             self.values = values
         }
     }
-
 }
 
 extension MailManagerClientTypes {
+
     /// The conditional expression used to evaluate an email for determining if a rule action should be taken.
-    public enum RuleCondition {
+    public enum RuleCondition: Swift.Sendable {
         /// The condition applies to a boolean expression passed in this field.
         case booleanexpression(MailManagerClientTypes.RuleBooleanExpression)
         /// The condition applies to a string expression passed in this field.
@@ -2169,12 +2176,12 @@ extension MailManagerClientTypes {
         case dmarcexpression(MailManagerClientTypes.RuleDmarcExpression)
         case sdkUnknown(Swift.String)
     }
-
 }
 
 extension MailManagerClientTypes {
+
     /// A rule contains conditions, "unless conditions" and actions. For each envelope recipient of an email, if all conditions match and none of the "unless conditions" match, then all of the actions are executed sequentially. If no conditions are provided, the rule always applies and the actions are implicitly executed. If only "unless conditions" are provided, the rule applies if the email does not match the evaluation of the "unless conditions".
-    public struct Rule {
+    public struct Rule: Swift.Sendable {
         /// The list of actions to execute when the conditions match the incoming email, and none of the "unless conditions" match.
         /// This member is required.
         public var actions: [MailManagerClientTypes.RuleAction]?
@@ -2198,10 +2205,9 @@ extension MailManagerClientTypes {
             self.unless = unless
         }
     }
-
 }
 
-public struct CreateRuleSetInput {
+public struct CreateRuleSetInput: Swift.Sendable {
     /// A unique token that Amazon SES uses to recognize subsequent retries of the same request.
     public var clientToken: Swift.String?
     /// A user-friendly name for the rule set.
@@ -2227,7 +2233,7 @@ public struct CreateRuleSetInput {
     }
 }
 
-public struct CreateRuleSetOutput {
+public struct CreateRuleSetOutput: Swift.Sendable {
     /// The identifier of the created rule set.
     /// This member is required.
     public var ruleSetId: Swift.String?
@@ -2241,8 +2247,9 @@ public struct CreateRuleSetOutput {
 }
 
 extension MailManagerClientTypes {
+
     /// The Add On ARN and its returned value that is evaluated in a policy statement's conditional expression to either deny or block the incoming email.
-    public struct IngressAnalysis {
+    public struct IngressAnalysis: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of an Add On.
         /// This member is required.
         public var analyzer: Swift.String?
@@ -2259,22 +2266,21 @@ extension MailManagerClientTypes {
             self.resultField = resultField
         }
     }
-
 }
 
 extension MailManagerClientTypes {
+
     /// The union type representing the allowed types of operands for a boolean condition.
-    public enum IngressBooleanToEvaluate {
+    public enum IngressBooleanToEvaluate: Swift.Sendable {
         /// The structure type for a boolean condition stating the Add On ARN and its returned value.
         case analysis(MailManagerClientTypes.IngressAnalysis)
         case sdkUnknown(Swift.String)
     }
-
 }
 
 extension MailManagerClientTypes {
 
-    public enum IngressBooleanOperator: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum IngressBooleanOperator: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case isFalse
         case isTrue
         case sdkUnknown(Swift.String)
@@ -2302,8 +2308,9 @@ extension MailManagerClientTypes {
 }
 
 extension MailManagerClientTypes {
+
     /// The structure for a boolean condition matching on the incoming mail.
-    public struct IngressBooleanExpression {
+    public struct IngressBooleanExpression: Swift.Sendable {
         /// The operand on which to perform a boolean condition operation.
         /// This member is required.
         public var evaluate: MailManagerClientTypes.IngressBooleanToEvaluate?
@@ -2320,12 +2327,11 @@ extension MailManagerClientTypes {
             self.`operator` = `operator`
         }
     }
-
 }
 
 extension MailManagerClientTypes {
 
-    public enum IngressIpv4Attribute: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum IngressIpv4Attribute: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case senderIp
         case sdkUnknown(Swift.String)
 
@@ -2350,18 +2356,18 @@ extension MailManagerClientTypes {
 }
 
 extension MailManagerClientTypes {
+
     /// The structure for an IP based condition matching on the incoming mail.
-    public enum IngressIpToEvaluate {
+    public enum IngressIpToEvaluate: Swift.Sendable {
         /// An enum type representing the allowed attribute types for an IP condition.
         case attribute(MailManagerClientTypes.IngressIpv4Attribute)
         case sdkUnknown(Swift.String)
     }
-
 }
 
 extension MailManagerClientTypes {
 
-    public enum IngressIpOperator: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum IngressIpOperator: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case cidrMatches
         case notCidrMatches
         case sdkUnknown(Swift.String)
@@ -2389,8 +2395,9 @@ extension MailManagerClientTypes {
 }
 
 extension MailManagerClientTypes {
+
     /// The union type representing the allowed types for the left hand side of an IP condition.
-    public struct IngressIpv4Expression {
+    public struct IngressIpv4Expression: Swift.Sendable {
         /// The left hand side argument of an IP condition expression.
         /// This member is required.
         public var evaluate: MailManagerClientTypes.IngressIpToEvaluate?
@@ -2412,12 +2419,11 @@ extension MailManagerClientTypes {
             self.values = values
         }
     }
-
 }
 
 extension MailManagerClientTypes {
 
-    public enum IngressStringEmailAttribute: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum IngressStringEmailAttribute: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case recipient
         case sdkUnknown(Swift.String)
 
@@ -2442,18 +2448,18 @@ extension MailManagerClientTypes {
 }
 
 extension MailManagerClientTypes {
+
     /// The union type representing the allowed types for the left hand side of a string condition.
-    public enum IngressStringToEvaluate {
+    public enum IngressStringToEvaluate: Swift.Sendable {
         /// The enum type representing the allowed attribute types for a string condition.
         case attribute(MailManagerClientTypes.IngressStringEmailAttribute)
         case sdkUnknown(Swift.String)
     }
-
 }
 
 extension MailManagerClientTypes {
 
-    public enum IngressStringOperator: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum IngressStringOperator: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case contains
         case endsWith
         case equals
@@ -2490,8 +2496,9 @@ extension MailManagerClientTypes {
 }
 
 extension MailManagerClientTypes {
+
     /// The structure for a string based condition matching on the incoming mail.
-    public struct IngressStringExpression {
+    public struct IngressStringExpression: Swift.Sendable {
         /// The left hand side argument of a string condition expression.
         /// This member is required.
         public var evaluate: MailManagerClientTypes.IngressStringToEvaluate?
@@ -2513,12 +2520,11 @@ extension MailManagerClientTypes {
             self.values = values
         }
     }
-
 }
 
 extension MailManagerClientTypes {
 
-    public enum IngressTlsAttribute: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum IngressTlsAttribute: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case tlsProtocol
         case sdkUnknown(Swift.String)
 
@@ -2543,18 +2549,18 @@ extension MailManagerClientTypes {
 }
 
 extension MailManagerClientTypes {
+
     /// The union type representing the allowed types for the left hand side of a TLS condition.
-    public enum IngressTlsProtocolToEvaluate {
+    public enum IngressTlsProtocolToEvaluate: Swift.Sendable {
         /// The enum type representing the allowed attribute types for the TLS condition.
         case attribute(MailManagerClientTypes.IngressTlsAttribute)
         case sdkUnknown(Swift.String)
     }
-
 }
 
 extension MailManagerClientTypes {
 
-    public enum IngressTlsProtocolOperator: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum IngressTlsProtocolOperator: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case `is`
         case minimumTlsVersion
         case sdkUnknown(Swift.String)
@@ -2583,7 +2589,7 @@ extension MailManagerClientTypes {
 
 extension MailManagerClientTypes {
 
-    public enum IngressTlsProtocolAttribute: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum IngressTlsProtocolAttribute: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case tls12
         case tls13
         case sdkUnknown(Swift.String)
@@ -2611,8 +2617,9 @@ extension MailManagerClientTypes {
 }
 
 extension MailManagerClientTypes {
+
     /// The structure for a TLS related condition matching on the incoming mail.
-    public struct IngressTlsProtocolExpression {
+    public struct IngressTlsProtocolExpression: Swift.Sendable {
         /// The left hand side argument of a TLS condition expression.
         /// This member is required.
         public var evaluate: MailManagerClientTypes.IngressTlsProtocolToEvaluate?
@@ -2634,12 +2641,12 @@ extension MailManagerClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension MailManagerClientTypes {
+
     /// The email traffic filtering conditions which are contained in a traffic policy resource.
-    public enum PolicyCondition {
+    public enum PolicyCondition: Swift.Sendable {
         /// This represents a string based condition matching on the incoming mail. It performs the string operation configured in 'Operator' and evaluates the 'Protocol' object against the 'Value'.
         case stringexpression(MailManagerClientTypes.IngressStringExpression)
         /// This represents an IP based condition matching on the incoming mail. It performs the operation configured in 'Operator' and evaluates the 'Protocol' object against the 'Value'.
@@ -2650,12 +2657,12 @@ extension MailManagerClientTypes {
         case booleanexpression(MailManagerClientTypes.IngressBooleanExpression)
         case sdkUnknown(Swift.String)
     }
-
 }
 
 extension MailManagerClientTypes {
+
     /// The structure containing traffic policy conditions and actions.
-    public struct PolicyStatement {
+    public struct PolicyStatement: Swift.Sendable {
         /// The action that informs a traffic policy resource to either allow or block the email if it matches a condition in the policy statement.
         /// This member is required.
         public var action: MailManagerClientTypes.AcceptAction?
@@ -2672,10 +2679,9 @@ extension MailManagerClientTypes {
             self.conditions = conditions
         }
     }
-
 }
 
-public struct CreateTrafficPolicyInput {
+public struct CreateTrafficPolicyInput: Swift.Sendable {
     /// A unique token that Amazon SES uses to recognize subsequent retries of the same request.
     public var clientToken: Swift.String?
     /// Default action instructs the traﬃc policy to either Allow or Deny (block) messages that fall outside of (or not addressed by) the conditions of your policy statements
@@ -2710,7 +2716,7 @@ public struct CreateTrafficPolicyInput {
     }
 }
 
-public struct CreateTrafficPolicyOutput {
+public struct CreateTrafficPolicyOutput: Swift.Sendable {
     /// The identifier of the traffic policy resource.
     /// This member is required.
     public var trafficPolicyId: Swift.String?
@@ -2723,7 +2729,7 @@ public struct CreateTrafficPolicyOutput {
     }
 }
 
-public struct DeleteIngressPointInput {
+public struct DeleteIngressPointInput: Swift.Sendable {
     /// The identifier of the ingress endpoint resource that you want to delete.
     /// This member is required.
     public var ingressPointId: Swift.String?
@@ -2736,12 +2742,12 @@ public struct DeleteIngressPointInput {
     }
 }
 
-public struct DeleteIngressPointOutput {
+public struct DeleteIngressPointOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteRelayInput {
+public struct DeleteRelayInput: Swift.Sendable {
     /// The unique relay identifier.
     /// This member is required.
     public var relayId: Swift.String?
@@ -2754,12 +2760,12 @@ public struct DeleteRelayInput {
     }
 }
 
-public struct DeleteRelayOutput {
+public struct DeleteRelayOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteRuleSetInput {
+public struct DeleteRuleSetInput: Swift.Sendable {
     /// The identifier of an existing rule set resource to delete.
     /// This member is required.
     public var ruleSetId: Swift.String?
@@ -2772,12 +2778,12 @@ public struct DeleteRuleSetInput {
     }
 }
 
-public struct DeleteRuleSetOutput {
+public struct DeleteRuleSetOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteTrafficPolicyInput {
+public struct DeleteTrafficPolicyInput: Swift.Sendable {
     /// The identifier of the traffic policy that you want to delete.
     /// This member is required.
     public var trafficPolicyId: Swift.String?
@@ -2790,14 +2796,39 @@ public struct DeleteTrafficPolicyInput {
     }
 }
 
-public struct DeleteTrafficPolicyOutput {
+public struct DeleteTrafficPolicyOutput: Swift.Sendable {
 
     public init() { }
 }
 
 extension MailManagerClientTypes {
+
+    /// The SMTP envelope information of the email.
+    public struct Envelope: Swift.Sendable {
+        /// The RCPT FROM given by the host from which the email was received.
+        public var from: Swift.String?
+        /// The HELO used by the host from which the email was received.
+        public var helo: Swift.String?
+        /// All SMTP TO entries given by the host from which the email was received.
+        public var to: [Swift.String]?
+
+        public init(
+            from: Swift.String? = nil,
+            helo: Swift.String? = nil,
+            to: [Swift.String]? = nil
+        )
+        {
+            self.from = from
+            self.helo = helo
+            self.to = to
+        }
+    }
+}
+
+extension MailManagerClientTypes {
+
     /// The configuration for exporting email data to an Amazon S3 bucket.
-    public struct S3ExportDestinationConfiguration {
+    public struct S3ExportDestinationConfiguration: Swift.Sendable {
         /// The S3 location to deliver the exported email data.
         public var s3Location: Swift.String?
 
@@ -2808,22 +2839,21 @@ extension MailManagerClientTypes {
             self.s3Location = s3Location
         }
     }
-
 }
 
 extension MailManagerClientTypes {
+
     /// The destination configuration for delivering exported email data.
-    public enum ExportDestinationConfiguration {
+    public enum ExportDestinationConfiguration: Swift.Sendable {
         /// Configuration for delivering to an Amazon S3 bucket.
         case s3(MailManagerClientTypes.S3ExportDestinationConfiguration)
         case sdkUnknown(Swift.String)
     }
-
 }
 
 extension MailManagerClientTypes {
 
-    public enum ExportState: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ExportState: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case cancelled
         case completed
         case failed
@@ -2863,8 +2893,9 @@ extension MailManagerClientTypes {
 }
 
 extension MailManagerClientTypes {
+
     /// The current status of an archive export job.
-    public struct ExportStatus {
+    public struct ExportStatus: Swift.Sendable {
         /// The timestamp of when the export job completed (if finished).
         public var completionTimestamp: Foundation.Date?
         /// An error message if the export job failed.
@@ -2887,12 +2918,12 @@ extension MailManagerClientTypes {
             self.submissionTimestamp = submissionTimestamp
         }
     }
-
 }
 
 extension MailManagerClientTypes {
+
     /// Summary statuses of an archive export job.
-    public struct ExportSummary {
+    public struct ExportSummary: Swift.Sendable {
         /// The unique identifier of the export job.
         public var exportId: Swift.String?
         /// The current status of the export job.
@@ -2907,11 +2938,10 @@ extension MailManagerClientTypes {
             self.status = status
         }
     }
-
 }
 
 /// The request to retrieve details of a specific archive export job.
-public struct GetArchiveExportInput {
+public struct GetArchiveExportInput: Swift.Sendable {
     /// The identifier of the export job to get details for.
     /// This member is required.
     public var exportId: Swift.String?
@@ -2925,7 +2955,7 @@ public struct GetArchiveExportInput {
 }
 
 /// The response containing details of the specified archive export job.
-public struct GetArchiveExportOutput {
+public struct GetArchiveExportOutput: Swift.Sendable {
     /// The identifier of the archive the email export was performed from.
     public var archiveId: Swift.String?
     /// Where the exported emails are being delivered.
@@ -2962,34 +2992,7 @@ public struct GetArchiveExportOutput {
 }
 
 /// The request to get details of a specific email message stored in an archive.
-public struct GetArchiveMessageInput {
-    /// The unique identifier of the archived email message.
-    /// This member is required.
-    public var archivedMessageId: Swift.String?
-
-    public init(
-        archivedMessageId: Swift.String? = nil
-    )
-    {
-        self.archivedMessageId = archivedMessageId
-    }
-}
-
-/// The response containing details about the requested archived email message.
-public struct GetArchiveMessageOutput {
-    /// A pre-signed URL to temporarily download the full message content.
-    public var messageDownloadLink: Swift.String?
-
-    public init(
-        messageDownloadLink: Swift.String? = nil
-    )
-    {
-        self.messageDownloadLink = messageDownloadLink
-    }
-}
-
-/// The request to get the textual content of a specific email message stored in an archive.
-public struct GetArchiveMessageContentInput {
+public struct GetArchiveMessageInput: Swift.Sendable {
     /// The unique identifier of the archived email message.
     /// This member is required.
     public var archivedMessageId: Swift.String?
@@ -3003,8 +3006,93 @@ public struct GetArchiveMessageContentInput {
 }
 
 extension MailManagerClientTypes {
+
+    /// The metadata about the email.
+    public struct Metadata: Swift.Sendable {
+        /// The ID of the ingress endpoint through which the email was received.
+        public var ingressPointId: Swift.String?
+        /// The ID of the rule set that processed the email.
+        public var ruleSetId: Swift.String?
+        /// The name of the host from which the email was received.
+        public var senderHostname: Swift.String?
+        /// The IP address of the host from which the email was received.
+        public var senderIpAddress: Swift.String?
+        /// The timestamp of when the email was received.
+        public var timestamp: Foundation.Date?
+        /// The TLS cipher suite used to communicate with the host from which the email was received.
+        public var tlsCipherSuite: Swift.String?
+        /// The TLS protocol used to communicate with the host from which the email was received.
+        public var tlsProtocol: Swift.String?
+        /// The ID of the traffic policy that was in effect when the email was received.
+        public var trafficPolicyId: Swift.String?
+
+        public init(
+            ingressPointId: Swift.String? = nil,
+            ruleSetId: Swift.String? = nil,
+            senderHostname: Swift.String? = nil,
+            senderIpAddress: Swift.String? = nil,
+            timestamp: Foundation.Date? = nil,
+            tlsCipherSuite: Swift.String? = nil,
+            tlsProtocol: Swift.String? = nil,
+            trafficPolicyId: Swift.String? = nil
+        )
+        {
+            self.ingressPointId = ingressPointId
+            self.ruleSetId = ruleSetId
+            self.senderHostname = senderHostname
+            self.senderIpAddress = senderIpAddress
+            self.timestamp = timestamp
+            self.tlsCipherSuite = tlsCipherSuite
+            self.tlsProtocol = tlsProtocol
+            self.trafficPolicyId = trafficPolicyId
+        }
+    }
+}
+
+extension MailManagerClientTypes.Metadata: Swift.CustomDebugStringConvertible {
+    public var debugDescription: Swift.String {
+        "Metadata(ingressPointId: \(Swift.String(describing: ingressPointId)), ruleSetId: \(Swift.String(describing: ruleSetId)), senderHostname: \(Swift.String(describing: senderHostname)), timestamp: \(Swift.String(describing: timestamp)), tlsCipherSuite: \(Swift.String(describing: tlsCipherSuite)), tlsProtocol: \(Swift.String(describing: tlsProtocol)), trafficPolicyId: \(Swift.String(describing: trafficPolicyId)), senderIpAddress: \"CONTENT_REDACTED\")"}
+}
+
+/// The response containing details about the requested archived email message.
+public struct GetArchiveMessageOutput: Swift.Sendable {
+    /// The SMTP envelope information of the email.
+    public var envelope: MailManagerClientTypes.Envelope?
+    /// A pre-signed URL to temporarily download the full message content.
+    public var messageDownloadLink: Swift.String?
+    /// The metadata about the email.
+    public var metadata: MailManagerClientTypes.Metadata?
+
+    public init(
+        envelope: MailManagerClientTypes.Envelope? = nil,
+        messageDownloadLink: Swift.String? = nil,
+        metadata: MailManagerClientTypes.Metadata? = nil
+    )
+    {
+        self.envelope = envelope
+        self.messageDownloadLink = messageDownloadLink
+        self.metadata = metadata
+    }
+}
+
+/// The request to get the textual content of a specific email message stored in an archive.
+public struct GetArchiveMessageContentInput: Swift.Sendable {
+    /// The unique identifier of the archived email message.
+    /// This member is required.
+    public var archivedMessageId: Swift.String?
+
+    public init(
+        archivedMessageId: Swift.String? = nil
+    )
+    {
+        self.archivedMessageId = archivedMessageId
+    }
+}
+
+extension MailManagerClientTypes {
+
     /// The textual body content of an email message.
-    public struct MessageBody {
+    public struct MessageBody: Swift.Sendable {
         /// The HTML body content of the message.
         public var html: Swift.String?
         /// A flag indicating if the email was malformed.
@@ -3023,11 +3111,10 @@ extension MailManagerClientTypes {
             self.text = text
         }
     }
-
 }
 
 /// The response containing the textual content of the requested archived email message.
-public struct GetArchiveMessageContentOutput {
+public struct GetArchiveMessageContentOutput: Swift.Sendable {
     /// The textual body content of the email message.
     public var body: MailManagerClientTypes.MessageBody?
 
@@ -3040,7 +3127,7 @@ public struct GetArchiveMessageContentOutput {
 }
 
 /// The request to retrieve details of a specific archive search job.
-public struct GetArchiveSearchInput {
+public struct GetArchiveSearchInput: Swift.Sendable {
     /// The identifier of the search job to get details for.
     /// This member is required.
     public var searchId: Swift.String?
@@ -3055,7 +3142,7 @@ public struct GetArchiveSearchInput {
 
 extension MailManagerClientTypes {
 
-    public enum SearchState: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SearchState: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case cancelled
         case completed
         case failed
@@ -3092,8 +3179,9 @@ extension MailManagerClientTypes {
 }
 
 extension MailManagerClientTypes {
+
     /// The current status of an archive search job.
-    public struct SearchStatus {
+    public struct SearchStatus: Swift.Sendable {
         /// The timestamp of when the search completed (if finished).
         public var completionTimestamp: Foundation.Date?
         /// An error message if the search failed.
@@ -3116,11 +3204,10 @@ extension MailManagerClientTypes {
             self.submissionTimestamp = submissionTimestamp
         }
     }
-
 }
 
 /// The response containing details of the specified archive search job.
-public struct GetArchiveSearchOutput {
+public struct GetArchiveSearchOutput: Swift.Sendable {
     /// The identifier of the archive the email search was performed in.
     public var archiveId: Swift.String?
     /// The criteria used to filter emails included in the search.
@@ -3153,7 +3240,7 @@ public struct GetArchiveSearchOutput {
 }
 
 /// The request to retrieve results from a completed archive search job.
-public struct GetArchiveSearchResultsInput {
+public struct GetArchiveSearchResultsInput: Swift.Sendable {
     /// The identifier of the completed search job.
     /// This member is required.
     public var searchId: Swift.String?
@@ -3167,26 +3254,35 @@ public struct GetArchiveSearchResultsInput {
 }
 
 extension MailManagerClientTypes {
+
     /// A result row containing metadata for an archived email message.
-    public struct Row {
+    public struct Row: Swift.Sendable {
         /// The unique identifier of the archived message.
         public var archivedMessageId: Swift.String?
         /// The email addresses in the CC header.
         public var cc: Swift.String?
         /// The date the email was sent.
         public var date: Swift.String?
+        /// The SMTP envelope information of the email.
+        public var envelope: MailManagerClientTypes.Envelope?
         /// The email address of the sender.
         public var from: Swift.String?
         /// A flag indicating if the email has attachments.
         public var hasAttachments: Swift.Bool?
         /// The email message ID this is a reply to.
         public var inReplyTo: Swift.String?
+        /// The ID of the ingress endpoint through which the email was received.
+        public var ingressPointId: Swift.String?
         /// The unique message ID of the email.
         public var messageId: Swift.String?
         /// The received headers from the email delivery path.
         public var receivedHeaders: [Swift.String]?
         /// The timestamp of when the email was received.
         public var receivedTimestamp: Foundation.Date?
+        /// The name of the host from which the email was received.
+        public var senderHostname: Swift.String?
+        /// The IP address of the host from which the email was received.
+        public var senderIpAddress: Swift.String?
         /// The subject header value of the email.
         public var subject: Swift.String?
         /// The email addresses in the To header.
@@ -3202,12 +3298,16 @@ extension MailManagerClientTypes {
             archivedMessageId: Swift.String? = nil,
             cc: Swift.String? = nil,
             date: Swift.String? = nil,
+            envelope: MailManagerClientTypes.Envelope? = nil,
             from: Swift.String? = nil,
             hasAttachments: Swift.Bool? = nil,
             inReplyTo: Swift.String? = nil,
+            ingressPointId: Swift.String? = nil,
             messageId: Swift.String? = nil,
             receivedHeaders: [Swift.String]? = nil,
             receivedTimestamp: Foundation.Date? = nil,
+            senderHostname: Swift.String? = nil,
+            senderIpAddress: Swift.String? = nil,
             subject: Swift.String? = nil,
             to: Swift.String? = nil,
             xMailer: Swift.String? = nil,
@@ -3218,12 +3318,16 @@ extension MailManagerClientTypes {
             self.archivedMessageId = archivedMessageId
             self.cc = cc
             self.date = date
+            self.envelope = envelope
             self.from = from
             self.hasAttachments = hasAttachments
             self.inReplyTo = inReplyTo
+            self.ingressPointId = ingressPointId
             self.messageId = messageId
             self.receivedHeaders = receivedHeaders
             self.receivedTimestamp = receivedTimestamp
+            self.senderHostname = senderHostname
+            self.senderIpAddress = senderIpAddress
             self.subject = subject
             self.to = to
             self.xMailer = xMailer
@@ -3231,11 +3335,15 @@ extension MailManagerClientTypes {
             self.xPriority = xPriority
         }
     }
+}
 
+extension MailManagerClientTypes.Row: Swift.CustomDebugStringConvertible {
+    public var debugDescription: Swift.String {
+        "Row(archivedMessageId: \(Swift.String(describing: archivedMessageId)), cc: \(Swift.String(describing: cc)), date: \(Swift.String(describing: date)), envelope: \(Swift.String(describing: envelope)), from: \(Swift.String(describing: from)), hasAttachments: \(Swift.String(describing: hasAttachments)), inReplyTo: \(Swift.String(describing: inReplyTo)), ingressPointId: \(Swift.String(describing: ingressPointId)), messageId: \(Swift.String(describing: messageId)), receivedHeaders: \(Swift.String(describing: receivedHeaders)), receivedTimestamp: \(Swift.String(describing: receivedTimestamp)), senderHostname: \(Swift.String(describing: senderHostname)), subject: \(Swift.String(describing: subject)), to: \(Swift.String(describing: to)), xMailer: \(Swift.String(describing: xMailer)), xOriginalMailer: \(Swift.String(describing: xOriginalMailer)), xPriority: \(Swift.String(describing: xPriority)), senderIpAddress: \"CONTENT_REDACTED\")"}
 }
 
 /// The response containing search results from a completed archive search.
-public struct GetArchiveSearchResultsOutput {
+public struct GetArchiveSearchResultsOutput: Swift.Sendable {
     /// The list of email result objects matching the search criteria.
     public var rows: [MailManagerClientTypes.Row]?
 
@@ -3247,7 +3355,7 @@ public struct GetArchiveSearchResultsOutput {
     }
 }
 
-public struct GetIngressPointInput {
+public struct GetIngressPointInput: Swift.Sendable {
     /// The identifier of an ingress endpoint.
     /// This member is required.
     public var ingressPointId: Swift.String?
@@ -3261,8 +3369,9 @@ public struct GetIngressPointInput {
 }
 
 extension MailManagerClientTypes {
+
     /// The password configuration of the ingress endpoint resource.
-    public struct IngressPointPasswordConfiguration {
+    public struct IngressPointPasswordConfiguration: Swift.Sendable {
         /// The previous password expiry timestamp of the ingress endpoint resource.
         public var previousSmtpPasswordExpiryTimestamp: Foundation.Date?
         /// The previous password version of the ingress endpoint resource.
@@ -3281,12 +3390,12 @@ extension MailManagerClientTypes {
             self.smtpPasswordVersion = smtpPasswordVersion
         }
     }
-
 }
 
 extension MailManagerClientTypes {
+
     /// The authentication configuration for the ingress endpoint resource.
-    public struct IngressPointAuthConfiguration {
+    public struct IngressPointAuthConfiguration: Swift.Sendable {
         /// The ingress endpoint password configuration for the ingress endpoint resource.
         public var ingressPointPasswordConfiguration: MailManagerClientTypes.IngressPointPasswordConfiguration?
         /// The ingress endpoint SecretsManager::Secret ARN configuration for the ingress endpoint resource.
@@ -3301,12 +3410,11 @@ extension MailManagerClientTypes {
             self.secretArn = secretArn
         }
     }
-
 }
 
 extension MailManagerClientTypes {
 
-    public enum IngressPointStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum IngressPointStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case active
         case closed
         case deprovisioning
@@ -3345,7 +3453,7 @@ extension MailManagerClientTypes {
     }
 }
 
-public struct GetIngressPointOutput {
+public struct GetIngressPointOutput: Swift.Sendable {
     /// The DNS A Record that identifies your ingress endpoint. Configure your DNS Mail Exchange (MX) record with this value to route emails to Mail Manager.
     public var aRecord: Swift.String?
     /// The timestamp of when the ingress endpoint was created.
@@ -3399,7 +3507,7 @@ public struct GetIngressPointOutput {
     }
 }
 
-public struct GetRelayInput {
+public struct GetRelayInput: Swift.Sendable {
     /// A unique relay identifier.
     /// This member is required.
     public var relayId: Swift.String?
@@ -3412,7 +3520,7 @@ public struct GetRelayInput {
     }
 }
 
-public struct GetRelayOutput {
+public struct GetRelayOutput: Swift.Sendable {
     /// The authentication attribute—contains the secret ARN where the customer relay server credentials are stored.
     public var authentication: MailManagerClientTypes.RelayAuthentication?
     /// The timestamp of when the relay was created.
@@ -3453,7 +3561,7 @@ public struct GetRelayOutput {
     }
 }
 
-public struct GetRuleSetInput {
+public struct GetRuleSetInput: Swift.Sendable {
     /// The identifier of an existing rule set to be retrieved.
     /// This member is required.
     public var ruleSetId: Swift.String?
@@ -3466,7 +3574,7 @@ public struct GetRuleSetInput {
     }
 }
 
-public struct GetRuleSetOutput {
+public struct GetRuleSetOutput: Swift.Sendable {
     /// The date of when then rule set was created.
     /// This member is required.
     public var createdDate: Foundation.Date?
@@ -3504,7 +3612,7 @@ public struct GetRuleSetOutput {
     }
 }
 
-public struct GetTrafficPolicyInput {
+public struct GetTrafficPolicyInput: Swift.Sendable {
     /// The identifier of the traffic policy resource.
     /// This member is required.
     public var trafficPolicyId: Swift.String?
@@ -3517,7 +3625,7 @@ public struct GetTrafficPolicyInput {
     }
 }
 
-public struct GetTrafficPolicyOutput {
+public struct GetTrafficPolicyOutput: Swift.Sendable {
     /// The timestamp of when the traffic policy was created.
     public var createdTimestamp: Foundation.Date?
     /// The default action of the traffic policy.
@@ -3560,8 +3668,9 @@ public struct GetTrafficPolicyOutput {
 }
 
 extension MailManagerClientTypes {
+
     /// The structure of an ingress endpoint resource.
-    public struct IngressPoint {
+    public struct IngressPoint: Swift.Sendable {
         /// The DNS A Record that identifies your ingress endpoint. Configure your DNS Mail Exchange (MX) record with this value to route emails to Mail Manager.
         public var aRecord: Swift.String?
         /// The identifier of the ingress endpoint resource.
@@ -3592,10 +3701,9 @@ extension MailManagerClientTypes {
             self.type = type
         }
     }
-
 }
 
-public struct ListIngressPointsInput {
+public struct ListIngressPointsInput: Swift.Sendable {
     /// If you received a pagination token from a previous call to this API, you can provide it here to continue paginating through the next page of results.
     public var nextToken: Swift.String?
     /// The maximum number of ingress endpoint resources that are returned per call. You can use NextToken to obtain further ingress endpoints.
@@ -3611,7 +3719,7 @@ public struct ListIngressPointsInput {
     }
 }
 
-public struct ListIngressPointsOutput {
+public struct ListIngressPointsOutput: Swift.Sendable {
     /// The list of ingress endpoints.
     public var ingressPoints: [MailManagerClientTypes.IngressPoint]?
     /// If NextToken is returned, there are more results available. The value of NextToken is a unique pagination token for each page. Make the call again using the returned token to retrieve the next page.
@@ -3629,7 +3737,7 @@ public struct ListIngressPointsOutput {
 
 extension MailManagerClientTypes {
 
-    public enum IngressPointStatusToUpdate: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum IngressPointStatusToUpdate: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case active
         case closed
         case sdkUnknown(Swift.String)
@@ -3656,7 +3764,7 @@ extension MailManagerClientTypes {
     }
 }
 
-public struct UpdateIngressPointInput {
+public struct UpdateIngressPointInput: Swift.Sendable {
     /// If you choose an Authenticated ingress endpoint, you must configure either an SMTP password or a secret ARN.
     public var ingressPointConfiguration: MailManagerClientTypes.IngressPointConfiguration?
     /// The identifier for the ingress endpoint you want to update.
@@ -3689,13 +3797,13 @@ public struct UpdateIngressPointInput {
     }
 }
 
-public struct UpdateIngressPointOutput {
+public struct UpdateIngressPointOutput: Swift.Sendable {
 
     public init() { }
 }
 
 /// The request to list archive export jobs in your account.
-public struct ListArchiveExportsInput {
+public struct ListArchiveExportsInput: Swift.Sendable {
     /// The identifier of the archive.
     /// This member is required.
     public var archiveId: Swift.String?
@@ -3717,7 +3825,7 @@ public struct ListArchiveExportsInput {
 }
 
 /// The response containing a list of archive export jobs and their statuses.
-public struct ListArchiveExportsOutput {
+public struct ListArchiveExportsOutput: Swift.Sendable {
     /// The list of export job identifiers and statuses.
     public var exports: [MailManagerClientTypes.ExportSummary]?
     /// If present, use to retrieve the next page of results.
@@ -3734,7 +3842,7 @@ public struct ListArchiveExportsOutput {
 }
 
 /// The request to list archive search jobs in your account.
-public struct ListArchiveSearchesInput {
+public struct ListArchiveSearchesInput: Swift.Sendable {
     /// The identifier of the archive.
     /// This member is required.
     public var archiveId: Swift.String?
@@ -3756,8 +3864,9 @@ public struct ListArchiveSearchesInput {
 }
 
 extension MailManagerClientTypes {
+
     /// Summary details of an archive search job.
-    public struct SearchSummary {
+    public struct SearchSummary: Swift.Sendable {
         /// The unique identifier of the search job.
         public var searchId: Swift.String?
         /// The current status of the search job.
@@ -3772,11 +3881,10 @@ extension MailManagerClientTypes {
             self.status = status
         }
     }
-
 }
 
 /// The response containing a list of archive search jobs and their statuses.
-public struct ListArchiveSearchesOutput {
+public struct ListArchiveSearchesOutput: Swift.Sendable {
     /// If present, use to retrieve the next page of results.
     public var nextToken: Swift.String?
     /// The list of search job identifiers and statuses.
@@ -3792,7 +3900,7 @@ public struct ListArchiveSearchesOutput {
     }
 }
 
-public struct ListRelaysInput {
+public struct ListRelaysInput: Swift.Sendable {
     /// If you received a pagination token from a previous call to this API, you can provide it here to continue paginating through the next page of results.
     public var nextToken: Swift.String?
     /// The number of relays to be returned in one request.
@@ -3809,8 +3917,9 @@ public struct ListRelaysInput {
 }
 
 extension MailManagerClientTypes {
+
     /// The relay resource that can be used as a rule to relay receiving emails to the destination relay server.
-    public struct Relay {
+    public struct Relay: Swift.Sendable {
         /// The timestamp of when the relay was last modified.
         public var lastModifiedTimestamp: Foundation.Date?
         /// The unique relay identifier.
@@ -3829,10 +3938,9 @@ extension MailManagerClientTypes {
             self.relayName = relayName
         }
     }
-
 }
 
-public struct ListRelaysOutput {
+public struct ListRelaysOutput: Swift.Sendable {
     /// If NextToken is returned, there are more results available. The value of NextToken is a unique pagination token for each page. Make the call again using the returned token to retrieve the next page.
     public var nextToken: Swift.String?
     /// The list of returned relays.
@@ -3849,7 +3957,7 @@ public struct ListRelaysOutput {
     }
 }
 
-public struct ListRuleSetsInput {
+public struct ListRuleSetsInput: Swift.Sendable {
     /// If you received a pagination token from a previous call to this API, you can provide it here to continue paginating through the next page of results.
     public var nextToken: Swift.String?
     /// The maximum number of rule set resources that are returned per call. You can use NextToken to obtain further rule sets.
@@ -3866,8 +3974,9 @@ public struct ListRuleSetsInput {
 }
 
 extension MailManagerClientTypes {
+
     /// A rule set contains a list of rules that are evaluated in order. Each rule is evaluated sequentially for each email.
-    public struct RuleSet {
+    public struct RuleSet: Swift.Sendable {
         /// The last modification date of the rule set.
         public var lastModificationDate: Foundation.Date?
         /// The identifier of the rule set.
@@ -3886,10 +3995,9 @@ extension MailManagerClientTypes {
             self.ruleSetName = ruleSetName
         }
     }
-
 }
 
-public struct ListRuleSetsOutput {
+public struct ListRuleSetsOutput: Swift.Sendable {
     /// If NextToken is returned, there are more results available. The value of NextToken is a unique pagination token for each page. Make the call again using the returned token to retrieve the next page.
     public var nextToken: Swift.String?
     /// The list of rule sets.
@@ -3906,7 +4014,7 @@ public struct ListRuleSetsOutput {
     }
 }
 
-public struct ListTagsForResourceInput {
+public struct ListTagsForResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the resource to retrieve tags from.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -3919,7 +4027,7 @@ public struct ListTagsForResourceInput {
     }
 }
 
-public struct ListTagsForResourceOutput {
+public struct ListTagsForResourceOutput: Swift.Sendable {
     /// The tags used to organize, track, or control access for the resource. For example, { "tags": {"key1":"value1", "key2":"value2"} }.
     /// This member is required.
     public var tags: [MailManagerClientTypes.Tag]?
@@ -3932,7 +4040,7 @@ public struct ListTagsForResourceOutput {
     }
 }
 
-public struct ListTrafficPoliciesInput {
+public struct ListTrafficPoliciesInput: Swift.Sendable {
     /// If you received a pagination token from a previous call to this API, you can provide it here to continue paginating through the next page of results.
     public var nextToken: Swift.String?
     /// The maximum number of traffic policy resources that are returned per call. You can use NextToken to obtain further traffic policies.
@@ -3949,8 +4057,9 @@ public struct ListTrafficPoliciesInput {
 }
 
 extension MailManagerClientTypes {
+
     /// The structure of a traffic policy resource which is a container for policy statements.
-    public struct TrafficPolicy {
+    public struct TrafficPolicy: Swift.Sendable {
         /// Default action instructs the traﬃc policy to either Allow or Deny (block) messages that fall outside of (or not addressed by) the conditions of your policy statements
         /// This member is required.
         public var defaultAction: MailManagerClientTypes.AcceptAction?
@@ -3972,10 +4081,9 @@ extension MailManagerClientTypes {
             self.trafficPolicyName = trafficPolicyName
         }
     }
-
 }
 
-public struct ListTrafficPoliciesOutput {
+public struct ListTrafficPoliciesOutput: Swift.Sendable {
     /// If NextToken is returned, there are more results available. The value of NextToken is a unique pagination token for each page. Make the call again using the returned token to retrieve the next page.
     public var nextToken: Swift.String?
     /// The list of traffic policies.
@@ -3991,7 +4099,7 @@ public struct ListTrafficPoliciesOutput {
     }
 }
 
-public struct UpdateRelayInput {
+public struct UpdateRelayInput: Swift.Sendable {
     /// Authentication for the relay destination server—specify the secretARN where the SMTP credentials are stored.
     public var authentication: MailManagerClientTypes.RelayAuthentication?
     /// The unique relay identifier.
@@ -4020,12 +4128,12 @@ public struct UpdateRelayInput {
     }
 }
 
-public struct UpdateRelayOutput {
+public struct UpdateRelayOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdateRuleSetInput {
+public struct UpdateRuleSetInput: Swift.Sendable {
     /// The identifier of a rule set you want to update.
     /// This member is required.
     public var ruleSetId: Swift.String?
@@ -4046,13 +4154,13 @@ public struct UpdateRuleSetInput {
     }
 }
 
-public struct UpdateRuleSetOutput {
+public struct UpdateRuleSetOutput: Swift.Sendable {
 
     public init() { }
 }
 
 /// The request to initiate an export of emails from an archive.
-public struct StartArchiveExportInput {
+public struct StartArchiveExportInput: Swift.Sendable {
     /// The identifier of the archive to export emails from.
     /// This member is required.
     public var archiveId: Swift.String?
@@ -4064,6 +4172,8 @@ public struct StartArchiveExportInput {
     /// The start of the timestamp range to include emails from.
     /// This member is required.
     public var fromTimestamp: Foundation.Date?
+    /// Whether to include message metadata as JSON files in the export.
+    public var includeMetadata: Swift.Bool?
     /// The maximum number of email items to include in the export.
     public var maxResults: Swift.Int?
     /// The end of the timestamp range to include emails from.
@@ -4075,6 +4185,7 @@ public struct StartArchiveExportInput {
         exportDestinationConfiguration: MailManagerClientTypes.ExportDestinationConfiguration? = nil,
         filters: MailManagerClientTypes.ArchiveFilters? = nil,
         fromTimestamp: Foundation.Date? = nil,
+        includeMetadata: Swift.Bool? = nil,
         maxResults: Swift.Int? = nil,
         toTimestamp: Foundation.Date? = nil
     )
@@ -4083,13 +4194,14 @@ public struct StartArchiveExportInput {
         self.exportDestinationConfiguration = exportDestinationConfiguration
         self.filters = filters
         self.fromTimestamp = fromTimestamp
+        self.includeMetadata = includeMetadata
         self.maxResults = maxResults
         self.toTimestamp = toTimestamp
     }
 }
 
 /// The response from initiating an archive export.
-public struct StartArchiveExportOutput {
+public struct StartArchiveExportOutput: Swift.Sendable {
     /// The unique identifier for the initiated export job.
     public var exportId: Swift.String?
 
@@ -4102,7 +4214,7 @@ public struct StartArchiveExportOutput {
 }
 
 /// The request to initiate a search across emails in an archive.
-public struct StartArchiveSearchInput {
+public struct StartArchiveSearchInput: Swift.Sendable {
     /// The identifier of the archive to search emails in.
     /// This member is required.
     public var archiveId: Swift.String?
@@ -4135,7 +4247,7 @@ public struct StartArchiveSearchInput {
 }
 
 /// The response from initiating an archive search.
-public struct StartArchiveSearchOutput {
+public struct StartArchiveSearchOutput: Swift.Sendable {
     /// The unique identifier for the initiated search job.
     public var searchId: Swift.String?
 
@@ -4148,7 +4260,7 @@ public struct StartArchiveSearchOutput {
 }
 
 /// The request to stop an in-progress archive export job.
-public struct StopArchiveExportInput {
+public struct StopArchiveExportInput: Swift.Sendable {
     /// The identifier of the export job to stop.
     /// This member is required.
     public var exportId: Swift.String?
@@ -4162,13 +4274,13 @@ public struct StopArchiveExportInput {
 }
 
 /// The response indicating if the request to stop the export job succeeded. On success, returns an HTTP 200 status code. On failure, returns an error message.
-public struct StopArchiveExportOutput {
+public struct StopArchiveExportOutput: Swift.Sendable {
 
     public init() { }
 }
 
 /// The request to stop an in-progress archive search job.
-public struct StopArchiveSearchInput {
+public struct StopArchiveSearchInput: Swift.Sendable {
     /// The identifier of the search job to stop.
     /// This member is required.
     public var searchId: Swift.String?
@@ -4182,12 +4294,12 @@ public struct StopArchiveSearchInput {
 }
 
 /// The response indicating if the request to stop the search job succeeded. On success, returns an HTTP 200 status code. On failure, returns an error message.
-public struct StopArchiveSearchOutput {
+public struct StopArchiveSearchOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct TagResourceInput {
+public struct TagResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the resource that you want to tag.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -4205,12 +4317,12 @@ public struct TagResourceInput {
     }
 }
 
-public struct TagResourceOutput {
+public struct TagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdateTrafficPolicyInput {
+public struct UpdateTrafficPolicyInput: Swift.Sendable {
     /// Default action instructs the traﬃc policy to either Allow or Deny (block) messages that fall outside of (or not addressed by) the conditions of your policy statements
     public var defaultAction: MailManagerClientTypes.AcceptAction?
     /// The maximum message size in bytes of email which is allowed in by this traffic policy—anything larger will be blocked.
@@ -4239,12 +4351,12 @@ public struct UpdateTrafficPolicyInput {
     }
 }
 
-public struct UpdateTrafficPolicyOutput {
+public struct UpdateTrafficPolicyOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UntagResourceInput {
+public struct UntagResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the resource that you want to untag.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -4267,7 +4379,7 @@ extension UntagResourceInput: Swift.CustomDebugStringConvertible {
         "UntagResourceInput(resourceArn: \(Swift.String(describing: resourceArn)), tagKeys: \"CONTENT_REDACTED\")"}
 }
 
-public struct UntagResourceOutput {
+public struct UntagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
@@ -4935,6 +5047,7 @@ extension StartArchiveExportInput {
         try writer["ExportDestinationConfiguration"].write(value.exportDestinationConfiguration, with: MailManagerClientTypes.ExportDestinationConfiguration.write(value:to:))
         try writer["Filters"].write(value.filters, with: MailManagerClientTypes.ArchiveFilters.write(value:to:))
         try writer["FromTimestamp"].writeTimestamp(value.fromTimestamp, format: SmithyTimestamps.TimestampFormat.epochSeconds)
+        try writer["IncludeMetadata"].write(value.includeMetadata)
         try writer["MaxResults"].write(value.maxResults)
         try writer["ToTimestamp"].writeTimestamp(value.toTimestamp, format: SmithyTimestamps.TimestampFormat.epochSeconds)
     }
@@ -5249,7 +5362,9 @@ extension GetArchiveMessageOutput {
         let responseReader = try SmithyJSON.Reader.from(data: data)
         let reader = responseReader
         var value = GetArchiveMessageOutput()
+        value.envelope = try reader["Envelope"].readIfPresent(with: MailManagerClientTypes.Envelope.read(from:))
         value.messageDownloadLink = try reader["MessageDownloadLink"].readIfPresent()
+        value.metadata = try reader["Metadata"].readIfPresent(with: MailManagerClientTypes.Metadata.read(from:))
         return value
     }
 }
@@ -6618,6 +6733,35 @@ extension MailManagerClientTypes.ExportStatus {
     }
 }
 
+extension MailManagerClientTypes.Metadata {
+
+    static func read(from reader: SmithyJSON.Reader) throws -> MailManagerClientTypes.Metadata {
+        guard reader.hasContent else { throw SmithyReadWrite.ReaderError.requiredValueNotPresent }
+        var value = MailManagerClientTypes.Metadata()
+        value.timestamp = try reader["Timestamp"].readTimestampIfPresent(format: SmithyTimestamps.TimestampFormat.epochSeconds)
+        value.ingressPointId = try reader["IngressPointId"].readIfPresent()
+        value.trafficPolicyId = try reader["TrafficPolicyId"].readIfPresent()
+        value.ruleSetId = try reader["RuleSetId"].readIfPresent()
+        value.senderHostname = try reader["SenderHostname"].readIfPresent()
+        value.senderIpAddress = try reader["SenderIpAddress"].readIfPresent()
+        value.tlsCipherSuite = try reader["TlsCipherSuite"].readIfPresent()
+        value.tlsProtocol = try reader["TlsProtocol"].readIfPresent()
+        return value
+    }
+}
+
+extension MailManagerClientTypes.Envelope {
+
+    static func read(from reader: SmithyJSON.Reader) throws -> MailManagerClientTypes.Envelope {
+        guard reader.hasContent else { throw SmithyReadWrite.ReaderError.requiredValueNotPresent }
+        var value = MailManagerClientTypes.Envelope()
+        value.helo = try reader["Helo"].readIfPresent()
+        value.from = try reader["From"].readIfPresent()
+        value.to = try reader["To"].readListIfPresent(memberReadingClosure: SmithyReadWrite.ReadingClosures.readString(from:), memberNodeInfo: "member", isFlattened: false)
+        return value
+    }
+}
+
 extension MailManagerClientTypes.MessageBody {
 
     static func read(from reader: SmithyJSON.Reader) throws -> MailManagerClientTypes.MessageBody {
@@ -6662,6 +6806,10 @@ extension MailManagerClientTypes.Row {
         value.xMailer = try reader["XMailer"].readIfPresent()
         value.xOriginalMailer = try reader["XOriginalMailer"].readIfPresent()
         value.xPriority = try reader["XPriority"].readIfPresent()
+        value.ingressPointId = try reader["IngressPointId"].readIfPresent()
+        value.senderHostname = try reader["SenderHostname"].readIfPresent()
+        value.senderIpAddress = try reader["SenderIpAddress"].readIfPresent()
+        value.envelope = try reader["Envelope"].readIfPresent(with: MailManagerClientTypes.Envelope.read(from:))
         return value
     }
 }

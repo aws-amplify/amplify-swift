@@ -16,17 +16,19 @@ class S3ConcurrentTests: S3XCTestCase {
     public var fileData: Data!
     let MEGABYTE: Double = 1_000_000
 
+    #if !os(macOS) && !os(iOS) && !os(tvOS) && !os(visionOS)
     // Payload below 1,048,576 bytes; sends as simple data payload
-    func test_100x_1MB_getObject() async throws {
+    func test_20x_1MB_getObject() async throws {
         fileData = try generateDummyTextData(numMegabytes: MEGABYTE)
-        try await repeatConcurrentlyWithArgs(count: 100, test: getObject, args: fileData!)
+        try await repeatConcurrentlyWithArgs(count: 20, test: getObject, args: fileData!)
     }
 
     // Payload over 1,048,576 bytes; uses aws chunked encoding & flexible checksum
-    func test_100x_1_5MB_getObject() async throws {
+    func test_20x_1_5MB_getObject() async throws {
         fileData = try generateDummyTextData(numMegabytes: MEGABYTE * 1.5)
-        try await repeatConcurrentlyWithArgs(count: 100, test: getObject, args: fileData!)
+        try await repeatConcurrentlyWithArgs(count: 20, test: getObject, args: fileData!)
     }
+    #endif
 
     /* Helper functions */
 

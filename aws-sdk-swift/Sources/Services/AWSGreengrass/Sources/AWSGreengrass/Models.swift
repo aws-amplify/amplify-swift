@@ -27,19 +27,21 @@ import struct Smithy.URIQueryItem
 import struct SmithyHTTPAPI.Header
 import struct SmithyHTTPAPI.Headers
 
-public struct TagResourceOutput {
+
+public struct TagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UntagResourceOutput {
+public struct UntagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
 extension GreengrassClientTypes {
+
     /// Information about a Greengrass core's connectivity.
-    public struct ConnectivityInfo {
+    public struct ConnectivityInfo: Swift.Sendable {
         /// The endpoint for the Greengrass core. Can be an IP address or DNS.
         public var hostAddress: Swift.String?
         /// The ID of the connectivity information.
@@ -62,12 +64,12 @@ extension GreengrassClientTypes {
             self.portNumber = portNumber
         }
     }
-
 }
 
 extension GreengrassClientTypes {
+
     /// Information about a connector. Connectors run on the Greengrass core and contain built-in integration with local infrastructure, device protocols, AWS, and other cloud services.
-    public struct Connector {
+    public struct Connector: Swift.Sendable {
         /// The ARN of the connector.
         /// This member is required.
         public var connectorArn: Swift.String?
@@ -88,12 +90,12 @@ extension GreengrassClientTypes {
             self.parameters = parameters
         }
     }
-
 }
 
 extension GreengrassClientTypes {
+
     /// Information about a core.
-    public struct Core {
+    public struct Core: Swift.Sendable {
         /// The ARN of the certificate associated with the core.
         /// This member is required.
         public var certificateArn: Swift.String?
@@ -119,12 +121,12 @@ extension GreengrassClientTypes {
             self.thingArn = thingArn
         }
     }
-
 }
 
 extension GreengrassClientTypes {
+
     /// Information about a definition.
-    public struct DefinitionInformation {
+    public struct DefinitionInformation: Swift.Sendable {
         /// The ARN of the definition.
         public var arn: Swift.String?
         /// The time, in milliseconds since the epoch, when the definition was created.
@@ -163,12 +165,12 @@ extension GreengrassClientTypes {
             self.tags = tags
         }
     }
-
 }
 
 extension GreengrassClientTypes {
+
     /// Information about a device.
-    public struct Device {
+    public struct Device: Swift.Sendable {
         /// The ARN of the certificate associated with the device.
         /// This member is required.
         public var certificateArn: Swift.String?
@@ -194,12 +196,11 @@ extension GreengrassClientTypes {
             self.thingArn = thingArn
         }
     }
-
 }
 
 extension GreengrassClientTypes {
 
-    public enum EncodingType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum EncodingType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case binary
         case json
         case sdkUnknown(Swift.String)
@@ -229,7 +230,7 @@ extension GreengrassClientTypes {
 extension GreengrassClientTypes {
 
     /// Specifies whether the Lambda function runs in a Greengrass container (default) or without containerization. Unless your scenario requires that you run without containerization, we recommend that you run in a Greengrass container. Omit this value to run the Lambda function with the default containerization for the group.
-    public enum FunctionIsolationMode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum FunctionIsolationMode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case greengrasscontainer
         case nocontainer
         case sdkUnknown(Swift.String)
@@ -257,8 +258,9 @@ extension GreengrassClientTypes {
 }
 
 extension GreengrassClientTypes {
+
     /// Specifies the user and group whose permissions are used when running the Lambda function. You can specify one or both values to override the default values. We recommend that you avoid running as root unless absolutely necessary to minimize the risk of unintended changes or malicious attacks. To run as root, you must set ''IsolationMode'' to ''NoContainer'' and update config.json in ''greengrass-root/config'' to set ''allowFunctionsToRunAsRoot'' to ''yes''.
-    public struct FunctionRunAsConfig {
+    public struct FunctionRunAsConfig: Swift.Sendable {
         /// The group ID whose permissions are used to run a Lambda function.
         public var gid: Swift.Int?
         /// The user ID whose permissions are used to run a Lambda function.
@@ -273,12 +275,12 @@ extension GreengrassClientTypes {
             self.uid = uid
         }
     }
-
 }
 
 extension GreengrassClientTypes {
+
     /// Configuration information that specifies how a Lambda function runs.
-    public struct FunctionExecutionConfig {
+    public struct FunctionExecutionConfig: Swift.Sendable {
         /// Specifies whether the Lambda function runs in a Greengrass container (default) or without containerization. Unless your scenario requires that you run without containerization, we recommend that you run in a Greengrass container. Omit this value to run the Lambda function with the default containerization for the group.
         public var isolationMode: GreengrassClientTypes.FunctionIsolationMode?
         /// Specifies the user and group whose permissions are used when running the Lambda function. You can specify one or both values to override the default values. We recommend that you avoid running as root unless absolutely necessary to minimize the risk of unintended changes or malicious attacks. To run as root, you must set ''IsolationMode'' to ''NoContainer'' and update config.json in ''greengrass-root/config'' to set ''allowFunctionsToRunAsRoot'' to ''yes''.
@@ -293,13 +295,12 @@ extension GreengrassClientTypes {
             self.runAs = runAs
         }
     }
-
 }
 
 extension GreengrassClientTypes {
 
     /// The type of permission a function has to access a resource.
-    public enum Permission: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Permission: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case ro
         case rw
         case sdkUnknown(Swift.String)
@@ -327,8 +328,9 @@ extension GreengrassClientTypes {
 }
 
 extension GreengrassClientTypes {
+
     /// A policy used by the function to access a resource.
-    public struct ResourceAccessPolicy {
+    public struct ResourceAccessPolicy: Swift.Sendable {
         /// The permissions that the Lambda function has to the resource. Can be one of ''rw'' (read/write) or ''ro'' (read-only).
         public var permission: GreengrassClientTypes.Permission?
         /// The ID of the resource. (This ID is assigned to the resource when you create the resource definiton.)
@@ -344,12 +346,12 @@ extension GreengrassClientTypes {
             self.resourceId = resourceId
         }
     }
-
 }
 
 extension GreengrassClientTypes {
+
     /// The environment configuration of the function.
-    public struct FunctionConfigurationEnvironment {
+    public struct FunctionConfigurationEnvironment: Swift.Sendable {
         /// If true, the Lambda function is allowed to access the host's /sys folder. Use this when the Lambda function needs to read device information from /sys. This setting applies only when you run the Lambda function in a Greengrass container.
         public var accessSysfs: Swift.Bool?
         /// Configuration related to executing the Lambda function
@@ -372,12 +374,12 @@ extension GreengrassClientTypes {
             self.variables = variables
         }
     }
-
 }
 
 extension GreengrassClientTypes {
+
     /// The configuration of the Lambda function.
-    public struct FunctionConfiguration {
+    public struct FunctionConfiguration: Swift.Sendable {
         /// The expected encoding type of the input payload for the function. The default is ''json''.
         public var encodingType: GreengrassClientTypes.EncodingType?
         /// The environment configuration of the function.
@@ -416,12 +418,12 @@ extension GreengrassClientTypes {
             self.timeout = timeout
         }
     }
-
 }
 
 extension GreengrassClientTypes {
+
     /// Information about a Lambda function.
-    public struct Function {
+    public struct Function: Swift.Sendable {
         /// The ARN of the Lambda function.
         public var functionArn: Swift.String?
         /// The configuration of the Lambda function.
@@ -441,12 +443,12 @@ extension GreengrassClientTypes {
             self.id = id
         }
     }
-
 }
 
 extension GreengrassClientTypes {
+
     /// Information about a certificate authority for a group.
-    public struct GroupCertificateAuthorityProperties {
+    public struct GroupCertificateAuthorityProperties: Swift.Sendable {
         /// The ARN of the certificate authority for the group.
         public var groupCertificateAuthorityArn: Swift.String?
         /// The ID of the certificate authority for the group.
@@ -461,12 +463,12 @@ extension GreengrassClientTypes {
             self.groupCertificateAuthorityId = groupCertificateAuthorityId
         }
     }
-
 }
 
 extension GreengrassClientTypes {
+
     /// Information about a group.
-    public struct GroupInformation {
+    public struct GroupInformation: Swift.Sendable {
         /// The ARN of the group.
         public var arn: Swift.String?
         /// The time, in milliseconds since the epoch, when the group was created.
@@ -501,12 +503,11 @@ extension GreengrassClientTypes {
             self.name = name
         }
     }
-
 }
 
 extension GreengrassClientTypes {
 
-    public enum LoggerComponent: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum LoggerComponent: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case greengrasssystem
         case lambda
         case sdkUnknown(Swift.String)
@@ -535,7 +536,7 @@ extension GreengrassClientTypes {
 
 extension GreengrassClientTypes {
 
-    public enum LoggerLevel: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum LoggerLevel: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case debug
         case error
         case fatal
@@ -573,7 +574,7 @@ extension GreengrassClientTypes {
 
 extension GreengrassClientTypes {
 
-    public enum LoggerType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum LoggerType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case awscloudwatch
         case filesystem
         case sdkUnknown(Swift.String)
@@ -601,8 +602,9 @@ extension GreengrassClientTypes {
 }
 
 extension GreengrassClientTypes {
+
     /// Information about a logger
-    public struct Logger {
+    public struct Logger: Swift.Sendable {
         /// The component that will be subject to logging.
         /// This member is required.
         public var component: GreengrassClientTypes.LoggerComponent?
@@ -633,12 +635,12 @@ extension GreengrassClientTypes {
             self.type = type
         }
     }
-
 }
 
 extension GreengrassClientTypes {
+
     /// Group owner related settings for local resources.
-    public struct GroupOwnerSetting {
+    public struct GroupOwnerSetting: Swift.Sendable {
         /// If true, AWS IoT Greengrass automatically adds the specified Linux OS group owner of the resource to the Lambda process privileges. Thus the Lambda process will have the file access permissions of the added Linux group.
         public var autoAddGroupOwner: Swift.Bool?
         /// The name of the Linux OS group whose privileges will be added to the Lambda process. This field is optional.
@@ -653,12 +655,12 @@ extension GreengrassClientTypes {
             self.groupOwner = groupOwner
         }
     }
-
 }
 
 extension GreengrassClientTypes {
+
     /// Attributes that define a local device resource.
-    public struct LocalDeviceResourceData {
+    public struct LocalDeviceResourceData: Swift.Sendable {
         /// Group/owner related settings for local resources.
         public var groupOwnerSetting: GreengrassClientTypes.GroupOwnerSetting?
         /// The local absolute path of the device resource. The source path for a device resource can refer only to a character device or block device under ''/dev''.
@@ -673,12 +675,12 @@ extension GreengrassClientTypes {
             self.sourcePath = sourcePath
         }
     }
-
 }
 
 extension GreengrassClientTypes {
+
     /// Attributes that define a local volume resource.
-    public struct LocalVolumeResourceData {
+    public struct LocalVolumeResourceData: Swift.Sendable {
         /// The absolute local path of the resource inside the Lambda environment.
         public var destinationPath: Swift.String?
         /// Allows you to configure additional group privileges for the Lambda process. This field is optional.
@@ -697,12 +699,12 @@ extension GreengrassClientTypes {
             self.sourcePath = sourcePath
         }
     }
-
 }
 
 extension GreengrassClientTypes {
+
     /// The owner setting for downloaded machine learning resources.
-    public struct ResourceDownloadOwnerSetting {
+    public struct ResourceDownloadOwnerSetting: Swift.Sendable {
         /// The group owner of the resource. This is the name of an existing Linux OS group on the system or a GID. The group's permissions are added to the Lambda process.
         /// This member is required.
         public var groupOwner: Swift.String?
@@ -719,12 +721,12 @@ extension GreengrassClientTypes {
             self.groupPermission = groupPermission
         }
     }
-
 }
 
 extension GreengrassClientTypes {
+
     /// Attributes that define an Amazon S3 machine learning resource.
-    public struct S3MachineLearningModelResourceData {
+    public struct S3MachineLearningModelResourceData: Swift.Sendable {
         /// The absolute local path of the resource inside the Lambda environment.
         public var destinationPath: Swift.String?
         /// The owner setting for downloaded machine learning resources.
@@ -743,12 +745,12 @@ extension GreengrassClientTypes {
             self.s3Uri = s3Uri
         }
     }
-
 }
 
 extension GreengrassClientTypes {
+
     /// Attributes that define an Amazon SageMaker machine learning resource.
-    public struct SageMakerMachineLearningModelResourceData {
+    public struct SageMakerMachineLearningModelResourceData: Swift.Sendable {
         /// The absolute local path of the resource inside the Lambda environment.
         public var destinationPath: Swift.String?
         /// The owner setting for downloaded machine learning resources.
@@ -767,12 +769,12 @@ extension GreengrassClientTypes {
             self.sageMakerJobArn = sageMakerJobArn
         }
     }
-
 }
 
 extension GreengrassClientTypes {
+
     /// Attributes that define a secret resource, which references a secret from AWS Secrets Manager. AWS IoT Greengrass stores a local, encrypted copy of the secret on the Greengrass core, where it can be securely accessed by connectors and Lambda functions.
-    public struct SecretsManagerSecretResourceData {
+    public struct SecretsManagerSecretResourceData: Swift.Sendable {
         /// Optional. The staging labels whose values you want to make available on the core, in addition to ''AWSCURRENT''.
         public var additionalStagingLabelsToDownload: [Swift.String]?
         /// The ARN of the Secrets Manager secret to make available on the core. The value of the secret's latest version (represented by the ''AWSCURRENT'' staging label) is included by default.
@@ -787,12 +789,12 @@ extension GreengrassClientTypes {
             self.arn = arn
         }
     }
-
 }
 
 extension GreengrassClientTypes {
+
     /// A container for resource data. The container takes only one of the following supported resource data types: ''LocalDeviceResourceData'', ''LocalVolumeResourceData'', ''SageMakerMachineLearningModelResourceData'', ''S3MachineLearningModelResourceData'', ''SecretsManagerSecretResourceData''.
-    public struct ResourceDataContainer {
+    public struct ResourceDataContainer: Swift.Sendable {
         /// Attributes that define the local device resource.
         public var localDeviceResourceData: GreengrassClientTypes.LocalDeviceResourceData?
         /// Attributes that define the local volume resource.
@@ -819,12 +821,12 @@ extension GreengrassClientTypes {
             self.secretsManagerSecretResourceData = secretsManagerSecretResourceData
         }
     }
-
 }
 
 extension GreengrassClientTypes {
+
     /// Information about a resource.
-    public struct Resource {
+    public struct Resource: Swift.Sendable {
         /// The resource ID, used to refer to a resource in the Lambda function configuration. Max length is 128 characters with pattern ''[a-zA-Z0-9:_-]+''. This must be unique within a Greengrass group.
         /// This member is required.
         public var id: Swift.String?
@@ -846,12 +848,12 @@ extension GreengrassClientTypes {
             self.resourceDataContainer = resourceDataContainer
         }
     }
-
 }
 
 extension GreengrassClientTypes {
+
     /// Information about a subscription.
-    public struct Subscription {
+    public struct Subscription: Swift.Sendable {
         /// A descriptive or arbitrary ID for the subscription. This value must be unique within the subscription definition version. Max length is 128 characters with pattern ''[a-zA-Z0-9:_-]+''.
         /// This member is required.
         public var id: Swift.String?
@@ -878,12 +880,12 @@ extension GreengrassClientTypes {
             self.target = target
         }
     }
-
 }
 
 extension GreengrassClientTypes {
+
     /// Information about a version.
-    public struct VersionInformation {
+    public struct VersionInformation: Swift.Sendable {
         /// The ARN of the version.
         public var arn: Swift.String?
         /// The time, in milliseconds since the epoch, when the version was created.
@@ -906,12 +908,12 @@ extension GreengrassClientTypes {
             self.version = version
         }
     }
-
 }
 
 extension GreengrassClientTypes {
+
     /// Details about the error.
-    public struct ErrorDetail {
+    public struct ErrorDetail: Swift.Sendable {
         /// A detailed error code.
         public var detailedErrorCode: Swift.String?
         /// A detailed error message.
@@ -926,7 +928,6 @@ extension GreengrassClientTypes {
             self.detailedErrorMessage = detailedErrorMessage
         }
     }
-
 }
 
 /// General error information.
@@ -987,7 +988,7 @@ public struct InternalServerErrorException: ClientRuntime.ModeledError, AWSClien
     }
 }
 
-public struct AssociateRoleToGroupInput {
+public struct AssociateRoleToGroupInput: Swift.Sendable {
     /// The ID of the Greengrass group.
     /// This member is required.
     public var groupId: Swift.String?
@@ -1005,7 +1006,7 @@ public struct AssociateRoleToGroupInput {
     }
 }
 
-public struct AssociateRoleToGroupOutput {
+public struct AssociateRoleToGroupOutput: Swift.Sendable {
     /// The time, in milliseconds since the epoch, when the role ARN was associated with the group.
     public var associatedAt: Swift.String?
 
@@ -1017,7 +1018,7 @@ public struct AssociateRoleToGroupOutput {
     }
 }
 
-public struct AssociateServiceRoleToAccountInput {
+public struct AssociateServiceRoleToAccountInput: Swift.Sendable {
     /// The ARN of the service role you wish to associate with your account.
     /// This member is required.
     public var roleArn: Swift.String?
@@ -1030,7 +1031,7 @@ public struct AssociateServiceRoleToAccountInput {
     }
 }
 
-public struct AssociateServiceRoleToAccountOutput {
+public struct AssociateServiceRoleToAccountOutput: Swift.Sendable {
     /// The time when the service role was associated with the account.
     public var associatedAt: Swift.String?
 
@@ -1043,8 +1044,9 @@ public struct AssociateServiceRoleToAccountOutput {
 }
 
 extension GreengrassClientTypes {
+
     /// Information about a bulk deployment. You cannot start a new bulk deployment while another one is still running or in a non-terminal state.
-    public struct BulkDeployment {
+    public struct BulkDeployment: Swift.Sendable {
         /// The ARN of the bulk deployment.
         public var bulkDeploymentArn: Swift.String?
         /// The ID of the bulk deployment.
@@ -1063,12 +1065,12 @@ extension GreengrassClientTypes {
             self.createdAt = createdAt
         }
     }
-
 }
 
 extension GreengrassClientTypes {
+
     /// Relevant metrics on input records processed during bulk deployment.
-    public struct BulkDeploymentMetrics {
+    public struct BulkDeploymentMetrics: Swift.Sendable {
         /// The total number of records that returned a non-retryable error. For example, this can occur if a group record from the input file uses an invalid format or specifies a nonexistent group version, or if the execution role doesn't grant permission to deploy a group or group version.
         public var invalidInputRecords: Swift.Int?
         /// The total number of group records from the input file that have been processed so far, or attempted.
@@ -1087,13 +1089,12 @@ extension GreengrassClientTypes {
             self.retryAttempts = retryAttempts
         }
     }
-
 }
 
 extension GreengrassClientTypes {
 
     /// The type of deployment. When used for ''CreateDeployment'', only ''NewDeployment'' and ''Redeployment'' are valid.
-    public enum DeploymentType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DeploymentType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case forceresetdeployment
         case newdeployment
         case redeployment
@@ -1127,8 +1128,9 @@ extension GreengrassClientTypes {
 }
 
 extension GreengrassClientTypes {
+
     /// Information about an individual group deployment in a bulk deployment operation.
-    public struct BulkDeploymentResult {
+    public struct BulkDeploymentResult: Swift.Sendable {
         /// The time, in ISO format, when the deployment was created.
         public var createdAt: Swift.String?
         /// The ARN of the group deployment.
@@ -1167,13 +1169,12 @@ extension GreengrassClientTypes {
             self.groupArn = groupArn
         }
     }
-
 }
 
 extension GreengrassClientTypes {
 
     /// The current status of the bulk deployment.
-    public enum BulkDeploymentStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum BulkDeploymentStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case completed
         case failed
         case initializing
@@ -1214,7 +1215,7 @@ extension GreengrassClientTypes {
 
 extension GreengrassClientTypes {
 
-    public enum ConfigurationSyncStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ConfigurationSyncStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case insync
         case outofsync
         case sdkUnknown(Swift.String)
@@ -1242,8 +1243,9 @@ extension GreengrassClientTypes {
 }
 
 extension GreengrassClientTypes {
+
     /// Information about the connector definition version, which is a container for connectors.
-    public struct ConnectorDefinitionVersion {
+    public struct ConnectorDefinitionVersion: Swift.Sendable {
         /// A list of references to connectors in this version, with their corresponding configuration settings.
         public var connectors: [GreengrassClientTypes.Connector]?
 
@@ -1254,12 +1256,12 @@ extension GreengrassClientTypes {
             self.connectors = connectors
         }
     }
-
 }
 
 extension GreengrassClientTypes {
+
     /// Information about a core definition version.
-    public struct CoreDefinitionVersion {
+    public struct CoreDefinitionVersion: Swift.Sendable {
         /// A list of cores in the core definition version.
         public var cores: [GreengrassClientTypes.Core]?
 
@@ -1270,10 +1272,9 @@ extension GreengrassClientTypes {
             self.cores = cores
         }
     }
-
 }
 
-public struct CreateConnectorDefinitionInput {
+public struct CreateConnectorDefinitionInput: Swift.Sendable {
     /// A client token used to correlate requests and responses.
     public var amznClientToken: Swift.String?
     /// Information about the initial version of the connector definition.
@@ -1297,7 +1298,7 @@ public struct CreateConnectorDefinitionInput {
     }
 }
 
-public struct CreateConnectorDefinitionOutput {
+public struct CreateConnectorDefinitionOutput: Swift.Sendable {
     /// The ARN of the definition.
     public var arn: Swift.String?
     /// The time, in milliseconds since the epoch, when the definition was created.
@@ -1333,7 +1334,7 @@ public struct CreateConnectorDefinitionOutput {
     }
 }
 
-public struct CreateConnectorDefinitionVersionInput {
+public struct CreateConnectorDefinitionVersionInput: Swift.Sendable {
     /// A client token used to correlate requests and responses.
     public var amznClientToken: Swift.String?
     /// The ID of the connector definition.
@@ -1354,7 +1355,7 @@ public struct CreateConnectorDefinitionVersionInput {
     }
 }
 
-public struct CreateConnectorDefinitionVersionOutput {
+public struct CreateConnectorDefinitionVersionOutput: Swift.Sendable {
     /// The ARN of the version.
     public var arn: Swift.String?
     /// The time, in milliseconds since the epoch, when the version was created.
@@ -1379,7 +1380,7 @@ public struct CreateConnectorDefinitionVersionOutput {
 }
 
 /// Information needed to create a core definition.
-public struct CreateCoreDefinitionInput {
+public struct CreateCoreDefinitionInput: Swift.Sendable {
     /// A client token used to correlate requests and responses.
     public var amznClientToken: Swift.String?
     /// Information about the initial version of the core definition.
@@ -1403,7 +1404,7 @@ public struct CreateCoreDefinitionInput {
     }
 }
 
-public struct CreateCoreDefinitionOutput {
+public struct CreateCoreDefinitionOutput: Swift.Sendable {
     /// The ARN of the definition.
     public var arn: Swift.String?
     /// The time, in milliseconds since the epoch, when the definition was created.
@@ -1439,7 +1440,7 @@ public struct CreateCoreDefinitionOutput {
     }
 }
 
-public struct CreateCoreDefinitionVersionInput {
+public struct CreateCoreDefinitionVersionInput: Swift.Sendable {
     /// A client token used to correlate requests and responses.
     public var amznClientToken: Swift.String?
     /// The ID of the core definition.
@@ -1460,7 +1461,7 @@ public struct CreateCoreDefinitionVersionInput {
     }
 }
 
-public struct CreateCoreDefinitionVersionOutput {
+public struct CreateCoreDefinitionVersionOutput: Swift.Sendable {
     /// The ARN of the version.
     public var arn: Swift.String?
     /// The time, in milliseconds since the epoch, when the version was created.
@@ -1484,7 +1485,7 @@ public struct CreateCoreDefinitionVersionOutput {
     }
 }
 
-public struct CreateDeploymentInput {
+public struct CreateDeploymentInput: Swift.Sendable {
     /// A client token used to correlate requests and responses.
     public var amznClientToken: Swift.String?
     /// The ID of the deployment if you wish to redeploy a previous deployment.
@@ -1514,7 +1515,7 @@ public struct CreateDeploymentInput {
     }
 }
 
-public struct CreateDeploymentOutput {
+public struct CreateDeploymentOutput: Swift.Sendable {
     /// The ARN of the deployment.
     public var deploymentArn: Swift.String?
     /// The ID of the deployment.
@@ -1531,8 +1532,9 @@ public struct CreateDeploymentOutput {
 }
 
 extension GreengrassClientTypes {
+
     /// Information about a device definition version.
-    public struct DeviceDefinitionVersion {
+    public struct DeviceDefinitionVersion: Swift.Sendable {
         /// A list of devices in the definition version.
         public var devices: [GreengrassClientTypes.Device]?
 
@@ -1543,10 +1545,9 @@ extension GreengrassClientTypes {
             self.devices = devices
         }
     }
-
 }
 
-public struct CreateDeviceDefinitionInput {
+public struct CreateDeviceDefinitionInput: Swift.Sendable {
     /// A client token used to correlate requests and responses.
     public var amznClientToken: Swift.String?
     /// Information about the initial version of the device definition.
@@ -1570,7 +1571,7 @@ public struct CreateDeviceDefinitionInput {
     }
 }
 
-public struct CreateDeviceDefinitionOutput {
+public struct CreateDeviceDefinitionOutput: Swift.Sendable {
     /// The ARN of the definition.
     public var arn: Swift.String?
     /// The time, in milliseconds since the epoch, when the definition was created.
@@ -1606,7 +1607,7 @@ public struct CreateDeviceDefinitionOutput {
     }
 }
 
-public struct CreateDeviceDefinitionVersionInput {
+public struct CreateDeviceDefinitionVersionInput: Swift.Sendable {
     /// A client token used to correlate requests and responses.
     public var amznClientToken: Swift.String?
     /// The ID of the device definition.
@@ -1627,7 +1628,7 @@ public struct CreateDeviceDefinitionVersionInput {
     }
 }
 
-public struct CreateDeviceDefinitionVersionOutput {
+public struct CreateDeviceDefinitionVersionOutput: Swift.Sendable {
     /// The ARN of the version.
     public var arn: Swift.String?
     /// The time, in milliseconds since the epoch, when the version was created.
@@ -1652,8 +1653,9 @@ public struct CreateDeviceDefinitionVersionOutput {
 }
 
 extension GreengrassClientTypes {
+
     /// Configuration information that specifies how a Lambda function runs.
-    public struct FunctionDefaultExecutionConfig {
+    public struct FunctionDefaultExecutionConfig: Swift.Sendable {
         /// Specifies whether the Lambda function runs in a Greengrass container (default) or without containerization. Unless your scenario requires that you run without containerization, we recommend that you run in a Greengrass container. Omit this value to run the Lambda function with the default containerization for the group.
         public var isolationMode: GreengrassClientTypes.FunctionIsolationMode?
         /// Specifies the user and group whose permissions are used when running the Lambda function. You can specify one or both values to override the default values. We recommend that you avoid running as root unless absolutely necessary to minimize the risk of unintended changes or malicious attacks. To run as root, you must set ''IsolationMode'' to ''NoContainer'' and update config.json in ''greengrass-root/config'' to set ''allowFunctionsToRunAsRoot'' to ''yes''.
@@ -1668,12 +1670,12 @@ extension GreengrassClientTypes {
             self.runAs = runAs
         }
     }
-
 }
 
 extension GreengrassClientTypes {
+
     /// The default configuration that applies to all Lambda functions in the group. Individual Lambda functions can override these settings.
-    public struct FunctionDefaultConfig {
+    public struct FunctionDefaultConfig: Swift.Sendable {
         /// Configuration information that specifies how a Lambda function runs.
         public var execution: GreengrassClientTypes.FunctionDefaultExecutionConfig?
 
@@ -1684,12 +1686,12 @@ extension GreengrassClientTypes {
             self.execution = execution
         }
     }
-
 }
 
 extension GreengrassClientTypes {
+
     /// Information about a function definition version.
-    public struct FunctionDefinitionVersion {
+    public struct FunctionDefinitionVersion: Swift.Sendable {
         /// The default configuration that applies to all Lambda functions in this function definition version. Individual Lambda functions can override these settings.
         public var defaultConfig: GreengrassClientTypes.FunctionDefaultConfig?
         /// A list of Lambda functions in this function definition version.
@@ -1704,10 +1706,9 @@ extension GreengrassClientTypes {
             self.functions = functions
         }
     }
-
 }
 
-public struct CreateFunctionDefinitionInput {
+public struct CreateFunctionDefinitionInput: Swift.Sendable {
     /// A client token used to correlate requests and responses.
     public var amznClientToken: Swift.String?
     /// Information about the initial version of the function definition.
@@ -1731,7 +1732,7 @@ public struct CreateFunctionDefinitionInput {
     }
 }
 
-public struct CreateFunctionDefinitionOutput {
+public struct CreateFunctionDefinitionOutput: Swift.Sendable {
     /// The ARN of the definition.
     public var arn: Swift.String?
     /// The time, in milliseconds since the epoch, when the definition was created.
@@ -1768,7 +1769,7 @@ public struct CreateFunctionDefinitionOutput {
 }
 
 /// Information needed to create a function definition version.
-public struct CreateFunctionDefinitionVersionInput {
+public struct CreateFunctionDefinitionVersionInput: Swift.Sendable {
     /// A client token used to correlate requests and responses.
     public var amznClientToken: Swift.String?
     /// The default configuration that applies to all Lambda functions in this function definition version. Individual Lambda functions can override these settings.
@@ -1793,7 +1794,7 @@ public struct CreateFunctionDefinitionVersionInput {
     }
 }
 
-public struct CreateFunctionDefinitionVersionOutput {
+public struct CreateFunctionDefinitionVersionOutput: Swift.Sendable {
     /// The ARN of the version.
     public var arn: Swift.String?
     /// The time, in milliseconds since the epoch, when the version was created.
@@ -1818,8 +1819,9 @@ public struct CreateFunctionDefinitionVersionOutput {
 }
 
 extension GreengrassClientTypes {
+
     /// Information about a group version.
-    public struct GroupVersion {
+    public struct GroupVersion: Swift.Sendable {
         /// The ARN of the connector definition version for this group.
         public var connectorDefinitionVersionArn: Swift.String?
         /// The ARN of the core definition version for this group.
@@ -1854,10 +1856,9 @@ extension GreengrassClientTypes {
             self.subscriptionDefinitionVersionArn = subscriptionDefinitionVersionArn
         }
     }
-
 }
 
-public struct CreateGroupInput {
+public struct CreateGroupInput: Swift.Sendable {
     /// A client token used to correlate requests and responses.
     public var amznClientToken: Swift.String?
     /// Information about the initial version of the group.
@@ -1882,7 +1883,7 @@ public struct CreateGroupInput {
     }
 }
 
-public struct CreateGroupOutput {
+public struct CreateGroupOutput: Swift.Sendable {
     /// The ARN of the definition.
     public var arn: Swift.String?
     /// The time, in milliseconds since the epoch, when the definition was created.
@@ -1918,7 +1919,7 @@ public struct CreateGroupOutput {
     }
 }
 
-public struct CreateGroupCertificateAuthorityInput {
+public struct CreateGroupCertificateAuthorityInput: Swift.Sendable {
     /// A client token used to correlate requests and responses.
     public var amznClientToken: Swift.String?
     /// The ID of the Greengrass group.
@@ -1935,7 +1936,7 @@ public struct CreateGroupCertificateAuthorityInput {
     }
 }
 
-public struct CreateGroupCertificateAuthorityOutput {
+public struct CreateGroupCertificateAuthorityOutput: Swift.Sendable {
     /// The ARN of the group certificate authority.
     public var groupCertificateAuthorityArn: Swift.String?
 
@@ -1947,7 +1948,7 @@ public struct CreateGroupCertificateAuthorityOutput {
     }
 }
 
-public struct CreateGroupVersionInput {
+public struct CreateGroupVersionInput: Swift.Sendable {
     /// A client token used to correlate requests and responses.
     public var amznClientToken: Swift.String?
     /// The ARN of the connector definition version for this group.
@@ -1992,7 +1993,7 @@ public struct CreateGroupVersionInput {
     }
 }
 
-public struct CreateGroupVersionOutput {
+public struct CreateGroupVersionOutput: Swift.Sendable {
     /// The ARN of the version.
     public var arn: Swift.String?
     /// The time, in milliseconds since the epoch, when the version was created.
@@ -2017,8 +2018,9 @@ public struct CreateGroupVersionOutput {
 }
 
 extension GreengrassClientTypes {
+
     /// Information about a logger definition version.
-    public struct LoggerDefinitionVersion {
+    public struct LoggerDefinitionVersion: Swift.Sendable {
         /// A list of loggers.
         public var loggers: [GreengrassClientTypes.Logger]?
 
@@ -2029,10 +2031,9 @@ extension GreengrassClientTypes {
             self.loggers = loggers
         }
     }
-
 }
 
-public struct CreateLoggerDefinitionInput {
+public struct CreateLoggerDefinitionInput: Swift.Sendable {
     /// A client token used to correlate requests and responses.
     public var amznClientToken: Swift.String?
     /// Information about the initial version of the logger definition.
@@ -2056,7 +2057,7 @@ public struct CreateLoggerDefinitionInput {
     }
 }
 
-public struct CreateLoggerDefinitionOutput {
+public struct CreateLoggerDefinitionOutput: Swift.Sendable {
     /// The ARN of the definition.
     public var arn: Swift.String?
     /// The time, in milliseconds since the epoch, when the definition was created.
@@ -2092,7 +2093,7 @@ public struct CreateLoggerDefinitionOutput {
     }
 }
 
-public struct CreateLoggerDefinitionVersionInput {
+public struct CreateLoggerDefinitionVersionInput: Swift.Sendable {
     /// A client token used to correlate requests and responses.
     public var amznClientToken: Swift.String?
     /// The ID of the logger definition.
@@ -2113,7 +2114,7 @@ public struct CreateLoggerDefinitionVersionInput {
     }
 }
 
-public struct CreateLoggerDefinitionVersionOutput {
+public struct CreateLoggerDefinitionVersionOutput: Swift.Sendable {
     /// The ARN of the version.
     public var arn: Swift.String?
     /// The time, in milliseconds since the epoch, when the version was created.
@@ -2138,8 +2139,9 @@ public struct CreateLoggerDefinitionVersionOutput {
 }
 
 extension GreengrassClientTypes {
+
     /// Information about a resource definition version.
-    public struct ResourceDefinitionVersion {
+    public struct ResourceDefinitionVersion: Swift.Sendable {
         /// A list of resources.
         public var resources: [GreengrassClientTypes.Resource]?
 
@@ -2150,10 +2152,9 @@ extension GreengrassClientTypes {
             self.resources = resources
         }
     }
-
 }
 
-public struct CreateResourceDefinitionInput {
+public struct CreateResourceDefinitionInput: Swift.Sendable {
     /// A client token used to correlate requests and responses.
     public var amznClientToken: Swift.String?
     /// Information about the initial version of the resource definition.
@@ -2177,7 +2178,7 @@ public struct CreateResourceDefinitionInput {
     }
 }
 
-public struct CreateResourceDefinitionOutput {
+public struct CreateResourceDefinitionOutput: Swift.Sendable {
     /// The ARN of the definition.
     public var arn: Swift.String?
     /// The time, in milliseconds since the epoch, when the definition was created.
@@ -2213,7 +2214,7 @@ public struct CreateResourceDefinitionOutput {
     }
 }
 
-public struct CreateResourceDefinitionVersionInput {
+public struct CreateResourceDefinitionVersionInput: Swift.Sendable {
     /// A client token used to correlate requests and responses.
     public var amznClientToken: Swift.String?
     /// The ID of the resource definition.
@@ -2234,7 +2235,7 @@ public struct CreateResourceDefinitionVersionInput {
     }
 }
 
-public struct CreateResourceDefinitionVersionOutput {
+public struct CreateResourceDefinitionVersionOutput: Swift.Sendable {
     /// The ARN of the version.
     public var arn: Swift.String?
     /// The time, in milliseconds since the epoch, when the version was created.
@@ -2261,7 +2262,7 @@ public struct CreateResourceDefinitionVersionOutput {
 extension GreengrassClientTypes {
 
     /// The piece of software on the Greengrass core that will be updated.
-    public enum SoftwareToUpdate: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SoftwareToUpdate: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case core
         case otaAgent
         case sdkUnknown(Swift.String)
@@ -2291,7 +2292,7 @@ extension GreengrassClientTypes {
 extension GreengrassClientTypes {
 
     /// The minimum level of log statements that should be logged by the OTA Agent during an update.
-    public enum UpdateAgentLogLevel: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum UpdateAgentLogLevel: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case debug
         case error
         case fatal
@@ -2339,7 +2340,7 @@ extension GreengrassClientTypes {
 extension GreengrassClientTypes {
 
     /// The architecture of the cores which are the targets of an update.
-    public enum UpdateTargetsArchitecture: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum UpdateTargetsArchitecture: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case aarch64
         case armv6l
         case armv7l
@@ -2375,7 +2376,7 @@ extension GreengrassClientTypes {
 extension GreengrassClientTypes {
 
     /// The operating system of the cores which are the targets of an update.
-    public enum UpdateTargetsOperatingSystem: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum UpdateTargetsOperatingSystem: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case amazonLinux
         case openwrt
         case raspbian
@@ -2408,7 +2409,7 @@ extension GreengrassClientTypes {
     }
 }
 
-public struct CreateSoftwareUpdateJobInput {
+public struct CreateSoftwareUpdateJobInput: Swift.Sendable {
     /// A client token used to correlate requests and responses.
     public var amznClientToken: Swift.String?
     /// The IAM Role that Greengrass will use to create pre-signed URLs pointing towards the update artifact.
@@ -2449,7 +2450,7 @@ public struct CreateSoftwareUpdateJobInput {
     }
 }
 
-public struct CreateSoftwareUpdateJobOutput {
+public struct CreateSoftwareUpdateJobOutput: Swift.Sendable {
     /// The IoT Job ARN corresponding to this update.
     public var iotJobArn: Swift.String?
     /// The IoT Job Id corresponding to this update.
@@ -2470,8 +2471,9 @@ public struct CreateSoftwareUpdateJobOutput {
 }
 
 extension GreengrassClientTypes {
+
     /// Information about a subscription definition version.
-    public struct SubscriptionDefinitionVersion {
+    public struct SubscriptionDefinitionVersion: Swift.Sendable {
         /// A list of subscriptions.
         public var subscriptions: [GreengrassClientTypes.Subscription]?
 
@@ -2482,10 +2484,9 @@ extension GreengrassClientTypes {
             self.subscriptions = subscriptions
         }
     }
-
 }
 
-public struct CreateSubscriptionDefinitionInput {
+public struct CreateSubscriptionDefinitionInput: Swift.Sendable {
     /// A client token used to correlate requests and responses.
     public var amznClientToken: Swift.String?
     /// Information about the initial version of the subscription definition.
@@ -2509,7 +2510,7 @@ public struct CreateSubscriptionDefinitionInput {
     }
 }
 
-public struct CreateSubscriptionDefinitionOutput {
+public struct CreateSubscriptionDefinitionOutput: Swift.Sendable {
     /// The ARN of the definition.
     public var arn: Swift.String?
     /// The time, in milliseconds since the epoch, when the definition was created.
@@ -2545,7 +2546,7 @@ public struct CreateSubscriptionDefinitionOutput {
     }
 }
 
-public struct CreateSubscriptionDefinitionVersionInput {
+public struct CreateSubscriptionDefinitionVersionInput: Swift.Sendable {
     /// A client token used to correlate requests and responses.
     public var amznClientToken: Swift.String?
     /// The ID of the subscription definition.
@@ -2566,7 +2567,7 @@ public struct CreateSubscriptionDefinitionVersionInput {
     }
 }
 
-public struct CreateSubscriptionDefinitionVersionOutput {
+public struct CreateSubscriptionDefinitionVersionOutput: Swift.Sendable {
     /// The ARN of the version.
     public var arn: Swift.String?
     /// The time, in milliseconds since the epoch, when the version was created.
@@ -2590,7 +2591,7 @@ public struct CreateSubscriptionDefinitionVersionOutput {
     }
 }
 
-public struct DeleteConnectorDefinitionInput {
+public struct DeleteConnectorDefinitionInput: Swift.Sendable {
     /// The ID of the connector definition.
     /// This member is required.
     public var connectorDefinitionId: Swift.String?
@@ -2603,12 +2604,12 @@ public struct DeleteConnectorDefinitionInput {
     }
 }
 
-public struct DeleteConnectorDefinitionOutput {
+public struct DeleteConnectorDefinitionOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteCoreDefinitionInput {
+public struct DeleteCoreDefinitionInput: Swift.Sendable {
     /// The ID of the core definition.
     /// This member is required.
     public var coreDefinitionId: Swift.String?
@@ -2621,12 +2622,12 @@ public struct DeleteCoreDefinitionInput {
     }
 }
 
-public struct DeleteCoreDefinitionOutput {
+public struct DeleteCoreDefinitionOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteDeviceDefinitionInput {
+public struct DeleteDeviceDefinitionInput: Swift.Sendable {
     /// The ID of the device definition.
     /// This member is required.
     public var deviceDefinitionId: Swift.String?
@@ -2639,12 +2640,12 @@ public struct DeleteDeviceDefinitionInput {
     }
 }
 
-public struct DeleteDeviceDefinitionOutput {
+public struct DeleteDeviceDefinitionOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteFunctionDefinitionInput {
+public struct DeleteFunctionDefinitionInput: Swift.Sendable {
     /// The ID of the Lambda function definition.
     /// This member is required.
     public var functionDefinitionId: Swift.String?
@@ -2657,12 +2658,12 @@ public struct DeleteFunctionDefinitionInput {
     }
 }
 
-public struct DeleteFunctionDefinitionOutput {
+public struct DeleteFunctionDefinitionOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteGroupInput {
+public struct DeleteGroupInput: Swift.Sendable {
     /// The ID of the Greengrass group.
     /// This member is required.
     public var groupId: Swift.String?
@@ -2675,12 +2676,12 @@ public struct DeleteGroupInput {
     }
 }
 
-public struct DeleteGroupOutput {
+public struct DeleteGroupOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteLoggerDefinitionInput {
+public struct DeleteLoggerDefinitionInput: Swift.Sendable {
     /// The ID of the logger definition.
     /// This member is required.
     public var loggerDefinitionId: Swift.String?
@@ -2693,12 +2694,12 @@ public struct DeleteLoggerDefinitionInput {
     }
 }
 
-public struct DeleteLoggerDefinitionOutput {
+public struct DeleteLoggerDefinitionOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteResourceDefinitionInput {
+public struct DeleteResourceDefinitionInput: Swift.Sendable {
     /// The ID of the resource definition.
     /// This member is required.
     public var resourceDefinitionId: Swift.String?
@@ -2711,12 +2712,12 @@ public struct DeleteResourceDefinitionInput {
     }
 }
 
-public struct DeleteResourceDefinitionOutput {
+public struct DeleteResourceDefinitionOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteSubscriptionDefinitionInput {
+public struct DeleteSubscriptionDefinitionInput: Swift.Sendable {
     /// The ID of the subscription definition.
     /// This member is required.
     public var subscriptionDefinitionId: Swift.String?
@@ -2729,14 +2730,15 @@ public struct DeleteSubscriptionDefinitionInput {
     }
 }
 
-public struct DeleteSubscriptionDefinitionOutput {
+public struct DeleteSubscriptionDefinitionOutput: Swift.Sendable {
 
     public init() { }
 }
 
 extension GreengrassClientTypes {
+
     /// Information about a deployment.
-    public struct Deployment {
+    public struct Deployment: Swift.Sendable {
         /// The time, in milliseconds since the epoch, when the deployment was created.
         public var createdAt: Swift.String?
         /// The ARN of the deployment.
@@ -2763,10 +2765,9 @@ extension GreengrassClientTypes {
             self.groupArn = groupArn
         }
     }
-
 }
 
-public struct DisassociateRoleFromGroupInput {
+public struct DisassociateRoleFromGroupInput: Swift.Sendable {
     /// The ID of the Greengrass group.
     /// This member is required.
     public var groupId: Swift.String?
@@ -2779,7 +2780,7 @@ public struct DisassociateRoleFromGroupInput {
     }
 }
 
-public struct DisassociateRoleFromGroupOutput {
+public struct DisassociateRoleFromGroupOutput: Swift.Sendable {
     /// The time, in milliseconds since the epoch, when the role was disassociated from the group.
     public var disassociatedAt: Swift.String?
 
@@ -2791,12 +2792,12 @@ public struct DisassociateRoleFromGroupOutput {
     }
 }
 
-public struct DisassociateServiceRoleFromAccountInput {
+public struct DisassociateServiceRoleFromAccountInput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DisassociateServiceRoleFromAccountOutput {
+public struct DisassociateServiceRoleFromAccountOutput: Swift.Sendable {
     /// The time when the service role was disassociated from the account.
     public var disassociatedAt: Swift.String?
 
@@ -2808,7 +2809,7 @@ public struct DisassociateServiceRoleFromAccountOutput {
     }
 }
 
-public struct GetAssociatedRoleInput {
+public struct GetAssociatedRoleInput: Swift.Sendable {
     /// The ID of the Greengrass group.
     /// This member is required.
     public var groupId: Swift.String?
@@ -2821,7 +2822,7 @@ public struct GetAssociatedRoleInput {
     }
 }
 
-public struct GetAssociatedRoleOutput {
+public struct GetAssociatedRoleOutput: Swift.Sendable {
     /// The time when the role was associated with the group.
     public var associatedAt: Swift.String?
     /// The ARN of the role that is associated with the group.
@@ -2837,7 +2838,7 @@ public struct GetAssociatedRoleOutput {
     }
 }
 
-public struct GetBulkDeploymentStatusInput {
+public struct GetBulkDeploymentStatusInput: Swift.Sendable {
     /// The ID of the bulk deployment.
     /// This member is required.
     public var bulkDeploymentId: Swift.String?
@@ -2850,7 +2851,7 @@ public struct GetBulkDeploymentStatusInput {
     }
 }
 
-public struct GetBulkDeploymentStatusOutput {
+public struct GetBulkDeploymentStatusOutput: Swift.Sendable {
     /// Relevant metrics on input records processed during bulk deployment.
     public var bulkDeploymentMetrics: GreengrassClientTypes.BulkDeploymentMetrics?
     /// The status of the bulk deployment.
@@ -2882,7 +2883,7 @@ public struct GetBulkDeploymentStatusOutput {
     }
 }
 
-public struct GetConnectivityInfoInput {
+public struct GetConnectivityInfoInput: Swift.Sendable {
     /// The thing name.
     /// This member is required.
     public var thingName: Swift.String?
@@ -2895,7 +2896,7 @@ public struct GetConnectivityInfoInput {
     }
 }
 
-public struct GetConnectivityInfoOutput {
+public struct GetConnectivityInfoOutput: Swift.Sendable {
     /// Connectivity info list.
     public var connectivityInfo: [GreengrassClientTypes.ConnectivityInfo]?
     /// A message about the connectivity info request.
@@ -2911,7 +2912,7 @@ public struct GetConnectivityInfoOutput {
     }
 }
 
-public struct GetConnectorDefinitionInput {
+public struct GetConnectorDefinitionInput: Swift.Sendable {
     /// The ID of the connector definition.
     /// This member is required.
     public var connectorDefinitionId: Swift.String?
@@ -2924,7 +2925,7 @@ public struct GetConnectorDefinitionInput {
     }
 }
 
-public struct GetConnectorDefinitionOutput {
+public struct GetConnectorDefinitionOutput: Swift.Sendable {
     /// The ARN of the definition.
     public var arn: Swift.String?
     /// The time, in milliseconds since the epoch, when the definition was created.
@@ -2964,7 +2965,7 @@ public struct GetConnectorDefinitionOutput {
     }
 }
 
-public struct GetConnectorDefinitionVersionInput {
+public struct GetConnectorDefinitionVersionInput: Swift.Sendable {
     /// The ID of the connector definition.
     /// This member is required.
     public var connectorDefinitionId: Swift.String?
@@ -2986,7 +2987,7 @@ public struct GetConnectorDefinitionVersionInput {
     }
 }
 
-public struct GetConnectorDefinitionVersionOutput {
+public struct GetConnectorDefinitionVersionOutput: Swift.Sendable {
     /// The ARN of the connector definition version.
     public var arn: Swift.String?
     /// The time, in milliseconds since the epoch, when the connector definition version was created.
@@ -3018,7 +3019,7 @@ public struct GetConnectorDefinitionVersionOutput {
     }
 }
 
-public struct GetCoreDefinitionInput {
+public struct GetCoreDefinitionInput: Swift.Sendable {
     /// The ID of the core definition.
     /// This member is required.
     public var coreDefinitionId: Swift.String?
@@ -3031,7 +3032,7 @@ public struct GetCoreDefinitionInput {
     }
 }
 
-public struct GetCoreDefinitionOutput {
+public struct GetCoreDefinitionOutput: Swift.Sendable {
     /// The ARN of the definition.
     public var arn: Swift.String?
     /// The time, in milliseconds since the epoch, when the definition was created.
@@ -3071,7 +3072,7 @@ public struct GetCoreDefinitionOutput {
     }
 }
 
-public struct GetCoreDefinitionVersionInput {
+public struct GetCoreDefinitionVersionInput: Swift.Sendable {
     /// The ID of the core definition.
     /// This member is required.
     public var coreDefinitionId: Swift.String?
@@ -3089,7 +3090,7 @@ public struct GetCoreDefinitionVersionInput {
     }
 }
 
-public struct GetCoreDefinitionVersionOutput {
+public struct GetCoreDefinitionVersionOutput: Swift.Sendable {
     /// The ARN of the core definition version.
     public var arn: Swift.String?
     /// The time, in milliseconds since the epoch, when the core definition version was created.
@@ -3121,7 +3122,7 @@ public struct GetCoreDefinitionVersionOutput {
     }
 }
 
-public struct GetDeploymentStatusInput {
+public struct GetDeploymentStatusInput: Swift.Sendable {
     /// The ID of the deployment.
     /// This member is required.
     public var deploymentId: Swift.String?
@@ -3139,7 +3140,7 @@ public struct GetDeploymentStatusInput {
     }
 }
 
-public struct GetDeploymentStatusOutput {
+public struct GetDeploymentStatusOutput: Swift.Sendable {
     /// The status of the deployment: ''InProgress'', ''Building'', ''Success'', or ''Failure''.
     public var deploymentStatus: Swift.String?
     /// The type of the deployment.
@@ -3167,7 +3168,7 @@ public struct GetDeploymentStatusOutput {
     }
 }
 
-public struct GetDeviceDefinitionInput {
+public struct GetDeviceDefinitionInput: Swift.Sendable {
     /// The ID of the device definition.
     /// This member is required.
     public var deviceDefinitionId: Swift.String?
@@ -3180,7 +3181,7 @@ public struct GetDeviceDefinitionInput {
     }
 }
 
-public struct GetDeviceDefinitionOutput {
+public struct GetDeviceDefinitionOutput: Swift.Sendable {
     /// The ARN of the definition.
     public var arn: Swift.String?
     /// The time, in milliseconds since the epoch, when the definition was created.
@@ -3220,7 +3221,7 @@ public struct GetDeviceDefinitionOutput {
     }
 }
 
-public struct GetDeviceDefinitionVersionInput {
+public struct GetDeviceDefinitionVersionInput: Swift.Sendable {
     /// The ID of the device definition.
     /// This member is required.
     public var deviceDefinitionId: Swift.String?
@@ -3242,7 +3243,7 @@ public struct GetDeviceDefinitionVersionInput {
     }
 }
 
-public struct GetDeviceDefinitionVersionOutput {
+public struct GetDeviceDefinitionVersionOutput: Swift.Sendable {
     /// The ARN of the device definition version.
     public var arn: Swift.String?
     /// The time, in milliseconds since the epoch, when the device definition version was created.
@@ -3274,7 +3275,7 @@ public struct GetDeviceDefinitionVersionOutput {
     }
 }
 
-public struct GetFunctionDefinitionInput {
+public struct GetFunctionDefinitionInput: Swift.Sendable {
     /// The ID of the Lambda function definition.
     /// This member is required.
     public var functionDefinitionId: Swift.String?
@@ -3287,7 +3288,7 @@ public struct GetFunctionDefinitionInput {
     }
 }
 
-public struct GetFunctionDefinitionOutput {
+public struct GetFunctionDefinitionOutput: Swift.Sendable {
     /// The ARN of the definition.
     public var arn: Swift.String?
     /// The time, in milliseconds since the epoch, when the definition was created.
@@ -3327,7 +3328,7 @@ public struct GetFunctionDefinitionOutput {
     }
 }
 
-public struct GetFunctionDefinitionVersionInput {
+public struct GetFunctionDefinitionVersionInput: Swift.Sendable {
     /// The ID of the Lambda function definition.
     /// This member is required.
     public var functionDefinitionId: Swift.String?
@@ -3349,7 +3350,7 @@ public struct GetFunctionDefinitionVersionInput {
     }
 }
 
-public struct GetFunctionDefinitionVersionOutput {
+public struct GetFunctionDefinitionVersionOutput: Swift.Sendable {
     /// The ARN of the function definition version.
     public var arn: Swift.String?
     /// The time, in milliseconds since the epoch, when the function definition version was created.
@@ -3381,7 +3382,7 @@ public struct GetFunctionDefinitionVersionOutput {
     }
 }
 
-public struct GetGroupInput {
+public struct GetGroupInput: Swift.Sendable {
     /// The ID of the Greengrass group.
     /// This member is required.
     public var groupId: Swift.String?
@@ -3394,7 +3395,7 @@ public struct GetGroupInput {
     }
 }
 
-public struct GetGroupOutput {
+public struct GetGroupOutput: Swift.Sendable {
     /// The ARN of the definition.
     public var arn: Swift.String?
     /// The time, in milliseconds since the epoch, when the definition was created.
@@ -3434,7 +3435,7 @@ public struct GetGroupOutput {
     }
 }
 
-public struct GetGroupCertificateAuthorityInput {
+public struct GetGroupCertificateAuthorityInput: Swift.Sendable {
     /// The ID of the certificate authority.
     /// This member is required.
     public var certificateAuthorityId: Swift.String?
@@ -3452,7 +3453,7 @@ public struct GetGroupCertificateAuthorityInput {
     }
 }
 
-public struct GetGroupCertificateAuthorityOutput {
+public struct GetGroupCertificateAuthorityOutput: Swift.Sendable {
     /// The ARN of the certificate authority for the group.
     public var groupCertificateAuthorityArn: Swift.String?
     /// The ID of the certificate authority for the group.
@@ -3472,7 +3473,7 @@ public struct GetGroupCertificateAuthorityOutput {
     }
 }
 
-public struct GetGroupCertificateConfigurationInput {
+public struct GetGroupCertificateConfigurationInput: Swift.Sendable {
     /// The ID of the Greengrass group.
     /// This member is required.
     public var groupId: Swift.String?
@@ -3485,7 +3486,7 @@ public struct GetGroupCertificateConfigurationInput {
     }
 }
 
-public struct GetGroupCertificateConfigurationOutput {
+public struct GetGroupCertificateConfigurationOutput: Swift.Sendable {
     /// The amount of time remaining before the certificate authority expires, in milliseconds.
     public var certificateAuthorityExpiryInMilliseconds: Swift.String?
     /// The amount of time remaining before the certificate expires, in milliseconds.
@@ -3505,7 +3506,7 @@ public struct GetGroupCertificateConfigurationOutput {
     }
 }
 
-public struct GetGroupVersionInput {
+public struct GetGroupVersionInput: Swift.Sendable {
     /// The ID of the Greengrass group.
     /// This member is required.
     public var groupId: Swift.String?
@@ -3523,7 +3524,7 @@ public struct GetGroupVersionInput {
     }
 }
 
-public struct GetGroupVersionOutput {
+public struct GetGroupVersionOutput: Swift.Sendable {
     /// The ARN of the group version.
     public var arn: Swift.String?
     /// The time, in milliseconds since the epoch, when the group version was created.
@@ -3551,7 +3552,7 @@ public struct GetGroupVersionOutput {
     }
 }
 
-public struct GetLoggerDefinitionInput {
+public struct GetLoggerDefinitionInput: Swift.Sendable {
     /// The ID of the logger definition.
     /// This member is required.
     public var loggerDefinitionId: Swift.String?
@@ -3564,7 +3565,7 @@ public struct GetLoggerDefinitionInput {
     }
 }
 
-public struct GetLoggerDefinitionOutput {
+public struct GetLoggerDefinitionOutput: Swift.Sendable {
     /// The ARN of the definition.
     public var arn: Swift.String?
     /// The time, in milliseconds since the epoch, when the definition was created.
@@ -3604,7 +3605,7 @@ public struct GetLoggerDefinitionOutput {
     }
 }
 
-public struct GetLoggerDefinitionVersionInput {
+public struct GetLoggerDefinitionVersionInput: Swift.Sendable {
     /// The ID of the logger definition.
     /// This member is required.
     public var loggerDefinitionId: Swift.String?
@@ -3626,7 +3627,7 @@ public struct GetLoggerDefinitionVersionInput {
     }
 }
 
-public struct GetLoggerDefinitionVersionOutput {
+public struct GetLoggerDefinitionVersionOutput: Swift.Sendable {
     /// The ARN of the logger definition version.
     public var arn: Swift.String?
     /// The time, in milliseconds since the epoch, when the logger definition version was created.
@@ -3654,7 +3655,7 @@ public struct GetLoggerDefinitionVersionOutput {
     }
 }
 
-public struct GetResourceDefinitionInput {
+public struct GetResourceDefinitionInput: Swift.Sendable {
     /// The ID of the resource definition.
     /// This member is required.
     public var resourceDefinitionId: Swift.String?
@@ -3667,7 +3668,7 @@ public struct GetResourceDefinitionInput {
     }
 }
 
-public struct GetResourceDefinitionOutput {
+public struct GetResourceDefinitionOutput: Swift.Sendable {
     /// The ARN of the definition.
     public var arn: Swift.String?
     /// The time, in milliseconds since the epoch, when the definition was created.
@@ -3707,7 +3708,7 @@ public struct GetResourceDefinitionOutput {
     }
 }
 
-public struct GetResourceDefinitionVersionInput {
+public struct GetResourceDefinitionVersionInput: Swift.Sendable {
     /// The ID of the resource definition.
     /// This member is required.
     public var resourceDefinitionId: Swift.String?
@@ -3725,7 +3726,7 @@ public struct GetResourceDefinitionVersionInput {
     }
 }
 
-public struct GetResourceDefinitionVersionOutput {
+public struct GetResourceDefinitionVersionOutput: Swift.Sendable {
     /// Arn of the resource definition version.
     public var arn: Swift.String?
     /// The time, in milliseconds since the epoch, when the resource definition version was created.
@@ -3753,12 +3754,12 @@ public struct GetResourceDefinitionVersionOutput {
     }
 }
 
-public struct GetServiceRoleForAccountInput {
+public struct GetServiceRoleForAccountInput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct GetServiceRoleForAccountOutput {
+public struct GetServiceRoleForAccountOutput: Swift.Sendable {
     /// The time when the service role was associated with the account.
     public var associatedAt: Swift.String?
     /// The ARN of the role which is associated with the account.
@@ -3774,7 +3775,7 @@ public struct GetServiceRoleForAccountOutput {
     }
 }
 
-public struct GetSubscriptionDefinitionInput {
+public struct GetSubscriptionDefinitionInput: Swift.Sendable {
     /// The ID of the subscription definition.
     /// This member is required.
     public var subscriptionDefinitionId: Swift.String?
@@ -3787,7 +3788,7 @@ public struct GetSubscriptionDefinitionInput {
     }
 }
 
-public struct GetSubscriptionDefinitionOutput {
+public struct GetSubscriptionDefinitionOutput: Swift.Sendable {
     /// The ARN of the definition.
     public var arn: Swift.String?
     /// The time, in milliseconds since the epoch, when the definition was created.
@@ -3827,7 +3828,7 @@ public struct GetSubscriptionDefinitionOutput {
     }
 }
 
-public struct GetSubscriptionDefinitionVersionInput {
+public struct GetSubscriptionDefinitionVersionInput: Swift.Sendable {
     /// The token for the next set of results, or ''null'' if there are no additional results.
     public var nextToken: Swift.String?
     /// The ID of the subscription definition.
@@ -3849,7 +3850,7 @@ public struct GetSubscriptionDefinitionVersionInput {
     }
 }
 
-public struct GetSubscriptionDefinitionVersionOutput {
+public struct GetSubscriptionDefinitionVersionOutput: Swift.Sendable {
     /// The ARN of the subscription definition version.
     public var arn: Swift.String?
     /// The time, in milliseconds since the epoch, when the subscription definition version was created.
@@ -3881,7 +3882,7 @@ public struct GetSubscriptionDefinitionVersionOutput {
     }
 }
 
-public struct GetThingRuntimeConfigurationInput {
+public struct GetThingRuntimeConfigurationInput: Swift.Sendable {
     /// The thing name.
     /// This member is required.
     public var thingName: Swift.String?
@@ -3896,7 +3897,7 @@ public struct GetThingRuntimeConfigurationInput {
 
 extension GreengrassClientTypes {
 
-    public enum Telemetry: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Telemetry: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case off
         case on
         case sdkUnknown(Swift.String)
@@ -3924,8 +3925,9 @@ extension GreengrassClientTypes {
 }
 
 extension GreengrassClientTypes {
+
     /// Configuration settings for running telemetry.
-    public struct TelemetryConfiguration {
+    public struct TelemetryConfiguration: Swift.Sendable {
         /// Synchronization status of the device reported configuration with the desired configuration.
         public var configurationSyncStatus: GreengrassClientTypes.ConfigurationSyncStatus?
         /// Configure telemetry to be on or off.
@@ -3941,12 +3943,12 @@ extension GreengrassClientTypes {
             self.telemetry = telemetry
         }
     }
-
 }
 
 extension GreengrassClientTypes {
+
     /// Runtime configuration for a thing.
-    public struct RuntimeConfiguration {
+    public struct RuntimeConfiguration: Swift.Sendable {
         /// Configuration for telemetry service.
         public var telemetryConfiguration: GreengrassClientTypes.TelemetryConfiguration?
 
@@ -3957,10 +3959,9 @@ extension GreengrassClientTypes {
             self.telemetryConfiguration = telemetryConfiguration
         }
     }
-
 }
 
-public struct GetThingRuntimeConfigurationOutput {
+public struct GetThingRuntimeConfigurationOutput: Swift.Sendable {
     /// Runtime configuration for a thing.
     public var runtimeConfiguration: GreengrassClientTypes.RuntimeConfiguration?
 
@@ -3972,7 +3973,7 @@ public struct GetThingRuntimeConfigurationOutput {
     }
 }
 
-public struct ListBulkDeploymentDetailedReportsInput {
+public struct ListBulkDeploymentDetailedReportsInput: Swift.Sendable {
     /// The ID of the bulk deployment.
     /// This member is required.
     public var bulkDeploymentId: Swift.String?
@@ -3993,7 +3994,7 @@ public struct ListBulkDeploymentDetailedReportsInput {
     }
 }
 
-public struct ListBulkDeploymentDetailedReportsOutput {
+public struct ListBulkDeploymentDetailedReportsOutput: Swift.Sendable {
     /// A list of the individual group deployments in the bulk deployment operation.
     public var deployments: [GreengrassClientTypes.BulkDeploymentResult]?
     /// The token for the next set of results, or ''null'' if there are no additional results.
@@ -4009,7 +4010,7 @@ public struct ListBulkDeploymentDetailedReportsOutput {
     }
 }
 
-public struct ListBulkDeploymentsInput {
+public struct ListBulkDeploymentsInput: Swift.Sendable {
     /// The maximum number of results to be returned per request.
     public var maxResults: Swift.String?
     /// The token for the next set of results, or ''null'' if there are no additional results.
@@ -4025,7 +4026,7 @@ public struct ListBulkDeploymentsInput {
     }
 }
 
-public struct ListBulkDeploymentsOutput {
+public struct ListBulkDeploymentsOutput: Swift.Sendable {
     /// A list of bulk deployments.
     public var bulkDeployments: [GreengrassClientTypes.BulkDeployment]?
     /// The token for the next set of results, or ''null'' if there are no additional results.
@@ -4041,7 +4042,7 @@ public struct ListBulkDeploymentsOutput {
     }
 }
 
-public struct ListConnectorDefinitionsInput {
+public struct ListConnectorDefinitionsInput: Swift.Sendable {
     /// The maximum number of results to be returned per request.
     public var maxResults: Swift.String?
     /// The token for the next set of results, or ''null'' if there are no additional results.
@@ -4057,7 +4058,7 @@ public struct ListConnectorDefinitionsInput {
     }
 }
 
-public struct ListConnectorDefinitionsOutput {
+public struct ListConnectorDefinitionsOutput: Swift.Sendable {
     /// Information about a definition.
     public var definitions: [GreengrassClientTypes.DefinitionInformation]?
     /// The token for the next set of results, or ''null'' if there are no additional results.
@@ -4073,7 +4074,7 @@ public struct ListConnectorDefinitionsOutput {
     }
 }
 
-public struct ListConnectorDefinitionVersionsInput {
+public struct ListConnectorDefinitionVersionsInput: Swift.Sendable {
     /// The ID of the connector definition.
     /// This member is required.
     public var connectorDefinitionId: Swift.String?
@@ -4094,7 +4095,7 @@ public struct ListConnectorDefinitionVersionsInput {
     }
 }
 
-public struct ListConnectorDefinitionVersionsOutput {
+public struct ListConnectorDefinitionVersionsOutput: Swift.Sendable {
     /// The token for the next set of results, or ''null'' if there are no additional results.
     public var nextToken: Swift.String?
     /// Information about a version.
@@ -4110,7 +4111,7 @@ public struct ListConnectorDefinitionVersionsOutput {
     }
 }
 
-public struct ListCoreDefinitionsInput {
+public struct ListCoreDefinitionsInput: Swift.Sendable {
     /// The maximum number of results to be returned per request.
     public var maxResults: Swift.String?
     /// The token for the next set of results, or ''null'' if there are no additional results.
@@ -4126,7 +4127,7 @@ public struct ListCoreDefinitionsInput {
     }
 }
 
-public struct ListCoreDefinitionsOutput {
+public struct ListCoreDefinitionsOutput: Swift.Sendable {
     /// Information about a definition.
     public var definitions: [GreengrassClientTypes.DefinitionInformation]?
     /// The token for the next set of results, or ''null'' if there are no additional results.
@@ -4142,7 +4143,7 @@ public struct ListCoreDefinitionsOutput {
     }
 }
 
-public struct ListCoreDefinitionVersionsInput {
+public struct ListCoreDefinitionVersionsInput: Swift.Sendable {
     /// The ID of the core definition.
     /// This member is required.
     public var coreDefinitionId: Swift.String?
@@ -4163,7 +4164,7 @@ public struct ListCoreDefinitionVersionsInput {
     }
 }
 
-public struct ListCoreDefinitionVersionsOutput {
+public struct ListCoreDefinitionVersionsOutput: Swift.Sendable {
     /// The token for the next set of results, or ''null'' if there are no additional results.
     public var nextToken: Swift.String?
     /// Information about a version.
@@ -4179,7 +4180,7 @@ public struct ListCoreDefinitionVersionsOutput {
     }
 }
 
-public struct ListDeploymentsInput {
+public struct ListDeploymentsInput: Swift.Sendable {
     /// The ID of the Greengrass group.
     /// This member is required.
     public var groupId: Swift.String?
@@ -4200,7 +4201,7 @@ public struct ListDeploymentsInput {
     }
 }
 
-public struct ListDeploymentsOutput {
+public struct ListDeploymentsOutput: Swift.Sendable {
     /// A list of deployments for the requested groups.
     public var deployments: [GreengrassClientTypes.Deployment]?
     /// The token for the next set of results, or ''null'' if there are no additional results.
@@ -4216,7 +4217,7 @@ public struct ListDeploymentsOutput {
     }
 }
 
-public struct ListDeviceDefinitionsInput {
+public struct ListDeviceDefinitionsInput: Swift.Sendable {
     /// The maximum number of results to be returned per request.
     public var maxResults: Swift.String?
     /// The token for the next set of results, or ''null'' if there are no additional results.
@@ -4232,7 +4233,7 @@ public struct ListDeviceDefinitionsInput {
     }
 }
 
-public struct ListDeviceDefinitionsOutput {
+public struct ListDeviceDefinitionsOutput: Swift.Sendable {
     /// Information about a definition.
     public var definitions: [GreengrassClientTypes.DefinitionInformation]?
     /// The token for the next set of results, or ''null'' if there are no additional results.
@@ -4248,7 +4249,7 @@ public struct ListDeviceDefinitionsOutput {
     }
 }
 
-public struct ListDeviceDefinitionVersionsInput {
+public struct ListDeviceDefinitionVersionsInput: Swift.Sendable {
     /// The ID of the device definition.
     /// This member is required.
     public var deviceDefinitionId: Swift.String?
@@ -4269,7 +4270,7 @@ public struct ListDeviceDefinitionVersionsInput {
     }
 }
 
-public struct ListDeviceDefinitionVersionsOutput {
+public struct ListDeviceDefinitionVersionsOutput: Swift.Sendable {
     /// The token for the next set of results, or ''null'' if there are no additional results.
     public var nextToken: Swift.String?
     /// Information about a version.
@@ -4285,7 +4286,7 @@ public struct ListDeviceDefinitionVersionsOutput {
     }
 }
 
-public struct ListFunctionDefinitionsInput {
+public struct ListFunctionDefinitionsInput: Swift.Sendable {
     /// The maximum number of results to be returned per request.
     public var maxResults: Swift.String?
     /// The token for the next set of results, or ''null'' if there are no additional results.
@@ -4301,7 +4302,7 @@ public struct ListFunctionDefinitionsInput {
     }
 }
 
-public struct ListFunctionDefinitionsOutput {
+public struct ListFunctionDefinitionsOutput: Swift.Sendable {
     /// Information about a definition.
     public var definitions: [GreengrassClientTypes.DefinitionInformation]?
     /// The token for the next set of results, or ''null'' if there are no additional results.
@@ -4317,7 +4318,7 @@ public struct ListFunctionDefinitionsOutput {
     }
 }
 
-public struct ListFunctionDefinitionVersionsInput {
+public struct ListFunctionDefinitionVersionsInput: Swift.Sendable {
     /// The ID of the Lambda function definition.
     /// This member is required.
     public var functionDefinitionId: Swift.String?
@@ -4338,7 +4339,7 @@ public struct ListFunctionDefinitionVersionsInput {
     }
 }
 
-public struct ListFunctionDefinitionVersionsOutput {
+public struct ListFunctionDefinitionVersionsOutput: Swift.Sendable {
     /// The token for the next set of results, or ''null'' if there are no additional results.
     public var nextToken: Swift.String?
     /// Information about a version.
@@ -4354,7 +4355,7 @@ public struct ListFunctionDefinitionVersionsOutput {
     }
 }
 
-public struct ListGroupCertificateAuthoritiesInput {
+public struct ListGroupCertificateAuthoritiesInput: Swift.Sendable {
     /// The ID of the Greengrass group.
     /// This member is required.
     public var groupId: Swift.String?
@@ -4367,7 +4368,7 @@ public struct ListGroupCertificateAuthoritiesInput {
     }
 }
 
-public struct ListGroupCertificateAuthoritiesOutput {
+public struct ListGroupCertificateAuthoritiesOutput: Swift.Sendable {
     /// A list of certificate authorities associated with the group.
     public var groupCertificateAuthorities: [GreengrassClientTypes.GroupCertificateAuthorityProperties]?
 
@@ -4379,7 +4380,7 @@ public struct ListGroupCertificateAuthoritiesOutput {
     }
 }
 
-public struct ListGroupsInput {
+public struct ListGroupsInput: Swift.Sendable {
     /// The maximum number of results to be returned per request.
     public var maxResults: Swift.String?
     /// The token for the next set of results, or ''null'' if there are no additional results.
@@ -4395,7 +4396,7 @@ public struct ListGroupsInput {
     }
 }
 
-public struct ListGroupsOutput {
+public struct ListGroupsOutput: Swift.Sendable {
     /// Information about a group.
     public var groups: [GreengrassClientTypes.GroupInformation]?
     /// The token for the next set of results, or ''null'' if there are no additional results.
@@ -4411,7 +4412,7 @@ public struct ListGroupsOutput {
     }
 }
 
-public struct ListGroupVersionsInput {
+public struct ListGroupVersionsInput: Swift.Sendable {
     /// The ID of the Greengrass group.
     /// This member is required.
     public var groupId: Swift.String?
@@ -4432,7 +4433,7 @@ public struct ListGroupVersionsInput {
     }
 }
 
-public struct ListGroupVersionsOutput {
+public struct ListGroupVersionsOutput: Swift.Sendable {
     /// The token for the next set of results, or ''null'' if there are no additional results.
     public var nextToken: Swift.String?
     /// Information about a version.
@@ -4448,7 +4449,7 @@ public struct ListGroupVersionsOutput {
     }
 }
 
-public struct ListLoggerDefinitionsInput {
+public struct ListLoggerDefinitionsInput: Swift.Sendable {
     /// The maximum number of results to be returned per request.
     public var maxResults: Swift.String?
     /// The token for the next set of results, or ''null'' if there are no additional results.
@@ -4464,7 +4465,7 @@ public struct ListLoggerDefinitionsInput {
     }
 }
 
-public struct ListLoggerDefinitionsOutput {
+public struct ListLoggerDefinitionsOutput: Swift.Sendable {
     /// Information about a definition.
     public var definitions: [GreengrassClientTypes.DefinitionInformation]?
     /// The token for the next set of results, or ''null'' if there are no additional results.
@@ -4480,7 +4481,7 @@ public struct ListLoggerDefinitionsOutput {
     }
 }
 
-public struct ListLoggerDefinitionVersionsInput {
+public struct ListLoggerDefinitionVersionsInput: Swift.Sendable {
     /// The ID of the logger definition.
     /// This member is required.
     public var loggerDefinitionId: Swift.String?
@@ -4501,7 +4502,7 @@ public struct ListLoggerDefinitionVersionsInput {
     }
 }
 
-public struct ListLoggerDefinitionVersionsOutput {
+public struct ListLoggerDefinitionVersionsOutput: Swift.Sendable {
     /// The token for the next set of results, or ''null'' if there are no additional results.
     public var nextToken: Swift.String?
     /// Information about a version.
@@ -4517,7 +4518,7 @@ public struct ListLoggerDefinitionVersionsOutput {
     }
 }
 
-public struct ListResourceDefinitionsInput {
+public struct ListResourceDefinitionsInput: Swift.Sendable {
     /// The maximum number of results to be returned per request.
     public var maxResults: Swift.String?
     /// The token for the next set of results, or ''null'' if there are no additional results.
@@ -4533,7 +4534,7 @@ public struct ListResourceDefinitionsInput {
     }
 }
 
-public struct ListResourceDefinitionsOutput {
+public struct ListResourceDefinitionsOutput: Swift.Sendable {
     /// Information about a definition.
     public var definitions: [GreengrassClientTypes.DefinitionInformation]?
     /// The token for the next set of results, or ''null'' if there are no additional results.
@@ -4549,7 +4550,7 @@ public struct ListResourceDefinitionsOutput {
     }
 }
 
-public struct ListResourceDefinitionVersionsInput {
+public struct ListResourceDefinitionVersionsInput: Swift.Sendable {
     /// The maximum number of results to be returned per request.
     public var maxResults: Swift.String?
     /// The token for the next set of results, or ''null'' if there are no additional results.
@@ -4570,7 +4571,7 @@ public struct ListResourceDefinitionVersionsInput {
     }
 }
 
-public struct ListResourceDefinitionVersionsOutput {
+public struct ListResourceDefinitionVersionsOutput: Swift.Sendable {
     /// The token for the next set of results, or ''null'' if there are no additional results.
     public var nextToken: Swift.String?
     /// Information about a version.
@@ -4586,7 +4587,7 @@ public struct ListResourceDefinitionVersionsOutput {
     }
 }
 
-public struct ListSubscriptionDefinitionsInput {
+public struct ListSubscriptionDefinitionsInput: Swift.Sendable {
     /// The maximum number of results to be returned per request.
     public var maxResults: Swift.String?
     /// The token for the next set of results, or ''null'' if there are no additional results.
@@ -4602,7 +4603,7 @@ public struct ListSubscriptionDefinitionsInput {
     }
 }
 
-public struct ListSubscriptionDefinitionsOutput {
+public struct ListSubscriptionDefinitionsOutput: Swift.Sendable {
     /// Information about a definition.
     public var definitions: [GreengrassClientTypes.DefinitionInformation]?
     /// The token for the next set of results, or ''null'' if there are no additional results.
@@ -4618,7 +4619,7 @@ public struct ListSubscriptionDefinitionsOutput {
     }
 }
 
-public struct ListSubscriptionDefinitionVersionsInput {
+public struct ListSubscriptionDefinitionVersionsInput: Swift.Sendable {
     /// The maximum number of results to be returned per request.
     public var maxResults: Swift.String?
     /// The token for the next set of results, or ''null'' if there are no additional results.
@@ -4639,7 +4640,7 @@ public struct ListSubscriptionDefinitionVersionsInput {
     }
 }
 
-public struct ListSubscriptionDefinitionVersionsOutput {
+public struct ListSubscriptionDefinitionVersionsOutput: Swift.Sendable {
     /// The token for the next set of results, or ''null'' if there are no additional results.
     public var nextToken: Swift.String?
     /// Information about a version.
@@ -4655,7 +4656,7 @@ public struct ListSubscriptionDefinitionVersionsOutput {
     }
 }
 
-public struct ListTagsForResourceInput {
+public struct ListTagsForResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the resource.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -4668,7 +4669,7 @@ public struct ListTagsForResourceInput {
     }
 }
 
-public struct ListTagsForResourceOutput {
+public struct ListTagsForResourceOutput: Swift.Sendable {
     /// The key-value pair for the resource tag.
     public var tags: [Swift.String: Swift.String]?
 
@@ -4681,7 +4682,7 @@ public struct ListTagsForResourceOutput {
 }
 
 /// Information needed to reset deployments.
-public struct ResetDeploymentsInput {
+public struct ResetDeploymentsInput: Swift.Sendable {
     /// A client token used to correlate requests and responses.
     public var amznClientToken: Swift.String?
     /// If true, performs a best-effort only core reset.
@@ -4702,7 +4703,7 @@ public struct ResetDeploymentsInput {
     }
 }
 
-public struct ResetDeploymentsOutput {
+public struct ResetDeploymentsOutput: Swift.Sendable {
     /// The ARN of the deployment.
     public var deploymentArn: Swift.String?
     /// The ID of the deployment.
@@ -4718,7 +4719,7 @@ public struct ResetDeploymentsOutput {
     }
 }
 
-public struct StartBulkDeploymentInput {
+public struct StartBulkDeploymentInput: Swift.Sendable {
     /// A client token used to correlate requests and responses.
     public var amznClientToken: Swift.String?
     /// The ARN of the execution role to associate with the bulk deployment operation. This IAM role must allow the ''greengrass:CreateDeployment'' action for all group versions that are listed in the input file. This IAM role must have access to the S3 bucket containing the input file.
@@ -4744,7 +4745,7 @@ public struct StartBulkDeploymentInput {
     }
 }
 
-public struct StartBulkDeploymentOutput {
+public struct StartBulkDeploymentOutput: Swift.Sendable {
     /// The ARN of the bulk deployment.
     public var bulkDeploymentArn: Swift.String?
     /// The ID of the bulk deployment.
@@ -4760,7 +4761,7 @@ public struct StartBulkDeploymentOutput {
     }
 }
 
-public struct StopBulkDeploymentInput {
+public struct StopBulkDeploymentInput: Swift.Sendable {
     /// The ID of the bulk deployment.
     /// This member is required.
     public var bulkDeploymentId: Swift.String?
@@ -4773,13 +4774,13 @@ public struct StopBulkDeploymentInput {
     }
 }
 
-public struct StopBulkDeploymentOutput {
+public struct StopBulkDeploymentOutput: Swift.Sendable {
 
     public init() { }
 }
 
 /// A map of the key-value pairs for the resource tag.
-public struct TagResourceInput {
+public struct TagResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the resource.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -4796,7 +4797,7 @@ public struct TagResourceInput {
     }
 }
 
-public struct UntagResourceInput {
+public struct UntagResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the resource.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -4815,7 +4816,7 @@ public struct UntagResourceInput {
 }
 
 /// Connectivity information.
-public struct UpdateConnectivityInfoInput {
+public struct UpdateConnectivityInfoInput: Swift.Sendable {
     /// A list of connectivity info.
     public var connectivityInfo: [GreengrassClientTypes.ConnectivityInfo]?
     /// The thing name.
@@ -4832,7 +4833,7 @@ public struct UpdateConnectivityInfoInput {
     }
 }
 
-public struct UpdateConnectivityInfoOutput {
+public struct UpdateConnectivityInfoOutput: Swift.Sendable {
     /// A message about the connectivity info update request.
     public var message: Swift.String?
     /// The new version of the connectivity info.
@@ -4848,7 +4849,7 @@ public struct UpdateConnectivityInfoOutput {
     }
 }
 
-public struct UpdateConnectorDefinitionInput {
+public struct UpdateConnectorDefinitionInput: Swift.Sendable {
     /// The ID of the connector definition.
     /// This member is required.
     public var connectorDefinitionId: Swift.String?
@@ -4865,12 +4866,12 @@ public struct UpdateConnectorDefinitionInput {
     }
 }
 
-public struct UpdateConnectorDefinitionOutput {
+public struct UpdateConnectorDefinitionOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdateCoreDefinitionInput {
+public struct UpdateCoreDefinitionInput: Swift.Sendable {
     /// The ID of the core definition.
     /// This member is required.
     public var coreDefinitionId: Swift.String?
@@ -4887,12 +4888,12 @@ public struct UpdateCoreDefinitionInput {
     }
 }
 
-public struct UpdateCoreDefinitionOutput {
+public struct UpdateCoreDefinitionOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdateDeviceDefinitionInput {
+public struct UpdateDeviceDefinitionInput: Swift.Sendable {
     /// The ID of the device definition.
     /// This member is required.
     public var deviceDefinitionId: Swift.String?
@@ -4909,12 +4910,12 @@ public struct UpdateDeviceDefinitionInput {
     }
 }
 
-public struct UpdateDeviceDefinitionOutput {
+public struct UpdateDeviceDefinitionOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdateFunctionDefinitionInput {
+public struct UpdateFunctionDefinitionInput: Swift.Sendable {
     /// The ID of the Lambda function definition.
     /// This member is required.
     public var functionDefinitionId: Swift.String?
@@ -4931,12 +4932,12 @@ public struct UpdateFunctionDefinitionInput {
     }
 }
 
-public struct UpdateFunctionDefinitionOutput {
+public struct UpdateFunctionDefinitionOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdateGroupInput {
+public struct UpdateGroupInput: Swift.Sendable {
     /// The ID of the Greengrass group.
     /// This member is required.
     public var groupId: Swift.String?
@@ -4953,12 +4954,12 @@ public struct UpdateGroupInput {
     }
 }
 
-public struct UpdateGroupOutput {
+public struct UpdateGroupOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdateGroupCertificateConfigurationInput {
+public struct UpdateGroupCertificateConfigurationInput: Swift.Sendable {
     /// The amount of time remaining before the certificate expires, in milliseconds.
     public var certificateExpiryInMilliseconds: Swift.String?
     /// The ID of the Greengrass group.
@@ -4975,7 +4976,7 @@ public struct UpdateGroupCertificateConfigurationInput {
     }
 }
 
-public struct UpdateGroupCertificateConfigurationOutput {
+public struct UpdateGroupCertificateConfigurationOutput: Swift.Sendable {
     /// The amount of time remaining before the certificate authority expires, in milliseconds.
     public var certificateAuthorityExpiryInMilliseconds: Swift.String?
     /// The amount of time remaining before the certificate expires, in milliseconds.
@@ -4995,7 +4996,7 @@ public struct UpdateGroupCertificateConfigurationOutput {
     }
 }
 
-public struct UpdateLoggerDefinitionInput {
+public struct UpdateLoggerDefinitionInput: Swift.Sendable {
     /// The ID of the logger definition.
     /// This member is required.
     public var loggerDefinitionId: Swift.String?
@@ -5012,12 +5013,12 @@ public struct UpdateLoggerDefinitionInput {
     }
 }
 
-public struct UpdateLoggerDefinitionOutput {
+public struct UpdateLoggerDefinitionOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdateResourceDefinitionInput {
+public struct UpdateResourceDefinitionInput: Swift.Sendable {
     /// The name of the definition.
     public var name: Swift.String?
     /// The ID of the resource definition.
@@ -5034,12 +5035,12 @@ public struct UpdateResourceDefinitionInput {
     }
 }
 
-public struct UpdateResourceDefinitionOutput {
+public struct UpdateResourceDefinitionOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdateSubscriptionDefinitionInput {
+public struct UpdateSubscriptionDefinitionInput: Swift.Sendable {
     /// The name of the definition.
     public var name: Swift.String?
     /// The ID of the subscription definition.
@@ -5056,14 +5057,15 @@ public struct UpdateSubscriptionDefinitionInput {
     }
 }
 
-public struct UpdateSubscriptionDefinitionOutput {
+public struct UpdateSubscriptionDefinitionOutput: Swift.Sendable {
 
     public init() { }
 }
 
 extension GreengrassClientTypes {
+
     /// Configuration settings for running telemetry.
-    public struct TelemetryConfigurationUpdate {
+    public struct TelemetryConfigurationUpdate: Swift.Sendable {
         /// Configure telemetry to be on or off.
         /// This member is required.
         public var telemetry: GreengrassClientTypes.Telemetry?
@@ -5075,10 +5077,9 @@ extension GreengrassClientTypes {
             self.telemetry = telemetry
         }
     }
-
 }
 
-public struct UpdateThingRuntimeConfigurationInput {
+public struct UpdateThingRuntimeConfigurationInput: Swift.Sendable {
     /// Configuration for telemetry service.
     public var telemetryConfiguration: GreengrassClientTypes.TelemetryConfigurationUpdate?
     /// The thing name.
@@ -5095,7 +5096,7 @@ public struct UpdateThingRuntimeConfigurationInput {
     }
 }
 
-public struct UpdateThingRuntimeConfigurationOutput {
+public struct UpdateThingRuntimeConfigurationOutput: Swift.Sendable {
 
     public init() { }
 }

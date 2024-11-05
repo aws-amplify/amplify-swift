@@ -27,62 +27,63 @@ import protocol ClientRuntime.ModeledError
 @_spi(UnknownAWSHTTPServiceError) import struct AWSClientRuntime.UnknownAWSHTTPServiceError
 import struct Smithy.URIQueryItem
 
-public struct DeleteCampaignOutput {
+
+public struct DeleteCampaignOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteConnectInstanceConfigOutput {
+public struct DeleteConnectInstanceConfigOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteInstanceOnboardingJobOutput {
+public struct DeleteInstanceOnboardingJobOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct PauseCampaignOutput {
+public struct PauseCampaignOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct ResumeCampaignOutput {
+public struct ResumeCampaignOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct StartCampaignOutput {
+public struct StartCampaignOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct StopCampaignOutput {
+public struct StopCampaignOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct TagResourceOutput {
+public struct TagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UntagResourceOutput {
+public struct UntagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdateCampaignDialerConfigOutput {
+public struct UpdateCampaignDialerConfigOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdateCampaignNameOutput {
+public struct UpdateCampaignNameOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdateCampaignOutboundCallConfigOutput {
+public struct UpdateCampaignOutboundCallConfigOutput: Swift.Sendable {
 
     public init() { }
 }
@@ -117,8 +118,9 @@ public struct AccessDeniedException: ClientRuntime.ModeledError, AWSClientRuntim
 }
 
 extension ConnectCampaignsClientTypes {
+
     /// Agentless Dialer config
-    public struct AgentlessDialerConfig {
+    public struct AgentlessDialerConfig: Swift.Sendable {
         /// Allocates dialing capacity for this campaign between multiple active campaigns
         public var dialingCapacity: Swift.Double?
 
@@ -129,7 +131,6 @@ extension ConnectCampaignsClientTypes {
             self.dialingCapacity = dialingCapacity
         }
     }
-
 }
 
 /// The request could not be processed because of conflict in the current state of the resource.
@@ -307,8 +308,9 @@ public struct ValidationException: ClientRuntime.ModeledError, AWSClientRuntime.
 }
 
 extension ConnectCampaignsClientTypes {
+
     /// Predictive Dialer config
-    public struct PredictiveDialerConfig {
+    public struct PredictiveDialerConfig: Swift.Sendable {
         /// The bandwidth allocation of a queue resource.
         /// This member is required.
         public var bandwidthAllocation: Swift.Double?
@@ -324,12 +326,12 @@ extension ConnectCampaignsClientTypes {
             self.dialingCapacity = dialingCapacity
         }
     }
-
 }
 
 extension ConnectCampaignsClientTypes {
+
     /// Progressive Dialer config
-    public struct ProgressiveDialerConfig {
+    public struct ProgressiveDialerConfig: Swift.Sendable {
         /// The bandwidth allocation of a queue resource.
         /// This member is required.
         public var bandwidthAllocation: Swift.Double?
@@ -345,12 +347,12 @@ extension ConnectCampaignsClientTypes {
             self.dialingCapacity = dialingCapacity
         }
     }
-
 }
 
 extension ConnectCampaignsClientTypes {
+
     /// The possible types of dialer config parameters
-    public enum DialerConfig {
+    public enum DialerConfig: Swift.Sendable {
         /// Progressive Dialer config
         case progressivedialerconfig(ConnectCampaignsClientTypes.ProgressiveDialerConfig)
         /// Predictive Dialer config
@@ -359,12 +361,12 @@ extension ConnectCampaignsClientTypes {
         case agentlessdialerconfig(ConnectCampaignsClientTypes.AgentlessDialerConfig)
         case sdkUnknown(Swift.String)
     }
-
 }
 
 extension ConnectCampaignsClientTypes {
+
     /// Answering Machine Detection config
-    public struct AnswerMachineDetectionConfig {
+    public struct AnswerMachineDetectionConfig: Swift.Sendable {
         /// Enable or disable await answer machine prompt
         public var awaitAnswerMachinePrompt: Swift.Bool?
         /// Enable or disable answering machine detection
@@ -380,12 +382,12 @@ extension ConnectCampaignsClientTypes {
             self.enableAnswerMachineDetection = enableAnswerMachineDetection
         }
     }
-
 }
 
 extension ConnectCampaignsClientTypes {
+
     /// The configuration used for outbound calls.
-    public struct OutboundCallConfig {
+    public struct OutboundCallConfig: Swift.Sendable {
         /// Answering Machine Detection config
         public var answerMachineDetectionConfig: ConnectCampaignsClientTypes.AnswerMachineDetectionConfig?
         /// The identifier of the contact flow for the outbound call.
@@ -409,11 +411,10 @@ extension ConnectCampaignsClientTypes {
             self.connectSourcePhoneNumber = connectSourcePhoneNumber
         }
     }
-
 }
 
 /// The request for Create Campaign API.
-public struct CreateCampaignInput {
+public struct CreateCampaignInput: Swift.Sendable {
     /// Amazon Connect Instance Id
     /// This member is required.
     public var connectInstanceId: Swift.String?
@@ -446,7 +447,7 @@ public struct CreateCampaignInput {
 }
 
 /// The response for Create Campaign API
-public struct CreateCampaignOutput {
+public struct CreateCampaignOutput: Swift.Sendable {
     /// The resource name of an Amazon Connect campaign.
     public var arn: Swift.String?
     /// Identifier representing a Campaign
@@ -467,7 +468,7 @@ public struct CreateCampaignOutput {
 }
 
 /// DeleteCampaignRequest
-public struct DeleteCampaignInput {
+public struct DeleteCampaignInput: Swift.Sendable {
     /// Identifier representing a Campaign
     /// This member is required.
     public var id: Swift.String?
@@ -510,7 +511,7 @@ public struct InvalidStateException: ClientRuntime.ModeledError, AWSClientRuntim
 }
 
 /// DeleteCampaignRequest
-public struct DeleteConnectInstanceConfigInput {
+public struct DeleteConnectInstanceConfigInput: Swift.Sendable {
     /// Amazon Connect Instance Id
     /// This member is required.
     public var connectInstanceId: Swift.String?
@@ -524,7 +525,7 @@ public struct DeleteConnectInstanceConfigInput {
 }
 
 /// The request for DeleteInstanceOnboardingJob API.
-public struct DeleteInstanceOnboardingJobInput {
+public struct DeleteInstanceOnboardingJobInput: Swift.Sendable {
     /// Amazon Connect Instance Id
     /// This member is required.
     public var connectInstanceId: Swift.String?
@@ -538,7 +539,7 @@ public struct DeleteInstanceOnboardingJobInput {
 }
 
 /// DescribeCampaignRequests
-public struct DescribeCampaignInput {
+public struct DescribeCampaignInput: Swift.Sendable {
     /// Identifier representing a Campaign
     /// This member is required.
     public var id: Swift.String?
@@ -552,8 +553,9 @@ public struct DescribeCampaignInput {
 }
 
 extension ConnectCampaignsClientTypes {
+
     /// An Amazon Connect campaign.
-    public struct Campaign {
+    public struct Campaign: Swift.Sendable {
         /// The resource name of an Amazon Connect campaign.
         /// This member is required.
         public var arn: Swift.String?
@@ -594,11 +596,10 @@ extension ConnectCampaignsClientTypes {
             self.tags = tags
         }
     }
-
 }
 
 /// DescribeCampaignResponse
-public struct DescribeCampaignOutput {
+public struct DescribeCampaignOutput: Swift.Sendable {
     /// An Amazon Connect campaign.
     public var campaign: ConnectCampaignsClientTypes.Campaign?
 
@@ -611,7 +612,7 @@ public struct DescribeCampaignOutput {
 }
 
 /// GetCampaignStateRequest
-public struct GetCampaignStateInput {
+public struct GetCampaignStateInput: Swift.Sendable {
     /// Identifier representing a Campaign
     /// This member is required.
     public var id: Swift.String?
@@ -627,7 +628,7 @@ public struct GetCampaignStateInput {
 extension ConnectCampaignsClientTypes {
 
     /// State of a campaign
-    public enum CampaignState: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum CampaignState: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         /// Campaign is in failed state
         case failed
         /// Campaign is in initialized state
@@ -669,7 +670,7 @@ extension ConnectCampaignsClientTypes {
 }
 
 /// GetCampaignStateResponse
-public struct GetCampaignStateOutput {
+public struct GetCampaignStateOutput: Swift.Sendable {
     /// State of a campaign
     public var state: ConnectCampaignsClientTypes.CampaignState?
 
@@ -682,7 +683,7 @@ public struct GetCampaignStateOutput {
 }
 
 /// GetCampaignStateBatchRequest
-public struct GetCampaignStateBatchInput {
+public struct GetCampaignStateBatchInput: Swift.Sendable {
     /// List of CampaignId
     /// This member is required.
     public var campaignIds: [Swift.String]?
@@ -698,7 +699,7 @@ public struct GetCampaignStateBatchInput {
 extension ConnectCampaignsClientTypes {
 
     /// A predefined code indicating the error that caused the failure in getting state of campaigns
-    public enum GetCampaignStateBatchFailureCode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum GetCampaignStateBatchFailureCode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         /// The specified resource was not found
         case resourceNotFound
         /// Unexpected error during processing of request
@@ -728,8 +729,9 @@ extension ConnectCampaignsClientTypes {
 }
 
 extension ConnectCampaignsClientTypes {
+
     /// Failed response of campaign state
-    public struct FailedCampaignStateResponse {
+    public struct FailedCampaignStateResponse: Swift.Sendable {
         /// Identifier representing a Campaign
         public var campaignId: Swift.String?
         /// A predefined code indicating the error that caused the failure in getting state of campaigns
@@ -744,12 +746,12 @@ extension ConnectCampaignsClientTypes {
             self.failureCode = failureCode
         }
     }
-
 }
 
 extension ConnectCampaignsClientTypes {
+
     /// Successful response of campaign state
-    public struct SuccessfulCampaignStateResponse {
+    public struct SuccessfulCampaignStateResponse: Swift.Sendable {
         /// Identifier representing a Campaign
         public var campaignId: Swift.String?
         /// State of a campaign
@@ -764,11 +766,10 @@ extension ConnectCampaignsClientTypes {
             self.state = state
         }
     }
-
 }
 
 /// GetCampaignStateBatchResponse
-public struct GetCampaignStateBatchOutput {
+public struct GetCampaignStateBatchOutput: Swift.Sendable {
     /// List of failed requests of campaign state
     public var failedRequests: [ConnectCampaignsClientTypes.FailedCampaignStateResponse]?
     /// List of successful response of campaign state
@@ -785,7 +786,7 @@ public struct GetCampaignStateBatchOutput {
 }
 
 /// GetConnectInstanceConfigRequest
-public struct GetConnectInstanceConfigInput {
+public struct GetConnectInstanceConfigInput: Swift.Sendable {
     /// Amazon Connect Instance Id
     /// This member is required.
     public var connectInstanceId: Swift.String?
@@ -801,7 +802,7 @@ public struct GetConnectInstanceConfigInput {
 extension ConnectCampaignsClientTypes {
 
     /// Server-side encryption type.
-    public enum EncryptionType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum EncryptionType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case kms
         case sdkUnknown(Swift.String)
 
@@ -826,8 +827,9 @@ extension ConnectCampaignsClientTypes {
 }
 
 extension ConnectCampaignsClientTypes {
+
     /// Encryption config for Connect Instance. Note that sensitive data will always be encrypted. If disabled, service will perform encryption with its own key. If enabled, a KMS key id needs to be provided and KMS charges will apply. KMS is only type supported
-    public struct EncryptionConfig {
+    public struct EncryptionConfig: Swift.Sendable {
         /// Boolean to indicate if custom encryption has been enabled.
         /// This member is required.
         public var enabled: Swift.Bool
@@ -847,12 +849,12 @@ extension ConnectCampaignsClientTypes {
             self.keyArn = keyArn
         }
     }
-
 }
 
 extension ConnectCampaignsClientTypes {
+
     /// Instance config object
-    public struct InstanceConfig {
+    public struct InstanceConfig: Swift.Sendable {
         /// Amazon Connect Instance Id
         /// This member is required.
         public var connectInstanceId: Swift.String?
@@ -874,11 +876,10 @@ extension ConnectCampaignsClientTypes {
             self.serviceLinkedRoleArn = serviceLinkedRoleArn
         }
     }
-
 }
 
 /// GetConnectInstanceConfigResponse
-public struct GetConnectInstanceConfigOutput {
+public struct GetConnectInstanceConfigOutput: Swift.Sendable {
     /// Instance config object
     public var connectInstanceConfig: ConnectCampaignsClientTypes.InstanceConfig?
 
@@ -891,7 +892,7 @@ public struct GetConnectInstanceConfigOutput {
 }
 
 /// GetInstanceOnboardingJobStatusRequest
-public struct GetInstanceOnboardingJobStatusInput {
+public struct GetInstanceOnboardingJobStatusInput: Swift.Sendable {
     /// Amazon Connect Instance Id
     /// This member is required.
     public var connectInstanceId: Swift.String?
@@ -907,7 +908,7 @@ public struct GetInstanceOnboardingJobStatusInput {
 extension ConnectCampaignsClientTypes {
 
     /// Enumeration of the possible failure codes for instance onboarding job
-    public enum InstanceOnboardingJobFailureCode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum InstanceOnboardingJobFailureCode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case eventBridgeAccessDenied
         case eventBridgeManagedRuleLimitExceeded
         case iamAccessDenied
@@ -949,7 +950,7 @@ extension ConnectCampaignsClientTypes {
 extension ConnectCampaignsClientTypes {
 
     /// Enumeration of the possible states for instance onboarding job
-    public enum InstanceOnboardingJobStatusCode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum InstanceOnboardingJobStatusCode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case failed
         case inProgress
         case succeeded
@@ -980,8 +981,9 @@ extension ConnectCampaignsClientTypes {
 }
 
 extension ConnectCampaignsClientTypes {
+
     /// Instance onboarding job status object
-    public struct InstanceOnboardingJobStatus {
+    public struct InstanceOnboardingJobStatus: Swift.Sendable {
         /// Amazon Connect Instance Id
         /// This member is required.
         public var connectInstanceId: Swift.String?
@@ -1002,11 +1004,10 @@ extension ConnectCampaignsClientTypes {
             self.status = status
         }
     }
-
 }
 
 /// GetInstanceOnboardingJobStatusResponse
-public struct GetInstanceOnboardingJobStatusOutput {
+public struct GetInstanceOnboardingJobStatusOutput: Swift.Sendable {
     /// Instance onboarding job status object
     public var connectInstanceOnboardingJobStatus: ConnectCampaignsClientTypes.InstanceOnboardingJobStatus?
 
@@ -1021,7 +1022,7 @@ public struct GetInstanceOnboardingJobStatusOutput {
 extension ConnectCampaignsClientTypes {
 
     /// Operators for Connect instance identifier filter
-    public enum InstanceIdFilterOperator: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum InstanceIdFilterOperator: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         /// Equals operator
         case eq
         case sdkUnknown(Swift.String)
@@ -1047,8 +1048,9 @@ extension ConnectCampaignsClientTypes {
 }
 
 extension ConnectCampaignsClientTypes {
+
     /// Connect instance identifier filter
-    public struct InstanceIdFilter {
+    public struct InstanceIdFilter: Swift.Sendable {
         /// Operators for Connect instance identifier filter
         /// This member is required.
         public var `operator`: ConnectCampaignsClientTypes.InstanceIdFilterOperator?
@@ -1065,12 +1067,12 @@ extension ConnectCampaignsClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension ConnectCampaignsClientTypes {
+
     /// Filter model by type
-    public struct CampaignFilters {
+    public struct CampaignFilters: Swift.Sendable {
         /// Connect instance identifier filter
         public var instanceIdFilter: ConnectCampaignsClientTypes.InstanceIdFilter?
 
@@ -1081,11 +1083,10 @@ extension ConnectCampaignsClientTypes {
             self.instanceIdFilter = instanceIdFilter
         }
     }
-
 }
 
 /// ListCampaignsRequest
-public struct ListCampaignsInput {
+public struct ListCampaignsInput: Swift.Sendable {
     /// Filter model by type
     public var filters: ConnectCampaignsClientTypes.CampaignFilters?
     /// The maximum number of results to return per page.
@@ -1106,8 +1107,9 @@ public struct ListCampaignsInput {
 }
 
 extension ConnectCampaignsClientTypes {
+
     /// An Amazon Connect campaign summary.
-    public struct CampaignSummary {
+    public struct CampaignSummary: Swift.Sendable {
         /// The resource name of an Amazon Connect campaign.
         /// This member is required.
         public var arn: Swift.String?
@@ -1134,11 +1136,10 @@ extension ConnectCampaignsClientTypes {
             self.name = name
         }
     }
-
 }
 
 /// ListCampaignsResponse
-public struct ListCampaignsOutput {
+public struct ListCampaignsOutput: Swift.Sendable {
     /// A list of Amazon Connect campaigns.
     public var campaignSummaryList: [ConnectCampaignsClientTypes.CampaignSummary]?
     /// The token for the next set of results.
@@ -1155,7 +1156,7 @@ public struct ListCampaignsOutput {
 }
 
 /// ListTagsForResource
-public struct ListTagsForResourceInput {
+public struct ListTagsForResourceInput: Swift.Sendable {
     /// Arn
     /// This member is required.
     public var arn: Swift.String?
@@ -1169,7 +1170,7 @@ public struct ListTagsForResourceInput {
 }
 
 /// ListTagsForResponse
-public struct ListTagsForResourceOutput {
+public struct ListTagsForResourceOutput: Swift.Sendable {
     /// Tag map with key and value.
     public var tags: [Swift.String: Swift.String]?
 
@@ -1216,7 +1217,7 @@ public struct InvalidCampaignStateException: ClientRuntime.ModeledError, AWSClie
 }
 
 /// PauseCampaignRequest
-public struct PauseCampaignInput {
+public struct PauseCampaignInput: Swift.Sendable {
     /// Identifier representing a Campaign
     /// This member is required.
     public var id: Swift.String?
@@ -1230,8 +1231,9 @@ public struct PauseCampaignInput {
 }
 
 extension ConnectCampaignsClientTypes {
+
     /// A dial request for a campaign.
-    public struct DialRequest {
+    public struct DialRequest: Swift.Sendable {
         /// A custom key-value pair using an attribute map. The attributes are standard Amazon Connect attributes, and can be accessed in contact flows just like any other contact attributes.
         /// This member is required.
         public var attributes: [Swift.String: Swift.String]?
@@ -1258,7 +1260,6 @@ extension ConnectCampaignsClientTypes {
             self.phoneNumber = phoneNumber
         }
     }
-
 }
 
 extension ConnectCampaignsClientTypes.DialRequest: Swift.CustomDebugStringConvertible {
@@ -1267,7 +1268,7 @@ extension ConnectCampaignsClientTypes.DialRequest: Swift.CustomDebugStringConver
 }
 
 /// PutDialRequestBatchRequest
-public struct PutDialRequestBatchInput {
+public struct PutDialRequestBatchInput: Swift.Sendable {
     /// A list of dial requests.
     /// This member is required.
     public var dialRequests: [ConnectCampaignsClientTypes.DialRequest]?
@@ -1288,7 +1289,7 @@ public struct PutDialRequestBatchInput {
 extension ConnectCampaignsClientTypes {
 
     /// A predefined code indicating the error that caused the failure.
-    public enum FailureCode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum FailureCode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         /// The request failed to satisfy the constraints specified by the service
         case invalidInput
         /// Request throttled due to large number of pending dial requests
@@ -1322,8 +1323,9 @@ extension ConnectCampaignsClientTypes {
 }
 
 extension ConnectCampaignsClientTypes {
+
     /// A failed request identified by the unique client token.
-    public struct FailedRequest {
+    public struct FailedRequest: Swift.Sendable {
         /// Client provided parameter used for idempotency. Its value must be unique for each request.
         public var clientToken: Swift.String?
         /// A predefined code indicating the error that caused the failure.
@@ -1342,12 +1344,12 @@ extension ConnectCampaignsClientTypes {
             self.id = id
         }
     }
-
 }
 
 extension ConnectCampaignsClientTypes {
+
     /// A successful request identified by the unique client token.
-    public struct SuccessfulRequest {
+    public struct SuccessfulRequest: Swift.Sendable {
         /// Client provided parameter used for idempotency. Its value must be unique for each request.
         public var clientToken: Swift.String?
         /// Identifier representing a Dial request
@@ -1362,11 +1364,10 @@ extension ConnectCampaignsClientTypes {
             self.id = id
         }
     }
-
 }
 
 /// PutDialRequestBatchResponse
-public struct PutDialRequestBatchOutput {
+public struct PutDialRequestBatchOutput: Swift.Sendable {
     /// A list of failed requests.
     public var failedRequests: [ConnectCampaignsClientTypes.FailedRequest]?
     /// A list of successful requests identified by the unique client token.
@@ -1383,7 +1384,7 @@ public struct PutDialRequestBatchOutput {
 }
 
 /// ResumeCampaignRequest
-public struct ResumeCampaignInput {
+public struct ResumeCampaignInput: Swift.Sendable {
     /// Identifier representing a Campaign
     /// This member is required.
     public var id: Swift.String?
@@ -1397,7 +1398,7 @@ public struct ResumeCampaignInput {
 }
 
 /// StartCampaignRequest
-public struct StartCampaignInput {
+public struct StartCampaignInput: Swift.Sendable {
     /// Identifier representing a Campaign
     /// This member is required.
     public var id: Swift.String?
@@ -1411,7 +1412,7 @@ public struct StartCampaignInput {
 }
 
 /// The request for StartInstanceOnboardingJob API.
-public struct StartInstanceOnboardingJobInput {
+public struct StartInstanceOnboardingJobInput: Swift.Sendable {
     /// Amazon Connect Instance Id
     /// This member is required.
     public var connectInstanceId: Swift.String?
@@ -1430,7 +1431,7 @@ public struct StartInstanceOnboardingJobInput {
 }
 
 /// The response for StartInstanceOnboardingJob API.
-public struct StartInstanceOnboardingJobOutput {
+public struct StartInstanceOnboardingJobOutput: Swift.Sendable {
     /// Instance onboarding job status object
     public var connectInstanceOnboardingJobStatus: ConnectCampaignsClientTypes.InstanceOnboardingJobStatus?
 
@@ -1443,7 +1444,7 @@ public struct StartInstanceOnboardingJobOutput {
 }
 
 /// StopCampaignRequest
-public struct StopCampaignInput {
+public struct StopCampaignInput: Swift.Sendable {
     /// Identifier representing a Campaign
     /// This member is required.
     public var id: Swift.String?
@@ -1457,7 +1458,7 @@ public struct StopCampaignInput {
 }
 
 /// TagResourceRequest
-public struct TagResourceInput {
+public struct TagResourceInput: Swift.Sendable {
     /// Arn
     /// This member is required.
     public var arn: Swift.String?
@@ -1476,7 +1477,7 @@ public struct TagResourceInput {
 }
 
 /// UntagResourceRequest
-public struct UntagResourceInput {
+public struct UntagResourceInput: Swift.Sendable {
     /// Arn
     /// This member is required.
     public var arn: Swift.String?
@@ -1495,7 +1496,7 @@ public struct UntagResourceInput {
 }
 
 /// UpdateCampaignDialerConfigRequest
-public struct UpdateCampaignDialerConfigInput {
+public struct UpdateCampaignDialerConfigInput: Swift.Sendable {
     /// The possible types of dialer config parameters
     /// This member is required.
     public var dialerConfig: ConnectCampaignsClientTypes.DialerConfig?
@@ -1514,7 +1515,7 @@ public struct UpdateCampaignDialerConfigInput {
 }
 
 /// UpdateCampaignNameRequest
-public struct UpdateCampaignNameInput {
+public struct UpdateCampaignNameInput: Swift.Sendable {
     /// Identifier representing a Campaign
     /// This member is required.
     public var id: Swift.String?
@@ -1533,7 +1534,7 @@ public struct UpdateCampaignNameInput {
 }
 
 /// UpdateCampaignOutboundCallConfigRequest
-public struct UpdateCampaignOutboundCallConfigInput {
+public struct UpdateCampaignOutboundCallConfigInput: Swift.Sendable {
     /// Answering Machine Detection config
     public var answerMachineDetectionConfig: ConnectCampaignsClientTypes.AnswerMachineDetectionConfig?
     /// The identifier of the contact flow for the outbound call.

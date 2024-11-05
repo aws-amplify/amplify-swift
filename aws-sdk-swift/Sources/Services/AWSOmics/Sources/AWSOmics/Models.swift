@@ -36,32 +36,33 @@ import struct SmithyHTTPAPI.Headers
 @_spi(SmithyReadWrite) import struct SmithyReadWrite.WritingClosureBox
 @_spi(SmithyTimestamps) import struct SmithyTimestamps.TimestampFormatter
 
-public struct CancelRunOutput {
+
+public struct CancelRunOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteRunGroupOutput {
+public struct DeleteRunGroupOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteRunOutput {
+public struct DeleteRunOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteWorkflowOutput {
+public struct DeleteWorkflowOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdateRunGroupOutput {
+public struct UpdateRunGroupOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdateWorkflowOutput {
+public struct UpdateWorkflowOutput: Swift.Sendable {
 
     public init() { }
 }
@@ -266,7 +267,7 @@ public struct ValidationException: ClientRuntime.ModeledError, AWSClientRuntime.
     }
 }
 
-public struct AbortMultipartReadSetUploadInput {
+public struct AbortMultipartReadSetUploadInput: Swift.Sendable {
     /// The sequence store ID for the store involved in the multipart upload.
     /// This member is required.
     public var sequenceStoreId: Swift.String?
@@ -284,14 +285,14 @@ public struct AbortMultipartReadSetUploadInput {
     }
 }
 
-public struct AbortMultipartReadSetUploadOutput {
+public struct AbortMultipartReadSetUploadOutput: Swift.Sendable {
 
     public init() { }
 }
 
 extension OmicsClientTypes {
 
-    public enum Accelerators: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Accelerators: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case gpu
         case sdkUnknown(Swift.String)
 
@@ -340,7 +341,7 @@ public struct ConflictException: ClientRuntime.ModeledError, AWSClientRuntime.AW
     }
 }
 
-public struct AcceptShareInput {
+public struct AcceptShareInput: Swift.Sendable {
     /// The ID of the resource share.
     /// This member is required.
     public var shareId: Swift.String?
@@ -355,7 +356,7 @@ public struct AcceptShareInput {
 
 extension OmicsClientTypes {
 
-    public enum ShareStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ShareStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         /// The share is activated
         case activating
         /// The share is active and can be used
@@ -400,7 +401,7 @@ extension OmicsClientTypes {
     }
 }
 
-public struct AcceptShareOutput {
+public struct AcceptShareOutput: Swift.Sendable {
     /// The status of the resource share.
     public var status: OmicsClientTypes.ShareStatus?
 
@@ -414,7 +415,7 @@ public struct AcceptShareOutput {
 
 extension OmicsClientTypes {
 
-    public enum ReadSetActivationJobStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ReadSetActivationJobStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case cancelled
         case cancelling
         case completed
@@ -457,8 +458,9 @@ extension OmicsClientTypes {
 }
 
 extension OmicsClientTypes {
+
     /// A read set activation job filter.
-    public struct ActivateReadSetFilter {
+    public struct ActivateReadSetFilter: Swift.Sendable {
         /// The filter's start date.
         public var createdAfter: Foundation.Date?
         /// The filter's end date.
@@ -477,12 +479,12 @@ extension OmicsClientTypes {
             self.status = status
         }
     }
-
 }
 
 extension OmicsClientTypes {
+
     /// A read set activation job.
-    public struct ActivateReadSetJobItem {
+    public struct ActivateReadSetJobItem: Swift.Sendable {
         /// When the job completed.
         public var completionTime: Foundation.Date?
         /// When the job was created.
@@ -513,12 +515,11 @@ extension OmicsClientTypes {
             self.status = status
         }
     }
-
 }
 
 extension OmicsClientTypes {
 
-    public enum ReadSetActivationJobItemStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ReadSetActivationJobItemStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case failed
         case finished
         case inProgress
@@ -552,8 +553,9 @@ extension OmicsClientTypes {
 }
 
 extension OmicsClientTypes {
+
     /// A source for a read set activation job.
-    public struct ActivateReadSetSourceItem {
+    public struct ActivateReadSetSourceItem: Swift.Sendable {
         /// The source's read set ID.
         /// This member is required.
         public var readSetId: Swift.String?
@@ -574,12 +576,11 @@ extension OmicsClientTypes {
             self.statusMessage = statusMessage
         }
     }
-
 }
 
 extension OmicsClientTypes {
 
-    public enum JobStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum JobStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         /// The Job was cancelled
         case cancelled
         /// The Job has completed
@@ -625,8 +626,9 @@ extension OmicsClientTypes {
 }
 
 extension OmicsClientTypes {
+
     /// Details about an imported annotation item.
-    public struct AnnotationImportItemDetail {
+    public struct AnnotationImportItemDetail: Swift.Sendable {
         /// The item's job status.
         /// This member is required.
         public var jobStatus: OmicsClientTypes.JobStatus?
@@ -643,12 +645,12 @@ extension OmicsClientTypes {
             self.source = source
         }
     }
-
 }
 
 extension OmicsClientTypes {
+
     /// A source for an annotation import job.
-    public struct AnnotationImportItemSource {
+    public struct AnnotationImportItemSource: Swift.Sendable {
         /// The source file's location in Amazon S3.
         /// This member is required.
         public var source: Swift.String?
@@ -660,10 +662,9 @@ extension OmicsClientTypes {
             self.source = source
         }
     }
-
 }
 
-public struct CancelAnnotationImportJobInput {
+public struct CancelAnnotationImportJobInput: Swift.Sendable {
     /// The job's ID.
     /// This member is required.
     public var jobId: Swift.String?
@@ -676,12 +677,12 @@ public struct CancelAnnotationImportJobInput {
     }
 }
 
-public struct CancelAnnotationImportJobOutput {
+public struct CancelAnnotationImportJobOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct GetAnnotationImportJobInput {
+public struct GetAnnotationImportJobInput: Swift.Sendable {
     /// The job's ID.
     /// This member is required.
     public var jobId: Swift.String?
@@ -695,8 +696,9 @@ public struct GetAnnotationImportJobInput {
 }
 
 extension OmicsClientTypes {
+
     /// Read options for an annotation import job.
-    public struct ReadOptions {
+    public struct ReadOptions: Swift.Sendable {
         /// The file's comment character.
         public var comment: Swift.String?
         /// The file's encoding.
@@ -739,12 +741,12 @@ extension OmicsClientTypes {
             self.sep = sep
         }
     }
-
 }
 
 extension OmicsClientTypes {
+
     /// Formatting options for a TSV file.
-    public struct TsvOptions {
+    public struct TsvOptions: Swift.Sendable {
         /// The file's read options.
         public var readOptions: OmicsClientTypes.ReadOptions?
 
@@ -755,12 +757,12 @@ extension OmicsClientTypes {
             self.readOptions = readOptions
         }
     }
-
 }
 
 extension OmicsClientTypes {
+
     /// Formatting options for a VCF file.
-    public struct VcfOptions {
+    public struct VcfOptions: Swift.Sendable {
         /// The file's ignore filter field setting.
         public var ignoreFilterField: Swift.Bool?
         /// The file's ignore qual field setting.
@@ -775,22 +777,21 @@ extension OmicsClientTypes {
             self.ignoreQualField = ignoreQualField
         }
     }
-
 }
 
 extension OmicsClientTypes {
+
     /// Formatting options for a file.
-    public enum FormatOptions {
+    public enum FormatOptions: Swift.Sendable {
         /// Options for a TSV file.
         case tsvoptions(OmicsClientTypes.TsvOptions)
         /// Options for a VCF file.
         case vcfoptions(OmicsClientTypes.VcfOptions)
         case sdkUnknown(Swift.String)
     }
-
 }
 
-public struct GetAnnotationImportJobOutput {
+public struct GetAnnotationImportJobOutput: Swift.Sendable {
     /// The annotation schema generated by the parsed annotation data.
     public var annotationFields: [Swift.String: Swift.String]?
     /// When the job completed.
@@ -863,8 +864,9 @@ public struct GetAnnotationImportJobOutput {
 }
 
 extension OmicsClientTypes {
+
     /// A filter for annotation import jobs.
-    public struct ListAnnotationImportJobsFilter {
+    public struct ListAnnotationImportJobsFilter: Swift.Sendable {
         /// A status to filter on.
         public var status: OmicsClientTypes.JobStatus?
         /// A store name to filter on.
@@ -879,10 +881,9 @@ extension OmicsClientTypes {
             self.storeName = storeName
         }
     }
-
 }
 
-public struct ListAnnotationImportJobsInput {
+public struct ListAnnotationImportJobsInput: Swift.Sendable {
     /// A filter to apply to the list.
     public var filter: OmicsClientTypes.ListAnnotationImportJobsFilter?
     /// IDs of annotation import jobs to retrieve.
@@ -907,8 +908,9 @@ public struct ListAnnotationImportJobsInput {
 }
 
 extension OmicsClientTypes {
+
     /// An annotation import job.
-    public struct AnnotationImportJobItem {
+    public struct AnnotationImportJobItem: Swift.Sendable {
         /// The annotation schema generated by the parsed annotation data.
         public var annotationFields: [Swift.String: Swift.String]?
         /// When the job completed.
@@ -962,10 +964,9 @@ extension OmicsClientTypes {
             self.versionName = versionName
         }
     }
-
 }
 
-public struct ListAnnotationImportJobsOutput {
+public struct ListAnnotationImportJobsOutput: Swift.Sendable {
     /// A list of jobs.
     public var annotationImportJobs: [OmicsClientTypes.AnnotationImportJobItem]?
     /// Specifies the pagination token from a previous request to retrieve the next page of results.
@@ -981,7 +982,7 @@ public struct ListAnnotationImportJobsOutput {
     }
 }
 
-public struct StartAnnotationImportJobInput {
+public struct StartAnnotationImportJobInput: Swift.Sendable {
     /// The annotation schema generated by the parsed annotation data.
     public var annotationFields: [Swift.String: Swift.String]?
     /// A destination annotation store for the job.
@@ -1020,7 +1021,7 @@ public struct StartAnnotationImportJobInput {
     }
 }
 
-public struct StartAnnotationImportJobOutput {
+public struct StartAnnotationImportJobOutput: Swift.Sendable {
     /// The job's ID.
     /// This member is required.
     public var jobId: Swift.String?
@@ -1034,18 +1035,18 @@ public struct StartAnnotationImportJobOutput {
 }
 
 extension OmicsClientTypes {
+
     /// A genome reference.
-    public enum ReferenceItem {
+    public enum ReferenceItem: Swift.Sendable {
         /// The reference's ARN.
         case referencearn(Swift.String)
         case sdkUnknown(Swift.String)
     }
-
 }
 
 extension OmicsClientTypes {
 
-    public enum EncryptionType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum EncryptionType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         /// KMS
         case kms
         case sdkUnknown(Swift.String)
@@ -1071,8 +1072,9 @@ extension OmicsClientTypes {
 }
 
 extension OmicsClientTypes {
+
     /// Server-side encryption (SSE) settings for a store.
-    public struct SseConfig {
+    public struct SseConfig: Swift.Sendable {
         /// An encryption key ARN.
         public var keyArn: Swift.String?
         /// The encryption type.
@@ -1088,12 +1090,11 @@ extension OmicsClientTypes {
             self.type = type
         }
     }
-
 }
 
 extension OmicsClientTypes {
 
-    public enum StoreFormat: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum StoreFormat: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         /// GFF3 Format
         case gff
         /// TSV Format
@@ -1128,7 +1129,7 @@ extension OmicsClientTypes {
 
 extension OmicsClientTypes {
 
-    public enum AnnotationType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AnnotationType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         /// Contains contig and 1-base position
         case chrPos
         /// Contains contig, 1-base position, ref and alt allele information
@@ -1179,7 +1180,7 @@ extension OmicsClientTypes {
 
 extension OmicsClientTypes {
 
-    public enum FormatToHeaderKey: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum FormatToHeaderKey: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case alt
         case chr
         case end
@@ -1220,7 +1221,7 @@ extension OmicsClientTypes {
 
 extension OmicsClientTypes {
 
-    public enum SchemaValueType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SchemaValueType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         /// BOOLEAN type
         case boolean
         /// DOUBLE type
@@ -1266,8 +1267,9 @@ extension OmicsClientTypes {
 }
 
 extension OmicsClientTypes {
+
     /// File settings for a TSV store.
-    public struct TsvStoreOptions {
+    public struct TsvStoreOptions: Swift.Sendable {
         /// The store's annotation type.
         public var annotationType: OmicsClientTypes.AnnotationType?
         /// The store's header key to column name mapping.
@@ -1286,20 +1288,19 @@ extension OmicsClientTypes {
             self.schema = schema
         }
     }
-
 }
 
 extension OmicsClientTypes {
+
     /// Settings for a store.
-    public enum StoreOptions {
+    public enum StoreOptions: Swift.Sendable {
         /// File settings for a TSV store.
         case tsvstoreoptions(OmicsClientTypes.TsvStoreOptions)
         case sdkUnknown(Swift.String)
     }
-
 }
 
-public struct CreateAnnotationStoreInput {
+public struct CreateAnnotationStoreInput: Swift.Sendable {
     /// A description for the store.
     public var description: Swift.String?
     /// A name for the store.
@@ -1342,7 +1343,7 @@ public struct CreateAnnotationStoreInput {
 
 extension OmicsClientTypes {
 
-    public enum StoreStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum StoreStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         /// The Store is active
         case active
         /// The Store is being created
@@ -1383,7 +1384,7 @@ extension OmicsClientTypes {
     }
 }
 
-public struct CreateAnnotationStoreOutput {
+public struct CreateAnnotationStoreOutput: Swift.Sendable {
     /// When the store was created.
     /// This member is required.
     public var creationTime: Foundation.Date?
@@ -1428,7 +1429,7 @@ public struct CreateAnnotationStoreOutput {
     }
 }
 
-public struct DeleteAnnotationStoreInput {
+public struct DeleteAnnotationStoreInput: Swift.Sendable {
     /// Whether to force deletion.
     public var force: Swift.Bool?
     /// The store's name.
@@ -1445,7 +1446,7 @@ public struct DeleteAnnotationStoreInput {
     }
 }
 
-public struct DeleteAnnotationStoreOutput {
+public struct DeleteAnnotationStoreOutput: Swift.Sendable {
     /// The store's status.
     /// This member is required.
     public var status: OmicsClientTypes.StoreStatus?
@@ -1458,7 +1459,7 @@ public struct DeleteAnnotationStoreOutput {
     }
 }
 
-public struct GetAnnotationStoreInput {
+public struct GetAnnotationStoreInput: Swift.Sendable {
     /// The store's name.
     /// This member is required.
     public var name: Swift.String?
@@ -1471,7 +1472,7 @@ public struct GetAnnotationStoreInput {
     }
 }
 
-public struct GetAnnotationStoreOutput {
+public struct GetAnnotationStoreOutput: Swift.Sendable {
     /// When the store was created.
     /// This member is required.
     public var creationTime: Foundation.Date?
@@ -1553,8 +1554,9 @@ public struct GetAnnotationStoreOutput {
 }
 
 extension OmicsClientTypes {
+
     /// A filter for annotation stores.
-    public struct ListAnnotationStoresFilter {
+    public struct ListAnnotationStoresFilter: Swift.Sendable {
         /// A status to filter on.
         public var status: OmicsClientTypes.StoreStatus?
 
@@ -1565,10 +1567,9 @@ extension OmicsClientTypes {
             self.status = status
         }
     }
-
 }
 
-public struct ListAnnotationStoresInput {
+public struct ListAnnotationStoresInput: Swift.Sendable {
     /// A filter to apply to the list.
     public var filter: OmicsClientTypes.ListAnnotationStoresFilter?
     /// IDs of stores to list.
@@ -1593,8 +1594,9 @@ public struct ListAnnotationStoresInput {
 }
 
 extension OmicsClientTypes {
+
     /// An annotation store.
-    public struct AnnotationStoreItem {
+    public struct AnnotationStoreItem: Swift.Sendable {
         /// The store's creation time.
         /// This member is required.
         public var creationTime: Foundation.Date?
@@ -1661,10 +1663,9 @@ extension OmicsClientTypes {
             self.updateTime = updateTime
         }
     }
-
 }
 
-public struct ListAnnotationStoresOutput {
+public struct ListAnnotationStoresOutput: Swift.Sendable {
     /// A list of stores.
     public var annotationStores: [OmicsClientTypes.AnnotationStoreItem]?
     /// A pagination token that's included if more results are available.
@@ -1680,7 +1681,7 @@ public struct ListAnnotationStoresOutput {
     }
 }
 
-public struct UpdateAnnotationStoreInput {
+public struct UpdateAnnotationStoreInput: Swift.Sendable {
     /// A description for the store.
     public var description: Swift.String?
     /// A name for the store.
@@ -1697,7 +1698,7 @@ public struct UpdateAnnotationStoreInput {
     }
 }
 
-public struct UpdateAnnotationStoreOutput {
+public struct UpdateAnnotationStoreOutput: Swift.Sendable {
     /// When the store was created.
     /// This member is required.
     public var creationTime: Foundation.Date?
@@ -1749,8 +1750,9 @@ public struct UpdateAnnotationStoreOutput {
 }
 
 extension OmicsClientTypes {
+
     /// The options for a TSV file.
-    public struct TsvVersionOptions {
+    public struct TsvVersionOptions: Swift.Sendable {
         /// The store version's annotation type.
         public var annotationType: OmicsClientTypes.AnnotationType?
         /// The annotation store version's header key to column name mapping.
@@ -1769,20 +1771,19 @@ extension OmicsClientTypes {
             self.schema = schema
         }
     }
-
 }
 
 extension OmicsClientTypes {
+
     /// The options for an annotation store version.
-    public enum VersionOptions {
+    public enum VersionOptions: Swift.Sendable {
         /// File settings for a version of a TSV store.
         case tsvversionoptions(OmicsClientTypes.TsvVersionOptions)
         case sdkUnknown(Swift.String)
     }
-
 }
 
-public struct CreateAnnotationStoreVersionInput {
+public struct CreateAnnotationStoreVersionInput: Swift.Sendable {
     /// The description of an annotation store version.
     public var description: Swift.String?
     /// The name of an annotation store version from which versions are being created.
@@ -1814,7 +1815,7 @@ public struct CreateAnnotationStoreVersionInput {
 
 extension OmicsClientTypes {
 
-    public enum VersionStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum VersionStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         /// The Version is active
         case active
         /// The Version is being created
@@ -1855,7 +1856,7 @@ extension OmicsClientTypes {
     }
 }
 
-public struct CreateAnnotationStoreVersionOutput {
+public struct CreateAnnotationStoreVersionOutput: Swift.Sendable {
     /// The time stamp for the creation of an annotation store version.
     /// This member is required.
     public var creationTime: Foundation.Date?
@@ -1897,7 +1898,7 @@ public struct CreateAnnotationStoreVersionOutput {
     }
 }
 
-public struct DeleteAnnotationStoreVersionsInput {
+public struct DeleteAnnotationStoreVersionsInput: Swift.Sendable {
     /// Forces the deletion of an annotation store version when imports are in-progress..
     public var force: Swift.Bool?
     /// The name of the annotation store from which versions are being deleted.
@@ -1920,8 +1921,9 @@ public struct DeleteAnnotationStoreVersionsInput {
 }
 
 extension OmicsClientTypes {
+
     /// The error preventing deletion of the annotation store version.
-    public struct VersionDeleteError {
+    public struct VersionDeleteError: Swift.Sendable {
         /// The message explaining the error in annotation store deletion.
         /// This member is required.
         public var message: Swift.String?
@@ -1938,10 +1940,9 @@ extension OmicsClientTypes {
             self.versionName = versionName
         }
     }
-
 }
 
-public struct DeleteAnnotationStoreVersionsOutput {
+public struct DeleteAnnotationStoreVersionsOutput: Swift.Sendable {
     /// Any errors that occur when attempting to delete an annotation store version.
     public var errors: [OmicsClientTypes.VersionDeleteError]?
 
@@ -1953,7 +1954,7 @@ public struct DeleteAnnotationStoreVersionsOutput {
     }
 }
 
-public struct GetAnnotationStoreVersionInput {
+public struct GetAnnotationStoreVersionInput: Swift.Sendable {
     /// The name given to an annotation store version to distinguish it from others.
     /// This member is required.
     public var name: Swift.String?
@@ -1971,7 +1972,7 @@ public struct GetAnnotationStoreVersionInput {
     }
 }
 
-public struct GetAnnotationStoreVersionOutput {
+public struct GetAnnotationStoreVersionOutput: Swift.Sendable {
     /// The time stamp for when an annotation store version was created.
     /// This member is required.
     public var creationTime: Foundation.Date?
@@ -2044,8 +2045,9 @@ public struct GetAnnotationStoreVersionOutput {
 }
 
 extension OmicsClientTypes {
+
     /// Use filters to focus the returned annotation store versions on a specific parameter, such as the status of the annotation store.
-    public struct ListAnnotationStoreVersionsFilter {
+    public struct ListAnnotationStoreVersionsFilter: Swift.Sendable {
         /// The status of an annotation store version.
         public var status: OmicsClientTypes.VersionStatus?
 
@@ -2056,10 +2058,9 @@ extension OmicsClientTypes {
             self.status = status
         }
     }
-
 }
 
-public struct ListAnnotationStoreVersionsInput {
+public struct ListAnnotationStoreVersionsInput: Swift.Sendable {
     /// A filter to apply to the list of annotation store versions.
     public var filter: OmicsClientTypes.ListAnnotationStoreVersionsFilter?
     /// The maximum number of annotation store versions to return in one page of results.
@@ -2085,8 +2086,9 @@ public struct ListAnnotationStoreVersionsInput {
 }
 
 extension OmicsClientTypes {
+
     /// Annotation store versions.
-    public struct AnnotationStoreVersionItem {
+    public struct AnnotationStoreVersionItem: Swift.Sendable {
         /// The time stamp for when an annotation store version was created.
         /// This member is required.
         public var creationTime: Foundation.Date?
@@ -2148,10 +2150,9 @@ extension OmicsClientTypes {
             self.versionSizeBytes = versionSizeBytes
         }
     }
-
 }
 
-public struct ListAnnotationStoreVersionsOutput {
+public struct ListAnnotationStoreVersionsOutput: Swift.Sendable {
     /// Lists all versions of an annotation store.
     public var annotationStoreVersions: [OmicsClientTypes.AnnotationStoreVersionItem]?
     /// Specifies the pagination token from a previous request to retrieve the next page of results.
@@ -2167,7 +2168,7 @@ public struct ListAnnotationStoreVersionsOutput {
     }
 }
 
-public struct UpdateAnnotationStoreVersionInput {
+public struct UpdateAnnotationStoreVersionInput: Swift.Sendable {
     /// The description of an annotation store.
     public var description: Swift.String?
     /// The name of an annotation store.
@@ -2189,7 +2190,7 @@ public struct UpdateAnnotationStoreVersionInput {
     }
 }
 
-public struct UpdateAnnotationStoreVersionOutput {
+public struct UpdateAnnotationStoreVersionOutput: Swift.Sendable {
     /// The time stamp for when an annotation store version was created.
     /// This member is required.
     public var creationTime: Foundation.Date?
@@ -2237,7 +2238,7 @@ public struct UpdateAnnotationStoreVersionOutput {
     }
 }
 
-public struct BatchDeleteReadSetInput {
+public struct BatchDeleteReadSetInput: Swift.Sendable {
     /// The read sets' IDs.
     /// This member is required.
     public var ids: [Swift.String]?
@@ -2256,8 +2257,9 @@ public struct BatchDeleteReadSetInput {
 }
 
 extension OmicsClientTypes {
+
     /// An error from a batch read set operation.
-    public struct ReadSetBatchError {
+    public struct ReadSetBatchError: Swift.Sendable {
         /// The error's code.
         /// This member is required.
         public var code: Swift.String?
@@ -2279,10 +2281,9 @@ extension OmicsClientTypes {
             self.message = message
         }
     }
-
 }
 
-public struct BatchDeleteReadSetOutput {
+public struct BatchDeleteReadSetOutput: Swift.Sendable {
     /// Errors returned by individual delete operations.
     public var errors: [OmicsClientTypes.ReadSetBatchError]?
 
@@ -2294,7 +2295,7 @@ public struct BatchDeleteReadSetOutput {
     }
 }
 
-public struct CancelRunInput {
+public struct CancelRunInput: Swift.Sendable {
     /// The run's ID.
     /// This member is required.
     public var id: Swift.String?
@@ -2307,7 +2308,7 @@ public struct CancelRunInput {
     }
 }
 
-public struct CancelVariantImportJobInput {
+public struct CancelVariantImportJobInput: Swift.Sendable {
     /// The job's ID.
     /// This member is required.
     public var jobId: Swift.String?
@@ -2320,14 +2321,14 @@ public struct CancelVariantImportJobInput {
     }
 }
 
-public struct CancelVariantImportJobOutput {
+public struct CancelVariantImportJobOutput: Swift.Sendable {
 
     public init() { }
 }
 
 extension OmicsClientTypes {
 
-    public enum ReadSetPartSource: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ReadSetPartSource: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case source1
         case source2
         case sdkUnknown(Swift.String)
@@ -2355,8 +2356,9 @@ extension OmicsClientTypes {
 }
 
 extension OmicsClientTypes {
+
     /// Part of the response to the CompleteReadSetUpload API, including metadata.
-    public struct CompleteReadSetUploadPartListItem {
+    public struct CompleteReadSetUploadPartListItem: Swift.Sendable {
         /// A unique identifier used to confirm that parts are being added to the correct upload.
         /// This member is required.
         public var checksum: Swift.String?
@@ -2378,10 +2380,9 @@ extension OmicsClientTypes {
             self.partSource = partSource
         }
     }
-
 }
 
-public struct CompleteMultipartReadSetUploadInput {
+public struct CompleteMultipartReadSetUploadInput: Swift.Sendable {
     /// The individual uploads or parts of a multipart upload.
     /// This member is required.
     public var parts: [OmicsClientTypes.CompleteReadSetUploadPartListItem]?
@@ -2404,7 +2405,7 @@ public struct CompleteMultipartReadSetUploadInput {
     }
 }
 
-public struct CompleteMultipartReadSetUploadOutput {
+public struct CompleteMultipartReadSetUploadOutput: Swift.Sendable {
     /// The read set ID created for an uploaded read set.
     /// This member is required.
     public var readSetId: Swift.String?
@@ -2419,7 +2420,7 @@ public struct CompleteMultipartReadSetUploadOutput {
 
 extension OmicsClientTypes {
 
-    public enum FileType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum FileType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case bam
         case cram
         case fastq
@@ -2452,7 +2453,7 @@ extension OmicsClientTypes {
     }
 }
 
-public struct CreateMultipartReadSetUploadInput {
+public struct CreateMultipartReadSetUploadInput: Swift.Sendable {
     /// An idempotency token that can be used to avoid triggering multiple multipart uploads.
     public var clientToken: Swift.String?
     /// The description of the read set.
@@ -2505,7 +2506,7 @@ public struct CreateMultipartReadSetUploadInput {
     }
 }
 
-public struct CreateMultipartReadSetUploadOutput {
+public struct CreateMultipartReadSetUploadOutput: Swift.Sendable {
     /// The creation time of the multipart upload.
     /// This member is required.
     public var creationTime: Foundation.Date?
@@ -2564,7 +2565,7 @@ public struct CreateMultipartReadSetUploadOutput {
     }
 }
 
-public struct CreateReferenceStoreInput {
+public struct CreateReferenceStoreInput: Swift.Sendable {
     /// To ensure that requests don't run multiple times, specify a unique token for each request.
     public var clientToken: Swift.String?
     /// A description for the store.
@@ -2593,7 +2594,7 @@ public struct CreateReferenceStoreInput {
     }
 }
 
-public struct CreateReferenceStoreOutput {
+public struct CreateReferenceStoreOutput: Swift.Sendable {
     /// The store's ARN.
     /// This member is required.
     public var arn: Swift.String?
@@ -2628,7 +2629,7 @@ public struct CreateReferenceStoreOutput {
     }
 }
 
-public struct CreateRunGroupInput {
+public struct CreateRunGroupInput: Swift.Sendable {
     /// The maximum number of CPUs that can run concurrently across all active runs in the run group.
     public var maxCpus: Swift.Int?
     /// The maximum time for each run (in minutes). If a run exceeds the maximum run time, the run fails automatically.
@@ -2665,7 +2666,7 @@ public struct CreateRunGroupInput {
     }
 }
 
-public struct CreateRunGroupOutput {
+public struct CreateRunGroupOutput: Swift.Sendable {
     /// The group's ARN.
     public var arn: Swift.String?
     /// The group's ID.
@@ -2687,7 +2688,7 @@ public struct CreateRunGroupOutput {
 
 extension OmicsClientTypes {
 
-    public enum ETagAlgorithmFamily: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ETagAlgorithmFamily: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case md5up
         case sha256up
         case sha512up
@@ -2717,7 +2718,7 @@ extension OmicsClientTypes {
     }
 }
 
-public struct CreateSequenceStoreInput {
+public struct CreateSequenceStoreInput: Swift.Sendable {
     /// To ensure that requests don't run multiple times, specify a unique token for each request.
     public var clientToken: Swift.String?
     /// A description for the store.
@@ -2754,7 +2755,7 @@ public struct CreateSequenceStoreInput {
     }
 }
 
-public struct CreateSequenceStoreOutput {
+public struct CreateSequenceStoreOutput: Swift.Sendable {
     /// The store's ARN.
     /// This member is required.
     public var arn: Swift.String?
@@ -2797,7 +2798,7 @@ public struct CreateSequenceStoreOutput {
     }
 }
 
-public struct CreateShareInput {
+public struct CreateShareInput: Swift.Sendable {
     /// The principal subscriber is the account being offered shared access to the resource.
     /// This member is required.
     public var principalSubscriber: Swift.String?
@@ -2819,7 +2820,7 @@ public struct CreateShareInput {
     }
 }
 
-public struct CreateShareOutput {
+public struct CreateShareOutput: Swift.Sendable {
     /// The ID that HealthOmics generates for the share.
     public var shareId: Swift.String?
     /// The name of the share.
@@ -2839,7 +2840,7 @@ public struct CreateShareOutput {
     }
 }
 
-public struct CreateVariantStoreInput {
+public struct CreateVariantStoreInput: Swift.Sendable {
     /// A description for the store.
     public var description: Swift.String?
     /// A name for the store.
@@ -2868,7 +2869,7 @@ public struct CreateVariantStoreInput {
     }
 }
 
-public struct CreateVariantStoreOutput {
+public struct CreateVariantStoreOutput: Swift.Sendable {
     /// When the store was created.
     /// This member is required.
     public var creationTime: Foundation.Date?
@@ -2902,7 +2903,7 @@ public struct CreateVariantStoreOutput {
 
 extension OmicsClientTypes {
 
-    public enum WorkflowEngine: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum WorkflowEngine: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case cwl
         case nextflow
         case wdl
@@ -2933,8 +2934,9 @@ extension OmicsClientTypes {
 }
 
 extension OmicsClientTypes {
+
     /// A workflow parameter.
-    public struct WorkflowParameter {
+    public struct WorkflowParameter: Swift.Sendable {
         /// The parameter's description.
         public var description: Swift.String?
         /// Whether the parameter is optional.
@@ -2949,10 +2951,9 @@ extension OmicsClientTypes {
             self.`optional` = `optional`
         }
     }
-
 }
 
-public struct CreateWorkflowInput {
+public struct CreateWorkflowInput: Swift.Sendable {
     /// The computational accelerator specified to run the workflow.
     public var accelerators: OmicsClientTypes.Accelerators?
     /// The URI of a definition for the workflow.
@@ -3007,7 +3008,7 @@ public struct CreateWorkflowInput {
 
 extension OmicsClientTypes {
 
-    public enum WorkflowStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum WorkflowStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case active
         case creating
         case deleted
@@ -3046,7 +3047,7 @@ extension OmicsClientTypes {
     }
 }
 
-public struct CreateWorkflowOutput {
+public struct CreateWorkflowOutput: Swift.Sendable {
     /// The workflow's ARN.
     public var arn: Swift.String?
     /// The workflow's ID.
@@ -3072,7 +3073,7 @@ public struct CreateWorkflowOutput {
 
 extension OmicsClientTypes {
 
-    public enum CreationType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum CreationType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case `import`
         case upload
         case sdkUnknown(Swift.String)
@@ -3099,7 +3100,7 @@ extension OmicsClientTypes {
     }
 }
 
-public struct DeleteReferenceInput {
+public struct DeleteReferenceInput: Swift.Sendable {
     /// The reference's ID.
     /// This member is required.
     public var id: Swift.String?
@@ -3117,12 +3118,12 @@ public struct DeleteReferenceInput {
     }
 }
 
-public struct DeleteReferenceOutput {
+public struct DeleteReferenceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteReferenceStoreInput {
+public struct DeleteReferenceStoreInput: Swift.Sendable {
     /// The store's ID.
     /// This member is required.
     public var id: Swift.String?
@@ -3135,12 +3136,12 @@ public struct DeleteReferenceStoreInput {
     }
 }
 
-public struct DeleteReferenceStoreOutput {
+public struct DeleteReferenceStoreOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteRunInput {
+public struct DeleteRunInput: Swift.Sendable {
     /// The run's ID.
     /// This member is required.
     public var id: Swift.String?
@@ -3153,7 +3154,7 @@ public struct DeleteRunInput {
     }
 }
 
-public struct DeleteRunGroupInput {
+public struct DeleteRunGroupInput: Swift.Sendable {
     /// The run group's ID.
     /// This member is required.
     public var id: Swift.String?
@@ -3166,7 +3167,7 @@ public struct DeleteRunGroupInput {
     }
 }
 
-public struct DeleteSequenceStoreInput {
+public struct DeleteSequenceStoreInput: Swift.Sendable {
     /// The sequence store's ID.
     /// This member is required.
     public var id: Swift.String?
@@ -3179,12 +3180,12 @@ public struct DeleteSequenceStoreInput {
     }
 }
 
-public struct DeleteSequenceStoreOutput {
+public struct DeleteSequenceStoreOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteShareInput {
+public struct DeleteShareInput: Swift.Sendable {
     /// The ID for the resource share to be deleted.
     /// This member is required.
     public var shareId: Swift.String?
@@ -3197,7 +3198,7 @@ public struct DeleteShareInput {
     }
 }
 
-public struct DeleteShareOutput {
+public struct DeleteShareOutput: Swift.Sendable {
     /// The status of the share being deleted.
     public var status: OmicsClientTypes.ShareStatus?
 
@@ -3209,7 +3210,7 @@ public struct DeleteShareOutput {
     }
 }
 
-public struct DeleteVariantStoreInput {
+public struct DeleteVariantStoreInput: Swift.Sendable {
     /// Whether to force deletion.
     public var force: Swift.Bool?
     /// The store's name.
@@ -3226,7 +3227,7 @@ public struct DeleteVariantStoreInput {
     }
 }
 
-public struct DeleteVariantStoreOutput {
+public struct DeleteVariantStoreOutput: Swift.Sendable {
     /// The store's status.
     /// This member is required.
     public var status: OmicsClientTypes.StoreStatus?
@@ -3239,7 +3240,7 @@ public struct DeleteVariantStoreOutput {
     }
 }
 
-public struct DeleteWorkflowInput {
+public struct DeleteWorkflowInput: Swift.Sendable {
     /// The workflow's ID.
     /// This member is required.
     public var id: Swift.String?
@@ -3254,7 +3255,7 @@ public struct DeleteWorkflowInput {
 
 extension OmicsClientTypes {
 
-    public enum ETagAlgorithm: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ETagAlgorithm: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case bamMd5up
         case bamSha256up
         case bamSha512up
@@ -3303,8 +3304,9 @@ extension OmicsClientTypes {
 }
 
 extension OmicsClientTypes {
+
     /// The entity tag (ETag) is a hash of the object representing its semantic content.
-    public struct ETag {
+    public struct ETag: Swift.Sendable {
         /// The algorithm used to calculate the read set’s ETag(s).
         public var algorithm: OmicsClientTypes.ETagAlgorithm?
         /// The ETag hash calculated on Source1 of the read set.
@@ -3323,12 +3325,12 @@ extension OmicsClientTypes {
             self.source2 = source2
         }
     }
-
 }
 
 extension OmicsClientTypes {
+
     /// A read set.
-    public struct ExportReadSet {
+    public struct ExportReadSet: Swift.Sendable {
         /// The set's ID.
         /// This member is required.
         public var readSetId: Swift.String?
@@ -3340,12 +3342,11 @@ extension OmicsClientTypes {
             self.readSetId = readSetId
         }
     }
-
 }
 
 extension OmicsClientTypes {
 
-    public enum ReadSetExportJobItemStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ReadSetExportJobItemStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case failed
         case finished
         case inProgress
@@ -3379,8 +3380,9 @@ extension OmicsClientTypes {
 }
 
 extension OmicsClientTypes {
+
     /// Details about a read set.
-    public struct ExportReadSetDetail {
+    public struct ExportReadSetDetail: Swift.Sendable {
         /// The set's ID.
         /// This member is required.
         public var id: Swift.String?
@@ -3401,12 +3403,11 @@ extension OmicsClientTypes {
             self.statusMessage = statusMessage
         }
     }
-
 }
 
 extension OmicsClientTypes {
 
-    public enum ReadSetExportJobStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ReadSetExportJobStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case cancelled
         case cancelling
         case completed
@@ -3449,8 +3450,9 @@ extension OmicsClientTypes {
 }
 
 extension OmicsClientTypes {
+
     /// An read set export job filter.
-    public struct ExportReadSetFilter {
+    public struct ExportReadSetFilter: Swift.Sendable {
         /// The filter's start date.
         public var createdAfter: Foundation.Date?
         /// The filter's end date.
@@ -3469,12 +3471,12 @@ extension OmicsClientTypes {
             self.status = status
         }
     }
-
 }
 
 extension OmicsClientTypes {
+
     /// Details about a read set export job.
-    public struct ExportReadSetJobDetail {
+    public struct ExportReadSetJobDetail: Swift.Sendable {
         /// When the job completed.
         public var completionTime: Foundation.Date?
         /// When the job was created.
@@ -3510,12 +3512,12 @@ extension OmicsClientTypes {
             self.status = status
         }
     }
-
 }
 
 extension OmicsClientTypes {
+
     /// The S3 URI for each read set file.
-    public struct ReadSetS3Access {
+    public struct ReadSetS3Access: Swift.Sendable {
         /// The S3 URI for each read set file.
         public var s3Uri: Swift.String?
 
@@ -3526,12 +3528,12 @@ extension OmicsClientTypes {
             self.s3Uri = s3Uri
         }
     }
-
 }
 
 extension OmicsClientTypes {
+
     /// Details about a file.
-    public struct FileInformation {
+    public struct FileInformation: Swift.Sendable {
         /// The file's content length.
         public var contentLength: Swift.Int?
         /// The file's part size.
@@ -3554,12 +3556,11 @@ extension OmicsClientTypes {
             self.totalParts = totalParts
         }
     }
-
 }
 
 extension OmicsClientTypes {
 
-    public enum ShareResourceType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ShareResourceType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         /// The share is on an annotation store
         case annotationStore
         /// The share is on a variant store
@@ -3593,8 +3594,9 @@ extension OmicsClientTypes {
 }
 
 extension OmicsClientTypes {
+
     /// Use filters to return a subset of resources. You can define filters for specific parameters, such as the resource status.
-    public struct Filter {
+    public struct Filter: Swift.Sendable {
         /// Filter based on the Amazon Resource Number (ARN) of the resource. You can specify up to 10 values.
         public var resourceArns: [Swift.String]?
         /// Filter based on the resource status. You can specify up to 10 values.
@@ -3613,7 +3615,6 @@ extension OmicsClientTypes {
             self.type = type
         }
     }
-
 }
 
 /// The ranges specified in the request are not valid.
@@ -3643,7 +3644,7 @@ public struct RangeNotSatisfiableException: ClientRuntime.ModeledError, AWSClien
 
 extension OmicsClientTypes {
 
-    public enum ReadSetFile: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ReadSetFile: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case index
         case source1
         case source2
@@ -3673,7 +3674,7 @@ extension OmicsClientTypes {
     }
 }
 
-public struct GetReadSetInput {
+public struct GetReadSetInput: Swift.Sendable {
     /// The file to retrieve.
     public var file: OmicsClientTypes.ReadSetFile?
     /// The read set's ID.
@@ -3700,7 +3701,7 @@ public struct GetReadSetInput {
     }
 }
 
-public struct GetReadSetOutput {
+public struct GetReadSetOutput: Swift.Sendable {
     /// The read set file payload.
     public var payload: Smithy.ByteStream?
 
@@ -3712,7 +3713,7 @@ public struct GetReadSetOutput {
     }
 }
 
-public struct GetReadSetActivationJobInput {
+public struct GetReadSetActivationJobInput: Swift.Sendable {
     /// The job's ID.
     /// This member is required.
     public var id: Swift.String?
@@ -3730,7 +3731,7 @@ public struct GetReadSetActivationJobInput {
     }
 }
 
-public struct GetReadSetActivationJobOutput {
+public struct GetReadSetActivationJobOutput: Swift.Sendable {
     /// When the job completed.
     public var completionTime: Foundation.Date?
     /// When the job was created.
@@ -3770,7 +3771,7 @@ public struct GetReadSetActivationJobOutput {
     }
 }
 
-public struct GetReadSetExportJobInput {
+public struct GetReadSetExportJobInput: Swift.Sendable {
     /// The job's ID.
     /// This member is required.
     public var id: Swift.String?
@@ -3788,7 +3789,7 @@ public struct GetReadSetExportJobInput {
     }
 }
 
-public struct GetReadSetExportJobOutput {
+public struct GetReadSetExportJobOutput: Swift.Sendable {
     /// When the job completed.
     public var completionTime: Foundation.Date?
     /// When the job was created.
@@ -3833,7 +3834,7 @@ public struct GetReadSetExportJobOutput {
     }
 }
 
-public struct GetReadSetImportJobInput {
+public struct GetReadSetImportJobInput: Swift.Sendable {
     /// The job's ID.
     /// This member is required.
     public var id: Swift.String?
@@ -3852,8 +3853,9 @@ public struct GetReadSetImportJobInput {
 }
 
 extension OmicsClientTypes {
+
     /// Source files for a sequence.
-    public struct SourceFiles {
+    public struct SourceFiles: Swift.Sendable {
         /// The location of the first file in Amazon S3.
         /// This member is required.
         public var source1: Swift.String?
@@ -3869,12 +3871,11 @@ extension OmicsClientTypes {
             self.source2 = source2
         }
     }
-
 }
 
 extension OmicsClientTypes {
 
-    public enum ReadSetImportJobItemStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ReadSetImportJobItemStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case failed
         case finished
         case inProgress
@@ -3908,8 +3909,9 @@ extension OmicsClientTypes {
 }
 
 extension OmicsClientTypes {
+
     /// A source for an import read set job.
-    public struct ImportReadSetSourceItem {
+    public struct ImportReadSetSourceItem: Swift.Sendable {
         /// The source's description.
         public var description: Swift.String?
         /// Where the source originated.
@@ -3969,12 +3971,11 @@ extension OmicsClientTypes {
             self.tags = tags
         }
     }
-
 }
 
 extension OmicsClientTypes {
 
-    public enum ReadSetImportJobStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ReadSetImportJobStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case cancelled
         case cancelling
         case completed
@@ -4016,7 +4017,7 @@ extension OmicsClientTypes {
     }
 }
 
-public struct GetReadSetImportJobOutput {
+public struct GetReadSetImportJobOutput: Swift.Sendable {
     /// When the job completed.
     public var completionTime: Foundation.Date?
     /// When the job was created.
@@ -4062,7 +4063,7 @@ public struct GetReadSetImportJobOutput {
     }
 }
 
-public struct GetReadSetMetadataInput {
+public struct GetReadSetMetadataInput: Swift.Sendable {
     /// The read set's ID.
     /// This member is required.
     public var id: Swift.String?
@@ -4081,8 +4082,9 @@ public struct GetReadSetMetadataInput {
 }
 
 extension OmicsClientTypes {
+
     /// Files in a read set.
-    public struct ReadSetFiles {
+    public struct ReadSetFiles: Swift.Sendable {
         /// The files' index.
         public var index: OmicsClientTypes.FileInformation?
         /// The location of the first file in Amazon S3.
@@ -4101,12 +4103,12 @@ extension OmicsClientTypes {
             self.source2 = source2
         }
     }
-
 }
 
 extension OmicsClientTypes {
+
     /// Details about a sequence.
-    public struct SequenceInformation {
+    public struct SequenceInformation: Swift.Sendable {
         /// The sequence's alignment setting.
         public var alignment: Swift.String?
         /// Where the sequence originated.
@@ -4129,12 +4131,11 @@ extension OmicsClientTypes {
             self.totalReadCount = totalReadCount
         }
     }
-
 }
 
 extension OmicsClientTypes {
 
-    public enum ReadSetStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ReadSetStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case activating
         case active
         case archived
@@ -4176,7 +4177,7 @@ extension OmicsClientTypes {
     }
 }
 
-public struct GetReadSetMetadataOutput {
+public struct GetReadSetMetadataOutput: Swift.Sendable {
     /// The read set's ARN.
     /// This member is required.
     public var arn: Swift.String?
@@ -4260,7 +4261,7 @@ public struct GetReadSetMetadataOutput {
 
 extension OmicsClientTypes {
 
-    public enum ReferenceFile: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ReferenceFile: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case index
         case source
         case sdkUnknown(Swift.String)
@@ -4287,7 +4288,7 @@ extension OmicsClientTypes {
     }
 }
 
-public struct GetReferenceInput {
+public struct GetReferenceInput: Swift.Sendable {
     /// The file to retrieve.
     public var file: OmicsClientTypes.ReferenceFile?
     /// The reference's ID.
@@ -4318,7 +4319,7 @@ public struct GetReferenceInput {
     }
 }
 
-public struct GetReferenceOutput {
+public struct GetReferenceOutput: Swift.Sendable {
     /// The reference file payload.
     public var payload: Smithy.ByteStream?
 
@@ -4330,7 +4331,7 @@ public struct GetReferenceOutput {
     }
 }
 
-public struct GetReferenceImportJobInput {
+public struct GetReferenceImportJobInput: Swift.Sendable {
     /// The job's ID.
     /// This member is required.
     public var id: Swift.String?
@@ -4350,7 +4351,7 @@ public struct GetReferenceImportJobInput {
 
 extension OmicsClientTypes {
 
-    public enum ReferenceImportJobItemStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ReferenceImportJobItemStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case failed
         case finished
         case inProgress
@@ -4384,8 +4385,9 @@ extension OmicsClientTypes {
 }
 
 extension OmicsClientTypes {
+
     /// An genome reference source.
-    public struct ImportReferenceSourceItem {
+    public struct ImportReferenceSourceItem: Swift.Sendable {
         /// The source's description.
         public var description: Swift.String?
         /// The source's name.
@@ -4421,12 +4423,11 @@ extension OmicsClientTypes {
             self.tags = tags
         }
     }
-
 }
 
 extension OmicsClientTypes {
 
-    public enum ReferenceImportJobStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ReferenceImportJobStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case cancelled
         case cancelling
         case completed
@@ -4468,7 +4469,7 @@ extension OmicsClientTypes {
     }
 }
 
-public struct GetReferenceImportJobOutput {
+public struct GetReferenceImportJobOutput: Swift.Sendable {
     /// When the job completed.
     public var completionTime: Foundation.Date?
     /// When the job was created.
@@ -4514,7 +4515,7 @@ public struct GetReferenceImportJobOutput {
     }
 }
 
-public struct GetReferenceMetadataInput {
+public struct GetReferenceMetadataInput: Swift.Sendable {
     /// The reference's ID.
     /// This member is required.
     public var id: Swift.String?
@@ -4534,7 +4535,7 @@ public struct GetReferenceMetadataInput {
 
 extension OmicsClientTypes {
 
-    public enum ReferenceCreationType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ReferenceCreationType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case `import`
         case sdkUnknown(Swift.String)
 
@@ -4559,8 +4560,9 @@ extension OmicsClientTypes {
 }
 
 extension OmicsClientTypes {
+
     /// A set of genome reference files.
-    public struct ReferenceFiles {
+    public struct ReferenceFiles: Swift.Sendable {
         /// The files' index.
         public var index: OmicsClientTypes.FileInformation?
         /// The source file's location in Amazon S3.
@@ -4575,12 +4577,11 @@ extension OmicsClientTypes {
             self.source = source
         }
     }
-
 }
 
 extension OmicsClientTypes {
 
-    public enum ReferenceStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ReferenceStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case active
         case deleted
         case deleting
@@ -4610,7 +4611,7 @@ extension OmicsClientTypes {
     }
 }
 
-public struct GetReferenceMetadataOutput {
+public struct GetReferenceMetadataOutput: Swift.Sendable {
     /// The reference's ARN.
     /// This member is required.
     public var arn: Swift.String?
@@ -4672,7 +4673,7 @@ public struct GetReferenceMetadataOutput {
     }
 }
 
-public struct GetReferenceStoreInput {
+public struct GetReferenceStoreInput: Swift.Sendable {
     /// The store's ID.
     /// This member is required.
     public var id: Swift.String?
@@ -4685,7 +4686,7 @@ public struct GetReferenceStoreInput {
     }
 }
 
-public struct GetReferenceStoreOutput {
+public struct GetReferenceStoreOutput: Swift.Sendable {
     /// The store's ARN.
     /// This member is required.
     public var arn: Swift.String?
@@ -4722,7 +4723,7 @@ public struct GetReferenceStoreOutput {
 
 extension OmicsClientTypes {
 
-    public enum RunExport: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum RunExport: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case definition
         case sdkUnknown(Swift.String)
 
@@ -4746,7 +4747,7 @@ extension OmicsClientTypes {
     }
 }
 
-public struct GetRunInput {
+public struct GetRunInput: Swift.Sendable {
     /// The run's export format.
     public var export: [OmicsClientTypes.RunExport]?
     /// The run's ID.
@@ -4765,7 +4766,7 @@ public struct GetRunInput {
 
 extension OmicsClientTypes {
 
-    public enum RunLogLevel: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum RunLogLevel: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case all
         case error
         case fatal
@@ -4799,8 +4800,9 @@ extension OmicsClientTypes {
 }
 
 extension OmicsClientTypes {
+
     /// The URI for the run log.
-    public struct RunLogLocation {
+    public struct RunLogLocation: Swift.Sendable {
         /// The log stream ARN for the engine log.
         public var engineLogStream: Swift.String?
         /// The log stream ARN for the run log.
@@ -4815,12 +4817,11 @@ extension OmicsClientTypes {
             self.runLogStream = runLogStream
         }
     }
-
 }
 
 extension OmicsClientTypes {
 
-    public enum RunRetentionMode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum RunRetentionMode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case remove
         case retain
         case sdkUnknown(Swift.String)
@@ -4849,7 +4850,7 @@ extension OmicsClientTypes {
 
 extension OmicsClientTypes {
 
-    public enum RunStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum RunStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case cancelled
         case completed
         case deleted
@@ -4896,7 +4897,7 @@ extension OmicsClientTypes {
 
 extension OmicsClientTypes {
 
-    public enum StorageType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum StorageType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case `dynamic`
         case `static`
         case sdkUnknown(Swift.String)
@@ -4925,7 +4926,7 @@ extension OmicsClientTypes {
 
 extension OmicsClientTypes {
 
-    public enum WorkflowType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum WorkflowType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case `private`
         case ready2run
         case sdkUnknown(Swift.String)
@@ -4952,7 +4953,7 @@ extension OmicsClientTypes {
     }
 }
 
-public struct GetRunOutput {
+public struct GetRunOutput: Swift.Sendable {
     /// The computational accelerator used to run the workflow.
     public var accelerators: OmicsClientTypes.Accelerators?
     /// The run's ARN.
@@ -5084,7 +5085,7 @@ public struct GetRunOutput {
     }
 }
 
-public struct GetRunGroupInput {
+public struct GetRunGroupInput: Swift.Sendable {
     /// The group's ID.
     /// This member is required.
     public var id: Swift.String?
@@ -5097,7 +5098,7 @@ public struct GetRunGroupInput {
     }
 }
 
-public struct GetRunGroupOutput {
+public struct GetRunGroupOutput: Swift.Sendable {
     /// The group's ARN.
     public var arn: Swift.String?
     /// When the group was created.
@@ -5141,7 +5142,7 @@ public struct GetRunGroupOutput {
     }
 }
 
-public struct GetRunTaskInput {
+public struct GetRunTaskInput: Swift.Sendable {
     /// The workflow run ID.
     /// This member is required.
     public var id: Swift.String?
@@ -5161,7 +5162,7 @@ public struct GetRunTaskInput {
 
 extension OmicsClientTypes {
 
-    public enum TaskStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum TaskStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case cancelled
         case completed
         case failed
@@ -5203,7 +5204,7 @@ extension OmicsClientTypes {
     }
 }
 
-public struct GetRunTaskOutput {
+public struct GetRunTaskOutput: Swift.Sendable {
     /// The task's CPU usage.
     public var cpus: Swift.Int?
     /// When the task was created.
@@ -5263,7 +5264,7 @@ public struct GetRunTaskOutput {
     }
 }
 
-public struct GetSequenceStoreInput {
+public struct GetSequenceStoreInput: Swift.Sendable {
     /// The store's ID.
     /// This member is required.
     public var id: Swift.String?
@@ -5277,8 +5278,9 @@ public struct GetSequenceStoreInput {
 }
 
 extension OmicsClientTypes {
+
     /// The S3 access metadata of the sequence store.
-    public struct SequenceStoreS3Access {
+    public struct SequenceStoreS3Access: Swift.Sendable {
         /// This is ARN of the access point associated with the S3 bucket storing read sets.
         public var s3AccessPointArn: Swift.String?
         /// The S3 URI of the sequence store.
@@ -5293,10 +5295,9 @@ extension OmicsClientTypes {
             self.s3Uri = s3Uri
         }
     }
-
 }
 
-public struct GetSequenceStoreOutput {
+public struct GetSequenceStoreOutput: Swift.Sendable {
     /// The store's ARN.
     /// This member is required.
     public var arn: Swift.String?
@@ -5343,7 +5344,7 @@ public struct GetSequenceStoreOutput {
     }
 }
 
-public struct GetShareInput {
+public struct GetShareInput: Swift.Sendable {
     /// The ID of the share.
     /// This member is required.
     public var shareId: Swift.String?
@@ -5357,8 +5358,9 @@ public struct GetShareInput {
 }
 
 extension OmicsClientTypes {
+
     /// The details of a resource share.
-    public struct ShareDetails {
+    public struct ShareDetails: Swift.Sendable {
         /// The timestamp of when the resource share was created.
         public var creationTime: Foundation.Date?
         /// The account ID for the data owner. The owner creates the resource share.
@@ -5405,10 +5407,9 @@ extension OmicsClientTypes {
             self.updateTime = updateTime
         }
     }
-
 }
 
-public struct GetShareOutput {
+public struct GetShareOutput: Swift.Sendable {
     /// A resource share details object. The object includes the status, the resourceArn, and ownerId.
     public var share: OmicsClientTypes.ShareDetails?
 
@@ -5420,7 +5421,7 @@ public struct GetShareOutput {
     }
 }
 
-public struct GetVariantImportJobInput {
+public struct GetVariantImportJobInput: Swift.Sendable {
     /// The job's ID.
     /// This member is required.
     public var jobId: Swift.String?
@@ -5434,8 +5435,9 @@ public struct GetVariantImportJobInput {
 }
 
 extension OmicsClientTypes {
+
     /// Details about an imported variant item.
-    public struct VariantImportItemDetail {
+    public struct VariantImportItemDetail: Swift.Sendable {
         /// The item's job status.
         /// This member is required.
         public var jobStatus: OmicsClientTypes.JobStatus?
@@ -5456,10 +5458,9 @@ extension OmicsClientTypes {
             self.statusMessage = statusMessage
         }
     }
-
 }
 
-public struct GetVariantImportJobOutput {
+public struct GetVariantImportJobOutput: Swift.Sendable {
     /// The annotation schema generated by the parsed annotation data.
     public var annotationFields: [Swift.String: Swift.String]?
     /// When the job completed.
@@ -5520,7 +5521,7 @@ public struct GetVariantImportJobOutput {
     }
 }
 
-public struct GetVariantStoreInput {
+public struct GetVariantStoreInput: Swift.Sendable {
     /// The store's name.
     /// This member is required.
     public var name: Swift.String?
@@ -5533,7 +5534,7 @@ public struct GetVariantStoreInput {
     }
 }
 
-public struct GetVariantStoreOutput {
+public struct GetVariantStoreOutput: Swift.Sendable {
     /// When the store was created.
     /// This member is required.
     public var creationTime: Foundation.Date?
@@ -5603,7 +5604,7 @@ public struct GetVariantStoreOutput {
 
 extension OmicsClientTypes {
 
-    public enum WorkflowExport: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum WorkflowExport: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case definition
         case sdkUnknown(Swift.String)
 
@@ -5627,7 +5628,7 @@ extension OmicsClientTypes {
     }
 }
 
-public struct GetWorkflowInput {
+public struct GetWorkflowInput: Swift.Sendable {
     /// The export format for the workflow.
     public var export: [OmicsClientTypes.WorkflowExport]?
     /// The workflow's ID.
@@ -5652,7 +5653,7 @@ public struct GetWorkflowInput {
     }
 }
 
-public struct GetWorkflowOutput {
+public struct GetWorkflowOutput: Swift.Sendable {
     /// The computational accelerator specified to run the workflow.
     public var accelerators: OmicsClientTypes.Accelerators?
     /// The workflow's ARN.
@@ -5729,8 +5730,9 @@ public struct GetWorkflowOutput {
 }
 
 extension OmicsClientTypes {
+
     /// A filter for import read set jobs.
-    public struct ImportReadSetFilter {
+    public struct ImportReadSetFilter: Swift.Sendable {
         /// The filter's start date.
         public var createdAfter: Foundation.Date?
         /// The filter's end date.
@@ -5749,12 +5751,12 @@ extension OmicsClientTypes {
             self.status = status
         }
     }
-
 }
 
 extension OmicsClientTypes {
+
     /// An import read set job.
-    public struct ImportReadSetJobItem {
+    public struct ImportReadSetJobItem: Swift.Sendable {
         /// When the job completed.
         public var completionTime: Foundation.Date?
         /// When the job was created.
@@ -5790,12 +5792,12 @@ extension OmicsClientTypes {
             self.status = status
         }
     }
-
 }
 
 extension OmicsClientTypes {
+
     /// A filter for import references.
-    public struct ImportReferenceFilter {
+    public struct ImportReferenceFilter: Swift.Sendable {
         /// The filter's start date.
         public var createdAfter: Foundation.Date?
         /// The filter's end date.
@@ -5814,12 +5816,12 @@ extension OmicsClientTypes {
             self.status = status
         }
     }
-
 }
 
 extension OmicsClientTypes {
+
     /// An import reference job.
-    public struct ImportReferenceJobItem {
+    public struct ImportReferenceJobItem: Swift.Sendable {
         /// When the job completed.
         public var completionTime: Foundation.Date?
         /// When the job was created.
@@ -5855,10 +5857,9 @@ extension OmicsClientTypes {
             self.status = status
         }
     }
-
 }
 
-public struct ListMultipartReadSetUploadsInput {
+public struct ListMultipartReadSetUploadsInput: Swift.Sendable {
     /// The maximum number of multipart uploads returned in a page.
     public var maxResults: Swift.Int?
     /// Next token returned in the response of a previous ListMultipartReadSetUploads call. Used to get the next page of results.
@@ -5880,8 +5881,9 @@ public struct ListMultipartReadSetUploadsInput {
 }
 
 extension OmicsClientTypes {
+
     /// Part of the response to ListMultipartReadSetUploads, excluding completed and aborted multipart uploads.
-    public struct MultipartReadSetUploadListItem {
+    public struct MultipartReadSetUploadListItem: Swift.Sendable {
         /// The time stamp for when a direct upload was created.
         /// This member is required.
         public var creationTime: Foundation.Date?
@@ -5940,10 +5942,9 @@ extension OmicsClientTypes {
             self.uploadId = uploadId
         }
     }
-
 }
 
-public struct ListMultipartReadSetUploadsOutput {
+public struct ListMultipartReadSetUploadsOutput: Swift.Sendable {
     /// Next token returned in the response of a previous ListMultipartReadSetUploads call. Used to get the next page of results.
     public var nextToken: Swift.String?
     /// An array of multipart uploads.
@@ -5959,7 +5960,7 @@ public struct ListMultipartReadSetUploadsOutput {
     }
 }
 
-public struct ListReadSetActivationJobsInput {
+public struct ListReadSetActivationJobsInput: Swift.Sendable {
     /// A filter to apply to the list.
     public var filter: OmicsClientTypes.ActivateReadSetFilter?
     /// The maximum number of read set activation jobs to return in one page of results.
@@ -5984,7 +5985,7 @@ public struct ListReadSetActivationJobsInput {
     }
 }
 
-public struct ListReadSetActivationJobsOutput {
+public struct ListReadSetActivationJobsOutput: Swift.Sendable {
     /// A list of jobs.
     public var activationJobs: [OmicsClientTypes.ActivateReadSetJobItem]?
     /// A pagination token that's included if more results are available.
@@ -6000,7 +6001,7 @@ public struct ListReadSetActivationJobsOutput {
     }
 }
 
-public struct ListReadSetExportJobsInput {
+public struct ListReadSetExportJobsInput: Swift.Sendable {
     /// A filter to apply to the list.
     public var filter: OmicsClientTypes.ExportReadSetFilter?
     /// The maximum number of jobs to return in one page of results.
@@ -6025,7 +6026,7 @@ public struct ListReadSetExportJobsInput {
     }
 }
 
-public struct ListReadSetExportJobsOutput {
+public struct ListReadSetExportJobsOutput: Swift.Sendable {
     /// A list of jobs.
     public var exportJobs: [OmicsClientTypes.ExportReadSetJobDetail]?
     /// A pagination token that's included if more results are available.
@@ -6041,7 +6042,7 @@ public struct ListReadSetExportJobsOutput {
     }
 }
 
-public struct ListReadSetImportJobsInput {
+public struct ListReadSetImportJobsInput: Swift.Sendable {
     /// A filter to apply to the list.
     public var filter: OmicsClientTypes.ImportReadSetFilter?
     /// The maximum number of jobs to return in one page of results.
@@ -6066,7 +6067,7 @@ public struct ListReadSetImportJobsInput {
     }
 }
 
-public struct ListReadSetImportJobsOutput {
+public struct ListReadSetImportJobsOutput: Swift.Sendable {
     /// A list of jobs.
     public var importJobs: [OmicsClientTypes.ImportReadSetJobItem]?
     /// A pagination token that's included if more results are available.
@@ -6083,8 +6084,9 @@ public struct ListReadSetImportJobsOutput {
 }
 
 extension OmicsClientTypes {
+
     /// A filter for read sets.
-    public struct ReadSetFilter {
+    public struct ReadSetFilter: Swift.Sendable {
         /// The filter's start date.
         public var createdAfter: Foundation.Date?
         /// The filter's end date.
@@ -6127,10 +6129,9 @@ extension OmicsClientTypes {
             self.subjectId = subjectId
         }
     }
-
 }
 
-public struct ListReadSetsInput {
+public struct ListReadSetsInput: Swift.Sendable {
     /// A filter to apply to the list.
     public var filter: OmicsClientTypes.ReadSetFilter?
     /// The maximum number of read sets to return in one page of results.
@@ -6156,8 +6157,9 @@ public struct ListReadSetsInput {
 }
 
 extension OmicsClientTypes {
+
     /// A read set.
-    public struct ReadSetListItem {
+    public struct ReadSetListItem: Swift.Sendable {
         /// The read set's ARN.
         /// This member is required.
         public var arn: Swift.String?
@@ -6230,10 +6232,9 @@ extension OmicsClientTypes {
             self.subjectId = subjectId
         }
     }
-
 }
 
-public struct ListReadSetsOutput {
+public struct ListReadSetsOutput: Swift.Sendable {
     /// A pagination token that's included if more results are available.
     public var nextToken: Swift.String?
     /// A list of read sets.
@@ -6251,8 +6252,9 @@ public struct ListReadSetsOutput {
 }
 
 extension OmicsClientTypes {
+
     /// Filter settings that select for read set upload parts of interest.
-    public struct ReadSetUploadPartListFilter {
+    public struct ReadSetUploadPartListFilter: Swift.Sendable {
         /// Filters for read set uploads after a specified time.
         public var createdAfter: Foundation.Date?
         /// Filters for read set part uploads before a specified time.
@@ -6267,10 +6269,9 @@ extension OmicsClientTypes {
             self.createdBefore = createdBefore
         }
     }
-
 }
 
-public struct ListReadSetUploadPartsInput {
+public struct ListReadSetUploadPartsInput: Swift.Sendable {
     /// Attributes used to filter for a specific subset of read set part uploads.
     public var filter: OmicsClientTypes.ReadSetUploadPartListFilter?
     /// The maximum number of read set upload parts returned in a page.
@@ -6306,8 +6307,9 @@ public struct ListReadSetUploadPartsInput {
 }
 
 extension OmicsClientTypes {
+
     /// The metadata of a single part of a file that was added to a multipart upload. A list of these parts is returned in the response to the ListReadSetUploadParts API.
-    public struct ReadSetUploadPartListItem {
+    public struct ReadSetUploadPartListItem: Swift.Sendable {
         /// A unique identifier used to confirm that parts are being added to the correct upload.
         /// This member is required.
         public var checksum: Swift.String?
@@ -6342,10 +6344,9 @@ extension OmicsClientTypes {
             self.partSource = partSource
         }
     }
-
 }
 
-public struct ListReadSetUploadPartsOutput {
+public struct ListReadSetUploadPartsOutput: Swift.Sendable {
     /// Next token returned in the response of a previous ListReadSetUploadParts call. Used to get the next page of results.
     public var nextToken: Swift.String?
     /// An array of upload parts.
@@ -6361,7 +6362,7 @@ public struct ListReadSetUploadPartsOutput {
     }
 }
 
-public struct ListReferenceImportJobsInput {
+public struct ListReferenceImportJobsInput: Swift.Sendable {
     /// A filter to apply to the list.
     public var filter: OmicsClientTypes.ImportReferenceFilter?
     /// The maximum number of jobs to return in one page of results.
@@ -6386,7 +6387,7 @@ public struct ListReferenceImportJobsInput {
     }
 }
 
-public struct ListReferenceImportJobsOutput {
+public struct ListReferenceImportJobsOutput: Swift.Sendable {
     /// A lis of jobs.
     public var importJobs: [OmicsClientTypes.ImportReferenceJobItem]?
     /// A pagination token that's included if more results are available.
@@ -6403,8 +6404,9 @@ public struct ListReferenceImportJobsOutput {
 }
 
 extension OmicsClientTypes {
+
     /// A filter for references.
-    public struct ReferenceFilter {
+    public struct ReferenceFilter: Swift.Sendable {
         /// The filter's start date.
         public var createdAfter: Foundation.Date?
         /// The filter's end date.
@@ -6427,10 +6429,9 @@ extension OmicsClientTypes {
             self.name = name
         }
     }
-
 }
 
-public struct ListReferencesInput {
+public struct ListReferencesInput: Swift.Sendable {
     /// A filter to apply to the list.
     public var filter: OmicsClientTypes.ReferenceFilter?
     /// The maximum number of references to return in one page of results.
@@ -6456,8 +6457,9 @@ public struct ListReferencesInput {
 }
 
 extension OmicsClientTypes {
+
     /// A genome reference.
-    public struct ReferenceListItem {
+    public struct ReferenceListItem: Swift.Sendable {
         /// The reference's ARN.
         /// This member is required.
         public var arn: Swift.String?
@@ -6506,10 +6508,9 @@ extension OmicsClientTypes {
             self.updateTime = updateTime
         }
     }
-
 }
 
-public struct ListReferencesOutput {
+public struct ListReferencesOutput: Swift.Sendable {
     /// A pagination token that's included if more results are available.
     public var nextToken: Swift.String?
     /// A list of references.
@@ -6527,8 +6528,9 @@ public struct ListReferencesOutput {
 }
 
 extension OmicsClientTypes {
+
     /// A filter for reference stores.
-    public struct ReferenceStoreFilter {
+    public struct ReferenceStoreFilter: Swift.Sendable {
         /// The filter's start date.
         public var createdAfter: Foundation.Date?
         /// The filter's end date.
@@ -6547,10 +6549,9 @@ extension OmicsClientTypes {
             self.name = name
         }
     }
-
 }
 
-public struct ListReferenceStoresInput {
+public struct ListReferenceStoresInput: Swift.Sendable {
     /// A filter to apply to the list.
     public var filter: OmicsClientTypes.ReferenceStoreFilter?
     /// The maximum number of stores to return in one page of results.
@@ -6571,8 +6572,9 @@ public struct ListReferenceStoresInput {
 }
 
 extension OmicsClientTypes {
+
     /// Details about a reference store.
-    public struct ReferenceStoreDetail {
+    public struct ReferenceStoreDetail: Swift.Sendable {
         /// The store's ARN.
         /// This member is required.
         public var arn: Swift.String?
@@ -6606,10 +6608,9 @@ extension OmicsClientTypes {
             self.sseConfig = sseConfig
         }
     }
-
 }
 
-public struct ListReferenceStoresOutput {
+public struct ListReferenceStoresOutput: Swift.Sendable {
     /// A pagination token that's included if more results are available.
     public var nextToken: Swift.String?
     /// A list of reference stores.
@@ -6626,7 +6627,7 @@ public struct ListReferenceStoresOutput {
     }
 }
 
-public struct ListRunGroupsInput {
+public struct ListRunGroupsInput: Swift.Sendable {
     /// The maximum number of run groups to return in one page of results.
     public var maxResults: Swift.Int?
     /// The run groups' name.
@@ -6647,8 +6648,9 @@ public struct ListRunGroupsInput {
 }
 
 extension OmicsClientTypes {
+
     /// A run group.
-    public struct RunGroupListItem {
+    public struct RunGroupListItem: Swift.Sendable {
         /// The group's ARN.
         public var arn: Swift.String?
         /// When the group was created.
@@ -6687,10 +6689,9 @@ extension OmicsClientTypes {
             self.name = name
         }
     }
-
 }
 
-public struct ListRunGroupsOutput {
+public struct ListRunGroupsOutput: Swift.Sendable {
     /// A list of groups.
     public var items: [OmicsClientTypes.RunGroupListItem]?
     /// A pagination token that's included if more results are available.
@@ -6706,7 +6707,7 @@ public struct ListRunGroupsOutput {
     }
 }
 
-public struct ListRunsInput {
+public struct ListRunsInput: Swift.Sendable {
     /// The maximum number of runs to return in one page of results.
     public var maxResults: Swift.Int?
     /// Filter the list by run name.
@@ -6735,8 +6736,9 @@ public struct ListRunsInput {
 }
 
 extension OmicsClientTypes {
+
     /// A workflow run.
-    public struct RunListItem {
+    public struct RunListItem: Swift.Sendable {
         /// The run's ARN.
         public var arn: Swift.String?
         /// When the run was created.
@@ -6787,10 +6789,9 @@ extension OmicsClientTypes {
             self.workflowId = workflowId
         }
     }
-
 }
 
-public struct ListRunsOutput {
+public struct ListRunsOutput: Swift.Sendable {
     /// A list of runs.
     public var items: [OmicsClientTypes.RunListItem]?
     /// A pagination token that's included if more results are available.
@@ -6806,7 +6807,7 @@ public struct ListRunsOutput {
     }
 }
 
-public struct ListRunTasksInput {
+public struct ListRunTasksInput: Swift.Sendable {
     /// The run's ID.
     /// This member is required.
     public var id: Swift.String?
@@ -6832,8 +6833,9 @@ public struct ListRunTasksInput {
 }
 
 extension OmicsClientTypes {
+
     /// A workflow run task.
-    public struct TaskListItem {
+    public struct TaskListItem: Swift.Sendable {
         /// The task's CPU count.
         public var cpus: Swift.Int?
         /// When the task was created.
@@ -6880,10 +6882,9 @@ extension OmicsClientTypes {
             self.taskId = taskId
         }
     }
-
 }
 
-public struct ListRunTasksOutput {
+public struct ListRunTasksOutput: Swift.Sendable {
     /// A list of tasks.
     public var items: [OmicsClientTypes.TaskListItem]?
     /// A pagination token that's included if more results are available.
@@ -6900,8 +6901,9 @@ public struct ListRunTasksOutput {
 }
 
 extension OmicsClientTypes {
+
     /// A filter for a sequence store.
-    public struct SequenceStoreFilter {
+    public struct SequenceStoreFilter: Swift.Sendable {
         /// The filter's start date.
         public var createdAfter: Foundation.Date?
         /// The filter's end date.
@@ -6920,10 +6922,9 @@ extension OmicsClientTypes {
             self.name = name
         }
     }
-
 }
 
-public struct ListSequenceStoresInput {
+public struct ListSequenceStoresInput: Swift.Sendable {
     /// A filter to apply to the list.
     public var filter: OmicsClientTypes.SequenceStoreFilter?
     /// The maximum number of stores to return in one page of results.
@@ -6944,8 +6945,9 @@ public struct ListSequenceStoresInput {
 }
 
 extension OmicsClientTypes {
+
     /// Details about a sequence store.
-    public struct SequenceStoreDetail {
+    public struct SequenceStoreDetail: Swift.Sendable {
         /// The store's ARN.
         /// This member is required.
         public var arn: Swift.String?
@@ -6987,10 +6989,9 @@ extension OmicsClientTypes {
             self.sseConfig = sseConfig
         }
     }
-
 }
 
-public struct ListSequenceStoresOutput {
+public struct ListSequenceStoresOutput: Swift.Sendable {
     /// A pagination token that's included if more results are available.
     public var nextToken: Swift.String?
     /// A list of sequence stores.
@@ -7009,7 +7010,7 @@ public struct ListSequenceStoresOutput {
 
 extension OmicsClientTypes {
 
-    public enum ResourceOwner: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ResourceOwner: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         /// The resource owner is an account other than the caller
         case other
         /// The resource owner is the calling account
@@ -7038,7 +7039,7 @@ extension OmicsClientTypes {
     }
 }
 
-public struct ListSharesInput {
+public struct ListSharesInput: Swift.Sendable {
     /// Attributes that you use to filter for a specific subset of resource shares.
     public var filter: OmicsClientTypes.Filter?
     /// The maximum number of shares to return in one page of results.
@@ -7063,7 +7064,7 @@ public struct ListSharesInput {
     }
 }
 
-public struct ListSharesOutput {
+public struct ListSharesOutput: Swift.Sendable {
     /// Next token returned in the response of a previous ListSharesResponse call. Used to get the next page of results.
     public var nextToken: Swift.String?
     /// The shares available and their metadata details.
@@ -7080,7 +7081,7 @@ public struct ListSharesOutput {
     }
 }
 
-public struct ListTagsForResourceInput {
+public struct ListTagsForResourceInput: Swift.Sendable {
     /// The resource's ARN.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -7093,7 +7094,7 @@ public struct ListTagsForResourceInput {
     }
 }
 
-public struct ListTagsForResourceOutput {
+public struct ListTagsForResourceOutput: Swift.Sendable {
     /// A list of tags.
     /// This member is required.
     public var tags: [Swift.String: Swift.String]?
@@ -7107,8 +7108,9 @@ public struct ListTagsForResourceOutput {
 }
 
 extension OmicsClientTypes {
+
     /// A filter for variant import jobs.
-    public struct ListVariantImportJobsFilter {
+    public struct ListVariantImportJobsFilter: Swift.Sendable {
         /// A status to filter on.
         public var status: OmicsClientTypes.JobStatus?
         /// A store name to filter on.
@@ -7123,10 +7125,9 @@ extension OmicsClientTypes {
             self.storeName = storeName
         }
     }
-
 }
 
-public struct ListVariantImportJobsInput {
+public struct ListVariantImportJobsInput: Swift.Sendable {
     /// A filter to apply to the list.
     public var filter: OmicsClientTypes.ListVariantImportJobsFilter?
     /// A list of job IDs.
@@ -7151,8 +7152,9 @@ public struct ListVariantImportJobsInput {
 }
 
 extension OmicsClientTypes {
+
     /// A variant import job.
-    public struct VariantImportJobItem {
+    public struct VariantImportJobItem: Swift.Sendable {
         /// The annotation schema generated by the parsed annotation data.
         public var annotationFields: [Swift.String: Swift.String]?
         /// When the job completed.
@@ -7201,10 +7203,9 @@ extension OmicsClientTypes {
             self.updateTime = updateTime
         }
     }
-
 }
 
-public struct ListVariantImportJobsOutput {
+public struct ListVariantImportJobsOutput: Swift.Sendable {
     /// A pagination token that's included if more results are available.
     public var nextToken: Swift.String?
     /// A list of jobs.
@@ -7221,8 +7222,9 @@ public struct ListVariantImportJobsOutput {
 }
 
 extension OmicsClientTypes {
+
     /// A filter for variant stores.
-    public struct ListVariantStoresFilter {
+    public struct ListVariantStoresFilter: Swift.Sendable {
         /// A status to filter on.
         public var status: OmicsClientTypes.StoreStatus?
 
@@ -7233,10 +7235,9 @@ extension OmicsClientTypes {
             self.status = status
         }
     }
-
 }
 
-public struct ListVariantStoresInput {
+public struct ListVariantStoresInput: Swift.Sendable {
     /// A filter to apply to the list.
     public var filter: OmicsClientTypes.ListVariantStoresFilter?
     /// A list of store IDs.
@@ -7261,8 +7262,9 @@ public struct ListVariantStoresInput {
 }
 
 extension OmicsClientTypes {
+
     /// A variant store.
-    public struct VariantStoreItem {
+    public struct VariantStoreItem: Swift.Sendable {
         /// When the store was created.
         /// This member is required.
         public var creationTime: Foundation.Date?
@@ -7324,10 +7326,9 @@ extension OmicsClientTypes {
             self.updateTime = updateTime
         }
     }
-
 }
 
-public struct ListVariantStoresOutput {
+public struct ListVariantStoresOutput: Swift.Sendable {
     /// A pagination token that's included if more results are available.
     public var nextToken: Swift.String?
     /// A list of variant stores.
@@ -7343,7 +7344,7 @@ public struct ListVariantStoresOutput {
     }
 }
 
-public struct ListWorkflowsInput {
+public struct ListWorkflowsInput: Swift.Sendable {
     /// The maximum number of workflows to return in one page of results.
     public var maxResults: Swift.Int?
     /// Filter the list by workflow name.
@@ -7368,8 +7369,9 @@ public struct ListWorkflowsInput {
 }
 
 extension OmicsClientTypes {
+
     /// A workflow.
-    public struct WorkflowListItem {
+    public struct WorkflowListItem: Swift.Sendable {
         /// The workflow's ARN.
         public var arn: Swift.String?
         /// When the workflow was created.
@@ -7408,10 +7410,9 @@ extension OmicsClientTypes {
             self.type = type
         }
     }
-
 }
 
-public struct ListWorkflowsOutput {
+public struct ListWorkflowsOutput: Swift.Sendable {
     /// A list of workflow items.
     public var items: [OmicsClientTypes.WorkflowListItem]?
     /// A pagination token that's included if more results are available.
@@ -7428,8 +7429,9 @@ public struct ListWorkflowsOutput {
 }
 
 extension OmicsClientTypes {
+
     /// A source for a reference import job.
-    public struct StartReferenceImportJobSourceItem {
+    public struct StartReferenceImportJobSourceItem: Swift.Sendable {
         /// The source's description.
         public var description: Swift.String?
         /// The source's name.
@@ -7454,10 +7456,9 @@ extension OmicsClientTypes {
             self.tags = tags
         }
     }
-
 }
 
-public struct StartReferenceImportJobInput {
+public struct StartReferenceImportJobInput: Swift.Sendable {
     /// To ensure that jobs don't run multiple times, specify a unique token for each job.
     public var clientToken: Swift.String?
     /// The job's reference store ID.
@@ -7484,7 +7485,7 @@ public struct StartReferenceImportJobInput {
     }
 }
 
-public struct StartReferenceImportJobOutput {
+public struct StartReferenceImportJobOutput: Swift.Sendable {
     /// When the job was created.
     /// This member is required.
     public var creationTime: Foundation.Date?
@@ -7517,7 +7518,7 @@ public struct StartReferenceImportJobOutput {
     }
 }
 
-public struct UpdateRunGroupInput {
+public struct UpdateRunGroupInput: Swift.Sendable {
     /// The group's ID.
     /// This member is required.
     public var id: Swift.String?
@@ -7550,7 +7551,7 @@ public struct UpdateRunGroupInput {
     }
 }
 
-public struct StartRunInput {
+public struct StartRunInput: Swift.Sendable {
     /// A log level for the run.
     public var logLevel: OmicsClientTypes.RunLogLevel?
     /// A name for the run.
@@ -7624,7 +7625,7 @@ public struct StartRunInput {
     }
 }
 
-public struct StartRunOutput {
+public struct StartRunOutput: Swift.Sendable {
     /// The run's ARN.
     public var arn: Swift.String?
     /// The run's ID.
@@ -7657,8 +7658,9 @@ public struct StartRunOutput {
 }
 
 extension OmicsClientTypes {
+
     /// A source for a read set activation job.
-    public struct StartReadSetActivationJobSourceItem {
+    public struct StartReadSetActivationJobSourceItem: Swift.Sendable {
         /// The source's read set ID.
         /// This member is required.
         public var readSetId: Swift.String?
@@ -7670,10 +7672,9 @@ extension OmicsClientTypes {
             self.readSetId = readSetId
         }
     }
-
 }
 
-public struct StartReadSetActivationJobInput {
+public struct StartReadSetActivationJobInput: Swift.Sendable {
     /// To ensure that jobs don't run multiple times, specify a unique token for each job.
     public var clientToken: Swift.String?
     /// The read set's sequence store ID.
@@ -7695,7 +7696,7 @@ public struct StartReadSetActivationJobInput {
     }
 }
 
-public struct StartReadSetActivationJobOutput {
+public struct StartReadSetActivationJobOutput: Swift.Sendable {
     /// When the job was created.
     /// This member is required.
     public var creationTime: Foundation.Date?
@@ -7723,7 +7724,7 @@ public struct StartReadSetActivationJobOutput {
     }
 }
 
-public struct StartReadSetExportJobInput {
+public struct StartReadSetExportJobInput: Swift.Sendable {
     /// To ensure that jobs don't run multiple times, specify a unique token for each job.
     public var clientToken: Swift.String?
     /// A location for exported files in Amazon S3.
@@ -7755,7 +7756,7 @@ public struct StartReadSetExportJobInput {
     }
 }
 
-public struct StartReadSetExportJobOutput {
+public struct StartReadSetExportJobOutput: Swift.Sendable {
     /// When the job was created.
     /// This member is required.
     public var creationTime: Foundation.Date?
@@ -7789,8 +7790,9 @@ public struct StartReadSetExportJobOutput {
 }
 
 extension OmicsClientTypes {
+
     /// A source for a read set import job.
-    public struct StartReadSetImportJobSourceItem {
+    public struct StartReadSetImportJobSourceItem: Swift.Sendable {
         /// The source's description.
         public var description: Swift.String?
         /// Where the source originated.
@@ -7837,10 +7839,9 @@ extension OmicsClientTypes {
             self.tags = tags
         }
     }
-
 }
 
-public struct StartReadSetImportJobInput {
+public struct StartReadSetImportJobInput: Swift.Sendable {
     /// To ensure that jobs don't run multiple times, specify a unique token for each job.
     public var clientToken: Swift.String?
     /// A service role for the job.
@@ -7867,7 +7868,7 @@ public struct StartReadSetImportJobInput {
     }
 }
 
-public struct StartReadSetImportJobOutput {
+public struct StartReadSetImportJobOutput: Swift.Sendable {
     /// When the job was created.
     /// This member is required.
     public var creationTime: Foundation.Date?
@@ -7900,7 +7901,7 @@ public struct StartReadSetImportJobOutput {
     }
 }
 
-public struct UploadReadSetPartInput {
+public struct UploadReadSetPartInput: Swift.Sendable {
     /// The number of the part being uploaded.
     /// This member is required.
     public var partNumber: Swift.Int?
@@ -7933,7 +7934,7 @@ public struct UploadReadSetPartInput {
     }
 }
 
-public struct UploadReadSetPartOutput {
+public struct UploadReadSetPartOutput: Swift.Sendable {
     /// An identifier used to confirm that parts are being added to the intended upload.
     /// This member is required.
     public var checksum: Swift.String?
@@ -7946,7 +7947,7 @@ public struct UploadReadSetPartOutput {
     }
 }
 
-public struct TagResourceInput {
+public struct TagResourceInput: Swift.Sendable {
     /// The resource's ARN.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -7964,12 +7965,12 @@ public struct TagResourceInput {
     }
 }
 
-public struct TagResourceOutput {
+public struct TagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UntagResourceInput {
+public struct UntagResourceInput: Swift.Sendable {
     /// The resource's ARN.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -7987,14 +7988,15 @@ public struct UntagResourceInput {
     }
 }
 
-public struct UntagResourceOutput {
+public struct UntagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
 extension OmicsClientTypes {
+
     /// A imported variant item's source.
-    public struct VariantImportItemSource {
+    public struct VariantImportItemSource: Swift.Sendable {
         /// The source file's location in Amazon S3.
         /// This member is required.
         public var source: Swift.String?
@@ -8006,10 +8008,9 @@ extension OmicsClientTypes {
             self.source = source
         }
     }
-
 }
 
-public struct StartVariantImportJobInput {
+public struct StartVariantImportJobInput: Swift.Sendable {
     /// The annotation schema generated by the parsed annotation data.
     public var annotationFields: [Swift.String: Swift.String]?
     /// The destination variant store for the job.
@@ -8040,7 +8041,7 @@ public struct StartVariantImportJobInput {
     }
 }
 
-public struct StartVariantImportJobOutput {
+public struct StartVariantImportJobOutput: Swift.Sendable {
     /// The job's ID.
     /// This member is required.
     public var jobId: Swift.String?
@@ -8053,7 +8054,7 @@ public struct StartVariantImportJobOutput {
     }
 }
 
-public struct UpdateVariantStoreInput {
+public struct UpdateVariantStoreInput: Swift.Sendable {
     /// A description for the store.
     public var description: Swift.String?
     /// A name for the store.
@@ -8070,7 +8071,7 @@ public struct UpdateVariantStoreInput {
     }
 }
 
-public struct UpdateVariantStoreOutput {
+public struct UpdateVariantStoreOutput: Swift.Sendable {
     /// When the store was created.
     /// This member is required.
     public var creationTime: Foundation.Date?
@@ -8113,7 +8114,7 @@ public struct UpdateVariantStoreOutput {
     }
 }
 
-public struct UpdateWorkflowInput {
+public struct UpdateWorkflowInput: Swift.Sendable {
     /// A description for the workflow.
     public var description: Swift.String?
     /// The workflow's ID.

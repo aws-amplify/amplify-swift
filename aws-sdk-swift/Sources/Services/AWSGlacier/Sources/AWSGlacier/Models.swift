@@ -28,62 +28,63 @@ import struct Smithy.URIQueryItem
 import struct SmithyHTTPAPI.Header
 import struct SmithyHTTPAPI.Headers
 
-public struct AbortMultipartUploadOutput {
+
+public struct AbortMultipartUploadOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct AbortVaultLockOutput {
+public struct AbortVaultLockOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct AddTagsToVaultOutput {
+public struct AddTagsToVaultOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct CompleteVaultLockOutput {
+public struct CompleteVaultLockOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteArchiveOutput {
+public struct DeleteArchiveOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteVaultAccessPolicyOutput {
+public struct DeleteVaultAccessPolicyOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteVaultNotificationsOutput {
+public struct DeleteVaultNotificationsOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteVaultOutput {
+public struct DeleteVaultOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct RemoveTagsFromVaultOutput {
+public struct RemoveTagsFromVaultOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct SetDataRetrievalPolicyOutput {
+public struct SetDataRetrievalPolicyOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct SetVaultAccessPolicyOutput {
+public struct SetVaultAccessPolicyOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct SetVaultNotificationsOutput {
+public struct SetVaultNotificationsOutput: Swift.Sendable {
 
     public init() { }
 }
@@ -221,7 +222,7 @@ public struct ServiceUnavailableException: ClientRuntime.ModeledError, AWSClient
 }
 
 /// Provides options to abort a multipart upload identified by the upload ID. For information about the underlying REST API, see [Abort Multipart Upload](https://docs.aws.amazon.com/amazonglacier/latest/dev/api-multipart-abort-upload.html). For conceptual information, see [Working with Archives in Amazon S3 Glacier](https://docs.aws.amazon.com/amazonglacier/latest/dev/working-with-archives.html).
-public struct AbortMultipartUploadInput {
+public struct AbortMultipartUploadInput: Swift.Sendable {
     /// The AccountId value is the AWS account ID of the account that owns the vault. You can either specify an AWS account ID or optionally a single '-' (hyphen), in which case Amazon S3 Glacier uses the AWS account ID associated with the credentials used to sign the request. If you use an account ID, do not include any hyphens ('-') in the ID.
     /// This member is required.
     public var accountId: Swift.String?
@@ -245,7 +246,7 @@ public struct AbortMultipartUploadInput {
 }
 
 /// The input values for AbortVaultLock.
-public struct AbortVaultLockInput {
+public struct AbortVaultLockInput: Swift.Sendable {
     /// The AccountId value is the AWS account ID. This value must match the AWS account ID associated with the credentials used to sign the request. You can either specify an AWS account ID or optionally a single '-' (hyphen), in which case Amazon Glacier uses the AWS account ID associated with the credentials used to sign the request. If you specify your account ID, do not include any hyphens ('-') in the ID.
     /// This member is required.
     public var accountId: Swift.String?
@@ -265,7 +266,7 @@ public struct AbortVaultLockInput {
 
 extension GlacierClientTypes {
 
-    public enum ModelType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ModelType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case amazoncustomerbyemail
         case canonicaluser
         case group
@@ -296,8 +297,9 @@ extension GlacierClientTypes {
 }
 
 extension GlacierClientTypes {
+
     /// Contains information about the grantee.
-    public struct Grantee {
+    public struct Grantee: Swift.Sendable {
         /// Screen name of the grantee.
         public var displayName: Swift.String?
         /// Email address of the grantee.
@@ -325,12 +327,11 @@ extension GlacierClientTypes {
             self.uri = uri
         }
     }
-
 }
 
 extension GlacierClientTypes {
 
-    public enum Permission: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Permission: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case fullControl
         case read
         case readAcp
@@ -367,8 +368,9 @@ extension GlacierClientTypes {
 }
 
 extension GlacierClientTypes {
+
     /// Contains information about a grant.
-    public struct Grant {
+    public struct Grant: Swift.Sendable {
         /// The grantee.
         public var grantee: GlacierClientTypes.Grantee?
         /// Specifies the permission given to the grantee.
@@ -383,12 +385,11 @@ extension GlacierClientTypes {
             self.permission = permission
         }
     }
-
 }
 
 extension GlacierClientTypes {
 
-    public enum ActionCode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ActionCode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case archiveretrieval
         case inventoryretrieval
         case select
@@ -452,7 +453,7 @@ public struct LimitExceededException: ClientRuntime.ModeledError, AWSClientRunti
 }
 
 /// The input values for AddTagsToVault.
-public struct AddTagsToVaultInput {
+public struct AddTagsToVaultInput: Swift.Sendable {
     /// The AccountId value is the AWS account ID of the account that owns the vault. You can either specify an AWS account ID or optionally a single '-' (hyphen), in which case Amazon S3 Glacier uses the AWS account ID associated with the credentials used to sign the request. If you use an account ID, do not include any hyphens ('-') in the ID.
     /// This member is required.
     public var accountId: Swift.String?
@@ -476,7 +477,7 @@ public struct AddTagsToVaultInput {
 
 extension GlacierClientTypes {
 
-    public enum CannedACL: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum CannedACL: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case authenticatedread
         case awsexecread
         case bucketownerfullcontrol
@@ -519,7 +520,7 @@ extension GlacierClientTypes {
 }
 
 /// Provides options to complete a multipart upload operation. This informs Amazon Glacier that all the archive parts have been uploaded and Amazon S3 Glacier (Glacier) can now assemble the archive from the uploaded parts. After assembling and saving the archive to the vault, Glacier returns the URI path of the newly created archive resource.
-public struct CompleteMultipartUploadInput {
+public struct CompleteMultipartUploadInput: Swift.Sendable {
     /// The AccountId value is the AWS account ID of the account that owns the vault. You can either specify an AWS account ID or optionally a single '-' (hyphen), in which case Amazon S3 Glacier uses the AWS account ID associated with the credentials used to sign the request. If you use an account ID, do not include any hyphens ('-') in the ID.
     /// This member is required.
     public var accountId: Swift.String?
@@ -551,7 +552,7 @@ public struct CompleteMultipartUploadInput {
 }
 
 /// Contains the Amazon S3 Glacier response to your request. For information about the underlying REST API, see [Upload Archive](https://docs.aws.amazon.com/amazonglacier/latest/dev/api-archive-post.html). For conceptual information, see [Working with Archives in Amazon S3 Glacier](https://docs.aws.amazon.com/amazonglacier/latest/dev/working-with-archives.html).
-public struct CompleteMultipartUploadOutput {
+public struct CompleteMultipartUploadOutput: Swift.Sendable {
     /// The ID of the archive. This value is also included as part of the location.
     public var archiveId: Swift.String?
     /// The checksum of the archive computed by Amazon S3 Glacier.
@@ -572,7 +573,7 @@ public struct CompleteMultipartUploadOutput {
 }
 
 /// The input values for CompleteVaultLock.
-public struct CompleteVaultLockInput {
+public struct CompleteVaultLockInput: Swift.Sendable {
     /// The AccountId value is the AWS account ID. This value must match the AWS account ID associated with the credentials used to sign the request. You can either specify an AWS account ID or optionally a single '-' (hyphen), in which case Amazon Glacier uses the AWS account ID associated with the credentials used to sign the request. If you specify your account ID, do not include any hyphens ('-') in the ID.
     /// This member is required.
     public var accountId: Swift.String?
@@ -596,7 +597,7 @@ public struct CompleteVaultLockInput {
 }
 
 /// Provides options to create a vault.
-public struct CreateVaultInput {
+public struct CreateVaultInput: Swift.Sendable {
     /// The AccountId value is the AWS account ID. This value must match the AWS account ID associated with the credentials used to sign the request. You can either specify an AWS account ID or optionally a single '-' (hyphen), in which case Amazon S3 Glacier uses the AWS account ID associated with the credentials used to sign the request. If you specify your account ID, do not include any hyphens ('-') in the ID.
     /// This member is required.
     public var accountId: Swift.String?
@@ -615,7 +616,7 @@ public struct CreateVaultInput {
 }
 
 /// Contains the Amazon S3 Glacier response to your request.
-public struct CreateVaultOutput {
+public struct CreateVaultOutput: Swift.Sendable {
     /// The URI of the vault that was created.
     public var location: Swift.String?
 
@@ -629,7 +630,7 @@ public struct CreateVaultOutput {
 
 extension GlacierClientTypes {
 
-    public enum FileHeaderInfo: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum FileHeaderInfo: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case ignore
         case `none`
         case use
@@ -660,8 +661,9 @@ extension GlacierClientTypes {
 }
 
 extension GlacierClientTypes {
+
     /// Contains information about the comma-separated value (CSV) file to select from.
-    public struct CSVInput {
+    public struct CSVInput: Swift.Sendable {
         /// A single character used to indicate that a row should be ignored when the character is present at the start of that row.
         public var comments: Swift.String?
         /// A value used to separate individual fields from each other within a record.
@@ -692,12 +694,11 @@ extension GlacierClientTypes {
             self.recordDelimiter = recordDelimiter
         }
     }
-
 }
 
 extension GlacierClientTypes {
 
-    public enum QuoteFields: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum QuoteFields: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case always
         case asneeded
         case sdkUnknown(Swift.String)
@@ -725,8 +726,9 @@ extension GlacierClientTypes {
 }
 
 extension GlacierClientTypes {
+
     /// Contains information about the comma-separated value (CSV) file that the job results are stored in.
-    public struct CSVOutput {
+    public struct CSVOutput: Swift.Sendable {
         /// A value used to separate individual fields from each other within a record.
         public var fieldDelimiter: Swift.String?
         /// A value used as an escape character where the field delimiter is part of the value.
@@ -753,12 +755,12 @@ extension GlacierClientTypes {
             self.recordDelimiter = recordDelimiter
         }
     }
-
 }
 
 extension GlacierClientTypes {
+
     /// Data retrieval policy rule.
-    public struct DataRetrievalRule {
+    public struct DataRetrievalRule: Swift.Sendable {
         /// The maximum number of bytes that can be retrieved in an hour. This field is required only if the value of the Strategy field is BytesPerHour. Your PUT operation will be rejected if the Strategy field is not set to BytesPerHour and you set this field.
         public var bytesPerHour: Swift.Int?
         /// The type of data retrieval policy to set. Valid values: BytesPerHour|FreeTier|None
@@ -773,12 +775,12 @@ extension GlacierClientTypes {
             self.strategy = strategy
         }
     }
-
 }
 
 extension GlacierClientTypes {
+
     /// Data retrieval policy.
-    public struct DataRetrievalPolicy {
+    public struct DataRetrievalPolicy: Swift.Sendable {
         /// The policy rule. Although this is a list type, currently there must be only one rule, which contains a Strategy field and optionally a BytesPerHour field.
         public var rules: [GlacierClientTypes.DataRetrievalRule]?
 
@@ -789,11 +791,10 @@ extension GlacierClientTypes {
             self.rules = rules
         }
     }
-
 }
 
 /// Provides options for deleting an archive from an Amazon S3 Glacier vault.
-public struct DeleteArchiveInput {
+public struct DeleteArchiveInput: Swift.Sendable {
     /// The AccountId value is the AWS account ID of the account that owns the vault. You can either specify an AWS account ID or optionally a single '-' (hyphen), in which case Amazon S3 Glacier uses the AWS account ID associated with the credentials used to sign the request. If you use an account ID, do not include any hyphens ('-') in the ID.
     /// This member is required.
     public var accountId: Swift.String?
@@ -817,7 +818,7 @@ public struct DeleteArchiveInput {
 }
 
 /// Provides options for deleting a vault from Amazon S3 Glacier.
-public struct DeleteVaultInput {
+public struct DeleteVaultInput: Swift.Sendable {
     /// The AccountId value is the AWS account ID of the account that owns the vault. You can either specify an AWS account ID or optionally a single '-' (hyphen), in which case Amazon S3 Glacier uses the AWS account ID associated with the credentials used to sign the request. If you use an account ID, do not include any hyphens ('-') in the ID.
     /// This member is required.
     public var accountId: Swift.String?
@@ -836,7 +837,7 @@ public struct DeleteVaultInput {
 }
 
 /// DeleteVaultAccessPolicy input.
-public struct DeleteVaultAccessPolicyInput {
+public struct DeleteVaultAccessPolicyInput: Swift.Sendable {
     /// The AccountId value is the AWS account ID of the account that owns the vault. You can either specify an AWS account ID or optionally a single '-' (hyphen), in which case Amazon S3 Glacier uses the AWS account ID associated with the credentials used to sign the request. If you use an account ID, do not include any hyphens ('-') in the ID.
     /// This member is required.
     public var accountId: Swift.String?
@@ -855,7 +856,7 @@ public struct DeleteVaultAccessPolicyInput {
 }
 
 /// Provides options for deleting a vault notification configuration from an Amazon Glacier vault.
-public struct DeleteVaultNotificationsInput {
+public struct DeleteVaultNotificationsInput: Swift.Sendable {
     /// The AccountId value is the AWS account ID of the account that owns the vault. You can either specify an AWS account ID or optionally a single '-' (hyphen), in which case Amazon S3 Glacier uses the AWS account ID associated with the credentials used to sign the request. If you use an account ID, do not include any hyphens ('-') in the ID.
     /// This member is required.
     public var accountId: Swift.String?
@@ -874,7 +875,7 @@ public struct DeleteVaultNotificationsInput {
 }
 
 /// Provides options for retrieving a job description.
-public struct DescribeJobInput {
+public struct DescribeJobInput: Swift.Sendable {
     /// The AccountId value is the AWS account ID of the account that owns the vault. You can either specify an AWS account ID or optionally a single '-' (hyphen), in which case Amazon S3 Glacier uses the AWS account ID associated with the credentials used to sign the request. If you use an account ID, do not include any hyphens ('-') in the ID.
     /// This member is required.
     public var accountId: Swift.String?
@@ -898,8 +899,9 @@ public struct DescribeJobInput {
 }
 
 extension GlacierClientTypes {
+
     /// Describes the options for a range inventory retrieval job.
-    public struct InventoryRetrievalJobDescription {
+    public struct InventoryRetrievalJobDescription: Swift.Sendable {
         /// The end of the date range in UTC for vault inventory retrieval that includes archives created before this date. This value should be a string in the ISO 8601 date format, for example 2013-03-20T17:03:43Z.
         public var endDate: Swift.String?
         /// The output format for the vault inventory list, which is set by the InitiateJob request when initiating a job to retrieve a vault inventory. Valid values are CSV and JSON.
@@ -926,12 +928,11 @@ extension GlacierClientTypes {
             self.startDate = startDate
         }
     }
-
 }
 
 extension GlacierClientTypes {
 
-    public enum EncryptionType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum EncryptionType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case kms
         case s3
         case sdkUnknown(Swift.String)
@@ -959,8 +960,9 @@ extension GlacierClientTypes {
 }
 
 extension GlacierClientTypes {
+
     /// Contains information about the encryption used to store the job results in Amazon S3.
-    public struct Encryption {
+    public struct Encryption: Swift.Sendable {
         /// The server-side encryption algorithm used when storing job results in Amazon S3, for example AES256 or aws:kms.
         public var encryptionType: GlacierClientTypes.EncryptionType?
         /// Optional. If the encryption type is aws:kms, you can use this value to specify the encryption context for the job results.
@@ -979,12 +981,11 @@ extension GlacierClientTypes {
             self.kmsKeyId = kmsKeyId
         }
     }
-
 }
 
 extension GlacierClientTypes {
 
-    public enum StorageClass: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum StorageClass: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case reducedredundancy
         case standard
         case standardinfrequentaccess
@@ -1015,8 +1016,9 @@ extension GlacierClientTypes {
 }
 
 extension GlacierClientTypes {
+
     /// Contains information about the location in Amazon S3 where the select job results are stored.
-    public struct S3Location {
+    public struct S3Location: Swift.Sendable {
         /// A list of grants that control access to the staged results.
         public var accessControlList: [GlacierClientTypes.Grant]?
         /// The name of the Amazon S3 bucket where the job results are stored.
@@ -1055,12 +1057,12 @@ extension GlacierClientTypes {
             self.userMetadata = userMetadata
         }
     }
-
 }
 
 extension GlacierClientTypes {
+
     /// Contains information about the location where the select job results are stored.
-    public struct OutputLocation {
+    public struct OutputLocation: Swift.Sendable {
         /// Describes an S3 location that will receive the results of the job request.
         public var s3: GlacierClientTypes.S3Location?
 
@@ -1071,12 +1073,11 @@ extension GlacierClientTypes {
             self.s3 = s3
         }
     }
-
 }
 
 extension GlacierClientTypes {
 
-    public enum ExpressionType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ExpressionType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case sql
         case sdkUnknown(Swift.String)
 
@@ -1101,8 +1102,9 @@ extension GlacierClientTypes {
 }
 
 extension GlacierClientTypes {
+
     /// Describes how the archive is serialized.
-    public struct InputSerialization {
+    public struct InputSerialization: Swift.Sendable {
         /// Describes the serialization of a CSV-encoded object.
         public var csv: GlacierClientTypes.CSVInput?
 
@@ -1113,12 +1115,12 @@ extension GlacierClientTypes {
             self.csv = csv
         }
     }
-
 }
 
 extension GlacierClientTypes {
+
     /// Describes how the select output is serialized.
-    public struct OutputSerialization {
+    public struct OutputSerialization: Swift.Sendable {
         /// Describes the serialization of CSV-encoded query results.
         public var csv: GlacierClientTypes.CSVOutput?
 
@@ -1129,12 +1131,12 @@ extension GlacierClientTypes {
             self.csv = csv
         }
     }
-
 }
 
 extension GlacierClientTypes {
+
     /// Contains information about the parameters used for a select.
-    public struct SelectParameters {
+    public struct SelectParameters: Swift.Sendable {
         /// The expression that is used to select the object.
         public var expression: Swift.String?
         /// The type of the provided expression, for example SQL.
@@ -1157,12 +1159,11 @@ extension GlacierClientTypes {
             self.outputSerialization = outputSerialization
         }
     }
-
 }
 
 extension GlacierClientTypes {
 
-    public enum StatusCode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum StatusCode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case failed
         case inprogress
         case succeeded
@@ -1193,7 +1194,7 @@ extension GlacierClientTypes {
 }
 
 /// Contains the description of an Amazon S3 Glacier job.
-public struct DescribeJobOutput {
+public struct DescribeJobOutput: Swift.Sendable {
     /// The job type. This value is either ArchiveRetrieval, InventoryRetrieval, or Select.
     public var action: GlacierClientTypes.ActionCode?
     /// The archive ID requested for a select job or archive retrieval. Otherwise, this field is null.
@@ -1300,7 +1301,7 @@ public struct DescribeJobOutput {
 }
 
 /// Provides options for retrieving metadata for a specific vault in Amazon Glacier.
-public struct DescribeVaultInput {
+public struct DescribeVaultInput: Swift.Sendable {
     /// The AccountId value is the AWS account ID of the account that owns the vault. You can either specify an AWS account ID or optionally a single '-' (hyphen), in which case Amazon S3 Glacier uses the AWS account ID associated with the credentials used to sign the request. If you use an account ID, do not include any hyphens ('-') in the ID.
     /// This member is required.
     public var accountId: Swift.String?
@@ -1319,7 +1320,7 @@ public struct DescribeVaultInput {
 }
 
 /// Contains the Amazon S3 Glacier response to your request.
-public struct DescribeVaultOutput {
+public struct DescribeVaultOutput: Swift.Sendable {
     /// The Universal Coordinated Time (UTC) date when the vault was created. This value should be a string in the ISO 8601 date format, for example 2012-03-20T17:03:43.221Z.
     public var creationDate: Swift.String?
     /// The Universal Coordinated Time (UTC) date when Amazon S3 Glacier completed the last vault inventory. This value should be a string in the ISO 8601 date format, for example 2012-03-20T17:03:43.221Z.
@@ -1352,8 +1353,9 @@ public struct DescribeVaultOutput {
 }
 
 extension GlacierClientTypes {
+
     /// Contains the Amazon S3 Glacier response to your request.
-    public struct DescribeVaultOutput {
+    public struct DescribeVaultOutput: Swift.Sendable {
         /// The Universal Coordinated Time (UTC) date when the vault was created. This value should be a string in the ISO 8601 date format, for example 2012-03-20T17:03:43.221Z.
         public var creationDate: Swift.String?
         /// The Universal Coordinated Time (UTC) date when Amazon S3 Glacier completed the last vault inventory. This value should be a string in the ISO 8601 date format, for example 2012-03-20T17:03:43.221Z.
@@ -1384,11 +1386,10 @@ extension GlacierClientTypes {
             self.vaultName = vaultName
         }
     }
-
 }
 
 /// Input for GetDataRetrievalPolicy.
-public struct GetDataRetrievalPolicyInput {
+public struct GetDataRetrievalPolicyInput: Swift.Sendable {
     /// The AccountId value is the AWS account ID. This value must match the AWS account ID associated with the credentials used to sign the request. You can either specify an AWS account ID or optionally a single '-' (hyphen), in which case Amazon Glacier uses the AWS account ID associated with the credentials used to sign the request. If you specify your account ID, do not include any hyphens ('-') in the ID.
     /// This member is required.
     public var accountId: Swift.String?
@@ -1402,7 +1403,7 @@ public struct GetDataRetrievalPolicyInput {
 }
 
 /// Contains the Amazon S3 Glacier response to the GetDataRetrievalPolicy request.
-public struct GetDataRetrievalPolicyOutput {
+public struct GetDataRetrievalPolicyOutput: Swift.Sendable {
     /// Contains the returned data retrieval policy in JSON format.
     public var policy: GlacierClientTypes.DataRetrievalPolicy?
 
@@ -1415,7 +1416,7 @@ public struct GetDataRetrievalPolicyOutput {
 }
 
 /// Provides options for downloading output of an Amazon S3 Glacier job.
-public struct GetJobOutputInput {
+public struct GetJobOutputInput: Swift.Sendable {
     /// The AccountId value is the AWS account ID of the account that owns the vault. You can either specify an AWS account ID or optionally a single '-' (hyphen), in which case Amazon S3 Glacier uses the AWS account ID associated with the credentials used to sign the request. If you use an account ID, do not include any hyphens ('-') in the ID.
     /// This member is required.
     public var accountId: Swift.String?
@@ -1451,7 +1452,7 @@ public struct GetJobOutputInput {
 }
 
 /// Contains the Amazon S3 Glacier response to your request.
-public struct GetJobOutputOutput {
+public struct GetJobOutputOutput: Swift.Sendable {
     /// Indicates the range units accepted. For more information, see [RFC2616](http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html).
     public var acceptRanges: Swift.String?
     /// The description of an archive.
@@ -1494,7 +1495,7 @@ public struct GetJobOutputOutput {
 }
 
 /// Input for GetVaultAccessPolicy.
-public struct GetVaultAccessPolicyInput {
+public struct GetVaultAccessPolicyInput: Swift.Sendable {
     /// The AccountId value is the AWS account ID of the account that owns the vault. You can either specify an AWS account ID or optionally a single '-' (hyphen), in which case Amazon S3 Glacier uses the AWS account ID associated with the credentials used to sign the request. If you use an account ID, do not include any hyphens ('-') in the ID.
     /// This member is required.
     public var accountId: Swift.String?
@@ -1513,8 +1514,9 @@ public struct GetVaultAccessPolicyInput {
 }
 
 extension GlacierClientTypes {
+
     /// Contains the vault access policy.
-    public struct VaultAccessPolicy {
+    public struct VaultAccessPolicy: Swift.Sendable {
         /// The vault access policy.
         public var policy: Swift.String?
 
@@ -1525,11 +1527,10 @@ extension GlacierClientTypes {
             self.policy = policy
         }
     }
-
 }
 
 /// Output for GetVaultAccessPolicy.
-public struct GetVaultAccessPolicyOutput {
+public struct GetVaultAccessPolicyOutput: Swift.Sendable {
     /// Contains the returned vault access policy as a JSON string.
     public var policy: GlacierClientTypes.VaultAccessPolicy?
 
@@ -1542,7 +1543,7 @@ public struct GetVaultAccessPolicyOutput {
 }
 
 /// The input values for GetVaultLock.
-public struct GetVaultLockInput {
+public struct GetVaultLockInput: Swift.Sendable {
     /// The AccountId value is the AWS account ID of the account that owns the vault. You can either specify an AWS account ID or optionally a single '-' (hyphen), in which case Amazon S3 Glacier uses the AWS account ID associated with the credentials used to sign the request. If you use an account ID, do not include any hyphens ('-') in the ID.
     /// This member is required.
     public var accountId: Swift.String?
@@ -1561,7 +1562,7 @@ public struct GetVaultLockInput {
 }
 
 /// Contains the Amazon S3 Glacier response to your request.
-public struct GetVaultLockOutput {
+public struct GetVaultLockOutput: Swift.Sendable {
     /// The UTC date and time at which the vault lock was put into the InProgress state.
     public var creationDate: Swift.String?
     /// The UTC date and time at which the lock ID expires. This value can be null if the vault lock is in a Locked state.
@@ -1586,7 +1587,7 @@ public struct GetVaultLockOutput {
 }
 
 /// Provides options for retrieving the notification configuration set on an Amazon Glacier vault.
-public struct GetVaultNotificationsInput {
+public struct GetVaultNotificationsInput: Swift.Sendable {
     /// The AccountId value is the AWS account ID of the account that owns the vault. You can either specify an AWS account ID or optionally a single '-' (hyphen), in which case Amazon S3 Glacier uses the AWS account ID associated with the credentials used to sign the request. If you use an account ID, do not include any hyphens ('-') in the ID.
     /// This member is required.
     public var accountId: Swift.String?
@@ -1605,8 +1606,9 @@ public struct GetVaultNotificationsInput {
 }
 
 extension GlacierClientTypes {
+
     /// Represents a vault's notification configuration.
-    public struct VaultNotificationConfig {
+    public struct VaultNotificationConfig: Swift.Sendable {
         /// A list of one or more events for which Amazon S3 Glacier will send a notification to the specified Amazon SNS topic.
         public var events: [Swift.String]?
         /// The Amazon Simple Notification Service (Amazon SNS) topic Amazon Resource Name (ARN).
@@ -1621,11 +1623,10 @@ extension GlacierClientTypes {
             self.snsTopic = snsTopic
         }
     }
-
 }
 
 /// Contains the Amazon S3 Glacier response to your request.
-public struct GetVaultNotificationsOutput {
+public struct GetVaultNotificationsOutput: Swift.Sendable {
     /// Returns the notification configuration set on the vault.
     public var vaultNotificationConfig: GlacierClientTypes.VaultNotificationConfig?
 
@@ -1701,8 +1702,9 @@ public struct PolicyEnforcedException: ClientRuntime.ModeledError, AWSClientRunt
 }
 
 extension GlacierClientTypes {
+
     /// Provides options for specifying a range inventory retrieval job.
-    public struct InventoryRetrievalJobInput {
+    public struct InventoryRetrievalJobInput: Swift.Sendable {
         /// The end of the date range in UTC for vault inventory retrieval that includes archives created before this date. This value should be a string in the ISO 8601 date format, for example 2013-03-20T17:03:43Z.
         public var endDate: Swift.String?
         /// Specifies the maximum number of inventory items returned per vault inventory retrieval request. Valid values are greater than or equal to 1.
@@ -1725,12 +1727,12 @@ extension GlacierClientTypes {
             self.startDate = startDate
         }
     }
-
 }
 
 extension GlacierClientTypes {
+
     /// Provides options for defining a job.
-    public struct JobParameters {
+    public struct JobParameters: Swift.Sendable {
         /// The ID of the archive that you want to retrieve. This field is required only if Type is set to select or archive-retrievalcode>. An error occurs if you specify this request parameter for an inventory retrieval job request.
         public var archiveId: Swift.String?
         /// The optional description for the job. The description must be less than or equal to 1,024 bytes. The allowable characters are 7-bit ASCII without control codes-specifically, ASCII values 32-126 decimal or 0x20-0x7E hexadecimal.
@@ -1777,11 +1779,10 @@ extension GlacierClientTypes {
             self.type = type
         }
     }
-
 }
 
 /// Provides options for initiating an Amazon S3 Glacier job.
-public struct InitiateJobInput {
+public struct InitiateJobInput: Swift.Sendable {
     /// The AccountId value is the AWS account ID of the account that owns the vault. You can either specify an AWS account ID or optionally a single '-' (hyphen), in which case Amazon S3 Glacier uses the AWS account ID associated with the credentials used to sign the request. If you use an account ID, do not include any hyphens ('-') in the ID.
     /// This member is required.
     public var accountId: Swift.String?
@@ -1804,7 +1805,7 @@ public struct InitiateJobInput {
 }
 
 /// Contains the Amazon S3 Glacier response to your request.
-public struct InitiateJobOutput {
+public struct InitiateJobOutput: Swift.Sendable {
     /// The ID of the job.
     public var jobId: Swift.String?
     /// The path to the location of where the select results are stored.
@@ -1825,7 +1826,7 @@ public struct InitiateJobOutput {
 }
 
 /// Provides options for initiating a multipart upload to an Amazon S3 Glacier vault.
-public struct InitiateMultipartUploadInput {
+public struct InitiateMultipartUploadInput: Swift.Sendable {
     /// The AccountId value is the AWS account ID of the account that owns the vault. You can either specify an AWS account ID or optionally a single '-' (hyphen), in which case Amazon S3 Glacier uses the AWS account ID associated with the credentials used to sign the request. If you use an account ID, do not include any hyphens ('-') in the ID.
     /// This member is required.
     public var accountId: Swift.String?
@@ -1852,7 +1853,7 @@ public struct InitiateMultipartUploadInput {
 }
 
 /// The Amazon S3 Glacier response to your request.
-public struct InitiateMultipartUploadOutput {
+public struct InitiateMultipartUploadOutput: Swift.Sendable {
     /// The relative URI path of the multipart upload ID Amazon S3 Glacier created.
     public var location: Swift.String?
     /// The ID of the multipart upload. This value is also included as part of the location.
@@ -1869,8 +1870,9 @@ public struct InitiateMultipartUploadOutput {
 }
 
 extension GlacierClientTypes {
+
     /// Contains the vault lock policy.
-    public struct VaultLockPolicy {
+    public struct VaultLockPolicy: Swift.Sendable {
         /// The vault lock policy.
         public var policy: Swift.String?
 
@@ -1881,11 +1883,10 @@ extension GlacierClientTypes {
             self.policy = policy
         }
     }
-
 }
 
 /// The input values for InitiateVaultLock.
-public struct InitiateVaultLockInput {
+public struct InitiateVaultLockInput: Swift.Sendable {
     /// The AccountId value is the AWS account ID. This value must match the AWS account ID associated with the credentials used to sign the request. You can either specify an AWS account ID or optionally a single '-' (hyphen), in which case Amazon Glacier uses the AWS account ID associated with the credentials used to sign the request. If you specify your account ID, do not include any hyphens ('-') in the ID.
     /// This member is required.
     public var accountId: Swift.String?
@@ -1908,7 +1909,7 @@ public struct InitiateVaultLockInput {
 }
 
 /// Contains the Amazon S3 Glacier response to your request.
-public struct InitiateVaultLockOutput {
+public struct InitiateVaultLockOutput: Swift.Sendable {
     /// The lock ID, which is used to complete the vault locking process.
     public var lockId: Swift.String?
 
@@ -1921,7 +1922,7 @@ public struct InitiateVaultLockOutput {
 }
 
 /// Provides options for retrieving a job list for an Amazon S3 Glacier vault.
-public struct ListJobsInput {
+public struct ListJobsInput: Swift.Sendable {
     /// The AccountId value is the AWS account ID of the account that owns the vault. You can either specify an AWS account ID or optionally a single '-' (hyphen), in which case Amazon S3 Glacier uses the AWS account ID associated with the credentials used to sign the request. If you use an account ID, do not include any hyphens ('-') in the ID.
     /// This member is required.
     public var accountId: Swift.String?
@@ -1956,8 +1957,9 @@ public struct ListJobsInput {
 }
 
 extension GlacierClientTypes {
+
     /// Contains the description of an Amazon S3 Glacier job.
-    public struct GlacierJobDescription {
+    public struct GlacierJobDescription: Swift.Sendable {
         /// The job type. This value is either ArchiveRetrieval, InventoryRetrieval, or Select.
         public var action: GlacierClientTypes.ActionCode?
         /// The archive ID requested for a select job or archive retrieval. Otherwise, this field is null.
@@ -2062,11 +2064,10 @@ extension GlacierClientTypes {
             self.vaultARN = vaultARN
         }
     }
-
 }
 
 /// Contains the Amazon S3 Glacier response to your request.
-public struct ListJobsOutput {
+public struct ListJobsOutput: Swift.Sendable {
     /// A list of job objects. Each job object contains metadata describing the job.
     public var jobList: [GlacierClientTypes.GlacierJobDescription]?
     /// An opaque string used for pagination that specifies the job at which the listing of jobs should begin. You get the marker value from a previous List Jobs response. You only need to include the marker if you are continuing the pagination of the results started in a previous List Jobs request.
@@ -2083,7 +2084,7 @@ public struct ListJobsOutput {
 }
 
 /// Provides options for retrieving list of in-progress multipart uploads for an Amazon Glacier vault.
-public struct ListMultipartUploadsInput {
+public struct ListMultipartUploadsInput: Swift.Sendable {
     /// The AccountId value is the AWS account ID of the account that owns the vault. You can either specify an AWS account ID or optionally a single '-' (hyphen), in which case Amazon S3 Glacier uses the AWS account ID associated with the credentials used to sign the request. If you use an account ID, do not include any hyphens ('-') in the ID.
     /// This member is required.
     public var accountId: Swift.String?
@@ -2110,8 +2111,9 @@ public struct ListMultipartUploadsInput {
 }
 
 extension GlacierClientTypes {
+
     /// A list of in-progress multipart uploads for a vault.
-    public struct UploadListElement {
+    public struct UploadListElement: Swift.Sendable {
         /// The description of the archive that was specified in the Initiate Multipart Upload request.
         public var archiveDescription: Swift.String?
         /// The UTC time at which the multipart upload was initiated.
@@ -2138,11 +2140,10 @@ extension GlacierClientTypes {
             self.vaultARN = vaultARN
         }
     }
-
 }
 
 /// Contains the Amazon S3 Glacier response to your request.
-public struct ListMultipartUploadsOutput {
+public struct ListMultipartUploadsOutput: Swift.Sendable {
     /// An opaque string that represents where to continue pagination of the results. You use the marker in a new List Multipart Uploads request to obtain more uploads in the list. If there are no more uploads, this value is null.
     public var marker: Swift.String?
     /// A list of in-progress multipart uploads.
@@ -2159,7 +2160,7 @@ public struct ListMultipartUploadsOutput {
 }
 
 /// Provides options for retrieving a list of parts of an archive that have been uploaded in a specific multipart upload.
-public struct ListPartsInput {
+public struct ListPartsInput: Swift.Sendable {
     /// The AccountId value is the AWS account ID of the account that owns the vault. You can either specify an AWS account ID or optionally a single '-' (hyphen), in which case Amazon S3 Glacier uses the AWS account ID associated with the credentials used to sign the request. If you use an account ID, do not include any hyphens ('-') in the ID.
     /// This member is required.
     public var accountId: Swift.String?
@@ -2191,8 +2192,9 @@ public struct ListPartsInput {
 }
 
 extension GlacierClientTypes {
+
     /// A list of the part sizes of the multipart upload.
-    public struct PartListElement {
+    public struct PartListElement: Swift.Sendable {
         /// The byte range of a part, inclusive of the upper value of the range.
         public var rangeInBytes: Swift.String?
         /// The SHA256 tree hash value that Amazon S3 Glacier calculated for the part. This field is never null.
@@ -2207,11 +2209,10 @@ extension GlacierClientTypes {
             self.sha256TreeHash = sha256TreeHash
         }
     }
-
 }
 
 /// Contains the Amazon S3 Glacier response to your request.
-public struct ListPartsOutput {
+public struct ListPartsOutput: Swift.Sendable {
     /// The description of the archive that was specified in the Initiate Multipart Upload request.
     public var archiveDescription: Swift.String?
     /// The UTC time at which the multipart upload was initiated.
@@ -2247,7 +2248,7 @@ public struct ListPartsOutput {
     }
 }
 
-public struct ListProvisionedCapacityInput {
+public struct ListProvisionedCapacityInput: Swift.Sendable {
     /// The AWS account ID of the account that owns the vault. You can either specify an AWS account ID or optionally a single '-' (hyphen), in which case Amazon S3 Glacier uses the AWS account ID associated with the credentials used to sign the request. If you use an account ID, don't include any hyphens ('-') in the ID.
     /// This member is required.
     public var accountId: Swift.String?
@@ -2261,8 +2262,9 @@ public struct ListProvisionedCapacityInput {
 }
 
 extension GlacierClientTypes {
+
     /// The definition for a provisioned capacity unit.
-    public struct ProvisionedCapacityDescription {
+    public struct ProvisionedCapacityDescription: Swift.Sendable {
         /// The ID that identifies the provisioned capacity unit.
         public var capacityId: Swift.String?
         /// The date that the provisioned capacity unit expires, in Universal Coordinated Time (UTC).
@@ -2281,10 +2283,9 @@ extension GlacierClientTypes {
             self.startDate = startDate
         }
     }
-
 }
 
-public struct ListProvisionedCapacityOutput {
+public struct ListProvisionedCapacityOutput: Swift.Sendable {
     /// The response body contains the following JSON fields.
     public var provisionedCapacityList: [GlacierClientTypes.ProvisionedCapacityDescription]?
 
@@ -2297,7 +2298,7 @@ public struct ListProvisionedCapacityOutput {
 }
 
 /// The input value for ListTagsForVaultInput.
-public struct ListTagsForVaultInput {
+public struct ListTagsForVaultInput: Swift.Sendable {
     /// The AccountId value is the AWS account ID of the account that owns the vault. You can either specify an AWS account ID or optionally a single '-' (hyphen), in which case Amazon S3 Glacier uses the AWS account ID associated with the credentials used to sign the request. If you use an account ID, do not include any hyphens ('-') in the ID.
     /// This member is required.
     public var accountId: Swift.String?
@@ -2316,7 +2317,7 @@ public struct ListTagsForVaultInput {
 }
 
 /// Contains the Amazon S3 Glacier response to your request.
-public struct ListTagsForVaultOutput {
+public struct ListTagsForVaultOutput: Swift.Sendable {
     /// The tags attached to the vault. Each tag is composed of a key and a value.
     public var tags: [Swift.String: Swift.String]?
 
@@ -2329,7 +2330,7 @@ public struct ListTagsForVaultOutput {
 }
 
 /// Provides options to retrieve the vault list owned by the calling user's account. The list provides metadata information for each vault.
-public struct ListVaultsInput {
+public struct ListVaultsInput: Swift.Sendable {
     /// The AccountId value is the AWS account ID. This value must match the AWS account ID associated with the credentials used to sign the request. You can either specify an AWS account ID or optionally a single '-' (hyphen), in which case Amazon Glacier uses the AWS account ID associated with the credentials used to sign the request. If you specify your account ID, do not include any hyphens ('-') in the ID.
     /// This member is required.
     public var accountId: Swift.String?
@@ -2351,7 +2352,7 @@ public struct ListVaultsInput {
 }
 
 /// Contains the Amazon S3 Glacier response to your request.
-public struct ListVaultsOutput {
+public struct ListVaultsOutput: Swift.Sendable {
     /// The vault ARN at which to continue pagination of the results. You use the marker in another List Vaults request to obtain more vaults in the list.
     public var marker: Swift.String?
     /// List of vaults.
@@ -2367,7 +2368,7 @@ public struct ListVaultsOutput {
     }
 }
 
-public struct PurchaseProvisionedCapacityInput {
+public struct PurchaseProvisionedCapacityInput: Swift.Sendable {
     /// The AWS account ID of the account that owns the vault. You can either specify an AWS account ID or optionally a single '-' (hyphen), in which case Amazon S3 Glacier uses the AWS account ID associated with the credentials used to sign the request. If you use an account ID, don't include any hyphens ('-') in the ID.
     /// This member is required.
     public var accountId: Swift.String?
@@ -2380,7 +2381,7 @@ public struct PurchaseProvisionedCapacityInput {
     }
 }
 
-public struct PurchaseProvisionedCapacityOutput {
+public struct PurchaseProvisionedCapacityOutput: Swift.Sendable {
     /// The ID that identifies the provisioned capacity unit.
     public var capacityId: Swift.String?
 
@@ -2393,7 +2394,7 @@ public struct PurchaseProvisionedCapacityOutput {
 }
 
 /// The input value for RemoveTagsFromVaultInput.
-public struct RemoveTagsFromVaultInput {
+public struct RemoveTagsFromVaultInput: Swift.Sendable {
     /// The AccountId value is the AWS account ID of the account that owns the vault. You can either specify an AWS account ID or optionally a single '-' (hyphen), in which case Amazon S3 Glacier uses the AWS account ID associated with the credentials used to sign the request. If you use an account ID, do not include any hyphens ('-') in the ID.
     /// This member is required.
     public var accountId: Swift.String?
@@ -2416,7 +2417,7 @@ public struct RemoveTagsFromVaultInput {
 }
 
 /// SetDataRetrievalPolicy input.
-public struct SetDataRetrievalPolicyInput {
+public struct SetDataRetrievalPolicyInput: Swift.Sendable {
     /// The AccountId value is the AWS account ID. This value must match the AWS account ID associated with the credentials used to sign the request. You can either specify an AWS account ID or optionally a single '-' (hyphen), in which case Amazon Glacier uses the AWS account ID associated with the credentials used to sign the request. If you specify your account ID, do not include any hyphens ('-') in the ID.
     /// This member is required.
     public var accountId: Swift.String?
@@ -2434,7 +2435,7 @@ public struct SetDataRetrievalPolicyInput {
 }
 
 /// SetVaultAccessPolicy input.
-public struct SetVaultAccessPolicyInput {
+public struct SetVaultAccessPolicyInput: Swift.Sendable {
     /// The AccountId value is the AWS account ID of the account that owns the vault. You can either specify an AWS account ID or optionally a single '-' (hyphen), in which case Amazon S3 Glacier uses the AWS account ID associated with the credentials used to sign the request. If you use an account ID, do not include any hyphens ('-') in the ID.
     /// This member is required.
     public var accountId: Swift.String?
@@ -2457,7 +2458,7 @@ public struct SetVaultAccessPolicyInput {
 }
 
 /// Provides options to configure notifications that will be sent when specific events happen to a vault.
-public struct SetVaultNotificationsInput {
+public struct SetVaultNotificationsInput: Swift.Sendable {
     /// The AccountId value is the AWS account ID of the account that owns the vault. You can either specify an AWS account ID or optionally a single '-' (hyphen), in which case Amazon S3 Glacier uses the AWS account ID associated with the credentials used to sign the request. If you use an account ID, do not include any hyphens ('-') in the ID.
     /// This member is required.
     public var accountId: Swift.String?
@@ -2513,7 +2514,7 @@ public struct RequestTimeoutException: ClientRuntime.ModeledError, AWSClientRunt
 }
 
 /// Provides options to add an archive to a vault.
-public struct UploadArchiveInput {
+public struct UploadArchiveInput: Swift.Sendable {
     /// The AccountId value is the AWS account ID of the account that owns the vault. You can either specify an AWS account ID or optionally a single '-' (hyphen), in which case Amazon S3 Glacier uses the AWS account ID associated with the credentials used to sign the request. If you use an account ID, do not include any hyphens ('-') in the ID.
     /// This member is required.
     public var accountId: Swift.String?
@@ -2544,7 +2545,7 @@ public struct UploadArchiveInput {
 }
 
 /// Contains the Amazon S3 Glacier response to your request. For information about the underlying REST API, see [Upload Archive](https://docs.aws.amazon.com/amazonglacier/latest/dev/api-archive-post.html). For conceptual information, see [Working with Archives in Amazon S3 Glacier](https://docs.aws.amazon.com/amazonglacier/latest/dev/working-with-archives.html).
-public struct UploadArchiveOutput {
+public struct UploadArchiveOutput: Swift.Sendable {
     /// The ID of the archive. This value is also included as part of the location.
     public var archiveId: Swift.String?
     /// The checksum of the archive computed by Amazon S3 Glacier.
@@ -2565,7 +2566,7 @@ public struct UploadArchiveOutput {
 }
 
 /// Provides options to upload a part of an archive in a multipart upload operation.
-public struct UploadMultipartPartInput {
+public struct UploadMultipartPartInput: Swift.Sendable {
     /// The AccountId value is the AWS account ID of the account that owns the vault. You can either specify an AWS account ID or optionally a single '-' (hyphen), in which case Amazon S3 Glacier uses the AWS account ID associated with the credentials used to sign the request. If you use an account ID, do not include any hyphens ('-') in the ID.
     /// This member is required.
     public var accountId: Swift.String?
@@ -2601,7 +2602,7 @@ public struct UploadMultipartPartInput {
 }
 
 /// Contains the Amazon S3 Glacier response to your request.
-public struct UploadMultipartPartOutput {
+public struct UploadMultipartPartOutput: Swift.Sendable {
     /// The SHA256 tree hash that Amazon S3 Glacier computed for the uploaded part.
     public var checksum: Swift.String?
 

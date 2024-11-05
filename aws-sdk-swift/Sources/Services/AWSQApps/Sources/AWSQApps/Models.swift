@@ -32,42 +32,43 @@ import struct SmithyHTTPAPI.Headers
 @_spi(SmithyReadWrite) import struct SmithyReadWrite.ReadingClosureBox
 @_spi(SmithyTimestamps) import struct SmithyTimestamps.TimestampFormatter
 
-public struct AssociateLibraryItemReviewOutput {
+
+public struct AssociateLibraryItemReviewOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct AssociateQAppWithUserOutput {
+public struct AssociateQAppWithUserOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteLibraryItemOutput {
+public struct DeleteLibraryItemOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteQAppOutput {
+public struct DeleteQAppOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DisassociateLibraryItemReviewOutput {
+public struct DisassociateLibraryItemReviewOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DisassociateQAppFromUserOutput {
+public struct DisassociateQAppFromUserOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct StopQAppSessionOutput {
+public struct StopQAppSessionOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdateLibraryItemMetadataOutput {
+public struct UpdateLibraryItemMetadataOutput: Swift.Sendable {
 
     public init() { }
 }
@@ -99,7 +100,7 @@ public struct AccessDeniedException: ClientRuntime.ModeledError, AWSClientRuntim
 
 extension QAppsClientTypes {
 
-    public enum CardType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum CardType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case fileUpload
         case qPlugin
         case qQuery
@@ -133,8 +134,9 @@ extension QAppsClientTypes {
 }
 
 extension QAppsClientTypes {
+
     /// A card in an Amazon Q App that allows the user to upload a file.
-    public struct FileUploadCard {
+    public struct FileUploadCard: Swift.Sendable {
         /// A flag indicating if the user can override the default file for the upload card.
         public var allowOverride: Swift.Bool?
         /// Any dependencies or requirements for the file upload card.
@@ -173,12 +175,11 @@ extension QAppsClientTypes {
             self.type = type
         }
     }
-
 }
 
 extension QAppsClientTypes {
 
-    public enum PluginType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum PluginType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case custom
         case jira
         case salesforce
@@ -215,8 +216,9 @@ extension QAppsClientTypes {
 }
 
 extension QAppsClientTypes {
+
     /// A card in an Q App that integrates with a third-party plugin or service.
-    public struct QPluginCard {
+    public struct QPluginCard: Swift.Sendable {
         /// Any dependencies or requirements for the plugin card.
         /// This member is required.
         public var dependencies: [Swift.String]?
@@ -258,12 +260,12 @@ extension QAppsClientTypes {
             self.type = type
         }
     }
-
 }
 
 extension QAppsClientTypes {
+
     /// The value of a document attribute. You can only provide one value for a document attribute.
-    public enum DocumentAttributeValue {
+    public enum DocumentAttributeValue: Swift.Sendable {
         /// A string.
         case stringvalue(Swift.String)
         /// A list of strings.
@@ -274,12 +276,12 @@ extension QAppsClientTypes {
         case datevalue(Foundation.Date)
         case sdkUnknown(Swift.String)
     }
-
 }
 
 extension QAppsClientTypes {
+
     /// A document attribute or metadata field.
-    public struct DocumentAttribute {
+    public struct DocumentAttribute: Swift.Sendable {
         /// The identifier for the attribute.
         /// This member is required.
         public var name: Swift.String?
@@ -296,12 +298,11 @@ extension QAppsClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension QAppsClientTypes {
 
-    public enum CardOutputSource: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum CardOutputSource: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case approvedSources
         case llm
         case sdkUnknown(Swift.String)
@@ -329,8 +330,9 @@ extension QAppsClientTypes {
 }
 
 extension QAppsClientTypes {
+
     /// A card in an Amazon Q App that allows the user to input text.
-    public struct TextInputCard {
+    public struct TextInputCard: Swift.Sendable {
         /// The default value to pre-populate in the text input field.
         public var defaultValue: Swift.String?
         /// Any dependencies or requirements for the text input card.
@@ -365,12 +367,12 @@ extension QAppsClientTypes {
             self.type = type
         }
     }
-
 }
 
 extension QAppsClientTypes {
+
     /// Represents a file upload card. It can optionally receive a filename and fileId to set a default file. If not received, the user must provide the file when the Q App runs.
-    public struct FileUploadCardInput {
+    public struct FileUploadCardInput: Swift.Sendable {
         /// A flag indicating if the user can override the default file for the upload card.
         public var allowOverride: Swift.Bool?
         /// The identifier of a pre-uploaded file associated with the card.
@@ -404,12 +406,12 @@ extension QAppsClientTypes {
             self.type = type
         }
     }
-
 }
 
 extension QAppsClientTypes {
+
     /// The input shape for defining a plugin card in an Amazon Q App.
-    public struct QPluginCardInput {
+    public struct QPluginCardInput: Swift.Sendable {
         /// The unique identifier of the plugin card.
         /// This member is required.
         public var id: Swift.String?
@@ -441,12 +443,12 @@ extension QAppsClientTypes {
             self.type = type
         }
     }
-
 }
 
 extension QAppsClientTypes {
+
     /// The input shape for defining a text input card in an Amazon Q App.
-    public struct TextInputCardInput {
+    public struct TextInputCardInput: Swift.Sendable {
         /// The default value to pre-populate in the text input field.
         public var defaultValue: Swift.String?
         /// The unique identifier of the text input card.
@@ -476,12 +478,11 @@ extension QAppsClientTypes {
             self.type = type
         }
     }
-
 }
 
 extension QAppsClientTypes {
 
-    public enum AppRequiredCapability: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AppRequiredCapability: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case creatorMode
         case fileUpload
         case pluginMode
@@ -516,7 +517,7 @@ extension QAppsClientTypes {
 
 extension QAppsClientTypes {
 
-    public enum AppStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AppStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case deleted
         case draft
         case published
@@ -779,7 +780,7 @@ public struct ValidationException: ClientRuntime.ModeledError, AWSClientRuntime.
     }
 }
 
-public struct AssociateLibraryItemReviewInput {
+public struct AssociateLibraryItemReviewInput: Swift.Sendable {
     /// The unique identifier for the Amazon Q Business application environment instance.
     /// This member is required.
     public var instanceId: Swift.String?
@@ -797,7 +798,7 @@ public struct AssociateLibraryItemReviewInput {
     }
 }
 
-public struct AssociateQAppWithUserInput {
+public struct AssociateQAppWithUserInput: Swift.Sendable {
     /// The ID of the Amazon Q App to associate with the user.
     /// This member is required.
     public var appId: Swift.String?
@@ -817,7 +818,7 @@ public struct AssociateQAppWithUserInput {
 
 extension QAppsClientTypes {
 
-    public enum ExecutionStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ExecutionStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case completed
         case inProgress
         case waiting
@@ -848,8 +849,9 @@ extension QAppsClientTypes {
 }
 
 extension QAppsClientTypes {
+
     /// The current status and value of a card in an active Amazon Q App session.
-    public struct CardStatus {
+    public struct CardStatus: Swift.Sendable {
         /// The current state of the card.
         /// This member is required.
         public var currentState: QAppsClientTypes.ExecutionStatus?
@@ -866,12 +868,12 @@ extension QAppsClientTypes {
             self.currentValue = currentValue
         }
     }
-
 }
 
 extension QAppsClientTypes {
+
     /// The value or result associated with a card in a Amazon Q App session.
-    public struct CardValue {
+    public struct CardValue: Swift.Sendable {
         /// The unique identifier of the card.
         /// This member is required.
         public var cardId: Swift.String?
@@ -888,12 +890,12 @@ extension QAppsClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension QAppsClientTypes {
+
     /// A category used to classify and filter library items for Amazon Q Apps.
-    public struct Category {
+    public struct Category: Swift.Sendable {
         /// The unique identifier of the category.
         /// This member is required.
         public var id: Swift.String?
@@ -910,7 +912,6 @@ extension QAppsClientTypes {
             self.title = title
         }
     }
-
 }
 
 /// The requested operation could not be completed because the content exceeds the maximum allowed size.
@@ -950,7 +951,7 @@ public struct ContentTooLargeException: ClientRuntime.ModeledError, AWSClientRun
 
 extension QAppsClientTypes {
 
-    public enum Sender: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Sender: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case system
         case user
         case sdkUnknown(Swift.String)
@@ -978,8 +979,9 @@ extension QAppsClientTypes {
 }
 
 extension QAppsClientTypes {
+
     /// A message in a conversation, used as input for generating an Amazon Q App definition.
-    public struct ConversationMessage {
+    public struct ConversationMessage: Swift.Sendable {
         /// The text content of the conversation message.
         /// This member is required.
         public var body: Swift.String?
@@ -996,10 +998,9 @@ extension QAppsClientTypes {
             self.type = type
         }
     }
-
 }
 
-public struct CreateLibraryItemInput {
+public struct CreateLibraryItemInput: Swift.Sendable {
     /// The unique identifier of the Amazon Q App to publish to the library.
     /// This member is required.
     public var appId: Swift.String?
@@ -1027,7 +1028,7 @@ public struct CreateLibraryItemInput {
     }
 }
 
-public struct CreateLibraryItemOutput {
+public struct CreateLibraryItemOutput: Swift.Sendable {
     /// The date and time the library item was created.
     /// This member is required.
     public var createdAt: Foundation.Date?
@@ -1072,7 +1073,7 @@ public struct CreateLibraryItemOutput {
     }
 }
 
-public struct CreateQAppOutput {
+public struct CreateQAppOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the new Q App.
     /// This member is required.
     public var appArn: Swift.String?
@@ -1137,7 +1138,7 @@ public struct CreateQAppOutput {
     }
 }
 
-public struct DeleteLibraryItemInput {
+public struct DeleteLibraryItemInput: Swift.Sendable {
     /// The unique identifier of the Amazon Q Business application environment instance.
     /// This member is required.
     public var instanceId: Swift.String?
@@ -1155,7 +1156,7 @@ public struct DeleteLibraryItemInput {
     }
 }
 
-public struct DeleteQAppInput {
+public struct DeleteQAppInput: Swift.Sendable {
     /// The unique identifier of the Q App to delete.
     /// This member is required.
     public var appId: Swift.String?
@@ -1173,7 +1174,7 @@ public struct DeleteQAppInput {
     }
 }
 
-public struct DisassociateLibraryItemReviewInput {
+public struct DisassociateLibraryItemReviewInput: Swift.Sendable {
     /// The unique identifier of the Amazon Q Business application environment instance.
     /// This member is required.
     public var instanceId: Swift.String?
@@ -1191,7 +1192,7 @@ public struct DisassociateLibraryItemReviewInput {
     }
 }
 
-public struct DisassociateQAppFromUserInput {
+public struct DisassociateQAppFromUserInput: Swift.Sendable {
     /// The unique identifier of the Q App to disassociate from the user.
     /// This member is required.
     public var appId: Swift.String?
@@ -1211,7 +1212,7 @@ public struct DisassociateQAppFromUserInput {
 
 extension QAppsClientTypes {
 
-    public enum DocumentScope: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DocumentScope: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case application
         case session
         case sdkUnknown(Swift.String)
@@ -1238,7 +1239,7 @@ extension QAppsClientTypes {
     }
 }
 
-public struct GetLibraryItemInput {
+public struct GetLibraryItemInput: Swift.Sendable {
     /// The unique identifier of the Amazon Q App associated with the library item.
     public var appId: Swift.String?
     /// The unique identifier of the Amazon Q Business application environment instance.
@@ -1260,7 +1261,7 @@ public struct GetLibraryItemInput {
     }
 }
 
-public struct GetLibraryItemOutput {
+public struct GetLibraryItemOutput: Swift.Sendable {
     /// The unique identifier of the Q App associated with the library item.
     /// This member is required.
     public var appId: Swift.String?
@@ -1328,7 +1329,7 @@ public struct GetLibraryItemOutput {
     }
 }
 
-public struct GetQAppInput {
+public struct GetQAppInput: Swift.Sendable {
     /// The unique identifier of the Q App to retrieve.
     /// This member is required.
     public var appId: Swift.String?
@@ -1346,7 +1347,7 @@ public struct GetQAppInput {
     }
 }
 
-public struct GetQAppSessionInput {
+public struct GetQAppSessionInput: Swift.Sendable {
     /// The unique identifier of the Amazon Q Business application environment instance.
     /// This member is required.
     public var instanceId: Swift.String?
@@ -1364,7 +1365,7 @@ public struct GetQAppSessionInput {
     }
 }
 
-public struct GetQAppSessionOutput {
+public struct GetQAppSessionOutput: Swift.Sendable {
     /// The current status for each card in the Q App session.
     /// This member is required.
     public var cardStatus: [Swift.String: QAppsClientTypes.CardStatus]?
@@ -1392,7 +1393,7 @@ public struct GetQAppSessionOutput {
     }
 }
 
-public struct ImportDocumentInput {
+public struct ImportDocumentInput: Swift.Sendable {
     /// The unique identifier of the Q App the file is associated with.
     /// This member is required.
     public var appId: Swift.String?
@@ -1434,7 +1435,7 @@ public struct ImportDocumentInput {
     }
 }
 
-public struct ImportDocumentOutput {
+public struct ImportDocumentOutput: Swift.Sendable {
     /// The unique identifier assigned to the uploaded file.
     public var fileId: Swift.String?
 
@@ -1447,8 +1448,9 @@ public struct ImportDocumentOutput {
 }
 
 extension QAppsClientTypes {
+
     /// A library item is a snapshot of an Amazon Q App that can be published so the users in their Amazon Q Apps library can discover it, clone it, and run it.
-    public struct LibraryItemMember {
+    public struct LibraryItemMember: Swift.Sendable {
         /// The unique identifier of the Q App associated with the library item.
         /// This member is required.
         public var appId: Swift.String?
@@ -1515,12 +1517,11 @@ extension QAppsClientTypes {
             self.userCount = userCount
         }
     }
-
 }
 
 extension QAppsClientTypes {
 
-    public enum LibraryItemStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum LibraryItemStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case disabled
         case published
         case sdkUnknown(Swift.String)
@@ -1547,7 +1548,7 @@ extension QAppsClientTypes {
     }
 }
 
-public struct ListLibraryItemsInput {
+public struct ListLibraryItemsInput: Swift.Sendable {
     /// Optional category to filter the library items by.
     public var categoryId: Swift.String?
     /// The unique identifier of the Amazon Q Business application environment instance.
@@ -1572,7 +1573,7 @@ public struct ListLibraryItemsInput {
     }
 }
 
-public struct ListLibraryItemsOutput {
+public struct ListLibraryItemsOutput: Swift.Sendable {
     /// The list of library items meeting the request criteria.
     public var libraryItems: [QAppsClientTypes.LibraryItemMember]?
     /// The token to use to request the next page of results.
@@ -1588,7 +1589,7 @@ public struct ListLibraryItemsOutput {
     }
 }
 
-public struct ListQAppsInput {
+public struct ListQAppsInput: Swift.Sendable {
     /// The unique identifier of the Amazon Q Business application environment instance.
     /// This member is required.
     public var instanceId: Swift.String?
@@ -1610,8 +1611,9 @@ public struct ListQAppsInput {
 }
 
 extension QAppsClientTypes {
+
     /// An Amazon Q App associated with a user, either owned by the user or favorited.
-    public struct UserAppItem {
+    public struct UserAppItem: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the Q App.
         /// This member is required.
         public var appArn: Swift.String?
@@ -1654,10 +1656,9 @@ extension QAppsClientTypes {
             self.title = title
         }
     }
-
 }
 
-public struct ListQAppsOutput {
+public struct ListQAppsOutput: Swift.Sendable {
     /// The list of Amazon Q Apps meeting the request criteria.
     /// This member is required.
     public var apps: [QAppsClientTypes.UserAppItem]?
@@ -1674,7 +1675,7 @@ public struct ListQAppsOutput {
     }
 }
 
-public struct ListTagsForResourceInput {
+public struct ListTagsForResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the resource whose tags should be listed.
     /// This member is required.
     public var resourceARN: Swift.String?
@@ -1687,7 +1688,7 @@ public struct ListTagsForResourceInput {
     }
 }
 
-public struct ListTagsForResourceOutput {
+public struct ListTagsForResourceOutput: Swift.Sendable {
     /// The list of tags that are assigned to the resource.
     public var tags: [Swift.String: Swift.String]?
 
@@ -1700,18 +1701,18 @@ public struct ListTagsForResourceOutput {
 }
 
 extension QAppsClientTypes {
+
     /// The input options for generating an Q App definition.
-    public enum PredictQAppInputOptions {
+    public enum PredictQAppInputOptions: Swift.Sendable {
         /// A conversation to use as input for generating the Q App definition.
         case conversation([QAppsClientTypes.ConversationMessage])
         /// A problem statement to use as input for generating the Q App definition.
         case problemstatement(Swift.String)
         case sdkUnknown(Swift.String)
     }
-
 }
 
-public struct PredictQAppInput {
+public struct PredictQAppInput: Swift.Sendable {
     /// The unique identifier of the Amazon Q Business application environment instance.
     /// This member is required.
     public var instanceId: Swift.String?
@@ -1728,7 +1729,7 @@ public struct PredictQAppInput {
     }
 }
 
-public struct StartQAppSessionInput {
+public struct StartQAppSessionInput: Swift.Sendable {
     /// The unique identifier of the Q App to start a session for.
     /// This member is required.
     public var appId: Swift.String?
@@ -1759,7 +1760,7 @@ public struct StartQAppSessionInput {
     }
 }
 
-public struct StartQAppSessionOutput {
+public struct StartQAppSessionOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the new Q App session.
     /// This member is required.
     public var sessionArn: Swift.String?
@@ -1777,7 +1778,7 @@ public struct StartQAppSessionOutput {
     }
 }
 
-public struct StopQAppSessionInput {
+public struct StopQAppSessionInput: Swift.Sendable {
     /// The unique identifier of the Amazon Q Business application environment instance.
     /// This member is required.
     public var instanceId: Swift.String?
@@ -1795,7 +1796,7 @@ public struct StopQAppSessionInput {
     }
 }
 
-public struct TagResourceInput {
+public struct TagResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the resource to tag.
     /// This member is required.
     public var resourceARN: Swift.String?
@@ -1813,12 +1814,12 @@ public struct TagResourceInput {
     }
 }
 
-public struct TagResourceOutput {
+public struct TagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UntagResourceInput {
+public struct UntagResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the resource to disassociate the tag from.
     /// This member is required.
     public var resourceARN: Swift.String?
@@ -1836,12 +1837,12 @@ public struct UntagResourceInput {
     }
 }
 
-public struct UntagResourceOutput {
+public struct UntagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdateLibraryItemInput {
+public struct UpdateLibraryItemInput: Swift.Sendable {
     /// The new categories to associate with the library item.
     public var categories: [Swift.String]?
     /// The unique identifier of the Amazon Q Business application environment instance.
@@ -1867,7 +1868,7 @@ public struct UpdateLibraryItemInput {
     }
 }
 
-public struct UpdateLibraryItemOutput {
+public struct UpdateLibraryItemOutput: Swift.Sendable {
     /// The unique identifier of the Q App associated with the library item.
     /// This member is required.
     public var appId: Swift.String?
@@ -1935,7 +1936,7 @@ public struct UpdateLibraryItemOutput {
     }
 }
 
-public struct UpdateLibraryItemMetadataInput {
+public struct UpdateLibraryItemMetadataInput: Swift.Sendable {
     /// The unique identifier of the Amazon Q Business application environment instance.
     /// This member is required.
     public var instanceId: Swift.String?
@@ -1957,7 +1958,7 @@ public struct UpdateLibraryItemMetadataInput {
     }
 }
 
-public struct UpdateQAppOutput {
+public struct UpdateQAppOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the updated Q App.
     /// This member is required.
     public var appArn: Swift.String?
@@ -2022,7 +2023,7 @@ public struct UpdateQAppOutput {
     }
 }
 
-public struct UpdateQAppSessionInput {
+public struct UpdateQAppSessionInput: Swift.Sendable {
     /// The unique identifier of the Amazon Q Business application environment instance.
     /// This member is required.
     public var instanceId: Swift.String?
@@ -2044,7 +2045,7 @@ public struct UpdateQAppSessionInput {
     }
 }
 
-public struct UpdateQAppSessionOutput {
+public struct UpdateQAppSessionOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the updated Q App session.
     /// This member is required.
     public var sessionArn: Swift.String?
@@ -2063,8 +2064,9 @@ public struct UpdateQAppSessionOutput {
 }
 
 extension QAppsClientTypes {
+
     /// The filter criteria used on responses based on document attributes or metadata fields.
-    public struct AttributeFilter {
+    public struct AttributeFilter: Swift.Sendable {
         /// Performs a logical AND operation on all supplied filters.
         public var andAllFilters: [QAppsClientTypes.AttributeFilter]?
         /// Returns true when a document contains all the specified document attributes or metadata fields. Supported for the following [document attribute value types](https://docs.aws.amazon.com/amazonq/latest/api-reference/API_DocumentAttributeValue.html): stringListValue.
@@ -2111,12 +2113,12 @@ extension QAppsClientTypes {
             self.orAllFilters = orAllFilters
         }
     }
-
 }
 
 extension QAppsClientTypes {
+
     /// A card in a Amazon Q App that generates a response based on the Amazon Q Business service.
-    public struct QQueryCard {
+    public struct QQueryCard: Swift.Sendable {
         /// The Amazon Q Business filters applied in this query card when resolving data sources
         public var attributeFilter: QAppsClientTypes.AttributeFilter?
         /// Any dependencies or requirements for the query card.
@@ -2157,12 +2159,12 @@ extension QAppsClientTypes {
             self.type = type
         }
     }
-
 }
 
 extension QAppsClientTypes {
+
     /// The input shape for defining a query card in an Amazon Q App.
-    public struct QQueryCardInput {
+    public struct QQueryCardInput: Swift.Sendable {
         /// Turns on filtering of responses based on document attributes or metadata fields.
         public var attributeFilter: QAppsClientTypes.AttributeFilter?
         /// The unique identifier of the query card.
@@ -2197,12 +2199,12 @@ extension QAppsClientTypes {
             self.type = type
         }
     }
-
 }
 
 extension QAppsClientTypes {
+
     /// A card representing a component or step in an Amazon Q App's flow.
-    public indirect enum Card {
+    public indirect enum Card: Swift.Sendable {
         /// A container for the properties of the text input card.
         case textinput(QAppsClientTypes.TextInputCard)
         /// A container for the properties of the query card.
@@ -2213,12 +2215,12 @@ extension QAppsClientTypes {
         case fileupload(QAppsClientTypes.FileUploadCard)
         case sdkUnknown(Swift.String)
     }
-
 }
 
 extension QAppsClientTypes {
+
     /// The properties defining an input card in an Amazon Q App.
-    public indirect enum CardInput {
+    public indirect enum CardInput: Swift.Sendable {
         /// A container for the properties of the text input card.
         case textinput(QAppsClientTypes.TextInputCardInput)
         /// A container for the properties of the query input card.
@@ -2229,12 +2231,12 @@ extension QAppsClientTypes {
         case fileupload(QAppsClientTypes.FileUploadCardInput)
         case sdkUnknown(Swift.String)
     }
-
 }
 
 extension QAppsClientTypes {
+
     /// The definition of the Q App, specifying the cards and flow.
-    public struct AppDefinition {
+    public struct AppDefinition: Swift.Sendable {
         /// The version of the app definition schema or specification.
         /// This member is required.
         public var appDefinitionVersion: Swift.String?
@@ -2255,12 +2257,12 @@ extension QAppsClientTypes {
             self.cards = cards
         }
     }
-
 }
 
 extension QAppsClientTypes {
+
     /// The input for defining an Q App.
-    public struct AppDefinitionInput {
+    public struct AppDefinitionInput: Swift.Sendable {
         /// The cards that make up the Q App definition.
         /// This member is required.
         public var cards: [QAppsClientTypes.CardInput]?
@@ -2276,12 +2278,12 @@ extension QAppsClientTypes {
             self.initialPrompt = initialPrompt
         }
     }
-
 }
 
 extension QAppsClientTypes {
+
     /// The definition of an Amazon Q App generated based on input such as a conversation or problem statement.
-    public struct PredictAppDefinition {
+    public struct PredictAppDefinition: Swift.Sendable {
         /// The definition specifying the cards and flow of the generated Q App.
         /// This member is required.
         public var appDefinition: QAppsClientTypes.AppDefinitionInput?
@@ -2302,10 +2304,9 @@ extension QAppsClientTypes {
             self.title = title
         }
     }
-
 }
 
-public struct CreateQAppInput {
+public struct CreateQAppInput: Swift.Sendable {
     /// The definition of the new Q App, specifying the cards and flow.
     /// This member is required.
     public var appDefinition: QAppsClientTypes.AppDefinitionInput?
@@ -2336,7 +2337,7 @@ public struct CreateQAppInput {
     }
 }
 
-public struct GetQAppOutput {
+public struct GetQAppOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the Q App.
     /// This member is required.
     public var appArn: Swift.String?
@@ -2406,7 +2407,7 @@ public struct GetQAppOutput {
     }
 }
 
-public struct UpdateQAppInput {
+public struct UpdateQAppInput: Swift.Sendable {
     /// The new definition specifying the cards and flow for the Q App.
     public var appDefinition: QAppsClientTypes.AppDefinitionInput?
     /// The unique identifier of the Q App to update.
@@ -2436,7 +2437,7 @@ public struct UpdateQAppInput {
     }
 }
 
-public struct PredictQAppOutput {
+public struct PredictQAppOutput: Swift.Sendable {
     /// The generated Q App definition.
     /// This member is required.
     public var app: QAppsClientTypes.PredictAppDefinition?

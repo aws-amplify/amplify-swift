@@ -49,8 +49,9 @@ public struct AccessDeniedException: ClientRuntime.ModeledError, AWSClientRuntim
 }
 
 extension PricingClientTypes {
+
     /// The values of a given attribute, such as Throughput Optimized HDD or Provisioned IOPS for the Amazon EC2volumeType attribute.
-    public struct AttributeValue {
+    public struct AttributeValue: Swift.Sendable {
         /// The specific value of an attributeName.
         public var value: Swift.String?
 
@@ -61,7 +62,6 @@ extension PricingClientTypes {
             self.value = value
         }
     }
-
 }
 
 /// The pagination token expired. Try again without a pagination token.
@@ -208,7 +208,7 @@ public struct ThrottlingException: ClientRuntime.ModeledError, AWSClientRuntime.
     }
 }
 
-public struct DescribeServicesInput {
+public struct DescribeServicesInput: Swift.Sendable {
     /// The format version that you want the response to be in. Valid values are: aws_v1
     public var formatVersion: Swift.String?
     /// The maximum number of results that you want returned in the response.
@@ -233,8 +233,9 @@ public struct DescribeServicesInput {
 }
 
 extension PricingClientTypes {
+
     /// The metadata for a service, such as the service code and available attribute names.
-    public struct Service {
+    public struct Service: Swift.Sendable {
         /// The attributes that are available for this service.
         public var attributeNames: [Swift.String]?
         /// The code for the Amazon Web Services service.
@@ -250,10 +251,9 @@ extension PricingClientTypes {
             self.serviceCode = serviceCode
         }
     }
-
 }
 
-public struct DescribeServicesOutput {
+public struct DescribeServicesOutput: Swift.Sendable {
     /// The format version of the response. For example, aws_v1.
     public var formatVersion: Swift.String?
     /// The pagination token for the next set of retrievable results.
@@ -273,7 +273,7 @@ public struct DescribeServicesOutput {
     }
 }
 
-public struct GetAttributeValuesInput {
+public struct GetAttributeValuesInput: Swift.Sendable {
     /// The name of the attribute that you want to retrieve the values for, such as volumeType.
     /// This member is required.
     public var attributeName: Swift.String?
@@ -299,7 +299,7 @@ public struct GetAttributeValuesInput {
     }
 }
 
-public struct GetAttributeValuesOutput {
+public struct GetAttributeValuesOutput: Swift.Sendable {
     /// The list of values for an attribute. For example, Throughput Optimized HDD and Provisioned IOPS are two available values for the AmazonEC2volumeType.
     public var attributeValues: [PricingClientTypes.AttributeValue]?
     /// The pagination token that indicates the next set of results to retrieve.
@@ -339,7 +339,7 @@ public struct ResourceNotFoundException: ClientRuntime.ModeledError, AWSClientRu
     }
 }
 
-public struct GetPriceListFileUrlInput {
+public struct GetPriceListFileUrlInput: Swift.Sendable {
     /// The format that you want to retrieve your Price List files in. The FileFormat can be obtained from the [ListPriceLists](https://docs.aws.amazon.com/aws-cost-management/latest/APIReference/API_pricing_ListPriceLists.html) response.
     /// This member is required.
     public var fileFormat: Swift.String?
@@ -357,7 +357,7 @@ public struct GetPriceListFileUrlInput {
     }
 }
 
-public struct GetPriceListFileUrlOutput {
+public struct GetPriceListFileUrlOutput: Swift.Sendable {
     /// The URL to download your Price List file from.
     public var url: Swift.String?
 
@@ -371,7 +371,7 @@ public struct GetPriceListFileUrlOutput {
 
 extension PricingClientTypes {
 
-    public enum FilterType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum FilterType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case termMatch
         case sdkUnknown(Swift.String)
 
@@ -396,8 +396,9 @@ extension PricingClientTypes {
 }
 
 extension PricingClientTypes {
+
     /// The constraints that you want all returned products to match.
-    public struct Filter {
+    public struct Filter: Swift.Sendable {
         /// The product metadata field that you want to filter on. You can filter by just the service code to see all products for a specific service, filter by just the attribute name to see a specific attribute for multiple services, or use both a service code and an attribute name to retrieve only products that match both fields. Valid values include: ServiceCode, and all attribute names For example, you can filter by the AmazonEC2 service code and the volumeType attribute name to get the prices for only Amazon EC2 volumes.
         /// This member is required.
         public var field: Swift.String?
@@ -419,10 +420,9 @@ extension PricingClientTypes {
             self.value = value
         }
     }
-
 }
 
-public struct GetProductsInput {
+public struct GetProductsInput: Swift.Sendable {
     /// The list of filters that limit the returned products. only products that match all filters are returned.
     public var filters: [PricingClientTypes.Filter]?
     /// The format version that you want the response to be in. Valid values are: aws_v1
@@ -451,7 +451,7 @@ public struct GetProductsInput {
     }
 }
 
-public struct GetProductsOutput {
+public struct GetProductsOutput: Swift.Sendable {
     /// The format version of the response. For example, aws_v1.
     public var formatVersion: Swift.String?
     /// The pagination token that indicates the next set of results to retrieve.
@@ -471,7 +471,7 @@ public struct GetProductsOutput {
     }
 }
 
-public struct ListPriceListsInput {
+public struct ListPriceListsInput: Swift.Sendable {
     /// The three alphabetical character ISO-4217 currency code that the Price List files are denominated in.
     /// This member is required.
     public var currencyCode: Swift.String?
@@ -507,8 +507,9 @@ public struct ListPriceListsInput {
 }
 
 extension PricingClientTypes {
+
     /// This feature is in preview release and is subject to change. Your use of Amazon Web Services Price List API is subject to the Beta Service Participation terms of the [Amazon Web Services Service Terms](https://aws.amazon.com/service-terms/) (Section 1.10). This is the type of price list references that match your request.
-    public struct PriceList {
+    public struct PriceList: Swift.Sendable {
         /// The three alphabetical character ISO-4217 currency code the Price List files are denominated in.
         public var currencyCode: Swift.String?
         /// The format you want to retrieve your Price List files. The FileFormat can be obtained from the [ListPriceList](https://docs.aws.amazon.com/aws-cost-management/latest/APIReference/API_pricing_ListPriceLists.html) response.
@@ -531,10 +532,9 @@ extension PricingClientTypes {
             self.regionCode = regionCode
         }
     }
-
 }
 
-public struct ListPriceListsOutput {
+public struct ListPriceListsOutput: Swift.Sendable {
     /// The pagination token that indicates the next set of results to retrieve.
     public var nextToken: Swift.String?
     /// The type of price list references that match your request.

@@ -27,7 +27,7 @@ import protocol ClientRuntime.ModeledError
 extension CostandUsageReportClientTypes {
 
     /// The types of manifest that you want Amazon Web Services to create for this report.
-    public enum AdditionalArtifact: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AdditionalArtifact: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case athena
         case quicksight
         case redshift
@@ -108,7 +108,7 @@ public struct ValidationException: ClientRuntime.ModeledError, AWSClientRuntime.
 }
 
 /// Deletes the specified report.
-public struct DeleteReportDefinitionInput {
+public struct DeleteReportDefinitionInput: Swift.Sendable {
     /// The name of the report that you want to delete. The name must be unique, is case sensitive, and can't include spaces.
     /// This member is required.
     public var reportName: Swift.String?
@@ -122,7 +122,7 @@ public struct DeleteReportDefinitionInput {
 }
 
 /// If the action is successful, the service sends back an HTTP 200 response.
-public struct DeleteReportDefinitionOutput {
+public struct DeleteReportDefinitionOutput: Swift.Sendable {
     /// Whether the deletion was successful or not.
     public var responseMessage: Swift.String?
 
@@ -135,7 +135,7 @@ public struct DeleteReportDefinitionOutput {
 }
 
 /// Requests a Amazon Web Services Cost and Usage Report list owned by the account.
-public struct DescribeReportDefinitionsInput {
+public struct DescribeReportDefinitionsInput: Swift.Sendable {
     /// The maximum number of results that Amazon Web Services returns for the operation.
     public var maxResults: Swift.Int?
     /// A generic string.
@@ -154,7 +154,7 @@ public struct DescribeReportDefinitionsInput {
 extension CostandUsageReportClientTypes {
 
     /// Whether or not Amazon Web Services includes resource IDs in the report.
-    public enum SchemaElement: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SchemaElement: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case manualDiscountCompatibility
         case resources
         case splitCostAllocationData
@@ -187,7 +187,7 @@ extension CostandUsageReportClientTypes {
 extension CostandUsageReportClientTypes {
 
     /// The compression format that Amazon Web Services uses for the report.
-    public enum CompressionFormat: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum CompressionFormat: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case gzip
         case parquet
         case zip
@@ -220,7 +220,7 @@ extension CostandUsageReportClientTypes {
 extension CostandUsageReportClientTypes {
 
     /// The format that Amazon Web Services saves the report in.
-    public enum ReportFormat: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ReportFormat: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case csv
         case parquet
         case sdkUnknown(Swift.String)
@@ -249,7 +249,7 @@ extension CostandUsageReportClientTypes {
 
 extension CostandUsageReportClientTypes {
 
-    public enum LastStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum LastStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case errorNoBucket
         case errorPermissions
         case success
@@ -280,8 +280,9 @@ extension CostandUsageReportClientTypes {
 }
 
 extension CostandUsageReportClientTypes {
+
     /// A two element dictionary with a lastDelivery and lastStatus key whose values describe the date and status of the last delivered report for a particular report definition.
-    public struct ReportStatus {
+    public struct ReportStatus: Swift.Sendable {
         /// A timestamp that gives the date of a report delivery.
         public var lastDelivery: Swift.String?
         /// An enum that gives the status of a report delivery.
@@ -296,12 +297,11 @@ extension CostandUsageReportClientTypes {
             self.lastStatus = lastStatus
         }
     }
-
 }
 
 extension CostandUsageReportClientTypes {
 
-    public enum ReportVersioning: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ReportVersioning: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case createNewReport
         case overwriteReport
         case sdkUnknown(Swift.String)
@@ -331,7 +331,7 @@ extension CostandUsageReportClientTypes {
 extension CostandUsageReportClientTypes {
 
     /// The region of the S3 bucket that Amazon Web Services delivers the report into.
-    public enum AWSRegion: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AWSRegion: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case bahrain
         case beijing
         case canadaCentral
@@ -439,7 +439,7 @@ extension CostandUsageReportClientTypes {
 extension CostandUsageReportClientTypes {
 
     /// The length of time covered by the report.
-    public enum TimeUnit: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum TimeUnit: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case daily
         case hourly
         case monthly
@@ -470,8 +470,9 @@ extension CostandUsageReportClientTypes {
 }
 
 extension CostandUsageReportClientTypes {
+
     /// The definition of Amazon Web Services Cost and Usage Report. You can specify the report name, time unit, report format, compression format, S3 bucket, additional artifacts, and schema elements in the definition.
-    public struct ReportDefinition {
+    public struct ReportDefinition: Swift.Sendable {
         /// A list of manifests that you want Amazon Web Services to create for this report.
         public var additionalArtifacts: [CostandUsageReportClientTypes.AdditionalArtifact]?
         /// A list of strings that indicate additional content that Amazon Web Services includes in the report, such as individual resource IDs.
@@ -538,11 +539,10 @@ extension CostandUsageReportClientTypes {
             self.timeUnit = timeUnit
         }
     }
-
 }
 
 /// If the action is successful, the service sends back an HTTP 200 response.
-public struct DescribeReportDefinitionsOutput {
+public struct DescribeReportDefinitionsOutput: Swift.Sendable {
     /// A generic string.
     public var nextToken: Swift.String?
     /// An Amazon Web Services Cost and Usage Report list owned by the account.
@@ -583,7 +583,7 @@ public struct ResourceNotFoundException: ClientRuntime.ModeledError, AWSClientRu
     }
 }
 
-public struct ListTagsForResourceInput {
+public struct ListTagsForResourceInput: Swift.Sendable {
     /// The report name of the report definition that tags are to be returned for.
     /// This member is required.
     public var reportName: Swift.String?
@@ -597,8 +597,9 @@ public struct ListTagsForResourceInput {
 }
 
 extension CostandUsageReportClientTypes {
+
     /// Describes a tag. A tag is a key-value pair. You can add up to 50 tags to a report definition.
-    public struct Tag {
+    public struct Tag: Swift.Sendable {
         /// The key of the tag. Tag keys are case sensitive. Each report definition can only have up to one tag with the same key. If you try to add an existing tag with the same key, the existing tag value will be updated to the new value.
         /// This member is required.
         public var key: Swift.String?
@@ -615,10 +616,9 @@ extension CostandUsageReportClientTypes {
             self.value = value
         }
     }
-
 }
 
-public struct ListTagsForResourceOutput {
+public struct ListTagsForResourceOutput: Swift.Sendable {
     /// The tags assigned to the report definition resource.
     public var tags: [CostandUsageReportClientTypes.Tag]?
 
@@ -630,7 +630,7 @@ public struct ListTagsForResourceOutput {
     }
 }
 
-public struct ModifyReportDefinitionInput {
+public struct ModifyReportDefinitionInput: Swift.Sendable {
     /// The definition of Amazon Web Services Cost and Usage Report. You can specify the report name, time unit, report format, compression format, S3 bucket, additional artifacts, and schema elements in the definition.
     /// This member is required.
     public var reportDefinition: CostandUsageReportClientTypes.ReportDefinition?
@@ -648,7 +648,7 @@ public struct ModifyReportDefinitionInput {
     }
 }
 
-public struct ModifyReportDefinitionOutput {
+public struct ModifyReportDefinitionOutput: Swift.Sendable {
 
     public init() { }
 }
@@ -704,7 +704,7 @@ public struct ReportLimitReachedException: ClientRuntime.ModeledError, AWSClient
 }
 
 /// Creates a Cost and Usage Report.
-public struct PutReportDefinitionInput {
+public struct PutReportDefinitionInput: Swift.Sendable {
     /// Represents the output of the PutReportDefinition operation. The content consists of the detailed metadata and data file information.
     /// This member is required.
     public var reportDefinition: CostandUsageReportClientTypes.ReportDefinition?
@@ -722,12 +722,12 @@ public struct PutReportDefinitionInput {
 }
 
 /// If the action is successful, the service sends back an HTTP 200 response with an empty HTTP body.
-public struct PutReportDefinitionOutput {
+public struct PutReportDefinitionOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct TagResourceInput {
+public struct TagResourceInput: Swift.Sendable {
     /// The report name of the report definition that tags are to be associated with.
     /// This member is required.
     public var reportName: Swift.String?
@@ -745,12 +745,12 @@ public struct TagResourceInput {
     }
 }
 
-public struct TagResourceOutput {
+public struct TagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UntagResourceInput {
+public struct UntagResourceInput: Swift.Sendable {
     /// The report name of the report definition that tags are to be disassociated from.
     /// This member is required.
     public var reportName: Swift.String?
@@ -768,7 +768,7 @@ public struct UntagResourceInput {
     }
 }
 
-public struct UntagResourceOutput {
+public struct UntagResourceOutput: Swift.Sendable {
 
     public init() { }
 }

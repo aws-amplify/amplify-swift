@@ -34,134 +34,136 @@ import struct SmithyHTTPAPI.Headers
 @_spi(SmithyReadWrite) import struct SmithyReadWrite.ReadingClosureBox
 @_spi(SmithyReadWrite) import struct SmithyReadWrite.WritingClosureBox
 
-public struct DeleteApiKeyOutput {
+
+public struct DeleteApiKeyOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteAuthorizerOutput {
+public struct DeleteAuthorizerOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteBasePathMappingOutput {
+public struct DeleteBasePathMappingOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteClientCertificateOutput {
+public struct DeleteClientCertificateOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteDeploymentOutput {
+public struct DeleteDeploymentOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteDocumentationPartOutput {
+public struct DeleteDocumentationPartOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteDocumentationVersionOutput {
+public struct DeleteDocumentationVersionOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteDomainNameOutput {
+public struct DeleteDomainNameOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteGatewayResponseOutput {
+public struct DeleteGatewayResponseOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteIntegrationOutput {
+public struct DeleteIntegrationOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteIntegrationResponseOutput {
+public struct DeleteIntegrationResponseOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteMethodOutput {
+public struct DeleteMethodOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteMethodResponseOutput {
+public struct DeleteMethodResponseOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteModelOutput {
+public struct DeleteModelOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteRequestValidatorOutput {
+public struct DeleteRequestValidatorOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteResourceOutput {
+public struct DeleteResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteRestApiOutput {
+public struct DeleteRestApiOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteStageOutput {
+public struct DeleteStageOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteUsagePlanKeyOutput {
+public struct DeleteUsagePlanKeyOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteUsagePlanOutput {
+public struct DeleteUsagePlanOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteVpcLinkOutput {
+public struct DeleteVpcLinkOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct FlushStageAuthorizersCacheOutput {
+public struct FlushStageAuthorizersCacheOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct FlushStageCacheOutput {
+public struct FlushStageCacheOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct TagResourceOutput {
+public struct TagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UntagResourceOutput {
+public struct UntagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
 extension APIGatewayClientTypes {
+
     /// Access log settings, including the access log format and access log destination ARN.
-    public struct AccessLogSettings {
+    public struct AccessLogSettings: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the CloudWatch Logs log group or Kinesis Data Firehose delivery stream to receive access logs. If you specify a Kinesis Data Firehose delivery stream, the stream name must begin with amazon-apigateway-.
         public var destinationArn: Swift.String?
         /// A single line format of the access logs of data, as specified by selected $context variables. The format must include at least $context.requestId.
@@ -176,12 +178,12 @@ extension APIGatewayClientTypes {
             self.format = format
         }
     }
-
 }
 
 extension APIGatewayClientTypes {
+
     /// The API request rate limits.
-    public struct ThrottleSettings {
+    public struct ThrottleSettings: Swift.Sendable {
         /// The API target request burst rate limit. This allows more requests through for a period of time than the target rate limit.
         public var burstLimit: Swift.Int
         /// The API target request rate limit.
@@ -196,12 +198,12 @@ extension APIGatewayClientTypes {
             self.rateLimit = rateLimit
         }
     }
-
 }
 
 extension APIGatewayClientTypes {
+
     /// A resource that can be distributed to callers for executing Method resources that require an API key. API keys can be mapped to any Stage on any RestApi, which indicates that the callers with the API key can make requests to that stage.
-    public struct ApiKey {
+    public struct ApiKey: Swift.Sendable {
         /// The timestamp when the API Key was created.
         public var createdDate: Foundation.Date?
         /// An Amazon Web Services Marketplace customer identifier, when integrating with the Amazon Web Services SaaS Marketplace.
@@ -248,12 +250,11 @@ extension APIGatewayClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension APIGatewayClientTypes {
 
-    public enum ApiKeysFormat: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ApiKeysFormat: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case csv
         case sdkUnknown(Swift.String)
 
@@ -279,7 +280,7 @@ extension APIGatewayClientTypes {
 
 extension APIGatewayClientTypes {
 
-    public enum ApiKeySourceType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ApiKeySourceType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case authorizer
         case header
         case sdkUnknown(Swift.String)
@@ -307,8 +308,9 @@ extension APIGatewayClientTypes {
 }
 
 extension APIGatewayClientTypes {
+
     /// API stage name of the associated API stage in a usage plan.
-    public struct ApiStage {
+    public struct ApiStage: Swift.Sendable {
         /// API Id of the associated API stage in a usage plan.
         public var apiId: Swift.String?
         /// API stage name of the associated API stage in a usage plan.
@@ -327,13 +329,12 @@ extension APIGatewayClientTypes {
             self.throttle = throttle
         }
     }
-
 }
 
 extension APIGatewayClientTypes {
 
     /// The authorizer type. Valid values are TOKEN for a Lambda function using a single authorization token submitted in a custom header, REQUEST for a Lambda function using incoming request parameters, and COGNITO_USER_POOLS for using an Amazon Cognito user pool.
-    public enum AuthorizerType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AuthorizerType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case cognitoUserPools
         case request
         case token
@@ -364,8 +365,9 @@ extension APIGatewayClientTypes {
 }
 
 extension APIGatewayClientTypes {
+
     /// Represents an authorization layer for methods. If enabled on a method, API Gateway will activate the authorizer when a client calls the method.
-    public struct Authorizer {
+    public struct Authorizer: Swift.Sendable {
         /// Optional customer-defined field, used in OpenAPI imports and exports without functional impact.
         public var authType: Swift.String?
         /// Specifies the required credentials as an IAM role for API Gateway to invoke the authorizer. To specify an IAM role for API Gateway to assume, use the role's Amazon Resource Name (ARN). To use resource-based permissions on the Lambda function, specify null.
@@ -412,7 +414,6 @@ extension APIGatewayClientTypes {
             self.type = type
         }
     }
-
 }
 
 /// The submitted request is not valid, for example, the input is incomplete or incorrect. See the accompanying error message for details.
@@ -566,8 +567,9 @@ public struct UnauthorizedException: ClientRuntime.ModeledError, AWSClientRuntim
 }
 
 extension APIGatewayClientTypes {
+
     /// A reference to a unique stage identified in the format {restApiId}/{stage}.
-    public struct StageKey {
+    public struct StageKey: Swift.Sendable {
         /// The string identifier of the associated RestApi.
         public var restApiId: Swift.String?
         /// The stage name associated with the stage key.
@@ -582,11 +584,10 @@ extension APIGatewayClientTypes {
             self.stageName = stageName
         }
     }
-
 }
 
 /// Request to create an ApiKey resource.
-public struct CreateApiKeyInput {
+public struct CreateApiKeyInput: Swift.Sendable {
     /// An Amazon Web Services Marketplace customer identifier, when integrating with the Amazon Web Services SaaS Marketplace.
     public var customerId: Swift.String?
     /// The description of the ApiKey.
@@ -627,7 +628,7 @@ public struct CreateApiKeyInput {
 }
 
 /// A resource that can be distributed to callers for executing Method resources that require an API key. API keys can be mapped to any Stage on any RestApi, which indicates that the callers with the API key can make requests to that stage.
-public struct CreateApiKeyOutput {
+public struct CreateApiKeyOutput: Swift.Sendable {
     /// The timestamp when the API Key was created.
     public var createdDate: Foundation.Date?
     /// An Amazon Web Services Marketplace customer identifier, when integrating with the Amazon Web Services SaaS Marketplace.
@@ -676,7 +677,7 @@ public struct CreateApiKeyOutput {
 }
 
 /// Request to add a new Authorizer to an existing RestApi resource.
-public struct CreateAuthorizerInput {
+public struct CreateAuthorizerInput: Swift.Sendable {
     /// Optional customer-defined field, used in OpenAPI imports and exports without functional impact.
     public var authType: Swift.String?
     /// Specifies the required credentials as an IAM role for API Gateway to invoke the authorizer. To specify an IAM role for API Gateway to assume, use the role's Amazon Resource Name (ARN). To use resource-based permissions on the Lambda function, specify null.
@@ -728,7 +729,7 @@ public struct CreateAuthorizerInput {
 }
 
 /// Represents an authorization layer for methods. If enabled on a method, API Gateway will activate the authorizer when a client calls the method.
-public struct CreateAuthorizerOutput {
+public struct CreateAuthorizerOutput: Swift.Sendable {
     /// Optional customer-defined field, used in OpenAPI imports and exports without functional impact.
     public var authType: Swift.String?
     /// Specifies the required credentials as an IAM role for API Gateway to invoke the authorizer. To specify an IAM role for API Gateway to assume, use the role's Amazon Resource Name (ARN). To use resource-based permissions on the Lambda function, specify null.
@@ -777,7 +778,7 @@ public struct CreateAuthorizerOutput {
 }
 
 /// Requests API Gateway to create a new BasePathMapping resource.
-public struct CreateBasePathMappingInput {
+public struct CreateBasePathMappingInput: Swift.Sendable {
     /// The base path name that callers of the API must provide as part of the URL after the domain name. This value must be unique for all of the mappings across a single API. Specify '(none)' if you do not want callers to specify a base path name after the domain name.
     public var basePath: Swift.String?
     /// The domain name of the BasePathMapping resource to create.
@@ -804,7 +805,7 @@ public struct CreateBasePathMappingInput {
 }
 
 /// Represents the base path that callers of the API must provide as part of the URL after the domain name.
-public struct CreateBasePathMappingOutput {
+public struct CreateBasePathMappingOutput: Swift.Sendable {
     /// The base path name that callers of the API must provide as part of the URL after the domain name.
     public var basePath: Swift.String?
     /// The string identifier of the associated RestApi.
@@ -854,7 +855,7 @@ public struct ServiceUnavailableException: ClientRuntime.ModeledError, AWSClient
 extension APIGatewayClientTypes {
 
     /// Returns the size of the CacheCluster.
-    public enum CacheClusterSize: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum CacheClusterSize: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case size0Point5Gb
         case size118Gb
         case size13Point5Gb
@@ -900,8 +901,9 @@ extension APIGatewayClientTypes {
 }
 
 extension APIGatewayClientTypes {
+
     /// The input configuration for a canary deployment.
-    public struct DeploymentCanarySettings {
+    public struct DeploymentCanarySettings: Swift.Sendable {
         /// The percentage (0.0-100.0) of traffic routed to the canary deployment.
         public var percentTraffic: Swift.Double
         /// A stage variable overrides used for the canary release deployment. They can override existing stage variables or add new stage variables for the canary release deployment. These stage variables are represented as a string-to-string map between stage variable names and their values.
@@ -920,11 +922,10 @@ extension APIGatewayClientTypes {
             self.useStageCache = useStageCache
         }
     }
-
 }
 
 /// Requests API Gateway to create a Deployment resource.
-public struct CreateDeploymentInput {
+public struct CreateDeploymentInput: Swift.Sendable {
     /// Enables a cache cluster for the Stage resource specified in the input.
     public var cacheClusterEnabled: Swift.Bool?
     /// The stage's cache capacity in GB. For more information about choosing a cache size, see [Enabling API caching to enhance responsiveness](https://docs.aws.amazon.com/apigateway/latest/developerguide/api-gateway-caching.html).
@@ -970,8 +971,9 @@ public struct CreateDeploymentInput {
 }
 
 extension APIGatewayClientTypes {
+
     /// Represents a summary of a Method resource, given a particular date and time.
-    public struct MethodSnapshot {
+    public struct MethodSnapshot: Swift.Sendable {
         /// Specifies whether the method requires a valid ApiKey.
         public var apiKeyRequired: Swift.Bool
         /// The method's authorization type. Valid values are NONE for open access, AWS_IAM for using AWS IAM permissions, CUSTOM for using a custom authorizer, or COGNITO_USER_POOLS for using a Cognito user pool.
@@ -986,11 +988,10 @@ extension APIGatewayClientTypes {
             self.authorizationType = authorizationType
         }
     }
-
 }
 
 /// An immutable representation of a RestApi resource that can be called by users using Stages. A deployment must be associated with a Stage for it to be callable over the Internet.
-public struct CreateDeploymentOutput {
+public struct CreateDeploymentOutput: Swift.Sendable {
     /// A summary of the RestApi at the date and time that the deployment resource was created.
     public var apiSummary: [Swift.String: [Swift.String: APIGatewayClientTypes.MethodSnapshot]]?
     /// The date and time that the deployment resource was created.
@@ -1016,7 +1017,7 @@ public struct CreateDeploymentOutput {
 
 extension APIGatewayClientTypes {
 
-    public enum DocumentationPartType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DocumentationPartType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case api
         case authorizer
         case method
@@ -1074,8 +1075,9 @@ extension APIGatewayClientTypes {
 }
 
 extension APIGatewayClientTypes {
+
     /// Specifies the target API entity to which the documentation applies.
-    public struct DocumentationPartLocation {
+    public struct DocumentationPartLocation: Swift.Sendable {
         /// The HTTP verb of a method. It is a valid field for the API entity types of METHOD, PATH_PARAMETER, QUERY_PARAMETER, REQUEST_HEADER, REQUEST_BODY, RESPONSE, RESPONSE_HEADER, and RESPONSE_BODY. The default value is * for any method. When an applicable child entity inherits the content of an entity of the same type with more general specifications of the other location attributes, the child entity's method attribute must match that of the parent entity exactly.
         public var method: Swift.String?
         /// The name of the targeted API entity. It is a valid and required field for the API entity types of AUTHORIZER, MODEL, PATH_PARAMETER, QUERY_PARAMETER, REQUEST_HEADER, REQUEST_BODY and RESPONSE_HEADER. It is an invalid field for any other entity type.
@@ -1103,11 +1105,10 @@ extension APIGatewayClientTypes {
             self.type = type
         }
     }
-
 }
 
 /// Creates a new documentation part of a given API.
-public struct CreateDocumentationPartInput {
+public struct CreateDocumentationPartInput: Swift.Sendable {
     /// The location of the targeted API entity of the to-be-created documentation part.
     /// This member is required.
     public var location: APIGatewayClientTypes.DocumentationPartLocation?
@@ -1131,7 +1132,7 @@ public struct CreateDocumentationPartInput {
 }
 
 /// A documentation part for a targeted API entity.
-public struct CreateDocumentationPartOutput {
+public struct CreateDocumentationPartOutput: Swift.Sendable {
     /// The DocumentationPart identifier, generated by API Gateway when the DocumentationPart is created.
     public var id: Swift.String?
     /// The location of the API entity to which the documentation applies. Valid fields depend on the targeted API entity type. All the valid location fields are not required. If not explicitly specified, a valid location field is treated as a wildcard and associated documentation content may be inherited by matching entities, unless overridden.
@@ -1152,7 +1153,7 @@ public struct CreateDocumentationPartOutput {
 }
 
 /// Creates a new documentation version of a given API.
-public struct CreateDocumentationVersionInput {
+public struct CreateDocumentationVersionInput: Swift.Sendable {
     /// A description about the new documentation snapshot.
     public var description: Swift.String?
     /// The version identifier of the new snapshot.
@@ -1179,7 +1180,7 @@ public struct CreateDocumentationVersionInput {
 }
 
 /// A snapshot of the documentation of an API.
-public struct CreateDocumentationVersionOutput {
+public struct CreateDocumentationVersionOutput: Swift.Sendable {
     /// The date when the API documentation snapshot is created.
     public var createdDate: Foundation.Date?
     /// The description of the API documentation snapshot.
@@ -1202,7 +1203,7 @@ public struct CreateDocumentationVersionOutput {
 extension APIGatewayClientTypes {
 
     /// The endpoint type. The valid values are EDGE for edge-optimized API setup, most suitable for mobile applications; REGIONAL for regional API endpoint setup, most suitable for calling from AWS Region; and PRIVATE for private APIs.
-    public enum EndpointType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum EndpointType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case edge
         case `private`
         case regional
@@ -1233,8 +1234,9 @@ extension APIGatewayClientTypes {
 }
 
 extension APIGatewayClientTypes {
+
     /// The endpoint configuration to indicate the types of endpoints an API (RestApi) or its custom domain name (DomainName) has.
-    public struct EndpointConfiguration {
+    public struct EndpointConfiguration: Swift.Sendable {
         /// A list of endpoint types of an API (RestApi) or its custom domain name (DomainName). For an edge-optimized API and its custom domain name, the endpoint type is "EDGE". For a regional API and its custom domain name, the endpoint type is REGIONAL. For a private API, the endpoint type is PRIVATE.
         public var types: [APIGatewayClientTypes.EndpointType]?
         /// A list of VpcEndpointIds of an API (RestApi) against which to create Route53 ALIASes. It is only supported for PRIVATE endpoint type.
@@ -1249,12 +1251,12 @@ extension APIGatewayClientTypes {
             self.vpcEndpointIds = vpcEndpointIds
         }
     }
-
 }
 
 extension APIGatewayClientTypes {
+
     /// The mutual TLS authentication configuration for a custom domain name. If specified, API Gateway performs two-way authentication between the client and the server. Clients must present a trusted certificate to access your API.
-    public struct MutualTlsAuthenticationInput {
+    public struct MutualTlsAuthenticationInput: Swift.Sendable {
         /// An Amazon S3 URL that specifies the truststore for mutual TLS authentication, for example s3://bucket-name/key-name. The truststore can contain certificates from public or private certificate authorities. To update the truststore, upload a new version to S3, and then update your custom domain name to use the new version. To update the truststore, you must have permissions to access the S3 object.
         public var truststoreUri: Swift.String?
         /// The version of the S3 object that contains your truststore. To specify a version, you must have versioning enabled for the S3 bucket
@@ -1269,12 +1271,11 @@ extension APIGatewayClientTypes {
             self.truststoreVersion = truststoreVersion
         }
     }
-
 }
 
 extension APIGatewayClientTypes {
 
-    public enum SecurityPolicy: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SecurityPolicy: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case tls10
         case tls12
         case sdkUnknown(Swift.String)
@@ -1302,7 +1303,7 @@ extension APIGatewayClientTypes {
 }
 
 /// A request to create a new domain name.
-public struct CreateDomainNameInput {
+public struct CreateDomainNameInput: Swift.Sendable {
     /// The reference to an Amazon Web Services-managed certificate that will be used by edge-optimized endpoint for this domain name. Certificate Manager is the only supported source.
     public var certificateArn: Swift.String?
     /// [Deprecated] The body of the server certificate that will be used by edge-optimized endpoint for this domain name provided by your certificate authority.
@@ -1365,7 +1366,7 @@ public struct CreateDomainNameInput {
 
 extension APIGatewayClientTypes {
 
-    public enum DomainNameStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DomainNameStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case available
         case pending
         case pendingCertificateReimport
@@ -1402,8 +1403,9 @@ extension APIGatewayClientTypes {
 }
 
 extension APIGatewayClientTypes {
+
     /// The mutual TLS authentication configuration for a custom domain name. If specified, API Gateway performs two-way authentication between the client and the server. Clients must present a trusted certificate to access your API.
-    public struct MutualTlsAuthentication {
+    public struct MutualTlsAuthentication: Swift.Sendable {
         /// An Amazon S3 URL that specifies the truststore for mutual TLS authentication, for example s3://bucket-name/key-name. The truststore can contain certificates from public or private certificate authorities. To update the truststore, upload a new version to S3, and then update your custom domain name to use the new version. To update the truststore, you must have permissions to access the S3 object.
         public var truststoreUri: Swift.String?
         /// The version of the S3 object that contains your truststore. To specify a version, you must have versioning enabled for the S3 bucket.
@@ -1422,11 +1424,10 @@ extension APIGatewayClientTypes {
             self.truststoreWarnings = truststoreWarnings
         }
     }
-
 }
 
 /// Represents a custom domain name as a user-friendly host name of an API (RestApi).
-public struct CreateDomainNameOutput {
+public struct CreateDomainNameOutput: Swift.Sendable {
     /// The reference to an Amazon Web Services-managed certificate that will be used by edge-optimized endpoint for this domain name. Certificate Manager is the only supported source.
     public var certificateArn: Swift.String?
     /// The name of the certificate that will be used by edge-optimized endpoint for this domain name.
@@ -1503,7 +1504,7 @@ public struct CreateDomainNameOutput {
 }
 
 /// Request to add a new Model to an existing RestApi resource.
-public struct CreateModelInput {
+public struct CreateModelInput: Swift.Sendable {
     /// The content-type for the model.
     /// This member is required.
     public var contentType: Swift.String?
@@ -1535,7 +1536,7 @@ public struct CreateModelInput {
 }
 
 /// Represents the data structure of a method's request or response payload.
-public struct CreateModelOutput {
+public struct CreateModelOutput: Swift.Sendable {
     /// The content-type for the model.
     public var contentType: Swift.String?
     /// The description of the model.
@@ -1564,7 +1565,7 @@ public struct CreateModelOutput {
 }
 
 /// Creates a RequestValidator of a given RestApi.
-public struct CreateRequestValidatorInput {
+public struct CreateRequestValidatorInput: Swift.Sendable {
     /// The name of the to-be-created RequestValidator.
     public var name: Swift.String?
     /// The string identifier of the associated RestApi.
@@ -1590,7 +1591,7 @@ public struct CreateRequestValidatorInput {
 }
 
 /// A set of validation rules for incoming Method requests.
-public struct CreateRequestValidatorOutput {
+public struct CreateRequestValidatorOutput: Swift.Sendable {
     /// The identifier of this RequestValidator.
     public var id: Swift.String?
     /// The name of this RequestValidator
@@ -1615,7 +1616,7 @@ public struct CreateRequestValidatorOutput {
 }
 
 /// Requests API Gateway to create a Resource resource.
-public struct CreateResourceInput {
+public struct CreateResourceInput: Swift.Sendable {
     /// The parent resource's identifier.
     /// This member is required.
     public var parentId: Swift.String?
@@ -1640,7 +1641,7 @@ public struct CreateResourceInput {
 
 extension APIGatewayClientTypes {
 
-    public enum ConnectionType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ConnectionType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case internet
         case vpcLink
         case sdkUnknown(Swift.String)
@@ -1669,7 +1670,7 @@ extension APIGatewayClientTypes {
 
 extension APIGatewayClientTypes {
 
-    public enum ContentHandlingStrategy: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ContentHandlingStrategy: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case convertToBinary
         case convertToText
         case sdkUnknown(Swift.String)
@@ -1697,8 +1698,9 @@ extension APIGatewayClientTypes {
 }
 
 extension APIGatewayClientTypes {
+
     /// Represents an integration response. The status code must map to an existing MethodResponse, and parameters and templates can be used to transform the back-end response.
-    public struct IntegrationResponse {
+    public struct IntegrationResponse: Swift.Sendable {
         /// Specifies how to handle response payload content type conversions. Supported values are CONVERT_TO_BINARY and CONVERT_TO_TEXT, with the following behaviors: If this property is not defined, the response payload will be passed through from the integration response to the method response without modification.
         public var contentHandling: APIGatewayClientTypes.ContentHandlingStrategy?
         /// A key-value map specifying response parameters that are passed to the method response from the back end. The key is a method response header parameter name and the mapped value is an integration response header value, a static value enclosed within a pair of single quotes, or a JSON expression from the integration response body. The mapping key must match the pattern of method.response.header.{name}, where name is a valid and unique header name. The mapped non-static value must match the pattern of integration.response.header.{name} or integration.response.body.{JSON-expression}, where name is a valid and unique response header name and JSON-expression is a valid JSON expression without the $ prefix.
@@ -1725,12 +1727,12 @@ extension APIGatewayClientTypes {
             self.statusCode = statusCode
         }
     }
-
 }
 
 extension APIGatewayClientTypes {
+
     /// Specifies the TLS configuration for an integration.
-    public struct TlsConfig {
+    public struct TlsConfig: Swift.Sendable {
         /// Specifies whether or not API Gateway skips verification that the certificate for an integration endpoint is issued by a supported certificate authority. This isn’t recommended, but it enables you to use certificates that are signed by private certificate authorities, or certificates that are self-signed. If enabled, API Gateway still performs basic certificate validation, which includes checking the certificate's expiration date, hostname, and presence of a root certificate authority. Supported only for HTTP and HTTP_PROXY integrations. Enabling insecureSkipVerification isn't recommended, especially for integrations with public HTTPS endpoints. If you enable insecureSkipVerification, you increase the risk of man-in-the-middle attacks.
         public var insecureSkipVerification: Swift.Bool
 
@@ -1741,13 +1743,12 @@ extension APIGatewayClientTypes {
             self.insecureSkipVerification = insecureSkipVerification
         }
     }
-
 }
 
 extension APIGatewayClientTypes {
 
     /// The integration type. The valid value is HTTP for integrating an API method with an HTTP backend; AWS with any Amazon Web Services service endpoints; MOCK for testing without actually invoking the backend; HTTP_PROXY for integrating with the HTTP proxy integration; AWS_PROXY for integrating with the Lambda proxy integration.
-    public enum IntegrationType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum IntegrationType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case aws
         case awsProxy
         case http
@@ -1784,8 +1785,9 @@ extension APIGatewayClientTypes {
 }
 
 extension APIGatewayClientTypes {
+
     /// Represents an HTTP, HTTP_PROXY, AWS, AWS_PROXY, or Mock integration.
-    public struct Integration {
+    public struct Integration: Swift.Sendable {
         /// A list of request parameters whose values API Gateway caches. To be valid values for cacheKeyParameters, these parameters must also be specified for Method requestParameters.
         public var cacheKeyParameters: [Swift.String]?
         /// Specifies a group of related cached parameters. By default, API Gateway uses the resource ID as the cacheNamespace. You can specify the same cacheNamespace across resources to return the same cached data for requests to different resources.
@@ -1852,12 +1854,12 @@ extension APIGatewayClientTypes {
             self.uri = uri
         }
     }
-
 }
 
 extension APIGatewayClientTypes {
+
     /// Represents a method response of a given HTTP status code returned to the client. The method response is passed from the back end through the associated integration response that can be transformed using a mapping template.
-    public struct MethodResponse {
+    public struct MethodResponse: Swift.Sendable {
         /// Specifies the Model resources used for the response's content-type. Response models are represented as a key/value map, with a content-type as the key and a Model name as the value.
         public var responseModels: [Swift.String: Swift.String]?
         /// A key-value map specifying required or optional response parameters that API Gateway can send back to the caller. A key defines a method response header and the value specifies whether the associated method response header is required or not. The expression of the key must match the pattern method.response.header.{name}, where name is a valid and unique header name. API Gateway passes certain integration response data to the method response headers specified here according to the mapping you prescribe in the API's IntegrationResponse. The integration response data that can be mapped include an integration response header expressed in integration.response.header.{name}, a static value enclosed within a pair of single quotes (e.g., 'application/json'), or a JSON expression from the back-end response payload in the form of integration.response.body.{JSON-expression}, where JSON-expression is a valid JSON expression without the $ prefix.)
@@ -1876,12 +1878,12 @@ extension APIGatewayClientTypes {
             self.statusCode = statusCode
         }
     }
-
 }
 
 extension APIGatewayClientTypes {
+
     /// Represents a client-facing interface by which the client calls the API to access back-end resources. A Method resource is integrated with an Integration resource. Both consist of a request and one or more responses. The method request takes the client input that is passed to the back end through the integration request. A method response returns the output from the back end to the client through an integration response. A method request is embodied in a Method resource, whereas an integration request is embodied in an Integration resource. On the other hand, a method response is represented by a MethodResponse resource, whereas an integration response is represented by an IntegrationResponse resource.
-    public struct Method {
+    public struct Method: Swift.Sendable {
         /// A boolean flag specifying whether a valid ApiKey is required to invoke this method.
         public var apiKeyRequired: Swift.Bool?
         /// A list of authorization scopes configured on the method. The scopes are used with a COGNITO_USER_POOLS authorizer to authorize the method invocation. The authorization works by matching the method scopes against the scopes parsed from the access token in the incoming request. The method invocation is authorized if any method scopes matches a claimed scope in the access token. Otherwise, the invocation is not authorized. When the method scope is configured, the client must provide an access token instead of an identity token for authorization purposes.
@@ -1932,11 +1934,10 @@ extension APIGatewayClientTypes {
             self.requestValidatorId = requestValidatorId
         }
     }
-
 }
 
 /// Represents an API resource.
-public struct CreateResourceOutput {
+public struct CreateResourceOutput: Swift.Sendable {
     /// The resource's identifier.
     public var id: Swift.String?
     /// The parent resource's identifier.
@@ -1965,7 +1966,7 @@ public struct CreateResourceOutput {
 }
 
 /// The POST Request to add a new RestApi resource to your collection.
-public struct CreateRestApiInput {
+public struct CreateRestApiInput: Swift.Sendable {
     /// The source of the API key for metering requests according to a usage plan. Valid values are: HEADER to read the API key from the X-API-Key header of a request. AUTHORIZER to read the API key from the UsageIdentifierKey from a custom authorizer.
     public var apiKeySource: APIGatewayClientTypes.ApiKeySourceType?
     /// The list of binary media types supported by the RestApi. By default, the RestApi supports only UTF-8-encoded text payloads.
@@ -2019,7 +2020,7 @@ public struct CreateRestApiInput {
 }
 
 /// Represents a REST API.
-public struct CreateRestApiOutput {
+public struct CreateRestApiOutput: Swift.Sendable {
     /// The source of the API key for metering requests according to a usage plan. Valid values are: >HEADER to read the API key from the X-API-Key header of a request. AUTHORIZER to read the API key from the UsageIdentifierKey from a custom authorizer.
     public var apiKeySource: APIGatewayClientTypes.ApiKeySourceType?
     /// The list of binary media types supported by the RestApi. By default, the RestApi supports only UTF-8-encoded text payloads.
@@ -2084,8 +2085,9 @@ public struct CreateRestApiOutput {
 }
 
 extension APIGatewayClientTypes {
+
     /// Configuration settings of a canary deployment.
-    public struct CanarySettings {
+    public struct CanarySettings: Swift.Sendable {
         /// The ID of the canary deployment.
         public var deploymentId: Swift.String?
         /// The percent (0-100) of traffic diverted to a canary deployment.
@@ -2108,11 +2110,10 @@ extension APIGatewayClientTypes {
             self.useStageCache = useStageCache
         }
     }
-
 }
 
 /// Requests API Gateway to create a Stage resource.
-public struct CreateStageInput {
+public struct CreateStageInput: Swift.Sendable {
     /// Whether cache clustering is enabled for the stage.
     public var cacheClusterEnabled: Swift.Bool?
     /// The stage's cache capacity in GB. For more information about choosing a cache size, see [Enabling API caching to enhance responsiveness](https://docs.aws.amazon.com/apigateway/latest/developerguide/api-gateway-caching.html).
@@ -2170,7 +2171,7 @@ public struct CreateStageInput {
 extension APIGatewayClientTypes {
 
     /// Returns the status of the CacheCluster.
-    public enum CacheClusterStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum CacheClusterStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case available
         case createInProgress
         case deleteInProgress
@@ -2208,7 +2209,7 @@ extension APIGatewayClientTypes {
 
 extension APIGatewayClientTypes {
 
-    public enum UnauthorizedCacheControlHeaderStrategy: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum UnauthorizedCacheControlHeaderStrategy: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case failWith403
         case succeedWithoutResponseHeader
         case succeedWithResponseHeader
@@ -2239,8 +2240,9 @@ extension APIGatewayClientTypes {
 }
 
 extension APIGatewayClientTypes {
+
     /// Specifies the method setting properties.
-    public struct MethodSetting {
+    public struct MethodSetting: Swift.Sendable {
         /// Specifies whether the cached responses are encrypted.
         public var cacheDataEncrypted: Swift.Bool
         /// Specifies the time to live (TTL), in seconds, for cached responses. The higher the TTL, the longer the response will be cached.
@@ -2287,11 +2289,10 @@ extension APIGatewayClientTypes {
             self.unauthorizedCacheControlHeaderStrategy = unauthorizedCacheControlHeaderStrategy
         }
     }
-
 }
 
 /// Represents a unique identifier for a version of a deployed RestApi that is callable by users.
-public struct CreateStageOutput {
+public struct CreateStageOutput: Swift.Sendable {
     /// Settings for logging access in this stage.
     public var accessLogSettings: APIGatewayClientTypes.AccessLogSettings?
     /// Specifies whether a cache cluster is enabled for the stage. To activate a method-level cache, set CachingEnabled to true for a method.
@@ -2369,7 +2370,7 @@ public struct CreateStageOutput {
 
 extension APIGatewayClientTypes {
 
-    public enum QuotaPeriodType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum QuotaPeriodType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case day
         case month
         case week
@@ -2400,8 +2401,9 @@ extension APIGatewayClientTypes {
 }
 
 extension APIGatewayClientTypes {
+
     /// Quotas configured for a usage plan.
-    public struct QuotaSettings {
+    public struct QuotaSettings: Swift.Sendable {
         /// The target maximum number of requests that can be made in a given time period.
         public var limit: Swift.Int
         /// The number of requests subtracted from the given limit in the initial time period.
@@ -2420,11 +2422,10 @@ extension APIGatewayClientTypes {
             self.period = period
         }
     }
-
 }
 
 /// The POST request to create a usage plan with the name, description, throttle limits and quota limits, as well as the associated API stages, specified in the payload.
-public struct CreateUsagePlanInput {
+public struct CreateUsagePlanInput: Swift.Sendable {
     /// The associated API stages of the usage plan.
     public var apiStages: [APIGatewayClientTypes.ApiStage]?
     /// The description of the usage plan.
@@ -2458,7 +2459,7 @@ public struct CreateUsagePlanInput {
 }
 
 /// Represents a usage plan used to specify who can assess associated API stages. Optionally, target request rate and quota limits can be set. In some cases clients can exceed the targets that you set. Don’t rely on usage plans to control costs. Consider using [Amazon Web Services Budgets](https://docs.aws.amazon.com/cost-management/latest/userguide/budgets-managing-costs.html) to monitor costs and [WAF](https://docs.aws.amazon.com/waf/latest/developerguide/waf-chapter.html) to manage API requests.
-public struct CreateUsagePlanOutput {
+public struct CreateUsagePlanOutput: Swift.Sendable {
     /// The associated API stages of a usage plan.
     public var apiStages: [APIGatewayClientTypes.ApiStage]?
     /// The description of a usage plan.
@@ -2499,7 +2500,7 @@ public struct CreateUsagePlanOutput {
 }
 
 /// The POST request to create a usage plan key for adding an existing API key to a usage plan.
-public struct CreateUsagePlanKeyInput {
+public struct CreateUsagePlanKeyInput: Swift.Sendable {
     /// The identifier of a UsagePlanKey resource for a plan customer.
     /// This member is required.
     public var keyId: Swift.String?
@@ -2523,7 +2524,7 @@ public struct CreateUsagePlanKeyInput {
 }
 
 /// Represents a usage plan key to identify a plan customer.
-public struct CreateUsagePlanKeyOutput {
+public struct CreateUsagePlanKeyOutput: Swift.Sendable {
     /// The Id of a usage plan key.
     public var id: Swift.String?
     /// The name of a usage plan key.
@@ -2548,7 +2549,7 @@ public struct CreateUsagePlanKeyOutput {
 }
 
 /// Creates a VPC link, under the caller's account in a selected region, in an asynchronous operation that typically takes 2-4 minutes to complete and become operational. The caller must have permissions to create and update VPC Endpoint services.
-public struct CreateVpcLinkInput {
+public struct CreateVpcLinkInput: Swift.Sendable {
     /// The description of the VPC link.
     public var description: Swift.String?
     /// The name used to label and identify the VPC link.
@@ -2576,7 +2577,7 @@ public struct CreateVpcLinkInput {
 
 extension APIGatewayClientTypes {
 
-    public enum VpcLinkStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum VpcLinkStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case available
         case deleting
         case failed
@@ -2610,7 +2611,7 @@ extension APIGatewayClientTypes {
 }
 
 /// An API Gateway VPC link for a RestApi to access resources in an Amazon Virtual Private Cloud (VPC).
-public struct CreateVpcLinkOutput {
+public struct CreateVpcLinkOutput: Swift.Sendable {
     /// The description of the VPC link.
     public var description: Swift.String?
     /// The identifier of the VpcLink. It is used in an Integration to reference this VpcLink.
@@ -2647,7 +2648,7 @@ public struct CreateVpcLinkOutput {
 }
 
 /// A request to delete the ApiKey resource.
-public struct DeleteApiKeyInput {
+public struct DeleteApiKeyInput: Swift.Sendable {
     /// The identifier of the ApiKey resource to be deleted.
     /// This member is required.
     public var apiKey: Swift.String?
@@ -2661,7 +2662,7 @@ public struct DeleteApiKeyInput {
 }
 
 /// Request to delete an existing Authorizer resource.
-public struct DeleteAuthorizerInput {
+public struct DeleteAuthorizerInput: Swift.Sendable {
     /// The identifier of the Authorizer resource.
     /// This member is required.
     public var authorizerId: Swift.String?
@@ -2680,7 +2681,7 @@ public struct DeleteAuthorizerInput {
 }
 
 /// A request to delete the BasePathMapping resource.
-public struct DeleteBasePathMappingInput {
+public struct DeleteBasePathMappingInput: Swift.Sendable {
     /// The base path name of the BasePathMapping resource to delete. To specify an empty base path, set this parameter to '(none)'.
     /// This member is required.
     public var basePath: Swift.String?
@@ -2699,7 +2700,7 @@ public struct DeleteBasePathMappingInput {
 }
 
 /// A request to delete the ClientCertificate resource.
-public struct DeleteClientCertificateInput {
+public struct DeleteClientCertificateInput: Swift.Sendable {
     /// The identifier of the ClientCertificate resource to be deleted.
     /// This member is required.
     public var clientCertificateId: Swift.String?
@@ -2713,7 +2714,7 @@ public struct DeleteClientCertificateInput {
 }
 
 /// Requests API Gateway to delete a Deployment resource.
-public struct DeleteDeploymentInput {
+public struct DeleteDeploymentInput: Swift.Sendable {
     /// The identifier of the Deployment resource to delete.
     /// This member is required.
     public var deploymentId: Swift.String?
@@ -2732,7 +2733,7 @@ public struct DeleteDeploymentInput {
 }
 
 /// Deletes an existing documentation part of an API.
-public struct DeleteDocumentationPartInput {
+public struct DeleteDocumentationPartInput: Swift.Sendable {
     /// The identifier of the to-be-deleted documentation part.
     /// This member is required.
     public var documentationPartId: Swift.String?
@@ -2751,7 +2752,7 @@ public struct DeleteDocumentationPartInput {
 }
 
 /// Deletes an existing documentation version of an API.
-public struct DeleteDocumentationVersionInput {
+public struct DeleteDocumentationVersionInput: Swift.Sendable {
     /// The version identifier of a to-be-deleted documentation snapshot.
     /// This member is required.
     public var documentationVersion: Swift.String?
@@ -2770,7 +2771,7 @@ public struct DeleteDocumentationVersionInput {
 }
 
 /// A request to delete the DomainName resource.
-public struct DeleteDomainNameInput {
+public struct DeleteDomainNameInput: Swift.Sendable {
     /// The name of the DomainName resource to be deleted.
     /// This member is required.
     public var domainName: Swift.String?
@@ -2785,7 +2786,7 @@ public struct DeleteDomainNameInput {
 
 extension APIGatewayClientTypes {
 
-    public enum GatewayResponseType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum GatewayResponseType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case accessDenied
         case apiConfigurationError
         case authorizerConfigurationError
@@ -2870,7 +2871,7 @@ extension APIGatewayClientTypes {
 }
 
 /// Clears any customization of a GatewayResponse of a specified response type on the given RestApi and resets it with the default settings.
-public struct DeleteGatewayResponseInput {
+public struct DeleteGatewayResponseInput: Swift.Sendable {
     /// The response type of the associated GatewayResponse.
     /// This member is required.
     public var responseType: APIGatewayClientTypes.GatewayResponseType?
@@ -2889,7 +2890,7 @@ public struct DeleteGatewayResponseInput {
 }
 
 /// Represents a delete integration request.
-public struct DeleteIntegrationInput {
+public struct DeleteIntegrationInput: Swift.Sendable {
     /// Specifies a delete integration request's HTTP method.
     /// This member is required.
     public var httpMethod: Swift.String?
@@ -2913,7 +2914,7 @@ public struct DeleteIntegrationInput {
 }
 
 /// Represents a delete integration response request.
-public struct DeleteIntegrationResponseInput {
+public struct DeleteIntegrationResponseInput: Swift.Sendable {
     /// Specifies a delete integration response request's HTTP method.
     /// This member is required.
     public var httpMethod: Swift.String?
@@ -2942,7 +2943,7 @@ public struct DeleteIntegrationResponseInput {
 }
 
 /// Request to delete an existing Method resource.
-public struct DeleteMethodInput {
+public struct DeleteMethodInput: Swift.Sendable {
     /// The HTTP verb of the Method resource.
     /// This member is required.
     public var httpMethod: Swift.String?
@@ -2966,7 +2967,7 @@ public struct DeleteMethodInput {
 }
 
 /// A request to delete an existing MethodResponse resource.
-public struct DeleteMethodResponseInput {
+public struct DeleteMethodResponseInput: Swift.Sendable {
     /// The HTTP verb of the Method resource.
     /// This member is required.
     public var httpMethod: Swift.String?
@@ -2995,7 +2996,7 @@ public struct DeleteMethodResponseInput {
 }
 
 /// Request to delete an existing model in an existing RestApi resource.
-public struct DeleteModelInput {
+public struct DeleteModelInput: Swift.Sendable {
     /// The name of the model to delete.
     /// This member is required.
     public var modelName: Swift.String?
@@ -3014,7 +3015,7 @@ public struct DeleteModelInput {
 }
 
 /// Deletes a specified RequestValidator of a given RestApi.
-public struct DeleteRequestValidatorInput {
+public struct DeleteRequestValidatorInput: Swift.Sendable {
     /// The identifier of the RequestValidator to be deleted.
     /// This member is required.
     public var requestValidatorId: Swift.String?
@@ -3033,7 +3034,7 @@ public struct DeleteRequestValidatorInput {
 }
 
 /// Request to delete a Resource.
-public struct DeleteResourceInput {
+public struct DeleteResourceInput: Swift.Sendable {
     /// The identifier of the Resource resource.
     /// This member is required.
     public var resourceId: Swift.String?
@@ -3052,7 +3053,7 @@ public struct DeleteResourceInput {
 }
 
 /// Request to delete the specified API from your collection.
-public struct DeleteRestApiInput {
+public struct DeleteRestApiInput: Swift.Sendable {
     /// The string identifier of the associated RestApi.
     /// This member is required.
     public var restApiId: Swift.String?
@@ -3066,7 +3067,7 @@ public struct DeleteRestApiInput {
 }
 
 /// Requests API Gateway to delete a Stage resource.
-public struct DeleteStageInput {
+public struct DeleteStageInput: Swift.Sendable {
     /// The string identifier of the associated RestApi.
     /// This member is required.
     public var restApiId: Swift.String?
@@ -3085,7 +3086,7 @@ public struct DeleteStageInput {
 }
 
 /// The DELETE request to delete a usage plan of a given plan Id.
-public struct DeleteUsagePlanInput {
+public struct DeleteUsagePlanInput: Swift.Sendable {
     /// The Id of the to-be-deleted usage plan.
     /// This member is required.
     public var usagePlanId: Swift.String?
@@ -3099,7 +3100,7 @@ public struct DeleteUsagePlanInput {
 }
 
 /// The DELETE request to delete a usage plan key and remove the underlying API key from the associated usage plan.
-public struct DeleteUsagePlanKeyInput {
+public struct DeleteUsagePlanKeyInput: Swift.Sendable {
     /// The Id of the UsagePlanKey resource to be deleted.
     /// This member is required.
     public var keyId: Swift.String?
@@ -3118,7 +3119,7 @@ public struct DeleteUsagePlanKeyInput {
 }
 
 /// Deletes an existing VpcLink of a specified identifier.
-public struct DeleteVpcLinkInput {
+public struct DeleteVpcLinkInput: Swift.Sendable {
     /// The identifier of the VpcLink. It is used in an Integration to reference this VpcLink.
     /// This member is required.
     public var vpcLinkId: Swift.String?
@@ -3132,7 +3133,7 @@ public struct DeleteVpcLinkInput {
 }
 
 /// Request to flush authorizer cache entries on a specified stage.
-public struct FlushStageAuthorizersCacheInput {
+public struct FlushStageAuthorizersCacheInput: Swift.Sendable {
     /// The string identifier of the associated RestApi.
     /// This member is required.
     public var restApiId: Swift.String?
@@ -3151,7 +3152,7 @@ public struct FlushStageAuthorizersCacheInput {
 }
 
 /// Requests API Gateway to flush a stage's cache.
-public struct FlushStageCacheInput {
+public struct FlushStageCacheInput: Swift.Sendable {
     /// The string identifier of the associated RestApi.
     /// This member is required.
     public var restApiId: Swift.String?
@@ -3170,7 +3171,7 @@ public struct FlushStageCacheInput {
 }
 
 /// A request to generate a ClientCertificate resource.
-public struct GenerateClientCertificateInput {
+public struct GenerateClientCertificateInput: Swift.Sendable {
     /// The description of the ClientCertificate.
     public var description: Swift.String?
     /// The key-value map of strings. The valid character set is [a-zA-Z+-=._:/]. The tag key can be up to 128 characters and must not start with aws:. The tag value can be up to 256 characters.
@@ -3187,7 +3188,7 @@ public struct GenerateClientCertificateInput {
 }
 
 /// Represents a client certificate used to configure client-side SSL authentication while sending requests to the integration endpoint.
-public struct GenerateClientCertificateOutput {
+public struct GenerateClientCertificateOutput: Swift.Sendable {
     /// The identifier of the client certificate.
     public var clientCertificateId: Swift.String?
     /// The timestamp when the client certificate was created.
@@ -3220,13 +3221,13 @@ public struct GenerateClientCertificateOutput {
 }
 
 /// Requests API Gateway to get information about the current Account resource.
-public struct GetAccountInput {
+public struct GetAccountInput: Swift.Sendable {
 
     public init() { }
 }
 
 /// Represents an AWS account that is associated with API Gateway.
-public struct GetAccountOutput {
+public struct GetAccountOutput: Swift.Sendable {
     /// The version of the API keys used for the account.
     public var apiKeyVersion: Swift.String?
     /// The ARN of an Amazon CloudWatch role for the current Account.
@@ -3251,7 +3252,7 @@ public struct GetAccountOutput {
 }
 
 /// A request to get information about the current ApiKey resource.
-public struct GetApiKeyInput {
+public struct GetApiKeyInput: Swift.Sendable {
     /// The identifier of the ApiKey resource.
     /// This member is required.
     public var apiKey: Swift.String?
@@ -3269,7 +3270,7 @@ public struct GetApiKeyInput {
 }
 
 /// A resource that can be distributed to callers for executing Method resources that require an API key. API keys can be mapped to any Stage on any RestApi, which indicates that the callers with the API key can make requests to that stage.
-public struct GetApiKeyOutput {
+public struct GetApiKeyOutput: Swift.Sendable {
     /// The timestamp when the API Key was created.
     public var createdDate: Foundation.Date?
     /// An Amazon Web Services Marketplace customer identifier, when integrating with the Amazon Web Services SaaS Marketplace.
@@ -3318,7 +3319,7 @@ public struct GetApiKeyOutput {
 }
 
 /// A request to get information about the current ApiKeys resource.
-public struct GetApiKeysInput {
+public struct GetApiKeysInput: Swift.Sendable {
     /// The identifier of a customer in Amazon Web Services Marketplace or an external system, such as a developer portal.
     public var customerId: Swift.String?
     /// A boolean flag to specify whether (true) or not (false) the result contains key values.
@@ -3347,7 +3348,7 @@ public struct GetApiKeysInput {
 }
 
 /// Represents a collection of API keys as represented by an ApiKeys resource.
-public struct GetApiKeysOutput {
+public struct GetApiKeysOutput: Swift.Sendable {
     /// The current page of elements from this collection.
     public var items: [APIGatewayClientTypes.ApiKey]?
     /// The current pagination position in the paged result set.
@@ -3368,7 +3369,7 @@ public struct GetApiKeysOutput {
 }
 
 /// Request to describe an existing Authorizer resource.
-public struct GetAuthorizerInput {
+public struct GetAuthorizerInput: Swift.Sendable {
     /// The identifier of the Authorizer resource.
     /// This member is required.
     public var authorizerId: Swift.String?
@@ -3387,7 +3388,7 @@ public struct GetAuthorizerInput {
 }
 
 /// Represents an authorization layer for methods. If enabled on a method, API Gateway will activate the authorizer when a client calls the method.
-public struct GetAuthorizerOutput {
+public struct GetAuthorizerOutput: Swift.Sendable {
     /// Optional customer-defined field, used in OpenAPI imports and exports without functional impact.
     public var authType: Swift.String?
     /// Specifies the required credentials as an IAM role for API Gateway to invoke the authorizer. To specify an IAM role for API Gateway to assume, use the role's Amazon Resource Name (ARN). To use resource-based permissions on the Lambda function, specify null.
@@ -3436,7 +3437,7 @@ public struct GetAuthorizerOutput {
 }
 
 /// Request to describe an existing Authorizers resource.
-public struct GetAuthorizersInput {
+public struct GetAuthorizersInput: Swift.Sendable {
     /// The maximum number of returned results per page. The default value is 25 and the maximum value is 500.
     public var limit: Swift.Int?
     /// The current pagination position in the paged result set.
@@ -3458,7 +3459,7 @@ public struct GetAuthorizersInput {
 }
 
 /// Represents a collection of Authorizer resources.
-public struct GetAuthorizersOutput {
+public struct GetAuthorizersOutput: Swift.Sendable {
     /// The current page of elements from this collection.
     public var items: [APIGatewayClientTypes.Authorizer]?
     /// The current pagination position in the paged result set.
@@ -3475,7 +3476,7 @@ public struct GetAuthorizersOutput {
 }
 
 /// Request to describe a BasePathMapping resource.
-public struct GetBasePathMappingInput {
+public struct GetBasePathMappingInput: Swift.Sendable {
     /// The base path name that callers of the API must provide as part of the URL after the domain name. This value must be unique for all of the mappings across a single API. Specify '(none)' if you do not want callers to specify any base path name after the domain name.
     /// This member is required.
     public var basePath: Swift.String?
@@ -3494,7 +3495,7 @@ public struct GetBasePathMappingInput {
 }
 
 /// Represents the base path that callers of the API must provide as part of the URL after the domain name.
-public struct GetBasePathMappingOutput {
+public struct GetBasePathMappingOutput: Swift.Sendable {
     /// The base path name that callers of the API must provide as part of the URL after the domain name.
     public var basePath: Swift.String?
     /// The string identifier of the associated RestApi.
@@ -3515,7 +3516,7 @@ public struct GetBasePathMappingOutput {
 }
 
 /// A request to get information about a collection of BasePathMapping resources.
-public struct GetBasePathMappingsInput {
+public struct GetBasePathMappingsInput: Swift.Sendable {
     /// The domain name of a BasePathMapping resource.
     /// This member is required.
     public var domainName: Swift.String?
@@ -3537,8 +3538,9 @@ public struct GetBasePathMappingsInput {
 }
 
 extension APIGatewayClientTypes {
+
     /// Represents the base path that callers of the API must provide as part of the URL after the domain name.
-    public struct BasePathMapping {
+    public struct BasePathMapping: Swift.Sendable {
         /// The base path name that callers of the API must provide as part of the URL after the domain name.
         public var basePath: Swift.String?
         /// The string identifier of the associated RestApi.
@@ -3557,11 +3559,10 @@ extension APIGatewayClientTypes {
             self.stage = stage
         }
     }
-
 }
 
 /// Represents a collection of BasePathMapping resources.
-public struct GetBasePathMappingsOutput {
+public struct GetBasePathMappingsOutput: Swift.Sendable {
     /// The current page of elements from this collection.
     public var items: [APIGatewayClientTypes.BasePathMapping]?
     /// The current pagination position in the paged result set.
@@ -3578,7 +3579,7 @@ public struct GetBasePathMappingsOutput {
 }
 
 /// A request to get information about the current ClientCertificate resource.
-public struct GetClientCertificateInput {
+public struct GetClientCertificateInput: Swift.Sendable {
     /// The identifier of the ClientCertificate resource to be described.
     /// This member is required.
     public var clientCertificateId: Swift.String?
@@ -3592,7 +3593,7 @@ public struct GetClientCertificateInput {
 }
 
 /// Represents a client certificate used to configure client-side SSL authentication while sending requests to the integration endpoint.
-public struct GetClientCertificateOutput {
+public struct GetClientCertificateOutput: Swift.Sendable {
     /// The identifier of the client certificate.
     public var clientCertificateId: Swift.String?
     /// The timestamp when the client certificate was created.
@@ -3625,7 +3626,7 @@ public struct GetClientCertificateOutput {
 }
 
 /// A request to get information about a collection of ClientCertificate resources.
-public struct GetClientCertificatesInput {
+public struct GetClientCertificatesInput: Swift.Sendable {
     /// The maximum number of returned results per page. The default value is 25 and the maximum value is 500.
     public var limit: Swift.Int?
     /// The current pagination position in the paged result set.
@@ -3642,8 +3643,9 @@ public struct GetClientCertificatesInput {
 }
 
 extension APIGatewayClientTypes {
+
     /// Represents a client certificate used to configure client-side SSL authentication while sending requests to the integration endpoint.
-    public struct ClientCertificate {
+    public struct ClientCertificate: Swift.Sendable {
         /// The identifier of the client certificate.
         public var clientCertificateId: Swift.String?
         /// The timestamp when the client certificate was created.
@@ -3674,11 +3676,10 @@ extension APIGatewayClientTypes {
             self.tags = tags
         }
     }
-
 }
 
 /// Represents a collection of ClientCertificate resources.
-public struct GetClientCertificatesOutput {
+public struct GetClientCertificatesOutput: Swift.Sendable {
     /// The current page of elements from this collection.
     public var items: [APIGatewayClientTypes.ClientCertificate]?
     /// The current pagination position in the paged result set.
@@ -3695,7 +3696,7 @@ public struct GetClientCertificatesOutput {
 }
 
 /// Requests API Gateway to get information about a Deployment resource.
-public struct GetDeploymentInput {
+public struct GetDeploymentInput: Swift.Sendable {
     /// The identifier of the Deployment resource to get information about.
     /// This member is required.
     public var deploymentId: Swift.String?
@@ -3718,7 +3719,7 @@ public struct GetDeploymentInput {
 }
 
 /// An immutable representation of a RestApi resource that can be called by users using Stages. A deployment must be associated with a Stage for it to be callable over the Internet.
-public struct GetDeploymentOutput {
+public struct GetDeploymentOutput: Swift.Sendable {
     /// A summary of the RestApi at the date and time that the deployment resource was created.
     public var apiSummary: [Swift.String: [Swift.String: APIGatewayClientTypes.MethodSnapshot]]?
     /// The date and time that the deployment resource was created.
@@ -3743,7 +3744,7 @@ public struct GetDeploymentOutput {
 }
 
 /// Requests API Gateway to get information about a Deployments collection.
-public struct GetDeploymentsInput {
+public struct GetDeploymentsInput: Swift.Sendable {
     /// The maximum number of returned results per page. The default value is 25 and the maximum value is 500.
     public var limit: Swift.Int?
     /// The current pagination position in the paged result set.
@@ -3765,8 +3766,9 @@ public struct GetDeploymentsInput {
 }
 
 extension APIGatewayClientTypes {
+
     /// An immutable representation of a RestApi resource that can be called by users using Stages. A deployment must be associated with a Stage for it to be callable over the Internet.
-    public struct Deployment {
+    public struct Deployment: Swift.Sendable {
         /// A summary of the RestApi at the date and time that the deployment resource was created.
         public var apiSummary: [Swift.String: [Swift.String: APIGatewayClientTypes.MethodSnapshot]]?
         /// The date and time that the deployment resource was created.
@@ -3789,11 +3791,10 @@ extension APIGatewayClientTypes {
             self.id = id
         }
     }
-
 }
 
 /// Represents a collection resource that contains zero or more references to your existing deployments, and links that guide you on how to interact with your collection. The collection offers a paginated view of the contained deployments.
-public struct GetDeploymentsOutput {
+public struct GetDeploymentsOutput: Swift.Sendable {
     /// The current page of elements from this collection.
     public var items: [APIGatewayClientTypes.Deployment]?
     /// The current pagination position in the paged result set.
@@ -3810,7 +3811,7 @@ public struct GetDeploymentsOutput {
 }
 
 /// Gets a specified documentation part of a given API.
-public struct GetDocumentationPartInput {
+public struct GetDocumentationPartInput: Swift.Sendable {
     /// The string identifier of the associated RestApi.
     /// This member is required.
     public var documentationPartId: Swift.String?
@@ -3829,7 +3830,7 @@ public struct GetDocumentationPartInput {
 }
 
 /// A documentation part for a targeted API entity.
-public struct GetDocumentationPartOutput {
+public struct GetDocumentationPartOutput: Swift.Sendable {
     /// The DocumentationPart identifier, generated by API Gateway when the DocumentationPart is created.
     public var id: Swift.String?
     /// The location of the API entity to which the documentation applies. Valid fields depend on the targeted API entity type. All the valid location fields are not required. If not explicitly specified, a valid location field is treated as a wildcard and associated documentation content may be inherited by matching entities, unless overridden.
@@ -3851,7 +3852,7 @@ public struct GetDocumentationPartOutput {
 
 extension APIGatewayClientTypes {
 
-    public enum LocationStatusType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum LocationStatusType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case documented
         case undocumented
         case sdkUnknown(Swift.String)
@@ -3879,7 +3880,7 @@ extension APIGatewayClientTypes {
 }
 
 /// Gets the documentation parts of an API. The result may be filtered by the type, name, or path of API entities (targets).
-public struct GetDocumentationPartsInput {
+public struct GetDocumentationPartsInput: Swift.Sendable {
     /// The maximum number of returned results per page. The default value is 25 and the maximum value is 500.
     public var limit: Swift.Int?
     /// The status of the API documentation parts to retrieve. Valid values are DOCUMENTED for retrieving DocumentationPart resources with content and UNDOCUMENTED for DocumentationPart resources without content.
@@ -3917,8 +3918,9 @@ public struct GetDocumentationPartsInput {
 }
 
 extension APIGatewayClientTypes {
+
     /// A documentation part for a targeted API entity.
-    public struct DocumentationPart {
+    public struct DocumentationPart: Swift.Sendable {
         /// The DocumentationPart identifier, generated by API Gateway when the DocumentationPart is created.
         public var id: Swift.String?
         /// The location of the API entity to which the documentation applies. Valid fields depend on the targeted API entity type. All the valid location fields are not required. If not explicitly specified, a valid location field is treated as a wildcard and associated documentation content may be inherited by matching entities, unless overridden.
@@ -3937,11 +3939,10 @@ extension APIGatewayClientTypes {
             self.properties = properties
         }
     }
-
 }
 
 /// The collection of documentation parts of an API.
-public struct GetDocumentationPartsOutput {
+public struct GetDocumentationPartsOutput: Swift.Sendable {
     /// The current page of elements from this collection.
     public var items: [APIGatewayClientTypes.DocumentationPart]?
     /// The current pagination position in the paged result set.
@@ -3958,7 +3959,7 @@ public struct GetDocumentationPartsOutput {
 }
 
 /// Gets a documentation snapshot of an API.
-public struct GetDocumentationVersionInput {
+public struct GetDocumentationVersionInput: Swift.Sendable {
     /// The version identifier of the to-be-retrieved documentation snapshot.
     /// This member is required.
     public var documentationVersion: Swift.String?
@@ -3977,7 +3978,7 @@ public struct GetDocumentationVersionInput {
 }
 
 /// A snapshot of the documentation of an API.
-public struct GetDocumentationVersionOutput {
+public struct GetDocumentationVersionOutput: Swift.Sendable {
     /// The date when the API documentation snapshot is created.
     public var createdDate: Foundation.Date?
     /// The description of the API documentation snapshot.
@@ -3998,7 +3999,7 @@ public struct GetDocumentationVersionOutput {
 }
 
 /// Gets the documentation versions of an API.
-public struct GetDocumentationVersionsInput {
+public struct GetDocumentationVersionsInput: Swift.Sendable {
     /// The maximum number of returned results per page. The default value is 25 and the maximum value is 500.
     public var limit: Swift.Int?
     /// The current pagination position in the paged result set.
@@ -4020,8 +4021,9 @@ public struct GetDocumentationVersionsInput {
 }
 
 extension APIGatewayClientTypes {
+
     /// A snapshot of the documentation of an API.
-    public struct DocumentationVersion {
+    public struct DocumentationVersion: Swift.Sendable {
         /// The date when the API documentation snapshot is created.
         public var createdDate: Foundation.Date?
         /// The description of the API documentation snapshot.
@@ -4040,11 +4042,10 @@ extension APIGatewayClientTypes {
             self.version = version
         }
     }
-
 }
 
 /// The collection of documentation snapshots of an API.
-public struct GetDocumentationVersionsOutput {
+public struct GetDocumentationVersionsOutput: Swift.Sendable {
     /// The current page of elements from this collection.
     public var items: [APIGatewayClientTypes.DocumentationVersion]?
     /// The current pagination position in the paged result set.
@@ -4061,7 +4062,7 @@ public struct GetDocumentationVersionsOutput {
 }
 
 /// Request to get the name of a DomainName resource.
-public struct GetDomainNameInput {
+public struct GetDomainNameInput: Swift.Sendable {
     /// The name of the DomainName resource.
     /// This member is required.
     public var domainName: Swift.String?
@@ -4075,7 +4076,7 @@ public struct GetDomainNameInput {
 }
 
 /// Represents a custom domain name as a user-friendly host name of an API (RestApi).
-public struct GetDomainNameOutput {
+public struct GetDomainNameOutput: Swift.Sendable {
     /// The reference to an Amazon Web Services-managed certificate that will be used by edge-optimized endpoint for this domain name. Certificate Manager is the only supported source.
     public var certificateArn: Swift.String?
     /// The name of the certificate that will be used by edge-optimized endpoint for this domain name.
@@ -4152,7 +4153,7 @@ public struct GetDomainNameOutput {
 }
 
 /// Request to describe a collection of DomainName resources.
-public struct GetDomainNamesInput {
+public struct GetDomainNamesInput: Swift.Sendable {
     /// The maximum number of returned results per page. The default value is 25 and the maximum value is 500.
     public var limit: Swift.Int?
     /// The current pagination position in the paged result set.
@@ -4169,8 +4170,9 @@ public struct GetDomainNamesInput {
 }
 
 extension APIGatewayClientTypes {
+
     /// Represents a custom domain name as a user-friendly host name of an API (RestApi).
-    public struct DomainName {
+    public struct DomainName: Swift.Sendable {
         /// The reference to an Amazon Web Services-managed certificate that will be used by edge-optimized endpoint for this domain name. Certificate Manager is the only supported source.
         public var certificateArn: Swift.String?
         /// The name of the certificate that will be used by edge-optimized endpoint for this domain name.
@@ -4245,11 +4247,10 @@ extension APIGatewayClientTypes {
             self.tags = tags
         }
     }
-
 }
 
 /// Represents a collection of DomainName resources.
-public struct GetDomainNamesOutput {
+public struct GetDomainNamesOutput: Swift.Sendable {
     /// The current page of elements from this collection.
     public var items: [APIGatewayClientTypes.DomainName]?
     /// The current pagination position in the paged result set.
@@ -4266,7 +4267,7 @@ public struct GetDomainNamesOutput {
 }
 
 /// Request a new export of a RestApi for a particular Stage.
-public struct GetExportInput {
+public struct GetExportInput: Swift.Sendable {
     /// The content-type of the export, for example application/json. Currently application/json and application/yaml are supported for exportType ofoas30 and swagger. This should be specified in the Accept header for direct API requests.
     public var accepts: Swift.String?
     /// The type of export. Acceptable values are 'oas30' for OpenAPI 3.0.x and 'swagger' for Swagger/OpenAPI 2.0.
@@ -4298,7 +4299,7 @@ public struct GetExportInput {
 }
 
 /// The binary blob response to GetExport, which contains the generated SDK.
-public struct GetExportOutput {
+public struct GetExportOutput: Swift.Sendable {
     /// The binary blob response to GetExport, which contains the export.
     public var body: Foundation.Data?
     /// The content-disposition header value in the HTTP response.
@@ -4319,7 +4320,7 @@ public struct GetExportOutput {
 }
 
 /// Gets a GatewayResponse of a specified response type on the given RestApi.
-public struct GetGatewayResponseInput {
+public struct GetGatewayResponseInput: Swift.Sendable {
     /// The response type of the associated GatewayResponse.
     /// This member is required.
     public var responseType: APIGatewayClientTypes.GatewayResponseType?
@@ -4338,7 +4339,7 @@ public struct GetGatewayResponseInput {
 }
 
 /// A gateway response of a given response type and status code, with optional response parameters and mapping templates.
-public struct GetGatewayResponseOutput {
+public struct GetGatewayResponseOutput: Swift.Sendable {
     /// A Boolean flag to indicate whether this GatewayResponse is the default gateway response (true) or not (false). A default gateway response is one generated by API Gateway without any customization by an API developer.
     public var defaultResponse: Swift.Bool
     /// Response parameters (paths, query strings and headers) of the GatewayResponse as a string-to-string map of key-value pairs.
@@ -4367,7 +4368,7 @@ public struct GetGatewayResponseOutput {
 }
 
 /// Gets the GatewayResponses collection on the given RestApi. If an API developer has not added any definitions for gateway responses, the result will be the API Gateway-generated default GatewayResponses collection for the supported response types.
-public struct GetGatewayResponsesInput {
+public struct GetGatewayResponsesInput: Swift.Sendable {
     /// The maximum number of returned results per page. The default value is 25 and the maximum value is 500. The GatewayResponses collection does not support pagination and the limit does not apply here.
     public var limit: Swift.Int?
     /// The current pagination position in the paged result set. The GatewayResponse collection does not support pagination and the position does not apply here.
@@ -4389,8 +4390,9 @@ public struct GetGatewayResponsesInput {
 }
 
 extension APIGatewayClientTypes {
+
     /// A gateway response of a given response type and status code, with optional response parameters and mapping templates.
-    public struct GatewayResponse {
+    public struct GatewayResponse: Swift.Sendable {
         /// A Boolean flag to indicate whether this GatewayResponse is the default gateway response (true) or not (false). A default gateway response is one generated by API Gateway without any customization by an API developer.
         public var defaultResponse: Swift.Bool
         /// Response parameters (paths, query strings and headers) of the GatewayResponse as a string-to-string map of key-value pairs.
@@ -4417,11 +4419,10 @@ extension APIGatewayClientTypes {
             self.statusCode = statusCode
         }
     }
-
 }
 
 /// The collection of the GatewayResponse instances of a RestApi as a responseType-to-GatewayResponse object map of key-value pairs. As such, pagination is not supported for querying this collection.
-public struct GetGatewayResponsesOutput {
+public struct GetGatewayResponsesOutput: Swift.Sendable {
     /// Returns the entire collection, because of no pagination support.
     public var items: [APIGatewayClientTypes.GatewayResponse]?
     /// The current pagination position in the paged result set. The GatewayResponse collection does not support pagination and the position does not apply here.
@@ -4438,7 +4439,7 @@ public struct GetGatewayResponsesOutput {
 }
 
 /// Represents a request to get the integration configuration.
-public struct GetIntegrationInput {
+public struct GetIntegrationInput: Swift.Sendable {
     /// Specifies a get integration request's HTTP method.
     /// This member is required.
     public var httpMethod: Swift.String?
@@ -4462,7 +4463,7 @@ public struct GetIntegrationInput {
 }
 
 /// Represents an HTTP, HTTP_PROXY, AWS, AWS_PROXY, or Mock integration.
-public struct GetIntegrationOutput {
+public struct GetIntegrationOutput: Swift.Sendable {
     /// A list of request parameters whose values API Gateway caches. To be valid values for cacheKeyParameters, these parameters must also be specified for Method requestParameters.
     public var cacheKeyParameters: [Swift.String]?
     /// Specifies a group of related cached parameters. By default, API Gateway uses the resource ID as the cacheNamespace. You can specify the same cacheNamespace across resources to return the same cached data for requests to different resources.
@@ -4531,7 +4532,7 @@ public struct GetIntegrationOutput {
 }
 
 /// Represents a get integration response request.
-public struct GetIntegrationResponseInput {
+public struct GetIntegrationResponseInput: Swift.Sendable {
     /// Specifies a get integration response request's HTTP method.
     /// This member is required.
     public var httpMethod: Swift.String?
@@ -4560,7 +4561,7 @@ public struct GetIntegrationResponseInput {
 }
 
 /// Represents an integration response. The status code must map to an existing MethodResponse, and parameters and templates can be used to transform the back-end response.
-public struct GetIntegrationResponseOutput {
+public struct GetIntegrationResponseOutput: Swift.Sendable {
     /// Specifies how to handle response payload content type conversions. Supported values are CONVERT_TO_BINARY and CONVERT_TO_TEXT, with the following behaviors: If this property is not defined, the response payload will be passed through from the integration response to the method response without modification.
     public var contentHandling: APIGatewayClientTypes.ContentHandlingStrategy?
     /// A key-value map specifying response parameters that are passed to the method response from the back end. The key is a method response header parameter name and the mapped value is an integration response header value, a static value enclosed within a pair of single quotes, or a JSON expression from the integration response body. The mapping key must match the pattern of method.response.header.{name}, where name is a valid and unique header name. The mapped non-static value must match the pattern of integration.response.header.{name} or integration.response.body.{JSON-expression}, where name is a valid and unique response header name and JSON-expression is a valid JSON expression without the $ prefix.
@@ -4589,7 +4590,7 @@ public struct GetIntegrationResponseOutput {
 }
 
 /// Request to describe an existing Method resource.
-public struct GetMethodInput {
+public struct GetMethodInput: Swift.Sendable {
     /// Specifies the method request's HTTP method type.
     /// This member is required.
     public var httpMethod: Swift.String?
@@ -4613,7 +4614,7 @@ public struct GetMethodInput {
 }
 
 /// Represents a client-facing interface by which the client calls the API to access back-end resources. A Method resource is integrated with an Integration resource. Both consist of a request and one or more responses. The method request takes the client input that is passed to the back end through the integration request. A method response returns the output from the back end to the client through an integration response. A method request is embodied in a Method resource, whereas an integration request is embodied in an Integration resource. On the other hand, a method response is represented by a MethodResponse resource, whereas an integration response is represented by an IntegrationResponse resource.
-public struct GetMethodOutput {
+public struct GetMethodOutput: Swift.Sendable {
     /// A boolean flag specifying whether a valid ApiKey is required to invoke this method.
     public var apiKeyRequired: Swift.Bool?
     /// A list of authorization scopes configured on the method. The scopes are used with a COGNITO_USER_POOLS authorizer to authorize the method invocation. The authorization works by matching the method scopes against the scopes parsed from the access token in the incoming request. The method invocation is authorized if any method scopes matches a claimed scope in the access token. Otherwise, the invocation is not authorized. When the method scope is configured, the client must provide an access token instead of an identity token for authorization purposes.
@@ -4666,7 +4667,7 @@ public struct GetMethodOutput {
 }
 
 /// Request to describe a MethodResponse resource.
-public struct GetMethodResponseInput {
+public struct GetMethodResponseInput: Swift.Sendable {
     /// The HTTP verb of the Method resource.
     /// This member is required.
     public var httpMethod: Swift.String?
@@ -4695,7 +4696,7 @@ public struct GetMethodResponseInput {
 }
 
 /// Represents a method response of a given HTTP status code returned to the client. The method response is passed from the back end through the associated integration response that can be transformed using a mapping template.
-public struct GetMethodResponseOutput {
+public struct GetMethodResponseOutput: Swift.Sendable {
     /// Specifies the Model resources used for the response's content-type. Response models are represented as a key/value map, with a content-type as the key and a Model name as the value.
     public var responseModels: [Swift.String: Swift.String]?
     /// A key-value map specifying required or optional response parameters that API Gateway can send back to the caller. A key defines a method response header and the value specifies whether the associated method response header is required or not. The expression of the key must match the pattern method.response.header.{name}, where name is a valid and unique header name. API Gateway passes certain integration response data to the method response headers specified here according to the mapping you prescribe in the API's IntegrationResponse. The integration response data that can be mapped include an integration response header expressed in integration.response.header.{name}, a static value enclosed within a pair of single quotes (e.g., 'application/json'), or a JSON expression from the back-end response payload in the form of integration.response.body.{JSON-expression}, where JSON-expression is a valid JSON expression without the $ prefix.)
@@ -4716,7 +4717,7 @@ public struct GetMethodResponseOutput {
 }
 
 /// Request to list information about a model in an existing RestApi resource.
-public struct GetModelInput {
+public struct GetModelInput: Swift.Sendable {
     /// A query parameter of a Boolean value to resolve (true) all external model references and returns a flattened model schema or not (false) The default is false.
     public var flatten: Swift.Bool?
     /// The name of the model as an identifier.
@@ -4739,7 +4740,7 @@ public struct GetModelInput {
 }
 
 /// Represents the data structure of a method's request or response payload.
-public struct GetModelOutput {
+public struct GetModelOutput: Swift.Sendable {
     /// The content-type for the model.
     public var contentType: Swift.String?
     /// The description of the model.
@@ -4768,7 +4769,7 @@ public struct GetModelOutput {
 }
 
 /// Request to list existing Models defined for a RestApi resource.
-public struct GetModelsInput {
+public struct GetModelsInput: Swift.Sendable {
     /// The maximum number of returned results per page. The default value is 25 and the maximum value is 500.
     public var limit: Swift.Int?
     /// The current pagination position in the paged result set.
@@ -4790,8 +4791,9 @@ public struct GetModelsInput {
 }
 
 extension APIGatewayClientTypes {
+
     /// Represents the data structure of a method's request or response payload.
-    public struct Model {
+    public struct Model: Swift.Sendable {
         /// The content-type for the model.
         public var contentType: Swift.String?
         /// The description of the model.
@@ -4818,11 +4820,10 @@ extension APIGatewayClientTypes {
             self.schema = schema
         }
     }
-
 }
 
 /// Represents a collection of Model resources.
-public struct GetModelsOutput {
+public struct GetModelsOutput: Swift.Sendable {
     /// The current page of elements from this collection.
     public var items: [APIGatewayClientTypes.Model]?
     /// The current pagination position in the paged result set.
@@ -4839,7 +4840,7 @@ public struct GetModelsOutput {
 }
 
 /// Request to generate a sample mapping template used to transform the payload.
-public struct GetModelTemplateInput {
+public struct GetModelTemplateInput: Swift.Sendable {
     /// The name of the model for which to generate a template.
     /// This member is required.
     public var modelName: Swift.String?
@@ -4858,7 +4859,7 @@ public struct GetModelTemplateInput {
 }
 
 /// Represents a mapping template used to transform a payload.
-public struct GetModelTemplateOutput {
+public struct GetModelTemplateOutput: Swift.Sendable {
     /// The Apache Velocity Template Language (VTL) template content used for the template resource.
     public var value: Swift.String?
 
@@ -4871,7 +4872,7 @@ public struct GetModelTemplateOutput {
 }
 
 /// Gets a RequestValidator of a given RestApi.
-public struct GetRequestValidatorInput {
+public struct GetRequestValidatorInput: Swift.Sendable {
     /// The identifier of the RequestValidator to be retrieved.
     /// This member is required.
     public var requestValidatorId: Swift.String?
@@ -4890,7 +4891,7 @@ public struct GetRequestValidatorInput {
 }
 
 /// A set of validation rules for incoming Method requests.
-public struct GetRequestValidatorOutput {
+public struct GetRequestValidatorOutput: Swift.Sendable {
     /// The identifier of this RequestValidator.
     public var id: Swift.String?
     /// The name of this RequestValidator
@@ -4915,7 +4916,7 @@ public struct GetRequestValidatorOutput {
 }
 
 /// Gets the RequestValidators collection of a given RestApi.
-public struct GetRequestValidatorsInput {
+public struct GetRequestValidatorsInput: Swift.Sendable {
     /// The maximum number of returned results per page. The default value is 25 and the maximum value is 500.
     public var limit: Swift.Int?
     /// The current pagination position in the paged result set.
@@ -4937,8 +4938,9 @@ public struct GetRequestValidatorsInput {
 }
 
 extension APIGatewayClientTypes {
+
     /// A set of validation rules for incoming Method requests.
-    public struct RequestValidator {
+    public struct RequestValidator: Swift.Sendable {
         /// The identifier of this RequestValidator.
         public var id: Swift.String?
         /// The name of this RequestValidator
@@ -4961,11 +4963,10 @@ extension APIGatewayClientTypes {
             self.validateRequestParameters = validateRequestParameters
         }
     }
-
 }
 
 /// A collection of RequestValidator resources of a given RestApi.
-public struct GetRequestValidatorsOutput {
+public struct GetRequestValidatorsOutput: Swift.Sendable {
     /// The current page of elements from this collection.
     public var items: [APIGatewayClientTypes.RequestValidator]?
     /// The current pagination position in the paged result set.
@@ -4982,7 +4983,7 @@ public struct GetRequestValidatorsOutput {
 }
 
 /// Request to list information about a resource.
-public struct GetResourceInput {
+public struct GetResourceInput: Swift.Sendable {
     /// A query parameter to retrieve the specified resources embedded in the returned Resource representation in the response. This embed parameter value is a list of comma-separated strings. Currently, the request supports only retrieval of the embedded Method resources this way. The query parameter value must be a single-valued list and contain the "methods" string. For example, GET /restapis/{restapi_id}/resources/{resource_id}?embed=methods.
     public var embed: [Swift.String]?
     /// The identifier for the Resource resource.
@@ -5005,7 +5006,7 @@ public struct GetResourceInput {
 }
 
 /// Represents an API resource.
-public struct GetResourceOutput {
+public struct GetResourceOutput: Swift.Sendable {
     /// The resource's identifier.
     public var id: Swift.String?
     /// The parent resource's identifier.
@@ -5034,7 +5035,7 @@ public struct GetResourceOutput {
 }
 
 /// Request to list information about a collection of resources.
-public struct GetResourcesInput {
+public struct GetResourcesInput: Swift.Sendable {
     /// A query parameter used to retrieve the specified resources embedded in the returned Resources resource in the response. This embed parameter value is a list of comma-separated strings. Currently, the request supports only retrieval of the embedded Method resources this way. The query parameter value must be a single-valued list and contain the "methods" string. For example, GET /restapis/{restapi_id}/resources?embed=methods.
     public var embed: [Swift.String]?
     /// The maximum number of returned results per page. The default value is 25 and the maximum value is 500.
@@ -5060,8 +5061,9 @@ public struct GetResourcesInput {
 }
 
 extension APIGatewayClientTypes {
+
     /// Represents an API resource.
-    public struct Resource {
+    public struct Resource: Swift.Sendable {
         /// The resource's identifier.
         public var id: Swift.String?
         /// The parent resource's identifier.
@@ -5088,11 +5090,10 @@ extension APIGatewayClientTypes {
             self.resourceMethods = resourceMethods
         }
     }
-
 }
 
 /// Represents a collection of Resource resources.
-public struct GetResourcesOutput {
+public struct GetResourcesOutput: Swift.Sendable {
     /// The current page of elements from this collection.
     public var items: [APIGatewayClientTypes.Resource]?
     /// The current pagination position in the paged result set.
@@ -5109,7 +5110,7 @@ public struct GetResourcesOutput {
 }
 
 /// The GET request to list an existing RestApi defined for your collection.
-public struct GetRestApiInput {
+public struct GetRestApiInput: Swift.Sendable {
     /// The string identifier of the associated RestApi.
     /// This member is required.
     public var restApiId: Swift.String?
@@ -5123,7 +5124,7 @@ public struct GetRestApiInput {
 }
 
 /// Represents a REST API.
-public struct GetRestApiOutput {
+public struct GetRestApiOutput: Swift.Sendable {
     /// The source of the API key for metering requests according to a usage plan. Valid values are: >HEADER to read the API key from the X-API-Key header of a request. AUTHORIZER to read the API key from the UsageIdentifierKey from a custom authorizer.
     public var apiKeySource: APIGatewayClientTypes.ApiKeySourceType?
     /// The list of binary media types supported by the RestApi. By default, the RestApi supports only UTF-8-encoded text payloads.
@@ -5188,7 +5189,7 @@ public struct GetRestApiOutput {
 }
 
 /// The GET request to list existing RestApis defined for your collection.
-public struct GetRestApisInput {
+public struct GetRestApisInput: Swift.Sendable {
     /// The maximum number of returned results per page. The default value is 25 and the maximum value is 500.
     public var limit: Swift.Int?
     /// The current pagination position in the paged result set.
@@ -5205,8 +5206,9 @@ public struct GetRestApisInput {
 }
 
 extension APIGatewayClientTypes {
+
     /// Represents a REST API.
-    public struct RestApi {
+    public struct RestApi: Swift.Sendable {
         /// The source of the API key for metering requests according to a usage plan. Valid values are: >HEADER to read the API key from the X-API-Key header of a request. AUTHORIZER to read the API key from the UsageIdentifierKey from a custom authorizer.
         public var apiKeySource: APIGatewayClientTypes.ApiKeySourceType?
         /// The list of binary media types supported by the RestApi. By default, the RestApi supports only UTF-8-encoded text payloads.
@@ -5269,11 +5271,10 @@ extension APIGatewayClientTypes {
             self.warnings = warnings
         }
     }
-
 }
 
 /// Contains references to your APIs and links that guide you in how to interact with your collection. A collection offers a paginated view of your APIs.
-public struct GetRestApisOutput {
+public struct GetRestApisOutput: Swift.Sendable {
     /// The current page of elements from this collection.
     public var items: [APIGatewayClientTypes.RestApi]?
     /// The current pagination position in the paged result set.
@@ -5290,7 +5291,7 @@ public struct GetRestApisOutput {
 }
 
 /// Request a new generated client SDK for a RestApi and Stage.
-public struct GetSdkInput {
+public struct GetSdkInput: Swift.Sendable {
     /// A string-to-string key-value map of query parameters sdkType-dependent properties of the SDK. For sdkType of objectivec or swift, a parameter named classPrefix is required. For sdkType of android, parameters named groupId, artifactId, artifactVersion, and invokerPackage are required. For sdkType of java, parameters named serviceName and javaPackageName are required.
     public var parameters: [Swift.String: Swift.String]?
     /// The string identifier of the associated RestApi.
@@ -5318,7 +5319,7 @@ public struct GetSdkInput {
 }
 
 /// The binary blob response to GetSdk, which contains the generated SDK.
-public struct GetSdkOutput {
+public struct GetSdkOutput: Swift.Sendable {
     /// The binary blob response to GetSdk, which contains the generated SDK.
     public var body: Foundation.Data?
     /// The content-disposition header value in the HTTP response.
@@ -5339,7 +5340,7 @@ public struct GetSdkOutput {
 }
 
 /// Get an SdkType instance.
-public struct GetSdkTypeInput {
+public struct GetSdkTypeInput: Swift.Sendable {
     /// The identifier of the queried SdkType instance.
     /// This member is required.
     public var id: Swift.String?
@@ -5353,8 +5354,9 @@ public struct GetSdkTypeInput {
 }
 
 extension APIGatewayClientTypes {
+
     /// A configuration property of an SDK type.
-    public struct SdkConfigurationProperty {
+    public struct SdkConfigurationProperty: Swift.Sendable {
         /// The default value of an SdkType configuration property.
         public var defaultValue: Swift.String?
         /// The description of an SdkType configuration property.
@@ -5381,11 +5383,10 @@ extension APIGatewayClientTypes {
             self.`required` = `required`
         }
     }
-
 }
 
 /// A type of SDK that API Gateway can generate.
-public struct GetSdkTypeOutput {
+public struct GetSdkTypeOutput: Swift.Sendable {
     /// A list of configuration properties of an SdkType.
     public var configurationProperties: [APIGatewayClientTypes.SdkConfigurationProperty]?
     /// The description of an SdkType.
@@ -5410,7 +5411,7 @@ public struct GetSdkTypeOutput {
 }
 
 /// Get the SdkTypes collection.
-public struct GetSdkTypesInput {
+public struct GetSdkTypesInput: Swift.Sendable {
     /// The maximum number of returned results per page. The default value is 25 and the maximum value is 500.
     public var limit: Swift.Int?
     /// The current pagination position in the paged result set.
@@ -5427,8 +5428,9 @@ public struct GetSdkTypesInput {
 }
 
 extension APIGatewayClientTypes {
+
     /// A type of SDK that API Gateway can generate.
-    public struct SdkType {
+    public struct SdkType: Swift.Sendable {
         /// A list of configuration properties of an SdkType.
         public var configurationProperties: [APIGatewayClientTypes.SdkConfigurationProperty]?
         /// The description of an SdkType.
@@ -5451,11 +5453,10 @@ extension APIGatewayClientTypes {
             self.id = id
         }
     }
-
 }
 
 /// The collection of SdkType instances.
-public struct GetSdkTypesOutput {
+public struct GetSdkTypesOutput: Swift.Sendable {
     /// The current page of elements from this collection.
     public var items: [APIGatewayClientTypes.SdkType]?
 
@@ -5468,7 +5469,7 @@ public struct GetSdkTypesOutput {
 }
 
 /// Requests API Gateway to get information about a Stage resource.
-public struct GetStageInput {
+public struct GetStageInput: Swift.Sendable {
     /// The string identifier of the associated RestApi.
     /// This member is required.
     public var restApiId: Swift.String?
@@ -5487,7 +5488,7 @@ public struct GetStageInput {
 }
 
 /// Represents a unique identifier for a version of a deployed RestApi that is callable by users.
-public struct GetStageOutput {
+public struct GetStageOutput: Swift.Sendable {
     /// Settings for logging access in this stage.
     public var accessLogSettings: APIGatewayClientTypes.AccessLogSettings?
     /// Specifies whether a cache cluster is enabled for the stage. To activate a method-level cache, set CachingEnabled to true for a method.
@@ -5564,7 +5565,7 @@ public struct GetStageOutput {
 }
 
 /// Requests API Gateway to get information about one or more Stage resources.
-public struct GetStagesInput {
+public struct GetStagesInput: Swift.Sendable {
     /// The stages' deployment identifiers.
     public var deploymentId: Swift.String?
     /// The string identifier of the associated RestApi.
@@ -5582,8 +5583,9 @@ public struct GetStagesInput {
 }
 
 extension APIGatewayClientTypes {
+
     /// Represents a unique identifier for a version of a deployed RestApi that is callable by users.
-    public struct Stage {
+    public struct Stage: Swift.Sendable {
         /// Settings for logging access in this stage.
         public var accessLogSettings: APIGatewayClientTypes.AccessLogSettings?
         /// Specifies whether a cache cluster is enabled for the stage. To activate a method-level cache, set CachingEnabled to true for a method.
@@ -5658,11 +5660,10 @@ extension APIGatewayClientTypes {
             self.webAclArn = webAclArn
         }
     }
-
 }
 
 /// A list of Stage resources that are associated with the ApiKey resource.
-public struct GetStagesOutput {
+public struct GetStagesOutput: Swift.Sendable {
     /// The current page of elements from this collection.
     public var item: [APIGatewayClientTypes.Stage]?
 
@@ -5675,7 +5676,7 @@ public struct GetStagesOutput {
 }
 
 /// Gets the Tags collection for a given resource.
-public struct GetTagsInput {
+public struct GetTagsInput: Swift.Sendable {
     /// (Not currently supported) The maximum number of returned results per page. The default value is 25 and the maximum value is 500.
     public var limit: Swift.Int?
     /// (Not currently supported) The current pagination position in the paged result set.
@@ -5697,7 +5698,7 @@ public struct GetTagsInput {
 }
 
 /// The collection of tags. Each tag element is associated with a given resource.
-public struct GetTagsOutput {
+public struct GetTagsOutput: Swift.Sendable {
     /// The collection of tags. Each tag element is associated with a given resource.
     public var tags: [Swift.String: Swift.String]?
 
@@ -5710,7 +5711,7 @@ public struct GetTagsOutput {
 }
 
 /// The GET request to get the usage data of a usage plan in a specified time interval.
-public struct GetUsageInput {
+public struct GetUsageInput: Swift.Sendable {
     /// The ending date (e.g., 2016-12-31) of the usage data.
     /// This member is required.
     public var endDate: Swift.String?
@@ -5746,7 +5747,7 @@ public struct GetUsageInput {
 }
 
 /// Represents the usage data of a usage plan.
-public struct GetUsageOutput {
+public struct GetUsageOutput: Swift.Sendable {
     /// The ending date of the usage data.
     public var endDate: Swift.String?
     /// The usage data, as daily logs of used and remaining quotas, over the specified time interval indexed over the API keys in a usage plan. For example, {..., "values" : { "{api_key}" : [ [0, 100], [10, 90], [100, 10]]}, where {api_key} stands for an API key value and the daily log entry is of the format [used quota, remaining quota].
@@ -5775,7 +5776,7 @@ public struct GetUsageOutput {
 }
 
 /// The GET request to get a usage plan of a given plan identifier.
-public struct GetUsagePlanInput {
+public struct GetUsagePlanInput: Swift.Sendable {
     /// The identifier of the UsagePlan resource to be retrieved.
     /// This member is required.
     public var usagePlanId: Swift.String?
@@ -5789,7 +5790,7 @@ public struct GetUsagePlanInput {
 }
 
 /// Represents a usage plan used to specify who can assess associated API stages. Optionally, target request rate and quota limits can be set. In some cases clients can exceed the targets that you set. Don’t rely on usage plans to control costs. Consider using [Amazon Web Services Budgets](https://docs.aws.amazon.com/cost-management/latest/userguide/budgets-managing-costs.html) to monitor costs and [WAF](https://docs.aws.amazon.com/waf/latest/developerguide/waf-chapter.html) to manage API requests.
-public struct GetUsagePlanOutput {
+public struct GetUsagePlanOutput: Swift.Sendable {
     /// The associated API stages of a usage plan.
     public var apiStages: [APIGatewayClientTypes.ApiStage]?
     /// The description of a usage plan.
@@ -5830,7 +5831,7 @@ public struct GetUsagePlanOutput {
 }
 
 /// The GET request to get a usage plan key of a given key identifier.
-public struct GetUsagePlanKeyInput {
+public struct GetUsagePlanKeyInput: Swift.Sendable {
     /// The key Id of the to-be-retrieved UsagePlanKey resource representing a plan customer.
     /// This member is required.
     public var keyId: Swift.String?
@@ -5849,7 +5850,7 @@ public struct GetUsagePlanKeyInput {
 }
 
 /// Represents a usage plan key to identify a plan customer.
-public struct GetUsagePlanKeyOutput {
+public struct GetUsagePlanKeyOutput: Swift.Sendable {
     /// The Id of a usage plan key.
     public var id: Swift.String?
     /// The name of a usage plan key.
@@ -5874,7 +5875,7 @@ public struct GetUsagePlanKeyOutput {
 }
 
 /// The GET request to get all the usage plan keys representing the API keys added to a specified usage plan.
-public struct GetUsagePlanKeysInput {
+public struct GetUsagePlanKeysInput: Swift.Sendable {
     /// The maximum number of returned results per page. The default value is 25 and the maximum value is 500.
     public var limit: Swift.Int?
     /// A query parameter specifying the name of the to-be-returned usage plan keys.
@@ -5900,8 +5901,9 @@ public struct GetUsagePlanKeysInput {
 }
 
 extension APIGatewayClientTypes {
+
     /// Represents a usage plan key to identify a plan customer.
-    public struct UsagePlanKey {
+    public struct UsagePlanKey: Swift.Sendable {
         /// The Id of a usage plan key.
         public var id: Swift.String?
         /// The name of a usage plan key.
@@ -5924,11 +5926,10 @@ extension APIGatewayClientTypes {
             self.value = value
         }
     }
-
 }
 
 /// Represents the collection of usage plan keys added to usage plans for the associated API keys and, possibly, other types of keys.
-public struct GetUsagePlanKeysOutput {
+public struct GetUsagePlanKeysOutput: Swift.Sendable {
     /// The current page of elements from this collection.
     public var items: [APIGatewayClientTypes.UsagePlanKey]?
     /// The current pagination position in the paged result set.
@@ -5945,7 +5946,7 @@ public struct GetUsagePlanKeysOutput {
 }
 
 /// The GET request to get all the usage plans of the caller's account.
-public struct GetUsagePlansInput {
+public struct GetUsagePlansInput: Swift.Sendable {
     /// The identifier of the API key associated with the usage plans.
     public var keyId: Swift.String?
     /// The maximum number of returned results per page. The default value is 25 and the maximum value is 500.
@@ -5966,8 +5967,9 @@ public struct GetUsagePlansInput {
 }
 
 extension APIGatewayClientTypes {
+
     /// Represents a usage plan used to specify who can assess associated API stages. Optionally, target request rate and quota limits can be set. In some cases clients can exceed the targets that you set. Don’t rely on usage plans to control costs. Consider using [Amazon Web Services Budgets](https://docs.aws.amazon.com/cost-management/latest/userguide/budgets-managing-costs.html) to monitor costs and [WAF](https://docs.aws.amazon.com/waf/latest/developerguide/waf-chapter.html) to manage API requests.
-    public struct UsagePlan {
+    public struct UsagePlan: Swift.Sendable {
         /// The associated API stages of a usage plan.
         public var apiStages: [APIGatewayClientTypes.ApiStage]?
         /// The description of a usage plan.
@@ -6006,11 +6008,10 @@ extension APIGatewayClientTypes {
             self.throttle = throttle
         }
     }
-
 }
 
 /// Represents a collection of usage plans for an AWS account.
-public struct GetUsagePlansOutput {
+public struct GetUsagePlansOutput: Swift.Sendable {
     /// The current page of elements from this collection.
     public var items: [APIGatewayClientTypes.UsagePlan]?
     /// The current pagination position in the paged result set.
@@ -6027,7 +6028,7 @@ public struct GetUsagePlansOutput {
 }
 
 /// Gets a specified VPC link under the caller's account in a region.
-public struct GetVpcLinkInput {
+public struct GetVpcLinkInput: Swift.Sendable {
     /// The identifier of the VpcLink. It is used in an Integration to reference this VpcLink.
     /// This member is required.
     public var vpcLinkId: Swift.String?
@@ -6041,7 +6042,7 @@ public struct GetVpcLinkInput {
 }
 
 /// An API Gateway VPC link for a RestApi to access resources in an Amazon Virtual Private Cloud (VPC).
-public struct GetVpcLinkOutput {
+public struct GetVpcLinkOutput: Swift.Sendable {
     /// The description of the VPC link.
     public var description: Swift.String?
     /// The identifier of the VpcLink. It is used in an Integration to reference this VpcLink.
@@ -6078,7 +6079,7 @@ public struct GetVpcLinkOutput {
 }
 
 /// Gets the VpcLinks collection under the caller's account in a selected region.
-public struct GetVpcLinksInput {
+public struct GetVpcLinksInput: Swift.Sendable {
     /// The maximum number of returned results per page. The default value is 25 and the maximum value is 500.
     public var limit: Swift.Int?
     /// The current pagination position in the paged result set.
@@ -6095,8 +6096,9 @@ public struct GetVpcLinksInput {
 }
 
 extension APIGatewayClientTypes {
+
     /// An API Gateway VPC link for a RestApi to access resources in an Amazon Virtual Private Cloud (VPC).
-    public struct VpcLink {
+    public struct VpcLink: Swift.Sendable {
         /// The description of the VPC link.
         public var description: Swift.String?
         /// The identifier of the VpcLink. It is used in an Integration to reference this VpcLink.
@@ -6131,11 +6133,10 @@ extension APIGatewayClientTypes {
             self.targetArns = targetArns
         }
     }
-
 }
 
 /// The collection of VPC links under the caller's account in a region.
-public struct GetVpcLinksOutput {
+public struct GetVpcLinksOutput: Swift.Sendable {
     /// The current page of elements from this collection.
     public var items: [APIGatewayClientTypes.VpcLink]?
     /// The current pagination position in the paged result set.
@@ -6152,7 +6153,7 @@ public struct GetVpcLinksOutput {
 }
 
 /// The POST request to import API keys from an external source, such as a CSV-formatted file.
-public struct ImportApiKeysInput {
+public struct ImportApiKeysInput: Swift.Sendable {
     /// The payload of the POST request to import API keys. For the payload format, see API Key File Format.
     /// This member is required.
     public var body: Foundation.Data?
@@ -6175,7 +6176,7 @@ public struct ImportApiKeysInput {
 }
 
 /// The identifier of an ApiKey used in a UsagePlan.
-public struct ImportApiKeysOutput {
+public struct ImportApiKeysOutput: Swift.Sendable {
     /// A list of all the ApiKey identifiers.
     public var ids: [Swift.String]?
     /// A list of warning messages.
@@ -6193,7 +6194,7 @@ public struct ImportApiKeysOutput {
 
 extension APIGatewayClientTypes {
 
-    public enum PutMode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum PutMode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case merge
         case overwrite
         case sdkUnknown(Swift.String)
@@ -6221,7 +6222,7 @@ extension APIGatewayClientTypes {
 }
 
 /// Import documentation parts from an external (e.g., OpenAPI) definition file.
-public struct ImportDocumentationPartsInput {
+public struct ImportDocumentationPartsInput: Swift.Sendable {
     /// Raw byte array representing the to-be-imported documentation parts. To import from an OpenAPI file, this is a JSON object.
     /// This member is required.
     public var body: Foundation.Data?
@@ -6248,7 +6249,7 @@ public struct ImportDocumentationPartsInput {
 }
 
 /// A collection of the imported DocumentationPart identifiers.
-public struct ImportDocumentationPartsOutput {
+public struct ImportDocumentationPartsOutput: Swift.Sendable {
     /// A list of the returned documentation part identifiers.
     public var ids: [Swift.String]?
     /// A list of warning messages reported during import of documentation parts.
@@ -6265,7 +6266,7 @@ public struct ImportDocumentationPartsOutput {
 }
 
 /// A POST request to import an API to API Gateway using an input of an API definition file.
-public struct ImportRestApiInput {
+public struct ImportRestApiInput: Swift.Sendable {
     /// The POST request body containing external API definitions. Currently, only OpenAPI definition JSON/YAML files are supported. The maximum size of the API definition file is 6MB.
     /// This member is required.
     public var body: Foundation.Data?
@@ -6287,7 +6288,7 @@ public struct ImportRestApiInput {
 }
 
 /// Represents a REST API.
-public struct ImportRestApiOutput {
+public struct ImportRestApiOutput: Swift.Sendable {
     /// The source of the API key for metering requests according to a usage plan. Valid values are: >HEADER to read the API key from the X-API-Key header of a request. AUTHORIZER to read the API key from the UsageIdentifierKey from a custom authorizer.
     public var apiKeySource: APIGatewayClientTypes.ApiKeySourceType?
     /// The list of binary media types supported by the RestApi. By default, the RestApi supports only UTF-8-encoded text payloads.
@@ -6352,7 +6353,7 @@ public struct ImportRestApiOutput {
 }
 
 /// Creates a customization of a GatewayResponse of a specified response type and status code on the given RestApi.
-public struct PutGatewayResponseInput {
+public struct PutGatewayResponseInput: Swift.Sendable {
     /// Response parameters (paths, query strings and headers) of the GatewayResponse as a string-to-string map of key-value pairs.
     public var responseParameters: [Swift.String: Swift.String]?
     /// Response templates of the GatewayResponse as a string-to-string map of key-value pairs.
@@ -6383,7 +6384,7 @@ public struct PutGatewayResponseInput {
 }
 
 /// A gateway response of a given response type and status code, with optional response parameters and mapping templates.
-public struct PutGatewayResponseOutput {
+public struct PutGatewayResponseOutput: Swift.Sendable {
     /// A Boolean flag to indicate whether this GatewayResponse is the default gateway response (true) or not (false). A default gateway response is one generated by API Gateway without any customization by an API developer.
     public var defaultResponse: Swift.Bool
     /// Response parameters (paths, query strings and headers) of the GatewayResponse as a string-to-string map of key-value pairs.
@@ -6412,7 +6413,7 @@ public struct PutGatewayResponseOutput {
 }
 
 /// Sets up a method's integration.
-public struct PutIntegrationInput {
+public struct PutIntegrationInput: Swift.Sendable {
     /// A list of request parameters whose values API Gateway caches. To be valid values for cacheKeyParameters, these parameters must also be specified for Method requestParameters.
     public var cacheKeyParameters: [Swift.String]?
     /// Specifies a group of related cached parameters. By default, API Gateway uses the resource ID as the cacheNamespace. You can specify the same cacheNamespace across resources to return the same cached data for requests to different resources.
@@ -6493,7 +6494,7 @@ public struct PutIntegrationInput {
 }
 
 /// Represents an HTTP, HTTP_PROXY, AWS, AWS_PROXY, or Mock integration.
-public struct PutIntegrationOutput {
+public struct PutIntegrationOutput: Swift.Sendable {
     /// A list of request parameters whose values API Gateway caches. To be valid values for cacheKeyParameters, these parameters must also be specified for Method requestParameters.
     public var cacheKeyParameters: [Swift.String]?
     /// Specifies a group of related cached parameters. By default, API Gateway uses the resource ID as the cacheNamespace. You can specify the same cacheNamespace across resources to return the same cached data for requests to different resources.
@@ -6562,7 +6563,7 @@ public struct PutIntegrationOutput {
 }
 
 /// Represents a put integration response request.
-public struct PutIntegrationResponseInput {
+public struct PutIntegrationResponseInput: Swift.Sendable {
     /// Specifies how to handle response payload content type conversions. Supported values are CONVERT_TO_BINARY and CONVERT_TO_TEXT, with the following behaviors: If this property is not defined, the response payload will be passed through from the integration response to the method response without modification.
     public var contentHandling: APIGatewayClientTypes.ContentHandlingStrategy?
     /// Specifies a put integration response request's HTTP method.
@@ -6607,7 +6608,7 @@ public struct PutIntegrationResponseInput {
 }
 
 /// Represents an integration response. The status code must map to an existing MethodResponse, and parameters and templates can be used to transform the back-end response.
-public struct PutIntegrationResponseOutput {
+public struct PutIntegrationResponseOutput: Swift.Sendable {
     /// Specifies how to handle response payload content type conversions. Supported values are CONVERT_TO_BINARY and CONVERT_TO_TEXT, with the following behaviors: If this property is not defined, the response payload will be passed through from the integration response to the method response without modification.
     public var contentHandling: APIGatewayClientTypes.ContentHandlingStrategy?
     /// A key-value map specifying response parameters that are passed to the method response from the back end. The key is a method response header parameter name and the mapped value is an integration response header value, a static value enclosed within a pair of single quotes, or a JSON expression from the integration response body. The mapping key must match the pattern of method.response.header.{name}, where name is a valid and unique header name. The mapped non-static value must match the pattern of integration.response.header.{name} or integration.response.body.{JSON-expression}, where name is a valid and unique response header name and JSON-expression is a valid JSON expression without the $ prefix.
@@ -6636,7 +6637,7 @@ public struct PutIntegrationResponseOutput {
 }
 
 /// Request to add a method to an existing Resource resource.
-public struct PutMethodInput {
+public struct PutMethodInput: Swift.Sendable {
     /// Specifies whether the method required a valid ApiKey.
     public var apiKeyRequired: Swift.Bool?
     /// A list of authorization scopes configured on the method. The scopes are used with a COGNITO_USER_POOLS authorizer to authorize the method invocation. The authorization works by matching the method scopes against the scopes parsed from the access token in the incoming request. The method invocation is authorized if any method scopes matches a claimed scope in the access token. Otherwise, the invocation is not authorized. When the method scope is configured, the client must provide an access token instead of an identity token for authorization purposes.
@@ -6693,7 +6694,7 @@ public struct PutMethodInput {
 }
 
 /// Represents a client-facing interface by which the client calls the API to access back-end resources. A Method resource is integrated with an Integration resource. Both consist of a request and one or more responses. The method request takes the client input that is passed to the back end through the integration request. A method response returns the output from the back end to the client through an integration response. A method request is embodied in a Method resource, whereas an integration request is embodied in an Integration resource. On the other hand, a method response is represented by a MethodResponse resource, whereas an integration response is represented by an IntegrationResponse resource.
-public struct PutMethodOutput {
+public struct PutMethodOutput: Swift.Sendable {
     /// A boolean flag specifying whether a valid ApiKey is required to invoke this method.
     public var apiKeyRequired: Swift.Bool?
     /// A list of authorization scopes configured on the method. The scopes are used with a COGNITO_USER_POOLS authorizer to authorize the method invocation. The authorization works by matching the method scopes against the scopes parsed from the access token in the incoming request. The method invocation is authorized if any method scopes matches a claimed scope in the access token. Otherwise, the invocation is not authorized. When the method scope is configured, the client must provide an access token instead of an identity token for authorization purposes.
@@ -6746,7 +6747,7 @@ public struct PutMethodOutput {
 }
 
 /// Request to add a MethodResponse to an existing Method resource.
-public struct PutMethodResponseInput {
+public struct PutMethodResponseInput: Swift.Sendable {
     /// The HTTP verb of the Method resource.
     /// This member is required.
     public var httpMethod: Swift.String?
@@ -6783,7 +6784,7 @@ public struct PutMethodResponseInput {
 }
 
 /// Represents a method response of a given HTTP status code returned to the client. The method response is passed from the back end through the associated integration response that can be transformed using a mapping template.
-public struct PutMethodResponseOutput {
+public struct PutMethodResponseOutput: Swift.Sendable {
     /// Specifies the Model resources used for the response's content-type. Response models are represented as a key/value map, with a content-type as the key and a Model name as the value.
     public var responseModels: [Swift.String: Swift.String]?
     /// A key-value map specifying required or optional response parameters that API Gateway can send back to the caller. A key defines a method response header and the value specifies whether the associated method response header is required or not. The expression of the key must match the pattern method.response.header.{name}, where name is a valid and unique header name. API Gateway passes certain integration response data to the method response headers specified here according to the mapping you prescribe in the API's IntegrationResponse. The integration response data that can be mapped include an integration response header expressed in integration.response.header.{name}, a static value enclosed within a pair of single quotes (e.g., 'application/json'), or a JSON expression from the back-end response payload in the form of integration.response.body.{JSON-expression}, where JSON-expression is a valid JSON expression without the $ prefix.)
@@ -6804,7 +6805,7 @@ public struct PutMethodResponseOutput {
 }
 
 /// A PUT request to update an existing API, with external API definitions specified as the request body.
-public struct PutRestApiInput {
+public struct PutRestApiInput: Swift.Sendable {
     /// The PUT request body containing external API definitions. Currently, only OpenAPI definition JSON/YAML files are supported. The maximum size of the API definition file is 6MB.
     /// This member is required.
     public var body: Foundation.Data?
@@ -6835,7 +6836,7 @@ public struct PutRestApiInput {
 }
 
 /// Represents a REST API.
-public struct PutRestApiOutput {
+public struct PutRestApiOutput: Swift.Sendable {
     /// The source of the API key for metering requests according to a usage plan. Valid values are: >HEADER to read the API key from the X-API-Key header of a request. AUTHORIZER to read the API key from the UsageIdentifierKey from a custom authorizer.
     public var apiKeySource: APIGatewayClientTypes.ApiKeySourceType?
     /// The list of binary media types supported by the RestApi. By default, the RestApi supports only UTF-8-encoded text payloads.
@@ -6900,7 +6901,7 @@ public struct PutRestApiOutput {
 }
 
 /// Adds or updates a tag on a given resource.
-public struct TagResourceInput {
+public struct TagResourceInput: Swift.Sendable {
     /// The ARN of a resource that can be tagged.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -6919,7 +6920,7 @@ public struct TagResourceInput {
 }
 
 /// Make a request to simulate the invocation of an Authorizer.
-public struct TestInvokeAuthorizerInput {
+public struct TestInvokeAuthorizerInput: Swift.Sendable {
     /// A key-value map of additional context variables.
     public var additionalContext: [Swift.String: Swift.String]?
     /// Specifies a test invoke authorizer request's Authorizer ID.
@@ -6962,7 +6963,7 @@ public struct TestInvokeAuthorizerInput {
 }
 
 /// Represents the response of the test invoke request for a custom Authorizer
-public struct TestInvokeAuthorizerOutput {
+public struct TestInvokeAuthorizerOutput: Swift.Sendable {
     /// The authorization response.
     public var authorization: [Swift.String: [Swift.String]]?
     /// The open identity claims, with any supported custom attributes, returned from the Cognito Your User Pool configured for the API.
@@ -6999,7 +7000,7 @@ public struct TestInvokeAuthorizerOutput {
 }
 
 /// Make a request to simulate the invocation of a Method.
-public struct TestInvokeMethodInput {
+public struct TestInvokeMethodInput: Swift.Sendable {
     /// The simulated request body of an incoming invocation request.
     public var body: Swift.String?
     /// A ClientCertificate identifier to use in the test invocation. API Gateway will use the certificate when making the HTTPS request to the defined back-end endpoint.
@@ -7047,7 +7048,7 @@ public struct TestInvokeMethodInput {
 }
 
 /// Represents the response of the test invoke request in the HTTP method.
-public struct TestInvokeMethodOutput {
+public struct TestInvokeMethodOutput: Swift.Sendable {
     /// The body of the HTTP response.
     public var body: Swift.String?
     /// The headers of the HTTP response.
@@ -7080,7 +7081,7 @@ public struct TestInvokeMethodOutput {
 }
 
 /// Removes a tag from a given resource.
-public struct UntagResourceInput {
+public struct UntagResourceInput: Swift.Sendable {
     /// The ARN of a resource that can be tagged.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -7100,7 +7101,7 @@ public struct UntagResourceInput {
 
 extension APIGatewayClientTypes {
 
-    public enum Op: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Op: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case add
         case copy
         case move
@@ -7140,8 +7141,9 @@ extension APIGatewayClientTypes {
 }
 
 extension APIGatewayClientTypes {
+
     /// For more information about supported patch operations, see [Patch Operations](https://docs.aws.amazon.com/apigateway/latest/api/patch-operations.html).
-    public struct PatchOperation {
+    public struct PatchOperation: Swift.Sendable {
         /// The copy update operation's source as identified by a JSON-Pointer value referencing the location within the targeted resource to copy the value from. For example, to promote a canary deployment, you copy the canary deployment ID to the affiliated deployment ID by calling a PATCH request on a Stage resource with "op":"copy", "from":"/canarySettings/deploymentId" and "path":"/deploymentId".
         public var from: Swift.String?
         /// An update operation to be performed with this PATCH request. The valid value can be add, remove, replace or copy. Not all valid operations are supported for a given resource. Support of the operations depends on specific operational contexts. Attempts to apply an unsupported operation on a resource will return an error message..
@@ -7164,11 +7166,10 @@ extension APIGatewayClientTypes {
             self.value = value
         }
     }
-
 }
 
 /// Requests API Gateway to change information about the current Account resource.
-public struct UpdateAccountInput {
+public struct UpdateAccountInput: Swift.Sendable {
     /// For more information about supported patch operations, see [Patch Operations](https://docs.aws.amazon.com/apigateway/latest/api/patch-operations.html).
     public var patchOperations: [APIGatewayClientTypes.PatchOperation]?
 
@@ -7181,7 +7182,7 @@ public struct UpdateAccountInput {
 }
 
 /// Represents an AWS account that is associated with API Gateway.
-public struct UpdateAccountOutput {
+public struct UpdateAccountOutput: Swift.Sendable {
     /// The version of the API keys used for the account.
     public var apiKeyVersion: Swift.String?
     /// The ARN of an Amazon CloudWatch role for the current Account.
@@ -7206,7 +7207,7 @@ public struct UpdateAccountOutput {
 }
 
 /// A request to change information about an ApiKey resource.
-public struct UpdateApiKeyInput {
+public struct UpdateApiKeyInput: Swift.Sendable {
     /// The identifier of the ApiKey resource to be updated.
     /// This member is required.
     public var apiKey: Swift.String?
@@ -7224,7 +7225,7 @@ public struct UpdateApiKeyInput {
 }
 
 /// A resource that can be distributed to callers for executing Method resources that require an API key. API keys can be mapped to any Stage on any RestApi, which indicates that the callers with the API key can make requests to that stage.
-public struct UpdateApiKeyOutput {
+public struct UpdateApiKeyOutput: Swift.Sendable {
     /// The timestamp when the API Key was created.
     public var createdDate: Foundation.Date?
     /// An Amazon Web Services Marketplace customer identifier, when integrating with the Amazon Web Services SaaS Marketplace.
@@ -7273,7 +7274,7 @@ public struct UpdateApiKeyOutput {
 }
 
 /// Request to update an existing Authorizer resource.
-public struct UpdateAuthorizerInput {
+public struct UpdateAuthorizerInput: Swift.Sendable {
     /// The identifier of the Authorizer resource.
     /// This member is required.
     public var authorizerId: Swift.String?
@@ -7296,7 +7297,7 @@ public struct UpdateAuthorizerInput {
 }
 
 /// Represents an authorization layer for methods. If enabled on a method, API Gateway will activate the authorizer when a client calls the method.
-public struct UpdateAuthorizerOutput {
+public struct UpdateAuthorizerOutput: Swift.Sendable {
     /// Optional customer-defined field, used in OpenAPI imports and exports without functional impact.
     public var authType: Swift.String?
     /// Specifies the required credentials as an IAM role for API Gateway to invoke the authorizer. To specify an IAM role for API Gateway to assume, use the role's Amazon Resource Name (ARN). To use resource-based permissions on the Lambda function, specify null.
@@ -7345,7 +7346,7 @@ public struct UpdateAuthorizerOutput {
 }
 
 /// A request to change information about the BasePathMapping resource.
-public struct UpdateBasePathMappingInput {
+public struct UpdateBasePathMappingInput: Swift.Sendable {
     /// The base path of the BasePathMapping resource to change. To specify an empty base path, set this parameter to '(none)'.
     /// This member is required.
     public var basePath: Swift.String?
@@ -7368,7 +7369,7 @@ public struct UpdateBasePathMappingInput {
 }
 
 /// Represents the base path that callers of the API must provide as part of the URL after the domain name.
-public struct UpdateBasePathMappingOutput {
+public struct UpdateBasePathMappingOutput: Swift.Sendable {
     /// The base path name that callers of the API must provide as part of the URL after the domain name.
     public var basePath: Swift.String?
     /// The string identifier of the associated RestApi.
@@ -7389,7 +7390,7 @@ public struct UpdateBasePathMappingOutput {
 }
 
 /// A request to change information about an ClientCertificate resource.
-public struct UpdateClientCertificateInput {
+public struct UpdateClientCertificateInput: Swift.Sendable {
     /// The identifier of the ClientCertificate resource to be updated.
     /// This member is required.
     public var clientCertificateId: Swift.String?
@@ -7407,7 +7408,7 @@ public struct UpdateClientCertificateInput {
 }
 
 /// Represents a client certificate used to configure client-side SSL authentication while sending requests to the integration endpoint.
-public struct UpdateClientCertificateOutput {
+public struct UpdateClientCertificateOutput: Swift.Sendable {
     /// The identifier of the client certificate.
     public var clientCertificateId: Swift.String?
     /// The timestamp when the client certificate was created.
@@ -7440,7 +7441,7 @@ public struct UpdateClientCertificateOutput {
 }
 
 /// Requests API Gateway to change information about a Deployment resource.
-public struct UpdateDeploymentInput {
+public struct UpdateDeploymentInput: Swift.Sendable {
     /// The replacement identifier for the Deployment resource to change information about.
     /// This member is required.
     public var deploymentId: Swift.String?
@@ -7463,7 +7464,7 @@ public struct UpdateDeploymentInput {
 }
 
 /// An immutable representation of a RestApi resource that can be called by users using Stages. A deployment must be associated with a Stage for it to be callable over the Internet.
-public struct UpdateDeploymentOutput {
+public struct UpdateDeploymentOutput: Swift.Sendable {
     /// A summary of the RestApi at the date and time that the deployment resource was created.
     public var apiSummary: [Swift.String: [Swift.String: APIGatewayClientTypes.MethodSnapshot]]?
     /// The date and time that the deployment resource was created.
@@ -7488,7 +7489,7 @@ public struct UpdateDeploymentOutput {
 }
 
 /// Updates an existing documentation part of a given API.
-public struct UpdateDocumentationPartInput {
+public struct UpdateDocumentationPartInput: Swift.Sendable {
     /// The identifier of the to-be-updated documentation part.
     /// This member is required.
     public var documentationPartId: Swift.String?
@@ -7511,7 +7512,7 @@ public struct UpdateDocumentationPartInput {
 }
 
 /// A documentation part for a targeted API entity.
-public struct UpdateDocumentationPartOutput {
+public struct UpdateDocumentationPartOutput: Swift.Sendable {
     /// The DocumentationPart identifier, generated by API Gateway when the DocumentationPart is created.
     public var id: Swift.String?
     /// The location of the API entity to which the documentation applies. Valid fields depend on the targeted API entity type. All the valid location fields are not required. If not explicitly specified, a valid location field is treated as a wildcard and associated documentation content may be inherited by matching entities, unless overridden.
@@ -7532,7 +7533,7 @@ public struct UpdateDocumentationPartOutput {
 }
 
 /// Updates an existing documentation version of an API.
-public struct UpdateDocumentationVersionInput {
+public struct UpdateDocumentationVersionInput: Swift.Sendable {
     /// The version identifier of the to-be-updated documentation version.
     /// This member is required.
     public var documentationVersion: Swift.String?
@@ -7555,7 +7556,7 @@ public struct UpdateDocumentationVersionInput {
 }
 
 /// A snapshot of the documentation of an API.
-public struct UpdateDocumentationVersionOutput {
+public struct UpdateDocumentationVersionOutput: Swift.Sendable {
     /// The date when the API documentation snapshot is created.
     public var createdDate: Foundation.Date?
     /// The description of the API documentation snapshot.
@@ -7576,7 +7577,7 @@ public struct UpdateDocumentationVersionOutput {
 }
 
 /// A request to change information about the DomainName resource.
-public struct UpdateDomainNameInput {
+public struct UpdateDomainNameInput: Swift.Sendable {
     /// The name of the DomainName resource to be changed.
     /// This member is required.
     public var domainName: Swift.String?
@@ -7594,7 +7595,7 @@ public struct UpdateDomainNameInput {
 }
 
 /// Represents a custom domain name as a user-friendly host name of an API (RestApi).
-public struct UpdateDomainNameOutput {
+public struct UpdateDomainNameOutput: Swift.Sendable {
     /// The reference to an Amazon Web Services-managed certificate that will be used by edge-optimized endpoint for this domain name. Certificate Manager is the only supported source.
     public var certificateArn: Swift.String?
     /// The name of the certificate that will be used by edge-optimized endpoint for this domain name.
@@ -7671,7 +7672,7 @@ public struct UpdateDomainNameOutput {
 }
 
 /// Updates a GatewayResponse of a specified response type on the given RestApi.
-public struct UpdateGatewayResponseInput {
+public struct UpdateGatewayResponseInput: Swift.Sendable {
     /// For more information about supported patch operations, see [Patch Operations](https://docs.aws.amazon.com/apigateway/latest/api/patch-operations.html).
     public var patchOperations: [APIGatewayClientTypes.PatchOperation]?
     /// The response type of the associated GatewayResponse.
@@ -7694,7 +7695,7 @@ public struct UpdateGatewayResponseInput {
 }
 
 /// A gateway response of a given response type and status code, with optional response parameters and mapping templates.
-public struct UpdateGatewayResponseOutput {
+public struct UpdateGatewayResponseOutput: Swift.Sendable {
     /// A Boolean flag to indicate whether this GatewayResponse is the default gateway response (true) or not (false). A default gateway response is one generated by API Gateway without any customization by an API developer.
     public var defaultResponse: Swift.Bool
     /// Response parameters (paths, query strings and headers) of the GatewayResponse as a string-to-string map of key-value pairs.
@@ -7723,7 +7724,7 @@ public struct UpdateGatewayResponseOutput {
 }
 
 /// Represents an update integration request.
-public struct UpdateIntegrationInput {
+public struct UpdateIntegrationInput: Swift.Sendable {
     /// Represents an update integration request's HTTP method.
     /// This member is required.
     public var httpMethod: Swift.String?
@@ -7751,7 +7752,7 @@ public struct UpdateIntegrationInput {
 }
 
 /// Represents an HTTP, HTTP_PROXY, AWS, AWS_PROXY, or Mock integration.
-public struct UpdateIntegrationOutput {
+public struct UpdateIntegrationOutput: Swift.Sendable {
     /// A list of request parameters whose values API Gateway caches. To be valid values for cacheKeyParameters, these parameters must also be specified for Method requestParameters.
     public var cacheKeyParameters: [Swift.String]?
     /// Specifies a group of related cached parameters. By default, API Gateway uses the resource ID as the cacheNamespace. You can specify the same cacheNamespace across resources to return the same cached data for requests to different resources.
@@ -7820,7 +7821,7 @@ public struct UpdateIntegrationOutput {
 }
 
 /// Represents an update integration response request.
-public struct UpdateIntegrationResponseInput {
+public struct UpdateIntegrationResponseInput: Swift.Sendable {
     /// Specifies an update integration response request's HTTP method.
     /// This member is required.
     public var httpMethod: Swift.String?
@@ -7853,7 +7854,7 @@ public struct UpdateIntegrationResponseInput {
 }
 
 /// Represents an integration response. The status code must map to an existing MethodResponse, and parameters and templates can be used to transform the back-end response.
-public struct UpdateIntegrationResponseOutput {
+public struct UpdateIntegrationResponseOutput: Swift.Sendable {
     /// Specifies how to handle response payload content type conversions. Supported values are CONVERT_TO_BINARY and CONVERT_TO_TEXT, with the following behaviors: If this property is not defined, the response payload will be passed through from the integration response to the method response without modification.
     public var contentHandling: APIGatewayClientTypes.ContentHandlingStrategy?
     /// A key-value map specifying response parameters that are passed to the method response from the back end. The key is a method response header parameter name and the mapped value is an integration response header value, a static value enclosed within a pair of single quotes, or a JSON expression from the integration response body. The mapping key must match the pattern of method.response.header.{name}, where name is a valid and unique header name. The mapped non-static value must match the pattern of integration.response.header.{name} or integration.response.body.{JSON-expression}, where name is a valid and unique response header name and JSON-expression is a valid JSON expression without the $ prefix.
@@ -7882,7 +7883,7 @@ public struct UpdateIntegrationResponseOutput {
 }
 
 /// Request to update an existing Method resource.
-public struct UpdateMethodInput {
+public struct UpdateMethodInput: Swift.Sendable {
     /// The HTTP verb of the Method resource.
     /// This member is required.
     public var httpMethod: Swift.String?
@@ -7910,7 +7911,7 @@ public struct UpdateMethodInput {
 }
 
 /// Represents a client-facing interface by which the client calls the API to access back-end resources. A Method resource is integrated with an Integration resource. Both consist of a request and one or more responses. The method request takes the client input that is passed to the back end through the integration request. A method response returns the output from the back end to the client through an integration response. A method request is embodied in a Method resource, whereas an integration request is embodied in an Integration resource. On the other hand, a method response is represented by a MethodResponse resource, whereas an integration response is represented by an IntegrationResponse resource.
-public struct UpdateMethodOutput {
+public struct UpdateMethodOutput: Swift.Sendable {
     /// A boolean flag specifying whether a valid ApiKey is required to invoke this method.
     public var apiKeyRequired: Swift.Bool?
     /// A list of authorization scopes configured on the method. The scopes are used with a COGNITO_USER_POOLS authorizer to authorize the method invocation. The authorization works by matching the method scopes against the scopes parsed from the access token in the incoming request. The method invocation is authorized if any method scopes matches a claimed scope in the access token. Otherwise, the invocation is not authorized. When the method scope is configured, the client must provide an access token instead of an identity token for authorization purposes.
@@ -7963,7 +7964,7 @@ public struct UpdateMethodOutput {
 }
 
 /// A request to update an existing MethodResponse resource.
-public struct UpdateMethodResponseInput {
+public struct UpdateMethodResponseInput: Swift.Sendable {
     /// The HTTP verb of the Method resource.
     /// This member is required.
     public var httpMethod: Swift.String?
@@ -7996,7 +7997,7 @@ public struct UpdateMethodResponseInput {
 }
 
 /// Represents a method response of a given HTTP status code returned to the client. The method response is passed from the back end through the associated integration response that can be transformed using a mapping template.
-public struct UpdateMethodResponseOutput {
+public struct UpdateMethodResponseOutput: Swift.Sendable {
     /// Specifies the Model resources used for the response's content-type. Response models are represented as a key/value map, with a content-type as the key and a Model name as the value.
     public var responseModels: [Swift.String: Swift.String]?
     /// A key-value map specifying required or optional response parameters that API Gateway can send back to the caller. A key defines a method response header and the value specifies whether the associated method response header is required or not. The expression of the key must match the pattern method.response.header.{name}, where name is a valid and unique header name. API Gateway passes certain integration response data to the method response headers specified here according to the mapping you prescribe in the API's IntegrationResponse. The integration response data that can be mapped include an integration response header expressed in integration.response.header.{name}, a static value enclosed within a pair of single quotes (e.g., 'application/json'), or a JSON expression from the back-end response payload in the form of integration.response.body.{JSON-expression}, where JSON-expression is a valid JSON expression without the $ prefix.)
@@ -8017,7 +8018,7 @@ public struct UpdateMethodResponseOutput {
 }
 
 /// Request to update an existing model in an existing RestApi resource.
-public struct UpdateModelInput {
+public struct UpdateModelInput: Swift.Sendable {
     /// The name of the model to update.
     /// This member is required.
     public var modelName: Swift.String?
@@ -8040,7 +8041,7 @@ public struct UpdateModelInput {
 }
 
 /// Represents the data structure of a method's request or response payload.
-public struct UpdateModelOutput {
+public struct UpdateModelOutput: Swift.Sendable {
     /// The content-type for the model.
     public var contentType: Swift.String?
     /// The description of the model.
@@ -8069,7 +8070,7 @@ public struct UpdateModelOutput {
 }
 
 /// Updates a RequestValidator of a given RestApi.
-public struct UpdateRequestValidatorInput {
+public struct UpdateRequestValidatorInput: Swift.Sendable {
     /// For more information about supported patch operations, see [Patch Operations](https://docs.aws.amazon.com/apigateway/latest/api/patch-operations.html).
     public var patchOperations: [APIGatewayClientTypes.PatchOperation]?
     /// The identifier of RequestValidator to be updated.
@@ -8092,7 +8093,7 @@ public struct UpdateRequestValidatorInput {
 }
 
 /// A set of validation rules for incoming Method requests.
-public struct UpdateRequestValidatorOutput {
+public struct UpdateRequestValidatorOutput: Swift.Sendable {
     /// The identifier of this RequestValidator.
     public var id: Swift.String?
     /// The name of this RequestValidator
@@ -8117,7 +8118,7 @@ public struct UpdateRequestValidatorOutput {
 }
 
 /// Request to change information about a Resource resource.
-public struct UpdateResourceInput {
+public struct UpdateResourceInput: Swift.Sendable {
     /// For more information about supported patch operations, see [Patch Operations](https://docs.aws.amazon.com/apigateway/latest/api/patch-operations.html).
     public var patchOperations: [APIGatewayClientTypes.PatchOperation]?
     /// The identifier of the Resource resource.
@@ -8140,7 +8141,7 @@ public struct UpdateResourceInput {
 }
 
 /// Represents an API resource.
-public struct UpdateResourceOutput {
+public struct UpdateResourceOutput: Swift.Sendable {
     /// The resource's identifier.
     public var id: Swift.String?
     /// The parent resource's identifier.
@@ -8169,7 +8170,7 @@ public struct UpdateResourceOutput {
 }
 
 /// Request to update an existing RestApi resource in your collection.
-public struct UpdateRestApiInput {
+public struct UpdateRestApiInput: Swift.Sendable {
     /// For more information about supported patch operations, see [Patch Operations](https://docs.aws.amazon.com/apigateway/latest/api/patch-operations.html).
     public var patchOperations: [APIGatewayClientTypes.PatchOperation]?
     /// The string identifier of the associated RestApi.
@@ -8187,7 +8188,7 @@ public struct UpdateRestApiInput {
 }
 
 /// Represents a REST API.
-public struct UpdateRestApiOutput {
+public struct UpdateRestApiOutput: Swift.Sendable {
     /// The source of the API key for metering requests according to a usage plan. Valid values are: >HEADER to read the API key from the X-API-Key header of a request. AUTHORIZER to read the API key from the UsageIdentifierKey from a custom authorizer.
     public var apiKeySource: APIGatewayClientTypes.ApiKeySourceType?
     /// The list of binary media types supported by the RestApi. By default, the RestApi supports only UTF-8-encoded text payloads.
@@ -8252,7 +8253,7 @@ public struct UpdateRestApiOutput {
 }
 
 /// Requests API Gateway to change information about a Stage resource.
-public struct UpdateStageInput {
+public struct UpdateStageInput: Swift.Sendable {
     /// For more information about supported patch operations, see [Patch Operations](https://docs.aws.amazon.com/apigateway/latest/api/patch-operations.html).
     public var patchOperations: [APIGatewayClientTypes.PatchOperation]?
     /// The string identifier of the associated RestApi.
@@ -8275,7 +8276,7 @@ public struct UpdateStageInput {
 }
 
 /// Represents a unique identifier for a version of a deployed RestApi that is callable by users.
-public struct UpdateStageOutput {
+public struct UpdateStageOutput: Swift.Sendable {
     /// Settings for logging access in this stage.
     public var accessLogSettings: APIGatewayClientTypes.AccessLogSettings?
     /// Specifies whether a cache cluster is enabled for the stage. To activate a method-level cache, set CachingEnabled to true for a method.
@@ -8352,7 +8353,7 @@ public struct UpdateStageOutput {
 }
 
 /// The PATCH request to grant a temporary extension to the remaining quota of a usage plan associated with a specified API key.
-public struct UpdateUsageInput {
+public struct UpdateUsageInput: Swift.Sendable {
     /// The identifier of the API key associated with the usage plan in which a temporary extension is granted to the remaining quota.
     /// This member is required.
     public var keyId: Swift.String?
@@ -8375,7 +8376,7 @@ public struct UpdateUsageInput {
 }
 
 /// Represents the usage data of a usage plan.
-public struct UpdateUsageOutput {
+public struct UpdateUsageOutput: Swift.Sendable {
     /// The ending date of the usage data.
     public var endDate: Swift.String?
     /// The usage data, as daily logs of used and remaining quotas, over the specified time interval indexed over the API keys in a usage plan. For example, {..., "values" : { "{api_key}" : [ [0, 100], [10, 90], [100, 10]]}, where {api_key} stands for an API key value and the daily log entry is of the format [used quota, remaining quota].
@@ -8404,7 +8405,7 @@ public struct UpdateUsageOutput {
 }
 
 /// The PATCH request to update a usage plan of a given plan Id.
-public struct UpdateUsagePlanInput {
+public struct UpdateUsagePlanInput: Swift.Sendable {
     /// For more information about supported patch operations, see [Patch Operations](https://docs.aws.amazon.com/apigateway/latest/api/patch-operations.html).
     public var patchOperations: [APIGatewayClientTypes.PatchOperation]?
     /// The Id of the to-be-updated usage plan.
@@ -8422,7 +8423,7 @@ public struct UpdateUsagePlanInput {
 }
 
 /// Represents a usage plan used to specify who can assess associated API stages. Optionally, target request rate and quota limits can be set. In some cases clients can exceed the targets that you set. Don’t rely on usage plans to control costs. Consider using [Amazon Web Services Budgets](https://docs.aws.amazon.com/cost-management/latest/userguide/budgets-managing-costs.html) to monitor costs and [WAF](https://docs.aws.amazon.com/waf/latest/developerguide/waf-chapter.html) to manage API requests.
-public struct UpdateUsagePlanOutput {
+public struct UpdateUsagePlanOutput: Swift.Sendable {
     /// The associated API stages of a usage plan.
     public var apiStages: [APIGatewayClientTypes.ApiStage]?
     /// The description of a usage plan.
@@ -8463,7 +8464,7 @@ public struct UpdateUsagePlanOutput {
 }
 
 /// Updates an existing VpcLink of a specified identifier.
-public struct UpdateVpcLinkInput {
+public struct UpdateVpcLinkInput: Swift.Sendable {
     /// For more information about supported patch operations, see [Patch Operations](https://docs.aws.amazon.com/apigateway/latest/api/patch-operations.html).
     public var patchOperations: [APIGatewayClientTypes.PatchOperation]?
     /// The identifier of the VpcLink. It is used in an Integration to reference this VpcLink.
@@ -8481,7 +8482,7 @@ public struct UpdateVpcLinkInput {
 }
 
 /// An API Gateway VPC link for a RestApi to access resources in an Amazon Virtual Private Cloud (VPC).
-public struct UpdateVpcLinkOutput {
+public struct UpdateVpcLinkOutput: Swift.Sendable {
     /// The description of the VPC link.
     public var description: Swift.String?
     /// The identifier of the VpcLink. It is used in an Integration to reference this VpcLink.

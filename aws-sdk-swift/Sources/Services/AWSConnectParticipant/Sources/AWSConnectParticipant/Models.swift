@@ -176,7 +176,7 @@ public struct ValidationException: ClientRuntime.ModeledError, AWSClientRuntime.
     }
 }
 
-public struct CompleteAttachmentUploadInput {
+public struct CompleteAttachmentUploadInput: Swift.Sendable {
     /// A list of unique identifiers for the attachments.
     /// This member is required.
     public var attachmentIds: [Swift.String]?
@@ -199,14 +199,14 @@ public struct CompleteAttachmentUploadInput {
     }
 }
 
-public struct CompleteAttachmentUploadOutput {
+public struct CompleteAttachmentUploadOutput: Swift.Sendable {
 
     public init() { }
 }
 
 extension ConnectParticipantClientTypes {
 
-    public enum ConnectionType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ConnectionType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case connectionCredentials
         case websocket
         case sdkUnknown(Swift.String)
@@ -233,7 +233,7 @@ extension ConnectParticipantClientTypes {
     }
 }
 
-public struct CreateParticipantConnectionInput {
+public struct CreateParticipantConnectionInput: Swift.Sendable {
     /// Amazon Connect Participant is used to mark the participant as connected for customer participant in message streaming, as well as for agent or manager participant in non-streaming chats.
     public var connectParticipant: Swift.Bool?
     /// This is a header parameter. The ParticipantToken as obtained from [StartChatContact](https://docs.aws.amazon.com/connect/latest/APIReference/API_StartChatContact.html) API response.
@@ -255,8 +255,9 @@ public struct CreateParticipantConnectionInput {
 }
 
 extension ConnectParticipantClientTypes {
+
     /// Connection credentials.
-    public struct ConnectionCredentials {
+    public struct ConnectionCredentials: Swift.Sendable {
         /// The connection token.
         public var connectionToken: Swift.String?
         /// The expiration of the token. It's specified in ISO 8601 format: yyyy-MM-ddThh:mm:ss.SSSZ. For example, 2019-11-08T02:41:28.172Z.
@@ -271,12 +272,12 @@ extension ConnectParticipantClientTypes {
             self.expiry = expiry
         }
     }
-
 }
 
 extension ConnectParticipantClientTypes {
+
     /// The websocket for the participant's connection.
-    public struct Websocket {
+    public struct Websocket: Swift.Sendable {
         /// The URL expiration timestamp in ISO date format. It's specified in ISO 8601 format: yyyy-MM-ddThh:mm:ss.SSSZ. For example, 2019-11-08T02:41:28.172Z.
         public var connectionExpiry: Swift.String?
         /// The URL of the websocket.
@@ -291,10 +292,9 @@ extension ConnectParticipantClientTypes {
             self.url = url
         }
     }
-
 }
 
-public struct CreateParticipantConnectionOutput {
+public struct CreateParticipantConnectionOutput: Swift.Sendable {
     /// Creates the participant's connection credentials. The authentication token associated with the participant's connection.
     public var connectionCredentials: ConnectParticipantClientTypes.ConnectionCredentials?
     /// Creates the participant's websocket connection.
@@ -312,7 +312,7 @@ public struct CreateParticipantConnectionOutput {
 
 extension ConnectParticipantClientTypes {
 
-    public enum ResourceType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ResourceType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case contact
         case contactFlow
         case hierarchyGroup
@@ -389,7 +389,7 @@ public struct ResourceNotFoundException: ClientRuntime.ModeledError, AWSClientRu
     }
 }
 
-public struct DescribeViewInput {
+public struct DescribeViewInput: Swift.Sendable {
     /// The connection token.
     /// This member is required.
     public var connectionToken: Swift.String?
@@ -408,8 +408,9 @@ public struct DescribeViewInput {
 }
 
 extension ConnectParticipantClientTypes {
+
     /// View content containing all content necessary to render a view except for runtime input data.
-    public struct ViewContent {
+    public struct ViewContent: Swift.Sendable {
         /// A list of actions possible from the view
         public var actions: [Swift.String]?
         /// The schema representing the input data that the view template must be supplied to render.
@@ -428,7 +429,6 @@ extension ConnectParticipantClientTypes {
             self.template = template
         }
     }
-
 }
 
 extension ConnectParticipantClientTypes.ViewContent: Swift.CustomDebugStringConvertible {
@@ -437,8 +437,9 @@ extension ConnectParticipantClientTypes.ViewContent: Swift.CustomDebugStringConv
 }
 
 extension ConnectParticipantClientTypes {
+
     /// A view resource object. Contains metadata and content necessary to render the view.
-    public struct View {
+    public struct View: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the view.
         public var arn: Swift.String?
         /// View content containing all content necessary to render a view except for runtime input data.
@@ -465,7 +466,6 @@ extension ConnectParticipantClientTypes {
             self.version = version
         }
     }
-
 }
 
 extension ConnectParticipantClientTypes.View: Swift.CustomDebugStringConvertible {
@@ -473,7 +473,7 @@ extension ConnectParticipantClientTypes.View: Swift.CustomDebugStringConvertible
         "View(arn: \(Swift.String(describing: arn)), content: \(Swift.String(describing: content)), id: \(Swift.String(describing: id)), version: \(Swift.String(describing: version)), name: \"CONTENT_REDACTED\")"}
 }
 
-public struct DescribeViewOutput {
+public struct DescribeViewOutput: Swift.Sendable {
     /// A view resource object. Contains metadata and content necessary to render the view.
     public var view: ConnectParticipantClientTypes.View?
 
@@ -485,7 +485,7 @@ public struct DescribeViewOutput {
     }
 }
 
-public struct DisconnectParticipantInput {
+public struct DisconnectParticipantInput: Swift.Sendable {
     /// A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If not provided, the Amazon Web Services SDK populates this field. For more information about idempotency, see [Making retries safe with idempotent APIs](https://aws.amazon.com/builders-library/making-retries-safe-with-idempotent-APIs/).
     public var clientToken: Swift.String?
     /// The authentication token associated with the participant's connection.
@@ -502,12 +502,12 @@ public struct DisconnectParticipantInput {
     }
 }
 
-public struct DisconnectParticipantOutput {
+public struct DisconnectParticipantOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct GetAttachmentInput {
+public struct GetAttachmentInput: Swift.Sendable {
     /// A unique identifier for the attachment.
     /// This member is required.
     public var attachmentId: Swift.String?
@@ -525,7 +525,7 @@ public struct GetAttachmentInput {
     }
 }
 
-public struct GetAttachmentOutput {
+public struct GetAttachmentOutput: Swift.Sendable {
     /// This is the pre-signed URL that can be used for uploading the file to Amazon S3 when used in response to [StartAttachmentUpload](https://docs.aws.amazon.com/connect-participant/latest/APIReference/API_StartAttachmentUpload.html).
     public var url: Swift.String?
     /// The expiration time of the URL in ISO timestamp. It's specified in ISO 8601 format: yyyy-MM-ddThh:mm:ss.SSSZ. For example, 2019-11-08T02:41:28.172Z.
@@ -543,7 +543,7 @@ public struct GetAttachmentOutput {
 
 extension ConnectParticipantClientTypes {
 
-    public enum ScanDirection: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ScanDirection: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case backward
         case forward
         case sdkUnknown(Swift.String)
@@ -572,7 +572,7 @@ extension ConnectParticipantClientTypes {
 
 extension ConnectParticipantClientTypes {
 
-    public enum SortKey: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SortKey: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case ascending
         case descending
         case sdkUnknown(Swift.String)
@@ -600,8 +600,9 @@ extension ConnectParticipantClientTypes {
 }
 
 extension ConnectParticipantClientTypes {
+
     /// A filtering option for where to start. For example, if you sent 100 messages, start with message 50.
-    public struct StartPosition {
+    public struct StartPosition: Swift.Sendable {
         /// The time in ISO format where to start. It's specified in ISO 8601 format: yyyy-MM-ddThh:mm:ss.SSSZ. For example, 2019-11-08T02:41:28.172Z.
         public var absoluteTime: Swift.String?
         /// The ID of the message or event where to start.
@@ -620,10 +621,9 @@ extension ConnectParticipantClientTypes {
             self.mostRecent = mostRecent
         }
     }
-
 }
 
-public struct GetTranscriptInput {
+public struct GetTranscriptInput: Swift.Sendable {
     /// The authentication token associated with the participant's connection.
     /// This member is required.
     public var connectionToken: Swift.String?
@@ -662,7 +662,7 @@ public struct GetTranscriptInput {
 
 extension ConnectParticipantClientTypes {
 
-    public enum ArtifactStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ArtifactStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case approved
         case inProgress
         case rejected
@@ -693,8 +693,9 @@ extension ConnectParticipantClientTypes {
 }
 
 extension ConnectParticipantClientTypes {
+
     /// The case-insensitive input to indicate standard MIME type that describes the format of the file that will be uploaded.
-    public struct AttachmentItem {
+    public struct AttachmentItem: Swift.Sendable {
         /// A unique identifier for the attachment.
         public var attachmentId: Swift.String?
         /// A case-sensitive name of the attachment being uploaded.
@@ -717,12 +718,12 @@ extension ConnectParticipantClientTypes {
             self.status = status
         }
     }
-
 }
 
 extension ConnectParticipantClientTypes {
+
     /// The receipt for the message delivered to the recipient.
-    public struct Receipt {
+    public struct Receipt: Swift.Sendable {
         /// The time when the message was delivered to the recipient.
         public var deliveredTimestamp: Swift.String?
         /// The time when the message was read by the recipient.
@@ -741,12 +742,12 @@ extension ConnectParticipantClientTypes {
             self.recipientParticipantId = recipientParticipantId
         }
     }
-
 }
 
 extension ConnectParticipantClientTypes {
+
     /// Contains metadata related to a message.
-    public struct MessageMetadata {
+    public struct MessageMetadata: Swift.Sendable {
         /// The identifier of the message that contains the metadata information.
         public var messageId: Swift.String?
         /// The list of receipt information for a message for different recipients.
@@ -761,12 +762,11 @@ extension ConnectParticipantClientTypes {
             self.receipts = receipts
         }
     }
-
 }
 
 extension ConnectParticipantClientTypes {
 
-    public enum ParticipantRole: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ParticipantRole: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case agent
         case customer
         case customBot
@@ -804,7 +804,7 @@ extension ConnectParticipantClientTypes {
 
 extension ConnectParticipantClientTypes {
 
-    public enum ChatItemType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ChatItemType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case attachment
         case chatEnded
         case connectionAck
@@ -862,8 +862,9 @@ extension ConnectParticipantClientTypes {
 }
 
 extension ConnectParticipantClientTypes {
+
     /// An item - message or event - that has been sent.
-    public struct Item {
+    public struct Item: Swift.Sendable {
         /// The time when the message or event was sent. It's specified in ISO 8601 format: yyyy-MM-ddThh:mm:ss.SSSZ. For example, 2019-11-08T02:41:28.172Z.
         public var absoluteTime: Swift.String?
         /// Provides information about the attachments.
@@ -918,10 +919,9 @@ extension ConnectParticipantClientTypes {
             self.type = type
         }
     }
-
 }
 
-public struct GetTranscriptOutput {
+public struct GetTranscriptOutput: Swift.Sendable {
     /// The initial contact ID for the contact.
     public var initialContactId: Swift.String?
     /// The pagination token. Use the value returned previously in the next subsequent request to retrieve the next set of results.
@@ -941,7 +941,7 @@ public struct GetTranscriptOutput {
     }
 }
 
-public struct SendEventInput {
+public struct SendEventInput: Swift.Sendable {
     /// A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If not provided, the Amazon Web Services SDK populates this field. For more information about idempotency, see [Making retries safe with idempotent APIs](https://aws.amazon.com/builders-library/making-retries-safe-with-idempotent-APIs/).
     public var clientToken: Swift.String?
     /// The authentication token associated with the participant's connection.
@@ -975,7 +975,7 @@ public struct SendEventInput {
     }
 }
 
-public struct SendEventOutput {
+public struct SendEventOutput: Swift.Sendable {
     /// The time when the event was sent. It's specified in ISO 8601 format: yyyy-MM-ddThh:mm:ss.SSSZ. For example, 2019-11-08T02:41:28.172Z.
     public var absoluteTime: Swift.String?
     /// The ID of the response.
@@ -991,7 +991,7 @@ public struct SendEventOutput {
     }
 }
 
-public struct SendMessageInput {
+public struct SendMessageInput: Swift.Sendable {
     /// A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If not provided, the Amazon Web Services SDK populates this field. For more information about idempotency, see [Making retries safe with idempotent APIs](https://aws.amazon.com/builders-library/making-retries-safe-with-idempotent-APIs/).
     public var clientToken: Swift.String?
     /// The authentication token associated with the connection.
@@ -1024,7 +1024,7 @@ public struct SendMessageInput {
     }
 }
 
-public struct SendMessageOutput {
+public struct SendMessageOutput: Swift.Sendable {
     /// The time when the message was sent. It's specified in ISO 8601 format: yyyy-MM-ddThh:mm:ss.SSSZ. For example, 2019-11-08T02:41:28.172Z.
     public var absoluteTime: Swift.String?
     /// The ID of the message.
@@ -1040,7 +1040,7 @@ public struct SendMessageOutput {
     }
 }
 
-public struct StartAttachmentUploadInput {
+public struct StartAttachmentUploadInput: Swift.Sendable {
     /// A case-sensitive name of the attachment being uploaded.
     /// This member is required.
     public var attachmentName: Swift.String?
@@ -1074,8 +1074,9 @@ public struct StartAttachmentUploadInput {
 }
 
 extension ConnectParticipantClientTypes {
+
     /// Fields to be used while uploading the attachment.
-    public struct UploadMetadata {
+    public struct UploadMetadata: Swift.Sendable {
         /// The headers to be provided while uploading the file to the URL.
         public var headersToInclude: [Swift.String: Swift.String]?
         /// This is the pre-signed URL that can be used for uploading the file to Amazon S3 when used in response to [StartAttachmentUpload](https://docs.aws.amazon.com/connect-participant/latest/APIReference/API_StartAttachmentUpload.html).
@@ -1094,10 +1095,9 @@ extension ConnectParticipantClientTypes {
             self.urlExpiry = urlExpiry
         }
     }
-
 }
 
-public struct StartAttachmentUploadOutput {
+public struct StartAttachmentUploadOutput: Swift.Sendable {
     /// A unique identifier for the attachment.
     public var attachmentId: Swift.String?
     /// Fields to be used while uploading the attachment.

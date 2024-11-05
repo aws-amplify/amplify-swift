@@ -119,8 +119,9 @@ public struct ThrottlingException: ClientRuntime.ModeledError, AWSClientRuntime.
 }
 
 extension EvidentlyClientTypes {
+
     /// A structure containing an error name and message.
-    public struct ValidationExceptionField {
+    public struct ValidationExceptionField: Swift.Sendable {
         /// The error message.
         /// This member is required.
         public var message: Swift.String?
@@ -137,12 +138,11 @@ extension EvidentlyClientTypes {
             self.name = name
         }
     }
-
 }
 
 extension EvidentlyClientTypes {
 
-    public enum ValidationExceptionReason: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ValidationExceptionReason: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case cannotParse
         case fieldValidationFailed
         case other
@@ -208,8 +208,9 @@ public struct ValidationException: ClientRuntime.ModeledError, AWSClientRuntime.
 }
 
 extension EvidentlyClientTypes {
+
     /// This structure assigns a feature variation to one user session.
-    public struct EvaluationRequest {
+    public struct EvaluationRequest: Swift.Sendable {
         /// An internal ID that represents a unique user session of the application. This entityID is checked against any override rules assigned for this feature.
         /// This member is required.
         public var entityId: Swift.String?
@@ -230,10 +231,9 @@ extension EvidentlyClientTypes {
             self.feature = feature
         }
     }
-
 }
 
-public struct BatchEvaluateFeatureInput {
+public struct BatchEvaluateFeatureInput: Swift.Sendable {
     /// The name or ARN of the project that contains the feature being evaluated.
     /// This member is required.
     public var project: Swift.String?
@@ -252,8 +252,9 @@ public struct BatchEvaluateFeatureInput {
 }
 
 extension EvidentlyClientTypes {
+
     /// The value assigned to a feature variation. This structure must contain exactly one field. It can be boolValue, doubleValue, longValue, or stringValue.
-    public enum VariableValue {
+    public enum VariableValue: Swift.Sendable {
         /// If this feature uses the Boolean variation type, this field contains the Boolean value of this variation.
         case boolvalue(Swift.Bool)
         /// If this feature uses the string variation type, this field contains the string value of this variation.
@@ -264,12 +265,12 @@ extension EvidentlyClientTypes {
         case doublevalue(Swift.Double)
         case sdkUnknown(Swift.String)
     }
-
 }
 
 extension EvidentlyClientTypes {
+
     /// This structure displays the results of one feature evaluation assignment to one user session.
-    public struct EvaluationResult {
+    public struct EvaluationResult: Swift.Sendable {
         /// If this user was assigned to a launch or experiment, this field lists the launch or experiment name.
         public var details: Swift.String?
         /// An internal ID that represents a unique user session of the application.
@@ -306,10 +307,9 @@ extension EvidentlyClientTypes {
             self.variation = variation
         }
     }
-
 }
 
-public struct BatchEvaluateFeatureOutput {
+public struct BatchEvaluateFeatureOutput: Swift.Sendable {
     /// An array of structures, where each structure displays the results of one feature evaluation assignment to one user session.
     public var results: [EvidentlyClientTypes.EvaluationResult]?
 
@@ -323,7 +323,7 @@ public struct BatchEvaluateFeatureOutput {
 
 extension EvidentlyClientTypes {
 
-    public enum ChangeDirectionEnum: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ChangeDirectionEnum: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case decrease
         case increase
         case sdkUnknown(Swift.String)
@@ -351,8 +351,9 @@ extension EvidentlyClientTypes {
 }
 
 extension EvidentlyClientTypes {
+
     /// A structure containing the CloudWatch Logs log group where the project stores evaluation events.
-    public struct CloudWatchLogsDestination {
+    public struct CloudWatchLogsDestination: Swift.Sendable {
         /// The name of the log group where the project stores evaluation events.
         public var logGroup: Swift.String?
 
@@ -363,12 +364,12 @@ extension EvidentlyClientTypes {
             self.logGroup = logGroup
         }
     }
-
 }
 
 extension EvidentlyClientTypes {
+
     /// A structure containing the CloudWatch Logs log group where the project stores evaluation events.
-    public struct CloudWatchLogsDestinationConfig {
+    public struct CloudWatchLogsDestinationConfig: Swift.Sendable {
         /// The name of the log group where the project stores evaluation events.
         public var logGroup: Swift.String?
 
@@ -379,7 +380,6 @@ extension EvidentlyClientTypes {
             self.logGroup = logGroup
         }
     }
-
 }
 
 /// A resource was in an inconsistent state during an update or a deletion.
@@ -455,8 +455,9 @@ public struct ServiceQuotaExceededException: ClientRuntime.ModeledError, AWSClie
 }
 
 extension EvidentlyClientTypes {
+
     /// This structure defines a metric that you want to use to evaluate the variations during a launch or experiment.
-    public struct MetricDefinitionConfig {
+    public struct MetricDefinitionConfig: Swift.Sendable {
         /// The entity, such as a user or session, that does an action that causes a metric value to be recorded. An example is userDetails.userID.
         /// This member is required.
         public var entityIdKey: Swift.String?
@@ -486,12 +487,12 @@ extension EvidentlyClientTypes {
             self.valueKey = valueKey
         }
     }
-
 }
 
 extension EvidentlyClientTypes {
+
     /// Use this structure to tell Evidently whether higher or lower values are desired for a metric that is used in an experiment.
-    public struct MetricGoalConfig {
+    public struct MetricGoalConfig: Swift.Sendable {
         /// INCREASE means that a variation with a higher number for this metric is performing better. DECREASE means that a variation with a lower number for this metric is performing better.
         public var desiredChange: EvidentlyClientTypes.ChangeDirectionEnum?
         /// A structure that contains details about the metric.
@@ -507,12 +508,12 @@ extension EvidentlyClientTypes {
             self.metricDefinition = metricDefinition
         }
     }
-
 }
 
 extension EvidentlyClientTypes {
+
     /// A structure that contains the configuration of which variation to use as the "control" version. The "control" version is used for comparison with other variations. This structure also specifies how much experiment traffic is allocated to each variation.
-    public struct OnlineAbConfig {
+    public struct OnlineAbConfig: Swift.Sendable {
         /// The name of the variation that is to be the default variation that the other variations are compared to.
         public var controlTreatmentName: Swift.String?
         /// A set of key-value pairs. The keys are variation names, and the values are the portion of experiment traffic to be assigned to that variation. Specify the traffic portion in thousandths of a percent, so 20,000 for a variation would allocate 20% of the experiment traffic to that variation.
@@ -527,12 +528,12 @@ extension EvidentlyClientTypes {
             self.treatmentWeights = treatmentWeights
         }
     }
-
 }
 
 extension EvidentlyClientTypes {
+
     /// A structure that defines one treatment in an experiment. A treatment is a variation of the feature that you are including in the experiment.
-    public struct TreatmentConfig {
+    public struct TreatmentConfig: Swift.Sendable {
         /// A description for this treatment.
         public var description: Swift.String?
         /// The feature that this experiment is testing.
@@ -558,10 +559,9 @@ extension EvidentlyClientTypes {
             self.variation = variation
         }
     }
-
 }
 
-public struct CreateExperimentInput {
+public struct CreateExperimentInput: Swift.Sendable {
     /// An optional description of the experiment.
     public var description: Swift.String?
     /// An array of structures that defines the metrics used for the experiment, and whether a higher or lower value for each metric is the goal.
@@ -614,8 +614,9 @@ public struct CreateExperimentInput {
 }
 
 extension EvidentlyClientTypes {
+
     /// This structure contains the date and time that the experiment started and ended.
-    public struct ExperimentExecution {
+    public struct ExperimentExecution: Swift.Sendable {
         /// The date and time that the experiment ended.
         public var endedTime: Foundation.Date?
         /// The date and time that the experiment started.
@@ -630,12 +631,12 @@ extension EvidentlyClientTypes {
             self.startedTime = startedTime
         }
     }
-
 }
 
 extension EvidentlyClientTypes {
+
     /// This structure defines a metric that is being used to evaluate the variations during a launch or experiment.
-    public struct MetricDefinition {
+    public struct MetricDefinition: Swift.Sendable {
         /// The entity, such as a user or session, that does an action that causes a metric value to be recorded.
         public var entityIdKey: Swift.String?
         /// The EventBridge event pattern that defines how the metric is recorded. For more information about EventBridge event patterns, see [Amazon EventBridge event patterns](https://docs.aws.amazon.com/eventbridge/latest/userguide/eb-event-patterns.html).
@@ -662,12 +663,12 @@ extension EvidentlyClientTypes {
             self.valueKey = valueKey
         }
     }
-
 }
 
 extension EvidentlyClientTypes {
+
     /// A structure that tells Evidently whether higher or lower values are desired for a metric that is used in an experiment.
-    public struct MetricGoal {
+    public struct MetricGoal: Swift.Sendable {
         /// INCREASE means that a variation with a higher number for this metric is performing better. DECREASE means that a variation with a lower number for this metric is performing better.
         public var desiredChange: EvidentlyClientTypes.ChangeDirectionEnum?
         /// A structure that contains details about the metric.
@@ -683,12 +684,12 @@ extension EvidentlyClientTypes {
             self.metricDefinition = metricDefinition
         }
     }
-
 }
 
 extension EvidentlyClientTypes {
+
     /// A structure that contains the configuration of which variation to use as the "control" version. The "control" version is used for comparison with other variations. This structure also specifies how much experiment traffic is allocated to each variation.
-    public struct OnlineAbDefinition {
+    public struct OnlineAbDefinition: Swift.Sendable {
         /// The name of the variation that is the default variation that the other variations are compared to.
         public var controlTreatmentName: Swift.String?
         /// A set of key-value pairs. The keys are variation names, and the values are the portion of experiment traffic to be assigned to that variation. The traffic portion is specified in thousandths of a percent, so 20,000 for a variation would allocate 20% of the experiment traffic to that variation.
@@ -703,12 +704,12 @@ extension EvidentlyClientTypes {
             self.treatmentWeights = treatmentWeights
         }
     }
-
 }
 
 extension EvidentlyClientTypes {
+
     /// This structure contains the time and date that Evidently completed the analysis of the experiment.
-    public struct ExperimentSchedule {
+    public struct ExperimentSchedule: Swift.Sendable {
         /// The time and date that Evidently completed the analysis of the experiment.
         public var analysisCompleteTime: Foundation.Date?
 
@@ -719,12 +720,11 @@ extension EvidentlyClientTypes {
             self.analysisCompleteTime = analysisCompleteTime
         }
     }
-
 }
 
 extension EvidentlyClientTypes {
 
-    public enum ExperimentStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ExperimentStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case cancelled
         case completed
         case created
@@ -761,8 +761,9 @@ extension EvidentlyClientTypes {
 }
 
 extension EvidentlyClientTypes {
+
     /// A structure that defines one treatment in an experiment. A treatment is a variation of the feature that you are including in the experiment.
-    public struct Treatment {
+    public struct Treatment: Swift.Sendable {
         /// The description of the treatment.
         public var description: Swift.String?
         /// The feature variation used for this treatment. This is a key-value pair. The key is the feature name, and the value is the variation name.
@@ -782,12 +783,11 @@ extension EvidentlyClientTypes {
             self.name = name
         }
     }
-
 }
 
 extension EvidentlyClientTypes {
 
-    public enum ExperimentType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ExperimentType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case onlineAbExperiment
         case sdkUnknown(Swift.String)
 
@@ -812,8 +812,9 @@ extension EvidentlyClientTypes {
 }
 
 extension EvidentlyClientTypes {
+
     /// A structure containing the configuration details of an experiment.
-    public struct Experiment {
+    public struct Experiment: Swift.Sendable {
         /// The ARN of the experiment.
         /// This member is required.
         public var arn: Swift.String?
@@ -898,10 +899,9 @@ extension EvidentlyClientTypes {
             self.type = type
         }
     }
-
 }
 
-public struct CreateExperimentOutput {
+public struct CreateExperimentOutput: Swift.Sendable {
     /// A structure containing the configuration details of the experiment that you created.
     /// This member is required.
     public var experiment: EvidentlyClientTypes.Experiment?
@@ -916,7 +916,7 @@ public struct CreateExperimentOutput {
 
 extension EvidentlyClientTypes {
 
-    public enum FeatureEvaluationStrategy: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum FeatureEvaluationStrategy: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case allRules
         case defaultVariation
         case sdkUnknown(Swift.String)
@@ -944,8 +944,9 @@ extension EvidentlyClientTypes {
 }
 
 extension EvidentlyClientTypes {
+
     /// This structure contains the name and variation value of one variation of a feature.
-    public struct VariationConfig {
+    public struct VariationConfig: Swift.Sendable {
         /// The name of the variation.
         /// This member is required.
         public var name: Swift.String?
@@ -962,10 +963,9 @@ extension EvidentlyClientTypes {
             self.value = value
         }
     }
-
 }
 
-public struct CreateFeatureInput {
+public struct CreateFeatureInput: Swift.Sendable {
     /// The name of the variation to use as the default variation. The default variation is served to users who are not allocated to any ongoing launches or experiments of this feature. This variation must also be listed in the variations structure. If you omit defaultVariation, the first variation listed in the variations structure is used as the default variation.
     public var defaultVariation: Swift.String?
     /// An optional description of the feature.
@@ -1009,8 +1009,9 @@ public struct CreateFeatureInput {
 }
 
 extension EvidentlyClientTypes {
+
     /// A structure that contains the information about an evaluation rule for this feature, if it is used in a launch or experiment.
-    public struct EvaluationRule {
+    public struct EvaluationRule: Swift.Sendable {
         /// The name of the experiment or launch.
         public var name: Swift.String?
         /// This value is aws.evidently.splits if this is an evaluation rule for a launch, and it is aws.evidently.onlineab if this is an evaluation rule for an experiment.
@@ -1026,12 +1027,11 @@ extension EvidentlyClientTypes {
             self.type = type
         }
     }
-
 }
 
 extension EvidentlyClientTypes {
 
-    public enum FeatureStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum FeatureStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case available
         case updating
         case sdkUnknown(Swift.String)
@@ -1060,7 +1060,7 @@ extension EvidentlyClientTypes {
 
 extension EvidentlyClientTypes {
 
-    public enum VariationValueType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum VariationValueType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case boolean
         case double
         case long
@@ -1094,8 +1094,9 @@ extension EvidentlyClientTypes {
 }
 
 extension EvidentlyClientTypes {
+
     /// This structure contains the name and variation value of one variation of a feature.
-    public struct Variation {
+    public struct Variation: Swift.Sendable {
         /// The name of the variation.
         public var name: Swift.String?
         /// The value assigned to this variation.
@@ -1110,12 +1111,12 @@ extension EvidentlyClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension EvidentlyClientTypes {
+
     /// This structure contains information about one Evidently feature in your account.
-    public struct Feature {
+    public struct Feature: Swift.Sendable {
         /// The ARN of the feature.
         /// This member is required.
         public var arn: Swift.String?
@@ -1186,10 +1187,9 @@ extension EvidentlyClientTypes {
             self.variations = variations
         }
     }
-
 }
 
-public struct CreateFeatureOutput {
+public struct CreateFeatureOutput: Swift.Sendable {
     /// A structure that contains information about the new feature.
     public var feature: EvidentlyClientTypes.Feature?
 
@@ -1202,8 +1202,9 @@ public struct CreateFeatureOutput {
 }
 
 extension EvidentlyClientTypes {
+
     /// A structure that defines one launch group in a launch. A launch group is a variation of the feature that you are including in the launch.
-    public struct LaunchGroupConfig {
+    public struct LaunchGroupConfig: Swift.Sendable {
         /// A description of the launch group.
         public var description: Swift.String?
         /// The feature that this launch is using.
@@ -1229,12 +1230,12 @@ extension EvidentlyClientTypes {
             self.variation = variation
         }
     }
-
 }
 
 extension EvidentlyClientTypes {
+
     /// A structure that defines a metric to be used to monitor performance of the variations during a launch.
-    public struct MetricMonitorConfig {
+    public struct MetricMonitorConfig: Swift.Sendable {
         /// A structure that defines the metric.
         /// This member is required.
         public var metricDefinition: EvidentlyClientTypes.MetricDefinitionConfig?
@@ -1246,12 +1247,12 @@ extension EvidentlyClientTypes {
             self.metricDefinition = metricDefinition
         }
     }
-
 }
 
 extension EvidentlyClientTypes {
+
     /// This structure specifies a segment that you have already created, and defines the traffic split for that segment to be used in a launch.
-    public struct SegmentOverride {
+    public struct SegmentOverride: Swift.Sendable {
         /// A number indicating the order to use to evaluate segment overrides, if there are more than one. Segment overrides with lower numbers are evaluated first.
         /// This member is required.
         public var evaluationOrder: Swift.Int?
@@ -1273,12 +1274,12 @@ extension EvidentlyClientTypes {
             self.weights = weights
         }
     }
-
 }
 
 extension EvidentlyClientTypes {
+
     /// This structure defines the traffic allocation percentages among the feature variations during one step of a launch, and the start time of that step.
-    public struct ScheduledSplitConfig {
+    public struct ScheduledSplitConfig: Swift.Sendable {
         /// The traffic allocation percentages among the feature variations during one step of a launch. This is a set of key-value pairs. The keys are variation names. The values represent the percentage of traffic to allocate to that variation during this step. The values is expressed in thousandths of a percent, so assigning a weight of 50000 assigns 50% of traffic to that variation. If the sum of the weights for all the variations in a segment override does not add up to 100,000, then the remaining traffic that matches this segment is not assigned by this segment override, and instead moves on to the next segment override or the default traffic split.
         /// This member is required.
         public var groupWeights: [Swift.String: Swift.Int]?
@@ -1299,12 +1300,12 @@ extension EvidentlyClientTypes {
             self.startTime = startTime
         }
     }
-
 }
 
 extension EvidentlyClientTypes {
+
     /// An array of structures that define the traffic allocation percentages among the feature variations during each step of a launch. This also defines the start time of each step.
-    public struct ScheduledSplitsLaunchConfig {
+    public struct ScheduledSplitsLaunchConfig: Swift.Sendable {
         /// An array of structures that define the traffic allocation percentages among the feature variations during each step of the launch. This also defines the start time of each step.
         /// This member is required.
         public var steps: [EvidentlyClientTypes.ScheduledSplitConfig]?
@@ -1316,10 +1317,9 @@ extension EvidentlyClientTypes {
             self.steps = steps
         }
     }
-
 }
 
-public struct CreateLaunchInput {
+public struct CreateLaunchInput: Swift.Sendable {
     /// An optional description for the launch.
     public var description: Swift.String?
     /// An array of structures that contains the feature and variations that are to be used for the launch.
@@ -1363,8 +1363,9 @@ public struct CreateLaunchInput {
 }
 
 extension EvidentlyClientTypes {
+
     /// This structure contains information about the start and end times of the launch.
-    public struct LaunchExecution {
+    public struct LaunchExecution: Swift.Sendable {
         /// The date and time that the launch ended.
         public var endedTime: Foundation.Date?
         /// The date and time that the launch started.
@@ -1379,12 +1380,12 @@ extension EvidentlyClientTypes {
             self.startedTime = startedTime
         }
     }
-
 }
 
 extension EvidentlyClientTypes {
+
     /// A structure that defines one launch group in a launch. A launch group is a variation of the feature that you are including in the launch.
-    public struct LaunchGroup {
+    public struct LaunchGroup: Swift.Sendable {
         /// A description of the launch group.
         public var description: Swift.String?
         /// The feature variation for this launch group. This is a key-value pair.
@@ -1405,12 +1406,12 @@ extension EvidentlyClientTypes {
             self.name = name
         }
     }
-
 }
 
 extension EvidentlyClientTypes {
+
     /// A structure that defines a metric to be used to monitor performance of the variations during a launch.
-    public struct MetricMonitor {
+    public struct MetricMonitor: Swift.Sendable {
         /// A structure that defines the metric.
         /// This member is required.
         public var metricDefinition: EvidentlyClientTypes.MetricDefinition?
@@ -1422,12 +1423,12 @@ extension EvidentlyClientTypes {
             self.metricDefinition = metricDefinition
         }
     }
-
 }
 
 extension EvidentlyClientTypes {
+
     /// This structure defines the traffic allocation percentages among the feature variations during one step of a launch, and the start time of that step.
-    public struct ScheduledSplit {
+    public struct ScheduledSplit: Swift.Sendable {
         /// The traffic allocation percentages among the feature variations during one step of a launch. This is a set of key-value pairs. The keys are variation names. The values represent the percentage of traffic to allocate to that variation during this step. The values is expressed in thousandths of a percent, so assigning a weight of 50000 assigns 50% of traffic to that variation. If the sum of the weights for all the variations in a segment override does not add up to 100,000, then the remaining traffic that matches this segment is not assigned by this segment override, and instead moves on to the next segment override or the default traffic split.
         public var groupWeights: [Swift.String: Swift.Int]?
         /// Use this parameter to specify different traffic splits for one or more audience segments. A segment is a portion of your audience that share one or more characteristics. Examples could be Chrome browser users, users in Europe, or Firefox browser users in Europe who also fit other criteria that your application collects, such as age. This parameter is an array of up to six segment override objects. Each of these objects specifies a segment that you have already created, and defines the traffic split for that segment.
@@ -1447,12 +1448,12 @@ extension EvidentlyClientTypes {
             self.startTime = startTime
         }
     }
-
 }
 
 extension EvidentlyClientTypes {
+
     /// An array of structures that define the traffic allocation percentages among the feature variations during each step of a launch. This also defines the start time of each step.
-    public struct ScheduledSplitsLaunchDefinition {
+    public struct ScheduledSplitsLaunchDefinition: Swift.Sendable {
         /// An array of structures that define the traffic allocation percentages among the feature variations during each step of the launch. This also defines the start time of each step.
         public var steps: [EvidentlyClientTypes.ScheduledSplit]?
 
@@ -1463,12 +1464,11 @@ extension EvidentlyClientTypes {
             self.steps = steps
         }
     }
-
 }
 
 extension EvidentlyClientTypes {
 
-    public enum LaunchStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum LaunchStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case cancelled
         case completed
         case created
@@ -1506,7 +1506,7 @@ extension EvidentlyClientTypes {
 
 extension EvidentlyClientTypes {
 
-    public enum LaunchType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum LaunchType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case scheduledSplitsLaunch
         case sdkUnknown(Swift.String)
 
@@ -1531,8 +1531,9 @@ extension EvidentlyClientTypes {
 }
 
 extension EvidentlyClientTypes {
+
     /// This structure contains the configuration details of one Evidently launch.
-    public struct Launch {
+    public struct Launch: Swift.Sendable {
         /// The ARN of the launch.
         /// This member is required.
         public var arn: Swift.String?
@@ -1605,10 +1606,9 @@ extension EvidentlyClientTypes {
             self.type = type
         }
     }
-
 }
 
-public struct CreateLaunchOutput {
+public struct CreateLaunchOutput: Swift.Sendable {
     /// A structure that contains the configuration of the launch that was created.
     /// This member is required.
     public var launch: EvidentlyClientTypes.Launch?
@@ -1622,8 +1622,9 @@ public struct CreateLaunchOutput {
 }
 
 extension EvidentlyClientTypes {
+
     /// Use this parameter to configure client-side evaluation for your project. Client-side evaluation allows your application to assign variations to user sessions locally instead of by calling the [EvaluateFeature](https://docs.aws.amazon.com/cloudwatchevidently/latest/APIReference/API_EvaluateFeature.html) operation to assign the variations. This mitigates the latency and availability risks that come with an API call. ProjectAppConfigResource is a structure that defines the configuration of how your application integrates with AppConfig to run client-side evaluation.
-    public struct ProjectAppConfigResourceConfig {
+    public struct ProjectAppConfigResourceConfig: Swift.Sendable {
         /// The ID of the AppConfig application to use for client-side evaluation.
         public var applicationId: Swift.String?
         /// The ID of the AppConfig environment to use for client-side evaluation. This must be an environment that is within the application that you specify for applicationId.
@@ -1638,12 +1639,12 @@ extension EvidentlyClientTypes {
             self.environmentId = environmentId
         }
     }
-
 }
 
 extension EvidentlyClientTypes {
+
     /// If the project stores evaluation events in an Amazon S3 bucket, this structure stores the bucket name and bucket prefix.
-    public struct S3DestinationConfig {
+    public struct S3DestinationConfig: Swift.Sendable {
         /// The name of the bucket in which Evidently stores evaluation events.
         public var bucket: Swift.String?
         /// The bucket prefix in which Evidently stores evaluation events.
@@ -1658,12 +1659,12 @@ extension EvidentlyClientTypes {
             self.`prefix` = `prefix`
         }
     }
-
 }
 
 extension EvidentlyClientTypes {
+
     /// A structure that contains information about where Evidently is to store evaluation events for longer term storage.
-    public struct ProjectDataDeliveryConfig {
+    public struct ProjectDataDeliveryConfig: Swift.Sendable {
         /// If the project stores evaluation events in CloudWatch Logs, this structure stores the log group name.
         public var cloudWatchLogs: EvidentlyClientTypes.CloudWatchLogsDestinationConfig?
         /// If the project stores evaluation events in an Amazon S3 bucket, this structure stores the bucket name and bucket prefix.
@@ -1678,10 +1679,9 @@ extension EvidentlyClientTypes {
             self.s3Destination = s3Destination
         }
     }
-
 }
 
-public struct CreateProjectInput {
+public struct CreateProjectInput: Swift.Sendable {
     /// Use this parameter if the project will use client-side evaluation powered by AppConfig. Client-side evaluation allows your application to assign variations to user sessions locally instead of by calling the [EvaluateFeature](https://docs.aws.amazon.com/cloudwatchevidently/latest/APIReference/API_EvaluateFeature.html) operation. This mitigates the latency and availability risks that come with an API call. For more information, see [ Client-side evaluation - powered by AppConfig.](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-Evidently-client-side-evaluation.html) This parameter is a structure that contains information about the AppConfig application and environment that will be used as for client-side evaluation. To create a project that uses client-side evaluation, you must have the evidently:ExportProjectAsConfiguration permission.
     public var appConfigResource: EvidentlyClientTypes.ProjectAppConfigResourceConfig?
     /// A structure that contains information about where Evidently is to store evaluation events for longer term storage, if you choose to do so. If you choose not to store these events, Evidently deletes them after using them to produce metrics and other experiment results that you can view.
@@ -1711,8 +1711,9 @@ public struct CreateProjectInput {
 }
 
 extension EvidentlyClientTypes {
+
     /// This is a structure that defines the configuration of how your application integrates with AppConfig to run client-side evaluation.
-    public struct ProjectAppConfigResource {
+    public struct ProjectAppConfigResource: Swift.Sendable {
         /// The ID of the AppConfig application to use for client-side evaluation.
         /// This member is required.
         public var applicationId: Swift.String?
@@ -1734,12 +1735,12 @@ extension EvidentlyClientTypes {
             self.environmentId = environmentId
         }
     }
-
 }
 
 extension EvidentlyClientTypes {
+
     /// If the project stores evaluation events in an Amazon S3 bucket, this structure stores the bucket name and bucket prefix.
-    public struct S3Destination {
+    public struct S3Destination: Swift.Sendable {
         /// The name of the bucket in which Evidently stores evaluation events.
         public var bucket: Swift.String?
         /// The bucket prefix in which Evidently stores evaluation events.
@@ -1754,12 +1755,12 @@ extension EvidentlyClientTypes {
             self.`prefix` = `prefix`
         }
     }
-
 }
 
 extension EvidentlyClientTypes {
+
     /// A structure that contains information about where Evidently is to store evaluation events for longer term storage.
-    public struct ProjectDataDelivery {
+    public struct ProjectDataDelivery: Swift.Sendable {
         /// If the project stores evaluation events in CloudWatch Logs, this structure stores the log group name.
         public var cloudWatchLogs: EvidentlyClientTypes.CloudWatchLogsDestination?
         /// If the project stores evaluation events in an Amazon S3 bucket, this structure stores the bucket name and bucket prefix.
@@ -1774,12 +1775,11 @@ extension EvidentlyClientTypes {
             self.s3Destination = s3Destination
         }
     }
-
 }
 
 extension EvidentlyClientTypes {
 
-    public enum ProjectStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ProjectStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case available
         case updating
         case sdkUnknown(Swift.String)
@@ -1807,8 +1807,9 @@ extension EvidentlyClientTypes {
 }
 
 extension EvidentlyClientTypes {
+
     /// This structure defines a project, which is the logical object in Evidently that can contain features, launches, and experiments. Use projects to group similar features together.
-    public struct Project {
+    public struct Project: Swift.Sendable {
         /// The number of ongoing experiments currently in the project.
         public var activeExperimentCount: Swift.Int?
         /// The number of ongoing launches currently in the project.
@@ -1876,10 +1877,9 @@ extension EvidentlyClientTypes {
             self.tags = tags
         }
     }
-
 }
 
-public struct CreateProjectOutput {
+public struct CreateProjectOutput: Swift.Sendable {
     /// A structure that contains information about the created project.
     /// This member is required.
     public var project: EvidentlyClientTypes.Project?
@@ -1892,7 +1892,7 @@ public struct CreateProjectOutput {
     }
 }
 
-public struct CreateSegmentInput {
+public struct CreateSegmentInput: Swift.Sendable {
     /// An optional description for this segment.
     public var description: Swift.String?
     /// A name for the segment.
@@ -1919,8 +1919,9 @@ public struct CreateSegmentInput {
 }
 
 extension EvidentlyClientTypes {
+
     /// This structure contains information about one audience segment. You can use segments in your experiments and launches to narrow the user sessions used for experiment or launch to only the user sessions that match one or more criteria.
-    public struct Segment {
+    public struct Segment: Swift.Sendable {
         /// The ARN of the segment.
         /// This member is required.
         public var arn: Swift.String?
@@ -1968,10 +1969,9 @@ extension EvidentlyClientTypes {
             self.tags = tags
         }
     }
-
 }
 
-public struct CreateSegmentOutput {
+public struct CreateSegmentOutput: Swift.Sendable {
     /// A structure that contains the complete information about the segment that was just created.
     /// This member is required.
     public var segment: EvidentlyClientTypes.Segment?
@@ -2032,7 +2032,7 @@ public struct ServiceUnavailableException: ClientRuntime.ModeledError, AWSClient
     }
 }
 
-public struct DeleteExperimentInput {
+public struct DeleteExperimentInput: Swift.Sendable {
     /// The name of the experiment to delete.
     /// This member is required.
     public var experiment: Swift.String?
@@ -2050,12 +2050,12 @@ public struct DeleteExperimentInput {
     }
 }
 
-public struct DeleteExperimentOutput {
+public struct DeleteExperimentOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteFeatureInput {
+public struct DeleteFeatureInput: Swift.Sendable {
     /// The name of the feature to delete.
     /// This member is required.
     public var feature: Swift.String?
@@ -2073,12 +2073,12 @@ public struct DeleteFeatureInput {
     }
 }
 
-public struct DeleteFeatureOutput {
+public struct DeleteFeatureOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteLaunchInput {
+public struct DeleteLaunchInput: Swift.Sendable {
     /// The name of the launch to delete.
     /// This member is required.
     public var launch: Swift.String?
@@ -2096,12 +2096,12 @@ public struct DeleteLaunchInput {
     }
 }
 
-public struct DeleteLaunchOutput {
+public struct DeleteLaunchOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteProjectInput {
+public struct DeleteProjectInput: Swift.Sendable {
     /// The name or ARN of the project to delete.
     /// This member is required.
     public var project: Swift.String?
@@ -2114,12 +2114,12 @@ public struct DeleteProjectInput {
     }
 }
 
-public struct DeleteProjectOutput {
+public struct DeleteProjectOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteSegmentInput {
+public struct DeleteSegmentInput: Swift.Sendable {
     /// Specifies the segment to delete.
     /// This member is required.
     public var segment: Swift.String?
@@ -2132,12 +2132,12 @@ public struct DeleteSegmentInput {
     }
 }
 
-public struct DeleteSegmentOutput {
+public struct DeleteSegmentOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct EvaluateFeatureInput {
+public struct EvaluateFeatureInput: Swift.Sendable {
     /// An internal ID that represents a unique user of the application. This entityID is checked against any override rules assigned for this feature.
     /// This member is required.
     public var entityId: Swift.String?
@@ -2164,7 +2164,7 @@ public struct EvaluateFeatureInput {
     }
 }
 
-public struct EvaluateFeatureOutput {
+public struct EvaluateFeatureOutput: Swift.Sendable {
     /// If this user was assigned to a launch or experiment, this field lists the launch or experiment name.
     public var details: Swift.String?
     /// Specifies the reason that the user session was assigned this variation. Possible values include DEFAULT, meaning the user was served the default variation; LAUNCH_RULE_MATCH, if the user session was enrolled in a launch; EXPERIMENT_RULE_MATCH, if the user session was enrolled in an experiment; or ENTITY_OVERRIDES_MATCH, if the user's entityId matches an override rule.
@@ -2190,7 +2190,7 @@ public struct EvaluateFeatureOutput {
 
 extension EvidentlyClientTypes {
 
-    public enum EventType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum EventType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case custom
         case evaluation
         case sdkUnknown(Swift.String)
@@ -2218,8 +2218,9 @@ extension EvidentlyClientTypes {
 }
 
 extension EvidentlyClientTypes {
+
     /// A structure that contains the information about one evaluation event or custom event sent to Evidently. This is a JSON payload. If this event specifies a pre-defined event type, the payload must follow the defined event schema.
-    public struct Event {
+    public struct Event: Swift.Sendable {
         /// The event data.
         /// This member is required.
         public var data: Swift.String?
@@ -2241,10 +2242,9 @@ extension EvidentlyClientTypes {
             self.type = type
         }
     }
-
 }
 
-public struct ListTagsForResourceInput {
+public struct ListTagsForResourceInput: Swift.Sendable {
     /// The ARN of the resource that you want to see the tags of.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -2257,7 +2257,7 @@ public struct ListTagsForResourceInput {
     }
 }
 
-public struct ListTagsForResourceOutput {
+public struct ListTagsForResourceOutput: Swift.Sendable {
     /// The list of tag keys and values associated with the resource you specified.
     public var tags: [Swift.String: Swift.String]?
 
@@ -2269,7 +2269,7 @@ public struct ListTagsForResourceOutput {
     }
 }
 
-public struct GetExperimentInput {
+public struct GetExperimentInput: Swift.Sendable {
     /// The name of the experiment that you want to see the details of.
     /// This member is required.
     public var experiment: Swift.String?
@@ -2287,7 +2287,7 @@ public struct GetExperimentInput {
     }
 }
 
-public struct GetExperimentOutput {
+public struct GetExperimentOutput: Swift.Sendable {
     /// A structure containing the configuration details of the experiment.
     public var experiment: EvidentlyClientTypes.Experiment?
 
@@ -2301,7 +2301,7 @@ public struct GetExperimentOutput {
 
 extension EvidentlyClientTypes {
 
-    public enum ExperimentBaseStat: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ExperimentBaseStat: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case mean
         case sdkUnknown(Swift.String)
 
@@ -2327,7 +2327,7 @@ extension EvidentlyClientTypes {
 
 extension EvidentlyClientTypes {
 
-    public enum ExperimentReportName: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ExperimentReportName: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case bayesianInference
         case sdkUnknown(Swift.String)
 
@@ -2353,7 +2353,7 @@ extension EvidentlyClientTypes {
 
 extension EvidentlyClientTypes {
 
-    public enum ExperimentResultRequestType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ExperimentResultRequestType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case baseStat
         case confidenceInterval
         case pValue
@@ -2386,7 +2386,7 @@ extension EvidentlyClientTypes {
     }
 }
 
-public struct GetExperimentResultsInput {
+public struct GetExperimentResultsInput: Swift.Sendable {
     /// The statistic used to calculate experiment results. Currently the only valid value is mean, which uses the mean of the collected values as the statistic.
     public var baseStat: EvidentlyClientTypes.ExperimentBaseStat?
     /// The date and time that the experiment ended, if it is completed. This must be no longer than 30 days after the experiment start time.
@@ -2447,8 +2447,9 @@ public struct GetExperimentResultsInput {
 }
 
 extension EvidentlyClientTypes {
+
     /// A structure that contains results of an experiment.
-    public struct ExperimentReport {
+    public struct ExperimentReport: Swift.Sendable {
         /// The content of the report.
         public var content: Swift.String?
         /// The name of the metric that is analyzed in this experiment report.
@@ -2471,12 +2472,11 @@ extension EvidentlyClientTypes {
             self.treatmentName = treatmentName
         }
     }
-
 }
 
 extension EvidentlyClientTypes {
 
-    public enum ExperimentResultResponseType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ExperimentResultResponseType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case confidenceIntervalLowerbound
         case confidenceIntervalUpperbound
         case mean
@@ -2513,8 +2513,9 @@ extension EvidentlyClientTypes {
 }
 
 extension EvidentlyClientTypes {
+
     /// A structure that contains experiment results for one metric that is monitored in the experiment.
-    public struct ExperimentResultsData {
+    public struct ExperimentResultsData: Swift.Sendable {
         /// The name of the metric.
         public var metricName: Swift.String?
         /// The experiment statistic that these results pertain to.
@@ -2537,10 +2538,9 @@ extension EvidentlyClientTypes {
             self.values = values
         }
     }
-
 }
 
-public struct GetExperimentResultsOutput {
+public struct GetExperimentResultsOutput: Swift.Sendable {
     /// If the experiment doesn't yet have enough events to provide valid results, this field is returned with the message Not enough events to generate results. If there are enough events to provide valid results, this field is not returned.
     public var details: Swift.String?
     /// An array of structures that include the reports that you requested.
@@ -2564,7 +2564,7 @@ public struct GetExperimentResultsOutput {
     }
 }
 
-public struct ListExperimentsInput {
+public struct ListExperimentsInput: Swift.Sendable {
     /// The maximum number of results to include in the response.
     public var maxResults: Swift.Int?
     /// The token to use when requesting the next set of results. You received this token from a previous ListExperiments operation.
@@ -2589,7 +2589,7 @@ public struct ListExperimentsInput {
     }
 }
 
-public struct ListExperimentsOutput {
+public struct ListExperimentsOutput: Swift.Sendable {
     /// An array of structures that contain the configuration details of the experiments in the specified project.
     public var experiments: [EvidentlyClientTypes.Experiment]?
     /// The token to use in a subsequent ListExperiments operation to return the next set of results.
@@ -2605,7 +2605,7 @@ public struct ListExperimentsOutput {
     }
 }
 
-public struct StartExperimentInput {
+public struct StartExperimentInput: Swift.Sendable {
     /// The date and time to end the experiment. This must be no more than 30 days after the experiment starts.
     /// This member is required.
     public var analysisCompleteTime: Foundation.Date?
@@ -2628,7 +2628,7 @@ public struct StartExperimentInput {
     }
 }
 
-public struct StartExperimentOutput {
+public struct StartExperimentOutput: Swift.Sendable {
     /// A timestamp that indicates when the experiment started.
     public var startedTime: Foundation.Date?
 
@@ -2642,7 +2642,7 @@ public struct StartExperimentOutput {
 
 extension EvidentlyClientTypes {
 
-    public enum ExperimentStopDesiredState: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ExperimentStopDesiredState: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case cancelled
         case completed
         case sdkUnknown(Swift.String)
@@ -2669,7 +2669,7 @@ extension EvidentlyClientTypes {
     }
 }
 
-public struct StopExperimentInput {
+public struct StopExperimentInput: Swift.Sendable {
     /// Specify whether the experiment is to be considered COMPLETED or CANCELLED after it stops.
     public var desiredState: EvidentlyClientTypes.ExperimentStopDesiredState?
     /// The name of the experiment to stop.
@@ -2695,7 +2695,7 @@ public struct StopExperimentInput {
     }
 }
 
-public struct StopExperimentOutput {
+public struct StopExperimentOutput: Swift.Sendable {
     /// The date and time that the experiment stopped.
     public var endedTime: Foundation.Date?
 
@@ -2707,7 +2707,7 @@ public struct StopExperimentOutput {
     }
 }
 
-public struct UpdateExperimentInput {
+public struct UpdateExperimentInput: Swift.Sendable {
     /// An optional description of the experiment.
     public var description: Swift.String?
     /// The name of the experiment to update.
@@ -2757,7 +2757,7 @@ public struct UpdateExperimentInput {
     }
 }
 
-public struct UpdateExperimentOutput {
+public struct UpdateExperimentOutput: Swift.Sendable {
     /// A structure containing the configuration details of the experiment that was updated.
     /// This member is required.
     public var experiment: EvidentlyClientTypes.Experiment?
@@ -2770,7 +2770,7 @@ public struct UpdateExperimentOutput {
     }
 }
 
-public struct GetFeatureInput {
+public struct GetFeatureInput: Swift.Sendable {
     /// The name of the feature that you want to retrieve information for.
     /// This member is required.
     public var feature: Swift.String?
@@ -2788,7 +2788,7 @@ public struct GetFeatureInput {
     }
 }
 
-public struct GetFeatureOutput {
+public struct GetFeatureOutput: Swift.Sendable {
     /// A structure containing the configuration details of the feature.
     /// This member is required.
     public var feature: EvidentlyClientTypes.Feature?
@@ -2801,7 +2801,7 @@ public struct GetFeatureOutput {
     }
 }
 
-public struct ListFeaturesInput {
+public struct ListFeaturesInput: Swift.Sendable {
     /// The maximum number of results to include in the response.
     public var maxResults: Swift.Int?
     /// The token to use when requesting the next set of results. You received this token from a previous ListFeatures operation.
@@ -2823,8 +2823,9 @@ public struct ListFeaturesInput {
 }
 
 extension EvidentlyClientTypes {
+
     /// This structure contains information about one Evidently feature in your account.
-    public struct FeatureSummary {
+    public struct FeatureSummary: Swift.Sendable {
         /// The ARN of the feature.
         /// This member is required.
         public var arn: Swift.String?
@@ -2877,10 +2878,9 @@ extension EvidentlyClientTypes {
             self.tags = tags
         }
     }
-
 }
 
-public struct ListFeaturesOutput {
+public struct ListFeaturesOutput: Swift.Sendable {
     /// An array of structures that contain the configuration details of the features in the specified project.
     public var features: [EvidentlyClientTypes.FeatureSummary]?
     /// The token to use in a subsequent ListFeatures operation to return the next set of results.
@@ -2896,7 +2896,7 @@ public struct ListFeaturesOutput {
     }
 }
 
-public struct UpdateFeatureInput {
+public struct UpdateFeatureInput: Swift.Sendable {
     /// To update variation configurations for this feature, or add new ones, specify this structure. In this array, include any variations that you want to add or update. If the array includes a variation name that already exists for this feature, it is updated. If it includes a new variation name, it is added as a new variation.
     public var addOrUpdateVariations: [EvidentlyClientTypes.VariationConfig]?
     /// The name of the variation to use as the default variation. The default variation is served to users who are not allocated to any ongoing launches or experiments of this feature.
@@ -2938,7 +2938,7 @@ public struct UpdateFeatureInput {
     }
 }
 
-public struct UpdateFeatureOutput {
+public struct UpdateFeatureOutput: Swift.Sendable {
     /// A structure that contains information about the updated feature.
     /// This member is required.
     public var feature: EvidentlyClientTypes.Feature?
@@ -2951,7 +2951,7 @@ public struct UpdateFeatureOutput {
     }
 }
 
-public struct GetProjectInput {
+public struct GetProjectInput: Swift.Sendable {
     /// The name or ARN of the project that you want to see the details of.
     /// This member is required.
     public var project: Swift.String?
@@ -2964,7 +2964,7 @@ public struct GetProjectInput {
     }
 }
 
-public struct GetProjectOutput {
+public struct GetProjectOutput: Swift.Sendable {
     /// A structure containing the configuration details of the project.
     /// This member is required.
     public var project: EvidentlyClientTypes.Project?
@@ -2977,7 +2977,7 @@ public struct GetProjectOutput {
     }
 }
 
-public struct GetLaunchInput {
+public struct GetLaunchInput: Swift.Sendable {
     /// The name of the launch that you want to see the details of.
     /// This member is required.
     public var launch: Swift.String?
@@ -2995,7 +2995,7 @@ public struct GetLaunchInput {
     }
 }
 
-public struct GetLaunchOutput {
+public struct GetLaunchOutput: Swift.Sendable {
     /// A structure containing the configuration details of the launch.
     public var launch: EvidentlyClientTypes.Launch?
 
@@ -3007,7 +3007,7 @@ public struct GetLaunchOutput {
     }
 }
 
-public struct ListLaunchesInput {
+public struct ListLaunchesInput: Swift.Sendable {
     /// The maximum number of results to include in the response.
     public var maxResults: Swift.Int?
     /// The token to use when requesting the next set of results. You received this token from a previous ListLaunches operation.
@@ -3032,7 +3032,7 @@ public struct ListLaunchesInput {
     }
 }
 
-public struct ListLaunchesOutput {
+public struct ListLaunchesOutput: Swift.Sendable {
     /// An array of structures that contain the configuration details of the launches in the specified project.
     public var launches: [EvidentlyClientTypes.Launch]?
     /// The token to use in a subsequent ListLaunches operation to return the next set of results.
@@ -3048,7 +3048,7 @@ public struct ListLaunchesOutput {
     }
 }
 
-public struct StartLaunchInput {
+public struct StartLaunchInput: Swift.Sendable {
     /// The name of the launch to start.
     /// This member is required.
     public var launch: Swift.String?
@@ -3066,7 +3066,7 @@ public struct StartLaunchInput {
     }
 }
 
-public struct StartLaunchOutput {
+public struct StartLaunchOutput: Swift.Sendable {
     /// A structure that contains information about the launch that was started.
     /// This member is required.
     public var launch: EvidentlyClientTypes.Launch?
@@ -3081,7 +3081,7 @@ public struct StartLaunchOutput {
 
 extension EvidentlyClientTypes {
 
-    public enum LaunchStopDesiredState: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum LaunchStopDesiredState: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case cancelled
         case completed
         case sdkUnknown(Swift.String)
@@ -3108,7 +3108,7 @@ extension EvidentlyClientTypes {
     }
 }
 
-public struct StopLaunchInput {
+public struct StopLaunchInput: Swift.Sendable {
     /// Specify whether to consider the launch as COMPLETED or CANCELLED after it stops.
     public var desiredState: EvidentlyClientTypes.LaunchStopDesiredState?
     /// The name of the launch to stop.
@@ -3134,7 +3134,7 @@ public struct StopLaunchInput {
     }
 }
 
-public struct StopLaunchOutput {
+public struct StopLaunchOutput: Swift.Sendable {
     /// The date and time that the launch stopped.
     public var endedTime: Foundation.Date?
 
@@ -3146,7 +3146,7 @@ public struct StopLaunchOutput {
     }
 }
 
-public struct UpdateLaunchInput {
+public struct UpdateLaunchInput: Swift.Sendable {
     /// An optional description for the launch.
     public var description: Swift.String?
     /// An array of structures that contains the feature and variations that are to be used for the launch.
@@ -3184,7 +3184,7 @@ public struct UpdateLaunchInput {
     }
 }
 
-public struct UpdateLaunchOutput {
+public struct UpdateLaunchOutput: Swift.Sendable {
     /// A structure that contains the new configuration of the launch that was updated.
     /// This member is required.
     public var launch: EvidentlyClientTypes.Launch?
@@ -3197,7 +3197,7 @@ public struct UpdateLaunchOutput {
     }
 }
 
-public struct ListProjectsInput {
+public struct ListProjectsInput: Swift.Sendable {
     /// The maximum number of results to include in the response.
     public var maxResults: Swift.Int?
     /// The token to use when requesting the next set of results. You received this token from a previous ListProjects operation.
@@ -3214,8 +3214,9 @@ public struct ListProjectsInput {
 }
 
 extension EvidentlyClientTypes {
+
     /// A structure that contains configuration information about an Evidently project.
-    public struct ProjectSummary {
+    public struct ProjectSummary: Swift.Sendable {
         /// The number of experiments currently in the project.
         public var activeExperimentCount: Swift.Int?
         /// The number of ongoing launches currently in the project.
@@ -3275,10 +3276,9 @@ extension EvidentlyClientTypes {
             self.tags = tags
         }
     }
-
 }
 
-public struct ListProjectsOutput {
+public struct ListProjectsOutput: Swift.Sendable {
     /// The token to use in a subsequent ListProjects operation to return the next set of results.
     public var nextToken: Swift.String?
     /// An array of structures that contain the configuration details of the projects in the Region.
@@ -3294,7 +3294,7 @@ public struct ListProjectsOutput {
     }
 }
 
-public struct PutProjectEventsInput {
+public struct PutProjectEventsInput: Swift.Sendable {
     /// An array of event structures that contain the performance data that is being sent to Evidently.
     /// This member is required.
     public var events: [EvidentlyClientTypes.Event]?
@@ -3313,8 +3313,9 @@ public struct PutProjectEventsInput {
 }
 
 extension EvidentlyClientTypes {
+
     /// A structure that contains Evidently's response to the sent events, including an event ID and error codes, if any.
-    public struct PutProjectEventsResultEntry {
+    public struct PutProjectEventsResultEntry: Swift.Sendable {
         /// If the PutProjectEvents operation has an error, the error code is returned here.
         public var errorCode: Swift.String?
         /// If the PutProjectEvents operation has an error, the error message is returned here.
@@ -3333,10 +3334,9 @@ extension EvidentlyClientTypes {
             self.eventId = eventId
         }
     }
-
 }
 
-public struct PutProjectEventsOutput {
+public struct PutProjectEventsOutput: Swift.Sendable {
     /// A structure that contains Evidently's response to the sent events, including an event ID and error codes, if any.
     public var eventResults: [EvidentlyClientTypes.PutProjectEventsResultEntry]?
     /// The number of events in the operation that could not be used by Evidently.
@@ -3352,7 +3352,7 @@ public struct PutProjectEventsOutput {
     }
 }
 
-public struct UpdateProjectInput {
+public struct UpdateProjectInput: Swift.Sendable {
     /// Use this parameter if the project will use client-side evaluation powered by AppConfig. Client-side evaluation allows your application to assign variations to user sessions locally instead of by calling the [EvaluateFeature](https://docs.aws.amazon.com/cloudwatchevidently/latest/APIReference/API_EvaluateFeature.html) operation. This mitigates the latency and availability risks that come with an API call. allows you to This parameter is a structure that contains information about the AppConfig application that will be used for client-side evaluation.
     public var appConfigResource: EvidentlyClientTypes.ProjectAppConfigResourceConfig?
     /// An optional description of the project.
@@ -3373,7 +3373,7 @@ public struct UpdateProjectInput {
     }
 }
 
-public struct UpdateProjectOutput {
+public struct UpdateProjectOutput: Swift.Sendable {
     /// A structure containing information about the updated project.
     /// This member is required.
     public var project: EvidentlyClientTypes.Project?
@@ -3386,7 +3386,7 @@ public struct UpdateProjectOutput {
     }
 }
 
-public struct UpdateProjectDataDeliveryInput {
+public struct UpdateProjectDataDeliveryInput: Swift.Sendable {
     /// A structure containing the CloudWatch Logs log group where you want to store evaluation events.
     public var cloudWatchLogs: EvidentlyClientTypes.CloudWatchLogsDestinationConfig?
     /// The name or ARN of the project that you want to modify the data storage options for.
@@ -3407,7 +3407,7 @@ public struct UpdateProjectDataDeliveryInput {
     }
 }
 
-public struct UpdateProjectDataDeliveryOutput {
+public struct UpdateProjectDataDeliveryOutput: Swift.Sendable {
     /// A structure containing details about the project that you updated.
     /// This member is required.
     public var project: EvidentlyClientTypes.Project?
@@ -3420,7 +3420,7 @@ public struct UpdateProjectDataDeliveryOutput {
     }
 }
 
-public struct GetSegmentInput {
+public struct GetSegmentInput: Swift.Sendable {
     /// The ARN of the segment to return information for.
     /// This member is required.
     public var segment: Swift.String?
@@ -3433,7 +3433,7 @@ public struct GetSegmentInput {
     }
 }
 
-public struct GetSegmentOutput {
+public struct GetSegmentOutput: Swift.Sendable {
     /// A structure that contains the complete information about the segment.
     /// This member is required.
     public var segment: EvidentlyClientTypes.Segment?
@@ -3448,7 +3448,7 @@ public struct GetSegmentOutput {
 
 extension EvidentlyClientTypes {
 
-    public enum SegmentReferenceResourceType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SegmentReferenceResourceType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case experiment
         case launch
         case sdkUnknown(Swift.String)
@@ -3475,7 +3475,7 @@ extension EvidentlyClientTypes {
     }
 }
 
-public struct ListSegmentReferencesInput {
+public struct ListSegmentReferencesInput: Swift.Sendable {
     /// The maximum number of results to include in the response. If you omit this, the default of 50 is used.
     public var maxResults: Swift.Int?
     /// The token to use when requesting the next set of results. You received this token from a previous ListSegmentReferences operation.
@@ -3502,8 +3502,9 @@ public struct ListSegmentReferencesInput {
 }
 
 extension EvidentlyClientTypes {
+
     /// A structure that contains information about one experiment or launch that uses the specified segment.
-    public struct RefResource {
+    public struct RefResource: Swift.Sendable {
         /// The ARN of the experiment or launch.
         public var arn: Swift.String?
         /// The day and time that this experiment or launch ended.
@@ -3540,10 +3541,9 @@ extension EvidentlyClientTypes {
             self.type = type
         }
     }
-
 }
 
-public struct ListSegmentReferencesOutput {
+public struct ListSegmentReferencesOutput: Swift.Sendable {
     /// The token to use in a subsequent ListSegmentReferences operation to return the next set of results.
     public var nextToken: Swift.String?
     /// An array of structures, where each structure contains information about one experiment or launch that uses this segment.
@@ -3559,7 +3559,7 @@ public struct ListSegmentReferencesOutput {
     }
 }
 
-public struct ListSegmentsInput {
+public struct ListSegmentsInput: Swift.Sendable {
     /// The maximum number of results to include in the response. If you omit this, the default of 50 is used.
     public var maxResults: Swift.Int?
     /// The token to use when requesting the next set of results. You received this token from a previous ListSegments operation.
@@ -3575,7 +3575,7 @@ public struct ListSegmentsInput {
     }
 }
 
-public struct ListSegmentsOutput {
+public struct ListSegmentsOutput: Swift.Sendable {
     /// The token to use in a subsequent ListSegments operation to return the next set of results.
     public var nextToken: Swift.String?
     /// An array of structures that contain information about the segments in this Region.
@@ -3591,7 +3591,7 @@ public struct ListSegmentsOutput {
     }
 }
 
-public struct TagResourceInput {
+public struct TagResourceInput: Swift.Sendable {
     /// The ARN of the CloudWatch Evidently resource that you're adding tags to.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -3609,12 +3609,12 @@ public struct TagResourceInput {
     }
 }
 
-public struct TagResourceOutput {
+public struct TagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct TestSegmentPatternInput {
+public struct TestSegmentPatternInput: Swift.Sendable {
     /// The pattern to test.
     /// This member is required.
     public var pattern: Swift.String?
@@ -3632,7 +3632,7 @@ public struct TestSegmentPatternInput {
     }
 }
 
-public struct TestSegmentPatternOutput {
+public struct TestSegmentPatternOutput: Swift.Sendable {
     /// Returns true if the pattern matches the payload.
     /// This member is required.
     public var match: Swift.Bool?
@@ -3645,7 +3645,7 @@ public struct TestSegmentPatternOutput {
     }
 }
 
-public struct UntagResourceInput {
+public struct UntagResourceInput: Swift.Sendable {
     /// The ARN of the CloudWatch Evidently resource that you're removing tags from.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -3663,7 +3663,7 @@ public struct UntagResourceInput {
     }
 }
 
-public struct UntagResourceOutput {
+public struct UntagResourceOutput: Swift.Sendable {
 
     public init() { }
 }

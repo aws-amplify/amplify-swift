@@ -30,7 +30,7 @@ import struct Smithy.URIQueryItem
 
 extension SsmSapClientTypes {
 
-    public enum AllocationType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AllocationType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case elasticIp
         case overlay
         case unknown
@@ -65,7 +65,7 @@ extension SsmSapClientTypes {
 
 extension SsmSapClientTypes {
 
-    public enum ApplicationDiscoveryStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ApplicationDiscoveryStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case deleting
         case refreshFailed
         case registering
@@ -103,7 +103,7 @@ extension SsmSapClientTypes {
 
 extension SsmSapClientTypes {
 
-    public enum ApplicationStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ApplicationStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case activated
         case deleting
         case failed
@@ -150,7 +150,7 @@ extension SsmSapClientTypes {
 
 extension SsmSapClientTypes {
 
-    public enum ApplicationType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ApplicationType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case hana
         case sapAbap
         case sdkUnknown(Swift.String)
@@ -178,8 +178,9 @@ extension SsmSapClientTypes {
 }
 
 extension SsmSapClientTypes {
+
     /// An SAP application registered with AWS Systems Manager for SAP.
-    public struct Application {
+    public struct Application: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the Application Registry.
         public var appRegistryArn: Swift.String?
         /// The Amazon Resource Name (ARN) of the application.
@@ -226,12 +227,11 @@ extension SsmSapClientTypes {
             self.type = type
         }
     }
-
 }
 
 extension SsmSapClientTypes {
 
-    public enum CredentialType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum CredentialType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case admin
         case sdkUnknown(Swift.String)
 
@@ -256,8 +256,9 @@ extension SsmSapClientTypes {
 }
 
 extension SsmSapClientTypes {
+
     /// The credentials of your SAP application.
-    public struct ApplicationCredential {
+    public struct ApplicationCredential: Swift.Sendable {
         /// The type of the application credentials.
         /// This member is required.
         public var credentialType: SsmSapClientTypes.CredentialType?
@@ -279,7 +280,6 @@ extension SsmSapClientTypes {
             self.secretId = secretId
         }
     }
-
 }
 
 extension SsmSapClientTypes.ApplicationCredential: Swift.CustomDebugStringConvertible {
@@ -288,8 +288,9 @@ extension SsmSapClientTypes.ApplicationCredential: Swift.CustomDebugStringConver
 }
 
 extension SsmSapClientTypes {
+
     /// The summary of the SAP application registered with AWS Systems Manager for SAP.
-    public struct ApplicationSummary {
+    public struct ApplicationSummary: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the application.
         public var arn: Swift.String?
         /// The status of the latest discovery.
@@ -316,12 +317,12 @@ extension SsmSapClientTypes {
             self.type = type
         }
     }
-
 }
 
 extension SsmSapClientTypes {
+
     /// Provides information of the IP address.
-    public struct IpAddressMember {
+    public struct IpAddressMember: Swift.Sendable {
         /// The type of allocation for the IP address.
         public var allocationType: SsmSapClientTypes.AllocationType?
         /// The IP address.
@@ -340,12 +341,12 @@ extension SsmSapClientTypes {
             self.primary = primary
         }
     }
-
 }
 
 extension SsmSapClientTypes {
+
     /// Describes the properties of the associated host.
-    public struct AssociatedHost {
+    public struct AssociatedHost: Swift.Sendable {
         /// The ID of the Amazon EC2 instance.
         public var ec2InstanceId: Swift.String?
         /// The name of the host.
@@ -368,12 +369,11 @@ extension SsmSapClientTypes {
             self.osVersion = osVersion
         }
     }
-
 }
 
 extension SsmSapClientTypes {
 
-    public enum BackintMode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum BackintMode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case awsbackup
         case sdkUnknown(Swift.String)
 
@@ -398,8 +398,9 @@ extension SsmSapClientTypes {
 }
 
 extension SsmSapClientTypes {
+
     /// Configuration parameters for AWS Backint Agent for SAP HANA. You can backup your SAP HANA database with AWS Backup or Amazon S3.
-    public struct BackintConfig {
+    public struct BackintConfig: Swift.Sendable {
         /// AWS service for your database backup.
         /// This member is required.
         public var backintMode: SsmSapClientTypes.BackintMode?
@@ -416,12 +417,11 @@ extension SsmSapClientTypes {
             self.ensureNoBackupInProcess = ensureNoBackupInProcess
         }
     }
-
 }
 
 extension SsmSapClientTypes {
 
-    public enum ClusterStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ClusterStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case maintenance
         case `none`
         case offline
@@ -459,7 +459,7 @@ extension SsmSapClientTypes {
 
 extension SsmSapClientTypes {
 
-    public enum ComponentType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ComponentType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case abap
         case ascs
         case dialog
@@ -506,7 +506,7 @@ extension SsmSapClientTypes {
 
 extension SsmSapClientTypes {
 
-    public enum DatabaseConnectionMethod: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DatabaseConnectionMethod: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case direct
         case overlay
         case sdkUnknown(Swift.String)
@@ -534,8 +534,9 @@ extension SsmSapClientTypes {
 }
 
 extension SsmSapClientTypes {
+
     /// The connection specifications for the database.
-    public struct DatabaseConnection {
+    public struct DatabaseConnection: Swift.Sendable {
         /// The IP address for connection.
         public var connectionIp: Swift.String?
         /// The Amazon Resource Name of the connected SAP HANA database.
@@ -554,12 +555,11 @@ extension SsmSapClientTypes {
             self.databaseConnectionMethod = databaseConnectionMethod
         }
     }
-
 }
 
 extension SsmSapClientTypes {
 
-    public enum HostRole: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum HostRole: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case leader
         case standby
         case unknown
@@ -593,8 +593,9 @@ extension SsmSapClientTypes {
 }
 
 extension SsmSapClientTypes {
+
     /// Describes the properties of the Dedicated Host.
-    public struct Host {
+    public struct Host: Swift.Sendable {
         /// The ID of Amazon EC2 instance.
         public var ec2InstanceId: Swift.String?
         /// The IP address of the Dedicated Host.
@@ -625,12 +626,11 @@ extension SsmSapClientTypes {
             self.osVersion = osVersion
         }
     }
-
 }
 
 extension SsmSapClientTypes {
 
-    public enum OperationMode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum OperationMode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case deltaDatashipping
         case logreplay
         case logreplayReadaccess
@@ -668,7 +668,7 @@ extension SsmSapClientTypes {
 
 extension SsmSapClientTypes {
 
-    public enum ReplicationMode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ReplicationMode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case async
         case `none`
         case primary
@@ -705,8 +705,9 @@ extension SsmSapClientTypes {
 }
 
 extension SsmSapClientTypes {
+
     /// Details of the SAP HANA system replication for the instance.
-    public struct Resilience {
+    public struct Resilience: Swift.Sendable {
         /// The cluster status of the component.
         public var clusterStatus: SsmSapClientTypes.ClusterStatus?
         /// Indicates if or not enqueue replication is enabled for the ASCS component.
@@ -733,12 +734,11 @@ extension SsmSapClientTypes {
             self.hsrTier = hsrTier
         }
     }
-
 }
 
 extension SsmSapClientTypes {
 
-    public enum ComponentStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ComponentStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case activated
         case running
         case runningWithError
@@ -781,8 +781,9 @@ extension SsmSapClientTypes {
 }
 
 extension SsmSapClientTypes {
+
     /// The SAP component of your application.
-    public struct Component {
+    public struct Component: Swift.Sendable {
         /// The ID of the application.
         public var applicationId: Swift.String?
         /// The Amazon Resource Name (ARN) of the component.
@@ -885,12 +886,12 @@ extension SsmSapClientTypes {
             self.systemNumber = systemNumber
         }
     }
-
 }
 
 extension SsmSapClientTypes {
+
     /// The summary of the component.
-    public struct ComponentSummary {
+    public struct ComponentSummary: Swift.Sendable {
         /// The ID of the application.
         public var applicationId: Swift.String?
         /// The Amazon Resource Name (ARN) of the component summary.
@@ -917,7 +918,6 @@ extension SsmSapClientTypes {
             self.tags = tags
         }
     }
-
 }
 
 /// A conflict has occurred.
@@ -946,7 +946,7 @@ public struct ConflictException: ClientRuntime.ModeledError, AWSClientRuntime.AW
 
 extension SsmSapClientTypes {
 
-    public enum ConnectedEntityType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ConnectedEntityType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case dbms
         case sdkUnknown(Swift.String)
 
@@ -972,7 +972,7 @@ extension SsmSapClientTypes {
 
 extension SsmSapClientTypes {
 
-    public enum DatabaseType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DatabaseType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case system
         case tenant
         case sdkUnknown(Swift.String)
@@ -1001,7 +1001,7 @@ extension SsmSapClientTypes {
 
 extension SsmSapClientTypes {
 
-    public enum DatabaseStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DatabaseStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case error
         case running
         case starting
@@ -1041,8 +1041,9 @@ extension SsmSapClientTypes {
 }
 
 extension SsmSapClientTypes {
+
     /// The SAP HANA database of the application registered with AWS Systems Manager for SAP.
-    public struct Database {
+    public struct Database: Swift.Sendable {
         /// The ID of the application.
         public var applicationId: Swift.String?
         /// The Amazon Resource Name (ARN) of the database.
@@ -1097,12 +1098,12 @@ extension SsmSapClientTypes {
             self.status = status
         }
     }
-
 }
 
 extension SsmSapClientTypes {
+
     /// The summary of the database.
-    public struct DatabaseSummary {
+    public struct DatabaseSummary: Swift.Sendable {
         /// The ID of the application.
         public var applicationId: Swift.String?
         /// The Amazon Resource Name (ARN) of the database.
@@ -1133,7 +1134,6 @@ extension SsmSapClientTypes {
             self.tags = tags
         }
     }
-
 }
 
 /// An internal error has occurred.
@@ -1210,7 +1210,7 @@ public struct ValidationException: ClientRuntime.ModeledError, AWSClientRuntime.
 
 extension SsmSapClientTypes {
 
-    public enum PermissionActionType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum PermissionActionType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case restore
         case sdkUnknown(Swift.String)
 
@@ -1234,7 +1234,7 @@ extension SsmSapClientTypes {
     }
 }
 
-public struct DeleteResourcePermissionInput {
+public struct DeleteResourcePermissionInput: Swift.Sendable {
     /// Delete or restore the permissions on the target database.
     public var actionType: SsmSapClientTypes.PermissionActionType?
     /// The Amazon Resource Name (ARN) of the resource.
@@ -1255,7 +1255,7 @@ public struct DeleteResourcePermissionInput {
     }
 }
 
-public struct DeleteResourcePermissionOutput {
+public struct DeleteResourcePermissionOutput: Swift.Sendable {
     /// The policy that removes permissions on the target database.
     public var policy: Swift.String?
 
@@ -1291,7 +1291,7 @@ public struct UnauthorizedException: ClientRuntime.ModeledError, AWSClientRuntim
     }
 }
 
-public struct DeregisterApplicationInput {
+public struct DeregisterApplicationInput: Swift.Sendable {
     /// The ID of the application.
     /// This member is required.
     public var applicationId: Swift.String?
@@ -1304,14 +1304,14 @@ public struct DeregisterApplicationInput {
     }
 }
 
-public struct DeregisterApplicationOutput {
+public struct DeregisterApplicationOutput: Swift.Sendable {
 
     public init() { }
 }
 
 extension SsmSapClientTypes {
 
-    public enum FilterOperator: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum FilterOperator: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case equals
         case greaterThanOrEquals
         case lessThanOrEquals
@@ -1342,8 +1342,9 @@ extension SsmSapClientTypes {
 }
 
 extension SsmSapClientTypes {
+
     /// A specific result obtained by specifying the name, value, and operator.
-    public struct Filter {
+    public struct Filter: Swift.Sendable {
         /// The name of the filter. Filter names are case-sensitive.
         /// This member is required.
         public var name: Swift.String?
@@ -1365,10 +1366,9 @@ extension SsmSapClientTypes {
             self.value = value
         }
     }
-
 }
 
-public struct GetApplicationInput {
+public struct GetApplicationInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the application registry.
     public var appRegistryArn: Swift.String?
     /// The Amazon Resource Name (ARN) of the application.
@@ -1388,7 +1388,7 @@ public struct GetApplicationInput {
     }
 }
 
-public struct GetApplicationOutput {
+public struct GetApplicationOutput: Swift.Sendable {
     /// Returns all of the metadata of an application registered with AWS Systems Manager for SAP.
     public var application: SsmSapClientTypes.Application?
     /// The tags of a registered application.
@@ -1404,7 +1404,7 @@ public struct GetApplicationOutput {
     }
 }
 
-public struct GetComponentInput {
+public struct GetComponentInput: Swift.Sendable {
     /// The ID of the application.
     /// This member is required.
     public var applicationId: Swift.String?
@@ -1422,7 +1422,7 @@ public struct GetComponentInput {
     }
 }
 
-public struct GetComponentOutput {
+public struct GetComponentOutput: Swift.Sendable {
     /// The component of an application registered with AWS Systems Manager for SAP.
     public var component: SsmSapClientTypes.Component?
     /// The tags of a component.
@@ -1438,7 +1438,7 @@ public struct GetComponentOutput {
     }
 }
 
-public struct GetDatabaseInput {
+public struct GetDatabaseInput: Swift.Sendable {
     /// The ID of the application.
     public var applicationId: Swift.String?
     /// The ID of the component.
@@ -1462,7 +1462,7 @@ public struct GetDatabaseInput {
     }
 }
 
-public struct GetDatabaseOutput {
+public struct GetDatabaseOutput: Swift.Sendable {
     /// The SAP HANA database of an application registered with AWS Systems Manager for SAP.
     public var database: SsmSapClientTypes.Database?
     /// The tags of a database.
@@ -1478,7 +1478,7 @@ public struct GetDatabaseOutput {
     }
 }
 
-public struct GetOperationInput {
+public struct GetOperationInput: Swift.Sendable {
     /// The ID of the operation.
     /// This member is required.
     public var operationId: Swift.String?
@@ -1493,7 +1493,7 @@ public struct GetOperationInput {
 
 extension SsmSapClientTypes {
 
-    public enum OperationStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum OperationStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case error
         case inprogress
         case success
@@ -1524,8 +1524,9 @@ extension SsmSapClientTypes {
 }
 
 extension SsmSapClientTypes {
+
     /// The operations performed by AWS Systems Manager for SAP.
-    public struct Operation {
+    public struct Operation: Swift.Sendable {
         /// The end time of the operation.
         public var endTime: Foundation.Date?
         /// The ID of the operation.
@@ -1576,10 +1577,9 @@ extension SsmSapClientTypes {
             self.type = type
         }
     }
-
 }
 
-public struct GetOperationOutput {
+public struct GetOperationOutput: Swift.Sendable {
     /// Returns the details of an operation.
     public var operation: SsmSapClientTypes.Operation?
 
@@ -1591,7 +1591,7 @@ public struct GetOperationOutput {
     }
 }
 
-public struct GetResourcePermissionInput {
+public struct GetResourcePermissionInput: Swift.Sendable {
     ///
     public var actionType: SsmSapClientTypes.PermissionActionType?
     /// The Amazon Resource Name (ARN) of the resource.
@@ -1608,7 +1608,7 @@ public struct GetResourcePermissionInput {
     }
 }
 
-public struct GetResourcePermissionOutput {
+public struct GetResourcePermissionOutput: Swift.Sendable {
     ///
     public var policy: Swift.String?
 
@@ -1620,7 +1620,7 @@ public struct GetResourcePermissionOutput {
     }
 }
 
-public struct ListApplicationsInput {
+public struct ListApplicationsInput: Swift.Sendable {
     /// The filter of name, value, and operator.
     public var filters: [SsmSapClientTypes.Filter]?
     /// The maximum number of results to return with a single call. To retrieve the remaining results, make another call with the returned nextToken value.
@@ -1640,7 +1640,7 @@ public struct ListApplicationsInput {
     }
 }
 
-public struct ListApplicationsOutput {
+public struct ListApplicationsOutput: Swift.Sendable {
     /// The applications registered with AWS Systems Manager for SAP.
     public var applications: [SsmSapClientTypes.ApplicationSummary]?
     /// The token to use to retrieve the next page of results. This value is null when there are no more results to return.
@@ -1656,7 +1656,7 @@ public struct ListApplicationsOutput {
     }
 }
 
-public struct ListComponentsInput {
+public struct ListComponentsInput: Swift.Sendable {
     /// The ID of the application.
     public var applicationId: Swift.String?
     /// The maximum number of results to return with a single call. To retrieve the remaining results, make another call with the returned nextToken value. If you do not specify a value for MaxResults, the request returns 50 items per page by default.
@@ -1676,7 +1676,7 @@ public struct ListComponentsInput {
     }
 }
 
-public struct ListComponentsOutput {
+public struct ListComponentsOutput: Swift.Sendable {
     /// List of components registered with AWS System Manager for SAP.
     public var components: [SsmSapClientTypes.ComponentSummary]?
     /// The token to use to retrieve the next page of results. This value is null when there are no more results to return.
@@ -1692,7 +1692,7 @@ public struct ListComponentsOutput {
     }
 }
 
-public struct ListDatabasesInput {
+public struct ListDatabasesInput: Swift.Sendable {
     /// The ID of the application.
     public var applicationId: Swift.String?
     /// The ID of the component.
@@ -1716,7 +1716,7 @@ public struct ListDatabasesInput {
     }
 }
 
-public struct ListDatabasesOutput {
+public struct ListDatabasesOutput: Swift.Sendable {
     /// The SAP HANA databases of an application.
     public var databases: [SsmSapClientTypes.DatabaseSummary]?
     /// The token to use to retrieve the next page of results. This value is null when there are no more results to return.
@@ -1732,7 +1732,7 @@ public struct ListDatabasesOutput {
     }
 }
 
-public struct ListOperationEventsInput {
+public struct ListOperationEventsInput: Swift.Sendable {
     /// Optionally specify filters to narrow the returned operation event items. Valid filter names include status, resourceID, and resourceType. The valid operator for all three filters is Equals.
     public var filters: [SsmSapClientTypes.Filter]?
     /// The maximum number of results to return with a single call. To retrieve the remaining results, make another call with the returned nextToken value. If you do not specify a value for MaxResults, the request returns 50 items per page by default.
@@ -1758,8 +1758,9 @@ public struct ListOperationEventsInput {
 }
 
 extension SsmSapClientTypes {
+
     /// The resource contains a ResourceArn and the ResourceType.
-    public struct Resource {
+    public struct Resource: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the source resource. Example of ResourceArn: "arn:aws:ec2:us-east-1:111111111111:instance/i-abcdefgh987654321"
         public var resourceArn: Swift.String?
         /// The resource type. Example of ResourceType: "AWS::SystemsManagerSAP::Component" or "AWS::EC2::Instance".
@@ -1774,12 +1775,11 @@ extension SsmSapClientTypes {
             self.resourceType = resourceType
         }
     }
-
 }
 
 extension SsmSapClientTypes {
 
-    public enum OperationEventStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum OperationEventStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case completed
         case failed
         case inProgress
@@ -1810,6 +1810,7 @@ extension SsmSapClientTypes {
 }
 
 extension SsmSapClientTypes {
+
     /// An operation event returns details for an operation, including key milestones which can be used to monitor and track operations in progress. Operation events contain:
     ///
     /// * Description string
@@ -1824,7 +1825,7 @@ extension SsmSapClientTypes {
     ///
     ///
     /// Operation event examples include StartApplication or StopApplication.
-    public struct OperationEvent {
+    public struct OperationEvent: Swift.Sendable {
         /// A description of the operation event. For example, "Stop the EC2 instance i-abcdefgh987654321".
         public var description: Swift.String?
         /// The resource involved in the operations event. Contains ResourceArn ARN and ResourceType.
@@ -1851,10 +1852,9 @@ extension SsmSapClientTypes {
             self.timestamp = timestamp
         }
     }
-
 }
 
-public struct ListOperationEventsOutput {
+public struct ListOperationEventsOutput: Swift.Sendable {
     /// The token to use to retrieve the next page of results. This value is null when there are no more results to return.
     public var nextToken: Swift.String?
     /// A returned list of operation events that meet the filter criteria.
@@ -1870,7 +1870,7 @@ public struct ListOperationEventsOutput {
     }
 }
 
-public struct ListOperationsInput {
+public struct ListOperationsInput: Swift.Sendable {
     /// The ID of the application.
     /// This member is required.
     public var applicationId: Swift.String?
@@ -1895,7 +1895,7 @@ public struct ListOperationsInput {
     }
 }
 
-public struct ListOperationsOutput {
+public struct ListOperationsOutput: Swift.Sendable {
     /// The token to use to retrieve the next page of results. This value is null when there are no more results to return.
     public var nextToken: Swift.String?
     /// List of operations performed by AWS Systems Manager for SAP.
@@ -1911,7 +1911,7 @@ public struct ListOperationsOutput {
     }
 }
 
-public struct ListTagsForResourceInput {
+public struct ListTagsForResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the resource.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -1924,7 +1924,7 @@ public struct ListTagsForResourceInput {
     }
 }
 
-public struct ListTagsForResourceOutput {
+public struct ListTagsForResourceOutput: Swift.Sendable {
     ///
     public var tags: [Swift.String: Swift.String]?
 
@@ -1936,7 +1936,7 @@ public struct ListTagsForResourceOutput {
     }
 }
 
-public struct PutResourcePermissionInput {
+public struct PutResourcePermissionInput: Swift.Sendable {
     ///
     /// This member is required.
     public var actionType: SsmSapClientTypes.PermissionActionType?
@@ -1959,7 +1959,7 @@ public struct PutResourcePermissionInput {
     }
 }
 
-public struct PutResourcePermissionOutput {
+public struct PutResourcePermissionOutput: Swift.Sendable {
     ///
     public var policy: Swift.String?
 
@@ -1971,7 +1971,7 @@ public struct PutResourcePermissionOutput {
     }
 }
 
-public struct RegisterApplicationInput {
+public struct RegisterApplicationInput: Swift.Sendable {
     /// The ID of the application.
     /// This member is required.
     public var applicationId: Swift.String?
@@ -2014,7 +2014,7 @@ public struct RegisterApplicationInput {
     }
 }
 
-public struct RegisterApplicationOutput {
+public struct RegisterApplicationOutput: Swift.Sendable {
     /// The application registered with AWS Systems Manager for SAP.
     public var application: SsmSapClientTypes.Application?
     /// The ID of the operation.
@@ -2030,7 +2030,7 @@ public struct RegisterApplicationOutput {
     }
 }
 
-public struct StartApplicationInput {
+public struct StartApplicationInput: Swift.Sendable {
     /// The ID of the application.
     /// This member is required.
     public var applicationId: Swift.String?
@@ -2043,7 +2043,7 @@ public struct StartApplicationInput {
     }
 }
 
-public struct StartApplicationOutput {
+public struct StartApplicationOutput: Swift.Sendable {
     /// The ID of the operation.
     public var operationId: Swift.String?
 
@@ -2055,7 +2055,7 @@ public struct StartApplicationOutput {
     }
 }
 
-public struct StartApplicationRefreshInput {
+public struct StartApplicationRefreshInput: Swift.Sendable {
     /// The ID of the application.
     /// This member is required.
     public var applicationId: Swift.String?
@@ -2068,7 +2068,7 @@ public struct StartApplicationRefreshInput {
     }
 }
 
-public struct StartApplicationRefreshOutput {
+public struct StartApplicationRefreshOutput: Swift.Sendable {
     /// The ID of the operation.
     public var operationId: Swift.String?
 
@@ -2080,7 +2080,7 @@ public struct StartApplicationRefreshOutput {
     }
 }
 
-public struct StopApplicationInput {
+public struct StopApplicationInput: Swift.Sendable {
     /// The ID of the application.
     /// This member is required.
     public var applicationId: Swift.String?
@@ -2101,7 +2101,7 @@ public struct StopApplicationInput {
     }
 }
 
-public struct StopApplicationOutput {
+public struct StopApplicationOutput: Swift.Sendable {
     /// The ID of the operation.
     public var operationId: Swift.String?
 
@@ -2113,7 +2113,7 @@ public struct StopApplicationOutput {
     }
 }
 
-public struct TagResourceInput {
+public struct TagResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the resource.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -2131,12 +2131,12 @@ public struct TagResourceInput {
     }
 }
 
-public struct TagResourceOutput {
+public struct TagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UntagResourceInput {
+public struct UntagResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the resource.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -2154,12 +2154,12 @@ public struct UntagResourceInput {
     }
 }
 
-public struct UntagResourceOutput {
+public struct UntagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdateApplicationSettingsInput {
+public struct UpdateApplicationSettingsInput: Swift.Sendable {
     /// The ID of the application.
     /// This member is required.
     public var applicationId: Swift.String?
@@ -2188,7 +2188,7 @@ public struct UpdateApplicationSettingsInput {
     }
 }
 
-public struct UpdateApplicationSettingsOutput {
+public struct UpdateApplicationSettingsOutput: Swift.Sendable {
     /// The update message.
     public var message: Swift.String?
     /// The IDs of the operations.

@@ -167,8 +167,9 @@ public struct ServiceQuotaExceededException: ClientRuntime.ModeledError, AWSClie
 }
 
 extension OAMClientTypes {
+
     /// This structure contains the Filter parameter which you can use to specify which log groups are to share log events from this source account to the monitoring account.
-    public struct LogGroupConfiguration {
+    public struct LogGroupConfiguration: Swift.Sendable {
         /// Use this field to specify which log groups are to share their log events with the monitoring account. Use the term LogGroupName and one or more of the following operands. Use single quotation marks (') around log group names. The matching of log group names is case sensitive. Each filter has a limit of five conditional operands. Conditional operands are AND and OR.
         ///
         /// * = and !=
@@ -202,12 +203,12 @@ extension OAMClientTypes {
             self.filter = filter
         }
     }
-
 }
 
 extension OAMClientTypes {
+
     /// This structure contains the Filter parameter which you can use to specify which metric namespaces are to be shared from this source account to the monitoring account.
-    public struct MetricConfiguration {
+    public struct MetricConfiguration: Swift.Sendable {
         /// Use this field to specify which metrics are to be shared with the monitoring account. Use the term Namespace and one or more of the following operands. Use single quotation marks (') around namespace names. The matching of namespace names is case sensitive. Each filter has a limit of five conditional operands. Conditional operands are AND and OR.
         ///
         /// * = and !=
@@ -241,12 +242,12 @@ extension OAMClientTypes {
             self.filter = filter
         }
     }
-
 }
 
 extension OAMClientTypes {
+
     /// Use this structure to optionally create filters that specify that only some metric namespaces or log groups are to be shared from the source account to the monitoring account.
-    public struct LinkConfiguration {
+    public struct LinkConfiguration: Swift.Sendable {
         /// Use this structure to filter which log groups are to send log events from the source account to the monitoring account.
         public var logGroupConfiguration: OAMClientTypes.LogGroupConfiguration?
         /// Use this structure to filter which metric namespaces are to be shared from the source account to the monitoring account.
@@ -261,12 +262,11 @@ extension OAMClientTypes {
             self.metricConfiguration = metricConfiguration
         }
     }
-
 }
 
 extension OAMClientTypes {
 
-    public enum ResourceType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ResourceType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case awsApplicationinsightsApplication
         case awsCloudwatchMetric
         case awsInternetmonitorMonitor
@@ -302,7 +302,7 @@ extension OAMClientTypes {
     }
 }
 
-public struct CreateLinkInput {
+public struct CreateLinkInput: Swift.Sendable {
     /// Specify a friendly human-readable name to use to identify this source account when you are viewing data from it in the monitoring account. You can use a custom label or use the following variables:
     ///
     /// * $AccountName is the name of the account
@@ -339,7 +339,7 @@ public struct CreateLinkInput {
     }
 }
 
-public struct CreateLinkOutput {
+public struct CreateLinkOutput: Swift.Sendable {
     /// The ARN of the link that is newly created.
     public var arn: Swift.String?
     /// The random ID string that Amazon Web Services generated as part of the link ARN.
@@ -379,7 +379,7 @@ public struct CreateLinkOutput {
     }
 }
 
-public struct CreateSinkInput {
+public struct CreateSinkInput: Swift.Sendable {
     /// A name for the sink.
     /// This member is required.
     public var name: Swift.String?
@@ -396,7 +396,7 @@ public struct CreateSinkInput {
     }
 }
 
-public struct CreateSinkOutput {
+public struct CreateSinkOutput: Swift.Sendable {
     /// The ARN of the sink that is newly created.
     public var arn: Swift.String?
     /// The random ID string that Amazon Web Services generated as part of the sink ARN.
@@ -448,7 +448,7 @@ public struct ResourceNotFoundException: ClientRuntime.ModeledError, AWSClientRu
     }
 }
 
-public struct DeleteLinkInput {
+public struct DeleteLinkInput: Swift.Sendable {
     /// The ARN of the link to delete.
     /// This member is required.
     public var identifier: Swift.String?
@@ -461,12 +461,12 @@ public struct DeleteLinkInput {
     }
 }
 
-public struct DeleteLinkOutput {
+public struct DeleteLinkOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteSinkInput {
+public struct DeleteSinkInput: Swift.Sendable {
     /// The ARN of the sink to delete.
     /// This member is required.
     public var identifier: Swift.String?
@@ -479,12 +479,12 @@ public struct DeleteSinkInput {
     }
 }
 
-public struct DeleteSinkOutput {
+public struct DeleteSinkOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct GetLinkInput {
+public struct GetLinkInput: Swift.Sendable {
     /// The ARN of the link to retrieve information for.
     /// This member is required.
     public var identifier: Swift.String?
@@ -497,7 +497,7 @@ public struct GetLinkInput {
     }
 }
 
-public struct GetLinkOutput {
+public struct GetLinkOutput: Swift.Sendable {
     /// The ARN of the link.
     public var arn: Swift.String?
     /// The random ID string that Amazon Web Services generated as part of the link ARN.
@@ -537,7 +537,7 @@ public struct GetLinkOutput {
     }
 }
 
-public struct GetSinkInput {
+public struct GetSinkInput: Swift.Sendable {
     /// The ARN of the sink to retrieve information for.
     /// This member is required.
     public var identifier: Swift.String?
@@ -550,7 +550,7 @@ public struct GetSinkInput {
     }
 }
 
-public struct GetSinkOutput {
+public struct GetSinkOutput: Swift.Sendable {
     /// The ARN of the sink.
     public var arn: Swift.String?
     /// The random ID string that Amazon Web Services generated as part of the sink ARN.
@@ -574,7 +574,7 @@ public struct GetSinkOutput {
     }
 }
 
-public struct GetSinkPolicyInput {
+public struct GetSinkPolicyInput: Swift.Sendable {
     /// The ARN of the sink to retrieve the policy of.
     /// This member is required.
     public var sinkIdentifier: Swift.String?
@@ -587,7 +587,7 @@ public struct GetSinkPolicyInput {
     }
 }
 
-public struct GetSinkPolicyOutput {
+public struct GetSinkPolicyOutput: Swift.Sendable {
     /// The policy that you specified, in JSON format.
     public var policy: Swift.String?
     /// The ARN of the sink.
@@ -607,7 +607,7 @@ public struct GetSinkPolicyOutput {
     }
 }
 
-public struct ListAttachedLinksInput {
+public struct ListAttachedLinksInput: Swift.Sendable {
     /// Limits the number of returned links to the specified number.
     public var maxResults: Swift.Int?
     /// The token for the next set of items to return. You received this token from a previous call.
@@ -629,8 +629,9 @@ public struct ListAttachedLinksInput {
 }
 
 extension OAMClientTypes {
+
     /// A structure that contains information about one link attached to this monitoring account sink.
-    public struct ListAttachedLinksItem {
+    public struct ListAttachedLinksItem: Swift.Sendable {
         /// The label that was assigned to this link at creation, with the variables resolved to their actual values.
         public var label: Swift.String?
         /// The ARN of the link.
@@ -649,10 +650,9 @@ extension OAMClientTypes {
             self.resourceTypes = resourceTypes
         }
     }
-
 }
 
-public struct ListAttachedLinksOutput {
+public struct ListAttachedLinksOutput: Swift.Sendable {
     /// An array of structures that contain the information about the attached links.
     /// This member is required.
     public var items: [OAMClientTypes.ListAttachedLinksItem]?
@@ -669,7 +669,7 @@ public struct ListAttachedLinksOutput {
     }
 }
 
-public struct ListLinksInput {
+public struct ListLinksInput: Swift.Sendable {
     /// Limits the number of returned links to the specified number.
     public var maxResults: Swift.Int?
     /// The token for the next set of items to return. You received this token from a previous call.
@@ -686,8 +686,9 @@ public struct ListLinksInput {
 }
 
 extension OAMClientTypes {
+
     /// A structure that contains information about one of this source account's links to a monitoring account.
-    public struct ListLinksItem {
+    public struct ListLinksItem: Swift.Sendable {
         /// The ARN of the link.
         public var arn: Swift.String?
         /// The random ID string that Amazon Web Services generated as part of the link ARN.
@@ -714,10 +715,9 @@ extension OAMClientTypes {
             self.sinkArn = sinkArn
         }
     }
-
 }
 
-public struct ListLinksOutput {
+public struct ListLinksOutput: Swift.Sendable {
     /// An array of structures that contain the information about the returned links.
     /// This member is required.
     public var items: [OAMClientTypes.ListLinksItem]?
@@ -734,7 +734,7 @@ public struct ListLinksOutput {
     }
 }
 
-public struct ListSinksInput {
+public struct ListSinksInput: Swift.Sendable {
     /// Limits the number of returned links to the specified number.
     public var maxResults: Swift.Int?
     /// The token for the next set of items to return. You received this token from a previous call.
@@ -751,8 +751,9 @@ public struct ListSinksInput {
 }
 
 extension OAMClientTypes {
+
     /// A structure that contains information about one of this monitoring account's sinks.
-    public struct ListSinksItem {
+    public struct ListSinksItem: Swift.Sendable {
         /// The ARN of the sink.
         public var arn: Swift.String?
         /// The random ID string that Amazon Web Services generated as part of the sink ARN.
@@ -771,10 +772,9 @@ extension OAMClientTypes {
             self.name = name
         }
     }
-
 }
 
-public struct ListSinksOutput {
+public struct ListSinksOutput: Swift.Sendable {
     /// An array of structures that contain the information about the returned sinks.
     /// This member is required.
     public var items: [OAMClientTypes.ListSinksItem]?
@@ -815,7 +815,7 @@ public struct ValidationException: ClientRuntime.ModeledError, AWSClientRuntime.
     }
 }
 
-public struct ListTagsForResourceInput {
+public struct ListTagsForResourceInput: Swift.Sendable {
     /// The ARN of the resource that you want to view tags for. The ARN format of a sink is arn:aws:oam:Region:account-id:sink/sink-id  The ARN format of a link is arn:aws:oam:Region:account-id:link/link-id  For more information about ARN format, see [CloudWatch Logs resources and operations](https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/iam-access-control-overview-cwl.html). Unlike tagging permissions in other Amazon Web Services services, to retrieve the list of tags for links or sinks you must have the oam:RequestTag permission. The aws:ReguestTag permission does not allow you to tag and untag links and sinks.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -828,7 +828,7 @@ public struct ListTagsForResourceInput {
     }
 }
 
-public struct ListTagsForResourceOutput {
+public struct ListTagsForResourceOutput: Swift.Sendable {
     /// The list of tags associated with the requested resource.>
     public var tags: [Swift.String: Swift.String]?
 
@@ -840,7 +840,7 @@ public struct ListTagsForResourceOutput {
     }
 }
 
-public struct PutSinkPolicyInput {
+public struct PutSinkPolicyInput: Swift.Sendable {
     /// The JSON policy to use. If you are updating an existing policy, the entire existing policy is replaced by what you specify here. The policy must be in JSON string format with quotation marks escaped and no newlines. For examples of different types of policies, see the Examples section on this page.
     /// This member is required.
     public var policy: Swift.String?
@@ -858,7 +858,7 @@ public struct PutSinkPolicyInput {
     }
 }
 
-public struct PutSinkPolicyOutput {
+public struct PutSinkPolicyOutput: Swift.Sendable {
     /// The policy that you specified.
     public var policy: Swift.String?
     /// The ARN of the sink.
@@ -902,7 +902,7 @@ public struct TooManyTagsException: ClientRuntime.ModeledError, AWSClientRuntime
     }
 }
 
-public struct TagResourceInput {
+public struct TagResourceInput: Swift.Sendable {
     /// The ARN of the resource that you're adding tags to. The ARN format of a sink is arn:aws:oam:Region:account-id:sink/sink-id  The ARN format of a link is arn:aws:oam:Region:account-id:link/link-id  For more information about ARN format, see [CloudWatch Logs resources and operations](https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/iam-access-control-overview-cwl.html).
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -920,12 +920,12 @@ public struct TagResourceInput {
     }
 }
 
-public struct TagResourceOutput {
+public struct TagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UntagResourceInput {
+public struct UntagResourceInput: Swift.Sendable {
     /// The ARN of the resource that you're removing tags from. The ARN format of a sink is arn:aws:oam:Region:account-id:sink/sink-id  The ARN format of a link is arn:aws:oam:Region:account-id:link/link-id  For more information about ARN format, see [CloudWatch Logs resources and operations](https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/iam-access-control-overview-cwl.html).
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -943,12 +943,12 @@ public struct UntagResourceInput {
     }
 }
 
-public struct UntagResourceOutput {
+public struct UntagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdateLinkInput {
+public struct UpdateLinkInput: Swift.Sendable {
     /// The ARN of the link that you want to update.
     /// This member is required.
     public var identifier: Swift.String?
@@ -970,7 +970,7 @@ public struct UpdateLinkInput {
     }
 }
 
-public struct UpdateLinkOutput {
+public struct UpdateLinkOutput: Swift.Sendable {
     /// The ARN of the link that you have updated.
     public var arn: Swift.String?
     /// The random ID string that Amazon Web Services generated as part of the sink ARN.

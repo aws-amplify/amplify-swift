@@ -32,99 +32,100 @@ import struct SmithyHTTPAPI.Headers
 @_spi(SmithyReadWrite) import struct SmithyReadWrite.WritingClosureBox
 @_spi(SmithyTimestamps) import struct SmithyTimestamps.TimestampFormatter
 
-public struct AssociateAliasOutput {
+
+public struct AssociateAliasOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteCachePolicyOutput {
+public struct DeleteCachePolicyOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteCloudFrontOriginAccessIdentityOutput {
+public struct DeleteCloudFrontOriginAccessIdentityOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteContinuousDeploymentPolicyOutput {
+public struct DeleteContinuousDeploymentPolicyOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteDistributionOutput {
+public struct DeleteDistributionOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteFieldLevelEncryptionConfigOutput {
+public struct DeleteFieldLevelEncryptionConfigOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteFieldLevelEncryptionProfileOutput {
+public struct DeleteFieldLevelEncryptionProfileOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteFunctionOutput {
+public struct DeleteFunctionOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteKeyGroupOutput {
+public struct DeleteKeyGroupOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteKeyValueStoreOutput {
+public struct DeleteKeyValueStoreOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteOriginAccessControlOutput {
+public struct DeleteOriginAccessControlOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteOriginRequestPolicyOutput {
+public struct DeleteOriginRequestPolicyOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeletePublicKeyOutput {
+public struct DeletePublicKeyOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteRealtimeLogConfigOutput {
+public struct DeleteRealtimeLogConfigOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteResponseHeadersPolicyOutput {
+public struct DeleteResponseHeadersPolicyOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteStreamingDistributionOutput {
+public struct DeleteStreamingDistributionOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct TagResourceOutput {
+public struct TagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UntagResourceOutput {
+public struct UntagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
 extension CloudFrontClientTypes {
 
-    public enum ResponseHeadersPolicyAccessControlAllowMethodsValues: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ResponseHeadersPolicyAccessControlAllowMethodsValues: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case all
         case delete
         case `get`
@@ -194,8 +195,9 @@ public struct AccessDenied: ClientRuntime.ModeledError, AWSClientRuntime.AWSServ
 }
 
 extension CloudFrontClientTypes {
+
     /// A list of CloudFront key pair identifiers.
-    public struct KeyPairIds {
+    public struct KeyPairIds: Swift.Sendable {
         /// A list of CloudFront key pair identifiers.
         public var items: [Swift.String]?
         /// The number of key pair identifiers in the list.
@@ -211,12 +213,12 @@ extension CloudFrontClientTypes {
             self.quantity = quantity
         }
     }
-
 }
 
 extension CloudFrontClientTypes {
+
     /// A list of identifiers for the public keys that CloudFront can use to verify the signatures of signed URLs and signed cookies.
-    public struct KGKeyPairIds {
+    public struct KGKeyPairIds: Swift.Sendable {
         /// The identifier of the key group that contains the public keys.
         public var keyGroupId: Swift.String?
         /// A list of CloudFront key pair identifiers.
@@ -231,12 +233,12 @@ extension CloudFrontClientTypes {
             self.keyPairIds = keyPairIds
         }
     }
-
 }
 
 extension CloudFrontClientTypes {
+
     /// A list of key groups, and the public keys in each key group, that CloudFront can use to verify the signatures of signed URLs and signed cookies.
-    public struct ActiveTrustedKeyGroups {
+    public struct ActiveTrustedKeyGroups: Swift.Sendable {
         /// This field is true if any of the key groups have public keys that CloudFront can use to verify the signatures of signed URLs and signed cookies. If not, this field is false.
         /// This member is required.
         public var enabled: Swift.Bool?
@@ -257,12 +259,12 @@ extension CloudFrontClientTypes {
             self.quantity = quantity
         }
     }
-
 }
 
 extension CloudFrontClientTypes {
+
     /// A list of Amazon Web Services accounts and the active CloudFront key pairs in each account that CloudFront can use to verify the signatures of signed URLs and signed cookies.
-    public struct Signer {
+    public struct Signer: Swift.Sendable {
         /// An Amazon Web Services account number that contains active CloudFront key pairs that CloudFront can use to verify the signatures of signed URLs and signed cookies. If the Amazon Web Services account that owns the key pairs is the same account that owns the CloudFront distribution, the value of this field is self.
         public var awsAccountNumber: Swift.String?
         /// A list of CloudFront key pair identifiers.
@@ -277,12 +279,12 @@ extension CloudFrontClientTypes {
             self.keyPairIds = keyPairIds
         }
     }
-
 }
 
 extension CloudFrontClientTypes {
+
     /// A list of Amazon Web Services accounts and the active CloudFront key pairs in each account that CloudFront can use to verify the signatures of signed URLs and signed cookies.
-    public struct ActiveTrustedSigners {
+    public struct ActiveTrustedSigners: Swift.Sendable {
         /// This field is true if any of the Amazon Web Services accounts in the list are configured as trusted signers. If not, this field is false.
         /// This member is required.
         public var enabled: Swift.Bool?
@@ -303,12 +305,12 @@ extension CloudFrontClientTypes {
             self.quantity = quantity
         }
     }
-
 }
 
 extension CloudFrontClientTypes {
+
     /// A complex type that contains information about CNAMEs (alternate domain names), if any, for this distribution.
-    public struct Aliases : Swift.Equatable {
+    public struct Aliases: Swift.Sendable, Swift.Equatable {
         /// A complex type that contains the CNAME aliases, if any, that you want to associate with this distribution.
         public var items: [Swift.String]?
         /// The number of CNAME aliases, if any, that you want to associate with this distribution.
@@ -324,12 +326,11 @@ extension CloudFrontClientTypes {
             self.quantity = quantity
         }
     }
-
 }
 
 extension CloudFrontClientTypes {
 
-    public enum ICPRecordalStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ICPRecordalStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case approved
         case pending
         case suspended
@@ -360,8 +361,9 @@ extension CloudFrontClientTypes {
 }
 
 extension CloudFrontClientTypes {
+
     /// Amazon Web Services services in China customers must file for an Internet Content Provider (ICP) recordal if they want to serve content publicly on an alternate domain name, also known as a CNAME, that they've added to CloudFront. AliasICPRecordal provides the ICP recordal status for CNAMEs associated with distributions. The status is returned in the CloudFront response; you can't configure it yourself. For more information about ICP recordals, see [ Signup, Accounts, and Credentials](https://docs.amazonaws.cn/en_us/aws/latest/userguide/accounts-and-credentials.html) in Getting Started with Amazon Web Services services in China.
-    public struct AliasICPRecordal : Swift.Equatable {
+    public struct AliasICPRecordal: Swift.Sendable, Swift.Equatable {
         /// A domain name associated with a distribution.
         public var cname: Swift.String?
         /// The Internet Content Provider (ICP) recordal status for a CNAME. The ICPRecordalStatus is set to APPROVED for all CNAMEs (aliases) in regions outside of China. The status values returned are the following:
@@ -382,12 +384,11 @@ extension CloudFrontClientTypes {
             self.icpRecordalStatus = icpRecordalStatus
         }
     }
-
 }
 
 extension CloudFrontClientTypes {
 
-    public enum Method: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Method: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case delete
         case `get`
         case head
@@ -430,6 +431,7 @@ extension CloudFrontClientTypes {
 }
 
 extension CloudFrontClientTypes {
+
     /// A complex type that controls whether CloudFront caches the response to requests using the specified HTTP methods. There are two choices:
     ///
     /// * CloudFront caches responses to GET and HEAD requests.
@@ -438,7 +440,7 @@ extension CloudFrontClientTypes {
     ///
     ///
     /// If you pick the second choice for your Amazon S3 Origin, you may need to forward Access-Control-Request-Method, Access-Control-Request-Headers, and Origin headers for the responses to be cached correctly.
-    public struct CachedMethods : Swift.Equatable {
+    public struct CachedMethods: Swift.Sendable, Swift.Equatable {
         /// A complex type that contains the HTTP methods that you want CloudFront to cache responses to. Valid values for CachedMethods include GET, HEAD, and OPTIONS, depending on which caching option you choose. For more information, see the preceding section.
         /// This member is required.
         public var items: [CloudFrontClientTypes.Method]?
@@ -455,10 +457,10 @@ extension CloudFrontClientTypes {
             self.quantity = quantity
         }
     }
-
 }
 
 extension CloudFrontClientTypes {
+
     /// A complex type that controls which HTTP methods CloudFront processes and forwards to your Amazon S3 bucket or your custom origin. There are three choices:
     ///
     /// * CloudFront forwards only GET and HEAD requests.
@@ -469,7 +471,7 @@ extension CloudFrontClientTypes {
     ///
     ///
     /// If you pick the third choice, you may need to restrict access to your Amazon S3 bucket or to your custom origin so users can't perform operations that you don't want them to. For example, you might not want users to have permissions to delete objects from your origin.
-    public struct AllowedMethods : Swift.Equatable {
+    public struct AllowedMethods: Swift.Sendable, Swift.Equatable {
         /// A complex type that controls whether CloudFront caches the response to requests using the specified HTTP methods. There are two choices:
         ///
         /// * CloudFront caches responses to GET and HEAD requests.
@@ -497,7 +499,6 @@ extension CloudFrontClientTypes {
             self.quantity = quantity
         }
     }
-
 }
 
 /// The update contains modifications that are not allowed.
@@ -596,7 +597,7 @@ public struct TooManyDistributionCNAMEs: ClientRuntime.ModeledError, AWSClientRu
     }
 }
 
-public struct AssociateAliasInput {
+public struct AssociateAliasInput: Swift.Sendable {
     /// The alias (also known as a CNAME) to add to the target distribution.
     /// This member is required.
     public var alias: Swift.String?
@@ -640,7 +641,7 @@ public struct BatchTooLarge: ClientRuntime.ModeledError, AWSClientRuntime.AWSSer
 
 extension CloudFrontClientTypes {
 
-    public enum ItemSelection: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ItemSelection: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case all
         case `none`
         case whitelist
@@ -671,8 +672,9 @@ extension CloudFrontClientTypes {
 }
 
 extension CloudFrontClientTypes {
+
     /// Contains a list of cookie names.
-    public struct CookieNames : Swift.Equatable {
+    public struct CookieNames: Swift.Sendable, Swift.Equatable {
         /// A list of cookie names.
         public var items: [Swift.String]?
         /// The number of cookie names in the Items list.
@@ -688,12 +690,12 @@ extension CloudFrontClientTypes {
             self.quantity = quantity
         }
     }
-
 }
 
 extension CloudFrontClientTypes {
+
     /// This field is deprecated. We recommend that you use a cache policy or an origin request policy instead of this field. If you want to include cookies in the cache key, use CookiesConfig in a cache policy. See CachePolicy. If you want to send cookies to the origin but not include them in the cache key, use CookiesConfig in an origin request policy. See OriginRequestPolicy. A complex type that specifies whether you want CloudFront to forward cookies to the origin and, if so, which ones. For more information about forwarding cookies to the origin, see [Caching Content Based on Cookies](https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/Cookies.html) in the Amazon CloudFront Developer Guide.
-    public struct CookiePreference : Swift.Equatable {
+    public struct CookiePreference: Swift.Sendable, Swift.Equatable {
         /// This field is deprecated. We recommend that you use a cache policy or an origin request policy instead of this field. If you want to include cookies in the cache key, use a cache policy. For more information, see [Creating cache policies](https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/controlling-the-cache-key.html#cache-key-create-cache-policy) in the Amazon CloudFront Developer Guide. If you want to send cookies to the origin but not include them in the cache key, use origin request policy. For more information, see [Creating origin request policies](https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/controlling-origin-requests.html#origin-request-create-origin-request-policy) in the Amazon CloudFront Developer Guide. Specifies which cookies to forward to the origin for this cache behavior: all, none, or the list of cookies specified in the WhitelistedNames complex type. Amazon S3 doesn't process cookies. When the cache behavior is forwarding requests to an Amazon S3 origin, specify none for the Forward element.
         /// This member is required.
         public var forward: CloudFrontClientTypes.ItemSelection?
@@ -709,12 +711,12 @@ extension CloudFrontClientTypes {
             self.whitelistedNames = whitelistedNames
         }
     }
-
 }
 
 extension CloudFrontClientTypes {
+
     /// Contains a list of HTTP header names.
-    public struct Headers : Swift.Equatable {
+    public struct Headers: Swift.Sendable, Swift.Equatable {
         /// A list of HTTP header names.
         public var items: [Swift.String]?
         /// The number of header names in the Items list.
@@ -730,12 +732,12 @@ extension CloudFrontClientTypes {
             self.quantity = quantity
         }
     }
-
 }
 
 extension CloudFrontClientTypes {
+
     /// This field is deprecated. We recommend that you use a cache policy or an origin request policy instead of this field. If you want to include query strings in the cache key, use QueryStringsConfig in a cache policy. See CachePolicy. If you want to send query strings to the origin but not include them in the cache key, use QueryStringsConfig in an origin request policy. See OriginRequestPolicy. A complex type that contains information about the query string parameters that you want CloudFront to use for caching for a cache behavior.
-    public struct QueryStringCacheKeys : Swift.Equatable {
+    public struct QueryStringCacheKeys: Swift.Sendable, Swift.Equatable {
         /// A list that contains the query string parameters that you want CloudFront to use as a basis for caching for a cache behavior. If Quantity is 0, you can omit Items.
         public var items: [Swift.String]?
         /// The number of whitelisted query string parameters for a cache behavior.
@@ -751,12 +753,12 @@ extension CloudFrontClientTypes {
             self.quantity = quantity
         }
     }
-
 }
 
 extension CloudFrontClientTypes {
+
     /// This field is deprecated. We recommend that you use a cache policy or an origin request policy instead of this field. If you want to include values in the cache key, use a cache policy. For more information, see [Creating cache policies](https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/controlling-the-cache-key.html#cache-key-create-cache-policy) in the Amazon CloudFront Developer Guide. If you want to send values to the origin but not include them in the cache key, use an origin request policy. For more information, see [Creating origin request policies](https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/controlling-origin-requests.html#origin-request-create-origin-request-policy) in the Amazon CloudFront Developer Guide. A complex type that specifies how CloudFront handles query strings, cookies, and HTTP headers.
-    public struct ForwardedValues : Swift.Equatable {
+    public struct ForwardedValues: Swift.Sendable, Swift.Equatable {
         /// This field is deprecated. We recommend that you use a cache policy or an origin request policy instead of this field. If you want to include cookies in the cache key, use a cache policy. For more information, see [Creating cache policies](https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/controlling-the-cache-key.html#cache-key-create-cache-policy) in the Amazon CloudFront Developer Guide. If you want to send cookies to the origin but not include them in the cache key, use an origin request policy. For more information, see [Creating origin request policies](https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/controlling-origin-requests.html#origin-request-create-origin-request-policy) in the Amazon CloudFront Developer Guide. A complex type that specifies whether you want CloudFront to forward cookies to the origin and, if so, which ones. For more information about forwarding cookies to the origin, see [How CloudFront Forwards, Caches, and Logs Cookies](https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/Cookies.html) in the Amazon CloudFront Developer Guide.
         /// This member is required.
         public var cookies: CloudFrontClientTypes.CookiePreference?
@@ -781,12 +783,11 @@ extension CloudFrontClientTypes {
             self.queryStringCacheKeys = queryStringCacheKeys
         }
     }
-
 }
 
 extension CloudFrontClientTypes {
 
-    public enum EventType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum EventType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case originRequest
         case originResponse
         case viewerRequest
@@ -820,8 +821,9 @@ extension CloudFrontClientTypes {
 }
 
 extension CloudFrontClientTypes {
+
     /// A CloudFront function that is associated with a cache behavior in a CloudFront distribution.
-    public struct FunctionAssociation : Swift.Equatable {
+    public struct FunctionAssociation: Swift.Sendable, Swift.Equatable {
         /// The event type of the function, either viewer-request or viewer-response. You cannot use origin-facing event types (origin-request and origin-response) with a CloudFront function.
         /// This member is required.
         public var eventType: CloudFrontClientTypes.EventType?
@@ -838,12 +840,12 @@ extension CloudFrontClientTypes {
             self.functionARN = functionARN
         }
     }
-
 }
 
 extension CloudFrontClientTypes {
+
     /// A list of CloudFront functions that are associated with a cache behavior in a CloudFront distribution. Your functions must be published to the LIVE stage to associate them with a cache behavior.
-    public struct FunctionAssociations : Swift.Equatable {
+    public struct FunctionAssociations: Swift.Sendable, Swift.Equatable {
         /// The CloudFront functions that are associated with a cache behavior in a CloudFront distribution. Your functions must be published to the LIVE stage to associate them with a cache behavior.
         public var items: [CloudFrontClientTypes.FunctionAssociation]?
         /// The number of CloudFront functions in the list.
@@ -859,12 +861,12 @@ extension CloudFrontClientTypes {
             self.quantity = quantity
         }
     }
-
 }
 
 extension CloudFrontClientTypes {
+
     /// A complex type that contains a Lambda@Edge function association.
-    public struct LambdaFunctionAssociation : Swift.Equatable {
+    public struct LambdaFunctionAssociation: Swift.Sendable, Swift.Equatable {
         /// Specifies the event type that triggers a Lambda@Edge function invocation. You can specify the following values:
         ///
         /// * viewer-request: The function executes when CloudFront receives a request from a viewer and before it checks to see whether the requested object is in the edge cache.
@@ -893,12 +895,12 @@ extension CloudFrontClientTypes {
             self.lambdaFunctionARN = lambdaFunctionARN
         }
     }
-
 }
 
 extension CloudFrontClientTypes {
+
     /// A complex type that specifies a list of Lambda@Edge functions associations for a cache behavior. If you want to invoke one or more Lambda@Edge functions triggered by requests that match the PathPattern of the cache behavior, specify the applicable values for Quantity and Items. Note that there can be up to 4 LambdaFunctionAssociation items in this list (one for each possible value of EventType) and each EventType can be associated with only one function. If you don't want to invoke any Lambda@Edge functions for the requests that match PathPattern, specify 0 for Quantity and omit Items.
-    public struct LambdaFunctionAssociations : Swift.Equatable {
+    public struct LambdaFunctionAssociations: Swift.Sendable, Swift.Equatable {
         /// Optional: A complex type that contains LambdaFunctionAssociation items for this cache behavior. If Quantity is 0, you can omit Items.
         public var items: [CloudFrontClientTypes.LambdaFunctionAssociation]?
         /// The number of Lambda@Edge function associations for this cache behavior.
@@ -914,12 +916,12 @@ extension CloudFrontClientTypes {
             self.quantity = quantity
         }
     }
-
 }
 
 extension CloudFrontClientTypes {
+
     /// A list of key groups whose public keys CloudFront can use to verify the signatures of signed URLs and signed cookies.
-    public struct TrustedKeyGroups : Swift.Equatable {
+    public struct TrustedKeyGroups: Swift.Sendable, Swift.Equatable {
         /// This field is true if any of the key groups in the list have public keys that CloudFront can use to verify the signatures of signed URLs and signed cookies. If not, this field is false.
         /// This member is required.
         public var enabled: Swift.Bool?
@@ -940,12 +942,12 @@ extension CloudFrontClientTypes {
             self.quantity = quantity
         }
     }
-
 }
 
 extension CloudFrontClientTypes {
+
     /// A list of Amazon Web Services accounts whose public keys CloudFront can use to verify the signatures of signed URLs and signed cookies.
-    public struct TrustedSigners : Swift.Equatable {
+    public struct TrustedSigners: Swift.Sendable, Swift.Equatable {
         /// This field is true if any of the Amazon Web Services accounts in the list are configured as trusted signers. If not, this field is false.
         /// This member is required.
         public var enabled: Swift.Bool?
@@ -966,12 +968,11 @@ extension CloudFrontClientTypes {
             self.quantity = quantity
         }
     }
-
 }
 
 extension CloudFrontClientTypes {
 
-    public enum ViewerProtocolPolicy: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ViewerProtocolPolicy: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case allowAll
         case httpsOnly
         case redirectToHttps
@@ -1002,8 +1003,9 @@ extension CloudFrontClientTypes {
 }
 
 extension CloudFrontClientTypes {
+
     /// A complex type that describes how CloudFront processes requests. You must create at least as many cache behaviors (including the default cache behavior) as you have origins if you want CloudFront to serve objects from all of the origins. Each cache behavior specifies the one origin from which you want CloudFront to get objects. If you have two origins and only the default cache behavior, the default cache behavior will cause CloudFront to get objects from one of the origins, but the other origin is never used. For the current quota (formerly known as limit) on the number of cache behaviors that you can add to a distribution, see [Quotas](https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/cloudfront-limits.html) in the Amazon CloudFront Developer Guide. If you don't want to specify any cache behaviors, include only an empty CacheBehaviors element. Don't specify an empty individual CacheBehavior element, because this is invalid. For more information, see [CacheBehaviors](https://docs.aws.amazon.com/cloudfront/latest/APIReference/API_CacheBehaviors.html). To delete all cache behaviors in an existing distribution, update the distribution configuration and include only an empty CacheBehaviors element. To add, change, or remove one or more cache behaviors, update the distribution configuration and specify all of the cache behaviors that you want to include in the updated distribution. For more information about cache behaviors, see [Cache Behavior Settings](https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/distribution-web-values-specify.html#DownloadDistValuesCacheBehavior) in the Amazon CloudFront Developer Guide.
-    public struct CacheBehavior : Swift.Equatable {
+    public struct CacheBehavior: Swift.Sendable, Swift.Equatable {
         /// A complex type that controls which HTTP methods CloudFront processes and forwards to your Amazon S3 bucket or your custom origin. There are three choices:
         ///
         /// * CloudFront forwards only GET and HEAD requests.
@@ -1111,12 +1113,12 @@ extension CloudFrontClientTypes {
             self.viewerProtocolPolicy = viewerProtocolPolicy
         }
     }
-
 }
 
 extension CloudFrontClientTypes {
+
     /// A complex type that contains zero or more CacheBehavior elements.
-    public struct CacheBehaviors : Swift.Equatable {
+    public struct CacheBehaviors: Swift.Sendable, Swift.Equatable {
         /// Optional: A complex type that contains cache behaviors for this distribution. If Quantity is 0, you can omit Items.
         public var items: [CloudFrontClientTypes.CacheBehavior]?
         /// The number of cache behaviors for this distribution.
@@ -1132,12 +1134,11 @@ extension CloudFrontClientTypes {
             self.quantity = quantity
         }
     }
-
 }
 
 extension CloudFrontClientTypes {
 
-    public enum CachePolicyCookieBehavior: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum CachePolicyCookieBehavior: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case all
         case allexcept
         case `none`
@@ -1171,8 +1172,9 @@ extension CloudFrontClientTypes {
 }
 
 extension CloudFrontClientTypes {
+
     /// An object that determines whether any cookies in viewer requests (and if so, which cookies) are included in the cache key and in requests that CloudFront sends to the origin.
-    public struct CachePolicyCookiesConfig {
+    public struct CachePolicyCookiesConfig: Swift.Sendable {
         /// Determines whether any cookies in viewer requests are included in the cache key and in requests that CloudFront sends to the origin. Valid values are:
         ///
         /// * none – No cookies in viewer requests are included in the cache key or in requests that CloudFront sends to the origin. Even when this field is set to none, any cookies that are listed in an OriginRequestPolicy are included in origin requests.
@@ -1196,12 +1198,11 @@ extension CloudFrontClientTypes {
             self.cookies = cookies
         }
     }
-
 }
 
 extension CloudFrontClientTypes {
 
-    public enum CachePolicyHeaderBehavior: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum CachePolicyHeaderBehavior: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case `none`
         case whitelist
         case sdkUnknown(Swift.String)
@@ -1229,8 +1230,9 @@ extension CloudFrontClientTypes {
 }
 
 extension CloudFrontClientTypes {
+
     /// An object that determines whether any HTTP headers (and if so, which headers) are included in the cache key and in requests that CloudFront sends to the origin.
-    public struct CachePolicyHeadersConfig {
+    public struct CachePolicyHeadersConfig: Swift.Sendable {
         /// Determines whether any HTTP headers are included in the cache key and in requests that CloudFront sends to the origin. Valid values are:
         ///
         /// * none – No HTTP headers are included in the cache key or in requests that CloudFront sends to the origin. Even when this field is set to none, any headers that are listed in an OriginRequestPolicy are included in origin requests.
@@ -1250,12 +1252,11 @@ extension CloudFrontClientTypes {
             self.headers = headers
         }
     }
-
 }
 
 extension CloudFrontClientTypes {
 
-    public enum CachePolicyQueryStringBehavior: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum CachePolicyQueryStringBehavior: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case all
         case allexcept
         case `none`
@@ -1289,8 +1290,9 @@ extension CloudFrontClientTypes {
 }
 
 extension CloudFrontClientTypes {
+
     /// Contains a list of query string names.
-    public struct QueryStringNames {
+    public struct QueryStringNames: Swift.Sendable {
         /// A list of query string names.
         public var items: [Swift.String]?
         /// The number of query string names in the Items list.
@@ -1306,12 +1308,12 @@ extension CloudFrontClientTypes {
             self.quantity = quantity
         }
     }
-
 }
 
 extension CloudFrontClientTypes {
+
     /// An object that determines whether any URL query strings in viewer requests (and if so, which query strings) are included in the cache key and in requests that CloudFront sends to the origin.
-    public struct CachePolicyQueryStringsConfig {
+    public struct CachePolicyQueryStringsConfig: Swift.Sendable {
         /// Determines whether any URL query strings in viewer requests are included in the cache key and in requests that CloudFront sends to the origin. Valid values are:
         ///
         /// * none – No query strings in viewer requests are included in the cache key or in requests that CloudFront sends to the origin. Even when this field is set to none, any query strings that are listed in an OriginRequestPolicy are included in origin requests.
@@ -1335,12 +1337,12 @@ extension CloudFrontClientTypes {
             self.queryStrings = queryStrings
         }
     }
-
 }
 
 extension CloudFrontClientTypes {
+
     /// This object determines the values that CloudFront includes in the cache key. These values can include HTTP headers, cookies, and URL query strings. CloudFront uses the cache key to find an object in its cache that it can return to the viewer. The headers, cookies, and query strings that are included in the cache key are also included in requests that CloudFront sends to the origin. CloudFront sends a request when it can't find an object in its cache that matches the request's cache key. If you want to send values to the origin but not include them in the cache key, use OriginRequestPolicy.
-    public struct ParametersInCacheKeyAndForwardedToOrigin {
+    public struct ParametersInCacheKeyAndForwardedToOrigin: Swift.Sendable {
         /// An object that determines whether any cookies in viewer requests (and if so, which cookies) are included in the cache key and in requests that CloudFront sends to the origin.
         /// This member is required.
         public var cookiesConfig: CloudFrontClientTypes.CachePolicyCookiesConfig?
@@ -1389,10 +1391,10 @@ extension CloudFrontClientTypes {
             self.queryStringsConfig = queryStringsConfig
         }
     }
-
 }
 
 extension CloudFrontClientTypes {
+
     /// A cache policy configuration. This configuration determines the following:
     ///
     /// * The values that CloudFront includes in the cache key. These values can include HTTP headers, cookies, and URL query strings. CloudFront uses the cache key to find an object in its cache that it can return to the viewer.
@@ -1401,7 +1403,7 @@ extension CloudFrontClientTypes {
     ///
     ///
     /// The headers, cookies, and query strings that are included in the cache key are also included in requests that CloudFront sends to the origin. CloudFront sends a request when it can't find a valid object in its cache that matches the request's cache key. If you want to send values to the origin but not include them in the cache key, use OriginRequestPolicy.
-    public struct CachePolicyConfig {
+    public struct CachePolicyConfig: Swift.Sendable {
         /// A comment to describe the cache policy. The comment cannot be longer than 128 characters.
         public var comment: Swift.String?
         /// The default amount of time, in seconds, that you want objects to stay in the CloudFront cache before CloudFront sends another request to the origin to see if the object has been updated. CloudFront uses this value as the object's time to live (TTL) only when the origin does not send Cache-Control or Expires headers with the object. For more information, see [Managing How Long Content Stays in an Edge Cache (Expiration)](https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/Expiration.html) in the Amazon CloudFront Developer Guide. The default value for this field is 86400 seconds (one day). If the value of MinTTL is more than 86400 seconds, then the default value for this field is the same as the value of MinTTL.
@@ -1434,10 +1436,10 @@ extension CloudFrontClientTypes {
             self.parametersInCacheKeyAndForwardedToOrigin = parametersInCacheKeyAndForwardedToOrigin
         }
     }
-
 }
 
 extension CloudFrontClientTypes {
+
     /// A cache policy. When it's attached to a cache behavior, the cache policy determines the following:
     ///
     /// * The values that CloudFront includes in the cache key. These values can include HTTP headers, cookies, and URL query strings. CloudFront uses the cache key to find an object in its cache that it can return to the viewer.
@@ -1446,7 +1448,7 @@ extension CloudFrontClientTypes {
     ///
     ///
     /// The headers, cookies, and query strings that are included in the cache key are also included in requests that CloudFront sends to the origin. CloudFront sends a request when it can't find a valid object in its cache that matches the request's cache key. If you want to send values to the origin but not include them in the cache key, use OriginRequestPolicy.
-    public struct CachePolicy {
+    public struct CachePolicy: Swift.Sendable {
         /// The cache policy configuration.
         /// This member is required.
         public var cachePolicyConfig: CloudFrontClientTypes.CachePolicyConfig?
@@ -1468,7 +1470,6 @@ extension CloudFrontClientTypes {
             self.lastModifiedTime = lastModifiedTime
         }
     }
-
 }
 
 /// A cache policy with this name already exists. You must provide a unique name. To modify an existing cache policy, use UpdateCachePolicy.
@@ -1521,7 +1522,7 @@ public struct CachePolicyInUse: ClientRuntime.ModeledError, AWSClientRuntime.AWS
 
 extension CloudFrontClientTypes {
 
-    public enum CachePolicyType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum CachePolicyType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case custom
         case managed
         case sdkUnknown(Swift.String)
@@ -1549,8 +1550,9 @@ extension CloudFrontClientTypes {
 }
 
 extension CloudFrontClientTypes {
+
     /// Contains a cache policy.
-    public struct CachePolicySummary {
+    public struct CachePolicySummary: Swift.Sendable {
         /// The cache policy.
         /// This member is required.
         public var cachePolicy: CloudFrontClientTypes.CachePolicy?
@@ -1567,12 +1569,12 @@ extension CloudFrontClientTypes {
             self.type = type
         }
     }
-
 }
 
 extension CloudFrontClientTypes {
+
     /// A list of cache policies.
-    public struct CachePolicyList {
+    public struct CachePolicyList: Swift.Sendable {
         /// Contains the cache policies in the list.
         public var items: [CloudFrontClientTypes.CachePolicySummary]?
         /// The maximum number of cache policies requested.
@@ -1597,7 +1599,6 @@ extension CloudFrontClientTypes {
             self.quantity = quantity
         }
     }
-
 }
 
 /// You can't change the value of a public key.
@@ -1650,7 +1651,7 @@ public struct CannotDeleteEntityWhileInUse: ClientRuntime.ModeledError, AWSClien
 
 extension CloudFrontClientTypes {
 
-    public enum CertificateSource: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum CertificateSource: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case acm
         case cloudfront
         case iam
@@ -3120,7 +3121,7 @@ public struct TrustedSignerDoesNotExist: ClientRuntime.ModeledError, AWSClientRu
     }
 }
 
-public struct CopyDistributionInput {
+public struct CopyDistributionInput: Swift.Sendable {
     /// A value that uniquely identifies a request to create a resource. This helps to prevent CloudFront from creating a duplicate resource if you accidentally resubmit an identical request.
     /// This member is required.
     public var callerReference: Swift.String?
@@ -3151,6 +3152,7 @@ public struct CopyDistributionInput {
 }
 
 extension CloudFrontClientTypes {
+
     /// A complex type that controls:
     ///
     /// * Whether CloudFront replaces HTTP status codes in the 4xx and 5xx range with custom error messages before returning the response to the viewer.
@@ -3159,7 +3161,7 @@ extension CloudFrontClientTypes {
     ///
     ///
     /// For more information about custom error pages, see [Customizing Error Responses](https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/custom-error-pages.html) in the Amazon CloudFront Developer Guide.
-    public struct CustomErrorResponse : Swift.Equatable {
+    public struct CustomErrorResponse: Swift.Sendable, Swift.Equatable {
         /// The minimum amount of time, in seconds, that you want CloudFront to cache the HTTP status code specified in ErrorCode. When this time period has elapsed, CloudFront queries your origin to see whether the problem that caused the error has been resolved and the requested object is now available. For more information, see [Customizing Error Responses](https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/custom-error-pages.html) in the Amazon CloudFront Developer Guide.
         public var errorCachingMinTTL: Swift.Int?
         /// The HTTP status code for which you want to specify a custom error page and/or a caching duration.
@@ -3199,10 +3201,10 @@ extension CloudFrontClientTypes {
             self.responsePagePath = responsePagePath
         }
     }
-
 }
 
 extension CloudFrontClientTypes {
+
     /// A complex type that controls:
     ///
     /// * Whether CloudFront replaces HTTP status codes in the 4xx and 5xx range with custom error messages before returning the response to the viewer.
@@ -3211,7 +3213,7 @@ extension CloudFrontClientTypes {
     ///
     ///
     /// For more information about custom error pages, see [Customizing Error Responses](https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/custom-error-pages.html) in the Amazon CloudFront Developer Guide.
-    public struct CustomErrorResponses : Swift.Equatable {
+    public struct CustomErrorResponses: Swift.Sendable, Swift.Equatable {
         /// A complex type that contains a CustomErrorResponse element for each HTTP status code for which you want to specify a custom error page and/or a caching duration.
         public var items: [CloudFrontClientTypes.CustomErrorResponse]?
         /// The number of HTTP status codes for which you want to specify a custom error page and/or a caching duration. If Quantity is 0, you can omit Items.
@@ -3227,12 +3229,12 @@ extension CloudFrontClientTypes {
             self.quantity = quantity
         }
     }
-
 }
 
 extension CloudFrontClientTypes {
+
     /// A complex type that describes the default cache behavior if you don't specify a CacheBehavior element or if request URLs don't match any of the values of PathPattern in CacheBehavior elements. You must create exactly one default cache behavior.
-    public struct DefaultCacheBehavior : Swift.Equatable {
+    public struct DefaultCacheBehavior: Swift.Sendable, Swift.Equatable {
         /// A complex type that controls which HTTP methods CloudFront processes and forwards to your Amazon S3 bucket or your custom origin. There are three choices:
         ///
         /// * CloudFront forwards only GET and HEAD requests.
@@ -3335,12 +3337,11 @@ extension CloudFrontClientTypes {
             self.viewerProtocolPolicy = viewerProtocolPolicy
         }
     }
-
 }
 
 extension CloudFrontClientTypes {
 
-    public enum HttpVersion: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum HttpVersion: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case http11
         case http2
         case http2and3
@@ -3374,8 +3375,9 @@ extension CloudFrontClientTypes {
 }
 
 extension CloudFrontClientTypes {
+
     /// A complex type that controls whether access logs are written for the distribution.
-    public struct LoggingConfig {
+    public struct LoggingConfig: Swift.Sendable {
         /// The Amazon S3 bucket to store the access logs in, for example, myawslogbucket.s3.amazonaws.com.
         /// This member is required.
         public var bucket: Swift.String?
@@ -3402,12 +3404,12 @@ extension CloudFrontClientTypes {
             self.`prefix` = `prefix`
         }
     }
-
 }
 
 extension CloudFrontClientTypes {
+
     /// A complex data type for the status codes that you specify that, when returned by a primary origin, trigger CloudFront to failover to a second origin.
-    public struct StatusCodes : Swift.Equatable {
+    public struct StatusCodes: Swift.Sendable, Swift.Equatable {
         /// The items (status codes) for an origin group.
         /// This member is required.
         public var items: [Swift.Int]?
@@ -3424,12 +3426,12 @@ extension CloudFrontClientTypes {
             self.quantity = quantity
         }
     }
-
 }
 
 extension CloudFrontClientTypes {
+
     /// A complex data type that includes information about the failover criteria for an origin group, including the status codes for which CloudFront will failover from the primary origin to the second origin.
-    public struct OriginGroupFailoverCriteria : Swift.Equatable {
+    public struct OriginGroupFailoverCriteria: Swift.Sendable, Swift.Equatable {
         /// The status codes that, when returned from the primary origin, will trigger CloudFront to failover to the second origin.
         /// This member is required.
         public var statusCodes: CloudFrontClientTypes.StatusCodes?
@@ -3441,12 +3443,12 @@ extension CloudFrontClientTypes {
             self.statusCodes = statusCodes
         }
     }
-
 }
 
 extension CloudFrontClientTypes {
+
     /// An origin in an origin group.
-    public struct OriginGroupMember : Swift.Equatable {
+    public struct OriginGroupMember: Swift.Sendable, Swift.Equatable {
         /// The ID for an origin in an origin group.
         /// This member is required.
         public var originId: Swift.String?
@@ -3458,12 +3460,12 @@ extension CloudFrontClientTypes {
             self.originId = originId
         }
     }
-
 }
 
 extension CloudFrontClientTypes {
+
     /// A complex data type for the origins included in an origin group.
-    public struct OriginGroupMembers : Swift.Equatable {
+    public struct OriginGroupMembers: Swift.Sendable, Swift.Equatable {
         /// Items (origins) in an origin group.
         /// This member is required.
         public var items: [CloudFrontClientTypes.OriginGroupMember]?
@@ -3480,12 +3482,12 @@ extension CloudFrontClientTypes {
             self.quantity = quantity
         }
     }
-
 }
 
 extension CloudFrontClientTypes {
+
     /// An origin group includes two origins (a primary origin and a second origin to failover to) and a failover criteria that you specify. You create an origin group to support origin failover in CloudFront. When you create or update a distribution, you can specify the origin group instead of a single origin, and CloudFront will failover from the primary origin to the second origin under the failover conditions that you've chosen.
-    public struct OriginGroup : Swift.Equatable {
+    public struct OriginGroup: Swift.Sendable, Swift.Equatable {
         /// A complex type that contains information about the failover criteria for an origin group.
         /// This member is required.
         public var failoverCriteria: CloudFrontClientTypes.OriginGroupFailoverCriteria?
@@ -3507,12 +3509,12 @@ extension CloudFrontClientTypes {
             self.members = members
         }
     }
-
 }
 
 extension CloudFrontClientTypes {
+
     /// A complex data type for the origin groups specified for a distribution.
-    public struct OriginGroups : Swift.Equatable {
+    public struct OriginGroups: Swift.Sendable, Swift.Equatable {
         /// The items (origin groups) in a distribution.
         public var items: [CloudFrontClientTypes.OriginGroup]?
         /// The number of origin groups.
@@ -3528,12 +3530,12 @@ extension CloudFrontClientTypes {
             self.quantity = quantity
         }
     }
-
 }
 
 extension CloudFrontClientTypes {
+
     /// A complex type that contains HeaderName and HeaderValue elements, if any, for this distribution.
-    public struct OriginCustomHeader : Swift.Equatable {
+    public struct OriginCustomHeader: Swift.Sendable, Swift.Equatable {
         /// The name of a header that you want CloudFront to send to your origin. For more information, see [Adding Custom Headers to Origin Requests](https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/forward-custom-headers.html) in the Amazon CloudFront Developer Guide.
         /// This member is required.
         public var headerName: Swift.String?
@@ -3550,7 +3552,6 @@ extension CloudFrontClientTypes {
             self.headerValue = headerValue
         }
     }
-
 }
 
 extension CloudFrontClientTypes.OriginCustomHeader: Swift.CustomDebugStringConvertible {
@@ -3559,8 +3560,9 @@ extension CloudFrontClientTypes.OriginCustomHeader: Swift.CustomDebugStringConve
 }
 
 extension CloudFrontClientTypes {
+
     /// A complex type that contains the list of Custom Headers for each origin.
-    public struct CustomHeaders : Swift.Equatable {
+    public struct CustomHeaders: Swift.Sendable, Swift.Equatable {
         /// Optional: A list that contains one OriginCustomHeader element for each custom header that you want CloudFront to forward to the origin. If Quantity is 0, omit Items.
         public var items: [CloudFrontClientTypes.OriginCustomHeader]?
         /// The number of custom headers, if any, for this distribution.
@@ -3576,12 +3578,11 @@ extension CloudFrontClientTypes {
             self.quantity = quantity
         }
     }
-
 }
 
 extension CloudFrontClientTypes {
 
-    public enum OriginProtocolPolicy: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum OriginProtocolPolicy: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case httpOnly
         case httpsOnly
         case matchViewer
@@ -3613,7 +3614,7 @@ extension CloudFrontClientTypes {
 
 extension CloudFrontClientTypes {
 
-    public enum SslProtocol: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SslProtocol: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case sslv3
         case tlsv1
         case tlsv11
@@ -3647,8 +3648,9 @@ extension CloudFrontClientTypes {
 }
 
 extension CloudFrontClientTypes {
+
     /// A complex type that contains information about the SSL/TLS protocols that CloudFront can use when establishing an HTTPS connection with your origin.
-    public struct OriginSslProtocols : Swift.Equatable {
+    public struct OriginSslProtocols: Swift.Sendable, Swift.Equatable {
         /// A list that contains allowed SSL/TLS protocols for this distribution.
         /// This member is required.
         public var items: [CloudFrontClientTypes.SslProtocol]?
@@ -3665,12 +3667,12 @@ extension CloudFrontClientTypes {
             self.quantity = quantity
         }
     }
-
 }
 
 extension CloudFrontClientTypes {
+
     /// A custom origin. A custom origin is any origin that is not an Amazon S3 bucket, with one exception. An Amazon S3 bucket that is [configured with static website hosting](https://docs.aws.amazon.com/AmazonS3/latest/dev/WebsiteHosting.html) is a custom origin.
-    public struct CustomOriginConfig : Swift.Equatable {
+    public struct CustomOriginConfig: Swift.Sendable, Swift.Equatable {
         /// The HTTP port that CloudFront uses to connect to the origin. Specify the HTTP port that the origin listens on.
         /// This member is required.
         public var httpPort: Swift.Int?
@@ -3710,12 +3712,12 @@ extension CloudFrontClientTypes {
             self.originSslProtocols = originSslProtocols
         }
     }
-
 }
 
 extension CloudFrontClientTypes {
+
     /// CloudFront Origin Shield. Using Origin Shield can help reduce the load on your origin. For more information, see [Using Origin Shield](https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/origin-shield.html) in the Amazon CloudFront Developer Guide.
-    public struct OriginShield : Swift.Equatable {
+    public struct OriginShield: Swift.Sendable, Swift.Equatable {
         /// A flag that specifies whether Origin Shield is enabled. When it's enabled, CloudFront routes all requests through Origin Shield, which can help protect your origin. When it's disabled, CloudFront might send requests directly to your origin from multiple edge locations or regional edge caches.
         /// This member is required.
         public var enabled: Swift.Bool?
@@ -3731,12 +3733,12 @@ extension CloudFrontClientTypes {
             self.originShieldRegion = originShieldRegion
         }
     }
-
 }
 
 extension CloudFrontClientTypes {
+
     /// A complex type that contains information about the Amazon S3 origin. If the origin is a custom origin or an S3 bucket that is configured as a website endpoint, use the CustomOriginConfig element instead.
-    public struct S3OriginConfig : Swift.Equatable {
+    public struct S3OriginConfig: Swift.Sendable, Swift.Equatable {
         /// If you're using origin access control (OAC) instead of origin access identity, specify an empty OriginAccessIdentity element. For more information, see [Restricting access to an Amazon Web Services](https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/private-content-restricting-access-to-origin.html) in the Amazon CloudFront Developer Guide. The CloudFront origin access identity to associate with the origin. Use an origin access identity to configure the origin so that viewers can only access objects in an Amazon S3 bucket through CloudFront. The format of the value is: origin-access-identity/cloudfront/ID-of-origin-access-identity The  ID-of-origin-access-identity  is the value that CloudFront returned in the ID element when you created the origin access identity. If you want viewers to be able to access objects using either the CloudFront URL or the Amazon S3 URL, specify an empty OriginAccessIdentity element. To delete the origin access identity from an existing distribution, update the distribution configuration and include an empty OriginAccessIdentity element. To replace the origin access identity, update the distribution configuration and specify the new origin access identity. For more information about the origin access identity, see [Serving Private Content through CloudFront](https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/PrivateContent.html) in the Amazon CloudFront Developer Guide.
         /// This member is required.
         public var originAccessIdentity: Swift.String?
@@ -3748,10 +3750,10 @@ extension CloudFrontClientTypes {
             self.originAccessIdentity = originAccessIdentity
         }
     }
-
 }
 
 extension CloudFrontClientTypes {
+
     /// An origin. An origin is the location where content is stored, and from which CloudFront gets content to serve to viewers. To specify an origin:
     ///
     /// * Use S3OriginConfig to specify an Amazon S3 bucket that is not configured with static website hosting.
@@ -3773,7 +3775,7 @@ extension CloudFrontClientTypes {
     ///
     ///
     /// For the current maximum number of origins that you can specify per distribution, see [General Quotas on Web Distributions](https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/cloudfront-limits.html#limits-web-distributions) in the Amazon CloudFront Developer Guide (quotas were formerly referred to as limits).
-    public struct Origin : Swift.Equatable {
+    public struct Origin: Swift.Sendable, Swift.Equatable {
         /// The number of times that CloudFront attempts to connect to the origin. The minimum number is 1, the maximum is 3, and the default (if you don't specify otherwise) is 3. For a custom origin (including an Amazon S3 bucket that's configured with static website hosting), this value also specifies the number of times that CloudFront attempts to get a response from the origin, in the case of an [Origin Response Timeout](https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/distribution-web-values-specify.html#DownloadDistValuesOriginResponseTimeout). For more information, see [Origin Connection Attempts](https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/distribution-web-values-specify.html#origin-connection-attempts) in the Amazon CloudFront Developer Guide.
         public var connectionAttempts: Swift.Int?
         /// The number of seconds that CloudFront waits when trying to establish a connection to the origin. The minimum timeout is 1 second, the maximum is 10 seconds, and the default (if you don't specify otherwise) is 10 seconds. For more information, see [Origin Connection Timeout](https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/distribution-web-values-specify.html#origin-connection-timeout) in the Amazon CloudFront Developer Guide.
@@ -3822,12 +3824,12 @@ extension CloudFrontClientTypes {
             self.s3OriginConfig = s3OriginConfig
         }
     }
-
 }
 
 extension CloudFrontClientTypes {
+
     /// Contains information about the origins for this distribution.
-    public struct Origins : Swift.Equatable {
+    public struct Origins: Swift.Sendable, Swift.Equatable {
         /// A list of origins.
         /// This member is required.
         public var items: [CloudFrontClientTypes.Origin]?
@@ -3844,12 +3846,11 @@ extension CloudFrontClientTypes {
             self.quantity = quantity
         }
     }
-
 }
 
 extension CloudFrontClientTypes {
 
-    public enum PriceClass: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum PriceClass: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case priceclass100
         case priceclass200
         case priceclassAll
@@ -3881,7 +3882,7 @@ extension CloudFrontClientTypes {
 
 extension CloudFrontClientTypes {
 
-    public enum GeoRestrictionType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum GeoRestrictionType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case blacklist
         case `none`
         case whitelist
@@ -3912,8 +3913,9 @@ extension CloudFrontClientTypes {
 }
 
 extension CloudFrontClientTypes {
+
     /// A complex type that controls the countries in which your content is distributed. CloudFront determines the location of your users using MaxMind GeoIP databases.
-    public struct GeoRestriction : Swift.Equatable {
+    public struct GeoRestriction: Swift.Sendable, Swift.Equatable {
         /// A complex type that contains a Location element for each country in which you want CloudFront either to distribute your content (whitelist) or not distribute your content (blacklist). The Location element is a two-letter, uppercase country code for a country that you want to include in your blacklist or whitelist. Include one Location element for each country. CloudFront and MaxMind both use ISO 3166 country codes. For the current list of countries and the corresponding codes, see ISO 3166-1-alpha-2 code on the International Organization for Standardization website. You can also refer to the country list on the CloudFront console, which includes both country names and codes.
         public var items: [Swift.String]?
         /// When geo restriction is enabled, this is the number of countries in your whitelist or blacklist. Otherwise, when it is not enabled, Quantity is 0, and you can omit Items.
@@ -3940,12 +3942,12 @@ extension CloudFrontClientTypes {
             self.restrictionType = restrictionType
         }
     }
-
 }
 
 extension CloudFrontClientTypes {
+
     /// A complex type that identifies ways in which you want to restrict distribution of your content.
-    public struct Restrictions : Swift.Equatable {
+    public struct Restrictions: Swift.Sendable, Swift.Equatable {
         /// A complex type that controls the countries in which your content is distributed. CloudFront determines the location of your users using MaxMind GeoIP databases.
         /// This member is required.
         public var geoRestriction: CloudFrontClientTypes.GeoRestriction?
@@ -3957,12 +3959,11 @@ extension CloudFrontClientTypes {
             self.geoRestriction = geoRestriction
         }
     }
-
 }
 
 extension CloudFrontClientTypes {
 
-    public enum MinimumProtocolVersion: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum MinimumProtocolVersion: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case sslv3
         case tlsv1
         case tlsv112016
@@ -4006,7 +4007,7 @@ extension CloudFrontClientTypes {
 
 extension CloudFrontClientTypes {
 
-    public enum SSLSupportMethod: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SSLSupportMethod: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case sniOnly
         case staticIp
         case vip
@@ -4037,6 +4038,7 @@ extension CloudFrontClientTypes {
 }
 
 extension CloudFrontClientTypes {
+
     /// A complex type that determines the distribution's SSL/TLS configuration for communicating with viewers. If the distribution doesn't use Aliases (also known as alternate domain names or CNAMEs)—that is, if the distribution uses the CloudFront domain name such as d111111abcdef8.cloudfront.net—set CloudFrontDefaultCertificate to true and leave all other fields empty. If the distribution uses Aliases (alternate domain names or CNAMEs), use the fields in this type to specify the following settings:
     ///
     /// * Which viewers the distribution accepts HTTPS connections from: only viewers that support [server name indication (SNI)](https://en.wikipedia.org/wiki/Server_Name_Indication) (recommended), or all viewers including those that don't support SNI.
@@ -4061,7 +4063,7 @@ extension CloudFrontClientTypes {
     ///
     ///
     /// All distributions support HTTPS connections from viewers. To require viewers to use HTTPS only, or to redirect them from HTTP to HTTPS, use ViewerProtocolPolicy in the CacheBehavior or DefaultCacheBehavior. To specify how CloudFront should use SSL/TLS to communicate with your custom origin, use CustomOriginConfig. For more information, see [Using HTTPS with CloudFront](https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/using-https.html) and [ Using Alternate Domain Names and HTTPS](https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/using-https-alternate-domain-names.html) in the Amazon CloudFront Developer Guide.
-    public struct ViewerCertificate : Swift.Equatable {
+    public struct ViewerCertificate: Swift.Sendable, Swift.Equatable {
         /// If the distribution uses Aliases (alternate domain names or CNAMEs) and the SSL/TLS certificate is stored in [Certificate Manager (ACM)](https://docs.aws.amazon.com/acm/latest/userguide/acm-overview.html), provide the Amazon Resource Name (ARN) of the ACM certificate. CloudFront only supports ACM certificates in the US East (N. Virginia) Region (us-east-1). If you specify an ACM certificate ARN, you must also specify values for MinimumProtocolVersion and SSLSupportMethod.
         public var acmCertificateArn: Swift.String?
         /// This field is deprecated. Use one of the following fields instead:
@@ -4132,12 +4134,12 @@ extension CloudFrontClientTypes {
             self.sslSupportMethod = sslSupportMethod
         }
     }
-
 }
 
 extension CloudFrontClientTypes {
+
     /// A distribution configuration.
-    public struct DistributionConfig {
+    public struct DistributionConfig: Swift.Sendable {
         /// A complex type that contains information about CNAMEs (alternate domain names), if any, for this distribution.
         public var aliases: CloudFrontClientTypes.Aliases?
         /// A complex type that contains zero or more CacheBehavior elements.
@@ -4239,7 +4241,6 @@ extension CloudFrontClientTypes {
             self.webACLId = webACLId
         }
     }
-
 }
 
 extension CloudFrontClientTypes.DistributionConfig: Swift.CustomDebugStringConvertible {
@@ -4248,8 +4249,9 @@ extension CloudFrontClientTypes.DistributionConfig: Swift.CustomDebugStringConve
 }
 
 extension CloudFrontClientTypes {
+
     /// A distribution tells CloudFront where you want content to be delivered from, and the details about how to track and manage content delivery.
-    public struct Distribution {
+    public struct Distribution: Swift.Sendable {
         /// This field contains a list of key groups and the public keys in each key group that CloudFront can use to verify the signatures of signed URLs or signed cookies.
         public var activeTrustedKeyGroups: CloudFrontClientTypes.ActiveTrustedKeyGroups?
         /// We recommend using TrustedKeyGroups instead of TrustedSigners. This field contains a list of Amazon Web Services account IDs and the active CloudFront key pairs in each account that CloudFront can use to verify the signatures of signed URLs or signed cookies.
@@ -4303,10 +4305,9 @@ extension CloudFrontClientTypes {
             self.status = status
         }
     }
-
 }
 
-public struct CopyDistributionOutput {
+public struct CopyDistributionOutput: Swift.Sendable {
     /// A distribution tells CloudFront where you want content to be delivered from, and the details about how to track and manage content delivery.
     public var distribution: CloudFrontClientTypes.Distribution?
     /// The version identifier for the current version of the staging distribution.
@@ -4422,7 +4423,7 @@ public struct TooManyQueryStringsInCachePolicy: ClientRuntime.ModeledError, AWSC
     }
 }
 
-public struct CreateCachePolicyInput {
+public struct CreateCachePolicyInput: Swift.Sendable {
     /// A cache policy configuration.
     /// This member is required.
     public var cachePolicyConfig: CloudFrontClientTypes.CachePolicyConfig?
@@ -4435,7 +4436,7 @@ public struct CreateCachePolicyInput {
     }
 }
 
-public struct CreateCachePolicyOutput {
+public struct CreateCachePolicyOutput: Swift.Sendable {
     /// A cache policy.
     public var cachePolicy: CloudFrontClientTypes.CachePolicy?
     /// The current version of the cache policy.
@@ -4504,8 +4505,9 @@ public struct TooManyCloudFrontOriginAccessIdentities: ClientRuntime.ModeledErro
 }
 
 extension CloudFrontClientTypes {
+
     /// Origin access identity configuration. Send a GET request to the /CloudFront API version/CloudFront/identity ID/config resource.
-    public struct CloudFrontOriginAccessIdentityConfig {
+    public struct CloudFrontOriginAccessIdentityConfig: Swift.Sendable {
         /// A unique value (for example, a date-time stamp) that ensures that the request can't be replayed. If the value of CallerReference is new (regardless of the content of the CloudFrontOriginAccessIdentityConfig object), a new origin access identity is created. If the CallerReference is a value already sent in a previous identity request, and the content of the CloudFrontOriginAccessIdentityConfig is identical to the original request (ignoring white space), the response includes the same information returned to the original request. If the CallerReference is a value you already sent in a previous request to create an identity, but the content of the CloudFrontOriginAccessIdentityConfig is different from the original request, CloudFront returns a CloudFrontOriginAccessIdentityAlreadyExists error.
         /// This member is required.
         public var callerReference: Swift.String?
@@ -4522,11 +4524,10 @@ extension CloudFrontClientTypes {
             self.comment = comment
         }
     }
-
 }
 
 /// The request to create a new origin access identity (OAI). An origin access identity is a special CloudFront user that you can associate with Amazon S3 origins, so that you can secure all or just some of your Amazon S3 content. For more information, see [ Restricting Access to Amazon S3 Content by Using an Origin Access Identity](https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/private-content-restricting-access-to-s3.html) in the Amazon CloudFront Developer Guide.
-public struct CreateCloudFrontOriginAccessIdentityInput {
+public struct CreateCloudFrontOriginAccessIdentityInput: Swift.Sendable {
     /// The current configuration information for the identity.
     /// This member is required.
     public var cloudFrontOriginAccessIdentityConfig: CloudFrontClientTypes.CloudFrontOriginAccessIdentityConfig?
@@ -4540,8 +4541,9 @@ public struct CreateCloudFrontOriginAccessIdentityInput {
 }
 
 extension CloudFrontClientTypes {
+
     /// CloudFront origin access identity.
-    public struct CloudFrontOriginAccessIdentity {
+    public struct CloudFrontOriginAccessIdentity: Swift.Sendable {
         /// The current configuration information for the identity.
         public var cloudFrontOriginAccessIdentityConfig: CloudFrontClientTypes.CloudFrontOriginAccessIdentityConfig?
         /// The ID for the origin access identity, for example, E74FTE3AJFJ256A.
@@ -4562,11 +4564,10 @@ extension CloudFrontClientTypes {
             self.s3CanonicalUserId = s3CanonicalUserId
         }
     }
-
 }
 
 /// The returned result of the corresponding request.
-public struct CreateCloudFrontOriginAccessIdentityOutput {
+public struct CreateCloudFrontOriginAccessIdentityOutput: Swift.Sendable {
     /// The origin access identity's information.
     public var cloudFrontOriginAccessIdentity: CloudFrontClientTypes.CloudFrontOriginAccessIdentity?
     /// The current version of the origin access identity created.
@@ -4659,8 +4660,9 @@ public struct TooManyContinuousDeploymentPolicies: ClientRuntime.ModeledError, A
 }
 
 extension CloudFrontClientTypes {
+
     /// The CloudFront domain name of the staging distribution.
-    public struct StagingDistributionDnsNames {
+    public struct StagingDistributionDnsNames: Swift.Sendable {
         /// The CloudFront domain name of the staging distribution.
         public var items: [Swift.String]?
         /// The number of CloudFront domain names in your staging distribution.
@@ -4676,12 +4678,12 @@ extension CloudFrontClientTypes {
             self.quantity = quantity
         }
     }
-
 }
 
 extension CloudFrontClientTypes {
+
     /// This configuration determines which HTTP requests are sent to the staging distribution. If the HTTP request contains a header and value that matches what you specify here, the request is sent to the staging distribution. Otherwise the request is sent to the primary distribution.
-    public struct ContinuousDeploymentSingleHeaderConfig {
+    public struct ContinuousDeploymentSingleHeaderConfig: Swift.Sendable {
         /// The request header name that you want CloudFront to send to your staging distribution. The header must contain the prefix aws-cf-cd-.
         /// This member is required.
         public var header: Swift.String?
@@ -4698,12 +4700,12 @@ extension CloudFrontClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension CloudFrontClientTypes {
+
     /// Session stickiness provides the ability to define multiple requests from a single viewer as a single session. This prevents the potentially inconsistent experience of sending some of a given user's requests to your staging distribution, while others are sent to your primary distribution. Define the session duration using TTL values.
-    public struct SessionStickinessConfig {
+    public struct SessionStickinessConfig: Swift.Sendable {
         /// The amount of time after which you want sessions to cease if no requests are received. Allowed values are 300–3600 seconds (5–60 minutes). The value must be less than or equal to MaximumTTL.
         /// This member is required.
         public var idleTTL: Swift.Int?
@@ -4720,12 +4722,12 @@ extension CloudFrontClientTypes {
             self.maximumTTL = maximumTTL
         }
     }
-
 }
 
 extension CloudFrontClientTypes {
+
     /// Contains the percentage of traffic to send to a staging distribution.
-    public struct ContinuousDeploymentSingleWeightConfig {
+    public struct ContinuousDeploymentSingleWeightConfig: Swift.Sendable {
         /// Session stickiness provides the ability to define multiple requests from a single viewer as a single session. This prevents the potentially inconsistent experience of sending some of a given user's requests to your staging distribution, while others are sent to your primary distribution. Define the session duration using TTL values.
         public var sessionStickinessConfig: CloudFrontClientTypes.SessionStickinessConfig?
         /// The percentage of traffic to send to a staging distribution, expressed as a decimal number between 0 and 0.15. For example, a value of 0.10 means 10% of traffic is sent to the staging distribution.
@@ -4741,12 +4743,11 @@ extension CloudFrontClientTypes {
             self.weight = weight
         }
     }
-
 }
 
 extension CloudFrontClientTypes {
 
-    public enum ContinuousDeploymentPolicyType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ContinuousDeploymentPolicyType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case singleheader
         case singleweight
         case sdkUnknown(Swift.String)
@@ -4774,8 +4775,9 @@ extension CloudFrontClientTypes {
 }
 
 extension CloudFrontClientTypes {
+
     /// The traffic configuration of your continuous deployment.
-    public struct TrafficConfig {
+    public struct TrafficConfig: Swift.Sendable {
         /// Determines which HTTP requests are sent to the staging distribution.
         public var singleHeaderConfig: CloudFrontClientTypes.ContinuousDeploymentSingleHeaderConfig?
         /// Contains the percentage of traffic to send to the staging distribution.
@@ -4795,12 +4797,12 @@ extension CloudFrontClientTypes {
             self.type = type
         }
     }
-
 }
 
 extension CloudFrontClientTypes {
+
     /// Contains the configuration for a continuous deployment policy.
-    public struct ContinuousDeploymentPolicyConfig {
+    public struct ContinuousDeploymentPolicyConfig: Swift.Sendable {
         /// A Boolean that indicates whether this continuous deployment policy is enabled (in effect). When this value is true, this policy is enabled and in effect. When this value is false, this policy is not enabled and has no effect.
         /// This member is required.
         public var enabled: Swift.Bool?
@@ -4821,10 +4823,9 @@ extension CloudFrontClientTypes {
             self.trafficConfig = trafficConfig
         }
     }
-
 }
 
-public struct CreateContinuousDeploymentPolicyInput {
+public struct CreateContinuousDeploymentPolicyInput: Swift.Sendable {
     /// Contains the configuration for a continuous deployment policy.
     /// This member is required.
     public var continuousDeploymentPolicyConfig: CloudFrontClientTypes.ContinuousDeploymentPolicyConfig?
@@ -4838,8 +4839,9 @@ public struct CreateContinuousDeploymentPolicyInput {
 }
 
 extension CloudFrontClientTypes {
+
     /// A continuous deployment policy.
-    public struct ContinuousDeploymentPolicy {
+    public struct ContinuousDeploymentPolicy: Swift.Sendable {
         /// Contains the configuration for a continuous deployment policy.
         /// This member is required.
         public var continuousDeploymentPolicyConfig: CloudFrontClientTypes.ContinuousDeploymentPolicyConfig?
@@ -4861,10 +4863,9 @@ extension CloudFrontClientTypes {
             self.lastModifiedTime = lastModifiedTime
         }
     }
-
 }
 
-public struct CreateContinuousDeploymentPolicyOutput {
+public struct CreateContinuousDeploymentPolicyOutput: Swift.Sendable {
     /// A continuous deployment policy.
     public var continuousDeploymentPolicy: CloudFrontClientTypes.ContinuousDeploymentPolicy?
     /// The version identifier for the current version of the continuous deployment policy.
@@ -4981,7 +4982,7 @@ public struct NoSuchContinuousDeploymentPolicy: ClientRuntime.ModeledError, AWSC
 }
 
 /// The request to create a new distribution.
-public struct CreateDistributionInput {
+public struct CreateDistributionInput: Swift.Sendable {
     /// The distribution's configuration information.
     /// This member is required.
     public var distributionConfig: CloudFrontClientTypes.DistributionConfig?
@@ -4995,7 +4996,7 @@ public struct CreateDistributionInput {
 }
 
 /// The returned result of the corresponding request.
-public struct CreateDistributionOutput {
+public struct CreateDistributionOutput: Swift.Sendable {
     /// The distribution's information.
     public var distribution: CloudFrontClientTypes.Distribution?
     /// The current version of the distribution created.
@@ -5040,8 +5041,9 @@ public struct InvalidTagging: ClientRuntime.ModeledError, AWSClientRuntime.AWSSe
 }
 
 extension CloudFrontClientTypes {
+
     /// A complex type that contains Tag key and Tag value.
-    public struct Tag {
+    public struct Tag: Swift.Sendable {
         /// A string that contains Tag key. The string length should be between 1 and 128 characters. Valid characters include a-z, A-Z, 0-9, space, and the special characters _ - . : / = + @.
         /// This member is required.
         public var key: Swift.String?
@@ -5057,12 +5059,12 @@ extension CloudFrontClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension CloudFrontClientTypes {
+
     /// A complex type that contains zero or more Tag elements.
-    public struct Tags {
+    public struct Tags: Swift.Sendable {
         /// A complex type that contains Tag elements.
         public var items: [CloudFrontClientTypes.Tag]?
 
@@ -5073,12 +5075,12 @@ extension CloudFrontClientTypes {
             self.items = items
         }
     }
-
 }
 
 extension CloudFrontClientTypes {
+
     /// A distribution Configuration and a list of tags to be associated with the distribution.
-    public struct DistributionConfigWithTags {
+    public struct DistributionConfigWithTags: Swift.Sendable {
         /// A distribution configuration.
         /// This member is required.
         public var distributionConfig: CloudFrontClientTypes.DistributionConfig?
@@ -5095,11 +5097,10 @@ extension CloudFrontClientTypes {
             self.tags = tags
         }
     }
-
 }
 
 /// The request to create a new distribution with tags.
-public struct CreateDistributionWithTagsInput {
+public struct CreateDistributionWithTagsInput: Swift.Sendable {
     /// The distribution's configuration information.
     /// This member is required.
     public var distributionConfigWithTags: CloudFrontClientTypes.DistributionConfigWithTags?
@@ -5113,7 +5114,7 @@ public struct CreateDistributionWithTagsInput {
 }
 
 /// The returned result of the corresponding request.
-public struct CreateDistributionWithTagsOutput {
+public struct CreateDistributionWithTagsOutput: Swift.Sendable {
     /// The distribution's information.
     public var distribution: CloudFrontClientTypes.Distribution?
     /// The current version of the distribution created.
@@ -5279,7 +5280,7 @@ public struct TooManyFieldLevelEncryptionQueryArgProfiles: ClientRuntime.Modeled
 
 extension CloudFrontClientTypes {
 
-    public enum Format: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Format: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case urlencoded
         case sdkUnknown(Swift.String)
 
@@ -5304,8 +5305,9 @@ extension CloudFrontClientTypes {
 }
 
 extension CloudFrontClientTypes {
+
     /// A field-level encryption content type profile.
-    public struct ContentTypeProfile {
+    public struct ContentTypeProfile: Swift.Sendable {
         /// The content type for a field-level encryption content type-profile mapping.
         /// This member is required.
         public var contentType: Swift.String?
@@ -5326,12 +5328,12 @@ extension CloudFrontClientTypes {
             self.profileId = profileId
         }
     }
-
 }
 
 extension CloudFrontClientTypes {
+
     /// Field-level encryption content type-profile.
-    public struct ContentTypeProfiles {
+    public struct ContentTypeProfiles: Swift.Sendable {
         /// Items in a field-level encryption content type-profile mapping.
         public var items: [CloudFrontClientTypes.ContentTypeProfile]?
         /// The number of field-level encryption content type-profile mappings.
@@ -5347,12 +5349,12 @@ extension CloudFrontClientTypes {
             self.quantity = quantity
         }
     }
-
 }
 
 extension CloudFrontClientTypes {
+
     /// The configuration for a field-level encryption content type-profile mapping.
-    public struct ContentTypeProfileConfig {
+    public struct ContentTypeProfileConfig: Swift.Sendable {
         /// The configuration for a field-level encryption content type-profile.
         public var contentTypeProfiles: CloudFrontClientTypes.ContentTypeProfiles?
         /// The setting in a field-level encryption content type-profile mapping that specifies what to do when an unknown content type is provided for the profile. If true, content is forwarded without being encrypted when the content type is unknown. If false (the default), an error is returned when the content type is unknown.
@@ -5368,12 +5370,12 @@ extension CloudFrontClientTypes {
             self.forwardWhenContentTypeIsUnknown = forwardWhenContentTypeIsUnknown
         }
     }
-
 }
 
 extension CloudFrontClientTypes {
+
     /// Query argument-profile mapping for field-level encryption.
-    public struct QueryArgProfile {
+    public struct QueryArgProfile: Swift.Sendable {
         /// ID of profile to use for field-level encryption query argument-profile mapping
         /// This member is required.
         public var profileId: Swift.String?
@@ -5390,12 +5392,12 @@ extension CloudFrontClientTypes {
             self.queryArg = queryArg
         }
     }
-
 }
 
 extension CloudFrontClientTypes {
+
     /// Query argument-profile mapping for field-level encryption.
-    public struct QueryArgProfiles {
+    public struct QueryArgProfiles: Swift.Sendable {
         /// Number of items for query argument-profile mapping for field-level encryption.
         public var items: [CloudFrontClientTypes.QueryArgProfile]?
         /// Number of profiles for query argument-profile mapping for field-level encryption.
@@ -5411,12 +5413,12 @@ extension CloudFrontClientTypes {
             self.quantity = quantity
         }
     }
-
 }
 
 extension CloudFrontClientTypes {
+
     /// Configuration for query argument-profile mapping for field-level encryption.
-    public struct QueryArgProfileConfig {
+    public struct QueryArgProfileConfig: Swift.Sendable {
         /// Flag to set if you want a request to be forwarded to the origin even if the profile specified by the field-level encryption query argument, fle-profile, is unknown.
         /// This member is required.
         public var forwardWhenQueryArgProfileIsUnknown: Swift.Bool?
@@ -5432,12 +5434,12 @@ extension CloudFrontClientTypes {
             self.queryArgProfiles = queryArgProfiles
         }
     }
-
 }
 
 extension CloudFrontClientTypes {
+
     /// A complex data type that includes the profile configurations specified for field-level encryption.
-    public struct FieldLevelEncryptionConfig {
+    public struct FieldLevelEncryptionConfig: Swift.Sendable {
         /// A unique number that ensures the request can't be replayed.
         /// This member is required.
         public var callerReference: Swift.String?
@@ -5461,10 +5463,9 @@ extension CloudFrontClientTypes {
             self.queryArgProfileConfig = queryArgProfileConfig
         }
     }
-
 }
 
-public struct CreateFieldLevelEncryptionConfigInput {
+public struct CreateFieldLevelEncryptionConfigInput: Swift.Sendable {
     /// The request to create a new field-level encryption configuration.
     /// This member is required.
     public var fieldLevelEncryptionConfig: CloudFrontClientTypes.FieldLevelEncryptionConfig?
@@ -5478,8 +5479,9 @@ public struct CreateFieldLevelEncryptionConfigInput {
 }
 
 extension CloudFrontClientTypes {
+
     /// A complex data type that includes the profile configurations and other options specified for field-level encryption.
-    public struct FieldLevelEncryption {
+    public struct FieldLevelEncryption: Swift.Sendable {
         /// A complex data type that includes the profile configurations specified for field-level encryption.
         /// This member is required.
         public var fieldLevelEncryptionConfig: CloudFrontClientTypes.FieldLevelEncryptionConfig?
@@ -5501,10 +5503,9 @@ extension CloudFrontClientTypes {
             self.lastModifiedTime = lastModifiedTime
         }
     }
-
 }
 
-public struct CreateFieldLevelEncryptionConfigOutput {
+public struct CreateFieldLevelEncryptionConfigOutput: Swift.Sendable {
     /// The current version of the field level encryption configuration. For example: E2QWRUHAPOMQZL.
     public var eTag: Swift.String?
     /// Returned when you create a new field-level encryption configuration.
@@ -5669,8 +5670,9 @@ public struct TooManyFieldLevelEncryptionProfiles: ClientRuntime.ModeledError, A
 }
 
 extension CloudFrontClientTypes {
+
     /// A complex data type that includes the field patterns to match for field-level encryption.
-    public struct FieldPatterns {
+    public struct FieldPatterns: Swift.Sendable {
         /// An array of the field-level encryption field patterns.
         public var items: [Swift.String]?
         /// The number of field-level encryption field patterns.
@@ -5686,12 +5688,12 @@ extension CloudFrontClientTypes {
             self.quantity = quantity
         }
     }
-
 }
 
 extension CloudFrontClientTypes {
+
     /// Complex data type for field-level encryption profiles that includes the encryption key and field pattern specifications.
-    public struct EncryptionEntity {
+    public struct EncryptionEntity: Swift.Sendable {
         /// Field patterns in a field-level encryption content type profile specify the fields that you want to be encrypted. You can provide the full field name, or any beginning characters followed by a wildcard (*). You can't overlap field patterns. For example, you can't have both ABC* and AB*. Note that field patterns are case-sensitive.
         /// This member is required.
         public var fieldPatterns: CloudFrontClientTypes.FieldPatterns?
@@ -5713,12 +5715,12 @@ extension CloudFrontClientTypes {
             self.publicKeyId = publicKeyId
         }
     }
-
 }
 
 extension CloudFrontClientTypes {
+
     /// Complex data type for field-level encryption profiles that includes all of the encryption entities.
-    public struct EncryptionEntities {
+    public struct EncryptionEntities: Swift.Sendable {
         /// An array of field patterns in a field-level encryption content type-profile mapping.
         public var items: [CloudFrontClientTypes.EncryptionEntity]?
         /// Number of field pattern items in a field-level encryption content type-profile mapping.
@@ -5734,12 +5736,12 @@ extension CloudFrontClientTypes {
             self.quantity = quantity
         }
     }
-
 }
 
 extension CloudFrontClientTypes {
+
     /// A complex data type of profiles for the field-level encryption.
-    public struct FieldLevelEncryptionProfileConfig {
+    public struct FieldLevelEncryptionProfileConfig: Swift.Sendable {
         /// A unique number that ensures that the request can't be replayed.
         /// This member is required.
         public var callerReference: Swift.String?
@@ -5765,10 +5767,9 @@ extension CloudFrontClientTypes {
             self.name = name
         }
     }
-
 }
 
-public struct CreateFieldLevelEncryptionProfileInput {
+public struct CreateFieldLevelEncryptionProfileInput: Swift.Sendable {
     /// The request to create a field-level encryption profile.
     /// This member is required.
     public var fieldLevelEncryptionProfileConfig: CloudFrontClientTypes.FieldLevelEncryptionProfileConfig?
@@ -5782,8 +5783,9 @@ public struct CreateFieldLevelEncryptionProfileInput {
 }
 
 extension CloudFrontClientTypes {
+
     /// A complex data type for field-level encryption profiles.
-    public struct FieldLevelEncryptionProfile {
+    public struct FieldLevelEncryptionProfile: Swift.Sendable {
         /// A complex data type that includes the profile name and the encryption entities for the field-level encryption profile.
         /// This member is required.
         public var fieldLevelEncryptionProfileConfig: CloudFrontClientTypes.FieldLevelEncryptionProfileConfig?
@@ -5805,10 +5807,9 @@ extension CloudFrontClientTypes {
             self.lastModifiedTime = lastModifiedTime
         }
     }
-
 }
 
-public struct CreateFieldLevelEncryptionProfileOutput {
+public struct CreateFieldLevelEncryptionProfileOutput: Swift.Sendable {
     /// The current version of the field level encryption profile. For example: E2QWRUHAPOMQZL.
     public var eTag: Swift.String?
     /// Returned when you create a new field-level encryption profile.
@@ -5925,8 +5926,9 @@ public struct UnsupportedOperation: ClientRuntime.ModeledError, AWSClientRuntime
 }
 
 extension CloudFrontClientTypes {
+
     /// The key value store association.
-    public struct KeyValueStoreAssociation {
+    public struct KeyValueStoreAssociation: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the key value store association.
         /// This member is required.
         public var keyValueStoreARN: Swift.String?
@@ -5938,12 +5940,12 @@ extension CloudFrontClientTypes {
             self.keyValueStoreARN = keyValueStoreARN
         }
     }
-
 }
 
 extension CloudFrontClientTypes {
+
     /// The key value store associations.
-    public struct KeyValueStoreAssociations {
+    public struct KeyValueStoreAssociations: Swift.Sendable {
         /// The items of the key value store association.
         public var items: [CloudFrontClientTypes.KeyValueStoreAssociation]?
         /// The quantity of key value store associations.
@@ -5959,12 +5961,11 @@ extension CloudFrontClientTypes {
             self.quantity = quantity
         }
     }
-
 }
 
 extension CloudFrontClientTypes {
 
-    public enum FunctionRuntime: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum FunctionRuntime: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case cloudfrontJs10
         case cloudfrontJs20
         case sdkUnknown(Swift.String)
@@ -5992,8 +5993,9 @@ extension CloudFrontClientTypes {
 }
 
 extension CloudFrontClientTypes {
+
     /// Contains configuration information about a CloudFront function.
-    public struct FunctionConfig {
+    public struct FunctionConfig: Swift.Sendable {
         /// A comment to describe the function.
         /// This member is required.
         public var comment: Swift.String?
@@ -6014,10 +6016,9 @@ extension CloudFrontClientTypes {
             self.runtime = runtime
         }
     }
-
 }
 
-public struct CreateFunctionInput {
+public struct CreateFunctionInput: Swift.Sendable {
     /// The function code. For more information about writing a CloudFront function, see [Writing function code for CloudFront Functions](https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/writing-function-code.html) in the Amazon CloudFront Developer Guide.
     /// This member is required.
     public var functionCode: Foundation.Data?
@@ -6047,7 +6048,7 @@ extension CreateFunctionInput: Swift.CustomDebugStringConvertible {
 
 extension CloudFrontClientTypes {
 
-    public enum FunctionStage: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum FunctionStage: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case development
         case live
         case sdkUnknown(Swift.String)
@@ -6075,8 +6076,9 @@ extension CloudFrontClientTypes {
 }
 
 extension CloudFrontClientTypes {
+
     /// Contains metadata about a CloudFront function.
-    public struct FunctionMetadata {
+    public struct FunctionMetadata: Swift.Sendable {
         /// The date and time when the function was created.
         public var createdTime: Foundation.Date?
         /// The Amazon Resource Name (ARN) of the function. The ARN uniquely identifies the function.
@@ -6101,12 +6103,12 @@ extension CloudFrontClientTypes {
             self.stage = stage
         }
     }
-
 }
 
 extension CloudFrontClientTypes {
+
     /// Contains configuration information and metadata about a CloudFront function.
-    public struct FunctionSummary {
+    public struct FunctionSummary: Swift.Sendable {
         /// Contains configuration information about a CloudFront function.
         /// This member is required.
         public var functionConfig: CloudFrontClientTypes.FunctionConfig?
@@ -6132,10 +6134,9 @@ extension CloudFrontClientTypes {
             self.status = status
         }
     }
-
 }
 
-public struct CreateFunctionOutput {
+public struct CreateFunctionOutput: Swift.Sendable {
     /// The version identifier for the current version of the CloudFront function.
     public var eTag: Swift.String?
     /// Contains configuration information and metadata about a CloudFront function.
@@ -6180,8 +6181,9 @@ public struct TooManyInvalidationsInProgress: ClientRuntime.ModeledError, AWSCli
 }
 
 extension CloudFrontClientTypes {
+
     /// A complex type that contains information about the objects that you want to invalidate. For more information, see [Specifying the Objects to Invalidate](https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/Invalidation.html#invalidation-specifying-objects) in the Amazon CloudFront Developer Guide.
-    public struct Paths {
+    public struct Paths: Swift.Sendable {
         /// A complex type that contains a list of the paths that you want to invalidate.
         public var items: [Swift.String]?
         /// The number of invalidation paths specified for the objects that you want to invalidate.
@@ -6197,12 +6199,12 @@ extension CloudFrontClientTypes {
             self.quantity = quantity
         }
     }
-
 }
 
 extension CloudFrontClientTypes {
+
     /// An invalidation batch.
-    public struct InvalidationBatch {
+    public struct InvalidationBatch: Swift.Sendable {
         /// A value that you specify to uniquely identify an invalidation request. CloudFront uses the value to prevent you from accidentally resubmitting an identical request. Whenever you create a new invalidation request, you must specify a new value for CallerReference and change other values in the request as applicable. One way to ensure that the value of CallerReference is unique is to use a timestamp, for example, 20120301090000. If you make a second invalidation request with the same value for CallerReference, and if the rest of the request is the same, CloudFront doesn't create a new invalidation request. Instead, CloudFront returns information about the invalidation request that you previously created with the same CallerReference. If CallerReference is a value you already sent in a previous invalidation batch request but the content of any Path is different from the original request, CloudFront returns an InvalidationBatchAlreadyExists error.
         /// This member is required.
         public var callerReference: Swift.String?
@@ -6219,11 +6221,10 @@ extension CloudFrontClientTypes {
             self.paths = paths
         }
     }
-
 }
 
 /// The request to create an invalidation.
-public struct CreateInvalidationInput {
+public struct CreateInvalidationInput: Swift.Sendable {
     /// The distribution's id.
     /// This member is required.
     public var distributionId: Swift.String?
@@ -6242,8 +6243,9 @@ public struct CreateInvalidationInput {
 }
 
 extension CloudFrontClientTypes {
+
     /// An invalidation.
-    public struct Invalidation {
+    public struct Invalidation: Swift.Sendable {
         /// The date and time the invalidation request was first made.
         /// This member is required.
         public var createTime: Foundation.Date?
@@ -6270,11 +6272,10 @@ extension CloudFrontClientTypes {
             self.status = status
         }
     }
-
 }
 
 /// The returned result of the corresponding request.
-public struct CreateInvalidationOutput {
+public struct CreateInvalidationOutput: Swift.Sendable {
     /// The invalidation's information.
     public var invalidation: CloudFrontClientTypes.Invalidation?
     /// The fully qualified URI of the distribution and invalidation batch request, including the Invalidation ID.
@@ -6363,8 +6364,9 @@ public struct TooManyPublicKeysInKeyGroup: ClientRuntime.ModeledError, AWSClient
 }
 
 extension CloudFrontClientTypes {
+
     /// A key group configuration. A key group contains a list of public keys that you can use with [CloudFront signed URLs and signed cookies](https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/PrivateContent.html).
-    public struct KeyGroupConfig {
+    public struct KeyGroupConfig: Swift.Sendable {
         /// A comment to describe the key group. The comment cannot be longer than 128 characters.
         public var comment: Swift.String?
         /// A list of the identifiers of the public keys in the key group.
@@ -6385,10 +6387,9 @@ extension CloudFrontClientTypes {
             self.name = name
         }
     }
-
 }
 
-public struct CreateKeyGroupInput {
+public struct CreateKeyGroupInput: Swift.Sendable {
     /// A key group configuration.
     /// This member is required.
     public var keyGroupConfig: CloudFrontClientTypes.KeyGroupConfig?
@@ -6402,8 +6403,9 @@ public struct CreateKeyGroupInput {
 }
 
 extension CloudFrontClientTypes {
+
     /// A key group. A key group contains a list of public keys that you can use with [CloudFront signed URLs and signed cookies](https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/PrivateContent.html).
-    public struct KeyGroup {
+    public struct KeyGroup: Swift.Sendable {
         /// The identifier for the key group.
         /// This member is required.
         public var id: Swift.String?
@@ -6425,10 +6427,9 @@ extension CloudFrontClientTypes {
             self.lastModifiedTime = lastModifiedTime
         }
     }
-
 }
 
-public struct CreateKeyGroupOutput {
+public struct CreateKeyGroupOutput: Swift.Sendable {
     /// The identifier for this version of the key group.
     public var eTag: Swift.String?
     /// The key group that was just created.
@@ -6522,7 +6523,7 @@ public struct EntitySizeLimitExceeded: ClientRuntime.ModeledError, AWSClientRunt
 
 extension CloudFrontClientTypes {
 
-    public enum ImportSourceType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ImportSourceType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case s3
         case sdkUnknown(Swift.String)
 
@@ -6547,8 +6548,9 @@ extension CloudFrontClientTypes {
 }
 
 extension CloudFrontClientTypes {
+
     /// The import source for the key value store.
-    public struct ImportSource {
+    public struct ImportSource: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the import source for the key value store.
         /// This member is required.
         public var sourceARN: Swift.String?
@@ -6565,10 +6567,9 @@ extension CloudFrontClientTypes {
             self.sourceType = sourceType
         }
     }
-
 }
 
-public struct CreateKeyValueStoreInput {
+public struct CreateKeyValueStoreInput: Swift.Sendable {
     /// The comment of the key value store.
     public var comment: Swift.String?
     /// The S3 bucket that provides the source for the import. The source must be in a valid JSON format.
@@ -6590,8 +6591,9 @@ public struct CreateKeyValueStoreInput {
 }
 
 extension CloudFrontClientTypes {
+
     /// The key value store. Use this to separate data from function code, allowing you to update data without having to publish a new version of a function. The key value store holds keys and their corresponding values.
-    public struct KeyValueStore : Swift.Equatable {
+    public struct KeyValueStore: Swift.Sendable, Swift.Equatable {
         /// The Amazon Resource Name (ARN) of the key value store.
         /// This member is required.
         public var arn: Swift.String?
@@ -6627,10 +6629,9 @@ extension CloudFrontClientTypes {
             self.status = status
         }
     }
-
 }
 
-public struct CreateKeyValueStoreOutput {
+public struct CreateKeyValueStoreOutput: Swift.Sendable {
     /// The ETag in the resulting key value store.
     public var eTag: Swift.String?
     /// The resulting key value store.
@@ -6676,7 +6677,7 @@ public struct MonitoringSubscriptionAlreadyExists: ClientRuntime.ModeledError, A
 
 extension CloudFrontClientTypes {
 
-    public enum RealtimeMetricsSubscriptionStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum RealtimeMetricsSubscriptionStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case disabled
         case enabled
         case sdkUnknown(Swift.String)
@@ -6704,8 +6705,9 @@ extension CloudFrontClientTypes {
 }
 
 extension CloudFrontClientTypes {
+
     /// A subscription configuration for additional CloudWatch metrics.
-    public struct RealtimeMetricsSubscriptionConfig {
+    public struct RealtimeMetricsSubscriptionConfig: Swift.Sendable {
         /// A flag that indicates whether additional CloudWatch metrics are enabled for a given CloudFront distribution.
         /// This member is required.
         public var realtimeMetricsSubscriptionStatus: CloudFrontClientTypes.RealtimeMetricsSubscriptionStatus?
@@ -6717,12 +6719,12 @@ extension CloudFrontClientTypes {
             self.realtimeMetricsSubscriptionStatus = realtimeMetricsSubscriptionStatus
         }
     }
-
 }
 
 extension CloudFrontClientTypes {
+
     /// A monitoring subscription. This structure contains information about whether additional CloudWatch metrics are enabled for a given CloudFront distribution.
-    public struct MonitoringSubscription {
+    public struct MonitoringSubscription: Swift.Sendable {
         /// A subscription configuration for additional CloudWatch metrics.
         public var realtimeMetricsSubscriptionConfig: CloudFrontClientTypes.RealtimeMetricsSubscriptionConfig?
 
@@ -6733,10 +6735,9 @@ extension CloudFrontClientTypes {
             self.realtimeMetricsSubscriptionConfig = realtimeMetricsSubscriptionConfig
         }
     }
-
 }
 
-public struct CreateMonitoringSubscriptionInput {
+public struct CreateMonitoringSubscriptionInput: Swift.Sendable {
     /// The ID of the distribution that you are enabling metrics for.
     /// This member is required.
     public var distributionId: Swift.String?
@@ -6754,7 +6755,7 @@ public struct CreateMonitoringSubscriptionInput {
     }
 }
 
-public struct CreateMonitoringSubscriptionOutput {
+public struct CreateMonitoringSubscriptionOutput: Swift.Sendable {
     /// A monitoring subscription. This structure contains information about whether additional CloudWatch metrics are enabled for a given CloudFront distribution.
     public var monitoringSubscription: CloudFrontClientTypes.MonitoringSubscription?
 
@@ -6816,7 +6817,7 @@ public struct TooManyOriginAccessControls: ClientRuntime.ModeledError, AWSClient
 
 extension CloudFrontClientTypes {
 
-    public enum OriginAccessControlOriginTypes: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum OriginAccessControlOriginTypes: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case lambda
         case mediapackagev2
         case mediastore
@@ -6851,7 +6852,7 @@ extension CloudFrontClientTypes {
 
 extension CloudFrontClientTypes {
 
-    public enum OriginAccessControlSigningBehaviors: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum OriginAccessControlSigningBehaviors: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case always
         case never
         case noOverride
@@ -6883,7 +6884,7 @@ extension CloudFrontClientTypes {
 
 extension CloudFrontClientTypes {
 
-    public enum OriginAccessControlSigningProtocols: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum OriginAccessControlSigningProtocols: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case sigv4
         case sdkUnknown(Swift.String)
 
@@ -6908,8 +6909,9 @@ extension CloudFrontClientTypes {
 }
 
 extension CloudFrontClientTypes {
+
     /// A CloudFront origin access control configuration.
-    public struct OriginAccessControlConfig {
+    public struct OriginAccessControlConfig: Swift.Sendable {
         /// A description of the origin access control.
         public var description: Swift.String?
         /// A name to identify the origin access control. You can specify up to 64 characters.
@@ -6946,10 +6948,9 @@ extension CloudFrontClientTypes {
             self.signingProtocol = signingProtocol
         }
     }
-
 }
 
-public struct CreateOriginAccessControlInput {
+public struct CreateOriginAccessControlInput: Swift.Sendable {
     /// Contains the origin access control.
     /// This member is required.
     public var originAccessControlConfig: CloudFrontClientTypes.OriginAccessControlConfig?
@@ -6963,8 +6964,9 @@ public struct CreateOriginAccessControlInput {
 }
 
 extension CloudFrontClientTypes {
+
     /// A CloudFront origin access control, including its unique identifier.
-    public struct OriginAccessControl {
+    public struct OriginAccessControl: Swift.Sendable {
         /// The unique identifier of the origin access control.
         /// This member is required.
         public var id: Swift.String?
@@ -6980,10 +6982,9 @@ extension CloudFrontClientTypes {
             self.originAccessControlConfig = originAccessControlConfig
         }
     }
-
 }
 
-public struct CreateOriginAccessControlOutput {
+public struct CreateOriginAccessControlOutput: Swift.Sendable {
     /// The version identifier for the current version of the origin access control.
     public var eTag: Swift.String?
     /// The URL of the origin access control.
@@ -7125,7 +7126,7 @@ public struct TooManyQueryStringsInOriginRequestPolicy: ClientRuntime.ModeledErr
 
 extension CloudFrontClientTypes {
 
-    public enum OriginRequestPolicyCookieBehavior: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum OriginRequestPolicyCookieBehavior: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case all
         case allexcept
         case `none`
@@ -7159,8 +7160,9 @@ extension CloudFrontClientTypes {
 }
 
 extension CloudFrontClientTypes {
+
     /// An object that determines whether any cookies in viewer requests (and if so, which cookies) are included in requests that CloudFront sends to the origin.
-    public struct OriginRequestPolicyCookiesConfig {
+    public struct OriginRequestPolicyCookiesConfig: Swift.Sendable {
         /// Determines whether cookies in viewer requests are included in requests that CloudFront sends to the origin. Valid values are:
         ///
         /// * none – No cookies in viewer requests are included in requests that CloudFront sends to the origin. Even when this field is set to none, any cookies that are listed in a CachePolicy are included in origin requests.
@@ -7184,12 +7186,11 @@ extension CloudFrontClientTypes {
             self.cookies = cookies
         }
     }
-
 }
 
 extension CloudFrontClientTypes {
 
-    public enum OriginRequestPolicyHeaderBehavior: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum OriginRequestPolicyHeaderBehavior: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case allexcept
         case allviewer
         case allviewerandwhitelistcloudfront
@@ -7226,8 +7227,9 @@ extension CloudFrontClientTypes {
 }
 
 extension CloudFrontClientTypes {
+
     /// An object that determines whether any HTTP headers (and if so, which headers) are included in requests that CloudFront sends to the origin.
-    public struct OriginRequestPolicyHeadersConfig {
+    public struct OriginRequestPolicyHeadersConfig: Swift.Sendable {
         /// Determines whether any HTTP headers are included in requests that CloudFront sends to the origin. Valid values are:
         ///
         /// * none – No HTTP headers in viewer requests are included in requests that CloudFront sends to the origin. Even when this field is set to none, any headers that are listed in a CachePolicy are included in origin requests.
@@ -7253,12 +7255,11 @@ extension CloudFrontClientTypes {
             self.headers = headers
         }
     }
-
 }
 
 extension CloudFrontClientTypes {
 
-    public enum OriginRequestPolicyQueryStringBehavior: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum OriginRequestPolicyQueryStringBehavior: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case all
         case allexcept
         case `none`
@@ -7292,8 +7293,9 @@ extension CloudFrontClientTypes {
 }
 
 extension CloudFrontClientTypes {
+
     /// An object that determines whether any URL query strings in viewer requests (and if so, which query strings) are included in requests that CloudFront sends to the origin.
-    public struct OriginRequestPolicyQueryStringsConfig {
+    public struct OriginRequestPolicyQueryStringsConfig: Swift.Sendable {
         /// Determines whether any URL query strings in viewer requests are included in requests that CloudFront sends to the origin. Valid values are:
         ///
         /// * none – No query strings in viewer requests are included in requests that CloudFront sends to the origin. Even when this field is set to none, any query strings that are listed in a CachePolicy are included in origin requests.
@@ -7317,10 +7319,10 @@ extension CloudFrontClientTypes {
             self.queryStrings = queryStrings
         }
     }
-
 }
 
 extension CloudFrontClientTypes {
+
     /// An origin request policy configuration. This configuration determines the values that CloudFront includes in requests that it sends to the origin. Each request that CloudFront sends to the origin includes the following:
     ///
     /// * The request body and the URL path (without the domain name) from the viewer request.
@@ -7331,7 +7333,7 @@ extension CloudFrontClientTypes {
     ///
     ///
     /// CloudFront sends a request when it can't find an object in its cache that matches the request. If you want to send values to the origin and also include them in the cache key, use CachePolicy.
-    public struct OriginRequestPolicyConfig {
+    public struct OriginRequestPolicyConfig: Swift.Sendable {
         /// A comment to describe the origin request policy. The comment cannot be longer than 128 characters.
         public var comment: Swift.String?
         /// The cookies from viewer requests to include in origin requests.
@@ -7362,10 +7364,9 @@ extension CloudFrontClientTypes {
             self.queryStringsConfig = queryStringsConfig
         }
     }
-
 }
 
-public struct CreateOriginRequestPolicyInput {
+public struct CreateOriginRequestPolicyInput: Swift.Sendable {
     /// An origin request policy configuration.
     /// This member is required.
     public var originRequestPolicyConfig: CloudFrontClientTypes.OriginRequestPolicyConfig?
@@ -7379,6 +7380,7 @@ public struct CreateOriginRequestPolicyInput {
 }
 
 extension CloudFrontClientTypes {
+
     /// An origin request policy. When it's attached to a cache behavior, the origin request policy determines the values that CloudFront includes in requests that it sends to the origin. Each request that CloudFront sends to the origin includes the following:
     ///
     /// * The request body and the URL path (without the domain name) from the viewer request.
@@ -7389,7 +7391,7 @@ extension CloudFrontClientTypes {
     ///
     ///
     /// CloudFront sends a request when it can't find an object in its cache that matches the request. If you want to send values to the origin and also include them in the cache key, use CachePolicy.
-    public struct OriginRequestPolicy {
+    public struct OriginRequestPolicy: Swift.Sendable {
         /// The unique identifier for the origin request policy.
         /// This member is required.
         public var id: Swift.String?
@@ -7411,10 +7413,9 @@ extension CloudFrontClientTypes {
             self.originRequestPolicyConfig = originRequestPolicyConfig
         }
     }
-
 }
 
-public struct CreateOriginRequestPolicyOutput {
+public struct CreateOriginRequestPolicyOutput: Swift.Sendable {
     /// The current version of the origin request policy.
     public var eTag: Swift.String?
     /// The fully qualified URI of the origin request policy just created.
@@ -7483,8 +7484,9 @@ public struct TooManyPublicKeys: ClientRuntime.ModeledError, AWSClientRuntime.AW
 }
 
 extension CloudFrontClientTypes {
+
     /// Configuration information about a public key that you can use with [signed URLs and signed cookies](https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/PrivateContent.html), or with [field-level encryption](https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/field-level-encryption.html).
-    public struct PublicKeyConfig {
+    public struct PublicKeyConfig: Swift.Sendable {
         /// A string included in the request to help make sure that the request can't be replayed.
         /// This member is required.
         public var callerReference: Swift.String?
@@ -7510,10 +7512,9 @@ extension CloudFrontClientTypes {
             self.name = name
         }
     }
-
 }
 
-public struct CreatePublicKeyInput {
+public struct CreatePublicKeyInput: Swift.Sendable {
     /// A CloudFront public key configuration.
     /// This member is required.
     public var publicKeyConfig: CloudFrontClientTypes.PublicKeyConfig?
@@ -7527,8 +7528,9 @@ public struct CreatePublicKeyInput {
 }
 
 extension CloudFrontClientTypes {
+
     /// A public key that you can use with [signed URLs and signed cookies](https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/PrivateContent.html), or with [field-level encryption](https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/field-level-encryption.html).
-    public struct PublicKey {
+    public struct PublicKey: Swift.Sendable {
         /// The date and time when the public key was uploaded.
         /// This member is required.
         public var createdTime: Foundation.Date?
@@ -7550,10 +7552,9 @@ extension CloudFrontClientTypes {
             self.publicKeyConfig = publicKeyConfig
         }
     }
-
 }
 
-public struct CreatePublicKeyOutput {
+public struct CreatePublicKeyOutput: Swift.Sendable {
     /// The identifier for this version of the public key.
     public var eTag: Swift.String?
     /// The URL of the public key.
@@ -7622,8 +7623,9 @@ public struct TooManyRealtimeLogConfigs: ClientRuntime.ModeledError, AWSClientRu
 }
 
 extension CloudFrontClientTypes {
+
     /// Contains information about the Amazon Kinesis data stream where you are sending real-time log data.
-    public struct KinesisStreamConfig {
+    public struct KinesisStreamConfig: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of an Identity and Access Management (IAM) role that CloudFront can use to send real-time log data to your Kinesis data stream. For more information the IAM role, see [Real-time log configuration IAM role](https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/real-time-logs.html#understand-real-time-log-config-iam-role) in the Amazon CloudFront Developer Guide.
         /// This member is required.
         public var roleARN: Swift.String?
@@ -7640,12 +7642,12 @@ extension CloudFrontClientTypes {
             self.streamARN = streamARN
         }
     }
-
 }
 
 extension CloudFrontClientTypes {
+
     /// Contains information about the Amazon Kinesis data stream where you are sending real-time log data in a real-time log configuration.
-    public struct EndPoint {
+    public struct EndPoint: Swift.Sendable {
         /// Contains information about the Amazon Kinesis data stream where you are sending real-time log data.
         public var kinesisStreamConfig: CloudFrontClientTypes.KinesisStreamConfig?
         /// The type of data stream where you are sending real-time log data. The only valid value is Kinesis.
@@ -7661,10 +7663,9 @@ extension CloudFrontClientTypes {
             self.streamType = streamType
         }
     }
-
 }
 
-public struct CreateRealtimeLogConfigInput {
+public struct CreateRealtimeLogConfigInput: Swift.Sendable {
     /// Contains information about the Amazon Kinesis data stream where you are sending real-time log data.
     /// This member is required.
     public var endPoints: [CloudFrontClientTypes.EndPoint]?
@@ -7693,8 +7694,9 @@ public struct CreateRealtimeLogConfigInput {
 }
 
 extension CloudFrontClientTypes {
+
     /// A real-time log configuration.
-    public struct RealtimeLogConfig {
+    public struct RealtimeLogConfig: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of this real-time log configuration.
         /// This member is required.
         public var arn: Swift.String?
@@ -7726,10 +7728,9 @@ extension CloudFrontClientTypes {
             self.samplingRate = samplingRate
         }
     }
-
 }
 
-public struct CreateRealtimeLogConfigOutput {
+public struct CreateRealtimeLogConfigOutput: Swift.Sendable {
     /// A real-time log configuration.
     public var realtimeLogConfig: CloudFrontClientTypes.RealtimeLogConfig?
 
@@ -7862,8 +7863,9 @@ public struct TooManyResponseHeadersPolicies: ClientRuntime.ModeledError, AWSCli
 }
 
 extension CloudFrontClientTypes {
+
     /// A list of HTTP header names that CloudFront includes as values for the Access-Control-Allow-Headers HTTP response header. For more information about the Access-Control-Allow-Headers HTTP response header, see [Access-Control-Allow-Headers](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Access-Control-Allow-Headers) in the MDN Web Docs.
-    public struct ResponseHeadersPolicyAccessControlAllowHeaders {
+    public struct ResponseHeadersPolicyAccessControlAllowHeaders: Swift.Sendable {
         /// The list of HTTP header names. You can specify * to allow all headers.
         /// This member is required.
         public var items: [Swift.String]?
@@ -7880,12 +7882,12 @@ extension CloudFrontClientTypes {
             self.quantity = quantity
         }
     }
-
 }
 
 extension CloudFrontClientTypes {
+
     /// A list of HTTP methods that CloudFront includes as values for the Access-Control-Allow-Methods HTTP response header. For more information about the Access-Control-Allow-Methods HTTP response header, see [Access-Control-Allow-Methods](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Access-Control-Allow-Methods) in the MDN Web Docs.
-    public struct ResponseHeadersPolicyAccessControlAllowMethods {
+    public struct ResponseHeadersPolicyAccessControlAllowMethods: Swift.Sendable {
         /// The list of HTTP methods. Valid values are:
         ///
         /// * GET
@@ -7921,12 +7923,12 @@ extension CloudFrontClientTypes {
             self.quantity = quantity
         }
     }
-
 }
 
 extension CloudFrontClientTypes {
+
     /// A list of origins (domain names) that CloudFront can use as the value for the Access-Control-Allow-Origin HTTP response header. For more information about the Access-Control-Allow-Origin HTTP response header, see [Access-Control-Allow-Origin](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Access-Control-Allow-Origin) in the MDN Web Docs.
-    public struct ResponseHeadersPolicyAccessControlAllowOrigins {
+    public struct ResponseHeadersPolicyAccessControlAllowOrigins: Swift.Sendable {
         /// The list of origins (domain names). You can specify * to allow all origins.
         /// This member is required.
         public var items: [Swift.String]?
@@ -7943,12 +7945,12 @@ extension CloudFrontClientTypes {
             self.quantity = quantity
         }
     }
-
 }
 
 extension CloudFrontClientTypes {
+
     /// A list of HTTP headers that CloudFront includes as values for the Access-Control-Expose-Headers HTTP response header. For more information about the Access-Control-Expose-Headers HTTP response header, see [Access-Control-Expose-Headers](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Access-Control-Expose-Headers) in the MDN Web Docs.
-    public struct ResponseHeadersPolicyAccessControlExposeHeaders {
+    public struct ResponseHeadersPolicyAccessControlExposeHeaders: Swift.Sendable {
         /// The list of HTTP headers. You can specify * to expose all headers.
         public var items: [Swift.String]?
         /// The number of HTTP headers in the list.
@@ -7964,12 +7966,12 @@ extension CloudFrontClientTypes {
             self.quantity = quantity
         }
     }
-
 }
 
 extension CloudFrontClientTypes {
+
     /// A configuration for a set of HTTP response headers that are used for cross-origin resource sharing (CORS). CloudFront adds these headers to HTTP responses that it sends for CORS requests that match a cache behavior associated with this response headers policy. For more information about CORS, see [Cross-Origin Resource Sharing (CORS)](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS) in the MDN Web Docs.
-    public struct ResponseHeadersPolicyCorsConfig {
+    public struct ResponseHeadersPolicyCorsConfig: Swift.Sendable {
         /// A Boolean that CloudFront uses as the value for the Access-Control-Allow-Credentials HTTP response header. For more information about the Access-Control-Allow-Credentials HTTP response header, see [Access-Control-Allow-Credentials](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Access-Control-Allow-Credentials) in the MDN Web Docs.
         /// This member is required.
         public var accessControlAllowCredentials: Swift.Bool?
@@ -8009,12 +8011,12 @@ extension CloudFrontClientTypes {
             self.originOverride = originOverride
         }
     }
-
 }
 
 extension CloudFrontClientTypes {
+
     /// An HTTP response header name and its value. CloudFront includes this header in HTTP responses that it sends for requests that match a cache behavior that's associated with this response headers policy.
-    public struct ResponseHeadersPolicyCustomHeader {
+    public struct ResponseHeadersPolicyCustomHeader: Swift.Sendable {
         /// The HTTP response header name.
         /// This member is required.
         public var header: Swift.String?
@@ -8036,12 +8038,12 @@ extension CloudFrontClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension CloudFrontClientTypes {
+
     /// A list of HTTP response header names and their values. CloudFront includes these headers in HTTP responses that it sends for requests that match a cache behavior that's associated with this response headers policy.
-    public struct ResponseHeadersPolicyCustomHeadersConfig {
+    public struct ResponseHeadersPolicyCustomHeadersConfig: Swift.Sendable {
         /// The list of HTTP response headers and their values.
         public var items: [CloudFrontClientTypes.ResponseHeadersPolicyCustomHeader]?
         /// The number of HTTP response headers in the list.
@@ -8057,12 +8059,12 @@ extension CloudFrontClientTypes {
             self.quantity = quantity
         }
     }
-
 }
 
 extension CloudFrontClientTypes {
+
     /// The name of an HTTP header that CloudFront removes from HTTP responses to requests that match the cache behavior that this response headers policy is attached to.
-    public struct ResponseHeadersPolicyRemoveHeader {
+    public struct ResponseHeadersPolicyRemoveHeader: Swift.Sendable {
         /// The HTTP header name.
         /// This member is required.
         public var header: Swift.String?
@@ -8074,12 +8076,12 @@ extension CloudFrontClientTypes {
             self.header = header
         }
     }
-
 }
 
 extension CloudFrontClientTypes {
+
     /// A list of HTTP header names that CloudFront removes from HTTP responses to requests that match the cache behavior that this response headers policy is attached to.
-    public struct ResponseHeadersPolicyRemoveHeadersConfig {
+    public struct ResponseHeadersPolicyRemoveHeadersConfig: Swift.Sendable {
         /// The list of HTTP header names.
         public var items: [CloudFrontClientTypes.ResponseHeadersPolicyRemoveHeader]?
         /// The number of HTTP header names in the list.
@@ -8095,12 +8097,12 @@ extension CloudFrontClientTypes {
             self.quantity = quantity
         }
     }
-
 }
 
 extension CloudFrontClientTypes {
+
     /// The policy directives and their values that CloudFront includes as values for the Content-Security-Policy HTTP response header. For more information about the Content-Security-Policy HTTP response header, see [Content-Security-Policy](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy) in the MDN Web Docs.
-    public struct ResponseHeadersPolicyContentSecurityPolicy {
+    public struct ResponseHeadersPolicyContentSecurityPolicy: Swift.Sendable {
         /// The policy directives and their values that CloudFront includes as values for the Content-Security-Policy HTTP response header.
         /// This member is required.
         public var contentSecurityPolicy: Swift.String?
@@ -8117,12 +8119,12 @@ extension CloudFrontClientTypes {
             self.`override` = `override`
         }
     }
-
 }
 
 extension CloudFrontClientTypes {
+
     /// Determines whether CloudFront includes the X-Content-Type-Options HTTP response header with its value set to nosniff. For more information about the X-Content-Type-Options HTTP response header, see [X-Content-Type-Options](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/X-Content-Type-Options) in the MDN Web Docs.
-    public struct ResponseHeadersPolicyContentTypeOptions {
+    public struct ResponseHeadersPolicyContentTypeOptions: Swift.Sendable {
         /// A Boolean that determines whether CloudFront overrides the X-Content-Type-Options HTTP response header received from the origin with the one specified in this response headers policy.
         /// This member is required.
         public var `override`: Swift.Bool?
@@ -8134,12 +8136,11 @@ extension CloudFrontClientTypes {
             self.`override` = `override`
         }
     }
-
 }
 
 extension CloudFrontClientTypes {
 
-    public enum FrameOptionsList: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum FrameOptionsList: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case deny
         case sameorigin
         case sdkUnknown(Swift.String)
@@ -8167,8 +8168,9 @@ extension CloudFrontClientTypes {
 }
 
 extension CloudFrontClientTypes {
+
     /// Determines whether CloudFront includes the X-Frame-Options HTTP response header and the header's value. For more information about the X-Frame-Options HTTP response header, see [X-Frame-Options](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/X-Frame-Options) in the MDN Web Docs.
-    public struct ResponseHeadersPolicyFrameOptions {
+    public struct ResponseHeadersPolicyFrameOptions: Swift.Sendable {
         /// The value of the X-Frame-Options HTTP response header. Valid values are DENY and SAMEORIGIN. For more information about these values, see [X-Frame-Options](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/X-Frame-Options) in the MDN Web Docs.
         /// This member is required.
         public var frameOption: CloudFrontClientTypes.FrameOptionsList?
@@ -8185,12 +8187,11 @@ extension CloudFrontClientTypes {
             self.`override` = `override`
         }
     }
-
 }
 
 extension CloudFrontClientTypes {
 
-    public enum ReferrerPolicyList: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ReferrerPolicyList: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case noReferrer
         case noReferrerWhenDowngrade
         case origin
@@ -8236,8 +8237,9 @@ extension CloudFrontClientTypes {
 }
 
 extension CloudFrontClientTypes {
+
     /// Determines whether CloudFront includes the Referrer-Policy HTTP response header and the header's value. For more information about the Referrer-Policy HTTP response header, see [Referrer-Policy](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Referrer-Policy) in the MDN Web Docs.
-    public struct ResponseHeadersPolicyReferrerPolicy {
+    public struct ResponseHeadersPolicyReferrerPolicy: Swift.Sendable {
         /// A Boolean that determines whether CloudFront overrides the Referrer-Policy HTTP response header received from the origin with the one specified in this response headers policy.
         /// This member is required.
         public var `override`: Swift.Bool?
@@ -8273,12 +8275,12 @@ extension CloudFrontClientTypes {
             self.referrerPolicy = referrerPolicy
         }
     }
-
 }
 
 extension CloudFrontClientTypes {
+
     /// Determines whether CloudFront includes the Strict-Transport-Security HTTP response header and the header's value. For more information about the Strict-Transport-Security HTTP response header, see [Strict-Transport-Security](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Strict-Transport-Security) in the MDN Web Docs.
-    public struct ResponseHeadersPolicyStrictTransportSecurity {
+    public struct ResponseHeadersPolicyStrictTransportSecurity: Swift.Sendable {
         /// A number that CloudFront uses as the value for the max-age directive in the Strict-Transport-Security HTTP response header.
         /// This member is required.
         public var accessControlMaxAgeSec: Swift.Int?
@@ -8303,12 +8305,12 @@ extension CloudFrontClientTypes {
             self.preload = preload
         }
     }
-
 }
 
 extension CloudFrontClientTypes {
+
     /// Determines whether CloudFront includes the X-XSS-Protection HTTP response header and the header's value. For more information about the X-XSS-Protection HTTP response header, see [X-XSS-Protection](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/X-XSS-Protection) in the MDN Web Docs.
-    public struct ResponseHeadersPolicyXSSProtection {
+    public struct ResponseHeadersPolicyXSSProtection: Swift.Sendable {
         /// A Boolean that determines whether CloudFront includes the mode=block directive in the X-XSS-Protection header. For more information about this directive, see [X-XSS-Protection](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/X-XSS-Protection) in the MDN Web Docs.
         public var modeBlock: Swift.Bool?
         /// A Boolean that determines whether CloudFront overrides the X-XSS-Protection HTTP response header received from the origin with the one specified in this response headers policy.
@@ -8333,12 +8335,12 @@ extension CloudFrontClientTypes {
             self.reportUri = reportUri
         }
     }
-
 }
 
 extension CloudFrontClientTypes {
+
     /// A configuration for a set of security-related HTTP response headers. CloudFront adds these headers to HTTP responses that it sends for requests that match a cache behavior associated with this response headers policy.
-    public struct ResponseHeadersPolicySecurityHeadersConfig {
+    public struct ResponseHeadersPolicySecurityHeadersConfig: Swift.Sendable {
         /// The policy directives and their values that CloudFront includes as values for the Content-Security-Policy HTTP response header. For more information about the Content-Security-Policy HTTP response header, see [Content-Security-Policy](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy) in the MDN Web Docs.
         public var contentSecurityPolicy: CloudFrontClientTypes.ResponseHeadersPolicyContentSecurityPolicy?
         /// Determines whether CloudFront includes the X-Content-Type-Options HTTP response header with its value set to nosniff. For more information about the X-Content-Type-Options HTTP response header, see [X-Content-Type-Options](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/X-Content-Type-Options) in the MDN Web Docs.
@@ -8369,12 +8371,12 @@ extension CloudFrontClientTypes {
             self.xssProtection = xssProtection
         }
     }
-
 }
 
 extension CloudFrontClientTypes {
+
     /// A configuration for enabling the Server-Timing header in HTTP responses sent from CloudFront. CloudFront adds this header to HTTP responses that it sends in response to requests that match a cache behavior that's associated with this response headers policy. You can use the Server-Timing header to view metrics that can help you gain insights about the behavior and performance of CloudFront. For example, you can see which cache layer served a cache hit, or the first byte latency from the origin when there was a cache miss. You can use the metrics in the Server-Timing header to troubleshoot issues or test the efficiency of your CloudFront configuration. For more information, see [Server-Timing header](https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/understanding-response-headers-policies.html#server-timing-header) in the Amazon CloudFront Developer Guide.
-    public struct ResponseHeadersPolicyServerTimingHeadersConfig {
+    public struct ResponseHeadersPolicyServerTimingHeadersConfig: Swift.Sendable {
         /// A Boolean that determines whether CloudFront adds the Server-Timing header to HTTP responses that it sends in response to requests that match a cache behavior that's associated with this response headers policy.
         /// This member is required.
         public var enabled: Swift.Bool?
@@ -8390,12 +8392,12 @@ extension CloudFrontClientTypes {
             self.samplingRate = samplingRate
         }
     }
-
 }
 
 extension CloudFrontClientTypes {
+
     /// A response headers policy configuration. A response headers policy configuration contains metadata about the response headers policy, and configurations for sets of HTTP response headers.
-    public struct ResponseHeadersPolicyConfig {
+    public struct ResponseHeadersPolicyConfig: Swift.Sendable {
         /// A comment to describe the response headers policy. The comment cannot be longer than 128 characters.
         public var comment: Swift.String?
         /// A configuration for a set of HTTP response headers that are used for cross-origin resource sharing (CORS).
@@ -8431,10 +8433,9 @@ extension CloudFrontClientTypes {
             self.serverTimingHeadersConfig = serverTimingHeadersConfig
         }
     }
-
 }
 
-public struct CreateResponseHeadersPolicyInput {
+public struct CreateResponseHeadersPolicyInput: Swift.Sendable {
     /// Contains metadata about the response headers policy, and a set of configurations that specify the HTTP headers.
     /// This member is required.
     public var responseHeadersPolicyConfig: CloudFrontClientTypes.ResponseHeadersPolicyConfig?
@@ -8448,8 +8449,9 @@ public struct CreateResponseHeadersPolicyInput {
 }
 
 extension CloudFrontClientTypes {
+
     /// A response headers policy. A response headers policy contains information about a set of HTTP response headers. After you create a response headers policy, you can use its ID to attach it to one or more cache behaviors in a CloudFront distribution. When it's attached to a cache behavior, the response headers policy affects the HTTP headers that CloudFront includes in HTTP responses to requests that match the cache behavior. CloudFront adds or removes response headers according to the configuration of the response headers policy. For more information, see [Adding or removing HTTP headers in CloudFront responses](https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/modifying-response-headers.html) in the Amazon CloudFront Developer Guide.
-    public struct ResponseHeadersPolicy {
+    public struct ResponseHeadersPolicy: Swift.Sendable {
         /// The identifier for the response headers policy.
         /// This member is required.
         public var id: Swift.String?
@@ -8471,10 +8473,9 @@ extension CloudFrontClientTypes {
             self.responseHeadersPolicyConfig = responseHeadersPolicyConfig
         }
     }
-
 }
 
-public struct CreateResponseHeadersPolicyOutput {
+public struct CreateResponseHeadersPolicyOutput: Swift.Sendable {
     /// The version identifier for the current version of the response headers policy.
     public var eTag: Swift.String?
     /// The URL of the response headers policy.
@@ -8567,8 +8568,9 @@ public struct TooManyStreamingDistributions: ClientRuntime.ModeledError, AWSClie
 }
 
 extension CloudFrontClientTypes {
+
     /// A complex type that controls whether access logs are written for this streaming distribution.
-    public struct StreamingLoggingConfig {
+    public struct StreamingLoggingConfig: Swift.Sendable {
         /// The Amazon S3 bucket to store the access logs in, for example, myawslogbucket.s3.amazonaws.com.
         /// This member is required.
         public var bucket: Swift.String?
@@ -8590,12 +8592,12 @@ extension CloudFrontClientTypes {
             self.`prefix` = `prefix`
         }
     }
-
 }
 
 extension CloudFrontClientTypes {
+
     /// A complex type that contains information about the Amazon S3 bucket from which you want CloudFront to get your media files for distribution.
-    public struct S3Origin : Swift.Equatable {
+    public struct S3Origin: Swift.Sendable, Swift.Equatable {
         /// The DNS name of the Amazon S3 origin.
         /// This member is required.
         public var domainName: Swift.String?
@@ -8612,12 +8614,12 @@ extension CloudFrontClientTypes {
             self.originAccessIdentity = originAccessIdentity
         }
     }
-
 }
 
 extension CloudFrontClientTypes {
+
     /// The RTMP distribution's configuration information.
-    public struct StreamingDistributionConfig {
+    public struct StreamingDistributionConfig: Swift.Sendable {
         /// A complex type that contains information about CNAMEs (alternate domain names), if any, for this streaming distribution.
         public var aliases: CloudFrontClientTypes.Aliases?
         /// A unique value (for example, a date-time stamp) that ensures that the request can't be replayed. If the value of CallerReference is new (regardless of the content of the StreamingDistributionConfig object), CloudFront creates a new distribution. If CallerReference is a value that you already sent in a previous request to create a distribution, CloudFront returns a DistributionAlreadyExists error.
@@ -8661,11 +8663,10 @@ extension CloudFrontClientTypes {
             self.trustedSigners = trustedSigners
         }
     }
-
 }
 
 /// The request to create a new streaming distribution.
-public struct CreateStreamingDistributionInput {
+public struct CreateStreamingDistributionInput: Swift.Sendable {
     /// The streaming distribution's configuration information.
     /// This member is required.
     public var streamingDistributionConfig: CloudFrontClientTypes.StreamingDistributionConfig?
@@ -8679,8 +8680,9 @@ public struct CreateStreamingDistributionInput {
 }
 
 extension CloudFrontClientTypes {
+
     /// A streaming distribution tells CloudFront where you want RTMP content to be delivered from, and the details about how to track and manage content delivery.
-    public struct StreamingDistribution {
+    public struct StreamingDistribution: Swift.Sendable {
         /// A complex type that lists the Amazon Web Services accounts, if any, that you included in the TrustedSigners complex type for this distribution. These are the accounts that you want to allow to create signed URLs for private content. The Signer complex type lists the Amazon Web Services account number of the trusted signer or self if the signer is the Amazon Web Services account that created the distribution. The Signer element also includes the IDs of any active CloudFront key pairs that are associated with the trusted signer's Amazon Web Services account. If no KeyPairId element appears for a Signer, that signer can't create signed URLs. For more information, see [Serving Private Content through CloudFront](https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/PrivateContent.html) in the Amazon CloudFront Developer Guide.
         /// This member is required.
         public var activeTrustedSigners: CloudFrontClientTypes.ActiveTrustedSigners?
@@ -8721,11 +8723,10 @@ extension CloudFrontClientTypes {
             self.streamingDistributionConfig = streamingDistributionConfig
         }
     }
-
 }
 
 /// The returned result of the corresponding request.
-public struct CreateStreamingDistributionOutput {
+public struct CreateStreamingDistributionOutput: Swift.Sendable {
     /// The current version of the streaming distribution created.
     public var eTag: Swift.String?
     /// The fully qualified URI of the new streaming distribution resource just created.
@@ -8746,8 +8747,9 @@ public struct CreateStreamingDistributionOutput {
 }
 
 extension CloudFrontClientTypes {
+
     /// A streaming distribution Configuration and a list of tags to be associated with the streaming distribution.
-    public struct StreamingDistributionConfigWithTags {
+    public struct StreamingDistributionConfigWithTags: Swift.Sendable {
         /// A streaming distribution Configuration.
         /// This member is required.
         public var streamingDistributionConfig: CloudFrontClientTypes.StreamingDistributionConfig?
@@ -8764,11 +8766,10 @@ extension CloudFrontClientTypes {
             self.tags = tags
         }
     }
-
 }
 
 /// The request to create a new streaming distribution with tags.
-public struct CreateStreamingDistributionWithTagsInput {
+public struct CreateStreamingDistributionWithTagsInput: Swift.Sendable {
     /// The streaming distribution's configuration information.
     /// This member is required.
     public var streamingDistributionConfigWithTags: CloudFrontClientTypes.StreamingDistributionConfigWithTags?
@@ -8782,7 +8783,7 @@ public struct CreateStreamingDistributionWithTagsInput {
 }
 
 /// The returned result of the corresponding request.
-public struct CreateStreamingDistributionWithTagsOutput {
+public struct CreateStreamingDistributionWithTagsOutput: Swift.Sendable {
     /// The current version of the distribution created.
     public var eTag: Swift.String?
     /// The fully qualified URI of the new streaming distribution resource just created.
@@ -8826,7 +8827,7 @@ public struct IllegalDelete: ClientRuntime.ModeledError, AWSClientRuntime.AWSSer
     }
 }
 
-public struct DeleteCachePolicyInput {
+public struct DeleteCachePolicyInput: Swift.Sendable {
     /// The unique identifier for the cache policy that you are deleting. To get the identifier, you can use ListCachePolicies.
     /// This member is required.
     public var id: Swift.String?
@@ -8892,7 +8893,7 @@ public struct NoSuchCloudFrontOriginAccessIdentity: ClientRuntime.ModeledError, 
 }
 
 /// Deletes a origin access identity.
-public struct DeleteCloudFrontOriginAccessIdentityInput {
+public struct DeleteCloudFrontOriginAccessIdentityInput: Swift.Sendable {
     /// The origin access identity's ID.
     /// This member is required.
     public var id: Swift.String?
@@ -8909,7 +8910,7 @@ public struct DeleteCloudFrontOriginAccessIdentityInput {
     }
 }
 
-public struct DeleteContinuousDeploymentPolicyInput {
+public struct DeleteContinuousDeploymentPolicyInput: Swift.Sendable {
     /// The identifier of the continuous deployment policy that you are deleting.
     /// This member is required.
     public var id: Swift.String?
@@ -8970,7 +8971,7 @@ public struct DistributionNotDisabled: ClientRuntime.ModeledError, AWSClientRunt
 ///
 ///
 /// For information about deleting a distribution using the CloudFront console, see [Deleting a Distribution](https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/HowToDeleteDistribution.html) in the Amazon CloudFront Developer Guide.
-public struct DeleteDistributionInput {
+public struct DeleteDistributionInput: Swift.Sendable {
     /// The distribution ID.
     /// This member is required.
     public var id: Swift.String?
@@ -9011,7 +9012,7 @@ public struct FieldLevelEncryptionConfigInUse: ClientRuntime.ModeledError, AWSCl
     }
 }
 
-public struct DeleteFieldLevelEncryptionConfigInput {
+public struct DeleteFieldLevelEncryptionConfigInput: Swift.Sendable {
     /// The ID of the configuration you want to delete from CloudFront.
     /// This member is required.
     public var id: Swift.String?
@@ -9052,7 +9053,7 @@ public struct FieldLevelEncryptionProfileInUse: ClientRuntime.ModeledError, AWSC
     }
 }
 
-public struct DeleteFieldLevelEncryptionProfileInput {
+public struct DeleteFieldLevelEncryptionProfileInput: Swift.Sendable {
     /// Request the ID of the profile you want to delete from CloudFront.
     /// This member is required.
     public var id: Swift.String?
@@ -9117,7 +9118,7 @@ public struct NoSuchFunctionExists: ClientRuntime.ModeledError, AWSClientRuntime
     }
 }
 
-public struct DeleteFunctionInput {
+public struct DeleteFunctionInput: Swift.Sendable {
     /// The current version (ETag value) of the function that you are deleting, which you can get using DescribeFunction.
     /// This member is required.
     public var ifMatch: Swift.String?
@@ -9183,7 +9184,7 @@ public struct ResourceInUse: ClientRuntime.ModeledError, AWSClientRuntime.AWSSer
     }
 }
 
-public struct DeleteKeyGroupInput {
+public struct DeleteKeyGroupInput: Swift.Sendable {
     /// The identifier of the key group that you are deleting. To get the identifier, use ListKeyGroups.
     /// This member is required.
     public var id: Swift.String?
@@ -9224,7 +9225,7 @@ public struct EntityNotFound: ClientRuntime.ModeledError, AWSClientRuntime.AWSSe
     }
 }
 
-public struct DeleteKeyValueStoreInput {
+public struct DeleteKeyValueStoreInput: Swift.Sendable {
     /// The key value store to delete, if a match occurs.
     /// This member is required.
     public var ifMatch: Swift.String?
@@ -9266,7 +9267,7 @@ public struct NoSuchMonitoringSubscription: ClientRuntime.ModeledError, AWSClien
     }
 }
 
-public struct DeleteMonitoringSubscriptionInput {
+public struct DeleteMonitoringSubscriptionInput: Swift.Sendable {
     /// The ID of the distribution that you are disabling metrics for.
     /// This member is required.
     public var distributionId: Swift.String?
@@ -9279,7 +9280,7 @@ public struct DeleteMonitoringSubscriptionInput {
     }
 }
 
-public struct DeleteMonitoringSubscriptionOutput {
+public struct DeleteMonitoringSubscriptionOutput: Swift.Sendable {
 
     public init() { }
 }
@@ -9332,7 +9333,7 @@ public struct OriginAccessControlInUse: ClientRuntime.ModeledError, AWSClientRun
     }
 }
 
-public struct DeleteOriginAccessControlInput {
+public struct DeleteOriginAccessControlInput: Swift.Sendable {
     /// The unique identifier of the origin access control that you are deleting.
     /// This member is required.
     public var id: Swift.String?
@@ -9373,7 +9374,7 @@ public struct OriginRequestPolicyInUse: ClientRuntime.ModeledError, AWSClientRun
     }
 }
 
-public struct DeleteOriginRequestPolicyInput {
+public struct DeleteOriginRequestPolicyInput: Swift.Sendable {
     /// The unique identifier for the origin request policy that you are deleting. To get the identifier, you can use ListOriginRequestPolicies.
     /// This member is required.
     public var id: Swift.String?
@@ -9414,7 +9415,7 @@ public struct PublicKeyInUse: ClientRuntime.ModeledError, AWSClientRuntime.AWSSe
     }
 }
 
-public struct DeletePublicKeyInput {
+public struct DeletePublicKeyInput: Swift.Sendable {
     /// The ID of the public key you want to remove from CloudFront.
     /// This member is required.
     public var id: Swift.String?
@@ -9455,7 +9456,7 @@ public struct RealtimeLogConfigInUse: ClientRuntime.ModeledError, AWSClientRunti
     }
 }
 
-public struct DeleteRealtimeLogConfigInput {
+public struct DeleteRealtimeLogConfigInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the real-time log configuration to delete.
     public var arn: Swift.String?
     /// The name of the real-time log configuration to delete.
@@ -9495,7 +9496,7 @@ public struct ResponseHeadersPolicyInUse: ClientRuntime.ModeledError, AWSClientR
     }
 }
 
-public struct DeleteResponseHeadersPolicyInput {
+public struct DeleteResponseHeadersPolicyInput: Swift.Sendable {
     /// The identifier for the response headers policy that you are deleting. To get the identifier, you can use ListResponseHeadersPolicies.
     /// This member is required.
     public var id: Swift.String?
@@ -9561,7 +9562,7 @@ public struct StreamingDistributionNotDisabled: ClientRuntime.ModeledError, AWSC
 }
 
 /// The request to delete a streaming distribution.
-public struct DeleteStreamingDistributionInput {
+public struct DeleteStreamingDistributionInput: Swift.Sendable {
     /// The distribution ID.
     /// This member is required.
     public var id: Swift.String?
@@ -9578,7 +9579,7 @@ public struct DeleteStreamingDistributionInput {
     }
 }
 
-public struct DescribeFunctionInput {
+public struct DescribeFunctionInput: Swift.Sendable {
     /// The name of the function that you are getting information about.
     /// This member is required.
     public var name: Swift.String?
@@ -9595,7 +9596,7 @@ public struct DescribeFunctionInput {
     }
 }
 
-public struct DescribeFunctionOutput {
+public struct DescribeFunctionOutput: Swift.Sendable {
     /// The version identifier for the current version of the CloudFront function.
     public var eTag: Swift.String?
     /// Contains configuration information and metadata about a CloudFront function.
@@ -9611,7 +9612,7 @@ public struct DescribeFunctionOutput {
     }
 }
 
-public struct DescribeKeyValueStoreInput {
+public struct DescribeKeyValueStoreInput: Swift.Sendable {
     /// The name of the key value store.
     /// This member is required.
     public var name: Swift.String?
@@ -9624,7 +9625,7 @@ public struct DescribeKeyValueStoreInput {
     }
 }
 
-public struct DescribeKeyValueStoreOutput {
+public struct DescribeKeyValueStoreOutput: Swift.Sendable {
     /// The ETag of the resulting key value store.
     public var eTag: Swift.String?
     /// The resulting key value store.
@@ -9640,7 +9641,7 @@ public struct DescribeKeyValueStoreOutput {
     }
 }
 
-public struct GetCachePolicyInput {
+public struct GetCachePolicyInput: Swift.Sendable {
     /// The unique identifier for the cache policy. If the cache policy is attached to a distribution's cache behavior, you can get the policy's identifier using ListDistributions or GetDistribution. If the cache policy is not attached to a cache behavior, you can get the identifier using ListCachePolicies.
     /// This member is required.
     public var id: Swift.String?
@@ -9653,7 +9654,7 @@ public struct GetCachePolicyInput {
     }
 }
 
-public struct GetCachePolicyOutput {
+public struct GetCachePolicyOutput: Swift.Sendable {
     /// The cache policy.
     public var cachePolicy: CloudFrontClientTypes.CachePolicy?
     /// The current version of the cache policy.
@@ -9669,7 +9670,7 @@ public struct GetCachePolicyOutput {
     }
 }
 
-public struct GetCachePolicyConfigInput {
+public struct GetCachePolicyConfigInput: Swift.Sendable {
     /// The unique identifier for the cache policy. If the cache policy is attached to a distribution's cache behavior, you can get the policy's identifier using ListDistributions or GetDistribution. If the cache policy is not attached to a cache behavior, you can get the identifier using ListCachePolicies.
     /// This member is required.
     public var id: Swift.String?
@@ -9682,7 +9683,7 @@ public struct GetCachePolicyConfigInput {
     }
 }
 
-public struct GetCachePolicyConfigOutput {
+public struct GetCachePolicyConfigOutput: Swift.Sendable {
     /// The cache policy configuration.
     public var cachePolicyConfig: CloudFrontClientTypes.CachePolicyConfig?
     /// The current version of the cache policy.
@@ -9699,7 +9700,7 @@ public struct GetCachePolicyConfigOutput {
 }
 
 /// The request to get an origin access identity's information.
-public struct GetCloudFrontOriginAccessIdentityInput {
+public struct GetCloudFrontOriginAccessIdentityInput: Swift.Sendable {
     /// The identity's ID.
     /// This member is required.
     public var id: Swift.String?
@@ -9713,7 +9714,7 @@ public struct GetCloudFrontOriginAccessIdentityInput {
 }
 
 /// The returned result of the corresponding request.
-public struct GetCloudFrontOriginAccessIdentityOutput {
+public struct GetCloudFrontOriginAccessIdentityOutput: Swift.Sendable {
     /// The origin access identity's information.
     public var cloudFrontOriginAccessIdentity: CloudFrontClientTypes.CloudFrontOriginAccessIdentity?
     /// The current version of the origin access identity's information. For example: E2QWRUHAPOMQZL.
@@ -9730,7 +9731,7 @@ public struct GetCloudFrontOriginAccessIdentityOutput {
 }
 
 /// The origin access identity's configuration information. For more information, see [CloudFrontOriginAccessIdentityConfig](https://docs.aws.amazon.com/cloudfront/latest/APIReference/API_CloudFrontOriginAccessIdentityConfig.html).
-public struct GetCloudFrontOriginAccessIdentityConfigInput {
+public struct GetCloudFrontOriginAccessIdentityConfigInput: Swift.Sendable {
     /// The identity's ID.
     /// This member is required.
     public var id: Swift.String?
@@ -9744,7 +9745,7 @@ public struct GetCloudFrontOriginAccessIdentityConfigInput {
 }
 
 /// The returned result of the corresponding request.
-public struct GetCloudFrontOriginAccessIdentityConfigOutput {
+public struct GetCloudFrontOriginAccessIdentityConfigOutput: Swift.Sendable {
     /// The origin access identity's configuration information.
     public var cloudFrontOriginAccessIdentityConfig: CloudFrontClientTypes.CloudFrontOriginAccessIdentityConfig?
     /// The current version of the configuration. For example: E2QWRUHAPOMQZL.
@@ -9760,7 +9761,7 @@ public struct GetCloudFrontOriginAccessIdentityConfigOutput {
     }
 }
 
-public struct GetContinuousDeploymentPolicyInput {
+public struct GetContinuousDeploymentPolicyInput: Swift.Sendable {
     /// The identifier of the continuous deployment policy that you are getting.
     /// This member is required.
     public var id: Swift.String?
@@ -9773,7 +9774,7 @@ public struct GetContinuousDeploymentPolicyInput {
     }
 }
 
-public struct GetContinuousDeploymentPolicyOutput {
+public struct GetContinuousDeploymentPolicyOutput: Swift.Sendable {
     /// A continuous deployment policy.
     public var continuousDeploymentPolicy: CloudFrontClientTypes.ContinuousDeploymentPolicy?
     /// The version identifier for the current version of the continuous deployment policy.
@@ -9789,7 +9790,7 @@ public struct GetContinuousDeploymentPolicyOutput {
     }
 }
 
-public struct GetContinuousDeploymentPolicyConfigInput {
+public struct GetContinuousDeploymentPolicyConfigInput: Swift.Sendable {
     /// The identifier of the continuous deployment policy whose configuration you are getting.
     /// This member is required.
     public var id: Swift.String?
@@ -9802,7 +9803,7 @@ public struct GetContinuousDeploymentPolicyConfigInput {
     }
 }
 
-public struct GetContinuousDeploymentPolicyConfigOutput {
+public struct GetContinuousDeploymentPolicyConfigOutput: Swift.Sendable {
     /// Contains the configuration for a continuous deployment policy.
     public var continuousDeploymentPolicyConfig: CloudFrontClientTypes.ContinuousDeploymentPolicyConfig?
     /// The version identifier for the current version of the continuous deployment policy.
@@ -9819,7 +9820,7 @@ public struct GetContinuousDeploymentPolicyConfigOutput {
 }
 
 /// The request to get a distribution's information.
-public struct GetDistributionInput {
+public struct GetDistributionInput: Swift.Sendable {
     /// The distribution's ID. If the ID is empty, an empty distribution configuration is returned.
     /// This member is required.
     public var id: Swift.String?
@@ -9833,7 +9834,7 @@ public struct GetDistributionInput {
 }
 
 /// The returned result of the corresponding request.
-public struct GetDistributionOutput {
+public struct GetDistributionOutput: Swift.Sendable {
     /// The distribution's information.
     public var distribution: CloudFrontClientTypes.Distribution?
     /// The current version of the distribution's information. For example: E2QWRUHAPOMQZL.
@@ -9850,7 +9851,7 @@ public struct GetDistributionOutput {
 }
 
 /// The request to get a distribution configuration.
-public struct GetDistributionConfigInput {
+public struct GetDistributionConfigInput: Swift.Sendable {
     /// The distribution's ID. If the ID is empty, an empty distribution configuration is returned.
     /// This member is required.
     public var id: Swift.String?
@@ -9864,7 +9865,7 @@ public struct GetDistributionConfigInput {
 }
 
 /// The returned result of the corresponding request.
-public struct GetDistributionConfigOutput {
+public struct GetDistributionConfigOutput: Swift.Sendable {
     /// The distribution's configuration information.
     public var distributionConfig: CloudFrontClientTypes.DistributionConfig?
     /// The current version of the configuration. For example: E2QWRUHAPOMQZL.
@@ -9880,7 +9881,7 @@ public struct GetDistributionConfigOutput {
     }
 }
 
-public struct GetFieldLevelEncryptionInput {
+public struct GetFieldLevelEncryptionInput: Swift.Sendable {
     /// Request the ID for the field-level encryption configuration information.
     /// This member is required.
     public var id: Swift.String?
@@ -9893,7 +9894,7 @@ public struct GetFieldLevelEncryptionInput {
     }
 }
 
-public struct GetFieldLevelEncryptionOutput {
+public struct GetFieldLevelEncryptionOutput: Swift.Sendable {
     /// The current version of the field level encryption configuration. For example: E2QWRUHAPOMQZL.
     public var eTag: Swift.String?
     /// Return the field-level encryption configuration information.
@@ -9909,7 +9910,7 @@ public struct GetFieldLevelEncryptionOutput {
     }
 }
 
-public struct GetFieldLevelEncryptionConfigInput {
+public struct GetFieldLevelEncryptionConfigInput: Swift.Sendable {
     /// Request the ID for the field-level encryption configuration information.
     /// This member is required.
     public var id: Swift.String?
@@ -9922,7 +9923,7 @@ public struct GetFieldLevelEncryptionConfigInput {
     }
 }
 
-public struct GetFieldLevelEncryptionConfigOutput {
+public struct GetFieldLevelEncryptionConfigOutput: Swift.Sendable {
     /// The current version of the field level encryption configuration. For example: E2QWRUHAPOMQZL.
     public var eTag: Swift.String?
     /// Return the field-level encryption configuration information.
@@ -9938,7 +9939,7 @@ public struct GetFieldLevelEncryptionConfigOutput {
     }
 }
 
-public struct GetFieldLevelEncryptionProfileInput {
+public struct GetFieldLevelEncryptionProfileInput: Swift.Sendable {
     /// Get the ID for the field-level encryption profile information.
     /// This member is required.
     public var id: Swift.String?
@@ -9951,7 +9952,7 @@ public struct GetFieldLevelEncryptionProfileInput {
     }
 }
 
-public struct GetFieldLevelEncryptionProfileOutput {
+public struct GetFieldLevelEncryptionProfileOutput: Swift.Sendable {
     /// The current version of the field level encryption profile. For example: E2QWRUHAPOMQZL.
     public var eTag: Swift.String?
     /// Return the field-level encryption profile information.
@@ -9967,7 +9968,7 @@ public struct GetFieldLevelEncryptionProfileOutput {
     }
 }
 
-public struct GetFieldLevelEncryptionProfileConfigInput {
+public struct GetFieldLevelEncryptionProfileConfigInput: Swift.Sendable {
     /// Get the ID for the field-level encryption profile configuration information.
     /// This member is required.
     public var id: Swift.String?
@@ -9980,7 +9981,7 @@ public struct GetFieldLevelEncryptionProfileConfigInput {
     }
 }
 
-public struct GetFieldLevelEncryptionProfileConfigOutput {
+public struct GetFieldLevelEncryptionProfileConfigOutput: Swift.Sendable {
     /// The current version of the field-level encryption profile configuration result. For example: E2QWRUHAPOMQZL.
     public var eTag: Swift.String?
     /// Return the field-level encryption profile configuration information.
@@ -9996,7 +9997,7 @@ public struct GetFieldLevelEncryptionProfileConfigOutput {
     }
 }
 
-public struct GetFunctionInput {
+public struct GetFunctionInput: Swift.Sendable {
     /// The name of the function whose code you are getting.
     /// This member is required.
     public var name: Swift.String?
@@ -10013,7 +10014,7 @@ public struct GetFunctionInput {
     }
 }
 
-public struct GetFunctionOutput {
+public struct GetFunctionOutput: Swift.Sendable {
     /// The content type (media type) of the response.
     public var contentType: Swift.String?
     /// The version identifier for the current version of the CloudFront function.
@@ -10063,7 +10064,7 @@ public struct NoSuchInvalidation: ClientRuntime.ModeledError, AWSClientRuntime.A
 }
 
 /// The request to get an invalidation's information.
-public struct GetInvalidationInput {
+public struct GetInvalidationInput: Swift.Sendable {
     /// The distribution's ID.
     /// This member is required.
     public var distributionId: Swift.String?
@@ -10082,7 +10083,7 @@ public struct GetInvalidationInput {
 }
 
 /// The returned result of the corresponding request.
-public struct GetInvalidationOutput {
+public struct GetInvalidationOutput: Swift.Sendable {
     /// The invalidation's information. For more information, see [Invalidation Complex Type](https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/InvalidationDatatype.html).
     public var invalidation: CloudFrontClientTypes.Invalidation?
 
@@ -10094,7 +10095,7 @@ public struct GetInvalidationOutput {
     }
 }
 
-public struct GetKeyGroupInput {
+public struct GetKeyGroupInput: Swift.Sendable {
     /// The identifier of the key group that you are getting. To get the identifier, use ListKeyGroups.
     /// This member is required.
     public var id: Swift.String?
@@ -10107,7 +10108,7 @@ public struct GetKeyGroupInput {
     }
 }
 
-public struct GetKeyGroupOutput {
+public struct GetKeyGroupOutput: Swift.Sendable {
     /// The identifier for this version of the key group.
     public var eTag: Swift.String?
     /// The key group.
@@ -10123,7 +10124,7 @@ public struct GetKeyGroupOutput {
     }
 }
 
-public struct GetKeyGroupConfigInput {
+public struct GetKeyGroupConfigInput: Swift.Sendable {
     /// The identifier of the key group whose configuration you are getting. To get the identifier, use ListKeyGroups.
     /// This member is required.
     public var id: Swift.String?
@@ -10136,7 +10137,7 @@ public struct GetKeyGroupConfigInput {
     }
 }
 
-public struct GetKeyGroupConfigOutput {
+public struct GetKeyGroupConfigOutput: Swift.Sendable {
     /// The identifier for this version of the key group.
     public var eTag: Swift.String?
     /// The key group configuration.
@@ -10152,7 +10153,7 @@ public struct GetKeyGroupConfigOutput {
     }
 }
 
-public struct GetMonitoringSubscriptionInput {
+public struct GetMonitoringSubscriptionInput: Swift.Sendable {
     /// The ID of the distribution that you are getting metrics information for.
     /// This member is required.
     public var distributionId: Swift.String?
@@ -10165,7 +10166,7 @@ public struct GetMonitoringSubscriptionInput {
     }
 }
 
-public struct GetMonitoringSubscriptionOutput {
+public struct GetMonitoringSubscriptionOutput: Swift.Sendable {
     /// A monitoring subscription. This structure contains information about whether additional CloudWatch metrics are enabled for a given CloudFront distribution.
     public var monitoringSubscription: CloudFrontClientTypes.MonitoringSubscription?
 
@@ -10177,7 +10178,7 @@ public struct GetMonitoringSubscriptionOutput {
     }
 }
 
-public struct GetOriginAccessControlInput {
+public struct GetOriginAccessControlInput: Swift.Sendable {
     /// The unique identifier of the origin access control.
     /// This member is required.
     public var id: Swift.String?
@@ -10190,7 +10191,7 @@ public struct GetOriginAccessControlInput {
     }
 }
 
-public struct GetOriginAccessControlOutput {
+public struct GetOriginAccessControlOutput: Swift.Sendable {
     /// The version identifier for the current version of the origin access control.
     public var eTag: Swift.String?
     /// Contains an origin access control, including its unique identifier.
@@ -10206,7 +10207,7 @@ public struct GetOriginAccessControlOutput {
     }
 }
 
-public struct GetOriginAccessControlConfigInput {
+public struct GetOriginAccessControlConfigInput: Swift.Sendable {
     /// The unique identifier of the origin access control.
     /// This member is required.
     public var id: Swift.String?
@@ -10219,7 +10220,7 @@ public struct GetOriginAccessControlConfigInput {
     }
 }
 
-public struct GetOriginAccessControlConfigOutput {
+public struct GetOriginAccessControlConfigOutput: Swift.Sendable {
     /// The version identifier for the current version of the origin access control.
     public var eTag: Swift.String?
     /// Contains an origin access control configuration.
@@ -10235,7 +10236,7 @@ public struct GetOriginAccessControlConfigOutput {
     }
 }
 
-public struct GetOriginRequestPolicyInput {
+public struct GetOriginRequestPolicyInput: Swift.Sendable {
     /// The unique identifier for the origin request policy. If the origin request policy is attached to a distribution's cache behavior, you can get the policy's identifier using ListDistributions or GetDistribution. If the origin request policy is not attached to a cache behavior, you can get the identifier using ListOriginRequestPolicies.
     /// This member is required.
     public var id: Swift.String?
@@ -10248,7 +10249,7 @@ public struct GetOriginRequestPolicyInput {
     }
 }
 
-public struct GetOriginRequestPolicyOutput {
+public struct GetOriginRequestPolicyOutput: Swift.Sendable {
     /// The current version of the origin request policy.
     public var eTag: Swift.String?
     /// The origin request policy.
@@ -10264,7 +10265,7 @@ public struct GetOriginRequestPolicyOutput {
     }
 }
 
-public struct GetOriginRequestPolicyConfigInput {
+public struct GetOriginRequestPolicyConfigInput: Swift.Sendable {
     /// The unique identifier for the origin request policy. If the origin request policy is attached to a distribution's cache behavior, you can get the policy's identifier using ListDistributions or GetDistribution. If the origin request policy is not attached to a cache behavior, you can get the identifier using ListOriginRequestPolicies.
     /// This member is required.
     public var id: Swift.String?
@@ -10277,7 +10278,7 @@ public struct GetOriginRequestPolicyConfigInput {
     }
 }
 
-public struct GetOriginRequestPolicyConfigOutput {
+public struct GetOriginRequestPolicyConfigOutput: Swift.Sendable {
     /// The current version of the origin request policy.
     public var eTag: Swift.String?
     /// The origin request policy configuration.
@@ -10293,7 +10294,7 @@ public struct GetOriginRequestPolicyConfigOutput {
     }
 }
 
-public struct GetPublicKeyInput {
+public struct GetPublicKeyInput: Swift.Sendable {
     /// The identifier of the public key you are getting.
     /// This member is required.
     public var id: Swift.String?
@@ -10306,7 +10307,7 @@ public struct GetPublicKeyInput {
     }
 }
 
-public struct GetPublicKeyOutput {
+public struct GetPublicKeyOutput: Swift.Sendable {
     /// The identifier for this version of the public key.
     public var eTag: Swift.String?
     /// The public key.
@@ -10322,7 +10323,7 @@ public struct GetPublicKeyOutput {
     }
 }
 
-public struct GetPublicKeyConfigInput {
+public struct GetPublicKeyConfigInput: Swift.Sendable {
     /// The identifier of the public key whose configuration you are getting.
     /// This member is required.
     public var id: Swift.String?
@@ -10335,7 +10336,7 @@ public struct GetPublicKeyConfigInput {
     }
 }
 
-public struct GetPublicKeyConfigOutput {
+public struct GetPublicKeyConfigOutput: Swift.Sendable {
     /// The identifier for this version of the public key configuration.
     public var eTag: Swift.String?
     /// A public key configuration.
@@ -10351,7 +10352,7 @@ public struct GetPublicKeyConfigOutput {
     }
 }
 
-public struct GetRealtimeLogConfigInput {
+public struct GetRealtimeLogConfigInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the real-time log configuration to get.
     public var arn: Swift.String?
     /// The name of the real-time log configuration to get.
@@ -10367,7 +10368,7 @@ public struct GetRealtimeLogConfigInput {
     }
 }
 
-public struct GetRealtimeLogConfigOutput {
+public struct GetRealtimeLogConfigOutput: Swift.Sendable {
     /// A real-time log configuration.
     public var realtimeLogConfig: CloudFrontClientTypes.RealtimeLogConfig?
 
@@ -10379,7 +10380,7 @@ public struct GetRealtimeLogConfigOutput {
     }
 }
 
-public struct GetResponseHeadersPolicyInput {
+public struct GetResponseHeadersPolicyInput: Swift.Sendable {
     /// The identifier for the response headers policy. If the response headers policy is attached to a distribution's cache behavior, you can get the policy's identifier using ListDistributions or GetDistribution. If the response headers policy is not attached to a cache behavior, you can get the identifier using ListResponseHeadersPolicies.
     /// This member is required.
     public var id: Swift.String?
@@ -10392,7 +10393,7 @@ public struct GetResponseHeadersPolicyInput {
     }
 }
 
-public struct GetResponseHeadersPolicyOutput {
+public struct GetResponseHeadersPolicyOutput: Swift.Sendable {
     /// The version identifier for the current version of the response headers policy.
     public var eTag: Swift.String?
     /// Contains a response headers policy.
@@ -10408,7 +10409,7 @@ public struct GetResponseHeadersPolicyOutput {
     }
 }
 
-public struct GetResponseHeadersPolicyConfigInput {
+public struct GetResponseHeadersPolicyConfigInput: Swift.Sendable {
     /// The identifier for the response headers policy. If the response headers policy is attached to a distribution's cache behavior, you can get the policy's identifier using ListDistributions or GetDistribution. If the response headers policy is not attached to a cache behavior, you can get the identifier using ListResponseHeadersPolicies.
     /// This member is required.
     public var id: Swift.String?
@@ -10421,7 +10422,7 @@ public struct GetResponseHeadersPolicyConfigInput {
     }
 }
 
-public struct GetResponseHeadersPolicyConfigOutput {
+public struct GetResponseHeadersPolicyConfigOutput: Swift.Sendable {
     /// The version identifier for the current version of the response headers policy.
     public var eTag: Swift.String?
     /// Contains a response headers policy.
@@ -10438,7 +10439,7 @@ public struct GetResponseHeadersPolicyConfigOutput {
 }
 
 /// The request to get a streaming distribution's information.
-public struct GetStreamingDistributionInput {
+public struct GetStreamingDistributionInput: Swift.Sendable {
     /// The streaming distribution's ID.
     /// This member is required.
     public var id: Swift.String?
@@ -10452,7 +10453,7 @@ public struct GetStreamingDistributionInput {
 }
 
 /// The returned result of the corresponding request.
-public struct GetStreamingDistributionOutput {
+public struct GetStreamingDistributionOutput: Swift.Sendable {
     /// The current version of the streaming distribution's information. For example: E2QWRUHAPOMQZL.
     public var eTag: Swift.String?
     /// The streaming distribution's information.
@@ -10469,7 +10470,7 @@ public struct GetStreamingDistributionOutput {
 }
 
 /// To request to get a streaming distribution configuration.
-public struct GetStreamingDistributionConfigInput {
+public struct GetStreamingDistributionConfigInput: Swift.Sendable {
     /// The streaming distribution's ID.
     /// This member is required.
     public var id: Swift.String?
@@ -10483,7 +10484,7 @@ public struct GetStreamingDistributionConfigInput {
 }
 
 /// The returned result of the corresponding request.
-public struct GetStreamingDistributionConfigOutput {
+public struct GetStreamingDistributionConfigOutput: Swift.Sendable {
     /// The current version of the configuration. For example: E2QWRUHAPOMQZL.
     public var eTag: Swift.String?
     /// The streaming distribution's configuration information.
@@ -10499,7 +10500,7 @@ public struct GetStreamingDistributionConfigOutput {
     }
 }
 
-public struct ListCachePoliciesInput {
+public struct ListCachePoliciesInput: Swift.Sendable {
     /// Use this field when paginating results to indicate where to begin in your list of cache policies. The response includes cache policies in the list that occur after the marker. To get the next page of the list, set this field's value to the value of NextMarker from the current page's response.
     public var marker: Swift.String?
     /// The maximum number of cache policies that you want in the response.
@@ -10523,7 +10524,7 @@ public struct ListCachePoliciesInput {
     }
 }
 
-public struct ListCachePoliciesOutput {
+public struct ListCachePoliciesOutput: Swift.Sendable {
     /// A list of cache policies.
     public var cachePolicyList: CloudFrontClientTypes.CachePolicyList?
 
@@ -10536,7 +10537,7 @@ public struct ListCachePoliciesOutput {
 }
 
 /// The request to list origin access identities.
-public struct ListCloudFrontOriginAccessIdentitiesInput {
+public struct ListCloudFrontOriginAccessIdentitiesInput: Swift.Sendable {
     /// Use this when paginating results to indicate where to begin in your list of origin access identities. The results include identities in the list that occur after the marker. To get the next page of results, set the Marker to the value of the NextMarker from the current page's response (which is also the ID of the last identity on that page).
     public var marker: Swift.String?
     /// The maximum number of origin access identities you want in the response body.
@@ -10553,8 +10554,9 @@ public struct ListCloudFrontOriginAccessIdentitiesInput {
 }
 
 extension CloudFrontClientTypes {
+
     /// Summary of the information about a CloudFront origin access identity.
-    public struct CloudFrontOriginAccessIdentitySummary : Swift.Equatable {
+    public struct CloudFrontOriginAccessIdentitySummary: Swift.Sendable, Swift.Equatable {
         /// The comment for this origin access identity, as originally specified when created.
         /// This member is required.
         public var comment: Swift.String?
@@ -10576,12 +10578,12 @@ extension CloudFrontClientTypes {
             self.s3CanonicalUserId = s3CanonicalUserId
         }
     }
-
 }
 
 extension CloudFrontClientTypes {
+
     /// Lists the origin access identities for CloudFront.Send a GET request to the /CloudFront API version/origin-access-identity/cloudfront resource. The response includes a CloudFrontOriginAccessIdentityList element with zero or more CloudFrontOriginAccessIdentitySummary child elements. By default, your entire list of origin access identities is returned in one single page. If the list is long, you can paginate it using the MaxItems and Marker parameters.
-    public struct CloudFrontOriginAccessIdentityList : Swift.Equatable {
+    public struct CloudFrontOriginAccessIdentityList: Swift.Sendable, Swift.Equatable {
         /// A flag that indicates whether more origin access identities remain to be listed. If your results were truncated, you can make a follow-up pagination request using the Marker request parameter to retrieve more items in the list.
         /// This member is required.
         public var isTruncated: Swift.Bool?
@@ -10616,11 +10618,10 @@ extension CloudFrontClientTypes {
             self.quantity = quantity
         }
     }
-
 }
 
 /// The returned result of the corresponding request.
-public struct ListCloudFrontOriginAccessIdentitiesOutput {
+public struct ListCloudFrontOriginAccessIdentitiesOutput: Swift.Sendable {
     /// The CloudFrontOriginAccessIdentityList type.
     public var cloudFrontOriginAccessIdentityList: CloudFrontClientTypes.CloudFrontOriginAccessIdentityList?
 
@@ -10632,7 +10633,7 @@ public struct ListCloudFrontOriginAccessIdentitiesOutput {
     }
 }
 
-public struct ListConflictingAliasesInput {
+public struct ListConflictingAliasesInput: Swift.Sendable {
     /// The alias (also called a CNAME) to search for conflicting aliases.
     /// This member is required.
     public var alias: Swift.String?
@@ -10659,8 +10660,9 @@ public struct ListConflictingAliasesInput {
 }
 
 extension CloudFrontClientTypes {
+
     /// An alias (also called a CNAME) and the CloudFront distribution and Amazon Web Services account ID that it's associated with. The distribution and account IDs are partially hidden, which allows you to identify the distributions and accounts that you own, but helps to protect the information of ones that you don't own.
-    public struct ConflictingAlias {
+    public struct ConflictingAlias: Swift.Sendable {
         /// The (partially hidden) ID of the Amazon Web Services account that owns the distribution that's associated with the alias.
         public var accountId: Swift.String?
         /// An alias (also called a CNAME).
@@ -10679,12 +10681,12 @@ extension CloudFrontClientTypes {
             self.distributionId = distributionId
         }
     }
-
 }
 
 extension CloudFrontClientTypes {
+
     /// A list of aliases (also called CNAMEs) and the CloudFront distributions and Amazon Web Services accounts that they are associated with. In the list, the distribution and account IDs are partially hidden, which allows you to identify the distributions and accounts that you own, but helps to protect the information of ones that you don't own.
-    public struct ConflictingAliasesList {
+    public struct ConflictingAliasesList: Swift.Sendable {
         /// Contains the conflicting aliases in the list.
         public var items: [CloudFrontClientTypes.ConflictingAlias]?
         /// The maximum number of conflicting aliases requested.
@@ -10707,10 +10709,9 @@ extension CloudFrontClientTypes {
             self.quantity = quantity
         }
     }
-
 }
 
-public struct ListConflictingAliasesOutput {
+public struct ListConflictingAliasesOutput: Swift.Sendable {
     /// A list of conflicting aliases.
     public var conflictingAliasesList: CloudFrontClientTypes.ConflictingAliasesList?
 
@@ -10722,7 +10723,7 @@ public struct ListConflictingAliasesOutput {
     }
 }
 
-public struct ListContinuousDeploymentPoliciesInput {
+public struct ListContinuousDeploymentPoliciesInput: Swift.Sendable {
     /// Use this field when paginating results to indicate where to begin in your list of continuous deployment policies. The response includes policies in the list that occur after the marker. To get the next page of the list, set this field's value to the value of NextMarker from the current page's response.
     public var marker: Swift.String?
     /// The maximum number of continuous deployment policies that you want returned in the response.
@@ -10739,8 +10740,9 @@ public struct ListContinuousDeploymentPoliciesInput {
 }
 
 extension CloudFrontClientTypes {
+
     /// A summary of the information about your continuous deployment policies.
-    public struct ContinuousDeploymentPolicySummary {
+    public struct ContinuousDeploymentPolicySummary: Swift.Sendable {
         /// The continuous deployment policy.
         /// This member is required.
         public var continuousDeploymentPolicy: CloudFrontClientTypes.ContinuousDeploymentPolicy?
@@ -10752,12 +10754,12 @@ extension CloudFrontClientTypes {
             self.continuousDeploymentPolicy = continuousDeploymentPolicy
         }
     }
-
 }
 
 extension CloudFrontClientTypes {
+
     /// Contains a list of continuous deployment policies.
-    public struct ContinuousDeploymentPolicyList {
+    public struct ContinuousDeploymentPolicyList: Swift.Sendable {
         /// A list of continuous deployment policy items.
         public var items: [CloudFrontClientTypes.ContinuousDeploymentPolicySummary]?
         /// The maximum number of continuous deployment policies that were specified in your request.
@@ -10782,10 +10784,9 @@ extension CloudFrontClientTypes {
             self.quantity = quantity
         }
     }
-
 }
 
-public struct ListContinuousDeploymentPoliciesOutput {
+public struct ListContinuousDeploymentPoliciesOutput: Swift.Sendable {
     /// A list of continuous deployment policies.
     public var continuousDeploymentPolicyList: CloudFrontClientTypes.ContinuousDeploymentPolicyList?
 
@@ -10798,7 +10799,7 @@ public struct ListContinuousDeploymentPoliciesOutput {
 }
 
 /// The request to list your distributions.
-public struct ListDistributionsInput {
+public struct ListDistributionsInput: Swift.Sendable {
     /// Use this when paginating results to indicate where to begin in your list of distributions. The results include distributions in the list that occur after the marker. To get the next page of results, set the Marker to the value of the NextMarker from the current page's response (which is also the ID of the last distribution on that page).
     public var marker: Swift.String?
     /// The maximum number of distributions you want in the response body.
@@ -10815,8 +10816,9 @@ public struct ListDistributionsInput {
 }
 
 extension CloudFrontClientTypes {
+
     /// A summary of the information about a CloudFront distribution.
-    public struct DistributionSummary : Swift.Equatable {
+    public struct DistributionSummary: Swift.Sendable, Swift.Equatable {
         /// Amazon Web Services services in China customers must file for an Internet Content Provider (ICP) recordal if they want to serve content publicly on an alternate domain name, also known as a CNAME, that they've added to CloudFront. AliasICPRecordal provides the ICP recordal status for CNAMEs associated with distributions. For more information about ICP recordals, see [ Signup, Accounts, and Credentials](https://docs.amazonaws.cn/en_us/aws/latest/userguide/accounts-and-credentials.html) in Getting Started with Amazon Web Services services in China.
         public var aliasICPRecordals: [CloudFrontClientTypes.AliasICPRecordal]?
         /// A complex type that contains information about CNAMEs (alternate domain names), if any, for this distribution.
@@ -10926,12 +10928,12 @@ extension CloudFrontClientTypes {
             self.webACLId = webACLId
         }
     }
-
 }
 
 extension CloudFrontClientTypes {
+
     /// A distribution list.
-    public struct DistributionList : Swift.Equatable {
+    public struct DistributionList: Swift.Sendable, Swift.Equatable {
         /// A flag that indicates whether more distributions remain to be listed. If your results were truncated, you can make a follow-up pagination request using the Marker request parameter to retrieve more distributions in the list.
         /// This member is required.
         public var isTruncated: Swift.Bool?
@@ -10966,11 +10968,10 @@ extension CloudFrontClientTypes {
             self.quantity = quantity
         }
     }
-
 }
 
 /// The returned result of the corresponding request.
-public struct ListDistributionsOutput {
+public struct ListDistributionsOutput: Swift.Sendable {
     /// The DistributionList type.
     public var distributionList: CloudFrontClientTypes.DistributionList?
 
@@ -10982,7 +10983,7 @@ public struct ListDistributionsOutput {
     }
 }
 
-public struct ListDistributionsByCachePolicyIdInput {
+public struct ListDistributionsByCachePolicyIdInput: Swift.Sendable {
     /// The ID of the cache policy whose associated distribution IDs you want to list.
     /// This member is required.
     public var cachePolicyId: Swift.String?
@@ -11004,8 +11005,9 @@ public struct ListDistributionsByCachePolicyIdInput {
 }
 
 extension CloudFrontClientTypes {
+
     /// A list of distribution IDs.
-    public struct DistributionIdList {
+    public struct DistributionIdList: Swift.Sendable {
         /// A flag that indicates whether more distribution IDs remain to be listed. If your results were truncated, you can make a subsequent request using the Marker request field to retrieve more distribution IDs in the list.
         /// This member is required.
         public var isTruncated: Swift.Bool?
@@ -11040,10 +11042,9 @@ extension CloudFrontClientTypes {
             self.quantity = quantity
         }
     }
-
 }
 
-public struct ListDistributionsByCachePolicyIdOutput {
+public struct ListDistributionsByCachePolicyIdOutput: Swift.Sendable {
     /// A list of distribution IDs.
     public var distributionIdList: CloudFrontClientTypes.DistributionIdList?
 
@@ -11055,7 +11056,7 @@ public struct ListDistributionsByCachePolicyIdOutput {
     }
 }
 
-public struct ListDistributionsByKeyGroupInput {
+public struct ListDistributionsByKeyGroupInput: Swift.Sendable {
     /// The ID of the key group whose associated distribution IDs you are listing.
     /// This member is required.
     public var keyGroupId: Swift.String?
@@ -11076,7 +11077,7 @@ public struct ListDistributionsByKeyGroupInput {
     }
 }
 
-public struct ListDistributionsByKeyGroupOutput {
+public struct ListDistributionsByKeyGroupOutput: Swift.Sendable {
     /// A list of distribution IDs.
     public var distributionIdList: CloudFrontClientTypes.DistributionIdList?
 
@@ -11088,7 +11089,7 @@ public struct ListDistributionsByKeyGroupOutput {
     }
 }
 
-public struct ListDistributionsByOriginRequestPolicyIdInput {
+public struct ListDistributionsByOriginRequestPolicyIdInput: Swift.Sendable {
     /// Use this field when paginating results to indicate where to begin in your list of distribution IDs. The response includes distribution IDs in the list that occur after the marker. To get the next page of the list, set this field's value to the value of NextMarker from the current page's response.
     public var marker: Swift.String?
     /// The maximum number of distribution IDs that you want in the response.
@@ -11109,7 +11110,7 @@ public struct ListDistributionsByOriginRequestPolicyIdInput {
     }
 }
 
-public struct ListDistributionsByOriginRequestPolicyIdOutput {
+public struct ListDistributionsByOriginRequestPolicyIdOutput: Swift.Sendable {
     /// A list of distribution IDs.
     public var distributionIdList: CloudFrontClientTypes.DistributionIdList?
 
@@ -11121,7 +11122,7 @@ public struct ListDistributionsByOriginRequestPolicyIdOutput {
     }
 }
 
-public struct ListDistributionsByRealtimeLogConfigInput {
+public struct ListDistributionsByRealtimeLogConfigInput: Swift.Sendable {
     /// Use this field when paginating results to indicate where to begin in your list of distributions. The response includes distributions in the list that occur after the marker. To get the next page of the list, set this field's value to the value of NextMarker from the current page's response.
     public var marker: Swift.String?
     /// The maximum number of distributions that you want in the response.
@@ -11145,7 +11146,7 @@ public struct ListDistributionsByRealtimeLogConfigInput {
     }
 }
 
-public struct ListDistributionsByRealtimeLogConfigOutput {
+public struct ListDistributionsByRealtimeLogConfigOutput: Swift.Sendable {
     /// A distribution list.
     public var distributionList: CloudFrontClientTypes.DistributionList?
 
@@ -11157,7 +11158,7 @@ public struct ListDistributionsByRealtimeLogConfigOutput {
     }
 }
 
-public struct ListDistributionsByResponseHeadersPolicyIdInput {
+public struct ListDistributionsByResponseHeadersPolicyIdInput: Swift.Sendable {
     /// Use this field when paginating results to indicate where to begin in your list of distribution IDs. The response includes distribution IDs in the list that occur after the marker. To get the next page of the list, set this field's value to the value of NextMarker from the current page's response.
     public var marker: Swift.String?
     /// The maximum number of distribution IDs that you want to get in the response.
@@ -11178,7 +11179,7 @@ public struct ListDistributionsByResponseHeadersPolicyIdInput {
     }
 }
 
-public struct ListDistributionsByResponseHeadersPolicyIdOutput {
+public struct ListDistributionsByResponseHeadersPolicyIdOutput: Swift.Sendable {
     /// A list of distribution IDs.
     public var distributionIdList: CloudFrontClientTypes.DistributionIdList?
 
@@ -11191,7 +11192,7 @@ public struct ListDistributionsByResponseHeadersPolicyIdOutput {
 }
 
 /// The request to list distributions that are associated with a specified WAF web ACL.
-public struct ListDistributionsByWebACLIdInput {
+public struct ListDistributionsByWebACLIdInput: Swift.Sendable {
     /// Use Marker and MaxItems to control pagination of results. If you have more than MaxItems distributions that satisfy the request, the response includes a NextMarker element. To get the next page of results, submit another request. For the value of Marker, specify the value of NextMarker from the last response. (For the first request, omit Marker.)
     public var marker: Swift.String?
     /// The maximum number of distributions that you want CloudFront to return in the response body. The maximum and default values are both 100.
@@ -11213,7 +11214,7 @@ public struct ListDistributionsByWebACLIdInput {
 }
 
 /// The response to a request to list the distributions that are associated with a specified WAF web ACL.
-public struct ListDistributionsByWebACLIdOutput {
+public struct ListDistributionsByWebACLIdOutput: Swift.Sendable {
     /// The DistributionList type.
     public var distributionList: CloudFrontClientTypes.DistributionList?
 
@@ -11225,7 +11226,7 @@ public struct ListDistributionsByWebACLIdOutput {
     }
 }
 
-public struct ListFieldLevelEncryptionConfigsInput {
+public struct ListFieldLevelEncryptionConfigsInput: Swift.Sendable {
     /// Use this when paginating results to indicate where to begin in your list of configurations. The results include configurations in the list that occur after the marker. To get the next page of results, set the Marker to the value of the NextMarker from the current page's response (which is also the ID of the last configuration on that page).
     public var marker: Swift.String?
     /// The maximum number of field-level encryption configurations you want in the response body.
@@ -11242,8 +11243,9 @@ public struct ListFieldLevelEncryptionConfigsInput {
 }
 
 extension CloudFrontClientTypes {
+
     /// A summary of a field-level encryption item.
-    public struct FieldLevelEncryptionSummary {
+    public struct FieldLevelEncryptionSummary: Swift.Sendable {
         /// An optional comment about the field-level encryption item. The comment cannot be longer than 128 characters.
         public var comment: Swift.String?
         /// A summary of a content type-profile mapping.
@@ -11272,12 +11274,12 @@ extension CloudFrontClientTypes {
             self.queryArgProfileConfig = queryArgProfileConfig
         }
     }
-
 }
 
 extension CloudFrontClientTypes {
+
     /// List of field-level encryption configurations.
-    public struct FieldLevelEncryptionList {
+    public struct FieldLevelEncryptionList: Swift.Sendable {
         /// An array of field-level encryption items.
         public var items: [CloudFrontClientTypes.FieldLevelEncryptionSummary]?
         /// The maximum number of elements you want in the response body.
@@ -11302,10 +11304,9 @@ extension CloudFrontClientTypes {
             self.quantity = quantity
         }
     }
-
 }
 
-public struct ListFieldLevelEncryptionConfigsOutput {
+public struct ListFieldLevelEncryptionConfigsOutput: Swift.Sendable {
     /// Returns a list of all field-level encryption configurations that have been created in CloudFront for this account.
     public var fieldLevelEncryptionList: CloudFrontClientTypes.FieldLevelEncryptionList?
 
@@ -11317,7 +11318,7 @@ public struct ListFieldLevelEncryptionConfigsOutput {
     }
 }
 
-public struct ListFieldLevelEncryptionProfilesInput {
+public struct ListFieldLevelEncryptionProfilesInput: Swift.Sendable {
     /// Use this when paginating results to indicate where to begin in your list of profiles. The results include profiles in the list that occur after the marker. To get the next page of results, set the Marker to the value of the NextMarker from the current page's response (which is also the ID of the last profile on that page).
     public var marker: Swift.String?
     /// The maximum number of field-level encryption profiles you want in the response body.
@@ -11334,8 +11335,9 @@ public struct ListFieldLevelEncryptionProfilesInput {
 }
 
 extension CloudFrontClientTypes {
+
     /// The field-level encryption profile summary.
-    public struct FieldLevelEncryptionProfileSummary {
+    public struct FieldLevelEncryptionProfileSummary: Swift.Sendable {
         /// An optional comment for the field-level encryption profile summary. The comment cannot be longer than 128 characters.
         public var comment: Swift.String?
         /// A complex data type of encryption entities for the field-level encryption profile that include the public key ID, provider, and field patterns for specifying which fields to encrypt with this key.
@@ -11366,12 +11368,12 @@ extension CloudFrontClientTypes {
             self.name = name
         }
     }
-
 }
 
 extension CloudFrontClientTypes {
+
     /// List of field-level encryption profiles.
-    public struct FieldLevelEncryptionProfileList {
+    public struct FieldLevelEncryptionProfileList: Swift.Sendable {
         /// The field-level encryption profile items.
         public var items: [CloudFrontClientTypes.FieldLevelEncryptionProfileSummary]?
         /// The maximum number of field-level encryption profiles you want in the response body.
@@ -11396,10 +11398,9 @@ extension CloudFrontClientTypes {
             self.quantity = quantity
         }
     }
-
 }
 
-public struct ListFieldLevelEncryptionProfilesOutput {
+public struct ListFieldLevelEncryptionProfilesOutput: Swift.Sendable {
     /// Returns a list of the field-level encryption profiles that have been created in CloudFront for this account.
     public var fieldLevelEncryptionProfileList: CloudFrontClientTypes.FieldLevelEncryptionProfileList?
 
@@ -11411,7 +11412,7 @@ public struct ListFieldLevelEncryptionProfilesOutput {
     }
 }
 
-public struct ListFunctionsInput {
+public struct ListFunctionsInput: Swift.Sendable {
     /// Use this field when paginating results to indicate where to begin in your list of functions. The response includes functions in the list that occur after the marker. To get the next page of the list, set this field's value to the value of NextMarker from the current page's response.
     public var marker: Swift.String?
     /// The maximum number of functions that you want in the response.
@@ -11432,8 +11433,9 @@ public struct ListFunctionsInput {
 }
 
 extension CloudFrontClientTypes {
+
     /// A list of CloudFront functions.
-    public struct FunctionList {
+    public struct FunctionList: Swift.Sendable {
         /// Contains the functions in the list.
         public var items: [CloudFrontClientTypes.FunctionSummary]?
         /// The maximum number of functions requested.
@@ -11458,10 +11460,9 @@ extension CloudFrontClientTypes {
             self.quantity = quantity
         }
     }
-
 }
 
-public struct ListFunctionsOutput {
+public struct ListFunctionsOutput: Swift.Sendable {
     /// A list of CloudFront functions.
     public var functionList: CloudFrontClientTypes.FunctionList?
 
@@ -11474,7 +11475,7 @@ public struct ListFunctionsOutput {
 }
 
 /// The request to list invalidations.
-public struct ListInvalidationsInput {
+public struct ListInvalidationsInput: Swift.Sendable {
     /// The distribution's ID.
     /// This member is required.
     public var distributionId: Swift.String?
@@ -11496,8 +11497,9 @@ public struct ListInvalidationsInput {
 }
 
 extension CloudFrontClientTypes {
+
     /// A summary of an invalidation request.
-    public struct InvalidationSummary : Swift.Equatable {
+    public struct InvalidationSummary: Swift.Sendable, Swift.Equatable {
         /// The time that an invalidation request was created.
         /// This member is required.
         public var createTime: Foundation.Date?
@@ -11519,12 +11521,12 @@ extension CloudFrontClientTypes {
             self.status = status
         }
     }
-
 }
 
 extension CloudFrontClientTypes {
+
     /// The InvalidationList complex type describes the list of invalidation objects. For more information about invalidation, see [Invalidating Objects (Web Distributions Only)](https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/Invalidation.html) in the Amazon CloudFront Developer Guide.
-    public struct InvalidationList : Swift.Equatable {
+    public struct InvalidationList: Swift.Sendable, Swift.Equatable {
         /// A flag that indicates whether more invalidation batch requests remain to be listed. If your results were truncated, you can make a follow-up pagination request using the Marker request parameter to retrieve more invalidation batches in the list.
         /// This member is required.
         public var isTruncated: Swift.Bool?
@@ -11559,11 +11561,10 @@ extension CloudFrontClientTypes {
             self.quantity = quantity
         }
     }
-
 }
 
 /// The returned result of the corresponding request.
-public struct ListInvalidationsOutput {
+public struct ListInvalidationsOutput: Swift.Sendable {
     /// Information about invalidation batches.
     public var invalidationList: CloudFrontClientTypes.InvalidationList?
 
@@ -11575,7 +11576,7 @@ public struct ListInvalidationsOutput {
     }
 }
 
-public struct ListKeyGroupsInput {
+public struct ListKeyGroupsInput: Swift.Sendable {
     /// Use this field when paginating results to indicate where to begin in your list of key groups. The response includes key groups in the list that occur after the marker. To get the next page of the list, set this field's value to the value of NextMarker from the current page's response.
     public var marker: Swift.String?
     /// The maximum number of key groups that you want in the response.
@@ -11592,8 +11593,9 @@ public struct ListKeyGroupsInput {
 }
 
 extension CloudFrontClientTypes {
+
     /// Contains information about a key group.
-    public struct KeyGroupSummary {
+    public struct KeyGroupSummary: Swift.Sendable {
         /// A key group.
         /// This member is required.
         public var keyGroup: CloudFrontClientTypes.KeyGroup?
@@ -11605,12 +11607,12 @@ extension CloudFrontClientTypes {
             self.keyGroup = keyGroup
         }
     }
-
 }
 
 extension CloudFrontClientTypes {
+
     /// A list of key groups.
-    public struct KeyGroupList {
+    public struct KeyGroupList: Swift.Sendable {
         /// A list of key groups.
         public var items: [CloudFrontClientTypes.KeyGroupSummary]?
         /// The maximum number of key groups requested.
@@ -11635,10 +11637,9 @@ extension CloudFrontClientTypes {
             self.quantity = quantity
         }
     }
-
 }
 
-public struct ListKeyGroupsOutput {
+public struct ListKeyGroupsOutput: Swift.Sendable {
     /// A list of key groups.
     public var keyGroupList: CloudFrontClientTypes.KeyGroupList?
 
@@ -11650,7 +11651,7 @@ public struct ListKeyGroupsOutput {
     }
 }
 
-public struct ListKeyValueStoresInput {
+public struct ListKeyValueStoresInput: Swift.Sendable {
     /// The marker associated with the key value stores list.
     public var marker: Swift.String?
     /// The maximum number of items in the key value stores list.
@@ -11671,8 +11672,9 @@ public struct ListKeyValueStoresInput {
 }
 
 extension CloudFrontClientTypes {
+
     /// The key value store list.
-    public struct KeyValueStoreList : Swift.Equatable {
+    public struct KeyValueStoreList: Swift.Sendable, Swift.Equatable {
         /// The items of the key value store list.
         public var items: [CloudFrontClientTypes.KeyValueStore]?
         /// The maximum number of items in the key value store list.
@@ -11697,10 +11699,9 @@ extension CloudFrontClientTypes {
             self.quantity = quantity
         }
     }
-
 }
 
-public struct ListKeyValueStoresOutput {
+public struct ListKeyValueStoresOutput: Swift.Sendable {
     /// The resulting key value stores list.
     public var keyValueStoreList: CloudFrontClientTypes.KeyValueStoreList?
 
@@ -11712,7 +11713,7 @@ public struct ListKeyValueStoresOutput {
     }
 }
 
-public struct ListOriginAccessControlsInput {
+public struct ListOriginAccessControlsInput: Swift.Sendable {
     /// Use this field when paginating results to indicate where to begin in your list of origin access controls. The response includes the items in the list that occur after the marker. To get the next page of the list, set this field's value to the value of NextMarker from the current page's response.
     public var marker: Swift.String?
     /// The maximum number of origin access controls that you want in the response.
@@ -11729,8 +11730,9 @@ public struct ListOriginAccessControlsInput {
 }
 
 extension CloudFrontClientTypes {
+
     /// A CloudFront origin access control.
-    public struct OriginAccessControlSummary {
+    public struct OriginAccessControlSummary: Swift.Sendable {
         /// A description of the origin access control.
         /// This member is required.
         public var description: Swift.String?
@@ -11773,12 +11775,12 @@ extension CloudFrontClientTypes {
             self.signingProtocol = signingProtocol
         }
     }
-
 }
 
 extension CloudFrontClientTypes {
+
     /// A list of CloudFront origin access controls.
-    public struct OriginAccessControlList {
+    public struct OriginAccessControlList: Swift.Sendable {
         /// If there are more items in the list than are in this response, this value is true.
         /// This member is required.
         public var isTruncated: Swift.Bool?
@@ -11813,10 +11815,9 @@ extension CloudFrontClientTypes {
             self.quantity = quantity
         }
     }
-
 }
 
-public struct ListOriginAccessControlsOutput {
+public struct ListOriginAccessControlsOutput: Swift.Sendable {
     /// A list of origin access controls.
     public var originAccessControlList: CloudFrontClientTypes.OriginAccessControlList?
 
@@ -11830,7 +11831,7 @@ public struct ListOriginAccessControlsOutput {
 
 extension CloudFrontClientTypes {
 
-    public enum OriginRequestPolicyType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum OriginRequestPolicyType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case custom
         case managed
         case sdkUnknown(Swift.String)
@@ -11857,7 +11858,7 @@ extension CloudFrontClientTypes {
     }
 }
 
-public struct ListOriginRequestPoliciesInput {
+public struct ListOriginRequestPoliciesInput: Swift.Sendable {
     /// Use this field when paginating results to indicate where to begin in your list of origin request policies. The response includes origin request policies in the list that occur after the marker. To get the next page of the list, set this field's value to the value of NextMarker from the current page's response.
     public var marker: Swift.String?
     /// The maximum number of origin request policies that you want in the response.
@@ -11882,8 +11883,9 @@ public struct ListOriginRequestPoliciesInput {
 }
 
 extension CloudFrontClientTypes {
+
     /// Contains an origin request policy.
-    public struct OriginRequestPolicySummary {
+    public struct OriginRequestPolicySummary: Swift.Sendable {
         /// The origin request policy.
         /// This member is required.
         public var originRequestPolicy: CloudFrontClientTypes.OriginRequestPolicy?
@@ -11900,12 +11902,12 @@ extension CloudFrontClientTypes {
             self.type = type
         }
     }
-
 }
 
 extension CloudFrontClientTypes {
+
     /// A list of origin request policies.
-    public struct OriginRequestPolicyList {
+    public struct OriginRequestPolicyList: Swift.Sendable {
         /// Contains the origin request policies in the list.
         public var items: [CloudFrontClientTypes.OriginRequestPolicySummary]?
         /// The maximum number of origin request policies requested.
@@ -11930,10 +11932,9 @@ extension CloudFrontClientTypes {
             self.quantity = quantity
         }
     }
-
 }
 
-public struct ListOriginRequestPoliciesOutput {
+public struct ListOriginRequestPoliciesOutput: Swift.Sendable {
     /// A list of origin request policies.
     public var originRequestPolicyList: CloudFrontClientTypes.OriginRequestPolicyList?
 
@@ -11945,7 +11946,7 @@ public struct ListOriginRequestPoliciesOutput {
     }
 }
 
-public struct ListPublicKeysInput {
+public struct ListPublicKeysInput: Swift.Sendable {
     /// Use this when paginating results to indicate where to begin in your list of public keys. The results include public keys in the list that occur after the marker. To get the next page of results, set the Marker to the value of the NextMarker from the current page's response (which is also the ID of the last public key on that page).
     public var marker: Swift.String?
     /// The maximum number of public keys you want in the response body.
@@ -11962,8 +11963,9 @@ public struct ListPublicKeysInput {
 }
 
 extension CloudFrontClientTypes {
+
     /// Contains information about a public key.
-    public struct PublicKeySummary {
+    public struct PublicKeySummary: Swift.Sendable {
         /// A comment to describe the public key. The comment cannot be longer than 128 characters.
         public var comment: Swift.String?
         /// The date and time when the public key was uploaded.
@@ -11994,12 +11996,12 @@ extension CloudFrontClientTypes {
             self.name = name
         }
     }
-
 }
 
 extension CloudFrontClientTypes {
+
     /// A list of public keys that you can use with [signed URLs and signed cookies](https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/PrivateContent.html), or with [field-level encryption](https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/field-level-encryption.html).
-    public struct PublicKeyList {
+    public struct PublicKeyList: Swift.Sendable {
         /// A list of public keys.
         public var items: [CloudFrontClientTypes.PublicKeySummary]?
         /// The maximum number of public keys you want in the response.
@@ -12024,10 +12026,9 @@ extension CloudFrontClientTypes {
             self.quantity = quantity
         }
     }
-
 }
 
-public struct ListPublicKeysOutput {
+public struct ListPublicKeysOutput: Swift.Sendable {
     /// Returns a list of all public keys that have been added to CloudFront for this account.
     public var publicKeyList: CloudFrontClientTypes.PublicKeyList?
 
@@ -12039,7 +12040,7 @@ public struct ListPublicKeysOutput {
     }
 }
 
-public struct ListRealtimeLogConfigsInput {
+public struct ListRealtimeLogConfigsInput: Swift.Sendable {
     /// Use this field when paginating results to indicate where to begin in your list of real-time log configurations. The response includes real-time log configurations in the list that occur after the marker. To get the next page of the list, set this field's value to the value of NextMarker from the current page's response.
     public var marker: Swift.String?
     /// The maximum number of real-time log configurations that you want in the response.
@@ -12056,8 +12057,9 @@ public struct ListRealtimeLogConfigsInput {
 }
 
 extension CloudFrontClientTypes {
+
     /// A list of real-time log configurations.
-    public struct RealtimeLogConfigs {
+    public struct RealtimeLogConfigs: Swift.Sendable {
         /// A flag that indicates whether there are more real-time log configurations than are contained in this list.
         /// This member is required.
         public var isTruncated: Swift.Bool?
@@ -12087,10 +12089,9 @@ extension CloudFrontClientTypes {
             self.nextMarker = nextMarker
         }
     }
-
 }
 
-public struct ListRealtimeLogConfigsOutput {
+public struct ListRealtimeLogConfigsOutput: Swift.Sendable {
     /// A list of real-time log configurations.
     public var realtimeLogConfigs: CloudFrontClientTypes.RealtimeLogConfigs?
 
@@ -12104,7 +12105,7 @@ public struct ListRealtimeLogConfigsOutput {
 
 extension CloudFrontClientTypes {
 
-    public enum ResponseHeadersPolicyType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ResponseHeadersPolicyType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case custom
         case managed
         case sdkUnknown(Swift.String)
@@ -12131,7 +12132,7 @@ extension CloudFrontClientTypes {
     }
 }
 
-public struct ListResponseHeadersPoliciesInput {
+public struct ListResponseHeadersPoliciesInput: Swift.Sendable {
     /// Use this field when paginating results to indicate where to begin in your list of response headers policies. The response includes response headers policies in the list that occur after the marker. To get the next page of the list, set this field's value to the value of NextMarker from the current page's response.
     public var marker: Swift.String?
     /// The maximum number of response headers policies that you want to get in the response.
@@ -12156,8 +12157,9 @@ public struct ListResponseHeadersPoliciesInput {
 }
 
 extension CloudFrontClientTypes {
+
     /// Contains a response headers policy.
-    public struct ResponseHeadersPolicySummary {
+    public struct ResponseHeadersPolicySummary: Swift.Sendable {
         /// The response headers policy.
         /// This member is required.
         public var responseHeadersPolicy: CloudFrontClientTypes.ResponseHeadersPolicy?
@@ -12174,12 +12176,12 @@ extension CloudFrontClientTypes {
             self.type = type
         }
     }
-
 }
 
 extension CloudFrontClientTypes {
+
     /// A list of response headers policies.
-    public struct ResponseHeadersPolicyList {
+    public struct ResponseHeadersPolicyList: Swift.Sendable {
         /// The response headers policies in the list.
         public var items: [CloudFrontClientTypes.ResponseHeadersPolicySummary]?
         /// The maximum number of response headers policies requested.
@@ -12204,10 +12206,9 @@ extension CloudFrontClientTypes {
             self.quantity = quantity
         }
     }
-
 }
 
-public struct ListResponseHeadersPoliciesOutput {
+public struct ListResponseHeadersPoliciesOutput: Swift.Sendable {
     /// A list of response headers policies.
     public var responseHeadersPolicyList: CloudFrontClientTypes.ResponseHeadersPolicyList?
 
@@ -12220,7 +12221,7 @@ public struct ListResponseHeadersPoliciesOutput {
 }
 
 /// The request to list your streaming distributions.
-public struct ListStreamingDistributionsInput {
+public struct ListStreamingDistributionsInput: Swift.Sendable {
     /// The value that you provided for the Marker request parameter.
     public var marker: Swift.String?
     /// The value that you provided for the MaxItems request parameter.
@@ -12237,8 +12238,9 @@ public struct ListStreamingDistributionsInput {
 }
 
 extension CloudFrontClientTypes {
+
     /// A summary of the information for a CloudFront streaming distribution.
-    public struct StreamingDistributionSummary : Swift.Equatable {
+    public struct StreamingDistributionSummary: Swift.Sendable, Swift.Equatable {
         /// A complex type that contains information about CNAMEs (alternate domain names), if any, for this streaming distribution.
         /// This member is required.
         public var aliases: CloudFrontClientTypes.Aliases?
@@ -12300,12 +12302,12 @@ extension CloudFrontClientTypes {
             self.trustedSigners = trustedSigners
         }
     }
-
 }
 
 extension CloudFrontClientTypes {
+
     /// A streaming distribution list.
-    public struct StreamingDistributionList : Swift.Equatable {
+    public struct StreamingDistributionList: Swift.Sendable, Swift.Equatable {
         /// A flag that indicates whether more streaming distributions remain to be listed. If your results were truncated, you can make a follow-up pagination request using the Marker request parameter to retrieve more distributions in the list.
         /// This member is required.
         public var isTruncated: Swift.Bool?
@@ -12340,11 +12342,10 @@ extension CloudFrontClientTypes {
             self.quantity = quantity
         }
     }
-
 }
 
 /// The returned result of the corresponding request.
-public struct ListStreamingDistributionsOutput {
+public struct ListStreamingDistributionsOutput: Swift.Sendable {
     /// The StreamingDistributionList type.
     public var streamingDistributionList: CloudFrontClientTypes.StreamingDistributionList?
 
@@ -12357,7 +12358,7 @@ public struct ListStreamingDistributionsOutput {
 }
 
 /// The request to list tags for a CloudFront resource.
-public struct ListTagsForResourceInput {
+public struct ListTagsForResourceInput: Swift.Sendable {
     /// An ARN of a CloudFront resource.
     /// This member is required.
     public var resource: Swift.String?
@@ -12371,7 +12372,7 @@ public struct ListTagsForResourceInput {
 }
 
 /// The returned result of the corresponding request.
-public struct ListTagsForResourceOutput {
+public struct ListTagsForResourceOutput: Swift.Sendable {
     /// A complex type that contains zero or more Tag elements.
     /// This member is required.
     public var tags: CloudFrontClientTypes.Tags?
@@ -12384,7 +12385,7 @@ public struct ListTagsForResourceOutput {
     }
 }
 
-public struct PublishFunctionInput {
+public struct PublishFunctionInput: Swift.Sendable {
     /// The current version (ETag value) of the function that you are publishing, which you can get using DescribeFunction.
     /// This member is required.
     public var ifMatch: Swift.String?
@@ -12402,7 +12403,7 @@ public struct PublishFunctionInput {
     }
 }
 
-public struct PublishFunctionOutput {
+public struct PublishFunctionOutput: Swift.Sendable {
     /// Contains configuration information and metadata about a CloudFront function.
     public var functionSummary: CloudFrontClientTypes.FunctionSummary?
 
@@ -12415,7 +12416,7 @@ public struct PublishFunctionOutput {
 }
 
 /// The request to add tags to a CloudFront resource.
-public struct TagResourceInput {
+public struct TagResourceInput: Swift.Sendable {
     /// An ARN of a CloudFront resource.
     /// This member is required.
     public var resource: Swift.String?
@@ -12457,7 +12458,7 @@ public struct TestFunctionFailed: ClientRuntime.ModeledError, AWSClientRuntime.A
     }
 }
 
-public struct TestFunctionInput {
+public struct TestFunctionInput: Swift.Sendable {
     /// The event object to test the function with. For more information about the structure of the event object, see [Testing functions](https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/managing-functions.html#test-function) in the Amazon CloudFront Developer Guide.
     /// This member is required.
     public var eventObject: Foundation.Data?
@@ -12490,8 +12491,9 @@ extension TestFunctionInput: Swift.CustomDebugStringConvertible {
 }
 
 extension CloudFrontClientTypes {
+
     /// Contains the result of testing a CloudFront function with TestFunction.
-    public struct TestResult {
+    public struct TestResult: Swift.Sendable {
         /// The amount of time that the function took to run as a percentage of the maximum allowed time. For example, a compute utilization of 35 means that the function completed in 35% of the maximum allowed time.
         public var computeUtilization: Swift.String?
         /// If the result of testing the function was an error, this field contains the error message.
@@ -12518,7 +12520,6 @@ extension CloudFrontClientTypes {
             self.functionSummary = functionSummary
         }
     }
-
 }
 
 extension CloudFrontClientTypes.TestResult: Swift.CustomDebugStringConvertible {
@@ -12526,7 +12527,7 @@ extension CloudFrontClientTypes.TestResult: Swift.CustomDebugStringConvertible {
         "TestResult(computeUtilization: \(Swift.String(describing: computeUtilization)), functionSummary: \(Swift.String(describing: functionSummary)), functionErrorMessage: \"CONTENT_REDACTED\", functionExecutionLogs: \"CONTENT_REDACTED\", functionOutput: \"CONTENT_REDACTED\")"}
 }
 
-public struct TestFunctionOutput {
+public struct TestFunctionOutput: Swift.Sendable {
     /// An object that represents the result of running the function with the provided event object.
     public var testResult: CloudFrontClientTypes.TestResult?
 
@@ -12539,8 +12540,9 @@ public struct TestFunctionOutput {
 }
 
 extension CloudFrontClientTypes {
+
     /// A complex type that contains zero or more Tag elements.
-    public struct TagKeys {
+    public struct TagKeys: Swift.Sendable {
         /// A complex type that contains Tag key elements.
         public var items: [Swift.String]?
 
@@ -12551,11 +12553,10 @@ extension CloudFrontClientTypes {
             self.items = items
         }
     }
-
 }
 
 /// The request to remove tags from a CloudFront resource.
-public struct UntagResourceInput {
+public struct UntagResourceInput: Swift.Sendable {
     /// An ARN of a CloudFront resource.
     /// This member is required.
     public var resource: Swift.String?
@@ -12573,7 +12574,7 @@ public struct UntagResourceInput {
     }
 }
 
-public struct UpdateCachePolicyInput {
+public struct UpdateCachePolicyInput: Swift.Sendable {
     /// A cache policy configuration.
     /// This member is required.
     public var cachePolicyConfig: CloudFrontClientTypes.CachePolicyConfig?
@@ -12595,7 +12596,7 @@ public struct UpdateCachePolicyInput {
     }
 }
 
-public struct UpdateCachePolicyOutput {
+public struct UpdateCachePolicyOutput: Swift.Sendable {
     /// A cache policy.
     public var cachePolicy: CloudFrontClientTypes.CachePolicy?
     /// The current version of the cache policy.
@@ -12612,7 +12613,7 @@ public struct UpdateCachePolicyOutput {
 }
 
 /// The request to update an origin access identity.
-public struct UpdateCloudFrontOriginAccessIdentityInput {
+public struct UpdateCloudFrontOriginAccessIdentityInput: Swift.Sendable {
     /// The identity's configuration information.
     /// This member is required.
     public var cloudFrontOriginAccessIdentityConfig: CloudFrontClientTypes.CloudFrontOriginAccessIdentityConfig?
@@ -12635,7 +12636,7 @@ public struct UpdateCloudFrontOriginAccessIdentityInput {
 }
 
 /// The returned result of the corresponding request.
-public struct UpdateCloudFrontOriginAccessIdentityOutput {
+public struct UpdateCloudFrontOriginAccessIdentityOutput: Swift.Sendable {
     /// The origin access identity's information.
     public var cloudFrontOriginAccessIdentity: CloudFrontClientTypes.CloudFrontOriginAccessIdentity?
     /// The current version of the configuration. For example: E2QWRUHAPOMQZL.
@@ -12651,7 +12652,7 @@ public struct UpdateCloudFrontOriginAccessIdentityOutput {
     }
 }
 
-public struct UpdateContinuousDeploymentPolicyInput {
+public struct UpdateContinuousDeploymentPolicyInput: Swift.Sendable {
     /// The continuous deployment policy configuration.
     /// This member is required.
     public var continuousDeploymentPolicyConfig: CloudFrontClientTypes.ContinuousDeploymentPolicyConfig?
@@ -12673,7 +12674,7 @@ public struct UpdateContinuousDeploymentPolicyInput {
     }
 }
 
-public struct UpdateContinuousDeploymentPolicyOutput {
+public struct UpdateContinuousDeploymentPolicyOutput: Swift.Sendable {
     /// A continuous deployment policy.
     public var continuousDeploymentPolicy: CloudFrontClientTypes.ContinuousDeploymentPolicy?
     /// The version identifier for the current version of the continuous deployment policy.
@@ -12690,7 +12691,7 @@ public struct UpdateContinuousDeploymentPolicyOutput {
 }
 
 /// The request to update a distribution.
-public struct UpdateDistributionInput {
+public struct UpdateDistributionInput: Swift.Sendable {
     /// The distribution's configuration information.
     /// This member is required.
     public var distributionConfig: CloudFrontClientTypes.DistributionConfig?
@@ -12713,7 +12714,7 @@ public struct UpdateDistributionInput {
 }
 
 /// The returned result of the corresponding request.
-public struct UpdateDistributionOutput {
+public struct UpdateDistributionOutput: Swift.Sendable {
     /// The distribution's information.
     public var distribution: CloudFrontClientTypes.Distribution?
     /// The current version of the configuration. For example: E2QWRUHAPOMQZL.
@@ -12729,7 +12730,7 @@ public struct UpdateDistributionOutput {
     }
 }
 
-public struct UpdateDistributionWithStagingConfigInput {
+public struct UpdateDistributionWithStagingConfigInput: Swift.Sendable {
     /// The identifier of the primary distribution to which you are copying a staging distribution's configuration.
     /// This member is required.
     public var id: Swift.String?
@@ -12750,7 +12751,7 @@ public struct UpdateDistributionWithStagingConfigInput {
     }
 }
 
-public struct UpdateDistributionWithStagingConfigOutput {
+public struct UpdateDistributionWithStagingConfigOutput: Swift.Sendable {
     /// A distribution tells CloudFront where you want content to be delivered from, and the details about how to track and manage content delivery.
     public var distribution: CloudFrontClientTypes.Distribution?
     /// The current version of the primary distribution (after it's updated).
@@ -12766,7 +12767,7 @@ public struct UpdateDistributionWithStagingConfigOutput {
     }
 }
 
-public struct UpdateFieldLevelEncryptionConfigInput {
+public struct UpdateFieldLevelEncryptionConfigInput: Swift.Sendable {
     /// Request to update a field-level encryption configuration.
     /// This member is required.
     public var fieldLevelEncryptionConfig: CloudFrontClientTypes.FieldLevelEncryptionConfig?
@@ -12788,7 +12789,7 @@ public struct UpdateFieldLevelEncryptionConfigInput {
     }
 }
 
-public struct UpdateFieldLevelEncryptionConfigOutput {
+public struct UpdateFieldLevelEncryptionConfigOutput: Swift.Sendable {
     /// The value of the ETag header that you received when updating the configuration. For example: E2QWRUHAPOMQZL.
     public var eTag: Swift.String?
     /// Return the results of updating the configuration.
@@ -12804,7 +12805,7 @@ public struct UpdateFieldLevelEncryptionConfigOutput {
     }
 }
 
-public struct UpdateFieldLevelEncryptionProfileInput {
+public struct UpdateFieldLevelEncryptionProfileInput: Swift.Sendable {
     /// Request to update a field-level encryption profile.
     /// This member is required.
     public var fieldLevelEncryptionProfileConfig: CloudFrontClientTypes.FieldLevelEncryptionProfileConfig?
@@ -12826,7 +12827,7 @@ public struct UpdateFieldLevelEncryptionProfileInput {
     }
 }
 
-public struct UpdateFieldLevelEncryptionProfileOutput {
+public struct UpdateFieldLevelEncryptionProfileOutput: Swift.Sendable {
     /// The result of the field-level encryption profile request.
     public var eTag: Swift.String?
     /// Return the results of updating the profile.
@@ -12842,7 +12843,7 @@ public struct UpdateFieldLevelEncryptionProfileOutput {
     }
 }
 
-public struct UpdateFunctionInput {
+public struct UpdateFunctionInput: Swift.Sendable {
     /// The function code. For more information about writing a CloudFront function, see [Writing function code for CloudFront Functions](https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/writing-function-code.html) in the Amazon CloudFront Developer Guide.
     /// This member is required.
     public var functionCode: Foundation.Data?
@@ -12875,7 +12876,7 @@ extension UpdateFunctionInput: Swift.CustomDebugStringConvertible {
         "UpdateFunctionInput(functionConfig: \(Swift.String(describing: functionConfig)), ifMatch: \(Swift.String(describing: ifMatch)), name: \(Swift.String(describing: name)), functionCode: \"CONTENT_REDACTED\")"}
 }
 
-public struct UpdateFunctionOutput {
+public struct UpdateFunctionOutput: Swift.Sendable {
     /// The version identifier for the current version of the CloudFront function.
     public var eTag: Swift.String?
     /// Contains configuration information and metadata about a CloudFront function.
@@ -12891,7 +12892,7 @@ public struct UpdateFunctionOutput {
     }
 }
 
-public struct UpdateKeyGroupInput {
+public struct UpdateKeyGroupInput: Swift.Sendable {
     /// The identifier of the key group that you are updating.
     /// This member is required.
     public var id: Swift.String?
@@ -12913,7 +12914,7 @@ public struct UpdateKeyGroupInput {
     }
 }
 
-public struct UpdateKeyGroupOutput {
+public struct UpdateKeyGroupOutput: Swift.Sendable {
     /// The identifier for this version of the key group.
     public var eTag: Swift.String?
     /// The key group that was just updated.
@@ -12929,7 +12930,7 @@ public struct UpdateKeyGroupOutput {
     }
 }
 
-public struct UpdateKeyValueStoreInput {
+public struct UpdateKeyValueStoreInput: Swift.Sendable {
     /// The comment of the key value store to update.
     /// This member is required.
     public var comment: Swift.String?
@@ -12952,7 +12953,7 @@ public struct UpdateKeyValueStoreInput {
     }
 }
 
-public struct UpdateKeyValueStoreOutput {
+public struct UpdateKeyValueStoreOutput: Swift.Sendable {
     /// The ETag of the resulting key value store.
     public var eTag: Swift.String?
     /// The resulting key value store to update.
@@ -12968,7 +12969,7 @@ public struct UpdateKeyValueStoreOutput {
     }
 }
 
-public struct UpdateOriginAccessControlInput {
+public struct UpdateOriginAccessControlInput: Swift.Sendable {
     /// The unique identifier of the origin access control that you are updating.
     /// This member is required.
     public var id: Swift.String?
@@ -12990,7 +12991,7 @@ public struct UpdateOriginAccessControlInput {
     }
 }
 
-public struct UpdateOriginAccessControlOutput {
+public struct UpdateOriginAccessControlOutput: Swift.Sendable {
     /// The new version of the origin access control after it has been updated.
     public var eTag: Swift.String?
     /// The origin access control after it has been updated.
@@ -13006,7 +13007,7 @@ public struct UpdateOriginAccessControlOutput {
     }
 }
 
-public struct UpdateOriginRequestPolicyInput {
+public struct UpdateOriginRequestPolicyInput: Swift.Sendable {
     /// The unique identifier for the origin request policy that you are updating. The identifier is returned in a cache behavior's OriginRequestPolicyId field in the response to GetDistributionConfig.
     /// This member is required.
     public var id: Swift.String?
@@ -13028,7 +13029,7 @@ public struct UpdateOriginRequestPolicyInput {
     }
 }
 
-public struct UpdateOriginRequestPolicyOutput {
+public struct UpdateOriginRequestPolicyOutput: Swift.Sendable {
     /// The current version of the origin request policy.
     public var eTag: Swift.String?
     /// An origin request policy.
@@ -13044,7 +13045,7 @@ public struct UpdateOriginRequestPolicyOutput {
     }
 }
 
-public struct UpdatePublicKeyInput {
+public struct UpdatePublicKeyInput: Swift.Sendable {
     /// The identifier of the public key that you are updating.
     /// This member is required.
     public var id: Swift.String?
@@ -13066,7 +13067,7 @@ public struct UpdatePublicKeyInput {
     }
 }
 
-public struct UpdatePublicKeyOutput {
+public struct UpdatePublicKeyOutput: Swift.Sendable {
     /// The identifier of the current version of the public key.
     public var eTag: Swift.String?
     /// The public key.
@@ -13082,7 +13083,7 @@ public struct UpdatePublicKeyOutput {
     }
 }
 
-public struct UpdateRealtimeLogConfigInput {
+public struct UpdateRealtimeLogConfigInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) for this real-time log configuration.
     public var arn: Swift.String?
     /// Contains information about the Amazon Kinesis data stream where you are sending real-time log data.
@@ -13110,7 +13111,7 @@ public struct UpdateRealtimeLogConfigInput {
     }
 }
 
-public struct UpdateRealtimeLogConfigOutput {
+public struct UpdateRealtimeLogConfigOutput: Swift.Sendable {
     /// A real-time log configuration.
     public var realtimeLogConfig: CloudFrontClientTypes.RealtimeLogConfig?
 
@@ -13122,7 +13123,7 @@ public struct UpdateRealtimeLogConfigOutput {
     }
 }
 
-public struct UpdateResponseHeadersPolicyInput {
+public struct UpdateResponseHeadersPolicyInput: Swift.Sendable {
     /// The identifier for the response headers policy that you are updating.
     /// This member is required.
     public var id: Swift.String?
@@ -13144,7 +13145,7 @@ public struct UpdateResponseHeadersPolicyInput {
     }
 }
 
-public struct UpdateResponseHeadersPolicyOutput {
+public struct UpdateResponseHeadersPolicyOutput: Swift.Sendable {
     /// The current version of the response headers policy.
     public var eTag: Swift.String?
     /// A response headers policy.
@@ -13161,7 +13162,7 @@ public struct UpdateResponseHeadersPolicyOutput {
 }
 
 /// The request to update a streaming distribution.
-public struct UpdateStreamingDistributionInput {
+public struct UpdateStreamingDistributionInput: Swift.Sendable {
     /// The streaming distribution's id.
     /// This member is required.
     public var id: Swift.String?
@@ -13184,7 +13185,7 @@ public struct UpdateStreamingDistributionInput {
 }
 
 /// The returned result of the corresponding request.
-public struct UpdateStreamingDistributionOutput {
+public struct UpdateStreamingDistributionOutput: Swift.Sendable {
     /// The current version of the configuration. For example: E2QWRUHAPOMQZL.
     public var eTag: Swift.String?
     /// The streaming distribution's information.

@@ -22,7 +22,7 @@ import enum SmithyReadWrite.ReaderError
 
 extension SageMakerMetricsClientTypes {
 
-    public enum MetricStatistic: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum MetricStatistic: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case avg
         case count
         case last
@@ -63,7 +63,7 @@ extension SageMakerMetricsClientTypes {
 
 extension SageMakerMetricsClientTypes {
 
-    public enum Period: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Period: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case fiveMinute
         case iterationNumber
         case oneHour
@@ -98,7 +98,7 @@ extension SageMakerMetricsClientTypes {
 
 extension SageMakerMetricsClientTypes {
 
-    public enum XAxisType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum XAxisType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case iterationNumber
         case timestamp
         case sdkUnknown(Swift.String)
@@ -126,8 +126,9 @@ extension SageMakerMetricsClientTypes {
 }
 
 extension SageMakerMetricsClientTypes {
+
     /// Specifies a query to retrieve training metrics from SageMaker.
-    public struct MetricQuery {
+    public struct MetricQuery: Swift.Sendable {
         /// The end time of metrics to retrieve.
         public var end: Swift.Int?
         /// The name of the metric to retrieve.
@@ -167,10 +168,9 @@ extension SageMakerMetricsClientTypes {
             self.xAxisType = xAxisType
         }
     }
-
 }
 
-public struct BatchGetMetricsInput {
+public struct BatchGetMetricsInput: Swift.Sendable {
     /// Queries made to retrieve training metrics from SageMaker.
     /// This member is required.
     public var metricQueries: [SageMakerMetricsClientTypes.MetricQuery]?
@@ -185,7 +185,7 @@ public struct BatchGetMetricsInput {
 
 extension SageMakerMetricsClientTypes {
 
-    public enum MetricQueryResultStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum MetricQueryResultStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case complete
         case internalError
         case truncated
@@ -219,8 +219,9 @@ extension SageMakerMetricsClientTypes {
 }
 
 extension SageMakerMetricsClientTypes {
+
     /// The result of a query to retrieve training metrics from SageMaker.
-    public struct MetricQueryResult {
+    public struct MetricQueryResult: Swift.Sendable {
         /// A message describing the status of the metric query.
         public var message: Swift.String?
         /// The metric values retrieved by the query.
@@ -246,10 +247,9 @@ extension SageMakerMetricsClientTypes {
             self.xAxisValues = xAxisValues
         }
     }
-
 }
 
-public struct BatchGetMetricsOutput {
+public struct BatchGetMetricsOutput: Swift.Sendable {
     /// The results of a query to retrieve training metrics from SageMaker.
     public var metricQueryResults: [SageMakerMetricsClientTypes.MetricQueryResult]?
 
@@ -262,8 +262,9 @@ public struct BatchGetMetricsOutput {
 }
 
 extension SageMakerMetricsClientTypes {
+
     /// The raw metric data to associate with the resource.
-    public struct RawMetricData {
+    public struct RawMetricData: Swift.Sendable {
         /// The name of the metric.
         /// This member is required.
         public var metricName: Swift.String?
@@ -289,10 +290,9 @@ extension SageMakerMetricsClientTypes {
             self.value = value
         }
     }
-
 }
 
-public struct BatchPutMetricsInput {
+public struct BatchPutMetricsInput: Swift.Sendable {
     /// A list of raw metric values to put.
     /// This member is required.
     public var metricData: [SageMakerMetricsClientTypes.RawMetricData]?
@@ -312,7 +312,7 @@ public struct BatchPutMetricsInput {
 
 extension SageMakerMetricsClientTypes {
 
-    public enum PutMetricsErrorCode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum PutMetricsErrorCode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case conflictError
         case internalError
         case metricLimitExceeded
@@ -346,8 +346,9 @@ extension SageMakerMetricsClientTypes {
 }
 
 extension SageMakerMetricsClientTypes {
+
     /// An error that occured when putting the metric data.
-    public struct BatchPutMetricsError {
+    public struct BatchPutMetricsError: Swift.Sendable {
         /// The error code of an error that occured when attempting to put metrics.
         ///
         /// * METRIC_LIMIT_EXCEEDED: The maximum amount of metrics per resource is exceeded.
@@ -370,10 +371,9 @@ extension SageMakerMetricsClientTypes {
             self.metricIndex = metricIndex
         }
     }
-
 }
 
-public struct BatchPutMetricsOutput {
+public struct BatchPutMetricsOutput: Swift.Sendable {
     /// Lists any errors that occur when inserting metric data.
     public var errors: [SageMakerMetricsClientTypes.BatchPutMetricsError]?
 

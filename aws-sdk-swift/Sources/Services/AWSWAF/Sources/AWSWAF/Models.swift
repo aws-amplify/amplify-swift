@@ -28,7 +28,7 @@ import protocol ClientRuntime.ModeledError
 
 extension WAFClientTypes {
 
-    public enum WafActionType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum WafActionType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case allow
         case block
         case count
@@ -59,8 +59,9 @@ extension WAFClientTypes {
 }
 
 extension WAFClientTypes {
+
     /// This is AWS WAF Classic documentation. For more information, see [AWS WAF Classic](https://docs.aws.amazon.com/waf/latest/developerguide/classic-waf-chapter.html) in the developer guide. For the latest version of AWS WAF, use the AWS WAFV2 API and see the [AWS WAF Developer Guide](https://docs.aws.amazon.com/waf/latest/developerguide/waf-chapter.html). With the latest version, AWS WAF has a single set of endpoints for regional and global use. For the action that is associated with a rule in a WebACL, specifies the action that you want AWS WAF to perform when a web request matches all of the conditions in a rule. For the default action in a WebACL, specifies the action that you want AWS WAF to take when a web request doesn't match all of the conditions in any of the rules in a WebACL.
-    public struct WafAction {
+    public struct WafAction: Swift.Sendable {
         /// Specifies how you want AWS WAF to respond to requests that match the settings in a Rule. Valid settings include the following:
         ///
         /// * ALLOW: AWS WAF allows requests
@@ -78,12 +79,12 @@ extension WAFClientTypes {
             self.type = type
         }
     }
-
 }
 
 extension WAFClientTypes {
+
     /// This is AWS WAF Classic documentation. For more information, see [AWS WAF Classic](https://docs.aws.amazon.com/waf/latest/developerguide/classic-waf-chapter.html) in the developer guide. For the latest version of AWS WAF, use the AWS WAFV2 API and see the [AWS WAF Developer Guide](https://docs.aws.amazon.com/waf/latest/developerguide/waf-chapter.html). With the latest version, AWS WAF has a single set of endpoints for regional and global use. The rule to exclude from a rule group. This is applicable only when the ActivatedRule refers to a RuleGroup. The rule must belong to the RuleGroup that is specified by the ActivatedRule.
-    public struct ExcludedRule {
+    public struct ExcludedRule: Swift.Sendable {
         /// The unique identifier for the rule to exclude from the rule group.
         /// This member is required.
         public var ruleId: Swift.String?
@@ -95,12 +96,11 @@ extension WAFClientTypes {
             self.ruleId = ruleId
         }
     }
-
 }
 
 extension WAFClientTypes {
 
-    public enum WafOverrideActionType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum WafOverrideActionType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case count
         case `none`
         case sdkUnknown(Swift.String)
@@ -128,8 +128,9 @@ extension WAFClientTypes {
 }
 
 extension WAFClientTypes {
+
     /// This is AWS WAF Classic documentation. For more information, see [AWS WAF Classic](https://docs.aws.amazon.com/waf/latest/developerguide/classic-waf-chapter.html) in the developer guide. For the latest version of AWS WAF, use the AWS WAFV2 API and see the [AWS WAF Developer Guide](https://docs.aws.amazon.com/waf/latest/developerguide/waf-chapter.html). With the latest version, AWS WAF has a single set of endpoints for regional and global use. The action to take if any rule within the RuleGroup matches a request.
-    public struct WafOverrideAction {
+    public struct WafOverrideAction: Swift.Sendable {
         /// COUNT overrides the action specified by the individual rule within a RuleGroup . If set to NONE, the rule's action will take place.
         /// This member is required.
         public var type: WAFClientTypes.WafOverrideActionType?
@@ -141,12 +142,11 @@ extension WAFClientTypes {
             self.type = type
         }
     }
-
 }
 
 extension WAFClientTypes {
 
-    public enum WafRuleType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum WafRuleType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case group
         case rateBased
         case regular
@@ -177,8 +177,9 @@ extension WAFClientTypes {
 }
 
 extension WAFClientTypes {
+
     /// This is AWS WAF Classic documentation. For more information, see [AWS WAF Classic](https://docs.aws.amazon.com/waf/latest/developerguide/classic-waf-chapter.html) in the developer guide. For the latest version of AWS WAF, use the AWS WAFV2 API and see the [AWS WAF Developer Guide](https://docs.aws.amazon.com/waf/latest/developerguide/waf-chapter.html). With the latest version, AWS WAF has a single set of endpoints for regional and global use. The ActivatedRule object in an [UpdateWebACL] request specifies a Rule that you want to insert or delete, the priority of the Rule in the WebACL, and the action that you want AWS WAF to take when a web request matches the Rule (ALLOW, BLOCK, or COUNT). To specify whether to insert or delete a Rule, use the Action parameter in the [WebACLUpdate] data type.
-    public struct ActivatedRule {
+    public struct ActivatedRule: Swift.Sendable {
         /// Specifies the action that CloudFront or AWS WAF takes when a web request matches the conditions in the Rule. Valid values for Action include the following:
         ///
         /// * ALLOW: CloudFront responds with the requested object.
@@ -228,7 +229,6 @@ extension WAFClientTypes {
             self.type = type
         }
     }
-
 }
 
 /// The name specified is invalid.
@@ -294,7 +294,7 @@ public struct WAFInvalidAccountException: ClientRuntime.ModeledError, AWSClientR
 
 extension WAFClientTypes {
 
-    public enum ParameterExceptionField: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ParameterExceptionField: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case byteMatchFieldType
         case byteMatchPositionalConstraint
         case byteMatchTextTransformation
@@ -371,7 +371,7 @@ extension WAFClientTypes {
 
 extension WAFClientTypes {
 
-    public enum ParameterExceptionReason: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ParameterExceptionReason: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case illegalArgument
         case illegalCombination
         case invalidOption
@@ -500,7 +500,7 @@ public struct WAFStaleDataException: ClientRuntime.ModeledError, AWSClientRuntim
     }
 }
 
-public struct CreateByteMatchSetInput {
+public struct CreateByteMatchSetInput: Swift.Sendable {
     /// The value returned by the most recent call to [GetChangeToken].
     /// This member is required.
     public var changeToken: Swift.String?
@@ -520,7 +520,7 @@ public struct CreateByteMatchSetInput {
 
 extension WAFClientTypes {
 
-    public enum MatchFieldType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum MatchFieldType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case allQueryArgs
         case body
         case header
@@ -563,8 +563,9 @@ extension WAFClientTypes {
 }
 
 extension WAFClientTypes {
+
     /// This is AWS WAF Classic documentation. For more information, see [AWS WAF Classic](https://docs.aws.amazon.com/waf/latest/developerguide/classic-waf-chapter.html) in the developer guide. For the latest version of AWS WAF, use the AWS WAFV2 API and see the [AWS WAF Developer Guide](https://docs.aws.amazon.com/waf/latest/developerguide/waf-chapter.html). With the latest version, AWS WAF has a single set of endpoints for regional and global use. Specifies where in a web request to look for TargetString.
-    public struct FieldToMatch {
+    public struct FieldToMatch: Swift.Sendable {
         /// When the value of Type is HEADER, enter the name of the header that you want AWS WAF to search, for example, User-Agent or Referer. The name of the header is not case sensitive. When the value of Type is SINGLE_QUERY_ARG, enter the name of the parameter that you want AWS WAF to search, for example, UserName or SalesRegion. The parameter name is not case sensitive. If the value of Type is any other value, omit Data.
         public var data: Swift.String?
         /// The part of the web request that you want AWS WAF to search for a specified string. Parts of a request that you can search include the following:
@@ -594,12 +595,11 @@ extension WAFClientTypes {
             self.type = type
         }
     }
-
 }
 
 extension WAFClientTypes {
 
-    public enum PositionalConstraint: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum PositionalConstraint: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case contains
         case containsWord
         case endsWith
@@ -637,7 +637,7 @@ extension WAFClientTypes {
 
 extension WAFClientTypes {
 
-    public enum TextTransformation: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum TextTransformation: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case cmdLine
         case compressWhiteSpace
         case htmlEntityDecode
@@ -677,8 +677,9 @@ extension WAFClientTypes {
 }
 
 extension WAFClientTypes {
+
     /// This is AWS WAF Classic documentation. For more information, see [AWS WAF Classic](https://docs.aws.amazon.com/waf/latest/developerguide/classic-waf-chapter.html) in the developer guide. For the latest version of AWS WAF, use the AWS WAFV2 API and see the [AWS WAF Developer Guide](https://docs.aws.amazon.com/waf/latest/developerguide/waf-chapter.html). With the latest version, AWS WAF has a single set of endpoints for regional and global use. The bytes (typically a string that corresponds with ASCII characters) that you want AWS WAF to search for in web requests, the location in requests that you want AWS WAF to search, and other settings.
-    public struct ByteMatchTuple {
+    public struct ByteMatchTuple: Swift.Sendable {
         /// The part of a web request that you want AWS WAF to search, such as a specified header or a query string. For more information, see [FieldToMatch].
         /// This member is required.
         public var fieldToMatch: WAFClientTypes.FieldToMatch?
@@ -776,12 +777,12 @@ extension WAFClientTypes {
             self.textTransformation = textTransformation
         }
     }
-
 }
 
 extension WAFClientTypes {
+
     /// This is AWS WAF Classic documentation. For more information, see [AWS WAF Classic](https://docs.aws.amazon.com/waf/latest/developerguide/classic-waf-chapter.html) in the developer guide. For the latest version of AWS WAF, use the AWS WAFV2 API and see the [AWS WAF Developer Guide](https://docs.aws.amazon.com/waf/latest/developerguide/waf-chapter.html). With the latest version, AWS WAF has a single set of endpoints for regional and global use. In a [GetByteMatchSet] request, ByteMatchSet is a complex type that contains the ByteMatchSetId and Name of a ByteMatchSet, and the values that you specified when you updated the ByteMatchSet. A complex type that contains ByteMatchTuple objects, which specify the parts of web requests that you want AWS WAF to inspect and the values that you want AWS WAF to search for. If a ByteMatchSet contains more than one ByteMatchTuple object, a request needs to match the settings in only one ByteMatchTuple to be considered a match.
-    public struct ByteMatchSet {
+    public struct ByteMatchSet: Swift.Sendable {
         /// The ByteMatchSetId for a ByteMatchSet. You use ByteMatchSetId to get information about a ByteMatchSet (see [GetByteMatchSet]), update a ByteMatchSet (see [UpdateByteMatchSet]), insert a ByteMatchSet into a Rule or delete one from a Rule (see [UpdateRule]), and delete a ByteMatchSet from AWS WAF (see [DeleteByteMatchSet]). ByteMatchSetId is returned by [CreateByteMatchSet] and by [ListByteMatchSets].
         /// This member is required.
         public var byteMatchSetId: Swift.String?
@@ -802,10 +803,9 @@ extension WAFClientTypes {
             self.name = name
         }
     }
-
 }
 
-public struct CreateByteMatchSetOutput {
+public struct CreateByteMatchSetOutput: Swift.Sendable {
     /// A [ByteMatchSet] that contains no ByteMatchTuple objects.
     public var byteMatchSet: WAFClientTypes.ByteMatchSet?
     /// The ChangeToken that you used to submit the CreateByteMatchSet request. You can also use this value to query the status of the request. For more information, see [GetChangeTokenStatus].
@@ -821,7 +821,7 @@ public struct CreateByteMatchSetOutput {
     }
 }
 
-public struct CreateGeoMatchSetInput {
+public struct CreateGeoMatchSetInput: Swift.Sendable {
     /// The value returned by the most recent call to [GetChangeToken].
     /// This member is required.
     public var changeToken: Swift.String?
@@ -841,7 +841,7 @@ public struct CreateGeoMatchSetInput {
 
 extension WAFClientTypes {
 
-    public enum GeoMatchConstraintType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum GeoMatchConstraintType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case country
         case sdkUnknown(Swift.String)
 
@@ -867,7 +867,7 @@ extension WAFClientTypes {
 
 extension WAFClientTypes {
 
-    public enum GeoMatchConstraintValue: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum GeoMatchConstraintValue: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case ad
         case ae
         case af
@@ -1636,8 +1636,9 @@ extension WAFClientTypes {
 }
 
 extension WAFClientTypes {
+
     /// This is AWS WAF Classic documentation. For more information, see [AWS WAF Classic](https://docs.aws.amazon.com/waf/latest/developerguide/classic-waf-chapter.html) in the developer guide. For the latest version of AWS WAF, use the AWS WAFV2 API and see the [AWS WAF Developer Guide](https://docs.aws.amazon.com/waf/latest/developerguide/waf-chapter.html). With the latest version, AWS WAF has a single set of endpoints for regional and global use. The country from which web requests originate that you want AWS WAF to search for.
-    public struct GeoMatchConstraint {
+    public struct GeoMatchConstraint: Swift.Sendable {
         /// The type of geographical area you want AWS WAF to search for. Currently Country is the only valid value.
         /// This member is required.
         public var type: WAFClientTypes.GeoMatchConstraintType?
@@ -1654,12 +1655,12 @@ extension WAFClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension WAFClientTypes {
+
     /// This is AWS WAF Classic documentation. For more information, see [AWS WAF Classic](https://docs.aws.amazon.com/waf/latest/developerguide/classic-waf-chapter.html) in the developer guide. For the latest version of AWS WAF, use the AWS WAFV2 API and see the [AWS WAF Developer Guide](https://docs.aws.amazon.com/waf/latest/developerguide/waf-chapter.html). With the latest version, AWS WAF has a single set of endpoints for regional and global use. Contains one or more countries that AWS WAF will search for.
-    public struct GeoMatchSet {
+    public struct GeoMatchSet: Swift.Sendable {
         /// An array of [GeoMatchConstraint] objects, which contain the country that you want AWS WAF to search for.
         /// This member is required.
         public var geoMatchConstraints: [WAFClientTypes.GeoMatchConstraint]?
@@ -1680,10 +1681,9 @@ extension WAFClientTypes {
             self.name = name
         }
     }
-
 }
 
-public struct CreateGeoMatchSetOutput {
+public struct CreateGeoMatchSetOutput: Swift.Sendable {
     /// The ChangeToken that you used to submit the CreateGeoMatchSet request. You can also use this value to query the status of the request. For more information, see [GetChangeTokenStatus].
     public var changeToken: Swift.String?
     /// The [GeoMatchSet] returned in the CreateGeoMatchSet response. The GeoMatchSet contains no GeoMatchConstraints.
@@ -1699,7 +1699,7 @@ public struct CreateGeoMatchSetOutput {
     }
 }
 
-public struct CreateIPSetInput {
+public struct CreateIPSetInput: Swift.Sendable {
     /// The value returned by the most recent call to [GetChangeToken].
     /// This member is required.
     public var changeToken: Swift.String?
@@ -1719,7 +1719,7 @@ public struct CreateIPSetInput {
 
 extension WAFClientTypes {
 
-    public enum IPSetDescriptorType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum IPSetDescriptorType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case ipv4
         case ipv6
         case sdkUnknown(Swift.String)
@@ -1747,8 +1747,9 @@ extension WAFClientTypes {
 }
 
 extension WAFClientTypes {
+
     /// This is AWS WAF Classic documentation. For more information, see [AWS WAF Classic](https://docs.aws.amazon.com/waf/latest/developerguide/classic-waf-chapter.html) in the developer guide. For the latest version of AWS WAF, use the AWS WAFV2 API and see the [AWS WAF Developer Guide](https://docs.aws.amazon.com/waf/latest/developerguide/waf-chapter.html). With the latest version, AWS WAF has a single set of endpoints for regional and global use. Specifies the IP address type (IPV4 or IPV6) and the IP address range (in CIDR format) that web requests originate from.
-    public struct IPSetDescriptor {
+    public struct IPSetDescriptor: Swift.Sendable {
         /// Specify IPV4 or IPV6.
         /// This member is required.
         public var type: WAFClientTypes.IPSetDescriptorType?
@@ -1776,12 +1777,12 @@ extension WAFClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension WAFClientTypes {
+
     /// This is AWS WAF Classic documentation. For more information, see [AWS WAF Classic](https://docs.aws.amazon.com/waf/latest/developerguide/classic-waf-chapter.html) in the developer guide. For the latest version of AWS WAF, use the AWS WAFV2 API and see the [AWS WAF Developer Guide](https://docs.aws.amazon.com/waf/latest/developerguide/waf-chapter.html). With the latest version, AWS WAF has a single set of endpoints for regional and global use. Contains one or more IP addresses or blocks of IP addresses specified in Classless Inter-Domain Routing (CIDR) notation. AWS WAF supports IPv4 address ranges: /8 and any range between /16 through /32. AWS WAF supports IPv6 address ranges: /24, /32, /48, /56, /64, and /128. To specify an individual IP address, you specify the four-part IP address followed by a /32, for example, 192.0.2.0/32. To block a range of IP addresses, you can specify /8 or any range between /16 through /32 (for IPv4) or /24, /32, /48, /56, /64, or /128 (for IPv6). For more information about CIDR notation, see the Wikipedia entry [Classless Inter-Domain Routing](https://en.wikipedia.org/wiki/Classless_Inter-Domain_Routing).
-    public struct IPSet {
+    public struct IPSet: Swift.Sendable {
         /// The IP address type (IPV4 or IPV6) and the IP address range (in CIDR notation) that web requests originate from. If the WebACL is associated with a CloudFront distribution and the viewer did not use an HTTP proxy or a load balancer to send the request, this is the value of the c-ip field in the CloudFront access logs.
         /// This member is required.
         public var ipSetDescriptors: [WAFClientTypes.IPSetDescriptor]?
@@ -1802,10 +1803,9 @@ extension WAFClientTypes {
             self.name = name
         }
     }
-
 }
 
-public struct CreateIPSetOutput {
+public struct CreateIPSetOutput: Swift.Sendable {
     /// The ChangeToken that you used to submit the CreateIPSet request. You can also use this value to query the status of the request. For more information, see [GetChangeTokenStatus].
     public var changeToken: Swift.String?
     /// The [IPSet] returned in the CreateIPSet response.
@@ -1895,7 +1895,7 @@ public struct WAFTagOperationInternalErrorException: ClientRuntime.ModeledError,
 
 extension WAFClientTypes {
 
-    public enum RateKey: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum RateKey: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case ip
         case sdkUnknown(Swift.String)
 
@@ -1920,8 +1920,9 @@ extension WAFClientTypes {
 }
 
 extension WAFClientTypes {
+
     /// This is AWS WAF Classic documentation. For more information, see [AWS WAF Classic](https://docs.aws.amazon.com/waf/latest/developerguide/classic-waf-chapter.html) in the developer guide. For the latest version of AWS WAF, use the AWS WAFV2 API and see the [AWS WAF Developer Guide](https://docs.aws.amazon.com/waf/latest/developerguide/waf-chapter.html). With the latest version, AWS WAF has a single set of endpoints for regional and global use. A tag associated with an AWS resource. Tags are key:value pairs that you can use to categorize and manage your resources, for purposes like billing. For example, you might set the tag key to "customer" and the value to the customer name or ID. You can specify one or more tags to add to each AWS resource, up to 50 tags for a resource. Tagging is only available through the API, SDKs, and CLI. You can't manage or view tags through the AWS WAF Classic console. You can tag the AWS resources that you manage through AWS WAF Classic: web ACLs, rule groups, and rules.
-    public struct Tag {
+    public struct Tag: Swift.Sendable {
         ///
         /// This member is required.
         public var key: Swift.String?
@@ -1938,10 +1939,9 @@ extension WAFClientTypes {
             self.value = value
         }
     }
-
 }
 
-public struct CreateRateBasedRuleInput {
+public struct CreateRateBasedRuleInput: Swift.Sendable {
     /// The ChangeToken that you used to submit the CreateRateBasedRule request. You can also use this value to query the status of the request. For more information, see [GetChangeTokenStatus].
     /// This member is required.
     public var changeToken: Swift.String?
@@ -1980,7 +1980,7 @@ public struct CreateRateBasedRuleInput {
 
 extension WAFClientTypes {
 
-    public enum PredicateType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum PredicateType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case byteMatch
         case geoMatch
         case ipMatch
@@ -2023,8 +2023,9 @@ extension WAFClientTypes {
 }
 
 extension WAFClientTypes {
+
     /// This is AWS WAF Classic documentation. For more information, see [AWS WAF Classic](https://docs.aws.amazon.com/waf/latest/developerguide/classic-waf-chapter.html) in the developer guide. For the latest version of AWS WAF, use the AWS WAFV2 API and see the [AWS WAF Developer Guide](https://docs.aws.amazon.com/waf/latest/developerguide/waf-chapter.html). With the latest version, AWS WAF has a single set of endpoints for regional and global use. Specifies the [ByteMatchSet], [IPSet], [SqlInjectionMatchSet], [XssMatchSet], [RegexMatchSet], [GeoMatchSet], and [SizeConstraintSet] objects that you want to add to a Rule and, for each object, indicates whether you want to negate the settings, for example, requests that do NOT originate from the IP address 192.0.2.44.
-    public struct Predicate {
+    public struct Predicate: Swift.Sendable {
         /// A unique identifier for a predicate in a Rule, such as ByteMatchSetId or IPSetId. The ID is returned by the corresponding Create or List command.
         /// This member is required.
         public var dataId: Swift.String?
@@ -2046,10 +2047,10 @@ extension WAFClientTypes {
             self.type = type
         }
     }
-
 }
 
 extension WAFClientTypes {
+
     /// This is AWS WAF Classic documentation. For more information, see [AWS WAF Classic](https://docs.aws.amazon.com/waf/latest/developerguide/classic-waf-chapter.html) in the developer guide. For the latest version of AWS WAF, use the AWS WAFV2 API and see the [AWS WAF Developer Guide](https://docs.aws.amazon.com/waf/latest/developerguide/waf-chapter.html). With the latest version, AWS WAF has a single set of endpoints for regional and global use. A RateBasedRule is identical to a regular [Rule], with one addition: a RateBasedRule counts the number of requests that arrive from a specified IP address every five minutes. For example, based on recent requests that you've seen from an attacker, you might create a RateBasedRule that includes the following conditions:
     ///
     /// * The requests come from 192.0.2.44.
@@ -2058,7 +2059,7 @@ extension WAFClientTypes {
     ///
     ///
     /// In the rule, you also define the rate limit as 1,000. Requests that meet both of these conditions and exceed 1,000 requests every five minutes trigger the rule's action (block or count), which is defined in the web ACL.
-    public struct RateBasedRule {
+    public struct RateBasedRule: Swift.Sendable {
         /// The Predicates object contains one Predicate element for each [ByteMatchSet], [IPSet], or [SqlInjectionMatchSet] object that you want to include in a RateBasedRule.
         /// This member is required.
         public var matchPredicates: [WAFClientTypes.Predicate]?
@@ -2093,10 +2094,9 @@ extension WAFClientTypes {
             self.ruleId = ruleId
         }
     }
-
 }
 
-public struct CreateRateBasedRuleOutput {
+public struct CreateRateBasedRuleOutput: Swift.Sendable {
     /// The ChangeToken that you used to submit the CreateRateBasedRule request. You can also use this value to query the status of the request. For more information, see [GetChangeTokenStatus].
     public var changeToken: Swift.String?
     /// The [RateBasedRule] that is returned in the CreateRateBasedRule response.
@@ -2112,7 +2112,7 @@ public struct CreateRateBasedRuleOutput {
     }
 }
 
-public struct CreateRegexMatchSetInput {
+public struct CreateRegexMatchSetInput: Swift.Sendable {
     /// The value returned by the most recent call to [GetChangeToken].
     /// This member is required.
     public var changeToken: Swift.String?
@@ -2131,6 +2131,7 @@ public struct CreateRegexMatchSetInput {
 }
 
 extension WAFClientTypes {
+
     /// This is AWS WAF Classic documentation. For more information, see [AWS WAF Classic](https://docs.aws.amazon.com/waf/latest/developerguide/classic-waf-chapter.html) in the developer guide. For the latest version of AWS WAF, use the AWS WAFV2 API and see the [AWS WAF Developer Guide](https://docs.aws.amazon.com/waf/latest/developerguide/waf-chapter.html). With the latest version, AWS WAF has a single set of endpoints for regional and global use. The regular expression pattern that you want AWS WAF to search for in web requests, the location in requests that you want AWS WAF to search, and other settings. Each RegexMatchTuple object contains:
     ///
     /// * The part of a web request that you want AWS WAF to inspect, such as a query string or the value of the User-Agent header.
@@ -2138,7 +2139,7 @@ extension WAFClientTypes {
     /// * The identifier of the pattern (a regular expression) that you want AWS WAF to look for. For more information, see [RegexPatternSet].
     ///
     /// * Whether to perform any conversions on the request, such as converting it to lowercase, before inspecting it for the specified string.
-    public struct RegexMatchTuple {
+    public struct RegexMatchTuple: Swift.Sendable {
         /// Specifies where in a web request to look for the RegexPatternSet.
         /// This member is required.
         public var fieldToMatch: WAFClientTypes.FieldToMatch?
@@ -2203,12 +2204,12 @@ extension WAFClientTypes {
             self.textTransformation = textTransformation
         }
     }
-
 }
 
 extension WAFClientTypes {
+
     /// This is AWS WAF Classic documentation. For more information, see [AWS WAF Classic](https://docs.aws.amazon.com/waf/latest/developerguide/classic-waf-chapter.html) in the developer guide. For the latest version of AWS WAF, use the AWS WAFV2 API and see the [AWS WAF Developer Guide](https://docs.aws.amazon.com/waf/latest/developerguide/waf-chapter.html). With the latest version, AWS WAF has a single set of endpoints for regional and global use. In a [GetRegexMatchSet] request, RegexMatchSet is a complex type that contains the RegexMatchSetId and Name of a RegexMatchSet, and the values that you specified when you updated the RegexMatchSet. The values are contained in a RegexMatchTuple object, which specify the parts of web requests that you want AWS WAF to inspect and the values that you want AWS WAF to search for. If a RegexMatchSet contains more than one RegexMatchTuple object, a request needs to match the settings in only one ByteMatchTuple to be considered a match.
-    public struct RegexMatchSet {
+    public struct RegexMatchSet: Swift.Sendable {
         /// A friendly name or description of the [RegexMatchSet]. You can't change Name after you create a RegexMatchSet.
         public var name: Swift.String?
         /// The RegexMatchSetId for a RegexMatchSet. You use RegexMatchSetId to get information about a RegexMatchSet (see [GetRegexMatchSet]), update a RegexMatchSet (see [UpdateRegexMatchSet]), insert a RegexMatchSet into a Rule or delete one from a Rule (see [UpdateRule]), and delete a RegexMatchSet from AWS WAF (see [DeleteRegexMatchSet]). RegexMatchSetId is returned by [CreateRegexMatchSet] and by [ListRegexMatchSets].
@@ -2233,10 +2234,9 @@ extension WAFClientTypes {
             self.regexMatchTuples = regexMatchTuples
         }
     }
-
 }
 
-public struct CreateRegexMatchSetOutput {
+public struct CreateRegexMatchSetOutput: Swift.Sendable {
     /// The ChangeToken that you used to submit the CreateRegexMatchSet request. You can also use this value to query the status of the request. For more information, see [GetChangeTokenStatus].
     public var changeToken: Swift.String?
     /// A [RegexMatchSet] that contains no RegexMatchTuple objects.
@@ -2252,7 +2252,7 @@ public struct CreateRegexMatchSetOutput {
     }
 }
 
-public struct CreateRegexPatternSetInput {
+public struct CreateRegexPatternSetInput: Swift.Sendable {
     /// The value returned by the most recent call to [GetChangeToken].
     /// This member is required.
     public var changeToken: Swift.String?
@@ -2271,8 +2271,9 @@ public struct CreateRegexPatternSetInput {
 }
 
 extension WAFClientTypes {
+
     /// This is AWS WAF Classic documentation. For more information, see [AWS WAF Classic](https://docs.aws.amazon.com/waf/latest/developerguide/classic-waf-chapter.html) in the developer guide. For the latest version of AWS WAF, use the AWS WAFV2 API and see the [AWS WAF Developer Guide](https://docs.aws.amazon.com/waf/latest/developerguide/waf-chapter.html). With the latest version, AWS WAF has a single set of endpoints for regional and global use. The RegexPatternSet specifies the regular expression (regex) pattern that you want AWS WAF to search for, such as B[a@]dB[o0]t. You can then configure AWS WAF to reject those requests.
-    public struct RegexPatternSet {
+    public struct RegexPatternSet: Swift.Sendable {
         /// A friendly name or description of the [RegexPatternSet]. You can't change Name after you create a RegexPatternSet.
         public var name: Swift.String?
         /// The identifier for the RegexPatternSet. You use RegexPatternSetId to get information about a RegexPatternSet, update a RegexPatternSet, remove a RegexPatternSet from a RegexMatchSet, and delete a RegexPatternSet from AWS WAF. RegexMatchSetId is returned by [CreateRegexPatternSet] and by [ListRegexPatternSets].
@@ -2293,10 +2294,9 @@ extension WAFClientTypes {
             self.regexPatternStrings = regexPatternStrings
         }
     }
-
 }
 
-public struct CreateRegexPatternSetOutput {
+public struct CreateRegexPatternSetOutput: Swift.Sendable {
     /// The ChangeToken that you used to submit the CreateRegexPatternSet request. You can also use this value to query the status of the request. For more information, see [GetChangeTokenStatus].
     public var changeToken: Swift.String?
     /// A [RegexPatternSet] that contains no objects.
@@ -2312,7 +2312,7 @@ public struct CreateRegexPatternSetOutput {
     }
 }
 
-public struct CreateRuleInput {
+public struct CreateRuleInput: Swift.Sendable {
     /// The value returned by the most recent call to [GetChangeToken].
     /// This member is required.
     public var changeToken: Swift.String?
@@ -2340,6 +2340,7 @@ public struct CreateRuleInput {
 }
 
 extension WAFClientTypes {
+
     /// This is AWS WAF Classic documentation. For more information, see [AWS WAF Classic](https://docs.aws.amazon.com/waf/latest/developerguide/classic-waf-chapter.html) in the developer guide. For the latest version of AWS WAF, use the AWS WAFV2 API and see the [AWS WAF Developer Guide](https://docs.aws.amazon.com/waf/latest/developerguide/waf-chapter.html). With the latest version, AWS WAF has a single set of endpoints for regional and global use. A combination of [ByteMatchSet], [IPSet], and/or [SqlInjectionMatchSet] objects that identify the web requests that you want to allow, block, or count. For example, you might create a Rule that includes the following predicates:
     ///
     /// * An IPSet that causes AWS WAF to search for web requests that originate from the IP address 192.0.2.44
@@ -2348,7 +2349,7 @@ extension WAFClientTypes {
     ///
     ///
     /// To match the settings in this Rule, a request must originate from 192.0.2.44 AND include a User-Agent header for which the value is BadBot.
-    public struct Rule {
+    public struct Rule: Swift.Sendable {
         /// A friendly name or description for the metrics for this Rule. The name can contain only alphanumeric characters (A-Z, a-z, 0-9), with maximum length 128 and minimum length one. It can't contain whitespace or metric names reserved for AWS WAF, including "All" and "Default_Action." You can't change MetricName after you create the Rule.
         public var metricName: Swift.String?
         /// The friendly name or description for the Rule. You can't change the name of a Rule after you create it.
@@ -2373,10 +2374,9 @@ extension WAFClientTypes {
             self.ruleId = ruleId
         }
     }
-
 }
 
-public struct CreateRuleOutput {
+public struct CreateRuleOutput: Swift.Sendable {
     /// The ChangeToken that you used to submit the CreateRule request. You can also use this value to query the status of the request. For more information, see [GetChangeTokenStatus].
     public var changeToken: Swift.String?
     /// The [Rule] returned in the CreateRule response.
@@ -2392,7 +2392,7 @@ public struct CreateRuleOutput {
     }
 }
 
-public struct CreateRuleGroupInput {
+public struct CreateRuleGroupInput: Swift.Sendable {
     /// The value returned by the most recent call to [GetChangeToken].
     /// This member is required.
     public var changeToken: Swift.String?
@@ -2420,6 +2420,7 @@ public struct CreateRuleGroupInput {
 }
 
 extension WAFClientTypes {
+
     /// This is AWS WAF Classic documentation. For more information, see [AWS WAF Classic](https://docs.aws.amazon.com/waf/latest/developerguide/classic-waf-chapter.html) in the developer guide. For the latest version of AWS WAF, use the AWS WAFV2 API and see the [AWS WAF Developer Guide](https://docs.aws.amazon.com/waf/latest/developerguide/waf-chapter.html). With the latest version, AWS WAF has a single set of endpoints for regional and global use. A collection of predefined rules that you can add to a web ACL. Rule groups are subject to the following limits:
     ///
     /// * Three rule groups per account. You can request an increase to this limit by contacting customer support.
@@ -2427,7 +2428,7 @@ extension WAFClientTypes {
     /// * One rule group per web ACL.
     ///
     /// * Ten rules per rule group.
-    public struct RuleGroup {
+    public struct RuleGroup: Swift.Sendable {
         /// A friendly name or description for the metrics for this RuleGroup. The name can contain only alphanumeric characters (A-Z, a-z, 0-9), with maximum length 128 and minimum length one. It can't contain whitespace or metric names reserved for AWS WAF, including "All" and "Default_Action." You can't change the name of the metric after you create the RuleGroup.
         public var metricName: Swift.String?
         /// The friendly name or description for the RuleGroup. You can't change the name of a RuleGroup after you create it.
@@ -2447,10 +2448,9 @@ extension WAFClientTypes {
             self.ruleGroupId = ruleGroupId
         }
     }
-
 }
 
-public struct CreateRuleGroupOutput {
+public struct CreateRuleGroupOutput: Swift.Sendable {
     /// The ChangeToken that you used to submit the CreateRuleGroup request. You can also use this value to query the status of the request. For more information, see [GetChangeTokenStatus].
     public var changeToken: Swift.String?
     /// An empty [RuleGroup].
@@ -2466,7 +2466,7 @@ public struct CreateRuleGroupOutput {
     }
 }
 
-public struct CreateSizeConstraintSetInput {
+public struct CreateSizeConstraintSetInput: Swift.Sendable {
     /// The value returned by the most recent call to [GetChangeToken].
     /// This member is required.
     public var changeToken: Swift.String?
@@ -2486,7 +2486,7 @@ public struct CreateSizeConstraintSetInput {
 
 extension WAFClientTypes {
 
-    public enum ComparisonOperator: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ComparisonOperator: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case eq
         case ge
         case gt
@@ -2526,8 +2526,9 @@ extension WAFClientTypes {
 }
 
 extension WAFClientTypes {
+
     /// This is AWS WAF Classic documentation. For more information, see [AWS WAF Classic](https://docs.aws.amazon.com/waf/latest/developerguide/classic-waf-chapter.html) in the developer guide. For the latest version of AWS WAF, use the AWS WAFV2 API and see the [AWS WAF Developer Guide](https://docs.aws.amazon.com/waf/latest/developerguide/waf-chapter.html). With the latest version, AWS WAF has a single set of endpoints for regional and global use. Specifies a constraint on the size of a part of the web request. AWS WAF uses the Size, ComparisonOperator, and FieldToMatch to build an expression in the form of "SizeComparisonOperator size in bytes of FieldToMatch". If that expression is true, the SizeConstraint is considered to match.
-    public struct SizeConstraint {
+    public struct SizeConstraint: Swift.Sendable {
         /// The type of comparison you want AWS WAF to perform. AWS WAF uses this in combination with the provided Size and FieldToMatch to build an expression in the form of "SizeComparisonOperator size in bytes of FieldToMatch". If that expression is true, the SizeConstraint is considered to match. EQ: Used to test if the Size is equal to the size of the FieldToMatch NE: Used to test if the Size is not equal to the size of the FieldToMatch LE: Used to test if the Size is less than or equal to the size of the FieldToMatch LT: Used to test if the Size is strictly less than the size of the FieldToMatch GE: Used to test if the Size is greater than or equal to the size of the FieldToMatch GT: Used to test if the Size is strictly greater than the size of the FieldToMatch
         /// This member is required.
         public var comparisonOperator: WAFClientTypes.ComparisonOperator?
@@ -2597,12 +2598,12 @@ extension WAFClientTypes {
             self.textTransformation = textTransformation
         }
     }
-
 }
 
 extension WAFClientTypes {
+
     /// This is AWS WAF Classic documentation. For more information, see [AWS WAF Classic](https://docs.aws.amazon.com/waf/latest/developerguide/classic-waf-chapter.html) in the developer guide. For the latest version of AWS WAF, use the AWS WAFV2 API and see the [AWS WAF Developer Guide](https://docs.aws.amazon.com/waf/latest/developerguide/waf-chapter.html). With the latest version, AWS WAF has a single set of endpoints for regional and global use. A complex type that contains SizeConstraint objects, which specify the parts of web requests that you want AWS WAF to inspect the size of. If a SizeConstraintSet contains more than one SizeConstraint object, a request only needs to match one constraint to be considered a match.
-    public struct SizeConstraintSet {
+    public struct SizeConstraintSet: Swift.Sendable {
         /// The name, if any, of the SizeConstraintSet.
         public var name: Swift.String?
         /// A unique identifier for a SizeConstraintSet. You use SizeConstraintSetId to get information about a SizeConstraintSet (see [GetSizeConstraintSet]), update a SizeConstraintSet (see [UpdateSizeConstraintSet]), insert a SizeConstraintSet into a Rule or delete one from a Rule (see [UpdateRule]), and delete a SizeConstraintSet from AWS WAF (see [DeleteSizeConstraintSet]). SizeConstraintSetId is returned by [CreateSizeConstraintSet] and by [ListSizeConstraintSets].
@@ -2623,10 +2624,9 @@ extension WAFClientTypes {
             self.sizeConstraints = sizeConstraints
         }
     }
-
 }
 
-public struct CreateSizeConstraintSetOutput {
+public struct CreateSizeConstraintSetOutput: Swift.Sendable {
     /// The ChangeToken that you used to submit the CreateSizeConstraintSet request. You can also use this value to query the status of the request. For more information, see [GetChangeTokenStatus].
     public var changeToken: Swift.String?
     /// A [SizeConstraintSet] that contains no SizeConstraint objects.
@@ -2643,7 +2643,7 @@ public struct CreateSizeConstraintSetOutput {
 }
 
 /// A request to create a [SqlInjectionMatchSet].
-public struct CreateSqlInjectionMatchSetInput {
+public struct CreateSqlInjectionMatchSetInput: Swift.Sendable {
     /// The value returned by the most recent call to [GetChangeToken].
     /// This member is required.
     public var changeToken: Swift.String?
@@ -2662,8 +2662,9 @@ public struct CreateSqlInjectionMatchSetInput {
 }
 
 extension WAFClientTypes {
+
     /// This is AWS WAF Classic documentation. For more information, see [AWS WAF Classic](https://docs.aws.amazon.com/waf/latest/developerguide/classic-waf-chapter.html) in the developer guide. For the latest version of AWS WAF, use the AWS WAFV2 API and see the [AWS WAF Developer Guide](https://docs.aws.amazon.com/waf/latest/developerguide/waf-chapter.html). With the latest version, AWS WAF has a single set of endpoints for regional and global use. Specifies the part of a web request that you want AWS WAF to inspect for snippets of malicious SQL code and, if you want AWS WAF to inspect a header, the name of the header.
-    public struct SqlInjectionMatchTuple {
+    public struct SqlInjectionMatchTuple: Swift.Sendable {
         /// Specifies where in a web request to look for snippets of malicious SQL code.
         /// This member is required.
         public var fieldToMatch: WAFClientTypes.FieldToMatch?
@@ -2723,12 +2724,12 @@ extension WAFClientTypes {
             self.textTransformation = textTransformation
         }
     }
-
 }
 
 extension WAFClientTypes {
+
     /// This is AWS WAF Classic documentation. For more information, see [AWS WAF Classic](https://docs.aws.amazon.com/waf/latest/developerguide/classic-waf-chapter.html) in the developer guide. For the latest version of AWS WAF, use the AWS WAFV2 API and see the [AWS WAF Developer Guide](https://docs.aws.amazon.com/waf/latest/developerguide/waf-chapter.html). With the latest version, AWS WAF has a single set of endpoints for regional and global use. A complex type that contains SqlInjectionMatchTuple objects, which specify the parts of web requests that you want AWS WAF to inspect for snippets of malicious SQL code and, if you want AWS WAF to inspect a header, the name of the header. If a SqlInjectionMatchSet contains more than one SqlInjectionMatchTuple object, a request needs to include snippets of SQL code in only one of the specified parts of the request to be considered a match.
-    public struct SqlInjectionMatchSet {
+    public struct SqlInjectionMatchSet: Swift.Sendable {
         /// The name, if any, of the SqlInjectionMatchSet.
         public var name: Swift.String?
         /// A unique identifier for a SqlInjectionMatchSet. You use SqlInjectionMatchSetId to get information about a SqlInjectionMatchSet (see [GetSqlInjectionMatchSet]), update a SqlInjectionMatchSet (see [UpdateSqlInjectionMatchSet]), insert a SqlInjectionMatchSet into a Rule or delete one from a Rule (see [UpdateRule]), and delete a SqlInjectionMatchSet from AWS WAF (see [DeleteSqlInjectionMatchSet]). SqlInjectionMatchSetId is returned by [CreateSqlInjectionMatchSet] and by [ListSqlInjectionMatchSets].
@@ -2749,11 +2750,10 @@ extension WAFClientTypes {
             self.sqlInjectionMatchTuples = sqlInjectionMatchTuples
         }
     }
-
 }
 
 /// The response to a CreateSqlInjectionMatchSet request.
-public struct CreateSqlInjectionMatchSetOutput {
+public struct CreateSqlInjectionMatchSetOutput: Swift.Sendable {
     /// The ChangeToken that you used to submit the CreateSqlInjectionMatchSet request. You can also use this value to query the status of the request. For more information, see [GetChangeTokenStatus].
     public var changeToken: Swift.String?
     /// A [SqlInjectionMatchSet].
@@ -2769,7 +2769,7 @@ public struct CreateSqlInjectionMatchSetOutput {
     }
 }
 
-public struct CreateWebACLInput {
+public struct CreateWebACLInput: Swift.Sendable {
     /// The value returned by the most recent call to [GetChangeToken].
     /// This member is required.
     public var changeToken: Swift.String?
@@ -2802,8 +2802,9 @@ public struct CreateWebACLInput {
 }
 
 extension WAFClientTypes {
+
     /// This is AWS WAF Classic documentation. For more information, see [AWS WAF Classic](https://docs.aws.amazon.com/waf/latest/developerguide/classic-waf-chapter.html) in the developer guide. For the latest version of AWS WAF, use the AWS WAFV2 API and see the [AWS WAF Developer Guide](https://docs.aws.amazon.com/waf/latest/developerguide/waf-chapter.html). With the latest version, AWS WAF has a single set of endpoints for regional and global use. Contains the Rules that identify the requests that you want to allow, block, or count. In a WebACL, you also specify a default action (ALLOW or BLOCK), and the action for each Rule that you add to a WebACL, for example, block requests from specified IP addresses or block requests from specified referrers. You also associate the WebACL with a CloudFront distribution to identify the requests that you want AWS WAF to filter. If you add more than one Rule to a WebACL, a request needs to match only one of the specifications to be allowed, blocked, or counted. For more information, see [UpdateWebACL].
-    public struct WebACL {
+    public struct WebACL: Swift.Sendable {
         /// The action to perform if none of the Rules contained in the WebACL match. The action is specified by the [WafAction] object.
         /// This member is required.
         public var defaultAction: WAFClientTypes.WafAction?
@@ -2837,10 +2838,9 @@ extension WAFClientTypes {
             self.webACLId = webACLId
         }
     }
-
 }
 
-public struct CreateWebACLOutput {
+public struct CreateWebACLOutput: Swift.Sendable {
     /// The ChangeToken that you used to submit the CreateWebACL request. You can also use this value to query the status of the request. For more information, see [GetChangeTokenStatus].
     public var changeToken: Swift.String?
     /// The [WebACL] returned in the CreateWebACL response.
@@ -2858,7 +2858,7 @@ public struct CreateWebACLOutput {
 
 extension WAFClientTypes {
 
-    public enum MigrationErrorType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum MigrationErrorType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case entityNotFound
         case entityNotSupported
         case s3BucketInvalidRegion
@@ -3002,7 +3002,7 @@ public struct WAFNonexistentItemException: ClientRuntime.ModeledError, AWSClient
     }
 }
 
-public struct CreateWebACLMigrationStackInput {
+public struct CreateWebACLMigrationStackInput: Swift.Sendable {
     /// Indicates whether to exclude entities that can't be migrated or to stop the migration. Set this to true to ignore unsupported entities in the web ACL during the migration. Otherwise, if AWS WAF encounters unsupported entities, it stops the process and throws an exception.
     /// This member is required.
     public var ignoreUnsupportedType: Swift.Bool?
@@ -3031,7 +3031,7 @@ public struct CreateWebACLMigrationStackInput {
     }
 }
 
-public struct CreateWebACLMigrationStackOutput {
+public struct CreateWebACLMigrationStackOutput: Swift.Sendable {
     /// The URL of the template created in Amazon S3.
     /// This member is required.
     public var s3ObjectUrl: Swift.String?
@@ -3045,7 +3045,7 @@ public struct CreateWebACLMigrationStackOutput {
 }
 
 /// A request to create an [XssMatchSet].
-public struct CreateXssMatchSetInput {
+public struct CreateXssMatchSetInput: Swift.Sendable {
     /// The value returned by the most recent call to [GetChangeToken].
     /// This member is required.
     public var changeToken: Swift.String?
@@ -3064,8 +3064,9 @@ public struct CreateXssMatchSetInput {
 }
 
 extension WAFClientTypes {
+
     /// This is AWS WAF Classic documentation. For more information, see [AWS WAF Classic](https://docs.aws.amazon.com/waf/latest/developerguide/classic-waf-chapter.html) in the developer guide. For the latest version of AWS WAF, use the AWS WAFV2 API and see the [AWS WAF Developer Guide](https://docs.aws.amazon.com/waf/latest/developerguide/waf-chapter.html). With the latest version, AWS WAF has a single set of endpoints for regional and global use. Specifies the part of a web request that you want AWS WAF to inspect for cross-site scripting attacks and, if you want AWS WAF to inspect a header, the name of the header.
-    public struct XssMatchTuple {
+    public struct XssMatchTuple: Swift.Sendable {
         /// Specifies where in a web request to look for cross-site scripting attacks.
         /// This member is required.
         public var fieldToMatch: WAFClientTypes.FieldToMatch?
@@ -3125,12 +3126,12 @@ extension WAFClientTypes {
             self.textTransformation = textTransformation
         }
     }
-
 }
 
 extension WAFClientTypes {
+
     /// This is AWS WAF Classic documentation. For more information, see [AWS WAF Classic](https://docs.aws.amazon.com/waf/latest/developerguide/classic-waf-chapter.html) in the developer guide. For the latest version of AWS WAF, use the AWS WAFV2 API and see the [AWS WAF Developer Guide](https://docs.aws.amazon.com/waf/latest/developerguide/waf-chapter.html). With the latest version, AWS WAF has a single set of endpoints for regional and global use. A complex type that contains XssMatchTuple objects, which specify the parts of web requests that you want AWS WAF to inspect for cross-site scripting attacks and, if you want AWS WAF to inspect a header, the name of the header. If a XssMatchSet contains more than one XssMatchTuple object, a request needs to include cross-site scripting attacks in only one of the specified parts of the request to be considered a match.
-    public struct XssMatchSet {
+    public struct XssMatchSet: Swift.Sendable {
         /// The name, if any, of the XssMatchSet.
         public var name: Swift.String?
         /// A unique identifier for an XssMatchSet. You use XssMatchSetId to get information about an XssMatchSet (see [GetXssMatchSet]), update an XssMatchSet (see [UpdateXssMatchSet]), insert an XssMatchSet into a Rule or delete one from a Rule (see [UpdateRule]), and delete an XssMatchSet from AWS WAF (see [DeleteXssMatchSet]). XssMatchSetId is returned by [CreateXssMatchSet] and by [ListXssMatchSets].
@@ -3151,11 +3152,10 @@ extension WAFClientTypes {
             self.xssMatchTuples = xssMatchTuples
         }
     }
-
 }
 
 /// The response to a CreateXssMatchSet request.
-public struct CreateXssMatchSetOutput {
+public struct CreateXssMatchSetOutput: Swift.Sendable {
     /// The ChangeToken that you used to submit the CreateXssMatchSet request. You can also use this value to query the status of the request. For more information, see [GetChangeTokenStatus].
     public var changeToken: Swift.String?
     /// An [XssMatchSet].
@@ -3231,7 +3231,7 @@ public struct WAFReferencedItemException: ClientRuntime.ModeledError, AWSClientR
     }
 }
 
-public struct DeleteByteMatchSetInput {
+public struct DeleteByteMatchSetInput: Swift.Sendable {
     /// The ByteMatchSetId of the [ByteMatchSet] that you want to delete. ByteMatchSetId is returned by [CreateByteMatchSet] and by [ListByteMatchSets].
     /// This member is required.
     public var byteMatchSetId: Swift.String?
@@ -3249,7 +3249,7 @@ public struct DeleteByteMatchSetInput {
     }
 }
 
-public struct DeleteByteMatchSetOutput {
+public struct DeleteByteMatchSetOutput: Swift.Sendable {
     /// The ChangeToken that you used to submit the DeleteByteMatchSet request. You can also use this value to query the status of the request. For more information, see [GetChangeTokenStatus].
     public var changeToken: Swift.String?
 
@@ -3261,7 +3261,7 @@ public struct DeleteByteMatchSetOutput {
     }
 }
 
-public struct DeleteGeoMatchSetInput {
+public struct DeleteGeoMatchSetInput: Swift.Sendable {
     /// The value returned by the most recent call to [GetChangeToken].
     /// This member is required.
     public var changeToken: Swift.String?
@@ -3279,7 +3279,7 @@ public struct DeleteGeoMatchSetInput {
     }
 }
 
-public struct DeleteGeoMatchSetOutput {
+public struct DeleteGeoMatchSetOutput: Swift.Sendable {
     /// The ChangeToken that you used to submit the DeleteGeoMatchSet request. You can also use this value to query the status of the request. For more information, see [GetChangeTokenStatus].
     public var changeToken: Swift.String?
 
@@ -3291,7 +3291,7 @@ public struct DeleteGeoMatchSetOutput {
     }
 }
 
-public struct DeleteIPSetInput {
+public struct DeleteIPSetInput: Swift.Sendable {
     /// The value returned by the most recent call to [GetChangeToken].
     /// This member is required.
     public var changeToken: Swift.String?
@@ -3309,7 +3309,7 @@ public struct DeleteIPSetInput {
     }
 }
 
-public struct DeleteIPSetOutput {
+public struct DeleteIPSetOutput: Swift.Sendable {
     /// The ChangeToken that you used to submit the DeleteIPSet request. You can also use this value to query the status of the request. For more information, see [GetChangeTokenStatus].
     public var changeToken: Swift.String?
 
@@ -3321,7 +3321,7 @@ public struct DeleteIPSetOutput {
     }
 }
 
-public struct DeleteLoggingConfigurationInput {
+public struct DeleteLoggingConfigurationInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the web ACL from which you want to delete the [LoggingConfiguration].
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -3334,12 +3334,12 @@ public struct DeleteLoggingConfigurationInput {
     }
 }
 
-public struct DeleteLoggingConfigurationOutput {
+public struct DeleteLoggingConfigurationOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeletePermissionPolicyInput {
+public struct DeletePermissionPolicyInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the RuleGroup from which you want to delete the policy. The user making the request must be the owner of the RuleGroup.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -3352,12 +3352,12 @@ public struct DeletePermissionPolicyInput {
     }
 }
 
-public struct DeletePermissionPolicyOutput {
+public struct DeletePermissionPolicyOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteRateBasedRuleInput {
+public struct DeleteRateBasedRuleInput: Swift.Sendable {
     /// The value returned by the most recent call to [GetChangeToken].
     /// This member is required.
     public var changeToken: Swift.String?
@@ -3375,7 +3375,7 @@ public struct DeleteRateBasedRuleInput {
     }
 }
 
-public struct DeleteRateBasedRuleOutput {
+public struct DeleteRateBasedRuleOutput: Swift.Sendable {
     /// The ChangeToken that you used to submit the DeleteRateBasedRule request. You can also use this value to query the status of the request. For more information, see [GetChangeTokenStatus].
     public var changeToken: Swift.String?
 
@@ -3387,7 +3387,7 @@ public struct DeleteRateBasedRuleOutput {
     }
 }
 
-public struct DeleteRegexMatchSetInput {
+public struct DeleteRegexMatchSetInput: Swift.Sendable {
     /// The value returned by the most recent call to [GetChangeToken].
     /// This member is required.
     public var changeToken: Swift.String?
@@ -3405,7 +3405,7 @@ public struct DeleteRegexMatchSetInput {
     }
 }
 
-public struct DeleteRegexMatchSetOutput {
+public struct DeleteRegexMatchSetOutput: Swift.Sendable {
     /// The ChangeToken that you used to submit the DeleteRegexMatchSet request. You can also use this value to query the status of the request. For more information, see [GetChangeTokenStatus].
     public var changeToken: Swift.String?
 
@@ -3417,7 +3417,7 @@ public struct DeleteRegexMatchSetOutput {
     }
 }
 
-public struct DeleteRegexPatternSetInput {
+public struct DeleteRegexPatternSetInput: Swift.Sendable {
     /// The value returned by the most recent call to [GetChangeToken].
     /// This member is required.
     public var changeToken: Swift.String?
@@ -3435,7 +3435,7 @@ public struct DeleteRegexPatternSetInput {
     }
 }
 
-public struct DeleteRegexPatternSetOutput {
+public struct DeleteRegexPatternSetOutput: Swift.Sendable {
     /// The ChangeToken that you used to submit the DeleteRegexPatternSet request. You can also use this value to query the status of the request. For more information, see [GetChangeTokenStatus].
     public var changeToken: Swift.String?
 
@@ -3447,7 +3447,7 @@ public struct DeleteRegexPatternSetOutput {
     }
 }
 
-public struct DeleteRuleInput {
+public struct DeleteRuleInput: Swift.Sendable {
     /// The value returned by the most recent call to [GetChangeToken].
     /// This member is required.
     public var changeToken: Swift.String?
@@ -3465,7 +3465,7 @@ public struct DeleteRuleInput {
     }
 }
 
-public struct DeleteRuleOutput {
+public struct DeleteRuleOutput: Swift.Sendable {
     /// The ChangeToken that you used to submit the DeleteRule request. You can also use this value to query the status of the request. For more information, see [GetChangeTokenStatus].
     public var changeToken: Swift.String?
 
@@ -3477,7 +3477,7 @@ public struct DeleteRuleOutput {
     }
 }
 
-public struct DeleteRuleGroupInput {
+public struct DeleteRuleGroupInput: Swift.Sendable {
     /// The value returned by the most recent call to [GetChangeToken].
     /// This member is required.
     public var changeToken: Swift.String?
@@ -3495,7 +3495,7 @@ public struct DeleteRuleGroupInput {
     }
 }
 
-public struct DeleteRuleGroupOutput {
+public struct DeleteRuleGroupOutput: Swift.Sendable {
     /// The ChangeToken that you used to submit the DeleteRuleGroup request. You can also use this value to query the status of the request. For more information, see [GetChangeTokenStatus].
     public var changeToken: Swift.String?
 
@@ -3507,7 +3507,7 @@ public struct DeleteRuleGroupOutput {
     }
 }
 
-public struct DeleteSizeConstraintSetInput {
+public struct DeleteSizeConstraintSetInput: Swift.Sendable {
     /// The value returned by the most recent call to [GetChangeToken].
     /// This member is required.
     public var changeToken: Swift.String?
@@ -3525,7 +3525,7 @@ public struct DeleteSizeConstraintSetInput {
     }
 }
 
-public struct DeleteSizeConstraintSetOutput {
+public struct DeleteSizeConstraintSetOutput: Swift.Sendable {
     /// The ChangeToken that you used to submit the DeleteSizeConstraintSet request. You can also use this value to query the status of the request. For more information, see [GetChangeTokenStatus].
     public var changeToken: Swift.String?
 
@@ -3538,7 +3538,7 @@ public struct DeleteSizeConstraintSetOutput {
 }
 
 /// A request to delete a [SqlInjectionMatchSet] from AWS WAF.
-public struct DeleteSqlInjectionMatchSetInput {
+public struct DeleteSqlInjectionMatchSetInput: Swift.Sendable {
     /// The value returned by the most recent call to [GetChangeToken].
     /// This member is required.
     public var changeToken: Swift.String?
@@ -3557,7 +3557,7 @@ public struct DeleteSqlInjectionMatchSetInput {
 }
 
 /// The response to a request to delete a [SqlInjectionMatchSet] from AWS WAF.
-public struct DeleteSqlInjectionMatchSetOutput {
+public struct DeleteSqlInjectionMatchSetOutput: Swift.Sendable {
     /// The ChangeToken that you used to submit the DeleteSqlInjectionMatchSet request. You can also use this value to query the status of the request. For more information, see [GetChangeTokenStatus].
     public var changeToken: Swift.String?
 
@@ -3569,7 +3569,7 @@ public struct DeleteSqlInjectionMatchSetOutput {
     }
 }
 
-public struct DeleteWebACLInput {
+public struct DeleteWebACLInput: Swift.Sendable {
     /// The value returned by the most recent call to [GetChangeToken].
     /// This member is required.
     public var changeToken: Swift.String?
@@ -3587,7 +3587,7 @@ public struct DeleteWebACLInput {
     }
 }
 
-public struct DeleteWebACLOutput {
+public struct DeleteWebACLOutput: Swift.Sendable {
     /// The ChangeToken that you used to submit the DeleteWebACL request. You can also use this value to query the status of the request. For more information, see [GetChangeTokenStatus].
     public var changeToken: Swift.String?
 
@@ -3600,7 +3600,7 @@ public struct DeleteWebACLOutput {
 }
 
 /// A request to delete an [XssMatchSet] from AWS WAF.
-public struct DeleteXssMatchSetInput {
+public struct DeleteXssMatchSetInput: Swift.Sendable {
     /// The value returned by the most recent call to [GetChangeToken].
     /// This member is required.
     public var changeToken: Swift.String?
@@ -3619,7 +3619,7 @@ public struct DeleteXssMatchSetInput {
 }
 
 /// The response to a request to delete an [XssMatchSet] from AWS WAF.
-public struct DeleteXssMatchSetOutput {
+public struct DeleteXssMatchSetOutput: Swift.Sendable {
     /// The ChangeToken that you used to submit the DeleteXssMatchSet request. You can also use this value to query the status of the request. For more information, see [GetChangeTokenStatus].
     public var changeToken: Swift.String?
 
@@ -3631,7 +3631,7 @@ public struct DeleteXssMatchSetOutput {
     }
 }
 
-public struct GetByteMatchSetInput {
+public struct GetByteMatchSetInput: Swift.Sendable {
     /// The ByteMatchSetId of the [ByteMatchSet] that you want to get. ByteMatchSetId is returned by [CreateByteMatchSet] and by [ListByteMatchSets].
     /// This member is required.
     public var byteMatchSetId: Swift.String?
@@ -3644,7 +3644,7 @@ public struct GetByteMatchSetInput {
     }
 }
 
-public struct GetByteMatchSetOutput {
+public struct GetByteMatchSetOutput: Swift.Sendable {
     /// Information about the [ByteMatchSet] that you specified in the GetByteMatchSet request. For more information, see the following topics:
     ///
     /// * [ByteMatchSet]: Contains ByteMatchSetId, ByteMatchTuples, and Name
@@ -3662,12 +3662,12 @@ public struct GetByteMatchSetOutput {
     }
 }
 
-public struct GetChangeTokenInput {
+public struct GetChangeTokenInput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct GetChangeTokenOutput {
+public struct GetChangeTokenOutput: Swift.Sendable {
     /// The ChangeToken that you used in the request. Use this value in a GetChangeTokenStatus request to get the current status of the request.
     public var changeToken: Swift.String?
 
@@ -3679,7 +3679,7 @@ public struct GetChangeTokenOutput {
     }
 }
 
-public struct GetChangeTokenStatusInput {
+public struct GetChangeTokenStatusInput: Swift.Sendable {
     /// The change token for which you want to get the status. This change token was previously returned in the GetChangeToken response.
     /// This member is required.
     public var changeToken: Swift.String?
@@ -3694,7 +3694,7 @@ public struct GetChangeTokenStatusInput {
 
 extension WAFClientTypes {
 
-    public enum ChangeTokenStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ChangeTokenStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case insync
         case pending
         case provisioned
@@ -3724,7 +3724,7 @@ extension WAFClientTypes {
     }
 }
 
-public struct GetChangeTokenStatusOutput {
+public struct GetChangeTokenStatusOutput: Swift.Sendable {
     /// The status of the change token.
     public var changeTokenStatus: WAFClientTypes.ChangeTokenStatus?
 
@@ -3736,7 +3736,7 @@ public struct GetChangeTokenStatusOutput {
     }
 }
 
-public struct GetGeoMatchSetInput {
+public struct GetGeoMatchSetInput: Swift.Sendable {
     /// The GeoMatchSetId of the [GeoMatchSet] that you want to get. GeoMatchSetId is returned by [CreateGeoMatchSet] and by [ListGeoMatchSets].
     /// This member is required.
     public var geoMatchSetId: Swift.String?
@@ -3749,7 +3749,7 @@ public struct GetGeoMatchSetInput {
     }
 }
 
-public struct GetGeoMatchSetOutput {
+public struct GetGeoMatchSetOutput: Swift.Sendable {
     /// Information about the [GeoMatchSet] that you specified in the GetGeoMatchSet request. This includes the Type, which for a GeoMatchContraint is always Country, as well as the Value, which is the identifier for a specific country.
     public var geoMatchSet: WAFClientTypes.GeoMatchSet?
 
@@ -3761,7 +3761,7 @@ public struct GetGeoMatchSetOutput {
     }
 }
 
-public struct GetIPSetInput {
+public struct GetIPSetInput: Swift.Sendable {
     /// The IPSetId of the [IPSet] that you want to get. IPSetId is returned by [CreateIPSet] and by [ListIPSets].
     /// This member is required.
     public var ipSetId: Swift.String?
@@ -3774,7 +3774,7 @@ public struct GetIPSetInput {
     }
 }
 
-public struct GetIPSetOutput {
+public struct GetIPSetOutput: Swift.Sendable {
     /// Information about the [IPSet] that you specified in the GetIPSet request. For more information, see the following topics:
     ///
     /// * [IPSet]: Contains IPSetDescriptors, IPSetId, and Name
@@ -3790,7 +3790,7 @@ public struct GetIPSetOutput {
     }
 }
 
-public struct GetLoggingConfigurationInput {
+public struct GetLoggingConfigurationInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the web ACL for which you want to get the [LoggingConfiguration].
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -3804,8 +3804,9 @@ public struct GetLoggingConfigurationInput {
 }
 
 extension WAFClientTypes {
+
     /// This is AWS WAF Classic documentation. For more information, see [AWS WAF Classic](https://docs.aws.amazon.com/waf/latest/developerguide/classic-waf-chapter.html) in the developer guide. For the latest version of AWS WAF, use the AWS WAFV2 API and see the [AWS WAF Developer Guide](https://docs.aws.amazon.com/waf/latest/developerguide/waf-chapter.html). With the latest version, AWS WAF has a single set of endpoints for regional and global use. The Amazon Kinesis Data Firehose, RedactedFields information, and the web ACL Amazon Resource Name (ARN).
-    public struct LoggingConfiguration {
+    public struct LoggingConfiguration: Swift.Sendable {
         /// An array of Amazon Kinesis Data Firehose ARNs.
         /// This member is required.
         public var logDestinationConfigs: [Swift.String]?
@@ -3826,10 +3827,9 @@ extension WAFClientTypes {
             self.resourceArn = resourceArn
         }
     }
-
 }
 
-public struct GetLoggingConfigurationOutput {
+public struct GetLoggingConfigurationOutput: Swift.Sendable {
     /// The [LoggingConfiguration] for the specified web ACL.
     public var loggingConfiguration: WAFClientTypes.LoggingConfiguration?
 
@@ -3841,7 +3841,7 @@ public struct GetLoggingConfigurationOutput {
     }
 }
 
-public struct GetPermissionPolicyInput {
+public struct GetPermissionPolicyInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the RuleGroup for which you want to get the policy.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -3854,7 +3854,7 @@ public struct GetPermissionPolicyInput {
     }
 }
 
-public struct GetPermissionPolicyOutput {
+public struct GetPermissionPolicyOutput: Swift.Sendable {
     /// The IAM policy attached to the specified RuleGroup.
     public var policy: Swift.String?
 
@@ -3866,7 +3866,7 @@ public struct GetPermissionPolicyOutput {
     }
 }
 
-public struct GetRateBasedRuleInput {
+public struct GetRateBasedRuleInput: Swift.Sendable {
     /// The RuleId of the [RateBasedRule] that you want to get. RuleId is returned by [CreateRateBasedRule] and by [ListRateBasedRules].
     /// This member is required.
     public var ruleId: Swift.String?
@@ -3879,7 +3879,7 @@ public struct GetRateBasedRuleInput {
     }
 }
 
-public struct GetRateBasedRuleOutput {
+public struct GetRateBasedRuleOutput: Swift.Sendable {
     /// Information about the [RateBasedRule] that you specified in the GetRateBasedRule request.
     public var rule: WAFClientTypes.RateBasedRule?
 
@@ -3891,7 +3891,7 @@ public struct GetRateBasedRuleOutput {
     }
 }
 
-public struct GetRateBasedRuleManagedKeysInput {
+public struct GetRateBasedRuleManagedKeysInput: Swift.Sendable {
     /// A null value and not currently used. Do not include this in your request.
     public var nextMarker: Swift.String?
     /// The RuleId of the [RateBasedRule] for which you want to get a list of ManagedKeys. RuleId is returned by [CreateRateBasedRule] and by [ListRateBasedRules].
@@ -3908,7 +3908,7 @@ public struct GetRateBasedRuleManagedKeysInput {
     }
 }
 
-public struct GetRateBasedRuleManagedKeysOutput {
+public struct GetRateBasedRuleManagedKeysOutput: Swift.Sendable {
     /// An array of IP addresses that currently are blocked by the specified [RateBasedRule].
     public var managedKeys: [Swift.String]?
     /// A null value and not currently used.
@@ -3924,7 +3924,7 @@ public struct GetRateBasedRuleManagedKeysOutput {
     }
 }
 
-public struct GetRegexMatchSetInput {
+public struct GetRegexMatchSetInput: Swift.Sendable {
     /// The RegexMatchSetId of the [RegexMatchSet] that you want to get. RegexMatchSetId is returned by [CreateRegexMatchSet] and by [ListRegexMatchSets].
     /// This member is required.
     public var regexMatchSetId: Swift.String?
@@ -3937,7 +3937,7 @@ public struct GetRegexMatchSetInput {
     }
 }
 
-public struct GetRegexMatchSetOutput {
+public struct GetRegexMatchSetOutput: Swift.Sendable {
     /// Information about the [RegexMatchSet] that you specified in the GetRegexMatchSet request. For more information, see [RegexMatchTuple].
     public var regexMatchSet: WAFClientTypes.RegexMatchSet?
 
@@ -3949,7 +3949,7 @@ public struct GetRegexMatchSetOutput {
     }
 }
 
-public struct GetRegexPatternSetInput {
+public struct GetRegexPatternSetInput: Swift.Sendable {
     /// The RegexPatternSetId of the [RegexPatternSet] that you want to get. RegexPatternSetId is returned by [CreateRegexPatternSet] and by [ListRegexPatternSets].
     /// This member is required.
     public var regexPatternSetId: Swift.String?
@@ -3962,7 +3962,7 @@ public struct GetRegexPatternSetInput {
     }
 }
 
-public struct GetRegexPatternSetOutput {
+public struct GetRegexPatternSetOutput: Swift.Sendable {
     /// Information about the [RegexPatternSet] that you specified in the GetRegexPatternSet request, including the identifier of the pattern set and the regular expression patterns you want AWS WAF to search for.
     public var regexPatternSet: WAFClientTypes.RegexPatternSet?
 
@@ -3974,7 +3974,7 @@ public struct GetRegexPatternSetOutput {
     }
 }
 
-public struct GetRuleInput {
+public struct GetRuleInput: Swift.Sendable {
     /// The RuleId of the [Rule] that you want to get. RuleId is returned by [CreateRule] and by [ListRules].
     /// This member is required.
     public var ruleId: Swift.String?
@@ -3987,7 +3987,7 @@ public struct GetRuleInput {
     }
 }
 
-public struct GetRuleOutput {
+public struct GetRuleOutput: Swift.Sendable {
     /// Information about the [Rule] that you specified in the GetRule request. For more information, see the following topics:
     ///
     /// * [Rule]: Contains MetricName, Name, an array of Predicate objects, and RuleId
@@ -4003,7 +4003,7 @@ public struct GetRuleOutput {
     }
 }
 
-public struct GetRuleGroupInput {
+public struct GetRuleGroupInput: Swift.Sendable {
     /// The RuleGroupId of the [RuleGroup] that you want to get. RuleGroupId is returned by [CreateRuleGroup] and by [ListRuleGroups].
     /// This member is required.
     public var ruleGroupId: Swift.String?
@@ -4016,7 +4016,7 @@ public struct GetRuleGroupInput {
     }
 }
 
-public struct GetRuleGroupOutput {
+public struct GetRuleGroupOutput: Swift.Sendable {
     /// Information about the [RuleGroup] that you specified in the GetRuleGroup request.
     public var ruleGroup: WAFClientTypes.RuleGroup?
 
@@ -4029,8 +4029,9 @@ public struct GetRuleGroupOutput {
 }
 
 extension WAFClientTypes {
+
     /// This is AWS WAF Classic documentation. For more information, see [AWS WAF Classic](https://docs.aws.amazon.com/waf/latest/developerguide/classic-waf-chapter.html) in the developer guide. For the latest version of AWS WAF, use the AWS WAFV2 API and see the [AWS WAF Developer Guide](https://docs.aws.amazon.com/waf/latest/developerguide/waf-chapter.html). With the latest version, AWS WAF has a single set of endpoints for regional and global use. In a [GetSampledRequests] request, the StartTime and EndTime objects specify the time range for which you want AWS WAF to return a sample of web requests. You must specify the times in Coordinated Universal Time (UTC) format. UTC format includes the special designator, Z. For example, "2016-09-27T14:50Z". In a [GetSampledRequests] response, the StartTime and EndTime objects specify the time range for which AWS WAF actually returned a sample of web requests. AWS WAF gets the specified number of requests from among the first 5,000 requests that your AWS resource receives during the specified time period. If your resource receives more than 5,000 requests during that period, AWS WAF stops sampling after the 5,000th request. In that case, EndTime is the time that AWS WAF received the 5,000th request.
-    public struct TimeWindow {
+    public struct TimeWindow: Swift.Sendable {
         /// The end of the time range from which you want GetSampledRequests to return a sample of the requests that your AWS resource received. You must specify the date and time in Coordinated Universal Time (UTC) format. UTC format includes the special designator, Z. For example, "2016-09-27T14:50Z". You can specify any time range in the previous three hours.
         /// This member is required.
         public var endTime: Foundation.Date?
@@ -4047,10 +4048,9 @@ extension WAFClientTypes {
             self.startTime = startTime
         }
     }
-
 }
 
-public struct GetSampledRequestsInput {
+public struct GetSampledRequestsInput: Swift.Sendable {
     /// The number of requests that you want AWS WAF to return from among the first 5,000 requests that your AWS resource received during the time range. If your resource received fewer requests than the value of MaxItems, GetSampledRequests returns information about all of them.
     /// This member is required.
     public var maxItems: Swift.Int?
@@ -4083,8 +4083,9 @@ public struct GetSampledRequestsInput {
 }
 
 extension WAFClientTypes {
+
     /// This is AWS WAF Classic documentation. For more information, see [AWS WAF Classic](https://docs.aws.amazon.com/waf/latest/developerguide/classic-waf-chapter.html) in the developer guide. For the latest version of AWS WAF, use the AWS WAFV2 API and see the [AWS WAF Developer Guide](https://docs.aws.amazon.com/waf/latest/developerguide/waf-chapter.html). With the latest version, AWS WAF has a single set of endpoints for regional and global use. The response from a [GetSampledRequests] request includes an HTTPHeader complex type that appears as Headers in the response syntax. HTTPHeader contains the names and values of all of the headers that appear in one of the web requests that were returned by GetSampledRequests.
-    public struct HTTPHeader {
+    public struct HTTPHeader: Swift.Sendable {
         /// The name of one of the headers in the sampled web request.
         public var name: Swift.String?
         /// The value of one of the headers in the sampled web request.
@@ -4099,12 +4100,12 @@ extension WAFClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension WAFClientTypes {
+
     /// This is AWS WAF Classic documentation. For more information, see [AWS WAF Classic](https://docs.aws.amazon.com/waf/latest/developerguide/classic-waf-chapter.html) in the developer guide. For the latest version of AWS WAF, use the AWS WAFV2 API and see the [AWS WAF Developer Guide](https://docs.aws.amazon.com/waf/latest/developerguide/waf-chapter.html). With the latest version, AWS WAF has a single set of endpoints for regional and global use. The response from a [GetSampledRequests] request includes an HTTPRequest complex type that appears as Request in the response syntax. HTTPRequest contains information about one of the web requests that were returned by GetSampledRequests.
-    public struct HTTPRequest {
+    public struct HTTPRequest: Swift.Sendable {
         /// The IP address that the request originated from. If the WebACL is associated with a CloudFront distribution, this is the value of one of the following fields in CloudFront access logs:
         ///
         /// * c-ip, if the viewer did not use an HTTP proxy or a load balancer to send the request
@@ -4139,12 +4140,12 @@ extension WAFClientTypes {
             self.uri = uri
         }
     }
-
 }
 
 extension WAFClientTypes {
+
     /// This is AWS WAF Classic documentation. For more information, see [AWS WAF Classic](https://docs.aws.amazon.com/waf/latest/developerguide/classic-waf-chapter.html) in the developer guide. For the latest version of AWS WAF, use the AWS WAFV2 API and see the [AWS WAF Developer Guide](https://docs.aws.amazon.com/waf/latest/developerguide/waf-chapter.html). With the latest version, AWS WAF has a single set of endpoints for regional and global use. The response from a [GetSampledRequests] request includes a SampledHTTPRequests complex type that appears as SampledRequests in the response syntax. SampledHTTPRequests contains one SampledHTTPRequest object for each web request that is returned by GetSampledRequests.
-    public struct SampledHTTPRequest {
+    public struct SampledHTTPRequest: Swift.Sendable {
         /// The action for the Rule that the request matched: ALLOW, BLOCK, or COUNT.
         public var action: Swift.String?
         /// A complex type that contains detailed information about the request.
@@ -4173,10 +4174,9 @@ extension WAFClientTypes {
             self.weight = weight
         }
     }
-
 }
 
-public struct GetSampledRequestsOutput {
+public struct GetSampledRequestsOutput: Swift.Sendable {
     /// The total number of requests from which GetSampledRequests got a sample of MaxItems requests. If PopulationSize is less than MaxItems, the sample includes every request that your AWS resource received during the specified time range.
     public var populationSize: Swift.Int
     /// A complex type that contains detailed information about each of the requests in the sample.
@@ -4196,7 +4196,7 @@ public struct GetSampledRequestsOutput {
     }
 }
 
-public struct GetSizeConstraintSetInput {
+public struct GetSizeConstraintSetInput: Swift.Sendable {
     /// The SizeConstraintSetId of the [SizeConstraintSet] that you want to get. SizeConstraintSetId is returned by [CreateSizeConstraintSet] and by [ListSizeConstraintSets].
     /// This member is required.
     public var sizeConstraintSetId: Swift.String?
@@ -4209,7 +4209,7 @@ public struct GetSizeConstraintSetInput {
     }
 }
 
-public struct GetSizeConstraintSetOutput {
+public struct GetSizeConstraintSetOutput: Swift.Sendable {
     /// Information about the [SizeConstraintSet] that you specified in the GetSizeConstraintSet request. For more information, see the following topics:
     ///
     /// * [SizeConstraintSet]: Contains SizeConstraintSetId, SizeConstraints, and Name
@@ -4228,7 +4228,7 @@ public struct GetSizeConstraintSetOutput {
 }
 
 /// A request to get a [SqlInjectionMatchSet].
-public struct GetSqlInjectionMatchSetInput {
+public struct GetSqlInjectionMatchSetInput: Swift.Sendable {
     /// The SqlInjectionMatchSetId of the [SqlInjectionMatchSet] that you want to get. SqlInjectionMatchSetId is returned by [CreateSqlInjectionMatchSet] and by [ListSqlInjectionMatchSets].
     /// This member is required.
     public var sqlInjectionMatchSetId: Swift.String?
@@ -4242,7 +4242,7 @@ public struct GetSqlInjectionMatchSetInput {
 }
 
 /// The response to a [GetSqlInjectionMatchSet] request.
-public struct GetSqlInjectionMatchSetOutput {
+public struct GetSqlInjectionMatchSetOutput: Swift.Sendable {
     /// Information about the [SqlInjectionMatchSet] that you specified in the GetSqlInjectionMatchSet request. For more information, see the following topics:
     ///
     /// * [SqlInjectionMatchSet]: Contains Name, SqlInjectionMatchSetId, and an array of SqlInjectionMatchTuple objects
@@ -4260,7 +4260,7 @@ public struct GetSqlInjectionMatchSetOutput {
     }
 }
 
-public struct GetWebACLInput {
+public struct GetWebACLInput: Swift.Sendable {
     /// The WebACLId of the [WebACL] that you want to get. WebACLId is returned by [CreateWebACL] and by [ListWebACLs].
     /// This member is required.
     public var webACLId: Swift.String?
@@ -4273,7 +4273,7 @@ public struct GetWebACLInput {
     }
 }
 
-public struct GetWebACLOutput {
+public struct GetWebACLOutput: Swift.Sendable {
     /// Information about the [WebACL] that you specified in the GetWebACL request. For more information, see the following topics:
     ///
     /// * [WebACL]: Contains DefaultAction, MetricName, Name, an array of Rule objects, and WebACLId
@@ -4294,7 +4294,7 @@ public struct GetWebACLOutput {
 }
 
 /// A request to get an [XssMatchSet].
-public struct GetXssMatchSetInput {
+public struct GetXssMatchSetInput: Swift.Sendable {
     /// The XssMatchSetId of the [XssMatchSet] that you want to get. XssMatchSetId is returned by [CreateXssMatchSet] and by [ListXssMatchSets].
     /// This member is required.
     public var xssMatchSetId: Swift.String?
@@ -4308,7 +4308,7 @@ public struct GetXssMatchSetInput {
 }
 
 /// The response to a [GetXssMatchSet] request.
-public struct GetXssMatchSetOutput {
+public struct GetXssMatchSetOutput: Swift.Sendable {
     /// Information about the [XssMatchSet] that you specified in the GetXssMatchSet request. For more information, see the following topics:
     ///
     /// * [XssMatchSet]: Contains Name, XssMatchSetId, and an array of XssMatchTuple objects
@@ -4326,7 +4326,7 @@ public struct GetXssMatchSetOutput {
     }
 }
 
-public struct ListActivatedRulesInRuleGroupInput {
+public struct ListActivatedRulesInRuleGroupInput: Swift.Sendable {
     /// Specifies the number of ActivatedRules that you want AWS WAF to return for this request. If you have more ActivatedRules than the number that you specify for Limit, the response includes a NextMarker value that you can use to get another batch of ActivatedRules.
     public var limit: Swift.Int?
     /// If you specify a value for Limit and you have more ActivatedRules than the value of Limit, AWS WAF returns a NextMarker value in the response that allows you to list another group of ActivatedRules. For the second and subsequent ListActivatedRulesInRuleGroup requests, specify the value of NextMarker from the previous response to get information about another batch of ActivatedRules.
@@ -4346,7 +4346,7 @@ public struct ListActivatedRulesInRuleGroupInput {
     }
 }
 
-public struct ListActivatedRulesInRuleGroupOutput {
+public struct ListActivatedRulesInRuleGroupOutput: Swift.Sendable {
     /// An array of ActivatedRules objects.
     public var activatedRules: [WAFClientTypes.ActivatedRule]?
     /// If you have more ActivatedRules than the number that you specified for Limit in the request, the response includes a NextMarker value. To list more ActivatedRules, submit another ListActivatedRulesInRuleGroup request, and specify the NextMarker value from the response in the NextMarker value in the next request.
@@ -4362,7 +4362,7 @@ public struct ListActivatedRulesInRuleGroupOutput {
     }
 }
 
-public struct ListByteMatchSetsInput {
+public struct ListByteMatchSetsInput: Swift.Sendable {
     /// Specifies the number of ByteMatchSet objects that you want AWS WAF to return for this request. If you have more ByteMatchSets objects than the number you specify for Limit, the response includes a NextMarker value that you can use to get another batch of ByteMatchSet objects.
     public var limit: Swift.Int?
     /// If you specify a value for Limit and you have more ByteMatchSets than the value of Limit, AWS WAF returns a NextMarker value in the response that allows you to list another group of ByteMatchSets. For the second and subsequent ListByteMatchSets requests, specify the value of NextMarker from the previous response to get information about another batch of ByteMatchSets.
@@ -4379,8 +4379,9 @@ public struct ListByteMatchSetsInput {
 }
 
 extension WAFClientTypes {
+
     /// This is AWS WAF Classic documentation. For more information, see [AWS WAF Classic](https://docs.aws.amazon.com/waf/latest/developerguide/classic-waf-chapter.html) in the developer guide. For the latest version of AWS WAF, use the AWS WAFV2 API and see the [AWS WAF Developer Guide](https://docs.aws.amazon.com/waf/latest/developerguide/waf-chapter.html). With the latest version, AWS WAF has a single set of endpoints for regional and global use. Returned by [ListByteMatchSets]. Each ByteMatchSetSummary object includes the Name and ByteMatchSetId for one [ByteMatchSet].
-    public struct ByteMatchSetSummary {
+    public struct ByteMatchSetSummary: Swift.Sendable {
         /// The ByteMatchSetId for a ByteMatchSet. You use ByteMatchSetId to get information about a ByteMatchSet, update a ByteMatchSet, remove a ByteMatchSet from a Rule, and delete a ByteMatchSet from AWS WAF. ByteMatchSetId is returned by [CreateByteMatchSet] and by [ListByteMatchSets].
         /// This member is required.
         public var byteMatchSetId: Swift.String?
@@ -4397,10 +4398,9 @@ extension WAFClientTypes {
             self.name = name
         }
     }
-
 }
 
-public struct ListByteMatchSetsOutput {
+public struct ListByteMatchSetsOutput: Swift.Sendable {
     /// An array of [ByteMatchSetSummary] objects.
     public var byteMatchSets: [WAFClientTypes.ByteMatchSetSummary]?
     /// If you have more ByteMatchSet objects than the number that you specified for Limit in the request, the response includes a NextMarker value. To list more ByteMatchSet objects, submit another ListByteMatchSets request, and specify the NextMarker value from the response in the NextMarker value in the next request.
@@ -4416,7 +4416,7 @@ public struct ListByteMatchSetsOutput {
     }
 }
 
-public struct ListGeoMatchSetsInput {
+public struct ListGeoMatchSetsInput: Swift.Sendable {
     /// Specifies the number of GeoMatchSet objects that you want AWS WAF to return for this request. If you have more GeoMatchSet objects than the number you specify for Limit, the response includes a NextMarker value that you can use to get another batch of GeoMatchSet objects.
     public var limit: Swift.Int?
     /// If you specify a value for Limit and you have more GeoMatchSets than the value of Limit, AWS WAF returns a NextMarker value in the response that allows you to list another group of GeoMatchSet objects. For the second and subsequent ListGeoMatchSets requests, specify the value of NextMarker from the previous response to get information about another batch of GeoMatchSet objects.
@@ -4433,8 +4433,9 @@ public struct ListGeoMatchSetsInput {
 }
 
 extension WAFClientTypes {
+
     /// This is AWS WAF Classic documentation. For more information, see [AWS WAF Classic](https://docs.aws.amazon.com/waf/latest/developerguide/classic-waf-chapter.html) in the developer guide. For the latest version of AWS WAF, use the AWS WAFV2 API and see the [AWS WAF Developer Guide](https://docs.aws.amazon.com/waf/latest/developerguide/waf-chapter.html). With the latest version, AWS WAF has a single set of endpoints for regional and global use. Contains the identifier and the name of the GeoMatchSet.
-    public struct GeoMatchSetSummary {
+    public struct GeoMatchSetSummary: Swift.Sendable {
         /// The GeoMatchSetId for an [GeoMatchSet]. You can use GeoMatchSetId in a [GetGeoMatchSet] request to get detailed information about an [GeoMatchSet].
         /// This member is required.
         public var geoMatchSetId: Swift.String?
@@ -4451,10 +4452,9 @@ extension WAFClientTypes {
             self.name = name
         }
     }
-
 }
 
-public struct ListGeoMatchSetsOutput {
+public struct ListGeoMatchSetsOutput: Swift.Sendable {
     /// An array of [GeoMatchSetSummary] objects.
     public var geoMatchSets: [WAFClientTypes.GeoMatchSetSummary]?
     /// If you have more GeoMatchSet objects than the number that you specified for Limit in the request, the response includes a NextMarker value. To list more GeoMatchSet objects, submit another ListGeoMatchSets request, and specify the NextMarker value from the response in the NextMarker value in the next request.
@@ -4470,7 +4470,7 @@ public struct ListGeoMatchSetsOutput {
     }
 }
 
-public struct ListIPSetsInput {
+public struct ListIPSetsInput: Swift.Sendable {
     /// Specifies the number of IPSet objects that you want AWS WAF to return for this request. If you have more IPSet objects than the number you specify for Limit, the response includes a NextMarker value that you can use to get another batch of IPSet objects.
     public var limit: Swift.Int?
     /// AWS WAF returns a NextMarker value in the response that allows you to list another group of IPSets. For the second and subsequent ListIPSets requests, specify the value of NextMarker from the previous response to get information about another batch of IPSets.
@@ -4487,8 +4487,9 @@ public struct ListIPSetsInput {
 }
 
 extension WAFClientTypes {
+
     /// This is AWS WAF Classic documentation. For more information, see [AWS WAF Classic](https://docs.aws.amazon.com/waf/latest/developerguide/classic-waf-chapter.html) in the developer guide. For the latest version of AWS WAF, use the AWS WAFV2 API and see the [AWS WAF Developer Guide](https://docs.aws.amazon.com/waf/latest/developerguide/waf-chapter.html). With the latest version, AWS WAF has a single set of endpoints for regional and global use. Contains the identifier and the name of the IPSet.
-    public struct IPSetSummary {
+    public struct IPSetSummary: Swift.Sendable {
         /// The IPSetId for an [IPSet]. You can use IPSetId in a [GetIPSet] request to get detailed information about an [IPSet].
         /// This member is required.
         public var ipSetId: Swift.String?
@@ -4505,10 +4506,9 @@ extension WAFClientTypes {
             self.name = name
         }
     }
-
 }
 
-public struct ListIPSetsOutput {
+public struct ListIPSetsOutput: Swift.Sendable {
     /// An array of [IPSetSummary] objects.
     public var ipSets: [WAFClientTypes.IPSetSummary]?
     /// To list more IPSet objects, submit another ListIPSets request, and in the next request use the NextMarker response value as the NextMarker value.
@@ -4524,7 +4524,7 @@ public struct ListIPSetsOutput {
     }
 }
 
-public struct ListLoggingConfigurationsInput {
+public struct ListLoggingConfigurationsInput: Swift.Sendable {
     /// Specifies the number of LoggingConfigurations that you want AWS WAF to return for this request. If you have more LoggingConfigurations than the number that you specify for Limit, the response includes a NextMarker value that you can use to get another batch of LoggingConfigurations.
     public var limit: Swift.Int?
     /// If you specify a value for Limit and you have more LoggingConfigurations than the value of Limit, AWS WAF returns a NextMarker value in the response that allows you to list another group of LoggingConfigurations. For the second and subsequent ListLoggingConfigurations requests, specify the value of NextMarker from the previous response to get information about another batch of ListLoggingConfigurations.
@@ -4540,7 +4540,7 @@ public struct ListLoggingConfigurationsInput {
     }
 }
 
-public struct ListLoggingConfigurationsOutput {
+public struct ListLoggingConfigurationsOutput: Swift.Sendable {
     /// An array of [LoggingConfiguration] objects.
     public var loggingConfigurations: [WAFClientTypes.LoggingConfiguration]?
     /// If you have more LoggingConfigurations than the number that you specified for Limit in the request, the response includes a NextMarker value. To list more LoggingConfigurations, submit another ListLoggingConfigurations request, and specify the NextMarker value from the response in the NextMarker value in the next request.
@@ -4556,7 +4556,7 @@ public struct ListLoggingConfigurationsOutput {
     }
 }
 
-public struct ListRateBasedRulesInput {
+public struct ListRateBasedRulesInput: Swift.Sendable {
     /// Specifies the number of Rules that you want AWS WAF to return for this request. If you have more Rules than the number that you specify for Limit, the response includes a NextMarker value that you can use to get another batch of Rules.
     public var limit: Swift.Int?
     /// If you specify a value for Limit and you have more Rules than the value of Limit, AWS WAF returns a NextMarker value in the response that allows you to list another group of Rules. For the second and subsequent ListRateBasedRules requests, specify the value of NextMarker from the previous response to get information about another batch of Rules.
@@ -4573,8 +4573,9 @@ public struct ListRateBasedRulesInput {
 }
 
 extension WAFClientTypes {
+
     /// This is AWS WAF Classic documentation. For more information, see [AWS WAF Classic](https://docs.aws.amazon.com/waf/latest/developerguide/classic-waf-chapter.html) in the developer guide. For the latest version of AWS WAF, use the AWS WAFV2 API and see the [AWS WAF Developer Guide](https://docs.aws.amazon.com/waf/latest/developerguide/waf-chapter.html). With the latest version, AWS WAF has a single set of endpoints for regional and global use. Contains the identifier and the friendly name or description of the Rule.
-    public struct RuleSummary {
+    public struct RuleSummary: Swift.Sendable {
         /// A friendly name or description of the [Rule]. You can't change the name of a Rule after you create it.
         /// This member is required.
         public var name: Swift.String?
@@ -4591,10 +4592,9 @@ extension WAFClientTypes {
             self.ruleId = ruleId
         }
     }
-
 }
 
-public struct ListRateBasedRulesOutput {
+public struct ListRateBasedRulesOutput: Swift.Sendable {
     /// If you have more Rules than the number that you specified for Limit in the request, the response includes a NextMarker value. To list more Rules, submit another ListRateBasedRules request, and specify the NextMarker value from the response in the NextMarker value in the next request.
     public var nextMarker: Swift.String?
     /// An array of [RuleSummary] objects.
@@ -4610,7 +4610,7 @@ public struct ListRateBasedRulesOutput {
     }
 }
 
-public struct ListRegexMatchSetsInput {
+public struct ListRegexMatchSetsInput: Swift.Sendable {
     /// Specifies the number of RegexMatchSet objects that you want AWS WAF to return for this request. If you have more RegexMatchSet objects than the number you specify for Limit, the response includes a NextMarker value that you can use to get another batch of RegexMatchSet objects.
     public var limit: Swift.Int?
     /// If you specify a value for Limit and you have more RegexMatchSet objects than the value of Limit, AWS WAF returns a NextMarker value in the response that allows you to list another group of ByteMatchSets. For the second and subsequent ListRegexMatchSets requests, specify the value of NextMarker from the previous response to get information about another batch of RegexMatchSet objects.
@@ -4627,8 +4627,9 @@ public struct ListRegexMatchSetsInput {
 }
 
 extension WAFClientTypes {
+
     /// This is AWS WAF Classic documentation. For more information, see [AWS WAF Classic](https://docs.aws.amazon.com/waf/latest/developerguide/classic-waf-chapter.html) in the developer guide. For the latest version of AWS WAF, use the AWS WAFV2 API and see the [AWS WAF Developer Guide](https://docs.aws.amazon.com/waf/latest/developerguide/waf-chapter.html). With the latest version, AWS WAF has a single set of endpoints for regional and global use. Returned by [ListRegexMatchSets]. Each RegexMatchSetSummary object includes the Name and RegexMatchSetId for one [RegexMatchSet].
-    public struct RegexMatchSetSummary {
+    public struct RegexMatchSetSummary: Swift.Sendable {
         /// A friendly name or description of the [RegexMatchSet]. You can't change Name after you create a RegexMatchSet.
         /// This member is required.
         public var name: Swift.String?
@@ -4645,10 +4646,9 @@ extension WAFClientTypes {
             self.regexMatchSetId = regexMatchSetId
         }
     }
-
 }
 
-public struct ListRegexMatchSetsOutput {
+public struct ListRegexMatchSetsOutput: Swift.Sendable {
     /// If you have more RegexMatchSet objects than the number that you specified for Limit in the request, the response includes a NextMarker value. To list more RegexMatchSet objects, submit another ListRegexMatchSets request, and specify the NextMarker value from the response in the NextMarker value in the next request.
     public var nextMarker: Swift.String?
     /// An array of [RegexMatchSetSummary] objects.
@@ -4664,7 +4664,7 @@ public struct ListRegexMatchSetsOutput {
     }
 }
 
-public struct ListRegexPatternSetsInput {
+public struct ListRegexPatternSetsInput: Swift.Sendable {
     /// Specifies the number of RegexPatternSet objects that you want AWS WAF to return for this request. If you have more RegexPatternSet objects than the number you specify for Limit, the response includes a NextMarker value that you can use to get another batch of RegexPatternSet objects.
     public var limit: Swift.Int?
     /// If you specify a value for Limit and you have more RegexPatternSet objects than the value of Limit, AWS WAF returns a NextMarker value in the response that allows you to list another group of RegexPatternSet objects. For the second and subsequent ListRegexPatternSets requests, specify the value of NextMarker from the previous response to get information about another batch of RegexPatternSet objects.
@@ -4681,8 +4681,9 @@ public struct ListRegexPatternSetsInput {
 }
 
 extension WAFClientTypes {
+
     /// This is AWS WAF Classic documentation. For more information, see [AWS WAF Classic](https://docs.aws.amazon.com/waf/latest/developerguide/classic-waf-chapter.html) in the developer guide. For the latest version of AWS WAF, use the AWS WAFV2 API and see the [AWS WAF Developer Guide](https://docs.aws.amazon.com/waf/latest/developerguide/waf-chapter.html). With the latest version, AWS WAF has a single set of endpoints for regional and global use. Returned by [ListRegexPatternSets]. Each RegexPatternSetSummary object includes the Name and RegexPatternSetId for one [RegexPatternSet].
-    public struct RegexPatternSetSummary {
+    public struct RegexPatternSetSummary: Swift.Sendable {
         /// A friendly name or description of the [RegexPatternSet]. You can't change Name after you create a RegexPatternSet.
         /// This member is required.
         public var name: Swift.String?
@@ -4699,10 +4700,9 @@ extension WAFClientTypes {
             self.regexPatternSetId = regexPatternSetId
         }
     }
-
 }
 
-public struct ListRegexPatternSetsOutput {
+public struct ListRegexPatternSetsOutput: Swift.Sendable {
     /// If you have more RegexPatternSet objects than the number that you specified for Limit in the request, the response includes a NextMarker value. To list more RegexPatternSet objects, submit another ListRegexPatternSets request, and specify the NextMarker value from the response in the NextMarker value in the next request.
     public var nextMarker: Swift.String?
     /// An array of [RegexPatternSetSummary] objects.
@@ -4718,7 +4718,7 @@ public struct ListRegexPatternSetsOutput {
     }
 }
 
-public struct ListRuleGroupsInput {
+public struct ListRuleGroupsInput: Swift.Sendable {
     /// Specifies the number of RuleGroups that you want AWS WAF to return for this request. If you have more RuleGroups than the number that you specify for Limit, the response includes a NextMarker value that you can use to get another batch of RuleGroups.
     public var limit: Swift.Int?
     /// If you specify a value for Limit and you have more RuleGroups than the value of Limit, AWS WAF returns a NextMarker value in the response that allows you to list another group of RuleGroups. For the second and subsequent ListRuleGroups requests, specify the value of NextMarker from the previous response to get information about another batch of RuleGroups.
@@ -4735,8 +4735,9 @@ public struct ListRuleGroupsInput {
 }
 
 extension WAFClientTypes {
+
     /// This is AWS WAF Classic documentation. For more information, see [AWS WAF Classic](https://docs.aws.amazon.com/waf/latest/developerguide/classic-waf-chapter.html) in the developer guide. For the latest version of AWS WAF, use the AWS WAFV2 API and see the [AWS WAF Developer Guide](https://docs.aws.amazon.com/waf/latest/developerguide/waf-chapter.html). With the latest version, AWS WAF has a single set of endpoints for regional and global use. Contains the identifier and the friendly name or description of the RuleGroup.
-    public struct RuleGroupSummary {
+    public struct RuleGroupSummary: Swift.Sendable {
         /// A friendly name or description of the [RuleGroup]. You can't change the name of a RuleGroup after you create it.
         /// This member is required.
         public var name: Swift.String?
@@ -4753,10 +4754,9 @@ extension WAFClientTypes {
             self.ruleGroupId = ruleGroupId
         }
     }
-
 }
 
-public struct ListRuleGroupsOutput {
+public struct ListRuleGroupsOutput: Swift.Sendable {
     /// If you have more RuleGroups than the number that you specified for Limit in the request, the response includes a NextMarker value. To list more RuleGroups, submit another ListRuleGroups request, and specify the NextMarker value from the response in the NextMarker value in the next request.
     public var nextMarker: Swift.String?
     /// An array of [RuleGroup] objects.
@@ -4772,7 +4772,7 @@ public struct ListRuleGroupsOutput {
     }
 }
 
-public struct ListRulesInput {
+public struct ListRulesInput: Swift.Sendable {
     /// Specifies the number of Rules that you want AWS WAF to return for this request. If you have more Rules than the number that you specify for Limit, the response includes a NextMarker value that you can use to get another batch of Rules.
     public var limit: Swift.Int?
     /// If you specify a value for Limit and you have more Rules than the value of Limit, AWS WAF returns a NextMarker value in the response that allows you to list another group of Rules. For the second and subsequent ListRules requests, specify the value of NextMarker from the previous response to get information about another batch of Rules.
@@ -4788,7 +4788,7 @@ public struct ListRulesInput {
     }
 }
 
-public struct ListRulesOutput {
+public struct ListRulesOutput: Swift.Sendable {
     /// If you have more Rules than the number that you specified for Limit in the request, the response includes a NextMarker value. To list more Rules, submit another ListRules request, and specify the NextMarker value from the response in the NextMarker value in the next request.
     public var nextMarker: Swift.String?
     /// An array of [RuleSummary] objects.
@@ -4804,7 +4804,7 @@ public struct ListRulesOutput {
     }
 }
 
-public struct ListSizeConstraintSetsInput {
+public struct ListSizeConstraintSetsInput: Swift.Sendable {
     /// Specifies the number of SizeConstraintSet objects that you want AWS WAF to return for this request. If you have more SizeConstraintSets objects than the number you specify for Limit, the response includes a NextMarker value that you can use to get another batch of SizeConstraintSet objects.
     public var limit: Swift.Int?
     /// If you specify a value for Limit and you have more SizeConstraintSets than the value of Limit, AWS WAF returns a NextMarker value in the response that allows you to list another group of SizeConstraintSets. For the second and subsequent ListSizeConstraintSets requests, specify the value of NextMarker from the previous response to get information about another batch of SizeConstraintSets.
@@ -4821,8 +4821,9 @@ public struct ListSizeConstraintSetsInput {
 }
 
 extension WAFClientTypes {
+
     /// This is AWS WAF Classic documentation. For more information, see [AWS WAF Classic](https://docs.aws.amazon.com/waf/latest/developerguide/classic-waf-chapter.html) in the developer guide. For the latest version of AWS WAF, use the AWS WAFV2 API and see the [AWS WAF Developer Guide](https://docs.aws.amazon.com/waf/latest/developerguide/waf-chapter.html). With the latest version, AWS WAF has a single set of endpoints for regional and global use. The Id and Name of a SizeConstraintSet.
-    public struct SizeConstraintSetSummary {
+    public struct SizeConstraintSetSummary: Swift.Sendable {
         /// The name of the SizeConstraintSet, if any.
         /// This member is required.
         public var name: Swift.String?
@@ -4839,10 +4840,9 @@ extension WAFClientTypes {
             self.sizeConstraintSetId = sizeConstraintSetId
         }
     }
-
 }
 
-public struct ListSizeConstraintSetsOutput {
+public struct ListSizeConstraintSetsOutput: Swift.Sendable {
     /// If you have more SizeConstraintSet objects than the number that you specified for Limit in the request, the response includes a NextMarker value. To list more SizeConstraintSet objects, submit another ListSizeConstraintSets request, and specify the NextMarker value from the response in the NextMarker value in the next request.
     public var nextMarker: Swift.String?
     /// An array of [SizeConstraintSetSummary] objects.
@@ -4859,7 +4859,7 @@ public struct ListSizeConstraintSetsOutput {
 }
 
 /// A request to list the [SqlInjectionMatchSet] objects created by the current AWS account.
-public struct ListSqlInjectionMatchSetsInput {
+public struct ListSqlInjectionMatchSetsInput: Swift.Sendable {
     /// Specifies the number of [SqlInjectionMatchSet] objects that you want AWS WAF to return for this request. If you have more SqlInjectionMatchSet objects than the number you specify for Limit, the response includes a NextMarker value that you can use to get another batch of Rules.
     public var limit: Swift.Int?
     /// If you specify a value for Limit and you have more [SqlInjectionMatchSet] objects than the value of Limit, AWS WAF returns a NextMarker value in the response that allows you to list another group of SqlInjectionMatchSets. For the second and subsequent ListSqlInjectionMatchSets requests, specify the value of NextMarker from the previous response to get information about another batch of SqlInjectionMatchSets.
@@ -4876,8 +4876,9 @@ public struct ListSqlInjectionMatchSetsInput {
 }
 
 extension WAFClientTypes {
+
     /// This is AWS WAF Classic documentation. For more information, see [AWS WAF Classic](https://docs.aws.amazon.com/waf/latest/developerguide/classic-waf-chapter.html) in the developer guide. For the latest version of AWS WAF, use the AWS WAFV2 API and see the [AWS WAF Developer Guide](https://docs.aws.amazon.com/waf/latest/developerguide/waf-chapter.html). With the latest version, AWS WAF has a single set of endpoints for regional and global use. The Id and Name of a SqlInjectionMatchSet.
-    public struct SqlInjectionMatchSetSummary {
+    public struct SqlInjectionMatchSetSummary: Swift.Sendable {
         /// The name of the SqlInjectionMatchSet, if any, specified by Id.
         /// This member is required.
         public var name: Swift.String?
@@ -4894,11 +4895,10 @@ extension WAFClientTypes {
             self.sqlInjectionMatchSetId = sqlInjectionMatchSetId
         }
     }
-
 }
 
 /// The response to a [ListSqlInjectionMatchSets] request.
-public struct ListSqlInjectionMatchSetsOutput {
+public struct ListSqlInjectionMatchSetsOutput: Swift.Sendable {
     /// If you have more [SqlInjectionMatchSet] objects than the number that you specified for Limit in the request, the response includes a NextMarker value. To list more SqlInjectionMatchSet objects, submit another ListSqlInjectionMatchSets request, and specify the NextMarker value from the response in the NextMarker value in the next request.
     public var nextMarker: Swift.String?
     /// An array of [SqlInjectionMatchSetSummary] objects.
@@ -4914,7 +4914,7 @@ public struct ListSqlInjectionMatchSetsOutput {
     }
 }
 
-public struct ListSubscribedRuleGroupsInput {
+public struct ListSubscribedRuleGroupsInput: Swift.Sendable {
     /// Specifies the number of subscribed rule groups that you want AWS WAF to return for this request. If you have more objects than the number you specify for Limit, the response includes a NextMarker value that you can use to get another batch of objects.
     public var limit: Swift.Int?
     /// If you specify a value for Limit and you have more ByteMatchSetssubscribed rule groups than the value of Limit, AWS WAF returns a NextMarker value in the response that allows you to list another group of subscribed rule groups. For the second and subsequent ListSubscribedRuleGroupsRequest requests, specify the value of NextMarker from the previous response to get information about another batch of subscribed rule groups.
@@ -4931,8 +4931,9 @@ public struct ListSubscribedRuleGroupsInput {
 }
 
 extension WAFClientTypes {
+
     /// This is AWS WAF Classic documentation. For more information, see [AWS WAF Classic](https://docs.aws.amazon.com/waf/latest/developerguide/classic-waf-chapter.html) in the developer guide. For the latest version of AWS WAF, use the AWS WAFV2 API and see the [AWS WAF Developer Guide](https://docs.aws.amazon.com/waf/latest/developerguide/waf-chapter.html). With the latest version, AWS WAF has a single set of endpoints for regional and global use. A summary of the rule groups you are subscribed to.
-    public struct SubscribedRuleGroupSummary {
+    public struct SubscribedRuleGroupSummary: Swift.Sendable {
         /// A friendly name or description for the metrics for this RuleGroup. The name can contain only alphanumeric characters (A-Z, a-z, 0-9), with maximum length 128 and minimum length one. It can't contain whitespace or metric names reserved for AWS WAF, including "All" and "Default_Action." You can't change the name of the metric after you create the RuleGroup.
         /// This member is required.
         public var metricName: Swift.String?
@@ -4954,10 +4955,9 @@ extension WAFClientTypes {
             self.ruleGroupId = ruleGroupId
         }
     }
-
 }
 
-public struct ListSubscribedRuleGroupsOutput {
+public struct ListSubscribedRuleGroupsOutput: Swift.Sendable {
     /// If you have more objects than the number that you specified for Limit in the request, the response includes a NextMarker value. To list more objects, submit another ListSubscribedRuleGroups request, and specify the NextMarker value from the response in the NextMarker value in the next request.
     public var nextMarker: Swift.String?
     /// An array of [RuleGroup] objects.
@@ -4973,7 +4973,7 @@ public struct ListSubscribedRuleGroupsOutput {
     }
 }
 
-public struct ListTagsForResourceInput {
+public struct ListTagsForResourceInput: Swift.Sendable {
     ///
     public var limit: Swift.Int?
     ///
@@ -4995,8 +4995,9 @@ public struct ListTagsForResourceInput {
 }
 
 extension WAFClientTypes {
+
     /// This is AWS WAF Classic documentation. For more information, see [AWS WAF Classic](https://docs.aws.amazon.com/waf/latest/developerguide/classic-waf-chapter.html) in the developer guide. For the latest version of AWS WAF, use the AWS WAFV2 API and see the [AWS WAF Developer Guide](https://docs.aws.amazon.com/waf/latest/developerguide/waf-chapter.html). With the latest version, AWS WAF has a single set of endpoints for regional and global use. Information for a tag associated with an AWS resource. Tags are key:value pairs that you can use to categorize and manage your resources, for purposes like billing. For example, you might set the tag key to "customer" and the value to the customer name or ID. You can specify one or more tags to add to each AWS resource, up to 50 tags for a resource. Tagging is only available through the API, SDKs, and CLI. You can't manage or view tags through the AWS WAF Classic console. You can tag the AWS resources that you manage through AWS WAF Classic: web ACLs, rule groups, and rules.
-    public struct TagInfoForResource {
+    public struct TagInfoForResource: Swift.Sendable {
         ///
         public var resourceARN: Swift.String?
         ///
@@ -5011,10 +5012,9 @@ extension WAFClientTypes {
             self.tagList = tagList
         }
     }
-
 }
 
-public struct ListTagsForResourceOutput {
+public struct ListTagsForResourceOutput: Swift.Sendable {
     ///
     public var nextMarker: Swift.String?
     ///
@@ -5030,7 +5030,7 @@ public struct ListTagsForResourceOutput {
     }
 }
 
-public struct ListWebACLsInput {
+public struct ListWebACLsInput: Swift.Sendable {
     /// Specifies the number of WebACL objects that you want AWS WAF to return for this request. If you have more WebACL objects than the number that you specify for Limit, the response includes a NextMarker value that you can use to get another batch of WebACL objects.
     public var limit: Swift.Int?
     /// If you specify a value for Limit and you have more WebACL objects than the number that you specify for Limit, AWS WAF returns a NextMarker value in the response that allows you to list another group of WebACL objects. For the second and subsequent ListWebACLs requests, specify the value of NextMarker from the previous response to get information about another batch of WebACL objects.
@@ -5047,8 +5047,9 @@ public struct ListWebACLsInput {
 }
 
 extension WAFClientTypes {
+
     /// This is AWS WAF Classic documentation. For more information, see [AWS WAF Classic](https://docs.aws.amazon.com/waf/latest/developerguide/classic-waf-chapter.html) in the developer guide. For the latest version of AWS WAF, use the AWS WAFV2 API and see the [AWS WAF Developer Guide](https://docs.aws.amazon.com/waf/latest/developerguide/waf-chapter.html). With the latest version, AWS WAF has a single set of endpoints for regional and global use. Contains the identifier and the name or description of the [WebACL].
-    public struct WebACLSummary {
+    public struct WebACLSummary: Swift.Sendable {
         /// A friendly name or description of the [WebACL]. You can't change the name of a WebACL after you create it.
         /// This member is required.
         public var name: Swift.String?
@@ -5065,10 +5066,9 @@ extension WAFClientTypes {
             self.webACLId = webACLId
         }
     }
-
 }
 
-public struct ListWebACLsOutput {
+public struct ListWebACLsOutput: Swift.Sendable {
     /// If you have more WebACL objects than the number that you specified for Limit in the request, the response includes a NextMarker value. To list more WebACL objects, submit another ListWebACLs request, and specify the NextMarker value from the response in the NextMarker value in the next request.
     public var nextMarker: Swift.String?
     /// An array of [WebACLSummary] objects.
@@ -5085,7 +5085,7 @@ public struct ListWebACLsOutput {
 }
 
 /// A request to list the [XssMatchSet] objects created by the current AWS account.
-public struct ListXssMatchSetsInput {
+public struct ListXssMatchSetsInput: Swift.Sendable {
     /// Specifies the number of [XssMatchSet] objects that you want AWS WAF to return for this request. If you have more XssMatchSet objects than the number you specify for Limit, the response includes a NextMarker value that you can use to get another batch of Rules.
     public var limit: Swift.Int?
     /// If you specify a value for Limit and you have more [XssMatchSet] objects than the value of Limit, AWS WAF returns a NextMarker value in the response that allows you to list another group of XssMatchSets. For the second and subsequent ListXssMatchSets requests, specify the value of NextMarker from the previous response to get information about another batch of XssMatchSets.
@@ -5102,8 +5102,9 @@ public struct ListXssMatchSetsInput {
 }
 
 extension WAFClientTypes {
+
     /// This is AWS WAF Classic documentation. For more information, see [AWS WAF Classic](https://docs.aws.amazon.com/waf/latest/developerguide/classic-waf-chapter.html) in the developer guide. For the latest version of AWS WAF, use the AWS WAFV2 API and see the [AWS WAF Developer Guide](https://docs.aws.amazon.com/waf/latest/developerguide/waf-chapter.html). With the latest version, AWS WAF has a single set of endpoints for regional and global use. The Id and Name of an XssMatchSet.
-    public struct XssMatchSetSummary {
+    public struct XssMatchSetSummary: Swift.Sendable {
         /// The name of the XssMatchSet, if any, specified by Id.
         /// This member is required.
         public var name: Swift.String?
@@ -5120,11 +5121,10 @@ extension WAFClientTypes {
             self.xssMatchSetId = xssMatchSetId
         }
     }
-
 }
 
 /// The response to a [ListXssMatchSets] request.
-public struct ListXssMatchSetsOutput {
+public struct ListXssMatchSetsOutput: Swift.Sendable {
     /// If you have more [XssMatchSet] objects than the number that you specified for Limit in the request, the response includes a NextMarker value. To list more XssMatchSet objects, submit another ListXssMatchSets request, and specify the NextMarker value from the response in the NextMarker value in the next request.
     public var nextMarker: Swift.String?
     /// An array of [XssMatchSetSummary] objects.
@@ -5164,7 +5164,7 @@ public struct WAFServiceLinkedRoleErrorException: ClientRuntime.ModeledError, AW
     }
 }
 
-public struct PutLoggingConfigurationInput {
+public struct PutLoggingConfigurationInput: Swift.Sendable {
     /// The Amazon Kinesis Data Firehose that contains the inspected traffic information, the redacted fields details, and the Amazon Resource Name (ARN) of the web ACL to monitor. When specifying Type in RedactedFields, you must use one of the following values: URI, QUERY_STRING, HEADER, or METHOD.
     /// This member is required.
     public var loggingConfiguration: WAFClientTypes.LoggingConfiguration?
@@ -5177,7 +5177,7 @@ public struct PutLoggingConfigurationInput {
     }
 }
 
-public struct PutLoggingConfigurationOutput {
+public struct PutLoggingConfigurationOutput: Swift.Sendable {
     /// The [LoggingConfiguration] that you submitted in the request.
     public var loggingConfiguration: WAFClientTypes.LoggingConfiguration?
 
@@ -5229,7 +5229,7 @@ public struct WAFInvalidPermissionPolicyException: ClientRuntime.ModeledError, A
     }
 }
 
-public struct PutPermissionPolicyInput {
+public struct PutPermissionPolicyInput: Swift.Sendable {
     /// The policy to attach to the specified RuleGroup.
     /// This member is required.
     public var policy: Swift.String?
@@ -5247,12 +5247,12 @@ public struct PutPermissionPolicyInput {
     }
 }
 
-public struct PutPermissionPolicyOutput {
+public struct PutPermissionPolicyOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct TagResourceInput {
+public struct TagResourceInput: Swift.Sendable {
     ///
     /// This member is required.
     public var resourceARN: Swift.String?
@@ -5270,12 +5270,12 @@ public struct TagResourceInput {
     }
 }
 
-public struct TagResourceOutput {
+public struct TagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UntagResourceInput {
+public struct UntagResourceInput: Swift.Sendable {
     ///
     /// This member is required.
     public var resourceARN: Swift.String?
@@ -5293,7 +5293,7 @@ public struct UntagResourceInput {
     }
 }
 
-public struct UntagResourceOutput {
+public struct UntagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
@@ -5332,7 +5332,7 @@ public struct WAFNonexistentContainerException: ClientRuntime.ModeledError, AWSC
 
 extension WAFClientTypes {
 
-    public enum ChangeAction: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ChangeAction: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case delete
         case insert
         case sdkUnknown(Swift.String)
@@ -5360,8 +5360,9 @@ extension WAFClientTypes {
 }
 
 extension WAFClientTypes {
+
     /// This is AWS WAF Classic documentation. For more information, see [AWS WAF Classic](https://docs.aws.amazon.com/waf/latest/developerguide/classic-waf-chapter.html) in the developer guide. For the latest version of AWS WAF, use the AWS WAFV2 API and see the [AWS WAF Developer Guide](https://docs.aws.amazon.com/waf/latest/developerguide/waf-chapter.html). With the latest version, AWS WAF has a single set of endpoints for regional and global use. In an [UpdateByteMatchSet] request, ByteMatchSetUpdate specifies whether to insert or delete a [ByteMatchTuple] and includes the settings for the ByteMatchTuple.
-    public struct ByteMatchSetUpdate {
+    public struct ByteMatchSetUpdate: Swift.Sendable {
         /// Specifies whether to insert or delete a [ByteMatchTuple].
         /// This member is required.
         public var action: WAFClientTypes.ChangeAction?
@@ -5378,10 +5379,9 @@ extension WAFClientTypes {
             self.byteMatchTuple = byteMatchTuple
         }
     }
-
 }
 
-public struct UpdateByteMatchSetInput {
+public struct UpdateByteMatchSetInput: Swift.Sendable {
     /// The ByteMatchSetId of the [ByteMatchSet] that you want to update. ByteMatchSetId is returned by [CreateByteMatchSet] and by [ListByteMatchSets].
     /// This member is required.
     public var byteMatchSetId: Swift.String?
@@ -5410,7 +5410,7 @@ public struct UpdateByteMatchSetInput {
     }
 }
 
-public struct UpdateByteMatchSetOutput {
+public struct UpdateByteMatchSetOutput: Swift.Sendable {
     /// The ChangeToken that you used to submit the UpdateByteMatchSet request. You can also use this value to query the status of the request. For more information, see [GetChangeTokenStatus].
     public var changeToken: Swift.String?
 
@@ -5423,8 +5423,9 @@ public struct UpdateByteMatchSetOutput {
 }
 
 extension WAFClientTypes {
+
     /// This is AWS WAF Classic documentation. For more information, see [AWS WAF Classic](https://docs.aws.amazon.com/waf/latest/developerguide/classic-waf-chapter.html) in the developer guide. For the latest version of AWS WAF, use the AWS WAFV2 API and see the [AWS WAF Developer Guide](https://docs.aws.amazon.com/waf/latest/developerguide/waf-chapter.html). With the latest version, AWS WAF has a single set of endpoints for regional and global use. Specifies the type of update to perform to an [GeoMatchSet] with [UpdateGeoMatchSet].
-    public struct GeoMatchSetUpdate {
+    public struct GeoMatchSetUpdate: Swift.Sendable {
         /// Specifies whether to insert or delete a country with [UpdateGeoMatchSet].
         /// This member is required.
         public var action: WAFClientTypes.ChangeAction?
@@ -5441,10 +5442,9 @@ extension WAFClientTypes {
             self.geoMatchConstraint = geoMatchConstraint
         }
     }
-
 }
 
-public struct UpdateGeoMatchSetInput {
+public struct UpdateGeoMatchSetInput: Swift.Sendable {
     /// The value returned by the most recent call to [GetChangeToken].
     /// This member is required.
     public var changeToken: Swift.String?
@@ -5471,7 +5471,7 @@ public struct UpdateGeoMatchSetInput {
     }
 }
 
-public struct UpdateGeoMatchSetOutput {
+public struct UpdateGeoMatchSetOutput: Swift.Sendable {
     /// The ChangeToken that you used to submit the UpdateGeoMatchSet request. You can also use this value to query the status of the request. For more information, see [GetChangeTokenStatus].
     public var changeToken: Swift.String?
 
@@ -5484,8 +5484,9 @@ public struct UpdateGeoMatchSetOutput {
 }
 
 extension WAFClientTypes {
+
     /// This is AWS WAF Classic documentation. For more information, see [AWS WAF Classic](https://docs.aws.amazon.com/waf/latest/developerguide/classic-waf-chapter.html) in the developer guide. For the latest version of AWS WAF, use the AWS WAFV2 API and see the [AWS WAF Developer Guide](https://docs.aws.amazon.com/waf/latest/developerguide/waf-chapter.html). With the latest version, AWS WAF has a single set of endpoints for regional and global use. Specifies the type of update to perform to an [IPSet] with [UpdateIPSet].
-    public struct IPSetUpdate {
+    public struct IPSetUpdate: Swift.Sendable {
         /// Specifies whether to insert or delete an IP address with [UpdateIPSet].
         /// This member is required.
         public var action: WAFClientTypes.ChangeAction?
@@ -5502,10 +5503,9 @@ extension WAFClientTypes {
             self.ipSetDescriptor = ipSetDescriptor
         }
     }
-
 }
 
-public struct UpdateIPSetInput {
+public struct UpdateIPSetInput: Swift.Sendable {
     /// The value returned by the most recent call to [GetChangeToken].
     /// This member is required.
     public var changeToken: Swift.String?
@@ -5535,7 +5535,7 @@ public struct UpdateIPSetInput {
     }
 }
 
-public struct UpdateIPSetOutput {
+public struct UpdateIPSetOutput: Swift.Sendable {
     /// The ChangeToken that you used to submit the UpdateIPSet request. You can also use this value to query the status of the request. For more information, see [GetChangeTokenStatus].
     public var changeToken: Swift.String?
 
@@ -5548,8 +5548,9 @@ public struct UpdateIPSetOutput {
 }
 
 extension WAFClientTypes {
+
     /// This is AWS WAF Classic documentation. For more information, see [AWS WAF Classic](https://docs.aws.amazon.com/waf/latest/developerguide/classic-waf-chapter.html) in the developer guide. For the latest version of AWS WAF, use the AWS WAFV2 API and see the [AWS WAF Developer Guide](https://docs.aws.amazon.com/waf/latest/developerguide/waf-chapter.html). With the latest version, AWS WAF has a single set of endpoints for regional and global use. Specifies a Predicate (such as an IPSet) and indicates whether you want to add it to a Rule or delete it from a Rule.
-    public struct RuleUpdate {
+    public struct RuleUpdate: Swift.Sendable {
         /// Specify INSERT to add a Predicate to a Rule. Use DELETE to remove a Predicate from a Rule.
         /// This member is required.
         public var action: WAFClientTypes.ChangeAction?
@@ -5566,10 +5567,9 @@ extension WAFClientTypes {
             self.predicate = predicate
         }
     }
-
 }
 
-public struct UpdateRateBasedRuleInput {
+public struct UpdateRateBasedRuleInput: Swift.Sendable {
     /// The value returned by the most recent call to [GetChangeToken].
     /// This member is required.
     public var changeToken: Swift.String?
@@ -5597,7 +5597,7 @@ public struct UpdateRateBasedRuleInput {
     }
 }
 
-public struct UpdateRateBasedRuleOutput {
+public struct UpdateRateBasedRuleOutput: Swift.Sendable {
     /// The ChangeToken that you used to submit the UpdateRateBasedRule request. You can also use this value to query the status of the request. For more information, see [GetChangeTokenStatus].
     public var changeToken: Swift.String?
 
@@ -5610,8 +5610,9 @@ public struct UpdateRateBasedRuleOutput {
 }
 
 extension WAFClientTypes {
+
     /// This is AWS WAF Classic documentation. For more information, see [AWS WAF Classic](https://docs.aws.amazon.com/waf/latest/developerguide/classic-waf-chapter.html) in the developer guide. For the latest version of AWS WAF, use the AWS WAFV2 API and see the [AWS WAF Developer Guide](https://docs.aws.amazon.com/waf/latest/developerguide/waf-chapter.html). With the latest version, AWS WAF has a single set of endpoints for regional and global use. In an [UpdateRegexMatchSet] request, RegexMatchSetUpdate specifies whether to insert or delete a [RegexMatchTuple] and includes the settings for the RegexMatchTuple.
-    public struct RegexMatchSetUpdate {
+    public struct RegexMatchSetUpdate: Swift.Sendable {
         /// Specifies whether to insert or delete a [RegexMatchTuple].
         /// This member is required.
         public var action: WAFClientTypes.ChangeAction?
@@ -5628,10 +5629,9 @@ extension WAFClientTypes {
             self.regexMatchTuple = regexMatchTuple
         }
     }
-
 }
 
-public struct UpdateRegexMatchSetInput {
+public struct UpdateRegexMatchSetInput: Swift.Sendable {
     /// The value returned by the most recent call to [GetChangeToken].
     /// This member is required.
     public var changeToken: Swift.String?
@@ -5654,7 +5654,7 @@ public struct UpdateRegexMatchSetInput {
     }
 }
 
-public struct UpdateRegexMatchSetOutput {
+public struct UpdateRegexMatchSetOutput: Swift.Sendable {
     /// The ChangeToken that you used to submit the UpdateRegexMatchSet request. You can also use this value to query the status of the request. For more information, see [GetChangeTokenStatus].
     public var changeToken: Swift.String?
 
@@ -5691,8 +5691,9 @@ public struct WAFInvalidRegexPatternException: ClientRuntime.ModeledError, AWSCl
 }
 
 extension WAFClientTypes {
+
     /// This is AWS WAF Classic documentation. For more information, see [AWS WAF Classic](https://docs.aws.amazon.com/waf/latest/developerguide/classic-waf-chapter.html) in the developer guide. For the latest version of AWS WAF, use the AWS WAFV2 API and see the [AWS WAF Developer Guide](https://docs.aws.amazon.com/waf/latest/developerguide/waf-chapter.html). With the latest version, AWS WAF has a single set of endpoints for regional and global use. In an [UpdateRegexPatternSet] request, RegexPatternSetUpdate specifies whether to insert or delete a RegexPatternString and includes the settings for the RegexPatternString.
-    public struct RegexPatternSetUpdate {
+    public struct RegexPatternSetUpdate: Swift.Sendable {
         /// Specifies whether to insert or delete a RegexPatternString.
         /// This member is required.
         public var action: WAFClientTypes.ChangeAction?
@@ -5709,10 +5710,9 @@ extension WAFClientTypes {
             self.regexPatternString = regexPatternString
         }
     }
-
 }
 
-public struct UpdateRegexPatternSetInput {
+public struct UpdateRegexPatternSetInput: Swift.Sendable {
     /// The value returned by the most recent call to [GetChangeToken].
     /// This member is required.
     public var changeToken: Swift.String?
@@ -5735,7 +5735,7 @@ public struct UpdateRegexPatternSetInput {
     }
 }
 
-public struct UpdateRegexPatternSetOutput {
+public struct UpdateRegexPatternSetOutput: Swift.Sendable {
     /// The ChangeToken that you used to submit the UpdateRegexPatternSet request. You can also use this value to query the status of the request. For more information, see [GetChangeTokenStatus].
     public var changeToken: Swift.String?
 
@@ -5747,7 +5747,7 @@ public struct UpdateRegexPatternSetOutput {
     }
 }
 
-public struct UpdateRuleInput {
+public struct UpdateRuleInput: Swift.Sendable {
     /// The value returned by the most recent call to [GetChangeToken].
     /// This member is required.
     public var changeToken: Swift.String?
@@ -5776,7 +5776,7 @@ public struct UpdateRuleInput {
     }
 }
 
-public struct UpdateRuleOutput {
+public struct UpdateRuleOutput: Swift.Sendable {
     /// The ChangeToken that you used to submit the UpdateRule request. You can also use this value to query the status of the request. For more information, see [GetChangeTokenStatus].
     public var changeToken: Swift.String?
 
@@ -5789,8 +5789,9 @@ public struct UpdateRuleOutput {
 }
 
 extension WAFClientTypes {
+
     /// This is AWS WAF Classic documentation. For more information, see [AWS WAF Classic](https://docs.aws.amazon.com/waf/latest/developerguide/classic-waf-chapter.html) in the developer guide. For the latest version of AWS WAF, use the AWS WAFV2 API and see the [AWS WAF Developer Guide](https://docs.aws.amazon.com/waf/latest/developerguide/waf-chapter.html). With the latest version, AWS WAF has a single set of endpoints for regional and global use. Specifies an ActivatedRule and indicates whether you want to add it to a RuleGroup or delete it from a RuleGroup.
-    public struct RuleGroupUpdate {
+    public struct RuleGroupUpdate: Swift.Sendable {
         /// Specify INSERT to add an ActivatedRule to a RuleGroup. Use DELETE to remove an ActivatedRule from a RuleGroup.
         /// This member is required.
         public var action: WAFClientTypes.ChangeAction?
@@ -5807,10 +5808,9 @@ extension WAFClientTypes {
             self.activatedRule = activatedRule
         }
     }
-
 }
 
-public struct UpdateRuleGroupInput {
+public struct UpdateRuleGroupInput: Swift.Sendable {
     /// The value returned by the most recent call to [GetChangeToken].
     /// This member is required.
     public var changeToken: Swift.String?
@@ -5833,7 +5833,7 @@ public struct UpdateRuleGroupInput {
     }
 }
 
-public struct UpdateRuleGroupOutput {
+public struct UpdateRuleGroupOutput: Swift.Sendable {
     /// The ChangeToken that you used to submit the UpdateRuleGroup request. You can also use this value to query the status of the request. For more information, see [GetChangeTokenStatus].
     public var changeToken: Swift.String?
 
@@ -5846,8 +5846,9 @@ public struct UpdateRuleGroupOutput {
 }
 
 extension WAFClientTypes {
+
     /// This is AWS WAF Classic documentation. For more information, see [AWS WAF Classic](https://docs.aws.amazon.com/waf/latest/developerguide/classic-waf-chapter.html) in the developer guide. For the latest version of AWS WAF, use the AWS WAFV2 API and see the [AWS WAF Developer Guide](https://docs.aws.amazon.com/waf/latest/developerguide/waf-chapter.html). With the latest version, AWS WAF has a single set of endpoints for regional and global use. Specifies the part of a web request that you want to inspect the size of and indicates whether you want to add the specification to a [SizeConstraintSet] or delete it from a SizeConstraintSet.
-    public struct SizeConstraintSetUpdate {
+    public struct SizeConstraintSetUpdate: Swift.Sendable {
         /// Specify INSERT to add a [SizeConstraintSetUpdate] to a [SizeConstraintSet]. Use DELETE to remove a SizeConstraintSetUpdate from a SizeConstraintSet.
         /// This member is required.
         public var action: WAFClientTypes.ChangeAction?
@@ -5864,10 +5865,9 @@ extension WAFClientTypes {
             self.sizeConstraint = sizeConstraint
         }
     }
-
 }
 
-public struct UpdateSizeConstraintSetInput {
+public struct UpdateSizeConstraintSetInput: Swift.Sendable {
     /// The value returned by the most recent call to [GetChangeToken].
     /// This member is required.
     public var changeToken: Swift.String?
@@ -5896,7 +5896,7 @@ public struct UpdateSizeConstraintSetInput {
     }
 }
 
-public struct UpdateSizeConstraintSetOutput {
+public struct UpdateSizeConstraintSetOutput: Swift.Sendable {
     /// The ChangeToken that you used to submit the UpdateSizeConstraintSet request. You can also use this value to query the status of the request. For more information, see [GetChangeTokenStatus].
     public var changeToken: Swift.String?
 
@@ -5909,8 +5909,9 @@ public struct UpdateSizeConstraintSetOutput {
 }
 
 extension WAFClientTypes {
+
     /// This is AWS WAF Classic documentation. For more information, see [AWS WAF Classic](https://docs.aws.amazon.com/waf/latest/developerguide/classic-waf-chapter.html) in the developer guide. For the latest version of AWS WAF, use the AWS WAFV2 API and see the [AWS WAF Developer Guide](https://docs.aws.amazon.com/waf/latest/developerguide/waf-chapter.html). With the latest version, AWS WAF has a single set of endpoints for regional and global use. Specifies the part of a web request that you want to inspect for snippets of malicious SQL code and indicates whether you want to add the specification to a [SqlInjectionMatchSet] or delete it from a SqlInjectionMatchSet.
-    public struct SqlInjectionMatchSetUpdate {
+    public struct SqlInjectionMatchSetUpdate: Swift.Sendable {
         /// Specify INSERT to add a [SqlInjectionMatchSetUpdate] to a [SqlInjectionMatchSet]. Use DELETE to remove a SqlInjectionMatchSetUpdate from a SqlInjectionMatchSet.
         /// This member is required.
         public var action: WAFClientTypes.ChangeAction?
@@ -5927,11 +5928,10 @@ extension WAFClientTypes {
             self.sqlInjectionMatchTuple = sqlInjectionMatchTuple
         }
     }
-
 }
 
 /// A request to update a [SqlInjectionMatchSet].
-public struct UpdateSqlInjectionMatchSetInput {
+public struct UpdateSqlInjectionMatchSetInput: Swift.Sendable {
     /// The value returned by the most recent call to [GetChangeToken].
     /// This member is required.
     public var changeToken: Swift.String?
@@ -5961,7 +5961,7 @@ public struct UpdateSqlInjectionMatchSetInput {
 }
 
 /// The response to an [UpdateSqlInjectionMatchSets] request.
-public struct UpdateSqlInjectionMatchSetOutput {
+public struct UpdateSqlInjectionMatchSetOutput: Swift.Sendable {
     /// The ChangeToken that you used to submit the UpdateSqlInjectionMatchSet request. You can also use this value to query the status of the request. For more information, see [GetChangeTokenStatus].
     public var changeToken: Swift.String?
 
@@ -5998,8 +5998,9 @@ public struct WAFSubscriptionNotFoundException: ClientRuntime.ModeledError, AWSC
 }
 
 extension WAFClientTypes {
+
     /// This is AWS WAF Classic documentation. For more information, see [AWS WAF Classic](https://docs.aws.amazon.com/waf/latest/developerguide/classic-waf-chapter.html) in the developer guide. For the latest version of AWS WAF, use the AWS WAFV2 API and see the [AWS WAF Developer Guide](https://docs.aws.amazon.com/waf/latest/developerguide/waf-chapter.html). With the latest version, AWS WAF has a single set of endpoints for regional and global use. Specifies whether to insert a Rule into or delete a Rule from a WebACL.
-    public struct WebACLUpdate {
+    public struct WebACLUpdate: Swift.Sendable {
         /// Specifies whether to insert a Rule into or delete a Rule from a WebACL.
         /// This member is required.
         public var action: WAFClientTypes.ChangeAction?
@@ -6016,10 +6017,9 @@ extension WAFClientTypes {
             self.activatedRule = activatedRule
         }
     }
-
 }
 
-public struct UpdateWebACLInput {
+public struct UpdateWebACLInput: Swift.Sendable {
     /// The value returned by the most recent call to [GetChangeToken].
     /// This member is required.
     public var changeToken: Swift.String?
@@ -6051,7 +6051,7 @@ public struct UpdateWebACLInput {
     }
 }
 
-public struct UpdateWebACLOutput {
+public struct UpdateWebACLOutput: Swift.Sendable {
     /// The ChangeToken that you used to submit the UpdateWebACL request. You can also use this value to query the status of the request. For more information, see [GetChangeTokenStatus].
     public var changeToken: Swift.String?
 
@@ -6064,8 +6064,9 @@ public struct UpdateWebACLOutput {
 }
 
 extension WAFClientTypes {
+
     /// This is AWS WAF Classic documentation. For more information, see [AWS WAF Classic](https://docs.aws.amazon.com/waf/latest/developerguide/classic-waf-chapter.html) in the developer guide. For the latest version of AWS WAF, use the AWS WAFV2 API and see the [AWS WAF Developer Guide](https://docs.aws.amazon.com/waf/latest/developerguide/waf-chapter.html). With the latest version, AWS WAF has a single set of endpoints for regional and global use. Specifies the part of a web request that you want to inspect for cross-site scripting attacks and indicates whether you want to add the specification to an [XssMatchSet] or delete it from an XssMatchSet.
-    public struct XssMatchSetUpdate {
+    public struct XssMatchSetUpdate: Swift.Sendable {
         /// Specify INSERT to add an [XssMatchSetUpdate] to an [XssMatchSet]. Use DELETE to remove an XssMatchSetUpdate from an XssMatchSet.
         /// This member is required.
         public var action: WAFClientTypes.ChangeAction?
@@ -6082,11 +6083,10 @@ extension WAFClientTypes {
             self.xssMatchTuple = xssMatchTuple
         }
     }
-
 }
 
 /// A request to update an [XssMatchSet].
-public struct UpdateXssMatchSetInput {
+public struct UpdateXssMatchSetInput: Swift.Sendable {
     /// The value returned by the most recent call to [GetChangeToken].
     /// This member is required.
     public var changeToken: Swift.String?
@@ -6116,7 +6116,7 @@ public struct UpdateXssMatchSetInput {
 }
 
 /// The response to an [UpdateXssMatchSets] request.
-public struct UpdateXssMatchSetOutput {
+public struct UpdateXssMatchSetOutput: Swift.Sendable {
     /// The ChangeToken that you used to submit the UpdateXssMatchSet request. You can also use this value to query the status of the request. For more information, see [GetChangeTokenStatus].
     public var changeToken: Swift.String?
 

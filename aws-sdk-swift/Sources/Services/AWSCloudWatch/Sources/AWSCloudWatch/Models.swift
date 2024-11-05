@@ -28,44 +28,45 @@ import protocol ClientRuntime.ModeledError
 @_spi(SmithyReadWrite) import struct SmithyReadWrite.WritingClosureBox
 @_spi(SmithyTimestamps) import struct SmithyTimestamps.TimestampFormatter
 
-public struct DeleteAlarmsOutput {
+
+public struct DeleteAlarmsOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DisableAlarmActionsOutput {
+public struct DisableAlarmActionsOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct EnableAlarmActionsOutput {
+public struct EnableAlarmActionsOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct PutCompositeAlarmOutput {
+public struct PutCompositeAlarmOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct PutMetricAlarmOutput {
+public struct PutMetricAlarmOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct PutMetricDataOutput {
+public struct PutMetricDataOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct SetAlarmStateOutput {
+public struct SetAlarmStateOutput: Swift.Sendable {
 
     public init() { }
 }
 
 extension CloudWatchClientTypes {
 
-    public enum ActionsSuppressedBy: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ActionsSuppressedBy: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case alarm
         case extensionperiod
         case waitperiod
@@ -97,7 +98,7 @@ extension CloudWatchClientTypes {
 
 extension CloudWatchClientTypes {
 
-    public enum AlarmType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AlarmType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case compositealarm
         case metricalarm
         case sdkUnknown(Swift.String)
@@ -126,7 +127,7 @@ extension CloudWatchClientTypes {
 
 extension CloudWatchClientTypes {
 
-    public enum HistoryItemType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum HistoryItemType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case action
         case configurationupdate
         case stateupdate
@@ -157,8 +158,9 @@ extension CloudWatchClientTypes {
 }
 
 extension CloudWatchClientTypes {
+
     /// Represents the history of a specific alarm.
-    public struct AlarmHistoryItem {
+    public struct AlarmHistoryItem: Swift.Sendable {
         /// The descriptive name for the alarm.
         public var alarmName: Swift.String?
         /// The type of alarm, either metric alarm or composite alarm.
@@ -189,12 +191,12 @@ extension CloudWatchClientTypes {
             self.timestamp = timestamp
         }
     }
-
 }
 
 extension CloudWatchClientTypes {
+
     /// Specifies one range of days or times to exclude from use for training an anomaly detection model.
-    public struct Range {
+    public struct Range: Swift.Sendable {
         /// The end time of the range to exclude. The format is yyyy-MM-dd'T'HH:mm:ss. For example, 2019-07-01T23:59:59.
         /// This member is required.
         public var endTime: Foundation.Date?
@@ -211,12 +213,12 @@ extension CloudWatchClientTypes {
             self.startTime = startTime
         }
     }
-
 }
 
 extension CloudWatchClientTypes {
+
     /// The configuration specifies details about how the anomaly detection model is to be trained, including time ranges to exclude from use for training the model and the time zone to use for the metric.
-    public struct AnomalyDetectorConfiguration {
+    public struct AnomalyDetectorConfiguration: Swift.Sendable {
         /// An array of time ranges to exclude from use when the anomaly detection model is trained. Use this to make sure that events that could cause unusual values for the metric, such as deployments, aren't used when CloudWatch creates the model.
         public var excludedTimeRanges: [CloudWatchClientTypes.Range]?
         /// The time zone to use for the metric. This is useful to enable the model to automatically account for daylight savings time changes if the metric is sensitive to such time changes. To specify a time zone, use the name of the time zone as specified in the standard tz database. For more information, see [tz database](https://en.wikipedia.org/wiki/Tz_database).
@@ -231,12 +233,12 @@ extension CloudWatchClientTypes {
             self.metricTimezone = metricTimezone
         }
     }
-
 }
 
 extension CloudWatchClientTypes {
+
     /// A dimension is a name/value pair that is part of the identity of a metric. Because dimensions are part of the unique identifier for a metric, whenever you add a unique name/value pair to one of your metrics, you are creating a new variation of that metric. For example, many Amazon EC2 metrics publish InstanceId as a dimension name, and the actual instance ID as the value for that dimension. You can assign up to 30 dimensions to a metric.
-    public struct Dimension {
+    public struct Dimension: Swift.Sendable {
         /// The name of the dimension. Dimension names must contain only ASCII characters, must include at least one non-whitespace character, and cannot start with a colon (:). ASCII control characters are not supported as part of dimension names.
         /// This member is required.
         public var name: Swift.String?
@@ -253,12 +255,12 @@ extension CloudWatchClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension CloudWatchClientTypes {
+
     /// This object includes parameters that you can use to provide information to CloudWatch to help it build more accurate anomaly detection models.
-    public struct MetricCharacteristics {
+    public struct MetricCharacteristics: Swift.Sendable {
         /// Set this parameter to true if values for this metric consistently include spikes that should not be considered to be anomalies. With this set to true, CloudWatch will expect to see spikes that occurred consistently during the model training period, and won't flag future similar spikes as anomalies.
         public var periodicSpikes: Swift.Bool?
 
@@ -269,12 +271,12 @@ extension CloudWatchClientTypes {
             self.periodicSpikes = periodicSpikes
         }
     }
-
 }
 
 extension CloudWatchClientTypes {
+
     /// Represents a specific metric.
-    public struct Metric {
+    public struct Metric: Swift.Sendable {
         /// The dimensions for the metric.
         public var dimensions: [CloudWatchClientTypes.Dimension]?
         /// The name of the metric. This is a required field.
@@ -293,12 +295,11 @@ extension CloudWatchClientTypes {
             self.namespace = namespace
         }
     }
-
 }
 
 extension CloudWatchClientTypes {
 
-    public enum StandardUnit: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum StandardUnit: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case bits
         case bitsSecond
         case bytes
@@ -401,8 +402,9 @@ extension CloudWatchClientTypes {
 }
 
 extension CloudWatchClientTypes {
+
     /// This structure defines the metric to be returned, along with the statistics, period, and units.
-    public struct MetricStat {
+    public struct MetricStat: Swift.Sendable {
         /// The metric to return, including the metric name, namespace, and dimensions.
         /// This member is required.
         public var metric: CloudWatchClientTypes.Metric?
@@ -434,12 +436,12 @@ extension CloudWatchClientTypes {
             self.unit = unit
         }
     }
-
 }
 
 extension CloudWatchClientTypes {
+
     /// This structure is used in both GetMetricData and PutMetricAlarm. The supported use of this structure is different for those two operations. When used in GetMetricData, it indicates the metric data to return, and whether this call is just retrieving a batch set of data for one metric, or is performing a Metrics Insights query or a math expression. A single GetMetricData call can include up to 500 MetricDataQuery structures. When used in PutMetricAlarm, it enables you to create an alarm based on a metric math expression. Each MetricDataQuery in the array specifies either a metric to retrieve, or a math expression to be performed on retrieved metrics. A single PutMetricAlarm call can include up to 20 MetricDataQuery structures in the array. The 20 structures can include as many as 10 structures that contain a MetricStat parameter to retrieve a metric, and as many as 10 structures that contain the Expression parameter to perform a math expression. Of those Expression structures, one must have true as the value for ReturnData. The result of this expression is the value the alarm watches. Any expression used in a PutMetricAlarm operation must return a single time series. For more information, see [Metric Math Syntax and Functions](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/using-metric-math.html#metric-math-syntax) in the Amazon CloudWatch User Guide. Some of the parameters of this structure also have different uses whether you are using this structure in a GetMetricData operation or a PutMetricAlarm operation. These differences are explained in the following parameter list.
-    public struct MetricDataQuery {
+    public struct MetricDataQuery: Swift.Sendable {
         /// The ID of the account where the metrics are located. If you are performing a GetMetricData operation in a monitoring account, use this to specify which account to retrieve this metric from. If you are performing a PutMetricAlarm operation, use this to specify which account contains the metric that the alarm is watching.
         public var accountId: Swift.String?
         /// This field can contain either a Metrics Insights query, or a metric math expression to be performed on the returned data. For more information about Metrics Insights queries, see [Metrics Insights query components and syntax](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/cloudwatch-metrics-insights-querylanguage) in the Amazon CloudWatch User Guide. A math expression can use the Id of the other metrics or queries to refer to those metrics, and can also use the Id of other expressions to use the result of those expressions. For more information about metric math expressions, see [Metric Math Syntax and Functions](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/using-metric-math.html#metric-math-syntax) in the Amazon CloudWatch User Guide. Within each MetricDataQuery object, you must specify either Expression or MetricStat but not both.
@@ -475,12 +477,12 @@ extension CloudWatchClientTypes {
             self.returnData = returnData
         }
     }
-
 }
 
 extension CloudWatchClientTypes {
+
     /// Indicates the CloudWatch math expression that provides the time series the anomaly detector uses as input. The designated math expression must return a single time series.
-    public struct MetricMathAnomalyDetector {
+    public struct MetricMathAnomalyDetector: Swift.Sendable {
         /// An array of metric data query structures that enables you to create an anomaly detector based on the result of a metric math expression. Each item in MetricDataQueries gets a metric or performs a math expression. One item in MetricDataQueries is the expression that provides the time series that the anomaly detector uses as input. Designate the expression by setting ReturnData to true for this object in the array. For all other expressions and metrics, set ReturnData to false. The designated expression must return a single time series.
         public var metricDataQueries: [CloudWatchClientTypes.MetricDataQuery]?
 
@@ -491,12 +493,12 @@ extension CloudWatchClientTypes {
             self.metricDataQueries = metricDataQueries
         }
     }
-
 }
 
 extension CloudWatchClientTypes {
+
     /// Designates the CloudWatch metric and statistic that provides the time series the anomaly detector uses as input. If you have enabled unified cross-account observability, and this account is a monitoring account, the metric can be in the same account or a source account.
-    public struct SingleMetricAnomalyDetector {
+    public struct SingleMetricAnomalyDetector: Swift.Sendable {
         /// If the CloudWatch metric that provides the time series that the anomaly detector uses as input is in another account, specify that account ID here. If you omit this parameter, the current account is used.
         public var accountId: Swift.String?
         /// The metric dimensions to create the anomaly detection model for.
@@ -523,12 +525,11 @@ extension CloudWatchClientTypes {
             self.stat = stat
         }
     }
-
 }
 
 extension CloudWatchClientTypes {
 
-    public enum AnomalyDetectorStateValue: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AnomalyDetectorStateValue: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case pendingTraining
         case trained
         case trainedInsufficientData
@@ -559,8 +560,9 @@ extension CloudWatchClientTypes {
 }
 
 extension CloudWatchClientTypes {
+
     /// An anomaly detection model associated with a particular CloudWatch metric, statistic, or metric math expression. You can use the model to display a band of expected, normal values when the metric is graphed. If you have enabled unified cross-account observability, and this account is a monitoring account, the metric can be in the same account or a source account.
-    public struct AnomalyDetector {
+    public struct AnomalyDetector: Swift.Sendable {
         /// The configuration specifies details about how the anomaly detection model is to be trained, including time ranges to exclude from use for training the model, and the time zone to use for the metric.
         public var configuration: CloudWatchClientTypes.AnomalyDetectorConfiguration?
         /// The metric dimensions associated with the anomaly detection model.
@@ -607,12 +609,11 @@ extension CloudWatchClientTypes {
             self.stateValue = stateValue
         }
     }
-
 }
 
 extension CloudWatchClientTypes {
 
-    public enum AnomalyDetectorType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AnomalyDetectorType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case metricMath
         case singleMetric
         case sdkUnknown(Swift.String)
@@ -640,8 +641,9 @@ extension CloudWatchClientTypes {
 }
 
 extension CloudWatchClientTypes {
+
     /// This array is empty if the API operation was successful for all the rules specified in the request. If the operation could not process one of the rules, the following data is returned for each of those rules.
-    public struct PartialFailure {
+    public struct PartialFailure: Swift.Sendable {
         /// The type of error.
         public var exceptionType: Swift.String?
         /// The code of the error.
@@ -664,12 +666,11 @@ extension CloudWatchClientTypes {
             self.failureResource = failureResource
         }
     }
-
 }
 
 extension CloudWatchClientTypes {
 
-    public enum ComparisonOperator: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ComparisonOperator: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case greaterthanorequaltothreshold
         case greaterthanthreshold
         case greaterthanupperthreshold
@@ -713,7 +714,7 @@ extension CloudWatchClientTypes {
 
 extension CloudWatchClientTypes {
 
-    public enum StateValue: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum StateValue: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case alarm
         case insufficientData
         case ok
@@ -744,8 +745,9 @@ extension CloudWatchClientTypes {
 }
 
 extension CloudWatchClientTypes {
+
     /// The details about a composite alarm.
-    public struct CompositeAlarm {
+    public struct CompositeAlarm: Swift.Sendable {
         /// Indicates whether actions should be executed during any changes to the alarm state.
         public var actionsEnabled: Swift.Bool?
         /// When the value is ALARM, it means that the actions are suppressed because the suppressor alarm is in ALARM When the value is WaitPeriod, it means that the actions are suppressed because the composite alarm is waiting for the suppressor alarm to go into into the ALARM state. The maximum waiting time is as specified in ActionsSuppressorWaitPeriod. After this time, the composite alarm performs its actions. When the value is ExtensionPeriod, it means that the actions are suppressed because the composite alarm is waiting after the suppressor alarm went out of the ALARM state. The maximum waiting time is as specified in ActionsSuppressorExtensionPeriod. After this time, the composite alarm performs its actions.
@@ -828,7 +830,6 @@ extension CloudWatchClientTypes {
             self.stateValue = stateValue
         }
     }
-
 }
 
 /// More than one process tried to modify a resource at the same time.
@@ -856,8 +857,9 @@ public struct ConcurrentModificationException: ClientRuntime.ModeledError, AWSCl
 }
 
 extension CloudWatchClientTypes {
+
     /// Represents a specific dashboard.
-    public struct DashboardEntry {
+    public struct DashboardEntry: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the dashboard.
         public var dashboardArn: Swift.String?
         /// The name of the dashboard.
@@ -880,12 +882,12 @@ extension CloudWatchClientTypes {
             self.size = size
         }
     }
-
 }
 
 extension CloudWatchClientTypes {
+
     /// An error or warning for the operation.
-    public struct DashboardValidationMessage {
+    public struct DashboardValidationMessage: Swift.Sendable {
         /// The data path related to the message.
         public var dataPath: Swift.String?
         /// A message describing the error or warning.
@@ -900,7 +902,6 @@ extension CloudWatchClientTypes {
             self.message = message
         }
     }
-
 }
 
 /// Some part of the dashboard data is invalid.
@@ -955,8 +956,9 @@ public struct DashboardNotFoundError: ClientRuntime.ModeledError, AWSClientRunti
 }
 
 extension CloudWatchClientTypes {
+
     /// Encapsulates the statistical data that CloudWatch computes from metric data.
-    public struct Datapoint {
+    public struct Datapoint: Swift.Sendable {
         /// The average of the metric values that correspond to the data point.
         public var average: Swift.Double?
         /// The percentile statistic for the data point.
@@ -995,7 +997,6 @@ extension CloudWatchClientTypes {
             self.unit = unit
         }
     }
-
 }
 
 /// The named resource does not exist.
@@ -1023,7 +1024,7 @@ public struct ResourceNotFound: ClientRuntime.ModeledError, AWSClientRuntime.AWS
     }
 }
 
-public struct DeleteAlarmsInput {
+public struct DeleteAlarmsInput: Swift.Sendable {
     /// The alarms to be deleted. Do not enclose the alarm names in quote marks.
     /// This member is required.
     public var alarmNames: [Swift.String]?
@@ -1166,7 +1167,7 @@ public struct ResourceNotFoundException: ClientRuntime.ModeledError, AWSClientRu
     }
 }
 
-public struct DeleteAnomalyDetectorInput {
+public struct DeleteAnomalyDetectorInput: Swift.Sendable {
     /// The metric dimensions associated with the anomaly detection model to delete.
     @available(*, deprecated, message: "Use SingleMetricAnomalyDetector.")
     public var dimensions: [CloudWatchClientTypes.Dimension]?
@@ -1228,12 +1229,12 @@ public struct DeleteAnomalyDetectorInput {
     }
 }
 
-public struct DeleteAnomalyDetectorOutput {
+public struct DeleteAnomalyDetectorOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteDashboardsInput {
+public struct DeleteDashboardsInput: Swift.Sendable {
     /// The dashboards to be deleted. This parameter is required.
     /// This member is required.
     public var dashboardNames: [Swift.String]?
@@ -1246,12 +1247,12 @@ public struct DeleteDashboardsInput {
     }
 }
 
-public struct DeleteDashboardsOutput {
+public struct DeleteDashboardsOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteInsightRulesInput {
+public struct DeleteInsightRulesInput: Swift.Sendable {
     /// An array of the rule names to delete. If you need to find out the names of your rules, use [DescribeInsightRules](https://docs.aws.amazon.com/AmazonCloudWatch/latest/APIReference/API_DescribeInsightRules.html).
     /// This member is required.
     public var ruleNames: [Swift.String]?
@@ -1264,7 +1265,7 @@ public struct DeleteInsightRulesInput {
     }
 }
 
-public struct DeleteInsightRulesOutput {
+public struct DeleteInsightRulesOutput: Swift.Sendable {
     /// An array listing the rules that could not be deleted. You cannot delete built-in rules.
     public var failures: [CloudWatchClientTypes.PartialFailure]?
 
@@ -1276,7 +1277,7 @@ public struct DeleteInsightRulesOutput {
     }
 }
 
-public struct DeleteMetricStreamInput {
+public struct DeleteMetricStreamInput: Swift.Sendable {
     /// The name of the metric stream to delete.
     /// This member is required.
     public var name: Swift.String?
@@ -1289,7 +1290,7 @@ public struct DeleteMetricStreamInput {
     }
 }
 
-public struct DeleteMetricStreamOutput {
+public struct DeleteMetricStreamOutput: Swift.Sendable {
 
     public init() { }
 }
@@ -1321,7 +1322,7 @@ public struct InvalidNextToken: ClientRuntime.ModeledError, AWSClientRuntime.AWS
 
 extension CloudWatchClientTypes {
 
-    public enum ScanBy: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ScanBy: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case timestampAscending
         case timestampDescending
         case sdkUnknown(Swift.String)
@@ -1348,7 +1349,7 @@ extension CloudWatchClientTypes {
     }
 }
 
-public struct DescribeAlarmHistoryInput {
+public struct DescribeAlarmHistoryInput: Swift.Sendable {
     /// The name of the alarm.
     public var alarmName: Swift.String?
     /// Use this parameter to specify whether you want the operation to return metric alarms or composite alarms. If you omit this parameter, only metric alarms are returned.
@@ -1388,7 +1389,7 @@ public struct DescribeAlarmHistoryInput {
     }
 }
 
-public struct DescribeAlarmHistoryOutput {
+public struct DescribeAlarmHistoryOutput: Swift.Sendable {
     /// The alarm histories, in JSON format.
     public var alarmHistoryItems: [CloudWatchClientTypes.AlarmHistoryItem]?
     /// The token that marks the start of the next batch of returned results.
@@ -1404,7 +1405,7 @@ public struct DescribeAlarmHistoryOutput {
     }
 }
 
-public struct DescribeAlarmsInput {
+public struct DescribeAlarmsInput: Swift.Sendable {
     /// Use this parameter to filter the results of the operation to only those alarms that use a certain alarm action. For example, you could specify the ARN of an SNS topic to find all alarms that send notifications to that topic.
     public var actionPrefix: Swift.String?
     /// An alarm name prefix. If you specify this parameter, you receive information about all alarms that have names that start with this prefix. If this parameter is specified, you cannot specify AlarmNames.
@@ -1450,7 +1451,7 @@ public struct DescribeAlarmsInput {
 
 extension CloudWatchClientTypes {
 
-    public enum EvaluationState: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum EvaluationState: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case partialData
         case sdkUnknown(Swift.String)
 
@@ -1476,7 +1477,7 @@ extension CloudWatchClientTypes {
 
 extension CloudWatchClientTypes {
 
-    public enum Statistic: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Statistic: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case average
         case maximum
         case minimum
@@ -1513,8 +1514,9 @@ extension CloudWatchClientTypes {
 }
 
 extension CloudWatchClientTypes {
+
     /// The details about a metric alarm.
-    public struct MetricAlarm {
+    public struct MetricAlarm: Swift.Sendable {
         /// Indicates whether actions should be executed during any changes to the alarm state.
         public var actionsEnabled: Swift.Bool?
         /// The actions to execute when this alarm transitions to the ALARM state from any other state. Each action is specified as an Amazon Resource Name (ARN).
@@ -1637,10 +1639,9 @@ extension CloudWatchClientTypes {
             self.unit = unit
         }
     }
-
 }
 
-public struct DescribeAlarmsOutput {
+public struct DescribeAlarmsOutput: Swift.Sendable {
     /// The information about any composite alarms returned by the operation.
     public var compositeAlarms: [CloudWatchClientTypes.CompositeAlarm]?
     /// The information about any metric alarms returned by the operation.
@@ -1660,7 +1661,7 @@ public struct DescribeAlarmsOutput {
     }
 }
 
-public struct DescribeAlarmsForMetricInput {
+public struct DescribeAlarmsForMetricInput: Swift.Sendable {
     /// The dimensions associated with the metric. If the metric has any associated dimensions, you must specify them in order for the call to succeed.
     public var dimensions: [CloudWatchClientTypes.Dimension]?
     /// The percentile statistic for the metric. Specify a value between p0.0 and p100.
@@ -1698,7 +1699,7 @@ public struct DescribeAlarmsForMetricInput {
     }
 }
 
-public struct DescribeAlarmsForMetricOutput {
+public struct DescribeAlarmsForMetricOutput: Swift.Sendable {
     /// The information for each alarm with the specified metric.
     public var metricAlarms: [CloudWatchClientTypes.MetricAlarm]?
 
@@ -1710,7 +1711,7 @@ public struct DescribeAlarmsForMetricOutput {
     }
 }
 
-public struct DescribeAnomalyDetectorsInput {
+public struct DescribeAnomalyDetectorsInput: Swift.Sendable {
     /// The anomaly detector types to request when using DescribeAnomalyDetectorsInput. If empty, defaults to SINGLE_METRIC.
     public var anomalyDetectorTypes: [CloudWatchClientTypes.AnomalyDetectorType]?
     /// Limits the results to only the anomaly detection models that are associated with the specified metric dimensions. If there are multiple metrics that have these dimensions and have anomaly detection models associated, they're all returned.
@@ -1742,7 +1743,7 @@ public struct DescribeAnomalyDetectorsInput {
     }
 }
 
-public struct DescribeAnomalyDetectorsOutput {
+public struct DescribeAnomalyDetectorsOutput: Swift.Sendable {
     /// The list of anomaly detection models returned by the operation.
     public var anomalyDetectors: [CloudWatchClientTypes.AnomalyDetector]?
     /// A token that you can use in a subsequent operation to retrieve the next set of results.
@@ -1758,7 +1759,7 @@ public struct DescribeAnomalyDetectorsOutput {
     }
 }
 
-public struct DescribeInsightRulesInput {
+public struct DescribeInsightRulesInput: Swift.Sendable {
     /// The maximum number of results to return in one operation. If you omit this parameter, the default of 500 is used.
     public var maxResults: Swift.Int?
     /// Include this value, if it was returned by the previous operation, to get the next set of rules.
@@ -1775,8 +1776,9 @@ public struct DescribeInsightRulesInput {
 }
 
 extension CloudWatchClientTypes {
+
     /// This structure contains the definition for a Contributor Insights rule. For more information about this rule, see[ Using Constributor Insights to analyze high-cardinality data](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/ContributorInsights.html) in the Amazon CloudWatch User Guide.
-    public struct InsightRule {
+    public struct InsightRule: Swift.Sendable {
         /// The definition of the rule, as a JSON object. The definition contains the keywords used to define contributors, the value to aggregate on if this rule returns a sum instead of a count, and the filters. For details on the valid syntax, see [Contributor Insights Rule Syntax](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/ContributorInsights-RuleSyntax.html).
         /// This member is required.
         public var definition: Swift.String?
@@ -1807,10 +1809,9 @@ extension CloudWatchClientTypes {
             self.state = state
         }
     }
-
 }
 
-public struct DescribeInsightRulesOutput {
+public struct DescribeInsightRulesOutput: Swift.Sendable {
     /// The rules returned by the operation.
     public var insightRules: [CloudWatchClientTypes.InsightRule]?
     /// If this parameter is present, it is a token that marks the start of the next batch of returned results.
@@ -1827,8 +1828,9 @@ public struct DescribeInsightRulesOutput {
 }
 
 extension CloudWatchClientTypes {
+
     /// Represents filters for a dimension.
-    public struct DimensionFilter {
+    public struct DimensionFilter: Swift.Sendable {
         /// The dimension name to be matched.
         /// This member is required.
         public var name: Swift.String?
@@ -1844,10 +1846,9 @@ extension CloudWatchClientTypes {
             self.value = value
         }
     }
-
 }
 
-public struct DisableAlarmActionsInput {
+public struct DisableAlarmActionsInput: Swift.Sendable {
     /// The names of the alarms.
     /// This member is required.
     public var alarmNames: [Swift.String]?
@@ -1860,7 +1861,7 @@ public struct DisableAlarmActionsInput {
     }
 }
 
-public struct DisableInsightRulesInput {
+public struct DisableInsightRulesInput: Swift.Sendable {
     /// An array of the rule names to disable. If you need to find out the names of your rules, use [DescribeInsightRules](https://docs.aws.amazon.com/AmazonCloudWatch/latest/APIReference/API_DescribeInsightRules.html).
     /// This member is required.
     public var ruleNames: [Swift.String]?
@@ -1873,7 +1874,7 @@ public struct DisableInsightRulesInput {
     }
 }
 
-public struct DisableInsightRulesOutput {
+public struct DisableInsightRulesOutput: Swift.Sendable {
     /// An array listing the rules that could not be disabled. You cannot disable built-in rules.
     public var failures: [CloudWatchClientTypes.PartialFailure]?
 
@@ -1885,7 +1886,7 @@ public struct DisableInsightRulesOutput {
     }
 }
 
-public struct EnableAlarmActionsInput {
+public struct EnableAlarmActionsInput: Swift.Sendable {
     /// The names of the alarms.
     /// This member is required.
     public var alarmNames: [Swift.String]?
@@ -1922,7 +1923,7 @@ public struct LimitExceededException: ClientRuntime.ModeledError, AWSClientRunti
     }
 }
 
-public struct EnableInsightRulesInput {
+public struct EnableInsightRulesInput: Swift.Sendable {
     /// An array of the rule names to enable. If you need to find out the names of your rules, use [DescribeInsightRules](https://docs.aws.amazon.com/AmazonCloudWatch/latest/APIReference/API_DescribeInsightRules.html).
     /// This member is required.
     public var ruleNames: [Swift.String]?
@@ -1935,7 +1936,7 @@ public struct EnableInsightRulesInput {
     }
 }
 
-public struct EnableInsightRulesOutput {
+public struct EnableInsightRulesOutput: Swift.Sendable {
     /// An array listing the rules that could not be enabled. You cannot disable or enable built-in rules.
     public var failures: [CloudWatchClientTypes.PartialFailure]?
 
@@ -1947,7 +1948,7 @@ public struct EnableInsightRulesOutput {
     }
 }
 
-public struct GetDashboardInput {
+public struct GetDashboardInput: Swift.Sendable {
     /// The name of the dashboard to be described.
     /// This member is required.
     public var dashboardName: Swift.String?
@@ -1960,7 +1961,7 @@ public struct GetDashboardInput {
     }
 }
 
-public struct GetDashboardOutput {
+public struct GetDashboardOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the dashboard.
     public var dashboardArn: Swift.String?
     /// The detailed information about the dashboard, including what widgets are included and their location on the dashboard. For more information about the DashboardBody syntax, see [Dashboard Body Structure and Syntax](https://docs.aws.amazon.com/AmazonCloudWatch/latest/APIReference/CloudWatch-Dashboard-Body-Structure.html).
@@ -1980,7 +1981,7 @@ public struct GetDashboardOutput {
     }
 }
 
-public struct GetInsightRuleReportInput {
+public struct GetInsightRuleReportInput: Swift.Sendable {
     /// The end time of the data to use in the report. When used in a raw HTTP Query API, it is formatted as yyyy-MM-dd'T'HH:mm:ss. For example, 2019-07-01T23:59:59.
     /// This member is required.
     public var endTime: Foundation.Date?
@@ -2035,8 +2036,9 @@ public struct GetInsightRuleReportInput {
 }
 
 extension CloudWatchClientTypes {
+
     /// One data point related to one contributor. For more information, see [GetInsightRuleReport](https://docs.aws.amazon.com/AmazonCloudWatch/latest/APIReference/API_GetInsightRuleReport.html) and [InsightRuleContributor](https://docs.aws.amazon.com/AmazonCloudWatch/latest/APIReference/API_InsightRuleContributor.html).
-    public struct InsightRuleContributorDatapoint {
+    public struct InsightRuleContributorDatapoint: Swift.Sendable {
         /// The approximate value that this contributor added during this timestamp.
         /// This member is required.
         public var approximateValue: Swift.Double?
@@ -2053,12 +2055,12 @@ extension CloudWatchClientTypes {
             self.timestamp = timestamp
         }
     }
-
 }
 
 extension CloudWatchClientTypes {
+
     /// One of the unique contributors found by a Contributor Insights rule. If the rule contains multiple keys, then a unique contributor is a unique combination of values from all the keys in the rule. If the rule contains a single key, then each unique contributor is each unique value for this key. For more information, see [GetInsightRuleReport](https://docs.aws.amazon.com/AmazonCloudWatch/latest/APIReference/API_GetInsightRuleReport.html).
-    public struct InsightRuleContributor {
+    public struct InsightRuleContributor: Swift.Sendable {
         /// An approximation of the aggregate value that comes from this contributor.
         /// This member is required.
         public var approximateAggregateValue: Swift.Double?
@@ -2080,12 +2082,12 @@ extension CloudWatchClientTypes {
             self.keys = keys
         }
     }
-
 }
 
 extension CloudWatchClientTypes {
+
     /// One data point from the metric time series returned in a Contributor Insights rule report. For more information, see [GetInsightRuleReport](https://docs.aws.amazon.com/AmazonCloudWatch/latest/APIReference/API_GetInsightRuleReport.html).
-    public struct InsightRuleMetricDatapoint {
+    public struct InsightRuleMetricDatapoint: Swift.Sendable {
         /// The average value from all contributors during the time period represented by that data point. This statistic is returned only if you included it in the Metrics array in your request.
         public var average: Swift.Double?
         /// The maximum value provided by one contributor during this timestamp. Each timestamp is evaluated separately, so the identity of the max contributor could be different for each timestamp. This statistic is returned only if you included it in the Metrics array in your request.
@@ -2125,10 +2127,9 @@ extension CloudWatchClientTypes {
             self.uniqueContributors = uniqueContributors
         }
     }
-
 }
 
-public struct GetInsightRuleReportOutput {
+public struct GetInsightRuleReportOutput: Swift.Sendable {
     /// The sum of the values from all individual contributors that match the rule.
     public var aggregateValue: Swift.Double?
     /// Specifies whether this rule aggregates contributor data by COUNT or SUM.
@@ -2161,8 +2162,9 @@ public struct GetInsightRuleReportOutput {
 }
 
 extension CloudWatchClientTypes {
+
     /// This structure includes the Timezone parameter, which you can use to specify your time zone so that the labels that are associated with returned metrics display the correct time for your time zone. The Timezone value affects a label only if you have a time-based dynamic expression in the label. For more information about dynamic expressions in labels, see [Using Dynamic Labels](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/graph-dynamic-labels.html).
-    public struct LabelOptions {
+    public struct LabelOptions: Swift.Sendable {
         /// The time zone to use for metric data return in this operation. The format is + or - followed by four digits. The first two digits indicate the number of hours ahead or behind of UTC, and the final two digits are the number of minutes. For example, +0130 indicates a time zone that is 1 hour and 30 minutes ahead of UTC. The default is +0000.
         public var timezone: Swift.String?
 
@@ -2173,10 +2175,9 @@ extension CloudWatchClientTypes {
             self.timezone = timezone
         }
     }
-
 }
 
-public struct GetMetricDataInput {
+public struct GetMetricDataInput: Swift.Sendable {
     /// The time stamp indicating the latest data to be returned. The value specified is exclusive; results include data points up to the specified time stamp. For better performance, specify StartTime and EndTime values that align with the value of the metric's Period and sync up with the beginning and end of an hour. For example, if the Period of a metric is 5 minutes, specifying 12:05 or 12:30 as EndTime can get a faster response from CloudWatch than setting 12:07 or 12:29 as the EndTime.
     /// This member is required.
     public var endTime: Foundation.Date?
@@ -2225,8 +2226,9 @@ public struct GetMetricDataInput {
 }
 
 extension CloudWatchClientTypes {
+
     /// A message returned by the GetMetricDataAPI, including a code and a description. If a cross-Region GetMetricData operation fails with a code of Forbidden and a value of Authentication too complex to retrieve cross region data, you can correct the problem by running the GetMetricData operation in the same Region where the metric data is.
-    public struct MessageData {
+    public struct MessageData: Swift.Sendable {
         /// The error code or status code associated with the message.
         public var code: Swift.String?
         /// The message text.
@@ -2241,12 +2243,11 @@ extension CloudWatchClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension CloudWatchClientTypes {
 
-    public enum StatusCode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum StatusCode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case complete
         case forbidden
         case internalError
@@ -2280,8 +2281,9 @@ extension CloudWatchClientTypes {
 }
 
 extension CloudWatchClientTypes {
+
     /// A GetMetricData call returns an array of MetricDataResult structures. Each of these structures includes the data points for that metric, along with the timestamps of those data points and other identifying information.
-    public struct MetricDataResult {
+    public struct MetricDataResult: Swift.Sendable {
         /// The short name you specified to represent this metric.
         public var id: Swift.String?
         /// The human-readable label associated with the data.
@@ -2312,10 +2314,9 @@ extension CloudWatchClientTypes {
             self.values = values
         }
     }
-
 }
 
-public struct GetMetricDataOutput {
+public struct GetMetricDataOutput: Swift.Sendable {
     /// Contains a message about this GetMetricData operation, if the operation results in such a message. An example of a message that might be returned is Maximum number of allowed metrics exceeded. If there is a message, as much of the operation as possible is still executed. A message appears here only if it is related to the global GetMetricData operation. Any message about a specific metric returned by the operation appears in the MetricDataResult object returned for that metric.
     public var messages: [CloudWatchClientTypes.MessageData]?
     /// The metrics that are returned, including the metric name, namespace, and dimensions.
@@ -2335,7 +2336,7 @@ public struct GetMetricDataOutput {
     }
 }
 
-public struct GetMetricStatisticsInput {
+public struct GetMetricStatisticsInput: Swift.Sendable {
     /// The dimensions. If the metric contains multiple dimensions, you must include a value for each dimension. CloudWatch treats each unique combination of dimensions as a separate metric. If a specific combination of dimensions was not published, you can't retrieve statistics for it. You must specify the same dimensions that were used when the metrics were created. For an example, see [Dimension Combinations](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/cloudwatch_concepts.html#dimension-combinations) in the Amazon CloudWatch User Guide. For more information about specifying dimensions, see [Publishing Metrics](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/publishingMetrics.html) in the Amazon CloudWatch User Guide.
     public var dimensions: [CloudWatchClientTypes.Dimension]?
     /// The time stamp that determines the last data point to return. The value specified is exclusive; results include data points up to the specified time stamp. In a raw HTTP query, the time stamp must be in ISO 8601 UTC format (for example, 2016-10-10T23:00:00Z).
@@ -2399,7 +2400,7 @@ public struct GetMetricStatisticsInput {
     }
 }
 
-public struct GetMetricStatisticsOutput {
+public struct GetMetricStatisticsOutput: Swift.Sendable {
     /// The data points for the specified metric.
     public var datapoints: [CloudWatchClientTypes.Datapoint]?
     /// A label for the specified metric.
@@ -2415,7 +2416,7 @@ public struct GetMetricStatisticsOutput {
     }
 }
 
-public struct GetMetricStreamInput {
+public struct GetMetricStreamInput: Swift.Sendable {
     /// The name of the metric stream to retrieve information about.
     /// This member is required.
     public var name: Swift.String?
@@ -2429,8 +2430,9 @@ public struct GetMetricStreamInput {
 }
 
 extension CloudWatchClientTypes {
+
     /// This structure contains a metric namespace and optionally, a list of metric names, to either include in a metric stream or exclude from a metric stream. A metric stream's filters can include up to 1000 total names. This limit applies to the sum of namespace names and metric names in the filters. For example, this could include 10 metric namespace filters with 99 metrics each, or 20 namespace filters with 49 metrics specified in each filter.
-    public struct MetricStreamFilter {
+    public struct MetricStreamFilter: Swift.Sendable {
         /// The names of the metrics to either include or exclude from the metric stream. If you omit this parameter, all metrics in the namespace are included or excluded, depending on whether this filter is specified as an exclude filter or an include filter. Each metric name can contain only ASCII printable characters (ASCII range 32 through 126). Each metric name must contain at least one non-whitespace character.
         public var metricNames: [Swift.String]?
         /// The name of the metric namespace for this filter. The namespace can contain only ASCII printable characters (ASCII range 32 through 126). It must contain at least one non-whitespace character.
@@ -2445,12 +2447,11 @@ extension CloudWatchClientTypes {
             self.namespace = namespace
         }
     }
-
 }
 
 extension CloudWatchClientTypes {
 
-    public enum MetricStreamOutputFormat: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum MetricStreamOutputFormat: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case json
         case openTelemetry07
         case openTelemetry10
@@ -2481,8 +2482,9 @@ extension CloudWatchClientTypes {
 }
 
 extension CloudWatchClientTypes {
+
     /// This object contains the information for one metric that is to be streamed with additional statistics.
-    public struct MetricStreamStatisticsMetric {
+    public struct MetricStreamStatisticsMetric: Swift.Sendable {
         /// The name of the metric.
         /// This member is required.
         public var metricName: Swift.String?
@@ -2499,12 +2501,12 @@ extension CloudWatchClientTypes {
             self.namespace = namespace
         }
     }
-
 }
 
 extension CloudWatchClientTypes {
+
     /// By default, a metric stream always sends the MAX, MIN, SUM, and SAMPLECOUNT statistics for each metric that is streamed. This structure contains information for one metric that includes additional statistics in the stream. For more information about statistics, see CloudWatch, listed in [ CloudWatch statistics definitions](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/Statistics-definitions.html.html).
-    public struct MetricStreamStatisticsConfiguration {
+    public struct MetricStreamStatisticsConfiguration: Swift.Sendable {
         /// The list of additional statistics that are to be streamed for the metrics listed in the IncludeMetrics array in this structure. This list can include as many as 20 statistics. If the OutputFormat for the stream is opentelemetry1.0 or opentelemetry0.7, the only valid values are p??  percentile statistics such as p90, p99 and so on. If the OutputFormat for the stream is json, the valid values include the abbreviations for all of the statistics listed in [ CloudWatch statistics definitions](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/Statistics-definitions.html.html). For example, this includes tm98, wm90, PR(:300), and so on.
         /// This member is required.
         public var additionalStatistics: [Swift.String]?
@@ -2521,10 +2523,9 @@ extension CloudWatchClientTypes {
             self.includeMetrics = includeMetrics
         }
     }
-
 }
 
-public struct GetMetricStreamOutput {
+public struct GetMetricStreamOutput: Swift.Sendable {
     /// The ARN of the metric stream.
     public var arn: Swift.String?
     /// The date that the metric stream was created.
@@ -2580,7 +2581,7 @@ public struct GetMetricStreamOutput {
     }
 }
 
-public struct GetMetricWidgetImageInput {
+public struct GetMetricWidgetImageInput: Swift.Sendable {
     /// A JSON string that defines the bitmap graph to be retrieved. The string includes the metrics to include in the graph, statistics, annotations, title, axis limits, and so on. You can include only one MetricWidget parameter in each GetMetricWidgetImage call. For more information about the syntax of MetricWidget see [GetMetricWidgetImage: Metric Widget Structure and Syntax](https://docs.aws.amazon.com/AmazonCloudWatch/latest/APIReference/CloudWatch-Metric-Widget-Structure.html). If any metric on the graph could not load all the requested data points, an orange triangle with an exclamation point appears next to the graph legend.
     /// This member is required.
     public var metricWidget: Swift.String?
@@ -2621,7 +2622,7 @@ public struct GetMetricWidgetImageInput {
     }
 }
 
-public struct GetMetricWidgetImageOutput {
+public struct GetMetricWidgetImageOutput: Swift.Sendable {
     /// The image of the graph, in the output format specified. The output is base64-encoded.
     public var metricWidgetImage: Foundation.Data?
 
@@ -2633,7 +2634,7 @@ public struct GetMetricWidgetImageOutput {
     }
 }
 
-public struct ListDashboardsInput {
+public struct ListDashboardsInput: Swift.Sendable {
     /// If you specify this parameter, only the dashboards with names starting with the specified string are listed. The maximum length is 255, and valid characters are A-Z, a-z, 0-9, ".", "-", and "_".
     public var dashboardNamePrefix: Swift.String?
     /// The token returned by a previous call to indicate that there is more data available.
@@ -2649,7 +2650,7 @@ public struct ListDashboardsInput {
     }
 }
 
-public struct ListDashboardsOutput {
+public struct ListDashboardsOutput: Swift.Sendable {
     /// The list of matching dashboards.
     public var dashboardEntries: [CloudWatchClientTypes.DashboardEntry]?
     /// The token that marks the start of the next batch of returned results.
@@ -2665,7 +2666,7 @@ public struct ListDashboardsOutput {
     }
 }
 
-public struct ListManagedInsightRulesInput {
+public struct ListManagedInsightRulesInput: Swift.Sendable {
     /// The maximum number of results to return in one operation. If you omit this parameter, the default number is used. The default number is 100.
     public var maxResults: Swift.Int?
     /// Include this value to get the next set of rules if the value was returned by the previous operation.
@@ -2687,8 +2688,9 @@ public struct ListManagedInsightRulesInput {
 }
 
 extension CloudWatchClientTypes {
+
     /// The status of a managed Contributor Insights rule.
-    public struct ManagedRuleState {
+    public struct ManagedRuleState: Swift.Sendable {
         /// The name of the Contributor Insights rule that contains data for the specified Amazon Web Services resource.
         /// This member is required.
         public var ruleName: Swift.String?
@@ -2705,12 +2707,12 @@ extension CloudWatchClientTypes {
             self.state = state
         }
     }
-
 }
 
 extension CloudWatchClientTypes {
+
     /// Contains information about managed Contributor Insights rules, as returned by ListManagedInsightRules.
-    public struct ManagedRuleDescription {
+    public struct ManagedRuleDescription: Swift.Sendable {
         /// If a managed rule is enabled, this is the ARN for the related Amazon Web Services resource.
         public var resourceARN: Swift.String?
         /// Describes the state of a managed rule. If present, it contains information about the Contributor Insights rule that contains information about the related Amazon Web Services resource.
@@ -2729,10 +2731,9 @@ extension CloudWatchClientTypes {
             self.templateName = templateName
         }
     }
-
 }
 
-public struct ListManagedInsightRulesOutput {
+public struct ListManagedInsightRulesOutput: Swift.Sendable {
     /// The managed rules that are available for the specified Amazon Web Services resource.
     public var managedRules: [CloudWatchClientTypes.ManagedRuleDescription]?
     /// Include this value to get the next set of rules if the value was returned by the previous operation.
@@ -2750,7 +2751,7 @@ public struct ListManagedInsightRulesOutput {
 
 extension CloudWatchClientTypes {
 
-    public enum RecentlyActive: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum RecentlyActive: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case pt3h
         case sdkUnknown(Swift.String)
 
@@ -2774,7 +2775,7 @@ extension CloudWatchClientTypes {
     }
 }
 
-public struct ListMetricsInput {
+public struct ListMetricsInput: Swift.Sendable {
     /// The dimensions to filter against. Only the dimensions that match exactly will be returned.
     public var dimensions: [CloudWatchClientTypes.DimensionFilter]?
     /// If you are using this operation in a monitoring account, specify true to include metrics from source accounts in the returned data. The default is false.
@@ -2810,7 +2811,7 @@ public struct ListMetricsInput {
     }
 }
 
-public struct ListMetricsOutput {
+public struct ListMetricsOutput: Swift.Sendable {
     /// The metrics that match your request.
     public var metrics: [CloudWatchClientTypes.Metric]?
     /// The token that marks the start of the next batch of returned results.
@@ -2830,7 +2831,7 @@ public struct ListMetricsOutput {
     }
 }
 
-public struct ListMetricStreamsInput {
+public struct ListMetricStreamsInput: Swift.Sendable {
     /// The maximum number of results to return in one operation.
     public var maxResults: Swift.Int?
     /// Include this value, if it was returned by the previous call, to get the next set of metric streams.
@@ -2847,8 +2848,9 @@ public struct ListMetricStreamsInput {
 }
 
 extension CloudWatchClientTypes {
+
     /// This structure contains the configuration information about one metric stream.
-    public struct MetricStreamEntry {
+    public struct MetricStreamEntry: Swift.Sendable {
         /// The ARN of the metric stream.
         public var arn: Swift.String?
         /// The date that the metric stream was originally created.
@@ -2883,10 +2885,9 @@ extension CloudWatchClientTypes {
             self.state = state
         }
     }
-
 }
 
-public struct ListMetricStreamsOutput {
+public struct ListMetricStreamsOutput: Swift.Sendable {
     /// The array of metric stream information.
     public var entries: [CloudWatchClientTypes.MetricStreamEntry]?
     /// The token that marks the start of the next batch of returned results. You can use this token in a subsequent operation to get the next batch of results.
@@ -2902,7 +2903,7 @@ public struct ListMetricStreamsOutput {
     }
 }
 
-public struct ListTagsForResourceInput {
+public struct ListTagsForResourceInput: Swift.Sendable {
     /// The ARN of the CloudWatch resource that you want to view tags for. The ARN format of an alarm is arn:aws:cloudwatch:Region:account-id:alarm:alarm-name  The ARN format of a Contributor Insights rule is arn:aws:cloudwatch:Region:account-id:insight-rule/insight-rule-name  For more information about ARN format, see [ Resource Types Defined by Amazon CloudWatch](https://docs.aws.amazon.com/IAM/latest/UserGuide/list_amazoncloudwatch.html#amazoncloudwatch-resources-for-iam-policies) in the Amazon Web Services General Reference.
     /// This member is required.
     public var resourceARN: Swift.String?
@@ -2916,8 +2917,9 @@ public struct ListTagsForResourceInput {
 }
 
 extension CloudWatchClientTypes {
+
     /// A key-value pair associated with a CloudWatch resource.
-    public struct Tag {
+    public struct Tag: Swift.Sendable {
         /// A string that you can use to assign a value. The combination of tag keys and values can help you organize and categorize your resources.
         /// This member is required.
         public var key: Swift.String?
@@ -2934,10 +2936,9 @@ extension CloudWatchClientTypes {
             self.value = value
         }
     }
-
 }
 
-public struct ListTagsForResourceOutput {
+public struct ListTagsForResourceOutput: Swift.Sendable {
     /// The list of tag keys and values associated with the resource you specified.
     public var tags: [CloudWatchClientTypes.Tag]?
 
@@ -2949,7 +2950,7 @@ public struct ListTagsForResourceOutput {
     }
 }
 
-public struct PutAnomalyDetectorInput {
+public struct PutAnomalyDetectorInput: Swift.Sendable {
     /// The configuration specifies details about how the anomaly detection model is to be trained, including time ranges to exclude when training and updating the model. You can specify as many as 10 time ranges. The configuration can also include the time zone to use for the metric.
     public var configuration: CloudWatchClientTypes.AnomalyDetectorConfiguration?
     /// The metric dimensions to create the anomaly detection model for.
@@ -3019,7 +3020,7 @@ public struct PutAnomalyDetectorInput {
     }
 }
 
-public struct PutAnomalyDetectorOutput {
+public struct PutAnomalyDetectorOutput: Swift.Sendable {
 
     public init() { }
 }
@@ -3049,7 +3050,7 @@ public struct LimitExceededFault: ClientRuntime.ModeledError, AWSClientRuntime.A
     }
 }
 
-public struct PutCompositeAlarmInput {
+public struct PutCompositeAlarmInput: Swift.Sendable {
     /// Indicates whether actions should be executed during any changes to the alarm state of the composite alarm. The default is TRUE.
     public var actionsEnabled: Swift.Bool?
     /// Actions will be suppressed if the suppressor alarm is in the ALARM state. ActionsSuppressor can be an AlarmName or an Amazon Resource Name (ARN) from an existing alarm.
@@ -3146,7 +3147,7 @@ public struct PutCompositeAlarmInput {
     }
 }
 
-public struct PutDashboardInput {
+public struct PutDashboardInput: Swift.Sendable {
     /// The detailed information about the dashboard in JSON format, including the widgets to include and their location on the dashboard. This parameter is required. For more information about the syntax, see [Dashboard Body Structure and Syntax](https://docs.aws.amazon.com/AmazonCloudWatch/latest/APIReference/CloudWatch-Dashboard-Body-Structure.html).
     /// This member is required.
     public var dashboardBody: Swift.String?
@@ -3164,7 +3165,7 @@ public struct PutDashboardInput {
     }
 }
 
-public struct PutDashboardOutput {
+public struct PutDashboardOutput: Swift.Sendable {
     /// If the input for PutDashboard was correct and the dashboard was successfully created or modified, this result is empty. If this result includes only warning messages, then the input was valid enough for the dashboard to be created or modified, but some elements of the dashboard might not render. If this result includes error messages, the input was not valid and the operation failed.
     public var dashboardValidationMessages: [CloudWatchClientTypes.DashboardValidationMessage]?
 
@@ -3176,7 +3177,7 @@ public struct PutDashboardOutput {
     }
 }
 
-public struct PutInsightRuleInput {
+public struct PutInsightRuleInput: Swift.Sendable {
     /// The definition of the rule, as a JSON object. For details on the valid syntax, see [Contributor Insights Rule Syntax](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/ContributorInsights-RuleSyntax.html).
     /// This member is required.
     public var ruleDefinition: Swift.String?
@@ -3202,14 +3203,15 @@ public struct PutInsightRuleInput {
     }
 }
 
-public struct PutInsightRuleOutput {
+public struct PutInsightRuleOutput: Swift.Sendable {
 
     public init() { }
 }
 
 extension CloudWatchClientTypes {
+
     /// Contains the information that's required to enable a managed Contributor Insights rule for an Amazon Web Services resource.
-    public struct ManagedRule {
+    public struct ManagedRule: Swift.Sendable {
         /// The ARN of an Amazon Web Services resource that has managed Contributor Insights rules.
         /// This member is required.
         public var resourceARN: Swift.String?
@@ -3230,10 +3232,9 @@ extension CloudWatchClientTypes {
             self.templateName = templateName
         }
     }
-
 }
 
-public struct PutManagedInsightRulesInput {
+public struct PutManagedInsightRulesInput: Swift.Sendable {
     /// A list of ManagedRules to enable.
     /// This member is required.
     public var managedRules: [CloudWatchClientTypes.ManagedRule]?
@@ -3246,7 +3247,7 @@ public struct PutManagedInsightRulesInput {
     }
 }
 
-public struct PutManagedInsightRulesOutput {
+public struct PutManagedInsightRulesOutput: Swift.Sendable {
     /// An array that lists the rules that could not be enabled.
     public var failures: [CloudWatchClientTypes.PartialFailure]?
 
@@ -3258,7 +3259,7 @@ public struct PutManagedInsightRulesOutput {
     }
 }
 
-public struct PutMetricAlarmInput {
+public struct PutMetricAlarmInput: Swift.Sendable {
     /// Indicates whether actions should be executed during any changes to the alarm state. The default is TRUE.
     public var actionsEnabled: Swift.Bool?
     /// The actions to execute when this alarm transitions to the ALARM state from any other state. Each action is specified as an Amazon Resource Name (ARN). Valid values: EC2 actions:
@@ -3509,8 +3510,9 @@ public struct PutMetricAlarmInput {
 }
 
 extension CloudWatchClientTypes {
+
     /// Represents a set of statistics that describes a specific metric.
-    public struct StatisticSet {
+    public struct StatisticSet: Swift.Sendable {
         /// The maximum value of the sample set.
         /// This member is required.
         public var maximum: Swift.Double?
@@ -3537,12 +3539,12 @@ extension CloudWatchClientTypes {
             self.sum = sum
         }
     }
-
 }
 
 extension CloudWatchClientTypes {
+
     /// Encapsulates the information sent to either create a metric or add new values to be aggregated into an existing metric.
-    public struct MetricDatum {
+    public struct MetricDatum: Swift.Sendable {
         /// Array of numbers that is used along with the Values array. Each number in the Count array is the number of times the corresponding value in the Values array occurred during the period. If you omit the Counts array, the default of 1 is used as the value for each count. If you include a Counts array, it must include the same amount of values as the Values array.
         public var counts: [Swift.Double]?
         /// The dimensions associated with the metric.
@@ -3586,10 +3588,9 @@ extension CloudWatchClientTypes {
             self.values = values
         }
     }
-
 }
 
-public struct PutMetricDataInput {
+public struct PutMetricDataInput: Swift.Sendable {
     /// The data for the metric. The array can include no more than 1000 metrics per call.
     /// This member is required.
     public var metricData: [CloudWatchClientTypes.MetricDatum]?
@@ -3607,7 +3608,7 @@ public struct PutMetricDataInput {
     }
 }
 
-public struct PutMetricStreamInput {
+public struct PutMetricStreamInput: Swift.Sendable {
     /// If you specify this parameter, the stream sends metrics from all metric namespaces except for the namespaces that you specify here. You cannot include ExcludeFilters and IncludeFilters in the same operation.
     public var excludeFilters: [CloudWatchClientTypes.MetricStreamFilter]?
     /// The ARN of the Amazon Kinesis Data Firehose delivery stream to use for this metric stream. This Amazon Kinesis Data Firehose delivery stream must already exist and must be in the same account as the metric stream.
@@ -3659,7 +3660,7 @@ public struct PutMetricStreamInput {
     }
 }
 
-public struct PutMetricStreamOutput {
+public struct PutMetricStreamOutput: Swift.Sendable {
     /// The ARN of the metric stream.
     public var arn: Swift.String?
 
@@ -3696,7 +3697,7 @@ public struct InvalidFormatFault: ClientRuntime.ModeledError, AWSClientRuntime.A
     }
 }
 
-public struct SetAlarmStateInput {
+public struct SetAlarmStateInput: Swift.Sendable {
     /// The name of the alarm.
     /// This member is required.
     public var alarmName: Swift.String?
@@ -3723,7 +3724,7 @@ public struct SetAlarmStateInput {
     }
 }
 
-public struct StartMetricStreamsInput {
+public struct StartMetricStreamsInput: Swift.Sendable {
     /// The array of the names of metric streams to start streaming. This is an "all or nothing" operation. If you do not have permission to access all of the metric streams that you list here, then none of the streams that you list in the operation will start streaming.
     /// This member is required.
     public var names: [Swift.String]?
@@ -3736,12 +3737,12 @@ public struct StartMetricStreamsInput {
     }
 }
 
-public struct StartMetricStreamsOutput {
+public struct StartMetricStreamsOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct StopMetricStreamsInput {
+public struct StopMetricStreamsInput: Swift.Sendable {
     /// The array of the names of metric streams to stop streaming. This is an "all or nothing" operation. If you do not have permission to access all of the metric streams that you list here, then none of the streams that you list in the operation will stop streaming.
     /// This member is required.
     public var names: [Swift.String]?
@@ -3754,12 +3755,12 @@ public struct StopMetricStreamsInput {
     }
 }
 
-public struct StopMetricStreamsOutput {
+public struct StopMetricStreamsOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct TagResourceInput {
+public struct TagResourceInput: Swift.Sendable {
     /// The ARN of the CloudWatch resource that you're adding tags to. The ARN format of an alarm is arn:aws:cloudwatch:Region:account-id:alarm:alarm-name  The ARN format of a Contributor Insights rule is arn:aws:cloudwatch:Region:account-id:insight-rule/insight-rule-name  For more information about ARN format, see [ Resource Types Defined by Amazon CloudWatch](https://docs.aws.amazon.com/IAM/latest/UserGuide/list_amazoncloudwatch.html#amazoncloudwatch-resources-for-iam-policies) in the Amazon Web Services General Reference.
     /// This member is required.
     public var resourceARN: Swift.String?
@@ -3777,12 +3778,12 @@ public struct TagResourceInput {
     }
 }
 
-public struct TagResourceOutput {
+public struct TagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UntagResourceInput {
+public struct UntagResourceInput: Swift.Sendable {
     /// The ARN of the CloudWatch resource that you're removing tags from. The ARN format of an alarm is arn:aws:cloudwatch:Region:account-id:alarm:alarm-name  The ARN format of a Contributor Insights rule is arn:aws:cloudwatch:Region:account-id:insight-rule/insight-rule-name  For more information about ARN format, see [ Resource Types Defined by Amazon CloudWatch](https://docs.aws.amazon.com/IAM/latest/UserGuide/list_amazoncloudwatch.html#amazoncloudwatch-resources-for-iam-policies) in the Amazon Web Services General Reference.
     /// This member is required.
     public var resourceARN: Swift.String?
@@ -3800,7 +3801,7 @@ public struct UntagResourceInput {
     }
 }
 
-public struct UntagResourceOutput {
+public struct UntagResourceOutput: Swift.Sendable {
 
     public init() { }
 }

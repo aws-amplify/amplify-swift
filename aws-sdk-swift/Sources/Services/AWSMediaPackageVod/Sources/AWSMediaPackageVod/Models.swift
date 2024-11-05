@@ -27,19 +27,20 @@ import struct Smithy.URIQueryItem
 @_spi(SmithyReadWrite) import struct SmithyReadWrite.ReadingClosureBox
 @_spi(SmithyReadWrite) import struct SmithyReadWrite.WritingClosureBox
 
-public struct TagResourceOutput {
+
+public struct TagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UntagResourceOutput {
+public struct UntagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
 extension MediaPackageVodClientTypes {
 
-    public enum __PeriodTriggersElement: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum __PeriodTriggersElement: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case ads
         case sdkUnknown(Swift.String)
 
@@ -64,8 +65,9 @@ extension MediaPackageVodClientTypes {
 }
 
 extension MediaPackageVodClientTypes {
+
     /// A MediaPackage VOD Asset resource.
-    public struct AssetShallow {
+    public struct AssetShallow: Swift.Sendable {
         /// The ARN of the Asset.
         public var arn: Swift.String?
         /// The time the Asset was initially submitted for Ingest.
@@ -104,12 +106,11 @@ extension MediaPackageVodClientTypes {
             self.tags = tags
         }
     }
-
 }
 
 extension MediaPackageVodClientTypes {
 
-    public enum ManifestLayout: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ManifestLayout: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case compact
         case full
         case sdkUnknown(Swift.String)
@@ -138,7 +139,7 @@ extension MediaPackageVodClientTypes {
 
 extension MediaPackageVodClientTypes {
 
-    public enum Profile: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Profile: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case hbbtv15
         case `none`
         case sdkUnknown(Swift.String)
@@ -167,7 +168,7 @@ extension MediaPackageVodClientTypes {
 
 extension MediaPackageVodClientTypes {
 
-    public enum ScteMarkersSource: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ScteMarkersSource: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case manifest
         case segments
         case sdkUnknown(Swift.String)
@@ -196,7 +197,7 @@ extension MediaPackageVodClientTypes {
 
 extension MediaPackageVodClientTypes {
 
-    public enum StreamOrder: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum StreamOrder: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case original
         case videoBitrateAscending
         case videoBitrateDescending
@@ -227,8 +228,9 @@ extension MediaPackageVodClientTypes {
 }
 
 extension MediaPackageVodClientTypes {
+
     /// A StreamSelection configuration.
-    public struct StreamSelection {
+    public struct StreamSelection: Swift.Sendable {
         /// The maximum video bitrate (bps) to include in output.
         public var maxVideoBitsPerSecond: Swift.Int?
         /// The minimum video bitrate (bps) to include in output.
@@ -247,12 +249,12 @@ extension MediaPackageVodClientTypes {
             self.streamOrder = streamOrder
         }
     }
-
 }
 
 extension MediaPackageVodClientTypes {
+
     /// A DASH manifest configuration.
-    public struct DashManifest {
+    public struct DashManifest: Swift.Sendable {
         /// Determines the position of some tags in the Media Presentation Description (MPD). When set to FULL, elements like SegmentTemplate and ContentProtection are included in each Representation. When set to COMPACT, duplicate elements are combined and presented at the AdaptationSet level.
         public var manifestLayout: MediaPackageVodClientTypes.ManifestLayout?
         /// An optional string to include in the name of the manifest.
@@ -283,12 +285,12 @@ extension MediaPackageVodClientTypes {
             self.streamSelection = streamSelection
         }
     }
-
 }
 
 extension MediaPackageVodClientTypes {
+
     /// The endpoint URL used to access an Asset using one PackagingConfiguration.
-    public struct EgressEndpoint {
+    public struct EgressEndpoint: Swift.Sendable {
         /// The ID of the PackagingConfiguration being applied to the Asset.
         public var packagingConfigurationId: Swift.String?
         /// The current processing status of the asset used for the packaging configuration. The status can be either QUEUED, PROCESSING, PLAYABLE, or FAILED. Status information won't be available for most assets ingested before 2021-09-30.
@@ -307,12 +309,11 @@ extension MediaPackageVodClientTypes {
             self.url = url
         }
     }
-
 }
 
 extension MediaPackageVodClientTypes {
 
-    public enum AdMarkers: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AdMarkers: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case `none`
         case passthrough
         case scte35Enhanced
@@ -343,8 +344,9 @@ extension MediaPackageVodClientTypes {
 }
 
 extension MediaPackageVodClientTypes {
+
     /// An HTTP Live Streaming (HLS) manifest configuration.
-    public struct HlsManifest {
+    public struct HlsManifest: Swift.Sendable {
         /// This setting controls how ad markers are included in the packaged OriginEndpoint. "NONE" will omit all SCTE-35 ad markers from the output. "PASSTHROUGH" causes the manifest to contain a copy of the SCTE-35 ad markers (comments) taken directly from the input HTTP Live Streaming (HLS) manifest. "SCTE35_ENHANCED" generates ad markers and blackout tags based on SCTE-35 messages in the input source.
         public var adMarkers: MediaPackageVodClientTypes.AdMarkers?
         /// When enabled, an I-Frame only stream will be included in the output.
@@ -375,12 +377,12 @@ extension MediaPackageVodClientTypes {
             self.streamSelection = streamSelection
         }
     }
-
 }
 
 extension MediaPackageVodClientTypes {
+
     /// A Microsoft Smooth Streaming (MSS) manifest configuration.
-    public struct MssManifest {
+    public struct MssManifest: Swift.Sendable {
         /// An optional string to include in the name of the manifest.
         public var manifestName: Swift.String?
         /// A StreamSelection configuration.
@@ -395,12 +397,11 @@ extension MediaPackageVodClientTypes {
             self.streamSelection = streamSelection
         }
     }
-
 }
 
 extension MediaPackageVodClientTypes {
 
-    public enum PresetSpeke20Audio: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum PresetSpeke20Audio: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case presetAudio1
         case presetAudio2
         case presetAudio3
@@ -438,7 +439,7 @@ extension MediaPackageVodClientTypes {
 
 extension MediaPackageVodClientTypes {
 
-    public enum PresetSpeke20Video: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum PresetSpeke20Video: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case presetVideo1
         case presetVideo2
         case presetVideo3
@@ -490,8 +491,9 @@ extension MediaPackageVodClientTypes {
 }
 
 extension MediaPackageVodClientTypes {
+
     /// Use encryptionContractConfiguration to configure one or more content encryption keys for your endpoints that use SPEKE 2.0. The encryption contract defines which content keys are used to encrypt the audio and video tracks in your stream. To configure the encryption contract, specify which audio and video encryption presets to use. Note the following considerations when using encryptionContractConfiguration: encryptionContractConfiguration can be used for DASH endpoints that use SPEKE 2.0. SPEKE 2.0 relies on the CPIX 2.3 specification. You must disable key rotation for this endpoint by setting keyRotationIntervalSeconds to 0.
-    public struct EncryptionContractConfiguration {
+    public struct EncryptionContractConfiguration: Swift.Sendable {
         /// A collection of audio encryption presets.
         /// This member is required.
         public var presetSpeke20Audio: MediaPackageVodClientTypes.PresetSpeke20Audio?
@@ -508,12 +510,12 @@ extension MediaPackageVodClientTypes {
             self.presetSpeke20Video = presetSpeke20Video
         }
     }
-
 }
 
 extension MediaPackageVodClientTypes {
+
     /// A configuration for accessing an external Secure Packager and Encoder Key Exchange (SPEKE) service that will provide encryption keys.
-    public struct SpekeKeyProvider {
+    public struct SpekeKeyProvider: Swift.Sendable {
         /// Use encryptionContractConfiguration to configure one or more content encryption keys for your endpoints that use SPEKE 2.0. The encryption contract defines which content keys are used to encrypt the audio and video tracks in your stream. To configure the encryption contract, specify which audio and video encryption presets to use. Note the following considerations when using encryptionContractConfiguration: encryptionContractConfiguration can be used for DASH endpoints that use SPEKE 2.0. SPEKE 2.0 relies on the CPIX 2.3 specification. You must disable key rotation for this endpoint by setting keyRotationIntervalSeconds to 0.
         public var encryptionContractConfiguration: MediaPackageVodClientTypes.EncryptionContractConfiguration?
         /// An Amazon Resource Name (ARN) of an IAM role that AWS Elemental MediaPackage will assume when accessing the key provider service.
@@ -539,12 +541,12 @@ extension MediaPackageVodClientTypes {
             self.url = url
         }
     }
-
 }
 
 extension MediaPackageVodClientTypes {
+
     /// A CMAF encryption configuration.
-    public struct CmafEncryption {
+    public struct CmafEncryption: Swift.Sendable {
         /// An optional 128-bit, 16-byte hex value represented by a 32-character string, used in conjunction with the key for encrypting blocks. If you don't specify a value, then MediaPackage creates the constant initialization vector (IV).
         public var constantInitializationVector: Swift.String?
         /// A configuration for accessing an external Secure Packager and Encoder Key Exchange (SPEKE) service that will provide encryption keys.
@@ -560,12 +562,12 @@ extension MediaPackageVodClientTypes {
             self.spekeKeyProvider = spekeKeyProvider
         }
     }
-
 }
 
 extension MediaPackageVodClientTypes {
+
     /// A CMAF packaging configuration.
-    public struct CmafPackage {
+    public struct CmafPackage: Swift.Sendable {
         /// A CMAF encryption configuration.
         public var encryption: MediaPackageVodClientTypes.CmafEncryption?
         /// A list of HLS manifest configurations.
@@ -589,12 +591,12 @@ extension MediaPackageVodClientTypes {
             self.segmentDurationSeconds = segmentDurationSeconds
         }
     }
-
 }
 
 extension MediaPackageVodClientTypes {
+
     /// A Dynamic Adaptive Streaming over HTTP (DASH) encryption configuration.
-    public struct DashEncryption {
+    public struct DashEncryption: Swift.Sendable {
         /// A configuration for accessing an external Secure Packager and Encoder Key Exchange (SPEKE) service that will provide encryption keys.
         /// This member is required.
         public var spekeKeyProvider: MediaPackageVodClientTypes.SpekeKeyProvider?
@@ -606,12 +608,11 @@ extension MediaPackageVodClientTypes {
             self.spekeKeyProvider = spekeKeyProvider
         }
     }
-
 }
 
 extension MediaPackageVodClientTypes {
 
-    public enum SegmentTemplateFormat: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SegmentTemplateFormat: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case numberWithDuration
         case numberWithTimeline
         case timeWithTimeline
@@ -642,8 +643,9 @@ extension MediaPackageVodClientTypes {
 }
 
 extension MediaPackageVodClientTypes {
+
     /// A Dynamic Adaptive Streaming over HTTP (DASH) packaging configuration.
-    public struct DashPackage {
+    public struct DashPackage: Swift.Sendable {
         /// A list of DASH manifest configurations.
         /// This member is required.
         public var dashManifests: [MediaPackageVodClientTypes.DashManifest]?
@@ -679,12 +681,11 @@ extension MediaPackageVodClientTypes {
             self.segmentTemplateFormat = segmentTemplateFormat
         }
     }
-
 }
 
 extension MediaPackageVodClientTypes {
 
-    public enum EncryptionMethod: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum EncryptionMethod: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case aes128
         case sampleAes
         case sdkUnknown(Swift.String)
@@ -712,8 +713,9 @@ extension MediaPackageVodClientTypes {
 }
 
 extension MediaPackageVodClientTypes {
+
     /// An HTTP Live Streaming (HLS) encryption configuration.
-    public struct HlsEncryption {
+    public struct HlsEncryption: Swift.Sendable {
         /// A constant initialization vector for encryption (optional). When not specified the initialization vector will be periodically rotated.
         public var constantInitializationVector: Swift.String?
         /// The encryption method to use.
@@ -733,12 +735,12 @@ extension MediaPackageVodClientTypes {
             self.spekeKeyProvider = spekeKeyProvider
         }
     }
-
 }
 
 extension MediaPackageVodClientTypes {
+
     /// An HTTP Live Streaming (HLS) packaging configuration.
-    public struct HlsPackage {
+    public struct HlsPackage: Swift.Sendable {
         /// An HTTP Live Streaming (HLS) encryption configuration.
         public var encryption: MediaPackageVodClientTypes.HlsEncryption?
         /// A list of HLS manifest configurations.
@@ -766,12 +768,12 @@ extension MediaPackageVodClientTypes {
             self.useAudioRenditionGroup = useAudioRenditionGroup
         }
     }
-
 }
 
 extension MediaPackageVodClientTypes {
+
     /// A Microsoft Smooth Streaming (MSS) encryption configuration.
-    public struct MssEncryption {
+    public struct MssEncryption: Swift.Sendable {
         /// A configuration for accessing an external Secure Packager and Encoder Key Exchange (SPEKE) service that will provide encryption keys.
         /// This member is required.
         public var spekeKeyProvider: MediaPackageVodClientTypes.SpekeKeyProvider?
@@ -783,12 +785,12 @@ extension MediaPackageVodClientTypes {
             self.spekeKeyProvider = spekeKeyProvider
         }
     }
-
 }
 
 extension MediaPackageVodClientTypes {
+
     /// A Microsoft Smooth Streaming (MSS) PackagingConfiguration.
-    public struct MssPackage {
+    public struct MssPackage: Swift.Sendable {
         /// A Microsoft Smooth Streaming (MSS) encryption configuration.
         public var encryption: MediaPackageVodClientTypes.MssEncryption?
         /// A list of MSS manifest configurations.
@@ -808,12 +810,12 @@ extension MediaPackageVodClientTypes {
             self.segmentDurationSeconds = segmentDurationSeconds
         }
     }
-
 }
 
 extension MediaPackageVodClientTypes {
+
     /// A MediaPackage VOD PackagingConfiguration resource.
-    public struct PackagingConfiguration {
+    public struct PackagingConfiguration: Swift.Sendable {
         /// The ARN of the PackagingConfiguration.
         public var arn: Swift.String?
         /// A CMAF packaging configuration.
@@ -856,12 +858,12 @@ extension MediaPackageVodClientTypes {
             self.tags = tags
         }
     }
-
 }
 
 extension MediaPackageVodClientTypes {
+
     /// CDN Authorization credentials
-    public struct Authorization {
+    public struct Authorization: Swift.Sendable {
         /// The Amazon Resource Name (ARN) for the secret in AWS Secrets Manager that is used for CDN authorization.
         /// This member is required.
         public var cdnIdentifierSecret: Swift.String?
@@ -878,12 +880,12 @@ extension MediaPackageVodClientTypes {
             self.secretsRoleArn = secretsRoleArn
         }
     }
-
 }
 
 extension MediaPackageVodClientTypes {
+
     /// Configure egress access logging.
-    public struct EgressAccessLogs {
+    public struct EgressAccessLogs: Swift.Sendable {
         /// Customize the log group name.
         public var logGroupName: Swift.String?
 
@@ -894,12 +896,12 @@ extension MediaPackageVodClientTypes {
             self.logGroupName = logGroupName
         }
     }
-
 }
 
 extension MediaPackageVodClientTypes {
+
     /// A MediaPackage VOD PackagingGroup resource.
-    public struct PackagingGroup {
+    public struct PackagingGroup: Swift.Sendable {
         /// The approximate asset count of the PackagingGroup.
         public var approximateAssetCount: Swift.Int?
         /// The ARN of the PackagingGroup.
@@ -938,7 +940,6 @@ extension MediaPackageVodClientTypes {
             self.tags = tags
         }
     }
-
 }
 
 /// The client is not authorized to access the requested resource.
@@ -1086,7 +1087,7 @@ public struct UnprocessableEntityException: ClientRuntime.ModeledError, AWSClien
 }
 
 /// The option to configure log subscription.
-public struct ConfigureLogsInput {
+public struct ConfigureLogsInput: Swift.Sendable {
     /// Configure egress access logging.
     public var egressAccessLogs: MediaPackageVodClientTypes.EgressAccessLogs?
     /// The ID of a MediaPackage VOD PackagingGroup resource.
@@ -1103,7 +1104,7 @@ public struct ConfigureLogsInput {
     }
 }
 
-public struct ConfigureLogsOutput {
+public struct ConfigureLogsOutput: Swift.Sendable {
     /// The ARN of the PackagingGroup.
     public var arn: Swift.String?
     /// CDN Authorization credentials
@@ -1140,7 +1141,7 @@ public struct ConfigureLogsOutput {
 }
 
 /// A new MediaPackage VOD Asset configuration.
-public struct CreateAssetInput {
+public struct CreateAssetInput: Swift.Sendable {
     /// The unique identifier for the Asset.
     /// This member is required.
     public var id: Swift.String?
@@ -1176,7 +1177,7 @@ public struct CreateAssetInput {
     }
 }
 
-public struct CreateAssetOutput {
+public struct CreateAssetOutput: Swift.Sendable {
     /// The ARN of the Asset.
     public var arn: Swift.String?
     /// The time the Asset was initially submitted for Ingest.
@@ -1221,7 +1222,7 @@ public struct CreateAssetOutput {
 }
 
 /// A new MediaPackage VOD PackagingConfiguration resource configuration.
-public struct CreatePackagingConfigurationInput {
+public struct CreatePackagingConfigurationInput: Swift.Sendable {
     /// A CMAF packaging configuration.
     public var cmafPackage: MediaPackageVodClientTypes.CmafPackage?
     /// A Dynamic Adaptive Streaming over HTTP (DASH) packaging configuration.
@@ -1259,7 +1260,7 @@ public struct CreatePackagingConfigurationInput {
     }
 }
 
-public struct CreatePackagingConfigurationOutput {
+public struct CreatePackagingConfigurationOutput: Swift.Sendable {
     /// The ARN of the PackagingConfiguration.
     public var arn: Swift.String?
     /// A CMAF packaging configuration.
@@ -1304,7 +1305,7 @@ public struct CreatePackagingConfigurationOutput {
 }
 
 /// A new MediaPackage VOD PackagingGroup resource configuration.
-public struct CreatePackagingGroupInput {
+public struct CreatePackagingGroupInput: Swift.Sendable {
     /// CDN Authorization credentials
     public var authorization: MediaPackageVodClientTypes.Authorization?
     /// Configure egress access logging.
@@ -1329,7 +1330,7 @@ public struct CreatePackagingGroupInput {
     }
 }
 
-public struct CreatePackagingGroupOutput {
+public struct CreatePackagingGroupOutput: Swift.Sendable {
     /// The ARN of the PackagingGroup.
     public var arn: Swift.String?
     /// CDN Authorization credentials
@@ -1365,7 +1366,7 @@ public struct CreatePackagingGroupOutput {
     }
 }
 
-public struct DeleteAssetInput {
+public struct DeleteAssetInput: Swift.Sendable {
     /// The ID of the MediaPackage VOD Asset resource to delete.
     /// This member is required.
     public var id: Swift.String?
@@ -1378,12 +1379,12 @@ public struct DeleteAssetInput {
     }
 }
 
-public struct DeleteAssetOutput {
+public struct DeleteAssetOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeletePackagingConfigurationInput {
+public struct DeletePackagingConfigurationInput: Swift.Sendable {
     /// The ID of the MediaPackage VOD PackagingConfiguration resource to delete.
     /// This member is required.
     public var id: Swift.String?
@@ -1396,12 +1397,12 @@ public struct DeletePackagingConfigurationInput {
     }
 }
 
-public struct DeletePackagingConfigurationOutput {
+public struct DeletePackagingConfigurationOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeletePackagingGroupInput {
+public struct DeletePackagingGroupInput: Swift.Sendable {
     /// The ID of the MediaPackage VOD PackagingGroup resource to delete.
     /// This member is required.
     public var id: Swift.String?
@@ -1414,12 +1415,12 @@ public struct DeletePackagingGroupInput {
     }
 }
 
-public struct DeletePackagingGroupOutput {
+public struct DeletePackagingGroupOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DescribeAssetInput {
+public struct DescribeAssetInput: Swift.Sendable {
     /// The ID of an MediaPackage VOD Asset resource.
     /// This member is required.
     public var id: Swift.String?
@@ -1432,7 +1433,7 @@ public struct DescribeAssetInput {
     }
 }
 
-public struct DescribeAssetOutput {
+public struct DescribeAssetOutput: Swift.Sendable {
     /// The ARN of the Asset.
     public var arn: Swift.String?
     /// The time the Asset was initially submitted for Ingest.
@@ -1476,7 +1477,7 @@ public struct DescribeAssetOutput {
     }
 }
 
-public struct DescribePackagingConfigurationInput {
+public struct DescribePackagingConfigurationInput: Swift.Sendable {
     /// The ID of a MediaPackage VOD PackagingConfiguration resource.
     /// This member is required.
     public var id: Swift.String?
@@ -1489,7 +1490,7 @@ public struct DescribePackagingConfigurationInput {
     }
 }
 
-public struct DescribePackagingConfigurationOutput {
+public struct DescribePackagingConfigurationOutput: Swift.Sendable {
     /// The ARN of the PackagingConfiguration.
     public var arn: Swift.String?
     /// A CMAF packaging configuration.
@@ -1533,7 +1534,7 @@ public struct DescribePackagingConfigurationOutput {
     }
 }
 
-public struct DescribePackagingGroupInput {
+public struct DescribePackagingGroupInput: Swift.Sendable {
     /// The ID of a MediaPackage VOD PackagingGroup resource.
     /// This member is required.
     public var id: Swift.String?
@@ -1546,7 +1547,7 @@ public struct DescribePackagingGroupInput {
     }
 }
 
-public struct DescribePackagingGroupOutput {
+public struct DescribePackagingGroupOutput: Swift.Sendable {
     /// The approximate asset count of the PackagingGroup.
     public var approximateAssetCount: Swift.Int?
     /// The ARN of the PackagingGroup.
@@ -1586,7 +1587,7 @@ public struct DescribePackagingGroupOutput {
     }
 }
 
-public struct ListAssetsInput {
+public struct ListAssetsInput: Swift.Sendable {
     /// Upper bound on number of records to return.
     public var maxResults: Swift.Int?
     /// A token used to resume pagination from the end of a previous request.
@@ -1606,7 +1607,7 @@ public struct ListAssetsInput {
     }
 }
 
-public struct ListAssetsOutput {
+public struct ListAssetsOutput: Swift.Sendable {
     /// A list of MediaPackage VOD Asset resources.
     public var assets: [MediaPackageVodClientTypes.AssetShallow]?
     /// A token that can be used to resume pagination from the end of the collection.
@@ -1622,7 +1623,7 @@ public struct ListAssetsOutput {
     }
 }
 
-public struct ListPackagingConfigurationsInput {
+public struct ListPackagingConfigurationsInput: Swift.Sendable {
     /// Upper bound on number of records to return.
     public var maxResults: Swift.Int?
     /// A token used to resume pagination from the end of a previous request.
@@ -1642,7 +1643,7 @@ public struct ListPackagingConfigurationsInput {
     }
 }
 
-public struct ListPackagingConfigurationsOutput {
+public struct ListPackagingConfigurationsOutput: Swift.Sendable {
     /// A token that can be used to resume pagination from the end of the collection.
     public var nextToken: Swift.String?
     /// A list of MediaPackage VOD PackagingConfiguration resources.
@@ -1658,7 +1659,7 @@ public struct ListPackagingConfigurationsOutput {
     }
 }
 
-public struct ListPackagingGroupsInput {
+public struct ListPackagingGroupsInput: Swift.Sendable {
     /// Upper bound on number of records to return.
     public var maxResults: Swift.Int?
     /// A token used to resume pagination from the end of a previous request.
@@ -1674,7 +1675,7 @@ public struct ListPackagingGroupsInput {
     }
 }
 
-public struct ListPackagingGroupsOutput {
+public struct ListPackagingGroupsOutput: Swift.Sendable {
     /// A token that can be used to resume pagination from the end of the collection.
     public var nextToken: Swift.String?
     /// A list of MediaPackage VOD PackagingGroup resources.
@@ -1690,7 +1691,7 @@ public struct ListPackagingGroupsOutput {
     }
 }
 
-public struct ListTagsForResourceInput {
+public struct ListTagsForResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) for the resource. You can get this from the response to any request to the resource.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -1703,7 +1704,7 @@ public struct ListTagsForResourceInput {
     }
 }
 
-public struct ListTagsForResourceOutput {
+public struct ListTagsForResourceOutput: Swift.Sendable {
     /// A collection of tags associated with a resource
     public var tags: [Swift.String: Swift.String]?
 
@@ -1715,7 +1716,7 @@ public struct ListTagsForResourceOutput {
     }
 }
 
-public struct TagResourceInput {
+public struct TagResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) for the resource. You can get this from the response to any request to the resource.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -1733,7 +1734,7 @@ public struct TagResourceInput {
     }
 }
 
-public struct UntagResourceInput {
+public struct UntagResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) for the resource. You can get this from the response to any request to the resource.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -1752,7 +1753,7 @@ public struct UntagResourceInput {
 }
 
 /// A MediaPackage VOD PackagingGroup resource configuration.
-public struct UpdatePackagingGroupInput {
+public struct UpdatePackagingGroupInput: Swift.Sendable {
     /// CDN Authorization credentials
     public var authorization: MediaPackageVodClientTypes.Authorization?
     /// The ID of a MediaPackage VOD PackagingGroup resource.
@@ -1769,7 +1770,7 @@ public struct UpdatePackagingGroupInput {
     }
 }
 
-public struct UpdatePackagingGroupOutput {
+public struct UpdatePackagingGroupOutput: Swift.Sendable {
     /// The approximate asset count of the PackagingGroup.
     public var approximateAssetCount: Swift.Int?
     /// The ARN of the PackagingGroup.

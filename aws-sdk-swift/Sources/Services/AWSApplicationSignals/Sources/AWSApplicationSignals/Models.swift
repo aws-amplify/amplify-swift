@@ -102,7 +102,7 @@ public struct ValidationException: ClientRuntime.ModeledError, AWSClientRuntime.
     }
 }
 
-public struct BatchGetServiceLevelObjectiveBudgetReportInput {
+public struct BatchGetServiceLevelObjectiveBudgetReportInput: Swift.Sendable {
     /// An array containing the IDs of the service level objectives that you want to include in the report.
     /// This member is required.
     public var sloIds: [Swift.String]?
@@ -121,8 +121,9 @@ public struct BatchGetServiceLevelObjectiveBudgetReportInput {
 }
 
 extension ApplicationSignalsClientTypes {
+
     /// A structure containing information about one error that occurred during a [BatchGetServiceLevelObjectiveBudgetReport](https://docs.aws.amazon.com/AmazonCloudWatch/latest/APIReference/API_BatchGetServiceLevelObjectiveBudgetReport.html) operation.
-    public struct ServiceLevelObjectiveBudgetReportError {
+    public struct ServiceLevelObjectiveBudgetReportError: Swift.Sendable {
         /// The ARN of the SLO that this error is related to.
         /// This member is required.
         public var arn: Swift.String?
@@ -149,12 +150,11 @@ extension ApplicationSignalsClientTypes {
             self.name = name
         }
     }
-
 }
 
 extension ApplicationSignalsClientTypes {
 
-    public enum ServiceLevelObjectiveBudgetStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ServiceLevelObjectiveBudgetStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case breached
         case insufficientData
         case ok
@@ -189,7 +189,7 @@ extension ApplicationSignalsClientTypes {
 
 extension ApplicationSignalsClientTypes {
 
-    public enum EvaluationType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum EvaluationType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case periodBased
         case requestBased
         case sdkUnknown(Swift.String)
@@ -218,7 +218,7 @@ extension ApplicationSignalsClientTypes {
 
 extension ApplicationSignalsClientTypes {
 
-    public enum DurationUnit: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DurationUnit: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case day
         case hour
         case minute
@@ -252,8 +252,9 @@ extension ApplicationSignalsClientTypes {
 }
 
 extension ApplicationSignalsClientTypes {
+
     /// If the interval for this service level objective is a calendar interval, this structure contains the interval specifications.
-    public struct CalendarInterval {
+    public struct CalendarInterval: Swift.Sendable {
         /// Specifies the duration of each calendar interval. For example, if Duration is 1 and DurationUnit is MONTH, each interval is one month, aligned with the calendar.
         /// This member is required.
         public var duration: Swift.Int?
@@ -275,12 +276,12 @@ extension ApplicationSignalsClientTypes {
             self.startTime = startTime
         }
     }
-
 }
 
 extension ApplicationSignalsClientTypes {
+
     /// If the interval for this SLO is a rolling interval, this structure contains the interval specifications.
-    public struct RollingInterval {
+    public struct RollingInterval: Swift.Sendable {
         /// Specifies the duration of each rolling interval. For example, if Duration is 7 and DurationUnit is DAY, each rolling interval is seven days.
         /// This member is required.
         public var duration: Swift.Int?
@@ -297,24 +298,24 @@ extension ApplicationSignalsClientTypes {
             self.durationUnit = durationUnit
         }
     }
-
 }
 
 extension ApplicationSignalsClientTypes {
+
     /// The time period used to evaluate the SLO. It can be either a calendar interval or rolling interval.
-    public enum Interval {
+    public enum Interval: Swift.Sendable {
         /// If the interval is a rolling interval, this structure contains the interval specifications.
         case rollinginterval(ApplicationSignalsClientTypes.RollingInterval)
         /// If the interval is a calendar interval, this structure contains the interval specifications.
         case calendarinterval(ApplicationSignalsClientTypes.CalendarInterval)
         case sdkUnknown(Swift.String)
     }
-
 }
 
 extension ApplicationSignalsClientTypes {
+
     /// This structure contains the attributes that determine the goal of an SLO. This includes the time period for evaluation and the attainment threshold.
-    public struct Goal {
+    public struct Goal: Swift.Sendable {
         /// The threshold that determines if the goal is being met. If this is a period-based SLO, the attainment goal is the percentage of good periods that meet the threshold requirements to the total periods within the interval. For example, an attainment goal of 99.9% means that within your interval, you are targeting 99.9% of the periods to be in healthy state. If this is a request-based SLO, the attainment goal is the percentage of requests that must be successful to meet the attainment goal. If you omit this parameter, 99 is used to represent 99% as the attainment goal.
         public var attainmentGoal: Swift.Double?
         /// The time period used to evaluate the SLO. It can be either a calendar interval or rolling interval. If you omit this parameter, a rolling interval of 7 days is used.
@@ -333,12 +334,11 @@ extension ApplicationSignalsClientTypes {
             self.warningThreshold = warningThreshold
         }
     }
-
 }
 
 extension ApplicationSignalsClientTypes {
 
-    public enum ServiceLevelIndicatorComparisonOperator: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ServiceLevelIndicatorComparisonOperator: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case greaterThan
         case greaterThanOrEqualTo
         case lessThan
@@ -373,7 +373,7 @@ extension ApplicationSignalsClientTypes {
 
 extension ApplicationSignalsClientTypes {
 
-    public enum ServiceLevelIndicatorMetricType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ServiceLevelIndicatorMetricType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case availability
         case latency
         case sdkUnknown(Swift.String)
@@ -401,8 +401,9 @@ extension ApplicationSignalsClientTypes {
 }
 
 extension ApplicationSignalsClientTypes {
+
     /// A dimension is a name/value pair that is part of the identity of a metric. Because dimensions are part of the unique identifier for a metric, whenever you add a unique name/value pair to one of your metrics, you are creating a new variation of that metric. For example, many Amazon EC2 metrics publish InstanceId as a dimension name, and the actual instance ID as the value for that dimension. You can assign up to 30 dimensions to a metric.
-    public struct Dimension {
+    public struct Dimension: Swift.Sendable {
         /// The name of the dimension. Dimension names must contain only ASCII characters, must include at least one non-whitespace character, and cannot start with a colon (:). ASCII control characters are not supported as part of dimension names.
         /// This member is required.
         public var name: Swift.String?
@@ -419,12 +420,12 @@ extension ApplicationSignalsClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension ApplicationSignalsClientTypes {
+
     /// This structure defines the metric used for a service level indicator, including the metric name, namespace, and dimensions
-    public struct Metric {
+    public struct Metric: Swift.Sendable {
         /// An array of one or more dimensions to use to define the metric that you want to use. For more information, see [Dimensions](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/cloudwatch_concepts.html#Dimension).
         public var dimensions: [ApplicationSignalsClientTypes.Dimension]?
         /// The name of the metric to use.
@@ -443,12 +444,11 @@ extension ApplicationSignalsClientTypes {
             self.namespace = namespace
         }
     }
-
 }
 
 extension ApplicationSignalsClientTypes {
 
-    public enum StandardUnit: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum StandardUnit: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case bits
         case bitsSecond
         case bytes
@@ -551,8 +551,9 @@ extension ApplicationSignalsClientTypes {
 }
 
 extension ApplicationSignalsClientTypes {
+
     /// This structure defines the metric to be used as the service level indicator, along with the statistics, period, and unit.
-    public struct MetricStat {
+    public struct MetricStat: Swift.Sendable {
         /// The metric to use as the service level indicator, including the metric name, namespace, and dimensions.
         /// This member is required.
         public var metric: ApplicationSignalsClientTypes.Metric?
@@ -578,12 +579,12 @@ extension ApplicationSignalsClientTypes {
             self.unit = unit
         }
     }
-
 }
 
 extension ApplicationSignalsClientTypes {
+
     /// Use this structure to define a metric or metric math expression that you want to use as for a service level objective. Each MetricDataQuery in the MetricDataQueries array specifies either a metric to retrieve, or a metric math expression to be performed on retrieved metrics. A single MetricDataQueries array can include as many as 20 MetricDataQuery structures in the array. The 20 structures can include as many as 10 structures that contain a MetricStat parameter to retrieve a metric, and as many as 10 structures that contain the Expression parameter to perform a math expression. Of those Expression structures, exactly one must have true as the value for ReturnData. The result of this expression used for the SLO. For more information about metric math expressions, see [CloudWatchUse metric math](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/using-metric-math.html). Within each MetricDataQuery object, you must specify either Expression or MetricStat but not both.
-    public struct MetricDataQuery {
+    public struct MetricDataQuery: Swift.Sendable {
         /// The ID of the account where this metric is located. If you are performing this operation in a monitoring account, use this to specify which source account to retrieve this metric from.
         public var accountId: Swift.String?
         /// This field can contain a metric math expression to be performed on the other metrics that you are retrieving within this MetricDataQueries structure. A math expression can use the Id of the other metrics or queries to refer to those metrics, and can also use the Id of other expressions to use the result of those expressions. For more information about metric math expressions, see [Metric Math Syntax and Functions](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/using-metric-math.html#metric-math-syntax) in the Amazon CloudWatch User Guide. Within each MetricDataQuery object, you must specify either Expression or MetricStat but not both.
@@ -625,24 +626,24 @@ extension ApplicationSignalsClientTypes {
             self.returnData = returnData
         }
     }
-
 }
 
 extension ApplicationSignalsClientTypes {
+
     /// This structure defines the metric that is used as the "good request" or "bad request" value for a request-based SLO. This value observed for the metric defined in TotalRequestCountMetric is divided by the number found for MonitoredRequestCountMetric to determine the percentage of successful requests that this SLO tracks.
-    public enum MonitoredRequestCountMetricDataQueries {
+    public enum MonitoredRequestCountMetricDataQueries: Swift.Sendable {
         /// If you want to count "good requests" to determine the percentage of successful requests for this request-based SLO, specify the metric to use as "good requests" in this structure.
         case goodcountmetric([ApplicationSignalsClientTypes.MetricDataQuery])
         /// If you want to count "bad requests" to determine the percentage of successful requests for this request-based SLO, specify the metric to use as "bad requests" in this structure.
         case badcountmetric([ApplicationSignalsClientTypes.MetricDataQuery])
         case sdkUnknown(Swift.String)
     }
-
 }
 
 extension ApplicationSignalsClientTypes {
+
     /// This structure contains the information about the metric that is used for a request-based SLO.
-    public struct RequestBasedServiceLevelIndicatorMetric {
+    public struct RequestBasedServiceLevelIndicatorMetric: Swift.Sendable {
         /// This is a string-to-string map that contains information about the type of object that this SLO is related to. It can include the following fields.
         ///
         /// * Type designates the type of object that this SLO is related to.
@@ -681,12 +682,12 @@ extension ApplicationSignalsClientTypes {
             self.totalRequestCountMetric = totalRequestCountMetric
         }
     }
-
 }
 
 extension ApplicationSignalsClientTypes {
+
     /// This structure contains information about the performance metric that a request-based SLO monitors.
-    public struct RequestBasedServiceLevelIndicator {
+    public struct RequestBasedServiceLevelIndicator: Swift.Sendable {
         /// The arithmetic operation used when comparing the specified metric to the threshold.
         public var comparisonOperator: ApplicationSignalsClientTypes.ServiceLevelIndicatorComparisonOperator?
         /// This value is the threshold that the observed metric values of the SLI metric are compared to.
@@ -706,12 +707,12 @@ extension ApplicationSignalsClientTypes {
             self.requestBasedSliMetric = requestBasedSliMetric
         }
     }
-
 }
 
 extension ApplicationSignalsClientTypes {
+
     /// This structure contains the information about the metric that is used for a period-based SLO.
-    public struct ServiceLevelIndicatorMetric {
+    public struct ServiceLevelIndicatorMetric: Swift.Sendable {
         /// This is a string-to-string map that contains information about the type of object that this SLO is related to. It can include the following fields.
         ///
         /// * Type designates the type of object that this SLO is related to.
@@ -745,12 +746,12 @@ extension ApplicationSignalsClientTypes {
             self.operationName = operationName
         }
     }
-
 }
 
 extension ApplicationSignalsClientTypes {
+
     /// This structure contains information about the performance metric that a period-based SLO monitors.
-    public struct ServiceLevelIndicator {
+    public struct ServiceLevelIndicator: Swift.Sendable {
         /// The arithmetic operation used when comparing the specified metric to the threshold.
         /// This member is required.
         public var comparisonOperator: ApplicationSignalsClientTypes.ServiceLevelIndicatorComparisonOperator?
@@ -772,12 +773,12 @@ extension ApplicationSignalsClientTypes {
             self.sliMetric = sliMetric
         }
     }
-
 }
 
 extension ApplicationSignalsClientTypes {
+
     /// A structure containing an SLO budget report that you have requested.
-    public struct ServiceLevelObjectiveBudgetReport {
+    public struct ServiceLevelObjectiveBudgetReport: Swift.Sendable {
         /// The ARN of the SLO that this report is for.
         /// This member is required.
         public var arn: Swift.String?
@@ -843,10 +844,9 @@ extension ApplicationSignalsClientTypes {
             self.totalBudgetSeconds = totalBudgetSeconds
         }
     }
-
 }
 
-public struct BatchGetServiceLevelObjectiveBudgetReportOutput {
+public struct BatchGetServiceLevelObjectiveBudgetReportOutput: Swift.Sendable {
     /// An array of structures, where each structure includes an error indicating that one of the requests in the array was not valid.
     /// This member is required.
     public var errors: [ApplicationSignalsClientTypes.ServiceLevelObjectiveBudgetReportError]?
@@ -869,7 +869,7 @@ public struct BatchGetServiceLevelObjectiveBudgetReportOutput {
     }
 }
 
-public struct GetServiceInput {
+public struct GetServiceInput: Swift.Sendable {
     /// The end of the time period to retrieve information about. When used in a raw HTTP Query API, it is formatted as be epoch time in seconds. For example: 1698778057 Your requested start time will be rounded to the nearest hour.
     /// This member is required.
     public var endTime: Foundation.Date?
@@ -903,8 +903,9 @@ public struct GetServiceInput {
 }
 
 extension ApplicationSignalsClientTypes {
+
     /// This structure contains information about one CloudWatch metric associated with this entity discovered by Application Signals.
-    public struct MetricReference {
+    public struct MetricReference: Swift.Sendable {
         /// An array of one or more dimensions that further define the metric. For more information, see [CloudWatchDimensions](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/cloudwatch_concepts.html#Dimension).
         public var dimensions: [ApplicationSignalsClientTypes.Dimension]?
         /// The name of the metric.
@@ -930,12 +931,12 @@ extension ApplicationSignalsClientTypes {
             self.namespace = namespace
         }
     }
-
 }
 
 extension ApplicationSignalsClientTypes {
+
     /// This structure contains information about one of your services that was discovered by Application Signals.
-    public struct Service {
+    public struct Service: Swift.Sendable {
         /// This structure contains one or more string-to-string maps that help identify this service. It can include platform attributes, application attributes, and telemetry attributes. Platform attributes contain information the service's platform.
         ///
         /// * PlatformType defines the hosted-in platform.
@@ -1012,10 +1013,9 @@ extension ApplicationSignalsClientTypes {
             self.metricReferences = metricReferences
         }
     }
-
 }
 
-public struct GetServiceOutput {
+public struct GetServiceOutput: Swift.Sendable {
     /// The end time of the data included in the response. In a raw HTTP Query API, it is formatted as be epoch time in seconds. For example: 1698778057. This displays the time that Application Signals used for the request. It might not match your request exactly, because it was rounded to the nearest hour.
     /// This member is required.
     public var endTime: Foundation.Date?
@@ -1048,7 +1048,7 @@ public struct GetServiceOutput {
     }
 }
 
-public struct ListServiceDependenciesInput {
+public struct ListServiceDependenciesInput: Swift.Sendable {
     /// The end of the time period to retrieve information about. When used in a raw HTTP Query API, it is formatted as be epoch time in seconds. For example: 1698778057 Your requested end time will be rounded to the nearest hour.
     /// This member is required.
     public var endTime: Foundation.Date?
@@ -1090,8 +1090,9 @@ public struct ListServiceDependenciesInput {
 }
 
 extension ApplicationSignalsClientTypes {
+
     /// This structure contains information about one dependency of this service.
-    public struct ServiceDependency {
+    public struct ServiceDependency: Swift.Sendable {
         /// This is a string-to-string map. It can include the following fields.
         ///
         /// * Type designates the type of object this is.
@@ -1128,10 +1129,9 @@ extension ApplicationSignalsClientTypes {
             self.operationName = operationName
         }
     }
-
 }
 
-public struct ListServiceDependenciesOutput {
+public struct ListServiceDependenciesOutput: Swift.Sendable {
     /// The end of the time period that the returned information applies to. When used in a raw HTTP Query API, it is formatted as be epoch time in seconds. For example: 1698778057 This displays the time that Application Signals used for the request. It might not match your request exactly, because it was rounded to the nearest hour.
     /// This member is required.
     public var endTime: Foundation.Date?
@@ -1158,7 +1158,7 @@ public struct ListServiceDependenciesOutput {
     }
 }
 
-public struct ListServiceDependentsInput {
+public struct ListServiceDependentsInput: Swift.Sendable {
     /// The end of the time period to retrieve information about. When used in a raw HTTP Query API, it is formatted as be epoch time in seconds. For example: 1698778057 Your requested start time will be rounded to the nearest hour.
     /// This member is required.
     public var endTime: Foundation.Date?
@@ -1200,8 +1200,9 @@ public struct ListServiceDependentsInput {
 }
 
 extension ApplicationSignalsClientTypes {
+
     /// This structure contains information about a service dependent that was discovered by Application Signals. A dependent is an entity that invoked the specified service during the provided time range. Dependents include other services, CloudWatch Synthetics canaries, and clients that are instrumented with CloudWatch RUM app monitors.
-    public struct ServiceDependent {
+    public struct ServiceDependent: Swift.Sendable {
         /// This is a string-to-string map. It can include the following fields.
         ///
         /// * Type designates the type of object this is.
@@ -1236,10 +1237,9 @@ extension ApplicationSignalsClientTypes {
             self.operationName = operationName
         }
     }
-
 }
 
-public struct ListServiceDependentsOutput {
+public struct ListServiceDependentsOutput: Swift.Sendable {
     /// The end of the time period that the returned information applies to. When used in a raw HTTP Query API, it is formatted as be epoch time in seconds. For example: 1698778057 This displays the time that Application Signals used for the request. It might not match your request exactly, because it was rounded to the nearest hour.
     /// This member is required.
     public var endTime: Foundation.Date?
@@ -1266,7 +1266,7 @@ public struct ListServiceDependentsOutput {
     }
 }
 
-public struct ListServiceOperationsInput {
+public struct ListServiceOperationsInput: Swift.Sendable {
     /// The end of the time period to retrieve information about. When used in a raw HTTP Query API, it is formatted as be epoch time in seconds. For example: 1698778057 Your requested end time will be rounded to the nearest hour.
     /// This member is required.
     public var endTime: Foundation.Date?
@@ -1308,8 +1308,9 @@ public struct ListServiceOperationsInput {
 }
 
 extension ApplicationSignalsClientTypes {
+
     /// This structure contains information about an operation discovered by Application Signals. An operation is a specific function performed by a service that was discovered by Application Signals, and is often an API that is called by an upstream dependent.
-    public struct ServiceOperation {
+    public struct ServiceOperation: Swift.Sendable {
         /// An array of structures that each contain information about one metric associated with this service operation that was discovered by Application Signals.
         /// This member is required.
         public var metricReferences: [ApplicationSignalsClientTypes.MetricReference]?
@@ -1326,10 +1327,9 @@ extension ApplicationSignalsClientTypes {
             self.name = name
         }
     }
-
 }
 
-public struct ListServiceOperationsOutput {
+public struct ListServiceOperationsOutput: Swift.Sendable {
     /// The end of the time period that the returned information applies to. When used in a raw HTTP Query API, it is formatted as be epoch time in seconds. For example: 1698778057 This displays the time that Application Signals used for the request. It might not match your request exactly, because it was rounded to the nearest hour.
     /// This member is required.
     public var endTime: Foundation.Date?
@@ -1356,7 +1356,7 @@ public struct ListServiceOperationsOutput {
     }
 }
 
-public struct ListServicesInput {
+public struct ListServicesInput: Swift.Sendable {
     /// The end of the time period to retrieve information about. When used in a raw HTTP Query API, it is formatted as be epoch time in seconds. For example: 1698778057 Your requested start time will be rounded to the nearest hour.
     /// This member is required.
     public var endTime: Foundation.Date?
@@ -1383,8 +1383,9 @@ public struct ListServicesInput {
 }
 
 extension ApplicationSignalsClientTypes {
+
     /// This structure contains information about one of your services that was discovered by Application Signals
-    public struct ServiceSummary {
+    public struct ServiceSummary: Swift.Sendable {
         /// This structure contains one or more string-to-string maps that help identify this service. It can include platform attributes, application attributes, and telemetry attributes. Platform attributes contain information the service's platform.
         ///
         /// * PlatformType defines the hosted-in platform.
@@ -1451,10 +1452,9 @@ extension ApplicationSignalsClientTypes {
             self.metricReferences = metricReferences
         }
     }
-
 }
 
-public struct ListServicesOutput {
+public struct ListServicesOutput: Swift.Sendable {
     /// The end of the time period that the returned information applies to. When used in a raw HTTP Query API, it is formatted as be epoch time in seconds. For example: 1698778057 This displays the time that Application Signals used for the request. It might not match your request exactly, because it was rounded to the nearest hour.
     /// This member is required.
     public var endTime: Foundation.Date?
@@ -1516,7 +1516,7 @@ public struct ResourceNotFoundException: ClientRuntime.ModeledError, AWSClientRu
     }
 }
 
-public struct ListTagsForResourceInput {
+public struct ListTagsForResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the CloudWatch resource that you want to view tags for. The ARN format of an Application Signals SLO is arn:aws:cloudwatch:Region:account-id:slo:slo-name  For more information about ARN format, see [ Resource Types Defined by Amazon CloudWatch](https://docs.aws.amazon.com/IAM/latest/UserGuide/list_amazoncloudwatch.html#amazoncloudwatch-resources-for-iam-policies) in the Amazon Web Services General Reference.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -1530,8 +1530,9 @@ public struct ListTagsForResourceInput {
 }
 
 extension ApplicationSignalsClientTypes {
+
     /// A key-value pair associated with a resource. Tags can help you organize and categorize your resources.
-    public struct Tag {
+    public struct Tag: Swift.Sendable {
         /// A string that you can use to assign a value. The combination of tag keys and values can help you organize and categorize your resources.
         /// This member is required.
         public var key: Swift.String?
@@ -1548,10 +1549,9 @@ extension ApplicationSignalsClientTypes {
             self.value = value
         }
     }
-
 }
 
-public struct ListTagsForResourceOutput {
+public struct ListTagsForResourceOutput: Swift.Sendable {
     /// The list of tag keys and values associated with the resource you specified.
     public var tags: [ApplicationSignalsClientTypes.Tag]?
 
@@ -1614,8 +1614,9 @@ public struct ServiceQuotaExceededException: ClientRuntime.ModeledError, AWSClie
 }
 
 extension ApplicationSignalsClientTypes {
+
     /// Use this structure to specify the information for the metric that a period-based SLO will monitor.
-    public struct RequestBasedServiceLevelIndicatorMetricConfig {
+    public struct RequestBasedServiceLevelIndicatorMetricConfig: Swift.Sendable {
         /// If this SLO is related to a metric collected by Application Signals, you must use this field to specify which service the SLO metric is related to. To do so, you must specify at least the Type, Name, and Environment attributes. This is a string-to-string map. It can include the following fields.
         ///
         /// * Type designates the type of object this is.
@@ -1652,12 +1653,12 @@ extension ApplicationSignalsClientTypes {
             self.totalRequestCountMetric = totalRequestCountMetric
         }
     }
-
 }
 
 extension ApplicationSignalsClientTypes {
+
     /// This structure specifies the information about the service and the performance metric that a request-based SLO is to monitor.
-    public struct RequestBasedServiceLevelIndicatorConfig {
+    public struct RequestBasedServiceLevelIndicatorConfig: Swift.Sendable {
         /// The arithmetic operation to use when comparing the specified metric to the threshold. This parameter is required if this SLO is tracking the Latency metric.
         public var comparisonOperator: ApplicationSignalsClientTypes.ServiceLevelIndicatorComparisonOperator?
         /// The value that the SLI metric is compared to. This parameter is required if this SLO is tracking the Latency metric.
@@ -1677,12 +1678,12 @@ extension ApplicationSignalsClientTypes {
             self.requestBasedSliMetricConfig = requestBasedSliMetricConfig
         }
     }
-
 }
 
 extension ApplicationSignalsClientTypes {
+
     /// Use this structure to specify the information for the metric that a period-based SLO will monitor.
-    public struct ServiceLevelIndicatorMetricConfig {
+    public struct ServiceLevelIndicatorMetricConfig: Swift.Sendable {
         /// If this SLO is related to a metric collected by Application Signals, you must use this field to specify which service the SLO metric is related to. To do so, you must specify at least the Type, Name, and Environment attributes. This is a string-to-string map. It can include the following fields.
         ///
         /// * Type designates the type of object this is.
@@ -1723,12 +1724,12 @@ extension ApplicationSignalsClientTypes {
             self.statistic = statistic
         }
     }
-
 }
 
 extension ApplicationSignalsClientTypes {
+
     /// This structure specifies the information about the service and the performance metric that a period-based SLO is to monitor.
-    public struct ServiceLevelIndicatorConfig {
+    public struct ServiceLevelIndicatorConfig: Swift.Sendable {
         /// The arithmetic operation to use when comparing the specified metric to the threshold.
         /// This member is required.
         public var comparisonOperator: ApplicationSignalsClientTypes.ServiceLevelIndicatorComparisonOperator?
@@ -1750,10 +1751,9 @@ extension ApplicationSignalsClientTypes {
             self.sliMetricConfig = sliMetricConfig
         }
     }
-
 }
 
-public struct CreateServiceLevelObjectiveInput {
+public struct CreateServiceLevelObjectiveInput: Swift.Sendable {
     /// An optional description for this SLO.
     public var description: Swift.String?
     /// This structure contains the attributes that determine the goal of the SLO.
@@ -1787,8 +1787,9 @@ public struct CreateServiceLevelObjectiveInput {
 }
 
 extension ApplicationSignalsClientTypes {
+
     /// A structure containing information about one service level objective (SLO) that has been created in Application Signals. Creating SLOs can help you ensure your services are performing to the level that you expect. SLOs help you set and track a specific target level for the reliability and availability of your applications and services. Each SLO uses a service level indicator (SLI), which is a key performance metric, to calculate how much underperformance can be tolerated before the goal that you set for the SLO is not achieved.
-    public struct ServiceLevelObjective {
+    public struct ServiceLevelObjective: Swift.Sendable {
         /// The ARN of this SLO.
         /// This member is required.
         public var arn: Swift.String?
@@ -1836,10 +1837,9 @@ extension ApplicationSignalsClientTypes {
             self.sli = sli
         }
     }
-
 }
 
-public struct CreateServiceLevelObjectiveOutput {
+public struct CreateServiceLevelObjectiveOutput: Swift.Sendable {
     /// A structure that contains information about the SLO that you just created.
     /// This member is required.
     public var slo: ApplicationSignalsClientTypes.ServiceLevelObjective?
@@ -1852,7 +1852,7 @@ public struct CreateServiceLevelObjectiveOutput {
     }
 }
 
-public struct DeleteServiceLevelObjectiveInput {
+public struct DeleteServiceLevelObjectiveInput: Swift.Sendable {
     /// The ARN or name of the service level objective to delete.
     /// This member is required.
     public var id: Swift.String?
@@ -1865,12 +1865,12 @@ public struct DeleteServiceLevelObjectiveInput {
     }
 }
 
-public struct DeleteServiceLevelObjectiveOutput {
+public struct DeleteServiceLevelObjectiveOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct GetServiceLevelObjectiveInput {
+public struct GetServiceLevelObjectiveInput: Swift.Sendable {
     /// The ARN or name of the SLO that you want to retrieve information about. You can find the ARNs of SLOs by using the [ListServiceLevelObjectives](https://docs.aws.amazon.com/AmazonCloudWatch/latest/APIReference/API_ListServiceLevelObjectives.html) operation.
     /// This member is required.
     public var id: Swift.String?
@@ -1883,7 +1883,7 @@ public struct GetServiceLevelObjectiveInput {
     }
 }
 
-public struct GetServiceLevelObjectiveOutput {
+public struct GetServiceLevelObjectiveOutput: Swift.Sendable {
     /// A structure containing the information about the SLO.
     /// This member is required.
     public var slo: ApplicationSignalsClientTypes.ServiceLevelObjective?
@@ -1896,7 +1896,7 @@ public struct GetServiceLevelObjectiveOutput {
     }
 }
 
-public struct ListServiceLevelObjectivesInput {
+public struct ListServiceLevelObjectivesInput: Swift.Sendable {
     /// You can use this optional field to specify which services you want to retrieve SLO information for. This is a string-to-string map. It can include the following fields.
     ///
     /// * Type designates the type of object this is.
@@ -1931,8 +1931,9 @@ public struct ListServiceLevelObjectivesInput {
 }
 
 extension ApplicationSignalsClientTypes {
+
     /// A structure that contains information about one service level objective (SLO) created in Application Signals.
-    public struct ServiceLevelObjectiveSummary {
+    public struct ServiceLevelObjectiveSummary: Swift.Sendable {
         /// The ARN of this service level objective.
         /// This member is required.
         public var arn: Swift.String?
@@ -1971,10 +1972,9 @@ extension ApplicationSignalsClientTypes {
             self.operationName = operationName
         }
     }
-
 }
 
-public struct ListServiceLevelObjectivesOutput {
+public struct ListServiceLevelObjectivesOutput: Swift.Sendable {
     /// Include this value in your next use of this API to get next set of service level objectives.
     public var nextToken: Swift.String?
     /// An array of structures, where each structure contains information about one SLO.
@@ -1990,7 +1990,7 @@ public struct ListServiceLevelObjectivesOutput {
     }
 }
 
-public struct UpdateServiceLevelObjectiveInput {
+public struct UpdateServiceLevelObjectiveInput: Swift.Sendable {
     /// An optional description for the SLO.
     public var description: Swift.String?
     /// A structure that contains the attributes that determine the goal of the SLO. This includes the time period for evaluation and the attainment threshold.
@@ -2019,7 +2019,7 @@ public struct UpdateServiceLevelObjectiveInput {
     }
 }
 
-public struct UpdateServiceLevelObjectiveOutput {
+public struct UpdateServiceLevelObjectiveOutput: Swift.Sendable {
     /// A structure that contains information about the SLO that you just updated.
     /// This member is required.
     public var slo: ApplicationSignalsClientTypes.ServiceLevelObjective?
@@ -2032,17 +2032,17 @@ public struct UpdateServiceLevelObjectiveOutput {
     }
 }
 
-public struct StartDiscoveryInput {
+public struct StartDiscoveryInput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct StartDiscoveryOutput {
+public struct StartDiscoveryOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct TagResourceInput {
+public struct TagResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the CloudWatch resource that you want to set tags for. The ARN format of an Application Signals SLO is arn:aws:cloudwatch:Region:account-id:slo:slo-name  For more information about ARN format, see [ Resource Types Defined by Amazon CloudWatch](https://docs.aws.amazon.com/IAM/latest/UserGuide/list_amazoncloudwatch.html#amazoncloudwatch-resources-for-iam-policies) in the Amazon Web Services General Reference.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -2060,12 +2060,12 @@ public struct TagResourceInput {
     }
 }
 
-public struct TagResourceOutput {
+public struct TagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UntagResourceInput {
+public struct UntagResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the CloudWatch resource that you want to delete tags from. The ARN format of an Application Signals SLO is arn:aws:cloudwatch:Region:account-id:slo:slo-name  For more information about ARN format, see [ Resource Types Defined by Amazon CloudWatch](https://docs.aws.amazon.com/IAM/latest/UserGuide/list_amazoncloudwatch.html#amazoncloudwatch-resources-for-iam-policies) in the Amazon Web Services General Reference.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -2083,7 +2083,7 @@ public struct UntagResourceInput {
     }
 }
 
-public struct UntagResourceOutput {
+public struct UntagResourceOutput: Swift.Sendable {
 
     public init() { }
 }

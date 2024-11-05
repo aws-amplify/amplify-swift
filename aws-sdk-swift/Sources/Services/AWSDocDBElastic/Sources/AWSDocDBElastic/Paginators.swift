@@ -72,3 +72,33 @@ extension PaginatorSequence where OperationStackInput == ListClusterSnapshotsInp
         return try await self.asyncCompactMap { item in item.snapshots }
     }
 }
+extension DocDBElasticClient {
+    /// Paginate over `[ListPendingMaintenanceActionsOutput]` results.
+    ///
+    /// When this operation is called, an `AsyncSequence` is created. AsyncSequences are lazy so no service
+    /// calls are made until the sequence is iterated over. This also means there is no guarantee that the request is valid
+    /// until then. If there are errors in your request, you will see the failures only after you start iterating.
+    /// - Parameters:
+    ///     - input: A `[ListPendingMaintenanceActionsInput]` to start pagination
+    /// - Returns: An `AsyncSequence` that can iterate over `ListPendingMaintenanceActionsOutput`
+    public func listPendingMaintenanceActionsPaginated(input: ListPendingMaintenanceActionsInput) -> ClientRuntime.PaginatorSequence<ListPendingMaintenanceActionsInput, ListPendingMaintenanceActionsOutput> {
+        return ClientRuntime.PaginatorSequence<ListPendingMaintenanceActionsInput, ListPendingMaintenanceActionsOutput>(input: input, inputKey: \.nextToken, outputKey: \.nextToken, paginationFunction: self.listPendingMaintenanceActions(input:))
+    }
+}
+
+extension ListPendingMaintenanceActionsInput: ClientRuntime.PaginateToken {
+    public func usingPaginationToken(_ token: Swift.String) -> ListPendingMaintenanceActionsInput {
+        return ListPendingMaintenanceActionsInput(
+            maxResults: self.maxResults,
+            nextToken: token
+        )}
+}
+
+extension PaginatorSequence where OperationStackInput == ListPendingMaintenanceActionsInput, OperationStackOutput == ListPendingMaintenanceActionsOutput {
+    /// This paginator transforms the `AsyncSequence` returned by `listPendingMaintenanceActionsPaginated`
+    /// to access the nested member `[DocDBElasticClientTypes.ResourcePendingMaintenanceAction]`
+    /// - Returns: `[DocDBElasticClientTypes.ResourcePendingMaintenanceAction]`
+    public func resourcePendingMaintenanceActions() async throws -> [DocDBElasticClientTypes.ResourcePendingMaintenanceAction] {
+        return try await self.asyncCompactMap { item in item.resourcePendingMaintenanceActions }
+    }
+}

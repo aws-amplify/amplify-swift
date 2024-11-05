@@ -30,12 +30,13 @@ import protocol ClientRuntime.ModeledError
 import struct Smithy.URIQueryItem
 @_spi(SmithyTimestamps) import struct SmithyTimestamps.TimestampFormatter
 
-public struct TagResourceOutput {
+
+public struct TagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UntagResourceOutput {
+public struct UntagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
@@ -205,17 +206,18 @@ public struct ValidationException: ClientRuntime.ModeledError, AWSClientRuntime.
 }
 
 extension ConnectCasesClientTypes {
+
     /// An empty value. You cannot set EmptyFieldValue on a field that is required on a case template. This structure will never have any data members. It signifies an empty value on a case field.
-    public struct EmptyFieldValue {
+    public struct EmptyFieldValue: Swift.Sendable {
 
         public init() { }
     }
-
 }
 
 extension ConnectCasesClientTypes {
+
     /// Object to store union of Field values. The Summary system field accepts 1500 characters while all other fields accept 500 characters.
-    public enum FieldValueUnion {
+    public enum FieldValueUnion: Swift.Sendable {
         /// String value type.
         case stringvalue(Swift.String)
         /// Can be either null, or have a Double number value type. Only one value can be provided.
@@ -228,12 +230,12 @@ extension ConnectCasesClientTypes {
         case userarnvalue(Swift.String)
         case sdkUnknown(Swift.String)
     }
-
 }
 
 extension ConnectCasesClientTypes {
+
     /// Object for case field values.
-    public struct FieldValue {
+    public struct FieldValue: Swift.Sendable {
         /// Unique identifier of a field.
         /// This member is required.
         public var id: Swift.String?
@@ -250,20 +252,19 @@ extension ConnectCasesClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension ConnectCasesClientTypes {
+
     /// Represents the identity of the person who performed the action.
-    public enum UserUnion {
+    public enum UserUnion: Swift.Sendable {
         /// Represents the Amazon Connect ARN of the user.
         case userarn(Swift.String)
         case sdkUnknown(Swift.String)
     }
-
 }
 
-public struct CreateCaseInput {
+public struct CreateCaseInput: Swift.Sendable {
     /// A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If not provided, the Amazon Web Services SDK populates this field. For more information about idempotency, see [Making retries safe with idempotent APIs](https://aws.amazon.com/builders-library/making-retries-safe-with-idempotent-APIs/).
     public var clientToken: Swift.String?
     /// The unique identifier of the Cases domain.
@@ -294,7 +295,7 @@ public struct CreateCaseInput {
     }
 }
 
-public struct CreateCaseOutput {
+public struct CreateCaseOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the case.
     /// This member is required.
     public var caseArn: Swift.String?
@@ -313,8 +314,9 @@ public struct CreateCaseOutput {
 }
 
 extension ConnectCasesClientTypes {
+
     /// Object for unique identifier of a field.
-    public struct FieldIdentifier {
+    public struct FieldIdentifier: Swift.Sendable {
         /// Unique identifier of a field.
         /// This member is required.
         public var id: Swift.String?
@@ -326,10 +328,9 @@ extension ConnectCasesClientTypes {
             self.id = id
         }
     }
-
 }
 
-public struct GetCaseInput {
+public struct GetCaseInput: Swift.Sendable {
     /// A unique identifier of the case.
     /// This member is required.
     public var caseId: Swift.String?
@@ -356,7 +357,7 @@ public struct GetCaseInput {
     }
 }
 
-public struct GetCaseOutput {
+public struct GetCaseOutput: Swift.Sendable {
     /// A list of detailed field information.
     /// This member is required.
     public var fields: [ConnectCasesClientTypes.FieldValue]?
@@ -382,7 +383,7 @@ public struct GetCaseOutput {
     }
 }
 
-public struct GetCaseAuditEventsInput {
+public struct GetCaseAuditEventsInput: Swift.Sendable {
     /// A unique identifier of the case.
     /// This member is required.
     public var caseId: Swift.String?
@@ -409,8 +410,9 @@ public struct GetCaseAuditEventsInput {
 }
 
 extension ConnectCasesClientTypes {
+
     /// Object to store union of Field values.
-    public enum AuditEventFieldValueUnion {
+    public enum AuditEventFieldValueUnion: Swift.Sendable {
         /// Can be either null, or have a String value type. Only one value can be provided.
         case stringvalue(Swift.String)
         /// Can be either null, or have a Double value type. Only one value can be provided.
@@ -423,12 +425,12 @@ extension ConnectCasesClientTypes {
         case userarnvalue(Swift.String)
         case sdkUnknown(Swift.String)
     }
-
 }
 
 extension ConnectCasesClientTypes {
+
     /// Fields for audit event.
-    public struct AuditEventField {
+    public struct AuditEventField: Swift.Sendable {
         /// Unique identifier of field in an Audit History entry.
         /// This member is required.
         public var eventFieldId: Swift.String?
@@ -449,12 +451,12 @@ extension ConnectCasesClientTypes {
             self.oldValue = oldValue
         }
     }
-
 }
 
 extension ConnectCasesClientTypes {
+
     /// Information of the user which performed the audit.
-    public struct AuditEventPerformedBy {
+    public struct AuditEventPerformedBy: Swift.Sendable {
         /// Unique identifier of an IAM role.
         /// This member is required.
         public var iamPrincipalArn: Swift.String?
@@ -470,12 +472,11 @@ extension ConnectCasesClientTypes {
             self.user = user
         }
     }
-
 }
 
 extension ConnectCasesClientTypes {
 
-    public enum RelatedItemType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum RelatedItemType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case comment
         case contact
         case file
@@ -507,7 +508,7 @@ extension ConnectCasesClientTypes {
 
 extension ConnectCasesClientTypes {
 
-    public enum AuditEventType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AuditEventType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case caseCreated
         case caseUpdated
         case relatedItemCreated
@@ -538,8 +539,9 @@ extension ConnectCasesClientTypes {
 }
 
 extension ConnectCasesClientTypes {
+
     /// Represents the content of a particular audit event.
-    public struct AuditEvent {
+    public struct AuditEvent: Swift.Sendable {
         /// Unique identifier of a case audit history event.
         /// This member is required.
         public var eventId: Swift.String?
@@ -574,10 +576,9 @@ extension ConnectCasesClientTypes {
             self.type = type
         }
     }
-
 }
 
-public struct GetCaseAuditEventsOutput {
+public struct GetCaseAuditEventsOutput: Swift.Sendable {
     /// A list of case audits where each represents a particular edit of the case.
     /// This member is required.
     public var auditEvents: [ConnectCasesClientTypes.AuditEvent?]?
@@ -594,7 +595,7 @@ public struct GetCaseAuditEventsOutput {
     }
 }
 
-public struct ListCasesForContactInput {
+public struct ListCasesForContactInput: Swift.Sendable {
     /// A unique identifier of a contact in Amazon Connect.
     /// This member is required.
     public var contactArn: Swift.String?
@@ -621,8 +622,9 @@ public struct ListCasesForContactInput {
 }
 
 extension ConnectCasesClientTypes {
+
     /// Case summary information.
-    public struct CaseSummary {
+    public struct CaseSummary: Swift.Sendable {
         /// A unique identifier of the case.
         /// This member is required.
         public var caseId: Swift.String?
@@ -639,10 +641,9 @@ extension ConnectCasesClientTypes {
             self.templateId = templateId
         }
     }
-
 }
 
-public struct ListCasesForContactOutput {
+public struct ListCasesForContactOutput: Swift.Sendable {
     /// A list of Case summary information.
     /// This member is required.
     public var cases: [ConnectCasesClientTypes.CaseSummary]?
@@ -686,7 +687,7 @@ public struct ServiceQuotaExceededException: ClientRuntime.ModeledError, AWSClie
 
 extension ConnectCasesClientTypes {
 
-    public enum CommentBodyTextType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum CommentBodyTextType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case plaintext
         case sdkUnknown(Swift.String)
 
@@ -711,8 +712,9 @@ extension ConnectCasesClientTypes {
 }
 
 extension ConnectCasesClientTypes {
+
     /// Represents the content of a Comment to be returned to agents.
-    public struct CommentContent {
+    public struct CommentContent: Swift.Sendable {
         /// Text in the body of a Comment on a case.
         /// This member is required.
         public var body: Swift.String?
@@ -729,12 +731,12 @@ extension ConnectCasesClientTypes {
             self.contentType = contentType
         }
     }
-
 }
 
 extension ConnectCasesClientTypes {
+
     /// An object that represents an Amazon Connect contact object.
-    public struct Contact {
+    public struct Contact: Swift.Sendable {
         /// A unique identifier of a contact in Amazon Connect.
         /// This member is required.
         public var contactArn: Swift.String?
@@ -746,12 +748,12 @@ extension ConnectCasesClientTypes {
             self.contactArn = contactArn
         }
     }
-
 }
 
 extension ConnectCasesClientTypes {
+
     /// An object that represents a content of an Amazon Connect file object.
-    public struct FileContent {
+    public struct FileContent: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of a File in Amazon Connect.
         /// This member is required.
         public var fileArn: Swift.String?
@@ -763,12 +765,12 @@ extension ConnectCasesClientTypes {
             self.fileArn = fileArn
         }
     }
-
 }
 
 extension ConnectCasesClientTypes {
+
     /// Represents the content of a related item to be created.
-    public enum RelatedItemInputContent {
+    public enum RelatedItemInputContent: Swift.Sendable {
         /// Object representing a contact in Amazon Connect as an API request field.
         case contact(ConnectCasesClientTypes.Contact)
         /// Represents the content of a comment to be returned to agents.
@@ -777,10 +779,9 @@ extension ConnectCasesClientTypes {
         case file(ConnectCasesClientTypes.FileContent)
         case sdkUnknown(Swift.String)
     }
-
 }
 
-public struct CreateRelatedItemInput {
+public struct CreateRelatedItemInput: Swift.Sendable {
     /// A unique identifier of the case.
     /// This member is required.
     public var caseId: Swift.String?
@@ -812,7 +813,7 @@ public struct CreateRelatedItemInput {
     }
 }
 
-public struct CreateRelatedItemOutput {
+public struct CreateRelatedItemOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the related item.
     /// This member is required.
     public var relatedItemArn: Swift.String?
@@ -831,17 +832,18 @@ public struct CreateRelatedItemOutput {
 }
 
 extension ConnectCasesClientTypes {
+
     /// A filter for related items of type Comment.
-    public struct CommentFilter {
+    public struct CommentFilter: Swift.Sendable {
 
         public init() { }
     }
-
 }
 
 extension ConnectCasesClientTypes {
+
     /// A filter for related items of type Contact.
-    public struct ContactFilter {
+    public struct ContactFilter: Swift.Sendable {
         /// A list of channels to filter on for related items of type Contact.
         public var channel: [Swift.String]?
         /// A unique identifier of a contact in Amazon Connect.
@@ -856,12 +858,12 @@ extension ConnectCasesClientTypes {
             self.contactArn = contactArn
         }
     }
-
 }
 
 extension ConnectCasesClientTypes {
+
     /// A filter for related items of type File.
-    public struct FileFilter {
+    public struct FileFilter: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the file.
         public var fileArn: Swift.String?
 
@@ -872,12 +874,12 @@ extension ConnectCasesClientTypes {
             self.fileArn = fileArn
         }
     }
-
 }
 
 extension ConnectCasesClientTypes {
+
     /// The list of types of related items and their parameters to use for filtering.
-    public enum RelatedItemTypeFilter {
+    public enum RelatedItemTypeFilter: Swift.Sendable {
         /// A filter for related items of type Contact.
         case contact(ConnectCasesClientTypes.ContactFilter)
         /// A filter for related items of type Comment.
@@ -886,10 +888,9 @@ extension ConnectCasesClientTypes {
         case file(ConnectCasesClientTypes.FileFilter)
         case sdkUnknown(Swift.String)
     }
-
 }
 
-public struct SearchRelatedItemsInput {
+public struct SearchRelatedItemsInput: Swift.Sendable {
     /// A unique identifier of the case.
     /// This member is required.
     public var caseId: Swift.String?
@@ -920,8 +921,9 @@ public struct SearchRelatedItemsInput {
 }
 
 extension ConnectCasesClientTypes {
+
     /// An object that represents a content of an Amazon Connect contact object.
-    public struct ContactContent {
+    public struct ContactContent: Swift.Sendable {
         /// A list of channels to filter on for related items of type Contact.
         /// This member is required.
         public var channel: Swift.String?
@@ -943,12 +945,12 @@ extension ConnectCasesClientTypes {
             self.contactArn = contactArn
         }
     }
-
 }
 
 extension ConnectCasesClientTypes {
+
     /// Represents the content of a particular type of related item.
-    public enum RelatedItemContent {
+    public enum RelatedItemContent: Swift.Sendable {
         /// Represents the content of a contact to be returned to agents.
         case contact(ConnectCasesClientTypes.ContactContent)
         /// Represents the content of a comment to be returned to agents.
@@ -957,12 +959,12 @@ extension ConnectCasesClientTypes {
         case file(ConnectCasesClientTypes.FileContent)
         case sdkUnknown(Swift.String)
     }
-
 }
 
 extension ConnectCasesClientTypes {
+
     /// A list of items that represent RelatedItems.
-    public struct SearchRelatedItemsResponseItem {
+    public struct SearchRelatedItemsResponseItem: Swift.Sendable {
         /// Time at which a related item was associated with a case.
         /// This member is required.
         public var associationTime: Foundation.Date?
@@ -997,10 +999,9 @@ extension ConnectCasesClientTypes {
             self.type = type
         }
     }
-
 }
 
-public struct SearchRelatedItemsOutput {
+public struct SearchRelatedItemsOutput: Swift.Sendable {
     /// The token for the next set of results. This is null if there are no more results to return.
     public var nextToken: Swift.String?
     /// A list of items related to a case.
@@ -1018,8 +1019,9 @@ public struct SearchRelatedItemsOutput {
 }
 
 extension ConnectCasesClientTypes {
+
     /// A filter for fields. Only one value can be provided.
-    public enum FieldFilter {
+    public enum FieldFilter: Swift.Sendable {
         /// Object containing field identifier and value information.
         case equalto(ConnectCasesClientTypes.FieldValue)
         /// Object containing field identifier and value information.
@@ -1034,12 +1036,11 @@ extension ConnectCasesClientTypes {
         case lessthanorequalto(ConnectCasesClientTypes.FieldValue)
         case sdkUnknown(Swift.String)
     }
-
 }
 
 extension ConnectCasesClientTypes {
 
-    public enum Order: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Order: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case ascending
         case descending
         case sdkUnknown(Swift.String)
@@ -1067,8 +1068,9 @@ extension ConnectCasesClientTypes {
 }
 
 extension ConnectCasesClientTypes {
+
     /// A structured set of sort terms.
-    public struct Sort {
+    public struct Sort: Swift.Sendable {
         /// Unique identifier of a field.
         /// This member is required.
         public var fieldId: Swift.String?
@@ -1085,12 +1087,12 @@ extension ConnectCasesClientTypes {
             self.sortOrder = sortOrder
         }
     }
-
 }
 
 extension ConnectCasesClientTypes {
+
     /// A list of items that represent cases.
-    public struct SearchCasesResponseItem {
+    public struct SearchCasesResponseItem: Swift.Sendable {
         /// A unique identifier of the case.
         /// This member is required.
         public var caseId: Swift.String?
@@ -1116,10 +1118,9 @@ extension ConnectCasesClientTypes {
             self.templateId = templateId
         }
     }
-
 }
 
-public struct SearchCasesOutput {
+public struct SearchCasesOutput: Swift.Sendable {
     /// A list of case documents where each case contains the properties CaseId and Fields where each field is a complex union structure.
     /// This member is required.
     public var cases: [ConnectCasesClientTypes.SearchCasesResponseItem?]?
@@ -1136,7 +1137,7 @@ public struct SearchCasesOutput {
     }
 }
 
-public struct UpdateCaseInput {
+public struct UpdateCaseInput: Swift.Sendable {
     /// A unique identifier of the case.
     /// This member is required.
     public var caseId: Swift.String?
@@ -1163,12 +1164,12 @@ public struct UpdateCaseInput {
     }
 }
 
-public struct UpdateCaseOutput {
+public struct UpdateCaseOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct CreateDomainInput {
+public struct CreateDomainInput: Swift.Sendable {
     /// The name for your Cases domain. It must be unique for your Amazon Web Services account.
     /// This member is required.
     public var name: Swift.String?
@@ -1183,7 +1184,7 @@ public struct CreateDomainInput {
 
 extension ConnectCasesClientTypes {
 
-    public enum DomainStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DomainStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case active
         case creationFailed
         case creationInProgress
@@ -1213,7 +1214,7 @@ extension ConnectCasesClientTypes {
     }
 }
 
-public struct CreateDomainOutput {
+public struct CreateDomainOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) for the Cases domain.
     /// This member is required.
     public var domainArn: Swift.String?
@@ -1236,7 +1237,7 @@ public struct CreateDomainOutput {
     }
 }
 
-public struct DeleteDomainInput {
+public struct DeleteDomainInput: Swift.Sendable {
     /// The unique identifier of the Cases domain.
     /// This member is required.
     public var domainId: Swift.String?
@@ -1249,12 +1250,12 @@ public struct DeleteDomainInput {
     }
 }
 
-public struct DeleteDomainOutput {
+public struct DeleteDomainOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct GetCaseEventConfigurationInput {
+public struct GetCaseEventConfigurationInput: Swift.Sendable {
     /// The unique identifier of the Cases domain.
     /// This member is required.
     public var domainId: Swift.String?
@@ -1268,8 +1269,9 @@ public struct GetCaseEventConfigurationInput {
 }
 
 extension ConnectCasesClientTypes {
+
     /// Details of what case data is published through the case event stream.
-    public struct CaseEventIncludedData {
+    public struct CaseEventIncludedData: Swift.Sendable {
         /// List of field identifiers.
         /// This member is required.
         public var fields: [ConnectCasesClientTypes.FieldIdentifier]?
@@ -1281,12 +1283,12 @@ extension ConnectCasesClientTypes {
             self.fields = fields
         }
     }
-
 }
 
 extension ConnectCasesClientTypes {
+
     /// Details of what related item data is published through the case event stream.
-    public struct RelatedItemEventIncludedData {
+    public struct RelatedItemEventIncludedData: Swift.Sendable {
         /// Details of what related item data is published through the case event stream.
         /// This member is required.
         public var includeContent: Swift.Bool?
@@ -1298,12 +1300,12 @@ extension ConnectCasesClientTypes {
             self.includeContent = includeContent
         }
     }
-
 }
 
 extension ConnectCasesClientTypes {
+
     /// Details of what case and related item data is published through the case event stream.
-    public struct EventIncludedData {
+    public struct EventIncludedData: Swift.Sendable {
         /// Details of what case data is published through the case event stream.
         public var caseData: ConnectCasesClientTypes.CaseEventIncludedData?
         /// Details of what related item data is published through the case event stream.
@@ -1318,12 +1320,12 @@ extension ConnectCasesClientTypes {
             self.relatedItemData = relatedItemData
         }
     }
-
 }
 
 extension ConnectCasesClientTypes {
+
     /// Configuration to enable EventBridge case event delivery and determine what data is delivered.
-    public struct EventBridgeConfiguration {
+    public struct EventBridgeConfiguration: Swift.Sendable {
         /// Indicates whether the to broadcast case event data to the customer.
         /// This member is required.
         public var enabled: Swift.Bool?
@@ -1339,10 +1341,9 @@ extension ConnectCasesClientTypes {
             self.includedData = includedData
         }
     }
-
 }
 
-public struct GetCaseEventConfigurationOutput {
+public struct GetCaseEventConfigurationOutput: Swift.Sendable {
     /// Configuration to enable EventBridge case event delivery and determine what data is delivered.
     /// This member is required.
     public var eventBridge: ConnectCasesClientTypes.EventBridgeConfiguration?
@@ -1355,7 +1356,7 @@ public struct GetCaseEventConfigurationOutput {
     }
 }
 
-public struct GetDomainInput {
+public struct GetDomainInput: Swift.Sendable {
     /// The unique identifier of the Cases domain.
     /// This member is required.
     public var domainId: Swift.String?
@@ -1368,7 +1369,7 @@ public struct GetDomainInput {
     }
 }
 
-public struct GetDomainOutput {
+public struct GetDomainOutput: Swift.Sendable {
     /// The timestamp when the Cases domain was created.
     /// This member is required.
     public var createdTime: Foundation.Date?
@@ -1405,7 +1406,7 @@ public struct GetDomainOutput {
     }
 }
 
-public struct ListDomainsInput {
+public struct ListDomainsInput: Swift.Sendable {
     /// The maximum number of results to return per page.
     public var maxResults: Swift.Int?
     /// The token for the next set of results. Use the value returned in the previous response in the next request to retrieve the next set of results.
@@ -1422,8 +1423,9 @@ public struct ListDomainsInput {
 }
 
 extension ConnectCasesClientTypes {
+
     /// Object for the summarized details of the domain.
-    public struct DomainSummary {
+    public struct DomainSummary: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the domain.
         /// This member is required.
         public var domainArn: Swift.String?
@@ -1445,10 +1447,9 @@ extension ConnectCasesClientTypes {
             self.name = name
         }
     }
-
 }
 
-public struct ListDomainsOutput {
+public struct ListDomainsOutput: Swift.Sendable {
     /// The Cases domain.
     /// This member is required.
     public var domains: [ConnectCasesClientTypes.DomainSummary]?
@@ -1465,7 +1466,7 @@ public struct ListDomainsOutput {
     }
 }
 
-public struct PutCaseEventConfigurationInput {
+public struct PutCaseEventConfigurationInput: Swift.Sendable {
     /// The unique identifier of the Cases domain.
     /// This member is required.
     public var domainId: Swift.String?
@@ -1483,12 +1484,12 @@ public struct PutCaseEventConfigurationInput {
     }
 }
 
-public struct PutCaseEventConfigurationOutput {
+public struct PutCaseEventConfigurationOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct BatchGetFieldInput {
+public struct BatchGetFieldInput: Swift.Sendable {
     /// The unique identifier of the Cases domain.
     /// This member is required.
     public var domainId: Swift.String?
@@ -1507,8 +1508,9 @@ public struct BatchGetFieldInput {
 }
 
 extension ConnectCasesClientTypes {
+
     /// Object for errors on fields.
-    public struct FieldError {
+    public struct FieldError: Swift.Sendable {
         /// The error code from getting a field.
         /// This member is required.
         public var errorCode: Swift.String?
@@ -1529,12 +1531,11 @@ extension ConnectCasesClientTypes {
             self.message = message
         }
     }
-
 }
 
 extension ConnectCasesClientTypes {
 
-    public enum FieldNamespace: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum FieldNamespace: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case custom
         case system
         case sdkUnknown(Swift.String)
@@ -1563,7 +1564,7 @@ extension ConnectCasesClientTypes {
 
 extension ConnectCasesClientTypes {
 
-    public enum FieldType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum FieldType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case boolean
         case dateTime
         case number
@@ -1606,8 +1607,9 @@ extension ConnectCasesClientTypes {
 }
 
 extension ConnectCasesClientTypes {
+
     /// Object to store detailed field information.
-    public struct GetFieldResponse {
+    public struct GetFieldResponse: Swift.Sendable {
         /// Timestamp at which the resource was created.
         public var createdTime: Foundation.Date?
         /// Denotes whether or not the resource has been deleted.
@@ -1659,10 +1661,9 @@ extension ConnectCasesClientTypes {
             self.type = type
         }
     }
-
 }
 
-public struct BatchGetFieldOutput {
+public struct BatchGetFieldOutput: Swift.Sendable {
     /// A list of field errors.
     /// This member is required.
     public var errors: [ConnectCasesClientTypes.FieldError]?
@@ -1681,8 +1682,9 @@ public struct BatchGetFieldOutput {
 }
 
 extension ConnectCasesClientTypes {
+
     /// Object for field Options information.
-    public struct FieldOption {
+    public struct FieldOption: Swift.Sendable {
         /// Describes whether the FieldOption is active (displayed) or inactive.
         /// This member is required.
         public var active: Swift.Bool?
@@ -1704,10 +1706,9 @@ extension ConnectCasesClientTypes {
             self.value = value
         }
     }
-
 }
 
-public struct BatchPutFieldOptionsInput {
+public struct BatchPutFieldOptionsInput: Swift.Sendable {
     /// The unique identifier of the Cases domain.
     /// This member is required.
     public var domainId: Swift.String?
@@ -1731,8 +1732,9 @@ public struct BatchPutFieldOptionsInput {
 }
 
 extension ConnectCasesClientTypes {
+
     /// Object for field Options errors.
-    public struct FieldOptionError {
+    public struct FieldOptionError: Swift.Sendable {
         /// Error code from creating or updating field option.
         /// This member is required.
         public var errorCode: Swift.String?
@@ -1754,10 +1756,9 @@ extension ConnectCasesClientTypes {
             self.value = value
         }
     }
-
 }
 
-public struct BatchPutFieldOptionsOutput {
+public struct BatchPutFieldOptionsOutput: Swift.Sendable {
     /// A list of field errors.
     public var errors: [ConnectCasesClientTypes.FieldOptionError]?
 
@@ -1769,7 +1770,7 @@ public struct BatchPutFieldOptionsOutput {
     }
 }
 
-public struct CreateFieldInput {
+public struct CreateFieldInput: Swift.Sendable {
     /// The description of the field.
     public var description: Swift.String?
     /// The unique identifier of the Cases domain.
@@ -1796,7 +1797,7 @@ public struct CreateFieldInput {
     }
 }
 
-public struct CreateFieldOutput {
+public struct CreateFieldOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the field.
     /// This member is required.
     public var fieldArn: Swift.String?
@@ -1814,7 +1815,7 @@ public struct CreateFieldOutput {
     }
 }
 
-public struct DeleteFieldInput {
+public struct DeleteFieldInput: Swift.Sendable {
     /// The unique identifier of the Cases domain.
     /// This member is required.
     public var domainId: Swift.String?
@@ -1832,12 +1833,12 @@ public struct DeleteFieldInput {
     }
 }
 
-public struct DeleteFieldOutput {
+public struct DeleteFieldOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct ListFieldOptionsInput {
+public struct ListFieldOptionsInput: Swift.Sendable {
     /// The unique identifier of the Cases domain.
     /// This member is required.
     public var domainId: Swift.String?
@@ -1867,7 +1868,7 @@ public struct ListFieldOptionsInput {
     }
 }
 
-public struct ListFieldOptionsOutput {
+public struct ListFieldOptionsOutput: Swift.Sendable {
     /// The token for the next set of results. This is null if there are no more results to return.
     public var nextToken: Swift.String?
     /// A list of FieldOption objects.
@@ -1884,7 +1885,7 @@ public struct ListFieldOptionsOutput {
     }
 }
 
-public struct ListFieldsInput {
+public struct ListFieldsInput: Swift.Sendable {
     /// The unique identifier of the Cases domain.
     /// This member is required.
     public var domainId: Swift.String?
@@ -1906,8 +1907,9 @@ public struct ListFieldsInput {
 }
 
 extension ConnectCasesClientTypes {
+
     /// Object for the summarized details of the field.
-    public struct FieldSummary {
+    public struct FieldSummary: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the field.
         /// This member is required.
         public var fieldArn: Swift.String?
@@ -1939,10 +1941,9 @@ extension ConnectCasesClientTypes {
             self.type = type
         }
     }
-
 }
 
-public struct ListFieldsOutput {
+public struct ListFieldsOutput: Swift.Sendable {
     /// List of detailed field information.
     /// This member is required.
     public var fields: [ConnectCasesClientTypes.FieldSummary]?
@@ -1959,7 +1960,7 @@ public struct ListFieldsOutput {
     }
 }
 
-public struct UpdateFieldInput {
+public struct UpdateFieldInput: Swift.Sendable {
     /// The description of a field.
     public var description: Swift.String?
     /// The unique identifier of the Cases domain.
@@ -1985,14 +1986,15 @@ public struct UpdateFieldInput {
     }
 }
 
-public struct UpdateFieldOutput {
+public struct UpdateFieldOutput: Swift.Sendable {
 
     public init() { }
 }
 
 extension ConnectCasesClientTypes {
+
     /// Object for field related information.
-    public struct FieldItem {
+    public struct FieldItem: Swift.Sendable {
         /// Unique identifier of a field.
         /// This member is required.
         public var id: Swift.String?
@@ -2004,12 +2006,12 @@ extension ConnectCasesClientTypes {
             self.id = id
         }
     }
-
 }
 
 extension ConnectCasesClientTypes {
+
     /// Object for a group of fields and associated properties.
-    public struct FieldGroup {
+    public struct FieldGroup: Swift.Sendable {
         /// Represents an ordered list containing field related information.
         /// This member is required.
         public var fields: [ConnectCasesClientTypes.FieldItem]?
@@ -2025,22 +2027,22 @@ extension ConnectCasesClientTypes {
             self.name = name
         }
     }
-
 }
 
 extension ConnectCasesClientTypes {
+
     /// This represents a sections within a panel or tab of the page layout.
-    public enum Section {
+    public enum Section: Swift.Sendable {
         /// Consists of a group of fields and associated properties.
         case fieldgroup(ConnectCasesClientTypes.FieldGroup)
         case sdkUnknown(Swift.String)
     }
-
 }
 
 extension ConnectCasesClientTypes {
+
     /// Ordered list containing different kinds of sections that can be added. A LayoutSections object can only contain one section.
-    public struct LayoutSections {
+    public struct LayoutSections: Swift.Sendable {
         /// Ordered list containing different kinds of sections that can be added.
         public var sections: [ConnectCasesClientTypes.Section]?
 
@@ -2051,12 +2053,12 @@ extension ConnectCasesClientTypes {
             self.sections = sections
         }
     }
-
 }
 
 extension ConnectCasesClientTypes {
+
     /// Content specific to BasicLayout type. It configures fields in the top panel and More Info tab of agent application.
-    public struct BasicLayout {
+    public struct BasicLayout: Swift.Sendable {
         /// This represents sections in a tab of the page layout.
         public var moreInfo: ConnectCasesClientTypes.LayoutSections?
         /// This represents sections in a panel of the page layout.
@@ -2071,20 +2073,19 @@ extension ConnectCasesClientTypes {
             self.topPanel = topPanel
         }
     }
-
 }
 
 extension ConnectCasesClientTypes {
+
     /// Object to store union of different versions of layout content.
-    public enum LayoutContent {
+    public enum LayoutContent: Swift.Sendable {
         /// Content specific to BasicLayout type. It configures fields in the top panel and More Info tab of Cases user interface.
         case basic(ConnectCasesClientTypes.BasicLayout)
         case sdkUnknown(Swift.String)
     }
-
 }
 
-public struct CreateLayoutInput {
+public struct CreateLayoutInput: Swift.Sendable {
     /// Information about which fields will be present in the layout, and information about the order of the fields.
     /// This member is required.
     public var content: ConnectCasesClientTypes.LayoutContent?
@@ -2107,7 +2108,7 @@ public struct CreateLayoutInput {
     }
 }
 
-public struct CreateLayoutOutput {
+public struct CreateLayoutOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the newly created layout.
     /// This member is required.
     public var layoutArn: Swift.String?
@@ -2125,7 +2126,7 @@ public struct CreateLayoutOutput {
     }
 }
 
-public struct DeleteLayoutInput {
+public struct DeleteLayoutInput: Swift.Sendable {
     /// The unique identifier of the Cases domain.
     /// This member is required.
     public var domainId: Swift.String?
@@ -2143,12 +2144,12 @@ public struct DeleteLayoutInput {
     }
 }
 
-public struct DeleteLayoutOutput {
+public struct DeleteLayoutOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct GetLayoutInput {
+public struct GetLayoutInput: Swift.Sendable {
     /// The unique identifier of the Cases domain.
     /// This member is required.
     public var domainId: Swift.String?
@@ -2166,7 +2167,7 @@ public struct GetLayoutInput {
     }
 }
 
-public struct GetLayoutOutput {
+public struct GetLayoutOutput: Swift.Sendable {
     /// Information about which fields will be present in the layout, the order of the fields, and read-only attribute of the field.
     /// This member is required.
     public var content: ConnectCasesClientTypes.LayoutContent?
@@ -2210,7 +2211,7 @@ public struct GetLayoutOutput {
     }
 }
 
-public struct ListLayoutsInput {
+public struct ListLayoutsInput: Swift.Sendable {
     /// The unique identifier of the Cases domain.
     /// This member is required.
     public var domainId: Swift.String?
@@ -2232,8 +2233,9 @@ public struct ListLayoutsInput {
 }
 
 extension ConnectCasesClientTypes {
+
     /// Object for the summarized details of the layout.
-    public struct LayoutSummary {
+    public struct LayoutSummary: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the layout.
         /// This member is required.
         public var layoutArn: Swift.String?
@@ -2255,10 +2257,9 @@ extension ConnectCasesClientTypes {
             self.name = name
         }
     }
-
 }
 
-public struct ListLayoutsOutput {
+public struct ListLayoutsOutput: Swift.Sendable {
     /// The layouts for the domain.
     /// This member is required.
     public var layouts: [ConnectCasesClientTypes.LayoutSummary]?
@@ -2275,7 +2276,7 @@ public struct ListLayoutsOutput {
     }
 }
 
-public struct UpdateLayoutInput {
+public struct UpdateLayoutInput: Swift.Sendable {
     /// Information about which fields will be present in the layout, the order of the fields.
     public var content: ConnectCasesClientTypes.LayoutContent?
     /// The unique identifier of the Cases domain.
@@ -2301,12 +2302,12 @@ public struct UpdateLayoutInput {
     }
 }
 
-public struct UpdateLayoutOutput {
+public struct UpdateLayoutOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct ListTagsForResourceInput {
+public struct ListTagsForResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN)
     /// This member is required.
     public var arn: Swift.String?
@@ -2319,7 +2320,7 @@ public struct ListTagsForResourceInput {
     }
 }
 
-public struct ListTagsForResourceOutput {
+public struct ListTagsForResourceOutput: Swift.Sendable {
     /// A map of of key-value pairs that represent tags on a resource. Tags are used to organize, track, or control access for this resource.
     public var tags: [Swift.String: Swift.String?]?
 
@@ -2331,7 +2332,7 @@ public struct ListTagsForResourceOutput {
     }
 }
 
-public struct TagResourceInput {
+public struct TagResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN)
     /// This member is required.
     public var arn: Swift.String?
@@ -2350,8 +2351,9 @@ public struct TagResourceInput {
 }
 
 extension ConnectCasesClientTypes {
+
     /// Object to store configuration of layouts associated to the template.
-    public struct LayoutConfiguration {
+    public struct LayoutConfiguration: Swift.Sendable {
         /// Unique identifier of a layout.
         public var defaultLayout: Swift.String?
 
@@ -2362,12 +2364,12 @@ extension ConnectCasesClientTypes {
             self.defaultLayout = defaultLayout
         }
     }
-
 }
 
 extension ConnectCasesClientTypes {
+
     /// List of fields that must have a value provided to create a case.
-    public struct RequiredField {
+    public struct RequiredField: Swift.Sendable {
         /// Unique identifier of a field.
         /// This member is required.
         public var fieldId: Swift.String?
@@ -2379,12 +2381,11 @@ extension ConnectCasesClientTypes {
             self.fieldId = fieldId
         }
     }
-
 }
 
 extension ConnectCasesClientTypes {
 
-    public enum TemplateStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum TemplateStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case active
         case inactive
         case sdkUnknown(Swift.String)
@@ -2411,7 +2412,7 @@ extension ConnectCasesClientTypes {
     }
 }
 
-public struct CreateTemplateInput {
+public struct CreateTemplateInput: Swift.Sendable {
     /// A brief description of the template.
     public var description: Swift.String?
     /// The unique identifier of the Cases domain.
@@ -2445,7 +2446,7 @@ public struct CreateTemplateInput {
     }
 }
 
-public struct CreateTemplateOutput {
+public struct CreateTemplateOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the newly created template.
     /// This member is required.
     public var templateArn: Swift.String?
@@ -2463,7 +2464,7 @@ public struct CreateTemplateOutput {
     }
 }
 
-public struct DeleteTemplateInput {
+public struct DeleteTemplateInput: Swift.Sendable {
     /// The unique identifier of the Cases domain.
     /// This member is required.
     public var domainId: Swift.String?
@@ -2481,12 +2482,12 @@ public struct DeleteTemplateInput {
     }
 }
 
-public struct DeleteTemplateOutput {
+public struct DeleteTemplateOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct GetTemplateInput {
+public struct GetTemplateInput: Swift.Sendable {
     /// The unique identifier of the Cases domain.
     /// This member is required.
     public var domainId: Swift.String?
@@ -2504,7 +2505,7 @@ public struct GetTemplateInput {
     }
 }
 
-public struct GetTemplateOutput {
+public struct GetTemplateOutput: Swift.Sendable {
     /// Timestamp at which the resource was created.
     public var createdTime: Foundation.Date?
     /// Denotes whether or not the resource has been deleted.
@@ -2560,7 +2561,7 @@ public struct GetTemplateOutput {
     }
 }
 
-public struct ListTemplatesInput {
+public struct ListTemplatesInput: Swift.Sendable {
     /// The unique identifier of the Cases domain.
     /// This member is required.
     public var domainId: Swift.String?
@@ -2586,8 +2587,9 @@ public struct ListTemplatesInput {
 }
 
 extension ConnectCasesClientTypes {
+
     /// Template summary information.
-    public struct TemplateSummary {
+    public struct TemplateSummary: Swift.Sendable {
         /// The template name.
         /// This member is required.
         public var name: Swift.String?
@@ -2614,10 +2616,9 @@ extension ConnectCasesClientTypes {
             self.templateId = templateId
         }
     }
-
 }
 
-public struct ListTemplatesOutput {
+public struct ListTemplatesOutput: Swift.Sendable {
     /// The token for the next set of results. This is null if there are no more results to return.
     public var nextToken: Swift.String?
     /// List of template summary objects.
@@ -2634,7 +2635,7 @@ public struct ListTemplatesOutput {
     }
 }
 
-public struct UpdateTemplateInput {
+public struct UpdateTemplateInput: Swift.Sendable {
     /// A brief description of the template.
     public var description: Swift.String?
     /// The unique identifier of the Cases domain.
@@ -2672,12 +2673,12 @@ public struct UpdateTemplateInput {
     }
 }
 
-public struct UpdateTemplateOutput {
+public struct UpdateTemplateOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UntagResourceInput {
+public struct UntagResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN)
     /// This member is required.
     public var arn: Swift.String?
@@ -2696,8 +2697,9 @@ public struct UntagResourceInput {
 }
 
 extension ConnectCasesClientTypes {
+
     /// A filter for cases. Only one value can be provided.
-    public indirect enum CaseFilter {
+    public indirect enum CaseFilter: Swift.Sendable {
         /// A list of fields to filter on.
         case field(ConnectCasesClientTypes.FieldFilter)
         /// A filter for cases. Only one value can be provided.
@@ -2708,10 +2710,9 @@ extension ConnectCasesClientTypes {
         case orall([ConnectCasesClientTypes.CaseFilter])
         case sdkUnknown(Swift.String)
     }
-
 }
 
-public struct SearchCasesInput {
+public struct SearchCasesInput: Swift.Sendable {
     /// The unique identifier of the Cases domain.
     /// This member is required.
     public var domainId: Swift.String?

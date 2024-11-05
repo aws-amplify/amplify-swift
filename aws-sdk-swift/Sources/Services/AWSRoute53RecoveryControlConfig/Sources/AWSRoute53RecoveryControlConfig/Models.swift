@@ -26,8 +26,9 @@ import protocol ClientRuntime.ModeledError
 import struct Smithy.URIQueryItem
 
 extension Route53RecoveryControlConfigClientTypes {
+
     /// A cluster endpoint. Specify an endpoint when you want to set or retrieve a routing control state in the cluster.
-    public struct ClusterEndpoint {
+    public struct ClusterEndpoint: Swift.Sendable {
         /// A cluster endpoint. Specify an endpoint and Amazon Web Services Region when you want to set or retrieve a routing control state in the cluster. To get or update the routing control state, see the Amazon Route 53 Application Recovery Controller Routing Control Actions.
         public var endpoint: Swift.String?
         /// The Amazon Web Services Region for a cluster endpoint.
@@ -42,13 +43,12 @@ extension Route53RecoveryControlConfigClientTypes {
             self.region = region
         }
     }
-
 }
 
 extension Route53RecoveryControlConfigClientTypes {
 
     /// The deployment status of a resource. Status can be one of the following: PENDING: Amazon Route 53 Application Recovery Controller is creating the resource. DEPLOYED: The resource is deployed and ready to use. PENDING_DELETION: Amazon Route 53 Application Recovery Controller is deleting the resource.
-    public enum Status: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Status: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case deployed
         case pending
         case pendingDeletion
@@ -79,8 +79,9 @@ extension Route53RecoveryControlConfigClientTypes {
 }
 
 extension Route53RecoveryControlConfigClientTypes {
+
     /// A set of five redundant Regional endpoints against which you can execute API calls to update or get the state of routing controls. You can host multiple control panels and routing controls on one cluster.
-    public struct Cluster {
+    public struct Cluster: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the cluster.
         public var clusterArn: Swift.String?
         /// Endpoints for a cluster. Specify one of these endpoints when you want to set or retrieve a routing control state in the cluster. To get or update the routing control state, see the Amazon Route 53 Application Recovery Controller Routing Control Actions.
@@ -107,12 +108,12 @@ extension Route53RecoveryControlConfigClientTypes {
             self.status = status
         }
     }
-
 }
 
 extension Route53RecoveryControlConfigClientTypes {
+
     /// A control panel represents a group of routing controls that can be changed together in a single transaction.
-    public struct ControlPanel {
+    public struct ControlPanel: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the cluster that includes the control panel.
         public var clusterArn: Swift.String?
         /// The Amazon Resource Name (ARN) of the control panel.
@@ -147,12 +148,12 @@ extension Route53RecoveryControlConfigClientTypes {
             self.status = status
         }
     }
-
 }
 
 extension Route53RecoveryControlConfigClientTypes {
+
     /// A routing control has one of two states: ON and OFF. You can map the routing control state to the state of an Amazon Route 53 health check, which can be used to control traffic routing.
-    public struct RoutingControl {
+    public struct RoutingControl: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the control panel that includes the routing control.
         public var controlPanelArn: Swift.String?
         /// The name of the routing control.
@@ -179,13 +180,12 @@ extension Route53RecoveryControlConfigClientTypes {
             self.status = status
         }
     }
-
 }
 
 extension Route53RecoveryControlConfigClientTypes {
 
     /// An enumerated type that determines how the evaluated rules are processed. RuleType can be one of the following: ATLEAST - At least N routing controls must be set. You specify N as the Threshold in the rule configuration. AND - All routing controls must be set. This is a shortcut for "At least N," where N is the total number of controls in the rule. OR - Any control must be set. This is a shortcut for "At least N," where N is 1.
-    public enum RuleType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum RuleType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case and
         case atleast
         case or
@@ -216,8 +216,9 @@ extension Route53RecoveryControlConfigClientTypes {
 }
 
 extension Route53RecoveryControlConfigClientTypes {
+
     /// The rule configuration for an assertion rule. That is, the criteria that you set for specific assertion controls (routing controls) that specify how many control states must be ON after a transaction completes.
-    public struct RuleConfig {
+    public struct RuleConfig: Swift.Sendable {
         /// Logical negation of the rule. If the rule would usually evaluate true, it's evaluated as false, and vice versa.
         /// This member is required.
         public var inverted: Swift.Bool?
@@ -239,12 +240,12 @@ extension Route53RecoveryControlConfigClientTypes {
             self.type = type
         }
     }
-
 }
 
 extension Route53RecoveryControlConfigClientTypes {
+
     /// An assertion rule enforces that, when you change a routing control state, that the criteria that you set in the rule configuration is met. Otherwise, the change to the routing control is not accepted. For example, the criteria might be that at least one routing control state is On after the transaction so that traffic continues to flow to at least one cell for the application. This ensures that you avoid a fail-open scenario.
-    public struct AssertionRule {
+    public struct AssertionRule: Swift.Sendable {
         /// The routing controls that are part of transactions that are evaluated to determine if a request to change a routing control state is allowed. For example, you might include three routing controls, one for each of three Amazon Web Services Regions.
         /// This member is required.
         public var assertedControls: [Swift.String]?
@@ -290,12 +291,12 @@ extension Route53RecoveryControlConfigClientTypes {
             self.waitPeriodMs = waitPeriodMs
         }
     }
-
 }
 
 extension Route53RecoveryControlConfigClientTypes {
+
     /// A gating rule verifies that a gating routing control or set of gating routing controls, evaluates as true, based on a rule configuration that you specify, which allows a set of routing control state changes to complete. For example, if you specify one gating routing control and you set the Type in the rule configuration to OR, that indicates that you must set the gating routing control to On for the rule to evaluate as true; that is, for the gating control "switch" to be "On". When you do that, then you can update the routing control states for the target routing controls that you specify in the gating rule.
-    public struct GatingRule {
+    public struct GatingRule: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the control panel.
         /// This member is required.
         public var controlPanelArn: Swift.String?
@@ -346,12 +347,12 @@ extension Route53RecoveryControlConfigClientTypes {
             self.waitPeriodMs = waitPeriodMs
         }
     }
-
 }
 
 extension Route53RecoveryControlConfigClientTypes {
+
     /// A safety rule. A safety rule can be an assertion rule or a gating rule.
-    public struct Rule {
+    public struct Rule: Swift.Sendable {
         /// An assertion rule enforces that, when a routing control state is changed, the criteria set by the rule configuration is met. Otherwise, the change to the routing control state is not accepted. For example, the criteria might be that at least one routing control state is On after the transaction so that traffic continues to flow to at least one cell for the application. This ensures that you avoid a fail-open scenario.
         public var assertion: Route53RecoveryControlConfigClientTypes.AssertionRule?
         /// A gating rule verifies that a gating routing control or set of gating routing controls, evaluates as true, based on a rule configuration that you specify, which allows a set of routing control state changes to complete. For example, if you specify one gating routing control and you set the Type in the rule configuration to OR, that indicates that you must set the gating routing control to On for the rule to evaluate as true; that is, for the gating control "switch" to be "On". When you do that, then you can update the routing control states for the target routing controls that you specify in the gating rule.
@@ -366,7 +367,6 @@ extension Route53RecoveryControlConfigClientTypes {
             self.gating = gating
         }
     }
-
 }
 
 /// 403 response - You do not have sufficient access to perform this action.
@@ -395,8 +395,9 @@ public struct AccessDeniedException: ClientRuntime.ModeledError, AWSClientRuntim
 }
 
 extension Route53RecoveryControlConfigClientTypes {
+
     /// An update to an assertion rule. You can update the name or the evaluation period (wait period). If you don't specify one of the items to update, the item is unchanged.
-    public struct AssertionRuleUpdate {
+    public struct AssertionRuleUpdate: Swift.Sendable {
         /// The name of the assertion rule. You can use any non-white space character in the name.
         /// This member is required.
         public var name: Swift.String?
@@ -418,7 +419,6 @@ extension Route53RecoveryControlConfigClientTypes {
             self.waitPeriodMs = waitPeriodMs
         }
     }
-
 }
 
 /// 409 response - ConflictException. You might be using a predefined variable.
@@ -572,7 +572,7 @@ public struct ValidationException: ClientRuntime.ModeledError, AWSClientRuntime.
 }
 
 /// Creates a cluster.
-public struct CreateClusterInput {
+public struct CreateClusterInput: Swift.Sendable {
     /// A unique, case-sensitive string of up to 64 ASCII characters. To make an idempotent API request with an action, specify a client token in the request.
     public var clientToken: Swift.String?
     /// The name of the cluster.
@@ -593,7 +593,7 @@ public struct CreateClusterInput {
     }
 }
 
-public struct CreateClusterOutput {
+public struct CreateClusterOutput: Swift.Sendable {
     /// The cluster that was created.
     public var cluster: Route53RecoveryControlConfigClientTypes.Cluster?
 
@@ -606,7 +606,7 @@ public struct CreateClusterOutput {
 }
 
 /// The details of the control panel that you're creating.
-public struct CreateControlPanelInput {
+public struct CreateControlPanelInput: Swift.Sendable {
     /// A unique, case-sensitive string of up to 64 ASCII characters. To make an idempotent API request with an action, specify a client token in the request.
     public var clientToken: Swift.String?
     /// The Amazon Resource Name (ARN) of the cluster for the control panel.
@@ -632,7 +632,7 @@ public struct CreateControlPanelInput {
     }
 }
 
-public struct CreateControlPanelOutput {
+public struct CreateControlPanelOutput: Swift.Sendable {
     /// Information about a control panel.
     public var controlPanel: Route53RecoveryControlConfigClientTypes.ControlPanel?
 
@@ -645,7 +645,7 @@ public struct CreateControlPanelOutput {
 }
 
 /// The details of the routing control that you're creating.
-public struct CreateRoutingControlInput {
+public struct CreateRoutingControlInput: Swift.Sendable {
     /// A unique, case-sensitive string of up to 64 ASCII characters. To make an idempotent API request with an action, specify a client token in the request.
     public var clientToken: Swift.String?
     /// The Amazon Resource Name (ARN) of the cluster that includes the routing control.
@@ -671,7 +671,7 @@ public struct CreateRoutingControlInput {
     }
 }
 
-public struct CreateRoutingControlOutput {
+public struct CreateRoutingControlOutput: Swift.Sendable {
     /// The routing control that is created.
     public var routingControl: Route53RecoveryControlConfigClientTypes.RoutingControl?
 
@@ -684,8 +684,9 @@ public struct CreateRoutingControlOutput {
 }
 
 extension Route53RecoveryControlConfigClientTypes {
+
     /// A new assertion rule for a control panel.
-    public struct NewAssertionRule {
+    public struct NewAssertionRule: Swift.Sendable {
         /// The routing controls that are part of transactions that are evaluated to determine if a request to change a routing control state is allowed. For example, you might include three routing controls, one for each of three Amazon Web Services Regions.
         /// This member is required.
         public var assertedControls: [Swift.String]?
@@ -717,12 +718,12 @@ extension Route53RecoveryControlConfigClientTypes {
             self.waitPeriodMs = waitPeriodMs
         }
     }
-
 }
 
 extension Route53RecoveryControlConfigClientTypes {
+
     /// A new gating rule for a control panel.
-    public struct NewGatingRule {
+    public struct NewGatingRule: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the control panel.
         /// This member is required.
         public var controlPanelArn: Swift.String?
@@ -759,11 +760,10 @@ extension Route53RecoveryControlConfigClientTypes {
             self.waitPeriodMs = waitPeriodMs
         }
     }
-
 }
 
 /// The request body that you include when you create a safety rule.
-public struct CreateSafetyRuleInput {
+public struct CreateSafetyRuleInput: Swift.Sendable {
     /// The assertion rule requested.
     public var assertionRule: Route53RecoveryControlConfigClientTypes.NewAssertionRule?
     /// A unique, case-sensitive string of up to 64 ASCII characters. To make an idempotent API request with an action, specify a client token in the request.
@@ -787,7 +787,7 @@ public struct CreateSafetyRuleInput {
     }
 }
 
-public struct CreateSafetyRuleOutput {
+public struct CreateSafetyRuleOutput: Swift.Sendable {
     /// The assertion rule created.
     public var assertionRule: Route53RecoveryControlConfigClientTypes.AssertionRule?
     /// The gating rule created.
@@ -803,7 +803,7 @@ public struct CreateSafetyRuleOutput {
     }
 }
 
-public struct DeleteClusterInput {
+public struct DeleteClusterInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the cluster that you're deleting.
     /// This member is required.
     public var clusterArn: Swift.String?
@@ -816,12 +816,12 @@ public struct DeleteClusterInput {
     }
 }
 
-public struct DeleteClusterOutput {
+public struct DeleteClusterOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteControlPanelInput {
+public struct DeleteControlPanelInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the control panel.
     /// This member is required.
     public var controlPanelArn: Swift.String?
@@ -834,12 +834,12 @@ public struct DeleteControlPanelInput {
     }
 }
 
-public struct DeleteControlPanelOutput {
+public struct DeleteControlPanelOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteRoutingControlInput {
+public struct DeleteRoutingControlInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the routing control that you're deleting.
     /// This member is required.
     public var routingControlArn: Swift.String?
@@ -852,12 +852,12 @@ public struct DeleteRoutingControlInput {
     }
 }
 
-public struct DeleteRoutingControlOutput {
+public struct DeleteRoutingControlOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteSafetyRuleInput {
+public struct DeleteSafetyRuleInput: Swift.Sendable {
     /// The ARN of the safety rule.
     /// This member is required.
     public var safetyRuleArn: Swift.String?
@@ -870,12 +870,12 @@ public struct DeleteSafetyRuleInput {
     }
 }
 
-public struct DeleteSafetyRuleOutput {
+public struct DeleteSafetyRuleOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DescribeClusterInput {
+public struct DescribeClusterInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the cluster.
     /// This member is required.
     public var clusterArn: Swift.String?
@@ -888,7 +888,7 @@ public struct DescribeClusterInput {
     }
 }
 
-public struct DescribeClusterOutput {
+public struct DescribeClusterOutput: Swift.Sendable {
     /// The cluster for the DescribeCluster request.
     public var cluster: Route53RecoveryControlConfigClientTypes.Cluster?
 
@@ -900,7 +900,7 @@ public struct DescribeClusterOutput {
     }
 }
 
-public struct DescribeControlPanelInput {
+public struct DescribeControlPanelInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the control panel.
     /// This member is required.
     public var controlPanelArn: Swift.String?
@@ -913,7 +913,7 @@ public struct DescribeControlPanelInput {
     }
 }
 
-public struct DescribeControlPanelOutput {
+public struct DescribeControlPanelOutput: Swift.Sendable {
     /// Information about the control panel.
     public var controlPanel: Route53RecoveryControlConfigClientTypes.ControlPanel?
 
@@ -925,7 +925,7 @@ public struct DescribeControlPanelOutput {
     }
 }
 
-public struct DescribeRoutingControlInput {
+public struct DescribeRoutingControlInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the routing control.
     /// This member is required.
     public var routingControlArn: Swift.String?
@@ -938,7 +938,7 @@ public struct DescribeRoutingControlInput {
     }
 }
 
-public struct DescribeRoutingControlOutput {
+public struct DescribeRoutingControlOutput: Swift.Sendable {
     /// Information about the routing control.
     public var routingControl: Route53RecoveryControlConfigClientTypes.RoutingControl?
 
@@ -950,7 +950,7 @@ public struct DescribeRoutingControlOutput {
     }
 }
 
-public struct DescribeSafetyRuleInput {
+public struct DescribeSafetyRuleInput: Swift.Sendable {
     /// The ARN of the safety rule.
     /// This member is required.
     public var safetyRuleArn: Swift.String?
@@ -963,7 +963,7 @@ public struct DescribeSafetyRuleInput {
     }
 }
 
-public struct DescribeSafetyRuleOutput {
+public struct DescribeSafetyRuleOutput: Swift.Sendable {
     /// The assertion rule in the response.
     public var assertionRule: Route53RecoveryControlConfigClientTypes.AssertionRule?
     /// The gating rule in the response.
@@ -980,8 +980,9 @@ public struct DescribeSafetyRuleOutput {
 }
 
 extension Route53RecoveryControlConfigClientTypes {
+
     /// Update to a gating rule. You can update the name or the evaluation period (wait period). If you don't specify one of the items to update, the item is unchanged.
-    public struct GatingRuleUpdate {
+    public struct GatingRuleUpdate: Swift.Sendable {
         /// The name for the gating rule. You can use any non-white space character in the name.
         /// This member is required.
         public var name: Swift.String?
@@ -1003,10 +1004,9 @@ extension Route53RecoveryControlConfigClientTypes {
             self.waitPeriodMs = waitPeriodMs
         }
     }
-
 }
 
-public struct GetResourcePolicyInput {
+public struct GetResourcePolicyInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the resource.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -1019,7 +1019,7 @@ public struct GetResourcePolicyInput {
     }
 }
 
-public struct GetResourcePolicyOutput {
+public struct GetResourcePolicyOutput: Swift.Sendable {
     /// The resource policy.
     public var policy: Swift.String?
 
@@ -1031,7 +1031,7 @@ public struct GetResourcePolicyOutput {
     }
 }
 
-public struct ListAssociatedRoute53HealthChecksInput {
+public struct ListAssociatedRoute53HealthChecksInput: Swift.Sendable {
     /// The number of objects that you want to return with this call.
     public var maxResults: Swift.Int?
     /// The token that identifies which batch of results you want to see.
@@ -1052,7 +1052,7 @@ public struct ListAssociatedRoute53HealthChecksInput {
     }
 }
 
-public struct ListAssociatedRoute53HealthChecksOutput {
+public struct ListAssociatedRoute53HealthChecksOutput: Swift.Sendable {
     /// Identifiers for the health checks.
     public var healthCheckIds: [Swift.String]?
     /// Next token for listing health checks.
@@ -1068,7 +1068,7 @@ public struct ListAssociatedRoute53HealthChecksOutput {
     }
 }
 
-public struct ListClustersInput {
+public struct ListClustersInput: Swift.Sendable {
     /// The number of objects that you want to return with this call.
     public var maxResults: Swift.Int?
     /// The token that identifies which batch of results you want to see.
@@ -1084,7 +1084,7 @@ public struct ListClustersInput {
     }
 }
 
-public struct ListClustersOutput {
+public struct ListClustersOutput: Swift.Sendable {
     /// An array of the clusters in an account.
     public var clusters: [Route53RecoveryControlConfigClientTypes.Cluster]?
     /// The token that identifies which batch of results you want to see.
@@ -1100,7 +1100,7 @@ public struct ListClustersOutput {
     }
 }
 
-public struct ListControlPanelsInput {
+public struct ListControlPanelsInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of a cluster.
     public var clusterArn: Swift.String?
     /// The number of objects that you want to return with this call.
@@ -1120,7 +1120,7 @@ public struct ListControlPanelsInput {
     }
 }
 
-public struct ListControlPanelsOutput {
+public struct ListControlPanelsOutput: Swift.Sendable {
     /// The result of a successful ListControlPanel request.
     public var controlPanels: [Route53RecoveryControlConfigClientTypes.ControlPanel]?
     /// The token that identifies which batch of results you want to see.
@@ -1136,7 +1136,7 @@ public struct ListControlPanelsOutput {
     }
 }
 
-public struct ListRoutingControlsInput {
+public struct ListRoutingControlsInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the control panel.
     /// This member is required.
     public var controlPanelArn: Swift.String?
@@ -1157,7 +1157,7 @@ public struct ListRoutingControlsInput {
     }
 }
 
-public struct ListRoutingControlsOutput {
+public struct ListRoutingControlsOutput: Swift.Sendable {
     /// The token that identifies which batch of results you want to see.
     public var nextToken: Swift.String?
     /// An array of routing controls.
@@ -1173,7 +1173,7 @@ public struct ListRoutingControlsOutput {
     }
 }
 
-public struct ListSafetyRulesInput {
+public struct ListSafetyRulesInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the control panel.
     /// This member is required.
     public var controlPanelArn: Swift.String?
@@ -1194,7 +1194,7 @@ public struct ListSafetyRulesInput {
     }
 }
 
-public struct ListSafetyRulesOutput {
+public struct ListSafetyRulesOutput: Swift.Sendable {
     /// The token that identifies which batch of results you want to see.
     public var nextToken: Swift.String?
     /// The list of safety rules in a control panel.
@@ -1210,7 +1210,7 @@ public struct ListSafetyRulesOutput {
     }
 }
 
-public struct ListTagsForResourceInput {
+public struct ListTagsForResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) for the resource that's tagged.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -1223,7 +1223,7 @@ public struct ListTagsForResourceInput {
     }
 }
 
-public struct ListTagsForResourceOutput {
+public struct ListTagsForResourceOutput: Swift.Sendable {
     /// The tags associated with the resource.
     public var tags: [Swift.String: Swift.String]?
 
@@ -1236,7 +1236,7 @@ public struct ListTagsForResourceOutput {
 }
 
 /// Request of adding tag to the resource
-public struct TagResourceInput {
+public struct TagResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) for the resource that's tagged.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -1254,12 +1254,12 @@ public struct TagResourceInput {
     }
 }
 
-public struct TagResourceOutput {
+public struct TagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UntagResourceInput {
+public struct UntagResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) for the resource that's tagged.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -1277,13 +1277,13 @@ public struct UntagResourceInput {
     }
 }
 
-public struct UntagResourceOutput {
+public struct UntagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
 /// The details of the control panel that you're updating.
-public struct UpdateControlPanelInput {
+public struct UpdateControlPanelInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the control panel.
     /// This member is required.
     public var controlPanelArn: Swift.String?
@@ -1301,7 +1301,7 @@ public struct UpdateControlPanelInput {
     }
 }
 
-public struct UpdateControlPanelOutput {
+public struct UpdateControlPanelOutput: Swift.Sendable {
     /// The control panel to update.
     public var controlPanel: Route53RecoveryControlConfigClientTypes.ControlPanel?
 
@@ -1314,7 +1314,7 @@ public struct UpdateControlPanelOutput {
 }
 
 /// The details of the routing control that you're updating.
-public struct UpdateRoutingControlInput {
+public struct UpdateRoutingControlInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the routing control.
     /// This member is required.
     public var routingControlArn: Swift.String?
@@ -1332,7 +1332,7 @@ public struct UpdateRoutingControlInput {
     }
 }
 
-public struct UpdateRoutingControlOutput {
+public struct UpdateRoutingControlOutput: Swift.Sendable {
     /// The routing control that was updated.
     public var routingControl: Route53RecoveryControlConfigClientTypes.RoutingControl?
 
@@ -1345,7 +1345,7 @@ public struct UpdateRoutingControlOutput {
 }
 
 /// A rule that you add to Application Recovery Controller to ensure that recovery actions don't accidentally impair your application's availability.
-public struct UpdateSafetyRuleInput {
+public struct UpdateSafetyRuleInput: Swift.Sendable {
     /// The assertion rule to update.
     public var assertionRuleUpdate: Route53RecoveryControlConfigClientTypes.AssertionRuleUpdate?
     /// The gating rule to update.
@@ -1361,7 +1361,7 @@ public struct UpdateSafetyRuleInput {
     }
 }
 
-public struct UpdateSafetyRuleOutput {
+public struct UpdateSafetyRuleOutput: Swift.Sendable {
     /// The assertion rule updated.
     public var assertionRule: Route53RecoveryControlConfigClientTypes.AssertionRule?
     /// The gating rule updated.

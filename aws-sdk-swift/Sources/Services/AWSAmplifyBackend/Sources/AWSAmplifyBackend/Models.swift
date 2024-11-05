@@ -27,7 +27,7 @@ import protocol ClientRuntime.ModeledError
 
 extension AmplifyBackendClientTypes {
 
-    public enum AdditionalConstraintsElement: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AdditionalConstraintsElement: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case requireDigit
         case requireLowercase
         case requireSymbol
@@ -169,7 +169,7 @@ public struct TooManyRequestsException: ClientRuntime.ModeledError, AWSClientRun
 }
 
 /// The request body for CloneBackend.
-public struct CloneBackendInput {
+public struct CloneBackendInput: Swift.Sendable {
     /// The app ID.
     /// This member is required.
     public var appId: Swift.String?
@@ -192,7 +192,7 @@ public struct CloneBackendInput {
     }
 }
 
-public struct CloneBackendOutput {
+public struct CloneBackendOutput: Swift.Sendable {
     /// The app ID.
     public var appId: Swift.String?
     /// The name of the backend environment.
@@ -225,16 +225,16 @@ public struct CloneBackendOutput {
 }
 
 extension AmplifyBackendClientTypes {
+
     /// Defines the resource configuration for the data model in your Amplify project.
-    public struct ResourceConfig {
+    public struct ResourceConfig: Swift.Sendable {
 
         public init() { }
     }
-
 }
 
 /// The request body for CreateBackend.
-public struct CreateBackendInput {
+public struct CreateBackendInput: Swift.Sendable {
     /// The app ID.
     /// This member is required.
     public var appId: Swift.String?
@@ -265,7 +265,7 @@ public struct CreateBackendInput {
     }
 }
 
-public struct CreateBackendOutput {
+public struct CreateBackendOutput: Swift.Sendable {
     /// The app ID.
     public var appId: Swift.String?
     /// The name of the backend environment.
@@ -299,7 +299,7 @@ public struct CreateBackendOutput {
 
 extension AmplifyBackendClientTypes {
 
-    public enum Mode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Mode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case amazonCognitoUserPools
         case apiKey
         case awsIam
@@ -333,8 +333,9 @@ extension AmplifyBackendClientTypes {
 }
 
 extension AmplifyBackendClientTypes {
+
     /// The authentication settings for accessing provisioned data models in your Amplify project.
-    public struct BackendAPIAppSyncAuthSettings {
+    public struct BackendAPIAppSyncAuthSettings: Swift.Sendable {
         /// The Amazon Cognito user pool ID, if Amazon Cognito was used as an authentication setting to access your data models.
         public var cognitoUserPoolId: Swift.String?
         /// The API key description for API_KEY, if it was used as an authentication mechanism to access your data models.
@@ -373,12 +374,12 @@ extension AmplifyBackendClientTypes {
             self.openIDProviderName = openIDProviderName
         }
     }
-
 }
 
 extension AmplifyBackendClientTypes {
+
     /// Describes the auth types for your configured data models.
-    public struct BackendAPIAuthType {
+    public struct BackendAPIAuthType: Swift.Sendable {
         /// Describes the authentication mode.
         public var mode: AmplifyBackendClientTypes.Mode?
         /// Describes settings for the authentication mode.
@@ -393,12 +394,11 @@ extension AmplifyBackendClientTypes {
             self.settings = settings
         }
     }
-
 }
 
 extension AmplifyBackendClientTypes {
 
-    public enum ResolutionStrategy: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ResolutionStrategy: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case automerge
         case lambda
         case `none`
@@ -432,8 +432,9 @@ extension AmplifyBackendClientTypes {
 }
 
 extension AmplifyBackendClientTypes {
+
     /// Describes the conflict resolution configuration for your data model configured in your Amplify project.
-    public struct BackendAPIConflictResolution {
+    public struct BackendAPIConflictResolution: Swift.Sendable {
         /// The strategy for conflict resolution.
         public var resolutionStrategy: AmplifyBackendClientTypes.ResolutionStrategy?
 
@@ -444,12 +445,12 @@ extension AmplifyBackendClientTypes {
             self.resolutionStrategy = resolutionStrategy
         }
     }
-
 }
 
 extension AmplifyBackendClientTypes {
+
     /// The resource config for the data model, configured as a part of the Amplify project.
-    public struct BackendAPIResourceConfig {
+    public struct BackendAPIResourceConfig: Swift.Sendable {
         /// Additional authentication methods used to interact with your data models.
         public var additionalAuthTypes: [AmplifyBackendClientTypes.BackendAPIAuthType]?
         /// The API name used to interact with the data model, configured as a part of your Amplify project.
@@ -480,11 +481,10 @@ extension AmplifyBackendClientTypes {
             self.transformSchema = transformSchema
         }
     }
-
 }
 
 /// The request body for CreateBackendAPI.
-public struct CreateBackendAPIInput {
+public struct CreateBackendAPIInput: Swift.Sendable {
     /// The app ID.
     /// This member is required.
     public var appId: Swift.String?
@@ -512,7 +512,7 @@ public struct CreateBackendAPIInput {
     }
 }
 
-public struct CreateBackendAPIOutput {
+public struct CreateBackendAPIOutput: Swift.Sendable {
     /// The app ID.
     public var appId: Swift.String?
     /// The name of the backend environment.
@@ -546,7 +546,7 @@ public struct CreateBackendAPIOutput {
 
 extension AmplifyBackendClientTypes {
 
-    public enum AuthResources: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AuthResources: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case identityPoolAndUserPool
         case userPoolOnly
         case sdkUnknown(Swift.String)
@@ -574,8 +574,9 @@ extension AmplifyBackendClientTypes {
 }
 
 extension AmplifyBackendClientTypes {
+
     /// Describes authorization configurations for the auth resources, configured as a part of your Amplify project.
-    public struct CreateBackendAuthIdentityPoolConfig {
+    public struct CreateBackendAuthIdentityPoolConfig: Swift.Sendable {
         /// Name of the Amazon Cognito identity pool used for authorization.
         /// This member is required.
         public var identityPoolName: Swift.String?
@@ -592,12 +593,11 @@ extension AmplifyBackendClientTypes {
             self.unauthenticatedLogin = unauthenticatedLogin
         }
     }
-
 }
 
 extension AmplifyBackendClientTypes {
 
-    public enum Service: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Service: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case cognito
         case sdkUnknown(Swift.String)
 
@@ -624,7 +624,7 @@ extension AmplifyBackendClientTypes {
 extension AmplifyBackendClientTypes {
 
     /// The type of verification message to send.
-    public enum DeliveryMethod: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DeliveryMethod: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case email
         case sms
         case sdkUnknown(Swift.String)
@@ -652,8 +652,9 @@ extension AmplifyBackendClientTypes {
 }
 
 extension AmplifyBackendClientTypes {
+
     /// The configuration for the email sent when an app user forgets their password.
-    public struct EmailSettings {
+    public struct EmailSettings: Swift.Sendable {
         /// The contents of the email message.
         public var emailMessage: Swift.String?
         /// The contents of the subject line of the email message.
@@ -668,7 +669,6 @@ extension AmplifyBackendClientTypes {
             self.emailSubject = emailSubject
         }
     }
-
 }
 
 extension AmplifyBackendClientTypes.EmailSettings: Swift.CustomDebugStringConvertible {
@@ -678,8 +678,9 @@ extension AmplifyBackendClientTypes.EmailSettings: Swift.CustomDebugStringConver
 }
 
 extension AmplifyBackendClientTypes {
+
     /// SMS settings for authentication.
-    public struct SmsSettings {
+    public struct SmsSettings: Swift.Sendable {
         /// The contents of the SMS message.
         public var smsMessage: Swift.String?
 
@@ -690,7 +691,6 @@ extension AmplifyBackendClientTypes {
             self.smsMessage = smsMessage
         }
     }
-
 }
 
 extension AmplifyBackendClientTypes.SmsSettings: Swift.CustomDebugStringConvertible {
@@ -700,8 +700,9 @@ extension AmplifyBackendClientTypes.SmsSettings: Swift.CustomDebugStringConverti
 }
 
 extension AmplifyBackendClientTypes {
+
     /// (DEPRECATED) Describes the forgot password policy for authenticating into the Amplify app.
-    public struct CreateBackendAuthForgotPasswordConfig {
+    public struct CreateBackendAuthForgotPasswordConfig: Swift.Sendable {
         /// (DEPRECATED) Describes which mode to use (either SMS or email) to deliver messages to app users who want to recover their password.
         /// This member is required.
         public var deliveryMethod: AmplifyBackendClientTypes.DeliveryMethod?
@@ -721,7 +722,6 @@ extension AmplifyBackendClientTypes {
             self.smsSettings = smsSettings
         }
     }
-
 }
 
 extension AmplifyBackendClientTypes.CreateBackendAuthForgotPasswordConfig: Swift.CustomDebugStringConvertible {
@@ -731,7 +731,7 @@ extension AmplifyBackendClientTypes.CreateBackendAuthForgotPasswordConfig: Swift
 
 extension AmplifyBackendClientTypes {
 
-    public enum MFAMode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum MFAMode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case off
         case on
         case `optional`
@@ -763,7 +763,7 @@ extension AmplifyBackendClientTypes {
 
 extension AmplifyBackendClientTypes {
 
-    public enum MfaTypesElement: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum MfaTypesElement: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case sms
         case totp
         case sdkUnknown(Swift.String)
@@ -791,8 +791,9 @@ extension AmplifyBackendClientTypes {
 }
 
 extension AmplifyBackendClientTypes {
+
     /// The settings of your MFA configuration for the backend of your Amplify project.
-    public struct Settings {
+    public struct Settings: Swift.Sendable {
         /// The supported MFA types.
         public var mfaTypes: [AmplifyBackendClientTypes.MfaTypesElement]?
         /// The body of the SMS message.
@@ -807,12 +808,12 @@ extension AmplifyBackendClientTypes {
             self.smsMessage = smsMessage
         }
     }
-
 }
 
 extension AmplifyBackendClientTypes {
+
     /// Describes whether to apply multi-factor authentication policies for your Amazon Cognito user pool configured as a part of your Amplify project.
-    public struct CreateBackendAuthMFAConfig {
+    public struct CreateBackendAuthMFAConfig: Swift.Sendable {
         /// Describes whether MFA should be [ON, OFF, or OPTIONAL] for authentication in your Amplify project.
         /// This member is required.
         public var mfaMode: AmplifyBackendClientTypes.MFAMode?
@@ -828,12 +829,11 @@ extension AmplifyBackendClientTypes {
             self.settings = settings
         }
     }
-
 }
 
 extension AmplifyBackendClientTypes {
 
-    public enum OAuthGrantType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum OAuthGrantType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case code
         case implicit
         case sdkUnknown(Swift.String)
@@ -862,7 +862,7 @@ extension AmplifyBackendClientTypes {
 
 extension AmplifyBackendClientTypes {
 
-    public enum OAuthScopesElement: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum OAuthScopesElement: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case awsCognitoSigninUserAdmin
         case email
         case openid
@@ -899,8 +899,9 @@ extension AmplifyBackendClientTypes {
 }
 
 extension AmplifyBackendClientTypes {
+
     /// Describes third-party social federation configurations for allowing your app users to sign in using OAuth.
-    public struct BackendAuthSocialProviderConfig {
+    public struct BackendAuthSocialProviderConfig: Swift.Sendable {
         /// Describes the client_id, which can be obtained from the third-party social federation provider.
         public var clientId: Swift.String?
         /// Describes the client_secret, which can be obtained from third-party social federation providers.
@@ -915,7 +916,6 @@ extension AmplifyBackendClientTypes {
             self.clientSecret = clientSecret
         }
     }
-
 }
 
 extension AmplifyBackendClientTypes.BackendAuthSocialProviderConfig: Swift.CustomDebugStringConvertible {
@@ -925,8 +925,9 @@ extension AmplifyBackendClientTypes.BackendAuthSocialProviderConfig: Swift.Custo
 }
 
 extension AmplifyBackendClientTypes {
+
     /// Describes Apple social federation configurations for allowing your app users to sign in using OAuth.
-    public struct BackendAuthAppleProviderConfig {
+    public struct BackendAuthAppleProviderConfig: Swift.Sendable {
         /// Describes the client_id (also called Services ID) that comes from Apple.
         public var clientId: Swift.String?
         /// Describes the key_id that comes from Apple.
@@ -949,7 +950,6 @@ extension AmplifyBackendClientTypes {
             self.teamId = teamId
         }
     }
-
 }
 
 extension AmplifyBackendClientTypes.BackendAuthAppleProviderConfig: Swift.CustomDebugStringConvertible {
@@ -959,8 +959,9 @@ extension AmplifyBackendClientTypes.BackendAuthAppleProviderConfig: Swift.Custom
 }
 
 extension AmplifyBackendClientTypes {
+
     /// The settings for using the social identity providers for access to your Amplify app.
-    public struct SocialProviderSettings {
+    public struct SocialProviderSettings: Swift.Sendable {
         /// Describes third-party social federation configurations for allowing your app users to sign in using OAuth.
         public var facebook: AmplifyBackendClientTypes.BackendAuthSocialProviderConfig?
         /// Describes third-party social federation configurations for allowing your app users to sign in using OAuth.
@@ -983,7 +984,6 @@ extension AmplifyBackendClientTypes {
             self.signInWithApple = signInWithApple
         }
     }
-
 }
 
 extension AmplifyBackendClientTypes.SocialProviderSettings: Swift.CustomDebugStringConvertible {
@@ -992,8 +992,9 @@ extension AmplifyBackendClientTypes.SocialProviderSettings: Swift.CustomDebugStr
 }
 
 extension AmplifyBackendClientTypes {
+
     /// Creates the OAuth configuration for your Amplify project.
-    public struct CreateBackendAuthOAuthConfig {
+    public struct CreateBackendAuthOAuthConfig: Swift.Sendable {
         /// The domain prefix for your Amplify app.
         public var domainPrefix: Swift.String?
         /// The OAuth grant type that you use to allow app users to authenticate from your Amplify app.
@@ -1028,12 +1029,12 @@ extension AmplifyBackendClientTypes {
             self.socialProviderSettings = socialProviderSettings
         }
     }
-
 }
 
 extension AmplifyBackendClientTypes {
+
     /// The password policy configuration for the backend to your Amplify project.
-    public struct CreateBackendAuthPasswordPolicyConfig {
+    public struct CreateBackendAuthPasswordPolicyConfig: Swift.Sendable {
         /// Additional constraints for the password used to access the backend of your Amplify project.
         public var additionalConstraints: [AmplifyBackendClientTypes.AdditionalConstraintsElement]?
         /// The minimum length of the password used to access the backend of your Amplify project.
@@ -1049,12 +1050,11 @@ extension AmplifyBackendClientTypes {
             self.minimumLength = minimumLength
         }
     }
-
 }
 
 extension AmplifyBackendClientTypes {
 
-    public enum RequiredSignUpAttributesElement: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum RequiredSignUpAttributesElement: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case address
         case birthdate
         case email
@@ -1128,7 +1128,7 @@ extension AmplifyBackendClientTypes {
 
 extension AmplifyBackendClientTypes {
 
-    public enum SignInMethod: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SignInMethod: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case email
         case emailAndPhoneNumber
         case phoneNumber
@@ -1162,8 +1162,9 @@ extension AmplifyBackendClientTypes {
 }
 
 extension AmplifyBackendClientTypes {
+
     /// Creates an email or SMS verification message for the auth resource configured for your Amplify project.
-    public struct CreateBackendAuthVerificationMessageConfig {
+    public struct CreateBackendAuthVerificationMessageConfig: Swift.Sendable {
         /// The type of verification message to send.
         /// This member is required.
         public var deliveryMethod: AmplifyBackendClientTypes.DeliveryMethod?
@@ -1183,7 +1184,6 @@ extension AmplifyBackendClientTypes {
             self.smsSettings = smsSettings
         }
     }
-
 }
 
 extension AmplifyBackendClientTypes.CreateBackendAuthVerificationMessageConfig: Swift.CustomDebugStringConvertible {
@@ -1192,8 +1192,9 @@ extension AmplifyBackendClientTypes.CreateBackendAuthVerificationMessageConfig: 
 }
 
 extension AmplifyBackendClientTypes {
+
     /// Describes the Amazon Cognito user pool configuration for the auth resource to be configured for your Amplify project.
-    public struct CreateBackendAuthUserPoolConfig {
+    public struct CreateBackendAuthUserPoolConfig: Swift.Sendable {
         /// (DEPRECATED) Describes the forgotten password policy for your Amazon Cognito user pool, configured as a part of your Amplify project.
         public var forgotPassword: AmplifyBackendClientTypes.CreateBackendAuthForgotPasswordConfig?
         /// Describes whether to apply multi-factor authentication policies for your Amazon Cognito user pool configured as a part of your Amplify project.
@@ -1235,12 +1236,12 @@ extension AmplifyBackendClientTypes {
             self.verificationMessage = verificationMessage
         }
     }
-
 }
 
 extension AmplifyBackendClientTypes {
+
     /// Defines the resource configuration when creating an auth resource in your Amplify project.
-    public struct CreateBackendAuthResourceConfig {
+    public struct CreateBackendAuthResourceConfig: Swift.Sendable {
         /// Defines whether you want to configure only authentication or both authentication and authorization settings.
         /// This member is required.
         public var authResources: AmplifyBackendClientTypes.AuthResources?
@@ -1266,11 +1267,10 @@ extension AmplifyBackendClientTypes {
             self.userPoolConfigs = userPoolConfigs
         }
     }
-
 }
 
 /// The request body for CreateBackendAuth.
-public struct CreateBackendAuthInput {
+public struct CreateBackendAuthInput: Swift.Sendable {
     /// The app ID.
     /// This member is required.
     public var appId: Swift.String?
@@ -1298,7 +1298,7 @@ public struct CreateBackendAuthInput {
     }
 }
 
-public struct CreateBackendAuthOutput {
+public struct CreateBackendAuthOutput: Swift.Sendable {
     /// The app ID.
     public var appId: Swift.String?
     /// The name of the backend environment.
@@ -1331,7 +1331,7 @@ public struct CreateBackendAuthOutput {
 }
 
 /// The request body for CreateBackendConfig.
-public struct CreateBackendConfigInput {
+public struct CreateBackendConfigInput: Swift.Sendable {
     /// The app ID.
     /// This member is required.
     public var appId: Swift.String?
@@ -1348,7 +1348,7 @@ public struct CreateBackendConfigInput {
     }
 }
 
-public struct CreateBackendConfigOutput {
+public struct CreateBackendConfigOutput: Swift.Sendable {
     /// The app ID.
     public var appId: Swift.String?
     /// The name of the backend environment.
@@ -1374,7 +1374,7 @@ public struct CreateBackendConfigOutput {
 
 extension AmplifyBackendClientTypes {
 
-    public enum AuthenticatedElement: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AuthenticatedElement: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case createAndUpdate
         case delete
         case read
@@ -1406,7 +1406,7 @@ extension AmplifyBackendClientTypes {
 
 extension AmplifyBackendClientTypes {
 
-    public enum UnAuthenticatedElement: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum UnAuthenticatedElement: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case createAndUpdate
         case delete
         case read
@@ -1437,8 +1437,9 @@ extension AmplifyBackendClientTypes {
 }
 
 extension AmplifyBackendClientTypes {
+
     /// Describes the read, write, and delete permissions users have against your storage S3 bucket.
-    public struct BackendStoragePermissions {
+    public struct BackendStoragePermissions: Swift.Sendable {
         /// Lists all authenticated user read, write, and delete permissions for your S3 bucket.
         /// This member is required.
         public var authenticated: [AmplifyBackendClientTypes.AuthenticatedElement]?
@@ -1454,12 +1455,11 @@ extension AmplifyBackendClientTypes {
             self.unAuthenticated = unAuthenticated
         }
     }
-
 }
 
 extension AmplifyBackendClientTypes {
 
-    public enum ServiceName: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ServiceName: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case s3
         case sdkUnknown(Swift.String)
 
@@ -1484,8 +1484,9 @@ extension AmplifyBackendClientTypes {
 }
 
 extension AmplifyBackendClientTypes {
+
     /// The resource configuration for creating backend storage.
-    public struct CreateBackendStorageResourceConfig {
+    public struct CreateBackendStorageResourceConfig: Swift.Sendable {
         /// The name of the S3 bucket.
         public var bucketName: Swift.String?
         /// The authorization configuration for the storage S3 bucket.
@@ -1506,11 +1507,10 @@ extension AmplifyBackendClientTypes {
             self.serviceName = serviceName
         }
     }
-
 }
 
 /// The request body for CreateBackendStorage.
-public struct CreateBackendStorageInput {
+public struct CreateBackendStorageInput: Swift.Sendable {
     /// The app ID.
     /// This member is required.
     public var appId: Swift.String?
@@ -1538,7 +1538,7 @@ public struct CreateBackendStorageInput {
     }
 }
 
-public struct CreateBackendStorageOutput {
+public struct CreateBackendStorageOutput: Swift.Sendable {
     /// The app ID.
     public var appId: Swift.String?
     /// The name of the backend environment.
@@ -1562,7 +1562,7 @@ public struct CreateBackendStorageOutput {
     }
 }
 
-public struct CreateTokenInput {
+public struct CreateTokenInput: Swift.Sendable {
     /// The app ID.
     /// This member is required.
     public var appId: Swift.String?
@@ -1575,7 +1575,7 @@ public struct CreateTokenInput {
     }
 }
 
-public struct CreateTokenOutput {
+public struct CreateTokenOutput: Swift.Sendable {
     /// The app ID.
     public var appId: Swift.String?
     /// One-time challenge code for authenticating into the Amplify Admin UI.
@@ -1599,7 +1599,7 @@ public struct CreateTokenOutput {
     }
 }
 
-public struct DeleteBackendInput {
+public struct DeleteBackendInput: Swift.Sendable {
     /// The app ID.
     /// This member is required.
     public var appId: Swift.String?
@@ -1617,7 +1617,7 @@ public struct DeleteBackendInput {
     }
 }
 
-public struct DeleteBackendOutput {
+public struct DeleteBackendOutput: Swift.Sendable {
     /// The app ID.
     public var appId: Swift.String?
     /// The name of the backend environment.
@@ -1650,7 +1650,7 @@ public struct DeleteBackendOutput {
 }
 
 /// The request body for DeleteBackendAPI.
-public struct DeleteBackendAPIInput {
+public struct DeleteBackendAPIInput: Swift.Sendable {
     /// The app ID.
     /// This member is required.
     public var appId: Swift.String?
@@ -1677,7 +1677,7 @@ public struct DeleteBackendAPIInput {
     }
 }
 
-public struct DeleteBackendAPIOutput {
+public struct DeleteBackendAPIOutput: Swift.Sendable {
     /// The app ID.
     public var appId: Swift.String?
     /// The name of the backend environment.
@@ -1710,7 +1710,7 @@ public struct DeleteBackendAPIOutput {
 }
 
 /// The request body for DeleteBackendAuth.
-public struct DeleteBackendAuthInput {
+public struct DeleteBackendAuthInput: Swift.Sendable {
     /// The app ID.
     /// This member is required.
     public var appId: Swift.String?
@@ -1733,7 +1733,7 @@ public struct DeleteBackendAuthInput {
     }
 }
 
-public struct DeleteBackendAuthOutput {
+public struct DeleteBackendAuthOutput: Swift.Sendable {
     /// The app ID.
     public var appId: Swift.String?
     /// The name of the backend environment.
@@ -1766,7 +1766,7 @@ public struct DeleteBackendAuthOutput {
 }
 
 /// The request body for DeleteBackendStorage.
-public struct DeleteBackendStorageInput {
+public struct DeleteBackendStorageInput: Swift.Sendable {
     /// The app ID.
     /// This member is required.
     public var appId: Swift.String?
@@ -1794,7 +1794,7 @@ public struct DeleteBackendStorageInput {
     }
 }
 
-public struct DeleteBackendStorageOutput {
+public struct DeleteBackendStorageOutput: Swift.Sendable {
     /// The app ID.
     public var appId: Swift.String?
     /// The name of the backend environment.
@@ -1818,7 +1818,7 @@ public struct DeleteBackendStorageOutput {
     }
 }
 
-public struct DeleteTokenInput {
+public struct DeleteTokenInput: Swift.Sendable {
     /// The app ID.
     /// This member is required.
     public var appId: Swift.String?
@@ -1836,7 +1836,7 @@ public struct DeleteTokenInput {
     }
 }
 
-public struct DeleteTokenOutput {
+public struct DeleteTokenOutput: Swift.Sendable {
     /// Indicates whether the request succeeded or failed.
     public var isSuccess: Swift.Bool?
 
@@ -1849,7 +1849,7 @@ public struct DeleteTokenOutput {
 }
 
 /// The request body for GenerateBackendAPIModels.
-public struct GenerateBackendAPIModelsInput {
+public struct GenerateBackendAPIModelsInput: Swift.Sendable {
     /// The app ID.
     /// This member is required.
     public var appId: Swift.String?
@@ -1872,7 +1872,7 @@ public struct GenerateBackendAPIModelsInput {
     }
 }
 
-public struct GenerateBackendAPIModelsOutput {
+public struct GenerateBackendAPIModelsOutput: Swift.Sendable {
     /// The app ID.
     public var appId: Swift.String?
     /// The name of the backend environment.
@@ -1905,7 +1905,7 @@ public struct GenerateBackendAPIModelsOutput {
 }
 
 /// The request body for GetBackend.
-public struct GetBackendInput {
+public struct GetBackendInput: Swift.Sendable {
     /// The app ID.
     /// This member is required.
     public var appId: Swift.String?
@@ -1922,7 +1922,7 @@ public struct GetBackendInput {
     }
 }
 
-public struct GetBackendOutput {
+public struct GetBackendOutput: Swift.Sendable {
     /// A stringified version of the cli.json file for your Amplify project.
     public var amplifyFeatureFlags: Swift.String?
     /// A stringified version of the current configs for your Amplify project.
@@ -1959,7 +1959,7 @@ public struct GetBackendOutput {
 }
 
 /// The request body for GetBackendAPI.
-public struct GetBackendAPIInput {
+public struct GetBackendAPIInput: Swift.Sendable {
     /// The app ID.
     /// This member is required.
     public var appId: Swift.String?
@@ -1986,7 +1986,7 @@ public struct GetBackendAPIInput {
     }
 }
 
-public struct GetBackendAPIOutput {
+public struct GetBackendAPIOutput: Swift.Sendable {
     /// The app ID.
     public var appId: Swift.String?
     /// The name of the backend environment.
@@ -2015,7 +2015,7 @@ public struct GetBackendAPIOutput {
 }
 
 /// The request body for GetBackendAPIModels.
-public struct GetBackendAPIModelsInput {
+public struct GetBackendAPIModelsInput: Swift.Sendable {
     /// The app ID.
     /// This member is required.
     public var appId: Swift.String?
@@ -2040,7 +2040,7 @@ public struct GetBackendAPIModelsInput {
 
 extension AmplifyBackendClientTypes {
 
-    public enum Status: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Status: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case latest
         case stale
         case sdkUnknown(Swift.String)
@@ -2067,7 +2067,7 @@ extension AmplifyBackendClientTypes {
     }
 }
 
-public struct GetBackendAPIModelsOutput {
+public struct GetBackendAPIModelsOutput: Swift.Sendable {
     /// Stringified JSON of the model introspection schema for an existing backend API resource.
     public var modelIntrospectionSchema: Swift.String?
     /// Stringified JSON of the datastore model.
@@ -2088,7 +2088,7 @@ public struct GetBackendAPIModelsOutput {
 }
 
 /// The request body for GetBackendAuth.
-public struct GetBackendAuthInput {
+public struct GetBackendAuthInput: Swift.Sendable {
     /// The app ID.
     /// This member is required.
     public var appId: Swift.String?
@@ -2111,7 +2111,7 @@ public struct GetBackendAuthInput {
     }
 }
 
-public struct GetBackendAuthOutput {
+public struct GetBackendAuthOutput: Swift.Sendable {
     /// The app ID.
     public var appId: Swift.String?
     /// The name of the backend environment.
@@ -2139,7 +2139,7 @@ public struct GetBackendAuthOutput {
     }
 }
 
-public struct GetBackendJobInput {
+public struct GetBackendJobInput: Swift.Sendable {
     /// The app ID.
     /// This member is required.
     public var appId: Swift.String?
@@ -2162,7 +2162,7 @@ public struct GetBackendJobInput {
     }
 }
 
-public struct GetBackendJobOutput {
+public struct GetBackendJobOutput: Swift.Sendable {
     /// The app ID.
     public var appId: Swift.String?
     /// The name of the backend environment.
@@ -2203,7 +2203,7 @@ public struct GetBackendJobOutput {
 }
 
 /// The request body for GetBackendStorage.
-public struct GetBackendStorageInput {
+public struct GetBackendStorageInput: Swift.Sendable {
     /// The app ID.
     /// This member is required.
     public var appId: Swift.String?
@@ -2227,8 +2227,9 @@ public struct GetBackendStorageInput {
 }
 
 extension AmplifyBackendClientTypes {
+
     /// The details for a backend storage resource.
-    public struct GetBackendStorageResourceConfig {
+    public struct GetBackendStorageResourceConfig: Swift.Sendable {
         /// The name of the S3 bucket.
         public var bucketName: Swift.String?
         /// Returns True if the storage resource has been imported.
@@ -2253,10 +2254,9 @@ extension AmplifyBackendClientTypes {
             self.serviceName = serviceName
         }
     }
-
 }
 
-public struct GetBackendStorageOutput {
+public struct GetBackendStorageOutput: Swift.Sendable {
     /// The app ID.
     public var appId: Swift.String?
     /// The name of the backend environment.
@@ -2280,7 +2280,7 @@ public struct GetBackendStorageOutput {
     }
 }
 
-public struct GetTokenInput {
+public struct GetTokenInput: Swift.Sendable {
     /// The app ID.
     /// This member is required.
     public var appId: Swift.String?
@@ -2298,7 +2298,7 @@ public struct GetTokenInput {
     }
 }
 
-public struct GetTokenOutput {
+public struct GetTokenOutput: Swift.Sendable {
     /// The app ID.
     public var appId: Swift.String?
     /// The one-time challenge code for authenticating into the Amplify Admin UI.
@@ -2323,7 +2323,7 @@ public struct GetTokenOutput {
 }
 
 /// The request body for ImportBackendAuth.
-public struct ImportBackendAuthInput {
+public struct ImportBackendAuthInput: Swift.Sendable {
     /// The app ID.
     /// This member is required.
     public var appId: Swift.String?
@@ -2360,7 +2360,7 @@ public struct ImportBackendAuthInput {
     }
 }
 
-public struct ImportBackendAuthOutput {
+public struct ImportBackendAuthOutput: Swift.Sendable {
     /// The app ID.
     public var appId: Swift.String?
     /// The name of the backend environment.
@@ -2393,7 +2393,7 @@ public struct ImportBackendAuthOutput {
 }
 
 /// The request body for ImportBackendStorage.
-public struct ImportBackendStorageInput {
+public struct ImportBackendStorageInput: Swift.Sendable {
     /// The app ID.
     /// This member is required.
     public var appId: Swift.String?
@@ -2420,7 +2420,7 @@ public struct ImportBackendStorageInput {
     }
 }
 
-public struct ImportBackendStorageOutput {
+public struct ImportBackendStorageOutput: Swift.Sendable {
     /// The app ID.
     public var appId: Swift.String?
     /// The name of the backend environment.
@@ -2445,7 +2445,7 @@ public struct ImportBackendStorageOutput {
 }
 
 /// The request body for ListBackendJobs.
-public struct ListBackendJobsInput {
+public struct ListBackendJobsInput: Swift.Sendable {
     /// The app ID.
     /// This member is required.
     public var appId: Swift.String?
@@ -2484,8 +2484,9 @@ public struct ListBackendJobsInput {
 }
 
 extension AmplifyBackendClientTypes {
+
     /// The response object for this operation.
-    public struct BackendJobRespObj {
+    public struct BackendJobRespObj: Swift.Sendable {
         /// The app ID.
         /// This member is required.
         public var appId: Swift.String?
@@ -2526,10 +2527,9 @@ extension AmplifyBackendClientTypes {
             self.updateTime = updateTime
         }
     }
-
 }
 
-public struct ListBackendJobsOutput {
+public struct ListBackendJobsOutput: Swift.Sendable {
     /// An array of jobs and their properties.
     public var jobs: [AmplifyBackendClientTypes.BackendJobRespObj]?
     /// The token for the next set of results.
@@ -2546,7 +2546,7 @@ public struct ListBackendJobsOutput {
 }
 
 /// The request body for S3Buckets.
-public struct ListS3BucketsInput {
+public struct ListS3BucketsInput: Swift.Sendable {
     /// Reserved for future use.
     public var nextToken: Swift.String?
 
@@ -2559,8 +2559,9 @@ public struct ListS3BucketsInput {
 }
 
 extension AmplifyBackendClientTypes {
+
     /// Describes the metadata of the S3 bucket.
-    public struct S3BucketInfo {
+    public struct S3BucketInfo: Swift.Sendable {
         /// The creation date of the S3 bucket.
         public var creationDate: Swift.String?
         /// The name of the S3 bucket.
@@ -2575,10 +2576,9 @@ extension AmplifyBackendClientTypes {
             self.name = name
         }
     }
-
 }
 
-public struct ListS3BucketsOutput {
+public struct ListS3BucketsOutput: Swift.Sendable {
     /// The list of S3 buckets.
     public var buckets: [AmplifyBackendClientTypes.S3BucketInfo]?
     /// Reserved for future use.
@@ -2595,7 +2595,7 @@ public struct ListS3BucketsOutput {
 }
 
 /// The request body for RemoveAllBackends.
-public struct RemoveAllBackendsInput {
+public struct RemoveAllBackendsInput: Swift.Sendable {
     /// The app ID.
     /// This member is required.
     public var appId: Swift.String?
@@ -2612,7 +2612,7 @@ public struct RemoveAllBackendsInput {
     }
 }
 
-public struct RemoveAllBackendsOutput {
+public struct RemoveAllBackendsOutput: Swift.Sendable {
     /// The app ID.
     public var appId: Swift.String?
     /// If the request fails, this error is returned.
@@ -2640,7 +2640,7 @@ public struct RemoveAllBackendsOutput {
     }
 }
 
-public struct RemoveBackendConfigInput {
+public struct RemoveBackendConfigInput: Swift.Sendable {
     /// The app ID.
     /// This member is required.
     public var appId: Swift.String?
@@ -2653,7 +2653,7 @@ public struct RemoveBackendConfigInput {
     }
 }
 
-public struct RemoveBackendConfigOutput {
+public struct RemoveBackendConfigOutput: Swift.Sendable {
     /// If the request fails, this error is returned.
     public var error: Swift.String?
 
@@ -2666,7 +2666,7 @@ public struct RemoveBackendConfigOutput {
 }
 
 /// The request body for UpdateBackendAPI.
-public struct UpdateBackendAPIInput {
+public struct UpdateBackendAPIInput: Swift.Sendable {
     /// The app ID.
     /// This member is required.
     public var appId: Swift.String?
@@ -2693,7 +2693,7 @@ public struct UpdateBackendAPIInput {
     }
 }
 
-public struct UpdateBackendAPIOutput {
+public struct UpdateBackendAPIOutput: Swift.Sendable {
     /// The app ID.
     public var appId: Swift.String?
     /// The name of the backend environment.
@@ -2726,8 +2726,9 @@ public struct UpdateBackendAPIOutput {
 }
 
 extension AmplifyBackendClientTypes {
+
     /// Describes the authorization configuration for the Amazon Cognito identity pool, provisioned as a part of your auth resource in the Amplify project.
-    public struct UpdateBackendAuthIdentityPoolConfig {
+    public struct UpdateBackendAuthIdentityPoolConfig: Swift.Sendable {
         /// A boolean value that can be set to allow or disallow guest-level authorization into your Amplify app.
         public var unauthenticatedLogin: Swift.Bool?
 
@@ -2738,12 +2739,12 @@ extension AmplifyBackendClientTypes {
             self.unauthenticatedLogin = unauthenticatedLogin
         }
     }
-
 }
 
 extension AmplifyBackendClientTypes {
+
     /// (DEPRECATED) Describes the forgot password policy for authenticating into the Amplify app.
-    public struct UpdateBackendAuthForgotPasswordConfig {
+    public struct UpdateBackendAuthForgotPasswordConfig: Swift.Sendable {
         /// (DEPRECATED) Describes which mode to use (either SMS or email) to deliver messages to app users that want to recover their password.
         public var deliveryMethod: AmplifyBackendClientTypes.DeliveryMethod?
         /// (DEPRECATED) The configuration for the email sent when an app user forgets their password.
@@ -2762,7 +2763,6 @@ extension AmplifyBackendClientTypes {
             self.smsSettings = smsSettings
         }
     }
-
 }
 
 extension AmplifyBackendClientTypes.UpdateBackendAuthForgotPasswordConfig: Swift.CustomDebugStringConvertible {
@@ -2771,8 +2771,9 @@ extension AmplifyBackendClientTypes.UpdateBackendAuthForgotPasswordConfig: Swift
 }
 
 extension AmplifyBackendClientTypes {
+
     /// Updates the multi-factor authentication (MFA) configuration for the backend of your Amplify project.
-    public struct UpdateBackendAuthMFAConfig {
+    public struct UpdateBackendAuthMFAConfig: Swift.Sendable {
         /// The MFA mode for the backend of your Amplify project.
         public var mfaMode: AmplifyBackendClientTypes.MFAMode?
         /// The settings of your MFA configuration for the backend of your Amplify project.
@@ -2787,12 +2788,12 @@ extension AmplifyBackendClientTypes {
             self.settings = settings
         }
     }
-
 }
 
 extension AmplifyBackendClientTypes {
+
     /// The OAuth configurations for authenticating users into your Amplify app.
-    public struct UpdateBackendAuthOAuthConfig {
+    public struct UpdateBackendAuthOAuthConfig: Swift.Sendable {
         /// The Amazon Cognito domain prefix used to create a hosted UI for authentication.
         public var domainPrefix: Swift.String?
         /// The OAuth grant type to allow app users to authenticate from your Amplify app.
@@ -2823,12 +2824,12 @@ extension AmplifyBackendClientTypes {
             self.socialProviderSettings = socialProviderSettings
         }
     }
-
 }
 
 extension AmplifyBackendClientTypes {
+
     /// Describes the password policy for your Amazon Cognito user pool configured as a part of your Amplify project.
-    public struct UpdateBackendAuthPasswordPolicyConfig {
+    public struct UpdateBackendAuthPasswordPolicyConfig: Swift.Sendable {
         /// Describes additional constraints on password requirements to sign in to the auth resource, configured as a part of your Amplify project.
         public var additionalConstraints: [AmplifyBackendClientTypes.AdditionalConstraintsElement]?
         /// Describes the minimum length of the password required to sign in to the auth resource, configured as a part of your Amplify project.
@@ -2843,12 +2844,12 @@ extension AmplifyBackendClientTypes {
             self.minimumLength = minimumLength
         }
     }
-
 }
 
 extension AmplifyBackendClientTypes {
+
     /// Updates the configuration of the email or SMS message for the auth resource configured for your Amplify project.
-    public struct UpdateBackendAuthVerificationMessageConfig {
+    public struct UpdateBackendAuthVerificationMessageConfig: Swift.Sendable {
         /// The type of verification message to send.
         /// This member is required.
         public var deliveryMethod: AmplifyBackendClientTypes.DeliveryMethod?
@@ -2868,7 +2869,6 @@ extension AmplifyBackendClientTypes {
             self.smsSettings = smsSettings
         }
     }
-
 }
 
 extension AmplifyBackendClientTypes.UpdateBackendAuthVerificationMessageConfig: Swift.CustomDebugStringConvertible {
@@ -2877,8 +2877,9 @@ extension AmplifyBackendClientTypes.UpdateBackendAuthVerificationMessageConfig: 
 }
 
 extension AmplifyBackendClientTypes {
+
     /// Describes the Amazon Cognito user pool configuration for the authorization resource to be configured for your Amplify project on an update.
-    public struct UpdateBackendAuthUserPoolConfig {
+    public struct UpdateBackendAuthUserPoolConfig: Swift.Sendable {
         /// (DEPRECATED) Describes the forgot password policy for your Amazon Cognito user pool, configured as a part of your Amplify project.
         public var forgotPassword: AmplifyBackendClientTypes.UpdateBackendAuthForgotPasswordConfig?
         /// Describes whether to apply multi-factor authentication policies for your Amazon Cognito user pool configured as a part of your Amplify project.
@@ -2905,12 +2906,12 @@ extension AmplifyBackendClientTypes {
             self.verificationMessage = verificationMessage
         }
     }
-
 }
 
 extension AmplifyBackendClientTypes {
+
     /// Defines the resource configuration when updating an authentication resource in your Amplify project.
-    public struct UpdateBackendAuthResourceConfig {
+    public struct UpdateBackendAuthResourceConfig: Swift.Sendable {
         /// Defines the service name to use when configuring an authentication resource in your Amplify project.
         /// This member is required.
         public var authResources: AmplifyBackendClientTypes.AuthResources?
@@ -2936,11 +2937,10 @@ extension AmplifyBackendClientTypes {
             self.userPoolConfigs = userPoolConfigs
         }
     }
-
 }
 
 /// The request body for UpdateBackendAuth.
-public struct UpdateBackendAuthInput {
+public struct UpdateBackendAuthInput: Swift.Sendable {
     /// The app ID.
     /// This member is required.
     public var appId: Swift.String?
@@ -2968,7 +2968,7 @@ public struct UpdateBackendAuthInput {
     }
 }
 
-public struct UpdateBackendAuthOutput {
+public struct UpdateBackendAuthOutput: Swift.Sendable {
     /// The app ID.
     public var appId: Swift.String?
     /// The name of the backend environment.
@@ -3001,8 +3001,9 @@ public struct UpdateBackendAuthOutput {
 }
 
 extension AmplifyBackendClientTypes {
+
     /// The request object for this operation.
-    public struct LoginAuthConfigReqObj {
+    public struct LoginAuthConfigReqObj: Swift.Sendable {
         /// The Amazon Cognito identity pool ID used for the Amplify Admin UI login authorization.
         public var awsCognitoIdentityPoolId: Swift.String?
         /// The AWS Region for the Amplify Admin UI login.
@@ -3025,11 +3026,10 @@ extension AmplifyBackendClientTypes {
             self.awsUserPoolsWebClientId = awsUserPoolsWebClientId
         }
     }
-
 }
 
 /// The request body for UpdateBackendConfig.
-public struct UpdateBackendConfigInput {
+public struct UpdateBackendConfigInput: Swift.Sendable {
     /// The app ID.
     /// This member is required.
     public var appId: Swift.String?
@@ -3046,7 +3046,7 @@ public struct UpdateBackendConfigInput {
     }
 }
 
-public struct UpdateBackendConfigOutput {
+public struct UpdateBackendConfigOutput: Swift.Sendable {
     /// The app ID.
     public var appId: Swift.String?
     /// The app ID for the backend manager.
@@ -3071,7 +3071,7 @@ public struct UpdateBackendConfigOutput {
 }
 
 /// The request body for GetBackendJob.
-public struct UpdateBackendJobInput {
+public struct UpdateBackendJobInput: Swift.Sendable {
     /// The app ID.
     /// This member is required.
     public var appId: Swift.String?
@@ -3102,7 +3102,7 @@ public struct UpdateBackendJobInput {
     }
 }
 
-public struct UpdateBackendJobOutput {
+public struct UpdateBackendJobOutput: Swift.Sendable {
     /// The app ID.
     public var appId: Swift.String?
     /// The name of the backend environment.
@@ -3143,8 +3143,9 @@ public struct UpdateBackendJobOutput {
 }
 
 extension AmplifyBackendClientTypes {
+
     /// The resource configuration for updating backend storage.
-    public struct UpdateBackendStorageResourceConfig {
+    public struct UpdateBackendStorageResourceConfig: Swift.Sendable {
         /// The authorization configuration for the storage S3 bucket.
         /// This member is required.
         public var permissions: AmplifyBackendClientTypes.BackendStoragePermissions?
@@ -3161,11 +3162,10 @@ extension AmplifyBackendClientTypes {
             self.serviceName = serviceName
         }
     }
-
 }
 
 /// The request body for UpdateBackendStorage.
-public struct UpdateBackendStorageInput {
+public struct UpdateBackendStorageInput: Swift.Sendable {
     /// The app ID.
     /// This member is required.
     public var appId: Swift.String?
@@ -3193,7 +3193,7 @@ public struct UpdateBackendStorageInput {
     }
 }
 
-public struct UpdateBackendStorageOutput {
+public struct UpdateBackendStorageOutput: Swift.Sendable {
     /// The app ID.
     public var appId: Swift.String?
     /// The name of the backend environment.

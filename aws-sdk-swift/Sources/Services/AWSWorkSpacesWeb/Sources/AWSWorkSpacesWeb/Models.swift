@@ -180,8 +180,9 @@ public struct ThrottlingException: ClientRuntime.ModeledError, AWSClientRuntime.
 }
 
 extension WorkSpacesWebClientTypes {
+
     /// Information about a field passed inside a request that resulted in an exception.
-    public struct ValidationExceptionField {
+    public struct ValidationExceptionField: Swift.Sendable {
         /// The message describing why the field failed validation.
         /// This member is required.
         public var message: Swift.String?
@@ -198,12 +199,11 @@ extension WorkSpacesWebClientTypes {
             self.name = name
         }
     }
-
 }
 
 extension WorkSpacesWebClientTypes {
 
-    public enum ValidationExceptionReason: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ValidationExceptionReason: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case cannotParse
         case fieldValidationFailed
         case other
@@ -268,7 +268,7 @@ public struct ValidationException: ClientRuntime.ModeledError, AWSClientRuntime.
     }
 }
 
-public struct AssociateBrowserSettingsInput {
+public struct AssociateBrowserSettingsInput: Swift.Sendable {
     /// The ARN of the browser settings.
     /// This member is required.
     public var browserSettingsArn: Swift.String?
@@ -286,7 +286,7 @@ public struct AssociateBrowserSettingsInput {
     }
 }
 
-public struct AssociateBrowserSettingsOutput {
+public struct AssociateBrowserSettingsOutput: Swift.Sendable {
     /// The ARN of the browser settings.
     /// This member is required.
     public var browserSettingsArn: Swift.String?
@@ -304,7 +304,7 @@ public struct AssociateBrowserSettingsOutput {
     }
 }
 
-public struct AssociateIpAccessSettingsInput {
+public struct AssociateIpAccessSettingsInput: Swift.Sendable {
     /// The ARN of the IP access settings.
     /// This member is required.
     public var ipAccessSettingsArn: Swift.String?
@@ -322,7 +322,7 @@ public struct AssociateIpAccessSettingsInput {
     }
 }
 
-public struct AssociateIpAccessSettingsOutput {
+public struct AssociateIpAccessSettingsOutput: Swift.Sendable {
     /// The ARN of the IP access settings resource.
     /// This member is required.
     public var ipAccessSettingsArn: Swift.String?
@@ -340,7 +340,7 @@ public struct AssociateIpAccessSettingsOutput {
     }
 }
 
-public struct AssociateNetworkSettingsInput {
+public struct AssociateNetworkSettingsInput: Swift.Sendable {
     /// The ARN of the network settings.
     /// This member is required.
     public var networkSettingsArn: Swift.String?
@@ -358,7 +358,7 @@ public struct AssociateNetworkSettingsInput {
     }
 }
 
-public struct AssociateNetworkSettingsOutput {
+public struct AssociateNetworkSettingsOutput: Swift.Sendable {
     /// The ARN of the network settings.
     /// This member is required.
     public var networkSettingsArn: Swift.String?
@@ -376,7 +376,7 @@ public struct AssociateNetworkSettingsOutput {
     }
 }
 
-public struct AssociateTrustStoreInput {
+public struct AssociateTrustStoreInput: Swift.Sendable {
     /// The ARN of the web portal.
     /// This member is required.
     public var portalArn: Swift.String?
@@ -394,7 +394,7 @@ public struct AssociateTrustStoreInput {
     }
 }
 
-public struct AssociateTrustStoreOutput {
+public struct AssociateTrustStoreOutput: Swift.Sendable {
     /// The ARN of the web portal.
     /// This member is required.
     public var portalArn: Swift.String?
@@ -412,7 +412,7 @@ public struct AssociateTrustStoreOutput {
     }
 }
 
-public struct AssociateUserAccessLoggingSettingsInput {
+public struct AssociateUserAccessLoggingSettingsInput: Swift.Sendable {
     /// The ARN of the web portal.
     /// This member is required.
     public var portalArn: Swift.String?
@@ -430,7 +430,7 @@ public struct AssociateUserAccessLoggingSettingsInput {
     }
 }
 
-public struct AssociateUserAccessLoggingSettingsOutput {
+public struct AssociateUserAccessLoggingSettingsOutput: Swift.Sendable {
     /// The ARN of the web portal.
     /// This member is required.
     public var portalArn: Swift.String?
@@ -448,7 +448,7 @@ public struct AssociateUserAccessLoggingSettingsOutput {
     }
 }
 
-public struct AssociateUserSettingsInput {
+public struct AssociateUserSettingsInput: Swift.Sendable {
     /// The ARN of the web portal.
     /// This member is required.
     public var portalArn: Swift.String?
@@ -466,7 +466,7 @@ public struct AssociateUserSettingsInput {
     }
 }
 
-public struct AssociateUserSettingsOutput {
+public struct AssociateUserSettingsOutput: Swift.Sendable {
     /// The ARN of the web portal.
     /// This member is required.
     public var portalArn: Swift.String?
@@ -486,7 +486,7 @@ public struct AssociateUserSettingsOutput {
 
 extension WorkSpacesWebClientTypes {
 
-    public enum AuthenticationType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AuthenticationType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case iamIdentityCenter
         case standard
         case sdkUnknown(Swift.String)
@@ -554,8 +554,9 @@ public struct ServiceQuotaExceededException: ClientRuntime.ModeledError, AWSClie
 }
 
 extension WorkSpacesWebClientTypes {
+
     /// The tag.
-    public struct Tag {
+    public struct Tag: Swift.Sendable {
         /// The key of the tag.
         /// This member is required.
         public var key: Swift.String?
@@ -572,7 +573,6 @@ extension WorkSpacesWebClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension WorkSpacesWebClientTypes.Tag: Swift.CustomDebugStringConvertible {
@@ -581,7 +581,7 @@ extension WorkSpacesWebClientTypes.Tag: Swift.CustomDebugStringConvertible {
     }
 }
 
-public struct CreateBrowserSettingsInput {
+public struct CreateBrowserSettingsInput: Swift.Sendable {
     /// Additional encryption context of the browser settings.
     public var additionalEncryptionContext: [Swift.String: Swift.String]?
     /// A JSON string containing Chrome Enterprise policies that will be applied to all streaming sessions.
@@ -615,7 +615,7 @@ extension CreateBrowserSettingsInput: Swift.CustomDebugStringConvertible {
         "CreateBrowserSettingsInput(additionalEncryptionContext: \(Swift.String(describing: additionalEncryptionContext)), clientToken: \(Swift.String(describing: clientToken)), customerManagedKey: \(Swift.String(describing: customerManagedKey)), browserPolicy: \"CONTENT_REDACTED\", tags: \"CONTENT_REDACTED\")"}
 }
 
-public struct CreateBrowserSettingsOutput {
+public struct CreateBrowserSettingsOutput: Swift.Sendable {
     /// The ARN of the browser settings.
     /// This member is required.
     public var browserSettingsArn: Swift.String?
@@ -628,7 +628,7 @@ public struct CreateBrowserSettingsOutput {
     }
 }
 
-public struct DeleteBrowserSettingsInput {
+public struct DeleteBrowserSettingsInput: Swift.Sendable {
     /// The ARN of the browser settings.
     /// This member is required.
     public var browserSettingsArn: Swift.String?
@@ -641,12 +641,12 @@ public struct DeleteBrowserSettingsInput {
     }
 }
 
-public struct DeleteBrowserSettingsOutput {
+public struct DeleteBrowserSettingsOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct GetBrowserSettingsInput {
+public struct GetBrowserSettingsInput: Swift.Sendable {
     /// The ARN of the browser settings.
     /// This member is required.
     public var browserSettingsArn: Swift.String?
@@ -660,8 +660,9 @@ public struct GetBrowserSettingsInput {
 }
 
 extension WorkSpacesWebClientTypes {
+
     /// The browser settings resource that can be associated with a web portal. Once associated with a web portal, browser settings control how the browser will behave once a user starts a streaming session for the web portal.
-    public struct BrowserSettings {
+    public struct BrowserSettings: Swift.Sendable {
         /// The additional encryption context of the browser settings.
         public var additionalEncryptionContext: [Swift.String: Swift.String]?
         /// A list of web portal ARNs that this browser settings is associated with.
@@ -689,7 +690,6 @@ extension WorkSpacesWebClientTypes {
             self.customerManagedKey = customerManagedKey
         }
     }
-
 }
 
 extension WorkSpacesWebClientTypes.BrowserSettings: Swift.CustomDebugStringConvertible {
@@ -697,7 +697,7 @@ extension WorkSpacesWebClientTypes.BrowserSettings: Swift.CustomDebugStringConve
         "BrowserSettings(additionalEncryptionContext: \(Swift.String(describing: additionalEncryptionContext)), associatedPortalArns: \(Swift.String(describing: associatedPortalArns)), browserSettingsArn: \(Swift.String(describing: browserSettingsArn)), customerManagedKey: \(Swift.String(describing: customerManagedKey)), browserPolicy: \"CONTENT_REDACTED\")"}
 }
 
-public struct GetBrowserSettingsOutput {
+public struct GetBrowserSettingsOutput: Swift.Sendable {
     /// The browser settings.
     public var browserSettings: WorkSpacesWebClientTypes.BrowserSettings?
 
@@ -709,7 +709,7 @@ public struct GetBrowserSettingsOutput {
     }
 }
 
-public struct ListBrowserSettingsInput {
+public struct ListBrowserSettingsInput: Swift.Sendable {
     /// The maximum number of results to be included in the next page.
     public var maxResults: Swift.Int?
     /// The pagination token used to retrieve the next page of results for this operation.
@@ -726,8 +726,9 @@ public struct ListBrowserSettingsInput {
 }
 
 extension WorkSpacesWebClientTypes {
+
     /// The summary for browser settings.
-    public struct BrowserSettingsSummary {
+    public struct BrowserSettingsSummary: Swift.Sendable {
         /// The ARN of the browser settings.
         /// This member is required.
         public var browserSettingsArn: Swift.String?
@@ -739,10 +740,9 @@ extension WorkSpacesWebClientTypes {
             self.browserSettingsArn = browserSettingsArn
         }
     }
-
 }
 
-public struct ListBrowserSettingsOutput {
+public struct ListBrowserSettingsOutput: Swift.Sendable {
     /// The browser settings.
     public var browserSettings: [WorkSpacesWebClientTypes.BrowserSettingsSummary]?
     /// The pagination token used to retrieve the next page of results for this operation.
@@ -758,7 +758,7 @@ public struct ListBrowserSettingsOutput {
     }
 }
 
-public struct UpdateBrowserSettingsInput {
+public struct UpdateBrowserSettingsInput: Swift.Sendable {
     /// A JSON string containing Chrome Enterprise policies that will be applied to all streaming sessions.
     public var browserPolicy: Swift.String?
     /// The ARN of the browser settings.
@@ -784,7 +784,7 @@ extension UpdateBrowserSettingsInput: Swift.CustomDebugStringConvertible {
         "UpdateBrowserSettingsInput(browserSettingsArn: \(Swift.String(describing: browserSettingsArn)), clientToken: \(Swift.String(describing: clientToken)), browserPolicy: \"CONTENT_REDACTED\")"}
 }
 
-public struct UpdateBrowserSettingsOutput {
+public struct UpdateBrowserSettingsOutput: Swift.Sendable {
     /// The browser settings.
     /// This member is required.
     public var browserSettings: WorkSpacesWebClientTypes.BrowserSettings?
@@ -797,7 +797,7 @@ public struct UpdateBrowserSettingsOutput {
     }
 }
 
-public struct ExpireSessionInput {
+public struct ExpireSessionInput: Swift.Sendable {
     /// The ID of the web portal for the session.
     /// This member is required.
     public var portalId: Swift.String?
@@ -815,12 +815,12 @@ public struct ExpireSessionInput {
     }
 }
 
-public struct ExpireSessionOutput {
+public struct ExpireSessionOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct GetSessionInput {
+public struct GetSessionInput: Swift.Sendable {
     /// The ID of the web portal for the session.
     /// This member is required.
     public var portalId: Swift.String?
@@ -840,7 +840,7 @@ public struct GetSessionInput {
 
 extension WorkSpacesWebClientTypes {
 
-    public enum SessionStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SessionStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case active
         case terminated
         case sdkUnknown(Swift.String)
@@ -868,8 +868,9 @@ extension WorkSpacesWebClientTypes {
 }
 
 extension WorkSpacesWebClientTypes {
+
     /// Information about a secure browser session.
-    public struct Session {
+    public struct Session: Swift.Sendable {
         /// The IP address of the client.
         public var clientIpAddresses: [Swift.String]?
         /// The end time of the session.
@@ -904,7 +905,6 @@ extension WorkSpacesWebClientTypes {
             self.username = username
         }
     }
-
 }
 
 extension WorkSpacesWebClientTypes.Session: Swift.CustomDebugStringConvertible {
@@ -912,7 +912,7 @@ extension WorkSpacesWebClientTypes.Session: Swift.CustomDebugStringConvertible {
         "Session(endTime: \(Swift.String(describing: endTime)), portalArn: \(Swift.String(describing: portalArn)), sessionId: \(Swift.String(describing: sessionId)), startTime: \(Swift.String(describing: startTime)), status: \(Swift.String(describing: status)), clientIpAddresses: \"CONTENT_REDACTED\", username: \"CONTENT_REDACTED\")"}
 }
 
-public struct GetSessionOutput {
+public struct GetSessionOutput: Swift.Sendable {
     /// The sessions in a list.
     public var session: WorkSpacesWebClientTypes.Session?
 
@@ -926,7 +926,7 @@ public struct GetSessionOutput {
 
 extension WorkSpacesWebClientTypes {
 
-    public enum IdentityProviderType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum IdentityProviderType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case facebook
         case google
         case loginwithamazon
@@ -965,7 +965,7 @@ extension WorkSpacesWebClientTypes {
     }
 }
 
-public struct CreateIdentityProviderInput {
+public struct CreateIdentityProviderInput: Swift.Sendable {
     /// A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. Idempotency ensures that an API request completes only once. With an idempotent request, if the original request completes successfully, subsequent retries with the same client token returns the result from the original successful request. If you do not specify a client token, one is automatically generated by the Amazon Web Services SDK.
     public var clientToken: Swift.String?
     /// The identity provider details. The following list describes the provider detail keys for each identity provider type.
@@ -1080,7 +1080,7 @@ extension CreateIdentityProviderInput: Swift.CustomDebugStringConvertible {
         "CreateIdentityProviderInput(clientToken: \(Swift.String(describing: clientToken)), identityProviderType: \(Swift.String(describing: identityProviderType)), portalArn: \(Swift.String(describing: portalArn)), identityProviderDetails: \"CONTENT_REDACTED\", identityProviderName: \"CONTENT_REDACTED\", tags: \"CONTENT_REDACTED\")"}
 }
 
-public struct CreateIdentityProviderOutput {
+public struct CreateIdentityProviderOutput: Swift.Sendable {
     /// The ARN of the identity provider.
     /// This member is required.
     public var identityProviderArn: Swift.String?
@@ -1093,7 +1093,7 @@ public struct CreateIdentityProviderOutput {
     }
 }
 
-public struct DeleteIdentityProviderInput {
+public struct DeleteIdentityProviderInput: Swift.Sendable {
     /// The ARN of the identity provider.
     /// This member is required.
     public var identityProviderArn: Swift.String?
@@ -1106,12 +1106,12 @@ public struct DeleteIdentityProviderInput {
     }
 }
 
-public struct DeleteIdentityProviderOutput {
+public struct DeleteIdentityProviderOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct GetIdentityProviderInput {
+public struct GetIdentityProviderInput: Swift.Sendable {
     /// The ARN of the identity provider.
     /// This member is required.
     public var identityProviderArn: Swift.String?
@@ -1125,8 +1125,9 @@ public struct GetIdentityProviderInput {
 }
 
 extension WorkSpacesWebClientTypes {
+
     /// The identity provider.
-    public struct IdentityProvider {
+    public struct IdentityProvider: Swift.Sendable {
         /// The ARN of the identity provider.
         /// This member is required.
         public var identityProviderArn: Swift.String?
@@ -1224,7 +1225,6 @@ extension WorkSpacesWebClientTypes {
             self.identityProviderType = identityProviderType
         }
     }
-
 }
 
 extension WorkSpacesWebClientTypes.IdentityProvider: Swift.CustomDebugStringConvertible {
@@ -1232,7 +1232,7 @@ extension WorkSpacesWebClientTypes.IdentityProvider: Swift.CustomDebugStringConv
         "IdentityProvider(identityProviderArn: \(Swift.String(describing: identityProviderArn)), identityProviderType: \(Swift.String(describing: identityProviderType)), identityProviderDetails: \"CONTENT_REDACTED\", identityProviderName: \"CONTENT_REDACTED\")"}
 }
 
-public struct GetIdentityProviderOutput {
+public struct GetIdentityProviderOutput: Swift.Sendable {
     /// The identity provider.
     public var identityProvider: WorkSpacesWebClientTypes.IdentityProvider?
 
@@ -1244,7 +1244,7 @@ public struct GetIdentityProviderOutput {
     }
 }
 
-public struct ListIdentityProvidersInput {
+public struct ListIdentityProvidersInput: Swift.Sendable {
     /// The maximum number of results to be included in the next page.
     public var maxResults: Swift.Int?
     /// The pagination token used to retrieve the next page of results for this operation.
@@ -1266,8 +1266,9 @@ public struct ListIdentityProvidersInput {
 }
 
 extension WorkSpacesWebClientTypes {
+
     /// The summary of the identity provider.
-    public struct IdentityProviderSummary {
+    public struct IdentityProviderSummary: Swift.Sendable {
         /// The ARN of the identity provider.
         /// This member is required.
         public var identityProviderArn: Swift.String?
@@ -1287,7 +1288,6 @@ extension WorkSpacesWebClientTypes {
             self.identityProviderType = identityProviderType
         }
     }
-
 }
 
 extension WorkSpacesWebClientTypes.IdentityProviderSummary: Swift.CustomDebugStringConvertible {
@@ -1295,7 +1295,7 @@ extension WorkSpacesWebClientTypes.IdentityProviderSummary: Swift.CustomDebugStr
         "IdentityProviderSummary(identityProviderArn: \(Swift.String(describing: identityProviderArn)), identityProviderType: \(Swift.String(describing: identityProviderType)), identityProviderName: \"CONTENT_REDACTED\")"}
 }
 
-public struct ListIdentityProvidersOutput {
+public struct ListIdentityProvidersOutput: Swift.Sendable {
     /// The identity providers.
     public var identityProviders: [WorkSpacesWebClientTypes.IdentityProviderSummary]?
     /// The pagination token used to retrieve the next page of results for this operation.
@@ -1311,7 +1311,7 @@ public struct ListIdentityProvidersOutput {
     }
 }
 
-public struct UpdateIdentityProviderInput {
+public struct UpdateIdentityProviderInput: Swift.Sendable {
     /// A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. Idempotency ensures that an API request completes only once. With an idempotent request, if the original request completes successfully, subsequent retries with the same client token return the result from the original successful request. If you do not specify a client token, one is automatically generated by the Amazon Web Services SDK.
     public var clientToken: Swift.String?
     /// The ARN of the identity provider.
@@ -1419,7 +1419,7 @@ extension UpdateIdentityProviderInput: Swift.CustomDebugStringConvertible {
         "UpdateIdentityProviderInput(clientToken: \(Swift.String(describing: clientToken)), identityProviderArn: \(Swift.String(describing: identityProviderArn)), identityProviderType: \(Swift.String(describing: identityProviderType)), identityProviderDetails: \"CONTENT_REDACTED\", identityProviderName: \"CONTENT_REDACTED\")"}
 }
 
-public struct UpdateIdentityProviderOutput {
+public struct UpdateIdentityProviderOutput: Swift.Sendable {
     /// The identity provider.
     /// This member is required.
     public var identityProvider: WorkSpacesWebClientTypes.IdentityProvider?
@@ -1433,8 +1433,9 @@ public struct UpdateIdentityProviderOutput {
 }
 
 extension WorkSpacesWebClientTypes {
+
     /// The IP rules of the IP access settings.
-    public struct IpRule {
+    public struct IpRule: Swift.Sendable {
         /// The description of the IP rule.
         public var description: Swift.String?
         /// The IP range of the IP rule.
@@ -1450,7 +1451,6 @@ extension WorkSpacesWebClientTypes {
             self.ipRange = ipRange
         }
     }
-
 }
 
 extension WorkSpacesWebClientTypes.IpRule: Swift.CustomDebugStringConvertible {
@@ -1458,7 +1458,7 @@ extension WorkSpacesWebClientTypes.IpRule: Swift.CustomDebugStringConvertible {
         "IpRule(description: \"CONTENT_REDACTED\", ipRange: \"CONTENT_REDACTED\")"}
 }
 
-public struct CreateIpAccessSettingsInput {
+public struct CreateIpAccessSettingsInput: Swift.Sendable {
     /// Additional encryption context of the IP access settings.
     public var additionalEncryptionContext: [Swift.String: Swift.String]?
     /// A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. Idempotency ensures that an API request completes only once. With an idempotent request, if the original request completes successfully, subsequent retries with the same client token returns the result from the original successful request. If you do not specify a client token, one is automatically generated by the Amazon Web Services SDK.
@@ -1500,7 +1500,7 @@ extension CreateIpAccessSettingsInput: Swift.CustomDebugStringConvertible {
         "CreateIpAccessSettingsInput(additionalEncryptionContext: \(Swift.String(describing: additionalEncryptionContext)), clientToken: \(Swift.String(describing: clientToken)), customerManagedKey: \(Swift.String(describing: customerManagedKey)), description: \"CONTENT_REDACTED\", displayName: \"CONTENT_REDACTED\", ipRules: \"CONTENT_REDACTED\", tags: \"CONTENT_REDACTED\")"}
 }
 
-public struct CreateIpAccessSettingsOutput {
+public struct CreateIpAccessSettingsOutput: Swift.Sendable {
     /// The ARN of the IP access settings resource.
     /// This member is required.
     public var ipAccessSettingsArn: Swift.String?
@@ -1513,7 +1513,7 @@ public struct CreateIpAccessSettingsOutput {
     }
 }
 
-public struct DeleteIpAccessSettingsInput {
+public struct DeleteIpAccessSettingsInput: Swift.Sendable {
     /// The ARN of the IP access settings.
     /// This member is required.
     public var ipAccessSettingsArn: Swift.String?
@@ -1526,12 +1526,12 @@ public struct DeleteIpAccessSettingsInput {
     }
 }
 
-public struct DeleteIpAccessSettingsOutput {
+public struct DeleteIpAccessSettingsOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct GetIpAccessSettingsInput {
+public struct GetIpAccessSettingsInput: Swift.Sendable {
     /// The ARN of the IP access settings.
     /// This member is required.
     public var ipAccessSettingsArn: Swift.String?
@@ -1545,8 +1545,9 @@ public struct GetIpAccessSettingsInput {
 }
 
 extension WorkSpacesWebClientTypes {
+
     /// The IP access settings resource that can be associated with a web portal.
-    public struct IpAccessSettings {
+    public struct IpAccessSettings: Swift.Sendable {
         /// The additional encryption context of the IP access settings.
         public var additionalEncryptionContext: [Swift.String: Swift.String]?
         /// A list of web portal ARNs that this IP access settings resource is associated with.
@@ -1586,7 +1587,6 @@ extension WorkSpacesWebClientTypes {
             self.ipRules = ipRules
         }
     }
-
 }
 
 extension WorkSpacesWebClientTypes.IpAccessSettings: Swift.CustomDebugStringConvertible {
@@ -1594,7 +1594,7 @@ extension WorkSpacesWebClientTypes.IpAccessSettings: Swift.CustomDebugStringConv
         "IpAccessSettings(additionalEncryptionContext: \(Swift.String(describing: additionalEncryptionContext)), associatedPortalArns: \(Swift.String(describing: associatedPortalArns)), creationDate: \(Swift.String(describing: creationDate)), customerManagedKey: \(Swift.String(describing: customerManagedKey)), ipAccessSettingsArn: \(Swift.String(describing: ipAccessSettingsArn)), description: \"CONTENT_REDACTED\", displayName: \"CONTENT_REDACTED\", ipRules: \"CONTENT_REDACTED\")"}
 }
 
-public struct GetIpAccessSettingsOutput {
+public struct GetIpAccessSettingsOutput: Swift.Sendable {
     /// The IP access settings.
     public var ipAccessSettings: WorkSpacesWebClientTypes.IpAccessSettings?
 
@@ -1606,7 +1606,7 @@ public struct GetIpAccessSettingsOutput {
     }
 }
 
-public struct ListIpAccessSettingsInput {
+public struct ListIpAccessSettingsInput: Swift.Sendable {
     /// The maximum number of results to be included in the next page.
     public var maxResults: Swift.Int?
     /// The pagination token used to retrieve the next page of results for this operation.
@@ -1623,8 +1623,9 @@ public struct ListIpAccessSettingsInput {
 }
 
 extension WorkSpacesWebClientTypes {
+
     /// The summary of IP access settings.
-    public struct IpAccessSettingsSummary {
+    public struct IpAccessSettingsSummary: Swift.Sendable {
         /// The creation date timestamp of the IP access settings.
         public var creationDate: Foundation.Date?
         /// The description of the IP access settings.
@@ -1648,7 +1649,6 @@ extension WorkSpacesWebClientTypes {
             self.ipAccessSettingsArn = ipAccessSettingsArn
         }
     }
-
 }
 
 extension WorkSpacesWebClientTypes.IpAccessSettingsSummary: Swift.CustomDebugStringConvertible {
@@ -1656,7 +1656,7 @@ extension WorkSpacesWebClientTypes.IpAccessSettingsSummary: Swift.CustomDebugStr
         "IpAccessSettingsSummary(creationDate: \(Swift.String(describing: creationDate)), ipAccessSettingsArn: \(Swift.String(describing: ipAccessSettingsArn)), description: \"CONTENT_REDACTED\", displayName: \"CONTENT_REDACTED\")"}
 }
 
-public struct ListIpAccessSettingsOutput {
+public struct ListIpAccessSettingsOutput: Swift.Sendable {
     /// The IP access settings.
     public var ipAccessSettings: [WorkSpacesWebClientTypes.IpAccessSettingsSummary]?
     /// The pagination token used to retrieve the next page of results for this operation.
@@ -1672,7 +1672,7 @@ public struct ListIpAccessSettingsOutput {
     }
 }
 
-public struct UpdateIpAccessSettingsInput {
+public struct UpdateIpAccessSettingsInput: Swift.Sendable {
     /// A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. Idempotency ensures that an API request completes only once. With an idempotent request, if the original request completes successfully, subsequent retries with the same client token return the result from the original successful request. If you do not specify a client token, one is automatically generated by the Amazon Web Services SDK.
     public var clientToken: Swift.String?
     /// The description of the IP access settings.
@@ -1706,7 +1706,7 @@ extension UpdateIpAccessSettingsInput: Swift.CustomDebugStringConvertible {
         "UpdateIpAccessSettingsInput(clientToken: \(Swift.String(describing: clientToken)), ipAccessSettingsArn: \(Swift.String(describing: ipAccessSettingsArn)), description: \"CONTENT_REDACTED\", displayName: \"CONTENT_REDACTED\", ipRules: \"CONTENT_REDACTED\")"}
 }
 
-public struct UpdateIpAccessSettingsOutput {
+public struct UpdateIpAccessSettingsOutput: Swift.Sendable {
     /// The IP access settings.
     /// This member is required.
     public var ipAccessSettings: WorkSpacesWebClientTypes.IpAccessSettings?
@@ -1721,7 +1721,7 @@ public struct UpdateIpAccessSettingsOutput {
 
 extension WorkSpacesWebClientTypes {
 
-    public enum SessionSortBy: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SessionSortBy: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case startTimeAscending
         case startTimeDescending
         case sdkUnknown(Swift.String)
@@ -1748,7 +1748,7 @@ extension WorkSpacesWebClientTypes {
     }
 }
 
-public struct ListSessionsInput {
+public struct ListSessionsInput: Swift.Sendable {
     /// The maximum number of results to be included in the next page.
     public var maxResults: Swift.Int?
     /// The pagination token used to retrieve the next page of results for this operation.
@@ -1791,8 +1791,9 @@ extension ListSessionsInput: Swift.CustomDebugStringConvertible {
 }
 
 extension WorkSpacesWebClientTypes {
+
     /// Summary information about a secure browser session.
-    public struct SessionSummary {
+    public struct SessionSummary: Swift.Sendable {
         /// The end time of the session.
         public var endTime: Foundation.Date?
         /// The ARN of the web portal.
@@ -1823,7 +1824,6 @@ extension WorkSpacesWebClientTypes {
             self.username = username
         }
     }
-
 }
 
 extension WorkSpacesWebClientTypes.SessionSummary: Swift.CustomDebugStringConvertible {
@@ -1831,7 +1831,7 @@ extension WorkSpacesWebClientTypes.SessionSummary: Swift.CustomDebugStringConver
         "SessionSummary(endTime: \(Swift.String(describing: endTime)), portalArn: \(Swift.String(describing: portalArn)), sessionId: \(Swift.String(describing: sessionId)), startTime: \(Swift.String(describing: startTime)), status: \(Swift.String(describing: status)), username: \"CONTENT_REDACTED\")"}
 }
 
-public struct ListSessionsOutput {
+public struct ListSessionsOutput: Swift.Sendable {
     /// The pagination token used to retrieve the next page of results for this operation.
     public var nextToken: Swift.String?
     /// The sessions in a list.
@@ -1848,7 +1848,7 @@ public struct ListSessionsOutput {
     }
 }
 
-public struct ListTagsForResourceInput {
+public struct ListTagsForResourceInput: Swift.Sendable {
     /// The ARN of the resource.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -1861,7 +1861,7 @@ public struct ListTagsForResourceInput {
     }
 }
 
-public struct ListTagsForResourceOutput {
+public struct ListTagsForResourceOutput: Swift.Sendable {
     /// The tags of the resource.
     public var tags: [WorkSpacesWebClientTypes.Tag]?
 
@@ -1878,7 +1878,7 @@ extension ListTagsForResourceOutput: Swift.CustomDebugStringConvertible {
         "ListTagsForResourceOutput(tags: \"CONTENT_REDACTED\")"}
 }
 
-public struct CreateNetworkSettingsInput {
+public struct CreateNetworkSettingsInput: Swift.Sendable {
     /// A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. Idempotency ensures that an API request completes only once. With an idempotent request, if the original request completes successfully, subsequent retries with the same client token returns the result from the original successful request. If you do not specify a client token, one is automatically generated by the Amazon Web Services SDK.
     public var clientToken: Swift.String?
     /// One or more security groups used to control access from streaming instances to your VPC.
@@ -1914,7 +1914,7 @@ extension CreateNetworkSettingsInput: Swift.CustomDebugStringConvertible {
         "CreateNetworkSettingsInput(clientToken: \(Swift.String(describing: clientToken)), securityGroupIds: \(Swift.String(describing: securityGroupIds)), subnetIds: \(Swift.String(describing: subnetIds)), vpcId: \(Swift.String(describing: vpcId)), tags: \"CONTENT_REDACTED\")"}
 }
 
-public struct CreateNetworkSettingsOutput {
+public struct CreateNetworkSettingsOutput: Swift.Sendable {
     /// The ARN of the network settings.
     /// This member is required.
     public var networkSettingsArn: Swift.String?
@@ -1927,7 +1927,7 @@ public struct CreateNetworkSettingsOutput {
     }
 }
 
-public struct DeleteNetworkSettingsInput {
+public struct DeleteNetworkSettingsInput: Swift.Sendable {
     /// The ARN of the network settings.
     /// This member is required.
     public var networkSettingsArn: Swift.String?
@@ -1940,12 +1940,12 @@ public struct DeleteNetworkSettingsInput {
     }
 }
 
-public struct DeleteNetworkSettingsOutput {
+public struct DeleteNetworkSettingsOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct GetNetworkSettingsInput {
+public struct GetNetworkSettingsInput: Swift.Sendable {
     /// The ARN of the network settings.
     /// This member is required.
     public var networkSettingsArn: Swift.String?
@@ -1959,8 +1959,9 @@ public struct GetNetworkSettingsInput {
 }
 
 extension WorkSpacesWebClientTypes {
+
     /// A network settings resource that can be associated with a web portal. Once associated with a web portal, network settings define how streaming instances will connect with your specified VPC.
-    public struct NetworkSettings {
+    public struct NetworkSettings: Swift.Sendable {
         /// A list of web portal ARNs that this network settings is associated with.
         public var associatedPortalArns: [Swift.String]?
         /// The ARN of the network settings.
@@ -1988,10 +1989,9 @@ extension WorkSpacesWebClientTypes {
             self.vpcId = vpcId
         }
     }
-
 }
 
-public struct GetNetworkSettingsOutput {
+public struct GetNetworkSettingsOutput: Swift.Sendable {
     /// The network settings.
     public var networkSettings: WorkSpacesWebClientTypes.NetworkSettings?
 
@@ -2003,7 +2003,7 @@ public struct GetNetworkSettingsOutput {
     }
 }
 
-public struct ListNetworkSettingsInput {
+public struct ListNetworkSettingsInput: Swift.Sendable {
     /// The maximum number of results to be included in the next page.
     public var maxResults: Swift.Int?
     /// The pagination token used to retrieve the next page of results for this operation.
@@ -2020,8 +2020,9 @@ public struct ListNetworkSettingsInput {
 }
 
 extension WorkSpacesWebClientTypes {
+
     /// The summary of network settings.
-    public struct NetworkSettingsSummary {
+    public struct NetworkSettingsSummary: Swift.Sendable {
         /// The ARN of the network settings.
         /// This member is required.
         public var networkSettingsArn: Swift.String?
@@ -2037,10 +2038,9 @@ extension WorkSpacesWebClientTypes {
             self.vpcId = vpcId
         }
     }
-
 }
 
-public struct ListNetworkSettingsOutput {
+public struct ListNetworkSettingsOutput: Swift.Sendable {
     /// The network settings.
     public var networkSettings: [WorkSpacesWebClientTypes.NetworkSettingsSummary]?
     /// The pagination token used to retrieve the next page of results for this operation.
@@ -2056,7 +2056,7 @@ public struct ListNetworkSettingsOutput {
     }
 }
 
-public struct UpdateNetworkSettingsInput {
+public struct UpdateNetworkSettingsInput: Swift.Sendable {
     /// A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. Idempotency ensures that an API request completes only once. With an idempotent request, if the original request completes successfully, subsequent retries with the same client token return the result from the original successful request. If you do not specify a client token, one is automatically generated by the Amazon Web Services SDK.
     public var clientToken: Swift.String?
     /// The ARN of the network settings.
@@ -2085,7 +2085,7 @@ public struct UpdateNetworkSettingsInput {
     }
 }
 
-public struct UpdateNetworkSettingsOutput {
+public struct UpdateNetworkSettingsOutput: Swift.Sendable {
     /// The network settings.
     /// This member is required.
     public var networkSettings: WorkSpacesWebClientTypes.NetworkSettings?
@@ -2100,7 +2100,7 @@ public struct UpdateNetworkSettingsOutput {
 
 extension WorkSpacesWebClientTypes {
 
-    public enum BrowserType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum BrowserType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case chrome
         case sdkUnknown(Swift.String)
 
@@ -2126,7 +2126,7 @@ extension WorkSpacesWebClientTypes {
 
 extension WorkSpacesWebClientTypes {
 
-    public enum InstanceType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum InstanceType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case standardLarge
         case standardRegular
         case standardXlarge
@@ -2156,7 +2156,7 @@ extension WorkSpacesWebClientTypes {
     }
 }
 
-public struct CreatePortalInput {
+public struct CreatePortalInput: Swift.Sendable {
     /// The additional encryption context of the portal.
     public var additionalEncryptionContext: [Swift.String: Swift.String]?
     /// The type of authentication integration points used when signing into the web portal. Defaults to Standard. Standard web portals are authenticated directly through your identity provider. You need to call CreateIdentityProvider to integrate your identity provider with your web portal. User and group access to your web portal is controlled through your identity provider. IAM Identity Center web portals are authenticated through IAM Identity Center. Identity sources (including external identity provider integration), plus user and group access to your web portal, can be configured in the IAM Identity Center.
@@ -2201,7 +2201,7 @@ extension CreatePortalInput: Swift.CustomDebugStringConvertible {
         "CreatePortalInput(additionalEncryptionContext: \(Swift.String(describing: additionalEncryptionContext)), authenticationType: \(Swift.String(describing: authenticationType)), clientToken: \(Swift.String(describing: clientToken)), customerManagedKey: \(Swift.String(describing: customerManagedKey)), instanceType: \(Swift.String(describing: instanceType)), maxConcurrentSessions: \(Swift.String(describing: maxConcurrentSessions)), displayName: \"CONTENT_REDACTED\", tags: \"CONTENT_REDACTED\")"}
 }
 
-public struct CreatePortalOutput {
+public struct CreatePortalOutput: Swift.Sendable {
     /// The ARN of the web portal.
     /// This member is required.
     public var portalArn: Swift.String?
@@ -2219,7 +2219,7 @@ public struct CreatePortalOutput {
     }
 }
 
-public struct DeletePortalInput {
+public struct DeletePortalInput: Swift.Sendable {
     /// The ARN of the web portal.
     /// This member is required.
     public var portalArn: Swift.String?
@@ -2232,12 +2232,12 @@ public struct DeletePortalInput {
     }
 }
 
-public struct DeletePortalOutput {
+public struct DeletePortalOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DisassociateBrowserSettingsInput {
+public struct DisassociateBrowserSettingsInput: Swift.Sendable {
     /// The ARN of the web portal.
     /// This member is required.
     public var portalArn: Swift.String?
@@ -2250,12 +2250,12 @@ public struct DisassociateBrowserSettingsInput {
     }
 }
 
-public struct DisassociateBrowserSettingsOutput {
+public struct DisassociateBrowserSettingsOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DisassociateIpAccessSettingsInput {
+public struct DisassociateIpAccessSettingsInput: Swift.Sendable {
     /// The ARN of the web portal.
     /// This member is required.
     public var portalArn: Swift.String?
@@ -2268,12 +2268,12 @@ public struct DisassociateIpAccessSettingsInput {
     }
 }
 
-public struct DisassociateIpAccessSettingsOutput {
+public struct DisassociateIpAccessSettingsOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DisassociateNetworkSettingsInput {
+public struct DisassociateNetworkSettingsInput: Swift.Sendable {
     /// The ARN of the web portal.
     /// This member is required.
     public var portalArn: Swift.String?
@@ -2286,12 +2286,12 @@ public struct DisassociateNetworkSettingsInput {
     }
 }
 
-public struct DisassociateNetworkSettingsOutput {
+public struct DisassociateNetworkSettingsOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DisassociateTrustStoreInput {
+public struct DisassociateTrustStoreInput: Swift.Sendable {
     /// The ARN of the web portal.
     /// This member is required.
     public var portalArn: Swift.String?
@@ -2304,12 +2304,12 @@ public struct DisassociateTrustStoreInput {
     }
 }
 
-public struct DisassociateTrustStoreOutput {
+public struct DisassociateTrustStoreOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DisassociateUserAccessLoggingSettingsInput {
+public struct DisassociateUserAccessLoggingSettingsInput: Swift.Sendable {
     /// The ARN of the web portal.
     /// This member is required.
     public var portalArn: Swift.String?
@@ -2322,12 +2322,12 @@ public struct DisassociateUserAccessLoggingSettingsInput {
     }
 }
 
-public struct DisassociateUserAccessLoggingSettingsOutput {
+public struct DisassociateUserAccessLoggingSettingsOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DisassociateUserSettingsInput {
+public struct DisassociateUserSettingsInput: Swift.Sendable {
     /// The ARN of the web portal.
     /// This member is required.
     public var portalArn: Swift.String?
@@ -2340,12 +2340,12 @@ public struct DisassociateUserSettingsInput {
     }
 }
 
-public struct DisassociateUserSettingsOutput {
+public struct DisassociateUserSettingsOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct GetPortalInput {
+public struct GetPortalInput: Swift.Sendable {
     /// The ARN of the web portal.
     /// This member is required.
     public var portalArn: Swift.String?
@@ -2360,7 +2360,7 @@ public struct GetPortalInput {
 
 extension WorkSpacesWebClientTypes {
 
-    public enum PortalStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum PortalStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case active
         case incomplete
         case pending
@@ -2392,7 +2392,7 @@ extension WorkSpacesWebClientTypes {
 
 extension WorkSpacesWebClientTypes {
 
-    public enum RendererType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum RendererType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case appstream
         case sdkUnknown(Swift.String)
 
@@ -2417,8 +2417,9 @@ extension WorkSpacesWebClientTypes {
 }
 
 extension WorkSpacesWebClientTypes {
+
     /// The web portal.
-    public struct Portal {
+    public struct Portal: Swift.Sendable {
         /// The additional encryption context of the portal.
         public var additionalEncryptionContext: [Swift.String: Swift.String]?
         /// The type of authentication integration points used when signing into the web portal. Defaults to Standard. Standard web portals are authenticated directly through your identity provider. You need to call CreateIdentityProvider to integrate your identity provider with your web portal. User and group access to your web portal is controlled through your identity provider. IAM Identity Center web portals are authenticated through IAM Identity Center. Identity sources (including external identity provider integration), plus user and group access to your web portal, can be configured in the IAM Identity Center.
@@ -2502,7 +2503,6 @@ extension WorkSpacesWebClientTypes {
             self.userSettingsArn = userSettingsArn
         }
     }
-
 }
 
 extension WorkSpacesWebClientTypes.Portal: Swift.CustomDebugStringConvertible {
@@ -2510,7 +2510,7 @@ extension WorkSpacesWebClientTypes.Portal: Swift.CustomDebugStringConvertible {
         "Portal(additionalEncryptionContext: \(Swift.String(describing: additionalEncryptionContext)), authenticationType: \(Swift.String(describing: authenticationType)), browserSettingsArn: \(Swift.String(describing: browserSettingsArn)), browserType: \(Swift.String(describing: browserType)), creationDate: \(Swift.String(describing: creationDate)), customerManagedKey: \(Swift.String(describing: customerManagedKey)), instanceType: \(Swift.String(describing: instanceType)), ipAccessSettingsArn: \(Swift.String(describing: ipAccessSettingsArn)), maxConcurrentSessions: \(Swift.String(describing: maxConcurrentSessions)), networkSettingsArn: \(Swift.String(describing: networkSettingsArn)), portalArn: \(Swift.String(describing: portalArn)), portalEndpoint: \(Swift.String(describing: portalEndpoint)), portalStatus: \(Swift.String(describing: portalStatus)), rendererType: \(Swift.String(describing: rendererType)), statusReason: \(Swift.String(describing: statusReason)), trustStoreArn: \(Swift.String(describing: trustStoreArn)), userAccessLoggingSettingsArn: \(Swift.String(describing: userAccessLoggingSettingsArn)), userSettingsArn: \(Swift.String(describing: userSettingsArn)), displayName: \"CONTENT_REDACTED\")"}
 }
 
-public struct GetPortalOutput {
+public struct GetPortalOutput: Swift.Sendable {
     /// The web portal.
     public var portal: WorkSpacesWebClientTypes.Portal?
 
@@ -2522,7 +2522,7 @@ public struct GetPortalOutput {
     }
 }
 
-public struct GetPortalServiceProviderMetadataInput {
+public struct GetPortalServiceProviderMetadataInput: Swift.Sendable {
     /// The ARN of the web portal.
     /// This member is required.
     public var portalArn: Swift.String?
@@ -2535,7 +2535,7 @@ public struct GetPortalServiceProviderMetadataInput {
     }
 }
 
-public struct GetPortalServiceProviderMetadataOutput {
+public struct GetPortalServiceProviderMetadataOutput: Swift.Sendable {
     /// The ARN of the web portal.
     /// This member is required.
     public var portalArn: Swift.String?
@@ -2552,7 +2552,7 @@ public struct GetPortalServiceProviderMetadataOutput {
     }
 }
 
-public struct ListPortalsInput {
+public struct ListPortalsInput: Swift.Sendable {
     /// The maximum number of results to be included in the next page.
     public var maxResults: Swift.Int?
     /// The pagination token used to retrieve the next page of results for this operation.
@@ -2569,8 +2569,9 @@ public struct ListPortalsInput {
 }
 
 extension WorkSpacesWebClientTypes {
+
     /// The summary of the portal.
-    public struct PortalSummary {
+    public struct PortalSummary: Swift.Sendable {
         /// The type of authentication integration points used when signing into the web portal. Defaults to Standard. Standard web portals are authenticated directly through your identity provider. You need to call CreateIdentityProvider to integrate your identity provider with your web portal. User and group access to your web portal is controlled through your identity provider. IAM Identity Center web portals are authenticated through IAM Identity Center. Identity sources (including external identity provider integration), plus user and group access to your web portal, can be configured in the IAM Identity Center.
         public var authenticationType: WorkSpacesWebClientTypes.AuthenticationType?
         /// The ARN of the browser settings that is associated with the web portal.
@@ -2642,7 +2643,6 @@ extension WorkSpacesWebClientTypes {
             self.userSettingsArn = userSettingsArn
         }
     }
-
 }
 
 extension WorkSpacesWebClientTypes.PortalSummary: Swift.CustomDebugStringConvertible {
@@ -2650,7 +2650,7 @@ extension WorkSpacesWebClientTypes.PortalSummary: Swift.CustomDebugStringConvert
         "PortalSummary(authenticationType: \(Swift.String(describing: authenticationType)), browserSettingsArn: \(Swift.String(describing: browserSettingsArn)), browserType: \(Swift.String(describing: browserType)), creationDate: \(Swift.String(describing: creationDate)), instanceType: \(Swift.String(describing: instanceType)), ipAccessSettingsArn: \(Swift.String(describing: ipAccessSettingsArn)), maxConcurrentSessions: \(Swift.String(describing: maxConcurrentSessions)), networkSettingsArn: \(Swift.String(describing: networkSettingsArn)), portalArn: \(Swift.String(describing: portalArn)), portalEndpoint: \(Swift.String(describing: portalEndpoint)), portalStatus: \(Swift.String(describing: portalStatus)), rendererType: \(Swift.String(describing: rendererType)), trustStoreArn: \(Swift.String(describing: trustStoreArn)), userAccessLoggingSettingsArn: \(Swift.String(describing: userAccessLoggingSettingsArn)), userSettingsArn: \(Swift.String(describing: userSettingsArn)), displayName: \"CONTENT_REDACTED\")"}
 }
 
-public struct ListPortalsOutput {
+public struct ListPortalsOutput: Swift.Sendable {
     /// The pagination token used to retrieve the next page of results for this operation.
     public var nextToken: Swift.String?
     /// The portals in the list.
@@ -2666,7 +2666,7 @@ public struct ListPortalsOutput {
     }
 }
 
-public struct UpdatePortalInput {
+public struct UpdatePortalInput: Swift.Sendable {
     /// The type of authentication integration points used when signing into the web portal. Defaults to Standard. Standard web portals are authenticated directly through your identity provider. You need to call CreateIdentityProvider to integrate your identity provider with your web portal. User and group access to your web portal is controlled through your identity provider. IAM Identity Center web portals are authenticated through IAM Identity Center. Identity sources (including external identity provider integration), plus user and group access to your web portal, can be configured in the IAM Identity Center.
     public var authenticationType: WorkSpacesWebClientTypes.AuthenticationType?
     /// The name of the web portal. This is not visible to users who log into the web portal.
@@ -2700,7 +2700,7 @@ extension UpdatePortalInput: Swift.CustomDebugStringConvertible {
         "UpdatePortalInput(authenticationType: \(Swift.String(describing: authenticationType)), instanceType: \(Swift.String(describing: instanceType)), maxConcurrentSessions: \(Swift.String(describing: maxConcurrentSessions)), portalArn: \(Swift.String(describing: portalArn)), displayName: \"CONTENT_REDACTED\")"}
 }
 
-public struct UpdatePortalOutput {
+public struct UpdatePortalOutput: Swift.Sendable {
     /// The web portal.
     public var portal: WorkSpacesWebClientTypes.Portal?
 
@@ -2740,7 +2740,7 @@ public struct TooManyTagsException: ClientRuntime.ModeledError, AWSClientRuntime
     }
 }
 
-public struct TagResourceInput {
+public struct TagResourceInput: Swift.Sendable {
     /// A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. Idempotency ensures that an API request completes only once. With an idempotent request, if the original request completes successfully, subsequent retries with the same client token returns the result from the original successful request. If you do not specify a client token, one is automatically generated by the Amazon Web Services SDK.
     public var clientToken: Swift.String?
     /// The ARN of the resource.
@@ -2767,14 +2767,15 @@ extension TagResourceInput: Swift.CustomDebugStringConvertible {
         "TagResourceInput(clientToken: \(Swift.String(describing: clientToken)), resourceArn: \(Swift.String(describing: resourceArn)), tags: \"CONTENT_REDACTED\")"}
 }
 
-public struct TagResourceOutput {
+public struct TagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
 extension WorkSpacesWebClientTypes {
+
     /// The summary of the certificate.
-    public struct CertificateSummary {
+    public struct CertificateSummary: Swift.Sendable {
         /// The entity that issued the certificate.
         public var issuer: Swift.String?
         /// The certificate is not valid after this date.
@@ -2801,10 +2802,9 @@ extension WorkSpacesWebClientTypes {
             self.thumbprint = thumbprint
         }
     }
-
 }
 
-public struct CreateTrustStoreInput {
+public struct CreateTrustStoreInput: Swift.Sendable {
     /// A list of CA certificates to be added to the trust store.
     /// This member is required.
     public var certificateList: [Foundation.Data]?
@@ -2830,7 +2830,7 @@ extension CreateTrustStoreInput: Swift.CustomDebugStringConvertible {
         "CreateTrustStoreInput(certificateList: \(Swift.String(describing: certificateList)), clientToken: \(Swift.String(describing: clientToken)), tags: \"CONTENT_REDACTED\")"}
 }
 
-public struct CreateTrustStoreOutput {
+public struct CreateTrustStoreOutput: Swift.Sendable {
     /// The ARN of the trust store.
     /// This member is required.
     public var trustStoreArn: Swift.String?
@@ -2843,7 +2843,7 @@ public struct CreateTrustStoreOutput {
     }
 }
 
-public struct DeleteTrustStoreInput {
+public struct DeleteTrustStoreInput: Swift.Sendable {
     /// The ARN of the trust store.
     /// This member is required.
     public var trustStoreArn: Swift.String?
@@ -2856,12 +2856,12 @@ public struct DeleteTrustStoreInput {
     }
 }
 
-public struct DeleteTrustStoreOutput {
+public struct DeleteTrustStoreOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct GetTrustStoreInput {
+public struct GetTrustStoreInput: Swift.Sendable {
     /// The ARN of the trust store.
     /// This member is required.
     public var trustStoreArn: Swift.String?
@@ -2875,8 +2875,9 @@ public struct GetTrustStoreInput {
 }
 
 extension WorkSpacesWebClientTypes {
+
     /// A trust store that can be associated with a web portal. A trust store contains certificate authority (CA) certificates. Once associated with a web portal, the browser in a streaming session will recognize certificates that have been issued using any of the CAs in the trust store. If your organization has internal websites that use certificates issued by private CAs, you should add the private CA certificate to the trust store.
-    public struct TrustStore {
+    public struct TrustStore: Swift.Sendable {
         /// A list of web portal ARNs that this trust store is associated with.
         public var associatedPortalArns: [Swift.String]?
         /// The ARN of the trust store.
@@ -2892,10 +2893,9 @@ extension WorkSpacesWebClientTypes {
             self.trustStoreArn = trustStoreArn
         }
     }
-
 }
 
-public struct GetTrustStoreOutput {
+public struct GetTrustStoreOutput: Swift.Sendable {
     /// The trust store.
     public var trustStore: WorkSpacesWebClientTypes.TrustStore?
 
@@ -2907,7 +2907,7 @@ public struct GetTrustStoreOutput {
     }
 }
 
-public struct GetTrustStoreCertificateInput {
+public struct GetTrustStoreCertificateInput: Swift.Sendable {
     /// The thumbprint of the trust store certificate.
     /// This member is required.
     public var thumbprint: Swift.String?
@@ -2926,8 +2926,9 @@ public struct GetTrustStoreCertificateInput {
 }
 
 extension WorkSpacesWebClientTypes {
+
     /// The certificate.
-    public struct Certificate {
+    public struct Certificate: Swift.Sendable {
         /// The body of the certificate.
         public var body: Foundation.Data?
         /// The entity that issued the certificate.
@@ -2958,10 +2959,9 @@ extension WorkSpacesWebClientTypes {
             self.thumbprint = thumbprint
         }
     }
-
 }
 
-public struct GetTrustStoreCertificateOutput {
+public struct GetTrustStoreCertificateOutput: Swift.Sendable {
     /// The certificate of the trust store certificate.
     public var certificate: WorkSpacesWebClientTypes.Certificate?
     /// The ARN of the trust store certificate.
@@ -2978,7 +2978,7 @@ public struct GetTrustStoreCertificateOutput {
     }
 }
 
-public struct ListTrustStoreCertificatesInput {
+public struct ListTrustStoreCertificatesInput: Swift.Sendable {
     /// The maximum number of results to be included in the next page.
     public var maxResults: Swift.Int?
     /// The pagination token used to retrieve the next page of results for this operation.
@@ -2999,7 +2999,7 @@ public struct ListTrustStoreCertificatesInput {
     }
 }
 
-public struct ListTrustStoreCertificatesOutput {
+public struct ListTrustStoreCertificatesOutput: Swift.Sendable {
     /// The certificate list.
     public var certificateList: [WorkSpacesWebClientTypes.CertificateSummary]?
     /// The pagination token used to retrieve the next page of results for this operation.>
@@ -3020,7 +3020,7 @@ public struct ListTrustStoreCertificatesOutput {
     }
 }
 
-public struct ListTrustStoresInput {
+public struct ListTrustStoresInput: Swift.Sendable {
     /// The maximum number of results to be included in the next page.
     public var maxResults: Swift.Int?
     /// The pagination token used to retrieve the next page of results for this operation.
@@ -3037,8 +3037,9 @@ public struct ListTrustStoresInput {
 }
 
 extension WorkSpacesWebClientTypes {
+
     /// The summary of the trust store.
-    public struct TrustStoreSummary {
+    public struct TrustStoreSummary: Swift.Sendable {
         /// The ARN of the trust store.
         public var trustStoreArn: Swift.String?
 
@@ -3049,10 +3050,9 @@ extension WorkSpacesWebClientTypes {
             self.trustStoreArn = trustStoreArn
         }
     }
-
 }
 
-public struct ListTrustStoresOutput {
+public struct ListTrustStoresOutput: Swift.Sendable {
     /// The pagination token used to retrieve the next page of results for this operation.
     public var nextToken: Swift.String?
     /// The trust stores.
@@ -3068,7 +3068,7 @@ public struct ListTrustStoresOutput {
     }
 }
 
-public struct UpdateTrustStoreInput {
+public struct UpdateTrustStoreInput: Swift.Sendable {
     /// A list of CA certificates to add to the trust store.
     public var certificatesToAdd: [Foundation.Data]?
     /// A list of CA certificates to delete from a trust store.
@@ -3093,7 +3093,7 @@ public struct UpdateTrustStoreInput {
     }
 }
 
-public struct UpdateTrustStoreOutput {
+public struct UpdateTrustStoreOutput: Swift.Sendable {
     /// The ARN of the trust store.
     /// This member is required.
     public var trustStoreArn: Swift.String?
@@ -3106,7 +3106,7 @@ public struct UpdateTrustStoreOutput {
     }
 }
 
-public struct UntagResourceInput {
+public struct UntagResourceInput: Swift.Sendable {
     /// The ARN of the resource.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -3129,12 +3129,12 @@ extension UntagResourceInput: Swift.CustomDebugStringConvertible {
         "UntagResourceInput(resourceArn: \(Swift.String(describing: resourceArn)), tagKeys: \"CONTENT_REDACTED\")"}
 }
 
-public struct UntagResourceOutput {
+public struct UntagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct CreateUserAccessLoggingSettingsInput {
+public struct CreateUserAccessLoggingSettingsInput: Swift.Sendable {
     /// A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. Idempotency ensures that an API request completes only once. With an idempotent request, if the original request completes successfully, subsequent retries with the same client token returns the result from the original successful request. If you do not specify a client token, one is automatically generated by the Amazon Web Services SDK.
     public var clientToken: Swift.String?
     /// The ARN of the Kinesis stream.
@@ -3160,7 +3160,7 @@ extension CreateUserAccessLoggingSettingsInput: Swift.CustomDebugStringConvertib
         "CreateUserAccessLoggingSettingsInput(clientToken: \(Swift.String(describing: clientToken)), kinesisStreamArn: \(Swift.String(describing: kinesisStreamArn)), tags: \"CONTENT_REDACTED\")"}
 }
 
-public struct CreateUserAccessLoggingSettingsOutput {
+public struct CreateUserAccessLoggingSettingsOutput: Swift.Sendable {
     /// The ARN of the user access logging settings.
     /// This member is required.
     public var userAccessLoggingSettingsArn: Swift.String?
@@ -3173,7 +3173,7 @@ public struct CreateUserAccessLoggingSettingsOutput {
     }
 }
 
-public struct DeleteUserAccessLoggingSettingsInput {
+public struct DeleteUserAccessLoggingSettingsInput: Swift.Sendable {
     /// The ARN of the user access logging settings.
     /// This member is required.
     public var userAccessLoggingSettingsArn: Swift.String?
@@ -3186,12 +3186,12 @@ public struct DeleteUserAccessLoggingSettingsInput {
     }
 }
 
-public struct DeleteUserAccessLoggingSettingsOutput {
+public struct DeleteUserAccessLoggingSettingsOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct GetUserAccessLoggingSettingsInput {
+public struct GetUserAccessLoggingSettingsInput: Swift.Sendable {
     /// The ARN of the user access logging settings.
     /// This member is required.
     public var userAccessLoggingSettingsArn: Swift.String?
@@ -3205,8 +3205,9 @@ public struct GetUserAccessLoggingSettingsInput {
 }
 
 extension WorkSpacesWebClientTypes {
+
     /// A user access logging settings resource that can be associated with a web portal.
-    public struct UserAccessLoggingSettings {
+    public struct UserAccessLoggingSettings: Swift.Sendable {
         /// A list of web portal ARNs that this user access logging settings is associated with.
         public var associatedPortalArns: [Swift.String]?
         /// The ARN of the Kinesis stream.
@@ -3226,10 +3227,9 @@ extension WorkSpacesWebClientTypes {
             self.userAccessLoggingSettingsArn = userAccessLoggingSettingsArn
         }
     }
-
 }
 
-public struct GetUserAccessLoggingSettingsOutput {
+public struct GetUserAccessLoggingSettingsOutput: Swift.Sendable {
     /// The user access logging settings.
     public var userAccessLoggingSettings: WorkSpacesWebClientTypes.UserAccessLoggingSettings?
 
@@ -3241,7 +3241,7 @@ public struct GetUserAccessLoggingSettingsOutput {
     }
 }
 
-public struct ListUserAccessLoggingSettingsInput {
+public struct ListUserAccessLoggingSettingsInput: Swift.Sendable {
     /// The maximum number of results to be included in the next page.
     public var maxResults: Swift.Int?
     /// The pagination token used to retrieve the next page of results for this operation.
@@ -3258,8 +3258,9 @@ public struct ListUserAccessLoggingSettingsInput {
 }
 
 extension WorkSpacesWebClientTypes {
+
     /// The summary of user access logging settings.
-    public struct UserAccessLoggingSettingsSummary {
+    public struct UserAccessLoggingSettingsSummary: Swift.Sendable {
         /// The ARN of the Kinesis stream.
         public var kinesisStreamArn: Swift.String?
         /// The ARN of the user access logging settings.
@@ -3275,10 +3276,9 @@ extension WorkSpacesWebClientTypes {
             self.userAccessLoggingSettingsArn = userAccessLoggingSettingsArn
         }
     }
-
 }
 
-public struct ListUserAccessLoggingSettingsOutput {
+public struct ListUserAccessLoggingSettingsOutput: Swift.Sendable {
     /// The pagination token used to retrieve the next page of results for this operation.
     public var nextToken: Swift.String?
     /// The user access logging settings.
@@ -3294,7 +3294,7 @@ public struct ListUserAccessLoggingSettingsOutput {
     }
 }
 
-public struct UpdateUserAccessLoggingSettingsInput {
+public struct UpdateUserAccessLoggingSettingsInput: Swift.Sendable {
     /// A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. Idempotency ensures that an API request completes only once. With an idempotent request, if the original request completes successfully, subsequent retries with the same client token return the result from the original successful request. If you do not specify a client token, one is automatically generated by the Amazon Web Services SDK.
     public var clientToken: Swift.String?
     /// The ARN of the Kinesis stream.
@@ -3315,7 +3315,7 @@ public struct UpdateUserAccessLoggingSettingsInput {
     }
 }
 
-public struct UpdateUserAccessLoggingSettingsOutput {
+public struct UpdateUserAccessLoggingSettingsOutput: Swift.Sendable {
     /// The user access logging settings.
     /// This member is required.
     public var userAccessLoggingSettings: WorkSpacesWebClientTypes.UserAccessLoggingSettings?
@@ -3329,8 +3329,9 @@ public struct UpdateUserAccessLoggingSettingsOutput {
 }
 
 extension WorkSpacesWebClientTypes {
+
     /// Specifies a single cookie or set of cookies in an end user's browser.
-    public struct CookieSpecification {
+    public struct CookieSpecification: Swift.Sendable {
         /// The domain of the cookie.
         /// This member is required.
         public var domain: Swift.String?
@@ -3350,7 +3351,6 @@ extension WorkSpacesWebClientTypes {
             self.path = path
         }
     }
-
 }
 
 extension WorkSpacesWebClientTypes.CookieSpecification: Swift.CustomDebugStringConvertible {
@@ -3359,8 +3359,9 @@ extension WorkSpacesWebClientTypes.CookieSpecification: Swift.CustomDebugStringC
 }
 
 extension WorkSpacesWebClientTypes {
+
     /// The configuration that specifies which cookies should be synchronized from the end user's local browser to the remote browser.
-    public struct CookieSynchronizationConfiguration {
+    public struct CookieSynchronizationConfiguration: Swift.Sendable {
         /// The list of cookie specifications that are allowed to be synchronized to the remote browser.
         /// This member is required.
         public var allowlist: [WorkSpacesWebClientTypes.CookieSpecification]?
@@ -3376,7 +3377,6 @@ extension WorkSpacesWebClientTypes {
             self.blocklist = blocklist
         }
     }
-
 }
 
 extension WorkSpacesWebClientTypes.CookieSynchronizationConfiguration: Swift.CustomDebugStringConvertible {
@@ -3387,7 +3387,7 @@ extension WorkSpacesWebClientTypes.CookieSynchronizationConfiguration: Swift.Cus
 
 extension WorkSpacesWebClientTypes {
 
-    public enum EnabledType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum EnabledType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case disabled
         case enabled
         case sdkUnknown(Swift.String)
@@ -3414,7 +3414,7 @@ extension WorkSpacesWebClientTypes {
     }
 }
 
-public struct CreateUserSettingsInput {
+public struct CreateUserSettingsInput: Swift.Sendable {
     /// The additional encryption context of the user settings.
     public var additionalEncryptionContext: [Swift.String: Swift.String]?
     /// A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. Idempotency ensures that an API request completes only once. With an idempotent request, if the original request completes successfully, subsequent retries with the same client token returns the result from the original successful request. If you do not specify a client token, one is automatically generated by the Amazon Web Services SDK.
@@ -3484,7 +3484,7 @@ extension CreateUserSettingsInput: Swift.CustomDebugStringConvertible {
         "CreateUserSettingsInput(additionalEncryptionContext: \(Swift.String(describing: additionalEncryptionContext)), clientToken: \(Swift.String(describing: clientToken)), copyAllowed: \(Swift.String(describing: copyAllowed)), customerManagedKey: \(Swift.String(describing: customerManagedKey)), deepLinkAllowed: \(Swift.String(describing: deepLinkAllowed)), disconnectTimeoutInMinutes: \(Swift.String(describing: disconnectTimeoutInMinutes)), downloadAllowed: \(Swift.String(describing: downloadAllowed)), idleDisconnectTimeoutInMinutes: \(Swift.String(describing: idleDisconnectTimeoutInMinutes)), pasteAllowed: \(Swift.String(describing: pasteAllowed)), printAllowed: \(Swift.String(describing: printAllowed)), uploadAllowed: \(Swift.String(describing: uploadAllowed)), cookieSynchronizationConfiguration: \"CONTENT_REDACTED\", tags: \"CONTENT_REDACTED\")"}
 }
 
-public struct CreateUserSettingsOutput {
+public struct CreateUserSettingsOutput: Swift.Sendable {
     /// The ARN of the user settings.
     /// This member is required.
     public var userSettingsArn: Swift.String?
@@ -3497,7 +3497,7 @@ public struct CreateUserSettingsOutput {
     }
 }
 
-public struct DeleteUserSettingsInput {
+public struct DeleteUserSettingsInput: Swift.Sendable {
     /// The ARN of the user settings.
     /// This member is required.
     public var userSettingsArn: Swift.String?
@@ -3510,12 +3510,12 @@ public struct DeleteUserSettingsInput {
     }
 }
 
-public struct DeleteUserSettingsOutput {
+public struct DeleteUserSettingsOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct GetUserSettingsInput {
+public struct GetUserSettingsInput: Swift.Sendable {
     /// The ARN of the user settings.
     /// This member is required.
     public var userSettingsArn: Swift.String?
@@ -3529,8 +3529,9 @@ public struct GetUserSettingsInput {
 }
 
 extension WorkSpacesWebClientTypes {
+
     /// A user settings resource that can be associated with a web portal. Once associated with a web portal, user settings control how users can transfer data between a streaming session and the their local devices.
-    public struct UserSettings {
+    public struct UserSettings: Swift.Sendable {
         /// The additional encryption context of the user settings.
         public var additionalEncryptionContext: [Swift.String: Swift.String]?
         /// A list of web portal ARNs that this user settings is associated with.
@@ -3590,7 +3591,6 @@ extension WorkSpacesWebClientTypes {
             self.userSettingsArn = userSettingsArn
         }
     }
-
 }
 
 extension WorkSpacesWebClientTypes.UserSettings: Swift.CustomDebugStringConvertible {
@@ -3598,7 +3598,7 @@ extension WorkSpacesWebClientTypes.UserSettings: Swift.CustomDebugStringConverti
         "UserSettings(additionalEncryptionContext: \(Swift.String(describing: additionalEncryptionContext)), associatedPortalArns: \(Swift.String(describing: associatedPortalArns)), copyAllowed: \(Swift.String(describing: copyAllowed)), customerManagedKey: \(Swift.String(describing: customerManagedKey)), deepLinkAllowed: \(Swift.String(describing: deepLinkAllowed)), disconnectTimeoutInMinutes: \(Swift.String(describing: disconnectTimeoutInMinutes)), downloadAllowed: \(Swift.String(describing: downloadAllowed)), idleDisconnectTimeoutInMinutes: \(Swift.String(describing: idleDisconnectTimeoutInMinutes)), pasteAllowed: \(Swift.String(describing: pasteAllowed)), printAllowed: \(Swift.String(describing: printAllowed)), uploadAllowed: \(Swift.String(describing: uploadAllowed)), userSettingsArn: \(Swift.String(describing: userSettingsArn)), cookieSynchronizationConfiguration: \"CONTENT_REDACTED\")"}
 }
 
-public struct GetUserSettingsOutput {
+public struct GetUserSettingsOutput: Swift.Sendable {
     /// The user settings.
     public var userSettings: WorkSpacesWebClientTypes.UserSettings?
 
@@ -3610,7 +3610,7 @@ public struct GetUserSettingsOutput {
     }
 }
 
-public struct ListUserSettingsInput {
+public struct ListUserSettingsInput: Swift.Sendable {
     /// The maximum number of results to be included in the next page.
     public var maxResults: Swift.Int?
     /// The pagination token used to retrieve the next page of results for this operation.
@@ -3627,8 +3627,9 @@ public struct ListUserSettingsInput {
 }
 
 extension WorkSpacesWebClientTypes {
+
     /// The summary of user settings.
-    public struct UserSettingsSummary {
+    public struct UserSettingsSummary: Swift.Sendable {
         /// The configuration that specifies which cookies should be synchronized from the end user's local browser to the remote browser.
         public var cookieSynchronizationConfiguration: WorkSpacesWebClientTypes.CookieSynchronizationConfiguration?
         /// Specifies whether the user can copy text from the streaming session to the local device.
@@ -3676,7 +3677,6 @@ extension WorkSpacesWebClientTypes {
             self.userSettingsArn = userSettingsArn
         }
     }
-
 }
 
 extension WorkSpacesWebClientTypes.UserSettingsSummary: Swift.CustomDebugStringConvertible {
@@ -3684,7 +3684,7 @@ extension WorkSpacesWebClientTypes.UserSettingsSummary: Swift.CustomDebugStringC
         "UserSettingsSummary(copyAllowed: \(Swift.String(describing: copyAllowed)), deepLinkAllowed: \(Swift.String(describing: deepLinkAllowed)), disconnectTimeoutInMinutes: \(Swift.String(describing: disconnectTimeoutInMinutes)), downloadAllowed: \(Swift.String(describing: downloadAllowed)), idleDisconnectTimeoutInMinutes: \(Swift.String(describing: idleDisconnectTimeoutInMinutes)), pasteAllowed: \(Swift.String(describing: pasteAllowed)), printAllowed: \(Swift.String(describing: printAllowed)), uploadAllowed: \(Swift.String(describing: uploadAllowed)), userSettingsArn: \(Swift.String(describing: userSettingsArn)), cookieSynchronizationConfiguration: \"CONTENT_REDACTED\")"}
 }
 
-public struct ListUserSettingsOutput {
+public struct ListUserSettingsOutput: Swift.Sendable {
     /// The pagination token used to retrieve the next page of results for this operation.
     public var nextToken: Swift.String?
     /// The user settings.
@@ -3700,7 +3700,7 @@ public struct ListUserSettingsOutput {
     }
 }
 
-public struct UpdateUserSettingsInput {
+public struct UpdateUserSettingsInput: Swift.Sendable {
     /// A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. Idempotency ensures that an API request completes only once. With an idempotent request, if the original request completes successfully, subsequent retries with the same client token return the result from the original successful request. If you do not specify a client token, one is automatically generated by the Amazon Web Services SDK.
     public var clientToken: Swift.String?
     /// The configuration that specifies which cookies should be synchronized from the end user's local browser to the remote browser. If the allowlist and blocklist are empty, the configuration becomes null.
@@ -3758,7 +3758,7 @@ extension UpdateUserSettingsInput: Swift.CustomDebugStringConvertible {
         "UpdateUserSettingsInput(clientToken: \(Swift.String(describing: clientToken)), copyAllowed: \(Swift.String(describing: copyAllowed)), deepLinkAllowed: \(Swift.String(describing: deepLinkAllowed)), disconnectTimeoutInMinutes: \(Swift.String(describing: disconnectTimeoutInMinutes)), downloadAllowed: \(Swift.String(describing: downloadAllowed)), idleDisconnectTimeoutInMinutes: \(Swift.String(describing: idleDisconnectTimeoutInMinutes)), pasteAllowed: \(Swift.String(describing: pasteAllowed)), printAllowed: \(Swift.String(describing: printAllowed)), uploadAllowed: \(Swift.String(describing: uploadAllowed)), userSettingsArn: \(Swift.String(describing: userSettingsArn)), cookieSynchronizationConfiguration: \"CONTENT_REDACTED\")"}
 }
 
-public struct UpdateUserSettingsOutput {
+public struct UpdateUserSettingsOutput: Swift.Sendable {
     /// The user settings.
     /// This member is required.
     public var userSettings: WorkSpacesWebClientTypes.UserSettings?

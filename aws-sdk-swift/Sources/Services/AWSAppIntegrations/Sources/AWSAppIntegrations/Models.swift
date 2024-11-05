@@ -200,8 +200,9 @@ public struct UnsupportedOperationException: ClientRuntime.ModeledError, AWSClie
 }
 
 extension AppIntegrationsClientTypes {
+
     /// The external URL source for the application.
-    public struct ExternalUrlConfig {
+    public struct ExternalUrlConfig: Swift.Sendable {
         /// The URL to access the application.
         /// This member is required.
         public var accessUrl: Swift.String?
@@ -217,12 +218,12 @@ extension AppIntegrationsClientTypes {
             self.approvedOrigins = approvedOrigins
         }
     }
-
 }
 
 extension AppIntegrationsClientTypes {
+
     /// The configuration for where the application should be loaded from.
-    public struct ApplicationSourceConfig {
+    public struct ApplicationSourceConfig: Swift.Sendable {
         /// The external URL source for the application.
         public var externalUrlConfig: AppIntegrationsClientTypes.ExternalUrlConfig?
 
@@ -233,12 +234,12 @@ extension AppIntegrationsClientTypes {
             self.externalUrlConfig = externalUrlConfig
         }
     }
-
 }
 
 extension AppIntegrationsClientTypes {
+
     /// The configuration of an event that the application publishes.
-    public struct Publication {
+    public struct Publication: Swift.Sendable {
         /// The description of the publication.
         public var description: Swift.String?
         /// The name of the publication.
@@ -259,12 +260,12 @@ extension AppIntegrationsClientTypes {
             self.schema = schema
         }
     }
-
 }
 
 extension AppIntegrationsClientTypes {
+
     /// The configuration of an event that the application subscribes.
-    public struct Subscription {
+    public struct Subscription: Swift.Sendable {
         /// The description of the subscription.
         public var description: Swift.String?
         /// The name of the subscription.
@@ -280,10 +281,9 @@ extension AppIntegrationsClientTypes {
             self.event = event
         }
     }
-
 }
 
-public struct CreateApplicationInput {
+public struct CreateApplicationInput: Swift.Sendable {
     /// The configuration for where the application should be loaded from.
     /// This member is required.
     public var applicationSourceConfig: AppIntegrationsClientTypes.ApplicationSourceConfig?
@@ -332,7 +332,7 @@ public struct CreateApplicationInput {
     }
 }
 
-public struct CreateApplicationOutput {
+public struct CreateApplicationOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the Application.
     public var arn: Swift.String?
     /// A unique identifier for the Application.
@@ -349,8 +349,9 @@ public struct CreateApplicationOutput {
 }
 
 extension AppIntegrationsClientTypes {
+
     /// The configuration for what files should be pulled from the source.
-    public struct FileConfiguration {
+    public struct FileConfiguration: Swift.Sendable {
         /// Restrictions for what files should be pulled from the source.
         public var filters: [Swift.String: [Swift.String]]?
         /// Identifiers for the source folders to pull all files from recursively.
@@ -366,12 +367,12 @@ extension AppIntegrationsClientTypes {
             self.folders = folders
         }
     }
-
 }
 
 extension AppIntegrationsClientTypes {
+
     /// The name of the data and how often it should be pulled from the source.
-    public struct ScheduleConfiguration {
+    public struct ScheduleConfiguration: Swift.Sendable {
         /// The start date for objects to import in the first flow run as an Unix/epoch timestamp in milliseconds or in ISO-8601 format.
         public var firstExecutionFrom: Swift.String?
         /// The name of the object to pull from the data source.
@@ -391,10 +392,9 @@ extension AppIntegrationsClientTypes {
             self.scheduleExpression = scheduleExpression
         }
     }
-
 }
 
-public struct CreateDataIntegrationInput {
+public struct CreateDataIntegrationInput: Swift.Sendable {
     /// A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If not provided, the Amazon Web Services SDK populates this field. For more information about idempotency, see [Making retries safe with idempotent APIs](https://aws.amazon.com/builders-library/making-retries-safe-with-idempotent-APIs/).
     public var clientToken: Swift.String?
     /// A description of the DataIntegration.
@@ -440,7 +440,7 @@ public struct CreateDataIntegrationInput {
     }
 }
 
-public struct CreateDataIntegrationOutput {
+public struct CreateDataIntegrationOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN)
     public var arn: Swift.String?
     /// A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If not provided, the Amazon Web Services SDK populates this field. For more information about idempotency, see [Making retries safe with idempotent APIs](https://aws.amazon.com/builders-library/making-retries-safe-with-idempotent-APIs/).
@@ -518,7 +518,7 @@ public struct ResourceNotFoundException: ClientRuntime.ModeledError, AWSClientRu
 
 extension AppIntegrationsClientTypes {
 
-    public enum ExecutionMode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ExecutionMode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case onDemand
         case scheduled
         case sdkUnknown(Swift.String)
@@ -546,8 +546,9 @@ extension AppIntegrationsClientTypes {
 }
 
 extension AppIntegrationsClientTypes {
+
     /// The start and end time for data pull from the source.
-    public struct OnDemandConfiguration {
+    public struct OnDemandConfiguration: Swift.Sendable {
         /// The end time for data pull from the source as an Unix/epoch string in milliseconds
         public var endTime: Swift.String?
         /// The start time for data pull from the source as an Unix/epoch string in milliseconds
@@ -563,12 +564,12 @@ extension AppIntegrationsClientTypes {
             self.startTime = startTime
         }
     }
-
 }
 
 extension AppIntegrationsClientTypes {
+
     /// The configuration for how the files should be pulled from the source.
-    public struct ExecutionConfiguration {
+    public struct ExecutionConfiguration: Swift.Sendable {
         /// The mode for data import/export execution.
         /// This member is required.
         public var executionMode: AppIntegrationsClientTypes.ExecutionMode?
@@ -588,10 +589,9 @@ extension AppIntegrationsClientTypes {
             self.scheduleConfiguration = scheduleConfiguration
         }
     }
-
 }
 
-public struct CreateDataIntegrationAssociationInput {
+public struct CreateDataIntegrationAssociationInput: Swift.Sendable {
     /// The mapping of metadata to be extracted from the data.
     public var clientAssociationMetadata: [Swift.String: Swift.String]?
     /// The identifier for the client that is associated with the DataIntegration association.
@@ -628,7 +628,7 @@ public struct CreateDataIntegrationAssociationInput {
     }
 }
 
-public struct CreateDataIntegrationAssociationOutput {
+public struct CreateDataIntegrationAssociationOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) for the DataIntegration.
     public var dataIntegrationArn: Swift.String?
     /// A unique identifier. for the DataIntegrationAssociation.
@@ -645,8 +645,9 @@ public struct CreateDataIntegrationAssociationOutput {
 }
 
 extension AppIntegrationsClientTypes {
+
     /// The event filter.
-    public struct EventFilter {
+    public struct EventFilter: Swift.Sendable {
         /// The source of the events.
         /// This member is required.
         public var source: Swift.String?
@@ -658,10 +659,9 @@ extension AppIntegrationsClientTypes {
             self.source = source
         }
     }
-
 }
 
-public struct CreateEventIntegrationInput {
+public struct CreateEventIntegrationInput: Swift.Sendable {
     /// A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If not provided, the Amazon Web Services SDK populates this field. For more information about idempotency, see [Making retries safe with idempotent APIs](https://aws.amazon.com/builders-library/making-retries-safe-with-idempotent-APIs/).
     public var clientToken: Swift.String?
     /// The description of the event integration.
@@ -696,7 +696,7 @@ public struct CreateEventIntegrationInput {
     }
 }
 
-public struct CreateEventIntegrationOutput {
+public struct CreateEventIntegrationOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the event integration.
     public var eventIntegrationArn: Swift.String?
 
@@ -708,7 +708,7 @@ public struct CreateEventIntegrationOutput {
     }
 }
 
-public struct DeleteApplicationInput {
+public struct DeleteApplicationInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the Application.
     /// This member is required.
     public var arn: Swift.String?
@@ -721,12 +721,12 @@ public struct DeleteApplicationInput {
     }
 }
 
-public struct DeleteApplicationOutput {
+public struct DeleteApplicationOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteDataIntegrationInput {
+public struct DeleteDataIntegrationInput: Swift.Sendable {
     /// A unique identifier for the DataIntegration.
     /// This member is required.
     public var dataIntegrationIdentifier: Swift.String?
@@ -739,12 +739,12 @@ public struct DeleteDataIntegrationInput {
     }
 }
 
-public struct DeleteDataIntegrationOutput {
+public struct DeleteDataIntegrationOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteEventIntegrationInput {
+public struct DeleteEventIntegrationInput: Swift.Sendable {
     /// The name of the event integration.
     /// This member is required.
     public var name: Swift.String?
@@ -757,12 +757,12 @@ public struct DeleteEventIntegrationInput {
     }
 }
 
-public struct DeleteEventIntegrationOutput {
+public struct DeleteEventIntegrationOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct GetApplicationInput {
+public struct GetApplicationInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the Application.
     /// This member is required.
     public var arn: Swift.String?
@@ -775,7 +775,7 @@ public struct GetApplicationInput {
     }
 }
 
-public struct GetApplicationOutput {
+public struct GetApplicationOutput: Swift.Sendable {
     /// The configuration for where the application should be loaded from.
     public var applicationSourceConfig: AppIntegrationsClientTypes.ApplicationSourceConfig?
     /// The Amazon Resource Name (ARN) of the Application.
@@ -833,7 +833,7 @@ public struct GetApplicationOutput {
     }
 }
 
-public struct GetDataIntegrationInput {
+public struct GetDataIntegrationInput: Swift.Sendable {
     /// A unique identifier.
     /// This member is required.
     public var identifier: Swift.String?
@@ -846,7 +846,7 @@ public struct GetDataIntegrationInput {
     }
 }
 
-public struct GetDataIntegrationOutput {
+public struct GetDataIntegrationOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) for the DataIntegration.
     public var arn: Swift.String?
     /// The KMS key ARN for the DataIntegration.
@@ -894,7 +894,7 @@ public struct GetDataIntegrationOutput {
     }
 }
 
-public struct GetEventIntegrationInput {
+public struct GetEventIntegrationInput: Swift.Sendable {
     /// The name of the event integration.
     /// This member is required.
     public var name: Swift.String?
@@ -907,7 +907,7 @@ public struct GetEventIntegrationInput {
     }
 }
 
-public struct GetEventIntegrationOutput {
+public struct GetEventIntegrationOutput: Swift.Sendable {
     /// The description of the event integration.
     public var description: Swift.String?
     /// The EventBridge bus.
@@ -939,7 +939,7 @@ public struct GetEventIntegrationOutput {
     }
 }
 
-public struct ListApplicationAssociationsInput {
+public struct ListApplicationAssociationsInput: Swift.Sendable {
     /// A unique identifier for the Application.
     /// This member is required.
     public var applicationId: Swift.String?
@@ -961,8 +961,9 @@ public struct ListApplicationAssociationsInput {
 }
 
 extension AppIntegrationsClientTypes {
+
     /// Summary information about the Application Association.
-    public struct ApplicationAssociationSummary {
+    public struct ApplicationAssociationSummary: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the Application.
         public var applicationArn: Swift.String?
         /// The Amazon Resource Name (ARN) of the Application Association.
@@ -981,10 +982,9 @@ extension AppIntegrationsClientTypes {
             self.clientId = clientId
         }
     }
-
 }
 
-public struct ListApplicationAssociationsOutput {
+public struct ListApplicationAssociationsOutput: Swift.Sendable {
     /// List of Application Associations for the Application.
     public var applicationAssociations: [AppIntegrationsClientTypes.ApplicationAssociationSummary]?
     /// If there are additional results, this is the token for the next set of results.
@@ -1000,7 +1000,7 @@ public struct ListApplicationAssociationsOutput {
     }
 }
 
-public struct ListApplicationsInput {
+public struct ListApplicationsInput: Swift.Sendable {
     /// The maximum number of results to return per page.
     public var maxResults: Swift.Int?
     /// The token for the next set of results. Use the value returned in the previous response in the next request to retrieve the next set of results.
@@ -1017,8 +1017,9 @@ public struct ListApplicationsInput {
 }
 
 extension AppIntegrationsClientTypes {
+
     /// Summary information about the Application.
-    public struct ApplicationSummary {
+    public struct ApplicationSummary: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the Application.
         public var arn: Swift.String?
         /// The time when the application was created.
@@ -1049,10 +1050,9 @@ extension AppIntegrationsClientTypes {
             self.namespace = namespace
         }
     }
-
 }
 
-public struct ListApplicationsOutput {
+public struct ListApplicationsOutput: Swift.Sendable {
     /// The Applications associated with this account.
     public var applications: [AppIntegrationsClientTypes.ApplicationSummary]?
     /// If there are additional results, this is the token for the next set of results.
@@ -1068,7 +1068,7 @@ public struct ListApplicationsOutput {
     }
 }
 
-public struct ListDataIntegrationAssociationsInput {
+public struct ListDataIntegrationAssociationsInput: Swift.Sendable {
     /// A unique identifier for the DataIntegration.
     /// This member is required.
     public var dataIntegrationIdentifier: Swift.String?
@@ -1091,7 +1091,7 @@ public struct ListDataIntegrationAssociationsInput {
 
 extension AppIntegrationsClientTypes {
 
-    public enum ExecutionStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ExecutionStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case completed
         case failed
         case inProgress
@@ -1122,8 +1122,9 @@ extension AppIntegrationsClientTypes {
 }
 
 extension AppIntegrationsClientTypes {
+
     /// The execution status of the last job.
-    public struct LastExecutionStatus {
+    public struct LastExecutionStatus: Swift.Sendable {
         /// The job status enum string.
         public var executionStatus: AppIntegrationsClientTypes.ExecutionStatus?
         /// The status message of a job.
@@ -1138,12 +1139,12 @@ extension AppIntegrationsClientTypes {
             self.statusMessage = statusMessage
         }
     }
-
 }
 
 extension AppIntegrationsClientTypes {
+
     /// Summary information about the DataIntegration association.
-    public struct DataIntegrationAssociationSummary {
+    public struct DataIntegrationAssociationSummary: Swift.Sendable {
         /// The identifier for the client that is associated with the DataIntegration association.
         public var clientId: Swift.String?
         /// The Amazon Resource Name (ARN) of the DataIntegration.
@@ -1174,10 +1175,9 @@ extension AppIntegrationsClientTypes {
             self.lastExecutionStatus = lastExecutionStatus
         }
     }
-
 }
 
-public struct ListDataIntegrationAssociationsOutput {
+public struct ListDataIntegrationAssociationsOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) and unique ID of the DataIntegration association.
     public var dataIntegrationAssociations: [AppIntegrationsClientTypes.DataIntegrationAssociationSummary]?
     /// If there are additional results, this is the token for the next set of results.
@@ -1193,7 +1193,7 @@ public struct ListDataIntegrationAssociationsOutput {
     }
 }
 
-public struct ListDataIntegrationsInput {
+public struct ListDataIntegrationsInput: Swift.Sendable {
     /// The maximum number of results to return per page.
     public var maxResults: Swift.Int?
     /// The token for the next set of results. Use the value returned in the previous response in the next request to retrieve the next set of results.
@@ -1210,8 +1210,9 @@ public struct ListDataIntegrationsInput {
 }
 
 extension AppIntegrationsClientTypes {
+
     /// Summary information about the DataIntegration.
-    public struct DataIntegrationSummary {
+    public struct DataIntegrationSummary: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the DataIntegration.
         public var arn: Swift.String?
         /// The name of the DataIntegration.
@@ -1230,10 +1231,9 @@ extension AppIntegrationsClientTypes {
             self.sourceURI = sourceURI
         }
     }
-
 }
 
-public struct ListDataIntegrationsOutput {
+public struct ListDataIntegrationsOutput: Swift.Sendable {
     /// The DataIntegrations associated with this account.
     public var dataIntegrations: [AppIntegrationsClientTypes.DataIntegrationSummary]?
     /// If there are additional results, this is the token for the next set of results.
@@ -1249,7 +1249,7 @@ public struct ListDataIntegrationsOutput {
     }
 }
 
-public struct ListEventIntegrationAssociationsInput {
+public struct ListEventIntegrationAssociationsInput: Swift.Sendable {
     /// The name of the event integration.
     /// This member is required.
     public var eventIntegrationName: Swift.String?
@@ -1271,8 +1271,9 @@ public struct ListEventIntegrationAssociationsInput {
 }
 
 extension AppIntegrationsClientTypes {
+
     /// The event integration association.
-    public struct EventIntegrationAssociation {
+    public struct EventIntegrationAssociation: Swift.Sendable {
         /// The metadata associated with the client.
         public var clientAssociationMetadata: [Swift.String: Swift.String]?
         /// The identifier for the client that is associated with the event integration.
@@ -1303,10 +1304,9 @@ extension AppIntegrationsClientTypes {
             self.eventIntegrationName = eventIntegrationName
         }
     }
-
 }
 
-public struct ListEventIntegrationAssociationsOutput {
+public struct ListEventIntegrationAssociationsOutput: Swift.Sendable {
     /// The event integration associations.
     public var eventIntegrationAssociations: [AppIntegrationsClientTypes.EventIntegrationAssociation]?
     /// If there are additional results, this is the token for the next set of results.
@@ -1322,7 +1322,7 @@ public struct ListEventIntegrationAssociationsOutput {
     }
 }
 
-public struct ListEventIntegrationsInput {
+public struct ListEventIntegrationsInput: Swift.Sendable {
     /// The maximum number of results to return per page.
     public var maxResults: Swift.Int?
     /// The token for the next set of results. Use the value returned in the previous response in the next request to retrieve the next set of results.
@@ -1339,8 +1339,9 @@ public struct ListEventIntegrationsInput {
 }
 
 extension AppIntegrationsClientTypes {
+
     /// The event integration.
-    public struct EventIntegration {
+    public struct EventIntegration: Swift.Sendable {
         /// The event integration description.
         public var description: Swift.String?
         /// The Amazon EventBridge bus for the event integration.
@@ -1371,10 +1372,9 @@ extension AppIntegrationsClientTypes {
             self.tags = tags
         }
     }
-
 }
 
-public struct ListEventIntegrationsOutput {
+public struct ListEventIntegrationsOutput: Swift.Sendable {
     /// The event integrations.
     public var eventIntegrations: [AppIntegrationsClientTypes.EventIntegration]?
     /// If there are additional results, this is the token for the next set of results.
@@ -1390,7 +1390,7 @@ public struct ListEventIntegrationsOutput {
     }
 }
 
-public struct ListTagsForResourceInput {
+public struct ListTagsForResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the resource.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -1403,7 +1403,7 @@ public struct ListTagsForResourceInput {
     }
 }
 
-public struct ListTagsForResourceOutput {
+public struct ListTagsForResourceOutput: Swift.Sendable {
     /// Information about the tags.
     public var tags: [Swift.String: Swift.String]?
 
@@ -1415,7 +1415,7 @@ public struct ListTagsForResourceOutput {
     }
 }
 
-public struct TagResourceInput {
+public struct TagResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the resource.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -1433,12 +1433,12 @@ public struct TagResourceInput {
     }
 }
 
-public struct TagResourceOutput {
+public struct TagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UntagResourceInput {
+public struct UntagResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the resource.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -1456,12 +1456,12 @@ public struct UntagResourceInput {
     }
 }
 
-public struct UntagResourceOutput {
+public struct UntagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdateApplicationInput {
+public struct UpdateApplicationInput: Swift.Sendable {
     /// The configuration for where the application should be loaded from.
     public var applicationSourceConfig: AppIntegrationsClientTypes.ApplicationSourceConfig?
     /// The Amazon Resource Name (ARN) of the Application.
@@ -1500,12 +1500,12 @@ public struct UpdateApplicationInput {
     }
 }
 
-public struct UpdateApplicationOutput {
+public struct UpdateApplicationOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdateDataIntegrationInput {
+public struct UpdateDataIntegrationInput: Swift.Sendable {
     /// A description of the DataIntegration.
     public var description: Swift.String?
     /// A unique identifier for the DataIntegration.
@@ -1526,12 +1526,12 @@ public struct UpdateDataIntegrationInput {
     }
 }
 
-public struct UpdateDataIntegrationOutput {
+public struct UpdateDataIntegrationOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdateDataIntegrationAssociationInput {
+public struct UpdateDataIntegrationAssociationInput: Swift.Sendable {
     /// A unique identifier. of the DataIntegrationAssociation resource
     /// This member is required.
     public var dataIntegrationAssociationIdentifier: Swift.String?
@@ -1554,12 +1554,12 @@ public struct UpdateDataIntegrationAssociationInput {
     }
 }
 
-public struct UpdateDataIntegrationAssociationOutput {
+public struct UpdateDataIntegrationAssociationOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdateEventIntegrationInput {
+public struct UpdateEventIntegrationInput: Swift.Sendable {
     /// The description of the event integration.
     public var description: Swift.String?
     /// The name of the event integration.
@@ -1576,7 +1576,7 @@ public struct UpdateEventIntegrationInput {
     }
 }
 
-public struct UpdateEventIntegrationOutput {
+public struct UpdateEventIntegrationOutput: Swift.Sendable {
 
     public init() { }
 }

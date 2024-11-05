@@ -27,34 +27,35 @@ import protocol ClientRuntime.ModeledError
 @_spi(UnknownAWSHTTPServiceError) import struct AWSClientRuntime.UnknownAWSHTTPServiceError
 @_spi(SmithyReadWrite) import struct SmithyReadWrite.WritingClosureBox
 
-public struct DescribeHealthServiceStatusForOrganizationInput {
+
+public struct DescribeHealthServiceStatusForOrganizationInput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DisableHealthServiceAccessForOrganizationInput {
+public struct DisableHealthServiceAccessForOrganizationInput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DisableHealthServiceAccessForOrganizationOutput {
+public struct DisableHealthServiceAccessForOrganizationOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct EnableHealthServiceAccessForOrganizationInput {
+public struct EnableHealthServiceAccessForOrganizationInput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct EnableHealthServiceAccessForOrganizationOutput {
+public struct EnableHealthServiceAccessForOrganizationOutput: Swift.Sendable {
 
     public init() { }
 }
 
 extension HealthClientTypes {
 
-    public enum EntityStatusCode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum EntityStatusCode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case impaired
         case pending
         case resolved
@@ -91,8 +92,9 @@ extension HealthClientTypes {
 }
 
 extension HealthClientTypes {
+
     /// The number of entities in an account that are impacted by a specific event aggregated by the entity status codes.
-    public struct AccountEntityAggregate {
+    public struct AccountEntityAggregate: Swift.Sendable {
         /// The 12-digit Amazon Web Services account numbers that contains the affected entities.
         public var accountId: Swift.String?
         /// The number of entities that match the filter criteria for the specified events.
@@ -111,12 +113,12 @@ extension HealthClientTypes {
             self.statuses = statuses
         }
     }
-
 }
 
 extension HealthClientTypes {
+
     /// Information about an entity that is affected by a Health event.
-    public struct AffectedEntity {
+    public struct AffectedEntity: Swift.Sendable {
         /// The 12-digit Amazon Web Services account number that contains the affected entity.
         public var awsAccountId: Swift.String?
         /// The unique identifier for the entity. Format: arn:aws:health:entity-region:aws-account:entity/entity-id . Example: arn:aws:health:us-east-1:111222333444:entity/AVh5GGT7ul1arKr1sE1K
@@ -155,7 +157,6 @@ extension HealthClientTypes {
             self.tags = tags
         }
     }
-
 }
 
 /// The specified pagination token (nextToken) is not valid.
@@ -182,7 +183,7 @@ public struct InvalidPaginationToken: ClientRuntime.ModeledError, AWSClientRunti
     }
 }
 
-public struct DescribeAffectedAccountsForOrganizationInput {
+public struct DescribeAffectedAccountsForOrganizationInput: Swift.Sendable {
     /// The unique identifier for the event. The event ARN has the arn:aws:health:event-region::event/SERVICE/EVENT_TYPE_CODE/EVENT_TYPE_PLUS_ID  format. For example, an event ARN might look like the following: arn:aws:health:us-east-1::event/EC2/EC2_INSTANCE_RETIREMENT_SCHEDULED/EC2_INSTANCE_RETIREMENT_SCHEDULED_ABC123-DEF456
     /// This member is required.
     public var eventArn: Swift.String?
@@ -205,7 +206,7 @@ public struct DescribeAffectedAccountsForOrganizationInput {
 
 extension HealthClientTypes {
 
-    public enum EventScopeCode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum EventScopeCode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case accountSpecific
         case `none`
         case `public`
@@ -235,7 +236,7 @@ extension HealthClientTypes {
     }
 }
 
-public struct DescribeAffectedAccountsForOrganizationOutput {
+public struct DescribeAffectedAccountsForOrganizationOutput: Swift.Sendable {
     /// A JSON set of elements of the affected accounts.
     public var affectedAccounts: [Swift.String]?
     /// This parameter specifies if the Health event is a public Amazon Web Service event or an account-specific event.
@@ -286,8 +287,9 @@ public struct UnsupportedLocale: ClientRuntime.ModeledError, AWSClientRuntime.AW
 }
 
 extension HealthClientTypes {
+
     /// A range of dates and times that is used by the [EventFilter](https://docs.aws.amazon.com/health/latest/APIReference/API_EventFilter.html) and [EntityFilter](https://docs.aws.amazon.com/health/latest/APIReference/API_EntityFilter.html) objects. If from is set and to is set: match items where the timestamp (startTime, endTime, or lastUpdatedTime) is between from and to inclusive. If from is set and to is not set: match items where the timestamp value is equal to or after from. If from is not set and to is set: match items where the timestamp value is equal to or before to.
-    public struct DateTimeRange {
+    public struct DateTimeRange: Swift.Sendable {
         /// The starting date and time of a time range.
         public var from: Foundation.Date?
         /// The ending date and time of a time range.
@@ -302,12 +304,12 @@ extension HealthClientTypes {
             self.to = to
         }
     }
-
 }
 
 extension HealthClientTypes {
+
     /// The values to use to filter results from the [DescribeAffectedEntities](https://docs.aws.amazon.com/health/latest/APIReference/API_DescribeAffectedEntities.html) operation.
-    public struct EntityFilter {
+    public struct EntityFilter: Swift.Sendable {
         /// A list of entity ARNs (unique identifiers).
         public var entityArns: [Swift.String]?
         /// A list of IDs for affected entities.
@@ -339,10 +341,9 @@ extension HealthClientTypes {
             self.tags = tags
         }
     }
-
 }
 
-public struct DescribeAffectedEntitiesInput {
+public struct DescribeAffectedEntitiesInput: Swift.Sendable {
     /// Values to narrow the results returned. At least one event ARN is required.
     /// This member is required.
     public var filter: HealthClientTypes.EntityFilter?
@@ -367,7 +368,7 @@ public struct DescribeAffectedEntitiesInput {
     }
 }
 
-public struct DescribeAffectedEntitiesOutput {
+public struct DescribeAffectedEntitiesOutput: Swift.Sendable {
     /// The entities that match the filter criteria.
     public var entities: [HealthClientTypes.AffectedEntity]?
     /// If the results of a search are large, only a portion of the results are returned, and a nextToken pagination token is returned in the response. To retrieve the next batch of results, reissue the search request and include the returned token. When all results have been returned, the response does not contain a pagination token value.
@@ -384,8 +385,9 @@ public struct DescribeAffectedEntitiesOutput {
 }
 
 extension HealthClientTypes {
+
     /// A JSON set of elements including the awsAccountId, eventArn and a set of statusCodes.
-    public struct EntityAccountFilter {
+    public struct EntityAccountFilter: Swift.Sendable {
         /// The 12-digit Amazon Web Services account numbers that contains the affected entities.
         public var awsAccountId: Swift.String?
         /// The unique identifier for the event. The event ARN has the arn:aws:health:event-region::event/SERVICE/EVENT_TYPE_CODE/EVENT_TYPE_PLUS_ID  format. For example, an event ARN might look like the following: arn:aws:health:us-east-1::event/EC2/EC2_INSTANCE_RETIREMENT_SCHEDULED/EC2_INSTANCE_RETIREMENT_SCHEDULED_ABC123-DEF456
@@ -405,12 +407,12 @@ extension HealthClientTypes {
             self.statusCodes = statusCodes
         }
     }
-
 }
 
 extension HealthClientTypes {
+
     /// The values used to filter results from the [DescribeEventDetailsForOrganization](https://docs.aws.amazon.com/health/latest/APIReference/API_DescribeEventDetailsForOrganization.html) and [DescribeAffectedEntitiesForOrganization](https://docs.aws.amazon.com/health/latest/APIReference/API_DescribeAffectedEntitiesForOrganization.html) operations.
-    public struct EventAccountFilter {
+    public struct EventAccountFilter: Swift.Sendable {
         /// The 12-digit Amazon Web Services account numbers that contains the affected entities.
         public var awsAccountId: Swift.String?
         /// The unique identifier for the event. The event ARN has the arn:aws:health:event-region::event/SERVICE/EVENT_TYPE_CODE/EVENT_TYPE_PLUS_ID  format. For example, an event ARN might look like the following: arn:aws:health:us-east-1::event/EC2/EC2_INSTANCE_RETIREMENT_SCHEDULED/EC2_INSTANCE_RETIREMENT_SCHEDULED_ABC123-DEF456
@@ -426,10 +428,9 @@ extension HealthClientTypes {
             self.eventArn = eventArn
         }
     }
-
 }
 
-public struct DescribeAffectedEntitiesForOrganizationInput {
+public struct DescribeAffectedEntitiesForOrganizationInput: Swift.Sendable {
     /// The locale (language) to return information in. English (en) is the default and the only supported value at this time.
     public var locale: Swift.String?
     /// The maximum number of items to return in one batch, between 10 and 100, inclusive.
@@ -459,8 +460,9 @@ public struct DescribeAffectedEntitiesForOrganizationInput {
 }
 
 extension HealthClientTypes {
+
     /// Error information returned when a [DescribeAffectedEntitiesForOrganization](https://docs.aws.amazon.com/health/latest/APIReference/API_DescribeAffectedEntitiesForOrganization.html) operation can't find or process a specific entity.
-    public struct OrganizationAffectedEntitiesErrorItem {
+    public struct OrganizationAffectedEntitiesErrorItem: Swift.Sendable {
         /// The 12-digit Amazon Web Services account numbers that contains the affected entities.
         public var awsAccountId: Swift.String?
         /// A message that describes the error. Follow the error message and retry your request. For example, the InvalidAccountInputError error message appears if you call the DescribeAffectedEntitiesForOrganization operation and specify the AccountSpecific value for the EventScopeCode parameter, but don't specify an Amazon Web Services account.
@@ -483,10 +485,9 @@ extension HealthClientTypes {
             self.eventArn = eventArn
         }
     }
-
 }
 
-public struct DescribeAffectedEntitiesForOrganizationOutput {
+public struct DescribeAffectedEntitiesForOrganizationOutput: Swift.Sendable {
     /// A JSON set of elements including the awsAccountId and its entityArn, entityValue and its entityArn, lastUpdatedTime, and statusCode.
     public var entities: [HealthClientTypes.AffectedEntity]?
     /// A JSON set of elements of the failed response, including the awsAccountId, errorMessage, errorName, and eventArn.
@@ -506,7 +507,7 @@ public struct DescribeAffectedEntitiesForOrganizationOutput {
     }
 }
 
-public struct DescribeEntityAggregatesInput {
+public struct DescribeEntityAggregatesInput: Swift.Sendable {
     /// A list of event ARNs (unique identifiers). For example: "arn:aws:health:us-east-1::event/EC2/EC2_INSTANCE_RETIREMENT_SCHEDULED/EC2_INSTANCE_RETIREMENT_SCHEDULED_ABC123-CDE456", "arn:aws:health:us-west-1::event/EBS/AWS_EBS_LOST_VOLUME/AWS_EBS_LOST_VOLUME_CHI789_JKL101"
     public var eventArns: [Swift.String]?
 
@@ -519,8 +520,9 @@ public struct DescribeEntityAggregatesInput {
 }
 
 extension HealthClientTypes {
+
     /// The number of entities that are affected by one or more events. Returned by the [DescribeEntityAggregates](https://docs.aws.amazon.com/health/latest/APIReference/API_DescribeEntityAggregates.html) operation.
-    public struct EntityAggregate {
+    public struct EntityAggregate: Swift.Sendable {
         /// The number of entities that match the criteria for the specified events.
         public var count: Swift.Int
         /// The unique identifier for the event. The event ARN has the arn:aws:health:event-region::event/SERVICE/EVENT_TYPE_CODE/EVENT_TYPE_PLUS_ID  format. For example, an event ARN might look like the following: arn:aws:health:us-east-1::event/EC2/EC2_INSTANCE_RETIREMENT_SCHEDULED/EC2_INSTANCE_RETIREMENT_SCHEDULED_ABC123-DEF456
@@ -539,10 +541,9 @@ extension HealthClientTypes {
             self.statuses = statuses
         }
     }
-
 }
 
-public struct DescribeEntityAggregatesOutput {
+public struct DescribeEntityAggregatesOutput: Swift.Sendable {
     /// The number of entities that are affected by each of the specified events.
     public var entityAggregates: [HealthClientTypes.EntityAggregate]?
 
@@ -554,7 +555,7 @@ public struct DescribeEntityAggregatesOutput {
     }
 }
 
-public struct DescribeEntityAggregatesForOrganizationInput {
+public struct DescribeEntityAggregatesForOrganizationInput: Swift.Sendable {
     /// A list of 12-digit Amazon Web Services account numbers that contains the affected entities.
     public var awsAccountIds: [Swift.String]?
     /// A list of event ARNs (unique identifiers). For example: "arn:aws:health:us-east-1::event/EC2/EC2_INSTANCE_RETIREMENT_SCHEDULED/EC2_INSTANCE_RETIREMENT_SCHEDULED_ABC123-CDE456", "arn:aws:health:us-west-1::event/EBS/AWS_EBS_LOST_VOLUME/AWS_EBS_LOST_VOLUME_CHI789_JKL101"
@@ -572,8 +573,9 @@ public struct DescribeEntityAggregatesForOrganizationInput {
 }
 
 extension HealthClientTypes {
+
     /// The aggregate results of entities affected by the specified event in your organization. The results are aggregated by the entity status codes for the specified set of accountsIDs.
-    public struct OrganizationEntityAggregate {
+    public struct OrganizationEntityAggregate: Swift.Sendable {
         /// A list of entity aggregates for each of the specified accounts in your organization that are affected by a specific event. If there are no awsAccountIds provided in the request, this field will be empty in the response.
         public var accounts: [HealthClientTypes.AccountEntityAggregate]?
         /// The number of entities for the organization that match the filter criteria for the specified events.
@@ -596,10 +598,9 @@ extension HealthClientTypes {
             self.statuses = statuses
         }
     }
-
 }
 
-public struct DescribeEntityAggregatesForOrganizationOutput {
+public struct DescribeEntityAggregatesForOrganizationOutput: Swift.Sendable {
     /// The list of entity aggregates for each of the specified accounts that are affected by each of the specified events.
     public var organizationEntityAggregates: [HealthClientTypes.OrganizationEntityAggregate]?
 
@@ -613,7 +614,7 @@ public struct DescribeEntityAggregatesForOrganizationOutput {
 
 extension HealthClientTypes {
 
-    public enum EventAggregateField: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum EventAggregateField: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case eventtypecategory
         case sdkUnknown(Swift.String)
 
@@ -639,7 +640,7 @@ extension HealthClientTypes {
 
 extension HealthClientTypes {
 
-    public enum EventStatusCode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum EventStatusCode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case closed
         case `open`
         case upcoming
@@ -671,7 +672,7 @@ extension HealthClientTypes {
 
 extension HealthClientTypes {
 
-    public enum EventTypeCategory: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum EventTypeCategory: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case accountNotification
         case investigation
         case issue
@@ -705,8 +706,9 @@ extension HealthClientTypes {
 }
 
 extension HealthClientTypes {
+
     /// The values to use to filter results from the [DescribeEvents](https://docs.aws.amazon.com/health/latest/APIReference/API_DescribeEvents.html) and [DescribeEventAggregates](https://docs.aws.amazon.com/health/latest/APIReference/API_DescribeEventAggregates.html) operations.
-    public struct EventFilter {
+    public struct EventFilter: Swift.Sendable {
         /// A list of Amazon Web Services Availability Zones.
         public var availabilityZones: [Swift.String]?
         /// A list of dates and times that the event ended.
@@ -765,10 +767,9 @@ extension HealthClientTypes {
             self.tags = tags
         }
     }
-
 }
 
-public struct DescribeEventAggregatesInput {
+public struct DescribeEventAggregatesInput: Swift.Sendable {
     /// The only currently supported value is eventTypeCategory.
     /// This member is required.
     public var aggregateField: HealthClientTypes.EventAggregateField?
@@ -794,8 +795,9 @@ public struct DescribeEventAggregatesInput {
 }
 
 extension HealthClientTypes {
+
     /// The number of events of each issue type. Returned by the [DescribeEventAggregates](https://docs.aws.amazon.com/health/latest/APIReference/API_DescribeEventAggregates.html) operation.
-    public struct EventAggregate {
+    public struct EventAggregate: Swift.Sendable {
         /// The issue type for the associated count.
         public var aggregateValue: Swift.String?
         /// The number of events of the associated issue type.
@@ -810,10 +812,9 @@ extension HealthClientTypes {
             self.count = count
         }
     }
-
 }
 
-public struct DescribeEventAggregatesOutput {
+public struct DescribeEventAggregatesOutput: Swift.Sendable {
     /// The number of events in each category that meet the optional filter criteria.
     public var eventAggregates: [HealthClientTypes.EventAggregate]?
     /// If the results of a search are large, only a portion of the results are returned, and a nextToken pagination token is returned in the response. To retrieve the next batch of results, reissue the search request and include the returned token. When all results have been returned, the response does not contain a pagination token value.
@@ -829,7 +830,7 @@ public struct DescribeEventAggregatesOutput {
     }
 }
 
-public struct DescribeEventDetailsInput {
+public struct DescribeEventDetailsInput: Swift.Sendable {
     /// A list of event ARNs (unique identifiers). For example: "arn:aws:health:us-east-1::event/EC2/EC2_INSTANCE_RETIREMENT_SCHEDULED/EC2_INSTANCE_RETIREMENT_SCHEDULED_ABC123-CDE456", "arn:aws:health:us-west-1::event/EBS/AWS_EBS_LOST_VOLUME/AWS_EBS_LOST_VOLUME_CHI789_JKL101"
     /// This member is required.
     public var eventArns: [Swift.String]?
@@ -847,8 +848,9 @@ public struct DescribeEventDetailsInput {
 }
 
 extension HealthClientTypes {
+
     /// Error information returned when a [DescribeEventDetails](https://docs.aws.amazon.com/health/latest/APIReference/API_DescribeEventDetails.html) operation can't find a specified event.
-    public struct EventDetailsErrorItem {
+    public struct EventDetailsErrorItem: Swift.Sendable {
         /// A message that describes the error.
         public var errorMessage: Swift.String?
         /// The name of the error.
@@ -867,10 +869,10 @@ extension HealthClientTypes {
             self.eventArn = eventArn
         }
     }
-
 }
 
 extension HealthClientTypes {
+
     /// Summary information about an Health event. Health events can be public or account-specific:
     ///
     /// * Public events might be service events that are not specific to an Amazon Web Services account. For example, if there is an issue with an Amazon Web Services Region, Health provides information about the event, even if you don't use services or resources in that Region.
@@ -879,7 +881,7 @@ extension HealthClientTypes {
     ///
     ///
     /// You can determine if an event is public or account-specific by using the eventScopeCode parameter. For more information, see [eventScopeCode](https://docs.aws.amazon.com/health/latest/APIReference/API_Event.html#AWSHealth-Type-Event-eventScopeCode).
-    public struct Event {
+    public struct Event: Swift.Sendable {
         /// The unique identifier for the event. The event ARN has the arn:aws:health:event-region::event/SERVICE/EVENT_TYPE_CODE/EVENT_TYPE_PLUS_ID  format. For example, an event ARN might look like the following: arn:aws:health:us-east-1::event/EC2/EC2_INSTANCE_RETIREMENT_SCHEDULED/EC2_INSTANCE_RETIREMENT_SCHEDULED_ABC123-DEF456
         public var arn: Swift.String?
         /// The Amazon Web Services Availability Zone of the event. For example, us-east-1a.
@@ -936,12 +938,12 @@ extension HealthClientTypes {
             self.statusCode = statusCode
         }
     }
-
 }
 
 extension HealthClientTypes {
+
     /// The detailed description of the event. Included in the information returned by the [DescribeEventDetails](https://docs.aws.amazon.com/health/latest/APIReference/API_DescribeEventDetails.html) operation.
-    public struct EventDescription {
+    public struct EventDescription: Swift.Sendable {
         /// The most recent description of the event.
         public var latestDescription: Swift.String?
 
@@ -952,12 +954,12 @@ extension HealthClientTypes {
             self.latestDescription = latestDescription
         }
     }
-
 }
 
 extension HealthClientTypes {
+
     /// Detailed information about an event. A combination of an [Event](https://docs.aws.amazon.com/health/latest/APIReference/API_Event.html) object, an [EventDescription](https://docs.aws.amazon.com/health/latest/APIReference/API_EventDescription.html) object, and additional metadata about the event. Returned by the [DescribeEventDetails](https://docs.aws.amazon.com/health/latest/APIReference/API_DescribeEventDetails.html) operation.
-    public struct EventDetails {
+    public struct EventDetails: Swift.Sendable {
         /// Summary information about the event.
         public var event: HealthClientTypes.Event?
         /// The most recent description of the event.
@@ -976,10 +978,9 @@ extension HealthClientTypes {
             self.eventMetadata = eventMetadata
         }
     }
-
 }
 
-public struct DescribeEventDetailsOutput {
+public struct DescribeEventDetailsOutput: Swift.Sendable {
     /// Error messages for any events that could not be retrieved.
     public var failedSet: [HealthClientTypes.EventDetailsErrorItem]?
     /// Information about the events that could be retrieved.
@@ -995,7 +996,7 @@ public struct DescribeEventDetailsOutput {
     }
 }
 
-public struct DescribeEventDetailsForOrganizationInput {
+public struct DescribeEventDetailsForOrganizationInput: Swift.Sendable {
     /// The locale (language) to return information in. English (en) is the default and the only supported value at this time.
     public var locale: Swift.String?
     /// A set of JSON elements that includes the awsAccountId and the eventArn.
@@ -1013,8 +1014,9 @@ public struct DescribeEventDetailsForOrganizationInput {
 }
 
 extension HealthClientTypes {
+
     /// Error information returned when a [DescribeEventDetailsForOrganization](https://docs.aws.amazon.com/health/latest/APIReference/API_DescribeEventDetailsForOrganization.html) operation can't find a specified event.
-    public struct OrganizationEventDetailsErrorItem {
+    public struct OrganizationEventDetailsErrorItem: Swift.Sendable {
         /// Error information returned when a [DescribeEventDetailsForOrganization](https://docs.aws.amazon.com/health/latest/APIReference/API_DescribeEventDetailsForOrganization.html) operation can't find a specified event.
         public var awsAccountId: Swift.String?
         /// A message that describes the error. If you call the DescribeEventDetailsForOrganization operation and receive one of the following errors, follow the recommendations in the message:
@@ -1043,12 +1045,12 @@ extension HealthClientTypes {
             self.eventArn = eventArn
         }
     }
-
 }
 
 extension HealthClientTypes {
+
     /// Detailed information about an event. A combination of an [Event](https://docs.aws.amazon.com/health/latest/APIReference/API_Event.html) object, an [EventDescription](https://docs.aws.amazon.com/health/latest/APIReference/API_EventDescription.html) object, and additional metadata about the event. Returned by the [DescribeEventDetailsForOrganization](https://docs.aws.amazon.com/health/latest/APIReference/API_DescribeEventDetailsForOrganization.html) operation.
-    public struct OrganizationEventDetails {
+    public struct OrganizationEventDetails: Swift.Sendable {
         /// The 12-digit Amazon Web Services account numbers that contains the affected entities.
         public var awsAccountId: Swift.String?
         /// Summary information about an Health event. Health events can be public or account-specific:
@@ -1078,10 +1080,9 @@ extension HealthClientTypes {
             self.eventMetadata = eventMetadata
         }
     }
-
 }
 
-public struct DescribeEventDetailsForOrganizationOutput {
+public struct DescribeEventDetailsForOrganizationOutput: Swift.Sendable {
     /// Error messages for any events that could not be retrieved.
     public var failedSet: [HealthClientTypes.OrganizationEventDetailsErrorItem]?
     /// Information about the events that could be retrieved.
@@ -1097,7 +1098,7 @@ public struct DescribeEventDetailsForOrganizationOutput {
     }
 }
 
-public struct DescribeEventsInput {
+public struct DescribeEventsInput: Swift.Sendable {
     /// Values to narrow the results returned.
     public var filter: HealthClientTypes.EventFilter?
     /// The locale (language) to return information in. English (en) is the default and the only supported value at this time.
@@ -1121,7 +1122,7 @@ public struct DescribeEventsInput {
     }
 }
 
-public struct DescribeEventsOutput {
+public struct DescribeEventsOutput: Swift.Sendable {
     /// The events that match the specified filter criteria.
     public var events: [HealthClientTypes.Event]?
     /// If the results of a search are large, only a portion of the results are returned, and a nextToken pagination token is returned in the response. To retrieve the next batch of results, reissue the search request and include the returned token. When all results have been returned, the response does not contain a pagination token value.
@@ -1138,8 +1139,9 @@ public struct DescribeEventsOutput {
 }
 
 extension HealthClientTypes {
+
     /// The values to filter results from the [DescribeEventsForOrganization](https://docs.aws.amazon.com/health/latest/APIReference/API_DescribeEventsForOrganization.html) operation.
-    public struct OrganizationEventFilter {
+    public struct OrganizationEventFilter: Swift.Sendable {
         /// A list of 12-digit Amazon Web Services account numbers that contains the affected entities.
         public var awsAccountIds: [Swift.String]?
         /// A range of dates and times that is used by the [EventFilter](https://docs.aws.amazon.com/health/latest/APIReference/API_EventFilter.html) and [EntityFilter](https://docs.aws.amazon.com/health/latest/APIReference/API_EntityFilter.html) objects. If from is set and to is set: match items where the timestamp (startTime, endTime, or lastUpdatedTime) is between from and to inclusive. If from is set and to is not set: match items where the timestamp value is equal to or after from. If from is not set and to is set: match items where the timestamp value is equal to or before to.
@@ -1190,10 +1192,9 @@ extension HealthClientTypes {
             self.startTime = startTime
         }
     }
-
 }
 
-public struct DescribeEventsForOrganizationInput {
+public struct DescribeEventsForOrganizationInput: Swift.Sendable {
     /// Values to narrow the results returned.
     public var filter: HealthClientTypes.OrganizationEventFilter?
     /// The locale (language) to return information in. English (en) is the default and the only supported value at this time.
@@ -1218,8 +1219,9 @@ public struct DescribeEventsForOrganizationInput {
 }
 
 extension HealthClientTypes {
+
     /// Summary information about an event, returned by the [DescribeEventsForOrganization](https://docs.aws.amazon.com/health/latest/APIReference/API_DescribeEventsForOrganization.html) operation.
-    public struct OrganizationEvent {
+    public struct OrganizationEvent: Swift.Sendable {
         /// The unique identifier for the event. The event ARN has the arn:aws:health:event-region::event/SERVICE/EVENT_TYPE_CODE/EVENT_TYPE_PLUS_ID  format. For example, an event ARN might look like the following: arn:aws:health:us-east-1::event/EC2/EC2_INSTANCE_RETIREMENT_SCHEDULED/EC2_INSTANCE_RETIREMENT_SCHEDULED_ABC123-DEF456
         public var arn: Swift.String?
         /// The date and time that the event ended.
@@ -1272,10 +1274,9 @@ extension HealthClientTypes {
             self.statusCode = statusCode
         }
     }
-
 }
 
-public struct DescribeEventsForOrganizationOutput {
+public struct DescribeEventsForOrganizationOutput: Swift.Sendable {
     /// The events that match the specified filter criteria.
     public var events: [HealthClientTypes.OrganizationEvent]?
     /// If the results of a search are large, only a portion of the results are returned, and a nextToken pagination token is returned in the response. To retrieve the next batch of results, reissue the search request and include the returned token. When all results have been returned, the response does not contain a pagination token value.
@@ -1292,8 +1293,9 @@ public struct DescribeEventsForOrganizationOutput {
 }
 
 extension HealthClientTypes {
+
     /// The values to use to filter results from the [DescribeEventTypes](https://docs.aws.amazon.com/health/latest/APIReference/API_DescribeEventTypes.html) operation.
-    public struct EventTypeFilter {
+    public struct EventTypeFilter: Swift.Sendable {
         /// A list of event type category codes. Possible values are issue, accountNotification, or scheduledChange. Currently, the investigation value isn't supported at this time.
         public var eventTypeCategories: [HealthClientTypes.EventTypeCategory]?
         /// A list of event type codes.
@@ -1312,10 +1314,9 @@ extension HealthClientTypes {
             self.services = services
         }
     }
-
 }
 
-public struct DescribeEventTypesInput {
+public struct DescribeEventTypesInput: Swift.Sendable {
     /// Values to narrow the results returned.
     public var filter: HealthClientTypes.EventTypeFilter?
     /// The locale (language) to return information in. English (en) is the default and the only supported value at this time.
@@ -1340,8 +1341,9 @@ public struct DescribeEventTypesInput {
 }
 
 extension HealthClientTypes {
+
     /// Contains the metadata about a type of event that is reported by Health. The EventType shows the category, service, and the event type code of the event. For example, an issue might be the category, EC2 the service, and AWS_EC2_SYSTEM_MAINTENANCE_EVENT the event type code. You can use the [DescribeEventTypes](https://docs.aws.amazon.com/health/latest/APIReference/API_DescribeEventTypes.html) API operation to return this information about an event. You can also use the Amazon CloudWatch Events console to create a rule so that you can get notified or take action when Health delivers a specific event to your Amazon Web Services account. For more information, see [Monitor for Health events with Amazon CloudWatch Events](https://docs.aws.amazon.com/health/latest/ug/cloudwatch-events-health.html) in the Health User Guide.
-    public struct EventType {
+    public struct EventType: Swift.Sendable {
         /// A list of event type category codes. Possible values are issue, accountNotification, or scheduledChange. Currently, the investigation value isn't supported at this time.
         public var category: HealthClientTypes.EventTypeCategory?
         /// The unique identifier for the event type. The format is AWS_SERVICE_DESCRIPTION ; for example, AWS_EC2_SYSTEM_MAINTENANCE_EVENT.
@@ -1360,10 +1362,9 @@ extension HealthClientTypes {
             self.service = service
         }
     }
-
 }
 
-public struct DescribeEventTypesOutput {
+public struct DescribeEventTypesOutput: Swift.Sendable {
     /// A list of event types that match the filter criteria. Event types have a category (issue, accountNotification, or scheduledChange), a service (for example, EC2, RDS, DATAPIPELINE, BILLING), and a code (in the format AWS_SERVICE_DESCRIPTION ; for example, AWS_EC2_SYSTEM_MAINTENANCE_EVENT).
     public var eventTypes: [HealthClientTypes.EventType]?
     /// If the results of a search are large, only a portion of the results are returned, and a nextToken pagination token is returned in the response. To retrieve the next batch of results, reissue the search request and include the returned token. When all results have been returned, the response does not contain a pagination token value.
@@ -1379,7 +1380,7 @@ public struct DescribeEventTypesOutput {
     }
 }
 
-public struct DescribeHealthServiceStatusForOrganizationOutput {
+public struct DescribeHealthServiceStatusForOrganizationOutput: Swift.Sendable {
     /// Information about the status of enabling or disabling the Health organizational view feature in your organization. Valid values are ENABLED | DISABLED | PENDING.
     public var healthServiceAccessStatusForOrganization: Swift.String?
 

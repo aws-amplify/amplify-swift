@@ -29,7 +29,7 @@ import protocol ClientRuntime.ModeledError
 
 extension SnowballClientTypes {
 
-    public enum AddressType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AddressType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case awsShip
         case custPickup
         case sdkUnknown(Swift.String)
@@ -57,8 +57,9 @@ extension SnowballClientTypes {
 }
 
 extension SnowballClientTypes {
+
     /// The address that you want the Snow device(s) associated with a specific job to be shipped to. Addresses are validated at the time of creation. The address you provide must be located within the serviceable area of your region. Although no individual elements of the Address are required, if the address is invalid or unsupported, then an exception is thrown.
-    public struct Address {
+    public struct Address: Swift.Sendable {
         /// The unique ID for an address.
         public var addressId: Swift.String?
         /// The city in an address that a Snow device is to be delivered to.
@@ -125,7 +126,6 @@ extension SnowballClientTypes {
             self.type = type
         }
     }
-
 }
 
 /// The action can't be performed because the job's current state doesn't allow that action to be performed.
@@ -204,7 +204,7 @@ public struct KMSRequestFailedException: ClientRuntime.ModeledError, AWSClientRu
     }
 }
 
-public struct CancelClusterInput {
+public struct CancelClusterInput: Swift.Sendable {
     /// The 39-character ID for the cluster that you want to cancel, for example CID123e4567-e89b-12d3-a456-426655440000.
     /// This member is required.
     public var clusterId: Swift.String?
@@ -217,12 +217,12 @@ public struct CancelClusterInput {
     }
 }
 
-public struct CancelClusterOutput {
+public struct CancelClusterOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct CancelJobInput {
+public struct CancelJobInput: Swift.Sendable {
     /// The 39-character job ID for the job that you want to cancel, for example JID123e4567-e89b-12d3-a456-426655440000.
     /// This member is required.
     public var jobId: Swift.String?
@@ -235,7 +235,7 @@ public struct CancelJobInput {
     }
 }
 
-public struct CancelJobOutput {
+public struct CancelJobOutput: Swift.Sendable {
 
     public init() { }
 }
@@ -288,7 +288,7 @@ public struct UnsupportedAddressException: ClientRuntime.ModeledError, AWSClient
     }
 }
 
-public struct CreateAddressInput {
+public struct CreateAddressInput: Swift.Sendable {
     /// The address that you want the Snow device shipped to.
     /// This member is required.
     public var address: SnowballClientTypes.Address?
@@ -301,7 +301,7 @@ public struct CreateAddressInput {
     }
 }
 
-public struct CreateAddressOutput {
+public struct CreateAddressOutput: Swift.Sendable {
     /// The automatically generated ID for a specific address. You'll use this ID when you create a job to specify which address you want the Snow device for that job shipped to.
     public var addressId: Swift.String?
 
@@ -363,7 +363,7 @@ public struct InvalidInputCombinationException: ClientRuntime.ModeledError, AWSC
 
 extension SnowballClientTypes {
 
-    public enum JobType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum JobType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case export
         case `import`
         case localUse
@@ -395,7 +395,7 @@ extension SnowballClientTypes {
 
 extension SnowballClientTypes {
 
-    public enum JobState: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum JobState: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case cancelled
         case complete
         case inProgress
@@ -456,8 +456,9 @@ extension SnowballClientTypes {
 }
 
 extension SnowballClientTypes {
+
     /// The Amazon Simple Notification Service (Amazon SNS) notification settings associated with a specific job. The Notification object is returned as a part of the response syntax of the DescribeJob action in the JobMetadata data type. When the notification settings are defined during job creation, you can choose to notify based on a specific set of job states using the JobStatesToNotify array of strings, or you can specify that you want to have Amazon SNS notifications sent out for all job states with NotifyAll set to true.
-    public struct Notification {
+    public struct Notification: Swift.Sendable {
         /// Used to send SNS notifications for the person picking up the device (identified during job creation).
         public var devicePickupSnsTopicARN: Swift.String?
         /// The list of job states that will trigger a notification for this job.
@@ -480,12 +481,12 @@ extension SnowballClientTypes {
             self.snsTopicARN = snsTopicARN
         }
     }
-
 }
 
 extension SnowballClientTypes {
+
     /// An object representing the metadata and configuration settings of EKS Anywhere on the Snow Family device.
-    public struct EKSOnDeviceServiceConfiguration {
+    public struct EKSOnDeviceServiceConfiguration: Swift.Sendable {
         /// The optional version of EKS Anywhere on the Snow Family device.
         public var eksAnywhereVersion: Swift.String?
         /// The Kubernetes version for EKS Anywhere on the Snow Family device.
@@ -500,12 +501,11 @@ extension SnowballClientTypes {
             self.kubernetesVersion = kubernetesVersion
         }
     }
-
 }
 
 extension SnowballClientTypes {
 
-    public enum StorageUnit: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum StorageUnit: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case tb
         case sdkUnknown(Swift.String)
 
@@ -530,8 +530,9 @@ extension SnowballClientTypes {
 }
 
 extension SnowballClientTypes {
+
     /// An object that represents the metadata and configuration settings for the NFS (Network File System) service on an Amazon Web Services Snow Family device.
-    public struct NFSOnDeviceServiceConfiguration {
+    public struct NFSOnDeviceServiceConfiguration: Swift.Sendable {
         /// The maximum NFS storage for one Snow Family device.
         public var storageLimit: Swift.Int
         /// The scale unit of the NFS storage on the device. Valid values: TB.
@@ -546,12 +547,12 @@ extension SnowballClientTypes {
             self.storageUnit = storageUnit
         }
     }
-
 }
 
 extension SnowballClientTypes {
+
     /// Amazon S3 compatible storage on Snow family devices configuration items.
-    public struct S3OnDeviceServiceConfiguration {
+    public struct S3OnDeviceServiceConfiguration: Swift.Sendable {
         /// >Fault tolerance level of the cluster. This indicates the number of nodes that can go down without degrading the performance of the cluster. This additional input helps when the specified StorageLimit matches more than one Amazon S3 compatible storage on Snow family devices service configuration.
         public var faultTolerance: Swift.Int?
         /// Applicable when creating a cluster. Specifies how many nodes are needed for Amazon S3 compatible storage on Snow family devices. If specified, the other input can be omitted.
@@ -574,12 +575,12 @@ extension SnowballClientTypes {
             self.storageUnit = storageUnit
         }
     }
-
 }
 
 extension SnowballClientTypes {
+
     /// An object that represents the metadata and configuration settings for the Storage Gateway service Tape Gateway type on an Amazon Web Services Snow Family device.
-    public struct TGWOnDeviceServiceConfiguration {
+    public struct TGWOnDeviceServiceConfiguration: Swift.Sendable {
         /// The maximum number of virtual tapes to store on one Snow Family device. Due to physical resource limitations, this value must be set to 80 for Snowball Edge.
         public var storageLimit: Swift.Int
         /// The scale unit of the virtual tapes on the device.
@@ -594,12 +595,12 @@ extension SnowballClientTypes {
             self.storageUnit = storageUnit
         }
     }
-
 }
 
 extension SnowballClientTypes {
+
     /// An object that represents the metadata and configuration settings for services on an Amazon Web Services Snow Family device.
-    public struct OnDeviceServiceConfiguration {
+    public struct OnDeviceServiceConfiguration: Swift.Sendable {
         /// The configuration of EKS Anywhere on the Snow Family device.
         public var eksOnDeviceService: SnowballClientTypes.EKSOnDeviceServiceConfiguration?
         /// Represents the NFS (Network File System) service on a Snow Family device.
@@ -622,12 +623,11 @@ extension SnowballClientTypes {
             self.tgwOnDeviceService = tgwOnDeviceService
         }
     }
-
 }
 
 extension SnowballClientTypes {
 
-    public enum RemoteManagement: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum RemoteManagement: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case installedAutostart
         case installedOnly
         case notInstalled
@@ -658,8 +658,9 @@ extension SnowballClientTypes {
 }
 
 extension SnowballClientTypes {
+
     /// A JSON-formatted object that contains the IDs for an Amazon Machine Image (AMI), including the Amazon EC2-compatible AMI ID and the Snow device AMI ID. Each AMI has these two IDs to simplify identifying the AMI in both the Amazon Web Services Cloud and on the device.
-    public struct Ec2AmiResource {
+    public struct Ec2AmiResource: Swift.Sendable {
         /// The ID of the AMI in Amazon EC2.
         /// This member is required.
         public var amiId: Swift.String?
@@ -675,12 +676,12 @@ extension SnowballClientTypes {
             self.snowballAmiId = snowballAmiId
         }
     }
-
 }
 
 extension SnowballClientTypes {
+
     /// The container for the [EventTriggerDefinition$EventResourceARN].
-    public struct EventTriggerDefinition {
+    public struct EventTriggerDefinition: Swift.Sendable {
         /// The Amazon Resource Name (ARN) for any local Amazon S3 resource that is an Lambda function's event trigger associated with this job.
         public var eventResourceARN: Swift.String?
 
@@ -691,12 +692,12 @@ extension SnowballClientTypes {
             self.eventResourceARN = eventResourceARN
         }
     }
-
 }
 
 extension SnowballClientTypes {
+
     /// Identifies
-    public struct LambdaResource {
+    public struct LambdaResource: Swift.Sendable {
         /// The array of ARNs for [S3Resource] objects to trigger the [LambdaResource] objects associated with this job.
         public var eventTriggers: [SnowballClientTypes.EventTriggerDefinition]?
         /// An Amazon Resource Name (ARN) that represents an Lambda function to be triggered by PUT object actions on the associated local Amazon S3 resource.
@@ -711,12 +712,12 @@ extension SnowballClientTypes {
             self.lambdaArn = lambdaArn
         }
     }
-
 }
 
 extension SnowballClientTypes {
+
     /// Contains a key range. For export jobs, a S3Resource object can have an optional KeyRange value. The length of the range is defined at job creation, and has either an inclusive BeginMarker, an inclusive EndMarker, or both. Ranges are UTF-8 binary sorted.
-    public struct KeyRange {
+    public struct KeyRange: Swift.Sendable {
         /// The key that starts an optional key range for an export job. Ranges are inclusive and UTF-8 binary sorted.
         public var beginMarker: Swift.String?
         /// The key that ends an optional key range for an export job. Ranges are inclusive and UTF-8 binary sorted.
@@ -731,12 +732,11 @@ extension SnowballClientTypes {
             self.endMarker = endMarker
         }
     }
-
 }
 
 extension SnowballClientTypes {
 
-    public enum DeviceServiceName: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DeviceServiceName: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case nfsOnDeviceService
         case s3OnDeviceService
         case sdkUnknown(Swift.String)
@@ -765,7 +765,7 @@ extension SnowballClientTypes {
 
 extension SnowballClientTypes {
 
-    public enum TransferOption: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum TransferOption: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case export
         case `import`
         case localUse
@@ -796,8 +796,9 @@ extension SnowballClientTypes {
 }
 
 extension SnowballClientTypes {
+
     /// An object that represents the service or services on the Snow Family device that your transferred data will be exported from or imported into. Amazon Web Services Snow Family supports Amazon S3 and NFS (Network File System).
-    public struct TargetOnDeviceService {
+    public struct TargetOnDeviceService: Swift.Sendable {
         /// Specifies the name of the service on the Snow Family device that your transferred data will be exported from or imported into.
         public var serviceName: SnowballClientTypes.DeviceServiceName?
         /// Specifies whether the data is being imported or exported. You can import or export the data, or use it locally on the device.
@@ -812,12 +813,12 @@ extension SnowballClientTypes {
             self.transferOption = transferOption
         }
     }
-
 }
 
 extension SnowballClientTypes {
+
     /// Each S3Resource object represents an Amazon S3 bucket that your transferred data will be exported from or imported into. For export jobs, this object can have an optional KeyRange value. The length of the range is defined at job creation, and has either an inclusive BeginMarker, an inclusive EndMarker, or both. Ranges are UTF-8 binary sorted.
-    public struct S3Resource {
+    public struct S3Resource: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of an Amazon S3 bucket.
         public var bucketArn: Swift.String?
         /// For export jobs, you can provide an optional KeyRange within a specific Amazon S3 bucket. The length of the range is defined at job creation, and has either an inclusive BeginMarker, an inclusive EndMarker, or both. Ranges are UTF-8 binary sorted.
@@ -836,12 +837,12 @@ extension SnowballClientTypes {
             self.targetOnDeviceServices = targetOnDeviceServices
         }
     }
-
 }
 
 extension SnowballClientTypes {
+
     /// Contains an array of Amazon Web Services resource objects. Each object represents an Amazon S3 bucket, an Lambda function, or an Amazon Machine Image (AMI) based on Amazon EC2 that is associated with a particular job.
-    public struct JobResource {
+    public struct JobResource: Swift.Sendable {
         /// The Amazon Machine Images (AMIs) associated with this job.
         public var ec2AmiResources: [SnowballClientTypes.Ec2AmiResource]?
         /// The Python-language Lambda functions for this job.
@@ -860,12 +861,11 @@ extension SnowballClientTypes {
             self.s3Resources = s3Resources
         }
     }
-
 }
 
 extension SnowballClientTypes {
 
-    public enum ShippingOption: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ShippingOption: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case express
         case nextDay
         case secondDay
@@ -900,7 +900,7 @@ extension SnowballClientTypes {
 
 extension SnowballClientTypes {
 
-    public enum SnowballCapacity: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SnowballCapacity: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case noPreference
         case t100
         case t13
@@ -956,7 +956,7 @@ extension SnowballClientTypes {
 
 extension SnowballClientTypes {
 
-    public enum SnowballType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SnowballType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case edge
         case edgeC
         case edgeCg
@@ -1008,8 +1008,9 @@ extension SnowballClientTypes {
 }
 
 extension SnowballClientTypes {
+
     /// The tax documents required in Amazon Web Services Region in India.
-    public struct INDTaxDocuments {
+    public struct INDTaxDocuments: Swift.Sendable {
         /// The Goods and Services Tax (GST) documents required in Amazon Web Services Region in India.
         public var gstin: Swift.String?
 
@@ -1020,12 +1021,12 @@ extension SnowballClientTypes {
             self.gstin = gstin
         }
     }
-
 }
 
 extension SnowballClientTypes {
+
     /// The tax documents required in your Amazon Web Services Region.
-    public struct TaxDocuments {
+    public struct TaxDocuments: Swift.Sendable {
         /// The tax documents required in Amazon Web Services Region in India.
         public var ind: SnowballClientTypes.INDTaxDocuments?
 
@@ -1036,10 +1037,9 @@ extension SnowballClientTypes {
             self.ind = ind
         }
     }
-
 }
 
-public struct CreateClusterInput {
+public struct CreateClusterInput: Swift.Sendable {
     /// The ID for the address that you want the cluster shipped to.
     /// This member is required.
     public var addressId: Swift.String?
@@ -1139,8 +1139,9 @@ public struct CreateClusterInput {
 }
 
 extension SnowballClientTypes {
+
     /// Each JobListEntry object contains a job's state, a job's ID, and a value that indicates whether the job is a job part, in the case of an export job.
-    public struct JobListEntry {
+    public struct JobListEntry: Swift.Sendable {
         /// The creation date for this job.
         public var creationDate: Foundation.Date?
         /// The optional description of this specific job, for example Important Photos 2016-08-11.
@@ -1175,10 +1176,9 @@ extension SnowballClientTypes {
             self.snowballType = snowballType
         }
     }
-
 }
 
-public struct CreateClusterOutput {
+public struct CreateClusterOutput: Swift.Sendable {
     /// The automatically generated ID for a cluster.
     public var clusterId: Swift.String?
     /// List of jobs created for this cluster. For syntax, see [ListJobsResult$JobListEntries](http://amazonaws.com/snowball/latest/api-reference/API_ListJobs.html#API_ListJobs_ResponseSyntax) in this guide.
@@ -1219,8 +1219,9 @@ public struct ClusterLimitExceededException: ClientRuntime.ModeledError, AWSClie
 }
 
 extension SnowballClientTypes {
+
     /// Configures the wireless connection on an Snowcone device.
-    public struct WirelessConnection {
+    public struct WirelessConnection: Swift.Sendable {
         /// Enables the Wi-Fi adapter on an Snowcone device.
         public var isWifiEnabled: Swift.Bool
 
@@ -1231,12 +1232,12 @@ extension SnowballClientTypes {
             self.isWifiEnabled = isWifiEnabled
         }
     }
-
 }
 
 extension SnowballClientTypes {
+
     /// Specifies the device configuration for an Snowcone job.
-    public struct SnowconeDeviceConfiguration {
+    public struct SnowconeDeviceConfiguration: Swift.Sendable {
         /// Configures the wireless connection for the Snowcone device.
         public var wirelessConnection: SnowballClientTypes.WirelessConnection?
 
@@ -1247,12 +1248,12 @@ extension SnowballClientTypes {
             self.wirelessConnection = wirelessConnection
         }
     }
-
 }
 
 extension SnowballClientTypes {
+
     /// The container for SnowconeDeviceConfiguration.
-    public struct DeviceConfiguration {
+    public struct DeviceConfiguration: Swift.Sendable {
         /// Returns information about the device configuration for an Snowcone job.
         public var snowconeDeviceConfiguration: SnowballClientTypes.SnowconeDeviceConfiguration?
 
@@ -1263,12 +1264,11 @@ extension SnowballClientTypes {
             self.snowconeDeviceConfiguration = snowconeDeviceConfiguration
         }
     }
-
 }
 
 extension SnowballClientTypes {
 
-    public enum ImpactLevel: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ImpactLevel: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case il2
         case il4
         case il5
@@ -1305,8 +1305,9 @@ extension SnowballClientTypes {
 }
 
 extension SnowballClientTypes {
+
     /// Information identifying the person picking up the device.
-    public struct PickupDetails {
+    public struct PickupDetails: Swift.Sendable {
         /// The unique ID for a device that will be picked up.
         public var devicePickupId: Swift.String?
         /// The email address of the person picking up the device.
@@ -1341,7 +1342,6 @@ extension SnowballClientTypes {
             self.phoneNumber = phoneNumber
         }
     }
-
 }
 
 extension SnowballClientTypes.PickupDetails: Swift.CustomDebugStringConvertible {
@@ -1349,7 +1349,7 @@ extension SnowballClientTypes.PickupDetails: Swift.CustomDebugStringConvertible 
         "PickupDetails(devicePickupId: \(Swift.String(describing: devicePickupId)), identificationExpirationDate: \(Swift.String(describing: identificationExpirationDate)), identificationIssuingOrg: \(Swift.String(describing: identificationIssuingOrg)), identificationNumber: \(Swift.String(describing: identificationNumber)), name: \(Swift.String(describing: name)), email: \"CONTENT_REDACTED\", phoneNumber: \"CONTENT_REDACTED\")"}
 }
 
-public struct CreateJobInput {
+public struct CreateJobInput: Swift.Sendable {
     /// The ID for the address that you want the Snow device shipped to.
     public var addressId: Swift.String?
     /// The ID of a cluster. If you're creating a job for a node in a cluster, you need to provide only this clusterId value. The other job attributes are inherited from the cluster.
@@ -1441,7 +1441,7 @@ public struct CreateJobInput {
     }
 }
 
-public struct CreateJobOutput {
+public struct CreateJobOutput: Swift.Sendable {
     /// The automatically generated ID for a job, for example JID123e4567-e89b-12d3-a456-426655440000.
     public var jobId: Swift.String?
 
@@ -1455,7 +1455,7 @@ public struct CreateJobOutput {
 
 extension SnowballClientTypes {
 
-    public enum LongTermPricingType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum LongTermPricingType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case oneMonth
         case oneYear
         case threeYear
@@ -1485,7 +1485,7 @@ extension SnowballClientTypes {
     }
 }
 
-public struct CreateLongTermPricingInput {
+public struct CreateLongTermPricingInput: Swift.Sendable {
     /// Specifies whether the current long-term pricing type for the device should be renewed.
     public var isLongTermPricingAutoRenew: Swift.Bool?
     /// The type of long-term pricing option you want for the device, either 1-year or 3-year long-term pricing.
@@ -1507,7 +1507,7 @@ public struct CreateLongTermPricingInput {
     }
 }
 
-public struct CreateLongTermPricingOutput {
+public struct CreateLongTermPricingOutput: Swift.Sendable {
     /// The ID of the long-term pricing type for the device.
     public var longTermPricingId: Swift.String?
 
@@ -1571,7 +1571,7 @@ public struct ReturnShippingLabelAlreadyExistsException: ClientRuntime.ModeledEr
     }
 }
 
-public struct CreateReturnShippingLabelInput {
+public struct CreateReturnShippingLabelInput: Swift.Sendable {
     /// The ID for a job that you want to create the return shipping label for; for example, JID123e4567-e89b-12d3-a456-426655440000.
     /// This member is required.
     public var jobId: Swift.String?
@@ -1590,7 +1590,7 @@ public struct CreateReturnShippingLabelInput {
 
 extension SnowballClientTypes {
 
-    public enum ShippingLabelStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ShippingLabelStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case failed
         case inProgress
         case succeeded
@@ -1623,7 +1623,7 @@ extension SnowballClientTypes {
     }
 }
 
-public struct CreateReturnShippingLabelOutput {
+public struct CreateReturnShippingLabelOutput: Swift.Sendable {
     /// The status information of the task on a Snow device that is being returned to Amazon Web Services.
     public var status: SnowballClientTypes.ShippingLabelStatus?
 
@@ -1635,7 +1635,7 @@ public struct CreateReturnShippingLabelOutput {
     }
 }
 
-public struct DescribeAddressInput {
+public struct DescribeAddressInput: Swift.Sendable {
     /// The automatically generated ID for a specific address.
     /// This member is required.
     public var addressId: Swift.String?
@@ -1648,7 +1648,7 @@ public struct DescribeAddressInput {
     }
 }
 
-public struct DescribeAddressOutput {
+public struct DescribeAddressOutput: Swift.Sendable {
     /// The address that you want the Snow device(s) associated with a specific job to be shipped to.
     public var address: SnowballClientTypes.Address?
 
@@ -1684,7 +1684,7 @@ public struct InvalidNextTokenException: ClientRuntime.ModeledError, AWSClientRu
     }
 }
 
-public struct DescribeAddressesInput {
+public struct DescribeAddressesInput: Swift.Sendable {
     /// The number of ADDRESS objects to return.
     public var maxResults: Swift.Int?
     /// HTTP requests are stateless. To identify what object comes "next" in the list of ADDRESS objects, you have the option of specifying a value for NextToken as the starting point for your list of returned addresses.
@@ -1700,7 +1700,7 @@ public struct DescribeAddressesInput {
     }
 }
 
-public struct DescribeAddressesOutput {
+public struct DescribeAddressesOutput: Swift.Sendable {
     /// The Snow device shipping addresses that were created for this account.
     public var addresses: [SnowballClientTypes.Address]?
     /// HTTP requests are stateless. If you use the automatically generated NextToken value in your next DescribeAddresses call, your list of returned addresses will start from this point in the array.
@@ -1716,7 +1716,7 @@ public struct DescribeAddressesOutput {
     }
 }
 
-public struct DescribeClusterInput {
+public struct DescribeClusterInput: Swift.Sendable {
     /// The automatically generated ID for a cluster.
     /// This member is required.
     public var clusterId: Swift.String?
@@ -1731,7 +1731,7 @@ public struct DescribeClusterInput {
 
 extension SnowballClientTypes {
 
-    public enum ClusterState: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ClusterState: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case awaitingQuorum
         case cancelled
         case complete
@@ -1768,8 +1768,9 @@ extension SnowballClientTypes {
 }
 
 extension SnowballClientTypes {
+
     /// Contains metadata about a specific cluster.
-    public struct ClusterMetadata {
+    public struct ClusterMetadata: Swift.Sendable {
         /// The automatically generated ID for a specific address.
         public var addressId: Swift.String?
         /// The automatically generated ID for a cluster.
@@ -1844,10 +1845,9 @@ extension SnowballClientTypes {
             self.taxDocuments = taxDocuments
         }
     }
-
 }
 
-public struct DescribeClusterOutput {
+public struct DescribeClusterOutput: Swift.Sendable {
     /// Information about a specific cluster, including shipping information, cluster status, and other important metadata.
     public var clusterMetadata: SnowballClientTypes.ClusterMetadata?
 
@@ -1859,7 +1859,7 @@ public struct DescribeClusterOutput {
     }
 }
 
-public struct DescribeJobInput {
+public struct DescribeJobInput: Swift.Sendable {
     /// The automatically generated ID for a job, for example JID123e4567-e89b-12d3-a456-426655440000.
     /// This member is required.
     public var jobId: Swift.String?
@@ -1873,8 +1873,9 @@ public struct DescribeJobInput {
 }
 
 extension SnowballClientTypes {
+
     /// Defines the real-time status of a Snow device's data transfer while the device is at Amazon Web Services. This data is only available while a job has a JobState value of InProgress, for both import and export jobs.
-    public struct DataTransfer {
+    public struct DataTransfer: Swift.Sendable {
         /// The number of bytes transferred between a Snow device and Amazon S3.
         public var bytesTransferred: Swift.Int
         /// The number of objects transferred between a Snow device and Amazon S3.
@@ -1897,12 +1898,12 @@ extension SnowballClientTypes {
             self.totalObjects = totalObjects
         }
     }
-
 }
 
 extension SnowballClientTypes {
+
     /// Contains job logs. Whenever a Snow device is used to import data into or export data out of Amazon S3, you'll have the option of downloading a PDF job report. Job logs are returned as a part of the response syntax of the DescribeJob action in the JobMetadata data type. The job logs can be accessed for up to 60 minutes after this request has been made. To access any of the job logs after 60 minutes have passed, you'll have to make another call to the DescribeJob action. For import jobs, the PDF job report becomes available at the end of the import process. For export jobs, your job report typically becomes available while the Snow device for your job part is being delivered to you. The job report provides you insight into the state of your Amazon S3 data transfer. The report includes details about your job or job part for your records. For deeper visibility into the status of your transferred objects, you can look at the two associated logs: a success log and a failure log. The logs are saved in comma-separated value (CSV) format, and the name of each log includes the ID of the job or job part that the log describes.
-    public struct JobLogs {
+    public struct JobLogs: Swift.Sendable {
         /// A link to an Amazon S3 presigned URL where the job completion report is located.
         public var jobCompletionReportURI: Swift.String?
         /// A link to an Amazon S3 presigned URL where the job failure log is located.
@@ -1921,12 +1922,12 @@ extension SnowballClientTypes {
             self.jobSuccessLogURI = jobSuccessLogURI
         }
     }
-
 }
 
 extension SnowballClientTypes {
+
     /// The Status and TrackingNumber information for an inbound or outbound shipment.
-    public struct Shipment {
+    public struct Shipment: Swift.Sendable {
         /// Status information for a shipment.
         public var status: Swift.String?
         /// The tracking number for this job. Using this tracking number with your region's carrier's website, you can track a Snow device as the carrier transports it. For India, the carrier is Amazon Logistics. For all other regions, UPS is the carrier.
@@ -1941,12 +1942,12 @@ extension SnowballClientTypes {
             self.trackingNumber = trackingNumber
         }
     }
-
 }
 
 extension SnowballClientTypes {
+
     /// A job's shipping information, including inbound and outbound tracking numbers and shipping speed options.
-    public struct ShippingDetails {
+    public struct ShippingDetails: Swift.Sendable {
         /// The Status and TrackingNumber values for a Snow device being returned to Amazon Web Services for a particular job.
         public var inboundShipment: SnowballClientTypes.Shipment?
         /// The Status and TrackingNumber values for a Snow device being delivered to the address that you specified for a particular job.
@@ -1973,12 +1974,12 @@ extension SnowballClientTypes {
             self.shippingOption = shippingOption
         }
     }
-
 }
 
 extension SnowballClientTypes {
+
     /// Contains information about a specific job including shipping information, job status, and other important metadata. This information is returned as a part of the response syntax of the DescribeJob action.
-    public struct JobMetadata {
+    public struct JobMetadata: Swift.Sendable {
         /// The ID for the address that you want the Snow device shipped to.
         public var addressId: Swift.String?
         /// The 39-character ID for the cluster, for example CID123e4567-e89b-12d3-a456-426655440000.
@@ -2085,10 +2086,9 @@ extension SnowballClientTypes {
             self.taxDocuments = taxDocuments
         }
     }
-
 }
 
-public struct DescribeJobOutput {
+public struct DescribeJobOutput: Swift.Sendable {
     /// Information about a specific job, including shipping information, job status, and other important metadata.
     public var jobMetadata: SnowballClientTypes.JobMetadata?
     /// Information about a specific job part (in the case of an export job), including shipping information, job status, and other important metadata.
@@ -2104,7 +2104,7 @@ public struct DescribeJobOutput {
     }
 }
 
-public struct DescribeReturnShippingLabelInput {
+public struct DescribeReturnShippingLabelInput: Swift.Sendable {
     /// The automatically generated ID for a job, for example JID123e4567-e89b-12d3-a456-426655440000.
     /// This member is required.
     public var jobId: Swift.String?
@@ -2117,7 +2117,7 @@ public struct DescribeReturnShippingLabelInput {
     }
 }
 
-public struct DescribeReturnShippingLabelOutput {
+public struct DescribeReturnShippingLabelOutput: Swift.Sendable {
     /// The expiration date of the current return shipping label.
     public var expirationDate: Foundation.Date?
     /// The pre-signed Amazon S3 URI used to download the return shipping label.
@@ -2137,7 +2137,7 @@ public struct DescribeReturnShippingLabelOutput {
     }
 }
 
-public struct GetJobManifestInput {
+public struct GetJobManifestInput: Swift.Sendable {
     /// The ID for a job that you want to get the manifest file for, for example JID123e4567-e89b-12d3-a456-426655440000.
     /// This member is required.
     public var jobId: Swift.String?
@@ -2150,7 +2150,7 @@ public struct GetJobManifestInput {
     }
 }
 
-public struct GetJobManifestOutput {
+public struct GetJobManifestOutput: Swift.Sendable {
     /// The Amazon S3 presigned URL for the manifest file associated with the specified JobId value.
     public var manifestURI: Swift.String?
 
@@ -2162,7 +2162,7 @@ public struct GetJobManifestOutput {
     }
 }
 
-public struct GetJobUnlockCodeInput {
+public struct GetJobUnlockCodeInput: Swift.Sendable {
     /// The ID for the job that you want to get the UnlockCode value for, for example JID123e4567-e89b-12d3-a456-426655440000.
     /// This member is required.
     public var jobId: Swift.String?
@@ -2175,7 +2175,7 @@ public struct GetJobUnlockCodeInput {
     }
 }
 
-public struct GetJobUnlockCodeOutput {
+public struct GetJobUnlockCodeOutput: Swift.Sendable {
     /// The UnlockCode value for the specified job. The UnlockCode value can be accessed for up to 360 days after the job has been created.
     public var unlockCode: Swift.String?
 
@@ -2187,12 +2187,12 @@ public struct GetJobUnlockCodeOutput {
     }
 }
 
-public struct GetSnowballUsageInput {
+public struct GetSnowballUsageInput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct GetSnowballUsageOutput {
+public struct GetSnowballUsageOutput: Swift.Sendable {
     /// The service limit for number of Snow devices this account can have at once. The default service limit is 1 (one).
     public var snowballLimit: Swift.Int?
     /// The number of Snow devices that this account is currently using.
@@ -2208,7 +2208,7 @@ public struct GetSnowballUsageOutput {
     }
 }
 
-public struct GetSoftwareUpdatesInput {
+public struct GetSoftwareUpdatesInput: Swift.Sendable {
     /// The ID for a job that you want to get the software update file for, for example JID123e4567-e89b-12d3-a456-426655440000.
     /// This member is required.
     public var jobId: Swift.String?
@@ -2221,7 +2221,7 @@ public struct GetSoftwareUpdatesInput {
     }
 }
 
-public struct GetSoftwareUpdatesOutput {
+public struct GetSoftwareUpdatesOutput: Swift.Sendable {
     /// The Amazon S3 presigned URL for the update file associated with the specified JobId value. The software update will be available for 2 days after this request is made. To access an update after the 2 days have passed, you'll have to make another call to GetSoftwareUpdates.
     public var updatesURI: Swift.String?
 
@@ -2233,7 +2233,7 @@ public struct GetSoftwareUpdatesOutput {
     }
 }
 
-public struct ListClusterJobsInput {
+public struct ListClusterJobsInput: Swift.Sendable {
     /// The 39-character ID for the cluster that you want to list, for example CID123e4567-e89b-12d3-a456-426655440000.
     /// This member is required.
     public var clusterId: Swift.String?
@@ -2254,7 +2254,7 @@ public struct ListClusterJobsInput {
     }
 }
 
-public struct ListClusterJobsOutput {
+public struct ListClusterJobsOutput: Swift.Sendable {
     /// Each JobListEntry object contains a job's state, a job's ID, and a value that indicates whether the job is a job part, in the case of export jobs.
     public var jobListEntries: [SnowballClientTypes.JobListEntry]?
     /// HTTP requests are stateless. If you use the automatically generated NextToken value in your next ListClusterJobsResult call, your list of returned jobs will start from this point in the array.
@@ -2270,7 +2270,7 @@ public struct ListClusterJobsOutput {
     }
 }
 
-public struct ListClustersInput {
+public struct ListClustersInput: Swift.Sendable {
     /// The number of ClusterListEntry objects to return.
     public var maxResults: Swift.Int?
     /// HTTP requests are stateless. To identify what object comes "next" in the list of ClusterListEntry objects, you have the option of specifying NextToken as the starting point for your returned list.
@@ -2287,8 +2287,9 @@ public struct ListClustersInput {
 }
 
 extension SnowballClientTypes {
+
     /// Contains a cluster's state, a cluster's ID, and other important information.
-    public struct ClusterListEntry {
+    public struct ClusterListEntry: Swift.Sendable {
         /// The 39-character ID for the cluster that you want to list, for example CID123e4567-e89b-12d3-a456-426655440000.
         public var clusterId: Swift.String?
         /// The current state of this cluster. For information about the state of a specific node, see [JobListEntry$JobState].
@@ -2311,10 +2312,9 @@ extension SnowballClientTypes {
             self.description = description
         }
     }
-
 }
 
-public struct ListClustersOutput {
+public struct ListClustersOutput: Swift.Sendable {
     /// Each ClusterListEntry object contains a cluster's state, a cluster's ID, and other important status information.
     public var clusterListEntries: [SnowballClientTypes.ClusterListEntry]?
     /// HTTP requests are stateless. If you use the automatically generated NextToken value in your next ClusterListEntry call, your list of returned clusters will start from this point in the array.
@@ -2330,7 +2330,7 @@ public struct ListClustersOutput {
     }
 }
 
-public struct ListCompatibleImagesInput {
+public struct ListCompatibleImagesInput: Swift.Sendable {
     /// The maximum number of results for the list of compatible images. Currently, a Snowball Edge device can store 10 AMIs.
     public var maxResults: Swift.Int?
     /// HTTP requests are stateless. To identify what object comes "next" in the list of compatible images, you can specify a value for NextToken as the starting point for your list of returned images.
@@ -2347,8 +2347,9 @@ public struct ListCompatibleImagesInput {
 }
 
 extension SnowballClientTypes {
+
     /// A JSON-formatted object that describes a compatible Amazon Machine Image (AMI), including the ID and name for a Snow device AMI. This AMI is compatible with the device's physical hardware requirements, and it should be able to be run in an SBE1 instance on the device.
-    public struct CompatibleImage {
+    public struct CompatibleImage: Swift.Sendable {
         /// The unique identifier for an individual Snow device AMI.
         public var amiId: Swift.String?
         /// The optional name of a compatible image.
@@ -2363,10 +2364,9 @@ extension SnowballClientTypes {
             self.name = name
         }
     }
-
 }
 
-public struct ListCompatibleImagesOutput {
+public struct ListCompatibleImagesOutput: Swift.Sendable {
     /// A JSON-formatted object that describes a compatible AMI, including the ID and name for a Snow device AMI.
     public var compatibleImages: [SnowballClientTypes.CompatibleImage]?
     /// Because HTTP requests are stateless, this is the starting point for your next list of returned images.
@@ -2382,7 +2382,7 @@ public struct ListCompatibleImagesOutput {
     }
 }
 
-public struct ListJobsInput {
+public struct ListJobsInput: Swift.Sendable {
     /// The number of JobListEntry objects to return.
     public var maxResults: Swift.Int?
     /// HTTP requests are stateless. To identify what object comes "next" in the list of JobListEntry objects, you have the option of specifying NextToken as the starting point for your returned list.
@@ -2398,7 +2398,7 @@ public struct ListJobsInput {
     }
 }
 
-public struct ListJobsOutput {
+public struct ListJobsOutput: Swift.Sendable {
     /// Each JobListEntry object contains a job's state, a job's ID, and a value that indicates whether the job is a job part, in the case of export jobs.
     public var jobListEntries: [SnowballClientTypes.JobListEntry]?
     /// HTTP requests are stateless. If you use this automatically generated NextToken value in your next ListJobs call, your returned JobListEntry objects will start from this point in the array.
@@ -2414,7 +2414,7 @@ public struct ListJobsOutput {
     }
 }
 
-public struct ListLongTermPricingInput {
+public struct ListLongTermPricingInput: Swift.Sendable {
     /// The maximum number of ListLongTermPricing objects to return.
     public var maxResults: Swift.Int?
     /// Because HTTP requests are stateless, this is the starting point for your next list of ListLongTermPricing to return.
@@ -2431,8 +2431,9 @@ public struct ListLongTermPricingInput {
 }
 
 extension SnowballClientTypes {
+
     /// Each LongTermPricingListEntry object contains information about a long-term pricing type.
-    public struct LongTermPricingListEntry {
+    public struct LongTermPricingListEntry: Swift.Sendable {
         /// The current active jobs on the device the long-term pricing type.
         public var currentActiveJob: Swift.String?
         /// If set to true, specifies that the current long-term pricing type for the device should be automatically renewed before the long-term pricing contract expires.
@@ -2479,10 +2480,9 @@ extension SnowballClientTypes {
             self.snowballType = snowballType
         }
     }
-
 }
 
-public struct ListLongTermPricingOutput {
+public struct ListLongTermPricingOutput: Swift.Sendable {
     /// Each LongTermPricingEntry object contains a status, ID, and other information about the LongTermPricing type.
     public var longTermPricingEntries: [SnowballClientTypes.LongTermPricingListEntry]?
     /// Because HTTP requests are stateless, this is the starting point for your next list of returned ListLongTermPricing list.
@@ -2498,7 +2498,7 @@ public struct ListLongTermPricingOutput {
     }
 }
 
-public struct ListPickupLocationsInput {
+public struct ListPickupLocationsInput: Swift.Sendable {
     /// The maximum number of locations to list per page.
     public var maxResults: Swift.Int?
     /// HTTP requests are stateless. To identify what object comes "next" in the list of ListPickupLocationsRequest objects, you have the option of specifying NextToken as the starting point for your returned list.
@@ -2514,7 +2514,7 @@ public struct ListPickupLocationsInput {
     }
 }
 
-public struct ListPickupLocationsOutput {
+public struct ListPickupLocationsOutput: Swift.Sendable {
     /// Information about the address of pickup locations.
     public var addresses: [SnowballClientTypes.Address]?
     /// HTTP requests are stateless. To identify what object comes "next" in the list of ListPickupLocationsResult objects, you have the option of specifying NextToken as the starting point for your returned list.
@@ -2532,7 +2532,7 @@ public struct ListPickupLocationsOutput {
 
 extension SnowballClientTypes {
 
-    public enum ServiceName: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ServiceName: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case eksAnywhere
         case kubernetes
         case sdkUnknown(Swift.String)
@@ -2560,8 +2560,9 @@ extension SnowballClientTypes {
 }
 
 extension SnowballClientTypes {
+
     /// The version of the requested service.
-    public struct ServiceVersion {
+    public struct ServiceVersion: Swift.Sendable {
         /// The version number of the requested service.
         public var version: Swift.String?
 
@@ -2572,12 +2573,12 @@ extension SnowballClientTypes {
             self.version = version
         }
     }
-
 }
 
 extension SnowballClientTypes {
+
     /// The name and version of the service dependant on the requested service.
-    public struct DependentService {
+    public struct DependentService: Swift.Sendable {
         /// The name of the dependent service.
         public var serviceName: SnowballClientTypes.ServiceName?
         /// The version of the dependent service.
@@ -2592,10 +2593,9 @@ extension SnowballClientTypes {
             self.serviceVersion = serviceVersion
         }
     }
-
 }
 
-public struct ListServiceVersionsInput {
+public struct ListServiceVersionsInput: Swift.Sendable {
     /// A list of names and versions of dependant services of the requested service.
     public var dependentServices: [SnowballClientTypes.DependentService]?
     /// The maximum number of ListServiceVersions objects to return.
@@ -2620,7 +2620,7 @@ public struct ListServiceVersionsInput {
     }
 }
 
-public struct ListServiceVersionsOutput {
+public struct ListServiceVersionsOutput: Swift.Sendable {
     /// A list of names and versions of dependant services of the service for which the system provided supported versions.
     public var dependentServices: [SnowballClientTypes.DependentService]?
     /// Because HTTP requests are stateless, this is the starting point of the next list of returned ListServiceVersionsResult results.
@@ -2646,7 +2646,7 @@ public struct ListServiceVersionsOutput {
     }
 }
 
-public struct UpdateClusterInput {
+public struct UpdateClusterInput: Swift.Sendable {
     /// The ID of the updated [Address] object.
     public var addressId: Swift.String?
     /// The cluster ID of the cluster that you want to update, for example CID123e4567-e89b-12d3-a456-426655440000.
@@ -2691,12 +2691,12 @@ public struct UpdateClusterInput {
     }
 }
 
-public struct UpdateClusterOutput {
+public struct UpdateClusterOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdateJobInput {
+public struct UpdateJobInput: Swift.Sendable {
     /// The ID of the updated [Address] object.
     public var addressId: Swift.String?
     /// The updated description of this job's [JobMetadata] object.
@@ -2749,14 +2749,14 @@ public struct UpdateJobInput {
     }
 }
 
-public struct UpdateJobOutput {
+public struct UpdateJobOutput: Swift.Sendable {
 
     public init() { }
 }
 
 extension SnowballClientTypes {
 
-    public enum ShipmentState: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ShipmentState: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case received
         case returned
         case sdkUnknown(Swift.String)
@@ -2783,7 +2783,7 @@ extension SnowballClientTypes {
     }
 }
 
-public struct UpdateJobShipmentStateInput {
+public struct UpdateJobShipmentStateInput: Swift.Sendable {
     /// The job ID of the job whose shipment date you want to update, for example JID123e4567-e89b-12d3-a456-426655440000.
     /// This member is required.
     public var jobId: Swift.String?
@@ -2801,12 +2801,12 @@ public struct UpdateJobShipmentStateInput {
     }
 }
 
-public struct UpdateJobShipmentStateOutput {
+public struct UpdateJobShipmentStateOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdateLongTermPricingInput {
+public struct UpdateLongTermPricingInput: Swift.Sendable {
     /// If set to true, specifies that the current long-term pricing type for the device should be automatically renewed before the long-term pricing contract expires.
     public var isLongTermPricingAutoRenew: Swift.Bool?
     /// The ID of the long-term pricing type for the device.
@@ -2827,7 +2827,7 @@ public struct UpdateLongTermPricingInput {
     }
 }
 
-public struct UpdateLongTermPricingOutput {
+public struct UpdateLongTermPricingOutput: Swift.Sendable {
 
     public init() { }
 }

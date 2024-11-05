@@ -27,59 +27,61 @@ import protocol ClientRuntime.ModeledError
 @_spi(SmithyReadWrite) import struct AWSClientRuntime.AWSJSONError
 @_spi(UnknownAWSHTTPServiceError) import struct AWSClientRuntime.UnknownAWSHTTPServiceError
 
-public struct DeleteCampaignOutput {
+
+public struct DeleteCampaignOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteDatasetGroupOutput {
+public struct DeleteDatasetGroupOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteDatasetOutput {
+public struct DeleteDatasetOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteEventTrackerOutput {
+public struct DeleteEventTrackerOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteFilterOutput {
+public struct DeleteFilterOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteMetricAttributionOutput {
+public struct DeleteMetricAttributionOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteRecommenderOutput {
+public struct DeleteRecommenderOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteSchemaOutput {
+public struct DeleteSchemaOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteSolutionOutput {
+public struct DeleteSolutionOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct StopSolutionVersionCreationOutput {
+public struct StopSolutionVersionCreationOutput: Swift.Sendable {
 
     public init() { }
 }
 
 extension PersonalizeClientTypes {
+
     /// Describes an algorithm image.
-    public struct AlgorithmImage {
+    public struct AlgorithmImage: Swift.Sendable {
         /// The URI of the Docker container for the algorithm image.
         /// This member is required.
         public var dockerURI: Swift.String?
@@ -95,12 +97,12 @@ extension PersonalizeClientTypes {
             self.name = name
         }
     }
-
 }
 
 extension PersonalizeClientTypes {
+
     /// Provides the name and default range of a categorical hyperparameter and whether the hyperparameter is tunable. A tunable hyperparameter can have its value determined during hyperparameter optimization (HPO).
-    public struct DefaultCategoricalHyperParameterRange {
+    public struct DefaultCategoricalHyperParameterRange: Swift.Sendable {
         /// Whether the hyperparameter is tunable.
         public var isTunable: Swift.Bool
         /// The name of the hyperparameter.
@@ -119,12 +121,12 @@ extension PersonalizeClientTypes {
             self.values = values
         }
     }
-
 }
 
 extension PersonalizeClientTypes {
+
     /// Provides the name and default range of a continuous hyperparameter and whether the hyperparameter is tunable. A tunable hyperparameter can have its value determined during hyperparameter optimization (HPO).
-    public struct DefaultContinuousHyperParameterRange {
+    public struct DefaultContinuousHyperParameterRange: Swift.Sendable {
         /// Whether the hyperparameter is tunable.
         public var isTunable: Swift.Bool
         /// The maximum allowable value for the hyperparameter.
@@ -147,12 +149,12 @@ extension PersonalizeClientTypes {
             self.name = name
         }
     }
-
 }
 
 extension PersonalizeClientTypes {
+
     /// Provides the name and default range of a integer-valued hyperparameter and whether the hyperparameter is tunable. A tunable hyperparameter can have its value determined during hyperparameter optimization (HPO).
-    public struct DefaultIntegerHyperParameterRange {
+    public struct DefaultIntegerHyperParameterRange: Swift.Sendable {
         /// Indicates whether the hyperparameter is tunable.
         public var isTunable: Swift.Bool
         /// The maximum allowable value for the hyperparameter.
@@ -175,12 +177,12 @@ extension PersonalizeClientTypes {
             self.name = name
         }
     }
-
 }
 
 extension PersonalizeClientTypes {
+
     /// Specifies the hyperparameters and their default ranges. Hyperparameters can be categorical, continuous, or integer-valued.
-    public struct DefaultHyperParameterRanges {
+    public struct DefaultHyperParameterRanges: Swift.Sendable {
         /// The categorical hyperparameters and their default ranges.
         public var categoricalHyperParameterRanges: [PersonalizeClientTypes.DefaultCategoricalHyperParameterRange]?
         /// The continuous hyperparameters and their default ranges.
@@ -199,12 +201,12 @@ extension PersonalizeClientTypes {
             self.integerHyperParameterRanges = integerHyperParameterRanges
         }
     }
-
 }
 
 extension PersonalizeClientTypes {
+
     /// Describes a custom algorithm.
-    public struct Algorithm {
+    public struct Algorithm: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the algorithm.
         public var algorithmArn: Swift.String?
         /// The URI of the Docker container for the algorithm image.
@@ -251,7 +253,6 @@ extension PersonalizeClientTypes {
             self.trainingInputMode = trainingInputMode
         }
     }
-
 }
 
 /// Provide a valid value for the field or parameter.
@@ -399,8 +400,9 @@ public struct TooManyTagsException: ClientRuntime.ModeledError, AWSClientRuntime
 }
 
 extension PersonalizeClientTypes {
+
     /// The configuration details of a batch inference job.
-    public struct BatchInferenceJobConfig {
+    public struct BatchInferenceJobConfig: Swift.Sendable {
         /// A string to string map specifying the exploration configuration hyperparameters, including explorationWeight and explorationItemAgeCutOff, you want to use to configure the amount of item exploration Amazon Personalize uses when recommending items. See [User-Personalization](https://docs.aws.amazon.com/personalize/latest/dg/native-recipe-new-item-USER_PERSONALIZATION.html).
         public var itemExplorationConfig: [Swift.String: Swift.String]?
 
@@ -411,12 +413,11 @@ extension PersonalizeClientTypes {
             self.itemExplorationConfig = itemExplorationConfig
         }
     }
-
 }
 
 extension PersonalizeClientTypes {
 
-    public enum BatchInferenceJobMode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum BatchInferenceJobMode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case batchInference
         case themeGeneration
         case sdkUnknown(Swift.String)
@@ -444,8 +445,9 @@ extension PersonalizeClientTypes {
 }
 
 extension PersonalizeClientTypes {
+
     /// The configuration details of an Amazon S3 input or output bucket.
-    public struct S3DataConfig {
+    public struct S3DataConfig: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the Key Management Service (KMS) key that Amazon Personalize uses to encrypt or decrypt the input and output files.
         public var kmsKeyArn: Swift.String?
         /// The file path of the Amazon S3 bucket.
@@ -461,12 +463,12 @@ extension PersonalizeClientTypes {
             self.path = path
         }
     }
-
 }
 
 extension PersonalizeClientTypes {
+
     /// The input configuration of a batch inference job.
-    public struct BatchInferenceJobInput {
+    public struct BatchInferenceJobInput: Swift.Sendable {
         /// The URI of the Amazon S3 location that contains your input data. The Amazon S3 bucket must be in the same region as the API endpoint you are calling.
         /// This member is required.
         public var s3DataSource: PersonalizeClientTypes.S3DataConfig?
@@ -478,12 +480,12 @@ extension PersonalizeClientTypes {
             self.s3DataSource = s3DataSource
         }
     }
-
 }
 
 extension PersonalizeClientTypes {
+
     /// The output configuration parameters of a batch inference job.
-    public struct BatchInferenceJobOutput {
+    public struct BatchInferenceJobOutput: Swift.Sendable {
         /// Information on the Amazon S3 bucket in which the batch inference job's output is stored.
         /// This member is required.
         public var s3DataDestination: PersonalizeClientTypes.S3DataConfig?
@@ -495,12 +497,12 @@ extension PersonalizeClientTypes {
             self.s3DataDestination = s3DataDestination
         }
     }
-
 }
 
 extension PersonalizeClientTypes {
+
     /// The optional metadata that you apply to resources to help you categorize and organize them. Each tag consists of a key and an optional value, both of which you define. For more information see [Tagging Amazon Personalize resources](https://docs.aws.amazon.com/personalize/latest/dg/tagging-resources.html).
-    public struct Tag {
+    public struct Tag: Swift.Sendable {
         /// One part of a key-value pair that makes up a tag. A key is a general label that acts like a category for more specific tag values.
         /// This member is required.
         public var tagKey: Swift.String?
@@ -517,12 +519,12 @@ extension PersonalizeClientTypes {
             self.tagValue = tagValue
         }
     }
-
 }
 
 extension PersonalizeClientTypes {
+
     /// A string to string map of the configuration details for theme generation.
-    public struct FieldsForThemeGeneration {
+    public struct FieldsForThemeGeneration: Swift.Sendable {
         /// The name of the Items dataset column that stores the name of each item in the dataset.
         /// This member is required.
         public var itemName: Swift.String?
@@ -534,12 +536,12 @@ extension PersonalizeClientTypes {
             self.itemName = itemName
         }
     }
-
 }
 
 extension PersonalizeClientTypes {
+
     /// The configuration details for generating themes with a batch inference job.
-    public struct ThemeGenerationConfig {
+    public struct ThemeGenerationConfig: Swift.Sendable {
         /// Fields used to generate descriptive themes for a batch inference job.
         /// This member is required.
         public var fieldsForThemeGeneration: PersonalizeClientTypes.FieldsForThemeGeneration?
@@ -551,10 +553,9 @@ extension PersonalizeClientTypes {
             self.fieldsForThemeGeneration = fieldsForThemeGeneration
         }
     }
-
 }
 
-public struct CreateBatchInferenceJobInput {
+public struct CreateBatchInferenceJobInput: Swift.Sendable {
     /// The configuration details of a batch inference job.
     public var batchInferenceJobConfig: PersonalizeClientTypes.BatchInferenceJobConfig?
     /// The mode of the batch inference job. To generate descriptive themes for groups of similar items, set the job mode to THEME_GENERATION. If you don't want to generate themes, use the default BATCH_INFERENCE. When you get batch recommendations with themes, you will incur additional costs. For more information, see [Amazon Personalize pricing](https://aws.amazon.com/personalize/pricing/).
@@ -611,7 +612,7 @@ public struct CreateBatchInferenceJobInput {
     }
 }
 
-public struct CreateBatchInferenceJobOutput {
+public struct CreateBatchInferenceJobOutput: Swift.Sendable {
     /// The ARN of the batch inference job.
     public var batchInferenceJobArn: Swift.String?
 
@@ -624,8 +625,9 @@ public struct CreateBatchInferenceJobOutput {
 }
 
 extension PersonalizeClientTypes {
+
     /// The input configuration of a batch segment job.
-    public struct BatchSegmentJobInput {
+    public struct BatchSegmentJobInput: Swift.Sendable {
         /// The configuration details of an Amazon S3 input or output bucket.
         /// This member is required.
         public var s3DataSource: PersonalizeClientTypes.S3DataConfig?
@@ -637,12 +639,12 @@ extension PersonalizeClientTypes {
             self.s3DataSource = s3DataSource
         }
     }
-
 }
 
 extension PersonalizeClientTypes {
+
     /// The output configuration parameters of a batch segment job.
-    public struct BatchSegmentJobOutput {
+    public struct BatchSegmentJobOutput: Swift.Sendable {
         /// The configuration details of an Amazon S3 input or output bucket.
         /// This member is required.
         public var s3DataDestination: PersonalizeClientTypes.S3DataConfig?
@@ -654,10 +656,9 @@ extension PersonalizeClientTypes {
             self.s3DataDestination = s3DataDestination
         }
     }
-
 }
 
-public struct CreateBatchSegmentJobInput {
+public struct CreateBatchSegmentJobInput: Swift.Sendable {
     /// The ARN of the filter to apply to the batch segment job. For more information on using filters, see [Filtering batch recommendations](https://docs.aws.amazon.com/personalize/latest/dg/filter-batch.html).
     public var filterArn: Swift.String?
     /// The Amazon S3 path for the input data used to generate the batch segment job.
@@ -702,7 +703,7 @@ public struct CreateBatchSegmentJobInput {
     }
 }
 
-public struct CreateBatchSegmentJobOutput {
+public struct CreateBatchSegmentJobOutput: Swift.Sendable {
     /// The ARN of the batch segment job.
     public var batchSegmentJobArn: Swift.String?
 
@@ -715,8 +716,9 @@ public struct CreateBatchSegmentJobOutput {
 }
 
 extension PersonalizeClientTypes {
+
     /// The configuration details of a campaign.
-    public struct CampaignConfig {
+    public struct CampaignConfig: Swift.Sendable {
         /// Whether metadata with recommendations is enabled for the campaign. If enabled, you can specify the columns from your Items dataset in your request for recommendations. Amazon Personalize returns this data for each item in the recommendation response. For information about enabling metadata for a campaign, see [Enabling metadata in recommendations for a campaign](https://docs.aws.amazon.com/personalize/latest/dg/campaigns.html#create-campaign-return-metadata). If you enable metadata in recommendations, you will incur additional costs. For more information, see [Amazon Personalize pricing](https://aws.amazon.com/personalize/pricing/).
         public var enableMetadataWithRecommendations: Swift.Bool?
         /// Specifies the exploration configuration hyperparameters, including explorationWeight and explorationItemAgeCutOff, you want to use to configure the amount of item exploration Amazon Personalize uses when recommending items. Provide itemExplorationConfig data only if your solution uses the [User-Personalization](https://docs.aws.amazon.com/personalize/latest/dg/native-recipe-new-item-USER_PERSONALIZATION.html) recipe.
@@ -735,10 +737,9 @@ extension PersonalizeClientTypes {
             self.syncWithLatestSolutionVersion = syncWithLatestSolutionVersion
         }
     }
-
 }
 
-public struct CreateCampaignInput {
+public struct CreateCampaignInput: Swift.Sendable {
     /// The configuration details of a campaign.
     public var campaignConfig: PersonalizeClientTypes.CampaignConfig?
     /// Specifies the requested minimum provisioned transactions (recommendations) per second that Amazon Personalize will support. A high minProvisionedTPS will increase your bill. We recommend starting with 1 for minProvisionedTPS (the default). Track your usage using Amazon CloudWatch metrics, and increase the minProvisionedTPS as necessary.
@@ -768,7 +769,7 @@ public struct CreateCampaignInput {
     }
 }
 
-public struct CreateCampaignOutput {
+public struct CreateCampaignOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the campaign.
     public var campaignArn: Swift.String?
 
@@ -781,8 +782,9 @@ public struct CreateCampaignOutput {
 }
 
 extension PersonalizeClientTypes {
+
     /// Describes the data source that contains the data to upload to a dataset, or the list of records to delete from Amazon Personalize.
-    public struct DataSource {
+    public struct DataSource: Swift.Sendable {
         /// For dataset import jobs, the path to the Amazon S3 bucket where the data that you want to upload to your dataset is stored. For data deletion jobs, the path to the Amazon S3 bucket that stores the list of records to delete. For example: s3://bucket-name/folder-name/fileName.csv If your CSV files are in a folder in your Amazon S3 bucket and you want your import job or data deletion job to consider multiple files, you can specify the path to the folder. With a data deletion job, Amazon Personalize uses all files in the folder and any sub folder. Use the following syntax with a / after the folder name: s3://bucket-name/folder-name/
         public var dataLocation: Swift.String?
 
@@ -793,10 +795,9 @@ extension PersonalizeClientTypes {
             self.dataLocation = dataLocation
         }
     }
-
 }
 
-public struct CreateDataDeletionJobInput {
+public struct CreateDataDeletionJobInput: Swift.Sendable {
     /// The Amazon S3 bucket that contains the list of userIds of the users to delete.
     /// This member is required.
     public var dataSource: PersonalizeClientTypes.DataSource?
@@ -828,7 +829,7 @@ public struct CreateDataDeletionJobInput {
     }
 }
 
-public struct CreateDataDeletionJobOutput {
+public struct CreateDataDeletionJobOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the data deletion job.
     public var dataDeletionJobArn: Swift.String?
 
@@ -840,7 +841,7 @@ public struct CreateDataDeletionJobOutput {
     }
 }
 
-public struct CreateDatasetInput {
+public struct CreateDatasetInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the dataset group to add the dataset to.
     /// This member is required.
     public var datasetGroupArn: Swift.String?
@@ -882,7 +883,7 @@ public struct CreateDatasetInput {
     }
 }
 
-public struct CreateDatasetOutput {
+public struct CreateDatasetOutput: Swift.Sendable {
     /// The ARN of the dataset.
     public var datasetArn: Swift.String?
 
@@ -896,7 +897,7 @@ public struct CreateDatasetOutput {
 
 extension PersonalizeClientTypes {
 
-    public enum IngestionMode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum IngestionMode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case all
         case bulk
         case put
@@ -927,8 +928,9 @@ extension PersonalizeClientTypes {
 }
 
 extension PersonalizeClientTypes {
+
     /// The output configuration parameters of a dataset export job.
-    public struct DatasetExportJobOutput {
+    public struct DatasetExportJobOutput: Swift.Sendable {
         /// The configuration details of an Amazon S3 input or output bucket.
         /// This member is required.
         public var s3DataDestination: PersonalizeClientTypes.S3DataConfig?
@@ -940,10 +942,9 @@ extension PersonalizeClientTypes {
             self.s3DataDestination = s3DataDestination
         }
     }
-
 }
 
-public struct CreateDatasetExportJobInput {
+public struct CreateDatasetExportJobInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the dataset that contains the data to export.
     /// This member is required.
     public var datasetArn: Swift.String?
@@ -979,7 +980,7 @@ public struct CreateDatasetExportJobInput {
     }
 }
 
-public struct CreateDatasetExportJobOutput {
+public struct CreateDatasetExportJobOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the dataset export job.
     public var datasetExportJobArn: Swift.String?
 
@@ -993,7 +994,7 @@ public struct CreateDatasetExportJobOutput {
 
 extension PersonalizeClientTypes {
 
-    public enum Domain: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Domain: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case ecommerce
         case videoOnDemand
         case sdkUnknown(Swift.String)
@@ -1020,7 +1021,7 @@ extension PersonalizeClientTypes {
     }
 }
 
-public struct CreateDatasetGroupInput {
+public struct CreateDatasetGroupInput: Swift.Sendable {
     /// The domain of the dataset group. Specify a domain to create a Domain dataset group. The domain you specify determines the default schemas for datasets and the use cases available for recommenders. If you don't specify a domain, you create a Custom dataset group with solution versions that you deploy with a campaign.
     public var domain: PersonalizeClientTypes.Domain?
     /// The Amazon Resource Name (ARN) of a Key Management Service (KMS) key used to encrypt the datasets.
@@ -1049,7 +1050,7 @@ public struct CreateDatasetGroupInput {
     }
 }
 
-public struct CreateDatasetGroupOutput {
+public struct CreateDatasetGroupOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the new dataset group.
     public var datasetGroupArn: Swift.String?
     /// The domain for the new Domain dataset group.
@@ -1067,7 +1068,7 @@ public struct CreateDatasetGroupOutput {
 
 extension PersonalizeClientTypes {
 
-    public enum ImportMode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ImportMode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case full
         case incremental
         case sdkUnknown(Swift.String)
@@ -1094,7 +1095,7 @@ extension PersonalizeClientTypes {
     }
 }
 
-public struct CreateDatasetImportJobInput {
+public struct CreateDatasetImportJobInput: Swift.Sendable {
     /// The Amazon S3 bucket that contains the training data to import.
     /// This member is required.
     public var dataSource: PersonalizeClientTypes.DataSource?
@@ -1138,7 +1139,7 @@ public struct CreateDatasetImportJobInput {
     }
 }
 
-public struct CreateDatasetImportJobOutput {
+public struct CreateDatasetImportJobOutput: Swift.Sendable {
     /// The ARN of the dataset import job.
     public var datasetImportJobArn: Swift.String?
 
@@ -1150,7 +1151,7 @@ public struct CreateDatasetImportJobOutput {
     }
 }
 
-public struct CreateEventTrackerInput {
+public struct CreateEventTrackerInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the dataset group that receives the event data.
     /// This member is required.
     public var datasetGroupArn: Swift.String?
@@ -1172,7 +1173,7 @@ public struct CreateEventTrackerInput {
     }
 }
 
-public struct CreateEventTrackerOutput {
+public struct CreateEventTrackerOutput: Swift.Sendable {
     /// The ARN of the event tracker.
     public var eventTrackerArn: Swift.String?
     /// The ID of the event tracker. Include this ID in requests to the [PutEvents](https://docs.aws.amazon.com/personalize/latest/dg/API_UBS_PutEvents.html) API.
@@ -1188,7 +1189,7 @@ public struct CreateEventTrackerOutput {
     }
 }
 
-public struct CreateFilterInput {
+public struct CreateFilterInput: Swift.Sendable {
     /// The ARN of the dataset group that the filter will belong to.
     /// This member is required.
     public var datasetGroupArn: Swift.String?
@@ -1220,7 +1221,7 @@ extension CreateFilterInput: Swift.CustomDebugStringConvertible {
         "CreateFilterInput(datasetGroupArn: \(Swift.String(describing: datasetGroupArn)), name: \(Swift.String(describing: name)), tags: \(Swift.String(describing: tags)), filterExpression: \"CONTENT_REDACTED\")"}
 }
 
-public struct CreateFilterOutput {
+public struct CreateFilterOutput: Swift.Sendable {
     /// The ARN of the new filter.
     public var filterArn: Swift.String?
 
@@ -1233,8 +1234,9 @@ public struct CreateFilterOutput {
 }
 
 extension PersonalizeClientTypes {
+
     /// Contains information on a metric that a metric attribution reports on. For more information, see [Measuring impact of recommendations](https://docs.aws.amazon.com/personalize/latest/dg/measuring-recommendation-impact.html).
-    public struct MetricAttribute {
+    public struct MetricAttribute: Swift.Sendable {
         /// The metric's event type.
         /// This member is required.
         public var eventType: Swift.String?
@@ -1256,12 +1258,12 @@ extension PersonalizeClientTypes {
             self.metricName = metricName
         }
     }
-
 }
 
 extension PersonalizeClientTypes {
+
     /// The output configuration details for a metric attribution.
-    public struct MetricAttributionOutput {
+    public struct MetricAttributionOutput: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the IAM service role that has permissions to add data to your output Amazon S3 bucket and add metrics to Amazon CloudWatch. For more information, see [Measuring impact of recommendations](https://docs.aws.amazon.com/personalize/latest/dg/measuring-recommendation-impact.html).
         /// This member is required.
         public var roleArn: Swift.String?
@@ -1277,10 +1279,9 @@ extension PersonalizeClientTypes {
             self.s3DataDestination = s3DataDestination
         }
     }
-
 }
 
-public struct CreateMetricAttributionInput {
+public struct CreateMetricAttributionInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the destination dataset group for the metric attribution.
     /// This member is required.
     public var datasetGroupArn: Swift.String?
@@ -1308,7 +1309,7 @@ public struct CreateMetricAttributionInput {
     }
 }
 
-public struct CreateMetricAttributionOutput {
+public struct CreateMetricAttributionOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) for the new metric attribution.
     public var metricAttributionArn: Swift.String?
 
@@ -1321,8 +1322,9 @@ public struct CreateMetricAttributionOutput {
 }
 
 extension PersonalizeClientTypes {
+
     /// The training data configuration to use when creating a domain recommender or custom solution version (trained model).
-    public struct TrainingDataConfig {
+    public struct TrainingDataConfig: Swift.Sendable {
         /// Specifies the columns to exclude from training. Each key is a dataset type, and each value is a list of columns. Exclude columns to control what data Amazon Personalize uses to generate recommendations. For example, you might have a column that you want to use only to filter recommendations. You can exclude this column from training and Amazon Personalize considers it only when filtering.
         public var excludedDatasetColumns: [Swift.String: [Swift.String]]?
 
@@ -1333,12 +1335,12 @@ extension PersonalizeClientTypes {
             self.excludedDatasetColumns = excludedDatasetColumns
         }
     }
-
 }
 
 extension PersonalizeClientTypes {
+
     /// The configuration details of the recommender.
-    public struct RecommenderConfig {
+    public struct RecommenderConfig: Swift.Sendable {
         /// Whether metadata with recommendations is enabled for the recommender. If enabled, you can specify the columns from your Items dataset in your request for recommendations. Amazon Personalize returns this data for each item in the recommendation response. For information about enabling metadata for a recommender, see [Enabling metadata in recommendations for a recommender](https://docs.aws.amazon.com/personalize/latest/dg/creating-recommenders.html#create-recommender-return-metadata). If you enable metadata in recommendations, you will incur additional costs. For more information, see [Amazon Personalize pricing](https://aws.amazon.com/personalize/pricing/).
         public var enableMetadataWithRecommendations: Swift.Bool?
         /// Specifies the exploration configuration hyperparameters, including explorationWeight and explorationItemAgeCutOff, you want to use to configure the amount of item exploration Amazon Personalize uses when recommending items. Provide itemExplorationConfig data only if your recommenders generate personalized recommendations for a user (not popular items or similar items).
@@ -1361,10 +1363,9 @@ extension PersonalizeClientTypes {
             self.trainingDataConfig = trainingDataConfig
         }
     }
-
 }
 
-public struct CreateRecommenderInput {
+public struct CreateRecommenderInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the destination domain dataset group for the recommender.
     /// This member is required.
     public var datasetGroupArn: Swift.String?
@@ -1395,7 +1396,7 @@ public struct CreateRecommenderInput {
     }
 }
 
-public struct CreateRecommenderOutput {
+public struct CreateRecommenderOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the recommender.
     public var recommenderArn: Swift.String?
 
@@ -1407,7 +1408,7 @@ public struct CreateRecommenderOutput {
     }
 }
 
-public struct CreateSchemaInput {
+public struct CreateSchemaInput: Swift.Sendable {
     /// The domain for the schema. If you are creating a schema for a dataset in a Domain dataset group, specify the domain you chose when you created the Domain dataset group.
     public var domain: PersonalizeClientTypes.Domain?
     /// The name for the schema.
@@ -1429,7 +1430,7 @@ public struct CreateSchemaInput {
     }
 }
 
-public struct CreateSchemaOutput {
+public struct CreateSchemaOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the created schema.
     public var schemaArn: Swift.String?
 
@@ -1442,8 +1443,9 @@ public struct CreateSchemaOutput {
 }
 
 extension PersonalizeClientTypes {
+
     /// When the solution performs AutoML (performAutoML is true in [CreateSolution](https://docs.aws.amazon.com/personalize/latest/dg/API_CreateSolution.html)), Amazon Personalize determines which recipe, from the specified list, optimizes the given metric. Amazon Personalize then uses that recipe for the solution.
-    public struct AutoMLConfig {
+    public struct AutoMLConfig: Swift.Sendable {
         /// The metric to optimize.
         public var metricName: Swift.String?
         /// The list of candidate recipes.
@@ -1458,12 +1460,12 @@ extension PersonalizeClientTypes {
             self.recipeList = recipeList
         }
     }
-
 }
 
 extension PersonalizeClientTypes {
+
     /// The automatic training configuration to use when performAutoTraining is true.
-    public struct AutoTrainingConfig {
+    public struct AutoTrainingConfig: Swift.Sendable {
         /// Specifies how often to automatically train new solution versions. Specify a rate expression in rate(value unit) format. For value, specify a number between 1 and 30. For unit, specify day or days. For example, to automatically create a new solution version every 5 days, specify rate(5 days). The default is every 7 days. For more information about auto training, see [Creating and configuring a solution](https://docs.aws.amazon.com/personalize/latest/dg/customizing-solution-config.html).
         public var schedulingExpression: Swift.String?
 
@@ -1474,12 +1476,12 @@ extension PersonalizeClientTypes {
             self.schedulingExpression = schedulingExpression
         }
     }
-
 }
 
 extension PersonalizeClientTypes {
+
     /// Provides the name and range of a categorical hyperparameter.
-    public struct CategoricalHyperParameterRange {
+    public struct CategoricalHyperParameterRange: Swift.Sendable {
         /// The name of the hyperparameter.
         public var name: Swift.String?
         /// A list of the categories for the hyperparameter.
@@ -1494,12 +1496,12 @@ extension PersonalizeClientTypes {
             self.values = values
         }
     }
-
 }
 
 extension PersonalizeClientTypes {
+
     /// Provides the name and range of a continuous hyperparameter.
-    public struct ContinuousHyperParameterRange {
+    public struct ContinuousHyperParameterRange: Swift.Sendable {
         /// The maximum allowable value for the hyperparameter.
         public var maxValue: Swift.Double
         /// The minimum allowable value for the hyperparameter.
@@ -1518,12 +1520,12 @@ extension PersonalizeClientTypes {
             self.name = name
         }
     }
-
 }
 
 extension PersonalizeClientTypes {
+
     /// Provides the name and range of an integer-valued hyperparameter.
-    public struct IntegerHyperParameterRange {
+    public struct IntegerHyperParameterRange: Swift.Sendable {
         /// The maximum allowable value for the hyperparameter.
         public var maxValue: Swift.Int
         /// The minimum allowable value for the hyperparameter.
@@ -1542,12 +1544,12 @@ extension PersonalizeClientTypes {
             self.name = name
         }
     }
-
 }
 
 extension PersonalizeClientTypes {
+
     /// Specifies the hyperparameters and their ranges. Hyperparameters can be categorical, continuous, or integer-valued.
-    public struct HyperParameterRanges {
+    public struct HyperParameterRanges: Swift.Sendable {
         /// The categorical hyperparameters and their ranges.
         public var categoricalHyperParameterRanges: [PersonalizeClientTypes.CategoricalHyperParameterRange]?
         /// The continuous hyperparameters and their ranges.
@@ -1566,12 +1568,12 @@ extension PersonalizeClientTypes {
             self.integerHyperParameterRanges = integerHyperParameterRanges
         }
     }
-
 }
 
 extension PersonalizeClientTypes {
+
     /// The metric to optimize during hyperparameter optimization (HPO). Amazon Personalize doesn't support configuring the hpoObjective at this time.
-    public struct HPOObjective {
+    public struct HPOObjective: Swift.Sendable {
         /// The name of the metric.
         public var metricName: Swift.String?
         /// A regular expression for finding the metric in the training job logs.
@@ -1590,12 +1592,12 @@ extension PersonalizeClientTypes {
             self.type = type
         }
     }
-
 }
 
 extension PersonalizeClientTypes {
+
     /// Describes the resource configuration for hyperparameter optimization (HPO).
-    public struct HPOResourceConfig {
+    public struct HPOResourceConfig: Swift.Sendable {
         /// The maximum number of training jobs when you create a solution version. The maximum value for maxNumberOfTrainingJobs is 40.
         public var maxNumberOfTrainingJobs: Swift.String?
         /// The maximum number of parallel training jobs when you create a solution version. The maximum value for maxParallelTrainingJobs is 10.
@@ -1610,12 +1612,12 @@ extension PersonalizeClientTypes {
             self.maxParallelTrainingJobs = maxParallelTrainingJobs
         }
     }
-
 }
 
 extension PersonalizeClientTypes {
+
     /// Describes the properties for hyperparameter optimization (HPO).
-    public struct HPOConfig {
+    public struct HPOConfig: Swift.Sendable {
         /// The hyperparameters and their allowable ranges.
         public var algorithmHyperParameterRanges: PersonalizeClientTypes.HyperParameterRanges?
         /// The metric to optimize during HPO. Amazon Personalize doesn't support configuring the hpoObjective at this time.
@@ -1634,12 +1636,11 @@ extension PersonalizeClientTypes {
             self.hpoResourceConfig = hpoResourceConfig
         }
     }
-
 }
 
 extension PersonalizeClientTypes {
 
-    public enum ObjectiveSensitivity: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ObjectiveSensitivity: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case high
         case low
         case medium
@@ -1673,8 +1674,9 @@ extension PersonalizeClientTypes {
 }
 
 extension PersonalizeClientTypes {
+
     /// Describes the additional objective for the solution, such as maximizing streaming minutes or increasing revenue. For more information see [Optimizing a solution](https://docs.aws.amazon.com/personalize/latest/dg/optimizing-solution-for-objective.html).
-    public struct OptimizationObjective {
+    public struct OptimizationObjective: Swift.Sendable {
         /// The numerical metadata column in an Items dataset related to the optimization objective. For example, VIDEO_LENGTH (to maximize streaming minutes), or PRICE (to maximize revenue).
         public var itemAttribute: Swift.String?
         /// Specifies how Amazon Personalize balances the importance of your optimization objective versus relevance.
@@ -1689,12 +1691,12 @@ extension PersonalizeClientTypes {
             self.objectiveSensitivity = objectiveSensitivity
         }
     }
-
 }
 
 extension PersonalizeClientTypes {
+
     /// Describes the configuration properties for the solution.
-    public struct SolutionConfig {
+    public struct SolutionConfig: Swift.Sendable {
         /// Lists the algorithm hyperparameters and their values.
         public var algorithmHyperParameters: [Swift.String: Swift.String]?
         /// The [AutoMLConfig](https://docs.aws.amazon.com/personalize/latest/dg/API_AutoMLConfig.html) object containing a list of recipes to search when AutoML is performed.
@@ -1733,10 +1735,9 @@ extension PersonalizeClientTypes {
             self.trainingDataConfig = trainingDataConfig
         }
     }
-
 }
 
-public struct CreateSolutionInput {
+public struct CreateSolutionInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the dataset group that provides the training data.
     /// This member is required.
     public var datasetGroupArn: Swift.String?
@@ -1782,7 +1783,7 @@ public struct CreateSolutionInput {
     }
 }
 
-public struct CreateSolutionOutput {
+public struct CreateSolutionOutput: Swift.Sendable {
     /// The ARN of the solution.
     public var solutionArn: Swift.String?
 
@@ -1796,7 +1797,7 @@ public struct CreateSolutionOutput {
 
 extension PersonalizeClientTypes {
 
-    public enum TrainingMode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum TrainingMode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case autotrain
         case full
         case update
@@ -1826,7 +1827,7 @@ extension PersonalizeClientTypes {
     }
 }
 
-public struct CreateSolutionVersionInput {
+public struct CreateSolutionVersionInput: Swift.Sendable {
     /// The name of the solution version.
     public var name: Swift.String?
     /// The Amazon Resource Name (ARN) of the solution containing the training configuration information.
@@ -1851,7 +1852,7 @@ public struct CreateSolutionVersionInput {
     }
 }
 
-public struct CreateSolutionVersionOutput {
+public struct CreateSolutionVersionOutput: Swift.Sendable {
     /// The ARN of the new solution version.
     public var solutionVersionArn: Swift.String?
 
@@ -1863,7 +1864,7 @@ public struct CreateSolutionVersionOutput {
     }
 }
 
-public struct DeleteCampaignInput {
+public struct DeleteCampaignInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the campaign to delete.
     /// This member is required.
     public var campaignArn: Swift.String?
@@ -1876,7 +1877,7 @@ public struct DeleteCampaignInput {
     }
 }
 
-public struct DeleteDatasetInput {
+public struct DeleteDatasetInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the dataset to delete.
     /// This member is required.
     public var datasetArn: Swift.String?
@@ -1889,7 +1890,7 @@ public struct DeleteDatasetInput {
     }
 }
 
-public struct DeleteDatasetGroupInput {
+public struct DeleteDatasetGroupInput: Swift.Sendable {
     /// The ARN of the dataset group to delete.
     /// This member is required.
     public var datasetGroupArn: Swift.String?
@@ -1902,7 +1903,7 @@ public struct DeleteDatasetGroupInput {
     }
 }
 
-public struct DeleteEventTrackerInput {
+public struct DeleteEventTrackerInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the event tracker to delete.
     /// This member is required.
     public var eventTrackerArn: Swift.String?
@@ -1915,7 +1916,7 @@ public struct DeleteEventTrackerInput {
     }
 }
 
-public struct DeleteFilterInput {
+public struct DeleteFilterInput: Swift.Sendable {
     /// The ARN of the filter to delete.
     /// This member is required.
     public var filterArn: Swift.String?
@@ -1928,7 +1929,7 @@ public struct DeleteFilterInput {
     }
 }
 
-public struct DeleteMetricAttributionInput {
+public struct DeleteMetricAttributionInput: Swift.Sendable {
     /// The metric attribution's Amazon Resource Name (ARN).
     /// This member is required.
     public var metricAttributionArn: Swift.String?
@@ -1941,7 +1942,7 @@ public struct DeleteMetricAttributionInput {
     }
 }
 
-public struct DeleteRecommenderInput {
+public struct DeleteRecommenderInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the recommender to delete.
     /// This member is required.
     public var recommenderArn: Swift.String?
@@ -1954,7 +1955,7 @@ public struct DeleteRecommenderInput {
     }
 }
 
-public struct DeleteSchemaInput {
+public struct DeleteSchemaInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the schema to delete.
     /// This member is required.
     public var schemaArn: Swift.String?
@@ -1967,7 +1968,7 @@ public struct DeleteSchemaInput {
     }
 }
 
-public struct DeleteSolutionInput {
+public struct DeleteSolutionInput: Swift.Sendable {
     /// The ARN of the solution to delete.
     /// This member is required.
     public var solutionArn: Swift.String?
@@ -1980,7 +1981,7 @@ public struct DeleteSolutionInput {
     }
 }
 
-public struct DescribeAlgorithmInput {
+public struct DescribeAlgorithmInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the algorithm to describe.
     /// This member is required.
     public var algorithmArn: Swift.String?
@@ -1993,7 +1994,7 @@ public struct DescribeAlgorithmInput {
     }
 }
 
-public struct DescribeAlgorithmOutput {
+public struct DescribeAlgorithmOutput: Swift.Sendable {
     /// A listing of the properties of the algorithm.
     public var algorithm: PersonalizeClientTypes.Algorithm?
 
@@ -2005,7 +2006,7 @@ public struct DescribeAlgorithmOutput {
     }
 }
 
-public struct DescribeBatchInferenceJobInput {
+public struct DescribeBatchInferenceJobInput: Swift.Sendable {
     /// The ARN of the batch inference job to describe.
     /// This member is required.
     public var batchInferenceJobArn: Swift.String?
@@ -2019,8 +2020,9 @@ public struct DescribeBatchInferenceJobInput {
 }
 
 extension PersonalizeClientTypes {
+
     /// Contains information on a batch inference job.
-    public struct BatchInferenceJob {
+    public struct BatchInferenceJob: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the batch inference job.
         public var batchInferenceJobArn: Swift.String?
         /// A string to string map of the configuration details of a batch inference job.
@@ -2095,10 +2097,9 @@ extension PersonalizeClientTypes {
             self.themeGenerationConfig = themeGenerationConfig
         }
     }
-
 }
 
-public struct DescribeBatchInferenceJobOutput {
+public struct DescribeBatchInferenceJobOutput: Swift.Sendable {
     /// Information on the specified batch inference job.
     public var batchInferenceJob: PersonalizeClientTypes.BatchInferenceJob?
 
@@ -2110,7 +2111,7 @@ public struct DescribeBatchInferenceJobOutput {
     }
 }
 
-public struct DescribeBatchSegmentJobInput {
+public struct DescribeBatchSegmentJobInput: Swift.Sendable {
     /// The ARN of the batch segment job to describe.
     /// This member is required.
     public var batchSegmentJobArn: Swift.String?
@@ -2124,8 +2125,9 @@ public struct DescribeBatchSegmentJobInput {
 }
 
 extension PersonalizeClientTypes {
+
     /// Contains information on a batch segment job.
-    public struct BatchSegmentJob {
+    public struct BatchSegmentJob: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the batch segment job.
         public var batchSegmentJobArn: Swift.String?
         /// The time at which the batch segment job was created.
@@ -2188,10 +2190,9 @@ extension PersonalizeClientTypes {
             self.status = status
         }
     }
-
 }
 
-public struct DescribeBatchSegmentJobOutput {
+public struct DescribeBatchSegmentJobOutput: Swift.Sendable {
     /// Information on the specified batch segment job.
     public var batchSegmentJob: PersonalizeClientTypes.BatchSegmentJob?
 
@@ -2203,7 +2204,7 @@ public struct DescribeBatchSegmentJobOutput {
     }
 }
 
-public struct DescribeCampaignInput {
+public struct DescribeCampaignInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the campaign.
     /// This member is required.
     public var campaignArn: Swift.String?
@@ -2217,8 +2218,9 @@ public struct DescribeCampaignInput {
 }
 
 extension PersonalizeClientTypes {
+
     /// Provides a summary of the properties of a campaign update. For a complete listing, call the [DescribeCampaign](https://docs.aws.amazon.com/personalize/latest/dg/API_DescribeCampaign.html) API.
-    public struct CampaignUpdateSummary {
+    public struct CampaignUpdateSummary: Swift.Sendable {
         /// The configuration details of a campaign.
         public var campaignConfig: PersonalizeClientTypes.CampaignConfig?
         /// The date and time (in Unix time) that the campaign update was created.
@@ -2257,12 +2259,12 @@ extension PersonalizeClientTypes {
             self.status = status
         }
     }
-
 }
 
 extension PersonalizeClientTypes {
+
     /// An object that describes the deployment of a solution version. For more information on campaigns, see [CreateCampaign](https://docs.aws.amazon.com/personalize/latest/dg/API_CreateCampaign.html).
-    public struct Campaign {
+    public struct Campaign: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the campaign.
         public var campaignArn: Swift.String?
         /// The configuration details of a campaign.
@@ -2313,10 +2315,9 @@ extension PersonalizeClientTypes {
             self.status = status
         }
     }
-
 }
 
-public struct DescribeCampaignOutput {
+public struct DescribeCampaignOutput: Swift.Sendable {
     /// The properties of the campaign.
     public var campaign: PersonalizeClientTypes.Campaign?
 
@@ -2328,7 +2329,7 @@ public struct DescribeCampaignOutput {
     }
 }
 
-public struct DescribeDataDeletionJobInput {
+public struct DescribeDataDeletionJobInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the data deletion job.
     /// This member is required.
     public var dataDeletionJobArn: Swift.String?
@@ -2342,8 +2343,9 @@ public struct DescribeDataDeletionJobInput {
 }
 
 extension PersonalizeClientTypes {
+
     /// Describes a job that deletes all references to specific users from an Amazon Personalize dataset group in batches. For information about creating a data deletion job, see [Deleting users](https://docs.aws.amazon.com/personalize/latest/dg/delete-records.html).
-    public struct DataDeletionJob {
+    public struct DataDeletionJob: Swift.Sendable {
         /// The creation date and time (in Unix time) of the data deletion job.
         public var creationDateTime: Foundation.Date?
         /// The Amazon Resource Name (ARN) of the data deletion job.
@@ -2392,10 +2394,9 @@ extension PersonalizeClientTypes {
             self.status = status
         }
     }
-
 }
 
-public struct DescribeDataDeletionJobOutput {
+public struct DescribeDataDeletionJobOutput: Swift.Sendable {
     /// Information about the data deletion job, including the status. The status is one of the following values:
     ///
     /// * PENDING
@@ -2415,7 +2416,7 @@ public struct DescribeDataDeletionJobOutput {
     }
 }
 
-public struct DescribeDatasetInput {
+public struct DescribeDatasetInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the dataset to describe.
     /// This member is required.
     public var datasetArn: Swift.String?
@@ -2429,8 +2430,9 @@ public struct DescribeDatasetInput {
 }
 
 extension PersonalizeClientTypes {
+
     /// Describes an update to a dataset.
-    public struct DatasetUpdateSummary {
+    public struct DatasetUpdateSummary: Swift.Sendable {
         /// The creation date and time (in Unix time) of the dataset update.
         public var creationDateTime: Foundation.Date?
         /// If updating a dataset fails, provides the reason why.
@@ -2457,12 +2459,12 @@ extension PersonalizeClientTypes {
             self.status = status
         }
     }
-
 }
 
 extension PersonalizeClientTypes {
+
     /// Provides metadata for a dataset.
-    public struct Dataset {
+    public struct Dataset: Swift.Sendable {
         /// The creation date and time (in Unix time) of the dataset.
         public var creationDateTime: Foundation.Date?
         /// The Amazon Resource Name (ARN) of the dataset that you want metadata for.
@@ -2523,10 +2525,9 @@ extension PersonalizeClientTypes {
             self.trackingId = trackingId
         }
     }
-
 }
 
-public struct DescribeDatasetOutput {
+public struct DescribeDatasetOutput: Swift.Sendable {
     /// A listing of the dataset's properties.
     public var dataset: PersonalizeClientTypes.Dataset?
 
@@ -2538,7 +2539,7 @@ public struct DescribeDatasetOutput {
     }
 }
 
-public struct DescribeDatasetExportJobInput {
+public struct DescribeDatasetExportJobInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the dataset export job to describe.
     /// This member is required.
     public var datasetExportJobArn: Swift.String?
@@ -2552,10 +2553,11 @@ public struct DescribeDatasetExportJobInput {
 }
 
 extension PersonalizeClientTypes {
+
     /// Describes a job that exports a dataset to an Amazon S3 bucket. For more information, see [CreateDatasetExportJob](https://docs.aws.amazon.com/personalize/latest/dg/API_CreateDatasetExportJob.html). A dataset export job can be in one of the following states:
     ///
     /// * CREATE PENDING > CREATE IN_PROGRESS > ACTIVE -or- CREATE FAILED
-    public struct DatasetExportJob {
+    public struct DatasetExportJob: Swift.Sendable {
         /// The creation date and time (in Unix time) of the dataset export job.
         public var creationDateTime: Foundation.Date?
         /// The Amazon Resource Name (ARN) of the dataset to export.
@@ -2604,10 +2606,9 @@ extension PersonalizeClientTypes {
             self.status = status
         }
     }
-
 }
 
-public struct DescribeDatasetExportJobOutput {
+public struct DescribeDatasetExportJobOutput: Swift.Sendable {
     /// Information about the dataset export job, including the status. The status is one of the following values:
     ///
     /// * CREATE PENDING
@@ -2627,7 +2628,7 @@ public struct DescribeDatasetExportJobOutput {
     }
 }
 
-public struct DescribeDatasetGroupInput {
+public struct DescribeDatasetGroupInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the dataset group to describe.
     /// This member is required.
     public var datasetGroupArn: Swift.String?
@@ -2641,8 +2642,9 @@ public struct DescribeDatasetGroupInput {
 }
 
 extension PersonalizeClientTypes {
+
     /// A dataset group is a collection of related datasets (Item interactions, Users, Items, Actions, Action interactions). You create a dataset group by calling [CreateDatasetGroup](https://docs.aws.amazon.com/personalize/latest/dg/API_CreateDatasetGroup.html). You then create a dataset and add it to a dataset group by calling [CreateDataset](https://docs.aws.amazon.com/personalize/latest/dg/API_CreateDataset.html). The dataset group is used to create and train a solution by calling [CreateSolution](https://docs.aws.amazon.com/personalize/latest/dg/API_CreateSolution.html). A dataset group can contain only one of each type of dataset. You can specify an Key Management Service (KMS) key to encrypt the datasets in the group.
-    public struct DatasetGroup {
+    public struct DatasetGroup: Swift.Sendable {
         /// The creation date and time (in Unix time) of the dataset group.
         public var creationDateTime: Foundation.Date?
         /// The Amazon Resource Name (ARN) of the dataset group.
@@ -2689,10 +2691,9 @@ extension PersonalizeClientTypes {
             self.status = status
         }
     }
-
 }
 
-public struct DescribeDatasetGroupOutput {
+public struct DescribeDatasetGroupOutput: Swift.Sendable {
     /// A listing of the dataset group's properties.
     public var datasetGroup: PersonalizeClientTypes.DatasetGroup?
 
@@ -2704,7 +2705,7 @@ public struct DescribeDatasetGroupOutput {
     }
 }
 
-public struct DescribeDatasetImportJobInput {
+public struct DescribeDatasetImportJobInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the dataset import job to describe.
     /// This member is required.
     public var datasetImportJobArn: Swift.String?
@@ -2718,10 +2719,11 @@ public struct DescribeDatasetImportJobInput {
 }
 
 extension PersonalizeClientTypes {
+
     /// Describes a job that imports training data from a data source (Amazon S3 bucket) to an Amazon Personalize dataset. For more information, see [CreateDatasetImportJob](https://docs.aws.amazon.com/personalize/latest/dg/API_CreateDatasetImportJob.html). A dataset import job can be in one of the following states:
     ///
     /// * CREATE PENDING > CREATE IN_PROGRESS > ACTIVE -or- CREATE FAILED
-    public struct DatasetImportJob {
+    public struct DatasetImportJob: Swift.Sendable {
         /// The creation date and time (in Unix time) of the dataset import job.
         public var creationDateTime: Foundation.Date?
         /// The Amazon S3 bucket that contains the training data to import.
@@ -2774,10 +2776,9 @@ extension PersonalizeClientTypes {
             self.status = status
         }
     }
-
 }
 
-public struct DescribeDatasetImportJobOutput {
+public struct DescribeDatasetImportJobOutput: Swift.Sendable {
     /// Information about the dataset import job, including the status. The status is one of the following values:
     ///
     /// * CREATE PENDING
@@ -2797,7 +2798,7 @@ public struct DescribeDatasetImportJobOutput {
     }
 }
 
-public struct DescribeEventTrackerInput {
+public struct DescribeEventTrackerInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the event tracker to describe.
     /// This member is required.
     public var eventTrackerArn: Swift.String?
@@ -2811,8 +2812,9 @@ public struct DescribeEventTrackerInput {
 }
 
 extension PersonalizeClientTypes {
+
     /// Provides information about an event tracker.
-    public struct EventTracker {
+    public struct EventTracker: Swift.Sendable {
         /// The Amazon Web Services account that owns the event tracker.
         public var accountId: Swift.String?
         /// The date and time (in Unix format) that the event tracker was created.
@@ -2855,10 +2857,9 @@ extension PersonalizeClientTypes {
             self.trackingId = trackingId
         }
     }
-
 }
 
-public struct DescribeEventTrackerOutput {
+public struct DescribeEventTrackerOutput: Swift.Sendable {
     /// An object that describes the event tracker.
     public var eventTracker: PersonalizeClientTypes.EventTracker?
 
@@ -2870,7 +2871,7 @@ public struct DescribeEventTrackerOutput {
     }
 }
 
-public struct DescribeFeatureTransformationInput {
+public struct DescribeFeatureTransformationInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the feature transformation to describe.
     /// This member is required.
     public var featureTransformationArn: Swift.String?
@@ -2884,8 +2885,9 @@ public struct DescribeFeatureTransformationInput {
 }
 
 extension PersonalizeClientTypes {
+
     /// Provides feature transformation information. Feature transformation is the process of modifying raw input data into a form more suitable for model training.
-    public struct FeatureTransformation {
+    public struct FeatureTransformation: Swift.Sendable {
         /// The creation date and time (in Unix time) of the feature transformation.
         public var creationDateTime: Foundation.Date?
         /// Provides the default parameters for feature transformation.
@@ -2918,10 +2920,9 @@ extension PersonalizeClientTypes {
             self.status = status
         }
     }
-
 }
 
-public struct DescribeFeatureTransformationOutput {
+public struct DescribeFeatureTransformationOutput: Swift.Sendable {
     /// A listing of the FeatureTransformation properties.
     public var featureTransformation: PersonalizeClientTypes.FeatureTransformation?
 
@@ -2933,7 +2934,7 @@ public struct DescribeFeatureTransformationOutput {
     }
 }
 
-public struct DescribeFilterInput {
+public struct DescribeFilterInput: Swift.Sendable {
     /// The ARN of the filter to describe.
     /// This member is required.
     public var filterArn: Swift.String?
@@ -2947,8 +2948,9 @@ public struct DescribeFilterInput {
 }
 
 extension PersonalizeClientTypes {
+
     /// Contains information on a recommendation filter, including its ARN, status, and filter expression.
-    public struct Filter {
+    public struct Filter: Swift.Sendable {
         /// The time at which the filter was created.
         public var creationDateTime: Foundation.Date?
         /// The ARN of the dataset group to which the filter belongs.
@@ -2987,7 +2989,6 @@ extension PersonalizeClientTypes {
             self.status = status
         }
     }
-
 }
 
 extension PersonalizeClientTypes.Filter: Swift.CustomDebugStringConvertible {
@@ -2995,7 +2996,7 @@ extension PersonalizeClientTypes.Filter: Swift.CustomDebugStringConvertible {
         "Filter(creationDateTime: \(Swift.String(describing: creationDateTime)), datasetGroupArn: \(Swift.String(describing: datasetGroupArn)), failureReason: \(Swift.String(describing: failureReason)), filterArn: \(Swift.String(describing: filterArn)), lastUpdatedDateTime: \(Swift.String(describing: lastUpdatedDateTime)), name: \(Swift.String(describing: name)), status: \(Swift.String(describing: status)), filterExpression: \"CONTENT_REDACTED\")"}
 }
 
-public struct DescribeFilterOutput {
+public struct DescribeFilterOutput: Swift.Sendable {
     /// The filter's details.
     public var filter: PersonalizeClientTypes.Filter?
 
@@ -3007,7 +3008,7 @@ public struct DescribeFilterOutput {
     }
 }
 
-public struct DescribeMetricAttributionInput {
+public struct DescribeMetricAttributionInput: Swift.Sendable {
     /// The metric attribution's Amazon Resource Name (ARN).
     /// This member is required.
     public var metricAttributionArn: Swift.String?
@@ -3021,8 +3022,9 @@ public struct DescribeMetricAttributionInput {
 }
 
 extension PersonalizeClientTypes {
+
     /// Contains information on a metric attribution. A metric attribution creates reports on the data that you import into Amazon Personalize. Depending on how you import the data, you can view reports in Amazon CloudWatch or Amazon S3. For more information, see [Measuring impact of recommendations](https://docs.aws.amazon.com/personalize/latest/dg/measuring-recommendation-impact.html).
-    public struct MetricAttribution {
+    public struct MetricAttribution: Swift.Sendable {
         /// The metric attribution's creation date time.
         public var creationDateTime: Foundation.Date?
         /// The metric attribution's dataset group Amazon Resource Name (ARN).
@@ -3061,10 +3063,9 @@ extension PersonalizeClientTypes {
             self.status = status
         }
     }
-
 }
 
-public struct DescribeMetricAttributionOutput {
+public struct DescribeMetricAttributionOutput: Swift.Sendable {
     /// The details of the metric attribution.
     public var metricAttribution: PersonalizeClientTypes.MetricAttribution?
 
@@ -3076,7 +3077,7 @@ public struct DescribeMetricAttributionOutput {
     }
 }
 
-public struct DescribeRecipeInput {
+public struct DescribeRecipeInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the recipe to describe.
     /// This member is required.
     public var recipeArn: Swift.String?
@@ -3090,8 +3091,9 @@ public struct DescribeRecipeInput {
 }
 
 extension PersonalizeClientTypes {
+
     /// Provides information about a recipe. Each recipe provides an algorithm that Amazon Personalize uses in model training when you use the [CreateSolution](https://docs.aws.amazon.com/personalize/latest/dg/API_CreateSolution.html) operation.
-    public struct Recipe {
+    public struct Recipe: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the algorithm that Amazon Personalize uses to train the model.
         public var algorithmArn: Swift.String?
         /// The date and time (in Unix format) that the recipe was created.
@@ -3140,10 +3142,9 @@ extension PersonalizeClientTypes {
             self.status = status
         }
     }
-
 }
 
-public struct DescribeRecipeOutput {
+public struct DescribeRecipeOutput: Swift.Sendable {
     /// An object that describes the recipe.
     public var recipe: PersonalizeClientTypes.Recipe?
 
@@ -3155,7 +3156,7 @@ public struct DescribeRecipeOutput {
     }
 }
 
-public struct DescribeRecommenderInput {
+public struct DescribeRecommenderInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the recommender to describe.
     /// This member is required.
     public var recommenderArn: Swift.String?
@@ -3169,8 +3170,9 @@ public struct DescribeRecommenderInput {
 }
 
 extension PersonalizeClientTypes {
+
     /// Provides a summary of the properties of a recommender update. For a complete listing, call the [DescribeRecommender](https://docs.aws.amazon.com/personalize/latest/dg/API_DescribeRecommender.html) API.
-    public struct RecommenderUpdateSummary {
+    public struct RecommenderUpdateSummary: Swift.Sendable {
         /// The date and time (in Unix format) that the recommender update was created.
         public var creationDateTime: Foundation.Date?
         /// If a recommender update fails, the reason behind the failure.
@@ -3197,12 +3199,12 @@ extension PersonalizeClientTypes {
             self.status = status
         }
     }
-
 }
 
 extension PersonalizeClientTypes {
+
     /// Describes a recommendation generator for a Domain dataset group. You create a recommender in a Domain dataset group for a specific domain use case (domain recipe), and specify the recommender in a [GetRecommendations](https://docs.aws.amazon.com/personalize/latest/dg/API_RS_GetRecommendations.html) request.
-    public struct Recommender {
+    public struct Recommender: Swift.Sendable {
         /// The date and time (in Unix format) that the recommender was created.
         public var creationDateTime: Foundation.Date?
         /// The Amazon Resource Name (ARN) of the Domain dataset group that contains the recommender.
@@ -3259,10 +3261,9 @@ extension PersonalizeClientTypes {
             self.status = status
         }
     }
-
 }
 
-public struct DescribeRecommenderOutput {
+public struct DescribeRecommenderOutput: Swift.Sendable {
     /// The properties of the recommender.
     public var recommender: PersonalizeClientTypes.Recommender?
 
@@ -3274,7 +3275,7 @@ public struct DescribeRecommenderOutput {
     }
 }
 
-public struct DescribeSchemaInput {
+public struct DescribeSchemaInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the schema to retrieve.
     /// This member is required.
     public var schemaArn: Swift.String?
@@ -3288,8 +3289,9 @@ public struct DescribeSchemaInput {
 }
 
 extension PersonalizeClientTypes {
+
     /// Describes the schema for a dataset. For more information on schemas, see [CreateSchema](https://docs.aws.amazon.com/personalize/latest/dg/API_CreateSchema.html).
-    public struct DatasetSchema {
+    public struct DatasetSchema: Swift.Sendable {
         /// The date and time (in Unix time) that the schema was created.
         public var creationDateTime: Foundation.Date?
         /// The domain of a schema that you created for a dataset in a Domain dataset group.
@@ -3320,10 +3322,9 @@ extension PersonalizeClientTypes {
             self.schemaArn = schemaArn
         }
     }
-
 }
 
-public struct DescribeSchemaOutput {
+public struct DescribeSchemaOutput: Swift.Sendable {
     /// The requested schema.
     public var schema: PersonalizeClientTypes.DatasetSchema?
 
@@ -3335,7 +3336,7 @@ public struct DescribeSchemaOutput {
     }
 }
 
-public struct DescribeSolutionInput {
+public struct DescribeSolutionInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the solution to describe.
     /// This member is required.
     public var solutionArn: Swift.String?
@@ -3349,8 +3350,9 @@ public struct DescribeSolutionInput {
 }
 
 extension PersonalizeClientTypes {
+
     /// When the solution performs AutoML (performAutoML is true in [CreateSolution](https://docs.aws.amazon.com/personalize/latest/dg/API_CreateSolution.html)), specifies the recipe that best optimized the specified metric.
-    public struct AutoMLResult {
+    public struct AutoMLResult: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the best recipe.
         public var bestRecipeArn: Swift.String?
 
@@ -3361,12 +3363,12 @@ extension PersonalizeClientTypes {
             self.bestRecipeArn = bestRecipeArn
         }
     }
-
 }
 
 extension PersonalizeClientTypes {
+
     /// The configuration details of the solution update.
-    public struct SolutionUpdateConfig {
+    public struct SolutionUpdateConfig: Swift.Sendable {
         /// The automatic training configuration to use when performAutoTraining is true.
         public var autoTrainingConfig: PersonalizeClientTypes.AutoTrainingConfig?
 
@@ -3377,12 +3379,12 @@ extension PersonalizeClientTypes {
             self.autoTrainingConfig = autoTrainingConfig
         }
     }
-
 }
 
 extension PersonalizeClientTypes {
+
     /// Provides a summary of the properties of a solution update. For a complete listing, call the [DescribeSolution](https://docs.aws.amazon.com/personalize/latest/dg/API_DescribeSolution.html) API.
-    public struct SolutionUpdateSummary {
+    public struct SolutionUpdateSummary: Swift.Sendable {
         /// The date and time (in Unix format) that the solution update was created.
         public var creationDateTime: Foundation.Date?
         /// If a solution update fails, the reason behind the failure.
@@ -3413,12 +3415,11 @@ extension PersonalizeClientTypes {
             self.status = status
         }
     }
-
 }
 
 extension PersonalizeClientTypes {
 
-    public enum TrainingType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum TrainingType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case automatic
         case manual
         case sdkUnknown(Swift.String)
@@ -3446,8 +3447,9 @@ extension PersonalizeClientTypes {
 }
 
 extension PersonalizeClientTypes {
+
     /// Provides a summary of the properties of a solution version. For a complete listing, call the [DescribeSolutionVersion](https://docs.aws.amazon.com/personalize/latest/dg/API_DescribeSolutionVersion.html) API.
-    public struct SolutionVersionSummary {
+    public struct SolutionVersionSummary: Swift.Sendable {
         /// The date and time (in Unix time) that this version of a solution was created.
         public var creationDateTime: Foundation.Date?
         /// If a solution version fails, the reason behind the failure.
@@ -3484,12 +3486,12 @@ extension PersonalizeClientTypes {
             self.trainingType = trainingType
         }
     }
-
 }
 
 extension PersonalizeClientTypes {
+
     /// By default, all new solutions use automatic training. With automatic training, you incur training costs while your solution is active. To avoid unnecessary costs, when you are finished you can [update the solution](https://docs.aws.amazon.com/personalize/latest/dg/API_UpdateSolution.html) to turn off automatic training. For information about training costs, see [Amazon Personalize pricing](https://aws.amazon.com/personalize/pricing/). An object that provides information about a solution. A solution includes the custom recipe, customized parameters, and trained models (Solution Versions) that Amazon Personalize uses to generate recommendations. After you create a solution, you can’t change its configuration. If you need to make changes, you can [clone the solution](https://docs.aws.amazon.com/personalize/latest/dg/cloning-solution.html) with the Amazon Personalize console or create a new one.
-    public struct Solution {
+    public struct Solution: Swift.Sendable {
         /// When performAutoML is true, specifies the best recipe found.
         public var autoMLResult: PersonalizeClientTypes.AutoMLResult?
         /// The creation date and time (in Unix time) of the solution.
@@ -3560,10 +3562,9 @@ extension PersonalizeClientTypes {
             self.status = status
         }
     }
-
 }
 
-public struct DescribeSolutionOutput {
+public struct DescribeSolutionOutput: Swift.Sendable {
     /// An object that describes the solution.
     public var solution: PersonalizeClientTypes.Solution?
 
@@ -3575,7 +3576,7 @@ public struct DescribeSolutionOutput {
     }
 }
 
-public struct DescribeSolutionVersionInput {
+public struct DescribeSolutionVersionInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the solution version.
     /// This member is required.
     public var solutionVersionArn: Swift.String?
@@ -3589,8 +3590,9 @@ public struct DescribeSolutionVersionInput {
 }
 
 extension PersonalizeClientTypes {
+
     /// If hyperparameter optimization (HPO) was performed, contains the hyperparameter values of the best performing model.
-    public struct TunedHPOParams {
+    public struct TunedHPOParams: Swift.Sendable {
         /// A list of the hyperparameter values of the best performing model.
         public var algorithmHyperParameters: [Swift.String: Swift.String]?
 
@@ -3601,12 +3603,12 @@ extension PersonalizeClientTypes {
             self.algorithmHyperParameters = algorithmHyperParameters
         }
     }
-
 }
 
 extension PersonalizeClientTypes {
+
     /// An object that provides information about a specific version of a [Solution](https://docs.aws.amazon.com/personalize/latest/dg/API_Solution.html) in a Custom dataset group.
-    public struct SolutionVersion {
+    public struct SolutionVersion: Swift.Sendable {
         /// The date and time (in Unix time) that this version of the solution was created.
         public var creationDateTime: Foundation.Date?
         /// The Amazon Resource Name (ARN) of the dataset group providing the training data.
@@ -3693,10 +3695,9 @@ extension PersonalizeClientTypes {
             self.tunedHPOParams = tunedHPOParams
         }
     }
-
 }
 
-public struct DescribeSolutionVersionOutput {
+public struct DescribeSolutionVersionOutput: Swift.Sendable {
     /// The solution version.
     public var solutionVersion: PersonalizeClientTypes.SolutionVersion?
 
@@ -3708,7 +3709,7 @@ public struct DescribeSolutionVersionOutput {
     }
 }
 
-public struct GetSolutionMetricsInput {
+public struct GetSolutionMetricsInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the solution version for which to get metrics.
     /// This member is required.
     public var solutionVersionArn: Swift.String?
@@ -3721,7 +3722,7 @@ public struct GetSolutionMetricsInput {
     }
 }
 
-public struct GetSolutionMetricsOutput {
+public struct GetSolutionMetricsOutput: Swift.Sendable {
     /// The metrics for the solution version. For more information, see [ Evaluating a solution version with metrics ](https://docs.aws.amazon.com/personalize/latest/dg/working-with-training-metrics.html).
     public var metrics: [Swift.String: Swift.Double]?
     /// The same solution version ARN as specified in the request.
@@ -3761,7 +3762,7 @@ public struct InvalidNextTokenException: ClientRuntime.ModeledError, AWSClientRu
     }
 }
 
-public struct ListBatchInferenceJobsInput {
+public struct ListBatchInferenceJobsInput: Swift.Sendable {
     /// The maximum number of batch inference job results to return in each page. The default value is 100.
     public var maxResults: Swift.Int?
     /// The token to request the next page of results.
@@ -3782,8 +3783,9 @@ public struct ListBatchInferenceJobsInput {
 }
 
 extension PersonalizeClientTypes {
+
     /// A truncated version of the [BatchInferenceJob](https://docs.aws.amazon.com/personalize/latest/dg/API_BatchInferenceJob.html). The [ListBatchInferenceJobs](https://docs.aws.amazon.com/personalize/latest/dg/API_ListBatchInferenceJobs.html) operation returns a list of batch inference job summaries.
-    public struct BatchInferenceJobSummary {
+    public struct BatchInferenceJobSummary: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the batch inference job.
         public var batchInferenceJobArn: Swift.String?
         /// The job's mode.
@@ -3830,10 +3832,9 @@ extension PersonalizeClientTypes {
             self.status = status
         }
     }
-
 }
 
-public struct ListBatchInferenceJobsOutput {
+public struct ListBatchInferenceJobsOutput: Swift.Sendable {
     /// A list containing information on each job that is returned.
     public var batchInferenceJobs: [PersonalizeClientTypes.BatchInferenceJobSummary]?
     /// The token to use to retrieve the next page of results. The value is null when there are no more results to return.
@@ -3849,7 +3850,7 @@ public struct ListBatchInferenceJobsOutput {
     }
 }
 
-public struct ListBatchSegmentJobsInput {
+public struct ListBatchSegmentJobsInput: Swift.Sendable {
     /// The maximum number of batch segment job results to return in each page. The default value is 100.
     public var maxResults: Swift.Int?
     /// The token to request the next page of results.
@@ -3870,8 +3871,9 @@ public struct ListBatchSegmentJobsInput {
 }
 
 extension PersonalizeClientTypes {
+
     /// A truncated version of the [BatchSegmentJob](https://docs.aws.amazon.com/personalize/latest/dg/API_BatchSegmentJob.html) datatype. [ListBatchSegmentJobs](https://docs.aws.amazon.com/personalize/latest/dg/API_ListBatchSegmentJobs.html) operation returns a list of batch segment job summaries.
-    public struct BatchSegmentJobSummary {
+    public struct BatchSegmentJobSummary: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the batch segment job.
         public var batchSegmentJobArn: Swift.String?
         /// The time at which the batch segment job was created.
@@ -3914,10 +3916,9 @@ extension PersonalizeClientTypes {
             self.status = status
         }
     }
-
 }
 
-public struct ListBatchSegmentJobsOutput {
+public struct ListBatchSegmentJobsOutput: Swift.Sendable {
     /// A list containing information on each job that is returned.
     public var batchSegmentJobs: [PersonalizeClientTypes.BatchSegmentJobSummary]?
     /// The token to use to retrieve the next page of results. The value is null when there are no more results to return.
@@ -3933,7 +3934,7 @@ public struct ListBatchSegmentJobsOutput {
     }
 }
 
-public struct ListCampaignsInput {
+public struct ListCampaignsInput: Swift.Sendable {
     /// The maximum number of campaigns to return.
     public var maxResults: Swift.Int?
     /// A token returned from the previous call to [ListCampaigns](https://docs.aws.amazon.com/personalize/latest/dg/API_ListCampaigns.html) for getting the next set of campaigns (if they exist).
@@ -3954,8 +3955,9 @@ public struct ListCampaignsInput {
 }
 
 extension PersonalizeClientTypes {
+
     /// Provides a summary of the properties of a campaign. For a complete listing, call the [DescribeCampaign](https://docs.aws.amazon.com/personalize/latest/dg/API_DescribeCampaign.html) API.
-    public struct CampaignSummary {
+    public struct CampaignSummary: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the campaign.
         public var campaignArn: Swift.String?
         /// The date and time (in Unix time) that the campaign was created.
@@ -3990,10 +3992,9 @@ extension PersonalizeClientTypes {
             self.status = status
         }
     }
-
 }
 
-public struct ListCampaignsOutput {
+public struct ListCampaignsOutput: Swift.Sendable {
     /// A list of the campaigns.
     public var campaigns: [PersonalizeClientTypes.CampaignSummary]?
     /// A token for getting the next set of campaigns (if they exist).
@@ -4009,7 +4010,7 @@ public struct ListCampaignsOutput {
     }
 }
 
-public struct ListDataDeletionJobsInput {
+public struct ListDataDeletionJobsInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the dataset group to list data deletion jobs for.
     public var datasetGroupArn: Swift.String?
     /// The maximum number of data deletion jobs to return.
@@ -4030,8 +4031,9 @@ public struct ListDataDeletionJobsInput {
 }
 
 extension PersonalizeClientTypes {
+
     /// Provides a summary of the properties of a data deletion job. For a complete listing, call the [DescribeDataDeletionJob](https://docs.aws.amazon.com/personalize/latest/dg/API_DescribeDataDeletionJob.html) API operation.
-    public struct DataDeletionJobSummary {
+    public struct DataDeletionJobSummary: Swift.Sendable {
         /// The creation date and time (in Unix time) of the data deletion job.
         public var creationDateTime: Foundation.Date?
         /// The Amazon Resource Name (ARN) of the data deletion job.
@@ -4068,10 +4070,9 @@ extension PersonalizeClientTypes {
             self.status = status
         }
     }
-
 }
 
-public struct ListDataDeletionJobsOutput {
+public struct ListDataDeletionJobsOutput: Swift.Sendable {
     /// The list of data deletion jobs.
     public var dataDeletionJobs: [PersonalizeClientTypes.DataDeletionJobSummary]?
     /// A token for getting the next set of data deletion jobs (if they exist).
@@ -4087,7 +4088,7 @@ public struct ListDataDeletionJobsOutput {
     }
 }
 
-public struct ListDatasetExportJobsInput {
+public struct ListDatasetExportJobsInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the dataset to list the dataset export jobs for.
     public var datasetArn: Swift.String?
     /// The maximum number of dataset export jobs to return.
@@ -4108,8 +4109,9 @@ public struct ListDatasetExportJobsInput {
 }
 
 extension PersonalizeClientTypes {
+
     /// Provides a summary of the properties of a dataset export job. For a complete listing, call the [DescribeDatasetExportJob](https://docs.aws.amazon.com/personalize/latest/dg/API_DescribeDatasetExportJob.html) API.
-    public struct DatasetExportJobSummary {
+    public struct DatasetExportJobSummary: Swift.Sendable {
         /// The date and time (in Unix time) that the dataset export job was created.
         public var creationDateTime: Foundation.Date?
         /// The Amazon Resource Name (ARN) of the dataset export job.
@@ -4142,10 +4144,9 @@ extension PersonalizeClientTypes {
             self.status = status
         }
     }
-
 }
 
-public struct ListDatasetExportJobsOutput {
+public struct ListDatasetExportJobsOutput: Swift.Sendable {
     /// The list of dataset export jobs.
     public var datasetExportJobs: [PersonalizeClientTypes.DatasetExportJobSummary]?
     /// A token for getting the next set of dataset export jobs (if they exist).
@@ -4161,7 +4162,7 @@ public struct ListDatasetExportJobsOutput {
     }
 }
 
-public struct ListDatasetGroupsInput {
+public struct ListDatasetGroupsInput: Swift.Sendable {
     /// The maximum number of dataset groups to return.
     public var maxResults: Swift.Int?
     /// A token returned from the previous call to ListDatasetGroups for getting the next set of dataset groups (if they exist).
@@ -4178,8 +4179,9 @@ public struct ListDatasetGroupsInput {
 }
 
 extension PersonalizeClientTypes {
+
     /// Provides a summary of the properties of a dataset group. For a complete listing, call the [DescribeDatasetGroup](https://docs.aws.amazon.com/personalize/latest/dg/API_DescribeDatasetGroup.html) API.
-    public struct DatasetGroupSummary {
+    public struct DatasetGroupSummary: Swift.Sendable {
         /// The date and time (in Unix time) that the dataset group was created.
         public var creationDateTime: Foundation.Date?
         /// The Amazon Resource Name (ARN) of the dataset group.
@@ -4218,10 +4220,9 @@ extension PersonalizeClientTypes {
             self.status = status
         }
     }
-
 }
 
-public struct ListDatasetGroupsOutput {
+public struct ListDatasetGroupsOutput: Swift.Sendable {
     /// The list of your dataset groups.
     public var datasetGroups: [PersonalizeClientTypes.DatasetGroupSummary]?
     /// A token for getting the next set of dataset groups (if they exist).
@@ -4237,7 +4238,7 @@ public struct ListDatasetGroupsOutput {
     }
 }
 
-public struct ListDatasetImportJobsInput {
+public struct ListDatasetImportJobsInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the dataset to list the dataset import jobs for.
     public var datasetArn: Swift.String?
     /// The maximum number of dataset import jobs to return.
@@ -4258,8 +4259,9 @@ public struct ListDatasetImportJobsInput {
 }
 
 extension PersonalizeClientTypes {
+
     /// Provides a summary of the properties of a dataset import job. For a complete listing, call the [DescribeDatasetImportJob](https://docs.aws.amazon.com/personalize/latest/dg/API_DescribeDatasetImportJob.html) API.
-    public struct DatasetImportJobSummary {
+    public struct DatasetImportJobSummary: Swift.Sendable {
         /// The date and time (in Unix time) that the dataset import job was created.
         public var creationDateTime: Foundation.Date?
         /// The Amazon Resource Name (ARN) of the dataset import job.
@@ -4296,10 +4298,9 @@ extension PersonalizeClientTypes {
             self.status = status
         }
     }
-
 }
 
-public struct ListDatasetImportJobsOutput {
+public struct ListDatasetImportJobsOutput: Swift.Sendable {
     /// The list of dataset import jobs.
     public var datasetImportJobs: [PersonalizeClientTypes.DatasetImportJobSummary]?
     /// A token for getting the next set of dataset import jobs (if they exist).
@@ -4315,7 +4316,7 @@ public struct ListDatasetImportJobsOutput {
     }
 }
 
-public struct ListDatasetsInput {
+public struct ListDatasetsInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the dataset group that contains the datasets to list.
     public var datasetGroupArn: Swift.String?
     /// The maximum number of datasets to return.
@@ -4336,8 +4337,9 @@ public struct ListDatasetsInput {
 }
 
 extension PersonalizeClientTypes {
+
     /// Provides a summary of the properties of a dataset. For a complete listing, call the [DescribeDataset](https://docs.aws.amazon.com/personalize/latest/dg/API_DescribeDataset.html) API.
-    public struct DatasetSummary {
+    public struct DatasetSummary: Swift.Sendable {
         /// The date and time (in Unix time) that the dataset was created.
         public var creationDateTime: Foundation.Date?
         /// The Amazon Resource Name (ARN) of the dataset.
@@ -4380,10 +4382,9 @@ extension PersonalizeClientTypes {
             self.status = status
         }
     }
-
 }
 
-public struct ListDatasetsOutput {
+public struct ListDatasetsOutput: Swift.Sendable {
     /// An array of Dataset objects. Each object provides metadata information.
     public var datasets: [PersonalizeClientTypes.DatasetSummary]?
     /// A token for getting the next set of datasets (if they exist).
@@ -4399,7 +4400,7 @@ public struct ListDatasetsOutput {
     }
 }
 
-public struct ListEventTrackersInput {
+public struct ListEventTrackersInput: Swift.Sendable {
     /// The ARN of a dataset group used to filter the response.
     public var datasetGroupArn: Swift.String?
     /// The maximum number of event trackers to return.
@@ -4420,8 +4421,9 @@ public struct ListEventTrackersInput {
 }
 
 extension PersonalizeClientTypes {
+
     /// Provides a summary of the properties of an event tracker. For a complete listing, call the [DescribeEventTracker](https://docs.aws.amazon.com/personalize/latest/dg/API_DescribeEventTracker.html) API.
-    public struct EventTrackerSummary {
+    public struct EventTrackerSummary: Swift.Sendable {
         /// The date and time (in Unix time) that the event tracker was created.
         public var creationDateTime: Foundation.Date?
         /// The Amazon Resource Name (ARN) of the event tracker.
@@ -4452,10 +4454,9 @@ extension PersonalizeClientTypes {
             self.status = status
         }
     }
-
 }
 
-public struct ListEventTrackersOutput {
+public struct ListEventTrackersOutput: Swift.Sendable {
     /// A list of event trackers.
     public var eventTrackers: [PersonalizeClientTypes.EventTrackerSummary]?
     /// A token for getting the next set of event trackers (if they exist).
@@ -4471,7 +4472,7 @@ public struct ListEventTrackersOutput {
     }
 }
 
-public struct ListFiltersInput {
+public struct ListFiltersInput: Swift.Sendable {
     /// The ARN of the dataset group that contains the filters.
     public var datasetGroupArn: Swift.String?
     /// The maximum number of filters to return.
@@ -4492,8 +4493,9 @@ public struct ListFiltersInput {
 }
 
 extension PersonalizeClientTypes {
+
     /// A short summary of a filter's attributes.
-    public struct FilterSummary {
+    public struct FilterSummary: Swift.Sendable {
         /// The time at which the filter was created.
         public var creationDateTime: Foundation.Date?
         /// The ARN of the dataset group to which the filter belongs.
@@ -4528,10 +4530,9 @@ extension PersonalizeClientTypes {
             self.status = status
         }
     }
-
 }
 
-public struct ListFiltersOutput {
+public struct ListFiltersOutput: Swift.Sendable {
     /// A list of returned filters.
     public var filters: [PersonalizeClientTypes.FilterSummary]?
     /// A token for getting the next set of filters (if they exist).
@@ -4547,7 +4548,7 @@ public struct ListFiltersOutput {
     }
 }
 
-public struct ListMetricAttributionMetricsInput {
+public struct ListMetricAttributionMetricsInput: Swift.Sendable {
     /// The maximum number of metrics to return in one page of results.
     public var maxResults: Swift.Int?
     /// The Amazon Resource Name (ARN) of the metric attribution to retrieve attributes for.
@@ -4567,7 +4568,7 @@ public struct ListMetricAttributionMetricsInput {
     }
 }
 
-public struct ListMetricAttributionMetricsOutput {
+public struct ListMetricAttributionMetricsOutput: Swift.Sendable {
     /// The metrics for the specified metric attribution.
     public var metrics: [PersonalizeClientTypes.MetricAttribute]?
     /// Specify the pagination token from a previous ListMetricAttributionMetricsResponse request to retrieve the next page of results.
@@ -4583,7 +4584,7 @@ public struct ListMetricAttributionMetricsOutput {
     }
 }
 
-public struct ListMetricAttributionsInput {
+public struct ListMetricAttributionsInput: Swift.Sendable {
     /// The metric attributions' dataset group Amazon Resource Name (ARN).
     public var datasetGroupArn: Swift.String?
     /// The maximum number of metric attributions to return in one page of results.
@@ -4604,8 +4605,9 @@ public struct ListMetricAttributionsInput {
 }
 
 extension PersonalizeClientTypes {
+
     /// Provides a summary of the properties of a metric attribution. For a complete listing, call the [DescribeMetricAttribution](https://docs.aws.amazon.com/personalize/latest/dg/API_DescribeMetricAttribution.html).
-    public struct MetricAttributionSummary {
+    public struct MetricAttributionSummary: Swift.Sendable {
         /// The metric attribution's creation date time.
         public var creationDateTime: Foundation.Date?
         /// The metric attribution's failure reason.
@@ -4636,10 +4638,9 @@ extension PersonalizeClientTypes {
             self.status = status
         }
     }
-
 }
 
-public struct ListMetricAttributionsOutput {
+public struct ListMetricAttributionsOutput: Swift.Sendable {
     /// The list of metric attributions.
     public var metricAttributions: [PersonalizeClientTypes.MetricAttributionSummary]?
     /// Specify the pagination token from a previous request to retrieve the next page of results.
@@ -4657,7 +4658,7 @@ public struct ListMetricAttributionsOutput {
 
 extension PersonalizeClientTypes {
 
-    public enum RecipeProvider: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum RecipeProvider: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case service
         case sdkUnknown(Swift.String)
 
@@ -4681,7 +4682,7 @@ extension PersonalizeClientTypes {
     }
 }
 
-public struct ListRecipesInput {
+public struct ListRecipesInput: Swift.Sendable {
     /// Filters returned recipes by domain for a Domain dataset group. Only recipes (Domain dataset group use cases) for this domain are included in the response. If you don't specify a domain, all recipes are returned.
     public var domain: PersonalizeClientTypes.Domain?
     /// The maximum number of recipes to return.
@@ -4706,8 +4707,9 @@ public struct ListRecipesInput {
 }
 
 extension PersonalizeClientTypes {
+
     /// Provides a summary of the properties of a recipe. For a complete listing, call the [DescribeRecipe](https://docs.aws.amazon.com/personalize/latest/dg/API_DescribeRecipe.html) API.
-    public struct RecipeSummary {
+    public struct RecipeSummary: Swift.Sendable {
         /// The date and time (in Unix time) that the recipe was created.
         public var creationDateTime: Foundation.Date?
         /// The domain of the recipe (if the recipe is a Domain dataset group use case).
@@ -4738,10 +4740,9 @@ extension PersonalizeClientTypes {
             self.status = status
         }
     }
-
 }
 
-public struct ListRecipesOutput {
+public struct ListRecipesOutput: Swift.Sendable {
     /// A token for getting the next set of recipes.
     public var nextToken: Swift.String?
     /// The list of available recipes.
@@ -4757,7 +4758,7 @@ public struct ListRecipesOutput {
     }
 }
 
-public struct ListRecommendersInput {
+public struct ListRecommendersInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the Domain dataset group to list the recommenders for. When a Domain dataset group is not specified, all the recommenders associated with the account are listed.
     public var datasetGroupArn: Swift.String?
     /// The maximum number of recommenders to return.
@@ -4778,8 +4779,9 @@ public struct ListRecommendersInput {
 }
 
 extension PersonalizeClientTypes {
+
     /// Provides a summary of the properties of the recommender.
-    public struct RecommenderSummary {
+    public struct RecommenderSummary: Swift.Sendable {
         /// The date and time (in Unix format) that the recommender was created.
         public var creationDateTime: Foundation.Date?
         /// The Amazon Resource Name (ARN) of the Domain dataset group that contains the recommender.
@@ -4824,10 +4826,9 @@ extension PersonalizeClientTypes {
             self.status = status
         }
     }
-
 }
 
-public struct ListRecommendersOutput {
+public struct ListRecommendersOutput: Swift.Sendable {
     /// A token for getting the next set of recommenders (if they exist).
     public var nextToken: Swift.String?
     /// A list of the recommenders.
@@ -4843,7 +4844,7 @@ public struct ListRecommendersOutput {
     }
 }
 
-public struct ListSchemasInput {
+public struct ListSchemasInput: Swift.Sendable {
     /// The maximum number of schemas to return.
     public var maxResults: Swift.Int?
     /// A token returned from the previous call to ListSchemas for getting the next set of schemas (if they exist).
@@ -4860,8 +4861,9 @@ public struct ListSchemasInput {
 }
 
 extension PersonalizeClientTypes {
+
     /// Provides a summary of the properties of a dataset schema. For a complete listing, call the [DescribeSchema](https://docs.aws.amazon.com/personalize/latest/dg/API_DescribeSchema.html) API.
-    public struct DatasetSchemaSummary {
+    public struct DatasetSchemaSummary: Swift.Sendable {
         /// The date and time (in Unix time) that the schema was created.
         public var creationDateTime: Foundation.Date?
         /// The domain of a schema that you created for a dataset in a Domain dataset group.
@@ -4888,10 +4890,9 @@ extension PersonalizeClientTypes {
             self.schemaArn = schemaArn
         }
     }
-
 }
 
-public struct ListSchemasOutput {
+public struct ListSchemasOutput: Swift.Sendable {
     /// A token used to get the next set of schemas (if they exist).
     public var nextToken: Swift.String?
     /// A list of schemas.
@@ -4907,7 +4908,7 @@ public struct ListSchemasOutput {
     }
 }
 
-public struct ListSolutionsInput {
+public struct ListSolutionsInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the dataset group.
     public var datasetGroupArn: Swift.String?
     /// The maximum number of solutions to return.
@@ -4928,8 +4929,9 @@ public struct ListSolutionsInput {
 }
 
 extension PersonalizeClientTypes {
+
     /// Provides a summary of the properties of a solution. For a complete listing, call the [DescribeSolution](https://docs.aws.amazon.com/personalize/latest/dg/API_DescribeSolution.html) API.
-    public struct SolutionSummary {
+    public struct SolutionSummary: Swift.Sendable {
         /// The date and time (in Unix time) that the solution was created.
         public var creationDateTime: Foundation.Date?
         /// The date and time (in Unix time) that the solution was last updated.
@@ -4964,10 +4966,9 @@ extension PersonalizeClientTypes {
             self.status = status
         }
     }
-
 }
 
-public struct ListSolutionsOutput {
+public struct ListSolutionsOutput: Swift.Sendable {
     /// A token for getting the next set of solutions (if they exist).
     public var nextToken: Swift.String?
     /// A list of the current solutions.
@@ -4983,7 +4984,7 @@ public struct ListSolutionsOutput {
     }
 }
 
-public struct ListSolutionVersionsInput {
+public struct ListSolutionVersionsInput: Swift.Sendable {
     /// The maximum number of solution versions to return.
     public var maxResults: Swift.Int?
     /// A token returned from the previous call to ListSolutionVersions for getting the next set of solution versions (if they exist).
@@ -5003,7 +5004,7 @@ public struct ListSolutionVersionsInput {
     }
 }
 
-public struct ListSolutionVersionsOutput {
+public struct ListSolutionVersionsOutput: Swift.Sendable {
     /// A token for getting the next set of solution versions (if they exist).
     public var nextToken: Swift.String?
     /// A list of solution versions describing the version properties.
@@ -5019,7 +5020,7 @@ public struct ListSolutionVersionsOutput {
     }
 }
 
-public struct ListTagsForResourceInput {
+public struct ListTagsForResourceInput: Swift.Sendable {
     /// The resource's Amazon Resource Name (ARN).
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -5032,7 +5033,7 @@ public struct ListTagsForResourceInput {
     }
 }
 
-public struct ListTagsForResourceOutput {
+public struct ListTagsForResourceOutput: Swift.Sendable {
     /// The resource's tags.
     public var tags: [PersonalizeClientTypes.Tag]?
 
@@ -5044,7 +5045,7 @@ public struct ListTagsForResourceOutput {
     }
 }
 
-public struct StartRecommenderInput {
+public struct StartRecommenderInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the recommender to start.
     /// This member is required.
     public var recommenderArn: Swift.String?
@@ -5057,7 +5058,7 @@ public struct StartRecommenderInput {
     }
 }
 
-public struct StartRecommenderOutput {
+public struct StartRecommenderOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the recommender you started.
     public var recommenderArn: Swift.String?
 
@@ -5069,7 +5070,7 @@ public struct StartRecommenderOutput {
     }
 }
 
-public struct StopRecommenderInput {
+public struct StopRecommenderInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the recommender to stop.
     /// This member is required.
     public var recommenderArn: Swift.String?
@@ -5082,7 +5083,7 @@ public struct StopRecommenderInput {
     }
 }
 
-public struct StopRecommenderOutput {
+public struct StopRecommenderOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the recommender you stopped.
     public var recommenderArn: Swift.String?
 
@@ -5094,7 +5095,7 @@ public struct StopRecommenderOutput {
     }
 }
 
-public struct StopSolutionVersionCreationInput {
+public struct StopSolutionVersionCreationInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the solution version you want to stop creating.
     /// This member is required.
     public var solutionVersionArn: Swift.String?
@@ -5107,7 +5108,7 @@ public struct StopSolutionVersionCreationInput {
     }
 }
 
-public struct TagResourceInput {
+public struct TagResourceInput: Swift.Sendable {
     /// The resource's Amazon Resource Name (ARN).
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -5125,7 +5126,7 @@ public struct TagResourceInput {
     }
 }
 
-public struct TagResourceOutput {
+public struct TagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
@@ -5154,7 +5155,7 @@ public struct TooManyTagKeysException: ClientRuntime.ModeledError, AWSClientRunt
     }
 }
 
-public struct UntagResourceInput {
+public struct UntagResourceInput: Swift.Sendable {
     /// The resource's Amazon Resource Name (ARN).
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -5172,12 +5173,12 @@ public struct UntagResourceInput {
     }
 }
 
-public struct UntagResourceOutput {
+public struct UntagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdateCampaignInput {
+public struct UpdateCampaignInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the campaign.
     /// This member is required.
     public var campaignArn: Swift.String?
@@ -5202,7 +5203,7 @@ public struct UpdateCampaignInput {
     }
 }
 
-public struct UpdateCampaignOutput {
+public struct UpdateCampaignOutput: Swift.Sendable {
     /// The same campaign ARN as given in the request.
     public var campaignArn: Swift.String?
 
@@ -5214,7 +5215,7 @@ public struct UpdateCampaignOutput {
     }
 }
 
-public struct UpdateDatasetInput {
+public struct UpdateDatasetInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the dataset that you want to update.
     /// This member is required.
     public var datasetArn: Swift.String?
@@ -5232,7 +5233,7 @@ public struct UpdateDatasetInput {
     }
 }
 
-public struct UpdateDatasetOutput {
+public struct UpdateDatasetOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the dataset you updated.
     public var datasetArn: Swift.String?
 
@@ -5244,7 +5245,7 @@ public struct UpdateDatasetOutput {
     }
 }
 
-public struct UpdateMetricAttributionInput {
+public struct UpdateMetricAttributionInput: Swift.Sendable {
     /// Add new metric attributes to the metric attribution.
     public var addMetrics: [PersonalizeClientTypes.MetricAttribute]?
     /// The Amazon Resource Name (ARN) for the metric attribution to update.
@@ -5268,7 +5269,7 @@ public struct UpdateMetricAttributionInput {
     }
 }
 
-public struct UpdateMetricAttributionOutput {
+public struct UpdateMetricAttributionOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) for the metric attribution that you updated.
     public var metricAttributionArn: Swift.String?
 
@@ -5280,7 +5281,7 @@ public struct UpdateMetricAttributionOutput {
     }
 }
 
-public struct UpdateRecommenderInput {
+public struct UpdateRecommenderInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the recommender to modify.
     /// This member is required.
     public var recommenderArn: Swift.String?
@@ -5298,7 +5299,7 @@ public struct UpdateRecommenderInput {
     }
 }
 
-public struct UpdateRecommenderOutput {
+public struct UpdateRecommenderOutput: Swift.Sendable {
     /// The same recommender Amazon Resource Name (ARN) as given in the request.
     public var recommenderArn: Swift.String?
 
@@ -5310,7 +5311,7 @@ public struct UpdateRecommenderOutput {
     }
 }
 
-public struct UpdateSolutionInput {
+public struct UpdateSolutionInput: Swift.Sendable {
     /// Whether the solution uses automatic training to create new solution versions (trained models). You can change the training frequency by specifying a schedulingExpression in the AutoTrainingConfig as part of solution configuration. If you turn on automatic training, the first automatic training starts within one hour after the solution update completes. If you manually create a solution version within the hour, the solution skips the first automatic training. For more information about automatic training, see [Configuring automatic training](https://docs.aws.amazon.com/personalize/latest/dg/solution-config-auto-training.html). After training starts, you can get the solution version's Amazon Resource Name (ARN) with the [ListSolutionVersions](https://docs.aws.amazon.com/personalize/latest/dg/API_ListSolutionVersions.html) API operation. To get its status, use the [DescribeSolutionVersion](https://docs.aws.amazon.com/personalize/latest/dg/API_DescribeSolutionVersion.html).
     public var performAutoTraining: Swift.Bool?
     /// The Amazon Resource Name (ARN) of the solution to update.
@@ -5331,7 +5332,7 @@ public struct UpdateSolutionInput {
     }
 }
 
-public struct UpdateSolutionOutput {
+public struct UpdateSolutionOutput: Swift.Sendable {
     /// The same solution Amazon Resource Name (ARN) as given in the request.
     public var solutionArn: Swift.String?
 

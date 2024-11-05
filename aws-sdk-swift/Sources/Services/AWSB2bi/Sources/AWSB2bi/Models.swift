@@ -27,32 +27,33 @@ import protocol ClientRuntime.ModeledError
 import struct Smithy.URIQueryItem
 @_spi(SmithyTimestamps) import struct SmithyTimestamps.TimestampFormatter
 
-public struct DeleteCapabilityOutput {
+
+public struct DeleteCapabilityOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeletePartnershipOutput {
+public struct DeletePartnershipOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteProfileOutput {
+public struct DeleteProfileOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteTransformerOutput {
+public struct DeleteTransformerOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct TagResourceOutput {
+public struct TagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UntagResourceOutput {
+public struct UntagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
@@ -261,8 +262,38 @@ public struct ValidationException: ClientRuntime.ModeledError, AWSClientRuntime.
 }
 
 extension B2biClientTypes {
-    /// Specifies the details for the Amazon S3 file location that is being used with Amazon Web Services B2BI Data Interchange. File locations in Amazon S3 are identified using a combination of the bucket and key.
-    public struct S3Location {
+
+    public enum CapabilityDirection: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+        case inbound
+        case outbound
+        case sdkUnknown(Swift.String)
+
+        public static var allCases: [CapabilityDirection] {
+            return [
+                .inbound,
+                .outbound
+            ]
+        }
+
+        public init?(rawValue: Swift.String) {
+            let value = Self.allCases.first(where: { $0.rawValue == rawValue })
+            self = value ?? Self.sdkUnknown(rawValue)
+        }
+
+        public var rawValue: Swift.String {
+            switch self {
+            case .inbound: return "INBOUND"
+            case .outbound: return "OUTBOUND"
+            case let .sdkUnknown(s): return s
+            }
+        }
+    }
+}
+
+extension B2biClientTypes {
+
+    /// Specifies the details for the Amazon S3 file location that is being used with Amazon Web Services B2B Data Interchange. File locations in Amazon S3 are identified using a combination of the bucket and key.
+    public struct S3Location: Swift.Sendable {
         /// Specifies the name of the Amazon S3 bucket.
         public var bucketName: Swift.String?
         /// Specifies the Amazon S3 key for the file location.
@@ -277,12 +308,11 @@ extension B2biClientTypes {
             self.key = key
         }
     }
-
 }
 
 extension B2biClientTypes {
 
-    public enum X12TransactionSet: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum X12TransactionSet: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case x12110
         case x12180
         case x12204
@@ -530,7 +560,7 @@ extension B2biClientTypes {
 
 extension B2biClientTypes {
 
-    public enum X12Version: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum X12Version: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case version4010
         case version4030
         case version5010
@@ -564,8 +594,9 @@ extension B2biClientTypes {
 }
 
 extension B2biClientTypes {
+
     /// A structure that contains the X12 transaction set and version. The X12 structure is used when the system transforms an EDI (electronic data interchange) file. If an EDI input file contains more than one transaction, each transaction must have the same transaction set and version, for example 214/4010. If not, the transformer cannot parse the file.
-    public struct X12Details {
+    public struct X12Details: Swift.Sendable {
         /// Returns an enumerated type where each value identifies an X12 transaction set. Transaction sets are maintained by the X12 Accredited Standards Committee.
         public var transactionSet: B2biClientTypes.X12TransactionSet?
         /// Returns the version to use for the specified X12 transaction set.
@@ -580,22 +611,24 @@ extension B2biClientTypes {
             self.version = version
         }
     }
-
 }
 
 extension B2biClientTypes {
+
     /// Specifies the details for the EDI standard that is being used for the transformer. Currently, only X12 is supported. X12 is a set of standards and corresponding messages that define specific business documents.
-    public enum EdiType {
+    public enum EdiType: Swift.Sendable {
         /// Returns the details for the EDI standard that is being used for the transformer. Currently, only X12 is supported. X12 is a set of standards and corresponding messages that define specific business documents.
         case x12details(B2biClientTypes.X12Details)
         case sdkUnknown(Swift.String)
     }
-
 }
 
 extension B2biClientTypes {
+
     /// Specifies the details for the EDI (electronic data interchange) transformation.
-    public struct EdiConfiguration {
+    public struct EdiConfiguration: Swift.Sendable {
+        /// Specifies whether this is capability is for inbound or outbound transformations.
+        public var capabilityDirection: B2biClientTypes.CapabilityDirection?
         /// Contains the Amazon S3 bucket and prefix for the location of the input file, which is contained in an S3Location object.
         /// This member is required.
         public var inputLocation: B2biClientTypes.S3Location?
@@ -610,34 +643,36 @@ extension B2biClientTypes {
         public var type: B2biClientTypes.EdiType?
 
         public init(
+            capabilityDirection: B2biClientTypes.CapabilityDirection? = nil,
             inputLocation: B2biClientTypes.S3Location? = nil,
             outputLocation: B2biClientTypes.S3Location? = nil,
             transformerId: Swift.String? = nil,
             type: B2biClientTypes.EdiType? = nil
         )
         {
+            self.capabilityDirection = capabilityDirection
             self.inputLocation = inputLocation
             self.outputLocation = outputLocation
             self.transformerId = transformerId
             self.type = type
         }
     }
-
 }
 
 extension B2biClientTypes {
+
     /// A capability object. Currently, only EDI (electronic data interchange) capabilities are supported. A trading capability contains the information required to transform incoming EDI documents into JSON or XML outputs.
-    public enum CapabilityConfiguration {
+    public enum CapabilityConfiguration: Swift.Sendable {
         /// An EDI (electronic data interchange) configuration object.
         case edi(B2biClientTypes.EdiConfiguration)
         case sdkUnknown(Swift.String)
     }
-
 }
 
 extension B2biClientTypes {
+
     /// Creates a key-value pair for a specific resource. Tags are metadata that you can use to search for and group a resource for various purposes. You can apply tags to capabilities, partnerships, profiles and transformers. A tag key can take more than one value. For example, to group capabilities for accounting purposes, you might create a tag called Group and assign the values Research and Accounting to that group.
-    public struct Tag {
+    public struct Tag: Swift.Sendable {
         /// Specifies the name assigned to the tag that you create.
         /// This member is required.
         public var key: Swift.String?
@@ -654,12 +689,11 @@ extension B2biClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension B2biClientTypes {
 
-    public enum CapabilityType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum CapabilityType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case edi
         case sdkUnknown(Swift.String)
 
@@ -683,7 +717,7 @@ extension B2biClientTypes {
     }
 }
 
-public struct CreateCapabilityInput {
+public struct CreateCapabilityInput: Swift.Sendable {
     /// Reserved for future use.
     public var clientToken: Swift.String?
     /// Specifies a structure that contains the details for a capability.
@@ -718,7 +752,7 @@ public struct CreateCapabilityInput {
     }
 }
 
-public struct CreateCapabilityOutput {
+public struct CreateCapabilityOutput: Swift.Sendable {
     /// Returns an Amazon Resource Name (ARN) for a specific Amazon Web Services resource, such as a capability, partnership, profile, or transformer.
     /// This member is required.
     public var capabilityArn: Swift.String?
@@ -760,7 +794,7 @@ public struct CreateCapabilityOutput {
     }
 }
 
-public struct DeleteCapabilityInput {
+public struct DeleteCapabilityInput: Swift.Sendable {
     /// Specifies a system-assigned unique identifier for the capability.
     /// This member is required.
     public var capabilityId: Swift.String?
@@ -773,7 +807,7 @@ public struct DeleteCapabilityInput {
     }
 }
 
-public struct GetCapabilityInput {
+public struct GetCapabilityInput: Swift.Sendable {
     /// Specifies a system-assigned unique identifier for the capability.
     /// This member is required.
     public var capabilityId: Swift.String?
@@ -786,7 +820,7 @@ public struct GetCapabilityInput {
     }
 }
 
-public struct GetCapabilityOutput {
+public struct GetCapabilityOutput: Swift.Sendable {
     /// Returns an Amazon Resource Name (ARN) for a specific Amazon Web Services resource, such as a capability, partnership, profile, or transformer.
     /// This member is required.
     public var capabilityArn: Swift.String?
@@ -832,7 +866,7 @@ public struct GetCapabilityOutput {
     }
 }
 
-public struct ListCapabilitiesInput {
+public struct ListCapabilitiesInput: Swift.Sendable {
     /// Specifies the maximum number of capabilities to return.
     public var maxResults: Swift.Int?
     /// When additional results are obtained from the command, a NextToken parameter is returned in the output. You can then pass the NextToken parameter in a subsequent command to continue listing additional resources.
@@ -849,8 +883,9 @@ public struct ListCapabilitiesInput {
 }
 
 extension B2biClientTypes {
+
     /// Returns the capability summary details. A trading capability contains the information required to transform incoming EDI documents into JSON or XML outputs.
-    public struct CapabilitySummary {
+    public struct CapabilitySummary: Swift.Sendable {
         /// Returns a system-assigned unique identifier for the capability.
         /// This member is required.
         public var capabilityId: Swift.String?
@@ -881,10 +916,9 @@ extension B2biClientTypes {
             self.type = type
         }
     }
-
 }
 
-public struct ListCapabilitiesOutput {
+public struct ListCapabilitiesOutput: Swift.Sendable {
     /// Returns one or more capabilities associated with this partnership.
     /// This member is required.
     public var capabilities: [B2biClientTypes.CapabilitySummary]?
@@ -901,7 +935,7 @@ public struct ListCapabilitiesOutput {
     }
 }
 
-public struct UpdateCapabilityInput {
+public struct UpdateCapabilityInput: Swift.Sendable {
     /// Specifies a system-assigned unique identifier for the capability.
     /// This member is required.
     public var capabilityId: Swift.String?
@@ -926,7 +960,7 @@ public struct UpdateCapabilityInput {
     }
 }
 
-public struct UpdateCapabilityOutput {
+public struct UpdateCapabilityOutput: Swift.Sendable {
     /// Returns an Amazon Resource Name (ARN) for a specific Amazon Web Services resource, such as a capability, partnership, profile, or transformer.
     /// This member is required.
     public var capabilityArn: Swift.String?
@@ -972,7 +1006,81 @@ public struct UpdateCapabilityOutput {
     }
 }
 
-public struct GetTransformerJobInput {
+extension B2biClientTypes {
+
+    public enum MappingType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+        case jsonata
+        case xslt
+        case sdkUnknown(Swift.String)
+
+        public static var allCases: [MappingType] {
+            return [
+                .jsonata,
+                .xslt
+            ]
+        }
+
+        public init?(rawValue: Swift.String) {
+            let value = Self.allCases.first(where: { $0.rawValue == rawValue })
+            self = value ?? Self.sdkUnknown(rawValue)
+        }
+
+        public var rawValue: Swift.String {
+            switch self {
+            case .jsonata: return "JSONATA"
+            case .xslt: return "XSLT"
+            case let .sdkUnknown(s): return s
+            }
+        }
+    }
+}
+
+extension B2biClientTypes {
+
+    /// A data structure that contains the information to use when generating a mapping template.
+    public enum TemplateDetails: Swift.Sendable {
+        /// A structure that contains the X12 transaction set and version. The X12 structure is used when the system transforms an EDI (electronic data interchange) file. If an EDI input file contains more than one transaction, each transaction must have the same transaction set and version, for example 214/4010. If not, the transformer cannot parse the file.
+        case x12(B2biClientTypes.X12Details)
+        case sdkUnknown(Swift.String)
+    }
+}
+
+public struct CreateStarterMappingTemplateInput: Swift.Sendable {
+    /// Specify the format for the mapping template: either JSONATA or XSLT.
+    /// This member is required.
+    public var mappingType: B2biClientTypes.MappingType?
+    /// Specify the location of the sample EDI file that is used to generate the mapping template.
+    public var outputSampleLocation: B2biClientTypes.S3Location?
+    /// Describes the details needed for generating the template. Specify the X12 transaction set and version for which the template is used: currently, we only support X12.
+    /// This member is required.
+    public var templateDetails: B2biClientTypes.TemplateDetails?
+
+    public init(
+        mappingType: B2biClientTypes.MappingType? = nil,
+        outputSampleLocation: B2biClientTypes.S3Location? = nil,
+        templateDetails: B2biClientTypes.TemplateDetails? = nil
+    )
+    {
+        self.mappingType = mappingType
+        self.outputSampleLocation = outputSampleLocation
+        self.templateDetails = templateDetails
+    }
+}
+
+public struct CreateStarterMappingTemplateOutput: Swift.Sendable {
+    /// Returns a string that represents the mapping template.
+    /// This member is required.
+    public var mappingTemplate: Swift.String?
+
+    public init(
+        mappingTemplate: Swift.String? = nil
+    )
+    {
+        self.mappingTemplate = mappingTemplate
+    }
+}
+
+public struct GetTransformerJobInput: Swift.Sendable {
     /// Specifies the system-assigned unique identifier for the transformer.
     /// This member is required.
     public var transformerId: Swift.String?
@@ -992,7 +1100,7 @@ public struct GetTransformerJobInput {
 
 extension B2biClientTypes {
 
-    public enum TransformerJobStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum TransformerJobStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case failed
         case running
         case succeeded
@@ -1022,7 +1130,7 @@ extension B2biClientTypes {
     }
 }
 
-public struct GetTransformerJobOutput {
+public struct GetTransformerJobOutput: Swift.Sendable {
     /// Returns an optional error message, which gets populated when the job is not run successfully.
     public var message: Swift.String?
     /// Returns the location for the output files. If the caller specified a directory for the output, then this contains the full path to the output file, including the file name generated by the service.
@@ -1043,7 +1151,7 @@ public struct GetTransformerJobOutput {
     }
 }
 
-public struct ListTagsForResourceInput {
+public struct ListTagsForResourceInput: Swift.Sendable {
     /// Requests the tags associated with a particular Amazon Resource Name (ARN). An ARN is an identifier for a specific Amazon Web Services resource, such as a capability, partnership, profile, or transformer.
     /// This member is required.
     public var resourceARN: Swift.String?
@@ -1056,7 +1164,7 @@ public struct ListTagsForResourceInput {
     }
 }
 
-public struct ListTagsForResourceOutput {
+public struct ListTagsForResourceOutput: Swift.Sendable {
     /// Returns the key-value pairs assigned to ARNs that you can use to group and search for resources by type. You can attach this metadata to resources (capabilities, partnerships, and so on) for any purpose.
     public var tags: [B2biClientTypes.Tag]?
 
@@ -1068,10 +1176,182 @@ public struct ListTagsForResourceOutput {
     }
 }
 
-public struct CreatePartnershipInput {
+extension B2biClientTypes {
+
+    /// In X12 EDI messages, delimiters are used to mark the end of segments or elements, and are defined in the interchange control header. The delimiters are part of the message's syntax and divide up its different elements.
+    public struct X12Delimiters: Swift.Sendable {
+        /// The component, or sub-element, separator. The default value is : (colon).
+        public var componentSeparator: Swift.String?
+        /// The data element separator. The default value is * (asterisk).
+        public var dataElementSeparator: Swift.String?
+        /// The segment terminator. The default value is ~ (tilde).
+        public var segmentTerminator: Swift.String?
+
+        public init(
+            componentSeparator: Swift.String? = nil,
+            dataElementSeparator: Swift.String? = nil,
+            segmentTerminator: Swift.String? = nil
+        )
+        {
+            self.componentSeparator = componentSeparator
+            self.dataElementSeparator = dataElementSeparator
+            self.segmentTerminator = segmentTerminator
+        }
+    }
+}
+
+extension B2biClientTypes {
+
+    /// Part of the X12 message structure. These are the functional group headers for the X12 EDI object.
+    public struct X12FunctionalGroupHeaders: Swift.Sendable {
+        /// A value representing the code used to identify the party receiving a message, at position GS-03.
+        public var applicationReceiverCode: Swift.String?
+        /// A value representing the code used to identify the party transmitting a message, at position GS-02.
+        public var applicationSenderCode: Swift.String?
+        /// A code that identifies the issuer of the standard, at position GS-07.
+        public var responsibleAgencyCode: Swift.String?
+
+        public init(
+            applicationReceiverCode: Swift.String? = nil,
+            applicationSenderCode: Swift.String? = nil,
+            responsibleAgencyCode: Swift.String? = nil
+        )
+        {
+            self.applicationReceiverCode = applicationReceiverCode
+            self.applicationSenderCode = applicationSenderCode
+            self.responsibleAgencyCode = responsibleAgencyCode
+        }
+    }
+}
+
+extension B2biClientTypes {
+
+    /// In X12, the Interchange Control Header is the first segment of an EDI document and is part of the Interchange Envelope. It contains information about the sender and receiver, the date and time of transmission, and the X12 version being used. It also includes delivery information, such as the sender and receiver IDs.
+    public struct X12InterchangeControlHeaders: Swift.Sendable {
+        /// Located at position ISA-14 in the header. The value "1" indicates that the sender is requesting an interchange acknowledgment at receipt of the interchange. The value "0" is used otherwise.
+        public var acknowledgmentRequestedCode: Swift.String?
+        /// Located at position ISA-08 in the header. This value (along with the receiverIdQualifier) identifies the intended recipient of the interchange.
+        public var receiverId: Swift.String?
+        /// Located at position ISA-07 in the header. Qualifier for the receiver ID. Together, the ID and qualifier uniquely identify the receiving trading partner.
+        public var receiverIdQualifier: Swift.String?
+        /// Located at position ISA-11 in the header. This string makes it easier when you need to group similar adjacent element values together without using extra segments. This parameter is only honored for version greater than 401 (VERSION_4010 and higher). For versions less than 401, this field is called [StandardsId](https://www.stedi.com/edi/x12-004010/segment/ISA#ISA-11), in which case our service sets the value to U.
+        public var repetitionSeparator: Swift.String?
+        /// Located at position ISA-06 in the header. This value (along with the senderIdQualifier) identifies the sender of the interchange.
+        public var senderId: Swift.String?
+        /// Located at position ISA-05 in the header. Qualifier for the sender ID. Together, the ID and qualifier uniquely identify the sending trading partner.
+        public var senderIdQualifier: Swift.String?
+        /// Located at position ISA-15 in the header. Specifies how this interchange is being used:
+        ///
+        /// * T indicates this interchange is for testing.
+        ///
+        /// * P indicates this interchange is for production.
+        ///
+        /// * I indicates this interchange is informational.
+        public var usageIndicatorCode: Swift.String?
+
+        public init(
+            acknowledgmentRequestedCode: Swift.String? = nil,
+            receiverId: Swift.String? = nil,
+            receiverIdQualifier: Swift.String? = nil,
+            repetitionSeparator: Swift.String? = nil,
+            senderId: Swift.String? = nil,
+            senderIdQualifier: Swift.String? = nil,
+            usageIndicatorCode: Swift.String? = nil
+        )
+        {
+            self.acknowledgmentRequestedCode = acknowledgmentRequestedCode
+            self.receiverId = receiverId
+            self.receiverIdQualifier = receiverIdQualifier
+            self.repetitionSeparator = repetitionSeparator
+            self.senderId = senderId
+            self.senderIdQualifier = senderIdQualifier
+            self.usageIndicatorCode = usageIndicatorCode
+        }
+    }
+}
+
+extension B2biClientTypes {
+
+    /// A structure containing the details for an outbound EDI object.
+    public struct X12OutboundEdiHeaders: Swift.Sendable {
+        /// The delimiters, for example semicolon (;), that separates sections of the headers for the X12 object.
+        public var delimiters: B2biClientTypes.X12Delimiters?
+        /// The functional group headers for the X12 object.
+        public var functionalGroupHeaders: B2biClientTypes.X12FunctionalGroupHeaders?
+        /// In X12 EDI messages, delimiters are used to mark the end of segments or elements, and are defined in the interchange control header.
+        public var interchangeControlHeaders: B2biClientTypes.X12InterchangeControlHeaders?
+        /// Specifies whether or not to validate the EDI for this X12 object: TRUE or FALSE.
+        public var validateEdi: Swift.Bool?
+
+        public init(
+            delimiters: B2biClientTypes.X12Delimiters? = nil,
+            functionalGroupHeaders: B2biClientTypes.X12FunctionalGroupHeaders? = nil,
+            interchangeControlHeaders: B2biClientTypes.X12InterchangeControlHeaders? = nil,
+            validateEdi: Swift.Bool? = nil
+        )
+        {
+            self.delimiters = delimiters
+            self.functionalGroupHeaders = functionalGroupHeaders
+            self.interchangeControlHeaders = interchangeControlHeaders
+            self.validateEdi = validateEdi
+        }
+    }
+}
+
+extension B2biClientTypes {
+
+    /// A wrapper structure for an X12 definition object. the X12 envelope ensures the integrity of the data and the efficiency of the information exchange. The X12 message structure has hierarchical levels. From highest to the lowest, they are:
+    ///
+    /// * Interchange Envelope
+    ///
+    /// * Functional Group
+    ///
+    /// * Transaction Set
+    public struct X12Envelope: Swift.Sendable {
+        /// A container for the X12 outbound EDI headers.
+        public var common: B2biClientTypes.X12OutboundEdiHeaders?
+
+        public init(
+            common: B2biClientTypes.X12OutboundEdiHeaders? = nil
+        )
+        {
+            self.common = common
+        }
+    }
+}
+
+extension B2biClientTypes {
+
+    /// A container for outbound EDI options.
+    public enum OutboundEdiOptions: Swift.Sendable {
+        /// A structure that contains an X12 envelope structure.
+        case x12(B2biClientTypes.X12Envelope)
+        case sdkUnknown(Swift.String)
+    }
+}
+
+extension B2biClientTypes {
+
+    /// Contains the details for an Outbound EDI capability.
+    public struct CapabilityOptions: Swift.Sendable {
+        /// A structure that contains the outbound EDI options.
+        public var outboundEdi: B2biClientTypes.OutboundEdiOptions?
+
+        public init(
+            outboundEdi: B2biClientTypes.OutboundEdiOptions? = nil
+        )
+        {
+            self.outboundEdi = outboundEdi
+        }
+    }
+}
+
+public struct CreatePartnershipInput: Swift.Sendable {
     /// Specifies a list of the capabilities associated with this partnership.
     /// This member is required.
     public var capabilities: [Swift.String]?
+    /// Specify the structure that contains the details for the associated capabilities.
+    public var capabilityOptions: B2biClientTypes.CapabilityOptions?
     /// Reserved for future use.
     public var clientToken: Swift.String?
     /// Specifies the email address associated with this trading partner.
@@ -1090,6 +1370,7 @@ public struct CreatePartnershipInput {
 
     public init(
         capabilities: [Swift.String]? = nil,
+        capabilityOptions: B2biClientTypes.CapabilityOptions? = nil,
         clientToken: Swift.String? = nil,
         email: Swift.String? = nil,
         name: Swift.String? = nil,
@@ -1099,6 +1380,7 @@ public struct CreatePartnershipInput {
     )
     {
         self.capabilities = capabilities
+        self.capabilityOptions = capabilityOptions
         self.clientToken = clientToken
         self.email = email
         self.name = name
@@ -1110,12 +1392,14 @@ public struct CreatePartnershipInput {
 
 extension CreatePartnershipInput: Swift.CustomDebugStringConvertible {
     public var debugDescription: Swift.String {
-        "CreatePartnershipInput(capabilities: \(Swift.String(describing: capabilities)), clientToken: \(Swift.String(describing: clientToken)), name: \(Swift.String(describing: name)), profileId: \(Swift.String(describing: profileId)), tags: \(Swift.String(describing: tags)), email: \"CONTENT_REDACTED\", phone: \"CONTENT_REDACTED\")"}
+        "CreatePartnershipInput(capabilities: \(Swift.String(describing: capabilities)), capabilityOptions: \(Swift.String(describing: capabilityOptions)), clientToken: \(Swift.String(describing: clientToken)), name: \(Swift.String(describing: name)), profileId: \(Swift.String(describing: profileId)), tags: \(Swift.String(describing: tags)), email: \"CONTENT_REDACTED\", phone: \"CONTENT_REDACTED\")"}
 }
 
-public struct CreatePartnershipOutput {
+public struct CreatePartnershipOutput: Swift.Sendable {
     /// Returns one or more capabilities associated with this partnership.
     public var capabilities: [Swift.String]?
+    /// Returns the structure that contains the details for the associated capabilities.
+    public var capabilityOptions: B2biClientTypes.CapabilityOptions?
     /// Returns a timestamp for creation date and time of the partnership.
     /// This member is required.
     public var createdAt: Foundation.Date?
@@ -1139,6 +1423,7 @@ public struct CreatePartnershipOutput {
 
     public init(
         capabilities: [Swift.String]? = nil,
+        capabilityOptions: B2biClientTypes.CapabilityOptions? = nil,
         createdAt: Foundation.Date? = nil,
         email: Swift.String? = nil,
         name: Swift.String? = nil,
@@ -1150,6 +1435,7 @@ public struct CreatePartnershipOutput {
     )
     {
         self.capabilities = capabilities
+        self.capabilityOptions = capabilityOptions
         self.createdAt = createdAt
         self.email = email
         self.name = name
@@ -1163,10 +1449,10 @@ public struct CreatePartnershipOutput {
 
 extension CreatePartnershipOutput: Swift.CustomDebugStringConvertible {
     public var debugDescription: Swift.String {
-        "CreatePartnershipOutput(capabilities: \(Swift.String(describing: capabilities)), createdAt: \(Swift.String(describing: createdAt)), name: \(Swift.String(describing: name)), partnershipArn: \(Swift.String(describing: partnershipArn)), partnershipId: \(Swift.String(describing: partnershipId)), profileId: \(Swift.String(describing: profileId)), tradingPartnerId: \(Swift.String(describing: tradingPartnerId)), email: \"CONTENT_REDACTED\", phone: \"CONTENT_REDACTED\")"}
+        "CreatePartnershipOutput(capabilities: \(Swift.String(describing: capabilities)), capabilityOptions: \(Swift.String(describing: capabilityOptions)), createdAt: \(Swift.String(describing: createdAt)), name: \(Swift.String(describing: name)), partnershipArn: \(Swift.String(describing: partnershipArn)), partnershipId: \(Swift.String(describing: partnershipId)), profileId: \(Swift.String(describing: profileId)), tradingPartnerId: \(Swift.String(describing: tradingPartnerId)), email: \"CONTENT_REDACTED\", phone: \"CONTENT_REDACTED\")"}
 }
 
-public struct DeletePartnershipInput {
+public struct DeletePartnershipInput: Swift.Sendable {
     /// Specifies the unique, system-generated identifier for a partnership.
     /// This member is required.
     public var partnershipId: Swift.String?
@@ -1179,7 +1465,7 @@ public struct DeletePartnershipInput {
     }
 }
 
-public struct GetPartnershipInput {
+public struct GetPartnershipInput: Swift.Sendable {
     /// Specifies the unique, system-generated identifier for a partnership.
     /// This member is required.
     public var partnershipId: Swift.String?
@@ -1192,9 +1478,11 @@ public struct GetPartnershipInput {
     }
 }
 
-public struct GetPartnershipOutput {
+public struct GetPartnershipOutput: Swift.Sendable {
     /// Returns one or more capabilities associated with this partnership.
     public var capabilities: [Swift.String]?
+    /// Contains the details for an Outbound EDI capability.
+    public var capabilityOptions: B2biClientTypes.CapabilityOptions?
     /// Returns a timestamp for creation date and time of the partnership.
     /// This member is required.
     public var createdAt: Foundation.Date?
@@ -1220,6 +1508,7 @@ public struct GetPartnershipOutput {
 
     public init(
         capabilities: [Swift.String]? = nil,
+        capabilityOptions: B2biClientTypes.CapabilityOptions? = nil,
         createdAt: Foundation.Date? = nil,
         email: Swift.String? = nil,
         modifiedAt: Foundation.Date? = nil,
@@ -1232,6 +1521,7 @@ public struct GetPartnershipOutput {
     )
     {
         self.capabilities = capabilities
+        self.capabilityOptions = capabilityOptions
         self.createdAt = createdAt
         self.email = email
         self.modifiedAt = modifiedAt
@@ -1246,10 +1536,10 @@ public struct GetPartnershipOutput {
 
 extension GetPartnershipOutput: Swift.CustomDebugStringConvertible {
     public var debugDescription: Swift.String {
-        "GetPartnershipOutput(capabilities: \(Swift.String(describing: capabilities)), createdAt: \(Swift.String(describing: createdAt)), modifiedAt: \(Swift.String(describing: modifiedAt)), name: \(Swift.String(describing: name)), partnershipArn: \(Swift.String(describing: partnershipArn)), partnershipId: \(Swift.String(describing: partnershipId)), profileId: \(Swift.String(describing: profileId)), tradingPartnerId: \(Swift.String(describing: tradingPartnerId)), email: \"CONTENT_REDACTED\", phone: \"CONTENT_REDACTED\")"}
+        "GetPartnershipOutput(capabilities: \(Swift.String(describing: capabilities)), capabilityOptions: \(Swift.String(describing: capabilityOptions)), createdAt: \(Swift.String(describing: createdAt)), modifiedAt: \(Swift.String(describing: modifiedAt)), name: \(Swift.String(describing: name)), partnershipArn: \(Swift.String(describing: partnershipArn)), partnershipId: \(Swift.String(describing: partnershipId)), profileId: \(Swift.String(describing: profileId)), tradingPartnerId: \(Swift.String(describing: tradingPartnerId)), email: \"CONTENT_REDACTED\", phone: \"CONTENT_REDACTED\")"}
 }
 
-public struct ListPartnershipsInput {
+public struct ListPartnershipsInput: Swift.Sendable {
     /// Specifies the maximum number of capabilities to return.
     public var maxResults: Swift.Int?
     /// When additional results are obtained from the command, a NextToken parameter is returned in the output. You can then pass the NextToken parameter in a subsequent command to continue listing additional resources.
@@ -1270,10 +1560,13 @@ public struct ListPartnershipsInput {
 }
 
 extension B2biClientTypes {
+
     /// A structure that contains the details for a partnership. A partnership represents the connection between you and your trading partner. It ties together a profile and one or more trading capabilities.
-    public struct PartnershipSummary {
+    public struct PartnershipSummary: Swift.Sendable {
         /// Returns one or more capabilities associated with this partnership.
         public var capabilities: [Swift.String]?
+        /// Contains the details for an Outbound EDI capability.
+        public var capabilityOptions: B2biClientTypes.CapabilityOptions?
         /// Returns a timestamp for creation date and time of the partnership.
         /// This member is required.
         public var createdAt: Foundation.Date?
@@ -1292,6 +1585,7 @@ extension B2biClientTypes {
 
         public init(
             capabilities: [Swift.String]? = nil,
+            capabilityOptions: B2biClientTypes.CapabilityOptions? = nil,
             createdAt: Foundation.Date? = nil,
             modifiedAt: Foundation.Date? = nil,
             name: Swift.String? = nil,
@@ -1301,6 +1595,7 @@ extension B2biClientTypes {
         )
         {
             self.capabilities = capabilities
+            self.capabilityOptions = capabilityOptions
             self.createdAt = createdAt
             self.modifiedAt = modifiedAt
             self.name = name
@@ -1309,10 +1604,9 @@ extension B2biClientTypes {
             self.tradingPartnerId = tradingPartnerId
         }
     }
-
 }
 
-public struct ListPartnershipsOutput {
+public struct ListPartnershipsOutput: Swift.Sendable {
     /// When additional results are obtained from the command, a NextToken parameter is returned in the output. You can then pass the NextToken parameter in a subsequent command to continue listing additional resources.
     public var nextToken: Swift.String?
     /// Specifies a list of your partnerships.
@@ -1329,9 +1623,11 @@ public struct ListPartnershipsOutput {
     }
 }
 
-public struct UpdatePartnershipInput {
+public struct UpdatePartnershipInput: Swift.Sendable {
     /// List of the capabilities associated with this partnership.
     public var capabilities: [Swift.String]?
+    /// To update, specify the structure that contains the details for the associated capabilities.
+    public var capabilityOptions: B2biClientTypes.CapabilityOptions?
     /// The name of the partnership, used to identify it.
     public var name: Swift.String?
     /// Specifies the unique, system-generated identifier for a partnership.
@@ -1340,19 +1636,23 @@ public struct UpdatePartnershipInput {
 
     public init(
         capabilities: [Swift.String]? = nil,
+        capabilityOptions: B2biClientTypes.CapabilityOptions? = nil,
         name: Swift.String? = nil,
         partnershipId: Swift.String? = nil
     )
     {
         self.capabilities = capabilities
+        self.capabilityOptions = capabilityOptions
         self.name = name
         self.partnershipId = partnershipId
     }
 }
 
-public struct UpdatePartnershipOutput {
+public struct UpdatePartnershipOutput: Swift.Sendable {
     /// Returns one or more capabilities associated with this partnership.
     public var capabilities: [Swift.String]?
+    /// Returns the structure that contains the details for the associated capabilities.
+    public var capabilityOptions: B2biClientTypes.CapabilityOptions?
     /// Returns a timestamp that identifies the most recent date and time that the partnership was modified.
     /// This member is required.
     public var createdAt: Foundation.Date?
@@ -1378,6 +1678,7 @@ public struct UpdatePartnershipOutput {
 
     public init(
         capabilities: [Swift.String]? = nil,
+        capabilityOptions: B2biClientTypes.CapabilityOptions? = nil,
         createdAt: Foundation.Date? = nil,
         email: Swift.String? = nil,
         modifiedAt: Foundation.Date? = nil,
@@ -1390,6 +1691,7 @@ public struct UpdatePartnershipOutput {
     )
     {
         self.capabilities = capabilities
+        self.capabilityOptions = capabilityOptions
         self.createdAt = createdAt
         self.email = email
         self.modifiedAt = modifiedAt
@@ -1404,12 +1706,12 @@ public struct UpdatePartnershipOutput {
 
 extension UpdatePartnershipOutput: Swift.CustomDebugStringConvertible {
     public var debugDescription: Swift.String {
-        "UpdatePartnershipOutput(capabilities: \(Swift.String(describing: capabilities)), createdAt: \(Swift.String(describing: createdAt)), modifiedAt: \(Swift.String(describing: modifiedAt)), name: \(Swift.String(describing: name)), partnershipArn: \(Swift.String(describing: partnershipArn)), partnershipId: \(Swift.String(describing: partnershipId)), profileId: \(Swift.String(describing: profileId)), tradingPartnerId: \(Swift.String(describing: tradingPartnerId)), email: \"CONTENT_REDACTED\", phone: \"CONTENT_REDACTED\")"}
+        "UpdatePartnershipOutput(capabilities: \(Swift.String(describing: capabilities)), capabilityOptions: \(Swift.String(describing: capabilityOptions)), createdAt: \(Swift.String(describing: createdAt)), modifiedAt: \(Swift.String(describing: modifiedAt)), name: \(Swift.String(describing: name)), partnershipArn: \(Swift.String(describing: partnershipArn)), partnershipId: \(Swift.String(describing: partnershipId)), profileId: \(Swift.String(describing: profileId)), tradingPartnerId: \(Swift.String(describing: tradingPartnerId)), email: \"CONTENT_REDACTED\", phone: \"CONTENT_REDACTED\")"}
 }
 
 extension B2biClientTypes {
 
-    public enum Logging: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Logging: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case disabled
         case enabled
         case sdkUnknown(Swift.String)
@@ -1436,7 +1738,7 @@ extension B2biClientTypes {
     }
 }
 
-public struct CreateProfileInput {
+public struct CreateProfileInput: Swift.Sendable {
     /// Specifies the name for the business associated with this profile.
     /// This member is required.
     public var businessName: Swift.String?
@@ -1481,7 +1783,7 @@ extension CreateProfileInput: Swift.CustomDebugStringConvertible {
         "CreateProfileInput(businessName: \(Swift.String(describing: businessName)), clientToken: \(Swift.String(describing: clientToken)), logging: \(Swift.String(describing: logging)), name: \(Swift.String(describing: name)), tags: \(Swift.String(describing: tags)), email: \"CONTENT_REDACTED\", phone: \"CONTENT_REDACTED\")"}
 }
 
-public struct CreateProfileOutput {
+public struct CreateProfileOutput: Swift.Sendable {
     /// Returns the name for the business associated with this profile.
     /// This member is required.
     public var businessName: Swift.String?
@@ -1536,7 +1838,7 @@ extension CreateProfileOutput: Swift.CustomDebugStringConvertible {
         "CreateProfileOutput(businessName: \(Swift.String(describing: businessName)), createdAt: \(Swift.String(describing: createdAt)), logGroupName: \(Swift.String(describing: logGroupName)), logging: \(Swift.String(describing: logging)), name: \(Swift.String(describing: name)), profileArn: \(Swift.String(describing: profileArn)), profileId: \(Swift.String(describing: profileId)), email: \"CONTENT_REDACTED\", phone: \"CONTENT_REDACTED\")"}
 }
 
-public struct DeleteProfileInput {
+public struct DeleteProfileInput: Swift.Sendable {
     /// Specifies the unique, system-generated identifier for the profile.
     /// This member is required.
     public var profileId: Swift.String?
@@ -1549,7 +1851,7 @@ public struct DeleteProfileInput {
     }
 }
 
-public struct GetProfileInput {
+public struct GetProfileInput: Swift.Sendable {
     /// Specifies the unique, system-generated identifier for the profile.
     /// This member is required.
     public var profileId: Swift.String?
@@ -1562,7 +1864,7 @@ public struct GetProfileInput {
     }
 }
 
-public struct GetProfileOutput {
+public struct GetProfileOutput: Swift.Sendable {
     /// Returns the name for the business associated with this profile.
     /// This member is required.
     public var businessName: Swift.String?
@@ -1621,7 +1923,7 @@ extension GetProfileOutput: Swift.CustomDebugStringConvertible {
         "GetProfileOutput(businessName: \(Swift.String(describing: businessName)), createdAt: \(Swift.String(describing: createdAt)), logGroupName: \(Swift.String(describing: logGroupName)), logging: \(Swift.String(describing: logging)), modifiedAt: \(Swift.String(describing: modifiedAt)), name: \(Swift.String(describing: name)), profileArn: \(Swift.String(describing: profileArn)), profileId: \(Swift.String(describing: profileId)), email: \"CONTENT_REDACTED\", phone: \"CONTENT_REDACTED\")"}
 }
 
-public struct ListProfilesInput {
+public struct ListProfilesInput: Swift.Sendable {
     /// Specifies the maximum number of profiles to return.
     public var maxResults: Swift.Int?
     /// When additional results are obtained from the command, a NextToken parameter is returned in the output. You can then pass the NextToken parameter in a subsequent command to continue listing additional resources.
@@ -1638,8 +1940,9 @@ public struct ListProfilesInput {
 }
 
 extension B2biClientTypes {
+
     /// Contains the details for a profile. A profile is the mechanism used to create the concept of a private network.
-    public struct ProfileSummary {
+    public struct ProfileSummary: Swift.Sendable {
         /// Returns the name for the business associated with this profile.
         /// This member is required.
         public var businessName: Swift.String?
@@ -1678,10 +1981,9 @@ extension B2biClientTypes {
             self.profileId = profileId
         }
     }
-
 }
 
-public struct ListProfilesOutput {
+public struct ListProfilesOutput: Swift.Sendable {
     /// When additional results are obtained from the command, a NextToken parameter is returned in the output. You can then pass the NextToken parameter in a subsequent command to continue listing additional resources.
     public var nextToken: Swift.String?
     /// Returns an array of ProfileSummary objects.
@@ -1698,7 +2000,7 @@ public struct ListProfilesOutput {
     }
 }
 
-public struct UpdateProfileInput {
+public struct UpdateProfileInput: Swift.Sendable {
     /// Specifies the name for the business associated with this profile.
     public var businessName: Swift.String?
     /// Specifies the email address associated with this customer profile.
@@ -1732,7 +2034,7 @@ extension UpdateProfileInput: Swift.CustomDebugStringConvertible {
         "UpdateProfileInput(businessName: \(Swift.String(describing: businessName)), name: \(Swift.String(describing: name)), profileId: \(Swift.String(describing: profileId)), email: \"CONTENT_REDACTED\", phone: \"CONTENT_REDACTED\")"}
 }
 
-public struct UpdateProfileOutput {
+public struct UpdateProfileOutput: Swift.Sendable {
     /// Returns the name for the business associated with this profile.
     /// This member is required.
     public var businessName: Swift.String?
@@ -1791,7 +2093,7 @@ extension UpdateProfileOutput: Swift.CustomDebugStringConvertible {
         "UpdateProfileOutput(businessName: \(Swift.String(describing: businessName)), createdAt: \(Swift.String(describing: createdAt)), logGroupName: \(Swift.String(describing: logGroupName)), logging: \(Swift.String(describing: logging)), modifiedAt: \(Swift.String(describing: modifiedAt)), name: \(Swift.String(describing: name)), profileArn: \(Swift.String(describing: profileArn)), profileId: \(Swift.String(describing: profileId)), email: \"CONTENT_REDACTED\", phone: \"CONTENT_REDACTED\")"}
 }
 
-public struct StartTransformerJobInput {
+public struct StartTransformerJobInput: Swift.Sendable {
     /// Reserved for future use.
     public var clientToken: Swift.String?
     /// Specifies the location of the input file for the transformation. The location consists of an Amazon S3 bucket and prefix.
@@ -1818,7 +2120,7 @@ public struct StartTransformerJobInput {
     }
 }
 
-public struct StartTransformerJobOutput {
+public struct StartTransformerJobOutput: Swift.Sendable {
     /// Returns the unique, system-generated identifier for a transformer run.
     /// This member is required.
     public var transformerJobId: Swift.String?
@@ -1831,7 +2133,7 @@ public struct StartTransformerJobOutput {
     }
 }
 
-public struct TagResourceInput {
+public struct TagResourceInput: Swift.Sendable {
     /// Specifies an Amazon Resource Name (ARN) for a specific Amazon Web Services resource, such as a capability, partnership, profile, or transformer.
     /// This member is required.
     public var resourceARN: Swift.String?
@@ -1851,12 +2153,12 @@ public struct TagResourceInput {
 
 extension B2biClientTypes {
 
-    public enum FileFormat: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ConversionSourceFormat: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case json
         case xml
         case sdkUnknown(Swift.String)
 
-        public static var allCases: [FileFormat] {
+        public static var allCases: [ConversionSourceFormat] {
             return [
                 .json,
                 .xml
@@ -1878,14 +2180,184 @@ extension B2biClientTypes {
     }
 }
 
-public struct TestMappingInput {
+extension B2biClientTypes {
+
+    /// The input file to use for an outbound transformation.
+    public enum InputFileSource: Swift.Sendable {
+        /// Specify the input contents, as a string, for the source of an outbound transformation.
+        case filecontent(Swift.String)
+        case sdkUnknown(Swift.String)
+    }
+}
+
+extension B2biClientTypes {
+
+    /// Describes the input for an outbound transformation.
+    public struct ConversionSource: Swift.Sendable {
+        /// The format for the input file: either JSON or XML.
+        /// This member is required.
+        public var fileFormat: B2biClientTypes.ConversionSourceFormat?
+        /// File to be converted
+        /// This member is required.
+        public var inputFile: B2biClientTypes.InputFileSource?
+
+        public init(
+            fileFormat: B2biClientTypes.ConversionSourceFormat? = nil,
+            inputFile: B2biClientTypes.InputFileSource? = nil
+        )
+        {
+            self.fileFormat = fileFormat
+            self.inputFile = inputFile
+        }
+    }
+}
+
+extension B2biClientTypes {
+
+    public enum ConversionTargetFormat: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+        case x12
+        case sdkUnknown(Swift.String)
+
+        public static var allCases: [ConversionTargetFormat] {
+            return [
+                .x12
+            ]
+        }
+
+        public init?(rawValue: Swift.String) {
+            let value = Self.allCases.first(where: { $0.rawValue == rawValue })
+            self = value ?? Self.sdkUnknown(rawValue)
+        }
+
+        public var rawValue: Swift.String {
+            switch self {
+            case .x12: return "X12"
+            case let .sdkUnknown(s): return s
+            }
+        }
+    }
+}
+
+extension B2biClientTypes {
+
+    /// Contains a structure describing the X12 details for the conversion target.
+    public enum ConversionTargetFormatDetails: Swift.Sendable {
+        /// A structure that contains the X12 transaction set and version. The X12 structure is used when the system transforms an EDI (electronic data interchange) file. If an EDI input file contains more than one transaction, each transaction must have the same transaction set and version, for example 214/4010. If not, the transformer cannot parse the file.
+        case x12(B2biClientTypes.X12Details)
+        case sdkUnknown(Swift.String)
+    }
+}
+
+extension B2biClientTypes {
+
+    /// Container for the location of a sample file used for outbound transformations.
+    public enum OutputSampleFileSource: Swift.Sendable {
+        /// Specifies the details for the Amazon S3 file location that is being used with Amazon Web Services B2B Data Interchange. File locations in Amazon S3 are identified using a combination of the bucket and key.
+        case filelocation(B2biClientTypes.S3Location)
+        case sdkUnknown(Swift.String)
+    }
+}
+
+extension B2biClientTypes {
+
+    /// Provide a sample of what the output of the transformation should look like.
+    public struct ConversionTarget: Swift.Sendable {
+        /// Currently, only X12 format is supported.
+        /// This member is required.
+        public var fileFormat: B2biClientTypes.ConversionTargetFormat?
+        /// A structure that contains the formatting details for the conversion target.
+        public var formatDetails: B2biClientTypes.ConversionTargetFormatDetails?
+        /// Customer uses this to provide a sample on what should file look like after conversion X12 EDI use case around this would be discovering the file syntax
+        public var outputSampleFile: B2biClientTypes.OutputSampleFileSource?
+
+        public init(
+            fileFormat: B2biClientTypes.ConversionTargetFormat? = nil,
+            formatDetails: B2biClientTypes.ConversionTargetFormatDetails? = nil,
+            outputSampleFile: B2biClientTypes.OutputSampleFileSource? = nil
+        )
+        {
+            self.fileFormat = fileFormat
+            self.formatDetails = formatDetails
+            self.outputSampleFile = outputSampleFile
+        }
+    }
+}
+
+public struct TestConversionInput: Swift.Sendable {
+    /// Specify the source file for an outbound EDI request.
+    /// This member is required.
+    public var source: B2biClientTypes.ConversionSource?
+    /// Specify the format (X12 is the only currently supported format), and other details for the conversion target.
+    /// This member is required.
+    public var target: B2biClientTypes.ConversionTarget?
+
+    public init(
+        source: B2biClientTypes.ConversionSource? = nil,
+        target: B2biClientTypes.ConversionTarget? = nil
+    )
+    {
+        self.source = source
+        self.target = target
+    }
+}
+
+public struct TestConversionOutput: Swift.Sendable {
+    /// Returns the converted file content.
+    /// This member is required.
+    public var convertedFileContent: Swift.String?
+    /// Returns an array of strings, each containing a message that Amazon Web Services B2B Data Interchange generates during the conversion.
+    public var validationMessages: [Swift.String]?
+
+    public init(
+        convertedFileContent: Swift.String? = nil,
+        validationMessages: [Swift.String]? = nil
+    )
+    {
+        self.convertedFileContent = convertedFileContent
+        self.validationMessages = validationMessages
+    }
+}
+
+extension B2biClientTypes {
+
+    public enum FileFormat: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+        case json
+        case notUsed
+        case xml
+        case sdkUnknown(Swift.String)
+
+        public static var allCases: [FileFormat] {
+            return [
+                .json,
+                .notUsed,
+                .xml
+            ]
+        }
+
+        public init?(rawValue: Swift.String) {
+            let value = Self.allCases.first(where: { $0.rawValue == rawValue })
+            self = value ?? Self.sdkUnknown(rawValue)
+        }
+
+        public var rawValue: Swift.String {
+            switch self {
+            case .json: return "JSON"
+            case .notUsed: return "NOT_USED"
+            case .xml: return "XML"
+            case let .sdkUnknown(s): return s
+            }
+        }
+    }
+}
+
+public struct TestMappingInput: Swift.Sendable {
     /// Specifies that the currently supported file formats for EDI transformations are JSON and XML.
     /// This member is required.
     public var fileFormat: B2biClientTypes.FileFormat?
     /// Specify the contents of the EDI (electronic data interchange) XML or JSON file that is used as input for the transform.
     /// This member is required.
     public var inputFileContent: Swift.String?
-    /// Specifies the mapping template for the transformer. This template is used to map the parsed EDI file using JSONata or XSLT.
+    /// Specifies the mapping template for the transformer. This template is used to map the parsed EDI file using JSONata or XSLT. This parameter is available for backwards compatibility. Use the [Mapping](https://docs.aws.amazon.com/b2bi/latest/APIReference/API_Mapping.html) data type instead.
     /// This member is required.
     public var mappingTemplate: Swift.String?
 
@@ -1901,7 +2373,7 @@ public struct TestMappingInput {
     }
 }
 
-public struct TestMappingOutput {
+public struct TestMappingOutput: Swift.Sendable {
     /// Returns a string for the mapping that can be used to identify the mapping. Similar to a fingerprint
     /// This member is required.
     public var mappedFileContent: Swift.String?
@@ -1914,7 +2386,7 @@ public struct TestMappingOutput {
     }
 }
 
-public struct TestParsingInput {
+public struct TestParsingInput: Swift.Sendable {
     /// Specifies the details for the EDI standard that is being used for the transformer. Currently, only X12 is supported. X12 is a set of standards and corresponding messages that define specific business documents.
     /// This member is required.
     public var ediType: B2biClientTypes.EdiType?
@@ -1937,7 +2409,7 @@ public struct TestParsingInput {
     }
 }
 
-public struct TestParsingOutput {
+public struct TestParsingOutput: Swift.Sendable {
     /// Returns the contents of the input file being tested, parsed according to the specified EDI (electronic data interchange) type.
     /// This member is required.
     public var parsedFileContent: Swift.String?
@@ -1950,23 +2422,228 @@ public struct TestParsingOutput {
     }
 }
 
-public struct CreateTransformerInput {
+extension B2biClientTypes {
+
+    /// A structure that contains the X12 transaction set and version.
+    public enum FormatOptions: Swift.Sendable {
+        /// A structure that contains the X12 transaction set and version. The X12 structure is used when the system transforms an EDI (electronic data interchange) file. If an EDI input file contains more than one transaction, each transaction must have the same transaction set and version, for example 214/4010. If not, the transformer cannot parse the file.
+        case x12(B2biClientTypes.X12Details)
+        case sdkUnknown(Swift.String)
+    }
+}
+
+extension B2biClientTypes {
+
+    public enum FromFormat: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+        case x12
+        case sdkUnknown(Swift.String)
+
+        public static var allCases: [FromFormat] {
+            return [
+                .x12
+            ]
+        }
+
+        public init?(rawValue: Swift.String) {
+            let value = Self.allCases.first(where: { $0.rawValue == rawValue })
+            self = value ?? Self.sdkUnknown(rawValue)
+        }
+
+        public var rawValue: Swift.String {
+            switch self {
+            case .x12: return "X12"
+            case let .sdkUnknown(s): return s
+            }
+        }
+    }
+}
+
+extension B2biClientTypes {
+
+    /// Contains the input formatting options for an inbound transformer (takes an X12-formatted EDI document as input and converts it to JSON or XML.
+    public struct InputConversion: Swift.Sendable {
+        /// A structure that contains the formatting options for an inbound transformer.
+        public var formatOptions: B2biClientTypes.FormatOptions?
+        /// The format for the transformer input: currently on X12 is supported.
+        /// This member is required.
+        public var fromFormat: B2biClientTypes.FromFormat?
+
+        public init(
+            formatOptions: B2biClientTypes.FormatOptions? = nil,
+            fromFormat: B2biClientTypes.FromFormat? = nil
+        )
+        {
+            self.formatOptions = formatOptions
+            self.fromFormat = fromFormat
+        }
+    }
+}
+
+extension B2biClientTypes {
+
+    public enum MappingTemplateLanguage: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+        case jsonata
+        case xslt
+        case sdkUnknown(Swift.String)
+
+        public static var allCases: [MappingTemplateLanguage] {
+            return [
+                .jsonata,
+                .xslt
+            ]
+        }
+
+        public init?(rawValue: Swift.String) {
+            let value = Self.allCases.first(where: { $0.rawValue == rawValue })
+            self = value ?? Self.sdkUnknown(rawValue)
+        }
+
+        public var rawValue: Swift.String {
+            switch self {
+            case .jsonata: return "JSONATA"
+            case .xslt: return "XSLT"
+            case let .sdkUnknown(s): return s
+            }
+        }
+    }
+}
+
+extension B2biClientTypes {
+
+    /// Specifies the mapping template for the transformer. This template is used to map the parsed EDI file using JSONata or XSLT.
+    public struct Mapping: Swift.Sendable {
+        /// A string that represents the mapping template, in the transformation language specified in templateLanguage.
+        public var template: Swift.String?
+        /// The transformation language for the template, either XSLT or JSONATA.
+        /// This member is required.
+        public var templateLanguage: B2biClientTypes.MappingTemplateLanguage?
+
+        public init(
+            template: Swift.String? = nil,
+            templateLanguage: B2biClientTypes.MappingTemplateLanguage? = nil
+        )
+        {
+            self.template = template
+            self.templateLanguage = templateLanguage
+        }
+    }
+}
+
+extension B2biClientTypes {
+
+    public enum ToFormat: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+        case x12
+        case sdkUnknown(Swift.String)
+
+        public static var allCases: [ToFormat] {
+            return [
+                .x12
+            ]
+        }
+
+        public init?(rawValue: Swift.String) {
+            let value = Self.allCases.first(where: { $0.rawValue == rawValue })
+            self = value ?? Self.sdkUnknown(rawValue)
+        }
+
+        public var rawValue: Swift.String {
+            switch self {
+            case .x12: return "X12"
+            case let .sdkUnknown(s): return s
+            }
+        }
+    }
+}
+
+extension B2biClientTypes {
+
+    /// Contains the formatting options for an outbound transformer (takes JSON or XML as input and converts it to an EDI document (currently only X12 format is supported).
+    public struct OutputConversion: Swift.Sendable {
+        /// A structure that contains the X12 transaction set and version for the transformer output.
+        public var formatOptions: B2biClientTypes.FormatOptions?
+        /// The format for the output from an outbound transformer: only X12 is currently supported.
+        /// This member is required.
+        public var toFormat: B2biClientTypes.ToFormat?
+
+        public init(
+            formatOptions: B2biClientTypes.FormatOptions? = nil,
+            toFormat: B2biClientTypes.ToFormat? = nil
+        )
+        {
+            self.formatOptions = formatOptions
+            self.toFormat = toFormat
+        }
+    }
+}
+
+extension B2biClientTypes {
+
+    /// An array of the Amazon S3 keys used to identify the location for your sample documents.
+    public struct SampleDocumentKeys: Swift.Sendable {
+        /// An array of keys for your input sample documents.
+        public var input: Swift.String?
+        /// An array of keys for your output sample documents.
+        public var output: Swift.String?
+
+        public init(
+            input: Swift.String? = nil,
+            output: Swift.String? = nil
+        )
+        {
+            self.input = input
+            self.output = output
+        }
+    }
+}
+
+extension B2biClientTypes {
+
+    /// Describes a structure that contains the Amazon S3 bucket and an array of the corresponding keys used to identify the location for your sample documents.
+    public struct SampleDocuments: Swift.Sendable {
+        /// Contains the Amazon S3 bucket that is used to hold your sample documents.
+        /// This member is required.
+        public var bucketName: Swift.String?
+        /// Contains an array of the Amazon S3 keys used to identify the location for your sample documents.
+        /// This member is required.
+        public var keys: [B2biClientTypes.SampleDocumentKeys]?
+
+        public init(
+            bucketName: Swift.String? = nil,
+            keys: [B2biClientTypes.SampleDocumentKeys]? = nil
+        )
+        {
+            self.bucketName = bucketName
+            self.keys = keys
+        }
+    }
+}
+
+public struct CreateTransformerInput: Swift.Sendable {
     /// Reserved for future use.
     public var clientToken: Swift.String?
     /// Specifies the details for the EDI standard that is being used for the transformer. Currently, only X12 is supported. X12 is a set of standards and corresponding messages that define specific business documents.
-    /// This member is required.
+    @available(*, deprecated, message: "This is a legacy trait. Please use input-conversion or output-conversion.")
     public var ediType: B2biClientTypes.EdiType?
     /// Specifies that the currently supported file formats for EDI transformations are JSON and XML.
-    /// This member is required.
+    @available(*, deprecated, message: "This is a legacy trait. Please use input-conversion or output-conversion.")
     public var fileFormat: B2biClientTypes.FileFormat?
-    /// Specifies the mapping template for the transformer. This template is used to map the parsed EDI file using JSONata or XSLT.
-    /// This member is required.
+    /// Specify the InputConversion object, which contains the format options for the inbound transformation.
+    public var inputConversion: B2biClientTypes.InputConversion?
+    /// Specify the structure that contains the mapping template and its language (either XSLT or JSONATA).
+    public var mapping: B2biClientTypes.Mapping?
+    /// Specifies the mapping template for the transformer. This template is used to map the parsed EDI file using JSONata or XSLT. This parameter is available for backwards compatibility. Use the [Mapping](https://docs.aws.amazon.com/b2bi/latest/APIReference/API_Mapping.html) data type instead.
+    @available(*, deprecated, message: "This is a legacy trait. Please use input-conversion or output-conversion.")
     public var mappingTemplate: Swift.String?
     /// Specifies the name of the transformer, used to identify it.
     /// This member is required.
     public var name: Swift.String?
+    /// A structure that contains the OutputConversion object, which contains the format options for the outbound transformation.
+    public var outputConversion: B2biClientTypes.OutputConversion?
     /// Specifies a sample EDI document that is used by a transformer as a guide for processing the EDI data.
+    @available(*, deprecated, message: "This is a legacy trait. Please use input-conversion or output-conversion.")
     public var sampleDocument: Swift.String?
+    /// Specify a structure that contains the Amazon S3 bucket and an array of the corresponding keys used to identify the location for your sample documents.
+    public var sampleDocuments: B2biClientTypes.SampleDocuments?
     /// Specifies the key-value pairs assigned to ARNs that you can use to group and search for resources by type. You can attach this metadata to resources (capabilities, partnerships, and so on) for any purpose.
     public var tags: [B2biClientTypes.Tag]?
 
@@ -1974,25 +2651,33 @@ public struct CreateTransformerInput {
         clientToken: Swift.String? = nil,
         ediType: B2biClientTypes.EdiType? = nil,
         fileFormat: B2biClientTypes.FileFormat? = nil,
+        inputConversion: B2biClientTypes.InputConversion? = nil,
+        mapping: B2biClientTypes.Mapping? = nil,
         mappingTemplate: Swift.String? = nil,
         name: Swift.String? = nil,
+        outputConversion: B2biClientTypes.OutputConversion? = nil,
         sampleDocument: Swift.String? = nil,
+        sampleDocuments: B2biClientTypes.SampleDocuments? = nil,
         tags: [B2biClientTypes.Tag]? = nil
     )
     {
         self.clientToken = clientToken
         self.ediType = ediType
         self.fileFormat = fileFormat
+        self.inputConversion = inputConversion
+        self.mapping = mapping
         self.mappingTemplate = mappingTemplate
         self.name = name
+        self.outputConversion = outputConversion
         self.sampleDocument = sampleDocument
+        self.sampleDocuments = sampleDocuments
         self.tags = tags
     }
 }
 
 extension B2biClientTypes {
 
-    public enum TransformerStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum TransformerStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case active
         case inactive
         case sdkUnknown(Swift.String)
@@ -2019,24 +2704,33 @@ extension B2biClientTypes {
     }
 }
 
-public struct CreateTransformerOutput {
+public struct CreateTransformerOutput: Swift.Sendable {
     /// Returns a timestamp for creation date and time of the transformer.
     /// This member is required.
     public var createdAt: Foundation.Date?
     /// Returns the details for the EDI standard that is being used for the transformer. Currently, only X12 is supported. X12 is a set of standards and corresponding messages that define specific business documents.
-    /// This member is required.
+    @available(*, deprecated, message: "This is a legacy trait. Please use input-conversion or output-conversion.")
     public var ediType: B2biClientTypes.EdiType?
     /// Returns that the currently supported file formats for EDI transformations are JSON and XML.
-    /// This member is required.
+    @available(*, deprecated, message: "This is a legacy trait. Please use input-conversion or output-conversion.")
     public var fileFormat: B2biClientTypes.FileFormat?
+    /// Returns the InputConversion object, which contains the format options for the inbound transformation.
+    public var inputConversion: B2biClientTypes.InputConversion?
+    /// Returns the structure that contains the mapping template and its language (either XSLT or JSONATA).
+    public var mapping: B2biClientTypes.Mapping?
     /// Returns the mapping template for the transformer. This template is used to map the parsed EDI file using JSONata or XSLT.
-    /// This member is required.
+    @available(*, deprecated, message: "This is a legacy trait. Please use input-conversion or output-conversion.")
     public var mappingTemplate: Swift.String?
     /// Returns the name of the transformer, used to identify it.
     /// This member is required.
     public var name: Swift.String?
+    /// Returns the OutputConversion object, which contains the format options for the outbound transformation.
+    public var outputConversion: B2biClientTypes.OutputConversion?
     /// Returns a sample EDI document that is used by a transformer as a guide for processing the EDI data.
+    @available(*, deprecated, message: "This is a legacy trait. Please use input-conversion or output-conversion.")
     public var sampleDocument: Swift.String?
+    /// Returns a structure that contains the Amazon S3 bucket and an array of the corresponding keys used to identify the location for your sample documents.
+    public var sampleDocuments: B2biClientTypes.SampleDocuments?
     /// Returns the state of the newly created transformer. The transformer can be either active or inactive. For the transformer to be used in a capability, its status must active.
     /// This member is required.
     public var status: B2biClientTypes.TransformerStatus?
@@ -2050,10 +2744,14 @@ public struct CreateTransformerOutput {
     public init(
         createdAt: Foundation.Date? = nil,
         ediType: B2biClientTypes.EdiType? = nil,
-        fileFormat: B2biClientTypes.FileFormat? = nil,
-        mappingTemplate: Swift.String? = nil,
+        fileFormat: B2biClientTypes.FileFormat? = .notUsed,
+        inputConversion: B2biClientTypes.InputConversion? = nil,
+        mapping: B2biClientTypes.Mapping? = nil,
+        mappingTemplate: Swift.String? = "NOT_USED",
         name: Swift.String? = nil,
+        outputConversion: B2biClientTypes.OutputConversion? = nil,
         sampleDocument: Swift.String? = nil,
+        sampleDocuments: B2biClientTypes.SampleDocuments? = nil,
         status: B2biClientTypes.TransformerStatus? = nil,
         transformerArn: Swift.String? = nil,
         transformerId: Swift.String? = nil
@@ -2062,16 +2760,20 @@ public struct CreateTransformerOutput {
         self.createdAt = createdAt
         self.ediType = ediType
         self.fileFormat = fileFormat
+        self.inputConversion = inputConversion
+        self.mapping = mapping
         self.mappingTemplate = mappingTemplate
         self.name = name
+        self.outputConversion = outputConversion
         self.sampleDocument = sampleDocument
+        self.sampleDocuments = sampleDocuments
         self.status = status
         self.transformerArn = transformerArn
         self.transformerId = transformerId
     }
 }
 
-public struct DeleteTransformerInput {
+public struct DeleteTransformerInput: Swift.Sendable {
     /// Specifies the system-assigned unique identifier for the transformer.
     /// This member is required.
     public var transformerId: Swift.String?
@@ -2084,7 +2786,7 @@ public struct DeleteTransformerInput {
     }
 }
 
-public struct GetTransformerInput {
+public struct GetTransformerInput: Swift.Sendable {
     /// Specifies the system-assigned unique identifier for the transformer.
     /// This member is required.
     public var transformerId: Swift.String?
@@ -2097,26 +2799,35 @@ public struct GetTransformerInput {
     }
 }
 
-public struct GetTransformerOutput {
+public struct GetTransformerOutput: Swift.Sendable {
     /// Returns a timestamp for creation date and time of the transformer.
     /// This member is required.
     public var createdAt: Foundation.Date?
     /// Returns the details for the EDI standard that is being used for the transformer. Currently, only X12 is supported. X12 is a set of standards and corresponding messages that define specific business documents.
-    /// This member is required.
+    @available(*, deprecated, message: "This is a legacy trait. Please use input-conversion or output-conversion.")
     public var ediType: B2biClientTypes.EdiType?
     /// Returns that the currently supported file formats for EDI transformations are JSON and XML.
-    /// This member is required.
+    @available(*, deprecated, message: "This is a legacy trait. Please use input-conversion or output-conversion.")
     public var fileFormat: B2biClientTypes.FileFormat?
+    /// Returns the InputConversion object, which contains the format options for the inbound transformation.
+    public var inputConversion: B2biClientTypes.InputConversion?
+    /// Returns the structure that contains the mapping template and its language (either XSLT or JSONATA).
+    public var mapping: B2biClientTypes.Mapping?
     /// Returns the mapping template for the transformer. This template is used to map the parsed EDI file using JSONata or XSLT.
-    /// This member is required.
+    @available(*, deprecated, message: "This is a legacy trait. Please use input-conversion or output-conversion.")
     public var mappingTemplate: Swift.String?
     /// Returns a timestamp for last time the transformer was modified.
     public var modifiedAt: Foundation.Date?
     /// Returns the name of the transformer, used to identify it.
     /// This member is required.
     public var name: Swift.String?
+    /// Returns the OutputConversion object, which contains the format options for the outbound transformation.
+    public var outputConversion: B2biClientTypes.OutputConversion?
     /// Returns a sample EDI document that is used by a transformer as a guide for processing the EDI data.
+    @available(*, deprecated, message: "This is a legacy trait. Please use input-conversion or output-conversion.")
     public var sampleDocument: Swift.String?
+    /// Returns a structure that contains the Amazon S3 bucket and an array of the corresponding keys used to identify the location for your sample documents.
+    public var sampleDocuments: B2biClientTypes.SampleDocuments?
     /// Returns the state of the newly created transformer. The transformer can be either active or inactive. For the transformer to be used in a capability, its status must active.
     /// This member is required.
     public var status: B2biClientTypes.TransformerStatus?
@@ -2130,11 +2841,15 @@ public struct GetTransformerOutput {
     public init(
         createdAt: Foundation.Date? = nil,
         ediType: B2biClientTypes.EdiType? = nil,
-        fileFormat: B2biClientTypes.FileFormat? = nil,
-        mappingTemplate: Swift.String? = nil,
+        fileFormat: B2biClientTypes.FileFormat? = .notUsed,
+        inputConversion: B2biClientTypes.InputConversion? = nil,
+        mapping: B2biClientTypes.Mapping? = nil,
+        mappingTemplate: Swift.String? = "NOT_USED",
         modifiedAt: Foundation.Date? = nil,
         name: Swift.String? = nil,
+        outputConversion: B2biClientTypes.OutputConversion? = nil,
         sampleDocument: Swift.String? = nil,
+        sampleDocuments: B2biClientTypes.SampleDocuments? = nil,
         status: B2biClientTypes.TransformerStatus? = nil,
         transformerArn: Swift.String? = nil,
         transformerId: Swift.String? = nil
@@ -2143,17 +2858,21 @@ public struct GetTransformerOutput {
         self.createdAt = createdAt
         self.ediType = ediType
         self.fileFormat = fileFormat
+        self.inputConversion = inputConversion
+        self.mapping = mapping
         self.mappingTemplate = mappingTemplate
         self.modifiedAt = modifiedAt
         self.name = name
+        self.outputConversion = outputConversion
         self.sampleDocument = sampleDocument
+        self.sampleDocuments = sampleDocuments
         self.status = status
         self.transformerArn = transformerArn
         self.transformerId = transformerId
     }
 }
 
-public struct ListTransformersInput {
+public struct ListTransformersInput: Swift.Sendable {
     /// Specifies the number of items to return for the API response.
     public var maxResults: Swift.Int?
     /// When additional results are obtained from the command, a NextToken parameter is returned in the output. You can then pass the NextToken parameter in a subsequent command to continue listing additional resources.
@@ -2170,27 +2889,37 @@ public struct ListTransformersInput {
 }
 
 extension B2biClientTypes {
-    /// Contains the details for a transformer object. A transformer describes how to process the incoming EDI documents and extract the necessary information to the output file.
-    public struct TransformerSummary {
+
+    /// Contains the details for a transformer object. A transformer can take an EDI file as input and transform it into a JSON-or XML-formatted document. Alternatively, a transformer can take a JSON-or XML-formatted document as input and transform it into an EDI file.
+    public struct TransformerSummary: Swift.Sendable {
         /// Returns a timestamp indicating when the transformer was created. For example, 2023-07-20T19:58:44.624Z.
         /// This member is required.
         public var createdAt: Foundation.Date?
         /// Returns the details for the EDI standard that is being used for the transformer. Currently, only X12 is supported. X12 is a set of standards and corresponding messages that define specific business documents.
-        /// This member is required.
+        @available(*, deprecated, message: "This is a legacy trait. Please use input-conversion or output-conversion.")
         public var ediType: B2biClientTypes.EdiType?
         /// Returns that the currently supported file formats for EDI transformations are JSON and XML.
-        /// This member is required.
+        @available(*, deprecated, message: "This is a legacy trait. Please use input-conversion or output-conversion.")
         public var fileFormat: B2biClientTypes.FileFormat?
+        /// Returns a structure that contains the format options for the transformation.
+        public var inputConversion: B2biClientTypes.InputConversion?
+        /// Returns the structure that contains the mapping template and its language (either XSLT or JSONATA).
+        public var mapping: B2biClientTypes.Mapping?
         /// Returns the mapping template for the transformer. This template is used to map the parsed EDI file using JSONata or XSLT.
-        /// This member is required.
+        @available(*, deprecated, message: "This is a legacy trait. Please use input-conversion or output-conversion.")
         public var mappingTemplate: Swift.String?
         /// Returns a timestamp representing the date and time for the most recent change for the transformer object.
         public var modifiedAt: Foundation.Date?
         /// Returns the descriptive name for the transformer.
         /// This member is required.
         public var name: Swift.String?
+        /// Returns the OutputConversion object, which contains the format options for the outbound transformation.
+        public var outputConversion: B2biClientTypes.OutputConversion?
         /// Returns a sample EDI document that is used by a transformer as a guide for processing the EDI data.
+        @available(*, deprecated, message: "This is a legacy trait. Please use input-conversion or output-conversion.")
         public var sampleDocument: Swift.String?
+        /// Returns a structure that contains the Amazon S3 bucket and an array of the corresponding keys used to identify the location for your sample documents.
+        public var sampleDocuments: B2biClientTypes.SampleDocuments?
         /// Returns the state of the newly created transformer. The transformer can be either active or inactive. For the transformer to be used in a capability, its status must active.
         /// This member is required.
         public var status: B2biClientTypes.TransformerStatus?
@@ -2201,11 +2930,15 @@ extension B2biClientTypes {
         public init(
             createdAt: Foundation.Date? = nil,
             ediType: B2biClientTypes.EdiType? = nil,
-            fileFormat: B2biClientTypes.FileFormat? = nil,
-            mappingTemplate: Swift.String? = nil,
+            fileFormat: B2biClientTypes.FileFormat? = .notUsed,
+            inputConversion: B2biClientTypes.InputConversion? = nil,
+            mapping: B2biClientTypes.Mapping? = nil,
+            mappingTemplate: Swift.String? = "NOT_USED",
             modifiedAt: Foundation.Date? = nil,
             name: Swift.String? = nil,
+            outputConversion: B2biClientTypes.OutputConversion? = nil,
             sampleDocument: Swift.String? = nil,
+            sampleDocuments: B2biClientTypes.SampleDocuments? = nil,
             status: B2biClientTypes.TransformerStatus? = nil,
             transformerId: Swift.String? = nil
         )
@@ -2213,18 +2946,21 @@ extension B2biClientTypes {
             self.createdAt = createdAt
             self.ediType = ediType
             self.fileFormat = fileFormat
+            self.inputConversion = inputConversion
+            self.mapping = mapping
             self.mappingTemplate = mappingTemplate
             self.modifiedAt = modifiedAt
             self.name = name
+            self.outputConversion = outputConversion
             self.sampleDocument = sampleDocument
+            self.sampleDocuments = sampleDocuments
             self.status = status
             self.transformerId = transformerId
         }
     }
-
 }
 
-public struct ListTransformersOutput {
+public struct ListTransformersOutput: Swift.Sendable {
     /// When additional results are obtained from the command, a NextToken parameter is returned in the output. You can then pass the NextToken parameter in a subsequent command to continue listing additional resources.
     public var nextToken: Swift.String?
     /// Returns an array of one or more transformer objects. For each transformer, a TransformerSummary object is returned. The TransformerSummary contains all the details for a specific transformer.
@@ -2241,17 +2977,29 @@ public struct ListTransformersOutput {
     }
 }
 
-public struct UpdateTransformerInput {
+public struct UpdateTransformerInput: Swift.Sendable {
     /// Specifies the details for the EDI standard that is being used for the transformer. Currently, only X12 is supported. X12 is a set of standards and corresponding messages that define specific business documents.
+    @available(*, deprecated, message: "This is a legacy trait. Please use input-conversion or output-conversion.")
     public var ediType: B2biClientTypes.EdiType?
     /// Specifies that the currently supported file formats for EDI transformations are JSON and XML.
+    @available(*, deprecated, message: "This is a legacy trait. Please use input-conversion or output-conversion.")
     public var fileFormat: B2biClientTypes.FileFormat?
-    /// Specifies the mapping template for the transformer. This template is used to map the parsed EDI file using JSONata or XSLT.
+    /// To update, specify the InputConversion object, which contains the format options for the inbound transformation.
+    public var inputConversion: B2biClientTypes.InputConversion?
+    /// Specify the structure that contains the mapping template and its language (either XSLT or JSONATA).
+    public var mapping: B2biClientTypes.Mapping?
+    /// Specifies the mapping template for the transformer. This template is used to map the parsed EDI file using JSONata or XSLT. This parameter is available for backwards compatibility. Use the [Mapping](https://docs.aws.amazon.com/b2bi/latest/APIReference/API_Mapping.html) data type instead.
+    @available(*, deprecated, message: "This is a legacy trait. Please use input-conversion or output-conversion.")
     public var mappingTemplate: Swift.String?
     /// Specify a new name for the transformer, if you want to update it.
     public var name: Swift.String?
+    /// To update, specify the OutputConversion object, which contains the format options for the outbound transformation.
+    public var outputConversion: B2biClientTypes.OutputConversion?
     /// Specifies a sample EDI document that is used by a transformer as a guide for processing the EDI data.
+    @available(*, deprecated, message: "This is a legacy trait. Please use input-conversion or output-conversion.")
     public var sampleDocument: Swift.String?
+    /// Specify a structure that contains the Amazon S3 bucket and an array of the corresponding keys used to identify the location for your sample documents.
+    public var sampleDocuments: B2biClientTypes.SampleDocuments?
     /// Specifies the transformer's status. You can update the state of the transformer, from active to inactive, or inactive to active.
     public var status: B2biClientTypes.TransformerStatus?
     /// Specifies the system-assigned unique identifier for the transformer.
@@ -2261,35 +3009,47 @@ public struct UpdateTransformerInput {
     public init(
         ediType: B2biClientTypes.EdiType? = nil,
         fileFormat: B2biClientTypes.FileFormat? = nil,
+        inputConversion: B2biClientTypes.InputConversion? = nil,
+        mapping: B2biClientTypes.Mapping? = nil,
         mappingTemplate: Swift.String? = nil,
         name: Swift.String? = nil,
+        outputConversion: B2biClientTypes.OutputConversion? = nil,
         sampleDocument: Swift.String? = nil,
+        sampleDocuments: B2biClientTypes.SampleDocuments? = nil,
         status: B2biClientTypes.TransformerStatus? = nil,
         transformerId: Swift.String? = nil
     )
     {
         self.ediType = ediType
         self.fileFormat = fileFormat
+        self.inputConversion = inputConversion
+        self.mapping = mapping
         self.mappingTemplate = mappingTemplate
         self.name = name
+        self.outputConversion = outputConversion
         self.sampleDocument = sampleDocument
+        self.sampleDocuments = sampleDocuments
         self.status = status
         self.transformerId = transformerId
     }
 }
 
-public struct UpdateTransformerOutput {
+public struct UpdateTransformerOutput: Swift.Sendable {
     /// Returns a timestamp for creation date and time of the transformer.
     /// This member is required.
     public var createdAt: Foundation.Date?
     /// Returns the details for the EDI standard that is being used for the transformer. Currently, only X12 is supported. X12 is a set of standards and corresponding messages that define specific business documents.
-    /// This member is required.
+    @available(*, deprecated, message: "This is a legacy trait. Please use input-conversion or output-conversion.")
     public var ediType: B2biClientTypes.EdiType?
     /// Returns that the currently supported file formats for EDI transformations are JSON and XML.
-    /// This member is required.
+    @available(*, deprecated, message: "This is a legacy trait. Please use input-conversion or output-conversion.")
     public var fileFormat: B2biClientTypes.FileFormat?
+    /// Returns the InputConversion object, which contains the format options for the inbound transformation.
+    public var inputConversion: B2biClientTypes.InputConversion?
+    /// Returns the structure that contains the mapping template and its language (either XSLT or JSONATA).
+    public var mapping: B2biClientTypes.Mapping?
     /// Returns the mapping template for the transformer. This template is used to map the parsed EDI file using JSONata or XSLT.
-    /// This member is required.
+    @available(*, deprecated, message: "This is a legacy trait. Please use input-conversion or output-conversion.")
     public var mappingTemplate: Swift.String?
     /// Returns a timestamp for last time the transformer was modified.
     /// This member is required.
@@ -2297,8 +3057,13 @@ public struct UpdateTransformerOutput {
     /// Returns the name of the transformer.
     /// This member is required.
     public var name: Swift.String?
+    /// Returns the OutputConversion object, which contains the format options for the outbound transformation.
+    public var outputConversion: B2biClientTypes.OutputConversion?
     /// Returns a sample EDI document that is used by a transformer as a guide for processing the EDI data.
+    @available(*, deprecated, message: "This is a legacy trait. Please use input-conversion or output-conversion.")
     public var sampleDocument: Swift.String?
+    /// Returns a structure that contains the Amazon S3 bucket and an array of the corresponding keys used to identify the location for your sample documents.
+    public var sampleDocuments: B2biClientTypes.SampleDocuments?
     /// Returns the state of the newly created transformer. The transformer can be either active or inactive. For the transformer to be used in a capability, its status must active.
     /// This member is required.
     public var status: B2biClientTypes.TransformerStatus?
@@ -2312,11 +3077,15 @@ public struct UpdateTransformerOutput {
     public init(
         createdAt: Foundation.Date? = nil,
         ediType: B2biClientTypes.EdiType? = nil,
-        fileFormat: B2biClientTypes.FileFormat? = nil,
-        mappingTemplate: Swift.String? = nil,
+        fileFormat: B2biClientTypes.FileFormat? = .notUsed,
+        inputConversion: B2biClientTypes.InputConversion? = nil,
+        mapping: B2biClientTypes.Mapping? = nil,
+        mappingTemplate: Swift.String? = "NOT_USED",
         modifiedAt: Foundation.Date? = nil,
         name: Swift.String? = nil,
+        outputConversion: B2biClientTypes.OutputConversion? = nil,
         sampleDocument: Swift.String? = nil,
+        sampleDocuments: B2biClientTypes.SampleDocuments? = nil,
         status: B2biClientTypes.TransformerStatus? = nil,
         transformerArn: Swift.String? = nil,
         transformerId: Swift.String? = nil
@@ -2325,17 +3094,21 @@ public struct UpdateTransformerOutput {
         self.createdAt = createdAt
         self.ediType = ediType
         self.fileFormat = fileFormat
+        self.inputConversion = inputConversion
+        self.mapping = mapping
         self.mappingTemplate = mappingTemplate
         self.modifiedAt = modifiedAt
         self.name = name
+        self.outputConversion = outputConversion
         self.sampleDocument = sampleDocument
+        self.sampleDocuments = sampleDocuments
         self.status = status
         self.transformerArn = transformerArn
         self.transformerId = transformerId
     }
 }
 
-public struct UntagResourceInput {
+public struct UntagResourceInput: Swift.Sendable {
     /// Specifies an Amazon Resource Name (ARN) for a specific Amazon Web Services resource, such as a capability, partnership, profile, or transformer.
     /// This member is required.
     public var resourceARN: Swift.String?
@@ -2370,6 +3143,13 @@ extension CreatePartnershipInput {
 extension CreateProfileInput {
 
     static func urlPathProvider(_ value: CreateProfileInput) -> Swift.String? {
+        return "/"
+    }
+}
+
+extension CreateStarterMappingTemplateInput {
+
+    static func urlPathProvider(_ value: CreateStarterMappingTemplateInput) -> Swift.String? {
         return "/"
     }
 }
@@ -2528,6 +3308,13 @@ extension TagResourceInput {
     }
 }
 
+extension TestConversionInput {
+
+    static func urlPathProvider(_ value: TestConversionInput) -> Swift.String? {
+        return "/"
+    }
+}
+
 extension TestMappingInput {
 
     static func urlPathProvider(_ value: TestMappingInput) -> Swift.String? {
@@ -2602,6 +3389,7 @@ extension CreatePartnershipInput {
     static func write(value: CreatePartnershipInput?, to writer: SmithyJSON.Writer) throws {
         guard let value else { return }
         try writer["capabilities"].writeList(value.capabilities, memberWritingClosure: SmithyReadWrite.WritingClosures.writeString(value:to:), memberNodeInfo: "member", isFlattened: false)
+        try writer["capabilityOptions"].write(value.capabilityOptions, with: B2biClientTypes.CapabilityOptions.write(value:to:))
         try writer["clientToken"].write(value.clientToken)
         try writer["email"].write(value.email)
         try writer["name"].write(value.name)
@@ -2625,6 +3413,16 @@ extension CreateProfileInput {
     }
 }
 
+extension CreateStarterMappingTemplateInput {
+
+    static func write(value: CreateStarterMappingTemplateInput?, to writer: SmithyJSON.Writer) throws {
+        guard let value else { return }
+        try writer["mappingType"].write(value.mappingType)
+        try writer["outputSampleLocation"].write(value.outputSampleLocation, with: B2biClientTypes.S3Location.write(value:to:))
+        try writer["templateDetails"].write(value.templateDetails, with: B2biClientTypes.TemplateDetails.write(value:to:))
+    }
+}
+
 extension CreateTransformerInput {
 
     static func write(value: CreateTransformerInput?, to writer: SmithyJSON.Writer) throws {
@@ -2632,9 +3430,13 @@ extension CreateTransformerInput {
         try writer["clientToken"].write(value.clientToken)
         try writer["ediType"].write(value.ediType, with: B2biClientTypes.EdiType.write(value:to:))
         try writer["fileFormat"].write(value.fileFormat)
+        try writer["inputConversion"].write(value.inputConversion, with: B2biClientTypes.InputConversion.write(value:to:))
+        try writer["mapping"].write(value.mapping, with: B2biClientTypes.Mapping.write(value:to:))
         try writer["mappingTemplate"].write(value.mappingTemplate)
         try writer["name"].write(value.name)
+        try writer["outputConversion"].write(value.outputConversion, with: B2biClientTypes.OutputConversion.write(value:to:))
         try writer["sampleDocument"].write(value.sampleDocument)
+        try writer["sampleDocuments"].write(value.sampleDocuments, with: B2biClientTypes.SampleDocuments.write(value:to:))
         try writer["tags"].writeList(value.tags, memberWritingClosure: B2biClientTypes.Tag.write(value:to:), memberNodeInfo: "member", isFlattened: false)
     }
 }
@@ -2770,6 +3572,15 @@ extension TagResourceInput {
     }
 }
 
+extension TestConversionInput {
+
+    static func write(value: TestConversionInput?, to writer: SmithyJSON.Writer) throws {
+        guard let value else { return }
+        try writer["source"].write(value.source, with: B2biClientTypes.ConversionSource.write(value:to:))
+        try writer["target"].write(value.target, with: B2biClientTypes.ConversionTarget.write(value:to:))
+    }
+}
+
 extension TestMappingInput {
 
     static func write(value: TestMappingInput?, to writer: SmithyJSON.Writer) throws {
@@ -2813,6 +3624,7 @@ extension UpdatePartnershipInput {
     static func write(value: UpdatePartnershipInput?, to writer: SmithyJSON.Writer) throws {
         guard let value else { return }
         try writer["capabilities"].writeList(value.capabilities, memberWritingClosure: SmithyReadWrite.WritingClosures.writeString(value:to:), memberNodeInfo: "member", isFlattened: false)
+        try writer["capabilityOptions"].write(value.capabilityOptions, with: B2biClientTypes.CapabilityOptions.write(value:to:))
         try writer["name"].write(value.name)
     }
 }
@@ -2834,9 +3646,13 @@ extension UpdateTransformerInput {
         guard let value else { return }
         try writer["ediType"].write(value.ediType, with: B2biClientTypes.EdiType.write(value:to:))
         try writer["fileFormat"].write(value.fileFormat)
+        try writer["inputConversion"].write(value.inputConversion, with: B2biClientTypes.InputConversion.write(value:to:))
+        try writer["mapping"].write(value.mapping, with: B2biClientTypes.Mapping.write(value:to:))
         try writer["mappingTemplate"].write(value.mappingTemplate)
         try writer["name"].write(value.name)
+        try writer["outputConversion"].write(value.outputConversion, with: B2biClientTypes.OutputConversion.write(value:to:))
         try writer["sampleDocument"].write(value.sampleDocument)
+        try writer["sampleDocuments"].write(value.sampleDocuments, with: B2biClientTypes.SampleDocuments.write(value:to:))
         try writer["status"].write(value.status)
     }
 }
@@ -2867,6 +3683,7 @@ extension CreatePartnershipOutput {
         let reader = responseReader
         var value = CreatePartnershipOutput()
         value.capabilities = try reader["capabilities"].readListIfPresent(memberReadingClosure: SmithyReadWrite.ReadingClosures.readString(from:), memberNodeInfo: "member", isFlattened: false)
+        value.capabilityOptions = try reader["capabilityOptions"].readIfPresent(with: B2biClientTypes.CapabilityOptions.read(from:))
         value.createdAt = try reader["createdAt"].readTimestampIfPresent(format: SmithyTimestamps.TimestampFormat.dateTime) ?? SmithyTimestamps.TimestampFormatter(format: .dateTime).date(from: "1970-01-01T00:00:00Z")
         value.email = try reader["email"].readIfPresent()
         value.name = try reader["name"].readIfPresent()
@@ -2899,6 +3716,18 @@ extension CreateProfileOutput {
     }
 }
 
+extension CreateStarterMappingTemplateOutput {
+
+    static func httpOutput(from httpResponse: SmithyHTTPAPI.HTTPResponse) async throws -> CreateStarterMappingTemplateOutput {
+        let data = try await httpResponse.data()
+        let responseReader = try SmithyJSON.Reader.from(data: data)
+        let reader = responseReader
+        var value = CreateStarterMappingTemplateOutput()
+        value.mappingTemplate = try reader["mappingTemplate"].readIfPresent() ?? ""
+        return value
+    }
+}
+
 extension CreateTransformerOutput {
 
     static func httpOutput(from httpResponse: SmithyHTTPAPI.HTTPResponse) async throws -> CreateTransformerOutput {
@@ -2908,10 +3737,14 @@ extension CreateTransformerOutput {
         var value = CreateTransformerOutput()
         value.createdAt = try reader["createdAt"].readTimestampIfPresent(format: SmithyTimestamps.TimestampFormat.dateTime) ?? SmithyTimestamps.TimestampFormatter(format: .dateTime).date(from: "1970-01-01T00:00:00Z")
         value.ediType = try reader["ediType"].readIfPresent(with: B2biClientTypes.EdiType.read(from:))
-        value.fileFormat = try reader["fileFormat"].readIfPresent() ?? .sdkUnknown("")
-        value.mappingTemplate = try reader["mappingTemplate"].readIfPresent() ?? ""
+        value.fileFormat = try reader["fileFormat"].readIfPresent() ?? .notUsed
+        value.inputConversion = try reader["inputConversion"].readIfPresent(with: B2biClientTypes.InputConversion.read(from:))
+        value.mapping = try reader["mapping"].readIfPresent(with: B2biClientTypes.Mapping.read(from:))
+        value.mappingTemplate = try reader["mappingTemplate"].readIfPresent() ?? "NOT_USED"
         value.name = try reader["name"].readIfPresent() ?? ""
+        value.outputConversion = try reader["outputConversion"].readIfPresent(with: B2biClientTypes.OutputConversion.read(from:))
         value.sampleDocument = try reader["sampleDocument"].readIfPresent()
+        value.sampleDocuments = try reader["sampleDocuments"].readIfPresent(with: B2biClientTypes.SampleDocuments.read(from:))
         value.status = try reader["status"].readIfPresent() ?? .sdkUnknown("")
         value.transformerArn = try reader["transformerArn"].readIfPresent() ?? ""
         value.transformerId = try reader["transformerId"].readIfPresent() ?? ""
@@ -2974,6 +3807,7 @@ extension GetPartnershipOutput {
         let reader = responseReader
         var value = GetPartnershipOutput()
         value.capabilities = try reader["capabilities"].readListIfPresent(memberReadingClosure: SmithyReadWrite.ReadingClosures.readString(from:), memberNodeInfo: "member", isFlattened: false)
+        value.capabilityOptions = try reader["capabilityOptions"].readIfPresent(with: B2biClientTypes.CapabilityOptions.read(from:))
         value.createdAt = try reader["createdAt"].readTimestampIfPresent(format: SmithyTimestamps.TimestampFormat.dateTime) ?? SmithyTimestamps.TimestampFormatter(format: .dateTime).date(from: "1970-01-01T00:00:00Z")
         value.email = try reader["email"].readIfPresent()
         value.modifiedAt = try reader["modifiedAt"].readTimestampIfPresent(format: SmithyTimestamps.TimestampFormat.dateTime)
@@ -3017,11 +3851,15 @@ extension GetTransformerOutput {
         var value = GetTransformerOutput()
         value.createdAt = try reader["createdAt"].readTimestampIfPresent(format: SmithyTimestamps.TimestampFormat.dateTime) ?? SmithyTimestamps.TimestampFormatter(format: .dateTime).date(from: "1970-01-01T00:00:00Z")
         value.ediType = try reader["ediType"].readIfPresent(with: B2biClientTypes.EdiType.read(from:))
-        value.fileFormat = try reader["fileFormat"].readIfPresent() ?? .sdkUnknown("")
-        value.mappingTemplate = try reader["mappingTemplate"].readIfPresent() ?? ""
+        value.fileFormat = try reader["fileFormat"].readIfPresent() ?? .notUsed
+        value.inputConversion = try reader["inputConversion"].readIfPresent(with: B2biClientTypes.InputConversion.read(from:))
+        value.mapping = try reader["mapping"].readIfPresent(with: B2biClientTypes.Mapping.read(from:))
+        value.mappingTemplate = try reader["mappingTemplate"].readIfPresent() ?? "NOT_USED"
         value.modifiedAt = try reader["modifiedAt"].readTimestampIfPresent(format: SmithyTimestamps.TimestampFormat.dateTime)
         value.name = try reader["name"].readIfPresent() ?? ""
+        value.outputConversion = try reader["outputConversion"].readIfPresent(with: B2biClientTypes.OutputConversion.read(from:))
         value.sampleDocument = try reader["sampleDocument"].readIfPresent()
+        value.sampleDocuments = try reader["sampleDocuments"].readIfPresent(with: B2biClientTypes.SampleDocuments.read(from:))
         value.status = try reader["status"].readIfPresent() ?? .sdkUnknown("")
         value.transformerArn = try reader["transformerArn"].readIfPresent() ?? ""
         value.transformerId = try reader["transformerId"].readIfPresent() ?? ""
@@ -3126,6 +3964,19 @@ extension TagResourceOutput {
     }
 }
 
+extension TestConversionOutput {
+
+    static func httpOutput(from httpResponse: SmithyHTTPAPI.HTTPResponse) async throws -> TestConversionOutput {
+        let data = try await httpResponse.data()
+        let responseReader = try SmithyJSON.Reader.from(data: data)
+        let reader = responseReader
+        var value = TestConversionOutput()
+        value.convertedFileContent = try reader["convertedFileContent"].readIfPresent() ?? ""
+        value.validationMessages = try reader["validationMessages"].readListIfPresent(memberReadingClosure: SmithyReadWrite.ReadingClosures.readString(from:), memberNodeInfo: "member", isFlattened: false)
+        return value
+    }
+}
+
 extension TestMappingOutput {
 
     static func httpOutput(from httpResponse: SmithyHTTPAPI.HTTPResponse) async throws -> TestMappingOutput {
@@ -3184,6 +4035,7 @@ extension UpdatePartnershipOutput {
         let reader = responseReader
         var value = UpdatePartnershipOutput()
         value.capabilities = try reader["capabilities"].readListIfPresent(memberReadingClosure: SmithyReadWrite.ReadingClosures.readString(from:), memberNodeInfo: "member", isFlattened: false)
+        value.capabilityOptions = try reader["capabilityOptions"].readIfPresent(with: B2biClientTypes.CapabilityOptions.read(from:))
         value.createdAt = try reader["createdAt"].readTimestampIfPresent(format: SmithyTimestamps.TimestampFormat.dateTime) ?? SmithyTimestamps.TimestampFormatter(format: .dateTime).date(from: "1970-01-01T00:00:00Z")
         value.email = try reader["email"].readIfPresent()
         value.modifiedAt = try reader["modifiedAt"].readTimestampIfPresent(format: SmithyTimestamps.TimestampFormat.dateTime)
@@ -3227,11 +4079,15 @@ extension UpdateTransformerOutput {
         var value = UpdateTransformerOutput()
         value.createdAt = try reader["createdAt"].readTimestampIfPresent(format: SmithyTimestamps.TimestampFormat.dateTime) ?? SmithyTimestamps.TimestampFormatter(format: .dateTime).date(from: "1970-01-01T00:00:00Z")
         value.ediType = try reader["ediType"].readIfPresent(with: B2biClientTypes.EdiType.read(from:))
-        value.fileFormat = try reader["fileFormat"].readIfPresent() ?? .sdkUnknown("")
-        value.mappingTemplate = try reader["mappingTemplate"].readIfPresent() ?? ""
+        value.fileFormat = try reader["fileFormat"].readIfPresent() ?? .notUsed
+        value.inputConversion = try reader["inputConversion"].readIfPresent(with: B2biClientTypes.InputConversion.read(from:))
+        value.mapping = try reader["mapping"].readIfPresent(with: B2biClientTypes.Mapping.read(from:))
+        value.mappingTemplate = try reader["mappingTemplate"].readIfPresent() ?? "NOT_USED"
         value.modifiedAt = try reader["modifiedAt"].readTimestampIfPresent(format: SmithyTimestamps.TimestampFormat.dateTime) ?? SmithyTimestamps.TimestampFormatter(format: .dateTime).date(from: "1970-01-01T00:00:00Z")
         value.name = try reader["name"].readIfPresent() ?? ""
+        value.outputConversion = try reader["outputConversion"].readIfPresent(with: B2biClientTypes.OutputConversion.read(from:))
         value.sampleDocument = try reader["sampleDocument"].readIfPresent()
+        value.sampleDocuments = try reader["sampleDocuments"].readIfPresent(with: B2biClientTypes.SampleDocuments.read(from:))
         value.status = try reader["status"].readIfPresent() ?? .sdkUnknown("")
         value.transformerArn = try reader["transformerArn"].readIfPresent() ?? ""
         value.transformerId = try reader["transformerId"].readIfPresent() ?? ""
@@ -3293,6 +4149,23 @@ enum CreateProfileOutputError {
             case "ResourceNotFoundException": return try ResourceNotFoundException.makeError(baseError: baseError)
             case "ServiceQuotaExceededException": return try ServiceQuotaExceededException.makeError(baseError: baseError)
             case "ThrottlingException": return try ThrottlingException.makeError(baseError: baseError)
+            case "ValidationException": return try ValidationException.makeError(baseError: baseError)
+            default: return try AWSClientRuntime.UnknownAWSHTTPServiceError.makeError(baseError: baseError)
+        }
+    }
+}
+
+enum CreateStarterMappingTemplateOutputError {
+
+    static func httpError(from httpResponse: SmithyHTTPAPI.HTTPResponse) async throws -> Swift.Error {
+        let data = try await httpResponse.data()
+        let responseReader = try SmithyJSON.Reader.from(data: data)
+        let baseError = try AWSClientRuntime.AWSJSONError(httpResponse: httpResponse, responseReader: responseReader, noErrorWrapping: false)
+        if let error = baseError.customError() { return error }
+        switch baseError.code {
+            case "AccessDeniedException": return try AccessDeniedException.makeError(baseError: baseError)
+            case "InternalServerException": return try InternalServerException.makeError(baseError: baseError)
+            case "ResourceNotFoundException": return try ResourceNotFoundException.makeError(baseError: baseError)
             case "ValidationException": return try ValidationException.makeError(baseError: baseError)
             default: return try AWSClientRuntime.UnknownAWSHTTPServiceError.makeError(baseError: baseError)
         }
@@ -3606,6 +4479,24 @@ enum TagResourceOutputError {
     }
 }
 
+enum TestConversionOutputError {
+
+    static func httpError(from httpResponse: SmithyHTTPAPI.HTTPResponse) async throws -> Swift.Error {
+        let data = try await httpResponse.data()
+        let responseReader = try SmithyJSON.Reader.from(data: data)
+        let baseError = try AWSClientRuntime.AWSJSONError(httpResponse: httpResponse, responseReader: responseReader, noErrorWrapping: false)
+        if let error = baseError.customError() { return error }
+        switch baseError.code {
+            case "AccessDeniedException": return try AccessDeniedException.makeError(baseError: baseError)
+            case "InternalServerException": return try InternalServerException.makeError(baseError: baseError)
+            case "ResourceNotFoundException": return try ResourceNotFoundException.makeError(baseError: baseError)
+            case "ThrottlingException": return try ThrottlingException.makeError(baseError: baseError)
+            case "ValidationException": return try ValidationException.makeError(baseError: baseError)
+            default: return try AWSClientRuntime.UnknownAWSHTTPServiceError.makeError(baseError: baseError)
+        }
+    }
+}
+
 enum TestMappingOutputError {
 
     static func httpError(from httpResponse: SmithyHTTPAPI.HTTPResponse) async throws -> Swift.Error {
@@ -3869,6 +4760,7 @@ extension B2biClientTypes.EdiConfiguration {
 
     static func write(value: B2biClientTypes.EdiConfiguration?, to writer: SmithyJSON.Writer) throws {
         guard let value else { return }
+        try writer["capabilityDirection"].write(value.capabilityDirection)
         try writer["inputLocation"].write(value.inputLocation, with: B2biClientTypes.S3Location.write(value:to:))
         try writer["outputLocation"].write(value.outputLocation, with: B2biClientTypes.S3Location.write(value:to:))
         try writer["transformerId"].write(value.transformerId)
@@ -3878,6 +4770,7 @@ extension B2biClientTypes.EdiConfiguration {
     static func read(from reader: SmithyJSON.Reader) throws -> B2biClientTypes.EdiConfiguration {
         guard reader.hasContent else { throw SmithyReadWrite.ReaderError.requiredValueNotPresent }
         var value = B2biClientTypes.EdiConfiguration()
+        value.capabilityDirection = try reader["capabilityDirection"].readIfPresent()
         value.type = try reader["type"].readIfPresent(with: B2biClientTypes.EdiType.read(from:))
         value.inputLocation = try reader["inputLocation"].readIfPresent(with: B2biClientTypes.S3Location.read(from:))
         value.outputLocation = try reader["outputLocation"].readIfPresent(with: B2biClientTypes.S3Location.read(from:))
@@ -3944,6 +4837,255 @@ extension B2biClientTypes.X12Details {
     }
 }
 
+extension B2biClientTypes.CapabilityOptions {
+
+    static func write(value: B2biClientTypes.CapabilityOptions?, to writer: SmithyJSON.Writer) throws {
+        guard let value else { return }
+        try writer["outboundEdi"].write(value.outboundEdi, with: B2biClientTypes.OutboundEdiOptions.write(value:to:))
+    }
+
+    static func read(from reader: SmithyJSON.Reader) throws -> B2biClientTypes.CapabilityOptions {
+        guard reader.hasContent else { throw SmithyReadWrite.ReaderError.requiredValueNotPresent }
+        var value = B2biClientTypes.CapabilityOptions()
+        value.outboundEdi = try reader["outboundEdi"].readIfPresent(with: B2biClientTypes.OutboundEdiOptions.read(from:))
+        return value
+    }
+}
+
+extension B2biClientTypes.OutboundEdiOptions {
+
+    static func write(value: B2biClientTypes.OutboundEdiOptions?, to writer: SmithyJSON.Writer) throws {
+        guard let value else { return }
+        switch value {
+            case let .x12(x12):
+                try writer["x12"].write(x12, with: B2biClientTypes.X12Envelope.write(value:to:))
+            case let .sdkUnknown(sdkUnknown):
+                try writer["sdkUnknown"].write(sdkUnknown)
+        }
+    }
+
+    static func read(from reader: SmithyJSON.Reader) throws -> B2biClientTypes.OutboundEdiOptions {
+        guard reader.hasContent else { throw SmithyReadWrite.ReaderError.requiredValueNotPresent }
+        let name = reader.children.filter { $0.hasContent && $0.nodeInfo.name != "__type" }.first?.nodeInfo.name
+        switch name {
+            case "x12":
+                return .x12(try reader["x12"].read(with: B2biClientTypes.X12Envelope.read(from:)))
+            default:
+                return .sdkUnknown(name ?? "")
+        }
+    }
+}
+
+extension B2biClientTypes.X12Envelope {
+
+    static func write(value: B2biClientTypes.X12Envelope?, to writer: SmithyJSON.Writer) throws {
+        guard let value else { return }
+        try writer["common"].write(value.common, with: B2biClientTypes.X12OutboundEdiHeaders.write(value:to:))
+    }
+
+    static func read(from reader: SmithyJSON.Reader) throws -> B2biClientTypes.X12Envelope {
+        guard reader.hasContent else { throw SmithyReadWrite.ReaderError.requiredValueNotPresent }
+        var value = B2biClientTypes.X12Envelope()
+        value.common = try reader["common"].readIfPresent(with: B2biClientTypes.X12OutboundEdiHeaders.read(from:))
+        return value
+    }
+}
+
+extension B2biClientTypes.X12OutboundEdiHeaders {
+
+    static func write(value: B2biClientTypes.X12OutboundEdiHeaders?, to writer: SmithyJSON.Writer) throws {
+        guard let value else { return }
+        try writer["delimiters"].write(value.delimiters, with: B2biClientTypes.X12Delimiters.write(value:to:))
+        try writer["functionalGroupHeaders"].write(value.functionalGroupHeaders, with: B2biClientTypes.X12FunctionalGroupHeaders.write(value:to:))
+        try writer["interchangeControlHeaders"].write(value.interchangeControlHeaders, with: B2biClientTypes.X12InterchangeControlHeaders.write(value:to:))
+        try writer["validateEdi"].write(value.validateEdi)
+    }
+
+    static func read(from reader: SmithyJSON.Reader) throws -> B2biClientTypes.X12OutboundEdiHeaders {
+        guard reader.hasContent else { throw SmithyReadWrite.ReaderError.requiredValueNotPresent }
+        var value = B2biClientTypes.X12OutboundEdiHeaders()
+        value.interchangeControlHeaders = try reader["interchangeControlHeaders"].readIfPresent(with: B2biClientTypes.X12InterchangeControlHeaders.read(from:))
+        value.functionalGroupHeaders = try reader["functionalGroupHeaders"].readIfPresent(with: B2biClientTypes.X12FunctionalGroupHeaders.read(from:))
+        value.delimiters = try reader["delimiters"].readIfPresent(with: B2biClientTypes.X12Delimiters.read(from:))
+        value.validateEdi = try reader["validateEdi"].readIfPresent()
+        return value
+    }
+}
+
+extension B2biClientTypes.X12Delimiters {
+
+    static func write(value: B2biClientTypes.X12Delimiters?, to writer: SmithyJSON.Writer) throws {
+        guard let value else { return }
+        try writer["componentSeparator"].write(value.componentSeparator)
+        try writer["dataElementSeparator"].write(value.dataElementSeparator)
+        try writer["segmentTerminator"].write(value.segmentTerminator)
+    }
+
+    static func read(from reader: SmithyJSON.Reader) throws -> B2biClientTypes.X12Delimiters {
+        guard reader.hasContent else { throw SmithyReadWrite.ReaderError.requiredValueNotPresent }
+        var value = B2biClientTypes.X12Delimiters()
+        value.componentSeparator = try reader["componentSeparator"].readIfPresent()
+        value.dataElementSeparator = try reader["dataElementSeparator"].readIfPresent()
+        value.segmentTerminator = try reader["segmentTerminator"].readIfPresent()
+        return value
+    }
+}
+
+extension B2biClientTypes.X12FunctionalGroupHeaders {
+
+    static func write(value: B2biClientTypes.X12FunctionalGroupHeaders?, to writer: SmithyJSON.Writer) throws {
+        guard let value else { return }
+        try writer["applicationReceiverCode"].write(value.applicationReceiverCode)
+        try writer["applicationSenderCode"].write(value.applicationSenderCode)
+        try writer["responsibleAgencyCode"].write(value.responsibleAgencyCode)
+    }
+
+    static func read(from reader: SmithyJSON.Reader) throws -> B2biClientTypes.X12FunctionalGroupHeaders {
+        guard reader.hasContent else { throw SmithyReadWrite.ReaderError.requiredValueNotPresent }
+        var value = B2biClientTypes.X12FunctionalGroupHeaders()
+        value.applicationSenderCode = try reader["applicationSenderCode"].readIfPresent()
+        value.applicationReceiverCode = try reader["applicationReceiverCode"].readIfPresent()
+        value.responsibleAgencyCode = try reader["responsibleAgencyCode"].readIfPresent()
+        return value
+    }
+}
+
+extension B2biClientTypes.X12InterchangeControlHeaders {
+
+    static func write(value: B2biClientTypes.X12InterchangeControlHeaders?, to writer: SmithyJSON.Writer) throws {
+        guard let value else { return }
+        try writer["acknowledgmentRequestedCode"].write(value.acknowledgmentRequestedCode)
+        try writer["receiverId"].write(value.receiverId)
+        try writer["receiverIdQualifier"].write(value.receiverIdQualifier)
+        try writer["repetitionSeparator"].write(value.repetitionSeparator)
+        try writer["senderId"].write(value.senderId)
+        try writer["senderIdQualifier"].write(value.senderIdQualifier)
+        try writer["usageIndicatorCode"].write(value.usageIndicatorCode)
+    }
+
+    static func read(from reader: SmithyJSON.Reader) throws -> B2biClientTypes.X12InterchangeControlHeaders {
+        guard reader.hasContent else { throw SmithyReadWrite.ReaderError.requiredValueNotPresent }
+        var value = B2biClientTypes.X12InterchangeControlHeaders()
+        value.senderIdQualifier = try reader["senderIdQualifier"].readIfPresent()
+        value.senderId = try reader["senderId"].readIfPresent()
+        value.receiverIdQualifier = try reader["receiverIdQualifier"].readIfPresent()
+        value.receiverId = try reader["receiverId"].readIfPresent()
+        value.repetitionSeparator = try reader["repetitionSeparator"].readIfPresent()
+        value.acknowledgmentRequestedCode = try reader["acknowledgmentRequestedCode"].readIfPresent()
+        value.usageIndicatorCode = try reader["usageIndicatorCode"].readIfPresent()
+        return value
+    }
+}
+
+extension B2biClientTypes.InputConversion {
+
+    static func write(value: B2biClientTypes.InputConversion?, to writer: SmithyJSON.Writer) throws {
+        guard let value else { return }
+        try writer["formatOptions"].write(value.formatOptions, with: B2biClientTypes.FormatOptions.write(value:to:))
+        try writer["fromFormat"].write(value.fromFormat)
+    }
+
+    static func read(from reader: SmithyJSON.Reader) throws -> B2biClientTypes.InputConversion {
+        guard reader.hasContent else { throw SmithyReadWrite.ReaderError.requiredValueNotPresent }
+        var value = B2biClientTypes.InputConversion()
+        value.fromFormat = try reader["fromFormat"].readIfPresent() ?? .sdkUnknown("")
+        value.formatOptions = try reader["formatOptions"].readIfPresent(with: B2biClientTypes.FormatOptions.read(from:))
+        return value
+    }
+}
+
+extension B2biClientTypes.FormatOptions {
+
+    static func write(value: B2biClientTypes.FormatOptions?, to writer: SmithyJSON.Writer) throws {
+        guard let value else { return }
+        switch value {
+            case let .x12(x12):
+                try writer["x12"].write(x12, with: B2biClientTypes.X12Details.write(value:to:))
+            case let .sdkUnknown(sdkUnknown):
+                try writer["sdkUnknown"].write(sdkUnknown)
+        }
+    }
+
+    static func read(from reader: SmithyJSON.Reader) throws -> B2biClientTypes.FormatOptions {
+        guard reader.hasContent else { throw SmithyReadWrite.ReaderError.requiredValueNotPresent }
+        let name = reader.children.filter { $0.hasContent && $0.nodeInfo.name != "__type" }.first?.nodeInfo.name
+        switch name {
+            case "x12":
+                return .x12(try reader["x12"].read(with: B2biClientTypes.X12Details.read(from:)))
+            default:
+                return .sdkUnknown(name ?? "")
+        }
+    }
+}
+
+extension B2biClientTypes.Mapping {
+
+    static func write(value: B2biClientTypes.Mapping?, to writer: SmithyJSON.Writer) throws {
+        guard let value else { return }
+        try writer["template"].write(value.template)
+        try writer["templateLanguage"].write(value.templateLanguage)
+    }
+
+    static func read(from reader: SmithyJSON.Reader) throws -> B2biClientTypes.Mapping {
+        guard reader.hasContent else { throw SmithyReadWrite.ReaderError.requiredValueNotPresent }
+        var value = B2biClientTypes.Mapping()
+        value.templateLanguage = try reader["templateLanguage"].readIfPresent() ?? .sdkUnknown("")
+        value.template = try reader["template"].readIfPresent()
+        return value
+    }
+}
+
+extension B2biClientTypes.OutputConversion {
+
+    static func write(value: B2biClientTypes.OutputConversion?, to writer: SmithyJSON.Writer) throws {
+        guard let value else { return }
+        try writer["formatOptions"].write(value.formatOptions, with: B2biClientTypes.FormatOptions.write(value:to:))
+        try writer["toFormat"].write(value.toFormat)
+    }
+
+    static func read(from reader: SmithyJSON.Reader) throws -> B2biClientTypes.OutputConversion {
+        guard reader.hasContent else { throw SmithyReadWrite.ReaderError.requiredValueNotPresent }
+        var value = B2biClientTypes.OutputConversion()
+        value.toFormat = try reader["toFormat"].readIfPresent() ?? .sdkUnknown("")
+        value.formatOptions = try reader["formatOptions"].readIfPresent(with: B2biClientTypes.FormatOptions.read(from:))
+        return value
+    }
+}
+
+extension B2biClientTypes.SampleDocuments {
+
+    static func write(value: B2biClientTypes.SampleDocuments?, to writer: SmithyJSON.Writer) throws {
+        guard let value else { return }
+        try writer["bucketName"].write(value.bucketName)
+        try writer["keys"].writeList(value.keys, memberWritingClosure: B2biClientTypes.SampleDocumentKeys.write(value:to:), memberNodeInfo: "member", isFlattened: false)
+    }
+
+    static func read(from reader: SmithyJSON.Reader) throws -> B2biClientTypes.SampleDocuments {
+        guard reader.hasContent else { throw SmithyReadWrite.ReaderError.requiredValueNotPresent }
+        var value = B2biClientTypes.SampleDocuments()
+        value.bucketName = try reader["bucketName"].readIfPresent() ?? ""
+        value.keys = try reader["keys"].readListIfPresent(memberReadingClosure: B2biClientTypes.SampleDocumentKeys.read(from:), memberNodeInfo: "member", isFlattened: false) ?? []
+        return value
+    }
+}
+
+extension B2biClientTypes.SampleDocumentKeys {
+
+    static func write(value: B2biClientTypes.SampleDocumentKeys?, to writer: SmithyJSON.Writer) throws {
+        guard let value else { return }
+        try writer["input"].write(value.input)
+        try writer["output"].write(value.output)
+    }
+
+    static func read(from reader: SmithyJSON.Reader) throws -> B2biClientTypes.SampleDocumentKeys {
+        guard reader.hasContent else { throw SmithyReadWrite.ReaderError.requiredValueNotPresent }
+        var value = B2biClientTypes.SampleDocumentKeys()
+        value.input = try reader["input"].readIfPresent()
+        value.output = try reader["output"].readIfPresent()
+        return value
+    }
+}
+
 extension B2biClientTypes.CapabilitySummary {
 
     static func read(from reader: SmithyJSON.Reader) throws -> B2biClientTypes.CapabilitySummary {
@@ -3967,6 +5109,7 @@ extension B2biClientTypes.PartnershipSummary {
         value.partnershipId = try reader["partnershipId"].readIfPresent() ?? ""
         value.name = try reader["name"].readIfPresent()
         value.capabilities = try reader["capabilities"].readListIfPresent(memberReadingClosure: SmithyReadWrite.ReadingClosures.readString(from:), memberNodeInfo: "member", isFlattened: false)
+        value.capabilityOptions = try reader["capabilityOptions"].readIfPresent(with: B2biClientTypes.CapabilityOptions.read(from:))
         value.tradingPartnerId = try reader["tradingPartnerId"].readIfPresent()
         value.createdAt = try reader["createdAt"].readTimestampIfPresent(format: SmithyTimestamps.TimestampFormat.dateTime) ?? SmithyTimestamps.TimestampFormatter(format: .dateTime).date(from: "1970-01-01T00:00:00Z")
         value.modifiedAt = try reader["modifiedAt"].readTimestampIfPresent(format: SmithyTimestamps.TimestampFormat.dateTime)
@@ -4014,14 +5157,89 @@ extension B2biClientTypes.TransformerSummary {
         var value = B2biClientTypes.TransformerSummary()
         value.transformerId = try reader["transformerId"].readIfPresent() ?? ""
         value.name = try reader["name"].readIfPresent() ?? ""
-        value.fileFormat = try reader["fileFormat"].readIfPresent() ?? .sdkUnknown("")
-        value.mappingTemplate = try reader["mappingTemplate"].readIfPresent() ?? ""
         value.status = try reader["status"].readIfPresent() ?? .sdkUnknown("")
-        value.ediType = try reader["ediType"].readIfPresent(with: B2biClientTypes.EdiType.read(from:))
-        value.sampleDocument = try reader["sampleDocument"].readIfPresent()
         value.createdAt = try reader["createdAt"].readTimestampIfPresent(format: SmithyTimestamps.TimestampFormat.dateTime) ?? SmithyTimestamps.TimestampFormatter(format: .dateTime).date(from: "1970-01-01T00:00:00Z")
         value.modifiedAt = try reader["modifiedAt"].readTimestampIfPresent(format: SmithyTimestamps.TimestampFormat.dateTime)
+        value.fileFormat = try reader["fileFormat"].readIfPresent() ?? .notUsed
+        value.mappingTemplate = try reader["mappingTemplate"].readIfPresent() ?? "NOT_USED"
+        value.ediType = try reader["ediType"].readIfPresent(with: B2biClientTypes.EdiType.read(from:))
+        value.sampleDocument = try reader["sampleDocument"].readIfPresent()
+        value.inputConversion = try reader["inputConversion"].readIfPresent(with: B2biClientTypes.InputConversion.read(from:))
+        value.mapping = try reader["mapping"].readIfPresent(with: B2biClientTypes.Mapping.read(from:))
+        value.outputConversion = try reader["outputConversion"].readIfPresent(with: B2biClientTypes.OutputConversion.read(from:))
+        value.sampleDocuments = try reader["sampleDocuments"].readIfPresent(with: B2biClientTypes.SampleDocuments.read(from:))
         return value
+    }
+}
+
+extension B2biClientTypes.TemplateDetails {
+
+    static func write(value: B2biClientTypes.TemplateDetails?, to writer: SmithyJSON.Writer) throws {
+        guard let value else { return }
+        switch value {
+            case let .x12(x12):
+                try writer["x12"].write(x12, with: B2biClientTypes.X12Details.write(value:to:))
+            case let .sdkUnknown(sdkUnknown):
+                try writer["sdkUnknown"].write(sdkUnknown)
+        }
+    }
+}
+
+extension B2biClientTypes.ConversionSource {
+
+    static func write(value: B2biClientTypes.ConversionSource?, to writer: SmithyJSON.Writer) throws {
+        guard let value else { return }
+        try writer["fileFormat"].write(value.fileFormat)
+        try writer["inputFile"].write(value.inputFile, with: B2biClientTypes.InputFileSource.write(value:to:))
+    }
+}
+
+extension B2biClientTypes.InputFileSource {
+
+    static func write(value: B2biClientTypes.InputFileSource?, to writer: SmithyJSON.Writer) throws {
+        guard let value else { return }
+        switch value {
+            case let .filecontent(filecontent):
+                try writer["fileContent"].write(filecontent)
+            case let .sdkUnknown(sdkUnknown):
+                try writer["sdkUnknown"].write(sdkUnknown)
+        }
+    }
+}
+
+extension B2biClientTypes.ConversionTarget {
+
+    static func write(value: B2biClientTypes.ConversionTarget?, to writer: SmithyJSON.Writer) throws {
+        guard let value else { return }
+        try writer["fileFormat"].write(value.fileFormat)
+        try writer["formatDetails"].write(value.formatDetails, with: B2biClientTypes.ConversionTargetFormatDetails.write(value:to:))
+        try writer["outputSampleFile"].write(value.outputSampleFile, with: B2biClientTypes.OutputSampleFileSource.write(value:to:))
+    }
+}
+
+extension B2biClientTypes.OutputSampleFileSource {
+
+    static func write(value: B2biClientTypes.OutputSampleFileSource?, to writer: SmithyJSON.Writer) throws {
+        guard let value else { return }
+        switch value {
+            case let .filelocation(filelocation):
+                try writer["fileLocation"].write(filelocation, with: B2biClientTypes.S3Location.write(value:to:))
+            case let .sdkUnknown(sdkUnknown):
+                try writer["sdkUnknown"].write(sdkUnknown)
+        }
+    }
+}
+
+extension B2biClientTypes.ConversionTargetFormatDetails {
+
+    static func write(value: B2biClientTypes.ConversionTargetFormatDetails?, to writer: SmithyJSON.Writer) throws {
+        guard let value else { return }
+        switch value {
+            case let .x12(x12):
+                try writer["x12"].write(x12, with: B2biClientTypes.X12Details.write(value:to:))
+            case let .sdkUnknown(sdkUnknown):
+                try writer["sdkUnknown"].write(sdkUnknown)
+        }
     }
 }
 

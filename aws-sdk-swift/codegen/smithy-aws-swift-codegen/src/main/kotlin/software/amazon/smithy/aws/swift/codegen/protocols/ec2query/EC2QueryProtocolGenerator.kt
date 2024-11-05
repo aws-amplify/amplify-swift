@@ -23,7 +23,7 @@ class EC2QueryProtocolGenerator : AWSHTTPBindingProtocolGenerator(EC2QueryCustom
         HttpBindingResolver = FormURLHttpBindingResolver(ctx, contentType)
 
     override val shouldRenderEncodableConformance = true
-    override val testsToIgnore = setOf(
+    override val protocolTestsToIgnore = setOf(
         "SDKAppliedContentEncoding_ec2Query",
         "SDKAppendsGzipAndIgnoresHttpProvidedEncoding_ec2Query"
     )

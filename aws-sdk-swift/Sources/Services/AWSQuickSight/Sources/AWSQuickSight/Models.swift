@@ -63,8 +63,9 @@ public struct AccessDeniedException: ClientRuntime.ModeledError, AWSClientRuntim
 }
 
 extension QuickSightClientTypes {
+
     /// The Amazon QuickSight customizations associated with your Amazon Web Services account or a QuickSight namespace in a specific Amazon Web Services Region.
-    public struct AccountCustomization {
+    public struct AccountCustomization: Swift.Sendable {
         /// The default email customization template.
         public var defaultEmailCustomizationTemplate: Swift.String?
         /// The default theme for this Amazon QuickSight subscription.
@@ -79,12 +80,11 @@ extension QuickSightClientTypes {
             self.defaultTheme = defaultTheme
         }
     }
-
 }
 
 extension QuickSightClientTypes {
 
-    public enum Edition: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Edition: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case enterprise
         case enterpriseAndQ
         case standard
@@ -115,6 +115,7 @@ extension QuickSightClientTypes {
 }
 
 extension QuickSightClientTypes {
+
     /// A structure that contains the following account information elements:
     ///
     /// * Your Amazon QuickSight account name.
@@ -126,7 +127,7 @@ extension QuickSightClientTypes {
     /// * The authentication type of the Amazon QuickSight account.
     ///
     /// * The status of the Amazon QuickSight account's subscription.
-    public struct AccountInfo {
+    public struct AccountInfo: Swift.Sendable {
         /// The account name that you provided for the Amazon QuickSight subscription in your Amazon Web Services account. You create this name when you sign up for Amazon QuickSight. It's unique over all of Amazon Web Services, and it appears only when users sign in.
         public var accountName: Swift.String?
         /// The status of your account subscription.
@@ -157,12 +158,12 @@ extension QuickSightClientTypes {
             self.notificationEmail = notificationEmail
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The Amazon QuickSight settings associated with your Amazon Web Services account.
-    public struct AccountSettings {
+    public struct AccountSettings: Swift.Sendable {
         /// The "account name" you provided for the Amazon QuickSight subscription in your Amazon Web Services account. You create this name when you sign up for Amazon QuickSight. It is unique in all of Amazon Web Services and it appears only when users sign in.
         public var accountName: Swift.String?
         /// The default Amazon QuickSight namespace for your Amazon Web Services account.
@@ -193,12 +194,12 @@ extension QuickSightClientTypes {
             self.terminationProtectionEnabled = terminationProtectionEnabled
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The active Identity and Access Management (IAM) policy assignment.
-    public struct ActiveIAMPolicyAssignment {
+    public struct ActiveIAMPolicyAssignment: Swift.Sendable {
         /// A name for the IAM policy assignment.
         public var assignmentName: Swift.String?
         /// The Amazon Resource Name (ARN) of the resource.
@@ -213,12 +214,11 @@ extension QuickSightClientTypes {
             self.policyArn = policyArn
         }
     }
-
 }
 
 extension QuickSightClientTypes {
 
-    public enum DashboardBehavior: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DashboardBehavior: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case disabled
         case enabled
         case sdkUnknown(Swift.String)
@@ -246,8 +246,9 @@ extension QuickSightClientTypes {
 }
 
 extension QuickSightClientTypes {
+
     /// An ad hoc (one-time) filtering option.
-    public struct AdHocFilteringOption {
+    public struct AdHocFilteringOption: Swift.Sendable {
         /// Availability status.
         public var availabilityStatus: QuickSightClientTypes.DashboardBehavior?
 
@@ -258,12 +259,11 @@ extension QuickSightClientTypes {
             self.availabilityStatus = availabilityStatus
         }
     }
-
 }
 
 extension QuickSightClientTypes {
 
-    public enum AggType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AggType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case average
         case column
         case count
@@ -346,7 +346,7 @@ extension QuickSightClientTypes {
 
 extension QuickSightClientTypes {
 
-    public enum TopicTimeGranularity: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum TopicTimeGranularity: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case day
         case hour
         case minute
@@ -392,8 +392,9 @@ extension QuickSightClientTypes {
 }
 
 extension QuickSightClientTypes {
+
     /// The definition of an Agg function.
-    public struct AggFunction {
+    public struct AggFunction: Swift.Sendable {
         /// The aggregation of an Agg function.
         public var aggregation: QuickSightClientTypes.AggType?
         /// The aggregation parameters for an Agg function.
@@ -416,12 +417,11 @@ extension QuickSightClientTypes {
             self.periodField = periodField
         }
     }
-
 }
 
 extension QuickSightClientTypes {
 
-    public enum SimpleAttributeAggregationFunction: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SimpleAttributeAggregationFunction: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case uniqueValue
         case sdkUnknown(Swift.String)
 
@@ -446,8 +446,9 @@ extension QuickSightClientTypes {
 }
 
 extension QuickSightClientTypes {
+
     /// Aggregation for attributes.
-    public struct AttributeAggregationFunction {
+    public struct AttributeAggregationFunction: Swift.Sendable {
         /// The built-in aggregation functions for attributes.
         ///
         /// * UNIQUE_VALUE: Returns the unique value for a field, aggregated by the dimension fields.
@@ -464,12 +465,11 @@ extension QuickSightClientTypes {
             self.valueForMultipleValues = valueForMultipleValues
         }
     }
-
 }
 
 extension QuickSightClientTypes {
 
-    public enum CategoricalAggregationFunction: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum CategoricalAggregationFunction: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case count
         case distinctCount
         case sdkUnknown(Swift.String)
@@ -498,7 +498,7 @@ extension QuickSightClientTypes {
 
 extension QuickSightClientTypes {
 
-    public enum DateAggregationFunction: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DateAggregationFunction: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case count
         case distinctCount
         case max
@@ -532,8 +532,9 @@ extension QuickSightClientTypes {
 }
 
 extension QuickSightClientTypes {
+
     /// An aggregation based on the percentile of values in a dimension or measure.
-    public struct PercentileAggregation {
+    public struct PercentileAggregation: Swift.Sendable {
         /// The percentile value. This value can be any numeric constant 0–100. A percentile value of 50 computes the median value of the measure.
         public var percentileValue: Swift.Double?
 
@@ -544,12 +545,11 @@ extension QuickSightClientTypes {
             self.percentileValue = percentileValue
         }
     }
-
 }
 
 extension QuickSightClientTypes {
 
-    public enum SimpleNumericalAggregationFunction: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SimpleNumericalAggregationFunction: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case average
         case count
         case distinctCount
@@ -604,8 +604,9 @@ extension QuickSightClientTypes {
 }
 
 extension QuickSightClientTypes {
+
     /// Aggregation for numerical values.
-    public struct NumericalAggregationFunction {
+    public struct NumericalAggregationFunction: Swift.Sendable {
         /// An aggregation based on the percentile of values in a dimension or measure.
         public var percentileAggregation: QuickSightClientTypes.PercentileAggregation?
         /// Built-in aggregation functions for numerical values.
@@ -642,12 +643,12 @@ extension QuickSightClientTypes {
             self.simpleNumericalAggregation = simpleNumericalAggregation
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// An aggregation function aggregates values from a dimension or measure. This is a union type structure. For this structure to be valid, only one of the attributes can be defined.
-    public struct AggregationFunction {
+    public struct AggregationFunction: Swift.Sendable {
         /// Aggregation for attributes.
         public var attributeAggregationFunction: QuickSightClientTypes.AttributeAggregationFunction?
         /// Aggregation for categorical values.
@@ -682,12 +683,11 @@ extension QuickSightClientTypes {
             self.numericalAggregationFunction = numericalAggregationFunction
         }
     }
-
 }
 
 extension QuickSightClientTypes {
 
-    public enum TimeGranularity: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum TimeGranularity: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case day
         case hour
         case millisecond
@@ -736,8 +736,9 @@ extension QuickSightClientTypes {
 }
 
 extension QuickSightClientTypes {
+
     /// The definition of an AggregationPartitionBy.
-    public struct AggregationPartitionBy {
+    public struct AggregationPartitionBy: Swift.Sendable {
         /// The field Name for an AggregationPartitionBy.
         public var fieldName: Swift.String?
         /// The TimeGranularity for an AggregationPartitionBy.
@@ -752,12 +753,12 @@ extension QuickSightClientTypes {
             self.timeGranularity = timeGranularity
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// A column of a data set.
-    public struct ColumnIdentifier {
+    public struct ColumnIdentifier: Swift.Sendable {
         /// The name of the column.
         /// This member is required.
         public var columnName: Swift.String?
@@ -774,12 +775,11 @@ extension QuickSightClientTypes {
             self.dataSetIdentifier = dataSetIdentifier
         }
     }
-
 }
 
 extension QuickSightClientTypes {
 
-    public enum SortDirection: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SortDirection: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case asc
         case desc
         case sdkUnknown(Swift.String)
@@ -807,8 +807,9 @@ extension QuickSightClientTypes {
 }
 
 extension QuickSightClientTypes {
+
     /// The configuration options to sort aggregated values.
-    public struct AggregationSortConfiguration {
+    public struct AggregationSortConfiguration: Swift.Sendable {
         /// The function that aggregates the values in Column.
         public var aggregationFunction: QuickSightClientTypes.AggregationFunction?
         /// The column that determines the sort order of aggregated values.
@@ -833,21 +834,21 @@ extension QuickSightClientTypes {
             self.sortDirection = sortDirection
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// An empty object that represents that the AllSheets option is the chosen value for the FilterScopeConfiguration parameter. This structure applies the filter to all visuals on all sheets of an Analysis, Dashboard, or Template. This is a union type structure. For this structure to be valid, only one of the attributes can be defined.
-    public struct AllSheetsFilterScopeConfiguration {
+    public struct AllSheetsFilterScopeConfiguration: Swift.Sendable {
 
         public init() { }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The parameters for OpenSearch.
-    public struct AmazonElasticsearchParameters {
+    public struct AmazonElasticsearchParameters: Swift.Sendable {
         /// The OpenSearch domain.
         /// This member is required.
         public var domain: Swift.String?
@@ -859,12 +860,12 @@ extension QuickSightClientTypes {
             self.domain = domain
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The parameters for OpenSearch.
-    public struct AmazonOpenSearchParameters {
+    public struct AmazonOpenSearchParameters: Swift.Sendable {
         /// The OpenSearch domain.
         /// This member is required.
         public var domain: Swift.String?
@@ -876,12 +877,11 @@ extension QuickSightClientTypes {
             self.domain = domain
         }
     }
-
 }
 
 extension QuickSightClientTypes {
 
-    public enum AnalysisErrorType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AnalysisErrorType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case accessDenied
         case columnGeographicRoleMismatch
         case columnReplacementMissing
@@ -933,8 +933,9 @@ extension QuickSightClientTypes {
 }
 
 extension QuickSightClientTypes {
+
     /// An object, structure, or sub-structure of an analysis, template, or dashboard.
-    public struct Entity {
+    public struct Entity: Swift.Sendable {
         /// The hierarchical path of the entity within the analysis, template, or dashboard definition tree.
         public var path: Swift.String?
 
@@ -945,12 +946,12 @@ extension QuickSightClientTypes {
             self.path = path
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// Analysis error.
-    public struct AnalysisError {
+    public struct AnalysisError: Swift.Sendable {
         /// The message associated with the analysis error.
         public var message: Swift.String?
         /// The type of the analysis error.
@@ -969,12 +970,12 @@ extension QuickSightClientTypes {
             self.violatedEntities = violatedEntities
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// A sheet, which is an object that contains a set of visuals that are viewed together on one page in Amazon QuickSight. Every analysis and dashboard contains at least one sheet. Each sheet contains at least one visualization widget, for example a chart, pivot table, or narrative insight. Sheets can be associated with other components, such as controls, filters, and so on.
-    public struct Sheet {
+    public struct Sheet: Swift.Sendable {
         /// The name of a sheet. This name is displayed on the sheet's tab in the Amazon QuickSight console.
         public var name: Swift.String?
         /// The unique identifier associated with a sheet.
@@ -989,12 +990,11 @@ extension QuickSightClientTypes {
             self.sheetId = sheetId
         }
     }
-
 }
 
 extension QuickSightClientTypes {
 
-    public enum ResourceStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ResourceStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case creationFailed
         case creationInProgress
         case creationSuccessful
@@ -1037,8 +1037,9 @@ extension QuickSightClientTypes {
 }
 
 extension QuickSightClientTypes {
+
     /// Metadata structure for an analysis in Amazon QuickSight
-    public struct Analysis {
+    public struct Analysis: Swift.Sendable {
         /// The ID of the analysis.
         public var analysisId: Swift.String?
         /// The Amazon Resource Name (ARN) of the analysis.
@@ -1085,12 +1086,12 @@ extension QuickSightClientTypes {
             self.themeArn = themeArn
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The options that determine the sizing of the canvas used in a free-form layout.
-    public struct FreeFormLayoutScreenCanvasSizeOptions {
+    public struct FreeFormLayoutScreenCanvasSizeOptions: Swift.Sendable {
         /// The width that the view port will be optimized for when the layout renders.
         /// This member is required.
         public var optimizedViewPortWidth: Swift.String?
@@ -1102,12 +1103,12 @@ extension QuickSightClientTypes {
             self.optimizedViewPortWidth = optimizedViewPortWidth
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// Configuration options for the canvas of a free-form layout.
-    public struct FreeFormLayoutCanvasSizeOptions {
+    public struct FreeFormLayoutCanvasSizeOptions: Swift.Sendable {
         /// The options that determine the sizing of the canvas used in a free-form layout.
         public var screenCanvasSizeOptions: QuickSightClientTypes.FreeFormLayoutScreenCanvasSizeOptions?
 
@@ -1118,12 +1119,12 @@ extension QuickSightClientTypes {
             self.screenCanvasSizeOptions = screenCanvasSizeOptions
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The options that determine the default settings of a free-form layout configuration.
-    public struct DefaultFreeFormLayoutConfiguration {
+    public struct DefaultFreeFormLayoutConfiguration: Swift.Sendable {
         /// Determines the screen canvas size options for a free-form layout.
         /// This member is required.
         public var canvasSizeOptions: QuickSightClientTypes.FreeFormLayoutCanvasSizeOptions?
@@ -1135,12 +1136,11 @@ extension QuickSightClientTypes {
             self.canvasSizeOptions = canvasSizeOptions
         }
     }
-
 }
 
 extension QuickSightClientTypes {
 
-    public enum ResizeOption: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ResizeOption: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case fixed
         case responsive
         case sdkUnknown(Swift.String)
@@ -1168,8 +1168,9 @@ extension QuickSightClientTypes {
 }
 
 extension QuickSightClientTypes {
+
     /// The options that determine the sizing of the canvas used in a grid layout.
-    public struct GridLayoutScreenCanvasSizeOptions {
+    public struct GridLayoutScreenCanvasSizeOptions: Swift.Sendable {
         /// The width that the view port will be optimized for when the layout renders.
         public var optimizedViewPortWidth: Swift.String?
         /// This value determines the layout behavior when the viewport is resized.
@@ -1189,12 +1190,12 @@ extension QuickSightClientTypes {
             self.resizeOption = resizeOption
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// Configuration options for the canvas of a grid layout.
-    public struct GridLayoutCanvasSizeOptions {
+    public struct GridLayoutCanvasSizeOptions: Swift.Sendable {
         /// The options that determine the sizing of the canvas used in a grid layout.
         public var screenCanvasSizeOptions: QuickSightClientTypes.GridLayoutScreenCanvasSizeOptions?
 
@@ -1205,12 +1206,12 @@ extension QuickSightClientTypes {
             self.screenCanvasSizeOptions = screenCanvasSizeOptions
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The options that determine the default settings for a grid layout configuration.
-    public struct DefaultGridLayoutConfiguration {
+    public struct DefaultGridLayoutConfiguration: Swift.Sendable {
         /// Determines the screen canvas size options for a grid layout.
         /// This member is required.
         public var canvasSizeOptions: QuickSightClientTypes.GridLayoutCanvasSizeOptions?
@@ -1222,12 +1223,12 @@ extension QuickSightClientTypes {
             self.canvasSizeOptions = canvasSizeOptions
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The options that determine the default settings for interactive layout configuration.
-    public struct DefaultInteractiveLayoutConfiguration {
+    public struct DefaultInteractiveLayoutConfiguration: Swift.Sendable {
         /// The options that determine the default settings of a free-form layout configuration.
         public var freeForm: QuickSightClientTypes.DefaultFreeFormLayoutConfiguration?
         /// The options that determine the default settings for a grid layout configuration.
@@ -1242,12 +1243,12 @@ extension QuickSightClientTypes {
             self.grid = grid
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The configuration of spacing (often a margin or padding).
-    public struct Spacing {
+    public struct Spacing: Swift.Sendable {
         /// Define the bottom spacing.
         public var bottom: Swift.String?
         /// Define the left spacing.
@@ -1270,12 +1271,11 @@ extension QuickSightClientTypes {
             self.top = top
         }
     }
-
 }
 
 extension QuickSightClientTypes {
 
-    public enum PaperOrientation: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum PaperOrientation: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case landscape
         case portrait
         case sdkUnknown(Swift.String)
@@ -1304,7 +1304,7 @@ extension QuickSightClientTypes {
 
 extension QuickSightClientTypes {
 
-    public enum PaperSize: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum PaperSize: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case a0
         case a1
         case a2
@@ -1359,8 +1359,9 @@ extension QuickSightClientTypes {
 }
 
 extension QuickSightClientTypes {
+
     /// The options for a paper canvas of a section-based layout.
-    public struct SectionBasedLayoutPaperCanvasSizeOptions {
+    public struct SectionBasedLayoutPaperCanvasSizeOptions: Swift.Sendable {
         /// Defines the spacing between the canvas content and the top, bottom, left, and right edges.
         public var paperMargin: QuickSightClientTypes.Spacing?
         /// The paper orientation that is used to define canvas dimensions. Choose one of the following options:
@@ -1383,12 +1384,12 @@ extension QuickSightClientTypes {
             self.paperSize = paperSize
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The options for the canvas of a section-based layout.
-    public struct SectionBasedLayoutCanvasSizeOptions {
+    public struct SectionBasedLayoutCanvasSizeOptions: Swift.Sendable {
         /// The options for a paper canvas of a section-based layout.
         public var paperCanvasSizeOptions: QuickSightClientTypes.SectionBasedLayoutPaperCanvasSizeOptions?
 
@@ -1399,12 +1400,12 @@ extension QuickSightClientTypes {
             self.paperCanvasSizeOptions = paperCanvasSizeOptions
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The options that determine the default settings for a section-based layout configuration.
-    public struct DefaultSectionBasedLayoutConfiguration {
+    public struct DefaultSectionBasedLayoutConfiguration: Swift.Sendable {
         /// Determines the screen canvas size options for a section-based layout.
         /// This member is required.
         public var canvasSizeOptions: QuickSightClientTypes.SectionBasedLayoutCanvasSizeOptions?
@@ -1416,12 +1417,12 @@ extension QuickSightClientTypes {
             self.canvasSizeOptions = canvasSizeOptions
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The options that determine the default settings for a paginated layout configuration.
-    public struct DefaultPaginatedLayoutConfiguration {
+    public struct DefaultPaginatedLayoutConfiguration: Swift.Sendable {
         /// The options that determine the default settings for a section-based layout configuration.
         public var sectionBased: QuickSightClientTypes.DefaultSectionBasedLayoutConfiguration?
 
@@ -1432,12 +1433,11 @@ extension QuickSightClientTypes {
             self.sectionBased = sectionBased
         }
     }
-
 }
 
 extension QuickSightClientTypes {
 
-    public enum SheetContentType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SheetContentType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case interactive
         case paginated
         case sdkUnknown(Swift.String)
@@ -1465,8 +1465,9 @@ extension QuickSightClientTypes {
 }
 
 extension QuickSightClientTypes {
+
     /// The configuration for default new sheet settings.
-    public struct DefaultNewSheetConfiguration {
+    public struct DefaultNewSheetConfiguration: Swift.Sendable {
         /// The options that determine the default settings for interactive layout configuration.
         public var interactiveLayoutConfiguration: QuickSightClientTypes.DefaultInteractiveLayoutConfiguration?
         /// The options that determine the default settings for a paginated layout configuration.
@@ -1485,12 +1486,12 @@ extension QuickSightClientTypes {
             self.sheetContentType = sheetContentType
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The configuration for default analysis settings.
-    public struct AnalysisDefaults {
+    public struct AnalysisDefaults: Swift.Sendable {
         /// The configuration for default new sheet settings.
         /// This member is required.
         public var defaultNewSheetConfiguration: QuickSightClientTypes.DefaultNewSheetConfiguration?
@@ -1502,12 +1503,12 @@ extension QuickSightClientTypes {
             self.defaultNewSheetConfiguration = defaultNewSheetConfiguration
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The calculated field of an analysis.
-    public struct CalculatedField {
+    public struct CalculatedField: Swift.Sendable {
         /// The data set that is used in this calculated field.
         /// This member is required.
         public var dataSetIdentifier: Swift.String?
@@ -1529,7 +1530,6 @@ extension QuickSightClientTypes {
             self.name = name
         }
     }
-
 }
 
 extension QuickSightClientTypes.CalculatedField: Swift.CustomDebugStringConvertible {
@@ -1539,7 +1539,7 @@ extension QuickSightClientTypes.CalculatedField: Swift.CustomDebugStringConverti
 
 extension QuickSightClientTypes {
 
-    public enum SpecialValue: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SpecialValue: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case empty
         case null
         case other
@@ -1570,8 +1570,9 @@ extension QuickSightClientTypes {
 }
 
 extension QuickSightClientTypes {
+
     /// Determines the color that's applied to a particular data value in a column.
-    public struct CustomColor {
+    public struct CustomColor: Swift.Sendable {
         /// The color that is applied to the data value.
         /// This member is required.
         public var color: Swift.String?
@@ -1591,7 +1592,6 @@ extension QuickSightClientTypes {
             self.specialValue = specialValue
         }
     }
-
 }
 
 extension QuickSightClientTypes.CustomColor: Swift.CustomDebugStringConvertible {
@@ -1600,8 +1600,9 @@ extension QuickSightClientTypes.CustomColor: Swift.CustomDebugStringConvertible 
 }
 
 extension QuickSightClientTypes {
+
     /// The color configurations for a column.
-    public struct ColorsConfiguration {
+    public struct ColorsConfiguration: Swift.Sendable {
         /// A list of up to 50 custom colors.
         public var customColors: [QuickSightClientTypes.CustomColor]?
 
@@ -1612,12 +1613,12 @@ extension QuickSightClientTypes {
             self.customColors = customColors
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The options that determine the null value format configuration.
-    public struct NullValueFormatConfiguration {
+    public struct NullValueFormatConfiguration: Swift.Sendable {
         /// Determines the null string of null values.
         /// This member is required.
         public var nullString: Swift.String?
@@ -1629,7 +1630,6 @@ extension QuickSightClientTypes {
             self.nullString = nullString
         }
     }
-
 }
 
 extension QuickSightClientTypes.NullValueFormatConfiguration: Swift.CustomDebugStringConvertible {
@@ -1638,8 +1638,9 @@ extension QuickSightClientTypes.NullValueFormatConfiguration: Swift.CustomDebugS
 }
 
 extension QuickSightClientTypes {
+
     /// The option that determines the decimal places configuration.
-    public struct DecimalPlacesConfiguration {
+    public struct DecimalPlacesConfiguration: Swift.Sendable {
         /// The values of the decimal places.
         /// This member is required.
         public var decimalPlaces: Swift.Int?
@@ -1651,12 +1652,11 @@ extension QuickSightClientTypes {
             self.decimalPlaces = decimalPlaces
         }
     }
-
 }
 
 extension QuickSightClientTypes {
 
-    public enum NegativeValueDisplayMode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum NegativeValueDisplayMode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case negative
         case positive
         case sdkUnknown(Swift.String)
@@ -1684,8 +1684,9 @@ extension QuickSightClientTypes {
 }
 
 extension QuickSightClientTypes {
+
     /// The options that determine the negative value configuration.
-    public struct NegativeValueConfiguration {
+    public struct NegativeValueConfiguration: Swift.Sendable {
         /// Determines the display mode of the negative value configuration.
         /// This member is required.
         public var displayMode: QuickSightClientTypes.NegativeValueDisplayMode?
@@ -1697,12 +1698,11 @@ extension QuickSightClientTypes {
             self.displayMode = displayMode
         }
     }
-
 }
 
 extension QuickSightClientTypes {
 
-    public enum NumberScale: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum NumberScale: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case auto
         case billions
         case millions
@@ -1743,7 +1743,7 @@ extension QuickSightClientTypes {
 
 extension QuickSightClientTypes {
 
-    public enum NumericSeparatorSymbol: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum NumericSeparatorSymbol: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case comma
         case dot
         case space
@@ -1775,7 +1775,7 @@ extension QuickSightClientTypes {
 
 extension QuickSightClientTypes {
 
-    public enum Visibility: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Visibility: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case hidden
         case visible
         case sdkUnknown(Swift.String)
@@ -1803,8 +1803,9 @@ extension QuickSightClientTypes {
 }
 
 extension QuickSightClientTypes {
+
     /// The options that determine the thousands separator configuration.
-    public struct ThousandSeparatorOptions {
+    public struct ThousandSeparatorOptions: Swift.Sendable {
         /// Determines the thousands separator symbol.
         public var symbol: QuickSightClientTypes.NumericSeparatorSymbol?
         /// Determines the visibility of the thousands separator.
@@ -1819,12 +1820,12 @@ extension QuickSightClientTypes {
             self.visibility = visibility
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The options that determine the numeric separator configuration.
-    public struct NumericSeparatorConfiguration {
+    public struct NumericSeparatorConfiguration: Swift.Sendable {
         /// Determines the decimal separator.
         public var decimalSeparator: QuickSightClientTypes.NumericSeparatorSymbol?
         /// The options that determine the thousands separator configuration.
@@ -1839,12 +1840,12 @@ extension QuickSightClientTypes {
             self.thousandsSeparator = thousandsSeparator
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The options that determine the currency display format configuration.
-    public struct CurrencyDisplayFormatConfiguration {
+    public struct CurrencyDisplayFormatConfiguration: Swift.Sendable {
         /// The option that determines the decimal places configuration.
         public var decimalPlacesConfiguration: QuickSightClientTypes.DecimalPlacesConfiguration?
         /// The options that determine the negative value configuration.
@@ -1883,7 +1884,6 @@ extension QuickSightClientTypes {
             self.symbol = symbol
         }
     }
-
 }
 
 extension QuickSightClientTypes.CurrencyDisplayFormatConfiguration: Swift.CustomDebugStringConvertible {
@@ -1892,8 +1892,9 @@ extension QuickSightClientTypes.CurrencyDisplayFormatConfiguration: Swift.Custom
 }
 
 extension QuickSightClientTypes {
+
     /// The options that determine the number display format configuration.
-    public struct NumberDisplayFormatConfiguration {
+    public struct NumberDisplayFormatConfiguration: Swift.Sendable {
         /// The option that determines the decimal places configuration.
         public var decimalPlacesConfiguration: QuickSightClientTypes.DecimalPlacesConfiguration?
         /// The options that determine the negative value configuration.
@@ -1928,7 +1929,6 @@ extension QuickSightClientTypes {
             self.suffix = suffix
         }
     }
-
 }
 
 extension QuickSightClientTypes.NumberDisplayFormatConfiguration: Swift.CustomDebugStringConvertible {
@@ -1937,8 +1937,9 @@ extension QuickSightClientTypes.NumberDisplayFormatConfiguration: Swift.CustomDe
 }
 
 extension QuickSightClientTypes {
+
     /// The options that determine the percentage display format configuration.
-    public struct PercentageDisplayFormatConfiguration {
+    public struct PercentageDisplayFormatConfiguration: Swift.Sendable {
         /// The option that determines the decimal places configuration.
         public var decimalPlacesConfiguration: QuickSightClientTypes.DecimalPlacesConfiguration?
         /// The options that determine the negative value configuration.
@@ -1969,7 +1970,6 @@ extension QuickSightClientTypes {
             self.suffix = suffix
         }
     }
-
 }
 
 extension QuickSightClientTypes.PercentageDisplayFormatConfiguration: Swift.CustomDebugStringConvertible {
@@ -1978,8 +1978,9 @@ extension QuickSightClientTypes.PercentageDisplayFormatConfiguration: Swift.Cust
 }
 
 extension QuickSightClientTypes {
+
     /// The options that determine the numeric format configuration. This is a union type structure. For this structure to be valid, only one of the attributes can be defined.
-    public struct NumericFormatConfiguration {
+    public struct NumericFormatConfiguration: Swift.Sendable {
         /// The options that determine the currency display format configuration.
         public var currencyDisplayFormatConfiguration: QuickSightClientTypes.CurrencyDisplayFormatConfiguration?
         /// The options that determine the number display format configuration.
@@ -1998,12 +1999,12 @@ extension QuickSightClientTypes {
             self.percentageDisplayFormatConfiguration = percentageDisplayFormatConfiguration
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// Formatting configuration for DateTime fields.
-    public struct DateTimeFormatConfiguration {
+    public struct DateTimeFormatConfiguration: Swift.Sendable {
         /// Determines the DateTime format.
         public var dateTimeFormat: Swift.String?
         /// The options that determine the null value format configuration.
@@ -2022,12 +2023,12 @@ extension QuickSightClientTypes {
             self.numericFormatConfiguration = numericFormatConfiguration
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// Formatting configuration for number fields.
-    public struct NumberFormatConfiguration {
+    public struct NumberFormatConfiguration: Swift.Sendable {
         /// The options that determine the numeric format configuration.
         public var formatConfiguration: QuickSightClientTypes.NumericFormatConfiguration?
 
@@ -2038,12 +2039,12 @@ extension QuickSightClientTypes {
             self.formatConfiguration = formatConfiguration
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// Formatting configuration for string fields.
-    public struct StringFormatConfiguration {
+    public struct StringFormatConfiguration: Swift.Sendable {
         /// The options that determine the null value format configuration.
         public var nullValueFormatConfiguration: QuickSightClientTypes.NullValueFormatConfiguration?
         /// The formatting configuration for numeric strings.
@@ -2058,12 +2059,12 @@ extension QuickSightClientTypes {
             self.numericFormatConfiguration = numericFormatConfiguration
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The formatting configuration for all types of field.
-    public struct FormatConfiguration {
+    public struct FormatConfiguration: Swift.Sendable {
         /// Formatting configuration for DateTime fields.
         public var dateTimeFormatConfiguration: QuickSightClientTypes.DateTimeFormatConfiguration?
         /// Formatting configuration for number fields.
@@ -2082,12 +2083,11 @@ extension QuickSightClientTypes {
             self.stringFormatConfiguration = stringFormatConfiguration
         }
     }
-
 }
 
 extension QuickSightClientTypes {
 
-    public enum ColumnRole: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ColumnRole: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case dimension
         case measure
         case sdkUnknown(Swift.String)
@@ -2115,8 +2115,9 @@ extension QuickSightClientTypes {
 }
 
 extension QuickSightClientTypes {
+
     /// The general configuration of a column.
-    public struct ColumnConfiguration {
+    public struct ColumnConfiguration: Swift.Sendable {
         /// The color configurations of the column.
         public var colorsConfiguration: QuickSightClientTypes.ColorsConfiguration?
         /// The column.
@@ -2140,12 +2141,12 @@ extension QuickSightClientTypes {
             self.role = role
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// A data set.
-    public struct DataSetIdentifierDeclaration {
+    public struct DataSetIdentifierDeclaration: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the data set.
         /// This member is required.
         public var dataSetArn: Swift.String?
@@ -2162,12 +2163,11 @@ extension QuickSightClientTypes {
             self.identifier = identifier
         }
     }
-
 }
 
 extension QuickSightClientTypes {
 
-    public enum CrossDatasetTypes: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum CrossDatasetTypes: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case allDatasets
         case singleDataset
         case sdkUnknown(Swift.String)
@@ -2196,7 +2196,7 @@ extension QuickSightClientTypes {
 
 extension QuickSightClientTypes {
 
-    public enum CategoryFilterMatchOperator: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum CategoryFilterMatchOperator: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case contains
         case doesNotContain
         case doesNotEqual
@@ -2237,7 +2237,7 @@ extension QuickSightClientTypes {
 
 extension QuickSightClientTypes {
 
-    public enum FilterNullOption: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum FilterNullOption: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case allValues
         case nonNullsOnly
         case nullsOnly
@@ -2269,7 +2269,7 @@ extension QuickSightClientTypes {
 
 extension QuickSightClientTypes {
 
-    public enum CategoryFilterSelectAllOptions: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum CategoryFilterSelectAllOptions: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case filterAllValues
         case sdkUnknown(Swift.String)
 
@@ -2294,8 +2294,9 @@ extension QuickSightClientTypes {
 }
 
 extension QuickSightClientTypes {
+
     /// A custom filter that filters based on a single value. This filter can be partially matched.
-    public struct CustomFilterConfiguration {
+    public struct CustomFilterConfiguration: Swift.Sendable {
         /// The category value for the filter. This field is mutually exclusive to ParameterName.
         public var categoryValue: Swift.String?
         /// The match operator that is used to determine if a filter should be applied.
@@ -2332,12 +2333,12 @@ extension QuickSightClientTypes {
             self.selectAllOptions = selectAllOptions
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// A list of custom filter values.
-    public struct CustomFilterListConfiguration {
+    public struct CustomFilterListConfiguration: Swift.Sendable {
         /// The list of category values for the filter.
         public var categoryValues: [Swift.String]?
         /// The match operator that is used to determine if a filter should be applied.
@@ -2370,12 +2371,12 @@ extension QuickSightClientTypes {
             self.selectAllOptions = selectAllOptions
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// A list of filter configurations.
-    public struct FilterListConfiguration {
+    public struct FilterListConfiguration: Swift.Sendable {
         /// The list of category values for the filter.
         public var categoryValues: [Swift.String]?
         /// The match operator that is used to determine if a filter should be applied.
@@ -2407,12 +2408,12 @@ extension QuickSightClientTypes {
             self.selectAllOptions = selectAllOptions
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The configuration for a CategoryFilter. This is a union type structure. For this structure to be valid, only one of the attributes can be defined.
-    public struct CategoryFilterConfiguration {
+    public struct CategoryFilterConfiguration: Swift.Sendable {
         /// A custom filter that filters based on a single value. This filter can be partially matched.
         public var customFilterConfiguration: QuickSightClientTypes.CustomFilterConfiguration?
         /// A list of custom filter values. In the Amazon QuickSight console, this filter type is called a custom filter list.
@@ -2431,12 +2432,11 @@ extension QuickSightClientTypes {
             self.filterListConfiguration = filterListConfiguration
         }
     }
-
 }
 
 extension QuickSightClientTypes {
 
-    public enum CommitMode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum CommitMode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case auto
         case manual
         case sdkUnknown(Swift.String)
@@ -2464,8 +2464,9 @@ extension QuickSightClientTypes {
 }
 
 extension QuickSightClientTypes {
+
     /// A control to display info icons for filters and parameters.
-    public struct SheetControlInfoIconLabelOptions {
+    public struct SheetControlInfoIconLabelOptions: Swift.Sendable {
         /// The text content of info icon.
         public var infoIconText: Swift.String?
         /// The visibility configuration of info icon label options.
@@ -2480,12 +2481,11 @@ extension QuickSightClientTypes {
             self.visibility = visibility
         }
     }
-
 }
 
 extension QuickSightClientTypes {
 
-    public enum FontDecoration: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum FontDecoration: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case `none`
         case underline
         case sdkUnknown(Swift.String)
@@ -2514,7 +2514,7 @@ extension QuickSightClientTypes {
 
 extension QuickSightClientTypes {
 
-    public enum RelativeFontSize: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum RelativeFontSize: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case extraLarge
         case extraSmall
         case large
@@ -2551,8 +2551,9 @@ extension QuickSightClientTypes {
 }
 
 extension QuickSightClientTypes {
+
     /// The option that determines the text display size.
-    public struct FontSize {
+    public struct FontSize: Swift.Sendable {
         /// The lexical name for the text size, proportional to its surrounding context.
         public var relative: QuickSightClientTypes.RelativeFontSize?
 
@@ -2563,12 +2564,11 @@ extension QuickSightClientTypes {
             self.relative = relative
         }
     }
-
 }
 
 extension QuickSightClientTypes {
 
-    public enum FontStyle: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum FontStyle: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case italic
         case normal
         case sdkUnknown(Swift.String)
@@ -2597,7 +2597,7 @@ extension QuickSightClientTypes {
 
 extension QuickSightClientTypes {
 
-    public enum FontWeightName: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum FontWeightName: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case bold
         case normal
         case sdkUnknown(Swift.String)
@@ -2625,8 +2625,9 @@ extension QuickSightClientTypes {
 }
 
 extension QuickSightClientTypes {
+
     /// The option that determines the text display weight, or boldness.
-    public struct FontWeight {
+    public struct FontWeight: Swift.Sendable {
         /// The lexical name for the level of boldness of the text display.
         public var name: QuickSightClientTypes.FontWeightName?
 
@@ -2637,12 +2638,12 @@ extension QuickSightClientTypes {
             self.name = name
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// Configures the display properties of the given text.
-    public struct FontConfiguration {
+    public struct FontConfiguration: Swift.Sendable {
         /// Determines the color of the text.
         public var fontColor: Swift.String?
         /// Determines the appearance of decorative lines on the text.
@@ -2669,12 +2670,12 @@ extension QuickSightClientTypes {
             self.fontWeight = fontWeight
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The share label options for the labels.
-    public struct LabelOptions {
+    public struct LabelOptions: Swift.Sendable {
         /// The text for the label.
         public var customLabel: Swift.String?
         /// The font configuration of the label.
@@ -2693,12 +2694,12 @@ extension QuickSightClientTypes {
             self.visibility = visibility
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The display options of a control.
-    public struct DateTimePickerControlDisplayOptions {
+    public struct DateTimePickerControlDisplayOptions: Swift.Sendable {
         /// The date icon visibility of the DateTimePickerControlDisplayOptions.
         public var dateIconVisibility: QuickSightClientTypes.Visibility?
         /// Customize how dates are formatted in controls.
@@ -2725,12 +2726,11 @@ extension QuickSightClientTypes {
             self.titleOptions = titleOptions
         }
     }
-
 }
 
 extension QuickSightClientTypes {
 
-    public enum SheetControlDateTimePickerType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SheetControlDateTimePickerType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case dateRange
         case singleValued
         case sdkUnknown(Swift.String)
@@ -2758,8 +2758,9 @@ extension QuickSightClientTypes {
 }
 
 extension QuickSightClientTypes {
+
     /// The default options that correspond to the filter control type of a DateTimePicker.
-    public struct DefaultDateTimePickerControlOptions {
+    public struct DefaultDateTimePickerControlOptions: Swift.Sendable {
         /// The visibility configuration of the Apply button on a DateTimePickerControl.
         public var commitMode: QuickSightClientTypes.CommitMode?
         /// The display options of a control.
@@ -2782,12 +2783,12 @@ extension QuickSightClientTypes {
             self.type = type
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The configuration of the Select all options in a list control.
-    public struct ListControlSelectAllOptions {
+    public struct ListControlSelectAllOptions: Swift.Sendable {
         /// The visibility configuration of the Select all options in a list control.
         public var visibility: QuickSightClientTypes.Visibility?
 
@@ -2798,12 +2799,12 @@ extension QuickSightClientTypes {
             self.visibility = visibility
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The display options of a control.
-    public struct DropDownControlDisplayOptions {
+    public struct DropDownControlDisplayOptions: Swift.Sendable {
         /// The configuration of info icon label options.
         public var infoIconLabelOptions: QuickSightClientTypes.SheetControlInfoIconLabelOptions?
         /// The configuration of the Select all options in a dropdown control.
@@ -2822,12 +2823,12 @@ extension QuickSightClientTypes {
             self.titleOptions = titleOptions
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// A list of selectable values that are used in a control.
-    public struct FilterSelectableValues {
+    public struct FilterSelectableValues: Swift.Sendable {
         /// The values that are used in the FilterSelectableValues.
         public var values: [Swift.String]?
 
@@ -2838,12 +2839,11 @@ extension QuickSightClientTypes {
             self.values = values
         }
     }
-
 }
 
 extension QuickSightClientTypes {
 
-    public enum SheetControlListType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SheetControlListType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case multiSelect
         case singleSelect
         case sdkUnknown(Swift.String)
@@ -2871,8 +2871,9 @@ extension QuickSightClientTypes {
 }
 
 extension QuickSightClientTypes {
+
     /// The default options that correspond to the Dropdown filter control type.
-    public struct DefaultFilterDropDownControlOptions {
+    public struct DefaultFilterDropDownControlOptions: Swift.Sendable {
         /// The visibility configuration of the Apply button on a FilterDropDownControl.
         public var commitMode: QuickSightClientTypes.CommitMode?
         /// The display options of a control.
@@ -2899,12 +2900,12 @@ extension QuickSightClientTypes {
             self.type = type
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The configuration of the search options in a list control.
-    public struct ListControlSearchOptions {
+    public struct ListControlSearchOptions: Swift.Sendable {
         /// The visibility configuration of the search options in a list control.
         public var visibility: QuickSightClientTypes.Visibility?
 
@@ -2915,12 +2916,12 @@ extension QuickSightClientTypes {
             self.visibility = visibility
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The display options of a control.
-    public struct ListControlDisplayOptions {
+    public struct ListControlDisplayOptions: Swift.Sendable {
         /// The configuration of info icon label options.
         public var infoIconLabelOptions: QuickSightClientTypes.SheetControlInfoIconLabelOptions?
         /// The configuration of the search options in a list control.
@@ -2943,12 +2944,12 @@ extension QuickSightClientTypes {
             self.titleOptions = titleOptions
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The default options that correspond to the List filter control type.
-    public struct DefaultFilterListControlOptions {
+    public struct DefaultFilterListControlOptions: Swift.Sendable {
         /// The display options of a control.
         public var displayOptions: QuickSightClientTypes.ListControlDisplayOptions?
         /// A list of selectable values that are used in a control.
@@ -2971,12 +2972,12 @@ extension QuickSightClientTypes {
             self.type = type
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The display options of a control.
-    public struct RelativeDateTimeControlDisplayOptions {
+    public struct RelativeDateTimeControlDisplayOptions: Swift.Sendable {
         /// Customize how dates are formatted in controls.
         public var dateTimeFormat: Swift.String?
         /// The configuration of info icon label options.
@@ -2995,12 +2996,12 @@ extension QuickSightClientTypes {
             self.titleOptions = titleOptions
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The default options that correspond to the RelativeDateTime filter control type.
-    public struct DefaultRelativeDateTimeControlOptions {
+    public struct DefaultRelativeDateTimeControlOptions: Swift.Sendable {
         /// The visibility configuration of the Apply button on a RelativeDateTimeControl.
         public var commitMode: QuickSightClientTypes.CommitMode?
         /// The display options of a control.
@@ -3015,12 +3016,12 @@ extension QuickSightClientTypes {
             self.displayOptions = displayOptions
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The display options of a control.
-    public struct SliderControlDisplayOptions {
+    public struct SliderControlDisplayOptions: Swift.Sendable {
         /// The configuration of info icon label options.
         public var infoIconLabelOptions: QuickSightClientTypes.SheetControlInfoIconLabelOptions?
         /// The options to configure the title visibility, name, and font size.
@@ -3035,12 +3036,11 @@ extension QuickSightClientTypes {
             self.titleOptions = titleOptions
         }
     }
-
 }
 
 extension QuickSightClientTypes {
 
-    public enum SheetControlSliderType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SheetControlSliderType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case range
         case singlePoint
         case sdkUnknown(Swift.String)
@@ -3068,8 +3068,9 @@ extension QuickSightClientTypes {
 }
 
 extension QuickSightClientTypes {
+
     /// The default options that correspond to the Slider filter control type.
-    public struct DefaultSliderControlOptions {
+    public struct DefaultSliderControlOptions: Swift.Sendable {
         /// The display options of a control.
         public var displayOptions: QuickSightClientTypes.SliderControlDisplayOptions?
         /// The larger value that is displayed at the right of the slider.
@@ -3103,12 +3104,12 @@ extension QuickSightClientTypes {
             self.type = type
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The configuration of the placeholder options in a text control.
-    public struct TextControlPlaceholderOptions {
+    public struct TextControlPlaceholderOptions: Swift.Sendable {
         /// The visibility configuration of the placeholder options in a text control.
         public var visibility: QuickSightClientTypes.Visibility?
 
@@ -3119,12 +3120,12 @@ extension QuickSightClientTypes {
             self.visibility = visibility
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The display options of a control.
-    public struct TextAreaControlDisplayOptions {
+    public struct TextAreaControlDisplayOptions: Swift.Sendable {
         /// The configuration of info icon label options.
         public var infoIconLabelOptions: QuickSightClientTypes.SheetControlInfoIconLabelOptions?
         /// The configuration of the placeholder options in a text area control.
@@ -3143,12 +3144,12 @@ extension QuickSightClientTypes {
             self.titleOptions = titleOptions
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The default options that correspond to the TextArea filter control type.
-    public struct DefaultTextAreaControlOptions {
+    public struct DefaultTextAreaControlOptions: Swift.Sendable {
         /// The delimiter that is used to separate the lines in text.
         public var delimiter: Swift.String?
         /// The display options of a control.
@@ -3163,12 +3164,12 @@ extension QuickSightClientTypes {
             self.displayOptions = displayOptions
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The display options of a control.
-    public struct TextFieldControlDisplayOptions {
+    public struct TextFieldControlDisplayOptions: Swift.Sendable {
         /// The configuration of info icon label options.
         public var infoIconLabelOptions: QuickSightClientTypes.SheetControlInfoIconLabelOptions?
         /// The configuration of the placeholder options in a text field control.
@@ -3187,12 +3188,12 @@ extension QuickSightClientTypes {
             self.titleOptions = titleOptions
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The default options that correspond to the TextField filter control type.
-    public struct DefaultTextFieldControlOptions {
+    public struct DefaultTextFieldControlOptions: Swift.Sendable {
         /// The display options of a control.
         public var displayOptions: QuickSightClientTypes.TextFieldControlDisplayOptions?
 
@@ -3203,12 +3204,12 @@ extension QuickSightClientTypes {
             self.displayOptions = displayOptions
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The option that corresponds to the control type of the filter.
-    public struct DefaultFilterControlOptions {
+    public struct DefaultFilterControlOptions: Swift.Sendable {
         /// The default options that correspond to the filter control type of a DateTimePicker.
         public var defaultDateTimePickerOptions: QuickSightClientTypes.DefaultDateTimePickerControlOptions?
         /// The default options that correspond to the Dropdown filter control type.
@@ -3243,12 +3244,12 @@ extension QuickSightClientTypes {
             self.defaultTextFieldOptions = defaultTextFieldOptions
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The default configuration for all dependent controls of the filter.
-    public struct DefaultFilterControlConfiguration {
+    public struct DefaultFilterControlConfiguration: Swift.Sendable {
         /// The control option for the DefaultFilterControlConfiguration.
         /// This member is required.
         public var controlOptions: QuickSightClientTypes.DefaultFilterControlOptions?
@@ -3265,12 +3266,12 @@ extension QuickSightClientTypes {
             self.title = title
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// A CategoryFilter filters text values. For more information, see [Adding text filters](https://docs.aws.amazon.com/quicksight/latest/user/add-a-text-filter-data-prep.html) in the Amazon QuickSight User Guide.
-    public struct CategoryFilter {
+    public struct CategoryFilter: Swift.Sendable {
         /// The column that the filter is applied to.
         /// This member is required.
         public var column: QuickSightClientTypes.ColumnIdentifier?
@@ -3296,12 +3297,12 @@ extension QuickSightClientTypes {
             self.filterId = filterId
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// A CategoryInnerFilter filters text values for the NestedFilter.
-    public struct CategoryInnerFilter {
+    public struct CategoryInnerFilter: Swift.Sendable {
         /// A column of a data set.
         /// This member is required.
         public var column: QuickSightClientTypes.ColumnIdentifier?
@@ -3322,12 +3323,12 @@ extension QuickSightClientTypes {
             self.defaultFilterControlConfiguration = defaultFilterControlConfiguration
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The InnerFilter defines the subset of data to be used with the NestedFilter.
-    public struct InnerFilter {
+    public struct InnerFilter: Swift.Sendable {
         /// A CategoryInnerFilter filters text values for the NestedFilter.
         public var categoryInnerFilter: QuickSightClientTypes.CategoryInnerFilter?
 
@@ -3338,12 +3339,12 @@ extension QuickSightClientTypes {
             self.categoryInnerFilter = categoryInnerFilter
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// A NestedFilter filters data with a subset of data that is defined by the nested inner filter.
-    public struct NestedFilter {
+    public struct NestedFilter: Swift.Sendable {
         /// The column that the filter is applied to.
         /// This member is required.
         public var column: QuickSightClientTypes.ColumnIdentifier?
@@ -3370,12 +3371,11 @@ extension QuickSightClientTypes {
             self.innerFilter = innerFilter
         }
     }
-
 }
 
 extension QuickSightClientTypes {
 
-    public enum NumericEqualityMatchOperator: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum NumericEqualityMatchOperator: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case doesNotEqual
         case equals
         case sdkUnknown(Swift.String)
@@ -3404,7 +3404,7 @@ extension QuickSightClientTypes {
 
 extension QuickSightClientTypes {
 
-    public enum NumericFilterSelectAllOptions: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum NumericFilterSelectAllOptions: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case filterAllValues
         case sdkUnknown(Swift.String)
 
@@ -3429,8 +3429,9 @@ extension QuickSightClientTypes {
 }
 
 extension QuickSightClientTypes {
+
     /// A NumericEqualityFilter filters values that are equal to the specified value.
-    public struct NumericEqualityFilter {
+    public struct NumericEqualityFilter: Swift.Sendable {
         /// The aggregation function of the filter.
         public var aggregationFunction: QuickSightClientTypes.AggregationFunction?
         /// The column that the filter is applied to.
@@ -3485,12 +3486,12 @@ extension QuickSightClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The value input pf the numeric range filter.
-    public struct NumericRangeFilterValue {
+    public struct NumericRangeFilterValue: Swift.Sendable {
         /// The parameter that is used in the numeric range.
         public var parameter: Swift.String?
         /// The static value of the numeric range filter.
@@ -3505,12 +3506,12 @@ extension QuickSightClientTypes {
             self.staticValue = staticValue
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// A NumericRangeFilter filters values that are within the value range.
-    public struct NumericRangeFilter {
+    public struct NumericRangeFilter: Swift.Sendable {
         /// The aggregation function of the filter.
         public var aggregationFunction: QuickSightClientTypes.AggregationFunction?
         /// The column that the filter is applied to.
@@ -3568,12 +3569,11 @@ extension QuickSightClientTypes {
             self.selectAllOptions = selectAllOptions
         }
     }
-
 }
 
 extension QuickSightClientTypes {
 
-    public enum AnchorOption: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AnchorOption: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case now
         case sdkUnknown(Swift.String)
 
@@ -3598,8 +3598,9 @@ extension QuickSightClientTypes {
 }
 
 extension QuickSightClientTypes {
+
     /// The date configuration of the filter.
-    public struct AnchorDateConfiguration {
+    public struct AnchorDateConfiguration: Swift.Sendable {
         /// The options for the date configuration. Choose one of the options below:
         ///
         /// * NOW
@@ -3616,12 +3617,11 @@ extension QuickSightClientTypes {
             self.parameterName = parameterName
         }
     }
-
 }
 
 extension QuickSightClientTypes {
 
-    public enum WidgetStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum WidgetStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case disabled
         case enabled
         case sdkUnknown(Swift.String)
@@ -3649,8 +3649,9 @@ extension QuickSightClientTypes {
 }
 
 extension QuickSightClientTypes {
+
     /// The exclude period of TimeRangeFilter or RelativeDatesFilter.
-    public struct ExcludePeriodConfiguration {
+    public struct ExcludePeriodConfiguration: Swift.Sendable {
         /// The amount or number of the exclude period.
         /// This member is required.
         public var amount: Swift.Int?
@@ -3675,12 +3676,11 @@ extension QuickSightClientTypes {
             self.status = status
         }
     }
-
 }
 
 extension QuickSightClientTypes {
 
-    public enum RelativeDateType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum RelativeDateType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case last
         case next
         case now
@@ -3717,8 +3717,9 @@ extension QuickSightClientTypes {
 }
 
 extension QuickSightClientTypes {
+
     /// A RelativeDatesFilter filters relative dates values.
-    public struct RelativeDatesFilter {
+    public struct RelativeDatesFilter: Swift.Sendable {
         /// The date configuration of the filter.
         /// This member is required.
         public var anchorDateConfiguration: QuickSightClientTypes.AnchorDateConfiguration?
@@ -3791,12 +3792,12 @@ extension QuickSightClientTypes {
             self.timeGranularity = timeGranularity
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The rolling date configuration of a date time filter.
-    public struct RollingDateConfiguration {
+    public struct RollingDateConfiguration: Swift.Sendable {
         /// The data set that is used in the rolling date configuration.
         public var dataSetIdentifier: Swift.String?
         /// The expression of the rolling date configuration.
@@ -3812,7 +3813,6 @@ extension QuickSightClientTypes {
             self.expression = expression
         }
     }
-
 }
 
 extension QuickSightClientTypes.RollingDateConfiguration: Swift.CustomDebugStringConvertible {
@@ -3821,8 +3821,9 @@ extension QuickSightClientTypes.RollingDateConfiguration: Swift.CustomDebugStrin
 }
 
 extension QuickSightClientTypes {
+
     /// A TimeEqualityFilter filters values that are equal to a given value.
-    public struct TimeEqualityFilter {
+    public struct TimeEqualityFilter: Swift.Sendable {
         /// The column that the filter is applied to.
         /// This member is required.
         public var column: QuickSightClientTypes.ColumnIdentifier?
@@ -3859,12 +3860,12 @@ extension QuickSightClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The value of a time range filter. This is a union type structure. For this structure to be valid, only one of the attributes can be defined.
-    public struct TimeRangeFilterValue {
+    public struct TimeRangeFilterValue: Swift.Sendable {
         /// The parameter type input value.
         public var parameter: Swift.String?
         /// The rolling date input value.
@@ -3883,12 +3884,12 @@ extension QuickSightClientTypes {
             self.staticValue = staticValue
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// A TimeRangeFilter filters values that are between two specified values.
-    public struct TimeRangeFilter {
+    public struct TimeRangeFilter: Swift.Sendable {
         /// The column that the filter is applied to.
         /// This member is required.
         public var column: QuickSightClientTypes.ColumnIdentifier?
@@ -3944,12 +3945,12 @@ extension QuickSightClientTypes {
             self.timeGranularity = timeGranularity
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// A TopBottomFilter filters values that are at the top or the bottom.
-    public struct TopBottomFilter {
+    public struct TopBottomFilter: Swift.Sendable {
         /// The aggregation and sort configuration of the top bottom filter.
         /// This member is required.
         public var aggregationSortConfigurations: [QuickSightClientTypes.AggregationSortConfiguration]?
@@ -3987,12 +3988,12 @@ extension QuickSightClientTypes {
             self.timeGranularity = timeGranularity
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// With a Filter, you can remove portions of data from a particular visual or view. This is a union type structure. For this structure to be valid, only one of the attributes can be defined.
-    public struct Filter {
+    public struct Filter: Swift.Sendable {
         /// A CategoryFilter filters text values. For more information, see [Adding text filters](https://docs.aws.amazon.com/quicksight/latest/user/add-a-text-filter-data-prep.html) in the Amazon QuickSight User Guide.
         public var categoryFilter: QuickSightClientTypes.CategoryFilter?
         /// A NestedFilter filters data with a subset of data that is defined by the nested inner filter.
@@ -4031,12 +4032,11 @@ extension QuickSightClientTypes {
             self.topBottomFilter = topBottomFilter
         }
     }
-
 }
 
 extension QuickSightClientTypes {
 
-    public enum FilterVisualScope: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum FilterVisualScope: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case allVisuals
         case selectedVisuals
         case sdkUnknown(Swift.String)
@@ -4064,8 +4064,9 @@ extension QuickSightClientTypes {
 }
 
 extension QuickSightClientTypes {
+
     /// The filter that is applied to the options.
-    public struct SheetVisualScopingConfiguration {
+    public struct SheetVisualScopingConfiguration: Swift.Sendable {
         /// The scope of the applied entities. Choose one of the following options:
         ///
         /// * ALL_VISUALS
@@ -4090,12 +4091,12 @@ extension QuickSightClientTypes {
             self.visualIds = visualIds
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The configuration for applying a filter to specific sheets or visuals. You can apply this filter to multiple visuals that are on one sheet or to all visuals on a sheet. This is a union type structure. For this structure to be valid, only one of the attributes can be defined.
-    public struct SelectedSheetsFilterScopeConfiguration {
+    public struct SelectedSheetsFilterScopeConfiguration: Swift.Sendable {
         /// The sheet ID and visual IDs of the sheet and visuals that the filter is applied to.
         public var sheetVisualScopingConfigurations: [QuickSightClientTypes.SheetVisualScopingConfiguration]?
 
@@ -4106,12 +4107,12 @@ extension QuickSightClientTypes {
             self.sheetVisualScopingConfigurations = sheetVisualScopingConfigurations
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The scope configuration for a FilterGroup. This is a union type structure. For this structure to be valid, only one of the attributes can be defined.
-    public struct FilterScopeConfiguration {
+    public struct FilterScopeConfiguration: Swift.Sendable {
         /// The configuration that applies a filter to all sheets. When you choose AllSheets as the value for a FilterScopeConfiguration, this filter is applied to all visuals of all sheets in an Analysis, Dashboard, or Template. The AllSheetsFilterScopeConfiguration is chosen.
         public var allSheets: QuickSightClientTypes.AllSheetsFilterScopeConfiguration?
         /// The configuration for applying a filter to specific sheets.
@@ -4126,12 +4127,12 @@ extension QuickSightClientTypes {
             self.selectedSheets = selectedSheets
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// A grouping of individual filters. Filter groups are applied to the same group of visuals. For more information, see [Adding filter conditions (group filters) with AND and OR operators](https://docs.aws.amazon.com/quicksight/latest/user/add-a-compound-filter.html) in the Amazon QuickSight User Guide.
-    public struct FilterGroup {
+    public struct FilterGroup: Swift.Sendable {
         /// The filter new feature which can apply filter group to all data sets. Choose one of the following options:
         ///
         /// * ALL_DATASETS
@@ -4166,12 +4167,11 @@ extension QuickSightClientTypes {
             self.status = status
         }
     }
-
 }
 
 extension QuickSightClientTypes {
 
-    public enum DayOfTheWeek: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DayOfTheWeek: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case friday
         case monday
         case saturday
@@ -4214,8 +4214,9 @@ extension QuickSightClientTypes {
 }
 
 extension QuickSightClientTypes {
+
     /// An array of analysis level configurations.
-    public struct AssetOptions {
+    public struct AssetOptions: Swift.Sendable {
         /// Determines the timezone for the analysis.
         public var timezone: Swift.String?
         /// Determines the week start day for an analysis.
@@ -4230,12 +4231,12 @@ extension QuickSightClientTypes {
             self.weekStart = weekStart
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// Defines different defaults to the users or groups based on mapping.
-    public struct DynamicDefaultValue {
+    public struct DynamicDefaultValue: Swift.Sendable {
         /// The column that contains the default value of each user or group.
         /// This member is required.
         public var defaultValueColumn: QuickSightClientTypes.ColumnIdentifier?
@@ -4255,12 +4256,12 @@ extension QuickSightClientTypes {
             self.userNameColumn = userNameColumn
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The default values of the DateTimeParameterDeclaration.
-    public struct DateTimeDefaultValues {
+    public struct DateTimeDefaultValues: Swift.Sendable {
         /// The dynamic value of the DataTimeDefaultValues. Different defaults are displayed according to users, groups, and values mapping.
         public var dynamicValue: QuickSightClientTypes.DynamicDefaultValue?
         /// The rolling date of the DataTimeDefaultValues. The date is determined from the dataset based on input expression.
@@ -4279,7 +4280,6 @@ extension QuickSightClientTypes {
             self.staticValues = staticValues
         }
     }
-
 }
 
 extension QuickSightClientTypes.DateTimeDefaultValues: Swift.CustomDebugStringConvertible {
@@ -4288,8 +4288,9 @@ extension QuickSightClientTypes.DateTimeDefaultValues: Swift.CustomDebugStringCo
 }
 
 extension QuickSightClientTypes {
+
     /// A dataset parameter that is mapped to an analysis parameter.
-    public struct MappedDataSetParameter {
+    public struct MappedDataSetParameter: Swift.Sendable {
         /// A unique name that identifies a dataset within the analysis or dashboard.
         /// This member is required.
         public var dataSetIdentifier: Swift.String?
@@ -4306,12 +4307,11 @@ extension QuickSightClientTypes {
             self.dataSetParameterName = dataSetParameterName
         }
     }
-
 }
 
 extension QuickSightClientTypes {
 
-    public enum ValueWhenUnsetOption: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ValueWhenUnsetOption: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case null
         case recommendedValue
         case sdkUnknown(Swift.String)
@@ -4339,8 +4339,9 @@ extension QuickSightClientTypes {
 }
 
 extension QuickSightClientTypes {
+
     /// The configuration that defines the default value of a DateTime parameter when a value has not been set.
-    public struct DateTimeValueWhenUnsetConfiguration {
+    public struct DateTimeValueWhenUnsetConfiguration: Swift.Sendable {
         /// A custom value that's used when the value of a parameter isn't set.
         public var customValue: Foundation.Date?
         /// The built-in options for default values. The value can be one of the following:
@@ -4359,7 +4360,6 @@ extension QuickSightClientTypes {
             self.valueWhenUnsetOption = valueWhenUnsetOption
         }
     }
-
 }
 
 extension QuickSightClientTypes.DateTimeValueWhenUnsetConfiguration: Swift.CustomDebugStringConvertible {
@@ -4368,8 +4368,9 @@ extension QuickSightClientTypes.DateTimeValueWhenUnsetConfiguration: Swift.Custo
 }
 
 extension QuickSightClientTypes {
+
     /// A parameter declaration for the DateTime data type.
-    public struct DateTimeParameterDeclaration {
+    public struct DateTimeParameterDeclaration: Swift.Sendable {
         /// The default values of a parameter. If the parameter is a single-value parameter, a maximum of one default value can be provided.
         public var defaultValues: QuickSightClientTypes.DateTimeDefaultValues?
         /// A list of dataset parameters that are mapped to an analysis parameter.
@@ -4397,12 +4398,12 @@ extension QuickSightClientTypes {
             self.valueWhenUnset = valueWhenUnset
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The default values of the DecimalParameterDeclaration.
-    public struct DecimalDefaultValues {
+    public struct DecimalDefaultValues: Swift.Sendable {
         /// The dynamic value of the DecimalDefaultValues. Different defaults are displayed according to users, groups, and values mapping.
         public var dynamicValue: QuickSightClientTypes.DynamicDefaultValue?
         /// The static values of the DecimalDefaultValues.
@@ -4417,7 +4418,6 @@ extension QuickSightClientTypes {
             self.staticValues = staticValues
         }
     }
-
 }
 
 extension QuickSightClientTypes.DecimalDefaultValues: Swift.CustomDebugStringConvertible {
@@ -4427,7 +4427,7 @@ extension QuickSightClientTypes.DecimalDefaultValues: Swift.CustomDebugStringCon
 
 extension QuickSightClientTypes {
 
-    public enum ParameterValueType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ParameterValueType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case multiValued
         case singleValued
         case sdkUnknown(Swift.String)
@@ -4455,8 +4455,9 @@ extension QuickSightClientTypes {
 }
 
 extension QuickSightClientTypes {
+
     /// The configuration that defines the default value of a Decimal parameter when a value has not been set.
-    public struct DecimalValueWhenUnsetConfiguration {
+    public struct DecimalValueWhenUnsetConfiguration: Swift.Sendable {
         /// A custom value that's used when the value of a parameter isn't set.
         public var customValue: Swift.Double?
         /// The built-in options for default values. The value can be one of the following:
@@ -4475,7 +4476,6 @@ extension QuickSightClientTypes {
             self.valueWhenUnsetOption = valueWhenUnsetOption
         }
     }
-
 }
 
 extension QuickSightClientTypes.DecimalValueWhenUnsetConfiguration: Swift.CustomDebugStringConvertible {
@@ -4484,8 +4484,9 @@ extension QuickSightClientTypes.DecimalValueWhenUnsetConfiguration: Swift.Custom
 }
 
 extension QuickSightClientTypes {
+
     /// A parameter declaration for the Decimal data type.
-    public struct DecimalParameterDeclaration {
+    public struct DecimalParameterDeclaration: Swift.Sendable {
         /// The default values of a parameter. If the parameter is a single-value parameter, a maximum of one default value can be provided.
         public var defaultValues: QuickSightClientTypes.DecimalDefaultValues?
         /// A list of dataset parameters that are mapped to an analysis parameter.
@@ -4514,12 +4515,12 @@ extension QuickSightClientTypes {
             self.valueWhenUnset = valueWhenUnset
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The default values of the IntegerParameterDeclaration.
-    public struct IntegerDefaultValues {
+    public struct IntegerDefaultValues: Swift.Sendable {
         /// The dynamic value of the IntegerDefaultValues. Different defaults are displayed according to users, groups, and values mapping.
         public var dynamicValue: QuickSightClientTypes.DynamicDefaultValue?
         /// The static values of the IntegerDefaultValues.
@@ -4534,7 +4535,6 @@ extension QuickSightClientTypes {
             self.staticValues = staticValues
         }
     }
-
 }
 
 extension QuickSightClientTypes.IntegerDefaultValues: Swift.CustomDebugStringConvertible {
@@ -4543,8 +4543,9 @@ extension QuickSightClientTypes.IntegerDefaultValues: Swift.CustomDebugStringCon
 }
 
 extension QuickSightClientTypes {
+
     /// A parameter declaration for the Integer data type. This is a union type structure. For this structure to be valid, only one of the attributes can be defined.
-    public struct IntegerValueWhenUnsetConfiguration {
+    public struct IntegerValueWhenUnsetConfiguration: Swift.Sendable {
         /// A custom value that's used when the value of a parameter isn't set.
         public var customValue: Swift.Int?
         /// The built-in options for default values. The value can be one of the following:
@@ -4563,7 +4564,6 @@ extension QuickSightClientTypes {
             self.valueWhenUnsetOption = valueWhenUnsetOption
         }
     }
-
 }
 
 extension QuickSightClientTypes.IntegerValueWhenUnsetConfiguration: Swift.CustomDebugStringConvertible {
@@ -4572,8 +4572,9 @@ extension QuickSightClientTypes.IntegerValueWhenUnsetConfiguration: Swift.Custom
 }
 
 extension QuickSightClientTypes {
+
     /// A parameter declaration for the Integer data type.
-    public struct IntegerParameterDeclaration {
+    public struct IntegerParameterDeclaration: Swift.Sendable {
         /// The default values of a parameter. If the parameter is a single-value parameter, a maximum of one default value can be provided.
         public var defaultValues: QuickSightClientTypes.IntegerDefaultValues?
         /// A list of dataset parameters that are mapped to an analysis parameter.
@@ -4602,12 +4603,12 @@ extension QuickSightClientTypes {
             self.valueWhenUnset = valueWhenUnset
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The default values of the StringParameterDeclaration.
-    public struct StringDefaultValues {
+    public struct StringDefaultValues: Swift.Sendable {
         /// The dynamic value of the StringDefaultValues. Different defaults displayed according to users, groups, and values mapping.
         public var dynamicValue: QuickSightClientTypes.DynamicDefaultValue?
         /// The static values of the DecimalDefaultValues.
@@ -4622,7 +4623,6 @@ extension QuickSightClientTypes {
             self.staticValues = staticValues
         }
     }
-
 }
 
 extension QuickSightClientTypes.StringDefaultValues: Swift.CustomDebugStringConvertible {
@@ -4631,8 +4631,9 @@ extension QuickSightClientTypes.StringDefaultValues: Swift.CustomDebugStringConv
 }
 
 extension QuickSightClientTypes {
+
     /// The configuration that defines the default value of a String parameter when a value has not been set.
-    public struct StringValueWhenUnsetConfiguration {
+    public struct StringValueWhenUnsetConfiguration: Swift.Sendable {
         /// A custom value that's used when the value of a parameter isn't set.
         public var customValue: Swift.String?
         /// The built-in options for default values. The value can be one of the following:
@@ -4651,7 +4652,6 @@ extension QuickSightClientTypes {
             self.valueWhenUnsetOption = valueWhenUnsetOption
         }
     }
-
 }
 
 extension QuickSightClientTypes.StringValueWhenUnsetConfiguration: Swift.CustomDebugStringConvertible {
@@ -4660,8 +4660,9 @@ extension QuickSightClientTypes.StringValueWhenUnsetConfiguration: Swift.CustomD
 }
 
 extension QuickSightClientTypes {
+
     /// A parameter declaration for the String data type.
-    public struct StringParameterDeclaration {
+    public struct StringParameterDeclaration: Swift.Sendable {
         /// The default values of a parameter. If the parameter is a single-value parameter, a maximum of one default value can be provided.
         public var defaultValues: QuickSightClientTypes.StringDefaultValues?
         /// A list of dataset parameters that are mapped to an analysis parameter.
@@ -4690,12 +4691,12 @@ extension QuickSightClientTypes {
             self.valueWhenUnset = valueWhenUnset
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The declaration definition of a parameter. For more information, see [Parameters in Amazon QuickSight](https://docs.aws.amazon.com/quicksight/latest/user/parameters-in-quicksight.html) in the Amazon QuickSight User Guide. This is a union type structure. For this structure to be valid, only one of the attributes can be defined.
-    public struct ParameterDeclaration {
+    public struct ParameterDeclaration: Swift.Sendable {
         /// A parameter declaration for the DateTime data type.
         public var dateTimeParameterDeclaration: QuickSightClientTypes.DateTimeParameterDeclaration?
         /// A parameter declaration for the Decimal data type.
@@ -4718,12 +4719,11 @@ extension QuickSightClientTypes {
             self.stringParameterDeclaration = stringParameterDeclaration
         }
     }
-
 }
 
 extension QuickSightClientTypes {
 
-    public enum QueryExecutionMode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum QueryExecutionMode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case auto
         case manual
         case sdkUnknown(Swift.String)
@@ -4751,8 +4751,9 @@ extension QuickSightClientTypes {
 }
 
 extension QuickSightClientTypes {
+
     /// A structure that describes the query execution options.
-    public struct QueryExecutionOptions {
+    public struct QueryExecutionOptions: Swift.Sendable {
         /// A structure that describes the query execution mode.
         public var queryExecutionMode: QuickSightClientTypes.QueryExecutionMode?
 
@@ -4763,12 +4764,12 @@ extension QuickSightClientTypes {
             self.queryExecutionMode = queryExecutionMode
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The source controls that are used in a CascadingControlConfiguration.
-    public struct CascadingControlSource {
+    public struct CascadingControlSource: Swift.Sendable {
         /// The column identifier that determines which column to look up for the source sheet control.
         public var columnToMatch: QuickSightClientTypes.ColumnIdentifier?
         /// The source sheet control ID of a CascadingControlSource.
@@ -4783,12 +4784,12 @@ extension QuickSightClientTypes {
             self.sourceSheetControlId = sourceSheetControlId
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The values that are displayed in a control can be configured to only show values that are valid based on what's selected in other controls.
-    public struct CascadingControlConfiguration {
+    public struct CascadingControlConfiguration: Swift.Sendable {
         /// A list of source controls that determine the values that are used in the current control.
         public var sourceControls: [QuickSightClientTypes.CascadingControlSource]?
 
@@ -4799,12 +4800,12 @@ extension QuickSightClientTypes {
             self.sourceControls = sourceControls
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// A control from a filter that is scoped across more than one sheet. This represents your filter control on a sheet
-    public struct FilterCrossSheetControl {
+    public struct FilterCrossSheetControl: Swift.Sendable {
         /// The values that are displayed in a control can be configured to only show values that are valid based on what's selected in other controls.
         public var cascadingControlConfiguration: QuickSightClientTypes.CascadingControlConfiguration?
         /// The ID of the FilterCrossSheetControl.
@@ -4825,12 +4826,12 @@ extension QuickSightClientTypes {
             self.sourceFilterId = sourceFilterId
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// A control from a date filter that is used to specify date and time.
-    public struct FilterDateTimePickerControl {
+    public struct FilterDateTimePickerControl: Swift.Sendable {
         /// The visibility configurationof the Apply button on a DateTimePickerControl.
         public var commitMode: QuickSightClientTypes.CommitMode?
         /// The display options of a control.
@@ -4868,12 +4869,12 @@ extension QuickSightClientTypes {
             self.type = type
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// A control to display a dropdown list with buttons that are used to select a single value.
-    public struct FilterDropDownControl {
+    public struct FilterDropDownControl: Swift.Sendable {
         /// The values that are displayed in a control can be configured to only show values that are valid based on what's selected in other controls.
         public var cascadingControlConfiguration: QuickSightClientTypes.CascadingControlConfiguration?
         /// The visibility configuration of the Apply button on a FilterDropDownControl.
@@ -4919,12 +4920,12 @@ extension QuickSightClientTypes {
             self.type = type
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// A control to display a list of buttons or boxes. This is used to select either a single value or multiple values.
-    public struct FilterListControl {
+    public struct FilterListControl: Swift.Sendable {
         /// The values that are displayed in a control can be configured to only show values that are valid based on what's selected in other controls.
         public var cascadingControlConfiguration: QuickSightClientTypes.CascadingControlConfiguration?
         /// The display options of a control.
@@ -4966,12 +4967,12 @@ extension QuickSightClientTypes {
             self.type = type
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// A control from a date filter that is used to specify the relative date.
-    public struct FilterRelativeDateTimeControl {
+    public struct FilterRelativeDateTimeControl: Swift.Sendable {
         /// The visibility configuration of the Apply button on a FilterRelativeDateTimeControl.
         public var commitMode: QuickSightClientTypes.CommitMode?
         /// The display options of a control.
@@ -5001,12 +5002,12 @@ extension QuickSightClientTypes {
             self.title = title
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// A control to display a horizontal toggle bar. This is used to change a value by sliding the toggle.
-    public struct FilterSliderControl {
+    public struct FilterSliderControl: Swift.Sendable {
         /// The display options of a control.
         public var displayOptions: QuickSightClientTypes.SliderControlDisplayOptions?
         /// The ID of the FilterSliderControl.
@@ -5055,12 +5056,12 @@ extension QuickSightClientTypes {
             self.type = type
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// A control to display a text box that is used to enter multiple entries.
-    public struct FilterTextAreaControl {
+    public struct FilterTextAreaControl: Swift.Sendable {
         /// The delimiter that is used to separate the lines in text.
         public var delimiter: Swift.String?
         /// The display options of a control.
@@ -5090,12 +5091,12 @@ extension QuickSightClientTypes {
             self.title = title
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// A control to display a text box that is used to enter a single entry.
-    public struct FilterTextFieldControl {
+    public struct FilterTextFieldControl: Swift.Sendable {
         /// The display options of a control.
         public var displayOptions: QuickSightClientTypes.TextFieldControlDisplayOptions?
         /// The ID of the FilterTextFieldControl.
@@ -5121,12 +5122,12 @@ extension QuickSightClientTypes {
             self.title = title
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The control of a filter that is used to interact with a dashboard or an analysis. This is a union type structure. For this structure to be valid, only one of the attributes can be defined.
-    public struct FilterControl {
+    public struct FilterControl: Swift.Sendable {
         /// A control from a filter that is scoped across more than one sheet. This represents your filter control on a sheet
         public var crossSheet: QuickSightClientTypes.FilterCrossSheetControl?
         /// A control from a date filter that is used to specify date and time.
@@ -5165,12 +5166,12 @@ extension QuickSightClientTypes {
             self.textField = textField
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The background style configuration of a free-form layout element.
-    public struct FreeFormLayoutElementBackgroundStyle {
+    public struct FreeFormLayoutElementBackgroundStyle: Swift.Sendable {
         /// The background color of a free-form layout element.
         public var color: Swift.String?
         /// The background visibility of a free-form layout element.
@@ -5185,12 +5186,12 @@ extension QuickSightClientTypes {
             self.visibility = visibility
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The background style configuration of a free-form layout element.
-    public struct FreeFormLayoutElementBorderStyle {
+    public struct FreeFormLayoutElementBorderStyle: Swift.Sendable {
         /// The border color of a free-form layout element.
         public var color: Swift.String?
         /// The border visibility of a free-form layout element.
@@ -5205,12 +5206,11 @@ extension QuickSightClientTypes {
             self.visibility = visibility
         }
     }
-
 }
 
 extension QuickSightClientTypes {
 
-    public enum LayoutElementType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum LayoutElementType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case filterControl
         case parameterControl
         case textBox
@@ -5244,8 +5244,9 @@ extension QuickSightClientTypes {
 }
 
 extension QuickSightClientTypes {
+
     /// The configuration of loading animation in free-form layout.
-    public struct LoadingAnimation {
+    public struct LoadingAnimation: Swift.Sendable {
         /// The visibility configuration of LoadingAnimation.
         public var visibility: QuickSightClientTypes.Visibility?
 
@@ -5256,12 +5257,12 @@ extension QuickSightClientTypes {
             self.visibility = visibility
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The override configuration of the rendering rules of a sheet.
-    public struct SheetElementConfigurationOverrides {
+    public struct SheetElementConfigurationOverrides: Swift.Sendable {
         /// Determines whether or not the overrides are visible. Choose one of the following options:
         ///
         /// * VISIBLE
@@ -5276,12 +5277,12 @@ extension QuickSightClientTypes {
             self.visibility = visibility
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The rendering rules of a sheet that uses a free-form layout.
-    public struct SheetElementRenderingRule {
+    public struct SheetElementRenderingRule: Swift.Sendable {
         /// The override configuration of the rendering rules of a sheet.
         /// This member is required.
         public var configurationOverrides: QuickSightClientTypes.SheetElementConfigurationOverrides?
@@ -5298,7 +5299,6 @@ extension QuickSightClientTypes {
             self.expression = expression
         }
     }
-
 }
 
 extension QuickSightClientTypes.SheetElementRenderingRule: Swift.CustomDebugStringConvertible {
@@ -5307,8 +5307,9 @@ extension QuickSightClientTypes.SheetElementRenderingRule: Swift.CustomDebugStri
 }
 
 extension QuickSightClientTypes {
+
     /// An element within a free-form layout.
-    public struct FreeFormLayoutElement {
+    public struct FreeFormLayoutElement: Swift.Sendable {
         /// The background style configuration of a free-form layout element.
         public var backgroundStyle: QuickSightClientTypes.FreeFormLayoutElementBackgroundStyle?
         /// The border style configuration of a free-form layout element.
@@ -5369,12 +5370,12 @@ extension QuickSightClientTypes {
             self.yAxisLocation = yAxisLocation
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The configuration of a free-form layout.
-    public struct FreeFormLayoutConfiguration {
+    public struct FreeFormLayoutConfiguration: Swift.Sendable {
         /// Configuration options for the canvas of a free-form layout.
         public var canvasSizeOptions: QuickSightClientTypes.FreeFormLayoutCanvasSizeOptions?
         /// The elements that are included in a free-form layout.
@@ -5390,12 +5391,12 @@ extension QuickSightClientTypes {
             self.elements = elements
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// An element within a grid layout.
-    public struct GridLayoutElement {
+    public struct GridLayoutElement: Swift.Sendable {
         /// The column index for the upper left corner of an element.
         public var columnIndex: Swift.Int?
         /// The width of a grid element expressed as a number of grid columns.
@@ -5430,12 +5431,12 @@ extension QuickSightClientTypes {
             self.rowSpan = rowSpan
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The configuration for a grid layout. Also called a tiled layout. Visuals snap to a grid with standard spacing and alignment. Dashboards are displayed as designed, with options to fit to screen or view at actual size.
-    public struct GridLayoutConfiguration {
+    public struct GridLayoutConfiguration: Swift.Sendable {
         /// Configuration options for the canvas of a grid layout.
         public var canvasSizeOptions: QuickSightClientTypes.GridLayoutCanvasSizeOptions?
         /// The elements that are included in a grid layout.
@@ -5451,12 +5452,12 @@ extension QuickSightClientTypes {
             self.elements = elements
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The free-form layout configuration of a section.
-    public struct FreeFormSectionLayoutConfiguration {
+    public struct FreeFormSectionLayoutConfiguration: Swift.Sendable {
         /// The elements that are included in the free-form layout.
         /// This member is required.
         public var elements: [QuickSightClientTypes.FreeFormLayoutElement]?
@@ -5468,12 +5469,12 @@ extension QuickSightClientTypes {
             self.elements = elements
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The layout configuration of a section.
-    public struct SectionLayoutConfiguration {
+    public struct SectionLayoutConfiguration: Swift.Sendable {
         /// The free-form layout configuration of a section.
         /// This member is required.
         public var freeFormLayout: QuickSightClientTypes.FreeFormSectionLayoutConfiguration?
@@ -5485,12 +5486,12 @@ extension QuickSightClientTypes {
             self.freeFormLayout = freeFormLayout
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The configuration of content in a body section.
-    public struct BodySectionContent {
+    public struct BodySectionContent: Swift.Sendable {
         /// The layout configuration of a body section.
         public var layout: QuickSightClientTypes.SectionLayoutConfiguration?
 
@@ -5501,12 +5502,11 @@ extension QuickSightClientTypes {
             self.layout = layout
         }
     }
-
 }
 
 extension QuickSightClientTypes {
 
-    public enum SectionPageBreakStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SectionPageBreakStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case disabled
         case enabled
         case sdkUnknown(Swift.String)
@@ -5534,8 +5534,9 @@ extension QuickSightClientTypes {
 }
 
 extension QuickSightClientTypes {
+
     /// The configuration of a page break after a section.
-    public struct SectionAfterPageBreak {
+    public struct SectionAfterPageBreak: Swift.Sendable {
         /// The option that enables or disables a page break at the end of a section.
         public var status: QuickSightClientTypes.SectionPageBreakStatus?
 
@@ -5546,12 +5547,12 @@ extension QuickSightClientTypes {
             self.status = status
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The configuration of a page break for a section.
-    public struct SectionPageBreakConfiguration {
+    public struct SectionPageBreakConfiguration: Swift.Sendable {
         /// The configuration of a page break after a section.
         public var after: QuickSightClientTypes.SectionAfterPageBreak?
 
@@ -5562,12 +5563,12 @@ extension QuickSightClientTypes {
             self.after = after
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The sort configuration for a column that is not used in a field well.
-    public struct ColumnSort {
+    public struct ColumnSort: Swift.Sendable {
         /// The aggregation function that is defined in the column sort.
         public var aggregationFunction: QuickSightClientTypes.AggregationFunction?
         /// The sort direction.
@@ -5588,12 +5589,12 @@ extension QuickSightClientTypes {
             self.sortBy = sortBy
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// Describes the Category dataset column and constraints for the dynamic values used to repeat the contents of a section.
-    public struct BodySectionDynamicCategoryDimensionConfiguration {
+    public struct BodySectionDynamicCategoryDimensionConfiguration: Swift.Sendable {
         /// A column of a data set.
         /// This member is required.
         public var column: QuickSightClientTypes.ColumnIdentifier?
@@ -5613,12 +5614,12 @@ extension QuickSightClientTypes {
             self.sortByMetrics = sortByMetrics
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// Describes the Numeric dataset column and constraints for the dynamic values used to repeat the contents of a section.
-    public struct BodySectionDynamicNumericDimensionConfiguration {
+    public struct BodySectionDynamicNumericDimensionConfiguration: Swift.Sendable {
         /// A column of a data set.
         /// This member is required.
         public var column: QuickSightClientTypes.ColumnIdentifier?
@@ -5638,12 +5639,12 @@ extension QuickSightClientTypes {
             self.sortByMetrics = sortByMetrics
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// Describes the dataset column and constraints for the dynamic values used to repeat the contents of a section. The dataset column is either Category or Numeric column configuration
-    public struct BodySectionRepeatDimensionConfiguration {
+    public struct BodySectionRepeatDimensionConfiguration: Swift.Sendable {
         /// Describes the Category dataset column and constraints around the dynamic values that will be used in repeating the section contents.
         public var dynamicCategoryDimensionConfiguration: QuickSightClientTypes.BodySectionDynamicCategoryDimensionConfiguration?
         /// Describes the Numeric dataset column and constraints around the dynamic values used to repeat the contents of a section.
@@ -5658,12 +5659,12 @@ extension QuickSightClientTypes {
             self.dynamicNumericDimensionConfiguration = dynamicNumericDimensionConfiguration
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The page break configuration to apply for each repeating instance.
-    public struct BodySectionRepeatPageBreakConfiguration {
+    public struct BodySectionRepeatPageBreakConfiguration: Swift.Sendable {
         /// The configuration of a page break after a section.
         public var after: QuickSightClientTypes.SectionAfterPageBreak?
 
@@ -5674,12 +5675,12 @@ extension QuickSightClientTypes {
             self.after = after
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// Describes the configurations that are required to declare a section as repeating.
-    public struct BodySectionRepeatConfiguration {
+    public struct BodySectionRepeatConfiguration: Swift.Sendable {
         /// List of BodySectionRepeatDimensionConfiguration values that describe the dataset column and constraints for the column used to repeat the contents of a section.
         public var dimensionConfigurations: [QuickSightClientTypes.BodySectionRepeatDimensionConfiguration]?
         /// List of visuals to exclude from repetition in repeating sections. The visuals will render identically, and ignore the repeating configurations in all repeating instances.
@@ -5698,12 +5699,12 @@ extension QuickSightClientTypes {
             self.pageBreakConfiguration = pageBreakConfiguration
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The options that style a section.
-    public struct SectionStyle {
+    public struct SectionStyle: Swift.Sendable {
         /// The height of a section. Heights can only be defined for header and footer sections. The default height margin is 0.5 inches.
         public var height: Swift.String?
         /// The spacing between section content and its top, bottom, left, and right edges. There is no padding by default.
@@ -5718,12 +5719,12 @@ extension QuickSightClientTypes {
             self.padding = padding
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The configuration of a body section.
-    public struct BodySectionConfiguration {
+    public struct BodySectionConfiguration: Swift.Sendable {
         /// The configuration of content in a body section.
         /// This member is required.
         public var content: QuickSightClientTypes.BodySectionContent?
@@ -5752,12 +5753,12 @@ extension QuickSightClientTypes {
             self.style = style
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The configuration of a header or footer section.
-    public struct HeaderFooterSectionConfiguration {
+    public struct HeaderFooterSectionConfiguration: Swift.Sendable {
         /// The layout configuration of the header or footer section.
         /// This member is required.
         public var layout: QuickSightClientTypes.SectionLayoutConfiguration?
@@ -5778,12 +5779,12 @@ extension QuickSightClientTypes {
             self.style = style
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The configuration for a section-based layout.
-    public struct SectionBasedLayoutConfiguration {
+    public struct SectionBasedLayoutConfiguration: Swift.Sendable {
         /// A list of body section configurations.
         /// This member is required.
         public var bodySections: [QuickSightClientTypes.BodySectionConfiguration]?
@@ -5810,12 +5811,12 @@ extension QuickSightClientTypes {
             self.headerSections = headerSections
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The configuration that determines what the type of layout will be used on a sheet. This is a union type structure. For this structure to be valid, only one of the attributes can be defined.
-    public struct LayoutConfiguration {
+    public struct LayoutConfiguration: Swift.Sendable {
         /// A free-form is optimized for a fixed width and has more control over the exact placement of layout elements.
         public var freeFormLayout: QuickSightClientTypes.FreeFormLayoutConfiguration?
         /// A type of layout that can be used on a sheet. In a grid layout, visuals snap to a grid with standard spacing and alignment. Dashboards are displayed as designed, with options to fit to screen or view at actual size. A grid layout can be configured to behave in one of two ways when the viewport is resized: FIXED or RESPONSIVE.
@@ -5834,12 +5835,12 @@ extension QuickSightClientTypes {
             self.sectionBasedLayout = sectionBasedLayout
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// A Layout defines the placement of elements within a sheet. For more information, see [Types of layout](https://docs.aws.amazon.com/quicksight/latest/user/types-of-layout.html) in the Amazon QuickSight User Guide. This is a union type structure. For this structure to be valid, only one of the attributes can be defined.
-    public struct Layout {
+    public struct Layout: Swift.Sendable {
         /// The configuration that determines what the type of layout for a sheet.
         /// This member is required.
         public var configuration: QuickSightClientTypes.LayoutConfiguration?
@@ -5851,12 +5852,12 @@ extension QuickSightClientTypes {
             self.configuration = configuration
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// A control from a date parameter that specifies date and time.
-    public struct ParameterDateTimePickerControl {
+    public struct ParameterDateTimePickerControl: Swift.Sendable {
         /// The display options of a control.
         public var displayOptions: QuickSightClientTypes.DateTimePickerControlDisplayOptions?
         /// The ID of the ParameterDateTimePickerControl.
@@ -5882,12 +5883,12 @@ extension QuickSightClientTypes {
             self.title = title
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// A list of selectable values that are used in a control.
-    public struct ParameterSelectableValues {
+    public struct ParameterSelectableValues: Swift.Sendable {
         /// The column identifier that fetches values from the data set.
         public var linkToDataSetColumn: QuickSightClientTypes.ColumnIdentifier?
         /// The values that are used in ParameterSelectableValues.
@@ -5902,12 +5903,12 @@ extension QuickSightClientTypes {
             self.values = values
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// A control to display a dropdown list with buttons that are used to select a single value.
-    public struct ParameterDropDownControl {
+    public struct ParameterDropDownControl: Swift.Sendable {
         /// The values that are displayed in a control can be configured to only show values that are valid based on what's selected in other controls.
         public var cascadingControlConfiguration: QuickSightClientTypes.CascadingControlConfiguration?
         /// The visibility configuration of the Apply button on a ParameterDropDownControl.
@@ -5949,12 +5950,12 @@ extension QuickSightClientTypes {
             self.type = type
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// A control to display a list with buttons or boxes that are used to select either a single value or multiple values.
-    public struct ParameterListControl {
+    public struct ParameterListControl: Swift.Sendable {
         /// The values that are displayed in a control can be configured to only show values that are valid based on what's selected in other controls.
         public var cascadingControlConfiguration: QuickSightClientTypes.CascadingControlConfiguration?
         /// The display options of a control.
@@ -5992,12 +5993,12 @@ extension QuickSightClientTypes {
             self.type = type
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// A control to display a horizontal toggle bar. This is used to change a value by sliding the toggle.
-    public struct ParameterSliderControl {
+    public struct ParameterSliderControl: Swift.Sendable {
         /// The display options of a control.
         public var displayOptions: QuickSightClientTypes.SliderControlDisplayOptions?
         /// The larger value that is displayed at the right of the slider.
@@ -6038,12 +6039,12 @@ extension QuickSightClientTypes {
             self.title = title
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// A control to display a text box that is used to enter multiple entries.
-    public struct ParameterTextAreaControl {
+    public struct ParameterTextAreaControl: Swift.Sendable {
         /// The delimiter that is used to separate the lines in text.
         public var delimiter: Swift.String?
         /// The display options of a control.
@@ -6073,12 +6074,12 @@ extension QuickSightClientTypes {
             self.title = title
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// A control to display a text box that is used to enter a single entry.
-    public struct ParameterTextFieldControl {
+    public struct ParameterTextFieldControl: Swift.Sendable {
         /// The display options of a control.
         public var displayOptions: QuickSightClientTypes.TextFieldControlDisplayOptions?
         /// The ID of the ParameterTextFieldControl.
@@ -6104,12 +6105,12 @@ extension QuickSightClientTypes {
             self.title = title
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The control of a parameter that users can interact with in a dashboard or an analysis. This is a union type structure. For this structure to be valid, only one of the attributes can be defined.
-    public struct ParameterControl {
+    public struct ParameterControl: Swift.Sendable {
         /// A control from a date parameter that specifies date and time.
         public var dateTimePicker: QuickSightClientTypes.ParameterDateTimePickerControl?
         /// A control to display a dropdown list with buttons that are used to select a single value.
@@ -6140,12 +6141,12 @@ extension QuickSightClientTypes {
             self.textField = textField
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The configuration that determines the elements and canvas size options of sheet control.
-    public struct SheetControlLayoutConfiguration {
+    public struct SheetControlLayoutConfiguration: Swift.Sendable {
         /// The configuration that determines the elements and canvas size options of sheet control.
         public var gridLayout: QuickSightClientTypes.GridLayoutConfiguration?
 
@@ -6156,12 +6157,12 @@ extension QuickSightClientTypes {
             self.gridLayout = gridLayout
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// A grid layout to define the placement of sheet control.
-    public struct SheetControlLayout {
+    public struct SheetControlLayout: Swift.Sendable {
         /// The configuration that determines the elements and canvas size options of sheet control.
         /// This member is required.
         public var configuration: QuickSightClientTypes.SheetControlLayoutConfiguration?
@@ -6173,12 +6174,12 @@ extension QuickSightClientTypes {
             self.configuration = configuration
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// A text box.
-    public struct SheetTextBox {
+    public struct SheetTextBox: Swift.Sendable {
         /// The content that is displayed in the text box.
         public var content: Swift.String?
         /// The unique identifier for a text box. This identifier must be unique within the context of a dashboard, template, or analysis. Two dashboards, analyses, or templates can have text boxes that share identifiers.
@@ -6194,12 +6195,11 @@ extension QuickSightClientTypes {
             self.sheetTextBoxId = sheetTextBoxId
         }
     }
-
 }
 
 extension QuickSightClientTypes {
 
-    public enum SelectedFieldOptions: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SelectedFieldOptions: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case allFields
         case sdkUnknown(Swift.String)
 
@@ -6224,8 +6224,9 @@ extension QuickSightClientTypes {
 }
 
 extension QuickSightClientTypes {
+
     /// The configuration of selected fields in theCustomActionFilterOperation. This is a union type structure. For this structure to be valid, only one of the attributes can be defined.
-    public struct FilterOperationSelectedFieldsConfiguration {
+    public struct FilterOperationSelectedFieldsConfiguration: Swift.Sendable {
         /// The selected columns of a dataset.
         public var selectedColumns: [QuickSightClientTypes.ColumnIdentifier]?
         /// A structure that contains the options that choose which fields are filtered in the CustomActionFilterOperation. Valid values are defined as follows:
@@ -6246,12 +6247,11 @@ extension QuickSightClientTypes {
             self.selectedFields = selectedFields
         }
     }
-
 }
 
 extension QuickSightClientTypes {
 
-    public enum TargetVisualOptions: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum TargetVisualOptions: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case allVisuals
         case sdkUnknown(Swift.String)
 
@@ -6276,8 +6276,9 @@ extension QuickSightClientTypes {
 }
 
 extension QuickSightClientTypes {
+
     /// The configuration of the same-sheet target visuals that you want to be filtered. This is a union type structure. For this structure to be valid, only one of the attributes can be defined.
-    public struct SameSheetTargetVisualConfiguration {
+    public struct SameSheetTargetVisualConfiguration: Swift.Sendable {
         /// The options that choose the target visual in the same sheet. Valid values are defined as follows:
         ///
         /// * ALL_VISUALS: Applies the filter operation to all visuals in the same sheet.
@@ -6294,12 +6295,12 @@ extension QuickSightClientTypes {
             self.targetVisuals = targetVisuals
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The configuration of target visuals that you want to be filtered. This is a union type structure. For this structure to be valid, only one of the attributes can be defined.
-    public struct FilterOperationTargetVisualsConfiguration {
+    public struct FilterOperationTargetVisualsConfiguration: Swift.Sendable {
         /// The configuration of the same-sheet target visuals that you want to be filtered.
         public var sameSheetTargetVisualConfiguration: QuickSightClientTypes.SameSheetTargetVisualConfiguration?
 
@@ -6310,12 +6311,12 @@ extension QuickSightClientTypes {
             self.sameSheetTargetVisualConfiguration = sameSheetTargetVisualConfiguration
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The filter operation that filters data included in a visual or in an entire sheet.
-    public struct CustomActionFilterOperation {
+    public struct CustomActionFilterOperation: Swift.Sendable {
         /// The configuration that chooses the fields to be filtered.
         /// This member is required.
         public var selectedFieldsConfiguration: QuickSightClientTypes.FilterOperationSelectedFieldsConfiguration?
@@ -6332,12 +6333,12 @@ extension QuickSightClientTypes {
             self.targetVisualsConfiguration = targetVisualsConfiguration
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The navigation configuration for CustomActionNavigationOperation.
-    public struct LocalNavigationConfiguration {
+    public struct LocalNavigationConfiguration: Swift.Sendable {
         /// The sheet that is targeted for navigation in the same analysis.
         /// This member is required.
         public var targetSheetId: Swift.String?
@@ -6349,12 +6350,12 @@ extension QuickSightClientTypes {
             self.targetSheetId = targetSheetId
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The navigation operation that navigates between different sheets in the same analysis. This is a union type structure. For this structure to be valid, only one of the attributes can be defined.
-    public struct CustomActionNavigationOperation {
+    public struct CustomActionNavigationOperation: Swift.Sendable {
         /// The configuration that chooses the navigation target.
         public var localNavigationConfiguration: QuickSightClientTypes.LocalNavigationConfiguration?
 
@@ -6365,12 +6366,12 @@ extension QuickSightClientTypes {
             self.localNavigationConfiguration = localNavigationConfiguration
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The customized parameter values. This is a union type structure. For this structure to be valid, only one of the attributes can be defined.
-    public struct CustomParameterValues {
+    public struct CustomParameterValues: Swift.Sendable {
         /// A list of datetime-type parameter values.
         public var dateTimeValues: [Foundation.Date]?
         /// A list of decimal-type parameter values.
@@ -6393,7 +6394,6 @@ extension QuickSightClientTypes {
             self.stringValues = stringValues
         }
     }
-
 }
 
 extension QuickSightClientTypes.CustomParameterValues: Swift.CustomDebugStringConvertible {
@@ -6402,8 +6402,9 @@ extension QuickSightClientTypes.CustomParameterValues: Swift.CustomDebugStringCo
 }
 
 extension QuickSightClientTypes {
+
     /// The configuration of custom values for the destination parameter in DestinationParameterValueConfiguration.
-    public struct CustomValuesConfiguration {
+    public struct CustomValuesConfiguration: Swift.Sendable {
         /// The customized parameter values. This is a union type structure. For this structure to be valid, only one of the attributes can be defined.
         /// This member is required.
         public var customValues: QuickSightClientTypes.CustomParameterValues?
@@ -6419,12 +6420,11 @@ extension QuickSightClientTypes {
             self.includeNullValue = includeNullValue
         }
     }
-
 }
 
 extension QuickSightClientTypes {
 
-    public enum SelectAllValueOptions: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SelectAllValueOptions: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case allValues
         case sdkUnknown(Swift.String)
 
@@ -6449,8 +6449,9 @@ extension QuickSightClientTypes {
 }
 
 extension QuickSightClientTypes {
+
     /// The configuration of destination parameter values. This is a union type structure. For this structure to be valid, only one of the attributes can be defined.
-    public struct DestinationParameterValueConfiguration {
+    public struct DestinationParameterValueConfiguration: Swift.Sendable {
         /// The configuration of custom values for destination parameter in DestinationParameterValueConfiguration.
         public var customValuesConfiguration: QuickSightClientTypes.CustomValuesConfiguration?
         /// The configuration that selects all options.
@@ -6477,12 +6478,12 @@ extension QuickSightClientTypes {
             self.sourceParameterName = sourceParameterName
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The configuration of adding parameters in action.
-    public struct SetParameterValueConfiguration {
+    public struct SetParameterValueConfiguration: Swift.Sendable {
         /// The destination parameter name of the SetParameterValueConfiguration.
         /// This member is required.
         public var destinationParameterName: Swift.String?
@@ -6499,12 +6500,12 @@ extension QuickSightClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The set parameter operation that sets parameters in custom action.
-    public struct CustomActionSetParametersOperation {
+    public struct CustomActionSetParametersOperation: Swift.Sendable {
         /// The parameter that determines the value configuration.
         /// This member is required.
         public var parameterValueConfigurations: [QuickSightClientTypes.SetParameterValueConfiguration]?
@@ -6516,12 +6517,11 @@ extension QuickSightClientTypes {
             self.parameterValueConfigurations = parameterValueConfigurations
         }
     }
-
 }
 
 extension QuickSightClientTypes {
 
-    public enum URLTargetConfiguration: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum URLTargetConfiguration: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case newTab
         case newWindow
         case sameTab
@@ -6552,8 +6552,9 @@ extension QuickSightClientTypes {
 }
 
 extension QuickSightClientTypes {
+
     /// The URL operation that opens a link to another webpage.
-    public struct CustomActionURLOperation {
+    public struct CustomActionURLOperation: Swift.Sendable {
         /// The target of the CustomActionURLOperation. Valid values are defined as follows:
         ///
         /// * NEW_TAB: Opens the target URL in a new browser tab.
@@ -6576,12 +6577,12 @@ extension QuickSightClientTypes {
             self.urlTemplate = urlTemplate
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The operation that is defined by the custom action. This is a union type structure. For this structure to be valid, only one of the attributes can be defined.
-    public struct VisualCustomActionOperation {
+    public struct VisualCustomActionOperation: Swift.Sendable {
         /// The filter operation that filters data included in a visual or in an entire sheet.
         public var filterOperation: QuickSightClientTypes.CustomActionFilterOperation?
         /// The navigation operation that navigates between different sheets in the same analysis.
@@ -6604,12 +6605,11 @@ extension QuickSightClientTypes {
             self.urlOperation = urlOperation
         }
     }
-
 }
 
 extension QuickSightClientTypes {
 
-    public enum VisualCustomActionTrigger: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum VisualCustomActionTrigger: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case dataPointClick
         case dataPointMenu
         case sdkUnknown(Swift.String)
@@ -6637,8 +6637,9 @@ extension QuickSightClientTypes {
 }
 
 extension QuickSightClientTypes {
+
     /// A custom action defined on a visual.
-    public struct VisualCustomAction {
+    public struct VisualCustomAction: Swift.Sendable {
         /// A list of VisualCustomActionOperations. This is a union type structure. For this structure to be valid, only one of the attributes can be defined.
         /// This member is required.
         public var actionOperations: [QuickSightClientTypes.VisualCustomActionOperation]?
@@ -6673,12 +6674,11 @@ extension QuickSightClientTypes {
             self.trigger = trigger
         }
     }
-
 }
 
 extension QuickSightClientTypes {
 
-    public enum BarsArrangement: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum BarsArrangement: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case clustered
         case stacked
         case stackedPercent
@@ -6709,8 +6709,9 @@ extension QuickSightClientTypes {
 }
 
 extension QuickSightClientTypes {
+
     /// The options that determine how a date axis is displayed.
-    public struct DateAxisOptions {
+    public struct DateAxisOptions: Swift.Sendable {
         /// Determines whether or not missing dates are displayed.
         public var missingDateVisibility: QuickSightClientTypes.Visibility?
 
@@ -6721,21 +6722,21 @@ extension QuickSightClientTypes {
             self.missingDateVisibility = missingDateVisibility
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The options that are saved for future extension.
-    public struct AxisDisplayDataDrivenRange {
+    public struct AxisDisplayDataDrivenRange: Swift.Sendable {
 
         public init() { }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The minimum and maximum setup for an axis display range.
-    public struct AxisDisplayMinMaxRange {
+    public struct AxisDisplayMinMaxRange: Swift.Sendable {
         /// The maximum setup for an axis display range.
         public var maximum: Swift.Double?
         /// The minimum setup for an axis display range.
@@ -6750,12 +6751,12 @@ extension QuickSightClientTypes {
             self.minimum = minimum
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The range setup of a numeric axis display range. This is a union type structure. For this structure to be valid, only one of the attributes can be defined.
-    public struct AxisDisplayRange {
+    public struct AxisDisplayRange: Swift.Sendable {
         /// The data-driven setup of an axis display range.
         public var dataDriven: QuickSightClientTypes.AxisDisplayDataDrivenRange?
         /// The minimum and maximum setup of an axis display range.
@@ -6770,12 +6771,12 @@ extension QuickSightClientTypes {
             self.minMax = minMax
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The liner axis scale setup. This is a union type structure. For this structure to be valid, only one of the attributes can be defined.
-    public struct AxisLinearScale {
+    public struct AxisLinearScale: Swift.Sendable {
         /// The step count setup of a linear axis.
         public var stepCount: Swift.Int?
         /// The step size setup of a linear axis.
@@ -6790,12 +6791,12 @@ extension QuickSightClientTypes {
             self.stepSize = stepSize
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The logarithmic axis scale setup.
-    public struct AxisLogarithmicScale {
+    public struct AxisLogarithmicScale: Swift.Sendable {
         /// The base setup of a logarithmic axis scale.
         public var base: Swift.Double?
 
@@ -6806,12 +6807,12 @@ extension QuickSightClientTypes {
             self.base = base
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The scale setup options for a numeric axis display. This is a union type structure. For this structure to be valid, only one of the attributes can be defined.
-    public struct AxisScale {
+    public struct AxisScale: Swift.Sendable {
         /// The linear axis scale setup.
         public var linear: QuickSightClientTypes.AxisLinearScale?
         /// The logarithmic axis scale setup.
@@ -6826,12 +6827,12 @@ extension QuickSightClientTypes {
             self.logarithmic = logarithmic
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The options for an axis with a numeric field.
-    public struct NumericAxisOptions {
+    public struct NumericAxisOptions: Swift.Sendable {
         /// The range setup of a numeric axis.
         public var range: QuickSightClientTypes.AxisDisplayRange?
         /// The scale setup of a numeric axis.
@@ -6846,12 +6847,12 @@ extension QuickSightClientTypes {
             self.scale = scale
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The data options for an axis. This is a union type structure. For this structure to be valid, only one of the attributes can be defined.
-    public struct AxisDataOptions {
+    public struct AxisDataOptions: Swift.Sendable {
         /// The options for an axis with a date field.
         public var dateAxisOptions: QuickSightClientTypes.DateAxisOptions?
         /// The options for an axis with a numeric field.
@@ -6866,12 +6867,12 @@ extension QuickSightClientTypes {
             self.numericAxisOptions = numericAxisOptions
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The percent range in the visible range.
-    public struct PercentVisibleRange {
+    public struct PercentVisibleRange: Swift.Sendable {
         /// The lower bound of the range.
         public var from: Swift.Double?
         /// The top bound of the range.
@@ -6886,12 +6887,12 @@ extension QuickSightClientTypes {
             self.to = to
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The range options for the data zoom scroll bar.
-    public struct VisibleRangeOptions {
+    public struct VisibleRangeOptions: Swift.Sendable {
         /// The percent range in the visible range.
         public var percentRange: QuickSightClientTypes.PercentVisibleRange?
 
@@ -6902,12 +6903,12 @@ extension QuickSightClientTypes {
             self.percentRange = percentRange
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The visual display options for a data zoom scroll bar.
-    public struct ScrollBarOptions {
+    public struct ScrollBarOptions: Swift.Sendable {
         /// The visibility of the data zoom scroll bar.
         public var visibility: QuickSightClientTypes.Visibility?
         /// The visibility range for the data zoom scroll bar.
@@ -6922,12 +6923,12 @@ extension QuickSightClientTypes {
             self.visibleRange = visibleRange
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The tick label options of an axis.
-    public struct AxisTickLabelOptions {
+    public struct AxisTickLabelOptions: Swift.Sendable {
         /// Determines whether or not the axis ticks are visible.
         public var labelOptions: QuickSightClientTypes.LabelOptions?
         /// The rotation angle of the axis tick labels.
@@ -6942,12 +6943,12 @@ extension QuickSightClientTypes {
             self.rotationAngle = rotationAngle
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The display options for the axis label.
-    public struct AxisDisplayOptions {
+    public struct AxisDisplayOptions: Swift.Sendable {
         /// Determines whether or not the axis line is visible.
         public var axisLineVisibility: QuickSightClientTypes.Visibility?
         /// The offset value that determines the starting placement of the axis within a visual's bounds.
@@ -6978,12 +6979,12 @@ extension QuickSightClientTypes {
             self.tickLabelOptions = tickLabelOptions
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The reference that specifies where the axis label is applied to.
-    public struct AxisLabelReferenceOptions {
+    public struct AxisLabelReferenceOptions: Swift.Sendable {
         /// The column that the axis label is targeted to.
         /// This member is required.
         public var column: QuickSightClientTypes.ColumnIdentifier?
@@ -7000,12 +7001,12 @@ extension QuickSightClientTypes {
             self.fieldId = fieldId
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The label options for a chart axis. You must specify the field that the label is targeted to.
-    public struct AxisLabelOptions {
+    public struct AxisLabelOptions: Swift.Sendable {
         /// The options that indicate which field the label belongs to.
         public var applyTo: QuickSightClientTypes.AxisLabelReferenceOptions?
         /// The text for the axis label.
@@ -7024,12 +7025,12 @@ extension QuickSightClientTypes {
             self.fontConfiguration = fontConfiguration
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The label options for an axis on a chart.
-    public struct ChartAxisLabelOptions {
+    public struct ChartAxisLabelOptions: Swift.Sendable {
         /// The label options for a chart axis.
         public var axisLabelOptions: [QuickSightClientTypes.AxisLabelOptions]?
         /// The visibility configuration of the sort icon on a chart's axis label.
@@ -7052,12 +7053,12 @@ extension QuickSightClientTypes {
             self.visibility = visibility
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The contribution analysis visual display for a line, pie, or bar chart.
-    public struct ContributionAnalysisDefault {
+    public struct ContributionAnalysisDefault: Swift.Sendable {
         /// The dimensions columns that are used in the contribution analysis, usually a list of ColumnIdentifiers.
         /// This member is required.
         public var contributorDimensions: [QuickSightClientTypes.ColumnIdentifier]?
@@ -7074,12 +7075,12 @@ extension QuickSightClientTypes {
             self.measureFieldId = measureFieldId
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The option that specifies individual data values for labels.
-    public struct DataPathLabelType {
+    public struct DataPathLabelType: Swift.Sendable {
         /// The field ID of the field that the data label needs to be applied to.
         public var fieldId: Swift.String?
         /// The actual value of the field that is labeled.
@@ -7098,7 +7099,6 @@ extension QuickSightClientTypes {
             self.visibility = visibility
         }
     }
-
 }
 
 extension QuickSightClientTypes.DataPathLabelType: Swift.CustomDebugStringConvertible {
@@ -7107,8 +7107,9 @@ extension QuickSightClientTypes.DataPathLabelType: Swift.CustomDebugStringConver
 }
 
 extension QuickSightClientTypes {
+
     /// The field label type.
-    public struct FieldLabelType {
+    public struct FieldLabelType: Swift.Sendable {
         /// Indicates the field that is targeted by the field label.
         public var fieldId: Swift.String?
         /// The visibility of the field label.
@@ -7123,12 +7124,12 @@ extension QuickSightClientTypes {
             self.visibility = visibility
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The maximum label of a data path label.
-    public struct MaximumLabelType {
+    public struct MaximumLabelType: Swift.Sendable {
         /// The visibility of the maximum label.
         public var visibility: QuickSightClientTypes.Visibility?
 
@@ -7139,12 +7140,12 @@ extension QuickSightClientTypes {
             self.visibility = visibility
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The minimum label of a data path label.
-    public struct MinimumLabelType {
+    public struct MinimumLabelType: Swift.Sendable {
         /// The visibility of the minimum label.
         public var visibility: QuickSightClientTypes.Visibility?
 
@@ -7155,12 +7156,12 @@ extension QuickSightClientTypes {
             self.visibility = visibility
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The range ends label type of a data path label.
-    public struct RangeEndsLabelType {
+    public struct RangeEndsLabelType: Swift.Sendable {
         /// The visibility of the range ends label.
         public var visibility: QuickSightClientTypes.Visibility?
 
@@ -7171,12 +7172,12 @@ extension QuickSightClientTypes {
             self.visibility = visibility
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The option that determines the data label type. This is a union type structure. For this structure to be valid, only one of the attributes can be defined.
-    public struct DataLabelType {
+    public struct DataLabelType: Swift.Sendable {
         /// The option that specifies individual data values for labels.
         public var dataPathLabelType: QuickSightClientTypes.DataPathLabelType?
         /// Determines the label configuration for the entire field.
@@ -7203,12 +7204,11 @@ extension QuickSightClientTypes {
             self.rangeEndsLabelType = rangeEndsLabelType
         }
     }
-
 }
 
 extension QuickSightClientTypes {
 
-    public enum DataLabelContent: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DataLabelContent: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case percent
         case value
         case valueAndPercent
@@ -7240,7 +7240,7 @@ extension QuickSightClientTypes {
 
 extension QuickSightClientTypes {
 
-    public enum DataLabelOverlap: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DataLabelOverlap: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case disableOverlap
         case enableOverlap
         case sdkUnknown(Swift.String)
@@ -7269,7 +7269,7 @@ extension QuickSightClientTypes {
 
 extension QuickSightClientTypes {
 
-    public enum DataLabelPosition: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DataLabelPosition: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case bottom
         case inside
         case `left`
@@ -7309,8 +7309,9 @@ extension QuickSightClientTypes {
 }
 
 extension QuickSightClientTypes {
+
     /// The options that determine the presentation of the data labels.
-    public struct DataLabelOptions {
+    public struct DataLabelOptions: Swift.Sendable {
         /// Determines the visibility of the category field labels.
         public var categoryLabelVisibility: QuickSightClientTypes.Visibility?
         /// The option that determines the data label type.
@@ -7357,12 +7358,12 @@ extension QuickSightClientTypes {
             self.visibility = visibility
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The dimension type field with categorical type columns..
-    public struct CategoricalDimensionField {
+    public struct CategoricalDimensionField: Swift.Sendable {
         /// The column that is used in the CategoricalDimensionField.
         /// This member is required.
         public var column: QuickSightClientTypes.ColumnIdentifier?
@@ -7387,12 +7388,12 @@ extension QuickSightClientTypes {
             self.hierarchyId = hierarchyId
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The dimension type field with date type columns.
-    public struct DateDimensionField {
+    public struct DateDimensionField: Swift.Sendable {
         /// The column that is used in the DateDimensionField.
         /// This member is required.
         public var column: QuickSightClientTypes.ColumnIdentifier?
@@ -7439,12 +7440,12 @@ extension QuickSightClientTypes {
             self.hierarchyId = hierarchyId
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The dimension type field with numerical type columns.
-    public struct NumericalDimensionField {
+    public struct NumericalDimensionField: Swift.Sendable {
         /// The column that is used in the NumericalDimensionField.
         /// This member is required.
         public var column: QuickSightClientTypes.ColumnIdentifier?
@@ -7469,12 +7470,12 @@ extension QuickSightClientTypes {
             self.hierarchyId = hierarchyId
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The dimension type field.
-    public struct DimensionField {
+    public struct DimensionField: Swift.Sendable {
         /// The dimension type field with categorical type columns.
         public var categoricalDimensionField: QuickSightClientTypes.CategoricalDimensionField?
         /// The dimension type field with date type columns.
@@ -7493,12 +7494,12 @@ extension QuickSightClientTypes {
             self.numericalDimensionField = numericalDimensionField
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The table calculation measure field for pivot tables.
-    public struct CalculatedMeasureField {
+    public struct CalculatedMeasureField: Swift.Sendable {
         /// The expression in the table calculation.
         /// This member is required.
         public var expression: Swift.String?
@@ -7515,7 +7516,6 @@ extension QuickSightClientTypes {
             self.fieldId = fieldId
         }
     }
-
 }
 
 extension QuickSightClientTypes.CalculatedMeasureField: Swift.CustomDebugStringConvertible {
@@ -7524,8 +7524,9 @@ extension QuickSightClientTypes.CalculatedMeasureField: Swift.CustomDebugStringC
 }
 
 extension QuickSightClientTypes {
+
     /// The measure type field with categorical type columns.
-    public struct CategoricalMeasureField {
+    public struct CategoricalMeasureField: Swift.Sendable {
         /// The aggregation function of the measure field.
         public var aggregationFunction: QuickSightClientTypes.CategoricalAggregationFunction?
         /// The column that is used in the CategoricalMeasureField.
@@ -7550,12 +7551,12 @@ extension QuickSightClientTypes {
             self.formatConfiguration = formatConfiguration
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The measure type field with date type columns.
-    public struct DateMeasureField {
+    public struct DateMeasureField: Swift.Sendable {
         /// The aggregation function of the measure field.
         public var aggregationFunction: QuickSightClientTypes.DateAggregationFunction?
         /// The column that is used in the DateMeasureField.
@@ -7580,12 +7581,12 @@ extension QuickSightClientTypes {
             self.formatConfiguration = formatConfiguration
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The measure type field with numerical type columns.
-    public struct NumericalMeasureField {
+    public struct NumericalMeasureField: Swift.Sendable {
         /// The aggregation function of the measure field.
         public var aggregationFunction: QuickSightClientTypes.NumericalAggregationFunction?
         /// The column that is used in the NumericalMeasureField.
@@ -7610,12 +7611,12 @@ extension QuickSightClientTypes {
             self.formatConfiguration = formatConfiguration
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The measure (metric) type field.
-    public struct MeasureField {
+    public struct MeasureField: Swift.Sendable {
         /// The calculated measure field only used in pivot tables.
         public var calculatedMeasureField: QuickSightClientTypes.CalculatedMeasureField?
         /// The measure type field with categorical type columns.
@@ -7638,12 +7639,12 @@ extension QuickSightClientTypes {
             self.numericalMeasureField = numericalMeasureField
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The aggregated field wells of a bar chart.
-    public struct BarChartAggregatedFieldWells {
+    public struct BarChartAggregatedFieldWells: Swift.Sendable {
         /// The category (y-axis) field well of a bar chart.
         public var category: [QuickSightClientTypes.DimensionField]?
         /// The color (group/color) field well of a bar chart.
@@ -7666,12 +7667,12 @@ extension QuickSightClientTypes {
             self.values = values
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The field wells of a BarChartVisual. This is a union type structure. For this structure to be valid, only one of the attributes can be defined.
-    public struct BarChartFieldWells {
+    public struct BarChartFieldWells: Swift.Sendable {
         /// The aggregated field wells of a bar chart.
         public var barChartAggregatedFieldWells: QuickSightClientTypes.BarChartAggregatedFieldWells?
 
@@ -7682,12 +7683,12 @@ extension QuickSightClientTypes {
             self.barChartAggregatedFieldWells = barChartAggregatedFieldWells
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The context menu options for a visual's interactions.
-    public struct ContextMenuOption {
+    public struct ContextMenuOption: Swift.Sendable {
         /// The availability status of the context menu options. If the value of this property is set to ENABLED, dashboard readers can interact with the context menu.
         public var availabilityStatus: QuickSightClientTypes.DashboardBehavior?
 
@@ -7698,12 +7699,12 @@ extension QuickSightClientTypes {
             self.availabilityStatus = availabilityStatus
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The menu options for a visual.
-    public struct VisualMenuOption {
+    public struct VisualMenuOption: Swift.Sendable {
         /// The availaiblity status of a visual's menu options.
         public var availabilityStatus: QuickSightClientTypes.DashboardBehavior?
 
@@ -7714,12 +7715,12 @@ extension QuickSightClientTypes {
             self.availabilityStatus = availabilityStatus
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The general visual interactions setup for visual publish options
-    public struct VisualInteractionOptions {
+    public struct VisualInteractionOptions: Swift.Sendable {
         /// The context menu options for a visual.
         public var contextMenuOption: QuickSightClientTypes.ContextMenuOption?
         /// The on-visual menu options for a visual.
@@ -7734,12 +7735,11 @@ extension QuickSightClientTypes {
             self.visualMenuOption = visualMenuOption
         }
     }
-
 }
 
 extension QuickSightClientTypes {
 
-    public enum LegendPosition: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum LegendPosition: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case auto
         case bottom
         case `right`
@@ -7773,8 +7773,9 @@ extension QuickSightClientTypes {
 }
 
 extension QuickSightClientTypes {
+
     /// The options for the legend setup of a visual.
-    public struct LegendOptions {
+    public struct LegendOptions: Swift.Sendable {
         /// The height of the legend. If this value is omitted, a default height is used when rendering.
         public var height: Swift.String?
         /// The positions for the legend. Choose one of the following options:
@@ -7809,12 +7810,11 @@ extension QuickSightClientTypes {
             self.width = width
         }
     }
-
 }
 
 extension QuickSightClientTypes {
 
-    public enum BarChartOrientation: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum BarChartOrientation: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case horizontal
         case vertical
         case sdkUnknown(Swift.String)
@@ -7843,7 +7843,7 @@ extension QuickSightClientTypes {
 
 extension QuickSightClientTypes {
 
-    public enum AxisBinding: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AxisBinding: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case primaryYaxis
         case secondaryYaxis
         case sdkUnknown(Swift.String)
@@ -7871,8 +7871,9 @@ extension QuickSightClientTypes {
 }
 
 extension QuickSightClientTypes {
+
     /// The dynamic configuration of the reference line data configuration.
-    public struct ReferenceLineDynamicDataConfiguration {
+    public struct ReferenceLineDynamicDataConfiguration: Swift.Sendable {
         /// The calculation that is used in the dynamic data.
         /// This member is required.
         public var calculation: QuickSightClientTypes.NumericalAggregationFunction?
@@ -7893,12 +7894,11 @@ extension QuickSightClientTypes {
             self.measureAggregationFunction = measureAggregationFunction
         }
     }
-
 }
 
 extension QuickSightClientTypes {
 
-    public enum ReferenceLineSeriesType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ReferenceLineSeriesType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case bar
         case line
         case sdkUnknown(Swift.String)
@@ -7926,8 +7926,9 @@ extension QuickSightClientTypes {
 }
 
 extension QuickSightClientTypes {
+
     /// The static data configuration of the reference line data configuration.
-    public struct ReferenceLineStaticDataConfiguration {
+    public struct ReferenceLineStaticDataConfiguration: Swift.Sendable {
         /// The double input of the static data.
         /// This member is required.
         public var value: Swift.Double
@@ -7939,7 +7940,6 @@ extension QuickSightClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension QuickSightClientTypes.ReferenceLineStaticDataConfiguration: Swift.CustomDebugStringConvertible {
@@ -7948,8 +7948,9 @@ extension QuickSightClientTypes.ReferenceLineStaticDataConfiguration: Swift.Cust
 }
 
 extension QuickSightClientTypes {
+
     /// The data configuration of the reference line.
-    public struct ReferenceLineDataConfiguration {
+    public struct ReferenceLineDataConfiguration: Swift.Sendable {
         /// The axis binding type of the reference line. Choose one of the following options:
         ///
         /// * PrimaryY
@@ -7980,12 +7981,12 @@ extension QuickSightClientTypes {
             self.staticConfiguration = staticConfiguration
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The configuration for a custom label on a ReferenceLine.
-    public struct ReferenceLineCustomLabelConfiguration {
+    public struct ReferenceLineCustomLabelConfiguration: Swift.Sendable {
         /// The string text of the custom label.
         /// This member is required.
         public var customLabel: Swift.String?
@@ -7997,12 +7998,11 @@ extension QuickSightClientTypes {
             self.customLabel = customLabel
         }
     }
-
 }
 
 extension QuickSightClientTypes {
 
-    public enum ReferenceLineLabelHorizontalPosition: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ReferenceLineLabelHorizontalPosition: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case center
         case `left`
         case `right`
@@ -8034,7 +8034,7 @@ extension QuickSightClientTypes {
 
 extension QuickSightClientTypes {
 
-    public enum ReferenceLineValueLabelRelativePosition: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ReferenceLineValueLabelRelativePosition: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case afterCustomLabel
         case beforeCustomLabel
         case sdkUnknown(Swift.String)
@@ -8062,8 +8062,9 @@ extension QuickSightClientTypes {
 }
 
 extension QuickSightClientTypes {
+
     /// The value label configuration of the label in a reference line.
-    public struct ReferenceLineValueLabelConfiguration {
+    public struct ReferenceLineValueLabelConfiguration: Swift.Sendable {
         /// The format configuration of the value label.
         public var formatConfiguration: QuickSightClientTypes.NumericFormatConfiguration?
         /// The relative position of the value label. Choose one of the following options:
@@ -8082,12 +8083,11 @@ extension QuickSightClientTypes {
             self.relativePosition = relativePosition
         }
     }
-
 }
 
 extension QuickSightClientTypes {
 
-    public enum ReferenceLineLabelVerticalPosition: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ReferenceLineLabelVerticalPosition: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case above
         case below
         case sdkUnknown(Swift.String)
@@ -8115,8 +8115,9 @@ extension QuickSightClientTypes {
 }
 
 extension QuickSightClientTypes {
+
     /// The label configuration of a reference line.
-    public struct ReferenceLineLabelConfiguration {
+    public struct ReferenceLineLabelConfiguration: Swift.Sendable {
         /// The custom label configuration of the label in a reference line.
         public var customLabelConfiguration: QuickSightClientTypes.ReferenceLineCustomLabelConfiguration?
         /// The font color configuration of the label in a reference line.
@@ -8157,12 +8158,11 @@ extension QuickSightClientTypes {
             self.verticalPosition = verticalPosition
         }
     }
-
 }
 
 extension QuickSightClientTypes {
 
-    public enum ReferenceLinePatternType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ReferenceLinePatternType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case dashed
         case dotted
         case solid
@@ -8193,8 +8193,9 @@ extension QuickSightClientTypes {
 }
 
 extension QuickSightClientTypes {
+
     /// The style configuration of the reference line.
-    public struct ReferenceLineStyleConfiguration {
+    public struct ReferenceLineStyleConfiguration: Swift.Sendable {
         /// The hex color of the reference line.
         public var color: Swift.String?
         /// The pattern type of the line style. Choose one of the following options:
@@ -8215,12 +8216,12 @@ extension QuickSightClientTypes {
             self.pattern = pattern
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The reference line visual display options.
-    public struct ReferenceLine {
+    public struct ReferenceLine: Swift.Sendable {
         /// The data configuration of the reference line.
         /// This member is required.
         public var dataConfiguration: QuickSightClientTypes.ReferenceLineDataConfiguration?
@@ -8248,12 +8249,11 @@ extension QuickSightClientTypes {
             self.styleConfiguration = styleConfiguration
         }
     }
-
 }
 
 extension QuickSightClientTypes {
 
-    public enum PanelBorderStyle: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum PanelBorderStyle: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case dashed
         case dotted
         case solid
@@ -8285,7 +8285,7 @@ extension QuickSightClientTypes {
 
 extension QuickSightClientTypes {
 
-    public enum HorizontalTextAlignment: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum HorizontalTextAlignment: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case auto
         case center
         case `left`
@@ -8319,8 +8319,9 @@ extension QuickSightClientTypes {
 }
 
 extension QuickSightClientTypes {
+
     /// The options that determine the title styles for each small multiples panel.
-    public struct PanelTitleOptions {
+    public struct PanelTitleOptions: Swift.Sendable {
         /// Configures the display properties of the given text.
         public var fontConfiguration: QuickSightClientTypes.FontConfiguration?
         /// Sets the horizontal text alignment of the title within each panel.
@@ -8339,12 +8340,12 @@ extension QuickSightClientTypes {
             self.visibility = visibility
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// A collection of options that configure how each panel displays in a small multiples chart.
-    public struct PanelConfiguration {
+    public struct PanelConfiguration: Swift.Sendable {
         /// Sets the background color for each panel.
         public var backgroundColor: Swift.String?
         /// Determines whether or not a background for each small multiples panel is rendered.
@@ -8387,12 +8388,11 @@ extension QuickSightClientTypes {
             self.title = title
         }
     }
-
 }
 
 extension QuickSightClientTypes {
 
-    public enum SmallMultiplesAxisPlacement: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SmallMultiplesAxisPlacement: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case inside
         case outside
         case sdkUnknown(Swift.String)
@@ -8421,7 +8421,7 @@ extension QuickSightClientTypes {
 
 extension QuickSightClientTypes {
 
-    public enum SmallMultiplesAxisScale: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SmallMultiplesAxisScale: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case independent
         case shared
         case sdkUnknown(Swift.String)
@@ -8449,8 +8449,9 @@ extension QuickSightClientTypes {
 }
 
 extension QuickSightClientTypes {
+
     /// Configures the properties of a chart's axes that are used by small multiples panels.
-    public struct SmallMultiplesAxisProperties {
+    public struct SmallMultiplesAxisProperties: Swift.Sendable {
         /// Defines the placement of the axis. By default, axes are rendered OUTSIDE of the panels. Axes with INDEPENDENT scale are rendered INSIDE the panels.
         public var placement: QuickSightClientTypes.SmallMultiplesAxisPlacement?
         /// Determines whether scale of the axes are shared or independent. The default value is SHARED.
@@ -8465,12 +8466,12 @@ extension QuickSightClientTypes {
             self.scale = scale
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// Options that determine the layout and display options of a chart's small multiples.
-    public struct SmallMultiplesOptions {
+    public struct SmallMultiplesOptions: Swift.Sendable {
         /// Sets the maximum number of visible columns to display in the grid of small multiples panels. The default is Auto, which automatically adjusts the columns in the grid to fit the overall layout and size of the given chart.
         public var maxVisibleColumns: Swift.Int?
         /// Sets the maximum number of visible rows to display in the grid of small multiples panels. The default value is Auto, which automatically adjusts the rows in the grid to fit the overall layout and size of the given chart.
@@ -8497,12 +8498,11 @@ extension QuickSightClientTypes {
             self.yAxis = yAxis
         }
     }
-
 }
 
 extension QuickSightClientTypes {
 
-    public enum OtherCategories: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum OtherCategories: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case exclude
         case include
         case sdkUnknown(Swift.String)
@@ -8530,8 +8530,9 @@ extension QuickSightClientTypes {
 }
 
 extension QuickSightClientTypes {
+
     /// The limit configuration of the visual display for an axis.
-    public struct ItemsLimitConfiguration {
+    public struct ItemsLimitConfiguration: Swift.Sendable {
         /// The limit on how many items of a field are showed in the chart. For example, the number of slices that are displayed in a pie chart.
         public var itemsLimit: Swift.Int?
         /// The Show other of an axis in the chart. Choose one of the following options:
@@ -8550,12 +8551,12 @@ extension QuickSightClientTypes {
             self.otherCategories = otherCategories
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The sort configuration for a field in a field well.
-    public struct FieldSort {
+    public struct FieldSort: Swift.Sendable {
         /// The sort direction. Choose one of the following options:
         ///
         /// * ASC: Ascending
@@ -8576,12 +8577,12 @@ extension QuickSightClientTypes {
             self.fieldId = fieldId
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The field sort options in a chart configuration.
-    public struct FieldSortOptions {
+    public struct FieldSortOptions: Swift.Sendable {
         /// The sort configuration for a column that is not used in a field well.
         public var columnSort: QuickSightClientTypes.ColumnSort?
         /// The sort configuration for a field in a field well.
@@ -8596,12 +8597,12 @@ extension QuickSightClientTypes {
             self.fieldSort = fieldSort
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// sort-configuration-description
-    public struct BarChartSortConfiguration {
+    public struct BarChartSortConfiguration: Swift.Sendable {
         /// The limit on the number of categories displayed in a bar chart.
         public var categoryItemsLimit: QuickSightClientTypes.ItemsLimitConfiguration?
         /// The sort configuration of category fields.
@@ -8632,12 +8633,11 @@ extension QuickSightClientTypes {
             self.smallMultiplesSort = smallMultiplesSort
         }
     }
-
 }
 
 extension QuickSightClientTypes {
 
-    public enum TooltipTarget: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum TooltipTarget: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case bar
         case both
         case line
@@ -8668,8 +8668,9 @@ extension QuickSightClientTypes {
 }
 
 extension QuickSightClientTypes {
+
     /// The tooltip item for the columns that are not part of a field well.
-    public struct ColumnTooltipItem {
+    public struct ColumnTooltipItem: Swift.Sendable {
         /// The aggregation function of the column tooltip item.
         public var aggregation: QuickSightClientTypes.AggregationFunction?
         /// The target column of the tooltip item.
@@ -8697,12 +8698,12 @@ extension QuickSightClientTypes {
             self.visibility = visibility
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The tooltip item for the fields.
-    public struct FieldTooltipItem {
+    public struct FieldTooltipItem: Swift.Sendable {
         /// The unique ID of the field that is targeted by the tooltip.
         /// This member is required.
         public var fieldId: Swift.String?
@@ -8726,12 +8727,12 @@ extension QuickSightClientTypes {
             self.visibility = visibility
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The tooltip. This is a union type structure. For this structure to be valid, only one of the attributes can be defined.
-    public struct TooltipItem {
+    public struct TooltipItem: Swift.Sendable {
         /// The tooltip item for the columns that are not part of a field well.
         public var columnTooltipItem: QuickSightClientTypes.ColumnTooltipItem?
         /// The tooltip item for the fields.
@@ -8746,12 +8747,11 @@ extension QuickSightClientTypes {
             self.fieldTooltipItem = fieldTooltipItem
         }
     }
-
 }
 
 extension QuickSightClientTypes {
 
-    public enum TooltipTitleType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum TooltipTitleType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case `none`
         case primaryValue
         case sdkUnknown(Swift.String)
@@ -8779,8 +8779,9 @@ extension QuickSightClientTypes {
 }
 
 extension QuickSightClientTypes {
+
     /// The setup for the detailed tooltip.
-    public struct FieldBasedTooltip {
+    public struct FieldBasedTooltip: Swift.Sendable {
         /// The visibility of Show aggregations.
         public var aggregationVisibility: QuickSightClientTypes.Visibility?
         /// The fields configuration in the tooltip.
@@ -8803,12 +8804,11 @@ extension QuickSightClientTypes {
             self.tooltipTitleType = tooltipTitleType
         }
     }
-
 }
 
 extension QuickSightClientTypes {
 
-    public enum SelectedTooltipType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SelectedTooltipType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case basic
         case detailed
         case sdkUnknown(Swift.String)
@@ -8836,8 +8836,9 @@ extension QuickSightClientTypes {
 }
 
 extension QuickSightClientTypes {
+
     /// The display options for the visual tooltip.
-    public struct TooltipOptions {
+    public struct TooltipOptions: Swift.Sendable {
         /// The setup for the detailed tooltip. The tooltip setup is always saved. The display type is decided based on the tooltip type.
         public var fieldBasedTooltip: QuickSightClientTypes.FieldBasedTooltip?
         /// The selected type for the tooltip. Choose one of the following options:
@@ -8860,12 +8861,11 @@ extension QuickSightClientTypes {
             self.tooltipVisibility = tooltipVisibility
         }
     }
-
 }
 
 extension QuickSightClientTypes {
 
-    public enum PivotTableDataPathType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum PivotTableDataPathType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case countMetricColumn
         case emptyColumnHeader
         case hierarchyRowsLayoutColumn
@@ -8899,8 +8899,9 @@ extension QuickSightClientTypes {
 }
 
 extension QuickSightClientTypes {
+
     /// The type of the data path value.
-    public struct DataPathType {
+    public struct DataPathType: Swift.Sendable {
         /// The type of data path value utilized in a pivot table. Choose one of the following options:
         ///
         /// * HIERARCHY_ROWS_LAYOUT_COLUMN - The type of data path for the rows layout column, when RowsLayout is set to HIERARCHY.
@@ -8919,12 +8920,12 @@ extension QuickSightClientTypes {
             self.pivotTableDataPathType = pivotTableDataPathType
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The data path that needs to be sorted.
-    public struct DataPathValue {
+    public struct DataPathValue: Swift.Sendable {
         /// The type configuration of the field.
         public var dataPathType: QuickSightClientTypes.DataPathType?
         /// The field ID of the field that needs to be sorted.
@@ -8943,7 +8944,6 @@ extension QuickSightClientTypes {
             self.fieldValue = fieldValue
         }
     }
-
 }
 
 extension QuickSightClientTypes.DataPathValue: Swift.CustomDebugStringConvertible {
@@ -8952,8 +8952,9 @@ extension QuickSightClientTypes.DataPathValue: Swift.CustomDebugStringConvertibl
 }
 
 extension QuickSightClientTypes {
+
     /// The color map that determines the color options for a particular element.
-    public struct DataPathColor {
+    public struct DataPathColor: Swift.Sendable {
         /// The color that needs to be applied to the element.
         /// This member is required.
         public var color: Swift.String?
@@ -8974,12 +8975,12 @@ extension QuickSightClientTypes {
             self.timeGranularity = timeGranularity
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The visual display options for the visual palette.
-    public struct VisualPalette {
+    public struct VisualPalette: Swift.Sendable {
         /// The chart color options for the visual palette.
         public var chartColor: Swift.String?
         /// The color map options for the visual palette.
@@ -8994,12 +8995,12 @@ extension QuickSightClientTypes {
             self.colorMap = colorMap
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The configuration of a BarChartVisual.
-    public struct BarChartConfiguration {
+    public struct BarChartConfiguration: Swift.Sendable {
         /// Determines the arrangement of the bars. The orientation and arrangement of bars determine the type of bar that is used in the visual.
         public var barsArrangement: QuickSightClientTypes.BarsArrangement?
         /// The label display options (grid line, range, scale, axis step) for bar chart category.
@@ -9078,12 +9079,12 @@ extension QuickSightClientTypes {
             self.visualPalette = visualPalette
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The category drill down filter.
-    public struct CategoryDrillDownFilter {
+    public struct CategoryDrillDownFilter: Swift.Sendable {
         /// A list of the string inputs that are the values of the category drill down filter.
         /// This member is required.
         public var categoryValues: [Swift.String]?
@@ -9100,12 +9101,12 @@ extension QuickSightClientTypes {
             self.column = column
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The numeric equality type drill down filter.
-    public struct NumericEqualityDrillDownFilter {
+    public struct NumericEqualityDrillDownFilter: Swift.Sendable {
         /// The column that the filter is applied to.
         /// This member is required.
         public var column: QuickSightClientTypes.ColumnIdentifier?
@@ -9122,12 +9123,12 @@ extension QuickSightClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The time range drill down filter.
-    public struct TimeRangeDrillDownFilter {
+    public struct TimeRangeDrillDownFilter: Swift.Sendable {
         /// The column that the filter is applied to.
         /// This member is required.
         public var column: QuickSightClientTypes.ColumnIdentifier?
@@ -9154,12 +9155,12 @@ extension QuickSightClientTypes {
             self.timeGranularity = timeGranularity
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The drill down filter for the column hierarchies. This is a union type structure. For this structure to be valid, only one of the attributes can be defined.
-    public struct DrillDownFilter {
+    public struct DrillDownFilter: Swift.Sendable {
         /// The category type drill down filter. This filter is used for string type columns.
         public var categoryFilter: QuickSightClientTypes.CategoryDrillDownFilter?
         /// The numeric equality type drill down filter. This filter is used for number type columns.
@@ -9178,12 +9179,12 @@ extension QuickSightClientTypes {
             self.timeRangeFilter = timeRangeFilter
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The option that determines the hierarchy of any DateTime fields.
-    public struct DateTimeHierarchy {
+    public struct DateTimeHierarchy: Swift.Sendable {
         /// The option that determines the drill down filters for the DateTime hierarchy.
         public var drillDownFilters: [QuickSightClientTypes.DrillDownFilter]?
         /// The hierarchy ID of the DateTime hierarchy.
@@ -9199,12 +9200,12 @@ extension QuickSightClientTypes {
             self.hierarchyId = hierarchyId
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The option that determines the hierarchy of the fields that are built within a visual's field wells. These fields can't be duplicated to other visuals.
-    public struct ExplicitHierarchy {
+    public struct ExplicitHierarchy: Swift.Sendable {
         /// The list of columns that define the explicit hierarchy.
         /// This member is required.
         public var columns: [QuickSightClientTypes.ColumnIdentifier]?
@@ -9225,12 +9226,12 @@ extension QuickSightClientTypes {
             self.hierarchyId = hierarchyId
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The option that determines the hierarchy of the fields that are defined during data preparation. These fields are available to use in any analysis that uses the data source.
-    public struct PredefinedHierarchy {
+    public struct PredefinedHierarchy: Swift.Sendable {
         /// The list of columns that define the predefined hierarchy.
         /// This member is required.
         public var columns: [QuickSightClientTypes.ColumnIdentifier]?
@@ -9251,12 +9252,12 @@ extension QuickSightClientTypes {
             self.hierarchyId = hierarchyId
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The option that determines the hierarchy of the fields for a visual element.
-    public struct ColumnHierarchy {
+    public struct ColumnHierarchy: Swift.Sendable {
         /// The option that determines the hierarchy of any DateTime fields.
         public var dateTimeHierarchy: QuickSightClientTypes.DateTimeHierarchy?
         /// The option that determines the hierarchy of the fields that are built within a visual's field wells. These fields can't be duplicated to other visuals.
@@ -9275,12 +9276,12 @@ extension QuickSightClientTypes {
             self.predefinedHierarchy = predefinedHierarchy
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The text format for a subtitle. This is a union type structure. For this structure to be valid, only one of the attributes can be defined.
-    public struct LongFormatText {
+    public struct LongFormatText: Swift.Sendable {
         /// Plain text format.
         public var plainText: Swift.String?
         /// Rich text. Examples of rich text include bold, underline, and italics.
@@ -9295,12 +9296,12 @@ extension QuickSightClientTypes {
             self.richText = richText
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The subtitle label options for a visual.
-    public struct VisualSubtitleLabelOptions {
+    public struct VisualSubtitleLabelOptions: Swift.Sendable {
         /// The long text format of the subtitle label, such as plain text or rich text.
         public var formatText: QuickSightClientTypes.LongFormatText?
         /// The visibility of the subtitle label.
@@ -9315,12 +9316,12 @@ extension QuickSightClientTypes {
             self.visibility = visibility
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The text format for the title. This is a union type structure. For this structure to be valid, only one of the attributes can be defined.
-    public struct ShortFormatText {
+    public struct ShortFormatText: Swift.Sendable {
         /// Plain text format.
         public var plainText: Swift.String?
         /// Rich text. Examples of rich text include bold, underline, and italics.
@@ -9335,12 +9336,12 @@ extension QuickSightClientTypes {
             self.richText = richText
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The title label options for a visual.
-    public struct VisualTitleLabelOptions {
+    public struct VisualTitleLabelOptions: Swift.Sendable {
         /// The short text format of the title label, such as plain text or rich text.
         public var formatText: QuickSightClientTypes.ShortFormatText?
         /// The visibility of the title label.
@@ -9355,10 +9356,10 @@ extension QuickSightClientTypes {
             self.visibility = visibility
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// A bar chart. The BarChartVisual structure describes a visual that is a member of the bar chart family. The following charts can be described using this structure:
     ///
     /// * Horizontal bar chart
@@ -9375,7 +9376,7 @@ extension QuickSightClientTypes {
     ///
     ///
     /// For more information, see [Using bar charts](https://docs.aws.amazon.com/quicksight/latest/user/bar-charts.html) in the Amazon QuickSight User Guide.
-    public struct BarChartVisual {
+    public struct BarChartVisual: Swift.Sendable {
         /// The list of custom actions that are configured for a visual.
         public var actions: [QuickSightClientTypes.VisualCustomAction]?
         /// The configuration settings of the visual.
@@ -9407,12 +9408,11 @@ extension QuickSightClientTypes {
             self.visualId = visualId
         }
     }
-
 }
 
 extension QuickSightClientTypes {
 
-    public enum BoxPlotFillStyle: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum BoxPlotFillStyle: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case solid
         case transparent
         case sdkUnknown(Swift.String)
@@ -9440,8 +9440,9 @@ extension QuickSightClientTypes {
 }
 
 extension QuickSightClientTypes {
+
     /// The style options of the box plot.
-    public struct BoxPlotStyleOptions {
+    public struct BoxPlotStyleOptions: Swift.Sendable {
         /// The fill styles (solid, transparent) of the box plot.
         public var fillStyle: QuickSightClientTypes.BoxPlotFillStyle?
 
@@ -9452,12 +9453,12 @@ extension QuickSightClientTypes {
             self.fillStyle = fillStyle
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The options of a box plot visual.
-    public struct BoxPlotOptions {
+    public struct BoxPlotOptions: Swift.Sendable {
         /// Determines the visibility of all data points of the box plot.
         public var allDataPointsVisibility: QuickSightClientTypes.Visibility?
         /// Determines the visibility of the outlier in a box plot.
@@ -9476,12 +9477,12 @@ extension QuickSightClientTypes {
             self.styleOptions = styleOptions
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The aggregated field well for a box plot.
-    public struct BoxPlotAggregatedFieldWells {
+    public struct BoxPlotAggregatedFieldWells: Swift.Sendable {
         /// The group by field well of a box plot chart. Values are grouped based on group by fields.
         public var groupBy: [QuickSightClientTypes.DimensionField]?
         /// The value field well of a box plot chart. Values are aggregated based on group by fields.
@@ -9496,12 +9497,12 @@ extension QuickSightClientTypes {
             self.values = values
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The field wells of a BoxPlotVisual. This is a union type structure. For this structure to be valid, only one of the attributes can be defined.
-    public struct BoxPlotFieldWells {
+    public struct BoxPlotFieldWells: Swift.Sendable {
         /// The aggregated field wells of a box plot.
         public var boxPlotAggregatedFieldWells: QuickSightClientTypes.BoxPlotAggregatedFieldWells?
 
@@ -9512,12 +9513,12 @@ extension QuickSightClientTypes {
             self.boxPlotAggregatedFieldWells = boxPlotAggregatedFieldWells
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The pagination configuration for a table visual or boxplot.
-    public struct PaginationConfiguration {
+    public struct PaginationConfiguration: Swift.Sendable {
         /// Indicates the page number.
         /// This member is required.
         public var pageNumber: Swift.Int?
@@ -9534,12 +9535,12 @@ extension QuickSightClientTypes {
             self.pageSize = pageSize
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The sort configuration of a BoxPlotVisual.
-    public struct BoxPlotSortConfiguration {
+    public struct BoxPlotSortConfiguration: Swift.Sendable {
         /// The sort configuration of a group by fields.
         public var categorySort: [QuickSightClientTypes.FieldSortOptions]?
         /// The pagination configuration of a table visual or box plot.
@@ -9554,12 +9555,12 @@ extension QuickSightClientTypes {
             self.paginationConfiguration = paginationConfiguration
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The configuration of a BoxPlotVisual.
-    public struct BoxPlotChartConfiguration {
+    public struct BoxPlotChartConfiguration: Swift.Sendable {
         /// The box plot chart options for a box plot visual
         public var boxPlotOptions: QuickSightClientTypes.BoxPlotOptions?
         /// The label display options (grid line, range, scale, axis step) of a box plot category.
@@ -9614,12 +9615,12 @@ extension QuickSightClientTypes {
             self.visualPalette = visualPalette
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// A box plot. For more information, see [Using box plots](https://docs.aws.amazon.com/quicksight/latest/user/box-plots.html) in the Amazon QuickSight User Guide.
-    public struct BoxPlotVisual {
+    public struct BoxPlotVisual: Swift.Sendable {
         /// The list of custom actions that are configured for a visual.
         public var actions: [QuickSightClientTypes.VisualCustomAction]?
         /// The configuration settings of the visual.
@@ -9651,12 +9652,12 @@ extension QuickSightClientTypes {
             self.visualId = visualId
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The aggregated field wells of a combo chart.
-    public struct ComboChartAggregatedFieldWells {
+    public struct ComboChartAggregatedFieldWells: Swift.Sendable {
         /// The aggregated BarValues field well of a combo chart.
         public var barValues: [QuickSightClientTypes.MeasureField]?
         /// The aggregated category field wells of a combo chart.
@@ -9679,12 +9680,12 @@ extension QuickSightClientTypes {
             self.lineValues = lineValues
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The field wells of the visual. This is a union type structure. For this structure to be valid, only one of the attributes can be defined.
-    public struct ComboChartFieldWells {
+    public struct ComboChartFieldWells: Swift.Sendable {
         /// The aggregated field wells of a combo chart. Combo charts only have aggregated field wells. Columns in a combo chart are aggregated by category.
         public var comboChartAggregatedFieldWells: QuickSightClientTypes.ComboChartAggregatedFieldWells?
 
@@ -9695,12 +9696,11 @@ extension QuickSightClientTypes {
             self.comboChartAggregatedFieldWells = comboChartAggregatedFieldWells
         }
     }
-
 }
 
 extension QuickSightClientTypes {
 
-    public enum SingleYAxisOption: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SingleYAxisOption: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case primaryYAxis
         case sdkUnknown(Swift.String)
 
@@ -9725,8 +9725,9 @@ extension QuickSightClientTypes {
 }
 
 extension QuickSightClientTypes {
+
     /// The options that are available for a single Y axis in a chart.
-    public struct YAxisOptions {
+    public struct YAxisOptions: Swift.Sendable {
         /// The Y axis type to be used in the chart. If you choose PRIMARY_Y_AXIS, the primary Y Axis is located on the leftmost vertical axis of the chart.
         /// This member is required.
         public var yAxis: QuickSightClientTypes.SingleYAxisOption?
@@ -9738,12 +9739,12 @@ extension QuickSightClientTypes {
             self.yAxis = yAxis
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The settings of a chart's single axis configuration.
-    public struct SingleAxisOptions {
+    public struct SingleAxisOptions: Swift.Sendable {
         /// The Y axis options of a single axis configuration.
         public var yAxisOptions: QuickSightClientTypes.YAxisOptions?
 
@@ -9754,12 +9755,12 @@ extension QuickSightClientTypes {
             self.yAxisOptions = yAxisOptions
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The sort configuration of a ComboChartVisual.
-    public struct ComboChartSortConfiguration {
+    public struct ComboChartSortConfiguration: Swift.Sendable {
         /// The item limit configuration for the category field well of a combo chart.
         public var categoryItemsLimit: QuickSightClientTypes.ItemsLimitConfiguration?
         /// The sort configuration of the category field well in a combo chart.
@@ -9782,12 +9783,12 @@ extension QuickSightClientTypes {
             self.colorSort = colorSort
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The configuration of a ComboChartVisual.
-    public struct ComboChartConfiguration {
+    public struct ComboChartConfiguration: Swift.Sendable {
         /// The options that determine if visual data labels are displayed. The data label options for a bar in a combo chart.
         public var barDataLabels: QuickSightClientTypes.DataLabelOptions?
         /// Determines the bar arrangement in a combo chart. The following are valid values in this structure:
@@ -9872,12 +9873,12 @@ extension QuickSightClientTypes {
             self.visualPalette = visualPalette
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// A combo chart. The ComboChartVisual includes stacked bar combo charts and clustered bar combo charts For more information, see [Using combo charts](https://docs.aws.amazon.com/quicksight/latest/user/combo-charts.html) in the Amazon QuickSight User Guide.
-    public struct ComboChartVisual {
+    public struct ComboChartVisual: Swift.Sendable {
         /// The list of custom actions that are configured for a visual.
         public var actions: [QuickSightClientTypes.VisualCustomAction]?
         /// The configuration settings of the visual.
@@ -9909,12 +9910,11 @@ extension QuickSightClientTypes {
             self.visualId = visualId
         }
     }
-
 }
 
 extension QuickSightClientTypes {
 
-    public enum CustomContentType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum CustomContentType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case image
         case otherEmbeddedContent
         case sdkUnknown(Swift.String)
@@ -9943,7 +9943,7 @@ extension QuickSightClientTypes {
 
 extension QuickSightClientTypes {
 
-    public enum CustomContentImageScalingConfiguration: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum CustomContentImageScalingConfiguration: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case doNotScale
         case fitToHeight
         case fitToWidth
@@ -9977,8 +9977,9 @@ extension QuickSightClientTypes {
 }
 
 extension QuickSightClientTypes {
+
     /// The configuration of a CustomContentVisual.
-    public struct CustomContentConfiguration {
+    public struct CustomContentConfiguration: Swift.Sendable {
         /// The content type of the custom content visual. You can use this to have the visual render as an image.
         public var contentType: QuickSightClientTypes.CustomContentType?
         /// The input URL that links to the custom content that you want in the custom visual.
@@ -10001,12 +10002,12 @@ extension QuickSightClientTypes {
             self.interactions = interactions
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// A visual that contains custom content. For more information, see [Using custom visual content](https://docs.aws.amazon.com/quicksight/latest/user/custom-visual-content.html) in the Amazon QuickSight User Guide.
-    public struct CustomContentVisual {
+    public struct CustomContentVisual: Swift.Sendable {
         /// The list of custom actions that are configured for a visual.
         public var actions: [QuickSightClientTypes.VisualCustomAction]?
         /// The configuration of a CustomContentVisual.
@@ -10039,12 +10040,12 @@ extension QuickSightClientTypes {
             self.visualId = visualId
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// An empty visual. Empty visuals are used in layouts but have not been configured to show any data. A new visual created in the Amazon QuickSight console is considered an EmptyVisual until a visual type is selected.
-    public struct EmptyVisual {
+    public struct EmptyVisual: Swift.Sendable {
         /// The list of custom actions that are configured for a visual.
         public var actions: [QuickSightClientTypes.VisualCustomAction]?
         /// The data set that is used in the empty visual. Every visual requires a dataset to render.
@@ -10065,12 +10066,12 @@ extension QuickSightClientTypes {
             self.visualId = visualId
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The aggregated field well of the filled map.
-    public struct FilledMapAggregatedFieldWells {
+    public struct FilledMapAggregatedFieldWells: Swift.Sendable {
         /// The aggregated location field well of the filled map. Values are grouped by location fields.
         public var geospatial: [QuickSightClientTypes.DimensionField]?
         /// The aggregated color field well of a filled map. Values are aggregated based on location fields.
@@ -10085,12 +10086,12 @@ extension QuickSightClientTypes {
             self.values = values
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The field wells of a FilledMapVisual. This is a union type structure. For this structure to be valid, only one of the attributes can be defined.
-    public struct FilledMapFieldWells {
+    public struct FilledMapFieldWells: Swift.Sendable {
         /// The aggregated field well of the filled map.
         public var filledMapAggregatedFieldWells: QuickSightClientTypes.FilledMapAggregatedFieldWells?
 
@@ -10101,12 +10102,11 @@ extension QuickSightClientTypes {
             self.filledMapAggregatedFieldWells = filledMapAggregatedFieldWells
         }
     }
-
 }
 
 extension QuickSightClientTypes {
 
-    public enum BaseMapStyleType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum BaseMapStyleType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case darkGray
         case imagery
         case lightGray
@@ -10140,8 +10140,9 @@ extension QuickSightClientTypes {
 }
 
 extension QuickSightClientTypes {
+
     /// The map style options of the geospatial map.
-    public struct GeospatialMapStyleOptions {
+    public struct GeospatialMapStyleOptions: Swift.Sendable {
         /// The base map style of the geospatial map.
         public var baseMapStyle: QuickSightClientTypes.BaseMapStyleType?
 
@@ -10152,12 +10153,12 @@ extension QuickSightClientTypes {
             self.baseMapStyle = baseMapStyle
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The sort configuration of a FilledMapVisual.
-    public struct FilledMapSortConfiguration {
+    public struct FilledMapSortConfiguration: Swift.Sendable {
         /// The sort configuration of the location fields.
         public var categorySort: [QuickSightClientTypes.FieldSortOptions]?
 
@@ -10168,12 +10169,12 @@ extension QuickSightClientTypes {
             self.categorySort = categorySort
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The bound options (north, south, west, east) of the geospatial window options.
-    public struct GeospatialCoordinateBounds {
+    public struct GeospatialCoordinateBounds: Swift.Sendable {
         /// The longitude of the east bound of the geospatial coordinate bounds.
         /// This member is required.
         public var east: Swift.Double?
@@ -10200,12 +10201,11 @@ extension QuickSightClientTypes {
             self.west = west
         }
     }
-
 }
 
 extension QuickSightClientTypes {
 
-    public enum MapZoomMode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum MapZoomMode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case auto
         case manual
         case sdkUnknown(Swift.String)
@@ -10233,8 +10233,9 @@ extension QuickSightClientTypes {
 }
 
 extension QuickSightClientTypes {
+
     /// The window options of the geospatial map visual.
-    public struct GeospatialWindowOptions {
+    public struct GeospatialWindowOptions: Swift.Sendable {
         /// The bounds options (north, south, west, east) of the geospatial window options.
         public var bounds: QuickSightClientTypes.GeospatialCoordinateBounds?
         /// The map zoom modes (manual, auto) of the geospatial window options.
@@ -10249,12 +10250,12 @@ extension QuickSightClientTypes {
             self.mapZoomMode = mapZoomMode
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The configuration for a FilledMapVisual.
-    public struct FilledMapConfiguration {
+    public struct FilledMapConfiguration: Swift.Sendable {
         /// The field wells of the visual.
         public var fieldWells: QuickSightClientTypes.FilledMapFieldWells?
         /// The general visual interactions setup for a visual.
@@ -10289,12 +10290,12 @@ extension QuickSightClientTypes {
             self.windowOptions = windowOptions
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// Determines the gradient stop configuration.
-    public struct GradientStop {
+    public struct GradientStop: Swift.Sendable {
         /// Determines the color.
         public var color: Swift.String?
         /// Determines the data value.
@@ -10314,12 +10315,12 @@ extension QuickSightClientTypes {
             self.gradientOffset = gradientOffset
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// Determines the gradient color settings.
-    public struct GradientColor {
+    public struct GradientColor: Swift.Sendable {
         /// The list of gradient color stops.
         public var stops: [QuickSightClientTypes.GradientStop]?
 
@@ -10330,12 +10331,12 @@ extension QuickSightClientTypes {
             self.stops = stops
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// Formatting configuration for gradient color.
-    public struct ConditionalFormattingGradientColor {
+    public struct ConditionalFormattingGradientColor: Swift.Sendable {
         /// Determines the color.
         /// This member is required.
         public var color: QuickSightClientTypes.GradientColor?
@@ -10352,7 +10353,6 @@ extension QuickSightClientTypes {
             self.expression = expression
         }
     }
-
 }
 
 extension QuickSightClientTypes.ConditionalFormattingGradientColor: Swift.CustomDebugStringConvertible {
@@ -10361,8 +10361,9 @@ extension QuickSightClientTypes.ConditionalFormattingGradientColor: Swift.Custom
 }
 
 extension QuickSightClientTypes {
+
     /// Formatting configuration for solid color.
-    public struct ConditionalFormattingSolidColor {
+    public struct ConditionalFormattingSolidColor: Swift.Sendable {
         /// Determines the color.
         public var color: Swift.String?
         /// The expression that determines the formatting configuration for solid color.
@@ -10378,7 +10379,6 @@ extension QuickSightClientTypes {
             self.expression = expression
         }
     }
-
 }
 
 extension QuickSightClientTypes.ConditionalFormattingSolidColor: Swift.CustomDebugStringConvertible {
@@ -10387,8 +10387,9 @@ extension QuickSightClientTypes.ConditionalFormattingSolidColor: Swift.CustomDeb
 }
 
 extension QuickSightClientTypes {
+
     /// The formatting configuration for the color.
-    public struct ConditionalFormattingColor {
+    public struct ConditionalFormattingColor: Swift.Sendable {
         /// Formatting configuration for gradient color.
         public var gradient: QuickSightClientTypes.ConditionalFormattingGradientColor?
         /// Formatting configuration for solid color.
@@ -10403,12 +10404,12 @@ extension QuickSightClientTypes {
             self.solid = solid
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The shape conditional formatting of a filled map visual.
-    public struct ShapeConditionalFormat {
+    public struct ShapeConditionalFormat: Swift.Sendable {
         /// The conditional formatting for the shape background color of a filled map visual.
         /// This member is required.
         public var backgroundColor: QuickSightClientTypes.ConditionalFormattingColor?
@@ -10420,12 +10421,12 @@ extension QuickSightClientTypes {
             self.backgroundColor = backgroundColor
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The conditional formatting that determines the shape of the filled map.
-    public struct FilledMapShapeConditionalFormatting {
+    public struct FilledMapShapeConditionalFormatting: Swift.Sendable {
         /// The field ID of the filled map shape.
         /// This member is required.
         public var fieldId: Swift.String?
@@ -10441,12 +10442,12 @@ extension QuickSightClientTypes {
             self.format = format
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// Conditional formatting options of a FilledMapVisual.
-    public struct FilledMapConditionalFormattingOption {
+    public struct FilledMapConditionalFormattingOption: Swift.Sendable {
         /// The conditional formatting that determines the shape of the filled map.
         /// This member is required.
         public var shape: QuickSightClientTypes.FilledMapShapeConditionalFormatting?
@@ -10458,12 +10459,12 @@ extension QuickSightClientTypes {
             self.shape = shape
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The conditional formatting of a FilledMapVisual.
-    public struct FilledMapConditionalFormatting {
+    public struct FilledMapConditionalFormatting: Swift.Sendable {
         /// Conditional formatting options of a FilledMapVisual.
         /// This member is required.
         public var conditionalFormattingOptions: [QuickSightClientTypes.FilledMapConditionalFormattingOption]?
@@ -10475,12 +10476,12 @@ extension QuickSightClientTypes {
             self.conditionalFormattingOptions = conditionalFormattingOptions
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// A filled map. For more information, see [Creating filled maps](https://docs.aws.amazon.com/quicksight/latest/user/filled-maps.html) in the Amazon QuickSight User Guide.
-    public struct FilledMapVisual {
+    public struct FilledMapVisual: Swift.Sendable {
         /// The list of custom actions that are configured for a visual.
         public var actions: [QuickSightClientTypes.VisualCustomAction]?
         /// The configuration settings of the visual.
@@ -10516,12 +10517,11 @@ extension QuickSightClientTypes {
             self.visualId = visualId
         }
     }
-
 }
 
 extension QuickSightClientTypes {
 
-    public enum FunnelChartMeasureDataLabelStyle: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum FunnelChartMeasureDataLabelStyle: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case percentageByFirstStage
         case percentageByPreviousStage
         case valueAndPercentageByFirstStage
@@ -10558,8 +10558,9 @@ extension QuickSightClientTypes {
 }
 
 extension QuickSightClientTypes {
+
     /// The options that determine the presentation of the data labels.
-    public struct FunnelChartDataLabelOptions {
+    public struct FunnelChartDataLabelOptions: Swift.Sendable {
         /// The visibility of the category labels within the data labels.
         public var categoryLabelVisibility: QuickSightClientTypes.Visibility?
         /// The color of the data label text.
@@ -10594,12 +10595,12 @@ extension QuickSightClientTypes {
             self.visibility = visibility
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The field well configuration of a FunnelChartVisual.
-    public struct FunnelChartAggregatedFieldWells {
+    public struct FunnelChartAggregatedFieldWells: Swift.Sendable {
         /// The category field wells of a funnel chart. Values are grouped by category fields.
         public var category: [QuickSightClientTypes.DimensionField]?
         /// The value field wells of a funnel chart. Values are aggregated based on categories.
@@ -10614,12 +10615,12 @@ extension QuickSightClientTypes {
             self.values = values
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The field well configuration of a FunnelChartVisual. This is a union type structure. For this structure to be valid, only one of the attributes can be defined.
-    public struct FunnelChartFieldWells {
+    public struct FunnelChartFieldWells: Swift.Sendable {
         /// The field well configuration of a FunnelChartVisual.
         public var funnelChartAggregatedFieldWells: QuickSightClientTypes.FunnelChartAggregatedFieldWells?
 
@@ -10630,12 +10631,12 @@ extension QuickSightClientTypes {
             self.funnelChartAggregatedFieldWells = funnelChartAggregatedFieldWells
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The sort configuration of a FunnelChartVisual.
-    public struct FunnelChartSortConfiguration {
+    public struct FunnelChartSortConfiguration: Swift.Sendable {
         /// The limit on the number of categories displayed.
         public var categoryItemsLimit: QuickSightClientTypes.ItemsLimitConfiguration?
         /// The sort configuration of the category fields.
@@ -10650,12 +10651,12 @@ extension QuickSightClientTypes {
             self.categorySort = categorySort
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The configuration of a FunnelChartVisual.
-    public struct FunnelChartConfiguration {
+    public struct FunnelChartConfiguration: Swift.Sendable {
         /// The label options of the categories that are displayed in a FunnelChartVisual.
         public var categoryLabelOptions: QuickSightClientTypes.ChartAxisLabelOptions?
         /// The options that determine the presentation of the data labels.
@@ -10694,12 +10695,12 @@ extension QuickSightClientTypes {
             self.visualPalette = visualPalette
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// A funnel chart. For more information, see [Using funnel charts](https://docs.aws.amazon.com/quicksight/latest/user/funnel-visual-content.html) in the Amazon QuickSight User Guide.
-    public struct FunnelChartVisual {
+    public struct FunnelChartVisual: Swift.Sendable {
         /// The list of custom actions that are configured for a visual.
         public var actions: [QuickSightClientTypes.VisualCustomAction]?
         /// The configuration of a FunnelChartVisual.
@@ -10731,12 +10732,12 @@ extension QuickSightClientTypes {
             self.visualId = visualId
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The color configuration of a GaugeChartVisual.
-    public struct GaugeChartColorConfiguration {
+    public struct GaugeChartColorConfiguration: Swift.Sendable {
         /// The background color configuration of a GaugeChartVisual.
         public var backgroundColor: Swift.String?
         /// The foreground color configuration of a GaugeChartVisual.
@@ -10751,12 +10752,12 @@ extension QuickSightClientTypes {
             self.foregroundColor = foregroundColor
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The field well configuration of a GaugeChartVisual.
-    public struct GaugeChartFieldWells {
+    public struct GaugeChartFieldWells: Swift.Sendable {
         /// The target value field wells of a GaugeChartVisual.
         public var targetValues: [QuickSightClientTypes.MeasureField]?
         /// The value field wells of a GaugeChartVisual.
@@ -10771,12 +10772,11 @@ extension QuickSightClientTypes {
             self.values = values
         }
     }
-
 }
 
 extension QuickSightClientTypes {
 
-    public enum ArcThicknessOptions: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ArcThicknessOptions: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case large
         case medium
         case small
@@ -10807,8 +10807,9 @@ extension QuickSightClientTypes {
 }
 
 extension QuickSightClientTypes {
+
     /// The arc configuration of a GaugeChartVisual.
-    public struct ArcConfiguration {
+    public struct ArcConfiguration: Swift.Sendable {
         /// The option that determines the arc angle of a GaugeChartVisual.
         public var arcAngle: Swift.Double?
         /// The options that determine the arc thickness of a GaugeChartVisual.
@@ -10823,12 +10824,12 @@ extension QuickSightClientTypes {
             self.arcThickness = arcThickness
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The arc axis range of a GaugeChartVisual.
-    public struct ArcAxisDisplayRange {
+    public struct ArcAxisDisplayRange: Swift.Sendable {
         /// The maximum value of the arc axis range.
         public var max: Swift.Double?
         /// The minimum value of the arc axis range.
@@ -10843,12 +10844,12 @@ extension QuickSightClientTypes {
             self.min = min
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The arc axis configuration of a GaugeChartVisual.
-    public struct ArcAxisConfiguration {
+    public struct ArcAxisConfiguration: Swift.Sendable {
         /// The arc axis range of a GaugeChartVisual.
         public var range: QuickSightClientTypes.ArcAxisDisplayRange?
         /// The reserved range of the arc axis.
@@ -10863,12 +10864,12 @@ extension QuickSightClientTypes {
             self.reserveRange = reserveRange
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The format of the comparison. This is a union type structure. For this structure to be valid, only one of the attributes can be defined.
-    public struct ComparisonFormatConfiguration {
+    public struct ComparisonFormatConfiguration: Swift.Sendable {
         /// The number display format.
         public var numberDisplayFormatConfiguration: QuickSightClientTypes.NumberDisplayFormatConfiguration?
         /// The percentage display format.
@@ -10883,12 +10884,11 @@ extension QuickSightClientTypes {
             self.percentageDisplayFormatConfiguration = percentageDisplayFormatConfiguration
         }
     }
-
 }
 
 extension QuickSightClientTypes {
 
-    public enum ComparisonMethod: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ComparisonMethod: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case difference
         case percent
         case percentDifference
@@ -10919,8 +10919,9 @@ extension QuickSightClientTypes {
 }
 
 extension QuickSightClientTypes {
+
     /// The comparison display configuration of a KPI or gauge chart.
-    public struct ComparisonConfiguration {
+    public struct ComparisonConfiguration: Swift.Sendable {
         /// The format of the comparison.
         public var comparisonFormat: QuickSightClientTypes.ComparisonFormatConfiguration?
         /// The method of the comparison. Choose from the following options:
@@ -10941,12 +10942,11 @@ extension QuickSightClientTypes {
             self.comparisonMethod = comparisonMethod
         }
     }
-
 }
 
 extension QuickSightClientTypes {
 
-    public enum PrimaryValueDisplayType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum PrimaryValueDisplayType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case actual
         case comparison
         case hidden
@@ -10977,8 +10977,9 @@ extension QuickSightClientTypes {
 }
 
 extension QuickSightClientTypes {
+
     /// The options that determine the presentation of the GaugeChartVisual.
-    public struct GaugeChartOptions {
+    public struct GaugeChartOptions: Swift.Sendable {
         /// The arc configuration of a GaugeChartVisual.
         public var arc: QuickSightClientTypes.ArcConfiguration?
         /// The arc axis configuration of a GaugeChartVisual.
@@ -11005,12 +11006,12 @@ extension QuickSightClientTypes {
             self.primaryValueFontConfiguration = primaryValueFontConfiguration
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The configuration of a GaugeChartVisual.
-    public struct GaugeChartConfiguration {
+    public struct GaugeChartConfiguration: Swift.Sendable {
         /// The color configuration of a GaugeChartVisual.
         public var colorConfiguration: QuickSightClientTypes.GaugeChartColorConfiguration?
         /// The data label configuration of a GaugeChartVisual.
@@ -11045,12 +11046,12 @@ extension QuickSightClientTypes {
             self.visualPalette = visualPalette
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The options that determine the presentation of the arc of a GaugeChartVisual.
-    public struct GaugeChartArcConditionalFormatting {
+    public struct GaugeChartArcConditionalFormatting: Swift.Sendable {
         /// The conditional formatting of the arc foreground color.
         public var foregroundColor: QuickSightClientTypes.ConditionalFormattingColor?
 
@@ -11061,12 +11062,11 @@ extension QuickSightClientTypes {
             self.foregroundColor = foregroundColor
         }
     }
-
 }
 
 extension QuickSightClientTypes {
 
-    public enum ConditionalFormattingIconDisplayOption: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ConditionalFormattingIconDisplayOption: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case iconOnly
         case sdkUnknown(Swift.String)
 
@@ -11091,8 +11091,9 @@ extension QuickSightClientTypes {
 }
 
 extension QuickSightClientTypes {
+
     /// Determines the icon display configuration.
-    public struct ConditionalFormattingIconDisplayConfiguration {
+    public struct ConditionalFormattingIconDisplayConfiguration: Swift.Sendable {
         /// Determines the icon display configuration.
         public var iconDisplayOption: QuickSightClientTypes.ConditionalFormattingIconDisplayOption?
 
@@ -11103,12 +11104,11 @@ extension QuickSightClientTypes {
             self.iconDisplayOption = iconDisplayOption
         }
     }
-
 }
 
 extension QuickSightClientTypes {
 
-    public enum Icon: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Icon: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case arrowDown
         case arrowDownLeft
         case arrowDownRight
@@ -11208,8 +11208,9 @@ extension QuickSightClientTypes {
 }
 
 extension QuickSightClientTypes {
+
     /// Custom icon options for an icon set.
-    public struct ConditionalFormattingCustomIconOptions {
+    public struct ConditionalFormattingCustomIconOptions: Swift.Sendable {
         /// Determines the type of icon.
         public var icon: QuickSightClientTypes.Icon?
         /// Determines the Unicode icon type.
@@ -11224,12 +11225,12 @@ extension QuickSightClientTypes {
             self.unicodeIcon = unicodeIcon
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// Determines the custom condition for an icon set.
-    public struct ConditionalFormattingCustomIconCondition {
+    public struct ConditionalFormattingCustomIconCondition: Swift.Sendable {
         /// Determines the color of the icon.
         public var color: Swift.String?
         /// Determines the icon display configuration.
@@ -11254,7 +11255,6 @@ extension QuickSightClientTypes {
             self.iconOptions = iconOptions
         }
     }
-
 }
 
 extension QuickSightClientTypes.ConditionalFormattingCustomIconCondition: Swift.CustomDebugStringConvertible {
@@ -11264,7 +11264,7 @@ extension QuickSightClientTypes.ConditionalFormattingCustomIconCondition: Swift.
 
 extension QuickSightClientTypes {
 
-    public enum ConditionalFormattingIconSetType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ConditionalFormattingIconSetType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case bars
         case caretUpMinusDown
         case checkX
@@ -11319,8 +11319,9 @@ extension QuickSightClientTypes {
 }
 
 extension QuickSightClientTypes {
+
     /// Formatting configuration for icon set.
-    public struct ConditionalFormattingIconSet {
+    public struct ConditionalFormattingIconSet: Swift.Sendable {
         /// The expression that determines the formatting configuration for the icon set.
         /// This member is required.
         public var expression: Swift.String?
@@ -11336,7 +11337,6 @@ extension QuickSightClientTypes {
             self.iconSetType = iconSetType
         }
     }
-
 }
 
 extension QuickSightClientTypes.ConditionalFormattingIconSet: Swift.CustomDebugStringConvertible {
@@ -11345,8 +11345,9 @@ extension QuickSightClientTypes.ConditionalFormattingIconSet: Swift.CustomDebugS
 }
 
 extension QuickSightClientTypes {
+
     /// The formatting configuration for the icon.
-    public struct ConditionalFormattingIcon {
+    public struct ConditionalFormattingIcon: Swift.Sendable {
         /// Determines the custom condition for an icon set.
         public var customCondition: QuickSightClientTypes.ConditionalFormattingCustomIconCondition?
         /// Formatting configuration for icon set.
@@ -11361,12 +11362,12 @@ extension QuickSightClientTypes {
             self.iconSet = iconSet
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The conditional formatting for the primary value of a GaugeChartVisual.
-    public struct GaugeChartPrimaryValueConditionalFormatting {
+    public struct GaugeChartPrimaryValueConditionalFormatting: Swift.Sendable {
         /// The conditional formatting of the primary value icon.
         public var icon: QuickSightClientTypes.ConditionalFormattingIcon?
         /// The conditional formatting of the primary value text color.
@@ -11381,12 +11382,12 @@ extension QuickSightClientTypes {
             self.textColor = textColor
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// Conditional formatting options of a GaugeChartVisual.
-    public struct GaugeChartConditionalFormattingOption {
+    public struct GaugeChartConditionalFormattingOption: Swift.Sendable {
         /// The options that determine the presentation of the arc of a GaugeChartVisual.
         public var arc: QuickSightClientTypes.GaugeChartArcConditionalFormatting?
         /// The conditional formatting for the primary value of a GaugeChartVisual.
@@ -11401,12 +11402,12 @@ extension QuickSightClientTypes {
             self.primaryValue = primaryValue
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The conditional formatting of a GaugeChartVisual.
-    public struct GaugeChartConditionalFormatting {
+    public struct GaugeChartConditionalFormatting: Swift.Sendable {
         /// Conditional formatting options of a GaugeChartVisual.
         public var conditionalFormattingOptions: [QuickSightClientTypes.GaugeChartConditionalFormattingOption]?
 
@@ -11417,12 +11418,12 @@ extension QuickSightClientTypes {
             self.conditionalFormattingOptions = conditionalFormattingOptions
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// A gauge chart. For more information, see [Using gauge charts](https://docs.aws.amazon.com/quicksight/latest/user/gauge-chart.html) in the Amazon QuickSight User Guide.
-    public struct GaugeChartVisual {
+    public struct GaugeChartVisual: Swift.Sendable {
         /// The list of custom actions that are configured for a visual.
         public var actions: [QuickSightClientTypes.VisualCustomAction]?
         /// The configuration of a GaugeChartVisual.
@@ -11454,12 +11455,12 @@ extension QuickSightClientTypes {
             self.visualId = visualId
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The aggregated field wells for a geospatial map.
-    public struct GeospatialMapAggregatedFieldWells {
+    public struct GeospatialMapAggregatedFieldWells: Swift.Sendable {
         /// The color field wells of a geospatial map.
         public var colors: [QuickSightClientTypes.DimensionField]?
         /// The geospatial field wells of a geospatial map. Values are grouped by geospatial fields.
@@ -11478,12 +11479,12 @@ extension QuickSightClientTypes {
             self.values = values
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The field wells of a GeospatialMapVisual. This is a union type structure. For this structure to be valid, only one of the attributes can be defined.
-    public struct GeospatialMapFieldWells {
+    public struct GeospatialMapFieldWells: Swift.Sendable {
         /// The aggregated field well for a geospatial map.
         public var geospatialMapAggregatedFieldWells: QuickSightClientTypes.GeospatialMapAggregatedFieldWells?
 
@@ -11494,12 +11495,12 @@ extension QuickSightClientTypes {
             self.geospatialMapAggregatedFieldWells = geospatialMapAggregatedFieldWells
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The simple cluster marker of the cluster marker.
-    public struct SimpleClusterMarker {
+    public struct SimpleClusterMarker: Swift.Sendable {
         /// The color of the simple cluster marker.
         public var color: Swift.String?
 
@@ -11510,12 +11511,12 @@ extension QuickSightClientTypes {
             self.color = color
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The cluster marker that is a part of the cluster marker configuration.
-    public struct ClusterMarker {
+    public struct ClusterMarker: Swift.Sendable {
         /// The simple cluster marker of the cluster marker.
         public var simpleClusterMarker: QuickSightClientTypes.SimpleClusterMarker?
 
@@ -11526,12 +11527,12 @@ extension QuickSightClientTypes {
             self.simpleClusterMarker = simpleClusterMarker
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The cluster marker configuration of the geospatial map selected point style.
-    public struct ClusterMarkerConfiguration {
+    public struct ClusterMarkerConfiguration: Swift.Sendable {
         /// The cluster marker that is a part of the cluster marker configuration.
         public var clusterMarker: QuickSightClientTypes.ClusterMarker?
 
@@ -11542,12 +11543,12 @@ extension QuickSightClientTypes {
             self.clusterMarker = clusterMarker
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The color to be used in the heatmap point style.
-    public struct GeospatialHeatmapDataColor {
+    public struct GeospatialHeatmapDataColor: Swift.Sendable {
         /// The hex color to be used in the heatmap point style.
         /// This member is required.
         public var color: Swift.String?
@@ -11559,12 +11560,12 @@ extension QuickSightClientTypes {
             self.color = color
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The color scale specification for the heatmap point style.
-    public struct GeospatialHeatmapColorScale {
+    public struct GeospatialHeatmapColorScale: Swift.Sendable {
         /// The list of colors to be used in heatmap point style.
         public var colors: [QuickSightClientTypes.GeospatialHeatmapDataColor]?
 
@@ -11575,12 +11576,12 @@ extension QuickSightClientTypes {
             self.colors = colors
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The heatmap configuration of the geospatial point style.
-    public struct GeospatialHeatmapConfiguration {
+    public struct GeospatialHeatmapConfiguration: Swift.Sendable {
         /// The color scale specification for the heatmap point style.
         public var heatmapColor: QuickSightClientTypes.GeospatialHeatmapColorScale?
 
@@ -11591,12 +11592,11 @@ extension QuickSightClientTypes {
             self.heatmapColor = heatmapColor
         }
     }
-
 }
 
 extension QuickSightClientTypes {
 
-    public enum GeospatialSelectedPointStyle: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum GeospatialSelectedPointStyle: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case cluster
         case heatmap
         case point
@@ -11627,8 +11627,9 @@ extension QuickSightClientTypes {
 }
 
 extension QuickSightClientTypes {
+
     /// The point style of the geospatial map.
-    public struct GeospatialPointStyleOptions {
+    public struct GeospatialPointStyleOptions: Swift.Sendable {
         /// The cluster marker configuration of the geospatial point style.
         public var clusterMarkerConfiguration: QuickSightClientTypes.ClusterMarkerConfiguration?
         /// The heatmap configuration of the geospatial point style.
@@ -11647,12 +11648,12 @@ extension QuickSightClientTypes {
             self.selectedPointStyle = selectedPointStyle
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The configuration of a GeospatialMapVisual.
-    public struct GeospatialMapConfiguration {
+    public struct GeospatialMapConfiguration: Swift.Sendable {
         /// The field wells of the visual.
         public var fieldWells: QuickSightClientTypes.GeospatialMapFieldWells?
         /// The general visual interactions setup for a visual.
@@ -11691,12 +11692,12 @@ extension QuickSightClientTypes {
             self.windowOptions = windowOptions
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// A geospatial map or a points on map visual. For more information, see [Creating point maps](https://docs.aws.amazon.com/quicksight/latest/user/point-maps.html) in the Amazon QuickSight User Guide.
-    public struct GeospatialMapVisual {
+    public struct GeospatialMapVisual: Swift.Sendable {
         /// The list of custom actions that are configured for a visual.
         public var actions: [QuickSightClientTypes.VisualCustomAction]?
         /// The configuration settings of the visual.
@@ -11728,12 +11729,11 @@ extension QuickSightClientTypes {
             self.visualId = visualId
         }
     }
-
 }
 
 extension QuickSightClientTypes {
 
-    public enum ColorFillType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ColorFillType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case discrete
         case gradient
         case sdkUnknown(Swift.String)
@@ -11761,8 +11761,9 @@ extension QuickSightClientTypes {
 }
 
 extension QuickSightClientTypes {
+
     /// Determines the color that is applied to a particular data value.
-    public struct DataColor {
+    public struct DataColor: Swift.Sendable {
         /// The color that is applied to the data value.
         public var color: Swift.String?
         /// The data value that the color is applied to.
@@ -11777,12 +11778,12 @@ extension QuickSightClientTypes {
             self.dataValue = dataValue
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// Determines the color scale that is applied to the visual.
-    public struct ColorScale {
+    public struct ColorScale: Swift.Sendable {
         /// Determines the color fill type.
         /// This member is required.
         public var colorFillType: QuickSightClientTypes.ColorFillType?
@@ -11803,12 +11804,12 @@ extension QuickSightClientTypes {
             self.nullValueColor = nullValueColor
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The aggregated field wells of a heat map.
-    public struct HeatMapAggregatedFieldWells {
+    public struct HeatMapAggregatedFieldWells: Swift.Sendable {
         /// The columns field well of a heat map.
         public var columns: [QuickSightClientTypes.DimensionField]?
         /// The rows field well of a heat map.
@@ -11827,12 +11828,12 @@ extension QuickSightClientTypes {
             self.values = values
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The field well configuration of a heat map. This is a union type structure. For this structure to be valid, only one of the attributes can be defined.
-    public struct HeatMapFieldWells {
+    public struct HeatMapFieldWells: Swift.Sendable {
         /// The aggregated field wells of a heat map.
         public var heatMapAggregatedFieldWells: QuickSightClientTypes.HeatMapAggregatedFieldWells?
 
@@ -11843,12 +11844,12 @@ extension QuickSightClientTypes {
             self.heatMapAggregatedFieldWells = heatMapAggregatedFieldWells
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The sort configuration of a heat map.
-    public struct HeatMapSortConfiguration {
+    public struct HeatMapSortConfiguration: Swift.Sendable {
         /// The limit on the number of columns that are displayed in a heat map.
         public var heatMapColumnItemsLimitConfiguration: QuickSightClientTypes.ItemsLimitConfiguration?
         /// The column sort configuration for heat map for columns that aren't a part of a field well.
@@ -11871,12 +11872,12 @@ extension QuickSightClientTypes {
             self.heatMapRowSort = heatMapRowSort
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The configuration of a heat map.
-    public struct HeatMapConfiguration {
+    public struct HeatMapConfiguration: Swift.Sendable {
         /// The color options (gradient color, point of divergence) in a heat map.
         public var colorScale: QuickSightClientTypes.ColorScale?
         /// The label options of the column that is displayed in a heat map.
@@ -11919,12 +11920,12 @@ extension QuickSightClientTypes {
             self.tooltip = tooltip
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// A heat map. For more information, see [Using heat maps](https://docs.aws.amazon.com/quicksight/latest/user/heat-map.html) in the Amazon QuickSight User Guide.
-    public struct HeatMapVisual {
+    public struct HeatMapVisual: Swift.Sendable {
         /// The list of custom actions that are configured for a visual.
         public var actions: [QuickSightClientTypes.VisualCustomAction]?
         /// The configuration of a heat map.
@@ -11956,12 +11957,12 @@ extension QuickSightClientTypes {
             self.visualId = visualId
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The options that determine the bin count of a histogram.
-    public struct BinCountOptions {
+    public struct BinCountOptions: Swift.Sendable {
         /// The options that determine the bin count value.
         public var value: Swift.Int?
 
@@ -11972,12 +11973,12 @@ extension QuickSightClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The options that determine the bin width of a histogram.
-    public struct BinWidthOptions {
+    public struct BinWidthOptions: Swift.Sendable {
         /// The options that determine the bin count limit.
         public var binCountLimit: Swift.Int?
         /// The options that determine the bin width value.
@@ -11992,12 +11993,11 @@ extension QuickSightClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension QuickSightClientTypes {
 
-    public enum HistogramBinType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum HistogramBinType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case binCount
         case binWidth
         case sdkUnknown(Swift.String)
@@ -12025,8 +12025,9 @@ extension QuickSightClientTypes {
 }
 
 extension QuickSightClientTypes {
+
     /// The options that determine the presentation of histogram bins.
-    public struct HistogramBinOptions {
+    public struct HistogramBinOptions: Swift.Sendable {
         /// The options that determine the bin count of a histogram.
         public var binCount: QuickSightClientTypes.BinCountOptions?
         /// The options that determine the bin width of a histogram.
@@ -12049,12 +12050,12 @@ extension QuickSightClientTypes {
             self.startValue = startValue
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The field well configuration of a histogram.
-    public struct HistogramAggregatedFieldWells {
+    public struct HistogramAggregatedFieldWells: Swift.Sendable {
         /// The value field wells of a histogram. Values are aggregated by COUNT or DISTINCT_COUNT.
         public var values: [QuickSightClientTypes.MeasureField]?
 
@@ -12065,12 +12066,12 @@ extension QuickSightClientTypes {
             self.values = values
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The field well configuration of a histogram.
-    public struct HistogramFieldWells {
+    public struct HistogramFieldWells: Swift.Sendable {
         /// The field well configuration of a histogram.
         public var histogramAggregatedFieldWells: QuickSightClientTypes.HistogramAggregatedFieldWells?
 
@@ -12081,12 +12082,12 @@ extension QuickSightClientTypes {
             self.histogramAggregatedFieldWells = histogramAggregatedFieldWells
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The configuration for a HistogramVisual.
-    public struct HistogramConfiguration {
+    public struct HistogramConfiguration: Swift.Sendable {
         /// The options that determine the presentation of histogram bins.
         public var binOptions: QuickSightClientTypes.HistogramBinOptions?
         /// The data label configuration of a histogram.
@@ -12129,12 +12130,12 @@ extension QuickSightClientTypes {
             self.yAxisDisplayOptions = yAxisDisplayOptions
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// A histogram. For more information, see [Using histograms](https://docs.aws.amazon.com/quicksight/latest/user/histogram-charts.html) in the Amazon QuickSight User Guide.
-    public struct HistogramVisual {
+    public struct HistogramVisual: Swift.Sendable {
         /// The list of custom actions that are configured for a visual.
         public var actions: [QuickSightClientTypes.VisualCustomAction]?
         /// The configuration for a HistogramVisual.
@@ -12162,12 +12163,11 @@ extension QuickSightClientTypes {
             self.visualId = visualId
         }
     }
-
 }
 
 extension QuickSightClientTypes {
 
-    public enum ForecastComputationSeasonality: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ForecastComputationSeasonality: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case automatic
         case custom
         case sdkUnknown(Swift.String)
@@ -12195,8 +12195,9 @@ extension QuickSightClientTypes {
 }
 
 extension QuickSightClientTypes {
+
     /// The forecast computation configuration.
-    public struct ForecastComputation {
+    public struct ForecastComputation: Swift.Sendable {
         /// The ID for a computation.
         /// This member is required.
         public var computationId: Swift.String?
@@ -12252,12 +12253,12 @@ extension QuickSightClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The growth rate computation configuration.
-    public struct GrowthRateComputation {
+    public struct GrowthRateComputation: Swift.Sendable {
         /// The ID for a computation.
         /// This member is required.
         public var computationId: Swift.String?
@@ -12285,12 +12286,11 @@ extension QuickSightClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension QuickSightClientTypes {
 
-    public enum MaximumMinimumComputationType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum MaximumMinimumComputationType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case maximum
         case minimum
         case sdkUnknown(Swift.String)
@@ -12318,8 +12318,9 @@ extension QuickSightClientTypes {
 }
 
 extension QuickSightClientTypes {
+
     /// The maximum and minimum computation configuration.
-    public struct MaximumMinimumComputation {
+    public struct MaximumMinimumComputation: Swift.Sendable {
         /// The ID for a computation.
         /// This member is required.
         public var computationId: Swift.String?
@@ -12352,12 +12353,12 @@ extension QuickSightClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The metric comparison computation configuration.
-    public struct MetricComparisonComputation {
+    public struct MetricComparisonComputation: Swift.Sendable {
         /// The ID for a computation.
         /// This member is required.
         public var computationId: Swift.String?
@@ -12385,12 +12386,12 @@ extension QuickSightClientTypes {
             self.time = time
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The period over period computation configuration.
-    public struct PeriodOverPeriodComputation {
+    public struct PeriodOverPeriodComputation: Swift.Sendable {
         /// The ID for a computation.
         /// This member is required.
         public var computationId: Swift.String?
@@ -12414,12 +12415,12 @@ extension QuickSightClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The period to date computation configuration.
-    public struct PeriodToDateComputation {
+    public struct PeriodToDateComputation: Swift.Sendable {
         /// The ID for a computation.
         /// This member is required.
         public var computationId: Swift.String?
@@ -12451,12 +12452,11 @@ extension QuickSightClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension QuickSightClientTypes {
 
-    public enum TopBottomSortOrder: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum TopBottomSortOrder: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case absoluteDifference
         case percentDifference
         case sdkUnknown(Swift.String)
@@ -12485,7 +12485,7 @@ extension QuickSightClientTypes {
 
 extension QuickSightClientTypes {
 
-    public enum TopBottomComputationType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum TopBottomComputationType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case bottom
         case top
         case sdkUnknown(Swift.String)
@@ -12513,8 +12513,9 @@ extension QuickSightClientTypes {
 }
 
 extension QuickSightClientTypes {
+
     /// The top movers and bottom movers computation setup.
-    public struct TopBottomMoversComputation {
+    public struct TopBottomMoversComputation: Swift.Sendable {
         /// The category field that is used in a computation.
         public var category: QuickSightClientTypes.DimensionField?
         /// The ID for a computation.
@@ -12559,12 +12560,12 @@ extension QuickSightClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The top ranked and bottom ranked computation configuration.
-    public struct TopBottomRankedComputation {
+    public struct TopBottomRankedComputation: Swift.Sendable {
         /// The category field that is used in a computation.
         public var category: QuickSightClientTypes.DimensionField?
         /// The ID for a computation.
@@ -12601,12 +12602,12 @@ extension QuickSightClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The total aggregation computation configuration.
-    public struct TotalAggregationComputation {
+    public struct TotalAggregationComputation: Swift.Sendable {
         /// The ID for a computation.
         /// This member is required.
         public var computationId: Swift.String?
@@ -12626,12 +12627,12 @@ extension QuickSightClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The unique values computation configuration.
-    public struct UniqueValuesComputation {
+    public struct UniqueValuesComputation: Swift.Sendable {
         /// The category field that is used in a computation.
         public var category: QuickSightClientTypes.DimensionField?
         /// The ID for a computation.
@@ -12651,12 +12652,12 @@ extension QuickSightClientTypes {
             self.name = name
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The computation union that is used in an insight visual. This is a union type structure. For this structure to be valid, only one of the attributes can be defined.
-    public struct Computation {
+    public struct Computation: Swift.Sendable {
         /// The forecast computation configuration.
         public var forecast: QuickSightClientTypes.ForecastComputation?
         /// The growth rate computation configuration.
@@ -12703,12 +12704,12 @@ extension QuickSightClientTypes {
             self.uniqueValues = uniqueValues
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The custom narrative options.
-    public struct CustomNarrativeOptions {
+    public struct CustomNarrativeOptions: Swift.Sendable {
         /// The string input of custom narrative.
         /// This member is required.
         public var narrative: Swift.String?
@@ -12720,12 +12721,12 @@ extension QuickSightClientTypes {
             self.narrative = narrative
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The configuration of an insight visual.
-    public struct InsightConfiguration {
+    public struct InsightConfiguration: Swift.Sendable {
         /// The computations configurations of the insight visual
         public var computations: [QuickSightClientTypes.Computation]?
         /// The custom narrative of the insight visual.
@@ -12744,12 +12745,12 @@ extension QuickSightClientTypes {
             self.interactions = interactions
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// An insight visual. For more information, see [Working with insights](https://docs.aws.amazon.com/quicksight/latest/user/computational-insights.html) in the Amazon QuickSight User Guide.
-    public struct InsightVisual {
+    public struct InsightVisual: Swift.Sendable {
         /// The list of custom actions that are configured for a visual.
         public var actions: [QuickSightClientTypes.VisualCustomAction]?
         /// The dataset that is used in the insight visual.
@@ -12782,12 +12783,12 @@ extension QuickSightClientTypes {
             self.visualId = visualId
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The field well configuration of a KPI visual.
-    public struct KPIFieldWells {
+    public struct KPIFieldWells: Swift.Sendable {
         /// The target value field wells of a KPI visual.
         public var targetValues: [QuickSightClientTypes.MeasureField]?
         /// The trend group field wells of a KPI visual.
@@ -12806,12 +12807,12 @@ extension QuickSightClientTypes {
             self.values = values
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The options that determine the presentation of the progress bar of a KPI visual.
-    public struct ProgressBarOptions {
+    public struct ProgressBarOptions: Swift.Sendable {
         /// The visibility of the progress bar.
         public var visibility: QuickSightClientTypes.Visibility?
 
@@ -12822,12 +12823,12 @@ extension QuickSightClientTypes {
             self.visibility = visibility
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The options that determine the presentation of the secondary value of a KPI visual.
-    public struct SecondaryValueOptions {
+    public struct SecondaryValueOptions: Swift.Sendable {
         /// Determines the visibility of the secondary value.
         public var visibility: QuickSightClientTypes.Visibility?
 
@@ -12838,12 +12839,11 @@ extension QuickSightClientTypes {
             self.visibility = visibility
         }
     }
-
 }
 
 extension QuickSightClientTypes {
 
-    public enum KPISparklineType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum KPISparklineType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case area
         case line
         case sdkUnknown(Swift.String)
@@ -12871,8 +12871,9 @@ extension QuickSightClientTypes {
 }
 
 extension QuickSightClientTypes {
+
     /// The options that determine the visibility, color, type, and tooltip visibility of the sparkline of a KPI visual.
-    public struct KPISparklineOptions {
+    public struct KPISparklineOptions: Swift.Sendable {
         /// The color of the sparkline.
         public var color: Swift.String?
         /// The tooltip visibility of the sparkline.
@@ -12896,12 +12897,12 @@ extension QuickSightClientTypes {
             self.visibility = visibility
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The options that determine the presentation of trend arrows in a KPI visual.
-    public struct TrendArrowOptions {
+    public struct TrendArrowOptions: Swift.Sendable {
         /// The visibility of the trend arrows.
         public var visibility: QuickSightClientTypes.Visibility?
 
@@ -12912,12 +12913,11 @@ extension QuickSightClientTypes {
             self.visibility = visibility
         }
     }
-
 }
 
 extension QuickSightClientTypes {
 
-    public enum KPIVisualStandardLayoutType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum KPIVisualStandardLayoutType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case classic
         case vertical
         case sdkUnknown(Swift.String)
@@ -12945,8 +12945,9 @@ extension QuickSightClientTypes {
 }
 
 extension QuickSightClientTypes {
+
     /// The standard layout of the KPI visual.
-    public struct KPIVisualStandardLayout {
+    public struct KPIVisualStandardLayout: Swift.Sendable {
         /// The standard layout type.
         /// This member is required.
         public var type: QuickSightClientTypes.KPIVisualStandardLayoutType?
@@ -12958,12 +12959,12 @@ extension QuickSightClientTypes {
             self.type = type
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The options that determine the layout a KPI visual.
-    public struct KPIVisualLayoutOptions {
+    public struct KPIVisualLayoutOptions: Swift.Sendable {
         /// The standard layout of the KPI visual.
         public var standardLayout: QuickSightClientTypes.KPIVisualStandardLayout?
 
@@ -12974,12 +12975,12 @@ extension QuickSightClientTypes {
             self.standardLayout = standardLayout
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The options that determine the presentation of a KPI visual.
-    public struct KPIOptions {
+    public struct KPIOptions: Swift.Sendable {
         /// The comparison configuration of a KPI visual.
         public var comparison: QuickSightClientTypes.ComparisonConfiguration?
         /// The options that determine the primary value display type.
@@ -13022,12 +13023,12 @@ extension QuickSightClientTypes {
             self.visualLayoutOptions = visualLayoutOptions
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The sort configuration of a KPI visual.
-    public struct KPISortConfiguration {
+    public struct KPISortConfiguration: Swift.Sendable {
         /// The sort configuration of the trend group fields.
         public var trendGroupSort: [QuickSightClientTypes.FieldSortOptions]?
 
@@ -13038,12 +13039,12 @@ extension QuickSightClientTypes {
             self.trendGroupSort = trendGroupSort
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The configuration of a KPI visual.
-    public struct KPIConfiguration {
+    public struct KPIConfiguration: Swift.Sendable {
         /// The field well configuration of a KPI visual.
         public var fieldWells: QuickSightClientTypes.KPIFieldWells?
         /// The general visual interactions setup for a visual.
@@ -13066,12 +13067,12 @@ extension QuickSightClientTypes {
             self.sortConfiguration = sortConfiguration
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The conditional formatting for the actual value of a KPI visual.
-    public struct KPIActualValueConditionalFormatting {
+    public struct KPIActualValueConditionalFormatting: Swift.Sendable {
         /// The conditional formatting of the actual value's icon.
         public var icon: QuickSightClientTypes.ConditionalFormattingIcon?
         /// The conditional formatting of the actual value's text color.
@@ -13086,12 +13087,12 @@ extension QuickSightClientTypes {
             self.textColor = textColor
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The conditional formatting for the comparison value of a KPI visual.
-    public struct KPIComparisonValueConditionalFormatting {
+    public struct KPIComparisonValueConditionalFormatting: Swift.Sendable {
         /// The conditional formatting of the comparison value's icon.
         public var icon: QuickSightClientTypes.ConditionalFormattingIcon?
         /// The conditional formatting of the comparison value's text color.
@@ -13106,12 +13107,12 @@ extension QuickSightClientTypes {
             self.textColor = textColor
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The conditional formatting for the primary value of a KPI visual.
-    public struct KPIPrimaryValueConditionalFormatting {
+    public struct KPIPrimaryValueConditionalFormatting: Swift.Sendable {
         /// The conditional formatting of the primary value's icon.
         public var icon: QuickSightClientTypes.ConditionalFormattingIcon?
         /// The conditional formatting of the primary value's text color.
@@ -13126,12 +13127,12 @@ extension QuickSightClientTypes {
             self.textColor = textColor
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The conditional formatting for the progress bar of a KPI visual.
-    public struct KPIProgressBarConditionalFormatting {
+    public struct KPIProgressBarConditionalFormatting: Swift.Sendable {
         /// The conditional formatting of the progress bar's foreground color.
         public var foregroundColor: QuickSightClientTypes.ConditionalFormattingColor?
 
@@ -13142,12 +13143,12 @@ extension QuickSightClientTypes {
             self.foregroundColor = foregroundColor
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The conditional formatting options of a KPI visual.
-    public struct KPIConditionalFormattingOption {
+    public struct KPIConditionalFormattingOption: Swift.Sendable {
         /// The conditional formatting for the actual value of a KPI visual.
         public var actualValue: QuickSightClientTypes.KPIActualValueConditionalFormatting?
         /// The conditional formatting for the comparison value of a KPI visual.
@@ -13170,12 +13171,12 @@ extension QuickSightClientTypes {
             self.progressBar = progressBar
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The conditional formatting of a KPI visual.
-    public struct KPIConditionalFormatting {
+    public struct KPIConditionalFormatting: Swift.Sendable {
         /// The conditional formatting options of a KPI visual.
         public var conditionalFormattingOptions: [QuickSightClientTypes.KPIConditionalFormattingOption]?
 
@@ -13186,12 +13187,12 @@ extension QuickSightClientTypes {
             self.conditionalFormattingOptions = conditionalFormattingOptions
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// A key performance indicator (KPI). For more information, see [Using KPIs](https://docs.aws.amazon.com/quicksight/latest/user/kpi.html) in the Amazon QuickSight User Guide.
-    public struct KPIVisual {
+    public struct KPIVisual: Swift.Sendable {
         /// The list of custom actions that are configured for a visual.
         public var actions: [QuickSightClientTypes.VisualCustomAction]?
         /// The configuration of a KPI visual.
@@ -13227,12 +13228,11 @@ extension QuickSightClientTypes {
             self.visualId = visualId
         }
     }
-
 }
 
 extension QuickSightClientTypes {
 
-    public enum LineInterpolation: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum LineInterpolation: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case linear
         case smooth
         case stepped
@@ -13264,7 +13264,7 @@ extension QuickSightClientTypes {
 
 extension QuickSightClientTypes {
 
-    public enum LineChartLineStyle: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum LineChartLineStyle: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case dashed
         case dotted
         case solid
@@ -13295,8 +13295,9 @@ extension QuickSightClientTypes {
 }
 
 extension QuickSightClientTypes {
+
     /// Line styles options for a line series in LineChartVisual.
-    public struct LineChartLineStyleSettings {
+    public struct LineChartLineStyleSettings: Swift.Sendable {
         /// Interpolation style for line series.
         ///
         /// * LINEAR: Show as default, linear style.
@@ -13331,12 +13332,11 @@ extension QuickSightClientTypes {
             self.lineWidth = lineWidth
         }
     }
-
 }
 
 extension QuickSightClientTypes {
 
-    public enum LineChartMarkerShape: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum LineChartMarkerShape: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case circle
         case diamond
         case roundedSquare
@@ -13373,8 +13373,9 @@ extension QuickSightClientTypes {
 }
 
 extension QuickSightClientTypes {
+
     /// Marker styles options for a line series in LineChartVisual.
-    public struct LineChartMarkerStyleSettings {
+    public struct LineChartMarkerStyleSettings: Swift.Sendable {
         /// Color of marker in the series.
         public var markerColor: Swift.String?
         /// Shape option for markers in the series.
@@ -13407,12 +13408,12 @@ extension QuickSightClientTypes {
             self.markerVisibility = markerVisibility
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The options that determine the default presentation of all line series in LineChartVisual.
-    public struct LineChartDefaultSeriesSettings {
+    public struct LineChartDefaultSeriesSettings: Swift.Sendable {
         /// The axis to which you are binding all line series to.
         public var axisBinding: QuickSightClientTypes.AxisBinding?
         /// Line styles options for all line series in the visual.
@@ -13431,12 +13432,12 @@ extension QuickSightClientTypes {
             self.markerStyleSettings = markerStyleSettings
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The field well configuration of a line chart.
-    public struct LineChartAggregatedFieldWells {
+    public struct LineChartAggregatedFieldWells: Swift.Sendable {
         /// The category field wells of a line chart. Values are grouped by category fields.
         public var category: [QuickSightClientTypes.DimensionField]?
         /// The color field wells of a line chart. Values are grouped by category fields.
@@ -13459,12 +13460,12 @@ extension QuickSightClientTypes {
             self.values = values
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The field well configuration of a line chart.
-    public struct LineChartFieldWells {
+    public struct LineChartFieldWells: Swift.Sendable {
         /// The field well configuration of a line chart.
         public var lineChartAggregatedFieldWells: QuickSightClientTypes.LineChartAggregatedFieldWells?
 
@@ -13475,12 +13476,12 @@ extension QuickSightClientTypes {
             self.lineChartAggregatedFieldWells = lineChartAggregatedFieldWells
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The forecast properties setup of a forecast in the line chart.
-    public struct TimeBasedForecastProperties {
+    public struct TimeBasedForecastProperties: Swift.Sendable {
         /// The lower boundary setup of a forecast computation.
         public var lowerBoundary: Swift.Double?
         /// The periods backward setup of a forecast computation.
@@ -13515,12 +13516,12 @@ extension QuickSightClientTypes {
             self.upperBoundary = upperBoundary
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// Provides the forecast to meet the target for a particular date.
-    public struct WhatIfPointScenario {
+    public struct WhatIfPointScenario: Swift.Sendable {
         /// The date that you need the forecast results for.
         /// This member is required.
         public var date: Foundation.Date?
@@ -13537,12 +13538,12 @@ extension QuickSightClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// Provides the forecast to meet the target for a particular date range.
-    public struct WhatIfRangeScenario {
+    public struct WhatIfRangeScenario: Swift.Sendable {
         /// The end date in the date range that you need the forecast results for.
         /// This member is required.
         public var endDate: Foundation.Date?
@@ -13564,12 +13565,12 @@ extension QuickSightClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The forecast scenario of a forecast in the line chart.
-    public struct ForecastScenario {
+    public struct ForecastScenario: Swift.Sendable {
         /// The what-if analysis forecast setup with the target date.
         public var whatIfPointScenario: QuickSightClientTypes.WhatIfPointScenario?
         /// The what-if analysis forecast setup with the date range.
@@ -13584,12 +13585,12 @@ extension QuickSightClientTypes {
             self.whatIfRangeScenario = whatIfRangeScenario
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The forecast configuration that is used in a line chart's display properties.
-    public struct ForecastConfiguration {
+    public struct ForecastConfiguration: Swift.Sendable {
         /// The forecast properties setup of a forecast in the line chart.
         public var forecastProperties: QuickSightClientTypes.TimeBasedForecastProperties?
         /// The forecast scenario of a forecast in the line chart.
@@ -13604,12 +13605,11 @@ extension QuickSightClientTypes {
             self.scenario = scenario
         }
     }
-
 }
 
 extension QuickSightClientTypes {
 
-    public enum MissingDataTreatmentOption: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum MissingDataTreatmentOption: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case interpolate
         case showAsBlank
         case showAsZero
@@ -13640,8 +13640,9 @@ extension QuickSightClientTypes {
 }
 
 extension QuickSightClientTypes {
+
     /// The configuration options that determine how missing data is treated during the rendering of a line chart.
-    public struct MissingDataConfiguration {
+    public struct MissingDataConfiguration: Swift.Sendable {
         /// The treatment option that determines how missing data should be rendered. Choose from the following options:
         ///
         /// * INTERPOLATE: Interpolate missing values between the prior and the next known value.
@@ -13658,12 +13659,12 @@ extension QuickSightClientTypes {
             self.treatmentOption = treatmentOption
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The series axis configuration of a line chart.
-    public struct LineSeriesAxisDisplayOptions {
+    public struct LineSeriesAxisDisplayOptions: Swift.Sendable {
         /// The options that determine the presentation of the line series axis.
         public var axisOptions: QuickSightClientTypes.AxisDisplayOptions?
         /// The configuration options that determine how missing data is treated during the rendering of a line chart.
@@ -13678,12 +13679,12 @@ extension QuickSightClientTypes {
             self.missingDataConfigurations = missingDataConfigurations
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The options that determine the presentation of a line series in the visual
-    public struct LineChartSeriesSettings {
+    public struct LineChartSeriesSettings: Swift.Sendable {
         /// Line styles options for a line series in LineChartVisual.
         public var lineStyleSettings: QuickSightClientTypes.LineChartLineStyleSettings?
         /// Marker styles options for a line series in LineChartVisual.
@@ -13698,12 +13699,12 @@ extension QuickSightClientTypes {
             self.markerStyleSettings = markerStyleSettings
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The data field series item configuration of a line chart.
-    public struct DataFieldSeriesItem {
+    public struct DataFieldSeriesItem: Swift.Sendable {
         /// The axis that you are binding the field to.
         /// This member is required.
         public var axisBinding: QuickSightClientTypes.AxisBinding?
@@ -13728,7 +13729,6 @@ extension QuickSightClientTypes {
             self.settings = settings
         }
     }
-
 }
 
 extension QuickSightClientTypes.DataFieldSeriesItem: Swift.CustomDebugStringConvertible {
@@ -13737,8 +13737,9 @@ extension QuickSightClientTypes.DataFieldSeriesItem: Swift.CustomDebugStringConv
 }
 
 extension QuickSightClientTypes {
+
     /// The field series item configuration of a line chart.
-    public struct FieldSeriesItem {
+    public struct FieldSeriesItem: Swift.Sendable {
         /// The axis that you are binding the field to.
         /// This member is required.
         public var axisBinding: QuickSightClientTypes.AxisBinding?
@@ -13759,12 +13760,12 @@ extension QuickSightClientTypes {
             self.settings = settings
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The series item configuration of a line chart. This is a union type structure. For this structure to be valid, only one of the attributes can be defined.
-    public struct SeriesItem {
+    public struct SeriesItem: Swift.Sendable {
         /// The data field series item configuration of a line chart.
         public var dataFieldSeriesItem: QuickSightClientTypes.DataFieldSeriesItem?
         /// The field series item configuration of a line chart.
@@ -13779,12 +13780,12 @@ extension QuickSightClientTypes {
             self.fieldSeriesItem = fieldSeriesItem
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The sort configuration of a line chart.
-    public struct LineChartSortConfiguration {
+    public struct LineChartSortConfiguration: Swift.Sendable {
         /// The limit on the number of categories that are displayed in a line chart.
         public var categoryItemsLimitConfiguration: QuickSightClientTypes.ItemsLimitConfiguration?
         /// The sort configuration of the category fields.
@@ -13811,12 +13812,11 @@ extension QuickSightClientTypes {
             self.smallMultiplesSort = smallMultiplesSort
         }
     }
-
 }
 
 extension QuickSightClientTypes {
 
-    public enum LineChartType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum LineChartType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case area
         case line
         case stackedArea
@@ -13847,8 +13847,9 @@ extension QuickSightClientTypes {
 }
 
 extension QuickSightClientTypes {
+
     /// The configuration of a line chart.
-    public struct LineChartConfiguration {
+    public struct LineChartConfiguration: Swift.Sendable {
         /// The default configuration of a line chart's contribution analysis.
         public var contributionAnalysisDefaults: [QuickSightClientTypes.ContributionAnalysisDefault]?
         /// The data label configuration of a line chart.
@@ -13939,12 +13940,12 @@ extension QuickSightClientTypes {
             self.xAxisLabelOptions = xAxisLabelOptions
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// A line chart. For more information, see [Using line charts](https://docs.aws.amazon.com/quicksight/latest/user/line-charts.html) in the Amazon QuickSight User Guide.
-    public struct LineChartVisual {
+    public struct LineChartVisual: Swift.Sendable {
         /// The list of custom actions that are configured for a visual.
         public var actions: [QuickSightClientTypes.VisualCustomAction]?
         /// The configuration of a line chart.
@@ -13976,12 +13977,11 @@ extension QuickSightClientTypes {
             self.visualId = visualId
         }
     }
-
 }
 
 extension QuickSightClientTypes {
 
-    public enum ArcThickness: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ArcThickness: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case large
         case medium
         case small
@@ -14015,8 +14015,9 @@ extension QuickSightClientTypes {
 }
 
 extension QuickSightClientTypes {
+
     /// The options that determine the arc thickness of a GaugeChartVisual.
-    public struct ArcOptions {
+    public struct ArcOptions: Swift.Sendable {
         /// The arc thickness of a GaugeChartVisual.
         public var arcThickness: QuickSightClientTypes.ArcThickness?
 
@@ -14027,12 +14028,12 @@ extension QuickSightClientTypes {
             self.arcThickness = arcThickness
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The label options of the label that is displayed in the center of a donut chart. This option isn't available for pie charts.
-    public struct DonutCenterOptions {
+    public struct DonutCenterOptions: Swift.Sendable {
         /// Determines the visibility of the label in a donut chart. In the Amazon QuickSight console, this option is called 'Show total'.
         public var labelVisibility: QuickSightClientTypes.Visibility?
 
@@ -14043,12 +14044,12 @@ extension QuickSightClientTypes {
             self.labelVisibility = labelVisibility
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The options for configuring a donut chart or pie chart.
-    public struct DonutOptions {
+    public struct DonutOptions: Swift.Sendable {
         /// The option for define the arc of the chart shape. Valid values are as follows:
         ///
         /// * WHOLE - A pie chart
@@ -14071,12 +14072,12 @@ extension QuickSightClientTypes {
             self.donutCenterOptions = donutCenterOptions
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The field well configuration of a pie chart.
-    public struct PieChartAggregatedFieldWells {
+    public struct PieChartAggregatedFieldWells: Swift.Sendable {
         /// The category (group/color) field wells of a pie chart.
         public var category: [QuickSightClientTypes.DimensionField]?
         /// The small multiples field well of a pie chart.
@@ -14095,12 +14096,12 @@ extension QuickSightClientTypes {
             self.values = values
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The field well configuration of a pie chart. This is a union type structure. For this structure to be valid, only one of the attributes can be defined.
-    public struct PieChartFieldWells {
+    public struct PieChartFieldWells: Swift.Sendable {
         /// The field well configuration of a pie chart.
         public var pieChartAggregatedFieldWells: QuickSightClientTypes.PieChartAggregatedFieldWells?
 
@@ -14111,12 +14112,12 @@ extension QuickSightClientTypes {
             self.pieChartAggregatedFieldWells = pieChartAggregatedFieldWells
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The sort configuration of a pie chart.
-    public struct PieChartSortConfiguration {
+    public struct PieChartSortConfiguration: Swift.Sendable {
         /// The limit on the number of categories that are displayed in a pie chart.
         public var categoryItemsLimit: QuickSightClientTypes.ItemsLimitConfiguration?
         /// The sort configuration of the category fields.
@@ -14139,12 +14140,12 @@ extension QuickSightClientTypes {
             self.smallMultiplesSort = smallMultiplesSort
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The configuration of a pie chart.
-    public struct PieChartConfiguration {
+    public struct PieChartConfiguration: Swift.Sendable {
         /// The label options of the group/color that is displayed in a pie chart.
         public var categoryLabelOptions: QuickSightClientTypes.ChartAxisLabelOptions?
         /// The contribution analysis (anomaly configuration) setup of the visual.
@@ -14199,10 +14200,10 @@ extension QuickSightClientTypes {
             self.visualPalette = visualPalette
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// A pie or donut chart. The PieChartVisual structure describes a visual that is a member of the pie chart family. The following charts can be described by using this structure:
     ///
     /// * Pie charts
@@ -14211,7 +14212,7 @@ extension QuickSightClientTypes {
     ///
     ///
     /// For more information, see [Using pie charts](https://docs.aws.amazon.com/quicksight/latest/user/pie-chart.html) in the Amazon QuickSight User Guide. For more information, see [Using donut charts](https://docs.aws.amazon.com/quicksight/latest/user/donut-chart.html) in the Amazon QuickSight User Guide.
-    public struct PieChartVisual {
+    public struct PieChartVisual: Swift.Sendable {
         /// The list of custom actions that are configured for a visual.
         public var actions: [QuickSightClientTypes.VisualCustomAction]?
         /// The configuration of a pie chart.
@@ -14243,12 +14244,11 @@ extension QuickSightClientTypes {
             self.visualId = visualId
         }
     }
-
 }
 
 extension QuickSightClientTypes {
 
-    public enum PivotTableFieldCollapseState: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum PivotTableFieldCollapseState: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case collapsed
         case expanded
         case sdkUnknown(Swift.String)
@@ -14276,8 +14276,9 @@ extension QuickSightClientTypes {
 }
 
 extension QuickSightClientTypes {
+
     /// The target of a pivot table field collapse state.
-    public struct PivotTableFieldCollapseStateTarget {
+    public struct PivotTableFieldCollapseStateTarget: Swift.Sendable {
         /// The data path of the pivot table's header. Used to set the collapse state.
         public var fieldDataPathValues: [QuickSightClientTypes.DataPathValue]?
         /// The field ID of the pivot table that the collapse state needs to be set to.
@@ -14292,12 +14293,12 @@ extension QuickSightClientTypes {
             self.fieldId = fieldId
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The collapse state options for the pivot table field options.
-    public struct PivotTableFieldCollapseStateOption {
+    public struct PivotTableFieldCollapseStateOption: Swift.Sendable {
         /// The state of the field target of a pivot table. Choose one of the following options:
         ///
         /// * COLLAPSED
@@ -14317,12 +14318,12 @@ extension QuickSightClientTypes {
             self.target = target
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The data path options for the pivot table field options.
-    public struct PivotTableDataPathOption {
+    public struct PivotTableDataPathOption: Swift.Sendable {
         /// The list of data path values for the data path options.
         /// This member is required.
         public var dataPathList: [QuickSightClientTypes.DataPathValue]?
@@ -14338,12 +14339,12 @@ extension QuickSightClientTypes {
             self.width = width
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The selected field options for the pivot table field options.
-    public struct PivotTableFieldOption {
+    public struct PivotTableFieldOption: Swift.Sendable {
         /// The custom label of the pivot table field.
         public var customLabel: Swift.String?
         /// The field ID of the pivot table field.
@@ -14363,12 +14364,12 @@ extension QuickSightClientTypes {
             self.visibility = visibility
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The field options for a pivot table visual.
-    public struct PivotTableFieldOptions {
+    public struct PivotTableFieldOptions: Swift.Sendable {
         /// The collapse state options for the pivot table field options.
         public var collapseStateOptions: [QuickSightClientTypes.PivotTableFieldCollapseStateOption]?
         /// The data path options for the pivot table field options.
@@ -14387,12 +14388,12 @@ extension QuickSightClientTypes {
             self.selectedFieldOptions = selectedFieldOptions
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The aggregated field well for the pivot table.
-    public struct PivotTableAggregatedFieldWells {
+    public struct PivotTableAggregatedFieldWells: Swift.Sendable {
         /// The columns field well for a pivot table. Values are grouped by columns fields.
         public var columns: [QuickSightClientTypes.DimensionField]?
         /// The rows field well for a pivot table. Values are grouped by rows fields.
@@ -14411,12 +14412,12 @@ extension QuickSightClientTypes {
             self.values = values
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The field wells for a pivot table visual. This is a union type structure. For this structure to be valid, only one of the attributes can be defined.
-    public struct PivotTableFieldWells {
+    public struct PivotTableFieldWells: Swift.Sendable {
         /// The aggregated field well for the pivot table.
         public var pivotTableAggregatedFieldWells: QuickSightClientTypes.PivotTableAggregatedFieldWells?
 
@@ -14427,12 +14428,12 @@ extension QuickSightClientTypes {
             self.pivotTableAggregatedFieldWells = pivotTableAggregatedFieldWells
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The paginated report options for a pivot table visual.
-    public struct PivotTablePaginatedReportOptions {
+    public struct PivotTablePaginatedReportOptions: Swift.Sendable {
         /// The visibility of the repeating header rows on each page.
         public var overflowColumnHeaderVisibility: QuickSightClientTypes.Visibility?
         /// The visibility of the printing table overflow across pages.
@@ -14447,12 +14448,12 @@ extension QuickSightClientTypes {
             self.verticalOverflowVisibility = verticalOverflowVisibility
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// Allows data paths to be sorted by a specific data value.
-    public struct DataPathSort {
+    public struct DataPathSort: Swift.Sendable {
         /// Determines the sort direction.
         /// This member is required.
         public var direction: QuickSightClientTypes.SortDirection?
@@ -14469,12 +14470,12 @@ extension QuickSightClientTypes {
             self.sortPaths = sortPaths
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The sort by field for the field sort options.
-    public struct PivotTableSortBy {
+    public struct PivotTableSortBy: Swift.Sendable {
         /// The column sort (field id, direction) for the pivot table sort by options.
         public var column: QuickSightClientTypes.ColumnSort?
         /// The data path sort (data path value, direction) for the pivot table sort by options.
@@ -14493,12 +14494,12 @@ extension QuickSightClientTypes {
             self.field = field
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The field sort options for a pivot table sort configuration.
-    public struct PivotFieldSortOptions {
+    public struct PivotFieldSortOptions: Swift.Sendable {
         /// The field ID for the field sort options.
         /// This member is required.
         public var fieldId: Swift.String?
@@ -14515,12 +14516,12 @@ extension QuickSightClientTypes {
             self.sortBy = sortBy
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The sort configuration for a PivotTableVisual.
-    public struct PivotTableSortConfiguration {
+    public struct PivotTableSortConfiguration: Swift.Sendable {
         /// The field sort options for a pivot table sort configuration.
         public var fieldSortOptions: [QuickSightClientTypes.PivotFieldSortOptions]?
 
@@ -14531,12 +14532,11 @@ extension QuickSightClientTypes {
             self.fieldSortOptions = fieldSortOptions
         }
     }
-
 }
 
 extension QuickSightClientTypes {
 
-    public enum TableBorderStyle: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum TableBorderStyle: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case `none`
         case solid
         case sdkUnknown(Swift.String)
@@ -14564,8 +14564,9 @@ extension QuickSightClientTypes {
 }
 
 extension QuickSightClientTypes {
+
     /// The border options for a table border.
-    public struct TableBorderOptions {
+    public struct TableBorderOptions: Swift.Sendable {
         /// The color of a table border.
         public var color: Swift.String?
         /// The style (none, solid) of a table border.
@@ -14584,12 +14585,12 @@ extension QuickSightClientTypes {
             self.thickness = thickness
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The side border options for a table.
-    public struct TableSideBorderOptions {
+    public struct TableSideBorderOptions: Swift.Sendable {
         /// The table border options of the bottom border.
         public var bottom: QuickSightClientTypes.TableBorderOptions?
         /// The table border options of the inner horizontal border.
@@ -14620,12 +14621,12 @@ extension QuickSightClientTypes {
             self.top = top
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// Determines the border options for a table visual.
-    public struct GlobalTableBorderOptions {
+    public struct GlobalTableBorderOptions: Swift.Sendable {
         /// Determines the options for side specific border.
         public var sideSpecificBorder: QuickSightClientTypes.TableSideBorderOptions?
         /// Determines the options for uniform border.
@@ -14640,12 +14641,11 @@ extension QuickSightClientTypes {
             self.uniformBorder = uniformBorder
         }
     }
-
 }
 
 extension QuickSightClientTypes {
 
-    public enum TextWrap: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum TextWrap: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case `none`
         case wrap
         case sdkUnknown(Swift.String)
@@ -14674,7 +14674,7 @@ extension QuickSightClientTypes {
 
 extension QuickSightClientTypes {
 
-    public enum VerticalTextAlignment: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum VerticalTextAlignment: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case auto
         case bottom
         case middle
@@ -14708,8 +14708,9 @@ extension QuickSightClientTypes {
 }
 
 extension QuickSightClientTypes {
+
     /// The table cell style for a cell in pivot table or table visual.
-    public struct TableCellStyle {
+    public struct TableCellStyle: Swift.Sendable {
         /// The background color for the table cells.
         public var backgroundColor: Swift.String?
         /// The borders for the table cells.
@@ -14748,12 +14749,11 @@ extension QuickSightClientTypes {
             self.visibility = visibility
         }
     }
-
 }
 
 extension QuickSightClientTypes {
 
-    public enum PivotTableMetricPlacement: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum PivotTableMetricPlacement: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case column
         case row
         case sdkUnknown(Swift.String)
@@ -14781,8 +14781,9 @@ extension QuickSightClientTypes {
 }
 
 extension QuickSightClientTypes {
+
     /// Determines the row alternate color options.
-    public struct RowAlternateColorOptions {
+    public struct RowAlternateColorOptions: Swift.Sendable {
         /// Determines the list of row alternate colors.
         public var rowAlternateColors: [Swift.String]?
         /// Determines the widget status.
@@ -14801,12 +14802,12 @@ extension QuickSightClientTypes {
             self.usePrimaryBackgroundColor = usePrimaryBackgroundColor
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The options for the label thta is located above the row headers. This option is only applicable when RowsLayout is set to HIERARCHY.
-    public struct PivotTableRowsLabelOptions {
+    public struct PivotTableRowsLabelOptions: Swift.Sendable {
         /// The custom label string for the rows label.
         public var customLabel: Swift.String?
         /// The visibility of the rows label.
@@ -14821,12 +14822,11 @@ extension QuickSightClientTypes {
             self.visibility = visibility
         }
     }
-
 }
 
 extension QuickSightClientTypes {
 
-    public enum PivotTableRowsLayout: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum PivotTableRowsLayout: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case hierarchy
         case tabular
         case sdkUnknown(Swift.String)
@@ -14854,8 +14854,9 @@ extension QuickSightClientTypes {
 }
 
 extension QuickSightClientTypes {
+
     /// The table options for a pivot table visual.
-    public struct PivotTableOptions {
+    public struct PivotTableOptions: Swift.Sendable {
         /// The table cell style of cells.
         public var cellStyle: QuickSightClientTypes.TableCellStyle?
         /// The visibility setting of a pivot table's collapsed row dimension fields. If the value of this structure is HIDDEN, all collapsed columns in a pivot table are automatically hidden. The default value is VISIBLE.
@@ -14918,12 +14919,11 @@ extension QuickSightClientTypes {
             self.toggleButtonsVisibility = toggleButtonsVisibility
         }
     }
-
 }
 
 extension QuickSightClientTypes {
 
-    public enum PivotTableSubtotalLevel: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum PivotTableSubtotalLevel: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case all
         case custom
         case last
@@ -14954,8 +14954,9 @@ extension QuickSightClientTypes {
 }
 
 extension QuickSightClientTypes {
+
     /// The optional configuration of subtotals cells.
-    public struct PivotTableFieldSubtotalOptions {
+    public struct PivotTableFieldSubtotalOptions: Swift.Sendable {
         /// The field ID of the subtotal options.
         public var fieldId: Swift.String?
 
@@ -14966,12 +14967,11 @@ extension QuickSightClientTypes {
             self.fieldId = fieldId
         }
     }
-
 }
 
 extension QuickSightClientTypes {
 
-    public enum StyledCellType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum StyledCellType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case metricHeader
         case total
         case value
@@ -15002,8 +15002,9 @@ extension QuickSightClientTypes {
 }
 
 extension QuickSightClientTypes {
+
     /// The table style target.
-    public struct TableStyleTarget {
+    public struct TableStyleTarget: Swift.Sendable {
         /// The cell type of the table style target.
         /// This member is required.
         public var cellType: QuickSightClientTypes.StyledCellType?
@@ -15015,12 +15016,12 @@ extension QuickSightClientTypes {
             self.cellType = cellType
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The subtotal options.
-    public struct SubtotalOptions {
+    public struct SubtotalOptions: Swift.Sendable {
         /// The custom label string for the subtotal cells.
         public var customLabel: Swift.String?
         /// The field level (all, custom, last) for the subtotal cells.
@@ -15059,12 +15060,11 @@ extension QuickSightClientTypes {
             self.valueCellStyle = valueCellStyle
         }
     }
-
 }
 
 extension QuickSightClientTypes {
 
-    public enum TableTotalsPlacement: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum TableTotalsPlacement: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case auto
         case end
         case start
@@ -15096,7 +15096,7 @@ extension QuickSightClientTypes {
 
 extension QuickSightClientTypes {
 
-    public enum TableTotalsScrollStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum TableTotalsScrollStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case pinned
         case scrolled
         case sdkUnknown(Swift.String)
@@ -15125,7 +15125,7 @@ extension QuickSightClientTypes {
 
 extension QuickSightClientTypes {
 
-    public enum SimpleTotalAggregationFunction: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SimpleTotalAggregationFunction: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case average
         case `default`
         case max
@@ -15165,8 +15165,9 @@ extension QuickSightClientTypes {
 }
 
 extension QuickSightClientTypes {
+
     /// An aggregation function that aggregates the total values of a measure.
-    public struct TotalAggregationFunction {
+    public struct TotalAggregationFunction: Swift.Sendable {
         /// A built in aggregation function for total values.
         public var simpleTotalAggregationFunction: QuickSightClientTypes.SimpleTotalAggregationFunction?
 
@@ -15177,12 +15178,12 @@ extension QuickSightClientTypes {
             self.simpleTotalAggregationFunction = simpleTotalAggregationFunction
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The total aggregation settings map of a field id.
-    public struct TotalAggregationOption {
+    public struct TotalAggregationOption: Swift.Sendable {
         /// The field id that's associated with the total aggregation option.
         /// This member is required.
         public var fieldId: Swift.String?
@@ -15199,12 +15200,12 @@ extension QuickSightClientTypes {
             self.totalAggregationFunction = totalAggregationFunction
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The optional configuration of totals cells in a PivotTableVisual.
-    public struct PivotTotalOptions {
+    public struct PivotTotalOptions: Swift.Sendable {
         /// The custom label string for the total cells.
         public var customLabel: Swift.String?
         /// The cell styling options for the total of header cells.
@@ -15243,12 +15244,12 @@ extension QuickSightClientTypes {
             self.valueCellStyle = valueCellStyle
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The total options for a pivot table visual.
-    public struct PivotTableTotalOptions {
+    public struct PivotTableTotalOptions: Swift.Sendable {
         /// The column subtotal options.
         public var columnSubtotalOptions: QuickSightClientTypes.SubtotalOptions?
         /// The column total options.
@@ -15271,12 +15272,12 @@ extension QuickSightClientTypes {
             self.rowTotalOptions = rowTotalOptions
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The configuration for a PivotTableVisual.
-    public struct PivotTableConfiguration {
+    public struct PivotTableConfiguration: Swift.Sendable {
         /// The field options for a pivot table visual.
         public var fieldOptions: QuickSightClientTypes.PivotTableFieldOptions?
         /// The field wells of the visual.
@@ -15311,12 +15312,11 @@ extension QuickSightClientTypes {
             self.totalOptions = totalOptions
         }
     }
-
 }
 
 extension QuickSightClientTypes {
 
-    public enum PivotTableConditionalFormattingScopeRole: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum PivotTableConditionalFormattingScopeRole: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case field
         case fieldTotal
         case grandTotal
@@ -15347,8 +15347,9 @@ extension QuickSightClientTypes {
 }
 
 extension QuickSightClientTypes {
+
     /// The scope of the cell for conditional formatting.
-    public struct PivotTableConditionalFormattingScope {
+    public struct PivotTableConditionalFormattingScope: Swift.Sendable {
         /// The role (field, field total, grand total) of the cell for conditional formatting.
         public var role: QuickSightClientTypes.PivotTableConditionalFormattingScopeRole?
 
@@ -15359,12 +15360,12 @@ extension QuickSightClientTypes {
             self.role = role
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The conditional formatting for the text.
-    public struct TextConditionalFormat {
+    public struct TextConditionalFormat: Swift.Sendable {
         /// The conditional formatting for the text background color.
         public var backgroundColor: QuickSightClientTypes.ConditionalFormattingColor?
         /// The conditional formatting for the icon.
@@ -15383,12 +15384,12 @@ extension QuickSightClientTypes {
             self.textColor = textColor
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The cell conditional formatting option for a pivot table.
-    public struct PivotTableCellConditionalFormatting {
+    public struct PivotTableCellConditionalFormatting: Swift.Sendable {
         /// The field ID of the cell for conditional formatting.
         /// This member is required.
         public var fieldId: Swift.String?
@@ -15412,12 +15413,12 @@ extension QuickSightClientTypes {
             self.textFormat = textFormat
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// Conditional formatting options for a PivotTableVisual.
-    public struct PivotTableConditionalFormattingOption {
+    public struct PivotTableConditionalFormattingOption: Swift.Sendable {
         /// The cell conditional formatting option for a pivot table.
         public var cell: QuickSightClientTypes.PivotTableCellConditionalFormatting?
 
@@ -15428,12 +15429,12 @@ extension QuickSightClientTypes {
             self.cell = cell
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The conditional formatting for a PivotTableVisual.
-    public struct PivotTableConditionalFormatting {
+    public struct PivotTableConditionalFormatting: Swift.Sendable {
         /// Conditional formatting options for a PivotTableVisual.
         public var conditionalFormattingOptions: [QuickSightClientTypes.PivotTableConditionalFormattingOption]?
 
@@ -15444,12 +15445,12 @@ extension QuickSightClientTypes {
             self.conditionalFormattingOptions = conditionalFormattingOptions
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// A pivot table. For more information, see [Using pivot tables](https://docs.aws.amazon.com/quicksight/latest/user/pivot-table.html) in the Amazon QuickSight User Guide.
-    public struct PivotTableVisual {
+    public struct PivotTableVisual: Swift.Sendable {
         /// The list of custom actions that are configured for a visual.
         public var actions: [QuickSightClientTypes.VisualCustomAction]?
         /// The configuration settings of the visual.
@@ -15481,12 +15482,11 @@ extension QuickSightClientTypes {
             self.visualId = visualId
         }
     }
-
 }
 
 extension QuickSightClientTypes {
 
-    public enum RadarChartAxesRangeScale: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum RadarChartAxesRangeScale: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case auto
         case independent
         case shared
@@ -15517,8 +15517,9 @@ extension QuickSightClientTypes {
 }
 
 extension QuickSightClientTypes {
+
     /// The configured style settings of a radar chart.
-    public struct RadarChartAreaStyleSettings {
+    public struct RadarChartAreaStyleSettings: Swift.Sendable {
         /// The visibility settings of a radar chart.
         public var visibility: QuickSightClientTypes.Visibility?
 
@@ -15529,12 +15530,12 @@ extension QuickSightClientTypes {
             self.visibility = visibility
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The series settings of a radar chart.
-    public struct RadarChartSeriesSettings {
+    public struct RadarChartSeriesSettings: Swift.Sendable {
         /// The area style settings of a radar chart.
         public var areaStyleSettings: QuickSightClientTypes.RadarChartAreaStyleSettings?
 
@@ -15545,12 +15546,12 @@ extension QuickSightClientTypes {
             self.areaStyleSettings = areaStyleSettings
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The aggregated field well configuration of a RadarChartVisual.
-    public struct RadarChartAggregatedFieldWells {
+    public struct RadarChartAggregatedFieldWells: Swift.Sendable {
         /// The aggregated field well categories of a radar chart.
         public var category: [QuickSightClientTypes.DimensionField]?
         /// The color that are assigned to the aggregated field wells of a radar chart.
@@ -15569,12 +15570,12 @@ extension QuickSightClientTypes {
             self.values = values
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The field wells of a radar chart visual.
-    public struct RadarChartFieldWells {
+    public struct RadarChartFieldWells: Swift.Sendable {
         /// The aggregated field wells of a radar chart visual.
         public var radarChartAggregatedFieldWells: QuickSightClientTypes.RadarChartAggregatedFieldWells?
 
@@ -15585,12 +15586,11 @@ extension QuickSightClientTypes {
             self.radarChartAggregatedFieldWells = radarChartAggregatedFieldWells
         }
     }
-
 }
 
 extension QuickSightClientTypes {
 
-    public enum RadarChartShape: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum RadarChartShape: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case circle
         case polygon
         case sdkUnknown(Swift.String)
@@ -15618,8 +15618,9 @@ extension QuickSightClientTypes {
 }
 
 extension QuickSightClientTypes {
+
     /// The sort configuration of a RadarChartVisual.
-    public struct RadarChartSortConfiguration {
+    public struct RadarChartSortConfiguration: Swift.Sendable {
         /// The category items limit for a radar chart.
         public var categoryItemsLimit: QuickSightClientTypes.ItemsLimitConfiguration?
         /// The category sort options of a radar chart.
@@ -15642,12 +15643,12 @@ extension QuickSightClientTypes {
             self.colorSort = colorSort
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The configuration of a RadarChartVisual.
-    public struct RadarChartConfiguration {
+    public struct RadarChartConfiguration: Swift.Sendable {
         /// Determines the visibility of the colors of alternatign bands in a radar chart.
         public var alternateBandColorsVisibility: QuickSightClientTypes.Visibility?
         /// The color of the even-numbered alternate bands of a radar chart.
@@ -15718,12 +15719,12 @@ extension QuickSightClientTypes {
             self.visualPalette = visualPalette
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// A radar chart visual.
-    public struct RadarChartVisual {
+    public struct RadarChartVisual: Swift.Sendable {
         /// The list of custom actions that are configured for a visual.
         public var actions: [QuickSightClientTypes.VisualCustomAction]?
         /// The configuration settings of the visual.
@@ -15755,12 +15756,12 @@ extension QuickSightClientTypes {
             self.visualId = visualId
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The field well configuration of a sankey diagram.
-    public struct SankeyDiagramAggregatedFieldWells {
+    public struct SankeyDiagramAggregatedFieldWells: Swift.Sendable {
         /// The destination field wells of a sankey diagram.
         public var destination: [QuickSightClientTypes.DimensionField]?
         /// The source field wells of a sankey diagram.
@@ -15779,12 +15780,12 @@ extension QuickSightClientTypes {
             self.weight = weight
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The field well configuration of a sankey diagram.
-    public struct SankeyDiagramFieldWells {
+    public struct SankeyDiagramFieldWells: Swift.Sendable {
         /// The field well configuration of a sankey diagram.
         public var sankeyDiagramAggregatedFieldWells: QuickSightClientTypes.SankeyDiagramAggregatedFieldWells?
 
@@ -15795,12 +15796,12 @@ extension QuickSightClientTypes {
             self.sankeyDiagramAggregatedFieldWells = sankeyDiagramAggregatedFieldWells
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The sort configuration of a sankey diagram.
-    public struct SankeyDiagramSortConfiguration {
+    public struct SankeyDiagramSortConfiguration: Swift.Sendable {
         /// The limit on the number of destination nodes that are displayed in a sankey diagram.
         public var destinationItemsLimit: QuickSightClientTypes.ItemsLimitConfiguration?
         /// The limit on the number of source nodes that are displayed in a sankey diagram.
@@ -15819,12 +15820,12 @@ extension QuickSightClientTypes {
             self.weightSort = weightSort
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The configuration of a sankey diagram.
-    public struct SankeyDiagramChartConfiguration {
+    public struct SankeyDiagramChartConfiguration: Swift.Sendable {
         /// The data label configuration of a sankey diagram.
         public var dataLabels: QuickSightClientTypes.DataLabelOptions?
         /// The field well configuration of a sankey diagram.
@@ -15847,12 +15848,12 @@ extension QuickSightClientTypes {
             self.sortConfiguration = sortConfiguration
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// A sankey diagram. For more information, see [Using Sankey diagrams](https://docs.aws.amazon.com/quicksight/latest/user/sankey-diagram.html) in the Amazon QuickSight User Guide.
-    public struct SankeyDiagramVisual {
+    public struct SankeyDiagramVisual: Swift.Sendable {
         /// The list of custom actions that are configured for a visual.
         public var actions: [QuickSightClientTypes.VisualCustomAction]?
         /// The configuration of a sankey diagram.
@@ -15880,12 +15881,12 @@ extension QuickSightClientTypes {
             self.visualId = visualId
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The aggregated field well of a scatter plot.
-    public struct ScatterPlotCategoricallyAggregatedFieldWells {
+    public struct ScatterPlotCategoricallyAggregatedFieldWells: Swift.Sendable {
         /// The category field well of a scatter plot.
         public var category: [QuickSightClientTypes.DimensionField]?
         /// The label field well of a scatter plot.
@@ -15912,12 +15913,12 @@ extension QuickSightClientTypes {
             self.yAxis = yAxis
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The unaggregated field wells of a scatter plot.
-    public struct ScatterPlotUnaggregatedFieldWells {
+    public struct ScatterPlotUnaggregatedFieldWells: Swift.Sendable {
         /// The category field well of a scatter plot.
         public var category: [QuickSightClientTypes.DimensionField]?
         /// The label field well of a scatter plot.
@@ -15944,12 +15945,12 @@ extension QuickSightClientTypes {
             self.yAxis = yAxis
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The field well configuration of a scatter plot. This is a union type structure. For this structure to be valid, only one of the attributes can be defined.
-    public struct ScatterPlotFieldWells {
+    public struct ScatterPlotFieldWells: Swift.Sendable {
         /// The aggregated field wells of a scatter plot. The x and y-axes of scatter plots with aggregated field wells are aggregated by category, label, or both.
         public var scatterPlotCategoricallyAggregatedFieldWells: QuickSightClientTypes.ScatterPlotCategoricallyAggregatedFieldWells?
         /// The unaggregated field wells of a scatter plot. The x and y-axes of these scatter plots are unaggregated.
@@ -15964,12 +15965,12 @@ extension QuickSightClientTypes {
             self.scatterPlotUnaggregatedFieldWells = scatterPlotUnaggregatedFieldWells
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The sort configuration of a scatter plot.
-    public struct ScatterPlotSortConfiguration {
+    public struct ScatterPlotSortConfiguration: Swift.Sendable {
         /// The limit configuration of the visual display for an axis.
         public var scatterPlotLimitConfiguration: QuickSightClientTypes.ItemsLimitConfiguration?
 
@@ -15980,12 +15981,12 @@ extension QuickSightClientTypes {
             self.scatterPlotLimitConfiguration = scatterPlotLimitConfiguration
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The configuration of a scatter plot.
-    public struct ScatterPlotConfiguration {
+    public struct ScatterPlotConfiguration: Swift.Sendable {
         /// The options that determine if visual data labels are displayed.
         public var dataLabels: QuickSightClientTypes.DataLabelOptions?
         /// The field wells of the visual.
@@ -16036,12 +16037,12 @@ extension QuickSightClientTypes {
             self.yAxisLabelOptions = yAxisLabelOptions
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// A scatter plot. For more information, see [Using scatter plots](https://docs.aws.amazon.com/quicksight/latest/user/scatter-plot.html) in the Amazon QuickSight User Guide.
-    public struct ScatterPlotVisual {
+    public struct ScatterPlotVisual: Swift.Sendable {
         /// The list of custom actions that are configured for a visual.
         public var actions: [QuickSightClientTypes.VisualCustomAction]?
         /// The configuration settings of the visual.
@@ -16073,12 +16074,12 @@ extension QuickSightClientTypes {
             self.visualId = visualId
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The settings for the pinned columns of a table visual.
-    public struct TablePinnedFieldOptions {
+    public struct TablePinnedFieldOptions: Swift.Sendable {
         /// A list of columns to be pinned to the left of a table visual.
         public var pinnedLeftFields: [Swift.String]?
 
@@ -16089,12 +16090,11 @@ extension QuickSightClientTypes {
             self.pinnedLeftFields = pinnedLeftFields
         }
     }
-
 }
 
 extension QuickSightClientTypes {
 
-    public enum TableCellImageScalingConfiguration: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum TableCellImageScalingConfiguration: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case doNotScale
         case fitToCellHeight
         case fitToCellWidth
@@ -16125,8 +16125,9 @@ extension QuickSightClientTypes {
 }
 
 extension QuickSightClientTypes {
+
     /// The sizing options for the table image configuration.
-    public struct TableCellImageSizingConfiguration {
+    public struct TableCellImageSizingConfiguration: Swift.Sendable {
         /// The cell scaling configuration of the sizing options for the table image configuration.
         public var tableCellImageScalingConfiguration: QuickSightClientTypes.TableCellImageScalingConfiguration?
 
@@ -16137,12 +16138,12 @@ extension QuickSightClientTypes {
             self.tableCellImageScalingConfiguration = tableCellImageScalingConfiguration
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The image configuration of a table field URL.
-    public struct TableFieldImageConfiguration {
+    public struct TableFieldImageConfiguration: Swift.Sendable {
         /// The sizing options for the table image configuration.
         public var sizingOptions: QuickSightClientTypes.TableCellImageSizingConfiguration?
 
@@ -16153,12 +16154,11 @@ extension QuickSightClientTypes {
             self.sizingOptions = sizingOptions
         }
     }
-
 }
 
 extension QuickSightClientTypes {
 
-    public enum TableFieldIconSetType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum TableFieldIconSetType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case link
         case sdkUnknown(Swift.String)
 
@@ -16183,8 +16183,9 @@ extension QuickSightClientTypes {
 }
 
 extension QuickSightClientTypes {
+
     /// The custom icon content for the table link content configuration.
-    public struct TableFieldCustomIconContent {
+    public struct TableFieldCustomIconContent: Swift.Sendable {
         /// The icon set type (link) of the custom icon content for table URL link content.
         public var icon: QuickSightClientTypes.TableFieldIconSetType?
 
@@ -16195,12 +16196,12 @@ extension QuickSightClientTypes {
             self.icon = icon
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The custom text content (value, font configuration) for the table link content configuration.
-    public struct TableFieldCustomTextContent {
+    public struct TableFieldCustomTextContent: Swift.Sendable {
         /// The font configuration of the custom text content for the table URL link content.
         /// This member is required.
         public var fontConfiguration: QuickSightClientTypes.FontConfiguration?
@@ -16216,12 +16217,12 @@ extension QuickSightClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The URL content (text, icon) for the table link configuration.
-    public struct TableFieldLinkContentConfiguration {
+    public struct TableFieldLinkContentConfiguration: Swift.Sendable {
         /// The custom icon content for the table link content configuration.
         public var customIconContent: QuickSightClientTypes.TableFieldCustomIconContent?
         /// The custom text content (value, font configuration) for the table link content configuration.
@@ -16236,12 +16237,12 @@ extension QuickSightClientTypes {
             self.customTextContent = customTextContent
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The link configuration of a table field URL.
-    public struct TableFieldLinkConfiguration {
+    public struct TableFieldLinkConfiguration: Swift.Sendable {
         /// The URL content (text, icon) for the table link configuration.
         /// This member is required.
         public var content: QuickSightClientTypes.TableFieldLinkContentConfiguration?
@@ -16258,12 +16259,12 @@ extension QuickSightClientTypes {
             self.target = target
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The URL configuration for a table field.
-    public struct TableFieldURLConfiguration {
+    public struct TableFieldURLConfiguration: Swift.Sendable {
         /// The image configuration of a table field URL.
         public var imageConfiguration: QuickSightClientTypes.TableFieldImageConfiguration?
         /// The link configuration of a table field URL.
@@ -16278,12 +16279,12 @@ extension QuickSightClientTypes {
             self.linkConfiguration = linkConfiguration
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The options for a table field.
-    public struct TableFieldOption {
+    public struct TableFieldOption: Swift.Sendable {
         /// The custom label for a table field.
         public var customLabel: Swift.String?
         /// The field ID for a table field.
@@ -16311,12 +16312,12 @@ extension QuickSightClientTypes {
             self.width = width
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The field options of a table visual.
-    public struct TableFieldOptions {
+    public struct TableFieldOptions: Swift.Sendable {
         /// The order of the field IDs that are configured as field options for a table visual.
         public var order: [Swift.String]?
         /// The settings for the pinned columns of a table visual.
@@ -16335,12 +16336,12 @@ extension QuickSightClientTypes {
             self.selectedFieldOptions = selectedFieldOptions
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The aggregated field well for the table.
-    public struct TableAggregatedFieldWells {
+    public struct TableAggregatedFieldWells: Swift.Sendable {
         /// The group by field well for a pivot table. Values are grouped by group by fields.
         public var groupBy: [QuickSightClientTypes.DimensionField]?
         /// The values field well for a pivot table. Values are aggregated based on group by fields.
@@ -16355,12 +16356,12 @@ extension QuickSightClientTypes {
             self.values = values
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The unaggregated field for a table.
-    public struct UnaggregatedField {
+    public struct UnaggregatedField: Swift.Sendable {
         /// The column that is used in the UnaggregatedField.
         /// This member is required.
         public var column: QuickSightClientTypes.ColumnIdentifier?
@@ -16381,12 +16382,12 @@ extension QuickSightClientTypes {
             self.formatConfiguration = formatConfiguration
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The unaggregated field well for the table.
-    public struct TableUnaggregatedFieldWells {
+    public struct TableUnaggregatedFieldWells: Swift.Sendable {
         /// The values field well for a pivot table. Values are unaggregated for an unaggregated table.
         public var values: [QuickSightClientTypes.UnaggregatedField]?
 
@@ -16397,12 +16398,12 @@ extension QuickSightClientTypes {
             self.values = values
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The field wells for a table visual. This is a union type structure. For this structure to be valid, only one of the attributes can be defined.
-    public struct TableFieldWells {
+    public struct TableFieldWells: Swift.Sendable {
         /// The aggregated field well for the table.
         public var tableAggregatedFieldWells: QuickSightClientTypes.TableAggregatedFieldWells?
         /// The unaggregated field well for the table.
@@ -16417,12 +16418,12 @@ extension QuickSightClientTypes {
             self.tableUnaggregatedFieldWells = tableUnaggregatedFieldWells
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The paginated report options for a table visual.
-    public struct TablePaginatedReportOptions {
+    public struct TablePaginatedReportOptions: Swift.Sendable {
         /// The visibility of repeating header rows on each page.
         public var overflowColumnHeaderVisibility: QuickSightClientTypes.Visibility?
         /// The visibility of printing table overflow across pages.
@@ -16437,12 +16438,12 @@ extension QuickSightClientTypes {
             self.verticalOverflowVisibility = verticalOverflowVisibility
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The sort configuration for a TableVisual.
-    public struct TableSortConfiguration {
+    public struct TableSortConfiguration: Swift.Sendable {
         /// The pagination configuration (page size, page number) for the table.
         public var paginationConfiguration: QuickSightClientTypes.PaginationConfiguration?
         /// The field sort options for rows in the table.
@@ -16457,12 +16458,12 @@ extension QuickSightClientTypes {
             self.rowSort = rowSort
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The options for data bars.
-    public struct DataBarsOptions {
+    public struct DataBarsOptions: Swift.Sendable {
         /// The field ID for the data bars options.
         /// This member is required.
         public var fieldId: Swift.String?
@@ -16482,12 +16483,12 @@ extension QuickSightClientTypes {
             self.positiveColor = positiveColor
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The inline visualization of a specific type to display within a chart.
-    public struct TableInlineVisualization {
+    public struct TableInlineVisualization: Swift.Sendable {
         /// The configuration of the inline visualization of the data bars within a chart.
         public var dataBars: QuickSightClientTypes.DataBarsOptions?
 
@@ -16498,12 +16499,11 @@ extension QuickSightClientTypes {
             self.dataBars = dataBars
         }
     }
-
 }
 
 extension QuickSightClientTypes {
 
-    public enum TableOrientation: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum TableOrientation: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case horizontal
         case vertical
         case sdkUnknown(Swift.String)
@@ -16531,8 +16531,9 @@ extension QuickSightClientTypes {
 }
 
 extension QuickSightClientTypes {
+
     /// The table options for a table visual.
-    public struct TableOptions {
+    public struct TableOptions: Swift.Sendable {
         /// The table cell style of table cells.
         public var cellStyle: QuickSightClientTypes.TableCellStyle?
         /// The table cell style of a table header.
@@ -16555,12 +16556,12 @@ extension QuickSightClientTypes {
             self.rowAlternateColorOptions = rowAlternateColorOptions
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The total options for a table visual.
-    public struct TotalOptions {
+    public struct TotalOptions: Swift.Sendable {
         /// The custom label string for the total cells.
         public var customLabel: Swift.String?
         /// The placement (start, end) for the total cells.
@@ -16591,12 +16592,12 @@ extension QuickSightClientTypes {
             self.totalsVisibility = totalsVisibility
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The configuration for a TableVisual.
-    public struct TableConfiguration {
+    public struct TableConfiguration: Swift.Sendable {
         /// The field options for a table visual.
         public var fieldOptions: QuickSightClientTypes.TableFieldOptions?
         /// The field wells of the visual.
@@ -16635,12 +16636,12 @@ extension QuickSightClientTypes {
             self.totalOptions = totalOptions
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The cell conditional formatting option for a table.
-    public struct TableCellConditionalFormatting {
+    public struct TableCellConditionalFormatting: Swift.Sendable {
         /// The field ID of the cell for conditional formatting.
         /// This member is required.
         public var fieldId: Swift.String?
@@ -16656,12 +16657,12 @@ extension QuickSightClientTypes {
             self.textFormat = textFormat
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The conditional formatting of a table row.
-    public struct TableRowConditionalFormatting {
+    public struct TableRowConditionalFormatting: Swift.Sendable {
         /// The conditional formatting color (solid, gradient) of the background for a table row.
         public var backgroundColor: QuickSightClientTypes.ConditionalFormattingColor?
         /// The conditional formatting color (solid, gradient) of the text for a table row.
@@ -16676,12 +16677,12 @@ extension QuickSightClientTypes {
             self.textColor = textColor
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// Conditional formatting options for a PivotTableVisual.
-    public struct TableConditionalFormattingOption {
+    public struct TableConditionalFormattingOption: Swift.Sendable {
         /// The cell conditional formatting option for a table.
         public var cell: QuickSightClientTypes.TableCellConditionalFormatting?
         /// The row conditional formatting option for a table.
@@ -16696,12 +16697,12 @@ extension QuickSightClientTypes {
             self.row = row
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The conditional formatting for a PivotTableVisual.
-    public struct TableConditionalFormatting {
+    public struct TableConditionalFormatting: Swift.Sendable {
         /// Conditional formatting options for a PivotTableVisual.
         public var conditionalFormattingOptions: [QuickSightClientTypes.TableConditionalFormattingOption]?
 
@@ -16712,12 +16713,12 @@ extension QuickSightClientTypes {
             self.conditionalFormattingOptions = conditionalFormattingOptions
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// A table visual. For more information, see [Using tables as visuals](https://docs.aws.amazon.com/quicksight/latest/user/tabular.html) in the Amazon QuickSight User Guide.
-    public struct TableVisual {
+    public struct TableVisual: Swift.Sendable {
         /// The list of custom actions that are configured for a visual.
         public var actions: [QuickSightClientTypes.VisualCustomAction]?
         /// The configuration settings of the visual.
@@ -16749,12 +16750,12 @@ extension QuickSightClientTypes {
             self.visualId = visualId
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// Aggregated field wells of a tree map.
-    public struct TreeMapAggregatedFieldWells {
+    public struct TreeMapAggregatedFieldWells: Swift.Sendable {
         /// The color field well of a tree map. Values are grouped by aggregations based on group by fields.
         public var colors: [QuickSightClientTypes.MeasureField]?
         /// The group by field well of a tree map. Values are grouped based on group by fields.
@@ -16773,12 +16774,12 @@ extension QuickSightClientTypes {
             self.sizes = sizes
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The field wells of a tree map. This is a union type structure. For this structure to be valid, only one of the attributes can be defined.
-    public struct TreeMapFieldWells {
+    public struct TreeMapFieldWells: Swift.Sendable {
         /// The aggregated field wells of a tree map.
         public var treeMapAggregatedFieldWells: QuickSightClientTypes.TreeMapAggregatedFieldWells?
 
@@ -16789,12 +16790,12 @@ extension QuickSightClientTypes {
             self.treeMapAggregatedFieldWells = treeMapAggregatedFieldWells
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The sort configuration of a tree map.
-    public struct TreeMapSortConfiguration {
+    public struct TreeMapSortConfiguration: Swift.Sendable {
         /// The limit on the number of groups that are displayed.
         public var treeMapGroupItemsLimitConfiguration: QuickSightClientTypes.ItemsLimitConfiguration?
         /// The sort configuration of group by fields.
@@ -16809,12 +16810,12 @@ extension QuickSightClientTypes {
             self.treeMapSort = treeMapSort
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The configuration of a tree map.
-    public struct TreeMapConfiguration {
+    public struct TreeMapConfiguration: Swift.Sendable {
         /// The label options (label text, label visibility) for the colors displayed in a tree map.
         public var colorLabelOptions: QuickSightClientTypes.ChartAxisLabelOptions?
         /// The color options (gradient color, point of divergence) of a tree map.
@@ -16861,12 +16862,12 @@ extension QuickSightClientTypes {
             self.tooltip = tooltip
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// A tree map. For more information, see [Using tree maps](https://docs.aws.amazon.com/quicksight/latest/user/tree-map.html) in the Amazon QuickSight User Guide.
-    public struct TreeMapVisual {
+    public struct TreeMapVisual: Swift.Sendable {
         /// The list of custom actions that are configured for a visual.
         public var actions: [QuickSightClientTypes.VisualCustomAction]?
         /// The configuration settings of the visual.
@@ -16898,12 +16899,12 @@ extension QuickSightClientTypes {
             self.visualId = visualId
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The color configuration for individual groups within a waterfall visual.
-    public struct WaterfallChartGroupColorConfiguration {
+    public struct WaterfallChartGroupColorConfiguration: Swift.Sendable {
         /// Defines the color for the negative bars of a waterfall chart.
         public var negativeBarColor: Swift.String?
         /// Defines the color for the positive bars of a waterfall chart.
@@ -16922,12 +16923,12 @@ extension QuickSightClientTypes {
             self.totalBarColor = totalBarColor
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The color configuration of a waterfall visual.
-    public struct WaterfallChartColorConfiguration {
+    public struct WaterfallChartColorConfiguration: Swift.Sendable {
         /// The color configuration for individual groups within a waterfall visual.
         public var groupColorConfiguration: QuickSightClientTypes.WaterfallChartGroupColorConfiguration?
 
@@ -16938,12 +16939,12 @@ extension QuickSightClientTypes {
             self.groupColorConfiguration = groupColorConfiguration
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The field well configuration of a waterfall visual.
-    public struct WaterfallChartAggregatedFieldWells {
+    public struct WaterfallChartAggregatedFieldWells: Swift.Sendable {
         /// The breakdown field wells of a waterfall visual.
         public var breakdowns: [QuickSightClientTypes.DimensionField]?
         /// The category field wells of a waterfall visual.
@@ -16962,12 +16963,12 @@ extension QuickSightClientTypes {
             self.values = values
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The field well configuration of a waterfall visual.
-    public struct WaterfallChartFieldWells {
+    public struct WaterfallChartFieldWells: Swift.Sendable {
         /// The field well configuration of a waterfall visual.
         public var waterfallChartAggregatedFieldWells: QuickSightClientTypes.WaterfallChartAggregatedFieldWells?
 
@@ -16978,12 +16979,12 @@ extension QuickSightClientTypes {
             self.waterfallChartAggregatedFieldWells = waterfallChartAggregatedFieldWells
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The sort configuration of a waterfall visual.
-    public struct WaterfallChartSortConfiguration {
+    public struct WaterfallChartSortConfiguration: Swift.Sendable {
         /// The limit on the number of bar groups that are displayed.
         public var breakdownItemsLimit: QuickSightClientTypes.ItemsLimitConfiguration?
         /// The sort configuration of the category fields.
@@ -16998,12 +16999,12 @@ extension QuickSightClientTypes {
             self.categorySort = categorySort
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The options that determine the presentation of a waterfall visual.
-    public struct WaterfallChartOptions {
+    public struct WaterfallChartOptions: Swift.Sendable {
         /// This option determines the total bar label of a waterfall visual.
         public var totalBarLabel: Swift.String?
 
@@ -17014,12 +17015,12 @@ extension QuickSightClientTypes {
             self.totalBarLabel = totalBarLabel
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The configuration for a waterfall visual.
-    public struct WaterfallChartConfiguration {
+    public struct WaterfallChartConfiguration: Swift.Sendable {
         /// The options that determine the presentation of the category axis.
         public var categoryAxisDisplayOptions: QuickSightClientTypes.AxisDisplayOptions?
         /// The options that determine the presentation of the category axis label.
@@ -17074,12 +17075,12 @@ extension QuickSightClientTypes {
             self.waterfallChartOptions = waterfallChartOptions
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// A waterfall chart. For more information, see [Using waterfall charts](https://docs.aws.amazon.com/quicksight/latest/user/waterfall-chart.html) in the Amazon QuickSight User Guide.
-    public struct WaterfallVisual {
+    public struct WaterfallVisual: Swift.Sendable {
         /// The list of custom actions that are configured for a visual.
         public var actions: [QuickSightClientTypes.VisualCustomAction]?
         /// The configuration for a waterfall visual.
@@ -17111,12 +17112,12 @@ extension QuickSightClientTypes {
             self.visualId = visualId
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The aggregated field wells of a word cloud.
-    public struct WordCloudAggregatedFieldWells {
+    public struct WordCloudAggregatedFieldWells: Swift.Sendable {
         /// The group by field well of a word cloud. Values are grouped by group by fields.
         public var groupBy: [QuickSightClientTypes.DimensionField]?
         /// The size field well of a word cloud. Values are aggregated based on group by fields.
@@ -17131,12 +17132,12 @@ extension QuickSightClientTypes {
             self.size = size
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The field wells of a word cloud visual. This is a union type structure. For this structure to be valid, only one of the attributes can be defined.
-    public struct WordCloudFieldWells {
+    public struct WordCloudFieldWells: Swift.Sendable {
         /// The aggregated field wells of a word cloud.
         public var wordCloudAggregatedFieldWells: QuickSightClientTypes.WordCloudAggregatedFieldWells?
 
@@ -17147,12 +17148,12 @@ extension QuickSightClientTypes {
             self.wordCloudAggregatedFieldWells = wordCloudAggregatedFieldWells
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The sort configuration of a word cloud visual.
-    public struct WordCloudSortConfiguration {
+    public struct WordCloudSortConfiguration: Swift.Sendable {
         /// The limit on the number of groups that are displayed in a word cloud.
         public var categoryItemsLimit: QuickSightClientTypes.ItemsLimitConfiguration?
         /// The sort configuration of group by fields.
@@ -17167,12 +17168,11 @@ extension QuickSightClientTypes {
             self.categorySort = categorySort
         }
     }
-
 }
 
 extension QuickSightClientTypes {
 
-    public enum WordCloudCloudLayout: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum WordCloudCloudLayout: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case fluid
         case normal
         case sdkUnknown(Swift.String)
@@ -17201,7 +17201,7 @@ extension QuickSightClientTypes {
 
 extension QuickSightClientTypes {
 
-    public enum WordCloudWordCasing: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum WordCloudWordCasing: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case existingCase
         case lowerCase
         case sdkUnknown(Swift.String)
@@ -17230,7 +17230,7 @@ extension QuickSightClientTypes {
 
 extension QuickSightClientTypes {
 
-    public enum WordCloudWordOrientation: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum WordCloudWordOrientation: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case horizontal
         case horizontalAndVertical
         case sdkUnknown(Swift.String)
@@ -17259,7 +17259,7 @@ extension QuickSightClientTypes {
 
 extension QuickSightClientTypes {
 
-    public enum WordCloudWordPadding: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum WordCloudWordPadding: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case large
         case medium
         case `none`
@@ -17294,7 +17294,7 @@ extension QuickSightClientTypes {
 
 extension QuickSightClientTypes {
 
-    public enum WordCloudWordScaling: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum WordCloudWordScaling: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case emphasize
         case normal
         case sdkUnknown(Swift.String)
@@ -17322,8 +17322,9 @@ extension QuickSightClientTypes {
 }
 
 extension QuickSightClientTypes {
+
     /// The word cloud options for a word cloud visual.
-    public struct WordCloudOptions {
+    public struct WordCloudOptions: Swift.Sendable {
         /// The cloud layout options (fluid, normal) of a word cloud.
         public var cloudLayout: QuickSightClientTypes.WordCloudCloudLayout?
         /// The length limit of each word from 1-100.
@@ -17354,12 +17355,12 @@ extension QuickSightClientTypes {
             self.wordScaling = wordScaling
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The configuration of a word cloud visual.
-    public struct WordCloudChartConfiguration {
+    public struct WordCloudChartConfiguration: Swift.Sendable {
         /// The label options (label text, label visibility, and sort icon visibility) for the word cloud category.
         public var categoryLabelOptions: QuickSightClientTypes.ChartAxisLabelOptions?
         /// The field wells of the visual.
@@ -17386,12 +17387,12 @@ extension QuickSightClientTypes {
             self.wordCloudOptions = wordCloudOptions
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// A word cloud. For more information, see [Using word clouds](https://docs.aws.amazon.com/quicksight/latest/user/word-cloud.html) in the Amazon QuickSight User Guide.
-    public struct WordCloudVisual {
+    public struct WordCloudVisual: Swift.Sendable {
         /// The list of custom actions that are configured for a visual.
         public var actions: [QuickSightClientTypes.VisualCustomAction]?
         /// The configuration settings of the visual.
@@ -17423,12 +17424,12 @@ extension QuickSightClientTypes {
             self.visualId = visualId
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// A visual displayed on a sheet in an analysis, dashboard, or template. This is a union type structure. For this structure to be valid, only one of the attributes can be defined.
-    public struct Visual {
+    public struct Visual: Swift.Sendable {
         /// A bar chart. For more information, see [Using bar charts](https://docs.aws.amazon.com/quicksight/latest/user/bar-charts.html) in the Amazon QuickSight User Guide.
         public var barChartVisual: QuickSightClientTypes.BarChartVisual?
         /// A box plot. For more information, see [Using box plots](https://docs.aws.amazon.com/quicksight/latest/user/box-plots.html) in the Amazon QuickSight User Guide.
@@ -17527,12 +17528,12 @@ extension QuickSightClientTypes {
             self.wordCloudVisual = wordCloudVisual
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// A sheet is an object that contains a set of visuals that are viewed together on one page in a paginated report. Every analysis and dashboard must contain at least one sheet.
-    public struct SheetDefinition {
+    public struct SheetDefinition: Swift.Sendable {
         /// The layout content type of the sheet. Choose one of the following options:
         ///
         /// * PAGINATED: Creates a sheet for a paginated report.
@@ -17588,12 +17589,12 @@ extension QuickSightClientTypes {
             self.visuals = visuals
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The definition of an analysis.
-    public struct AnalysisDefinition {
+    public struct AnalysisDefinition: Swift.Sendable {
         /// The configuration for default analysis settings.
         public var analysisDefaults: QuickSightClientTypes.AnalysisDefaults?
         /// An array of calculated field definitions for the analysis.
@@ -17637,12 +17638,11 @@ extension QuickSightClientTypes {
             self.sheets = sheets
         }
     }
-
 }
 
 extension QuickSightClientTypes {
 
-    public enum AnalysisFilterAttribute: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AnalysisFilterAttribute: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case analysisName
         case directQuicksightOwner
         case directQuicksightSoleOwner
@@ -17686,7 +17686,7 @@ extension QuickSightClientTypes {
 
 extension QuickSightClientTypes {
 
-    public enum FilterOperator: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum FilterOperator: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case stringequals
         case stringlike
         case sdkUnknown(Swift.String)
@@ -17714,8 +17714,9 @@ extension QuickSightClientTypes {
 }
 
 extension QuickSightClientTypes {
+
     /// A filter that you apply when searching for one or more analyses.
-    public struct AnalysisSearchFilter {
+    public struct AnalysisSearchFilter: Swift.Sendable {
         /// The name of the value that you want to use as a filter, for example "Name": "QUICKSIGHT_OWNER". Valid values are defined as follows:
         ///
         /// * QUICKSIGHT_VIEWER_OR_OWNER: Provide an ARN of a user or group, and any analyses with that ARN listed as one of the analysis' owners or viewers are returned. Implicit permissions from folders or groups are considered.
@@ -17746,12 +17747,12 @@ extension QuickSightClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// Dataset reference.
-    public struct DataSetReference {
+    public struct DataSetReference: Swift.Sendable {
         /// Dataset Amazon Resource Name (ARN).
         /// This member is required.
         public var dataSetArn: Swift.String?
@@ -17768,12 +17769,12 @@ extension QuickSightClientTypes {
             self.dataSetPlaceholder = dataSetPlaceholder
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The source template of an analysis.
-    public struct AnalysisSourceTemplate {
+    public struct AnalysisSourceTemplate: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the source template of an analysis.
         /// This member is required.
         public var arn: Swift.String?
@@ -17790,12 +17791,12 @@ extension QuickSightClientTypes {
             self.dataSetReferences = dataSetReferences
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The source entity of an analysis.
-    public struct AnalysisSourceEntity {
+    public struct AnalysisSourceEntity: Swift.Sendable {
         /// The source template for the source entity of the analysis.
         public var sourceTemplate: QuickSightClientTypes.AnalysisSourceTemplate?
 
@@ -17806,12 +17807,12 @@ extension QuickSightClientTypes {
             self.sourceTemplate = sourceTemplate
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The summary metadata that describes an analysis.
-    public struct AnalysisSummary {
+    public struct AnalysisSummary: Swift.Sendable {
         /// The ID of the analysis. This ID displays in the URL.
         public var analysisId: Swift.String?
         /// The Amazon Resource Name (ARN) for the analysis.
@@ -17842,12 +17843,11 @@ extension QuickSightClientTypes {
             self.status = status
         }
     }
-
 }
 
 extension QuickSightClientTypes {
 
-    public enum AnchorType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AnchorType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case today
         case sdkUnknown(Swift.String)
 
@@ -17872,8 +17872,9 @@ extension QuickSightClientTypes {
 }
 
 extension QuickSightClientTypes {
+
     /// The definition of the Anchor.
-    public struct Anchor {
+    public struct Anchor: Swift.Sendable {
         /// The AnchorType for the Anchor.
         public var anchorType: QuickSightClientTypes.AnchorType?
         /// The offset of the Anchor.
@@ -17892,12 +17893,11 @@ extension QuickSightClientTypes {
             self.timeGranularity = timeGranularity
         }
     }
-
 }
 
 extension QuickSightClientTypes {
 
-    public enum AnonymousUserDashboardEmbeddingConfigurationDisabledFeature: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AnonymousUserDashboardEmbeddingConfigurationDisabledFeature: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case sharedView
         case sdkUnknown(Swift.String)
 
@@ -17923,7 +17923,7 @@ extension QuickSightClientTypes {
 
 extension QuickSightClientTypes {
 
-    public enum AnonymousUserDashboardEmbeddingConfigurationEnabledFeature: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AnonymousUserDashboardEmbeddingConfigurationEnabledFeature: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case sharedView
         case sdkUnknown(Swift.String)
 
@@ -17948,8 +17948,9 @@ extension QuickSightClientTypes {
 }
 
 extension QuickSightClientTypes {
+
     /// The shared view settings of an embedded dashboard.
-    public struct SharedViewConfigurations {
+    public struct SharedViewConfigurations: Swift.Sendable {
         /// The shared view settings of an embedded dashboard.
         /// This member is required.
         public var enabled: Swift.Bool
@@ -17961,12 +17962,12 @@ extension QuickSightClientTypes {
             self.enabled = enabled
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The feature configuration for an embedded dashboard.
-    public struct AnonymousUserDashboardFeatureConfigurations {
+    public struct AnonymousUserDashboardFeatureConfigurations: Swift.Sendable {
         /// The shared view settings of an embedded dashboard.
         public var sharedView: QuickSightClientTypes.SharedViewConfigurations?
 
@@ -17977,12 +17978,12 @@ extension QuickSightClientTypes {
             self.sharedView = sharedView
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// Information about the dashboard that you want to embed.
-    public struct AnonymousUserDashboardEmbeddingConfiguration {
+    public struct AnonymousUserDashboardEmbeddingConfiguration: Swift.Sendable {
         /// A list of all disabled features of a specified anonymous dashboard.
         public var disabledFeatures: [QuickSightClientTypes.AnonymousUserDashboardEmbeddingConfigurationDisabledFeature]?
         /// A list of all enabled features of a specified anonymous dashboard.
@@ -18006,10 +18007,10 @@ extension QuickSightClientTypes {
             self.initialDashboardId = initialDashboardId
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// A structure that contains the following elements:
     ///
     /// * The DashboardId of the dashboard that has the visual that you want to embed.
@@ -18020,7 +18021,7 @@ extension QuickSightClientTypes {
     ///
     ///
     /// The DashboardId, SheetId, and VisualId can be found in the IDs for developers section of the Embed visual pane of the visual's on-visual menu of the Amazon QuickSight console. You can also get the DashboardId with a ListDashboards API operation.
-    public struct DashboardVisualId {
+    public struct DashboardVisualId: Swift.Sendable {
         /// The ID of the dashboard that has the visual that you want to embed. The DashboardId can be found in the IDs for developers section of the Embed visual pane of the visual's on-visual menu of the Amazon QuickSight console. You can also get the DashboardId with a ListDashboards API operation.
         /// This member is required.
         public var dashboardId: Swift.String?
@@ -18042,12 +18043,12 @@ extension QuickSightClientTypes {
             self.visualId = visualId
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The experience that you are embedding. You can use this object to generate a url that embeds a visual into your application.
-    public struct AnonymousUserDashboardVisualEmbeddingConfiguration {
+    public struct AnonymousUserDashboardVisualEmbeddingConfiguration: Swift.Sendable {
         /// The visual ID for the visual that you want the user to see. This ID is included in the output URL. When the URL in response is accessed, Amazon QuickSight renders this visual. The Amazon Resource Name (ARN) of the dashboard that the visual belongs to must be included in the AuthorizedResourceArns parameter. Otherwise, the request will fail with InvalidParameterValueException.
         /// This member is required.
         public var initialDashboardVisualId: QuickSightClientTypes.DashboardVisualId?
@@ -18059,12 +18060,12 @@ extension QuickSightClientTypes {
             self.initialDashboardVisualId = initialDashboardVisualId
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The settings that you want to use for the Generative Q&A experience.
-    public struct AnonymousUserGenerativeQnAEmbeddingConfiguration {
+    public struct AnonymousUserGenerativeQnAEmbeddingConfiguration: Swift.Sendable {
         /// The Amazon QuickSight Q topic ID of the new reader experience topic that you want the anonymous user to see first. This ID is included in the output URL. When the URL in response is accessed, Amazon QuickSight renders the Generative Q&A experience with this new reader experience topic pre selected. The Amazon Resource Name (ARN) of this Q new reader experience topic must be included in the AuthorizedResourceArns parameter. Otherwise, the request fails with an InvalidParameterValueException error.
         /// This member is required.
         public var initialTopicId: Swift.String?
@@ -18076,12 +18077,12 @@ extension QuickSightClientTypes {
             self.initialTopicId = initialTopicId
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The settings that you want to use with the Q search bar.
-    public struct AnonymousUserQSearchBarEmbeddingConfiguration {
+    public struct AnonymousUserQSearchBarEmbeddingConfiguration: Swift.Sendable {
         /// The Amazon QuickSight Q topic ID of the legacy topic that you want the anonymous user to see first. This ID is included in the output URL. When the URL in response is accessed, Amazon QuickSight renders the Q search bar with this legacy topic pre-selected. The Amazon Resource Name (ARN) of this Q legacy topic must be included in the AuthorizedResourceArns parameter. Otherwise, the request fails with an InvalidParameterValueException error.
         /// This member is required.
         public var initialTopicId: Swift.String?
@@ -18093,12 +18094,12 @@ extension QuickSightClientTypes {
             self.initialTopicId = initialTopicId
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The type of experience you want to embed. For anonymous users, you can embed Amazon QuickSight dashboards.
-    public struct AnonymousUserEmbeddingExperienceConfiguration {
+    public struct AnonymousUserEmbeddingExperienceConfiguration: Swift.Sendable {
         /// The type of embedding experience. In this case, Amazon QuickSight dashboards.
         public var dashboard: QuickSightClientTypes.AnonymousUserDashboardEmbeddingConfiguration?
         /// The type of embedding experience. In this case, Amazon QuickSight visuals.
@@ -18121,12 +18122,11 @@ extension QuickSightClientTypes {
             self.qSearchBar = qSearchBar
         }
     }
-
 }
 
 extension QuickSightClientTypes {
 
-    public enum SnapshotFileFormatType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SnapshotFileFormatType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case csv
         case excel
         case pdf
@@ -18158,7 +18158,7 @@ extension QuickSightClientTypes {
 
 extension QuickSightClientTypes {
 
-    public enum SnapshotFileSheetSelectionScope: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SnapshotFileSheetSelectionScope: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case allVisuals
         case selectedVisuals
         case sdkUnknown(Swift.String)
@@ -18186,8 +18186,9 @@ extension QuickSightClientTypes {
 }
 
 extension QuickSightClientTypes {
+
     /// A structure that contains information that identifies the snapshot that needs to be generated.
-    public struct SnapshotFileSheetSelection {
+    public struct SnapshotFileSheetSelection: Swift.Sendable {
         /// The selection scope of the visuals on a sheet of a dashboard that you are generating a snapthot of. You can choose one of the following options.
         ///
         /// * ALL_VISUALS - Selects all visuals that are on the sheet. This value is required if the snapshot is a PDF.
@@ -18212,12 +18213,12 @@ extension QuickSightClientTypes {
             self.visualIds = visualIds
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// A structure that contains the information for the snapshot that you want to generate. This information is provided by you when you start a new snapshot job.
-    public struct SnapshotFile {
+    public struct SnapshotFile: Swift.Sendable {
         /// The format of the snapshot file to be generated. You can choose between CSV, Excel, or PDF.
         /// This member is required.
         public var formatType: QuickSightClientTypes.SnapshotFileFormatType?
@@ -18234,12 +18235,12 @@ extension QuickSightClientTypes {
             self.sheetSelections = sheetSelections
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// Information on the error that caused the snapshot job to fail.
-    public struct SnapshotJobResultErrorInfo {
+    public struct SnapshotJobResultErrorInfo: Swift.Sendable {
         /// The error message.
         public var errorMessage: Swift.String?
         /// The error type.
@@ -18254,12 +18255,12 @@ extension QuickSightClientTypes {
             self.errorType = errorType
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// An optional structure that contains the Amazon S3 bucket configuration that the generated snapshots are stored in. If you don't provide this information, generated snapshots are stored in the default Amazon QuickSight bucket.
-    public struct S3BucketConfiguration {
+    public struct S3BucketConfiguration: Swift.Sendable {
         /// The name of an existing Amazon S3 bucket where the generated snapshot artifacts are sent.
         /// This member is required.
         public var bucketName: Swift.String?
@@ -18281,12 +18282,12 @@ extension QuickSightClientTypes {
             self.bucketRegion = bucketRegion
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// A structure that describes the Amazon S3 settings to use to save the generated dashboard snapshot.
-    public struct SnapshotS3DestinationConfiguration {
+    public struct SnapshotS3DestinationConfiguration: Swift.Sendable {
         /// A structure that contains details about the Amazon S3 bucket that the generated dashboard snapshot is saved in.
         /// This member is required.
         public var bucketConfiguration: QuickSightClientTypes.S3BucketConfiguration?
@@ -18298,12 +18299,12 @@ extension QuickSightClientTypes {
             self.bucketConfiguration = bucketConfiguration
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The Amazon S3 result from the snapshot job. The result includes the DestinationConfiguration and the Amazon S3 Uri. If an error occured during the job, the result returns information on the error.
-    public struct SnapshotJobS3Result {
+    public struct SnapshotJobS3Result: Swift.Sendable {
         /// An array of error records that describe any failures that occur while the dashboard snapshot job runs.
         public var errorInfo: [QuickSightClientTypes.SnapshotJobResultErrorInfo]?
         /// A list of Amazon S3 bucket configurations that are provided when you make a StartDashboardSnapshotJob API call.
@@ -18322,7 +18323,6 @@ extension QuickSightClientTypes {
             self.s3Uri = s3Uri
         }
     }
-
 }
 
 extension QuickSightClientTypes.SnapshotJobS3Result: Swift.CustomDebugStringConvertible {
@@ -18331,8 +18331,9 @@ extension QuickSightClientTypes.SnapshotJobS3Result: Swift.CustomDebugStringConv
 }
 
 extension QuickSightClientTypes {
+
     /// A structure that contains information on the generated snapshot file groups.
-    public struct SnapshotJobResultFileGroup {
+    public struct SnapshotJobResultFileGroup: Swift.Sendable {
         /// A list of SnapshotFile objects.
         public var files: [QuickSightClientTypes.SnapshotFile]?
         /// A list of SnapshotJobS3Result objects.
@@ -18347,12 +18348,12 @@ extension QuickSightClientTypes {
             self.s3Results = s3Results
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// A structure that contains the file groups that are requested for the artifact generation in a StartDashboardSnapshotJob API call.
-    public struct AnonymousUserSnapshotJobResult {
+    public struct AnonymousUserSnapshotJobResult: Swift.Sendable {
         /// A list of SnapshotJobResultFileGroup objects that contain information on the files that are requested during a StartDashboardSnapshotJob API call. If the job succeeds, these objects contain the location where the snapshot artifacts are stored. If the job fails, the objects contain information about the error that caused the job to fail.
         public var fileGroups: [QuickSightClientTypes.SnapshotJobResultFileGroup]?
 
@@ -18363,12 +18364,11 @@ extension QuickSightClientTypes {
             self.fileGroups = fileGroups
         }
     }
-
 }
 
 extension QuickSightClientTypes {
 
-    public enum AssetBundleExportJobAnalysisPropertyToOverride: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AssetBundleExportJobAnalysisPropertyToOverride: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case name
         case sdkUnknown(Swift.String)
 
@@ -18393,8 +18393,9 @@ extension QuickSightClientTypes {
 }
 
 extension QuickSightClientTypes {
+
     /// Controls how a specific Analysis resource is parameterized in the returned CloudFormation template.
-    public struct AssetBundleExportJobAnalysisOverrideProperties {
+    public struct AssetBundleExportJobAnalysisOverrideProperties: Swift.Sendable {
         /// The ARN of the specific Analysis resource whose override properties are configured in this structure.
         /// This member is required.
         public var arn: Swift.String?
@@ -18411,12 +18412,11 @@ extension QuickSightClientTypes {
             self.properties = properties
         }
     }
-
 }
 
 extension QuickSightClientTypes {
 
-    public enum AssetBundleExportJobDashboardPropertyToOverride: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AssetBundleExportJobDashboardPropertyToOverride: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case name
         case sdkUnknown(Swift.String)
 
@@ -18441,8 +18441,9 @@ extension QuickSightClientTypes {
 }
 
 extension QuickSightClientTypes {
+
     /// Controls how a specific Dashboard resource is parameterized in the returned CloudFormation template.
-    public struct AssetBundleExportJobDashboardOverrideProperties {
+    public struct AssetBundleExportJobDashboardOverrideProperties: Swift.Sendable {
         /// The ARN of the specific Dashboard resource whose override properties are configured in this structure.
         /// This member is required.
         public var arn: Swift.String?
@@ -18459,12 +18460,11 @@ extension QuickSightClientTypes {
             self.properties = properties
         }
     }
-
 }
 
 extension QuickSightClientTypes {
 
-    public enum AssetBundleExportJobDataSetPropertyToOverride: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AssetBundleExportJobDataSetPropertyToOverride: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case name
         case sdkUnknown(Swift.String)
 
@@ -18489,8 +18489,9 @@ extension QuickSightClientTypes {
 }
 
 extension QuickSightClientTypes {
+
     /// Controls how a specific DataSet resource is parameterized in the returned CloudFormation template.
-    public struct AssetBundleExportJobDataSetOverrideProperties {
+    public struct AssetBundleExportJobDataSetOverrideProperties: Swift.Sendable {
         /// The ARN of the specific DataSet resource whose override properties are configured in this structure.
         /// This member is required.
         public var arn: Swift.String?
@@ -18507,12 +18508,11 @@ extension QuickSightClientTypes {
             self.properties = properties
         }
     }
-
 }
 
 extension QuickSightClientTypes {
 
-    public enum AssetBundleExportJobDataSourcePropertyToOverride: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AssetBundleExportJobDataSourcePropertyToOverride: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case catalog
         case clusterId
         case database
@@ -18588,8 +18588,9 @@ extension QuickSightClientTypes {
 }
 
 extension QuickSightClientTypes {
+
     /// Controls how a specific DataSource resource is parameterized in the returned CloudFormation template.
-    public struct AssetBundleExportJobDataSourceOverrideProperties {
+    public struct AssetBundleExportJobDataSourceOverrideProperties: Swift.Sendable {
         /// The ARN of the specific DataSource resource whose override properties are configured in this structure.
         /// This member is required.
         public var arn: Swift.String?
@@ -18606,12 +18607,62 @@ extension QuickSightClientTypes {
             self.properties = properties
         }
     }
-
 }
 
 extension QuickSightClientTypes {
 
-    public enum AssetBundleExportJobRefreshSchedulePropertyToOverride: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AssetBundleExportJobFolderPropertyToOverride: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+        case name
+        case parentFolderArn
+        case sdkUnknown(Swift.String)
+
+        public static var allCases: [AssetBundleExportJobFolderPropertyToOverride] {
+            return [
+                .name,
+                .parentFolderArn
+            ]
+        }
+
+        public init?(rawValue: Swift.String) {
+            let value = Self.allCases.first(where: { $0.rawValue == rawValue })
+            self = value ?? Self.sdkUnknown(rawValue)
+        }
+
+        public var rawValue: Swift.String {
+            switch self {
+            case .name: return "Name"
+            case .parentFolderArn: return "ParentFolderArn"
+            case let .sdkUnknown(s): return s
+            }
+        }
+    }
+}
+
+extension QuickSightClientTypes {
+
+    /// Controls how a specific Folder resource is parameterized in the returned CloudFormation template.
+    public struct AssetBundleExportJobFolderOverrideProperties: Swift.Sendable {
+        /// The ARN of the specific Folder resource whose override properties are configured in this structure.
+        /// This member is required.
+        public var arn: Swift.String?
+        /// A list of Folder resource properties to generate variables for in the returned CloudFormation template.
+        /// This member is required.
+        public var properties: [QuickSightClientTypes.AssetBundleExportJobFolderPropertyToOverride]?
+
+        public init(
+            arn: Swift.String? = nil,
+            properties: [QuickSightClientTypes.AssetBundleExportJobFolderPropertyToOverride]? = nil
+        )
+        {
+            self.arn = arn
+            self.properties = properties
+        }
+    }
+}
+
+extension QuickSightClientTypes {
+
+    public enum AssetBundleExportJobRefreshSchedulePropertyToOverride: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case startAfterDateTime
         case sdkUnknown(Swift.String)
 
@@ -18636,8 +18687,9 @@ extension QuickSightClientTypes {
 }
 
 extension QuickSightClientTypes {
+
     /// Controls how a specific RefreshSchedule resource is parameterized in the returned CloudFormation template.
-    public struct AssetBundleExportJobRefreshScheduleOverrideProperties {
+    public struct AssetBundleExportJobRefreshScheduleOverrideProperties: Swift.Sendable {
         /// The ARN of the specific RefreshSchedule resource whose override properties are configured in this structure.
         /// This member is required.
         public var arn: Swift.String?
@@ -18654,12 +18706,12 @@ extension QuickSightClientTypes {
             self.properties = properties
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// An optional structure that configures resource ID overrides for the export job.
-    public struct AssetBundleExportJobResourceIdOverrideConfiguration {
+    public struct AssetBundleExportJobResourceIdOverrideConfiguration: Swift.Sendable {
         /// An option to request a CloudFormation variable for a prefix to be prepended to each resource's ID before import. The prefix is only added to the asset IDs and does not change the name of the asset.
         public var prefixForAllResources: Swift.Bool
 
@@ -18670,12 +18722,11 @@ extension QuickSightClientTypes {
             self.prefixForAllResources = prefixForAllResources
         }
     }
-
 }
 
 extension QuickSightClientTypes {
 
-    public enum AssetBundleExportJobThemePropertyToOverride: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AssetBundleExportJobThemePropertyToOverride: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case name
         case sdkUnknown(Swift.String)
 
@@ -18700,8 +18751,9 @@ extension QuickSightClientTypes {
 }
 
 extension QuickSightClientTypes {
+
     /// Controls how a specific Theme resource is parameterized in the returned CloudFormation template.
-    public struct AssetBundleExportJobThemeOverrideProperties {
+    public struct AssetBundleExportJobThemeOverrideProperties: Swift.Sendable {
         /// The ARN of the specific Theme resource whose override properties are configured in this structure.
         /// This member is required.
         public var arn: Swift.String?
@@ -18718,12 +18770,11 @@ extension QuickSightClientTypes {
             self.properties = properties
         }
     }
-
 }
 
 extension QuickSightClientTypes {
 
-    public enum AssetBundleExportJobVPCConnectionPropertyToOverride: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AssetBundleExportJobVPCConnectionPropertyToOverride: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case dnsResolvers
         case name
         case roleArn
@@ -18754,8 +18805,9 @@ extension QuickSightClientTypes {
 }
 
 extension QuickSightClientTypes {
+
     /// Controls how a specific VPCConnection resource is parameterized in the outputted CloudFormation template.
-    public struct AssetBundleExportJobVPCConnectionOverrideProperties {
+    public struct AssetBundleExportJobVPCConnectionOverrideProperties: Swift.Sendable {
         /// The ARN of the specific VPCConnection resource whose override properties are configured in this structure.
         /// This member is required.
         public var arn: Swift.String?
@@ -18772,12 +18824,12 @@ extension QuickSightClientTypes {
             self.properties = properties
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// An optional collection of CloudFormation property configurations that control how the export job is generated.
-    public struct AssetBundleCloudFormationOverridePropertyConfiguration {
+    public struct AssetBundleCloudFormationOverridePropertyConfiguration: Swift.Sendable {
         /// An optional list of structures that control how Analysis resources are parameterized in the returned CloudFormation template.
         public var analyses: [QuickSightClientTypes.AssetBundleExportJobAnalysisOverrideProperties]?
         /// An optional list of structures that control how Dashboard resources are parameterized in the returned CloudFormation template.
@@ -18786,6 +18838,8 @@ extension QuickSightClientTypes {
         public var dataSets: [QuickSightClientTypes.AssetBundleExportJobDataSetOverrideProperties]?
         /// An optional list of structures that control how DataSource resources are parameterized in the returned CloudFormation template.
         public var dataSources: [QuickSightClientTypes.AssetBundleExportJobDataSourceOverrideProperties]?
+        /// An optional list of structures that controls how Folder resources are parameterized in the returned CloudFormation template.
+        public var folders: [QuickSightClientTypes.AssetBundleExportJobFolderOverrideProperties]?
         /// An optional list of structures that control how RefreshSchedule resources are parameterized in the returned CloudFormation template.
         public var refreshSchedules: [QuickSightClientTypes.AssetBundleExportJobRefreshScheduleOverrideProperties]?
         /// An optional list of structures that control how resource IDs are parameterized in the returned CloudFormation template.
@@ -18800,6 +18854,7 @@ extension QuickSightClientTypes {
             dashboards: [QuickSightClientTypes.AssetBundleExportJobDashboardOverrideProperties]? = nil,
             dataSets: [QuickSightClientTypes.AssetBundleExportJobDataSetOverrideProperties]? = nil,
             dataSources: [QuickSightClientTypes.AssetBundleExportJobDataSourceOverrideProperties]? = nil,
+            folders: [QuickSightClientTypes.AssetBundleExportJobFolderOverrideProperties]? = nil,
             refreshSchedules: [QuickSightClientTypes.AssetBundleExportJobRefreshScheduleOverrideProperties]? = nil,
             resourceIdOverrideConfiguration: QuickSightClientTypes.AssetBundleExportJobResourceIdOverrideConfiguration? = nil,
             themes: [QuickSightClientTypes.AssetBundleExportJobThemeOverrideProperties]? = nil,
@@ -18810,18 +18865,18 @@ extension QuickSightClientTypes {
             self.dashboards = dashboards
             self.dataSets = dataSets
             self.dataSources = dataSources
+            self.folders = folders
             self.refreshSchedules = refreshSchedules
             self.resourceIdOverrideConfiguration = resourceIdOverrideConfiguration
             self.themes = themes
             self.vpcConnections = vpcConnections
         }
     }
-
 }
 
 extension QuickSightClientTypes {
 
-    public enum AssetBundleExportFormat: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AssetBundleExportFormat: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case cloudformationJson
         case quicksightJson
         case sdkUnknown(Swift.String)
@@ -18849,8 +18904,9 @@ extension QuickSightClientTypes {
 }
 
 extension QuickSightClientTypes {
+
     /// Describes an error that occurred during an Asset Bundle export job.
-    public struct AssetBundleExportJobError {
+    public struct AssetBundleExportJobError: Swift.Sendable {
         /// The ARN of the resource whose processing caused an error.
         public var arn: Swift.String?
         /// A description of the error.
@@ -18869,12 +18925,11 @@ extension QuickSightClientTypes {
             self.type = type
         }
     }
-
 }
 
 extension QuickSightClientTypes {
 
-    public enum AssetBundleExportJobStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AssetBundleExportJobStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case failed
         case inProgress
         case queuedForImmediateExecution
@@ -18908,8 +18963,9 @@ extension QuickSightClientTypes {
 }
 
 extension QuickSightClientTypes {
+
     /// A summary of the export job that includes details of the job's configuration and its current status.
-    public struct AssetBundleExportJobSummary {
+    public struct AssetBundleExportJobSummary: Swift.Sendable {
         /// The ARN of the export job.
         public var arn: Swift.String?
         /// The ID of the export job.
@@ -18948,12 +19004,12 @@ extension QuickSightClientTypes {
             self.jobStatus = jobStatus
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The option to relax the validation that is required to export each asset. When StrictModeForAllResource is set to false, validation is skipped for specific UI errors.
-    public struct AssetBundleExportJobValidationStrategy {
+    public struct AssetBundleExportJobValidationStrategy: Swift.Sendable {
         /// A Boolean value that indicates whether to export resources under strict or lenient mode.
         public var strictModeForAllResources: Swift.Bool
 
@@ -18964,12 +19020,12 @@ extension QuickSightClientTypes {
             self.strictModeForAllResources = strictModeForAllResources
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// Describes a warning that occurred during an Asset Bundle export job.
-    public struct AssetBundleExportJobWarning {
+    public struct AssetBundleExportJobWarning: Swift.Sendable {
         /// The ARN of the resource whose processing caused a warning.
         public var arn: Swift.String?
         /// A description of the warning.
@@ -18984,12 +19040,11 @@ extension QuickSightClientTypes {
             self.message = message
         }
     }
-
 }
 
 extension QuickSightClientTypes {
 
-    public enum AssetBundleImportFailureAction: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AssetBundleImportFailureAction: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case doNothing
         case rollback
         case sdkUnknown(Swift.String)
@@ -19017,8 +19072,9 @@ extension QuickSightClientTypes {
 }
 
 extension QuickSightClientTypes {
+
     /// The override parameters for a single analysis that is being imported.
-    public struct AssetBundleImportJobAnalysisOverrideParameters {
+    public struct AssetBundleImportJobAnalysisOverrideParameters: Swift.Sendable {
         /// The ID of the analysis that you ant to apply overrides to.
         /// This member is required.
         public var analysisId: Swift.String?
@@ -19034,12 +19090,12 @@ extension QuickSightClientTypes {
             self.name = name
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// A structure that contains the permissions for the resource that you want to override in an asset bundle import job.
-    public struct AssetBundleResourcePermissions {
+    public struct AssetBundleResourcePermissions: Swift.Sendable {
         /// A list of IAM actions to grant permissions on.
         /// This member is required.
         public var actions: [Swift.String]?
@@ -19056,12 +19112,12 @@ extension QuickSightClientTypes {
             self.principals = principals
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// An object that contains a list of permissions to be applied to a list of analysis IDs.
-    public struct AssetBundleImportJobAnalysisOverridePermissions {
+    public struct AssetBundleImportJobAnalysisOverridePermissions: Swift.Sendable {
         /// A list of analysis IDs that you want to apply overrides to. You can use * to override all analyses in this asset bundle.
         /// This member is required.
         public var analysisIds: [Swift.String]?
@@ -19078,12 +19134,12 @@ extension QuickSightClientTypes {
             self.permissions = permissions
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The key or keys of the key-value pairs for the resource tag or tags assigned to the resource.
-    public struct Tag {
+    public struct Tag: Swift.Sendable {
         /// Tag key.
         /// This member is required.
         public var key: Swift.String?
@@ -19100,12 +19156,12 @@ extension QuickSightClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// An object that contains a list of tags to be assigned to a list of analysis IDs.
-    public struct AssetBundleImportJobAnalysisOverrideTags {
+    public struct AssetBundleImportJobAnalysisOverrideTags: Swift.Sendable {
         /// A list of analysis IDs that you want to apply overrides to. You can use * to override all analyses in this asset bundle.
         /// This member is required.
         public var analysisIds: [Swift.String]?
@@ -19122,12 +19178,12 @@ extension QuickSightClientTypes {
             self.tags = tags
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The override parameters for a single dashboard that is being imported.
-    public struct AssetBundleImportJobDashboardOverrideParameters {
+    public struct AssetBundleImportJobDashboardOverrideParameters: Swift.Sendable {
         /// The ID of the dashboard that you want to apply overrides to.
         /// This member is required.
         public var dashboardId: Swift.String?
@@ -19143,12 +19199,12 @@ extension QuickSightClientTypes {
             self.name = name
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// A structure that contains the configuration of a shared link to an Amazon QuickSight dashboard.
-    public struct AssetBundleResourceLinkSharingConfiguration {
+    public struct AssetBundleResourceLinkSharingConfiguration: Swift.Sendable {
         /// A list of link sharing permissions for the dashboards that you want to apply overrides to.
         public var permissions: QuickSightClientTypes.AssetBundleResourcePermissions?
 
@@ -19159,12 +19215,12 @@ extension QuickSightClientTypes {
             self.permissions = permissions
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// An object that contains a list of permissions to be applied to a list of dashboard IDs.
-    public struct AssetBundleImportJobDashboardOverridePermissions {
+    public struct AssetBundleImportJobDashboardOverridePermissions: Swift.Sendable {
         /// A list of dashboard IDs that you want to apply overrides to. You can use * to override all dashboards in this asset bundle.
         /// This member is required.
         public var dashboardIds: [Swift.String]?
@@ -19184,12 +19240,12 @@ extension QuickSightClientTypes {
             self.permissions = permissions
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// An object that contains a list of tags to be assigned to a list of dashboard IDs.
-    public struct AssetBundleImportJobDashboardOverrideTags {
+    public struct AssetBundleImportJobDashboardOverrideTags: Swift.Sendable {
         /// A list of dashboard IDs that you want to apply overrides to. You can use * to override all dashboards in this asset bundle.
         /// This member is required.
         public var dashboardIds: [Swift.String]?
@@ -19206,12 +19262,12 @@ extension QuickSightClientTypes {
             self.tags = tags
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The override parameters for a single dataset that is being imported.
-    public struct AssetBundleImportJobDataSetOverrideParameters {
+    public struct AssetBundleImportJobDataSetOverrideParameters: Swift.Sendable {
         /// The ID of the dataset to apply overrides to.
         /// This member is required.
         public var dataSetId: Swift.String?
@@ -19227,12 +19283,12 @@ extension QuickSightClientTypes {
             self.name = name
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// An object that contains a list of permissions to be applied to a list of dataset IDs.
-    public struct AssetBundleImportJobDataSetOverridePermissions {
+    public struct AssetBundleImportJobDataSetOverridePermissions: Swift.Sendable {
         /// A list of dataset IDs that you want to apply overrides to. You can use * to override all datasets in this asset bundle.
         /// This member is required.
         public var dataSetIds: [Swift.String]?
@@ -19249,12 +19305,12 @@ extension QuickSightClientTypes {
             self.permissions = permissions
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// An object that contains a list of tags to be assigned to a list of dataset IDs.
-    public struct AssetBundleImportJobDataSetOverrideTags {
+    public struct AssetBundleImportJobDataSetOverrideTags: Swift.Sendable {
         /// A list of dataset IDs that you want to apply overrides to. You can use * to override all datasets in this asset bundle.
         /// This member is required.
         public var dataSetIds: [Swift.String]?
@@ -19271,12 +19327,12 @@ extension QuickSightClientTypes {
             self.tags = tags
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// A username and password credential pair to use to import a data source resource.
-    public struct AssetBundleImportJobDataSourceCredentialPair {
+    public struct AssetBundleImportJobDataSourceCredentialPair: Swift.Sendable {
         /// The password for the data source connection.
         /// This member is required.
         public var password: Swift.String?
@@ -19293,7 +19349,6 @@ extension QuickSightClientTypes {
             self.username = username
         }
     }
-
 }
 
 extension QuickSightClientTypes.AssetBundleImportJobDataSourceCredentialPair: Swift.CustomDebugStringConvertible {
@@ -19303,8 +19358,9 @@ extension QuickSightClientTypes.AssetBundleImportJobDataSourceCredentialPair: Sw
 }
 
 extension QuickSightClientTypes {
+
     /// The login credentials to use to import a data source resource.
-    public struct AssetBundleImportJobDataSourceCredentials {
+    public struct AssetBundleImportJobDataSourceCredentials: Swift.Sendable {
         /// A username and password credential pair to be used to create the imported data source. Keep this field blank if you are using a Secrets Manager secret to provide credentials.
         public var credentialPair: QuickSightClientTypes.AssetBundleImportJobDataSourceCredentialPair?
         /// The ARN of the Secrets Manager secret that's used to create the imported data source. Keep this field blank, unless you are using a secret in place of a credential pair.
@@ -19319,7 +19375,6 @@ extension QuickSightClientTypes {
             self.secretArn = secretArn
         }
     }
-
 }
 
 extension QuickSightClientTypes.AssetBundleImportJobDataSourceCredentials: Swift.CustomDebugStringConvertible {
@@ -19328,8 +19383,9 @@ extension QuickSightClientTypes.AssetBundleImportJobDataSourceCredentials: Swift
 }
 
 extension QuickSightClientTypes {
+
     /// Parameters for Amazon Athena.
-    public struct AthenaParameters {
+    public struct AthenaParameters: Swift.Sendable {
         /// Use the RoleArn structure to override an account-wide role for a specific Athena data source. For example, say an account administrator has turned off all Athena access with an account-wide role. The administrator can then use RoleArn to bypass the account-wide role and allow Athena access for the single Athena data source that is specified in the structure, even if the account-wide role forbidding Athena access is still active.
         public var roleArn: Swift.String?
         /// The workgroup that Amazon Athena uses.
@@ -19344,12 +19400,12 @@ extension QuickSightClientTypes {
             self.workGroup = workGroup
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// Parameters for Amazon Aurora.
-    public struct AuroraParameters {
+    public struct AuroraParameters: Swift.Sendable {
         /// Database.
         /// This member is required.
         public var database: Swift.String?
@@ -19371,12 +19427,12 @@ extension QuickSightClientTypes {
             self.port = port
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// Parameters for Amazon Aurora PostgreSQL-Compatible Edition.
-    public struct AuroraPostgreSqlParameters {
+    public struct AuroraPostgreSqlParameters: Swift.Sendable {
         /// The Amazon Aurora PostgreSQL database to connect to.
         /// This member is required.
         public var database: Swift.String?
@@ -19398,12 +19454,12 @@ extension QuickSightClientTypes {
             self.port = port
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The parameters for IoT Analytics.
-    public struct AwsIotAnalyticsParameters {
+    public struct AwsIotAnalyticsParameters: Swift.Sendable {
         /// Dataset name.
         /// This member is required.
         public var dataSetName: Swift.String?
@@ -19415,12 +19471,12 @@ extension QuickSightClientTypes {
             self.dataSetName = dataSetName
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The parameters that are required to connect to a Google BigQuery data source.
-    public struct BigQueryParameters {
+    public struct BigQueryParameters: Swift.Sendable {
         /// The storage location where you create a Google BigQuery data source.
         public var dataSetRegion: Swift.String?
         /// The Google Cloud Platform project ID where your datasource was created.
@@ -19436,12 +19492,12 @@ extension QuickSightClientTypes {
             self.projectId = projectId
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The parameters that are required to connect to a Databricks data source.
-    public struct DatabricksParameters {
+    public struct DatabricksParameters: Swift.Sendable {
         /// The host name of the Databricks data source.
         /// This member is required.
         public var host: Swift.String?
@@ -19463,12 +19519,12 @@ extension QuickSightClientTypes {
             self.sqlEndpointPath = sqlEndpointPath
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The required parameters for connecting to an Exasol data source.
-    public struct ExasolParameters {
+    public struct ExasolParameters: Swift.Sendable {
         /// The hostname or IP address of the Exasol data source.
         /// This member is required.
         public var host: Swift.String?
@@ -19485,12 +19541,12 @@ extension QuickSightClientTypes {
             self.port = port
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The parameters for Jira.
-    public struct JiraParameters {
+    public struct JiraParameters: Swift.Sendable {
         /// The base URL of the Jira site.
         /// This member is required.
         public var siteBaseUrl: Swift.String?
@@ -19502,12 +19558,12 @@ extension QuickSightClientTypes {
             self.siteBaseUrl = siteBaseUrl
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The parameters for MariaDB.
-    public struct MariaDbParameters {
+    public struct MariaDbParameters: Swift.Sendable {
         /// Database.
         /// This member is required.
         public var database: Swift.String?
@@ -19529,12 +19585,12 @@ extension QuickSightClientTypes {
             self.port = port
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The parameters for MySQL.
-    public struct MySqlParameters {
+    public struct MySqlParameters: Swift.Sendable {
         /// Database.
         /// This member is required.
         public var database: Swift.String?
@@ -19556,12 +19612,12 @@ extension QuickSightClientTypes {
             self.port = port
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The parameters for Oracle.
-    public struct OracleParameters {
+    public struct OracleParameters: Swift.Sendable {
         /// The database.
         /// This member is required.
         public var database: Swift.String?
@@ -19583,12 +19639,12 @@ extension QuickSightClientTypes {
             self.port = port
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The parameters for PostgreSQL.
-    public struct PostgreSqlParameters {
+    public struct PostgreSqlParameters: Swift.Sendable {
         /// Database.
         /// This member is required.
         public var database: Swift.String?
@@ -19610,12 +19666,12 @@ extension QuickSightClientTypes {
             self.port = port
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The parameters for Presto.
-    public struct PrestoParameters {
+    public struct PrestoParameters: Swift.Sendable {
         /// Catalog.
         /// This member is required.
         public var catalog: Swift.String?
@@ -19637,12 +19693,12 @@ extension QuickSightClientTypes {
             self.port = port
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The parameters for Amazon RDS.
-    public struct RdsParameters {
+    public struct RdsParameters: Swift.Sendable {
         /// Database.
         /// This member is required.
         public var database: Swift.String?
@@ -19659,12 +19715,12 @@ extension QuickSightClientTypes {
             self.instanceId = instanceId
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// A structure that grants Amazon QuickSight access to your cluster and make a call to the redshift:GetClusterCredentials API. For more information on the redshift:GetClusterCredentials API, see [GetClusterCredentials](https://docs.aws.amazon.com/redshift/latest/APIReference/API_GetClusterCredentials.html).
-    public struct RedshiftIAMParameters {
+    public struct RedshiftIAMParameters: Swift.Sendable {
         /// Automatically creates a database user. If your database doesn't have a DatabaseUser, set this parameter to True. If there is no DatabaseUser, Amazon QuickSight can't connect to your cluster. The RoleArn that you use for this operation must grant access to redshift:CreateClusterUser to successfully create the user.
         public var autoCreateDatabaseUser: Swift.Bool
         /// A list of groups whose permissions will be granted to Amazon QuickSight to access the cluster. These permissions are combined with the permissions granted to Amazon QuickSight by the DatabaseUser. If you choose to include this parameter, the RoleArn must grant access to redshift:JoinGroup.
@@ -19688,12 +19744,12 @@ extension QuickSightClientTypes {
             self.roleArn = roleArn
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The parameters for an IAM Identity Center configuration.
-    public struct IdentityCenterConfiguration {
+    public struct IdentityCenterConfiguration: Swift.Sendable {
         /// A Boolean option that controls whether Trusted Identity Propagation should be used.
         public var enableIdentityPropagation: Swift.Bool?
 
@@ -19704,12 +19760,12 @@ extension QuickSightClientTypes {
             self.enableIdentityPropagation = enableIdentityPropagation
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The parameters for Amazon Redshift. The ClusterId field can be blank if Host and Port are both set. The Host and Port fields can be blank if the ClusterId field is set.
-    public struct RedshiftParameters {
+    public struct RedshiftParameters: Swift.Sendable {
         /// Cluster ID. This field can be blank if the Host and Port are provided.
         public var clusterId: Swift.String?
         /// Database.
@@ -19741,12 +19797,12 @@ extension QuickSightClientTypes {
             self.port = port
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// Amazon S3 manifest file location.
-    public struct ManifestFileLocation {
+    public struct ManifestFileLocation: Swift.Sendable {
         /// Amazon S3 bucket.
         /// This member is required.
         public var bucket: Swift.String?
@@ -19763,12 +19819,12 @@ extension QuickSightClientTypes {
             self.key = key
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The parameters for S3.
-    public struct S3Parameters {
+    public struct S3Parameters: Swift.Sendable {
         /// Location of the Amazon S3 manifest file. This is NULL if the manifest file was uploaded into Amazon QuickSight.
         /// This member is required.
         public var manifestFileLocation: QuickSightClientTypes.ManifestFileLocation?
@@ -19784,12 +19840,12 @@ extension QuickSightClientTypes {
             self.roleArn = roleArn
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The parameters for ServiceNow.
-    public struct ServiceNowParameters {
+    public struct ServiceNowParameters: Swift.Sendable {
         /// URL of the base site.
         /// This member is required.
         public var siteBaseUrl: Swift.String?
@@ -19801,12 +19857,12 @@ extension QuickSightClientTypes {
             self.siteBaseUrl = siteBaseUrl
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The parameters for Snowflake.
-    public struct SnowflakeParameters {
+    public struct SnowflakeParameters: Swift.Sendable {
         /// Database.
         /// This member is required.
         public var database: Swift.String?
@@ -19828,12 +19884,12 @@ extension QuickSightClientTypes {
             self.warehouse = warehouse
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The parameters for Spark.
-    public struct SparkParameters {
+    public struct SparkParameters: Swift.Sendable {
         /// Host.
         /// This member is required.
         public var host: Swift.String?
@@ -19850,12 +19906,12 @@ extension QuickSightClientTypes {
             self.port = port
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The parameters for SQL Server.
-    public struct SqlServerParameters {
+    public struct SqlServerParameters: Swift.Sendable {
         /// Database.
         /// This member is required.
         public var database: Swift.String?
@@ -19877,12 +19933,11 @@ extension QuickSightClientTypes {
             self.port = port
         }
     }
-
 }
 
 extension QuickSightClientTypes {
 
-    public enum StarburstProductType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum StarburstProductType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case enterprise
         case galaxy
         case sdkUnknown(Swift.String)
@@ -19910,8 +19965,9 @@ extension QuickSightClientTypes {
 }
 
 extension QuickSightClientTypes {
+
     /// The parameters that are required to connect to a Starburst data source.
-    public struct StarburstParameters {
+    public struct StarburstParameters: Swift.Sendable {
         /// The catalog name for the Starburst data source.
         /// This member is required.
         public var catalog: Swift.String?
@@ -19937,12 +19993,12 @@ extension QuickSightClientTypes {
             self.productType = productType
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The parameters for Teradata.
-    public struct TeradataParameters {
+    public struct TeradataParameters: Swift.Sendable {
         /// Database.
         /// This member is required.
         public var database: Swift.String?
@@ -19964,12 +20020,12 @@ extension QuickSightClientTypes {
             self.port = port
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The parameters that are required to connect to a Trino data source.
-    public struct TrinoParameters {
+    public struct TrinoParameters: Swift.Sendable {
         /// The catalog name for the Trino data source.
         /// This member is required.
         public var catalog: Swift.String?
@@ -19991,12 +20047,12 @@ extension QuickSightClientTypes {
             self.port = port
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The parameters for Twitter.
-    public struct TwitterParameters {
+    public struct TwitterParameters: Swift.Sendable {
         /// Maximum number of rows to query Twitter.
         /// This member is required.
         public var maxRows: Swift.Int?
@@ -20013,12 +20069,12 @@ extension QuickSightClientTypes {
             self.query = query
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The parameters that Amazon QuickSight uses to connect to your underlying data source. This is a variant type structure. For this structure to be valid, only one of the attributes can be non-null.
-    public enum DataSourceParameters {
+    public enum DataSourceParameters: Swift.Sendable {
         /// The parameters for OpenSearch.
         case amazonelasticsearchparameters(QuickSightClientTypes.AmazonElasticsearchParameters)
         /// The parameters for Amazon Athena.
@@ -20073,12 +20129,12 @@ extension QuickSightClientTypes {
         case bigqueryparameters(QuickSightClientTypes.BigQueryParameters)
         case sdkUnknown(Swift.String)
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// Secure Socket Layer (SSL) properties that apply when Amazon QuickSight connects to your underlying data source.
-    public struct SslProperties {
+    public struct SslProperties: Swift.Sendable {
         /// A Boolean option to control whether SSL should be disabled.
         public var disableSsl: Swift.Bool
 
@@ -20089,12 +20145,12 @@ extension QuickSightClientTypes {
             self.disableSsl = disableSsl
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// VPC connection properties.
-    public struct VpcConnectionProperties {
+    public struct VpcConnectionProperties: Swift.Sendable {
         /// The Amazon Resource Name (ARN) for the VPC connection.
         /// This member is required.
         public var vpcConnectionArn: Swift.String?
@@ -20106,12 +20162,12 @@ extension QuickSightClientTypes {
             self.vpcConnectionArn = vpcConnectionArn
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The override parameters for a single data source that is being imported.
-    public struct AssetBundleImportJobDataSourceOverrideParameters {
+    public struct AssetBundleImportJobDataSourceOverrideParameters: Swift.Sendable {
         /// An optional structure that provides the credentials to be used to create the imported data source.
         public var credentials: QuickSightClientTypes.AssetBundleImportJobDataSourceCredentials?
         /// The ID of the data source to apply overrides to.
@@ -20143,12 +20199,12 @@ extension QuickSightClientTypes {
             self.vpcConnectionProperties = vpcConnectionProperties
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// An object that contains a list of permissions to be applied to a list of data source IDs.
-    public struct AssetBundleImportJobDataSourceOverridePermissions {
+    public struct AssetBundleImportJobDataSourceOverridePermissions: Swift.Sendable {
         /// A list of data source IDs that you want to apply overrides to. You can use * to override all data sources in this asset bundle.
         /// This member is required.
         public var dataSourceIds: [Swift.String]?
@@ -20165,12 +20221,12 @@ extension QuickSightClientTypes {
             self.permissions = permissions
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// An object that contains a list of tags to be assigned to a list of data source IDs.
-    public struct AssetBundleImportJobDataSourceOverrideTags {
+    public struct AssetBundleImportJobDataSourceOverrideTags: Swift.Sendable {
         /// A list of data source IDs that you want to apply overrides to. You can use * to override all data sources in this asset bundle.
         /// This member is required.
         public var dataSourceIds: [Swift.String]?
@@ -20187,12 +20243,12 @@ extension QuickSightClientTypes {
             self.tags = tags
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// Describes an error that occurred within an Asset Bundle import execution.
-    public struct AssetBundleImportJobError {
+    public struct AssetBundleImportJobError: Swift.Sendable {
         /// The ARN of the resource whose processing caused an error.
         public var arn: Swift.String?
         /// A description of the error.
@@ -20211,12 +20267,80 @@ extension QuickSightClientTypes {
             self.type = type
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
+    /// The override parameters for a single folder that is being imported.
+    public struct AssetBundleImportJobFolderOverrideParameters: Swift.Sendable {
+        /// The ID of the folder that you want to apply overrides to.
+        /// This member is required.
+        public var folderId: Swift.String?
+        /// A new name for the folder.
+        public var name: Swift.String?
+        /// A new parent folder arn. This change can only be applied if the import creates a brand new folder. Existing folders cannot be moved.
+        public var parentFolderArn: Swift.String?
+
+        public init(
+            folderId: Swift.String? = nil,
+            name: Swift.String? = nil,
+            parentFolderArn: Swift.String? = nil
+        )
+        {
+            self.folderId = folderId
+            self.name = name
+            self.parentFolderArn = parentFolderArn
+        }
+    }
+}
+
+extension QuickSightClientTypes {
+
+    /// An object that contains a list of permissions to be applied to a list of folder IDs.
+    public struct AssetBundleImportJobFolderOverridePermissions: Swift.Sendable {
+        /// A list of folder IDs that you want to apply overrides to. You can use * to override all folders in this asset bundle.
+        /// This member is required.
+        public var folderIds: [Swift.String]?
+        /// A structure that contains the permissions for the resource that you want to override in an asset bundle import job.
+        public var permissions: QuickSightClientTypes.AssetBundleResourcePermissions?
+
+        public init(
+            folderIds: [Swift.String]? = nil,
+            permissions: QuickSightClientTypes.AssetBundleResourcePermissions? = nil
+        )
+        {
+            self.folderIds = folderIds
+            self.permissions = permissions
+        }
+    }
+}
+
+extension QuickSightClientTypes {
+
+    /// An object that contains a list of tags to be assigned to a list of folder IDs.
+    public struct AssetBundleImportJobFolderOverrideTags: Swift.Sendable {
+        /// A list of folder IDs that you want to apply overrides to. You can use * to override all folders in this asset bundle.
+        /// This member is required.
+        public var folderIds: [Swift.String]?
+        /// A list of tags for the folders that you want to apply overrides to.
+        /// This member is required.
+        public var tags: [QuickSightClientTypes.Tag]?
+
+        public init(
+            folderIds: [Swift.String]? = nil,
+            tags: [QuickSightClientTypes.Tag]? = nil
+        )
+        {
+            self.folderIds = folderIds
+            self.tags = tags
+        }
+    }
+}
+
+extension QuickSightClientTypes {
+
     /// A list of overrides for a specific RefreshsSchedule resource that is present in the asset bundle that is imported.
-    public struct AssetBundleImportJobRefreshScheduleOverrideParameters {
+    public struct AssetBundleImportJobRefreshScheduleOverrideParameters: Swift.Sendable {
         /// A partial identifier for the specific RefreshSchedule resource that is being overridden. This structure is used together with the ScheduleID structure.
         /// This member is required.
         public var dataSetId: Swift.String?
@@ -20237,12 +20361,12 @@ extension QuickSightClientTypes {
             self.startAfterDateTime = startAfterDateTime
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// An optional structure that configures resource ID overrides for the import job.
-    public struct AssetBundleImportJobResourceIdOverrideConfiguration {
+    public struct AssetBundleImportJobResourceIdOverrideConfiguration: Swift.Sendable {
         /// An option to request a CloudFormation variable for a prefix to be prepended to each resource's ID before import. The prefix is only added to the asset IDs and does not change the name of the asset.
         public var prefixForAllResources: Swift.String?
 
@@ -20253,12 +20377,12 @@ extension QuickSightClientTypes {
             self.prefixForAllResources = prefixForAllResources
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The override parameters for a single theme that is imported.
-    public struct AssetBundleImportJobThemeOverrideParameters {
+    public struct AssetBundleImportJobThemeOverrideParameters: Swift.Sendable {
         /// A new name for the theme.
         public var name: Swift.String?
         /// The ID of the theme to apply overrides to.
@@ -20274,12 +20398,12 @@ extension QuickSightClientTypes {
             self.themeId = themeId
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The override parameters for a single VPC connection that is imported.
-    public struct AssetBundleImportJobVPCConnectionOverrideParameters {
+    public struct AssetBundleImportJobVPCConnectionOverrideParameters: Swift.Sendable {
         /// An optional override of DNS resolvers to be used by the VPC connection.
         public var dnsResolvers: [Swift.String]?
         /// A new name for the VPC connection.
@@ -20311,12 +20435,12 @@ extension QuickSightClientTypes {
             self.vpcConnectionId = vpcConnectionId
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// A list of overrides that modify the asset bundle resource configuration before the resource is imported.
-    public struct AssetBundleImportJobOverrideParameters {
+    public struct AssetBundleImportJobOverrideParameters: Swift.Sendable {
         /// A list of overrides for any Analysis resources that are present in the asset bundle that is imported.
         public var analyses: [QuickSightClientTypes.AssetBundleImportJobAnalysisOverrideParameters]?
         /// A list of overrides for any Dashboard resources that are present in the asset bundle that is imported.
@@ -20325,6 +20449,8 @@ extension QuickSightClientTypes {
         public var dataSets: [QuickSightClientTypes.AssetBundleImportJobDataSetOverrideParameters]?
         /// A list of overrides for any DataSource resources that are present in the asset bundle that is imported.
         public var dataSources: [QuickSightClientTypes.AssetBundleImportJobDataSourceOverrideParameters]?
+        /// A list of overrides for any Folder resources that are present in the asset bundle that is imported.
+        public var folders: [QuickSightClientTypes.AssetBundleImportJobFolderOverrideParameters]?
         /// A list of overrides for any RefreshSchedule resources that are present in the asset bundle that is imported.
         public var refreshSchedules: [QuickSightClientTypes.AssetBundleImportJobRefreshScheduleOverrideParameters]?
         /// An optional structure that configures resource ID overrides to be applied within the import job.
@@ -20339,6 +20465,7 @@ extension QuickSightClientTypes {
             dashboards: [QuickSightClientTypes.AssetBundleImportJobDashboardOverrideParameters]? = nil,
             dataSets: [QuickSightClientTypes.AssetBundleImportJobDataSetOverrideParameters]? = nil,
             dataSources: [QuickSightClientTypes.AssetBundleImportJobDataSourceOverrideParameters]? = nil,
+            folders: [QuickSightClientTypes.AssetBundleImportJobFolderOverrideParameters]? = nil,
             refreshSchedules: [QuickSightClientTypes.AssetBundleImportJobRefreshScheduleOverrideParameters]? = nil,
             resourceIdOverrideConfiguration: QuickSightClientTypes.AssetBundleImportJobResourceIdOverrideConfiguration? = nil,
             themes: [QuickSightClientTypes.AssetBundleImportJobThemeOverrideParameters]? = nil,
@@ -20349,18 +20476,19 @@ extension QuickSightClientTypes {
             self.dashboards = dashboards
             self.dataSets = dataSets
             self.dataSources = dataSources
+            self.folders = folders
             self.refreshSchedules = refreshSchedules
             self.resourceIdOverrideConfiguration = resourceIdOverrideConfiguration
             self.themes = themes
             self.vpcConnections = vpcConnections
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// An object that contains a list of permissions to be applied to a list of theme IDs.
-    public struct AssetBundleImportJobThemeOverridePermissions {
+    public struct AssetBundleImportJobThemeOverridePermissions: Swift.Sendable {
         /// A list of permissions for the themes that you want to apply overrides to.
         /// This member is required.
         public var permissions: QuickSightClientTypes.AssetBundleResourcePermissions?
@@ -20377,12 +20505,12 @@ extension QuickSightClientTypes {
             self.themeIds = themeIds
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// A structure that contains the override permission configurations that modify the permissions for specified resources before the resource is imported.
-    public struct AssetBundleImportJobOverridePermissions {
+    public struct AssetBundleImportJobOverridePermissions: Swift.Sendable {
         /// A list of permissions overrides for any Analysis resources that are present in the asset bundle that is imported.
         public var analyses: [QuickSightClientTypes.AssetBundleImportJobAnalysisOverridePermissions]?
         /// A list of permissions overrides for any Dashboard resources that are present in the asset bundle that is imported.
@@ -20391,6 +20519,8 @@ extension QuickSightClientTypes {
         public var dataSets: [QuickSightClientTypes.AssetBundleImportJobDataSetOverridePermissions]?
         /// A list of permissions overrides for any DataSource resources that are present in the asset bundle that is imported.
         public var dataSources: [QuickSightClientTypes.AssetBundleImportJobDataSourceOverridePermissions]?
+        /// A list of permissions for the folders that you want to apply overrides to.
+        public var folders: [QuickSightClientTypes.AssetBundleImportJobFolderOverridePermissions]?
         /// A list of permissions overrides for any Theme resources that are present in the asset bundle that is imported.
         public var themes: [QuickSightClientTypes.AssetBundleImportJobThemeOverridePermissions]?
 
@@ -20399,6 +20529,7 @@ extension QuickSightClientTypes {
             dashboards: [QuickSightClientTypes.AssetBundleImportJobDashboardOverridePermissions]? = nil,
             dataSets: [QuickSightClientTypes.AssetBundleImportJobDataSetOverridePermissions]? = nil,
             dataSources: [QuickSightClientTypes.AssetBundleImportJobDataSourceOverridePermissions]? = nil,
+            folders: [QuickSightClientTypes.AssetBundleImportJobFolderOverridePermissions]? = nil,
             themes: [QuickSightClientTypes.AssetBundleImportJobThemeOverridePermissions]? = nil
         )
         {
@@ -20406,15 +20537,16 @@ extension QuickSightClientTypes {
             self.dashboards = dashboards
             self.dataSets = dataSets
             self.dataSources = dataSources
+            self.folders = folders
             self.themes = themes
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// An object that contains a list of tags to be assigned to a list of theme IDs.
-    public struct AssetBundleImportJobThemeOverrideTags {
+    public struct AssetBundleImportJobThemeOverrideTags: Swift.Sendable {
         /// A list of tags for the themes that you want to apply overrides to.
         /// This member is required.
         public var tags: [QuickSightClientTypes.Tag]?
@@ -20431,12 +20563,12 @@ extension QuickSightClientTypes {
             self.themeIds = themeIds
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// An object that contains a list of tags to be assigned to a list of VPC connection IDs.
-    public struct AssetBundleImportJobVPCConnectionOverrideTags {
+    public struct AssetBundleImportJobVPCConnectionOverrideTags: Swift.Sendable {
         /// A list of tags for the VPC connections that you want to apply overrides to.
         /// This member is required.
         public var tags: [QuickSightClientTypes.Tag]?
@@ -20453,12 +20585,12 @@ extension QuickSightClientTypes {
             self.vpcConnectionIds = vpcConnectionIds
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// A structure that contains the override tag configuration that modify the tags that are assigned to specified resources before the resource is imported.
-    public struct AssetBundleImportJobOverrideTags {
+    public struct AssetBundleImportJobOverrideTags: Swift.Sendable {
         /// A list of tag overrides for any Analysis resources that are present in the asset bundle that is imported.
         public var analyses: [QuickSightClientTypes.AssetBundleImportJobAnalysisOverrideTags]?
         /// A list of tag overrides for any Dashboard resources that are present in the asset bundle that is imported.
@@ -20467,6 +20599,8 @@ extension QuickSightClientTypes {
         public var dataSets: [QuickSightClientTypes.AssetBundleImportJobDataSetOverrideTags]?
         /// A list of tag overrides for any DataSource resources that are present in the asset bundle that is imported.
         public var dataSources: [QuickSightClientTypes.AssetBundleImportJobDataSourceOverrideTags]?
+        /// A list of tag overrides for any Folder resources that are present in the asset bundle that is imported.
+        public var folders: [QuickSightClientTypes.AssetBundleImportJobFolderOverrideTags]?
         /// A list of tag overrides for any Theme resources that are present in the asset bundle that is imported.
         public var themes: [QuickSightClientTypes.AssetBundleImportJobThemeOverrideTags]?
         /// A list of tag overrides for any VPCConnection resources that are present in the asset bundle that is imported.
@@ -20477,6 +20611,7 @@ extension QuickSightClientTypes {
             dashboards: [QuickSightClientTypes.AssetBundleImportJobDashboardOverrideTags]? = nil,
             dataSets: [QuickSightClientTypes.AssetBundleImportJobDataSetOverrideTags]? = nil,
             dataSources: [QuickSightClientTypes.AssetBundleImportJobDataSourceOverrideTags]? = nil,
+            folders: [QuickSightClientTypes.AssetBundleImportJobFolderOverrideTags]? = nil,
             themes: [QuickSightClientTypes.AssetBundleImportJobThemeOverrideTags]? = nil,
             vpcConnections: [QuickSightClientTypes.AssetBundleImportJobVPCConnectionOverrideTags]? = nil
         )
@@ -20485,16 +20620,17 @@ extension QuickSightClientTypes {
             self.dashboards = dashboards
             self.dataSets = dataSets
             self.dataSources = dataSources
+            self.folders = folders
             self.themes = themes
             self.vpcConnections = vpcConnections
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// An optional parameter that overrides the validation strategy for all analyses and dashboards before the resource is imported.
-    public struct AssetBundleImportJobOverrideValidationStrategy {
+    public struct AssetBundleImportJobOverrideValidationStrategy: Swift.Sendable {
         /// A Boolean value that indicates whether to import all analyses and dashboards under strict or lenient mode.
         public var strictModeForAllResources: Swift.Bool
 
@@ -20505,12 +20641,11 @@ extension QuickSightClientTypes {
             self.strictModeForAllResources = strictModeForAllResources
         }
     }
-
 }
 
 extension QuickSightClientTypes {
 
-    public enum AssetBundleImportJobStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AssetBundleImportJobStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case failed
         case failedRollbackCompleted
         case failedRollbackError
@@ -20553,8 +20688,9 @@ extension QuickSightClientTypes {
 }
 
 extension QuickSightClientTypes {
+
     /// A summary of the import job that includes details of the requested job's configuration and its current status.
-    public struct AssetBundleImportJobSummary {
+    public struct AssetBundleImportJobSummary: Swift.Sendable {
         /// The ARN of the import job.
         public var arn: Swift.String?
         /// The ID of the job. This ID is unique while the job is running. After the job is completed, you can reuse this ID for another job.
@@ -20581,12 +20717,12 @@ extension QuickSightClientTypes {
             self.jobStatus = jobStatus
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// Describes a warning that occurred during an Asset Bundle import job.
-    public struct AssetBundleImportJobWarning {
+    public struct AssetBundleImportJobWarning: Swift.Sendable {
         /// The ARN of the resource that the warning occurred for.
         public var arn: Swift.String?
         /// A description of the warning that occurred during an Asset Bundle import job.
@@ -20601,12 +20737,12 @@ extension QuickSightClientTypes {
             self.message = message
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The source of the asset bundle zip file that contains the data that you want to import. The file must be in QUICKSIGHT_JSON format.
-    public struct AssetBundleImportSource {
+    public struct AssetBundleImportSource: Swift.Sendable {
         /// The bytes of the base64 encoded asset bundle import zip file. This file can't exceed 20 MB. If you are calling the API operations from the Amazon Web Services SDK for Java, JavaScript, Python, or PHP, the SDK encodes base64 automatically to allow the direct setting of the zip file's bytes. If you are using an SDK for a different language or receiving related errors, try to base64 encode your data.
         public var body: Foundation.Data?
         /// The Amazon S3 URI for an asset bundle import file that exists in an Amazon S3 bucket that the caller has read access to. The file must be a zip format file and can't exceed 20 MB.
@@ -20621,7 +20757,6 @@ extension QuickSightClientTypes {
             self.s3Uri = s3Uri
         }
     }
-
 }
 
 extension QuickSightClientTypes.AssetBundleImportSource: Swift.CustomDebugStringConvertible {
@@ -20630,8 +20765,9 @@ extension QuickSightClientTypes.AssetBundleImportSource: Swift.CustomDebugString
 }
 
 extension QuickSightClientTypes {
+
     /// A description of the import source that you provide at the start of an import job. This value is set to either Body or S3Uri, depending on how the StartAssetBundleImportJobRequest is configured.
-    public struct AssetBundleImportSourceDescription {
+    public struct AssetBundleImportSourceDescription: Swift.Sendable {
         /// An HTTPS download URL for the provided asset bundle that you optionally provided at the start of the import job. This URL is valid for five minutes after issuance. Call DescribeAssetBundleExportJob again for a fresh URL if needed. The downloaded asset bundle is a .qs zip file.
         public var body: Swift.String?
         /// The Amazon S3 URI that you provided at the start of the import job.
@@ -20646,7 +20782,6 @@ extension QuickSightClientTypes {
             self.s3Uri = s3Uri
         }
     }
-
 }
 
 extension QuickSightClientTypes.AssetBundleImportSourceDescription: Swift.CustomDebugStringConvertible {
@@ -20656,7 +20791,7 @@ extension QuickSightClientTypes.AssetBundleImportSourceDescription: Swift.Custom
 
 extension QuickSightClientTypes {
 
-    public enum AssignmentStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AssignmentStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case disabled
         case draft
         case enabled
@@ -20688,7 +20823,7 @@ extension QuickSightClientTypes {
 
 extension QuickSightClientTypes {
 
-    public enum AuthenticationMethodOption: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AuthenticationMethodOption: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case activeDirectory
         case iamAndQuicksight
         case iamIdentityCenter
@@ -20723,7 +20858,7 @@ extension QuickSightClientTypes {
 
 extension QuickSightClientTypes {
 
-    public enum ServiceType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ServiceType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case redshift
         case sdkUnknown(Swift.String)
 
@@ -20748,8 +20883,9 @@ extension QuickSightClientTypes {
 }
 
 extension QuickSightClientTypes {
+
     /// The authorized targets that are associated with a service.
-    public struct AuthorizedTargetsByService {
+    public struct AuthorizedTargetsByService: Swift.Sendable {
         /// Aist of authorized targets that are represented by IAM Identity Center application ARNs.
         public var authorizedTargets: [Swift.String]?
         /// The name of the Amazon Web Services service.
@@ -20764,12 +20900,11 @@ extension QuickSightClientTypes {
             self.service = service
         }
     }
-
 }
 
 extension QuickSightClientTypes {
 
-    public enum AuthorSpecifiedAggregation: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AuthorSpecifiedAggregation: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case average
         case count
         case distinctCount
@@ -20884,7 +21019,7 @@ public struct InvalidParameterValueException: ClientRuntime.ModeledError, AWSCli
 
 extension QuickSightClientTypes {
 
-    public enum ExceptionResourceType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ExceptionResourceType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case accountSettings
         case dataSet
         case dataSource
@@ -20994,7 +21129,7 @@ public struct ThrottlingException: ClientRuntime.ModeledError, AWSClientRuntime.
 
 extension QuickSightClientTypes {
 
-    public enum ContributionAnalysisDirection: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ContributionAnalysisDirection: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case decrease
         case increase
         case neutral
@@ -21025,8 +21160,9 @@ extension QuickSightClientTypes {
 }
 
 extension QuickSightClientTypes {
+
     /// The definition for the ContributionAnalysisFactor.
-    public struct ContributionAnalysisFactor {
+    public struct ContributionAnalysisFactor: Swift.Sendable {
         /// The field name of the ContributionAnalysisFactor.
         public var fieldName: Swift.String?
 
@@ -21037,12 +21173,11 @@ extension QuickSightClientTypes {
             self.fieldName = fieldName
         }
     }
-
 }
 
 extension QuickSightClientTypes {
 
-    public enum ContributionAnalysisSortType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ContributionAnalysisSortType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case absoluteDifference
         case contributionPercentage
         case deviationFromExpected
@@ -21076,8 +21211,9 @@ extension QuickSightClientTypes {
 }
 
 extension QuickSightClientTypes {
+
     /// The definition for the identifier.
-    public struct Identifier {
+    public struct Identifier: Swift.Sendable {
         /// The identity of the identifier.
         /// This member is required.
         public var identity: Swift.String?
@@ -21089,12 +21225,11 @@ extension QuickSightClientTypes {
             self.identity = identity
         }
     }
-
 }
 
 extension QuickSightClientTypes {
 
-    public enum TopicSortDirection: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum TopicSortDirection: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case ascending
         case descending
         case sdkUnknown(Swift.String)
@@ -21122,8 +21257,9 @@ extension QuickSightClientTypes {
 }
 
 extension QuickSightClientTypes {
+
     /// The definition for the FilterAggMetrics.
-    public struct FilterAggMetrics {
+    public struct FilterAggMetrics: Swift.Sendable {
         /// The function for the FilterAggMetrics.
         public var function: QuickSightClientTypes.AggType?
         /// The metric operand of the FilterAggMetrics.
@@ -21142,12 +21278,11 @@ extension QuickSightClientTypes {
             self.sortDirection = sortDirection
         }
     }
-
 }
 
 extension QuickSightClientTypes {
 
-    public enum ConstantType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ConstantType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case collective
         case range
         case singular
@@ -21178,8 +21313,9 @@ extension QuickSightClientTypes {
 }
 
 extension QuickSightClientTypes {
+
     /// The definition for a CollectiveConstantEntry.
-    public struct CollectiveConstantEntry {
+    public struct CollectiveConstantEntry: Swift.Sendable {
         /// The ConstantType of a CollectiveConstantEntry.
         public var constantType: QuickSightClientTypes.ConstantType?
         /// The value of a CollectiveConstantEntry.
@@ -21194,12 +21330,12 @@ extension QuickSightClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The definition for a TopicConstantValue.
-    public struct TopicConstantValue {
+    public struct TopicConstantValue: Swift.Sendable {
         /// The constant type of a TopicConstantValue.
         public var constantType: QuickSightClientTypes.ConstantType?
         /// The maximum for the TopicConstantValue.
@@ -21226,12 +21362,11 @@ extension QuickSightClientTypes {
             self.valueList = valueList
         }
     }
-
 }
 
 extension QuickSightClientTypes {
 
-    public enum FilterClass: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum FilterClass: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case conditionalValueFilter
         case enforcedValueFilter
         case namedValueFilter
@@ -21263,7 +21398,7 @@ extension QuickSightClientTypes {
 
 extension QuickSightClientTypes {
 
-    public enum TopicIRFilterType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum TopicIRFilterType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case acceptAllFilter
         case categoryFilter
         case dateRangeFilter
@@ -21313,7 +21448,7 @@ extension QuickSightClientTypes {
 
 extension QuickSightClientTypes {
 
-    public enum TopicIRFilterFunction: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum TopicIRFilterFunction: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case contains
         case containsString
         case endsWith
@@ -21366,7 +21501,7 @@ extension QuickSightClientTypes {
 
 extension QuickSightClientTypes {
 
-    public enum NullFilterOption: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum NullFilterOption: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case allValues
         case nonNullsOnly
         case nullsOnly
@@ -21397,8 +21532,9 @@ extension QuickSightClientTypes {
 }
 
 extension QuickSightClientTypes {
+
     /// The definition for a TopicIRFilterOption.
-    public struct TopicIRFilterOption {
+    public struct TopicIRFilterOption: Swift.Sendable {
         /// The agg metrics for the TopicIRFilterOption.
         public var aggMetrics: [QuickSightClientTypes.FilterAggMetrics]?
         /// The aggregation for the TopicIRFilterOption.
@@ -21477,12 +21613,12 @@ extension QuickSightClientTypes {
             self.topBottomLimit = topBottomLimit
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The definition for the ContributionAnalysisTimeRanges.
-    public struct ContributionAnalysisTimeRanges {
+    public struct ContributionAnalysisTimeRanges: Swift.Sendable {
         /// The end range for the ContributionAnalysisTimeRanges.
         public var endRange: QuickSightClientTypes.TopicIRFilterOption?
         /// The start range for the ContributionAnalysisTimeRanges.
@@ -21497,12 +21633,12 @@ extension QuickSightClientTypes {
             self.startRange = startRange
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The definition for a TopicIRContributionAnalysis.
-    public struct TopicIRContributionAnalysis {
+    public struct TopicIRContributionAnalysis: Swift.Sendable {
         /// The direction for the TopicIRContributionAnalysis.
         public var direction: QuickSightClientTypes.ContributionAnalysisDirection?
         /// The factors for a TopicIRContributionAnalysis.
@@ -21525,12 +21661,11 @@ extension QuickSightClientTypes {
             self.timeRanges = timeRanges
         }
     }
-
 }
 
 extension QuickSightClientTypes {
 
-    public enum DisplayFormat: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DisplayFormat: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case auto
         case currency
         case date
@@ -21571,7 +21706,7 @@ extension QuickSightClientTypes {
 
 extension QuickSightClientTypes {
 
-    public enum TopicNumericSeparatorSymbol: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum TopicNumericSeparatorSymbol: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case comma
         case dot
         case sdkUnknown(Swift.String)
@@ -21599,8 +21734,9 @@ extension QuickSightClientTypes {
 }
 
 extension QuickSightClientTypes {
+
     /// A structure that represents a negative format.
-    public struct NegativeFormat {
+    public struct NegativeFormat: Swift.Sendable {
         /// The prefix for a negative format.
         public var `prefix`: Swift.String?
         /// The suffix for a negative format.
@@ -21615,12 +21751,12 @@ extension QuickSightClientTypes {
             self.suffix = suffix
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// A structure that represents additional options for display formatting.
-    public struct DisplayFormatOptions {
+    public struct DisplayFormatOptions: Swift.Sendable {
         /// Determines the blank cell format.
         public var blankCellFormat: Swift.String?
         /// The currency symbol, such as USD.
@@ -21675,12 +21811,12 @@ extension QuickSightClientTypes {
             self.useGrouping = useGrouping
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The definition for a NamedEntityRef.
-    public struct NamedEntityRef {
+    public struct NamedEntityRef: Swift.Sendable {
         /// The NamedEntityName for the NamedEntityRef.
         public var namedEntityName: Swift.String?
 
@@ -21691,12 +21827,12 @@ extension QuickSightClientTypes {
             self.namedEntityName = namedEntityName
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The definition for a TopicSortClause.
-    public struct TopicSortClause {
+    public struct TopicSortClause: Swift.Sendable {
         /// The operand for a TopicSortClause.
         public var operand: QuickSightClientTypes.Identifier?
         /// The sort direction for the TopicSortClause.
@@ -21711,12 +21847,12 @@ extension QuickSightClientTypes {
             self.sortDirection = sortDirection
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The definition for a TopicIRGroupBy.
-    public struct TopicIRGroupBy {
+    public struct TopicIRGroupBy: Swift.Sendable {
         /// The display format for the TopicIRGroupBy.
         public var displayFormat: QuickSightClientTypes.DisplayFormat?
         /// A structure that represents additional options for display formatting.
@@ -21747,12 +21883,11 @@ extension QuickSightClientTypes {
             self.timeGranularity = timeGranularity
         }
     }
-
 }
 
 extension QuickSightClientTypes {
 
-    public enum ComparisonMethodType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ComparisonMethodType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case diff
         case diffAsPerc
         case movingAverage
@@ -21804,8 +21939,9 @@ extension QuickSightClientTypes {
 }
 
 extension QuickSightClientTypes {
+
     /// The definition of a TopicIRComparisonMethod.
-    public struct TopicIRComparisonMethod {
+    public struct TopicIRComparisonMethod: Swift.Sendable {
         /// The period for the TopicIRComparisonMethod.
         public var period: QuickSightClientTypes.TopicTimeGranularity?
         /// The type for the TopicIRComparisonMethod.
@@ -21824,12 +21960,12 @@ extension QuickSightClientTypes {
             self.windowSize = windowSize
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The definition for a TopicIRMetric.
-    public struct TopicIRMetric {
+    public struct TopicIRMetric: Swift.Sendable {
         /// The calculated field references for the TopicIRMetric.
         public var calculatedFieldReferences: [QuickSightClientTypes.Identifier]?
         /// The comparison method for the TopicIRMetric.
@@ -21872,7 +22008,6 @@ extension QuickSightClientTypes {
             self.operands = operands
         }
     }
-
 }
 
 extension QuickSightClientTypes.TopicIRMetric: Swift.CustomDebugStringConvertible {
@@ -21881,8 +22016,9 @@ extension QuickSightClientTypes.TopicIRMetric: Swift.CustomDebugStringConvertibl
 }
 
 extension QuickSightClientTypes {
+
     /// The definition for a VisualOptions.
-    public struct VisualOptions {
+    public struct VisualOptions: Swift.Sendable {
         /// The type for a VisualOptions.
         public var type: Swift.String?
 
@@ -21893,12 +22029,12 @@ extension QuickSightClientTypes {
             self.type = type
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The definition for a TopicIR.
-    public struct TopicIR {
+    public struct TopicIR: Swift.Sendable {
         /// The contribution analysis for the TopicIR.
         public var contributionAnalysis: QuickSightClientTypes.TopicIRContributionAnalysis?
         /// The filters for the TopicIR.
@@ -21929,12 +22065,11 @@ extension QuickSightClientTypes {
             self.visual = visual
         }
     }
-
 }
 
 extension QuickSightClientTypes {
 
-    public enum VisualRole: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum VisualRole: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case complimentary
         case fallback
         case fragment
@@ -21971,8 +22106,9 @@ extension QuickSightClientTypes {
 }
 
 extension QuickSightClientTypes {
+
     /// The definition for the slot.
-    public struct Slot {
+    public struct Slot: Swift.Sendable {
         /// The slot ID of the slot.
         public var slotId: Swift.String?
         /// The visual ID for the slot.
@@ -21987,12 +22123,12 @@ extension QuickSightClientTypes {
             self.visualId = visualId
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The definition for a TopicTemplate.
-    public struct TopicTemplate {
+    public struct TopicTemplate: Swift.Sendable {
         /// The slots for the TopicTemplate.
         public var slots: [QuickSightClientTypes.Slot]?
         /// The template type for the TopicTemplate.
@@ -22007,12 +22143,11 @@ extension QuickSightClientTypes {
             self.templateType = templateType
         }
     }
-
 }
 
 extension QuickSightClientTypes {
 
-    public enum ReviewedAnswerErrorCode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ReviewedAnswerErrorCode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case datasetDoesNotExist
         case duplicatedAnswer
         case internalError
@@ -22055,8 +22190,9 @@ extension QuickSightClientTypes {
 }
 
 extension QuickSightClientTypes {
+
     /// The definition for a InvalidTopicReviewedAnswer.
-    public struct InvalidTopicReviewedAnswer {
+    public struct InvalidTopicReviewedAnswer: Swift.Sendable {
         /// The answer ID for the InvalidTopicReviewedAnswer.
         public var answerId: Swift.String?
         /// The error that is returned for the InvalidTopicReviewedAnswer.
@@ -22071,12 +22207,12 @@ extension QuickSightClientTypes {
             self.error = error
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The definition for a SucceededTopicReviewedAnswer.
-    public struct SucceededTopicReviewedAnswer {
+    public struct SucceededTopicReviewedAnswer: Swift.Sendable {
         /// The answer ID for the SucceededTopicReviewedAnswer.
         public var answerId: Swift.String?
 
@@ -22087,10 +22223,9 @@ extension QuickSightClientTypes {
             self.answerId = answerId
         }
     }
-
 }
 
-public struct BatchCreateTopicReviewedAnswerOutput {
+public struct BatchCreateTopicReviewedAnswerOutput: Swift.Sendable {
     /// The definition of Answers that are invalid and not created.
     public var invalidAnswers: [QuickSightClientTypes.InvalidTopicReviewedAnswer]?
     /// The Amazon Web Services request ID for this operation.
@@ -22150,7 +22285,7 @@ public struct ConflictException: ClientRuntime.ModeledError, AWSClientRuntime.AW
     }
 }
 
-public struct BatchDeleteTopicReviewedAnswerInput {
+public struct BatchDeleteTopicReviewedAnswerInput: Swift.Sendable {
     /// The Answer IDs of the Answers to be deleted.
     public var answerIds: [Swift.String]?
     /// The ID of the Amazon Web Services account that you want to delete a reviewed answers in.
@@ -22172,7 +22307,7 @@ public struct BatchDeleteTopicReviewedAnswerInput {
     }
 }
 
-public struct BatchDeleteTopicReviewedAnswerOutput {
+public struct BatchDeleteTopicReviewedAnswerOutput: Swift.Sendable {
     /// The definition of Answers that are invalid and not deleted.
     public var invalidAnswers: [QuickSightClientTypes.InvalidTopicReviewedAnswer]?
     /// The Amazon Web Services request ID for this operation.
@@ -22205,8 +22340,9 @@ public struct BatchDeleteTopicReviewedAnswerOutput {
 }
 
 extension QuickSightClientTypes {
+
     /// The bookmarks configuration of an embedded dashboard.
-    public struct BookmarksConfigurations {
+    public struct BookmarksConfigurations: Swift.Sendable {
         /// A Boolean value that determines whether a user can bookmark an embedded dashboard.
         /// This member is required.
         public var enabled: Swift.Bool
@@ -22218,12 +22354,12 @@ extension QuickSightClientTypes {
             self.enabled = enabled
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The display options for tile borders for visuals.
-    public struct BorderStyle {
+    public struct BorderStyle: Swift.Sendable {
         /// The option to enable display of borders for visuals.
         public var show: Swift.Bool?
 
@@ -22234,12 +22370,12 @@ extension QuickSightClientTypes {
             self.show = show
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// A calculated column for a dataset.
-    public struct CalculatedColumn {
+    public struct CalculatedColumn: Swift.Sendable {
         /// A unique ID to identify a calculated column. During a dataset update, if the column ID of a calculated column matches that of an existing calculated column, Amazon QuickSight preserves the existing calculated column.
         /// This member is required.
         public var columnId: Swift.String?
@@ -22261,7 +22397,6 @@ extension QuickSightClientTypes {
             self.expression = expression
         }
     }
-
 }
 
 extension QuickSightClientTypes.CalculatedColumn: Swift.CustomDebugStringConvertible {
@@ -22301,7 +22436,7 @@ public struct ResourceExistsException: ClientRuntime.ModeledError, AWSClientRunt
     }
 }
 
-public struct CancelIngestionInput {
+public struct CancelIngestionInput: Swift.Sendable {
     /// The Amazon Web Services account ID.
     /// This member is required.
     public var awsAccountId: Swift.String?
@@ -22324,7 +22459,7 @@ public struct CancelIngestionInput {
     }
 }
 
-public struct CancelIngestionOutput {
+public struct CancelIngestionOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) for the data ingestion.
     public var arn: Swift.String?
     /// An ID for the ingestion.
@@ -22350,7 +22485,7 @@ public struct CancelIngestionOutput {
 
 extension QuickSightClientTypes {
 
-    public enum ColumnDataType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ColumnDataType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case datetime
         case decimal
         case integer
@@ -22385,7 +22520,7 @@ extension QuickSightClientTypes {
 
 extension QuickSightClientTypes {
 
-    public enum ColumnDataSubType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ColumnDataSubType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case fixed
         case float
         case sdkUnknown(Swift.String)
@@ -22413,8 +22548,9 @@ extension QuickSightClientTypes {
 }
 
 extension QuickSightClientTypes {
+
     /// A transform operation that casts a column to a different type.
-    public struct CastColumnTypeOperation {
+    public struct CastColumnTypeOperation: Swift.Sendable {
         /// Column name.
         /// This member is required.
         public var columnName: Swift.String?
@@ -22439,12 +22575,11 @@ extension QuickSightClientTypes {
             self.subType = subType
         }
     }
-
 }
 
 extension QuickSightClientTypes {
 
-    public enum CategoryFilterFunction: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum CategoryFilterFunction: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case contains
         case exact
         case sdkUnknown(Swift.String)
@@ -22473,7 +22608,7 @@ extension QuickSightClientTypes {
 
 extension QuickSightClientTypes {
 
-    public enum CategoryFilterType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum CategoryFilterType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case customFilter
         case customFilterList
         case filterList
@@ -22504,8 +22639,9 @@ extension QuickSightClientTypes {
 }
 
 extension QuickSightClientTypes {
+
     /// A structure that represents the cell value synonym.
-    public struct CellValueSynonym {
+    public struct CellValueSynonym: Swift.Sendable {
         /// The cell value.
         public var cellValue: Swift.String?
         /// Other names or aliases for the cell value.
@@ -22520,12 +22656,12 @@ extension QuickSightClientTypes {
             self.synonyms = synonyms
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// A structure that represents a collective constant.
-    public struct CollectiveConstant {
+    public struct CollectiveConstant: Swift.Sendable {
         /// A list of values for the collective constant.
         public var valueList: [Swift.String]?
 
@@ -22536,12 +22672,11 @@ extension QuickSightClientTypes {
             self.valueList = valueList
         }
     }
-
 }
 
 extension QuickSightClientTypes {
 
-    public enum ColumnDataRole: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ColumnDataRole: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case dimension
         case measure
         case sdkUnknown(Swift.String)
@@ -22569,8 +22704,9 @@ extension QuickSightClientTypes {
 }
 
 extension QuickSightClientTypes {
+
     /// Metadata that contains a description for a column.
-    public struct ColumnDescription {
+    public struct ColumnDescription: Swift.Sendable {
         /// The text of a description for a column.
         public var text: Swift.String?
 
@@ -22581,7 +22717,6 @@ extension QuickSightClientTypes {
             self.text = text
         }
     }
-
 }
 
 extension QuickSightClientTypes.ColumnDescription: Swift.CustomDebugStringConvertible {
@@ -22591,7 +22726,7 @@ extension QuickSightClientTypes.ColumnDescription: Swift.CustomDebugStringConver
 
 extension QuickSightClientTypes {
 
-    public enum GeoSpatialCountryCode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum GeoSpatialCountryCode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case us
         case sdkUnknown(Swift.String)
 
@@ -22616,8 +22751,9 @@ extension QuickSightClientTypes {
 }
 
 extension QuickSightClientTypes {
+
     /// Geospatial column group that denotes a hierarchy.
-    public struct GeoSpatialColumnGroup {
+    public struct GeoSpatialColumnGroup: Swift.Sendable {
         /// Columns in this hierarchy.
         /// This member is required.
         public var columns: [Swift.String]?
@@ -22638,12 +22774,12 @@ extension QuickSightClientTypes {
             self.name = name
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// Groupings of columns that work together in certain Amazon QuickSight features. This is a variant type structure. For this structure to be valid, only one of the attributes can be non-null.
-    public struct ColumnGroup {
+    public struct ColumnGroup: Swift.Sendable {
         /// Geospatial column group that denotes a hierarchy.
         public var geoSpatialColumnGroup: QuickSightClientTypes.GeoSpatialColumnGroup?
 
@@ -22654,12 +22790,12 @@ extension QuickSightClientTypes {
             self.geoSpatialColumnGroup = geoSpatialColumnGroup
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// A structure describing the name, data type, and geographic role of the columns.
-    public struct ColumnGroupColumnSchema {
+    public struct ColumnGroupColumnSchema: Swift.Sendable {
         /// The name of the column group's column schema.
         public var name: Swift.String?
 
@@ -22670,12 +22806,12 @@ extension QuickSightClientTypes {
             self.name = name
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The column group schema.
-    public struct ColumnGroupSchema {
+    public struct ColumnGroupSchema: Swift.Sendable {
         /// A structure containing the list of schemas for column group columns.
         public var columnGroupColumnSchemaList: [QuickSightClientTypes.ColumnGroupColumnSchema]?
         /// The name of the column group schema.
@@ -22690,12 +22826,12 @@ extension QuickSightClientTypes {
             self.name = name
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// A rule defined to grant access on one or more restricted columns. Each dataset can have multiple rules. To create a restricted column, you add it to one or more rules. Each rule must contain at least one column and at least one user or group. To be able to see a restricted column, a user or group needs to be added to a rule for that column.
-    public struct ColumnLevelPermissionRule {
+    public struct ColumnLevelPermissionRule: Swift.Sendable {
         /// An array of column names.
         public var columnNames: [Swift.String]?
         /// An array of Amazon Resource Names (ARNs) for Amazon QuickSight users or groups.
@@ -22710,12 +22846,11 @@ extension QuickSightClientTypes {
             self.principals = principals
         }
     }
-
 }
 
 extension QuickSightClientTypes {
 
-    public enum ColumnOrderingType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ColumnOrderingType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case greaterIsBetter
         case lesserIsBetter
         case specified
@@ -22746,8 +22881,9 @@ extension QuickSightClientTypes {
 }
 
 extension QuickSightClientTypes {
+
     /// The column schema.
-    public struct ColumnSchema {
+    public struct ColumnSchema: Swift.Sendable {
         /// The data type of the column schema.
         public var dataType: Swift.String?
         /// The geographic role of the column schema.
@@ -22766,12 +22902,11 @@ extension QuickSightClientTypes {
             self.name = name
         }
     }
-
 }
 
 extension QuickSightClientTypes {
 
-    public enum GeoSpatialDataRole: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum GeoSpatialDataRole: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case city
         case country
         case county
@@ -22814,8 +22949,9 @@ extension QuickSightClientTypes {
 }
 
 extension QuickSightClientTypes {
+
     /// A tag for a column in a [TagColumnOperation](https://docs.aws.amazon.com/quicksight/latest/APIReference/API_TagColumnOperation.html) structure. This is a variant type structure. For this structure to be valid, only one of the attributes can be non-null.
-    public struct ColumnTag {
+    public struct ColumnTag: Swift.Sendable {
         /// A description for a column.
         public var columnDescription: QuickSightClientTypes.ColumnDescription?
         /// A geospatial role for a column.
@@ -22830,12 +22966,11 @@ extension QuickSightClientTypes {
             self.columnGeographicRole = columnGeographicRole
         }
     }
-
 }
 
 extension QuickSightClientTypes {
 
-    public enum ColumnTagName: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ColumnTagName: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case columnDescription
         case columnGeographicRole
         case sdkUnknown(Swift.String)
@@ -22864,7 +22999,7 @@ extension QuickSightClientTypes {
 
 extension QuickSightClientTypes {
 
-    public enum UndefinedSpecifiedValueType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum UndefinedSpecifiedValueType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case least
         case most
         case sdkUnknown(Swift.String)
@@ -22892,8 +23027,9 @@ extension QuickSightClientTypes {
 }
 
 extension QuickSightClientTypes {
+
     /// A structure that represents a comparative order.
-    public struct ComparativeOrder {
+    public struct ComparativeOrder: Swift.Sendable {
         /// The list of columns to be used in the ordering.
         public var specifedOrder: [Swift.String]?
         /// The treat of undefined specified values. Valid values for this structure are LEAST and MOST.
@@ -22912,7 +23048,6 @@ extension QuickSightClientTypes {
             self.useOrdering = useOrdering
         }
     }
-
 }
 
 /// A resource is already in a state that indicates an operation is happening that must complete before a new update can be applied.
@@ -22974,7 +23109,7 @@ public struct ResourceUnavailableException: ClientRuntime.ModeledError, AWSClien
     }
 }
 
-public struct CreateAccountCustomizationInput {
+public struct CreateAccountCustomizationInput: Swift.Sendable {
     /// The Amazon QuickSight customizations you're adding in the current Amazon Web Services Region. You can add these to an Amazon Web Services account and a QuickSight namespace. For example, you can add a default theme by setting AccountCustomization to the midnight theme: "AccountCustomization": { "DefaultTheme": "arn:aws:quicksight::aws:theme/MIDNIGHT" }. Or, you can add a custom theme by specifying "AccountCustomization": { "DefaultTheme": "arn:aws:quicksight:us-west-2:111122223333:theme/bdb844d0-0fe9-4d9d-b520-0fe602d93639" }.
     /// This member is required.
     public var accountCustomization: QuickSightClientTypes.AccountCustomization?
@@ -23000,7 +23135,7 @@ public struct CreateAccountCustomizationInput {
     }
 }
 
-public struct CreateAccountCustomizationOutput {
+public struct CreateAccountCustomizationOutput: Swift.Sendable {
     /// The Amazon QuickSight customizations you're adding in the current Amazon Web Services Region.
     public var accountCustomization: QuickSightClientTypes.AccountCustomization?
     /// The Amazon Resource Name (ARN) for the customization that you created for this Amazon Web Services account.
@@ -23060,7 +23195,7 @@ public struct PreconditionNotMetException: ClientRuntime.ModeledError, AWSClient
     }
 }
 
-public struct CreateAccountSubscriptionInput {
+public struct CreateAccountSubscriptionInput: Swift.Sendable {
     /// The name of your Amazon QuickSight account. This name is unique over all of Amazon Web Services, and it appears only when users sign in. You can't change AccountName value after the Amazon QuickSight account is created.
     /// This member is required.
     public var accountName: Swift.String?
@@ -23157,8 +23292,9 @@ public struct CreateAccountSubscriptionInput {
 }
 
 extension QuickSightClientTypes {
+
     /// A SignupResponse object that contains a summary of a newly created account.
-    public struct SignupResponse {
+    public struct SignupResponse: Swift.Sendable {
         /// The name of your Amazon QuickSight account.
         public var accountName: Swift.String?
         /// The type of Active Directory that is being used to authenticate the Amazon QuickSight account. Valid values are SIMPLE_AD, AD_CONNECTOR, and MICROSOFT_AD.
@@ -23181,10 +23317,9 @@ extension QuickSightClientTypes {
             self.userLoginName = userLoginName
         }
     }
-
 }
 
-public struct CreateAccountSubscriptionOutput {
+public struct CreateAccountSubscriptionOutput: Swift.Sendable {
     /// The Amazon Web Services request ID for this operation.
     public var requestId: Swift.String?
     /// A SignupResponse object that returns information about a newly created Amazon QuickSight account.
@@ -23265,8 +23400,9 @@ public struct UnsupportedUserEditionException: ClientRuntime.ModeledError, AWSCl
 }
 
 extension QuickSightClientTypes {
+
     /// A date-time parameter.
-    public struct DateTimeParameter {
+    public struct DateTimeParameter: Swift.Sendable {
         /// A display name for the date-time parameter.
         /// This member is required.
         public var name: Swift.String?
@@ -23283,7 +23419,6 @@ extension QuickSightClientTypes {
             self.values = values
         }
     }
-
 }
 
 extension QuickSightClientTypes.DateTimeParameter: Swift.CustomDebugStringConvertible {
@@ -23292,8 +23427,9 @@ extension QuickSightClientTypes.DateTimeParameter: Swift.CustomDebugStringConver
 }
 
 extension QuickSightClientTypes {
+
     /// A decimal parameter.
-    public struct DecimalParameter {
+    public struct DecimalParameter: Swift.Sendable {
         /// A display name for the decimal parameter.
         /// This member is required.
         public var name: Swift.String?
@@ -23310,7 +23446,6 @@ extension QuickSightClientTypes {
             self.values = values
         }
     }
-
 }
 
 extension QuickSightClientTypes.DecimalParameter: Swift.CustomDebugStringConvertible {
@@ -23319,8 +23454,9 @@ extension QuickSightClientTypes.DecimalParameter: Swift.CustomDebugStringConvert
 }
 
 extension QuickSightClientTypes {
+
     /// An integer parameter.
-    public struct IntegerParameter {
+    public struct IntegerParameter: Swift.Sendable {
         /// The name of the integer parameter.
         /// This member is required.
         public var name: Swift.String?
@@ -23337,7 +23473,6 @@ extension QuickSightClientTypes {
             self.values = values
         }
     }
-
 }
 
 extension QuickSightClientTypes.IntegerParameter: Swift.CustomDebugStringConvertible {
@@ -23346,8 +23481,9 @@ extension QuickSightClientTypes.IntegerParameter: Swift.CustomDebugStringConvert
 }
 
 extension QuickSightClientTypes {
+
     /// A string parameter.
-    public struct StringParameter {
+    public struct StringParameter: Swift.Sendable {
         /// A display name for a string parameter.
         /// This member is required.
         public var name: Swift.String?
@@ -23364,7 +23500,6 @@ extension QuickSightClientTypes {
             self.values = values
         }
     }
-
 }
 
 extension QuickSightClientTypes.StringParameter: Swift.CustomDebugStringConvertible {
@@ -23373,8 +23508,9 @@ extension QuickSightClientTypes.StringParameter: Swift.CustomDebugStringConverti
 }
 
 extension QuickSightClientTypes {
+
     /// A list of Amazon QuickSight parameters and the list's override values.
-    public struct Parameters {
+    public struct Parameters: Swift.Sendable {
         /// The parameters that have a data type of date-time.
         public var dateTimeParameters: [QuickSightClientTypes.DateTimeParameter]?
         /// The parameters that have a data type of decimal.
@@ -23397,12 +23533,12 @@ extension QuickSightClientTypes {
             self.stringParameters = stringParameters
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// Permission for the resource.
-    public struct ResourcePermission {
+    public struct ResourcePermission: Swift.Sendable {
         /// The IAM action to grant or revoke permissions on.
         /// This member is required.
         public var actions: [Swift.String]?
@@ -23425,12 +23561,11 @@ extension QuickSightClientTypes {
             self.principal = principal
         }
     }
-
 }
 
 extension QuickSightClientTypes {
 
-    public enum ValidationStrategyMode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ValidationStrategyMode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case lenient
         case strict
         case sdkUnknown(Swift.String)
@@ -23458,8 +23593,9 @@ extension QuickSightClientTypes {
 }
 
 extension QuickSightClientTypes {
+
     /// The option to relax the validation that is required to create and update analyses, dashboards, and templates with definition objects. When you set this value to LENIENT, validation is skipped for specific errors.
-    public struct ValidationStrategy {
+    public struct ValidationStrategy: Swift.Sendable {
         /// The mode of validation for the asset to be created or updated. When you set this value to STRICT, strict validation for every error is enforced. When you set this value to LENIENT, validation is skipped for specific UI errors.
         /// This member is required.
         public var mode: QuickSightClientTypes.ValidationStrategyMode?
@@ -23471,10 +23607,9 @@ extension QuickSightClientTypes {
             self.mode = mode
         }
     }
-
 }
 
-public struct CreateAnalysisInput {
+public struct CreateAnalysisInput: Swift.Sendable {
     /// The ID for the analysis that you're creating. This ID displays in the URL of the analysis.
     /// This member is required.
     public var analysisId: Swift.String?
@@ -23529,7 +23664,7 @@ public struct CreateAnalysisInput {
     }
 }
 
-public struct CreateAnalysisOutput {
+public struct CreateAnalysisOutput: Swift.Sendable {
     /// The ID of the analysis.
     public var analysisId: Swift.String?
     /// The ARN for the analysis.
@@ -23558,8 +23693,9 @@ public struct CreateAnalysisOutput {
 }
 
 extension QuickSightClientTypes {
+
     /// A transform operation that creates calculated columns. Columns created in one such operation form a lexical closure.
-    public struct CreateColumnsOperation {
+    public struct CreateColumnsOperation: Swift.Sendable {
         /// Calculated columns to create.
         /// This member is required.
         public var columns: [QuickSightClientTypes.CalculatedColumn]?
@@ -23571,12 +23707,12 @@ extension QuickSightClientTypes {
             self.columns = columns
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The drill down options for data points in a dashbaord.
-    public struct DataPointDrillUpDownOption {
+    public struct DataPointDrillUpDownOption: Swift.Sendable {
         /// The status of the drill down options of data points.
         public var availabilityStatus: QuickSightClientTypes.DashboardBehavior?
 
@@ -23587,12 +23723,12 @@ extension QuickSightClientTypes {
             self.availabilityStatus = availabilityStatus
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The data point menu options of a dashboard.
-    public struct DataPointMenuLabelOption {
+    public struct DataPointMenuLabelOption: Swift.Sendable {
         /// The status of the data point menu options.
         public var availabilityStatus: QuickSightClientTypes.DashboardBehavior?
 
@@ -23603,12 +23739,12 @@ extension QuickSightClientTypes {
             self.availabilityStatus = availabilityStatus
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The data point tooltip options.
-    public struct DataPointTooltipOption {
+    public struct DataPointTooltipOption: Swift.Sendable {
         /// The status of the data point tool tip options.
         public var availabilityStatus: QuickSightClientTypes.DashboardBehavior?
 
@@ -23619,12 +23755,12 @@ extension QuickSightClientTypes {
             self.availabilityStatus = availabilityStatus
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// Export to .csv option.
-    public struct ExportToCSVOption {
+    public struct ExportToCSVOption: Swift.Sendable {
         /// Availability status.
         public var availabilityStatus: QuickSightClientTypes.DashboardBehavior?
 
@@ -23635,12 +23771,12 @@ extension QuickSightClientTypes {
             self.availabilityStatus = availabilityStatus
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// Determines whether or not hidden fields are visible on exported dashbaords.
-    public struct ExportWithHiddenFieldsOption {
+    public struct ExportWithHiddenFieldsOption: Swift.Sendable {
         /// The status of the export with hidden fields options.
         public var availabilityStatus: QuickSightClientTypes.DashboardBehavior?
 
@@ -23651,12 +23787,11 @@ extension QuickSightClientTypes {
             self.availabilityStatus = availabilityStatus
         }
     }
-
 }
 
 extension QuickSightClientTypes {
 
-    public enum DashboardUIState: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DashboardUIState: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case collapsed
         case expanded
         case sdkUnknown(Swift.String)
@@ -23684,8 +23819,9 @@ extension QuickSightClientTypes {
 }
 
 extension QuickSightClientTypes {
+
     /// Sheet controls option.
-    public struct SheetControlsOption {
+    public struct SheetControlsOption: Swift.Sendable {
         /// Visibility state.
         public var visibilityState: QuickSightClientTypes.DashboardUIState?
 
@@ -23696,12 +23832,12 @@ extension QuickSightClientTypes {
             self.visibilityState = visibilityState
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The sheet layout maximization options of a dashbaord.
-    public struct SheetLayoutElementMaximizationOption {
+    public struct SheetLayoutElementMaximizationOption: Swift.Sendable {
         /// The status of the sheet layout maximization options of a dashbaord.
         public var availabilityStatus: QuickSightClientTypes.DashboardBehavior?
 
@@ -23712,12 +23848,12 @@ extension QuickSightClientTypes {
             self.availabilityStatus = availabilityStatus
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The axis sort options for a visual.
-    public struct VisualAxisSortOption {
+    public struct VisualAxisSortOption: Swift.Sendable {
         /// The availaiblity status of a visual's axis sort options.
         public var availabilityStatus: QuickSightClientTypes.DashboardBehavior?
 
@@ -23728,12 +23864,12 @@ extension QuickSightClientTypes {
             self.availabilityStatus = availabilityStatus
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// Determines if hidden fields are included in an exported dashboard.
-    public struct ExportHiddenFieldsOption {
+    public struct ExportHiddenFieldsOption: Swift.Sendable {
         /// The status of the export hidden fields options of a dashbaord.
         public var availabilityStatus: QuickSightClientTypes.DashboardBehavior?
 
@@ -23744,12 +23880,12 @@ extension QuickSightClientTypes {
             self.availabilityStatus = availabilityStatus
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The visual publish options of a visual in a dashboard
-    public struct DashboardVisualPublishOptions {
+    public struct DashboardVisualPublishOptions: Swift.Sendable {
         /// Determines if hidden fields are included in an exported dashboard.
         public var exportHiddenFieldsOption: QuickSightClientTypes.ExportHiddenFieldsOption?
 
@@ -23760,12 +23896,12 @@ extension QuickSightClientTypes {
             self.exportHiddenFieldsOption = exportHiddenFieldsOption
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// Dashboard publish options.
-    public struct DashboardPublishOptions {
+    public struct DashboardPublishOptions: Swift.Sendable {
         /// Ad hoc (one-time) filtering option.
         public var adHocFilteringOption: QuickSightClientTypes.AdHocFilteringOption?
         /// The drill-down options of data points in a dashboard.
@@ -23817,12 +23953,12 @@ extension QuickSightClientTypes {
             self.visualPublishOptions = visualPublishOptions
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The contents of a dashboard.
-    public struct DashboardVersionDefinition {
+    public struct DashboardVersionDefinition: Swift.Sendable {
         /// The configuration for default analysis settings.
         public var analysisDefaults: QuickSightClientTypes.AnalysisDefaults?
         /// An array of calculated field definitions for the dashboard.
@@ -23862,12 +23998,12 @@ extension QuickSightClientTypes {
             self.sheets = sheets
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// A structure that contains the configuration of a shareable link to the dashboard.
-    public struct LinkSharingConfiguration {
+    public struct LinkSharingConfiguration: Swift.Sendable {
         /// A structure that contains the permissions of a shareable link.
         public var permissions: [QuickSightClientTypes.ResourcePermission]?
 
@@ -23878,12 +24014,12 @@ extension QuickSightClientTypes {
             self.permissions = permissions
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// Dashboard source template.
-    public struct DashboardSourceTemplate {
+    public struct DashboardSourceTemplate: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the resource.
         /// This member is required.
         public var arn: Swift.String?
@@ -23900,12 +24036,12 @@ extension QuickSightClientTypes {
             self.dataSetReferences = dataSetReferences
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// Dashboard source entity.
-    public struct DashboardSourceEntity {
+    public struct DashboardSourceEntity: Swift.Sendable {
         /// Source template.
         public var sourceTemplate: QuickSightClientTypes.DashboardSourceTemplate?
 
@@ -23916,10 +24052,9 @@ extension QuickSightClientTypes {
             self.sourceTemplate = sourceTemplate
         }
     }
-
 }
 
-public struct CreateDashboardInput {
+public struct CreateDashboardInput: Swift.Sendable {
     /// The ID of the Amazon Web Services account where you want to create the dashboard.
     /// This member is required.
     public var awsAccountId: Swift.String?
@@ -23996,7 +24131,7 @@ public struct CreateDashboardInput {
     }
 }
 
-public struct CreateDashboardOutput {
+public struct CreateDashboardOutput: Swift.Sendable {
     /// The ARN of the dashboard.
     public var arn: Swift.String?
     /// The status of the dashboard creation request.
@@ -24029,8 +24164,9 @@ public struct CreateDashboardOutput {
 }
 
 extension QuickSightClientTypes {
+
     /// The default values of a date time parameter.
-    public struct DateTimeDatasetParameterDefaultValues {
+    public struct DateTimeDatasetParameterDefaultValues: Swift.Sendable {
         /// A list of static default values for a given date time parameter.
         public var staticValues: [Foundation.Date]?
 
@@ -24041,13 +24177,12 @@ extension QuickSightClientTypes {
             self.staticValues = staticValues
         }
     }
-
 }
 
 extension QuickSightClientTypes {
 
     /// The value type of the parameter. The value type is used to validate the parameter before it is evaluated.
-    public enum DatasetParameterValueType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DatasetParameterValueType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case multiValued
         case singleValued
         case sdkUnknown(Swift.String)
@@ -24075,8 +24210,9 @@ extension QuickSightClientTypes {
 }
 
 extension QuickSightClientTypes {
+
     /// A date time parameter for a dataset.
-    public struct DateTimeDatasetParameter {
+    public struct DateTimeDatasetParameter: Swift.Sendable {
         /// A list of default values for a given date time parameter. This structure only accepts static values.
         public var defaultValues: QuickSightClientTypes.DateTimeDatasetParameterDefaultValues?
         /// An identifier for the parameter that is created in the dataset.
@@ -24106,12 +24242,12 @@ extension QuickSightClientTypes {
             self.valueType = valueType
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The default values of a decimal parameter.
-    public struct DecimalDatasetParameterDefaultValues {
+    public struct DecimalDatasetParameterDefaultValues: Swift.Sendable {
         /// A list of static default values for a given decimal parameter.
         public var staticValues: [Swift.Double]?
 
@@ -24122,12 +24258,12 @@ extension QuickSightClientTypes {
             self.staticValues = staticValues
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// A decimal parameter for a dataset.
-    public struct DecimalDatasetParameter {
+    public struct DecimalDatasetParameter: Swift.Sendable {
         /// A list of default values for a given decimal parameter. This structure only accepts static values.
         public var defaultValues: QuickSightClientTypes.DecimalDatasetParameterDefaultValues?
         /// An identifier for the decimal parameter created in the dataset.
@@ -24153,12 +24289,12 @@ extension QuickSightClientTypes {
             self.valueType = valueType
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The default values of an integer parameter.
-    public struct IntegerDatasetParameterDefaultValues {
+    public struct IntegerDatasetParameterDefaultValues: Swift.Sendable {
         /// A list of static default values for a given integer parameter.
         public var staticValues: [Swift.Int]?
 
@@ -24169,12 +24305,12 @@ extension QuickSightClientTypes {
             self.staticValues = staticValues
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// An integer parameter for a dataset.
-    public struct IntegerDatasetParameter {
+    public struct IntegerDatasetParameter: Swift.Sendable {
         /// A list of default values for a given integer parameter. This structure only accepts static values.
         public var defaultValues: QuickSightClientTypes.IntegerDatasetParameterDefaultValues?
         /// An identifier for the integer parameter created in the dataset.
@@ -24200,12 +24336,12 @@ extension QuickSightClientTypes {
             self.valueType = valueType
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The default values of a string parameter.
-    public struct StringDatasetParameterDefaultValues {
+    public struct StringDatasetParameterDefaultValues: Swift.Sendable {
         /// A list of static default values for a given string parameter.
         public var staticValues: [Swift.String]?
 
@@ -24216,12 +24352,12 @@ extension QuickSightClientTypes {
             self.staticValues = staticValues
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// A string parameter for a dataset.
-    public struct StringDatasetParameter {
+    public struct StringDatasetParameter: Swift.Sendable {
         /// A list of default values for a given string dataset parameter type. This structure only accepts static values.
         public var defaultValues: QuickSightClientTypes.StringDatasetParameterDefaultValues?
         /// An identifier for the string parameter that is created in the dataset.
@@ -24247,12 +24383,12 @@ extension QuickSightClientTypes {
             self.valueType = valueType
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// A parameter that is created in a dataset. The parameter can be a string, integer, decimal, or datetime data type.
-    public struct DatasetParameter {
+    public struct DatasetParameter: Swift.Sendable {
         /// A date time parameter that is created in the dataset.
         public var dateTimeDatasetParameter: QuickSightClientTypes.DateTimeDatasetParameter?
         /// A decimal parameter that is created in the dataset.
@@ -24275,12 +24411,12 @@ extension QuickSightClientTypes {
             self.stringDatasetParameter = stringDatasetParameter
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The usage configuration to apply to child datasets that reference this dataset as a source.
-    public struct DataSetUsageConfiguration {
+    public struct DataSetUsageConfiguration: Swift.Sendable {
         /// An option that controls whether a child dataset of a direct query can use this dataset as a source.
         public var disableUseAsDirectQuerySource: Swift.Bool
         /// An option that controls whether a child dataset that's stored in QuickSight can use this dataset as a source.
@@ -24295,12 +24431,12 @@ extension QuickSightClientTypes {
             self.disableUseAsImportedSource = disableUseAsImportedSource
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// A FieldFolder element is a folder that contains fields and nested subfolders.
-    public struct FieldFolder {
+    public struct FieldFolder: Swift.Sendable {
         /// A folder has a list of columns. A column can only be in one folder.
         public var columns: [Swift.String]?
         /// The description for a field folder.
@@ -24315,12 +24451,11 @@ extension QuickSightClientTypes {
             self.description = description
         }
     }
-
 }
 
 extension QuickSightClientTypes {
 
-    public enum DataSetImportMode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DataSetImportMode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case directQuery
         case spice
         case sdkUnknown(Swift.String)
@@ -24348,8 +24483,9 @@ extension QuickSightClientTypes {
 }
 
 extension QuickSightClientTypes {
+
     /// A transform operation that filters rows based on a condition.
-    public struct FilterOperation {
+    public struct FilterOperation: Swift.Sendable {
         /// An expression that must evaluate to a Boolean value. Rows for which the expression evaluates to true are kept in the dataset.
         /// This member is required.
         public var conditionExpression: Swift.String?
@@ -24361,7 +24497,6 @@ extension QuickSightClientTypes {
             self.conditionExpression = conditionExpression
         }
     }
-
 }
 
 extension QuickSightClientTypes.FilterOperation: Swift.CustomDebugStringConvertible {
@@ -24370,8 +24505,9 @@ extension QuickSightClientTypes.FilterOperation: Swift.CustomDebugStringConverti
 }
 
 extension QuickSightClientTypes {
+
     /// The configuration that overrides the existing default values for a dataset parameter that is inherited from another dataset.
-    public struct NewDefaultValues {
+    public struct NewDefaultValues: Swift.Sendable {
         /// A list of static default values for a given date time parameter.
         public var dateTimeStaticValues: [Foundation.Date]?
         /// A list of static default values for a given decimal parameter.
@@ -24394,12 +24530,12 @@ extension QuickSightClientTypes {
             self.stringStaticValues = stringStaticValues
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// A transform operation that overrides the dataset parameter values that are defined in another dataset.
-    public struct OverrideDatasetParameterOperation {
+    public struct OverrideDatasetParameterOperation: Swift.Sendable {
         /// The new default values for the parameter.
         public var newDefaultValues: QuickSightClientTypes.NewDefaultValues?
         /// The new name for the parameter.
@@ -24419,12 +24555,12 @@ extension QuickSightClientTypes {
             self.parameterName = parameterName
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// A transform operation that projects columns. Operations that come after a projection can only refer to projected columns.
-    public struct ProjectOperation {
+    public struct ProjectOperation: Swift.Sendable {
         /// Projected columns.
         /// This member is required.
         public var projectedColumns: [Swift.String]?
@@ -24436,12 +24572,12 @@ extension QuickSightClientTypes {
             self.projectedColumns = projectedColumns
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// A transform operation that renames a column.
-    public struct RenameColumnOperation {
+    public struct RenameColumnOperation: Swift.Sendable {
         /// The name of the column to be renamed.
         /// This member is required.
         public var columnName: Swift.String?
@@ -24458,12 +24594,12 @@ extension QuickSightClientTypes {
             self.newColumnName = newColumnName
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// A transform operation that tags a column with additional information.
-    public struct TagColumnOperation {
+    public struct TagColumnOperation: Swift.Sendable {
         /// The column that this operation acts on.
         /// This member is required.
         public var columnName: Swift.String?
@@ -24480,12 +24616,12 @@ extension QuickSightClientTypes {
             self.tags = tags
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// A transform operation that removes tags associated with a column.
-    public struct UntagColumnOperation {
+    public struct UntagColumnOperation: Swift.Sendable {
         /// The column that this operation acts on.
         /// This member is required.
         public var columnName: Swift.String?
@@ -24502,12 +24638,12 @@ extension QuickSightClientTypes {
             self.tagNames = tagNames
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// A data transformation on a logical table. This is a variant type structure. For this structure to be valid, only one of the attributes can be non-null.
-    public enum TransformOperation {
+    public enum TransformOperation: Swift.Sendable {
         /// An operation that projects columns. Operations that come after a projection can only refer to projected columns.
         case projectoperation(QuickSightClientTypes.ProjectOperation)
         /// An operation that filters rows based on some condition.
@@ -24526,12 +24662,12 @@ extension QuickSightClientTypes {
         case overridedatasetparameteroperation(QuickSightClientTypes.OverrideDatasetParameterOperation)
         case sdkUnknown(Swift.String)
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// Properties associated with the columns participating in a join.
-    public struct JoinKeyProperties {
+    public struct JoinKeyProperties: Swift.Sendable {
         /// A value that indicates that a row in a table is uniquely identified by the columns in a join key. This is used by Amazon QuickSight to optimize query performance.
         public var uniqueKey: Swift.Bool?
 
@@ -24542,12 +24678,11 @@ extension QuickSightClientTypes {
             self.uniqueKey = uniqueKey
         }
     }
-
 }
 
 extension QuickSightClientTypes {
 
-    public enum JoinType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum JoinType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case inner
         case `left`
         case outer
@@ -24581,8 +24716,9 @@ extension QuickSightClientTypes {
 }
 
 extension QuickSightClientTypes {
+
     /// The instructions associated with a join.
-    public struct JoinInstruction {
+    public struct JoinInstruction: Swift.Sendable {
         /// Join key properties of the left operand.
         public var leftJoinKeyProperties: QuickSightClientTypes.JoinKeyProperties?
         /// The operand on the left side of a join.
@@ -24617,12 +24753,12 @@ extension QuickSightClientTypes {
             self.type = type
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// Information about the source of a logical table. This is a variant type structure. For this structure to be valid, only one of the attributes can be non-null.
-    public struct LogicalTableSource {
+    public struct LogicalTableSource: Swift.Sendable {
         /// The Amazon Resource Number (ARN) of the parent dataset.
         public var dataSetArn: Swift.String?
         /// Specifies the result of a join of two logical tables.
@@ -24641,12 +24777,12 @@ extension QuickSightClientTypes {
             self.physicalTableId = physicalTableId
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// A logical table is a unit that joins and that data transformations operate on. A logical table has a source, which can be either a physical table or result of a join. When a logical table points to a physical table, the logical table acts as a mutable copy of that physical table through transform operations.
-    public struct LogicalTable {
+    public struct LogicalTable: Swift.Sendable {
         /// A display name for the logical table.
         /// This member is required.
         public var alias: Swift.String?
@@ -24667,12 +24803,11 @@ extension QuickSightClientTypes {
             self.source = source
         }
     }
-
 }
 
 extension QuickSightClientTypes {
 
-    public enum InputColumnDataType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum InputColumnDataType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case bit
         case boolean
         case datetime
@@ -24715,8 +24850,9 @@ extension QuickSightClientTypes {
 }
 
 extension QuickSightClientTypes {
+
     /// Metadata for a column that is used as the input of a transform operation.
-    public struct InputColumn {
+    public struct InputColumn: Swift.Sendable {
         /// The name of this column in the underlying data source.
         /// This member is required.
         public var name: Swift.String?
@@ -24737,12 +24873,12 @@ extension QuickSightClientTypes {
             self.type = type
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// A physical table type built from the results of the custom SQL query.
-    public struct CustomSql {
+    public struct CustomSql: Swift.Sendable {
         /// The column schema from the SQL query result set.
         public var columns: [QuickSightClientTypes.InputColumn]?
         /// The Amazon Resource Name (ARN) of the data source.
@@ -24768,12 +24904,12 @@ extension QuickSightClientTypes {
             self.sqlQuery = sqlQuery
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// A physical table type for relational data sources.
-    public struct RelationalTable {
+    public struct RelationalTable: Swift.Sendable {
         /// The catalog associated with a table.
         public var catalog: Swift.String?
         /// The Amazon Resource Name (ARN) for the data source.
@@ -24803,12 +24939,11 @@ extension QuickSightClientTypes {
             self.schema = schema
         }
     }
-
 }
 
 extension QuickSightClientTypes {
 
-    public enum FileFormat: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum FileFormat: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case clf
         case csv
         case elf
@@ -24849,7 +24984,7 @@ extension QuickSightClientTypes {
 
 extension QuickSightClientTypes {
 
-    public enum TextQualifier: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum TextQualifier: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case doubleQuote
         case singleQuote
         case sdkUnknown(Swift.String)
@@ -24877,8 +25012,9 @@ extension QuickSightClientTypes {
 }
 
 extension QuickSightClientTypes {
+
     /// Information about the format for a source file or files.
-    public struct UploadSettings {
+    public struct UploadSettings: Swift.Sendable {
         /// Whether the file has a header row, or the files each have a header row.
         public var containsHeader: Swift.Bool?
         /// The delimiter between values in the file.
@@ -24905,12 +25041,12 @@ extension QuickSightClientTypes {
             self.textQualifier = textQualifier
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// A physical table type for an S3 data source.
-    public struct S3Source {
+    public struct S3Source: Swift.Sendable {
         /// The Amazon Resource Name (ARN) for the data source.
         /// This member is required.
         public var dataSourceArn: Swift.String?
@@ -24931,12 +25067,12 @@ extension QuickSightClientTypes {
             self.uploadSettings = uploadSettings
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// A view of a data source that contains information about the shape of the data in the underlying source. This is a variant type structure. For this structure to be valid, only one of the attributes can be non-null.
-    public enum PhysicalTable {
+    public enum PhysicalTable: Swift.Sendable {
         /// A physical table type for relational data sources.
         case relationaltable(QuickSightClientTypes.RelationalTable)
         /// A physical table type built from the results of the custom SQL query.
@@ -24945,12 +25081,11 @@ extension QuickSightClientTypes {
         case s3source(QuickSightClientTypes.S3Source)
         case sdkUnknown(Swift.String)
     }
-
 }
 
 extension QuickSightClientTypes {
 
-    public enum RowLevelPermissionFormatVersion: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum RowLevelPermissionFormatVersion: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case version1
         case version2
         case sdkUnknown(Swift.String)
@@ -24979,7 +25114,7 @@ extension QuickSightClientTypes {
 
 extension QuickSightClientTypes {
 
-    public enum RowLevelPermissionPolicy: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum RowLevelPermissionPolicy: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case denyAccess
         case grantAccess
         case sdkUnknown(Swift.String)
@@ -25008,7 +25143,7 @@ extension QuickSightClientTypes {
 
 extension QuickSightClientTypes {
 
-    public enum Status: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Status: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case disabled
         case enabled
         case sdkUnknown(Swift.String)
@@ -25036,8 +25171,9 @@ extension QuickSightClientTypes {
 }
 
 extension QuickSightClientTypes {
+
     /// Information about a dataset that contains permissions for row-level security (RLS). The permissions dataset maps fields to users or groups. For more information, see [Using Row-Level Security (RLS) to Restrict Access to a Dataset](https://docs.aws.amazon.com/quicksight/latest/user/restrict-access-to-a-data-set-using-row-level-security.html) in the Amazon QuickSight User Guide. The option to deny permissions by setting PermissionPolicy to DENY_ACCESS is not supported for new RLS datasets.
-    public struct RowLevelPermissionDataSet {
+    public struct RowLevelPermissionDataSet: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the dataset that contains permissions for RLS.
         /// This member is required.
         public var arn: Swift.String?
@@ -25066,12 +25202,12 @@ extension QuickSightClientTypes {
             self.status = status
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// A set of rules associated with a tag.
-    public struct RowLevelPermissionTagRule {
+    public struct RowLevelPermissionTagRule: Swift.Sendable {
         /// The column name that a tag key is assigned to.
         /// This member is required.
         public var columnName: Swift.String?
@@ -25096,7 +25232,6 @@ extension QuickSightClientTypes {
             self.tagMultiValueDelimiter = tagMultiValueDelimiter
         }
     }
-
 }
 
 extension QuickSightClientTypes.RowLevelPermissionTagRule: Swift.CustomDebugStringConvertible {
@@ -25105,8 +25240,9 @@ extension QuickSightClientTypes.RowLevelPermissionTagRule: Swift.CustomDebugStri
 }
 
 extension QuickSightClientTypes {
+
     /// The configuration of tags on a dataset to set row-level security.
-    public struct RowLevelPermissionTagConfiguration {
+    public struct RowLevelPermissionTagConfiguration: Swift.Sendable {
         /// The status of row-level security tags. If enabled, the status is ENABLED. If disabled, the status is DISABLED.
         public var status: QuickSightClientTypes.Status?
         /// A list of tag configuration rules to apply to a dataset. All tag configurations have the OR condition. Tags within each tile will be joined (AND). At least one rule in this structure must have all tag values assigned to it to apply Row-level security (RLS) to the dataset.
@@ -25126,10 +25262,9 @@ extension QuickSightClientTypes {
             self.tagRules = tagRules
         }
     }
-
 }
 
-public struct CreateDataSetInput {
+public struct CreateDataSetInput: Swift.Sendable {
     /// The Amazon Web Services account ID.
     /// This member is required.
     public var awsAccountId: Swift.String?
@@ -25206,7 +25341,7 @@ public struct CreateDataSetInput {
     }
 }
 
-public struct CreateDataSetOutput {
+public struct CreateDataSetOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the dataset.
     public var arn: Swift.String?
     /// The ID for the dataset that you want to create. This ID is unique per Amazon Web Services Region for each Amazon Web Services account.
@@ -25267,8 +25402,9 @@ public struct CustomerManagedKeyUnavailableException: ClientRuntime.ModeledError
 }
 
 extension QuickSightClientTypes {
+
     /// The combination of user name and password that are used as credentials.
-    public struct CredentialPair {
+    public struct CredentialPair: Swift.Sendable {
         /// A set of alternate data source parameters that you want to share for these credentials. The credentials are applied in tandem with the data source parameters when you copy a data source by using a create or update request. The API operation compares the DataSourceParameters structure that's in the request with the structures in the AlternateDataSourceParameters allow list. If the structures are an exact match, the request is allowed to use the new data source with the existing credentials. If the AlternateDataSourceParameters list is null, the DataSourceParameters originally used with these Credentials is automatically allowed.
         public var alternateDataSourceParameters: [QuickSightClientTypes.DataSourceParameters]?
         /// Password.
@@ -25289,12 +25425,12 @@ extension QuickSightClientTypes {
             self.username = username
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// Data source credentials. This is a variant type structure. For this structure to be valid, only one of the attributes can be non-null.
-    public struct DataSourceCredentials {
+    public struct DataSourceCredentials: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of a data source that has the credential pair that you want to use. When CopySourceArn is not null, the credential pair from the data source in the ARN is used as the credentials for the DataSourceCredentials structure.
         public var copySourceArn: Swift.String?
         /// Credential pair. For more information, see [CredentialPair](https://docs.aws.amazon.com/quicksight/latest/APIReference/API_CredentialPair.html).
@@ -25313,7 +25449,6 @@ extension QuickSightClientTypes {
             self.secretArn = secretArn
         }
     }
-
 }
 
 extension QuickSightClientTypes.DataSourceCredentials: Swift.CustomDebugStringConvertible {
@@ -25324,7 +25459,7 @@ extension QuickSightClientTypes.DataSourceCredentials: Swift.CustomDebugStringCo
 
 extension QuickSightClientTypes {
 
-    public enum DataSourceType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DataSourceType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case adobeAnalytics
         case amazonElasticsearch
         case amazonOpensearch
@@ -25432,7 +25567,7 @@ extension QuickSightClientTypes {
     }
 }
 
-public struct CreateDataSourceInput {
+public struct CreateDataSourceInput: Swift.Sendable {
     /// The Amazon Web Services account ID.
     /// This member is required.
     public var awsAccountId: Swift.String?
@@ -25493,7 +25628,7 @@ extension CreateDataSourceInput: Swift.CustomDebugStringConvertible {
         "CreateDataSourceInput(awsAccountId: \(Swift.String(describing: awsAccountId)), dataSourceId: \(Swift.String(describing: dataSourceId)), dataSourceParameters: \(Swift.String(describing: dataSourceParameters)), folderArns: \(Swift.String(describing: folderArns)), name: \(Swift.String(describing: name)), permissions: \(Swift.String(describing: permissions)), sslProperties: \(Swift.String(describing: sslProperties)), tags: \(Swift.String(describing: tags)), type: \(Swift.String(describing: type)), vpcConnectionProperties: \(Swift.String(describing: vpcConnectionProperties)), credentials: \"CONTENT_REDACTED\")"}
 }
 
-public struct CreateDataSourceOutput {
+public struct CreateDataSourceOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the data source.
     public var arn: Swift.String?
     /// The status of creating the data source.
@@ -25523,7 +25658,7 @@ public struct CreateDataSourceOutput {
 
 extension QuickSightClientTypes {
 
-    public enum FolderType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum FolderType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case restricted
         case shared
         case sdkUnknown(Swift.String)
@@ -25552,7 +25687,7 @@ extension QuickSightClientTypes {
 
 extension QuickSightClientTypes {
 
-    public enum SharingModel: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SharingModel: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case account
         case namespace
         case sdkUnknown(Swift.String)
@@ -25579,7 +25714,7 @@ extension QuickSightClientTypes {
     }
 }
 
-public struct CreateFolderInput {
+public struct CreateFolderInput: Swift.Sendable {
     /// The ID for the Amazon Web Services account where you want to create the folder.
     /// This member is required.
     public var awsAccountId: Swift.String?
@@ -25621,7 +25756,7 @@ public struct CreateFolderInput {
     }
 }
 
-public struct CreateFolderOutput {
+public struct CreateFolderOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) for the newly created folder.
     public var arn: Swift.String?
     /// The folder ID for the newly created folder.
@@ -25647,7 +25782,7 @@ public struct CreateFolderOutput {
 
 extension QuickSightClientTypes {
 
-    public enum MemberType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum MemberType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case analysis
         case dashboard
         case dataset
@@ -25683,7 +25818,7 @@ extension QuickSightClientTypes {
     }
 }
 
-public struct CreateFolderMembershipInput {
+public struct CreateFolderMembershipInput: Swift.Sendable {
     /// The ID for the Amazon Web Services account that contains the folder.
     /// This member is required.
     public var awsAccountId: Swift.String?
@@ -25712,8 +25847,9 @@ public struct CreateFolderMembershipInput {
 }
 
 extension QuickSightClientTypes {
+
     /// An asset in a Amazon QuickSight folder, such as a dashboard, analysis, or dataset.
-    public struct FolderMember {
+    public struct FolderMember: Swift.Sendable {
         /// The ID of an asset in the folder.
         public var memberId: Swift.String?
         /// The type of asset that it is.
@@ -25728,10 +25864,9 @@ extension QuickSightClientTypes {
             self.memberType = memberType
         }
     }
-
 }
 
-public struct CreateFolderMembershipOutput {
+public struct CreateFolderMembershipOutput: Swift.Sendable {
     /// Information about the member in the folder.
     public var folderMember: QuickSightClientTypes.FolderMember?
     /// The Amazon Web Services request ID for this operation.
@@ -25752,7 +25887,7 @@ public struct CreateFolderMembershipOutput {
 }
 
 /// The request object for this operation.
-public struct CreateGroupInput {
+public struct CreateGroupInput: Swift.Sendable {
     /// The ID for the Amazon Web Services account that the group is in. Currently, you use the ID for the Amazon Web Services account that contains your Amazon QuickSight account.
     /// This member is required.
     public var awsAccountId: Swift.String?
@@ -25780,8 +25915,9 @@ public struct CreateGroupInput {
 }
 
 extension QuickSightClientTypes {
+
     /// A group in Amazon QuickSight consists of a set of users. You can use groups to make it easier to manage access and security.
-    public struct Group {
+    public struct Group: Swift.Sendable {
         /// The Amazon Resource Name (ARN) for the group.
         public var arn: Swift.String?
         /// The group description.
@@ -25804,11 +25940,10 @@ extension QuickSightClientTypes {
             self.principalId = principalId
         }
     }
-
 }
 
 /// The response object for this operation.
-public struct CreateGroupOutput {
+public struct CreateGroupOutput: Swift.Sendable {
     /// The name of the group.
     public var group: QuickSightClientTypes.Group?
     /// The Amazon Web Services request ID for this operation.
@@ -25828,7 +25963,7 @@ public struct CreateGroupOutput {
     }
 }
 
-public struct CreateGroupMembershipInput {
+public struct CreateGroupMembershipInput: Swift.Sendable {
     /// The ID for the Amazon Web Services account that the group is in. Currently, you use the ID for the Amazon Web Services account that contains your Amazon QuickSight account.
     /// This member is required.
     public var awsAccountId: Swift.String?
@@ -25857,8 +25992,9 @@ public struct CreateGroupMembershipInput {
 }
 
 extension QuickSightClientTypes {
+
     /// A member of an Amazon QuickSight group. Currently, group members must be users. Groups can't be members of another group. .
-    public struct GroupMember {
+    public struct GroupMember: Swift.Sendable {
         /// The Amazon Resource Name (ARN) for the group member (user).
         public var arn: Swift.String?
         /// The name of the group member (user).
@@ -25873,10 +26009,9 @@ extension QuickSightClientTypes {
             self.memberName = memberName
         }
     }
-
 }
 
-public struct CreateGroupMembershipOutput {
+public struct CreateGroupMembershipOutput: Swift.Sendable {
     /// The group member.
     public var groupMember: QuickSightClientTypes.GroupMember?
     /// The Amazon Web Services request ID for this operation.
@@ -25896,7 +26031,7 @@ public struct CreateGroupMembershipOutput {
     }
 }
 
-public struct CreateIAMPolicyAssignmentInput {
+public struct CreateIAMPolicyAssignmentInput: Swift.Sendable {
     /// The name of the assignment, also called a rule. The name must be unique within the Amazon Web Services account.
     /// This member is required.
     public var assignmentName: Swift.String?
@@ -25938,7 +26073,7 @@ public struct CreateIAMPolicyAssignmentInput {
     }
 }
 
-public struct CreateIAMPolicyAssignmentOutput {
+public struct CreateIAMPolicyAssignmentOutput: Swift.Sendable {
     /// The ID for the assignment.
     public var assignmentId: Swift.String?
     /// The name of the assignment. The name must be unique within the Amazon Web Services account.
@@ -25983,7 +26118,7 @@ public struct CreateIAMPolicyAssignmentOutput {
 extension QuickSightClientTypes {
 
     /// This defines the type of ingestion user wants to trigger. This is part of create ingestion request.
-    public enum IngestionType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum IngestionType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case fullRefresh
         case incrementalRefresh
         case sdkUnknown(Swift.String)
@@ -26010,7 +26145,7 @@ extension QuickSightClientTypes {
     }
 }
 
-public struct CreateIngestionInput {
+public struct CreateIngestionInput: Swift.Sendable {
     /// The Amazon Web Services account ID.
     /// This member is required.
     public var awsAccountId: Swift.String?
@@ -26039,7 +26174,7 @@ public struct CreateIngestionInput {
 
 extension QuickSightClientTypes {
 
-    public enum IngestionStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum IngestionStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case cancelled
         case completed
         case failed
@@ -26078,7 +26213,7 @@ extension QuickSightClientTypes {
     }
 }
 
-public struct CreateIngestionOutput {
+public struct CreateIngestionOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) for the data ingestion.
     public var arn: Swift.String?
     /// An ID for the ingestion.
@@ -26108,7 +26243,7 @@ public struct CreateIngestionOutput {
 
 extension QuickSightClientTypes {
 
-    public enum IdentityStore: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum IdentityStore: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case quicksight
         case sdkUnknown(Swift.String)
 
@@ -26132,7 +26267,7 @@ extension QuickSightClientTypes {
     }
 }
 
-public struct CreateNamespaceInput {
+public struct CreateNamespaceInput: Swift.Sendable {
     /// The ID for the Amazon Web Services account that you want to create the Amazon QuickSight namespace in.
     /// This member is required.
     public var awsAccountId: Swift.String?
@@ -26161,7 +26296,7 @@ public struct CreateNamespaceInput {
 
 extension QuickSightClientTypes {
 
-    public enum NamespaceStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum NamespaceStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case created
         case creating
         case deleting
@@ -26197,7 +26332,7 @@ extension QuickSightClientTypes {
     }
 }
 
-public struct CreateNamespaceOutput {
+public struct CreateNamespaceOutput: Swift.Sendable {
     /// The ARN of the Amazon QuickSight namespace you created.
     public var arn: Swift.String?
     /// The Amazon Web Services Region; that you want to use for the free SPICE capacity for the new namespace. This is set to the region that you run CreateNamespace in.
@@ -26235,7 +26370,7 @@ public struct CreateNamespaceOutput {
 
 extension QuickSightClientTypes {
 
-    public enum RefreshInterval: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum RefreshInterval: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case daily
         case hourly
         case minute15
@@ -26276,7 +26411,7 @@ extension QuickSightClientTypes {
 
 extension QuickSightClientTypes {
 
-    public enum DayOfWeek: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DayOfWeek: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case friday
         case monday
         case saturday
@@ -26319,8 +26454,9 @@ extension QuickSightClientTypes {
 }
 
 extension QuickSightClientTypes {
+
     /// The refresh on entity for weekly or monthly schedules.
-    public struct ScheduleRefreshOnEntity {
+    public struct ScheduleRefreshOnEntity: Swift.Sendable {
         /// The day of the month that you want to schedule refresh on.
         public var dayOfMonth: Swift.String?
         /// The day of the week that you want to schedule a refresh on.
@@ -26335,12 +26471,12 @@ extension QuickSightClientTypes {
             self.dayOfWeek = dayOfWeek
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// Specifies the interval between each scheduled refresh of a dataset.
-    public struct RefreshFrequency {
+    public struct RefreshFrequency: Swift.Sendable {
         /// The interval between scheduled refreshes. Valid values are as follows:
         ///
         /// * MINUTE15: The dataset refreshes every 15 minutes. This value is only supported for incremental refreshes. This interval can only be used for one schedule per dataset.
@@ -26376,12 +26512,12 @@ extension QuickSightClientTypes {
             self.timezone = timezone
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The refresh schedule of a dataset.
-    public struct RefreshSchedule {
+    public struct RefreshSchedule: Swift.Sendable {
         /// The Amazon Resource Name (ARN) for the refresh schedule.
         public var arn: Swift.String?
         /// The type of refresh that a datset undergoes. Valid values are as follows:
@@ -26418,10 +26554,9 @@ extension QuickSightClientTypes {
             self.startAfterDateTime = startAfterDateTime
         }
     }
-
 }
 
-public struct CreateRefreshScheduleInput {
+public struct CreateRefreshScheduleInput: Swift.Sendable {
     /// The Amazon Web Services account ID.
     /// This member is required.
     public var awsAccountId: Swift.String?
@@ -26444,7 +26579,7 @@ public struct CreateRefreshScheduleInput {
     }
 }
 
-public struct CreateRefreshScheduleOutput {
+public struct CreateRefreshScheduleOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) for the refresh schedule.
     public var arn: Swift.String?
     /// The Amazon Web Services request ID for this operation.
@@ -26470,7 +26605,7 @@ public struct CreateRefreshScheduleOutput {
 
 extension QuickSightClientTypes {
 
-    public enum Role: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Role: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case admin
         case adminPro
         case author
@@ -26509,7 +26644,7 @@ extension QuickSightClientTypes {
     }
 }
 
-public struct CreateRoleMembershipInput {
+public struct CreateRoleMembershipInput: Swift.Sendable {
     /// The ID for the Amazon Web Services account that you want to create a group in. The Amazon Web Services account ID that you provide must be the same Amazon Web Services account that contains your Amazon QuickSight account.
     /// This member is required.
     public var awsAccountId: Swift.String?
@@ -26537,7 +26672,7 @@ public struct CreateRoleMembershipInput {
     }
 }
 
-public struct CreateRoleMembershipOutput {
+public struct CreateRoleMembershipOutput: Swift.Sendable {
     /// The Amazon Web Services request ID for this operation.
     public var requestId: Swift.String?
     /// The HTTP status of the request.
@@ -26554,8 +26689,9 @@ public struct CreateRoleMembershipOutput {
 }
 
 extension QuickSightClientTypes {
+
     /// Dataset schema.
-    public struct DataSetSchema {
+    public struct DataSetSchema: Swift.Sendable {
         /// A structure containing the list of column schemas.
         public var columnSchemaList: [QuickSightClientTypes.ColumnSchema]?
 
@@ -26566,12 +26702,12 @@ extension QuickSightClientTypes {
             self.columnSchemaList = columnSchemaList
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// Dataset configuration.
-    public struct DataSetConfiguration {
+    public struct DataSetConfiguration: Swift.Sendable {
         /// A structure containing the list of column group schemas.
         public var columnGroupSchemaList: [QuickSightClientTypes.ColumnGroupSchema]?
         /// Dataset schema.
@@ -26590,12 +26726,12 @@ extension QuickSightClientTypes {
             self.placeholder = placeholder
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The detailed definition of a template.
-    public struct TemplateVersionDefinition {
+    public struct TemplateVersionDefinition: Swift.Sendable {
         /// The configuration for default analysis settings.
         public var analysisDefaults: QuickSightClientTypes.AnalysisDefaults?
         /// An array of calculated field definitions for the template.
@@ -26639,12 +26775,12 @@ extension QuickSightClientTypes {
             self.sheets = sheets
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The source analysis of the template.
-    public struct TemplateSourceAnalysis {
+    public struct TemplateSourceAnalysis: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the resource.
         /// This member is required.
         public var arn: Swift.String?
@@ -26661,12 +26797,12 @@ extension QuickSightClientTypes {
             self.dataSetReferences = dataSetReferences
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The source template of the template.
-    public struct TemplateSourceTemplate {
+    public struct TemplateSourceTemplate: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the resource.
         /// This member is required.
         public var arn: Swift.String?
@@ -26678,12 +26814,12 @@ extension QuickSightClientTypes {
             self.arn = arn
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The source entity of the template.
-    public struct TemplateSourceEntity {
+    public struct TemplateSourceEntity: Swift.Sendable {
         /// The source analysis, if it is based on an analysis.
         public var sourceAnalysis: QuickSightClientTypes.TemplateSourceAnalysis?
         /// The source template, if it is based on an template.
@@ -26698,10 +26834,9 @@ extension QuickSightClientTypes {
             self.sourceTemplate = sourceTemplate
         }
     }
-
 }
 
-public struct CreateTemplateInput {
+public struct CreateTemplateInput: Swift.Sendable {
     /// The ID for the Amazon Web Services account that the group is in. You use the ID for the Amazon Web Services account that contains your Amazon QuickSight account.
     /// This member is required.
     public var awsAccountId: Swift.String?
@@ -26747,7 +26882,7 @@ public struct CreateTemplateInput {
     }
 }
 
-public struct CreateTemplateOutput {
+public struct CreateTemplateOutput: Swift.Sendable {
     /// The ARN for the template.
     public var arn: Swift.String?
     /// The template creation status.
@@ -26779,7 +26914,7 @@ public struct CreateTemplateOutput {
     }
 }
 
-public struct CreateTemplateAliasInput {
+public struct CreateTemplateAliasInput: Swift.Sendable {
     /// The name that you want to give to the template alias that you're creating. Don't start the alias name with the $ character. Alias names that start with $ are reserved by Amazon QuickSight.
     /// This member is required.
     public var aliasName: Swift.String?
@@ -26808,8 +26943,9 @@ public struct CreateTemplateAliasInput {
 }
 
 extension QuickSightClientTypes {
+
     /// The template alias.
-    public struct TemplateAlias {
+    public struct TemplateAlias: Swift.Sendable {
         /// The display name of the template alias.
         public var aliasName: Swift.String?
         /// The Amazon Resource Name (ARN) of the template alias.
@@ -26828,10 +26964,9 @@ extension QuickSightClientTypes {
             self.templateVersionNumber = templateVersionNumber
         }
     }
-
 }
 
-public struct CreateTemplateAliasOutput {
+public struct CreateTemplateAliasOutput: Swift.Sendable {
     /// The Amazon Web Services request ID for this operation.
     public var requestId: Swift.String?
     /// The HTTP status of the request.
@@ -26852,8 +26987,9 @@ public struct CreateTemplateAliasOutput {
 }
 
 extension QuickSightClientTypes {
+
     /// The theme colors that are used for data colors in charts. The colors description is a hexadecimal color code that consists of six alphanumerical characters, prefixed with #, for example #37BFF5.
-    public struct DataColorPalette {
+    public struct DataColorPalette: Swift.Sendable {
         /// The hexadecimal codes for the colors.
         public var colors: [Swift.String]?
         /// The hexadecimal code of a color that applies to charts where a lack of data is highlighted.
@@ -26872,12 +27008,12 @@ extension QuickSightClientTypes {
             self.minMaxGradient = minMaxGradient
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// Display options related to tiles on a sheet.
-    public struct TileStyle {
+    public struct TileStyle: Swift.Sendable {
         /// The border around a tile.
         public var border: QuickSightClientTypes.BorderStyle?
 
@@ -26888,12 +27024,12 @@ extension QuickSightClientTypes {
             self.border = border
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The display options for gutter spacing between tiles on a sheet.
-    public struct GutterStyle {
+    public struct GutterStyle: Swift.Sendable {
         /// This Boolean value controls whether to display a gutter space between sheet tiles.
         public var show: Swift.Bool?
 
@@ -26904,12 +27040,12 @@ extension QuickSightClientTypes {
             self.show = show
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The display options for margins around the outside edge of sheets.
-    public struct MarginStyle {
+    public struct MarginStyle: Swift.Sendable {
         /// This Boolean value controls whether to display sheet margins.
         public var show: Swift.Bool?
 
@@ -26920,12 +27056,12 @@ extension QuickSightClientTypes {
             self.show = show
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The display options for the layout of tiles on a sheet.
-    public struct TileLayoutStyle {
+    public struct TileLayoutStyle: Swift.Sendable {
         /// The gutter settings that apply between tiles.
         public var gutter: QuickSightClientTypes.GutterStyle?
         /// The margin settings that apply around the outside edge of sheets.
@@ -26940,12 +27076,12 @@ extension QuickSightClientTypes {
             self.margin = margin
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The theme display options for sheets.
-    public struct SheetStyle {
+    public struct SheetStyle: Swift.Sendable {
         /// The display options for tiles.
         public var tile: QuickSightClientTypes.TileStyle?
         /// The layout options for tiles.
@@ -26960,12 +27096,12 @@ extension QuickSightClientTypes {
             self.tileLayout = tileLayout
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// Determines the font settings.
-    public struct Font {
+    public struct Font: Swift.Sendable {
         /// Determines the font family settings.
         public var fontFamily: Swift.String?
 
@@ -26976,12 +27112,12 @@ extension QuickSightClientTypes {
             self.fontFamily = fontFamily
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// Determines the typography options.
-    public struct Typography {
+    public struct Typography: Swift.Sendable {
         /// Determines the list of font families.
         public var fontFamilies: [QuickSightClientTypes.Font]?
 
@@ -26992,12 +27128,12 @@ extension QuickSightClientTypes {
             self.fontFamilies = fontFamilies
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The theme colors that apply to UI and to charts, excluding data colors. The colors description is a hexadecimal color code that consists of six alphanumerical characters, prefixed with #, for example #37BFF5. For more information, see [Using Themes in Amazon QuickSight](https://docs.aws.amazon.com/quicksight/latest/user/themes-in-quicksight.html) in the Amazon QuickSight User Guide.
-    public struct UIColorPalette {
+    public struct UIColorPalette: Swift.Sendable {
         /// This color is that applies to selected states and buttons.
         public var accent: Swift.String?
         /// The foreground color that applies to any text or other elements that appear over the accent color.
@@ -27068,12 +27204,12 @@ extension QuickSightClientTypes {
             self.warningForeground = warningForeground
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The theme configuration. This configuration contains all of the display properties for a theme.
-    public struct ThemeConfiguration {
+    public struct ThemeConfiguration: Swift.Sendable {
         /// Color properties that apply to chart data colors.
         public var dataColorPalette: QuickSightClientTypes.DataColorPalette?
         /// Display options related to sheets.
@@ -27096,10 +27232,9 @@ extension QuickSightClientTypes {
             self.uiColorPalette = uiColorPalette
         }
     }
-
 }
 
-public struct CreateThemeInput {
+public struct CreateThemeInput: Swift.Sendable {
     /// The ID of the Amazon Web Services account where you want to store the new theme.
     /// This member is required.
     public var awsAccountId: Swift.String?
@@ -27144,7 +27279,7 @@ public struct CreateThemeInput {
     }
 }
 
-public struct CreateThemeOutput {
+public struct CreateThemeOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) for the theme.
     public var arn: Swift.String?
     /// The theme creation status.
@@ -27176,7 +27311,7 @@ public struct CreateThemeOutput {
     }
 }
 
-public struct CreateThemeAliasInput {
+public struct CreateThemeAliasInput: Swift.Sendable {
     /// The name that you want to give to the theme alias that you are creating. The alias name can't begin with a $. Alias names that start with $ are reserved by Amazon QuickSight.
     /// This member is required.
     public var aliasName: Swift.String?
@@ -27205,8 +27340,9 @@ public struct CreateThemeAliasInput {
 }
 
 extension QuickSightClientTypes {
+
     /// An alias for a theme.
-    public struct ThemeAlias {
+    public struct ThemeAlias: Swift.Sendable {
         /// The display name of the theme alias.
         public var aliasName: Swift.String?
         /// The Amazon Resource Name (ARN) of the theme alias.
@@ -27225,10 +27361,9 @@ extension QuickSightClientTypes {
             self.themeVersionNumber = themeVersionNumber
         }
     }
-
 }
 
-public struct CreateThemeAliasOutput {
+public struct CreateThemeAliasOutput: Swift.Sendable {
     /// The Amazon Web Services request ID for this operation.
     public var requestId: Swift.String?
     /// The HTTP status of the request.
@@ -27250,7 +27385,23 @@ public struct CreateThemeAliasOutput {
 
 extension QuickSightClientTypes {
 
-    public enum DefaultAggregation: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    /// Configuration options for a Topic.
+    public struct TopicConfigOptions: Swift.Sendable {
+        /// Enables Amazon Q Business Insights for a Topic.
+        public var qBusinessInsightsEnabled: Swift.Bool?
+
+        public init(
+            qBusinessInsightsEnabled: Swift.Bool? = nil
+        )
+        {
+            self.qBusinessInsightsEnabled = qBusinessInsightsEnabled
+        }
+    }
+}
+
+extension QuickSightClientTypes {
+
+    public enum DefaultAggregation: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case average
         case count
         case distinctCount
@@ -27305,8 +27456,9 @@ extension QuickSightClientTypes {
 }
 
 extension QuickSightClientTypes {
+
     /// A structure that represents a default formatting definition.
-    public struct DefaultFormatting {
+    public struct DefaultFormatting: Swift.Sendable {
         /// The display format. Valid values for this structure are AUTO, PERCENT, CURRENCY, NUMBER, DATE, and STRING.
         public var displayFormat: QuickSightClientTypes.DisplayFormat?
         /// The additional options for display formatting.
@@ -27321,12 +27473,12 @@ extension QuickSightClientTypes {
             self.displayFormatOptions = displayFormatOptions
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// A structure that represents a semantic type.
-    public struct SemanticType {
+    public struct SemanticType: Swift.Sendable {
         /// The semantic type falsey cell value.
         public var falseyCellValue: Swift.String?
         /// The other names or aliases for the false cell value.
@@ -27361,7 +27513,6 @@ extension QuickSightClientTypes {
             self.typeParameters = typeParameters
         }
     }
-
 }
 
 extension QuickSightClientTypes.SemanticType: Swift.CustomDebugStringConvertible {
@@ -27370,8 +27521,9 @@ extension QuickSightClientTypes.SemanticType: Swift.CustomDebugStringConvertible
 }
 
 extension QuickSightClientTypes {
+
     /// A structure that represents a calculated field.
-    public struct TopicCalculatedField {
+    public struct TopicCalculatedField: Swift.Sendable {
         /// The default aggregation. Valid values for this structure are SUM, MAX, MIN, COUNT, DISTINCT_COUNT, and AVERAGE.
         public var aggregation: QuickSightClientTypes.DefaultAggregation?
         /// The list of aggregation types that are allowed for the calculated field. Valid values for this structure are COUNT, DISTINCT_COUNT, MIN, MAX, MEDIAN, SUM, AVERAGE, STDEV, STDEVP, VAR, VARP, and PERCENTILE.
@@ -27448,7 +27600,6 @@ extension QuickSightClientTypes {
             self.timeGranularity = timeGranularity
         }
     }
-
 }
 
 extension QuickSightClientTypes.TopicCalculatedField: Swift.CustomDebugStringConvertible {
@@ -27457,8 +27608,9 @@ extension QuickSightClientTypes.TopicCalculatedField: Swift.CustomDebugStringCon
 }
 
 extension QuickSightClientTypes {
+
     /// Represents a column in a dataset.
-    public struct TopicColumn {
+    public struct TopicColumn: Swift.Sendable {
         /// The type of aggregation that is performed on the column data when it's queried.
         public var aggregation: QuickSightClientTypes.DefaultAggregation?
         /// The list of aggregation types that are allowed for the column. Valid values for this structure are COUNT, DISTINCT_COUNT, MIN, MAX, MEDIAN, SUM, AVERAGE, STDEV, STDEVP, VAR, VARP, and PERCENTILE.
@@ -27534,12 +27686,12 @@ extension QuickSightClientTypes {
             self.timeGranularity = timeGranularity
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// A structure that represents a data aggregation.
-    public struct DataAggregation {
+    public struct DataAggregation: Swift.Sendable {
         /// The level of time precision that is used to aggregate DateTime values.
         public var datasetRowDateGranularity: QuickSightClientTypes.TopicTimeGranularity?
         /// The column name for the default date.
@@ -27554,12 +27706,12 @@ extension QuickSightClientTypes {
             self.defaultDateColumnName = defaultDateColumnName
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// A constant used in a category filter.
-    public struct TopicCategoryFilterConstant {
+    public struct TopicCategoryFilterConstant: Swift.Sendable {
         /// A collective constant used in a category filter. This element is used to specify a list of values for the constant.
         public var collectiveConstant: QuickSightClientTypes.CollectiveConstant?
         /// The type of category filter constant. This element is used to specify whether a constant is a singular or collective. Valid values are SINGULAR and COLLECTIVE.
@@ -27578,7 +27730,6 @@ extension QuickSightClientTypes {
             self.singularConstant = singularConstant
         }
     }
-
 }
 
 extension QuickSightClientTypes.TopicCategoryFilterConstant: Swift.CustomDebugStringConvertible {
@@ -27588,8 +27739,9 @@ extension QuickSightClientTypes.TopicCategoryFilterConstant: Swift.CustomDebugSt
 }
 
 extension QuickSightClientTypes {
+
     /// A structure that represents a category filter.
-    public struct TopicCategoryFilter {
+    public struct TopicCategoryFilter: Swift.Sendable {
         /// The category filter function. Valid values for this structure are EXACT and CONTAINS.
         public var categoryFilterFunction: QuickSightClientTypes.CategoryFilterFunction?
         /// The category filter type. This element is used to specify whether a filter is a simple category filter or an inverse category filter.
@@ -27612,7 +27764,6 @@ extension QuickSightClientTypes {
             self.inverse = inverse
         }
     }
-
 }
 
 extension QuickSightClientTypes.TopicCategoryFilter: Swift.CustomDebugStringConvertible {
@@ -27621,8 +27772,9 @@ extension QuickSightClientTypes.TopicCategoryFilter: Swift.CustomDebugStringConv
 }
 
 extension QuickSightClientTypes {
+
     /// A structure that represents a range constant.
-    public struct RangeConstant {
+    public struct RangeConstant: Swift.Sendable {
         /// The maximum value for a range constant.
         public var maximum: Swift.String?
         /// The minimum value for a range constant.
@@ -27637,12 +27789,12 @@ extension QuickSightClientTypes {
             self.minimum = minimum
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// A constant value that is used in a range filter to specify the endpoints of the range.
-    public struct TopicRangeFilterConstant {
+    public struct TopicRangeFilterConstant: Swift.Sendable {
         /// The data type of the constant value that is used in a range filter. Valid values for this structure are RANGE.
         public var constantType: QuickSightClientTypes.ConstantType?
         /// The value of the constant that is used to specify the endpoints of a range filter.
@@ -27657,7 +27809,6 @@ extension QuickSightClientTypes {
             self.rangeConstant = rangeConstant
         }
     }
-
 }
 
 extension QuickSightClientTypes.TopicRangeFilterConstant: Swift.CustomDebugStringConvertible {
@@ -27667,8 +27818,9 @@ extension QuickSightClientTypes.TopicRangeFilterConstant: Swift.CustomDebugStrin
 }
 
 extension QuickSightClientTypes {
+
     /// A filter used to restrict data based on a range of dates or times.
-    public struct TopicDateRangeFilter {
+    public struct TopicDateRangeFilter: Swift.Sendable {
         /// The constant used in a date range filter.
         public var constant: QuickSightClientTypes.TopicRangeFilterConstant?
         /// A Boolean value that indicates whether the date range filter should include the boundary values. If set to true, the filter includes the start and end dates. If set to false, the filter excludes them.
@@ -27683,7 +27835,6 @@ extension QuickSightClientTypes {
             self.inclusive = inclusive
         }
     }
-
 }
 
 extension QuickSightClientTypes.TopicDateRangeFilter: Swift.CustomDebugStringConvertible {
@@ -27693,7 +27844,7 @@ extension QuickSightClientTypes.TopicDateRangeFilter: Swift.CustomDebugStringCon
 
 extension QuickSightClientTypes {
 
-    public enum NamedFilterType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum NamedFilterType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case categoryFilter
         case dateRangeFilter
         case numericEqualityFilter
@@ -27731,7 +27882,7 @@ extension QuickSightClientTypes {
 
 extension QuickSightClientTypes {
 
-    public enum NamedFilterAggType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum NamedFilterAggType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case average
         case count
         case distinctCount
@@ -27789,8 +27940,9 @@ extension QuickSightClientTypes {
 }
 
 extension QuickSightClientTypes {
+
     /// A structure that represents a singular filter constant, used in filters to specify a single value to match against.
-    public struct TopicSingularFilterConstant {
+    public struct TopicSingularFilterConstant: Swift.Sendable {
         /// The type of the singular filter constant. Valid values for this structure are SINGULAR.
         public var constantType: QuickSightClientTypes.ConstantType?
         /// The value of the singular filter constant.
@@ -27805,7 +27957,6 @@ extension QuickSightClientTypes {
             self.singularConstant = singularConstant
         }
     }
-
 }
 
 extension QuickSightClientTypes.TopicSingularFilterConstant: Swift.CustomDebugStringConvertible {
@@ -27815,8 +27966,9 @@ extension QuickSightClientTypes.TopicSingularFilterConstant: Swift.CustomDebugSt
 }
 
 extension QuickSightClientTypes {
+
     /// A filter that filters topics based on the value of a numeric field. The filter includes only topics whose numeric field value matches the specified value.
-    public struct TopicNumericEqualityFilter {
+    public struct TopicNumericEqualityFilter: Swift.Sendable {
         /// An aggregation function that specifies how to calculate the value of a numeric field for a topic. Valid values for this structure are NO_AGGREGATION, SUM, AVERAGE, COUNT, DISTINCT_COUNT, MAX, MEDIAN, MIN, STDEV, STDEVP, VAR, and VARP.
         public var aggregation: QuickSightClientTypes.NamedFilterAggType?
         /// The constant used in a numeric equality filter.
@@ -27831,7 +27983,6 @@ extension QuickSightClientTypes {
             self.constant = constant
         }
     }
-
 }
 
 extension QuickSightClientTypes.TopicNumericEqualityFilter: Swift.CustomDebugStringConvertible {
@@ -27840,8 +27991,9 @@ extension QuickSightClientTypes.TopicNumericEqualityFilter: Swift.CustomDebugStr
 }
 
 extension QuickSightClientTypes {
+
     /// A filter that filters topics based on the value of a numeric field. The filter includes only topics whose numeric field value falls within the specified range.
-    public struct TopicNumericRangeFilter {
+    public struct TopicNumericRangeFilter: Swift.Sendable {
         /// An aggregation function that specifies how to calculate the value of a numeric field for a topic, Valid values for this structure are NO_AGGREGATION, SUM, AVERAGE, COUNT, DISTINCT_COUNT, MAX, MEDIAN, MIN, STDEV, STDEVP, VAR, and VARP.
         public var aggregation: QuickSightClientTypes.NamedFilterAggType?
         /// The constant used in a numeric range filter.
@@ -27860,7 +28012,6 @@ extension QuickSightClientTypes {
             self.inclusive = inclusive
         }
     }
-
 }
 
 extension QuickSightClientTypes.TopicNumericRangeFilter: Swift.CustomDebugStringConvertible {
@@ -27870,7 +28021,7 @@ extension QuickSightClientTypes.TopicNumericRangeFilter: Swift.CustomDebugString
 
 extension QuickSightClientTypes {
 
-    public enum TopicRelativeDateFilterFunction: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum TopicRelativeDateFilterFunction: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case last
         case next
         case now
@@ -27907,8 +28058,9 @@ extension QuickSightClientTypes {
 }
 
 extension QuickSightClientTypes {
+
     /// A structure that represents a relative date filter.
-    public struct TopicRelativeDateFilter {
+    public struct TopicRelativeDateFilter: Swift.Sendable {
         /// The constant used in a relative date filter.
         public var constant: QuickSightClientTypes.TopicSingularFilterConstant?
         /// The function to be used in a relative date filter to determine the range of dates to include in the results. Valid values for this structure are BEFORE, AFTER, and BETWEEN.
@@ -27927,7 +28079,6 @@ extension QuickSightClientTypes {
             self.timeGranularity = timeGranularity
         }
     }
-
 }
 
 extension QuickSightClientTypes.TopicRelativeDateFilter: Swift.CustomDebugStringConvertible {
@@ -27936,8 +28087,9 @@ extension QuickSightClientTypes.TopicRelativeDateFilter: Swift.CustomDebugString
 }
 
 extension QuickSightClientTypes {
+
     /// A structure that represents a filter used to select items for a topic.
-    public struct TopicFilter {
+    public struct TopicFilter: Swift.Sendable {
         /// The category filter that is associated with this filter.
         public var categoryFilter: QuickSightClientTypes.TopicCategoryFilter?
         /// The date range filter.
@@ -27990,12 +28142,11 @@ extension QuickSightClientTypes {
             self.relativeDateFilter = relativeDateFilter
         }
     }
-
 }
 
 extension QuickSightClientTypes {
 
-    public enum NamedEntityAggType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum NamedEntityAggType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case average
         case count
         case custom
@@ -28056,8 +28207,9 @@ extension QuickSightClientTypes {
 }
 
 extension QuickSightClientTypes {
+
     /// A structure that represents a metric.
-    public struct NamedEntityDefinitionMetric {
+    public struct NamedEntityDefinitionMetric: Swift.Sendable {
         /// The aggregation of a named entity. Valid values for this structure are SUM, MIN, MAX, COUNT, AVERAGE, DISTINCT_COUNT, STDEV, STDEVP, VAR, VARP, PERCENTILE, MEDIAN, and CUSTOM.
         public var aggregation: QuickSightClientTypes.NamedEntityAggType?
         /// The additional parameters for an aggregation function.
@@ -28072,12 +28224,11 @@ extension QuickSightClientTypes {
             self.aggregationFunctionParameters = aggregationFunctionParameters
         }
     }
-
 }
 
 extension QuickSightClientTypes {
 
-    public enum PropertyRole: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum PropertyRole: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case id
         case primary
         case sdkUnknown(Swift.String)
@@ -28106,7 +28257,7 @@ extension QuickSightClientTypes {
 
 extension QuickSightClientTypes {
 
-    public enum PropertyUsage: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum PropertyUsage: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case dimension
         case inherit
         case measure
@@ -28137,8 +28288,9 @@ extension QuickSightClientTypes {
 }
 
 extension QuickSightClientTypes {
+
     /// A structure that represents a named entity.
-    public struct NamedEntityDefinition {
+    public struct NamedEntityDefinition: Swift.Sendable {
         /// The name of the entity.
         public var fieldName: Swift.String?
         /// The definition of a metric.
@@ -28165,12 +28317,12 @@ extension QuickSightClientTypes {
             self.propertyUsage = propertyUsage
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// A structure that represents a semantic entity type.
-    public struct SemanticEntityType {
+    public struct SemanticEntityType: Swift.Sendable {
         /// The semantic entity sub type name.
         public var subTypeName: Swift.String?
         /// The semantic entity type name.
@@ -28189,12 +28341,12 @@ extension QuickSightClientTypes {
             self.typeParameters = typeParameters
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// A structure that represents a named entity.
-    public struct TopicNamedEntity {
+    public struct TopicNamedEntity: Swift.Sendable {
         /// The definition of a named entity.
         public var definition: [QuickSightClientTypes.NamedEntityDefinition]?
         /// The description of the named entity.
@@ -28222,12 +28374,12 @@ extension QuickSightClientTypes {
             self.semanticEntityType = semanticEntityType
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// A structure that represents a dataset.
-    public struct DatasetMetadata {
+    public struct DatasetMetadata: Swift.Sendable {
         /// The list of calculated field definitions.
         public var calculatedFields: [QuickSightClientTypes.TopicCalculatedField]?
         /// The list of column definitions.
@@ -28267,12 +28419,11 @@ extension QuickSightClientTypes {
             self.namedEntities = namedEntities
         }
     }
-
 }
 
 extension QuickSightClientTypes {
 
-    public enum TopicUserExperienceVersion: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum TopicUserExperienceVersion: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case legacy
         case newReaderExperience
         case sdkUnknown(Swift.String)
@@ -28300,8 +28451,11 @@ extension QuickSightClientTypes {
 }
 
 extension QuickSightClientTypes {
+
     /// A structure that describes the details of a topic, such as its name, description, and associated data sets.
-    public struct TopicDetails {
+    public struct TopicDetails: Swift.Sendable {
+        /// Configuration options for a Topic.
+        public var configOptions: QuickSightClientTypes.TopicConfigOptions?
         /// The data sets that the topic is associated with.
         public var dataSets: [QuickSightClientTypes.DatasetMetadata]?
         /// The description of the topic.
@@ -28312,22 +28466,23 @@ extension QuickSightClientTypes {
         public var userExperienceVersion: QuickSightClientTypes.TopicUserExperienceVersion?
 
         public init(
+            configOptions: QuickSightClientTypes.TopicConfigOptions? = nil,
             dataSets: [QuickSightClientTypes.DatasetMetadata]? = nil,
             description: Swift.String? = nil,
             name: Swift.String? = nil,
             userExperienceVersion: QuickSightClientTypes.TopicUserExperienceVersion? = nil
         )
         {
+            self.configOptions = configOptions
             self.dataSets = dataSets
             self.description = description
             self.name = name
             self.userExperienceVersion = userExperienceVersion
         }
     }
-
 }
 
-public struct CreateTopicInput {
+public struct CreateTopicInput: Swift.Sendable {
     /// The ID of the Amazon Web Services account that you want to create a topic in.
     /// This member is required.
     public var awsAccountId: Swift.String?
@@ -28354,7 +28509,7 @@ public struct CreateTopicInput {
     }
 }
 
-public struct CreateTopicOutput {
+public struct CreateTopicOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the topic.
     public var arn: Swift.String?
     /// The Amazon Resource Name (ARN) of the topic refresh.
@@ -28384,7 +28539,7 @@ public struct CreateTopicOutput {
 
 extension QuickSightClientTypes {
 
-    public enum TopicScheduleType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum TopicScheduleType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case daily
         case hourly
         case monthly
@@ -28418,8 +28573,9 @@ extension QuickSightClientTypes {
 }
 
 extension QuickSightClientTypes {
+
     /// A structure that represents a topic refresh schedule.
-    public struct TopicRefreshSchedule {
+    public struct TopicRefreshSchedule: Swift.Sendable {
         /// A Boolean value that controls whether to schedule runs at the same schedule that is specified in SPICE dataset.
         /// This member is required.
         public var basedOnSpiceSchedule: Swift.Bool
@@ -28452,10 +28608,9 @@ extension QuickSightClientTypes {
             self.topicScheduleType = topicScheduleType
         }
     }
-
 }
 
-public struct CreateTopicRefreshScheduleInput {
+public struct CreateTopicRefreshScheduleInput: Swift.Sendable {
     /// The ID of the Amazon Web Services account that contains the topic you're creating a refresh schedule for.
     /// This member is required.
     public var awsAccountId: Swift.String?
@@ -28487,7 +28642,7 @@ public struct CreateTopicRefreshScheduleInput {
     }
 }
 
-public struct CreateTopicRefreshScheduleOutput {
+public struct CreateTopicRefreshScheduleOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the dataset.
     public var datasetArn: Swift.String?
     /// The Amazon Web Services request ID for this operation.
@@ -28515,7 +28670,7 @@ public struct CreateTopicRefreshScheduleOutput {
     }
 }
 
-public struct CreateVPCConnectionInput {
+public struct CreateVPCConnectionInput: Swift.Sendable {
     /// The Amazon Web Services account ID of the account where you want to create a new VPC connection.
     /// This member is required.
     public var awsAccountId: Swift.String?
@@ -28563,7 +28718,7 @@ public struct CreateVPCConnectionInput {
 
 extension QuickSightClientTypes {
 
-    public enum VPCConnectionAvailabilityStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum VPCConnectionAvailabilityStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case available
         case partiallyAvailable
         case unavailable
@@ -28595,7 +28750,7 @@ extension QuickSightClientTypes {
 
 extension QuickSightClientTypes {
 
-    public enum VPCConnectionResourceStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum VPCConnectionResourceStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case creationFailed
         case creationInProgress
         case creationSuccessful
@@ -28643,7 +28798,7 @@ extension QuickSightClientTypes {
     }
 }
 
-public struct CreateVPCConnectionOutput {
+public struct CreateVPCConnectionOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the VPC connection.
     public var arn: Swift.String?
     /// The availability status of the VPC connection.
@@ -28677,7 +28832,7 @@ public struct CreateVPCConnectionOutput {
 
 extension QuickSightClientTypes {
 
-    public enum DashboardErrorType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DashboardErrorType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case accessDenied
         case columnGeographicRoleMismatch
         case columnReplacementMissing
@@ -28729,8 +28884,9 @@ extension QuickSightClientTypes {
 }
 
 extension QuickSightClientTypes {
+
     /// Dashboard error.
-    public struct DashboardError {
+    public struct DashboardError: Swift.Sendable {
         /// Message.
         public var message: Swift.String?
         /// Type.
@@ -28749,12 +28905,12 @@ extension QuickSightClientTypes {
             self.violatedEntities = violatedEntities
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// Dashboard version.
-    public struct DashboardVersion {
+    public struct DashboardVersion: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the resource.
         public var arn: Swift.String?
         /// The time that this dashboard version was created.
@@ -28801,12 +28957,12 @@ extension QuickSightClientTypes {
             self.versionNumber = versionNumber
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// Dashboard.
-    public struct Dashboard {
+    public struct Dashboard: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the resource.
         public var arn: Swift.String?
         /// The time that this dashboard was created.
@@ -28845,12 +29001,11 @@ extension QuickSightClientTypes {
             self.version = version
         }
     }
-
 }
 
 extension QuickSightClientTypes {
 
-    public enum DashboardFilterAttribute: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DashboardFilterAttribute: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case dashboardName
         case directQuicksightOwner
         case directQuicksightSoleOwner
@@ -28893,8 +29048,9 @@ extension QuickSightClientTypes {
 }
 
 extension QuickSightClientTypes {
+
     /// A filter that you apply when searching for dashboards.
-    public struct DashboardSearchFilter {
+    public struct DashboardSearchFilter: Swift.Sendable {
         /// The name of the value that you want to use as a filter, for example, "Name": "QUICKSIGHT_OWNER". Valid values are defined as follows:
         ///
         /// * QUICKSIGHT_VIEWER_OR_OWNER: Provide an ARN of a user or group, and any dashboards with that ARN listed as one of the dashboards's owners or viewers are returned. Implicit permissions from folders or groups are considered.
@@ -28926,12 +29082,12 @@ extension QuickSightClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// Dashboard summary.
-    public struct DashboardSummary {
+    public struct DashboardSummary: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the resource.
         public var arn: Swift.String?
         /// The time that this dashboard was created.
@@ -28966,12 +29122,12 @@ extension QuickSightClientTypes {
             self.publishedVersionNumber = publishedVersionNumber
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// Dashboard version summary.
-    public struct DashboardVersionSummary {
+    public struct DashboardVersionSummary: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the resource.
         public var arn: Swift.String?
         /// The time that this dashboard version was created.
@@ -29002,12 +29158,12 @@ extension QuickSightClientTypes {
             self.versionNumber = versionNumber
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// Output column.
-    public struct OutputColumn {
+    public struct OutputColumn: Swift.Sendable {
         /// A description for a column.
         public var description: Swift.String?
         /// The display name of the column..
@@ -29030,7 +29186,6 @@ extension QuickSightClientTypes {
             self.type = type
         }
     }
-
 }
 
 extension QuickSightClientTypes.OutputColumn: Swift.CustomDebugStringConvertible {
@@ -29039,8 +29194,9 @@ extension QuickSightClientTypes.OutputColumn: Swift.CustomDebugStringConvertible
 }
 
 extension QuickSightClientTypes {
+
     /// Dataset.
-    public struct DataSet {
+    public struct DataSet: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the resource.
         public var arn: Swift.String?
         /// Groupings of columns that work together in certain Amazon QuickSight features. Currently, only geospatial hierarchy is supported.
@@ -29115,12 +29271,11 @@ extension QuickSightClientTypes {
             self.rowLevelPermissionTagConfiguration = rowLevelPermissionTagConfiguration
         }
     }
-
 }
 
 extension QuickSightClientTypes {
 
-    public enum DataSetFilterAttribute: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DataSetFilterAttribute: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case datasetName
         case directQuicksightOwner
         case directQuicksightSoleOwner
@@ -29161,7 +29316,7 @@ extension QuickSightClientTypes {
 
 extension QuickSightClientTypes {
 
-    public enum LookbackWindowSizeUnit: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum LookbackWindowSizeUnit: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case day
         case hour
         case week
@@ -29192,8 +29347,9 @@ extension QuickSightClientTypes {
 }
 
 extension QuickSightClientTypes {
+
     /// The lookback window setup of an incremental refresh configuration.
-    public struct LookbackWindow {
+    public struct LookbackWindow: Swift.Sendable {
         /// The name of the lookback window column.
         /// This member is required.
         public var columnName: Swift.String?
@@ -29215,12 +29371,12 @@ extension QuickSightClientTypes {
             self.sizeUnit = sizeUnit
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The incremental refresh configuration for a dataset.
-    public struct IncrementalRefresh {
+    public struct IncrementalRefresh: Swift.Sendable {
         /// The lookback window setup for an incremental refresh configuration.
         /// This member is required.
         public var lookbackWindow: QuickSightClientTypes.LookbackWindow?
@@ -29232,12 +29388,12 @@ extension QuickSightClientTypes {
             self.lookbackWindow = lookbackWindow
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The refresh configuration of a dataset.
-    public struct RefreshConfiguration {
+    public struct RefreshConfiguration: Swift.Sendable {
         /// The incremental refresh for the dataset.
         /// This member is required.
         public var incrementalRefresh: QuickSightClientTypes.IncrementalRefresh?
@@ -29249,12 +29405,12 @@ extension QuickSightClientTypes {
             self.incrementalRefresh = incrementalRefresh
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The refresh properties of a dataset.
-    public struct DataSetRefreshProperties {
+    public struct DataSetRefreshProperties: Swift.Sendable {
         /// The refresh configuration for a dataset.
         /// This member is required.
         public var refreshConfiguration: QuickSightClientTypes.RefreshConfiguration?
@@ -29266,12 +29422,12 @@ extension QuickSightClientTypes {
             self.refreshConfiguration = refreshConfiguration
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// A filter that you apply when searching for datasets.
-    public struct DataSetSearchFilter {
+    public struct DataSetSearchFilter: Swift.Sendable {
         /// The name of the value that you want to use as a filter, for example, "Name": "QUICKSIGHT_OWNER". Valid values are defined as follows:
         ///
         /// * QUICKSIGHT_VIEWER_OR_OWNER: Provide an ARN of a user or group, and any datasets with that ARN listed as one of the dataset owners or viewers are returned. Implicit permissions from folders or groups are considered.
@@ -29305,12 +29461,12 @@ extension QuickSightClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// Dataset summary.
-    public struct DataSetSummary {
+    public struct DataSetSummary: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the dataset.
         public var arn: Swift.String?
         /// A value that indicates if the dataset has column level permission configured.
@@ -29353,12 +29509,11 @@ extension QuickSightClientTypes {
             self.rowLevelPermissionTagConfigurationApplied = rowLevelPermissionTagConfigurationApplied
         }
     }
-
 }
 
 extension QuickSightClientTypes {
 
-    public enum DataSourceErrorInfoType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DataSourceErrorInfoType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case accessDenied
         case conflict
         case copySourceNotFound
@@ -29404,8 +29559,9 @@ extension QuickSightClientTypes {
 }
 
 extension QuickSightClientTypes {
+
     /// Error information for the data source creation or update.
-    public struct DataSourceErrorInfo {
+    public struct DataSourceErrorInfo: Swift.Sendable {
         /// Error message.
         public var message: Swift.String?
         /// Error type.
@@ -29420,12 +29576,12 @@ extension QuickSightClientTypes {
             self.type = type
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The structure of a data source.
-    public struct DataSource {
+    public struct DataSource: Swift.Sendable {
         /// A set of alternate data source parameters that you want to share for the credentials stored with this data source. The credentials are applied in tandem with the data source parameters when you copy a data source by using a create or update request. The API operation compares the DataSourceParameters structure that's in the request with the structures in the AlternateDataSourceParameters allow list. If the structures are an exact match, the request is allowed to use the credentials from this existing data source. If the AlternateDataSourceParameters list is null, the Credentials originally used with this DataSourceParameters are automatically allowed.
         public var alternateDataSourceParameters: [QuickSightClientTypes.DataSourceParameters]?
         /// The Amazon Resource Name (ARN) of the data source.
@@ -29484,12 +29640,11 @@ extension QuickSightClientTypes {
             self.vpcConnectionProperties = vpcConnectionProperties
         }
     }
-
 }
 
 extension QuickSightClientTypes {
 
-    public enum DataSourceFilterAttribute: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DataSourceFilterAttribute: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case datasourceName
         case directQuicksightOwner
         case directQuicksightSoleOwner
@@ -29523,8 +29678,9 @@ extension QuickSightClientTypes {
 }
 
 extension QuickSightClientTypes {
+
     /// A filter that you apply when searching for data sources.
-    public struct DataSourceSearchFilter {
+    public struct DataSourceSearchFilter: Swift.Sendable {
         /// The name of the value that you want to use as a filter, for example, "Name": "DIRECT_QUICKSIGHT_OWNER". Valid values are defined as follows:
         ///
         /// * DIRECT_QUICKSIGHT_VIEWER_OR_OWNER: Provide an ARN of a user or group, and any data sources with that ARN listed as one of the owners or viewers of the data sources are returned. Implicit permissions from folders or groups are not considered.
@@ -29554,12 +29710,12 @@ extension QuickSightClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// A DataSourceSummary object that returns a summary of a data source.
-    public struct DataSourceSummary {
+    public struct DataSourceSummary: Swift.Sendable {
         /// The arn of the datasource.
         public var arn: Swift.String?
         /// The date and time that the data source was created. This value is expressed in MM-DD-YYYY HH:MM:SS format.
@@ -29590,10 +29746,9 @@ extension QuickSightClientTypes {
             self.type = type
         }
     }
-
 }
 
-public struct DeleteAccountCustomizationInput {
+public struct DeleteAccountCustomizationInput: Swift.Sendable {
     /// The ID for the Amazon Web Services account that you want to delete Amazon QuickSight customizations from in this Amazon Web Services Region.
     /// This member is required.
     public var awsAccountId: Swift.String?
@@ -29610,7 +29765,7 @@ public struct DeleteAccountCustomizationInput {
     }
 }
 
-public struct DeleteAccountCustomizationOutput {
+public struct DeleteAccountCustomizationOutput: Swift.Sendable {
     /// The Amazon Web Services request ID for this operation.
     public var requestId: Swift.String?
     /// The HTTP status of the request.
@@ -29626,7 +29781,7 @@ public struct DeleteAccountCustomizationOutput {
     }
 }
 
-public struct DeleteAccountSubscriptionInput {
+public struct DeleteAccountSubscriptionInput: Swift.Sendable {
     /// The Amazon Web Services account ID of the account that you want to delete.
     /// This member is required.
     public var awsAccountId: Swift.String?
@@ -29639,7 +29794,7 @@ public struct DeleteAccountSubscriptionInput {
     }
 }
 
-public struct DeleteAccountSubscriptionOutput {
+public struct DeleteAccountSubscriptionOutput: Swift.Sendable {
     /// The Amazon Web Services request ID for this operation.
     public var requestId: Swift.String?
     /// The HTTP status of the request.
@@ -29655,7 +29810,7 @@ public struct DeleteAccountSubscriptionOutput {
     }
 }
 
-public struct DeleteAnalysisInput {
+public struct DeleteAnalysisInput: Swift.Sendable {
     /// The ID of the analysis that you're deleting.
     /// This member is required.
     public var analysisId: Swift.String?
@@ -29681,7 +29836,7 @@ public struct DeleteAnalysisInput {
     }
 }
 
-public struct DeleteAnalysisOutput {
+public struct DeleteAnalysisOutput: Swift.Sendable {
     /// The ID of the deleted analysis.
     public var analysisId: Swift.String?
     /// The Amazon Resource Name (ARN) of the deleted analysis.
@@ -29709,7 +29864,7 @@ public struct DeleteAnalysisOutput {
     }
 }
 
-public struct DeleteDashboardInput {
+public struct DeleteDashboardInput: Swift.Sendable {
     /// The ID of the Amazon Web Services account that contains the dashboard that you're deleting.
     /// This member is required.
     public var awsAccountId: Swift.String?
@@ -29731,7 +29886,7 @@ public struct DeleteDashboardInput {
     }
 }
 
-public struct DeleteDashboardOutput {
+public struct DeleteDashboardOutput: Swift.Sendable {
     /// The Secure Socket Layer (SSL) properties that apply for the resource.
     public var arn: Swift.String?
     /// The ID of the dashboard.
@@ -29755,7 +29910,7 @@ public struct DeleteDashboardOutput {
     }
 }
 
-public struct DeleteDataSetInput {
+public struct DeleteDataSetInput: Swift.Sendable {
     /// The Amazon Web Services account ID.
     /// This member is required.
     public var awsAccountId: Swift.String?
@@ -29773,7 +29928,7 @@ public struct DeleteDataSetInput {
     }
 }
 
-public struct DeleteDataSetOutput {
+public struct DeleteDataSetOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the dataset.
     public var arn: Swift.String?
     /// The ID for the dataset that you want to create. This ID is unique per Amazon Web Services Region for each Amazon Web Services account.
@@ -29797,7 +29952,7 @@ public struct DeleteDataSetOutput {
     }
 }
 
-public struct DeleteDataSetRefreshPropertiesInput {
+public struct DeleteDataSetRefreshPropertiesInput: Swift.Sendable {
     /// The Amazon Web Services account ID.
     /// This member is required.
     public var awsAccountId: Swift.String?
@@ -29815,7 +29970,7 @@ public struct DeleteDataSetRefreshPropertiesInput {
     }
 }
 
-public struct DeleteDataSetRefreshPropertiesOutput {
+public struct DeleteDataSetRefreshPropertiesOutput: Swift.Sendable {
     /// The Amazon Web Services request ID for this operation.
     public var requestId: Swift.String?
     /// The HTTP status of the request.
@@ -29831,7 +29986,7 @@ public struct DeleteDataSetRefreshPropertiesOutput {
     }
 }
 
-public struct DeleteDataSourceInput {
+public struct DeleteDataSourceInput: Swift.Sendable {
     /// The Amazon Web Services account ID.
     /// This member is required.
     public var awsAccountId: Swift.String?
@@ -29849,7 +30004,7 @@ public struct DeleteDataSourceInput {
     }
 }
 
-public struct DeleteDataSourceOutput {
+public struct DeleteDataSourceOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the data source that you deleted.
     public var arn: Swift.String?
     /// The ID of the data source. This ID is unique per Amazon Web Services Region for each Amazon Web Services account.
@@ -29873,7 +30028,7 @@ public struct DeleteDataSourceOutput {
     }
 }
 
-public struct DeleteFolderInput {
+public struct DeleteFolderInput: Swift.Sendable {
     /// The ID for the Amazon Web Services account that contains the folder.
     /// This member is required.
     public var awsAccountId: Swift.String?
@@ -29891,7 +30046,7 @@ public struct DeleteFolderInput {
     }
 }
 
-public struct DeleteFolderOutput {
+public struct DeleteFolderOutput: Swift.Sendable {
     /// The Amazon Resource Name of the deleted folder.
     public var arn: Swift.String?
     /// The ID of the folder.
@@ -29915,7 +30070,7 @@ public struct DeleteFolderOutput {
     }
 }
 
-public struct DeleteFolderMembershipInput {
+public struct DeleteFolderMembershipInput: Swift.Sendable {
     /// The ID for the Amazon Web Services account that contains the folder.
     /// This member is required.
     public var awsAccountId: Swift.String?
@@ -29943,7 +30098,7 @@ public struct DeleteFolderMembershipInput {
     }
 }
 
-public struct DeleteFolderMembershipOutput {
+public struct DeleteFolderMembershipOutput: Swift.Sendable {
     /// The Amazon Web Services request ID for this operation.
     public var requestId: Swift.String?
     /// The HTTP status of the request.
@@ -29959,7 +30114,7 @@ public struct DeleteFolderMembershipOutput {
     }
 }
 
-public struct DeleteGroupInput {
+public struct DeleteGroupInput: Swift.Sendable {
     /// The ID for the Amazon Web Services account that the group is in. Currently, you use the ID for the Amazon Web Services account that contains your Amazon QuickSight account.
     /// This member is required.
     public var awsAccountId: Swift.String?
@@ -29982,7 +30137,7 @@ public struct DeleteGroupInput {
     }
 }
 
-public struct DeleteGroupOutput {
+public struct DeleteGroupOutput: Swift.Sendable {
     /// The Amazon Web Services request ID for this operation.
     public var requestId: Swift.String?
     /// The HTTP status of the request.
@@ -29998,7 +30153,7 @@ public struct DeleteGroupOutput {
     }
 }
 
-public struct DeleteGroupMembershipInput {
+public struct DeleteGroupMembershipInput: Swift.Sendable {
     /// The ID for the Amazon Web Services account that the group is in. Currently, you use the ID for the Amazon Web Services account that contains your Amazon QuickSight account.
     /// This member is required.
     public var awsAccountId: Swift.String?
@@ -30026,7 +30181,7 @@ public struct DeleteGroupMembershipInput {
     }
 }
 
-public struct DeleteGroupMembershipOutput {
+public struct DeleteGroupMembershipOutput: Swift.Sendable {
     /// The Amazon Web Services request ID for this operation.
     public var requestId: Swift.String?
     /// The HTTP status of the request.
@@ -30042,7 +30197,7 @@ public struct DeleteGroupMembershipOutput {
     }
 }
 
-public struct DeleteIAMPolicyAssignmentInput {
+public struct DeleteIAMPolicyAssignmentInput: Swift.Sendable {
     /// The name of the assignment.
     /// This member is required.
     public var assignmentName: Swift.String?
@@ -30065,7 +30220,7 @@ public struct DeleteIAMPolicyAssignmentInput {
     }
 }
 
-public struct DeleteIAMPolicyAssignmentOutput {
+public struct DeleteIAMPolicyAssignmentOutput: Swift.Sendable {
     /// The name of the assignment.
     public var assignmentName: Swift.String?
     /// The Amazon Web Services request ID for this operation.
@@ -30085,7 +30240,7 @@ public struct DeleteIAMPolicyAssignmentOutput {
     }
 }
 
-public struct DeleteIdentityPropagationConfigInput {
+public struct DeleteIdentityPropagationConfigInput: Swift.Sendable {
     /// The ID of the Amazon Web Services account that you want to delete an identity propagation configuration from.
     /// This member is required.
     public var awsAccountId: Swift.String?
@@ -30103,7 +30258,7 @@ public struct DeleteIdentityPropagationConfigInput {
     }
 }
 
-public struct DeleteIdentityPropagationConfigOutput {
+public struct DeleteIdentityPropagationConfigOutput: Swift.Sendable {
     /// The Amazon Web Services request ID for this operation.
     public var requestId: Swift.String?
     /// The HTTP status of the request.
@@ -30119,7 +30274,7 @@ public struct DeleteIdentityPropagationConfigOutput {
     }
 }
 
-public struct DeleteNamespaceInput {
+public struct DeleteNamespaceInput: Swift.Sendable {
     /// The ID for the Amazon Web Services account that you want to delete the Amazon QuickSight namespace from.
     /// This member is required.
     public var awsAccountId: Swift.String?
@@ -30137,7 +30292,7 @@ public struct DeleteNamespaceInput {
     }
 }
 
-public struct DeleteNamespaceOutput {
+public struct DeleteNamespaceOutput: Swift.Sendable {
     /// The Amazon Web Services request ID for this operation.
     public var requestId: Swift.String?
     /// The HTTP status of the request.
@@ -30153,7 +30308,7 @@ public struct DeleteNamespaceOutput {
     }
 }
 
-public struct DeleteRefreshScheduleInput {
+public struct DeleteRefreshScheduleInput: Swift.Sendable {
     /// The Amazon Web Services account ID.
     /// This member is required.
     public var awsAccountId: Swift.String?
@@ -30176,7 +30331,7 @@ public struct DeleteRefreshScheduleInput {
     }
 }
 
-public struct DeleteRefreshScheduleOutput {
+public struct DeleteRefreshScheduleOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) for the refresh schedule.
     public var arn: Swift.String?
     /// The Amazon Web Services request ID for this operation.
@@ -30200,7 +30355,7 @@ public struct DeleteRefreshScheduleOutput {
     }
 }
 
-public struct DeleteRoleCustomPermissionInput {
+public struct DeleteRoleCustomPermissionInput: Swift.Sendable {
     /// The ID for the Amazon Web Services account that the group is in. Currently, you use the ID for the Amazon Web Services account that contains your Amazon QuickSight account.
     /// This member is required.
     public var awsAccountId: Swift.String?
@@ -30223,7 +30378,7 @@ public struct DeleteRoleCustomPermissionInput {
     }
 }
 
-public struct DeleteRoleCustomPermissionOutput {
+public struct DeleteRoleCustomPermissionOutput: Swift.Sendable {
     /// The Amazon Web Services request ID for this operation.
     public var requestId: Swift.String?
     /// The HTTP status of the request.
@@ -30239,7 +30394,7 @@ public struct DeleteRoleCustomPermissionOutput {
     }
 }
 
-public struct DeleteRoleMembershipInput {
+public struct DeleteRoleMembershipInput: Swift.Sendable {
     /// The ID for the Amazon Web Services account that you want to create a group in. The Amazon Web Services account ID that you provide must be the same Amazon Web Services account that contains your Amazon QuickSight account.
     /// This member is required.
     public var awsAccountId: Swift.String?
@@ -30267,7 +30422,7 @@ public struct DeleteRoleMembershipInput {
     }
 }
 
-public struct DeleteRoleMembershipOutput {
+public struct DeleteRoleMembershipOutput: Swift.Sendable {
     /// The Amazon Web Services request ID for this operation.
     public var requestId: Swift.String?
     /// The HTTP status of the request.
@@ -30283,7 +30438,7 @@ public struct DeleteRoleMembershipOutput {
     }
 }
 
-public struct DeleteTemplateInput {
+public struct DeleteTemplateInput: Swift.Sendable {
     /// The ID of the Amazon Web Services account that contains the template that you're deleting.
     /// This member is required.
     public var awsAccountId: Swift.String?
@@ -30305,7 +30460,7 @@ public struct DeleteTemplateInput {
     }
 }
 
-public struct DeleteTemplateOutput {
+public struct DeleteTemplateOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the resource.
     public var arn: Swift.String?
     /// The Amazon Web Services request ID for this operation.
@@ -30329,7 +30484,7 @@ public struct DeleteTemplateOutput {
     }
 }
 
-public struct DeleteTemplateAliasInput {
+public struct DeleteTemplateAliasInput: Swift.Sendable {
     /// The name for the template alias. To delete a specific alias, you delete the version that the alias points to. You can specify the alias name, or specify the latest version of the template by providing the keyword $LATEST in the AliasName parameter.
     /// This member is required.
     public var aliasName: Swift.String?
@@ -30352,7 +30507,7 @@ public struct DeleteTemplateAliasInput {
     }
 }
 
-public struct DeleteTemplateAliasOutput {
+public struct DeleteTemplateAliasOutput: Swift.Sendable {
     /// The name for the template alias.
     public var aliasName: Swift.String?
     /// The Amazon Resource Name (ARN) of the template you want to delete.
@@ -30380,7 +30535,7 @@ public struct DeleteTemplateAliasOutput {
     }
 }
 
-public struct DeleteThemeInput {
+public struct DeleteThemeInput: Swift.Sendable {
     /// The ID of the Amazon Web Services account that contains the theme that you're deleting.
     /// This member is required.
     public var awsAccountId: Swift.String?
@@ -30402,7 +30557,7 @@ public struct DeleteThemeInput {
     }
 }
 
-public struct DeleteThemeOutput {
+public struct DeleteThemeOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the resource.
     public var arn: Swift.String?
     /// The Amazon Web Services request ID for this operation.
@@ -30426,7 +30581,7 @@ public struct DeleteThemeOutput {
     }
 }
 
-public struct DeleteThemeAliasInput {
+public struct DeleteThemeAliasInput: Swift.Sendable {
     /// The unique name for the theme alias to delete.
     /// This member is required.
     public var aliasName: Swift.String?
@@ -30449,7 +30604,7 @@ public struct DeleteThemeAliasInput {
     }
 }
 
-public struct DeleteThemeAliasOutput {
+public struct DeleteThemeAliasOutput: Swift.Sendable {
     /// The name for the theme alias.
     public var aliasName: Swift.String?
     /// The Amazon Resource Name (ARN) of the theme resource using the deleted alias.
@@ -30477,7 +30632,7 @@ public struct DeleteThemeAliasOutput {
     }
 }
 
-public struct DeleteTopicInput {
+public struct DeleteTopicInput: Swift.Sendable {
     /// The ID of the Amazon Web Services account that contains the topic that you want to delete.
     /// This member is required.
     public var awsAccountId: Swift.String?
@@ -30495,7 +30650,7 @@ public struct DeleteTopicInput {
     }
 }
 
-public struct DeleteTopicOutput {
+public struct DeleteTopicOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the topic.
     public var arn: Swift.String?
     /// The Amazon Web Services request ID for this operation.
@@ -30519,7 +30674,7 @@ public struct DeleteTopicOutput {
     }
 }
 
-public struct DeleteTopicRefreshScheduleInput {
+public struct DeleteTopicRefreshScheduleInput: Swift.Sendable {
     /// The Amazon Web Services account ID.
     /// This member is required.
     public var awsAccountId: Swift.String?
@@ -30542,7 +30697,7 @@ public struct DeleteTopicRefreshScheduleInput {
     }
 }
 
-public struct DeleteTopicRefreshScheduleOutput {
+public struct DeleteTopicRefreshScheduleOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the dataset.
     public var datasetArn: Swift.String?
     /// The Amazon Web Services request ID for this operation.
@@ -30570,7 +30725,7 @@ public struct DeleteTopicRefreshScheduleOutput {
     }
 }
 
-public struct DeleteUserInput {
+public struct DeleteUserInput: Swift.Sendable {
     /// The ID for the Amazon Web Services account that the user is in. Currently, you use the ID for the Amazon Web Services account that contains your Amazon QuickSight account.
     /// This member is required.
     public var awsAccountId: Swift.String?
@@ -30593,7 +30748,7 @@ public struct DeleteUserInput {
     }
 }
 
-public struct DeleteUserOutput {
+public struct DeleteUserOutput: Swift.Sendable {
     /// The Amazon Web Services request ID for this operation.
     public var requestId: Swift.String?
     /// The HTTP status of the request.
@@ -30610,7 +30765,7 @@ public struct DeleteUserOutput {
 }
 
 ///
-public struct DeleteUserByPrincipalIdInput {
+public struct DeleteUserByPrincipalIdInput: Swift.Sendable {
     /// The ID for the Amazon Web Services account that the user is in. Currently, you use the ID for the Amazon Web Services account that contains your Amazon QuickSight account.
     /// This member is required.
     public var awsAccountId: Swift.String?
@@ -30633,7 +30788,7 @@ public struct DeleteUserByPrincipalIdInput {
     }
 }
 
-public struct DeleteUserByPrincipalIdOutput {
+public struct DeleteUserByPrincipalIdOutput: Swift.Sendable {
     /// The Amazon Web Services request ID for this operation.
     public var requestId: Swift.String?
     /// The HTTP status of the request.
@@ -30649,7 +30804,7 @@ public struct DeleteUserByPrincipalIdOutput {
     }
 }
 
-public struct DeleteVPCConnectionInput {
+public struct DeleteVPCConnectionInput: Swift.Sendable {
     /// The Amazon Web Services account ID of the account where you want to delete a VPC connection.
     /// This member is required.
     public var awsAccountId: Swift.String?
@@ -30667,7 +30822,7 @@ public struct DeleteVPCConnectionInput {
     }
 }
 
-public struct DeleteVPCConnectionOutput {
+public struct DeleteVPCConnectionOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the deleted VPC connection.
     public var arn: Swift.String?
     /// The availability status of the VPC connection.
@@ -30699,7 +30854,7 @@ public struct DeleteVPCConnectionOutput {
     }
 }
 
-public struct DescribeAccountCustomizationInput {
+public struct DescribeAccountCustomizationInput: Swift.Sendable {
     /// The ID for the Amazon Web Services account that you want to describe Amazon QuickSight customizations for.
     /// This member is required.
     public var awsAccountId: Swift.String?
@@ -30720,7 +30875,7 @@ public struct DescribeAccountCustomizationInput {
     }
 }
 
-public struct DescribeAccountCustomizationOutput {
+public struct DescribeAccountCustomizationOutput: Swift.Sendable {
     /// The Amazon QuickSight customizations that exist in the current Amazon Web Services Region.
     public var accountCustomization: QuickSightClientTypes.AccountCustomization?
     /// The Amazon Resource Name (ARN) of the customization that's associated with this Amazon Web Services account.
@@ -30752,7 +30907,7 @@ public struct DescribeAccountCustomizationOutput {
     }
 }
 
-public struct DescribeAccountSettingsInput {
+public struct DescribeAccountSettingsInput: Swift.Sendable {
     /// The ID for the Amazon Web Services account that contains the settings that you want to list.
     /// This member is required.
     public var awsAccountId: Swift.String?
@@ -30765,7 +30920,7 @@ public struct DescribeAccountSettingsInput {
     }
 }
 
-public struct DescribeAccountSettingsOutput {
+public struct DescribeAccountSettingsOutput: Swift.Sendable {
     /// The Amazon QuickSight settings for this Amazon Web Services account. This information includes the edition of Amazon Amazon QuickSight that you subscribed to (Standard or Enterprise) and the notification email for the Amazon QuickSight subscription. In the QuickSight console, the Amazon QuickSight subscription is sometimes referred to as a QuickSight "account" even though it's technically not an account by itself. Instead, it's a subscription to the Amazon QuickSight service for your Amazon Web Services account. The edition that you subscribe to applies to Amazon QuickSight in every Amazon Web Services Region where you use it.
     public var accountSettings: QuickSightClientTypes.AccountSettings?
     /// The Amazon Web Services request ID for this operation.
@@ -30785,7 +30940,7 @@ public struct DescribeAccountSettingsOutput {
     }
 }
 
-public struct DescribeAccountSubscriptionInput {
+public struct DescribeAccountSubscriptionInput: Swift.Sendable {
     /// The Amazon Web Services account ID associated with your Amazon QuickSight account.
     /// This member is required.
     public var awsAccountId: Swift.String?
@@ -30798,7 +30953,7 @@ public struct DescribeAccountSubscriptionInput {
     }
 }
 
-public struct DescribeAccountSubscriptionOutput {
+public struct DescribeAccountSubscriptionOutput: Swift.Sendable {
     /// A structure that contains the following elements:
     ///
     /// * Your Amazon QuickSight account name.
@@ -30828,7 +30983,7 @@ public struct DescribeAccountSubscriptionOutput {
     }
 }
 
-public struct DescribeAnalysisInput {
+public struct DescribeAnalysisInput: Swift.Sendable {
     /// The ID of the analysis that you're describing. The ID is part of the URL of the analysis.
     /// This member is required.
     public var analysisId: Swift.String?
@@ -30846,7 +31001,7 @@ public struct DescribeAnalysisInput {
     }
 }
 
-public struct DescribeAnalysisOutput {
+public struct DescribeAnalysisOutput: Swift.Sendable {
     /// A metadata structure that contains summary information for the analysis that you're describing.
     public var analysis: QuickSightClientTypes.Analysis?
     /// The Amazon Web Services request ID for this operation.
@@ -30866,7 +31021,7 @@ public struct DescribeAnalysisOutput {
     }
 }
 
-public struct DescribeAnalysisDefinitionInput {
+public struct DescribeAnalysisDefinitionInput: Swift.Sendable {
     /// The ID of the analysis that you're describing. The ID is part of the URL of the analysis.
     /// This member is required.
     public var analysisId: Swift.String?
@@ -30884,7 +31039,7 @@ public struct DescribeAnalysisDefinitionInput {
     }
 }
 
-public struct DescribeAnalysisDefinitionOutput {
+public struct DescribeAnalysisDefinitionOutput: Swift.Sendable {
     /// The ID of the analysis described.
     public var analysisId: Swift.String?
     /// The definition of an analysis. A definition is the data model of all features in a Dashboard, Template, or Analysis.
@@ -30938,7 +31093,7 @@ public struct DescribeAnalysisDefinitionOutput {
     }
 }
 
-public struct DescribeAnalysisPermissionsInput {
+public struct DescribeAnalysisPermissionsInput: Swift.Sendable {
     /// The ID of the analysis whose permissions you're describing. The ID is part of the analysis URL.
     /// This member is required.
     public var analysisId: Swift.String?
@@ -30956,7 +31111,7 @@ public struct DescribeAnalysisPermissionsInput {
     }
 }
 
-public struct DescribeAnalysisPermissionsOutput {
+public struct DescribeAnalysisPermissionsOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the analysis whose permissions you're describing.
     public var analysisArn: Swift.String?
     /// The ID of the analysis whose permissions you're describing.
@@ -30984,7 +31139,7 @@ public struct DescribeAnalysisPermissionsOutput {
     }
 }
 
-public struct DescribeAssetBundleExportJobInput {
+public struct DescribeAssetBundleExportJobInput: Swift.Sendable {
     /// The ID of the job that you want described. The job ID is set when you start a new job with a StartAssetBundleExportJob API call.
     /// This member is required.
     public var assetBundleExportJobId: Swift.String?
@@ -31002,7 +31157,39 @@ public struct DescribeAssetBundleExportJobInput {
     }
 }
 
-public struct DescribeAssetBundleExportJobOutput {
+extension QuickSightClientTypes {
+
+    public enum IncludeFolderMembers: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+        case `none`
+        case oneLevel
+        case recurse
+        case sdkUnknown(Swift.String)
+
+        public static var allCases: [IncludeFolderMembers] {
+            return [
+                .none,
+                .oneLevel,
+                .recurse
+            ]
+        }
+
+        public init?(rawValue: Swift.String) {
+            let value = Self.allCases.first(where: { $0.rawValue == rawValue })
+            self = value ?? Self.sdkUnknown(rawValue)
+        }
+
+        public var rawValue: Swift.String {
+            switch self {
+            case .none: return "NONE"
+            case .oneLevel: return "ONE_LEVEL"
+            case .recurse: return "RECURSE"
+            case let .sdkUnknown(s): return s
+            }
+        }
+    }
+}
+
+public struct DescribeAssetBundleExportJobOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) for the export job.
     public var arn: Swift.String?
     /// The ID of the job. The job ID is set when you start a new job with a StartAssetBundleExportJob API call.
@@ -31021,6 +31208,10 @@ public struct DescribeAssetBundleExportJobOutput {
     public var exportFormat: QuickSightClientTypes.AssetBundleExportFormat?
     /// The include dependencies flag.
     public var includeAllDependencies: Swift.Bool
+    /// A setting that determines whether folder members are included.
+    public var includeFolderMembers: QuickSightClientTypes.IncludeFolderMembers?
+    /// The include folder memberships flag.
+    public var includeFolderMemberships: Swift.Bool
     /// The include permissions flag.
     public var includePermissions: Swift.Bool
     /// The include tags flag.
@@ -31048,6 +31239,8 @@ public struct DescribeAssetBundleExportJobOutput {
         errors: [QuickSightClientTypes.AssetBundleExportJobError]? = nil,
         exportFormat: QuickSightClientTypes.AssetBundleExportFormat? = nil,
         includeAllDependencies: Swift.Bool = false,
+        includeFolderMembers: QuickSightClientTypes.IncludeFolderMembers? = nil,
+        includeFolderMemberships: Swift.Bool = false,
         includePermissions: Swift.Bool = false,
         includeTags: Swift.Bool = false,
         jobStatus: QuickSightClientTypes.AssetBundleExportJobStatus? = nil,
@@ -31067,6 +31260,8 @@ public struct DescribeAssetBundleExportJobOutput {
         self.errors = errors
         self.exportFormat = exportFormat
         self.includeAllDependencies = includeAllDependencies
+        self.includeFolderMembers = includeFolderMembers
+        self.includeFolderMemberships = includeFolderMemberships
         self.includePermissions = includePermissions
         self.includeTags = includeTags
         self.jobStatus = jobStatus
@@ -31080,10 +31275,10 @@ public struct DescribeAssetBundleExportJobOutput {
 
 extension DescribeAssetBundleExportJobOutput: Swift.CustomDebugStringConvertible {
     public var debugDescription: Swift.String {
-        "DescribeAssetBundleExportJobOutput(arn: \(Swift.String(describing: arn)), assetBundleExportJobId: \(Swift.String(describing: assetBundleExportJobId)), awsAccountId: \(Swift.String(describing: awsAccountId)), cloudFormationOverridePropertyConfiguration: \(Swift.String(describing: cloudFormationOverridePropertyConfiguration)), createdTime: \(Swift.String(describing: createdTime)), errors: \(Swift.String(describing: errors)), exportFormat: \(Swift.String(describing: exportFormat)), includeAllDependencies: \(Swift.String(describing: includeAllDependencies)), includePermissions: \(Swift.String(describing: includePermissions)), includeTags: \(Swift.String(describing: includeTags)), jobStatus: \(Swift.String(describing: jobStatus)), requestId: \(Swift.String(describing: requestId)), resourceArns: \(Swift.String(describing: resourceArns)), status: \(Swift.String(describing: status)), validationStrategy: \(Swift.String(describing: validationStrategy)), warnings: \(Swift.String(describing: warnings)), downloadUrl: \"CONTENT_REDACTED\")"}
+        "DescribeAssetBundleExportJobOutput(arn: \(Swift.String(describing: arn)), assetBundleExportJobId: \(Swift.String(describing: assetBundleExportJobId)), awsAccountId: \(Swift.String(describing: awsAccountId)), cloudFormationOverridePropertyConfiguration: \(Swift.String(describing: cloudFormationOverridePropertyConfiguration)), createdTime: \(Swift.String(describing: createdTime)), errors: \(Swift.String(describing: errors)), exportFormat: \(Swift.String(describing: exportFormat)), includeAllDependencies: \(Swift.String(describing: includeAllDependencies)), includeFolderMembers: \(Swift.String(describing: includeFolderMembers)), includeFolderMemberships: \(Swift.String(describing: includeFolderMemberships)), includePermissions: \(Swift.String(describing: includePermissions)), includeTags: \(Swift.String(describing: includeTags)), jobStatus: \(Swift.String(describing: jobStatus)), requestId: \(Swift.String(describing: requestId)), resourceArns: \(Swift.String(describing: resourceArns)), status: \(Swift.String(describing: status)), validationStrategy: \(Swift.String(describing: validationStrategy)), warnings: \(Swift.String(describing: warnings)), downloadUrl: \"CONTENT_REDACTED\")"}
 }
 
-public struct DescribeAssetBundleImportJobInput {
+public struct DescribeAssetBundleImportJobInput: Swift.Sendable {
     /// The ID of the job. The job ID is set when you start a new job with a StartAssetBundleImportJob API call.
     /// This member is required.
     public var assetBundleImportJobId: Swift.String?
@@ -31101,7 +31296,7 @@ public struct DescribeAssetBundleImportJobInput {
     }
 }
 
-public struct DescribeAssetBundleImportJobOutput {
+public struct DescribeAssetBundleImportJobOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) for the import job.
     public var arn: Swift.String?
     /// The ID of the job. The job ID is set when you start a new job with a StartAssetBundleImportJob API call.
@@ -31181,7 +31376,7 @@ public struct DescribeAssetBundleImportJobOutput {
     }
 }
 
-public struct DescribeDashboardInput {
+public struct DescribeDashboardInput: Swift.Sendable {
     /// The alias name.
     public var aliasName: Swift.String?
     /// The ID of the Amazon Web Services account that contains the dashboard that you're describing.
@@ -31207,7 +31402,7 @@ public struct DescribeDashboardInput {
     }
 }
 
-public struct DescribeDashboardOutput {
+public struct DescribeDashboardOutput: Swift.Sendable {
     /// Information about the dashboard.
     public var dashboard: QuickSightClientTypes.Dashboard?
     /// The Amazon Web Services request ID for this operation.
@@ -31227,7 +31422,7 @@ public struct DescribeDashboardOutput {
     }
 }
 
-public struct DescribeDashboardDefinitionInput {
+public struct DescribeDashboardDefinitionInput: Swift.Sendable {
     /// The alias name.
     public var aliasName: Swift.String?
     /// The ID of the Amazon Web Services account that contains the dashboard that you're describing.
@@ -31253,7 +31448,7 @@ public struct DescribeDashboardDefinitionInput {
     }
 }
 
-public struct DescribeDashboardDefinitionOutput {
+public struct DescribeDashboardDefinitionOutput: Swift.Sendable {
     /// The ID of the dashboard described.
     public var dashboardId: Swift.String?
     /// Options for publishing the dashboard:
@@ -31317,7 +31512,7 @@ public struct DescribeDashboardDefinitionOutput {
     }
 }
 
-public struct DescribeDashboardPermissionsInput {
+public struct DescribeDashboardPermissionsInput: Swift.Sendable {
     /// The ID of the Amazon Web Services account that contains the dashboard that you're describing permissions for.
     /// This member is required.
     public var awsAccountId: Swift.String?
@@ -31335,7 +31530,7 @@ public struct DescribeDashboardPermissionsInput {
     }
 }
 
-public struct DescribeDashboardPermissionsOutput {
+public struct DescribeDashboardPermissionsOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the dashboard.
     public var dashboardArn: Swift.String?
     /// The ID for the dashboard.
@@ -31367,7 +31562,7 @@ public struct DescribeDashboardPermissionsOutput {
     }
 }
 
-public struct DescribeDashboardSnapshotJobInput {
+public struct DescribeDashboardSnapshotJobInput: Swift.Sendable {
     /// The ID of the Amazon Web Services account that the dashboard snapshot job is executed in.
     /// This member is required.
     public var awsAccountId: Swift.String?
@@ -31392,7 +31587,7 @@ public struct DescribeDashboardSnapshotJobInput {
 
 extension QuickSightClientTypes {
 
-    public enum SnapshotJobStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SnapshotJobStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case completed
         case failed
         case queued
@@ -31426,8 +31621,9 @@ extension QuickSightClientTypes {
 }
 
 extension QuickSightClientTypes {
+
     /// A structure that contains information on the Amazon S3 destinations of the generated snapshot.
-    public struct SnapshotDestinationConfiguration {
+    public struct SnapshotDestinationConfiguration: Swift.Sendable {
         /// A list of SnapshotS3DestinationConfiguration objects that contain Amazon S3 destination configurations. This structure can hold a maximum of 1 S3DestinationConfiguration.
         public var s3Destinations: [QuickSightClientTypes.SnapshotS3DestinationConfiguration]?
 
@@ -31438,12 +31634,12 @@ extension QuickSightClientTypes {
             self.s3Destinations = s3Destinations
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// A structure that contains the information on the snapshot files.
-    public struct SnapshotFileGroup {
+    public struct SnapshotFileGroup: Swift.Sendable {
         /// A list of SnapshotFile objects that contain the information on the snapshot files that need to be generated. This structure can hold 1 configuration at a time.
         public var files: [QuickSightClientTypes.SnapshotFile]?
 
@@ -31454,12 +31650,12 @@ extension QuickSightClientTypes {
             self.files = files
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// Describes the configuration of the dashboard snapshot.
-    public struct SnapshotConfiguration {
+    public struct SnapshotConfiguration: Swift.Sendable {
         /// A structure that contains information on the Amazon S3 bucket that the generated snapshot is stored in.
         public var destinationConfiguration: QuickSightClientTypes.SnapshotDestinationConfiguration?
         /// A list of SnapshotJobResultFileGroup objects that contain information about the snapshot that is generated. This list can hold a maximum of 6 FileGroup configurations.
@@ -31479,12 +31675,12 @@ extension QuickSightClientTypes {
             self.parameters = parameters
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// Use this structure to redact sensitive information that you provide about an anonymous user from the snapshot.
-    public struct SnapshotAnonymousUserRedacted {
+    public struct SnapshotAnonymousUserRedacted: Swift.Sendable {
         /// The tag keys for the RowLevelPermissionTags.
         public var rowLevelPermissionTagKeys: [Swift.String]?
 
@@ -31495,12 +31691,12 @@ extension QuickSightClientTypes {
             self.rowLevelPermissionTagKeys = rowLevelPermissionTagKeys
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// A structure that contains information about the users that the dashboard snapshot is generated for. Sensitive user information is excluded.
-    public struct SnapshotUserConfigurationRedacted {
+    public struct SnapshotUserConfigurationRedacted: Swift.Sendable {
         /// An array of records that describe anonymous users that the dashboard snapshot is generated for. Sensitive user information is excluded.
         public var anonymousUsers: [QuickSightClientTypes.SnapshotAnonymousUserRedacted]?
 
@@ -31511,10 +31707,9 @@ extension QuickSightClientTypes {
             self.anonymousUsers = anonymousUsers
         }
     }
-
 }
 
-public struct DescribeDashboardSnapshotJobOutput {
+public struct DescribeDashboardSnapshotJobOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) for the snapshot job. The job ARN is generated when you start a new job with a StartDashboardSnapshotJob API call.
     public var arn: Swift.String?
     /// The ID of the Amazon Web Services account that the dashboard snapshot job is executed in.
@@ -31574,7 +31769,7 @@ public struct DescribeDashboardSnapshotJobOutput {
     }
 }
 
-public struct DescribeDashboardSnapshotJobResultInput {
+public struct DescribeDashboardSnapshotJobResultInput: Swift.Sendable {
     /// The ID of the Amazon Web Services account that the dashboard snapshot job is executed in.
     /// This member is required.
     public var awsAccountId: Swift.String?
@@ -31598,8 +31793,9 @@ public struct DescribeDashboardSnapshotJobResultInput {
 }
 
 extension QuickSightClientTypes {
+
     /// An object that contains information on the error that caused the snapshot job to fail.
-    public struct SnapshotJobErrorInfo {
+    public struct SnapshotJobErrorInfo: Swift.Sendable {
         /// The error message.
         public var errorMessage: Swift.String?
         /// The error type.
@@ -31614,12 +31810,12 @@ extension QuickSightClientTypes {
             self.errorType = errorType
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// An object that provides information on the result of a snapshot job. This object provides information about the job, the job status, and the location of the generated file.
-    public struct SnapshotJobResult {
+    public struct SnapshotJobResult: Swift.Sendable {
         /// A list of AnonymousUserSnapshotJobResult objects that contain information on anonymous users and their user configurations. This data provided by you when you make a StartDashboardSnapshotJob API call.
         public var anonymousUsers: [QuickSightClientTypes.AnonymousUserSnapshotJobResult]?
 
@@ -31630,10 +31826,9 @@ extension QuickSightClientTypes {
             self.anonymousUsers = anonymousUsers
         }
     }
-
 }
 
-public struct DescribeDashboardSnapshotJobResultOutput {
+public struct DescribeDashboardSnapshotJobResultOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) for the snapshot job. The job ARN is generated when you start a new job with a StartDashboardSnapshotJob API call.
     public var arn: Swift.String?
     /// The time that a snapshot job was created.
@@ -31673,7 +31868,7 @@ public struct DescribeDashboardSnapshotJobResultOutput {
     }
 }
 
-public struct DescribeDataSetInput {
+public struct DescribeDataSetInput: Swift.Sendable {
     /// The Amazon Web Services account ID.
     /// This member is required.
     public var awsAccountId: Swift.String?
@@ -31691,7 +31886,7 @@ public struct DescribeDataSetInput {
     }
 }
 
-public struct DescribeDataSetOutput {
+public struct DescribeDataSetOutput: Swift.Sendable {
     /// Information on the dataset.
     public var dataSet: QuickSightClientTypes.DataSet?
     /// The Amazon Web Services request ID for this operation.
@@ -31711,7 +31906,7 @@ public struct DescribeDataSetOutput {
     }
 }
 
-public struct DescribeDataSetPermissionsInput {
+public struct DescribeDataSetPermissionsInput: Swift.Sendable {
     /// The Amazon Web Services account ID.
     /// This member is required.
     public var awsAccountId: Swift.String?
@@ -31729,7 +31924,7 @@ public struct DescribeDataSetPermissionsInput {
     }
 }
 
-public struct DescribeDataSetPermissionsOutput {
+public struct DescribeDataSetPermissionsOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the dataset.
     public var dataSetArn: Swift.String?
     /// The ID for the dataset that you want to create. This ID is unique per Amazon Web Services Region for each Amazon Web Services account.
@@ -31757,7 +31952,7 @@ public struct DescribeDataSetPermissionsOutput {
     }
 }
 
-public struct DescribeDataSetRefreshPropertiesInput {
+public struct DescribeDataSetRefreshPropertiesInput: Swift.Sendable {
     /// The Amazon Web Services account ID.
     /// This member is required.
     public var awsAccountId: Swift.String?
@@ -31775,7 +31970,7 @@ public struct DescribeDataSetRefreshPropertiesInput {
     }
 }
 
-public struct DescribeDataSetRefreshPropertiesOutput {
+public struct DescribeDataSetRefreshPropertiesOutput: Swift.Sendable {
     /// The dataset refresh properties.
     public var dataSetRefreshProperties: QuickSightClientTypes.DataSetRefreshProperties?
     /// The Amazon Web Services request ID for this operation.
@@ -31795,7 +31990,7 @@ public struct DescribeDataSetRefreshPropertiesOutput {
     }
 }
 
-public struct DescribeDataSourceInput {
+public struct DescribeDataSourceInput: Swift.Sendable {
     /// The Amazon Web Services account ID.
     /// This member is required.
     public var awsAccountId: Swift.String?
@@ -31813,7 +32008,7 @@ public struct DescribeDataSourceInput {
     }
 }
 
-public struct DescribeDataSourceOutput {
+public struct DescribeDataSourceOutput: Swift.Sendable {
     /// The information on the data source.
     public var dataSource: QuickSightClientTypes.DataSource?
     /// The Amazon Web Services request ID for this operation.
@@ -31833,7 +32028,7 @@ public struct DescribeDataSourceOutput {
     }
 }
 
-public struct DescribeDataSourcePermissionsInput {
+public struct DescribeDataSourcePermissionsInput: Swift.Sendable {
     /// The Amazon Web Services account ID.
     /// This member is required.
     public var awsAccountId: Swift.String?
@@ -31851,7 +32046,7 @@ public struct DescribeDataSourcePermissionsInput {
     }
 }
 
-public struct DescribeDataSourcePermissionsOutput {
+public struct DescribeDataSourcePermissionsOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the data source.
     public var dataSourceArn: Swift.String?
     /// The ID of the data source. This ID is unique per Amazon Web Services Region for each Amazon Web Services account.
@@ -31879,7 +32074,7 @@ public struct DescribeDataSourcePermissionsOutput {
     }
 }
 
-public struct DescribeFolderInput {
+public struct DescribeFolderInput: Swift.Sendable {
     /// The ID for the Amazon Web Services account that contains the folder.
     /// This member is required.
     public var awsAccountId: Swift.String?
@@ -31898,8 +32093,9 @@ public struct DescribeFolderInput {
 }
 
 extension QuickSightClientTypes {
+
     /// A folder in Amazon QuickSight.
-    public struct Folder {
+    public struct Folder: Swift.Sendable {
         /// The Amazon Resource Name (ARN) for the folder.
         public var arn: Swift.String?
         /// The time that the folder was created.
@@ -31938,10 +32134,9 @@ extension QuickSightClientTypes {
             self.sharingModel = sharingModel
         }
     }
-
 }
 
-public struct DescribeFolderOutput {
+public struct DescribeFolderOutput: Swift.Sendable {
     /// Information about the folder.
     public var folder: QuickSightClientTypes.Folder?
     /// The Amazon Web Services request ID for this operation.
@@ -31989,7 +32184,7 @@ public struct InvalidNextTokenException: ClientRuntime.ModeledError, AWSClientRu
     }
 }
 
-public struct DescribeFolderPermissionsInput {
+public struct DescribeFolderPermissionsInput: Swift.Sendable {
     /// The ID for the Amazon Web Services account that contains the folder.
     /// This member is required.
     public var awsAccountId: Swift.String?
@@ -32019,7 +32214,7 @@ public struct DescribeFolderPermissionsInput {
     }
 }
 
-public struct DescribeFolderPermissionsOutput {
+public struct DescribeFolderPermissionsOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) for the folder.
     public var arn: Swift.String?
     /// The ID of the folder.
@@ -32051,7 +32246,7 @@ public struct DescribeFolderPermissionsOutput {
     }
 }
 
-public struct DescribeFolderResolvedPermissionsInput {
+public struct DescribeFolderResolvedPermissionsInput: Swift.Sendable {
     /// The ID for the Amazon Web Services account that contains the folder.
     /// This member is required.
     public var awsAccountId: Swift.String?
@@ -32081,7 +32276,7 @@ public struct DescribeFolderResolvedPermissionsInput {
     }
 }
 
-public struct DescribeFolderResolvedPermissionsOutput {
+public struct DescribeFolderResolvedPermissionsOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the folder.
     public var arn: Swift.String?
     /// The ID of the folder.
@@ -32113,7 +32308,7 @@ public struct DescribeFolderResolvedPermissionsOutput {
     }
 }
 
-public struct DescribeGroupInput {
+public struct DescribeGroupInput: Swift.Sendable {
     /// The ID for the Amazon Web Services account that the group is in. Currently, you use the ID for the Amazon Web Services account that contains your Amazon QuickSight account.
     /// This member is required.
     public var awsAccountId: Swift.String?
@@ -32136,7 +32331,7 @@ public struct DescribeGroupInput {
     }
 }
 
-public struct DescribeGroupOutput {
+public struct DescribeGroupOutput: Swift.Sendable {
     /// The name of the group.
     public var group: QuickSightClientTypes.Group?
     /// The Amazon Web Services request ID for this operation.
@@ -32156,7 +32351,7 @@ public struct DescribeGroupOutput {
     }
 }
 
-public struct DescribeGroupMembershipInput {
+public struct DescribeGroupMembershipInput: Swift.Sendable {
     /// The ID for the Amazon Web Services account that the group is in. Currently, you use the ID for the Amazon Web Services account that contains your Amazon QuickSight account.
     /// This member is required.
     public var awsAccountId: Swift.String?
@@ -32184,7 +32379,7 @@ public struct DescribeGroupMembershipInput {
     }
 }
 
-public struct DescribeGroupMembershipOutput {
+public struct DescribeGroupMembershipOutput: Swift.Sendable {
     /// A member of an Amazon QuickSight group. Currently, group members must be users. Groups can't be members of another group. .
     public var groupMember: QuickSightClientTypes.GroupMember?
     /// The Amazon Web Services request ID for this operation.
@@ -32204,7 +32399,7 @@ public struct DescribeGroupMembershipOutput {
     }
 }
 
-public struct DescribeIAMPolicyAssignmentInput {
+public struct DescribeIAMPolicyAssignmentInput: Swift.Sendable {
     /// The name of the assignment, also called a rule.
     /// This member is required.
     public var assignmentName: Swift.String?
@@ -32228,8 +32423,9 @@ public struct DescribeIAMPolicyAssignmentInput {
 }
 
 extension QuickSightClientTypes {
+
     /// An Identity and Access Management (IAM) policy assignment.
-    public struct IAMPolicyAssignment {
+    public struct IAMPolicyAssignment: Swift.Sendable {
         /// Assignment ID.
         public var assignmentId: Swift.String?
         /// Assignment name.
@@ -32260,10 +32456,9 @@ extension QuickSightClientTypes {
             self.policyArn = policyArn
         }
     }
-
 }
 
-public struct DescribeIAMPolicyAssignmentOutput {
+public struct DescribeIAMPolicyAssignmentOutput: Swift.Sendable {
     /// Information describing the IAM policy assignment.
     public var iamPolicyAssignment: QuickSightClientTypes.IAMPolicyAssignment?
     /// The Amazon Web Services request ID for this operation.
@@ -32283,7 +32478,7 @@ public struct DescribeIAMPolicyAssignmentOutput {
     }
 }
 
-public struct DescribeIngestionInput {
+public struct DescribeIngestionInput: Swift.Sendable {
     /// The Amazon Web Services account ID.
     /// This member is required.
     public var awsAccountId: Swift.String?
@@ -32308,7 +32503,7 @@ public struct DescribeIngestionInput {
 
 extension QuickSightClientTypes {
 
-    public enum IngestionErrorType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum IngestionErrorType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case accountCapacityLimitExceeded
         case connectionFailure
         case cursorNotEnabled
@@ -32465,8 +32660,9 @@ extension QuickSightClientTypes {
 }
 
 extension QuickSightClientTypes {
+
     /// Error information for the SPICE ingestion of a dataset.
-    public struct ErrorInfo {
+    public struct ErrorInfo: Swift.Sendable {
         /// Error message.
         public var message: Swift.String?
         /// Error type.
@@ -32481,12 +32677,12 @@ extension QuickSightClientTypes {
             self.type = type
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// Information about a queued dataset SPICE ingestion.
-    public struct QueueInfo {
+    public struct QueueInfo: Swift.Sendable {
         /// The ID of the ongoing ingestion. The queued ingestion is waiting for the ongoing ingestion to complete.
         /// This member is required.
         public var queuedIngestion: Swift.String?
@@ -32503,12 +32699,11 @@ extension QuickSightClientTypes {
             self.waitingOnIngestion = waitingOnIngestion
         }
     }
-
 }
 
 extension QuickSightClientTypes {
 
-    public enum IngestionRequestSource: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum IngestionRequestSource: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case manual
         case scheduled
         case sdkUnknown(Swift.String)
@@ -32538,7 +32733,7 @@ extension QuickSightClientTypes {
 extension QuickSightClientTypes {
 
     /// This defines the type of ingestion request. This is returned as part of create ingestion response.
-    public enum IngestionRequestType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum IngestionRequestType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case edit
         case fullRefresh
         case incrementalRefresh
@@ -32572,8 +32767,9 @@ extension QuickSightClientTypes {
 }
 
 extension QuickSightClientTypes {
+
     /// Information about rows for a data set SPICE ingestion.
-    public struct RowInfo {
+    public struct RowInfo: Swift.Sendable {
         /// The number of rows that were not ingested.
         public var rowsDropped: Swift.Int?
         /// The number of rows that were ingested.
@@ -32592,12 +32788,12 @@ extension QuickSightClientTypes {
             self.totalRowsInDataset = totalRowsInDataset
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// Information about the SPICE ingestion for a dataset.
-    public struct Ingestion {
+    public struct Ingestion: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the resource.
         /// This member is required.
         public var arn: Swift.String?
@@ -32651,10 +32847,9 @@ extension QuickSightClientTypes {
             self.rowInfo = rowInfo
         }
     }
-
 }
 
-public struct DescribeIngestionOutput {
+public struct DescribeIngestionOutput: Swift.Sendable {
     /// Information about the ingestion.
     public var ingestion: QuickSightClientTypes.Ingestion?
     /// The Amazon Web Services request ID for this operation.
@@ -32674,7 +32869,7 @@ public struct DescribeIngestionOutput {
     }
 }
 
-public struct DescribeIpRestrictionInput {
+public struct DescribeIpRestrictionInput: Swift.Sendable {
     /// The ID of the Amazon Web Services account that contains the IP rules.
     /// This member is required.
     public var awsAccountId: Swift.String?
@@ -32687,7 +32882,7 @@ public struct DescribeIpRestrictionInput {
     }
 }
 
-public struct DescribeIpRestrictionOutput {
+public struct DescribeIpRestrictionOutput: Swift.Sendable {
     /// The ID of the Amazon Web Services account that contains the IP rules.
     public var awsAccountId: Swift.String?
     /// A value that specifies whether IP rules are turned on.
@@ -32723,7 +32918,7 @@ public struct DescribeIpRestrictionOutput {
     }
 }
 
-public struct DescribeKeyRegistrationInput {
+public struct DescribeKeyRegistrationInput: Swift.Sendable {
     /// The ID of the Amazon Web Services account that contains the customer managed key registration that you want to describe.
     /// This member is required.
     public var awsAccountId: Swift.String?
@@ -32741,12 +32936,13 @@ public struct DescribeKeyRegistrationInput {
 }
 
 extension QuickSightClientTypes {
+
     /// A customer managed key structure that contains the information listed below:
     ///
     /// * KeyArn - The ARN of a KMS key that is registered to a Amazon QuickSight account for encryption and decryption use.
     ///
     /// * DefaultKey - Indicates whether the current key is set as the default key for encryption and decryption use.
-    public struct RegisteredCustomerManagedKey {
+    public struct RegisteredCustomerManagedKey: Swift.Sendable {
         /// Indicates whether a RegisteredCustomerManagedKey is set as the default key for encryption and decryption use.
         public var defaultKey: Swift.Bool
         /// The ARN of the KMS key that is registered to a Amazon QuickSight account for encryption and decryption use.
@@ -32761,10 +32957,9 @@ extension QuickSightClientTypes {
             self.keyArn = keyArn
         }
     }
-
 }
 
-public struct DescribeKeyRegistrationOutput {
+public struct DescribeKeyRegistrationOutput: Swift.Sendable {
     /// The ID of the Amazon Web Services account that contains the customer managed key registration specified in the request.
     public var awsAccountId: Swift.String?
     /// A list of RegisteredCustomerManagedKey objects in a Amazon QuickSight account.
@@ -32788,7 +32983,7 @@ public struct DescribeKeyRegistrationOutput {
     }
 }
 
-public struct DescribeNamespaceInput {
+public struct DescribeNamespaceInput: Swift.Sendable {
     /// The ID for the Amazon Web Services account that contains the Amazon QuickSight namespace that you want to describe.
     /// This member is required.
     public var awsAccountId: Swift.String?
@@ -32808,7 +33003,7 @@ public struct DescribeNamespaceInput {
 
 extension QuickSightClientTypes {
 
-    public enum NamespaceErrorType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum NamespaceErrorType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case internalServiceError
         case permissionDenied
         case sdkUnknown(Swift.String)
@@ -32836,8 +33031,9 @@ extension QuickSightClientTypes {
 }
 
 extension QuickSightClientTypes {
+
     /// Errors that occur during namespace creation.
-    public struct NamespaceError {
+    public struct NamespaceError: Swift.Sendable {
         /// The message for the error.
         public var message: Swift.String?
         /// The error type.
@@ -32852,12 +33048,12 @@ extension QuickSightClientTypes {
             self.type = type
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The error type.
-    public struct NamespaceInfoV2 {
+    public struct NamespaceInfoV2: Swift.Sendable {
         /// The namespace ARN.
         public var arn: Swift.String?
         /// The namespace Amazon Web Services Region.
@@ -32888,10 +33084,9 @@ extension QuickSightClientTypes {
             self.namespaceError = namespaceError
         }
     }
-
 }
 
-public struct DescribeNamespaceOutput {
+public struct DescribeNamespaceOutput: Swift.Sendable {
     /// The information about the namespace that you're describing. The response includes the namespace ARN, name, Amazon Web Services Region, creation status, and identity store. DescribeNamespace also works for namespaces that are in the process of being created. For incomplete namespaces, this API operation lists the namespace error types and messages associated with the creation process.
     public var namespace: QuickSightClientTypes.NamespaceInfoV2?
     /// The Amazon Web Services request ID for this operation.
@@ -32911,7 +33106,69 @@ public struct DescribeNamespaceOutput {
     }
 }
 
-public struct DescribeRefreshScheduleInput {
+public struct DescribeQPersonalizationConfigurationInput: Swift.Sendable {
+    /// The ID of the Amazon Web Services account that contains the personalization configuration that the user wants described.
+    /// This member is required.
+    public var awsAccountId: Swift.String?
+
+    public init(
+        awsAccountId: Swift.String? = nil
+    )
+    {
+        self.awsAccountId = awsAccountId
+    }
+}
+
+extension QuickSightClientTypes {
+
+    public enum PersonalizationMode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+        case disabled
+        case enabled
+        case sdkUnknown(Swift.String)
+
+        public static var allCases: [PersonalizationMode] {
+            return [
+                .disabled,
+                .enabled
+            ]
+        }
+
+        public init?(rawValue: Swift.String) {
+            let value = Self.allCases.first(where: { $0.rawValue == rawValue })
+            self = value ?? Self.sdkUnknown(rawValue)
+        }
+
+        public var rawValue: Swift.String {
+            switch self {
+            case .disabled: return "DISABLED"
+            case .enabled: return "ENABLED"
+            case let .sdkUnknown(s): return s
+            }
+        }
+    }
+}
+
+public struct DescribeQPersonalizationConfigurationOutput: Swift.Sendable {
+    /// A value that indicates whether personalization is enabled or not.
+    public var personalizationMode: QuickSightClientTypes.PersonalizationMode?
+    /// The Amazon Web Services request ID for this operation.
+    public var requestId: Swift.String?
+    /// The HTTP status of the request.
+    public var status: Swift.Int
+
+    public init(
+        personalizationMode: QuickSightClientTypes.PersonalizationMode? = nil,
+        requestId: Swift.String? = nil,
+        status: Swift.Int = 0
+    )
+    {
+        self.personalizationMode = personalizationMode
+        self.requestId = requestId
+        self.status = status
+    }
+}
+
+public struct DescribeRefreshScheduleInput: Swift.Sendable {
     /// The Amazon Web Services account ID.
     /// This member is required.
     public var awsAccountId: Swift.String?
@@ -32934,7 +33191,7 @@ public struct DescribeRefreshScheduleInput {
     }
 }
 
-public struct DescribeRefreshScheduleOutput {
+public struct DescribeRefreshScheduleOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) for the refresh schedule.
     public var arn: Swift.String?
     /// The refresh schedule.
@@ -32958,7 +33215,7 @@ public struct DescribeRefreshScheduleOutput {
     }
 }
 
-public struct DescribeRoleCustomPermissionInput {
+public struct DescribeRoleCustomPermissionInput: Swift.Sendable {
     /// The ID for the Amazon Web Services account that you want to create a group in. The Amazon Web Services account ID that you provide must be the same Amazon Web Services account that contains your Amazon QuickSight account.
     /// This member is required.
     public var awsAccountId: Swift.String?
@@ -32981,7 +33238,7 @@ public struct DescribeRoleCustomPermissionInput {
     }
 }
 
-public struct DescribeRoleCustomPermissionOutput {
+public struct DescribeRoleCustomPermissionOutput: Swift.Sendable {
     /// The name of the custom permission that is described.
     public var customPermissionsName: Swift.String?
     /// The Amazon Web Services request ID for this operation.
@@ -33001,7 +33258,7 @@ public struct DescribeRoleCustomPermissionOutput {
     }
 }
 
-public struct DescribeTemplateInput {
+public struct DescribeTemplateInput: Swift.Sendable {
     /// The alias of the template that you want to describe. If you name a specific alias, you describe the version that the alias points to. You can specify the latest version of the template by providing the keyword $LATEST in the AliasName parameter. The keyword $PUBLISHED doesn't apply to templates.
     public var aliasName: Swift.String?
     /// The ID of the Amazon Web Services account that contains the template that you're describing.
@@ -33029,7 +33286,7 @@ public struct DescribeTemplateInput {
 
 extension QuickSightClientTypes {
 
-    public enum TemplateErrorType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum TemplateErrorType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case accessDenied
         case dataSetNotFound
         case internalFailure
@@ -33063,8 +33320,9 @@ extension QuickSightClientTypes {
 }
 
 extension QuickSightClientTypes {
+
     /// List of errors that occurred when the template version creation failed.
-    public struct TemplateError {
+    public struct TemplateError: Swift.Sendable {
         /// Description of the error type.
         public var message: Swift.String?
         /// Type of error.
@@ -33083,12 +33341,12 @@ extension QuickSightClientTypes {
             self.violatedEntities = violatedEntities
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// A version of a template.
-    public struct TemplateVersion {
+    public struct TemplateVersion: Swift.Sendable {
         /// The time that this template version was created.
         public var createdTime: Foundation.Date?
         /// Schema of the dataset identified by the placeholder. Any dashboard created from this template should be bound to new datasets matching the same schema described through this API operation.
@@ -33145,12 +33403,12 @@ extension QuickSightClientTypes {
             self.versionNumber = versionNumber
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// A template object. A template is an entity in Amazon QuickSight that encapsulates the metadata required to create an analysis and that you can use to create a dashboard. A template adds a layer of abstraction by using placeholders to replace the dataset associated with an analysis. You can use templates to create dashboards by replacing dataset placeholders with datasets that follow the same schema that was used to create the source analysis and template. You can share templates across Amazon Web Services accounts by allowing users in other Amazon Web Services accounts to create a template or a dashboard from an existing template.
-    public struct Template {
+    public struct Template: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the template.
         public var arn: Swift.String?
         /// Time when this was created.
@@ -33181,10 +33439,9 @@ extension QuickSightClientTypes {
             self.version = version
         }
     }
-
 }
 
-public struct DescribeTemplateOutput {
+public struct DescribeTemplateOutput: Swift.Sendable {
     /// The Amazon Web Services request ID for this operation.
     public var requestId: Swift.String?
     /// The HTTP status of the request.
@@ -33204,7 +33461,7 @@ public struct DescribeTemplateOutput {
     }
 }
 
-public struct DescribeTemplateAliasInput {
+public struct DescribeTemplateAliasInput: Swift.Sendable {
     /// The name of the template alias that you want to describe. If you name a specific alias, you describe the version that the alias points to. You can specify the latest version of the template by providing the keyword $LATEST in the AliasName parameter. The keyword $PUBLISHED doesn't apply to templates.
     /// This member is required.
     public var aliasName: Swift.String?
@@ -33227,7 +33484,7 @@ public struct DescribeTemplateAliasInput {
     }
 }
 
-public struct DescribeTemplateAliasOutput {
+public struct DescribeTemplateAliasOutput: Swift.Sendable {
     /// The Amazon Web Services request ID for this operation.
     public var requestId: Swift.String?
     /// The HTTP status of the request.
@@ -33247,7 +33504,7 @@ public struct DescribeTemplateAliasOutput {
     }
 }
 
-public struct DescribeTemplateDefinitionInput {
+public struct DescribeTemplateDefinitionInput: Swift.Sendable {
     /// The alias of the template that you want to describe. If you name a specific alias, you describe the version that the alias points to. You can specify the latest version of the template by providing the keyword $LATEST in the AliasName parameter. The keyword $PUBLISHED doesn't apply to templates.
     public var aliasName: Swift.String?
     /// The ID of the Amazon Web Services account that contains the template. You must be using the Amazon Web Services account that the template is in.
@@ -33273,7 +33530,7 @@ public struct DescribeTemplateDefinitionInput {
     }
 }
 
-public struct DescribeTemplateDefinitionOutput {
+public struct DescribeTemplateDefinitionOutput: Swift.Sendable {
     /// The definition of the template. A definition is the data model of all features in a Dashboard, Template, or Analysis.
     public var definition: QuickSightClientTypes.TemplateVersionDefinition?
     /// Errors associated with the template version.
@@ -33327,7 +33584,7 @@ public struct DescribeTemplateDefinitionOutput {
     }
 }
 
-public struct DescribeTemplatePermissionsInput {
+public struct DescribeTemplatePermissionsInput: Swift.Sendable {
     /// The ID of the Amazon Web Services account that contains the template that you're describing.
     /// This member is required.
     public var awsAccountId: Swift.String?
@@ -33345,7 +33602,7 @@ public struct DescribeTemplatePermissionsInput {
     }
 }
 
-public struct DescribeTemplatePermissionsOutput {
+public struct DescribeTemplatePermissionsOutput: Swift.Sendable {
     /// A list of resource permissions to be set on the template.
     public var permissions: [QuickSightClientTypes.ResourcePermission]?
     /// The Amazon Web Services request ID for this operation.
@@ -33373,7 +33630,7 @@ public struct DescribeTemplatePermissionsOutput {
     }
 }
 
-public struct DescribeThemeInput {
+public struct DescribeThemeInput: Swift.Sendable {
     /// The alias of the theme that you want to describe. If you name a specific alias, you describe the version that the alias points to. You can specify the latest version of the theme by providing the keyword $LATEST in the AliasName parameter. The keyword $PUBLISHED doesn't apply to themes.
     public var aliasName: Swift.String?
     /// The ID of the Amazon Web Services account that contains the theme that you're describing.
@@ -33401,7 +33658,7 @@ public struct DescribeThemeInput {
 
 extension QuickSightClientTypes {
 
-    public enum ThemeType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ThemeType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case all
         case custom
         case quicksight
@@ -33433,7 +33690,7 @@ extension QuickSightClientTypes {
 
 extension QuickSightClientTypes {
 
-    public enum ThemeErrorType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ThemeErrorType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case internalFailure
         case sdkUnknown(Swift.String)
 
@@ -33458,8 +33715,9 @@ extension QuickSightClientTypes {
 }
 
 extension QuickSightClientTypes {
+
     /// Theme error.
-    public struct ThemeError {
+    public struct ThemeError: Swift.Sendable {
         /// The error message.
         public var message: Swift.String?
         /// The type of error.
@@ -33474,12 +33732,12 @@ extension QuickSightClientTypes {
             self.type = type
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// A version of a theme.
-    public struct ThemeVersion {
+    public struct ThemeVersion: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the resource.
         public var arn: Swift.String?
         /// The Amazon QuickSight-defined ID of the theme that a custom theme inherits from. All themes initially inherit from a default Amazon QuickSight theme.
@@ -33518,12 +33776,12 @@ extension QuickSightClientTypes {
             self.versionNumber = versionNumber
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// Summary information about a theme.
-    public struct Theme {
+    public struct Theme: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the theme.
         public var arn: Swift.String?
         /// The date and time that the theme was created.
@@ -33558,10 +33816,9 @@ extension QuickSightClientTypes {
             self.version = version
         }
     }
-
 }
 
-public struct DescribeThemeOutput {
+public struct DescribeThemeOutput: Swift.Sendable {
     /// The Amazon Web Services request ID for this operation.
     public var requestId: Swift.String?
     /// The HTTP status of the request.
@@ -33581,7 +33838,7 @@ public struct DescribeThemeOutput {
     }
 }
 
-public struct DescribeThemeAliasInput {
+public struct DescribeThemeAliasInput: Swift.Sendable {
     /// The name of the theme alias that you want to describe.
     /// This member is required.
     public var aliasName: Swift.String?
@@ -33604,7 +33861,7 @@ public struct DescribeThemeAliasInput {
     }
 }
 
-public struct DescribeThemeAliasOutput {
+public struct DescribeThemeAliasOutput: Swift.Sendable {
     /// The Amazon Web Services request ID for this operation.
     public var requestId: Swift.String?
     /// The HTTP status of the request.
@@ -33624,7 +33881,7 @@ public struct DescribeThemeAliasOutput {
     }
 }
 
-public struct DescribeThemePermissionsInput {
+public struct DescribeThemePermissionsInput: Swift.Sendable {
     /// The ID of the Amazon Web Services account that contains the theme that you're describing.
     /// This member is required.
     public var awsAccountId: Swift.String?
@@ -33642,7 +33899,7 @@ public struct DescribeThemePermissionsInput {
     }
 }
 
-public struct DescribeThemePermissionsOutput {
+public struct DescribeThemePermissionsOutput: Swift.Sendable {
     /// A list of resource permissions set on the theme.
     public var permissions: [QuickSightClientTypes.ResourcePermission]?
     /// The Amazon Web Services request ID for this operation.
@@ -33670,7 +33927,7 @@ public struct DescribeThemePermissionsOutput {
     }
 }
 
-public struct DescribeTopicInput {
+public struct DescribeTopicInput: Swift.Sendable {
     /// The Amazon Web Services account ID.
     /// This member is required.
     public var awsAccountId: Swift.String?
@@ -33688,7 +33945,7 @@ public struct DescribeTopicInput {
     }
 }
 
-public struct DescribeTopicOutput {
+public struct DescribeTopicOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the topic.
     public var arn: Swift.String?
     /// The Amazon Web Services request ID for this operation.
@@ -33716,7 +33973,7 @@ public struct DescribeTopicOutput {
     }
 }
 
-public struct DescribeTopicPermissionsInput {
+public struct DescribeTopicPermissionsInput: Swift.Sendable {
     /// The ID of the Amazon Web Services account that contains the topic that you want described.
     /// This member is required.
     public var awsAccountId: Swift.String?
@@ -33734,7 +33991,7 @@ public struct DescribeTopicPermissionsInput {
     }
 }
 
-public struct DescribeTopicPermissionsOutput {
+public struct DescribeTopicPermissionsOutput: Swift.Sendable {
     /// A list of resource permissions that are configured to the topic.
     public var permissions: [QuickSightClientTypes.ResourcePermission]?
     /// The Amazon Web Services request ID for this operation.
@@ -33762,7 +34019,7 @@ public struct DescribeTopicPermissionsOutput {
     }
 }
 
-public struct DescribeTopicRefreshInput {
+public struct DescribeTopicRefreshInput: Swift.Sendable {
     /// The ID of the Amazon Web Services account that contains the topic whose refresh you want to describe.
     /// This member is required.
     public var awsAccountId: Swift.String?
@@ -33787,7 +34044,7 @@ public struct DescribeTopicRefreshInput {
 
 extension QuickSightClientTypes {
 
-    public enum TopicRefreshStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum TopicRefreshStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case cancelled
         case completed
         case failed
@@ -33824,8 +34081,9 @@ extension QuickSightClientTypes {
 }
 
 extension QuickSightClientTypes {
+
     /// The details about the refresh of a topic.
-    public struct TopicRefreshDetails {
+    public struct TopicRefreshDetails: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the topic refresh.
         public var refreshArn: Swift.String?
         /// The ID of the refresh, which occurs as a result of topic creation or topic update.
@@ -33844,10 +34102,9 @@ extension QuickSightClientTypes {
             self.refreshStatus = refreshStatus
         }
     }
-
 }
 
-public struct DescribeTopicRefreshOutput {
+public struct DescribeTopicRefreshOutput: Swift.Sendable {
     /// Details of the refresh, which is performed when the topic is created or updated.
     public var refreshDetails: QuickSightClientTypes.TopicRefreshDetails?
     /// The Amazon Web Services request ID for this operation.
@@ -33867,7 +34124,7 @@ public struct DescribeTopicRefreshOutput {
     }
 }
 
-public struct DescribeTopicRefreshScheduleInput {
+public struct DescribeTopicRefreshScheduleInput: Swift.Sendable {
     /// The Amazon Web Services account ID.
     /// This member is required.
     public var awsAccountId: Swift.String?
@@ -33890,7 +34147,7 @@ public struct DescribeTopicRefreshScheduleInput {
     }
 }
 
-public struct DescribeTopicRefreshScheduleOutput {
+public struct DescribeTopicRefreshScheduleOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the dataset.
     public var datasetArn: Swift.String?
     /// The definition of a refresh schedule.
@@ -33922,7 +34179,7 @@ public struct DescribeTopicRefreshScheduleOutput {
     }
 }
 
-public struct DescribeUserInput {
+public struct DescribeUserInput: Swift.Sendable {
     /// The ID for the Amazon Web Services account that the user is in. Currently, you use the ID for the Amazon Web Services account that contains your Amazon QuickSight account.
     /// This member is required.
     public var awsAccountId: Swift.String?
@@ -33947,7 +34204,7 @@ public struct DescribeUserInput {
 
 extension QuickSightClientTypes {
 
-    public enum IdentityType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum IdentityType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case iam
         case iamIdentityCenter
         case quicksight
@@ -33979,7 +34236,7 @@ extension QuickSightClientTypes {
 
 extension QuickSightClientTypes {
 
-    public enum UserRole: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum UserRole: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case admin
         case adminPro
         case author
@@ -34025,8 +34282,9 @@ extension QuickSightClientTypes {
 }
 
 extension QuickSightClientTypes {
+
     /// A registered user of Amazon QuickSight.
-    public struct User {
+    public struct User: Swift.Sendable {
         /// The active status of user. When you create an Amazon QuickSight user that's not an IAM user or an Active Directory user, that user is inactive until they sign in and provide a password.
         public var active: Swift.Bool
         /// The Amazon Resource Name (ARN) for the user.
@@ -34097,10 +34355,9 @@ extension QuickSightClientTypes {
             self.userName = userName
         }
     }
-
 }
 
-public struct DescribeUserOutput {
+public struct DescribeUserOutput: Swift.Sendable {
     /// The Amazon Web Services request ID for this operation.
     public var requestId: Swift.String?
     /// The HTTP status of the request.
@@ -34120,7 +34377,7 @@ public struct DescribeUserOutput {
     }
 }
 
-public struct DescribeVPCConnectionInput {
+public struct DescribeVPCConnectionInput: Swift.Sendable {
     /// The Amazon Web Services account ID of the account that contains the VPC connection that you want described.
     /// This member is required.
     public var awsAccountId: Swift.String?
@@ -34140,7 +34397,7 @@ public struct DescribeVPCConnectionInput {
 
 extension QuickSightClientTypes {
 
-    public enum NetworkInterfaceStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum NetworkInterfaceStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case attachmentFailedRollbackFailed
         case available
         case creating
@@ -34192,8 +34449,9 @@ extension QuickSightClientTypes {
 }
 
 extension QuickSightClientTypes {
+
     /// The structure that contains information about a network interface.
-    public struct NetworkInterface {
+    public struct NetworkInterface: Swift.Sendable {
         /// The availability zone that the network interface resides in.
         public var availabilityZone: Swift.String?
         /// An error message.
@@ -34220,12 +34478,12 @@ extension QuickSightClientTypes {
             self.subnetId = subnetId
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The structure of a VPC connection.
-    public struct VPCConnection {
+    public struct VPCConnection: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the VPC connection.
         public var arn: Swift.String?
         /// The availability status of the VPC connection.
@@ -34280,10 +34538,9 @@ extension QuickSightClientTypes {
             self.vpcId = vpcId
         }
     }
-
 }
 
-public struct DescribeVPCConnectionOutput {
+public struct DescribeVPCConnectionOutput: Swift.Sendable {
     /// The Amazon Web Services request ID for this operation.
     public var requestId: Swift.String?
     /// The HTTP status of the request.
@@ -34333,7 +34590,7 @@ public struct DomainNotWhitelistedException: ClientRuntime.ModeledError, AWSClie
 
 extension QuickSightClientTypes {
 
-    public enum EmbeddingIdentityType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum EmbeddingIdentityType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case anonymous
         case iam
         case quicksight
@@ -34364,8 +34621,9 @@ extension QuickSightClientTypes {
 }
 
 extension QuickSightClientTypes {
+
     /// An entry that appears when a KeyRegistration update to Amazon QuickSight fails.
-    public struct FailedKeyRegistrationEntry {
+    public struct FailedKeyRegistrationEntry: Swift.Sendable {
         /// The ARN of the KMS key that failed to update.
         public var keyArn: Swift.String?
         /// A message that provides information about why a FailedKeyRegistrationEntry error occurred.
@@ -34391,12 +34649,11 @@ extension QuickSightClientTypes {
             self.statusCode = statusCode
         }
     }
-
 }
 
 extension QuickSightClientTypes {
 
-    public enum FolderFilterAttribute: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum FolderFilterAttribute: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case directQuicksightOwner
         case directQuicksightSoleOwner
         case directQuicksightViewerOrOwner
@@ -34439,8 +34696,9 @@ extension QuickSightClientTypes {
 }
 
 extension QuickSightClientTypes {
+
     /// An object that consists of a member Amazon Resource Name (ARN) and a member ID.
-    public struct MemberIdArnPair {
+    public struct MemberIdArnPair: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the member.
         public var memberArn: Swift.String?
         /// The ID of the member.
@@ -34455,12 +34713,12 @@ extension QuickSightClientTypes {
             self.memberId = memberId
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// A filter to use to search an Amazon QuickSight folder.
-    public struct FolderSearchFilter {
+    public struct FolderSearchFilter: Swift.Sendable {
         /// The name of a value that you want to use in the filter. For example, "Name": "QUICKSIGHT_OWNER". Valid values are defined as follows:
         ///
         /// * QUICKSIGHT_VIEWER_OR_OWNER: Provide an ARN of a user or group, and any folders with that ARN listed as one of the folder's owners or viewers are returned. Implicit permissions from folders or groups are considered.
@@ -34493,12 +34751,12 @@ extension QuickSightClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// A summary of information about an existing Amazon QuickSight folder.
-    public struct FolderSummary {
+    public struct FolderSummary: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the folder.
         public var arn: Swift.String?
         /// The time that the folder was created.
@@ -34533,7 +34791,6 @@ extension QuickSightClientTypes {
             self.sharingModel = sharingModel
         }
     }
-
 }
 
 /// The number of minutes specified for the lifetime of a session isn't valid. The session lifetime must be 15-600 minutes.
@@ -34593,8 +34850,9 @@ public struct UnsupportedPricingPlanException: ClientRuntime.ModeledError, AWSCl
 }
 
 extension QuickSightClientTypes {
+
     /// The key-value pair used for the row-level security tags feature.
-    public struct SessionTag {
+    public struct SessionTag: Swift.Sendable {
         /// The key for the tag.
         /// This member is required.
         public var key: Swift.String?
@@ -34611,7 +34869,6 @@ extension QuickSightClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension QuickSightClientTypes.SessionTag: Swift.CustomDebugStringConvertible {
@@ -34619,7 +34876,7 @@ extension QuickSightClientTypes.SessionTag: Swift.CustomDebugStringConvertible {
         "SessionTag(key: \(Swift.String(describing: key)), value: \"CONTENT_REDACTED\")"}
 }
 
-public struct GenerateEmbedUrlForAnonymousUserInput {
+public struct GenerateEmbedUrlForAnonymousUserInput: Swift.Sendable {
     /// The domains that you want to add to the allow list for access to the generated URL that is then embedded. This optional parameter overrides the static domains that are configured in the Manage QuickSight menu in the Amazon QuickSight console. Instead, it allows only the domains that you include in this parameter. You can list up to three domains or subdomains in each API call. To include all subdomains under a specific domain to the allow list, use *. For example, https://*.sapp.amazon.com includes all subdomains under https://sapp.amazon.com.
     public var allowedDomains: [Swift.String]?
     /// The Amazon Resource Names (ARNs) for the Amazon QuickSight resources that the user is authorized to access during the lifetime of the session. If you choose Dashboard embedding experience, pass the list of dashboard ARNs in the account that you want the user to be able to view. If you want to make changes to the theme of your embedded content, pass a list of theme ARNs that the anonymous users need access to. Currently, you can pass up to 25 theme ARNs in each API call.
@@ -34659,7 +34916,7 @@ public struct GenerateEmbedUrlForAnonymousUserInput {
     }
 }
 
-public struct GenerateEmbedUrlForAnonymousUserOutput {
+public struct GenerateEmbedUrlForAnonymousUserOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) to use for the anonymous Amazon QuickSight user.
     /// This member is required.
     public var anonymousUserArn: Swift.String?
@@ -34721,8 +34978,9 @@ public struct QuickSightUserNotFoundException: ClientRuntime.ModeledError, AWSCl
 }
 
 extension QuickSightClientTypes {
+
     /// The state perssitence configuration of an embedded dashboard.
-    public struct StatePersistenceConfigurations {
+    public struct StatePersistenceConfigurations: Swift.Sendable {
         /// Determines if a Amazon QuickSight dashboard's state persistence settings are turned on or off.
         /// This member is required.
         public var enabled: Swift.Bool
@@ -34734,12 +34992,12 @@ extension QuickSightClientTypes {
             self.enabled = enabled
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The feature configuration for an embedded dashboard.
-    public struct RegisteredUserDashboardFeatureConfigurations {
+    public struct RegisteredUserDashboardFeatureConfigurations: Swift.Sendable {
         /// The bookmarks configuration for an embedded dashboard in Amazon QuickSight.
         public var bookmarks: QuickSightClientTypes.BookmarksConfigurations?
         /// The shared view settings of an embedded dashboard.
@@ -34758,12 +35016,12 @@ extension QuickSightClientTypes {
             self.statePersistence = statePersistence
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// Information about the dashboard you want to embed.
-    public struct RegisteredUserDashboardEmbeddingConfiguration {
+    public struct RegisteredUserDashboardEmbeddingConfiguration: Swift.Sendable {
         /// The feature configurations of an embbedded Amazon QuickSight dashboard.
         public var featureConfigurations: QuickSightClientTypes.RegisteredUserDashboardFeatureConfigurations?
         /// The dashboard ID for the dashboard that you want the user to see first. This ID is included in the output URL. When the URL in response is accessed, Amazon QuickSight renders this dashboard if the user has permissions to view it. If the user does not have permission to view this dashboard, they see a permissions error message.
@@ -34779,12 +35037,12 @@ extension QuickSightClientTypes {
             self.initialDashboardId = initialDashboardId
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The experience that you are embedding. You can use this object to generate a url that embeds a visual into your application.
-    public struct RegisteredUserDashboardVisualEmbeddingConfiguration {
+    public struct RegisteredUserDashboardVisualEmbeddingConfiguration: Swift.Sendable {
         /// The visual ID for the visual that you want the user to embed. This ID is included in the output URL. When the URL in response is accessed, Amazon QuickSight renders this visual. The Amazon Resource Name (ARN) of the dashboard that the visual belongs to must be included in the AuthorizedResourceArns parameter. Otherwise, the request will fail with InvalidParameterValueException.
         /// This member is required.
         public var initialDashboardVisualId: QuickSightClientTypes.DashboardVisualId?
@@ -34796,12 +35054,12 @@ extension QuickSightClientTypes {
             self.initialDashboardVisualId = initialDashboardVisualId
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// An object that provides information about the configuration of a Generative Q&A experience.
-    public struct RegisteredUserGenerativeQnAEmbeddingConfiguration {
+    public struct RegisteredUserGenerativeQnAEmbeddingConfiguration: Swift.Sendable {
         /// The ID of the new Q reader experience topic that you want to make the starting topic in the Generative Q&A experience. You can find a topic ID by navigating to the Topics pane in the Amazon QuickSight application and opening a topic. The ID is in the URL for the topic that you open. If you don't specify an initial topic or you specify a legacy topic, a list of all shared new reader experience topics is shown in the Generative Q&A experience for your readers. When you select an initial new reader experience topic, you can specify whether or not readers are allowed to select other new reader experience topics from the available ones in the list.
         public var initialTopicId: Swift.String?
 
@@ -34812,12 +35070,12 @@ extension QuickSightClientTypes {
             self.initialTopicId = initialTopicId
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// Information about the Q search bar embedding experience.
-    public struct RegisteredUserQSearchBarEmbeddingConfiguration {
+    public struct RegisteredUserQSearchBarEmbeddingConfiguration: Swift.Sendable {
         /// The ID of the legacy Q topic that you want to use as the starting topic in the Q search bar. To locate the topic ID of the topic that you want to use, open the [Amazon QuickSight console](https://quicksight.aws.amazon.com/), navigate to the Topics pane, and choose thre topic that you want to use. The TopicID is located in the URL of the topic that opens. When you select an initial topic, you can specify whether or not readers are allowed to select other topics from the list of available topics. If you don't specify an initial topic or if you specify a new reader experience topic, a list of all shared legacy topics is shown in the Q bar.
         public var initialTopicId: Swift.String?
 
@@ -34828,12 +35086,12 @@ extension QuickSightClientTypes {
             self.initialTopicId = initialTopicId
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The feature configurations of an embedded Amazon QuickSight console.
-    public struct RegisteredUserConsoleFeatureConfigurations {
+    public struct RegisteredUserConsoleFeatureConfigurations: Swift.Sendable {
         /// The shared view settings of an embedded dashboard.
         public var sharedView: QuickSightClientTypes.SharedViewConfigurations?
         /// The state persistence configurations of an embedded Amazon QuickSight console.
@@ -34848,12 +35106,12 @@ extension QuickSightClientTypes {
             self.statePersistence = statePersistence
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// Information about the Amazon QuickSight console that you want to embed.
-    public struct RegisteredUserQuickSightConsoleEmbeddingConfiguration {
+    public struct RegisteredUserQuickSightConsoleEmbeddingConfiguration: Swift.Sendable {
         /// The embedding configuration of an embedded Amazon QuickSight console.
         public var featureConfigurations: QuickSightClientTypes.RegisteredUserConsoleFeatureConfigurations?
         /// The initial URL path for the Amazon QuickSight console. InitialPath is required. The entry point URL is constrained to the following paths:
@@ -34880,12 +35138,12 @@ extension QuickSightClientTypes {
             self.initialPath = initialPath
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The type of experience you want to embed. For registered users, you can embed Amazon QuickSight dashboards or the Amazon QuickSight console. Exactly one of the experience configurations is required. You can choose Dashboard or QuickSightConsole. You cannot choose more than one experience configuration.
-    public struct RegisteredUserEmbeddingExperienceConfiguration {
+    public struct RegisteredUserEmbeddingExperienceConfiguration: Swift.Sendable {
         /// The configuration details for providing a dashboard embedding experience.
         public var dashboard: QuickSightClientTypes.RegisteredUserDashboardEmbeddingConfiguration?
         /// The type of embedding experience. In this case, Amazon QuickSight visuals.
@@ -34919,10 +35177,9 @@ extension QuickSightClientTypes {
             self.quickSightConsole = quickSightConsole
         }
     }
-
 }
 
-public struct GenerateEmbedUrlForRegisteredUserInput {
+public struct GenerateEmbedUrlForRegisteredUserInput: Swift.Sendable {
     /// The domains that you want to add to the allow list for access to the generated URL that is then embedded. This optional parameter overrides the static domains that are configured in the Manage QuickSight menu in the Amazon QuickSight console. Instead, it allows only the domains that you include in this parameter. You can list up to three domains or subdomains in each API call. To include all subdomains under a specific domain to the allow list, use *. For example, https://*.sapp.amazon.com includes all subdomains under https://sapp.amazon.com.
     public var allowedDomains: [Swift.String]?
     /// The ID for the Amazon Web Services account that contains the dashboard that you're embedding.
@@ -34953,7 +35210,7 @@ public struct GenerateEmbedUrlForRegisteredUserInput {
     }
 }
 
-public struct GenerateEmbedUrlForRegisteredUserOutput {
+public struct GenerateEmbedUrlForRegisteredUserOutput: Swift.Sendable {
     /// The embed URL for the Amazon QuickSight dashboard, visual, Q search bar, Generative Q&A experience, or console.
     /// This member is required.
     public var embedUrl: Swift.String?
@@ -35009,7 +35266,7 @@ public struct IdentityTypeNotSupportedException: ClientRuntime.ModeledError, AWS
     }
 }
 
-public struct GetDashboardEmbedUrlInput {
+public struct GetDashboardEmbedUrlInput: Swift.Sendable {
     /// A list of one or more dashboard IDs that you want anonymous users to have tempporary access to. Currently, the IdentityType parameter must be set to ANONYMOUS because other identity types authenticate as Amazon QuickSight or IAM users. For example, if you set "--dashboard-id dash_id1 --dashboard-id dash_id2 dash_id3 identity-type ANONYMOUS", the session can access all three dashboards.
     public var additionalDashboardIds: [Swift.String]?
     /// The ID for the Amazon Web Services account that contains the dashboard that you're embedding.
@@ -35070,7 +35327,7 @@ public struct GetDashboardEmbedUrlInput {
 }
 
 /// Output returned from the GetDashboardEmbedUrl operation.
-public struct GetDashboardEmbedUrlOutput {
+public struct GetDashboardEmbedUrlOutput: Swift.Sendable {
     /// A single-use URL that you can put into your server-side webpage to embed your dashboard. This URL is valid for 5 minutes. The API operation provides the URL with an auth_code value that enables one (and only one) sign-on to a user session that is valid for 10 hours.
     public var embedUrl: Swift.String?
     /// The Amazon Web Services request ID for this operation.
@@ -35095,7 +35352,7 @@ extension GetDashboardEmbedUrlOutput: Swift.CustomDebugStringConvertible {
         "GetDashboardEmbedUrlOutput(requestId: \(Swift.String(describing: requestId)), status: \(Swift.String(describing: status)), embedUrl: \"CONTENT_REDACTED\")"}
 }
 
-public struct GetSessionEmbedUrlInput {
+public struct GetSessionEmbedUrlInput: Swift.Sendable {
     /// The ID for the Amazon Web Services account associated with your Amazon QuickSight subscription.
     /// This member is required.
     public var awsAccountId: Swift.String?
@@ -35141,7 +35398,7 @@ public struct GetSessionEmbedUrlInput {
     }
 }
 
-public struct GetSessionEmbedUrlOutput {
+public struct GetSessionEmbedUrlOutput: Swift.Sendable {
     /// A single-use URL that you can put into your server-side web page to embed your Amazon QuickSight session. This URL is valid for 5 minutes. The API operation provides the URL with an auth_code value that enables one (and only one) sign-on to a user session that is valid for 10 hours.
     public var embedUrl: Swift.String?
     /// The Amazon Web Services request ID for this operation.
@@ -35168,7 +35425,7 @@ extension GetSessionEmbedUrlOutput: Swift.CustomDebugStringConvertible {
 
 extension QuickSightClientTypes {
 
-    public enum GroupFilterAttribute: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum GroupFilterAttribute: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case groupName
         case sdkUnknown(Swift.String)
 
@@ -35194,7 +35451,7 @@ extension QuickSightClientTypes {
 
 extension QuickSightClientTypes {
 
-    public enum GroupFilterOperator: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum GroupFilterOperator: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case startswith
         case sdkUnknown(Swift.String)
 
@@ -35219,8 +35476,9 @@ extension QuickSightClientTypes {
 }
 
 extension QuickSightClientTypes {
+
     /// A GroupSearchFilter object that you want to apply to your search.
-    public struct GroupSearchFilter {
+    public struct GroupSearchFilter: Swift.Sendable {
         /// The name of the value that you want to use as a filter, for example "Name": "GROUP_NAME". Currently, the only supported name is GROUP_NAME.
         /// This member is required.
         public var name: QuickSightClientTypes.GroupFilterAttribute?
@@ -35242,12 +35500,12 @@ extension QuickSightClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// IAM policy assignment summary.
-    public struct IAMPolicyAssignmentSummary {
+    public struct IAMPolicyAssignmentSummary: Swift.Sendable {
         /// Assignment name.
         public var assignmentName: Swift.String?
         /// Assignment status.
@@ -35262,7 +35520,6 @@ extension QuickSightClientTypes {
             self.assignmentStatus = assignmentStatus
         }
     }
-
 }
 
 /// You don't have this feature activated for your account. To fix this issue, contact Amazon Web Services support.
@@ -35293,7 +35550,7 @@ public struct InvalidRequestException: ClientRuntime.ModeledError, AWSClientRunt
     }
 }
 
-public struct ListAnalysesInput {
+public struct ListAnalysesInput: Swift.Sendable {
     /// The ID of the Amazon Web Services account that contains the analyses.
     /// This member is required.
     public var awsAccountId: Swift.String?
@@ -35314,7 +35571,7 @@ public struct ListAnalysesInput {
     }
 }
 
-public struct ListAnalysesOutput {
+public struct ListAnalysesOutput: Swift.Sendable {
     /// Metadata describing each of the analyses that are listed.
     public var analysisSummaryList: [QuickSightClientTypes.AnalysisSummary]?
     /// A pagination token that can be used in a subsequent request.
@@ -35338,7 +35595,7 @@ public struct ListAnalysesOutput {
     }
 }
 
-public struct ListAssetBundleExportJobsInput {
+public struct ListAssetBundleExportJobsInput: Swift.Sendable {
     /// The ID of the Amazon Web Services account that the export jobs were executed in.
     /// This member is required.
     public var awsAccountId: Swift.String?
@@ -35359,7 +35616,7 @@ public struct ListAssetBundleExportJobsInput {
     }
 }
 
-public struct ListAssetBundleExportJobsOutput {
+public struct ListAssetBundleExportJobsOutput: Swift.Sendable {
     /// A list of export job summaries.
     public var assetBundleExportJobSummaryList: [QuickSightClientTypes.AssetBundleExportJobSummary]?
     /// The token for the next set of results, or null if there are no more results.
@@ -35383,7 +35640,7 @@ public struct ListAssetBundleExportJobsOutput {
     }
 }
 
-public struct ListAssetBundleImportJobsInput {
+public struct ListAssetBundleImportJobsInput: Swift.Sendable {
     /// The ID of the Amazon Web Services account that the import jobs were executed in.
     /// This member is required.
     public var awsAccountId: Swift.String?
@@ -35404,7 +35661,7 @@ public struct ListAssetBundleImportJobsInput {
     }
 }
 
-public struct ListAssetBundleImportJobsOutput {
+public struct ListAssetBundleImportJobsOutput: Swift.Sendable {
     /// A list of import job summaries.
     public var assetBundleImportJobSummaryList: [QuickSightClientTypes.AssetBundleImportJobSummary]?
     /// The token for the next set of results, or null if there are no more results.
@@ -35428,7 +35685,7 @@ public struct ListAssetBundleImportJobsOutput {
     }
 }
 
-public struct ListDashboardsInput {
+public struct ListDashboardsInput: Swift.Sendable {
     /// The ID of the Amazon Web Services account that contains the dashboards that you're listing.
     /// This member is required.
     public var awsAccountId: Swift.String?
@@ -35449,7 +35706,7 @@ public struct ListDashboardsInput {
     }
 }
 
-public struct ListDashboardsOutput {
+public struct ListDashboardsOutput: Swift.Sendable {
     /// A structure that contains all of the dashboards in your Amazon Web Services account. This structure provides basic information about the dashboards.
     public var dashboardSummaryList: [QuickSightClientTypes.DashboardSummary]?
     /// The token for the next set of results, or null if there are no more results.
@@ -35473,7 +35730,7 @@ public struct ListDashboardsOutput {
     }
 }
 
-public struct ListDashboardVersionsInput {
+public struct ListDashboardVersionsInput: Swift.Sendable {
     /// The ID of the Amazon Web Services account that contains the dashboard that you're listing versions for.
     /// This member is required.
     public var awsAccountId: Swift.String?
@@ -35499,7 +35756,7 @@ public struct ListDashboardVersionsInput {
     }
 }
 
-public struct ListDashboardVersionsOutput {
+public struct ListDashboardVersionsOutput: Swift.Sendable {
     /// A structure that contains information about each version of the dashboard.
     public var dashboardVersionSummaryList: [QuickSightClientTypes.DashboardVersionSummary]?
     /// The token for the next set of results, or null if there are no more results.
@@ -35523,7 +35780,7 @@ public struct ListDashboardVersionsOutput {
     }
 }
 
-public struct ListDataSetsInput {
+public struct ListDataSetsInput: Swift.Sendable {
     /// The Amazon Web Services account ID.
     /// This member is required.
     public var awsAccountId: Swift.String?
@@ -35544,7 +35801,7 @@ public struct ListDataSetsInput {
     }
 }
 
-public struct ListDataSetsOutput {
+public struct ListDataSetsOutput: Swift.Sendable {
     /// The list of dataset summaries.
     public var dataSetSummaries: [QuickSightClientTypes.DataSetSummary]?
     /// The token for the next set of results, or null if there are no more results.
@@ -35568,7 +35825,7 @@ public struct ListDataSetsOutput {
     }
 }
 
-public struct ListDataSourcesInput {
+public struct ListDataSourcesInput: Swift.Sendable {
     /// The Amazon Web Services account ID.
     /// This member is required.
     public var awsAccountId: Swift.String?
@@ -35589,7 +35846,7 @@ public struct ListDataSourcesInput {
     }
 }
 
-public struct ListDataSourcesOutput {
+public struct ListDataSourcesOutput: Swift.Sendable {
     /// A list of data sources.
     public var dataSources: [QuickSightClientTypes.DataSource]?
     /// The token for the next set of results, or null if there are no more results.
@@ -35613,7 +35870,7 @@ public struct ListDataSourcesOutput {
     }
 }
 
-public struct ListFolderMembersInput {
+public struct ListFolderMembersInput: Swift.Sendable {
     /// The ID for the Amazon Web Services account that contains the folder.
     /// This member is required.
     public var awsAccountId: Swift.String?
@@ -35639,7 +35896,7 @@ public struct ListFolderMembersInput {
     }
 }
 
-public struct ListFolderMembersOutput {
+public struct ListFolderMembersOutput: Swift.Sendable {
     /// A structure that contains all of the folder members (dashboards, analyses, and datasets) in the folder.
     public var folderMemberList: [QuickSightClientTypes.MemberIdArnPair]?
     /// The token for the next set of results, or null if there are no more results.
@@ -35663,7 +35920,7 @@ public struct ListFolderMembersOutput {
     }
 }
 
-public struct ListFoldersInput {
+public struct ListFoldersInput: Swift.Sendable {
     /// The ID for the Amazon Web Services account that contains the folder.
     /// This member is required.
     public var awsAccountId: Swift.String?
@@ -35684,7 +35941,7 @@ public struct ListFoldersInput {
     }
 }
 
-public struct ListFoldersOutput {
+public struct ListFoldersOutput: Swift.Sendable {
     /// A structure that contains all of the folders in the Amazon Web Services account. This structure provides basic information about the folders.
     public var folderSummaryList: [QuickSightClientTypes.FolderSummary]?
     /// The token for the next set of results, or null if there are no more results.
@@ -35708,7 +35965,7 @@ public struct ListFoldersOutput {
     }
 }
 
-public struct ListFoldersForResourceInput {
+public struct ListFoldersForResourceInput: Swift.Sendable {
     /// The ID for the Amazon Web Services account that contains the resource.
     /// This member is required.
     public var awsAccountId: Swift.String?
@@ -35734,7 +35991,7 @@ public struct ListFoldersForResourceInput {
     }
 }
 
-public struct ListFoldersForResourceOutput {
+public struct ListFoldersForResourceOutput: Swift.Sendable {
     /// A list that contains the Amazon Resource Names (ARNs) of all folders that the resource is a member of.
     public var folders: [Swift.String]?
     /// The token for the next set of results, or null if there are no more results.
@@ -35758,7 +36015,7 @@ public struct ListFoldersForResourceOutput {
     }
 }
 
-public struct ListGroupMembershipsInput {
+public struct ListGroupMembershipsInput: Swift.Sendable {
     /// The ID for the Amazon Web Services account that the group is in. Currently, you use the ID for the Amazon Web Services account that contains your Amazon QuickSight account.
     /// This member is required.
     public var awsAccountId: Swift.String?
@@ -35789,7 +36046,7 @@ public struct ListGroupMembershipsInput {
     }
 }
 
-public struct ListGroupMembershipsOutput {
+public struct ListGroupMembershipsOutput: Swift.Sendable {
     /// The list of the members of the group.
     public var groupMemberList: [QuickSightClientTypes.GroupMember]?
     /// A pagination token that can be used in a subsequent request.
@@ -35813,7 +36070,7 @@ public struct ListGroupMembershipsOutput {
     }
 }
 
-public struct ListGroupsInput {
+public struct ListGroupsInput: Swift.Sendable {
     /// The ID for the Amazon Web Services account that the group is in. Currently, you use the ID for the Amazon Web Services account that contains your Amazon QuickSight account.
     /// This member is required.
     public var awsAccountId: Swift.String?
@@ -35839,7 +36096,7 @@ public struct ListGroupsInput {
     }
 }
 
-public struct ListGroupsOutput {
+public struct ListGroupsOutput: Swift.Sendable {
     /// The list of the groups.
     public var groupList: [QuickSightClientTypes.Group]?
     /// A pagination token that can be used in a subsequent request.
@@ -35863,7 +36120,7 @@ public struct ListGroupsOutput {
     }
 }
 
-public struct ListIAMPolicyAssignmentsInput {
+public struct ListIAMPolicyAssignmentsInput: Swift.Sendable {
     /// The status of the assignments.
     public var assignmentStatus: QuickSightClientTypes.AssignmentStatus?
     /// The ID of the Amazon Web Services account that contains these IAM policy assignments.
@@ -35893,7 +36150,7 @@ public struct ListIAMPolicyAssignmentsInput {
     }
 }
 
-public struct ListIAMPolicyAssignmentsOutput {
+public struct ListIAMPolicyAssignmentsOutput: Swift.Sendable {
     /// Information describing the IAM policy assignments.
     public var iamPolicyAssignments: [QuickSightClientTypes.IAMPolicyAssignmentSummary]?
     /// The token for the next set of results, or null if there are no more results.
@@ -35917,7 +36174,7 @@ public struct ListIAMPolicyAssignmentsOutput {
     }
 }
 
-public struct ListIAMPolicyAssignmentsForUserInput {
+public struct ListIAMPolicyAssignmentsForUserInput: Swift.Sendable {
     /// The ID of the Amazon Web Services account that contains the assignments.
     /// This member is required.
     public var awsAccountId: Swift.String?
@@ -35948,7 +36205,7 @@ public struct ListIAMPolicyAssignmentsForUserInput {
     }
 }
 
-public struct ListIAMPolicyAssignmentsForUserOutput {
+public struct ListIAMPolicyAssignmentsForUserOutput: Swift.Sendable {
     /// The active assignments for this user.
     public var activeAssignments: [QuickSightClientTypes.ActiveIAMPolicyAssignment]?
     /// The token for the next set of results, or null if there are no more results.
@@ -35972,7 +36229,7 @@ public struct ListIAMPolicyAssignmentsForUserOutput {
     }
 }
 
-public struct ListIdentityPropagationConfigsInput {
+public struct ListIdentityPropagationConfigsInput: Swift.Sendable {
     /// The ID of the Amazon Web Services account that contain the identity propagation configurations of.
     /// This member is required.
     public var awsAccountId: Swift.String?
@@ -35993,7 +36250,7 @@ public struct ListIdentityPropagationConfigsInput {
     }
 }
 
-public struct ListIdentityPropagationConfigsOutput {
+public struct ListIdentityPropagationConfigsOutput: Swift.Sendable {
     /// The token for the next set of results, or null if there are no more results.
     public var nextToken: Swift.String?
     /// The Amazon Web Services request ID for this operation.
@@ -36017,7 +36274,7 @@ public struct ListIdentityPropagationConfigsOutput {
     }
 }
 
-public struct ListIngestionsInput {
+public struct ListIngestionsInput: Swift.Sendable {
     /// The Amazon Web Services account ID.
     /// This member is required.
     public var awsAccountId: Swift.String?
@@ -36043,7 +36300,7 @@ public struct ListIngestionsInput {
     }
 }
 
-public struct ListIngestionsOutput {
+public struct ListIngestionsOutput: Swift.Sendable {
     /// A list of the ingestions.
     public var ingestions: [QuickSightClientTypes.Ingestion]?
     /// The token for the next set of results, or null if there are no more results.
@@ -36067,7 +36324,7 @@ public struct ListIngestionsOutput {
     }
 }
 
-public struct ListNamespacesInput {
+public struct ListNamespacesInput: Swift.Sendable {
     /// The ID for the Amazon Web Services account that contains the Amazon QuickSight namespaces that you want to list.
     /// This member is required.
     public var awsAccountId: Swift.String?
@@ -36088,7 +36345,7 @@ public struct ListNamespacesInput {
     }
 }
 
-public struct ListNamespacesOutput {
+public struct ListNamespacesOutput: Swift.Sendable {
     /// The information about the namespaces in this Amazon Web Services account. The response includes the namespace ARN, name, Amazon Web Services Region, notification email address, creation status, and identity store.
     public var namespaces: [QuickSightClientTypes.NamespaceInfoV2]?
     /// A unique pagination token that can be used in a subsequent request. Receiving NextToken in your response inticates that there is more data that can be returned. To receive the data, make another ListNamespaces API call with the returned token to retrieve the next page of data. Each token is valid for 24 hours. If you try to make a ListNamespaces API call with an expired token, you will receive a HTTP 400 InvalidNextTokenException error.
@@ -36112,7 +36369,7 @@ public struct ListNamespacesOutput {
     }
 }
 
-public struct ListRefreshSchedulesInput {
+public struct ListRefreshSchedulesInput: Swift.Sendable {
     /// The Amazon Web Services account ID.
     /// This member is required.
     public var awsAccountId: Swift.String?
@@ -36130,7 +36387,7 @@ public struct ListRefreshSchedulesInput {
     }
 }
 
-public struct ListRefreshSchedulesOutput {
+public struct ListRefreshSchedulesOutput: Swift.Sendable {
     /// The list of refresh schedules for the dataset.
     public var refreshSchedules: [QuickSightClientTypes.RefreshSchedule]?
     /// The Amazon Web Services request ID for this operation.
@@ -36150,7 +36407,7 @@ public struct ListRefreshSchedulesOutput {
     }
 }
 
-public struct ListRoleMembershipsInput {
+public struct ListRoleMembershipsInput: Swift.Sendable {
     /// The ID for the Amazon Web Services account that you want to create a group in. The Amazon Web Services account ID that you provide must be the same Amazon Web Services account that contains your Amazon QuickSight account.
     /// This member is required.
     public var awsAccountId: Swift.String?
@@ -36181,7 +36438,7 @@ public struct ListRoleMembershipsInput {
     }
 }
 
-public struct ListRoleMembershipsOutput {
+public struct ListRoleMembershipsOutput: Swift.Sendable {
     /// The list of groups associated with a role
     public var membersList: [Swift.String]?
     /// A pagination token that can be used in a subsequent request.
@@ -36205,7 +36462,7 @@ public struct ListRoleMembershipsOutput {
     }
 }
 
-public struct ListTagsForResourceInput {
+public struct ListTagsForResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the resource that you want a list of tags for.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -36218,7 +36475,7 @@ public struct ListTagsForResourceInput {
     }
 }
 
-public struct ListTagsForResourceOutput {
+public struct ListTagsForResourceOutput: Swift.Sendable {
     /// The Amazon Web Services request ID for this operation.
     public var requestId: Swift.String?
     /// The HTTP status of the request.
@@ -36238,7 +36495,7 @@ public struct ListTagsForResourceOutput {
     }
 }
 
-public struct ListTemplateAliasesInput {
+public struct ListTemplateAliasesInput: Swift.Sendable {
     /// The ID of the Amazon Web Services account that contains the template aliases that you're listing.
     /// This member is required.
     public var awsAccountId: Swift.String?
@@ -36264,7 +36521,7 @@ public struct ListTemplateAliasesInput {
     }
 }
 
-public struct ListTemplateAliasesOutput {
+public struct ListTemplateAliasesOutput: Swift.Sendable {
     /// The token for the next set of results, or null if there are no more results.
     public var nextToken: Swift.String?
     /// The Amazon Web Services request ID for this operation.
@@ -36288,7 +36545,7 @@ public struct ListTemplateAliasesOutput {
     }
 }
 
-public struct ListTemplatesInput {
+public struct ListTemplatesInput: Swift.Sendable {
     /// The ID of the Amazon Web Services account that contains the templates that you're listing.
     /// This member is required.
     public var awsAccountId: Swift.String?
@@ -36310,8 +36567,9 @@ public struct ListTemplatesInput {
 }
 
 extension QuickSightClientTypes {
+
     /// The template summary.
-    public struct TemplateSummary {
+    public struct TemplateSummary: Swift.Sendable {
         /// A summary of a template.
         public var arn: Swift.String?
         /// The last time that this template was created.
@@ -36342,10 +36600,9 @@ extension QuickSightClientTypes {
             self.templateId = templateId
         }
     }
-
 }
 
-public struct ListTemplatesOutput {
+public struct ListTemplatesOutput: Swift.Sendable {
     /// The token for the next set of results, or null if there are no more results.
     public var nextToken: Swift.String?
     /// The Amazon Web Services request ID for this operation.
@@ -36369,7 +36626,7 @@ public struct ListTemplatesOutput {
     }
 }
 
-public struct ListTemplateVersionsInput {
+public struct ListTemplateVersionsInput: Swift.Sendable {
     /// The ID of the Amazon Web Services account that contains the templates that you're listing.
     /// This member is required.
     public var awsAccountId: Swift.String?
@@ -36396,8 +36653,9 @@ public struct ListTemplateVersionsInput {
 }
 
 extension QuickSightClientTypes {
+
     /// The template version.
-    public struct TemplateVersionSummary {
+    public struct TemplateVersionSummary: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the template version.
         public var arn: Swift.String?
         /// The time that this template version was created.
@@ -36424,10 +36682,9 @@ extension QuickSightClientTypes {
             self.versionNumber = versionNumber
         }
     }
-
 }
 
-public struct ListTemplateVersionsOutput {
+public struct ListTemplateVersionsOutput: Swift.Sendable {
     /// The token for the next set of results, or null if there are no more results.
     public var nextToken: Swift.String?
     /// The Amazon Web Services request ID for this operation.
@@ -36451,7 +36708,7 @@ public struct ListTemplateVersionsOutput {
     }
 }
 
-public struct ListThemeAliasesInput {
+public struct ListThemeAliasesInput: Swift.Sendable {
     /// The ID of the Amazon Web Services account that contains the theme aliases that you're listing.
     /// This member is required.
     public var awsAccountId: Swift.String?
@@ -36477,7 +36734,7 @@ public struct ListThemeAliasesInput {
     }
 }
 
-public struct ListThemeAliasesOutput {
+public struct ListThemeAliasesOutput: Swift.Sendable {
     /// The token for the next set of results, or null if there are no more results.
     public var nextToken: Swift.String?
     /// The Amazon Web Services request ID for this operation.
@@ -36501,7 +36758,7 @@ public struct ListThemeAliasesOutput {
     }
 }
 
-public struct ListThemesInput {
+public struct ListThemesInput: Swift.Sendable {
     /// The ID of the Amazon Web Services account that contains the themes that you're listing.
     /// This member is required.
     public var awsAccountId: Swift.String?
@@ -36533,8 +36790,9 @@ public struct ListThemesInput {
 }
 
 extension QuickSightClientTypes {
+
     /// The theme summary.
-    public struct ThemeSummary {
+    public struct ThemeSummary: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the resource.
         public var arn: Swift.String?
         /// The date and time that this theme was created.
@@ -36565,10 +36823,9 @@ extension QuickSightClientTypes {
             self.themeId = themeId
         }
     }
-
 }
 
-public struct ListThemesOutput {
+public struct ListThemesOutput: Swift.Sendable {
     /// The token for the next set of results, or null if there are no more results.
     public var nextToken: Swift.String?
     /// The Amazon Web Services request ID for this operation.
@@ -36592,7 +36849,7 @@ public struct ListThemesOutput {
     }
 }
 
-public struct ListThemeVersionsInput {
+public struct ListThemeVersionsInput: Swift.Sendable {
     /// The ID of the Amazon Web Services account that contains the themes that you're listing.
     /// This member is required.
     public var awsAccountId: Swift.String?
@@ -36619,8 +36876,9 @@ public struct ListThemeVersionsInput {
 }
 
 extension QuickSightClientTypes {
+
     /// The theme version.
-    public struct ThemeVersionSummary {
+    public struct ThemeVersionSummary: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the theme version.
         public var arn: Swift.String?
         /// The date and time that this theme version was created.
@@ -36647,10 +36905,9 @@ extension QuickSightClientTypes {
             self.versionNumber = versionNumber
         }
     }
-
 }
 
-public struct ListThemeVersionsOutput {
+public struct ListThemeVersionsOutput: Swift.Sendable {
     /// The token for the next set of results, or null if there are no more results.
     public var nextToken: Swift.String?
     /// The Amazon Web Services request ID for this operation.
@@ -36674,7 +36931,7 @@ public struct ListThemeVersionsOutput {
     }
 }
 
-public struct ListTopicRefreshSchedulesInput {
+public struct ListTopicRefreshSchedulesInput: Swift.Sendable {
     /// The ID of the Amazon Web Services account that contains the topic whose refresh schedule you want described.
     /// This member is required.
     public var awsAccountId: Swift.String?
@@ -36693,8 +36950,9 @@ public struct ListTopicRefreshSchedulesInput {
 }
 
 extension QuickSightClientTypes {
+
     /// A summary of the refresh schedule details for a dataset.
-    public struct TopicRefreshScheduleSummary {
+    public struct TopicRefreshScheduleSummary: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the dataset.
         public var datasetArn: Swift.String?
         /// The ID of the dataset.
@@ -36717,10 +36975,9 @@ extension QuickSightClientTypes {
             self.refreshSchedule = refreshSchedule
         }
     }
-
 }
 
-public struct ListTopicRefreshSchedulesOutput {
+public struct ListTopicRefreshSchedulesOutput: Swift.Sendable {
     /// The list of topic refresh schedules.
     public var refreshSchedules: [QuickSightClientTypes.TopicRefreshScheduleSummary]?
     /// The Amazon Web Services request ID for this operation.
@@ -36748,7 +37005,7 @@ public struct ListTopicRefreshSchedulesOutput {
     }
 }
 
-public struct ListTopicReviewedAnswersInput {
+public struct ListTopicReviewedAnswersInput: Swift.Sendable {
     /// The ID of the Amazon Web Services account that containd the reviewed answers that you want listed.
     /// This member is required.
     public var awsAccountId: Swift.String?
@@ -36766,7 +37023,7 @@ public struct ListTopicReviewedAnswersInput {
     }
 }
 
-public struct ListTopicsInput {
+public struct ListTopicsInput: Swift.Sendable {
     /// The ID of the Amazon Web Services account that contains the topics that you want to list.
     /// This member is required.
     public var awsAccountId: Swift.String?
@@ -36788,8 +37045,9 @@ public struct ListTopicsInput {
 }
 
 extension QuickSightClientTypes {
+
     /// A topic summary.
-    public struct TopicSummary {
+    public struct TopicSummary: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the topic.
         public var arn: Swift.String?
         /// The name of the topic.
@@ -36812,10 +37070,9 @@ extension QuickSightClientTypes {
             self.userExperienceVersion = userExperienceVersion
         }
     }
-
 }
 
-public struct ListTopicsOutput {
+public struct ListTopicsOutput: Swift.Sendable {
     /// The token for the next set of results, or null if there are no more results.
     public var nextToken: Swift.String?
     /// The Amazon Web Services request ID for this operation.
@@ -36839,7 +37096,7 @@ public struct ListTopicsOutput {
     }
 }
 
-public struct ListUserGroupsInput {
+public struct ListUserGroupsInput: Swift.Sendable {
     /// The Amazon Web Services account ID that the user is in. Currently, you use the ID for the Amazon Web Services account that contains your Amazon QuickSight account.
     /// This member is required.
     public var awsAccountId: Swift.String?
@@ -36870,7 +37127,7 @@ public struct ListUserGroupsInput {
     }
 }
 
-public struct ListUserGroupsOutput {
+public struct ListUserGroupsOutput: Swift.Sendable {
     /// The list of groups the user is a member of.
     public var groupList: [QuickSightClientTypes.Group]?
     /// A pagination token that can be used in a subsequent request.
@@ -36894,7 +37151,7 @@ public struct ListUserGroupsOutput {
     }
 }
 
-public struct ListUsersInput {
+public struct ListUsersInput: Swift.Sendable {
     /// The ID for the Amazon Web Services account that the user is in. Currently, you use the ID for the Amazon Web Services account that contains your Amazon QuickSight account.
     /// This member is required.
     public var awsAccountId: Swift.String?
@@ -36920,7 +37177,7 @@ public struct ListUsersInput {
     }
 }
 
-public struct ListUsersOutput {
+public struct ListUsersOutput: Swift.Sendable {
     /// A pagination token that can be used in a subsequent request.
     public var nextToken: Swift.String?
     /// The Amazon Web Services request ID for this operation.
@@ -36944,7 +37201,7 @@ public struct ListUsersOutput {
     }
 }
 
-public struct ListVPCConnectionsInput {
+public struct ListVPCConnectionsInput: Swift.Sendable {
     /// The Amazon Web Services account ID of the account that contains the VPC connections that you want to list.
     /// This member is required.
     public var awsAccountId: Swift.String?
@@ -36966,8 +37223,9 @@ public struct ListVPCConnectionsInput {
 }
 
 extension QuickSightClientTypes {
+
     /// The summary metadata that describes a VPC connection.
-    public struct VPCConnectionSummary {
+    public struct VPCConnectionSummary: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the VPC connection.
         public var arn: Swift.String?
         /// The availability status of the VPC connection.
@@ -37022,10 +37280,9 @@ extension QuickSightClientTypes {
             self.vpcId = vpcId
         }
     }
-
 }
 
-public struct ListVPCConnectionsOutput {
+public struct ListVPCConnectionsOutput: Swift.Sendable {
     /// The token for the next set of results, or null if there are no more results.
     public var nextToken: Swift.String?
     /// The Amazon Web Services request ID for this operation.
@@ -37051,7 +37308,7 @@ public struct ListVPCConnectionsOutput {
 
 extension QuickSightClientTypes {
 
-    public enum PurchaseMode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum PurchaseMode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case autoPurchase
         case manual
         case sdkUnknown(Swift.String)
@@ -37078,7 +37335,7 @@ extension QuickSightClientTypes {
     }
 }
 
-public struct PutDataSetRefreshPropertiesInput {
+public struct PutDataSetRefreshPropertiesInput: Swift.Sendable {
     /// The Amazon Web Services account ID.
     /// This member is required.
     public var awsAccountId: Swift.String?
@@ -37101,7 +37358,7 @@ public struct PutDataSetRefreshPropertiesInput {
     }
 }
 
-public struct PutDataSetRefreshPropertiesOutput {
+public struct PutDataSetRefreshPropertiesOutput: Swift.Sendable {
     /// The Amazon Web Services request ID for this operation.
     public var requestId: Swift.String?
     /// The HTTP status of the request.
@@ -37117,7 +37374,7 @@ public struct PutDataSetRefreshPropertiesOutput {
     }
 }
 
-public struct RegisterUserInput {
+public struct RegisterUserInput: Swift.Sendable {
     /// The ID for the Amazon Web Services account that the user is in. Currently, you use the ID for the Amazon Web Services account that contains your Amazon QuickSight account.
     /// This member is required.
     public var awsAccountId: Swift.String?
@@ -37213,7 +37470,7 @@ public struct RegisterUserInput {
     }
 }
 
-public struct RegisterUserOutput {
+public struct RegisterUserOutput: Swift.Sendable {
     /// The Amazon Web Services request ID for this operation.
     public var requestId: Swift.String?
     /// The HTTP status of the request.
@@ -37237,31 +37494,37 @@ public struct RegisterUserOutput {
     }
 }
 
-public struct RestoreAnalysisInput {
+public struct RestoreAnalysisInput: Swift.Sendable {
     /// The ID of the analysis that you're restoring.
     /// This member is required.
     public var analysisId: Swift.String?
     /// The ID of the Amazon Web Services account that contains the analysis.
     /// This member is required.
     public var awsAccountId: Swift.String?
+    /// A boolean value that determines if the analysis will be restored to folders that it previously resided in. A True value restores analysis back to all folders that it previously resided in. A False value restores the analysis but does not restore the analysis back to all previously resided folders. Restoring a restricted analysis requires this parameter to be set to True.
+    public var restoreToFolders: Swift.Bool?
 
     public init(
         analysisId: Swift.String? = nil,
-        awsAccountId: Swift.String? = nil
+        awsAccountId: Swift.String? = nil,
+        restoreToFolders: Swift.Bool? = false
     )
     {
         self.analysisId = analysisId
         self.awsAccountId = awsAccountId
+        self.restoreToFolders = restoreToFolders
     }
 }
 
-public struct RestoreAnalysisOutput {
+public struct RestoreAnalysisOutput: Swift.Sendable {
     /// The ID of the analysis that you're restoring.
     public var analysisId: Swift.String?
     /// The Amazon Resource Name (ARN) of the analysis that you're restoring.
     public var arn: Swift.String?
     /// The Amazon Web Services request ID for this operation.
     public var requestId: Swift.String?
+    /// A list of folder arns thatthe analysis failed to be restored to.
+    public var restorationFailedFolderArns: [Swift.String]?
     /// The HTTP status of the request.
     public var status: Swift.Int
 
@@ -37269,17 +37532,19 @@ public struct RestoreAnalysisOutput {
         analysisId: Swift.String? = nil,
         arn: Swift.String? = nil,
         requestId: Swift.String? = nil,
+        restorationFailedFolderArns: [Swift.String]? = nil,
         status: Swift.Int = 0
     )
     {
         self.analysisId = analysisId
         self.arn = arn
         self.requestId = requestId
+        self.restorationFailedFolderArns = restorationFailedFolderArns
         self.status = status
     }
 }
 
-public struct SearchAnalysesInput {
+public struct SearchAnalysesInput: Swift.Sendable {
     /// The ID of the Amazon Web Services account that contains the analyses that you're searching for.
     /// This member is required.
     public var awsAccountId: Swift.String?
@@ -37305,7 +37570,7 @@ public struct SearchAnalysesInput {
     }
 }
 
-public struct SearchAnalysesOutput {
+public struct SearchAnalysesOutput: Swift.Sendable {
     /// Metadata describing the analyses that you searched for.
     public var analysisSummaryList: [QuickSightClientTypes.AnalysisSummary]?
     /// A pagination token that can be used in a subsequent request.
@@ -37329,7 +37594,7 @@ public struct SearchAnalysesOutput {
     }
 }
 
-public struct SearchDashboardsInput {
+public struct SearchDashboardsInput: Swift.Sendable {
     /// The ID of the Amazon Web Services account that contains the user whose dashboards you're searching for.
     /// This member is required.
     public var awsAccountId: Swift.String?
@@ -37355,7 +37620,7 @@ public struct SearchDashboardsInput {
     }
 }
 
-public struct SearchDashboardsOutput {
+public struct SearchDashboardsOutput: Swift.Sendable {
     /// The list of dashboards owned by the user specified in Filters in your request.
     public var dashboardSummaryList: [QuickSightClientTypes.DashboardSummary]?
     /// The token for the next set of results, or null if there are no more results.
@@ -37379,7 +37644,7 @@ public struct SearchDashboardsOutput {
     }
 }
 
-public struct SearchDataSetsInput {
+public struct SearchDataSetsInput: Swift.Sendable {
     /// The Amazon Web Services account ID.
     /// This member is required.
     public var awsAccountId: Swift.String?
@@ -37405,7 +37670,7 @@ public struct SearchDataSetsInput {
     }
 }
 
-public struct SearchDataSetsOutput {
+public struct SearchDataSetsOutput: Swift.Sendable {
     /// A DataSetSummaries object that returns a summary of a dataset.
     public var dataSetSummaries: [QuickSightClientTypes.DataSetSummary]?
     /// A pagination token that can be used in a subsequent request.
@@ -37429,7 +37694,7 @@ public struct SearchDataSetsOutput {
     }
 }
 
-public struct SearchDataSourcesInput {
+public struct SearchDataSourcesInput: Swift.Sendable {
     /// The Amazon Web Services account ID.
     /// This member is required.
     public var awsAccountId: Swift.String?
@@ -37455,7 +37720,7 @@ public struct SearchDataSourcesInput {
     }
 }
 
-public struct SearchDataSourcesOutput {
+public struct SearchDataSourcesOutput: Swift.Sendable {
     /// A DataSourceSummaries object that returns a summary of a data source.
     public var dataSourceSummaries: [QuickSightClientTypes.DataSourceSummary]?
     /// A pagination token that can be used in a subsequent request.
@@ -37479,7 +37744,7 @@ public struct SearchDataSourcesOutput {
     }
 }
 
-public struct SearchFoldersInput {
+public struct SearchFoldersInput: Swift.Sendable {
     /// The ID for the Amazon Web Services account that contains the folder.
     /// This member is required.
     public var awsAccountId: Swift.String?
@@ -37505,7 +37770,7 @@ public struct SearchFoldersInput {
     }
 }
 
-public struct SearchFoldersOutput {
+public struct SearchFoldersOutput: Swift.Sendable {
     /// A structure that contains all of the folders in the Amazon Web Services account. This structure provides basic information about the folders.
     public var folderSummaryList: [QuickSightClientTypes.FolderSummary]?
     /// The token for the next set of results, or null if there are no more results.
@@ -37529,7 +37794,7 @@ public struct SearchFoldersOutput {
     }
 }
 
-public struct SearchGroupsInput {
+public struct SearchGroupsInput: Swift.Sendable {
     /// The ID for the Amazon Web Services account that the group is in. Currently, you use the ID for the Amazon Web Services account that contains your Amazon QuickSight account.
     /// This member is required.
     public var awsAccountId: Swift.String?
@@ -37560,7 +37825,7 @@ public struct SearchGroupsInput {
     }
 }
 
-public struct SearchGroupsOutput {
+public struct SearchGroupsOutput: Swift.Sendable {
     /// A list of groups in a specified namespace that match the filters you set in your SearchGroups request.
     public var groupList: [QuickSightClientTypes.Group]?
     /// A pagination token that can be used in a subsequent request.
@@ -37584,7 +37849,7 @@ public struct SearchGroupsOutput {
     }
 }
 
-public struct StartAssetBundleExportJobInput {
+public struct StartAssetBundleExportJobInput: Swift.Sendable {
     /// The ID of the job. This ID is unique while the job is running. After the job is completed, you can reuse this ID for another job.
     /// This member is required.
     public var assetBundleExportJobId: Swift.String?
@@ -37598,6 +37863,10 @@ public struct StartAssetBundleExportJobInput {
     public var exportFormat: QuickSightClientTypes.AssetBundleExportFormat?
     /// A Boolean that determines whether all dependencies of each resource ARN are recursively exported with the job. For example, say you provided a Dashboard ARN to the ResourceArns parameter. If you set IncludeAllDependencies to TRUE, any theme, dataset, and data source resource that is a dependency of the dashboard is also exported.
     public var includeAllDependencies: Swift.Bool?
+    /// A setting that indicates whether you want to include folder assets. You can also use this setting to recusrsively include all subfolders of an exported folder.
+    public var includeFolderMembers: QuickSightClientTypes.IncludeFolderMembers?
+    /// A Boolean that determines if the exported asset carries over information about the folders that the asset is a member of.
+    public var includeFolderMemberships: Swift.Bool?
     /// A Boolean that determines whether all permissions for each resource ARN are exported with the job. If you set IncludePermissions to TRUE, any permissions associated with each resource are exported.
     public var includePermissions: Swift.Bool?
     /// A Boolean that determines whether all tags for each resource ARN are exported with the job. If you set IncludeTags to TRUE, any tags associated with each resource are exported.
@@ -37631,6 +37900,8 @@ public struct StartAssetBundleExportJobInput {
         cloudFormationOverridePropertyConfiguration: QuickSightClientTypes.AssetBundleCloudFormationOverridePropertyConfiguration? = nil,
         exportFormat: QuickSightClientTypes.AssetBundleExportFormat? = nil,
         includeAllDependencies: Swift.Bool? = false,
+        includeFolderMembers: QuickSightClientTypes.IncludeFolderMembers? = nil,
+        includeFolderMemberships: Swift.Bool? = false,
         includePermissions: Swift.Bool? = false,
         includeTags: Swift.Bool? = false,
         resourceArns: [Swift.String]? = nil,
@@ -37642,6 +37913,8 @@ public struct StartAssetBundleExportJobInput {
         self.cloudFormationOverridePropertyConfiguration = cloudFormationOverridePropertyConfiguration
         self.exportFormat = exportFormat
         self.includeAllDependencies = includeAllDependencies
+        self.includeFolderMembers = includeFolderMembers
+        self.includeFolderMemberships = includeFolderMemberships
         self.includePermissions = includePermissions
         self.includeTags = includeTags
         self.resourceArns = resourceArns
@@ -37649,7 +37922,7 @@ public struct StartAssetBundleExportJobInput {
     }
 }
 
-public struct StartAssetBundleExportJobOutput {
+public struct StartAssetBundleExportJobOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) for the export job.
     public var arn: Swift.String?
     /// The ID of the job. This ID is unique while the job is running. After the job is completed, you can reuse this ID for another job.
@@ -37673,7 +37946,7 @@ public struct StartAssetBundleExportJobOutput {
     }
 }
 
-public struct StartAssetBundleImportJobInput {
+public struct StartAssetBundleImportJobInput: Swift.Sendable {
     /// The ID of the job. This ID is unique while the job is running. After the job is completed, you can reuse this ID for another job.
     /// This member is required.
     public var assetBundleImportJobId: Swift.String?
@@ -37716,7 +37989,7 @@ public struct StartAssetBundleImportJobInput {
     }
 }
 
-public struct StartAssetBundleImportJobOutput {
+public struct StartAssetBundleImportJobOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) for the import job.
     public var arn: Swift.String?
     /// The ID of the job. This ID is unique while the job is running. After the job is completed, you can reuse this ID for another job.
@@ -37741,8 +38014,9 @@ public struct StartAssetBundleImportJobOutput {
 }
 
 extension QuickSightClientTypes {
+
     /// A structure that contains information on the anonymous user configuration.
-    public struct SnapshotAnonymousUser {
+    public struct SnapshotAnonymousUser: Swift.Sendable {
         /// The tags to be used for row-level security (RLS). Make sure that the relevant datasets have RLS tags configured before you start a snapshot export job. You can configure the RLS tags of a dataset with a DataSet$RowLevelPermissionTagConfiguration API call. These are not the tags that are used for Amazon Web Services resource tagging. For more information on row level security in Amazon QuickSight, see [Using Row-Level Security (RLS) with Tags](https://docs.aws.amazon.com/quicksight/latest/user/quicksight-dev-rls-tags.html)in the Amazon QuickSight User Guide.
         public var rowLevelPermissionTags: [QuickSightClientTypes.SessionTag]?
 
@@ -37753,12 +38027,12 @@ extension QuickSightClientTypes {
             self.rowLevelPermissionTags = rowLevelPermissionTags
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// A structure that contains information about the users that the dashboard snapshot is generated for.
-    public struct SnapshotUserConfiguration {
+    public struct SnapshotUserConfiguration: Swift.Sendable {
         /// An array of records that describe the anonymous users that the dashboard snapshot is generated for.
         public var anonymousUsers: [QuickSightClientTypes.SnapshotAnonymousUser]?
 
@@ -37769,10 +38043,9 @@ extension QuickSightClientTypes {
             self.anonymousUsers = anonymousUsers
         }
     }
-
 }
 
-public struct StartDashboardSnapshotJobInput {
+public struct StartDashboardSnapshotJobInput: Swift.Sendable {
     /// The ID of the Amazon Web Services account that the dashboard snapshot job is executed in.
     /// This member is required.
     public var awsAccountId: Swift.String?
@@ -37805,7 +38078,7 @@ public struct StartDashboardSnapshotJobInput {
     }
 }
 
-public struct StartDashboardSnapshotJobOutput {
+public struct StartDashboardSnapshotJobOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) for the dashboard snapshot job.
     public var arn: Swift.String?
     /// The Amazon Web Services request ID for this operation.
@@ -37829,7 +38102,46 @@ public struct StartDashboardSnapshotJobOutput {
     }
 }
 
-public struct TagResourceInput {
+public struct StartDashboardSnapshotJobScheduleInput: Swift.Sendable {
+    /// The ID of the Amazon Web Services account that the dashboard snapshot job is executed in.
+    /// This member is required.
+    public var awsAccountId: Swift.String?
+    /// The ID of the dashboard that you want to start a snapshot job schedule for.
+    /// This member is required.
+    public var dashboardId: Swift.String?
+    /// The ID of the schedule that you want to start a snapshot job schedule for. The schedule ID can be found in the Amazon QuickSight console in the Schedules pane of the dashboard that the schedule is configured for.
+    /// This member is required.
+    public var scheduleId: Swift.String?
+
+    public init(
+        awsAccountId: Swift.String? = nil,
+        dashboardId: Swift.String? = nil,
+        scheduleId: Swift.String? = nil
+    )
+    {
+        self.awsAccountId = awsAccountId
+        self.dashboardId = dashboardId
+        self.scheduleId = scheduleId
+    }
+}
+
+public struct StartDashboardSnapshotJobScheduleOutput: Swift.Sendable {
+    /// The Amazon Web Services request ID for this operation.
+    public var requestId: Swift.String?
+    /// The HTTP status of the request
+    public var status: Swift.Int
+
+    public init(
+        requestId: Swift.String? = nil,
+        status: Swift.Int = 0
+    )
+    {
+        self.requestId = requestId
+        self.status = status
+    }
+}
+
+public struct TagResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the resource that you want to tag.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -37847,7 +38159,7 @@ public struct TagResourceInput {
     }
 }
 
-public struct TagResourceOutput {
+public struct TagResourceOutput: Swift.Sendable {
     /// The Amazon Web Services request ID for this operation.
     public var requestId: Swift.String?
     /// The HTTP status of the request.
@@ -37863,7 +38175,7 @@ public struct TagResourceOutput {
     }
 }
 
-public struct UntagResourceInput {
+public struct UntagResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the resource that you want to untag.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -37881,7 +38193,7 @@ public struct UntagResourceInput {
     }
 }
 
-public struct UntagResourceOutput {
+public struct UntagResourceOutput: Swift.Sendable {
     /// The Amazon Web Services request ID for this operation.
     public var requestId: Swift.String?
     /// The HTTP status of the request.
@@ -37897,7 +38209,7 @@ public struct UntagResourceOutput {
     }
 }
 
-public struct UpdateAccountCustomizationInput {
+public struct UpdateAccountCustomizationInput: Swift.Sendable {
     /// The Amazon QuickSight customizations you're updating in the current Amazon Web Services Region.
     /// This member is required.
     public var accountCustomization: QuickSightClientTypes.AccountCustomization?
@@ -37919,7 +38231,7 @@ public struct UpdateAccountCustomizationInput {
     }
 }
 
-public struct UpdateAccountCustomizationOutput {
+public struct UpdateAccountCustomizationOutput: Swift.Sendable {
     /// The Amazon QuickSight customizations you're updating in the current Amazon Web Services Region.
     public var accountCustomization: QuickSightClientTypes.AccountCustomization?
     /// The Amazon Resource Name (ARN) for the updated customization for this Amazon Web Services account.
@@ -37951,7 +38263,7 @@ public struct UpdateAccountCustomizationOutput {
     }
 }
 
-public struct UpdateAccountSettingsInput {
+public struct UpdateAccountSettingsInput: Swift.Sendable {
     /// The ID for the Amazon Web Services account that contains the Amazon QuickSight settings that you want to list.
     /// This member is required.
     public var awsAccountId: Swift.String?
@@ -37977,7 +38289,7 @@ public struct UpdateAccountSettingsInput {
     }
 }
 
-public struct UpdateAccountSettingsOutput {
+public struct UpdateAccountSettingsOutput: Swift.Sendable {
     /// The Amazon Web Services request ID for this operation.
     public var requestId: Swift.String?
     /// The HTTP status of the request.
@@ -37993,7 +38305,7 @@ public struct UpdateAccountSettingsOutput {
     }
 }
 
-public struct UpdateAnalysisInput {
+public struct UpdateAnalysisInput: Swift.Sendable {
     /// The ID for the analysis that you're updating. This ID displays in the URL of the analysis.
     /// This member is required.
     public var analysisId: Swift.String?
@@ -38036,7 +38348,7 @@ public struct UpdateAnalysisInput {
     }
 }
 
-public struct UpdateAnalysisOutput {
+public struct UpdateAnalysisOutput: Swift.Sendable {
     /// The ID of the analysis.
     public var analysisId: Swift.String?
     /// The ARN of the analysis that you're updating.
@@ -38064,7 +38376,7 @@ public struct UpdateAnalysisOutput {
     }
 }
 
-public struct UpdateAnalysisPermissionsInput {
+public struct UpdateAnalysisPermissionsInput: Swift.Sendable {
     /// The ID of the analysis whose permissions you're updating. The ID is part of the analysis URL.
     /// This member is required.
     public var analysisId: Swift.String?
@@ -38090,7 +38402,7 @@ public struct UpdateAnalysisPermissionsInput {
     }
 }
 
-public struct UpdateAnalysisPermissionsOutput {
+public struct UpdateAnalysisPermissionsOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the analysis that you updated.
     public var analysisArn: Swift.String?
     /// The ID of the analysis that you updated permissions for.
@@ -38118,7 +38430,7 @@ public struct UpdateAnalysisPermissionsOutput {
     }
 }
 
-public struct UpdateDashboardInput {
+public struct UpdateDashboardInput: Swift.Sendable {
     /// The ID of the Amazon Web Services account that contains the dashboard that you're updating.
     /// This member is required.
     public var awsAccountId: Swift.String?
@@ -38175,7 +38487,7 @@ public struct UpdateDashboardInput {
     }
 }
 
-public struct UpdateDashboardOutput {
+public struct UpdateDashboardOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the resource.
     public var arn: Swift.String?
     /// The creation status of the request.
@@ -38207,7 +38519,7 @@ public struct UpdateDashboardOutput {
     }
 }
 
-public struct UpdateDashboardLinksInput {
+public struct UpdateDashboardLinksInput: Swift.Sendable {
     /// The ID of the Amazon Web Services account that contains the dashboard whose links you want to update.
     /// This member is required.
     public var awsAccountId: Swift.String?
@@ -38230,7 +38542,7 @@ public struct UpdateDashboardLinksInput {
     }
 }
 
-public struct UpdateDashboardLinksOutput {
+public struct UpdateDashboardLinksOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the dashboard.
     public var dashboardArn: Swift.String?
     /// A list of analysis Amazon Resource Names (ARNs) to be linked to the dashboard.
@@ -38254,7 +38566,7 @@ public struct UpdateDashboardLinksOutput {
     }
 }
 
-public struct UpdateDashboardPermissionsInput {
+public struct UpdateDashboardPermissionsInput: Swift.Sendable {
     /// The ID of the Amazon Web Services account that contains the dashboard whose permissions you're updating.
     /// This member is required.
     public var awsAccountId: Swift.String?
@@ -38288,7 +38600,7 @@ public struct UpdateDashboardPermissionsInput {
     }
 }
 
-public struct UpdateDashboardPermissionsOutput {
+public struct UpdateDashboardPermissionsOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the dashboard.
     public var dashboardArn: Swift.String?
     /// The ID for the dashboard.
@@ -38320,7 +38632,7 @@ public struct UpdateDashboardPermissionsOutput {
     }
 }
 
-public struct UpdateDashboardPublishedVersionInput {
+public struct UpdateDashboardPublishedVersionInput: Swift.Sendable {
     /// The ID of the Amazon Web Services account that contains the dashboard that you're updating.
     /// This member is required.
     public var awsAccountId: Swift.String?
@@ -38343,7 +38655,7 @@ public struct UpdateDashboardPublishedVersionInput {
     }
 }
 
-public struct UpdateDashboardPublishedVersionOutput {
+public struct UpdateDashboardPublishedVersionOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the dashboard.
     public var dashboardArn: Swift.String?
     /// The ID for the dashboard.
@@ -38367,7 +38679,7 @@ public struct UpdateDashboardPublishedVersionOutput {
     }
 }
 
-public struct UpdateDataSetInput {
+public struct UpdateDataSetInput: Swift.Sendable {
     /// The Amazon Web Services account ID.
     /// This member is required.
     public var awsAccountId: Swift.String?
@@ -38432,7 +38744,7 @@ public struct UpdateDataSetInput {
     }
 }
 
-public struct UpdateDataSetOutput {
+public struct UpdateDataSetOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the dataset.
     public var arn: Swift.String?
     /// The ID for the dataset that you want to create. This ID is unique per Amazon Web Services Region for each Amazon Web Services account.
@@ -38464,7 +38776,7 @@ public struct UpdateDataSetOutput {
     }
 }
 
-public struct UpdateDataSetPermissionsInput {
+public struct UpdateDataSetPermissionsInput: Swift.Sendable {
     /// The Amazon Web Services account ID.
     /// This member is required.
     public var awsAccountId: Swift.String?
@@ -38490,7 +38802,7 @@ public struct UpdateDataSetPermissionsInput {
     }
 }
 
-public struct UpdateDataSetPermissionsOutput {
+public struct UpdateDataSetPermissionsOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the dataset.
     public var dataSetArn: Swift.String?
     /// The ID for the dataset whose permissions you want to update. This ID is unique per Amazon Web Services Region for each Amazon Web Services account.
@@ -38514,7 +38826,7 @@ public struct UpdateDataSetPermissionsOutput {
     }
 }
 
-public struct UpdateDataSourceInput {
+public struct UpdateDataSourceInput: Swift.Sendable {
     /// The Amazon Web Services account ID.
     /// This member is required.
     public var awsAccountId: Swift.String?
@@ -38558,7 +38870,7 @@ extension UpdateDataSourceInput: Swift.CustomDebugStringConvertible {
         "UpdateDataSourceInput(awsAccountId: \(Swift.String(describing: awsAccountId)), dataSourceId: \(Swift.String(describing: dataSourceId)), dataSourceParameters: \(Swift.String(describing: dataSourceParameters)), name: \(Swift.String(describing: name)), sslProperties: \(Swift.String(describing: sslProperties)), vpcConnectionProperties: \(Swift.String(describing: vpcConnectionProperties)), credentials: \"CONTENT_REDACTED\")"}
 }
 
-public struct UpdateDataSourceOutput {
+public struct UpdateDataSourceOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the data source.
     public var arn: Swift.String?
     /// The ID of the data source. This ID is unique per Amazon Web Services Region for each Amazon Web Services account.
@@ -38586,7 +38898,7 @@ public struct UpdateDataSourceOutput {
     }
 }
 
-public struct UpdateDataSourcePermissionsInput {
+public struct UpdateDataSourcePermissionsInput: Swift.Sendable {
     /// The Amazon Web Services account ID.
     /// This member is required.
     public var awsAccountId: Swift.String?
@@ -38612,7 +38924,7 @@ public struct UpdateDataSourcePermissionsInput {
     }
 }
 
-public struct UpdateDataSourcePermissionsOutput {
+public struct UpdateDataSourcePermissionsOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the data source.
     public var dataSourceArn: Swift.String?
     /// The ID of the data source. This ID is unique per Amazon Web Services Region for each Amazon Web Services account.
@@ -38636,7 +38948,7 @@ public struct UpdateDataSourcePermissionsOutput {
     }
 }
 
-public struct UpdateFolderInput {
+public struct UpdateFolderInput: Swift.Sendable {
     /// The ID for the Amazon Web Services account that contains the folder to update.
     /// This member is required.
     public var awsAccountId: Swift.String?
@@ -38659,7 +38971,7 @@ public struct UpdateFolderInput {
     }
 }
 
-public struct UpdateFolderOutput {
+public struct UpdateFolderOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the folder.
     public var arn: Swift.String?
     /// The ID of the folder.
@@ -38683,7 +38995,7 @@ public struct UpdateFolderOutput {
     }
 }
 
-public struct UpdateFolderPermissionsInput {
+public struct UpdateFolderPermissionsInput: Swift.Sendable {
     /// The ID for the Amazon Web Services account that contains the folder to update.
     /// This member is required.
     public var awsAccountId: Swift.String?
@@ -38709,7 +39021,7 @@ public struct UpdateFolderPermissionsInput {
     }
 }
 
-public struct UpdateFolderPermissionsOutput {
+public struct UpdateFolderPermissionsOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the folder.
     public var arn: Swift.String?
     /// The ID of the folder.
@@ -38737,7 +39049,7 @@ public struct UpdateFolderPermissionsOutput {
     }
 }
 
-public struct UpdateGroupInput {
+public struct UpdateGroupInput: Swift.Sendable {
     /// The ID for the Amazon Web Services account that the group is in. Currently, you use the ID for the Amazon Web Services account that contains your Amazon QuickSight account.
     /// This member is required.
     public var awsAccountId: Swift.String?
@@ -38764,7 +39076,7 @@ public struct UpdateGroupInput {
     }
 }
 
-public struct UpdateGroupOutput {
+public struct UpdateGroupOutput: Swift.Sendable {
     /// The name of the group.
     public var group: QuickSightClientTypes.Group?
     /// The Amazon Web Services request ID for this operation.
@@ -38784,7 +39096,7 @@ public struct UpdateGroupOutput {
     }
 }
 
-public struct UpdateIAMPolicyAssignmentInput {
+public struct UpdateIAMPolicyAssignmentInput: Swift.Sendable {
     /// The name of the assignment, also called a rule. The name must be unique within the Amazon Web Services account.
     /// This member is required.
     public var assignmentName: Swift.String?
@@ -38825,7 +39137,7 @@ public struct UpdateIAMPolicyAssignmentInput {
     }
 }
 
-public struct UpdateIAMPolicyAssignmentOutput {
+public struct UpdateIAMPolicyAssignmentOutput: Swift.Sendable {
     /// The ID of the assignment.
     public var assignmentId: Swift.String?
     /// The name of the assignment or rule.
@@ -38867,7 +39179,7 @@ public struct UpdateIAMPolicyAssignmentOutput {
     }
 }
 
-public struct UpdateIdentityPropagationConfigInput {
+public struct UpdateIdentityPropagationConfigInput: Swift.Sendable {
     /// Specifies a list of application ARNs that represent the authorized targets for a service.
     public var authorizedTargets: [Swift.String]?
     /// The ID of the Amazon Web Services account that contains the identity propagation configuration that you want to update.
@@ -38889,7 +39201,7 @@ public struct UpdateIdentityPropagationConfigInput {
     }
 }
 
-public struct UpdateIdentityPropagationConfigOutput {
+public struct UpdateIdentityPropagationConfigOutput: Swift.Sendable {
     /// The Amazon Web Services request ID for this operation.
     public var requestId: Swift.String?
     /// The HTTP status of the request.
@@ -38905,7 +39217,7 @@ public struct UpdateIdentityPropagationConfigOutput {
     }
 }
 
-public struct UpdateIpRestrictionInput {
+public struct UpdateIpRestrictionInput: Swift.Sendable {
     /// The ID of the Amazon Web Services account that contains the IP rules.
     /// This member is required.
     public var awsAccountId: Swift.String?
@@ -38934,7 +39246,7 @@ public struct UpdateIpRestrictionInput {
     }
 }
 
-public struct UpdateIpRestrictionOutput {
+public struct UpdateIpRestrictionOutput: Swift.Sendable {
     /// The ID of the Amazon Web Services account that contains the IP rules.
     public var awsAccountId: Swift.String?
     /// The Amazon Web Services request ID for this operation.
@@ -38954,7 +39266,7 @@ public struct UpdateIpRestrictionOutput {
     }
 }
 
-public struct UpdateKeyRegistrationInput {
+public struct UpdateKeyRegistrationInput: Swift.Sendable {
     /// The ID of the Amazon Web Services account that contains the customer managed key registration that you want to update.
     /// This member is required.
     public var awsAccountId: Swift.String?
@@ -38973,8 +39285,9 @@ public struct UpdateKeyRegistrationInput {
 }
 
 extension QuickSightClientTypes {
+
     /// A success entry that occurs when a KeyRegistration job is successfully applied to the Amazon QuickSight account.
-    public struct SuccessfulKeyRegistrationEntry {
+    public struct SuccessfulKeyRegistrationEntry: Swift.Sendable {
         /// The ARN of the KMS key that is associated with the SuccessfulKeyRegistrationEntry entry.
         /// This member is required.
         public var keyArn: Swift.String?
@@ -38991,10 +39304,9 @@ extension QuickSightClientTypes {
             self.statusCode = statusCode
         }
     }
-
 }
 
-public struct UpdateKeyRegistrationOutput {
+public struct UpdateKeyRegistrationOutput: Swift.Sendable {
     /// A list of all customer managed key registrations that failed to update.
     public var failedKeyRegistration: [QuickSightClientTypes.FailedKeyRegistrationEntry]?
     /// The Amazon Web Services request ID for this operation.
@@ -39014,7 +39326,7 @@ public struct UpdateKeyRegistrationOutput {
     }
 }
 
-public struct UpdatePublicSharingSettingsInput {
+public struct UpdatePublicSharingSettingsInput: Swift.Sendable {
     /// The Amazon Web Services account ID associated with your Amazon QuickSight subscription.
     /// This member is required.
     public var awsAccountId: Swift.String?
@@ -39031,7 +39343,7 @@ public struct UpdatePublicSharingSettingsInput {
     }
 }
 
-public struct UpdatePublicSharingSettingsOutput {
+public struct UpdatePublicSharingSettingsOutput: Swift.Sendable {
     /// The Amazon Web Services request ID for this operation.
     public var requestId: Swift.String?
     /// The HTTP status of the request.
@@ -39047,7 +39359,45 @@ public struct UpdatePublicSharingSettingsOutput {
     }
 }
 
-public struct UpdateRefreshScheduleInput {
+public struct UpdateQPersonalizationConfigurationInput: Swift.Sendable {
+    /// The ID of the Amazon Web Services account account that contains the personalization configuration that the user wants to update.
+    /// This member is required.
+    public var awsAccountId: Swift.String?
+    /// An option to allow Amazon QuickSight to customize data stories with user specific metadata, specifically location and job information, in your IAM Identity Center instance.
+    /// This member is required.
+    public var personalizationMode: QuickSightClientTypes.PersonalizationMode?
+
+    public init(
+        awsAccountId: Swift.String? = nil,
+        personalizationMode: QuickSightClientTypes.PersonalizationMode? = nil
+    )
+    {
+        self.awsAccountId = awsAccountId
+        self.personalizationMode = personalizationMode
+    }
+}
+
+public struct UpdateQPersonalizationConfigurationOutput: Swift.Sendable {
+    /// The personalization mode that is used for the personalization configuration.
+    public var personalizationMode: QuickSightClientTypes.PersonalizationMode?
+    /// The Amazon Web Services request ID for this operation.
+    public var requestId: Swift.String?
+    /// The HTTP status of the request.
+    public var status: Swift.Int
+
+    public init(
+        personalizationMode: QuickSightClientTypes.PersonalizationMode? = nil,
+        requestId: Swift.String? = nil,
+        status: Swift.Int = 0
+    )
+    {
+        self.personalizationMode = personalizationMode
+        self.requestId = requestId
+        self.status = status
+    }
+}
+
+public struct UpdateRefreshScheduleInput: Swift.Sendable {
     /// The Amazon Web Services account ID.
     /// This member is required.
     public var awsAccountId: Swift.String?
@@ -39070,7 +39420,7 @@ public struct UpdateRefreshScheduleInput {
     }
 }
 
-public struct UpdateRefreshScheduleOutput {
+public struct UpdateRefreshScheduleOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) for the refresh schedule.
     public var arn: Swift.String?
     /// The Amazon Web Services request ID for this operation.
@@ -39094,7 +39444,7 @@ public struct UpdateRefreshScheduleOutput {
     }
 }
 
-public struct UpdateRoleCustomPermissionInput {
+public struct UpdateRoleCustomPermissionInput: Swift.Sendable {
     /// The ID for the Amazon Web Services account that you want to create a group in. The Amazon Web Services account ID that you provide must be the same Amazon Web Services account that contains your Amazon QuickSight account.
     /// This member is required.
     public var awsAccountId: Swift.String?
@@ -39122,7 +39472,7 @@ public struct UpdateRoleCustomPermissionInput {
     }
 }
 
-public struct UpdateRoleCustomPermissionOutput {
+public struct UpdateRoleCustomPermissionOutput: Swift.Sendable {
     /// The Amazon Web Services request ID for this operation.
     public var requestId: Swift.String?
     /// The HTTP status of the request.
@@ -39138,7 +39488,7 @@ public struct UpdateRoleCustomPermissionOutput {
     }
 }
 
-public struct UpdateSPICECapacityConfigurationInput {
+public struct UpdateSPICECapacityConfigurationInput: Swift.Sendable {
     /// The ID of the Amazon Web Services account that contains the SPICE configuration that you want to update.
     /// This member is required.
     public var awsAccountId: Swift.String?
@@ -39160,7 +39510,7 @@ public struct UpdateSPICECapacityConfigurationInput {
     }
 }
 
-public struct UpdateSPICECapacityConfigurationOutput {
+public struct UpdateSPICECapacityConfigurationOutput: Swift.Sendable {
     /// The Amazon Web Services request ID for this operation.
     public var requestId: Swift.String?
     /// The HTTP status of the request.
@@ -39176,7 +39526,7 @@ public struct UpdateSPICECapacityConfigurationOutput {
     }
 }
 
-public struct UpdateTemplateInput {
+public struct UpdateTemplateInput: Swift.Sendable {
     /// The ID of the Amazon Web Services account that contains the template that you're updating.
     /// This member is required.
     public var awsAccountId: Swift.String?
@@ -39214,7 +39564,7 @@ public struct UpdateTemplateInput {
     }
 }
 
-public struct UpdateTemplateOutput {
+public struct UpdateTemplateOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) for the template.
     public var arn: Swift.String?
     /// The creation status of the template.
@@ -39246,7 +39596,7 @@ public struct UpdateTemplateOutput {
     }
 }
 
-public struct UpdateTemplateAliasInput {
+public struct UpdateTemplateAliasInput: Swift.Sendable {
     /// The alias of the template that you want to update. If you name a specific alias, you update the version that the alias points to. You can specify the latest version of the template by providing the keyword $LATEST in the AliasName parameter. The keyword $PUBLISHED doesn't apply to templates.
     /// This member is required.
     public var aliasName: Swift.String?
@@ -39274,7 +39624,7 @@ public struct UpdateTemplateAliasInput {
     }
 }
 
-public struct UpdateTemplateAliasOutput {
+public struct UpdateTemplateAliasOutput: Swift.Sendable {
     /// The Amazon Web Services request ID for this operation.
     public var requestId: Swift.String?
     /// The HTTP status of the request.
@@ -39294,7 +39644,7 @@ public struct UpdateTemplateAliasOutput {
     }
 }
 
-public struct UpdateTemplatePermissionsInput {
+public struct UpdateTemplatePermissionsInput: Swift.Sendable {
     /// The ID of the Amazon Web Services account that contains the template.
     /// This member is required.
     public var awsAccountId: Swift.String?
@@ -39320,7 +39670,7 @@ public struct UpdateTemplatePermissionsInput {
     }
 }
 
-public struct UpdateTemplatePermissionsOutput {
+public struct UpdateTemplatePermissionsOutput: Swift.Sendable {
     /// A list of resource permissions to be set on the template.
     public var permissions: [QuickSightClientTypes.ResourcePermission]?
     /// The Amazon Web Services request ID for this operation.
@@ -39348,7 +39698,7 @@ public struct UpdateTemplatePermissionsOutput {
     }
 }
 
-public struct UpdateThemeInput {
+public struct UpdateThemeInput: Swift.Sendable {
     /// The ID of the Amazon Web Services account that contains the theme that you're updating.
     /// This member is required.
     public var awsAccountId: Swift.String?
@@ -39383,7 +39733,7 @@ public struct UpdateThemeInput {
     }
 }
 
-public struct UpdateThemeOutput {
+public struct UpdateThemeOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) for the theme.
     public var arn: Swift.String?
     /// The creation status of the theme.
@@ -39415,7 +39765,7 @@ public struct UpdateThemeOutput {
     }
 }
 
-public struct UpdateThemeAliasInput {
+public struct UpdateThemeAliasInput: Swift.Sendable {
     /// The name of the theme alias that you want to update.
     /// This member is required.
     public var aliasName: Swift.String?
@@ -39443,7 +39793,7 @@ public struct UpdateThemeAliasInput {
     }
 }
 
-public struct UpdateThemeAliasOutput {
+public struct UpdateThemeAliasOutput: Swift.Sendable {
     /// The Amazon Web Services request ID for this operation.
     public var requestId: Swift.String?
     /// The HTTP status of the request.
@@ -39463,7 +39813,7 @@ public struct UpdateThemeAliasOutput {
     }
 }
 
-public struct UpdateThemePermissionsInput {
+public struct UpdateThemePermissionsInput: Swift.Sendable {
     /// The ID of the Amazon Web Services account that contains the theme.
     /// This member is required.
     public var awsAccountId: Swift.String?
@@ -39489,7 +39839,7 @@ public struct UpdateThemePermissionsInput {
     }
 }
 
-public struct UpdateThemePermissionsOutput {
+public struct UpdateThemePermissionsOutput: Swift.Sendable {
     /// The resulting list of resource permissions for the theme.
     public var permissions: [QuickSightClientTypes.ResourcePermission]?
     /// The Amazon Web Services request ID for this operation.
@@ -39517,7 +39867,7 @@ public struct UpdateThemePermissionsOutput {
     }
 }
 
-public struct UpdateTopicInput {
+public struct UpdateTopicInput: Swift.Sendable {
     /// The ID of the Amazon Web Services account that contains the topic that you want to update.
     /// This member is required.
     public var awsAccountId: Swift.String?
@@ -39540,7 +39890,7 @@ public struct UpdateTopicInput {
     }
 }
 
-public struct UpdateTopicOutput {
+public struct UpdateTopicOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the topic.
     public var arn: Swift.String?
     /// The Amazon Resource Name (ARN) of the topic refresh.
@@ -39568,7 +39918,7 @@ public struct UpdateTopicOutput {
     }
 }
 
-public struct UpdateTopicPermissionsInput {
+public struct UpdateTopicPermissionsInput: Swift.Sendable {
     /// The ID of the Amazon Web Services account that contains the topic that you want to update the permissions for.
     /// This member is required.
     public var awsAccountId: Swift.String?
@@ -39594,7 +39944,7 @@ public struct UpdateTopicPermissionsInput {
     }
 }
 
-public struct UpdateTopicPermissionsOutput {
+public struct UpdateTopicPermissionsOutput: Swift.Sendable {
     /// A list of resource permissions on the topic.
     public var permissions: [QuickSightClientTypes.ResourcePermission]?
     /// The Amazon Web Services request ID for this operation.
@@ -39622,7 +39972,7 @@ public struct UpdateTopicPermissionsOutput {
     }
 }
 
-public struct UpdateTopicRefreshScheduleInput {
+public struct UpdateTopicRefreshScheduleInput: Swift.Sendable {
     /// The ID of the Amazon Web Services account that contains the topic whose refresh schedule you want to update.
     /// This member is required.
     public var awsAccountId: Swift.String?
@@ -39650,7 +40000,7 @@ public struct UpdateTopicRefreshScheduleInput {
     }
 }
 
-public struct UpdateTopicRefreshScheduleOutput {
+public struct UpdateTopicRefreshScheduleOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the dataset.
     public var datasetArn: Swift.String?
     /// The Amazon Web Services request ID for this operation.
@@ -39678,7 +40028,7 @@ public struct UpdateTopicRefreshScheduleOutput {
     }
 }
 
-public struct UpdateUserInput {
+public struct UpdateUserInput: Swift.Sendable {
     /// The ID for the Amazon Web Services account that the user is in. Currently, you use the ID for the Amazon Web Services account that contains your Amazon QuickSight account.
     /// This member is required.
     public var awsAccountId: Swift.String?
@@ -39763,7 +40113,7 @@ public struct UpdateUserInput {
     }
 }
 
-public struct UpdateUserOutput {
+public struct UpdateUserOutput: Swift.Sendable {
     /// The Amazon Web Services request ID for this operation.
     public var requestId: Swift.String?
     /// The HTTP status of the request.
@@ -39783,7 +40133,7 @@ public struct UpdateUserOutput {
     }
 }
 
-public struct UpdateVPCConnectionInput {
+public struct UpdateVPCConnectionInput: Swift.Sendable {
     /// The Amazon Web Services account ID of the account that contains the VPC connection that you want to update.
     /// This member is required.
     public var awsAccountId: Swift.String?
@@ -39825,7 +40175,7 @@ public struct UpdateVPCConnectionInput {
     }
 }
 
-public struct UpdateVPCConnectionOutput {
+public struct UpdateVPCConnectionOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the VPC connection.
     public var arn: Swift.String?
     /// The availability status of the VPC connection.
@@ -39858,8 +40208,9 @@ public struct UpdateVPCConnectionOutput {
 }
 
 extension QuickSightClientTypes {
+
     /// The definition for a TopicVisual.
-    public struct TopicVisual {
+    public struct TopicVisual: Swift.Sendable {
         /// The ir for the TopicVisual.
         public var ir: QuickSightClientTypes.TopicIR?
         /// The role for the TopicVisual.
@@ -39882,12 +40233,12 @@ extension QuickSightClientTypes {
             self.visualId = visualId
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The definition for a CreateTopicReviewedAnswer.
-    public struct CreateTopicReviewedAnswer {
+    public struct CreateTopicReviewedAnswer: Swift.Sendable {
         /// The answer ID for the CreateTopicReviewedAnswer.
         /// This member is required.
         public var answerId: Swift.String?
@@ -39921,12 +40272,12 @@ extension QuickSightClientTypes {
             self.template = template
         }
     }
-
 }
 
 extension QuickSightClientTypes {
+
     /// The deinition for a TopicReviewedAnswer.
-    public struct TopicReviewedAnswer {
+    public struct TopicReviewedAnswer: Swift.Sendable {
         /// The answer ID of the reviewed answer.
         /// This member is required.
         public var answerId: Swift.String?
@@ -39964,10 +40315,9 @@ extension QuickSightClientTypes {
             self.template = template
         }
     }
-
 }
 
-public struct BatchCreateTopicReviewedAnswerInput {
+public struct BatchCreateTopicReviewedAnswerInput: Swift.Sendable {
     /// The definition of the Answers to be created.
     /// This member is required.
     public var answers: [QuickSightClientTypes.CreateTopicReviewedAnswer]?
@@ -39990,7 +40340,7 @@ public struct BatchCreateTopicReviewedAnswerInput {
     }
 }
 
-public struct ListTopicReviewedAnswersOutput {
+public struct ListTopicReviewedAnswersOutput: Swift.Sendable {
     /// The definition of all Answers in the topic.
     public var answers: [QuickSightClientTypes.TopicReviewedAnswer]?
     /// The Amazon Web Services request ID for this operation.
@@ -41275,6 +41625,16 @@ extension DescribeNamespaceInput {
     }
 }
 
+extension DescribeQPersonalizationConfigurationInput {
+
+    static func urlPathProvider(_ value: DescribeQPersonalizationConfigurationInput) -> Swift.String? {
+        guard let awsAccountId = value.awsAccountId else {
+            return nil
+        }
+        return "/accounts/\(awsAccountId.urlPercentEncoding())/q-personalization-configuration"
+    }
+}
+
 extension DescribeRefreshScheduleInput {
 
     static func urlPathProvider(_ value: DescribeRefreshScheduleInput) -> Swift.String? {
@@ -42527,6 +42887,18 @@ extension RestoreAnalysisInput {
     }
 }
 
+extension RestoreAnalysisInput {
+
+    static func queryItemProvider(_ value: RestoreAnalysisInput) throws -> [Smithy.URIQueryItem] {
+        var items = [Smithy.URIQueryItem]()
+        if let restoreToFolders = value.restoreToFolders {
+            let restoreToFoldersQueryItem = Smithy.URIQueryItem(name: "restore-to-folders".urlPercentEncoding(), value: Swift.String(restoreToFolders).urlPercentEncoding())
+            items.append(restoreToFoldersQueryItem)
+        }
+        return items
+    }
+}
+
 extension SearchAnalysesInput {
 
     static func urlPathProvider(_ value: SearchAnalysesInput) -> Swift.String? {
@@ -42636,6 +43008,22 @@ extension StartDashboardSnapshotJobInput {
             return nil
         }
         return "/accounts/\(awsAccountId.urlPercentEncoding())/dashboards/\(dashboardId.urlPercentEncoding())/snapshot-jobs"
+    }
+}
+
+extension StartDashboardSnapshotJobScheduleInput {
+
+    static func urlPathProvider(_ value: StartDashboardSnapshotJobScheduleInput) -> Swift.String? {
+        guard let awsAccountId = value.awsAccountId else {
+            return nil
+        }
+        guard let dashboardId = value.dashboardId else {
+            return nil
+        }
+        guard let scheduleId = value.scheduleId else {
+            return nil
+        }
+        return "/accounts/\(awsAccountId.urlPercentEncoding())/dashboards/\(dashboardId.urlPercentEncoding())/schedules/\(scheduleId.urlPercentEncoding())"
     }
 }
 
@@ -42938,6 +43326,16 @@ extension UpdatePublicSharingSettingsInput {
             return nil
         }
         return "/accounts/\(awsAccountId.urlPercentEncoding())/public-sharing-settings"
+    }
+}
+
+extension UpdateQPersonalizationConfigurationInput {
+
+    static func urlPathProvider(_ value: UpdateQPersonalizationConfigurationInput) -> Swift.String? {
+        guard let awsAccountId = value.awsAccountId else {
+            return nil
+        }
+        return "/accounts/\(awsAccountId.urlPercentEncoding())/q-personalization-configuration"
     }
 }
 
@@ -43512,6 +43910,8 @@ extension StartAssetBundleExportJobInput {
         try writer["CloudFormationOverridePropertyConfiguration"].write(value.cloudFormationOverridePropertyConfiguration, with: QuickSightClientTypes.AssetBundleCloudFormationOverridePropertyConfiguration.write(value:to:))
         try writer["ExportFormat"].write(value.exportFormat)
         try writer["IncludeAllDependencies"].write(value.includeAllDependencies)
+        try writer["IncludeFolderMembers"].write(value.includeFolderMembers)
+        try writer["IncludeFolderMemberships"].write(value.includeFolderMemberships)
         try writer["IncludePermissions"].write(value.includePermissions)
         try writer["IncludeTags"].write(value.includeTags)
         try writer["ResourceArns"].writeList(value.resourceArns, memberWritingClosure: SmithyReadWrite.WritingClosures.writeString(value:to:), memberNodeInfo: "member", isFlattened: false)
@@ -43740,6 +44140,14 @@ extension UpdatePublicSharingSettingsInput {
     static func write(value: UpdatePublicSharingSettingsInput?, to writer: SmithyJSON.Writer) throws {
         guard let value else { return }
         try writer["PublicSharingEnabled"].write(value.publicSharingEnabled)
+    }
+}
+
+extension UpdateQPersonalizationConfigurationInput {
+
+    static func write(value: UpdateQPersonalizationConfigurationInput?, to writer: SmithyJSON.Writer) throws {
+        guard let value else { return }
+        try writer["PersonalizationMode"].write(value.personalizationMode)
     }
 }
 
@@ -44750,6 +45158,8 @@ extension DescribeAssetBundleExportJobOutput {
         value.errors = try reader["Errors"].readListIfPresent(memberReadingClosure: QuickSightClientTypes.AssetBundleExportJobError.read(from:), memberNodeInfo: "member", isFlattened: false)
         value.exportFormat = try reader["ExportFormat"].readIfPresent()
         value.includeAllDependencies = try reader["IncludeAllDependencies"].readIfPresent() ?? false
+        value.includeFolderMembers = try reader["IncludeFolderMembers"].readIfPresent()
+        value.includeFolderMemberships = try reader["IncludeFolderMemberships"].readIfPresent() ?? false
         value.includePermissions = try reader["IncludePermissions"].readIfPresent() ?? false
         value.includeTags = try reader["IncludeTags"].readIfPresent() ?? false
         value.jobStatus = try reader["JobStatus"].readIfPresent()
@@ -45100,6 +45510,20 @@ extension DescribeNamespaceOutput {
         let reader = responseReader
         var value = DescribeNamespaceOutput()
         value.namespace = try reader["Namespace"].readIfPresent(with: QuickSightClientTypes.NamespaceInfoV2.read(from:))
+        value.requestId = try reader["RequestId"].readIfPresent()
+        value.status = httpResponse.statusCode.rawValue
+        return value
+    }
+}
+
+extension DescribeQPersonalizationConfigurationOutput {
+
+    static func httpOutput(from httpResponse: SmithyHTTPAPI.HTTPResponse) async throws -> DescribeQPersonalizationConfigurationOutput {
+        let data = try await httpResponse.data()
+        let responseReader = try SmithyJSON.Reader.from(data: data)
+        let reader = responseReader
+        var value = DescribeQPersonalizationConfigurationOutput()
+        value.personalizationMode = try reader["PersonalizationMode"].readIfPresent()
         value.requestId = try reader["RequestId"].readIfPresent()
         value.status = httpResponse.statusCode.rawValue
         return value
@@ -45908,6 +46332,7 @@ extension RestoreAnalysisOutput {
         value.analysisId = try reader["AnalysisId"].readIfPresent()
         value.arn = try reader["Arn"].readIfPresent()
         value.requestId = try reader["RequestId"].readIfPresent()
+        value.restorationFailedFolderArns = try reader["RestorationFailedFolderArns"].readListIfPresent(memberReadingClosure: SmithyReadWrite.ReadingClosures.readString(from:), memberNodeInfo: "member", isFlattened: false)
         value.status = httpResponse.statusCode.rawValue
         return value
     }
@@ -46043,6 +46468,19 @@ extension StartDashboardSnapshotJobOutput {
         value.arn = try reader["Arn"].readIfPresent()
         value.requestId = try reader["RequestId"].readIfPresent()
         value.snapshotJobId = try reader["SnapshotJobId"].readIfPresent()
+        value.status = httpResponse.statusCode.rawValue
+        return value
+    }
+}
+
+extension StartDashboardSnapshotJobScheduleOutput {
+
+    static func httpOutput(from httpResponse: SmithyHTTPAPI.HTTPResponse) async throws -> StartDashboardSnapshotJobScheduleOutput {
+        let data = try await httpResponse.data()
+        let responseReader = try SmithyJSON.Reader.from(data: data)
+        let reader = responseReader
+        var value = StartDashboardSnapshotJobScheduleOutput()
+        value.requestId = try reader["RequestId"].readIfPresent()
         value.status = httpResponse.statusCode.rawValue
         return value
     }
@@ -46374,6 +46812,20 @@ extension UpdatePublicSharingSettingsOutput {
         let responseReader = try SmithyJSON.Reader.from(data: data)
         let reader = responseReader
         var value = UpdatePublicSharingSettingsOutput()
+        value.requestId = try reader["RequestId"].readIfPresent()
+        value.status = httpResponse.statusCode.rawValue
+        return value
+    }
+}
+
+extension UpdateQPersonalizationConfigurationOutput {
+
+    static func httpOutput(from httpResponse: SmithyHTTPAPI.HTTPResponse) async throws -> UpdateQPersonalizationConfigurationOutput {
+        let data = try await httpResponse.data()
+        let responseReader = try SmithyJSON.Reader.from(data: data)
+        let reader = responseReader
+        var value = UpdateQPersonalizationConfigurationOutput()
+        value.personalizationMode = try reader["PersonalizationMode"].readIfPresent()
         value.requestId = try reader["RequestId"].readIfPresent()
         value.status = httpResponse.statusCode.rawValue
         return value
@@ -48151,6 +48603,25 @@ enum DescribeNamespaceOutputError {
     }
 }
 
+enum DescribeQPersonalizationConfigurationOutputError {
+
+    static func httpError(from httpResponse: SmithyHTTPAPI.HTTPResponse) async throws -> Swift.Error {
+        let data = try await httpResponse.data()
+        let responseReader = try SmithyJSON.Reader.from(data: data)
+        let baseError = try AWSClientRuntime.RestJSONError(httpResponse: httpResponse, responseReader: responseReader, noErrorWrapping: false)
+        if let error = baseError.customError() { return error }
+        switch baseError.code {
+            case "AccessDeniedException": return try AccessDeniedException.makeError(baseError: baseError)
+            case "ConflictException": return try ConflictException.makeError(baseError: baseError)
+            case "InternalFailureException": return try InternalFailureException.makeError(baseError: baseError)
+            case "InvalidParameterValueException": return try InvalidParameterValueException.makeError(baseError: baseError)
+            case "ResourceNotFoundException": return try ResourceNotFoundException.makeError(baseError: baseError)
+            case "ThrottlingException": return try ThrottlingException.makeError(baseError: baseError)
+            default: return try AWSClientRuntime.UnknownAWSHTTPServiceError.makeError(baseError: baseError)
+        }
+    }
+}
+
 enum DescribeRefreshScheduleOutputError {
 
     static func httpError(from httpResponse: SmithyHTTPAPI.HTTPResponse) async throws -> Swift.Error {
@@ -49201,6 +49672,8 @@ enum RestoreAnalysisOutputError {
             case "ConflictException": return try ConflictException.makeError(baseError: baseError)
             case "InternalFailureException": return try InternalFailureException.makeError(baseError: baseError)
             case "InvalidParameterValueException": return try InvalidParameterValueException.makeError(baseError: baseError)
+            case "LimitExceededException": return try LimitExceededException.makeError(baseError: baseError)
+            case "PreconditionNotMetException": return try PreconditionNotMetException.makeError(baseError: baseError)
             case "ResourceNotFoundException": return try ResourceNotFoundException.makeError(baseError: baseError)
             case "ThrottlingException": return try ThrottlingException.makeError(baseError: baseError)
             case "UnsupportedUserEditionException": return try UnsupportedUserEditionException.makeError(baseError: baseError)
@@ -49383,6 +49856,26 @@ enum StartDashboardSnapshotJobOutputError {
             case "ResourceNotFoundException": return try ResourceNotFoundException.makeError(baseError: baseError)
             case "ThrottlingException": return try ThrottlingException.makeError(baseError: baseError)
             case "UnsupportedPricingPlanException": return try UnsupportedPricingPlanException.makeError(baseError: baseError)
+            case "UnsupportedUserEditionException": return try UnsupportedUserEditionException.makeError(baseError: baseError)
+            default: return try AWSClientRuntime.UnknownAWSHTTPServiceError.makeError(baseError: baseError)
+        }
+    }
+}
+
+enum StartDashboardSnapshotJobScheduleOutputError {
+
+    static func httpError(from httpResponse: SmithyHTTPAPI.HTTPResponse) async throws -> Swift.Error {
+        let data = try await httpResponse.data()
+        let responseReader = try SmithyJSON.Reader.from(data: data)
+        let baseError = try AWSClientRuntime.RestJSONError(httpResponse: httpResponse, responseReader: responseReader, noErrorWrapping: false)
+        if let error = baseError.customError() { return error }
+        switch baseError.code {
+            case "AccessDeniedException": return try AccessDeniedException.makeError(baseError: baseError)
+            case "InternalFailureException": return try InternalFailureException.makeError(baseError: baseError)
+            case "InvalidParameterValueException": return try InvalidParameterValueException.makeError(baseError: baseError)
+            case "LimitExceededException": return try LimitExceededException.makeError(baseError: baseError)
+            case "ResourceNotFoundException": return try ResourceNotFoundException.makeError(baseError: baseError)
+            case "ThrottlingException": return try ThrottlingException.makeError(baseError: baseError)
             case "UnsupportedUserEditionException": return try UnsupportedUserEditionException.makeError(baseError: baseError)
             default: return try AWSClientRuntime.UnknownAWSHTTPServiceError.makeError(baseError: baseError)
         }
@@ -49812,6 +50305,26 @@ enum UpdatePublicSharingSettingsOutputError {
             case "ResourceNotFoundException": return try ResourceNotFoundException.makeError(baseError: baseError)
             case "ThrottlingException": return try ThrottlingException.makeError(baseError: baseError)
             case "UnsupportedPricingPlanException": return try UnsupportedPricingPlanException.makeError(baseError: baseError)
+            default: return try AWSClientRuntime.UnknownAWSHTTPServiceError.makeError(baseError: baseError)
+        }
+    }
+}
+
+enum UpdateQPersonalizationConfigurationOutputError {
+
+    static func httpError(from httpResponse: SmithyHTTPAPI.HTTPResponse) async throws -> Swift.Error {
+        let data = try await httpResponse.data()
+        let responseReader = try SmithyJSON.Reader.from(data: data)
+        let baseError = try AWSClientRuntime.RestJSONError(httpResponse: httpResponse, responseReader: responseReader, noErrorWrapping: false)
+        if let error = baseError.customError() { return error }
+        switch baseError.code {
+            case "AccessDeniedException": return try AccessDeniedException.makeError(baseError: baseError)
+            case "ConflictException": return try ConflictException.makeError(baseError: baseError)
+            case "InternalFailureException": return try InternalFailureException.makeError(baseError: baseError)
+            case "InvalidParameterValueException": return try InvalidParameterValueException.makeError(baseError: baseError)
+            case "ResourceNotFoundException": return try ResourceNotFoundException.makeError(baseError: baseError)
+            case "ResourceUnavailableException": return try ResourceUnavailableException.makeError(baseError: baseError)
+            case "ThrottlingException": return try ThrottlingException.makeError(baseError: baseError)
             default: return try AWSClientRuntime.UnknownAWSHTTPServiceError.makeError(baseError: baseError)
         }
     }
@@ -60230,6 +60743,7 @@ extension QuickSightClientTypes.AssetBundleCloudFormationOverridePropertyConfigu
         try writer["Dashboards"].writeList(value.dashboards, memberWritingClosure: QuickSightClientTypes.AssetBundleExportJobDashboardOverrideProperties.write(value:to:), memberNodeInfo: "member", isFlattened: false)
         try writer["DataSets"].writeList(value.dataSets, memberWritingClosure: QuickSightClientTypes.AssetBundleExportJobDataSetOverrideProperties.write(value:to:), memberNodeInfo: "member", isFlattened: false)
         try writer["DataSources"].writeList(value.dataSources, memberWritingClosure: QuickSightClientTypes.AssetBundleExportJobDataSourceOverrideProperties.write(value:to:), memberNodeInfo: "member", isFlattened: false)
+        try writer["Folders"].writeList(value.folders, memberWritingClosure: QuickSightClientTypes.AssetBundleExportJobFolderOverrideProperties.write(value:to:), memberNodeInfo: "member", isFlattened: false)
         try writer["RefreshSchedules"].writeList(value.refreshSchedules, memberWritingClosure: QuickSightClientTypes.AssetBundleExportJobRefreshScheduleOverrideProperties.write(value:to:), memberNodeInfo: "member", isFlattened: false)
         try writer["ResourceIdOverrideConfiguration"].write(value.resourceIdOverrideConfiguration, with: QuickSightClientTypes.AssetBundleExportJobResourceIdOverrideConfiguration.write(value:to:))
         try writer["Themes"].writeList(value.themes, memberWritingClosure: QuickSightClientTypes.AssetBundleExportJobThemeOverrideProperties.write(value:to:), memberNodeInfo: "member", isFlattened: false)
@@ -60247,6 +60761,24 @@ extension QuickSightClientTypes.AssetBundleCloudFormationOverridePropertyConfigu
         value.themes = try reader["Themes"].readListIfPresent(memberReadingClosure: QuickSightClientTypes.AssetBundleExportJobThemeOverrideProperties.read(from:), memberNodeInfo: "member", isFlattened: false)
         value.analyses = try reader["Analyses"].readListIfPresent(memberReadingClosure: QuickSightClientTypes.AssetBundleExportJobAnalysisOverrideProperties.read(from:), memberNodeInfo: "member", isFlattened: false)
         value.dashboards = try reader["Dashboards"].readListIfPresent(memberReadingClosure: QuickSightClientTypes.AssetBundleExportJobDashboardOverrideProperties.read(from:), memberNodeInfo: "member", isFlattened: false)
+        value.folders = try reader["Folders"].readListIfPresent(memberReadingClosure: QuickSightClientTypes.AssetBundleExportJobFolderOverrideProperties.read(from:), memberNodeInfo: "member", isFlattened: false)
+        return value
+    }
+}
+
+extension QuickSightClientTypes.AssetBundleExportJobFolderOverrideProperties {
+
+    static func write(value: QuickSightClientTypes.AssetBundleExportJobFolderOverrideProperties?, to writer: SmithyJSON.Writer) throws {
+        guard let value else { return }
+        try writer["Arn"].write(value.arn)
+        try writer["Properties"].writeList(value.properties, memberWritingClosure: SmithyReadWrite.WritingClosureBox<QuickSightClientTypes.AssetBundleExportJobFolderPropertyToOverride>().write(value:to:), memberNodeInfo: "member", isFlattened: false)
+    }
+
+    static func read(from reader: SmithyJSON.Reader) throws -> QuickSightClientTypes.AssetBundleExportJobFolderOverrideProperties {
+        guard reader.hasContent else { throw SmithyReadWrite.ReaderError.requiredValueNotPresent }
+        var value = QuickSightClientTypes.AssetBundleExportJobFolderOverrideProperties()
+        value.arn = try reader["Arn"].readIfPresent() ?? ""
+        value.properties = try reader["Properties"].readListIfPresent(memberReadingClosure: SmithyReadWrite.ReadingClosureBox<QuickSightClientTypes.AssetBundleExportJobFolderPropertyToOverride>().read(from:), memberNodeInfo: "member", isFlattened: false) ?? []
         return value
     }
 }
@@ -60442,6 +60974,7 @@ extension QuickSightClientTypes.AssetBundleImportJobOverrideParameters {
         try writer["Dashboards"].writeList(value.dashboards, memberWritingClosure: QuickSightClientTypes.AssetBundleImportJobDashboardOverrideParameters.write(value:to:), memberNodeInfo: "member", isFlattened: false)
         try writer["DataSets"].writeList(value.dataSets, memberWritingClosure: QuickSightClientTypes.AssetBundleImportJobDataSetOverrideParameters.write(value:to:), memberNodeInfo: "member", isFlattened: false)
         try writer["DataSources"].writeList(value.dataSources, memberWritingClosure: QuickSightClientTypes.AssetBundleImportJobDataSourceOverrideParameters.write(value:to:), memberNodeInfo: "member", isFlattened: false)
+        try writer["Folders"].writeList(value.folders, memberWritingClosure: QuickSightClientTypes.AssetBundleImportJobFolderOverrideParameters.write(value:to:), memberNodeInfo: "member", isFlattened: false)
         try writer["RefreshSchedules"].writeList(value.refreshSchedules, memberWritingClosure: QuickSightClientTypes.AssetBundleImportJobRefreshScheduleOverrideParameters.write(value:to:), memberNodeInfo: "member", isFlattened: false)
         try writer["ResourceIdOverrideConfiguration"].write(value.resourceIdOverrideConfiguration, with: QuickSightClientTypes.AssetBundleImportJobResourceIdOverrideConfiguration.write(value:to:))
         try writer["Themes"].writeList(value.themes, memberWritingClosure: QuickSightClientTypes.AssetBundleImportJobThemeOverrideParameters.write(value:to:), memberNodeInfo: "member", isFlattened: false)
@@ -60459,6 +60992,26 @@ extension QuickSightClientTypes.AssetBundleImportJobOverrideParameters {
         value.themes = try reader["Themes"].readListIfPresent(memberReadingClosure: QuickSightClientTypes.AssetBundleImportJobThemeOverrideParameters.read(from:), memberNodeInfo: "member", isFlattened: false)
         value.analyses = try reader["Analyses"].readListIfPresent(memberReadingClosure: QuickSightClientTypes.AssetBundleImportJobAnalysisOverrideParameters.read(from:), memberNodeInfo: "member", isFlattened: false)
         value.dashboards = try reader["Dashboards"].readListIfPresent(memberReadingClosure: QuickSightClientTypes.AssetBundleImportJobDashboardOverrideParameters.read(from:), memberNodeInfo: "member", isFlattened: false)
+        value.folders = try reader["Folders"].readListIfPresent(memberReadingClosure: QuickSightClientTypes.AssetBundleImportJobFolderOverrideParameters.read(from:), memberNodeInfo: "member", isFlattened: false)
+        return value
+    }
+}
+
+extension QuickSightClientTypes.AssetBundleImportJobFolderOverrideParameters {
+
+    static func write(value: QuickSightClientTypes.AssetBundleImportJobFolderOverrideParameters?, to writer: SmithyJSON.Writer) throws {
+        guard let value else { return }
+        try writer["FolderId"].write(value.folderId)
+        try writer["Name"].write(value.name)
+        try writer["ParentFolderArn"].write(value.parentFolderArn)
+    }
+
+    static func read(from reader: SmithyJSON.Reader) throws -> QuickSightClientTypes.AssetBundleImportJobFolderOverrideParameters {
+        guard reader.hasContent else { throw SmithyReadWrite.ReaderError.requiredValueNotPresent }
+        var value = QuickSightClientTypes.AssetBundleImportJobFolderOverrideParameters()
+        value.folderId = try reader["FolderId"].readIfPresent() ?? ""
+        value.name = try reader["Name"].readIfPresent()
+        value.parentFolderArn = try reader["ParentFolderArn"].readIfPresent()
         return value
     }
 }
@@ -61332,6 +61885,7 @@ extension QuickSightClientTypes.AssetBundleImportJobOverridePermissions {
         try writer["Dashboards"].writeList(value.dashboards, memberWritingClosure: QuickSightClientTypes.AssetBundleImportJobDashboardOverridePermissions.write(value:to:), memberNodeInfo: "member", isFlattened: false)
         try writer["DataSets"].writeList(value.dataSets, memberWritingClosure: QuickSightClientTypes.AssetBundleImportJobDataSetOverridePermissions.write(value:to:), memberNodeInfo: "member", isFlattened: false)
         try writer["DataSources"].writeList(value.dataSources, memberWritingClosure: QuickSightClientTypes.AssetBundleImportJobDataSourceOverridePermissions.write(value:to:), memberNodeInfo: "member", isFlattened: false)
+        try writer["Folders"].writeList(value.folders, memberWritingClosure: QuickSightClientTypes.AssetBundleImportJobFolderOverridePermissions.write(value:to:), memberNodeInfo: "member", isFlattened: false)
         try writer["Themes"].writeList(value.themes, memberWritingClosure: QuickSightClientTypes.AssetBundleImportJobThemeOverridePermissions.write(value:to:), memberNodeInfo: "member", isFlattened: false)
     }
 
@@ -61343,6 +61897,41 @@ extension QuickSightClientTypes.AssetBundleImportJobOverridePermissions {
         value.themes = try reader["Themes"].readListIfPresent(memberReadingClosure: QuickSightClientTypes.AssetBundleImportJobThemeOverridePermissions.read(from:), memberNodeInfo: "member", isFlattened: false)
         value.analyses = try reader["Analyses"].readListIfPresent(memberReadingClosure: QuickSightClientTypes.AssetBundleImportJobAnalysisOverridePermissions.read(from:), memberNodeInfo: "member", isFlattened: false)
         value.dashboards = try reader["Dashboards"].readListIfPresent(memberReadingClosure: QuickSightClientTypes.AssetBundleImportJobDashboardOverridePermissions.read(from:), memberNodeInfo: "member", isFlattened: false)
+        value.folders = try reader["Folders"].readListIfPresent(memberReadingClosure: QuickSightClientTypes.AssetBundleImportJobFolderOverridePermissions.read(from:), memberNodeInfo: "member", isFlattened: false)
+        return value
+    }
+}
+
+extension QuickSightClientTypes.AssetBundleImportJobFolderOverridePermissions {
+
+    static func write(value: QuickSightClientTypes.AssetBundleImportJobFolderOverridePermissions?, to writer: SmithyJSON.Writer) throws {
+        guard let value else { return }
+        try writer["FolderIds"].writeList(value.folderIds, memberWritingClosure: SmithyReadWrite.WritingClosures.writeString(value:to:), memberNodeInfo: "member", isFlattened: false)
+        try writer["Permissions"].write(value.permissions, with: QuickSightClientTypes.AssetBundleResourcePermissions.write(value:to:))
+    }
+
+    static func read(from reader: SmithyJSON.Reader) throws -> QuickSightClientTypes.AssetBundleImportJobFolderOverridePermissions {
+        guard reader.hasContent else { throw SmithyReadWrite.ReaderError.requiredValueNotPresent }
+        var value = QuickSightClientTypes.AssetBundleImportJobFolderOverridePermissions()
+        value.folderIds = try reader["FolderIds"].readListIfPresent(memberReadingClosure: SmithyReadWrite.ReadingClosures.readString(from:), memberNodeInfo: "member", isFlattened: false) ?? []
+        value.permissions = try reader["Permissions"].readIfPresent(with: QuickSightClientTypes.AssetBundleResourcePermissions.read(from:))
+        return value
+    }
+}
+
+extension QuickSightClientTypes.AssetBundleResourcePermissions {
+
+    static func write(value: QuickSightClientTypes.AssetBundleResourcePermissions?, to writer: SmithyJSON.Writer) throws {
+        guard let value else { return }
+        try writer["Actions"].writeList(value.actions, memberWritingClosure: SmithyReadWrite.WritingClosures.writeString(value:to:), memberNodeInfo: "member", isFlattened: false)
+        try writer["Principals"].writeList(value.principals, memberWritingClosure: SmithyReadWrite.WritingClosures.writeString(value:to:), memberNodeInfo: "member", isFlattened: false)
+    }
+
+    static func read(from reader: SmithyJSON.Reader) throws -> QuickSightClientTypes.AssetBundleResourcePermissions {
+        guard reader.hasContent else { throw SmithyReadWrite.ReaderError.requiredValueNotPresent }
+        var value = QuickSightClientTypes.AssetBundleResourcePermissions()
+        value.principals = try reader["Principals"].readListIfPresent(memberReadingClosure: SmithyReadWrite.ReadingClosures.readString(from:), memberNodeInfo: "member", isFlattened: false) ?? []
+        value.actions = try reader["Actions"].readListIfPresent(memberReadingClosure: SmithyReadWrite.ReadingClosures.readString(from:), memberNodeInfo: "member", isFlattened: false) ?? []
         return value
     }
 }
@@ -61377,23 +61966,6 @@ extension QuickSightClientTypes.AssetBundleResourceLinkSharingConfiguration {
         guard reader.hasContent else { throw SmithyReadWrite.ReaderError.requiredValueNotPresent }
         var value = QuickSightClientTypes.AssetBundleResourceLinkSharingConfiguration()
         value.permissions = try reader["Permissions"].readIfPresent(with: QuickSightClientTypes.AssetBundleResourcePermissions.read(from:))
-        return value
-    }
-}
-
-extension QuickSightClientTypes.AssetBundleResourcePermissions {
-
-    static func write(value: QuickSightClientTypes.AssetBundleResourcePermissions?, to writer: SmithyJSON.Writer) throws {
-        guard let value else { return }
-        try writer["Actions"].writeList(value.actions, memberWritingClosure: SmithyReadWrite.WritingClosures.writeString(value:to:), memberNodeInfo: "member", isFlattened: false)
-        try writer["Principals"].writeList(value.principals, memberWritingClosure: SmithyReadWrite.WritingClosures.writeString(value:to:), memberNodeInfo: "member", isFlattened: false)
-    }
-
-    static func read(from reader: SmithyJSON.Reader) throws -> QuickSightClientTypes.AssetBundleResourcePermissions {
-        guard reader.hasContent else { throw SmithyReadWrite.ReaderError.requiredValueNotPresent }
-        var value = QuickSightClientTypes.AssetBundleResourcePermissions()
-        value.principals = try reader["Principals"].readListIfPresent(memberReadingClosure: SmithyReadWrite.ReadingClosures.readString(from:), memberNodeInfo: "member", isFlattened: false) ?? []
-        value.actions = try reader["Actions"].readListIfPresent(memberReadingClosure: SmithyReadWrite.ReadingClosures.readString(from:), memberNodeInfo: "member", isFlattened: false) ?? []
         return value
     }
 }
@@ -61474,6 +62046,7 @@ extension QuickSightClientTypes.AssetBundleImportJobOverrideTags {
         try writer["Dashboards"].writeList(value.dashboards, memberWritingClosure: QuickSightClientTypes.AssetBundleImportJobDashboardOverrideTags.write(value:to:), memberNodeInfo: "member", isFlattened: false)
         try writer["DataSets"].writeList(value.dataSets, memberWritingClosure: QuickSightClientTypes.AssetBundleImportJobDataSetOverrideTags.write(value:to:), memberNodeInfo: "member", isFlattened: false)
         try writer["DataSources"].writeList(value.dataSources, memberWritingClosure: QuickSightClientTypes.AssetBundleImportJobDataSourceOverrideTags.write(value:to:), memberNodeInfo: "member", isFlattened: false)
+        try writer["Folders"].writeList(value.folders, memberWritingClosure: QuickSightClientTypes.AssetBundleImportJobFolderOverrideTags.write(value:to:), memberNodeInfo: "member", isFlattened: false)
         try writer["Themes"].writeList(value.themes, memberWritingClosure: QuickSightClientTypes.AssetBundleImportJobThemeOverrideTags.write(value:to:), memberNodeInfo: "member", isFlattened: false)
         try writer["VPCConnections"].writeList(value.vpcConnections, memberWritingClosure: QuickSightClientTypes.AssetBundleImportJobVPCConnectionOverrideTags.write(value:to:), memberNodeInfo: "member", isFlattened: false)
     }
@@ -61487,22 +62060,23 @@ extension QuickSightClientTypes.AssetBundleImportJobOverrideTags {
         value.themes = try reader["Themes"].readListIfPresent(memberReadingClosure: QuickSightClientTypes.AssetBundleImportJobThemeOverrideTags.read(from:), memberNodeInfo: "member", isFlattened: false)
         value.analyses = try reader["Analyses"].readListIfPresent(memberReadingClosure: QuickSightClientTypes.AssetBundleImportJobAnalysisOverrideTags.read(from:), memberNodeInfo: "member", isFlattened: false)
         value.dashboards = try reader["Dashboards"].readListIfPresent(memberReadingClosure: QuickSightClientTypes.AssetBundleImportJobDashboardOverrideTags.read(from:), memberNodeInfo: "member", isFlattened: false)
+        value.folders = try reader["Folders"].readListIfPresent(memberReadingClosure: QuickSightClientTypes.AssetBundleImportJobFolderOverrideTags.read(from:), memberNodeInfo: "member", isFlattened: false)
         return value
     }
 }
 
-extension QuickSightClientTypes.AssetBundleImportJobDashboardOverrideTags {
+extension QuickSightClientTypes.AssetBundleImportJobFolderOverrideTags {
 
-    static func write(value: QuickSightClientTypes.AssetBundleImportJobDashboardOverrideTags?, to writer: SmithyJSON.Writer) throws {
+    static func write(value: QuickSightClientTypes.AssetBundleImportJobFolderOverrideTags?, to writer: SmithyJSON.Writer) throws {
         guard let value else { return }
-        try writer["DashboardIds"].writeList(value.dashboardIds, memberWritingClosure: SmithyReadWrite.WritingClosures.writeString(value:to:), memberNodeInfo: "member", isFlattened: false)
+        try writer["FolderIds"].writeList(value.folderIds, memberWritingClosure: SmithyReadWrite.WritingClosures.writeString(value:to:), memberNodeInfo: "member", isFlattened: false)
         try writer["Tags"].writeList(value.tags, memberWritingClosure: QuickSightClientTypes.Tag.write(value:to:), memberNodeInfo: "member", isFlattened: false)
     }
 
-    static func read(from reader: SmithyJSON.Reader) throws -> QuickSightClientTypes.AssetBundleImportJobDashboardOverrideTags {
+    static func read(from reader: SmithyJSON.Reader) throws -> QuickSightClientTypes.AssetBundleImportJobFolderOverrideTags {
         guard reader.hasContent else { throw SmithyReadWrite.ReaderError.requiredValueNotPresent }
-        var value = QuickSightClientTypes.AssetBundleImportJobDashboardOverrideTags()
-        value.dashboardIds = try reader["DashboardIds"].readListIfPresent(memberReadingClosure: SmithyReadWrite.ReadingClosures.readString(from:), memberNodeInfo: "member", isFlattened: false) ?? []
+        var value = QuickSightClientTypes.AssetBundleImportJobFolderOverrideTags()
+        value.folderIds = try reader["FolderIds"].readListIfPresent(memberReadingClosure: SmithyReadWrite.ReadingClosures.readString(from:), memberNodeInfo: "member", isFlattened: false) ?? []
         value.tags = try reader["Tags"].readListIfPresent(memberReadingClosure: QuickSightClientTypes.Tag.read(from:), memberNodeInfo: "member", isFlattened: false) ?? []
         return value
     }
@@ -61521,6 +62095,23 @@ extension QuickSightClientTypes.Tag {
         var value = QuickSightClientTypes.Tag()
         value.key = try reader["Key"].readIfPresent() ?? ""
         value.value = try reader["Value"].readIfPresent() ?? ""
+        return value
+    }
+}
+
+extension QuickSightClientTypes.AssetBundleImportJobDashboardOverrideTags {
+
+    static func write(value: QuickSightClientTypes.AssetBundleImportJobDashboardOverrideTags?, to writer: SmithyJSON.Writer) throws {
+        guard let value else { return }
+        try writer["DashboardIds"].writeList(value.dashboardIds, memberWritingClosure: SmithyReadWrite.WritingClosures.writeString(value:to:), memberNodeInfo: "member", isFlattened: false)
+        try writer["Tags"].writeList(value.tags, memberWritingClosure: QuickSightClientTypes.Tag.write(value:to:), memberNodeInfo: "member", isFlattened: false)
+    }
+
+    static func read(from reader: SmithyJSON.Reader) throws -> QuickSightClientTypes.AssetBundleImportJobDashboardOverrideTags {
+        guard reader.hasContent else { throw SmithyReadWrite.ReaderError.requiredValueNotPresent }
+        var value = QuickSightClientTypes.AssetBundleImportJobDashboardOverrideTags()
+        value.dashboardIds = try reader["DashboardIds"].readListIfPresent(memberReadingClosure: SmithyReadWrite.ReadingClosures.readString(from:), memberNodeInfo: "member", isFlattened: false) ?? []
+        value.tags = try reader["Tags"].readListIfPresent(memberReadingClosure: QuickSightClientTypes.Tag.read(from:), memberNodeInfo: "member", isFlattened: false) ?? []
         return value
     }
 }
@@ -63755,6 +64346,7 @@ extension QuickSightClientTypes.TopicDetails {
 
     static func write(value: QuickSightClientTypes.TopicDetails?, to writer: SmithyJSON.Writer) throws {
         guard let value else { return }
+        try writer["ConfigOptions"].write(value.configOptions, with: QuickSightClientTypes.TopicConfigOptions.write(value:to:))
         try writer["DataSets"].writeList(value.dataSets, memberWritingClosure: QuickSightClientTypes.DatasetMetadata.write(value:to:), memberNodeInfo: "member", isFlattened: false)
         try writer["Description"].write(value.description)
         try writer["Name"].write(value.name)
@@ -63768,6 +64360,22 @@ extension QuickSightClientTypes.TopicDetails {
         value.description = try reader["Description"].readIfPresent()
         value.userExperienceVersion = try reader["UserExperienceVersion"].readIfPresent()
         value.dataSets = try reader["DataSets"].readListIfPresent(memberReadingClosure: QuickSightClientTypes.DatasetMetadata.read(from:), memberNodeInfo: "member", isFlattened: false)
+        value.configOptions = try reader["ConfigOptions"].readIfPresent(with: QuickSightClientTypes.TopicConfigOptions.read(from:))
+        return value
+    }
+}
+
+extension QuickSightClientTypes.TopicConfigOptions {
+
+    static func write(value: QuickSightClientTypes.TopicConfigOptions?, to writer: SmithyJSON.Writer) throws {
+        guard let value else { return }
+        try writer["QBusinessInsightsEnabled"].write(value.qBusinessInsightsEnabled)
+    }
+
+    static func read(from reader: SmithyJSON.Reader) throws -> QuickSightClientTypes.TopicConfigOptions {
+        guard reader.hasContent else { throw SmithyReadWrite.ReaderError.requiredValueNotPresent }
+        var value = QuickSightClientTypes.TopicConfigOptions()
+        value.qBusinessInsightsEnabled = try reader["QBusinessInsightsEnabled"].readIfPresent()
         return value
     }
 }

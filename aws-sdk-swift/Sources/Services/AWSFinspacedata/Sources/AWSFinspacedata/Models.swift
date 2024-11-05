@@ -53,7 +53,7 @@ public struct AccessDeniedException: ClientRuntime.ModeledError, AWSClientRuntim
 
 extension FinspacedataClientTypes {
 
-    public enum ApiAccess: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ApiAccess: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case disabled
         case enabled
         case sdkUnknown(Swift.String)
@@ -82,7 +82,7 @@ extension FinspacedataClientTypes {
 
 extension FinspacedataClientTypes {
 
-    public enum ApplicationPermission: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ApplicationPermission: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case accessnotebooks
         case createdataset
         case gettemporarycredentials
@@ -242,7 +242,7 @@ public struct ValidationException: ClientRuntime.ModeledError, AWSClientRuntime.
     }
 }
 
-public struct AssociateUserToPermissionGroupInput {
+public struct AssociateUserToPermissionGroupInput: Swift.Sendable {
     /// A token that ensures idempotency. This token expires in 10 minutes.
     public var clientToken: Swift.String?
     /// The unique identifier for the permission group.
@@ -264,7 +264,7 @@ public struct AssociateUserToPermissionGroupInput {
     }
 }
 
-public struct AssociateUserToPermissionGroupOutput {
+public struct AssociateUserToPermissionGroupOutput: Swift.Sendable {
     /// The returned status code of the response.
     public var statusCode: Swift.Int
 
@@ -277,8 +277,9 @@ public struct AssociateUserToPermissionGroupOutput {
 }
 
 extension FinspacedataClientTypes {
+
     /// The credentials required to access the external Dataview from the S3 location.
-    public struct AwsCredentials {
+    public struct AwsCredentials: Swift.Sendable {
         /// The unique identifier for the security credentials.
         public var accessKeyId: Swift.String?
         /// The Epoch time when the current credentials expire.
@@ -301,7 +302,6 @@ extension FinspacedataClientTypes {
             self.sessionToken = sessionToken
         }
     }
-
 }
 
 extension FinspacedataClientTypes.AwsCredentials: Swift.CustomDebugStringConvertible {
@@ -337,7 +337,7 @@ public struct LimitExceededException: ClientRuntime.ModeledError, AWSClientRunti
 extension FinspacedataClientTypes {
 
     /// Indicates how the given change will be applied to the dataset.
-    public enum ChangeType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ChangeType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case append
         case modify
         case replace
@@ -368,7 +368,7 @@ extension FinspacedataClientTypes {
 }
 
 /// The request for a CreateChangeset operation.
-public struct CreateChangesetInput {
+public struct CreateChangesetInput: Swift.Sendable {
     /// The option to indicate how a Changeset will be applied to a Dataset.
     ///
     /// * REPLACE – Changeset will be considered as a replacement to all prior loaded Changesets.
@@ -418,7 +418,7 @@ public struct CreateChangesetInput {
 }
 
 /// The response from a CreateChangeset operation.
-public struct CreateChangesetOutput {
+public struct CreateChangesetOutput: Swift.Sendable {
     /// The unique identifier of the Changeset that is created.
     public var changesetId: Swift.String?
     /// The unique identifier for the FinSpace Dataset where the Changeset is created.
@@ -437,7 +437,7 @@ public struct CreateChangesetOutput {
 extension FinspacedataClientTypes {
 
     /// Dataset Kind
-    public enum DatasetKind: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DatasetKind: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case nonTabular
         case tabular
         case sdkUnknown(Swift.String)
@@ -465,8 +465,9 @@ extension FinspacedataClientTypes {
 }
 
 extension FinspacedataClientTypes {
+
     /// A structure for Dataset owner info.
-    public struct DatasetOwnerInfo {
+    public struct DatasetOwnerInfo: Swift.Sendable {
         /// Email address for the Dataset owner.
         public var email: Swift.String?
         /// The name of the Dataset owner.
@@ -485,7 +486,6 @@ extension FinspacedataClientTypes {
             self.phoneNumber = phoneNumber
         }
     }
-
 }
 
 extension FinspacedataClientTypes.DatasetOwnerInfo: Swift.CustomDebugStringConvertible {
@@ -494,6 +494,7 @@ extension FinspacedataClientTypes.DatasetOwnerInfo: Swift.CustomDebugStringConve
 }
 
 extension FinspacedataClientTypes {
+
     /// Resource permission for a dataset. When you create a dataset, all the other members of the same user group inherit access to the dataset. You can only create a dataset if your user group has application permission for Create Datasets. The following is a list of valid dataset permissions that you can apply:
     ///
     /// * ViewDatasetDetails
@@ -510,7 +511,7 @@ extension FinspacedataClientTypes {
     ///
     ///
     /// For more information on the dataset permissions, see [Supported Dataset Permissions](https://docs.aws.amazon.com/finspace/latest/userguide/managing-user-permissions.html#supported-dataset-permissions) in the FinSpace User Guide.
-    public struct ResourcePermission {
+    public struct ResourcePermission: Swift.Sendable {
         /// Permission for a resource.
         public var permission: Swift.String?
 
@@ -521,12 +522,12 @@ extension FinspacedataClientTypes {
             self.permission = permission
         }
     }
-
 }
 
 extension FinspacedataClientTypes {
+
     /// Permission group parameters for Dataset permissions. Here is an example of how you could specify the PermissionGroupParams:  { "permissionGroupId": "0r6fCRtSTUk4XPfXQe3M0g", "datasetPermissions": [ {"permission": "ViewDatasetDetails"}, {"permission": "AddDatasetData"}, {"permission": "EditDatasetMetadata"}, {"permission": "DeleteDataset"} ] }
-    public struct PermissionGroupParams {
+    public struct PermissionGroupParams: Swift.Sendable {
         /// List of resource permissions.
         public var datasetPermissions: [FinspacedataClientTypes.ResourcePermission]?
         /// The unique identifier for the PermissionGroup.
@@ -541,13 +542,12 @@ extension FinspacedataClientTypes {
             self.permissionGroupId = permissionGroupId
         }
     }
-
 }
 
 extension FinspacedataClientTypes {
 
     /// Data type of a column.
-    public enum ColumnDataType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ColumnDataType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case bigint
         case binary
         case boolean
@@ -605,8 +605,9 @@ extension FinspacedataClientTypes {
 }
 
 extension FinspacedataClientTypes {
+
     /// The definition of a column in a tabular Dataset.
-    public struct ColumnDefinition {
+    public struct ColumnDefinition: Swift.Sendable {
         /// Description for a column.
         public var columnDescription: Swift.String?
         /// The name of a column.
@@ -627,12 +628,12 @@ extension FinspacedataClientTypes {
             self.dataType = dataType
         }
     }
-
 }
 
 extension FinspacedataClientTypes {
+
     /// Definition for a schema on a tabular Dataset.
-    public struct SchemaDefinition {
+    public struct SchemaDefinition: Swift.Sendable {
         /// List of column definitions.
         public var columns: [FinspacedataClientTypes.ColumnDefinition]?
         /// List of column names used for primary key.
@@ -647,12 +648,12 @@ extension FinspacedataClientTypes {
             self.primaryKeyColumns = primaryKeyColumns
         }
     }
-
 }
 
 extension FinspacedataClientTypes {
+
     /// A union of schema types.
-    public struct SchemaUnion {
+    public struct SchemaUnion: Swift.Sendable {
         /// The configuration for a schema on a tabular Dataset.
         public var tabularSchemaConfig: FinspacedataClientTypes.SchemaDefinition?
 
@@ -663,11 +664,10 @@ extension FinspacedataClientTypes {
             self.tabularSchemaConfig = tabularSchemaConfig
         }
     }
-
 }
 
 /// The request for a CreateDataset operation
-public struct CreateDatasetInput {
+public struct CreateDatasetInput: Swift.Sendable {
     /// The unique resource identifier for a Dataset.
     public var alias: Swift.String?
     /// A token that ensures idempotency. This token expires in 10 minutes.
@@ -715,7 +715,7 @@ public struct CreateDatasetInput {
 }
 
 /// The response from a CreateDataset operation
-public struct CreateDatasetOutput {
+public struct CreateDatasetOutput: Swift.Sendable {
     /// The unique identifier for the created Dataset.
     public var datasetId: Swift.String?
 
@@ -730,7 +730,7 @@ public struct CreateDatasetOutput {
 extension FinspacedataClientTypes {
 
     /// Data View Export File Format
-    public enum ExportFileFormat: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ExportFileFormat: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case delimitedText
         case parquet
         case sdkUnknown(Swift.String)
@@ -758,8 +758,9 @@ extension FinspacedataClientTypes {
 }
 
 extension FinspacedataClientTypes {
+
     /// Structure for the Dataview destination type parameters.
-    public struct DataViewDestinationTypeParams {
+    public struct DataViewDestinationTypeParams: Swift.Sendable {
         /// Destination type for a Dataview.
         ///
         /// * GLUE_TABLE – Glue table destination type.
@@ -788,11 +789,10 @@ extension FinspacedataClientTypes {
             self.s3DestinationExportFileFormatOptions = s3DestinationExportFileFormatOptions
         }
     }
-
 }
 
 /// Request for creating a data view.
-public struct CreateDataViewInput {
+public struct CreateDataViewInput: Swift.Sendable {
     /// Beginning time to use for the Dataview. The value is determined as epoch time in milliseconds. For example, the value for Monday, November 1, 2021 12:00:00 PM UTC is specified as 1635768000000.
     public var asOfTimestamp: Swift.Int?
     /// Flag to indicate Dataview should be updated automatically.
@@ -831,7 +831,7 @@ public struct CreateDataViewInput {
 }
 
 /// Response for creating a data view.
-public struct CreateDataViewOutput {
+public struct CreateDataViewOutput: Swift.Sendable {
     /// The unique identifier for the created Dataview.
     public var dataViewId: Swift.String?
     /// The unique identifier of the Dataset used for the Dataview.
@@ -847,7 +847,7 @@ public struct CreateDataViewOutput {
     }
 }
 
-public struct CreatePermissionGroupInput {
+public struct CreatePermissionGroupInput: Swift.Sendable {
     /// The option to indicate FinSpace application permissions that are granted to a specific group. When assigning application permissions, be aware that the permission ManageUsersAndGroups allows users to grant themselves or others access to any functionality in their FinSpace environment's application. It should only be granted to trusted users.
     ///
     /// * CreateDataset – Group members can create new datasets.
@@ -892,7 +892,7 @@ extension CreatePermissionGroupInput: Swift.CustomDebugStringConvertible {
         "CreatePermissionGroupInput(applicationPermissions: \(Swift.String(describing: applicationPermissions)), clientToken: \(Swift.String(describing: clientToken)), description: \"CONTENT_REDACTED\", name: \"CONTENT_REDACTED\")"}
 }
 
-public struct CreatePermissionGroupOutput {
+public struct CreatePermissionGroupOutput: Swift.Sendable {
     /// The unique identifier for the permission group.
     public var permissionGroupId: Swift.String?
 
@@ -906,7 +906,7 @@ public struct CreatePermissionGroupOutput {
 
 extension FinspacedataClientTypes {
 
-    public enum UserType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum UserType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case appUser
         case superUser
         case sdkUnknown(Swift.String)
@@ -933,7 +933,7 @@ extension FinspacedataClientTypes {
     }
 }
 
-public struct CreateUserInput {
+public struct CreateUserInput: Swift.Sendable {
     /// The option to indicate whether the user can use the GetProgrammaticAccessCredentials API to obtain credentials that can then be used to access other FinSpace Data API operations.
     ///
     /// * ENABLED – The user has permissions to use the APIs.
@@ -984,7 +984,7 @@ extension CreateUserInput: Swift.CustomDebugStringConvertible {
         "CreateUserInput(apiAccess: \(Swift.String(describing: apiAccess)), apiAccessPrincipalArn: \(Swift.String(describing: apiAccessPrincipalArn)), clientToken: \(Swift.String(describing: clientToken)), type: \(Swift.String(describing: type)), emailAddress: \"CONTENT_REDACTED\", firstName: \"CONTENT_REDACTED\", lastName: \"CONTENT_REDACTED\")"}
 }
 
-public struct CreateUserOutput {
+public struct CreateUserOutput: Swift.Sendable {
     /// The unique identifier for the user.
     public var userId: Swift.String?
 
@@ -997,7 +997,7 @@ public struct CreateUserOutput {
 }
 
 /// The request for a DeleteDataset operation.
-public struct DeleteDatasetInput {
+public struct DeleteDatasetInput: Swift.Sendable {
     /// A token that ensures idempotency. This token expires in 10 minutes.
     public var clientToken: Swift.String?
     /// The unique identifier of the Dataset to be deleted.
@@ -1015,7 +1015,7 @@ public struct DeleteDatasetInput {
 }
 
 /// The response from an DeleteDataset operation
-public struct DeleteDatasetOutput {
+public struct DeleteDatasetOutput: Swift.Sendable {
     /// The unique identifier for the deleted Dataset.
     public var datasetId: Swift.String?
 
@@ -1027,7 +1027,7 @@ public struct DeleteDatasetOutput {
     }
 }
 
-public struct DeletePermissionGroupInput {
+public struct DeletePermissionGroupInput: Swift.Sendable {
     /// A token that ensures idempotency. This token expires in 10 minutes.
     public var clientToken: Swift.String?
     /// The unique identifier for the permission group that you want to delete.
@@ -1044,7 +1044,7 @@ public struct DeletePermissionGroupInput {
     }
 }
 
-public struct DeletePermissionGroupOutput {
+public struct DeletePermissionGroupOutput: Swift.Sendable {
     /// The unique identifier for the deleted permission group.
     public var permissionGroupId: Swift.String?
 
@@ -1056,7 +1056,7 @@ public struct DeletePermissionGroupOutput {
     }
 }
 
-public struct DisableUserInput {
+public struct DisableUserInput: Swift.Sendable {
     /// A token that ensures idempotency. This token expires in 10 minutes.
     public var clientToken: Swift.String?
     /// The unique identifier for the user that you want to deactivate.
@@ -1073,7 +1073,7 @@ public struct DisableUserInput {
     }
 }
 
-public struct DisableUserOutput {
+public struct DisableUserOutput: Swift.Sendable {
     /// The unique identifier for the deactivated user.
     public var userId: Swift.String?
 
@@ -1085,7 +1085,7 @@ public struct DisableUserOutput {
     }
 }
 
-public struct DisassociateUserFromPermissionGroupInput {
+public struct DisassociateUserFromPermissionGroupInput: Swift.Sendable {
     /// A token that ensures idempotency. This token expires in 10 minutes.
     public var clientToken: Swift.String?
     /// The unique identifier for the permission group.
@@ -1107,7 +1107,7 @@ public struct DisassociateUserFromPermissionGroupInput {
     }
 }
 
-public struct DisassociateUserFromPermissionGroupOutput {
+public struct DisassociateUserFromPermissionGroupOutput: Swift.Sendable {
     /// The returned status code of the response.
     public var statusCode: Swift.Int
 
@@ -1119,7 +1119,7 @@ public struct DisassociateUserFromPermissionGroupOutput {
     }
 }
 
-public struct EnableUserInput {
+public struct EnableUserInput: Swift.Sendable {
     /// A token that ensures idempotency. This token expires in 10 minutes.
     public var clientToken: Swift.String?
     /// The unique identifier for the user that you want to activate.
@@ -1136,7 +1136,7 @@ public struct EnableUserInput {
     }
 }
 
-public struct EnableUserOutput {
+public struct EnableUserOutput: Swift.Sendable {
     /// The unique identifier for the active user.
     public var userId: Swift.String?
 
@@ -1149,7 +1149,7 @@ public struct EnableUserOutput {
 }
 
 /// Request to describe a changeset.
-public struct GetChangesetInput {
+public struct GetChangesetInput: Swift.Sendable {
     /// The unique identifier of the Changeset for which to get data.
     /// This member is required.
     public var changesetId: Swift.String?
@@ -1170,7 +1170,7 @@ public struct GetChangesetInput {
 extension FinspacedataClientTypes {
 
     /// Changeset Error Category
-    public enum ErrorCategory: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ErrorCategory: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case accessDenied
         case cancelled
         case internalServiceException
@@ -1216,8 +1216,9 @@ extension FinspacedataClientTypes {
 }
 
 extension FinspacedataClientTypes {
+
     /// The structure with error messages.
-    public struct ChangesetErrorInfo {
+    public struct ChangesetErrorInfo: Swift.Sendable {
         /// The category of the error.
         ///
         /// * VALIDATION – The inputs to this request are invalid.
@@ -1248,13 +1249,12 @@ extension FinspacedataClientTypes {
             self.errorMessage = errorMessage
         }
     }
-
 }
 
 extension FinspacedataClientTypes {
 
     /// Status of the ingestion process returned from scheduler service.
-    public enum IngestionStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum IngestionStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case failed
         case pending
         case running
@@ -1291,7 +1291,7 @@ extension FinspacedataClientTypes {
 }
 
 /// The response from a describe changeset operation
-public struct GetChangesetOutput {
+public struct GetChangesetOutput: Swift.Sendable {
     /// Beginning time from which the Changeset is active. The value is determined as epoch time in milliseconds. For example, the value for Monday, November 1, 2021 12:00:00 PM UTC is specified as 1635768000000.
     public var activeFromTimestamp: Swift.Int?
     /// Time until which the Changeset is active. The value is determined as epoch time in milliseconds. For example, the value for Monday, November 1, 2021 12:00:00 PM UTC is specified as 1635768000000.
@@ -1358,7 +1358,7 @@ public struct GetChangesetOutput {
 }
 
 /// Request for the GetDataset operation.
-public struct GetDatasetInput {
+public struct GetDatasetInput: Swift.Sendable {
     /// The unique identifier for a Dataset.
     /// This member is required.
     public var datasetId: Swift.String?
@@ -1374,7 +1374,7 @@ public struct GetDatasetInput {
 extension FinspacedataClientTypes {
 
     /// Status of the dataset process returned from scheduler service.
-    public enum DatasetStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DatasetStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case failed
         case pending
         case running
@@ -1408,7 +1408,7 @@ extension FinspacedataClientTypes {
 }
 
 /// Response for the GetDataset operation
-public struct GetDatasetOutput {
+public struct GetDatasetOutput: Swift.Sendable {
     /// The unique resource identifier for a Dataset.
     public var alias: Swift.String?
     /// The timestamp at which the Dataset was created in FinSpace. The value is determined as epoch time in milliseconds. For example, the value for Monday, November 1, 2021 12:00:00 PM UTC is specified as 1635768000000.
@@ -1469,7 +1469,7 @@ public struct GetDatasetOutput {
 }
 
 /// Request for retrieving a data view detail. Grouped / accessible within a dataset by its dataset id.
-public struct GetDataViewInput {
+public struct GetDataViewInput: Swift.Sendable {
     /// The unique identifier for the Dataview.
     /// This member is required.
     public var dataViewId: Swift.String?
@@ -1488,8 +1488,9 @@ public struct GetDataViewInput {
 }
 
 extension FinspacedataClientTypes {
+
     /// The structure with error messages.
-    public struct DataViewErrorInfo {
+    public struct DataViewErrorInfo: Swift.Sendable {
         /// The category of the error.
         ///
         /// * VALIDATION – The inputs to this request are invalid.
@@ -1520,13 +1521,12 @@ extension FinspacedataClientTypes {
             self.errorMessage = errorMessage
         }
     }
-
 }
 
 extension FinspacedataClientTypes {
 
     /// Status of a DataView
-    public enum DataViewStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DataViewStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case cancelled
         case failed
         case failedCleanupFailed
@@ -1572,7 +1572,7 @@ extension FinspacedataClientTypes {
 }
 
 /// Response from retrieving a dataview, which includes details on the target database and table name
-public struct GetDataViewOutput {
+public struct GetDataViewOutput: Swift.Sendable {
     /// Time range to use for the Dataview. The value is determined as epoch time in milliseconds. For example, the value for Monday, November 1, 2021 12:00:00 PM UTC is specified as 1635768000000.
     public var asOfTimestamp: Swift.Int?
     /// Flag to indicate Dataview should be updated automatically.
@@ -1644,7 +1644,7 @@ public struct GetDataViewOutput {
     }
 }
 
-public struct GetExternalDataViewAccessDetailsInput {
+public struct GetExternalDataViewAccessDetailsInput: Swift.Sendable {
     /// The unique identifier for the Dataview that you want to access.
     /// This member is required.
     public var dataViewId: Swift.String?
@@ -1663,8 +1663,9 @@ public struct GetExternalDataViewAccessDetailsInput {
 }
 
 extension FinspacedataClientTypes {
+
     /// The location of an external Dataview in an S3 bucket.
-    public struct S3Location {
+    public struct S3Location: Swift.Sendable {
         /// The name of the S3 bucket.
         /// This member is required.
         public var bucket: Swift.String?
@@ -1681,10 +1682,9 @@ extension FinspacedataClientTypes {
             self.key = key
         }
     }
-
 }
 
-public struct GetExternalDataViewAccessDetailsOutput {
+public struct GetExternalDataViewAccessDetailsOutput: Swift.Sendable {
     /// The credentials required to access the external Dataview from the S3 location.
     public var credentials: FinspacedataClientTypes.AwsCredentials?
     /// The location where the external Dataview is stored.
@@ -1705,7 +1705,7 @@ extension GetExternalDataViewAccessDetailsOutput: Swift.CustomDebugStringConvert
         "GetExternalDataViewAccessDetailsOutput(s3Location: \(Swift.String(describing: s3Location)), credentials: \"CONTENT_REDACTED\")"}
 }
 
-public struct GetPermissionGroupInput {
+public struct GetPermissionGroupInput: Swift.Sendable {
     /// The unique identifier for the permission group.
     /// This member is required.
     public var permissionGroupId: Swift.String?
@@ -1720,7 +1720,7 @@ public struct GetPermissionGroupInput {
 
 extension FinspacedataClientTypes {
 
-    public enum PermissionGroupMembershipStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum PermissionGroupMembershipStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case additionInProgress
         case additionSuccess
         case removalInProgress
@@ -1751,8 +1751,9 @@ extension FinspacedataClientTypes {
 }
 
 extension FinspacedataClientTypes {
+
     /// The structure for a permission group.
-    public struct PermissionGroup {
+    public struct PermissionGroup: Swift.Sendable {
         /// Indicates the permissions that are granted to a specific group for accessing the FinSpace application. When assigning application permissions, be aware that the permission ManageUsersAndGroups allows users to grant themselves or others access to any functionality in their FinSpace environment's application. It should only be granted to trusted users.
         ///
         /// * CreateDataset – Group members can create new datasets.
@@ -1807,7 +1808,6 @@ extension FinspacedataClientTypes {
             self.permissionGroupId = permissionGroupId
         }
     }
-
 }
 
 extension FinspacedataClientTypes.PermissionGroup: Swift.CustomDebugStringConvertible {
@@ -1815,7 +1815,7 @@ extension FinspacedataClientTypes.PermissionGroup: Swift.CustomDebugStringConver
         "PermissionGroup(applicationPermissions: \(Swift.String(describing: applicationPermissions)), createTime: \(Swift.String(describing: createTime)), lastModifiedTime: \(Swift.String(describing: lastModifiedTime)), membershipStatus: \(Swift.String(describing: membershipStatus)), permissionGroupId: \(Swift.String(describing: permissionGroupId)), description: \"CONTENT_REDACTED\", name: \"CONTENT_REDACTED\")"}
 }
 
-public struct GetPermissionGroupOutput {
+public struct GetPermissionGroupOutput: Swift.Sendable {
     /// The structure for a permission group.
     public var permissionGroup: FinspacedataClientTypes.PermissionGroup?
 
@@ -1828,7 +1828,7 @@ public struct GetPermissionGroupOutput {
 }
 
 /// Request for GetProgrammaticAccessCredentials operation
-public struct GetProgrammaticAccessCredentialsInput {
+public struct GetProgrammaticAccessCredentialsInput: Swift.Sendable {
     /// The time duration in which the credentials remain valid.
     public var durationInMinutes: Swift.Int?
     /// The FinSpace environment identifier.
@@ -1846,8 +1846,9 @@ public struct GetProgrammaticAccessCredentialsInput {
 }
 
 extension FinspacedataClientTypes {
+
     /// Short term API credentials.
-    public struct Credentials {
+    public struct Credentials: Swift.Sendable {
         /// The access key identifier.
         public var accessKeyId: Swift.String?
         /// The access key.
@@ -1866,7 +1867,6 @@ extension FinspacedataClientTypes {
             self.sessionToken = sessionToken
         }
     }
-
 }
 
 extension FinspacedataClientTypes.Credentials: Swift.CustomDebugStringConvertible {
@@ -1876,7 +1876,7 @@ extension FinspacedataClientTypes.Credentials: Swift.CustomDebugStringConvertibl
 }
 
 /// Response for GetProgrammaticAccessCredentials operation
-public struct GetProgrammaticAccessCredentialsOutput {
+public struct GetProgrammaticAccessCredentialsOutput: Swift.Sendable {
     /// Returns the programmatic credentials.
     public var credentials: FinspacedataClientTypes.Credentials?
     /// Returns the duration in which the credentials will remain valid.
@@ -1897,7 +1897,7 @@ extension GetProgrammaticAccessCredentialsOutput: Swift.CustomDebugStringConvert
         "GetProgrammaticAccessCredentialsOutput(durationInMinutes: \(Swift.String(describing: durationInMinutes)), credentials: \"CONTENT_REDACTED\")"}
 }
 
-public struct GetUserInput {
+public struct GetUserInput: Swift.Sendable {
     /// The unique identifier of the user to get data for.
     /// This member is required.
     public var userId: Swift.String?
@@ -1912,7 +1912,7 @@ public struct GetUserInput {
 
 extension FinspacedataClientTypes {
 
-    public enum UserStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum UserStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case creating
         case disabled
         case enabled
@@ -1942,7 +1942,7 @@ extension FinspacedataClientTypes {
     }
 }
 
-public struct GetUserOutput {
+public struct GetUserOutput: Swift.Sendable {
     /// Indicates whether the user can use the GetProgrammaticAccessCredentials API to obtain credentials that can then be used to access other FinSpace Data API operations.
     ///
     /// * ENABLED – The user has permissions to use the APIs.
@@ -2026,7 +2026,7 @@ extension GetUserOutput: Swift.CustomDebugStringConvertible {
 
 extension FinspacedataClientTypes {
 
-    public enum LocationType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum LocationType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case ingestion
         case sagemaker
         case sdkUnknown(Swift.String)
@@ -2053,7 +2053,7 @@ extension FinspacedataClientTypes {
     }
 }
 
-public struct GetWorkingLocationInput {
+public struct GetWorkingLocationInput: Swift.Sendable {
     /// Specify the type of the working location.
     ///
     /// * SAGEMAKER – Use the Amazon S3 location as a temporary location to store data content when working with FinSpace Notebooks that run on SageMaker studio.
@@ -2069,7 +2069,7 @@ public struct GetWorkingLocationInput {
     }
 }
 
-public struct GetWorkingLocationOutput {
+public struct GetWorkingLocationOutput: Swift.Sendable {
     /// Returns the Amazon S3 bucket name for the working location.
     public var s3Bucket: Swift.String?
     /// Returns the Amazon S3 Path for the working location.
@@ -2090,7 +2090,7 @@ public struct GetWorkingLocationOutput {
 }
 
 /// Request to ListChangesetsRequest. It exposes minimal query filters.
-public struct ListChangesetsInput {
+public struct ListChangesetsInput: Swift.Sendable {
     /// The unique identifier for the FinSpace Dataset to which the Changeset belongs.
     /// This member is required.
     public var datasetId: Swift.String?
@@ -2112,8 +2112,9 @@ public struct ListChangesetsInput {
 }
 
 extension FinspacedataClientTypes {
+
     /// A Changeset is unit of data in a Dataset.
-    public struct ChangesetSummary {
+    public struct ChangesetSummary: Swift.Sendable {
         /// Beginning time from which the Changeset is active. The value is determined as epoch time in milliseconds. For example, the value for Monday, November 1, 2021 12:00:00 PM UTC is specified as 1635768000000.
         public var activeFromTimestamp: Swift.Int?
         /// Time until which the Changeset is active. The value is determined as epoch time in milliseconds. For example, the value for Monday, November 1, 2021 12:00:00 PM UTC is specified as 1635768000000.
@@ -2188,11 +2189,10 @@ extension FinspacedataClientTypes {
             self.updatesChangesetId = updatesChangesetId
         }
     }
-
 }
 
 /// Response to ListChangesetsResponse. This returns a list of dataset changesets that match the query criteria.
-public struct ListChangesetsOutput {
+public struct ListChangesetsOutput: Swift.Sendable {
     /// List of Changesets found.
     public var changesets: [FinspacedataClientTypes.ChangesetSummary]?
     /// A token that indicates where a results page should begin.
@@ -2209,7 +2209,7 @@ public struct ListChangesetsOutput {
 }
 
 /// Request for the ListDatasets operation.
-public struct ListDatasetsInput {
+public struct ListDatasetsInput: Swift.Sendable {
     /// The maximum number of results per page.
     public var maxResults: Swift.Int?
     /// A token that indicates where a results page should begin.
@@ -2226,8 +2226,9 @@ public struct ListDatasetsInput {
 }
 
 extension FinspacedataClientTypes {
+
     /// The structure for a Dataset.
-    public struct Dataset {
+    public struct Dataset: Swift.Sendable {
         /// The unique resource identifier for a Dataset.
         public var alias: Swift.String?
         /// The timestamp at which the Dataset was created in FinSpace. The value is determined as epoch time in milliseconds. For example, the value for Monday, November 1, 2021 12:00:00 PM UTC is specified as 1635768000000.
@@ -2278,11 +2279,10 @@ extension FinspacedataClientTypes {
             self.schemaDefinition = schemaDefinition
         }
     }
-
 }
 
 /// Response for the ListDatasets operation
-public struct ListDatasetsOutput {
+public struct ListDatasetsOutput: Swift.Sendable {
     /// List of Datasets.
     public var datasets: [FinspacedataClientTypes.Dataset]?
     /// A token that indicates where a results page should begin.
@@ -2299,7 +2299,7 @@ public struct ListDatasetsOutput {
 }
 
 /// Request for a list data views.
-public struct ListDataViewsInput {
+public struct ListDataViewsInput: Swift.Sendable {
     /// The unique identifier of the Dataset for which to retrieve Dataviews.
     /// This member is required.
     public var datasetId: Swift.String?
@@ -2321,8 +2321,9 @@ public struct ListDataViewsInput {
 }
 
 extension FinspacedataClientTypes {
+
     /// Structure for the summary of a Dataview.
-    public struct DataViewSummary {
+    public struct DataViewSummary: Swift.Sendable {
         /// Time range to use for the Dataview. The value is determined as epoch time in milliseconds. For example, the value for Monday, November 1, 2021 12:00:00 PM UTC is specified as 1635768000000.
         public var asOfTimestamp: Swift.Int?
         /// The flag to indicate Dataview should be updated automatically.
@@ -2393,10 +2394,9 @@ extension FinspacedataClientTypes {
             self.status = status
         }
     }
-
 }
 
-public struct ListDataViewsOutput {
+public struct ListDataViewsOutput: Swift.Sendable {
     /// A list of Dataviews.
     public var dataViews: [FinspacedataClientTypes.DataViewSummary]?
     /// A token that indicates where a results page should begin.
@@ -2412,7 +2412,7 @@ public struct ListDataViewsOutput {
     }
 }
 
-public struct ListPermissionGroupsInput {
+public struct ListPermissionGroupsInput: Swift.Sendable {
     /// The maximum number of results per page.
     /// This member is required.
     public var maxResults: Swift.Int?
@@ -2429,7 +2429,7 @@ public struct ListPermissionGroupsInput {
     }
 }
 
-public struct ListPermissionGroupsOutput {
+public struct ListPermissionGroupsOutput: Swift.Sendable {
     /// A token that indicates where a results page should begin.
     public var nextToken: Swift.String?
     /// A list of all the permission groups.
@@ -2445,7 +2445,7 @@ public struct ListPermissionGroupsOutput {
     }
 }
 
-public struct ListPermissionGroupsByUserInput {
+public struct ListPermissionGroupsByUserInput: Swift.Sendable {
     /// The maximum number of results per page.
     /// This member is required.
     public var maxResults: Swift.Int?
@@ -2468,8 +2468,9 @@ public struct ListPermissionGroupsByUserInput {
 }
 
 extension FinspacedataClientTypes {
+
     /// The structure of a permission group associated with a user.
-    public struct PermissionGroupByUser {
+    public struct PermissionGroupByUser: Swift.Sendable {
         /// Indicates the status of the user within a permission group.
         ///
         /// * ADDITION_IN_PROGRESS – The user is currently being added to the permission group.
@@ -2494,7 +2495,6 @@ extension FinspacedataClientTypes {
             self.permissionGroupId = permissionGroupId
         }
     }
-
 }
 
 extension FinspacedataClientTypes.PermissionGroupByUser: Swift.CustomDebugStringConvertible {
@@ -2502,7 +2502,7 @@ extension FinspacedataClientTypes.PermissionGroupByUser: Swift.CustomDebugString
         "PermissionGroupByUser(membershipStatus: \(Swift.String(describing: membershipStatus)), permissionGroupId: \(Swift.String(describing: permissionGroupId)), name: \"CONTENT_REDACTED\")"}
 }
 
-public struct ListPermissionGroupsByUserOutput {
+public struct ListPermissionGroupsByUserOutput: Swift.Sendable {
     /// A token that indicates where a results page should begin.
     public var nextToken: Swift.String?
     /// A list of returned permission groups.
@@ -2518,7 +2518,7 @@ public struct ListPermissionGroupsByUserOutput {
     }
 }
 
-public struct ListUsersInput {
+public struct ListUsersInput: Swift.Sendable {
     /// The maximum number of results per page.
     /// This member is required.
     public var maxResults: Swift.Int?
@@ -2536,8 +2536,9 @@ public struct ListUsersInput {
 }
 
 extension FinspacedataClientTypes {
+
     /// The details of the user.
-    public struct User {
+    public struct User: Swift.Sendable {
         /// Indicates whether the user can use the GetProgrammaticAccessCredentials API to obtain credentials that can then be used to access other FinSpace Data API operations.
         ///
         /// * ENABLED – The user has permissions to use the APIs.
@@ -2610,7 +2611,6 @@ extension FinspacedataClientTypes {
             self.userId = userId
         }
     }
-
 }
 
 extension FinspacedataClientTypes.User: Swift.CustomDebugStringConvertible {
@@ -2618,7 +2618,7 @@ extension FinspacedataClientTypes.User: Swift.CustomDebugStringConvertible {
         "User(apiAccess: \(Swift.String(describing: apiAccess)), apiAccessPrincipalArn: \(Swift.String(describing: apiAccessPrincipalArn)), createTime: \(Swift.String(describing: createTime)), lastDisabledTime: \(Swift.String(describing: lastDisabledTime)), lastEnabledTime: \(Swift.String(describing: lastEnabledTime)), lastLoginTime: \(Swift.String(describing: lastLoginTime)), lastModifiedTime: \(Swift.String(describing: lastModifiedTime)), status: \(Swift.String(describing: status)), type: \(Swift.String(describing: type)), userId: \(Swift.String(describing: userId)), emailAddress: \"CONTENT_REDACTED\", firstName: \"CONTENT_REDACTED\", lastName: \"CONTENT_REDACTED\")"}
 }
 
-public struct ListUsersOutput {
+public struct ListUsersOutput: Swift.Sendable {
     /// A token that indicates where a results page should begin.
     public var nextToken: Swift.String?
     /// A list of all the users.
@@ -2634,7 +2634,7 @@ public struct ListUsersOutput {
     }
 }
 
-public struct ListUsersByPermissionGroupInput {
+public struct ListUsersByPermissionGroupInput: Swift.Sendable {
     /// The maximum number of results per page.
     /// This member is required.
     public var maxResults: Swift.Int?
@@ -2657,8 +2657,9 @@ public struct ListUsersByPermissionGroupInput {
 }
 
 extension FinspacedataClientTypes {
+
     /// The structure of a user associated with a permission group.
-    public struct UserByPermissionGroup {
+    public struct UserByPermissionGroup: Swift.Sendable {
         /// Indicates whether the user can access FinSpace API operations.
         ///
         /// * ENABLED – The user has permissions to use the API operations.
@@ -2721,7 +2722,6 @@ extension FinspacedataClientTypes {
             self.userId = userId
         }
     }
-
 }
 
 extension FinspacedataClientTypes.UserByPermissionGroup: Swift.CustomDebugStringConvertible {
@@ -2729,7 +2729,7 @@ extension FinspacedataClientTypes.UserByPermissionGroup: Swift.CustomDebugString
         "UserByPermissionGroup(apiAccess: \(Swift.String(describing: apiAccess)), apiAccessPrincipalArn: \(Swift.String(describing: apiAccessPrincipalArn)), membershipStatus: \(Swift.String(describing: membershipStatus)), status: \(Swift.String(describing: status)), type: \(Swift.String(describing: type)), userId: \(Swift.String(describing: userId)), emailAddress: \"CONTENT_REDACTED\", firstName: \"CONTENT_REDACTED\", lastName: \"CONTENT_REDACTED\")"}
 }
 
-public struct ListUsersByPermissionGroupOutput {
+public struct ListUsersByPermissionGroupOutput: Swift.Sendable {
     /// A token that indicates where a results page should begin.
     public var nextToken: Swift.String?
     /// Lists details of all users in a specific permission group.
@@ -2745,7 +2745,7 @@ public struct ListUsersByPermissionGroupOutput {
     }
 }
 
-public struct ResetUserPasswordInput {
+public struct ResetUserPasswordInput: Swift.Sendable {
     /// A token that ensures idempotency. This token expires in 10 minutes.
     public var clientToken: Swift.String?
     /// The unique identifier of the user that a temporary password is requested for.
@@ -2762,7 +2762,7 @@ public struct ResetUserPasswordInput {
     }
 }
 
-public struct ResetUserPasswordOutput {
+public struct ResetUserPasswordOutput: Swift.Sendable {
     /// A randomly generated temporary password for the requested user. This password expires in 7 days.
     public var temporaryPassword: Swift.String?
     /// The unique identifier of the user that a new password is generated for.
@@ -2784,7 +2784,7 @@ extension ResetUserPasswordOutput: Swift.CustomDebugStringConvertible {
 }
 
 /// Request to update an existing changeset.
-public struct UpdateChangesetInput {
+public struct UpdateChangesetInput: Swift.Sendable {
     /// The unique identifier for the Changeset to update.
     /// This member is required.
     public var changesetId: Swift.String?
@@ -2828,7 +2828,7 @@ public struct UpdateChangesetInput {
 }
 
 /// The response from a update changeset operation.
-public struct UpdateChangesetOutput {
+public struct UpdateChangesetOutput: Swift.Sendable {
     /// The unique identifier for the Changeset to update.
     public var changesetId: Swift.String?
     /// The unique identifier for the FinSpace Dataset in which the Changeset is created.
@@ -2845,7 +2845,7 @@ public struct UpdateChangesetOutput {
 }
 
 /// The request for an UpdateDataset operation
-public struct UpdateDatasetInput {
+public struct UpdateDatasetInput: Swift.Sendable {
     /// The unique resource identifier for a Dataset.
     public var alias: Swift.String?
     /// A token that ensures idempotency. This token expires in 10 minutes.
@@ -2889,7 +2889,7 @@ public struct UpdateDatasetInput {
 }
 
 /// The response from an UpdateDataset operation
-public struct UpdateDatasetOutput {
+public struct UpdateDatasetOutput: Swift.Sendable {
     /// The unique identifier for updated Dataset.
     public var datasetId: Swift.String?
 
@@ -2901,7 +2901,7 @@ public struct UpdateDatasetOutput {
     }
 }
 
-public struct UpdatePermissionGroupInput {
+public struct UpdatePermissionGroupInput: Swift.Sendable {
     /// The permissions that are granted to a specific group for accessing the FinSpace application. When assigning application permissions, be aware that the permission ManageUsersAndGroups allows users to grant themselves or others access to any functionality in their FinSpace environment's application. It should only be granted to trusted users.
     ///
     /// * CreateDataset – Group members can create new datasets.
@@ -2949,7 +2949,7 @@ extension UpdatePermissionGroupInput: Swift.CustomDebugStringConvertible {
         "UpdatePermissionGroupInput(applicationPermissions: \(Swift.String(describing: applicationPermissions)), clientToken: \(Swift.String(describing: clientToken)), permissionGroupId: \(Swift.String(describing: permissionGroupId)), description: \"CONTENT_REDACTED\", name: \"CONTENT_REDACTED\")"}
 }
 
-public struct UpdatePermissionGroupOutput {
+public struct UpdatePermissionGroupOutput: Swift.Sendable {
     /// The unique identifier for the updated permission group.
     public var permissionGroupId: Swift.String?
 
@@ -2961,7 +2961,7 @@ public struct UpdatePermissionGroupOutput {
     }
 }
 
-public struct UpdateUserInput {
+public struct UpdateUserInput: Swift.Sendable {
     /// The option to indicate whether the user can use the GetProgrammaticAccessCredentials API to obtain credentials that can then be used to access other FinSpace Data API operations.
     ///
     /// * ENABLED – The user has permissions to use the APIs.
@@ -3011,7 +3011,7 @@ extension UpdateUserInput: Swift.CustomDebugStringConvertible {
         "UpdateUserInput(apiAccess: \(Swift.String(describing: apiAccess)), apiAccessPrincipalArn: \(Swift.String(describing: apiAccessPrincipalArn)), clientToken: \(Swift.String(describing: clientToken)), type: \(Swift.String(describing: type)), userId: \(Swift.String(describing: userId)), firstName: \"CONTENT_REDACTED\", lastName: \"CONTENT_REDACTED\")"}
 }
 
-public struct UpdateUserOutput {
+public struct UpdateUserOutput: Swift.Sendable {
     /// The unique identifier of the updated user.
     public var userId: Swift.String?
 

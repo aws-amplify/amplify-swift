@@ -31,8 +31,9 @@ import protocol ClientRuntime.ModeledError
 import struct Smithy.URIQueryItem
 
 extension IoTWirelessClientTypes {
+
     /// Session keys for ABP v1.1
-    public struct SessionKeysAbpV1_0_x {
+    public struct SessionKeysAbpV1_0_x: Swift.Sendable {
         /// The AppSKey value.
         public var appSKey: Swift.String?
         /// The NwkSKey value.
@@ -47,12 +48,12 @@ extension IoTWirelessClientTypes {
             self.nwkSKey = nwkSKey
         }
     }
-
 }
 
 extension IoTWirelessClientTypes {
+
     /// ABP device object for LoRaWAN specification v1.0.x
-    public struct AbpV1_0_x {
+    public struct AbpV1_0_x: Swift.Sendable {
         /// The DevAddr value.
         public var devAddr: Swift.String?
         /// The FCnt init value.
@@ -71,12 +72,12 @@ extension IoTWirelessClientTypes {
             self.sessionKeys = sessionKeys
         }
     }
-
 }
 
 extension IoTWirelessClientTypes {
+
     /// Session keys for ABP v1.1
-    public struct SessionKeysAbpV1_1 {
+    public struct SessionKeysAbpV1_1: Swift.Sendable {
         /// The AppSKey value.
         public var appSKey: Swift.String?
         /// The FNwkSIntKey value.
@@ -99,12 +100,12 @@ extension IoTWirelessClientTypes {
             self.sNwkSIntKey = sNwkSIntKey
         }
     }
-
 }
 
 extension IoTWirelessClientTypes {
+
     /// ABP device object for LoRaWAN specification v1.1
-    public struct AbpV1_1 {
+    public struct AbpV1_1: Swift.Sendable {
         /// The DevAddr value.
         public var devAddr: Swift.String?
         /// The FCnt init value.
@@ -123,7 +124,6 @@ extension IoTWirelessClientTypes {
             self.sessionKeys = sessionKeys
         }
     }
-
 }
 
 /// User does not have permission to perform this action.
@@ -151,8 +151,9 @@ public struct AccessDeniedException: ClientRuntime.ModeledError, AWSClientRuntim
 }
 
 extension IoTWirelessClientTypes {
+
     /// The accuracy of the estimated position in meters. An empty value indicates that no position data is available. A value of ‘0.0’ value indicates that position data is available. This data corresponds to the position information that you specified instead of the position computed by solver.
-    public struct Accuracy {
+    public struct Accuracy: Swift.Sendable {
         /// The horizontal accuracy of the estimated position, which is the difference between the estimated location and the actual device location.
         public var horizontalAccuracy: Swift.Float?
         /// The vertical accuracy of the estimated position, which is the difference between the estimated altitude and actual device latitude in meters.
@@ -167,12 +168,11 @@ extension IoTWirelessClientTypes {
             self.verticalAccuracy = verticalAccuracy
         }
     }
-
 }
 
 extension IoTWirelessClientTypes {
 
-    public enum AggregationPeriod: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AggregationPeriod: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case oneday
         case onehour
         case oneweek
@@ -204,7 +204,7 @@ extension IoTWirelessClientTypes {
 
 extension IoTWirelessClientTypes {
 
-    public enum ApplicationConfigType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ApplicationConfigType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case semtechgeolocation
         case sdkUnknown(Swift.String)
 
@@ -229,8 +229,9 @@ extension IoTWirelessClientTypes {
 }
 
 extension IoTWirelessClientTypes {
+
     /// LoRaWAN application configuration, which can be used to perform geolocation.
-    public struct ApplicationConfig {
+    public struct ApplicationConfig: Swift.Sendable {
         /// The name of the position data destination that describes the AWS IoT rule that processes the device's position data for use by AWS IoT Core for LoRaWAN.
         public var destinationName: Swift.String?
         /// The Fport value.
@@ -249,7 +250,6 @@ extension IoTWirelessClientTypes {
             self.type = type
         }
     }
-
 }
 
 /// Adding, updating, or deleting the resource can cause an inconsistent state.
@@ -389,8 +389,9 @@ public struct ValidationException: ClientRuntime.ModeledError, AWSClientRuntime.
 }
 
 extension IoTWirelessClientTypes {
+
     /// Information about a Sidewalk account.
-    public struct SidewalkAccountInfo {
+    public struct SidewalkAccountInfo: Swift.Sendable {
         /// The Sidewalk Amazon ID.
         public var amazonId: Swift.String?
         /// The Sidewalk application server private key.
@@ -405,7 +406,6 @@ extension IoTWirelessClientTypes {
             self.appServerPrivateKey = appServerPrivateKey
         }
     }
-
 }
 
 extension IoTWirelessClientTypes.SidewalkAccountInfo: Swift.CustomDebugStringConvertible {
@@ -414,8 +414,9 @@ extension IoTWirelessClientTypes.SidewalkAccountInfo: Swift.CustomDebugStringCon
 }
 
 extension IoTWirelessClientTypes {
+
     /// A simple label consisting of a customer-defined key-value pair
-    public struct Tag {
+    public struct Tag: Swift.Sendable {
         /// The tag's key value.
         /// This member is required.
         public var key: Swift.String?
@@ -432,10 +433,9 @@ extension IoTWirelessClientTypes {
             self.value = value
         }
     }
-
 }
 
-public struct AssociateAwsAccountWithPartnerAccountInput {
+public struct AssociateAwsAccountWithPartnerAccountInput: Swift.Sendable {
     /// Each resource must have a unique client request token. The client token is used to implement idempotency. It ensures that the request completes no more than one time. If you retry a request with the same token and the same parameters, the request will complete successfully. However, if you try to create a new resource using the same token but different parameters, an HTTP 409 conflict occurs. If you omit this value, AWS SDKs will automatically generate a unique client request. For more information about idempotency, see [Ensuring idempotency in Amazon EC2 API requests](https://docs.aws.amazon.com/ec2/latest/devguide/ec2-api-idempotency.html).
     public var clientRequestToken: Swift.String?
     /// The Sidewalk account credentials.
@@ -456,7 +456,7 @@ public struct AssociateAwsAccountWithPartnerAccountInput {
     }
 }
 
-public struct AssociateAwsAccountWithPartnerAccountOutput {
+public struct AssociateAwsAccountWithPartnerAccountOutput: Swift.Sendable {
     /// The Amazon Resource Name of the resource.
     public var arn: Swift.String?
     /// The Sidewalk account credentials.
@@ -472,7 +472,7 @@ public struct AssociateAwsAccountWithPartnerAccountOutput {
     }
 }
 
-public struct AssociateMulticastGroupWithFuotaTaskInput {
+public struct AssociateMulticastGroupWithFuotaTaskInput: Swift.Sendable {
     /// The ID of a FUOTA task.
     /// This member is required.
     public var id: Swift.String?
@@ -490,12 +490,12 @@ public struct AssociateMulticastGroupWithFuotaTaskInput {
     }
 }
 
-public struct AssociateMulticastGroupWithFuotaTaskOutput {
+public struct AssociateMulticastGroupWithFuotaTaskOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct AssociateWirelessDeviceWithFuotaTaskInput {
+public struct AssociateWirelessDeviceWithFuotaTaskInput: Swift.Sendable {
     /// The ID of a FUOTA task.
     /// This member is required.
     public var id: Swift.String?
@@ -513,12 +513,12 @@ public struct AssociateWirelessDeviceWithFuotaTaskInput {
     }
 }
 
-public struct AssociateWirelessDeviceWithFuotaTaskOutput {
+public struct AssociateWirelessDeviceWithFuotaTaskOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct AssociateWirelessDeviceWithMulticastGroupInput {
+public struct AssociateWirelessDeviceWithMulticastGroupInput: Swift.Sendable {
     /// The ID of the multicast group.
     /// This member is required.
     public var id: Swift.String?
@@ -536,12 +536,12 @@ public struct AssociateWirelessDeviceWithMulticastGroupInput {
     }
 }
 
-public struct AssociateWirelessDeviceWithMulticastGroupOutput {
+public struct AssociateWirelessDeviceWithMulticastGroupOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct AssociateWirelessDeviceWithThingInput {
+public struct AssociateWirelessDeviceWithThingInput: Swift.Sendable {
     /// The ID of the resource to update.
     /// This member is required.
     public var id: Swift.String?
@@ -559,12 +559,12 @@ public struct AssociateWirelessDeviceWithThingInput {
     }
 }
 
-public struct AssociateWirelessDeviceWithThingOutput {
+public struct AssociateWirelessDeviceWithThingOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct AssociateWirelessGatewayWithCertificateInput {
+public struct AssociateWirelessGatewayWithCertificateInput: Swift.Sendable {
     /// The ID of the resource to update.
     /// This member is required.
     public var id: Swift.String?
@@ -582,7 +582,7 @@ public struct AssociateWirelessGatewayWithCertificateInput {
     }
 }
 
-public struct AssociateWirelessGatewayWithCertificateOutput {
+public struct AssociateWirelessGatewayWithCertificateOutput: Swift.Sendable {
     /// The ID of the certificate associated with the wireless gateway.
     public var iotCertificateId: Swift.String?
 
@@ -594,7 +594,7 @@ public struct AssociateWirelessGatewayWithCertificateOutput {
     }
 }
 
-public struct AssociateWirelessGatewayWithThingInput {
+public struct AssociateWirelessGatewayWithThingInput: Swift.Sendable {
     /// The ID of the resource to update.
     /// This member is required.
     public var id: Swift.String?
@@ -612,7 +612,7 @@ public struct AssociateWirelessGatewayWithThingInput {
     }
 }
 
-public struct AssociateWirelessGatewayWithThingOutput {
+public struct AssociateWirelessGatewayWithThingOutput: Swift.Sendable {
 
     public init() { }
 }
@@ -620,7 +620,7 @@ public struct AssociateWirelessGatewayWithThingOutput {
 extension IoTWirelessClientTypes {
 
     /// Sidewalk device battery level.
-    public enum BatteryLevel: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum BatteryLevel: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case critical
         case low
         case normal
@@ -651,8 +651,9 @@ extension IoTWirelessClientTypes {
 }
 
 extension IoTWirelessClientTypes {
+
     /// Beaconing parameters for configuring the wireless gateways.
-    public struct Beaconing {
+    public struct Beaconing: Swift.Sendable {
         /// The data rate for gateways that are sending the beacons.
         public var dataRate: Swift.Int?
         /// The frequency list for the gateways to send the beacons.
@@ -667,10 +668,9 @@ extension IoTWirelessClientTypes {
             self.frequencies = frequencies
         }
     }
-
 }
 
-public struct CancelMulticastGroupSessionInput {
+public struct CancelMulticastGroupSessionInput: Swift.Sendable {
     /// The ID of the multicast group.
     /// This member is required.
     public var id: Swift.String?
@@ -683,14 +683,15 @@ public struct CancelMulticastGroupSessionInput {
     }
 }
 
-public struct CancelMulticastGroupSessionOutput {
+public struct CancelMulticastGroupSessionOutput: Swift.Sendable {
 
     public init() { }
 }
 
 extension IoTWirelessClientTypes {
+
     /// CDMA local ID information, which corresponds to the local identification parameters of a CDMA cell.
-    public struct CdmaLocalId {
+    public struct CdmaLocalId: Swift.Sendable {
         /// CDMA channel information.
         /// This member is required.
         public var cdmaChannel: Swift.Int?
@@ -707,12 +708,12 @@ extension IoTWirelessClientTypes {
             self.pnOffset = pnOffset
         }
     }
-
 }
 
 extension IoTWirelessClientTypes {
+
     /// CDMA object for network measurement reports.
-    public struct CdmaNmrObj {
+    public struct CdmaNmrObj: Swift.Sendable {
         /// CDMA base station ID (BSID).
         public var baseStationId: Swift.Int?
         /// CDMA channel information.
@@ -737,12 +738,12 @@ extension IoTWirelessClientTypes {
             self.pnOffset = pnOffset
         }
     }
-
 }
 
 extension IoTWirelessClientTypes {
+
     /// CDMA (Code-division multiple access) object.
-    public struct CdmaObj {
+    public struct CdmaObj: Swift.Sendable {
         /// CDMA base station latitude in degrees.
         public var baseLat: Swift.Float?
         /// CDMA base station longitude in degrees.
@@ -788,12 +789,12 @@ extension IoTWirelessClientTypes {
             self.systemId = systemId
         }
     }
-
 }
 
 extension IoTWirelessClientTypes {
+
     /// GSM local ID information, which corresponds to the local identification parameters of a GSM cell.
-    public struct GsmLocalId {
+    public struct GsmLocalId: Swift.Sendable {
         /// GSM broadcast control channel.
         /// This member is required.
         public var bcch: Swift.Int?
@@ -810,12 +811,12 @@ extension IoTWirelessClientTypes {
             self.bsic = bsic
         }
     }
-
 }
 
 extension IoTWirelessClientTypes {
+
     /// Global identity information.
-    public struct GlobalIdentity {
+    public struct GlobalIdentity: Swift.Sendable {
         /// GERAN (GSM EDGE Radio Access Network) cell global identifier.
         /// This member is required.
         public var geranCid: Swift.Int?
@@ -832,12 +833,12 @@ extension IoTWirelessClientTypes {
             self.lac = lac
         }
     }
-
 }
 
 extension IoTWirelessClientTypes {
+
     /// GSM object for network measurement reports.
-    public struct GsmNmrObj {
+    public struct GsmNmrObj: Swift.Sendable {
         /// GSM broadcast control channel.
         /// This member is required.
         public var bcch: Swift.Int?
@@ -862,12 +863,12 @@ extension IoTWirelessClientTypes {
             self.rxLevel = rxLevel
         }
     }
-
 }
 
 extension IoTWirelessClientTypes {
+
     /// GSM object.
-    public struct GsmObj {
+    public struct GsmObj: Swift.Sendable {
         /// GERAN (GSM EDGE Radio Access Network) Cell Global Identifier.
         /// This member is required.
         public var geranCid: Swift.Int?
@@ -910,12 +911,12 @@ extension IoTWirelessClientTypes {
             self.rxLevel = rxLevel
         }
     }
-
 }
 
 extension IoTWirelessClientTypes {
+
     /// LTE local identification (local ID) information.
-    public struct LteLocalId {
+    public struct LteLocalId: Swift.Sendable {
         /// Evolved universal terrestrial radio access (E-UTRA) absolute radio frequency channel number (FCN).
         /// This member is required.
         public var earfcn: Swift.Int?
@@ -932,12 +933,12 @@ extension IoTWirelessClientTypes {
             self.pci = pci
         }
     }
-
 }
 
 extension IoTWirelessClientTypes {
+
     /// LTE object for network measurement reports.
-    public struct LteNmrObj {
+    public struct LteNmrObj: Swift.Sendable {
         /// E-UTRA (Evolved universal terrestrial Radio Access) absolute radio frequency channel Number (EARFCN).
         /// This member is required.
         public var earfcn: Swift.Int?
@@ -967,12 +968,12 @@ extension IoTWirelessClientTypes {
             self.rsrq = rsrq
         }
     }
-
 }
 
 extension IoTWirelessClientTypes {
+
     /// LTE object.
-    public struct LteObj {
+    public struct LteObj: Swift.Sendable {
         /// E-UTRAN (Evolved Universal Terrestrial Radio Access Network) Cell Global Identifier.
         /// This member is required.
         public var eutranCid: Swift.Int?
@@ -1022,12 +1023,12 @@ extension IoTWirelessClientTypes {
             self.tac = tac
         }
     }
-
 }
 
 extension IoTWirelessClientTypes {
+
     /// TD-SCDMA local identification (local Id) information.
-    public struct TdscdmaLocalId {
+    public struct TdscdmaLocalId: Swift.Sendable {
         /// Cell parameters for TD-SCDMA.
         /// This member is required.
         public var cellParams: Swift.Int?
@@ -1044,12 +1045,12 @@ extension IoTWirelessClientTypes {
             self.uarfcn = uarfcn
         }
     }
-
 }
 
 extension IoTWirelessClientTypes {
+
     /// TD-SCDMA object for network measurement reports.
-    public struct TdscdmaNmrObj {
+    public struct TdscdmaNmrObj: Swift.Sendable {
         /// Cell parameters for TD-SCDMA network measurement reports object.
         /// This member is required.
         public var cellParams: Swift.Int?
@@ -1078,12 +1079,12 @@ extension IoTWirelessClientTypes {
             self.utranCid = utranCid
         }
     }
-
 }
 
 extension IoTWirelessClientTypes {
+
     /// TD-SCDMA object.
-    public struct TdscdmaObj {
+    public struct TdscdmaObj: Swift.Sendable {
         /// Location Area Code.
         public var lac: Swift.Int?
         /// Mobile Country Code.
@@ -1129,12 +1130,12 @@ extension IoTWirelessClientTypes {
             self.utranCid = utranCid
         }
     }
-
 }
 
 extension IoTWirelessClientTypes {
+
     /// WCDMA local identification (local ID) information.
-    public struct WcdmaLocalId {
+    public struct WcdmaLocalId: Swift.Sendable {
         /// Primary Scrambling Code.
         /// This member is required.
         public var psc: Swift.Int?
@@ -1151,12 +1152,12 @@ extension IoTWirelessClientTypes {
             self.uarfcndl = uarfcndl
         }
     }
-
 }
 
 extension IoTWirelessClientTypes {
+
     /// Network Measurement Reports.
-    public struct WcdmaNmrObj {
+    public struct WcdmaNmrObj: Swift.Sendable {
         /// Path loss, or path attenuation, is the reduction in power density of an electromagnetic wave as it propagates through space.
         public var pathLoss: Swift.Int?
         /// Primary Scrambling Code.
@@ -1186,12 +1187,12 @@ extension IoTWirelessClientTypes {
             self.utranCid = utranCid
         }
     }
-
 }
 
 extension IoTWirelessClientTypes {
+
     /// WCDMA.
-    public struct WcdmaObj {
+    public struct WcdmaObj: Swift.Sendable {
         /// Location Area Code.
         public var lac: Swift.Int?
         /// Mobile Country Code.
@@ -1233,12 +1234,12 @@ extension IoTWirelessClientTypes {
             self.wcdmaNmr = wcdmaNmr
         }
     }
-
 }
 
 extension IoTWirelessClientTypes {
+
     /// The cell towers that were used to perform the measurements.
-    public struct CellTowers {
+    public struct CellTowers: Swift.Sendable {
         /// CDMA object information.
         public var cdma: [IoTWirelessClientTypes.CdmaObj]?
         /// GSM object information.
@@ -1265,13 +1266,12 @@ extension IoTWirelessClientTypes {
             self.wcdma = wcdma
         }
     }
-
 }
 
 extension IoTWirelessClientTypes {
 
     /// The certificate chain algorithm provided by sidewalk.
-    public enum SigningAlg: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SigningAlg: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case ed25519
         case p256r1
         case sdkUnknown(Swift.String)
@@ -1299,8 +1299,9 @@ extension IoTWirelessClientTypes {
 }
 
 extension IoTWirelessClientTypes {
+
     /// List of sidewalk certificates.
-    public struct CertificateList {
+    public struct CertificateList: Swift.Sendable {
         /// The certificate chain algorithm provided by sidewalk.
         /// This member is required.
         public var signingAlg: IoTWirelessClientTypes.SigningAlg?
@@ -1317,12 +1318,11 @@ extension IoTWirelessClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension IoTWirelessClientTypes {
 
-    public enum ConnectionStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ConnectionStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case connected
         case disconnected
         case sdkUnknown(Swift.String)
@@ -1351,7 +1351,7 @@ extension IoTWirelessClientTypes {
 
 extension IoTWirelessClientTypes {
 
-    public enum EventNotificationTopicStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum EventNotificationTopicStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case disabled
         case enabled
         case sdkUnknown(Swift.String)
@@ -1379,8 +1379,9 @@ extension IoTWirelessClientTypes {
 }
 
 extension IoTWirelessClientTypes {
+
     /// Object for LoRaWAN connection status resource type event configuration.
-    public struct LoRaWANConnectionStatusEventNotificationConfigurations {
+    public struct LoRaWANConnectionStatusEventNotificationConfigurations: Swift.Sendable {
         /// Denotes whether the gateway EUI connection status event topic is enabled or disabled.
         public var gatewayEuiEventTopic: IoTWirelessClientTypes.EventNotificationTopicStatus?
 
@@ -1391,12 +1392,12 @@ extension IoTWirelessClientTypes {
             self.gatewayEuiEventTopic = gatewayEuiEventTopic
         }
     }
-
 }
 
 extension IoTWirelessClientTypes {
+
     /// Connection status event configuration object for enabling or disabling topic.
-    public struct ConnectionStatusEventConfiguration {
+    public struct ConnectionStatusEventConfiguration: Swift.Sendable {
         /// Connection status event configuration object for enabling or disabling LoRaWAN related event topics.
         public var loRaWAN: IoTWirelessClientTypes.LoRaWANConnectionStatusEventNotificationConfigurations?
         /// Denotes whether the wireless gateway ID connection status event topic is enabled or disabled.
@@ -1411,12 +1412,12 @@ extension IoTWirelessClientTypes {
             self.wirelessGatewayIdEventTopic = wirelessGatewayIdEventTopic
         }
     }
-
 }
 
 extension IoTWirelessClientTypes {
+
     /// Object for LoRaWAN connection status resource type event configuration.
-    public struct LoRaWANConnectionStatusResourceTypeEventConfiguration {
+    public struct LoRaWANConnectionStatusResourceTypeEventConfiguration: Swift.Sendable {
         /// Denotes whether the wireless gateway connection status event topic is enabled or disabled.
         public var wirelessGatewayEventTopic: IoTWirelessClientTypes.EventNotificationTopicStatus?
 
@@ -1427,12 +1428,12 @@ extension IoTWirelessClientTypes {
             self.wirelessGatewayEventTopic = wirelessGatewayEventTopic
         }
     }
-
 }
 
 extension IoTWirelessClientTypes {
+
     /// Connection status resource type event configuration object for enabling or disabling topic.
-    public struct ConnectionStatusResourceTypeEventConfiguration {
+    public struct ConnectionStatusResourceTypeEventConfiguration: Swift.Sendable {
         /// Connection status resource type event configuration object for enabling or disabling LoRaWAN related event topics.
         public var loRaWAN: IoTWirelessClientTypes.LoRaWANConnectionStatusResourceTypeEventConfiguration?
 
@@ -1443,12 +1444,11 @@ extension IoTWirelessClientTypes {
             self.loRaWAN = loRaWAN
         }
     }
-
 }
 
 extension IoTWirelessClientTypes {
 
-    public enum ExpressionType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ExpressionType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case mqtttopic
         case rulename
         case sdkUnknown(Swift.String)
@@ -1475,7 +1475,7 @@ extension IoTWirelessClientTypes {
     }
 }
 
-public struct CreateDestinationInput {
+public struct CreateDestinationInput: Swift.Sendable {
     /// Each resource must have a unique client request token. The client token is used to implement idempotency. It ensures that the request completes no more than one time. If you retry a request with the same token and the same parameters, the request will complete successfully. However, if you try to create a new resource using the same token but different parameters, an HTTP 409 conflict occurs. If you omit this value, AWS SDKs will automatically generate a unique client request. For more information about idempotency, see [Ensuring idempotency in Amazon EC2 API requests](https://docs.aws.amazon.com/ec2/latest/devguide/ec2-api-idempotency.html).
     public var clientRequestToken: Swift.String?
     /// The description of the new resource.
@@ -1515,7 +1515,7 @@ public struct CreateDestinationInput {
     }
 }
 
-public struct CreateDestinationOutput {
+public struct CreateDestinationOutput: Swift.Sendable {
     /// The Amazon Resource Name of the new resource.
     public var arn: Swift.String?
     /// The name of the new resource.
@@ -1532,8 +1532,9 @@ public struct CreateDestinationOutput {
 }
 
 extension IoTWirelessClientTypes {
+
     /// LoRaWANDeviceProfile object.
-    public struct LoRaWANDeviceProfile {
+    public struct LoRaWANDeviceProfile: Swift.Sendable {
         /// The ClassBTimeout value.
         public var classBTimeout: Swift.Int?
         /// The ClassCTimeout value.
@@ -1616,19 +1617,18 @@ extension IoTWirelessClientTypes {
             self.supportsJoin = supportsJoin
         }
     }
-
 }
 
 extension IoTWirelessClientTypes {
+
     /// Sidewalk object for creating a device profile.
-    public struct SidewalkCreateDeviceProfile {
+    public struct SidewalkCreateDeviceProfile: Swift.Sendable {
 
         public init() { }
     }
-
 }
 
-public struct CreateDeviceProfileInput {
+public struct CreateDeviceProfileInput: Swift.Sendable {
     /// Each resource must have a unique client request token. The client token is used to implement idempotency. It ensures that the request completes no more than one time. If you retry a request with the same token and the same parameters, the request will complete successfully. However, if you try to create a new resource using the same token but different parameters, an HTTP 409 conflict occurs. If you omit this value, AWS SDKs will automatically generate a unique client request. For more information about idempotency, see [Ensuring idempotency in Amazon EC2 API requests](https://docs.aws.amazon.com/ec2/latest/devguide/ec2-api-idempotency.html).
     public var clientRequestToken: Swift.String?
     /// The device profile information to use to create the device profile.
@@ -1656,7 +1656,7 @@ public struct CreateDeviceProfileInput {
     }
 }
 
-public struct CreateDeviceProfileOutput {
+public struct CreateDeviceProfileOutput: Swift.Sendable {
     /// The Amazon Resource Name of the new resource.
     public var arn: Swift.String?
     /// The ID of the new device profile.
@@ -1675,7 +1675,7 @@ public struct CreateDeviceProfileOutput {
 extension IoTWirelessClientTypes {
 
     /// Supported RfRegions
-    public enum SupportedRfRegion: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SupportedRfRegion: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case as9231
         case as9232
         case as9233
@@ -1736,8 +1736,9 @@ extension IoTWirelessClientTypes {
 }
 
 extension IoTWirelessClientTypes {
+
     /// The LoRaWAN information used with a FUOTA task.
-    public struct LoRaWANFuotaTask {
+    public struct LoRaWANFuotaTask: Swift.Sendable {
         /// Supported RfRegions
         public var rfRegion: IoTWirelessClientTypes.SupportedRfRegion?
 
@@ -1748,10 +1749,9 @@ extension IoTWirelessClientTypes {
             self.rfRegion = rfRegion
         }
     }
-
 }
 
-public struct CreateFuotaTaskInput {
+public struct CreateFuotaTaskInput: Swift.Sendable {
     /// Each resource must have a unique client request token. The client token is used to implement idempotency. It ensures that the request completes no more than one time. If you retry a request with the same token and the same parameters, the request will complete successfully. However, if you try to create a new resource using the same token but different parameters, an HTTP 409 conflict occurs. If you omit this value, AWS SDKs will automatically generate a unique client request. For more information about idempotency, see [Ensuring idempotency in Amazon EC2 API requests](https://docs.aws.amazon.com/ec2/latest/devguide/ec2-api-idempotency.html).
     public var clientRequestToken: Swift.String?
     /// The description of the new resource.
@@ -1801,7 +1801,7 @@ public struct CreateFuotaTaskInput {
     }
 }
 
-public struct CreateFuotaTaskOutput {
+public struct CreateFuotaTaskOutput: Swift.Sendable {
     /// The arn of a FUOTA task.
     public var arn: Swift.String?
     /// The ID of a FUOTA task.
@@ -1820,7 +1820,7 @@ public struct CreateFuotaTaskOutput {
 extension IoTWirelessClientTypes {
 
     /// DlClass for LoRaWAM, valid values are ClassB and ClassC.
-    public enum DlClass: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DlClass: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case classb
         case classc
         case sdkUnknown(Swift.String)
@@ -1848,8 +1848,9 @@ extension IoTWirelessClientTypes {
 }
 
 extension IoTWirelessClientTypes {
+
     /// The LoRaWAN information that is to be used with the multicast group.
-    public struct LoRaWANMulticast {
+    public struct LoRaWANMulticast: Swift.Sendable {
         /// DlClass for LoRaWAM, valid values are ClassB and ClassC.
         public var dlClass: IoTWirelessClientTypes.DlClass?
         /// Supported RfRegions
@@ -1864,10 +1865,9 @@ extension IoTWirelessClientTypes {
             self.rfRegion = rfRegion
         }
     }
-
 }
 
-public struct CreateMulticastGroupInput {
+public struct CreateMulticastGroupInput: Swift.Sendable {
     /// Each resource must have a unique client request token. The client token is used to implement idempotency. It ensures that the request completes no more than one time. If you retry a request with the same token and the same parameters, the request will complete successfully. However, if you try to create a new resource using the same token but different parameters, an HTTP 409 conflict occurs. If you omit this value, AWS SDKs will automatically generate a unique client request. For more information about idempotency, see [Ensuring idempotency in Amazon EC2 API requests](https://docs.aws.amazon.com/ec2/latest/devguide/ec2-api-idempotency.html).
     public var clientRequestToken: Swift.String?
     /// The description of the multicast group.
@@ -1896,7 +1896,7 @@ public struct CreateMulticastGroupInput {
     }
 }
 
-public struct CreateMulticastGroupOutput {
+public struct CreateMulticastGroupOutput: Swift.Sendable {
     /// The arn of the multicast group.
     public var arn: Swift.String?
     /// The ID of the multicast group.
@@ -1915,7 +1915,7 @@ public struct CreateMulticastGroupOutput {
 extension IoTWirelessClientTypes {
 
     /// The log level for a log message. The log levels can be disabled, or set to ERROR to display less verbose logs containing only error information, or to INFO for more detailed logs.
-    public enum LogLevel: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum LogLevel: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case disabled
         case error
         case info
@@ -1948,7 +1948,7 @@ extension IoTWirelessClientTypes {
 extension IoTWirelessClientTypes {
 
     /// FrameInfo of your multicast group resources for the trace content. Use FrameInfo to debug the multicast communication between your multicast groups and the network server.
-    public enum MulticastFrameInfo: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum MulticastFrameInfo: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case disabled
         case enabled
         case sdkUnknown(Swift.String)
@@ -1978,7 +1978,7 @@ extension IoTWirelessClientTypes {
 extension IoTWirelessClientTypes {
 
     /// FrameInfo of your wireless device resources for the trace content. Use FrameInfo to debug the communication between your LoRaWAN end devices and the network server.
-    public enum WirelessDeviceFrameInfo: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum WirelessDeviceFrameInfo: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case disabled
         case enabled
         case sdkUnknown(Swift.String)
@@ -2006,8 +2006,9 @@ extension IoTWirelessClientTypes {
 }
 
 extension IoTWirelessClientTypes {
+
     /// Trace content for your wireless devices, gateways, and multicast groups.
-    public struct TraceContent {
+    public struct TraceContent: Swift.Sendable {
         /// The log level for a log message. The log levels can be disabled, or set to ERROR to display less verbose logs containing only error information, or to INFO for more detailed logs.
         public var logLevel: IoTWirelessClientTypes.LogLevel?
         /// FrameInfo of your multicast group resources for the trace content. Use FrameInfo to debug the multicast communication between your multicast groups and the network server.
@@ -2026,10 +2027,9 @@ extension IoTWirelessClientTypes {
             self.wirelessDeviceFrameInfo = wirelessDeviceFrameInfo
         }
     }
-
 }
 
-public struct CreateNetworkAnalyzerConfigurationInput {
+public struct CreateNetworkAnalyzerConfigurationInput: Swift.Sendable {
     /// Each resource must have a unique client request token. The client token is used to implement idempotency. It ensures that the request completes no more than one time. If you retry a request with the same token and the same parameters, the request will complete successfully. However, if you try to create a new resource using the same token but different parameters, an HTTP 409 conflict occurs. If you omit this value, AWS SDKs will automatically generate a unique client request. For more information about idempotency, see [Ensuring idempotency in Amazon EC2 API requests](https://docs.aws.amazon.com/ec2/latest/devguide/ec2-api-idempotency.html).
     public var clientRequestToken: Swift.String?
     /// The description of the new resource.
@@ -2070,7 +2070,7 @@ public struct CreateNetworkAnalyzerConfigurationInput {
     }
 }
 
-public struct CreateNetworkAnalyzerConfigurationOutput {
+public struct CreateNetworkAnalyzerConfigurationOutput: Swift.Sendable {
     /// The Amazon Resource Name of the new resource.
     public var arn: Swift.String?
     /// Name of the network analyzer configuration.
@@ -2087,8 +2087,9 @@ public struct CreateNetworkAnalyzerConfigurationOutput {
 }
 
 extension IoTWirelessClientTypes {
+
     /// LoRaWANServiceProfile object.
-    public struct LoRaWANServiceProfile {
+    public struct LoRaWANServiceProfile: Swift.Sendable {
         /// The AddGWMetaData value.
         public var addGwMetadata: Swift.Bool
         /// The DrMax value.
@@ -2115,10 +2116,9 @@ extension IoTWirelessClientTypes {
             self.raAllowed = raAllowed
         }
     }
-
 }
 
-public struct CreateServiceProfileInput {
+public struct CreateServiceProfileInput: Swift.Sendable {
     /// Each resource must have a unique client request token. The client token is used to implement idempotency. It ensures that the request completes no more than one time. If you retry a request with the same token and the same parameters, the request will complete successfully. However, if you try to create a new resource using the same token but different parameters, an HTTP 409 conflict occurs. If you omit this value, AWS SDKs will automatically generate a unique client request. For more information about idempotency, see [Ensuring idempotency in Amazon EC2 API requests](https://docs.aws.amazon.com/ec2/latest/devguide/ec2-api-idempotency.html).
     public var clientRequestToken: Swift.String?
     /// The service profile information to use to create the service profile.
@@ -2142,7 +2142,7 @@ public struct CreateServiceProfileInput {
     }
 }
 
-public struct CreateServiceProfileOutput {
+public struct CreateServiceProfileOutput: Swift.Sendable {
     /// The Amazon Resource Name of the new resource.
     public var arn: Swift.String?
     /// The ID of the new service profile.
@@ -2159,8 +2159,9 @@ public struct CreateServiceProfileOutput {
 }
 
 extension IoTWirelessClientTypes {
+
     /// The FPorts for the position information.
-    public struct Positioning {
+    public struct Positioning: Swift.Sendable {
         /// The Fport value.
         public var clockSync: Swift.Int?
         /// The Fport value.
@@ -2179,12 +2180,12 @@ extension IoTWirelessClientTypes {
             self.stream = stream
         }
     }
-
 }
 
 extension IoTWirelessClientTypes {
+
     /// List of FPort assigned for different LoRaWAN application packages to use
-    public struct FPorts {
+    public struct FPorts: Swift.Sendable {
         /// Optional LoRaWAN application information, which can be used for geolocation.
         public var applications: [IoTWirelessClientTypes.ApplicationConfig]?
         /// The Fport value.
@@ -2211,12 +2212,12 @@ extension IoTWirelessClientTypes {
             self.positioning = positioning
         }
     }
-
 }
 
 extension IoTWirelessClientTypes {
+
     /// OTAA device object for v1.0.x
-    public struct OtaaV1_0_x {
+    public struct OtaaV1_0_x: Swift.Sendable {
         /// The AppEUI value. You specify this value when using LoRaWAN versions v1.0.2 or v1.0.3.
         public var appEui: Swift.String?
         /// The AppKey value.
@@ -2239,12 +2240,12 @@ extension IoTWirelessClientTypes {
             self.joinEui = joinEui
         }
     }
-
 }
 
 extension IoTWirelessClientTypes {
+
     /// OTAA device object for v1.1
-    public struct OtaaV1_1 {
+    public struct OtaaV1_1: Swift.Sendable {
         /// The AppKey value.
         public var appKey: Swift.String?
         /// The JoinEUI value.
@@ -2263,12 +2264,12 @@ extension IoTWirelessClientTypes {
             self.nwkKey = nwkKey
         }
     }
-
 }
 
 extension IoTWirelessClientTypes {
+
     /// LoRaWAN object for create functions.
-    public struct LoRaWANDevice {
+    public struct LoRaWANDevice: Swift.Sendable {
         /// LoRaWAN object for create APIs
         public var abpV1_0_x: IoTWirelessClientTypes.AbpV1_0_x?
         /// ABP device object for create APIs for v1.1
@@ -2307,12 +2308,11 @@ extension IoTWirelessClientTypes {
             self.serviceProfileId = serviceProfileId
         }
     }
-
 }
 
 extension IoTWirelessClientTypes {
 
-    public enum PositioningConfigStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum PositioningConfigStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case disabled
         case enabled
         case sdkUnknown(Swift.String)
@@ -2340,8 +2340,9 @@ extension IoTWirelessClientTypes {
 }
 
 extension IoTWirelessClientTypes {
+
     /// Sidewalk object for creating a wireless device.
-    public struct SidewalkCreateWirelessDevice {
+    public struct SidewalkCreateWirelessDevice: Swift.Sendable {
         /// The ID of the Sidewalk device profile.
         public var deviceProfileId: Swift.String?
 
@@ -2352,12 +2353,11 @@ extension IoTWirelessClientTypes {
             self.deviceProfileId = deviceProfileId
         }
     }
-
 }
 
 extension IoTWirelessClientTypes {
 
-    public enum WirelessDeviceType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum WirelessDeviceType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case lorawan
         case sidewalk
         case sdkUnknown(Swift.String)
@@ -2384,7 +2384,7 @@ extension IoTWirelessClientTypes {
     }
 }
 
-public struct CreateWirelessDeviceInput {
+public struct CreateWirelessDeviceInput: Swift.Sendable {
     /// Each resource must have a unique client request token. The client token is used to implement idempotency. It ensures that the request completes no more than one time. If you retry a request with the same token and the same parameters, the request will complete successfully. However, if you try to create a new resource using the same token but different parameters, an HTTP 409 conflict occurs. If you omit this value, AWS SDKs will automatically generate a unique client request. For more information about idempotency, see [Ensuring idempotency in Amazon EC2 API requests](https://docs.aws.amazon.com/ec2/latest/devguide/ec2-api-idempotency.html).
     public var clientRequestToken: Swift.String?
     /// The description of the new resource.
@@ -2430,7 +2430,7 @@ public struct CreateWirelessDeviceInput {
     }
 }
 
-public struct CreateWirelessDeviceOutput {
+public struct CreateWirelessDeviceOutput: Swift.Sendable {
     /// The Amazon Resource Name of the new resource.
     public var arn: Swift.String?
     /// The ID of the new wireless device.
@@ -2447,8 +2447,9 @@ public struct CreateWirelessDeviceOutput {
 }
 
 extension IoTWirelessClientTypes {
+
     /// LoRaWANGateway object.
-    public struct LoRaWANGateway {
+    public struct LoRaWANGateway: Swift.Sendable {
         /// Beaconing object information, which consists of the data rate and frequency parameters.
         public var beaconing: IoTWirelessClientTypes.Beaconing?
         /// The gateway's EUI value.
@@ -2483,10 +2484,9 @@ extension IoTWirelessClientTypes {
             self.subBands = subBands
         }
     }
-
 }
 
-public struct CreateWirelessGatewayInput {
+public struct CreateWirelessGatewayInput: Swift.Sendable {
     /// Each resource must have a unique client request token. The client token is used to implement idempotency. It ensures that the request completes no more than one time. If you retry a request with the same token and the same parameters, the request will complete successfully. However, if you try to create a new resource using the same token but different parameters, an HTTP 409 conflict occurs. If you omit this value, AWS SDKs will automatically generate a unique client request. For more information about idempotency, see [Ensuring idempotency in Amazon EC2 API requests](https://docs.aws.amazon.com/ec2/latest/devguide/ec2-api-idempotency.html).
     public var clientRequestToken: Swift.String?
     /// The description of the new resource.
@@ -2515,7 +2515,7 @@ public struct CreateWirelessGatewayInput {
     }
 }
 
-public struct CreateWirelessGatewayOutput {
+public struct CreateWirelessGatewayOutput: Swift.Sendable {
     /// The Amazon Resource Name of the new resource.
     public var arn: Swift.String?
     /// The ID of the new wireless gateway.
@@ -2531,7 +2531,7 @@ public struct CreateWirelessGatewayOutput {
     }
 }
 
-public struct CreateWirelessGatewayTaskInput {
+public struct CreateWirelessGatewayTaskInput: Swift.Sendable {
     /// The ID of the resource to update.
     /// This member is required.
     public var id: Swift.String?
@@ -2551,7 +2551,7 @@ public struct CreateWirelessGatewayTaskInput {
 
 extension IoTWirelessClientTypes {
 
-    public enum WirelessGatewayTaskStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum WirelessGatewayTaskStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case completed
         case failed
         case firstRetry
@@ -2590,7 +2590,7 @@ extension IoTWirelessClientTypes {
     }
 }
 
-public struct CreateWirelessGatewayTaskOutput {
+public struct CreateWirelessGatewayTaskOutput: Swift.Sendable {
     /// The status of the request.
     public var status: IoTWirelessClientTypes.WirelessGatewayTaskStatus?
     /// The ID of the WirelessGatewayTaskDefinition.
@@ -2607,8 +2607,9 @@ public struct CreateWirelessGatewayTaskOutput {
 }
 
 extension IoTWirelessClientTypes {
+
     /// LoRaWANGatewayVersion object.
-    public struct LoRaWANGatewayVersion {
+    public struct LoRaWANGatewayVersion: Swift.Sendable {
         /// The model number of the wireless gateway.
         public var model: Swift.String?
         /// The version of the wireless gateway firmware.
@@ -2627,12 +2628,12 @@ extension IoTWirelessClientTypes {
             self.station = station
         }
     }
-
 }
 
 extension IoTWirelessClientTypes {
+
     /// LoRaWANUpdateGatewayTaskCreate object.
-    public struct LoRaWANUpdateGatewayTaskCreate {
+    public struct LoRaWANUpdateGatewayTaskCreate: Swift.Sendable {
         /// The version of the gateways that should receive the update.
         public var currentVersion: IoTWirelessClientTypes.LoRaWANGatewayVersion?
         /// The CRC of the signature private key to check.
@@ -2655,12 +2656,12 @@ extension IoTWirelessClientTypes {
             self.updateVersion = updateVersion
         }
     }
-
 }
 
 extension IoTWirelessClientTypes {
+
     /// UpdateWirelessGatewayTaskCreate object.
-    public struct UpdateWirelessGatewayTaskCreate {
+    public struct UpdateWirelessGatewayTaskCreate: Swift.Sendable {
         /// The properties that relate to the LoRaWAN wireless gateway.
         public var loRaWAN: IoTWirelessClientTypes.LoRaWANUpdateGatewayTaskCreate?
         /// The IAM role used to read data from the S3 bucket.
@@ -2679,10 +2680,9 @@ extension IoTWirelessClientTypes {
             self.updateDataSource = updateDataSource
         }
     }
-
 }
 
-public struct CreateWirelessGatewayTaskDefinitionInput {
+public struct CreateWirelessGatewayTaskDefinitionInput: Swift.Sendable {
     /// Whether to automatically create tasks using this task definition for all gateways with the specified current version. If false, the task must me created by calling CreateWirelessGatewayTask.
     /// This member is required.
     public var autoCreateTasks: Swift.Bool?
@@ -2711,7 +2711,7 @@ public struct CreateWirelessGatewayTaskDefinitionInput {
     }
 }
 
-public struct CreateWirelessGatewayTaskDefinitionOutput {
+public struct CreateWirelessGatewayTaskDefinitionOutput: Swift.Sendable {
     /// The Amazon Resource Name of the resource.
     public var arn: Swift.String?
     /// The ID of the new wireless gateway task definition.
@@ -2728,8 +2728,9 @@ public struct CreateWirelessGatewayTaskDefinitionOutput {
 }
 
 extension IoTWirelessClientTypes {
+
     /// The device attestation key (DAK) information.
-    public struct DakCertificateMetadata {
+    public struct DakCertificateMetadata: Swift.Sendable {
         /// The advertised product ID (APID) that's used for pre-production and production applications.
         public var apId: Swift.String?
         /// The certificate ID for the DAK.
@@ -2757,10 +2758,9 @@ extension IoTWirelessClientTypes {
             self.maxAllowedSignature = maxAllowedSignature
         }
     }
-
 }
 
-public struct DeleteDestinationInput {
+public struct DeleteDestinationInput: Swift.Sendable {
     /// The name of the resource to delete.
     /// This member is required.
     public var name: Swift.String?
@@ -2773,12 +2773,12 @@ public struct DeleteDestinationInput {
     }
 }
 
-public struct DeleteDestinationOutput {
+public struct DeleteDestinationOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteDeviceProfileInput {
+public struct DeleteDeviceProfileInput: Swift.Sendable {
     /// The ID of the resource to delete.
     /// This member is required.
     public var id: Swift.String?
@@ -2791,12 +2791,12 @@ public struct DeleteDeviceProfileInput {
     }
 }
 
-public struct DeleteDeviceProfileOutput {
+public struct DeleteDeviceProfileOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteFuotaTaskInput {
+public struct DeleteFuotaTaskInput: Swift.Sendable {
     /// The ID of a FUOTA task.
     /// This member is required.
     public var id: Swift.String?
@@ -2809,12 +2809,12 @@ public struct DeleteFuotaTaskInput {
     }
 }
 
-public struct DeleteFuotaTaskOutput {
+public struct DeleteFuotaTaskOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteMulticastGroupInput {
+public struct DeleteMulticastGroupInput: Swift.Sendable {
     /// The ID of the multicast group.
     /// This member is required.
     public var id: Swift.String?
@@ -2827,12 +2827,12 @@ public struct DeleteMulticastGroupInput {
     }
 }
 
-public struct DeleteMulticastGroupOutput {
+public struct DeleteMulticastGroupOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteNetworkAnalyzerConfigurationInput {
+public struct DeleteNetworkAnalyzerConfigurationInput: Swift.Sendable {
     /// Name of the network analyzer configuration.
     /// This member is required.
     public var configurationName: Swift.String?
@@ -2845,12 +2845,12 @@ public struct DeleteNetworkAnalyzerConfigurationInput {
     }
 }
 
-public struct DeleteNetworkAnalyzerConfigurationOutput {
+public struct DeleteNetworkAnalyzerConfigurationOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteQueuedMessagesInput {
+public struct DeleteQueuedMessagesInput: Swift.Sendable {
     /// The ID of a given wireless device for which downlink messages will be deleted.
     /// This member is required.
     public var id: Swift.String?
@@ -2872,12 +2872,12 @@ public struct DeleteQueuedMessagesInput {
     }
 }
 
-public struct DeleteQueuedMessagesOutput {
+public struct DeleteQueuedMessagesOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteServiceProfileInput {
+public struct DeleteServiceProfileInput: Swift.Sendable {
     /// The ID of the resource to delete.
     /// This member is required.
     public var id: Swift.String?
@@ -2890,12 +2890,12 @@ public struct DeleteServiceProfileInput {
     }
 }
 
-public struct DeleteServiceProfileOutput {
+public struct DeleteServiceProfileOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteWirelessDeviceInput {
+public struct DeleteWirelessDeviceInput: Swift.Sendable {
     /// The ID of the resource to delete.
     /// This member is required.
     public var id: Swift.String?
@@ -2908,12 +2908,12 @@ public struct DeleteWirelessDeviceInput {
     }
 }
 
-public struct DeleteWirelessDeviceOutput {
+public struct DeleteWirelessDeviceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteWirelessDeviceImportTaskInput {
+public struct DeleteWirelessDeviceImportTaskInput: Swift.Sendable {
     /// The unique identifier of the import task to be deleted.
     /// This member is required.
     public var id: Swift.String?
@@ -2926,12 +2926,12 @@ public struct DeleteWirelessDeviceImportTaskInput {
     }
 }
 
-public struct DeleteWirelessDeviceImportTaskOutput {
+public struct DeleteWirelessDeviceImportTaskOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteWirelessGatewayInput {
+public struct DeleteWirelessGatewayInput: Swift.Sendable {
     /// The ID of the resource to delete.
     /// This member is required.
     public var id: Swift.String?
@@ -2944,12 +2944,12 @@ public struct DeleteWirelessGatewayInput {
     }
 }
 
-public struct DeleteWirelessGatewayOutput {
+public struct DeleteWirelessGatewayOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteWirelessGatewayTaskInput {
+public struct DeleteWirelessGatewayTaskInput: Swift.Sendable {
     /// The ID of the resource to delete.
     /// This member is required.
     public var id: Swift.String?
@@ -2962,12 +2962,12 @@ public struct DeleteWirelessGatewayTaskInput {
     }
 }
 
-public struct DeleteWirelessGatewayTaskOutput {
+public struct DeleteWirelessGatewayTaskOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteWirelessGatewayTaskDefinitionInput {
+public struct DeleteWirelessGatewayTaskDefinitionInput: Swift.Sendable {
     /// The ID of the resource to delete.
     /// This member is required.
     public var id: Swift.String?
@@ -2980,12 +2980,12 @@ public struct DeleteWirelessGatewayTaskDefinitionInput {
     }
 }
 
-public struct DeleteWirelessGatewayTaskDefinitionOutput {
+public struct DeleteWirelessGatewayTaskDefinitionOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeregisterWirelessDeviceInput {
+public struct DeregisterWirelessDeviceInput: Swift.Sendable {
     /// The identifier of the wireless device to deregister from AWS IoT Wireless.
     /// This member is required.
     public var identifier: Swift.String?
@@ -3002,14 +3002,15 @@ public struct DeregisterWirelessDeviceInput {
     }
 }
 
-public struct DeregisterWirelessDeviceOutput {
+public struct DeregisterWirelessDeviceOutput: Swift.Sendable {
 
     public init() { }
 }
 
 extension IoTWirelessClientTypes {
+
     /// Describes a destination.
-    public struct Destinations {
+    public struct Destinations: Swift.Sendable {
         /// The Amazon Resource Name of the resource.
         public var arn: Swift.String?
         /// The description of the resource.
@@ -3040,12 +3041,12 @@ extension IoTWirelessClientTypes {
             self.roleArn = roleArn
         }
     }
-
 }
 
 extension IoTWirelessClientTypes {
+
     /// Describes a device profile.
-    public struct DeviceProfile {
+    public struct DeviceProfile: Swift.Sendable {
         /// The Amazon Resource Name of the resource.
         public var arn: Swift.String?
         /// The ID of the device profile.
@@ -3064,12 +3065,11 @@ extension IoTWirelessClientTypes {
             self.name = name
         }
     }
-
 }
 
 extension IoTWirelessClientTypes {
 
-    public enum DeviceProfileType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DeviceProfileType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case lorawan
         case sidewalk
         case sdkUnknown(Swift.String)
@@ -3097,8 +3097,9 @@ extension IoTWirelessClientTypes {
 }
 
 extension IoTWirelessClientTypes {
+
     /// SidewalkEventNotificationConfigurations object, which is the event configuration object for Sidewalk-related event topics.
-    public struct SidewalkEventNotificationConfigurations {
+    public struct SidewalkEventNotificationConfigurations: Swift.Sendable {
         /// Denotes whether the Amazon ID event topic is enabled or disabled.
         public var amazonIdEventTopic: IoTWirelessClientTypes.EventNotificationTopicStatus?
 
@@ -3109,12 +3110,12 @@ extension IoTWirelessClientTypes {
             self.amazonIdEventTopic = amazonIdEventTopic
         }
     }
-
 }
 
 extension IoTWirelessClientTypes {
+
     /// Device registration state event configuration object for enabling and disabling relevant topics.
-    public struct DeviceRegistrationStateEventConfiguration {
+    public struct DeviceRegistrationStateEventConfiguration: Swift.Sendable {
         /// Device registration state event configuration object for enabling or disabling Sidewalk related event topics.
         public var sidewalk: IoTWirelessClientTypes.SidewalkEventNotificationConfigurations?
         /// Denotes whether the wireless device ID device registration state event topic is enabled or disabled.
@@ -3129,12 +3130,12 @@ extension IoTWirelessClientTypes {
             self.wirelessDeviceIdEventTopic = wirelessDeviceIdEventTopic
         }
     }
-
 }
 
 extension IoTWirelessClientTypes {
+
     /// Sidewalk resource type event configuration object for enabling or disabling topic.
-    public struct SidewalkResourceTypeEventConfiguration {
+    public struct SidewalkResourceTypeEventConfiguration: Swift.Sendable {
         /// Denotes whether the wireless device join event topic is enabled or disabled.
         public var wirelessDeviceEventTopic: IoTWirelessClientTypes.EventNotificationTopicStatus?
 
@@ -3145,12 +3146,12 @@ extension IoTWirelessClientTypes {
             self.wirelessDeviceEventTopic = wirelessDeviceEventTopic
         }
     }
-
 }
 
 extension IoTWirelessClientTypes {
+
     /// Device registration state resource type event configuration object for enabling or disabling topic.
-    public struct DeviceRegistrationStateResourceTypeEventConfiguration {
+    public struct DeviceRegistrationStateResourceTypeEventConfiguration: Swift.Sendable {
         /// Device registration resource type state event configuration object for enabling or disabling Sidewalk related event topics.
         public var sidewalk: IoTWirelessClientTypes.SidewalkResourceTypeEventConfiguration?
 
@@ -3161,13 +3162,12 @@ extension IoTWirelessClientTypes {
             self.sidewalk = sidewalk
         }
     }
-
 }
 
 extension IoTWirelessClientTypes {
 
     /// Device state defines the device status of sidewalk device.
-    public enum DeviceState: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DeviceState: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case provisioned
         case registerednotseen
         case registeredreachable
@@ -3202,7 +3202,7 @@ extension IoTWirelessClientTypes {
 
 extension IoTWirelessClientTypes {
 
-    public enum DimensionName: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DimensionName: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case deviceid
         case gatewayid
         case sdkUnknown(Swift.String)
@@ -3230,8 +3230,9 @@ extension IoTWirelessClientTypes {
 }
 
 extension IoTWirelessClientTypes {
+
     /// The required list of dimensions for the metric.
-    public struct Dimension {
+    public struct Dimension: Swift.Sendable {
         /// The name of the dimension.
         public var name: IoTWirelessClientTypes.DimensionName?
         /// The dimension's value.
@@ -3246,12 +3247,11 @@ extension IoTWirelessClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension IoTWirelessClientTypes {
 
-    public enum PartnerType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum PartnerType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case sidewalk
         case sdkUnknown(Swift.String)
 
@@ -3275,7 +3275,7 @@ extension IoTWirelessClientTypes {
     }
 }
 
-public struct DisassociateAwsAccountFromPartnerAccountInput {
+public struct DisassociateAwsAccountFromPartnerAccountInput: Swift.Sendable {
     /// The partner account ID to disassociate from the AWS account.
     /// This member is required.
     public var partnerAccountId: Swift.String?
@@ -3293,12 +3293,12 @@ public struct DisassociateAwsAccountFromPartnerAccountInput {
     }
 }
 
-public struct DisassociateAwsAccountFromPartnerAccountOutput {
+public struct DisassociateAwsAccountFromPartnerAccountOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DisassociateMulticastGroupFromFuotaTaskInput {
+public struct DisassociateMulticastGroupFromFuotaTaskInput: Swift.Sendable {
     /// The ID of a FUOTA task.
     /// This member is required.
     public var id: Swift.String?
@@ -3316,12 +3316,12 @@ public struct DisassociateMulticastGroupFromFuotaTaskInput {
     }
 }
 
-public struct DisassociateMulticastGroupFromFuotaTaskOutput {
+public struct DisassociateMulticastGroupFromFuotaTaskOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DisassociateWirelessDeviceFromFuotaTaskInput {
+public struct DisassociateWirelessDeviceFromFuotaTaskInput: Swift.Sendable {
     /// The ID of a FUOTA task.
     /// This member is required.
     public var id: Swift.String?
@@ -3339,12 +3339,12 @@ public struct DisassociateWirelessDeviceFromFuotaTaskInput {
     }
 }
 
-public struct DisassociateWirelessDeviceFromFuotaTaskOutput {
+public struct DisassociateWirelessDeviceFromFuotaTaskOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DisassociateWirelessDeviceFromMulticastGroupInput {
+public struct DisassociateWirelessDeviceFromMulticastGroupInput: Swift.Sendable {
     /// The ID of the multicast group.
     /// This member is required.
     public var id: Swift.String?
@@ -3362,12 +3362,12 @@ public struct DisassociateWirelessDeviceFromMulticastGroupInput {
     }
 }
 
-public struct DisassociateWirelessDeviceFromMulticastGroupOutput {
+public struct DisassociateWirelessDeviceFromMulticastGroupOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DisassociateWirelessDeviceFromThingInput {
+public struct DisassociateWirelessDeviceFromThingInput: Swift.Sendable {
     /// The ID of the resource to update.
     /// This member is required.
     public var id: Swift.String?
@@ -3380,12 +3380,12 @@ public struct DisassociateWirelessDeviceFromThingInput {
     }
 }
 
-public struct DisassociateWirelessDeviceFromThingOutput {
+public struct DisassociateWirelessDeviceFromThingOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DisassociateWirelessGatewayFromCertificateInput {
+public struct DisassociateWirelessGatewayFromCertificateInput: Swift.Sendable {
     /// The ID of the resource to update.
     /// This member is required.
     public var id: Swift.String?
@@ -3398,12 +3398,12 @@ public struct DisassociateWirelessGatewayFromCertificateInput {
     }
 }
 
-public struct DisassociateWirelessGatewayFromCertificateOutput {
+public struct DisassociateWirelessGatewayFromCertificateOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DisassociateWirelessGatewayFromThingInput {
+public struct DisassociateWirelessGatewayFromThingInput: Swift.Sendable {
     /// The ID of the resource to update.
     /// This member is required.
     public var id: Swift.String?
@@ -3416,14 +3416,14 @@ public struct DisassociateWirelessGatewayFromThingInput {
     }
 }
 
-public struct DisassociateWirelessGatewayFromThingOutput {
+public struct DisassociateWirelessGatewayFromThingOutput: Swift.Sendable {
 
     public init() { }
 }
 
 extension IoTWirelessClientTypes {
 
-    public enum DownlinkMode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DownlinkMode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case concurrent
         case sequential
         case usingUplinkGateway
@@ -3454,8 +3454,9 @@ extension IoTWirelessClientTypes {
 }
 
 extension IoTWirelessClientTypes {
+
     /// Gateway list item object that specifies the frequency and list of gateways for which the downlink message should be sent.
-    public struct GatewayListItem {
+    public struct GatewayListItem: Swift.Sendable {
         /// The frequency to use for the gateways when sending a downlink message to the wireless device.
         /// This member is required.
         public var downlinkFrequency: Swift.Int?
@@ -3472,12 +3473,12 @@ extension IoTWirelessClientTypes {
             self.gatewayId = gatewayId
         }
     }
-
 }
 
 extension IoTWirelessClientTypes {
+
     /// Specify the list of gateways to which you want to send downlink data traffic when the wireless device is running in class B or class C mode.
-    public struct ParticipatingGateways {
+    public struct ParticipatingGateways: Swift.Sendable {
         /// Indicates whether to send the downlink message in sequential mode or concurrent mode, or to use only the chosen gateways from the previous uplink message transmission.
         /// This member is required.
         public var downlinkMode: IoTWirelessClientTypes.DownlinkMode?
@@ -3499,12 +3500,12 @@ extension IoTWirelessClientTypes {
             self.transmissionInterval = transmissionInterval
         }
     }
-
 }
 
 extension IoTWirelessClientTypes {
+
     /// LoRaWAN router info.
-    public struct LoRaWANSendDataToDevice {
+    public struct LoRaWANSendDataToDevice: Swift.Sendable {
         /// The Fport value.
         public var fPort: Swift.Int?
         /// Choose the gateways that you want to use for the downlink data traffic when the wireless device is running in class B or class C mode.
@@ -3519,12 +3520,12 @@ extension IoTWirelessClientTypes {
             self.participatingGateways = participatingGateways
         }
     }
-
 }
 
 extension IoTWirelessClientTypes {
+
     /// The message in the downlink queue.
-    public struct DownlinkQueueMessage {
+    public struct DownlinkQueueMessage: Swift.Sendable {
         /// LoRaWAN router info.
         public var loRaWAN: IoTWirelessClientTypes.LoRaWANSendDataToDevice?
         /// The message ID assigned by IoT Wireless to each downlink message, which helps identify the message.
@@ -3547,13 +3548,12 @@ extension IoTWirelessClientTypes {
             self.transmitMode = transmitMode
         }
     }
-
 }
 
 extension IoTWirelessClientTypes {
 
     /// Sidewalk device status notification.
-    public enum Event: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Event: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case ack
         case discovered
         case lost
@@ -3590,8 +3590,9 @@ extension IoTWirelessClientTypes {
 }
 
 extension IoTWirelessClientTypes {
+
     /// Object for LoRaWAN join resource type event configuration.
-    public struct LoRaWANJoinEventNotificationConfigurations {
+    public struct LoRaWANJoinEventNotificationConfigurations: Swift.Sendable {
         /// Denotes whether the Dev EUI join event topic is enabled or disabled.
         public var devEuiEventTopic: IoTWirelessClientTypes.EventNotificationTopicStatus?
 
@@ -3602,12 +3603,12 @@ extension IoTWirelessClientTypes {
             self.devEuiEventTopic = devEuiEventTopic
         }
     }
-
 }
 
 extension IoTWirelessClientTypes {
+
     /// Join event configuration object for enabling or disabling topic.
-    public struct JoinEventConfiguration {
+    public struct JoinEventConfiguration: Swift.Sendable {
         /// Join event configuration object for enabling or disabling LoRaWAN related event topics.
         public var loRaWAN: IoTWirelessClientTypes.LoRaWANJoinEventNotificationConfigurations?
         /// Denotes whether the wireless device ID join event topic is enabled or disabled.
@@ -3622,12 +3623,12 @@ extension IoTWirelessClientTypes {
             self.wirelessDeviceIdEventTopic = wirelessDeviceIdEventTopic
         }
     }
-
 }
 
 extension IoTWirelessClientTypes {
+
     /// Message delivery status event configuration object for enabling and disabling relevant topics.
-    public struct MessageDeliveryStatusEventConfiguration {
+    public struct MessageDeliveryStatusEventConfiguration: Swift.Sendable {
         /// SidewalkEventNotificationConfigurations object, which is the event configuration object for Sidewalk-related event topics.
         public var sidewalk: IoTWirelessClientTypes.SidewalkEventNotificationConfigurations?
         /// Denotes whether the wireless device ID message delivery status event topic is enabled or disabled.
@@ -3642,12 +3643,12 @@ extension IoTWirelessClientTypes {
             self.wirelessDeviceIdEventTopic = wirelessDeviceIdEventTopic
         }
     }
-
 }
 
 extension IoTWirelessClientTypes {
+
     /// Proximity event configuration object for enabling and disabling relevant topics.
-    public struct ProximityEventConfiguration {
+    public struct ProximityEventConfiguration: Swift.Sendable {
         /// Proximity event configuration object for enabling or disabling Sidewalk related event topics.
         public var sidewalk: IoTWirelessClientTypes.SidewalkEventNotificationConfigurations?
         /// Denotes whether the wireless device ID proximity event topic is enabled or disabled.
@@ -3662,12 +3663,12 @@ extension IoTWirelessClientTypes {
             self.wirelessDeviceIdEventTopic = wirelessDeviceIdEventTopic
         }
     }
-
 }
 
 extension IoTWirelessClientTypes {
+
     /// Object of all event configurations and the status of the event topics.
-    public struct EventNotificationItemConfigurations {
+    public struct EventNotificationItemConfigurations: Swift.Sendable {
         /// Connection status event configuration for an event configuration item.
         public var connectionStatus: IoTWirelessClientTypes.ConnectionStatusEventConfiguration?
         /// Device registration state event configuration for an event configuration item.
@@ -3694,12 +3695,11 @@ extension IoTWirelessClientTypes {
             self.proximity = proximity
         }
     }
-
 }
 
 extension IoTWirelessClientTypes {
 
-    public enum IdentifierType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum IdentifierType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case deveui
         case gatewayeui
         case partneraccountid
@@ -3737,7 +3737,7 @@ extension IoTWirelessClientTypes {
 
 extension IoTWirelessClientTypes {
 
-    public enum EventNotificationPartnerType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum EventNotificationPartnerType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case sidewalk
         case sdkUnknown(Swift.String)
 
@@ -3762,8 +3762,9 @@ extension IoTWirelessClientTypes {
 }
 
 extension IoTWirelessClientTypes {
+
     /// Event configuration object for a single resource.
-    public struct EventConfigurationItem {
+    public struct EventConfigurationItem: Swift.Sendable {
         /// Object of all event configurations and the status of the event topics.
         public var events: IoTWirelessClientTypes.EventNotificationItemConfigurations?
         /// Resource identifier opted in for event messaging.
@@ -3786,12 +3787,11 @@ extension IoTWirelessClientTypes {
             self.partnerType = partnerType
         }
     }
-
 }
 
 extension IoTWirelessClientTypes {
 
-    public enum EventNotificationResourceType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum EventNotificationResourceType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case sidewalkaccount
         case wirelessdevice
         case wirelessgateway
@@ -3824,7 +3824,7 @@ extension IoTWirelessClientTypes {
 extension IoTWirelessClientTypes {
 
     /// The status of a wireless device in a FUOTA task.
-    public enum FuotaDeviceStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum FuotaDeviceStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case deviceExistInConflictFuotaTask
         case fragalgoUnsupported
         case fragindexUnsupported
@@ -3882,8 +3882,9 @@ extension IoTWirelessClientTypes {
 }
 
 extension IoTWirelessClientTypes {
+
     /// A FUOTA task.
-    public struct FuotaTask {
+    public struct FuotaTask: Swift.Sendable {
         /// The arn of a FUOTA task.
         public var arn: Swift.String?
         /// The ID of a FUOTA task.
@@ -3902,13 +3903,12 @@ extension IoTWirelessClientTypes {
             self.name = name
         }
     }
-
 }
 
 extension IoTWirelessClientTypes {
 
     /// The status of a FUOTA task.
-    public enum FuotaTaskStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum FuotaTaskStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case deleteWaiting
         case fuotadone
         case fuotasessionWaiting
@@ -3944,7 +3944,7 @@ extension IoTWirelessClientTypes {
     }
 }
 
-public struct GetDestinationInput {
+public struct GetDestinationInput: Swift.Sendable {
     /// The name of the resource to get.
     /// This member is required.
     public var name: Swift.String?
@@ -3957,7 +3957,7 @@ public struct GetDestinationInput {
     }
 }
 
-public struct GetDestinationOutput {
+public struct GetDestinationOutput: Swift.Sendable {
     /// The Amazon Resource Name of the resource.
     public var arn: Swift.String?
     /// The description of the resource.
@@ -3989,7 +3989,7 @@ public struct GetDestinationOutput {
     }
 }
 
-public struct GetDeviceProfileInput {
+public struct GetDeviceProfileInput: Swift.Sendable {
     /// The ID of the resource to get.
     /// This member is required.
     public var id: Swift.String?
@@ -4003,8 +4003,9 @@ public struct GetDeviceProfileInput {
 }
 
 extension IoTWirelessClientTypes {
+
     /// Gets information about a Sidewalk device profile.
-    public struct SidewalkGetDeviceProfile {
+    public struct SidewalkGetDeviceProfile: Swift.Sendable {
         /// The Sidewalk application server public key.
         public var applicationServerPublicKey: Swift.String?
         /// The DAK certificate information of the Sidewalk device profile.
@@ -4023,7 +4024,6 @@ extension IoTWirelessClientTypes {
             self.qualificationStatus = qualificationStatus
         }
     }
-
 }
 
 extension IoTWirelessClientTypes.SidewalkGetDeviceProfile: Swift.CustomDebugStringConvertible {
@@ -4031,7 +4031,7 @@ extension IoTWirelessClientTypes.SidewalkGetDeviceProfile: Swift.CustomDebugStri
         "SidewalkGetDeviceProfile(dakCertificateMetadata: \(Swift.String(describing: dakCertificateMetadata)), qualificationStatus: \(Swift.String(describing: qualificationStatus)), applicationServerPublicKey: \"CONTENT_REDACTED\")"}
 }
 
-public struct GetDeviceProfileOutput {
+public struct GetDeviceProfileOutput: Swift.Sendable {
     /// The Amazon Resource Name of the resource.
     public var arn: Swift.String?
     /// The ID of the device profile.
@@ -4059,14 +4059,15 @@ public struct GetDeviceProfileOutput {
     }
 }
 
-public struct GetEventConfigurationByResourceTypesInput {
+public struct GetEventConfigurationByResourceTypesInput: Swift.Sendable {
 
     public init() { }
 }
 
 extension IoTWirelessClientTypes {
+
     /// Object for LoRaWAN join resource type event configuration.
-    public struct LoRaWANJoinResourceTypeEventConfiguration {
+    public struct LoRaWANJoinResourceTypeEventConfiguration: Swift.Sendable {
         /// Denotes whether the wireless device join event topic is enabled or disabled.
         public var wirelessDeviceEventTopic: IoTWirelessClientTypes.EventNotificationTopicStatus?
 
@@ -4077,12 +4078,12 @@ extension IoTWirelessClientTypes {
             self.wirelessDeviceEventTopic = wirelessDeviceEventTopic
         }
     }
-
 }
 
 extension IoTWirelessClientTypes {
+
     /// Join resource type event configuration object for enabling or disabling topic.
-    public struct JoinResourceTypeEventConfiguration {
+    public struct JoinResourceTypeEventConfiguration: Swift.Sendable {
         /// Join resource type event configuration object for enabling or disabling LoRaWAN related event topics.
         public var loRaWAN: IoTWirelessClientTypes.LoRaWANJoinResourceTypeEventConfiguration?
 
@@ -4093,12 +4094,12 @@ extension IoTWirelessClientTypes {
             self.loRaWAN = loRaWAN
         }
     }
-
 }
 
 extension IoTWirelessClientTypes {
+
     /// Message delivery status resource type event configuration object for enabling or disabling relevant topic.
-    public struct MessageDeliveryStatusResourceTypeEventConfiguration {
+    public struct MessageDeliveryStatusResourceTypeEventConfiguration: Swift.Sendable {
         /// Sidewalk resource type event configuration object for enabling or disabling topic.
         public var sidewalk: IoTWirelessClientTypes.SidewalkResourceTypeEventConfiguration?
 
@@ -4109,12 +4110,12 @@ extension IoTWirelessClientTypes {
             self.sidewalk = sidewalk
         }
     }
-
 }
 
 extension IoTWirelessClientTypes {
+
     /// Proximity resource type event configuration object for enabling or disabling topic.
-    public struct ProximityResourceTypeEventConfiguration {
+    public struct ProximityResourceTypeEventConfiguration: Swift.Sendable {
         /// Proximity resource type event configuration object for enabling and disabling wireless device topic.
         public var sidewalk: IoTWirelessClientTypes.SidewalkResourceTypeEventConfiguration?
 
@@ -4125,10 +4126,9 @@ extension IoTWirelessClientTypes {
             self.sidewalk = sidewalk
         }
     }
-
 }
 
-public struct GetEventConfigurationByResourceTypesOutput {
+public struct GetEventConfigurationByResourceTypesOutput: Swift.Sendable {
     /// Resource type event configuration for the connection status event.
     public var connectionStatus: IoTWirelessClientTypes.ConnectionStatusResourceTypeEventConfiguration?
     /// Resource type event configuration for the device registration state event.
@@ -4156,7 +4156,7 @@ public struct GetEventConfigurationByResourceTypesOutput {
     }
 }
 
-public struct GetFuotaTaskInput {
+public struct GetFuotaTaskInput: Swift.Sendable {
     /// The ID of a FUOTA task.
     /// This member is required.
     public var id: Swift.String?
@@ -4170,8 +4170,9 @@ public struct GetFuotaTaskInput {
 }
 
 extension IoTWirelessClientTypes {
+
     /// The LoRaWAN information returned from getting a FUOTA task.
-    public struct LoRaWANFuotaTaskGetInfo {
+    public struct LoRaWANFuotaTaskGetInfo: Swift.Sendable {
         /// The frequency band (RFRegion) value.
         public var rfRegion: Swift.String?
         /// Start time of a FUOTA task.
@@ -4186,10 +4187,9 @@ extension IoTWirelessClientTypes {
             self.startTime = startTime
         }
     }
-
 }
 
-public struct GetFuotaTaskOutput {
+public struct GetFuotaTaskOutput: Swift.Sendable {
     /// The arn of a FUOTA task.
     public var arn: Swift.String?
     /// Created at timestamp for the resource.
@@ -4245,7 +4245,7 @@ public struct GetFuotaTaskOutput {
     }
 }
 
-public struct GetLogLevelsByResourceTypesInput {
+public struct GetLogLevelsByResourceTypesInput: Swift.Sendable {
 
     public init() { }
 }
@@ -4253,7 +4253,7 @@ public struct GetLogLevelsByResourceTypesInput {
 extension IoTWirelessClientTypes {
 
     /// The event for a log message, if the log message is tied to a wireless device.
-    public enum WirelessDeviceEvent: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum WirelessDeviceEvent: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case downlinkData
         case join
         case registration
@@ -4290,8 +4290,9 @@ extension IoTWirelessClientTypes {
 }
 
 extension IoTWirelessClientTypes {
+
     /// The log options for a wireless device event and can be used to set log levels for a specific wireless device event. For a LoRaWAN device, possible events for a log messsage are: Join, Rejoin, Downlink_Data, and Uplink_Data. For a Sidewalk device, possible events for a log message are Registration, Downlink_Data, and Uplink_Data.
-    public struct WirelessDeviceEventLogOption {
+    public struct WirelessDeviceEventLogOption: Swift.Sendable {
         /// The event for a log message, if the log message is tied to a wireless device.
         /// This member is required.
         public var event: IoTWirelessClientTypes.WirelessDeviceEvent?
@@ -4308,12 +4309,12 @@ extension IoTWirelessClientTypes {
             self.logLevel = logLevel
         }
     }
-
 }
 
 extension IoTWirelessClientTypes {
+
     /// The log options for wireless devices and can be used to set log levels for a specific type of wireless device.
-    public struct WirelessDeviceLogOption {
+    public struct WirelessDeviceLogOption: Swift.Sendable {
         /// The list of wireless device event log options.
         public var events: [IoTWirelessClientTypes.WirelessDeviceEventLogOption]?
         /// The log level for a log message. The log levels can be disabled, or set to ERROR to display less verbose logs containing only error information, or to INFO for more detailed logs.
@@ -4334,13 +4335,12 @@ extension IoTWirelessClientTypes {
             self.type = type
         }
     }
-
 }
 
 extension IoTWirelessClientTypes {
 
     /// The event for a log message, if the log message is tied to a wireless gateway.
-    public enum WirelessGatewayEvent: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum WirelessGatewayEvent: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case cupsRequest
         case certificate
         case sdkUnknown(Swift.String)
@@ -4368,8 +4368,9 @@ extension IoTWirelessClientTypes {
 }
 
 extension IoTWirelessClientTypes {
+
     /// The log options for a wireless gateway event and can be used to set log levels for a specific wireless gateway event. For a LoRaWAN gateway, possible events for a log message are CUPS_Request and Certificate.
-    public struct WirelessGatewayEventLogOption {
+    public struct WirelessGatewayEventLogOption: Swift.Sendable {
         /// The event for a log message, if the log message is tied to a wireless gateway.
         /// This member is required.
         public var event: IoTWirelessClientTypes.WirelessGatewayEvent?
@@ -4386,13 +4387,12 @@ extension IoTWirelessClientTypes {
             self.logLevel = logLevel
         }
     }
-
 }
 
 extension IoTWirelessClientTypes {
 
     /// The wireless gateway type.
-    public enum WirelessGatewayType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum WirelessGatewayType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case lorawan
         case sdkUnknown(Swift.String)
 
@@ -4417,8 +4417,9 @@ extension IoTWirelessClientTypes {
 }
 
 extension IoTWirelessClientTypes {
+
     /// The log options for wireless gateways and can be used to set log levels for a specific type of wireless gateway.
-    public struct WirelessGatewayLogOption {
+    public struct WirelessGatewayLogOption: Swift.Sendable {
         /// The list of wireless gateway event log options.
         public var events: [IoTWirelessClientTypes.WirelessGatewayEventLogOption]?
         /// The log level for a log message. The log levels can be disabled, or set to ERROR to display less verbose logs containing only error information, or to INFO for more detailed logs.
@@ -4439,10 +4440,9 @@ extension IoTWirelessClientTypes {
             self.type = type
         }
     }
-
 }
 
-public struct GetLogLevelsByResourceTypesOutput {
+public struct GetLogLevelsByResourceTypesOutput: Swift.Sendable {
     /// The log level for a log message. The log levels can be disabled, or set to ERROR to display less verbose logs containing only error information, or to INFO for more detailed logs.
     public var defaultLogLevel: IoTWirelessClientTypes.LogLevel?
     /// The list of wireless device log options.
@@ -4462,14 +4462,14 @@ public struct GetLogLevelsByResourceTypesOutput {
     }
 }
 
-public struct GetMetricConfigurationInput {
+public struct GetMetricConfigurationInput: Swift.Sendable {
 
     public init() { }
 }
 
 extension IoTWirelessClientTypes {
 
-    public enum SummaryMetricConfigurationStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SummaryMetricConfigurationStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case disabled
         case enabled
         case sdkUnknown(Swift.String)
@@ -4497,8 +4497,9 @@ extension IoTWirelessClientTypes {
 }
 
 extension IoTWirelessClientTypes {
+
     /// The configuration of summary metrics.
-    public struct SummaryMetricConfiguration {
+    public struct SummaryMetricConfiguration: Swift.Sendable {
         /// The status of the configuration of summary metrics.
         public var status: IoTWirelessClientTypes.SummaryMetricConfigurationStatus?
 
@@ -4509,10 +4510,9 @@ extension IoTWirelessClientTypes {
             self.status = status
         }
     }
-
 }
 
-public struct GetMetricConfigurationOutput {
+public struct GetMetricConfigurationOutput: Swift.Sendable {
     /// The configuration status of the AWS account for summary metric aggregation.
     public var summaryMetric: IoTWirelessClientTypes.SummaryMetricConfiguration?
 
@@ -4526,7 +4526,7 @@ public struct GetMetricConfigurationOutput {
 
 extension IoTWirelessClientTypes {
 
-    public enum MetricName: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum MetricName: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case awsaccountactivedevicecount
         case awsaccountactivegatewaycount
         case awsaccountdevicecount
@@ -4644,8 +4644,9 @@ extension IoTWirelessClientTypes {
 }
 
 extension IoTWirelessClientTypes {
+
     /// The summary metric query object.
-    public struct SummaryMetricQuery {
+    public struct SummaryMetricQuery: Swift.Sendable {
         /// The aggregation period of the summary metric.
         public var aggregationPeriod: IoTWirelessClientTypes.AggregationPeriod?
         /// The dimensions of the summary metric.
@@ -4676,10 +4677,9 @@ extension IoTWirelessClientTypes {
             self.startTimestamp = startTimestamp
         }
     }
-
 }
 
-public struct GetMetricsInput {
+public struct GetMetricsInput: Swift.Sendable {
     /// The list of queries to retrieve the summary metrics.
     public var summaryMetricQueries: [IoTWirelessClientTypes.SummaryMetricQuery]?
 
@@ -4693,7 +4693,7 @@ public struct GetMetricsInput {
 
 extension IoTWirelessClientTypes {
 
-    public enum MetricQueryStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum MetricQueryStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case failed
         case succeeded
         case sdkUnknown(Swift.String)
@@ -4721,8 +4721,9 @@ extension IoTWirelessClientTypes {
 }
 
 extension IoTWirelessClientTypes {
+
     /// The aggregated values of the metric.
-    public struct MetricQueryValue {
+    public struct MetricQueryValue: Swift.Sendable {
         /// The average of the values of all data points collected during the aggregation period.
         public var avg: Swift.Double?
         /// The maximum of the values of all the data points collected during the aggregation period.
@@ -4753,12 +4754,12 @@ extension IoTWirelessClientTypes {
             self.sum = sum
         }
     }
-
 }
 
 extension IoTWirelessClientTypes {
+
     /// The result of the summary metrics aggregation operation.
-    public struct SummaryMetricQueryResult {
+    public struct SummaryMetricQueryResult: Swift.Sendable {
         /// The aggregation period of the metric.
         public var aggregationPeriod: IoTWirelessClientTypes.AggregationPeriod?
         /// The dimensions of the metric.
@@ -4809,10 +4810,9 @@ extension IoTWirelessClientTypes {
             self.values = values
         }
     }
-
 }
 
-public struct GetMetricsOutput {
+public struct GetMetricsOutput: Swift.Sendable {
     /// The list of summary metrics that were retrieved.
     public var summaryMetricQueryResults: [IoTWirelessClientTypes.SummaryMetricQueryResult]?
 
@@ -4824,7 +4824,7 @@ public struct GetMetricsOutput {
     }
 }
 
-public struct GetMulticastGroupInput {
+public struct GetMulticastGroupInput: Swift.Sendable {
     /// The ID of the multicast group.
     /// This member is required.
     public var id: Swift.String?
@@ -4838,8 +4838,9 @@ public struct GetMulticastGroupInput {
 }
 
 extension IoTWirelessClientTypes {
+
     /// The LoRaWAN information that is to be returned from getting multicast group information.
-    public struct LoRaWANMulticastGet {
+    public struct LoRaWANMulticastGet: Swift.Sendable {
         /// DlClass for LoRaWAM, valid values are ClassB and ClassC.
         public var dlClass: IoTWirelessClientTypes.DlClass?
         /// Number of devices that are associated to the multicast group.
@@ -4862,10 +4863,9 @@ extension IoTWirelessClientTypes {
             self.rfRegion = rfRegion
         }
     }
-
 }
 
-public struct GetMulticastGroupOutput {
+public struct GetMulticastGroupOutput: Swift.Sendable {
     /// The arn of the multicast group.
     public var arn: Swift.String?
     /// Created at timestamp for the resource.
@@ -4901,7 +4901,7 @@ public struct GetMulticastGroupOutput {
     }
 }
 
-public struct GetMulticastGroupSessionInput {
+public struct GetMulticastGroupSessionInput: Swift.Sendable {
     /// The ID of the multicast group.
     /// This member is required.
     public var id: Swift.String?
@@ -4915,8 +4915,9 @@ public struct GetMulticastGroupSessionInput {
 }
 
 extension IoTWirelessClientTypes {
+
     /// The LoRaWAN information used with the multicast session.
-    public struct LoRaWANMulticastSession {
+    public struct LoRaWANMulticastSession: Swift.Sendable {
         /// Downlink data rate.
         public var dlDr: Swift.Int?
         /// Downlink frequency.
@@ -4943,10 +4944,9 @@ extension IoTWirelessClientTypes {
             self.sessionTimeout = sessionTimeout
         }
     }
-
 }
 
-public struct GetMulticastGroupSessionOutput {
+public struct GetMulticastGroupSessionOutput: Swift.Sendable {
     /// The LoRaWAN information used with the multicast session.
     public var loRaWAN: IoTWirelessClientTypes.LoRaWANMulticastSession?
 
@@ -4958,7 +4958,7 @@ public struct GetMulticastGroupSessionOutput {
     }
 }
 
-public struct GetNetworkAnalyzerConfigurationInput {
+public struct GetNetworkAnalyzerConfigurationInput: Swift.Sendable {
     /// Name of the network analyzer configuration.
     /// This member is required.
     public var configurationName: Swift.String?
@@ -4971,7 +4971,7 @@ public struct GetNetworkAnalyzerConfigurationInput {
     }
 }
 
-public struct GetNetworkAnalyzerConfigurationOutput {
+public struct GetNetworkAnalyzerConfigurationOutput: Swift.Sendable {
     /// The Amazon Resource Name of the new resource.
     public var arn: Swift.String?
     /// The description of the new resource.
@@ -5007,7 +5007,7 @@ public struct GetNetworkAnalyzerConfigurationOutput {
     }
 }
 
-public struct GetPartnerAccountInput {
+public struct GetPartnerAccountInput: Swift.Sendable {
     /// The partner account ID to disassociate from the AWS account.
     /// This member is required.
     public var partnerAccountId: Swift.String?
@@ -5026,8 +5026,9 @@ public struct GetPartnerAccountInput {
 }
 
 extension IoTWirelessClientTypes {
+
     /// Information about a Sidewalk account.
-    public struct SidewalkAccountInfoWithFingerprint {
+    public struct SidewalkAccountInfoWithFingerprint: Swift.Sendable {
         /// The Sidewalk Amazon ID.
         public var amazonId: Swift.String?
         /// The Amazon Resource Name of the resource.
@@ -5046,7 +5047,6 @@ extension IoTWirelessClientTypes {
             self.fingerprint = fingerprint
         }
     }
-
 }
 
 extension IoTWirelessClientTypes.SidewalkAccountInfoWithFingerprint: Swift.CustomDebugStringConvertible {
@@ -5054,7 +5054,7 @@ extension IoTWirelessClientTypes.SidewalkAccountInfoWithFingerprint: Swift.Custo
         "SidewalkAccountInfoWithFingerprint(amazonId: \(Swift.String(describing: amazonId)), arn: \(Swift.String(describing: arn)), fingerprint: \"CONTENT_REDACTED\")"}
 }
 
-public struct GetPartnerAccountOutput {
+public struct GetPartnerAccountOutput: Swift.Sendable {
     /// Whether the partner account is linked to the AWS account.
     public var accountLinked: Swift.Bool
     /// The Sidewalk account credentials.
@@ -5072,7 +5072,7 @@ public struct GetPartnerAccountOutput {
 
 extension IoTWirelessClientTypes {
 
-    public enum PositionResourceType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum PositionResourceType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case wirelessdevice
         case wirelessgateway
         case sdkUnknown(Swift.String)
@@ -5100,7 +5100,7 @@ extension IoTWirelessClientTypes {
 }
 
 @available(*, deprecated, message: "This operation is no longer supported.")
-public struct GetPositionInput {
+public struct GetPositionInput: Swift.Sendable {
     /// Resource identifier used to retrieve the position information.
     /// This member is required.
     public var resourceIdentifier: Swift.String?
@@ -5120,7 +5120,7 @@ public struct GetPositionInput {
 
 extension IoTWirelessClientTypes {
 
-    public enum PositionSolverProvider: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum PositionSolverProvider: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case semtech
         case sdkUnknown(Swift.String)
 
@@ -5146,7 +5146,7 @@ extension IoTWirelessClientTypes {
 
 extension IoTWirelessClientTypes {
 
-    public enum PositionSolverType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum PositionSolverType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case gnss
         case sdkUnknown(Swift.String)
 
@@ -5171,7 +5171,7 @@ extension IoTWirelessClientTypes {
 }
 
 @available(*, deprecated, message: "This operation is no longer supported.")
-public struct GetPositionOutput {
+public struct GetPositionOutput: Swift.Sendable {
     /// The accuracy of the estimated position in meters. An empty value indicates that no position data is available. A value of ‘0.0’ value indicates that position data is available. This data corresponds to the position information that you specified instead of the position computed by solver.
     public var accuracy: IoTWirelessClientTypes.Accuracy?
     /// The position information of the resource.
@@ -5204,7 +5204,7 @@ public struct GetPositionOutput {
 }
 
 @available(*, deprecated, message: "This operation is no longer supported.")
-public struct GetPositionConfigurationInput {
+public struct GetPositionConfigurationInput: Swift.Sendable {
     /// Resource identifier used in a position configuration.
     /// This member is required.
     public var resourceIdentifier: Swift.String?
@@ -5224,7 +5224,7 @@ public struct GetPositionConfigurationInput {
 
 extension IoTWirelessClientTypes {
 
-    public enum PositionConfigurationFec: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum PositionConfigurationFec: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case `none`
         case rose
         case sdkUnknown(Swift.String)
@@ -5253,7 +5253,7 @@ extension IoTWirelessClientTypes {
 
 extension IoTWirelessClientTypes {
 
-    public enum PositionConfigurationStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum PositionConfigurationStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case disabled
         case enabled
         case sdkUnknown(Swift.String)
@@ -5281,8 +5281,9 @@ extension IoTWirelessClientTypes {
 }
 
 extension IoTWirelessClientTypes {
+
     /// Details of the Semtech GNSS solver object.
-    public struct SemtechGnssDetail {
+    public struct SemtechGnssDetail: Swift.Sendable {
         /// Whether forward error correction is enabled.
         public var fec: IoTWirelessClientTypes.PositionConfigurationFec?
         /// The vendor of the solver object.
@@ -5305,12 +5306,12 @@ extension IoTWirelessClientTypes {
             self.type = type
         }
     }
-
 }
 
 extension IoTWirelessClientTypes {
+
     /// The wrapper for position solver details.
-    public struct PositionSolverDetails {
+    public struct PositionSolverDetails: Swift.Sendable {
         /// The Semtech GNSS solver object details.
         public var semtechGnss: IoTWirelessClientTypes.SemtechGnssDetail?
 
@@ -5321,11 +5322,10 @@ extension IoTWirelessClientTypes {
             self.semtechGnss = semtechGnss
         }
     }
-
 }
 
 @available(*, deprecated, message: "This operation is no longer supported.")
-public struct GetPositionConfigurationOutput {
+public struct GetPositionConfigurationOutput: Swift.Sendable {
     /// The position data destination that describes the AWS IoT rule that processes the device's position data for use by AWS IoT Core for LoRaWAN.
     public var destination: Swift.String?
     /// The wrapper for the solver configuration details object.
@@ -5342,8 +5342,9 @@ public struct GetPositionConfigurationOutput {
 }
 
 extension IoTWirelessClientTypes {
+
     /// Global navigation satellite system (GNSS) object used for positioning.
-    public struct Gnss {
+    public struct Gnss: Swift.Sendable {
         /// Optional assistance altitude, which is the altitude of the device at capture time, specified in meters above the WGS84 reference ellipsoid.
         public var assistAltitude: Swift.Float?
         /// Optional assistance position information, specified using latitude and longitude values in degrees. The coordinates are inside the WGS84 reference frame.
@@ -5375,12 +5376,12 @@ extension IoTWirelessClientTypes {
             self.use2DSolver = use2DSolver
         }
     }
-
 }
 
 extension IoTWirelessClientTypes {
+
     /// IP address used for resolving device location.
-    public struct Ip {
+    public struct Ip: Swift.Sendable {
         /// IP address information.
         /// This member is required.
         public var ipAddress: Swift.String?
@@ -5392,12 +5393,12 @@ extension IoTWirelessClientTypes {
             self.ipAddress = ipAddress
         }
     }
-
 }
 
 extension IoTWirelessClientTypes {
+
     /// Wi-Fi access point.
-    public struct WiFiAccessPoint {
+    public struct WiFiAccessPoint: Swift.Sendable {
         /// Wi-Fi MAC Address.
         /// This member is required.
         public var macAddress: Swift.String?
@@ -5414,10 +5415,9 @@ extension IoTWirelessClientTypes {
             self.rss = rss
         }
     }
-
 }
 
-public struct GetPositionEstimateInput {
+public struct GetPositionEstimateInput: Swift.Sendable {
     /// Retrieves an estimated device position by resolving measurement data from cellular radio towers. The position is resolved using HERE's cellular-based solver.
     public var cellTowers: IoTWirelessClientTypes.CellTowers?
     /// Retrieves an estimated device position by resolving the global navigation satellite system (GNSS) scan data. The position is resolved using the GNSS solver powered by LoRa Cloud.
@@ -5445,7 +5445,7 @@ public struct GetPositionEstimateInput {
     }
 }
 
-public struct GetPositionEstimateOutput {
+public struct GetPositionEstimateOutput: Swift.Sendable {
     /// The position information of the resource, displayed as a JSON payload. The payload is of type blob and uses the [GeoJSON](https://geojson.org/) format, which a format that's used to encode geographic data structures. A sample payload contains the timestamp information, the WGS84 coordinates of the location, and the accuracy and confidence level. For more information and examples, see [Resolve device location (console)](https://docs.aws.amazon.com/iot/latest/developerguide/location-resolve-console.html).
     public var geoJsonPayload: Foundation.Data?
 
@@ -5457,7 +5457,7 @@ public struct GetPositionEstimateOutput {
     }
 }
 
-public struct GetResourceEventConfigurationInput {
+public struct GetResourceEventConfigurationInput: Swift.Sendable {
     /// Resource identifier to opt in for event messaging.
     /// This member is required.
     public var identifier: Swift.String?
@@ -5479,7 +5479,7 @@ public struct GetResourceEventConfigurationInput {
     }
 }
 
-public struct GetResourceEventConfigurationOutput {
+public struct GetResourceEventConfigurationOutput: Swift.Sendable {
     /// Event configuration for the connection status event.
     public var connectionStatus: IoTWirelessClientTypes.ConnectionStatusEventConfiguration?
     /// Event configuration for the device registration state event.
@@ -5507,7 +5507,7 @@ public struct GetResourceEventConfigurationOutput {
     }
 }
 
-public struct GetResourceLogLevelInput {
+public struct GetResourceLogLevelInput: Swift.Sendable {
     /// The identifier of the resource. For a Wireless Device, it is the wireless device ID. For a wireless gateway, it is the wireless gateway ID.
     /// This member is required.
     public var resourceIdentifier: Swift.String?
@@ -5525,7 +5525,7 @@ public struct GetResourceLogLevelInput {
     }
 }
 
-public struct GetResourceLogLevelOutput {
+public struct GetResourceLogLevelOutput: Swift.Sendable {
     /// The log level for a log message. The log levels can be disabled, or set to ERROR to display less verbose logs containing only error information, or to INFO for more detailed logs.
     public var logLevel: IoTWirelessClientTypes.LogLevel?
 
@@ -5537,7 +5537,7 @@ public struct GetResourceLogLevelOutput {
     }
 }
 
-public struct GetResourcePositionInput {
+public struct GetResourcePositionInput: Swift.Sendable {
     /// The identifier of the resource for which position information is retrieved. It can be the wireless device ID or the wireless gateway ID, depending on the resource type.
     /// This member is required.
     public var resourceIdentifier: Swift.String?
@@ -5555,7 +5555,7 @@ public struct GetResourcePositionInput {
     }
 }
 
-public struct GetResourcePositionOutput {
+public struct GetResourcePositionOutput: Swift.Sendable {
     /// The position information of the resource, displayed as a JSON payload. The payload uses the GeoJSON format, which a format that's used to encode geographic data structures. For more information, see [GeoJSON](https://geojson.org/).
     public var geoJsonPayload: Foundation.Data?
 
@@ -5569,7 +5569,7 @@ public struct GetResourcePositionOutput {
 
 extension IoTWirelessClientTypes {
 
-    public enum WirelessGatewayServiceType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum WirelessGatewayServiceType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case cups
         case lns
         case sdkUnknown(Swift.String)
@@ -5596,7 +5596,7 @@ extension IoTWirelessClientTypes {
     }
 }
 
-public struct GetServiceEndpointInput {
+public struct GetServiceEndpointInput: Swift.Sendable {
     /// The service type for which to get endpoint information about. Can be CUPS for the Configuration and Update Server endpoint, or LNS for the LoRaWAN Network Server endpoint or CLAIM for the global endpoint.
     public var serviceType: IoTWirelessClientTypes.WirelessGatewayServiceType?
 
@@ -5608,7 +5608,7 @@ public struct GetServiceEndpointInput {
     }
 }
 
-public struct GetServiceEndpointOutput {
+public struct GetServiceEndpointOutput: Swift.Sendable {
     /// The Root CA of the server trust certificate.
     public var serverTrust: Swift.String?
     /// The service endpoint value.
@@ -5628,7 +5628,7 @@ public struct GetServiceEndpointOutput {
     }
 }
 
-public struct GetServiceProfileInput {
+public struct GetServiceProfileInput: Swift.Sendable {
     /// The ID of the resource to get.
     /// This member is required.
     public var id: Swift.String?
@@ -5642,8 +5642,9 @@ public struct GetServiceProfileInput {
 }
 
 extension IoTWirelessClientTypes {
+
     /// LoRaWANGetServiceProfileInfo object.
-    public struct LoRaWANGetServiceProfileInfo {
+    public struct LoRaWANGetServiceProfileInfo: Swift.Sendable {
         /// The AddGWMetaData value.
         public var addGwMetadata: Swift.Bool
         /// The ChannelMask value.
@@ -5726,10 +5727,9 @@ extension IoTWirelessClientTypes {
             self.ulRatePolicy = ulRatePolicy
         }
     }
-
 }
 
-public struct GetServiceProfileOutput {
+public struct GetServiceProfileOutput: Swift.Sendable {
     /// The Amazon Resource Name of the resource.
     public var arn: Swift.String?
     /// The ID of the service profile.
@@ -5755,7 +5755,7 @@ public struct GetServiceProfileOutput {
 
 extension IoTWirelessClientTypes {
 
-    public enum WirelessDeviceIdType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum WirelessDeviceIdType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case deveui
         case sidewalkmanufacturingsn
         case thingname
@@ -5788,7 +5788,7 @@ extension IoTWirelessClientTypes {
     }
 }
 
-public struct GetWirelessDeviceInput {
+public struct GetWirelessDeviceInput: Swift.Sendable {
     /// The identifier of the wireless device to get.
     /// This member is required.
     public var identifier: Swift.String?
@@ -5808,7 +5808,7 @@ public struct GetWirelessDeviceInput {
 
 extension IoTWirelessClientTypes {
 
-    public enum WirelessDeviceSidewalkStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum WirelessDeviceSidewalkStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case activated
         case provisioned
         case registered
@@ -5842,8 +5842,9 @@ extension IoTWirelessClientTypes {
 }
 
 extension IoTWirelessClientTypes {
+
     /// Sidewalk device object.
-    public struct SidewalkDevice {
+    public struct SidewalkDevice: Swift.Sendable {
         /// The Sidewalk Amazon ID.
         public var amazonId: Swift.String?
         /// The ID of the Sidewalk device profile.
@@ -5882,10 +5883,9 @@ extension IoTWirelessClientTypes {
             self.status = status
         }
     }
-
 }
 
-public struct GetWirelessDeviceOutput {
+public struct GetWirelessDeviceOutput: Swift.Sendable {
     /// The Amazon Resource Name of the resource.
     public var arn: Swift.String?
     /// The description of the resource.
@@ -5937,7 +5937,7 @@ public struct GetWirelessDeviceOutput {
     }
 }
 
-public struct GetWirelessDeviceImportTaskInput {
+public struct GetWirelessDeviceImportTaskInput: Swift.Sendable {
     /// The identifier of the import task for which information is requested.
     /// This member is required.
     public var id: Swift.String?
@@ -5951,8 +5951,9 @@ public struct GetWirelessDeviceImportTaskInput {
 }
 
 extension IoTWirelessClientTypes {
+
     /// Sidewalk-related information for devices in an import task that are being onboarded.
-    public struct SidewalkGetStartImportInfo {
+    public struct SidewalkGetStartImportInfo: Swift.Sendable {
         /// List of Sidewalk devices that are added to the import task.
         public var deviceCreationFileList: [Swift.String]?
         /// The IAM role that allows AWS IoT Wireless to access the CSV file in the S3 bucket.
@@ -5967,12 +5968,11 @@ extension IoTWirelessClientTypes {
             self.role = role
         }
     }
-
 }
 
 extension IoTWirelessClientTypes {
 
-    public enum ImportTaskStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ImportTaskStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case complete
         case deleting
         case failed
@@ -6011,7 +6011,7 @@ extension IoTWirelessClientTypes {
     }
 }
 
-public struct GetWirelessDeviceImportTaskOutput {
+public struct GetWirelessDeviceImportTaskOutput: Swift.Sendable {
     /// The ARN (Amazon Resource Name) of the import task.
     public var arn: Swift.String?
     /// The time at which the import task was created.
@@ -6063,7 +6063,7 @@ public struct GetWirelessDeviceImportTaskOutput {
     }
 }
 
-public struct GetWirelessDeviceStatisticsInput {
+public struct GetWirelessDeviceStatisticsInput: Swift.Sendable {
     /// The ID of the wireless device for which to get the data.
     /// This member is required.
     public var wirelessDeviceId: Swift.String?
@@ -6077,8 +6077,9 @@ public struct GetWirelessDeviceStatisticsInput {
 }
 
 extension IoTWirelessClientTypes {
+
     /// LoRaWAN gateway metatdata.
-    public struct LoRaWANGatewayMetadata {
+    public struct LoRaWANGatewayMetadata: Swift.Sendable {
         /// The gateway's EUI value.
         public var gatewayEui: Swift.String?
         /// The RSSI value.
@@ -6097,12 +6098,12 @@ extension IoTWirelessClientTypes {
             self.snr = snr
         }
     }
-
 }
 
 extension IoTWirelessClientTypes {
+
     /// LoRaWAN public gateway metadata.
-    public struct LoRaWANPublicGatewayMetadata {
+    public struct LoRaWANPublicGatewayMetadata: Swift.Sendable {
         /// Boolean that indicates whether downlink is allowed using the network.
         public var dlAllowed: Swift.Bool?
         /// The ID of the gateways that are operated by the network provider.
@@ -6133,12 +6134,12 @@ extension IoTWirelessClientTypes {
             self.snr = snr
         }
     }
-
 }
 
 extension IoTWirelessClientTypes {
+
     /// LoRaWAN device metatdata.
-    public struct LoRaWANDeviceMetadata {
+    public struct LoRaWANDeviceMetadata: Swift.Sendable {
         /// The DataRate value.
         public var dataRate: Swift.Int?
         /// The DevEUI value.
@@ -6173,12 +6174,12 @@ extension IoTWirelessClientTypes {
             self.timestamp = timestamp
         }
     }
-
 }
 
 extension IoTWirelessClientTypes {
+
     /// MetaData for Sidewalk device.
-    public struct SidewalkDeviceMetadata {
+    public struct SidewalkDeviceMetadata: Swift.Sendable {
         /// Sidewalk device battery level.
         public var batteryLevel: IoTWirelessClientTypes.BatteryLevel?
         /// Device state defines the device status of sidewalk device.
@@ -6201,10 +6202,9 @@ extension IoTWirelessClientTypes {
             self.rssi = rssi
         }
     }
-
 }
 
-public struct GetWirelessDeviceStatisticsOutput {
+public struct GetWirelessDeviceStatisticsOutput: Swift.Sendable {
     /// The date and time when the most recent uplink was received. This value is only valid for 3 months.
     public var lastUplinkReceivedAt: Swift.String?
     /// Information about the wireless device's operations.
@@ -6230,7 +6230,7 @@ public struct GetWirelessDeviceStatisticsOutput {
 
 extension IoTWirelessClientTypes {
 
-    public enum WirelessGatewayIdType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum WirelessGatewayIdType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case gatewayeui
         case thingname
         case wirelessgatewayid
@@ -6260,7 +6260,7 @@ extension IoTWirelessClientTypes {
     }
 }
 
-public struct GetWirelessGatewayInput {
+public struct GetWirelessGatewayInput: Swift.Sendable {
     /// The identifier of the wireless gateway to get.
     /// This member is required.
     public var identifier: Swift.String?
@@ -6278,7 +6278,7 @@ public struct GetWirelessGatewayInput {
     }
 }
 
-public struct GetWirelessGatewayOutput {
+public struct GetWirelessGatewayOutput: Swift.Sendable {
     /// The Amazon Resource Name of the resource.
     public var arn: Swift.String?
     /// The description of the resource.
@@ -6314,7 +6314,7 @@ public struct GetWirelessGatewayOutput {
     }
 }
 
-public struct GetWirelessGatewayCertificateInput {
+public struct GetWirelessGatewayCertificateInput: Swift.Sendable {
     /// The ID of the resource to get.
     /// This member is required.
     public var id: Swift.String?
@@ -6327,7 +6327,7 @@ public struct GetWirelessGatewayCertificateInput {
     }
 }
 
-public struct GetWirelessGatewayCertificateOutput {
+public struct GetWirelessGatewayCertificateOutput: Swift.Sendable {
     /// The ID of the certificate associated with the wireless gateway.
     public var iotCertificateId: Swift.String?
     /// The ID of the certificate that is associated with the wireless gateway and used for the LoRaWANNetworkServer endpoint.
@@ -6343,7 +6343,7 @@ public struct GetWirelessGatewayCertificateOutput {
     }
 }
 
-public struct GetWirelessGatewayFirmwareInformationInput {
+public struct GetWirelessGatewayFirmwareInformationInput: Swift.Sendable {
     /// The ID of the resource to get.
     /// This member is required.
     public var id: Swift.String?
@@ -6357,8 +6357,9 @@ public struct GetWirelessGatewayFirmwareInformationInput {
 }
 
 extension IoTWirelessClientTypes {
+
     /// LoRaWANGatewayCurrentVersion object.
-    public struct LoRaWANGatewayCurrentVersion {
+    public struct LoRaWANGatewayCurrentVersion: Swift.Sendable {
         /// The version of the gateways that should receive the update.
         public var currentVersion: IoTWirelessClientTypes.LoRaWANGatewayVersion?
 
@@ -6369,10 +6370,9 @@ extension IoTWirelessClientTypes {
             self.currentVersion = currentVersion
         }
     }
-
 }
 
-public struct GetWirelessGatewayFirmwareInformationOutput {
+public struct GetWirelessGatewayFirmwareInformationOutput: Swift.Sendable {
     /// Information about the wireless gateway's firmware.
     public var loRaWAN: IoTWirelessClientTypes.LoRaWANGatewayCurrentVersion?
 
@@ -6384,7 +6384,7 @@ public struct GetWirelessGatewayFirmwareInformationOutput {
     }
 }
 
-public struct GetWirelessGatewayStatisticsInput {
+public struct GetWirelessGatewayStatisticsInput: Swift.Sendable {
     /// The ID of the wireless gateway for which to get the data.
     /// This member is required.
     public var wirelessGatewayId: Swift.String?
@@ -6397,7 +6397,7 @@ public struct GetWirelessGatewayStatisticsInput {
     }
 }
 
-public struct GetWirelessGatewayStatisticsOutput {
+public struct GetWirelessGatewayStatisticsOutput: Swift.Sendable {
     /// The connection status of the wireless gateway.
     public var connectionStatus: IoTWirelessClientTypes.ConnectionStatus?
     /// The date and time when the most recent uplink was received. This value is only valid for 3 months.
@@ -6417,7 +6417,7 @@ public struct GetWirelessGatewayStatisticsOutput {
     }
 }
 
-public struct GetWirelessGatewayTaskInput {
+public struct GetWirelessGatewayTaskInput: Swift.Sendable {
     /// The ID of the resource to get.
     /// This member is required.
     public var id: Swift.String?
@@ -6430,7 +6430,7 @@ public struct GetWirelessGatewayTaskInput {
     }
 }
 
-public struct GetWirelessGatewayTaskOutput {
+public struct GetWirelessGatewayTaskOutput: Swift.Sendable {
     /// The date and time when the most recent uplink was received. This value is only valid for 3 months.
     public var lastUplinkReceivedAt: Swift.String?
     /// The status of the request.
@@ -6458,7 +6458,7 @@ public struct GetWirelessGatewayTaskOutput {
     }
 }
 
-public struct GetWirelessGatewayTaskDefinitionInput {
+public struct GetWirelessGatewayTaskDefinitionInput: Swift.Sendable {
     /// The ID of the resource to get.
     /// This member is required.
     public var id: Swift.String?
@@ -6471,7 +6471,7 @@ public struct GetWirelessGatewayTaskDefinitionInput {
     }
 }
 
-public struct GetWirelessGatewayTaskDefinitionOutput {
+public struct GetWirelessGatewayTaskDefinitionOutput: Swift.Sendable {
     /// The Amazon Resource Name of the resource.
     public var arn: Swift.String?
     /// Whether to automatically create tasks using this task definition for all gateways with the specified current version. If false, the task must me created by calling CreateWirelessGatewayTask.
@@ -6497,7 +6497,7 @@ public struct GetWirelessGatewayTaskDefinitionOutput {
 
 extension IoTWirelessClientTypes {
 
-    public enum OnboardStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum OnboardStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case failed
         case initialized
         case onboarded
@@ -6531,8 +6531,9 @@ extension IoTWirelessClientTypes {
 }
 
 extension IoTWirelessClientTypes {
+
     /// Information about a Sidewalk device that has been added to an import task.
-    public struct ImportedSidewalkDevice {
+    public struct ImportedSidewalkDevice: Swift.Sendable {
         /// The time at which the status information was last updated.
         public var lastUpdateTime: Foundation.Date?
         /// The onboarding status of the Sidewalk device in the import task.
@@ -6555,12 +6556,12 @@ extension IoTWirelessClientTypes {
             self.sidewalkManufacturingSn = sidewalkManufacturingSn
         }
     }
-
 }
 
 extension IoTWirelessClientTypes {
+
     /// Information about a wireless device that has been added to an import task.
-    public struct ImportedWirelessDevice {
+    public struct ImportedWirelessDevice: Swift.Sendable {
         /// The Sidewalk-related information about a device that has been added to an import task.
         public var sidewalk: IoTWirelessClientTypes.ImportedSidewalkDevice?
 
@@ -6571,10 +6572,9 @@ extension IoTWirelessClientTypes {
             self.sidewalk = sidewalk
         }
     }
-
 }
 
-public struct ListDestinationsInput {
+public struct ListDestinationsInput: Swift.Sendable {
     /// The maximum number of results to return in this operation.
     public var maxResults: Swift.Int?
     /// To retrieve the next set of results, the nextToken value from a previous response; otherwise null to receive the first set of results.
@@ -6590,7 +6590,7 @@ public struct ListDestinationsInput {
     }
 }
 
-public struct ListDestinationsOutput {
+public struct ListDestinationsOutput: Swift.Sendable {
     /// The list of destinations.
     public var destinationList: [IoTWirelessClientTypes.Destinations]?
     /// The token to use to get the next set of results, or null if there are no additional results.
@@ -6606,7 +6606,7 @@ public struct ListDestinationsOutput {
     }
 }
 
-public struct ListDeviceProfilesInput {
+public struct ListDeviceProfilesInput: Swift.Sendable {
     /// A filter to list only device profiles that use this type, which can be LoRaWAN or Sidewalk.
     public var deviceProfileType: IoTWirelessClientTypes.DeviceProfileType?
     /// The maximum number of results to return in this operation.
@@ -6626,7 +6626,7 @@ public struct ListDeviceProfilesInput {
     }
 }
 
-public struct ListDeviceProfilesOutput {
+public struct ListDeviceProfilesOutput: Swift.Sendable {
     /// The list of device profiles.
     public var deviceProfileList: [IoTWirelessClientTypes.DeviceProfile]?
     /// The token to use to get the next set of results, or null if there are no additional results.
@@ -6642,7 +6642,7 @@ public struct ListDeviceProfilesOutput {
     }
 }
 
-public struct ListDevicesForWirelessDeviceImportTaskInput {
+public struct ListDevicesForWirelessDeviceImportTaskInput: Swift.Sendable {
     /// The identifier of the import task for which wireless devices are listed.
     /// This member is required.
     public var id: Swift.String?
@@ -6667,7 +6667,7 @@ public struct ListDevicesForWirelessDeviceImportTaskInput {
     }
 }
 
-public struct ListDevicesForWirelessDeviceImportTaskOutput {
+public struct ListDevicesForWirelessDeviceImportTaskOutput: Swift.Sendable {
     /// The name of the Sidewalk destination that describes the IoT rule to route messages received from devices in an import task that are onboarded to AWS IoT Wireless.
     public var destinationName: Swift.String?
     /// List of wireless devices in an import task and their onboarding status.
@@ -6687,7 +6687,7 @@ public struct ListDevicesForWirelessDeviceImportTaskOutput {
     }
 }
 
-public struct ListEventConfigurationsInput {
+public struct ListEventConfigurationsInput: Swift.Sendable {
     /// The maximum number of results to return in this operation.
     public var maxResults: Swift.Int?
     /// To retrieve the next set of results, the nextToken value from a previous response; otherwise null to receive the first set of results.
@@ -6708,7 +6708,7 @@ public struct ListEventConfigurationsInput {
     }
 }
 
-public struct ListEventConfigurationsOutput {
+public struct ListEventConfigurationsOutput: Swift.Sendable {
     /// Event configurations of all events for a single resource.
     public var eventConfigurationsList: [IoTWirelessClientTypes.EventConfigurationItem]?
     /// To retrieve the next set of results, the nextToken value from a previous response; otherwise null to receive the first set of results.
@@ -6724,7 +6724,7 @@ public struct ListEventConfigurationsOutput {
     }
 }
 
-public struct ListFuotaTasksInput {
+public struct ListFuotaTasksInput: Swift.Sendable {
     /// The maximum number of results to return in this operation.
     public var maxResults: Swift.Int?
     /// To retrieve the next set of results, the nextToken value from a previous response; otherwise null to receive the first set of results.
@@ -6740,7 +6740,7 @@ public struct ListFuotaTasksInput {
     }
 }
 
-public struct ListFuotaTasksOutput {
+public struct ListFuotaTasksOutput: Swift.Sendable {
     /// Lists the FUOTA tasks registered to your AWS account.
     public var fuotaTaskList: [IoTWirelessClientTypes.FuotaTask]?
     /// To retrieve the next set of results, the nextToken value from a previous response; otherwise null to receive the first set of results.
@@ -6756,7 +6756,7 @@ public struct ListFuotaTasksOutput {
     }
 }
 
-public struct ListMulticastGroupsInput {
+public struct ListMulticastGroupsInput: Swift.Sendable {
     /// The maximum number of results to return in this operation.
     public var maxResults: Swift.Int?
     /// To retrieve the next set of results, the nextToken value from a previous response; otherwise null to receive the first set of results.
@@ -6773,8 +6773,9 @@ public struct ListMulticastGroupsInput {
 }
 
 extension IoTWirelessClientTypes {
+
     /// A multicast group.
-    public struct MulticastGroup {
+    public struct MulticastGroup: Swift.Sendable {
         /// The arn of the multicast group.
         public var arn: Swift.String?
         /// The ID of the multicast group.
@@ -6793,10 +6794,9 @@ extension IoTWirelessClientTypes {
             self.name = name
         }
     }
-
 }
 
-public struct ListMulticastGroupsOutput {
+public struct ListMulticastGroupsOutput: Swift.Sendable {
     /// List of multicast groups.
     public var multicastGroupList: [IoTWirelessClientTypes.MulticastGroup]?
     /// To retrieve the next set of results, the nextToken value from a previous response; otherwise null to receive the first set of results.
@@ -6812,7 +6812,7 @@ public struct ListMulticastGroupsOutput {
     }
 }
 
-public struct ListMulticastGroupsByFuotaTaskInput {
+public struct ListMulticastGroupsByFuotaTaskInput: Swift.Sendable {
     /// The ID of a FUOTA task.
     /// This member is required.
     public var id: Swift.String?
@@ -6834,8 +6834,9 @@ public struct ListMulticastGroupsByFuotaTaskInput {
 }
 
 extension IoTWirelessClientTypes {
+
     /// A multicast group that is associated with a FUOTA task.
-    public struct MulticastGroupByFuotaTask {
+    public struct MulticastGroupByFuotaTask: Swift.Sendable {
         /// The ID of the multicast group.
         public var id: Swift.String?
 
@@ -6846,10 +6847,9 @@ extension IoTWirelessClientTypes {
             self.id = id
         }
     }
-
 }
 
-public struct ListMulticastGroupsByFuotaTaskOutput {
+public struct ListMulticastGroupsByFuotaTaskOutput: Swift.Sendable {
     /// List of multicast groups associated with a FUOTA task.
     public var multicastGroupList: [IoTWirelessClientTypes.MulticastGroupByFuotaTask]?
     /// To retrieve the next set of results, the nextToken value from a previous response; otherwise null to receive the first set of results.
@@ -6865,7 +6865,7 @@ public struct ListMulticastGroupsByFuotaTaskOutput {
     }
 }
 
-public struct ListNetworkAnalyzerConfigurationsInput {
+public struct ListNetworkAnalyzerConfigurationsInput: Swift.Sendable {
     /// The maximum number of results to return in this operation.
     public var maxResults: Swift.Int?
     /// To retrieve the next set of results, the nextToken value from a previous response; otherwise null to receive the first set of results.
@@ -6882,8 +6882,9 @@ public struct ListNetworkAnalyzerConfigurationsInput {
 }
 
 extension IoTWirelessClientTypes {
+
     /// Network analyzer configurations.
-    public struct NetworkAnalyzerConfigurations {
+    public struct NetworkAnalyzerConfigurations: Swift.Sendable {
         /// The Amazon Resource Name of the new resource.
         public var arn: Swift.String?
         /// Name of the network analyzer configuration.
@@ -6898,10 +6899,9 @@ extension IoTWirelessClientTypes {
             self.name = name
         }
     }
-
 }
 
-public struct ListNetworkAnalyzerConfigurationsOutput {
+public struct ListNetworkAnalyzerConfigurationsOutput: Swift.Sendable {
     /// The list of network analyzer configurations.
     public var networkAnalyzerConfigurationList: [IoTWirelessClientTypes.NetworkAnalyzerConfigurations]?
     /// The token to use to get the next set of results, or null if there are no additional results.
@@ -6917,7 +6917,7 @@ public struct ListNetworkAnalyzerConfigurationsOutput {
     }
 }
 
-public struct ListPartnerAccountsInput {
+public struct ListPartnerAccountsInput: Swift.Sendable {
     /// The maximum number of results to return in this operation.
     public var maxResults: Swift.Int?
     /// To retrieve the next set of results, the nextToken value from a previous response; otherwise null to receive the first set of results.
@@ -6933,7 +6933,7 @@ public struct ListPartnerAccountsInput {
     }
 }
 
-public struct ListPartnerAccountsOutput {
+public struct ListPartnerAccountsOutput: Swift.Sendable {
     /// The token to use to get the next set of results, or null if there are no additional results.
     public var nextToken: Swift.String?
     /// The Sidewalk account credentials.
@@ -6950,7 +6950,7 @@ public struct ListPartnerAccountsOutput {
 }
 
 @available(*, deprecated, message: "This operation is no longer supported.")
-public struct ListPositionConfigurationsInput {
+public struct ListPositionConfigurationsInput: Swift.Sendable {
     /// The maximum number of results to return in this operation.
     public var maxResults: Swift.Int?
     /// To retrieve the next set of results, the nextToken value from a previous response; otherwise null to receive the first set of results.
@@ -6971,8 +6971,9 @@ public struct ListPositionConfigurationsInput {
 }
 
 extension IoTWirelessClientTypes {
+
     /// The wrapper for a position configuration.
-    public struct PositionConfigurationItem {
+    public struct PositionConfigurationItem: Swift.Sendable {
         /// The position data destination that describes the AWS IoT rule that processes the device's position data for use by AWS IoT Core for LoRaWAN.
         public var destination: Swift.String?
         /// Resource identifier for the position configuration.
@@ -6995,11 +6996,10 @@ extension IoTWirelessClientTypes {
             self.solvers = solvers
         }
     }
-
 }
 
 @available(*, deprecated, message: "This operation is no longer supported.")
-public struct ListPositionConfigurationsOutput {
+public struct ListPositionConfigurationsOutput: Swift.Sendable {
     /// The token to use to get the next set of results, or null if there are no additional results.
     public var nextToken: Swift.String?
     /// A list of position configurations.
@@ -7015,7 +7015,7 @@ public struct ListPositionConfigurationsOutput {
     }
 }
 
-public struct ListQueuedMessagesInput {
+public struct ListQueuedMessagesInput: Swift.Sendable {
     /// The ID of a given wireless device which the downlink message packets are being sent.
     /// This member is required.
     public var id: Swift.String?
@@ -7040,7 +7040,7 @@ public struct ListQueuedMessagesInput {
     }
 }
 
-public struct ListQueuedMessagesOutput {
+public struct ListQueuedMessagesOutput: Swift.Sendable {
     /// The messages in the downlink queue.
     public var downlinkQueueMessagesList: [IoTWirelessClientTypes.DownlinkQueueMessage]?
     /// To retrieve the next set of results, the nextToken value from a previous response; otherwise null to receive the first set of results.
@@ -7056,7 +7056,7 @@ public struct ListQueuedMessagesOutput {
     }
 }
 
-public struct ListServiceProfilesInput {
+public struct ListServiceProfilesInput: Swift.Sendable {
     /// The maximum number of results to return in this operation.
     public var maxResults: Swift.Int?
     /// To retrieve the next set of results, the nextToken value from a previous response; otherwise null to receive the first set of results.
@@ -7073,8 +7073,9 @@ public struct ListServiceProfilesInput {
 }
 
 extension IoTWirelessClientTypes {
+
     /// Information about a service profile.
-    public struct ServiceProfile {
+    public struct ServiceProfile: Swift.Sendable {
         /// The Amazon Resource Name of the resource.
         public var arn: Swift.String?
         /// The ID of the service profile.
@@ -7093,10 +7094,9 @@ extension IoTWirelessClientTypes {
             self.name = name
         }
     }
-
 }
 
-public struct ListServiceProfilesOutput {
+public struct ListServiceProfilesOutput: Swift.Sendable {
     /// The token to use to get the next set of results, or null if there are no additional results.
     public var nextToken: Swift.String?
     /// The list of service profiles.
@@ -7112,7 +7112,7 @@ public struct ListServiceProfilesOutput {
     }
 }
 
-public struct ListTagsForResourceInput {
+public struct ListTagsForResourceInput: Swift.Sendable {
     /// The ARN of the resource for which you want to list tags.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -7125,7 +7125,7 @@ public struct ListTagsForResourceInput {
     }
 }
 
-public struct ListTagsForResourceOutput {
+public struct ListTagsForResourceOutput: Swift.Sendable {
     /// The tags to attach to the specified resource. Tags are metadata that you can use to manage a resource.
     public var tags: [IoTWirelessClientTypes.Tag]?
 
@@ -7137,7 +7137,7 @@ public struct ListTagsForResourceOutput {
     }
 }
 
-public struct ListWirelessDeviceImportTasksInput {
+public struct ListWirelessDeviceImportTasksInput: Swift.Sendable {
     /// The maximum number of results to return in this operation.
     public var maxResults: Swift.Int?
     /// To retrieve the next set of results, the nextToken value from a previous response; otherwise null to receive the first set of results.
@@ -7154,8 +7154,9 @@ public struct ListWirelessDeviceImportTasksInput {
 }
 
 extension IoTWirelessClientTypes {
+
     /// Information about an import task for wireless devices.
-    public struct WirelessDeviceImportTask {
+    public struct WirelessDeviceImportTask: Swift.Sendable {
         /// The ARN (Amazon Resource Name) of the wireless device import task.
         public var arn: Swift.String?
         /// The time at which the import task was created.
@@ -7206,10 +7207,9 @@ extension IoTWirelessClientTypes {
             self.statusReason = statusReason
         }
     }
-
 }
 
-public struct ListWirelessDeviceImportTasksOutput {
+public struct ListWirelessDeviceImportTasksOutput: Swift.Sendable {
     /// The token to use to get the next set of results, or null if there are no additional results.
     public var nextToken: Swift.String?
     /// List of import tasks and summary information of onboarding status of devices in each import task.
@@ -7225,7 +7225,7 @@ public struct ListWirelessDeviceImportTasksOutput {
     }
 }
 
-public struct ListWirelessDevicesInput {
+public struct ListWirelessDevicesInput: Swift.Sendable {
     /// A filter to list only the wireless devices that use this destination.
     public var destinationName: Swift.String?
     /// A filter to list only the wireless devices that use this device profile.
@@ -7266,8 +7266,9 @@ public struct ListWirelessDevicesInput {
 }
 
 extension IoTWirelessClientTypes {
+
     /// LoRaWAN object for list functions.
-    public struct LoRaWANListDevice {
+    public struct LoRaWANListDevice: Swift.Sendable {
         /// The DevEUI value.
         public var devEui: Swift.String?
 
@@ -7278,12 +7279,12 @@ extension IoTWirelessClientTypes {
             self.devEui = devEui
         }
     }
-
 }
 
 extension IoTWirelessClientTypes {
+
     /// Sidewalk object used by list functions.
-    public struct SidewalkListDevice {
+    public struct SidewalkListDevice: Swift.Sendable {
         /// The Sidewalk Amazon ID.
         public var amazonId: Swift.String?
         /// The sidewalk device certificates for Ed25519 and P256r1.
@@ -7314,12 +7315,12 @@ extension IoTWirelessClientTypes {
             self.status = status
         }
     }
-
 }
 
 extension IoTWirelessClientTypes {
+
     /// Information about a wireless device's operation.
-    public struct WirelessDeviceStatistics {
+    public struct WirelessDeviceStatistics: Swift.Sendable {
         /// The Amazon Resource Name of the resource.
         public var arn: Swift.String?
         /// The name of the destination to which the device is assigned.
@@ -7370,10 +7371,9 @@ extension IoTWirelessClientTypes {
             self.type = type
         }
     }
-
 }
 
-public struct ListWirelessDevicesOutput {
+public struct ListWirelessDevicesOutput: Swift.Sendable {
     /// The token to use to get the next set of results, or null if there are no additional results.
     public var nextToken: Swift.String?
     /// The ID of the wireless device.
@@ -7389,7 +7389,7 @@ public struct ListWirelessDevicesOutput {
     }
 }
 
-public struct ListWirelessGatewaysInput {
+public struct ListWirelessGatewaysInput: Swift.Sendable {
     /// The maximum number of results to return in this operation.
     public var maxResults: Swift.Int?
     /// To retrieve the next set of results, the nextToken value from a previous response; otherwise null to receive the first set of results.
@@ -7406,8 +7406,9 @@ public struct ListWirelessGatewaysInput {
 }
 
 extension IoTWirelessClientTypes {
+
     /// Information about a wireless gateway's operation.
-    public struct WirelessGatewayStatistics {
+    public struct WirelessGatewayStatistics: Swift.Sendable {
         /// The Amazon Resource Name of the resource.
         public var arn: Swift.String?
         /// The description of the resource.
@@ -7438,10 +7439,9 @@ extension IoTWirelessClientTypes {
             self.name = name
         }
     }
-
 }
 
-public struct ListWirelessGatewaysOutput {
+public struct ListWirelessGatewaysOutput: Swift.Sendable {
     /// The token to use to get the next set of results, or null if there are no additional results.
     public var nextToken: Swift.String?
     /// The ID of the wireless gateway.
@@ -7459,7 +7459,7 @@ public struct ListWirelessGatewaysOutput {
 
 extension IoTWirelessClientTypes {
 
-    public enum WirelessGatewayTaskDefinitionType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum WirelessGatewayTaskDefinitionType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case update
         case sdkUnknown(Swift.String)
 
@@ -7483,7 +7483,7 @@ extension IoTWirelessClientTypes {
     }
 }
 
-public struct ListWirelessGatewayTaskDefinitionsInput {
+public struct ListWirelessGatewayTaskDefinitionsInput: Swift.Sendable {
     /// The maximum number of results to return in this operation.
     public var maxResults: Swift.Int?
     /// To retrieve the next set of results, the nextToken value from a previous response; otherwise null to receive the first set of results.
@@ -7504,8 +7504,9 @@ public struct ListWirelessGatewayTaskDefinitionsInput {
 }
 
 extension IoTWirelessClientTypes {
+
     /// LoRaWANUpdateGatewayTaskEntry object.
-    public struct LoRaWANUpdateGatewayTaskEntry {
+    public struct LoRaWANUpdateGatewayTaskEntry: Swift.Sendable {
         /// The version of the gateways that should receive the update.
         public var currentVersion: IoTWirelessClientTypes.LoRaWANGatewayVersion?
         /// The firmware version to update the gateway to.
@@ -7520,12 +7521,12 @@ extension IoTWirelessClientTypes {
             self.updateVersion = updateVersion
         }
     }
-
 }
 
 extension IoTWirelessClientTypes {
+
     /// UpdateWirelessGatewayTaskEntry object.
-    public struct UpdateWirelessGatewayTaskEntry {
+    public struct UpdateWirelessGatewayTaskEntry: Swift.Sendable {
         /// The Amazon Resource Name of the resource.
         public var arn: Swift.String?
         /// The ID of the new wireless gateway task entry.
@@ -7544,10 +7545,9 @@ extension IoTWirelessClientTypes {
             self.loRaWAN = loRaWAN
         }
     }
-
 }
 
-public struct ListWirelessGatewayTaskDefinitionsOutput {
+public struct ListWirelessGatewayTaskDefinitionsOutput: Swift.Sendable {
     /// The token to use to get the next set of results, or null if there are no additional results.
     public var nextToken: Swift.String?
     /// The list of task definitions.
@@ -7564,8 +7564,9 @@ public struct ListWirelessGatewayTaskDefinitionsOutput {
 }
 
 extension IoTWirelessClientTypes {
+
     /// Information about the Semtech GNSS solver configuration.
-    public struct SemtechGnssConfiguration {
+    public struct SemtechGnssConfiguration: Swift.Sendable {
         /// Whether forward error correction is enabled.
         /// This member is required.
         public var fec: IoTWirelessClientTypes.PositionConfigurationFec?
@@ -7582,12 +7583,12 @@ extension IoTWirelessClientTypes {
             self.status = status
         }
     }
-
 }
 
 extension IoTWirelessClientTypes {
+
     /// The wrapper for position solver configurations.
-    public struct PositionSolverConfigurations {
+    public struct PositionSolverConfigurations: Swift.Sendable {
         /// The Semtech GNSS solver configuration object.
         public var semtechGnss: IoTWirelessClientTypes.SemtechGnssConfiguration?
 
@@ -7598,11 +7599,10 @@ extension IoTWirelessClientTypes {
             self.semtechGnss = semtechGnss
         }
     }
-
 }
 
 @available(*, deprecated, message: "This operation is no longer supported.")
-public struct PutPositionConfigurationInput {
+public struct PutPositionConfigurationInput: Swift.Sendable {
     /// The position data destination that describes the AWS IoT rule that processes the device's position data for use by AWS IoT Core for LoRaWAN.
     public var destination: Swift.String?
     /// Resource identifier used to update the position configuration.
@@ -7629,12 +7629,12 @@ public struct PutPositionConfigurationInput {
 }
 
 @available(*, deprecated, message: "This operation is no longer supported.")
-public struct PutPositionConfigurationOutput {
+public struct PutPositionConfigurationOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct PutResourceLogLevelInput {
+public struct PutResourceLogLevelInput: Swift.Sendable {
     /// The log level for a log message. The log levels can be disabled, or set to ERROR to display less verbose logs containing only error information, or to INFO for more detailed logs.
     /// This member is required.
     public var logLevel: IoTWirelessClientTypes.LogLevel?
@@ -7657,22 +7657,22 @@ public struct PutResourceLogLevelInput {
     }
 }
 
-public struct PutResourceLogLevelOutput {
+public struct PutResourceLogLevelOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct ResetAllResourceLogLevelsInput {
+public struct ResetAllResourceLogLevelsInput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct ResetAllResourceLogLevelsOutput {
+public struct ResetAllResourceLogLevelsOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct ResetResourceLogLevelInput {
+public struct ResetResourceLogLevelInput: Swift.Sendable {
     /// The identifier of the resource. For a Wireless Device, it is the wireless device ID. For a wireless gateway, it is the wireless gateway ID.
     /// This member is required.
     public var resourceIdentifier: Swift.String?
@@ -7690,14 +7690,15 @@ public struct ResetResourceLogLevelInput {
     }
 }
 
-public struct ResetResourceLogLevelOutput {
+public struct ResetResourceLogLevelOutput: Swift.Sendable {
 
     public init() { }
 }
 
 extension IoTWirelessClientTypes {
+
     /// The metadata information of the LoRaWAN multicast group.
-    public struct LoRaWANMulticastMetadata {
+    public struct LoRaWANMulticastMetadata: Swift.Sendable {
         /// The Fport value.
         public var fPort: Swift.Int?
 
@@ -7708,12 +7709,12 @@ extension IoTWirelessClientTypes {
             self.fPort = fPort
         }
     }
-
 }
 
 extension IoTWirelessClientTypes {
+
     /// Wireless metadata that is to be sent to multicast group.
-    public struct MulticastWirelessMetadata {
+    public struct MulticastWirelessMetadata: Swift.Sendable {
         /// The metadata information of the LoRaWAN multicast group.
         public var loRaWAN: IoTWirelessClientTypes.LoRaWANMulticastMetadata?
 
@@ -7724,10 +7725,9 @@ extension IoTWirelessClientTypes {
             self.loRaWAN = loRaWAN
         }
     }
-
 }
 
-public struct SendDataToMulticastGroupInput {
+public struct SendDataToMulticastGroupInput: Swift.Sendable {
     /// The ID of the multicast group.
     /// This member is required.
     public var id: Swift.String?
@@ -7750,7 +7750,7 @@ public struct SendDataToMulticastGroupInput {
     }
 }
 
-public struct SendDataToMulticastGroupOutput {
+public struct SendDataToMulticastGroupOutput: Swift.Sendable {
     /// ID of a multicast group message.
     public var messageId: Swift.String?
 
@@ -7765,7 +7765,7 @@ public struct SendDataToMulticastGroupOutput {
 extension IoTWirelessClientTypes {
 
     /// Sidewalk device message type. Default value is CUSTOM_COMMAND_ID_NOTIFY.
-    public enum MessageType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum MessageType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case customCommandIdGet
         case customCommandIdNotify
         case customCommandIdResp
@@ -7799,8 +7799,9 @@ extension IoTWirelessClientTypes {
 }
 
 extension IoTWirelessClientTypes {
+
     /// Information about a Sidewalk router.
-    public struct SidewalkSendDataToDevice {
+    public struct SidewalkSendDataToDevice: Swift.Sendable {
         /// The duration of time in seconds to retry sending the ACK.
         public var ackModeRetryDurationSecs: Swift.Int?
         /// Sidewalk device message type. Default value is CUSTOM_COMMAND_ID_NOTIFY.
@@ -7819,12 +7820,12 @@ extension IoTWirelessClientTypes {
             self.seq = seq
         }
     }
-
 }
 
 extension IoTWirelessClientTypes {
+
     /// WirelessMetadata object.
-    public struct WirelessMetadata {
+    public struct WirelessMetadata: Swift.Sendable {
         /// LoRaWAN device info.
         public var loRaWAN: IoTWirelessClientTypes.LoRaWANSendDataToDevice?
         /// The Sidewalk account credentials.
@@ -7839,10 +7840,9 @@ extension IoTWirelessClientTypes {
             self.sidewalk = sidewalk
         }
     }
-
 }
 
-public struct SendDataToWirelessDeviceInput {
+public struct SendDataToWirelessDeviceInput: Swift.Sendable {
     /// The ID of the wireless device to receive the data.
     /// This member is required.
     public var id: Swift.String?
@@ -7869,7 +7869,7 @@ public struct SendDataToWirelessDeviceInput {
     }
 }
 
-public struct SendDataToWirelessDeviceOutput {
+public struct SendDataToWirelessDeviceOutput: Swift.Sendable {
     /// The ID of the message sent to the wireless device.
     public var messageId: Swift.String?
 
@@ -7881,7 +7881,7 @@ public struct SendDataToWirelessDeviceOutput {
     }
 }
 
-public struct StartBulkAssociateWirelessDeviceWithMulticastGroupInput {
+public struct StartBulkAssociateWirelessDeviceWithMulticastGroupInput: Swift.Sendable {
     /// The ID of the multicast group.
     /// This member is required.
     public var id: Swift.String?
@@ -7902,12 +7902,12 @@ public struct StartBulkAssociateWirelessDeviceWithMulticastGroupInput {
     }
 }
 
-public struct StartBulkAssociateWirelessDeviceWithMulticastGroupOutput {
+public struct StartBulkAssociateWirelessDeviceWithMulticastGroupOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct StartBulkDisassociateWirelessDeviceFromMulticastGroupInput {
+public struct StartBulkDisassociateWirelessDeviceFromMulticastGroupInput: Swift.Sendable {
     /// The ID of the multicast group.
     /// This member is required.
     public var id: Swift.String?
@@ -7928,14 +7928,15 @@ public struct StartBulkDisassociateWirelessDeviceFromMulticastGroupInput {
     }
 }
 
-public struct StartBulkDisassociateWirelessDeviceFromMulticastGroupOutput {
+public struct StartBulkDisassociateWirelessDeviceFromMulticastGroupOutput: Swift.Sendable {
 
     public init() { }
 }
 
 extension IoTWirelessClientTypes {
+
     /// The LoRaWAN information used to start a FUOTA task.
-    public struct LoRaWANStartFuotaTask {
+    public struct LoRaWANStartFuotaTask: Swift.Sendable {
         /// Start time of a FUOTA task.
         public var startTime: Foundation.Date?
 
@@ -7946,10 +7947,9 @@ extension IoTWirelessClientTypes {
             self.startTime = startTime
         }
     }
-
 }
 
-public struct StartFuotaTaskInput {
+public struct StartFuotaTaskInput: Swift.Sendable {
     /// The ID of a FUOTA task.
     /// This member is required.
     public var id: Swift.String?
@@ -7966,12 +7966,12 @@ public struct StartFuotaTaskInput {
     }
 }
 
-public struct StartFuotaTaskOutput {
+public struct StartFuotaTaskOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct StartMulticastGroupSessionInput {
+public struct StartMulticastGroupSessionInput: Swift.Sendable {
     /// The ID of the multicast group.
     /// This member is required.
     public var id: Swift.String?
@@ -7989,14 +7989,15 @@ public struct StartMulticastGroupSessionInput {
     }
 }
 
-public struct StartMulticastGroupSessionOutput {
+public struct StartMulticastGroupSessionOutput: Swift.Sendable {
 
     public init() { }
 }
 
 extension IoTWirelessClientTypes {
+
     /// Information about an import task created for an individual Sidewalk device.
-    public struct SidewalkSingleStartImportInfo {
+    public struct SidewalkSingleStartImportInfo: Swift.Sendable {
         /// The Sidewalk manufacturing serial number (SMSN) of the device added to the import task.
         public var sidewalkManufacturingSn: Swift.String?
 
@@ -8007,10 +8008,9 @@ extension IoTWirelessClientTypes {
             self.sidewalkManufacturingSn = sidewalkManufacturingSn
         }
     }
-
 }
 
-public struct StartSingleWirelessDeviceImportTaskInput {
+public struct StartSingleWirelessDeviceImportTaskInput: Swift.Sendable {
     /// Each resource must have a unique client request token. The client token is used to implement idempotency. It ensures that the request completes no more than one time. If you retry a request with the same token and the same parameters, the request will complete successfully. However, if you try to create a new resource using the same token but different parameters, an HTTP 409 conflict occurs. If you omit this value, AWS SDKs will automatically generate a unique client request. For more information about idempotency, see [Ensuring idempotency in Amazon EC2 API requests](https://docs.aws.amazon.com/ec2/latest/devguide/ec2-api-idempotency.html).
     public var clientRequestToken: Swift.String?
     /// The name of the Sidewalk destination that describes the IoT rule to route messages from the device in the import task that will be onboarded to AWS IoT Wireless.
@@ -8040,7 +8040,7 @@ public struct StartSingleWirelessDeviceImportTaskInput {
     }
 }
 
-public struct StartSingleWirelessDeviceImportTaskOutput {
+public struct StartSingleWirelessDeviceImportTaskOutput: Swift.Sendable {
     /// The ARN (Amazon Resource Name) of the import task.
     public var arn: Swift.String?
     /// The import task ID.
@@ -8057,8 +8057,9 @@ public struct StartSingleWirelessDeviceImportTaskOutput {
 }
 
 extension IoTWirelessClientTypes {
+
     /// Information about an import task created for bulk provisioning.
-    public struct SidewalkStartImportInfo {
+    public struct SidewalkStartImportInfo: Swift.Sendable {
         /// The CSV file contained in an S3 bucket that's used for adding devices to an import task.
         public var deviceCreationFile: Swift.String?
         /// The IAM role that allows AWS IoT Wireless to access the CSV file in the S3 bucket.
@@ -8073,10 +8074,9 @@ extension IoTWirelessClientTypes {
             self.role = role
         }
     }
-
 }
 
-public struct StartWirelessDeviceImportTaskInput {
+public struct StartWirelessDeviceImportTaskInput: Swift.Sendable {
     /// Each resource must have a unique client request token. The client token is used to implement idempotency. It ensures that the request completes no more than one time. If you retry a request with the same token and the same parameters, the request will complete successfully. However, if you try to create a new resource using the same token but different parameters, an HTTP 409 conflict occurs. If you omit this value, AWS SDKs will automatically generate a unique client request. For more information about idempotency, see [Ensuring idempotency in Amazon EC2 API requests](https://docs.aws.amazon.com/ec2/latest/devguide/ec2-api-idempotency.html).
     public var clientRequestToken: Swift.String?
     /// The name of the Sidewalk destination that describes the IoT rule to route messages from the devices in the import task that are onboarded to AWS IoT Wireless.
@@ -8102,7 +8102,7 @@ public struct StartWirelessDeviceImportTaskInput {
     }
 }
 
-public struct StartWirelessDeviceImportTaskOutput {
+public struct StartWirelessDeviceImportTaskOutput: Swift.Sendable {
     /// The ARN (Amazon Resource Name) of the import task.
     public var arn: Swift.String?
     /// The import task ID.
@@ -8146,7 +8146,7 @@ public struct TooManyTagsException: ClientRuntime.ModeledError, AWSClientRuntime
     }
 }
 
-public struct TagResourceInput {
+public struct TagResourceInput: Swift.Sendable {
     /// The ARN of the resource to add tags to.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -8164,12 +8164,12 @@ public struct TagResourceInput {
     }
 }
 
-public struct TagResourceOutput {
+public struct TagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct TestWirelessDeviceInput {
+public struct TestWirelessDeviceInput: Swift.Sendable {
     /// The ID of the wireless device to test.
     /// This member is required.
     public var id: Swift.String?
@@ -8182,7 +8182,7 @@ public struct TestWirelessDeviceInput {
     }
 }
 
-public struct TestWirelessDeviceOutput {
+public struct TestWirelessDeviceOutput: Swift.Sendable {
     /// The result returned by the test.
     public var result: Swift.String?
 
@@ -8194,7 +8194,7 @@ public struct TestWirelessDeviceOutput {
     }
 }
 
-public struct UntagResourceInput {
+public struct UntagResourceInput: Swift.Sendable {
     /// The ARN of the resource to remove tags from.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -8212,12 +8212,12 @@ public struct UntagResourceInput {
     }
 }
 
-public struct UntagResourceOutput {
+public struct UntagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdateDestinationInput {
+public struct UpdateDestinationInput: Swift.Sendable {
     /// A new description of the resource.
     public var description: Swift.String?
     /// The new rule name or topic rule to send messages to.
@@ -8246,12 +8246,12 @@ public struct UpdateDestinationInput {
     }
 }
 
-public struct UpdateDestinationOutput {
+public struct UpdateDestinationOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdateEventConfigurationByResourceTypesInput {
+public struct UpdateEventConfigurationByResourceTypesInput: Swift.Sendable {
     /// Connection status resource type event configuration object for enabling and disabling wireless gateway topic.
     public var connectionStatus: IoTWirelessClientTypes.ConnectionStatusResourceTypeEventConfiguration?
     /// Device registration state resource type event configuration object for enabling and disabling wireless gateway topic.
@@ -8279,12 +8279,12 @@ public struct UpdateEventConfigurationByResourceTypesInput {
     }
 }
 
-public struct UpdateEventConfigurationByResourceTypesOutput {
+public struct UpdateEventConfigurationByResourceTypesOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdateFuotaTaskInput {
+public struct UpdateFuotaTaskInput: Swift.Sendable {
     /// The description of the new resource.
     public var description: Swift.String?
     /// The S3 URI points to a firmware update image that is to be used with a FUOTA task.
@@ -8329,12 +8329,12 @@ public struct UpdateFuotaTaskInput {
     }
 }
 
-public struct UpdateFuotaTaskOutput {
+public struct UpdateFuotaTaskOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdateLogLevelsByResourceTypesInput {
+public struct UpdateLogLevelsByResourceTypesInput: Swift.Sendable {
     /// The log level for a log message. The log levels can be disabled, or set to ERROR to display less verbose logs containing only error information, or to INFO for more detailed logs.
     public var defaultLogLevel: IoTWirelessClientTypes.LogLevel?
     /// The list of wireless device log options.
@@ -8354,12 +8354,12 @@ public struct UpdateLogLevelsByResourceTypesInput {
     }
 }
 
-public struct UpdateLogLevelsByResourceTypesOutput {
+public struct UpdateLogLevelsByResourceTypesOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdateMetricConfigurationInput {
+public struct UpdateMetricConfigurationInput: Swift.Sendable {
     /// The value to be used to set summary metric configuration.
     public var summaryMetric: IoTWirelessClientTypes.SummaryMetricConfiguration?
 
@@ -8371,12 +8371,12 @@ public struct UpdateMetricConfigurationInput {
     }
 }
 
-public struct UpdateMetricConfigurationOutput {
+public struct UpdateMetricConfigurationOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdateMulticastGroupInput {
+public struct UpdateMulticastGroupInput: Swift.Sendable {
     /// The description of the new resource.
     public var description: Swift.String?
     /// The ID of the multicast group.
@@ -8401,12 +8401,12 @@ public struct UpdateMulticastGroupInput {
     }
 }
 
-public struct UpdateMulticastGroupOutput {
+public struct UpdateMulticastGroupOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdateNetworkAnalyzerConfigurationInput {
+public struct UpdateNetworkAnalyzerConfigurationInput: Swift.Sendable {
     /// Name of the network analyzer configuration.
     /// This member is required.
     public var configurationName: Swift.String?
@@ -8451,14 +8451,15 @@ public struct UpdateNetworkAnalyzerConfigurationInput {
     }
 }
 
-public struct UpdateNetworkAnalyzerConfigurationOutput {
+public struct UpdateNetworkAnalyzerConfigurationOutput: Swift.Sendable {
 
     public init() { }
 }
 
 extension IoTWirelessClientTypes {
+
     /// Sidewalk update.
-    public struct SidewalkUpdateAccount {
+    public struct SidewalkUpdateAccount: Swift.Sendable {
         /// The new Sidewalk application server private key.
         public var appServerPrivateKey: Swift.String?
 
@@ -8469,7 +8470,6 @@ extension IoTWirelessClientTypes {
             self.appServerPrivateKey = appServerPrivateKey
         }
     }
-
 }
 
 extension IoTWirelessClientTypes.SidewalkUpdateAccount: Swift.CustomDebugStringConvertible {
@@ -8477,7 +8477,7 @@ extension IoTWirelessClientTypes.SidewalkUpdateAccount: Swift.CustomDebugStringC
         "SidewalkUpdateAccount(appServerPrivateKey: \"CONTENT_REDACTED\")"}
 }
 
-public struct UpdatePartnerAccountInput {
+public struct UpdatePartnerAccountInput: Swift.Sendable {
     /// The ID of the partner account to update.
     /// This member is required.
     public var partnerAccountId: Swift.String?
@@ -8500,13 +8500,13 @@ public struct UpdatePartnerAccountInput {
     }
 }
 
-public struct UpdatePartnerAccountOutput {
+public struct UpdatePartnerAccountOutput: Swift.Sendable {
 
     public init() { }
 }
 
 @available(*, deprecated, message: "This operation is no longer supported.")
-public struct UpdatePositionInput {
+public struct UpdatePositionInput: Swift.Sendable {
     /// The position information of the resource.
     /// This member is required.
     public var position: [Swift.Float]?
@@ -8530,12 +8530,12 @@ public struct UpdatePositionInput {
 }
 
 @available(*, deprecated, message: "This operation is no longer supported.")
-public struct UpdatePositionOutput {
+public struct UpdatePositionOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdateResourceEventConfigurationInput {
+public struct UpdateResourceEventConfigurationInput: Swift.Sendable {
     /// Event configuration for the connection status event.
     public var connectionStatus: IoTWirelessClientTypes.ConnectionStatusEventConfiguration?
     /// Event configuration for the device registration state event.
@@ -8577,12 +8577,12 @@ public struct UpdateResourceEventConfigurationInput {
     }
 }
 
-public struct UpdateResourceEventConfigurationOutput {
+public struct UpdateResourceEventConfigurationOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdateResourcePositionInput {
+public struct UpdateResourcePositionInput: Swift.Sendable {
     /// The position information of the resource, displayed as a JSON payload. The payload uses the GeoJSON format, which a format that's used to encode geographic data structures. For more information, see [GeoJSON](https://geojson.org/).
     public var geoJsonPayload: Foundation.Data?
     /// The identifier of the resource for which position information is updated. It can be the wireless device ID or the wireless gateway ID, depending on the resource type.
@@ -8604,14 +8604,15 @@ public struct UpdateResourcePositionInput {
     }
 }
 
-public struct UpdateResourcePositionOutput {
+public struct UpdateResourcePositionOutput: Swift.Sendable {
 
     public init() { }
 }
 
 extension IoTWirelessClientTypes {
+
     /// ABP device object for LoRaWAN specification v1.0.x
-    public struct UpdateAbpV1_0_x {
+    public struct UpdateAbpV1_0_x: Swift.Sendable {
         /// The FCnt init value.
         public var fCntStart: Swift.Int?
 
@@ -8622,12 +8623,12 @@ extension IoTWirelessClientTypes {
             self.fCntStart = fCntStart
         }
     }
-
 }
 
 extension IoTWirelessClientTypes {
+
     /// ABP device object for LoRaWAN specification v1.1
-    public struct UpdateAbpV1_1 {
+    public struct UpdateAbpV1_1: Swift.Sendable {
         /// The FCnt init value.
         public var fCntStart: Swift.Int?
 
@@ -8638,12 +8639,12 @@ extension IoTWirelessClientTypes {
             self.fCntStart = fCntStart
         }
     }
-
 }
 
 extension IoTWirelessClientTypes {
+
     /// Object for updating the FPorts information.
-    public struct UpdateFPorts {
+    public struct UpdateFPorts: Swift.Sendable {
         /// LoRaWAN application, which can be used for geolocation by activating positioning.
         public var applications: [IoTWirelessClientTypes.ApplicationConfig]?
         /// Positioning FPorts for the ClockSync, Stream, and GNSS functions.
@@ -8658,12 +8659,12 @@ extension IoTWirelessClientTypes {
             self.positioning = positioning
         }
     }
-
 }
 
 extension IoTWirelessClientTypes {
+
     /// LoRaWAN object for update functions.
-    public struct LoRaWANUpdateDevice {
+    public struct LoRaWANUpdateDevice: Swift.Sendable {
         /// ABP device object for update APIs for v1.0.x
         public var abpV1_0_x: IoTWirelessClientTypes.UpdateAbpV1_0_x?
         /// ABP device object for update APIs for v1.1
@@ -8690,10 +8691,9 @@ extension IoTWirelessClientTypes {
             self.serviceProfileId = serviceProfileId
         }
     }
-
 }
 
-public struct UpdateWirelessDeviceInput {
+public struct UpdateWirelessDeviceInput: Swift.Sendable {
     /// A new description of the resource.
     public var description: Swift.String?
     /// The name of the new destination for the device.
@@ -8726,14 +8726,15 @@ public struct UpdateWirelessDeviceInput {
     }
 }
 
-public struct UpdateWirelessDeviceOutput {
+public struct UpdateWirelessDeviceOutput: Swift.Sendable {
 
     public init() { }
 }
 
 extension IoTWirelessClientTypes {
+
     /// Sidewalk object information for updating an import task.
-    public struct SidewalkUpdateImportInfo {
+    public struct SidewalkUpdateImportInfo: Swift.Sendable {
         /// The CSV file contained in an S3 bucket that's used for appending devices to an existing import task.
         public var deviceCreationFile: Swift.String?
 
@@ -8744,10 +8745,9 @@ extension IoTWirelessClientTypes {
             self.deviceCreationFile = deviceCreationFile
         }
     }
-
 }
 
-public struct UpdateWirelessDeviceImportTaskInput {
+public struct UpdateWirelessDeviceImportTaskInput: Swift.Sendable {
     /// The identifier of the import task to be updated.
     /// This member is required.
     public var id: Swift.String?
@@ -8765,12 +8765,12 @@ public struct UpdateWirelessDeviceImportTaskInput {
     }
 }
 
-public struct UpdateWirelessDeviceImportTaskOutput {
+public struct UpdateWirelessDeviceImportTaskOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdateWirelessGatewayInput {
+public struct UpdateWirelessGatewayInput: Swift.Sendable {
     /// A new description of the resource.
     public var description: Swift.String?
     /// The ID of the resource to update.
@@ -8803,7 +8803,7 @@ public struct UpdateWirelessGatewayInput {
     }
 }
 
-public struct UpdateWirelessGatewayOutput {
+public struct UpdateWirelessGatewayOutput: Swift.Sendable {
 
     public init() { }
 }

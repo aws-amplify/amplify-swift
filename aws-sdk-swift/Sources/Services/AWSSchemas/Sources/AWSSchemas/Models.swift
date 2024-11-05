@@ -27,44 +27,45 @@ import protocol ClientRuntime.ModeledError
 @_spi(UnknownAWSHTTPServiceError) import struct AWSClientRuntime.UnknownAWSHTTPServiceError
 import struct Smithy.URIQueryItem
 
-public struct DeleteDiscovererOutput {
+
+public struct DeleteDiscovererOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteRegistryOutput {
+public struct DeleteRegistryOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteResourcePolicyOutput {
+public struct DeleteResourcePolicyOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteSchemaOutput {
+public struct DeleteSchemaOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteSchemaVersionOutput {
+public struct DeleteSchemaVersionOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct TagResourceOutput {
+public struct TagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UntagResourceOutput {
+public struct UntagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
 extension SchemasClientTypes {
 
-    public enum DiscovererState: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DiscovererState: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case started
         case stopped
         case sdkUnknown(Swift.String)
@@ -92,7 +93,8 @@ extension SchemasClientTypes {
 }
 
 extension SchemasClientTypes {
-    public struct DiscovererSummary {
+
+    public struct DiscovererSummary: Swift.Sendable {
         /// The Status if the discoverer will discover schemas from events sent from another account.
         public var crossAccount: Swift.Bool?
         /// The ARN of the discoverer.
@@ -123,11 +125,11 @@ extension SchemasClientTypes {
             self.tags = tags
         }
     }
-
 }
 
 extension SchemasClientTypes {
-    public struct RegistrySummary {
+
+    public struct RegistrySummary: Swift.Sendable {
         /// The ARN of the registry.
         public var registryArn: Swift.String?
         /// The name of the registry.
@@ -146,12 +148,12 @@ extension SchemasClientTypes {
             self.tags = tags
         }
     }
-
 }
 
 extension SchemasClientTypes {
+
     /// A summary of schema details.
-    public struct SchemaSummary {
+    public struct SchemaSummary: Swift.Sendable {
         /// The date and time that schema was modified.
         public var lastModified: Foundation.Date?
         /// The ARN of the schema.
@@ -178,12 +180,11 @@ extension SchemasClientTypes {
             self.versionCount = versionCount
         }
     }
-
 }
 
 extension SchemasClientTypes {
 
-    public enum ModelType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ModelType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case jsonschemadraft4
         case openapi3
         case sdkUnknown(Swift.String)
@@ -211,7 +212,8 @@ extension SchemasClientTypes {
 }
 
 extension SchemasClientTypes {
-    public struct SchemaVersionSummary {
+
+    public struct SchemaVersionSummary: Swift.Sendable {
         /// The ARN of the schema version.
         public var schemaArn: Swift.String?
         /// The name of the schema.
@@ -234,11 +236,11 @@ extension SchemasClientTypes {
             self.type = type
         }
     }
-
 }
 
 extension SchemasClientTypes {
-    public struct SearchSchemaVersionSummary {
+
+    public struct SearchSchemaVersionSummary: Swift.Sendable {
         /// The date the schema version was created.
         public var createdDate: Foundation.Date?
         /// The version number of the schema
@@ -257,11 +259,11 @@ extension SchemasClientTypes {
             self.type = type
         }
     }
-
 }
 
 extension SchemasClientTypes {
-    public struct SearchSchemaSummary {
+
+    public struct SearchSchemaSummary: Swift.Sendable {
         /// The name of the registry.
         public var registryName: Swift.String?
         /// The ARN of the schema.
@@ -284,7 +286,6 @@ extension SchemasClientTypes {
             self.schemaVersions = schemaVersions
         }
     }
-
 }
 
 public struct BadRequestException: ClientRuntime.ModeledError, AWSClientRuntime.AWSServiceError, ClientRuntime.HTTPError, Swift.Error {
@@ -319,7 +320,7 @@ public struct BadRequestException: ClientRuntime.ModeledError, AWSClientRuntime.
 
 extension SchemasClientTypes {
 
-    public enum CodeGenerationStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum CodeGenerationStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case createComplete
         case createFailed
         case createInProgress
@@ -499,7 +500,7 @@ public struct UnauthorizedException: ClientRuntime.ModeledError, AWSClientRuntim
     }
 }
 
-public struct CreateDiscovererInput {
+public struct CreateDiscovererInput: Swift.Sendable {
     /// Support discovery of schemas in events sent to the bus from another account. (default: true).
     public var crossAccount: Swift.Bool?
     /// A description for the discoverer.
@@ -524,7 +525,7 @@ public struct CreateDiscovererInput {
     }
 }
 
-public struct CreateDiscovererOutput {
+public struct CreateDiscovererOutput: Swift.Sendable {
     /// The Status if the discoverer will discover schemas from events sent from another account.
     public var crossAccount: Swift.Bool?
     /// The description of the discoverer.
@@ -560,7 +561,7 @@ public struct CreateDiscovererOutput {
     }
 }
 
-public struct CreateRegistryInput {
+public struct CreateRegistryInput: Swift.Sendable {
     /// A description of the registry to be created.
     public var description: Swift.String?
     /// The name of the registry.
@@ -581,7 +582,7 @@ public struct CreateRegistryInput {
     }
 }
 
-public struct CreateRegistryOutput {
+public struct CreateRegistryOutput: Swift.Sendable {
     /// The description of the registry.
     public var description: Swift.String?
     /// The ARN of the registry.
@@ -605,7 +606,7 @@ public struct CreateRegistryOutput {
     }
 }
 
-public struct CreateSchemaInput {
+public struct CreateSchemaInput: Swift.Sendable {
     /// The source of the schema definition.
     /// This member is required.
     public var content: Swift.String?
@@ -641,7 +642,7 @@ public struct CreateSchemaInput {
     }
 }
 
-public struct CreateSchemaOutput {
+public struct CreateSchemaOutput: Swift.Sendable {
     /// The description of the schema.
     public var description: Swift.String?
     /// The date and time that schema was modified.
@@ -711,7 +712,7 @@ public struct NotFoundException: ClientRuntime.ModeledError, AWSClientRuntime.AW
     }
 }
 
-public struct DeleteDiscovererInput {
+public struct DeleteDiscovererInput: Swift.Sendable {
     /// The ID of the discoverer.
     /// This member is required.
     public var discovererId: Swift.String?
@@ -724,7 +725,7 @@ public struct DeleteDiscovererInput {
     }
 }
 
-public struct DeleteRegistryInput {
+public struct DeleteRegistryInput: Swift.Sendable {
     /// The name of the registry.
     /// This member is required.
     public var registryName: Swift.String?
@@ -737,7 +738,7 @@ public struct DeleteRegistryInput {
     }
 }
 
-public struct DeleteResourcePolicyInput {
+public struct DeleteResourcePolicyInput: Swift.Sendable {
     /// The name of the registry.
     public var registryName: Swift.String?
 
@@ -749,7 +750,7 @@ public struct DeleteResourcePolicyInput {
     }
 }
 
-public struct DeleteSchemaInput {
+public struct DeleteSchemaInput: Swift.Sendable {
     /// The name of the registry.
     /// This member is required.
     public var registryName: Swift.String?
@@ -767,7 +768,7 @@ public struct DeleteSchemaInput {
     }
 }
 
-public struct DeleteSchemaVersionInput {
+public struct DeleteSchemaVersionInput: Swift.Sendable {
     /// The name of the registry.
     /// This member is required.
     public var registryName: Swift.String?
@@ -820,7 +821,7 @@ public struct TooManyRequestsException: ClientRuntime.ModeledError, AWSClientRun
     }
 }
 
-public struct DescribeCodeBindingInput {
+public struct DescribeCodeBindingInput: Swift.Sendable {
     /// The language of the code binding.
     /// This member is required.
     public var language: Swift.String?
@@ -847,7 +848,7 @@ public struct DescribeCodeBindingInput {
     }
 }
 
-public struct DescribeCodeBindingOutput {
+public struct DescribeCodeBindingOutput: Swift.Sendable {
     /// The time and date that the code binding was created.
     public var creationDate: Foundation.Date?
     /// The date and time that code bindings were modified.
@@ -871,7 +872,7 @@ public struct DescribeCodeBindingOutput {
     }
 }
 
-public struct DescribeDiscovererInput {
+public struct DescribeDiscovererInput: Swift.Sendable {
     /// The ID of the discoverer.
     /// This member is required.
     public var discovererId: Swift.String?
@@ -884,7 +885,7 @@ public struct DescribeDiscovererInput {
     }
 }
 
-public struct DescribeDiscovererOutput {
+public struct DescribeDiscovererOutput: Swift.Sendable {
     /// The Status if the discoverer will discover schemas from events sent from another account.
     public var crossAccount: Swift.Bool?
     /// The description of the discoverer.
@@ -920,7 +921,7 @@ public struct DescribeDiscovererOutput {
     }
 }
 
-public struct DescribeRegistryInput {
+public struct DescribeRegistryInput: Swift.Sendable {
     /// The name of the registry.
     /// This member is required.
     public var registryName: Swift.String?
@@ -933,7 +934,7 @@ public struct DescribeRegistryInput {
     }
 }
 
-public struct DescribeRegistryOutput {
+public struct DescribeRegistryOutput: Swift.Sendable {
     /// The description of the registry.
     public var description: Swift.String?
     /// The ARN of the registry.
@@ -957,7 +958,7 @@ public struct DescribeRegistryOutput {
     }
 }
 
-public struct DescribeSchemaInput {
+public struct DescribeSchemaInput: Swift.Sendable {
     /// The name of the registry.
     /// This member is required.
     public var registryName: Swift.String?
@@ -979,7 +980,7 @@ public struct DescribeSchemaInput {
     }
 }
 
-public struct DescribeSchemaOutput {
+public struct DescribeSchemaOutput: Swift.Sendable {
     /// The source of the schema definition.
     public var content: Swift.String?
     /// The description of the schema.
@@ -1023,7 +1024,7 @@ public struct DescribeSchemaOutput {
     }
 }
 
-public struct ExportSchemaInput {
+public struct ExportSchemaInput: Swift.Sendable {
     /// The name of the registry.
     /// This member is required.
     public var registryName: Swift.String?
@@ -1049,7 +1050,7 @@ public struct ExportSchemaInput {
     }
 }
 
-public struct ExportSchemaOutput {
+public struct ExportSchemaOutput: Swift.Sendable {
     public var content: Swift.String?
     public var schemaArn: Swift.String?
     public var schemaName: Swift.String?
@@ -1072,7 +1073,7 @@ public struct ExportSchemaOutput {
     }
 }
 
-public struct GetCodeBindingSourceInput {
+public struct GetCodeBindingSourceInput: Swift.Sendable {
     /// The language of the code binding.
     /// This member is required.
     public var language: Swift.String?
@@ -1099,7 +1100,7 @@ public struct GetCodeBindingSourceInput {
     }
 }
 
-public struct GetCodeBindingSourceOutput {
+public struct GetCodeBindingSourceOutput: Swift.Sendable {
     public var body: Foundation.Data?
 
     public init(
@@ -1110,7 +1111,7 @@ public struct GetCodeBindingSourceOutput {
     }
 }
 
-public struct GetDiscoveredSchemaInput {
+public struct GetDiscoveredSchemaInput: Swift.Sendable {
     /// An array of strings where each string is a JSON event. These are the events that were used to generate the schema. The array includes a single type of event and has a maximum size of 10 events.
     /// This member is required.
     public var events: [Swift.String]?
@@ -1128,7 +1129,7 @@ public struct GetDiscoveredSchemaInput {
     }
 }
 
-public struct GetDiscoveredSchemaOutput {
+public struct GetDiscoveredSchemaOutput: Swift.Sendable {
     /// The source of the schema definition.
     public var content: Swift.String?
 
@@ -1140,7 +1141,7 @@ public struct GetDiscoveredSchemaOutput {
     }
 }
 
-public struct GetResourcePolicyInput {
+public struct GetResourcePolicyInput: Swift.Sendable {
     /// The name of the registry.
     public var registryName: Swift.String?
 
@@ -1152,7 +1153,7 @@ public struct GetResourcePolicyInput {
     }
 }
 
-public struct GetResourcePolicyOutput {
+public struct GetResourcePolicyOutput: Swift.Sendable {
     /// The resource-based policy.
     public var policy: Swift.String?
     /// The revision ID.
@@ -1198,7 +1199,7 @@ public struct GoneException: ClientRuntime.ModeledError, AWSClientRuntime.AWSSer
     }
 }
 
-public struct ListDiscoverersInput {
+public struct ListDiscoverersInput: Swift.Sendable {
     /// Specifying this limits the results to only those discoverer IDs that start with the specified prefix.
     public var discovererIdPrefix: Swift.String?
     public var limit: Swift.Int?
@@ -1221,7 +1222,7 @@ public struct ListDiscoverersInput {
     }
 }
 
-public struct ListDiscoverersOutput {
+public struct ListDiscoverersOutput: Swift.Sendable {
     /// An array of DiscovererSummary information.
     public var discoverers: [SchemasClientTypes.DiscovererSummary]?
     /// The token that specifies the next page of results to return. To request the first page, leave NextToken empty. The token will expire in 24 hours, and cannot be shared with other accounts.
@@ -1237,7 +1238,7 @@ public struct ListDiscoverersOutput {
     }
 }
 
-public struct ListRegistriesInput {
+public struct ListRegistriesInput: Swift.Sendable {
     public var limit: Swift.Int?
     /// The token that specifies the next page of results to return. To request the first page, leave NextToken empty. The token will expire in 24 hours, and cannot be shared with other accounts.
     public var nextToken: Swift.String?
@@ -1260,7 +1261,7 @@ public struct ListRegistriesInput {
     }
 }
 
-public struct ListRegistriesOutput {
+public struct ListRegistriesOutput: Swift.Sendable {
     /// The token that specifies the next page of results to return. To request the first page, leave NextToken empty. The token will expire in 24 hours, and cannot be shared with other accounts.
     public var nextToken: Swift.String?
     /// An array of registry summaries.
@@ -1276,7 +1277,7 @@ public struct ListRegistriesOutput {
     }
 }
 
-public struct ListSchemasInput {
+public struct ListSchemasInput: Swift.Sendable {
     public var limit: Swift.Int?
     /// The token that specifies the next page of results to return. To request the first page, leave NextToken empty. The token will expire in 24 hours, and cannot be shared with other accounts.
     public var nextToken: Swift.String?
@@ -1300,7 +1301,7 @@ public struct ListSchemasInput {
     }
 }
 
-public struct ListSchemasOutput {
+public struct ListSchemasOutput: Swift.Sendable {
     /// The token that specifies the next page of results to return. To request the first page, leave NextToken empty. The token will expire in 24 hours, and cannot be shared with other accounts.
     public var nextToken: Swift.String?
     /// An array of schema summaries.
@@ -1316,7 +1317,7 @@ public struct ListSchemasOutput {
     }
 }
 
-public struct ListSchemaVersionsInput {
+public struct ListSchemaVersionsInput: Swift.Sendable {
     public var limit: Swift.Int?
     /// The token that specifies the next page of results to return. To request the first page, leave NextToken empty. The token will expire in 24 hours, and cannot be shared with other accounts.
     public var nextToken: Swift.String?
@@ -1341,7 +1342,7 @@ public struct ListSchemaVersionsInput {
     }
 }
 
-public struct ListSchemaVersionsOutput {
+public struct ListSchemaVersionsOutput: Swift.Sendable {
     /// The token that specifies the next page of results to return. To request the first page, leave NextToken empty. The token will expire in 24 hours, and cannot be shared with other accounts.
     public var nextToken: Swift.String?
     /// An array of schema version summaries.
@@ -1357,7 +1358,7 @@ public struct ListSchemaVersionsOutput {
     }
 }
 
-public struct ListTagsForResourceInput {
+public struct ListTagsForResourceInput: Swift.Sendable {
     /// The ARN of the resource.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -1370,7 +1371,7 @@ public struct ListTagsForResourceInput {
     }
 }
 
-public struct ListTagsForResourceOutput {
+public struct ListTagsForResourceOutput: Swift.Sendable {
     /// Key-value pairs associated with a resource.
     public var tags: [Swift.String: Swift.String]?
 
@@ -1412,7 +1413,7 @@ public struct PreconditionFailedException: ClientRuntime.ModeledError, AWSClient
     }
 }
 
-public struct PutCodeBindingInput {
+public struct PutCodeBindingInput: Swift.Sendable {
     /// The language of the code binding.
     /// This member is required.
     public var language: Swift.String?
@@ -1439,7 +1440,7 @@ public struct PutCodeBindingInput {
     }
 }
 
-public struct PutCodeBindingOutput {
+public struct PutCodeBindingOutput: Swift.Sendable {
     /// The time and date that the code binding was created.
     public var creationDate: Foundation.Date?
     /// The date and time that code bindings were modified.
@@ -1464,7 +1465,7 @@ public struct PutCodeBindingOutput {
 }
 
 /// The name of the policy.
-public struct PutResourcePolicyInput {
+public struct PutResourcePolicyInput: Swift.Sendable {
     /// The resource-based policy.
     /// This member is required.
     public var policy: Swift.String?
@@ -1485,7 +1486,7 @@ public struct PutResourcePolicyInput {
     }
 }
 
-public struct PutResourcePolicyOutput {
+public struct PutResourcePolicyOutput: Swift.Sendable {
     /// The resource-based policy.
     public var policy: Swift.String?
     /// The revision ID of the policy.
@@ -1501,7 +1502,7 @@ public struct PutResourcePolicyOutput {
     }
 }
 
-public struct SearchSchemasInput {
+public struct SearchSchemasInput: Swift.Sendable {
     /// Specifying this limits the results to only schemas that include the provided keywords.
     /// This member is required.
     public var keywords: Swift.String?
@@ -1526,7 +1527,7 @@ public struct SearchSchemasInput {
     }
 }
 
-public struct SearchSchemasOutput {
+public struct SearchSchemasOutput: Swift.Sendable {
     /// The token that specifies the next page of results to return. To request the first page, leave NextToken empty. The token will expire in 24 hours, and cannot be shared with other accounts.
     public var nextToken: Swift.String?
     /// An array of SearchSchemaSummary information.
@@ -1542,7 +1543,7 @@ public struct SearchSchemasOutput {
     }
 }
 
-public struct StartDiscovererInput {
+public struct StartDiscovererInput: Swift.Sendable {
     /// The ID of the discoverer.
     /// This member is required.
     public var discovererId: Swift.String?
@@ -1555,7 +1556,7 @@ public struct StartDiscovererInput {
     }
 }
 
-public struct StartDiscovererOutput {
+public struct StartDiscovererOutput: Swift.Sendable {
     /// The ID of the discoverer.
     public var discovererId: Swift.String?
     /// The state of the discoverer.
@@ -1571,7 +1572,7 @@ public struct StartDiscovererOutput {
     }
 }
 
-public struct StopDiscovererInput {
+public struct StopDiscovererInput: Swift.Sendable {
     /// The ID of the discoverer.
     /// This member is required.
     public var discovererId: Swift.String?
@@ -1584,7 +1585,7 @@ public struct StopDiscovererInput {
     }
 }
 
-public struct StopDiscovererOutput {
+public struct StopDiscovererOutput: Swift.Sendable {
     /// The ID of the discoverer.
     public var discovererId: Swift.String?
     /// The state of the discoverer.
@@ -1601,7 +1602,7 @@ public struct StopDiscovererOutput {
 }
 
 ///
-public struct TagResourceInput {
+public struct TagResourceInput: Swift.Sendable {
     /// The ARN of the resource.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -1619,7 +1620,7 @@ public struct TagResourceInput {
     }
 }
 
-public struct UntagResourceInput {
+public struct UntagResourceInput: Swift.Sendable {
     /// The ARN of the resource.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -1637,7 +1638,7 @@ public struct UntagResourceInput {
     }
 }
 
-public struct UpdateDiscovererInput {
+public struct UpdateDiscovererInput: Swift.Sendable {
     /// Support discovery of schemas in events sent to the bus from another account. (default: true)
     public var crossAccount: Swift.Bool?
     /// The description of the discoverer to update.
@@ -1658,7 +1659,7 @@ public struct UpdateDiscovererInput {
     }
 }
 
-public struct UpdateDiscovererOutput {
+public struct UpdateDiscovererOutput: Swift.Sendable {
     /// The Status if the discoverer will discover schemas from events sent from another account.
     public var crossAccount: Swift.Bool?
     /// The description of the discoverer.
@@ -1695,7 +1696,7 @@ public struct UpdateDiscovererOutput {
 }
 
 /// Updates the registry.
-public struct UpdateRegistryInput {
+public struct UpdateRegistryInput: Swift.Sendable {
     /// The description of the registry to update.
     public var description: Swift.String?
     /// The name of the registry.
@@ -1712,7 +1713,7 @@ public struct UpdateRegistryInput {
     }
 }
 
-public struct UpdateRegistryOutput {
+public struct UpdateRegistryOutput: Swift.Sendable {
     /// The description of the registry.
     public var description: Swift.String?
     /// The ARN of the registry.
@@ -1736,7 +1737,7 @@ public struct UpdateRegistryOutput {
     }
 }
 
-public struct UpdateSchemaInput {
+public struct UpdateSchemaInput: Swift.Sendable {
     /// The ID of the client token.
     public var clientTokenId: Swift.String?
     /// The source of the schema definition.
@@ -1770,7 +1771,7 @@ public struct UpdateSchemaInput {
     }
 }
 
-public struct UpdateSchemaOutput {
+public struct UpdateSchemaOutput: Swift.Sendable {
     /// The description of the schema.
     public var description: Swift.String?
     /// The date and time that schema was modified.

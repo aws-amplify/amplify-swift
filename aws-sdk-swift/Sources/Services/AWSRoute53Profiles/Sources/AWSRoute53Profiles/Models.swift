@@ -237,8 +237,9 @@ public struct ValidationException: ClientRuntime.ModeledError, AWSClientRuntime.
 }
 
 extension Route53ProfilesClientTypes {
+
     /// Tag for the Profile.
-    public struct Tag {
+    public struct Tag: Swift.Sendable {
         /// Key associated with the Tag.
         /// This member is required.
         public var key: Swift.String?
@@ -255,10 +256,9 @@ extension Route53ProfilesClientTypes {
             self.value = value
         }
     }
-
 }
 
-public struct AssociateProfileInput {
+public struct AssociateProfileInput: Swift.Sendable {
     /// A name for the association.
     /// This member is required.
     public var name: Swift.String?
@@ -287,7 +287,7 @@ public struct AssociateProfileInput {
 
 extension Route53ProfilesClientTypes {
 
-    public enum ProfileStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ProfileStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case complete
         case creating
         case deleted
@@ -327,8 +327,9 @@ extension Route53ProfilesClientTypes {
 }
 
 extension Route53ProfilesClientTypes {
+
     /// An association between a Route 53 Profile and a VPC.
-    public struct ProfileAssociation {
+    public struct ProfileAssociation: Swift.Sendable {
         /// The date and time that the Profile association was created, in Unix time format and Coordinated Universal Time (UTC).
         public var creationTime: Foundation.Date?
         /// ID of the Profile association.
@@ -371,10 +372,9 @@ extension Route53ProfilesClientTypes {
             self.statusMessage = statusMessage
         }
     }
-
 }
 
-public struct AssociateProfileOutput {
+public struct AssociateProfileOutput: Swift.Sendable {
     /// The association that you just created. The association has an ID that you can use to identify it in other requests, like update and delete.
     public var profileAssociation: Route53ProfilesClientTypes.ProfileAssociation?
 
@@ -410,7 +410,7 @@ public struct InternalServiceErrorException: ClientRuntime.ModeledError, AWSClie
     }
 }
 
-public struct AssociateResourceToProfileInput {
+public struct AssociateResourceToProfileInput: Swift.Sendable {
     /// Name for the resource association.
     /// This member is required.
     public var name: Swift.String?
@@ -438,8 +438,9 @@ public struct AssociateResourceToProfileInput {
 }
 
 extension Route53ProfilesClientTypes {
+
     /// The association between a Route 53 Profile and resources.
-    public struct ProfileResourceAssociation {
+    public struct ProfileResourceAssociation: Swift.Sendable {
         /// The date and time that the Profile resource association was created, in Unix time format and Coordinated Universal Time (UTC).
         public var creationTime: Foundation.Date?
         /// ID of the Profile resource association.
@@ -490,10 +491,9 @@ extension Route53ProfilesClientTypes {
             self.statusMessage = statusMessage
         }
     }
-
 }
 
-public struct AssociateResourceToProfileOutput {
+public struct AssociateResourceToProfileOutput: Swift.Sendable {
     /// Infromation about the AssociateResourceToProfile, including a status message.
     public var profileResourceAssociation: Route53ProfilesClientTypes.ProfileResourceAssociation?
 
@@ -505,7 +505,7 @@ public struct AssociateResourceToProfileOutput {
     }
 }
 
-public struct CreateProfileInput {
+public struct CreateProfileInput: Swift.Sendable {
     /// ClientToken is an idempotency token that ensures a call to CreateProfile completes only once. You choose the value to pass. For example, an issue might prevent you from getting a response from CreateProfile. In this case, safely retry your call to CreateProfile by using the same CreateProfile parameter value.
     /// This member is required.
     public var clientToken: Swift.String?
@@ -529,7 +529,7 @@ public struct CreateProfileInput {
 
 extension Route53ProfilesClientTypes {
 
-    public enum ShareStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ShareStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case notShared
         case sharedByMe
         case sharedWithMe
@@ -560,8 +560,9 @@ extension Route53ProfilesClientTypes {
 }
 
 extension Route53ProfilesClientTypes {
+
     /// A complex type that includes settings for a Route 53 Profile.
-    public struct Profile {
+    public struct Profile: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the Profile.
         public var arn: Swift.String?
         /// The ClientToken value that was assigned when the Profile was created.
@@ -608,10 +609,9 @@ extension Route53ProfilesClientTypes {
             self.statusMessage = statusMessage
         }
     }
-
 }
 
-public struct CreateProfileOutput {
+public struct CreateProfileOutput: Swift.Sendable {
     /// The Profile that you just created.
     public var profile: Route53ProfilesClientTypes.Profile?
 
@@ -623,7 +623,7 @@ public struct CreateProfileOutput {
     }
 }
 
-public struct DeleteProfileInput {
+public struct DeleteProfileInput: Swift.Sendable {
     /// The ID of the Profile that you want to delete.
     /// This member is required.
     public var profileId: Swift.String?
@@ -636,7 +636,7 @@ public struct DeleteProfileInput {
     }
 }
 
-public struct DeleteProfileOutput {
+public struct DeleteProfileOutput: Swift.Sendable {
     /// Information about the DeleteProfile request, including the status of the request.
     public var profile: Route53ProfilesClientTypes.Profile?
 
@@ -648,7 +648,7 @@ public struct DeleteProfileOutput {
     }
 }
 
-public struct DisassociateProfileInput {
+public struct DisassociateProfileInput: Swift.Sendable {
     /// ID of the Profile.
     /// This member is required.
     public var profileId: Swift.String?
@@ -666,7 +666,7 @@ public struct DisassociateProfileInput {
     }
 }
 
-public struct DisassociateProfileOutput {
+public struct DisassociateProfileOutput: Swift.Sendable {
     /// Information about the DisassociateProfile request.
     public var profileAssociation: Route53ProfilesClientTypes.ProfileAssociation?
 
@@ -678,7 +678,7 @@ public struct DisassociateProfileOutput {
     }
 }
 
-public struct DisassociateResourceFromProfileInput {
+public struct DisassociateResourceFromProfileInput: Swift.Sendable {
     /// The ID of the Profile.
     /// This member is required.
     public var profileId: Swift.String?
@@ -696,7 +696,7 @@ public struct DisassociateResourceFromProfileInput {
     }
 }
 
-public struct DisassociateResourceFromProfileOutput {
+public struct DisassociateResourceFromProfileOutput: Swift.Sendable {
     /// Information about the DisassociateResourceFromProfile request, including the status of the request.
     public var profileResourceAssociation: Route53ProfilesClientTypes.ProfileResourceAssociation?
 
@@ -708,7 +708,7 @@ public struct DisassociateResourceFromProfileOutput {
     }
 }
 
-public struct GetProfileInput {
+public struct GetProfileInput: Swift.Sendable {
     /// ID of the Profile.
     /// This member is required.
     public var profileId: Swift.String?
@@ -721,7 +721,7 @@ public struct GetProfileInput {
     }
 }
 
-public struct GetProfileOutput {
+public struct GetProfileOutput: Swift.Sendable {
     /// Information about the Profile, including the status of the Profile.
     public var profile: Route53ProfilesClientTypes.Profile?
 
@@ -733,7 +733,7 @@ public struct GetProfileOutput {
     }
 }
 
-public struct GetProfileAssociationInput {
+public struct GetProfileAssociationInput: Swift.Sendable {
     /// The identifier of the association you want to get information about.
     /// This member is required.
     public var profileAssociationId: Swift.String?
@@ -746,7 +746,7 @@ public struct GetProfileAssociationInput {
     }
 }
 
-public struct GetProfileAssociationOutput {
+public struct GetProfileAssociationOutput: Swift.Sendable {
     /// Information about the Profile association that you specified in a GetProfileAssociation request.
     public var profileAssociation: Route53ProfilesClientTypes.ProfileAssociation?
 
@@ -758,7 +758,7 @@ public struct GetProfileAssociationOutput {
     }
 }
 
-public struct GetProfileResourceAssociationInput {
+public struct GetProfileResourceAssociationInput: Swift.Sendable {
     /// The ID of the profile resource association that you want to get information about.
     /// This member is required.
     public var profileResourceAssociationId: Swift.String?
@@ -771,7 +771,7 @@ public struct GetProfileResourceAssociationInput {
     }
 }
 
-public struct GetProfileResourceAssociationOutput {
+public struct GetProfileResourceAssociationOutput: Swift.Sendable {
     /// Information about the Profile resource association that you specified in a GetProfileResourceAssociation request.
     public var profileResourceAssociation: Route53ProfilesClientTypes.ProfileResourceAssociation?
 
@@ -807,7 +807,7 @@ public struct InvalidNextTokenException: ClientRuntime.ModeledError, AWSClientRu
     }
 }
 
-public struct ListProfileAssociationsInput {
+public struct ListProfileAssociationsInput: Swift.Sendable {
     /// The maximum number of objects that you want to return for this request. If more objects are available, in the response, a NextToken value, which you can use in a subsequent call to get the next batch of objects, is provided. If you don't specify a value for MaxResults, up to 100 objects are returned.
     public var maxResults: Swift.Int?
     /// For the first call to this list request, omit this value. When you request a list of objects, at most the number of objects specified by MaxResults is returned. If more objects are available for retrieval, a NextToken value is returned in the response. To retrieve the next batch of objects, use the token that was returned for the prior request in your next request.
@@ -831,7 +831,7 @@ public struct ListProfileAssociationsInput {
     }
 }
 
-public struct ListProfileAssociationsOutput {
+public struct ListProfileAssociationsOutput: Swift.Sendable {
     /// If more than MaxResults profile associations match the specified criteria, you can submit another ListProfileAssociations request to get the next group of results. In the next request, specify the value of NextToken from the previous response.
     public var nextToken: Swift.String?
     /// A complex type that containts settings information about the profile's VPC associations.
@@ -847,7 +847,7 @@ public struct ListProfileAssociationsOutput {
     }
 }
 
-public struct ListProfileResourceAssociationsInput {
+public struct ListProfileResourceAssociationsInput: Swift.Sendable {
     /// The maximum number of objects that you want to return for this request. If more objects are available, in the response, a NextToken value, which you can use in a subsequent call to get the next batch of objects, is provided. If you don't specify a value for MaxResults, up to 100 objects are returned.
     public var maxResults: Swift.Int?
     /// For the first call to this list request, omit this value. When you request a list of objects, at most the number of objects specified by MaxResults is returned. If more objects are available for retrieval, a NextToken value is returned in the response. To retrieve the next batch of objects, use the token that was returned for the prior request in your next request.
@@ -872,7 +872,7 @@ public struct ListProfileResourceAssociationsInput {
     }
 }
 
-public struct ListProfileResourceAssociationsOutput {
+public struct ListProfileResourceAssociationsOutput: Swift.Sendable {
     /// If more than MaxResults resource associations match the specified criteria, you can submit another ListProfileResourceAssociations request to get the next group of results. In the next request, specify the value of NextToken from the previous response.
     public var nextToken: Swift.String?
     /// Information about the profile resource association that you specified in a GetProfileResourceAssociation request.
@@ -888,7 +888,7 @@ public struct ListProfileResourceAssociationsOutput {
     }
 }
 
-public struct ListProfilesInput {
+public struct ListProfilesInput: Swift.Sendable {
     /// The maximum number of objects that you want to return for this request. If more objects are available, in the response, a NextToken value, which you can use in a subsequent call to get the next batch of objects, is provided. If you don't specify a value for MaxResults, up to 100 objects are returned.
     public var maxResults: Swift.Int?
     /// For the first call to this list request, omit this value. When you request a list of objects, at most the number of objects specified by MaxResults is returned. If more objects are available for retrieval, a NextToken value is returned in the response. To retrieve the next batch of objects, use the token that was returned for the prior request in your next request.
@@ -905,8 +905,9 @@ public struct ListProfilesInput {
 }
 
 extension Route53ProfilesClientTypes {
+
     /// Summary information about a Route 53 Profile.
-    public struct ProfileSummary {
+    public struct ProfileSummary: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the Profile.
         public var arn: Swift.String?
         /// ID of the Profile.
@@ -929,10 +930,9 @@ extension Route53ProfilesClientTypes {
             self.shareStatus = shareStatus
         }
     }
-
 }
 
-public struct ListProfilesOutput {
+public struct ListProfilesOutput: Swift.Sendable {
     /// If more than MaxResults resource associations match the specified criteria, you can submit another ListProfiles request to get the next group of results. In the next request, specify the value of NextToken from the previous response.
     public var nextToken: Swift.String?
     /// Summary information about the Profiles.
@@ -948,7 +948,7 @@ public struct ListProfilesOutput {
     }
 }
 
-public struct ListTagsForResourceInput {
+public struct ListTagsForResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) for the resource that you want to list the tags for.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -961,7 +961,7 @@ public struct ListTagsForResourceInput {
     }
 }
 
-public struct ListTagsForResourceOutput {
+public struct ListTagsForResourceOutput: Swift.Sendable {
     /// The tags that are associated with the resource that you specified in the ListTagsForResource request.
     /// This member is required.
     public var tags: [Swift.String: Swift.String]?
@@ -974,7 +974,7 @@ public struct ListTagsForResourceOutput {
     }
 }
 
-public struct TagResourceInput {
+public struct TagResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) for the resource that you want to add tags to.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -992,12 +992,12 @@ public struct TagResourceInput {
     }
 }
 
-public struct TagResourceOutput {
+public struct TagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UntagResourceInput {
+public struct UntagResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) for the resource that you want to remove tags from.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -1015,12 +1015,12 @@ public struct UntagResourceInput {
     }
 }
 
-public struct UntagResourceOutput {
+public struct UntagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdateProfileResourceAssociationInput {
+public struct UpdateProfileResourceAssociationInput: Swift.Sendable {
     /// Name of the resource association.
     public var name: Swift.String?
     /// ID of the resource association.
@@ -1041,7 +1041,7 @@ public struct UpdateProfileResourceAssociationInput {
     }
 }
 
-public struct UpdateProfileResourceAssociationOutput {
+public struct UpdateProfileResourceAssociationOutput: Swift.Sendable {
     /// Information about the UpdateProfileResourceAssociation request, including a status message.
     public var profileResourceAssociation: Route53ProfilesClientTypes.ProfileResourceAssociation?
 

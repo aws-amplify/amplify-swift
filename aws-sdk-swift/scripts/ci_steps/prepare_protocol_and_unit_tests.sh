@@ -2,8 +2,12 @@
 
 set -e
 
+# Get rid of the generated services
+rm -rf Sources/Services/*
+
+# Regenerate the SDK manifest, with only runtime included
 cd AWSSDKSwiftCLI
-swift run AWSSDKSwiftCLI generate-package-manifest --exclude-aws-services ..
+swift run AWSSDKSwiftCLI generate-package-manifest ..
 cd ..
 
 # Dump the Package.swift contents to the logs

@@ -26,12 +26,13 @@ import protocol ClientRuntime.ModeledError
 @_spi(UnknownAWSHTTPServiceError) import struct AWSClientRuntime.UnknownAWSHTTPServiceError
 @_spi(SmithyTimestamps) import struct SmithyTimestamps.TimestampFormatter
 
-public struct TagResourceOutput {
+
+public struct TagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UntagResourceOutput {
+public struct UntagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
@@ -250,8 +251,9 @@ public struct ThrottlingException: ClientRuntime.ModeledError, AWSClientRuntime.
 }
 
 extension PCSClientTypes {
+
     /// Stores information about a field in a request that caused an exception.
-    public struct ValidationExceptionField {
+    public struct ValidationExceptionField: Swift.Sendable {
         /// The message body of the exception.
         /// This member is required.
         public var message: Swift.String?
@@ -268,12 +270,11 @@ extension PCSClientTypes {
             self.name = name
         }
     }
-
 }
 
 extension PCSClientTypes {
 
-    public enum ValidationExceptionReason: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ValidationExceptionReason: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case cannotParse
         case fieldValidationFailed
         case other
@@ -349,8 +350,9 @@ public struct ValidationException: ClientRuntime.ModeledError, AWSClientRuntime.
 }
 
 extension PCSClientTypes {
+
     /// An Amazon EC2 launch template Amazon Web Services PCS uses to launch compute nodes.
-    public struct CustomLaunchTemplate {
+    public struct CustomLaunchTemplate: Swift.Sendable {
         /// The ID of the EC2 launch template to use to provision instances. Example: lt-xxxx
         /// This member is required.
         public var id: Swift.String?
@@ -367,12 +369,12 @@ extension PCSClientTypes {
             self.version = version
         }
     }
-
 }
 
 extension PCSClientTypes {
+
     /// An EC2 instance configuration Amazon Web Services PCS uses to launch compute nodes.
-    public struct InstanceConfig {
+    public struct InstanceConfig: Swift.Sendable {
         /// The EC2 instance type that Amazon Web Services PCS can provision in the compute node group. Example: t2.xlarge
         public var instanceType: Swift.String?
 
@@ -383,12 +385,11 @@ extension PCSClientTypes {
             self.instanceType = instanceType
         }
     }
-
 }
 
 extension PCSClientTypes {
 
-    public enum PurchaseOption: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum PurchaseOption: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case ondemand
         case spot
         case sdkUnknown(Swift.String)
@@ -416,8 +417,9 @@ extension PCSClientTypes {
 }
 
 extension PCSClientTypes {
+
     /// Specifies the boundaries of the compute node group auto scaling.
-    public struct ScalingConfigurationRequest {
+    public struct ScalingConfigurationRequest: Swift.Sendable {
         /// The upper bound of the number of instances allowed in the compute fleet.
         /// This member is required.
         public var maxInstanceCount: Swift.Int
@@ -434,13 +436,30 @@ extension PCSClientTypes {
             self.minInstanceCount = minInstanceCount
         }
     }
-
 }
 
 extension PCSClientTypes {
+
     /// Additional settings that directly map to Slurm settings.
-    public struct SlurmCustomSetting {
-        /// Amazon Web Services PCS supports configuration of the following Slurm parameters: [Prolog](https://slurm.schedmd.com/slurm.conf.html#OPT_Prolog_1), [Epilog](https://slurm.schedmd.com/slurm.conf.html#OPT_Epilog_1), and [SelectTypeParameters](https://slurm.schedmd.com/slurm.conf.html#OPT_SelectTypeParameters).
+    public struct SlurmCustomSetting: Swift.Sendable {
+        /// Amazon Web Services PCS supports configuration of the following Slurm parameters:
+        ///
+        /// * For clusters
+        ///
+        /// * [Prolog](https://slurm.schedmd.com/slurm.conf.html#OPT_Prolog_1)
+        ///
+        /// * [Epilog](https://slurm.schedmd.com/slurm.conf.html#OPT_Epilog_1)
+        ///
+        /// * [SelectTypeParameters](https://slurm.schedmd.com/slurm.conf.html#OPT_SelectTypeParameters)
+        ///
+        ///
+        ///
+        ///
+        /// * For compute node groups
+        ///
+        /// * [Weight](https://slurm.schedmd.com/slurm.conf.html#OPT_Weight)
+        ///
+        /// * [RealMemory](https://slurm.schedmd.com/slurm.conf.html#OPT_Weight)
         /// This member is required.
         public var parameterName: Swift.String?
         /// The values for the configured Slurm settings.
@@ -456,12 +475,12 @@ extension PCSClientTypes {
             self.parameterValue = parameterValue
         }
     }
-
 }
 
 extension PCSClientTypes {
+
     /// Additional options related to the Slurm scheduler.
-    public struct ComputeNodeGroupSlurmConfigurationRequest {
+    public struct ComputeNodeGroupSlurmConfigurationRequest: Swift.Sendable {
         /// Additional Slurm-specific configuration that directly maps to Slurm settings.
         public var slurmCustomSettings: [PCSClientTypes.SlurmCustomSetting]?
 
@@ -472,12 +491,11 @@ extension PCSClientTypes {
             self.slurmCustomSettings = slurmCustomSettings
         }
     }
-
 }
 
 extension PCSClientTypes {
 
-    public enum SpotAllocationStrategy: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SpotAllocationStrategy: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case capacityOptimized
         case lowestPrice
         case priceCapacityOptimized
@@ -508,8 +526,9 @@ extension PCSClientTypes {
 }
 
 extension PCSClientTypes {
+
     /// Additional configuration when you specify SPOT as the purchaseOption for the CreateComputeNodeGroup API action.
-    public struct SpotOptions {
+    public struct SpotOptions: Swift.Sendable {
         /// The Amazon EC2 allocation strategy Amazon Web Services PCS uses to provision EC2 instances. Amazon Web Services PCS supports lowest price, capacity optimized, and price capacity optimized. For more information, see [Use allocation strategies to determine how EC2 Fleet or Spot Fleet fulfills Spot and On-Demand capacity](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/spot-fleet-allocation-strategy.html) in the Amazon Elastic Compute Cloud User Guide. If you don't provide this option, it defaults to price capacity optimized.
         public var allocationStrategy: PCSClientTypes.SpotAllocationStrategy?
 
@@ -520,10 +539,9 @@ extension PCSClientTypes {
             self.allocationStrategy = allocationStrategy
         }
     }
-
 }
 
-public struct CreateComputeNodeGroupInput {
+public struct CreateComputeNodeGroupInput: Swift.Sendable {
     /// The ID of the Amazon Machine Image (AMI) that Amazon Web Services PCS uses to launch compute nodes (Amazon EC2 instances). If you don't provide this value, Amazon Web Services PCS uses the AMI ID specified in the custom launch template.
     public var amiId: Swift.String?
     /// A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. Idempotency ensures that an API request completes only once. With an idempotent request, if the original request completes successfully, the subsequent retries with the same client token return the result from the original successful request and they have no additional effect. If you don't specify a client token, the CLI and SDK automatically generate 1 for you.
@@ -537,7 +555,11 @@ public struct CreateComputeNodeGroupInput {
     /// An Amazon EC2 launch template Amazon Web Services PCS uses to launch compute nodes.
     /// This member is required.
     public var customLaunchTemplate: PCSClientTypes.CustomLaunchTemplate?
-    /// The Amazon Resource Name (ARN) of the IAM instance profile used to pass an IAM role when launching EC2 instances. The role contained in your instance profile must have pcs:RegisterComputeNodeGroupInstance permissions attached in order to provision instances correctly. The resource identifier of the ARN must start with AWSPCS. For example, arn:aws:iam:123456789012:instance-profile/AWSPCSMyComputeNodeInstanceProfile.
+    /// The Amazon Resource Name (ARN) of the IAM instance profile used to pass an IAM role when launching EC2 instances. The role contained in your instance profile must have the pcs:RegisterComputeNodeGroupInstance permission. The resource identifier of the ARN must start with AWSPCS or it must have /aws-pcs/ in its path. Examples
+    ///
+    /// * arn:aws:iam::111122223333:instance-profile/AWSPCS-example-role-1
+    ///
+    /// * arn:aws:iam::111122223333:instance-profile/aws-pcs/example-role-2
     /// This member is required.
     public var iamInstanceProfileArn: Swift.String?
     /// A list of EC2 instance configurations that Amazon Web Services PCS can provision in the compute node group.
@@ -591,8 +613,9 @@ public struct CreateComputeNodeGroupInput {
 }
 
 extension PCSClientTypes {
+
     /// An error that occurred during resource creation.
-    public struct ErrorInfo {
+    public struct ErrorInfo: Swift.Sendable {
         /// The short-form error code.
         public var code: Swift.String?
         /// The detailed error information.
@@ -607,12 +630,12 @@ extension PCSClientTypes {
             self.message = message
         }
     }
-
 }
 
 extension PCSClientTypes {
+
     /// Specifies the boundaries of the compute node group auto scaling.
-    public struct ScalingConfiguration {
+    public struct ScalingConfiguration: Swift.Sendable {
         /// The upper bound of the number of instances allowed in the compute fleet.
         /// This member is required.
         public var maxInstanceCount: Swift.Int
@@ -629,12 +652,12 @@ extension PCSClientTypes {
             self.minInstanceCount = minInstanceCount
         }
     }
-
 }
 
 extension PCSClientTypes {
+
     /// Additional options related to the Slurm scheduler.
-    public struct ComputeNodeGroupSlurmConfiguration {
+    public struct ComputeNodeGroupSlurmConfiguration: Swift.Sendable {
         /// Additional Slurm-specific configuration that directly maps to Slurm settings.
         public var slurmCustomSettings: [PCSClientTypes.SlurmCustomSetting]?
 
@@ -645,12 +668,11 @@ extension PCSClientTypes {
             self.slurmCustomSettings = slurmCustomSettings
         }
     }
-
 }
 
 extension PCSClientTypes {
 
-    public enum ComputeNodeGroupStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ComputeNodeGroupStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case active
         case createFailed
         case creating
@@ -696,8 +718,9 @@ extension PCSClientTypes {
 }
 
 extension PCSClientTypes {
+
     /// A compute node group associated with a cluster.
-    public struct ComputeNodeGroup {
+    public struct ComputeNodeGroup: Swift.Sendable {
         /// The ID of the Amazon Machine Image (AMI) that Amazon Web Services PCS uses to launch instances. If not provided, Amazon Web Services PCS uses the AMI ID specified in the custom launch template.
         public var amiId: Swift.String?
         /// The unique Amazon Resource Name (ARN) of the compute node group.
@@ -714,7 +737,11 @@ extension PCSClientTypes {
         public var customLaunchTemplate: PCSClientTypes.CustomLaunchTemplate?
         /// The list of errors that occurred during compute node group provisioning.
         public var errorInfo: [PCSClientTypes.ErrorInfo]?
-        /// The Amazon Resource Name (ARN) of the IAM instance profile used to pass an IAM role when launching EC2 instances. The role contained in your instance profile must have pcs:RegisterComputeNodeGroupInstance permissions attached to provision instances correctly.
+        /// The Amazon Resource Name (ARN) of the IAM instance profile used to pass an IAM role when launching EC2 instances. The role contained in your instance profile must have the pcs:RegisterComputeNodeGroupInstance permission. The resource identifier of the ARN must start with AWSPCS or it must have /aws-pcs/ in its path. Examples
+        ///
+        /// * arn:aws:iam::111122223333:instance-profile/AWSPCS-example-role-1
+        ///
+        /// * arn:aws:iam::111122223333:instance-profile/aws-pcs/example-role-2
         /// This member is required.
         public var iamInstanceProfileArn: Swift.String?
         /// The generated unique ID of the compute node group.
@@ -784,10 +811,9 @@ extension PCSClientTypes {
             self.subnetIds = subnetIds
         }
     }
-
 }
 
-public struct CreateComputeNodeGroupOutput {
+public struct CreateComputeNodeGroupOutput: Swift.Sendable {
     /// A compute node group associated with a cluster.
     public var computeNodeGroup: PCSClientTypes.ComputeNodeGroup?
 
@@ -799,7 +825,7 @@ public struct CreateComputeNodeGroupOutput {
     }
 }
 
-public struct DeleteComputeNodeGroupInput {
+public struct DeleteComputeNodeGroupInput: Swift.Sendable {
     /// A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. Idempotency ensures that an API request completes only once. With an idempotent request, if the original request completes successfully, the subsequent retries with the same client token return the result from the original successful request and they have no additional effect. If you don't specify a client token, the CLI and SDK automatically generate 1 for you.
     public var clientToken: Swift.String?
     /// The name or ID of the cluster of the compute node group.
@@ -821,12 +847,12 @@ public struct DeleteComputeNodeGroupInput {
     }
 }
 
-public struct DeleteComputeNodeGroupOutput {
+public struct DeleteComputeNodeGroupOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct GetComputeNodeGroupInput {
+public struct GetComputeNodeGroupInput: Swift.Sendable {
     /// The name or ID of the cluster.
     /// This member is required.
     public var clusterIdentifier: Swift.String?
@@ -844,7 +870,7 @@ public struct GetComputeNodeGroupInput {
     }
 }
 
-public struct GetComputeNodeGroupOutput {
+public struct GetComputeNodeGroupOutput: Swift.Sendable {
     /// A compute node group associated with a cluster.
     public var computeNodeGroup: PCSClientTypes.ComputeNodeGroup?
 
@@ -856,7 +882,7 @@ public struct GetComputeNodeGroupOutput {
     }
 }
 
-public struct ListComputeNodeGroupsInput {
+public struct ListComputeNodeGroupsInput: Swift.Sendable {
     /// The name or ID of the cluster to list compute node groups for.
     /// This member is required.
     public var clusterIdentifier: Swift.String?
@@ -878,8 +904,9 @@ public struct ListComputeNodeGroupsInput {
 }
 
 extension PCSClientTypes {
+
     /// The object returned by the ListComputeNodeGroups API action.
-    public struct ComputeNodeGroupSummary {
+    public struct ComputeNodeGroupSummary: Swift.Sendable {
         /// The unique Amazon Resource Name (ARN) of the compute node group.
         /// This member is required.
         public var arn: Swift.String?
@@ -921,10 +948,9 @@ extension PCSClientTypes {
             self.status = status
         }
     }
-
 }
 
-public struct ListComputeNodeGroupsOutput {
+public struct ListComputeNodeGroupsOutput: Swift.Sendable {
     /// The list of compute node groups for the cluster.
     /// This member is required.
     public var computeNodeGroups: [PCSClientTypes.ComputeNodeGroupSummary]?
@@ -942,8 +968,9 @@ public struct ListComputeNodeGroupsOutput {
 }
 
 extension PCSClientTypes {
+
     /// Additional options related to the Slurm scheduler.
-    public struct UpdateComputeNodeGroupSlurmConfigurationRequest {
+    public struct UpdateComputeNodeGroupSlurmConfigurationRequest: Swift.Sendable {
         /// Additional Slurm-specific configuration that directly maps to Slurm settings.
         public var slurmCustomSettings: [PCSClientTypes.SlurmCustomSetting]?
 
@@ -954,10 +981,9 @@ extension PCSClientTypes {
             self.slurmCustomSettings = slurmCustomSettings
         }
     }
-
 }
 
-public struct UpdateComputeNodeGroupInput {
+public struct UpdateComputeNodeGroupInput: Swift.Sendable {
     /// The ID of the Amazon Machine Image (AMI) that Amazon Web Services PCS uses to launch instances. If not provided, Amazon Web Services PCS uses the AMI ID specified in the custom launch template.
     public var amiId: Swift.String?
     /// A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. Idempotency ensures that an API request completes only once. With an idempotent request, if the original request completes successfully, the subsequent retries with the same client token return the result from the original successful request and they have no additional effect. If you don't specify a client token, the CLI and SDK automatically generate 1 for you.
@@ -970,7 +996,11 @@ public struct UpdateComputeNodeGroupInput {
     public var computeNodeGroupIdentifier: Swift.String?
     /// An Amazon EC2 launch template Amazon Web Services PCS uses to launch compute nodes.
     public var customLaunchTemplate: PCSClientTypes.CustomLaunchTemplate?
-    /// The Amazon Resource Name (ARN) of the IAM instance profile used to pass an IAM role when launching EC2 instances. The role contained in your instance profile must have pcs:RegisterComputeNodeGroupInstance permissions attached to provision instances correctly.
+    /// The Amazon Resource Name (ARN) of the IAM instance profile used to pass an IAM role when launching EC2 instances. The role contained in your instance profile must have the pcs:RegisterComputeNodeGroupInstance permission. The resource identifier of the ARN must start with AWSPCS or it must have /aws-pcs/ in its path. Examples
+    ///
+    /// * arn:aws:iam::111122223333:instance-profile/AWSPCS-example-role-1
+    ///
+    /// * arn:aws:iam::111122223333:instance-profile/aws-pcs/example-role-2
     public var iamInstanceProfileArn: Swift.String?
     /// Specifies how EC2 instances are purchased on your behalf. Amazon Web Services PCS supports On-Demand and Spot instances. For more information, see [Instance purchasing options](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/instance-purchasing-options.html) in the Amazon Elastic Compute Cloud User Guide. If you don't provide this option, it defaults to On-Demand.
     public var purchaseOption: PCSClientTypes.PurchaseOption?
@@ -1011,7 +1041,7 @@ public struct UpdateComputeNodeGroupInput {
     }
 }
 
-public struct UpdateComputeNodeGroupOutput {
+public struct UpdateComputeNodeGroupOutput: Swift.Sendable {
     /// A compute node group associated with a cluster.
     public var computeNodeGroup: PCSClientTypes.ComputeNodeGroup?
 
@@ -1024,8 +1054,9 @@ public struct UpdateComputeNodeGroupOutput {
 }
 
 extension PCSClientTypes {
+
     /// The networking configuration for the cluster's control plane.
-    public struct NetworkingRequest {
+    public struct NetworkingRequest: Swift.Sendable {
         /// A list of security group IDs associated with the Elastic Network Interface (ENI) created in subnets.
         public var securityGroupIds: [Swift.String]?
         /// The list of subnet IDs where Amazon Web Services PCS creates an Elastic Network Interface (ENI) to enable communication between managed controllers and Amazon Web Services PCS resources. Subnet IDs have the form subnet-0123456789abcdef0. Subnets can't be in Outposts, Wavelength or an Amazon Web Services Local Zone. Amazon Web Services PCS currently supports only 1 subnet in this list.
@@ -1040,12 +1071,11 @@ extension PCSClientTypes {
             self.subnetIds = subnetIds
         }
     }
-
 }
 
 extension PCSClientTypes {
 
-    public enum SchedulerType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SchedulerType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case slurm
         case sdkUnknown(Swift.String)
 
@@ -1070,8 +1100,9 @@ extension PCSClientTypes {
 }
 
 extension PCSClientTypes {
+
     /// The cluster management and job scheduling software associated with the cluster.
-    public struct SchedulerRequest {
+    public struct SchedulerRequest: Swift.Sendable {
         /// The software Amazon Web Services PCS uses to manage cluster scaling and job scheduling.
         /// This member is required.
         public var type: PCSClientTypes.SchedulerType?
@@ -1088,12 +1119,11 @@ extension PCSClientTypes {
             self.version = version
         }
     }
-
 }
 
 extension PCSClientTypes {
 
-    public enum Size: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Size: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case large
         case medium
         case small
@@ -1124,9 +1154,10 @@ extension PCSClientTypes {
 }
 
 extension PCSClientTypes {
+
     /// Additional options related to the Slurm scheduler.
-    public struct ClusterSlurmConfigurationRequest {
-        /// The time before an idle node is scaled down.
+    public struct ClusterSlurmConfigurationRequest: Swift.Sendable {
+        /// The time (in seconds) before an idle node is scaled down. Default: 600
         public var scaleDownIdleTimeInSeconds: Swift.Int?
         /// Additional Slurm-specific configuration that directly maps to Slurm settings.
         public var slurmCustomSettings: [PCSClientTypes.SlurmCustomSetting]?
@@ -1140,10 +1171,9 @@ extension PCSClientTypes {
             self.slurmCustomSettings = slurmCustomSettings
         }
     }
-
 }
 
-public struct CreateClusterInput {
+public struct CreateClusterInput: Swift.Sendable {
     /// A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. Idempotency ensures that an API request completes only once. With an idempotent request, if the original request completes successfully, the subsequent retries with the same client token return the result from the original successful request and they have no additional effect. If you don't specify a client token, the CLI and SDK automatically generate 1 for you.
     public var clientToken: Swift.String?
     /// A name to identify the cluster. Example: MyCluster
@@ -1191,7 +1221,7 @@ public struct CreateClusterInput {
 
 extension PCSClientTypes {
 
-    public enum EndpointType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum EndpointType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case slurmctld
         case slurmdbd
         case sdkUnknown(Swift.String)
@@ -1219,8 +1249,9 @@ extension PCSClientTypes {
 }
 
 extension PCSClientTypes {
+
     /// An endpoint available for interaction with the scheduler.
-    public struct Endpoint {
+    public struct Endpoint: Swift.Sendable {
         /// The endpoint's connection port number. Example: 1234
         /// This member is required.
         public var port: Swift.String?
@@ -1246,12 +1277,12 @@ extension PCSClientTypes {
             self.type = type
         }
     }
-
 }
 
 extension PCSClientTypes {
+
     /// The networking configuration for the cluster's control plane.
-    public struct Networking {
+    public struct Networking: Swift.Sendable {
         /// The list of security group IDs associated with the Elastic Network Interface (ENI) created in subnets. The following rules are required:
         ///
         /// * Inbound rule 1
@@ -1296,12 +1327,12 @@ extension PCSClientTypes {
             self.subnetIds = subnetIds
         }
     }
-
 }
 
 extension PCSClientTypes {
+
     /// The cluster management and job scheduling software associated with the cluster.
-    public struct Scheduler {
+    public struct Scheduler: Swift.Sendable {
         /// The software Amazon Web Services PCS uses to manage cluster scaling and job scheduling.
         /// This member is required.
         public var type: PCSClientTypes.SchedulerType?
@@ -1318,12 +1349,12 @@ extension PCSClientTypes {
             self.version = version
         }
     }
-
 }
 
 extension PCSClientTypes {
+
     /// The shared Slurm key for authentication, also known as the cluster secret.
-    public struct SlurmAuthKey {
+    public struct SlurmAuthKey: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the the shared Slurm key.
         /// This member is required.
         public var secretArn: Swift.String?
@@ -1340,15 +1371,15 @@ extension PCSClientTypes {
             self.secretVersion = secretVersion
         }
     }
-
 }
 
 extension PCSClientTypes {
+
     /// Additional options related to the Slurm scheduler.
-    public struct ClusterSlurmConfiguration {
+    public struct ClusterSlurmConfiguration: Swift.Sendable {
         /// The shared Slurm key for authentication, also known as the cluster secret.
         public var authKey: PCSClientTypes.SlurmAuthKey?
-        /// The time before an idle node is scaled down.
+        /// The time (in seconds) before an idle node is scaled down. Default: 600
         public var scaleDownIdleTimeInSeconds: Swift.Int?
         /// Additional Slurm-specific configuration that directly maps to Slurm settings.
         public var slurmCustomSettings: [PCSClientTypes.SlurmCustomSetting]?
@@ -1364,12 +1395,11 @@ extension PCSClientTypes {
             self.slurmCustomSettings = slurmCustomSettings
         }
     }
-
 }
 
 extension PCSClientTypes {
 
-    public enum ClusterStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ClusterStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case active
         case createFailed
         case creating
@@ -1412,8 +1442,9 @@ extension PCSClientTypes {
 }
 
 extension PCSClientTypes {
+
     /// The cluster resource and configuration.
-    public struct Cluster {
+    public struct Cluster: Swift.Sendable {
         /// The unique Amazon Resource Name (ARN) of the cluster.
         /// This member is required.
         public var arn: Swift.String?
@@ -1483,10 +1514,9 @@ extension PCSClientTypes {
             self.status = status
         }
     }
-
 }
 
-public struct CreateClusterOutput {
+public struct CreateClusterOutput: Swift.Sendable {
     /// The cluster resource.
     public var cluster: PCSClientTypes.Cluster?
 
@@ -1498,7 +1528,7 @@ public struct CreateClusterOutput {
     }
 }
 
-public struct DeleteClusterInput {
+public struct DeleteClusterInput: Swift.Sendable {
     /// A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. Idempotency ensures that an API request completes only once. With an idempotent request, if the original request completes successfully, the subsequent retries with the same client token return the result from the original successful request and they have no additional effect. If you don't specify a client token, the CLI and SDK automatically generate 1 for you.
     public var clientToken: Swift.String?
     /// The name or ID of the cluster to delete.
@@ -1515,12 +1545,12 @@ public struct DeleteClusterInput {
     }
 }
 
-public struct DeleteClusterOutput {
+public struct DeleteClusterOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct GetClusterInput {
+public struct GetClusterInput: Swift.Sendable {
     /// The name or ID of the cluster of the queue.
     /// This member is required.
     public var clusterIdentifier: Swift.String?
@@ -1533,7 +1563,7 @@ public struct GetClusterInput {
     }
 }
 
-public struct GetClusterOutput {
+public struct GetClusterOutput: Swift.Sendable {
     /// The cluster resource.
     public var cluster: PCSClientTypes.Cluster?
 
@@ -1545,7 +1575,7 @@ public struct GetClusterOutput {
     }
 }
 
-public struct ListClustersInput {
+public struct ListClustersInput: Swift.Sendable {
     /// The maximum number of results that are returned per call. You can use nextToken to obtain further pages of results. The default is 10 results, and the maximum allowed page size is 100 results. A value of 0 uses the default.
     public var maxResults: Swift.Int?
     /// The value of nextToken is a unique pagination token for each page of results returned. If nextToken is returned, there are more results available. Make the call again using the returned token to retrieve the next page. Keep all other arguments unchanged. Each pagination token expires after 24 hours. Using an expired pagination token returns an HTTP 400 InvalidToken error.
@@ -1562,8 +1592,9 @@ public struct ListClustersInput {
 }
 
 extension PCSClientTypes {
+
     /// The object returned by the ListClusters API action.
-    public struct ClusterSummary {
+    public struct ClusterSummary: Swift.Sendable {
         /// The unique Amazon Resource Name (ARN) of the cluster.
         /// This member is required.
         public var arn: Swift.String?
@@ -1600,10 +1631,9 @@ extension PCSClientTypes {
             self.status = status
         }
     }
-
 }
 
-public struct ListClustersOutput {
+public struct ListClustersOutput: Swift.Sendable {
     /// The list of clusters.
     /// This member is required.
     public var clusters: [PCSClientTypes.ClusterSummary]?
@@ -1621,8 +1651,9 @@ public struct ListClustersOutput {
 }
 
 extension PCSClientTypes {
+
     /// The compute node group configuration for a queue.
-    public struct ComputeNodeGroupConfiguration {
+    public struct ComputeNodeGroupConfiguration: Swift.Sendable {
         /// The compute node group ID for the compute node group configuration.
         public var computeNodeGroupId: Swift.String?
 
@@ -1633,10 +1664,9 @@ extension PCSClientTypes {
             self.computeNodeGroupId = computeNodeGroupId
         }
     }
-
 }
 
-public struct CreateQueueInput {
+public struct CreateQueueInput: Swift.Sendable {
     /// A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. Idempotency ensures that an API request completes only once. With an idempotent request, if the original request completes successfully, the subsequent retries with the same client token return the result from the original successful request and they have no additional effect. If you don't specify a client token, the CLI and SDK automatically generate 1 for you.
     public var clientToken: Swift.String?
     /// The name or ID of the cluster for which to create a queue.
@@ -1668,7 +1698,7 @@ public struct CreateQueueInput {
 
 extension PCSClientTypes {
 
-    public enum QueueStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum QueueStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case active
         case createFailed
         case creating
@@ -1711,8 +1741,9 @@ extension PCSClientTypes {
 }
 
 extension PCSClientTypes {
+
     /// A queue resource.
-    public struct Queue {
+    public struct Queue: Swift.Sendable {
         /// The unique Amazon Resource Name (ARN) of the queue.
         /// This member is required.
         public var arn: Swift.String?
@@ -1763,10 +1794,9 @@ extension PCSClientTypes {
             self.status = status
         }
     }
-
 }
 
-public struct CreateQueueOutput {
+public struct CreateQueueOutput: Swift.Sendable {
     /// A queue resource.
     public var queue: PCSClientTypes.Queue?
 
@@ -1778,7 +1808,7 @@ public struct CreateQueueOutput {
     }
 }
 
-public struct DeleteQueueInput {
+public struct DeleteQueueInput: Swift.Sendable {
     /// A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. Idempotency ensures that an API request completes only once. With an idempotent request, if the original request completes successfully, the subsequent retries with the same client token return the result from the original successful request and they have no additional effect. If you don't specify a client token, the CLI and SDK automatically generate 1 for you.
     public var clientToken: Swift.String?
     /// The name or ID of the cluster of the queue.
@@ -1800,12 +1830,12 @@ public struct DeleteQueueInput {
     }
 }
 
-public struct DeleteQueueOutput {
+public struct DeleteQueueOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct GetQueueInput {
+public struct GetQueueInput: Swift.Sendable {
     /// The name or ID of the cluster of the queue.
     /// This member is required.
     public var clusterIdentifier: Swift.String?
@@ -1823,7 +1853,7 @@ public struct GetQueueInput {
     }
 }
 
-public struct GetQueueOutput {
+public struct GetQueueOutput: Swift.Sendable {
     /// A queue resource.
     public var queue: PCSClientTypes.Queue?
 
@@ -1835,7 +1865,7 @@ public struct GetQueueOutput {
     }
 }
 
-public struct ListQueuesInput {
+public struct ListQueuesInput: Swift.Sendable {
     /// The name or ID of the cluster to list queues for.
     /// This member is required.
     public var clusterIdentifier: Swift.String?
@@ -1857,8 +1887,9 @@ public struct ListQueuesInput {
 }
 
 extension PCSClientTypes {
+
     /// The object returned by the ListQueues API action.
-    public struct QueueSummary {
+    public struct QueueSummary: Swift.Sendable {
         /// The unique Amazon Resource Name (ARN) of the queue.
         /// This member is required.
         public var arn: Swift.String?
@@ -1900,10 +1931,9 @@ extension PCSClientTypes {
             self.status = status
         }
     }
-
 }
 
-public struct ListQueuesOutput {
+public struct ListQueuesOutput: Swift.Sendable {
     /// The value of nextToken is a unique pagination token for each page of results returned. If nextToken is returned, there are more results available. Make the call again using the returned token to retrieve the next page. Keep all other arguments unchanged. Each pagination token expires after 24 hours. Using an expired pagination token returns an HTTP 400 InvalidToken error.
     public var nextToken: Swift.String?
     /// The list of queues associated with the cluster.
@@ -1920,7 +1950,7 @@ public struct ListQueuesOutput {
     }
 }
 
-public struct UpdateQueueInput {
+public struct UpdateQueueInput: Swift.Sendable {
     /// A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. Idempotency ensures that an API request completes only once. With an idempotent request, if the original request completes successfully, the subsequent retries with the same client token return the result from the original successful request and they have no additional effect. If you don't specify a client token, the CLI and SDK automatically generate 1 for you.
     public var clientToken: Swift.String?
     /// The name or ID of the cluster of the queue.
@@ -1946,7 +1976,7 @@ public struct UpdateQueueInput {
     }
 }
 
-public struct UpdateQueueOutput {
+public struct UpdateQueueOutput: Swift.Sendable {
     /// A queue resource.
     public var queue: PCSClientTypes.Queue?
 
@@ -1958,7 +1988,7 @@ public struct UpdateQueueOutput {
     }
 }
 
-public struct RegisterComputeNodeGroupInstanceInput {
+public struct RegisterComputeNodeGroupInstanceInput: Swift.Sendable {
     /// The client-generated token to allow for retries.
     /// This member is required.
     public var bootstrapId: Swift.String?
@@ -1976,7 +2006,7 @@ public struct RegisterComputeNodeGroupInstanceInput {
     }
 }
 
-public struct RegisterComputeNodeGroupInstanceOutput {
+public struct RegisterComputeNodeGroupInstanceOutput: Swift.Sendable {
     /// The list of endpoints available for interaction with the scheduler.
     /// This member is required.
     public var endpoints: [PCSClientTypes.Endpoint]?
@@ -2004,7 +2034,7 @@ extension RegisterComputeNodeGroupInstanceOutput: Swift.CustomDebugStringConvert
         "RegisterComputeNodeGroupInstanceOutput(endpoints: \(Swift.String(describing: endpoints)), nodeID: \(Swift.String(describing: nodeID)), sharedSecret: \"CONTENT_REDACTED\")"}
 }
 
-public struct ListTagsForResourceInput {
+public struct ListTagsForResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the resource for which to list tags.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -2017,7 +2047,7 @@ public struct ListTagsForResourceInput {
     }
 }
 
-public struct ListTagsForResourceOutput {
+public struct ListTagsForResourceOutput: Swift.Sendable {
     /// 1 or more tags added to the resource. Each tag consists of a tag key and tag value. The tag value is optional and can be an empty string.
     public var tags: [Swift.String: Swift.String]?
 
@@ -2029,7 +2059,7 @@ public struct ListTagsForResourceOutput {
     }
 }
 
-public struct TagResourceInput {
+public struct TagResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the resource.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -2047,7 +2077,7 @@ public struct TagResourceInput {
     }
 }
 
-public struct UntagResourceInput {
+public struct UntagResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the resource.
     /// This member is required.
     public var resourceArn: Swift.String?

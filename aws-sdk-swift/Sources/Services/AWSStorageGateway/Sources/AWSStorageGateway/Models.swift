@@ -28,7 +28,7 @@ import protocol ClientRuntime.ModeledError
 
 extension StorageGatewayClientTypes {
 
-    public enum ErrorCode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ErrorCode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case activationkeyexpired
         case activationkeyinvalid
         case activationkeynotfound
@@ -236,8 +236,9 @@ extension StorageGatewayClientTypes {
 }
 
 extension StorageGatewayClientTypes {
+
     /// Provides additional information about an error that was returned by the service. See the errorCode and errorDetails members for more information about the error.
-    public struct StorageGatewayError {
+    public struct StorageGatewayError: Swift.Sendable {
         /// Additional information about the error.
         public var errorCode: StorageGatewayClientTypes.ErrorCode?
         /// Human-readable text that provides detail about the error that occurred.
@@ -252,7 +253,6 @@ extension StorageGatewayClientTypes {
             self.errorDetails = errorDetails
         }
     }
-
 }
 
 /// An internal server error has occurred during the request. For more information, see the error and message fields.
@@ -314,8 +314,9 @@ public struct InvalidGatewayRequestException: ClientRuntime.ModeledError, AWSCli
 }
 
 extension StorageGatewayClientTypes {
+
     /// A key-value pair that helps you manage, filter, and search for your resource. Allowed characters: letters, white space, and numbers, representable in UTF-8, and the following characters: + - = . _ : /.
-    public struct Tag {
+    public struct Tag: Swift.Sendable {
         /// Tag key. The key can't start with aws:.
         /// This member is required.
         public var key: Swift.String?
@@ -332,7 +333,6 @@ extension StorageGatewayClientTypes {
             self.value = value
         }
     }
-
 }
 
 /// A JSON object containing one or more of the following fields:
@@ -350,7 +350,7 @@ extension StorageGatewayClientTypes {
 /// * [ActivateGatewayInput$MediumChangerType]
 ///
 /// * [ActivateGatewayInput$TapeDriveType]
-public struct ActivateGatewayInput {
+public struct ActivateGatewayInput: Swift.Sendable {
     /// Your gateway activation key. You can obtain the activation key by sending an HTTP GET request with redirects enabled to the gateway IP address (port 80). The redirect URL returned in the response provides you the activation key for your gateway in the query string parameter activationKey. It may also include other activation-related parameters, however, these are merely defaults -- the arguments you pass to the ActivateGateway API call determine the actual configuration of your gateway. For more information, see [Getting activation key](https://docs.aws.amazon.com/storagegateway/latest/userguide/get-activation-key.html) in the Storage Gateway User Guide.
     /// This member is required.
     public var activationKey: Swift.String?
@@ -363,7 +363,7 @@ public struct ActivateGatewayInput {
     /// A value that indicates the time zone you want to set for the gateway. The time zone is of the format "GMT", "GMT-hr:mm", or "GMT+hr:mm". For example, GMT indicates Greenwich Mean Time without any offset. GMT-4:00 indicates the time is 4 hours behind GMT. GMT+2:00 indicates the time is 2 hours ahead of GMT. The time zone is used, for example, for scheduling snapshots and your gateway's maintenance schedule.
     /// This member is required.
     public var gatewayTimezone: Swift.String?
-    /// A value that defines the type of gateway to activate. The type specified is critical to all later functions of the gateway and cannot be changed after activation. The default value is CACHED. Valid Values: STORED | CACHED | VTL | FILE_S3 | FILE_FSX_SMB
+    /// A value that defines the type of gateway to activate. The type specified is critical to all later functions of the gateway and cannot be changed after activation. The default value is CACHED. Amazon FSx File Gateway is no longer available to new customers. Existing customers of FSx File Gateway can continue to use the service normally. For capabilities similar to FSx File Gateway, visit [this blog post](https://aws.amazon.com/blogs/storage/switch-your-file-share-access-from-amazon-fsx-file-gateway-to-amazon-fsx-for-windows-file-server/). Valid Values: STORED | CACHED | VTL | FILE_S3 | FILE_FSX_SMB
     public var gatewayType: Swift.String?
     /// The value that indicates the type of medium changer to use for tape gateway. This field is optional. Valid Values: STK-L700 | AWS-Gateway-VTL | IBM-03584L32-0402
     public var mediumChangerType: Swift.String?
@@ -395,7 +395,7 @@ public struct ActivateGatewayInput {
 }
 
 /// Storage Gateway returns the Amazon Resource Name (ARN) of the activated gateway. It is a string made of information such as your account, gateway name, and Amazon Web Services Region. This ARN is used to reference the gateway in other API operations as well as resource-based authorization. For gateways activated prior to September 02, 2015, the gateway ARN contains the gateway name rather than the gateway ID. Changing the name of the gateway has no effect on the gateway ARN.
-public struct ActivateGatewayOutput {
+public struct ActivateGatewayOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the gateway. Use the [ListGateways] operation to return a list of gateways for your account and Amazon Web Services Region.
     public var gatewayARN: Swift.String?
 
@@ -409,7 +409,7 @@ public struct ActivateGatewayOutput {
 
 extension StorageGatewayClientTypes {
 
-    public enum ActiveDirectoryStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ActiveDirectoryStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case accessDenied
         case detached
         case joined
@@ -451,7 +451,7 @@ extension StorageGatewayClientTypes {
     }
 }
 
-public struct AddCacheInput {
+public struct AddCacheInput: Swift.Sendable {
     /// An array of strings that identify disks that are to be configured as working storage. Each string has a minimum length of 1 and maximum length of 300. You can get the disk IDs from the [ListLocalDisks] API.
     /// This member is required.
     public var diskIds: [Swift.String]?
@@ -469,7 +469,7 @@ public struct AddCacheInput {
     }
 }
 
-public struct AddCacheOutput {
+public struct AddCacheOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the gateway. Use the [ListGateways] operation to return a list of gateways for your account and Amazon Web Services Region.
     public var gatewayARN: Swift.String?
 
@@ -482,7 +482,7 @@ public struct AddCacheOutput {
 }
 
 /// AddTagsToResourceInput
-public struct AddTagsToResourceInput {
+public struct AddTagsToResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the resource you want to add tags to.
     /// This member is required.
     public var resourceARN: Swift.String?
@@ -501,7 +501,7 @@ public struct AddTagsToResourceInput {
 }
 
 /// AddTagsToResourceOutput
-public struct AddTagsToResourceOutput {
+public struct AddTagsToResourceOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the resource you want to add tags to.
     public var resourceARN: Swift.String?
 
@@ -513,7 +513,7 @@ public struct AddTagsToResourceOutput {
     }
 }
 
-public struct AddUploadBufferInput {
+public struct AddUploadBufferInput: Swift.Sendable {
     /// An array of strings that identify disks that are to be configured as working storage. Each string has a minimum length of 1 and maximum length of 300. You can get the disk IDs from the [ListLocalDisks] API.
     /// This member is required.
     public var diskIds: [Swift.String]?
@@ -531,7 +531,7 @@ public struct AddUploadBufferInput {
     }
 }
 
-public struct AddUploadBufferOutput {
+public struct AddUploadBufferOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the gateway. Use the [ListGateways] operation to return a list of gateways for your account and Amazon Web Services Region.
     public var gatewayARN: Swift.String?
 
@@ -546,7 +546,7 @@ public struct AddUploadBufferOutput {
 /// A JSON object containing one or more of the following fields:
 ///
 /// * [AddWorkingStorageInput$DiskIds]
-public struct AddWorkingStorageInput {
+public struct AddWorkingStorageInput: Swift.Sendable {
     /// An array of strings that identify disks that are to be configured as working storage. Each string has a minimum length of 1 and maximum length of 300. You can get the disk IDs from the [ListLocalDisks] API.
     /// This member is required.
     public var diskIds: [Swift.String]?
@@ -565,7 +565,7 @@ public struct AddWorkingStorageInput {
 }
 
 /// A JSON object containing the Amazon Resource Name (ARN) of the gateway for which working storage was configured.
-public struct AddWorkingStorageOutput {
+public struct AddWorkingStorageOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the gateway. Use the [ListGateways] operation to return a list of gateways for your account and Amazon Web Services Region.
     public var gatewayARN: Swift.String?
 
@@ -577,7 +577,7 @@ public struct AddWorkingStorageOutput {
     }
 }
 
-public struct AssignTapePoolInput {
+public struct AssignTapePoolInput: Swift.Sendable {
     /// Set permissions to bypass governance retention. If the lock type of the archived tape is Governance, the tape's archived age is not older than RetentionLockInDays, and the user does not already have BypassGovernanceRetention, setting this to TRUE enables the user to bypass the retention lock. This parameter is set to true by default for calls from the console. Valid values: TRUE | FALSE
     public var bypassGovernanceRetention: Swift.Bool?
     /// The ID of the pool that you want to add your tape to for archiving. The tape in this pool is archived in the S3 storage class that is associated with the pool. When you use your backup application to eject the tape, the tape is archived directly into the storage class (S3 Glacier or S3 Glacier Deep Archive) that corresponds to the pool.
@@ -599,7 +599,7 @@ public struct AssignTapePoolInput {
     }
 }
 
-public struct AssignTapePoolOutput {
+public struct AssignTapePoolOutput: Swift.Sendable {
     /// The unique Amazon Resource Names (ARN) of the virtual tape that was added to the tape pool.
     public var tapeARN: Swift.String?
 
@@ -612,8 +612,9 @@ public struct AssignTapePoolOutput {
 }
 
 extension StorageGatewayClientTypes {
+
     /// The refresh cache information for the file share or FSx file systems.
-    public struct CacheAttributes {
+    public struct CacheAttributes: Swift.Sendable {
         /// Refreshes a file share's cache by using Time To Live (TTL). TTL is the length of time since the last refresh after which access to the directory would cause the file gateway to first refresh that directory's contents from the Amazon S3 bucket or Amazon FSx file system. The TTL duration is in seconds. Valid Values:0, 300 to 2,592,000 seconds (5 minutes to 30 days)
         public var cacheStaleTimeoutInSeconds: Swift.Int?
 
@@ -624,12 +625,12 @@ extension StorageGatewayClientTypes {
             self.cacheStaleTimeoutInSeconds = cacheStaleTimeoutInSeconds
         }
     }
-
 }
 
 extension StorageGatewayClientTypes {
+
     /// Specifies network configuration information for the gateway associated with the Amazon FSx file system.
-    public struct EndpointNetworkConfiguration {
+    public struct EndpointNetworkConfiguration: Swift.Sendable {
         /// A list of gateway IP addresses on which the associated Amazon FSx file system is available. If multiple file systems are associated with this gateway, this field is required.
         public var ipAddresses: [Swift.String]?
 
@@ -640,10 +641,9 @@ extension StorageGatewayClientTypes {
             self.ipAddresses = ipAddresses
         }
     }
-
 }
 
-public struct AssociateFileSystemInput {
+public struct AssociateFileSystemInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the storage used for the audit logs.
     public var auditDestinationARN: Swift.String?
     /// The refresh cache information for the file share or FSx file systems.
@@ -697,7 +697,7 @@ extension AssociateFileSystemInput: Swift.CustomDebugStringConvertible {
         "AssociateFileSystemInput(auditDestinationARN: \(Swift.String(describing: auditDestinationARN)), cacheAttributes: \(Swift.String(describing: cacheAttributes)), clientToken: \(Swift.String(describing: clientToken)), endpointNetworkConfiguration: \(Swift.String(describing: endpointNetworkConfiguration)), gatewayARN: \(Swift.String(describing: gatewayARN)), locationARN: \(Swift.String(describing: locationARN)), tags: \(Swift.String(describing: tags)), userName: \(Swift.String(describing: userName)), password: \"CONTENT_REDACTED\")"}
 }
 
-public struct AssociateFileSystemOutput {
+public struct AssociateFileSystemOutput: Swift.Sendable {
     /// The ARN of the newly created file system association.
     public var fileSystemAssociationARN: Swift.String?
 
@@ -710,7 +710,7 @@ public struct AssociateFileSystemOutput {
 }
 
 /// AttachVolumeInput
-public struct AttachVolumeInput {
+public struct AttachVolumeInput: Swift.Sendable {
     /// The unique device ID or other distinguishing data that identifies the local disk used to create the volume. This value is only required when you are attaching a stored volume.
     public var diskId: Swift.String?
     /// The Amazon Resource Name (ARN) of the gateway that you want to attach the volume to.
@@ -742,7 +742,7 @@ public struct AttachVolumeInput {
 }
 
 /// AttachVolumeOutput
-public struct AttachVolumeOutput {
+public struct AttachVolumeOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the volume target, which includes the iSCSI name for the initiator that was used to connect to the target.
     public var targetARN: Swift.String?
     /// The Amazon Resource Name (ARN) of the volume that was attached to the gateway.
@@ -759,8 +759,9 @@ public struct AttachVolumeOutput {
 }
 
 extension StorageGatewayClientTypes {
+
     /// An automatic tape creation policy consists of automatic tape creation rules where each rule defines when and how to create new tapes. For more information about automatic tape creation, see [Creating Tapes Automatically](https://docs.aws.amazon.com/storagegateway/latest/userguide/GettingStartedCreateTapes.html#CreateTapesAutomatically).
-    public struct AutomaticTapeCreationRule {
+    public struct AutomaticTapeCreationRule: Swift.Sendable {
         /// The minimum number of available virtual tapes that the gateway maintains at all times. If the number of tapes on the gateway goes below this value, the gateway creates as many new tapes as are needed to have MinimumNumTapes on the gateway. For more information about automatic tape creation, see [Creating Tapes Automatically](https://docs.aws.amazon.com/storagegateway/latest/userguide/GettingStartedCreateTapes.html#CreateTapesAutomatically).
         /// This member is required.
         public var minimumNumTapes: Swift.Int?
@@ -791,12 +792,12 @@ extension StorageGatewayClientTypes {
             self.worm = worm
         }
     }
-
 }
 
 extension StorageGatewayClientTypes {
+
     /// Information about the gateway's automatic tape creation policies, including the automatic tape creation rules and the gateway that is using the policies.
-    public struct AutomaticTapeCreationPolicyInfo {
+    public struct AutomaticTapeCreationPolicyInfo: Swift.Sendable {
         /// An automatic tape creation policy consists of a list of automatic tape creation rules. This returns the rules that determine when and how to automatically create new tapes.
         public var automaticTapeCreationRules: [StorageGatewayClientTypes.AutomaticTapeCreationRule]?
         /// The Amazon Resource Name (ARN) of the gateway. Use the [ListGateways] operation to return a list of gateways for your account and Amazon Web Services Region.
@@ -811,12 +812,11 @@ extension StorageGatewayClientTypes {
             self.gatewayARN = gatewayARN
         }
     }
-
 }
 
 extension StorageGatewayClientTypes {
 
-    public enum AutomaticUpdatePolicy: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AutomaticUpdatePolicy: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case allVersions
         case emergencyVersionsOnly
         case sdkUnknown(Swift.String)
@@ -845,7 +845,7 @@ extension StorageGatewayClientTypes {
 
 extension StorageGatewayClientTypes {
 
-    public enum AvailabilityMonitorTestStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AvailabilityMonitorTestStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case complete
         case failed
         case pending
@@ -876,11 +876,12 @@ extension StorageGatewayClientTypes {
 }
 
 extension StorageGatewayClientTypes {
-    /// Describes a bandwidth rate limit interval for a gateway. A bandwidth rate limit schedule consists of one or more bandwidth rate limit intervals. A bandwidth rate limit interval defines a period of time on one or more days of the week, during which bandwidth rate limits are specified for uploading, downloading, or both.
-    public struct BandwidthRateLimitInterval {
-        /// The average download rate limit component of the bandwidth rate limit interval, in bits per second. This field does not appear in the response if the download rate limit is not set.
+
+    /// Describes a bandwidth rate limit interval for a gateway. A bandwidth rate limit schedule consists of one or more bandwidth rate limit intervals. A bandwidth rate limit interval defines a period of time on one or more days of the week, during which bandwidth rate limits are specified for uploading, downloading, or both. FSx File Gateway does not support this feature.
+    public struct BandwidthRateLimitInterval: Swift.Sendable {
+        /// The average download rate limit component of the bandwidth rate limit interval, in bits per second. This field does not appear in the response if the download rate limit is not set. S3 File Gateway does not support this feature.
         public var averageDownloadRateLimitInBitsPerSec: Swift.Int?
-        /// The average upload rate limit component of the bandwidth rate limit interval, in bits per second. This field does not appear in the response if the upload rate limit is not set. For Tape Gateway and Volume Gateway, the minimum value is 51200. For S3 File Gateway and FSx File Gateway, the minimum value is 104857600.
+        /// The average upload rate limit component of the bandwidth rate limit interval, in bits per second. This field does not appear in the response if the upload rate limit is not set. For Tape Gateway and Volume Gateway, the minimum value is 51200. This field is required for S3 File Gateway, and the minimum value is 104857600.
         public var averageUploadRateLimitInBitsPerSec: Swift.Int?
         /// The days of the week component of the bandwidth rate limit interval, represented as ordinal numbers from 0 to 6, where 0 represents Sunday and 6 represents Saturday.
         /// This member is required.
@@ -917,12 +918,12 @@ extension StorageGatewayClientTypes {
             self.startMinuteOfHour = startMinuteOfHour
         }
     }
-
 }
 
 extension StorageGatewayClientTypes {
+
     /// Lists iSCSI information about a volume.
-    public struct VolumeiSCSIAttributes {
+    public struct VolumeiSCSIAttributes: Swift.Sendable {
         /// Indicates whether mutual CHAP is enabled for the iSCSI target.
         public var chapEnabled: Swift.Bool
         /// The logical disk number.
@@ -949,12 +950,12 @@ extension StorageGatewayClientTypes {
             self.targetARN = targetARN
         }
     }
-
 }
 
 extension StorageGatewayClientTypes {
+
     /// Describes an iSCSI cached volume.
-    public struct CachediSCSIVolume {
+    public struct CachediSCSIVolume: Swift.Sendable {
         /// The date the volume was created. Volumes created prior to March 28, 2017 don’t have this timestamp.
         public var createdDate: Foundation.Date?
         /// Optional. The Amazon Resource Name (ARN) of a symmetric customer master key (CMK) used for Amazon S3 server-side encryption. Storage Gateway does not support asymmetric CMKs. This value must be set if KMSEncrypted is true, or if EncryptionType is SseKms or DsseKms.
@@ -1013,11 +1014,10 @@ extension StorageGatewayClientTypes {
             self.volumeiSCSIAttributes = volumeiSCSIAttributes
         }
     }
-
 }
 
 /// CancelArchivalInput
-public struct CancelArchivalInput {
+public struct CancelArchivalInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the gateway. Use the [ListGateways] operation to return a list of gateways for your account and Amazon Web Services Region.
     /// This member is required.
     public var gatewayARN: Swift.String?
@@ -1036,7 +1036,7 @@ public struct CancelArchivalInput {
 }
 
 /// CancelArchivalOutput
-public struct CancelArchivalOutput {
+public struct CancelArchivalOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the virtual tape for which archiving was canceled.
     public var tapeARN: Swift.String?
 
@@ -1049,7 +1049,7 @@ public struct CancelArchivalOutput {
 }
 
 /// CancelRetrievalInput
-public struct CancelRetrievalInput {
+public struct CancelRetrievalInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the gateway. Use the [ListGateways] operation to return a list of gateways for your account and Amazon Web Services Region.
     /// This member is required.
     public var gatewayARN: Swift.String?
@@ -1068,7 +1068,7 @@ public struct CancelRetrievalInput {
 }
 
 /// CancelRetrievalOutput
-public struct CancelRetrievalOutput {
+public struct CancelRetrievalOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the virtual tape for which retrieval was canceled.
     public var tapeARN: Swift.String?
 
@@ -1082,7 +1082,7 @@ public struct CancelRetrievalOutput {
 
 extension StorageGatewayClientTypes {
 
-    public enum CaseSensitivity: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum CaseSensitivity: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case casesensitive
         case clientspecified
         case sdkUnknown(Swift.String)
@@ -1110,8 +1110,9 @@ extension StorageGatewayClientTypes {
 }
 
 extension StorageGatewayClientTypes {
+
     /// Describes Challenge-Handshake Authentication Protocol (CHAP) information that supports authentication between your gateway and iSCSI initiators.
-    public struct ChapInfo {
+    public struct ChapInfo: Swift.Sendable {
         /// The iSCSI initiator that connects to the target.
         public var initiatorName: Swift.String?
         /// The secret key that the initiator (for example, the Windows client) must provide to participate in mutual CHAP with the target.
@@ -1134,7 +1135,6 @@ extension StorageGatewayClientTypes {
             self.targetARN = targetARN
         }
     }
-
 }
 
 extension StorageGatewayClientTypes.ChapInfo: Swift.CustomDebugStringConvertible {
@@ -1142,7 +1142,7 @@ extension StorageGatewayClientTypes.ChapInfo: Swift.CustomDebugStringConvertible
         "ChapInfo(initiatorName: \(Swift.String(describing: initiatorName)), targetARN: \(Swift.String(describing: targetARN)), secretToAuthenticateInitiator: \"CONTENT_REDACTED\", secretToAuthenticateTarget: \"CONTENT_REDACTED\")"}
 }
 
-public struct CreateCachediSCSIVolumeInput {
+public struct CreateCachediSCSIVolumeInput: Swift.Sendable {
     /// A unique identifier that you use to retry a request. If you retry a request, use the same ClientToken you specified in the initial request.
     /// This member is required.
     public var clientToken: Swift.String?
@@ -1195,7 +1195,7 @@ public struct CreateCachediSCSIVolumeInput {
     }
 }
 
-public struct CreateCachediSCSIVolumeOutput {
+public struct CreateCachediSCSIVolumeOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the volume target, which includes the iSCSI name that initiators can use to connect to the target.
     public var targetARN: Swift.String?
     /// The Amazon Resource Name (ARN) of the configured volume.
@@ -1213,7 +1213,7 @@ public struct CreateCachediSCSIVolumeOutput {
 
 extension StorageGatewayClientTypes {
 
-    public enum EncryptionType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum EncryptionType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case dssekms
         case ssekms
         case sses3
@@ -1244,8 +1244,9 @@ extension StorageGatewayClientTypes {
 }
 
 extension StorageGatewayClientTypes {
+
     /// Describes Network File System (NFS) file share default values. Files and folders stored as Amazon S3 objects in S3 buckets don't, by default, have Unix file permissions assigned to them. Upon discovery in an S3 bucket by Storage Gateway, the S3 objects that represent files and folders are assigned these default Unix permissions. This operation is only supported for S3 File Gateways.
-    public struct NFSFileShareDefaults {
+    public struct NFSFileShareDefaults: Swift.Sendable {
         /// The Unix directory mode in the form "nnnn". For example, 0666 represents the default access mode for all directories inside the file share. The default value is 0777.
         public var directoryMode: Swift.String?
         /// The Unix file mode in the form "nnnn". For example, 0666 represents the default file mode inside the file share. The default value is 0666.
@@ -1268,13 +1269,12 @@ extension StorageGatewayClientTypes {
             self.ownerId = ownerId
         }
     }
-
 }
 
 extension StorageGatewayClientTypes {
 
     /// A value that sets the access control list (ACL) permission for objects in the S3 bucket that an S3 File Gateway puts objects into. The default value is private.
-    public enum ObjectACL: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ObjectACL: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case authenticatedRead
         case awsExecRead
         case bucketOwnerFullControl
@@ -1317,7 +1317,7 @@ extension StorageGatewayClientTypes {
 }
 
 /// CreateNFSFileShareInput
-public struct CreateNFSFileShareInput {
+public struct CreateNFSFileShareInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the storage used for audit logs.
     public var auditDestinationARN: Swift.String?
     /// Specifies the Region of the S3 bucket where the NFS file share stores files. This parameter is required for NFS file shares that connect to Amazon S3 through a VPC endpoint, a VPC access point, or an access point alias that points to a VPC access point.
@@ -1333,7 +1333,7 @@ public struct CreateNFSFileShareInput {
     public var defaultStorageClass: Swift.String?
     /// A value that specifies the type of server-side encryption that the file share will use for the data that it stores in Amazon S3. We recommend using EncryptionType instead of KMSEncrypted to set the file share encryption method. You do not need to provide values for both parameters. If values for both parameters exist in the same request, then the specified encryption methods must not conflict. For example, if EncryptionType is SseS3, then KMSEncrypted must be false. If EncryptionType is SseKms or DsseKms, then KMSEncrypted must be true.
     public var encryptionType: StorageGatewayClientTypes.EncryptionType?
-    /// The name of the file share. Optional. FileShareName must be set if an S3 prefix name is set in LocationARN, or if an access point or access point alias is used.
+    /// The name of the file share. Optional. FileShareName must be set if an S3 prefix name is set in LocationARN, or if an access point or access point alias is used. A valid NFS file share name can only contain the following characters: a-z, A-Z, 0-9, -, ., and _.
     public var fileShareName: Swift.String?
     /// The Amazon Resource Name (ARN) of the S3 File Gateway on which you want to create a file share.
     /// This member is required.
@@ -1345,7 +1345,7 @@ public struct CreateNFSFileShareInput {
     public var kmsEncrypted: Swift.Bool?
     /// Optional. The Amazon Resource Name (ARN) of a symmetric customer master key (CMK) used for Amazon S3 server-side encryption. Storage Gateway does not support asymmetric CMKs. This value must be set if KMSEncrypted is true, or if EncryptionType is SseKms or DsseKms.
     public var kmsKey: Swift.String?
-    /// A custom ARN for the backend storage used for storing data for file shares. It includes a resource ARN with an optional prefix concatenation. The prefix must end with a forward slash (/). You can specify LocationARN as a bucket ARN, access point ARN or access point alias, as shown in the following examples. Bucket ARN: arn:aws:s3:::my-bucket/prefix/ Access point ARN: arn:aws:s3:region:account-id:accesspoint/access-point-name/prefix/ If you specify an access point, the bucket policy must be configured to delegate access control to the access point. For information, see [Delegating access control to access points](https://docs.aws.amazon.com/AmazonS3/latest/userguide/access-points-policies.html#access-points-delegating-control) in the Amazon S3 User Guide. Access point alias: test-ap-ab123cdef4gehijklmn5opqrstuvuse1a-s3alias
+    /// A custom ARN for the backend storage used for storing data for file shares. It includes a resource ARN with an optional prefix concatenation. The prefix must end with a forward slash (/). You can specify LocationARN as a bucket ARN, access point ARN or access point alias, as shown in the following examples. Bucket ARN: arn:aws:s3:::amzn-s3-demo-bucket/prefix/ Access point ARN: arn:aws:s3:region:account-id:accesspoint/access-point-name/prefix/ If you specify an access point, the bucket policy must be configured to delegate access control to the access point. For information, see [Delegating access control to access points](https://docs.aws.amazon.com/AmazonS3/latest/userguide/access-points-policies.html#access-points-delegating-control) in the Amazon S3 User Guide. Access point alias: test-ap-ab123cdef4gehijklmn5opqrstuvuse1a-s3alias
     /// This member is required.
     public var locationARN: Swift.String?
     /// File share default values. Optional.
@@ -1425,7 +1425,7 @@ public struct CreateNFSFileShareInput {
 }
 
 /// CreateNFSFileShareOutput
-public struct CreateNFSFileShareOutput {
+public struct CreateNFSFileShareOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the newly created file share.
     public var fileShareARN: Swift.String?
 
@@ -1438,7 +1438,7 @@ public struct CreateNFSFileShareOutput {
 }
 
 /// CreateSMBFileShareInput
-public struct CreateSMBFileShareInput {
+public struct CreateSMBFileShareInput: Swift.Sendable {
     /// The files and folders on this share will only be visible to users with read access.
     public var accessBasedEnumeration: Swift.Bool?
     /// A list of users or groups in the Active Directory that will be granted administrator privileges on the file share. These users can do all file operations as the super-user. Acceptable formats include: DOMAIN\User1, user1, @group1, and @DOMAIN\group1. Use this option very carefully, because any user in this list can do anything they like on the file share, regardless of file permissions.
@@ -1460,7 +1460,7 @@ public struct CreateSMBFileShareInput {
     public var defaultStorageClass: Swift.String?
     /// A value that specifies the type of server-side encryption that the file share will use for the data that it stores in Amazon S3. We recommend using EncryptionType instead of KMSEncrypted to set the file share encryption method. You do not need to provide values for both parameters. If values for both parameters exist in the same request, then the specified encryption methods must not conflict. For example, if EncryptionType is SseS3, then KMSEncrypted must be false. If EncryptionType is SseKms or DsseKms, then KMSEncrypted must be true.
     public var encryptionType: StorageGatewayClientTypes.EncryptionType?
-    /// The name of the file share. Optional. FileShareName must be set if an S3 prefix name is set in LocationARN, or if an access point or access point alias is used.
+    /// The name of the file share. Optional. FileShareName must be set if an S3 prefix name is set in LocationARN, or if an access point or access point alias is used. A valid SMB file share name cannot contain the following characters: [,],#,;,<,>,:,",\,/,|,?,*,+, or ASCII control characters 1-31.
     public var fileShareName: Swift.String?
     /// The ARN of the S3 File Gateway on which you want to create a file share.
     /// This member is required.
@@ -1474,7 +1474,7 @@ public struct CreateSMBFileShareInput {
     public var kmsEncrypted: Swift.Bool?
     /// Optional. The Amazon Resource Name (ARN) of a symmetric customer master key (CMK) used for Amazon S3 server-side encryption. Storage Gateway does not support asymmetric CMKs. This value must be set if KMSEncrypted is true, or if EncryptionType is SseKms or DsseKms.
     public var kmsKey: Swift.String?
-    /// A custom ARN for the backend storage used for storing data for file shares. It includes a resource ARN with an optional prefix concatenation. The prefix must end with a forward slash (/). You can specify LocationARN as a bucket ARN, access point ARN or access point alias, as shown in the following examples. Bucket ARN: arn:aws:s3:::my-bucket/prefix/ Access point ARN: arn:aws:s3:region:account-id:accesspoint/access-point-name/prefix/ If you specify an access point, the bucket policy must be configured to delegate access control to the access point. For information, see [Delegating access control to access points](https://docs.aws.amazon.com/AmazonS3/latest/userguide/access-points-policies.html#access-points-delegating-control) in the Amazon S3 User Guide. Access point alias: test-ap-ab123cdef4gehijklmn5opqrstuvuse1a-s3alias
+    /// A custom ARN for the backend storage used for storing data for file shares. It includes a resource ARN with an optional prefix concatenation. The prefix must end with a forward slash (/). You can specify LocationARN as a bucket ARN, access point ARN or access point alias, as shown in the following examples. Bucket ARN: arn:aws:s3:::amzn-s3-demo-bucket/prefix/ Access point ARN: arn:aws:s3:region:account-id:accesspoint/access-point-name/prefix/ If you specify an access point, the bucket policy must be configured to delegate access control to the access point. For information, see [Delegating access control to access points](https://docs.aws.amazon.com/AmazonS3/latest/userguide/access-points-policies.html#access-points-delegating-control) in the Amazon S3 User Guide. Access point alias: test-ap-ab123cdef4gehijklmn5opqrstuvuse1a-s3alias
     /// This member is required.
     public var locationARN: Swift.String?
     /// The notification policy of the file share. SettlingTimeInSeconds controls the number of seconds to wait after the last point in time a client wrote to a file before generating an ObjectUploaded notification. Because clients can make many small writes to files, it's best to set this parameter for as long as possible to avoid generating multiple notifications for the same file in a small time period. SettlingTimeInSeconds has no effect on the timing of the object uploading to Amazon S3, only the timing of the notification. This setting is not meant to specify an exact time at which the notification will be sent. In some cases, the gateway might require more than the specified delay time to generate and send notifications. The following example sets NotificationPolicy on with SettlingTimeInSeconds set to 60. {\"Upload\": {\"SettlingTimeInSeconds\": 60}} The following example sets NotificationPolicy off. {}
@@ -1560,7 +1560,7 @@ public struct CreateSMBFileShareInput {
 }
 
 /// CreateSMBFileShareOutput
-public struct CreateSMBFileShareOutput {
+public struct CreateSMBFileShareOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the newly created file share.
     public var fileShareARN: Swift.String?
 
@@ -1606,7 +1606,7 @@ public struct ServiceUnavailableError: ClientRuntime.ModeledError, AWSClientRunt
 /// * [CreateSnapshotInput$SnapshotDescription]
 ///
 /// * [CreateSnapshotInput$VolumeARN]
-public struct CreateSnapshotInput {
+public struct CreateSnapshotInput: Swift.Sendable {
     /// Textual description of the snapshot that appears in the Amazon EC2 console, Elastic Block Store snapshots panel in the Description field, and in the Storage Gateway snapshot Details pane, Description field.
     /// This member is required.
     public var snapshotDescription: Swift.String?
@@ -1629,7 +1629,7 @@ public struct CreateSnapshotInput {
 }
 
 /// A JSON object containing the following fields:
-public struct CreateSnapshotOutput {
+public struct CreateSnapshotOutput: Swift.Sendable {
     /// The snapshot ID that is used to refer to the snapshot in future operations such as describing snapshots (Amazon Elastic Compute Cloud API DescribeSnapshots) or creating a volume from a snapshot ([CreateStorediSCSIVolume]).
     public var snapshotId: Swift.String?
     /// The Amazon Resource Name (ARN) of the volume of which the snapshot was taken.
@@ -1645,7 +1645,7 @@ public struct CreateSnapshotOutput {
     }
 }
 
-public struct CreateSnapshotFromVolumeRecoveryPointInput {
+public struct CreateSnapshotFromVolumeRecoveryPointInput: Swift.Sendable {
     /// Textual description of the snapshot that appears in the Amazon EC2 console, Elastic Block Store snapshots panel in the Description field, and in the Storage Gateway snapshot Details pane, Description field.
     /// This member is required.
     public var snapshotDescription: Swift.String?
@@ -1667,7 +1667,7 @@ public struct CreateSnapshotFromVolumeRecoveryPointInput {
     }
 }
 
-public struct CreateSnapshotFromVolumeRecoveryPointOutput {
+public struct CreateSnapshotFromVolumeRecoveryPointOutput: Swift.Sendable {
     /// The ID of the snapshot.
     public var snapshotId: Swift.String?
     /// The Amazon Resource Name (ARN) of the iSCSI volume target. Use the [DescribeStorediSCSIVolumes] operation to return to retrieve the TargetARN for specified VolumeARN.
@@ -1698,7 +1698,7 @@ public struct CreateSnapshotFromVolumeRecoveryPointOutput {
 /// * [CreateStorediSCSIVolumeInput$SnapshotId]
 ///
 /// * [CreateStorediSCSIVolumeInput$TargetName]
-public struct CreateStorediSCSIVolumeInput {
+public struct CreateStorediSCSIVolumeInput: Swift.Sendable {
     /// The unique identifier for the gateway local disk that is configured as a stored volume. Use [ListLocalDisks](https://docs.aws.amazon.com/storagegateway/latest/userguide/API_ListLocalDisks.html) to list disk IDs for a gateway.
     /// This member is required.
     public var diskId: Swift.String?
@@ -1748,7 +1748,7 @@ public struct CreateStorediSCSIVolumeInput {
 }
 
 /// A JSON object containing the following fields:
-public struct CreateStorediSCSIVolumeOutput {
+public struct CreateStorediSCSIVolumeOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the volume target, which includes the iSCSI name that initiators can use to connect to the target.
     public var targetARN: Swift.String?
     /// The Amazon Resource Name (ARN) of the configured volume.
@@ -1770,7 +1770,7 @@ public struct CreateStorediSCSIVolumeOutput {
 
 extension StorageGatewayClientTypes {
 
-    public enum RetentionLockType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum RetentionLockType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case compliance
         case governance
         case `none`
@@ -1802,7 +1802,7 @@ extension StorageGatewayClientTypes {
 
 extension StorageGatewayClientTypes {
 
-    public enum TapeStorageClass: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum TapeStorageClass: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case deepArchive
         case glacier
         case sdkUnknown(Swift.String)
@@ -1829,7 +1829,7 @@ extension StorageGatewayClientTypes {
     }
 }
 
-public struct CreateTapePoolInput {
+public struct CreateTapePoolInput: Swift.Sendable {
     /// The name of the new custom tape pool.
     /// This member is required.
     public var poolName: Swift.String?
@@ -1859,7 +1859,7 @@ public struct CreateTapePoolInput {
     }
 }
 
-public struct CreateTapePoolOutput {
+public struct CreateTapePoolOutput: Swift.Sendable {
     /// The unique Amazon Resource Name (ARN) that represents the custom tape pool. Use the [ListTapePools] operation to return a list of tape pools for your account and Amazon Web Services Region.
     public var poolARN: Swift.String?
 
@@ -1872,7 +1872,7 @@ public struct CreateTapePoolOutput {
 }
 
 /// CreateTapesInput
-public struct CreateTapesInput {
+public struct CreateTapesInput: Swift.Sendable {
     /// A unique identifier that you use to retry a request. If you retry a request, use the same ClientToken you specified in the initial request. Using the same ClientToken prevents creating the tape multiple times.
     /// This member is required.
     public var clientToken: Swift.String?
@@ -1926,7 +1926,7 @@ public struct CreateTapesInput {
 }
 
 /// CreateTapeOutput
-public struct CreateTapesOutput {
+public struct CreateTapesOutput: Swift.Sendable {
     /// A list of unique Amazon Resource Names (ARNs) that represents the virtual tapes that were created.
     public var tapeARNs: [Swift.String]?
 
@@ -1939,7 +1939,7 @@ public struct CreateTapesOutput {
 }
 
 /// CreateTapeWithBarcodeInput
-public struct CreateTapeWithBarcodeInput {
+public struct CreateTapeWithBarcodeInput: Swift.Sendable {
     /// The unique Amazon Resource Name (ARN) that represents the gateway to associate the virtual tape with. Use the [ListGateways] operation to return a list of gateways for your account and Amazon Web Services Region.
     /// This member is required.
     public var gatewayARN: Swift.String?
@@ -1983,7 +1983,7 @@ public struct CreateTapeWithBarcodeInput {
 }
 
 /// CreateTapeOutput
-public struct CreateTapeWithBarcodeOutput {
+public struct CreateTapeWithBarcodeOutput: Swift.Sendable {
     /// A unique Amazon Resource Name (ARN) that represents the virtual tape that was created.
     public var tapeARN: Swift.String?
 
@@ -1995,7 +1995,7 @@ public struct CreateTapeWithBarcodeOutput {
     }
 }
 
-public struct DeleteAutomaticTapeCreationPolicyInput {
+public struct DeleteAutomaticTapeCreationPolicyInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the gateway. Use the [ListGateways] operation to return a list of gateways for your account and Amazon Web Services Region.
     /// This member is required.
     public var gatewayARN: Swift.String?
@@ -2008,7 +2008,7 @@ public struct DeleteAutomaticTapeCreationPolicyInput {
     }
 }
 
-public struct DeleteAutomaticTapeCreationPolicyOutput {
+public struct DeleteAutomaticTapeCreationPolicyOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the gateway. Use the [ListGateways] operation to return a list of gateways for your account and Amazon Web Services Region.
     public var gatewayARN: Swift.String?
 
@@ -2023,7 +2023,7 @@ public struct DeleteAutomaticTapeCreationPolicyOutput {
 /// A JSON object containing the following fields:
 ///
 /// * [DeleteBandwidthRateLimitInput$BandwidthType]
-public struct DeleteBandwidthRateLimitInput {
+public struct DeleteBandwidthRateLimitInput: Swift.Sendable {
     /// One of the BandwidthType values that indicates the gateway bandwidth rate limit to delete. Valid Values: UPLOAD | DOWNLOAD | ALL
     /// This member is required.
     public var bandwidthType: Swift.String?
@@ -2042,7 +2042,7 @@ public struct DeleteBandwidthRateLimitInput {
 }
 
 /// A JSON object containing the Amazon Resource Name (ARN) of the gateway whose bandwidth rate information was deleted.
-public struct DeleteBandwidthRateLimitOutput {
+public struct DeleteBandwidthRateLimitOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the gateway. Use the [ListGateways] operation to return a list of gateways for your account and Amazon Web Services Region.
     public var gatewayARN: Swift.String?
 
@@ -2059,7 +2059,7 @@ public struct DeleteBandwidthRateLimitOutput {
 /// * [DeleteChapCredentialsInput$InitiatorName]
 ///
 /// * [DeleteChapCredentialsInput$TargetARN]
-public struct DeleteChapCredentialsInput {
+public struct DeleteChapCredentialsInput: Swift.Sendable {
     /// The iSCSI initiator that connects to the target.
     /// This member is required.
     public var initiatorName: Swift.String?
@@ -2078,7 +2078,7 @@ public struct DeleteChapCredentialsInput {
 }
 
 /// A JSON object containing the following fields:
-public struct DeleteChapCredentialsOutput {
+public struct DeleteChapCredentialsOutput: Swift.Sendable {
     /// The iSCSI initiator that connects to the target.
     public var initiatorName: Swift.String?
     /// The Amazon Resource Name (ARN) of the target.
@@ -2095,7 +2095,7 @@ public struct DeleteChapCredentialsOutput {
 }
 
 /// DeleteFileShareInput
-public struct DeleteFileShareInput {
+public struct DeleteFileShareInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the file share to be deleted.
     /// This member is required.
     public var fileShareARN: Swift.String?
@@ -2113,7 +2113,7 @@ public struct DeleteFileShareInput {
 }
 
 /// DeleteFileShareOutput
-public struct DeleteFileShareOutput {
+public struct DeleteFileShareOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the deleted file share.
     public var fileShareARN: Swift.String?
 
@@ -2126,7 +2126,7 @@ public struct DeleteFileShareOutput {
 }
 
 /// A JSON object containing the ID of the gateway to delete.
-public struct DeleteGatewayInput {
+public struct DeleteGatewayInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the gateway. Use the [ListGateways] operation to return a list of gateways for your account and Amazon Web Services Region.
     /// This member is required.
     public var gatewayARN: Swift.String?
@@ -2140,7 +2140,7 @@ public struct DeleteGatewayInput {
 }
 
 /// A JSON object containing the ID of the deleted gateway.
-public struct DeleteGatewayOutput {
+public struct DeleteGatewayOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the gateway. Use the [ListGateways] operation to return a list of gateways for your account and Amazon Web Services Region.
     public var gatewayARN: Swift.String?
 
@@ -2152,7 +2152,7 @@ public struct DeleteGatewayOutput {
     }
 }
 
-public struct DeleteSnapshotScheduleInput {
+public struct DeleteSnapshotScheduleInput: Swift.Sendable {
     /// The volume which snapshot schedule to delete.
     /// This member is required.
     public var volumeARN: Swift.String?
@@ -2165,7 +2165,7 @@ public struct DeleteSnapshotScheduleInput {
     }
 }
 
-public struct DeleteSnapshotScheduleOutput {
+public struct DeleteSnapshotScheduleOutput: Swift.Sendable {
     /// The volume which snapshot schedule was deleted.
     public var volumeARN: Swift.String?
 
@@ -2178,7 +2178,7 @@ public struct DeleteSnapshotScheduleOutput {
 }
 
 /// DeleteTapeInput
-public struct DeleteTapeInput {
+public struct DeleteTapeInput: Swift.Sendable {
     /// Set to TRUE to delete an archived tape that belongs to a custom pool with tape retention lock. Only archived tapes with tape retention lock set to governance can be deleted. Archived tapes with tape retention lock set to compliance can't be deleted.
     public var bypassGovernanceRetention: Swift.Bool?
     /// The unique Amazon Resource Name (ARN) of the gateway that the virtual tape to delete is associated with. Use the [ListGateways] operation to return a list of gateways for your account and Amazon Web Services Region.
@@ -2201,7 +2201,7 @@ public struct DeleteTapeInput {
 }
 
 /// DeleteTapeOutput
-public struct DeleteTapeOutput {
+public struct DeleteTapeOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the deleted virtual tape.
     public var tapeARN: Swift.String?
 
@@ -2214,7 +2214,7 @@ public struct DeleteTapeOutput {
 }
 
 /// DeleteTapeArchiveInput
-public struct DeleteTapeArchiveInput {
+public struct DeleteTapeArchiveInput: Swift.Sendable {
     /// Set to TRUE to delete an archived tape that belongs to a custom pool with tape retention lock. Only archived tapes with tape retention lock set to governance can be deleted. Archived tapes with tape retention lock set to compliance can't be deleted.
     public var bypassGovernanceRetention: Swift.Bool?
     /// The Amazon Resource Name (ARN) of the virtual tape to delete from the virtual tape shelf (VTS).
@@ -2232,7 +2232,7 @@ public struct DeleteTapeArchiveInput {
 }
 
 /// DeleteTapeArchiveOutput
-public struct DeleteTapeArchiveOutput {
+public struct DeleteTapeArchiveOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the virtual tape that was deleted from the virtual tape shelf (VTS).
     public var tapeARN: Swift.String?
 
@@ -2244,7 +2244,7 @@ public struct DeleteTapeArchiveOutput {
     }
 }
 
-public struct DeleteTapePoolInput {
+public struct DeleteTapePoolInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the custom tape pool to delete.
     /// This member is required.
     public var poolARN: Swift.String?
@@ -2257,7 +2257,7 @@ public struct DeleteTapePoolInput {
     }
 }
 
-public struct DeleteTapePoolOutput {
+public struct DeleteTapePoolOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the custom tape pool being deleted.
     public var poolARN: Swift.String?
 
@@ -2270,7 +2270,7 @@ public struct DeleteTapePoolOutput {
 }
 
 /// A JSON object containing the [DeleteVolumeInput$VolumeARN] to delete.
-public struct DeleteVolumeInput {
+public struct DeleteVolumeInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the volume. Use the [ListVolumes] operation to return a list of gateway volumes.
     /// This member is required.
     public var volumeARN: Swift.String?
@@ -2284,7 +2284,7 @@ public struct DeleteVolumeInput {
 }
 
 /// A JSON object containing the Amazon Resource Name (ARN) of the storage volume that was deleted.
-public struct DeleteVolumeOutput {
+public struct DeleteVolumeOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the storage volume that was deleted. It is the same ARN you provided in the request.
     public var volumeARN: Swift.String?
 
@@ -2296,7 +2296,7 @@ public struct DeleteVolumeOutput {
     }
 }
 
-public struct DescribeAvailabilityMonitorTestInput {
+public struct DescribeAvailabilityMonitorTestInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the gateway. Use the [ListGateways] operation to return a list of gateways for your account and Amazon Web Services Region.
     /// This member is required.
     public var gatewayARN: Swift.String?
@@ -2309,7 +2309,7 @@ public struct DescribeAvailabilityMonitorTestInput {
     }
 }
 
-public struct DescribeAvailabilityMonitorTestOutput {
+public struct DescribeAvailabilityMonitorTestOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the gateway. Use the [ListGateways] operation to return a list of gateways for your account and Amazon Web Services Region.
     public var gatewayARN: Swift.String?
     /// The time the high availability monitoring test was started. If a test hasn't been performed, the value of this field is null.
@@ -2330,7 +2330,7 @@ public struct DescribeAvailabilityMonitorTestOutput {
 }
 
 /// A JSON object containing the Amazon Resource Name (ARN) of the gateway.
-public struct DescribeBandwidthRateLimitInput {
+public struct DescribeBandwidthRateLimitInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the gateway. Use the [ListGateways] operation to return a list of gateways for your account and Amazon Web Services Region.
     /// This member is required.
     public var gatewayARN: Swift.String?
@@ -2344,7 +2344,7 @@ public struct DescribeBandwidthRateLimitInput {
 }
 
 /// A JSON object containing the following fields:
-public struct DescribeBandwidthRateLimitOutput {
+public struct DescribeBandwidthRateLimitOutput: Swift.Sendable {
     /// The average download bandwidth rate limit in bits per second. This field does not appear in the response if the download rate limit is not set.
     public var averageDownloadRateLimitInBitsPerSec: Swift.Int?
     /// The average upload bandwidth rate limit in bits per second. This field does not appear in the response if the upload rate limit is not set.
@@ -2364,7 +2364,7 @@ public struct DescribeBandwidthRateLimitOutput {
     }
 }
 
-public struct DescribeBandwidthRateLimitScheduleInput {
+public struct DescribeBandwidthRateLimitScheduleInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the gateway. Use the [ListGateways] operation to return a list of gateways for your account and Amazon Web Services Region.
     /// This member is required.
     public var gatewayARN: Swift.String?
@@ -2377,7 +2377,7 @@ public struct DescribeBandwidthRateLimitScheduleInput {
     }
 }
 
-public struct DescribeBandwidthRateLimitScheduleOutput {
+public struct DescribeBandwidthRateLimitScheduleOutput: Swift.Sendable {
     /// An array that contains the bandwidth rate limit intervals for a tape or volume gateway.
     public var bandwidthRateLimitIntervals: [StorageGatewayClientTypes.BandwidthRateLimitInterval]?
     /// The Amazon Resource Name (ARN) of the gateway. Use the [ListGateways] operation to return a list of gateways for your account and Amazon Web Services Region.
@@ -2393,7 +2393,7 @@ public struct DescribeBandwidthRateLimitScheduleOutput {
     }
 }
 
-public struct DescribeCacheInput {
+public struct DescribeCacheInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the gateway. Use the [ListGateways] operation to return a list of gateways for your account and Amazon Web Services Region.
     /// This member is required.
     public var gatewayARN: Swift.String?
@@ -2406,7 +2406,7 @@ public struct DescribeCacheInput {
     }
 }
 
-public struct DescribeCacheOutput {
+public struct DescribeCacheOutput: Swift.Sendable {
     /// The amount of cache in bytes allocated to a gateway.
     public var cacheAllocatedInBytes: Swift.Int
     /// The file share's contribution to the overall percentage of the gateway's cache that has not been persisted to Amazon Web Services. The sample is taken at the end of the reporting period.
@@ -2442,7 +2442,7 @@ public struct DescribeCacheOutput {
     }
 }
 
-public struct DescribeCachediSCSIVolumesInput {
+public struct DescribeCachediSCSIVolumesInput: Swift.Sendable {
     /// An array of strings where each string represents the Amazon Resource Name (ARN) of a cached volume. All of the specified cached volumes must be from the same gateway. Use [ListVolumes] to get volume ARNs for a gateway.
     /// This member is required.
     public var volumeARNs: [Swift.String]?
@@ -2456,7 +2456,7 @@ public struct DescribeCachediSCSIVolumesInput {
 }
 
 /// A JSON object containing the following fields:
-public struct DescribeCachediSCSIVolumesOutput {
+public struct DescribeCachediSCSIVolumesOutput: Swift.Sendable {
     /// An array of objects where each object contains metadata about one cached volume.
     public var cachediSCSIVolumes: [StorageGatewayClientTypes.CachediSCSIVolume]?
 
@@ -2469,7 +2469,7 @@ public struct DescribeCachediSCSIVolumesOutput {
 }
 
 /// A JSON object containing the Amazon Resource Name (ARN) of the iSCSI volume target.
-public struct DescribeChapCredentialsInput {
+public struct DescribeChapCredentialsInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the iSCSI volume target. Use the [DescribeStorediSCSIVolumes] operation to return to retrieve the TargetARN for specified VolumeARN.
     /// This member is required.
     public var targetARN: Swift.String?
@@ -2483,7 +2483,7 @@ public struct DescribeChapCredentialsInput {
 }
 
 /// A JSON object containing the following fields:
-public struct DescribeChapCredentialsOutput {
+public struct DescribeChapCredentialsOutput: Swift.Sendable {
     /// An array of [ChapInfo] objects that represent CHAP credentials. Each object in the array contains CHAP credential information for one target-initiator pair. If no CHAP credentials are set, an empty array is returned. CHAP credential information is provided in a JSON object with the following fields:
     ///
     /// * InitiatorName: The iSCSI initiator that connects to the target.
@@ -2503,7 +2503,7 @@ public struct DescribeChapCredentialsOutput {
     }
 }
 
-public struct DescribeFileSystemAssociationsInput {
+public struct DescribeFileSystemAssociationsInput: Swift.Sendable {
     /// An array containing the Amazon Resource Name (ARN) of each file system association to be described.
     /// This member is required.
     public var fileSystemAssociationARNList: [Swift.String]?
@@ -2517,8 +2517,9 @@ public struct DescribeFileSystemAssociationsInput {
 }
 
 extension StorageGatewayClientTypes {
+
     /// Detailed information on file system association status.
-    public struct FileSystemAssociationStatusDetail {
+    public struct FileSystemAssociationStatusDetail: Swift.Sendable {
         /// The error code for a given file system association status.
         public var errorCode: Swift.String?
 
@@ -2529,12 +2530,12 @@ extension StorageGatewayClientTypes {
             self.errorCode = errorCode
         }
     }
-
 }
 
 extension StorageGatewayClientTypes {
+
     /// Describes the object returned by DescribeFileSystemAssociations that describes a created file system association.
-    public struct FileSystemAssociationInfo {
+    public struct FileSystemAssociationInfo: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the storage used for the audit logs.
         public var auditDestinationARN: Swift.String?
         /// The refresh cache information for the file share or FSx file systems.
@@ -2577,10 +2578,9 @@ extension StorageGatewayClientTypes {
             self.tags = tags
         }
     }
-
 }
 
-public struct DescribeFileSystemAssociationsOutput {
+public struct DescribeFileSystemAssociationsOutput: Swift.Sendable {
     /// An array containing the FileSystemAssociationInfo data type of each file system association to be described.
     public var fileSystemAssociationInfoList: [StorageGatewayClientTypes.FileSystemAssociationInfo]?
 
@@ -2593,7 +2593,7 @@ public struct DescribeFileSystemAssociationsOutput {
 }
 
 /// A JSON object containing the ID of the gateway.
-public struct DescribeGatewayInformationInput {
+public struct DescribeGatewayInformationInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the gateway. Use the [ListGateways] operation to return a list of gateways for your account and Amazon Web Services Region.
     /// This member is required.
     public var gatewayARN: Swift.String?
@@ -2608,7 +2608,7 @@ public struct DescribeGatewayInformationInput {
 
 extension StorageGatewayClientTypes {
 
-    public enum GatewayCapacity: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum GatewayCapacity: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case large
         case medium
         case small
@@ -2639,8 +2639,9 @@ extension StorageGatewayClientTypes {
 }
 
 extension StorageGatewayClientTypes {
+
     /// Describes a gateway's network interface.
-    public struct NetworkInterface {
+    public struct NetworkInterface: Swift.Sendable {
         /// The Internet Protocol version 4 (IPv4) address of the interface.
         public var ipv4Address: Swift.String?
         /// The Internet Protocol version 6 (IPv6) address of the interface. Currently not supported.
@@ -2659,7 +2660,6 @@ extension StorageGatewayClientTypes {
             self.macAddress = macAddress
         }
     }
-
 }
 
 extension StorageGatewayClientTypes.NetworkInterface: Swift.CustomDebugStringConvertible {
@@ -2670,7 +2670,7 @@ extension StorageGatewayClientTypes.NetworkInterface: Swift.CustomDebugStringCon
 
 extension StorageGatewayClientTypes {
 
-    public enum HostEnvironment: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum HostEnvironment: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case ec2
         case hyperV
         case kvm
@@ -2710,7 +2710,7 @@ extension StorageGatewayClientTypes {
 }
 
 /// A JSON object containing the following fields:
-public struct DescribeGatewayInformationOutput {
+public struct DescribeGatewayInformationOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the Amazon CloudWatch log group that is used to monitor events in the gateway. This field only only exist and returns once it have been chosen and set by the SGW service, based on the OS version of the gateway VM
     public var cloudWatchLogGroupARN: Swift.String?
     /// Date after which this gateway will not receive software updates for new features and bug fixes.
@@ -2735,7 +2735,7 @@ public struct DescribeGatewayInformationOutput {
     public var gatewayState: Swift.String?
     /// A value that indicates the time zone configured for the gateway.
     public var gatewayTimezone: Swift.String?
-    /// The type of the gateway.
+    /// The type of the gateway. Amazon FSx File Gateway is no longer available to new customers. Existing customers of FSx File Gateway can continue to use the service normally. For capabilities similar to FSx File Gateway, visit [this blog post](https://aws.amazon.com/blogs/storage/switch-your-file-share-access-from-amazon-fsx-file-gateway-to-amazon-fsx-for-windows-file-server/).
     public var gatewayType: Swift.String?
     /// The type of hardware or software platform on which the gateway is running. Tape Gateway is no longer available on Snow Family devices.
     public var hostEnvironment: StorageGatewayClientTypes.HostEnvironment?
@@ -2812,7 +2812,7 @@ extension DescribeGatewayInformationOutput: Swift.CustomDebugStringConvertible {
 }
 
 /// A JSON object containing the Amazon Resource Name (ARN) of the gateway.
-public struct DescribeMaintenanceStartTimeInput {
+public struct DescribeMaintenanceStartTimeInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the gateway. Use the [ListGateways] operation to return a list of gateways for your account and Amazon Web Services Region.
     /// This member is required.
     public var gatewayARN: Swift.String?
@@ -2826,8 +2826,9 @@ public struct DescribeMaintenanceStartTimeInput {
 }
 
 extension StorageGatewayClientTypes {
+
     /// A set of variables indicating the software update preferences for the gateway.
-    public struct SoftwareUpdatePreferences {
+    public struct SoftwareUpdatePreferences: Swift.Sendable {
         /// Indicates the automatic update policy for a gateway. ALL_VERSIONS - Enables regular gateway maintenance updates. EMERGENCY_VERSIONS_ONLY - Disables regular gateway maintenance updates. The gateway will still receive emergency version updates on rare occasions if necessary to remedy highly critical security or durability issues. You will be notified before an emergency version update is applied. These updates are applied during your gateway's scheduled maintenance window.
         public var automaticUpdatePolicy: StorageGatewayClientTypes.AutomaticUpdatePolicy?
 
@@ -2838,7 +2839,6 @@ extension StorageGatewayClientTypes {
             self.automaticUpdatePolicy = automaticUpdatePolicy
         }
     }
-
 }
 
 /// A JSON object containing the following fields:
@@ -2854,7 +2854,7 @@ extension StorageGatewayClientTypes {
 /// * [DescribeMaintenanceStartTimeOutput$MinuteOfHour]
 ///
 /// * [DescribeMaintenanceStartTimeOutput$Timezone]
-public struct DescribeMaintenanceStartTimeOutput {
+public struct DescribeMaintenanceStartTimeOutput: Swift.Sendable {
     /// The day of the month component of the maintenance start time represented as an ordinal number from 1 to 28, where 1 represents the first day of the month. It is not possible to set the maintenance schedule to start on days 29 through 31.
     public var dayOfMonth: Swift.Int?
     /// An ordinal number between 0 and 6 that represents the day of the week, where 0 represents Sunday and 6 represents Saturday. The day of week is in the time zone of the gateway.
@@ -2891,7 +2891,7 @@ public struct DescribeMaintenanceStartTimeOutput {
 }
 
 /// DescribeNFSFileSharesInput
-public struct DescribeNFSFileSharesInput {
+public struct DescribeNFSFileSharesInput: Swift.Sendable {
     /// An array containing the Amazon Resource Name (ARN) of each file share to be described.
     /// This member is required.
     public var fileShareARNList: [Swift.String]?
@@ -2905,8 +2905,9 @@ public struct DescribeNFSFileSharesInput {
 }
 
 extension StorageGatewayClientTypes {
+
     /// The Unix file permissions and ownership information assigned, by default, to native S3 objects when an S3 File Gateway discovers them in S3 buckets. This operation is only supported in S3 File Gateways.
-    public struct NFSFileShareInfo {
+    public struct NFSFileShareInfo: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the storage used for audit logs.
         public var auditDestinationARN: Swift.String?
         /// Specifies the Region of the S3 bucket where the NFS file share stores files. This parameter is required for NFS file shares that connect to Amazon S3 through a VPC endpoint, a VPC access point, or an access point alias that points to a VPC access point.
@@ -2936,7 +2937,7 @@ extension StorageGatewayClientTypes {
         public var kmsEncrypted: Swift.Bool
         /// Optional. The Amazon Resource Name (ARN) of a symmetric customer master key (CMK) used for Amazon S3 server-side encryption. Storage Gateway does not support asymmetric CMKs. This value must be set if KMSEncrypted is true, or if EncryptionType is SseKms or DsseKms.
         public var kmsKey: Swift.String?
-        /// A custom ARN for the backend storage used for storing data for file shares. It includes a resource ARN with an optional prefix concatenation. The prefix must end with a forward slash (/). You can specify LocationARN as a bucket ARN, access point ARN or access point alias, as shown in the following examples. Bucket ARN: arn:aws:s3:::my-bucket/prefix/ Access point ARN: arn:aws:s3:region:account-id:accesspoint/access-point-name/prefix/ If you specify an access point, the bucket policy must be configured to delegate access control to the access point. For information, see [Delegating access control to access points](https://docs.aws.amazon.com/AmazonS3/latest/userguide/access-points-policies.html#access-points-delegating-control) in the Amazon S3 User Guide. Access point alias: test-ap-ab123cdef4gehijklmn5opqrstuvuse1a-s3alias
+        /// A custom ARN for the backend storage used for storing data for file shares. It includes a resource ARN with an optional prefix concatenation. The prefix must end with a forward slash (/). You can specify LocationARN as a bucket ARN, access point ARN or access point alias, as shown in the following examples. Bucket ARN: arn:aws:s3:::amzn-s3-demo-bucket/prefix/ Access point ARN: arn:aws:s3:region:account-id:accesspoint/access-point-name/prefix/ If you specify an access point, the bucket policy must be configured to delegate access control to the access point. For information, see [Delegating access control to access points](https://docs.aws.amazon.com/AmazonS3/latest/userguide/access-points-policies.html#access-points-delegating-control) in the Amazon S3 User Guide. Access point alias: test-ap-ab123cdef4gehijklmn5opqrstuvuse1a-s3alias
         public var locationARN: Swift.String?
         /// Describes Network File System (NFS) file share default values. Files and folders stored as Amazon S3 objects in S3 buckets don't, by default, have Unix file permissions assigned to them. Upon discovery in an S3 bucket by Storage Gateway, the S3 objects that represent files and folders are assigned these default Unix permissions. This operation is only supported for S3 File Gateways.
         public var nfsFileShareDefaults: StorageGatewayClientTypes.NFSFileShareDefaults?
@@ -3020,11 +3021,10 @@ extension StorageGatewayClientTypes {
             self.vpcEndpointDNSName = vpcEndpointDNSName
         }
     }
-
 }
 
 /// DescribeNFSFileSharesOutput
-public struct DescribeNFSFileSharesOutput {
+public struct DescribeNFSFileSharesOutput: Swift.Sendable {
     /// An array containing a description for each requested file share.
     public var nfsFileShareInfoList: [StorageGatewayClientTypes.NFSFileShareInfo]?
 
@@ -3037,7 +3037,7 @@ public struct DescribeNFSFileSharesOutput {
 }
 
 /// DescribeSMBFileSharesInput
-public struct DescribeSMBFileSharesInput {
+public struct DescribeSMBFileSharesInput: Swift.Sendable {
     /// An array containing the Amazon Resource Name (ARN) of each file share to be described.
     /// This member is required.
     public var fileShareARNList: [Swift.String]?
@@ -3051,8 +3051,9 @@ public struct DescribeSMBFileSharesInput {
 }
 
 extension StorageGatewayClientTypes {
+
     /// The Windows file permissions and ownership information assigned, by default, to native S3 objects when S3 File Gateway discovers them in S3 buckets. This operation is only supported for S3 File Gateways.
-    public struct SMBFileShareInfo {
+    public struct SMBFileShareInfo: Swift.Sendable {
         /// Indicates whether AccessBasedEnumeration is enabled.
         public var accessBasedEnumeration: Swift.Bool?
         /// A list of users or groups in the Active Directory that have administrator rights to the file share. A group must be prefixed with the @ character. Acceptable formats include: DOMAIN\User1, user1, @group1, and @DOMAIN\group1. Can only be set if Authentication is set to ActiveDirectory.
@@ -3090,7 +3091,7 @@ extension StorageGatewayClientTypes {
         public var kmsEncrypted: Swift.Bool
         /// Optional. The Amazon Resource Name (ARN) of a symmetric customer master key (CMK) used for Amazon S3 server-side encryption. Storage Gateway does not support asymmetric CMKs. This value must be set if KMSEncrypted is true, or if EncryptionType is SseKms or DsseKms.
         public var kmsKey: Swift.String?
-        /// A custom ARN for the backend storage used for storing data for file shares. It includes a resource ARN with an optional prefix concatenation. The prefix must end with a forward slash (/). You can specify LocationARN as a bucket ARN, access point ARN or access point alias, as shown in the following examples. Bucket ARN: arn:aws:s3:::my-bucket/prefix/ Access point ARN: arn:aws:s3:region:account-id:accesspoint/access-point-name/prefix/ If you specify an access point, the bucket policy must be configured to delegate access control to the access point. For information, see [Delegating access control to access points](https://docs.aws.amazon.com/AmazonS3/latest/userguide/access-points-policies.html#access-points-delegating-control) in the Amazon S3 User Guide. Access point alias: test-ap-ab123cdef4gehijklmn5opqrstuvuse1a-s3alias
+        /// A custom ARN for the backend storage used for storing data for file shares. It includes a resource ARN with an optional prefix concatenation. The prefix must end with a forward slash (/). You can specify LocationARN as a bucket ARN, access point ARN or access point alias, as shown in the following examples. Bucket ARN: arn:aws:s3:::amzn-s3-demo-bucket/prefix/ Access point ARN: arn:aws:s3:region:account-id:accesspoint/access-point-name/prefix/ If you specify an access point, the bucket policy must be configured to delegate access control to the access point. For information, see [Delegating access control to access points](https://docs.aws.amazon.com/AmazonS3/latest/userguide/access-points-policies.html#access-points-delegating-control) in the Amazon S3 User Guide. Access point alias: test-ap-ab123cdef4gehijklmn5opqrstuvuse1a-s3alias
         public var locationARN: Swift.String?
         /// The notification policy of the file share. SettlingTimeInSeconds controls the number of seconds to wait after the last point in time a client wrote to a file before generating an ObjectUploaded notification. Because clients can make many small writes to files, it's best to set this parameter for as long as possible to avoid generating multiple notifications for the same file in a small time period. SettlingTimeInSeconds has no effect on the timing of the object uploading to Amazon S3, only the timing of the notification. This setting is not meant to specify an exact time at which the notification will be sent. In some cases, the gateway might require more than the specified delay time to generate and send notifications. The following example sets NotificationPolicy on with SettlingTimeInSeconds set to 60. {\"Upload\": {\"SettlingTimeInSeconds\": 60}} The following example sets NotificationPolicy off. {}
         public var notificationPolicy: Swift.String?
@@ -3180,11 +3181,10 @@ extension StorageGatewayClientTypes {
             self.vpcEndpointDNSName = vpcEndpointDNSName
         }
     }
-
 }
 
 /// DescribeSMBFileSharesOutput
-public struct DescribeSMBFileSharesOutput {
+public struct DescribeSMBFileSharesOutput: Swift.Sendable {
     /// An array containing a description for each requested file share.
     public var smbFileShareInfoList: [StorageGatewayClientTypes.SMBFileShareInfo]?
 
@@ -3196,7 +3196,7 @@ public struct DescribeSMBFileSharesOutput {
     }
 }
 
-public struct DescribeSMBSettingsInput {
+public struct DescribeSMBSettingsInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the gateway. Use the [ListGateways] operation to return a list of gateways for your account and Amazon Web Services Region.
     /// This member is required.
     public var gatewayARN: Swift.String?
@@ -3210,8 +3210,9 @@ public struct DescribeSMBSettingsInput {
 }
 
 extension StorageGatewayClientTypes {
+
     /// A list of Active Directory users and groups that have special permissions for SMB file shares on the gateway.
-    public struct SMBLocalGroups {
+    public struct SMBLocalGroups: Swift.Sendable {
         /// A list of Active Directory users and groups that have local Gateway Admin permissions. Acceptable formats include: DOMAIN\User1, user1, DOMAIN\group1, and group1. Gateway Admins can use the Shared Folders Microsoft Management Console snap-in to force-close files that are open and locked.
         public var gatewayAdmins: [Swift.String]?
 
@@ -3222,12 +3223,11 @@ extension StorageGatewayClientTypes {
             self.gatewayAdmins = gatewayAdmins
         }
     }
-
 }
 
 extension StorageGatewayClientTypes {
 
-    public enum SMBSecurityStrategy: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SMBSecurityStrategy: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case clientspecified
         case mandatoryencryption
         case mandatoryencryptionnoaes128
@@ -3260,7 +3260,7 @@ extension StorageGatewayClientTypes {
     }
 }
 
-public struct DescribeSMBSettingsOutput {
+public struct DescribeSMBSettingsOutput: Swift.Sendable {
     /// Indicates the status of a gateway that is a member of the Active Directory domain.
     ///
     /// * ACCESS_DENIED: Indicates that the JoinDomain operation failed due to an authentication error.
@@ -3319,7 +3319,7 @@ public struct DescribeSMBSettingsOutput {
 }
 
 /// A JSON object containing the [DescribeSnapshotScheduleInput$VolumeARN] of the volume.
-public struct DescribeSnapshotScheduleInput {
+public struct DescribeSnapshotScheduleInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the volume. Use the [ListVolumes] operation to return a list of gateway volumes.
     /// This member is required.
     public var volumeARN: Swift.String?
@@ -3332,7 +3332,7 @@ public struct DescribeSnapshotScheduleInput {
     }
 }
 
-public struct DescribeSnapshotScheduleOutput {
+public struct DescribeSnapshotScheduleOutput: Swift.Sendable {
     /// The snapshot description.
     public var description: Swift.String?
     /// The number of hours between snapshots.
@@ -3365,7 +3365,7 @@ public struct DescribeSnapshotScheduleOutput {
 }
 
 /// A JSON object containing a list of [DescribeStorediSCSIVolumesInput$VolumeARNs].
-public struct DescribeStorediSCSIVolumesInput {
+public struct DescribeStorediSCSIVolumesInput: Swift.Sendable {
     /// An array of strings where each string represents the Amazon Resource Name (ARN) of a stored volume. All of the specified stored volumes must be from the same gateway. Use [ListVolumes] to get volume ARNs for a gateway.
     /// This member is required.
     public var volumeARNs: [Swift.String]?
@@ -3379,8 +3379,9 @@ public struct DescribeStorediSCSIVolumesInput {
 }
 
 extension StorageGatewayClientTypes {
+
     /// Describes an iSCSI stored volume.
-    public struct StorediSCSIVolume {
+    public struct StorediSCSIVolume: Swift.Sendable {
         /// The date the volume was created. Volumes created prior to March 28, 2017 don’t have this timestamp.
         public var createdDate: Foundation.Date?
         /// Optional. The Amazon Resource Name (ARN) of a symmetric customer master key (CMK) used for Amazon S3 server-side encryption. Storage Gateway does not support asymmetric CMKs. This value must be set if KMSEncrypted is true, or if EncryptionType is SseKms or DsseKms.
@@ -3447,10 +3448,9 @@ extension StorageGatewayClientTypes {
             self.volumeiSCSIAttributes = volumeiSCSIAttributes
         }
     }
-
 }
 
-public struct DescribeStorediSCSIVolumesOutput {
+public struct DescribeStorediSCSIVolumesOutput: Swift.Sendable {
     /// Describes a single unit of output from [DescribeStorediSCSIVolumes]. The following fields are returned:
     ///
     /// * ChapEnabled: Indicates whether mutual CHAP is enabled for the iSCSI target.
@@ -3495,7 +3495,7 @@ public struct DescribeStorediSCSIVolumesOutput {
 }
 
 /// DescribeTapeArchivesInput
-public struct DescribeTapeArchivesInput {
+public struct DescribeTapeArchivesInput: Swift.Sendable {
     /// Specifies that the number of virtual tapes described be limited to the specified number.
     public var limit: Swift.Int?
     /// An opaque string that indicates the position at which to begin describing virtual tapes.
@@ -3516,8 +3516,9 @@ public struct DescribeTapeArchivesInput {
 }
 
 extension StorageGatewayClientTypes {
+
     /// Represents a virtual tape that is archived in the virtual tape shelf (VTS).
-    public struct TapeArchive {
+    public struct TapeArchive: Swift.Sendable {
         /// The time that the archiving of the virtual tape was completed. The default timestamp format is in the ISO8601 extended YYYY-MM-DD'T'HH:MM:SS'Z' format.
         public var completionTime: Foundation.Date?
         /// Optional. The Amazon Resource Name (ARN) of a symmetric customer master key (CMK) used for Amazon S3 server-side encryption. Storage Gateway does not support asymmetric CMKs. This value must be set if KMSEncrypted is true, or if EncryptionType is SseKms or DsseKms.
@@ -3576,11 +3577,10 @@ extension StorageGatewayClientTypes {
             self.worm = worm
         }
     }
-
 }
 
 /// DescribeTapeArchivesOutput
-public struct DescribeTapeArchivesOutput {
+public struct DescribeTapeArchivesOutput: Swift.Sendable {
     /// An opaque string that indicates the position at which the virtual tapes that were fetched for description ended. Use this marker in your next request to fetch the next set of virtual tapes in the virtual tape shelf (VTS). If there are no more virtual tapes to describe, this field does not appear in the response.
     public var marker: Swift.String?
     /// An array of virtual tape objects in the virtual tape shelf (VTS). The description includes of the Amazon Resource Name (ARN) of the virtual tapes. The information returned includes the Amazon Resource Names (ARNs) of the tapes, size of the tapes, status of the tapes, progress of the description, and tape barcode.
@@ -3597,7 +3597,7 @@ public struct DescribeTapeArchivesOutput {
 }
 
 /// DescribeTapeRecoveryPointsInput
-public struct DescribeTapeRecoveryPointsInput {
+public struct DescribeTapeRecoveryPointsInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the gateway. Use the [ListGateways] operation to return a list of gateways for your account and Amazon Web Services Region.
     /// This member is required.
     public var gatewayARN: Swift.String?
@@ -3619,8 +3619,9 @@ public struct DescribeTapeRecoveryPointsInput {
 }
 
 extension StorageGatewayClientTypes {
+
     /// Describes a recovery point.
-    public struct TapeRecoveryPointInfo {
+    public struct TapeRecoveryPointInfo: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the virtual tape.
         public var tapeARN: Swift.String?
         /// The time when the point-in-time view of the virtual tape was replicated for later recovery. The default timestamp format of the tape recovery point time is in the ISO8601 extended YYYY-MM-DD'T'HH:MM:SS'Z' format.
@@ -3643,11 +3644,10 @@ extension StorageGatewayClientTypes {
             self.tapeStatus = tapeStatus
         }
     }
-
 }
 
 /// DescribeTapeRecoveryPointsOutput
-public struct DescribeTapeRecoveryPointsOutput {
+public struct DescribeTapeRecoveryPointsOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the gateway. Use the [ListGateways] operation to return a list of gateways for your account and Amazon Web Services Region.
     public var gatewayARN: Swift.String?
     /// An opaque string that indicates the position at which the virtual tape recovery points that were listed for description ended. Use this marker in your next request to list the next set of virtual tape recovery points in the list. If there are no more recovery points to describe, this field does not appear in the response.
@@ -3668,7 +3668,7 @@ public struct DescribeTapeRecoveryPointsOutput {
 }
 
 /// DescribeTapesInput
-public struct DescribeTapesInput {
+public struct DescribeTapesInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the gateway. Use the [ListGateways] operation to return a list of gateways for your account and Amazon Web Services Region.
     /// This member is required.
     public var gatewayARN: Swift.String?
@@ -3694,8 +3694,9 @@ public struct DescribeTapesInput {
 }
 
 extension StorageGatewayClientTypes {
+
     /// Describes a virtual tape object.
-    public struct Tape {
+    public struct Tape: Swift.Sendable {
         /// Optional. The Amazon Resource Name (ARN) of a symmetric customer master key (CMK) used for Amazon S3 server-side encryption. Storage Gateway does not support asymmetric CMKs. This value must be set if KMSEncrypted is true, or if EncryptionType is SseKms or DsseKms.
         public var kmsKey: Swift.String?
         /// The date that the tape enters a custom tape pool.
@@ -3754,11 +3755,10 @@ extension StorageGatewayClientTypes {
             self.worm = worm
         }
     }
-
 }
 
 /// DescribeTapesOutput
-public struct DescribeTapesOutput {
+public struct DescribeTapesOutput: Swift.Sendable {
     /// An opaque string that can be used as part of a subsequent DescribeTapes call to retrieve the next page of results. If a response does not contain a marker, then there are no more results to be retrieved.
     public var marker: Swift.String?
     /// An array of virtual tape descriptions.
@@ -3774,7 +3774,7 @@ public struct DescribeTapesOutput {
     }
 }
 
-public struct DescribeUploadBufferInput {
+public struct DescribeUploadBufferInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the gateway. Use the [ListGateways] operation to return a list of gateways for your account and Amazon Web Services Region.
     /// This member is required.
     public var gatewayARN: Swift.String?
@@ -3787,7 +3787,7 @@ public struct DescribeUploadBufferInput {
     }
 }
 
-public struct DescribeUploadBufferOutput {
+public struct DescribeUploadBufferOutput: Swift.Sendable {
     /// An array of the gateway's local disk IDs that are configured as working storage. Each local disk ID is specified as a string (minimum length of 1 and maximum length of 300). If no local disks are configured as working storage, then the DiskIds array is empty.
     public var diskIds: [Swift.String]?
     /// The Amazon Resource Name (ARN) of the gateway. Use the [ListGateways] operation to return a list of gateways for your account and Amazon Web Services Region.
@@ -3812,7 +3812,7 @@ public struct DescribeUploadBufferOutput {
 }
 
 /// DescribeVTLDevicesInput
-public struct DescribeVTLDevicesInput {
+public struct DescribeVTLDevicesInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the gateway. Use the [ListGateways] operation to return a list of gateways for your account and Amazon Web Services Region.
     /// This member is required.
     public var gatewayARN: Swift.String?
@@ -3838,8 +3838,9 @@ public struct DescribeVTLDevicesInput {
 }
 
 extension StorageGatewayClientTypes {
+
     /// Lists iSCSI information about a VTL device.
-    public struct DeviceiSCSIAttributes {
+    public struct DeviceiSCSIAttributes: Swift.Sendable {
         /// Indicates whether mutual CHAP is enabled for the iSCSI target.
         public var chapEnabled: Swift.Bool
         /// The network interface identifier of the VTL device.
@@ -3862,12 +3863,12 @@ extension StorageGatewayClientTypes {
             self.targetARN = targetARN
         }
     }
-
 }
 
 extension StorageGatewayClientTypes {
+
     /// Represents a device object associated with a tape gateway.
-    public struct VTLDevice {
+    public struct VTLDevice: Swift.Sendable {
         /// A list of iSCSI information about a VTL device.
         public var deviceiSCSIAttributes: StorageGatewayClientTypes.DeviceiSCSIAttributes?
         /// Specifies the unique Amazon Resource Name (ARN) of the device (tape drive or media changer).
@@ -3894,11 +3895,10 @@ extension StorageGatewayClientTypes {
             self.vtlDeviceVendor = vtlDeviceVendor
         }
     }
-
 }
 
 /// DescribeVTLDevicesOutput
-public struct DescribeVTLDevicesOutput {
+public struct DescribeVTLDevicesOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the gateway. Use the [ListGateways] operation to return a list of gateways for your account and Amazon Web Services Region.
     public var gatewayARN: Swift.String?
     /// An opaque string that indicates the position at which the VTL devices that were fetched for description ended. Use the marker in your next request to fetch the next set of VTL devices in the list. If there are no more VTL devices to describe, this field does not appear in the response.
@@ -3919,7 +3919,7 @@ public struct DescribeVTLDevicesOutput {
 }
 
 /// A JSON object containing the Amazon Resource Name (ARN) of the gateway.
-public struct DescribeWorkingStorageInput {
+public struct DescribeWorkingStorageInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the gateway. Use the [ListGateways] operation to return a list of gateways for your account and Amazon Web Services Region.
     /// This member is required.
     public var gatewayARN: Swift.String?
@@ -3933,7 +3933,7 @@ public struct DescribeWorkingStorageInput {
 }
 
 /// A JSON object containing the following fields:
-public struct DescribeWorkingStorageOutput {
+public struct DescribeWorkingStorageOutput: Swift.Sendable {
     /// An array of the gateway's local disk IDs that are configured as working storage. Each local disk ID is specified as a string (minimum length of 1 and maximum length of 300). If no local disks are configured as working storage, then the DiskIds array is empty.
     public var diskIds: [Swift.String]?
     /// The Amazon Resource Name (ARN) of the gateway. Use the [ListGateways] operation to return a list of gateways for your account and Amazon Web Services Region.
@@ -3958,7 +3958,7 @@ public struct DescribeWorkingStorageOutput {
 }
 
 /// AttachVolumeInput
-public struct DetachVolumeInput {
+public struct DetachVolumeInput: Swift.Sendable {
     /// Set to true to forcibly remove the iSCSI connection of the target volume and detach the volume. The default is false. If this value is set to false, you must manually disconnect the iSCSI connection from the target volume. Valid Values: true | false
     public var forceDetach: Swift.Bool?
     /// The Amazon Resource Name (ARN) of the volume to detach from the gateway.
@@ -3976,7 +3976,7 @@ public struct DetachVolumeInput {
 }
 
 /// AttachVolumeOutput
-public struct DetachVolumeOutput {
+public struct DetachVolumeOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the volume that was detached.
     public var volumeARN: Swift.String?
 
@@ -3989,7 +3989,7 @@ public struct DetachVolumeOutput {
 }
 
 /// DisableGatewayInput
-public struct DisableGatewayInput {
+public struct DisableGatewayInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the gateway. Use the [ListGateways] operation to return a list of gateways for your account and Amazon Web Services Region.
     /// This member is required.
     public var gatewayARN: Swift.String?
@@ -4003,7 +4003,7 @@ public struct DisableGatewayInput {
 }
 
 /// DisableGatewayOutput
-public struct DisableGatewayOutput {
+public struct DisableGatewayOutput: Swift.Sendable {
     /// The unique Amazon Resource Name (ARN) of the disabled gateway.
     public var gatewayARN: Swift.String?
 
@@ -4015,7 +4015,7 @@ public struct DisableGatewayOutput {
     }
 }
 
-public struct DisassociateFileSystemInput {
+public struct DisassociateFileSystemInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the file system association to be deleted.
     /// This member is required.
     public var fileSystemAssociationARN: Swift.String?
@@ -4032,7 +4032,7 @@ public struct DisassociateFileSystemInput {
     }
 }
 
-public struct DisassociateFileSystemOutput {
+public struct DisassociateFileSystemOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the deleted file system association.
     public var fileSystemAssociationARN: Swift.String?
 
@@ -4045,8 +4045,9 @@ public struct DisassociateFileSystemOutput {
 }
 
 extension StorageGatewayClientTypes {
+
     /// Represents a gateway's local disk.
-    public struct Disk {
+    public struct Disk: Swift.Sendable {
         /// The iSCSI qualified name (IQN) that is defined for a disk. This field is not included in the response if the local disk is not defined as an iSCSI target. The format of this field is targetIqn::LUNNumber::region-volumeId.
         public var diskAllocationResource: Swift.String?
         /// One of the DiskAllocationType enumeration values that identifies how a local disk is used. Valid Values: UPLOAD_BUFFER | CACHE_STORAGE
@@ -4085,13 +4086,12 @@ extension StorageGatewayClientTypes {
             self.diskStatus = diskStatus
         }
     }
-
 }
 
 extension StorageGatewayClientTypes {
 
     /// The type of the file share.
-    public enum FileShareType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum FileShareType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case nfs
         case smb
         case sdkUnknown(Swift.String)
@@ -4119,8 +4119,9 @@ extension StorageGatewayClientTypes {
 }
 
 extension StorageGatewayClientTypes {
+
     /// Describes a file share. Only supported S3 File Gateway.
-    public struct FileShareInfo {
+    public struct FileShareInfo: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the file share.
         public var fileShareARN: Swift.String?
         /// The ID of the file share.
@@ -4147,12 +4148,12 @@ extension StorageGatewayClientTypes {
             self.gatewayARN = gatewayARN
         }
     }
-
 }
 
 extension StorageGatewayClientTypes {
+
     /// Gets the summary returned by ListFileSystemAssociation, which is a summary of a created file system association.
-    public struct FileSystemAssociationSummary {
+    public struct FileSystemAssociationSummary: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the file system association.
         public var fileSystemAssociationARN: Swift.String?
         /// The ID of the file system association.
@@ -4175,12 +4176,12 @@ extension StorageGatewayClientTypes {
             self.gatewayARN = gatewayARN
         }
     }
-
 }
 
 extension StorageGatewayClientTypes {
+
     /// Describes a gateway object.
-    public struct GatewayInfo {
+    public struct GatewayInfo: Swift.Sendable {
         /// Date after which this gateway will not receive software updates for new features and bug fixes.
         public var deprecationDate: Swift.String?
         /// The ID of the Amazon EC2 instance that was used to launch the gateway.
@@ -4195,7 +4196,7 @@ extension StorageGatewayClientTypes {
         public var gatewayName: Swift.String?
         /// The state of the gateway. Valid Values: DISABLED | ACTIVE
         public var gatewayOperationalState: Swift.String?
-        /// The type of the gateway.
+        /// The type of the gateway. Amazon FSx File Gateway is no longer available to new customers. Existing customers of FSx File Gateway can continue to use the service normally. For capabilities similar to FSx File Gateway, visit [this blog post](https://aws.amazon.com/blogs/storage/switch-your-file-share-access-from-amazon-fsx-file-gateway-to-amazon-fsx-for-windows-file-server/).
         public var gatewayType: Swift.String?
         /// The type of hardware or software platform on which the gateway is running. Tape Gateway is no longer available on Snow Family devices.
         public var hostEnvironment: StorageGatewayClientTypes.HostEnvironment?
@@ -4231,11 +4232,10 @@ extension StorageGatewayClientTypes {
             self.softwareVersion = softwareVersion
         }
     }
-
 }
 
 /// JoinDomainInput
-public struct JoinDomainInput {
+public struct JoinDomainInput: Swift.Sendable {
     /// List of IPv4 addresses, NetBIOS names, or host names of your domain server. If you need to specify the port number include it after the colon (“:”). For example, mydc.mydomain.com:389.
     public var domainControllers: [Swift.String]?
     /// The name of the domain that you want the gateway to join.
@@ -4281,7 +4281,7 @@ extension JoinDomainInput: Swift.CustomDebugStringConvertible {
 }
 
 /// JoinDomainOutput
-public struct JoinDomainOutput {
+public struct JoinDomainOutput: Swift.Sendable {
     /// Indicates the status of the gateway as a member of the Active Directory domain.
     ///
     /// * ACCESS_DENIED: Indicates that the JoinDomain operation failed due to an authentication error.
@@ -4311,7 +4311,7 @@ public struct JoinDomainOutput {
     }
 }
 
-public struct ListAutomaticTapeCreationPoliciesInput {
+public struct ListAutomaticTapeCreationPoliciesInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the gateway. Use the [ListGateways] operation to return a list of gateways for your account and Amazon Web Services Region.
     public var gatewayARN: Swift.String?
 
@@ -4323,7 +4323,7 @@ public struct ListAutomaticTapeCreationPoliciesInput {
     }
 }
 
-public struct ListAutomaticTapeCreationPoliciesOutput {
+public struct ListAutomaticTapeCreationPoliciesOutput: Swift.Sendable {
     /// Gets a listing of information about the gateway's automatic tape creation policies, including the automatic tape creation rules and the gateway that is using the policies.
     public var automaticTapeCreationPolicyInfos: [StorageGatewayClientTypes.AutomaticTapeCreationPolicyInfo]?
 
@@ -4336,7 +4336,7 @@ public struct ListAutomaticTapeCreationPoliciesOutput {
 }
 
 /// ListFileShareInput
-public struct ListFileSharesInput {
+public struct ListFileSharesInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the gateway whose file shares you want to list. If this field is not present, all file shares under your account are listed.
     public var gatewayARN: Swift.String?
     /// The maximum number of file shares to return in the response. The value must be an integer with a value greater than zero. Optional.
@@ -4357,7 +4357,7 @@ public struct ListFileSharesInput {
 }
 
 /// ListFileShareOutput
-public struct ListFileSharesOutput {
+public struct ListFileSharesOutput: Swift.Sendable {
     /// An array of information about the S3 File Gateway's file shares.
     public var fileShareInfoList: [StorageGatewayClientTypes.FileShareInfo]?
     /// If the request includes Marker, the response returns that value in this field.
@@ -4377,7 +4377,7 @@ public struct ListFileSharesOutput {
     }
 }
 
-public struct ListFileSystemAssociationsInput {
+public struct ListFileSystemAssociationsInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the gateway. Use the [ListGateways] operation to return a list of gateways for your account and Amazon Web Services Region.
     public var gatewayARN: Swift.String?
     /// The maximum number of file system associations to return in the response. If present, Limit must be an integer with a value greater than zero. Optional.
@@ -4397,7 +4397,7 @@ public struct ListFileSystemAssociationsInput {
     }
 }
 
-public struct ListFileSystemAssociationsOutput {
+public struct ListFileSystemAssociationsOutput: Swift.Sendable {
     /// An array of information about the Amazon FSx gateway's file system associations.
     public var fileSystemAssociationSummaryList: [StorageGatewayClientTypes.FileSystemAssociationSummary]?
     /// If the request includes Marker, the response returns that value in this field.
@@ -4422,7 +4422,7 @@ public struct ListFileSystemAssociationsOutput {
 /// * [ListGatewaysInput$Limit]
 ///
 /// * [ListGatewaysInput$Marker]
-public struct ListGatewaysInput {
+public struct ListGatewaysInput: Swift.Sendable {
     /// Specifies that the list of gateways returned be limited to the specified number of items.
     public var limit: Swift.Int?
     /// An opaque string that indicates the position at which to begin the returned list of gateways.
@@ -4438,7 +4438,7 @@ public struct ListGatewaysInput {
     }
 }
 
-public struct ListGatewaysOutput {
+public struct ListGatewaysOutput: Swift.Sendable {
     /// An array of [GatewayInfo] objects.
     public var gateways: [StorageGatewayClientTypes.GatewayInfo]?
     /// Use the marker in your next request to fetch the next set of gateways in the list. If there are no more gateways to list, this field does not appear in the response.
@@ -4455,7 +4455,7 @@ public struct ListGatewaysOutput {
 }
 
 /// A JSON object containing the Amazon Resource Name (ARN) of the gateway.
-public struct ListLocalDisksInput {
+public struct ListLocalDisksInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the gateway. Use the [ListGateways] operation to return a list of gateways for your account and Amazon Web Services Region.
     /// This member is required.
     public var gatewayARN: Swift.String?
@@ -4468,7 +4468,7 @@ public struct ListLocalDisksInput {
     }
 }
 
-public struct ListLocalDisksOutput {
+public struct ListLocalDisksOutput: Swift.Sendable {
     /// A JSON object containing the following fields:
     ///
     /// * [ListLocalDisksOutput$Disks]
@@ -4487,7 +4487,7 @@ public struct ListLocalDisksOutput {
 }
 
 /// ListTagsForResourceInput
-public struct ListTagsForResourceInput {
+public struct ListTagsForResourceInput: Swift.Sendable {
     /// Specifies that the list of tags returned be limited to the specified number of items.
     public var limit: Swift.Int?
     /// An opaque string that indicates the position at which to begin returning the list of tags.
@@ -4509,7 +4509,7 @@ public struct ListTagsForResourceInput {
 }
 
 /// ListTagsForResourceOutput
-public struct ListTagsForResourceOutput {
+public struct ListTagsForResourceOutput: Swift.Sendable {
     /// An opaque string that indicates the position at which to stop returning the list of tags.
     public var marker: Swift.String?
     /// The Amazon Resource Name (ARN) of the resource for which you want to list tags.
@@ -4529,7 +4529,7 @@ public struct ListTagsForResourceOutput {
     }
 }
 
-public struct ListTapePoolsInput {
+public struct ListTapePoolsInput: Swift.Sendable {
     /// An optional number limit for the tape pools in the list returned by this call.
     public var limit: Swift.Int?
     /// A string that indicates the position at which to begin the returned list of tape pools.
@@ -4551,7 +4551,7 @@ public struct ListTapePoolsInput {
 
 extension StorageGatewayClientTypes {
 
-    public enum PoolStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum PoolStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case active
         case deleted
         case sdkUnknown(Swift.String)
@@ -4579,8 +4579,9 @@ extension StorageGatewayClientTypes {
 }
 
 extension StorageGatewayClientTypes {
+
     /// Describes a custom tape pool.
-    public struct PoolInfo {
+    public struct PoolInfo: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the custom tape pool. Use the [ListTapePools] operation to return a list of custom tape pools for your account and Amazon Web Services Region.
         public var poolARN: Swift.String?
         /// The name of the custom tape pool. PoolName can use all ASCII characters, except '/' and '\'.
@@ -4611,10 +4612,9 @@ extension StorageGatewayClientTypes {
             self.storageClass = storageClass
         }
     }
-
 }
 
-public struct ListTapePoolsOutput {
+public struct ListTapePoolsOutput: Swift.Sendable {
     /// A string that indicates the position at which to begin the returned list of tape pools. Use the marker in your next request to continue pagination of tape pools. If there are no more tape pools to list, this element does not appear in the response body.
     public var marker: Swift.String?
     /// An array of PoolInfo objects, where each object describes a single custom tape pool. If there are no custom tape pools, the PoolInfos is an empty array.
@@ -4637,7 +4637,7 @@ public struct ListTapePoolsOutput {
 /// * [ListTapesInput$Marker]
 ///
 /// * [ListTapesInput$TapeARNs]
-public struct ListTapesInput {
+public struct ListTapesInput: Swift.Sendable {
     /// An optional number limit for the tapes in the list returned by this call.
     public var limit: Swift.Int?
     /// A string that indicates the position at which to begin the returned list of tapes.
@@ -4658,8 +4658,9 @@ public struct ListTapesInput {
 }
 
 extension StorageGatewayClientTypes {
+
     /// Describes a virtual tape.
-    public struct TapeInfo {
+    public struct TapeInfo: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the gateway. Use the [ListGateways] operation to return a list of gateways for your account and Amazon Web Services Region.
         public var gatewayARN: Swift.String?
         /// The date that the tape entered the custom tape pool with tape retention lock enabled.
@@ -4698,7 +4699,6 @@ extension StorageGatewayClientTypes {
             self.tapeStatus = tapeStatus
         }
     }
-
 }
 
 /// A JSON object containing the following fields:
@@ -4706,7 +4706,7 @@ extension StorageGatewayClientTypes {
 /// * [ListTapesOutput$Marker]
 ///
 /// * [ListTapesOutput$VolumeInfos]
-public struct ListTapesOutput {
+public struct ListTapesOutput: Swift.Sendable {
     /// A string that indicates the position at which to begin returning the next list of tapes. Use the marker in your next request to continue pagination of tapes. If there are no more tapes to list, this element does not appear in the response body.
     public var marker: Swift.String?
     /// An array of [TapeInfo] objects, where each object describes a single tape. If there are no tapes in the tape library or VTS, then the TapeInfos is an empty array.
@@ -4723,7 +4723,7 @@ public struct ListTapesOutput {
 }
 
 /// ListVolumeInitiatorsInput
-public struct ListVolumeInitiatorsInput {
+public struct ListVolumeInitiatorsInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the volume. Use the [ListVolumes] operation to return a list of gateway volumes for the gateway.
     /// This member is required.
     public var volumeARN: Swift.String?
@@ -4737,7 +4737,7 @@ public struct ListVolumeInitiatorsInput {
 }
 
 /// ListVolumeInitiatorsOutput
-public struct ListVolumeInitiatorsOutput {
+public struct ListVolumeInitiatorsOutput: Swift.Sendable {
     /// The host names and port numbers of all iSCSI initiators that are connected to the gateway.
     public var initiators: [Swift.String]?
 
@@ -4749,7 +4749,7 @@ public struct ListVolumeInitiatorsOutput {
     }
 }
 
-public struct ListVolumeRecoveryPointsInput {
+public struct ListVolumeRecoveryPointsInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the gateway. Use the [ListGateways] operation to return a list of gateways for your account and Amazon Web Services Region.
     /// This member is required.
     public var gatewayARN: Swift.String?
@@ -4763,8 +4763,9 @@ public struct ListVolumeRecoveryPointsInput {
 }
 
 extension StorageGatewayClientTypes {
+
     /// Describes a storage volume recovery point object.
-    public struct VolumeRecoveryPointInfo {
+    public struct VolumeRecoveryPointInfo: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the volume target.
         public var volumeARN: Swift.String?
         /// The time the recovery point was taken.
@@ -4787,10 +4788,9 @@ extension StorageGatewayClientTypes {
             self.volumeUsageInBytes = volumeUsageInBytes
         }
     }
-
 }
 
-public struct ListVolumeRecoveryPointsOutput {
+public struct ListVolumeRecoveryPointsOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the gateway. Use the [ListGateways] operation to return a list of gateways for your account and Amazon Web Services Region.
     public var gatewayARN: Swift.String?
     /// An array of [VolumeRecoveryPointInfo] objects.
@@ -4811,7 +4811,7 @@ public struct ListVolumeRecoveryPointsOutput {
 /// * [ListVolumesInput$Limit]
 ///
 /// * [ListVolumesInput$Marker]
-public struct ListVolumesInput {
+public struct ListVolumesInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the gateway. Use the [ListGateways] operation to return a list of gateways for your account and Amazon Web Services Region.
     public var gatewayARN: Swift.String?
     /// Specifies that the list of volumes returned be limited to the specified number of items.
@@ -4832,8 +4832,9 @@ public struct ListVolumesInput {
 }
 
 extension StorageGatewayClientTypes {
+
     /// Describes a storage volume object.
-    public struct VolumeInfo {
+    public struct VolumeInfo: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the gateway. Use the [ListGateways] operation to return a list of gateways for your account and Amazon Web Services Region.
         public var gatewayARN: Swift.String?
         /// The unique identifier assigned to your gateway during activation. This ID becomes part of the gateway Amazon Resource Name (ARN), which you use as input for other operations. Valid Values: 50 to 500 lowercase letters, numbers, periods (.), and hyphens (-).
@@ -4868,7 +4869,6 @@ extension StorageGatewayClientTypes {
             self.volumeType = volumeType
         }
     }
-
 }
 
 /// A JSON object containing the following fields:
@@ -4876,7 +4876,7 @@ extension StorageGatewayClientTypes {
 /// * [ListVolumesOutput$Marker]
 ///
 /// * [ListVolumesOutput$VolumeInfos]
-public struct ListVolumesOutput {
+public struct ListVolumesOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the gateway. Use the [ListGateways] operation to return a list of gateways for your account and Amazon Web Services Region.
     public var gatewayARN: Swift.String?
     /// Use the marker in your next request to continue pagination of iSCSI volumes. If there are no more volumes to list, this field does not appear in the response body.
@@ -4896,7 +4896,7 @@ public struct ListVolumesOutput {
     }
 }
 
-public struct NotifyWhenUploadedInput {
+public struct NotifyWhenUploadedInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the file share.
     /// This member is required.
     public var fileShareARN: Swift.String?
@@ -4909,7 +4909,7 @@ public struct NotifyWhenUploadedInput {
     }
 }
 
-public struct NotifyWhenUploadedOutput {
+public struct NotifyWhenUploadedOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the file share.
     public var fileShareARN: Swift.String?
     /// The randomly generated ID of the notification that was sent. This ID is in UUID format.
@@ -4926,7 +4926,7 @@ public struct NotifyWhenUploadedOutput {
 }
 
 /// RefreshCacheInput
-public struct RefreshCacheInput {
+public struct RefreshCacheInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the file share you want to refresh.
     /// This member is required.
     public var fileShareARN: Swift.String?
@@ -4948,7 +4948,7 @@ public struct RefreshCacheInput {
 }
 
 /// RefreshCacheOutput
-public struct RefreshCacheOutput {
+public struct RefreshCacheOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the file share.
     public var fileShareARN: Swift.String?
     /// The randomly generated ID of the notification that was sent. This ID is in UUID format.
@@ -4965,7 +4965,7 @@ public struct RefreshCacheOutput {
 }
 
 /// RemoveTagsFromResourceInput
-public struct RemoveTagsFromResourceInput {
+public struct RemoveTagsFromResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the resource you want to remove the tags from.
     /// This member is required.
     public var resourceARN: Swift.String?
@@ -4984,7 +4984,7 @@ public struct RemoveTagsFromResourceInput {
 }
 
 /// RemoveTagsFromResourceOutput
-public struct RemoveTagsFromResourceOutput {
+public struct RemoveTagsFromResourceOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the resource that the tags were removed from.
     public var resourceARN: Swift.String?
 
@@ -4996,7 +4996,7 @@ public struct RemoveTagsFromResourceOutput {
     }
 }
 
-public struct ResetCacheInput {
+public struct ResetCacheInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the gateway. Use the [ListGateways] operation to return a list of gateways for your account and Amazon Web Services Region.
     /// This member is required.
     public var gatewayARN: Swift.String?
@@ -5009,7 +5009,7 @@ public struct ResetCacheInput {
     }
 }
 
-public struct ResetCacheOutput {
+public struct ResetCacheOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the gateway. Use the [ListGateways] operation to return a list of gateways for your account and Amazon Web Services Region.
     public var gatewayARN: Swift.String?
 
@@ -5022,7 +5022,7 @@ public struct ResetCacheOutput {
 }
 
 /// RetrieveTapeArchiveInput
-public struct RetrieveTapeArchiveInput {
+public struct RetrieveTapeArchiveInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the gateway you want to retrieve the virtual tape to. Use the [ListGateways] operation to return a list of gateways for your account and Amazon Web Services Region. You retrieve archived virtual tapes to only one gateway and the gateway must be a tape gateway.
     /// This member is required.
     public var gatewayARN: Swift.String?
@@ -5041,7 +5041,7 @@ public struct RetrieveTapeArchiveInput {
 }
 
 /// RetrieveTapeArchiveOutput
-public struct RetrieveTapeArchiveOutput {
+public struct RetrieveTapeArchiveOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the retrieved virtual tape.
     public var tapeARN: Swift.String?
 
@@ -5054,7 +5054,7 @@ public struct RetrieveTapeArchiveOutput {
 }
 
 /// RetrieveTapeRecoveryPointInput
-public struct RetrieveTapeRecoveryPointInput {
+public struct RetrieveTapeRecoveryPointInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the gateway. Use the [ListGateways] operation to return a list of gateways for your account and Amazon Web Services Region.
     /// This member is required.
     public var gatewayARN: Swift.String?
@@ -5073,7 +5073,7 @@ public struct RetrieveTapeRecoveryPointInput {
 }
 
 /// RetrieveTapeRecoveryPointOutput
-public struct RetrieveTapeRecoveryPointOutput {
+public struct RetrieveTapeRecoveryPointOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the virtual tape for which the recovery point was retrieved.
     public var tapeARN: Swift.String?
 
@@ -5086,7 +5086,7 @@ public struct RetrieveTapeRecoveryPointOutput {
 }
 
 /// SetLocalConsolePasswordInput
-public struct SetLocalConsolePasswordInput {
+public struct SetLocalConsolePasswordInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the gateway. Use the [ListGateways] operation to return a list of gateways for your account and Amazon Web Services Region.
     /// This member is required.
     public var gatewayARN: Swift.String?
@@ -5109,7 +5109,7 @@ extension SetLocalConsolePasswordInput: Swift.CustomDebugStringConvertible {
         "SetLocalConsolePasswordInput(gatewayARN: \(Swift.String(describing: gatewayARN)), localConsolePassword: \"CONTENT_REDACTED\")"}
 }
 
-public struct SetLocalConsolePasswordOutput {
+public struct SetLocalConsolePasswordOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the gateway. Use the [ListGateways] operation to return a list of gateways for your account and Amazon Web Services Region.
     public var gatewayARN: Swift.String?
 
@@ -5122,7 +5122,7 @@ public struct SetLocalConsolePasswordOutput {
 }
 
 /// SetSMBGuestPasswordInput
-public struct SetSMBGuestPasswordInput {
+public struct SetSMBGuestPasswordInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the S3 File Gateway the SMB file share is associated with.
     /// This member is required.
     public var gatewayARN: Swift.String?
@@ -5145,7 +5145,7 @@ extension SetSMBGuestPasswordInput: Swift.CustomDebugStringConvertible {
         "SetSMBGuestPasswordInput(gatewayARN: \(Swift.String(describing: gatewayARN)), password: \"CONTENT_REDACTED\")"}
 }
 
-public struct SetSMBGuestPasswordOutput {
+public struct SetSMBGuestPasswordOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the gateway. Use the [ListGateways] operation to return a list of gateways for your account and Amazon Web Services Region.
     public var gatewayARN: Swift.String?
 
@@ -5158,7 +5158,7 @@ public struct SetSMBGuestPasswordOutput {
 }
 
 /// A JSON object containing the Amazon Resource Name (ARN) of the gateway to shut down.
-public struct ShutdownGatewayInput {
+public struct ShutdownGatewayInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the gateway. Use the [ListGateways] operation to return a list of gateways for your account and Amazon Web Services Region.
     /// This member is required.
     public var gatewayARN: Swift.String?
@@ -5172,7 +5172,7 @@ public struct ShutdownGatewayInput {
 }
 
 /// A JSON object containing the Amazon Resource Name (ARN) of the gateway that was shut down.
-public struct ShutdownGatewayOutput {
+public struct ShutdownGatewayOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the gateway. Use the [ListGateways] operation to return a list of gateways for your account and Amazon Web Services Region.
     public var gatewayARN: Swift.String?
 
@@ -5184,7 +5184,7 @@ public struct ShutdownGatewayOutput {
     }
 }
 
-public struct StartAvailabilityMonitorTestInput {
+public struct StartAvailabilityMonitorTestInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the gateway. Use the [ListGateways] operation to return a list of gateways for your account and Amazon Web Services Region.
     /// This member is required.
     public var gatewayARN: Swift.String?
@@ -5197,7 +5197,7 @@ public struct StartAvailabilityMonitorTestInput {
     }
 }
 
-public struct StartAvailabilityMonitorTestOutput {
+public struct StartAvailabilityMonitorTestOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the gateway. Use the [ListGateways] operation to return a list of gateways for your account and Amazon Web Services Region.
     public var gatewayARN: Swift.String?
 
@@ -5210,7 +5210,7 @@ public struct StartAvailabilityMonitorTestOutput {
 }
 
 /// A JSON object containing the Amazon Resource Name (ARN) of the gateway to start.
-public struct StartGatewayInput {
+public struct StartGatewayInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the gateway. Use the [ListGateways] operation to return a list of gateways for your account and Amazon Web Services Region.
     /// This member is required.
     public var gatewayARN: Swift.String?
@@ -5224,7 +5224,7 @@ public struct StartGatewayInput {
 }
 
 /// A JSON object containing the Amazon Resource Name (ARN) of the gateway that was restarted.
-public struct StartGatewayOutput {
+public struct StartGatewayOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the gateway. Use the [ListGateways] operation to return a list of gateways for your account and Amazon Web Services Region.
     public var gatewayARN: Swift.String?
 
@@ -5236,7 +5236,7 @@ public struct StartGatewayOutput {
     }
 }
 
-public struct UpdateAutomaticTapeCreationPolicyInput {
+public struct UpdateAutomaticTapeCreationPolicyInput: Swift.Sendable {
     /// An automatic tape creation policy consists of a list of automatic tape creation rules. The rules determine when and how to automatically create new tapes.
     /// This member is required.
     public var automaticTapeCreationRules: [StorageGatewayClientTypes.AutomaticTapeCreationRule]?
@@ -5254,7 +5254,7 @@ public struct UpdateAutomaticTapeCreationPolicyInput {
     }
 }
 
-public struct UpdateAutomaticTapeCreationPolicyOutput {
+public struct UpdateAutomaticTapeCreationPolicyOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the gateway. Use the [ListGateways] operation to return a list of gateways for your account and Amazon Web Services Region.
     public var gatewayARN: Swift.String?
 
@@ -5271,7 +5271,7 @@ public struct UpdateAutomaticTapeCreationPolicyOutput {
 /// * [UpdateBandwidthRateLimitInput$AverageDownloadRateLimitInBitsPerSec]
 ///
 /// * [UpdateBandwidthRateLimitInput$AverageUploadRateLimitInBitsPerSec]
-public struct UpdateBandwidthRateLimitInput {
+public struct UpdateBandwidthRateLimitInput: Swift.Sendable {
     /// The average download bandwidth rate limit in bits per second.
     public var averageDownloadRateLimitInBitsPerSec: Swift.Int?
     /// The average upload bandwidth rate limit in bits per second.
@@ -5293,7 +5293,7 @@ public struct UpdateBandwidthRateLimitInput {
 }
 
 /// A JSON object containing the Amazon Resource Name (ARN) of the gateway whose throttle information was updated.
-public struct UpdateBandwidthRateLimitOutput {
+public struct UpdateBandwidthRateLimitOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the gateway. Use the [ListGateways] operation to return a list of gateways for your account and Amazon Web Services Region.
     public var gatewayARN: Swift.String?
 
@@ -5305,7 +5305,7 @@ public struct UpdateBandwidthRateLimitOutput {
     }
 }
 
-public struct UpdateBandwidthRateLimitScheduleInput {
+public struct UpdateBandwidthRateLimitScheduleInput: Swift.Sendable {
     /// An array containing bandwidth rate limit schedule intervals for a gateway. When no bandwidth rate limit intervals have been scheduled, the array is empty.
     /// This member is required.
     public var bandwidthRateLimitIntervals: [StorageGatewayClientTypes.BandwidthRateLimitInterval]?
@@ -5323,7 +5323,7 @@ public struct UpdateBandwidthRateLimitScheduleInput {
     }
 }
 
-public struct UpdateBandwidthRateLimitScheduleOutput {
+public struct UpdateBandwidthRateLimitScheduleOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the gateway. Use the [ListGateways] operation to return a list of gateways for your account and Amazon Web Services Region.
     public var gatewayARN: Swift.String?
 
@@ -5344,7 +5344,7 @@ public struct UpdateBandwidthRateLimitScheduleOutput {
 /// * [UpdateChapCredentialsInput$SecretToAuthenticateTarget]
 ///
 /// * [UpdateChapCredentialsInput$TargetARN]
-public struct UpdateChapCredentialsInput {
+public struct UpdateChapCredentialsInput: Swift.Sendable {
     /// The iSCSI initiator that connects to the target.
     /// This member is required.
     public var initiatorName: Swift.String?
@@ -5377,7 +5377,7 @@ extension UpdateChapCredentialsInput: Swift.CustomDebugStringConvertible {
 }
 
 /// A JSON object containing the following fields:
-public struct UpdateChapCredentialsOutput {
+public struct UpdateChapCredentialsOutput: Swift.Sendable {
     /// The iSCSI initiator that connects to the target. This is the same initiator name specified in the request.
     public var initiatorName: Swift.String?
     /// The Amazon Resource Name (ARN) of the target. This is the same target specified in the request.
@@ -5393,7 +5393,7 @@ public struct UpdateChapCredentialsOutput {
     }
 }
 
-public struct UpdateFileSystemAssociationInput {
+public struct UpdateFileSystemAssociationInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the storage used for the audit logs.
     public var auditDestinationARN: Swift.String?
     /// The refresh cache information for the file share or FSx file systems.
@@ -5427,7 +5427,7 @@ extension UpdateFileSystemAssociationInput: Swift.CustomDebugStringConvertible {
         "UpdateFileSystemAssociationInput(auditDestinationARN: \(Swift.String(describing: auditDestinationARN)), cacheAttributes: \(Swift.String(describing: cacheAttributes)), fileSystemAssociationARN: \(Swift.String(describing: fileSystemAssociationARN)), userName: \(Swift.String(describing: userName)), password: \"CONTENT_REDACTED\")"}
 }
 
-public struct UpdateFileSystemAssociationOutput {
+public struct UpdateFileSystemAssociationOutput: Swift.Sendable {
     /// The ARN of the updated file system association.
     public var fileSystemAssociationARN: Swift.String?
 
@@ -5439,7 +5439,7 @@ public struct UpdateFileSystemAssociationOutput {
     }
 }
 
-public struct UpdateGatewayInformationInput {
+public struct UpdateGatewayInformationInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the Amazon CloudWatch log group that you want to use to monitor and log events in the gateway. For more information, see [What is Amazon CloudWatch Logs?](https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/WhatIsCloudWatchLogs.html)
     public var cloudWatchLogGroupARN: Swift.String?
     /// The Amazon Resource Name (ARN) of the gateway. Use the [ListGateways] operation to return a list of gateways for your account and Amazon Web Services Region.
@@ -5469,7 +5469,7 @@ public struct UpdateGatewayInformationInput {
 }
 
 /// A JSON object containing the Amazon Resource Name (ARN) of the gateway that was updated.
-public struct UpdateGatewayInformationOutput {
+public struct UpdateGatewayInformationOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the gateway. Use the [ListGateways] operation to return a list of gateways for your account and Amazon Web Services Region.
     public var gatewayARN: Swift.String?
     /// The name you configured for your gateway.
@@ -5486,7 +5486,7 @@ public struct UpdateGatewayInformationOutput {
 }
 
 /// A JSON object containing the Amazon Resource Name (ARN) of the gateway to update.
-public struct UpdateGatewaySoftwareNowInput {
+public struct UpdateGatewaySoftwareNowInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the gateway. Use the [ListGateways] operation to return a list of gateways for your account and Amazon Web Services Region.
     /// This member is required.
     public var gatewayARN: Swift.String?
@@ -5500,7 +5500,7 @@ public struct UpdateGatewaySoftwareNowInput {
 }
 
 /// A JSON object containing the Amazon Resource Name (ARN) of the gateway that was updated.
-public struct UpdateGatewaySoftwareNowOutput {
+public struct UpdateGatewaySoftwareNowOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the gateway. Use the [ListGateways] operation to return a list of gateways for your account and Amazon Web Services Region.
     public var gatewayARN: Swift.String?
 
@@ -5523,7 +5523,7 @@ public struct UpdateGatewaySoftwareNowOutput {
 /// * [UpdateMaintenanceStartTimeInput$HourOfDay]
 ///
 /// * [UpdateMaintenanceStartTimeInput$MinuteOfHour]
-public struct UpdateMaintenanceStartTimeInput {
+public struct UpdateMaintenanceStartTimeInput: Swift.Sendable {
     /// The day of the month component of the maintenance start time represented as an ordinal number from 1 to 28, where 1 represents the first day of the month. It is not possible to set the maintenance schedule to start on days 29 through 31.
     public var dayOfMonth: Swift.Int?
     /// The day of the week component of the maintenance start time week represented as an ordinal number from 0 to 6, where 0 represents Sunday and 6 represents Saturday.
@@ -5557,7 +5557,7 @@ public struct UpdateMaintenanceStartTimeInput {
 }
 
 /// A JSON object containing the Amazon Resource Name (ARN) of the gateway whose maintenance start time is updated.
-public struct UpdateMaintenanceStartTimeOutput {
+public struct UpdateMaintenanceStartTimeOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the gateway. Use the [ListGateways] operation to return a list of gateways for your account and Amazon Web Services Region.
     public var gatewayARN: Swift.String?
 
@@ -5570,7 +5570,7 @@ public struct UpdateMaintenanceStartTimeOutput {
 }
 
 /// UpdateNFSFileShareInput
-public struct UpdateNFSFileShareInput {
+public struct UpdateNFSFileShareInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the storage used for audit logs.
     public var auditDestinationARN: Swift.String?
     /// Specifies refresh cache information for the file share.
@@ -5584,7 +5584,7 @@ public struct UpdateNFSFileShareInput {
     /// The Amazon Resource Name (ARN) of the file share to be updated.
     /// This member is required.
     public var fileShareARN: Swift.String?
-    /// The name of the file share. Optional. FileShareName must be set if an S3 prefix name is set in LocationARN, or if an access point or access point alias is used.
+    /// The name of the file share. Optional. FileShareName must be set if an S3 prefix name is set in LocationARN, or if an access point or access point alias is used. A valid NFS file share name can only contain the following characters: a-z, A-Z, 0-9, -, ., and _.
     public var fileShareName: Swift.String?
     /// A value that enables guessing of the MIME type for uploaded objects based on file extensions. Set this value to true to enable MIME type guessing, otherwise set to false. The default value is true. Valid Values: true | false
     public var guessMIMETypeEnabled: Swift.Bool?
@@ -5651,7 +5651,7 @@ public struct UpdateNFSFileShareInput {
 }
 
 /// UpdateNFSFileShareOutput
-public struct UpdateNFSFileShareOutput {
+public struct UpdateNFSFileShareOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the updated file share.
     public var fileShareARN: Swift.String?
 
@@ -5664,7 +5664,7 @@ public struct UpdateNFSFileShareOutput {
 }
 
 /// UpdateSMBFileShareInput
-public struct UpdateSMBFileShareInput {
+public struct UpdateSMBFileShareInput: Swift.Sendable {
     /// The files and folders on this share will only be visible to users with read access.
     public var accessBasedEnumeration: Swift.Bool?
     /// A list of users or groups in the Active Directory that have administrator rights to the file share. A group must be prefixed with the @ character. Acceptable formats include: DOMAIN\User1, user1, @group1, and @DOMAIN\group1. Can only be set if Authentication is set to ActiveDirectory.
@@ -5682,7 +5682,7 @@ public struct UpdateSMBFileShareInput {
     /// The Amazon Resource Name (ARN) of the SMB file share that you want to update.
     /// This member is required.
     public var fileShareARN: Swift.String?
-    /// The name of the file share. Optional. FileShareName must be set if an S3 prefix name is set in LocationARN, or if an access point or access point alias is used.
+    /// The name of the file share. Optional. FileShareName must be set if an S3 prefix name is set in LocationARN, or if an access point or access point alias is used. A valid SMB file share name cannot contain the following characters: [,],#,;,<,>,:,",\,/,|,?,*,+, or ASCII control characters 1-31.
     public var fileShareName: Swift.String?
     /// A value that enables guessing of the MIME type for uploaded objects based on file extensions. Set this value to true to enable MIME type guessing, otherwise set to false. The default value is true. Valid Values: true | false
     public var guessMIMETypeEnabled: Swift.Bool?
@@ -5755,7 +5755,7 @@ public struct UpdateSMBFileShareInput {
 }
 
 /// UpdateSMBFileShareOutput
-public struct UpdateSMBFileShareOutput {
+public struct UpdateSMBFileShareOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the updated SMB file share.
     public var fileShareARN: Swift.String?
 
@@ -5767,7 +5767,7 @@ public struct UpdateSMBFileShareOutput {
     }
 }
 
-public struct UpdateSMBFileShareVisibilityInput {
+public struct UpdateSMBFileShareVisibilityInput: Swift.Sendable {
     /// The shares on this gateway appear when listing shares.
     /// This member is required.
     public var fileSharesVisible: Swift.Bool?
@@ -5785,7 +5785,7 @@ public struct UpdateSMBFileShareVisibilityInput {
     }
 }
 
-public struct UpdateSMBFileShareVisibilityOutput {
+public struct UpdateSMBFileShareVisibilityOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the gateway. Use the [ListGateways] operation to return a list of gateways for your account and Amazon Web Services Region.
     public var gatewayARN: Swift.String?
 
@@ -5797,7 +5797,7 @@ public struct UpdateSMBFileShareVisibilityOutput {
     }
 }
 
-public struct UpdateSMBLocalGroupsInput {
+public struct UpdateSMBLocalGroupsInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the gateway. Use the [ListGateways] operation to return a list of gateways for your account and Amazon Web Services Region.
     /// This member is required.
     public var gatewayARN: Swift.String?
@@ -5815,7 +5815,7 @@ public struct UpdateSMBLocalGroupsInput {
     }
 }
 
-public struct UpdateSMBLocalGroupsOutput {
+public struct UpdateSMBLocalGroupsOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the gateway. Use the [ListGateways] operation to return a list of gateways for your account and Amazon Web Services Region.
     public var gatewayARN: Swift.String?
 
@@ -5827,7 +5827,7 @@ public struct UpdateSMBLocalGroupsOutput {
     }
 }
 
-public struct UpdateSMBSecurityStrategyInput {
+public struct UpdateSMBSecurityStrategyInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the gateway. Use the [ListGateways] operation to return a list of gateways for your account and Amazon Web Services Region.
     /// This member is required.
     public var gatewayARN: Swift.String?
@@ -5845,7 +5845,7 @@ public struct UpdateSMBSecurityStrategyInput {
     }
 }
 
-public struct UpdateSMBSecurityStrategyOutput {
+public struct UpdateSMBSecurityStrategyOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the gateway. Use the [ListGateways] operation to return a list of gateways for your account and Amazon Web Services Region.
     public var gatewayARN: Swift.String?
 
@@ -5866,7 +5866,7 @@ public struct UpdateSMBSecurityStrategyOutput {
 /// * [UpdateSnapshotScheduleInput$StartAt]
 ///
 /// * [UpdateSnapshotScheduleInput$VolumeARN]
-public struct UpdateSnapshotScheduleInput {
+public struct UpdateSnapshotScheduleInput: Swift.Sendable {
     /// Optional description of the snapshot that overwrites the existing description.
     public var description: Swift.String?
     /// Frequency of snapshots. Specify the number of hours between snapshots.
@@ -5898,7 +5898,7 @@ public struct UpdateSnapshotScheduleInput {
 }
 
 /// A JSON object containing the Amazon Resource Name (ARN) of the updated storage volume.
-public struct UpdateSnapshotScheduleOutput {
+public struct UpdateSnapshotScheduleOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the volume. Use the [ListVolumes] operation to return a list of gateway volumes.
     public var volumeARN: Swift.String?
 
@@ -5910,7 +5910,7 @@ public struct UpdateSnapshotScheduleOutput {
     }
 }
 
-public struct UpdateVTLDeviceTypeInput {
+public struct UpdateVTLDeviceTypeInput: Swift.Sendable {
     /// The type of medium changer you want to select. Valid Values: STK-L700 | AWS-Gateway-VTL | IBM-03584L32-0402
     /// This member is required.
     public var deviceType: Swift.String?
@@ -5929,7 +5929,7 @@ public struct UpdateVTLDeviceTypeInput {
 }
 
 /// UpdateVTLDeviceTypeOutput
-public struct UpdateVTLDeviceTypeOutput {
+public struct UpdateVTLDeviceTypeOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the medium changer you have selected.
     public var vtlDeviceARN: Swift.String?
 

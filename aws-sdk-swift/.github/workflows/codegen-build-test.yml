@@ -11,9 +11,9 @@ env:
 
 jobs:
   codegen-build-test:
-    runs-on: macos-14-xlarge
+    runs-on: macos-15-xlarge
     env:
-      DEVELOPER_DIR: /Applications/Xcode_15.4.app/Contents/Developer
+      DEVELOPER_DIR: /Applications/Xcode_16.1.app/Contents/Developer
     steps:
       - name: Checkout aws-sdk-swift
         uses: actions/checkout@v3
@@ -61,19 +61,5 @@ jobs:
         run: ./scripts/ci_steps/codegen_sdk.sh
       - name: Build SDK with Unit Tests
         run: swift build --build-tests
-
-      # Configure credentials for use during special protocol tests run against real clients
-      # Since environment variables are modified by some tests profiles are used instead
-      - name: Create AWS config directory
-        run: mkdir -p ~/.aws
-      - name: Create AWS config file
-        run: |
-          echo "[default]" > ~/.aws/config
-          echo "region=us-west-2" >> ~/.aws/config
-      - name: Create AWS credentials file
-        run: |
-          echo "[default]" > ~/.aws/credentials
-          echo "aws_access_key_id = test-key-id" >> ~/.aws/credentials
-          echo "aws_secret_access_key = test-secret-access-key" >> ~/.aws/credentials
       - name: Run Unit Tests
         run: swift test --skip-build

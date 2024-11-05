@@ -54,8 +54,9 @@ public struct AccessDeniedException: ClientRuntime.ModeledError, AWSClientRuntim
 }
 
 extension PanoramaClientTypes {
+
     /// Details about a beta appliance software update.
-    public struct AlternateSoftwareMetadata {
+    public struct AlternateSoftwareMetadata: Swift.Sendable {
         /// The appliance software version.
         public var version: Swift.String?
 
@@ -66,12 +67,11 @@ extension PanoramaClientTypes {
             self.version = version
         }
     }
-
 }
 
 extension PanoramaClientTypes {
 
-    public enum ApplicationInstanceHealthStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ApplicationInstanceHealthStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case error
         case notAvailable
         case running
@@ -103,7 +103,7 @@ extension PanoramaClientTypes {
 
 extension PanoramaClientTypes {
 
-    public enum DesiredState: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DesiredState: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case removed
         case running
         case stopped
@@ -135,7 +135,7 @@ extension PanoramaClientTypes {
 
 extension PanoramaClientTypes {
 
-    public enum DeviceReportedStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DeviceReportedStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case installError
         case installInProgress
         case launched
@@ -190,8 +190,9 @@ extension PanoramaClientTypes {
 }
 
 extension PanoramaClientTypes {
+
     /// An application instance's state.
-    public struct ReportedRuntimeContextState {
+    public struct ReportedRuntimeContextState: Swift.Sendable {
         /// The application's desired state.
         /// This member is required.
         public var desiredState: PanoramaClientTypes.DesiredState?
@@ -218,12 +219,11 @@ extension PanoramaClientTypes {
             self.runtimeContextName = runtimeContextName
         }
     }
-
 }
 
 extension PanoramaClientTypes {
 
-    public enum ApplicationInstanceStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ApplicationInstanceStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case deploymentError
         case deploymentFailed
         case deploymentInProgress
@@ -278,8 +278,9 @@ extension PanoramaClientTypes {
 }
 
 extension PanoramaClientTypes {
+
     /// An application instance on a device.
-    public struct ApplicationInstance {
+    public struct ApplicationInstance: Swift.Sendable {
         /// The application instance's ID.
         public var applicationInstanceId: Swift.String?
         /// The application instance's ARN.
@@ -334,12 +335,12 @@ extension PanoramaClientTypes {
             self.tags = tags
         }
     }
-
 }
 
 extension PanoramaClientTypes {
+
     /// A conflict exception error argument.
-    public struct ConflictExceptionErrorArgument {
+    public struct ConflictExceptionErrorArgument: Swift.Sendable {
         /// The error argument's name.
         /// This member is required.
         public var name: Swift.String?
@@ -356,7 +357,6 @@ extension PanoramaClientTypes {
             self.value = value
         }
     }
-
 }
 
 /// The target resource is in use.
@@ -404,7 +404,7 @@ public struct ConflictException: ClientRuntime.ModeledError, AWSClientRuntime.AW
 
 extension PanoramaClientTypes {
 
-    public enum ConnectionType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ConnectionType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case dhcp
         case staticIp
         case sdkUnknown(Swift.String)
@@ -504,8 +504,9 @@ public struct ServiceQuotaExceededException: ClientRuntime.ModeledError, AWSClie
 }
 
 extension PanoramaClientTypes {
+
     /// A validation exception error argument.
-    public struct ValidationExceptionErrorArgument {
+    public struct ValidationExceptionErrorArgument: Swift.Sendable {
         /// The argument's name.
         /// This member is required.
         public var name: Swift.String?
@@ -522,12 +523,12 @@ extension PanoramaClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension PanoramaClientTypes {
+
     /// A validation exception field.
-    public struct ValidationExceptionField {
+    public struct ValidationExceptionField: Swift.Sendable {
         /// The field's message.
         /// This member is required.
         public var message: Swift.String?
@@ -544,12 +545,11 @@ extension PanoramaClientTypes {
             self.name = name
         }
     }
-
 }
 
 extension PanoramaClientTypes {
 
-    public enum ValidationExceptionReason: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ValidationExceptionReason: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case cannotParse
         case fieldValidationFailed
         case other
@@ -624,26 +624,26 @@ public struct ValidationException: ClientRuntime.ModeledError, AWSClientRuntime.
 }
 
 extension PanoramaClientTypes {
+
     /// Parameter overrides for an application instance. This is a JSON document that has a single key (PayloadData) where the value is an escaped string representation of the overrides document.
-    public enum ManifestOverridesPayload {
+    public enum ManifestOverridesPayload: Swift.Sendable {
         /// The overrides document.
         case payloaddata(Swift.String)
         case sdkUnknown(Swift.String)
     }
-
 }
 
 extension PanoramaClientTypes {
+
     /// A application verion's manifest file. This is a JSON document that has a single key (PayloadData) where the value is an escaped string representation of the application manifest (graph.json). This file is located in the graphs folder in your application source.
-    public enum ManifestPayload {
+    public enum ManifestPayload: Swift.Sendable {
         /// The application manifest.
         case payloaddata(Swift.String)
         case sdkUnknown(Swift.String)
     }
-
 }
 
-public struct CreateApplicationInstanceInput {
+public struct CreateApplicationInstanceInput: Swift.Sendable {
     /// The ID of an application instance to replace with the new instance.
     public var applicationInstanceIdToReplace: Swift.String?
     /// A device's ID.
@@ -685,7 +685,7 @@ public struct CreateApplicationInstanceInput {
     }
 }
 
-public struct CreateApplicationInstanceOutput {
+public struct CreateApplicationInstanceOutput: Swift.Sendable {
     /// The application instance's ID.
     /// This member is required.
     public var applicationInstanceId: Swift.String?
@@ -734,8 +734,9 @@ public struct ResourceNotFoundException: ClientRuntime.ModeledError, AWSClientRu
 }
 
 extension PanoramaClientTypes {
+
     /// An over-the-air update (OTA) job configuration.
-    public struct OTAJobConfig {
+    public struct OTAJobConfig: Swift.Sendable {
         /// Whether to apply the update if it is a major version change.
         public var allowMajorVersionUpdate: Swift.Bool
         /// The target version of the device software.
@@ -751,12 +752,12 @@ extension PanoramaClientTypes {
             self.imageVersion = imageVersion
         }
     }
-
 }
 
 extension PanoramaClientTypes {
+
     /// A job's configuration.
-    public struct DeviceJobConfig {
+    public struct DeviceJobConfig: Swift.Sendable {
         /// A configuration for an over-the-air (OTA) upgrade. Required for OTA jobs.
         public var otaJobConfig: PanoramaClientTypes.OTAJobConfig?
 
@@ -767,12 +768,11 @@ extension PanoramaClientTypes {
             self.otaJobConfig = otaJobConfig
         }
     }
-
 }
 
 extension PanoramaClientTypes {
 
-    public enum JobType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum JobType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case ota
         case reboot
         case sdkUnknown(Swift.String)
@@ -799,7 +799,7 @@ extension PanoramaClientTypes {
     }
 }
 
-public struct CreateJobForDevicesInput {
+public struct CreateJobForDevicesInput: Swift.Sendable {
     /// ID of target device.
     /// This member is required.
     public var deviceIds: [Swift.String]?
@@ -822,8 +822,9 @@ public struct CreateJobForDevicesInput {
 }
 
 extension PanoramaClientTypes {
+
     /// A job for a device.
-    public struct Job {
+    public struct Job: Swift.Sendable {
         /// The target device's ID.
         public var deviceId: Swift.String?
         /// The job's ID.
@@ -838,10 +839,9 @@ extension PanoramaClientTypes {
             self.jobId = jobId
         }
     }
-
 }
 
-public struct CreateJobForDevicesOutput {
+public struct CreateJobForDevicesOutput: Swift.Sendable {
     /// A list of jobs.
     /// This member is required.
     public var jobs: [PanoramaClientTypes.Job]?
@@ -856,7 +856,7 @@ public struct CreateJobForDevicesOutput {
 
 extension PanoramaClientTypes {
 
-    public enum JobResourceType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum JobResourceType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case package
         case sdkUnknown(Swift.String)
 
@@ -881,8 +881,9 @@ extension PanoramaClientTypes {
 }
 
 extension PanoramaClientTypes {
+
     /// Tags for a job.
-    public struct JobResourceTags {
+    public struct JobResourceTags: Swift.Sendable {
         /// The job's type.
         /// This member is required.
         public var resourceType: PanoramaClientTypes.JobResourceType?
@@ -899,12 +900,11 @@ extension PanoramaClientTypes {
             self.tags = tags
         }
     }
-
 }
 
 extension PanoramaClientTypes {
 
-    public enum TemplateType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum TemplateType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case rtspCameraStream
         case sdkUnknown(Swift.String)
 
@@ -928,7 +928,7 @@ extension PanoramaClientTypes {
     }
 }
 
-public struct CreateNodeFromTemplateJobInput {
+public struct CreateNodeFromTemplateJobInput: Swift.Sendable {
     /// Tags for the job.
     public var jobTags: [PanoramaClientTypes.JobResourceTags]?
     /// A description for the node.
@@ -974,7 +974,7 @@ extension CreateNodeFromTemplateJobInput: Swift.CustomDebugStringConvertible {
         "CreateNodeFromTemplateJobInput(jobTags: \(Swift.String(describing: jobTags)), nodeDescription: \(Swift.String(describing: nodeDescription)), nodeName: \(Swift.String(describing: nodeName)), outputPackageName: \(Swift.String(describing: outputPackageName)), outputPackageVersion: \(Swift.String(describing: outputPackageVersion)), templateType: \(Swift.String(describing: templateType)), templateParameters: [keys: \(Swift.String(describing: templateParameters?.keys)), values: \"CONTENT_REDACTED\"])"}
 }
 
-public struct CreateNodeFromTemplateJobOutput {
+public struct CreateNodeFromTemplateJobOutput: Swift.Sendable {
     /// The job's ID.
     /// This member is required.
     public var jobId: Swift.String?
@@ -987,7 +987,7 @@ public struct CreateNodeFromTemplateJobOutput {
     }
 }
 
-public struct CreatePackageInput {
+public struct CreatePackageInput: Swift.Sendable {
     /// A name for the package.
     /// This member is required.
     public var packageName: Swift.String?
@@ -1005,8 +1005,9 @@ public struct CreatePackageInput {
 }
 
 extension PanoramaClientTypes {
+
     /// A storage location.
-    public struct StorageLocation {
+    public struct StorageLocation: Swift.Sendable {
         /// The location's binary prefix.
         /// This member is required.
         public var binaryPrefixLocation: Swift.String?
@@ -1038,10 +1039,9 @@ extension PanoramaClientTypes {
             self.repoPrefixLocation = repoPrefixLocation
         }
     }
-
 }
 
-public struct CreatePackageOutput {
+public struct CreatePackageOutput: Swift.Sendable {
     /// The package's ARN.
     public var arn: Swift.String?
     /// The package's ID.
@@ -1063,8 +1063,9 @@ public struct CreatePackageOutput {
 }
 
 extension PanoramaClientTypes {
+
     /// A location in Amazon S3.
-    public struct S3Location {
+    public struct S3Location: Swift.Sendable {
         /// A bucket name.
         /// This member is required.
         public var bucketName: Swift.String?
@@ -1085,12 +1086,12 @@ extension PanoramaClientTypes {
             self.region = region
         }
     }
-
 }
 
 extension PanoramaClientTypes {
+
     /// A package version input configuration.
-    public struct PackageVersionInputConfig {
+    public struct PackageVersionInputConfig: Swift.Sendable {
         /// A location in Amazon S3.
         /// This member is required.
         public var s3Location: PanoramaClientTypes.S3Location?
@@ -1102,12 +1103,12 @@ extension PanoramaClientTypes {
             self.s3Location = s3Location
         }
     }
-
 }
 
 extension PanoramaClientTypes {
+
     /// A configuration for a package import job.
-    public struct PackageImportJobInputConfig {
+    public struct PackageImportJobInputConfig: Swift.Sendable {
         /// The package version's input configuration.
         public var packageVersionInputConfig: PanoramaClientTypes.PackageVersionInputConfig?
 
@@ -1118,12 +1119,11 @@ extension PanoramaClientTypes {
             self.packageVersionInputConfig = packageVersionInputConfig
         }
     }
-
 }
 
 extension PanoramaClientTypes {
 
-    public enum PackageImportJobType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum PackageImportJobType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case marketplaceNodePackageVersion
         case nodePackageVersion
         case sdkUnknown(Swift.String)
@@ -1151,8 +1151,9 @@ extension PanoramaClientTypes {
 }
 
 extension PanoramaClientTypes {
+
     /// A package version output configuration.
-    public struct PackageVersionOutputConfig {
+    public struct PackageVersionOutputConfig: Swift.Sendable {
         /// Indicates that the version is recommended for all users.
         public var markLatest: Swift.Bool
         /// The output's package name.
@@ -1173,12 +1174,12 @@ extension PanoramaClientTypes {
             self.packageVersion = packageVersion
         }
     }
-
 }
 
 extension PanoramaClientTypes {
+
     /// An output configuration for a package import job.
-    public struct PackageImportJobOutputConfig {
+    public struct PackageImportJobOutputConfig: Swift.Sendable {
         /// The package version's output configuration.
         public var packageVersionOutputConfig: PanoramaClientTypes.PackageVersionOutputConfig?
 
@@ -1189,10 +1190,9 @@ extension PanoramaClientTypes {
             self.packageVersionOutputConfig = packageVersionOutputConfig
         }
     }
-
 }
 
-public struct CreatePackageImportJobInput {
+public struct CreatePackageImportJobInput: Swift.Sendable {
     /// A client token for the package import job.
     /// This member is required.
     public var clientToken: Swift.String?
@@ -1224,7 +1224,7 @@ public struct CreatePackageImportJobInput {
     }
 }
 
-public struct CreatePackageImportJobOutput {
+public struct CreatePackageImportJobOutput: Swift.Sendable {
     /// The job's ID.
     /// This member is required.
     public var jobId: Swift.String?
@@ -1237,7 +1237,7 @@ public struct CreatePackageImportJobOutput {
     }
 }
 
-public struct DeleteDeviceInput {
+public struct DeleteDeviceInput: Swift.Sendable {
     /// The device's ID.
     /// This member is required.
     public var deviceId: Swift.String?
@@ -1250,7 +1250,7 @@ public struct DeleteDeviceInput {
     }
 }
 
-public struct DeleteDeviceOutput {
+public struct DeleteDeviceOutput: Swift.Sendable {
     /// The device's ID.
     public var deviceId: Swift.String?
 
@@ -1262,7 +1262,7 @@ public struct DeleteDeviceOutput {
     }
 }
 
-public struct DeletePackageInput {
+public struct DeletePackageInput: Swift.Sendable {
     /// Delete the package even if it has artifacts stored in its access point. Deletes the package's artifacts from Amazon S3.
     public var forceDelete: Swift.Bool
     /// The package's ID.
@@ -1279,12 +1279,12 @@ public struct DeletePackageInput {
     }
 }
 
-public struct DeletePackageOutput {
+public struct DeletePackageOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeregisterPackageVersionInput {
+public struct DeregisterPackageVersionInput: Swift.Sendable {
     /// An owner account.
     public var ownerAccount: Swift.String?
     /// A package ID.
@@ -1315,12 +1315,12 @@ public struct DeregisterPackageVersionInput {
     }
 }
 
-public struct DeregisterPackageVersionOutput {
+public struct DeregisterPackageVersionOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DescribeApplicationInstanceInput {
+public struct DescribeApplicationInstanceInput: Swift.Sendable {
     /// The application instance's ID.
     /// This member is required.
     public var applicationInstanceId: Swift.String?
@@ -1333,7 +1333,7 @@ public struct DescribeApplicationInstanceInput {
     }
 }
 
-public struct DescribeApplicationInstanceOutput {
+public struct DescribeApplicationInstanceOutput: Swift.Sendable {
     /// The application instance's ID.
     public var applicationInstanceId: Swift.String?
     /// The ID of the application instance that this instance replaced.
@@ -1401,7 +1401,7 @@ public struct DescribeApplicationInstanceOutput {
     }
 }
 
-public struct DescribeApplicationInstanceDetailsInput {
+public struct DescribeApplicationInstanceDetailsInput: Swift.Sendable {
     /// The application instance's ID.
     /// This member is required.
     public var applicationInstanceId: Swift.String?
@@ -1414,7 +1414,7 @@ public struct DescribeApplicationInstanceDetailsInput {
     }
 }
 
-public struct DescribeApplicationInstanceDetailsOutput {
+public struct DescribeApplicationInstanceDetailsOutput: Swift.Sendable {
     /// The application instance's ID.
     public var applicationInstanceId: Swift.String?
     /// The ID of the application instance that this instance replaced.
@@ -1454,7 +1454,7 @@ public struct DescribeApplicationInstanceDetailsOutput {
     }
 }
 
-public struct DescribeDeviceInput {
+public struct DescribeDeviceInput: Swift.Sendable {
     /// The device's ID.
     /// This member is required.
     public var deviceId: Swift.String?
@@ -1469,7 +1469,7 @@ public struct DescribeDeviceInput {
 
 extension PanoramaClientTypes {
 
-    public enum DeviceBrand: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DeviceBrand: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case awsPanorama
         case lenovo
         case sdkUnknown(Swift.String)
@@ -1498,7 +1498,7 @@ extension PanoramaClientTypes {
 
 extension PanoramaClientTypes {
 
-    public enum NetworkConnectionStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum NetworkConnectionStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case connected
         case connecting
         case notConnected
@@ -1529,8 +1529,9 @@ extension PanoramaClientTypes {
 }
 
 extension PanoramaClientTypes {
+
     /// A device's Ethernet status.
-    public struct EthernetStatus {
+    public struct EthernetStatus: Swift.Sendable {
         /// The device's connection status.
         public var connectionStatus: PanoramaClientTypes.NetworkConnectionStatus?
         /// The device's physical address.
@@ -1549,12 +1550,12 @@ extension PanoramaClientTypes {
             self.ipAddress = ipAddress
         }
     }
-
 }
 
 extension PanoramaClientTypes {
+
     /// Details about an NTP server connection.
-    public struct NtpStatus {
+    public struct NtpStatus: Swift.Sendable {
         /// The connection's status.
         public var connectionStatus: PanoramaClientTypes.NetworkConnectionStatus?
         /// The IP address of the server.
@@ -1573,12 +1574,12 @@ extension PanoramaClientTypes {
             self.ntpServerName = ntpServerName
         }
     }
-
 }
 
 extension PanoramaClientTypes {
+
     /// The network status of a device.
-    public struct NetworkStatus {
+    public struct NetworkStatus: Swift.Sendable {
         /// The status of Ethernet port 0.
         public var ethernet0Status: PanoramaClientTypes.EthernetStatus?
         /// The status of Ethernet port 1.
@@ -1601,12 +1602,11 @@ extension PanoramaClientTypes {
             self.ntpStatus = ntpStatus
         }
     }
-
 }
 
 extension PanoramaClientTypes {
 
-    public enum DeviceAggregatedStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DeviceAggregatedStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case awaitingProvisioning
         case deleting
         case error
@@ -1659,7 +1659,7 @@ extension PanoramaClientTypes {
 
 extension PanoramaClientTypes {
 
-    public enum DeviceConnectionStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DeviceConnectionStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case awaitingCredentials
         case error
         case notAvailable
@@ -1697,7 +1697,7 @@ extension PanoramaClientTypes {
 
 extension PanoramaClientTypes {
 
-    public enum UpdateProgress: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum UpdateProgress: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case completed
         case downloading
         case failed
@@ -1740,8 +1740,9 @@ extension PanoramaClientTypes {
 }
 
 extension PanoramaClientTypes {
+
     /// Returns information about the latest device job.
-    public struct LatestDeviceJob {
+    public struct LatestDeviceJob: Swift.Sendable {
         /// The target version of the device software.
         public var imageVersion: Swift.String?
         /// The job's type.
@@ -1760,12 +1761,12 @@ extension PanoramaClientTypes {
             self.status = status
         }
     }
-
 }
 
 extension PanoramaClientTypes {
+
     /// A static IP configuration.
-    public struct StaticIpConnectionInfo {
+    public struct StaticIpConnectionInfo: Swift.Sendable {
         /// The connection's default gateway.
         /// This member is required.
         public var defaultGateway: Swift.String?
@@ -1792,12 +1793,12 @@ extension PanoramaClientTypes {
             self.mask = mask
         }
     }
-
 }
 
 extension PanoramaClientTypes {
+
     /// A device's network configuration.
-    public struct EthernetPayload {
+    public struct EthernetPayload: Swift.Sendable {
         /// How the device gets an IP address.
         /// This member is required.
         public var connectionType: PanoramaClientTypes.ConnectionType?
@@ -1813,12 +1814,12 @@ extension PanoramaClientTypes {
             self.staticIpConnectionInfo = staticIpConnectionInfo
         }
     }
-
 }
 
 extension PanoramaClientTypes {
+
     /// Network time protocol (NTP) server settings. Use this option to connect to local NTP servers instead of pool.ntp.org.
-    public struct NtpPayload {
+    public struct NtpPayload: Swift.Sendable {
         /// NTP servers to use, in order of preference.
         /// This member is required.
         public var ntpServers: [Swift.String]?
@@ -1830,12 +1831,12 @@ extension PanoramaClientTypes {
             self.ntpServers = ntpServers
         }
     }
-
 }
 
 extension PanoramaClientTypes {
+
     /// The network configuration for a device.
-    public struct NetworkPayload {
+    public struct NetworkPayload: Swift.Sendable {
         /// Settings for Ethernet port 0.
         public var ethernet0: PanoramaClientTypes.EthernetPayload?
         /// Settings for Ethernet port 1.
@@ -1854,12 +1855,11 @@ extension PanoramaClientTypes {
             self.ntp = ntp
         }
     }
-
 }
 
 extension PanoramaClientTypes {
 
-    public enum DeviceStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DeviceStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case awaitingProvisioning
         case deleting
         case error
@@ -1900,7 +1900,7 @@ extension PanoramaClientTypes {
 
 extension PanoramaClientTypes {
 
-    public enum DeviceType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DeviceType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case panoramaAppliance
         case panoramaApplianceDeveloperKit
         case sdkUnknown(Swift.String)
@@ -1927,7 +1927,7 @@ extension PanoramaClientTypes {
     }
 }
 
-public struct DescribeDeviceOutput {
+public struct DescribeDeviceOutput: Swift.Sendable {
     /// Beta software releases available for the device.
     public var alternateSoftwares: [PanoramaClientTypes.AlternateSoftwareMetadata]?
     /// The device's ARN.
@@ -2015,7 +2015,7 @@ public struct DescribeDeviceOutput {
     }
 }
 
-public struct DescribeDeviceJobInput {
+public struct DescribeDeviceJobInput: Swift.Sendable {
     /// The job's ID.
     /// This member is required.
     public var jobId: Swift.String?
@@ -2028,7 +2028,7 @@ public struct DescribeDeviceJobInput {
     }
 }
 
-public struct DescribeDeviceJobOutput {
+public struct DescribeDeviceJobOutput: Swift.Sendable {
     /// When the job was created.
     public var createdTime: Foundation.Date?
     /// The device's ARN.
@@ -2072,7 +2072,7 @@ public struct DescribeDeviceJobOutput {
     }
 }
 
-public struct DescribeNodeInput {
+public struct DescribeNodeInput: Swift.Sendable {
     /// The node's ID.
     /// This member is required.
     public var nodeId: Swift.String?
@@ -2091,7 +2091,7 @@ public struct DescribeNodeInput {
 
 extension PanoramaClientTypes {
 
-    public enum NodeCategory: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum NodeCategory: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case businessLogic
         case mediaSink
         case mediaSource
@@ -2126,7 +2126,7 @@ extension PanoramaClientTypes {
 
 extension PanoramaClientTypes {
 
-    public enum PortType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum PortType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case boolean
         case float32
         case int32
@@ -2163,8 +2163,9 @@ extension PanoramaClientTypes {
 }
 
 extension PanoramaClientTypes {
+
     /// A node input port.
-    public struct NodeInputPort {
+    public struct NodeInputPort: Swift.Sendable {
         /// The input port's default value.
         public var defaultValue: Swift.String?
         /// The input port's description.
@@ -2191,12 +2192,12 @@ extension PanoramaClientTypes {
             self.type = type
         }
     }
-
 }
 
 extension PanoramaClientTypes {
+
     /// A node output port.
-    public struct NodeOutputPort {
+    public struct NodeOutputPort: Swift.Sendable {
         /// The output port's description.
         public var description: Swift.String?
         /// The output port's name.
@@ -2215,12 +2216,12 @@ extension PanoramaClientTypes {
             self.type = type
         }
     }
-
 }
 
 extension PanoramaClientTypes {
+
     /// A node interface.
-    public struct NodeInterface {
+    public struct NodeInterface: Swift.Sendable {
         /// The node interface's inputs.
         /// This member is required.
         public var inputs: [PanoramaClientTypes.NodeInputPort]?
@@ -2237,10 +2238,9 @@ extension PanoramaClientTypes {
             self.outputs = outputs
         }
     }
-
 }
 
-public struct DescribeNodeOutput {
+public struct DescribeNodeOutput: Swift.Sendable {
     /// The node's asset name.
     public var assetName: Swift.String?
     /// The node's category.
@@ -2316,7 +2316,7 @@ public struct DescribeNodeOutput {
     }
 }
 
-public struct DescribeNodeFromTemplateJobInput {
+public struct DescribeNodeFromTemplateJobInput: Swift.Sendable {
     /// The job's ID.
     /// This member is required.
     public var jobId: Swift.String?
@@ -2331,7 +2331,7 @@ public struct DescribeNodeFromTemplateJobInput {
 
 extension PanoramaClientTypes {
 
-    public enum NodeFromTemplateJobStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum NodeFromTemplateJobStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case failed
         case pending
         case succeeded
@@ -2361,7 +2361,7 @@ extension PanoramaClientTypes {
     }
 }
 
-public struct DescribeNodeFromTemplateJobOutput {
+public struct DescribeNodeFromTemplateJobOutput: Swift.Sendable {
     /// When the job was created.
     /// This member is required.
     public var createdTime: Foundation.Date?
@@ -2432,7 +2432,7 @@ extension DescribeNodeFromTemplateJobOutput: Swift.CustomDebugStringConvertible 
         "DescribeNodeFromTemplateJobOutput(createdTime: \(Swift.String(describing: createdTime)), jobId: \(Swift.String(describing: jobId)), jobTags: \(Swift.String(describing: jobTags)), lastUpdatedTime: \(Swift.String(describing: lastUpdatedTime)), nodeDescription: \(Swift.String(describing: nodeDescription)), nodeName: \(Swift.String(describing: nodeName)), outputPackageName: \(Swift.String(describing: outputPackageName)), outputPackageVersion: \(Swift.String(describing: outputPackageVersion)), status: \(Swift.String(describing: status)), statusMessage: \(Swift.String(describing: statusMessage)), templateType: \(Swift.String(describing: templateType)), templateParameters: [keys: \(Swift.String(describing: templateParameters?.keys)), values: \"CONTENT_REDACTED\"])"}
 }
 
-public struct DescribePackageInput {
+public struct DescribePackageInput: Swift.Sendable {
     /// The package's ID.
     /// This member is required.
     public var packageId: Swift.String?
@@ -2445,7 +2445,7 @@ public struct DescribePackageInput {
     }
 }
 
-public struct DescribePackageOutput {
+public struct DescribePackageOutput: Swift.Sendable {
     /// The package's ARN.
     /// This member is required.
     public var arn: Swift.String?
@@ -2491,7 +2491,7 @@ public struct DescribePackageOutput {
     }
 }
 
-public struct DescribePackageImportJobInput {
+public struct DescribePackageImportJobInput: Swift.Sendable {
     /// The job's ID.
     /// This member is required.
     public var jobId: Swift.String?
@@ -2505,8 +2505,9 @@ public struct DescribePackageImportJobInput {
 }
 
 extension PanoramaClientTypes {
+
     /// The location of an output object in Amazon S3.
-    public struct OutPutS3Location {
+    public struct OutPutS3Location: Swift.Sendable {
         /// The object's bucket.
         /// This member is required.
         public var bucketName: Swift.String?
@@ -2523,12 +2524,12 @@ extension PanoramaClientTypes {
             self.objectKey = objectKey
         }
     }
-
 }
 
 extension PanoramaClientTypes {
+
     /// Results of a package import job.
-    public struct PackageImportJobOutput {
+    public struct PackageImportJobOutput: Swift.Sendable {
         /// The package's output location.
         /// This member is required.
         public var outputS3Location: PanoramaClientTypes.OutPutS3Location?
@@ -2555,12 +2556,11 @@ extension PanoramaClientTypes {
             self.patchVersion = patchVersion
         }
     }
-
 }
 
 extension PanoramaClientTypes {
 
-    public enum PackageImportJobStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum PackageImportJobStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case failed
         case pending
         case succeeded
@@ -2590,7 +2590,7 @@ extension PanoramaClientTypes {
     }
 }
 
-public struct DescribePackageImportJobOutput {
+public struct DescribePackageImportJobOutput: Swift.Sendable {
     /// The job's client token.
     public var clientToken: Swift.String?
     /// When the job was created.
@@ -2651,7 +2651,7 @@ public struct DescribePackageImportJobOutput {
     }
 }
 
-public struct DescribePackageVersionInput {
+public struct DescribePackageVersionInput: Swift.Sendable {
     /// The version's owner account.
     public var ownerAccount: Swift.String?
     /// The version's ID.
@@ -2679,7 +2679,7 @@ public struct DescribePackageVersionInput {
 
 extension PanoramaClientTypes {
 
-    public enum PackageVersionStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum PackageVersionStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case deleting
         case failed
         case registerCompleted
@@ -2712,7 +2712,7 @@ extension PanoramaClientTypes {
     }
 }
 
-public struct DescribePackageVersionOutput {
+public struct DescribePackageVersionOutput: Swift.Sendable {
     /// Whether the version is the latest available.
     /// This member is required.
     public var isLatestPatch: Swift.Bool
@@ -2767,8 +2767,9 @@ public struct DescribePackageVersionOutput {
 }
 
 extension PanoramaClientTypes {
+
     /// A device.
-    public struct Device {
+    public struct Device: Swift.Sendable {
         /// The device's maker.
         public var brand: PanoramaClientTypes.DeviceBrand?
         /// When the device was created.
@@ -2827,12 +2828,12 @@ extension PanoramaClientTypes {
             self.type = type
         }
     }
-
 }
 
 extension PanoramaClientTypes {
+
     /// A job that runs on a device.
-    public struct DeviceJob {
+    public struct DeviceJob: Swift.Sendable {
         /// When the job was created.
         public var createdTime: Foundation.Date?
         /// The ID of the target device.
@@ -2859,10 +2860,9 @@ extension PanoramaClientTypes {
             self.jobType = jobType
         }
     }
-
 }
 
-public struct ListApplicationInstanceDependenciesInput {
+public struct ListApplicationInstanceDependenciesInput: Swift.Sendable {
     /// The application instance's ID.
     /// This member is required.
     public var applicationInstanceId: Swift.String?
@@ -2884,8 +2884,9 @@ public struct ListApplicationInstanceDependenciesInput {
 }
 
 extension PanoramaClientTypes {
+
     /// A package object.
-    public struct PackageObject {
+    public struct PackageObject: Swift.Sendable {
         /// The object's name.
         /// This member is required.
         public var name: Swift.String?
@@ -2907,10 +2908,9 @@ extension PanoramaClientTypes {
             self.patchVersion = patchVersion
         }
     }
-
 }
 
-public struct ListApplicationInstanceDependenciesOutput {
+public struct ListApplicationInstanceDependenciesOutput: Swift.Sendable {
     /// A pagination token that's included if more results are available.
     public var nextToken: Swift.String?
     /// A list of package objects.
@@ -2926,7 +2926,7 @@ public struct ListApplicationInstanceDependenciesOutput {
     }
 }
 
-public struct ListApplicationInstanceNodeInstancesInput {
+public struct ListApplicationInstanceNodeInstancesInput: Swift.Sendable {
     /// The node instances' application instance ID.
     /// This member is required.
     public var applicationInstanceId: Swift.String?
@@ -2949,7 +2949,7 @@ public struct ListApplicationInstanceNodeInstancesInput {
 
 extension PanoramaClientTypes {
 
-    public enum NodeInstanceStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum NodeInstanceStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case error
         case notAvailable
         case paused
@@ -2983,8 +2983,9 @@ extension PanoramaClientTypes {
 }
 
 extension PanoramaClientTypes {
+
     /// A node instance.
-    public struct NodeInstance {
+    public struct NodeInstance: Swift.Sendable {
         /// The instance's current status.
         /// This member is required.
         public var currentStatus: PanoramaClientTypes.NodeInstanceStatus?
@@ -3021,10 +3022,9 @@ extension PanoramaClientTypes {
             self.packageVersion = packageVersion
         }
     }
-
 }
 
-public struct ListApplicationInstanceNodeInstancesOutput {
+public struct ListApplicationInstanceNodeInstancesOutput: Swift.Sendable {
     /// A pagination token that's included if more results are available.
     public var nextToken: Swift.String?
     /// A list of node instances.
@@ -3042,7 +3042,7 @@ public struct ListApplicationInstanceNodeInstancesOutput {
 
 extension PanoramaClientTypes {
 
-    public enum StatusFilter: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum StatusFilter: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case deploymentError
         case deploymentFailed
         case deploymentSucceeded
@@ -3084,7 +3084,7 @@ extension PanoramaClientTypes {
     }
 }
 
-public struct ListApplicationInstancesInput {
+public struct ListApplicationInstancesInput: Swift.Sendable {
     /// The application instances' device ID.
     public var deviceId: Swift.String?
     /// The maximum number of application instances to return in one page of results.
@@ -3108,7 +3108,7 @@ public struct ListApplicationInstancesInput {
     }
 }
 
-public struct ListApplicationInstancesOutput {
+public struct ListApplicationInstancesOutput: Swift.Sendable {
     /// A list of application instances.
     public var applicationInstances: [PanoramaClientTypes.ApplicationInstance]?
     /// A pagination token that's included if more results are available.
@@ -3126,7 +3126,7 @@ public struct ListApplicationInstancesOutput {
 
 extension PanoramaClientTypes {
 
-    public enum ListDevicesSortBy: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ListDevicesSortBy: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case createdTime
         case deviceAggregatedStatus
         case deviceId
@@ -3161,7 +3161,7 @@ extension PanoramaClientTypes {
 
 extension PanoramaClientTypes {
 
-    public enum SortOrder: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SortOrder: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case ascending
         case descending
         case sdkUnknown(Swift.String)
@@ -3188,7 +3188,7 @@ extension PanoramaClientTypes {
     }
 }
 
-public struct ListDevicesInput {
+public struct ListDevicesInput: Swift.Sendable {
     /// Filter based on a device's status.
     public var deviceAggregatedStatusFilter: PanoramaClientTypes.DeviceAggregatedStatus?
     /// The maximum number of devices to return in one page of results.
@@ -3220,7 +3220,7 @@ public struct ListDevicesInput {
     }
 }
 
-public struct ListDevicesOutput {
+public struct ListDevicesOutput: Swift.Sendable {
     /// A list of devices.
     /// This member is required.
     public var devices: [PanoramaClientTypes.Device]?
@@ -3237,7 +3237,7 @@ public struct ListDevicesOutput {
     }
 }
 
-public struct ListDevicesJobsInput {
+public struct ListDevicesJobsInput: Swift.Sendable {
     /// Filter results by the job's target device ID.
     public var deviceId: Swift.String?
     /// The maximum number of device jobs to return in one page of results.
@@ -3257,7 +3257,7 @@ public struct ListDevicesJobsInput {
     }
 }
 
-public struct ListDevicesJobsOutput {
+public struct ListDevicesJobsOutput: Swift.Sendable {
     /// A list of jobs.
     public var deviceJobs: [PanoramaClientTypes.DeviceJob]?
     /// A pagination token that's included if more results are available.
@@ -3273,7 +3273,7 @@ public struct ListDevicesJobsOutput {
     }
 }
 
-public struct ListNodeFromTemplateJobsInput {
+public struct ListNodeFromTemplateJobsInput: Swift.Sendable {
     /// The maximum number of node from template jobs to return in one page of results.
     public var maxResults: Swift.Int
     /// Specify the pagination token from a previous request to retrieve the next page of results.
@@ -3290,8 +3290,9 @@ public struct ListNodeFromTemplateJobsInput {
 }
 
 extension PanoramaClientTypes {
+
     /// A job to create a camera stream node.
-    public struct NodeFromTemplateJob {
+    public struct NodeFromTemplateJob: Swift.Sendable {
         /// When the job was created.
         public var createdTime: Foundation.Date?
         /// The job's ID.
@@ -3322,10 +3323,9 @@ extension PanoramaClientTypes {
             self.templateType = templateType
         }
     }
-
 }
 
-public struct ListNodeFromTemplateJobsOutput {
+public struct ListNodeFromTemplateJobsOutput: Swift.Sendable {
     /// A pagination token that's included if more results are available.
     public var nextToken: Swift.String?
     /// A list of jobs.
@@ -3342,7 +3342,7 @@ public struct ListNodeFromTemplateJobsOutput {
     }
 }
 
-public struct ListNodesInput {
+public struct ListNodesInput: Swift.Sendable {
     /// Search for nodes by category.
     public var category: PanoramaClientTypes.NodeCategory?
     /// The maximum number of nodes to return in one page of results.
@@ -3379,8 +3379,9 @@ public struct ListNodesInput {
 }
 
 extension PanoramaClientTypes {
+
     /// An application node that represents a camera stream, a model, code, or output.
-    public struct Node {
+    public struct Node: Swift.Sendable {
         /// The node's category.
         /// This member is required.
         public var category: PanoramaClientTypes.NodeCategory?
@@ -3439,10 +3440,9 @@ extension PanoramaClientTypes {
             self.patchVersion = patchVersion
         }
     }
-
 }
 
-public struct ListNodesOutput {
+public struct ListNodesOutput: Swift.Sendable {
     /// A pagination token that's included if more results are available.
     public var nextToken: Swift.String?
     /// A list of nodes.
@@ -3458,7 +3458,7 @@ public struct ListNodesOutput {
     }
 }
 
-public struct ListPackageImportJobsInput {
+public struct ListPackageImportJobsInput: Swift.Sendable {
     /// The maximum number of package import jobs to return in one page of results.
     public var maxResults: Swift.Int
     /// Specify the pagination token from a previous request to retrieve the next page of results.
@@ -3475,8 +3475,9 @@ public struct ListPackageImportJobsInput {
 }
 
 extension PanoramaClientTypes {
+
     /// A job to import a package version.
-    public struct PackageImportJob {
+    public struct PackageImportJob: Swift.Sendable {
         /// When the job was created.
         public var createdTime: Foundation.Date?
         /// The job's ID.
@@ -3507,10 +3508,9 @@ extension PanoramaClientTypes {
             self.statusMessage = statusMessage
         }
     }
-
 }
 
-public struct ListPackageImportJobsOutput {
+public struct ListPackageImportJobsOutput: Swift.Sendable {
     /// A pagination token that's included if more results are available.
     public var nextToken: Swift.String?
     /// A list of package import jobs.
@@ -3527,7 +3527,7 @@ public struct ListPackageImportJobsOutput {
     }
 }
 
-public struct ListPackagesInput {
+public struct ListPackagesInput: Swift.Sendable {
     /// The maximum number of packages to return in one page of results.
     public var maxResults: Swift.Int
     /// Specify the pagination token from a previous request to retrieve the next page of results.
@@ -3544,8 +3544,9 @@ public struct ListPackagesInput {
 }
 
 extension PanoramaClientTypes {
+
     /// A package summary.
-    public struct PackageListItem {
+    public struct PackageListItem: Swift.Sendable {
         /// The package's ARN.
         public var arn: Swift.String?
         /// When the package was created.
@@ -3572,10 +3573,9 @@ extension PanoramaClientTypes {
             self.tags = tags
         }
     }
-
 }
 
-public struct ListPackagesOutput {
+public struct ListPackagesOutput: Swift.Sendable {
     /// A pagination token that's included if more results are available.
     public var nextToken: Swift.String?
     /// A list of packages.
@@ -3591,7 +3591,7 @@ public struct ListPackagesOutput {
     }
 }
 
-public struct ListTagsForResourceInput {
+public struct ListTagsForResourceInput: Swift.Sendable {
     /// The resource's ARN.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -3604,7 +3604,7 @@ public struct ListTagsForResourceInput {
     }
 }
 
-public struct ListTagsForResourceOutput {
+public struct ListTagsForResourceOutput: Swift.Sendable {
     /// A list of tags.
     public var tags: [Swift.String: Swift.String]?
 
@@ -3618,7 +3618,7 @@ public struct ListTagsForResourceOutput {
 
 extension PanoramaClientTypes {
 
-    public enum NodeSignalValue: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum NodeSignalValue: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case pause
         case resume
         case sdkUnknown(Swift.String)
@@ -3646,8 +3646,9 @@ extension PanoramaClientTypes {
 }
 
 extension PanoramaClientTypes {
+
     /// A signal to a camera node to start or stop processing video.
-    public struct NodeSignal {
+    public struct NodeSignal: Swift.Sendable {
         /// The camera node's name, from the application manifest.
         /// This member is required.
         public var nodeInstanceId: Swift.String?
@@ -3664,10 +3665,9 @@ extension PanoramaClientTypes {
             self.signal = signal
         }
     }
-
 }
 
-public struct ProvisionDeviceInput {
+public struct ProvisionDeviceInput: Swift.Sendable {
     /// A description for the device.
     public var description: Swift.String?
     /// A name for the device.
@@ -3692,7 +3692,7 @@ public struct ProvisionDeviceInput {
     }
 }
 
-public struct ProvisionDeviceOutput {
+public struct ProvisionDeviceOutput: Swift.Sendable {
     /// The device's ARN.
     /// This member is required.
     public var arn: Swift.String?
@@ -3722,7 +3722,7 @@ public struct ProvisionDeviceOutput {
     }
 }
 
-public struct RegisterPackageVersionInput {
+public struct RegisterPackageVersionInput: Swift.Sendable {
     /// Whether to mark the new version as the latest version.
     public var markLatest: Swift.Bool
     /// An owner account.
@@ -3753,12 +3753,12 @@ public struct RegisterPackageVersionInput {
     }
 }
 
-public struct RegisterPackageVersionOutput {
+public struct RegisterPackageVersionOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct RemoveApplicationInstanceInput {
+public struct RemoveApplicationInstanceInput: Swift.Sendable {
     /// An application instance ID.
     /// This member is required.
     public var applicationInstanceId: Swift.String?
@@ -3771,12 +3771,12 @@ public struct RemoveApplicationInstanceInput {
     }
 }
 
-public struct RemoveApplicationInstanceOutput {
+public struct RemoveApplicationInstanceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct SignalApplicationInstanceNodeInstancesInput {
+public struct SignalApplicationInstanceNodeInstancesInput: Swift.Sendable {
     /// An application instance ID.
     /// This member is required.
     public var applicationInstanceId: Swift.String?
@@ -3794,7 +3794,7 @@ public struct SignalApplicationInstanceNodeInstancesInput {
     }
 }
 
-public struct SignalApplicationInstanceNodeInstancesOutput {
+public struct SignalApplicationInstanceNodeInstancesOutput: Swift.Sendable {
     /// An application instance ID.
     /// This member is required.
     public var applicationInstanceId: Swift.String?
@@ -3807,7 +3807,7 @@ public struct SignalApplicationInstanceNodeInstancesOutput {
     }
 }
 
-public struct TagResourceInput {
+public struct TagResourceInput: Swift.Sendable {
     /// The resource's ARN.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -3825,12 +3825,12 @@ public struct TagResourceInput {
     }
 }
 
-public struct TagResourceOutput {
+public struct TagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UntagResourceInput {
+public struct UntagResourceInput: Swift.Sendable {
     /// The resource's ARN.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -3848,12 +3848,12 @@ public struct UntagResourceInput {
     }
 }
 
-public struct UntagResourceOutput {
+public struct UntagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdateDeviceMetadataInput {
+public struct UpdateDeviceMetadataInput: Swift.Sendable {
     /// A description for the device.
     public var description: Swift.String?
     /// The device's ID.
@@ -3870,7 +3870,7 @@ public struct UpdateDeviceMetadataInput {
     }
 }
 
-public struct UpdateDeviceMetadataOutput {
+public struct UpdateDeviceMetadataOutput: Swift.Sendable {
     /// The device's ID.
     public var deviceId: Swift.String?
 

@@ -84,8 +84,9 @@ public struct InvalidRequestException: ClientRuntime.ModeledError, AWSClientRunt
 }
 
 extension DataSyncClientTypes {
+
     /// The credentials that provide DataSync Discovery read access to your on-premises storage system's management interface. DataSync Discovery stores these credentials in [Secrets Manager](https://docs.aws.amazon.com/secretsmanager/latest/userguide/intro.html). For more information, see [Accessing your on-premises storage system](https://docs.aws.amazon.com/datasync/latest/userguide/discovery-configure-storage.html).
-    public struct Credentials {
+    public struct Credentials: Swift.Sendable {
         /// Specifies the password for your storage system's management interface.
         /// This member is required.
         public var password: Swift.String?
@@ -102,7 +103,6 @@ extension DataSyncClientTypes {
             self.username = username
         }
     }
-
 }
 
 extension DataSyncClientTypes.Credentials: Swift.CustomDebugStringConvertible {
@@ -111,8 +111,9 @@ extension DataSyncClientTypes.Credentials: Swift.CustomDebugStringConvertible {
 }
 
 extension DataSyncClientTypes {
+
     /// The network settings that DataSync Discovery uses to connect with your on-premises storage system's management interface.
-    public struct DiscoveryServerConfiguration {
+    public struct DiscoveryServerConfiguration: Swift.Sendable {
         /// The domain name or IP address of your storage system's management interface.
         /// This member is required.
         public var serverHostname: Swift.String?
@@ -128,12 +129,11 @@ extension DataSyncClientTypes {
             self.serverPort = serverPort
         }
     }
-
 }
 
 extension DataSyncClientTypes {
 
-    public enum DiscoverySystemType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DiscoverySystemType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case netappontap
         case sdkUnknown(Swift.String)
 
@@ -158,8 +158,9 @@ extension DataSyncClientTypes {
 }
 
 extension DataSyncClientTypes {
+
     /// A key-value pair representing a single tag that's been applied to an Amazon Web Services resource.
-    public struct TagListEntry {
+    public struct TagListEntry: Swift.Sendable {
         /// The key for an Amazon Web Services resource tag.
         /// This member is required.
         public var key: Swift.String?
@@ -175,10 +176,9 @@ extension DataSyncClientTypes {
             self.value = value
         }
     }
-
 }
 
-public struct AddStorageSystemInput {
+public struct AddStorageSystemInput: Swift.Sendable {
     /// Specifies the Amazon Resource Name (ARN) of the DataSync agent that connects to and reads from your on-premises storage system's management interface. You can only specify one ARN.
     /// This member is required.
     public var agentArns: [Swift.String]?
@@ -223,7 +223,7 @@ public struct AddStorageSystemInput {
     }
 }
 
-public struct AddStorageSystemOutput {
+public struct AddStorageSystemOutput: Swift.Sendable {
     /// The ARN of the on-premises storage system that you can use with DataSync Discovery.
     /// This member is required.
     public var storageSystemArn: Swift.String?
@@ -237,8 +237,9 @@ public struct AddStorageSystemOutput {
 }
 
 extension DataSyncClientTypes {
+
     /// The platform-related details about the DataSync agent, such as the version number.
-    public struct Platform {
+    public struct Platform: Swift.Sendable {
         /// The version of the DataSync agent.
         public var version: Swift.String?
 
@@ -249,12 +250,11 @@ extension DataSyncClientTypes {
             self.version = version
         }
     }
-
 }
 
 extension DataSyncClientTypes {
 
-    public enum AgentStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AgentStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case offline
         case online
         case sdkUnknown(Swift.String)
@@ -282,8 +282,9 @@ extension DataSyncClientTypes {
 }
 
 extension DataSyncClientTypes {
+
     /// Represents a single entry in a list (or array) of DataSync agents when you call the [ListAgents](https://docs.aws.amazon.com/datasync/latest/userguide/API_ListAgents.html) operation.
-    public struct AgentListEntry {
+    public struct AgentListEntry: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of a DataSync agent.
         public var agentArn: Swift.String?
         /// The name of an agent.
@@ -310,12 +311,11 @@ extension DataSyncClientTypes {
             self.status = status
         }
     }
-
 }
 
 extension DataSyncClientTypes {
 
-    public enum Atime: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Atime: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case bestEffort
         case `none`
         case sdkUnknown(Swift.String)
@@ -344,7 +344,7 @@ extension DataSyncClientTypes {
 
 extension DataSyncClientTypes {
 
-    public enum AzureAccessTier: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AzureAccessTier: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case archive
         case cool
         case hot
@@ -376,7 +376,7 @@ extension DataSyncClientTypes {
 
 extension DataSyncClientTypes {
 
-    public enum AzureBlobAuthenticationType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AzureBlobAuthenticationType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case sas
         case sdkUnknown(Swift.String)
 
@@ -401,8 +401,9 @@ extension DataSyncClientTypes {
 }
 
 extension DataSyncClientTypes {
+
     /// The shared access signature (SAS) configuration that allows DataSync to access your Microsoft Azure Blob Storage. For more information, see [SAS tokens](https://docs.aws.amazon.com/datasync/latest/userguide/creating-azure-blob-location.html#azure-blob-sas-tokens) for accessing your Azure Blob Storage.
-    public struct AzureBlobSasConfiguration {
+    public struct AzureBlobSasConfiguration: Swift.Sendable {
         /// Specifies a SAS token that provides permissions to access your Azure Blob Storage. The token is part of the SAS URI string that comes after the storage resource URI and a question mark. A token looks something like this: sp=r&st=2023-12-20T14:54:52Z&se=2023-12-20T22:54:52Z&spr=https&sv=2021-06-08&sr=c&sig=aBBKDWQvyuVcTPH9EBp%2FXTI9E%2F%2Fmq171%2BZU178wcwqU%3D
         /// This member is required.
         public var token: Swift.String?
@@ -414,7 +415,6 @@ extension DataSyncClientTypes {
             self.token = token
         }
     }
-
 }
 
 extension DataSyncClientTypes.AzureBlobSasConfiguration: Swift.CustomDebugStringConvertible {
@@ -424,7 +424,7 @@ extension DataSyncClientTypes.AzureBlobSasConfiguration: Swift.CustomDebugString
 
 extension DataSyncClientTypes {
 
-    public enum AzureBlobType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AzureBlobType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case block
         case sdkUnknown(Swift.String)
 
@@ -449,7 +449,7 @@ extension DataSyncClientTypes {
 }
 
 /// CancelTaskExecutionRequest
-public struct CancelTaskExecutionInput {
+public struct CancelTaskExecutionInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the task execution to stop.
     /// This member is required.
     public var taskExecutionArn: Swift.String?
@@ -462,14 +462,15 @@ public struct CancelTaskExecutionInput {
     }
 }
 
-public struct CancelTaskExecutionOutput {
+public struct CancelTaskExecutionOutput: Swift.Sendable {
 
     public init() { }
 }
 
 extension DataSyncClientTypes {
+
     /// The storage capacity of an on-premises storage system resource (for example, a volume).
-    public struct Capacity {
+    public struct Capacity: Swift.Sendable {
         /// The amount of space in the cluster that's in cloud storage (for example, if you're using data tiering).
         public var clusterCloudStorageUsed: Swift.Int?
         /// The amount of space that's being used in a storage system resource without accounting for compression or deduplication.
@@ -492,23 +493,22 @@ extension DataSyncClientTypes {
             self.used = used
         }
     }
-
 }
 
 /// CreateAgentRequest
-public struct CreateAgentInput {
-    /// Specifies your DataSync agent's activation key. If you don't have an activation key, see [Activate your agent](https://docs.aws.amazon.com/datasync/latest/userguide/activate-agent.html).
+public struct CreateAgentInput: Swift.Sendable {
+    /// Specifies your DataSync agent's activation key. If you don't have an activation key, see [Activating your agent](https://docs.aws.amazon.com/datasync/latest/userguide/activate-agent.html).
     /// This member is required.
     public var activationKey: Swift.String?
-    /// Specifies a name for your agent. You can see this name in the DataSync console.
+    /// Specifies a name for your agent. We recommend specifying a name that you can remember.
     public var agentName: Swift.String?
-    /// Specifies the Amazon Resource Name (ARN) of the security group that protects your task's [network interfaces](https://docs.aws.amazon.com/datasync/latest/userguide/datasync-network.html#required-network-interfaces) when [using a virtual private cloud (VPC) endpoint](https://docs.aws.amazon.com/datasync/latest/userguide/choose-service-endpoint.html#choose-service-endpoint-vpc). You can only specify one ARN.
+    /// Specifies the Amazon Resource Name (ARN) of the security group that allows traffic between your agent and VPC service endpoint. You can only specify one ARN.
     public var securityGroupArns: [Swift.String]?
-    /// Specifies the ARN of the subnet where you want to run your DataSync task when using a VPC endpoint. This is the subnet where DataSync creates and manages the [network interfaces](https://docs.aws.amazon.com/datasync/latest/userguide/datasync-network.html#required-network-interfaces) for your transfer. You can only specify one ARN.
+    /// Specifies the ARN of the subnet where your VPC service endpoint is located. You can only specify one ARN.
     public var subnetArns: [Swift.String]?
     /// Specifies labels that help you categorize, filter, and search for your Amazon Web Services resources. We recommend creating at least one tag for your agent.
     public var tags: [DataSyncClientTypes.TagListEntry]?
-    /// Specifies the ID of the VPC endpoint that you want your agent to connect to. For example, a VPC endpoint ID looks like vpce-01234d5aff67890e1. The VPC endpoint you use must include the DataSync service name (for example, com.amazonaws.us-east-2.datasync).
+    /// Specifies the ID of the [VPC service endpoint](https://docs.aws.amazon.com/datasync/latest/userguide/choose-service-endpoint.html#datasync-in-vpc) that you're using. For example, a VPC endpoint ID looks like vpce-01234d5aff67890e1. The VPC service endpoint you use must include the DataSync service name (for example, com.amazonaws.us-east-2.datasync).
     public var vpcEndpointId: Swift.String?
 
     public init(
@@ -530,7 +530,7 @@ public struct CreateAgentInput {
 }
 
 /// CreateAgentResponse
-public struct CreateAgentOutput {
+public struct CreateAgentOutput: Swift.Sendable {
     /// The ARN of the agent that you just activated. Use the [ListAgents](https://docs.aws.amazon.com/datasync/latest/userguide/API_ListAgents.html) operation to return a list of agents in your Amazon Web Services account and Amazon Web Services Region.
     public var agentArn: Swift.String?
 
@@ -542,7 +542,7 @@ public struct CreateAgentOutput {
     }
 }
 
-public struct CreateLocationAzureBlobInput {
+public struct CreateLocationAzureBlobInput: Swift.Sendable {
     /// Specifies the access tier that you want your objects or files transferred into. This only applies when using the location as a transfer destination. For more information, see [Access tiers](https://docs.aws.amazon.com/datasync/latest/userguide/creating-azure-blob-location.html#azure-blob-access-tiers).
     public var accessTier: DataSyncClientTypes.AzureAccessTier?
     /// Specifies the Amazon Resource Name (ARN) of the DataSync agent that can connect with your Azure Blob Storage container. You can specify more than one agent. For more information, see [Using multiple agents for your transfer](https://docs.aws.amazon.com/datasync/latest/userguide/multiple-agents.html).
@@ -585,7 +585,7 @@ public struct CreateLocationAzureBlobInput {
     }
 }
 
-public struct CreateLocationAzureBlobOutput {
+public struct CreateLocationAzureBlobOutput: Swift.Sendable {
     /// The ARN of the Azure Blob Storage transfer location that you created.
     public var locationArn: Swift.String?
 
@@ -598,8 +598,9 @@ public struct CreateLocationAzureBlobOutput {
 }
 
 extension DataSyncClientTypes {
-    /// The subnet and security groups that DataSync uses to access your Amazon EFS file system.
-    public struct Ec2Config {
+
+    /// The subnet and security groups that DataSync uses to connect to one of your Amazon EFS file system's [mount targets](https://docs.aws.amazon.com/efs/latest/ug/accessing-fs.html).
+    public struct Ec2Config: Swift.Sendable {
         /// Specifies the Amazon Resource Names (ARNs) of the security groups associated with an Amazon EFS file system's mount target.
         /// This member is required.
         public var securityGroupArns: [Swift.String]?
@@ -623,12 +624,11 @@ extension DataSyncClientTypes {
             self.subnetArn = subnetArn
         }
     }
-
 }
 
 extension DataSyncClientTypes {
 
-    public enum EfsInTransitEncryption: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum EfsInTransitEncryption: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case `none`
         case tls12
         case sdkUnknown(Swift.String)
@@ -656,20 +656,20 @@ extension DataSyncClientTypes {
 }
 
 /// CreateLocationEfsRequest
-public struct CreateLocationEfsInput {
-    /// Specifies the Amazon Resource Name (ARN) of the access point that DataSync uses to access the Amazon EFS file system.
+public struct CreateLocationEfsInput: Swift.Sendable {
+    /// Specifies the Amazon Resource Name (ARN) of the access point that DataSync uses to mount your Amazon EFS file system. For more information, see [Accessing restricted file systems](https://docs.aws.amazon.com/datasync/latest/userguide/create-efs-location.html#create-efs-location-iam).
     public var accessPointArn: Swift.String?
-    /// Specifies the subnet and security groups DataSync uses to access your Amazon EFS file system.
+    /// Specifies the subnet and security groups DataSync uses to connect to one of your Amazon EFS file system's [mount targets](https://docs.aws.amazon.com/efs/latest/ug/accessing-fs.html).
     /// This member is required.
     public var ec2Config: DataSyncClientTypes.Ec2Config?
-    /// Specifies the ARN for the Amazon EFS file system.
+    /// Specifies the ARN for your Amazon EFS file system.
     /// This member is required.
     public var efsFilesystemArn: Swift.String?
-    /// Specifies an Identity and Access Management (IAM) role that DataSync assumes when mounting the Amazon EFS file system.
+    /// Specifies an Identity and Access Management (IAM) role that allows DataSync to access your Amazon EFS file system. For information on creating this role, see [Creating a DataSync IAM role for file system access](https://docs.aws.amazon.com/datasync/latest/userguide/create-efs-location.html#create-efs-location-iam-role).
     public var fileSystemAccessRoleArn: Swift.String?
-    /// Specifies whether you want DataSync to use Transport Layer Security (TLS) 1.2 encryption when it copies data to or from the Amazon EFS file system. If you specify an access point using AccessPointArn or an IAM role using FileSystemAccessRoleArn, you must set this parameter to TLS1_2.
+    /// Specifies whether you want DataSync to use Transport Layer Security (TLS) 1.2 encryption when it transfers data to or from your Amazon EFS file system. If you specify an access point using AccessPointArn or an IAM role using FileSystemAccessRoleArn, you must set this parameter to TLS1_2.
     public var inTransitEncryption: DataSyncClientTypes.EfsInTransitEncryption?
-    /// Specifies a mount path for your Amazon EFS file system. This is where DataSync reads or writes data (depending on if this is a source or destination location). By default, DataSync uses the root directory, but you can also include subdirectories. You must specify a value with forward slashes (for example, /path/to/folder).
+    /// Specifies a mount path for your Amazon EFS file system. This is where DataSync reads or writes data (depending on if this is a source or destination location) on your file system. By default, DataSync uses the root directory (or [access point](https://docs.aws.amazon.com/efs/latest/ug/efs-access-points.html) if you provide one by using AccessPointArn). You can also include subdirectories using forward slashes (for example, /path/to/folder).
     public var subdirectory: Swift.String?
     /// Specifies the key-value pair that represents a tag that you want to add to the resource. The value can be an empty string. This value helps you manage, filter, and search for your resources. We recommend that you create a name tag for your location.
     public var tags: [DataSyncClientTypes.TagListEntry]?
@@ -695,7 +695,7 @@ public struct CreateLocationEfsInput {
 }
 
 /// CreateLocationEfs
-public struct CreateLocationEfsOutput {
+public struct CreateLocationEfsOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the Amazon EFS file system location that you create.
     public var locationArn: Swift.String?
 
@@ -707,7 +707,7 @@ public struct CreateLocationEfsOutput {
     }
 }
 
-public struct CreateLocationFsxLustreInput {
+public struct CreateLocationFsxLustreInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) for the FSx for Lustre file system.
     /// This member is required.
     public var fsxFilesystemArn: Swift.String?
@@ -733,7 +733,7 @@ public struct CreateLocationFsxLustreInput {
     }
 }
 
-public struct CreateLocationFsxLustreOutput {
+public struct CreateLocationFsxLustreOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the FSx for Lustre file system location that's created.
     public var locationArn: Swift.String?
 
@@ -747,7 +747,7 @@ public struct CreateLocationFsxLustreOutput {
 
 extension DataSyncClientTypes {
 
-    public enum NfsVersion: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum NfsVersion: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case automatic
         case nfs3
         case nfs40
@@ -781,8 +781,9 @@ extension DataSyncClientTypes {
 }
 
 extension DataSyncClientTypes {
+
     /// Specifies how DataSync can access a location using the NFS protocol.
-    public struct NfsMountOptions {
+    public struct NfsMountOptions: Swift.Sendable {
         /// Specifies the NFS version that you want DataSync to use when mounting your NFS share. If the server refuses to use the version specified, the task fails. You can specify the following options:
         ///
         /// * AUTOMATIC (default): DataSync chooses NFS version 4.1.
@@ -804,12 +805,12 @@ extension DataSyncClientTypes {
             self.version = version
         }
     }
-
 }
 
 extension DataSyncClientTypes {
+
     /// Specifies the Network File System (NFS) protocol configuration that DataSync uses to access your Amazon FSx for OpenZFS or Amazon FSx for NetApp ONTAP file system.
-    public struct FsxProtocolNfs {
+    public struct FsxProtocolNfs: Swift.Sendable {
         /// Specifies how DataSync can access a location using the NFS protocol.
         public var mountOptions: DataSyncClientTypes.NfsMountOptions?
 
@@ -820,12 +821,11 @@ extension DataSyncClientTypes {
             self.mountOptions = mountOptions
         }
     }
-
 }
 
 extension DataSyncClientTypes {
 
-    public enum SmbVersion: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SmbVersion: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case automatic
         case smb1
         case smb2
@@ -862,8 +862,9 @@ extension DataSyncClientTypes {
 }
 
 extension DataSyncClientTypes {
+
     /// Specifies the version of the Server Message Block (SMB) protocol that DataSync uses to access an SMB file server.
-    public struct SmbMountOptions {
+    public struct SmbMountOptions: Swift.Sendable {
         /// By default, DataSync automatically chooses an SMB protocol version based on negotiation with your SMB file server. You also can configure DataSync to use a specific SMB version, but we recommend doing this only if DataSync has trouble negotiating with the SMB file server automatically. These are the following options for configuring the SMB version:
         ///
         /// * AUTOMATIC (default): DataSync and the SMB file server negotiate the highest version of SMB that they mutually support between 2.1 and 3.1.1. This is the recommended option. If you instead choose a specific version that your file server doesn't support, you may get an Operation Not Supported error.
@@ -884,12 +885,12 @@ extension DataSyncClientTypes {
             self.version = version
         }
     }
-
 }
 
 extension DataSyncClientTypes {
+
     /// Specifies the Server Message Block (SMB) protocol configuration that DataSync uses to access your Amazon FSx for NetApp ONTAP file system. For more information, see [Accessing FSx for ONTAP file systems](https://docs.aws.amazon.com/datasync/latest/userguide/create-ontap-location.html#create-ontap-location-access).
-    public struct FsxProtocolSmb {
+    public struct FsxProtocolSmb: Swift.Sendable {
         /// Specifies the fully qualified domain name (FQDN) of the Microsoft Active Directory that your storage virtual machine (SVM) belongs to. If you have multiple domains in your environment, configuring this setting makes sure that DataSync connects to the right SVM.
         public var domain: Swift.String?
         /// Specifies the version of the Server Message Block (SMB) protocol that DataSync uses to access an SMB file server.
@@ -914,7 +915,6 @@ extension DataSyncClientTypes {
             self.user = user
         }
     }
-
 }
 
 extension DataSyncClientTypes.FsxProtocolSmb: Swift.CustomDebugStringConvertible {
@@ -923,8 +923,9 @@ extension DataSyncClientTypes.FsxProtocolSmb: Swift.CustomDebugStringConvertible
 }
 
 extension DataSyncClientTypes {
+
     /// Specifies the data transfer protocol that DataSync uses to access your Amazon FSx file system.
-    public struct FsxProtocol {
+    public struct FsxProtocol: Swift.Sendable {
         /// Specifies the Network File System (NFS) protocol configuration that DataSync uses to access your FSx for OpenZFS file system or FSx for ONTAP file system's storage virtual machine (SVM).
         public var nfs: DataSyncClientTypes.FsxProtocolNfs?
         /// Specifies the Server Message Block (SMB) protocol configuration that DataSync uses to access your FSx for ONTAP file system's SVM.
@@ -939,10 +940,9 @@ extension DataSyncClientTypes {
             self.smb = smb
         }
     }
-
 }
 
-public struct CreateLocationFsxOntapInput {
+public struct CreateLocationFsxOntapInput: Swift.Sendable {
     /// Specifies the data transfer protocol that DataSync uses to access your Amazon FSx file system.
     /// This member is required.
     public var `protocol`: DataSyncClientTypes.FsxProtocol?
@@ -980,7 +980,7 @@ public struct CreateLocationFsxOntapInput {
     }
 }
 
-public struct CreateLocationFsxOntapOutput {
+public struct CreateLocationFsxOntapOutput: Swift.Sendable {
     /// Specifies the ARN of the FSx for ONTAP file system location that you create.
     public var locationArn: Swift.String?
 
@@ -992,7 +992,7 @@ public struct CreateLocationFsxOntapOutput {
     }
 }
 
-public struct CreateLocationFsxOpenZfsInput {
+public struct CreateLocationFsxOpenZfsInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the FSx for OpenZFS file system.
     /// This member is required.
     public var fsxFilesystemArn: Swift.String?
@@ -1023,7 +1023,7 @@ public struct CreateLocationFsxOpenZfsInput {
     }
 }
 
-public struct CreateLocationFsxOpenZfsOutput {
+public struct CreateLocationFsxOpenZfsOutput: Swift.Sendable {
     /// The ARN of the FSx for OpenZFS file system location that you created.
     public var locationArn: Swift.String?
 
@@ -1035,7 +1035,7 @@ public struct CreateLocationFsxOpenZfsOutput {
     }
 }
 
-public struct CreateLocationFsxWindowsInput {
+public struct CreateLocationFsxWindowsInput: Swift.Sendable {
     /// Specifies the name of the Microsoft Active Directory domain that the FSx for Windows File Server file system belongs to. If you have multiple Active Directory domains in your environment, configuring this parameter makes sure that DataSync connects to the right file system.
     public var domain: Swift.String?
     /// Specifies the Amazon Resource Name (ARN) for the FSx for Windows File Server file system.
@@ -1044,7 +1044,7 @@ public struct CreateLocationFsxWindowsInput {
     /// Specifies the password of the user with the permissions to mount and access the files, folders, and file metadata in your FSx for Windows File Server file system.
     /// This member is required.
     public var password: Swift.String?
-    /// Specifies the ARNs of the security groups that provide access to your file system's preferred subnet. If you choose a security group that doesn't allow connections from within itself, do one of the following:
+    /// Specifies the ARNs of the Amazon EC2 security groups that provide access to your file system's preferred subnet. The security groups that you specify must be able to communicate with your file system's security groups. For information about configuring security groups for file system access, see the [ Amazon FSx for Windows File Server User Guide ](https://docs.aws.amazon.com/fsx/latest/WindowsGuide/limit-access-security-groups.html). If you choose a security group that doesn't allow connections from within itself, do one of the following:
     ///
     /// * Configure the security group to allow it to communicate within itself.
     ///
@@ -1084,7 +1084,7 @@ extension CreateLocationFsxWindowsInput: Swift.CustomDebugStringConvertible {
         "CreateLocationFsxWindowsInput(domain: \(Swift.String(describing: domain)), fsxFilesystemArn: \(Swift.String(describing: fsxFilesystemArn)), securityGroupArns: \(Swift.String(describing: securityGroupArns)), subdirectory: \(Swift.String(describing: subdirectory)), tags: \(Swift.String(describing: tags)), user: \(Swift.String(describing: user)), password: \"CONTENT_REDACTED\")"}
 }
 
-public struct CreateLocationFsxWindowsOutput {
+public struct CreateLocationFsxWindowsOutput: Swift.Sendable {
     /// The ARN of the FSx for Windows File Server file system location you created.
     public var locationArn: Swift.String?
 
@@ -1098,7 +1098,7 @@ public struct CreateLocationFsxWindowsOutput {
 
 extension DataSyncClientTypes {
 
-    public enum HdfsAuthenticationType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum HdfsAuthenticationType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case kerberos
         case simple
         case sdkUnknown(Swift.String)
@@ -1126,8 +1126,9 @@ extension DataSyncClientTypes {
 }
 
 extension DataSyncClientTypes {
+
     /// The NameNode of the Hadoop Distributed File System (HDFS). The NameNode manages the file system's namespace. The NameNode performs operations such as opening, closing, and renaming files and directories. The NameNode contains the information to map blocks of data to the DataNodes.
-    public struct HdfsNameNode {
+    public struct HdfsNameNode: Swift.Sendable {
         /// The hostname of the NameNode in the HDFS cluster. This value is the IP address or Domain Name Service (DNS) name of the NameNode. An agent that's installed on-premises uses this hostname to communicate with the NameNode in the network.
         /// This member is required.
         public var hostname: Swift.String?
@@ -1144,12 +1145,11 @@ extension DataSyncClientTypes {
             self.port = port
         }
     }
-
 }
 
 extension DataSyncClientTypes {
 
-    public enum HdfsDataTransferProtection: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum HdfsDataTransferProtection: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case authentication
         case disabled
         case integrity
@@ -1184,7 +1184,7 @@ extension DataSyncClientTypes {
 
 extension DataSyncClientTypes {
 
-    public enum HdfsRpcProtection: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum HdfsRpcProtection: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case authentication
         case disabled
         case integrity
@@ -1218,8 +1218,9 @@ extension DataSyncClientTypes {
 }
 
 extension DataSyncClientTypes {
+
     /// The Quality of Protection (QOP) configuration specifies the Remote Procedure Call (RPC) and data transfer privacy settings configured on the Hadoop Distributed File System (HDFS) cluster.
-    public struct QopConfiguration {
+    public struct QopConfiguration: Swift.Sendable {
         /// The data transfer protection setting configured on the HDFS cluster. This setting corresponds to your dfs.data.transfer.protection setting in the hdfs-site.xml file on your Hadoop cluster.
         public var dataTransferProtection: DataSyncClientTypes.HdfsDataTransferProtection?
         /// The RPC protection setting configured on the HDFS cluster. This setting corresponds to your hadoop.rpc.protection setting in your core-site.xml file on your Hadoop cluster.
@@ -1234,11 +1235,10 @@ extension DataSyncClientTypes {
             self.rpcProtection = rpcProtection
         }
     }
-
 }
 
-public struct CreateLocationHdfsInput {
-    /// The Amazon Resource Names (ARNs) of the agents that are used to connect to the HDFS cluster.
+public struct CreateLocationHdfsInput: Swift.Sendable {
+    /// The Amazon Resource Names (ARNs) of the DataSync agents that can connect to your HDFS cluster.
     /// This member is required.
     public var agentArns: [Swift.String]?
     /// The type of authentication used to determine the identity of the user.
@@ -1300,8 +1300,8 @@ public struct CreateLocationHdfsInput {
     }
 }
 
-public struct CreateLocationHdfsOutput {
-    /// The ARN of the source HDFS cluster location that's created.
+public struct CreateLocationHdfsOutput: Swift.Sendable {
+    /// The ARN of the source HDFS cluster location that you create.
     public var locationArn: Swift.String?
 
     public init(
@@ -1313,9 +1313,10 @@ public struct CreateLocationHdfsOutput {
 }
 
 extension DataSyncClientTypes {
-    /// The DataSync agents that are connecting to a Network File System (NFS) location.
-    public struct OnPremConfig {
-        /// The Amazon Resource Names (ARNs) of the agents connecting to a transfer location.
+
+    /// The DataSync agents that can connect to your Network File System (NFS) file server.
+    public struct OnPremConfig: Swift.Sendable {
+        /// The Amazon Resource Names (ARNs) of the DataSync agents that can connect to your NFS file server. You can specify more than one agent. For more information, see [Using multiple DataSync agents](https://docs.aws.amazon.com/datasync/latest/userguide/do-i-need-datasync-agent.html#multiple-agents).
         /// This member is required.
         public var agentArns: [Swift.String]?
 
@@ -1326,14 +1327,13 @@ extension DataSyncClientTypes {
             self.agentArns = agentArns
         }
     }
-
 }
 
 /// CreateLocationNfsRequest
-public struct CreateLocationNfsInput {
+public struct CreateLocationNfsInput: Swift.Sendable {
     /// Specifies the options that DataSync can use to mount your NFS file server.
     public var mountOptions: DataSyncClientTypes.NfsMountOptions?
-    /// Specifies the Amazon Resource Name (ARN) of the DataSync agent that want to connect to your NFS file server. You can specify more than one agent. For more information, see [Using multiple agents for transfers](https://docs.aws.amazon.com/datasync/latest/userguide/multiple-agents.html).
+    /// Specifies the Amazon Resource Name (ARN) of the DataSync agent that can connect to your NFS file server. You can specify more than one agent. For more information, see [Using multiple DataSync agents](https://docs.aws.amazon.com/datasync/latest/userguide/do-i-need-datasync-agent.html#multiple-agents).
     /// This member is required.
     public var onPremConfig: DataSyncClientTypes.OnPremConfig?
     /// Specifies the Domain Name System (DNS) name or IP version 4 address of the NFS file server that your DataSync agent connects to.
@@ -1362,7 +1362,7 @@ public struct CreateLocationNfsInput {
 }
 
 /// CreateLocationNfsResponse
-public struct CreateLocationNfsOutput {
+public struct CreateLocationNfsOutput: Swift.Sendable {
     /// The ARN of the transfer location that you created for your NFS file server.
     public var locationArn: Swift.String?
 
@@ -1376,7 +1376,7 @@ public struct CreateLocationNfsOutput {
 
 extension DataSyncClientTypes {
 
-    public enum ObjectStorageServerProtocol: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ObjectStorageServerProtocol: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case http
         case https
         case sdkUnknown(Swift.String)
@@ -1404,10 +1404,10 @@ extension DataSyncClientTypes {
 }
 
 /// CreateLocationObjectStorageRequest
-public struct CreateLocationObjectStorageInput {
+public struct CreateLocationObjectStorageInput: Swift.Sendable {
     /// Specifies the access key (for example, a user name) if credentials are required to authenticate with the object storage server.
     public var accessKey: Swift.String?
-    /// Specifies the Amazon Resource Names (ARNs) of the DataSync agents that can securely connect with your location.
+    /// Specifies the Amazon Resource Names (ARNs) of the DataSync agents that can connect with your object storage system.
     /// This member is required.
     public var agentArns: [Swift.String]?
     /// Specifies the name of the object storage bucket involved in the transfer.
@@ -1470,7 +1470,7 @@ extension CreateLocationObjectStorageInput: Swift.CustomDebugStringConvertible {
 }
 
 /// CreateLocationObjectStorageResponse
-public struct CreateLocationObjectStorageOutput {
+public struct CreateLocationObjectStorageOutput: Swift.Sendable {
     /// Specifies the ARN of the object storage system location that you create.
     public var locationArn: Swift.String?
 
@@ -1483,8 +1483,9 @@ public struct CreateLocationObjectStorageOutput {
 }
 
 extension DataSyncClientTypes {
+
     /// Specifies the Amazon Resource Name (ARN) of the Identity and Access Management (IAM) role that DataSync uses to access your S3 bucket. For more information, see [Accessing S3 buckets](https://docs.aws.amazon.com/datasync/latest/userguide/create-s3-location.html#create-s3-location-access).
-    public struct S3Config {
+    public struct S3Config: Swift.Sendable {
         /// Specifies the ARN of the IAM role that DataSync uses to access your S3 bucket.
         /// This member is required.
         public var bucketAccessRoleArn: Swift.String?
@@ -1496,12 +1497,11 @@ extension DataSyncClientTypes {
             self.bucketAccessRoleArn = bucketAccessRoleArn
         }
     }
-
 }
 
 extension DataSyncClientTypes {
 
-    public enum S3StorageClass: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum S3StorageClass: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case deepArchive
         case glacier
         case glacierInstantRetrieval
@@ -1547,7 +1547,7 @@ extension DataSyncClientTypes {
 }
 
 /// CreateLocationS3Request
-public struct CreateLocationS3Input {
+public struct CreateLocationS3Input: Swift.Sendable {
     /// (Amazon S3 on Outposts only) Specifies the Amazon Resource Name (ARN) of the DataSync agent on your Outpost. For more information, see [Deploy your DataSync agent on Outposts](https://docs.aws.amazon.com/datasync/latest/userguide/deploy-agents.html#outposts-agent).
     public var agentArns: [Swift.String]?
     /// Specifies the ARN of the S3 bucket that you want to use as a location. (When creating your DataSync task later, you specify whether this location is a transfer source or destination.) If your S3 bucket is located on an Outposts resource, you must specify an Amazon S3 access point. For more information, see [Managing data access with Amazon S3 access points](https://docs.aws.amazon.com/AmazonS3/latest/userguide/access-points.html) in the Amazon S3 User Guide.
@@ -1590,7 +1590,7 @@ public struct CreateLocationS3Input {
 }
 
 /// CreateLocationS3Response
-public struct CreateLocationS3Output {
+public struct CreateLocationS3Output: Swift.Sendable {
     /// The ARN of the S3 location that you created.
     public var locationArn: Swift.String?
 
@@ -1603,8 +1603,8 @@ public struct CreateLocationS3Output {
 }
 
 /// CreateLocationSmbRequest
-public struct CreateLocationSmbInput {
-    /// Specifies the DataSync agent (or agents) which you want to connect to your SMB file server. You specify an agent by using its Amazon Resource Name (ARN).
+public struct CreateLocationSmbInput: Swift.Sendable {
+    /// Specifies the DataSync agent (or agents) that can connect to your SMB file server. You specify an agent by using its Amazon Resource Name (ARN).
     /// This member is required.
     public var agentArns: [Swift.String]?
     /// Specifies the name of the Active Directory domain that your SMB file server belongs to. If you have multiple Active Directory domains in your environment, configuring this parameter makes sure that DataSync connects to the right file server.
@@ -1654,7 +1654,7 @@ extension CreateLocationSmbInput: Swift.CustomDebugStringConvertible {
 }
 
 /// CreateLocationSmbResponse
-public struct CreateLocationSmbOutput {
+public struct CreateLocationSmbOutput: Swift.Sendable {
     /// The ARN of the SMB location that you created.
     public var locationArn: Swift.String?
 
@@ -1668,7 +1668,7 @@ public struct CreateLocationSmbOutput {
 
 extension DataSyncClientTypes {
 
-    public enum FilterType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum FilterType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case simplePattern
         case sdkUnknown(Swift.String)
 
@@ -1693,8 +1693,9 @@ extension DataSyncClientTypes {
 }
 
 extension DataSyncClientTypes {
+
     /// Specifies which files, folders, and objects to include or exclude when transferring files from source to destination.
-    public struct FilterRule {
+    public struct FilterRule: Swift.Sendable {
         /// The type of filter rule to apply. DataSync only supports the SIMPLE_PATTERN rule type.
         public var filterType: DataSyncClientTypes.FilterType?
         /// A single filter string that consists of the patterns to include or exclude. The patterns are delimited by "|" (that is, a pipe), for example: /folder1|/folder2
@@ -1709,12 +1710,11 @@ extension DataSyncClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension DataSyncClientTypes {
 
-    public enum ManifestAction: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ManifestAction: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case transfer
         case sdkUnknown(Swift.String)
 
@@ -1740,7 +1740,7 @@ extension DataSyncClientTypes {
 
 extension DataSyncClientTypes {
 
-    public enum ManifestFormat: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ManifestFormat: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case csv
         case sdkUnknown(Swift.String)
 
@@ -1765,8 +1765,9 @@ extension DataSyncClientTypes {
 }
 
 extension DataSyncClientTypes {
+
     /// Specifies the S3 bucket where you're hosting the manifest that you want DataSync to use. For more information and configuration examples, see [Specifying what DataSync transfers by using a manifest](https://docs.aws.amazon.com/datasync/latest/userguide/transferring-with-manifest.html).
-    public struct S3ManifestConfig {
+    public struct S3ManifestConfig: Swift.Sendable {
         /// Specifies the Identity and Access Management (IAM) role that allows DataSync to access your manifest. For more information, see [Providing DataSync access to your manifest](https://docs.aws.amazon.com/datasync/latest/userguide/transferring-with-manifest.html#transferring-with-manifest-access).
         /// This member is required.
         public var bucketAccessRoleArn: Swift.String?
@@ -1792,12 +1793,12 @@ extension DataSyncClientTypes {
             self.s3BucketArn = s3BucketArn
         }
     }
-
 }
 
 extension DataSyncClientTypes {
+
     /// Specifies the manifest that you want DataSync to use and where it's hosted. For more information and configuration examples, see [Specifying what DataSync transfers by using a manifest](https://docs.aws.amazon.com/datasync/latest/userguide/transferring-with-manifest.html).
-    public struct SourceManifestConfig {
+    public struct SourceManifestConfig: Swift.Sendable {
         /// Specifies the S3 bucket where you're hosting your manifest.
         /// This member is required.
         public var s3: DataSyncClientTypes.S3ManifestConfig?
@@ -1809,12 +1810,12 @@ extension DataSyncClientTypes {
             self.s3 = s3
         }
     }
-
 }
 
 extension DataSyncClientTypes {
+
     /// Configures a manifest, which is a list of files or objects that you want DataSync to transfer. For more information and configuration examples, see [Specifying what DataSync transfers by using a manifest](https://docs.aws.amazon.com/datasync/latest/userguide/transferring-with-manifest.html).
-    public struct ManifestConfig {
+    public struct ManifestConfig: Swift.Sendable {
         /// Specifies what DataSync uses the manifest for.
         public var action: DataSyncClientTypes.ManifestAction?
         /// Specifies the file format of your manifest. For more information, see [Creating a manifest](https://docs.aws.amazon.com/datasync/latest/userguide/transferring-with-manifest.html#transferring-with-manifest-create).
@@ -1833,12 +1834,11 @@ extension DataSyncClientTypes {
             self.source = source
         }
     }
-
 }
 
 extension DataSyncClientTypes {
 
-    public enum Gid: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Gid: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case both
         case intValue
         case name
@@ -1873,7 +1873,7 @@ extension DataSyncClientTypes {
 
 extension DataSyncClientTypes {
 
-    public enum LogLevel: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum LogLevel: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case basic
         case off
         case transfer
@@ -1905,7 +1905,7 @@ extension DataSyncClientTypes {
 
 extension DataSyncClientTypes {
 
-    public enum Mtime: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Mtime: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case `none`
         case preserve
         case sdkUnknown(Swift.String)
@@ -1934,7 +1934,7 @@ extension DataSyncClientTypes {
 
 extension DataSyncClientTypes {
 
-    public enum ObjectTags: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ObjectTags: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case `none`
         case preserve
         case sdkUnknown(Swift.String)
@@ -1963,7 +1963,7 @@ extension DataSyncClientTypes {
 
 extension DataSyncClientTypes {
 
-    public enum OverwriteMode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum OverwriteMode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case always
         case never
         case sdkUnknown(Swift.String)
@@ -1992,7 +1992,7 @@ extension DataSyncClientTypes {
 
 extension DataSyncClientTypes {
 
-    public enum PosixPermissions: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum PosixPermissions: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case `none`
         case preserve
         case sdkUnknown(Swift.String)
@@ -2021,7 +2021,7 @@ extension DataSyncClientTypes {
 
 extension DataSyncClientTypes {
 
-    public enum PreserveDeletedFiles: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum PreserveDeletedFiles: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case preserve
         case remove
         case sdkUnknown(Swift.String)
@@ -2050,7 +2050,7 @@ extension DataSyncClientTypes {
 
 extension DataSyncClientTypes {
 
-    public enum PreserveDevices: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum PreserveDevices: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case `none`
         case preserve
         case sdkUnknown(Swift.String)
@@ -2079,7 +2079,7 @@ extension DataSyncClientTypes {
 
 extension DataSyncClientTypes {
 
-    public enum SmbSecurityDescriptorCopyFlags: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SmbSecurityDescriptorCopyFlags: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case `none`
         case ownerDacl
         case ownerDaclSacl
@@ -2111,7 +2111,7 @@ extension DataSyncClientTypes {
 
 extension DataSyncClientTypes {
 
-    public enum TaskQueueing: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum TaskQueueing: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case disabled
         case enabled
         case sdkUnknown(Swift.String)
@@ -2140,7 +2140,7 @@ extension DataSyncClientTypes {
 
 extension DataSyncClientTypes {
 
-    public enum TransferMode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum TransferMode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case all
         case changed
         case sdkUnknown(Swift.String)
@@ -2169,7 +2169,7 @@ extension DataSyncClientTypes {
 
 extension DataSyncClientTypes {
 
-    public enum Uid: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Uid: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case both
         case intValue
         case name
@@ -2204,7 +2204,7 @@ extension DataSyncClientTypes {
 
 extension DataSyncClientTypes {
 
-    public enum VerifyMode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum VerifyMode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case `none`
         case onlyFilesTransferred
         case pointInTimeConsistent
@@ -2235,18 +2235,19 @@ extension DataSyncClientTypes {
 }
 
 extension DataSyncClientTypes {
+
     /// Indicates how your transfer task is configured. These options include how DataSync handles files, objects, and their associated metadata during your transfer. You also can specify how to verify data integrity, set bandwidth limits for your task, among other options. Each option has a default value. Unless you need to, you don't have to configure any option before calling [StartTaskExecution](https://docs.aws.amazon.com/datasync/latest/userguide/API_StartTaskExecution.html). You also can override your task options for each task execution. For example, you might want to adjust the LogLevel for an individual execution.
-    public struct Options {
+    public struct Options: Swift.Sendable {
         /// Specifies whether to preserve metadata indicating the last time a file was read or written to. The behavior of Atime isn't fully standard across platforms, so DataSync can only do this on a best-effort basis.
         ///
-        /// * BEST_EFFORT (default) - DataSync attempts to preserve the original Atime attribute on all source files (that is, the version before the PREPARING phase of the task execution). This option is recommended.
+        /// * BEST_EFFORT (default) - DataSync attempts to preserve the original Atime attribute on all source files (that is, the version before the PREPARING steps of the task execution). This option is recommended.
         ///
         /// * NONE - Ignores Atime.
         ///
         ///
         /// If Atime is set to BEST_EFFORT, Mtime must be set to PRESERVE. If Atime is set to NONE, Mtime must also be NONE.
         public var atime: DataSyncClientTypes.Atime?
-        /// Limits the bandwidth used by a DataSync task. For example, if you want DataSync to use a maximum of 1 MB, set this value to 1048576 (=1024*1024).
+        /// Limits the bandwidth used by a DataSync task. For example, if you want DataSync to use a maximum of 1 MB, set this value to 1048576 (=1024*1024). Not applicable to [Enhanced mode tasks](https://docs.aws.amazon.com/datasync/latest/userguide/choosing-task-mode.html).
         public var bytesPerSecond: Swift.Int?
         /// Specifies the POSIX group ID (GID) of the file's owners.
         ///
@@ -2255,7 +2256,7 @@ extension DataSyncClientTypes {
         /// * NONE - Ignores UID and GID.
         ///
         ///
-        /// For more information, see [Metadata copied by DataSync](https://docs.aws.amazon.com/datasync/latest/userguide/special-files.html#metadata-copied).
+        /// For more information, see [Understanding how DataSync handles file and object metadata](https://docs.aws.amazon.com/datasync/latest/userguide/metadata-copied.html).
         public var gid: DataSyncClientTypes.Gid?
         /// Specifies the type of logs that DataSync publishes to a Amazon CloudWatch Logs log group. To specify the log group, see [CloudWatchLogGroupArn](https://docs.aws.amazon.com/datasync/latest/userguide/API_CreateTask.html#DataSync-CreateTask-request-CloudWatchLogGroupArn).
         ///
@@ -2265,7 +2266,7 @@ extension DataSyncClientTypes {
         ///
         /// * OFF - No logs are published.
         public var logLevel: DataSyncClientTypes.LogLevel?
-        /// Specifies whether to preserve metadata indicating the last time that a file was written to before the PREPARING phase of your task execution. This option is required when you need to run the a task more than once.
+        /// Specifies whether to preserve metadata indicating the last time that a file was written to before the PREPARING step of your task execution. This option is required when you need to run the a task more than once.
         ///
         /// * PRESERVE (default) - Preserves original Mtime, which is recommended.
         ///
@@ -2282,7 +2283,7 @@ extension DataSyncClientTypes {
         ///
         /// * NEVER - DataSync doesn't overwrite data in the destination location even if the source data has changed. You can use this option to protect against overwriting changes made to files or objects in the destination.
         public var overwriteMode: DataSyncClientTypes.OverwriteMode?
-        /// Specifies which users or groups can access a file for a specific purpose such as reading, writing, or execution of the file. For more information, see [Metadata copied by DataSync](https://docs.aws.amazon.com/datasync/latest/userguide/special-files.html#metadata-copied).
+        /// Specifies which users or groups can access a file for a specific purpose such as reading, writing, or execution of the file. For more information, see [Understanding how DataSync handles file and object metadata](https://docs.aws.amazon.com/datasync/latest/userguide/metadata-copied.html).
         ///
         /// * PRESERVE (default) - Preserves POSIX-style permissions, which is recommended.
         ///
@@ -2306,7 +2307,7 @@ extension DataSyncClientTypes {
         ///
         /// * PRESERVE - Preserves character and block device metadata. This option currently isn't supported for Amazon EFS.
         public var preserveDevices: DataSyncClientTypes.PreserveDevices?
-        /// Specifies which components of the SMB security descriptor are copied from source to destination objects. This value is only used for transfers between SMB and Amazon FSx for Windows File Server locations or between two FSx for Windows File Server locations. For more information, see [how DataSync handles metadata](https://docs.aws.amazon.com/datasync/latest/userguide/special-files.html).
+        /// Specifies which components of the SMB security descriptor are copied from source to destination objects. This value is only used for transfers between SMB and Amazon FSx for Windows File Server locations or between two FSx for Windows File Server locations. For more information, see [Understanding how DataSync handles file and object metadata](https://docs.aws.amazon.com/datasync/latest/userguide/metadata-copied.html).
         ///
         /// * OWNER_DACL (default) - For each copied object, DataSync copies the following metadata:
         ///
@@ -2332,9 +2333,9 @@ extension DataSyncClientTypes {
         public var securityDescriptorCopyFlags: DataSyncClientTypes.SmbSecurityDescriptorCopyFlags?
         /// Specifies whether your transfer tasks should be put into a queue during certain scenarios when [running multiple tasks](https://docs.aws.amazon.com/datasync/latest/userguide/run-task.html#running-multiple-tasks). This is ENABLED by default.
         public var taskQueueing: DataSyncClientTypes.TaskQueueing?
-        /// Determines whether DataSync transfers only the data and metadata that differ between the source and the destination location or transfers all the content from the source (without comparing what's in the destination).
+        /// Specifies whether DataSync transfers only the data (including metadata) that differs between locations following an initial copy or transfers all data every time you run the task. If you're planning on recurring transfers, you might only want to transfer what's changed since your previous task execution.
         ///
-        /// * CHANGED (default) - DataSync copies only data or metadata that is new or different content from the source location to the destination location.
+        /// * CHANGED (default) - After your initial full transfer, DataSync copies only the data and metadata that differs between the source and destination location.
         ///
         /// * ALL - DataSync copies everything in the source to the destination without comparing differences between the locations.
         public var transferMode: DataSyncClientTypes.TransferMode?
@@ -2347,13 +2348,13 @@ extension DataSyncClientTypes {
         ///
         /// For more information, see [Metadata copied by DataSync](https://docs.aws.amazon.com/datasync/latest/userguide/special-files.html#metadata-copied).
         public var uid: DataSyncClientTypes.Uid?
-        /// Specifies how and when DataSync checks the integrity of your data during a transfer.
+        /// Specifies if and how DataSync checks the integrity of your data at the end of your transfer.
         ///
-        /// * ONLY_FILES_TRANSFERRED (recommended) - DataSync calculates the checksum of transferred files and metadata at the source location. At the end of the transfer, DataSync then compares this checksum to the checksum calculated on those files at the destination. We recommend this option when transferring to S3 Glacier Flexible Retrieval or S3 Glacier Deep Archive storage classes. For more information, see [Storage class considerations with Amazon S3 locations](https://docs.aws.amazon.com/datasync/latest/userguide/create-s3-location.html#using-storage-classes).
+        /// * ONLY_FILES_TRANSFERRED (recommended) - DataSync calculates the checksum of transferred data (including metadata) at the source location. At the end of the transfer, DataSync then compares this checksum to the checksum calculated on that data at the destination. This is the default option for [Enhanced mode tasks](https://docs.aws.amazon.com/datasync/latest/userguide/choosing-task-mode.html). We recommend this option when transferring to S3 Glacier Flexible Retrieval or S3 Glacier Deep Archive storage classes. For more information, see [Storage class considerations with Amazon S3 locations](https://docs.aws.amazon.com/datasync/latest/userguide/create-s3-location.html#using-storage-classes).
         ///
-        /// * POINT_IN_TIME_CONSISTENT (default) - At the end of the transfer, DataSync scans the entire source and destination to verify that both locations are fully synchronized. If you use a [manifest](https://docs.aws.amazon.com/datasync/latest/userguide/transferring-with-manifest.html), DataSync only scans and verifies what's listed in the manifest. You can't use this option when transferring to S3 Glacier Flexible Retrieval or S3 Glacier Deep Archive storage classes. For more information, see [Storage class considerations with Amazon S3 locations](https://docs.aws.amazon.com/datasync/latest/userguide/create-s3-location.html#using-storage-classes).
+        /// * POINT_IN_TIME_CONSISTENT - At the end of the transfer, DataSync checks the entire source and destination to verify that both locations are fully synchronized. The is the default option for [Basic mode tasks](https://docs.aws.amazon.com/datasync/latest/userguide/choosing-task-mode.html) and isn't currently supported with Enhanced mode tasks. If you use a [manifest](https://docs.aws.amazon.com/datasync/latest/userguide/transferring-with-manifest.html), DataSync only scans and verifies what's listed in the manifest. You can't use this option when transferring to S3 Glacier Flexible Retrieval or S3 Glacier Deep Archive storage classes. For more information, see [Storage class considerations with Amazon S3 locations](https://docs.aws.amazon.com/datasync/latest/userguide/create-s3-location.html#using-storage-classes).
         ///
-        /// * NONE - DataSync doesn't run additional verification at the end of the transfer. All data transmissions are still integrity-checked with checksum verification during the transfer.
+        /// * NONE - DataSync performs data integrity checks only during your transfer. Unlike other options, there's no additional verification at the end of your transfer.
         public var verifyMode: DataSyncClientTypes.VerifyMode?
 
         public init(
@@ -2391,12 +2392,11 @@ extension DataSyncClientTypes {
             self.verifyMode = verifyMode
         }
     }
-
 }
 
 extension DataSyncClientTypes {
 
-    public enum ScheduleStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ScheduleStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case disabled
         case enabled
         case sdkUnknown(Swift.String)
@@ -2424,9 +2424,10 @@ extension DataSyncClientTypes {
 }
 
 extension DataSyncClientTypes {
+
     /// Configures your DataSync task to run on a [schedule](https://docs.aws.amazon.com/datasync/latest/userguide/task-scheduling.html) (at a minimum interval of 1 hour).
-    public struct TaskSchedule {
-        /// Specifies your task schedule by using a cron expression in UTC time. For information about cron expression syntax, see the [ Amazon EventBridge User Guide ](https://docs.aws.amazon.com/eventbridge/latest/userguide/eb-cron-expressions.html).
+    public struct TaskSchedule: Swift.Sendable {
+        /// Specifies your task schedule by using a cron or rate expression. Use cron expressions for task schedules that run on a specific time and day. For example, the following cron expression creates a task schedule that runs at 8 AM on the first Wednesday of every month: cron(0 8 * * 3#1) Use rate expressions for task schedules that run on a regular interval. For example, the following rate expression creates a task schedule that runs every 12 hours: rate(12 hours) For information about cron and rate expression syntax, see the [ Amazon EventBridge User Guide ](https://docs.aws.amazon.com/eventbridge/latest/userguide/eb-scheduled-rule-pattern.html).
         /// This member is required.
         public var scheduleExpression: Swift.String?
         /// Specifies whether to enable or disable your task schedule. Your schedule is enabled by default, but there can be situations where you need to disable it. For example, you might need to pause a recurring transfer to fix an issue with your task or perform maintenance on your storage system. DataSync might disable your schedule automatically if your task fails repeatedly with the same error. For more information, see [TaskScheduleDetails](https://docs.aws.amazon.com/datasync/latest/userguide/API_TaskScheduleDetails.html).
@@ -2441,12 +2442,41 @@ extension DataSyncClientTypes {
             self.status = status
         }
     }
-
 }
 
 extension DataSyncClientTypes {
+
+    public enum TaskMode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+        case basic
+        case enhanced
+        case sdkUnknown(Swift.String)
+
+        public static var allCases: [TaskMode] {
+            return [
+                .basic,
+                .enhanced
+            ]
+        }
+
+        public init?(rawValue: Swift.String) {
+            let value = Self.allCases.first(where: { $0.rawValue == rawValue })
+            self = value ?? Self.sdkUnknown(rawValue)
+        }
+
+        public var rawValue: Swift.String {
+            switch self {
+            case .basic: return "BASIC"
+            case .enhanced: return "ENHANCED"
+            case let .sdkUnknown(s): return s
+            }
+        }
+    }
+}
+
+extension DataSyncClientTypes {
+
     /// Specifies the Amazon S3 bucket where DataSync uploads your [task report](https://docs.aws.amazon.com/datasync/latest/userguide/task-reports.html).
-    public struct ReportDestinationS3 {
+    public struct ReportDestinationS3: Swift.Sendable {
         /// Specifies the Amazon Resource Name (ARN) of the IAM policy that allows DataSync to upload a task report to your S3 bucket. For more information, see [Allowing DataSync to upload a task report to an Amazon S3 bucket](https://docs.aws.amazon.com/datasync/latest/userguide/task-reports.html).
         /// This member is required.
         public var bucketAccessRoleArn: Swift.String?
@@ -2467,12 +2497,12 @@ extension DataSyncClientTypes {
             self.subdirectory = subdirectory
         }
     }
-
 }
 
 extension DataSyncClientTypes {
+
     /// Specifies where DataSync uploads your [task report](https://docs.aws.amazon.com/datasync/latest/userguide/task-reports.html).
-    public struct ReportDestination {
+    public struct ReportDestination: Swift.Sendable {
         /// Specifies the Amazon S3 bucket where DataSync uploads your task report.
         public var s3: DataSyncClientTypes.ReportDestinationS3?
 
@@ -2483,12 +2513,11 @@ extension DataSyncClientTypes {
             self.s3 = s3
         }
     }
-
 }
 
 extension DataSyncClientTypes {
 
-    public enum ObjectVersionIds: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ObjectVersionIds: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case include
         case `none`
         case sdkUnknown(Swift.String)
@@ -2517,7 +2546,7 @@ extension DataSyncClientTypes {
 
 extension DataSyncClientTypes {
 
-    public enum ReportOutputType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ReportOutputType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case standard
         case summaryOnly
         case sdkUnknown(Swift.String)
@@ -2546,7 +2575,7 @@ extension DataSyncClientTypes {
 
 extension DataSyncClientTypes {
 
-    public enum ReportLevel: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ReportLevel: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case errorsOnly
         case successesAndErrors
         case sdkUnknown(Swift.String)
@@ -2574,8 +2603,9 @@ extension DataSyncClientTypes {
 }
 
 extension DataSyncClientTypes {
+
     /// Specifies the level of detail for a particular aspect of your DataSync [task report](https://docs.aws.amazon.com/datasync/latest/userguide/task-reports.html).
-    public struct ReportOverride {
+    public struct ReportOverride: Swift.Sendable {
         /// Specifies whether your task report includes errors only or successes and errors. For example, your report might mostly include only what didn't go well in your transfer (ERRORS_ONLY). At the same time, you want to verify that your [task filter](https://docs.aws.amazon.com/datasync/latest/userguide/filtering.html) is working correctly. In this situation, you can get a list of what files DataSync successfully skipped and if something transferred that you didn't to transfer (SUCCESSES_AND_ERRORS).
         public var reportLevel: DataSyncClientTypes.ReportLevel?
 
@@ -2586,12 +2616,12 @@ extension DataSyncClientTypes {
             self.reportLevel = reportLevel
         }
     }
-
 }
 
 extension DataSyncClientTypes {
+
     /// The level of detail included in each aspect of your DataSync [task report](https://docs.aws.amazon.com/datasync/latest/userguide/task-reports.html).
-    public struct ReportOverrides {
+    public struct ReportOverrides: Swift.Sendable {
         /// Specifies the level of reporting for the files, objects, and directories that DataSync attempted to delete in your destination location. This only applies if you [configure your task](https://docs.aws.amazon.com/datasync/latest/userguide/configure-metadata.html) to delete data in the destination that isn't in the source.
         public var deleted: DataSyncClientTypes.ReportOverride?
         /// Specifies the level of reporting for the files, objects, and directories that DataSync attempted to skip during your transfer.
@@ -2614,12 +2644,12 @@ extension DataSyncClientTypes {
             self.verified = verified
         }
     }
-
 }
 
 extension DataSyncClientTypes {
+
     /// Specifies how you want to configure a task report, which provides detailed information about for your DataSync transfer. For more information, see [Task reports](https://docs.aws.amazon.com/datasync/latest/userguide/task-reports.html).
-    public struct TaskReportConfig {
+    public struct TaskReportConfig: Swift.Sendable {
         /// Specifies the Amazon S3 bucket where DataSync uploads your task report. For more information, see [Task reports](https://docs.aws.amazon.com/datasync/latest/userguide/task-reports.html#task-report-access).
         public var destination: DataSyncClientTypes.ReportDestination?
         /// Specifies whether your task report includes the new version of each object transferred into an S3 bucket. This only applies if you [enable versioning on your bucket](https://docs.aws.amazon.com/AmazonS3/latest/userguide/manage-versioning-examples.html). Keep in mind that setting this to INCLUDE can increase the duration of your task execution.
@@ -2654,19 +2684,18 @@ extension DataSyncClientTypes {
             self.reportLevel = reportLevel
         }
     }
-
 }
 
 /// CreateTaskRequest
-public struct CreateTaskInput {
-    /// Specifies the Amazon Resource Name (ARN) of an Amazon CloudWatch log group for monitoring your task.
+public struct CreateTaskInput: Swift.Sendable {
+    /// Specifies the Amazon Resource Name (ARN) of an Amazon CloudWatch log group for monitoring your task. For Enhanced mode tasks, you don't need to specify anything. DataSync automatically sends logs to a CloudWatch log group named /aws/datasync.
     public var cloudWatchLogGroupArn: Swift.String?
     /// Specifies the ARN of your transfer's destination location.
     /// This member is required.
     public var destinationLocationArn: Swift.String?
     /// Specifies exclude filters that define the files, objects, and folders in your source location that you don't want DataSync to transfer. For more information and examples, see [Specifying what DataSync transfers by using filters](https://docs.aws.amazon.com/datasync/latest/userguide/filtering.html).
     public var excludes: [DataSyncClientTypes.FilterRule]?
-    /// Specifies include filters define the files, objects, and folders in your source location that you want DataSync to transfer. For more information and examples, see [Specifying what DataSync transfers by using filters](https://docs.aws.amazon.com/datasync/latest/userguide/filtering.html).
+    /// Specifies include filters that define the files, objects, and folders in your source location that you want DataSync to transfer. For more information and examples, see [Specifying what DataSync transfers by using filters](https://docs.aws.amazon.com/datasync/latest/userguide/filtering.html).
     public var includes: [DataSyncClientTypes.FilterRule]?
     /// Configures a manifest, which is a list of files or objects that you want DataSync to transfer. For more information and configuration examples, see [Specifying what DataSync transfers by using a manifest](https://docs.aws.amazon.com/datasync/latest/userguide/transferring-with-manifest.html). When using this parameter, your caller identity (the role that you're using DataSync with) must have the iam:PassRole permission. The [AWSDataSyncFullAccess](https://docs.aws.amazon.com/datasync/latest/userguide/security-iam-awsmanpol.html#security-iam-awsmanpol-awsdatasyncfullaccess) policy includes this permission.
     public var manifestConfig: DataSyncClientTypes.ManifestConfig?
@@ -2681,6 +2710,15 @@ public struct CreateTaskInput {
     public var sourceLocationArn: Swift.String?
     /// Specifies the tags that you want to apply to your task. Tags are key-value pairs that help you manage, filter, and search for your DataSync resources.
     public var tags: [DataSyncClientTypes.TagListEntry]?
+    /// Specifies one of the following task modes for your data transfer:
+    ///
+    /// * ENHANCED - Transfer virtually unlimited numbers of objects with enhanced metrics, more detailed logs, and higher performance than Basic mode. Currently available for transfers between Amazon S3 locations. To create an Enhanced mode task, the IAM role that you use to call the CreateTask operation must have the iam:CreateServiceLinkedRole permission.
+    ///
+    /// * BASIC (default) - Transfer files or objects between Amazon Web Services storage and on-premises, edge, or other cloud storage. DataSync [quotas](https://docs.aws.amazon.com/datasync/latest/userguide/datasync-limits.html) apply.
+    ///
+    ///
+    /// For more information, see [Understanding task mode differences](https://docs.aws.amazon.com/datasync/latest/userguide/choosing-task-mode.html#task-mode-differences).
+    public var taskMode: DataSyncClientTypes.TaskMode?
     /// Specifies how you want to configure a task report, which provides detailed information about your DataSync transfer. For more information, see [Monitoring your DataSync transfers with task reports](https://docs.aws.amazon.com/datasync/latest/userguide/task-reports.html). When using this parameter, your caller identity (the role that you're using DataSync with) must have the iam:PassRole permission. The [AWSDataSyncFullAccess](https://docs.aws.amazon.com/datasync/latest/userguide/security-iam-awsmanpol.html#security-iam-awsmanpol-awsdatasyncfullaccess) policy includes this permission.
     public var taskReportConfig: DataSyncClientTypes.TaskReportConfig?
 
@@ -2695,6 +2733,7 @@ public struct CreateTaskInput {
         schedule: DataSyncClientTypes.TaskSchedule? = nil,
         sourceLocationArn: Swift.String? = nil,
         tags: [DataSyncClientTypes.TagListEntry]? = nil,
+        taskMode: DataSyncClientTypes.TaskMode? = nil,
         taskReportConfig: DataSyncClientTypes.TaskReportConfig? = nil
     )
     {
@@ -2708,12 +2747,13 @@ public struct CreateTaskInput {
         self.schedule = schedule
         self.sourceLocationArn = sourceLocationArn
         self.tags = tags
+        self.taskMode = taskMode
         self.taskReportConfig = taskReportConfig
     }
 }
 
 /// CreateTaskResponse
-public struct CreateTaskOutput {
+public struct CreateTaskOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the task.
     public var taskArn: Swift.String?
 
@@ -2726,7 +2766,7 @@ public struct CreateTaskOutput {
 }
 
 /// DeleteAgentRequest
-public struct DeleteAgentInput {
+public struct DeleteAgentInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the agent to delete. Use the ListAgents operation to return a list of agents for your account and Amazon Web Services Region.
     /// This member is required.
     public var agentArn: Swift.String?
@@ -2739,13 +2779,13 @@ public struct DeleteAgentInput {
     }
 }
 
-public struct DeleteAgentOutput {
+public struct DeleteAgentOutput: Swift.Sendable {
 
     public init() { }
 }
 
 /// DeleteLocation
-public struct DeleteLocationInput {
+public struct DeleteLocationInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the location to delete.
     /// This member is required.
     public var locationArn: Swift.String?
@@ -2758,13 +2798,13 @@ public struct DeleteLocationInput {
     }
 }
 
-public struct DeleteLocationOutput {
+public struct DeleteLocationOutput: Swift.Sendable {
 
     public init() { }
 }
 
 /// DeleteTask
-public struct DeleteTaskInput {
+public struct DeleteTaskInput: Swift.Sendable {
     /// Specifies the Amazon Resource Name (ARN) of the task that you want to delete.
     /// This member is required.
     public var taskArn: Swift.String?
@@ -2777,13 +2817,13 @@ public struct DeleteTaskInput {
     }
 }
 
-public struct DeleteTaskOutput {
+public struct DeleteTaskOutput: Swift.Sendable {
 
     public init() { }
 }
 
 /// DescribeAgent
-public struct DescribeAgentInput {
+public struct DescribeAgentInput: Swift.Sendable {
     /// Specifies the Amazon Resource Name (ARN) of the DataSync agent that you want information about.
     /// This member is required.
     public var agentArn: Swift.String?
@@ -2798,7 +2838,7 @@ public struct DescribeAgentInput {
 
 extension DataSyncClientTypes {
 
-    public enum EndpointType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum EndpointType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case fips
         case privateLink
         case `public`
@@ -2829,9 +2869,10 @@ extension DataSyncClientTypes {
 }
 
 extension DataSyncClientTypes {
+
     /// Specifies how your DataSync agent connects to Amazon Web Services using a [virtual private cloud (VPC) service endpoint](https://docs.aws.amazon.com/datasync/latest/userguide/choose-service-endpoint.html#choose-service-endpoint-vpc). An agent that uses a VPC endpoint isn't accessible over the public internet.
-    public struct PrivateLinkConfig {
-        /// Specifies the VPC endpoint provided by [Amazon Web Services PrivateLink](https://docs.aws.amazon.com/vpc/latest/userguide/endpoint-service.html) that your agent connects to.
+    public struct PrivateLinkConfig: Swift.Sendable {
+        /// Specifies the VPC endpoint provided by [Amazon Web Services PrivateLink](https://docs.aws.amazon.com/vpc/latest/privatelink/privatelink-share-your-services.html) that your agent connects to.
         public var privateLinkEndpoint: Swift.String?
         /// Specifies the Amazon Resource Names (ARN) of the security group that provides DataSync access to your VPC endpoint. You can only specify one ARN.
         public var securityGroupArns: [Swift.String]?
@@ -2853,11 +2894,10 @@ extension DataSyncClientTypes {
             self.vpcEndpointId = vpcEndpointId
         }
     }
-
 }
 
 /// DescribeAgentResponse
-public struct DescribeAgentOutput {
+public struct DescribeAgentOutput: Swift.Sendable {
     /// The ARN of the agent.
     public var agentArn: Swift.String?
     /// The time that the agent was [activated](https://docs.aws.amazon.com/datasync/latest/userguide/activate-agent.html).
@@ -2901,7 +2941,7 @@ public struct DescribeAgentOutput {
     }
 }
 
-public struct DescribeDiscoveryJobInput {
+public struct DescribeDiscoveryJobInput: Swift.Sendable {
     /// Specifies the Amazon Resource Name (ARN) of the discovery job that you want information about.
     /// This member is required.
     public var discoveryJobArn: Swift.String?
@@ -2916,7 +2956,7 @@ public struct DescribeDiscoveryJobInput {
 
 extension DataSyncClientTypes {
 
-    public enum DiscoveryJobStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DiscoveryJobStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case completed
         case completedWithIssues
         case failed
@@ -2958,7 +2998,7 @@ extension DataSyncClientTypes {
     }
 }
 
-public struct DescribeDiscoveryJobOutput {
+public struct DescribeDiscoveryJobOutput: Swift.Sendable {
     /// The number of minutes that the discovery job runs.
     public var collectionDurationMinutes: Swift.Int?
     /// The ARN of the discovery job.
@@ -2990,7 +3030,7 @@ public struct DescribeDiscoveryJobOutput {
     }
 }
 
-public struct DescribeLocationAzureBlobInput {
+public struct DescribeLocationAzureBlobInput: Swift.Sendable {
     /// Specifies the Amazon Resource Name (ARN) of your Azure Blob Storage transfer location.
     /// This member is required.
     public var locationArn: Swift.String?
@@ -3003,7 +3043,7 @@ public struct DescribeLocationAzureBlobInput {
     }
 }
 
-public struct DescribeLocationAzureBlobOutput {
+public struct DescribeLocationAzureBlobOutput: Swift.Sendable {
     /// The access tier that you want your objects or files transferred into. This only applies when using the location as a transfer destination. For more information, see [Access tiers](https://docs.aws.amazon.com/datasync/latest/userguide/creating-azure-blob-location.html#azure-blob-access-tiers).
     public var accessTier: DataSyncClientTypes.AzureAccessTier?
     /// The ARNs of the DataSync agents that can connect with your Azure Blob Storage container.
@@ -3040,7 +3080,7 @@ public struct DescribeLocationAzureBlobOutput {
 }
 
 /// DescribeLocationEfsRequest
-public struct DescribeLocationEfsInput {
+public struct DescribeLocationEfsInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the Amazon EFS file system location that you want information about.
     /// This member is required.
     public var locationArn: Swift.String?
@@ -3054,16 +3094,16 @@ public struct DescribeLocationEfsInput {
 }
 
 /// DescribeLocationEfsResponse
-public struct DescribeLocationEfsOutput {
-    /// The ARN of the access point that DataSync uses to access the Amazon EFS file system.
+public struct DescribeLocationEfsOutput: Swift.Sendable {
+    /// The ARN of the access point that DataSync uses to access the Amazon EFS file system. For more information, see [Accessing restricted file systems](https://docs.aws.amazon.com/datasync/latest/userguide/create-efs-location.html#create-efs-location-iam).
     public var accessPointArn: Swift.String?
     /// The time that the location was created.
     public var creationTime: Foundation.Date?
-    /// The subnet and security groups that DataSync uses to access your Amazon EFS file system.
+    /// The subnet and security groups that DataSync uses to connect to one of your Amazon EFS file system's [mount targets](https://docs.aws.amazon.com/efs/latest/ug/accessing-fs.html).
     public var ec2Config: DataSyncClientTypes.Ec2Config?
-    /// The Identity and Access Management (IAM) role that DataSync assumes when mounting the Amazon EFS file system.
+    /// The Identity and Access Management (IAM) role that allows DataSync to access your Amazon EFS file system. For more information, see [Creating a DataSync IAM role for file system access](https://docs.aws.amazon.com/datasync/latest/userguide/create-efs-location.html#create-efs-location-iam-role).
     public var fileSystemAccessRoleArn: Swift.String?
-    /// Describes whether DataSync uses Transport Layer Security (TLS) encryption when copying data to or from the Amazon EFS file system.
+    /// Indicates whether DataSync uses Transport Layer Security (TLS) encryption when transferring data to or from the Amazon EFS file system.
     public var inTransitEncryption: DataSyncClientTypes.EfsInTransitEncryption?
     /// The ARN of the Amazon EFS file system location.
     public var locationArn: Swift.String?
@@ -3090,7 +3130,7 @@ public struct DescribeLocationEfsOutput {
     }
 }
 
-public struct DescribeLocationFsxLustreInput {
+public struct DescribeLocationFsxLustreInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the FSx for Lustre location to describe.
     /// This member is required.
     public var locationArn: Swift.String?
@@ -3103,7 +3143,7 @@ public struct DescribeLocationFsxLustreInput {
     }
 }
 
-public struct DescribeLocationFsxLustreOutput {
+public struct DescribeLocationFsxLustreOutput: Swift.Sendable {
     /// The time that the FSx for Lustre location was created.
     public var creationTime: Foundation.Date?
     /// The Amazon Resource Name (ARN) of the FSx for Lustre location that was described.
@@ -3127,7 +3167,7 @@ public struct DescribeLocationFsxLustreOutput {
     }
 }
 
-public struct DescribeLocationFsxOntapInput {
+public struct DescribeLocationFsxOntapInput: Swift.Sendable {
     /// Specifies the Amazon Resource Name (ARN) of the FSx for ONTAP file system location that you want information about.
     /// This member is required.
     public var locationArn: Swift.String?
@@ -3140,7 +3180,7 @@ public struct DescribeLocationFsxOntapInput {
     }
 }
 
-public struct DescribeLocationFsxOntapOutput {
+public struct DescribeLocationFsxOntapOutput: Swift.Sendable {
     /// The time that the location was created.
     public var creationTime: Foundation.Date?
     /// The ARN of the FSx for ONTAP file system.
@@ -3176,7 +3216,7 @@ public struct DescribeLocationFsxOntapOutput {
     }
 }
 
-public struct DescribeLocationFsxOpenZfsInput {
+public struct DescribeLocationFsxOpenZfsInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the FSx for OpenZFS location to describe.
     /// This member is required.
     public var locationArn: Swift.String?
@@ -3189,7 +3229,7 @@ public struct DescribeLocationFsxOpenZfsInput {
     }
 }
 
-public struct DescribeLocationFsxOpenZfsOutput {
+public struct DescribeLocationFsxOpenZfsOutput: Swift.Sendable {
     /// The time that the FSx for OpenZFS location was created.
     public var creationTime: Foundation.Date?
     /// The ARN of the FSx for OpenZFS location that was described.
@@ -3217,7 +3257,7 @@ public struct DescribeLocationFsxOpenZfsOutput {
     }
 }
 
-public struct DescribeLocationFsxWindowsInput {
+public struct DescribeLocationFsxWindowsInput: Swift.Sendable {
     /// Specifies the Amazon Resource Name (ARN) of the FSx for Windows File Server location.
     /// This member is required.
     public var locationArn: Swift.String?
@@ -3230,7 +3270,7 @@ public struct DescribeLocationFsxWindowsInput {
     }
 }
 
-public struct DescribeLocationFsxWindowsOutput {
+public struct DescribeLocationFsxWindowsOutput: Swift.Sendable {
     /// The time that the FSx for Windows File Server location was created.
     public var creationTime: Foundation.Date?
     /// The name of the Microsoft Active Directory domain that the FSx for Windows File Server file system belongs to.
@@ -3239,7 +3279,7 @@ public struct DescribeLocationFsxWindowsOutput {
     public var locationArn: Swift.String?
     /// The uniform resource identifier (URI) of the FSx for Windows File Server location.
     public var locationUri: Swift.String?
-    /// The ARNs of the security groups that are configured for the FSx for Windows File Server file system.
+    /// The ARNs of the Amazon EC2 security groups that provide access to your file system's preferred subnet. For information about configuring security groups for file system access, see the [ Amazon FSx for Windows File Server User Guide ](https://docs.aws.amazon.com/fsx/latest/WindowsGuide/limit-access-security-groups.html).
     public var securityGroupArns: [Swift.String]?
     /// The user with the permissions to mount and access the FSx for Windows File Server file system.
     public var user: Swift.String?
@@ -3262,7 +3302,7 @@ public struct DescribeLocationFsxWindowsOutput {
     }
 }
 
-public struct DescribeLocationHdfsInput {
+public struct DescribeLocationHdfsInput: Swift.Sendable {
     /// Specifies the Amazon Resource Name (ARN) of the HDFS location.
     /// This member is required.
     public var locationArn: Swift.String?
@@ -3275,7 +3315,7 @@ public struct DescribeLocationHdfsInput {
     }
 }
 
-public struct DescribeLocationHdfsOutput {
+public struct DescribeLocationHdfsOutput: Swift.Sendable {
     /// The ARNs of the DataSync agents that can connect with your HDFS cluster.
     public var agentArns: [Swift.String]?
     /// The type of authentication used to determine the identity of the user.
@@ -3332,7 +3372,7 @@ public struct DescribeLocationHdfsOutput {
 }
 
 /// DescribeLocationNfsRequest
-public struct DescribeLocationNfsInput {
+public struct DescribeLocationNfsInput: Swift.Sendable {
     /// Specifies the Amazon Resource Name (ARN) of the NFS location that you want information about.
     /// This member is required.
     public var locationArn: Swift.String?
@@ -3346,7 +3386,7 @@ public struct DescribeLocationNfsInput {
 }
 
 /// DescribeLocationNfsResponse
-public struct DescribeLocationNfsOutput {
+public struct DescribeLocationNfsOutput: Swift.Sendable {
     /// The time when the NFS location was created.
     public var creationTime: Foundation.Date?
     /// The ARN of the NFS location.
@@ -3355,7 +3395,7 @@ public struct DescribeLocationNfsOutput {
     public var locationUri: Swift.String?
     /// The mount options that DataSync uses to mount your NFS file server.
     public var mountOptions: DataSyncClientTypes.NfsMountOptions?
-    /// The DataSync agents that are connecting to a Network File System (NFS) location.
+    /// The DataSync agents that can connect to your Network File System (NFS) file server.
     public var onPremConfig: DataSyncClientTypes.OnPremConfig?
 
     public init(
@@ -3375,7 +3415,7 @@ public struct DescribeLocationNfsOutput {
 }
 
 /// DescribeLocationObjectStorageRequest
-public struct DescribeLocationObjectStorageInput {
+public struct DescribeLocationObjectStorageInput: Swift.Sendable {
     /// Specifies the Amazon Resource Name (ARN) of the object storage system location.
     /// This member is required.
     public var locationArn: Swift.String?
@@ -3389,7 +3429,7 @@ public struct DescribeLocationObjectStorageInput {
 }
 
 /// DescribeLocationObjectStorageResponse
-public struct DescribeLocationObjectStorageOutput {
+public struct DescribeLocationObjectStorageOutput: Swift.Sendable {
     /// The access key (for example, a user name) required to authenticate with the object storage system.
     public var accessKey: Swift.String?
     /// The ARNs of the DataSync agents that can connect with your object storage system.
@@ -3430,7 +3470,7 @@ public struct DescribeLocationObjectStorageOutput {
 }
 
 /// DescribeLocationS3Request
-public struct DescribeLocationS3Input {
+public struct DescribeLocationS3Input: Swift.Sendable {
     /// Specifies the Amazon Resource Name (ARN) of the Amazon S3 location.
     /// This member is required.
     public var locationArn: Swift.String?
@@ -3444,7 +3484,7 @@ public struct DescribeLocationS3Input {
 }
 
 /// DescribeLocationS3Response
-public struct DescribeLocationS3Output {
+public struct DescribeLocationS3Output: Swift.Sendable {
     /// The ARNs of the DataSync agents deployed on your Outpost when using working with Amazon S3 on Outposts. For more information, see [Deploy your DataSync agent on Outposts](https://docs.aws.amazon.com/datasync/latest/userguide/deploy-agents.html#outposts-agent).
     public var agentArns: [Swift.String]?
     /// The time that the Amazon S3 location was created.
@@ -3477,7 +3517,7 @@ public struct DescribeLocationS3Output {
 }
 
 /// DescribeLocationSmbRequest
-public struct DescribeLocationSmbInput {
+public struct DescribeLocationSmbInput: Swift.Sendable {
     /// Specifies the Amazon Resource Name (ARN) of the SMB location that you want information about.
     /// This member is required.
     public var locationArn: Swift.String?
@@ -3491,7 +3531,7 @@ public struct DescribeLocationSmbInput {
 }
 
 /// DescribeLocationSmbResponse
-public struct DescribeLocationSmbOutput {
+public struct DescribeLocationSmbOutput: Swift.Sendable {
     /// The ARNs of the DataSync agents that can connect with your SMB file server.
     public var agentArns: [Swift.String]?
     /// The time that the SMB location was created.
@@ -3527,7 +3567,7 @@ public struct DescribeLocationSmbOutput {
     }
 }
 
-public struct DescribeStorageSystemInput {
+public struct DescribeStorageSystemInput: Swift.Sendable {
     /// Specifies the Amazon Resource Name (ARN) of an on-premises storage system that you're using with DataSync Discovery.
     /// This member is required.
     public var storageSystemArn: Swift.String?
@@ -3542,7 +3582,7 @@ public struct DescribeStorageSystemInput {
 
 extension DataSyncClientTypes {
 
-    public enum StorageSystemConnectivityStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum StorageSystemConnectivityStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case fail
         case pass
         case unknown
@@ -3572,7 +3612,7 @@ extension DataSyncClientTypes {
     }
 }
 
-public struct DescribeStorageSystemOutput {
+public struct DescribeStorageSystemOutput: Swift.Sendable {
     /// The ARN of the DataSync agent that connects to and reads from your on-premises storage system.
     public var agentArns: [Swift.String]?
     /// The ARN of the Amazon CloudWatch log group that's used to monitor and log discovery job events.
@@ -3622,7 +3662,7 @@ public struct DescribeStorageSystemOutput {
 
 extension DataSyncClientTypes {
 
-    public enum DiscoveryResourceType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DiscoveryResourceType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case cluster
         case svm
         case volume
@@ -3652,7 +3692,7 @@ extension DataSyncClientTypes {
     }
 }
 
-public struct DescribeStorageSystemResourceMetricsInput {
+public struct DescribeStorageSystemResourceMetricsInput: Swift.Sendable {
     /// Specifies the Amazon Resource Name (ARN) of the discovery job that collects information about your on-premises storage system.
     /// This member is required.
     public var discoveryJobArn: Swift.String?
@@ -3692,8 +3732,9 @@ public struct DescribeStorageSystemResourceMetricsInput {
 }
 
 extension DataSyncClientTypes {
+
     /// The IOPS peaks for an on-premises storage system resource. Each data point represents the 95th percentile peak value during a 1-hour interval.
-    public struct IOPS {
+    public struct IOPS: Swift.Sendable {
         /// Peak IOPS unrelated to read and write operations.
         public var other: Swift.Double?
         /// Peak IOPS related to read operations.
@@ -3716,12 +3757,12 @@ extension DataSyncClientTypes {
             self.write = write
         }
     }
-
 }
 
 extension DataSyncClientTypes {
+
     /// The latency peaks for an on-premises storage system resource. Each data point represents the 95th percentile peak value during a 1-hour interval.
-    public struct Latency {
+    public struct Latency: Swift.Sendable {
         /// Peak latency for operations unrelated to read and write operations.
         public var other: Swift.Double?
         /// Peak latency for read operations.
@@ -3740,12 +3781,12 @@ extension DataSyncClientTypes {
             self.write = write
         }
     }
-
 }
 
 extension DataSyncClientTypes {
+
     /// The throughput peaks for an on-premises storage system volume. Each data point represents the 95th percentile peak value during a 1-hour interval.
-    public struct Throughput {
+    public struct Throughput: Swift.Sendable {
         /// Peak throughput unrelated to read and write operations.
         public var other: Swift.Double?
         /// Peak throughput related to read operations.
@@ -3768,12 +3809,12 @@ extension DataSyncClientTypes {
             self.write = write
         }
     }
-
 }
 
 extension DataSyncClientTypes {
+
     /// The types of performance data that DataSync Discovery collects about an on-premises storage system resource.
-    public struct P95Metrics {
+    public struct P95Metrics: Swift.Sendable {
         /// The IOPS peaks for an on-premises storage system resource. Each data point represents the 95th percentile peak value during a 1-hour interval.
         public var iops: DataSyncClientTypes.IOPS?
         /// The latency peaks for an on-premises storage system resource. Each data point represents the 95th percentile peak value during a 1-hour interval.
@@ -3792,12 +3833,12 @@ extension DataSyncClientTypes {
             self.throughput = throughput
         }
     }
-
 }
 
 extension DataSyncClientTypes {
+
     /// Information, including performance data and capacity usage, provided by DataSync Discovery about a resource in your on-premises storage system.
-    public struct ResourceMetrics {
+    public struct ResourceMetrics: Swift.Sendable {
         /// The storage capacity of the on-premises storage system resource.
         public var capacity: DataSyncClientTypes.Capacity?
         /// The types of performance data that DataSync Discovery collects about the on-premises storage system resource.
@@ -3824,10 +3865,9 @@ extension DataSyncClientTypes {
             self.timestamp = timestamp
         }
     }
-
 }
 
-public struct DescribeStorageSystemResourceMetricsOutput {
+public struct DescribeStorageSystemResourceMetricsOutput: Swift.Sendable {
     /// The details that your discovery job collected about your storage system resource.
     public var metrics: [DataSyncClientTypes.ResourceMetrics]?
     /// The opaque string that indicates the position to begin the next list of results in the response.
@@ -3845,7 +3885,7 @@ public struct DescribeStorageSystemResourceMetricsOutput {
 
 extension DataSyncClientTypes {
 
-    public enum DiscoveryResourceFilter: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DiscoveryResourceFilter: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case svm
         case sdkUnknown(Swift.String)
 
@@ -3869,7 +3909,7 @@ extension DataSyncClientTypes {
     }
 }
 
-public struct DescribeStorageSystemResourcesInput {
+public struct DescribeStorageSystemResourcesInput: Swift.Sendable {
     /// Specifies the Amazon Resource Name (ARN) of the discovery job that's collecting data from your on-premises storage system.
     /// This member is required.
     public var discoveryJobArn: Swift.String?
@@ -3904,8 +3944,9 @@ public struct DescribeStorageSystemResourcesInput {
 }
 
 extension DataSyncClientTypes {
+
     /// The performance data that DataSync Discovery collects about an on-premises storage system resource.
-    public struct MaxP95Performance {
+    public struct MaxP95Performance: Swift.Sendable {
         /// Peak IOPS unrelated to read and write operations.
         public var iopsOther: Swift.Double?
         /// Peak IOPS related to read operations.
@@ -3956,12 +3997,12 @@ extension DataSyncClientTypes {
             self.throughputWrite = throughputWrite
         }
     }
-
 }
 
 extension DataSyncClientTypes {
+
     /// The details about an Amazon Web Services storage service that DataSync Discovery recommends for a resource in your on-premises storage system. For more information, see [Recommendations provided by DataSync Discovery](https://docs.aws.amazon.com/datasync/latest/userguide/discovery-understand-recommendations.html).
-    public struct Recommendation {
+    public struct Recommendation: Swift.Sendable {
         /// The estimated monthly cost of the recommended Amazon Web Services storage service.
         public var estimatedMonthlyStorageCost: Swift.String?
         /// Information about how you can set up a recommended Amazon Web Services storage service.
@@ -3980,12 +4021,11 @@ extension DataSyncClientTypes {
             self.storageType = storageType
         }
     }
-
 }
 
 extension DataSyncClientTypes {
 
-    public enum RecommendationStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum RecommendationStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case completed
         case failed
         case inProgress
@@ -4019,8 +4059,9 @@ extension DataSyncClientTypes {
 }
 
 extension DataSyncClientTypes {
+
     /// The information that DataSync Discovery collects about an on-premises storage system cluster.
-    public struct NetAppONTAPCluster {
+    public struct NetAppONTAPCluster: Swift.Sendable {
         /// The number of CIFS shares in the cluster.
         public var cifsShareCount: Swift.Int?
         /// The storage space that's being used in the cluster without accounting for compression or deduplication.
@@ -4075,12 +4116,12 @@ extension DataSyncClientTypes {
             self.resourceId = resourceId
         }
     }
-
 }
 
 extension DataSyncClientTypes {
+
     /// The information that DataSync Discovery collects about a storage virtual machine (SVM) in your on-premises storage system.
-    public struct NetAppONTAPSVM {
+    public struct NetAppONTAPSVM: Swift.Sendable {
         /// The number of CIFS shares in the SVM.
         public var cifsShareCount: Swift.Int?
         /// The universally unique identifier (UUID) of the cluster associated with the SVM.
@@ -4143,12 +4184,12 @@ extension DataSyncClientTypes {
             self.totalSnapshotCapacityUsed = totalSnapshotCapacityUsed
         }
     }
-
 }
 
 extension DataSyncClientTypes {
+
     /// The information that DataSync Discovery collects about a volume in your on-premises storage system.
-    public struct NetAppONTAPVolume {
+    public struct NetAppONTAPVolume: Swift.Sendable {
         /// The total storage space that's available in the volume.
         public var capacityProvisioned: Swift.Int?
         /// The storage space that's being used in the volume.
@@ -4215,12 +4256,12 @@ extension DataSyncClientTypes {
             self.volumeName = volumeName
         }
     }
-
 }
 
 extension DataSyncClientTypes {
+
     /// Information provided by DataSync Discovery about the resources in your on-premises storage system.
-    public struct ResourceDetails {
+    public struct ResourceDetails: Swift.Sendable {
         /// The information that DataSync Discovery collects about the cluster in your on-premises storage system.
         public var netAppONTAPClusters: [DataSyncClientTypes.NetAppONTAPCluster]?
         /// The information that DataSync Discovery collects about storage virtual machines (SVMs) in your on-premises storage system.
@@ -4239,10 +4280,9 @@ extension DataSyncClientTypes {
             self.netAppONTAPVolumes = netAppONTAPVolumes
         }
     }
-
 }
 
-public struct DescribeStorageSystemResourcesOutput {
+public struct DescribeStorageSystemResourcesOutput: Swift.Sendable {
     /// The opaque string that indicates the position to begin the next list of results in the response.
     public var nextToken: Swift.String?
     /// The information collected about your storage system's resources. A response can also include Amazon Web Services storage service recommendations. For more information, see [storage resource information](https://docs.aws.amazon.com/datasync/latest/userguide/discovery-understand-findings.html) collected by and [recommendations](https://docs.aws.amazon.com/datasync/latest/userguide/discovery-understand-recommendations.html) provided by DataSync Discovery.
@@ -4259,7 +4299,7 @@ public struct DescribeStorageSystemResourcesOutput {
 }
 
 /// DescribeTaskRequest
-public struct DescribeTaskInput {
+public struct DescribeTaskInput: Swift.Sendable {
     /// Specifies the Amazon Resource Name (ARN) of the transfer task that you want information about.
     /// This member is required.
     public var taskArn: Swift.String?
@@ -4274,7 +4314,7 @@ public struct DescribeTaskInput {
 
 extension DataSyncClientTypes {
 
-    public enum ScheduleDisabledBy: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ScheduleDisabledBy: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case service
         case user
         case sdkUnknown(Swift.String)
@@ -4302,8 +4342,9 @@ extension DataSyncClientTypes {
 }
 
 extension DataSyncClientTypes {
+
     /// Provides information about your DataSync [task schedule](https://docs.aws.amazon.com/datasync/latest/userguide/task-scheduling.html).
-    public struct TaskScheduleDetails {
+    public struct TaskScheduleDetails: Swift.Sendable {
         /// Indicates how your task schedule was disabled.
         ///
         /// * USER - Your schedule was manually disabled by using the [UpdateTask](https://docs.aws.amazon.com/datasync/latest/userguide/API_UpdateTask.html) operation or DataSync console.
@@ -4326,12 +4367,11 @@ extension DataSyncClientTypes {
             self.statusUpdateTime = statusUpdateTime
         }
     }
-
 }
 
 extension DataSyncClientTypes {
 
-    public enum TaskStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum TaskStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case available
         case creating
         case queued
@@ -4368,8 +4408,8 @@ extension DataSyncClientTypes {
 }
 
 /// DescribeTaskResponse
-public struct DescribeTaskOutput {
-    /// The Amazon Resource Name (ARN) of an Amazon CloudWatch log group for monitoring your task. For more information, see [Monitoring DataSync with Amazon CloudWatch](https://docs.aws.amazon.com/datasync/latest/userguide/monitor-datasync.html).
+public struct DescribeTaskOutput: Swift.Sendable {
+    /// The Amazon Resource Name (ARN) of an Amazon CloudWatch log group for monitoring your task. For more information, see [Monitoring data transfers with CloudWatch Logs](https://docs.aws.amazon.com/datasync/latest/userguide/configure-logging.html).
     public var cloudWatchLogGroupArn: Swift.String?
     /// The time that the task was created.
     public var creationTime: Foundation.Date?
@@ -4405,6 +4445,8 @@ public struct DescribeTaskOutput {
     public var status: DataSyncClientTypes.TaskStatus?
     /// The ARN of your task.
     public var taskArn: Swift.String?
+    /// The task mode that you're using. For more information, see [Choosing a task mode for your data transfer](https://docs.aws.amazon.com/datasync/latest/userguide/choosing-task-mode.html).
+    public var taskMode: DataSyncClientTypes.TaskMode?
     /// The configuration of your task report, which provides detailed information about your DataSync transfer. For more information, see [Monitoring your DataSync transfers with task reports](https://docs.aws.amazon.com/datasync/latest/userguide/task-reports.html).
     public var taskReportConfig: DataSyncClientTypes.TaskReportConfig?
 
@@ -4427,6 +4469,7 @@ public struct DescribeTaskOutput {
         sourceNetworkInterfaceArns: [Swift.String]? = nil,
         status: DataSyncClientTypes.TaskStatus? = nil,
         taskArn: Swift.String? = nil,
+        taskMode: DataSyncClientTypes.TaskMode? = nil,
         taskReportConfig: DataSyncClientTypes.TaskReportConfig? = nil
     )
     {
@@ -4448,12 +4491,13 @@ public struct DescribeTaskOutput {
         self.sourceNetworkInterfaceArns = sourceNetworkInterfaceArns
         self.status = status
         self.taskArn = taskArn
+        self.taskMode = taskMode
         self.taskReportConfig = taskReportConfig
     }
 }
 
 /// DescribeTaskExecutionRequest
-public struct DescribeTaskExecutionInput {
+public struct DescribeTaskExecutionInput: Swift.Sendable {
     /// Specifies the Amazon Resource Name (ARN) of the task execution that you want information about.
     /// This member is required.
     public var taskExecutionArn: Swift.String?
@@ -4468,7 +4512,61 @@ public struct DescribeTaskExecutionInput {
 
 extension DataSyncClientTypes {
 
-    public enum PhaseStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    /// The number of objects that DataSync fails to prepare, transfer, verify, and delete during your task execution. Applies only to [Enhanced mode tasks](https://docs.aws.amazon.com/datasync/latest/userguide/choosing-task-mode.html).
+    public struct TaskExecutionFilesFailedDetail: Swift.Sendable {
+        /// The number of objects that DataSync fails to delete during your task execution.
+        public var delete: Swift.Int
+        /// The number of objects that DataSync fails to prepare during your task execution.
+        public var prepare: Swift.Int
+        /// The number of objects that DataSync fails to transfer during your task execution.
+        public var transfer: Swift.Int
+        /// The number of objects that DataSync fails to verify during your task execution.
+        public var verify: Swift.Int
+
+        public init(
+            delete: Swift.Int = 0,
+            prepare: Swift.Int = 0,
+            transfer: Swift.Int = 0,
+            verify: Swift.Int = 0
+        )
+        {
+            self.delete = delete
+            self.prepare = prepare
+            self.transfer = transfer
+            self.verify = verify
+        }
+    }
+}
+
+extension DataSyncClientTypes {
+
+    /// The number of objects that DataSync finds at your locations. Applies only to [Enhanced mode tasks](https://docs.aws.amazon.com/datasync/latest/userguide/choosing-task-mode.html).
+    public struct TaskExecutionFilesListedDetail: Swift.Sendable {
+        /// The number of objects that DataSync finds at your destination location. This metric is only applicable if you [configure your task](https://docs.aws.amazon.com/datasync/latest/userguide/configure-metadata.html#task-option-file-object-handling) to delete data in the destination that isn't in the source.
+        public var atDestinationForDelete: Swift.Int
+        /// The number of objects that DataSync finds at your source location.
+        ///
+        /// * With a [manifest](https://docs.aws.amazon.com/datasync/latest/userguide/transferring-with-manifest.html), DataSync lists only what's in your manifest (and not everything at your source location).
+        ///
+        /// * With an include [filter](https://docs.aws.amazon.com/datasync/latest/userguide/filtering.html), DataSync lists only what matches the filter at your source location.
+        ///
+        /// * With an exclude filter, DataSync lists everything at your source location before applying the filter.
+        public var atSource: Swift.Int
+
+        public init(
+            atDestinationForDelete: Swift.Int = 0,
+            atSource: Swift.Int = 0
+        )
+        {
+            self.atDestinationForDelete = atDestinationForDelete
+            self.atSource = atSource
+        }
+    }
+}
+
+extension DataSyncClientTypes {
+
+    public enum PhaseStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case error
         case pending
         case success
@@ -4499,8 +4597,9 @@ extension DataSyncClientTypes {
 }
 
 extension DataSyncClientTypes {
+
     /// Indicates whether DataSync created a complete [task report](https://docs.aws.amazon.com/datasync/latest/userguide/task-reports.html) for your transfer.
-    public struct ReportResult {
+    public struct ReportResult: Swift.Sendable {
         /// Indicates the code associated with the error if DataSync can't create a complete report.
         public var errorCode: Swift.String?
         /// Provides details about issues creating a report.
@@ -4519,29 +4618,29 @@ extension DataSyncClientTypes {
             self.status = status
         }
     }
-
 }
 
 extension DataSyncClientTypes {
-    /// Describes the detailed result of a TaskExecution operation. This result includes the time in milliseconds spent in each phase, the status of the task execution, and the errors encountered.
-    public struct TaskExecutionResultDetail {
-        /// Errors that DataSync encountered during execution of the task. You can use this error code to help troubleshoot issues.
+
+    /// Provides detailed information about the result of your DataSync task execution.
+    public struct TaskExecutionResultDetail: Swift.Sendable {
+        /// An error that DataSync encountered during your task execution. You can use this information to help [troubleshoot issues](https://docs.aws.amazon.com/datasync/latest/userguide/troubleshooting-datasync-locations-tasks.html).
         public var errorCode: Swift.String?
-        /// Detailed description of an error that was encountered during the task execution. You can use this information to help troubleshoot issues.
+        /// The detailed description of an error that DataSync encountered during your task execution. You can use this information to help [troubleshoot issues](https://docs.aws.amazon.com/datasync/latest/userguide/troubleshooting-datasync-locations-tasks.html).
         public var errorDetail: Swift.String?
-        /// The total time in milliseconds that DataSync spent in the PREPARING phase.
+        /// The time in milliseconds that your task execution was in the PREPARING step. For more information, see [Task execution statuses](https://docs.aws.amazon.com/datasync/latest/userguide/run-task.html#understand-task-execution-statuses). For Enhanced mode tasks, the value is always 0. For more information, see [How DataSync prepares your data transfer](https://docs.aws.amazon.com/datasync/latest/userguide/how-datasync-transfer-works.html#how-datasync-prepares).
         public var prepareDuration: Swift.Int?
-        /// The status of the PREPARING phase.
+        /// The status of the PREPARING step for your task execution. For more information, see [Task execution statuses](https://docs.aws.amazon.com/datasync/latest/userguide/run-task.html#understand-task-execution-statuses).
         public var prepareStatus: DataSyncClientTypes.PhaseStatus?
-        /// The total time in milliseconds that DataSync took to transfer the file from the source to the destination location.
+        /// The time in milliseconds that your task execution ran.
         public var totalDuration: Swift.Int?
-        /// The total time in milliseconds that DataSync spent in the TRANSFERRING phase.
+        /// The time in milliseconds that your task execution was in the TRANSFERRING step. For more information, see [Task execution statuses](https://docs.aws.amazon.com/datasync/latest/userguide/run-task.html#understand-task-execution-statuses). For Enhanced mode tasks, the value is always 0. For more information, see [How DataSync transfers your data](https://docs.aws.amazon.com/datasync/latest/userguide/how-datasync-transfer-works.html#how-datasync-transfers).
         public var transferDuration: Swift.Int?
-        /// The status of the TRANSFERRING phase.
+        /// The status of the TRANSFERRING step for your task execution. For more information, see [Task execution statuses](https://docs.aws.amazon.com/datasync/latest/userguide/run-task.html#understand-task-execution-statuses).
         public var transferStatus: DataSyncClientTypes.PhaseStatus?
-        /// The total time in milliseconds that DataSync spent in the VERIFYING phase.
+        /// The time in milliseconds that your task execution was in the VERIFYING step. For more information, see [Task execution statuses](https://docs.aws.amazon.com/datasync/latest/userguide/run-task.html#understand-task-execution-statuses). For Enhanced mode tasks, the value is always 0. For more information, see [How DataSync verifies your data's integrity](https://docs.aws.amazon.com/datasync/latest/userguide/how-datasync-transfer-works.html#how-verifying-works).
         public var verifyDuration: Swift.Int?
-        /// The status of the VERIFYING phase.
+        /// The status of the VERIFYING step for your task execution. For more information, see [Task execution statuses](https://docs.aws.amazon.com/datasync/latest/userguide/run-task.html#understand-task-execution-statuses).
         public var verifyStatus: DataSyncClientTypes.PhaseStatus?
 
         public init(
@@ -4567,12 +4666,11 @@ extension DataSyncClientTypes {
             self.verifyStatus = verifyStatus
         }
     }
-
 }
 
 extension DataSyncClientTypes {
 
-    public enum TaskExecutionStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum TaskExecutionStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case cancelling
         case error
         case launching
@@ -4618,28 +4716,47 @@ extension DataSyncClientTypes {
 }
 
 /// DescribeTaskExecutionResponse
-public struct DescribeTaskExecutionOutput {
-    /// The physical number of bytes transferred over the network after compression was applied. In most cases, this number is less than BytesTransferred unless the data isn't compressible.
+public struct DescribeTaskExecutionOutput: Swift.Sendable {
+    /// The number of physical bytes that DataSync transfers over the network after compression (if compression is possible). This number is typically less than [BytesTransferred](https://docs.aws.amazon.com/datasync/latest/userguide/API_DescribeTaskExecution.html#DataSync-DescribeTaskExecution-response-BytesTransferred) unless the data isn't compressible. Not currently supported with [Enhanced mode tasks](https://docs.aws.amazon.com/datasync/latest/userguide/choosing-task-mode.html).
     public var bytesCompressed: Swift.Int
-    /// The total number of bytes that are involved in the transfer. For the number of bytes sent over the network, see BytesCompressed.
+    /// The number of bytes that DataSync sends to the network before compression (if compression is possible). For the number of bytes transferred over the network, see [BytesCompressed](https://docs.aws.amazon.com/datasync/latest/userguide/API_DescribeTaskExecution.html#DataSync-DescribeTaskExecution-response-BytesCompressed).
     public var bytesTransferred: Swift.Int
-    /// The number of logical bytes written to the destination location.
+    /// The number of logical bytes that DataSync actually writes to the destination location.
     public var bytesWritten: Swift.Int
-    /// The estimated physical number of bytes that will transfer over the network.
+    /// The number of logical bytes that DataSync expects to write to the destination location.
     public var estimatedBytesToTransfer: Swift.Int
-    /// The expected number of files, objects, and directories that DataSync will delete in your destination location. If you don't [configure your task](https://docs.aws.amazon.com/datasync/latest/userguide/configure-metadata.html) to delete data in the destination that isn't in the source, the value is always 0.
+    /// The number of files, objects, and directories that DataSync expects to delete in your destination location. If you don't [configure your task](https://docs.aws.amazon.com/datasync/latest/userguide/configure-metadata.html) to delete data in the destination that isn't in the source, the value is always 0.
     public var estimatedFilesToDelete: Swift.Int
-    /// The expected number of files, objects, and directories that DataSync will transfer over the network. This value is calculated during the task execution's PREPARING phase before the TRANSFERRING phase. The calculation is based on comparing the content of the source and destination locations and finding the difference that needs to be transferred.
+    /// The number of files, objects, and directories that DataSync expects to transfer over the network. This value is calculated during the task execution's PREPARING[step](https://docs.aws.amazon.com/datasync/latest/userguide/run-task.html#understand-task-execution-statuses) before the TRANSFERRING step. How this gets calculated depends primarily on your task’s [transfer mode](https://docs.aws.amazon.com/datasync/latest/userguide/API_Options.html#DataSync-Type-Options-TransferMode) configuration:
+    ///
+    /// * If TranserMode is set to CHANGED - The calculation is based on comparing the content of the source and destination locations and determining the difference that needs to be transferred. The difference can include:
+    ///
+    /// * Anything that's added or modified at the source location.
+    ///
+    /// * Anything that's in both locations and modified at the destination after an initial transfer (unless [OverwriteMode](https://docs.aws.amazon.com/datasync/latest/userguide/API_Options.html#DataSync-Type-Options-OverwriteMode) is set to NEVER).
+    ///
+    /// * (Basic task mode only) The number of items that DataSync expects to delete (if [PreserveDeletedFiles](https://docs.aws.amazon.com/datasync/latest/userguide/API_Options.html#DataSync-Type-Options-PreserveDeletedFiles) is set to REMOVE).
+    ///
+    ///
+    ///
+    ///
+    /// * If TranserMode is set to ALL - The calculation is based only on the items that DataSync finds at the source location.
     public var estimatedFilesToTransfer: Swift.Int
     /// A list of filter rules that exclude specific data during your transfer. For more information and examples, see [Filtering data transferred by DataSync](https://docs.aws.amazon.com/datasync/latest/userguide/filtering.html).
     public var excludes: [DataSyncClientTypes.FilterRule]?
-    /// The number of files, objects, and directories that DataSync deleted in your destination location. If you don't [configure your task](https://docs.aws.amazon.com/datasync/latest/userguide/configure-metadata.html) to delete data in the destination that isn't in the source, the value is always 0.
+    /// The number of files, objects, and directories that DataSync actually deletes in your destination location. If you don't [configure your task](https://docs.aws.amazon.com/datasync/latest/userguide/configure-metadata.html) to delete data in the destination that isn't in the source, the value is always 0.
     public var filesDeleted: Swift.Int
-    /// The number of files, objects, and directories that DataSync skipped during your transfer.
+    /// The number of objects that DataSync fails to prepare, transfer, verify, and delete during your task execution. Applies only to [Enhanced mode tasks](https://docs.aws.amazon.com/datasync/latest/userguide/choosing-task-mode.html).
+    public var filesFailed: DataSyncClientTypes.TaskExecutionFilesFailedDetail?
+    /// The number of objects that DataSync finds at your locations. Applies only to [Enhanced mode tasks](https://docs.aws.amazon.com/datasync/latest/userguide/choosing-task-mode.html).
+    public var filesListed: DataSyncClientTypes.TaskExecutionFilesListedDetail?
+    /// The number of objects that DataSync will attempt to transfer after comparing your source and destination locations. Applies only to [Enhanced mode tasks](https://docs.aws.amazon.com/datasync/latest/userguide/choosing-task-mode.html). This metric isn't applicable if you configure your task to [transfer all data](https://docs.aws.amazon.com/datasync/latest/userguide/configure-metadata.html#task-option-transfer-mode). In that scenario, DataSync copies everything from the source to the destination without comparing differences between the locations.
+    public var filesPrepared: Swift.Int
+    /// The number of files, objects, and directories that DataSync skips during your transfer.
     public var filesSkipped: Swift.Int
-    /// The actual number of files, objects, and directories that DataSync transferred over the network. This value is updated periodically during the task execution's TRANSFERRING phase when something is read from the source and sent over the network. If DataSync fails to transfer something, this value can be less than EstimatedFilesToTransfer. In some cases, this value can also be greater than EstimatedFilesToTransfer. This element is implementation-specific for some location types, so don't use it as an exact indication of what transferred or to monitor your task execution.
+    /// The number of files, objects, and directories that DataSync actually transfers over the network. This value is updated periodically during the task execution's TRANSFERRING[step](https://docs.aws.amazon.com/datasync/latest/userguide/run-task.html#understand-task-execution-statuses) when something is read from the source and sent over the network. If DataSync fails to transfer something, this value can be less than EstimatedFilesToTransfer. In some cases, this value can also be greater than EstimatedFilesToTransfer. This element is implementation-specific for some location types, so don't use it as an exact indication of what's transferring or to monitor your task execution.
     public var filesTransferred: Swift.Int
-    /// The number of files, objects, and directories that DataSync verified during your transfer. When you configure your task to [verify only the data that's transferred](https://docs.aws.amazon.com/datasync/latest/userguide/configure-data-verification-options.html), DataSync doesn't verify directories in some situations or files that fail to transfer.
+    /// The number of files, objects, and directories that DataSync verifies during your transfer. When you configure your task to [verify only the data that's transferred](https://docs.aws.amazon.com/datasync/latest/userguide/configure-data-verification-options.html), DataSync doesn't verify directories in some situations or files that fail to transfer.
     public var filesVerified: Swift.Int
     /// A list of filter rules that include specific data during your transfer. For more information and examples, see [Filtering data transferred by DataSync](https://docs.aws.amazon.com/datasync/latest/userguide/filtering.html).
     public var includes: [DataSyncClientTypes.FilterRule]?
@@ -4657,6 +4774,8 @@ public struct DescribeTaskExecutionOutput {
     public var status: DataSyncClientTypes.TaskExecutionStatus?
     /// The ARN of the task execution that you wanted information about. TaskExecutionArn is hierarchical and includes TaskArn for the task that was executed. For example, a TaskExecution value with the ARN arn:aws:datasync:us-east-1:111222333444:task/task-0208075f79cedf4a2/execution/exec-08ef1e88ec491019b executed the task with the ARN arn:aws:datasync:us-east-1:111222333444:task/task-0208075f79cedf4a2.
     public var taskExecutionArn: Swift.String?
+    /// The task mode that you're using. For more information, see [Choosing a task mode for your data transfer](https://docs.aws.amazon.com/datasync/latest/userguide/choosing-task-mode.html).
+    public var taskMode: DataSyncClientTypes.TaskMode?
     /// The configuration of your task report, which provides detailed information about for your DataSync transfer. For more information, see [Creating a task report](https://docs.aws.amazon.com/datasync/latest/userguide/task-reports.html).
     public var taskReportConfig: DataSyncClientTypes.TaskReportConfig?
 
@@ -4669,6 +4788,9 @@ public struct DescribeTaskExecutionOutput {
         estimatedFilesToTransfer: Swift.Int = 0,
         excludes: [DataSyncClientTypes.FilterRule]? = nil,
         filesDeleted: Swift.Int = 0,
+        filesFailed: DataSyncClientTypes.TaskExecutionFilesFailedDetail? = nil,
+        filesListed: DataSyncClientTypes.TaskExecutionFilesListedDetail? = nil,
+        filesPrepared: Swift.Int = 0,
         filesSkipped: Swift.Int = 0,
         filesTransferred: Swift.Int = 0,
         filesVerified: Swift.Int = 0,
@@ -4680,6 +4802,7 @@ public struct DescribeTaskExecutionOutput {
         startTime: Foundation.Date? = nil,
         status: DataSyncClientTypes.TaskExecutionStatus? = nil,
         taskExecutionArn: Swift.String? = nil,
+        taskMode: DataSyncClientTypes.TaskMode? = nil,
         taskReportConfig: DataSyncClientTypes.TaskReportConfig? = nil
     )
     {
@@ -4691,6 +4814,9 @@ public struct DescribeTaskExecutionOutput {
         self.estimatedFilesToTransfer = estimatedFilesToTransfer
         self.excludes = excludes
         self.filesDeleted = filesDeleted
+        self.filesFailed = filesFailed
+        self.filesListed = filesListed
+        self.filesPrepared = filesPrepared
         self.filesSkipped = filesSkipped
         self.filesTransferred = filesTransferred
         self.filesVerified = filesVerified
@@ -4702,13 +4828,15 @@ public struct DescribeTaskExecutionOutput {
         self.startTime = startTime
         self.status = status
         self.taskExecutionArn = taskExecutionArn
+        self.taskMode = taskMode
         self.taskReportConfig = taskReportConfig
     }
 }
 
 extension DataSyncClientTypes {
+
     /// The details about a specific DataSync discovery job.
-    public struct DiscoveryJobListEntry {
+    public struct DiscoveryJobListEntry: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of a discovery job.
         public var discoveryJobArn: Swift.String?
         /// The status of a discovery job. For more information, see [Discovery job statuses](https://docs.aws.amazon.com/datasync/latest/userguide/discovery-job-statuses.html#discovery-job-statuses-table).
@@ -4723,10 +4851,9 @@ extension DataSyncClientTypes {
             self.status = status
         }
     }
-
 }
 
-public struct GenerateRecommendationsInput {
+public struct GenerateRecommendationsInput: Swift.Sendable {
     /// Specifies the Amazon Resource Name (ARN) of the discovery job that collects information about your on-premises storage system.
     /// This member is required.
     public var discoveryJobArn: Swift.String?
@@ -4749,13 +4876,13 @@ public struct GenerateRecommendationsInput {
     }
 }
 
-public struct GenerateRecommendationsOutput {
+public struct GenerateRecommendationsOutput: Swift.Sendable {
 
     public init() { }
 }
 
 /// ListAgentsRequest
-public struct ListAgentsInput {
+public struct ListAgentsInput: Swift.Sendable {
     /// Specifies the maximum number of DataSync agents to list in a response. By default, a response shows a maximum of 100 agents.
     public var maxResults: Swift.Int?
     /// Specifies an opaque string that indicates the position to begin the next list of results in the response.
@@ -4772,7 +4899,7 @@ public struct ListAgentsInput {
 }
 
 /// ListAgentsResponse
-public struct ListAgentsOutput {
+public struct ListAgentsOutput: Swift.Sendable {
     /// A list of DataSync agents in your Amazon Web Services account in the Amazon Web Services Region specified in the request. The list is ordered by the agents' Amazon Resource Names (ARNs).
     public var agents: [DataSyncClientTypes.AgentListEntry]?
     /// The opaque string that indicates the position to begin the next list of results in the response.
@@ -4788,7 +4915,7 @@ public struct ListAgentsOutput {
     }
 }
 
-public struct ListDiscoveryJobsInput {
+public struct ListDiscoveryJobsInput: Swift.Sendable {
     /// Specifies how many results you want in the response.
     public var maxResults: Swift.Int?
     /// Specifies an opaque string that indicates the position to begin the next list of results in the response.
@@ -4808,7 +4935,7 @@ public struct ListDiscoveryJobsInput {
     }
 }
 
-public struct ListDiscoveryJobsOutput {
+public struct ListDiscoveryJobsOutput: Swift.Sendable {
     /// The discovery jobs that you've run.
     public var discoveryJobs: [DataSyncClientTypes.DiscoveryJobListEntry]?
     /// The opaque string that indicates the position to begin the next list of results in the response.
@@ -4826,7 +4953,7 @@ public struct ListDiscoveryJobsOutput {
 
 extension DataSyncClientTypes {
 
-    public enum LocationFilterName: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum LocationFilterName: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case creationtime
         case locationtype
         case locationuri
@@ -4858,7 +4985,7 @@ extension DataSyncClientTypes {
 
 extension DataSyncClientTypes {
 
-    public enum Operator: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Operator: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case beginsWith
         case contains
         case eq
@@ -4910,8 +5037,9 @@ extension DataSyncClientTypes {
 }
 
 extension DataSyncClientTypes {
+
     /// Narrow down the list of resources returned by ListLocations. For example, to see all your Amazon S3 locations, create a filter using "Name": "LocationType", "Operator": "Equals", and "Values": "S3". For more information, see [filtering resources](https://docs.aws.amazon.com/datasync/latest/userguide/query-resources.html).
-    public struct LocationFilter {
+    public struct LocationFilter: Swift.Sendable {
         /// The name of the filter being used. Each API call supports a list of filters that are available for it (for example, LocationType for ListLocations).
         /// This member is required.
         public var name: DataSyncClientTypes.LocationFilterName?
@@ -4933,11 +5061,10 @@ extension DataSyncClientTypes {
             self.values = values
         }
     }
-
 }
 
 /// ListLocationsRequest
-public struct ListLocationsInput {
+public struct ListLocationsInput: Swift.Sendable {
     /// You can use API filters to narrow down the list of resources returned by ListLocations. For example, to retrieve all tasks on a specific source location, you can use ListLocations with filter name LocationType S3 and Operator Equals.
     public var filters: [DataSyncClientTypes.LocationFilter]?
     /// The maximum number of locations to return.
@@ -4958,8 +5085,9 @@ public struct ListLocationsInput {
 }
 
 extension DataSyncClientTypes {
+
     /// Represents a single entry in a list of locations. LocationListEntry returns an array that contains a list of locations when the [ListLocations](https://docs.aws.amazon.com/datasync/latest/userguide/API_ListLocations.html) operation is called.
-    public struct LocationListEntry {
+    public struct LocationListEntry: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the location. For Network File System (NFS) or Amazon EFS, the location is the export path. For Amazon S3, the location is the prefix path that you want to mount and use as the root of the location.
         public var locationArn: Swift.String?
         /// Represents a list of URIs of a location. LocationUri returns an array that contains a list of locations when the [ListLocations](https://docs.aws.amazon.com/datasync/latest/userguide/API_ListLocations.html) operation is called. Format: TYPE://GLOBAL_ID/SUBDIR. TYPE designates the type of location (for example, nfs or s3). GLOBAL_ID is the globally unique identifier of the resource that backs the location. An example for EFS is us-east-2.fs-abcd1234. An example for Amazon S3 is the bucket name, such as myBucket. An example for NFS is a valid IPv4 address or a hostname that is compliant with Domain Name Service (DNS). SUBDIR is a valid file system path, delimited by forward slashes as is the *nix convention. For NFS and Amazon EFS, it's the export path to mount the location. For Amazon S3, it's the prefix path that you mount to and treat as the root of the location.
@@ -4974,11 +5102,10 @@ extension DataSyncClientTypes {
             self.locationUri = locationUri
         }
     }
-
 }
 
 /// ListLocationsResponse
-public struct ListLocationsOutput {
+public struct ListLocationsOutput: Swift.Sendable {
     /// An array that contains a list of locations.
     public var locations: [DataSyncClientTypes.LocationListEntry]?
     /// An opaque string that indicates the position at which to begin returning the next list of locations.
@@ -4994,7 +5121,7 @@ public struct ListLocationsOutput {
     }
 }
 
-public struct ListStorageSystemsInput {
+public struct ListStorageSystemsInput: Swift.Sendable {
     /// Specifies how many results you want in the response.
     public var maxResults: Swift.Int?
     /// Specifies an opaque string that indicates the position to begin the next list of results in the response.
@@ -5011,8 +5138,9 @@ public struct ListStorageSystemsInput {
 }
 
 extension DataSyncClientTypes {
+
     /// Information that identifies an on-premises storage system that you're using with DataSync Discovery.
-    public struct StorageSystemListEntry {
+    public struct StorageSystemListEntry: Swift.Sendable {
         /// The name of an on-premises storage system that you added to DataSync Discovery.
         public var name: Swift.String?
         /// The Amazon Resource Names (ARN) of an on-premises storage system that you added to DataSync Discovery.
@@ -5027,10 +5155,9 @@ extension DataSyncClientTypes {
             self.storageSystemArn = storageSystemArn
         }
     }
-
 }
 
-public struct ListStorageSystemsOutput {
+public struct ListStorageSystemsOutput: Swift.Sendable {
     /// The opaque string that indicates the position to begin the next list of results in the response.
     public var nextToken: Swift.String?
     /// The Amazon Resource Names ARNs) of the on-premises storage systems that you're using with DataSync Discovery.
@@ -5047,7 +5174,7 @@ public struct ListStorageSystemsOutput {
 }
 
 /// ListTagsForResourceRequest
-public struct ListTagsForResourceInput {
+public struct ListTagsForResourceInput: Swift.Sendable {
     /// Specifies how many results that you want in the response.
     public var maxResults: Swift.Int?
     /// Specifies an opaque string that indicates the position to begin the next list of results in the response.
@@ -5069,7 +5196,7 @@ public struct ListTagsForResourceInput {
 }
 
 /// ListTagsForResourceResponse
-public struct ListTagsForResourceOutput {
+public struct ListTagsForResourceOutput: Swift.Sendable {
     /// The opaque string that indicates the position to begin the next list of results in the response.
     public var nextToken: Swift.String?
     /// An array of tags applied to the specified resource.
@@ -5086,7 +5213,7 @@ public struct ListTagsForResourceOutput {
 }
 
 /// ListTaskExecutions
-public struct ListTaskExecutionsInput {
+public struct ListTaskExecutionsInput: Swift.Sendable {
     /// Specifies how many results you want in the response.
     public var maxResults: Swift.Int?
     /// Specifies an opaque string that indicates the position at which to begin the next list of results in the response.
@@ -5107,27 +5234,31 @@ public struct ListTaskExecutionsInput {
 }
 
 extension DataSyncClientTypes {
+
     /// Represents a single entry in a list of DataSync task executions that's returned with the [ListTaskExecutions](https://docs.aws.amazon.com/datasync/latest/userguide/API_ListTaskExecutions.html) operation.
-    public struct TaskExecutionListEntry {
+    public struct TaskExecutionListEntry: Swift.Sendable {
         /// The status of a task execution. For more information, see [Task execution statuses](https://docs.aws.amazon.com/datasync/latest/userguide/understand-task-statuses.html#understand-task-execution-statuses).
         public var status: DataSyncClientTypes.TaskExecutionStatus?
         /// The Amazon Resource Name (ARN) of a task execution.
         public var taskExecutionArn: Swift.String?
+        /// The task mode that you're using. For more information, see [Choosing a task mode for your data transfer](https://docs.aws.amazon.com/datasync/latest/userguide/choosing-task-mode.html).
+        public var taskMode: DataSyncClientTypes.TaskMode?
 
         public init(
             status: DataSyncClientTypes.TaskExecutionStatus? = nil,
-            taskExecutionArn: Swift.String? = nil
+            taskExecutionArn: Swift.String? = nil,
+            taskMode: DataSyncClientTypes.TaskMode? = nil
         )
         {
             self.status = status
             self.taskExecutionArn = taskExecutionArn
+            self.taskMode = taskMode
         }
     }
-
 }
 
 /// ListTaskExecutionsResponse
-public struct ListTaskExecutionsOutput {
+public struct ListTaskExecutionsOutput: Swift.Sendable {
     /// The opaque string that indicates the position to begin the next list of results in the response.
     public var nextToken: Swift.String?
     /// A list of the task's executions.
@@ -5145,7 +5276,7 @@ public struct ListTaskExecutionsOutput {
 
 extension DataSyncClientTypes {
 
-    public enum TaskFilterName: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum TaskFilterName: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case creationtime
         case locationid
         case sdkUnknown(Swift.String)
@@ -5173,8 +5304,9 @@ extension DataSyncClientTypes {
 }
 
 extension DataSyncClientTypes {
+
     /// You can use API filters to narrow down the list of resources returned by ListTasks. For example, to retrieve all tasks on a source location, you can use ListTasks with filter name LocationId and Operator Equals with the ARN for the location. For more information, see [filtering DataSync resources](https://docs.aws.amazon.com/datasync/latest/userguide/query-resources.html).
-    public struct TaskFilter {
+    public struct TaskFilter: Swift.Sendable {
         /// The name of the filter being used. Each API call supports a list of filters that are available for it. For example, LocationId for ListTasks.
         /// This member is required.
         public var name: DataSyncClientTypes.TaskFilterName?
@@ -5196,11 +5328,10 @@ extension DataSyncClientTypes {
             self.values = values
         }
     }
-
 }
 
 /// ListTasksRequest
-public struct ListTasksInput {
+public struct ListTasksInput: Swift.Sendable {
     /// You can use API filters to narrow down the list of resources returned by ListTasks. For example, to retrieve all tasks on a specific source location, you can use ListTasks with filter name LocationId and Operator Equals with the ARN for the location.
     public var filters: [DataSyncClientTypes.TaskFilter]?
     /// The maximum number of tasks to return.
@@ -5221,31 +5352,35 @@ public struct ListTasksInput {
 }
 
 extension DataSyncClientTypes {
+
     /// Represents a single entry in a list of tasks. TaskListEntry returns an array that contains a list of tasks when the [ListTasks](https://docs.aws.amazon.com/datasync/latest/userguide/API_ListTasks.html) operation is called. A task includes the source and destination file systems to sync and the options to use for the tasks.
-    public struct TaskListEntry {
+    public struct TaskListEntry: Swift.Sendable {
         /// The name of the task.
         public var name: Swift.String?
         /// The status of the task.
         public var status: DataSyncClientTypes.TaskStatus?
         /// The Amazon Resource Name (ARN) of the task.
         public var taskArn: Swift.String?
+        /// The task mode that you're using. For more information, see [Choosing a task mode for your data transfer](https://docs.aws.amazon.com/datasync/latest/userguide/choosing-task-mode.html).
+        public var taskMode: DataSyncClientTypes.TaskMode?
 
         public init(
             name: Swift.String? = nil,
             status: DataSyncClientTypes.TaskStatus? = nil,
-            taskArn: Swift.String? = nil
+            taskArn: Swift.String? = nil,
+            taskMode: DataSyncClientTypes.TaskMode? = nil
         )
         {
             self.name = name
             self.status = status
             self.taskArn = taskArn
+            self.taskMode = taskMode
         }
     }
-
 }
 
 /// ListTasksResponse
-public struct ListTasksOutput {
+public struct ListTasksOutput: Swift.Sendable {
     /// An opaque string that indicates the position at which to begin returning the next list of tasks.
     public var nextToken: Swift.String?
     /// A list of all the tasks that are returned.
@@ -5261,7 +5396,7 @@ public struct ListTasksOutput {
     }
 }
 
-public struct RemoveStorageSystemInput {
+public struct RemoveStorageSystemInput: Swift.Sendable {
     /// Specifies the Amazon Resource Name (ARN) of the storage system that you want to permanently remove from DataSync Discovery.
     /// This member is required.
     public var storageSystemArn: Swift.String?
@@ -5274,12 +5409,12 @@ public struct RemoveStorageSystemInput {
     }
 }
 
-public struct RemoveStorageSystemOutput {
+public struct RemoveStorageSystemOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct StartDiscoveryJobInput {
+public struct StartDiscoveryJobInput: Swift.Sendable {
     /// Specifies a client token to make sure requests with this API operation are idempotent. If you don't specify a client token, DataSync generates one for you automatically.
     /// This member is required.
     public var clientToken: Swift.String?
@@ -5306,7 +5441,7 @@ public struct StartDiscoveryJobInput {
     }
 }
 
-public struct StartDiscoveryJobOutput {
+public struct StartDiscoveryJobOutput: Swift.Sendable {
     /// The ARN of the discovery job that you started.
     public var discoveryJobArn: Swift.String?
 
@@ -5319,7 +5454,7 @@ public struct StartDiscoveryJobOutput {
 }
 
 /// StartTaskExecutionRequest
-public struct StartTaskExecutionInput {
+public struct StartTaskExecutionInput: Swift.Sendable {
     /// Specifies a list of filter rules that determines which files to exclude from a task. The list contains a single filter string that consists of the patterns to exclude. The patterns are delimited by "|" (that is, a pipe), for example, "/folder1|/folder2".
     public var excludes: [DataSyncClientTypes.FilterRule]?
     /// Specifies a list of filter rules that determines which files to include when running a task. The pattern should contain a single filter string that consists of the patterns to include. The patterns are delimited by "|" (that is, a pipe), for example, "/folder1|/folder2".
@@ -5357,7 +5492,7 @@ public struct StartTaskExecutionInput {
 }
 
 /// StartTaskExecutionResponse
-public struct StartTaskExecutionOutput {
+public struct StartTaskExecutionOutput: Swift.Sendable {
     /// The ARN of the running task execution.
     public var taskExecutionArn: Swift.String?
 
@@ -5369,7 +5504,7 @@ public struct StartTaskExecutionOutput {
     }
 }
 
-public struct StopDiscoveryJobInput {
+public struct StopDiscoveryJobInput: Swift.Sendable {
     /// Specifies the Amazon Resource Name (ARN) of the discovery job that you want to stop.
     /// This member is required.
     public var discoveryJobArn: Swift.String?
@@ -5382,13 +5517,13 @@ public struct StopDiscoveryJobInput {
     }
 }
 
-public struct StopDiscoveryJobOutput {
+public struct StopDiscoveryJobOutput: Swift.Sendable {
 
     public init() { }
 }
 
 /// TagResourceRequest
-public struct TagResourceInput {
+public struct TagResourceInput: Swift.Sendable {
     /// Specifies the Amazon Resource Name (ARN) of the resource to apply the tag to.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -5406,13 +5541,13 @@ public struct TagResourceInput {
     }
 }
 
-public struct TagResourceOutput {
+public struct TagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
 /// UntagResourceRequest
-public struct UntagResourceInput {
+public struct UntagResourceInput: Swift.Sendable {
     /// Specifies the keys in the tags that you want to remove.
     /// This member is required.
     public var keys: [Swift.String]?
@@ -5430,13 +5565,13 @@ public struct UntagResourceInput {
     }
 }
 
-public struct UntagResourceOutput {
+public struct UntagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
 /// UpdateAgentRequest
-public struct UpdateAgentInput {
+public struct UpdateAgentInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the agent to update.
     /// This member is required.
     public var agentArn: Swift.String?
@@ -5453,12 +5588,12 @@ public struct UpdateAgentInput {
     }
 }
 
-public struct UpdateAgentOutput {
+public struct UpdateAgentOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdateDiscoveryJobInput {
+public struct UpdateDiscoveryJobInput: Swift.Sendable {
     /// Specifies in minutes how long that you want the discovery job to run. (You can't set this parameter to less than the number of minutes that the job has already run for.)
     /// This member is required.
     public var collectionDurationMinutes: Swift.Int?
@@ -5476,12 +5611,12 @@ public struct UpdateDiscoveryJobInput {
     }
 }
 
-public struct UpdateDiscoveryJobOutput {
+public struct UpdateDiscoveryJobOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdateLocationAzureBlobInput {
+public struct UpdateLocationAzureBlobInput: Swift.Sendable {
     /// Specifies the access tier that you want your objects or files transferred into. This only applies when using the location as a transfer destination. For more information, see [Access tiers](https://docs.aws.amazon.com/datasync/latest/userguide/creating-azure-blob-location.html#azure-blob-access-tiers).
     public var accessTier: DataSyncClientTypes.AzureAccessTier?
     /// Specifies the Amazon Resource Name (ARN) of the DataSync agent that can connect with your Azure Blob Storage container. You can specify more than one agent. For more information, see [Using multiple agents for your transfer](https://docs.aws.amazon.com/datasync/latest/userguide/multiple-agents.html).
@@ -5518,13 +5653,13 @@ public struct UpdateLocationAzureBlobInput {
     }
 }
 
-public struct UpdateLocationAzureBlobOutput {
+public struct UpdateLocationAzureBlobOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdateLocationHdfsInput {
-    /// The ARNs of the agents that are used to connect to the HDFS cluster.
+public struct UpdateLocationHdfsInput: Swift.Sendable {
+    /// The Amazon Resource Names (ARNs) of the DataSync agents that can connect to your HDFS cluster.
     public var agentArns: [Swift.String]?
     /// The type of authentication used to determine the identity of the user.
     public var authenticationType: DataSyncClientTypes.HdfsAuthenticationType?
@@ -5584,18 +5719,18 @@ public struct UpdateLocationHdfsInput {
     }
 }
 
-public struct UpdateLocationHdfsOutput {
+public struct UpdateLocationHdfsOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdateLocationNfsInput {
+public struct UpdateLocationNfsInput: Swift.Sendable {
     /// Specifies the Amazon Resource Name (ARN) of the NFS transfer location that you want to update.
     /// This member is required.
     public var locationArn: Swift.String?
     /// Specifies how DataSync can access a location using the NFS protocol.
     public var mountOptions: DataSyncClientTypes.NfsMountOptions?
-    /// The DataSync agents that are connecting to a Network File System (NFS) location.
+    /// The DataSync agents that can connect to your Network File System (NFS) file server.
     public var onPremConfig: DataSyncClientTypes.OnPremConfig?
     /// Specifies the export path in your NFS file server that you want DataSync to mount. This path (or a subdirectory of the path) is where DataSync transfers data to or from. For information on configuring an export for DataSync, see [Accessing NFS file servers](https://docs.aws.amazon.com/datasync/latest/userguide/create-nfs-location.html#accessing-nfs).
     public var subdirectory: Swift.String?
@@ -5614,15 +5749,15 @@ public struct UpdateLocationNfsInput {
     }
 }
 
-public struct UpdateLocationNfsOutput {
+public struct UpdateLocationNfsOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdateLocationObjectStorageInput {
+public struct UpdateLocationObjectStorageInput: Swift.Sendable {
     /// Specifies the access key (for example, a user name) if credentials are required to authenticate with the object storage server.
     public var accessKey: Swift.String?
-    /// Specifies the Amazon Resource Names (ARNs) of the DataSync agents that can securely connect with your location.
+    /// Specifies the Amazon Resource Names (ARNs) of the DataSync agents that can connect with your object storage system.
     public var agentArns: [Swift.String]?
     /// Specifies the ARN of the object storage system location that you're updating.
     /// This member is required.
@@ -5674,13 +5809,13 @@ extension UpdateLocationObjectStorageInput: Swift.CustomDebugStringConvertible {
         "UpdateLocationObjectStorageInput(accessKey: \(Swift.String(describing: accessKey)), agentArns: \(Swift.String(describing: agentArns)), locationArn: \(Swift.String(describing: locationArn)), serverCertificate: \(Swift.String(describing: serverCertificate)), serverPort: \(Swift.String(describing: serverPort)), serverProtocol: \(Swift.String(describing: serverProtocol)), subdirectory: \(Swift.String(describing: subdirectory)), secretKey: \"CONTENT_REDACTED\")"}
 }
 
-public struct UpdateLocationObjectStorageOutput {
+public struct UpdateLocationObjectStorageOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdateLocationSmbInput {
-    /// Specifies the DataSync agent (or agents) which you want to connect to your SMB file server. You specify an agent by using its Amazon Resource Name (ARN).
+public struct UpdateLocationSmbInput: Swift.Sendable {
+    /// Specifies the DataSync agent (or agents) that can connect to your SMB file server. You specify an agent by using its Amazon Resource Name (ARN).
     public var agentArns: [Swift.String]?
     /// Specifies the Windows domain name that your SMB file server belongs to. If you have multiple domains in your environment, configuring this parameter makes sure that DataSync connects to the right file server. For more information, see [required permissions](https://docs.aws.amazon.com/datasync/latest/userguide/create-smb-location.html#configuring-smb-permissions) for SMB locations.
     public var domain: Swift.String?
@@ -5721,12 +5856,12 @@ extension UpdateLocationSmbInput: Swift.CustomDebugStringConvertible {
         "UpdateLocationSmbInput(agentArns: \(Swift.String(describing: agentArns)), domain: \(Swift.String(describing: domain)), locationArn: \(Swift.String(describing: locationArn)), mountOptions: \(Swift.String(describing: mountOptions)), subdirectory: \(Swift.String(describing: subdirectory)), user: \(Swift.String(describing: user)), password: \"CONTENT_REDACTED\")"}
 }
 
-public struct UpdateLocationSmbOutput {
+public struct UpdateLocationSmbOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdateStorageSystemInput {
+public struct UpdateStorageSystemInput: Swift.Sendable {
     /// Specifies the Amazon Resource Name (ARN) of the DataSync agent that connects to and reads your on-premises storage system. You can only specify one ARN.
     public var agentArns: [Swift.String]?
     /// Specifies the ARN of the Amazon CloudWatch log group for monitoring and logging discovery job events.
@@ -5759,14 +5894,14 @@ public struct UpdateStorageSystemInput {
     }
 }
 
-public struct UpdateStorageSystemOutput {
+public struct UpdateStorageSystemOutput: Swift.Sendable {
 
     public init() { }
 }
 
 /// UpdateTaskResponse
-public struct UpdateTaskInput {
-    /// Specifies the Amazon Resource Name (ARN) of an Amazon CloudWatch log group for monitoring your task.
+public struct UpdateTaskInput: Swift.Sendable {
+    /// Specifies the Amazon Resource Name (ARN) of an Amazon CloudWatch log group for monitoring your task. For Enhanced mode tasks, you must use /aws/datasync as your log group name. For example: arn:aws:logs:us-east-1:111222333444:log-group:/aws/datasync:* For more information, see [Monitoring data transfers with CloudWatch Logs](https://docs.aws.amazon.com/datasync/latest/userguide/configure-logging.html).
     public var cloudWatchLogGroupArn: Swift.String?
     /// Specifies exclude filters that define the files, objects, and folders in your source location that you don't want DataSync to transfer. For more information and examples, see [Specifying what DataSync transfers by using filters](https://docs.aws.amazon.com/datasync/latest/userguide/filtering.html).
     public var excludes: [DataSyncClientTypes.FilterRule]?
@@ -5810,12 +5945,12 @@ public struct UpdateTaskInput {
     }
 }
 
-public struct UpdateTaskOutput {
+public struct UpdateTaskOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdateTaskExecutionInput {
+public struct UpdateTaskExecutionInput: Swift.Sendable {
     /// Indicates how your transfer task is configured. These options include how DataSync handles files, objects, and their associated metadata during your transfer. You also can specify how to verify data integrity, set bandwidth limits for your task, among other options. Each option has a default value. Unless you need to, you don't have to configure any option before calling [StartTaskExecution](https://docs.aws.amazon.com/datasync/latest/userguide/API_StartTaskExecution.html). You also can override your task options for each task execution. For example, you might want to adjust the LogLevel for an individual execution.
     /// This member is required.
     public var options: DataSyncClientTypes.Options?
@@ -5833,7 +5968,7 @@ public struct UpdateTaskExecutionInput {
     }
 }
 
-public struct UpdateTaskExecutionOutput {
+public struct UpdateTaskExecutionOutput: Swift.Sendable {
 
     public init() { }
 }
@@ -6463,6 +6598,7 @@ extension CreateTaskInput {
         try writer["Schedule"].write(value.schedule, with: DataSyncClientTypes.TaskSchedule.write(value:to:))
         try writer["SourceLocationArn"].write(value.sourceLocationArn)
         try writer["Tags"].writeList(value.tags, memberWritingClosure: DataSyncClientTypes.TagListEntry.write(value:to:), memberNodeInfo: "member", isFlattened: false)
+        try writer["TaskMode"].write(value.taskMode)
         try writer["TaskReportConfig"].write(value.taskReportConfig, with: DataSyncClientTypes.TaskReportConfig.write(value:to:))
     }
 }
@@ -7412,6 +7548,7 @@ extension DescribeTaskOutput {
         value.sourceNetworkInterfaceArns = try reader["SourceNetworkInterfaceArns"].readListIfPresent(memberReadingClosure: SmithyReadWrite.ReadingClosures.readString(from:), memberNodeInfo: "member", isFlattened: false)
         value.status = try reader["Status"].readIfPresent()
         value.taskArn = try reader["TaskArn"].readIfPresent()
+        value.taskMode = try reader["TaskMode"].readIfPresent()
         value.taskReportConfig = try reader["TaskReportConfig"].readIfPresent(with: DataSyncClientTypes.TaskReportConfig.read(from:))
         return value
     }
@@ -7432,6 +7569,9 @@ extension DescribeTaskExecutionOutput {
         value.estimatedFilesToTransfer = try reader["EstimatedFilesToTransfer"].readIfPresent() ?? 0
         value.excludes = try reader["Excludes"].readListIfPresent(memberReadingClosure: DataSyncClientTypes.FilterRule.read(from:), memberNodeInfo: "member", isFlattened: false)
         value.filesDeleted = try reader["FilesDeleted"].readIfPresent() ?? 0
+        value.filesFailed = try reader["FilesFailed"].readIfPresent(with: DataSyncClientTypes.TaskExecutionFilesFailedDetail.read(from:))
+        value.filesListed = try reader["FilesListed"].readIfPresent(with: DataSyncClientTypes.TaskExecutionFilesListedDetail.read(from:))
+        value.filesPrepared = try reader["FilesPrepared"].readIfPresent() ?? 0
         value.filesSkipped = try reader["FilesSkipped"].readIfPresent() ?? 0
         value.filesTransferred = try reader["FilesTransferred"].readIfPresent() ?? 0
         value.filesVerified = try reader["FilesVerified"].readIfPresent() ?? 0
@@ -7443,6 +7583,7 @@ extension DescribeTaskExecutionOutput {
         value.startTime = try reader["StartTime"].readTimestampIfPresent(format: SmithyTimestamps.TimestampFormat.epochSeconds)
         value.status = try reader["Status"].readIfPresent()
         value.taskExecutionArn = try reader["TaskExecutionArn"].readIfPresent()
+        value.taskMode = try reader["TaskMode"].readIfPresent()
         value.taskReportConfig = try reader["TaskReportConfig"].readIfPresent(with: DataSyncClientTypes.TaskReportConfig.read(from:))
         return value
     }
@@ -9257,6 +9398,30 @@ extension DataSyncClientTypes.ReportResult {
     }
 }
 
+extension DataSyncClientTypes.TaskExecutionFilesListedDetail {
+
+    static func read(from reader: SmithyJSON.Reader) throws -> DataSyncClientTypes.TaskExecutionFilesListedDetail {
+        guard reader.hasContent else { throw SmithyReadWrite.ReaderError.requiredValueNotPresent }
+        var value = DataSyncClientTypes.TaskExecutionFilesListedDetail()
+        value.atSource = try reader["AtSource"].readIfPresent() ?? 0
+        value.atDestinationForDelete = try reader["AtDestinationForDelete"].readIfPresent() ?? 0
+        return value
+    }
+}
+
+extension DataSyncClientTypes.TaskExecutionFilesFailedDetail {
+
+    static func read(from reader: SmithyJSON.Reader) throws -> DataSyncClientTypes.TaskExecutionFilesFailedDetail {
+        guard reader.hasContent else { throw SmithyReadWrite.ReaderError.requiredValueNotPresent }
+        var value = DataSyncClientTypes.TaskExecutionFilesFailedDetail()
+        value.prepare = try reader["Prepare"].readIfPresent() ?? 0
+        value.transfer = try reader["Transfer"].readIfPresent() ?? 0
+        value.verify = try reader["Verify"].readIfPresent() ?? 0
+        value.delete = try reader["Delete"].readIfPresent() ?? 0
+        return value
+    }
+}
+
 extension DataSyncClientTypes.AgentListEntry {
 
     static func read(from reader: SmithyJSON.Reader) throws -> DataSyncClientTypes.AgentListEntry {
@@ -9327,6 +9492,7 @@ extension DataSyncClientTypes.TaskExecutionListEntry {
         var value = DataSyncClientTypes.TaskExecutionListEntry()
         value.taskExecutionArn = try reader["TaskExecutionArn"].readIfPresent()
         value.status = try reader["Status"].readIfPresent()
+        value.taskMode = try reader["TaskMode"].readIfPresent()
         return value
     }
 }
@@ -9339,6 +9505,7 @@ extension DataSyncClientTypes.TaskListEntry {
         value.taskArn = try reader["TaskArn"].readIfPresent()
         value.status = try reader["Status"].readIfPresent()
         value.name = try reader["Name"].readIfPresent()
+        value.taskMode = try reader["TaskMode"].readIfPresent()
         return value
     }
 }

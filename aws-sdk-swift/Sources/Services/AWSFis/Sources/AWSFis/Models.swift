@@ -28,7 +28,7 @@ import struct Smithy.URIQueryItem
 
 extension FisClientTypes {
 
-    public enum AccountTargeting: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AccountTargeting: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case multiAccount
         case singleAccount
         case sdkUnknown(Swift.String)
@@ -56,8 +56,9 @@ extension FisClientTypes {
 }
 
 extension FisClientTypes {
+
     /// Describes a parameter for an action.
-    public struct ActionParameter {
+    public struct ActionParameter: Swift.Sendable {
         /// The parameter description.
         public var description: Swift.String?
         /// Indicates whether the parameter is required.
@@ -72,12 +73,12 @@ extension FisClientTypes {
             self.`required` = `required`
         }
     }
-
 }
 
 extension FisClientTypes {
+
     /// Describes a target for an action.
-    public struct ActionTarget {
+    public struct ActionTarget: Swift.Sendable {
         /// The resource type of the target.
         public var resourceType: Swift.String?
 
@@ -88,12 +89,12 @@ extension FisClientTypes {
             self.resourceType = resourceType
         }
     }
-
 }
 
 extension FisClientTypes {
+
     /// Describes an action. For more information, see [FIS actions](https://docs.aws.amazon.com/fis/latest/userguide/fis-actions-reference.html) in the Fault Injection Service User Guide.
-    public struct Action {
+    public struct Action: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the action.
         public var arn: Swift.String?
         /// The description for the action.
@@ -124,12 +125,11 @@ extension FisClientTypes {
             self.targets = targets
         }
     }
-
 }
 
 extension FisClientTypes {
 
-    public enum ActionsMode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ActionsMode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case runAll
         case skipAll
         case sdkUnknown(Swift.String)
@@ -157,8 +157,9 @@ extension FisClientTypes {
 }
 
 extension FisClientTypes {
+
     /// Provides a summary of an action.
-    public struct ActionSummary {
+    public struct ActionSummary: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the action.
         public var arn: Swift.String?
         /// The description for the action.
@@ -185,7 +186,6 @@ extension FisClientTypes {
             self.targets = targets
         }
     }
-
 }
 
 /// The request could not be processed because of a conflict.
@@ -285,8 +285,9 @@ public struct ValidationException: ClientRuntime.ModeledError, AWSClientRuntime.
 }
 
 extension FisClientTypes {
+
     /// Specifies an action for an experiment template. For more information, see [Actions](https://docs.aws.amazon.com/fis/latest/userguide/actions.html) in the Fault Injection Service User Guide.
-    public struct CreateExperimentTemplateActionInput {
+    public struct CreateExperimentTemplateActionInput: Swift.Sendable {
         /// The ID of the action. The format of the action ID is: aws:service-name:action-type.
         /// This member is required.
         public var actionId: Swift.String?
@@ -314,12 +315,11 @@ extension FisClientTypes {
             self.targets = targets
         }
     }
-
 }
 
 extension FisClientTypes {
 
-    public enum EmptyTargetResolutionMode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum EmptyTargetResolutionMode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case fail
         case skip
         case sdkUnknown(Swift.String)
@@ -347,8 +347,9 @@ extension FisClientTypes {
 }
 
 extension FisClientTypes {
+
     /// Specifies experiment options for an experiment template.
-    public struct CreateExperimentTemplateExperimentOptionsInput {
+    public struct CreateExperimentTemplateExperimentOptionsInput: Swift.Sendable {
         /// Specifies the account targeting setting for experiment options.
         public var accountTargeting: FisClientTypes.AccountTargeting?
         /// Specifies the empty target resolution mode for experiment options.
@@ -363,12 +364,12 @@ extension FisClientTypes {
             self.emptyTargetResolutionMode = emptyTargetResolutionMode
         }
     }
-
 }
 
 extension FisClientTypes {
+
     /// Specifies the configuration for experiment logging to Amazon CloudWatch Logs.
-    public struct ExperimentTemplateCloudWatchLogsLogConfigurationInput {
+    public struct ExperimentTemplateCloudWatchLogsLogConfigurationInput: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the destination Amazon CloudWatch Logs log group.
         /// This member is required.
         public var logGroupArn: Swift.String?
@@ -380,12 +381,12 @@ extension FisClientTypes {
             self.logGroupArn = logGroupArn
         }
     }
-
 }
 
 extension FisClientTypes {
+
     /// Specifies the configuration for experiment logging to Amazon S3.
-    public struct ExperimentTemplateS3LogConfigurationInput {
+    public struct ExperimentTemplateS3LogConfigurationInput: Swift.Sendable {
         /// The name of the destination bucket.
         /// This member is required.
         public var bucketName: Swift.String?
@@ -401,12 +402,12 @@ extension FisClientTypes {
             self.`prefix` = `prefix`
         }
     }
-
 }
 
 extension FisClientTypes {
+
     /// Specifies the configuration for experiment logging.
-    public struct CreateExperimentTemplateLogConfigurationInput {
+    public struct CreateExperimentTemplateLogConfigurationInput: Swift.Sendable {
         /// The configuration for experiment logging to Amazon CloudWatch Logs.
         public var cloudWatchLogsConfiguration: FisClientTypes.ExperimentTemplateCloudWatchLogsLogConfigurationInput?
         /// The schema version.
@@ -426,12 +427,12 @@ extension FisClientTypes {
             self.s3Configuration = s3Configuration
         }
     }
-
 }
 
 extension FisClientTypes {
+
     /// Specifies a stop condition for an experiment template.
-    public struct CreateExperimentTemplateStopConditionInput {
+    public struct CreateExperimentTemplateStopConditionInput: Swift.Sendable {
         /// The source for the stop condition. Specify aws:cloudwatch:alarm if the stop condition is defined by a CloudWatch alarm. Specify none if there is no stop condition.
         /// This member is required.
         public var source: Swift.String?
@@ -447,12 +448,12 @@ extension FisClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension FisClientTypes {
+
     /// Specifies a filter used for the target resource input in an experiment template. For more information, see [Resource filters](https://docs.aws.amazon.com/fis/latest/userguide/targets.html#target-filters) in the Fault Injection Service User Guide.
-    public struct ExperimentTemplateTargetInputFilter {
+    public struct ExperimentTemplateTargetInputFilter: Swift.Sendable {
         /// The attribute path for the filter.
         /// This member is required.
         public var path: Swift.String?
@@ -469,12 +470,12 @@ extension FisClientTypes {
             self.values = values
         }
     }
-
 }
 
 extension FisClientTypes {
+
     /// Specifies a target for an experiment. You must specify at least one Amazon Resource Name (ARN) or at least one resource tag. You cannot specify both ARNs and tags. For more information, see [Targets](https://docs.aws.amazon.com/fis/latest/userguide/targets.html) in the Fault Injection Service User Guide.
-    public struct CreateExperimentTemplateTargetInput {
+    public struct CreateExperimentTemplateTargetInput: Swift.Sendable {
         /// The filters to apply to identify target resources using specific attributes.
         public var filters: [FisClientTypes.ExperimentTemplateTargetInputFilter]?
         /// The resource type parameters.
@@ -513,10 +514,9 @@ extension FisClientTypes {
             self.selectionMode = selectionMode
         }
     }
-
 }
 
-public struct CreateExperimentTemplateInput {
+public struct CreateExperimentTemplateInput: Swift.Sendable {
     /// The actions for the experiment.
     /// This member is required.
     public var actions: [Swift.String: FisClientTypes.CreateExperimentTemplateActionInput]?
@@ -566,8 +566,9 @@ public struct CreateExperimentTemplateInput {
 }
 
 extension FisClientTypes {
+
     /// Describes an action for an experiment template.
-    public struct ExperimentTemplateAction {
+    public struct ExperimentTemplateAction: Swift.Sendable {
         /// The ID of the action.
         public var actionId: Swift.String?
         /// A description for the action.
@@ -594,12 +595,12 @@ extension FisClientTypes {
             self.targets = targets
         }
     }
-
 }
 
 extension FisClientTypes {
+
     /// Describes the experiment options for an experiment template.
-    public struct ExperimentTemplateExperimentOptions {
+    public struct ExperimentTemplateExperimentOptions: Swift.Sendable {
         /// The account targeting setting for an experiment template.
         public var accountTargeting: FisClientTypes.AccountTargeting?
         /// The empty target resolution mode for an experiment template.
@@ -614,12 +615,12 @@ extension FisClientTypes {
             self.emptyTargetResolutionMode = emptyTargetResolutionMode
         }
     }
-
 }
 
 extension FisClientTypes {
+
     /// Describes the configuration for experiment logging to Amazon CloudWatch Logs.
-    public struct ExperimentTemplateCloudWatchLogsLogConfiguration {
+    public struct ExperimentTemplateCloudWatchLogsLogConfiguration: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the destination Amazon CloudWatch Logs log group.
         public var logGroupArn: Swift.String?
 
@@ -630,12 +631,12 @@ extension FisClientTypes {
             self.logGroupArn = logGroupArn
         }
     }
-
 }
 
 extension FisClientTypes {
+
     /// Describes the configuration for experiment logging to Amazon S3.
-    public struct ExperimentTemplateS3LogConfiguration {
+    public struct ExperimentTemplateS3LogConfiguration: Swift.Sendable {
         /// The name of the destination bucket.
         public var bucketName: Swift.String?
         /// The bucket prefix.
@@ -650,12 +651,12 @@ extension FisClientTypes {
             self.`prefix` = `prefix`
         }
     }
-
 }
 
 extension FisClientTypes {
+
     /// Describes the configuration for experiment logging.
-    public struct ExperimentTemplateLogConfiguration {
+    public struct ExperimentTemplateLogConfiguration: Swift.Sendable {
         /// The configuration for experiment logging to Amazon CloudWatch Logs.
         public var cloudWatchLogsConfiguration: FisClientTypes.ExperimentTemplateCloudWatchLogsLogConfiguration?
         /// The schema version.
@@ -674,12 +675,12 @@ extension FisClientTypes {
             self.s3Configuration = s3Configuration
         }
     }
-
 }
 
 extension FisClientTypes {
+
     /// Describes a stop condition for an experiment template.
-    public struct ExperimentTemplateStopCondition {
+    public struct ExperimentTemplateStopCondition: Swift.Sendable {
         /// The source for the stop condition.
         public var source: Swift.String?
         /// The Amazon Resource Name (ARN) of the CloudWatch alarm, if applicable.
@@ -694,12 +695,12 @@ extension FisClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension FisClientTypes {
+
     /// Describes a filter used for the target resources in an experiment template.
-    public struct ExperimentTemplateTargetFilter {
+    public struct ExperimentTemplateTargetFilter: Swift.Sendable {
         /// The attribute path for the filter.
         public var path: Swift.String?
         /// The attribute values for the filter.
@@ -714,12 +715,12 @@ extension FisClientTypes {
             self.values = values
         }
     }
-
 }
 
 extension FisClientTypes {
+
     /// Describes a target for an experiment template.
-    public struct ExperimentTemplateTarget {
+    public struct ExperimentTemplateTarget: Swift.Sendable {
         /// The filters to apply to identify target resources using specific attributes.
         public var filters: [FisClientTypes.ExperimentTemplateTargetFilter]?
         /// The resource type parameters.
@@ -750,12 +751,12 @@ extension FisClientTypes {
             self.selectionMode = selectionMode
         }
     }
-
 }
 
 extension FisClientTypes {
+
     /// Describes an experiment template.
-    public struct ExperimentTemplate {
+    public struct ExperimentTemplate: Swift.Sendable {
         /// The actions for the experiment.
         public var actions: [Swift.String: FisClientTypes.ExperimentTemplateAction]?
         /// The Amazon Resource Name (ARN) of the experiment template.
@@ -814,10 +815,9 @@ extension FisClientTypes {
             self.targets = targets
         }
     }
-
 }
 
-public struct CreateExperimentTemplateOutput {
+public struct CreateExperimentTemplateOutput: Swift.Sendable {
     /// Information about the experiment template.
     public var experimentTemplate: FisClientTypes.ExperimentTemplate?
 
@@ -829,7 +829,7 @@ public struct CreateExperimentTemplateOutput {
     }
 }
 
-public struct CreateTargetAccountConfigurationInput {
+public struct CreateTargetAccountConfigurationInput: Swift.Sendable {
     /// The Amazon Web Services account ID of the target account.
     /// This member is required.
     public var accountId: Swift.String?
@@ -861,8 +861,9 @@ public struct CreateTargetAccountConfigurationInput {
 }
 
 extension FisClientTypes {
+
     /// Describes a target account configuration.
-    public struct TargetAccountConfiguration {
+    public struct TargetAccountConfiguration: Swift.Sendable {
         /// The Amazon Web Services account ID of the target account.
         public var accountId: Swift.String?
         /// The description of the target account.
@@ -881,10 +882,9 @@ extension FisClientTypes {
             self.roleArn = roleArn
         }
     }
-
 }
 
-public struct CreateTargetAccountConfigurationOutput {
+public struct CreateTargetAccountConfigurationOutput: Swift.Sendable {
     /// Information about the target account configuration.
     public var targetAccountConfiguration: FisClientTypes.TargetAccountConfiguration?
 
@@ -896,7 +896,7 @@ public struct CreateTargetAccountConfigurationOutput {
     }
 }
 
-public struct DeleteExperimentTemplateInput {
+public struct DeleteExperimentTemplateInput: Swift.Sendable {
     /// The ID of the experiment template.
     /// This member is required.
     public var id: Swift.String?
@@ -909,7 +909,7 @@ public struct DeleteExperimentTemplateInput {
     }
 }
 
-public struct DeleteExperimentTemplateOutput {
+public struct DeleteExperimentTemplateOutput: Swift.Sendable {
     /// Information about the experiment template.
     public var experimentTemplate: FisClientTypes.ExperimentTemplate?
 
@@ -921,7 +921,7 @@ public struct DeleteExperimentTemplateOutput {
     }
 }
 
-public struct DeleteTargetAccountConfigurationInput {
+public struct DeleteTargetAccountConfigurationInput: Swift.Sendable {
     /// The Amazon Web Services account ID of the target account.
     /// This member is required.
     public var accountId: Swift.String?
@@ -939,7 +939,7 @@ public struct DeleteTargetAccountConfigurationInput {
     }
 }
 
-public struct DeleteTargetAccountConfigurationOutput {
+public struct DeleteTargetAccountConfigurationOutput: Swift.Sendable {
     /// Information about the target account configuration.
     public var targetAccountConfiguration: FisClientTypes.TargetAccountConfiguration?
 
@@ -953,7 +953,7 @@ public struct DeleteTargetAccountConfigurationOutput {
 
 extension FisClientTypes {
 
-    public enum ExperimentActionStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ExperimentActionStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case cancelled
         case completed
         case failed
@@ -1002,8 +1002,9 @@ extension FisClientTypes {
 }
 
 extension FisClientTypes {
+
     /// Describes the state of an action.
-    public struct ExperimentActionState {
+    public struct ExperimentActionState: Swift.Sendable {
         /// The reason for the state.
         public var reason: Swift.String?
         /// The state of the action.
@@ -1018,12 +1019,12 @@ extension FisClientTypes {
             self.status = status
         }
     }
-
 }
 
 extension FisClientTypes {
+
     /// Describes the action for an experiment.
-    public struct ExperimentAction {
+    public struct ExperimentAction: Swift.Sendable {
         /// The ID of the action.
         public var actionId: Swift.String?
         /// The description for the action.
@@ -1062,12 +1063,12 @@ extension FisClientTypes {
             self.targets = targets
         }
     }
-
 }
 
 extension FisClientTypes {
+
     /// Describes the options for an experiment.
-    public struct ExperimentOptions {
+    public struct ExperimentOptions: Swift.Sendable {
         /// The account targeting setting for an experiment.
         public var accountTargeting: FisClientTypes.AccountTargeting?
         /// The actions mode of the experiment that is set from the StartExperiment API command.
@@ -1086,12 +1087,12 @@ extension FisClientTypes {
             self.emptyTargetResolutionMode = emptyTargetResolutionMode
         }
     }
-
 }
 
 extension FisClientTypes {
+
     /// Describes the configuration for experiment logging to Amazon CloudWatch Logs.
-    public struct ExperimentCloudWatchLogsLogConfiguration {
+    public struct ExperimentCloudWatchLogsLogConfiguration: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the destination Amazon CloudWatch Logs log group.
         public var logGroupArn: Swift.String?
 
@@ -1102,12 +1103,12 @@ extension FisClientTypes {
             self.logGroupArn = logGroupArn
         }
     }
-
 }
 
 extension FisClientTypes {
+
     /// Describes the configuration for experiment logging to Amazon S3.
-    public struct ExperimentS3LogConfiguration {
+    public struct ExperimentS3LogConfiguration: Swift.Sendable {
         /// The name of the destination bucket.
         public var bucketName: Swift.String?
         /// The bucket prefix.
@@ -1122,12 +1123,12 @@ extension FisClientTypes {
             self.`prefix` = `prefix`
         }
     }
-
 }
 
 extension FisClientTypes {
+
     /// Describes the configuration for experiment logging.
-    public struct ExperimentLogConfiguration {
+    public struct ExperimentLogConfiguration: Swift.Sendable {
         /// The configuration for experiment logging to Amazon CloudWatch Logs.
         public var cloudWatchLogsConfiguration: FisClientTypes.ExperimentCloudWatchLogsLogConfiguration?
         /// The schema version.
@@ -1146,12 +1147,12 @@ extension FisClientTypes {
             self.s3Configuration = s3Configuration
         }
     }
-
 }
 
 extension FisClientTypes {
+
     /// Describes the error when an experiment has failed.
-    public struct ExperimentError {
+    public struct ExperimentError: Swift.Sendable {
         /// The Amazon Web Services Account ID where the experiment failure occurred.
         public var accountId: Swift.String?
         /// The error code for the failed experiment.
@@ -1170,12 +1171,11 @@ extension FisClientTypes {
             self.location = location
         }
     }
-
 }
 
 extension FisClientTypes {
 
-    public enum ExperimentStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ExperimentStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case cancelled
         case completed
         case failed
@@ -1221,8 +1221,9 @@ extension FisClientTypes {
 }
 
 extension FisClientTypes {
+
     /// Describes the state of an experiment.
-    public struct ExperimentState {
+    public struct ExperimentState: Swift.Sendable {
         /// The error information of the experiment when the action has failed.
         public var error: FisClientTypes.ExperimentError?
         /// The reason for the state.
@@ -1241,12 +1242,12 @@ extension FisClientTypes {
             self.status = status
         }
     }
-
 }
 
 extension FisClientTypes {
+
     /// Describes the stop condition for an experiment.
-    public struct ExperimentStopCondition {
+    public struct ExperimentStopCondition: Swift.Sendable {
         /// The source for the stop condition.
         public var source: Swift.String?
         /// The Amazon Resource Name (ARN) of the CloudWatch alarm, if applicable.
@@ -1261,12 +1262,12 @@ extension FisClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension FisClientTypes {
+
     /// Describes a filter used for the target resources in an experiment.
-    public struct ExperimentTargetFilter {
+    public struct ExperimentTargetFilter: Swift.Sendable {
         /// The attribute path for the filter.
         public var path: Swift.String?
         /// The attribute values for the filter.
@@ -1281,12 +1282,12 @@ extension FisClientTypes {
             self.values = values
         }
     }
-
 }
 
 extension FisClientTypes {
+
     /// Describes a target for an experiment.
-    public struct ExperimentTarget {
+    public struct ExperimentTarget: Swift.Sendable {
         /// The filters to apply to identify target resources using specific attributes.
         public var filters: [FisClientTypes.ExperimentTargetFilter]?
         /// The resource type parameters.
@@ -1317,12 +1318,12 @@ extension FisClientTypes {
             self.selectionMode = selectionMode
         }
     }
-
 }
 
 extension FisClientTypes {
+
     /// Describes an experiment.
-    public struct Experiment {
+    public struct Experiment: Swift.Sendable {
         /// The actions for the experiment.
         public var actions: [Swift.String: FisClientTypes.ExperimentAction]?
         /// The Amazon Resource Name (ARN) of the experiment.
@@ -1389,12 +1390,12 @@ extension FisClientTypes {
             self.targets = targets
         }
     }
-
 }
 
 extension FisClientTypes {
+
     /// Provides a summary of an experiment.
-    public struct ExperimentSummary {
+    public struct ExperimentSummary: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the experiment.
         public var arn: Swift.String?
         /// The time that the experiment was created.
@@ -1429,12 +1430,12 @@ extension FisClientTypes {
             self.tags = tags
         }
     }
-
 }
 
 extension FisClientTypes {
+
     /// Describes a target account configuration for an experiment.
-    public struct ExperimentTargetAccountConfiguration {
+    public struct ExperimentTargetAccountConfiguration: Swift.Sendable {
         /// The Amazon Web Services account ID of the target account.
         public var accountId: Swift.String?
         /// The description of the target account.
@@ -1453,12 +1454,12 @@ extension FisClientTypes {
             self.roleArn = roleArn
         }
     }
-
 }
 
 extension FisClientTypes {
+
     /// Provides a summary of a target account configuration.
-    public struct ExperimentTargetAccountConfigurationSummary {
+    public struct ExperimentTargetAccountConfigurationSummary: Swift.Sendable {
         /// The Amazon Web Services account ID of the target account.
         public var accountId: Swift.String?
         /// The description of the target account.
@@ -1477,12 +1478,12 @@ extension FisClientTypes {
             self.roleArn = roleArn
         }
     }
-
 }
 
 extension FisClientTypes {
+
     /// Provides a summary of an experiment template.
-    public struct ExperimentTemplateSummary {
+    public struct ExperimentTemplateSummary: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the experiment template.
         public var arn: Swift.String?
         /// The time that the experiment template was created.
@@ -1513,10 +1514,9 @@ extension FisClientTypes {
             self.tags = tags
         }
     }
-
 }
 
-public struct GetActionInput {
+public struct GetActionInput: Swift.Sendable {
     /// The ID of the action.
     /// This member is required.
     public var id: Swift.String?
@@ -1529,7 +1529,7 @@ public struct GetActionInput {
     }
 }
 
-public struct GetActionOutput {
+public struct GetActionOutput: Swift.Sendable {
     /// Information about the action.
     public var action: FisClientTypes.Action?
 
@@ -1541,7 +1541,7 @@ public struct GetActionOutput {
     }
 }
 
-public struct GetExperimentInput {
+public struct GetExperimentInput: Swift.Sendable {
     /// The ID of the experiment.
     /// This member is required.
     public var id: Swift.String?
@@ -1554,7 +1554,7 @@ public struct GetExperimentInput {
     }
 }
 
-public struct GetExperimentOutput {
+public struct GetExperimentOutput: Swift.Sendable {
     /// Information about the experiment.
     public var experiment: FisClientTypes.Experiment?
 
@@ -1566,7 +1566,7 @@ public struct GetExperimentOutput {
     }
 }
 
-public struct GetExperimentTargetAccountConfigurationInput {
+public struct GetExperimentTargetAccountConfigurationInput: Swift.Sendable {
     /// The Amazon Web Services account ID of the target account.
     /// This member is required.
     public var accountId: Swift.String?
@@ -1584,7 +1584,7 @@ public struct GetExperimentTargetAccountConfigurationInput {
     }
 }
 
-public struct GetExperimentTargetAccountConfigurationOutput {
+public struct GetExperimentTargetAccountConfigurationOutput: Swift.Sendable {
     /// Information about the target account configuration.
     public var targetAccountConfiguration: FisClientTypes.ExperimentTargetAccountConfiguration?
 
@@ -1596,7 +1596,7 @@ public struct GetExperimentTargetAccountConfigurationOutput {
     }
 }
 
-public struct GetExperimentTemplateInput {
+public struct GetExperimentTemplateInput: Swift.Sendable {
     /// The ID of the experiment template.
     /// This member is required.
     public var id: Swift.String?
@@ -1609,7 +1609,7 @@ public struct GetExperimentTemplateInput {
     }
 }
 
-public struct GetExperimentTemplateOutput {
+public struct GetExperimentTemplateOutput: Swift.Sendable {
     /// Information about the experiment template.
     public var experimentTemplate: FisClientTypes.ExperimentTemplate?
 
@@ -1621,7 +1621,7 @@ public struct GetExperimentTemplateOutput {
     }
 }
 
-public struct GetSafetyLeverInput {
+public struct GetSafetyLeverInput: Swift.Sendable {
     /// The ID of the safety lever.
     /// This member is required.
     public var id: Swift.String?
@@ -1636,7 +1636,7 @@ public struct GetSafetyLeverInput {
 
 extension FisClientTypes {
 
-    public enum SafetyLeverStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SafetyLeverStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case disengaged
         case engaged
         case engaging
@@ -1667,8 +1667,9 @@ extension FisClientTypes {
 }
 
 extension FisClientTypes {
+
     /// Describes the state of the safety lever.
-    public struct SafetyLeverState {
+    public struct SafetyLeverState: Swift.Sendable {
         /// The reason for the state of the safety lever.
         public var reason: Swift.String?
         /// The state of the safety lever.
@@ -1683,12 +1684,12 @@ extension FisClientTypes {
             self.status = status
         }
     }
-
 }
 
 extension FisClientTypes {
+
     /// Describes a safety lever.
-    public struct SafetyLever {
+    public struct SafetyLever: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the safety lever.
         public var arn: Swift.String?
         /// The ID of the safety lever.
@@ -1707,10 +1708,9 @@ extension FisClientTypes {
             self.state = state
         }
     }
-
 }
 
-public struct GetSafetyLeverOutput {
+public struct GetSafetyLeverOutput: Swift.Sendable {
     /// Information about the safety lever.
     public var safetyLever: FisClientTypes.SafetyLever?
 
@@ -1722,7 +1722,7 @@ public struct GetSafetyLeverOutput {
     }
 }
 
-public struct GetTargetAccountConfigurationInput {
+public struct GetTargetAccountConfigurationInput: Swift.Sendable {
     /// The Amazon Web Services account ID of the target account.
     /// This member is required.
     public var accountId: Swift.String?
@@ -1740,7 +1740,7 @@ public struct GetTargetAccountConfigurationInput {
     }
 }
 
-public struct GetTargetAccountConfigurationOutput {
+public struct GetTargetAccountConfigurationOutput: Swift.Sendable {
     /// Information about the target account configuration.
     public var targetAccountConfiguration: FisClientTypes.TargetAccountConfiguration?
 
@@ -1752,7 +1752,7 @@ public struct GetTargetAccountConfigurationOutput {
     }
 }
 
-public struct GetTargetResourceTypeInput {
+public struct GetTargetResourceTypeInput: Swift.Sendable {
     /// The resource type.
     /// This member is required.
     public var resourceType: Swift.String?
@@ -1766,8 +1766,9 @@ public struct GetTargetResourceTypeInput {
 }
 
 extension FisClientTypes {
+
     /// Describes the parameters for a resource type. Use parameters to determine which tasks are identified during target resolution.
-    public struct TargetResourceTypeParameter {
+    public struct TargetResourceTypeParameter: Swift.Sendable {
         /// A description of the parameter.
         public var description: Swift.String?
         /// Indicates whether the parameter is required.
@@ -1782,12 +1783,12 @@ extension FisClientTypes {
             self.`required` = `required`
         }
     }
-
 }
 
 extension FisClientTypes {
+
     /// Describes a resource type.
-    public struct TargetResourceType {
+    public struct TargetResourceType: Swift.Sendable {
         /// A description of the resource type.
         public var description: Swift.String?
         /// The parameters for the resource type.
@@ -1806,10 +1807,9 @@ extension FisClientTypes {
             self.resourceType = resourceType
         }
     }
-
 }
 
-public struct GetTargetResourceTypeOutput {
+public struct GetTargetResourceTypeOutput: Swift.Sendable {
     /// Information about the resource type.
     public var targetResourceType: FisClientTypes.TargetResourceType?
 
@@ -1821,7 +1821,7 @@ public struct GetTargetResourceTypeOutput {
     }
 }
 
-public struct ListActionsInput {
+public struct ListActionsInput: Swift.Sendable {
     /// The maximum number of results to return with a single call. To retrieve the remaining results, make another call with the returned nextToken value.
     public var maxResults: Swift.Int?
     /// The token for the next page of results.
@@ -1837,7 +1837,7 @@ public struct ListActionsInput {
     }
 }
 
-public struct ListActionsOutput {
+public struct ListActionsOutput: Swift.Sendable {
     /// The actions.
     public var actions: [FisClientTypes.ActionSummary]?
     /// The token to use to retrieve the next page of results. This value is null when there are no more results to return.
@@ -1853,7 +1853,7 @@ public struct ListActionsOutput {
     }
 }
 
-public struct ListExperimentResolvedTargetsInput {
+public struct ListExperimentResolvedTargetsInput: Swift.Sendable {
     /// The ID of the experiment.
     /// This member is required.
     public var experimentId: Swift.String?
@@ -1879,8 +1879,9 @@ public struct ListExperimentResolvedTargetsInput {
 }
 
 extension FisClientTypes {
+
     /// Describes a resolved target.
-    public struct ResolvedTarget {
+    public struct ResolvedTarget: Swift.Sendable {
         /// The resource type of the target.
         public var resourceType: Swift.String?
         /// Information about the target.
@@ -1899,10 +1900,9 @@ extension FisClientTypes {
             self.targetName = targetName
         }
     }
-
 }
 
-public struct ListExperimentResolvedTargetsOutput {
+public struct ListExperimentResolvedTargetsOutput: Swift.Sendable {
     /// The token to use to retrieve the next page of results. This value is null when there are no more results to return.
     public var nextToken: Swift.String?
     /// The resolved targets.
@@ -1918,7 +1918,7 @@ public struct ListExperimentResolvedTargetsOutput {
     }
 }
 
-public struct ListExperimentsInput {
+public struct ListExperimentsInput: Swift.Sendable {
     /// The ID of the experiment template.
     public var experimentTemplateId: Swift.String?
     /// The maximum number of results to return with a single call. To retrieve the remaining results, make another call with the returned nextToken value.
@@ -1938,7 +1938,7 @@ public struct ListExperimentsInput {
     }
 }
 
-public struct ListExperimentsOutput {
+public struct ListExperimentsOutput: Swift.Sendable {
     /// The experiments.
     public var experiments: [FisClientTypes.ExperimentSummary]?
     /// The token to use to retrieve the next page of results. This value is null when there are no more results to return.
@@ -1954,7 +1954,7 @@ public struct ListExperimentsOutput {
     }
 }
 
-public struct ListExperimentTargetAccountConfigurationsInput {
+public struct ListExperimentTargetAccountConfigurationsInput: Swift.Sendable {
     /// The ID of the experiment.
     /// This member is required.
     public var experimentId: Swift.String?
@@ -1971,7 +1971,7 @@ public struct ListExperimentTargetAccountConfigurationsInput {
     }
 }
 
-public struct ListExperimentTargetAccountConfigurationsOutput {
+public struct ListExperimentTargetAccountConfigurationsOutput: Swift.Sendable {
     /// The token to use to retrieve the next page of results. This value is null when there are no more results to return.
     public var nextToken: Swift.String?
     /// The target account configurations.
@@ -1987,7 +1987,7 @@ public struct ListExperimentTargetAccountConfigurationsOutput {
     }
 }
 
-public struct ListExperimentTemplatesInput {
+public struct ListExperimentTemplatesInput: Swift.Sendable {
     /// The maximum number of results to return with a single call. To retrieve the remaining results, make another call with the returned nextToken value.
     public var maxResults: Swift.Int?
     /// The token for the next page of results.
@@ -2003,7 +2003,7 @@ public struct ListExperimentTemplatesInput {
     }
 }
 
-public struct ListExperimentTemplatesOutput {
+public struct ListExperimentTemplatesOutput: Swift.Sendable {
     /// The experiment templates.
     public var experimentTemplates: [FisClientTypes.ExperimentTemplateSummary]?
     /// The token to use to retrieve the next page of results. This value is null when there are no more results to return.
@@ -2019,7 +2019,7 @@ public struct ListExperimentTemplatesOutput {
     }
 }
 
-public struct ListTagsForResourceInput {
+public struct ListTagsForResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the resource.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -2032,7 +2032,7 @@ public struct ListTagsForResourceInput {
     }
 }
 
-public struct ListTagsForResourceOutput {
+public struct ListTagsForResourceOutput: Swift.Sendable {
     /// The tags for the resource.
     public var tags: [Swift.String: Swift.String]?
 
@@ -2044,7 +2044,7 @@ public struct ListTagsForResourceOutput {
     }
 }
 
-public struct ListTargetAccountConfigurationsInput {
+public struct ListTargetAccountConfigurationsInput: Swift.Sendable {
     /// The ID of the experiment template.
     /// This member is required.
     public var experimentTemplateId: Swift.String?
@@ -2066,8 +2066,9 @@ public struct ListTargetAccountConfigurationsInput {
 }
 
 extension FisClientTypes {
+
     /// Provides a summary of a target account configuration.
-    public struct TargetAccountConfigurationSummary {
+    public struct TargetAccountConfigurationSummary: Swift.Sendable {
         /// The Amazon Web Services account ID of the target account.
         public var accountId: Swift.String?
         /// The description of the target account.
@@ -2086,10 +2087,9 @@ extension FisClientTypes {
             self.roleArn = roleArn
         }
     }
-
 }
 
-public struct ListTargetAccountConfigurationsOutput {
+public struct ListTargetAccountConfigurationsOutput: Swift.Sendable {
     /// The token to use to retrieve the next page of results. This value is null when there are no more results to return.
     public var nextToken: Swift.String?
     /// The target account configurations.
@@ -2105,7 +2105,7 @@ public struct ListTargetAccountConfigurationsOutput {
     }
 }
 
-public struct ListTargetResourceTypesInput {
+public struct ListTargetResourceTypesInput: Swift.Sendable {
     /// The maximum number of results to return with a single call. To retrieve the remaining results, make another call with the returned nextToken value.
     public var maxResults: Swift.Int?
     /// The token for the next page of results.
@@ -2122,8 +2122,9 @@ public struct ListTargetResourceTypesInput {
 }
 
 extension FisClientTypes {
+
     /// Describes a resource type.
-    public struct TargetResourceTypeSummary {
+    public struct TargetResourceTypeSummary: Swift.Sendable {
         /// A description of the resource type.
         public var description: Swift.String?
         /// The resource type.
@@ -2138,10 +2139,9 @@ extension FisClientTypes {
             self.resourceType = resourceType
         }
     }
-
 }
 
-public struct ListTargetResourceTypesOutput {
+public struct ListTargetResourceTypesOutput: Swift.Sendable {
     /// The token to use to retrieve the next page of results. This value is null when there are no more results to return.
     public var nextToken: Swift.String?
     /// The target resource types.
@@ -2158,8 +2158,9 @@ public struct ListTargetResourceTypesOutput {
 }
 
 extension FisClientTypes {
+
     /// Specifies experiment options for running an experiment.
-    public struct StartExperimentExperimentOptionsInput {
+    public struct StartExperimentExperimentOptionsInput: Swift.Sendable {
         /// Specifies the actions mode for experiment options.
         public var actionsMode: FisClientTypes.ActionsMode?
 
@@ -2170,10 +2171,9 @@ extension FisClientTypes {
             self.actionsMode = actionsMode
         }
     }
-
 }
 
-public struct StartExperimentInput {
+public struct StartExperimentInput: Swift.Sendable {
     /// Unique, case-sensitive identifier that you provide to ensure the idempotency of the request.
     /// This member is required.
     public var clientToken: Swift.String?
@@ -2199,7 +2199,7 @@ public struct StartExperimentInput {
     }
 }
 
-public struct StartExperimentOutput {
+public struct StartExperimentOutput: Swift.Sendable {
     /// Information about the experiment.
     public var experiment: FisClientTypes.Experiment?
 
@@ -2211,7 +2211,7 @@ public struct StartExperimentOutput {
     }
 }
 
-public struct StopExperimentInput {
+public struct StopExperimentInput: Swift.Sendable {
     /// The ID of the experiment.
     /// This member is required.
     public var id: Swift.String?
@@ -2224,7 +2224,7 @@ public struct StopExperimentInput {
     }
 }
 
-public struct StopExperimentOutput {
+public struct StopExperimentOutput: Swift.Sendable {
     /// Information about the experiment.
     public var experiment: FisClientTypes.Experiment?
 
@@ -2236,7 +2236,7 @@ public struct StopExperimentOutput {
     }
 }
 
-public struct TagResourceInput {
+public struct TagResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the resource.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -2254,12 +2254,12 @@ public struct TagResourceInput {
     }
 }
 
-public struct TagResourceOutput {
+public struct TagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UntagResourceInput {
+public struct UntagResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the resource.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -2276,14 +2276,15 @@ public struct UntagResourceInput {
     }
 }
 
-public struct UntagResourceOutput {
+public struct UntagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
 extension FisClientTypes {
+
     /// Specifies an action for an experiment template.
-    public struct UpdateExperimentTemplateActionInputItem {
+    public struct UpdateExperimentTemplateActionInputItem: Swift.Sendable {
         /// The ID of the action.
         public var actionId: Swift.String?
         /// A description for the action.
@@ -2310,12 +2311,12 @@ extension FisClientTypes {
             self.targets = targets
         }
     }
-
 }
 
 extension FisClientTypes {
+
     /// Specifies an experiment option for an experiment template.
-    public struct UpdateExperimentTemplateExperimentOptionsInput {
+    public struct UpdateExperimentTemplateExperimentOptionsInput: Swift.Sendable {
         /// The empty target resolution mode of the experiment template.
         public var emptyTargetResolutionMode: FisClientTypes.EmptyTargetResolutionMode?
 
@@ -2326,12 +2327,12 @@ extension FisClientTypes {
             self.emptyTargetResolutionMode = emptyTargetResolutionMode
         }
     }
-
 }
 
 extension FisClientTypes {
+
     /// Specifies the configuration for experiment logging.
-    public struct UpdateExperimentTemplateLogConfigurationInput {
+    public struct UpdateExperimentTemplateLogConfigurationInput: Swift.Sendable {
         /// The configuration for experiment logging to Amazon CloudWatch Logs.
         public var cloudWatchLogsConfiguration: FisClientTypes.ExperimentTemplateCloudWatchLogsLogConfigurationInput?
         /// The schema version.
@@ -2350,12 +2351,12 @@ extension FisClientTypes {
             self.s3Configuration = s3Configuration
         }
     }
-
 }
 
 extension FisClientTypes {
+
     /// Specifies a stop condition for an experiment. You can define a stop condition as a CloudWatch alarm.
-    public struct UpdateExperimentTemplateStopConditionInput {
+    public struct UpdateExperimentTemplateStopConditionInput: Swift.Sendable {
         /// The source for the stop condition. Specify aws:cloudwatch:alarm if the stop condition is defined by a CloudWatch alarm. Specify none if there is no stop condition.
         /// This member is required.
         public var source: Swift.String?
@@ -2371,12 +2372,12 @@ extension FisClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension FisClientTypes {
+
     /// Specifies a target for an experiment. You must specify at least one Amazon Resource Name (ARN) or at least one resource tag. You cannot specify both.
-    public struct UpdateExperimentTemplateTargetInput {
+    public struct UpdateExperimentTemplateTargetInput: Swift.Sendable {
         /// The filters to apply to identify target resources using specific attributes.
         public var filters: [FisClientTypes.ExperimentTemplateTargetInputFilter]?
         /// The resource type parameters.
@@ -2409,10 +2410,9 @@ extension FisClientTypes {
             self.selectionMode = selectionMode
         }
     }
-
 }
 
-public struct UpdateExperimentTemplateInput {
+public struct UpdateExperimentTemplateInput: Swift.Sendable {
     /// The actions for the experiment.
     public var actions: [Swift.String: FisClientTypes.UpdateExperimentTemplateActionInputItem]?
     /// A description for the template.
@@ -2453,7 +2453,7 @@ public struct UpdateExperimentTemplateInput {
     }
 }
 
-public struct UpdateExperimentTemplateOutput {
+public struct UpdateExperimentTemplateOutput: Swift.Sendable {
     /// Information about the experiment template.
     public var experimentTemplate: FisClientTypes.ExperimentTemplate?
 
@@ -2467,7 +2467,7 @@ public struct UpdateExperimentTemplateOutput {
 
 extension FisClientTypes {
 
-    public enum SafetyLeverStatusInput: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SafetyLeverStatusInput: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case disengaged
         case engaged
         case sdkUnknown(Swift.String)
@@ -2495,8 +2495,9 @@ extension FisClientTypes {
 }
 
 extension FisClientTypes {
+
     /// Specifies a state for a safety lever.
-    public struct UpdateSafetyLeverStateInput {
+    public struct UpdateSafetyLeverStateInput: Swift.Sendable {
         /// The reason for updating the state of the safety lever.
         /// This member is required.
         public var reason: Swift.String?
@@ -2513,10 +2514,9 @@ extension FisClientTypes {
             self.status = status
         }
     }
-
 }
 
-public struct UpdateSafetyLeverStateInput {
+public struct UpdateSafetyLeverStateInput: Swift.Sendable {
     /// The ID of the safety lever.
     /// This member is required.
     public var id: Swift.String?
@@ -2534,7 +2534,7 @@ public struct UpdateSafetyLeverStateInput {
     }
 }
 
-public struct UpdateSafetyLeverStateOutput {
+public struct UpdateSafetyLeverStateOutput: Swift.Sendable {
     /// Information about the safety lever.
     public var safetyLever: FisClientTypes.SafetyLever?
 
@@ -2546,7 +2546,7 @@ public struct UpdateSafetyLeverStateOutput {
     }
 }
 
-public struct UpdateTargetAccountConfigurationInput {
+public struct UpdateTargetAccountConfigurationInput: Swift.Sendable {
     /// The Amazon Web Services account ID of the target account.
     /// This member is required.
     public var accountId: Swift.String?
@@ -2572,7 +2572,7 @@ public struct UpdateTargetAccountConfigurationInput {
     }
 }
 
-public struct UpdateTargetAccountConfigurationOutput {
+public struct UpdateTargetAccountConfigurationOutput: Swift.Sendable {
     /// Information about the target account configuration.
     public var targetAccountConfiguration: FisClientTypes.TargetAccountConfiguration?
 

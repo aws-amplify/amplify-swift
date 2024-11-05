@@ -29,52 +29,53 @@ import struct Smithy.URIQueryItem
 @_spi(SmithyReadWrite) import struct SmithyReadWrite.ReadingClosureBox
 @_spi(SmithyTimestamps) import struct SmithyTimestamps.TimestampFormatter
 
-public struct CreateTagsOutput {
+
+public struct CreateTagsOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteAccessPointOutput {
+public struct DeleteAccessPointOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteFileSystemOutput {
+public struct DeleteFileSystemOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteFileSystemPolicyOutput {
+public struct DeleteFileSystemPolicyOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteMountTargetOutput {
+public struct DeleteMountTargetOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteReplicationConfigurationOutput {
+public struct DeleteReplicationConfigurationOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteTagsOutput {
+public struct DeleteTagsOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct ModifyMountTargetSecurityGroupsOutput {
+public struct ModifyMountTargetSecurityGroupsOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct TagResourceOutput {
+public struct TagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UntagResourceOutput {
+public struct UntagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
@@ -115,7 +116,7 @@ public struct AccessPointAlreadyExists: ClientRuntime.ModeledError, AWSClientRun
 
 extension EFSClientTypes {
 
-    public enum LifeCycleState: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum LifeCycleState: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case available
         case creating
         case deleted
@@ -155,8 +156,9 @@ extension EFSClientTypes {
 }
 
 extension EFSClientTypes {
+
     /// The full POSIX identity, including the user ID, group ID, and any secondary group IDs, on the access point that is used for all file system operations performed by NFS clients using the access point.
-    public struct PosixUser {
+    public struct PosixUser: Swift.Sendable {
         /// The POSIX group ID used for all file system operations using this access point.
         /// This member is required.
         public var gid: Swift.Int?
@@ -177,12 +179,12 @@ extension EFSClientTypes {
             self.uid = uid
         }
     }
-
 }
 
 extension EFSClientTypes {
+
     /// Required if the RootDirectory > Path specified does not exist. Specifies the POSIX IDs and permissions to apply to the access point's RootDirectory > Path. If the access point root directory does not exist, EFS creates it with these settings when a client connects to the access point. When specifying CreationInfo, you must include values for all properties. Amazon EFS creates a root directory only if you have provided the CreationInfo: OwnUid, OwnGID, and permissions for the directory. If you do not provide this information, Amazon EFS does not create the root directory. If the root directory does not exist, attempts to mount using the access point will fail. If you do not provide CreationInfo and the specified RootDirectory does not exist, attempts to mount the file system using the access point will fail.
-    public struct CreationInfo {
+    public struct CreationInfo: Swift.Sendable {
         /// Specifies the POSIX group ID to apply to the RootDirectory. Accepts values from 0 to 2^32 (4294967295).
         /// This member is required.
         public var ownerGid: Swift.Int?
@@ -204,12 +206,12 @@ extension EFSClientTypes {
             self.permissions = permissions
         }
     }
-
 }
 
 extension EFSClientTypes {
+
     /// Specifies the directory on the Amazon EFS file system that the access point provides access to. The access point exposes the specified file system path as the root directory of your file system to applications using the access point. NFS clients using the access point can only access data in the access point's RootDirectory and it's subdirectories.
-    public struct RootDirectory {
+    public struct RootDirectory: Swift.Sendable {
         /// (Optional) Specifies the POSIX IDs and permissions to apply to the access point's RootDirectory. If the RootDirectory > Path specified does not exist, EFS creates the root directory using the CreationInfo settings when a client connects to an access point. When specifying the CreationInfo, you must provide values for all properties. If you do not provide CreationInfo and the specified RootDirectory > Path does not exist, attempts to mount the file system using the access point will fail.
         public var creationInfo: EFSClientTypes.CreationInfo?
         /// Specifies the path on the EFS file system to expose as the root directory to NFS clients using the access point to access the EFS file system. A path can have up to four subdirectories. If the specified path does not exist, you are required to provide the CreationInfo.
@@ -224,12 +226,12 @@ extension EFSClientTypes {
             self.path = path
         }
     }
-
 }
 
 extension EFSClientTypes {
+
     /// A tag is a key-value pair. Allowed characters are letters, white space, and numbers that can be represented in UTF-8, and the following characters: + - = . _ : /.
-    public struct Tag {
+    public struct Tag: Swift.Sendable {
         /// The tag key (String). The key can't start with aws:.
         /// This member is required.
         public var key: Swift.String?
@@ -246,12 +248,12 @@ extension EFSClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension EFSClientTypes {
+
     /// Provides a description of an EFS file system access point.
-    public struct AccessPointDescription {
+    public struct AccessPointDescription: Swift.Sendable {
         /// The unique Amazon Resource Name (ARN) associated with the access point.
         public var accessPointArn: Swift.String?
         /// The ID of the access point, assigned by Amazon EFS.
@@ -298,7 +300,6 @@ extension EFSClientTypes {
             self.tags = tags
         }
     }
-
 }
 
 /// Returned if the Amazon Web Services account has already created the maximum number of access points allowed per file system. For more informaton, see [https://docs.aws.amazon.com/efs/latest/ug/limits.html#limits-efs-resources-per-account-per-region](https://docs.aws.amazon.com/efs/latest/ug/limits.html#limits-efs-resources-per-account-per-region).
@@ -392,7 +393,7 @@ public struct AvailabilityZonesMismatch: ClientRuntime.ModeledError, AWSClientRu
 
 extension EFSClientTypes {
 
-    public enum Status: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Status: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case disabled
         case disabling
         case enabled
@@ -426,8 +427,9 @@ extension EFSClientTypes {
 }
 
 extension EFSClientTypes {
+
     /// The backup policy for the file system used to create automatic daily backups. If status has a value of ENABLED, the file system is being automatically backed up. For more information, see [Automatic backups](https://docs.aws.amazon.com/efs/latest/ug/awsbackup.html#automatic-backups).
-    public struct BackupPolicy {
+    public struct BackupPolicy: Swift.Sendable {
         /// Describes the status of the file system's backup policy.
         ///
         /// * ENABLED – EFS is automatically backing up the file system.
@@ -447,7 +449,6 @@ extension EFSClientTypes {
             self.status = status
         }
     }
-
 }
 
 /// Returned if the request is malformed or contains an error such as an invalid parameter value or a missing required parameter.
@@ -628,7 +629,7 @@ public struct ThrottlingException: ClientRuntime.ModeledError, AWSClientRuntime.
     }
 }
 
-public struct CreateAccessPointInput {
+public struct CreateAccessPointInput: Swift.Sendable {
     /// A string of up to 64 ASCII characters that Amazon EFS uses to ensure idempotent creation.
     /// This member is required.
     public var clientToken: Swift.String?
@@ -659,7 +660,7 @@ public struct CreateAccessPointInput {
 }
 
 /// Provides a description of an EFS file system access point.
-public struct CreateAccessPointOutput {
+public struct CreateAccessPointOutput: Swift.Sendable {
     /// The unique Amazon Resource Name (ARN) associated with the access point.
     public var accessPointArn: Swift.String?
     /// The ID of the access point, assigned by Amazon EFS.
@@ -863,7 +864,7 @@ public struct UnsupportedAvailabilityZone: ClientRuntime.ModeledError, AWSClient
 
 extension EFSClientTypes {
 
-    public enum PerformanceMode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum PerformanceMode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case generalPurpose
         case maxIo
         case sdkUnknown(Swift.String)
@@ -892,7 +893,7 @@ extension EFSClientTypes {
 
 extension EFSClientTypes {
 
-    public enum ThroughputMode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ThroughputMode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case bursting
         case elastic
         case provisioned
@@ -922,7 +923,7 @@ extension EFSClientTypes {
     }
 }
 
-public struct CreateFileSystemInput {
+public struct CreateFileSystemInput: Swift.Sendable {
     /// Used to create a One Zone file system. It specifies the Amazon Web Services Availability Zone in which to create the file system. Use the format us-east-1a to specify the Availability Zone. For more information about One Zone file systems, see [Using EFS storage classes](https://docs.aws.amazon.com/efs/latest/ug/storage-classes.html) in the Amazon EFS User Guide. One Zone file systems are not available in all Availability Zones in Amazon Web Services Regions where Amazon EFS is available.
     public var availabilityZoneName: Swift.String?
     /// Specifies whether automatic backups are enabled on the file system that you are creating. Set the value to true to enable automatic backups. If you are creating a One Zone file system, automatic backups are enabled by default. For more information, see [Automatic backups](https://docs.aws.amazon.com/efs/latest/ug/awsbackup.html#automatic-backups) in the Amazon EFS User Guide. Default is false. However, if you specify an AvailabilityZoneName, the default is true. Backup is not available in all Amazon Web Services Regions where Amazon EFS is available.
@@ -980,7 +981,7 @@ public struct CreateFileSystemInput {
 
 extension EFSClientTypes {
 
-    public enum ReplicationOverwriteProtection: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ReplicationOverwriteProtection: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case disabled
         case enabled
         case replicating
@@ -1011,8 +1012,9 @@ extension EFSClientTypes {
 }
 
 extension EFSClientTypes {
+
     /// Describes the protection on a file system.
-    public struct FileSystemProtectionDescription {
+    public struct FileSystemProtectionDescription: Swift.Sendable {
         /// The status of the file system's replication overwrite protection.
         ///
         /// * ENABLED – The file system cannot be used as the destination file system in a replication configuration. The file system is writeable. Replication overwrite protection is ENABLED by default.
@@ -1032,12 +1034,12 @@ extension EFSClientTypes {
             self.replicationOverwriteProtection = replicationOverwriteProtection
         }
     }
-
 }
 
 extension EFSClientTypes {
+
     /// The latest known metered size (in bytes) of data stored in the file system, in its Value field, and the time at which that size was determined in its Timestamp field. The value doesn't represent the size of a consistent snapshot of the file system, but it is eventually consistent when there are no writes to the file system. That is, the value represents the actual size only if the file system is not modified for a period longer than a couple of hours. Otherwise, the value is not necessarily the exact size the file system was at any instant in time.
-    public struct FileSystemSize {
+    public struct FileSystemSize: Swift.Sendable {
         /// The time at which the size of data, returned in the Value field, was determined. The value is the integer number of seconds since 1970-01-01T00:00:00Z.
         public var timestamp: Foundation.Date?
         /// The latest known metered size (in bytes) of data stored in the file system.
@@ -1065,11 +1067,10 @@ extension EFSClientTypes {
             self.valueInStandard = valueInStandard
         }
     }
-
 }
 
 /// A description of the file system.
-public struct CreateFileSystemOutput {
+public struct CreateFileSystemOutput: Swift.Sendable {
     /// The unique and consistent identifier of the Availability Zone in which the file system is located, and is valid only for One Zone file systems. For example, use1-az1 is an Availability Zone ID for the us-east-1 Amazon Web Services Region, and it has the same location in every Amazon Web Services account.
     public var availabilityZoneId: Swift.String?
     /// Describes the Amazon Web Services Availability Zone in which the file system is located, and is valid only for One Zone file systems. For more information, see [Using EFS storage classes](https://docs.aws.amazon.com/efs/latest/ug/storage-classes.html) in the Amazon EFS User Guide.
@@ -1369,7 +1370,7 @@ public struct SubnetNotFound: ClientRuntime.ModeledError, AWSClientRuntime.AWSSe
 }
 
 ///
-public struct CreateMountTargetInput {
+public struct CreateMountTargetInput: Swift.Sendable {
     /// The ID of the file system for which to create the mount target.
     /// This member is required.
     public var fileSystemId: Swift.String?
@@ -1396,7 +1397,7 @@ public struct CreateMountTargetInput {
 }
 
 /// Provides a description of a mount target.
-public struct CreateMountTargetOutput {
+public struct CreateMountTargetOutput: Swift.Sendable {
     /// The unique and consistent identifier of the Availability Zone that the mount target resides in. For example, use1-az1 is an AZ ID for the us-east-1 Region and it has the same location in every Amazon Web Services account.
     public var availabilityZoneId: Swift.String?
     /// The name of the Availability Zone in which the mount target is located. Availability Zones are independently mapped to names for each Amazon Web Services account. For example, the Availability Zone us-east-1a for your Amazon Web Services account might not be the same location as us-east-1a for another Amazon Web Services account.
@@ -1508,8 +1509,9 @@ public struct ValidationException: ClientRuntime.ModeledError, AWSClientRuntime.
 }
 
 extension EFSClientTypes {
+
     /// Describes the new or existing destination file system for the replication configuration.
-    public struct DestinationToCreate {
+    public struct DestinationToCreate: Swift.Sendable {
         /// To create a file system that uses One Zone storage, specify the name of the Availability Zone in which to create the destination file system.
         public var availabilityZoneName: Swift.String?
         /// The ID of the file system to use for the destination. The file system's replication overwrite replication must be disabled. If you do not provide an ID, then EFS creates a new file system for the replication destination.
@@ -1540,10 +1542,9 @@ extension EFSClientTypes {
             self.region = region
         }
     }
-
 }
 
-public struct CreateReplicationConfigurationInput {
+public struct CreateReplicationConfigurationInput: Swift.Sendable {
     /// An array of destination configuration objects. Only one destination configuration object is supported.
     /// This member is required.
     public var destinations: [EFSClientTypes.DestinationToCreate]?
@@ -1563,7 +1564,7 @@ public struct CreateReplicationConfigurationInput {
 
 extension EFSClientTypes {
 
-    public enum ReplicationStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ReplicationStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case deleting
         case enabled
         case enabling
@@ -1603,8 +1604,9 @@ extension EFSClientTypes {
 }
 
 extension EFSClientTypes {
+
     /// Describes the destination file system in the replication configuration.
-    public struct Destination {
+    public struct Destination: Swift.Sendable {
         /// The ID of the destination Amazon EFS file system.
         /// This member is required.
         public var fileSystemId: Swift.String?
@@ -1634,11 +1636,10 @@ extension EFSClientTypes {
             self.status = status
         }
     }
-
 }
 
 /// Describes the replication configuration for a specific file system.
-public struct CreateReplicationConfigurationOutput {
+public struct CreateReplicationConfigurationOutput: Swift.Sendable {
     /// Describes when the replication configuration was created.
     /// This member is required.
     public var creationTime: Foundation.Date?
@@ -1677,7 +1678,7 @@ public struct CreateReplicationConfigurationOutput {
 }
 
 ///
-public struct CreateTagsInput {
+public struct CreateTagsInput: Swift.Sendable {
     /// The ID of the file system whose tags you want to modify (String). This operation modifies the tags only, not the file system.
     /// This member is required.
     public var fileSystemId: Swift.String?
@@ -1695,7 +1696,7 @@ public struct CreateTagsInput {
     }
 }
 
-public struct DeleteAccessPointInput {
+public struct DeleteAccessPointInput: Swift.Sendable {
     /// The ID of the access point that you want to delete.
     /// This member is required.
     public var accessPointId: Swift.String?
@@ -1739,7 +1740,7 @@ public struct FileSystemInUse: ClientRuntime.ModeledError, AWSClientRuntime.AWSS
 }
 
 ///
-public struct DeleteFileSystemInput {
+public struct DeleteFileSystemInput: Swift.Sendable {
     /// The ID of the file system you want to delete.
     /// This member is required.
     public var fileSystemId: Swift.String?
@@ -1752,7 +1753,7 @@ public struct DeleteFileSystemInput {
     }
 }
 
-public struct DeleteFileSystemPolicyInput {
+public struct DeleteFileSystemPolicyInput: Swift.Sendable {
     /// Specifies the EFS file system for which to delete the FileSystemPolicy.
     /// This member is required.
     public var fileSystemId: Swift.String?
@@ -1826,7 +1827,7 @@ public struct MountTargetNotFound: ClientRuntime.ModeledError, AWSClientRuntime.
 }
 
 ///
-public struct DeleteMountTargetInput {
+public struct DeleteMountTargetInput: Swift.Sendable {
     /// The ID of the mount target to delete (String).
     /// This member is required.
     public var mountTargetId: Swift.String?
@@ -1839,7 +1840,7 @@ public struct DeleteMountTargetInput {
     }
 }
 
-public struct DeleteReplicationConfigurationInput {
+public struct DeleteReplicationConfigurationInput: Swift.Sendable {
     /// The ID of the source file system in the replication configuration.
     /// This member is required.
     public var sourceFileSystemId: Swift.String?
@@ -1853,7 +1854,7 @@ public struct DeleteReplicationConfigurationInput {
 }
 
 ///
-public struct DeleteTagsInput {
+public struct DeleteTagsInput: Swift.Sendable {
     /// The ID of the file system whose tags you want to delete (String).
     /// This member is required.
     public var fileSystemId: Swift.String?
@@ -1871,7 +1872,7 @@ public struct DeleteTagsInput {
     }
 }
 
-public struct DescribeAccessPointsInput {
+public struct DescribeAccessPointsInput: Swift.Sendable {
     /// (Optional) Specifies an EFS access point to describe in the response; mutually exclusive with FileSystemId.
     public var accessPointId: Swift.String?
     /// (Optional) If you provide a FileSystemId, EFS returns all access points for that file system; mutually exclusive with AccessPointId.
@@ -1895,7 +1896,7 @@ public struct DescribeAccessPointsInput {
     }
 }
 
-public struct DescribeAccessPointsOutput {
+public struct DescribeAccessPointsOutput: Swift.Sendable {
     /// An array of access point descriptions.
     public var accessPoints: [EFSClientTypes.AccessPointDescription]?
     /// Present if there are more access points than returned in the response. You can use the NextMarker in the subsequent request to fetch the additional descriptions.
@@ -1911,7 +1912,7 @@ public struct DescribeAccessPointsOutput {
     }
 }
 
-public struct DescribeAccountPreferencesInput {
+public struct DescribeAccountPreferencesInput: Swift.Sendable {
     /// (Optional) When retrieving account preferences, you can optionally specify the MaxItems parameter to limit the number of objects returned in a response. The default value is 100.
     public var maxResults: Swift.Int?
     /// (Optional) You can use NextToken in a subsequent request to fetch the next page of Amazon Web Services account preferences if the response payload was paginated.
@@ -1930,7 +1931,7 @@ public struct DescribeAccountPreferencesInput {
 extension EFSClientTypes {
 
     /// A preference indicating a choice to use 63bit/32bit IDs for all applicable resources.
-    public enum ResourceIdType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ResourceIdType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case longid
         case shortid
         case sdkUnknown(Swift.String)
@@ -1960,7 +1961,7 @@ extension EFSClientTypes {
 extension EFSClientTypes {
 
     /// An EFS resource, for example a file system or a mount target.
-    public enum Resource: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Resource: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case filesystem
         case mounttarget
         case sdkUnknown(Swift.String)
@@ -1988,8 +1989,9 @@ extension EFSClientTypes {
 }
 
 extension EFSClientTypes {
+
     /// Describes the resource type and its ID preference for the user's Amazon Web Services account, in the current Amazon Web Services Region.
-    public struct ResourceIdPreference {
+    public struct ResourceIdPreference: Swift.Sendable {
         /// Identifies the EFS resource ID preference, either LONG_ID (17 characters) or SHORT_ID (8 characters).
         public var resourceIdType: EFSClientTypes.ResourceIdType?
         /// Identifies the Amazon EFS resources to which the ID preference setting applies, FILE_SYSTEM and MOUNT_TARGET.
@@ -2004,10 +2006,9 @@ extension EFSClientTypes {
             self.resources = resources
         }
     }
-
 }
 
-public struct DescribeAccountPreferencesOutput {
+public struct DescribeAccountPreferencesOutput: Swift.Sendable {
     /// Present if there are more records than returned in the response. You can use the NextToken in the subsequent request to fetch the additional descriptions.
     public var nextToken: Swift.String?
     /// Describes the resource ID preference setting for the Amazon Web Services account associated with the user making the request, in the current Amazon Web Services Region.
@@ -2052,7 +2053,7 @@ public struct PolicyNotFound: ClientRuntime.ModeledError, AWSClientRuntime.AWSSe
     }
 }
 
-public struct DescribeBackupPolicyInput {
+public struct DescribeBackupPolicyInput: Swift.Sendable {
     /// Specifies which EFS file system for which to retrieve the BackupPolicy.
     /// This member is required.
     public var fileSystemId: Swift.String?
@@ -2065,7 +2066,7 @@ public struct DescribeBackupPolicyInput {
     }
 }
 
-public struct DescribeBackupPolicyOutput {
+public struct DescribeBackupPolicyOutput: Swift.Sendable {
     /// Describes the file system's backup policy, indicating whether automatic backups are turned on or off.
     public var backupPolicy: EFSClientTypes.BackupPolicy?
 
@@ -2077,7 +2078,7 @@ public struct DescribeBackupPolicyOutput {
     }
 }
 
-public struct DescribeFileSystemPolicyInput {
+public struct DescribeFileSystemPolicyInput: Swift.Sendable {
     /// Specifies which EFS file system to retrieve the FileSystemPolicy for.
     /// This member is required.
     public var fileSystemId: Swift.String?
@@ -2090,7 +2091,7 @@ public struct DescribeFileSystemPolicyInput {
     }
 }
 
-public struct DescribeFileSystemPolicyOutput {
+public struct DescribeFileSystemPolicyOutput: Swift.Sendable {
     /// Specifies the EFS file system to which the FileSystemPolicy applies.
     public var fileSystemId: Swift.String?
     /// The JSON formatted FileSystemPolicy for the EFS file system.
@@ -2107,7 +2108,7 @@ public struct DescribeFileSystemPolicyOutput {
 }
 
 ///
-public struct DescribeFileSystemsInput {
+public struct DescribeFileSystemsInput: Swift.Sendable {
     /// (Optional) Restricts the list to the file system with this creation token (String). You specify a creation token when you create an Amazon EFS file system.
     public var creationToken: Swift.String?
     /// (Optional) ID of the file system whose description you want to retrieve (String).
@@ -2132,8 +2133,9 @@ public struct DescribeFileSystemsInput {
 }
 
 extension EFSClientTypes {
+
     /// A description of the file system.
-    public struct FileSystemDescription {
+    public struct FileSystemDescription: Swift.Sendable {
         /// The unique and consistent identifier of the Availability Zone in which the file system is located, and is valid only for One Zone file systems. For example, use1-az1 is an Availability Zone ID for the us-east-1 Amazon Web Services Region, and it has the same location in every Amazon Web Services account.
         public var availabilityZoneId: Swift.String?
         /// Describes the Amazon Web Services Availability Zone in which the file system is located, and is valid only for One Zone file systems. For more information, see [Using EFS storage classes](https://docs.aws.amazon.com/efs/latest/ug/storage-classes.html) in the Amazon EFS User Guide.
@@ -2221,10 +2223,9 @@ extension EFSClientTypes {
             self.throughputMode = throughputMode
         }
     }
-
 }
 
-public struct DescribeFileSystemsOutput {
+public struct DescribeFileSystemsOutput: Swift.Sendable {
     /// An array of file system descriptions.
     public var fileSystems: [EFSClientTypes.FileSystemDescription]?
     /// Present if provided by caller in the request (String).
@@ -2244,7 +2245,7 @@ public struct DescribeFileSystemsOutput {
     }
 }
 
-public struct DescribeLifecycleConfigurationInput {
+public struct DescribeLifecycleConfigurationInput: Swift.Sendable {
     /// The ID of the file system whose LifecycleConfiguration object you want to retrieve (String).
     /// This member is required.
     public var fileSystemId: Swift.String?
@@ -2259,7 +2260,7 @@ public struct DescribeLifecycleConfigurationInput {
 
 extension EFSClientTypes {
 
-    public enum TransitionToArchiveRules: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum TransitionToArchiveRules: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case after14Days
         case after180Days
         case after1Day
@@ -2309,7 +2310,7 @@ extension EFSClientTypes {
 
 extension EFSClientTypes {
 
-    public enum TransitionToIARules: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum TransitionToIARules: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case after14Days
         case after180Days
         case after1Day
@@ -2359,7 +2360,7 @@ extension EFSClientTypes {
 
 extension EFSClientTypes {
 
-    public enum TransitionToPrimaryStorageClassRules: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum TransitionToPrimaryStorageClassRules: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case after1Access
         case sdkUnknown(Swift.String)
 
@@ -2384,8 +2385,9 @@ extension EFSClientTypes {
 }
 
 extension EFSClientTypes {
+
     /// Describes a policy used by Lifecycle management that specifies when to transition files into and out of storage classes. For more information, see [Managing file system storage](https://docs.aws.amazon.com/efs/latest/ug/lifecycle-management-efs.html). When using the put-lifecycle-configuration CLI command or the PutLifecycleConfiguration API action, Amazon EFS requires that each LifecyclePolicy object have only a single transition. This means that in a request body, LifecyclePolicies must be structured as an array of LifecyclePolicy objects, one object for each transition. For more information, see the request examples in [PutLifecycleConfiguration].
-    public struct LifecyclePolicy {
+    public struct LifecyclePolicy: Swift.Sendable {
         /// The number of days after files were last accessed in primary storage (the Standard storage class) files at which to move them to Archive storage. Metadata operations such as listing the contents of a directory don't count as file access events.
         public var transitionToArchive: EFSClientTypes.TransitionToArchiveRules?
         /// The number of days after files were last accessed in primary storage (the Standard storage class) at which to move them to Infrequent Access (IA) storage. Metadata operations such as listing the contents of a directory don't count as file access events.
@@ -2404,10 +2406,9 @@ extension EFSClientTypes {
             self.transitionToPrimaryStorageClass = transitionToPrimaryStorageClass
         }
     }
-
 }
 
-public struct DescribeLifecycleConfigurationOutput {
+public struct DescribeLifecycleConfigurationOutput: Swift.Sendable {
     /// An array of lifecycle management policies. EFS supports a maximum of one policy per file system.
     public var lifecyclePolicies: [EFSClientTypes.LifecyclePolicy]?
 
@@ -2420,7 +2421,7 @@ public struct DescribeLifecycleConfigurationOutput {
 }
 
 ///
-public struct DescribeMountTargetsInput {
+public struct DescribeMountTargetsInput: Swift.Sendable {
     /// (Optional) The ID of the access point whose mount targets that you want to list. It must be included in your request if a FileSystemId or MountTargetId is not included in your request. Accepts either an access point ID or ARN as input.
     public var accessPointId: Swift.String?
     /// (Optional) ID of the file system whose mount targets you want to list (String). It must be included in your request if an AccessPointId or MountTargetId is not included. Accepts either a file system ID or ARN as input.
@@ -2449,8 +2450,9 @@ public struct DescribeMountTargetsInput {
 }
 
 extension EFSClientTypes {
+
     /// Provides a description of a mount target.
-    public struct MountTargetDescription {
+    public struct MountTargetDescription: Swift.Sendable {
         /// The unique and consistent identifier of the Availability Zone that the mount target resides in. For example, use1-az1 is an AZ ID for the us-east-1 Region and it has the same location in every Amazon Web Services account.
         public var availabilityZoneId: Swift.String?
         /// The name of the Availability Zone in which the mount target is located. Availability Zones are independently mapped to names for each Amazon Web Services account. For example, the Availability Zone us-east-1a for your Amazon Web Services account might not be the same location as us-east-1a for another Amazon Web Services account.
@@ -2501,11 +2503,10 @@ extension EFSClientTypes {
             self.vpcId = vpcId
         }
     }
-
 }
 
 ///
-public struct DescribeMountTargetsOutput {
+public struct DescribeMountTargetsOutput: Swift.Sendable {
     /// If the request included the Marker, the response returns that value in this field.
     public var marker: Swift.String?
     /// Returns the file system's mount targets as an array of MountTargetDescription objects.
@@ -2556,7 +2557,7 @@ public struct IncorrectMountTargetState: ClientRuntime.ModeledError, AWSClientRu
 }
 
 ///
-public struct DescribeMountTargetSecurityGroupsInput {
+public struct DescribeMountTargetSecurityGroupsInput: Swift.Sendable {
     /// The ID of the mount target whose security groups you want to retrieve.
     /// This member is required.
     public var mountTargetId: Swift.String?
@@ -2569,7 +2570,7 @@ public struct DescribeMountTargetSecurityGroupsInput {
     }
 }
 
-public struct DescribeMountTargetSecurityGroupsOutput {
+public struct DescribeMountTargetSecurityGroupsOutput: Swift.Sendable {
     /// An array of security groups.
     /// This member is required.
     public var securityGroups: [Swift.String]?
@@ -2582,7 +2583,7 @@ public struct DescribeMountTargetSecurityGroupsOutput {
     }
 }
 
-public struct DescribeReplicationConfigurationsInput {
+public struct DescribeReplicationConfigurationsInput: Swift.Sendable {
     /// You can retrieve the replication configuration for a specific file system by providing its file system ID.
     public var fileSystemId: Swift.String?
     /// (Optional) To limit the number of objects returned in a response, you can specify the MaxItems parameter. The default value is 100.
@@ -2603,8 +2604,9 @@ public struct DescribeReplicationConfigurationsInput {
 }
 
 extension EFSClientTypes {
+
     /// Describes the replication configuration for a specific file system.
-    public struct ReplicationConfigurationDescription {
+    public struct ReplicationConfigurationDescription: Swift.Sendable {
         /// Describes when the replication configuration was created.
         /// This member is required.
         public var creationTime: Foundation.Date?
@@ -2641,10 +2643,9 @@ extension EFSClientTypes {
             self.sourceFileSystemRegion = sourceFileSystemRegion
         }
     }
-
 }
 
-public struct DescribeReplicationConfigurationsOutput {
+public struct DescribeReplicationConfigurationsOutput: Swift.Sendable {
     /// You can use the NextToken from the previous response in a subsequent request to fetch the additional descriptions.
     public var nextToken: Swift.String?
     /// The collection of replication configurations that is returned.
@@ -2661,7 +2662,7 @@ public struct DescribeReplicationConfigurationsOutput {
 }
 
 ///
-public struct DescribeTagsInput {
+public struct DescribeTagsInput: Swift.Sendable {
     /// The ID of the file system whose tag set you want to retrieve.
     /// This member is required.
     public var fileSystemId: Swift.String?
@@ -2683,7 +2684,7 @@ public struct DescribeTagsInput {
 }
 
 ///
-public struct DescribeTagsOutput {
+public struct DescribeTagsOutput: Swift.Sendable {
     /// If the request included a Marker, the response returns that value in this field.
     public var marker: Swift.String?
     /// If a value is present, there are more tags to return. In a subsequent request, you can provide the value of NextMarker as the value of the Marker parameter in your next request to retrieve the next set of tags.
@@ -2733,7 +2734,7 @@ public struct InvalidPolicyException: ClientRuntime.ModeledError, AWSClientRunti
     }
 }
 
-public struct ListTagsForResourceInput {
+public struct ListTagsForResourceInput: Swift.Sendable {
     /// (Optional) Specifies the maximum number of tag objects to return in the response. The default value is 100.
     public var maxResults: Swift.Int?
     /// (Optional) You can use NextToken in a subsequent request to fetch the next page of access point descriptions if the response payload was paginated.
@@ -2754,7 +2755,7 @@ public struct ListTagsForResourceInput {
     }
 }
 
-public struct ListTagsForResourceOutput {
+public struct ListTagsForResourceOutput: Swift.Sendable {
     /// NextToken is present if the response payload is paginated. You can use NextToken in a subsequent request to fetch the next page of access point descriptions.
     public var nextToken: Swift.String?
     /// An array of the tags for the specified EFS resource.
@@ -2771,7 +2772,7 @@ public struct ListTagsForResourceOutput {
 }
 
 ///
-public struct ModifyMountTargetSecurityGroupsInput {
+public struct ModifyMountTargetSecurityGroupsInput: Swift.Sendable {
     /// The ID of the mount target whose security groups you want to modify.
     /// This member is required.
     public var mountTargetId: Swift.String?
@@ -2788,7 +2789,7 @@ public struct ModifyMountTargetSecurityGroupsInput {
     }
 }
 
-public struct PutAccountPreferencesInput {
+public struct PutAccountPreferencesInput: Swift.Sendable {
     /// Specifies the EFS resource ID preference to set for the user's Amazon Web Services account, in the current Amazon Web Services Region, either LONG_ID (17 characters), or SHORT_ID (8 characters). Starting in October, 2021, you will receive an error when setting the account preference to SHORT_ID. Contact Amazon Web Services support if you receive an error and must use short IDs for file system and mount target resources.
     /// This member is required.
     public var resourceIdType: EFSClientTypes.ResourceIdType?
@@ -2801,7 +2802,7 @@ public struct PutAccountPreferencesInput {
     }
 }
 
-public struct PutAccountPreferencesOutput {
+public struct PutAccountPreferencesOutput: Swift.Sendable {
     /// Describes the resource type and its ID preference for the user's Amazon Web Services account, in the current Amazon Web Services Region.
     public var resourceIdPreference: EFSClientTypes.ResourceIdPreference?
 
@@ -2813,7 +2814,7 @@ public struct PutAccountPreferencesOutput {
     }
 }
 
-public struct PutBackupPolicyInput {
+public struct PutBackupPolicyInput: Swift.Sendable {
     /// The backup policy included in the PutBackupPolicy request.
     /// This member is required.
     public var backupPolicy: EFSClientTypes.BackupPolicy?
@@ -2831,7 +2832,7 @@ public struct PutBackupPolicyInput {
     }
 }
 
-public struct PutBackupPolicyOutput {
+public struct PutBackupPolicyOutput: Swift.Sendable {
     /// Describes the file system's backup policy, indicating whether automatic backups are turned on or off.
     public var backupPolicy: EFSClientTypes.BackupPolicy?
 
@@ -2843,7 +2844,7 @@ public struct PutBackupPolicyOutput {
     }
 }
 
-public struct PutFileSystemPolicyInput {
+public struct PutFileSystemPolicyInput: Swift.Sendable {
     /// (Optional) A boolean that specifies whether or not to bypass the FileSystemPolicy lockout safety check. The lockout safety check determines whether the policy in the request will lock out, or prevent, the IAM principal that is making the request from making future PutFileSystemPolicy requests on this file system. Set BypassPolicyLockoutSafetyCheck to True only when you intend to prevent the IAM principal that is making the request from making subsequent PutFileSystemPolicy requests on this file system. The default value is False.
     public var bypassPolicyLockoutSafetyCheck: Swift.Bool?
     /// The ID of the EFS file system that you want to create or update the FileSystemPolicy for.
@@ -2865,7 +2866,7 @@ public struct PutFileSystemPolicyInput {
     }
 }
 
-public struct PutFileSystemPolicyOutput {
+public struct PutFileSystemPolicyOutput: Swift.Sendable {
     /// Specifies the EFS file system to which the FileSystemPolicy applies.
     public var fileSystemId: Swift.String?
     /// The JSON formatted FileSystemPolicy for the EFS file system.
@@ -2881,7 +2882,7 @@ public struct PutFileSystemPolicyOutput {
     }
 }
 
-public struct PutLifecycleConfigurationInput {
+public struct PutLifecycleConfigurationInput: Swift.Sendable {
     /// The ID of the file system for which you are creating the LifecycleConfiguration object (String).
     /// This member is required.
     public var fileSystemId: Swift.String?
@@ -2908,7 +2909,7 @@ public struct PutLifecycleConfigurationInput {
     }
 }
 
-public struct PutLifecycleConfigurationOutput {
+public struct PutLifecycleConfigurationOutput: Swift.Sendable {
     /// An array of lifecycle management policies. EFS supports a maximum of one policy per file system.
     public var lifecyclePolicies: [EFSClientTypes.LifecyclePolicy]?
 
@@ -2920,7 +2921,7 @@ public struct PutLifecycleConfigurationOutput {
     }
 }
 
-public struct TagResourceInput {
+public struct TagResourceInput: Swift.Sendable {
     /// The ID specifying the EFS resource that you want to create a tag for.
     /// This member is required.
     public var resourceId: Swift.String?
@@ -2938,7 +2939,7 @@ public struct TagResourceInput {
     }
 }
 
-public struct UntagResourceInput {
+public struct UntagResourceInput: Swift.Sendable {
     /// Specifies the EFS resource that you want to remove tags from.
     /// This member is required.
     public var resourceId: Swift.String?
@@ -2986,7 +2987,7 @@ public struct TooManyRequests: ClientRuntime.ModeledError, AWSClientRuntime.AWSS
     }
 }
 
-public struct UpdateFileSystemInput {
+public struct UpdateFileSystemInput: Swift.Sendable {
     /// The ID of the file system that you want to update.
     /// This member is required.
     public var fileSystemId: Swift.String?
@@ -3008,7 +3009,7 @@ public struct UpdateFileSystemInput {
 }
 
 /// A description of the file system.
-public struct UpdateFileSystemOutput {
+public struct UpdateFileSystemOutput: Swift.Sendable {
     /// The unique and consistent identifier of the Availability Zone in which the file system is located, and is valid only for One Zone file systems. For example, use1-az1 is an Availability Zone ID for the us-east-1 Amazon Web Services Region, and it has the same location in every Amazon Web Services account.
     public var availabilityZoneId: Swift.String?
     /// Describes the Amazon Web Services Availability Zone in which the file system is located, and is valid only for One Zone file systems. For more information, see [Using EFS storage classes](https://docs.aws.amazon.com/efs/latest/ug/storage-classes.html) in the Amazon EFS User Guide.
@@ -3126,7 +3127,7 @@ public struct ReplicationAlreadyExists: ClientRuntime.ModeledError, AWSClientRun
     }
 }
 
-public struct UpdateFileSystemProtectionInput {
+public struct UpdateFileSystemProtectionInput: Swift.Sendable {
     /// The ID of the file system to update.
     /// This member is required.
     public var fileSystemId: Swift.String?
@@ -3153,7 +3154,7 @@ public struct UpdateFileSystemProtectionInput {
 }
 
 /// Describes the protection on a file system.
-public struct UpdateFileSystemProtectionOutput {
+public struct UpdateFileSystemProtectionOutput: Swift.Sendable {
     /// The status of the file system's replication overwrite protection.
     ///
     /// * ENABLED – The file system cannot be used as the destination file system in a replication configuration. The file system is writeable. Replication overwrite protection is ENABLED by default.

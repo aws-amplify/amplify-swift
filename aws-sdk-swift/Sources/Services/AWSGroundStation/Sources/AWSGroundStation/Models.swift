@@ -111,7 +111,7 @@ public struct ResourceNotFoundException: ClientRuntime.ModeledError, AWSClientRu
     }
 }
 
-public struct GetAgentConfigurationInput {
+public struct GetAgentConfigurationInput: Swift.Sendable {
     /// UUID of agent to get configuration information for.
     /// This member is required.
     public var agentId: Swift.String?
@@ -124,7 +124,7 @@ public struct GetAgentConfigurationInput {
     }
 }
 
-public struct GetAgentConfigurationOutput {
+public struct GetAgentConfigurationOutput: Swift.Sendable {
     /// UUID of agent.
     public var agentId: Swift.String?
     /// Tasking document for agent.
@@ -141,8 +141,9 @@ public struct GetAgentConfigurationOutput {
 }
 
 extension GroundStationClientTypes {
+
     /// Version information for agent components.
-    public struct ComponentVersion {
+    public struct ComponentVersion: Swift.Sendable {
         /// Component type.
         /// This member is required.
         public var componentType: Swift.String?
@@ -159,12 +160,12 @@ extension GroundStationClientTypes {
             self.versions = versions
         }
     }
-
 }
 
 extension GroundStationClientTypes {
+
     /// Detailed information about the agent.
-    public struct AgentDetails {
+    public struct AgentDetails: Swift.Sendable {
         /// List of CPU cores reserved for the agent.
         public var agentCpuCores: [Swift.Int]?
         /// Current agent version.
@@ -199,12 +200,12 @@ extension GroundStationClientTypes {
             self.reservedCpuCores = reservedCpuCores
         }
     }
-
 }
 
 extension GroundStationClientTypes {
+
     /// Data for agent discovery.
-    public struct DiscoveryData {
+    public struct DiscoveryData: Swift.Sendable {
         /// List of capabilities to associate with agent.
         /// This member is required.
         public var capabilityArns: [Swift.String]?
@@ -226,10 +227,9 @@ extension GroundStationClientTypes {
             self.publicIpAddresses = publicIpAddresses
         }
     }
-
 }
 
-public struct RegisterAgentInput {
+public struct RegisterAgentInput: Swift.Sendable {
     /// Detailed information about the agent being registered.
     /// This member is required.
     public var agentDetails: GroundStationClientTypes.AgentDetails?
@@ -247,7 +247,7 @@ public struct RegisterAgentInput {
     }
 }
 
-public struct RegisterAgentOutput {
+public struct RegisterAgentOutput: Swift.Sendable {
     /// UUID of registered agent.
     public var agentId: Swift.String?
 
@@ -261,7 +261,7 @@ public struct RegisterAgentOutput {
 
 extension GroundStationClientTypes {
 
-    public enum AgentStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AgentStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case active
         case failed
         case inactive
@@ -295,8 +295,9 @@ extension GroundStationClientTypes {
 }
 
 extension GroundStationClientTypes {
+
     /// Aggregate status of Agent components.
-    public struct AggregateStatus {
+    public struct AggregateStatus: Swift.Sendable {
         /// Sparse map of failure signatures.
         public var signatureMap: [Swift.String: Swift.Bool]?
         /// Aggregate status.
@@ -312,12 +313,12 @@ extension GroundStationClientTypes {
             self.status = status
         }
     }
-
 }
 
 extension GroundStationClientTypes {
+
     /// Data on the status of agent components.
-    public struct ComponentStatusData {
+    public struct ComponentStatusData: Swift.Sendable {
         /// Bytes received by the component.
         public var bytesReceived: Swift.Int?
         /// Bytes sent by the component.
@@ -356,10 +357,9 @@ extension GroundStationClientTypes {
             self.status = status
         }
     }
-
 }
 
-public struct UpdateAgentStatusInput {
+public struct UpdateAgentStatusInput: Swift.Sendable {
     /// UUID of agent to update.
     /// This member is required.
     public var agentId: Swift.String?
@@ -387,7 +387,7 @@ public struct UpdateAgentStatusInput {
     }
 }
 
-public struct UpdateAgentStatusOutput {
+public struct UpdateAgentStatusOutput: Swift.Sendable {
     /// UUID of updated agent.
     /// This member is required.
     public var agentId: Swift.String?
@@ -402,7 +402,7 @@ public struct UpdateAgentStatusOutput {
 
 extension GroundStationClientTypes {
 
-    public enum AngleUnits: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AngleUnits: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case degreeAngle
         case radian
         case sdkUnknown(Swift.String)
@@ -430,8 +430,9 @@ extension GroundStationClientTypes {
 }
 
 extension GroundStationClientTypes {
+
     /// Details about an antenna demod decode Config used in a contact.
-    public struct AntennaDemodDecodeDetails {
+    public struct AntennaDemodDecodeDetails: Swift.Sendable {
         /// Name of an antenna demod decode output node used in a contact.
         public var outputNode: Swift.String?
 
@@ -442,12 +443,11 @@ extension GroundStationClientTypes {
             self.outputNode = outputNode
         }
     }
-
 }
 
 extension GroundStationClientTypes {
 
-    public enum BandwidthUnits: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum BandwidthUnits: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case ghz
         case khz
         case mhz
@@ -478,8 +478,9 @@ extension GroundStationClientTypes {
 }
 
 extension GroundStationClientTypes {
+
     /// Object that describes the frequency bandwidth.
-    public struct FrequencyBandwidth {
+    public struct FrequencyBandwidth: Swift.Sendable {
         /// Frequency bandwidth units.
         /// This member is required.
         public var units: GroundStationClientTypes.BandwidthUnits?
@@ -502,12 +503,11 @@ extension GroundStationClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension GroundStationClientTypes {
 
-    public enum FrequencyUnits: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum FrequencyUnits: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case ghz
         case khz
         case mhz
@@ -538,8 +538,9 @@ extension GroundStationClientTypes {
 }
 
 extension GroundStationClientTypes {
+
     /// Object that describes the frequency.
-    public struct Frequency {
+    public struct Frequency: Swift.Sendable {
         /// Frequency units.
         /// This member is required.
         public var units: GroundStationClientTypes.FrequencyUnits?
@@ -556,12 +557,11 @@ extension GroundStationClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension GroundStationClientTypes {
 
-    public enum Polarization: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Polarization: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case leftHand
         case `none`
         case rightHand
@@ -592,8 +592,9 @@ extension GroundStationClientTypes {
 }
 
 extension GroundStationClientTypes {
+
     /// Object that describes a spectral Config.
-    public struct SpectrumConfig {
+    public struct SpectrumConfig: Swift.Sendable {
         /// Bandwidth of a spectral Config. AWS Ground Station currently has the following bandwidth limitations:
         ///
         /// * For AntennaDownlinkDemodDecodeconfig, valid values are between 125 kHz to 650 MHz.
@@ -620,12 +621,12 @@ extension GroundStationClientTypes {
             self.polarization = polarization
         }
     }
-
 }
 
 extension GroundStationClientTypes {
+
     /// Information about how AWS Ground Station should configure an antenna for downlink during a contact.
-    public struct AntennaDownlinkConfig {
+    public struct AntennaDownlinkConfig: Swift.Sendable {
         /// Object that describes a spectral Config.
         /// This member is required.
         public var spectrumConfig: GroundStationClientTypes.SpectrumConfig?
@@ -637,12 +638,12 @@ extension GroundStationClientTypes {
             self.spectrumConfig = spectrumConfig
         }
     }
-
 }
 
 extension GroundStationClientTypes {
+
     /// Information about the decode Config.
-    public struct DecodeConfig {
+    public struct DecodeConfig: Swift.Sendable {
         /// Unvalidated JSON of a decode Config.
         /// This member is required.
         public var unvalidatedJSON: Swift.String?
@@ -654,12 +655,12 @@ extension GroundStationClientTypes {
             self.unvalidatedJSON = unvalidatedJSON
         }
     }
-
 }
 
 extension GroundStationClientTypes {
+
     /// Information about the demodulation Config.
-    public struct DemodulationConfig {
+    public struct DemodulationConfig: Swift.Sendable {
         /// Unvalidated JSON of a demodulation Config.
         /// This member is required.
         public var unvalidatedJSON: Swift.String?
@@ -671,12 +672,12 @@ extension GroundStationClientTypes {
             self.unvalidatedJSON = unvalidatedJSON
         }
     }
-
 }
 
 extension GroundStationClientTypes {
+
     /// Information about how AWS Ground Station should conﬁgure an antenna for downlink demod decode during a contact.
-    public struct AntennaDownlinkDemodDecodeConfig {
+    public struct AntennaDownlinkDemodDecodeConfig: Swift.Sendable {
         /// Information about the decode Config.
         /// This member is required.
         public var decodeConfig: GroundStationClientTypes.DecodeConfig?
@@ -698,12 +699,12 @@ extension GroundStationClientTypes {
             self.spectrumConfig = spectrumConfig
         }
     }
-
 }
 
 extension GroundStationClientTypes {
+
     /// Information about the uplink spectral Config.
-    public struct UplinkSpectrumConfig {
+    public struct UplinkSpectrumConfig: Swift.Sendable {
         /// Center frequency of an uplink spectral Config. Valid values are between 2025 to 2120 MHz.
         /// This member is required.
         public var centerFrequency: GroundStationClientTypes.Frequency?
@@ -719,12 +720,11 @@ extension GroundStationClientTypes {
             self.polarization = polarization
         }
     }
-
 }
 
 extension GroundStationClientTypes {
 
-    public enum EirpUnits: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum EirpUnits: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case dbw
         case sdkUnknown(Swift.String)
 
@@ -749,8 +749,9 @@ extension GroundStationClientTypes {
 }
 
 extension GroundStationClientTypes {
+
     /// Object that represents EIRP.
-    public struct Eirp {
+    public struct Eirp: Swift.Sendable {
         /// Units of an EIRP.
         /// This member is required.
         public var units: GroundStationClientTypes.EirpUnits?
@@ -767,12 +768,12 @@ extension GroundStationClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension GroundStationClientTypes {
+
     /// Information about the uplink Config of an antenna.
-    public struct AntennaUplinkConfig {
+    public struct AntennaUplinkConfig: Swift.Sendable {
         /// Information about the uplink spectral Config.
         /// This member is required.
         public var spectrumConfig: GroundStationClientTypes.UplinkSpectrumConfig?
@@ -793,12 +794,11 @@ extension GroundStationClientTypes {
             self.transmitDisabled = transmitDisabled
         }
     }
-
 }
 
 extension GroundStationClientTypes {
 
-    public enum AuditResults: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AuditResults: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case healthy
         case unhealthy
         case sdkUnknown(Swift.String)
@@ -826,8 +826,9 @@ extension GroundStationClientTypes {
 }
 
 extension GroundStationClientTypes {
+
     /// Information about the socket address.
-    public struct SocketAddress {
+    public struct SocketAddress: Swift.Sendable {
         /// Name of a socket address.
         /// This member is required.
         public var name: Swift.String?
@@ -844,12 +845,12 @@ extension GroundStationClientTypes {
             self.port = port
         }
     }
-
 }
 
 extension GroundStationClientTypes {
+
     /// Egress address of AgentEndpoint with an optional mtu.
-    public struct ConnectionDetails {
+    public struct ConnectionDetails: Swift.Sendable {
         /// Maximum transmission unit (MTU) size in bytes of a dataflow endpoint.
         public var mtu: Swift.Int?
         /// A socket address.
@@ -865,12 +866,12 @@ extension GroundStationClientTypes {
             self.socketAddress = socketAddress
         }
     }
-
 }
 
 extension GroundStationClientTypes {
+
     /// An integer range that has a minimum and maximum value.
-    public struct IntegerRange {
+    public struct IntegerRange: Swift.Sendable {
         /// A maximum value.
         /// This member is required.
         public var maximum: Swift.Int?
@@ -887,12 +888,12 @@ extension GroundStationClientTypes {
             self.minimum = minimum
         }
     }
-
 }
 
 extension GroundStationClientTypes {
+
     /// A socket address with a port range.
-    public struct RangedSocketAddress {
+    public struct RangedSocketAddress: Swift.Sendable {
         /// IPv4 socket address.
         /// This member is required.
         public var name: Swift.String?
@@ -909,12 +910,12 @@ extension GroundStationClientTypes {
             self.portRange = portRange
         }
     }
-
 }
 
 extension GroundStationClientTypes {
+
     /// Ingress address of AgentEndpoint with a port range and an optional mtu.
-    public struct RangedConnectionDetails {
+    public struct RangedConnectionDetails: Swift.Sendable {
         /// Maximum transmission unit (MTU) size in bytes of a dataflow endpoint.
         public var mtu: Swift.Int?
         /// A ranged socket address.
@@ -930,12 +931,12 @@ extension GroundStationClientTypes {
             self.socketAddress = socketAddress
         }
     }
-
 }
 
 extension GroundStationClientTypes {
+
     /// Information about AwsGroundStationAgentEndpoint.
-    public struct AwsGroundStationAgentEndpoint {
+    public struct AwsGroundStationAgentEndpoint: Swift.Sendable {
         /// The status of AgentEndpoint.
         public var agentStatus: GroundStationClientTypes.AgentStatus?
         /// The results of the audit.
@@ -965,11 +966,10 @@ extension GroundStationClientTypes {
             self.name = name
         }
     }
-
 }
 
 ///
-public struct CancelContactInput {
+public struct CancelContactInput: Swift.Sendable {
     /// UUID of a contact.
     /// This member is required.
     public var contactId: Swift.String?
@@ -983,7 +983,7 @@ public struct CancelContactInput {
 }
 
 ///
-public struct CancelContactOutput {
+public struct CancelContactOutput: Swift.Sendable {
     /// UUID of a contact.
     public var contactId: Swift.String?
 
@@ -997,7 +997,7 @@ public struct CancelContactOutput {
 
 extension GroundStationClientTypes {
 
-    public enum CapabilityHealth: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum CapabilityHealth: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case healthy
         case unhealthy
         case sdkUnknown(Swift.String)
@@ -1026,7 +1026,7 @@ extension GroundStationClientTypes {
 
 extension GroundStationClientTypes {
 
-    public enum CapabilityHealthReason: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum CapabilityHealthReason: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case dataplaneFailure
         case healthy
         case initializingDataplane
@@ -1070,7 +1070,7 @@ extension GroundStationClientTypes {
 
 extension GroundStationClientTypes {
 
-    public enum ConfigCapabilityType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ConfigCapabilityType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case antennaDownlink
         case antennaDownlinkDemodDecode
         case antennaUplink
@@ -1141,8 +1141,9 @@ public struct ResourceLimitExceededException: ClientRuntime.ModeledError, AWSCli
 }
 
 extension GroundStationClientTypes {
+
     /// Information about the dataflow endpoint Config.
-    public struct DataflowEndpointConfig {
+    public struct DataflowEndpointConfig: Swift.Sendable {
         /// Name of a dataflow endpoint.
         /// This member is required.
         public var dataflowEndpointName: Swift.String?
@@ -1158,12 +1159,12 @@ extension GroundStationClientTypes {
             self.dataflowEndpointRegion = dataflowEndpointRegion
         }
     }
-
 }
 
 extension GroundStationClientTypes {
+
     /// Information about an S3 recording Config.
-    public struct S3RecordingConfig {
+    public struct S3RecordingConfig: Swift.Sendable {
         /// ARN of the bucket to record to.
         /// This member is required.
         public var bucketArn: Swift.String?
@@ -1184,12 +1185,11 @@ extension GroundStationClientTypes {
             self.roleArn = roleArn
         }
     }
-
 }
 
 extension GroundStationClientTypes {
 
-    public enum Criticality: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Criticality: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case preferred
         case removed
         case `required`
@@ -1220,8 +1220,9 @@ extension GroundStationClientTypes {
 }
 
 extension GroundStationClientTypes {
+
     /// Object that determines whether tracking should be used during a contact executed with this Config in the mission profile.
-    public struct TrackingConfig {
+    public struct TrackingConfig: Swift.Sendable {
         /// Current setting for autotrack.
         /// This member is required.
         public var autotrack: GroundStationClientTypes.Criticality?
@@ -1233,12 +1234,12 @@ extension GroundStationClientTypes {
             self.autotrack = autotrack
         }
     }
-
 }
 
 extension GroundStationClientTypes {
+
     /// Information about an uplink echo Config. Parameters from the AntennaUplinkConfig, corresponding to the specified AntennaUplinkConfigArn, are used when this UplinkEchoConfig is used in a contact.
-    public struct UplinkEchoConfig {
+    public struct UplinkEchoConfig: Swift.Sendable {
         /// ARN of an uplink Config.
         /// This member is required.
         public var antennaUplinkConfigArn: Swift.String?
@@ -1255,12 +1256,12 @@ extension GroundStationClientTypes {
             self.enabled = enabled
         }
     }
-
 }
 
 extension GroundStationClientTypes {
+
     /// Object containing the parameters of a Config. See the subtype definitions for what each type of Config contains.
-    public enum ConfigTypeData {
+    public enum ConfigTypeData: Swift.Sendable {
         /// Information about how AWS Ground Station should configure an antenna for downlink during a contact.
         case antennadownlinkconfig(GroundStationClientTypes.AntennaDownlinkConfig)
         /// Object that determines whether tracking should be used during a contact executed with this Config in the mission profile.
@@ -1277,11 +1278,10 @@ extension GroundStationClientTypes {
         case s3recordingconfig(GroundStationClientTypes.S3RecordingConfig)
         case sdkUnknown(Swift.String)
     }
-
 }
 
 ///
-public struct CreateConfigInput {
+public struct CreateConfigInput: Swift.Sendable {
     /// Parameters of a Config.
     /// This member is required.
     public var configData: GroundStationClientTypes.ConfigTypeData?
@@ -1304,7 +1304,7 @@ public struct CreateConfigInput {
 }
 
 ///
-public struct CreateConfigOutput {
+public struct CreateConfigOutput: Swift.Sendable {
     /// ARN of a Config.
     public var configArn: Swift.String?
     /// UUID of a Config.
@@ -1325,7 +1325,7 @@ public struct CreateConfigOutput {
 }
 
 ///
-public struct DeleteConfigInput {
+public struct DeleteConfigInput: Swift.Sendable {
     /// UUID of a Config.
     /// This member is required.
     public var configId: Swift.String?
@@ -1344,7 +1344,7 @@ public struct DeleteConfigInput {
 }
 
 ///
-public struct DeleteConfigOutput {
+public struct DeleteConfigOutput: Swift.Sendable {
     /// ARN of a Config.
     public var configArn: Swift.String?
     /// UUID of a Config.
@@ -1365,7 +1365,7 @@ public struct DeleteConfigOutput {
 }
 
 ///
-public struct GetConfigInput {
+public struct GetConfigInput: Swift.Sendable {
     /// UUID of a Config.
     /// This member is required.
     public var configId: Swift.String?
@@ -1384,7 +1384,7 @@ public struct GetConfigInput {
 }
 
 ///
-public struct GetConfigOutput {
+public struct GetConfigOutput: Swift.Sendable {
     /// ARN of a Config
     /// This member is required.
     public var configArn: Swift.String?
@@ -1421,7 +1421,7 @@ public struct GetConfigOutput {
 }
 
 ///
-public struct ListConfigsInput {
+public struct ListConfigsInput: Swift.Sendable {
     /// Maximum number of Configs returned.
     public var maxResults: Swift.Int?
     /// Next token returned in the request of a previous ListConfigs call. Used to get the next page of results.
@@ -1438,8 +1438,9 @@ public struct ListConfigsInput {
 }
 
 extension GroundStationClientTypes {
+
     /// An item in a list of Config objects.
-    public struct ConfigListItem {
+    public struct ConfigListItem: Swift.Sendable {
         /// ARN of a Config.
         public var configArn: Swift.String?
         /// UUID of a Config.
@@ -1462,11 +1463,10 @@ extension GroundStationClientTypes {
             self.name = name
         }
     }
-
 }
 
 ///
-public struct ListConfigsOutput {
+public struct ListConfigsOutput: Swift.Sendable {
     /// List of Config items.
     public var configList: [GroundStationClientTypes.ConfigListItem]?
     /// Next token returned in the response of a previous ListConfigs call. Used to get the next page of results.
@@ -1483,7 +1483,7 @@ public struct ListConfigsOutput {
 }
 
 ///
-public struct UpdateConfigInput {
+public struct UpdateConfigInput: Swift.Sendable {
     /// Parameters of a Config.
     /// This member is required.
     public var configData: GroundStationClientTypes.ConfigTypeData?
@@ -1512,7 +1512,7 @@ public struct UpdateConfigInput {
 }
 
 ///
-public struct UpdateConfigOutput {
+public struct UpdateConfigOutput: Swift.Sendable {
     /// ARN of a Config.
     public var configArn: Swift.String?
     /// UUID of a Config.
@@ -1534,7 +1534,7 @@ public struct UpdateConfigOutput {
 
 extension GroundStationClientTypes {
 
-    public enum EndpointStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum EndpointStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case created
         case creating
         case deleted
@@ -1571,8 +1571,9 @@ extension GroundStationClientTypes {
 }
 
 extension GroundStationClientTypes {
+
     /// Information about a dataflow endpoint.
-    public struct DataflowEndpoint {
+    public struct DataflowEndpoint: Swift.Sendable {
         /// Socket address of a dataflow endpoint.
         public var address: GroundStationClientTypes.SocketAddress?
         /// Maximum transmission unit (MTU) size in bytes of a dataflow endpoint.
@@ -1595,12 +1596,12 @@ extension GroundStationClientTypes {
             self.status = status
         }
     }
-
 }
 
 extension GroundStationClientTypes {
+
     /// Information about endpoints.
-    public struct SecurityDetails {
+    public struct SecurityDetails: Swift.Sendable {
         /// ARN to a role needed for connecting streams to your instances.
         /// This member is required.
         public var roleArn: Swift.String?
@@ -1622,12 +1623,12 @@ extension GroundStationClientTypes {
             self.subnetIds = subnetIds
         }
     }
-
 }
 
 extension GroundStationClientTypes {
+
     /// Information about the endpoint details.
-    public struct EndpointDetails {
+    public struct EndpointDetails: Swift.Sendable {
         /// An agent endpoint.
         public var awsGroundStationAgentEndpoint: GroundStationClientTypes.AwsGroundStationAgentEndpoint?
         /// A dataflow endpoint.
@@ -1654,12 +1655,12 @@ extension GroundStationClientTypes {
             self.securityDetails = securityDetails
         }
     }
-
 }
 
 extension GroundStationClientTypes {
+
     /// Details about an S3 recording Config used in a contact.
-    public struct S3RecordingDetails {
+    public struct S3RecordingDetails: Swift.Sendable {
         /// ARN of the bucket used.
         public var bucketArn: Swift.String?
         /// Key template used for the S3 Recording Configuration
@@ -1674,12 +1675,12 @@ extension GroundStationClientTypes {
             self.keyTemplate = keyTemplate
         }
     }
-
 }
 
 extension GroundStationClientTypes {
+
     /// Details for certain Config object types in a contact.
-    public enum ConfigDetails {
+    public enum ConfigDetails: Swift.Sendable {
         /// Information about the endpoint details.
         case endpointdetails(GroundStationClientTypes.EndpointDetails)
         /// Details for antenna demod decode Config in a contact.
@@ -1688,11 +1689,10 @@ extension GroundStationClientTypes {
         case s3recordingdetails(GroundStationClientTypes.S3RecordingDetails)
         case sdkUnknown(Swift.String)
     }
-
 }
 
 ///
-public struct DescribeContactInput {
+public struct DescribeContactInput: Swift.Sendable {
     /// UUID of a contact.
     /// This member is required.
     public var contactId: Swift.String?
@@ -1707,7 +1707,7 @@ public struct DescribeContactInput {
 
 extension GroundStationClientTypes {
 
-    public enum ContactStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ContactStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case available
         case awsCancelled
         case awsFailed
@@ -1768,8 +1768,9 @@ extension GroundStationClientTypes {
 }
 
 extension GroundStationClientTypes {
+
     /// Dataflow details for the destination side.
-    public struct Destination {
+    public struct Destination: Swift.Sendable {
         /// Additional details for a Config, if type is dataflow endpoint or antenna demod decode.
         public var configDetails: GroundStationClientTypes.ConfigDetails?
         /// UUID of a Config.
@@ -1792,12 +1793,12 @@ extension GroundStationClientTypes {
             self.dataflowDestinationRegion = dataflowDestinationRegion
         }
     }
-
 }
 
 extension GroundStationClientTypes {
+
     /// Dataflow details for the source side.
-    public struct Source {
+    public struct Source: Swift.Sendable {
         /// Additional details for a Config, if type is dataflow-endpoint or antenna-downlink-demod-decode
         public var configDetails: GroundStationClientTypes.ConfigDetails?
         /// UUID of a Config.
@@ -1820,12 +1821,12 @@ extension GroundStationClientTypes {
             self.dataflowSourceRegion = dataflowSourceRegion
         }
     }
-
 }
 
 extension GroundStationClientTypes {
+
     /// Information about a dataflow edge used in a contact.
-    public struct DataflowDetail {
+    public struct DataflowDetail: Swift.Sendable {
         /// Dataflow details for the destination side.
         public var destination: GroundStationClientTypes.Destination?
         /// Error message for a dataflow.
@@ -1844,12 +1845,12 @@ extension GroundStationClientTypes {
             self.source = source
         }
     }
-
 }
 
 extension GroundStationClientTypes {
+
     /// Elevation angle of the satellite in the sky during a contact.
-    public struct Elevation {
+    public struct Elevation: Swift.Sendable {
         /// Elevation angle units.
         /// This member is required.
         public var unit: GroundStationClientTypes.AngleUnits?
@@ -1866,11 +1867,10 @@ extension GroundStationClientTypes {
             self.value = value
         }
     }
-
 }
 
 ///
-public struct DescribeContactOutput {
+public struct DescribeContactOutput: Swift.Sendable {
     /// UUID of a contact.
     public var contactId: Swift.String?
     /// Status of a contact.
@@ -1943,7 +1943,7 @@ public struct DescribeContactOutput {
 }
 
 ///
-public struct ListContactsInput {
+public struct ListContactsInput: Swift.Sendable {
     /// End time of a contact in UTC.
     /// This member is required.
     public var endTime: Foundation.Date?
@@ -1987,8 +1987,9 @@ public struct ListContactsInput {
 }
 
 extension GroundStationClientTypes {
+
     /// Data describing a contact.
-    public struct ContactData {
+    public struct ContactData: Swift.Sendable {
         /// UUID of a contact.
         public var contactId: Swift.String?
         /// Status of a contact.
@@ -2055,11 +2056,10 @@ extension GroundStationClientTypes {
             self.visibilityStartTime = visibilityStartTime
         }
     }
-
 }
 
 ///
-public struct ListContactsOutput {
+public struct ListContactsOutput: Swift.Sendable {
     /// List of contacts.
     public var contactList: [GroundStationClientTypes.ContactData]?
     /// Next token returned in the response of a previous ListContacts call. Used to get the next page of results.
@@ -2076,7 +2076,7 @@ public struct ListContactsOutput {
 }
 
 ///
-public struct ReserveContactInput {
+public struct ReserveContactInput: Swift.Sendable {
     /// End time of a contact in UTC.
     /// This member is required.
     public var endTime: Foundation.Date?
@@ -2114,7 +2114,7 @@ public struct ReserveContactInput {
 }
 
 ///
-public struct ReserveContactOutput {
+public struct ReserveContactOutput: Swift.Sendable {
     /// UUID of a contact.
     public var contactId: Swift.String?
 
@@ -2127,7 +2127,7 @@ public struct ReserveContactOutput {
 }
 
 ///
-public struct CreateDataflowEndpointGroupInput {
+public struct CreateDataflowEndpointGroupInput: Swift.Sendable {
     /// Amount of time, in seconds, after a contact ends that the Ground Station Dataflow Endpoint Group will be in a POSTPASS state. A Ground Station Dataflow Endpoint Group State Change event will be emitted when the Dataflow Endpoint Group enters and exits the POSTPASS state.
     public var contactPostPassDurationSeconds: Swift.Int?
     /// Amount of time, in seconds, before a contact starts that the Ground Station Dataflow Endpoint Group will be in a PREPASS state. A Ground Station Dataflow Endpoint Group State Change event will be emitted when the Dataflow Endpoint Group enters and exits the PREPASS state.
@@ -2153,7 +2153,7 @@ public struct CreateDataflowEndpointGroupInput {
 }
 
 ///
-public struct CreateDataflowEndpointGroupOutput {
+public struct CreateDataflowEndpointGroupOutput: Swift.Sendable {
     /// UUID of a dataflow endpoint group.
     public var dataflowEndpointGroupId: Swift.String?
 
@@ -2166,8 +2166,9 @@ public struct CreateDataflowEndpointGroupOutput {
 }
 
 extension GroundStationClientTypes {
+
     /// Object stored in S3 containing ephemeris data.
-    public struct S3Object {
+    public struct S3Object: Swift.Sendable {
         /// An Amazon S3 Bucket name.
         public var bucket: Swift.String?
         /// An Amazon S3 key for the ephemeris.
@@ -2186,12 +2187,12 @@ extension GroundStationClientTypes {
             self.version = version
         }
     }
-
 }
 
 extension GroundStationClientTypes {
+
     /// Ephemeris data in Orbit Ephemeris Message (OEM) format. AWS Ground Station processes OEM Customer Provided Ephemerides according to the [CCSDS standard](https://public.ccsds.org/Pubs/502x0b3e1.pdf) with some extra restrictions. OEM files should be in KVN format. For more detail about the OEM format that AWS Ground Station supports, see [OEM ephemeris format](https://docs.aws.amazon.com/ground-station/latest/ug/providing-custom-ephemeris-data.html#oem-ephemeris-format) in the AWS Ground Station user guide.
-    public struct OEMEphemeris {
+    public struct OEMEphemeris: Swift.Sendable {
         /// The data for an OEM ephemeris, supplied directly in the request rather than through an S3 object.
         public var oemData: Swift.String?
         /// Identifies the S3 object to be used as the ephemeris.
@@ -2206,12 +2207,12 @@ extension GroundStationClientTypes {
             self.s3Object = s3Object
         }
     }
-
 }
 
 extension GroundStationClientTypes {
+
     /// A time range with a start and end time.
-    public struct TimeRange {
+    public struct TimeRange: Swift.Sendable {
         /// Time in UTC at which the time range ends.
         /// This member is required.
         public var endTime: Foundation.Date?
@@ -2228,12 +2229,12 @@ extension GroundStationClientTypes {
             self.startTime = startTime
         }
     }
-
 }
 
 extension GroundStationClientTypes {
+
     /// Two-line element set (TLE) data.
-    public struct TLEData {
+    public struct TLEData: Swift.Sendable {
         /// First line of two-line element set (TLE) data.
         /// This member is required.
         public var tleLine1: Swift.String?
@@ -2255,12 +2256,12 @@ extension GroundStationClientTypes {
             self.validTimeRange = validTimeRange
         }
     }
-
 }
 
 extension GroundStationClientTypes {
+
     /// Two-line element set (TLE) ephemeris.
-    public struct TLEEphemeris {
+    public struct TLEEphemeris: Swift.Sendable {
         /// Identifies the S3 object to be used as the ephemeris.
         public var s3Object: GroundStationClientTypes.S3Object?
         /// The data for a TLE ephemeris, supplied directly in the request rather than through an S3 object.
@@ -2275,22 +2276,21 @@ extension GroundStationClientTypes {
             self.tleData = tleData
         }
     }
-
 }
 
 extension GroundStationClientTypes {
+
     /// Ephemeris data.
-    public enum EphemerisData {
+    public enum EphemerisData: Swift.Sendable {
         /// Two-line element set (TLE) ephemeris.
         case tle(GroundStationClientTypes.TLEEphemeris)
         /// Ephemeris data in Orbit Ephemeris Message (OEM) format. AWS Ground Station processes OEM Customer Provided Ephemerides according to the [CCSDS standard](https://public.ccsds.org/Pubs/502x0b3e1.pdf) with some extra restrictions. OEM files should be in KVN format. For more detail about the OEM format that AWS Ground Station supports, see [OEM ephemeris format](https://docs.aws.amazon.com/ground-station/latest/ug/providing-custom-ephemeris-data.html#oem-ephemeris-format) in the AWS Ground Station user guide.
         case oem(GroundStationClientTypes.OEMEphemeris)
         case sdkUnknown(Swift.String)
     }
-
 }
 
-public struct CreateEphemerisInput {
+public struct CreateEphemerisInput: Swift.Sendable {
     /// Whether to set the ephemeris status to ENABLED after validation. Setting this to false will set the ephemeris status to DISABLED after validation.
     public var enabled: Swift.Bool?
     /// Ephemeris data.
@@ -2332,7 +2332,7 @@ public struct CreateEphemerisInput {
     }
 }
 
-public struct CreateEphemerisOutput {
+public struct CreateEphemerisOutput: Swift.Sendable {
     /// The AWS Ground Station ephemeris ID.
     public var ephemerisId: Swift.String?
 
@@ -2345,8 +2345,9 @@ public struct CreateEphemerisOutput {
 }
 
 extension GroundStationClientTypes {
+
     /// AWS Key Management Service (KMS) Key.
-    public enum KmsKey {
+    public enum KmsKey: Swift.Sendable {
         /// KMS Key Arn.
         case kmskeyarn(Swift.String)
         /// KMS Alias Arn.
@@ -2355,11 +2356,10 @@ extension GroundStationClientTypes {
         case kmsaliasname(Swift.String)
         case sdkUnknown(Swift.String)
     }
-
 }
 
 ///
-public struct CreateMissionProfileInput {
+public struct CreateMissionProfileInput: Swift.Sendable {
     /// Amount of time after a contact ends that you’d like to receive a Ground Station Contact State Change event indicating the pass has finished.
     public var contactPostPassDurationSeconds: Swift.Int?
     /// Amount of time prior to contact start you’d like to receive a Ground Station Contact State Change event indicating an upcoming pass.
@@ -2408,7 +2408,7 @@ public struct CreateMissionProfileInput {
 }
 
 ///
-public struct CreateMissionProfileOutput {
+public struct CreateMissionProfileOutput: Swift.Sendable {
     /// UUID of a mission profile.
     public var missionProfileId: Swift.String?
 
@@ -2421,7 +2421,7 @@ public struct CreateMissionProfileOutput {
 }
 
 ///
-public struct DeleteDataflowEndpointGroupInput {
+public struct DeleteDataflowEndpointGroupInput: Swift.Sendable {
     /// UUID of a dataflow endpoint group.
     /// This member is required.
     public var dataflowEndpointGroupId: Swift.String?
@@ -2435,7 +2435,7 @@ public struct DeleteDataflowEndpointGroupInput {
 }
 
 ///
-public struct DeleteDataflowEndpointGroupOutput {
+public struct DeleteDataflowEndpointGroupOutput: Swift.Sendable {
     /// UUID of a dataflow endpoint group.
     public var dataflowEndpointGroupId: Swift.String?
 
@@ -2448,7 +2448,7 @@ public struct DeleteDataflowEndpointGroupOutput {
 }
 
 ///
-public struct GetDataflowEndpointGroupInput {
+public struct GetDataflowEndpointGroupInput: Swift.Sendable {
     /// UUID of a dataflow endpoint group.
     /// This member is required.
     public var dataflowEndpointGroupId: Swift.String?
@@ -2462,7 +2462,7 @@ public struct GetDataflowEndpointGroupInput {
 }
 
 ///
-public struct GetDataflowEndpointGroupOutput {
+public struct GetDataflowEndpointGroupOutput: Swift.Sendable {
     /// Amount of time, in seconds, after a contact ends that the Ground Station Dataflow Endpoint Group will be in a POSTPASS state. A Ground Station Dataflow Endpoint Group State Change event will be emitted when the Dataflow Endpoint Group enters and exits the POSTPASS state.
     public var contactPostPassDurationSeconds: Swift.Int?
     /// Amount of time, in seconds, before a contact starts that the Ground Station Dataflow Endpoint Group will be in a PREPASS state. A Ground Station Dataflow Endpoint Group State Change event will be emitted when the Dataflow Endpoint Group enters and exits the PREPASS state.
@@ -2495,7 +2495,7 @@ public struct GetDataflowEndpointGroupOutput {
 }
 
 ///
-public struct ListDataflowEndpointGroupsInput {
+public struct ListDataflowEndpointGroupsInput: Swift.Sendable {
     /// Maximum number of dataflow endpoint groups returned.
     public var maxResults: Swift.Int?
     /// Next token returned in the request of a previous ListDataflowEndpointGroups call. Used to get the next page of results.
@@ -2512,8 +2512,9 @@ public struct ListDataflowEndpointGroupsInput {
 }
 
 extension GroundStationClientTypes {
+
     /// Item in a list of DataflowEndpoint groups.
-    public struct DataflowEndpointListItem {
+    public struct DataflowEndpointListItem: Swift.Sendable {
         /// ARN of a dataflow endpoint group.
         public var dataflowEndpointGroupArn: Swift.String?
         /// UUID of a dataflow endpoint group.
@@ -2528,11 +2529,10 @@ extension GroundStationClientTypes {
             self.dataflowEndpointGroupId = dataflowEndpointGroupId
         }
     }
-
 }
 
 ///
-public struct ListDataflowEndpointGroupsOutput {
+public struct ListDataflowEndpointGroupsOutput: Swift.Sendable {
     /// A list of dataflow endpoint groups.
     public var dataflowEndpointGroupList: [GroundStationClientTypes.DataflowEndpointListItem]?
     /// Next token returned in the response of a previous ListDataflowEndpointGroups call. Used to get the next page of results.
@@ -2548,7 +2548,7 @@ public struct ListDataflowEndpointGroupsOutput {
     }
 }
 
-public struct DeleteEphemerisInput {
+public struct DeleteEphemerisInput: Swift.Sendable {
     /// The AWS Ground Station ephemeris ID.
     /// This member is required.
     public var ephemerisId: Swift.String?
@@ -2561,7 +2561,7 @@ public struct DeleteEphemerisInput {
     }
 }
 
-public struct DeleteEphemerisOutput {
+public struct DeleteEphemerisOutput: Swift.Sendable {
     /// The AWS Ground Station ephemeris ID.
     public var ephemerisId: Swift.String?
 
@@ -2574,7 +2574,7 @@ public struct DeleteEphemerisOutput {
 }
 
 ///
-public struct DeleteMissionProfileInput {
+public struct DeleteMissionProfileInput: Swift.Sendable {
     /// UUID of a mission profile.
     /// This member is required.
     public var missionProfileId: Swift.String?
@@ -2588,7 +2588,7 @@ public struct DeleteMissionProfileInput {
 }
 
 ///
-public struct DeleteMissionProfileOutput {
+public struct DeleteMissionProfileOutput: Swift.Sendable {
     /// UUID of a mission profile.
     public var missionProfileId: Swift.String?
 
@@ -2600,7 +2600,7 @@ public struct DeleteMissionProfileOutput {
     }
 }
 
-public struct DescribeEphemerisInput {
+public struct DescribeEphemerisInput: Swift.Sendable {
     /// The AWS Ground Station ephemeris ID.
     /// This member is required.
     public var ephemerisId: Swift.String?
@@ -2615,7 +2615,7 @@ public struct DescribeEphemerisInput {
 
 extension GroundStationClientTypes {
 
-    public enum EphemerisInvalidReason: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum EphemerisInvalidReason: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         /// Provided KMS key is invalid
         case kmsKeyInvalid
         /// Provided spacecraft identifiers such as spacecraft NORAD Id are invalid
@@ -2658,7 +2658,7 @@ extension GroundStationClientTypes {
 
 extension GroundStationClientTypes {
 
-    public enum EphemerisStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum EphemerisStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case disabled
         case enabled
         case error
@@ -2698,8 +2698,9 @@ extension GroundStationClientTypes {
 }
 
 extension GroundStationClientTypes {
+
     /// Description of ephemeris.
-    public struct EphemerisDescription {
+    public struct EphemerisDescription: Swift.Sendable {
         /// Supplied ephemeris data.
         public var ephemerisData: Swift.String?
         /// Source S3 object used for the ephemeris.
@@ -2714,22 +2715,21 @@ extension GroundStationClientTypes {
             self.sourceS3Object = sourceS3Object
         }
     }
-
 }
 
 extension GroundStationClientTypes {
+
     ///
-    public enum EphemerisTypeDescription {
+    public enum EphemerisTypeDescription: Swift.Sendable {
         /// Description of ephemeris.
         case tle(GroundStationClientTypes.EphemerisDescription)
         /// Description of ephemeris.
         case oem(GroundStationClientTypes.EphemerisDescription)
         case sdkUnknown(Swift.String)
     }
-
 }
 
-public struct DescribeEphemerisOutput {
+public struct DescribeEphemerisOutput: Swift.Sendable {
     /// The time the ephemeris was uploaded in UTC.
     public var creationTime: Foundation.Date?
     /// Whether or not the ephemeris is enabled.
@@ -2778,8 +2778,9 @@ public struct DescribeEphemerisOutput {
 }
 
 extension GroundStationClientTypes {
+
     /// Ephemeris item.
-    public struct EphemerisItem {
+    public struct EphemerisItem: Swift.Sendable {
         /// The time the ephemeris was uploaded in UTC.
         public var creationTime: Foundation.Date?
         /// Whether or not the ephemeris is enabled.
@@ -2814,10 +2815,9 @@ extension GroundStationClientTypes {
             self.status = status
         }
     }
-
 }
 
-public struct ListEphemeridesInput {
+public struct ListEphemeridesInput: Swift.Sendable {
     /// The end time to list in UTC. The operation will return an ephemeris if its expiration time is within the time range defined by the startTime and endTime.
     /// This member is required.
     public var endTime: Foundation.Date?
@@ -2852,7 +2852,7 @@ public struct ListEphemeridesInput {
     }
 }
 
-public struct ListEphemeridesOutput {
+public struct ListEphemeridesOutput: Swift.Sendable {
     /// List of ephemerides.
     public var ephemerides: [GroundStationClientTypes.EphemerisItem]?
     /// Pagination token.
@@ -2868,7 +2868,7 @@ public struct ListEphemeridesOutput {
     }
 }
 
-public struct UpdateEphemerisInput {
+public struct UpdateEphemerisInput: Swift.Sendable {
     /// Whether the ephemeris is enabled or not. Changing this value will not require the ephemeris to be re-validated.
     /// This member is required.
     public var enabled: Swift.Bool?
@@ -2894,7 +2894,7 @@ public struct UpdateEphemerisInput {
     }
 }
 
-public struct UpdateEphemerisOutput {
+public struct UpdateEphemerisOutput: Swift.Sendable {
     /// The AWS Ground Station ephemeris ID.
     public var ephemerisId: Swift.String?
 
@@ -2908,7 +2908,7 @@ public struct UpdateEphemerisOutput {
 
 extension GroundStationClientTypes {
 
-    public enum EphemerisSource: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum EphemerisSource: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case customerProvided
         case spaceTrack
         case sdkUnknown(Swift.String)
@@ -2936,8 +2936,9 @@ extension GroundStationClientTypes {
 }
 
 extension GroundStationClientTypes {
+
     /// Metadata describing a particular ephemeris.
-    public struct EphemerisMetaData {
+    public struct EphemerisMetaData: Swift.Sendable {
         /// UUID of a customer-provided ephemeris. This field is not populated for default ephemerides from Space Track.
         public var ephemerisId: Swift.String?
         /// The epoch of a default, ephemeris from Space Track in UTC. This field is not populated for customer-provided ephemerides.
@@ -2961,11 +2962,10 @@ extension GroundStationClientTypes {
             self.source = source
         }
     }
-
 }
 
 ///
-public struct GetMinuteUsageInput {
+public struct GetMinuteUsageInput: Swift.Sendable {
     /// The month being requested, with a value of 1-12.
     /// This member is required.
     public var month: Swift.Int?
@@ -2984,7 +2984,7 @@ public struct GetMinuteUsageInput {
 }
 
 ///
-public struct GetMinuteUsageOutput {
+public struct GetMinuteUsageOutput: Swift.Sendable {
     /// Estimated number of minutes remaining for an account, specific to the month being requested.
     public var estimatedMinutesRemaining: Swift.Int?
     /// Returns whether or not an account has signed up for the reserved minutes pricing plan, specific to the month being requested.
@@ -3013,7 +3013,7 @@ public struct GetMinuteUsageOutput {
 }
 
 ///
-public struct GetMissionProfileInput {
+public struct GetMissionProfileInput: Swift.Sendable {
     /// UUID of a mission profile.
     /// This member is required.
     public var missionProfileId: Swift.String?
@@ -3027,7 +3027,7 @@ public struct GetMissionProfileInput {
 }
 
 ///
-public struct GetMissionProfileOutput {
+public struct GetMissionProfileOutput: Swift.Sendable {
     /// Amount of time after a contact ends that you’d like to receive a CloudWatch event indicating the pass has finished.
     public var contactPostPassDurationSeconds: Swift.Int?
     /// Amount of time prior to contact start you’d like to receive a CloudWatch event indicating an upcoming pass.
@@ -3084,7 +3084,7 @@ public struct GetMissionProfileOutput {
 }
 
 ///
-public struct GetSatelliteInput {
+public struct GetSatelliteInput: Swift.Sendable {
     /// UUID of a satellite.
     /// This member is required.
     public var satelliteId: Swift.String?
@@ -3098,7 +3098,7 @@ public struct GetSatelliteInput {
 }
 
 ///
-public struct GetSatelliteOutput {
+public struct GetSatelliteOutput: Swift.Sendable {
     /// The current ephemeris being used to compute the trajectory of the satellite.
     public var currentEphemeris: GroundStationClientTypes.EphemerisMetaData?
     /// A list of ground stations to which the satellite is on-boarded.
@@ -3127,7 +3127,7 @@ public struct GetSatelliteOutput {
 }
 
 ///
-public struct ListGroundStationsInput {
+public struct ListGroundStationsInput: Swift.Sendable {
     /// Maximum number of ground stations returned.
     public var maxResults: Swift.Int?
     /// Next token that can be supplied in the next call to get the next page of ground stations.
@@ -3148,8 +3148,9 @@ public struct ListGroundStationsInput {
 }
 
 extension GroundStationClientTypes {
+
     /// Information about the ground station data.
-    public struct GroundStationData {
+    public struct GroundStationData: Swift.Sendable {
         /// UUID of a ground station.
         public var groundStationId: Swift.String?
         /// Name of a ground station.
@@ -3168,11 +3169,10 @@ extension GroundStationClientTypes {
             self.region = region
         }
     }
-
 }
 
 ///
-public struct ListGroundStationsOutput {
+public struct ListGroundStationsOutput: Swift.Sendable {
     /// List of ground stations.
     public var groundStationList: [GroundStationClientTypes.GroundStationData]?
     /// Next token that can be supplied in the next call to get the next page of ground stations.
@@ -3189,7 +3189,7 @@ public struct ListGroundStationsOutput {
 }
 
 ///
-public struct ListTagsForResourceInput {
+public struct ListTagsForResourceInput: Swift.Sendable {
     /// ARN of a resource.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -3203,7 +3203,7 @@ public struct ListTagsForResourceInput {
 }
 
 ///
-public struct ListTagsForResourceOutput {
+public struct ListTagsForResourceOutput: Swift.Sendable {
     /// Tags assigned to a resource.
     public var tags: [Swift.String: Swift.String]?
 
@@ -3216,7 +3216,7 @@ public struct ListTagsForResourceOutput {
 }
 
 ///
-public struct ListMissionProfilesInput {
+public struct ListMissionProfilesInput: Swift.Sendable {
     /// Maximum number of mission profiles returned.
     public var maxResults: Swift.Int?
     /// Next token returned in the request of a previous ListMissionProfiles call. Used to get the next page of results.
@@ -3233,8 +3233,9 @@ public struct ListMissionProfilesInput {
 }
 
 extension GroundStationClientTypes {
+
     /// Item in a list of mission profiles.
-    public struct MissionProfileListItem {
+    public struct MissionProfileListItem: Swift.Sendable {
         /// ARN of a mission profile.
         public var missionProfileArn: Swift.String?
         /// UUID of a mission profile.
@@ -3257,11 +3258,10 @@ extension GroundStationClientTypes {
             self.region = region
         }
     }
-
 }
 
 ///
-public struct ListMissionProfilesOutput {
+public struct ListMissionProfilesOutput: Swift.Sendable {
     /// List of mission profiles.
     public var missionProfileList: [GroundStationClientTypes.MissionProfileListItem]?
     /// Next token returned in the response of a previous ListMissionProfiles call. Used to get the next page of results.
@@ -3278,7 +3278,7 @@ public struct ListMissionProfilesOutput {
 }
 
 ///
-public struct UpdateMissionProfileInput {
+public struct UpdateMissionProfileInput: Swift.Sendable {
     /// Amount of time after a contact ends that you’d like to receive a Ground Station Contact State Change event indicating the pass has finished.
     public var contactPostPassDurationSeconds: Swift.Int?
     /// Amount of time after a contact ends that you’d like to receive a Ground Station Contact State Change event indicating the pass has finished.
@@ -3324,7 +3324,7 @@ public struct UpdateMissionProfileInput {
 }
 
 ///
-public struct UpdateMissionProfileOutput {
+public struct UpdateMissionProfileOutput: Swift.Sendable {
     /// UUID of a mission profile.
     public var missionProfileId: Swift.String?
 
@@ -3337,7 +3337,7 @@ public struct UpdateMissionProfileOutput {
 }
 
 ///
-public struct ListSatellitesInput {
+public struct ListSatellitesInput: Swift.Sendable {
     /// Maximum number of satellites returned.
     public var maxResults: Swift.Int?
     /// Next token that can be supplied in the next call to get the next page of satellites.
@@ -3354,8 +3354,9 @@ public struct ListSatellitesInput {
 }
 
 extension GroundStationClientTypes {
+
     /// Item in a list of satellites.
-    public struct SatelliteListItem {
+    public struct SatelliteListItem: Swift.Sendable {
         /// The current ephemeris being used to compute the trajectory of the satellite.
         public var currentEphemeris: GroundStationClientTypes.EphemerisMetaData?
         /// A list of ground stations to which the satellite is on-boarded.
@@ -3382,11 +3383,10 @@ extension GroundStationClientTypes {
             self.satelliteId = satelliteId
         }
     }
-
 }
 
 ///
-public struct ListSatellitesOutput {
+public struct ListSatellitesOutput: Swift.Sendable {
     /// Next token that can be supplied in the next call to get the next page of satellites.
     public var nextToken: Swift.String?
     /// List of satellites.
@@ -3403,7 +3403,7 @@ public struct ListSatellitesOutput {
 }
 
 ///
-public struct TagResourceInput {
+public struct TagResourceInput: Swift.Sendable {
     /// ARN of a resource tag.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -3422,13 +3422,13 @@ public struct TagResourceInput {
 }
 
 ///
-public struct TagResourceOutput {
+public struct TagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
 ///
-public struct UntagResourceInput {
+public struct UntagResourceInput: Swift.Sendable {
     /// ARN of a resource.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -3447,7 +3447,7 @@ public struct UntagResourceInput {
 }
 
 ///
-public struct UntagResourceOutput {
+public struct UntagResourceOutput: Swift.Sendable {
 
     public init() { }
 }

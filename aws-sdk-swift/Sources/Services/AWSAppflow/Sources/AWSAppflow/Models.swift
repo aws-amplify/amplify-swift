@@ -56,7 +56,7 @@ public struct AccessDeniedException: ClientRuntime.ModeledError, AWSClientRuntim
 
 extension AppflowClientTypes {
 
-    public enum AggregationType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AggregationType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case `none`
         case singleFile
         case sdkUnknown(Swift.String)
@@ -84,8 +84,9 @@ extension AppflowClientTypes {
 }
 
 extension AppflowClientTypes {
+
     /// The aggregation settings that you can use to customize the output format of your flow data.
-    public struct AggregationConfig {
+    public struct AggregationConfig: Swift.Sendable {
         /// Specifies whether Amazon AppFlow aggregates the flow records into a single file, or leave them unaggregated.
         public var aggregationType: AppflowClientTypes.AggregationType?
         /// The desired file size, in MB, for each output file that Amazon AppFlow writes to the flow destination. For each file, Amazon AppFlow attempts to achieve the size that you specify. The actual file sizes might differ from this target based on the number and size of the records that each file contains.
@@ -100,12 +101,11 @@ extension AppflowClientTypes {
             self.targetFileSize = targetFileSize
         }
     }
-
 }
 
 extension AppflowClientTypes {
 
-    public enum AmplitudeConnectorOperator: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AmplitudeConnectorOperator: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case between
         case sdkUnknown(Swift.String)
 
@@ -130,8 +130,9 @@ extension AppflowClientTypes {
 }
 
 extension AppflowClientTypes {
+
     /// The connector-specific credentials required when using Amplitude.
-    public struct AmplitudeConnectorProfileCredentials {
+    public struct AmplitudeConnectorProfileCredentials: Swift.Sendable {
         /// A unique alphanumeric identifier used to authenticate a user, developer, or calling program to your API.
         /// This member is required.
         public var apiKey: Swift.String?
@@ -148,7 +149,6 @@ extension AppflowClientTypes {
             self.secretKey = secretKey
         }
     }
-
 }
 
 extension AppflowClientTypes.AmplitudeConnectorProfileCredentials: Swift.CustomDebugStringConvertible {
@@ -157,26 +157,27 @@ extension AppflowClientTypes.AmplitudeConnectorProfileCredentials: Swift.CustomD
 }
 
 extension AppflowClientTypes {
+
     /// The connector-specific profile properties required when using Amplitude.
-    public struct AmplitudeConnectorProfileProperties {
+    public struct AmplitudeConnectorProfileProperties: Swift.Sendable {
 
         public init() { }
     }
-
 }
 
 extension AppflowClientTypes {
+
     /// The connector metadata specific to Amplitude.
-    public struct AmplitudeMetadata {
+    public struct AmplitudeMetadata: Swift.Sendable {
 
         public init() { }
     }
-
 }
 
 extension AppflowClientTypes {
+
     /// The properties that are applied when Amplitude is being used as a source.
-    public struct AmplitudeSourceProperties {
+    public struct AmplitudeSourceProperties: Swift.Sendable {
         /// The object specified in the Amplitude flow source.
         /// This member is required.
         public var object: Swift.String?
@@ -188,12 +189,12 @@ extension AppflowClientTypes {
             self.object = object
         }
     }
-
 }
 
 extension AppflowClientTypes {
+
     /// The API key credentials required for API key authentication.
-    public struct ApiKeyCredentials {
+    public struct ApiKeyCredentials: Swift.Sendable {
         /// The API key required for API key authentication.
         /// This member is required.
         public var apiKey: Swift.String?
@@ -209,7 +210,6 @@ extension AppflowClientTypes {
             self.apiSecretKey = apiSecretKey
         }
     }
-
 }
 
 extension AppflowClientTypes.ApiKeyCredentials: Swift.CustomDebugStringConvertible {
@@ -218,8 +218,9 @@ extension AppflowClientTypes.ApiKeyCredentials: Swift.CustomDebugStringConvertib
 }
 
 extension AppflowClientTypes {
+
     /// Information about required authentication parameters.
-    public struct AuthParameter {
+    public struct AuthParameter: Swift.Sendable {
         /// Contains default values for this authentication parameter that are supplied by the connector.
         public var connectorSuppliedValues: [Swift.String]?
         /// A description about the authentication parameter.
@@ -250,12 +251,12 @@ extension AppflowClientTypes {
             self.label = label
         }
     }
-
 }
 
 extension AppflowClientTypes {
+
     /// Configuration information required for custom authentication.
-    public struct CustomAuthConfig {
+    public struct CustomAuthConfig: Swift.Sendable {
         /// Information about authentication parameters required for authentication.
         public var authParameters: [AppflowClientTypes.AuthParameter]?
         /// The authentication type that the custom connector uses.
@@ -270,12 +271,11 @@ extension AppflowClientTypes {
             self.customAuthenticationType = customAuthenticationType
         }
     }
-
 }
 
 extension AppflowClientTypes {
 
-    public enum OAuth2CustomPropType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum OAuth2CustomPropType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case authUrl
         case tokenUrl
         case sdkUnknown(Swift.String)
@@ -303,8 +303,9 @@ extension AppflowClientTypes {
 }
 
 extension AppflowClientTypes {
+
     /// Custom parameter required for OAuth 2.0 authentication.
-    public struct OAuth2CustomParameter {
+    public struct OAuth2CustomParameter: Swift.Sendable {
         /// Contains default values for this authentication parameter that are supplied by the connector.
         public var connectorSuppliedValues: [Swift.String]?
         /// A description about the custom parameter used for OAuth 2.0 authentication.
@@ -339,12 +340,11 @@ extension AppflowClientTypes {
             self.type = type
         }
     }
-
 }
 
 extension AppflowClientTypes {
 
-    public enum OAuth2GrantType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum OAuth2GrantType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case authorizationCode
         case clientCredentials
         case jwtBearer
@@ -375,8 +375,9 @@ extension AppflowClientTypes {
 }
 
 extension AppflowClientTypes {
+
     /// Contains the default values required for OAuth 2.0 authentication.
-    public struct OAuth2Defaults {
+    public struct OAuth2Defaults: Swift.Sendable {
         /// Auth code URLs that can be used for OAuth 2.0 authentication.
         public var authCodeUrls: [Swift.String]?
         /// List of custom parameters required for OAuth 2.0 authentication.
@@ -403,12 +404,12 @@ extension AppflowClientTypes {
             self.tokenUrls = tokenUrls
         }
     }
-
 }
 
 extension AppflowClientTypes {
+
     /// Contains information about the authentication config that the connector supports.
-    public struct AuthenticationConfig {
+    public struct AuthenticationConfig: Swift.Sendable {
         /// Contains information required for custom authentication.
         public var customAuthConfigs: [AppflowClientTypes.CustomAuthConfig]?
         /// Indicates whether API key authentication is supported by the connector
@@ -439,12 +440,11 @@ extension AppflowClientTypes {
             self.oAuth2Defaults = oAuth2Defaults
         }
     }
-
 }
 
 extension AppflowClientTypes {
 
-    public enum AuthenticationType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AuthenticationType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case apikey
         case basic
         case custom
@@ -478,8 +478,9 @@ extension AppflowClientTypes {
 }
 
 extension AppflowClientTypes {
+
     /// The basic auth credentials required for basic authentication.
-    public struct BasicAuthCredentials {
+    public struct BasicAuthCredentials: Swift.Sendable {
         /// The password to use to connect to a resource.
         /// This member is required.
         public var password: Swift.String?
@@ -496,7 +497,6 @@ extension AppflowClientTypes {
             self.username = username
         }
     }
-
 }
 
 extension AppflowClientTypes.BasicAuthCredentials: Swift.CustomDebugStringConvertible {
@@ -600,7 +600,7 @@ public struct ValidationException: ClientRuntime.ModeledError, AWSClientRuntime.
     }
 }
 
-public struct CancelFlowExecutionsInput {
+public struct CancelFlowExecutionsInput: Swift.Sendable {
     /// The ID of each active run to cancel. These runs must belong to the flow you specify in your request. If you omit this parameter, your request ends all active runs that belong to the flow.
     public var executionIds: [Swift.String]?
     /// The name of a flow with active runs that you want to cancel.
@@ -617,7 +617,7 @@ public struct CancelFlowExecutionsInput {
     }
 }
 
-public struct CancelFlowExecutionsOutput {
+public struct CancelFlowExecutionsOutput: Swift.Sendable {
     /// The IDs of runs that Amazon AppFlow couldn't cancel. These runs might be ineligible for canceling because they haven't started yet or have already completed.
     public var invalidExecutions: [Swift.String]?
 
@@ -631,7 +631,7 @@ public struct CancelFlowExecutionsOutput {
 
 extension AppflowClientTypes {
 
-    public enum CatalogType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum CatalogType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case glue
         case sdkUnknown(Swift.String)
 
@@ -681,7 +681,7 @@ public struct ConflictException: ClientRuntime.ModeledError, AWSClientRuntime.AW
 
 extension AppflowClientTypes {
 
-    public enum ConnectionMode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ConnectionMode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case `private`
         case `public`
         case sdkUnknown(Swift.String)
@@ -733,44 +733,45 @@ public struct ConnectorAuthenticationException: ClientRuntime.ModeledError, AWSC
 }
 
 extension AppflowClientTypes {
+
     /// The connector metadata specific to Amazon Connect Customer Profiles.
-    public struct CustomerProfilesMetadata {
+    public struct CustomerProfilesMetadata: Swift.Sendable {
 
         public init() { }
     }
-
 }
 
 extension AppflowClientTypes {
+
     /// The connector metadata specific to Datadog.
-    public struct DatadogMetadata {
+    public struct DatadogMetadata: Swift.Sendable {
 
         public init() { }
     }
-
 }
 
 extension AppflowClientTypes {
+
     /// The connector metadata specific to Dynatrace.
-    public struct DynatraceMetadata {
+    public struct DynatraceMetadata: Swift.Sendable {
 
         public init() { }
     }
-
 }
 
 extension AppflowClientTypes {
+
     /// The connector metadata specific to Amazon EventBridge.
-    public struct EventBridgeMetadata {
+    public struct EventBridgeMetadata: Swift.Sendable {
 
         public init() { }
     }
-
 }
 
 extension AppflowClientTypes {
+
     /// The connector metadata specific to Google Analytics.
-    public struct GoogleAnalyticsMetadata {
+    public struct GoogleAnalyticsMetadata: Swift.Sendable {
         /// The desired authorization scope for the Google Analytics account.
         public var oAuthScopes: [Swift.String]?
 
@@ -781,12 +782,12 @@ extension AppflowClientTypes {
             self.oAuthScopes = oAuthScopes
         }
     }
-
 }
 
 extension AppflowClientTypes {
+
     /// The connector metadata specific to Amazon Honeycode.
-    public struct HoneycodeMetadata {
+    public struct HoneycodeMetadata: Swift.Sendable {
         /// The desired authorization scope for the Amazon Honeycode account.
         public var oAuthScopes: [Swift.String]?
 
@@ -797,57 +798,56 @@ extension AppflowClientTypes {
             self.oAuthScopes = oAuthScopes
         }
     }
-
 }
 
 extension AppflowClientTypes {
+
     /// The connector metadata specific to Infor Nexus.
-    public struct InforNexusMetadata {
+    public struct InforNexusMetadata: Swift.Sendable {
 
         public init() { }
     }
-
 }
 
 extension AppflowClientTypes {
+
     /// The connector metadata specific to Marketo.
-    public struct MarketoMetadata {
+    public struct MarketoMetadata: Swift.Sendable {
 
         public init() { }
     }
-
 }
 
 extension AppflowClientTypes {
+
     /// The connector metadata specific to Salesforce Pardot.
-    public struct PardotMetadata {
+    public struct PardotMetadata: Swift.Sendable {
 
         public init() { }
     }
-
 }
 
 extension AppflowClientTypes {
+
     /// The connector metadata specific to Amazon Redshift.
-    public struct RedshiftMetadata {
+    public struct RedshiftMetadata: Swift.Sendable {
 
         public init() { }
     }
-
 }
 
 extension AppflowClientTypes {
+
     /// The connector metadata specific to Amazon S3.
-    public struct S3Metadata {
+    public struct S3Metadata: Swift.Sendable {
 
         public init() { }
     }
-
 }
 
 extension AppflowClientTypes {
 
-    public enum SalesforceDataTransferApi: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SalesforceDataTransferApi: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case automatic
         case bulkv2
         case restSync
@@ -878,13 +878,14 @@ extension AppflowClientTypes {
 }
 
 extension AppflowClientTypes {
+
     /// The connector metadata specific to Salesforce.
-    public struct SalesforceMetadata {
+    public struct SalesforceMetadata: Swift.Sendable {
         /// The Salesforce APIs that you can have Amazon AppFlow use when your flows transfers data to or from Salesforce.
         public var dataTransferApis: [AppflowClientTypes.SalesforceDataTransferApi]?
         /// The desired authorization scope for the Salesforce account.
         public var oAuthScopes: [Swift.String]?
-        /// The OAuth 2.0 grant types that Amazon AppFlow can use when it requests an access token from Salesforce. Amazon AppFlow requires an access token each time it attempts to access your Salesforce records. AUTHORIZATION_CODE Amazon AppFlow passes an authorization code when it requests the access token from Salesforce. Amazon AppFlow receives the authorization code from Salesforce after you log in to your Salesforce account and authorize Amazon AppFlow to access your records. CLIENT_CREDENTIALS Amazon AppFlow passes client credentials (a client ID and client secret) when it requests the access token from Salesforce. You provide these credentials to Amazon AppFlow when you define the connection to your Salesforce account. JWT_BEARER Amazon AppFlow passes a JSON web token (JWT) when it requests the access token from Salesforce. You provide the JWT to Amazon AppFlow when you define the connection to your Salesforce account. When you use this grant type, you don't need to log in to your Salesforce account to authorize Amazon AppFlow to access your records.
+        /// The OAuth 2.0 grant types that Amazon AppFlow can use when it requests an access token from Salesforce. Amazon AppFlow requires an access token each time it attempts to access your Salesforce records. AUTHORIZATION_CODE Amazon AppFlow passes an authorization code when it requests the access token from Salesforce. Amazon AppFlow receives the authorization code from Salesforce after you log in to your Salesforce account and authorize Amazon AppFlow to access your records. JWT_BEARER Amazon AppFlow passes a JSON web token (JWT) when it requests the access token from Salesforce. You provide the JWT to Amazon AppFlow when you define the connection to your Salesforce account. When you use this grant type, you don't need to log in to your Salesforce account to authorize Amazon AppFlow to access your records. The CLIENT_CREDENTIALS value is not supported for Salesforce.
         public var oauth2GrantTypesSupported: [AppflowClientTypes.OAuth2GrantType]?
 
         public init(
@@ -898,39 +899,39 @@ extension AppflowClientTypes {
             self.oauth2GrantTypesSupported = oauth2GrantTypesSupported
         }
     }
-
 }
 
 extension AppflowClientTypes {
+
     /// The connector metadata specific to SAPOData.
-    public struct SAPODataMetadata {
+    public struct SAPODataMetadata: Swift.Sendable {
 
         public init() { }
     }
-
 }
 
 extension AppflowClientTypes {
+
     /// The connector metadata specific to ServiceNow.
-    public struct ServiceNowMetadata {
+    public struct ServiceNowMetadata: Swift.Sendable {
 
         public init() { }
     }
-
 }
 
 extension AppflowClientTypes {
+
     /// The connector metadata specific to Singular.
-    public struct SingularMetadata {
+    public struct SingularMetadata: Swift.Sendable {
 
         public init() { }
     }
-
 }
 
 extension AppflowClientTypes {
+
     /// The connector metadata specific to Slack.
-    public struct SlackMetadata {
+    public struct SlackMetadata: Swift.Sendable {
         /// The desired authorization scope for the Slack account.
         public var oAuthScopes: [Swift.String]?
 
@@ -941,12 +942,12 @@ extension AppflowClientTypes {
             self.oAuthScopes = oAuthScopes
         }
     }
-
 }
 
 extension AppflowClientTypes {
+
     /// The connector metadata specific to Snowflake.
-    public struct SnowflakeMetadata {
+    public struct SnowflakeMetadata: Swift.Sendable {
         /// Specifies the supported Amazon Web Services Regions when using Snowflake.
         public var supportedRegions: [Swift.String]?
 
@@ -957,39 +958,39 @@ extension AppflowClientTypes {
             self.supportedRegions = supportedRegions
         }
     }
-
 }
 
 extension AppflowClientTypes {
+
     /// The connector metadata specific to Trend Micro.
-    public struct TrendmicroMetadata {
+    public struct TrendmicroMetadata: Swift.Sendable {
 
         public init() { }
     }
-
 }
 
 extension AppflowClientTypes {
+
     /// The connector metadata specific to Upsolver.
-    public struct UpsolverMetadata {
+    public struct UpsolverMetadata: Swift.Sendable {
 
         public init() { }
     }
-
 }
 
 extension AppflowClientTypes {
+
     /// The connector metadata specific to Veeva.
-    public struct VeevaMetadata {
+    public struct VeevaMetadata: Swift.Sendable {
 
         public init() { }
     }
-
 }
 
 extension AppflowClientTypes {
+
     /// The connector metadata specific to Zendesk.
-    public struct ZendeskMetadata {
+    public struct ZendeskMetadata: Swift.Sendable {
         /// The desired authorization scope for the Zendesk account.
         public var oAuthScopes: [Swift.String]?
 
@@ -1000,12 +1001,12 @@ extension AppflowClientTypes {
             self.oAuthScopes = oAuthScopes
         }
     }
-
 }
 
 extension AppflowClientTypes {
+
     /// A structure to specify connector-specific metadata such as oAuthScopes, supportedRegions, privateLinkServiceUrl, and so on.
-    public struct ConnectorMetadata {
+    public struct ConnectorMetadata: Swift.Sendable {
         /// The connector metadata specific to Amplitude.
         public var amplitude: AppflowClientTypes.AmplitudeMetadata?
         /// The connector metadata specific to Amazon Connect Customer Profiles.
@@ -1100,12 +1101,12 @@ extension AppflowClientTypes {
             self.zendesk = zendesk
         }
     }
-
 }
 
 extension AppflowClientTypes {
+
     /// Contains information about the configuration of the lambda which is being registered as the connector.
-    public struct LambdaConnectorProvisioningConfig {
+    public struct LambdaConnectorProvisioningConfig: Swift.Sendable {
         /// Lambda ARN of the connector being registered.
         /// This member is required.
         public var lambdaArn: Swift.String?
@@ -1117,12 +1118,12 @@ extension AppflowClientTypes {
             self.lambdaArn = lambdaArn
         }
     }
-
 }
 
 extension AppflowClientTypes {
+
     /// Contains information about the configuration of the connector being registered.
-    public struct ConnectorProvisioningConfig {
+    public struct ConnectorProvisioningConfig: Swift.Sendable {
         /// Contains information about the configuration of the lambda which is being registered as the connector.
         public var lambda: AppflowClientTypes.LambdaConnectorProvisioningConfig?
 
@@ -1133,13 +1134,12 @@ extension AppflowClientTypes {
             self.lambda = lambda
         }
     }
-
 }
 
 extension AppflowClientTypes {
 
     /// The type of provisioning that the connector supports, such as Lambda.
-    public enum ConnectorProvisioningType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ConnectorProvisioningType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case lambda
         case sdkUnknown(Swift.String)
 
@@ -1164,8 +1164,9 @@ extension AppflowClientTypes {
 }
 
 extension AppflowClientTypes {
+
     /// Contains information about the connector runtime settings that are required for flow execution.
-    public struct ConnectorRuntimeSetting {
+    public struct ConnectorRuntimeSetting: Swift.Sendable {
         /// Contains default values for the connector runtime setting that are supplied by the connector.
         public var connectorSuppliedValueOptions: [Swift.String]?
         /// Data type of the connector runtime setting.
@@ -1200,12 +1201,11 @@ extension AppflowClientTypes {
             self.scope = scope
         }
     }
-
 }
 
 extension AppflowClientTypes {
 
-    public enum ConnectorType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ConnectorType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case amplitude
         case customconnector
         case customerprofiles
@@ -1300,7 +1300,7 @@ extension AppflowClientTypes {
 
 extension AppflowClientTypes {
 
-    public enum DataTransferApiType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DataTransferApiType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case async
         case automatic
         case sync
@@ -1331,8 +1331,9 @@ extension AppflowClientTypes {
 }
 
 extension AppflowClientTypes {
+
     /// The API of the connector application that Amazon AppFlow uses to transfer your data.
-    public struct DataTransferApi {
+    public struct DataTransferApi: Swift.Sendable {
         /// The name of the connector application API.
         public var name: Swift.String?
         /// You can specify one of the following types: AUTOMATIC The default. Optimizes a flow for datasets that fluctuate in size from small to large. For each flow run, Amazon AppFlow chooses to use the SYNC or ASYNC API type based on the amount of data that the run transfers. SYNC A synchronous API. This type of API optimizes a flow for small to medium-sized datasets. ASYNC An asynchronous API. This type of API optimizes a flow for large datasets.
@@ -1347,12 +1348,11 @@ extension AppflowClientTypes {
             self.type = type
         }
     }
-
 }
 
 extension AppflowClientTypes {
 
-    public enum SupportedDataTransferType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SupportedDataTransferType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case file
         case record
         case sdkUnknown(Swift.String)
@@ -1381,7 +1381,7 @@ extension AppflowClientTypes {
 
 extension AppflowClientTypes {
 
-    public enum Operators: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Operators: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case addition
         case between
         case contains
@@ -1467,7 +1467,7 @@ extension AppflowClientTypes {
 
 extension AppflowClientTypes {
 
-    public enum ScheduleFrequencyType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ScheduleFrequencyType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case byminute
         case daily
         case hourly
@@ -1508,7 +1508,7 @@ extension AppflowClientTypes {
 
 extension AppflowClientTypes {
 
-    public enum TriggerType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum TriggerType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case event
         case ondemand
         case scheduled
@@ -1541,7 +1541,7 @@ extension AppflowClientTypes {
 extension AppflowClientTypes {
 
     /// The possible write operations in the destination connector. When this value is not provided, this defaults to the INSERT operation.
-    public enum WriteOperationType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum WriteOperationType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case delete
         case insert
         case update
@@ -1575,8 +1575,9 @@ extension AppflowClientTypes {
 }
 
 extension AppflowClientTypes {
+
     /// The configuration settings related to a given connector.
-    public struct ConnectorConfiguration {
+    public struct ConnectorConfiguration: Swift.Sendable {
         /// The authentication config required for the connector.
         public var authenticationConfig: AppflowClientTypes.AuthenticationConfig?
         /// Specifies whether the connector can be used as a destination.
@@ -1695,12 +1696,12 @@ extension AppflowClientTypes {
             self.supportedWriteOperations = supportedWriteOperations
         }
     }
-
 }
 
 extension AppflowClientTypes {
+
     /// Information about the registered connector.
-    public struct ConnectorDetail {
+    public struct ConnectorDetail: Swift.Sendable {
         /// The application type of the connector.
         public var applicationType: Swift.String?
         /// A description about the registered connector.
@@ -1755,12 +1756,12 @@ extension AppflowClientTypes {
             self.supportedDataTransferTypes = supportedDataTransferTypes
         }
     }
-
 }
 
 extension AppflowClientTypes {
+
     /// The high-level entity that can be queried in Amazon AppFlow. For example, a Salesforce entity might be an Account or Opportunity, whereas a ServiceNow entity might be an Incident.
-    public struct ConnectorEntity {
+    public struct ConnectorEntity: Swift.Sendable {
         /// Specifies whether the connector entity is a parent or a category and has more entities nested underneath it. If another call is made with entitiesPath = "the_current_entity_name_with_hasNestedEntities_true", then it returns the nested entities underneath it. This provides a way to retrieve all supported entities in a recursive fashion.
         public var hasNestedEntities: Swift.Bool
         /// The label applied to the connector entity.
@@ -1780,12 +1781,12 @@ extension AppflowClientTypes {
             self.name = name
         }
     }
-
 }
 
 extension AppflowClientTypes {
+
     /// The properties that can be applied to a field when connector is being used as a destination.
-    public struct DestinationFieldProperties {
+    public struct DestinationFieldProperties: Swift.Sendable {
         /// Specifies if the destination field can be created by the current user.
         public var isCreatable: Swift.Bool
         /// Specifies whether the field can use the default value during a Create operation.
@@ -1816,12 +1817,12 @@ extension AppflowClientTypes {
             self.supportedWriteOperations = supportedWriteOperations
         }
     }
-
 }
 
 extension AppflowClientTypes {
+
     /// The properties that can be applied to a field when the connector is being used as a source.
-    public struct SourceFieldProperties {
+    public struct SourceFieldProperties: Swift.Sendable {
         /// Indicates if the field can be queried.
         public var isQueryable: Swift.Bool
         /// Indicates whether the field can be returned in a search result.
@@ -1840,12 +1841,12 @@ extension AppflowClientTypes {
             self.isTimestampFieldForIncrementalQueries = isTimestampFieldForIncrementalQueries
         }
     }
-
 }
 
 extension AppflowClientTypes {
+
     /// The range of values that the property supports.
-    public struct Range {
+    public struct Range: Swift.Sendable {
         /// Maximum value supported by the field.
         public var maximum: Swift.Double
         /// Minimum value supported by the field.
@@ -1860,12 +1861,11 @@ extension AppflowClientTypes {
             self.minimum = minimum
         }
     }
-
 }
 
 extension AppflowClientTypes {
 
-    public enum Operator: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Operator: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case addition
         case between
         case contains
@@ -1950,8 +1950,9 @@ extension AppflowClientTypes {
 }
 
 extension AppflowClientTypes {
+
     /// Contains details regarding the supported field type and the operators that can be applied for filtering.
-    public struct FieldTypeDetails {
+    public struct FieldTypeDetails: Swift.Sendable {
         /// This is the allowable length range for this field's value.
         public var fieldLengthRange: AppflowClientTypes.Range?
         /// The type of field, such as string, integer, date, and so on.
@@ -1988,12 +1989,12 @@ extension AppflowClientTypes {
             self.valueRegexPattern = valueRegexPattern
         }
     }
-
 }
 
 extension AppflowClientTypes {
+
     /// Contains details regarding all the supported FieldTypes and their corresponding filterOperators and supportedValues.
-    public struct SupportedFieldTypeDetails {
+    public struct SupportedFieldTypeDetails: Swift.Sendable {
         /// The initial supported version for fieldType. If this is later changed to a different version, v2 will be introduced.
         /// This member is required.
         public var v1: AppflowClientTypes.FieldTypeDetails?
@@ -2005,12 +2006,12 @@ extension AppflowClientTypes {
             self.v1 = v1
         }
     }
-
 }
 
 extension AppflowClientTypes {
+
     /// Describes the data model of a connector field. For example, for an account entity, the fields would be account name, account ID, and so on.
-    public struct ConnectorEntityField {
+    public struct ConnectorEntityField: Swift.Sendable {
         /// A map that has specific properties related to the ConnectorEntityField.
         public var customProperties: [Swift.String: Swift.String]?
         /// Default value that can be assigned to this field.
@@ -2062,12 +2063,12 @@ extension AppflowClientTypes {
             self.supportedFieldTypeDetails = supportedFieldTypeDetails
         }
     }
-
 }
 
 extension AppflowClientTypes {
+
     /// Used by select connectors for which the OAuth workflow is supported, such as Salesforce, Google Analytics, Marketo, Zendesk, and Slack.
-    public struct ConnectorOAuthRequest {
+    public struct ConnectorOAuthRequest: Swift.Sendable {
         /// The code provided by the connector when it has been authenticated via the connected app.
         public var authCode: Swift.String?
         /// The URL to which the authentication server redirects the browser after authorization has been granted.
@@ -2082,12 +2083,11 @@ extension AppflowClientTypes {
             self.redirectUri = redirectUri
         }
     }
-
 }
 
 extension AppflowClientTypes {
 
-    public enum DatadogConnectorOperator: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DatadogConnectorOperator: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case addition
         case between
         case division
@@ -2155,7 +2155,7 @@ extension AppflowClientTypes {
 
 extension AppflowClientTypes {
 
-    public enum DynatraceConnectorOperator: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DynatraceConnectorOperator: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case addition
         case between
         case division
@@ -2223,7 +2223,7 @@ extension AppflowClientTypes {
 
 extension AppflowClientTypes {
 
-    public enum GoogleAnalyticsConnectorOperator: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum GoogleAnalyticsConnectorOperator: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case between
         case projection
         case sdkUnknown(Swift.String)
@@ -2252,7 +2252,7 @@ extension AppflowClientTypes {
 
 extension AppflowClientTypes {
 
-    public enum InforNexusConnectorOperator: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum InforNexusConnectorOperator: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case addition
         case between
         case division
@@ -2320,7 +2320,7 @@ extension AppflowClientTypes {
 
 extension AppflowClientTypes {
 
-    public enum MarketoConnectorOperator: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum MarketoConnectorOperator: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case addition
         case between
         case division
@@ -2391,7 +2391,7 @@ extension AppflowClientTypes {
 
 extension AppflowClientTypes {
 
-    public enum PardotConnectorOperator: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum PardotConnectorOperator: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case addition
         case division
         case equalTo
@@ -2456,7 +2456,7 @@ extension AppflowClientTypes {
 
 extension AppflowClientTypes {
 
-    public enum S3ConnectorOperator: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum S3ConnectorOperator: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case addition
         case between
         case division
@@ -2539,7 +2539,7 @@ extension AppflowClientTypes {
 
 extension AppflowClientTypes {
 
-    public enum SalesforceConnectorOperator: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SalesforceConnectorOperator: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case addition
         case between
         case contains
@@ -2625,7 +2625,7 @@ extension AppflowClientTypes {
 
 extension AppflowClientTypes {
 
-    public enum SAPODataConnectorOperator: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SAPODataConnectorOperator: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case addition
         case between
         case contains
@@ -2711,7 +2711,7 @@ extension AppflowClientTypes {
 
 extension AppflowClientTypes {
 
-    public enum ServiceNowConnectorOperator: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ServiceNowConnectorOperator: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case addition
         case between
         case contains
@@ -2797,7 +2797,7 @@ extension AppflowClientTypes {
 
 extension AppflowClientTypes {
 
-    public enum SingularConnectorOperator: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SingularConnectorOperator: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case addition
         case division
         case equalTo
@@ -2862,7 +2862,7 @@ extension AppflowClientTypes {
 
 extension AppflowClientTypes {
 
-    public enum SlackConnectorOperator: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SlackConnectorOperator: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case addition
         case between
         case division
@@ -2942,7 +2942,7 @@ extension AppflowClientTypes {
 
 extension AppflowClientTypes {
 
-    public enum TrendmicroConnectorOperator: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum TrendmicroConnectorOperator: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case addition
         case division
         case equalTo
@@ -3007,7 +3007,7 @@ extension AppflowClientTypes {
 
 extension AppflowClientTypes {
 
-    public enum VeevaConnectorOperator: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum VeevaConnectorOperator: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case addition
         case between
         case contains
@@ -3093,7 +3093,7 @@ extension AppflowClientTypes {
 
 extension AppflowClientTypes {
 
-    public enum ZendeskConnectorOperator: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ZendeskConnectorOperator: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case addition
         case division
         case greaterThan
@@ -3157,8 +3157,9 @@ extension AppflowClientTypes {
 }
 
 extension AppflowClientTypes {
+
     /// The operation to be performed on the provided source fields.
-    public struct ConnectorOperator {
+    public struct ConnectorOperator: Swift.Sendable {
         /// The operation to be performed on the provided Amplitude source fields.
         public var amplitude: AppflowClientTypes.AmplitudeConnectorOperator?
         /// Operators supported by the custom connector.
@@ -3233,12 +3234,12 @@ extension AppflowClientTypes {
             self.zendesk = zendesk
         }
     }
-
 }
 
 extension AppflowClientTypes {
+
     /// The OAuth 2.0 properties required for OAuth 2.0 authentication.
-    public struct OAuth2Properties {
+    public struct OAuth2Properties: Swift.Sendable {
         /// The OAuth 2.0 grant type used by connector for OAuth 2.0 authentication.
         /// This member is required.
         public var oAuth2GrantType: AppflowClientTypes.OAuth2GrantType?
@@ -3259,12 +3260,12 @@ extension AppflowClientTypes {
             self.tokenUrlCustomProperties = tokenUrlCustomProperties
         }
     }
-
 }
 
 extension AppflowClientTypes {
+
     /// The profile properties required by the custom connector.
-    public struct CustomConnectorProfileProperties {
+    public struct CustomConnectorProfileProperties: Swift.Sendable {
         /// The OAuth 2.0 properties required for OAuth 2.0 authentication.
         public var oAuth2Properties: AppflowClientTypes.OAuth2Properties?
         /// A map of properties that are required to create a profile for the custom connector.
@@ -3279,12 +3280,12 @@ extension AppflowClientTypes {
             self.profileProperties = profileProperties
         }
     }
-
 }
 
 extension AppflowClientTypes {
+
     /// The connector-specific profile properties required by Datadog.
-    public struct DatadogConnectorProfileProperties {
+    public struct DatadogConnectorProfileProperties: Swift.Sendable {
         /// The location of the Datadog resource.
         /// This member is required.
         public var instanceUrl: Swift.String?
@@ -3296,12 +3297,12 @@ extension AppflowClientTypes {
             self.instanceUrl = instanceUrl
         }
     }
-
 }
 
 extension AppflowClientTypes {
+
     /// The connector-specific profile properties required by Dynatrace.
-    public struct DynatraceConnectorProfileProperties {
+    public struct DynatraceConnectorProfileProperties: Swift.Sendable {
         /// The location of the Dynatrace resource.
         /// This member is required.
         public var instanceUrl: Swift.String?
@@ -3313,30 +3314,30 @@ extension AppflowClientTypes {
             self.instanceUrl = instanceUrl
         }
     }
-
 }
 
 extension AppflowClientTypes {
+
     /// The connector-specific profile properties required by Google Analytics.
-    public struct GoogleAnalyticsConnectorProfileProperties {
+    public struct GoogleAnalyticsConnectorProfileProperties: Swift.Sendable {
 
         public init() { }
     }
-
 }
 
 extension AppflowClientTypes {
+
     /// The connector-specific properties required when using Amazon Honeycode.
-    public struct HoneycodeConnectorProfileProperties {
+    public struct HoneycodeConnectorProfileProperties: Swift.Sendable {
 
         public init() { }
     }
-
 }
 
 extension AppflowClientTypes {
+
     /// The connector-specific profile properties required by Infor Nexus.
-    public struct InforNexusConnectorProfileProperties {
+    public struct InforNexusConnectorProfileProperties: Swift.Sendable {
         /// The location of the Infor Nexus resource.
         /// This member is required.
         public var instanceUrl: Swift.String?
@@ -3348,12 +3349,12 @@ extension AppflowClientTypes {
             self.instanceUrl = instanceUrl
         }
     }
-
 }
 
 extension AppflowClientTypes {
+
     /// The connector-specific profile properties required when using Marketo.
-    public struct MarketoConnectorProfileProperties {
+    public struct MarketoConnectorProfileProperties: Swift.Sendable {
         /// The location of the Marketo resource.
         /// This member is required.
         public var instanceUrl: Swift.String?
@@ -3365,12 +3366,12 @@ extension AppflowClientTypes {
             self.instanceUrl = instanceUrl
         }
     }
-
 }
 
 extension AppflowClientTypes {
+
     /// The connector-specific profile properties required when using Salesforce Pardot.
-    public struct PardotConnectorProfileProperties {
+    public struct PardotConnectorProfileProperties: Swift.Sendable {
         /// The business unit id of Salesforce Pardot instance.
         public var businessUnitId: Swift.String?
         /// The location of the Salesforce Pardot resource.
@@ -3389,12 +3390,12 @@ extension AppflowClientTypes {
             self.isSandboxEnvironment = isSandboxEnvironment
         }
     }
-
 }
 
 extension AppflowClientTypes {
+
     /// The connector-specific profile properties when using Amazon Redshift.
-    public struct RedshiftConnectorProfileProperties {
+    public struct RedshiftConnectorProfileProperties: Swift.Sendable {
         /// A name for the associated Amazon S3 bucket.
         /// This member is required.
         public var bucketName: Swift.String?
@@ -3439,12 +3440,12 @@ extension AppflowClientTypes {
             self.workgroupName = workgroupName
         }
     }
-
 }
 
 extension AppflowClientTypes {
+
     /// The connector-specific profile properties required when using Salesforce.
-    public struct SalesforceConnectorProfileProperties {
+    public struct SalesforceConnectorProfileProperties: Swift.Sendable {
         /// The location of the Salesforce resource.
         public var instanceUrl: Swift.String?
         /// Indicates whether the connector profile applies to a sandbox or production environment.
@@ -3481,12 +3482,12 @@ extension AppflowClientTypes {
             self.usePrivateLinkForMetadataAndAuthorization = usePrivateLinkForMetadataAndAuthorization
         }
     }
-
 }
 
 extension AppflowClientTypes {
+
     /// The OAuth properties required for OAuth type authentication.
-    public struct OAuthProperties {
+    public struct OAuthProperties: Swift.Sendable {
         /// The authorization code url required to redirect to SAP Login Page to fetch authorization code for OAuth type authentication.
         /// This member is required.
         public var authCodeUrl: Swift.String?
@@ -3508,12 +3509,12 @@ extension AppflowClientTypes {
             self.tokenUrl = tokenUrl
         }
     }
-
 }
 
 extension AppflowClientTypes {
+
     /// The connector-specific profile properties required when using SAPOData.
-    public struct SAPODataConnectorProfileProperties {
+    public struct SAPODataConnectorProfileProperties: Swift.Sendable {
         /// The location of the SAPOData resource.
         /// This member is required.
         public var applicationHostUrl: Swift.String?
@@ -3556,12 +3557,12 @@ extension AppflowClientTypes {
             self.privateLinkServiceName = privateLinkServiceName
         }
     }
-
 }
 
 extension AppflowClientTypes {
+
     /// The connector-specific profile properties required when using ServiceNow.
-    public struct ServiceNowConnectorProfileProperties {
+    public struct ServiceNowConnectorProfileProperties: Swift.Sendable {
         /// The location of the ServiceNow resource.
         /// This member is required.
         public var instanceUrl: Swift.String?
@@ -3573,21 +3574,21 @@ extension AppflowClientTypes {
             self.instanceUrl = instanceUrl
         }
     }
-
 }
 
 extension AppflowClientTypes {
+
     /// The connector-specific profile properties required when using Singular.
-    public struct SingularConnectorProfileProperties {
+    public struct SingularConnectorProfileProperties: Swift.Sendable {
 
         public init() { }
     }
-
 }
 
 extension AppflowClientTypes {
+
     /// The connector-specific profile properties required when using Slack.
-    public struct SlackConnectorProfileProperties {
+    public struct SlackConnectorProfileProperties: Swift.Sendable {
         /// The location of the Slack resource.
         /// This member is required.
         public var instanceUrl: Swift.String?
@@ -3599,12 +3600,12 @@ extension AppflowClientTypes {
             self.instanceUrl = instanceUrl
         }
     }
-
 }
 
 extension AppflowClientTypes {
+
     /// The connector-specific profile properties required when using Snowflake.
-    public struct SnowflakeConnectorProfileProperties {
+    public struct SnowflakeConnectorProfileProperties: Swift.Sendable {
         /// The name of the account.
         public var accountName: Swift.String?
         /// The name of the Amazon S3 bucket associated with Snowflake.
@@ -3642,21 +3643,21 @@ extension AppflowClientTypes {
             self.warehouse = warehouse
         }
     }
-
 }
 
 extension AppflowClientTypes {
+
     /// The connector-specific profile properties required when using Trend Micro.
-    public struct TrendmicroConnectorProfileProperties {
+    public struct TrendmicroConnectorProfileProperties: Swift.Sendable {
 
         public init() { }
     }
-
 }
 
 extension AppflowClientTypes {
+
     /// The connector-specific profile properties required when using Veeva.
-    public struct VeevaConnectorProfileProperties {
+    public struct VeevaConnectorProfileProperties: Swift.Sendable {
         /// The location of the Veeva resource.
         /// This member is required.
         public var instanceUrl: Swift.String?
@@ -3668,12 +3669,12 @@ extension AppflowClientTypes {
             self.instanceUrl = instanceUrl
         }
     }
-
 }
 
 extension AppflowClientTypes {
+
     /// The connector-specific profile properties required when using Zendesk.
-    public struct ZendeskConnectorProfileProperties {
+    public struct ZendeskConnectorProfileProperties: Swift.Sendable {
         /// The location of the Zendesk resource.
         /// This member is required.
         public var instanceUrl: Swift.String?
@@ -3685,12 +3686,12 @@ extension AppflowClientTypes {
             self.instanceUrl = instanceUrl
         }
     }
-
 }
 
 extension AppflowClientTypes {
+
     /// The connector-specific profile properties required by each connector.
-    public struct ConnectorProfileProperties {
+    public struct ConnectorProfileProperties: Swift.Sendable {
         /// The connector-specific properties required by Amplitude.
         public var amplitude: AppflowClientTypes.AmplitudeConnectorProfileProperties?
         /// The properties required by the custom connector.
@@ -3773,12 +3774,11 @@ extension AppflowClientTypes {
             self.zendesk = zendesk
         }
     }
-
 }
 
 extension AppflowClientTypes {
 
-    public enum PrivateConnectionProvisioningFailureCause: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum PrivateConnectionProvisioningFailureCause: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case accessDenied
         case connectorAuthentication
         case connectorServer
@@ -3816,7 +3816,7 @@ extension AppflowClientTypes {
 
 extension AppflowClientTypes {
 
-    public enum PrivateConnectionProvisioningStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum PrivateConnectionProvisioningStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case created
         case failed
         case pending
@@ -3847,8 +3847,9 @@ extension AppflowClientTypes {
 }
 
 extension AppflowClientTypes {
+
     /// Specifies the private connection provisioning state.
-    public struct PrivateConnectionProvisioningState {
+    public struct PrivateConnectionProvisioningState: Swift.Sendable {
         /// Specifies the private connection provisioning failure cause.
         public var failureCause: AppflowClientTypes.PrivateConnectionProvisioningFailureCause?
         /// Specifies the private connection provisioning failure reason.
@@ -3867,12 +3868,12 @@ extension AppflowClientTypes {
             self.status = status
         }
     }
-
 }
 
 extension AppflowClientTypes {
+
     /// Describes an instance of a connector. This includes the provided name, credentials ARN, connection-mode, and so on. To keep the API intuitive and extensible, the fields that are common to all types of connector profiles are explicitly specified at the top level. The rest of the connector-specific properties are available via the connectorProfileProperties field.
-    public struct ConnectorProfile {
+    public struct ConnectorProfile: Swift.Sendable {
         /// Indicates the connection mode and if it is public or private.
         public var connectionMode: AppflowClientTypes.ConnectionMode?
         /// The label for the connector profile being created.
@@ -3919,12 +3920,12 @@ extension AppflowClientTypes {
             self.privateConnectionProvisioningState = privateConnectionProvisioningState
         }
     }
-
 }
 
 extension AppflowClientTypes {
+
     /// The custom credentials required for custom authentication.
-    public struct CustomAuthCredentials {
+    public struct CustomAuthCredentials: Swift.Sendable {
         /// A map that holds custom authentication credentials.
         public var credentialsMap: [Swift.String: Swift.String]?
         /// The custom authentication type that the connector uses.
@@ -3940,7 +3941,6 @@ extension AppflowClientTypes {
             self.customAuthenticationType = customAuthenticationType
         }
     }
-
 }
 
 extension AppflowClientTypes.CustomAuthCredentials: Swift.CustomDebugStringConvertible {
@@ -3949,8 +3949,9 @@ extension AppflowClientTypes.CustomAuthCredentials: Swift.CustomDebugStringConve
 }
 
 extension AppflowClientTypes {
+
     /// The OAuth 2.0 credentials required for OAuth 2.0 authentication.
-    public struct OAuth2Credentials {
+    public struct OAuth2Credentials: Swift.Sendable {
         /// The access token used to access the connector on your behalf.
         public var accessToken: Swift.String?
         /// The identifier for the desired client.
@@ -3977,7 +3978,6 @@ extension AppflowClientTypes {
             self.refreshToken = refreshToken
         }
     }
-
 }
 
 extension AppflowClientTypes.OAuth2Credentials: Swift.CustomDebugStringConvertible {
@@ -3986,8 +3986,9 @@ extension AppflowClientTypes.OAuth2Credentials: Swift.CustomDebugStringConvertib
 }
 
 extension AppflowClientTypes {
+
     /// The connector-specific profile credentials that are required when using the custom connector.
-    public struct CustomConnectorProfileCredentials {
+    public struct CustomConnectorProfileCredentials: Swift.Sendable {
         /// The API keys required for the authentication of the user.
         public var apiKey: AppflowClientTypes.ApiKeyCredentials?
         /// The authentication type that the custom connector uses for authenticating while creating a connector profile.
@@ -4015,12 +4016,12 @@ extension AppflowClientTypes {
             self.oauth2 = oauth2
         }
     }
-
 }
 
 extension AppflowClientTypes {
+
     /// The connector-specific credentials required by Datadog.
-    public struct DatadogConnectorProfileCredentials {
+    public struct DatadogConnectorProfileCredentials: Swift.Sendable {
         /// A unique alphanumeric identifier used to authenticate a user, developer, or calling program to your API.
         /// This member is required.
         public var apiKey: Swift.String?
@@ -4037,7 +4038,6 @@ extension AppflowClientTypes {
             self.applicationKey = applicationKey
         }
     }
-
 }
 
 extension AppflowClientTypes.DatadogConnectorProfileCredentials: Swift.CustomDebugStringConvertible {
@@ -4046,8 +4046,9 @@ extension AppflowClientTypes.DatadogConnectorProfileCredentials: Swift.CustomDeb
 }
 
 extension AppflowClientTypes {
+
     /// The connector-specific profile credentials required by Dynatrace.
-    public struct DynatraceConnectorProfileCredentials {
+    public struct DynatraceConnectorProfileCredentials: Swift.Sendable {
         /// The API tokens used by Dynatrace API to authenticate various API calls.
         /// This member is required.
         public var apiToken: Swift.String?
@@ -4059,12 +4060,12 @@ extension AppflowClientTypes {
             self.apiToken = apiToken
         }
     }
-
 }
 
 extension AppflowClientTypes {
+
     /// The connector-specific profile credentials required by Google Analytics.
-    public struct GoogleAnalyticsConnectorProfileCredentials {
+    public struct GoogleAnalyticsConnectorProfileCredentials: Swift.Sendable {
         /// The credentials used to access protected Google Analytics resources.
         public var accessToken: Swift.String?
         /// The identifier for the desired client.
@@ -4093,7 +4094,6 @@ extension AppflowClientTypes {
             self.refreshToken = refreshToken
         }
     }
-
 }
 
 extension AppflowClientTypes.GoogleAnalyticsConnectorProfileCredentials: Swift.CustomDebugStringConvertible {
@@ -4102,8 +4102,9 @@ extension AppflowClientTypes.GoogleAnalyticsConnectorProfileCredentials: Swift.C
 }
 
 extension AppflowClientTypes {
+
     /// The connector-specific credentials required when using Amazon Honeycode.
-    public struct HoneycodeConnectorProfileCredentials {
+    public struct HoneycodeConnectorProfileCredentials: Swift.Sendable {
         /// The credentials used to access protected Amazon Honeycode resources.
         public var accessToken: Swift.String?
         /// Used by select connectors for which the OAuth workflow is supported, such as Salesforce, Google Analytics, Marketo, Zendesk, and Slack.
@@ -4122,7 +4123,6 @@ extension AppflowClientTypes {
             self.refreshToken = refreshToken
         }
     }
-
 }
 
 extension AppflowClientTypes.HoneycodeConnectorProfileCredentials: Swift.CustomDebugStringConvertible {
@@ -4131,8 +4131,9 @@ extension AppflowClientTypes.HoneycodeConnectorProfileCredentials: Swift.CustomD
 }
 
 extension AppflowClientTypes {
+
     /// The connector-specific profile credentials required by Infor Nexus.
-    public struct InforNexusConnectorProfileCredentials {
+    public struct InforNexusConnectorProfileCredentials: Swift.Sendable {
         /// The Access Key portion of the credentials.
         /// This member is required.
         public var accessKeyId: Swift.String?
@@ -4159,7 +4160,6 @@ extension AppflowClientTypes {
             self.userId = userId
         }
     }
-
 }
 
 extension AppflowClientTypes.InforNexusConnectorProfileCredentials: Swift.CustomDebugStringConvertible {
@@ -4168,8 +4168,9 @@ extension AppflowClientTypes.InforNexusConnectorProfileCredentials: Swift.Custom
 }
 
 extension AppflowClientTypes {
+
     /// The connector-specific profile credentials required by Marketo.
-    public struct MarketoConnectorProfileCredentials {
+    public struct MarketoConnectorProfileCredentials: Swift.Sendable {
         /// The credentials used to access protected Marketo resources.
         public var accessToken: Swift.String?
         /// The identifier for the desired client.
@@ -4194,7 +4195,6 @@ extension AppflowClientTypes {
             self.oAuthRequest = oAuthRequest
         }
     }
-
 }
 
 extension AppflowClientTypes.MarketoConnectorProfileCredentials: Swift.CustomDebugStringConvertible {
@@ -4203,8 +4203,9 @@ extension AppflowClientTypes.MarketoConnectorProfileCredentials: Swift.CustomDeb
 }
 
 extension AppflowClientTypes {
+
     /// The connector-specific profile credentials required when using Salesforce Pardot.
-    public struct PardotConnectorProfileCredentials {
+    public struct PardotConnectorProfileCredentials: Swift.Sendable {
         /// The credentials used to access protected Salesforce Pardot resources.
         public var accessToken: Swift.String?
         /// The secret manager ARN, which contains the client ID and client secret of the connected app.
@@ -4227,7 +4228,6 @@ extension AppflowClientTypes {
             self.refreshToken = refreshToken
         }
     }
-
 }
 
 extension AppflowClientTypes.PardotConnectorProfileCredentials: Swift.CustomDebugStringConvertible {
@@ -4236,8 +4236,9 @@ extension AppflowClientTypes.PardotConnectorProfileCredentials: Swift.CustomDebu
 }
 
 extension AppflowClientTypes {
+
     /// The connector-specific profile credentials required when using Amazon Redshift.
-    public struct RedshiftConnectorProfileCredentials {
+    public struct RedshiftConnectorProfileCredentials: Swift.Sendable {
         /// The password that corresponds to the user name.
         public var password: Swift.String?
         /// The name of the user.
@@ -4252,7 +4253,6 @@ extension AppflowClientTypes {
             self.username = username
         }
     }
-
 }
 
 extension AppflowClientTypes.RedshiftConnectorProfileCredentials: Swift.CustomDebugStringConvertible {
@@ -4261,15 +4261,16 @@ extension AppflowClientTypes.RedshiftConnectorProfileCredentials: Swift.CustomDe
 }
 
 extension AppflowClientTypes {
+
     /// The connector-specific profile credentials required when using Salesforce.
-    public struct SalesforceConnectorProfileCredentials {
+    public struct SalesforceConnectorProfileCredentials: Swift.Sendable {
         /// The credentials used to access protected Salesforce resources.
         public var accessToken: Swift.String?
         /// The secret manager ARN, which contains the client ID and client secret of the connected app.
         public var clientCredentialsArn: Swift.String?
         /// A JSON web token (JWT) that authorizes Amazon AppFlow to access your Salesforce records.
         public var jwtToken: Swift.String?
-        /// Specifies the OAuth 2.0 grant type that Amazon AppFlow uses when it requests an access token from Salesforce. Amazon AppFlow requires an access token each time it attempts to access your Salesforce records. You can specify one of the following values: AUTHORIZATION_CODE Amazon AppFlow passes an authorization code when it requests the access token from Salesforce. Amazon AppFlow receives the authorization code from Salesforce after you log in to your Salesforce account and authorize Amazon AppFlow to access your records. CLIENT_CREDENTIALS Amazon AppFlow passes client credentials (a client ID and client secret) when it requests the access token from Salesforce. You provide these credentials to Amazon AppFlow when you define the connection to your Salesforce account. JWT_BEARER Amazon AppFlow passes a JSON web token (JWT) when it requests the access token from Salesforce. You provide the JWT to Amazon AppFlow when you define the connection to your Salesforce account. When you use this grant type, you don't need to log in to your Salesforce account to authorize Amazon AppFlow to access your records.
+        /// Specifies the OAuth 2.0 grant type that Amazon AppFlow uses when it requests an access token from Salesforce. Amazon AppFlow requires an access token each time it attempts to access your Salesforce records. You can specify one of the following values: AUTHORIZATION_CODE Amazon AppFlow passes an authorization code when it requests the access token from Salesforce. Amazon AppFlow receives the authorization code from Salesforce after you log in to your Salesforce account and authorize Amazon AppFlow to access your records. JWT_BEARER Amazon AppFlow passes a JSON web token (JWT) when it requests the access token from Salesforce. You provide the JWT to Amazon AppFlow when you define the connection to your Salesforce account. When you use this grant type, you don't need to log in to your Salesforce account to authorize Amazon AppFlow to access your records. The CLIENT_CREDENTIALS value is not supported for Salesforce.
         public var oAuth2GrantType: AppflowClientTypes.OAuth2GrantType?
         /// The OAuth requirement needed to request security tokens from the connector endpoint.
         public var oAuthRequest: AppflowClientTypes.ConnectorOAuthRequest?
@@ -4293,7 +4294,6 @@ extension AppflowClientTypes {
             self.refreshToken = refreshToken
         }
     }
-
 }
 
 extension AppflowClientTypes.SalesforceConnectorProfileCredentials: Swift.CustomDebugStringConvertible {
@@ -4302,8 +4302,9 @@ extension AppflowClientTypes.SalesforceConnectorProfileCredentials: Swift.Custom
 }
 
 extension AppflowClientTypes {
+
     /// The OAuth credentials required for OAuth type authentication.
-    public struct OAuthCredentials {
+    public struct OAuthCredentials: Swift.Sendable {
         /// The access token used to access protected SAPOData resources.
         public var accessToken: Swift.String?
         /// The identifier for the desired client.
@@ -4332,7 +4333,6 @@ extension AppflowClientTypes {
             self.refreshToken = refreshToken
         }
     }
-
 }
 
 extension AppflowClientTypes.OAuthCredentials: Swift.CustomDebugStringConvertible {
@@ -4341,8 +4341,9 @@ extension AppflowClientTypes.OAuthCredentials: Swift.CustomDebugStringConvertibl
 }
 
 extension AppflowClientTypes {
+
     /// The connector-specific profile credentials required when using SAPOData.
-    public struct SAPODataConnectorProfileCredentials {
+    public struct SAPODataConnectorProfileCredentials: Swift.Sendable {
         /// The SAPOData basic authentication credentials.
         public var basicAuthCredentials: AppflowClientTypes.BasicAuthCredentials?
         /// The SAPOData OAuth type authentication credentials.
@@ -4357,12 +4358,12 @@ extension AppflowClientTypes {
             self.oAuthCredentials = oAuthCredentials
         }
     }
-
 }
 
 extension AppflowClientTypes {
+
     /// The connector-specific profile credentials required when using ServiceNow.
-    public struct ServiceNowConnectorProfileCredentials {
+    public struct ServiceNowConnectorProfileCredentials: Swift.Sendable {
         /// The OAuth 2.0 credentials required to authenticate the user.
         public var oAuth2Credentials: AppflowClientTypes.OAuth2Credentials?
         /// The password that corresponds to the user name.
@@ -4381,7 +4382,6 @@ extension AppflowClientTypes {
             self.username = username
         }
     }
-
 }
 
 extension AppflowClientTypes.ServiceNowConnectorProfileCredentials: Swift.CustomDebugStringConvertible {
@@ -4390,8 +4390,9 @@ extension AppflowClientTypes.ServiceNowConnectorProfileCredentials: Swift.Custom
 }
 
 extension AppflowClientTypes {
+
     /// The connector-specific profile credentials required when using Singular.
-    public struct SingularConnectorProfileCredentials {
+    public struct SingularConnectorProfileCredentials: Swift.Sendable {
         /// A unique alphanumeric identifier used to authenticate a user, developer, or calling program to your API.
         /// This member is required.
         public var apiKey: Swift.String?
@@ -4403,7 +4404,6 @@ extension AppflowClientTypes {
             self.apiKey = apiKey
         }
     }
-
 }
 
 extension AppflowClientTypes.SingularConnectorProfileCredentials: Swift.CustomDebugStringConvertible {
@@ -4412,8 +4412,9 @@ extension AppflowClientTypes.SingularConnectorProfileCredentials: Swift.CustomDe
 }
 
 extension AppflowClientTypes {
+
     /// The connector-specific profile credentials required when using Slack.
-    public struct SlackConnectorProfileCredentials {
+    public struct SlackConnectorProfileCredentials: Swift.Sendable {
         /// The credentials used to access protected Slack resources.
         public var accessToken: Swift.String?
         /// The identifier for the client.
@@ -4438,7 +4439,6 @@ extension AppflowClientTypes {
             self.oAuthRequest = oAuthRequest
         }
     }
-
 }
 
 extension AppflowClientTypes.SlackConnectorProfileCredentials: Swift.CustomDebugStringConvertible {
@@ -4447,8 +4447,9 @@ extension AppflowClientTypes.SlackConnectorProfileCredentials: Swift.CustomDebug
 }
 
 extension AppflowClientTypes {
+
     /// The connector-specific profile credentials required when using Snowflake.
-    public struct SnowflakeConnectorProfileCredentials {
+    public struct SnowflakeConnectorProfileCredentials: Swift.Sendable {
         /// The password that corresponds to the user name.
         /// This member is required.
         public var password: Swift.String?
@@ -4465,7 +4466,6 @@ extension AppflowClientTypes {
             self.username = username
         }
     }
-
 }
 
 extension AppflowClientTypes.SnowflakeConnectorProfileCredentials: Swift.CustomDebugStringConvertible {
@@ -4474,8 +4474,9 @@ extension AppflowClientTypes.SnowflakeConnectorProfileCredentials: Swift.CustomD
 }
 
 extension AppflowClientTypes {
+
     /// The connector-specific profile credentials required when using Trend Micro.
-    public struct TrendmicroConnectorProfileCredentials {
+    public struct TrendmicroConnectorProfileCredentials: Swift.Sendable {
         /// The Secret Access Key portion of the credentials.
         /// This member is required.
         public var apiSecretKey: Swift.String?
@@ -4487,7 +4488,6 @@ extension AppflowClientTypes {
             self.apiSecretKey = apiSecretKey
         }
     }
-
 }
 
 extension AppflowClientTypes.TrendmicroConnectorProfileCredentials: Swift.CustomDebugStringConvertible {
@@ -4496,8 +4496,9 @@ extension AppflowClientTypes.TrendmicroConnectorProfileCredentials: Swift.Custom
 }
 
 extension AppflowClientTypes {
+
     /// The connector-specific profile credentials required when using Veeva.
-    public struct VeevaConnectorProfileCredentials {
+    public struct VeevaConnectorProfileCredentials: Swift.Sendable {
         /// The password that corresponds to the user name.
         /// This member is required.
         public var password: Swift.String?
@@ -4514,7 +4515,6 @@ extension AppflowClientTypes {
             self.username = username
         }
     }
-
 }
 
 extension AppflowClientTypes.VeevaConnectorProfileCredentials: Swift.CustomDebugStringConvertible {
@@ -4523,8 +4523,9 @@ extension AppflowClientTypes.VeevaConnectorProfileCredentials: Swift.CustomDebug
 }
 
 extension AppflowClientTypes {
+
     /// The connector-specific profile credentials required when using Zendesk.
-    public struct ZendeskConnectorProfileCredentials {
+    public struct ZendeskConnectorProfileCredentials: Swift.Sendable {
         /// The credentials used to access protected Zendesk resources.
         public var accessToken: Swift.String?
         /// The identifier for the desired client.
@@ -4549,7 +4550,6 @@ extension AppflowClientTypes {
             self.oAuthRequest = oAuthRequest
         }
     }
-
 }
 
 extension AppflowClientTypes.ZendeskConnectorProfileCredentials: Swift.CustomDebugStringConvertible {
@@ -4558,8 +4558,9 @@ extension AppflowClientTypes.ZendeskConnectorProfileCredentials: Swift.CustomDeb
 }
 
 extension AppflowClientTypes {
+
     /// The connector-specific credentials required by a connector.
-    public struct ConnectorProfileCredentials {
+    public struct ConnectorProfileCredentials: Swift.Sendable {
         /// The connector-specific credentials required when using Amplitude.
         public var amplitude: AppflowClientTypes.AmplitudeConnectorProfileCredentials?
         /// The connector-specific profile credentials that are required when using the custom connector.
@@ -4642,12 +4643,12 @@ extension AppflowClientTypes {
             self.zendesk = zendesk
         }
     }
-
 }
 
 extension AppflowClientTypes {
+
     /// Defines the connector-specific configuration and credentials for the connector profile.
-    public struct ConnectorProfileConfig {
+    public struct ConnectorProfileConfig: Swift.Sendable {
         /// The connector-specific credentials required by each connector.
         public var connectorProfileCredentials: AppflowClientTypes.ConnectorProfileCredentials?
         /// The connector-specific properties of the profile configuration.
@@ -4663,7 +4664,6 @@ extension AppflowClientTypes {
             self.connectorProfileProperties = connectorProfileProperties
         }
     }
-
 }
 
 /// An error occurred when retrieving data from the connector endpoint.
@@ -4714,7 +4714,7 @@ public struct ServiceQuotaExceededException: ClientRuntime.ModeledError, AWSClie
     }
 }
 
-public struct CreateConnectorProfileInput {
+public struct CreateConnectorProfileInput: Swift.Sendable {
     /// The clientToken parameter is an idempotency token. It ensures that your CreateConnectorProfile request completes only once. You choose the value to pass. For example, if you don't receive a response from your request, you can safely retry the request with the same clientToken parameter value. If you omit a clientToken value, the Amazon Web Services SDK that you are using inserts a value for you. This way, the SDK can safely retry requests multiple times after a network error. You must provide your own value for other use cases. If you specify input parameters that differ from your first request, an error occurs. If you use a different value for clientToken, Amazon AppFlow considers it a new call to CreateConnectorProfile. The token is active for 8 hours.
     public var clientToken: Swift.String?
     /// Indicates the connection mode and specifies whether it is public or private. Private flows use Amazon Web Services PrivateLink to route data over Amazon Web Services infrastructure without exposing it to the public internet.
@@ -4754,7 +4754,7 @@ public struct CreateConnectorProfileInput {
     }
 }
 
-public struct CreateConnectorProfileOutput {
+public struct CreateConnectorProfileOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the connector profile.
     public var connectorProfileArn: Swift.String?
 
@@ -4767,8 +4767,9 @@ public struct CreateConnectorProfileOutput {
 }
 
 extension AppflowClientTypes {
+
     /// The settings that determine how Amazon AppFlow handles an error when placing data in the destination. For example, this setting would determine if the flow should fail after one insertion error, or continue and attempt to insert every record regardless of the initial failure. ErrorHandlingConfig is a part of the destination connector details.
-    public struct ErrorHandlingConfig {
+    public struct ErrorHandlingConfig: Swift.Sendable {
         /// Specifies the name of the Amazon S3 bucket.
         public var bucketName: Swift.String?
         /// Specifies the Amazon S3 bucket prefix.
@@ -4787,12 +4788,12 @@ extension AppflowClientTypes {
             self.failOnFirstDestinationError = failOnFirstDestinationError
         }
     }
-
 }
 
 extension AppflowClientTypes {
+
     /// The properties that are applied when the custom connector is being used as a destination.
-    public struct CustomConnectorDestinationProperties {
+    public struct CustomConnectorDestinationProperties: Swift.Sendable {
         /// The custom properties that are specific to the connector when it's used as a destination in the flow.
         public var customProperties: [Swift.String: Swift.String]?
         /// The entity specified in the custom connector as a destination in the flow.
@@ -4820,12 +4821,12 @@ extension AppflowClientTypes {
             self.writeOperationType = writeOperationType
         }
     }
-
 }
 
 extension AppflowClientTypes {
+
     /// The properties that are applied when Amazon Connect Customer Profiles is used as a destination.
-    public struct CustomerProfilesDestinationProperties {
+    public struct CustomerProfilesDestinationProperties: Swift.Sendable {
         /// The unique name of the Amazon Connect Customer Profiles domain.
         /// This member is required.
         public var domainName: Swift.String?
@@ -4841,12 +4842,12 @@ extension AppflowClientTypes {
             self.objectTypeName = objectTypeName
         }
     }
-
 }
 
 extension AppflowClientTypes {
+
     /// The properties that are applied when Amazon EventBridge is being used as a destination.
-    public struct EventBridgeDestinationProperties {
+    public struct EventBridgeDestinationProperties: Swift.Sendable {
         /// The settings that determine how Amazon AppFlow handles an error when placing data in the destination. For example, this setting would determine if the flow should fail after one insertion error, or continue and attempt to insert every record regardless of the initial failure. ErrorHandlingConfig is a part of the destination connector details.
         public var errorHandlingConfig: AppflowClientTypes.ErrorHandlingConfig?
         /// The object specified in the Amazon EventBridge flow destination.
@@ -4862,12 +4863,12 @@ extension AppflowClientTypes {
             self.object = object
         }
     }
-
 }
 
 extension AppflowClientTypes {
+
     /// The properties that are applied when Amazon Honeycode is used as a destination.
-    public struct HoneycodeDestinationProperties {
+    public struct HoneycodeDestinationProperties: Swift.Sendable {
         /// The settings that determine how Amazon AppFlow handles an error when placing data in the destination. For example, this setting would determine if the flow should fail after one insertion error, or continue and attempt to insert every record regardless of the initial failure. ErrorHandlingConfig is a part of the destination connector details.
         public var errorHandlingConfig: AppflowClientTypes.ErrorHandlingConfig?
         /// The object specified in the Amazon Honeycode flow destination.
@@ -4883,21 +4884,21 @@ extension AppflowClientTypes {
             self.object = object
         }
     }
-
 }
 
 extension AppflowClientTypes {
+
     /// The properties that are applied when Amazon Lookout for Metrics is used as a destination.
-    public struct LookoutMetricsDestinationProperties {
+    public struct LookoutMetricsDestinationProperties: Swift.Sendable {
 
         public init() { }
     }
-
 }
 
 extension AppflowClientTypes {
+
     /// The properties that Amazon AppFlow applies when you use Marketo as a flow destination.
-    public struct MarketoDestinationProperties {
+    public struct MarketoDestinationProperties: Swift.Sendable {
         /// The settings that determine how Amazon AppFlow handles an error when placing data in the destination. For example, this setting would determine if the flow should fail after one insertion error, or continue and attempt to insert every record regardless of the initial failure. ErrorHandlingConfig is a part of the destination connector details.
         public var errorHandlingConfig: AppflowClientTypes.ErrorHandlingConfig?
         /// The object specified in the Marketo flow destination.
@@ -4913,12 +4914,12 @@ extension AppflowClientTypes {
             self.object = object
         }
     }
-
 }
 
 extension AppflowClientTypes {
+
     /// The properties that are applied when Amazon Redshift is being used as a destination.
-    public struct RedshiftDestinationProperties {
+    public struct RedshiftDestinationProperties: Swift.Sendable {
         /// The object key for the bucket in which Amazon AppFlow places the destination files.
         public var bucketPrefix: Swift.String?
         /// The settings that determine how Amazon AppFlow handles an error when placing data in the Amazon Redshift destination. For example, this setting would determine if the flow should fail after one insertion error, or continue and attempt to insert every record regardless of the initial failure. ErrorHandlingConfig is a part of the destination connector details.
@@ -4943,12 +4944,11 @@ extension AppflowClientTypes {
             self.object = object
         }
     }
-
 }
 
 extension AppflowClientTypes {
 
-    public enum FileType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum FileType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case csv
         case json
         case parquet
@@ -4980,7 +4980,7 @@ extension AppflowClientTypes {
 
 extension AppflowClientTypes {
 
-    public enum PathPrefix: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum PathPrefix: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case executionId
         case schemaVersion
         case sdkUnknown(Swift.String)
@@ -5009,7 +5009,7 @@ extension AppflowClientTypes {
 
 extension AppflowClientTypes {
 
-    public enum PrefixFormat: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum PrefixFormat: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case day
         case hour
         case minute
@@ -5047,7 +5047,7 @@ extension AppflowClientTypes {
 
 extension AppflowClientTypes {
 
-    public enum PrefixType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum PrefixType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case filename
         case path
         case pathAndFilename
@@ -5078,8 +5078,9 @@ extension AppflowClientTypes {
 }
 
 extension AppflowClientTypes {
+
     /// Specifies elements that Amazon AppFlow includes in the file and folder names in the flow destination.
-    public struct PrefixConfig {
+    public struct PrefixConfig: Swift.Sendable {
         /// Specifies whether the destination file path includes either or both of the following elements: EXECUTION_ID The ID that Amazon AppFlow assigns to the flow run. SCHEMA_VERSION The version number of your data schema. Amazon AppFlow assigns this version number. The version number increases by one when you change any of the following settings in your flow configuration:
         ///
         /// * Source-to-destination field mappings
@@ -5104,12 +5105,12 @@ extension AppflowClientTypes {
             self.prefixType = prefixType
         }
     }
-
 }
 
 extension AppflowClientTypes {
+
     /// The configuration that determines how Amazon AppFlow should format the flow output data when Amazon S3 is used as the destination.
-    public struct S3OutputFormatConfig {
+    public struct S3OutputFormatConfig: Swift.Sendable {
         /// The aggregation settings that you can use to customize the output format of your flow data.
         public var aggregationConfig: AppflowClientTypes.AggregationConfig?
         /// Indicates the file type that Amazon AppFlow places in the Amazon S3 bucket.
@@ -5136,12 +5137,12 @@ extension AppflowClientTypes {
             self.preserveSourceDataTyping = preserveSourceDataTyping
         }
     }
-
 }
 
 extension AppflowClientTypes {
+
     /// The properties that are applied when Amazon S3 is used as a destination.
-    public struct S3DestinationProperties {
+    public struct S3DestinationProperties: Swift.Sendable {
         /// The Amazon S3 bucket name in which Amazon AppFlow places the transferred data.
         /// This member is required.
         public var bucketName: Swift.String?
@@ -5161,12 +5162,12 @@ extension AppflowClientTypes {
             self.s3OutputFormatConfig = s3OutputFormatConfig
         }
     }
-
 }
 
 extension AppflowClientTypes {
+
     /// The properties that are applied when Salesforce is being used as a destination.
-    public struct SalesforceDestinationProperties {
+    public struct SalesforceDestinationProperties: Swift.Sendable {
         /// Specifies which Salesforce API is used by Amazon AppFlow when your flow transfers data to Salesforce. AUTOMATIC The default. Amazon AppFlow selects which API to use based on the number of records that your flow transfers to Salesforce. If your flow transfers fewer than 1,000 records, Amazon AppFlow uses Salesforce REST API. If your flow transfers 1,000 records or more, Amazon AppFlow uses Salesforce Bulk API 2.0. Each of these Salesforce APIs structures data differently. If Amazon AppFlow selects the API automatically, be aware that, for recurring flows, the data output might vary from one flow run to the next. For example, if a flow runs daily, it might use REST API on one day to transfer 900 records, and it might use Bulk API 2.0 on the next day to transfer 1,100 records. For each of these flow runs, the respective Salesforce API formats the data differently. Some of the differences include how dates are formatted and null values are represented. Also, Bulk API 2.0 doesn't transfer Salesforce compound fields. By choosing this option, you optimize flow performance for both small and large data transfers, but the tradeoff is inconsistent formatting in the output. BULKV2 Amazon AppFlow uses only Salesforce Bulk API 2.0. This API runs asynchronous data transfers, and it's optimal for large sets of data. By choosing this option, you ensure that your flow writes consistent output, but you optimize performance only for large data transfers. Note that Bulk API 2.0 does not transfer Salesforce compound fields. REST_SYNC Amazon AppFlow uses only Salesforce REST API. By choosing this option, you ensure that your flow writes consistent output, but you decrease performance for large data transfers that are better suited for Bulk API 2.0. In some cases, if your flow attempts to transfer a vary large set of data, it might fail with a timed out error.
         public var dataTransferApi: AppflowClientTypes.SalesforceDataTransferApi?
         /// The settings that determine how Amazon AppFlow handles an error when placing data in the Salesforce destination. For example, this setting would determine if the flow should fail after one insertion error, or continue and attempt to insert every record regardless of the initial failure. ErrorHandlingConfig is a part of the destination connector details.
@@ -5194,12 +5195,12 @@ extension AppflowClientTypes {
             self.writeOperationType = writeOperationType
         }
     }
-
 }
 
 extension AppflowClientTypes {
+
     /// Determines how Amazon AppFlow handles the success response that it gets from the connector after placing data. For example, this setting would determine where to write the response from the destination connector upon a successful insert operation.
-    public struct SuccessResponseHandlingConfig {
+    public struct SuccessResponseHandlingConfig: Swift.Sendable {
         /// The name of the Amazon S3 bucket.
         public var bucketName: Swift.String?
         /// The Amazon S3 bucket prefix.
@@ -5214,12 +5215,12 @@ extension AppflowClientTypes {
             self.bucketPrefix = bucketPrefix
         }
     }
-
 }
 
 extension AppflowClientTypes {
+
     /// The properties that are applied when using SAPOData as a flow destination
-    public struct SAPODataDestinationProperties {
+    public struct SAPODataDestinationProperties: Swift.Sendable {
         /// The settings that determine how Amazon AppFlow handles an error when placing data in the destination. For example, this setting would determine if the flow should fail after one insertion error, or continue and attempt to insert every record regardless of the initial failure. ErrorHandlingConfig is a part of the destination connector details.
         public var errorHandlingConfig: AppflowClientTypes.ErrorHandlingConfig?
         /// A list of field names that can be used as an ID field when performing a write operation.
@@ -5247,12 +5248,12 @@ extension AppflowClientTypes {
             self.writeOperationType = writeOperationType
         }
     }
-
 }
 
 extension AppflowClientTypes {
+
     /// The properties that are applied when Snowflake is being used as a destination.
-    public struct SnowflakeDestinationProperties {
+    public struct SnowflakeDestinationProperties: Swift.Sendable {
         /// The object key for the destination bucket in which Amazon AppFlow places the files.
         public var bucketPrefix: Swift.String?
         /// The settings that determine how Amazon AppFlow handles an error when placing data in the Snowflake destination. For example, this setting would determine if the flow should fail after one insertion error, or continue and attempt to insert every record regardless of the initial failure. ErrorHandlingConfig is a part of the destination connector details.
@@ -5277,12 +5278,12 @@ extension AppflowClientTypes {
             self.object = object
         }
     }
-
 }
 
 extension AppflowClientTypes {
+
     /// The configuration that determines how Amazon AppFlow formats the flow output data when Upsolver is used as the destination.
-    public struct UpsolverS3OutputFormatConfig {
+    public struct UpsolverS3OutputFormatConfig: Swift.Sendable {
         /// The aggregation settings that you can use to customize the output format of your flow data.
         public var aggregationConfig: AppflowClientTypes.AggregationConfig?
         /// Indicates the file type that Amazon AppFlow places in the Upsolver Amazon S3 bucket.
@@ -5302,12 +5303,12 @@ extension AppflowClientTypes {
             self.prefixConfig = prefixConfig
         }
     }
-
 }
 
 extension AppflowClientTypes {
+
     /// The properties that are applied when Upsolver is used as a destination.
-    public struct UpsolverDestinationProperties {
+    public struct UpsolverDestinationProperties: Swift.Sendable {
         /// The Upsolver Amazon S3 bucket name in which Amazon AppFlow places the transferred data.
         /// This member is required.
         public var bucketName: Swift.String?
@@ -5328,12 +5329,12 @@ extension AppflowClientTypes {
             self.s3OutputFormatConfig = s3OutputFormatConfig
         }
     }
-
 }
 
 extension AppflowClientTypes {
+
     /// The properties that are applied when Zendesk is used as a destination.
-    public struct ZendeskDestinationProperties {
+    public struct ZendeskDestinationProperties: Swift.Sendable {
         /// The settings that determine how Amazon AppFlow handles an error when placing data in the destination. For example, this setting would determine if the flow should fail after one insertion error, or continue and attempt to insert every record regardless of the initial failure. ErrorHandlingConfig is a part of the destination connector details.
         public var errorHandlingConfig: AppflowClientTypes.ErrorHandlingConfig?
         /// A list of field names that can be used as an ID field when performing a write operation.
@@ -5357,12 +5358,12 @@ extension AppflowClientTypes {
             self.writeOperationType = writeOperationType
         }
     }
-
 }
 
 extension AppflowClientTypes {
+
     /// This stores the information that is required to query a particular connector.
-    public struct DestinationConnectorProperties {
+    public struct DestinationConnectorProperties: Swift.Sendable {
         /// The properties that are required to query the custom Connector.
         public var customConnector: AppflowClientTypes.CustomConnectorDestinationProperties?
         /// The properties required to query Amazon Connect Customer Profiles.
@@ -5421,12 +5422,12 @@ extension AppflowClientTypes {
             self.zendesk = zendesk
         }
     }
-
 }
 
 extension AppflowClientTypes {
+
     /// Contains information about the configuration of destination connectors present in the flow.
-    public struct DestinationFlowConfig {
+    public struct DestinationFlowConfig: Swift.Sendable {
         /// The API version that the destination connector uses.
         public var apiVersion: Swift.String?
         /// The name of the connector profile. This name must be unique for each connector profile in the Amazon Web Services account.
@@ -5451,12 +5452,12 @@ extension AppflowClientTypes {
             self.destinationConnectorProperties = destinationConnectorProperties
         }
     }
-
 }
 
 extension AppflowClientTypes {
+
     /// Specifies the configuration that Amazon AppFlow uses when it catalogs your data with the Glue Data Catalog. When Amazon AppFlow catalogs your data, it stores metadata in Data Catalog tables. This metadata represents the data that's transferred by the flow that you configure with these settings. You can configure a flow with these settings only when the flow destination is Amazon S3.
-    public struct GlueDataCatalogConfig {
+    public struct GlueDataCatalogConfig: Swift.Sendable {
         /// The name of the Data Catalog database that stores the metadata tables that Amazon AppFlow creates in your Amazon Web Services account. These tables contain metadata for the data that's transferred by the flow that you configure with this parameter. When you configure a new flow with this parameter, you must specify an existing database.
         /// This member is required.
         public var databaseName: Swift.String?
@@ -5478,12 +5479,12 @@ extension AppflowClientTypes {
             self.tablePrefix = tablePrefix
         }
     }
-
 }
 
 extension AppflowClientTypes {
+
     /// Specifies the configuration that Amazon AppFlow uses when it catalogs your data. When Amazon AppFlow catalogs your data, it stores metadata in a data catalog.
-    public struct MetadataCatalogConfig {
+    public struct MetadataCatalogConfig: Swift.Sendable {
         /// Specifies the configuration that Amazon AppFlow uses when it catalogs your data with the Glue Data Catalog.
         public var glueDataCatalog: AppflowClientTypes.GlueDataCatalogConfig?
 
@@ -5494,12 +5495,12 @@ extension AppflowClientTypes {
             self.glueDataCatalog = glueDataCatalog
         }
     }
-
 }
 
 extension AppflowClientTypes {
+
     /// Specifies the configuration used when importing incremental records from the source.
-    public struct IncrementalPullConfig {
+    public struct IncrementalPullConfig: Swift.Sendable {
         /// A field that specifies the date time or timestamp field as the criteria to use when importing incremental records from the source.
         public var datetimeTypeFieldName: Swift.String?
 
@@ -5510,12 +5511,12 @@ extension AppflowClientTypes {
             self.datetimeTypeFieldName = datetimeTypeFieldName
         }
     }
-
 }
 
 extension AppflowClientTypes {
+
     /// The properties that are applied when the custom connector is being used as a source.
-    public struct CustomConnectorSourceProperties {
+    public struct CustomConnectorSourceProperties: Swift.Sendable {
         /// Custom properties that are required to use the custom connector as a source.
         public var customProperties: [Swift.String: Swift.String]?
         /// The API of the connector application that Amazon AppFlow uses to transfer your data.
@@ -5535,12 +5536,12 @@ extension AppflowClientTypes {
             self.entityName = entityName
         }
     }
-
 }
 
 extension AppflowClientTypes {
+
     /// The properties that are applied when Datadog is being used as a source.
-    public struct DatadogSourceProperties {
+    public struct DatadogSourceProperties: Swift.Sendable {
         /// The object specified in the Datadog flow source.
         /// This member is required.
         public var object: Swift.String?
@@ -5552,12 +5553,12 @@ extension AppflowClientTypes {
             self.object = object
         }
     }
-
 }
 
 extension AppflowClientTypes {
+
     /// The properties that are applied when Dynatrace is being used as a source.
-    public struct DynatraceSourceProperties {
+    public struct DynatraceSourceProperties: Swift.Sendable {
         /// The object specified in the Dynatrace flow source.
         /// This member is required.
         public var object: Swift.String?
@@ -5569,12 +5570,12 @@ extension AppflowClientTypes {
             self.object = object
         }
     }
-
 }
 
 extension AppflowClientTypes {
+
     /// The properties that are applied when Google Analytics is being used as a source.
-    public struct GoogleAnalyticsSourceProperties {
+    public struct GoogleAnalyticsSourceProperties: Swift.Sendable {
         /// The object specified in the Google Analytics flow source.
         /// This member is required.
         public var object: Swift.String?
@@ -5586,12 +5587,12 @@ extension AppflowClientTypes {
             self.object = object
         }
     }
-
 }
 
 extension AppflowClientTypes {
+
     /// The properties that are applied when Infor Nexus is being used as a source.
-    public struct InforNexusSourceProperties {
+    public struct InforNexusSourceProperties: Swift.Sendable {
         /// The object specified in the Infor Nexus flow source.
         /// This member is required.
         public var object: Swift.String?
@@ -5603,12 +5604,12 @@ extension AppflowClientTypes {
             self.object = object
         }
     }
-
 }
 
 extension AppflowClientTypes {
+
     /// The properties that are applied when Marketo is being used as a source.
-    public struct MarketoSourceProperties {
+    public struct MarketoSourceProperties: Swift.Sendable {
         /// The object specified in the Marketo flow source.
         /// This member is required.
         public var object: Swift.String?
@@ -5620,12 +5621,12 @@ extension AppflowClientTypes {
             self.object = object
         }
     }
-
 }
 
 extension AppflowClientTypes {
+
     /// The properties that are applied when Salesforce Pardot is being used as a source.
-    public struct PardotSourceProperties {
+    public struct PardotSourceProperties: Swift.Sendable {
         /// The object specified in the Salesforce Pardot flow source.
         /// This member is required.
         public var object: Swift.String?
@@ -5637,12 +5638,11 @@ extension AppflowClientTypes {
             self.object = object
         }
     }
-
 }
 
 extension AppflowClientTypes {
 
-    public enum S3InputFileType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum S3InputFileType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case csv
         case json
         case sdkUnknown(Swift.String)
@@ -5670,8 +5670,9 @@ extension AppflowClientTypes {
 }
 
 extension AppflowClientTypes {
+
     /// When you use Amazon S3 as the source, the configuration format that you provide the flow input data.
-    public struct S3InputFormatConfig {
+    public struct S3InputFormatConfig: Swift.Sendable {
         /// The file type that Amazon AppFlow gets from your Amazon S3 bucket.
         public var s3InputFileType: AppflowClientTypes.S3InputFileType?
 
@@ -5682,12 +5683,12 @@ extension AppflowClientTypes {
             self.s3InputFileType = s3InputFileType
         }
     }
-
 }
 
 extension AppflowClientTypes {
+
     /// The properties that are applied when Amazon S3 is being used as the flow source.
-    public struct S3SourceProperties {
+    public struct S3SourceProperties: Swift.Sendable {
         /// The Amazon S3 bucket name where the source files are stored.
         /// This member is required.
         public var bucketName: Swift.String?
@@ -5707,12 +5708,12 @@ extension AppflowClientTypes {
             self.s3InputFormatConfig = s3InputFormatConfig
         }
     }
-
 }
 
 extension AppflowClientTypes {
+
     /// The properties that are applied when Salesforce is being used as a source.
-    public struct SalesforceSourceProperties {
+    public struct SalesforceSourceProperties: Swift.Sendable {
         /// Specifies which Salesforce API is used by Amazon AppFlow when your flow transfers data from Salesforce. AUTOMATIC The default. Amazon AppFlow selects which API to use based on the number of records that your flow transfers from Salesforce. If your flow transfers fewer than 1,000,000 records, Amazon AppFlow uses Salesforce REST API. If your flow transfers 1,000,000 records or more, Amazon AppFlow uses Salesforce Bulk API 2.0. Each of these Salesforce APIs structures data differently. If Amazon AppFlow selects the API automatically, be aware that, for recurring flows, the data output might vary from one flow run to the next. For example, if a flow runs daily, it might use REST API on one day to transfer 900,000 records, and it might use Bulk API 2.0 on the next day to transfer 1,100,000 records. For each of these flow runs, the respective Salesforce API formats the data differently. Some of the differences include how dates are formatted and null values are represented. Also, Bulk API 2.0 doesn't transfer Salesforce compound fields. By choosing this option, you optimize flow performance for both small and large data transfers, but the tradeoff is inconsistent formatting in the output. BULKV2 Amazon AppFlow uses only Salesforce Bulk API 2.0. This API runs asynchronous data transfers, and it's optimal for large sets of data. By choosing this option, you ensure that your flow writes consistent output, but you optimize performance only for large data transfers. Note that Bulk API 2.0 does not transfer Salesforce compound fields. REST_SYNC Amazon AppFlow uses only Salesforce REST API. By choosing this option, you ensure that your flow writes consistent output, but you decrease performance for large data transfers that are better suited for Bulk API 2.0. In some cases, if your flow attempts to transfer a vary large set of data, it might fail wituh a timed out error.
         public var dataTransferApi: AppflowClientTypes.SalesforceDataTransferApi?
         /// The flag that enables dynamic fetching of new (recently added) fields in the Salesforce objects while running a flow.
@@ -5736,12 +5737,12 @@ extension AppflowClientTypes {
             self.object = object
         }
     }
-
 }
 
 extension AppflowClientTypes {
+
     /// Sets the page size for each concurrent process that transfers OData records from your SAP instance. A concurrent process is query that retrieves a batch of records as part of a flow run. Amazon AppFlow can run multiple concurrent processes in parallel to transfer data faster.
-    public struct SAPODataPaginationConfig {
+    public struct SAPODataPaginationConfig: Swift.Sendable {
         /// The maximum number of records that Amazon AppFlow receives in each page of the response from your SAP application. For transfers of OData records, the maximum page size is 3,000. For transfers of data that comes from an ODP provider, the maximum page size is 10,000.
         /// This member is required.
         public var maxPageSize: Swift.Int?
@@ -5753,12 +5754,12 @@ extension AppflowClientTypes {
             self.maxPageSize = maxPageSize
         }
     }
-
 }
 
 extension AppflowClientTypes {
+
     /// Sets the number of concurrent processes that transfer OData records from your SAP instance. A concurrent process is query that retrieves a batch of records as part of a flow run. Amazon AppFlow can run multiple concurrent processes in parallel to transfer data faster.
-    public struct SAPODataParallelismConfig {
+    public struct SAPODataParallelismConfig: Swift.Sendable {
         /// The maximum number of processes that Amazon AppFlow runs at the same time when it retrieves your data from your SAP application.
         /// This member is required.
         public var maxParallelism: Swift.Int?
@@ -5770,12 +5771,12 @@ extension AppflowClientTypes {
             self.maxParallelism = maxParallelism
         }
     }
-
 }
 
 extension AppflowClientTypes {
+
     /// The properties that are applied when using SAPOData as a flow source.
-    public struct SAPODataSourceProperties {
+    public struct SAPODataSourceProperties: Swift.Sendable {
         /// The object path specified in the SAPOData flow source.
         public var objectPath: Swift.String?
         /// Sets the page size for each concurrent process that transfers OData records from your SAP instance.
@@ -5794,12 +5795,12 @@ extension AppflowClientTypes {
             self.parallelismConfig = parallelismConfig
         }
     }
-
 }
 
 extension AppflowClientTypes {
+
     /// The properties that are applied when ServiceNow is being used as a source.
-    public struct ServiceNowSourceProperties {
+    public struct ServiceNowSourceProperties: Swift.Sendable {
         /// The object specified in the ServiceNow flow source.
         /// This member is required.
         public var object: Swift.String?
@@ -5811,12 +5812,12 @@ extension AppflowClientTypes {
             self.object = object
         }
     }
-
 }
 
 extension AppflowClientTypes {
+
     /// The properties that are applied when Singular is being used as a source.
-    public struct SingularSourceProperties {
+    public struct SingularSourceProperties: Swift.Sendable {
         /// The object specified in the Singular flow source.
         /// This member is required.
         public var object: Swift.String?
@@ -5828,12 +5829,12 @@ extension AppflowClientTypes {
             self.object = object
         }
     }
-
 }
 
 extension AppflowClientTypes {
+
     /// The properties that are applied when Slack is being used as a source.
-    public struct SlackSourceProperties {
+    public struct SlackSourceProperties: Swift.Sendable {
         /// The object specified in the Slack flow source.
         /// This member is required.
         public var object: Swift.String?
@@ -5845,12 +5846,12 @@ extension AppflowClientTypes {
             self.object = object
         }
     }
-
 }
 
 extension AppflowClientTypes {
+
     /// The properties that are applied when using Trend Micro as a flow source.
-    public struct TrendmicroSourceProperties {
+    public struct TrendmicroSourceProperties: Swift.Sendable {
         /// The object specified in the Trend Micro flow source.
         /// This member is required.
         public var object: Swift.String?
@@ -5862,12 +5863,12 @@ extension AppflowClientTypes {
             self.object = object
         }
     }
-
 }
 
 extension AppflowClientTypes {
+
     /// The properties that are applied when using Veeva as a flow source.
-    public struct VeevaSourceProperties {
+    public struct VeevaSourceProperties: Swift.Sendable {
         /// The document type specified in the Veeva document extract flow.
         public var documentType: Swift.String?
         /// Boolean value to include All Versions of files in Veeva document extract flow.
@@ -5895,12 +5896,12 @@ extension AppflowClientTypes {
             self.object = object
         }
     }
-
 }
 
 extension AppflowClientTypes {
+
     /// The properties that are applied when using Zendesk as a flow source.
-    public struct ZendeskSourceProperties {
+    public struct ZendeskSourceProperties: Swift.Sendable {
         /// The object specified in the Zendesk flow source.
         /// This member is required.
         public var object: Swift.String?
@@ -5912,12 +5913,12 @@ extension AppflowClientTypes {
             self.object = object
         }
     }
-
 }
 
 extension AppflowClientTypes {
+
     /// Specifies the information that is required to query a particular connector.
-    public struct SourceConnectorProperties {
+    public struct SourceConnectorProperties: Swift.Sendable {
         /// Specifies the information that is required for querying Amplitude.
         public var amplitude: AppflowClientTypes.AmplitudeSourceProperties?
         /// The properties that are applied when the custom connector is being used as a source.
@@ -5992,12 +5993,12 @@ extension AppflowClientTypes {
             self.zendesk = zendesk
         }
     }
-
 }
 
 extension AppflowClientTypes {
+
     /// Contains information about the configuration of the source connector used in the flow.
-    public struct SourceFlowConfig {
+    public struct SourceFlowConfig: Swift.Sendable {
         /// The API version of the connector when it's used as a source in the flow.
         public var apiVersion: Swift.String?
         /// The name of the connector profile. This name must be unique for each connector profile in the Amazon Web Services account.
@@ -6026,12 +6027,11 @@ extension AppflowClientTypes {
             self.sourceConnectorProperties = sourceConnectorProperties
         }
     }
-
 }
 
 extension AppflowClientTypes {
 
-    public enum OperatorPropertiesKeys: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum OperatorPropertiesKeys: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case concatFormat
         case dataType
         case destinationDataType
@@ -6105,7 +6105,7 @@ extension AppflowClientTypes {
 
 extension AppflowClientTypes {
 
-    public enum TaskType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum TaskType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case arithmetic
         case filter
         case map
@@ -6157,8 +6157,9 @@ extension AppflowClientTypes {
 }
 
 extension AppflowClientTypes {
+
     /// A class for modeling different type of tasks. Task implementation varies based on the TaskType.
-    public struct Task {
+    public struct Task: Swift.Sendable {
         /// The operation to be performed on the provided source fields.
         public var connectorOperator: AppflowClientTypes.ConnectorOperator?
         /// A field in a destination connector, or a field value against which Amazon AppFlow validates a source field.
@@ -6187,12 +6188,11 @@ extension AppflowClientTypes {
             self.taskType = taskType
         }
     }
-
 }
 
 extension AppflowClientTypes {
 
-    public enum DataPullMode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DataPullMode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case complete
         case incremental
         case sdkUnknown(Swift.String)
@@ -6220,8 +6220,9 @@ extension AppflowClientTypes {
 }
 
 extension AppflowClientTypes {
+
     /// Specifies the configuration details of a schedule-triggered flow as defined by the user. Currently, these settings only apply to the Scheduled trigger type.
-    public struct ScheduledTriggerProperties {
+    public struct ScheduledTriggerProperties: Swift.Sendable {
         /// Specifies whether a scheduled flow has an incremental data transfer or a complete data transfer for each flow run.
         public var dataPullMode: AppflowClientTypes.DataPullMode?
         /// Specifies the date range for the records to import from the connector in the first flow run.
@@ -6261,12 +6262,12 @@ extension AppflowClientTypes {
             self.timezone = timezone
         }
     }
-
 }
 
 extension AppflowClientTypes {
+
     /// Specifies the configuration details that control the trigger for a flow. Currently, these settings only apply to the Scheduled trigger type.
-    public struct TriggerProperties {
+    public struct TriggerProperties: Swift.Sendable {
         /// Specifies the configuration details of a schedule-triggered flow as defined by the user.
         public var scheduled: AppflowClientTypes.ScheduledTriggerProperties?
 
@@ -6277,12 +6278,12 @@ extension AppflowClientTypes {
             self.scheduled = scheduled
         }
     }
-
 }
 
 extension AppflowClientTypes {
+
     /// The trigger settings that determine how and when Amazon AppFlow runs the specified flow.
-    public struct TriggerConfig {
+    public struct TriggerConfig: Swift.Sendable {
         /// Specifies the configuration details of a schedule-triggered flow as defined by the user. Currently, these settings only apply to the Scheduled trigger type.
         public var triggerProperties: AppflowClientTypes.TriggerProperties?
         /// Specifies the type of flow trigger. This can be OnDemand, Scheduled, or Event.
@@ -6298,10 +6299,9 @@ extension AppflowClientTypes {
             self.triggerType = triggerType
         }
     }
-
 }
 
-public struct CreateFlowInput {
+public struct CreateFlowInput: Swift.Sendable {
     /// The clientToken parameter is an idempotency token. It ensures that your CreateFlow request completes only once. You choose the value to pass. For example, if you don't receive a response from your request, you can safely retry the request with the same clientToken parameter value. If you omit a clientToken value, the Amazon Web Services SDK that you are using inserts a value for you. This way, the SDK can safely retry requests multiple times after a network error. You must provide your own value for other use cases. If you specify input parameters that differ from your first request, an error occurs. If you use a different value for clientToken, Amazon AppFlow considers it a new call to CreateFlow. The token is active for 8 hours.
     public var clientToken: Swift.String?
     /// A description of the flow you want to create.
@@ -6356,7 +6356,7 @@ public struct CreateFlowInput {
 
 extension AppflowClientTypes {
 
-    public enum FlowStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum FlowStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case active
         case deleted
         case deprecated
@@ -6395,7 +6395,7 @@ extension AppflowClientTypes {
     }
 }
 
-public struct CreateFlowOutput {
+public struct CreateFlowOutput: Swift.Sendable {
     /// The flow's Amazon Resource Name (ARN).
     public var flowArn: Swift.String?
     /// Indicates the current status of the flow.
@@ -6411,7 +6411,7 @@ public struct CreateFlowOutput {
     }
 }
 
-public struct DeleteConnectorProfileInput {
+public struct DeleteConnectorProfileInput: Swift.Sendable {
     /// The name of the connector profile. The name is unique for each ConnectorProfile in your account.
     /// This member is required.
     public var connectorProfileName: Swift.String?
@@ -6428,12 +6428,12 @@ public struct DeleteConnectorProfileInput {
     }
 }
 
-public struct DeleteConnectorProfileOutput {
+public struct DeleteConnectorProfileOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteFlowInput {
+public struct DeleteFlowInput: Swift.Sendable {
     /// The specified name of the flow. Spaces are not allowed. Use underscores (_) or hyphens (-) only.
     /// This member is required.
     public var flowName: Swift.String?
@@ -6450,12 +6450,12 @@ public struct DeleteFlowInput {
     }
 }
 
-public struct DeleteFlowOutput {
+public struct DeleteFlowOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DescribeConnectorInput {
+public struct DescribeConnectorInput: Swift.Sendable {
     /// The label of the connector. The label is unique for each ConnectorRegistration in your Amazon Web Services account. Only needed if calling for CUSTOMCONNECTOR connector type/.
     public var connectorLabel: Swift.String?
     /// The connector type, such as CUSTOMCONNECTOR, Saleforce, Marketo. Please choose CUSTOMCONNECTOR for Lambda based custom connectors.
@@ -6472,7 +6472,7 @@ public struct DescribeConnectorInput {
     }
 }
 
-public struct DescribeConnectorOutput {
+public struct DescribeConnectorOutput: Swift.Sendable {
     /// Configuration info of all the connectors that the user requested.
     public var connectorConfiguration: AppflowClientTypes.ConnectorConfiguration?
 
@@ -6484,7 +6484,7 @@ public struct DescribeConnectorOutput {
     }
 }
 
-public struct DescribeConnectorEntityInput {
+public struct DescribeConnectorEntityInput: Swift.Sendable {
     /// The version of the API that's used by the connector.
     public var apiVersion: Swift.String?
     /// The entity name for that connector.
@@ -6509,7 +6509,7 @@ public struct DescribeConnectorEntityInput {
     }
 }
 
-public struct DescribeConnectorEntityOutput {
+public struct DescribeConnectorEntityOutput: Swift.Sendable {
     /// Describes the fields for that connector entity. For example, for an account entity, the fields would be account name, account ID, and so on.
     /// This member is required.
     public var connectorEntityFields: [AppflowClientTypes.ConnectorEntityField]?
@@ -6522,7 +6522,7 @@ public struct DescribeConnectorEntityOutput {
     }
 }
 
-public struct DescribeConnectorProfilesInput {
+public struct DescribeConnectorProfilesInput: Swift.Sendable {
     /// The name of the connector. The name is unique for each ConnectorRegistration in your Amazon Web Services account. Only needed if calling for CUSTOMCONNECTOR connector type/.
     public var connectorLabel: Swift.String?
     /// The name of the connector profile. The name is unique for each ConnectorProfile in the Amazon Web Services account.
@@ -6550,7 +6550,7 @@ public struct DescribeConnectorProfilesInput {
     }
 }
 
-public struct DescribeConnectorProfilesOutput {
+public struct DescribeConnectorProfilesOutput: Swift.Sendable {
     /// Returns information about the connector profiles associated with the flow.
     public var connectorProfileDetails: [AppflowClientTypes.ConnectorProfile]?
     /// The pagination token for the next page of data. If nextToken=null, this means that all records have been fetched.
@@ -6566,7 +6566,7 @@ public struct DescribeConnectorProfilesOutput {
     }
 }
 
-public struct DescribeConnectorsInput {
+public struct DescribeConnectorsInput: Swift.Sendable {
     /// The type of connector, such as Salesforce, Amplitude, and so on.
     public var connectorTypes: [AppflowClientTypes.ConnectorType]?
     /// The maximum number of items that should be returned in the result set. The default is 20.
@@ -6586,7 +6586,7 @@ public struct DescribeConnectorsInput {
     }
 }
 
-public struct DescribeConnectorsOutput {
+public struct DescribeConnectorsOutput: Swift.Sendable {
     /// The configuration that is applied to the connectors used in the flow.
     public var connectorConfigurations: [Swift.String: AppflowClientTypes.ConnectorConfiguration]?
     /// Information about the connectors supported in Amazon AppFlow.
@@ -6606,7 +6606,7 @@ public struct DescribeConnectorsOutput {
     }
 }
 
-public struct DescribeFlowInput {
+public struct DescribeFlowInput: Swift.Sendable {
     /// The specified name of the flow. Spaces are not allowed. Use underscores (_) or hyphens (-) only.
     /// This member is required.
     public var flowName: Swift.String?
@@ -6621,7 +6621,7 @@ public struct DescribeFlowInput {
 
 extension AppflowClientTypes {
 
-    public enum ExecutionStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ExecutionStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case canceled
         case cancelstarted
         case error
@@ -6658,8 +6658,9 @@ extension AppflowClientTypes {
 }
 
 extension AppflowClientTypes {
+
     /// Describes the details of the flow run, including the timestamp, status, and message.
-    public struct ExecutionDetails {
+    public struct ExecutionDetails: Swift.Sendable {
         /// Describes the details of the most recent flow run.
         public var mostRecentExecutionMessage: Swift.String?
         /// Specifies the status of the most recent flow run.
@@ -6678,12 +6679,12 @@ extension AppflowClientTypes {
             self.mostRecentExecutionTime = mostRecentExecutionTime
         }
     }
-
 }
 
 extension AppflowClientTypes {
+
     /// Describes the status of an attempt from Amazon AppFlow to register a resource. When you run a flow that you've configured to use a metadata catalog, Amazon AppFlow registers a metadata table and data partitions with that catalog. This operation provides the status of that registration attempt. The operation also indicates how many related resources Amazon AppFlow created or updated.
-    public struct RegistrationOutput {
+    public struct RegistrationOutput: Swift.Sendable {
         /// Explains the status of the registration attempt from Amazon AppFlow. If the attempt fails, the message explains why.
         public var message: Swift.String?
         /// Indicates the number of resources that Amazon AppFlow created or updated. Possible resources include metadata tables and data partitions.
@@ -6702,12 +6703,12 @@ extension AppflowClientTypes {
             self.status = status
         }
     }
-
 }
 
 extension AppflowClientTypes {
+
     /// Describes the metadata catalog, metadata table, and data partitions that Amazon AppFlow used for the associated flow run.
-    public struct MetadataCatalogDetail {
+    public struct MetadataCatalogDetail: Swift.Sendable {
         /// The type of metadata catalog that Amazon AppFlow used for the associated flow run. This parameter returns the following value: GLUE The metadata catalog is provided by the Glue Data Catalog. Glue includes the Glue Data Catalog as a component.
         public var catalogType: AppflowClientTypes.CatalogType?
         /// Describes the status of the attempt from Amazon AppFlow to register the data partitions with the metadata catalog. The data partitions organize the flow output into a hierarchical path, such as a folder path in an S3 bucket. Amazon AppFlow creates the partitions (if they don't already exist) based on your flow configuration.
@@ -6730,10 +6731,9 @@ extension AppflowClientTypes {
             self.tableRegistrationOutput = tableRegistrationOutput
         }
     }
-
 }
 
-public struct DescribeFlowOutput {
+public struct DescribeFlowOutput: Swift.Sendable {
     /// Specifies when the flow was created.
     public var createdAt: Foundation.Date?
     /// The ARN of the user who created the flow.
@@ -6823,7 +6823,7 @@ public struct DescribeFlowOutput {
     }
 }
 
-public struct DescribeFlowExecutionRecordsInput {
+public struct DescribeFlowExecutionRecordsInput: Swift.Sendable {
     /// The specified name of the flow. Spaces are not allowed. Use underscores (_) or hyphens (-) only.
     /// This member is required.
     public var flowName: Swift.String?
@@ -6845,8 +6845,9 @@ public struct DescribeFlowExecutionRecordsInput {
 }
 
 extension AppflowClientTypes {
+
     /// Provides details in the event of a failed flow, including the failure count and the related error messages.
-    public struct ErrorInfo {
+    public struct ErrorInfo: Swift.Sendable {
         /// Specifies the error message that appears if a flow fails.
         public var executionMessage: Swift.String?
         /// Specifies the failure count for the attempted flow.
@@ -6861,12 +6862,12 @@ extension AppflowClientTypes {
             self.putFailuresCount = putFailuresCount
         }
     }
-
 }
 
 extension AppflowClientTypes {
+
     /// Specifies the end result of the flow run.
-    public struct ExecutionResult {
+    public struct ExecutionResult: Swift.Sendable {
         /// The total number of bytes processed by the flow run.
         public var bytesProcessed: Swift.Int?
         /// The total number of bytes written as a result of the flow run.
@@ -6897,12 +6898,12 @@ extension AppflowClientTypes {
             self.recordsProcessed = recordsProcessed
         }
     }
-
 }
 
 extension AppflowClientTypes {
+
     /// Specifies information about the past flow run instances for a given flow.
-    public struct ExecutionRecord {
+    public struct ExecutionRecord: Swift.Sendable {
         /// The timestamp that indicates the last new or updated record to be transferred in the flow run.
         public var dataPullEndTime: Foundation.Date?
         /// The timestamp that determines the first new or updated record to be transferred in the flow run.
@@ -6941,10 +6942,9 @@ extension AppflowClientTypes {
             self.startedAt = startedAt
         }
     }
-
 }
 
-public struct DescribeFlowExecutionRecordsOutput {
+public struct DescribeFlowExecutionRecordsOutput: Swift.Sendable {
     /// Returns a list of all instances when this flow was run.
     public var flowExecutions: [AppflowClientTypes.ExecutionRecord]?
     /// The pagination token for the next page of data.
@@ -6961,8 +6961,9 @@ public struct DescribeFlowExecutionRecordsOutput {
 }
 
 extension AppflowClientTypes {
+
     /// The properties of the flow, such as its source, destination, trigger type, and so on.
-    public struct FlowDefinition {
+    public struct FlowDefinition: Swift.Sendable {
         /// Specifies when the flow was created.
         public var createdAt: Foundation.Date?
         /// The ARN of the user who created the flow.
@@ -7029,10 +7030,9 @@ extension AppflowClientTypes {
             self.triggerType = triggerType
         }
     }
-
 }
 
-public struct ListConnectorEntitiesInput {
+public struct ListConnectorEntitiesInput: Swift.Sendable {
     /// The version of the API that's used by the connector.
     public var apiVersion: Swift.String?
     /// The name of the connector profile. The name is unique for each ConnectorProfile in the Amazon Web Services account, and is used to query the downstream connector.
@@ -7064,7 +7064,7 @@ public struct ListConnectorEntitiesInput {
     }
 }
 
-public struct ListConnectorEntitiesOutput {
+public struct ListConnectorEntitiesOutput: Swift.Sendable {
     /// The response of ListConnectorEntities lists entities grouped by category. This map's key represents the group name, and its value contains the list of entities belonging to that group.
     /// This member is required.
     public var connectorEntityMap: [Swift.String: [AppflowClientTypes.ConnectorEntity]]?
@@ -7081,7 +7081,7 @@ public struct ListConnectorEntitiesOutput {
     }
 }
 
-public struct ListConnectorsInput {
+public struct ListConnectorsInput: Swift.Sendable {
     /// Specifies the maximum number of items that should be returned in the result set. The default for maxResults is 20 (for all paginated API operations).
     public var maxResults: Swift.Int?
     /// The pagination token for the next page of data.
@@ -7097,7 +7097,7 @@ public struct ListConnectorsInput {
     }
 }
 
-public struct ListConnectorsOutput {
+public struct ListConnectorsOutput: Swift.Sendable {
     /// Contains information about the connectors supported by Amazon AppFlow.
     public var connectors: [AppflowClientTypes.ConnectorDetail]?
     /// The pagination token for the next page of data. If nextToken=null, this means that all records have been fetched.
@@ -7113,7 +7113,7 @@ public struct ListConnectorsOutput {
     }
 }
 
-public struct ListFlowsInput {
+public struct ListFlowsInput: Swift.Sendable {
     /// Specifies the maximum number of items that should be returned in the result set.
     public var maxResults: Swift.Int?
     /// The pagination token for next page of data.
@@ -7129,7 +7129,7 @@ public struct ListFlowsInput {
     }
 }
 
-public struct ListFlowsOutput {
+public struct ListFlowsOutput: Swift.Sendable {
     /// The list of flows associated with your account.
     public var flows: [AppflowClientTypes.FlowDefinition]?
     /// The pagination token for next page of data.
@@ -7145,7 +7145,7 @@ public struct ListFlowsOutput {
     }
 }
 
-public struct ListTagsForResourceInput {
+public struct ListTagsForResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the specified flow.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -7158,7 +7158,7 @@ public struct ListTagsForResourceInput {
     }
 }
 
-public struct ListTagsForResourceOutput {
+public struct ListTagsForResourceOutput: Swift.Sendable {
     /// The tags used to organize, track, or control access for your flow.
     public var tags: [Swift.String: Swift.String]?
 
@@ -7170,7 +7170,7 @@ public struct ListTagsForResourceOutput {
     }
 }
 
-public struct RegisterConnectorInput {
+public struct RegisterConnectorInput: Swift.Sendable {
     /// The clientToken parameter is an idempotency token. It ensures that your RegisterConnector request completes only once. You choose the value to pass. For example, if you don't receive a response from your request, you can safely retry the request with the same clientToken parameter value. If you omit a clientToken value, the Amazon Web Services SDK that you are using inserts a value for you. This way, the SDK can safely retry requests multiple times after a network error. You must provide your own value for other use cases. If you specify input parameters that differ from your first request, an error occurs. If you use a different value for clientToken, Amazon AppFlow considers it a new call to RegisterConnector. The token is active for 8 hours.
     public var clientToken: Swift.String?
     /// The name of the connector. The name is unique for each ConnectorRegistration in your Amazon Web Services account.
@@ -7198,7 +7198,7 @@ public struct RegisterConnectorInput {
     }
 }
 
-public struct RegisterConnectorOutput {
+public struct RegisterConnectorOutput: Swift.Sendable {
     /// The ARN of the connector being registered.
     public var connectorArn: Swift.String?
 
@@ -7210,7 +7210,7 @@ public struct RegisterConnectorOutput {
     }
 }
 
-public struct ResetConnectorMetadataCacheInput {
+public struct ResetConnectorMetadataCacheInput: Swift.Sendable {
     /// The API version that you specified in the connector profile that you’re resetting cached metadata for. You must use this parameter only if the connector supports multiple API versions or if the connector type is CustomConnector. To look up how many versions a connector supports, use the DescribeConnectors action. In the response, find the value that Amazon AppFlow returns for the connectorVersion parameter. To look up the connector type, use the DescribeConnectorProfiles action. In the response, find the value that Amazon AppFlow returns for the connectorType parameter. To look up the API version that you specified in a connector profile, use the DescribeConnectorProfiles action.
     public var apiVersion: Swift.String?
     /// Use this parameter if you want to reset cached metadata about the details for an individual entity. If you don't include this parameter in your request, Amazon AppFlow only resets cached metadata about entity names, not entity details.
@@ -7238,12 +7238,12 @@ public struct ResetConnectorMetadataCacheInput {
     }
 }
 
-public struct ResetConnectorMetadataCacheOutput {
+public struct ResetConnectorMetadataCacheOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct StartFlowInput {
+public struct StartFlowInput: Swift.Sendable {
     /// The clientToken parameter is an idempotency token. It ensures that your StartFlow request completes only once. You choose the value to pass. For example, if you don't receive a response from your request, you can safely retry the request with the same clientToken parameter value. If you omit a clientToken value, the Amazon Web Services SDK that you are using inserts a value for you. This way, the SDK can safely retry requests multiple times after a network error. You must provide your own value for other use cases. If you specify input parameters that differ from your first request, an error occurs for flows that run on a schedule or based on an event. However, the error doesn't occur for flows that run on demand. You set the conditions that initiate your flow for the triggerConfig parameter. If you use a different value for clientToken, Amazon AppFlow considers it a new call to StartFlow. The token is active for 8 hours.
     public var clientToken: Swift.String?
     /// The specified name of the flow. Spaces are not allowed. Use underscores (_) or hyphens (-) only.
@@ -7260,7 +7260,7 @@ public struct StartFlowInput {
     }
 }
 
-public struct StartFlowOutput {
+public struct StartFlowOutput: Swift.Sendable {
     /// Returns the internal execution ID of an on-demand flow when the flow is started. For scheduled or event-triggered flows, this value is null.
     public var executionId: Swift.String?
     /// The flow's Amazon Resource Name (ARN).
@@ -7304,7 +7304,7 @@ public struct UnsupportedOperationException: ClientRuntime.ModeledError, AWSClie
     }
 }
 
-public struct StopFlowInput {
+public struct StopFlowInput: Swift.Sendable {
     /// The specified name of the flow. Spaces are not allowed. Use underscores (_) or hyphens (-) only.
     /// This member is required.
     public var flowName: Swift.String?
@@ -7317,7 +7317,7 @@ public struct StopFlowInput {
     }
 }
 
-public struct StopFlowOutput {
+public struct StopFlowOutput: Swift.Sendable {
     /// The flow's Amazon Resource Name (ARN).
     public var flowArn: Swift.String?
     /// Indicates the current status of the flow.
@@ -7333,7 +7333,7 @@ public struct StopFlowOutput {
     }
 }
 
-public struct TagResourceInput {
+public struct TagResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the flow that you want to tag.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -7351,12 +7351,12 @@ public struct TagResourceInput {
     }
 }
 
-public struct TagResourceOutput {
+public struct TagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UnregisterConnectorInput {
+public struct UnregisterConnectorInput: Swift.Sendable {
     /// The label of the connector. The label is unique for each ConnectorRegistration in your Amazon Web Services account.
     /// This member is required.
     public var connectorLabel: Swift.String?
@@ -7373,12 +7373,12 @@ public struct UnregisterConnectorInput {
     }
 }
 
-public struct UnregisterConnectorOutput {
+public struct UnregisterConnectorOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UntagResourceInput {
+public struct UntagResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the flow that you want to untag.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -7396,12 +7396,12 @@ public struct UntagResourceInput {
     }
 }
 
-public struct UntagResourceOutput {
+public struct UntagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdateConnectorProfileInput {
+public struct UpdateConnectorProfileInput: Swift.Sendable {
     /// The clientToken parameter is an idempotency token. It ensures that your UpdateConnectorProfile request completes only once. You choose the value to pass. For example, if you don't receive a response from your request, you can safely retry the request with the same clientToken parameter value. If you omit a clientToken value, the Amazon Web Services SDK that you are using inserts a value for you. This way, the SDK can safely retry requests multiple times after a network error. You must provide your own value for other use cases. If you specify input parameters that differ from your first request, an error occurs. If you use a different value for clientToken, Amazon AppFlow considers it a new call to UpdateConnectorProfile. The token is active for 8 hours.
     public var clientToken: Swift.String?
     /// Indicates the connection mode and if it is public or private.
@@ -7428,7 +7428,7 @@ public struct UpdateConnectorProfileInput {
     }
 }
 
-public struct UpdateConnectorProfileOutput {
+public struct UpdateConnectorProfileOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the connector profile.
     public var connectorProfileArn: Swift.String?
 
@@ -7440,7 +7440,7 @@ public struct UpdateConnectorProfileOutput {
     }
 }
 
-public struct UpdateConnectorRegistrationInput {
+public struct UpdateConnectorRegistrationInput: Swift.Sendable {
     /// The clientToken parameter is an idempotency token. It ensures that your UpdateConnectorRegistration request completes only once. You choose the value to pass. For example, if you don't receive a response from your request, you can safely retry the request with the same clientToken parameter value. If you omit a clientToken value, the Amazon Web Services SDK that you are using inserts a value for you. This way, the SDK can safely retry requests multiple times after a network error. You must provide your own value for other use cases. If you specify input parameters that differ from your first request, an error occurs. If you use a different value for clientToken, Amazon AppFlow considers it a new call to UpdateConnectorRegistration. The token is active for 8 hours.
     public var clientToken: Swift.String?
     /// The name of the connector. The name is unique for each connector registration in your AWS account.
@@ -7465,7 +7465,7 @@ public struct UpdateConnectorRegistrationInput {
     }
 }
 
-public struct UpdateConnectorRegistrationOutput {
+public struct UpdateConnectorRegistrationOutput: Swift.Sendable {
     /// The ARN of the connector being updated.
     public var connectorArn: Swift.String?
 
@@ -7477,7 +7477,7 @@ public struct UpdateConnectorRegistrationOutput {
     }
 }
 
-public struct UpdateFlowInput {
+public struct UpdateFlowInput: Swift.Sendable {
     /// The clientToken parameter is an idempotency token. It ensures that your UpdateFlow request completes only once. You choose the value to pass. For example, if you don't receive a response from your request, you can safely retry the request with the same clientToken parameter value. If you omit a clientToken value, the Amazon Web Services SDK that you are using inserts a value for you. This way, the SDK can safely retry requests multiple times after a network error. You must provide your own value for other use cases. If you specify input parameters that differ from your first request, an error occurs. If you use a different value for clientToken, Amazon AppFlow considers it a new call to UpdateFlow. The token is active for 8 hours.
     public var clientToken: Swift.String?
     /// A description of the flow.
@@ -7522,7 +7522,7 @@ public struct UpdateFlowInput {
     }
 }
 
-public struct UpdateFlowOutput {
+public struct UpdateFlowOutput: Swift.Sendable {
     /// Indicates the current status of the flow.
     public var flowStatus: AppflowClientTypes.FlowStatus?
 

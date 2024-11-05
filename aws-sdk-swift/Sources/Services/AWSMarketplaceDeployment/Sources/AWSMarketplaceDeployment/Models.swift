@@ -212,8 +212,9 @@ public struct ValidationException: ClientRuntime.ModeledError, AWSClientRuntime.
 }
 
 extension MarketplaceDeploymentClientTypes {
+
     /// The shape containing the requested deployment parameter name and secretString.
-    public struct DeploymentParameterInput {
+    public struct DeploymentParameterInput: Swift.Sendable {
         /// The desired name of the deployment parameter. This is the identifier on which deployment parameters are keyed for a given buyer and product. If this name matches an existing deployment parameter, this request will update the existing resource.
         /// This member is required.
         public var name: Swift.String?
@@ -230,7 +231,6 @@ extension MarketplaceDeploymentClientTypes {
             self.secretString = secretString
         }
     }
-
 }
 
 extension MarketplaceDeploymentClientTypes.DeploymentParameterInput: Swift.CustomDebugStringConvertible {
@@ -238,7 +238,7 @@ extension MarketplaceDeploymentClientTypes.DeploymentParameterInput: Swift.Custo
         "DeploymentParameterInput(name: \(Swift.String(describing: name)), secretString: \"CONTENT_REDACTED\")"}
 }
 
-public struct PutDeploymentParameterInput {
+public struct PutDeploymentParameterInput: Swift.Sendable {
     /// The unique identifier of the agreement.
     /// This member is required.
     public var agreementId: Swift.String?
@@ -278,7 +278,7 @@ public struct PutDeploymentParameterInput {
     }
 }
 
-public struct PutDeploymentParameterOutput {
+public struct PutDeploymentParameterOutput: Swift.Sendable {
     /// The unique identifier of the agreement.
     /// This member is required.
     public var agreementId: Swift.String?
@@ -305,7 +305,7 @@ public struct PutDeploymentParameterOutput {
     }
 }
 
-public struct ListTagsForResourceInput {
+public struct ListTagsForResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) associated with the deployment parameter resource you want to list tags on.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -318,7 +318,7 @@ public struct ListTagsForResourceInput {
     }
 }
 
-public struct ListTagsForResourceOutput {
+public struct ListTagsForResourceOutput: Swift.Sendable {
     /// A map of key-value pairs, where each pair represents a tag present on the resource.
     public var tags: [Swift.String: Swift.String]?
 
@@ -330,7 +330,7 @@ public struct ListTagsForResourceOutput {
     }
 }
 
-public struct TagResourceInput {
+public struct TagResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) associated with the resource you want to tag.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -347,12 +347,12 @@ public struct TagResourceInput {
     }
 }
 
-public struct TagResourceOutput {
+public struct TagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UntagResourceInput {
+public struct UntagResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) associated with the resource you want to remove the tag from.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -370,7 +370,7 @@ public struct UntagResourceInput {
     }
 }
 
-public struct UntagResourceOutput {
+public struct UntagResourceOutput: Swift.Sendable {
 
     public init() { }
 }

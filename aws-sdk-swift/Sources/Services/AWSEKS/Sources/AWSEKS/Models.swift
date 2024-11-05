@@ -31,7 +31,7 @@ import struct Smithy.URIQueryItem
 
 extension EKSClientTypes {
 
-    public enum AuthenticationMode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AuthenticationMode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case api
         case apiAndConfigMap
         case configMap
@@ -62,8 +62,9 @@ extension EKSClientTypes {
 }
 
 extension EKSClientTypes {
+
     /// The access configuration for the cluster.
-    public struct AccessConfigResponse {
+    public struct AccessConfigResponse: Swift.Sendable {
         /// The current authentication mode of the cluster.
         public var authenticationMode: EKSClientTypes.AuthenticationMode?
         /// Specifies whether or not the cluster creator IAM principal was set as a cluster admin access entry during cluster creation time.
@@ -78,7 +79,6 @@ extension EKSClientTypes {
             self.bootstrapClusterCreatorAdminPermissions = bootstrapClusterCreatorAdminPermissions
         }
     }
-
 }
 
 /// You don't have permissions to perform the requested operation. The [IAM principal](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_terms-and-concepts.html) making the request must have at least one IAM permissions policy attached that grants the required permissions. For more information, see [Access management](https://docs.aws.amazon.com/IAM/latest/UserGuide/access.html) in the IAM User Guide.
@@ -107,8 +107,9 @@ public struct AccessDeniedException: ClientRuntime.ModeledError, AWSClientRuntim
 }
 
 extension EKSClientTypes {
+
     /// An access entry allows an IAM principal (user or role) to access your cluster. Access entries can replace the need to maintain the aws-authConfigMap for authentication. For more information about access entries, see [Access entries](https://docs.aws.amazon.com/eks/latest/userguide/access-entries.html) in the Amazon EKS User Guide.
-    public struct AccessEntry {
+    public struct AccessEntry: Swift.Sendable {
         /// The ARN of the access entry.
         public var accessEntryArn: Swift.String?
         /// The name of your cluster.
@@ -151,12 +152,12 @@ extension EKSClientTypes {
             self.username = username
         }
     }
-
 }
 
 extension EKSClientTypes {
+
     /// An access policy includes permissions that allow Amazon EKS to authorize an IAM principal to work with Kubernetes objects on your cluster. The policies are managed by Amazon EKS, but they're not IAM policies. You can't view the permissions in the policies using the API. The permissions for many of the policies are similar to the Kubernetes cluster-admin, admin, edit, and view cluster roles. For more information about these cluster roles, see [User-facing roles](https://kubernetes.io/docs/reference/access-authn-authz/rbac/#user-facing-roles) in the Kubernetes documentation. To view the contents of the policies, see [Access policy permissions](https://docs.aws.amazon.com/eks/latest/userguide/access-policies.html#access-policy-permissions) in the Amazon EKS User Guide.
-    public struct AccessPolicy {
+    public struct AccessPolicy: Swift.Sendable {
         /// The ARN of the access policy.
         public var arn: Swift.String?
         /// The name of the access policy.
@@ -171,12 +172,11 @@ extension EKSClientTypes {
             self.name = name
         }
     }
-
 }
 
 extension EKSClientTypes {
 
-    public enum AccessScopeType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AccessScopeType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case cluster
         case namespace
         case sdkUnknown(Swift.String)
@@ -204,8 +204,9 @@ extension EKSClientTypes {
 }
 
 extension EKSClientTypes {
+
     /// The scope of an AccessPolicy that's associated to an AccessEntry.
-    public struct AccessScope {
+    public struct AccessScope: Swift.Sendable {
         /// A Kubernetes namespace that an access policy is scoped to. A value is required if you specified namespace for Type.
         public var namespaces: [Swift.String]?
         /// The scope type of an access policy.
@@ -220,12 +221,11 @@ extension EKSClientTypes {
             self.type = type
         }
     }
-
 }
 
 extension EKSClientTypes {
 
-    public enum AddonIssueCode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AddonIssueCode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case accessDenied
         case addonPermissionFailure
         case addonSubscriptionNeeded
@@ -277,8 +277,9 @@ extension EKSClientTypes {
 }
 
 extension EKSClientTypes {
+
     /// An issue related to an add-on.
-    public struct AddonIssue {
+    public struct AddonIssue: Swift.Sendable {
         /// A code that describes the type of issue.
         public var code: EKSClientTypes.AddonIssueCode?
         /// A message that provides details about the issue and what might cause it.
@@ -297,12 +298,12 @@ extension EKSClientTypes {
             self.resourceIds = resourceIds
         }
     }
-
 }
 
 extension EKSClientTypes {
+
     /// The health of the add-on.
-    public struct AddonHealth {
+    public struct AddonHealth: Swift.Sendable {
         /// An object representing the health issues for an add-on.
         public var issues: [EKSClientTypes.AddonIssue]?
 
@@ -313,12 +314,12 @@ extension EKSClientTypes {
             self.issues = issues
         }
     }
-
 }
 
 extension EKSClientTypes {
+
     /// Information about an Amazon EKS add-on from the Amazon Web Services Marketplace.
-    public struct MarketplaceInformation {
+    public struct MarketplaceInformation: Swift.Sendable {
         /// The product ID from the Amazon Web Services Marketplace.
         public var productId: Swift.String?
         /// The product URL from the Amazon Web Services Marketplace.
@@ -333,12 +334,11 @@ extension EKSClientTypes {
             self.productUrl = productUrl
         }
     }
-
 }
 
 extension EKSClientTypes {
 
-    public enum AddonStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AddonStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case active
         case createFailed
         case creating
@@ -384,8 +384,9 @@ extension EKSClientTypes {
 }
 
 extension EKSClientTypes {
+
     /// An Amazon EKS add-on. For more information, see [Amazon EKS add-ons](https://docs.aws.amazon.com/eks/latest/userguide/eks-add-ons.html) in the Amazon EKS User Guide.
-    public struct Addon {
+    public struct Addon: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the add-on.
         public var addonArn: Swift.String?
         /// The name of the add-on.
@@ -452,12 +453,12 @@ extension EKSClientTypes {
             self.tags = tags
         }
     }
-
 }
 
 extension EKSClientTypes {
+
     /// Compatibility information.
-    public struct Compatibility {
+    public struct Compatibility: Swift.Sendable {
         /// The supported Kubernetes version of the cluster.
         public var clusterVersion: Swift.String?
         /// The supported default version.
@@ -476,12 +477,12 @@ extension EKSClientTypes {
             self.platformVersions = platformVersions
         }
     }
-
 }
 
 extension EKSClientTypes {
+
     /// Information about an add-on version.
-    public struct AddonVersionInfo {
+    public struct AddonVersionInfo: Swift.Sendable {
         /// The version of the add-on.
         public var addonVersion: Swift.String?
         /// The architectures that the version supports.
@@ -508,12 +509,12 @@ extension EKSClientTypes {
             self.requiresIamPermissions = requiresIamPermissions
         }
     }
-
 }
 
 extension EKSClientTypes {
+
     /// Information about an add-on.
-    public struct AddonInfo {
+    public struct AddonInfo: Swift.Sendable {
         /// The name of the add-on.
         public var addonName: Swift.String?
         /// An object representing information about available add-on versions and compatible Kubernetes versions.
@@ -544,12 +545,12 @@ extension EKSClientTypes {
             self.type = type
         }
     }
-
 }
 
 extension EKSClientTypes {
+
     /// A type of Pod Identity Association owned by an Amazon EKS Add-on. Each EKS Pod Identity Association maps a role to a service account in a namespace in the cluster. For more information, see [Attach an IAM Role to an Amazon EKS add-on using Pod Identity](https://docs.aws.amazon.com/eks/latest/userguide/add-ons-iam.html) in the EKS User Guide.
-    public struct AddonPodIdentityAssociations {
+    public struct AddonPodIdentityAssociations: Swift.Sendable {
         /// The ARN of an IAM Role.
         /// This member is required.
         public var roleArn: Swift.String?
@@ -566,12 +567,12 @@ extension EKSClientTypes {
             self.serviceAccount = serviceAccount
         }
     }
-
 }
 
 extension EKSClientTypes {
+
     /// Information about how to configure IAM for an Addon.
-    public struct AddonPodIdentityConfiguration {
+    public struct AddonPodIdentityConfiguration: Swift.Sendable {
         /// A suggested IAM Policy for the addon.
         public var recommendedManagedPolicies: [Swift.String]?
         /// The Kubernetes Service Account name used by the addon.
@@ -586,12 +587,11 @@ extension EKSClientTypes {
             self.serviceAccount = serviceAccount
         }
     }
-
 }
 
 extension EKSClientTypes {
 
-    public enum AMITypes: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AMITypes: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case al2023Arm64Standard
         case al2023X8664Neuron
         case al2023X8664Nvidia
@@ -832,7 +832,7 @@ public struct ServerException: ClientRuntime.ModeledError, AWSClientRuntime.AWSS
     }
 }
 
-public struct AssociateAccessPolicyInput {
+public struct AssociateAccessPolicyInput: Swift.Sendable {
     /// The scope for the AccessPolicy. You can scope access policies to an entire cluster or to specific Kubernetes namespaces.
     /// This member is required.
     public var accessScope: EKSClientTypes.AccessScope?
@@ -861,8 +861,9 @@ public struct AssociateAccessPolicyInput {
 }
 
 extension EKSClientTypes {
+
     /// An access policy association.
-    public struct AssociatedAccessPolicy {
+    public struct AssociatedAccessPolicy: Swift.Sendable {
         /// The scope of the access policy.
         public var accessScope: EKSClientTypes.AccessScope?
         /// The date and time the AccessPolicy was associated with an AccessEntry.
@@ -885,10 +886,9 @@ extension EKSClientTypes {
             self.policyArn = policyArn
         }
     }
-
 }
 
-public struct AssociateAccessPolicyOutput {
+public struct AssociateAccessPolicyOutput: Swift.Sendable {
     /// The AccessPolicy and scope associated to the AccessEntry.
     public var associatedAccessPolicy: EKSClientTypes.AssociatedAccessPolicy?
     /// The name of your cluster.
@@ -987,8 +987,9 @@ public struct ResourceInUseException: ClientRuntime.ModeledError, AWSClientRunti
 }
 
 extension EKSClientTypes {
+
     /// Identifies the Key Management Service (KMS) key used to encrypt the secrets.
-    public struct Provider {
+    public struct Provider: Swift.Sendable {
         /// Amazon Resource Name (ARN) or alias of the KMS key. The KMS key must be symmetric and created in the same Amazon Web Services Region as the cluster. If the KMS key was created in a different account, the [IAM principal](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_terms-and-concepts.html) must have access to the KMS key. For more information, see [Allowing users in other accounts to use a KMS key](https://docs.aws.amazon.com/kms/latest/developerguide/key-policy-modifying-external-accounts.html) in the Key Management Service Developer Guide.
         public var keyArn: Swift.String?
 
@@ -999,12 +1000,12 @@ extension EKSClientTypes {
             self.keyArn = keyArn
         }
     }
-
 }
 
 extension EKSClientTypes {
+
     /// The encryption configuration for the cluster.
-    public struct EncryptionConfig {
+    public struct EncryptionConfig: Swift.Sendable {
         /// Key Management Service (KMS) key. Either the ARN or the alias can be used.
         public var provider: EKSClientTypes.Provider?
         /// Specifies the resources to be encrypted. The only supported value is secrets.
@@ -1019,10 +1020,9 @@ extension EKSClientTypes {
             self.resources = resources
         }
     }
-
 }
 
-public struct AssociateEncryptionConfigInput {
+public struct AssociateEncryptionConfigInput: Swift.Sendable {
     /// A unique, case-sensitive identifier that you provide to ensure the idempotency of the request.
     public var clientRequestToken: Swift.String?
     /// The name of your cluster.
@@ -1046,7 +1046,7 @@ public struct AssociateEncryptionConfigInput {
 
 extension EKSClientTypes {
 
-    public enum ErrorCode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ErrorCode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case accessDenied
         case admissionRequestDenied
         case clusterUnreachable
@@ -1119,8 +1119,9 @@ extension EKSClientTypes {
 }
 
 extension EKSClientTypes {
+
     /// An object representing an error when an asynchronous operation fails.
-    public struct ErrorDetail {
+    public struct ErrorDetail: Swift.Sendable {
         /// A brief description of the error.
         ///
         /// * SubnetNotFound: We couldn't find one of the subnets associated with the cluster.
@@ -1153,12 +1154,11 @@ extension EKSClientTypes {
             self.resourceIds = resourceIds
         }
     }
-
 }
 
 extension EKSClientTypes {
 
-    public enum UpdateParamType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum UpdateParamType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case addonVersion
         case authenticationMode
         case clusterLogging
@@ -1188,6 +1188,7 @@ extension EKSClientTypes {
         case taintsToRemove
         case upgradePolicy
         case version
+        case zonalShiftConfig
         case sdkUnknown(Swift.String)
 
         public static var allCases: [UpdateParamType] {
@@ -1220,7 +1221,8 @@ extension EKSClientTypes {
                 .taintsToAdd,
                 .taintsToRemove,
                 .upgradePolicy,
-                .version
+                .version,
+                .zonalShiftConfig
             ]
         }
 
@@ -1260,6 +1262,7 @@ extension EKSClientTypes {
             case .taintsToRemove: return "TaintsToRemove"
             case .upgradePolicy: return "UpgradePolicy"
             case .version: return "Version"
+            case .zonalShiftConfig: return "ZonalShiftConfig"
             case let .sdkUnknown(s): return s
             }
         }
@@ -1267,8 +1270,9 @@ extension EKSClientTypes {
 }
 
 extension EKSClientTypes {
+
     /// An object representing the details of an update request.
-    public struct UpdateParam {
+    public struct UpdateParam: Swift.Sendable {
         /// The keys associated with an update request.
         public var type: EKSClientTypes.UpdateParamType?
         /// The value of the keys submitted as part of an update request.
@@ -1283,12 +1287,11 @@ extension EKSClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension EKSClientTypes {
 
-    public enum UpdateStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum UpdateStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case cancelled
         case failed
         case inProgress
@@ -1323,7 +1326,7 @@ extension EKSClientTypes {
 
 extension EKSClientTypes {
 
-    public enum UpdateType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum UpdateType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case accessConfigUpdate
         case addonUpdate
         case associateEncryptionConfig
@@ -1335,6 +1338,7 @@ extension EKSClientTypes {
         case upgradePolicyUpdate
         case versionUpdate
         case vpcConfigUpdate
+        case zonalShiftConfigUpdate
         case sdkUnknown(Swift.String)
 
         public static var allCases: [UpdateType] {
@@ -1349,7 +1353,8 @@ extension EKSClientTypes {
                 .loggingUpdate,
                 .upgradePolicyUpdate,
                 .versionUpdate,
-                .vpcConfigUpdate
+                .vpcConfigUpdate,
+                .zonalShiftConfigUpdate
             ]
         }
 
@@ -1371,6 +1376,7 @@ extension EKSClientTypes {
             case .upgradePolicyUpdate: return "UpgradePolicyUpdate"
             case .versionUpdate: return "VersionUpdate"
             case .vpcConfigUpdate: return "VpcConfigUpdate"
+            case .zonalShiftConfigUpdate: return "ZonalShiftConfigUpdate"
             case let .sdkUnknown(s): return s
             }
         }
@@ -1378,8 +1384,9 @@ extension EKSClientTypes {
 }
 
 extension EKSClientTypes {
+
     /// An object representing an asynchronous update.
-    public struct Update {
+    public struct Update: Swift.Sendable {
         /// The Unix epoch timestamp at object creation.
         public var createdAt: Foundation.Date?
         /// Any errors associated with a Failed update.
@@ -1410,10 +1417,9 @@ extension EKSClientTypes {
             self.type = type
         }
     }
-
 }
 
-public struct AssociateEncryptionConfigOutput {
+public struct AssociateEncryptionConfigOutput: Swift.Sendable {
     /// An object representing an asynchronous update.
     public var update: EKSClientTypes.Update?
 
@@ -1426,8 +1432,9 @@ public struct AssociateEncryptionConfigOutput {
 }
 
 extension EKSClientTypes {
+
     /// An object representing an OpenID Connect (OIDC) configuration. Before associating an OIDC identity provider to your cluster, review the considerations in [Authenticating users for your cluster from an OIDC identity provider](https://docs.aws.amazon.com/eks/latest/userguide/authenticate-oidc-identity-provider.html) in the Amazon EKS User Guide.
-    public struct OidcIdentityProviderConfigRequest {
+    public struct OidcIdentityProviderConfigRequest: Swift.Sendable {
         /// This is also known as audience. The ID for the client application that makes authentication requests to the OIDC identity provider.
         /// This member is required.
         public var clientId: Swift.String?
@@ -1469,10 +1476,9 @@ extension EKSClientTypes {
             self.usernamePrefix = usernamePrefix
         }
     }
-
 }
 
-public struct AssociateIdentityProviderConfigInput {
+public struct AssociateIdentityProviderConfigInput: Swift.Sendable {
     /// A unique, case-sensitive identifier that you provide to ensure the idempotency of the request.
     public var clientRequestToken: Swift.String?
     /// The name of your cluster.
@@ -1498,7 +1504,7 @@ public struct AssociateIdentityProviderConfigInput {
     }
 }
 
-public struct AssociateIdentityProviderConfigOutput {
+public struct AssociateIdentityProviderConfigOutput: Swift.Sendable {
     /// The tags for the resource.
     public var tags: [Swift.String: Swift.String]?
     /// An object representing an asynchronous update.
@@ -1515,8 +1521,9 @@ public struct AssociateIdentityProviderConfigOutput {
 }
 
 extension EKSClientTypes {
+
     /// An Auto Scaling group that is associated with an Amazon EKS managed node group.
-    public struct AutoScalingGroup {
+    public struct AutoScalingGroup: Swift.Sendable {
         /// The name of the Auto Scaling group associated with an Amazon EKS managed node group.
         public var name: Swift.String?
 
@@ -1527,7 +1534,6 @@ extension EKSClientTypes {
             self.name = name
         }
     }
-
 }
 
 /// You have encountered a service limit on the specified resource.
@@ -1567,7 +1573,7 @@ public struct ResourceLimitExceededException: ClientRuntime.ModeledError, AWSCli
     }
 }
 
-public struct CreateAccessEntryInput {
+public struct CreateAccessEntryInput: Swift.Sendable {
     /// A unique, case-sensitive identifier that you provide to ensure the idempotency of the request.
     public var clientRequestToken: Swift.String?
     /// The name of your cluster.
@@ -1605,7 +1611,7 @@ public struct CreateAccessEntryInput {
     }
 }
 
-public struct CreateAccessEntryOutput {
+public struct CreateAccessEntryOutput: Swift.Sendable {
     /// An access entry allows an IAM principal (user or role) to access your cluster. Access entries can replace the need to maintain the aws-authConfigMap for authentication. For more information about access entries, see [Access entries](https://docs.aws.amazon.com/eks/latest/userguide/access-entries.html) in the Amazon EKS User Guide.
     public var accessEntry: EKSClientTypes.AccessEntry?
 
@@ -1619,7 +1625,7 @@ public struct CreateAccessEntryOutput {
 
 extension EKSClientTypes {
 
-    public enum ResolveConflicts: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ResolveConflicts: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case `none`
         case overwrite
         case preserve
@@ -1649,7 +1655,7 @@ extension EKSClientTypes {
     }
 }
 
-public struct CreateAddonInput {
+public struct CreateAddonInput: Swift.Sendable {
     /// The name of the add-on. The name must match one of the names returned by DescribeAddonVersions.
     /// This member is required.
     public var addonName: Swift.String?
@@ -1704,7 +1710,7 @@ public struct CreateAddonInput {
     }
 }
 
-public struct CreateAddonOutput {
+public struct CreateAddonOutput: Swift.Sendable {
     /// An Amazon EKS add-on. For more information, see [Amazon EKS add-ons](https://docs.aws.amazon.com/eks/latest/userguide/eks-add-ons.html) in the Amazon EKS User Guide.
     public var addon: EKSClientTypes.Addon?
 
@@ -1779,8 +1785,9 @@ public struct UnsupportedAvailabilityZoneException: ClientRuntime.ModeledError, 
 }
 
 extension EKSClientTypes {
+
     /// The access configuration information for the cluster.
-    public struct CreateAccessConfigRequest {
+    public struct CreateAccessConfigRequest: Swift.Sendable {
         /// The desired authentication mode for the cluster. If you create a cluster by using the EKS API, Amazon Web Services SDKs, or CloudFormation, the default is CONFIG_MAP. If you create the cluster by using the Amazon Web Services Management Console, the default value is API_AND_CONFIG_MAP.
         public var authenticationMode: EKSClientTypes.AuthenticationMode?
         /// Specifies whether or not the cluster creator IAM principal was set as a cluster admin access entry during cluster creation time. The default value is true.
@@ -1795,12 +1802,11 @@ extension EKSClientTypes {
             self.bootstrapClusterCreatorAdminPermissions = bootstrapClusterCreatorAdminPermissions
         }
     }
-
 }
 
 extension EKSClientTypes {
 
-    public enum IpFamily: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum IpFamily: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case ipv4
         case ipv6
         case sdkUnknown(Swift.String)
@@ -1828,8 +1834,9 @@ extension EKSClientTypes {
 }
 
 extension EKSClientTypes {
+
     /// The Kubernetes network configuration for the cluster.
-    public struct KubernetesNetworkConfigRequest {
+    public struct KubernetesNetworkConfigRequest: Swift.Sendable {
         /// Specify which IP family is used to assign Kubernetes pod and service IP addresses. If you don't specify a value, ipv4 is used by default. You can only specify an IP family when you create a cluster and can't change this value once the cluster is created. If you specify ipv6, the VPC and subnets that you specify for cluster creation must have both IPv4 and IPv6 CIDR blocks assigned to them. You can't specify ipv6 for clusters in China Regions. You can only specify ipv6 for 1.21 and later clusters that use version 1.10.1 or later of the Amazon VPC CNI add-on. If you specify ipv6, then ensure that your VPC meets the requirements listed in the considerations listed in [Assigning IPv6 addresses to pods and services](https://docs.aws.amazon.com/eks/latest/userguide/cni-ipv6.html) in the Amazon EKS User Guide. Kubernetes assigns services IPv6 addresses from the unique local address range (fc00::/7). You can't specify a custom IPv6 CIDR block. Pod addresses are assigned from the subnet's IPv6 CIDR.
         public var ipFamily: EKSClientTypes.IpFamily?
         /// Don't specify a value if you select ipv6 for ipFamily. The CIDR block to assign Kubernetes service IP addresses from. If you don't specify a block, Kubernetes assigns addresses from either the 10.100.0.0/16 or 172.20.0.0/16 CIDR blocks. We recommend that you specify a block that does not overlap with resources in other networks that are peered or connected to your VPC. The block must meet the following requirements:
@@ -1853,12 +1860,11 @@ extension EKSClientTypes {
             self.serviceIpv4Cidr = serviceIpv4Cidr
         }
     }
-
 }
 
 extension EKSClientTypes {
 
-    public enum LogType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum LogType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case api
         case audit
         case authenticator
@@ -1895,8 +1901,9 @@ extension EKSClientTypes {
 }
 
 extension EKSClientTypes {
+
     /// An object representing the enabled or disabled Kubernetes control plane logs for your cluster.
-    public struct LogSetup {
+    public struct LogSetup: Swift.Sendable {
         /// If a log type is enabled, that log type exports its control plane logs to CloudWatch Logs. If a log type isn't enabled, that log type doesn't export its control plane logs. Each individual log type can be enabled or disabled independently.
         public var enabled: Swift.Bool?
         /// The available cluster control plane log types.
@@ -1911,12 +1918,12 @@ extension EKSClientTypes {
             self.types = types
         }
     }
-
 }
 
 extension EKSClientTypes {
+
     /// An object representing the logging configuration for resources in your cluster.
-    public struct Logging {
+    public struct Logging: Swift.Sendable {
         /// The cluster control plane logging configuration for your cluster.
         public var clusterLogging: [EKSClientTypes.LogSetup]?
 
@@ -1927,12 +1934,12 @@ extension EKSClientTypes {
             self.clusterLogging = clusterLogging
         }
     }
-
 }
 
 extension EKSClientTypes {
+
     /// The placement configuration for all the control plane instances of your local Amazon EKS cluster on an Amazon Web Services Outpost. For more information, see [Capacity considerations](https://docs.aws.amazon.com/eks/latest/userguide/eks-outposts-capacity-considerations.html) in the Amazon EKS User Guide.
-    public struct ControlPlanePlacementRequest {
+    public struct ControlPlanePlacementRequest: Swift.Sendable {
         /// The name of the placement group for the Kubernetes control plane instances. This setting can't be changed after cluster creation.
         public var groupName: Swift.String?
 
@@ -1943,12 +1950,12 @@ extension EKSClientTypes {
             self.groupName = groupName
         }
     }
-
 }
 
 extension EKSClientTypes {
+
     /// The configuration of your local Amazon EKS cluster on an Amazon Web Services Outpost. Before creating a cluster on an Outpost, review [Creating a local cluster on an Outpost](https://docs.aws.amazon.com/eks/latest/userguide/eks-outposts-local-cluster-create.html) in the Amazon EKS User Guide. This API isn't available for Amazon EKS clusters on the Amazon Web Services cloud.
-    public struct OutpostConfigRequest {
+    public struct OutpostConfigRequest: Swift.Sendable {
         /// The Amazon EC2 instance type that you want to use for your local Amazon EKS cluster on Outposts. Choose an instance type based on the number of nodes that your cluster will have. For more information, see [Capacity considerations](https://docs.aws.amazon.com/eks/latest/userguide/eks-outposts-capacity-considerations.html) in the Amazon EKS User Guide. The instance type that you specify is used for all Kubernetes control plane instances. The instance type can't be changed after cluster creation. The control plane is not automatically scaled by Amazon EKS.
         /// This member is required.
         public var controlPlaneInstanceType: Swift.String?
@@ -1969,12 +1976,12 @@ extension EKSClientTypes {
             self.outpostArns = outpostArns
         }
     }
-
 }
 
 extension EKSClientTypes {
+
     /// An object representing the VPC configuration to use for an Amazon EKS cluster.
-    public struct VpcConfigRequest {
+    public struct VpcConfigRequest: Swift.Sendable {
         /// Set this value to true to enable private access for your cluster's Kubernetes API server endpoint. If you enable private access, Kubernetes API requests from within your cluster's VPC use the private VPC endpoint. The default value for this parameter is false, which disables private access for your Kubernetes API server. If you disable private access and you have nodes or Fargate pods in the cluster, then ensure that publicAccessCidrs includes the necessary CIDR blocks for communication with the nodes or Fargate pods. For more information, see [Amazon EKS cluster endpoint access control](https://docs.aws.amazon.com/eks/latest/userguide/cluster-endpoint.html) in the Amazon EKS User Guide .
         public var endpointPrivateAccess: Swift.Bool?
         /// Set this value to false to disable public access to your cluster's Kubernetes API server endpoint. If you disable public access, your cluster's Kubernetes API server can only receive requests from within the cluster VPC. The default value for this parameter is true, which enables public access for your Kubernetes API server. For more information, see [Amazon EKS cluster endpoint access control](https://docs.aws.amazon.com/eks/latest/userguide/cluster-endpoint.html) in the Amazon EKS User Guide .
@@ -2001,12 +2008,11 @@ extension EKSClientTypes {
             self.subnetIds = subnetIds
         }
     }
-
 }
 
 extension EKSClientTypes {
 
-    public enum SupportType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SupportType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case extended
         case standard
         case sdkUnknown(Swift.String)
@@ -2034,8 +2040,9 @@ extension EKSClientTypes {
 }
 
 extension EKSClientTypes {
+
     /// The support policy to use for the cluster. Extended support allows you to remain on specific Kubernetes versions for longer. Clusters in extended support have higher costs. The default value is EXTENDED. Use STANDARD to disable extended support. [Learn more about EKS Extended Support in the EKS User Guide.](https://docs.aws.amazon.com/eks/latest/userguide/extended-support-control.html)
-    public struct UpgradePolicyRequest {
+    public struct UpgradePolicyRequest: Swift.Sendable {
         /// If the cluster is set to EXTENDED, it will enter extended support at the end of standard support. If the cluster is set to STANDARD, it will be automatically upgraded at the end of standard support. [Learn more about EKS Extended Support in the EKS User Guide.](https://docs.aws.amazon.com/eks/latest/userguide/extended-support-control.html)
         public var supportType: EKSClientTypes.SupportType?
 
@@ -2046,10 +2053,25 @@ extension EKSClientTypes {
             self.supportType = supportType
         }
     }
-
 }
 
-public struct CreateClusterInput {
+extension EKSClientTypes {
+
+    /// The configuration for zonal shift for the cluster.
+    public struct ZonalShiftConfigRequest: Swift.Sendable {
+        /// If zonal shift is enabled, Amazon Web Services configures zonal autoshift for the cluster.
+        public var enabled: Swift.Bool?
+
+        public init(
+            enabled: Swift.Bool? = nil
+        )
+        {
+            self.enabled = enabled
+        }
+    }
+}
+
+public struct CreateClusterInput: Swift.Sendable {
     /// The access configuration for the cluster.
     public var accessConfig: EKSClientTypes.CreateAccessConfigRequest?
     /// If you set this value to False when creating a cluster, the default networking add-ons will not be installed. The default networking addons include vpc-cni, coredns, and kube-proxy. Use this option when you plan to install third-party alternative add-ons or self-manage the default networking add-ons.
@@ -2062,7 +2084,7 @@ public struct CreateClusterInput {
     public var kubernetesNetworkConfig: EKSClientTypes.KubernetesNetworkConfigRequest?
     /// Enable or disable exporting the Kubernetes control plane logs for your cluster to CloudWatch Logs. By default, cluster control plane logs aren't exported to CloudWatch Logs. For more information, see [Amazon EKS Cluster control plane logs](https://docs.aws.amazon.com/eks/latest/userguide/control-plane-logs.html) in the Amazon EKS User Guide . CloudWatch Logs ingestion, archive storage, and data scanning rates apply to exported control plane logs. For more information, see [CloudWatch Pricing](http://aws.amazon.com/cloudwatch/pricing/).
     public var logging: EKSClientTypes.Logging?
-    /// The unique name to give to your cluster.
+    /// The unique name to give to your cluster. The name can contain only alphanumeric characters (case-sensitive), hyphens, and underscores. It must start with an alphanumeric character and can't be longer than 100 characters. The name must be unique within the Amazon Web Services Region and Amazon Web Services account that you're creating the cluster in.
     /// This member is required.
     public var name: Swift.String?
     /// An object representing the configuration of your local Amazon EKS cluster on an Amazon Web Services Outpost. Before creating a local cluster on an Outpost, review [Local clusters for Amazon EKS on Amazon Web Services Outposts](https://docs.aws.amazon.com/eks/latest/userguide/eks-outposts-local-cluster-overview.html) in the Amazon EKS User Guide. This object isn't available for creating Amazon EKS clusters on the Amazon Web Services cloud.
@@ -2079,6 +2101,8 @@ public struct CreateClusterInput {
     public var upgradePolicy: EKSClientTypes.UpgradePolicyRequest?
     /// The desired Kubernetes version for your cluster. If you don't specify a value here, the default version available in Amazon EKS is used. The default version might not be the latest version available.
     public var version: Swift.String?
+    /// Enable or disable ARC zonal shift for the cluster. If zonal shift is enabled, Amazon Web Services configures zonal autoshift for the cluster. Zonal shift is a feature of Amazon Application Recovery Controller (ARC). ARC zonal shift is designed to be a temporary measure that allows you to move traffic for a resource away from an impaired AZ until the zonal shift expires or you cancel it. You can extend the zonal shift if necessary. You can start a zonal shift for an EKS cluster, or you can allow Amazon Web Services to do it for you by enabling zonal autoshift. This shift updates the flow of east-to-west network traffic in your cluster to only consider network endpoints for Pods running on worker nodes in healthy AZs. Additionally, any ALB or NLB handling ingress traffic for applications in your EKS cluster will automatically route traffic to targets in the healthy AZs. For more information about zonal shift in EKS, see [Learn about Amazon Application Recovery Controller (ARC) Zonal Shift in Amazon EKS](https://docs.aws.amazon.com/eks/latest/userguide/zone-shift.html) in the Amazon EKS User Guide .
+    public var zonalShiftConfig: EKSClientTypes.ZonalShiftConfigRequest?
 
     public init(
         accessConfig: EKSClientTypes.CreateAccessConfigRequest? = nil,
@@ -2093,7 +2117,8 @@ public struct CreateClusterInput {
         roleArn: Swift.String? = nil,
         tags: [Swift.String: Swift.String]? = nil,
         upgradePolicy: EKSClientTypes.UpgradePolicyRequest? = nil,
-        version: Swift.String? = nil
+        version: Swift.String? = nil,
+        zonalShiftConfig: EKSClientTypes.ZonalShiftConfigRequest? = nil
     )
     {
         self.accessConfig = accessConfig
@@ -2109,12 +2134,14 @@ public struct CreateClusterInput {
         self.tags = tags
         self.upgradePolicy = upgradePolicy
         self.version = version
+        self.zonalShiftConfig = zonalShiftConfig
     }
 }
 
 extension EKSClientTypes {
+
     /// An object representing the certificate-authority-data for your cluster.
-    public struct Certificate {
+    public struct Certificate: Swift.Sendable {
         /// The Base64-encoded certificate data required to communicate with your cluster. Add this to the certificate-authority-data section of the kubeconfig file for your cluster.
         public var data: Swift.String?
 
@@ -2125,12 +2152,12 @@ extension EKSClientTypes {
             self.data = data
         }
     }
-
 }
 
 extension EKSClientTypes {
+
     /// The full description of your connected cluster.
-    public struct ConnectorConfigResponse {
+    public struct ConnectorConfigResponse: Swift.Sendable {
         /// A unique code associated with the cluster for registration purposes.
         public var activationCode: Swift.String?
         /// The expiration time of the connected cluster. The cluster's YAML file must be applied through the native provider.
@@ -2157,12 +2184,11 @@ extension EKSClientTypes {
             self.roleArn = roleArn
         }
     }
-
 }
 
 extension EKSClientTypes {
 
-    public enum ClusterIssueCode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ClusterIssueCode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case accessDenied
         case clusterUnreachable
         case configurationConflict
@@ -2241,8 +2267,9 @@ extension EKSClientTypes {
 }
 
 extension EKSClientTypes {
+
     /// An issue with your Amazon EKS cluster.
-    public struct ClusterIssue {
+    public struct ClusterIssue: Swift.Sendable {
         /// The error code of the issue.
         public var code: EKSClientTypes.ClusterIssueCode?
         /// A description of the issue.
@@ -2261,12 +2288,12 @@ extension EKSClientTypes {
             self.resourceIds = resourceIds
         }
     }
-
 }
 
 extension EKSClientTypes {
+
     /// An object representing the health of your Amazon EKS cluster.
-    public struct ClusterHealth {
+    public struct ClusterHealth: Swift.Sendable {
         /// An object representing the health issues of your Amazon EKS cluster.
         public var issues: [EKSClientTypes.ClusterIssue]?
 
@@ -2277,12 +2304,12 @@ extension EKSClientTypes {
             self.issues = issues
         }
     }
-
 }
 
 extension EKSClientTypes {
+
     /// An object representing the [OpenID Connect](https://openid.net/connect/) (OIDC) identity provider information for the cluster.
-    public struct OIDC {
+    public struct OIDC: Swift.Sendable {
         /// The issuer URL for the OIDC identity provider.
         public var issuer: Swift.String?
 
@@ -2293,12 +2320,12 @@ extension EKSClientTypes {
             self.issuer = issuer
         }
     }
-
 }
 
 extension EKSClientTypes {
+
     /// An object representing an identity provider.
-    public struct Identity {
+    public struct Identity: Swift.Sendable {
         /// An object representing the [OpenID Connect](https://openid.net/connect/) identity provider information.
         public var oidc: EKSClientTypes.OIDC?
 
@@ -2309,12 +2336,12 @@ extension EKSClientTypes {
             self.oidc = oidc
         }
     }
-
 }
 
 extension EKSClientTypes {
+
     /// The Kubernetes network configuration for the cluster. The response contains a value for serviceIpv6Cidr or serviceIpv4Cidr, but not both.
-    public struct KubernetesNetworkConfigResponse {
+    public struct KubernetesNetworkConfigResponse: Swift.Sendable {
         /// The IP family used to assign Kubernetes Pod and Service objects IP addresses. The IP family is always ipv4, unless you have a 1.21 or later cluster running version 1.10.1 or later of the Amazon VPC CNI plugin for Kubernetes and specified ipv6 when you created the cluster.
         public var ipFamily: EKSClientTypes.IpFamily?
         /// The CIDR block that Kubernetes Pod and Service object IP addresses are assigned from. Kubernetes assigns addresses from an IPv4 CIDR block assigned to a subnet that the node is in. If you didn't specify a CIDR block when you created the cluster, then Kubernetes assigns addresses from either the 10.100.0.0/16 or 172.20.0.0/16 CIDR blocks. If this was specified, then it was specified when the cluster was created and it can't be changed.
@@ -2333,12 +2360,12 @@ extension EKSClientTypes {
             self.serviceIpv6Cidr = serviceIpv6Cidr
         }
     }
-
 }
 
 extension EKSClientTypes {
+
     /// The placement configuration for all the control plane instances of your local Amazon EKS cluster on an Amazon Web Services Outpost. For more information, see [Capacity considerations](https://docs.aws.amazon.com/eks/latest/userguide/eks-outposts-capacity-considerations.html) in the Amazon EKS User Guide.
-    public struct ControlPlanePlacementResponse {
+    public struct ControlPlanePlacementResponse: Swift.Sendable {
         /// The name of the placement group for the Kubernetes control plane instances.
         public var groupName: Swift.String?
 
@@ -2349,12 +2376,12 @@ extension EKSClientTypes {
             self.groupName = groupName
         }
     }
-
 }
 
 extension EKSClientTypes {
+
     /// An object representing the configuration of your local Amazon EKS cluster on an Amazon Web Services Outpost. This API isn't available for Amazon EKS clusters on the Amazon Web Services cloud.
-    public struct OutpostConfigResponse {
+    public struct OutpostConfigResponse: Swift.Sendable {
         /// The Amazon EC2 instance type used for the control plane. The instance type is the same for all control plane instances.
         /// This member is required.
         public var controlPlaneInstanceType: Swift.String?
@@ -2375,12 +2402,12 @@ extension EKSClientTypes {
             self.outpostArns = outpostArns
         }
     }
-
 }
 
 extension EKSClientTypes {
+
     /// An object representing an Amazon EKS cluster VPC configuration response.
-    public struct VpcConfigResponse {
+    public struct VpcConfigResponse: Swift.Sendable {
         /// The cluster security group that was created by Amazon EKS for the cluster. Managed node groups use this security group for control-plane-to-data-plane communication.
         public var clusterSecurityGroupId: Swift.String?
         /// This parameter indicates whether the Amazon EKS private API server endpoint is enabled. If the Amazon EKS private API server endpoint is enabled, Kubernetes API requests that originate from within your cluster's VPC use the private VPC endpoint instead of traversing the internet. If this value is disabled and you have nodes or Fargate pods in the cluster, then ensure that publicAccessCidrs includes the necessary CIDR blocks for communication with the nodes or Fargate pods. For more information, see [Amazon EKS cluster endpoint access control](https://docs.aws.amazon.com/eks/latest/userguide/cluster-endpoint.html) in the Amazon EKS User Guide .
@@ -2415,12 +2442,11 @@ extension EKSClientTypes {
             self.vpcId = vpcId
         }
     }
-
 }
 
 extension EKSClientTypes {
 
-    public enum ClusterStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ClusterStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case active
         case creating
         case deleting
@@ -2460,8 +2486,9 @@ extension EKSClientTypes {
 }
 
 extension EKSClientTypes {
+
     /// This value indicates if extended support is enabled or disabled for the cluster. [Learn more about EKS Extended Support in the EKS User Guide.](https://docs.aws.amazon.com/eks/latest/userguide/extended-support-control.html)
-    public struct UpgradePolicyResponse {
+    public struct UpgradePolicyResponse: Swift.Sendable {
         /// If the cluster is set to EXTENDED, it will enter extended support at the end of standard support. If the cluster is set to STANDARD, it will be automatically upgraded at the end of standard support. [Learn more about EKS Extended Support in the EKS User Guide.](https://docs.aws.amazon.com/eks/latest/userguide/extended-support-control.html)
         public var supportType: EKSClientTypes.SupportType?
 
@@ -2472,12 +2499,28 @@ extension EKSClientTypes {
             self.supportType = supportType
         }
     }
-
 }
 
 extension EKSClientTypes {
+
+    /// The status of zonal shift configuration for the cluster
+    public struct ZonalShiftConfigResponse: Swift.Sendable {
+        /// Whether the zonal shift is enabled.
+        public var enabled: Swift.Bool?
+
+        public init(
+            enabled: Swift.Bool? = nil
+        )
+        {
+            self.enabled = enabled
+        }
+    }
+}
+
+extension EKSClientTypes {
+
     /// An object representing an Amazon EKS cluster.
-    public struct Cluster {
+    public struct Cluster: Swift.Sendable {
         /// The access configuration for the cluster.
         public var accessConfig: EKSClientTypes.AccessConfigResponse?
         /// The Amazon Resource Name (ARN) of the cluster.
@@ -2522,6 +2565,8 @@ extension EKSClientTypes {
         public var upgradePolicy: EKSClientTypes.UpgradePolicyResponse?
         /// The Kubernetes server version for the cluster.
         public var version: Swift.String?
+        /// The configuration for zonal shift for the cluster.
+        public var zonalShiftConfig: EKSClientTypes.ZonalShiftConfigResponse?
 
         public init(
             accessConfig: EKSClientTypes.AccessConfigResponse? = nil,
@@ -2545,7 +2590,8 @@ extension EKSClientTypes {
             status: EKSClientTypes.ClusterStatus? = nil,
             tags: [Swift.String: Swift.String]? = nil,
             upgradePolicy: EKSClientTypes.UpgradePolicyResponse? = nil,
-            version: Swift.String? = nil
+            version: Swift.String? = nil,
+            zonalShiftConfig: EKSClientTypes.ZonalShiftConfigResponse? = nil
         )
         {
             self.accessConfig = accessConfig
@@ -2570,12 +2616,12 @@ extension EKSClientTypes {
             self.tags = tags
             self.upgradePolicy = upgradePolicy
             self.version = version
+            self.zonalShiftConfig = zonalShiftConfig
         }
     }
-
 }
 
-public struct CreateClusterOutput {
+public struct CreateClusterOutput: Swift.Sendable {
     /// The full description of your new cluster.
     public var cluster: EKSClientTypes.Cluster?
 
@@ -2589,7 +2635,7 @@ public struct CreateClusterOutput {
 
 extension EKSClientTypes {
 
-    public enum EksAnywhereSubscriptionLicenseType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum EksAnywhereSubscriptionLicenseType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case cluster
         case sdkUnknown(Swift.String)
 
@@ -2615,7 +2661,7 @@ extension EKSClientTypes {
 
 extension EKSClientTypes {
 
-    public enum EksAnywhereSubscriptionTermUnit: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum EksAnywhereSubscriptionTermUnit: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case months
         case sdkUnknown(Swift.String)
 
@@ -2640,8 +2686,9 @@ extension EKSClientTypes {
 }
 
 extension EKSClientTypes {
+
     /// An object representing the term duration and term unit type of your subscription. This determines the term length of your subscription. Valid values are MONTHS for term unit and 12 or 36 for term duration, indicating a 12 month or 36 month subscription.
-    public struct EksAnywhereSubscriptionTerm {
+    public struct EksAnywhereSubscriptionTerm: Swift.Sendable {
         /// The duration of the subscription term. Valid values are 12 and 36, indicating a 12 month or 36 month subscription.
         public var duration: Swift.Int
         /// The term unit of the subscription. Valid value is MONTHS.
@@ -2656,10 +2703,9 @@ extension EKSClientTypes {
             self.unit = unit
         }
     }
-
 }
 
-public struct CreateEksAnywhereSubscriptionInput {
+public struct CreateEksAnywhereSubscriptionInput: Swift.Sendable {
     /// A boolean indicating whether the subscription auto renews at the end of the term.
     public var autoRenew: Swift.Bool?
     /// A unique, case-sensitive identifier that you provide to ensure the idempotency of the request.
@@ -2698,8 +2744,9 @@ public struct CreateEksAnywhereSubscriptionInput {
 }
 
 extension EKSClientTypes {
+
     /// An EKS Anywhere subscription authorizing the customer to support for licensed clusters and access to EKS Anywhere Curated Packages.
-    public struct EksAnywhereSubscription {
+    public struct EksAnywhereSubscription: Swift.Sendable {
         /// The Amazon Resource Name (ARN) for the subscription.
         public var arn: Swift.String?
         /// A boolean indicating whether or not a subscription will auto renew when it expires.
@@ -2754,10 +2801,9 @@ extension EKSClientTypes {
             self.term = term
         }
     }
-
 }
 
-public struct CreateEksAnywhereSubscriptionOutput {
+public struct CreateEksAnywhereSubscriptionOutput: Swift.Sendable {
     /// The full description of the subscription.
     public var subscription: EKSClientTypes.EksAnywhereSubscription?
 
@@ -2770,8 +2816,9 @@ public struct CreateEksAnywhereSubscriptionOutput {
 }
 
 extension EKSClientTypes {
+
     /// An object representing an Fargate profile selector.
-    public struct FargateProfileSelector {
+    public struct FargateProfileSelector: Swift.Sendable {
         /// The Kubernetes labels that the selector should match. A pod must contain all of the labels that are specified in the selector for it to be considered a match.
         public var labels: [Swift.String: Swift.String]?
         /// The Kubernetes namespace that the selector should match.
@@ -2786,10 +2833,9 @@ extension EKSClientTypes {
             self.namespace = namespace
         }
     }
-
 }
 
-public struct CreateFargateProfileInput {
+public struct CreateFargateProfileInput: Swift.Sendable {
     /// A unique, case-sensitive identifier that you provide to ensure the idempotency of the request.
     public var clientRequestToken: Swift.String?
     /// The name of your cluster.
@@ -2830,7 +2876,7 @@ public struct CreateFargateProfileInput {
 
 extension EKSClientTypes {
 
-    public enum FargateProfileIssueCode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum FargateProfileIssueCode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case accessDenied
         case clusterUnreachable
         case internalFailure
@@ -2864,8 +2910,9 @@ extension EKSClientTypes {
 }
 
 extension EKSClientTypes {
+
     /// An issue that is associated with the Fargate profile.
-    public struct FargateProfileIssue {
+    public struct FargateProfileIssue: Swift.Sendable {
         /// A brief description of the error.
         public var code: EKSClientTypes.FargateProfileIssueCode?
         /// The error message associated with the issue.
@@ -2884,12 +2931,12 @@ extension EKSClientTypes {
             self.resourceIds = resourceIds
         }
     }
-
 }
 
 extension EKSClientTypes {
+
     /// The health status of the Fargate profile. If there are issues with your Fargate profile's health, they are listed here.
-    public struct FargateProfileHealth {
+    public struct FargateProfileHealth: Swift.Sendable {
         /// Any issues that are associated with the Fargate profile.
         public var issues: [EKSClientTypes.FargateProfileIssue]?
 
@@ -2900,12 +2947,11 @@ extension EKSClientTypes {
             self.issues = issues
         }
     }
-
 }
 
 extension EKSClientTypes {
 
-    public enum FargateProfileStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum FargateProfileStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case active
         case createFailed
         case creating
@@ -2942,8 +2988,9 @@ extension EKSClientTypes {
 }
 
 extension EKSClientTypes {
+
     /// An object representing an Fargate profile.
-    public struct FargateProfile {
+    public struct FargateProfile: Swift.Sendable {
         /// The name of your cluster.
         public var clusterName: Swift.String?
         /// The Unix epoch timestamp at object creation.
@@ -2990,10 +3037,9 @@ extension EKSClientTypes {
             self.tags = tags
         }
     }
-
 }
 
-public struct CreateFargateProfileOutput {
+public struct CreateFargateProfileOutput: Swift.Sendable {
     /// The full description of your new Fargate profile.
     public var fargateProfile: EKSClientTypes.FargateProfile?
 
@@ -3007,7 +3053,7 @@ public struct CreateFargateProfileOutput {
 
 extension EKSClientTypes {
 
-    public enum CapacityTypes: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum CapacityTypes: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case capacityBlock
         case onDemand
         case spot
@@ -3038,8 +3084,9 @@ extension EKSClientTypes {
 }
 
 extension EKSClientTypes {
+
     /// An object representing a node group launch template specification. The launch template can't include [SubnetId](https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_CreateNetworkInterface.html), [IamInstanceProfile](https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_IamInstanceProfile.html), [RequestSpotInstances](https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_RequestSpotInstances.html), [HibernationOptions](https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_HibernationOptionsRequest.html), or [TerminateInstances](https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_TerminateInstances.html), or the node group deployment or update will fail. For more information about launch templates, see [CreateLaunchTemplate](https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_CreateLaunchTemplate.html) in the Amazon EC2 API Reference. For more information about using launch templates with Amazon EKS, see [Customizing managed nodes with launch templates](https://docs.aws.amazon.com/eks/latest/userguide/launch-templates.html) in the Amazon EKS User Guide. You must specify either the launch template ID or the launch template name in the request, but not both.
-    public struct LaunchTemplateSpecification {
+    public struct LaunchTemplateSpecification: Swift.Sendable {
         /// The ID of the launch template. You must specify either the launch template ID or the launch template name in the request, but not both.
         public var id: Swift.String?
         /// The name of the launch template. You must specify either the launch template name or the launch template ID in the request, but not both.
@@ -3058,12 +3105,12 @@ extension EKSClientTypes {
             self.version = version
         }
     }
-
 }
 
 extension EKSClientTypes {
+
     /// An object representing the remote access configuration for the managed node group.
-    public struct RemoteAccessConfig {
+    public struct RemoteAccessConfig: Swift.Sendable {
         /// The Amazon EC2 SSH key name that provides access for SSH communication with the nodes in the managed node group. For more information, see [Amazon EC2 key pairs and Linux instances](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-key-pairs.html) in the Amazon Elastic Compute Cloud User Guide for Linux Instances. For Windows, an Amazon EC2 SSH key is used to obtain the RDP password. For more information, see [Amazon EC2 key pairs and Windows instances](https://docs.aws.amazon.com/AWSEC2/latest/WindowsGuide/ec2-key-pairs.html) in the Amazon Elastic Compute Cloud User Guide for Windows Instances.
         public var ec2SshKey: Swift.String?
         /// The security group IDs that are allowed SSH access (port 22) to the nodes. For Windows, the port is 3389. If you specify an Amazon EC2 SSH key but don't specify a source security group when you create a managed node group, then the port on the nodes is opened to the internet (0.0.0.0/0). For more information, see [Security Groups for Your VPC](https://docs.aws.amazon.com/vpc/latest/userguide/VPC_SecurityGroups.html) in the Amazon Virtual Private Cloud User Guide.
@@ -3078,12 +3125,12 @@ extension EKSClientTypes {
             self.sourceSecurityGroups = sourceSecurityGroups
         }
     }
-
 }
 
 extension EKSClientTypes {
+
     /// An object representing the scaling configuration details for the Auto Scaling group that is associated with your node group. When creating a node group, you must specify all or none of the properties. When updating a node group, you can specify any or none of the properties.
-    public struct NodegroupScalingConfig {
+    public struct NodegroupScalingConfig: Swift.Sendable {
         /// The current number of nodes that the managed node group should maintain. If you use the Kubernetes [Cluster Autoscaler](https://github.com/kubernetes/autoscaler#kubernetes-autoscaler), you shouldn't change the desiredSize value directly, as this can cause the Cluster Autoscaler to suddenly scale up or scale down. Whenever this parameter changes, the number of worker nodes in the node group is updated to the specified size. If this parameter is given a value that is smaller than the current number of running worker nodes, the necessary number of worker nodes are terminated to match the given value. When using CloudFormation, no action occurs if you remove this parameter from your CFN template. This parameter can be different from minSize in some cases, such as when starting with extra hosts for testing. This parameter can also be different when you want to start with an estimated number of needed hosts, but let the Cluster Autoscaler reduce the number if there are too many. When the Cluster Autoscaler is used, the desiredSize parameter is altered by the Cluster Autoscaler (but can be out-of-date for short periods of time). the Cluster Autoscaler doesn't scale a managed node group lower than minSize or higher than maxSize.
         public var desiredSize: Swift.Int?
         /// The maximum number of nodes that the managed node group can scale out to. For information about the maximum number that you can specify, see [Amazon EKS service quotas](https://docs.aws.amazon.com/eks/latest/userguide/service-quotas.html) in the Amazon EKS User Guide.
@@ -3102,12 +3149,11 @@ extension EKSClientTypes {
             self.minSize = minSize
         }
     }
-
 }
 
 extension EKSClientTypes {
 
-    public enum TaintEffect: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum TaintEffect: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case noExecute
         case noSchedule
         case preferNoSchedule
@@ -3138,8 +3184,9 @@ extension EKSClientTypes {
 }
 
 extension EKSClientTypes {
+
     /// A property that allows a node to repel a Pod. For more information, see [Node taints on managed node groups](https://docs.aws.amazon.com/eks/latest/userguide/node-taints-managed-node-groups.html) in the Amazon EKS User Guide.
-    public struct Taint {
+    public struct Taint: Swift.Sendable {
         /// The effect of the taint.
         public var effect: EKSClientTypes.TaintEffect?
         /// The key of the taint.
@@ -3158,12 +3205,12 @@ extension EKSClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension EKSClientTypes {
+
     /// The node group update configuration.
-    public struct NodegroupUpdateConfig {
+    public struct NodegroupUpdateConfig: Swift.Sendable {
         /// The maximum number of nodes unavailable at once during a version update. Nodes are updated in parallel. This value or maxUnavailablePercentage is required to have a value.The maximum number is 100.
         public var maxUnavailable: Swift.Int?
         /// The maximum percentage of nodes unavailable during a version update. This percentage of nodes are updated in parallel, up to 100 nodes at once. This value or maxUnavailable is required to have a value.
@@ -3178,10 +3225,9 @@ extension EKSClientTypes {
             self.maxUnavailablePercentage = maxUnavailablePercentage
         }
     }
-
 }
 
-public struct CreateNodegroupInput {
+public struct CreateNodegroupInput: Swift.Sendable {
     /// The AMI type for your node group. If you specify launchTemplate, and your launch template uses a custom AMI, then don't specify amiType, or the node group deployment will fail. If your launch template uses a Windows custom AMI, then add eks:kube-proxy-windows to your Windows nodes rolearn in the aws-authConfigMap. For more information about using launch templates with Amazon EKS, see [Customizing managed nodes with launch templates](https://docs.aws.amazon.com/eks/latest/userguide/launch-templates.html) in the Amazon EKS User Guide.
     public var amiType: EKSClientTypes.AMITypes?
     /// The capacity type for your node group.
@@ -3267,7 +3313,7 @@ public struct CreateNodegroupInput {
 
 extension EKSClientTypes {
 
-    public enum NodegroupIssueCode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum NodegroupIssueCode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case accessDenied
         case amiIdNotFound
         case asgInstanceLaunchFailures
@@ -3394,8 +3440,9 @@ extension EKSClientTypes {
 }
 
 extension EKSClientTypes {
+
     /// An object representing an issue with an Amazon EKS resource.
-    public struct Issue {
+    public struct Issue: Swift.Sendable {
         /// A brief description of the error.
         ///
         /// * AccessDenied: Amazon EKS or one or more of your managed nodes is failing to authenticate or authorize with your Kubernetes cluster API server.
@@ -3444,12 +3491,12 @@ extension EKSClientTypes {
             self.resourceIds = resourceIds
         }
     }
-
 }
 
 extension EKSClientTypes {
+
     /// An object representing the health status of the node group.
-    public struct NodegroupHealth {
+    public struct NodegroupHealth: Swift.Sendable {
         /// Any issues that are associated with the node group.
         public var issues: [EKSClientTypes.Issue]?
 
@@ -3460,12 +3507,12 @@ extension EKSClientTypes {
             self.issues = issues
         }
     }
-
 }
 
 extension EKSClientTypes {
+
     /// An object representing the resources associated with the node group, such as Auto Scaling groups and security groups for remote access.
-    public struct NodegroupResources {
+    public struct NodegroupResources: Swift.Sendable {
         /// The Auto Scaling groups associated with the node group.
         public var autoScalingGroups: [EKSClientTypes.AutoScalingGroup]?
         /// The remote access security group associated with the node group. This security group controls SSH access to the nodes.
@@ -3480,12 +3527,11 @@ extension EKSClientTypes {
             self.remoteAccessSecurityGroup = remoteAccessSecurityGroup
         }
     }
-
 }
 
 extension EKSClientTypes {
 
-    public enum NodegroupStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum NodegroupStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case active
         case createFailed
         case creating
@@ -3528,8 +3574,9 @@ extension EKSClientTypes {
 }
 
 extension EKSClientTypes {
+
     /// An object representing an Amazon EKS managed node group.
-    public struct Nodegroup {
+    public struct Nodegroup: Swift.Sendable {
         /// If the node group was deployed using a launch template with a custom AMI, then this is CUSTOM. For node groups that weren't deployed using a launch template, this is the AMI type that was specified in the node group configuration.
         public var amiType: EKSClientTypes.AMITypes?
         /// The capacity type of your managed node group.
@@ -3628,10 +3675,9 @@ extension EKSClientTypes {
             self.version = version
         }
     }
-
 }
 
-public struct CreateNodegroupOutput {
+public struct CreateNodegroupOutput: Swift.Sendable {
     /// The full description of your new node group.
     public var nodegroup: EKSClientTypes.Nodegroup?
 
@@ -3643,7 +3689,7 @@ public struct CreateNodegroupOutput {
     }
 }
 
-public struct CreatePodIdentityAssociationInput {
+public struct CreatePodIdentityAssociationInput: Swift.Sendable {
     /// A unique, case-sensitive identifier that you provide to ensure the idempotency of the request.
     public var clientRequestToken: Swift.String?
     /// The name of the cluster to create the association in.
@@ -3694,8 +3740,9 @@ public struct CreatePodIdentityAssociationInput {
 }
 
 extension EKSClientTypes {
+
     /// Amazon EKS Pod Identity associations provide the ability to manage credentials for your applications, similar to the way that Amazon EC2 instance profiles provide credentials to Amazon EC2 instances.
-    public struct PodIdentityAssociation {
+    public struct PodIdentityAssociation: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the association.
         public var associationArn: Swift.String?
         /// The ID of the association.
@@ -3756,10 +3803,9 @@ extension EKSClientTypes {
             self.tags = tags
         }
     }
-
 }
 
-public struct CreatePodIdentityAssociationOutput {
+public struct CreatePodIdentityAssociationOutput: Swift.Sendable {
     /// The full description of your new association. The description includes an ID for the association. Use the ID of the association in further actions to manage the association.
     public var association: EKSClientTypes.PodIdentityAssociation?
 
@@ -3771,7 +3817,7 @@ public struct CreatePodIdentityAssociationOutput {
     }
 }
 
-public struct DeleteAccessEntryInput {
+public struct DeleteAccessEntryInput: Swift.Sendable {
     /// The name of your cluster.
     /// This member is required.
     public var clusterName: Swift.String?
@@ -3789,12 +3835,12 @@ public struct DeleteAccessEntryInput {
     }
 }
 
-public struct DeleteAccessEntryOutput {
+public struct DeleteAccessEntryOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteAddonInput {
+public struct DeleteAddonInput: Swift.Sendable {
     /// The name of the add-on. The name must match one of the names returned by [ListAddons](https://docs.aws.amazon.com/eks/latest/APIReference/API_ListAddons.html).
     /// This member is required.
     public var addonName: Swift.String?
@@ -3816,7 +3862,7 @@ public struct DeleteAddonInput {
     }
 }
 
-public struct DeleteAddonOutput {
+public struct DeleteAddonOutput: Swift.Sendable {
     /// An Amazon EKS add-on. For more information, see [Amazon EKS add-ons](https://docs.aws.amazon.com/eks/latest/userguide/eks-add-ons.html) in the Amazon EKS User Guide.
     public var addon: EKSClientTypes.Addon?
 
@@ -3828,7 +3874,7 @@ public struct DeleteAddonOutput {
     }
 }
 
-public struct DeleteClusterInput {
+public struct DeleteClusterInput: Swift.Sendable {
     /// The name of the cluster to delete.
     /// This member is required.
     public var name: Swift.String?
@@ -3841,7 +3887,7 @@ public struct DeleteClusterInput {
     }
 }
 
-public struct DeleteClusterOutput {
+public struct DeleteClusterOutput: Swift.Sendable {
     /// The full description of the cluster to delete.
     public var cluster: EKSClientTypes.Cluster?
 
@@ -3853,7 +3899,7 @@ public struct DeleteClusterOutput {
     }
 }
 
-public struct DeleteEksAnywhereSubscriptionInput {
+public struct DeleteEksAnywhereSubscriptionInput: Swift.Sendable {
     /// The ID of the subscription.
     /// This member is required.
     public var id: Swift.String?
@@ -3866,7 +3912,7 @@ public struct DeleteEksAnywhereSubscriptionInput {
     }
 }
 
-public struct DeleteEksAnywhereSubscriptionOutput {
+public struct DeleteEksAnywhereSubscriptionOutput: Swift.Sendable {
     /// The full description of the subscription to be deleted.
     public var subscription: EKSClientTypes.EksAnywhereSubscription?
 
@@ -3878,7 +3924,7 @@ public struct DeleteEksAnywhereSubscriptionOutput {
     }
 }
 
-public struct DeleteFargateProfileInput {
+public struct DeleteFargateProfileInput: Swift.Sendable {
     /// The name of your cluster.
     /// This member is required.
     public var clusterName: Swift.String?
@@ -3896,7 +3942,7 @@ public struct DeleteFargateProfileInput {
     }
 }
 
-public struct DeleteFargateProfileOutput {
+public struct DeleteFargateProfileOutput: Swift.Sendable {
     /// The deleted Fargate profile.
     public var fargateProfile: EKSClientTypes.FargateProfile?
 
@@ -3908,7 +3954,7 @@ public struct DeleteFargateProfileOutput {
     }
 }
 
-public struct DeleteNodegroupInput {
+public struct DeleteNodegroupInput: Swift.Sendable {
     /// The name of your cluster.
     /// This member is required.
     public var clusterName: Swift.String?
@@ -3926,7 +3972,7 @@ public struct DeleteNodegroupInput {
     }
 }
 
-public struct DeleteNodegroupOutput {
+public struct DeleteNodegroupOutput: Swift.Sendable {
     /// The full description of your deleted node group.
     public var nodegroup: EKSClientTypes.Nodegroup?
 
@@ -3938,7 +3984,7 @@ public struct DeleteNodegroupOutput {
     }
 }
 
-public struct DeletePodIdentityAssociationInput {
+public struct DeletePodIdentityAssociationInput: Swift.Sendable {
     /// The ID of the association to be deleted.
     /// This member is required.
     public var associationId: Swift.String?
@@ -3956,7 +4002,7 @@ public struct DeletePodIdentityAssociationInput {
     }
 }
 
-public struct DeletePodIdentityAssociationOutput {
+public struct DeletePodIdentityAssociationOutput: Swift.Sendable {
     /// The full description of the EKS Pod Identity association that was deleted.
     public var association: EKSClientTypes.PodIdentityAssociation?
 
@@ -3968,7 +4014,7 @@ public struct DeletePodIdentityAssociationOutput {
     }
 }
 
-public struct DeregisterClusterInput {
+public struct DeregisterClusterInput: Swift.Sendable {
     /// The name of the connected cluster to deregister.
     /// This member is required.
     public var name: Swift.String?
@@ -3981,7 +4027,7 @@ public struct DeregisterClusterInput {
     }
 }
 
-public struct DeregisterClusterOutput {
+public struct DeregisterClusterOutput: Swift.Sendable {
     /// An object representing an Amazon EKS cluster.
     public var cluster: EKSClientTypes.Cluster?
 
@@ -3993,7 +4039,7 @@ public struct DeregisterClusterOutput {
     }
 }
 
-public struct DescribeAccessEntryInput {
+public struct DescribeAccessEntryInput: Swift.Sendable {
     /// The name of your cluster.
     /// This member is required.
     public var clusterName: Swift.String?
@@ -4011,7 +4057,7 @@ public struct DescribeAccessEntryInput {
     }
 }
 
-public struct DescribeAccessEntryOutput {
+public struct DescribeAccessEntryOutput: Swift.Sendable {
     /// Information about the access entry.
     public var accessEntry: EKSClientTypes.AccessEntry?
 
@@ -4023,7 +4069,7 @@ public struct DescribeAccessEntryOutput {
     }
 }
 
-public struct DescribeAddonInput {
+public struct DescribeAddonInput: Swift.Sendable {
     /// The name of the add-on. The name must match one of the names returned by [ListAddons](https://docs.aws.amazon.com/eks/latest/APIReference/API_ListAddons.html).
     /// This member is required.
     public var addonName: Swift.String?
@@ -4041,7 +4087,7 @@ public struct DescribeAddonInput {
     }
 }
 
-public struct DescribeAddonOutput {
+public struct DescribeAddonOutput: Swift.Sendable {
     /// An Amazon EKS add-on. For more information, see [Amazon EKS add-ons](https://docs.aws.amazon.com/eks/latest/userguide/eks-add-ons.html) in the Amazon EKS User Guide.
     public var addon: EKSClientTypes.Addon?
 
@@ -4053,7 +4099,7 @@ public struct DescribeAddonOutput {
     }
 }
 
-public struct DescribeAddonConfigurationInput {
+public struct DescribeAddonConfigurationInput: Swift.Sendable {
     /// The name of the add-on. The name must match one of the names returned by DescribeAddonVersions.
     /// This member is required.
     public var addonName: Swift.String?
@@ -4071,7 +4117,7 @@ public struct DescribeAddonConfigurationInput {
     }
 }
 
-public struct DescribeAddonConfigurationOutput {
+public struct DescribeAddonConfigurationOutput: Swift.Sendable {
     /// The name of the add-on.
     public var addonName: Swift.String?
     /// The version of the add-on. The version must match one of the versions returned by [DescribeAddonVersions](https://docs.aws.amazon.com/eks/latest/APIReference/API_DescribeAddonVersions.html).
@@ -4095,7 +4141,7 @@ public struct DescribeAddonConfigurationOutput {
     }
 }
 
-public struct DescribeAddonVersionsInput {
+public struct DescribeAddonVersionsInput: Swift.Sendable {
     /// The name of the add-on. The name must match one of the names returned by [ListAddons](https://docs.aws.amazon.com/eks/latest/APIReference/API_ListAddons.html).
     public var addonName: Swift.String?
     /// The Kubernetes versions that you can use the add-on with.
@@ -4131,7 +4177,7 @@ public struct DescribeAddonVersionsInput {
     }
 }
 
-public struct DescribeAddonVersionsOutput {
+public struct DescribeAddonVersionsOutput: Swift.Sendable {
     /// The list of available versions with Kubernetes version compatibility and other properties.
     public var addons: [EKSClientTypes.AddonInfo]?
     /// The nextToken value to include in a future DescribeAddonVersions request. When the results of a DescribeAddonVersions request exceed maxResults, you can use this value to retrieve the next page of results. This value is null when there are no more results to return. This token should be treated as an opaque identifier that is used only to retrieve the next items in a list and not for other programmatic purposes.
@@ -4147,7 +4193,7 @@ public struct DescribeAddonVersionsOutput {
     }
 }
 
-public struct DescribeClusterInput {
+public struct DescribeClusterInput: Swift.Sendable {
     /// The name of your cluster.
     /// This member is required.
     public var name: Swift.String?
@@ -4160,7 +4206,7 @@ public struct DescribeClusterInput {
     }
 }
 
-public struct DescribeClusterOutput {
+public struct DescribeClusterOutput: Swift.Sendable {
     /// The full description of your specified cluster.
     public var cluster: EKSClientTypes.Cluster?
 
@@ -4172,7 +4218,7 @@ public struct DescribeClusterOutput {
     }
 }
 
-public struct DescribeEksAnywhereSubscriptionInput {
+public struct DescribeEksAnywhereSubscriptionInput: Swift.Sendable {
     /// The ID of the subscription.
     /// This member is required.
     public var id: Swift.String?
@@ -4185,7 +4231,7 @@ public struct DescribeEksAnywhereSubscriptionInput {
     }
 }
 
-public struct DescribeEksAnywhereSubscriptionOutput {
+public struct DescribeEksAnywhereSubscriptionOutput: Swift.Sendable {
     /// The full description of the subscription.
     public var subscription: EKSClientTypes.EksAnywhereSubscription?
 
@@ -4197,7 +4243,7 @@ public struct DescribeEksAnywhereSubscriptionOutput {
     }
 }
 
-public struct DescribeFargateProfileInput {
+public struct DescribeFargateProfileInput: Swift.Sendable {
     /// The name of your cluster.
     /// This member is required.
     public var clusterName: Swift.String?
@@ -4215,7 +4261,7 @@ public struct DescribeFargateProfileInput {
     }
 }
 
-public struct DescribeFargateProfileOutput {
+public struct DescribeFargateProfileOutput: Swift.Sendable {
     /// The full description of your Fargate profile.
     public var fargateProfile: EKSClientTypes.FargateProfile?
 
@@ -4228,8 +4274,9 @@ public struct DescribeFargateProfileOutput {
 }
 
 extension EKSClientTypes {
+
     /// An object representing an identity provider configuration.
-    public struct IdentityProviderConfig {
+    public struct IdentityProviderConfig: Swift.Sendable {
         /// The name of the identity provider configuration.
         /// This member is required.
         public var name: Swift.String?
@@ -4246,10 +4293,9 @@ extension EKSClientTypes {
             self.type = type
         }
     }
-
 }
 
-public struct DescribeIdentityProviderConfigInput {
+public struct DescribeIdentityProviderConfigInput: Swift.Sendable {
     /// The name of your cluster.
     /// This member is required.
     public var clusterName: Swift.String?
@@ -4269,7 +4315,7 @@ public struct DescribeIdentityProviderConfigInput {
 
 extension EKSClientTypes {
 
-    public enum ConfigStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ConfigStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case active
         case creating
         case deleting
@@ -4300,8 +4346,9 @@ extension EKSClientTypes {
 }
 
 extension EKSClientTypes {
+
     /// An object representing the configuration for an OpenID Connect (OIDC) identity provider.
-    public struct OidcIdentityProviderConfig {
+    public struct OidcIdentityProviderConfig: Swift.Sendable {
         /// This is also known as audience. The ID of the client application that makes authentication requests to the OIDC identity provider.
         public var clientId: Swift.String?
         /// The name of your cluster.
@@ -4356,12 +4403,12 @@ extension EKSClientTypes {
             self.usernamePrefix = usernamePrefix
         }
     }
-
 }
 
 extension EKSClientTypes {
+
     /// The full description of your identity configuration.
-    public struct IdentityProviderConfigResponse {
+    public struct IdentityProviderConfigResponse: Swift.Sendable {
         /// An object representing an OpenID Connect (OIDC) identity provider configuration.
         public var oidc: EKSClientTypes.OidcIdentityProviderConfig?
 
@@ -4372,10 +4419,9 @@ extension EKSClientTypes {
             self.oidc = oidc
         }
     }
-
 }
 
-public struct DescribeIdentityProviderConfigOutput {
+public struct DescribeIdentityProviderConfigOutput: Swift.Sendable {
     /// The object that represents an OpenID Connect (OIDC) identity provider configuration.
     public var identityProviderConfig: EKSClientTypes.IdentityProviderConfigResponse?
 
@@ -4387,7 +4433,7 @@ public struct DescribeIdentityProviderConfigOutput {
     }
 }
 
-public struct DescribeInsightInput {
+public struct DescribeInsightInput: Swift.Sendable {
     /// The name of the cluster to describe the insight for.
     /// This member is required.
     public var clusterName: Swift.String?
@@ -4407,7 +4453,7 @@ public struct DescribeInsightInput {
 
 extension EKSClientTypes {
 
-    public enum Category: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Category: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case upgradeReadiness
         case sdkUnknown(Swift.String)
 
@@ -4432,8 +4478,9 @@ extension EKSClientTypes {
 }
 
 extension EKSClientTypes {
+
     /// Details about clients using the deprecated resources.
-    public struct ClientStat {
+    public struct ClientStat: Swift.Sendable {
         /// The timestamp of the last request seen from the Kubernetes client.
         public var lastRequestTime: Foundation.Date?
         /// The number of requests from the Kubernetes client seen over the last 30 days.
@@ -4452,12 +4499,12 @@ extension EKSClientTypes {
             self.userAgent = userAgent
         }
     }
-
 }
 
 extension EKSClientTypes {
+
     /// The summary information about deprecated resource usage for an insight check in the UPGRADE_READINESS category.
-    public struct DeprecationDetail {
+    public struct DeprecationDetail: Swift.Sendable {
         /// Details about Kubernetes clients using the deprecated resources.
         public var clientStats: [EKSClientTypes.ClientStat]?
         /// The newer version of the resource to migrate to if applicable.
@@ -4484,12 +4531,12 @@ extension EKSClientTypes {
             self.usage = usage
         }
     }
-
 }
 
 extension EKSClientTypes {
+
     /// Summary information that relates to the category of the insight. Currently only returned with certain insights having category UPGRADE_READINESS.
-    public struct InsightCategorySpecificSummary {
+    public struct InsightCategorySpecificSummary: Swift.Sendable {
         /// The summary information about deprecated resource usage for an insight check in the UPGRADE_READINESS category.
         public var deprecationDetails: [EKSClientTypes.DeprecationDetail]?
 
@@ -4500,12 +4547,11 @@ extension EKSClientTypes {
             self.deprecationDetails = deprecationDetails
         }
     }
-
 }
 
 extension EKSClientTypes {
 
-    public enum InsightStatusValue: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum InsightStatusValue: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case error
         case passing
         case unknown
@@ -4539,8 +4585,9 @@ extension EKSClientTypes {
 }
 
 extension EKSClientTypes {
+
     /// The status of the insight.
-    public struct InsightStatus {
+    public struct InsightStatus: Swift.Sendable {
         /// Explanation on the reasoning for the status of the resource.
         public var reason: Swift.String?
         /// The status of the resource.
@@ -4555,12 +4602,12 @@ extension EKSClientTypes {
             self.status = status
         }
     }
-
 }
 
 extension EKSClientTypes {
+
     /// Returns information about the resource being evaluated.
-    public struct InsightResourceDetail {
+    public struct InsightResourceDetail: Swift.Sendable {
         /// The Amazon Resource Name (ARN) if applicable.
         public var arn: Swift.String?
         /// An object containing more detail on the status of the insight resource.
@@ -4579,12 +4626,12 @@ extension EKSClientTypes {
             self.kubernetesResourceUri = kubernetesResourceUri
         }
     }
-
 }
 
 extension EKSClientTypes {
+
     /// A check that provides recommendations to remedy potential upgrade-impacting issues.
-    public struct Insight {
+    public struct Insight: Swift.Sendable {
         /// Links to sources that provide additional context on the insight.
         public var additionalInfo: [Swift.String: Swift.String]?
         /// The category of the insight.
@@ -4639,10 +4686,9 @@ extension EKSClientTypes {
             self.resources = resources
         }
     }
-
 }
 
-public struct DescribeInsightOutput {
+public struct DescribeInsightOutput: Swift.Sendable {
     /// The full description of the insight.
     public var insight: EKSClientTypes.Insight?
 
@@ -4654,7 +4700,7 @@ public struct DescribeInsightOutput {
     }
 }
 
-public struct DescribeNodegroupInput {
+public struct DescribeNodegroupInput: Swift.Sendable {
     /// The name of your cluster.
     /// This member is required.
     public var clusterName: Swift.String?
@@ -4672,7 +4718,7 @@ public struct DescribeNodegroupInput {
     }
 }
 
-public struct DescribeNodegroupOutput {
+public struct DescribeNodegroupOutput: Swift.Sendable {
     /// The full description of your node group.
     public var nodegroup: EKSClientTypes.Nodegroup?
 
@@ -4684,7 +4730,7 @@ public struct DescribeNodegroupOutput {
     }
 }
 
-public struct DescribePodIdentityAssociationInput {
+public struct DescribePodIdentityAssociationInput: Swift.Sendable {
     /// The ID of the association that you want the description of.
     /// This member is required.
     public var associationId: Swift.String?
@@ -4702,7 +4748,7 @@ public struct DescribePodIdentityAssociationInput {
     }
 }
 
-public struct DescribePodIdentityAssociationOutput {
+public struct DescribePodIdentityAssociationOutput: Swift.Sendable {
     /// The full description of the EKS Pod Identity association.
     public var association: EKSClientTypes.PodIdentityAssociation?
 
@@ -4715,7 +4761,7 @@ public struct DescribePodIdentityAssociationOutput {
 }
 
 /// Describes an update request.
-public struct DescribeUpdateInput {
+public struct DescribeUpdateInput: Swift.Sendable {
     /// The name of the add-on. The name must match one of the names returned by [ListAddons](https://docs.aws.amazon.com/eks/latest/APIReference/API_ListAddons.html). This parameter is required if the update is an add-on update.
     public var addonName: Swift.String?
     /// The name of the Amazon EKS cluster associated with the update.
@@ -4741,7 +4787,7 @@ public struct DescribeUpdateInput {
     }
 }
 
-public struct DescribeUpdateOutput {
+public struct DescribeUpdateOutput: Swift.Sendable {
     /// The full description of the specified update.
     public var update: EKSClientTypes.Update?
 
@@ -4753,7 +4799,7 @@ public struct DescribeUpdateOutput {
     }
 }
 
-public struct DisassociateAccessPolicyInput {
+public struct DisassociateAccessPolicyInput: Swift.Sendable {
     /// The name of your cluster.
     /// This member is required.
     public var clusterName: Swift.String?
@@ -4776,12 +4822,12 @@ public struct DisassociateAccessPolicyInput {
     }
 }
 
-public struct DisassociateAccessPolicyOutput {
+public struct DisassociateAccessPolicyOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DisassociateIdentityProviderConfigInput {
+public struct DisassociateIdentityProviderConfigInput: Swift.Sendable {
     /// A unique, case-sensitive identifier that you provide to ensure the idempotency of the request.
     public var clientRequestToken: Swift.String?
     /// The name of your cluster.
@@ -4803,7 +4849,7 @@ public struct DisassociateIdentityProviderConfigInput {
     }
 }
 
-public struct DisassociateIdentityProviderConfigOutput {
+public struct DisassociateIdentityProviderConfigOutput: Swift.Sendable {
     /// An object representing an asynchronous update.
     public var update: EKSClientTypes.Update?
 
@@ -4815,7 +4861,7 @@ public struct DisassociateIdentityProviderConfigOutput {
     }
 }
 
-public struct ListAccessEntriesInput {
+public struct ListAccessEntriesInput: Swift.Sendable {
     /// The ARN of an AccessPolicy. When you specify an access policy ARN, only the access entries associated to that access policy are returned. For a list of available policy ARNs, use ListAccessPolicies.
     public var associatedPolicyArn: Swift.String?
     /// The name of your cluster.
@@ -4840,7 +4886,7 @@ public struct ListAccessEntriesInput {
     }
 }
 
-public struct ListAccessEntriesOutput {
+public struct ListAccessEntriesOutput: Swift.Sendable {
     /// The list of access entries that exist for the cluster.
     public var accessEntries: [Swift.String]?
     /// The nextToken value returned from a previous paginated request, where maxResults was used and the results exceeded the value of that parameter. Pagination continues from the end of the previous results that returned the nextToken value. This value is null when there are no more results to return. This token should be treated as an opaque identifier that is used only to retrieve the next items in a list and not for other programmatic purposes.
@@ -4856,7 +4902,7 @@ public struct ListAccessEntriesOutput {
     }
 }
 
-public struct ListAccessPoliciesInput {
+public struct ListAccessPoliciesInput: Swift.Sendable {
     /// The maximum number of results, returned in paginated output. You receive maxResults in a single page, along with a nextToken response element. You can see the remaining results of the initial request by sending another request with the returned nextToken value. This value can be between 1 and 100. If you don't use this parameter, 100 results and a nextToken value, if applicable, are returned.
     public var maxResults: Swift.Int?
     /// The nextToken value returned from a previous paginated request, where maxResults was used and the results exceeded the value of that parameter. Pagination continues from the end of the previous results that returned the nextToken value. This value is null when there are no more results to return. This token should be treated as an opaque identifier that is used only to retrieve the next items in a list and not for other programmatic purposes.
@@ -4872,7 +4918,7 @@ public struct ListAccessPoliciesInput {
     }
 }
 
-public struct ListAccessPoliciesOutput {
+public struct ListAccessPoliciesOutput: Swift.Sendable {
     /// The list of available access policies. You can't view the contents of an access policy using the API. To view the contents, see [Access policy permissions](https://docs.aws.amazon.com/eks/latest/userguide/access-policies.html#access-policy-permissions) in the Amazon EKS User Guide.
     public var accessPolicies: [EKSClientTypes.AccessPolicy]?
     /// The nextToken value returned from a previous paginated request, where maxResults was used and the results exceeded the value of that parameter. Pagination continues from the end of the previous results that returned the nextToken value. This value is null when there are no more results to return. This token should be treated as an opaque identifier that is used only to retrieve the next items in a list and not for other programmatic purposes.
@@ -4888,7 +4934,7 @@ public struct ListAccessPoliciesOutput {
     }
 }
 
-public struct ListAddonsInput {
+public struct ListAddonsInput: Swift.Sendable {
     /// The name of your cluster.
     /// This member is required.
     public var clusterName: Swift.String?
@@ -4909,7 +4955,7 @@ public struct ListAddonsInput {
     }
 }
 
-public struct ListAddonsOutput {
+public struct ListAddonsOutput: Swift.Sendable {
     /// A list of installed add-ons.
     public var addons: [Swift.String]?
     /// The nextToken value to include in a future ListAddons request. When the results of a ListAddons request exceed maxResults, you can use this value to retrieve the next page of results. This value is null when there are no more results to return. This token should be treated as an opaque identifier that is used only to retrieve the next items in a list and not for other programmatic purposes.
@@ -4925,7 +4971,7 @@ public struct ListAddonsOutput {
     }
 }
 
-public struct ListAssociatedAccessPoliciesInput {
+public struct ListAssociatedAccessPoliciesInput: Swift.Sendable {
     /// The name of your cluster.
     /// This member is required.
     public var clusterName: Swift.String?
@@ -4951,7 +4997,7 @@ public struct ListAssociatedAccessPoliciesInput {
     }
 }
 
-public struct ListAssociatedAccessPoliciesOutput {
+public struct ListAssociatedAccessPoliciesOutput: Swift.Sendable {
     /// The list of access policies associated with the access entry.
     public var associatedAccessPolicies: [EKSClientTypes.AssociatedAccessPolicy]?
     /// The name of your cluster.
@@ -4975,7 +5021,7 @@ public struct ListAssociatedAccessPoliciesOutput {
     }
 }
 
-public struct ListClustersInput {
+public struct ListClustersInput: Swift.Sendable {
     /// Indicates whether external clusters are included in the returned list. Use 'all' to return [https://docs.aws.amazon.com/eks/latest/userguide/eks-connector.html](https://docs.aws.amazon.com/eks/latest/userguide/eks-connector.html)connected clusters, or blank to return only Amazon EKS clusters. 'all' must be in lowercase otherwise an error occurs.
     public var include: [Swift.String]?
     /// The maximum number of results, returned in paginated output. You receive maxResults in a single page, along with a nextToken response element. You can see the remaining results of the initial request by sending another request with the returned nextToken value. This value can be between 1 and 100. If you don't use this parameter, 100 results and a nextToken value, if applicable, are returned.
@@ -4995,7 +5041,7 @@ public struct ListClustersInput {
     }
 }
 
-public struct ListClustersOutput {
+public struct ListClustersOutput: Swift.Sendable {
     /// A list of all of the clusters for your account in the specified Amazon Web Services Region.
     public var clusters: [Swift.String]?
     /// The nextToken value returned from a previous paginated request, where maxResults was used and the results exceeded the value of that parameter. Pagination continues from the end of the previous results that returned the nextToken value. This value is null when there are no more results to return. This token should be treated as an opaque identifier that is used only to retrieve the next items in a list and not for other programmatic purposes.
@@ -5013,7 +5059,7 @@ public struct ListClustersOutput {
 
 extension EKSClientTypes {
 
-    public enum EksAnywhereSubscriptionStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum EksAnywhereSubscriptionStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case active
         case creating
         case deleting
@@ -5052,7 +5098,7 @@ extension EKSClientTypes {
     }
 }
 
-public struct ListEksAnywhereSubscriptionsInput {
+public struct ListEksAnywhereSubscriptionsInput: Swift.Sendable {
     /// An array of subscription statuses to filter on.
     public var includeStatus: [EKSClientTypes.EksAnywhereSubscriptionStatus]?
     /// The maximum number of cluster results returned by ListEksAnywhereSubscriptions in paginated output. When you use this parameter, ListEksAnywhereSubscriptions returns only maxResults results in a single page along with a nextToken response element. You can see the remaining results of the initial request by sending another ListEksAnywhereSubscriptions request with the returned nextToken value. This value can be between 1 and 100. If you don't use this parameter, ListEksAnywhereSubscriptions returns up to 10 results and a nextToken value if applicable.
@@ -5072,7 +5118,7 @@ public struct ListEksAnywhereSubscriptionsInput {
     }
 }
 
-public struct ListEksAnywhereSubscriptionsOutput {
+public struct ListEksAnywhereSubscriptionsOutput: Swift.Sendable {
     /// The nextToken value to include in a future ListEksAnywhereSubscriptions request. When the results of a ListEksAnywhereSubscriptions request exceed maxResults, you can use this value to retrieve the next page of results. This value is null when there are no more results to return.
     public var nextToken: Swift.String?
     /// A list of all subscription objects in the region, filtered by includeStatus and paginated by nextToken and maxResults.
@@ -5088,7 +5134,7 @@ public struct ListEksAnywhereSubscriptionsOutput {
     }
 }
 
-public struct ListFargateProfilesInput {
+public struct ListFargateProfilesInput: Swift.Sendable {
     /// The name of your cluster.
     /// This member is required.
     public var clusterName: Swift.String?
@@ -5109,7 +5155,7 @@ public struct ListFargateProfilesInput {
     }
 }
 
-public struct ListFargateProfilesOutput {
+public struct ListFargateProfilesOutput: Swift.Sendable {
     /// A list of all of the Fargate profiles associated with the specified cluster.
     public var fargateProfileNames: [Swift.String]?
     /// The nextToken value returned from a previous paginated request, where maxResults was used and the results exceeded the value of that parameter. Pagination continues from the end of the previous results that returned the nextToken value. This value is null when there are no more results to return. This token should be treated as an opaque identifier that is used only to retrieve the next items in a list and not for other programmatic purposes.
@@ -5125,7 +5171,7 @@ public struct ListFargateProfilesOutput {
     }
 }
 
-public struct ListIdentityProviderConfigsInput {
+public struct ListIdentityProviderConfigsInput: Swift.Sendable {
     /// The name of your cluster.
     /// This member is required.
     public var clusterName: Swift.String?
@@ -5146,7 +5192,7 @@ public struct ListIdentityProviderConfigsInput {
     }
 }
 
-public struct ListIdentityProviderConfigsOutput {
+public struct ListIdentityProviderConfigsOutput: Swift.Sendable {
     /// The identity provider configurations for the cluster.
     public var identityProviderConfigs: [EKSClientTypes.IdentityProviderConfig]?
     /// The nextToken value to include in a future ListIdentityProviderConfigsResponse request. When the results of a ListIdentityProviderConfigsResponse request exceed maxResults, you can use this value to retrieve the next page of results. This value is null when there are no more results to return. This token should be treated as an opaque identifier that is used only to retrieve the next items in a list and not for other programmatic purposes.
@@ -5163,8 +5209,9 @@ public struct ListIdentityProviderConfigsOutput {
 }
 
 extension EKSClientTypes {
+
     /// The criteria to use for the insights.
-    public struct InsightsFilter {
+    public struct InsightsFilter: Swift.Sendable {
         /// The categories to use to filter insights.
         public var categories: [EKSClientTypes.Category]?
         /// The Kubernetes versions to use to filter the insights.
@@ -5183,10 +5230,9 @@ extension EKSClientTypes {
             self.statuses = statuses
         }
     }
-
 }
 
-public struct ListInsightsInput {
+public struct ListInsightsInput: Swift.Sendable {
     /// The name of the Amazon EKS cluster associated with the insights.
     /// This member is required.
     public var clusterName: Swift.String?
@@ -5212,8 +5258,9 @@ public struct ListInsightsInput {
 }
 
 extension EKSClientTypes {
+
     /// The summarized description of the insight.
-    public struct InsightSummary {
+    public struct InsightSummary: Swift.Sendable {
         /// The category of the insight.
         public var category: EKSClientTypes.Category?
         /// The description of the insight which includes alert criteria, remediation recommendation, and additional resources (contains Markdown).
@@ -5252,10 +5299,9 @@ extension EKSClientTypes {
             self.name = name
         }
     }
-
 }
 
-public struct ListInsightsOutput {
+public struct ListInsightsOutput: Swift.Sendable {
     /// The returned list of insights.
     public var insights: [EKSClientTypes.InsightSummary]?
     /// The nextToken value to include in a future ListInsights request. When the results of a ListInsights request exceed maxResults, you can use this value to retrieve the next page of results. This value is null when there are no more results to return.
@@ -5271,7 +5317,7 @@ public struct ListInsightsOutput {
     }
 }
 
-public struct ListNodegroupsInput {
+public struct ListNodegroupsInput: Swift.Sendable {
     /// The name of your cluster.
     /// This member is required.
     public var clusterName: Swift.String?
@@ -5292,7 +5338,7 @@ public struct ListNodegroupsInput {
     }
 }
 
-public struct ListNodegroupsOutput {
+public struct ListNodegroupsOutput: Swift.Sendable {
     /// The nextToken value returned from a previous paginated request, where maxResults was used and the results exceeded the value of that parameter. Pagination continues from the end of the previous results that returned the nextToken value. This value is null when there are no more results to return. This token should be treated as an opaque identifier that is used only to retrieve the next items in a list and not for other programmatic purposes.
     public var nextToken: Swift.String?
     /// A list of all of the node groups associated with the specified cluster.
@@ -5308,7 +5354,7 @@ public struct ListNodegroupsOutput {
     }
 }
 
-public struct ListPodIdentityAssociationsInput {
+public struct ListPodIdentityAssociationsInput: Swift.Sendable {
     /// The name of the cluster that the associations are in.
     /// This member is required.
     public var clusterName: Swift.String?
@@ -5338,6 +5384,7 @@ public struct ListPodIdentityAssociationsInput {
 }
 
 extension EKSClientTypes {
+
     /// The summarized description of the association. Each summary is simplified by removing these fields compared to the full [PodIdentityAssociation]:
     ///
     /// * The IAM role: roleArn
@@ -5347,7 +5394,7 @@ extension EKSClientTypes {
     /// * The most recent timestamp that the association was modified at:. modifiedAt
     ///
     /// * The tags on the association: tags
-    public struct PodIdentityAssociationSummary {
+    public struct PodIdentityAssociationSummary: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the association.
         public var associationArn: Swift.String?
         /// The ID of the association.
@@ -5378,10 +5425,9 @@ extension EKSClientTypes {
             self.serviceAccount = serviceAccount
         }
     }
-
 }
 
-public struct ListPodIdentityAssociationsOutput {
+public struct ListPodIdentityAssociationsOutput: Swift.Sendable {
     /// The list of summarized descriptions of the associations that are in the cluster and match any filters that you provided. Each summary is simplified by removing these fields compared to the full [PodIdentityAssociation]:
     ///
     /// * The IAM role: roleArn
@@ -5455,7 +5501,7 @@ public struct NotFoundException: ClientRuntime.ModeledError, AWSClientRuntime.AW
     }
 }
 
-public struct ListTagsForResourceInput {
+public struct ListTagsForResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) that identifies the resource to list tags for.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -5468,7 +5514,7 @@ public struct ListTagsForResourceInput {
     }
 }
 
-public struct ListTagsForResourceOutput {
+public struct ListTagsForResourceOutput: Swift.Sendable {
     /// The tags for the resource.
     public var tags: [Swift.String: Swift.String]?
 
@@ -5480,7 +5526,7 @@ public struct ListTagsForResourceOutput {
     }
 }
 
-public struct ListUpdatesInput {
+public struct ListUpdatesInput: Swift.Sendable {
     /// The names of the installed add-ons that have available updates.
     public var addonName: Swift.String?
     /// The maximum number of results, returned in paginated output. You receive maxResults in a single page, along with a nextToken response element. You can see the remaining results of the initial request by sending another request with the returned nextToken value. This value can be between 1 and 100. If you don't use this parameter, 100 results and a nextToken value, if applicable, are returned.
@@ -5509,7 +5555,7 @@ public struct ListUpdatesInput {
     }
 }
 
-public struct ListUpdatesOutput {
+public struct ListUpdatesOutput: Swift.Sendable {
     /// The nextToken value returned from a previous paginated request, where maxResults was used and the results exceeded the value of that parameter. Pagination continues from the end of the previous results that returned the nextToken value. This value is null when there are no more results to return. This token should be treated as an opaque identifier that is used only to retrieve the next items in a list and not for other programmatic purposes.
     public var nextToken: Swift.String?
     /// A list of all the updates for the specified cluster and Region.
@@ -5552,7 +5598,7 @@ public struct ResourcePropagationDelayException: ClientRuntime.ModeledError, AWS
 
 extension EKSClientTypes {
 
-    public enum ConnectorConfigProvider: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ConnectorConfigProvider: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case aks
         case anthos
         case ec2
@@ -5601,8 +5647,9 @@ extension EKSClientTypes {
 }
 
 extension EKSClientTypes {
+
     /// The configuration sent to a cluster for configuration.
-    public struct ConnectorConfigRequest {
+    public struct ConnectorConfigRequest: Swift.Sendable {
         /// The cloud provider for the target cluster to connect.
         /// This member is required.
         public var provider: EKSClientTypes.ConnectorConfigProvider?
@@ -5619,10 +5666,9 @@ extension EKSClientTypes {
             self.roleArn = roleArn
         }
     }
-
 }
 
-public struct RegisterClusterInput {
+public struct RegisterClusterInput: Swift.Sendable {
     /// A unique, case-sensitive identifier that you provide to ensure the idempotency of the request.
     public var clientRequestToken: Swift.String?
     /// The configuration settings required to connect the Kubernetes cluster to the Amazon EKS control plane.
@@ -5648,7 +5694,7 @@ public struct RegisterClusterInput {
     }
 }
 
-public struct RegisterClusterOutput {
+public struct RegisterClusterOutput: Swift.Sendable {
     /// An object representing an Amazon EKS cluster.
     public var cluster: EKSClientTypes.Cluster?
 
@@ -5660,7 +5706,7 @@ public struct RegisterClusterOutput {
     }
 }
 
-public struct TagResourceInput {
+public struct TagResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the resource to add tags to.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -5678,12 +5724,12 @@ public struct TagResourceInput {
     }
 }
 
-public struct TagResourceOutput {
+public struct TagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UntagResourceInput {
+public struct UntagResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the resource to delete tags from.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -5701,12 +5747,12 @@ public struct UntagResourceInput {
     }
 }
 
-public struct UntagResourceOutput {
+public struct UntagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdateAccessEntryInput {
+public struct UpdateAccessEntryInput: Swift.Sendable {
     /// A unique, case-sensitive identifier that you provide to ensure the idempotency of the request.
     public var clientRequestToken: Swift.String?
     /// The name of your cluster.
@@ -5736,7 +5782,7 @@ public struct UpdateAccessEntryInput {
     }
 }
 
-public struct UpdateAccessEntryOutput {
+public struct UpdateAccessEntryOutput: Swift.Sendable {
     /// The ARN of the IAM principal for the AccessEntry.
     public var accessEntry: EKSClientTypes.AccessEntry?
 
@@ -5748,7 +5794,7 @@ public struct UpdateAccessEntryOutput {
     }
 }
 
-public struct UpdateAddonInput {
+public struct UpdateAddonInput: Swift.Sendable {
     /// The name of the add-on. The name must match one of the names returned by [ListAddons](https://docs.aws.amazon.com/eks/latest/APIReference/API_ListAddons.html).
     /// This member is required.
     public var addonName: Swift.String?
@@ -5796,7 +5842,7 @@ public struct UpdateAddonInput {
     }
 }
 
-public struct UpdateAddonOutput {
+public struct UpdateAddonOutput: Swift.Sendable {
     /// An object representing an asynchronous update.
     public var update: EKSClientTypes.Update?
 
@@ -5809,8 +5855,9 @@ public struct UpdateAddonOutput {
 }
 
 extension EKSClientTypes {
+
     /// The access configuration information for the cluster.
-    public struct UpdateAccessConfigRequest {
+    public struct UpdateAccessConfigRequest: Swift.Sendable {
         /// The desired authentication mode for the cluster.
         public var authenticationMode: EKSClientTypes.AuthenticationMode?
 
@@ -5821,10 +5868,9 @@ extension EKSClientTypes {
             self.authenticationMode = authenticationMode
         }
     }
-
 }
 
-public struct UpdateClusterConfigInput {
+public struct UpdateClusterConfigInput: Swift.Sendable {
     /// The access configuration for the cluster.
     public var accessConfig: EKSClientTypes.UpdateAccessConfigRequest?
     /// A unique, case-sensitive identifier that you provide to ensure the idempotency of the request.
@@ -5838,6 +5884,8 @@ public struct UpdateClusterConfigInput {
     public var resourcesVpcConfig: EKSClientTypes.VpcConfigRequest?
     /// You can enable or disable extended support for clusters currently on standard support. You cannot disable extended support once it starts. You must enable extended support before your cluster exits standard support.
     public var upgradePolicy: EKSClientTypes.UpgradePolicyRequest?
+    /// Enable or disable ARC zonal shift for the cluster. If zonal shift is enabled, Amazon Web Services configures zonal autoshift for the cluster. Zonal shift is a feature of Amazon Application Recovery Controller (ARC). ARC zonal shift is designed to be a temporary measure that allows you to move traffic for a resource away from an impaired AZ until the zonal shift expires or you cancel it. You can extend the zonal shift if necessary. You can start a zonal shift for an EKS cluster, or you can allow Amazon Web Services to do it for you by enabling zonal autoshift. This shift updates the flow of east-to-west network traffic in your cluster to only consider network endpoints for Pods running on worker nodes in healthy AZs. Additionally, any ALB or NLB handling ingress traffic for applications in your EKS cluster will automatically route traffic to targets in the healthy AZs. For more information about zonal shift in EKS, see [Learn about Amazon Application Recovery Controller (ARC) Zonal Shift in Amazon EKS](https://docs.aws.amazon.com/eks/latest/userguide/zone-shift.html) in the Amazon EKS User Guide .
+    public var zonalShiftConfig: EKSClientTypes.ZonalShiftConfigRequest?
 
     public init(
         accessConfig: EKSClientTypes.UpdateAccessConfigRequest? = nil,
@@ -5845,7 +5893,8 @@ public struct UpdateClusterConfigInput {
         logging: EKSClientTypes.Logging? = nil,
         name: Swift.String? = nil,
         resourcesVpcConfig: EKSClientTypes.VpcConfigRequest? = nil,
-        upgradePolicy: EKSClientTypes.UpgradePolicyRequest? = nil
+        upgradePolicy: EKSClientTypes.UpgradePolicyRequest? = nil,
+        zonalShiftConfig: EKSClientTypes.ZonalShiftConfigRequest? = nil
     )
     {
         self.accessConfig = accessConfig
@@ -5854,10 +5903,11 @@ public struct UpdateClusterConfigInput {
         self.name = name
         self.resourcesVpcConfig = resourcesVpcConfig
         self.upgradePolicy = upgradePolicy
+        self.zonalShiftConfig = zonalShiftConfig
     }
 }
 
-public struct UpdateClusterConfigOutput {
+public struct UpdateClusterConfigOutput: Swift.Sendable {
     /// An object representing an asynchronous update.
     public var update: EKSClientTypes.Update?
 
@@ -5869,7 +5919,7 @@ public struct UpdateClusterConfigOutput {
     }
 }
 
-public struct UpdateClusterVersionInput {
+public struct UpdateClusterVersionInput: Swift.Sendable {
     /// A unique, case-sensitive identifier that you provide to ensure the idempotency of the request.
     public var clientRequestToken: Swift.String?
     /// The name of the Amazon EKS cluster to update.
@@ -5891,7 +5941,7 @@ public struct UpdateClusterVersionInput {
     }
 }
 
-public struct UpdateClusterVersionOutput {
+public struct UpdateClusterVersionOutput: Swift.Sendable {
     /// The full description of the specified update
     public var update: EKSClientTypes.Update?
 
@@ -5903,7 +5953,7 @@ public struct UpdateClusterVersionOutput {
     }
 }
 
-public struct UpdateEksAnywhereSubscriptionInput {
+public struct UpdateEksAnywhereSubscriptionInput: Swift.Sendable {
     /// A boolean indicating whether or not to automatically renew the subscription.
     /// This member is required.
     public var autoRenew: Swift.Bool?
@@ -5925,7 +5975,7 @@ public struct UpdateEksAnywhereSubscriptionInput {
     }
 }
 
-public struct UpdateEksAnywhereSubscriptionOutput {
+public struct UpdateEksAnywhereSubscriptionOutput: Swift.Sendable {
     /// The full description of the updated subscription.
     public var subscription: EKSClientTypes.EksAnywhereSubscription?
 
@@ -5938,8 +5988,9 @@ public struct UpdateEksAnywhereSubscriptionOutput {
 }
 
 extension EKSClientTypes {
+
     /// An object representing a Kubernetes label change for a managed node group.
-    public struct UpdateLabelsPayload {
+    public struct UpdateLabelsPayload: Swift.Sendable {
         /// The Kubernetes labels to add or update.
         public var addOrUpdateLabels: [Swift.String: Swift.String]?
         /// The Kubernetes labels to remove.
@@ -5954,12 +6005,12 @@ extension EKSClientTypes {
             self.removeLabels = removeLabels
         }
     }
-
 }
 
 extension EKSClientTypes {
+
     /// An object representing the details of an update to a taints payload. For more information, see [Node taints on managed node groups](https://docs.aws.amazon.com/eks/latest/userguide/node-taints-managed-node-groups.html) in the Amazon EKS User Guide.
-    public struct UpdateTaintsPayload {
+    public struct UpdateTaintsPayload: Swift.Sendable {
         /// Kubernetes taints to be added or updated.
         public var addOrUpdateTaints: [EKSClientTypes.Taint]?
         /// Kubernetes taints to remove.
@@ -5974,10 +6025,9 @@ extension EKSClientTypes {
             self.removeTaints = removeTaints
         }
     }
-
 }
 
-public struct UpdateNodegroupConfigInput {
+public struct UpdateNodegroupConfigInput: Swift.Sendable {
     /// A unique, case-sensitive identifier that you provide to ensure the idempotency of the request.
     public var clientRequestToken: Swift.String?
     /// The name of your cluster.
@@ -6015,7 +6065,7 @@ public struct UpdateNodegroupConfigInput {
     }
 }
 
-public struct UpdateNodegroupConfigOutput {
+public struct UpdateNodegroupConfigOutput: Swift.Sendable {
     /// An object representing an asynchronous update.
     public var update: EKSClientTypes.Update?
 
@@ -6027,7 +6077,7 @@ public struct UpdateNodegroupConfigOutput {
     }
 }
 
-public struct UpdateNodegroupVersionInput {
+public struct UpdateNodegroupVersionInput: Swift.Sendable {
     /// A unique, case-sensitive identifier that you provide to ensure the idempotency of the request.
     public var clientRequestToken: Swift.String?
     /// The name of your cluster.
@@ -6065,7 +6115,7 @@ public struct UpdateNodegroupVersionInput {
     }
 }
 
-public struct UpdateNodegroupVersionOutput {
+public struct UpdateNodegroupVersionOutput: Swift.Sendable {
     /// An object representing an asynchronous update.
     public var update: EKSClientTypes.Update?
 
@@ -6077,7 +6127,7 @@ public struct UpdateNodegroupVersionOutput {
     }
 }
 
-public struct UpdatePodIdentityAssociationInput {
+public struct UpdatePodIdentityAssociationInput: Swift.Sendable {
     /// The ID of the association to be updated.
     /// This member is required.
     public var associationId: Swift.String?
@@ -6103,7 +6153,7 @@ public struct UpdatePodIdentityAssociationInput {
     }
 }
 
-public struct UpdatePodIdentityAssociationOutput {
+public struct UpdatePodIdentityAssociationOutput: Swift.Sendable {
     /// The full description of the EKS Pod Identity association that was updated.
     public var association: EKSClientTypes.PodIdentityAssociation?
 
@@ -7101,6 +7151,7 @@ extension CreateClusterInput {
         try writer["tags"].writeMap(value.tags, valueWritingClosure: SmithyReadWrite.WritingClosures.writeString(value:to:), keyNodeInfo: "key", valueNodeInfo: "value", isFlattened: false)
         try writer["upgradePolicy"].write(value.upgradePolicy, with: EKSClientTypes.UpgradePolicyRequest.write(value:to:))
         try writer["version"].write(value.version)
+        try writer["zonalShiftConfig"].write(value.zonalShiftConfig, with: EKSClientTypes.ZonalShiftConfigRequest.write(value:to:))
     }
 }
 
@@ -7245,6 +7296,7 @@ extension UpdateClusterConfigInput {
         try writer["logging"].write(value.logging, with: EKSClientTypes.Logging.write(value:to:))
         try writer["resourcesVpcConfig"].write(value.resourcesVpcConfig, with: EKSClientTypes.VpcConfigRequest.write(value:to:))
         try writer["upgradePolicy"].write(value.upgradePolicy, with: EKSClientTypes.UpgradePolicyRequest.write(value:to:))
+        try writer["zonalShiftConfig"].write(value.zonalShiftConfig, with: EKSClientTypes.ZonalShiftConfigRequest.write(value:to:))
     }
 }
 
@@ -9327,6 +9379,17 @@ extension EKSClientTypes.Cluster {
         value.outpostConfig = try reader["outpostConfig"].readIfPresent(with: EKSClientTypes.OutpostConfigResponse.read(from:))
         value.accessConfig = try reader["accessConfig"].readIfPresent(with: EKSClientTypes.AccessConfigResponse.read(from:))
         value.upgradePolicy = try reader["upgradePolicy"].readIfPresent(with: EKSClientTypes.UpgradePolicyResponse.read(from:))
+        value.zonalShiftConfig = try reader["zonalShiftConfig"].readIfPresent(with: EKSClientTypes.ZonalShiftConfigResponse.read(from:))
+        return value
+    }
+}
+
+extension EKSClientTypes.ZonalShiftConfigResponse {
+
+    static func read(from reader: SmithyJSON.Reader) throws -> EKSClientTypes.ZonalShiftConfigResponse {
+        guard reader.hasContent else { throw SmithyReadWrite.ReaderError.requiredValueNotPresent }
+        var value = EKSClientTypes.ZonalShiftConfigResponse()
+        value.enabled = try reader["enabled"].readIfPresent()
         return value
     }
 }
@@ -10113,6 +10176,14 @@ extension EKSClientTypes.UpgradePolicyRequest {
     static func write(value: EKSClientTypes.UpgradePolicyRequest?, to writer: SmithyJSON.Writer) throws {
         guard let value else { return }
         try writer["supportType"].write(value.supportType)
+    }
+}
+
+extension EKSClientTypes.ZonalShiftConfigRequest {
+
+    static func write(value: EKSClientTypes.ZonalShiftConfigRequest?, to writer: SmithyJSON.Writer) throws {
+        guard let value else { return }
+        try writer["enabled"].write(value.enabled)
     }
 }
 

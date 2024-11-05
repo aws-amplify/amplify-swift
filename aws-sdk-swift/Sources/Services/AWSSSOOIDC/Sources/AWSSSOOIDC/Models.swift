@@ -342,7 +342,7 @@ public struct UnsupportedGrantTypeException: ClientRuntime.ModeledError, AWSClie
     }
 }
 
-public struct CreateTokenInput {
+public struct CreateTokenInput: Swift.Sendable {
     /// The unique identifier string for the client or application. This value comes from the result of the [RegisterClient] API.
     /// This member is required.
     public var clientId: Swift.String?
@@ -394,7 +394,7 @@ extension CreateTokenInput: Swift.CustomDebugStringConvertible {
         "CreateTokenInput(clientId: \(Swift.String(describing: clientId)), code: \(Swift.String(describing: code)), deviceCode: \(Swift.String(describing: deviceCode)), grantType: \(Swift.String(describing: grantType)), redirectUri: \(Swift.String(describing: redirectUri)), scope: \(Swift.String(describing: scope)), clientSecret: \"CONTENT_REDACTED\", codeVerifier: \"CONTENT_REDACTED\", refreshToken: \"CONTENT_REDACTED\")"}
 }
 
-public struct CreateTokenOutput {
+public struct CreateTokenOutput: Swift.Sendable {
     /// A bearer token to access Amazon Web Services accounts and applications assigned to a user.
     public var accessToken: Swift.String?
     /// Indicates the time in seconds when an access token will expire.
@@ -464,7 +464,7 @@ public struct InvalidRequestRegionException: ClientRuntime.ModeledError, AWSClie
     }
 }
 
-public struct CreateTokenWithIAMInput {
+public struct CreateTokenWithIAMInput: Swift.Sendable {
     /// Used only when calling this API for the JWT Bearer grant type. This value specifies the JSON Web Token (JWT) issued by a trusted token issuer. To authorize a trusted token issuer, configure the JWT Bearer GrantOptions for the application.
     public var assertion: Swift.String?
     /// The unique identifier string for the client or application. This value is an application ARN that has OAuth grants configured.
@@ -523,7 +523,7 @@ extension CreateTokenWithIAMInput: Swift.CustomDebugStringConvertible {
         "CreateTokenWithIAMInput(clientId: \(Swift.String(describing: clientId)), code: \(Swift.String(describing: code)), grantType: \(Swift.String(describing: grantType)), redirectUri: \(Swift.String(describing: redirectUri)), requestedTokenType: \(Swift.String(describing: requestedTokenType)), scope: \(Swift.String(describing: scope)), subjectTokenType: \(Swift.String(describing: subjectTokenType)), assertion: \"CONTENT_REDACTED\", codeVerifier: \"CONTENT_REDACTED\", refreshToken: \"CONTENT_REDACTED\", subjectToken: \"CONTENT_REDACTED\")"}
 }
 
-public struct CreateTokenWithIAMOutput {
+public struct CreateTokenWithIAMOutput: Swift.Sendable {
     /// A bearer token to access Amazon Web Services accounts and applications assigned to a user.
     public var accessToken: Swift.String?
     /// Indicates the time in seconds when an access token will expire.
@@ -622,7 +622,7 @@ public struct InvalidRedirectUriException: ClientRuntime.ModeledError, AWSClient
     }
 }
 
-public struct RegisterClientInput {
+public struct RegisterClientInput: Swift.Sendable {
     /// The friendly name of the client.
     /// This member is required.
     public var clientName: Swift.String?
@@ -660,7 +660,7 @@ public struct RegisterClientInput {
     }
 }
 
-public struct RegisterClientOutput {
+public struct RegisterClientOutput: Swift.Sendable {
     /// An endpoint that the client can use to request authorization.
     public var authorizationEndpoint: Swift.String?
     /// The unique identifier string for each client. This client uses this identifier to get authenticated by the service in subsequent calls.
@@ -697,7 +697,7 @@ extension RegisterClientOutput: Swift.CustomDebugStringConvertible {
         "RegisterClientOutput(authorizationEndpoint: \(Swift.String(describing: authorizationEndpoint)), clientId: \(Swift.String(describing: clientId)), clientIdIssuedAt: \(Swift.String(describing: clientIdIssuedAt)), clientSecretExpiresAt: \(Swift.String(describing: clientSecretExpiresAt)), tokenEndpoint: \(Swift.String(describing: tokenEndpoint)), clientSecret: \"CONTENT_REDACTED\")"}
 }
 
-public struct StartDeviceAuthorizationInput {
+public struct StartDeviceAuthorizationInput: Swift.Sendable {
     /// The unique identifier string for the client that is registered with IAM Identity Center. This value should come from the persisted result of the [RegisterClient] API operation.
     /// This member is required.
     public var clientId: Swift.String?
@@ -725,7 +725,7 @@ extension StartDeviceAuthorizationInput: Swift.CustomDebugStringConvertible {
         "StartDeviceAuthorizationInput(clientId: \(Swift.String(describing: clientId)), startUrl: \(Swift.String(describing: startUrl)), clientSecret: \"CONTENT_REDACTED\")"}
 }
 
-public struct StartDeviceAuthorizationOutput {
+public struct StartDeviceAuthorizationOutput: Swift.Sendable {
     /// The short-lived code that is used by the device when polling for a session token.
     public var deviceCode: Swift.String?
     /// Indicates the number of seconds in which the verification code will become invalid.

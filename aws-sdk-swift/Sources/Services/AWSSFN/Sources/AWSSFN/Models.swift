@@ -74,8 +74,9 @@ public struct ActivityDoesNotExist: ClientRuntime.ModeledError, AWSClientRuntime
 }
 
 extension SFNClientTypes {
+
     /// Contains details about an activity that failed during an execution.
-    public struct ActivityFailedEventDetails {
+    public struct ActivityFailedEventDetails: Swift.Sendable {
         /// A more detailed explanation of the cause of the failure.
         public var cause: Swift.String?
         /// The error code of the failure.
@@ -90,7 +91,6 @@ extension SFNClientTypes {
             self.error = error
         }
     }
-
 }
 
 extension SFNClientTypes.ActivityFailedEventDetails: Swift.CustomDebugStringConvertible {
@@ -123,8 +123,9 @@ public struct ActivityLimitExceeded: ClientRuntime.ModeledError, AWSClientRuntim
 }
 
 extension SFNClientTypes {
+
     /// Contains details about an activity.
-    public struct ActivityListItem {
+    public struct ActivityListItem: Swift.Sendable {
         /// The Amazon Resource Name (ARN) that identifies the activity.
         /// This member is required.
         public var activityArn: Swift.String?
@@ -159,12 +160,12 @@ extension SFNClientTypes {
             self.name = name
         }
     }
-
 }
 
 extension SFNClientTypes {
+
     /// Provides details about input or output in an execution history event.
-    public struct HistoryEventExecutionDataDetails {
+    public struct HistoryEventExecutionDataDetails: Swift.Sendable {
         /// Indicates whether input or output was truncated in the response. Always false for API calls.
         public var truncated: Swift.Bool
 
@@ -175,12 +176,12 @@ extension SFNClientTypes {
             self.truncated = truncated
         }
     }
-
 }
 
 extension SFNClientTypes {
+
     /// Contains details about an activity scheduled during an execution.
-    public struct ActivityScheduledEventDetails {
+    public struct ActivityScheduledEventDetails: Swift.Sendable {
         /// The maximum allowed duration between two heartbeats for the activity task.
         public var heartbeatInSeconds: Swift.Int?
         /// The JSON data input to the activity task. Length constraints apply to the payload size, and are expressed as bytes in UTF-8 encoding.
@@ -208,7 +209,6 @@ extension SFNClientTypes {
             self.timeoutInSeconds = timeoutInSeconds
         }
     }
-
 }
 
 extension SFNClientTypes.ActivityScheduledEventDetails: Swift.CustomDebugStringConvertible {
@@ -217,8 +217,9 @@ extension SFNClientTypes.ActivityScheduledEventDetails: Swift.CustomDebugStringC
 }
 
 extension SFNClientTypes {
+
     /// Contains details about an activity schedule failure that occurred during an execution.
-    public struct ActivityScheduleFailedEventDetails {
+    public struct ActivityScheduleFailedEventDetails: Swift.Sendable {
         /// A more detailed explanation of the cause of the failure.
         public var cause: Swift.String?
         /// The error code of the failure.
@@ -233,7 +234,6 @@ extension SFNClientTypes {
             self.error = error
         }
     }
-
 }
 
 extension SFNClientTypes.ActivityScheduleFailedEventDetails: Swift.CustomDebugStringConvertible {
@@ -242,8 +242,9 @@ extension SFNClientTypes.ActivityScheduleFailedEventDetails: Swift.CustomDebugSt
 }
 
 extension SFNClientTypes {
+
     /// Contains details about the start of an activity during an execution.
-    public struct ActivityStartedEventDetails {
+    public struct ActivityStartedEventDetails: Swift.Sendable {
         /// The name of the worker that the task is assigned to. These names are provided by the workers when calling [GetActivityTask].
         public var workerName: Swift.String?
 
@@ -254,12 +255,12 @@ extension SFNClientTypes {
             self.workerName = workerName
         }
     }
-
 }
 
 extension SFNClientTypes {
+
     /// Contains details about an activity that successfully terminated during an execution.
-    public struct ActivitySucceededEventDetails {
+    public struct ActivitySucceededEventDetails: Swift.Sendable {
         /// The JSON data output by the activity task. Length constraints apply to the payload size, and are expressed as bytes in UTF-8 encoding.
         public var output: Swift.String?
         /// Contains details about the output of an execution history event.
@@ -274,7 +275,6 @@ extension SFNClientTypes {
             self.outputDetails = outputDetails
         }
     }
-
 }
 
 extension SFNClientTypes.ActivitySucceededEventDetails: Swift.CustomDebugStringConvertible {
@@ -283,8 +283,9 @@ extension SFNClientTypes.ActivitySucceededEventDetails: Swift.CustomDebugStringC
 }
 
 extension SFNClientTypes {
+
     /// Contains details about an activity timeout that occurred during an execution.
-    public struct ActivityTimedOutEventDetails {
+    public struct ActivityTimedOutEventDetails: Swift.Sendable {
         /// A more detailed explanation of the cause of the timeout.
         public var cause: Swift.String?
         /// The error code of the failure.
@@ -299,7 +300,6 @@ extension SFNClientTypes {
             self.error = error
         }
     }
-
 }
 
 extension SFNClientTypes.ActivityTimedOutEventDetails: Swift.CustomDebugStringConvertible {
@@ -456,7 +456,7 @@ public struct TooManyTags: ClientRuntime.ModeledError, AWSClientRuntime.AWSServi
 
 extension SFNClientTypes {
 
-    public enum EncryptionType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum EncryptionType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case awsOwnedKey
         case customerManagedKmsKey
         case sdkUnknown(Swift.String)
@@ -484,8 +484,9 @@ extension SFNClientTypes {
 }
 
 extension SFNClientTypes {
+
     /// Settings to configure server-side encryption. For additional control over security, you can encrypt your data using a customer-managed key for Step Functions state machines and activities. You can configure a symmetric KMS key and data key reuse period when creating or updating a State Machine, and when creating an Activity. The execution history and state machine definition will be encrypted with the key applied to the State Machine. Activity inputs will be encrypted with the key applied to the Activity. Step Functions automatically enables encryption at rest using Amazon Web Services owned keys at no charge. However, KMS charges apply when using a customer managed key. For more information about pricing, see [Key Management Service pricing](https://aws.amazon.com/kms/pricing/). For more information on KMS, see [What is Key Management Service?](https://docs.aws.amazon.com/kms/latest/developerguide/overview.html)
-    public struct EncryptionConfiguration {
+    public struct EncryptionConfiguration: Swift.Sendable {
         /// Maximum duration that Step Functions will reuse data keys. When the period expires, Step Functions will call GenerateDataKey. Only applies to customer managed keys.
         public var kmsDataKeyReusePeriodSeconds: Swift.Int?
         /// An alias, alias ARN, key ID, or key ARN of a symmetric encryption KMS key to encrypt data. To specify a KMS key in a different Amazon Web Services account, you must use the key ARN or alias ARN.
@@ -505,12 +506,12 @@ extension SFNClientTypes {
             self.type = type
         }
     }
-
 }
 
 extension SFNClientTypes {
+
     /// Tags are key-value pairs that can be associated with Step Functions state machines and activities. An array of key-value pairs. For more information, see [Using Cost Allocation Tags](https://docs.aws.amazon.com/awsaccountbilling/latest/aboutv2/cost-alloc-tags.html) in the Amazon Web Services Billing and Cost Management User Guide, and [Controlling Access Using IAM Tags](https://docs.aws.amazon.com/IAM/latest/UserGuide/access_iam-tags.html). Tags may only contain Unicode letters, digits, white space, or these symbols: _ . : / = + - @.
-    public struct Tag {
+    public struct Tag: Swift.Sendable {
         /// The key of a tag.
         public var key: Swift.String?
         /// The value of a tag.
@@ -525,10 +526,9 @@ extension SFNClientTypes {
             self.value = value
         }
     }
-
 }
 
-public struct CreateActivityInput {
+public struct CreateActivityInput: Swift.Sendable {
     /// Settings to configure server-side encryption.
     public var encryptionConfiguration: SFNClientTypes.EncryptionConfiguration?
     /// The name of the activity to create. This name must be unique for your Amazon Web Services account and region for 90 days. For more information, see [ Limits Related to State Machine Executions](https://docs.aws.amazon.com/step-functions/latest/dg/limits.html#service-limits-state-machine-executions) in the Step Functions Developer Guide. A name must not contain:
@@ -562,7 +562,7 @@ public struct CreateActivityInput {
     }
 }
 
-public struct CreateActivityOutput {
+public struct CreateActivityOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) that identifies the created activity.
     /// This member is required.
     public var activityArn: Swift.String?
@@ -798,7 +798,7 @@ public struct StateMachineTypeNotSupported: ClientRuntime.ModeledError, AWSClien
 
 extension SFNClientTypes {
 
-    public enum ValidationExceptionReason: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ValidationExceptionReason: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case apiDoesNotSupportLabeledArns
         case cannotUpdateCompletedMapRun
         case invalidRoutingConfiguration
@@ -860,8 +860,9 @@ public struct ValidationException: ClientRuntime.ModeledError, AWSClientRuntime.
 }
 
 extension SFNClientTypes {
+
     ///
-    public struct CloudWatchLogsLogGroup {
+    public struct CloudWatchLogsLogGroup: Swift.Sendable {
         /// The ARN of the the CloudWatch log group to which you want your logs emitted to. The ARN must end with :*
         public var logGroupArn: Swift.String?
 
@@ -872,12 +873,12 @@ extension SFNClientTypes {
             self.logGroupArn = logGroupArn
         }
     }
-
 }
 
 extension SFNClientTypes {
+
     ///
-    public struct LogDestination {
+    public struct LogDestination: Swift.Sendable {
         /// An object describing a CloudWatch log group. For more information, see [AWS::Logs::LogGroup](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-logs-loggroup.html) in the CloudFormation User Guide.
         public var cloudWatchLogsLogGroup: SFNClientTypes.CloudWatchLogsLogGroup?
 
@@ -888,12 +889,11 @@ extension SFNClientTypes {
             self.cloudWatchLogsLogGroup = cloudWatchLogsLogGroup
         }
     }
-
 }
 
 extension SFNClientTypes {
 
-    public enum LogLevel: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum LogLevel: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case all
         case error
         case fatal
@@ -927,8 +927,9 @@ extension SFNClientTypes {
 }
 
 extension SFNClientTypes {
+
     /// The LoggingConfiguration data type is used to set CloudWatch Logs options.
-    public struct LoggingConfiguration {
+    public struct LoggingConfiguration: Swift.Sendable {
         /// An array of objects that describes where your execution history events will be logged. Limited to size 1. Required, if your log level is not set to OFF.
         public var destinations: [SFNClientTypes.LogDestination]?
         /// Determines whether execution data is included in your log. When set to false, data is excluded.
@@ -947,12 +948,12 @@ extension SFNClientTypes {
             self.level = level
         }
     }
-
 }
 
 extension SFNClientTypes {
+
     /// Selects whether or not the state machine's X-Ray tracing is enabled. Default is false
-    public struct TracingConfiguration {
+    public struct TracingConfiguration: Swift.Sendable {
         /// When set to true, X-Ray tracing is enabled.
         public var enabled: Swift.Bool
 
@@ -963,12 +964,11 @@ extension SFNClientTypes {
             self.enabled = enabled
         }
     }
-
 }
 
 extension SFNClientTypes {
 
-    public enum StateMachineType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum StateMachineType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case express
         case standard
         case sdkUnknown(Swift.String)
@@ -995,7 +995,7 @@ extension SFNClientTypes {
     }
 }
 
-public struct CreateStateMachineInput {
+public struct CreateStateMachineInput: Swift.Sendable {
     /// The Amazon States Language definition of the state machine. See [Amazon States Language](https://docs.aws.amazon.com/step-functions/latest/dg/concepts-amazon-states-language.html).
     /// This member is required.
     public var definition: Swift.String?
@@ -1064,7 +1064,7 @@ extension CreateStateMachineInput: Swift.CustomDebugStringConvertible {
         "CreateStateMachineInput(encryptionConfiguration: \(Swift.String(describing: encryptionConfiguration)), loggingConfiguration: \(Swift.String(describing: loggingConfiguration)), name: \(Swift.String(describing: name)), publish: \(Swift.String(describing: publish)), roleArn: \(Swift.String(describing: roleArn)), tags: \(Swift.String(describing: tags)), tracingConfiguration: \(Swift.String(describing: tracingConfiguration)), type: \(Swift.String(describing: type)), definition: \"CONTENT_REDACTED\", versionDescription: \"CONTENT_REDACTED\")"}
 }
 
-public struct CreateStateMachineOutput {
+public struct CreateStateMachineOutput: Swift.Sendable {
     /// The date the state machine is created.
     /// This member is required.
     public var creationDate: Foundation.Date?
@@ -1138,8 +1138,9 @@ public struct ServiceQuotaExceededException: ClientRuntime.ModeledError, AWSClie
 }
 
 extension SFNClientTypes {
+
     /// Contains details about the routing configuration of a state machine alias. In a routing configuration, you define an array of objects that specify up to two state machine versions. You also specify the percentage of traffic to be routed to each version.
-    public struct RoutingConfigurationListItem {
+    public struct RoutingConfigurationListItem: Swift.Sendable {
         /// The Amazon Resource Name (ARN) that identifies one or two state machine versions defined in the routing configuration. If you specify the ARN of a second version, it must belong to the same state machine as the first version.
         /// This member is required.
         public var stateMachineVersionArn: Swift.String?
@@ -1156,10 +1157,9 @@ extension SFNClientTypes {
             self.weight = weight
         }
     }
-
 }
 
-public struct CreateStateMachineAliasInput {
+public struct CreateStateMachineAliasInput: Swift.Sendable {
     /// A description for the state machine alias.
     public var description: Swift.String?
     /// The name of the state machine alias. To avoid conflict with version ARNs, don't use an integer in the name of the alias.
@@ -1186,7 +1186,7 @@ extension CreateStateMachineAliasInput: Swift.CustomDebugStringConvertible {
         "CreateStateMachineAliasInput(name: \(Swift.String(describing: name)), routingConfiguration: \(Swift.String(describing: routingConfiguration)), description: \"CONTENT_REDACTED\")"}
 }
 
-public struct CreateStateMachineAliasOutput {
+public struct CreateStateMachineAliasOutput: Swift.Sendable {
     /// The date the state machine alias was created.
     /// This member is required.
     public var creationDate: Foundation.Date?
@@ -1204,7 +1204,7 @@ public struct CreateStateMachineAliasOutput {
     }
 }
 
-public struct DeleteActivityInput {
+public struct DeleteActivityInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the activity to delete.
     /// This member is required.
     public var activityArn: Swift.String?
@@ -1217,12 +1217,12 @@ public struct DeleteActivityInput {
     }
 }
 
-public struct DeleteActivityOutput {
+public struct DeleteActivityOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteStateMachineInput {
+public struct DeleteStateMachineInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the state machine to delete.
     /// This member is required.
     public var stateMachineArn: Swift.String?
@@ -1235,12 +1235,12 @@ public struct DeleteStateMachineInput {
     }
 }
 
-public struct DeleteStateMachineOutput {
+public struct DeleteStateMachineOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteStateMachineAliasInput {
+public struct DeleteStateMachineAliasInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the state machine alias to delete.
     /// This member is required.
     public var stateMachineAliasArn: Swift.String?
@@ -1253,12 +1253,12 @@ public struct DeleteStateMachineAliasInput {
     }
 }
 
-public struct DeleteStateMachineAliasOutput {
+public struct DeleteStateMachineAliasOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteStateMachineVersionInput {
+public struct DeleteStateMachineVersionInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the state machine version to delete.
     /// This member is required.
     public var stateMachineVersionArn: Swift.String?
@@ -1271,12 +1271,12 @@ public struct DeleteStateMachineVersionInput {
     }
 }
 
-public struct DeleteStateMachineVersionOutput {
+public struct DeleteStateMachineVersionOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DescribeActivityInput {
+public struct DescribeActivityInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the activity to describe.
     /// This member is required.
     public var activityArn: Swift.String?
@@ -1289,7 +1289,7 @@ public struct DescribeActivityInput {
     }
 }
 
-public struct DescribeActivityOutput {
+public struct DescribeActivityOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) that identifies the activity.
     /// This member is required.
     public var activityArn: Swift.String?
@@ -1355,7 +1355,7 @@ public struct ExecutionDoesNotExist: ClientRuntime.ModeledError, AWSClientRuntim
 
 extension SFNClientTypes {
 
-    public enum KmsKeyState: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum KmsKeyState: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case creating
         case disabled
         case pendingDeletion
@@ -1421,7 +1421,7 @@ public struct KmsInvalidStateException: ClientRuntime.ModeledError, AWSClientRun
 
 extension SFNClientTypes {
 
-    public enum IncludedData: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum IncludedData: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case allData
         case metadataOnly
         case sdkUnknown(Swift.String)
@@ -1448,7 +1448,7 @@ extension SFNClientTypes {
     }
 }
 
-public struct DescribeExecutionInput {
+public struct DescribeExecutionInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the execution to describe.
     /// This member is required.
     public var executionArn: Swift.String?
@@ -1466,8 +1466,9 @@ public struct DescribeExecutionInput {
 }
 
 extension SFNClientTypes {
+
     /// Provides details about execution input or output.
-    public struct CloudWatchEventsExecutionDataDetails {
+    public struct CloudWatchEventsExecutionDataDetails: Swift.Sendable {
         /// Indicates whether input or output was included in the response. Always true for API calls.
         public var included: Swift.Bool
 
@@ -1478,12 +1479,11 @@ extension SFNClientTypes {
             self.included = included
         }
     }
-
 }
 
 extension SFNClientTypes {
 
-    public enum ExecutionRedriveStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ExecutionRedriveStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case notRedrivable
         case redrivable
         case redrivableByMapRun
@@ -1515,7 +1515,7 @@ extension SFNClientTypes {
 
 extension SFNClientTypes {
 
-    public enum ExecutionStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ExecutionStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case aborted
         case failed
         case pendingRedrive
@@ -1554,7 +1554,7 @@ extension SFNClientTypes {
     }
 }
 
-public struct DescribeExecutionOutput {
+public struct DescribeExecutionOutput: Swift.Sendable {
     /// The cause string if the state machine execution failed.
     public var cause: Swift.String?
     /// The error string if the state machine execution failed.
@@ -1691,7 +1691,7 @@ extension DescribeExecutionOutput: Swift.CustomDebugStringConvertible {
         "DescribeExecutionOutput(executionArn: \(Swift.String(describing: executionArn)), inputDetails: \(Swift.String(describing: inputDetails)), mapRunArn: \(Swift.String(describing: mapRunArn)), name: \(Swift.String(describing: name)), outputDetails: \(Swift.String(describing: outputDetails)), redriveCount: \(Swift.String(describing: redriveCount)), redriveDate: \(Swift.String(describing: redriveDate)), redriveStatus: \(Swift.String(describing: redriveStatus)), startDate: \(Swift.String(describing: startDate)), stateMachineAliasArn: \(Swift.String(describing: stateMachineAliasArn)), stateMachineArn: \(Swift.String(describing: stateMachineArn)), stateMachineVersionArn: \(Swift.String(describing: stateMachineVersionArn)), status: \(Swift.String(describing: status)), stopDate: \(Swift.String(describing: stopDate)), traceHeader: \(Swift.String(describing: traceHeader)), cause: \"CONTENT_REDACTED\", error: \"CONTENT_REDACTED\", input: \"CONTENT_REDACTED\", output: \"CONTENT_REDACTED\", redriveStatusReason: \"CONTENT_REDACTED\")"}
 }
 
-public struct DescribeMapRunInput {
+public struct DescribeMapRunInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) that identifies a Map Run.
     /// This member is required.
     public var mapRunArn: Swift.String?
@@ -1705,8 +1705,9 @@ public struct DescribeMapRunInput {
 }
 
 extension SFNClientTypes {
+
     /// Contains details about all of the child workflow executions started by a Map Run.
-    public struct MapRunExecutionCounts {
+    public struct MapRunExecutionCounts: Swift.Sendable {
         /// The total number of child workflow executions that were started by a Map Run and were running, but were either stopped by the user or by Step Functions because the Map Run failed.
         /// This member is required.
         public var aborted: Swift.Int
@@ -1761,12 +1762,12 @@ extension SFNClientTypes {
             self.total = total
         }
     }
-
 }
 
 extension SFNClientTypes {
+
     /// Contains details about items that were processed in all of the child workflow executions that were started by a Map Run.
-    public struct MapRunItemCounts {
+    public struct MapRunItemCounts: Swift.Sendable {
         /// The total number of items processed in child workflow executions that were either stopped by the user or by Step Functions, because the Map Run failed.
         /// This member is required.
         public var aborted: Swift.Int
@@ -1821,12 +1822,11 @@ extension SFNClientTypes {
             self.total = total
         }
     }
-
 }
 
 extension SFNClientTypes {
 
-    public enum MapRunStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum MapRunStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case aborted
         case failed
         case running
@@ -1859,7 +1859,7 @@ extension SFNClientTypes {
     }
 }
 
-public struct DescribeMapRunOutput {
+public struct DescribeMapRunOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) that identifies the execution in which the Map Run was started.
     /// This member is required.
     public var executionArn: Swift.String?
@@ -1948,7 +1948,7 @@ public struct StateMachineDoesNotExist: ClientRuntime.ModeledError, AWSClientRun
     }
 }
 
-public struct DescribeStateMachineInput {
+public struct DescribeStateMachineInput: Swift.Sendable {
     /// If your state machine definition is encrypted with a KMS key, callers must have kms:Decrypt permission to decrypt the definition. Alternatively, you can call the API with includedData = METADATA_ONLY to get a successful response without the encrypted definition. When calling a labelled ARN for an encrypted state machine, the includedData = METADATA_ONLY parameter will not apply because Step Functions needs to decrypt the entire state machine definition to get the Distributed Map state’s definition. In this case, the API caller needs to have kms:Decrypt permission.
     public var includedData: SFNClientTypes.IncludedData?
     /// The Amazon Resource Name (ARN) of the state machine for which you want the information. If you specify a state machine version ARN, this API returns details about that version. The version ARN is a combination of state machine ARN and the version number separated by a colon (:). For example, stateMachineARN:1.
@@ -1967,7 +1967,7 @@ public struct DescribeStateMachineInput {
 
 extension SFNClientTypes {
 
-    public enum StateMachineStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum StateMachineStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case active
         case deleting
         case sdkUnknown(Swift.String)
@@ -1994,7 +1994,7 @@ extension SFNClientTypes {
     }
 }
 
-public struct DescribeStateMachineOutput {
+public struct DescribeStateMachineOutput: Swift.Sendable {
     /// The date the state machine is created. For a state machine version, creationDate is the date the version was created.
     /// This member is required.
     public var creationDate: Foundation.Date?
@@ -2078,7 +2078,7 @@ extension DescribeStateMachineOutput: Swift.CustomDebugStringConvertible {
         "DescribeStateMachineOutput(creationDate: \(Swift.String(describing: creationDate)), encryptionConfiguration: \(Swift.String(describing: encryptionConfiguration)), label: \(Swift.String(describing: label)), loggingConfiguration: \(Swift.String(describing: loggingConfiguration)), name: \(Swift.String(describing: name)), revisionId: \(Swift.String(describing: revisionId)), roleArn: \(Swift.String(describing: roleArn)), stateMachineArn: \(Swift.String(describing: stateMachineArn)), status: \(Swift.String(describing: status)), tracingConfiguration: \(Swift.String(describing: tracingConfiguration)), type: \(Swift.String(describing: type)), definition: \"CONTENT_REDACTED\", description: \"CONTENT_REDACTED\")"}
 }
 
-public struct DescribeStateMachineAliasInput {
+public struct DescribeStateMachineAliasInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the state machine alias.
     /// This member is required.
     public var stateMachineAliasArn: Swift.String?
@@ -2091,7 +2091,7 @@ public struct DescribeStateMachineAliasInput {
     }
 }
 
-public struct DescribeStateMachineAliasOutput {
+public struct DescribeStateMachineAliasOutput: Swift.Sendable {
     /// The date the state machine alias was created.
     public var creationDate: Foundation.Date?
     /// A description of the alias.
@@ -2128,7 +2128,7 @@ extension DescribeStateMachineAliasOutput: Swift.CustomDebugStringConvertible {
         "DescribeStateMachineAliasOutput(creationDate: \(Swift.String(describing: creationDate)), name: \(Swift.String(describing: name)), routingConfiguration: \(Swift.String(describing: routingConfiguration)), stateMachineAliasArn: \(Swift.String(describing: stateMachineAliasArn)), updateDate: \(Swift.String(describing: updateDate)), description: \"CONTENT_REDACTED\")"}
 }
 
-public struct DescribeStateMachineForExecutionInput {
+public struct DescribeStateMachineForExecutionInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the execution you want state machine information for.
     /// This member is required.
     public var executionArn: Swift.String?
@@ -2145,7 +2145,7 @@ public struct DescribeStateMachineForExecutionInput {
     }
 }
 
-public struct DescribeStateMachineForExecutionOutput {
+public struct DescribeStateMachineForExecutionOutput: Swift.Sendable {
     /// The Amazon States Language definition of the state machine. See [Amazon States Language](https://docs.aws.amazon.com/step-functions/latest/dg/concepts-amazon-states-language.html).
     /// This member is required.
     public var definition: Swift.String?
@@ -2207,7 +2207,7 @@ extension DescribeStateMachineForExecutionOutput: Swift.CustomDebugStringConvert
         "DescribeStateMachineForExecutionOutput(encryptionConfiguration: \(Swift.String(describing: encryptionConfiguration)), label: \(Swift.String(describing: label)), loggingConfiguration: \(Swift.String(describing: loggingConfiguration)), mapRunArn: \(Swift.String(describing: mapRunArn)), name: \(Swift.String(describing: name)), revisionId: \(Swift.String(describing: revisionId)), roleArn: \(Swift.String(describing: roleArn)), stateMachineArn: \(Swift.String(describing: stateMachineArn)), tracingConfiguration: \(Swift.String(describing: tracingConfiguration)), updateDate: \(Swift.String(describing: updateDate)), definition: \"CONTENT_REDACTED\")"}
 }
 
-public struct GetActivityTaskInput {
+public struct GetActivityTaskInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the activity to retrieve tasks from (assigned when you create the task using [CreateActivity].)
     /// This member is required.
     public var activityArn: Swift.String?
@@ -2224,7 +2224,7 @@ public struct GetActivityTaskInput {
     }
 }
 
-public struct GetActivityTaskOutput {
+public struct GetActivityTaskOutput: Swift.Sendable {
     /// The string that contains the JSON input data for the task. Length constraints apply to the payload size, and are expressed as bytes in UTF-8 encoding.
     public var input: Swift.String?
     /// A token that identifies the scheduled task. This token must be copied and included in subsequent calls to [SendTaskHeartbeat], [SendTaskSuccess] or [SendTaskFailure] in order to report the progress or completion of the task.
@@ -2269,7 +2269,7 @@ public struct InvalidToken: ClientRuntime.ModeledError, AWSClientRuntime.AWSServ
     }
 }
 
-public struct GetExecutionHistoryInput {
+public struct GetExecutionHistoryInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the execution.
     /// This member is required.
     public var executionArn: Swift.String?
@@ -2299,8 +2299,9 @@ public struct GetExecutionHistoryInput {
 }
 
 extension SFNClientTypes {
+
     /// Contains details about an abort of an execution.
-    public struct ExecutionAbortedEventDetails {
+    public struct ExecutionAbortedEventDetails: Swift.Sendable {
         /// A more detailed explanation of the cause of the failure.
         public var cause: Swift.String?
         /// The error code of the failure.
@@ -2315,7 +2316,6 @@ extension SFNClientTypes {
             self.error = error
         }
     }
-
 }
 
 extension SFNClientTypes.ExecutionAbortedEventDetails: Swift.CustomDebugStringConvertible {
@@ -2324,8 +2324,9 @@ extension SFNClientTypes.ExecutionAbortedEventDetails: Swift.CustomDebugStringCo
 }
 
 extension SFNClientTypes {
+
     /// Contains details about an execution failure event.
-    public struct ExecutionFailedEventDetails {
+    public struct ExecutionFailedEventDetails: Swift.Sendable {
         /// A more detailed explanation of the cause of the failure.
         public var cause: Swift.String?
         /// The error code of the failure.
@@ -2340,7 +2341,6 @@ extension SFNClientTypes {
             self.error = error
         }
     }
-
 }
 
 extension SFNClientTypes.ExecutionFailedEventDetails: Swift.CustomDebugStringConvertible {
@@ -2349,8 +2349,9 @@ extension SFNClientTypes.ExecutionFailedEventDetails: Swift.CustomDebugStringCon
 }
 
 extension SFNClientTypes {
+
     /// Contains details about a redriven execution.
-    public struct ExecutionRedrivenEventDetails {
+    public struct ExecutionRedrivenEventDetails: Swift.Sendable {
         /// The number of times you've redriven an execution. If you have not yet redriven an execution, the redriveCount is 0. This count is not updated for redrives that failed to start or are pending to be redriven.
         public var redriveCount: Swift.Int?
 
@@ -2361,12 +2362,12 @@ extension SFNClientTypes {
             self.redriveCount = redriveCount
         }
     }
-
 }
 
 extension SFNClientTypes {
+
     /// Contains details about the start of the execution.
-    public struct ExecutionStartedEventDetails {
+    public struct ExecutionStartedEventDetails: Swift.Sendable {
         /// The JSON data input to the execution. Length constraints apply to the payload size, and are expressed as bytes in UTF-8 encoding.
         public var input: Swift.String?
         /// Contains details about the input for an execution history event.
@@ -2393,7 +2394,6 @@ extension SFNClientTypes {
             self.stateMachineVersionArn = stateMachineVersionArn
         }
     }
-
 }
 
 extension SFNClientTypes.ExecutionStartedEventDetails: Swift.CustomDebugStringConvertible {
@@ -2402,8 +2402,9 @@ extension SFNClientTypes.ExecutionStartedEventDetails: Swift.CustomDebugStringCo
 }
 
 extension SFNClientTypes {
+
     /// Contains details about the successful termination of the execution.
-    public struct ExecutionSucceededEventDetails {
+    public struct ExecutionSucceededEventDetails: Swift.Sendable {
         /// The JSON data output by the execution. Length constraints apply to the payload size, and are expressed as bytes in UTF-8 encoding.
         public var output: Swift.String?
         /// Contains details about the output of an execution history event.
@@ -2418,7 +2419,6 @@ extension SFNClientTypes {
             self.outputDetails = outputDetails
         }
     }
-
 }
 
 extension SFNClientTypes.ExecutionSucceededEventDetails: Swift.CustomDebugStringConvertible {
@@ -2427,8 +2427,9 @@ extension SFNClientTypes.ExecutionSucceededEventDetails: Swift.CustomDebugString
 }
 
 extension SFNClientTypes {
+
     /// Contains details about the execution timeout that occurred during the execution.
-    public struct ExecutionTimedOutEventDetails {
+    public struct ExecutionTimedOutEventDetails: Swift.Sendable {
         /// A more detailed explanation of the cause of the timeout.
         public var cause: Swift.String?
         /// The error code of the failure.
@@ -2443,7 +2444,6 @@ extension SFNClientTypes {
             self.error = error
         }
     }
-
 }
 
 extension SFNClientTypes.ExecutionTimedOutEventDetails: Swift.CustomDebugStringConvertible {
@@ -2452,8 +2452,9 @@ extension SFNClientTypes.ExecutionTimedOutEventDetails: Swift.CustomDebugStringC
 }
 
 extension SFNClientTypes {
+
     /// Contains details about a Lambda function that failed during an execution.
-    public struct LambdaFunctionFailedEventDetails {
+    public struct LambdaFunctionFailedEventDetails: Swift.Sendable {
         /// A more detailed explanation of the cause of the failure.
         public var cause: Swift.String?
         /// The error code of the failure.
@@ -2468,7 +2469,6 @@ extension SFNClientTypes {
             self.error = error
         }
     }
-
 }
 
 extension SFNClientTypes.LambdaFunctionFailedEventDetails: Swift.CustomDebugStringConvertible {
@@ -2477,8 +2477,9 @@ extension SFNClientTypes.LambdaFunctionFailedEventDetails: Swift.CustomDebugStri
 }
 
 extension SFNClientTypes {
+
     /// Contains details about the credentials that Step Functions uses for a task.
-    public struct TaskCredentials {
+    public struct TaskCredentials: Swift.Sendable {
         /// The ARN of an IAM role that Step Functions assumes for the task. The role can allow cross-account access to resources.
         public var roleArn: Swift.String?
 
@@ -2489,12 +2490,12 @@ extension SFNClientTypes {
             self.roleArn = roleArn
         }
     }
-
 }
 
 extension SFNClientTypes {
+
     /// Contains details about a Lambda function scheduled during an execution.
-    public struct LambdaFunctionScheduledEventDetails {
+    public struct LambdaFunctionScheduledEventDetails: Swift.Sendable {
         /// The JSON data input to the Lambda function. Length constraints apply to the payload size, and are expressed as bytes in UTF-8 encoding.
         public var input: Swift.String?
         /// Contains details about input for an execution history event.
@@ -2522,7 +2523,6 @@ extension SFNClientTypes {
             self.timeoutInSeconds = timeoutInSeconds
         }
     }
-
 }
 
 extension SFNClientTypes.LambdaFunctionScheduledEventDetails: Swift.CustomDebugStringConvertible {
@@ -2531,8 +2531,9 @@ extension SFNClientTypes.LambdaFunctionScheduledEventDetails: Swift.CustomDebugS
 }
 
 extension SFNClientTypes {
+
     /// Contains details about a failed Lambda function schedule event that occurred during an execution.
-    public struct LambdaFunctionScheduleFailedEventDetails {
+    public struct LambdaFunctionScheduleFailedEventDetails: Swift.Sendable {
         /// A more detailed explanation of the cause of the failure.
         public var cause: Swift.String?
         /// The error code of the failure.
@@ -2547,7 +2548,6 @@ extension SFNClientTypes {
             self.error = error
         }
     }
-
 }
 
 extension SFNClientTypes.LambdaFunctionScheduleFailedEventDetails: Swift.CustomDebugStringConvertible {
@@ -2556,8 +2556,9 @@ extension SFNClientTypes.LambdaFunctionScheduleFailedEventDetails: Swift.CustomD
 }
 
 extension SFNClientTypes {
+
     /// Contains details about a lambda function that failed to start during an execution.
-    public struct LambdaFunctionStartFailedEventDetails {
+    public struct LambdaFunctionStartFailedEventDetails: Swift.Sendable {
         /// A more detailed explanation of the cause of the failure.
         public var cause: Swift.String?
         /// The error code of the failure.
@@ -2572,7 +2573,6 @@ extension SFNClientTypes {
             self.error = error
         }
     }
-
 }
 
 extension SFNClientTypes.LambdaFunctionStartFailedEventDetails: Swift.CustomDebugStringConvertible {
@@ -2581,8 +2581,9 @@ extension SFNClientTypes.LambdaFunctionStartFailedEventDetails: Swift.CustomDebu
 }
 
 extension SFNClientTypes {
+
     /// Contains details about a Lambda function that successfully terminated during an execution.
-    public struct LambdaFunctionSucceededEventDetails {
+    public struct LambdaFunctionSucceededEventDetails: Swift.Sendable {
         /// The JSON data output by the Lambda function. Length constraints apply to the payload size, and are expressed as bytes in UTF-8 encoding.
         public var output: Swift.String?
         /// Contains details about the output of an execution history event.
@@ -2597,7 +2598,6 @@ extension SFNClientTypes {
             self.outputDetails = outputDetails
         }
     }
-
 }
 
 extension SFNClientTypes.LambdaFunctionSucceededEventDetails: Swift.CustomDebugStringConvertible {
@@ -2606,8 +2606,9 @@ extension SFNClientTypes.LambdaFunctionSucceededEventDetails: Swift.CustomDebugS
 }
 
 extension SFNClientTypes {
+
     /// Contains details about a Lambda function timeout that occurred during an execution.
-    public struct LambdaFunctionTimedOutEventDetails {
+    public struct LambdaFunctionTimedOutEventDetails: Swift.Sendable {
         /// A more detailed explanation of the cause of the timeout.
         public var cause: Swift.String?
         /// The error code of the failure.
@@ -2622,7 +2623,6 @@ extension SFNClientTypes {
             self.error = error
         }
     }
-
 }
 
 extension SFNClientTypes.LambdaFunctionTimedOutEventDetails: Swift.CustomDebugStringConvertible {
@@ -2631,8 +2631,9 @@ extension SFNClientTypes.LambdaFunctionTimedOutEventDetails: Swift.CustomDebugSt
 }
 
 extension SFNClientTypes {
+
     /// Contains details about an iteration of a Map state.
-    public struct MapIterationEventDetails {
+    public struct MapIterationEventDetails: Swift.Sendable {
         /// The index of the array belonging to the Map state iteration.
         public var index: Swift.Int
         /// The name of the iteration’s parent Map state.
@@ -2647,12 +2648,12 @@ extension SFNClientTypes {
             self.name = name
         }
     }
-
 }
 
 extension SFNClientTypes {
+
     /// Contains details about a Map Run failure event that occurred during a state machine execution.
-    public struct MapRunFailedEventDetails {
+    public struct MapRunFailedEventDetails: Swift.Sendable {
         /// A more detailed explanation of the cause of the failure.
         public var cause: Swift.String?
         /// The error code of the Map Run failure.
@@ -2667,7 +2668,6 @@ extension SFNClientTypes {
             self.error = error
         }
     }
-
 }
 
 extension SFNClientTypes.MapRunFailedEventDetails: Swift.CustomDebugStringConvertible {
@@ -2676,8 +2676,9 @@ extension SFNClientTypes.MapRunFailedEventDetails: Swift.CustomDebugStringConver
 }
 
 extension SFNClientTypes {
+
     /// Contains details about a Map Run that was redriven.
-    public struct MapRunRedrivenEventDetails {
+    public struct MapRunRedrivenEventDetails: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of a Map Run that was redriven.
         public var mapRunArn: Swift.String?
         /// The number of times the Map Run has been redriven at this point in the execution's history including this event. The redrive count for a redriven Map Run is always greater than 0.
@@ -2692,12 +2693,12 @@ extension SFNClientTypes {
             self.redriveCount = redriveCount
         }
     }
-
 }
 
 extension SFNClientTypes {
+
     /// Contains details about a Map Run that was started during a state machine execution.
-    public struct MapRunStartedEventDetails {
+    public struct MapRunStartedEventDetails: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of a Map Run that was started.
         public var mapRunArn: Swift.String?
 
@@ -2708,12 +2709,12 @@ extension SFNClientTypes {
             self.mapRunArn = mapRunArn
         }
     }
-
 }
 
 extension SFNClientTypes {
+
     /// Details about a Map state that was started.
-    public struct MapStateStartedEventDetails {
+    public struct MapStateStartedEventDetails: Swift.Sendable {
         /// The size of the array for Map state iterations.
         public var length: Swift.Int
 
@@ -2724,12 +2725,12 @@ extension SFNClientTypes {
             self.length = length
         }
     }
-
 }
 
 extension SFNClientTypes {
+
     /// Contains details about a state entered during an execution.
-    public struct StateEnteredEventDetails {
+    public struct StateEnteredEventDetails: Swift.Sendable {
         /// The string that contains the JSON input data for the state. Length constraints apply to the payload size, and are expressed as bytes in UTF-8 encoding.
         public var input: Swift.String?
         /// Contains details about the input for an execution history event.
@@ -2749,7 +2750,6 @@ extension SFNClientTypes {
             self.name = name
         }
     }
-
 }
 
 extension SFNClientTypes.StateEnteredEventDetails: Swift.CustomDebugStringConvertible {
@@ -2758,8 +2758,9 @@ extension SFNClientTypes.StateEnteredEventDetails: Swift.CustomDebugStringConver
 }
 
 extension SFNClientTypes {
+
     /// Contains details about an exit from a state during an execution.
-    public struct StateExitedEventDetails {
+    public struct StateExitedEventDetails: Swift.Sendable {
         /// The name of the state. A name must not contain:
         ///
         /// * white space
@@ -2792,7 +2793,6 @@ extension SFNClientTypes {
             self.outputDetails = outputDetails
         }
     }
-
 }
 
 extension SFNClientTypes.StateExitedEventDetails: Swift.CustomDebugStringConvertible {
@@ -2801,8 +2801,9 @@ extension SFNClientTypes.StateExitedEventDetails: Swift.CustomDebugStringConvert
 }
 
 extension SFNClientTypes {
+
     /// Contains details about a task failure event.
-    public struct TaskFailedEventDetails {
+    public struct TaskFailedEventDetails: Swift.Sendable {
         /// A more detailed explanation of the cause of the failure.
         public var cause: Swift.String?
         /// The error code of the failure.
@@ -2827,7 +2828,6 @@ extension SFNClientTypes {
             self.resourceType = resourceType
         }
     }
-
 }
 
 extension SFNClientTypes.TaskFailedEventDetails: Swift.CustomDebugStringConvertible {
@@ -2836,8 +2836,9 @@ extension SFNClientTypes.TaskFailedEventDetails: Swift.CustomDebugStringConverti
 }
 
 extension SFNClientTypes {
+
     /// Contains details about a task scheduled during an execution.
-    public struct TaskScheduledEventDetails {
+    public struct TaskScheduledEventDetails: Swift.Sendable {
         /// The maximum allowed duration between two heartbeats for the task.
         public var heartbeatInSeconds: Swift.Int?
         /// The JSON data passed to the resource referenced in a task state. Length constraints apply to the payload size, and are expressed as bytes in UTF-8 encoding.
@@ -2876,7 +2877,6 @@ extension SFNClientTypes {
             self.timeoutInSeconds = timeoutInSeconds
         }
     }
-
 }
 
 extension SFNClientTypes.TaskScheduledEventDetails: Swift.CustomDebugStringConvertible {
@@ -2885,8 +2885,9 @@ extension SFNClientTypes.TaskScheduledEventDetails: Swift.CustomDebugStringConve
 }
 
 extension SFNClientTypes {
+
     /// Contains details about the start of a task during an execution.
-    public struct TaskStartedEventDetails {
+    public struct TaskStartedEventDetails: Swift.Sendable {
         /// The action of the resource called by a task state.
         /// This member is required.
         public var resource: Swift.String?
@@ -2903,12 +2904,12 @@ extension SFNClientTypes {
             self.resourceType = resourceType
         }
     }
-
 }
 
 extension SFNClientTypes {
+
     /// Contains details about a task that failed to start during an execution.
-    public struct TaskStartFailedEventDetails {
+    public struct TaskStartFailedEventDetails: Swift.Sendable {
         /// A more detailed explanation of the cause of the failure.
         public var cause: Swift.String?
         /// The error code of the failure.
@@ -2933,7 +2934,6 @@ extension SFNClientTypes {
             self.resourceType = resourceType
         }
     }
-
 }
 
 extension SFNClientTypes.TaskStartFailedEventDetails: Swift.CustomDebugStringConvertible {
@@ -2942,8 +2942,9 @@ extension SFNClientTypes.TaskStartFailedEventDetails: Swift.CustomDebugStringCon
 }
 
 extension SFNClientTypes {
+
     /// Contains details about a task that failed to submit during an execution.
-    public struct TaskSubmitFailedEventDetails {
+    public struct TaskSubmitFailedEventDetails: Swift.Sendable {
         /// A more detailed explanation of the cause of the failure.
         public var cause: Swift.String?
         /// The error code of the failure.
@@ -2968,7 +2969,6 @@ extension SFNClientTypes {
             self.resourceType = resourceType
         }
     }
-
 }
 
 extension SFNClientTypes.TaskSubmitFailedEventDetails: Swift.CustomDebugStringConvertible {
@@ -2977,8 +2977,9 @@ extension SFNClientTypes.TaskSubmitFailedEventDetails: Swift.CustomDebugStringCo
 }
 
 extension SFNClientTypes {
+
     /// Contains details about a task submitted to a resource .
-    public struct TaskSubmittedEventDetails {
+    public struct TaskSubmittedEventDetails: Swift.Sendable {
         /// The response from a resource when a task has started. Length constraints apply to the payload size, and are expressed as bytes in UTF-8 encoding.
         public var output: Swift.String?
         /// Contains details about the output of an execution history event.
@@ -3003,7 +3004,6 @@ extension SFNClientTypes {
             self.resourceType = resourceType
         }
     }
-
 }
 
 extension SFNClientTypes.TaskSubmittedEventDetails: Swift.CustomDebugStringConvertible {
@@ -3012,8 +3012,9 @@ extension SFNClientTypes.TaskSubmittedEventDetails: Swift.CustomDebugStringConve
 }
 
 extension SFNClientTypes {
+
     /// Contains details about the successful completion of a task state.
-    public struct TaskSucceededEventDetails {
+    public struct TaskSucceededEventDetails: Swift.Sendable {
         /// The full JSON response from a resource when a task has succeeded. This response becomes the output of the related task. Length constraints apply to the payload size, and are expressed as bytes in UTF-8 encoding.
         public var output: Swift.String?
         /// Contains details about the output of an execution history event.
@@ -3038,7 +3039,6 @@ extension SFNClientTypes {
             self.resourceType = resourceType
         }
     }
-
 }
 
 extension SFNClientTypes.TaskSucceededEventDetails: Swift.CustomDebugStringConvertible {
@@ -3047,8 +3047,9 @@ extension SFNClientTypes.TaskSucceededEventDetails: Swift.CustomDebugStringConve
 }
 
 extension SFNClientTypes {
+
     /// Contains details about a resource timeout that occurred during an execution.
-    public struct TaskTimedOutEventDetails {
+    public struct TaskTimedOutEventDetails: Swift.Sendable {
         /// A more detailed explanation of the cause of the failure.
         public var cause: Swift.String?
         /// The error code of the failure.
@@ -3073,7 +3074,6 @@ extension SFNClientTypes {
             self.resourceType = resourceType
         }
     }
-
 }
 
 extension SFNClientTypes.TaskTimedOutEventDetails: Swift.CustomDebugStringConvertible {
@@ -3083,7 +3083,7 @@ extension SFNClientTypes.TaskTimedOutEventDetails: Swift.CustomDebugStringConver
 
 extension SFNClientTypes {
 
-    public enum HistoryEventType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum HistoryEventType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case activityfailed
         case activityschedulefailed
         case activityscheduled
@@ -3288,8 +3288,9 @@ extension SFNClientTypes {
 }
 
 extension SFNClientTypes {
+
     /// Contains details about the events of an execution.
-    public struct HistoryEvent {
+    public struct HistoryEvent: Swift.Sendable {
         /// Contains details about an activity that failed during an execution.
         public var activityFailedEventDetails: SFNClientTypes.ActivityFailedEventDetails?
         /// Contains details about an activity schedule event that failed during an execution.
@@ -3459,10 +3460,9 @@ extension SFNClientTypes {
             self.type = type
         }
     }
-
 }
 
-public struct GetExecutionHistoryOutput {
+public struct GetExecutionHistoryOutput: Swift.Sendable {
     /// The list of events that occurred in the execution.
     /// This member is required.
     public var events: [SFNClientTypes.HistoryEvent]?
@@ -3479,7 +3479,7 @@ public struct GetExecutionHistoryOutput {
     }
 }
 
-public struct ListActivitiesInput {
+public struct ListActivitiesInput: Swift.Sendable {
     /// The maximum number of results that are returned per call. You can use nextToken to obtain further pages of results. The default is 100 and the maximum allowed page size is 1000. A value of 0 uses the default. This is only an upper limit. The actual number of results returned per call might be fewer than the specified maximum.
     public var maxResults: Swift.Int?
     /// If nextToken is returned, there are more results available. The value of nextToken is a unique pagination token for each page. Make the call again using the returned token to retrieve the next page. Keep all other arguments unchanged. Each pagination token expires after 24 hours. Using an expired pagination token will return an HTTP 400 InvalidToken error.
@@ -3495,7 +3495,7 @@ public struct ListActivitiesInput {
     }
 }
 
-public struct ListActivitiesOutput {
+public struct ListActivitiesOutput: Swift.Sendable {
     /// The list of activities.
     /// This member is required.
     public var activities: [SFNClientTypes.ActivityListItem]?
@@ -3514,7 +3514,7 @@ public struct ListActivitiesOutput {
 
 extension SFNClientTypes {
 
-    public enum ExecutionRedriveFilter: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ExecutionRedriveFilter: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case notRedriven
         case redriven
         case sdkUnknown(Swift.String)
@@ -3541,7 +3541,7 @@ extension SFNClientTypes {
     }
 }
 
-public struct ListExecutionsInput {
+public struct ListExecutionsInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the Map Run that started the child workflow executions. If the mapRunArn field is specified, a list of all of the child workflow executions started by a Map Run is returned. For more information, see [Examining Map Run](https://docs.aws.amazon.com/step-functions/latest/dg/concepts-examine-map-run.html) in the Step Functions Developer Guide. You can specify either a mapRunArn or a stateMachineArn, but not both.
     public var mapRunArn: Swift.String?
     /// The maximum number of results that are returned per call. You can use nextToken to obtain further pages of results. The default is 100 and the maximum allowed page size is 1000. A value of 0 uses the default. This is only an upper limit. The actual number of results returned per call might be fewer than the specified maximum.
@@ -3574,8 +3574,9 @@ public struct ListExecutionsInput {
 }
 
 extension SFNClientTypes {
+
     /// Contains details about an execution.
-    public struct ExecutionListItem {
+    public struct ExecutionListItem: Swift.Sendable {
         /// The Amazon Resource Name (ARN) that identifies the execution.
         /// This member is required.
         public var executionArn: Swift.String?
@@ -3648,10 +3649,9 @@ extension SFNClientTypes {
             self.stopDate = stopDate
         }
     }
-
 }
 
-public struct ListExecutionsOutput {
+public struct ListExecutionsOutput: Swift.Sendable {
     /// The list of matching executions.
     /// This member is required.
     public var executions: [SFNClientTypes.ExecutionListItem]?
@@ -3668,7 +3668,7 @@ public struct ListExecutionsOutput {
     }
 }
 
-public struct ListMapRunsInput {
+public struct ListMapRunsInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the execution for which the Map Runs must be listed.
     /// This member is required.
     public var executionArn: Swift.String?
@@ -3690,8 +3690,9 @@ public struct ListMapRunsInput {
 }
 
 extension SFNClientTypes {
+
     /// Contains details about a specific Map Run.
-    public struct MapRunListItem {
+    public struct MapRunListItem: Swift.Sendable {
         /// The executionArn of the execution from which the Map Run was started.
         /// This member is required.
         public var executionArn: Swift.String?
@@ -3722,10 +3723,9 @@ extension SFNClientTypes {
             self.stopDate = stopDate
         }
     }
-
 }
 
-public struct ListMapRunsOutput {
+public struct ListMapRunsOutput: Swift.Sendable {
     /// An array that lists information related to a Map Run, such as the Amazon Resource Name (ARN) of the Map Run and the ARN of the state machine that started the Map Run.
     /// This member is required.
     public var mapRuns: [SFNClientTypes.MapRunListItem]?
@@ -3742,7 +3742,7 @@ public struct ListMapRunsOutput {
     }
 }
 
-public struct ListStateMachineAliasesInput {
+public struct ListStateMachineAliasesInput: Swift.Sendable {
     /// The maximum number of results that are returned per call. You can use nextToken to obtain further pages of results. The default is 100 and the maximum allowed page size is 1000. A value of 0 uses the default. This is only an upper limit. The actual number of results returned per call might be fewer than the specified maximum.
     public var maxResults: Swift.Int?
     /// If nextToken is returned, there are more results available. The value of nextToken is a unique pagination token for each page. Make the call again using the returned token to retrieve the next page. Keep all other arguments unchanged. Each pagination token expires after 24 hours. Using an expired pagination token will return an HTTP 400 InvalidToken error.
@@ -3764,8 +3764,9 @@ public struct ListStateMachineAliasesInput {
 }
 
 extension SFNClientTypes {
+
     /// Contains details about a specific state machine alias.
-    public struct StateMachineAliasListItem {
+    public struct StateMachineAliasListItem: Swift.Sendable {
         /// The creation date of a state machine alias.
         /// This member is required.
         public var creationDate: Foundation.Date?
@@ -3782,10 +3783,9 @@ extension SFNClientTypes {
             self.stateMachineAliasArn = stateMachineAliasArn
         }
     }
-
 }
 
-public struct ListStateMachineAliasesOutput {
+public struct ListStateMachineAliasesOutput: Swift.Sendable {
     /// If nextToken is returned, there are more results available. The value of nextToken is a unique pagination token for each page. Make the call again using the returned token to retrieve the next page. Keep all other arguments unchanged. Each pagination token expires after 24 hours. Using an expired pagination token will return an HTTP 400 InvalidToken error.
     public var nextToken: Swift.String?
     /// Aliases for the state machine.
@@ -3802,7 +3802,7 @@ public struct ListStateMachineAliasesOutput {
     }
 }
 
-public struct ListStateMachinesInput {
+public struct ListStateMachinesInput: Swift.Sendable {
     /// The maximum number of results that are returned per call. You can use nextToken to obtain further pages of results. The default is 100 and the maximum allowed page size is 1000. A value of 0 uses the default. This is only an upper limit. The actual number of results returned per call might be fewer than the specified maximum.
     public var maxResults: Swift.Int?
     /// If nextToken is returned, there are more results available. The value of nextToken is a unique pagination token for each page. Make the call again using the returned token to retrieve the next page. Keep all other arguments unchanged. Each pagination token expires after 24 hours. Using an expired pagination token will return an HTTP 400 InvalidToken error.
@@ -3819,8 +3819,9 @@ public struct ListStateMachinesInput {
 }
 
 extension SFNClientTypes {
+
     /// Contains details about the state machine.
-    public struct StateMachineListItem {
+    public struct StateMachineListItem: Swift.Sendable {
         /// The date the state machine is created.
         /// This member is required.
         public var creationDate: Foundation.Date?
@@ -3860,10 +3861,9 @@ extension SFNClientTypes {
             self.type = type
         }
     }
-
 }
 
-public struct ListStateMachinesOutput {
+public struct ListStateMachinesOutput: Swift.Sendable {
     /// If nextToken is returned, there are more results available. The value of nextToken is a unique pagination token for each page. Make the call again using the returned token to retrieve the next page. Keep all other arguments unchanged. Each pagination token expires after 24 hours. Using an expired pagination token will return an HTTP 400 InvalidToken error.
     public var nextToken: Swift.String?
     /// This member is required.
@@ -3879,7 +3879,7 @@ public struct ListStateMachinesOutput {
     }
 }
 
-public struct ListStateMachineVersionsInput {
+public struct ListStateMachineVersionsInput: Swift.Sendable {
     /// The maximum number of results that are returned per call. You can use nextToken to obtain further pages of results. The default is 100 and the maximum allowed page size is 1000. A value of 0 uses the default. This is only an upper limit. The actual number of results returned per call might be fewer than the specified maximum.
     public var maxResults: Swift.Int?
     /// If nextToken is returned, there are more results available. The value of nextToken is a unique pagination token for each page. Make the call again using the returned token to retrieve the next page. Keep all other arguments unchanged. Each pagination token expires after 24 hours. Using an expired pagination token will return an HTTP 400 InvalidToken error.
@@ -3901,8 +3901,9 @@ public struct ListStateMachineVersionsInput {
 }
 
 extension SFNClientTypes {
+
     /// Contains details about a specific state machine version.
-    public struct StateMachineVersionListItem {
+    public struct StateMachineVersionListItem: Swift.Sendable {
         /// The creation date of a state machine version.
         /// This member is required.
         public var creationDate: Foundation.Date?
@@ -3919,10 +3920,9 @@ extension SFNClientTypes {
             self.stateMachineVersionArn = stateMachineVersionArn
         }
     }
-
 }
 
-public struct ListStateMachineVersionsOutput {
+public struct ListStateMachineVersionsOutput: Swift.Sendable {
     /// If nextToken is returned, there are more results available. The value of nextToken is a unique pagination token for each page. Make the call again using the returned token to retrieve the next page. Keep all other arguments unchanged. Each pagination token expires after 24 hours. Using an expired pagination token will return an HTTP 400 InvalidToken error.
     public var nextToken: Swift.String?
     /// Versions for the state machine.
@@ -3939,7 +3939,7 @@ public struct ListStateMachineVersionsOutput {
     }
 }
 
-public struct ListTagsForResourceInput {
+public struct ListTagsForResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) for the Step Functions state machine or activity.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -3952,7 +3952,7 @@ public struct ListTagsForResourceInput {
     }
 }
 
-public struct ListTagsForResourceOutput {
+public struct ListTagsForResourceOutput: Swift.Sendable {
     /// An array of tags associated with the resource.
     public var tags: [SFNClientTypes.Tag]?
 
@@ -3964,7 +3964,7 @@ public struct ListTagsForResourceOutput {
     }
 }
 
-public struct PublishStateMachineVersionInput {
+public struct PublishStateMachineVersionInput: Swift.Sendable {
     /// An optional description of the state machine version.
     public var description: Swift.String?
     /// Only publish the state machine version if the current state machine's revision ID matches the specified ID. Use this option to avoid publishing a version if the state machine changed since you last updated it. If the specified revision ID doesn't match the state machine's current revision ID, the API returns ConflictException. To specify an initial revision ID for a state machine with no revision ID assigned, specify the string INITIAL for the revisionId parameter. For example, you can specify a revisionID of INITIAL when you create a state machine using the [CreateStateMachine] API action.
@@ -3990,7 +3990,7 @@ extension PublishStateMachineVersionInput: Swift.CustomDebugStringConvertible {
         "PublishStateMachineVersionInput(revisionId: \(Swift.String(describing: revisionId)), stateMachineArn: \(Swift.String(describing: stateMachineArn)), description: \"CONTENT_REDACTED\")"}
 }
 
-public struct PublishStateMachineVersionOutput {
+public struct PublishStateMachineVersionOutput: Swift.Sendable {
     /// The date the version was created.
     /// This member is required.
     public var creationDate: Foundation.Date?
@@ -4056,7 +4056,7 @@ public struct ExecutionNotRedrivable: ClientRuntime.ModeledError, AWSClientRunti
     }
 }
 
-public struct RedriveExecutionInput {
+public struct RedriveExecutionInput: Swift.Sendable {
     /// A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If you don’t specify a client token, the Amazon Web Services SDK automatically generates a client token and uses it for the request to ensure idempotency. The API will return idempotent responses for the last 10 client tokens used to successfully redrive the execution. These client tokens are valid for up to 15 minutes after they are first used.
     public var clientToken: Swift.String?
     /// The Amazon Resource Name (ARN) of the execution to be redriven.
@@ -4073,7 +4073,7 @@ public struct RedriveExecutionInput {
     }
 }
 
-public struct RedriveExecutionOutput {
+public struct RedriveExecutionOutput: Swift.Sendable {
     /// The date the execution was last redriven.
     /// This member is required.
     public var redriveDate: Foundation.Date?
@@ -4134,7 +4134,7 @@ public struct TaskTimedOut: ClientRuntime.ModeledError, AWSClientRuntime.AWSServ
     }
 }
 
-public struct SendTaskFailureInput {
+public struct SendTaskFailureInput: Swift.Sendable {
     /// A more detailed explanation of the cause of the failure.
     public var cause: Swift.String?
     /// The error code of the failure.
@@ -4160,12 +4160,12 @@ extension SendTaskFailureInput: Swift.CustomDebugStringConvertible {
         "SendTaskFailureInput(taskToken: \(Swift.String(describing: taskToken)), cause: \"CONTENT_REDACTED\", error: \"CONTENT_REDACTED\")"}
 }
 
-public struct SendTaskFailureOutput {
+public struct SendTaskFailureOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct SendTaskHeartbeatInput {
+public struct SendTaskHeartbeatInput: Swift.Sendable {
     /// The token that represents this task. Task tokens are generated by Step Functions when tasks are assigned to a worker, or in the [context object](https://docs.aws.amazon.com/step-functions/latest/dg/input-output-contextobject.html) when a workflow enters a task state. See [GetActivityTaskOutput$taskToken].
     /// This member is required.
     public var taskToken: Swift.String?
@@ -4178,7 +4178,7 @@ public struct SendTaskHeartbeatInput {
     }
 }
 
-public struct SendTaskHeartbeatOutput {
+public struct SendTaskHeartbeatOutput: Swift.Sendable {
 
     public init() { }
 }
@@ -4207,7 +4207,7 @@ public struct InvalidOutput: ClientRuntime.ModeledError, AWSClientRuntime.AWSSer
     }
 }
 
-public struct SendTaskSuccessInput {
+public struct SendTaskSuccessInput: Swift.Sendable {
     /// The JSON output of the task. Length constraints apply to the payload size, and are expressed as bytes in UTF-8 encoding.
     /// This member is required.
     public var output: Swift.String?
@@ -4230,7 +4230,7 @@ extension SendTaskSuccessInput: Swift.CustomDebugStringConvertible {
         "SendTaskSuccessInput(taskToken: \(Swift.String(describing: taskToken)), output: \"CONTENT_REDACTED\")"}
 }
 
-public struct SendTaskSuccessOutput {
+public struct SendTaskSuccessOutput: Swift.Sendable {
 
     public init() { }
 }
@@ -4283,7 +4283,7 @@ public struct InvalidExecutionInput: ClientRuntime.ModeledError, AWSClientRuntim
     }
 }
 
-public struct StartExecutionInput {
+public struct StartExecutionInput: Swift.Sendable {
     /// The string that contains the JSON input data for the execution, for example: "input": "{\"first_name\" : \"test\"}" If you don't include any JSON input data, you still must include the two braces, for example: "input": "{}" Length constraints apply to the payload size, and are expressed as bytes in UTF-8 encoding.
     public var input: Swift.String?
     /// Optional name of the execution. This name must be unique for your Amazon Web Services account, Region, and state machine for 90 days. For more information, see [ Limits Related to State Machine Executions](https://docs.aws.amazon.com/step-functions/latest/dg/limits.html#service-limits-state-machine-executions) in the Step Functions Developer Guide. If you don't provide a name for the execution, Step Functions automatically generates a universally unique identifier (UUID) as the execution name. A name must not contain:
@@ -4332,7 +4332,7 @@ extension StartExecutionInput: Swift.CustomDebugStringConvertible {
         "StartExecutionInput(name: \(Swift.String(describing: name)), stateMachineArn: \(Swift.String(describing: stateMachineArn)), traceHeader: \(Swift.String(describing: traceHeader)), input: \"CONTENT_REDACTED\")"}
 }
 
-public struct StartExecutionOutput {
+public struct StartExecutionOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) that identifies the execution.
     /// This member is required.
     public var executionArn: Swift.String?
@@ -4350,7 +4350,7 @@ public struct StartExecutionOutput {
     }
 }
 
-public struct StartSyncExecutionInput {
+public struct StartSyncExecutionInput: Swift.Sendable {
     /// If your state machine definition is encrypted with a KMS key, callers must have kms:Decrypt permission to decrypt the definition. Alternatively, you can call the API with includedData = METADATA_ONLY to get a successful response without the encrypted definition.
     public var includedData: SFNClientTypes.IncludedData?
     /// The string that contains the JSON input data for the execution, for example: "input": "{\"first_name\" : \"test\"}" If you don't include any JSON input data, you still must include the two braces, for example: "input": "{}" Length constraints apply to the payload size, and are expressed as bytes in UTF-8 encoding.
@@ -4385,8 +4385,9 @@ extension StartSyncExecutionInput: Swift.CustomDebugStringConvertible {
 }
 
 extension SFNClientTypes {
+
     /// An object that describes workflow billing details.
-    public struct BillingDetails {
+    public struct BillingDetails: Swift.Sendable {
         /// Billed duration of your workflow, in milliseconds.
         public var billedDurationInMilliseconds: Swift.Int
         /// Billed memory consumption of your workflow, in MB.
@@ -4401,12 +4402,11 @@ extension SFNClientTypes {
             self.billedMemoryUsedInMB = billedMemoryUsedInMB
         }
     }
-
 }
 
 extension SFNClientTypes {
 
-    public enum SyncExecutionStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SyncExecutionStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case failed
         case succeeded
         case timedOut
@@ -4436,7 +4436,7 @@ extension SFNClientTypes {
     }
 }
 
-public struct StartSyncExecutionOutput {
+public struct StartSyncExecutionOutput: Swift.Sendable {
     /// An object that describes workflow billing details, including billed duration and memory use.
     public var billingDetails: SFNClientTypes.BillingDetails?
     /// A more detailed explanation of the cause of the failure.
@@ -4509,7 +4509,7 @@ extension StartSyncExecutionOutput: Swift.CustomDebugStringConvertible {
         "StartSyncExecutionOutput(billingDetails: \(Swift.String(describing: billingDetails)), executionArn: \(Swift.String(describing: executionArn)), inputDetails: \(Swift.String(describing: inputDetails)), name: \(Swift.String(describing: name)), outputDetails: \(Swift.String(describing: outputDetails)), startDate: \(Swift.String(describing: startDate)), stateMachineArn: \(Swift.String(describing: stateMachineArn)), status: \(Swift.String(describing: status)), stopDate: \(Swift.String(describing: stopDate)), traceHeader: \(Swift.String(describing: traceHeader)), cause: \"CONTENT_REDACTED\", error: \"CONTENT_REDACTED\", input: \"CONTENT_REDACTED\", output: \"CONTENT_REDACTED\")"}
 }
 
-public struct StopExecutionInput {
+public struct StopExecutionInput: Swift.Sendable {
     /// A more detailed explanation of the cause of the failure.
     public var cause: Swift.String?
     /// The error code of the failure.
@@ -4535,7 +4535,7 @@ extension StopExecutionInput: Swift.CustomDebugStringConvertible {
         "StopExecutionInput(executionArn: \(Swift.String(describing: executionArn)), cause: \"CONTENT_REDACTED\", error: \"CONTENT_REDACTED\")"}
 }
 
-public struct StopExecutionOutput {
+public struct StopExecutionOutput: Swift.Sendable {
     /// The date the execution is stopped.
     /// This member is required.
     public var stopDate: Foundation.Date?
@@ -4548,7 +4548,7 @@ public struct StopExecutionOutput {
     }
 }
 
-public struct TagResourceInput {
+public struct TagResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) for the Step Functions state machine or activity.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -4566,14 +4566,14 @@ public struct TagResourceInput {
     }
 }
 
-public struct TagResourceOutput {
+public struct TagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
 extension SFNClientTypes {
 
-    public enum InspectionLevel: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum InspectionLevel: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case debug
         case info
         case trace
@@ -4603,7 +4603,7 @@ extension SFNClientTypes {
     }
 }
 
-public struct TestStateInput {
+public struct TestStateInput: Swift.Sendable {
     /// The [Amazon States Language](https://docs.aws.amazon.com/step-functions/latest/dg/concepts-amazon-states-language.html) (ASL) definition of the state.
     /// This member is required.
     public var definition: Swift.String?
@@ -4648,8 +4648,9 @@ extension TestStateInput: Swift.CustomDebugStringConvertible {
 }
 
 extension SFNClientTypes {
+
     /// Contains additional details about the state's execution, including its input and output data processing flow, and HTTP request information.
-    public struct InspectionDataRequest {
+    public struct InspectionDataRequest: Swift.Sendable {
         /// The request body for the HTTP request.
         public var body: Swift.String?
         /// The request headers associated with the HTTP request.
@@ -4676,12 +4677,12 @@ extension SFNClientTypes {
             self.url = url
         }
     }
-
 }
 
 extension SFNClientTypes {
+
     /// Contains additional details about the state's execution, including its input and output data processing flow, and HTTP response information. The inspectionLevel request parameter specifies which details are returned.
-    public struct InspectionDataResponse {
+    public struct InspectionDataResponse: Swift.Sendable {
         /// The HTTP response returned.
         public var body: Swift.String?
         /// The response headers associated with the HTTP response.
@@ -4708,12 +4709,12 @@ extension SFNClientTypes {
             self.statusMessage = statusMessage
         }
     }
-
 }
 
 extension SFNClientTypes {
+
     /// Contains additional details about the state's execution, including its input and output data processing flow, and HTTP request and response information.
-    public struct InspectionData {
+    public struct InspectionData: Swift.Sendable {
         /// The input after Step Functions applies the [InputPath](https://docs.aws.amazon.com/step-functions/latest/dg/input-output-inputpath-params.html#input-output-inputpath) filter.
         public var afterInputPath: Swift.String?
         /// The effective input after Step Functions applies the [Parameters](https://docs.aws.amazon.com/step-functions/latest/dg/input-output-inputpath-params.html#input-output-parameters) filter.
@@ -4752,7 +4753,6 @@ extension SFNClientTypes {
             self.result = result
         }
     }
-
 }
 
 extension SFNClientTypes.InspectionData: Swift.CustomDebugStringConvertible {
@@ -4763,7 +4763,7 @@ extension SFNClientTypes.InspectionData: Swift.CustomDebugStringConvertible {
 
 extension SFNClientTypes {
 
-    public enum TestExecutionStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum TestExecutionStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case caughtError
         case failed
         case retriable
@@ -4796,7 +4796,7 @@ extension SFNClientTypes {
     }
 }
 
-public struct TestStateOutput {
+public struct TestStateOutput: Swift.Sendable {
     /// A detailed explanation of the cause for the error when the execution of a state fails.
     public var cause: Swift.String?
     /// The error returned when the execution of a state fails.
@@ -4833,7 +4833,7 @@ extension TestStateOutput: Swift.CustomDebugStringConvertible {
         "TestStateOutput(nextState: \(Swift.String(describing: nextState)), status: \(Swift.String(describing: status)), cause: \"CONTENT_REDACTED\", error: \"CONTENT_REDACTED\", inspectionData: \"CONTENT_REDACTED\", output: \"CONTENT_REDACTED\")"}
 }
 
-public struct UntagResourceInput {
+public struct UntagResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) for the Step Functions state machine or activity.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -4851,12 +4851,12 @@ public struct UntagResourceInput {
     }
 }
 
-public struct UntagResourceOutput {
+public struct UntagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdateMapRunInput {
+public struct UpdateMapRunInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of a Map Run.
     /// This member is required.
     public var mapRunArn: Swift.String?
@@ -4881,7 +4881,7 @@ public struct UpdateMapRunInput {
     }
 }
 
-public struct UpdateMapRunOutput {
+public struct UpdateMapRunOutput: Swift.Sendable {
 
     public init() { }
 }
@@ -4910,7 +4910,7 @@ public struct MissingRequiredParameter: ClientRuntime.ModeledError, AWSClientRun
     }
 }
 
-public struct UpdateStateMachineInput {
+public struct UpdateStateMachineInput: Swift.Sendable {
     /// The Amazon States Language definition of the state machine. See [Amazon States Language](https://docs.aws.amazon.com/step-functions/latest/dg/concepts-amazon-states-language.html).
     public var definition: Swift.String?
     /// Settings to configure server-side encryption.
@@ -4956,7 +4956,7 @@ extension UpdateStateMachineInput: Swift.CustomDebugStringConvertible {
         "UpdateStateMachineInput(encryptionConfiguration: \(Swift.String(describing: encryptionConfiguration)), loggingConfiguration: \(Swift.String(describing: loggingConfiguration)), publish: \(Swift.String(describing: publish)), roleArn: \(Swift.String(describing: roleArn)), stateMachineArn: \(Swift.String(describing: stateMachineArn)), tracingConfiguration: \(Swift.String(describing: tracingConfiguration)), definition: \"CONTENT_REDACTED\", versionDescription: \"CONTENT_REDACTED\")"}
 }
 
-public struct UpdateStateMachineOutput {
+public struct UpdateStateMachineOutput: Swift.Sendable {
     /// The revision identifier for the updated state machine.
     public var revisionId: Swift.String?
     /// The Amazon Resource Name (ARN) of the published state machine version. If the publish parameter isn't set to true, this field returns null.
@@ -4977,7 +4977,7 @@ public struct UpdateStateMachineOutput {
     }
 }
 
-public struct UpdateStateMachineAliasInput {
+public struct UpdateStateMachineAliasInput: Swift.Sendable {
     /// A description of the state machine alias.
     public var description: Swift.String?
     /// The routing configuration of the state machine alias. An array of RoutingConfig objects that specifies up to two state machine versions that the alias starts executions for.
@@ -5003,7 +5003,7 @@ extension UpdateStateMachineAliasInput: Swift.CustomDebugStringConvertible {
         "UpdateStateMachineAliasInput(routingConfiguration: \(Swift.String(describing: routingConfiguration)), stateMachineAliasArn: \(Swift.String(describing: stateMachineAliasArn)), description: \"CONTENT_REDACTED\")"}
 }
 
-public struct UpdateStateMachineAliasOutput {
+public struct UpdateStateMachineAliasOutput: Swift.Sendable {
     /// The date and time the state machine alias was updated.
     /// This member is required.
     public var updateDate: Foundation.Date?
@@ -5018,7 +5018,7 @@ public struct UpdateStateMachineAliasOutput {
 
 extension SFNClientTypes {
 
-    public enum ValidateStateMachineDefinitionSeverity: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ValidateStateMachineDefinitionSeverity: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case error
         case warning
         case sdkUnknown(Swift.String)
@@ -5045,7 +5045,7 @@ extension SFNClientTypes {
     }
 }
 
-public struct ValidateStateMachineDefinitionInput {
+public struct ValidateStateMachineDefinitionInput: Swift.Sendable {
     /// The Amazon States Language definition of the state machine. For more information, see [Amazon States Language](https://docs.aws.amazon.com/step-functions/latest/dg/concepts-amazon-states-language.html) (ASL).
     /// This member is required.
     public var definition: Swift.String?
@@ -5076,8 +5076,9 @@ extension ValidateStateMachineDefinitionInput: Swift.CustomDebugStringConvertibl
 }
 
 extension SFNClientTypes {
+
     /// Describes an error found during validation. Validation errors found in the definition return in the response as diagnostic elements, rather than raise an exception.
-    public struct ValidateStateMachineDefinitionDiagnostic {
+    public struct ValidateStateMachineDefinitionDiagnostic: Swift.Sendable {
         /// Identifying code for the diagnostic.
         /// This member is required.
         public var code: Swift.String?
@@ -5103,12 +5104,11 @@ extension SFNClientTypes {
             self.severity = severity
         }
     }
-
 }
 
 extension SFNClientTypes {
 
-    public enum ValidateStateMachineDefinitionResultCode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ValidateStateMachineDefinitionResultCode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case fail
         case ok
         case sdkUnknown(Swift.String)
@@ -5135,7 +5135,7 @@ extension SFNClientTypes {
     }
 }
 
-public struct ValidateStateMachineDefinitionOutput {
+public struct ValidateStateMachineDefinitionOutput: Swift.Sendable {
     /// If the result is OK, this field will be empty. When there are errors, this field will contain an array of Diagnostic objects to help you troubleshoot.
     /// This member is required.
     public var diagnostics: [SFNClientTypes.ValidateStateMachineDefinitionDiagnostic]?

@@ -33,19 +33,20 @@ import struct Smithy.URIQueryItem
 @_spi(SmithyReadWrite) import struct SmithyReadWrite.WritingClosureBox
 @_spi(SmithyTimestamps) import struct SmithyTimestamps.TimestampFormatter
 
-public struct TagResourceOutput {
+
+public struct TagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UntagResourceOutput {
+public struct UntagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
 extension PinpointClientTypes {
 
-    public enum __EndpointTypesElement: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum __EndpointTypesElement: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case adm
         case apns
         case apnsSandbox
@@ -107,7 +108,7 @@ extension PinpointClientTypes {
 
 extension PinpointClientTypes {
 
-    public enum __TimezoneEstimationMethodsElement: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum __TimezoneEstimationMethodsElement: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case phoneNumber
         case postalCode
         case sdkUnknown(Swift.String)
@@ -136,7 +137,7 @@ extension PinpointClientTypes {
 
 extension PinpointClientTypes {
 
-    public enum Action: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Action: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case deepLink
         case openApp
         case url
@@ -167,8 +168,9 @@ extension PinpointClientTypes {
 }
 
 extension PinpointClientTypes {
+
     /// Provides information about an activity that was performed by a campaign.
-    public struct ActivityResponse {
+    public struct ActivityResponse: Swift.Sendable {
         /// The unique identifier for the application that the campaign applies to.
         /// This member is required.
         public var applicationId: Swift.String?
@@ -234,12 +236,12 @@ extension PinpointClientTypes {
             self.treatmentId = treatmentId
         }
     }
-
 }
 
 extension PinpointClientTypes {
+
     /// Provides information about the activities that were performed by a campaign.
-    public struct ActivitiesResponse {
+    public struct ActivitiesResponse: Swift.Sendable {
         /// An array of responses, one for each activity that was performed by the campaign.
         /// This member is required.
         public var item: [PinpointClientTypes.ActivityResponse]?
@@ -255,12 +257,11 @@ extension PinpointClientTypes {
             self.nextToken = nextToken
         }
     }
-
 }
 
 extension PinpointClientTypes {
 
-    public enum AttributeType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AttributeType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case after
         case before
         case between
@@ -303,8 +304,9 @@ extension PinpointClientTypes {
 }
 
 extension PinpointClientTypes {
+
     /// Specifies attribute-based criteria for including or excluding endpoints from a segment.
-    public struct AttributeDimension {
+    public struct AttributeDimension: Swift.Sendable {
         /// The type of segment dimension to use. Valid values are:
         ///
         /// * INCLUSIVE - endpoints that have attributes matching the values are included in the segment.
@@ -334,12 +336,11 @@ extension PinpointClientTypes {
             self.values = values
         }
     }
-
 }
 
 extension PinpointClientTypes {
 
-    public enum DimensionType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DimensionType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case exclusive
         case inclusive
         case sdkUnknown(Swift.String)
@@ -367,8 +368,9 @@ extension PinpointClientTypes {
 }
 
 extension PinpointClientTypes {
+
     /// Specifies the dimension type and values for a segment dimension.
-    public struct SetDimension {
+    public struct SetDimension: Swift.Sendable {
         /// The type of segment dimension to use. Valid values are: INCLUSIVE, endpoints that match the criteria are included in the segment; and, EXCLUSIVE, endpoints that match the criteria are excluded from the segment.
         public var dimensionType: PinpointClientTypes.DimensionType?
         /// The criteria values to use for the segment dimension. Depending on the value of the DimensionType property, endpoints are included or excluded from the segment if their values match the criteria values.
@@ -384,12 +386,12 @@ extension PinpointClientTypes {
             self.values = values
         }
     }
-
 }
 
 extension PinpointClientTypes {
+
     /// Specifies metric-based criteria for including or excluding endpoints from a segment. These criteria derive from custom metrics that you define for endpoints.
-    public struct MetricDimension {
+    public struct MetricDimension: Swift.Sendable {
         /// The operator to use when comparing metric values. Valid values are: GREATER_THAN, LESS_THAN, GREATER_THAN_OR_EQUAL, LESS_THAN_OR_EQUAL, and EQUAL.
         /// This member is required.
         public var comparisonOperator: Swift.String?
@@ -406,12 +408,12 @@ extension PinpointClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension PinpointClientTypes {
+
     /// Specifies the dimensions for an event filter that determines when a campaign is sent or a journey activity is performed.
-    public struct EventDimensions {
+    public struct EventDimensions: Swift.Sendable {
         /// One or more custom attributes that your application reports to Amazon Pinpoint. You can use these attributes as selection criteria when you create an event filter.
         public var attributes: [Swift.String: PinpointClientTypes.AttributeDimension]?
         /// The name of the event that causes the campaign to be sent or the journey activity to be performed. This can be a standard event that Amazon Pinpoint generates, such as _email.delivered. For campaigns, this can also be a custom event that's specific to your application. For information about standard events, see [Streaming Amazon Pinpoint Events](https://docs.aws.amazon.com/pinpoint/latest/developerguide/event-streams.html) in the Amazon Pinpoint Developer Guide.
@@ -430,12 +432,12 @@ extension PinpointClientTypes {
             self.metrics = metrics
         }
     }
-
 }
 
 extension PinpointClientTypes {
+
     /// Specifies the conditions to evaluate for an event that applies to an activity in a journey.
-    public struct EventCondition {
+    public struct EventCondition: Swift.Sendable {
         /// The dimensions for the event filter to use for the activity.
         public var dimensions: PinpointClientTypes.EventDimensions?
         /// The message identifier (message_id) for the message to use when determining whether message events meet the condition.
@@ -450,12 +452,12 @@ extension PinpointClientTypes {
             self.messageActivity = messageActivity
         }
     }
-
 }
 
 extension PinpointClientTypes {
+
     /// Specifies a segment to associate with an activity in a journey.
-    public struct SegmentCondition {
+    public struct SegmentCondition: Swift.Sendable {
         /// The unique identifier for the segment to associate with the activity.
         /// This member is required.
         public var segmentId: Swift.String?
@@ -467,12 +469,11 @@ extension PinpointClientTypes {
             self.segmentId = segmentId
         }
     }
-
 }
 
 extension PinpointClientTypes {
 
-    public enum Duration: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Duration: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case day14
         case day30
         case day7
@@ -507,7 +508,7 @@ extension PinpointClientTypes {
 
 extension PinpointClientTypes {
 
-    public enum RecencyType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum RecencyType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case active
         case inactive
         case sdkUnknown(Swift.String)
@@ -535,8 +536,9 @@ extension PinpointClientTypes {
 }
 
 extension PinpointClientTypes {
+
     /// Specifies criteria for including or excluding endpoints from a segment based on how recently an endpoint was active.
-    public struct RecencyDimension {
+    public struct RecencyDimension: Swift.Sendable {
         /// The duration to use when determining whether an endpoint is active or inactive.
         /// This member is required.
         public var duration: PinpointClientTypes.Duration?
@@ -553,12 +555,12 @@ extension PinpointClientTypes {
             self.recencyType = recencyType
         }
     }
-
 }
 
 extension PinpointClientTypes {
+
     /// Specifies dimension settings for including or excluding endpoints from a segment based on how recently an endpoint was active.
-    public struct SegmentBehaviors {
+    public struct SegmentBehaviors: Swift.Sendable {
         /// The dimension settings that are based on how recently an endpoint was active.
         public var recency: PinpointClientTypes.RecencyDimension?
 
@@ -569,12 +571,12 @@ extension PinpointClientTypes {
             self.recency = recency
         }
     }
-
 }
 
 extension PinpointClientTypes {
+
     /// Specifies demographic-based dimension settings for including or excluding endpoints from a segment. These settings derive from characteristics of endpoint devices, such as platform, make, and model.
-    public struct SegmentDemographics {
+    public struct SegmentDemographics: Swift.Sendable {
         /// The app version criteria for the segment.
         public var appVersion: PinpointClientTypes.SetDimension?
         /// The channel criteria for the segment.
@@ -605,12 +607,12 @@ extension PinpointClientTypes {
             self.platform = platform
         }
     }
-
 }
 
 extension PinpointClientTypes {
+
     /// Specifies the GPS coordinates of a location.
-    public struct GPSCoordinates {
+    public struct GPSCoordinates: Swift.Sendable {
         /// The latitude coordinate of the location.
         /// This member is required.
         public var latitude: Swift.Double?
@@ -627,12 +629,12 @@ extension PinpointClientTypes {
             self.longitude = longitude
         }
     }
-
 }
 
 extension PinpointClientTypes {
+
     /// Specifies GPS-based criteria for including or excluding endpoints from a segment.
-    public struct GPSPointDimension {
+    public struct GPSPointDimension: Swift.Sendable {
         /// The GPS coordinates to measure distance from.
         /// This member is required.
         public var coordinates: PinpointClientTypes.GPSCoordinates?
@@ -648,12 +650,12 @@ extension PinpointClientTypes {
             self.rangeInKilometers = rangeInKilometers
         }
     }
-
 }
 
 extension PinpointClientTypes {
+
     /// Specifies geographical dimension settings for a segment.
-    public struct SegmentLocation {
+    public struct SegmentLocation: Swift.Sendable {
         /// The country or region code, in ISO 3166-1 alpha-2 format, for the segment.
         public var country: PinpointClientTypes.SetDimension?
         /// The GPS location and range for the segment.
@@ -668,12 +670,12 @@ extension PinpointClientTypes {
             self.gpsPoint = gpsPoint
         }
     }
-
 }
 
 extension PinpointClientTypes {
+
     /// Specifies the dimension settings for a segment.
-    public struct SegmentDimensions {
+    public struct SegmentDimensions: Swift.Sendable {
         /// One or more custom attributes to use as criteria for the segment.
         public var attributes: [Swift.String: PinpointClientTypes.AttributeDimension]?
         /// The behavior-based criteria, such as how recently users have used your app, for the segment.
@@ -704,12 +706,12 @@ extension PinpointClientTypes {
             self.userAttributes = userAttributes
         }
     }
-
 }
 
 extension PinpointClientTypes {
+
     /// Specifies a condition to evaluate for an activity in a journey.
-    public struct SimpleCondition {
+    public struct SimpleCondition: Swift.Sendable {
         /// The dimension settings for the event that's associated with the activity.
         public var eventCondition: PinpointClientTypes.EventCondition?
         /// The segment that's associated with the activity.
@@ -728,12 +730,11 @@ extension PinpointClientTypes {
             self.segmentDimensions = segmentDimensions
         }
     }
-
 }
 
 extension PinpointClientTypes {
 
-    public enum Operator: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Operator: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case all
         case any
         case sdkUnknown(Swift.String)
@@ -761,8 +762,9 @@ extension PinpointClientTypes {
 }
 
 extension PinpointClientTypes {
+
     /// Specifies the conditions to evaluate for an activity in a journey, and how to evaluate those conditions.
-    public struct Condition {
+    public struct Condition: Swift.Sendable {
         /// The conditions to evaluate for the activity.
         public var conditions: [PinpointClientTypes.SimpleCondition]?
         /// Specifies how to handle multiple conditions for the activity. For example, if you specify two conditions for an activity, whether both or only one of the conditions must be met for the activity to be performed.
@@ -777,12 +779,12 @@ extension PinpointClientTypes {
             self.`operator` = `operator`
         }
     }
-
 }
 
 extension PinpointClientTypes {
+
     /// Specifies a duration or a date and time that indicates when Amazon Pinpoint determines whether an activity's conditions have been met or an activity moves participants to the next activity in a journey.
-    public struct WaitTime {
+    public struct WaitTime: Swift.Sendable {
         /// The amount of time to wait, as a duration in ISO 8601 format, before determining whether the activity's conditions have been met or moving participants to the next activity in the journey.
         public var waitFor: Swift.String?
         /// The date and time, in ISO 8601 format, when Amazon Pinpoint determines whether the activity's conditions have been met or the activity moves participants to the next activity in the journey.
@@ -797,12 +799,12 @@ extension PinpointClientTypes {
             self.waitUntil = waitUntil
         }
     }
-
 }
 
 extension PinpointClientTypes {
+
     /// Specifies the settings for a yes/no split activity in a journey. This type of activity sends participants down one of two paths in a journey, based on conditions that you specify. To create yes/no split activities that send participants down different paths based on push notification events (such as Open or Received events), your mobile app has to specify the User ID and Endpoint ID values. For more information, see [Integrating Amazon Pinpoint with your application](https://docs.aws.amazon.com/pinpoint/latest/developerguide/integrate.html) in the Amazon Pinpoint Developer Guide.
-    public struct ConditionalSplitActivity {
+    public struct ConditionalSplitActivity: Swift.Sendable {
         /// The conditions that define the paths for the activity, and the relationship between the conditions.
         public var condition: PinpointClientTypes.Condition?
         /// The amount of time to wait before determining whether the conditions are met, or the date and time when Amazon Pinpoint determines whether the conditions are met.
@@ -825,11 +827,11 @@ extension PinpointClientTypes {
             self.trueActivity = trueActivity
         }
     }
-
 }
 
 extension PinpointClientTypes {
-    public struct ContactCenterActivity {
+
+    public struct ContactCenterActivity: Swift.Sendable {
         /// The unique identifier for the next activity to perform after the this activity.
         public var nextActivity: Swift.String?
 
@@ -840,12 +842,12 @@ extension PinpointClientTypes {
             self.nextActivity = nextActivity
         }
     }
-
 }
 
 extension PinpointClientTypes {
+
     /// Specifies the message content for a custom channel message that's sent to participants in a journey.
-    public struct JourneyCustomMessage {
+    public struct JourneyCustomMessage: Swift.Sendable {
         /// The message content that's passed to an AWS Lambda function or to a web hook.
         public var data: Swift.String?
 
@@ -856,12 +858,12 @@ extension PinpointClientTypes {
             self.data = data
         }
     }
-
 }
 
 extension PinpointClientTypes {
+
     /// The settings for a custom message activity. This type of activity calls an AWS Lambda function or web hook that sends messages to participants.
-    public struct CustomMessageActivity {
+    public struct CustomMessageActivity: Swift.Sendable {
         /// The destination to send the campaign or treatment to. This value can be one of the following:
         ///
         /// * The name or Amazon Resource Name (ARN) of an AWS Lambda function to invoke to handle delivery of the campaign or treatment.
@@ -896,12 +898,12 @@ extension PinpointClientTypes {
             self.templateVersion = templateVersion
         }
     }
-
 }
 
 extension PinpointClientTypes {
+
     /// Specifies the "From" address for an email message that's sent to participants in a journey.
-    public struct JourneyEmailMessage {
+    public struct JourneyEmailMessage: Swift.Sendable {
         /// The verified email address to send the email message from. The default address is the FromAddress specified for the email channel for the application.
         public var fromAddress: Swift.String?
 
@@ -912,12 +914,12 @@ extension PinpointClientTypes {
             self.fromAddress = fromAddress
         }
     }
-
 }
 
 extension PinpointClientTypes {
+
     /// Specifies the settings for an email activity in a journey. This type of activity sends an email message to participants.
-    public struct EmailMessageActivity {
+    public struct EmailMessageActivity: Swift.Sendable {
         /// Specifies the sender address for an email message that's sent to participants in the journey.
         public var messageConfig: PinpointClientTypes.JourneyEmailMessage?
         /// The unique identifier for the next activity to perform, after the message is sent.
@@ -940,12 +942,12 @@ extension PinpointClientTypes {
             self.templateVersion = templateVersion
         }
     }
-
 }
 
 extension PinpointClientTypes {
+
     /// Specifies the settings for a holdout activity in a journey. This type of activity stops a journey for a specified percentage of participants.
-    public struct HoldoutActivity {
+    public struct HoldoutActivity: Swift.Sendable {
         /// The unique identifier for the next activity to perform, after performing the holdout activity.
         public var nextActivity: Swift.String?
         /// The percentage of participants who shouldn't continue the journey. To determine which participants are held out, Amazon Pinpoint applies a probability-based algorithm to the percentage that you specify. Therefore, the actual percentage of participants who are held out may not be equal to the percentage that you specify.
@@ -961,12 +963,12 @@ extension PinpointClientTypes {
             self.percentage = percentage
         }
     }
-
 }
 
 extension PinpointClientTypes {
+
     /// Specifies a condition to evaluate for an activity path in a journey.
-    public struct MultiConditionalBranch {
+    public struct MultiConditionalBranch: Swift.Sendable {
         /// The condition to evaluate for the activity path.
         public var condition: PinpointClientTypes.SimpleCondition?
         /// The unique identifier for the next activity to perform, after completing the activity for the path.
@@ -981,12 +983,12 @@ extension PinpointClientTypes {
             self.nextActivity = nextActivity
         }
     }
-
 }
 
 extension PinpointClientTypes {
+
     /// Specifies the settings for a multivariate split activity in a journey. This type of activity sends participants down one of as many as five paths (including a default Else path) in a journey, based on conditions that you specify. To create multivariate split activities that send participants down different paths based on push notification events (such as Open or Received events), your mobile app has to specify the User ID and Endpoint ID values. For more information, see [Integrating Amazon Pinpoint with your application](https://docs.aws.amazon.com/pinpoint/latest/developerguide/integrate.html) in the Amazon Pinpoint Developer Guide.
-    public struct MultiConditionalSplitActivity {
+    public struct MultiConditionalSplitActivity: Swift.Sendable {
         /// The paths for the activity, including the conditions for entering each path and the activity to perform for each path.
         public var branches: [PinpointClientTypes.MultiConditionalBranch]?
         /// The unique identifier for the activity to perform for participants who don't meet any of the conditions specified for other paths in the activity.
@@ -1005,12 +1007,12 @@ extension PinpointClientTypes {
             self.evaluationWaitTime = evaluationWaitTime
         }
     }
-
 }
 
 extension PinpointClientTypes {
+
     /// Specifies the message configuration for a push notification that's sent to participants in a journey.
-    public struct JourneyPushMessage {
+    public struct JourneyPushMessage: Swift.Sendable {
         /// The number of seconds that the push notification service should keep the message, if the service is unable to deliver the notification the first time. This value is converted to an expiration value when it's sent to a push-notification service. If this value is 0, the service treats the notification as if it expires immediately and the service doesn't store or try to deliver the notification again. This value doesn't apply to messages that are sent through the Amazon Device Messaging (ADM) service.
         public var timeToLive: Swift.String?
 
@@ -1021,12 +1023,12 @@ extension PinpointClientTypes {
             self.timeToLive = timeToLive
         }
     }
-
 }
 
 extension PinpointClientTypes {
+
     /// Specifies the settings for a push notification activity in a journey. This type of activity sends a push notification to participants.
-    public struct PushMessageActivity {
+    public struct PushMessageActivity: Swift.Sendable {
         /// Specifies the time to live (TTL) value for push notifications that are sent to participants in a journey.
         public var messageConfig: PinpointClientTypes.JourneyPushMessage?
         /// The unique identifier for the next activity to perform, after the message is sent.
@@ -1049,12 +1051,12 @@ extension PinpointClientTypes {
             self.templateVersion = templateVersion
         }
     }
-
 }
 
 extension PinpointClientTypes {
+
     /// Specifies the settings for a path in a random split activity in a journey.
-    public struct RandomSplitEntry {
+    public struct RandomSplitEntry: Swift.Sendable {
         /// The unique identifier for the next activity to perform, after completing the activity for the path.
         public var nextActivity: Swift.String?
         /// The percentage of participants to send down the activity path. To determine which participants are sent down each path, Amazon Pinpoint applies a probability-based algorithm to the percentages that you specify for the paths. Therefore, the actual percentage of participants who are sent down a path may not be equal to the percentage that you specify.
@@ -1069,12 +1071,12 @@ extension PinpointClientTypes {
             self.percentage = percentage
         }
     }
-
 }
 
 extension PinpointClientTypes {
+
     /// Specifies the settings for a random split activity in a journey. This type of activity randomly sends specified percentages of participants down one of as many as five paths in a journey, based on conditions that you specify.
-    public struct RandomSplitActivity {
+    public struct RandomSplitActivity: Swift.Sendable {
         /// The paths for the activity, including the percentage of participants to enter each path and the activity to perform for each path.
         public var branches: [PinpointClientTypes.RandomSplitEntry]?
 
@@ -1085,12 +1087,11 @@ extension PinpointClientTypes {
             self.branches = branches
         }
     }
-
 }
 
 extension PinpointClientTypes {
 
-    public enum MessageType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum MessageType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case promotional
         case transactional
         case sdkUnknown(Swift.String)
@@ -1118,8 +1119,9 @@ extension PinpointClientTypes {
 }
 
 extension PinpointClientTypes {
+
     /// Specifies the sender ID and message type for an SMS message that's sent to participants in a journey.
-    public struct JourneySMSMessage {
+    public struct JourneySMSMessage: Swift.Sendable {
         /// The entity ID or Principal Entity (PE) id received from the regulatory body for sending SMS in your country.
         public var entityId: Swift.String?
         /// The SMS message type. Valid values are TRANSACTIONAL (for messages that are critical or time-sensitive, such as a one-time passwords) and PROMOTIONAL (for messsages that aren't critical or time-sensitive, such as marketing messages).
@@ -1146,12 +1148,12 @@ extension PinpointClientTypes {
             self.templateId = templateId
         }
     }
-
 }
 
 extension PinpointClientTypes {
+
     /// Specifies the settings for an SMS activity in a journey. This type of activity sends a text message to participants.
-    public struct SMSMessageActivity {
+    public struct SMSMessageActivity: Swift.Sendable {
         /// Specifies the sender ID and message type for an SMS message that's sent to participants in a journey.
         public var messageConfig: PinpointClientTypes.JourneySMSMessage?
         /// The unique identifier for the next activity to perform, after the message is sent.
@@ -1174,12 +1176,12 @@ extension PinpointClientTypes {
             self.templateVersion = templateVersion
         }
     }
-
 }
 
 extension PinpointClientTypes {
+
     /// Specifies the settings for a wait activity in a journey. This type of activity waits for a certain amount of time or until a specific date and time before moving participants to the next activity in a journey.
-    public struct WaitActivity {
+    public struct WaitActivity: Swift.Sendable {
         /// The unique identifier for the next activity to perform, after performing the wait activity.
         public var nextActivity: Swift.String?
         /// The amount of time to wait or the date and time when the activity moves participants to the next activity in the journey.
@@ -1194,12 +1196,12 @@ extension PinpointClientTypes {
             self.waitTime = waitTime
         }
     }
-
 }
 
 extension PinpointClientTypes {
+
     /// Specifies the configuration and other settings for an activity in a journey.
-    public struct Activity {
+    public struct Activity: Swift.Sendable {
         /// The settings for a yes/no split activity. This type of activity sends participants down one of two paths in a journey, based on conditions that you specify.
         public var conditionalSplit: PinpointClientTypes.ConditionalSplitActivity?
         /// The settings for a connect activity. This type of activity initiates a contact center call to participants.
@@ -1250,12 +1252,11 @@ extension PinpointClientTypes {
             self.wait = wait
         }
     }
-
 }
 
 extension PinpointClientTypes {
 
-    public enum ChannelType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ChannelType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case adm
         case apns
         case apnsSandbox
@@ -1316,8 +1317,9 @@ extension PinpointClientTypes {
 }
 
 extension PinpointClientTypes {
+
     /// Specifies address-based configuration settings for a message that's sent directly to an endpoint.
-    public struct AddressConfiguration {
+    public struct AddressConfiguration: Swift.Sendable {
         /// The message body to use instead of the default message body. This value overrides the default message body.
         public var bodyOverride: Swift.String?
         /// The channel to use when sending the message.
@@ -1348,12 +1350,12 @@ extension PinpointClientTypes {
             self.titleOverride = titleOverride
         }
     }
-
 }
 
 extension PinpointClientTypes {
+
     /// Specifies the status and settings of the ADM (Amazon Device Messaging) channel for an application.
-    public struct ADMChannelRequest {
+    public struct ADMChannelRequest: Swift.Sendable {
         /// The Client ID that you received from Amazon to send messages by using ADM.
         /// This member is required.
         public var clientId: Swift.String?
@@ -1374,12 +1376,12 @@ extension PinpointClientTypes {
             self.enabled = enabled
         }
     }
-
 }
 
 extension PinpointClientTypes {
+
     /// Provides information about the status and settings of the ADM (Amazon Device Messaging) channel for an application.
-    public struct ADMChannelResponse {
+    public struct ADMChannelResponse: Swift.Sendable {
         /// The unique identifier for the application that the ADM channel applies to.
         public var applicationId: Swift.String?
         /// The date and time when the ADM channel was enabled.
@@ -1427,12 +1429,12 @@ extension PinpointClientTypes {
             self.version = version
         }
     }
-
 }
 
 extension PinpointClientTypes {
+
     /// Specifies the settings for a one-time message that's sent directly to an endpoint through the ADM (Amazon Device Messaging) channel.
-    public struct ADMMessage {
+    public struct ADMMessage: Swift.Sendable {
         /// The action to occur if the recipient taps the push notification. Valid values are:
         ///
         /// * OPEN_APP - Your app opens or it becomes the foreground app if it was sent to the background. This is the default action.
@@ -1509,12 +1511,11 @@ extension PinpointClientTypes {
             self.url = url
         }
     }
-
 }
 
 extension PinpointClientTypes {
 
-    public enum Alignment: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Alignment: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case center
         case `left`
         case `right`
@@ -1545,8 +1546,9 @@ extension PinpointClientTypes {
 }
 
 extension PinpointClientTypes {
+
     /// Specifies channel-specific content and settings for a message template that can be used in push notifications that are sent through the ADM (Amazon Device Messaging), Baidu (Baidu Cloud Push), or GCM (Firebase Cloud Messaging, formerly Google Cloud Messaging) channel.
-    public struct AndroidPushNotificationTemplate {
+    public struct AndroidPushNotificationTemplate: Swift.Sendable {
         /// The action to occur if a recipient taps a push notification that's based on the message template. Valid values are:
         ///
         /// * OPEN_APP - Your app opens or it becomes the foreground app if it was sent to the background. This is the default action.
@@ -1595,12 +1597,12 @@ extension PinpointClientTypes {
             self.url = url
         }
     }
-
 }
 
 extension PinpointClientTypes {
+
     /// Specifies the status and settings of the APNs (Apple Push Notification service) channel for an application.
-    public struct APNSChannelRequest {
+    public struct APNSChannelRequest: Swift.Sendable {
         /// The bundle identifier that's assigned to your iOS app. This identifier is used for APNs tokens.
         public var bundleId: Swift.String?
         /// The APNs client certificate that you received from Apple, if you want Amazon Pinpoint to communicate with APNs by using an APNs certificate.
@@ -1639,12 +1641,12 @@ extension PinpointClientTypes {
             self.tokenKeyId = tokenKeyId
         }
     }
-
 }
 
 extension PinpointClientTypes {
+
     /// Provides information about the status and settings of the APNs (Apple Push Notification service) channel for an application.
-    public struct APNSChannelResponse {
+    public struct APNSChannelResponse: Swift.Sendable {
         /// The unique identifier for the application that the APNs channel applies to.
         public var applicationId: Swift.String?
         /// The date and time when the APNs channel was enabled.
@@ -1700,12 +1702,12 @@ extension PinpointClientTypes {
             self.version = version
         }
     }
-
 }
 
 extension PinpointClientTypes {
+
     /// Specifies the settings for a one-time message that's sent directly to an endpoint through the APNs (Apple Push Notification service) channel.
-    public struct APNSMessage {
+    public struct APNSMessage: Swift.Sendable {
         /// The action to occur if the recipient taps the push notification. Valid values are:
         ///
         /// * OPEN_APP - Your app opens or it becomes the foreground app if it was sent to the background. This is the default action.
@@ -1807,12 +1809,12 @@ extension PinpointClientTypes {
             self.url = url
         }
     }
-
 }
 
 extension PinpointClientTypes {
+
     /// Specifies channel-specific content and settings for a message template that can be used in push notifications that are sent through the APNs (Apple Push Notification service) channel.
-    public struct APNSPushNotificationTemplate {
+    public struct APNSPushNotificationTemplate: Swift.Sendable {
         /// The action to occur if a recipient taps a push notification that's based on the message template. Valid values are:
         ///
         /// * OPEN_APP - Your app opens or it becomes the foreground app if it was sent to the background. This is the default action.
@@ -1853,12 +1855,12 @@ extension PinpointClientTypes {
             self.url = url
         }
     }
-
 }
 
 extension PinpointClientTypes {
+
     /// Specifies the status and settings of the APNs (Apple Push Notification service) sandbox channel for an application.
-    public struct APNSSandboxChannelRequest {
+    public struct APNSSandboxChannelRequest: Swift.Sendable {
         /// The bundle identifier that's assigned to your iOS app. This identifier is used for APNs tokens.
         public var bundleId: Swift.String?
         /// The APNs client certificate that you received from Apple, if you want Amazon Pinpoint to communicate with the APNs sandbox environment by using an APNs certificate.
@@ -1897,12 +1899,12 @@ extension PinpointClientTypes {
             self.tokenKeyId = tokenKeyId
         }
     }
-
 }
 
 extension PinpointClientTypes {
+
     /// Provides information about the status and settings of the APNs (Apple Push Notification service) sandbox channel for an application.
-    public struct APNSSandboxChannelResponse {
+    public struct APNSSandboxChannelResponse: Swift.Sendable {
         /// The unique identifier for the application that the APNs sandbox channel applies to.
         public var applicationId: Swift.String?
         /// The date and time when the APNs sandbox channel was enabled.
@@ -1958,12 +1960,12 @@ extension PinpointClientTypes {
             self.version = version
         }
     }
-
 }
 
 extension PinpointClientTypes {
+
     /// Specifies the status and settings of the APNs (Apple Push Notification service) VoIP channel for an application.
-    public struct APNSVoipChannelRequest {
+    public struct APNSVoipChannelRequest: Swift.Sendable {
         /// The bundle identifier that's assigned to your iOS app. This identifier is used for APNs tokens.
         public var bundleId: Swift.String?
         /// The APNs client certificate that you received from Apple, if you want Amazon Pinpoint to communicate with APNs by using an APNs certificate.
@@ -2002,12 +2004,12 @@ extension PinpointClientTypes {
             self.tokenKeyId = tokenKeyId
         }
     }
-
 }
 
 extension PinpointClientTypes {
+
     /// Provides information about the status and settings of the APNs (Apple Push Notification service) VoIP channel for an application.
-    public struct APNSVoipChannelResponse {
+    public struct APNSVoipChannelResponse: Swift.Sendable {
         /// The unique identifier for the application that the APNs VoIP channel applies to.
         public var applicationId: Swift.String?
         /// The date and time when the APNs VoIP channel was enabled.
@@ -2063,12 +2065,12 @@ extension PinpointClientTypes {
             self.version = version
         }
     }
-
 }
 
 extension PinpointClientTypes {
+
     /// Specifies the status and settings of the APNs (Apple Push Notification service) VoIP sandbox channel for an application.
-    public struct APNSVoipSandboxChannelRequest {
+    public struct APNSVoipSandboxChannelRequest: Swift.Sendable {
         /// The bundle identifier that's assigned to your iOS app. This identifier is used for APNs tokens.
         public var bundleId: Swift.String?
         /// The APNs client certificate that you received from Apple, if you want Amazon Pinpoint to communicate with the APNs sandbox environment by using an APNs certificate.
@@ -2107,12 +2109,12 @@ extension PinpointClientTypes {
             self.tokenKeyId = tokenKeyId
         }
     }
-
 }
 
 extension PinpointClientTypes {
+
     /// Provides information about the status and settings of the APNs (Apple Push Notification service) VoIP sandbox channel for an application.
-    public struct APNSVoipSandboxChannelResponse {
+    public struct APNSVoipSandboxChannelResponse: Swift.Sendable {
         /// The unique identifier for the application that the APNs VoIP sandbox channel applies to.
         public var applicationId: Swift.String?
         /// The date and time when the APNs VoIP sandbox channel was enabled.
@@ -2168,12 +2170,12 @@ extension PinpointClientTypes {
             self.version = version
         }
     }
-
 }
 
 extension PinpointClientTypes {
+
     /// Provides a single value and metadata about that value as part of an array of query results for a standard metric that applies to an application, campaign, or journey.
-    public struct ResultRowValue {
+    public struct ResultRowValue: Swift.Sendable {
         /// The friendly name of the metric whose value is specified by the Value property.
         /// This member is required.
         public var key: Swift.String?
@@ -2195,12 +2197,12 @@ extension PinpointClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension PinpointClientTypes {
+
     /// Provides the results of a query that retrieved the data for a standard metric that applies to an application, campaign, or journey.
-    public struct ResultRow {
+    public struct ResultRow: Swift.Sendable {
         /// An array of objects that defines the field and field values that were used to group data in a result set that contains multiple results. This value is null if the data in a result set isn’t grouped.
         /// This member is required.
         public var groupedBys: [PinpointClientTypes.ResultRowValue]?
@@ -2217,12 +2219,12 @@ extension PinpointClientTypes {
             self.values = values
         }
     }
-
 }
 
 extension PinpointClientTypes {
+
     /// Provides the results of a query that retrieved the data for a standard metric that applies to an application, campaign, or journey.
-    public struct BaseKpiResult {
+    public struct BaseKpiResult: Swift.Sendable {
         /// An array of objects that provides the results of a query that retrieved the data for a standard metric that applies to an application, campaign, or journey.
         /// This member is required.
         public var rows: [PinpointClientTypes.ResultRow]?
@@ -2234,12 +2236,12 @@ extension PinpointClientTypes {
             self.rows = rows
         }
     }
-
 }
 
 extension PinpointClientTypes {
+
     /// Provides the results of a query that retrieved the data for a standard metric that applies to an application, and provides information about that query.
-    public struct ApplicationDateRangeKpiResponse {
+    public struct ApplicationDateRangeKpiResponse: Swift.Sendable {
         /// The unique identifier for the application that the metric applies to.
         /// This member is required.
         public var applicationId: Swift.String?
@@ -2275,12 +2277,12 @@ extension PinpointClientTypes {
             self.startTime = startTime
         }
     }
-
 }
 
 extension PinpointClientTypes {
+
     /// Provides information about an application.
-    public struct ApplicationResponse {
+    public struct ApplicationResponse: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the application.
         /// This member is required.
         public var arn: Swift.String?
@@ -2310,12 +2312,12 @@ extension PinpointClientTypes {
             self.tags = tags
         }
     }
-
 }
 
 extension PinpointClientTypes {
+
     /// The number of messages that can be sent to an endpoint during the specified timeframe for all journeys.
-    public struct JourneyTimeframeCap {
+    public struct JourneyTimeframeCap: Swift.Sendable {
         /// The maximum number of messages that all journeys can send to an endpoint during the specified timeframe. The maximum value is 100. If set to 0, this limit will not apply.
         public var cap: Swift.Int?
         /// The length of the timeframe in days. The maximum value is 30. If set to 0, this limit will not apply.
@@ -2330,12 +2332,12 @@ extension PinpointClientTypes {
             self.days = days
         }
     }
-
 }
 
 extension PinpointClientTypes {
+
     /// The default sending limits for journeys in the application. To override these limits and define custom limits for a specific journey, use the Journey resource.
-    public struct ApplicationSettingsJourneyLimits {
+    public struct ApplicationSettingsJourneyLimits: Swift.Sendable {
         /// The daily number of messages that an endpoint can receive from all journeys. The maximum value is 100. If set to 0, this limit will not apply.
         public var dailyCap: Swift.Int?
         /// The default maximum number of messages that can be sent to an endpoint during the specified timeframe for all journeys.
@@ -2354,12 +2356,11 @@ extension PinpointClientTypes {
             self.totalCap = totalCap
         }
     }
-
 }
 
 extension PinpointClientTypes {
 
-    public enum Mode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Mode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case delivery
         case filter
         case sdkUnknown(Swift.String)
@@ -2387,8 +2388,9 @@ extension PinpointClientTypes {
 }
 
 extension PinpointClientTypes {
+
     /// Specifies settings for invoking an AWS Lambda function that customizes a segment for a campaign.
-    public struct CampaignHook {
+    public struct CampaignHook: Swift.Sendable {
         /// The name or Amazon Resource Name (ARN) of the AWS Lambda function that Amazon Pinpoint invokes to customize a segment for a campaign.
         public var lambdaFunctionName: Swift.String?
         /// The mode that Amazon Pinpoint uses to invoke the AWS Lambda function. Possible values are:
@@ -2411,12 +2413,12 @@ extension PinpointClientTypes {
             self.webUrl = webUrl
         }
     }
-
 }
 
 extension PinpointClientTypes {
+
     /// For a campaign, specifies limits on the messages that the campaign can send. For an application, specifies the default limits for messages that campaigns in the application can send.
-    public struct CampaignLimits {
+    public struct CampaignLimits: Swift.Sendable {
         /// The maximum number of messages that a campaign can send to a single endpoint during a 24-hour period. For an application, this value specifies the default limit for the number of messages that campaigns and journeys can send to a single endpoint during a 24-hour period. The maximum value is 100.
         public var daily: Swift.Int?
         /// The maximum amount of time, in seconds, that a campaign can attempt to deliver a message after the scheduled start time for the campaign. The minimum value is 60 seconds.
@@ -2443,12 +2445,12 @@ extension PinpointClientTypes {
             self.total = total
         }
     }
-
 }
 
 extension PinpointClientTypes {
+
     /// Specifies the start and end times that define a time range when messages aren't sent to endpoints.
-    public struct QuietTime {
+    public struct QuietTime: Swift.Sendable {
         /// The specific time when quiet time ends. This value has to use 24-hour notation and be in HH:MM format, where HH is the hour (with a leading zero, if applicable) and MM is the minutes. For example, use 02:30 to represent 2:30 AM, or 14:30 to represent 2:30 PM.
         public var end: Swift.String?
         /// The specific time when quiet time begins. This value has to use 24-hour notation and be in HH:MM format, where HH is the hour (with a leading zero, if applicable) and MM is the minutes. For example, use 02:30 to represent 2:30 AM, or 14:30 to represent 2:30 PM.
@@ -2463,12 +2465,12 @@ extension PinpointClientTypes {
             self.start = start
         }
     }
-
 }
 
 extension PinpointClientTypes {
+
     /// Provides information about an application, including the default settings for an application.
-    public struct ApplicationSettingsResource {
+    public struct ApplicationSettingsResource: Swift.Sendable {
         /// The unique identifier for the application. This identifier is displayed as the Project ID on the Amazon Pinpoint console.
         /// This member is required.
         public var applicationId: Swift.String?
@@ -2509,12 +2511,12 @@ extension PinpointClientTypes {
             self.quietTime = quietTime
         }
     }
-
 }
 
 extension PinpointClientTypes {
+
     /// Provides information about all of your applications.
-    public struct ApplicationsResponse {
+    public struct ApplicationsResponse: Swift.Sendable {
         /// An array of responses, one for each application that was returned.
         public var item: [PinpointClientTypes.ApplicationResponse]?
         /// The string to use in a subsequent request to get the next page of results in a paginated response. This value is null if there are no additional pages.
@@ -2529,12 +2531,12 @@ extension PinpointClientTypes {
             self.nextToken = nextToken
         }
     }
-
 }
 
 extension PinpointClientTypes {
+
     /// Provides information about the type and the names of attributes that were removed from all the endpoints that are associated with an application.
-    public struct AttributesResource {
+    public struct AttributesResource: Swift.Sendable {
         /// The unique identifier for the application.
         /// This member is required.
         public var applicationId: Swift.String?
@@ -2561,7 +2563,6 @@ extension PinpointClientTypes {
             self.attributes = attributes
         }
     }
-
 }
 
 /// Provides information about an API request or response.
@@ -2594,8 +2595,9 @@ public struct BadRequestException: ClientRuntime.ModeledError, AWSClientRuntime.
 }
 
 extension PinpointClientTypes {
+
     /// Specifies the status and settings of the Baidu (Baidu Cloud Push) channel for an application.
-    public struct BaiduChannelRequest {
+    public struct BaiduChannelRequest: Swift.Sendable {
         /// The API key that you received from the Baidu Cloud Push service to communicate with the service.
         /// This member is required.
         public var apiKey: Swift.String?
@@ -2616,12 +2618,12 @@ extension PinpointClientTypes {
             self.secretKey = secretKey
         }
     }
-
 }
 
 extension PinpointClientTypes {
+
     /// Provides information about the status and settings of the Baidu (Baidu Cloud Push) channel for an application.
-    public struct BaiduChannelResponse {
+    public struct BaiduChannelResponse: Swift.Sendable {
         /// The unique identifier for the application that the Baidu channel applies to.
         public var applicationId: Swift.String?
         /// The date and time when the Baidu channel was enabled.
@@ -2674,12 +2676,12 @@ extension PinpointClientTypes {
             self.version = version
         }
     }
-
 }
 
 extension PinpointClientTypes {
+
     /// Specifies the settings for a one-time message that's sent directly to an endpoint through the Baidu (Baidu Cloud Push) channel.
-    public struct BaiduMessage {
+    public struct BaiduMessage: Swift.Sendable {
         /// The action to occur if the recipient taps the push notification. Valid values are:
         ///
         /// * OPEN_APP - Your app opens or it becomes the foreground app if it was sent to the background. This is the default action.
@@ -2748,12 +2750,11 @@ extension PinpointClientTypes {
             self.url = url
         }
     }
-
 }
 
 extension PinpointClientTypes {
 
-    public enum ButtonAction: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ButtonAction: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case close
         case deepLink
         case link
@@ -2784,8 +2785,9 @@ extension PinpointClientTypes {
 }
 
 extension PinpointClientTypes {
+
     /// Specifies the contents of a message that's sent through a custom channel to recipients of a campaign.
-    public struct CampaignCustomMessage {
+    public struct CampaignCustomMessage: Swift.Sendable {
         /// The raw, JSON-formatted string to use as the payload for the message. The maximum size is 5 KB.
         public var data: Swift.String?
 
@@ -2796,12 +2798,12 @@ extension PinpointClientTypes {
             self.data = data
         }
     }
-
 }
 
 extension PinpointClientTypes {
+
     /// Provides the results of a query that retrieved the data for a standard metric that applies to a campaign, and provides information about that query.
-    public struct CampaignDateRangeKpiResponse {
+    public struct CampaignDateRangeKpiResponse: Swift.Sendable {
         /// The unique identifier for the application that the metric applies to.
         /// This member is required.
         public var applicationId: Swift.String?
@@ -2842,12 +2844,12 @@ extension PinpointClientTypes {
             self.startTime = startTime
         }
     }
-
 }
 
 extension PinpointClientTypes {
+
     /// Contains the name and value pair of an email header to add to your email. You can have up to 15 MessageHeaders. A header can contain information such as the sender, receiver, route, or timestamp.
-    public struct MessageHeader {
+    public struct MessageHeader: Swift.Sendable {
         /// The name of the message header. The header name can contain up to 126 characters.
         public var name: Swift.String?
         /// The value of the message header. The header value can contain up to 870 characters, including the length of any rendered attributes. For example if you add the {CreationDate} attribute, it renders as YYYY-MM-DDTHH:MM:SS.SSSZ and is 24 characters in length.
@@ -2862,12 +2864,12 @@ extension PinpointClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension PinpointClientTypes {
+
     /// Specifies the content and "From" address for an email message that's sent to recipients of a campaign.
-    public struct CampaignEmailMessage {
+    public struct CampaignEmailMessage: Swift.Sendable {
         /// The body of the email for recipients whose email clients don't render HTML content.
         public var body: Swift.String?
         /// The verified email address to send the email from. The default address is the FromAddress specified for the email channel for the application.
@@ -2894,12 +2896,11 @@ extension PinpointClientTypes {
             self.title = title
         }
     }
-
 }
 
 extension PinpointClientTypes {
 
-    public enum FilterType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum FilterType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case endpoint
         case system
         case sdkUnknown(Swift.String)
@@ -2927,8 +2928,9 @@ extension PinpointClientTypes {
 }
 
 extension PinpointClientTypes {
+
     /// Specifies the settings for events that cause a campaign to be sent.
-    public struct CampaignEventFilter {
+    public struct CampaignEventFilter: Swift.Sendable {
         /// The dimension settings of the event filter for the campaign.
         /// This member is required.
         public var dimensions: PinpointClientTypes.EventDimensions?
@@ -2945,12 +2947,12 @@ extension PinpointClientTypes {
             self.filterType = filterType
         }
     }
-
 }
 
 extension PinpointClientTypes {
+
     /// Text config for Message Body.
-    public struct InAppMessageBodyConfig {
+    public struct InAppMessageBodyConfig: Swift.Sendable {
         /// The alignment of the text. Valid values: LEFT, CENTER, RIGHT.
         /// This member is required.
         public var alignment: PinpointClientTypes.Alignment?
@@ -2972,12 +2974,12 @@ extension PinpointClientTypes {
             self.textColor = textColor
         }
     }
-
 }
 
 extension PinpointClientTypes {
+
     /// Text config for Message Header.
-    public struct InAppMessageHeaderConfig {
+    public struct InAppMessageHeaderConfig: Swift.Sendable {
         /// The alignment of the text. Valid values: LEFT, CENTER, RIGHT.
         /// This member is required.
         public var alignment: PinpointClientTypes.Alignment?
@@ -2999,12 +3001,12 @@ extension PinpointClientTypes {
             self.textColor = textColor
         }
     }
-
 }
 
 extension PinpointClientTypes {
+
     /// Override button configuration.
-    public struct OverrideButtonConfiguration {
+    public struct OverrideButtonConfiguration: Swift.Sendable {
         /// Action triggered by the button.
         /// This member is required.
         public var buttonAction: PinpointClientTypes.ButtonAction?
@@ -3020,12 +3022,12 @@ extension PinpointClientTypes {
             self.link = link
         }
     }
-
 }
 
 extension PinpointClientTypes {
+
     /// Default button configuration.
-    public struct DefaultButtonConfiguration {
+    public struct DefaultButtonConfiguration: Swift.Sendable {
         /// The background color of the button.
         public var backgroundColor: Swift.String?
         /// The border radius of the button.
@@ -3058,12 +3060,12 @@ extension PinpointClientTypes {
             self.textColor = textColor
         }
     }
-
 }
 
 extension PinpointClientTypes {
+
     /// Button Config for an in-app message.
-    public struct InAppMessageButton {
+    public struct InAppMessageButton: Swift.Sendable {
         /// Default button content.
         public var android: PinpointClientTypes.OverrideButtonConfiguration?
         /// Default button content.
@@ -3086,12 +3088,12 @@ extension PinpointClientTypes {
             self.web = web
         }
     }
-
 }
 
 extension PinpointClientTypes {
+
     /// The configuration for the message content.
-    public struct InAppMessageContent {
+    public struct InAppMessageContent: Swift.Sendable {
         /// The background color for the message.
         public var backgroundColor: Swift.String?
         /// The configuration for the message body.
@@ -3122,12 +3124,11 @@ extension PinpointClientTypes {
             self.secondaryBtn = secondaryBtn
         }
     }
-
 }
 
 extension PinpointClientTypes {
 
-    public enum Layout: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Layout: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case bottomBanner
         case carousel
         case middleBanner
@@ -3167,8 +3168,9 @@ extension PinpointClientTypes {
 }
 
 extension PinpointClientTypes {
+
     /// In-app message configuration.
-    public struct CampaignInAppMessage {
+    public struct CampaignInAppMessage: Swift.Sendable {
         /// The message body of the notification, the email body or the text message.
         public var body: Swift.String?
         /// In-app message content.
@@ -3191,12 +3193,12 @@ extension PinpointClientTypes {
             self.layout = layout
         }
     }
-
 }
 
 extension PinpointClientTypes {
+
     /// Specifies the delivery configuration settings for sending a campaign or campaign treatment through a custom channel. This object is required if you use the CampaignCustomMessage object to define the message to send for the campaign or campaign treatment.
-    public struct CustomDeliveryConfiguration {
+    public struct CustomDeliveryConfiguration: Swift.Sendable {
         /// The destination to send the campaign or treatment to. This value can be one of the following:
         ///
         /// * The name or Amazon Resource Name (ARN) of an AWS Lambda function to invoke to handle delivery of the campaign or treatment.
@@ -3216,12 +3218,12 @@ extension PinpointClientTypes {
             self.endpointTypes = endpointTypes
         }
     }
-
 }
 
 extension PinpointClientTypes {
+
     /// Specifies the content and settings for a push notification that's sent to recipients of a campaign.
-    public struct Message {
+    public struct Message: Swift.Sendable {
         /// The action to occur if a recipient taps the push notification. Valid values are:
         ///
         /// * OPEN_APP - Your app opens or it becomes the foreground app if it was sent to the background. This is the default action.
@@ -3282,12 +3284,12 @@ extension PinpointClientTypes {
             self.url = url
         }
     }
-
 }
 
 extension PinpointClientTypes {
+
     /// Specifies the content and settings for an SMS message that's sent to recipients of a campaign.
-    public struct CampaignSmsMessage {
+    public struct CampaignSmsMessage: Swift.Sendable {
         /// The body of the SMS message.
         public var body: Swift.String?
         /// The entity ID or Principal Entity (PE) id received from the regulatory body for sending SMS in your country.
@@ -3318,12 +3320,12 @@ extension PinpointClientTypes {
             self.templateId = templateId
         }
     }
-
 }
 
 extension PinpointClientTypes {
+
     /// Specifies the message configuration settings for a campaign.
-    public struct MessageConfiguration {
+    public struct MessageConfiguration: Swift.Sendable {
         /// The message that the campaign sends through the ADM (Amazon Device Messaging) channel. If specified, this message overrides the default message.
         public var admMessage: PinpointClientTypes.Message?
         /// The message that the campaign sends through the APNs (Apple Push Notification service) channel. If specified, this message overrides the default message.
@@ -3366,12 +3368,11 @@ extension PinpointClientTypes {
             self.smsMessage = smsMessage
         }
     }
-
 }
 
 extension PinpointClientTypes {
 
-    public enum Frequency: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Frequency: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case daily
         case event
         case hourly
@@ -3414,8 +3415,9 @@ extension PinpointClientTypes {
 }
 
 extension PinpointClientTypes {
+
     /// Specifies the schedule settings for a campaign.
-    public struct Schedule {
+    public struct Schedule: Swift.Sendable {
         /// The scheduled time, in ISO 8601 format, when the campaign ended or will end.
         public var endTime: Swift.String?
         /// The type of event that causes the campaign to be sent, if the value of the Frequency property is EVENT.
@@ -3460,12 +3462,11 @@ extension PinpointClientTypes {
             self.timezone = timezone
         }
     }
-
 }
 
 extension PinpointClientTypes {
 
-    public enum CampaignStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum CampaignStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case completed
         case deleted
         case executing
@@ -3508,8 +3509,9 @@ extension PinpointClientTypes {
 }
 
 extension PinpointClientTypes {
+
     /// Provides information about the status of a campaign.
-    public struct CampaignState {
+    public struct CampaignState: Swift.Sendable {
         /// The current status of the campaign, or the current status of a treatment that belongs to an A/B test campaign. If a campaign uses A/B testing, the campaign has a status of COMPLETED only if all campaign treatments have a status of COMPLETED. If you delete the segment that's associated with a campaign, the campaign fails and has a status of DELETED.
         public var campaignStatus: PinpointClientTypes.CampaignStatus?
 
@@ -3520,12 +3522,12 @@ extension PinpointClientTypes {
             self.campaignStatus = campaignStatus
         }
     }
-
 }
 
 extension PinpointClientTypes {
+
     /// Specifies the name and version of the message template to use for the message.
-    public struct Template {
+    public struct Template: Swift.Sendable {
         /// The name of the message template to use for the message. If specified, this value must match the name of an existing message template.
         public var name: Swift.String?
         /// The unique identifier for the version of the message template to use for the message. If specified, this value must match the identifier for an existing template version. To retrieve a list of versions and version identifiers for a template, use the Template Versions resource. If you don't specify a value for this property, Amazon Pinpoint uses the active version of the template. The active version is typically the version of a template that's been most recently reviewed and approved for use, depending on your workflow. It isn't necessarily the latest version of a template.
@@ -3540,12 +3542,12 @@ extension PinpointClientTypes {
             self.version = version
         }
     }
-
 }
 
 extension PinpointClientTypes {
+
     /// Specifies the message template to use for the message, for each type of channel.
-    public struct TemplateConfiguration {
+    public struct TemplateConfiguration: Swift.Sendable {
         /// The email template to use for the message.
         public var emailTemplate: PinpointClientTypes.Template?
         /// The InApp template to use for the message. The InApp template object is not supported for SendMessages.
@@ -3572,12 +3574,12 @@ extension PinpointClientTypes {
             self.voiceTemplate = voiceTemplate
         }
     }
-
 }
 
 extension PinpointClientTypes {
+
     /// Specifies the settings for a campaign treatment. A treatment is a variation of a campaign that's used for A/B testing of a campaign.
-    public struct TreatmentResource {
+    public struct TreatmentResource: Swift.Sendable {
         /// The delivery configuration settings for sending the treatment through a custom channel. This object is required if the MessageConfiguration object for the treatment specifies a CustomMessage object.
         public var customDeliveryConfiguration: PinpointClientTypes.CustomDeliveryConfiguration?
         /// The unique identifier for the treatment.
@@ -3622,12 +3624,12 @@ extension PinpointClientTypes {
             self.treatmentName = treatmentName
         }
     }
-
 }
 
 extension PinpointClientTypes {
+
     /// Provides information about the status, configuration, and other settings for a campaign.
-    public struct CampaignResponse {
+    public struct CampaignResponse: Swift.Sendable {
         /// An array of responses, one for each treatment that you defined for the campaign, in addition to the default treatment.
         public var additionalTreatments: [PinpointClientTypes.TreatmentResource]?
         /// The unique identifier for the application that the campaign applies to.
@@ -3741,12 +3743,12 @@ extension PinpointClientTypes {
             self.version = version
         }
     }
-
 }
 
 extension PinpointClientTypes {
+
     /// Provides information about the configuration and other settings for all the campaigns that are associated with an application.
-    public struct CampaignsResponse {
+    public struct CampaignsResponse: Swift.Sendable {
         /// An array of responses, one for each campaign that's associated with the application.
         /// This member is required.
         public var item: [PinpointClientTypes.CampaignResponse]?
@@ -3762,12 +3764,12 @@ extension PinpointClientTypes {
             self.nextToken = nextToken
         }
     }
-
 }
 
 extension PinpointClientTypes {
+
     /// Provides information about the general settings and status of a channel for an application.
-    public struct ChannelResponse {
+    public struct ChannelResponse: Swift.Sendable {
         /// The unique identifier for the application.
         public var applicationId: Swift.String?
         /// The date and time, in ISO 8601 format, when the channel was enabled.
@@ -3810,12 +3812,12 @@ extension PinpointClientTypes {
             self.version = version
         }
     }
-
 }
 
 extension PinpointClientTypes {
+
     /// Provides information about the general settings and status of all channels for an application, including channels that aren't enabled for the application.
-    public struct ChannelsResponse {
+    public struct ChannelsResponse: Swift.Sendable {
         /// A map that contains a multipart response for each channel. For each item in this object, the ChannelType is the key and the Channel is the value.
         /// This member is required.
         public var channels: [Swift.String: PinpointClientTypes.ChannelResponse]?
@@ -3827,12 +3829,12 @@ extension PinpointClientTypes {
             self.channels = channels
         }
     }
-
 }
 
 extension PinpointClientTypes {
+
     /// Specifies the rule settings for when messages can't be sent.
-    public struct ClosedDaysRule {
+    public struct ClosedDaysRule: Swift.Sendable {
         /// End DateTime ISO 8601 format
         public var endDateTime: Swift.String?
         /// The name of the closed day rule.
@@ -3851,12 +3853,12 @@ extension PinpointClientTypes {
             self.startDateTime = startDateTime
         }
     }
-
 }
 
 extension PinpointClientTypes {
+
     /// The time when a journey will not send messages. QuietTime should be configured first and SendingSchedule should be set to true.
-    public struct ClosedDays {
+    public struct ClosedDays: Swift.Sendable {
         /// Rules for the Custom channel.
         public var custom: [PinpointClientTypes.ClosedDaysRule]?
         /// Rules for the Email channel.
@@ -3883,7 +3885,6 @@ extension PinpointClientTypes {
             self.voice = voice
         }
     }
-
 }
 
 /// Provides information about an API request or response.
@@ -4090,8 +4091,9 @@ public struct TooManyRequestsException: ClientRuntime.ModeledError, AWSClientRun
 }
 
 extension PinpointClientTypes {
+
     /// Specifies the display name of an application and the tags to associate with the application.
-    public struct CreateApplicationRequest {
+    public struct CreateApplicationRequest: Swift.Sendable {
         /// The display name of the application. This name is displayed as the Project name on the Amazon Pinpoint console.
         /// This member is required.
         public var name: Swift.String?
@@ -4107,10 +4109,9 @@ extension PinpointClientTypes {
             self.tags = tags
         }
     }
-
 }
 
-public struct CreateAppInput {
+public struct CreateAppInput: Swift.Sendable {
     /// Specifies the display name of an application and the tags to associate with the application.
     /// This member is required.
     public var createApplicationRequest: PinpointClientTypes.CreateApplicationRequest?
@@ -4123,7 +4124,7 @@ public struct CreateAppInput {
     }
 }
 
-public struct CreateAppOutput {
+public struct CreateAppOutput: Swift.Sendable {
     /// Provides information about an application.
     /// This member is required.
     public var applicationResponse: PinpointClientTypes.ApplicationResponse?
@@ -4137,8 +4138,9 @@ public struct CreateAppOutput {
 }
 
 extension PinpointClientTypes {
+
     /// Specifies the settings for a campaign treatment. A treatment is a variation of a campaign that's used for A/B testing of a campaign.
-    public struct WriteTreatmentResource {
+    public struct WriteTreatmentResource: Swift.Sendable {
         /// The delivery configuration settings for sending the treatment through a custom channel. This object is required if the MessageConfiguration object for the treatment specifies a CustomMessage object.
         public var customDeliveryConfiguration: PinpointClientTypes.CustomDeliveryConfiguration?
         /// The message configuration settings for the treatment.
@@ -4174,12 +4176,12 @@ extension PinpointClientTypes {
             self.treatmentName = treatmentName
         }
     }
-
 }
 
 extension PinpointClientTypes {
+
     /// Specifies the configuration and other settings for a campaign.
-    public struct WriteCampaignRequest {
+    public struct WriteCampaignRequest: Swift.Sendable {
         /// An array of requests that defines additional treatments for the campaign, in addition to the default treatment for the campaign.
         public var additionalTreatments: [PinpointClientTypes.WriteTreatmentResource]?
         /// The delivery configuration settings for sending the campaign through a custom channel. This object is required if the MessageConfiguration object for the campaign specifies a CustomMessage object.
@@ -4254,10 +4256,9 @@ extension PinpointClientTypes {
             self.treatmentName = treatmentName
         }
     }
-
 }
 
-public struct CreateCampaignInput {
+public struct CreateCampaignInput: Swift.Sendable {
     /// The unique identifier for the application. This identifier is displayed as the Project ID on the Amazon Pinpoint console.
     /// This member is required.
     public var applicationId: Swift.String?
@@ -4275,7 +4276,7 @@ public struct CreateCampaignInput {
     }
 }
 
-public struct CreateCampaignOutput {
+public struct CreateCampaignOutput: Swift.Sendable {
     /// Provides information about the status, configuration, and other settings for a campaign.
     /// This member is required.
     public var campaignResponse: PinpointClientTypes.CampaignResponse?
@@ -4289,8 +4290,9 @@ public struct CreateCampaignOutput {
 }
 
 extension PinpointClientTypes {
+
     /// Specifies the content and settings for a message template that can be used in messages that are sent through the email channel.
-    public struct EmailTemplateRequest {
+    public struct EmailTemplateRequest: Swift.Sendable {
         /// A JSON object that specifies the default values to use for message variables in the message template. This object is a set of key-value pairs. Each key defines a message variable in the template. The corresponding value defines the default value for that variable. When you create a message that's based on the template, you can override these defaults with message-specific and address-specific variables and values.
         public var defaultSubstitutions: Swift.String?
         /// The list of [MessageHeaders](https://docs.aws.amazon.com/pinpoint/latest/apireference/templates-template-name-email.html#templates-template-name-email-model-messageheader) for the email. You can have up to 15 Headers.
@@ -4329,10 +4331,9 @@ extension PinpointClientTypes {
             self.textPart = textPart
         }
     }
-
 }
 
-public struct CreateEmailTemplateInput {
+public struct CreateEmailTemplateInput: Swift.Sendable {
     /// Specifies the content and settings for a message template that can be used in messages that are sent through the email channel.
     /// This member is required.
     public var emailTemplateRequest: PinpointClientTypes.EmailTemplateRequest?
@@ -4351,8 +4352,9 @@ public struct CreateEmailTemplateInput {
 }
 
 extension PinpointClientTypes {
+
     /// Provides information about a request to create a message template.
-    public struct CreateTemplateMessageBody {
+    public struct CreateTemplateMessageBody: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the message template that was created.
         public var arn: Swift.String?
         /// The message that's returned from the API for the request to create the message template.
@@ -4371,10 +4373,9 @@ extension PinpointClientTypes {
             self.requestID = requestID
         }
     }
-
 }
 
-public struct CreateEmailTemplateOutput {
+public struct CreateEmailTemplateOutput: Swift.Sendable {
     /// Provides information about a request to create a message template.
     /// This member is required.
     public var createTemplateMessageBody: PinpointClientTypes.CreateTemplateMessageBody?
@@ -4388,8 +4389,9 @@ public struct CreateEmailTemplateOutput {
 }
 
 extension PinpointClientTypes {
+
     /// Specifies the settings for a job that exports endpoint definitions to an Amazon Simple Storage Service (Amazon S3) bucket.
-    public struct ExportJobRequest {
+    public struct ExportJobRequest: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the AWS Identity and Access Management (IAM) role that authorizes Amazon Pinpoint to access the Amazon S3 location where you want to export endpoint definitions to.
         /// This member is required.
         public var roleArn: Swift.String?
@@ -4414,10 +4416,9 @@ extension PinpointClientTypes {
             self.segmentVersion = segmentVersion
         }
     }
-
 }
 
-public struct CreateExportJobInput {
+public struct CreateExportJobInput: Swift.Sendable {
     /// The unique identifier for the application. This identifier is displayed as the Project ID on the Amazon Pinpoint console.
     /// This member is required.
     public var applicationId: Swift.String?
@@ -4436,8 +4437,9 @@ public struct CreateExportJobInput {
 }
 
 extension PinpointClientTypes {
+
     /// Provides information about the resource settings for a job that exports endpoint definitions to a file. The file can be added directly to an Amazon Simple Storage Service (Amazon S3) bucket by using the Amazon Pinpoint API or downloaded directly to a computer by using the Amazon Pinpoint console.
-    public struct ExportJobResource {
+    public struct ExportJobResource: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the AWS Identity and Access Management (IAM) role that authorized Amazon Pinpoint to access the Amazon S3 location where the endpoint definitions were exported to.
         /// This member is required.
         public var roleArn: Swift.String?
@@ -4462,12 +4464,11 @@ extension PinpointClientTypes {
             self.segmentVersion = segmentVersion
         }
     }
-
 }
 
 extension PinpointClientTypes {
 
-    public enum JobStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum JobStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case completed
         case completing
         case created
@@ -4516,8 +4517,9 @@ extension PinpointClientTypes {
 }
 
 extension PinpointClientTypes {
+
     /// Provides information about the status and settings of a job that exports endpoint definitions to a file. The file can be added directly to an Amazon Simple Storage Service (Amazon S3) bucket by using the Amazon Pinpoint API or downloaded directly to a computer by using the Amazon Pinpoint console.
-    public struct ExportJobResponse {
+    public struct ExportJobResponse: Swift.Sendable {
         /// The unique identifier for the application that's associated with the export job.
         /// This member is required.
         public var applicationId: Swift.String?
@@ -4582,10 +4584,9 @@ extension PinpointClientTypes {
             self.type = type
         }
     }
-
 }
 
-public struct CreateExportJobOutput {
+public struct CreateExportJobOutput: Swift.Sendable {
     /// Provides information about the status and settings of a job that exports endpoint definitions to a file. The file can be added directly to an Amazon Simple Storage Service (Amazon S3) bucket by using the Amazon Pinpoint API or downloaded directly to a computer by using the Amazon Pinpoint console.
     /// This member is required.
     public var exportJobResponse: PinpointClientTypes.ExportJobResponse?
@@ -4600,7 +4601,7 @@ public struct CreateExportJobOutput {
 
 extension PinpointClientTypes {
 
-    public enum Format: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Format: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case csv
         case json
         case sdkUnknown(Swift.String)
@@ -4628,8 +4629,9 @@ extension PinpointClientTypes {
 }
 
 extension PinpointClientTypes {
+
     /// Specifies the settings for a job that imports endpoint definitions from an Amazon Simple Storage Service (Amazon S3) bucket.
-    public struct ImportJobRequest {
+    public struct ImportJobRequest: Swift.Sendable {
         /// Specifies whether to create a segment that contains the endpoints, when the endpoint definitions are imported.
         public var defineSegment: Swift.Bool?
         /// (Deprecated) Your AWS account ID, which you assigned to an external ID key in an IAM trust policy. Amazon Pinpoint previously used this value to assume an IAM role when importing endpoint definitions, but we removed this requirement. We don't recommend use of external IDs for IAM roles that are assumed by Amazon Pinpoint.
@@ -4671,10 +4673,9 @@ extension PinpointClientTypes {
             self.segmentName = segmentName
         }
     }
-
 }
 
-public struct CreateImportJobInput {
+public struct CreateImportJobInput: Swift.Sendable {
     /// The unique identifier for the application. This identifier is displayed as the Project ID on the Amazon Pinpoint console.
     /// This member is required.
     public var applicationId: Swift.String?
@@ -4693,8 +4694,9 @@ public struct CreateImportJobInput {
 }
 
 extension PinpointClientTypes {
+
     /// Provides information about the resource settings for a job that imports endpoint definitions from one or more files. The files can be stored in an Amazon Simple Storage Service (Amazon S3) bucket or uploaded directly from a computer by using the Amazon Pinpoint console.
-    public struct ImportJobResource {
+    public struct ImportJobResource: Swift.Sendable {
         /// Specifies whether the import job creates a segment that contains the endpoints, when the endpoint definitions are imported.
         public var defineSegment: Swift.Bool?
         /// (Deprecated) Your AWS account ID, which you assigned to an external ID key in an IAM trust policy. Amazon Pinpoint previously used this value to assume an IAM role when importing endpoint definitions, but we removed this requirement. We don't recommend use of external IDs for IAM roles that are assumed by Amazon Pinpoint.
@@ -4736,12 +4738,12 @@ extension PinpointClientTypes {
             self.segmentName = segmentName
         }
     }
-
 }
 
 extension PinpointClientTypes {
+
     /// Provides information about the status and settings of a job that imports endpoint definitions from one or more files. The files can be stored in an Amazon Simple Storage Service (Amazon S3) bucket or uploaded directly from a computer by using the Amazon Pinpoint console.
-    public struct ImportJobResponse {
+    public struct ImportJobResponse: Swift.Sendable {
         /// The unique identifier for the application that's associated with the import job.
         /// This member is required.
         public var applicationId: Swift.String?
@@ -4806,10 +4808,9 @@ extension PinpointClientTypes {
             self.type = type
         }
     }
-
 }
 
-public struct CreateImportJobOutput {
+public struct CreateImportJobOutput: Swift.Sendable {
     /// Provides information about the status and settings of a job that imports endpoint definitions from one or more files. The files can be stored in an Amazon Simple Storage Service (Amazon S3) bucket or uploaded directly from a computer by using the Amazon Pinpoint console.
     /// This member is required.
     public var importJobResponse: PinpointClientTypes.ImportJobResponse?
@@ -4823,8 +4824,9 @@ public struct CreateImportJobOutput {
 }
 
 extension PinpointClientTypes {
+
     /// InApp Template Request.
-    public struct InAppTemplateRequest {
+    public struct InAppTemplateRequest: Swift.Sendable {
         /// The content of the message, can include up to 5 modals. Each modal must contain a message, a header, and background color. ImageUrl and buttons are optional.
         public var content: [PinpointClientTypes.InAppMessageContent]?
         /// Custom config to be sent to client.
@@ -4851,10 +4853,9 @@ extension PinpointClientTypes {
             self.templateDescription = templateDescription
         }
     }
-
 }
 
-public struct CreateInAppTemplateInput {
+public struct CreateInAppTemplateInput: Swift.Sendable {
     /// InApp Template Request.
     /// This member is required.
     public var inAppTemplateRequest: PinpointClientTypes.InAppTemplateRequest?
@@ -4873,8 +4874,9 @@ public struct CreateInAppTemplateInput {
 }
 
 extension PinpointClientTypes {
+
     /// Provides information about a request to create a message template.
-    public struct TemplateCreateMessageBody {
+    public struct TemplateCreateMessageBody: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the message template that was created.
         public var arn: Swift.String?
         /// The message that's returned from the API for the request to create the message template.
@@ -4893,10 +4895,9 @@ extension PinpointClientTypes {
             self.requestID = requestID
         }
     }
-
 }
 
-public struct CreateInAppTemplateOutput {
+public struct CreateInAppTemplateOutput: Swift.Sendable {
     /// Provides information about a request to create a message template.
     /// This member is required.
     public var templateCreateMessageBody: PinpointClientTypes.TemplateCreateMessageBody?
@@ -4910,8 +4911,9 @@ public struct CreateInAppTemplateOutput {
 }
 
 extension PinpointClientTypes {
+
     /// The channel-specific configurations for the journey.
-    public struct JourneyChannelSettings {
+    public struct JourneyChannelSettings: Swift.Sendable {
         /// Amazon Resource Name (ARN) of the Connect Campaign.
         public var connectCampaignArn: Swift.String?
         /// IAM role ARN to be assumed when invoking Connect campaign execution APIs for dialing.
@@ -4926,12 +4928,12 @@ extension PinpointClientTypes {
             self.connectCampaignExecutionRoleArn = connectCampaignExecutionRoleArn
         }
     }
-
 }
 
 extension PinpointClientTypes {
+
     /// Specifies limits on the messages that a journey can send and the number of times participants can enter a journey.
-    public struct JourneyLimits {
+    public struct JourneyLimits: Swift.Sendable {
         /// The maximum number of messages that the journey can send to a single participant during a 24-hour period. The maximum value is 100.
         public var dailyCap: Swift.Int?
         /// The maximum number of times that a participant can enter the journey. The maximum value is 100. To allow participants to enter the journey an unlimited number of times, set this value to 0.
@@ -4962,12 +4964,11 @@ extension PinpointClientTypes {
             self.totalCap = totalCap
         }
     }
-
 }
 
 extension PinpointClientTypes {
 
-    public enum DayOfWeek: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DayOfWeek: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case friday
         case monday
         case saturday
@@ -5010,8 +5011,9 @@ extension PinpointClientTypes {
 }
 
 extension PinpointClientTypes {
+
     /// Specifies the start and end time for OpenHours.
-    public struct OpenHoursRule {
+    public struct OpenHoursRule: Swift.Sendable {
         /// The end of the scheduled time, in ISO 8601 format, when the channel can't send messages.
         public var endTime: Swift.String?
         /// The start of the scheduled time, in ISO 8601 format, when the channel can send messages.
@@ -5026,12 +5028,12 @@ extension PinpointClientTypes {
             self.startTime = startTime
         }
     }
-
 }
 
 extension PinpointClientTypes {
+
     /// Specifies the times when message are allowed to be sent to endpoints.
-    public struct OpenHours {
+    public struct OpenHours: Swift.Sendable {
         /// Specifies the schedule settings for the custom channel.
         public var custom: [Swift.String: [PinpointClientTypes.OpenHoursRule]]?
         /// Specifies the schedule settings for the email channel.
@@ -5058,12 +5060,12 @@ extension PinpointClientTypes {
             self.voice = voice
         }
     }
-
 }
 
 extension PinpointClientTypes {
+
     /// Specifies the schedule settings for a journey.
-    public struct JourneySchedule {
+    public struct JourneySchedule: Swift.Sendable {
         /// The scheduled time, in ISO 8601 format, when the journey ended or will end.
         public var endTime: Foundation.Date?
         /// The scheduled time, in ISO 8601 format, when the journey began or will begin.
@@ -5082,12 +5084,12 @@ extension PinpointClientTypes {
             self.timezone = timezone
         }
     }
-
 }
 
 extension PinpointClientTypes {
+
     /// Specifies the settings for an event that causes a campaign to be sent or a journey activity to be performed.
-    public struct EventFilter {
+    public struct EventFilter: Swift.Sendable {
         /// The dimensions for the event filter to use for the campaign or the journey activity.
         /// This member is required.
         public var dimensions: PinpointClientTypes.EventDimensions?
@@ -5104,12 +5106,12 @@ extension PinpointClientTypes {
             self.filterType = filterType
         }
     }
-
 }
 
 extension PinpointClientTypes {
+
     /// Specifies the settings for an event that causes a journey activity to start.
-    public struct EventStartCondition {
+    public struct EventStartCondition: Swift.Sendable {
         /// Specifies the settings for an event that causes a campaign to be sent or a journey activity to be performed.
         public var eventFilter: PinpointClientTypes.EventFilter?
         public var segmentId: Swift.String?
@@ -5123,12 +5125,12 @@ extension PinpointClientTypes {
             self.segmentId = segmentId
         }
     }
-
 }
 
 extension PinpointClientTypes {
+
     /// Specifies the conditions for the first activity in a journey. This activity and its conditions determine which users are participants in a journey.
-    public struct StartCondition {
+    public struct StartCondition: Swift.Sendable {
         /// The custom description of the condition.
         public var description: Swift.String?
         /// Specifies the settings for an event that causes a journey activity to start.
@@ -5147,12 +5149,11 @@ extension PinpointClientTypes {
             self.segmentStartCondition = segmentStartCondition
         }
     }
-
 }
 
 extension PinpointClientTypes {
 
-    public enum State: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum State: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case active
         case cancelled
         case closed
@@ -5192,8 +5193,9 @@ extension PinpointClientTypes {
 }
 
 extension PinpointClientTypes {
+
     /// Specifies the configuration and other settings for a journey.
-    public struct WriteJourneyRequest {
+    public struct WriteJourneyRequest: Swift.Sendable {
         /// A map that contains a set of Activity objects, one object for each activity in the journey. For each Activity object, the key is the unique identifier (string) for an activity and the value is the settings for the activity. An activity identifier can contain a maximum of 100 characters. The characters must be alphanumeric characters.
         public var activities: [Swift.String: PinpointClientTypes.Activity]?
         /// The time when journey will stop sending messages. QuietTime should be configured first and SendingSchedule should be set to true.
@@ -5297,10 +5299,9 @@ extension PinpointClientTypes {
             self.waitForQuietTime = waitForQuietTime
         }
     }
-
 }
 
-public struct CreateJourneyInput {
+public struct CreateJourneyInput: Swift.Sendable {
     /// The unique identifier for the application. This identifier is displayed as the Project ID on the Amazon Pinpoint console.
     /// This member is required.
     public var applicationId: Swift.String?
@@ -5319,8 +5320,9 @@ public struct CreateJourneyInput {
 }
 
 extension PinpointClientTypes {
+
     /// Provides information about the status, configuration, and other settings for a journey.
-    public struct JourneyResponse {
+    public struct JourneyResponse: Swift.Sendable {
         /// A map that contains a set of Activity objects, one object for each activity in the journey. For each Activity object, the key is the unique identifier (string) for an activity and the value is the settings for the activity.
         public var activities: [Swift.String: PinpointClientTypes.Activity]?
         /// The unique identifier for the application that the journey applies to.
@@ -5441,10 +5443,9 @@ extension PinpointClientTypes {
             self.waitForQuietTime = waitForQuietTime
         }
     }
-
 }
 
-public struct CreateJourneyOutput {
+public struct CreateJourneyOutput: Swift.Sendable {
     /// Provides information about the status, configuration, and other settings for a journey.
     /// This member is required.
     public var journeyResponse: PinpointClientTypes.JourneyResponse?
@@ -5458,8 +5459,9 @@ public struct CreateJourneyOutput {
 }
 
 extension PinpointClientTypes {
+
     /// Specifies the default settings and content for a message template that can be used in messages that are sent through a push notification channel.
-    public struct DefaultPushNotificationTemplate {
+    public struct DefaultPushNotificationTemplate: Swift.Sendable {
         /// The action to occur if a recipient taps a push notification that's based on the message template. Valid values are:
         ///
         /// * OPEN_APP - Your app opens or it becomes the foreground app if it was sent to the background. This is the default action.
@@ -5492,12 +5494,12 @@ extension PinpointClientTypes {
             self.url = url
         }
     }
-
 }
 
 extension PinpointClientTypes {
+
     /// Specifies the content and settings for a message template that can be used in messages that are sent through a push notification channel.
-    public struct PushNotificationTemplateRequest {
+    public struct PushNotificationTemplateRequest: Swift.Sendable {
         /// The message template to use for the ADM (Amazon Device Messaging) channel. This message template overrides the default template for push notification channels (DefaultPushNotificationTemplate).
         public var adm: PinpointClientTypes.AndroidPushNotificationTemplate?
         /// The message template to use for the APNs (Apple Push Notification service) channel. This message template overrides the default template for push notification channels (DefaultPushNotificationTemplate).
@@ -5540,10 +5542,9 @@ extension PinpointClientTypes {
             self.templateDescription = templateDescription
         }
     }
-
 }
 
-public struct CreatePushTemplateInput {
+public struct CreatePushTemplateInput: Swift.Sendable {
     /// Specifies the content and settings for a message template that can be used in messages that are sent through a push notification channel.
     /// This member is required.
     public var pushNotificationTemplateRequest: PinpointClientTypes.PushNotificationTemplateRequest?
@@ -5561,7 +5562,7 @@ public struct CreatePushTemplateInput {
     }
 }
 
-public struct CreatePushTemplateOutput {
+public struct CreatePushTemplateOutput: Swift.Sendable {
     /// Provides information about a request to create a message template.
     /// This member is required.
     public var createTemplateMessageBody: PinpointClientTypes.CreateTemplateMessageBody?
@@ -5575,8 +5576,9 @@ public struct CreatePushTemplateOutput {
 }
 
 extension PinpointClientTypes {
+
     /// Specifies Amazon Pinpoint configuration settings for retrieving and processing recommendation data from a recommender model.
-    public struct CreateRecommenderConfigurationShape {
+    public struct CreateRecommenderConfigurationShape: Swift.Sendable {
         /// A map of key-value pairs that defines 1-10 custom endpoint or user attributes, depending on the value for the RecommendationProviderIdType property. Each of these attributes temporarily stores a recommended item that's retrieved from the recommender model and sent to an AWS Lambda function for additional processing. Each attribute can be used as a message variable in a message template. In the map, the key is the name of a custom attribute and the value is a custom display name for that attribute. The display name appears in the Attribute finder of the template editor on the Amazon Pinpoint console. The following restrictions apply to these names:
         ///
         /// * An attribute name must start with a letter or number and it can contain up to 50 characters. The characters can be letters, numbers, underscores (_), or hyphens (-). Attribute names are case sensitive and must be unique.
@@ -5632,10 +5634,9 @@ extension PinpointClientTypes {
             self.recommendationsPerMessage = recommendationsPerMessage
         }
     }
-
 }
 
-public struct CreateRecommenderConfigurationInput {
+public struct CreateRecommenderConfigurationInput: Swift.Sendable {
     /// Specifies Amazon Pinpoint configuration settings for retrieving and processing recommendation data from a recommender model.
     /// This member is required.
     public var createRecommenderConfiguration: PinpointClientTypes.CreateRecommenderConfigurationShape?
@@ -5649,8 +5650,9 @@ public struct CreateRecommenderConfigurationInput {
 }
 
 extension PinpointClientTypes {
+
     /// Provides information about Amazon Pinpoint configuration settings for retrieving and processing data from a recommender model.
-    public struct RecommenderConfigurationResponse {
+    public struct RecommenderConfigurationResponse: Swift.Sendable {
         /// A map that defines 1-10 custom endpoint or user attributes, depending on the value for the RecommendationProviderIdType property. Each of these attributes temporarily stores a recommended item that's retrieved from the recommender model and sent to an AWS Lambda function for additional processing. Each attribute can be used as a message variable in a message template. This value is null if the configuration doesn't invoke an AWS Lambda function (RecommendationTransformerUri) to perform additional processing of recommendation data.
         public var attributes: [Swift.String: Swift.String]?
         /// The date, in extended ISO 8601 format, when the configuration was created for the recommender model.
@@ -5714,10 +5716,9 @@ extension PinpointClientTypes {
             self.recommendationsPerMessage = recommendationsPerMessage
         }
     }
-
 }
 
-public struct CreateRecommenderConfigurationOutput {
+public struct CreateRecommenderConfigurationOutput: Swift.Sendable {
     /// Provides information about Amazon Pinpoint configuration settings for retrieving and processing data from a recommender model.
     /// This member is required.
     public var recommenderConfigurationResponse: PinpointClientTypes.RecommenderConfigurationResponse?
@@ -5731,8 +5732,9 @@ public struct CreateRecommenderConfigurationOutput {
 }
 
 extension PinpointClientTypes {
+
     /// Specifies the segment identifier and version of a segment.
-    public struct SegmentReference {
+    public struct SegmentReference: Swift.Sendable {
         /// The unique identifier for the segment.
         /// This member is required.
         public var id: Swift.String?
@@ -5748,12 +5750,11 @@ extension PinpointClientTypes {
             self.version = version
         }
     }
-
 }
 
 extension PinpointClientTypes {
 
-    public enum SourceType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SourceType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case all
         case any
         case `none`
@@ -5785,7 +5786,7 @@ extension PinpointClientTypes {
 
 extension PinpointClientTypes {
 
-    public enum ModelType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ModelType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case all
         case any
         case `none`
@@ -5816,8 +5817,9 @@ extension PinpointClientTypes {
 }
 
 extension PinpointClientTypes {
+
     /// Specifies the base segments and dimensions for a segment, and the relationships between these base segments and dimensions.
-    public struct SegmentGroup {
+    public struct SegmentGroup: Swift.Sendable {
         /// An array that defines the dimensions for the segment.
         public var dimensions: [PinpointClientTypes.SegmentDimensions]?
         /// The base segment to build the segment on. A base segment, also referred to as a source segment, defines the initial population of endpoints for a segment. When you add dimensions to a segment, Amazon Pinpoint filters the base segment by using the dimensions that you specify. You can specify more than one dimensional segment or only one imported segment. If you specify an imported segment, the Amazon Pinpoint console displays a segment size estimate that indicates the size of the imported segment without any filters applied to it.
@@ -5840,12 +5842,11 @@ extension PinpointClientTypes {
             self.type = type
         }
     }
-
 }
 
 extension PinpointClientTypes {
 
-    public enum Include: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Include: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case all
         case any
         case `none`
@@ -5876,8 +5877,9 @@ extension PinpointClientTypes {
 }
 
 extension PinpointClientTypes {
+
     /// Specifies the settings that define the relationships between segment groups for a segment.
-    public struct SegmentGroupList {
+    public struct SegmentGroupList: Swift.Sendable {
         /// An array that defines the set of segment criteria to evaluate when handling segment groups for the segment.
         public var groups: [PinpointClientTypes.SegmentGroup]?
         /// Specifies how to handle multiple segment groups for the segment. For example, if the segment includes three segment groups, whether the resulting segment includes endpoints that match all, any, or none of the segment groups.
@@ -5892,12 +5894,12 @@ extension PinpointClientTypes {
             self.include = include
         }
     }
-
 }
 
 extension PinpointClientTypes {
+
     /// Specifies the configuration, dimension, and other settings for a segment. A WriteSegmentRequest object can include a Dimensions object or a SegmentGroups object, but not both.
-    public struct WriteSegmentRequest {
+    public struct WriteSegmentRequest: Swift.Sendable {
         /// The criteria that define the dimensions for the segment.
         public var dimensions: PinpointClientTypes.SegmentDimensions?
         /// The name of the segment.
@@ -5920,10 +5922,9 @@ extension PinpointClientTypes {
             self.tags = tags
         }
     }
-
 }
 
-public struct CreateSegmentInput {
+public struct CreateSegmentInput: Swift.Sendable {
     /// The unique identifier for the application. This identifier is displayed as the Project ID on the Amazon Pinpoint console.
     /// This member is required.
     public var applicationId: Swift.String?
@@ -5942,8 +5943,9 @@ public struct CreateSegmentInput {
 }
 
 extension PinpointClientTypes {
+
     /// Provides information about the import job that created a segment. An import job is a job that creates a user segment by importing endpoint definitions.
-    public struct SegmentImportResource {
+    public struct SegmentImportResource: Swift.Sendable {
         /// The number of channel types in the endpoint definitions that were imported to create the segment.
         public var channelCounts: [Swift.String: Swift.Int]?
         /// (Deprecated) Your AWS account ID, which you assigned to an external ID key in an IAM trust policy. Amazon Pinpoint previously used this value to assume an IAM role when importing endpoint definitions, but we removed this requirement. We don't recommend use of external IDs for IAM roles that are assumed by Amazon Pinpoint.
@@ -5979,12 +5981,11 @@ extension PinpointClientTypes {
             self.size = size
         }
     }
-
 }
 
 extension PinpointClientTypes {
 
-    public enum SegmentType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SegmentType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case dimensional
         case `import`
         case sdkUnknown(Swift.String)
@@ -6012,8 +6013,9 @@ extension PinpointClientTypes {
 }
 
 extension PinpointClientTypes {
+
     /// Provides information about the configuration, dimension, and other settings for a segment.
-    public struct SegmentResponse {
+    public struct SegmentResponse: Swift.Sendable {
         /// The unique identifier for the application that the segment is associated with.
         /// This member is required.
         public var applicationId: Swift.String?
@@ -6077,10 +6079,9 @@ extension PinpointClientTypes {
             self.version = version
         }
     }
-
 }
 
-public struct CreateSegmentOutput {
+public struct CreateSegmentOutput: Swift.Sendable {
     /// Provides information about the configuration, dimension, and other settings for a segment.
     /// This member is required.
     public var segmentResponse: PinpointClientTypes.SegmentResponse?
@@ -6094,8 +6095,9 @@ public struct CreateSegmentOutput {
 }
 
 extension PinpointClientTypes {
+
     /// Specifies the content and settings for a message template that can be used in text messages that are sent through the SMS channel.
-    public struct SMSTemplateRequest {
+    public struct SMSTemplateRequest: Swift.Sendable {
         /// The message body to use in text messages that are based on the message template.
         public var body: Swift.String?
         /// A JSON object that specifies the default values to use for message variables in the message template. This object is a set of key-value pairs. Each key defines a message variable in the template. The corresponding value defines the default value for that variable. When you create a message that's based on the template, you can override these defaults with message-specific and address-specific variables and values.
@@ -6122,10 +6124,9 @@ extension PinpointClientTypes {
             self.templateDescription = templateDescription
         }
     }
-
 }
 
-public struct CreateSmsTemplateInput {
+public struct CreateSmsTemplateInput: Swift.Sendable {
     /// Specifies the content and settings for a message template that can be used in text messages that are sent through the SMS channel.
     /// This member is required.
     public var smsTemplateRequest: PinpointClientTypes.SMSTemplateRequest?
@@ -6143,7 +6144,7 @@ public struct CreateSmsTemplateInput {
     }
 }
 
-public struct CreateSmsTemplateOutput {
+public struct CreateSmsTemplateOutput: Swift.Sendable {
     /// Provides information about a request to create a message template.
     /// This member is required.
     public var createTemplateMessageBody: PinpointClientTypes.CreateTemplateMessageBody?
@@ -6157,8 +6158,9 @@ public struct CreateSmsTemplateOutput {
 }
 
 extension PinpointClientTypes {
+
     /// Specifies the content and settings for a message template that can be used in messages that are sent through the voice channel.
-    public struct VoiceTemplateRequest {
+    public struct VoiceTemplateRequest: Swift.Sendable {
         /// The text of the script to use in messages that are based on the message template, in plain text format.
         public var body: Swift.String?
         /// A JSON object that specifies the default values to use for message variables in the message template. This object is a set of key-value pairs. Each key defines a message variable in the template. The corresponding value defines the default value for that variable. When you create a message that's based on the template, you can override these defaults with message-specific and address-specific variables and values.
@@ -6189,10 +6191,9 @@ extension PinpointClientTypes {
             self.voiceId = voiceId
         }
     }
-
 }
 
-public struct CreateVoiceTemplateInput {
+public struct CreateVoiceTemplateInput: Swift.Sendable {
     /// The name of the message template. A template name must start with an alphanumeric character and can contain a maximum of 128 characters. The characters can be alphanumeric characters, underscores (_), or hyphens (-). Template names are case sensitive.
     /// This member is required.
     public var templateName: Swift.String?
@@ -6210,7 +6211,7 @@ public struct CreateVoiceTemplateInput {
     }
 }
 
-public struct CreateVoiceTemplateOutput {
+public struct CreateVoiceTemplateOutput: Swift.Sendable {
     /// Provides information about a request to create a message template.
     /// This member is required.
     public var createTemplateMessageBody: PinpointClientTypes.CreateTemplateMessageBody?
@@ -6224,8 +6225,9 @@ public struct CreateVoiceTemplateOutput {
 }
 
 extension PinpointClientTypes {
+
     /// Specifies the default message for all channels.
-    public struct DefaultMessage {
+    public struct DefaultMessage: Swift.Sendable {
         /// The default body of the message.
         public var body: Swift.String?
         /// The default message variables to use in the message. You can override these default variables with individual address variables.
@@ -6240,12 +6242,12 @@ extension PinpointClientTypes {
             self.substitutions = substitutions
         }
     }
-
 }
 
 extension PinpointClientTypes {
+
     /// Specifies the default settings and content for a push notification that's sent directly to an endpoint.
-    public struct DefaultPushNotificationMessage {
+    public struct DefaultPushNotificationMessage: Swift.Sendable {
         /// The default action to occur if a recipient taps the push notification. Valid values are:
         ///
         /// * OPEN_APP - Your app opens or it becomes the foreground app if it was sent to the background. This is the default action.
@@ -6286,10 +6288,9 @@ extension PinpointClientTypes {
             self.url = url
         }
     }
-
 }
 
-public struct DeleteAdmChannelInput {
+public struct DeleteAdmChannelInput: Swift.Sendable {
     /// The unique identifier for the application. This identifier is displayed as the Project ID on the Amazon Pinpoint console.
     /// This member is required.
     public var applicationId: Swift.String?
@@ -6302,7 +6303,7 @@ public struct DeleteAdmChannelInput {
     }
 }
 
-public struct DeleteAdmChannelOutput {
+public struct DeleteAdmChannelOutput: Swift.Sendable {
     /// Provides information about the status and settings of the ADM (Amazon Device Messaging) channel for an application.
     /// This member is required.
     public var admChannelResponse: PinpointClientTypes.ADMChannelResponse?
@@ -6315,7 +6316,7 @@ public struct DeleteAdmChannelOutput {
     }
 }
 
-public struct DeleteApnsChannelInput {
+public struct DeleteApnsChannelInput: Swift.Sendable {
     /// The unique identifier for the application. This identifier is displayed as the Project ID on the Amazon Pinpoint console.
     /// This member is required.
     public var applicationId: Swift.String?
@@ -6328,7 +6329,7 @@ public struct DeleteApnsChannelInput {
     }
 }
 
-public struct DeleteApnsChannelOutput {
+public struct DeleteApnsChannelOutput: Swift.Sendable {
     /// Provides information about the status and settings of the APNs (Apple Push Notification service) channel for an application.
     /// This member is required.
     public var apnsChannelResponse: PinpointClientTypes.APNSChannelResponse?
@@ -6341,7 +6342,7 @@ public struct DeleteApnsChannelOutput {
     }
 }
 
-public struct DeleteApnsSandboxChannelInput {
+public struct DeleteApnsSandboxChannelInput: Swift.Sendable {
     /// The unique identifier for the application. This identifier is displayed as the Project ID on the Amazon Pinpoint console.
     /// This member is required.
     public var applicationId: Swift.String?
@@ -6354,7 +6355,7 @@ public struct DeleteApnsSandboxChannelInput {
     }
 }
 
-public struct DeleteApnsSandboxChannelOutput {
+public struct DeleteApnsSandboxChannelOutput: Swift.Sendable {
     /// Provides information about the status and settings of the APNs (Apple Push Notification service) sandbox channel for an application.
     /// This member is required.
     public var apnsSandboxChannelResponse: PinpointClientTypes.APNSSandboxChannelResponse?
@@ -6367,7 +6368,7 @@ public struct DeleteApnsSandboxChannelOutput {
     }
 }
 
-public struct DeleteApnsVoipChannelInput {
+public struct DeleteApnsVoipChannelInput: Swift.Sendable {
     /// The unique identifier for the application. This identifier is displayed as the Project ID on the Amazon Pinpoint console.
     /// This member is required.
     public var applicationId: Swift.String?
@@ -6380,7 +6381,7 @@ public struct DeleteApnsVoipChannelInput {
     }
 }
 
-public struct DeleteApnsVoipChannelOutput {
+public struct DeleteApnsVoipChannelOutput: Swift.Sendable {
     /// Provides information about the status and settings of the APNs (Apple Push Notification service) VoIP channel for an application.
     /// This member is required.
     public var apnsVoipChannelResponse: PinpointClientTypes.APNSVoipChannelResponse?
@@ -6393,7 +6394,7 @@ public struct DeleteApnsVoipChannelOutput {
     }
 }
 
-public struct DeleteApnsVoipSandboxChannelInput {
+public struct DeleteApnsVoipSandboxChannelInput: Swift.Sendable {
     /// The unique identifier for the application. This identifier is displayed as the Project ID on the Amazon Pinpoint console.
     /// This member is required.
     public var applicationId: Swift.String?
@@ -6406,7 +6407,7 @@ public struct DeleteApnsVoipSandboxChannelInput {
     }
 }
 
-public struct DeleteApnsVoipSandboxChannelOutput {
+public struct DeleteApnsVoipSandboxChannelOutput: Swift.Sendable {
     /// Provides information about the status and settings of the APNs (Apple Push Notification service) VoIP sandbox channel for an application.
     /// This member is required.
     public var apnsVoipSandboxChannelResponse: PinpointClientTypes.APNSVoipSandboxChannelResponse?
@@ -6419,7 +6420,7 @@ public struct DeleteApnsVoipSandboxChannelOutput {
     }
 }
 
-public struct DeleteAppInput {
+public struct DeleteAppInput: Swift.Sendable {
     /// The unique identifier for the application. This identifier is displayed as the Project ID on the Amazon Pinpoint console.
     /// This member is required.
     public var applicationId: Swift.String?
@@ -6432,7 +6433,7 @@ public struct DeleteAppInput {
     }
 }
 
-public struct DeleteAppOutput {
+public struct DeleteAppOutput: Swift.Sendable {
     /// Provides information about an application.
     /// This member is required.
     public var applicationResponse: PinpointClientTypes.ApplicationResponse?
@@ -6445,7 +6446,7 @@ public struct DeleteAppOutput {
     }
 }
 
-public struct DeleteBaiduChannelInput {
+public struct DeleteBaiduChannelInput: Swift.Sendable {
     /// The unique identifier for the application. This identifier is displayed as the Project ID on the Amazon Pinpoint console.
     /// This member is required.
     public var applicationId: Swift.String?
@@ -6458,7 +6459,7 @@ public struct DeleteBaiduChannelInput {
     }
 }
 
-public struct DeleteBaiduChannelOutput {
+public struct DeleteBaiduChannelOutput: Swift.Sendable {
     /// Provides information about the status and settings of the Baidu (Baidu Cloud Push) channel for an application.
     /// This member is required.
     public var baiduChannelResponse: PinpointClientTypes.BaiduChannelResponse?
@@ -6471,7 +6472,7 @@ public struct DeleteBaiduChannelOutput {
     }
 }
 
-public struct DeleteCampaignInput {
+public struct DeleteCampaignInput: Swift.Sendable {
     /// The unique identifier for the application. This identifier is displayed as the Project ID on the Amazon Pinpoint console.
     /// This member is required.
     public var applicationId: Swift.String?
@@ -6489,7 +6490,7 @@ public struct DeleteCampaignInput {
     }
 }
 
-public struct DeleteCampaignOutput {
+public struct DeleteCampaignOutput: Swift.Sendable {
     /// Provides information about the status, configuration, and other settings for a campaign.
     /// This member is required.
     public var campaignResponse: PinpointClientTypes.CampaignResponse?
@@ -6502,7 +6503,7 @@ public struct DeleteCampaignOutput {
     }
 }
 
-public struct DeleteEmailChannelInput {
+public struct DeleteEmailChannelInput: Swift.Sendable {
     /// The unique identifier for the application. This identifier is displayed as the Project ID on the Amazon Pinpoint console.
     /// This member is required.
     public var applicationId: Swift.String?
@@ -6516,8 +6517,9 @@ public struct DeleteEmailChannelInput {
 }
 
 extension PinpointClientTypes {
+
     /// Provides information about the status and settings of the email channel for an application.
-    public struct EmailChannelResponse {
+    public struct EmailChannelResponse: Swift.Sendable {
         /// The unique identifier for the application that the email channel applies to.
         public var applicationId: Swift.String?
         /// The [Amazon SES configuration set](https://docs.aws.amazon.com/ses/latest/APIReference/API_ConfigurationSet.html) that's applied to messages that are sent through the channel.
@@ -6589,10 +6591,9 @@ extension PinpointClientTypes {
             self.version = version
         }
     }
-
 }
 
-public struct DeleteEmailChannelOutput {
+public struct DeleteEmailChannelOutput: Swift.Sendable {
     /// Provides information about the status and settings of the email channel for an application.
     /// This member is required.
     public var emailChannelResponse: PinpointClientTypes.EmailChannelResponse?
@@ -6605,7 +6606,7 @@ public struct DeleteEmailChannelOutput {
     }
 }
 
-public struct DeleteEmailTemplateInput {
+public struct DeleteEmailTemplateInput: Swift.Sendable {
     /// The name of the message template. A template name must start with an alphanumeric character and can contain a maximum of 128 characters. The characters can be alphanumeric characters, underscores (_), or hyphens (-). Template names are case sensitive.
     /// This member is required.
     public var templateName: Swift.String?
@@ -6629,8 +6630,9 @@ public struct DeleteEmailTemplateInput {
 }
 
 extension PinpointClientTypes {
+
     /// Provides information about an API request or response.
-    public struct MessageBody {
+    public struct MessageBody: Swift.Sendable {
         /// The message that's returned from the API.
         public var message: Swift.String?
         /// The unique identifier for the request or response.
@@ -6645,10 +6647,9 @@ extension PinpointClientTypes {
             self.requestID = requestID
         }
     }
-
 }
 
-public struct DeleteEmailTemplateOutput {
+public struct DeleteEmailTemplateOutput: Swift.Sendable {
     /// Provides information about an API request or response.
     /// This member is required.
     public var messageBody: PinpointClientTypes.MessageBody?
@@ -6661,7 +6662,7 @@ public struct DeleteEmailTemplateOutput {
     }
 }
 
-public struct DeleteEndpointInput {
+public struct DeleteEndpointInput: Swift.Sendable {
     /// The unique identifier for the application. This identifier is displayed as the Project ID on the Amazon Pinpoint console.
     /// This member is required.
     public var applicationId: Swift.String?
@@ -6680,8 +6681,9 @@ public struct DeleteEndpointInput {
 }
 
 extension PinpointClientTypes {
+
     /// Specifies demographic information about an endpoint, such as the applicable time zone and platform.
-    public struct EndpointDemographic {
+    public struct EndpointDemographic: Swift.Sendable {
         /// The version of the app that's associated with the endpoint.
         public var appVersion: Swift.String?
         /// The locale of the endpoint, in the following format: the ISO 639-1 alpha-2 code, followed by an underscore (_), followed by an ISO 3166-1 alpha-2 value.
@@ -6720,12 +6722,12 @@ extension PinpointClientTypes {
             self.timezone = timezone
         }
     }
-
 }
 
 extension PinpointClientTypes {
+
     /// Specifies geographic information about an endpoint.
-    public struct EndpointLocation {
+    public struct EndpointLocation: Swift.Sendable {
         /// The name of the city where the endpoint is located.
         public var city: Swift.String?
         /// The two-character code, in ISO 3166-1 alpha-2 format, for the country or region where the endpoint is located. For example, US for the United States.
@@ -6756,12 +6758,12 @@ extension PinpointClientTypes {
             self.region = region
         }
     }
-
 }
 
 extension PinpointClientTypes {
+
     /// Specifies data for one or more attributes that describe the user who's associated with an endpoint.
-    public struct EndpointUser {
+    public struct EndpointUser: Swift.Sendable {
         /// One or more custom attributes that describe the user by associating a name with an array of values. For example, the value of an attribute named Interests might be: ["Science", "Music", "Travel"]. You can use these attributes as filter criteria when you create segments. Attribute names are case sensitive. An attribute name can contain up to 50 characters. An attribute value can contain up to 100 characters. When you define the name of a custom attribute, avoid using the following characters: number sign (#), colon (:), question mark (?), backslash (\), and slash (/). The Amazon Pinpoint console can't display attribute names that contain these characters. This restriction doesn't apply to attribute values.
         public var userAttributes: [Swift.String: [Swift.String]]?
         /// The unique identifier for the user.
@@ -6776,12 +6778,12 @@ extension PinpointClientTypes {
             self.userId = userId
         }
     }
-
 }
 
 extension PinpointClientTypes {
+
     /// Provides information about the channel type and other settings for an endpoint.
-    public struct EndpointResponse {
+    public struct EndpointResponse: Swift.Sendable {
         /// The destination address for messages or push notifications that you send to the endpoint. The address varies by channel. For example, the address for a push-notification channel is typically the token provided by a push notification service, such as an Apple Push Notification service (APNs) device token or a Firebase Cloud Messaging (FCM) registration token. The address for the SMS channel is a phone number in E.164 format, such as +12065550100. The address for the email channel is an email address.
         public var address: Swift.String?
         /// The unique identifier for the application that's associated with the endpoint.
@@ -6848,10 +6850,9 @@ extension PinpointClientTypes {
             self.user = user
         }
     }
-
 }
 
-public struct DeleteEndpointOutput {
+public struct DeleteEndpointOutput: Swift.Sendable {
     /// Provides information about the channel type and other settings for an endpoint.
     /// This member is required.
     public var endpointResponse: PinpointClientTypes.EndpointResponse?
@@ -6864,7 +6865,7 @@ public struct DeleteEndpointOutput {
     }
 }
 
-public struct DeleteEventStreamInput {
+public struct DeleteEventStreamInput: Swift.Sendable {
     /// The unique identifier for the application. This identifier is displayed as the Project ID on the Amazon Pinpoint console.
     /// This member is required.
     public var applicationId: Swift.String?
@@ -6878,8 +6879,9 @@ public struct DeleteEventStreamInput {
 }
 
 extension PinpointClientTypes {
+
     /// Specifies settings for publishing event data to an Amazon Kinesis data stream or an Amazon Kinesis Data Firehose delivery stream.
-    public struct EventStream {
+    public struct EventStream: Swift.Sendable {
         /// The unique identifier for the application to publish event data for.
         /// This member is required.
         public var applicationId: Swift.String?
@@ -6913,10 +6915,9 @@ extension PinpointClientTypes {
             self.roleArn = roleArn
         }
     }
-
 }
 
-public struct DeleteEventStreamOutput {
+public struct DeleteEventStreamOutput: Swift.Sendable {
     /// Specifies settings for publishing event data to an Amazon Kinesis data stream or an Amazon Kinesis Data Firehose delivery stream.
     /// This member is required.
     public var eventStream: PinpointClientTypes.EventStream?
@@ -6929,7 +6930,7 @@ public struct DeleteEventStreamOutput {
     }
 }
 
-public struct DeleteGcmChannelInput {
+public struct DeleteGcmChannelInput: Swift.Sendable {
     /// The unique identifier for the application. This identifier is displayed as the Project ID on the Amazon Pinpoint console.
     /// This member is required.
     public var applicationId: Swift.String?
@@ -6943,8 +6944,9 @@ public struct DeleteGcmChannelInput {
 }
 
 extension PinpointClientTypes {
+
     /// Provides information about the status and settings of the GCM channel for an application. The GCM channel enables Amazon Pinpoint to send push notifications through the Firebase Cloud Messaging (FCM), formerly Google Cloud Messaging (GCM), service.
-    public struct GCMChannelResponse {
+    public struct GCMChannelResponse: Swift.Sendable {
         /// The unique identifier for the application that the GCM channel applies to.
         public var applicationId: Swift.String?
         /// The date and time when the GCM channel was enabled.
@@ -7004,10 +7006,9 @@ extension PinpointClientTypes {
             self.version = version
         }
     }
-
 }
 
-public struct DeleteGcmChannelOutput {
+public struct DeleteGcmChannelOutput: Swift.Sendable {
     /// Provides information about the status and settings of the GCM channel for an application. The GCM channel enables Amazon Pinpoint to send push notifications through the Firebase Cloud Messaging (FCM), formerly Google Cloud Messaging (GCM), service.
     /// This member is required.
     public var gcmChannelResponse: PinpointClientTypes.GCMChannelResponse?
@@ -7020,7 +7021,7 @@ public struct DeleteGcmChannelOutput {
     }
 }
 
-public struct DeleteInAppTemplateInput {
+public struct DeleteInAppTemplateInput: Swift.Sendable {
     /// The name of the message template. A template name must start with an alphanumeric character and can contain a maximum of 128 characters. The characters can be alphanumeric characters, underscores (_), or hyphens (-). Template names are case sensitive.
     /// This member is required.
     public var templateName: Swift.String?
@@ -7043,7 +7044,7 @@ public struct DeleteInAppTemplateInput {
     }
 }
 
-public struct DeleteInAppTemplateOutput {
+public struct DeleteInAppTemplateOutput: Swift.Sendable {
     /// Provides information about an API request or response.
     /// This member is required.
     public var messageBody: PinpointClientTypes.MessageBody?
@@ -7056,7 +7057,7 @@ public struct DeleteInAppTemplateOutput {
     }
 }
 
-public struct DeleteJourneyInput {
+public struct DeleteJourneyInput: Swift.Sendable {
     /// The unique identifier for the application. This identifier is displayed as the Project ID on the Amazon Pinpoint console.
     /// This member is required.
     public var applicationId: Swift.String?
@@ -7074,7 +7075,7 @@ public struct DeleteJourneyInput {
     }
 }
 
-public struct DeleteJourneyOutput {
+public struct DeleteJourneyOutput: Swift.Sendable {
     /// Provides information about the status, configuration, and other settings for a journey.
     /// This member is required.
     public var journeyResponse: PinpointClientTypes.JourneyResponse?
@@ -7087,7 +7088,7 @@ public struct DeleteJourneyOutput {
     }
 }
 
-public struct DeletePushTemplateInput {
+public struct DeletePushTemplateInput: Swift.Sendable {
     /// The name of the message template. A template name must start with an alphanumeric character and can contain a maximum of 128 characters. The characters can be alphanumeric characters, underscores (_), or hyphens (-). Template names are case sensitive.
     /// This member is required.
     public var templateName: Swift.String?
@@ -7110,7 +7111,7 @@ public struct DeletePushTemplateInput {
     }
 }
 
-public struct DeletePushTemplateOutput {
+public struct DeletePushTemplateOutput: Swift.Sendable {
     /// Provides information about an API request or response.
     /// This member is required.
     public var messageBody: PinpointClientTypes.MessageBody?
@@ -7123,7 +7124,7 @@ public struct DeletePushTemplateOutput {
     }
 }
 
-public struct DeleteRecommenderConfigurationInput {
+public struct DeleteRecommenderConfigurationInput: Swift.Sendable {
     /// The unique identifier for the recommender model configuration. This identifier is displayed as the Recommender ID on the Amazon Pinpoint console.
     /// This member is required.
     public var recommenderId: Swift.String?
@@ -7136,7 +7137,7 @@ public struct DeleteRecommenderConfigurationInput {
     }
 }
 
-public struct DeleteRecommenderConfigurationOutput {
+public struct DeleteRecommenderConfigurationOutput: Swift.Sendable {
     /// Provides information about Amazon Pinpoint configuration settings for retrieving and processing data from a recommender model.
     /// This member is required.
     public var recommenderConfigurationResponse: PinpointClientTypes.RecommenderConfigurationResponse?
@@ -7149,7 +7150,7 @@ public struct DeleteRecommenderConfigurationOutput {
     }
 }
 
-public struct DeleteSegmentInput {
+public struct DeleteSegmentInput: Swift.Sendable {
     /// The unique identifier for the application. This identifier is displayed as the Project ID on the Amazon Pinpoint console.
     /// This member is required.
     public var applicationId: Swift.String?
@@ -7167,7 +7168,7 @@ public struct DeleteSegmentInput {
     }
 }
 
-public struct DeleteSegmentOutput {
+public struct DeleteSegmentOutput: Swift.Sendable {
     /// Provides information about the configuration, dimension, and other settings for a segment.
     /// This member is required.
     public var segmentResponse: PinpointClientTypes.SegmentResponse?
@@ -7180,7 +7181,7 @@ public struct DeleteSegmentOutput {
     }
 }
 
-public struct DeleteSmsChannelInput {
+public struct DeleteSmsChannelInput: Swift.Sendable {
     /// The unique identifier for the application. This identifier is displayed as the Project ID on the Amazon Pinpoint console.
     /// This member is required.
     public var applicationId: Swift.String?
@@ -7194,8 +7195,9 @@ public struct DeleteSmsChannelInput {
 }
 
 extension PinpointClientTypes {
+
     /// Provides information about the status and settings of the SMS channel for an application.
-    public struct SMSChannelResponse {
+    public struct SMSChannelResponse: Swift.Sendable {
         /// The unique identifier for the application that the SMS channel applies to.
         public var applicationId: Swift.String?
         /// The date and time, in ISO 8601 format, when the SMS channel was enabled.
@@ -7259,10 +7261,9 @@ extension PinpointClientTypes {
             self.version = version
         }
     }
-
 }
 
-public struct DeleteSmsChannelOutput {
+public struct DeleteSmsChannelOutput: Swift.Sendable {
     /// Provides information about the status and settings of the SMS channel for an application.
     /// This member is required.
     public var smsChannelResponse: PinpointClientTypes.SMSChannelResponse?
@@ -7275,7 +7276,7 @@ public struct DeleteSmsChannelOutput {
     }
 }
 
-public struct DeleteSmsTemplateInput {
+public struct DeleteSmsTemplateInput: Swift.Sendable {
     /// The name of the message template. A template name must start with an alphanumeric character and can contain a maximum of 128 characters. The characters can be alphanumeric characters, underscores (_), or hyphens (-). Template names are case sensitive.
     /// This member is required.
     public var templateName: Swift.String?
@@ -7298,7 +7299,7 @@ public struct DeleteSmsTemplateInput {
     }
 }
 
-public struct DeleteSmsTemplateOutput {
+public struct DeleteSmsTemplateOutput: Swift.Sendable {
     /// Provides information about an API request or response.
     /// This member is required.
     public var messageBody: PinpointClientTypes.MessageBody?
@@ -7311,7 +7312,7 @@ public struct DeleteSmsTemplateOutput {
     }
 }
 
-public struct DeleteUserEndpointsInput {
+public struct DeleteUserEndpointsInput: Swift.Sendable {
     /// The unique identifier for the application. This identifier is displayed as the Project ID on the Amazon Pinpoint console.
     /// This member is required.
     public var applicationId: Swift.String?
@@ -7330,8 +7331,9 @@ public struct DeleteUserEndpointsInput {
 }
 
 extension PinpointClientTypes {
+
     /// Provides information about all the endpoints that are associated with a user ID.
-    public struct EndpointsResponse {
+    public struct EndpointsResponse: Swift.Sendable {
         /// An array of responses, one for each endpoint that's associated with the user ID.
         /// This member is required.
         public var item: [PinpointClientTypes.EndpointResponse]?
@@ -7343,10 +7345,9 @@ extension PinpointClientTypes {
             self.item = item
         }
     }
-
 }
 
-public struct DeleteUserEndpointsOutput {
+public struct DeleteUserEndpointsOutput: Swift.Sendable {
     /// Provides information about all the endpoints that are associated with a user ID.
     /// This member is required.
     public var endpointsResponse: PinpointClientTypes.EndpointsResponse?
@@ -7359,7 +7360,7 @@ public struct DeleteUserEndpointsOutput {
     }
 }
 
-public struct DeleteVoiceChannelInput {
+public struct DeleteVoiceChannelInput: Swift.Sendable {
     /// The unique identifier for the application. This identifier is displayed as the Project ID on the Amazon Pinpoint console.
     /// This member is required.
     public var applicationId: Swift.String?
@@ -7373,8 +7374,9 @@ public struct DeleteVoiceChannelInput {
 }
 
 extension PinpointClientTypes {
+
     /// Provides information about the status and settings of the voice channel for an application.
-    public struct VoiceChannelResponse {
+    public struct VoiceChannelResponse: Swift.Sendable {
         /// The unique identifier for the application that the voice channel applies to.
         public var applicationId: Swift.String?
         /// The date and time, in ISO 8601 format, when the voice channel was enabled.
@@ -7422,10 +7424,9 @@ extension PinpointClientTypes {
             self.version = version
         }
     }
-
 }
 
-public struct DeleteVoiceChannelOutput {
+public struct DeleteVoiceChannelOutput: Swift.Sendable {
     /// Provides information about the status and settings of the voice channel for an application.
     /// This member is required.
     public var voiceChannelResponse: PinpointClientTypes.VoiceChannelResponse?
@@ -7438,7 +7439,7 @@ public struct DeleteVoiceChannelOutput {
     }
 }
 
-public struct DeleteVoiceTemplateInput {
+public struct DeleteVoiceTemplateInput: Swift.Sendable {
     /// The name of the message template. A template name must start with an alphanumeric character and can contain a maximum of 128 characters. The characters can be alphanumeric characters, underscores (_), or hyphens (-). Template names are case sensitive.
     /// This member is required.
     public var templateName: Swift.String?
@@ -7461,7 +7462,7 @@ public struct DeleteVoiceTemplateInput {
     }
 }
 
-public struct DeleteVoiceTemplateOutput {
+public struct DeleteVoiceTemplateOutput: Swift.Sendable {
     /// Provides information about an API request or response.
     /// This member is required.
     public var messageBody: PinpointClientTypes.MessageBody?
@@ -7476,7 +7477,7 @@ public struct DeleteVoiceTemplateOutput {
 
 extension PinpointClientTypes {
 
-    public enum DeliveryStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DeliveryStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case duplicate
         case optOut
         case permanentFailure
@@ -7519,8 +7520,9 @@ extension PinpointClientTypes {
 }
 
 extension PinpointClientTypes {
+
     /// Specifies the contents of an email message, represented as a raw MIME message.
-    public struct RawEmail {
+    public struct RawEmail: Swift.Sendable {
         /// The email message, represented as a raw MIME message. The entire message must be base64 encoded.
         public var data: Foundation.Data?
 
@@ -7531,12 +7533,12 @@ extension PinpointClientTypes {
             self.data = data
         }
     }
-
 }
 
 extension PinpointClientTypes {
+
     /// Specifies the subject or body of an email message, represented as textual email data and the applicable character set.
-    public struct SimpleEmailPart {
+    public struct SimpleEmailPart: Swift.Sendable {
         /// The applicable character set for the message content.
         public var charset: Swift.String?
         /// The textual data of the message content.
@@ -7551,12 +7553,12 @@ extension PinpointClientTypes {
             self.data = data
         }
     }
-
 }
 
 extension PinpointClientTypes {
+
     /// Specifies the contents of an email message, composed of a subject, a text part, and an HTML part.
-    public struct SimpleEmail {
+    public struct SimpleEmail: Swift.Sendable {
         /// The list of MessageHeaders for the email. You can have up to 15 Headers.
         public var headers: [PinpointClientTypes.MessageHeader]?
         /// The body of the email message, in HTML format. We recommend using HTML format for email clients that render HTML content. You can include links, formatted text, and more in an HTML message.
@@ -7579,12 +7581,12 @@ extension PinpointClientTypes {
             self.textPart = textPart
         }
     }
-
 }
 
 extension PinpointClientTypes {
+
     /// Specifies the default settings and content for a one-time email message that's sent directly to an endpoint.
-    public struct EmailMessage {
+    public struct EmailMessage: Swift.Sendable {
         /// The body of the email message.
         public var body: Swift.String?
         /// The email address to forward bounces and complaints to, if feedback forwarding is enabled.
@@ -7619,12 +7621,12 @@ extension PinpointClientTypes {
             self.substitutions = substitutions
         }
     }
-
 }
 
 extension PinpointClientTypes {
+
     /// Specifies the settings for a one-time message that's sent directly to an endpoint through the GCM channel. The GCM channel enables Amazon Pinpoint to send messages to the Firebase Cloud Messaging (FCM), formerly Google Cloud Messaging (GCM), service.
-    public struct GCMMessage {
+    public struct GCMMessage: Swift.Sendable {
         /// The action to occur if the recipient taps the push notification. Valid values are:
         ///
         /// * OPEN_APP - Your app opens or it becomes the foreground app if it was sent to the background. This is the default action.
@@ -7711,12 +7713,12 @@ extension PinpointClientTypes {
             self.url = url
         }
     }
-
 }
 
 extension PinpointClientTypes {
+
     /// Specifies the default settings for a one-time SMS message that's sent directly to an endpoint.
-    public struct SMSMessage {
+    public struct SMSMessage: Swift.Sendable {
         /// The body of the SMS message.
         public var body: Swift.String?
         /// The entity ID or Principal Entity (PE) id received from the regulatory body for sending SMS in your country.
@@ -7759,12 +7761,12 @@ extension PinpointClientTypes {
             self.templateId = templateId
         }
     }
-
 }
 
 extension PinpointClientTypes {
+
     /// Specifies the settings for a one-time voice message that's sent directly to an endpoint through the voice channel.
-    public struct VoiceMessage {
+    public struct VoiceMessage: Swift.Sendable {
         /// The text of the script to use for the voice message.
         public var body: Swift.String?
         /// The code for the language to use when synthesizing the text of the message script. For a list of supported languages and the code for each one, see the [Amazon Polly Developer Guide](https://docs.aws.amazon.com/polly/latest/dg/what-is.html).
@@ -7791,12 +7793,12 @@ extension PinpointClientTypes {
             self.voiceId = voiceId
         }
     }
-
 }
 
 extension PinpointClientTypes {
+
     /// Specifies the settings and content for the default message and any default messages that you tailored for specific channels.
-    public struct DirectMessageConfiguration {
+    public struct DirectMessageConfiguration: Swift.Sendable {
         /// The default push notification message for the ADM (Amazon Device Messaging) channel. This message overrides the default push notification message (DefaultPushNotificationMessage).
         public var admMessage: PinpointClientTypes.ADMMessage?
         /// The default push notification message for the APNs (Apple Push Notification service) channel. This message overrides the default push notification message (DefaultPushNotificationMessage).
@@ -7839,12 +7841,12 @@ extension PinpointClientTypes {
             self.voiceMessage = voiceMessage
         }
     }
-
 }
 
 extension PinpointClientTypes {
+
     /// Specifies the status and settings of the email channel for an application.
-    public struct EmailChannelRequest {
+    public struct EmailChannelRequest: Swift.Sendable {
         /// The [Amazon SES configuration set](https://docs.aws.amazon.com/ses/latest/APIReference/API_ConfigurationSet.html) that you want to apply to messages that you send through the channel.
         public var configurationSet: Swift.String?
         /// Specifies whether to enable the email channel for the application.
@@ -7877,12 +7879,11 @@ extension PinpointClientTypes {
             self.roleArn = roleArn
         }
     }
-
 }
 
 extension PinpointClientTypes {
 
-    public enum TemplateType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum TemplateType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case email
         case inapp
         case push
@@ -7919,8 +7920,9 @@ extension PinpointClientTypes {
 }
 
 extension PinpointClientTypes {
+
     /// Provides information about the content and settings for a message template that can be used in messages that are sent through the email channel.
-    public struct EmailTemplateResponse {
+    public struct EmailTemplateResponse: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the message template.
         public var arn: Swift.String?
         /// The date, in ISO 8601 format, when the message template was created.
@@ -7987,12 +7989,12 @@ extension PinpointClientTypes {
             self.version = version
         }
     }
-
 }
 
 extension PinpointClientTypes {
+
     /// Specifies an endpoint to create or update and the settings and attributes to set or change for the endpoint.
-    public struct EndpointBatchItem {
+    public struct EndpointBatchItem: Swift.Sendable {
         /// The destination address for messages or push notifications that you send to the endpoint. The address varies by channel. For a push-notification channel, use the token provided by the push notification service, such as an Apple Push Notification service (APNs) device token or a Firebase Cloud Messaging (FCM) registration token. For the SMS channel, use a phone number in E.164 format, such as +12065550100. For the email channel, use an email address.
         public var address: Swift.String?
         /// One or more custom attributes that describe the endpoint by associating a name with an array of values. For example, the value of a custom attribute named Interests might be: ["Science", "Music", "Travel"]. You can use these attributes as filter criteria when you create segments. Attribute names are case sensitive. An attribute name can contain up to 50 characters. An attribute value can contain up to 100 characters. When you define the name of a custom attribute, avoid using the following characters: number sign (#), colon (:), question mark (?), backslash (\), and slash (/). The Amazon Pinpoint console can't display attribute names that contain these characters. This restriction doesn't apply to attribute values.
@@ -8047,12 +8049,12 @@ extension PinpointClientTypes {
             self.user = user
         }
     }
-
 }
 
 extension PinpointClientTypes {
+
     /// Specifies a batch of endpoints to create or update and the settings and attributes to set or change for each endpoint.
-    public struct EndpointBatchRequest {
+    public struct EndpointBatchRequest: Swift.Sendable {
         /// An array that defines the endpoints to create or update and, for each endpoint, the property values to set or change. An array can contain a maximum of 100 items.
         /// This member is required.
         public var item: [PinpointClientTypes.EndpointBatchItem]?
@@ -8064,12 +8066,12 @@ extension PinpointClientTypes {
             self.item = item
         }
     }
-
 }
 
 extension PinpointClientTypes {
+
     /// Provides the status code and message that result from processing data for an endpoint.
-    public struct EndpointItemResponse {
+    public struct EndpointItemResponse: Swift.Sendable {
         /// The custom message that's returned in the response as a result of processing the endpoint data.
         public var message: Swift.String?
         /// The status code that's returned in the response as a result of processing the endpoint data.
@@ -8084,12 +8086,12 @@ extension PinpointClientTypes {
             self.statusCode = statusCode
         }
     }
-
 }
 
 extension PinpointClientTypes {
+
     /// Provides information about the delivery status and results of sending a message directly to an endpoint.
-    public struct EndpointMessageResult {
+    public struct EndpointMessageResult: Swift.Sendable {
         /// The endpoint address that the message was delivered to.
         public var address: Swift.String?
         /// The delivery status of the message. Possible values are:
@@ -8136,12 +8138,12 @@ extension PinpointClientTypes {
             self.updatedToken = updatedToken
         }
     }
-
 }
 
 extension PinpointClientTypes {
+
     /// Specifies the channel type and other settings for an endpoint.
-    public struct EndpointRequest {
+    public struct EndpointRequest: Swift.Sendable {
         /// The destination address for messages or push notifications that you send to the endpoint. The address varies by channel. For a push-notification channel, use the token provided by the push notification service, such as an Apple Push Notification service (APNs) device token or a Firebase Cloud Messaging (FCM) registration token. For the SMS channel, use a phone number in E.164 format, such as +12065550100. For the email channel, use an email address.
         public var address: Swift.String?
         /// One or more custom attributes that describe the endpoint by associating a name with an array of values. For example, the value of a custom attribute named Interests might be: ["Science", "Music", "Travel"]. You can use these attributes as filter criteria when you create segments. Attribute names are case sensitive. An attribute name can contain up to 50 characters. An attribute value can contain up to 100 characters. When you define the name of a custom attribute, avoid using the following characters: number sign (#), colon (:), question mark (?), backslash (\), and slash (/). The Amazon Pinpoint console can't display attribute names that contain these characters. This restriction doesn't apply to attribute values.
@@ -8192,12 +8194,12 @@ extension PinpointClientTypes {
             self.user = user
         }
     }
-
 }
 
 extension PinpointClientTypes {
+
     /// Specifies the content, including message variables and attributes, to use in a message that's sent directly to an endpoint.
-    public struct EndpointSendConfiguration {
+    public struct EndpointSendConfiguration: Swift.Sendable {
         /// The body of the message. If specified, this value overrides the default message body.
         public var bodyOverride: Swift.String?
         /// A map of custom attributes to attach to the message for the address. Attribute names are case sensitive. For a push notification, this payload is added to the data.pinpoint object. For an email or text message, this payload is added to email/SMS delivery receipt event attributes.
@@ -8224,12 +8226,12 @@ extension PinpointClientTypes {
             self.titleOverride = titleOverride
         }
     }
-
 }
 
 extension PinpointClientTypes {
+
     /// Provides information about a session.
-    public struct Session {
+    public struct Session: Swift.Sendable {
         /// The duration of the session, in milliseconds.
         public var duration: Swift.Int?
         /// The unique identifier for the session.
@@ -8254,12 +8256,12 @@ extension PinpointClientTypes {
             self.stopTimestamp = stopTimestamp
         }
     }
-
 }
 
 extension PinpointClientTypes {
+
     /// Specifies information about an event that reports data to Amazon Pinpoint.
-    public struct Event {
+    public struct Event: Swift.Sendable {
         /// The package name of the app that's recording the event.
         public var appPackageName: Swift.String?
         /// The title of the app that's recording the event.
@@ -8308,12 +8310,12 @@ extension PinpointClientTypes {
             self.timestamp = timestamp
         }
     }
-
 }
 
 extension PinpointClientTypes {
+
     /// Provides the status code and message that result from processing an event.
-    public struct EventItemResponse {
+    public struct EventItemResponse: Swift.Sendable {
         /// A custom message that's returned in the response as a result of processing the event.
         public var message: Swift.String?
         /// The status code that's returned in the response as a result of processing the event. Possible values are: 202, for events that were accepted; and, 400, for events that weren't valid.
@@ -8328,12 +8330,12 @@ extension PinpointClientTypes {
             self.statusCode = statusCode
         }
     }
-
 }
 
 extension PinpointClientTypes {
+
     /// Specifies the properties and attributes of an endpoint that's associated with an event.
-    public struct PublicEndpoint {
+    public struct PublicEndpoint: Swift.Sendable {
         /// The unique identifier for the recipient, such as a device token, email address, or mobile phone number.
         public var address: Swift.String?
         /// One or more custom attributes that describe the endpoint by associating a name with an array of values. You can use these attributes as filter criteria when you create segments.
@@ -8384,12 +8386,12 @@ extension PinpointClientTypes {
             self.user = user
         }
     }
-
 }
 
 extension PinpointClientTypes {
+
     /// Specifies a batch of endpoints and events to process.
-    public struct EventsBatch {
+    public struct EventsBatch: Swift.Sendable {
         /// A set of properties and attributes that are associated with the endpoint.
         /// This member is required.
         public var endpoint: PinpointClientTypes.PublicEndpoint?
@@ -8406,12 +8408,12 @@ extension PinpointClientTypes {
             self.events = events
         }
     }
-
 }
 
 extension PinpointClientTypes {
+
     /// Specifies a batch of events to process.
-    public struct EventsRequest {
+    public struct EventsRequest: Swift.Sendable {
         /// The batch of events to process. For each item in a batch, the endpoint ID acts as a key that has an EventsBatch object as its value.
         /// This member is required.
         public var batchItem: [Swift.String: PinpointClientTypes.EventsBatch]?
@@ -8423,12 +8425,12 @@ extension PinpointClientTypes {
             self.batchItem = batchItem
         }
     }
-
 }
 
 extension PinpointClientTypes {
+
     /// Provides information about the results of a request to create or update an endpoint that's associated with an event.
-    public struct ItemResponse {
+    public struct ItemResponse: Swift.Sendable {
         /// The response that was received after the endpoint data was accepted.
         public var endpointItemResponse: PinpointClientTypes.EndpointItemResponse?
         /// A multipart response object that contains a key and a value for each event in the request. In each object, the event ID is the key and an EventItemResponse object is the value.
@@ -8443,12 +8445,12 @@ extension PinpointClientTypes {
             self.eventsItemResponse = eventsItemResponse
         }
     }
-
 }
 
 extension PinpointClientTypes {
+
     /// Provides information about endpoints and the events that they're associated with.
-    public struct EventsResponse {
+    public struct EventsResponse: Swift.Sendable {
         /// A map that contains a multipart response for each endpoint. For each item in this object, the endpoint ID is the key and the item response is the value. If no item response exists, the value can also be one of the following: 202, the request was processed successfully; or 400, the payload wasn't valid or required fields were missing.
         public var results: [Swift.String: PinpointClientTypes.ItemResponse]?
 
@@ -8459,12 +8461,12 @@ extension PinpointClientTypes {
             self.results = results
         }
     }
-
 }
 
 extension PinpointClientTypes {
+
     /// Provides information about all the export jobs that are associated with an application or segment. An export job is a job that exports endpoint definitions to a file.
-    public struct ExportJobsResponse {
+    public struct ExportJobsResponse: Swift.Sendable {
         /// An array of responses, one for each export job that's associated with the application (Export Jobs resource) or segment (Segment Export Jobs resource).
         /// This member is required.
         public var item: [PinpointClientTypes.ExportJobResponse]?
@@ -8480,12 +8482,12 @@ extension PinpointClientTypes {
             self.nextToken = nextToken
         }
     }
-
 }
 
 extension PinpointClientTypes {
+
     /// Specifies the status and settings of the GCM channel for an application. This channel enables Amazon Pinpoint to send push notifications through the Firebase Cloud Messaging (FCM), formerly Google Cloud Messaging (GCM), service.
-    public struct GCMChannelRequest {
+    public struct GCMChannelRequest: Swift.Sendable {
         /// The Web API Key, also referred to as an API_KEY or server key, that you received from Google to communicate with Google services.
         public var apiKey: Swift.String?
         /// The default authentication method used for GCM. Values are either "TOKEN" or "KEY". Defaults to "KEY".
@@ -8508,10 +8510,9 @@ extension PinpointClientTypes {
             self.serviceJson = serviceJson
         }
     }
-
 }
 
-public struct GetAdmChannelInput {
+public struct GetAdmChannelInput: Swift.Sendable {
     /// The unique identifier for the application. This identifier is displayed as the Project ID on the Amazon Pinpoint console.
     /// This member is required.
     public var applicationId: Swift.String?
@@ -8524,7 +8525,7 @@ public struct GetAdmChannelInput {
     }
 }
 
-public struct GetAdmChannelOutput {
+public struct GetAdmChannelOutput: Swift.Sendable {
     /// Provides information about the status and settings of the ADM (Amazon Device Messaging) channel for an application.
     /// This member is required.
     public var admChannelResponse: PinpointClientTypes.ADMChannelResponse?
@@ -8537,7 +8538,7 @@ public struct GetAdmChannelOutput {
     }
 }
 
-public struct GetApnsChannelInput {
+public struct GetApnsChannelInput: Swift.Sendable {
     /// The unique identifier for the application. This identifier is displayed as the Project ID on the Amazon Pinpoint console.
     /// This member is required.
     public var applicationId: Swift.String?
@@ -8550,7 +8551,7 @@ public struct GetApnsChannelInput {
     }
 }
 
-public struct GetApnsChannelOutput {
+public struct GetApnsChannelOutput: Swift.Sendable {
     /// Provides information about the status and settings of the APNs (Apple Push Notification service) channel for an application.
     /// This member is required.
     public var apnsChannelResponse: PinpointClientTypes.APNSChannelResponse?
@@ -8563,7 +8564,7 @@ public struct GetApnsChannelOutput {
     }
 }
 
-public struct GetApnsSandboxChannelInput {
+public struct GetApnsSandboxChannelInput: Swift.Sendable {
     /// The unique identifier for the application. This identifier is displayed as the Project ID on the Amazon Pinpoint console.
     /// This member is required.
     public var applicationId: Swift.String?
@@ -8576,7 +8577,7 @@ public struct GetApnsSandboxChannelInput {
     }
 }
 
-public struct GetApnsSandboxChannelOutput {
+public struct GetApnsSandboxChannelOutput: Swift.Sendable {
     /// Provides information about the status and settings of the APNs (Apple Push Notification service) sandbox channel for an application.
     /// This member is required.
     public var apnsSandboxChannelResponse: PinpointClientTypes.APNSSandboxChannelResponse?
@@ -8589,7 +8590,7 @@ public struct GetApnsSandboxChannelOutput {
     }
 }
 
-public struct GetApnsVoipChannelInput {
+public struct GetApnsVoipChannelInput: Swift.Sendable {
     /// The unique identifier for the application. This identifier is displayed as the Project ID on the Amazon Pinpoint console.
     /// This member is required.
     public var applicationId: Swift.String?
@@ -8602,7 +8603,7 @@ public struct GetApnsVoipChannelInput {
     }
 }
 
-public struct GetApnsVoipChannelOutput {
+public struct GetApnsVoipChannelOutput: Swift.Sendable {
     /// Provides information about the status and settings of the APNs (Apple Push Notification service) VoIP channel for an application.
     /// This member is required.
     public var apnsVoipChannelResponse: PinpointClientTypes.APNSVoipChannelResponse?
@@ -8615,7 +8616,7 @@ public struct GetApnsVoipChannelOutput {
     }
 }
 
-public struct GetApnsVoipSandboxChannelInput {
+public struct GetApnsVoipSandboxChannelInput: Swift.Sendable {
     /// The unique identifier for the application. This identifier is displayed as the Project ID on the Amazon Pinpoint console.
     /// This member is required.
     public var applicationId: Swift.String?
@@ -8628,7 +8629,7 @@ public struct GetApnsVoipSandboxChannelInput {
     }
 }
 
-public struct GetApnsVoipSandboxChannelOutput {
+public struct GetApnsVoipSandboxChannelOutput: Swift.Sendable {
     /// Provides information about the status and settings of the APNs (Apple Push Notification service) VoIP sandbox channel for an application.
     /// This member is required.
     public var apnsVoipSandboxChannelResponse: PinpointClientTypes.APNSVoipSandboxChannelResponse?
@@ -8641,7 +8642,7 @@ public struct GetApnsVoipSandboxChannelOutput {
     }
 }
 
-public struct GetAppInput {
+public struct GetAppInput: Swift.Sendable {
     /// The unique identifier for the application. This identifier is displayed as the Project ID on the Amazon Pinpoint console.
     /// This member is required.
     public var applicationId: Swift.String?
@@ -8654,7 +8655,7 @@ public struct GetAppInput {
     }
 }
 
-public struct GetAppOutput {
+public struct GetAppOutput: Swift.Sendable {
     /// Provides information about an application.
     /// This member is required.
     public var applicationResponse: PinpointClientTypes.ApplicationResponse?
@@ -8667,7 +8668,7 @@ public struct GetAppOutput {
     }
 }
 
-public struct GetApplicationDateRangeKpiInput {
+public struct GetApplicationDateRangeKpiInput: Swift.Sendable {
     /// The unique identifier for the application. This identifier is displayed as the Project ID on the Amazon Pinpoint console.
     /// This member is required.
     public var applicationId: Swift.String?
@@ -8701,7 +8702,7 @@ public struct GetApplicationDateRangeKpiInput {
     }
 }
 
-public struct GetApplicationDateRangeKpiOutput {
+public struct GetApplicationDateRangeKpiOutput: Swift.Sendable {
     /// Provides the results of a query that retrieved the data for a standard metric that applies to an application, and provides information about that query.
     /// This member is required.
     public var applicationDateRangeKpiResponse: PinpointClientTypes.ApplicationDateRangeKpiResponse?
@@ -8714,7 +8715,7 @@ public struct GetApplicationDateRangeKpiOutput {
     }
 }
 
-public struct GetApplicationSettingsInput {
+public struct GetApplicationSettingsInput: Swift.Sendable {
     /// The unique identifier for the application. This identifier is displayed as the Project ID on the Amazon Pinpoint console.
     /// This member is required.
     public var applicationId: Swift.String?
@@ -8727,7 +8728,7 @@ public struct GetApplicationSettingsInput {
     }
 }
 
-public struct GetApplicationSettingsOutput {
+public struct GetApplicationSettingsOutput: Swift.Sendable {
     /// Provides information about an application, including the default settings for an application.
     /// This member is required.
     public var applicationSettingsResource: PinpointClientTypes.ApplicationSettingsResource?
@@ -8740,7 +8741,7 @@ public struct GetApplicationSettingsOutput {
     }
 }
 
-public struct GetAppsInput {
+public struct GetAppsInput: Swift.Sendable {
     /// The maximum number of items to include in each page of a paginated response. This parameter is not supported for application, campaign, and journey metrics.
     public var pageSize: Swift.String?
     /// The NextToken string that specifies which page of results to return in a paginated response.
@@ -8756,7 +8757,7 @@ public struct GetAppsInput {
     }
 }
 
-public struct GetAppsOutput {
+public struct GetAppsOutput: Swift.Sendable {
     /// Provides information about all of your applications.
     /// This member is required.
     public var applicationsResponse: PinpointClientTypes.ApplicationsResponse?
@@ -8769,7 +8770,7 @@ public struct GetAppsOutput {
     }
 }
 
-public struct GetBaiduChannelInput {
+public struct GetBaiduChannelInput: Swift.Sendable {
     /// The unique identifier for the application. This identifier is displayed as the Project ID on the Amazon Pinpoint console.
     /// This member is required.
     public var applicationId: Swift.String?
@@ -8782,7 +8783,7 @@ public struct GetBaiduChannelInput {
     }
 }
 
-public struct GetBaiduChannelOutput {
+public struct GetBaiduChannelOutput: Swift.Sendable {
     /// Provides information about the status and settings of the Baidu (Baidu Cloud Push) channel for an application.
     /// This member is required.
     public var baiduChannelResponse: PinpointClientTypes.BaiduChannelResponse?
@@ -8795,7 +8796,7 @@ public struct GetBaiduChannelOutput {
     }
 }
 
-public struct GetCampaignInput {
+public struct GetCampaignInput: Swift.Sendable {
     /// The unique identifier for the application. This identifier is displayed as the Project ID on the Amazon Pinpoint console.
     /// This member is required.
     public var applicationId: Swift.String?
@@ -8813,7 +8814,7 @@ public struct GetCampaignInput {
     }
 }
 
-public struct GetCampaignOutput {
+public struct GetCampaignOutput: Swift.Sendable {
     /// Provides information about the status, configuration, and other settings for a campaign.
     /// This member is required.
     public var campaignResponse: PinpointClientTypes.CampaignResponse?
@@ -8826,7 +8827,7 @@ public struct GetCampaignOutput {
     }
 }
 
-public struct GetCampaignActivitiesInput {
+public struct GetCampaignActivitiesInput: Swift.Sendable {
     /// The unique identifier for the application. This identifier is displayed as the Project ID on the Amazon Pinpoint console.
     /// This member is required.
     public var applicationId: Swift.String?
@@ -8852,7 +8853,7 @@ public struct GetCampaignActivitiesInput {
     }
 }
 
-public struct GetCampaignActivitiesOutput {
+public struct GetCampaignActivitiesOutput: Swift.Sendable {
     /// Provides information about the activities that were performed by a campaign.
     /// This member is required.
     public var activitiesResponse: PinpointClientTypes.ActivitiesResponse?
@@ -8865,7 +8866,7 @@ public struct GetCampaignActivitiesOutput {
     }
 }
 
-public struct GetCampaignDateRangeKpiInput {
+public struct GetCampaignDateRangeKpiInput: Swift.Sendable {
     /// The unique identifier for the application. This identifier is displayed as the Project ID on the Amazon Pinpoint console.
     /// This member is required.
     public var applicationId: Swift.String?
@@ -8904,7 +8905,7 @@ public struct GetCampaignDateRangeKpiInput {
     }
 }
 
-public struct GetCampaignDateRangeKpiOutput {
+public struct GetCampaignDateRangeKpiOutput: Swift.Sendable {
     /// Provides the results of a query that retrieved the data for a standard metric that applies to a campaign, and provides information about that query.
     /// This member is required.
     public var campaignDateRangeKpiResponse: PinpointClientTypes.CampaignDateRangeKpiResponse?
@@ -8917,7 +8918,7 @@ public struct GetCampaignDateRangeKpiOutput {
     }
 }
 
-public struct GetCampaignsInput {
+public struct GetCampaignsInput: Swift.Sendable {
     /// The unique identifier for the application. This identifier is displayed as the Project ID on the Amazon Pinpoint console.
     /// This member is required.
     public var applicationId: Swift.String?
@@ -8938,7 +8939,7 @@ public struct GetCampaignsInput {
     }
 }
 
-public struct GetCampaignsOutput {
+public struct GetCampaignsOutput: Swift.Sendable {
     /// Provides information about the configuration and other settings for all the campaigns that are associated with an application.
     /// This member is required.
     public var campaignsResponse: PinpointClientTypes.CampaignsResponse?
@@ -8951,7 +8952,7 @@ public struct GetCampaignsOutput {
     }
 }
 
-public struct GetCampaignVersionInput {
+public struct GetCampaignVersionInput: Swift.Sendable {
     /// The unique identifier for the application. This identifier is displayed as the Project ID on the Amazon Pinpoint console.
     /// This member is required.
     public var applicationId: Swift.String?
@@ -8974,7 +8975,7 @@ public struct GetCampaignVersionInput {
     }
 }
 
-public struct GetCampaignVersionOutput {
+public struct GetCampaignVersionOutput: Swift.Sendable {
     /// Provides information about the status, configuration, and other settings for a campaign.
     /// This member is required.
     public var campaignResponse: PinpointClientTypes.CampaignResponse?
@@ -8987,7 +8988,7 @@ public struct GetCampaignVersionOutput {
     }
 }
 
-public struct GetCampaignVersionsInput {
+public struct GetCampaignVersionsInput: Swift.Sendable {
     /// The unique identifier for the application. This identifier is displayed as the Project ID on the Amazon Pinpoint console.
     /// This member is required.
     public var applicationId: Swift.String?
@@ -9013,7 +9014,7 @@ public struct GetCampaignVersionsInput {
     }
 }
 
-public struct GetCampaignVersionsOutput {
+public struct GetCampaignVersionsOutput: Swift.Sendable {
     /// Provides information about the configuration and other settings for all the campaigns that are associated with an application.
     /// This member is required.
     public var campaignsResponse: PinpointClientTypes.CampaignsResponse?
@@ -9026,7 +9027,7 @@ public struct GetCampaignVersionsOutput {
     }
 }
 
-public struct GetChannelsInput {
+public struct GetChannelsInput: Swift.Sendable {
     /// The unique identifier for the application. This identifier is displayed as the Project ID on the Amazon Pinpoint console.
     /// This member is required.
     public var applicationId: Swift.String?
@@ -9039,7 +9040,7 @@ public struct GetChannelsInput {
     }
 }
 
-public struct GetChannelsOutput {
+public struct GetChannelsOutput: Swift.Sendable {
     /// Provides information about the general settings and status of all channels for an application, including channels that aren't enabled for the application.
     /// This member is required.
     public var channelsResponse: PinpointClientTypes.ChannelsResponse?
@@ -9052,7 +9053,7 @@ public struct GetChannelsOutput {
     }
 }
 
-public struct GetEmailChannelInput {
+public struct GetEmailChannelInput: Swift.Sendable {
     /// The unique identifier for the application. This identifier is displayed as the Project ID on the Amazon Pinpoint console.
     /// This member is required.
     public var applicationId: Swift.String?
@@ -9065,7 +9066,7 @@ public struct GetEmailChannelInput {
     }
 }
 
-public struct GetEmailChannelOutput {
+public struct GetEmailChannelOutput: Swift.Sendable {
     /// Provides information about the status and settings of the email channel for an application.
     /// This member is required.
     public var emailChannelResponse: PinpointClientTypes.EmailChannelResponse?
@@ -9078,7 +9079,7 @@ public struct GetEmailChannelOutput {
     }
 }
 
-public struct GetEmailTemplateInput {
+public struct GetEmailTemplateInput: Swift.Sendable {
     /// The name of the message template. A template name must start with an alphanumeric character and can contain a maximum of 128 characters. The characters can be alphanumeric characters, underscores (_), or hyphens (-). Template names are case sensitive.
     /// This member is required.
     public var templateName: Swift.String?
@@ -9101,7 +9102,7 @@ public struct GetEmailTemplateInput {
     }
 }
 
-public struct GetEmailTemplateOutput {
+public struct GetEmailTemplateOutput: Swift.Sendable {
     /// Provides information about the content and settings for a message template that can be used in messages that are sent through the email channel.
     /// This member is required.
     public var emailTemplateResponse: PinpointClientTypes.EmailTemplateResponse?
@@ -9114,7 +9115,7 @@ public struct GetEmailTemplateOutput {
     }
 }
 
-public struct GetEndpointInput {
+public struct GetEndpointInput: Swift.Sendable {
     /// The unique identifier for the application. This identifier is displayed as the Project ID on the Amazon Pinpoint console.
     /// This member is required.
     public var applicationId: Swift.String?
@@ -9132,7 +9133,7 @@ public struct GetEndpointInput {
     }
 }
 
-public struct GetEndpointOutput {
+public struct GetEndpointOutput: Swift.Sendable {
     /// Provides information about the channel type and other settings for an endpoint.
     /// This member is required.
     public var endpointResponse: PinpointClientTypes.EndpointResponse?
@@ -9145,7 +9146,7 @@ public struct GetEndpointOutput {
     }
 }
 
-public struct GetEventStreamInput {
+public struct GetEventStreamInput: Swift.Sendable {
     /// The unique identifier for the application. This identifier is displayed as the Project ID on the Amazon Pinpoint console.
     /// This member is required.
     public var applicationId: Swift.String?
@@ -9158,7 +9159,7 @@ public struct GetEventStreamInput {
     }
 }
 
-public struct GetEventStreamOutput {
+public struct GetEventStreamOutput: Swift.Sendable {
     /// Specifies settings for publishing event data to an Amazon Kinesis data stream or an Amazon Kinesis Data Firehose delivery stream.
     /// This member is required.
     public var eventStream: PinpointClientTypes.EventStream?
@@ -9171,7 +9172,7 @@ public struct GetEventStreamOutput {
     }
 }
 
-public struct GetExportJobInput {
+public struct GetExportJobInput: Swift.Sendable {
     /// The unique identifier for the application. This identifier is displayed as the Project ID on the Amazon Pinpoint console.
     /// This member is required.
     public var applicationId: Swift.String?
@@ -9189,7 +9190,7 @@ public struct GetExportJobInput {
     }
 }
 
-public struct GetExportJobOutput {
+public struct GetExportJobOutput: Swift.Sendable {
     /// Provides information about the status and settings of a job that exports endpoint definitions to a file. The file can be added directly to an Amazon Simple Storage Service (Amazon S3) bucket by using the Amazon Pinpoint API or downloaded directly to a computer by using the Amazon Pinpoint console.
     /// This member is required.
     public var exportJobResponse: PinpointClientTypes.ExportJobResponse?
@@ -9202,7 +9203,7 @@ public struct GetExportJobOutput {
     }
 }
 
-public struct GetExportJobsInput {
+public struct GetExportJobsInput: Swift.Sendable {
     /// The unique identifier for the application. This identifier is displayed as the Project ID on the Amazon Pinpoint console.
     /// This member is required.
     public var applicationId: Swift.String?
@@ -9223,7 +9224,7 @@ public struct GetExportJobsInput {
     }
 }
 
-public struct GetExportJobsOutput {
+public struct GetExportJobsOutput: Swift.Sendable {
     /// Provides information about all the export jobs that are associated with an application or segment. An export job is a job that exports endpoint definitions to a file.
     /// This member is required.
     public var exportJobsResponse: PinpointClientTypes.ExportJobsResponse?
@@ -9236,7 +9237,7 @@ public struct GetExportJobsOutput {
     }
 }
 
-public struct GetGcmChannelInput {
+public struct GetGcmChannelInput: Swift.Sendable {
     /// The unique identifier for the application. This identifier is displayed as the Project ID on the Amazon Pinpoint console.
     /// This member is required.
     public var applicationId: Swift.String?
@@ -9249,7 +9250,7 @@ public struct GetGcmChannelInput {
     }
 }
 
-public struct GetGcmChannelOutput {
+public struct GetGcmChannelOutput: Swift.Sendable {
     /// Provides information about the status and settings of the GCM channel for an application. The GCM channel enables Amazon Pinpoint to send push notifications through the Firebase Cloud Messaging (FCM), formerly Google Cloud Messaging (GCM), service.
     /// This member is required.
     public var gcmChannelResponse: PinpointClientTypes.GCMChannelResponse?
@@ -9262,7 +9263,7 @@ public struct GetGcmChannelOutput {
     }
 }
 
-public struct GetImportJobInput {
+public struct GetImportJobInput: Swift.Sendable {
     /// The unique identifier for the application. This identifier is displayed as the Project ID on the Amazon Pinpoint console.
     /// This member is required.
     public var applicationId: Swift.String?
@@ -9280,7 +9281,7 @@ public struct GetImportJobInput {
     }
 }
 
-public struct GetImportJobOutput {
+public struct GetImportJobOutput: Swift.Sendable {
     /// Provides information about the status and settings of a job that imports endpoint definitions from one or more files. The files can be stored in an Amazon Simple Storage Service (Amazon S3) bucket or uploaded directly from a computer by using the Amazon Pinpoint console.
     /// This member is required.
     public var importJobResponse: PinpointClientTypes.ImportJobResponse?
@@ -9293,7 +9294,7 @@ public struct GetImportJobOutput {
     }
 }
 
-public struct GetImportJobsInput {
+public struct GetImportJobsInput: Swift.Sendable {
     /// The unique identifier for the application. This identifier is displayed as the Project ID on the Amazon Pinpoint console.
     /// This member is required.
     public var applicationId: Swift.String?
@@ -9315,8 +9316,9 @@ public struct GetImportJobsInput {
 }
 
 extension PinpointClientTypes {
+
     /// Provides information about the status and settings of all the import jobs that are associated with an application or segment. An import job is a job that imports endpoint definitions from one or more files.
-    public struct ImportJobsResponse {
+    public struct ImportJobsResponse: Swift.Sendable {
         /// An array of responses, one for each import job that's associated with the application (Import Jobs resource) or segment (Segment Import Jobs resource).
         /// This member is required.
         public var item: [PinpointClientTypes.ImportJobResponse]?
@@ -9332,10 +9334,9 @@ extension PinpointClientTypes {
             self.nextToken = nextToken
         }
     }
-
 }
 
-public struct GetImportJobsOutput {
+public struct GetImportJobsOutput: Swift.Sendable {
     /// Provides information about the status and settings of all the import jobs that are associated with an application or segment. An import job is a job that imports endpoint definitions from one or more files.
     /// This member is required.
     public var importJobsResponse: PinpointClientTypes.ImportJobsResponse?
@@ -9348,7 +9349,7 @@ public struct GetImportJobsOutput {
     }
 }
 
-public struct GetInAppMessagesInput {
+public struct GetInAppMessagesInput: Swift.Sendable {
     /// The unique identifier for the application. This identifier is displayed as the Project ID on the Amazon Pinpoint console.
     /// This member is required.
     public var applicationId: Swift.String?
@@ -9367,8 +9368,9 @@ public struct GetInAppMessagesInput {
 }
 
 extension PinpointClientTypes {
+
     /// Provides all fields required for building an in-app message.
-    public struct InAppMessage {
+    public struct InAppMessage: Swift.Sendable {
         /// In-app message content.
         public var content: [PinpointClientTypes.InAppMessageContent]?
         /// Custom config to be sent to SDK.
@@ -9387,12 +9389,12 @@ extension PinpointClientTypes {
             self.layout = layout
         }
     }
-
 }
 
 extension PinpointClientTypes {
+
     /// Schedule of the campaign.
-    public struct InAppCampaignSchedule {
+    public struct InAppCampaignSchedule: Swift.Sendable {
         /// The scheduled time after which the in-app message should not be shown. Timestamp is in ISO 8601 format.
         public var endDate: Swift.String?
         /// The event filter the SDK has to use to show the in-app message in the application.
@@ -9411,12 +9413,12 @@ extension PinpointClientTypes {
             self.quietTime = quietTime
         }
     }
-
 }
 
 extension PinpointClientTypes {
+
     /// Targeted in-app message campaign.
-    public struct InAppMessageCampaign {
+    public struct InAppMessageCampaign: Swift.Sendable {
         /// Campaign id of the corresponding campaign.
         public var campaignId: Swift.String?
         /// Daily cap which controls the number of times any in-app messages can be shown to the endpoint during a day.
@@ -9455,12 +9457,12 @@ extension PinpointClientTypes {
             self.treatmentId = treatmentId
         }
     }
-
 }
 
 extension PinpointClientTypes {
+
     /// Get in-app messages response object.
-    public struct InAppMessagesResponse {
+    public struct InAppMessagesResponse: Swift.Sendable {
         /// List of targeted in-app message campaigns.
         public var inAppMessageCampaigns: [PinpointClientTypes.InAppMessageCampaign]?
 
@@ -9471,10 +9473,9 @@ extension PinpointClientTypes {
             self.inAppMessageCampaigns = inAppMessageCampaigns
         }
     }
-
 }
 
-public struct GetInAppMessagesOutput {
+public struct GetInAppMessagesOutput: Swift.Sendable {
     /// Get in-app messages response object.
     /// This member is required.
     public var inAppMessagesResponse: PinpointClientTypes.InAppMessagesResponse?
@@ -9487,7 +9488,7 @@ public struct GetInAppMessagesOutput {
     }
 }
 
-public struct GetInAppTemplateInput {
+public struct GetInAppTemplateInput: Swift.Sendable {
     /// The name of the message template. A template name must start with an alphanumeric character and can contain a maximum of 128 characters. The characters can be alphanumeric characters, underscores (_), or hyphens (-). Template names are case sensitive.
     /// This member is required.
     public var templateName: Swift.String?
@@ -9511,8 +9512,9 @@ public struct GetInAppTemplateInput {
 }
 
 extension PinpointClientTypes {
+
     /// In-App Template Response.
-    public struct InAppTemplateResponse {
+    public struct InAppTemplateResponse: Swift.Sendable {
         /// The resource arn of the template.
         public var arn: Swift.String?
         /// The content of the message, can include up to 5 modals. Each modal must contain a message, a header, and background color. ImageUrl and buttons are optional.
@@ -9567,10 +9569,9 @@ extension PinpointClientTypes {
             self.version = version
         }
     }
-
 }
 
-public struct GetInAppTemplateOutput {
+public struct GetInAppTemplateOutput: Swift.Sendable {
     /// In-App Template Response.
     /// This member is required.
     public var inAppTemplateResponse: PinpointClientTypes.InAppTemplateResponse?
@@ -9583,7 +9584,7 @@ public struct GetInAppTemplateOutput {
     }
 }
 
-public struct GetJourneyInput {
+public struct GetJourneyInput: Swift.Sendable {
     /// The unique identifier for the application. This identifier is displayed as the Project ID on the Amazon Pinpoint console.
     /// This member is required.
     public var applicationId: Swift.String?
@@ -9601,7 +9602,7 @@ public struct GetJourneyInput {
     }
 }
 
-public struct GetJourneyOutput {
+public struct GetJourneyOutput: Swift.Sendable {
     /// Provides information about the status, configuration, and other settings for a journey.
     /// This member is required.
     public var journeyResponse: PinpointClientTypes.JourneyResponse?
@@ -9614,7 +9615,7 @@ public struct GetJourneyOutput {
     }
 }
 
-public struct GetJourneyDateRangeKpiInput {
+public struct GetJourneyDateRangeKpiInput: Swift.Sendable {
     /// The unique identifier for the application. This identifier is displayed as the Project ID on the Amazon Pinpoint console.
     /// This member is required.
     public var applicationId: Swift.String?
@@ -9654,8 +9655,9 @@ public struct GetJourneyDateRangeKpiInput {
 }
 
 extension PinpointClientTypes {
+
     /// Provides the results of a query that retrieved the data for a standard engagement metric that applies to a journey, and provides information about that query.
-    public struct JourneyDateRangeKpiResponse {
+    public struct JourneyDateRangeKpiResponse: Swift.Sendable {
         /// The unique identifier for the application that the metric applies to.
         /// This member is required.
         public var applicationId: Swift.String?
@@ -9696,10 +9698,9 @@ extension PinpointClientTypes {
             self.startTime = startTime
         }
     }
-
 }
 
-public struct GetJourneyDateRangeKpiOutput {
+public struct GetJourneyDateRangeKpiOutput: Swift.Sendable {
     /// Provides the results of a query that retrieved the data for a standard engagement metric that applies to a journey, and provides information about that query.
     /// This member is required.
     public var journeyDateRangeKpiResponse: PinpointClientTypes.JourneyDateRangeKpiResponse?
@@ -9712,7 +9713,7 @@ public struct GetJourneyDateRangeKpiOutput {
     }
 }
 
-public struct GetJourneyExecutionActivityMetricsInput {
+public struct GetJourneyExecutionActivityMetricsInput: Swift.Sendable {
     /// The unique identifier for the application. This identifier is displayed as the Project ID on the Amazon Pinpoint console.
     /// This member is required.
     public var applicationId: Swift.String?
@@ -9744,8 +9745,9 @@ public struct GetJourneyExecutionActivityMetricsInput {
 }
 
 extension PinpointClientTypes {
+
     /// Provides the results of a query that retrieved the data for a standard execution metric that applies to a journey activity, and provides information about that query.
-    public struct JourneyExecutionActivityMetricsResponse {
+    public struct JourneyExecutionActivityMetricsResponse: Swift.Sendable {
         /// The type of activity that the metric applies to. Possible values are:
         ///
         /// * CONDITIONAL_SPLIT – For a yes/no split activity, which is an activity that sends participants down one of two paths in a journey.
@@ -9794,10 +9796,9 @@ extension PinpointClientTypes {
             self.metrics = metrics
         }
     }
-
 }
 
-public struct GetJourneyExecutionActivityMetricsOutput {
+public struct GetJourneyExecutionActivityMetricsOutput: Swift.Sendable {
     /// Provides the results of a query that retrieved the data for a standard execution metric that applies to a journey activity, and provides information about that query.
     /// This member is required.
     public var journeyExecutionActivityMetricsResponse: PinpointClientTypes.JourneyExecutionActivityMetricsResponse?
@@ -9810,7 +9811,7 @@ public struct GetJourneyExecutionActivityMetricsOutput {
     }
 }
 
-public struct GetJourneyExecutionMetricsInput {
+public struct GetJourneyExecutionMetricsInput: Swift.Sendable {
     /// The unique identifier for the application. This identifier is displayed as the Project ID on the Amazon Pinpoint console.
     /// This member is required.
     public var applicationId: Swift.String?
@@ -9837,8 +9838,9 @@ public struct GetJourneyExecutionMetricsInput {
 }
 
 extension PinpointClientTypes {
+
     /// Provides the results of a query that retrieved the data for a standard execution metric that applies to a journey, and provides information about that query.
-    public struct JourneyExecutionMetricsResponse {
+    public struct JourneyExecutionMetricsResponse: Swift.Sendable {
         /// The unique identifier for the application that the metric applies to.
         /// This member is required.
         public var applicationId: Swift.String?
@@ -9865,10 +9867,9 @@ extension PinpointClientTypes {
             self.metrics = metrics
         }
     }
-
 }
 
-public struct GetJourneyExecutionMetricsOutput {
+public struct GetJourneyExecutionMetricsOutput: Swift.Sendable {
     /// Provides the results of a query that retrieved the data for a standard execution metric that applies to a journey, and provides information about that query.
     /// This member is required.
     public var journeyExecutionMetricsResponse: PinpointClientTypes.JourneyExecutionMetricsResponse?
@@ -9881,7 +9882,7 @@ public struct GetJourneyExecutionMetricsOutput {
     }
 }
 
-public struct GetJourneyRunExecutionActivityMetricsInput {
+public struct GetJourneyRunExecutionActivityMetricsInput: Swift.Sendable {
     /// The unique identifier for the application. This identifier is displayed as the Project ID on the Amazon Pinpoint console.
     /// This member is required.
     public var applicationId: Swift.String?
@@ -9918,8 +9919,9 @@ public struct GetJourneyRunExecutionActivityMetricsInput {
 }
 
 extension PinpointClientTypes {
+
     /// Provides the results of a query that retrieved the data for a standard execution metric that applies to a journey activity for a particular journey run, and provides information about that query.
-    public struct JourneyRunExecutionActivityMetricsResponse {
+    public struct JourneyRunExecutionActivityMetricsResponse: Swift.Sendable {
         /// The type of activity that the metric applies to. Possible values are:
         ///
         /// * CONDITIONAL_SPLIT – For a yes/no split activity, which is an activity that sends participants down one of two paths in a journey.
@@ -9973,10 +9975,9 @@ extension PinpointClientTypes {
             self.runId = runId
         }
     }
-
 }
 
-public struct GetJourneyRunExecutionActivityMetricsOutput {
+public struct GetJourneyRunExecutionActivityMetricsOutput: Swift.Sendable {
     /// Provides the results of a query that retrieved the data for a standard execution metric that applies to a journey activity for a particular journey run, and provides information about that query.
     /// This member is required.
     public var journeyRunExecutionActivityMetricsResponse: PinpointClientTypes.JourneyRunExecutionActivityMetricsResponse?
@@ -9989,7 +9990,7 @@ public struct GetJourneyRunExecutionActivityMetricsOutput {
     }
 }
 
-public struct GetJourneyRunExecutionMetricsInput {
+public struct GetJourneyRunExecutionMetricsInput: Swift.Sendable {
     /// The unique identifier for the application. This identifier is displayed as the Project ID on the Amazon Pinpoint console.
     /// This member is required.
     public var applicationId: Swift.String?
@@ -10021,8 +10022,9 @@ public struct GetJourneyRunExecutionMetricsInput {
 }
 
 extension PinpointClientTypes {
+
     /// Provides the results of a query that retrieved the data for a standard execution metric that applies to a journey run, and provides information about that query.
-    public struct JourneyRunExecutionMetricsResponse {
+    public struct JourneyRunExecutionMetricsResponse: Swift.Sendable {
         /// The unique identifier for the application that the metric applies to.
         /// This member is required.
         public var applicationId: Swift.String?
@@ -10054,10 +10056,9 @@ extension PinpointClientTypes {
             self.runId = runId
         }
     }
-
 }
 
-public struct GetJourneyRunExecutionMetricsOutput {
+public struct GetJourneyRunExecutionMetricsOutput: Swift.Sendable {
     /// Provides the results of a query that retrieved the data for a standard execution metric that applies to a journey run, and provides information about that query.
     /// This member is required.
     public var journeyRunExecutionMetricsResponse: PinpointClientTypes.JourneyRunExecutionMetricsResponse?
@@ -10070,7 +10071,7 @@ public struct GetJourneyRunExecutionMetricsOutput {
     }
 }
 
-public struct GetJourneyRunsInput {
+public struct GetJourneyRunsInput: Swift.Sendable {
     /// The unique identifier for the application. This identifier is displayed as the Project ID on the Amazon Pinpoint console.
     /// This member is required.
     public var applicationId: Swift.String?
@@ -10098,7 +10099,7 @@ public struct GetJourneyRunsInput {
 
 extension PinpointClientTypes {
 
-    public enum JourneyRunStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum JourneyRunStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case cancelled
         case completed
         case running
@@ -10132,8 +10133,9 @@ extension PinpointClientTypes {
 }
 
 extension PinpointClientTypes {
+
     /// Provides information from a specified run of a journey.
-    public struct JourneyRunResponse {
+    public struct JourneyRunResponse: Swift.Sendable {
         /// The time when the journey run was created or scheduled, in ISO 8601 format.
         /// This member is required.
         public var creationTime: Swift.String?
@@ -10160,12 +10162,12 @@ extension PinpointClientTypes {
             self.status = status
         }
     }
-
 }
 
 extension PinpointClientTypes {
+
     /// Provides information from all runs of a journey.
-    public struct JourneyRunsResponse {
+    public struct JourneyRunsResponse: Swift.Sendable {
         /// An array of responses, one for each run of the journey
         /// This member is required.
         public var item: [PinpointClientTypes.JourneyRunResponse]?
@@ -10181,10 +10183,9 @@ extension PinpointClientTypes {
             self.nextToken = nextToken
         }
     }
-
 }
 
-public struct GetJourneyRunsOutput {
+public struct GetJourneyRunsOutput: Swift.Sendable {
     /// Provides information from all runs of a journey.
     /// This member is required.
     public var journeyRunsResponse: PinpointClientTypes.JourneyRunsResponse?
@@ -10197,7 +10198,7 @@ public struct GetJourneyRunsOutput {
     }
 }
 
-public struct GetPushTemplateInput {
+public struct GetPushTemplateInput: Swift.Sendable {
     /// The name of the message template. A template name must start with an alphanumeric character and can contain a maximum of 128 characters. The characters can be alphanumeric characters, underscores (_), or hyphens (-). Template names are case sensitive.
     /// This member is required.
     public var templateName: Swift.String?
@@ -10221,8 +10222,9 @@ public struct GetPushTemplateInput {
 }
 
 extension PinpointClientTypes {
+
     /// Provides information about the content and settings for a message template that can be used in messages that are sent through a push notification channel.
-    public struct PushNotificationTemplateResponse {
+    public struct PushNotificationTemplateResponse: Swift.Sendable {
         /// The message template that's used for the ADM (Amazon Device Messaging) channel. This message template overrides the default template for push notification channels (DefaultPushNotificationTemplate).
         public var adm: PinpointClientTypes.AndroidPushNotificationTemplate?
         /// The message template that's used for the APNs (Apple Push Notification service) channel. This message template overrides the default template for push notification channels (DefaultPushNotificationTemplate).
@@ -10293,10 +10295,9 @@ extension PinpointClientTypes {
             self.version = version
         }
     }
-
 }
 
-public struct GetPushTemplateOutput {
+public struct GetPushTemplateOutput: Swift.Sendable {
     /// Provides information about the content and settings for a message template that can be used in messages that are sent through a push notification channel.
     /// This member is required.
     public var pushNotificationTemplateResponse: PinpointClientTypes.PushNotificationTemplateResponse?
@@ -10309,7 +10310,7 @@ public struct GetPushTemplateOutput {
     }
 }
 
-public struct GetRecommenderConfigurationInput {
+public struct GetRecommenderConfigurationInput: Swift.Sendable {
     /// The unique identifier for the recommender model configuration. This identifier is displayed as the Recommender ID on the Amazon Pinpoint console.
     /// This member is required.
     public var recommenderId: Swift.String?
@@ -10322,7 +10323,7 @@ public struct GetRecommenderConfigurationInput {
     }
 }
 
-public struct GetRecommenderConfigurationOutput {
+public struct GetRecommenderConfigurationOutput: Swift.Sendable {
     /// Provides information about Amazon Pinpoint configuration settings for retrieving and processing data from a recommender model.
     /// This member is required.
     public var recommenderConfigurationResponse: PinpointClientTypes.RecommenderConfigurationResponse?
@@ -10335,7 +10336,7 @@ public struct GetRecommenderConfigurationOutput {
     }
 }
 
-public struct GetRecommenderConfigurationsInput {
+public struct GetRecommenderConfigurationsInput: Swift.Sendable {
     /// The maximum number of items to include in each page of a paginated response. This parameter is not supported for application, campaign, and journey metrics.
     public var pageSize: Swift.String?
     /// The NextToken string that specifies which page of results to return in a paginated response.
@@ -10352,8 +10353,9 @@ public struct GetRecommenderConfigurationsInput {
 }
 
 extension PinpointClientTypes {
+
     /// Provides information about all the recommender model configurations that are associated with your Amazon Pinpoint account.
-    public struct ListRecommenderConfigurationsResponse {
+    public struct ListRecommenderConfigurationsResponse: Swift.Sendable {
         /// An array of responses, one for each recommender model configuration that's associated with your Amazon Pinpoint account.
         /// This member is required.
         public var item: [PinpointClientTypes.RecommenderConfigurationResponse]?
@@ -10369,10 +10371,9 @@ extension PinpointClientTypes {
             self.nextToken = nextToken
         }
     }
-
 }
 
-public struct GetRecommenderConfigurationsOutput {
+public struct GetRecommenderConfigurationsOutput: Swift.Sendable {
     /// Provides information about all the recommender model configurations that are associated with your Amazon Pinpoint account.
     /// This member is required.
     public var listRecommenderConfigurationsResponse: PinpointClientTypes.ListRecommenderConfigurationsResponse?
@@ -10385,7 +10386,7 @@ public struct GetRecommenderConfigurationsOutput {
     }
 }
 
-public struct GetSegmentInput {
+public struct GetSegmentInput: Swift.Sendable {
     /// The unique identifier for the application. This identifier is displayed as the Project ID on the Amazon Pinpoint console.
     /// This member is required.
     public var applicationId: Swift.String?
@@ -10403,7 +10404,7 @@ public struct GetSegmentInput {
     }
 }
 
-public struct GetSegmentOutput {
+public struct GetSegmentOutput: Swift.Sendable {
     /// Provides information about the configuration, dimension, and other settings for a segment.
     /// This member is required.
     public var segmentResponse: PinpointClientTypes.SegmentResponse?
@@ -10416,7 +10417,7 @@ public struct GetSegmentOutput {
     }
 }
 
-public struct GetSegmentExportJobsInput {
+public struct GetSegmentExportJobsInput: Swift.Sendable {
     /// The unique identifier for the application. This identifier is displayed as the Project ID on the Amazon Pinpoint console.
     /// This member is required.
     public var applicationId: Swift.String?
@@ -10442,7 +10443,7 @@ public struct GetSegmentExportJobsInput {
     }
 }
 
-public struct GetSegmentExportJobsOutput {
+public struct GetSegmentExportJobsOutput: Swift.Sendable {
     /// Provides information about all the export jobs that are associated with an application or segment. An export job is a job that exports endpoint definitions to a file.
     /// This member is required.
     public var exportJobsResponse: PinpointClientTypes.ExportJobsResponse?
@@ -10455,7 +10456,7 @@ public struct GetSegmentExportJobsOutput {
     }
 }
 
-public struct GetSegmentImportJobsInput {
+public struct GetSegmentImportJobsInput: Swift.Sendable {
     /// The unique identifier for the application. This identifier is displayed as the Project ID on the Amazon Pinpoint console.
     /// This member is required.
     public var applicationId: Swift.String?
@@ -10481,7 +10482,7 @@ public struct GetSegmentImportJobsInput {
     }
 }
 
-public struct GetSegmentImportJobsOutput {
+public struct GetSegmentImportJobsOutput: Swift.Sendable {
     /// Provides information about the status and settings of all the import jobs that are associated with an application or segment. An import job is a job that imports endpoint definitions from one or more files.
     /// This member is required.
     public var importJobsResponse: PinpointClientTypes.ImportJobsResponse?
@@ -10494,7 +10495,7 @@ public struct GetSegmentImportJobsOutput {
     }
 }
 
-public struct GetSegmentsInput {
+public struct GetSegmentsInput: Swift.Sendable {
     /// The unique identifier for the application. This identifier is displayed as the Project ID on the Amazon Pinpoint console.
     /// This member is required.
     public var applicationId: Swift.String?
@@ -10516,8 +10517,9 @@ public struct GetSegmentsInput {
 }
 
 extension PinpointClientTypes {
+
     /// Provides information about all the segments that are associated with an application.
-    public struct SegmentsResponse {
+    public struct SegmentsResponse: Swift.Sendable {
         /// An array of responses, one for each segment that's associated with the application (Segments resource) or each version of a segment that's associated with the application (Segment Versions resource).
         /// This member is required.
         public var item: [PinpointClientTypes.SegmentResponse]?
@@ -10533,10 +10535,9 @@ extension PinpointClientTypes {
             self.nextToken = nextToken
         }
     }
-
 }
 
-public struct GetSegmentsOutput {
+public struct GetSegmentsOutput: Swift.Sendable {
     /// Provides information about all the segments that are associated with an application.
     /// This member is required.
     public var segmentsResponse: PinpointClientTypes.SegmentsResponse?
@@ -10549,7 +10550,7 @@ public struct GetSegmentsOutput {
     }
 }
 
-public struct GetSegmentVersionInput {
+public struct GetSegmentVersionInput: Swift.Sendable {
     /// The unique identifier for the application. This identifier is displayed as the Project ID on the Amazon Pinpoint console.
     /// This member is required.
     public var applicationId: Swift.String?
@@ -10572,7 +10573,7 @@ public struct GetSegmentVersionInput {
     }
 }
 
-public struct GetSegmentVersionOutput {
+public struct GetSegmentVersionOutput: Swift.Sendable {
     /// Provides information about the configuration, dimension, and other settings for a segment.
     /// This member is required.
     public var segmentResponse: PinpointClientTypes.SegmentResponse?
@@ -10585,7 +10586,7 @@ public struct GetSegmentVersionOutput {
     }
 }
 
-public struct GetSegmentVersionsInput {
+public struct GetSegmentVersionsInput: Swift.Sendable {
     /// The unique identifier for the application. This identifier is displayed as the Project ID on the Amazon Pinpoint console.
     /// This member is required.
     public var applicationId: Swift.String?
@@ -10611,7 +10612,7 @@ public struct GetSegmentVersionsInput {
     }
 }
 
-public struct GetSegmentVersionsOutput {
+public struct GetSegmentVersionsOutput: Swift.Sendable {
     /// Provides information about all the segments that are associated with an application.
     /// This member is required.
     public var segmentsResponse: PinpointClientTypes.SegmentsResponse?
@@ -10624,7 +10625,7 @@ public struct GetSegmentVersionsOutput {
     }
 }
 
-public struct GetSmsChannelInput {
+public struct GetSmsChannelInput: Swift.Sendable {
     /// The unique identifier for the application. This identifier is displayed as the Project ID on the Amazon Pinpoint console.
     /// This member is required.
     public var applicationId: Swift.String?
@@ -10637,7 +10638,7 @@ public struct GetSmsChannelInput {
     }
 }
 
-public struct GetSmsChannelOutput {
+public struct GetSmsChannelOutput: Swift.Sendable {
     /// Provides information about the status and settings of the SMS channel for an application.
     /// This member is required.
     public var smsChannelResponse: PinpointClientTypes.SMSChannelResponse?
@@ -10650,7 +10651,7 @@ public struct GetSmsChannelOutput {
     }
 }
 
-public struct GetSmsTemplateInput {
+public struct GetSmsTemplateInput: Swift.Sendable {
     /// The name of the message template. A template name must start with an alphanumeric character and can contain a maximum of 128 characters. The characters can be alphanumeric characters, underscores (_), or hyphens (-). Template names are case sensitive.
     /// This member is required.
     public var templateName: Swift.String?
@@ -10674,8 +10675,9 @@ public struct GetSmsTemplateInput {
 }
 
 extension PinpointClientTypes {
+
     /// Provides information about the content and settings for a message template that can be used in text messages that are sent through the SMS channel.
-    public struct SMSTemplateResponse {
+    public struct SMSTemplateResponse: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the message template.
         public var arn: Swift.String?
         /// The message body that's used in text messages that are based on the message template.
@@ -10730,10 +10732,9 @@ extension PinpointClientTypes {
             self.version = version
         }
     }
-
 }
 
-public struct GetSmsTemplateOutput {
+public struct GetSmsTemplateOutput: Swift.Sendable {
     /// Provides information about the content and settings for a message template that can be used in text messages that are sent through the SMS channel.
     /// This member is required.
     public var smsTemplateResponse: PinpointClientTypes.SMSTemplateResponse?
@@ -10746,7 +10747,7 @@ public struct GetSmsTemplateOutput {
     }
 }
 
-public struct GetUserEndpointsInput {
+public struct GetUserEndpointsInput: Swift.Sendable {
     /// The unique identifier for the application. This identifier is displayed as the Project ID on the Amazon Pinpoint console.
     /// This member is required.
     public var applicationId: Swift.String?
@@ -10764,7 +10765,7 @@ public struct GetUserEndpointsInput {
     }
 }
 
-public struct GetUserEndpointsOutput {
+public struct GetUserEndpointsOutput: Swift.Sendable {
     /// Provides information about all the endpoints that are associated with a user ID.
     /// This member is required.
     public var endpointsResponse: PinpointClientTypes.EndpointsResponse?
@@ -10777,7 +10778,7 @@ public struct GetUserEndpointsOutput {
     }
 }
 
-public struct GetVoiceChannelInput {
+public struct GetVoiceChannelInput: Swift.Sendable {
     /// The unique identifier for the application. This identifier is displayed as the Project ID on the Amazon Pinpoint console.
     /// This member is required.
     public var applicationId: Swift.String?
@@ -10790,7 +10791,7 @@ public struct GetVoiceChannelInput {
     }
 }
 
-public struct GetVoiceChannelOutput {
+public struct GetVoiceChannelOutput: Swift.Sendable {
     /// Provides information about the status and settings of the voice channel for an application.
     /// This member is required.
     public var voiceChannelResponse: PinpointClientTypes.VoiceChannelResponse?
@@ -10803,7 +10804,7 @@ public struct GetVoiceChannelOutput {
     }
 }
 
-public struct GetVoiceTemplateInput {
+public struct GetVoiceTemplateInput: Swift.Sendable {
     /// The name of the message template. A template name must start with an alphanumeric character and can contain a maximum of 128 characters. The characters can be alphanumeric characters, underscores (_), or hyphens (-). Template names are case sensitive.
     /// This member is required.
     public var templateName: Swift.String?
@@ -10827,8 +10828,9 @@ public struct GetVoiceTemplateInput {
 }
 
 extension PinpointClientTypes {
+
     /// Provides information about the content and settings for a message template that can be used in messages that are sent through the voice channel.
-    public struct VoiceTemplateResponse {
+    public struct VoiceTemplateResponse: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the message template.
         public var arn: Swift.String?
         /// The text of the script that's used in messages that are based on the message template, in plain text format.
@@ -10887,10 +10889,9 @@ extension PinpointClientTypes {
             self.voiceId = voiceId
         }
     }
-
 }
 
-public struct GetVoiceTemplateOutput {
+public struct GetVoiceTemplateOutput: Swift.Sendable {
     /// Provides information about the content and settings for a message template that can be used in messages that are sent through the voice channel.
     /// This member is required.
     public var voiceTemplateResponse: PinpointClientTypes.VoiceTemplateResponse?
@@ -10904,8 +10905,9 @@ public struct GetVoiceTemplateOutput {
 }
 
 extension PinpointClientTypes {
+
     /// Provides information about the status, configuration, and other settings for all the journeys that are associated with an application.
-    public struct JourneysResponse {
+    public struct JourneysResponse: Swift.Sendable {
         /// An array of responses, one for each journey that's associated with the application.
         /// This member is required.
         public var item: [PinpointClientTypes.JourneyResponse]?
@@ -10921,12 +10923,12 @@ extension PinpointClientTypes {
             self.nextToken = nextToken
         }
     }
-
 }
 
 extension PinpointClientTypes {
+
     /// Changes the status of a journey.
-    public struct JourneyStateRequest {
+    public struct JourneyStateRequest: Swift.Sendable {
         /// The status of the journey. Currently, Supported values are ACTIVE, PAUSED, and CANCELLED If you cancel a journey, Amazon Pinpoint continues to perform activities that are currently in progress, until those activities are complete. Amazon Pinpoint also continues to collect and aggregate analytics data for those activities, until they are complete, and any activities that were complete when you cancelled the journey. After you cancel a journey, you can't add, change, or remove any activities from the journey. In addition, Amazon Pinpoint stops evaluating the journey and doesn't perform any activities that haven't started. When the journey is paused, Amazon Pinpoint continues to perform activities that are currently in progress, until those activities are complete. Endpoints will stop entering journeys when the journey is paused and will resume entering the journey after the journey is resumed. For wait activities, wait time is paused when the journey is paused. Currently, PAUSED only supports journeys with a segment refresh interval.
         public var state: PinpointClientTypes.State?
 
@@ -10937,10 +10939,9 @@ extension PinpointClientTypes {
             self.state = state
         }
     }
-
 }
 
-public struct ListJourneysInput {
+public struct ListJourneysInput: Swift.Sendable {
     /// The unique identifier for the application. This identifier is displayed as the Project ID on the Amazon Pinpoint console.
     /// This member is required.
     public var applicationId: Swift.String?
@@ -10961,7 +10962,7 @@ public struct ListJourneysInput {
     }
 }
 
-public struct ListJourneysOutput {
+public struct ListJourneysOutput: Swift.Sendable {
     /// Provides information about the status, configuration, and other settings for all the journeys that are associated with an application.
     /// This member is required.
     public var journeysResponse: PinpointClientTypes.JourneysResponse?
@@ -10975,8 +10976,9 @@ public struct ListJourneysOutput {
 }
 
 extension PinpointClientTypes {
+
     /// Provides information about a message template that's associated with your Amazon Pinpoint account.
-    public struct TemplateResponse {
+    public struct TemplateResponse: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the message template. This value isn't included in a TemplateResponse object. To retrieve the ARN of a template, use the GetEmailTemplate, GetPushTemplate, GetSmsTemplate, or GetVoiceTemplate operation, depending on the type of template that you want to retrieve the ARN for.
         public var arn: Swift.String?
         /// The date, in ISO 8601 format, when the message template was created.
@@ -11023,12 +11025,12 @@ extension PinpointClientTypes {
             self.version = version
         }
     }
-
 }
 
 extension PinpointClientTypes {
+
     /// Provides information about a specific version of a message template.
-    public struct TemplateVersionResponse {
+    public struct TemplateVersionResponse: Swift.Sendable {
         /// The date, in ISO 8601 format, when the version of the message template was created.
         /// This member is required.
         public var creationDate: Swift.String?
@@ -11067,10 +11069,9 @@ extension PinpointClientTypes {
             self.version = version
         }
     }
-
 }
 
-public struct ListTagsForResourceInput {
+public struct ListTagsForResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the resource.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -11084,8 +11085,9 @@ public struct ListTagsForResourceInput {
 }
 
 extension PinpointClientTypes {
+
     /// Specifies the tags (keys and values) for an application, campaign, message template, or segment.
-    public struct TagsModel {
+    public struct TagsModel: Swift.Sendable {
         /// A string-to-string map of key-value pairs that defines the tags for an application, campaign, message template, or segment. Each of these resources can have a maximum of 50 tags. Each tag consists of a required tag key and an associated tag value. The maximum length of a tag key is 128 characters. The maximum length of a tag value is 256 characters.
         /// This member is required.
         public var tags: [Swift.String: Swift.String]?
@@ -11097,10 +11099,9 @@ extension PinpointClientTypes {
             self.tags = tags
         }
     }
-
 }
 
-public struct ListTagsForResourceOutput {
+public struct ListTagsForResourceOutput: Swift.Sendable {
     /// Specifies the tags (keys and values) for an application, campaign, message template, or segment.
     /// This member is required.
     public var tagsModel: PinpointClientTypes.TagsModel?
@@ -11113,7 +11114,7 @@ public struct ListTagsForResourceOutput {
     }
 }
 
-public struct ListTemplatesInput {
+public struct ListTemplatesInput: Swift.Sendable {
     /// The string that specifies which page of results to return in a paginated response. This parameter is not supported for application, campaign, and journey metrics.
     public var nextToken: Swift.String?
     /// The maximum number of items to include in each page of a paginated response. This parameter is not supported for application, campaign, and journey metrics.
@@ -11138,8 +11139,9 @@ public struct ListTemplatesInput {
 }
 
 extension PinpointClientTypes {
+
     /// Provides information about all the message templates that are associated with your Amazon Pinpoint account.
-    public struct TemplatesResponse {
+    public struct TemplatesResponse: Swift.Sendable {
         /// An array of responses, one for each message template that's associated with your Amazon Pinpoint account and meets any filter criteria that you specified in the request.
         /// This member is required.
         public var item: [PinpointClientTypes.TemplateResponse]?
@@ -11155,10 +11157,9 @@ extension PinpointClientTypes {
             self.nextToken = nextToken
         }
     }
-
 }
 
-public struct ListTemplatesOutput {
+public struct ListTemplatesOutput: Swift.Sendable {
     /// Provides information about all the message templates that are associated with your Amazon Pinpoint account.
     /// This member is required.
     public var templatesResponse: PinpointClientTypes.TemplatesResponse?
@@ -11171,7 +11172,7 @@ public struct ListTemplatesOutput {
     }
 }
 
-public struct ListTemplateVersionsInput {
+public struct ListTemplateVersionsInput: Swift.Sendable {
     /// The string that specifies which page of results to return in a paginated response. This parameter is not supported for application, campaign, and journey metrics.
     public var nextToken: Swift.String?
     /// The maximum number of items to include in each page of a paginated response. This parameter is not supported for application, campaign, and journey metrics.
@@ -11198,8 +11199,9 @@ public struct ListTemplateVersionsInput {
 }
 
 extension PinpointClientTypes {
+
     /// Provides information about all the versions of a specific message template.
-    public struct TemplateVersionsResponse {
+    public struct TemplateVersionsResponse: Swift.Sendable {
         /// An array of responses, one for each version of the message template.
         /// This member is required.
         public var item: [PinpointClientTypes.TemplateVersionResponse]?
@@ -11223,10 +11225,9 @@ extension PinpointClientTypes {
             self.requestID = requestID
         }
     }
-
 }
 
-public struct ListTemplateVersionsOutput {
+public struct ListTemplateVersionsOutput: Swift.Sendable {
     /// Provides information about all the versions of a specific message template.
     /// This member is required.
     public var templateVersionsResponse: PinpointClientTypes.TemplateVersionsResponse?
@@ -11240,8 +11241,9 @@ public struct ListTemplateVersionsOutput {
 }
 
 extension PinpointClientTypes {
+
     /// Provides information about the results of sending a message directly to an endpoint address.
-    public struct MessageResult {
+    public struct MessageResult: Swift.Sendable {
         /// The delivery status of the message. Possible values are:
         ///
         /// * DUPLICATE - The endpoint address is a duplicate of another endpoint address. Amazon Pinpoint won't attempt to send the message again.
@@ -11284,12 +11286,12 @@ extension PinpointClientTypes {
             self.updatedToken = updatedToken
         }
     }
-
 }
 
 extension PinpointClientTypes {
+
     /// Specifies the configuration and other settings for a message.
-    public struct MessageRequest {
+    public struct MessageRequest: Swift.Sendable {
         /// A map of key-value pairs, where each key is an address and each value is an [AddressConfiguration](https://docs.aws.amazon.com/pinpoint/latest/apireference/apps-application-id-messages.html#apps-application-id-messages-model-addressconfiguration) object. An address can be a push notification token, a phone number, or an email address. You can use an [AddressConfiguration](https://docs.aws.amazon.com/pinpoint/latest/apireference/apps-application-id-messages.html#apps-application-id-messages-model-addressconfiguration) object to tailor the message for an address by specifying settings such as content overrides and message variables.
         public var addresses: [Swift.String: PinpointClientTypes.AddressConfiguration]?
         /// A map of custom attributes to attach to the message. For a push notification, this payload is added to the data.pinpoint object. For an email or text message, this payload is added to email/SMS delivery receipt event attributes.
@@ -11321,12 +11323,12 @@ extension PinpointClientTypes {
             self.traceId = traceId
         }
     }
-
 }
 
 extension PinpointClientTypes {
+
     /// Provides information about the results of a request to send a message to an endpoint address.
-    public struct MessageResponse {
+    public struct MessageResponse: Swift.Sendable {
         /// The unique identifier for the application that was used to send the message.
         /// This member is required.
         public var applicationId: Swift.String?
@@ -11350,12 +11352,12 @@ extension PinpointClientTypes {
             self.result = result
         }
     }
-
 }
 
 extension PinpointClientTypes {
+
     /// Specifies a phone number to validate and retrieve information about.
-    public struct NumberValidateRequest {
+    public struct NumberValidateRequest: Swift.Sendable {
         /// The two-character code, in ISO 3166-1 alpha-2 format, for the country or region where the phone number was originally registered.
         public var isoCountryCode: Swift.String?
         /// The phone number to retrieve information about. The phone number that you provide should include a valid numeric country code. Otherwise, the operation might result in an error.
@@ -11370,12 +11372,12 @@ extension PinpointClientTypes {
             self.phoneNumber = phoneNumber
         }
     }
-
 }
 
 extension PinpointClientTypes {
+
     /// Provides information about a phone number.
-    public struct NumberValidateResponse {
+    public struct NumberValidateResponse: Swift.Sendable {
         /// The carrier or service provider that the phone number is currently registered with. In some countries and regions, this value may be the carrier or service provider that the phone number was originally registered with.
         public var carrier: Swift.String?
         /// The name of the city where the phone number was originally registered.
@@ -11438,10 +11440,9 @@ extension PinpointClientTypes {
             self.zipCode = zipCode
         }
     }
-
 }
 
-public struct PhoneNumberValidateInput {
+public struct PhoneNumberValidateInput: Swift.Sendable {
     /// Specifies a phone number to validate and retrieve information about.
     /// This member is required.
     public var numberValidateRequest: PinpointClientTypes.NumberValidateRequest?
@@ -11454,7 +11455,7 @@ public struct PhoneNumberValidateInput {
     }
 }
 
-public struct PhoneNumberValidateOutput {
+public struct PhoneNumberValidateOutput: Swift.Sendable {
     /// Provides information about a phone number.
     /// This member is required.
     public var numberValidateResponse: PinpointClientTypes.NumberValidateResponse?
@@ -11467,7 +11468,7 @@ public struct PhoneNumberValidateOutput {
     }
 }
 
-public struct PutEventsInput {
+public struct PutEventsInput: Swift.Sendable {
     /// The unique identifier for the application. This identifier is displayed as the Project ID on the Amazon Pinpoint console.
     /// This member is required.
     public var applicationId: Swift.String?
@@ -11485,7 +11486,7 @@ public struct PutEventsInput {
     }
 }
 
-public struct PutEventsOutput {
+public struct PutEventsOutput: Swift.Sendable {
     /// Provides information about endpoints and the events that they're associated with.
     /// This member is required.
     public var eventsResponse: PinpointClientTypes.EventsResponse?
@@ -11499,8 +11500,9 @@ public struct PutEventsOutput {
 }
 
 extension PinpointClientTypes {
+
     /// Specifies the Amazon Resource Name (ARN) of an event stream to publish events to and the AWS Identity and Access Management (IAM) role to use when publishing those events.
-    public struct WriteEventStream {
+    public struct WriteEventStream: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the Amazon Kinesis data stream or Amazon Kinesis Data Firehose delivery stream that you want to publish event data to. For a Kinesis data stream, the ARN format is: arn:aws:kinesis:region:account-id:stream/stream_name For a Kinesis Data Firehose delivery stream, the ARN format is: arn:aws:firehose:region:account-id:deliverystream/stream_name
         /// This member is required.
         public var destinationStreamArn: Swift.String?
@@ -11517,10 +11519,9 @@ extension PinpointClientTypes {
             self.roleArn = roleArn
         }
     }
-
 }
 
-public struct PutEventStreamInput {
+public struct PutEventStreamInput: Swift.Sendable {
     /// The unique identifier for the application. This identifier is displayed as the Project ID on the Amazon Pinpoint console.
     /// This member is required.
     public var applicationId: Swift.String?
@@ -11538,7 +11539,7 @@ public struct PutEventStreamInput {
     }
 }
 
-public struct PutEventStreamOutput {
+public struct PutEventStreamOutput: Swift.Sendable {
     /// Specifies settings for publishing event data to an Amazon Kinesis data stream or an Amazon Kinesis Data Firehose delivery stream.
     /// This member is required.
     public var eventStream: PinpointClientTypes.EventStream?
@@ -11552,8 +11553,9 @@ public struct PutEventStreamOutput {
 }
 
 extension PinpointClientTypes {
+
     /// Specifies one or more attributes to remove from all the endpoints that are associated with an application.
-    public struct UpdateAttributesRequest {
+    public struct UpdateAttributesRequest: Swift.Sendable {
         /// An array of the attributes to remove from all the endpoints that are associated with the application. The array can specify the complete, exact name of each attribute to remove or it can specify a glob pattern that an attribute name must match in order for the attribute to be removed.
         public var blacklist: [Swift.String]?
 
@@ -11564,10 +11566,9 @@ extension PinpointClientTypes {
             self.blacklist = blacklist
         }
     }
-
 }
 
-public struct RemoveAttributesInput {
+public struct RemoveAttributesInput: Swift.Sendable {
     /// The unique identifier for the application. This identifier is displayed as the Project ID on the Amazon Pinpoint console.
     /// This member is required.
     public var applicationId: Swift.String?
@@ -11596,7 +11597,7 @@ public struct RemoveAttributesInput {
     }
 }
 
-public struct RemoveAttributesOutput {
+public struct RemoveAttributesOutput: Swift.Sendable {
     /// Provides information about the type and the names of attributes that were removed from all the endpoints that are associated with an application.
     /// This member is required.
     public var attributesResource: PinpointClientTypes.AttributesResource?
@@ -11609,7 +11610,7 @@ public struct RemoveAttributesOutput {
     }
 }
 
-public struct SendMessagesInput {
+public struct SendMessagesInput: Swift.Sendable {
     /// The unique identifier for the application. This identifier is displayed as the Project ID on the Amazon Pinpoint console.
     /// This member is required.
     public var applicationId: Swift.String?
@@ -11627,7 +11628,7 @@ public struct SendMessagesInput {
     }
 }
 
-public struct SendMessagesOutput {
+public struct SendMessagesOutput: Swift.Sendable {
     /// Provides information about the results of a request to send a message to an endpoint address.
     /// This member is required.
     public var messageResponse: PinpointClientTypes.MessageResponse?
@@ -11641,8 +11642,9 @@ public struct SendMessagesOutput {
 }
 
 extension PinpointClientTypes {
+
     /// Send OTP message request parameters.
-    public struct SendOTPMessageRequestParameters {
+    public struct SendOTPMessageRequestParameters: Swift.Sendable {
         /// The attempts allowed to validate an OTP.
         public var allowedAttempts: Swift.Int?
         /// The brand name that will be substituted into the OTP message body. Should be owned by calling AWS account.
@@ -11698,10 +11700,9 @@ extension PinpointClientTypes {
             self.validityPeriod = validityPeriod
         }
     }
-
 }
 
-public struct SendOTPMessageInput {
+public struct SendOTPMessageInput: Swift.Sendable {
     /// The unique ID of your Amazon Pinpoint application.
     /// This member is required.
     public var applicationId: Swift.String?
@@ -11719,7 +11720,7 @@ public struct SendOTPMessageInput {
     }
 }
 
-public struct SendOTPMessageOutput {
+public struct SendOTPMessageOutput: Swift.Sendable {
     /// Provides information about the results of a request to send a message to an endpoint address.
     /// This member is required.
     public var messageResponse: PinpointClientTypes.MessageResponse?
@@ -11733,8 +11734,9 @@ public struct SendOTPMessageOutput {
 }
 
 extension PinpointClientTypes {
+
     /// Specifies the configuration and other settings for a message to send to all the endpoints that are associated with a list of users.
-    public struct SendUsersMessageRequest {
+    public struct SendUsersMessageRequest: Swift.Sendable {
         /// A map of custom attribute-value pairs. For a push notification, Amazon Pinpoint adds these attributes to the data.pinpoint object in the body of the notification payload. Amazon Pinpoint also provides these attributes in the events that it generates for users-messages deliveries.
         public var context: [Swift.String: Swift.String]?
         /// The settings and content for the default message and any default messages that you defined for specific channels.
@@ -11763,10 +11765,9 @@ extension PinpointClientTypes {
             self.users = users
         }
     }
-
 }
 
-public struct SendUsersMessagesInput {
+public struct SendUsersMessagesInput: Swift.Sendable {
     /// The unique identifier for the application. This identifier is displayed as the Project ID on the Amazon Pinpoint console.
     /// This member is required.
     public var applicationId: Swift.String?
@@ -11785,8 +11786,9 @@ public struct SendUsersMessagesInput {
 }
 
 extension PinpointClientTypes {
+
     /// Provides information about which users and endpoints a message was sent to.
-    public struct SendUsersMessageResponse {
+    public struct SendUsersMessageResponse: Swift.Sendable {
         /// The unique identifier for the application that was used to send the message.
         /// This member is required.
         public var applicationId: Swift.String?
@@ -11806,10 +11808,9 @@ extension PinpointClientTypes {
             self.result = result
         }
     }
-
 }
 
-public struct SendUsersMessagesOutput {
+public struct SendUsersMessagesOutput: Swift.Sendable {
     /// Provides information about which users and endpoints a message was sent to.
     /// This member is required.
     public var sendUsersMessageResponse: PinpointClientTypes.SendUsersMessageResponse?
@@ -11822,7 +11823,7 @@ public struct SendUsersMessagesOutput {
     }
 }
 
-public struct TagResourceInput {
+public struct TagResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the resource.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -11840,7 +11841,7 @@ public struct TagResourceInput {
     }
 }
 
-public struct UntagResourceInput {
+public struct UntagResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the resource.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -11858,7 +11859,7 @@ public struct UntagResourceInput {
     }
 }
 
-public struct UpdateAdmChannelInput {
+public struct UpdateAdmChannelInput: Swift.Sendable {
     /// Specifies the status and settings of the ADM (Amazon Device Messaging) channel for an application.
     /// This member is required.
     public var admChannelRequest: PinpointClientTypes.ADMChannelRequest?
@@ -11876,7 +11877,7 @@ public struct UpdateAdmChannelInput {
     }
 }
 
-public struct UpdateAdmChannelOutput {
+public struct UpdateAdmChannelOutput: Swift.Sendable {
     /// Provides information about the status and settings of the ADM (Amazon Device Messaging) channel for an application.
     /// This member is required.
     public var admChannelResponse: PinpointClientTypes.ADMChannelResponse?
@@ -11889,7 +11890,7 @@ public struct UpdateAdmChannelOutput {
     }
 }
 
-public struct UpdateApnsChannelInput {
+public struct UpdateApnsChannelInput: Swift.Sendable {
     /// Specifies the status and settings of the APNs (Apple Push Notification service) channel for an application.
     /// This member is required.
     public var apnsChannelRequest: PinpointClientTypes.APNSChannelRequest?
@@ -11907,7 +11908,7 @@ public struct UpdateApnsChannelInput {
     }
 }
 
-public struct UpdateApnsChannelOutput {
+public struct UpdateApnsChannelOutput: Swift.Sendable {
     /// Provides information about the status and settings of the APNs (Apple Push Notification service) channel for an application.
     /// This member is required.
     public var apnsChannelResponse: PinpointClientTypes.APNSChannelResponse?
@@ -11920,7 +11921,7 @@ public struct UpdateApnsChannelOutput {
     }
 }
 
-public struct UpdateApnsSandboxChannelInput {
+public struct UpdateApnsSandboxChannelInput: Swift.Sendable {
     /// Specifies the status and settings of the APNs (Apple Push Notification service) sandbox channel for an application.
     /// This member is required.
     public var apnsSandboxChannelRequest: PinpointClientTypes.APNSSandboxChannelRequest?
@@ -11938,7 +11939,7 @@ public struct UpdateApnsSandboxChannelInput {
     }
 }
 
-public struct UpdateApnsSandboxChannelOutput {
+public struct UpdateApnsSandboxChannelOutput: Swift.Sendable {
     /// Provides information about the status and settings of the APNs (Apple Push Notification service) sandbox channel for an application.
     /// This member is required.
     public var apnsSandboxChannelResponse: PinpointClientTypes.APNSSandboxChannelResponse?
@@ -11951,7 +11952,7 @@ public struct UpdateApnsSandboxChannelOutput {
     }
 }
 
-public struct UpdateApnsVoipChannelInput {
+public struct UpdateApnsVoipChannelInput: Swift.Sendable {
     /// Specifies the status and settings of the APNs (Apple Push Notification service) VoIP channel for an application.
     /// This member is required.
     public var apnsVoipChannelRequest: PinpointClientTypes.APNSVoipChannelRequest?
@@ -11969,7 +11970,7 @@ public struct UpdateApnsVoipChannelInput {
     }
 }
 
-public struct UpdateApnsVoipChannelOutput {
+public struct UpdateApnsVoipChannelOutput: Swift.Sendable {
     /// Provides information about the status and settings of the APNs (Apple Push Notification service) VoIP channel for an application.
     /// This member is required.
     public var apnsVoipChannelResponse: PinpointClientTypes.APNSVoipChannelResponse?
@@ -11982,7 +11983,7 @@ public struct UpdateApnsVoipChannelOutput {
     }
 }
 
-public struct UpdateApnsVoipSandboxChannelInput {
+public struct UpdateApnsVoipSandboxChannelInput: Swift.Sendable {
     /// Specifies the status and settings of the APNs (Apple Push Notification service) VoIP sandbox channel for an application.
     /// This member is required.
     public var apnsVoipSandboxChannelRequest: PinpointClientTypes.APNSVoipSandboxChannelRequest?
@@ -12000,7 +12001,7 @@ public struct UpdateApnsVoipSandboxChannelInput {
     }
 }
 
-public struct UpdateApnsVoipSandboxChannelOutput {
+public struct UpdateApnsVoipSandboxChannelOutput: Swift.Sendable {
     /// Provides information about the status and settings of the APNs (Apple Push Notification service) VoIP sandbox channel for an application.
     /// This member is required.
     public var apnsVoipSandboxChannelResponse: PinpointClientTypes.APNSVoipSandboxChannelResponse?
@@ -12014,8 +12015,9 @@ public struct UpdateApnsVoipSandboxChannelOutput {
 }
 
 extension PinpointClientTypes {
+
     /// Specifies the default settings for an application.
-    public struct WriteApplicationSettingsRequest {
+    public struct WriteApplicationSettingsRequest: Swift.Sendable {
         /// The settings for the AWS Lambda function to invoke by default as a code hook for campaigns in the application. You can use this hook to customize segments that are used by campaigns in the application. To override these settings and define custom settings for a specific campaign, use the CampaignHook object of the Campaign resource.
         public var campaignHook: PinpointClientTypes.CampaignHook?
         /// Specifies whether to enable application-related alarms in Amazon CloudWatch.
@@ -12054,10 +12056,9 @@ extension PinpointClientTypes {
             self.quietTime = quietTime
         }
     }
-
 }
 
-public struct UpdateApplicationSettingsInput {
+public struct UpdateApplicationSettingsInput: Swift.Sendable {
     /// The unique identifier for the application. This identifier is displayed as the Project ID on the Amazon Pinpoint console.
     /// This member is required.
     public var applicationId: Swift.String?
@@ -12075,7 +12076,7 @@ public struct UpdateApplicationSettingsInput {
     }
 }
 
-public struct UpdateApplicationSettingsOutput {
+public struct UpdateApplicationSettingsOutput: Swift.Sendable {
     /// Provides information about an application, including the default settings for an application.
     /// This member is required.
     public var applicationSettingsResource: PinpointClientTypes.ApplicationSettingsResource?
@@ -12088,7 +12089,7 @@ public struct UpdateApplicationSettingsOutput {
     }
 }
 
-public struct UpdateBaiduChannelInput {
+public struct UpdateBaiduChannelInput: Swift.Sendable {
     /// The unique identifier for the application. This identifier is displayed as the Project ID on the Amazon Pinpoint console.
     /// This member is required.
     public var applicationId: Swift.String?
@@ -12106,7 +12107,7 @@ public struct UpdateBaiduChannelInput {
     }
 }
 
-public struct UpdateBaiduChannelOutput {
+public struct UpdateBaiduChannelOutput: Swift.Sendable {
     /// Provides information about the status and settings of the Baidu (Baidu Cloud Push) channel for an application.
     /// This member is required.
     public var baiduChannelResponse: PinpointClientTypes.BaiduChannelResponse?
@@ -12119,7 +12120,7 @@ public struct UpdateBaiduChannelOutput {
     }
 }
 
-public struct UpdateCampaignInput {
+public struct UpdateCampaignInput: Swift.Sendable {
     /// The unique identifier for the application. This identifier is displayed as the Project ID on the Amazon Pinpoint console.
     /// This member is required.
     public var applicationId: Swift.String?
@@ -12142,7 +12143,7 @@ public struct UpdateCampaignInput {
     }
 }
 
-public struct UpdateCampaignOutput {
+public struct UpdateCampaignOutput: Swift.Sendable {
     /// Provides information about the status, configuration, and other settings for a campaign.
     /// This member is required.
     public var campaignResponse: PinpointClientTypes.CampaignResponse?
@@ -12155,7 +12156,7 @@ public struct UpdateCampaignOutput {
     }
 }
 
-public struct UpdateEmailChannelInput {
+public struct UpdateEmailChannelInput: Swift.Sendable {
     /// The unique identifier for the application. This identifier is displayed as the Project ID on the Amazon Pinpoint console.
     /// This member is required.
     public var applicationId: Swift.String?
@@ -12173,7 +12174,7 @@ public struct UpdateEmailChannelInput {
     }
 }
 
-public struct UpdateEmailChannelOutput {
+public struct UpdateEmailChannelOutput: Swift.Sendable {
     /// Provides information about the status and settings of the email channel for an application.
     /// This member is required.
     public var emailChannelResponse: PinpointClientTypes.EmailChannelResponse?
@@ -12186,7 +12187,7 @@ public struct UpdateEmailChannelOutput {
     }
 }
 
-public struct UpdateEmailTemplateInput {
+public struct UpdateEmailTemplateInput: Swift.Sendable {
     /// Specifies whether to save the updates as a new version of the message template. Valid values are: true, save the updates as a new version; and, false, save the updates to (overwrite) the latest existing version of the template. If you don't specify a value for this parameter, Amazon Pinpoint saves the updates to (overwrites) the latest existing version of the template. If you specify a value of true for this parameter, don't specify a value for the version parameter. Otherwise, an error will occur.
     public var createNewVersion: Swift.Bool?
     /// Specifies the content and settings for a message template that can be used in messages that are sent through the email channel.
@@ -12218,7 +12219,7 @@ public struct UpdateEmailTemplateInput {
     }
 }
 
-public struct UpdateEmailTemplateOutput {
+public struct UpdateEmailTemplateOutput: Swift.Sendable {
     /// Provides information about an API request or response.
     /// This member is required.
     public var messageBody: PinpointClientTypes.MessageBody?
@@ -12231,7 +12232,7 @@ public struct UpdateEmailTemplateOutput {
     }
 }
 
-public struct UpdateEndpointInput {
+public struct UpdateEndpointInput: Swift.Sendable {
     /// The unique identifier for the application. This identifier is displayed as the Project ID on the Amazon Pinpoint console.
     /// This member is required.
     public var applicationId: Swift.String?
@@ -12254,7 +12255,7 @@ public struct UpdateEndpointInput {
     }
 }
 
-public struct UpdateEndpointOutput {
+public struct UpdateEndpointOutput: Swift.Sendable {
     /// Provides information about an API request or response.
     /// This member is required.
     public var messageBody: PinpointClientTypes.MessageBody?
@@ -12267,7 +12268,7 @@ public struct UpdateEndpointOutput {
     }
 }
 
-public struct UpdateEndpointsBatchInput {
+public struct UpdateEndpointsBatchInput: Swift.Sendable {
     /// The unique identifier for the application. This identifier is displayed as the Project ID on the Amazon Pinpoint console.
     /// This member is required.
     public var applicationId: Swift.String?
@@ -12285,7 +12286,7 @@ public struct UpdateEndpointsBatchInput {
     }
 }
 
-public struct UpdateEndpointsBatchOutput {
+public struct UpdateEndpointsBatchOutput: Swift.Sendable {
     /// Provides information about an API request or response.
     /// This member is required.
     public var messageBody: PinpointClientTypes.MessageBody?
@@ -12298,7 +12299,7 @@ public struct UpdateEndpointsBatchOutput {
     }
 }
 
-public struct UpdateGcmChannelInput {
+public struct UpdateGcmChannelInput: Swift.Sendable {
     /// The unique identifier for the application. This identifier is displayed as the Project ID on the Amazon Pinpoint console.
     /// This member is required.
     public var applicationId: Swift.String?
@@ -12316,7 +12317,7 @@ public struct UpdateGcmChannelInput {
     }
 }
 
-public struct UpdateGcmChannelOutput {
+public struct UpdateGcmChannelOutput: Swift.Sendable {
     /// Provides information about the status and settings of the GCM channel for an application. The GCM channel enables Amazon Pinpoint to send push notifications through the Firebase Cloud Messaging (FCM), formerly Google Cloud Messaging (GCM), service.
     /// This member is required.
     public var gcmChannelResponse: PinpointClientTypes.GCMChannelResponse?
@@ -12329,7 +12330,7 @@ public struct UpdateGcmChannelOutput {
     }
 }
 
-public struct UpdateInAppTemplateInput {
+public struct UpdateInAppTemplateInput: Swift.Sendable {
     /// Specifies whether to save the updates as a new version of the message template. Valid values are: true, save the updates as a new version; and, false, save the updates to (overwrite) the latest existing version of the template. If you don't specify a value for this parameter, Amazon Pinpoint saves the updates to (overwrites) the latest existing version of the template. If you specify a value of true for this parameter, don't specify a value for the version parameter. Otherwise, an error will occur.
     public var createNewVersion: Swift.Bool?
     /// InApp Template Request.
@@ -12361,7 +12362,7 @@ public struct UpdateInAppTemplateInput {
     }
 }
 
-public struct UpdateInAppTemplateOutput {
+public struct UpdateInAppTemplateOutput: Swift.Sendable {
     /// Provides information about an API request or response.
     /// This member is required.
     public var messageBody: PinpointClientTypes.MessageBody?
@@ -12374,7 +12375,7 @@ public struct UpdateInAppTemplateOutput {
     }
 }
 
-public struct UpdateJourneyInput {
+public struct UpdateJourneyInput: Swift.Sendable {
     /// The unique identifier for the application. This identifier is displayed as the Project ID on the Amazon Pinpoint console.
     /// This member is required.
     public var applicationId: Swift.String?
@@ -12397,7 +12398,7 @@ public struct UpdateJourneyInput {
     }
 }
 
-public struct UpdateJourneyOutput {
+public struct UpdateJourneyOutput: Swift.Sendable {
     /// Provides information about the status, configuration, and other settings for a journey.
     /// This member is required.
     public var journeyResponse: PinpointClientTypes.JourneyResponse?
@@ -12410,7 +12411,7 @@ public struct UpdateJourneyOutput {
     }
 }
 
-public struct UpdateJourneyStateInput {
+public struct UpdateJourneyStateInput: Swift.Sendable {
     /// The unique identifier for the application. This identifier is displayed as the Project ID on the Amazon Pinpoint console.
     /// This member is required.
     public var applicationId: Swift.String?
@@ -12433,7 +12434,7 @@ public struct UpdateJourneyStateInput {
     }
 }
 
-public struct UpdateJourneyStateOutput {
+public struct UpdateJourneyStateOutput: Swift.Sendable {
     /// Provides information about the status, configuration, and other settings for a journey.
     /// This member is required.
     public var journeyResponse: PinpointClientTypes.JourneyResponse?
@@ -12446,7 +12447,7 @@ public struct UpdateJourneyStateOutput {
     }
 }
 
-public struct UpdatePushTemplateInput {
+public struct UpdatePushTemplateInput: Swift.Sendable {
     /// Specifies whether to save the updates as a new version of the message template. Valid values are: true, save the updates as a new version; and, false, save the updates to (overwrite) the latest existing version of the template. If you don't specify a value for this parameter, Amazon Pinpoint saves the updates to (overwrites) the latest existing version of the template. If you specify a value of true for this parameter, don't specify a value for the version parameter. Otherwise, an error will occur.
     public var createNewVersion: Swift.Bool?
     /// Specifies the content and settings for a message template that can be used in messages that are sent through a push notification channel.
@@ -12478,7 +12479,7 @@ public struct UpdatePushTemplateInput {
     }
 }
 
-public struct UpdatePushTemplateOutput {
+public struct UpdatePushTemplateOutput: Swift.Sendable {
     /// Provides information about an API request or response.
     /// This member is required.
     public var messageBody: PinpointClientTypes.MessageBody?
@@ -12492,8 +12493,9 @@ public struct UpdatePushTemplateOutput {
 }
 
 extension PinpointClientTypes {
+
     /// Specifies Amazon Pinpoint configuration settings for retrieving and processing recommendation data from a recommender model.
-    public struct UpdateRecommenderConfigurationShape {
+    public struct UpdateRecommenderConfigurationShape: Swift.Sendable {
         /// A map of key-value pairs that defines 1-10 custom endpoint or user attributes, depending on the value for the RecommendationProviderIdType property. Each of these attributes temporarily stores a recommended item that's retrieved from the recommender model and sent to an AWS Lambda function for additional processing. Each attribute can be used as a message variable in a message template. In the map, the key is the name of a custom attribute and the value is a custom display name for that attribute. The display name appears in the Attribute finder of the template editor on the Amazon Pinpoint console. The following restrictions apply to these names:
         ///
         /// * An attribute name must start with a letter or number and it can contain up to 50 characters. The characters can be letters, numbers, underscores (_), or hyphens (-). Attribute names are case sensitive and must be unique.
@@ -12549,10 +12551,9 @@ extension PinpointClientTypes {
             self.recommendationsPerMessage = recommendationsPerMessage
         }
     }
-
 }
 
-public struct UpdateRecommenderConfigurationInput {
+public struct UpdateRecommenderConfigurationInput: Swift.Sendable {
     /// The unique identifier for the recommender model configuration. This identifier is displayed as the Recommender ID on the Amazon Pinpoint console.
     /// This member is required.
     public var recommenderId: Swift.String?
@@ -12570,7 +12571,7 @@ public struct UpdateRecommenderConfigurationInput {
     }
 }
 
-public struct UpdateRecommenderConfigurationOutput {
+public struct UpdateRecommenderConfigurationOutput: Swift.Sendable {
     /// Provides information about Amazon Pinpoint configuration settings for retrieving and processing data from a recommender model.
     /// This member is required.
     public var recommenderConfigurationResponse: PinpointClientTypes.RecommenderConfigurationResponse?
@@ -12583,7 +12584,7 @@ public struct UpdateRecommenderConfigurationOutput {
     }
 }
 
-public struct UpdateSegmentInput {
+public struct UpdateSegmentInput: Swift.Sendable {
     /// The unique identifier for the application. This identifier is displayed as the Project ID on the Amazon Pinpoint console.
     /// This member is required.
     public var applicationId: Swift.String?
@@ -12606,7 +12607,7 @@ public struct UpdateSegmentInput {
     }
 }
 
-public struct UpdateSegmentOutput {
+public struct UpdateSegmentOutput: Swift.Sendable {
     /// Provides information about the configuration, dimension, and other settings for a segment.
     /// This member is required.
     public var segmentResponse: PinpointClientTypes.SegmentResponse?
@@ -12620,8 +12621,9 @@ public struct UpdateSegmentOutput {
 }
 
 extension PinpointClientTypes {
+
     /// Specifies the status and settings of the SMS channel for an application.
-    public struct SMSChannelRequest {
+    public struct SMSChannelRequest: Swift.Sendable {
         /// Specifies whether to enable the SMS channel for the application.
         public var enabled: Swift.Bool?
         /// The identity that you want to display on recipients' devices when they receive messages from the SMS channel.
@@ -12640,10 +12642,9 @@ extension PinpointClientTypes {
             self.shortCode = shortCode
         }
     }
-
 }
 
-public struct UpdateSmsChannelInput {
+public struct UpdateSmsChannelInput: Swift.Sendable {
     /// The unique identifier for the application. This identifier is displayed as the Project ID on the Amazon Pinpoint console.
     /// This member is required.
     public var applicationId: Swift.String?
@@ -12661,7 +12662,7 @@ public struct UpdateSmsChannelInput {
     }
 }
 
-public struct UpdateSmsChannelOutput {
+public struct UpdateSmsChannelOutput: Swift.Sendable {
     /// Provides information about the status and settings of the SMS channel for an application.
     /// This member is required.
     public var smsChannelResponse: PinpointClientTypes.SMSChannelResponse?
@@ -12674,7 +12675,7 @@ public struct UpdateSmsChannelOutput {
     }
 }
 
-public struct UpdateSmsTemplateInput {
+public struct UpdateSmsTemplateInput: Swift.Sendable {
     /// Specifies whether to save the updates as a new version of the message template. Valid values are: true, save the updates as a new version; and, false, save the updates to (overwrite) the latest existing version of the template. If you don't specify a value for this parameter, Amazon Pinpoint saves the updates to (overwrites) the latest existing version of the template. If you specify a value of true for this parameter, don't specify a value for the version parameter. Otherwise, an error will occur.
     public var createNewVersion: Swift.Bool?
     /// Specifies the content and settings for a message template that can be used in text messages that are sent through the SMS channel.
@@ -12706,7 +12707,7 @@ public struct UpdateSmsTemplateInput {
     }
 }
 
-public struct UpdateSmsTemplateOutput {
+public struct UpdateSmsTemplateOutput: Swift.Sendable {
     /// Provides information about an API request or response.
     /// This member is required.
     public var messageBody: PinpointClientTypes.MessageBody?
@@ -12720,8 +12721,9 @@ public struct UpdateSmsTemplateOutput {
 }
 
 extension PinpointClientTypes {
+
     /// Specifies which version of a message template to use as the active version of the template.
-    public struct TemplateActiveVersionRequest {
+    public struct TemplateActiveVersionRequest: Swift.Sendable {
         /// The version of the message template to use as the active version of the template. Valid values are: latest, for the most recent version of the template; or, the unique identifier for any existing version of the template. If you specify an identifier, the value must match the identifier for an existing template version. To retrieve a list of versions and version identifiers for a template, use the Template Versions resource.
         public var version: Swift.String?
 
@@ -12732,10 +12734,9 @@ extension PinpointClientTypes {
             self.version = version
         }
     }
-
 }
 
-public struct UpdateTemplateActiveVersionInput {
+public struct UpdateTemplateActiveVersionInput: Swift.Sendable {
     /// Specifies which version of a message template to use as the active version of the template.
     /// This member is required.
     public var templateActiveVersionRequest: PinpointClientTypes.TemplateActiveVersionRequest?
@@ -12758,7 +12759,7 @@ public struct UpdateTemplateActiveVersionInput {
     }
 }
 
-public struct UpdateTemplateActiveVersionOutput {
+public struct UpdateTemplateActiveVersionOutput: Swift.Sendable {
     /// Provides information about an API request or response.
     /// This member is required.
     public var messageBody: PinpointClientTypes.MessageBody?
@@ -12772,8 +12773,9 @@ public struct UpdateTemplateActiveVersionOutput {
 }
 
 extension PinpointClientTypes {
+
     /// Specifies the status and settings of the voice channel for an application.
-    public struct VoiceChannelRequest {
+    public struct VoiceChannelRequest: Swift.Sendable {
         /// Specifies whether to enable the voice channel for the application.
         public var enabled: Swift.Bool?
 
@@ -12784,10 +12786,9 @@ extension PinpointClientTypes {
             self.enabled = enabled
         }
     }
-
 }
 
-public struct UpdateVoiceChannelInput {
+public struct UpdateVoiceChannelInput: Swift.Sendable {
     /// The unique identifier for the application. This identifier is displayed as the Project ID on the Amazon Pinpoint console.
     /// This member is required.
     public var applicationId: Swift.String?
@@ -12805,7 +12806,7 @@ public struct UpdateVoiceChannelInput {
     }
 }
 
-public struct UpdateVoiceChannelOutput {
+public struct UpdateVoiceChannelOutput: Swift.Sendable {
     /// Provides information about the status and settings of the voice channel for an application.
     /// This member is required.
     public var voiceChannelResponse: PinpointClientTypes.VoiceChannelResponse?
@@ -12818,7 +12819,7 @@ public struct UpdateVoiceChannelOutput {
     }
 }
 
-public struct UpdateVoiceTemplateInput {
+public struct UpdateVoiceTemplateInput: Swift.Sendable {
     /// Specifies whether to save the updates as a new version of the message template. Valid values are: true, save the updates as a new version; and, false, save the updates to (overwrite) the latest existing version of the template. If you don't specify a value for this parameter, Amazon Pinpoint saves the updates to (overwrites) the latest existing version of the template. If you specify a value of true for this parameter, don't specify a value for the version parameter. Otherwise, an error will occur.
     public var createNewVersion: Swift.Bool?
     /// The name of the message template. A template name must start with an alphanumeric character and can contain a maximum of 128 characters. The characters can be alphanumeric characters, underscores (_), or hyphens (-). Template names are case sensitive.
@@ -12850,7 +12851,7 @@ public struct UpdateVoiceTemplateInput {
     }
 }
 
-public struct UpdateVoiceTemplateOutput {
+public struct UpdateVoiceTemplateOutput: Swift.Sendable {
     /// Provides information about an API request or response.
     /// This member is required.
     public var messageBody: PinpointClientTypes.MessageBody?
@@ -12864,8 +12865,9 @@ public struct UpdateVoiceTemplateOutput {
 }
 
 extension PinpointClientTypes {
+
     /// Verify OTP message request.
-    public struct VerifyOTPMessageRequestParameters {
+    public struct VerifyOTPMessageRequestParameters: Swift.Sendable {
         /// The destination identity to send OTP to.
         /// This member is required.
         public var destinationIdentity: Swift.String?
@@ -12887,10 +12889,9 @@ extension PinpointClientTypes {
             self.referenceId = referenceId
         }
     }
-
 }
 
-public struct VerifyOTPMessageInput {
+public struct VerifyOTPMessageInput: Swift.Sendable {
     /// The unique ID of your Amazon Pinpoint application.
     /// This member is required.
     public var applicationId: Swift.String?
@@ -12909,8 +12910,9 @@ public struct VerifyOTPMessageInput {
 }
 
 extension PinpointClientTypes {
+
     /// Verify OTP Message Response.
-    public struct VerificationResponse {
+    public struct VerificationResponse: Swift.Sendable {
         /// Specifies whether the OTP is valid or not.
         public var valid: Swift.Bool?
 
@@ -12921,10 +12923,9 @@ extension PinpointClientTypes {
             self.valid = valid
         }
     }
-
 }
 
-public struct VerifyOTPMessageOutput {
+public struct VerifyOTPMessageOutput: Swift.Sendable {
     /// Verify OTP Message Response.
     /// This member is required.
     public var verificationResponse: PinpointClientTypes.VerificationResponse?

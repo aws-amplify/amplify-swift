@@ -28,7 +28,7 @@ import protocol ClientRuntime.ModeledError
 
 extension CostExplorerClientTypes {
 
-    public enum AccountScope: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AccountScope: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case linked
         case payer
         case sdkUnknown(Swift.String)
@@ -56,8 +56,9 @@ extension CostExplorerClientTypes {
 }
 
 extension CostExplorerClientTypes {
+
     /// Quantifies the anomaly. The higher score means that it's more anomalous.
-    public struct AnomalyScore {
+    public struct AnomalyScore: Swift.Sendable {
         /// The last observed score.
         /// This member is required.
         public var currentScore: Swift.Double
@@ -74,12 +75,11 @@ extension CostExplorerClientTypes {
             self.maxScore = maxScore
         }
     }
-
 }
 
 extension CostExplorerClientTypes {
 
-    public enum AnomalyFeedbackType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AnomalyFeedbackType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case no
         case plannedActivity
         case yes
@@ -110,8 +110,9 @@ extension CostExplorerClientTypes {
 }
 
 extension CostExplorerClientTypes {
+
     /// The dollar value of the anomaly.
-    public struct Impact {
+    public struct Impact: Swift.Sendable {
         /// The maximum dollar value that's observed for an anomaly.
         /// This member is required.
         public var maxImpact: Swift.Double
@@ -139,12 +140,12 @@ extension CostExplorerClientTypes {
             self.totalImpactPercentage = totalImpactPercentage
         }
     }
-
 }
 
 extension CostExplorerClientTypes {
+
     /// The combination of Amazon Web Servicesservice, linked account, linked account name, Region, and usage type where a cost anomaly is observed. The linked account name will only be available when the account name can be identified.
-    public struct RootCause {
+    public struct RootCause: Swift.Sendable {
         /// The member account value that's associated with the cost anomaly.
         public var linkedAccount: Swift.String?
         /// The member account name value that's associated with the cost anomaly.
@@ -171,12 +172,12 @@ extension CostExplorerClientTypes {
             self.usageType = usageType
         }
     }
-
 }
 
 extension CostExplorerClientTypes {
+
     /// An unusual cost pattern. This consists of the detailed metadata and the current status of the anomaly object.
-    public struct Anomaly {
+    public struct Anomaly: Swift.Sendable {
         /// The last day the anomaly is detected.
         public var anomalyEndDate: Swift.String?
         /// The unique identifier for the anomaly.
@@ -223,12 +224,12 @@ extension CostExplorerClientTypes {
             self.rootCauses = rootCauses
         }
     }
-
 }
 
 extension CostExplorerClientTypes {
+
     /// The time period for an anomaly.
-    public struct AnomalyDateInterval {
+    public struct AnomalyDateInterval: Swift.Sendable {
         /// The last date an anomaly was observed.
         public var endDate: Swift.String?
         /// The first date an anomaly was observed.
@@ -244,12 +245,11 @@ extension CostExplorerClientTypes {
             self.startDate = startDate
         }
     }
-
 }
 
 extension CostExplorerClientTypes {
 
-    public enum MonitorDimension: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum MonitorDimension: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case service
         case sdkUnknown(Swift.String)
 
@@ -275,7 +275,7 @@ extension CostExplorerClientTypes {
 
 extension CostExplorerClientTypes {
 
-    public enum MatchOption: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum MatchOption: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case absent
         case caseInsensitive
         case caseSensitive
@@ -321,8 +321,9 @@ extension CostExplorerClientTypes {
 }
 
 extension CostExplorerClientTypes {
+
     /// The Cost Categories values used for filtering the costs. If Values and Key are not specified, the ABSENTMatchOption is applied to all Cost Categories. That is, it filters on resources that aren't mapped to any Cost Categories. If Values is provided and Key isn't specified, the ABSENTMatchOption is applied to the Cost Categories Key only. That is, it filters on resources without the given Cost Categories key.
-    public struct CostCategoryValues {
+    public struct CostCategoryValues: Swift.Sendable {
         /// The unique name of the Cost Category.
         public var key: Swift.String?
         /// The match options that you can use to filter your results. MatchOptions is only applicable for actions related to cost category. The default values for MatchOptions is EQUALS and CASE_SENSITIVE.
@@ -341,12 +342,11 @@ extension CostExplorerClientTypes {
             self.values = values
         }
     }
-
 }
 
 extension CostExplorerClientTypes {
 
-    public enum Dimension: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Dimension: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case agreementEndDateTimeAfter
         case agreementEndDateTimeBefore
         case anomalyTotalImpactAbsolute
@@ -470,8 +470,9 @@ extension CostExplorerClientTypes {
 }
 
 extension CostExplorerClientTypes {
+
     /// The metadata that you can use to filter and group your results. You can use GetDimensionValues to find specific values.
-    public struct DimensionValues {
+    public struct DimensionValues: Swift.Sendable {
         /// The names of the metadata types that you can use to filter and group your results. For example, AZ returns a list of Availability Zones. Not all dimensions are supported in each API. Refer to the documentation for each specific API to see what is supported. LINK_ACCOUNT_NAME and SERVICE_CODE can only be used in [CostCategoryRule](https://docs.aws.amazon.com/aws-cost-management/latest/APIReference/API_CostCategoryRule.html). ANOMALY_TOTAL_IMPACT_ABSOLUTE and ANOMALY_TOTAL_IMPACT_PERCENTAGE can only be used in [AnomalySubscriptions](https://docs.aws.amazon.com/aws-cost-management/latest/APIReference/API_AnomalySubscription.html).
         public var key: CostExplorerClientTypes.Dimension?
         /// The match options that you can use to filter your results. MatchOptions is only applicable for actions related to Cost Category and Anomaly Subscriptions. Refer to the documentation for each specific API to see what is supported. The default values for MatchOptions are EQUALS and CASE_SENSITIVE.
@@ -490,12 +491,12 @@ extension CostExplorerClientTypes {
             self.values = values
         }
     }
-
 }
 
 extension CostExplorerClientTypes {
+
     /// The values that are available for a tag. If Values and Key aren't specified, the ABSENTMatchOption is applied to all tags. That is, it's filtered on resources with no tags. If Key is provided and Values isn't specified, the ABSENTMatchOption is applied to the tag Key only. That is, it's filtered on resources without the given tag key.
-    public struct TagValues {
+    public struct TagValues: Swift.Sendable {
         /// The key for the tag.
         public var key: Swift.String?
         /// The match options that you can use to filter your results. MatchOptions is only applicable for actions related to Cost Category. The default values for MatchOptions are EQUALS and CASE_SENSITIVE.
@@ -514,12 +515,11 @@ extension CostExplorerClientTypes {
             self.values = values
         }
     }
-
 }
 
 extension CostExplorerClientTypes {
 
-    public enum MonitorType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum MonitorType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case custom
         case dimensional
         case sdkUnknown(Swift.String)
@@ -548,7 +548,7 @@ extension CostExplorerClientTypes {
 
 extension CostExplorerClientTypes {
 
-    public enum AnomalySubscriptionFrequency: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AnomalySubscriptionFrequency: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case daily
         case immediate
         case weekly
@@ -580,7 +580,7 @@ extension CostExplorerClientTypes {
 
 extension CostExplorerClientTypes {
 
-    public enum SubscriberStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SubscriberStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case confirmed
         case declined
         case sdkUnknown(Swift.String)
@@ -609,7 +609,7 @@ extension CostExplorerClientTypes {
 
 extension CostExplorerClientTypes {
 
-    public enum SubscriberType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SubscriberType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case email
         case sns
         case sdkUnknown(Swift.String)
@@ -637,8 +637,9 @@ extension CostExplorerClientTypes {
 }
 
 extension CostExplorerClientTypes {
+
     /// The recipient of AnomalySubscription notifications.
-    public struct Subscriber {
+    public struct Subscriber: Swift.Sendable {
         /// The email address or SNS Amazon Resource Name (ARN). This depends on the Type.
         public var address: Swift.String?
         /// Indicates if the subscriber accepts the notifications.
@@ -657,12 +658,11 @@ extension CostExplorerClientTypes {
             self.type = type
         }
     }
-
 }
 
 extension CostExplorerClientTypes {
 
-    public enum ApproximationDimension: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ApproximationDimension: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case resource
         case service
         case sdkUnknown(Swift.String)
@@ -714,8 +714,9 @@ public struct LimitExceededException: ClientRuntime.ModeledError, AWSClientRunti
 }
 
 extension CostExplorerClientTypes {
+
     /// The tag structure that contains a tag key and value. Tagging is supported only for the following Cost Explorer resource types: [AnomalyMonitor](https://docs.aws.amazon.com/aws-cost-management/latest/APIReference/API_AnomalyMonitor.html), [AnomalySubscription](https://docs.aws.amazon.com/aws-cost-management/latest/APIReference/API_AnomalySubscription.html), [CostCategory](https://docs.aws.amazon.com/aws-cost-management/latest/APIReference/API_CostCategory.html).
-    public struct ResourceTag {
+    public struct ResourceTag: Swift.Sendable {
         /// The key that's associated with the tag.
         /// This member is required.
         public var key: Swift.String?
@@ -732,10 +733,9 @@ extension CostExplorerClientTypes {
             self.value = value
         }
     }
-
 }
 
-public struct CreateAnomalyMonitorOutput {
+public struct CreateAnomalyMonitorOutput: Swift.Sendable {
     /// The unique identifier of your newly created cost anomaly detection monitor.
     /// This member is required.
     public var monitorArn: Swift.String?
@@ -772,7 +772,7 @@ public struct UnknownMonitorException: ClientRuntime.ModeledError, AWSClientRunt
     }
 }
 
-public struct CreateAnomalySubscriptionOutput {
+public struct CreateAnomalySubscriptionOutput: Swift.Sendable {
     /// The unique identifier of your newly created cost anomaly subscription.
     /// This member is required.
     public var subscriptionArn: Swift.String?
@@ -811,7 +811,7 @@ public struct ServiceQuotaExceededException: ClientRuntime.ModeledError, AWSClie
 
 extension CostExplorerClientTypes {
 
-    public enum CostCategoryInheritedValueDimensionName: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum CostCategoryInheritedValueDimensionName: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case linkedAccountName
         case tag
         case sdkUnknown(Swift.String)
@@ -839,8 +839,9 @@ extension CostExplorerClientTypes {
 }
 
 extension CostExplorerClientTypes {
+
     /// When you create or update a cost category, you can define the CostCategoryRule rule type as INHERITED_VALUE. This rule type adds the flexibility to define a rule that dynamically inherits the cost category value from the dimension value that's defined by CostCategoryInheritedValueDimension. For example, suppose that you want to dynamically group costs that are based on the value of a specific tag key. First, choose an inherited value rule type, and then choose the tag dimension and specify the tag key to use.
-    public struct CostCategoryInheritedValueDimension {
+    public struct CostCategoryInheritedValueDimension: Swift.Sendable {
         /// The key to extract cost category values.
         public var dimensionKey: Swift.String?
         /// The name of the dimension that's used to group costs. If you specify LINKED_ACCOUNT_NAME, the cost category value is based on account name. If you specify TAG, the cost category value is based on the value of the specified tag key.
@@ -855,12 +856,11 @@ extension CostExplorerClientTypes {
             self.dimensionName = dimensionName
         }
     }
-
 }
 
 extension CostExplorerClientTypes {
 
-    public enum CostCategoryRuleType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum CostCategoryRuleType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case inheritedValue
         case regular
         case sdkUnknown(Swift.String)
@@ -890,7 +890,7 @@ extension CostExplorerClientTypes {
 extension CostExplorerClientTypes {
 
     /// The rule schema version in this particular Cost Category.
-    public enum CostCategoryRuleVersion: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum CostCategoryRuleVersion: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case costcategoryexpressionv1
         case sdkUnknown(Swift.String)
 
@@ -916,7 +916,7 @@ extension CostExplorerClientTypes {
 
 extension CostExplorerClientTypes {
 
-    public enum CostCategorySplitChargeMethod: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum CostCategorySplitChargeMethod: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case even
         case fixed
         case proportional
@@ -948,7 +948,7 @@ extension CostExplorerClientTypes {
 
 extension CostExplorerClientTypes {
 
-    public enum CostCategorySplitChargeRuleParameterType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum CostCategorySplitChargeRuleParameterType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case allocationPercentages
         case sdkUnknown(Swift.String)
 
@@ -973,8 +973,9 @@ extension CostExplorerClientTypes {
 }
 
 extension CostExplorerClientTypes {
+
     /// The parameters for a split charge method.
-    public struct CostCategorySplitChargeRuleParameter {
+    public struct CostCategorySplitChargeRuleParameter: Swift.Sendable {
         /// The parameter type.
         /// This member is required.
         public var type: CostExplorerClientTypes.CostCategorySplitChargeRuleParameterType?
@@ -991,12 +992,12 @@ extension CostExplorerClientTypes {
             self.values = values
         }
     }
-
 }
 
 extension CostExplorerClientTypes {
+
     /// Use the split charge rule to split the cost of one Cost Category value across several other target values.
-    public struct CostCategorySplitChargeRule {
+    public struct CostCategorySplitChargeRule: Swift.Sendable {
         /// The method that's used to define how to split your source costs across your targets. Proportional - Allocates charges across your targets based on the proportional weighted cost of each target. Fixed - Allocates charges across your targets based on your defined allocation percentage. >Even - Allocates costs evenly across all targets.
         /// This member is required.
         public var method: CostExplorerClientTypes.CostCategorySplitChargeMethod?
@@ -1022,10 +1023,9 @@ extension CostExplorerClientTypes {
             self.targets = targets
         }
     }
-
 }
 
-public struct CreateCostCategoryDefinitionOutput {
+public struct CreateCostCategoryDefinitionOutput: Swift.Sendable {
     /// The unique identifier for your newly created Cost Category.
     public var costCategoryArn: Swift.String?
     /// The Cost Category's effective start date. It can only be a billing start date (first day of the month).
@@ -1041,7 +1041,7 @@ public struct CreateCostCategoryDefinitionOutput {
     }
 }
 
-public struct DeleteAnomalyMonitorInput {
+public struct DeleteAnomalyMonitorInput: Swift.Sendable {
     /// The unique identifier of the cost anomaly monitor that you want to delete.
     /// This member is required.
     public var monitorArn: Swift.String?
@@ -1054,7 +1054,7 @@ public struct DeleteAnomalyMonitorInput {
     }
 }
 
-public struct DeleteAnomalyMonitorOutput {
+public struct DeleteAnomalyMonitorOutput: Swift.Sendable {
 
     public init() { }
 }
@@ -1083,7 +1083,7 @@ public struct UnknownSubscriptionException: ClientRuntime.ModeledError, AWSClien
     }
 }
 
-public struct DeleteAnomalySubscriptionInput {
+public struct DeleteAnomalySubscriptionInput: Swift.Sendable {
     /// The unique identifier of the cost anomaly subscription that you want to delete.
     /// This member is required.
     public var subscriptionArn: Swift.String?
@@ -1096,7 +1096,7 @@ public struct DeleteAnomalySubscriptionInput {
     }
 }
 
-public struct DeleteAnomalySubscriptionOutput {
+public struct DeleteAnomalySubscriptionOutput: Swift.Sendable {
 
     public init() { }
 }
@@ -1128,7 +1128,7 @@ public struct ResourceNotFoundException: ClientRuntime.ModeledError, AWSClientRu
     }
 }
 
-public struct DeleteCostCategoryDefinitionInput {
+public struct DeleteCostCategoryDefinitionInput: Swift.Sendable {
     /// The unique identifier for your Cost Category.
     /// This member is required.
     public var costCategoryArn: Swift.String?
@@ -1141,7 +1141,7 @@ public struct DeleteCostCategoryDefinitionInput {
     }
 }
 
-public struct DeleteCostCategoryDefinitionOutput {
+public struct DeleteCostCategoryDefinitionOutput: Swift.Sendable {
     /// The unique identifier for your Cost Category.
     public var costCategoryArn: Swift.String?
     /// The effective end date of the Cost Category as a result of deleting it. No costs after this date is categorized by the deleted Cost Category.
@@ -1157,7 +1157,7 @@ public struct DeleteCostCategoryDefinitionOutput {
     }
 }
 
-public struct DescribeCostCategoryDefinitionInput {
+public struct DescribeCostCategoryDefinitionInput: Swift.Sendable {
     /// The unique identifier for your Cost Category.
     /// This member is required.
     public var costCategoryArn: Swift.String?
@@ -1176,7 +1176,7 @@ public struct DescribeCostCategoryDefinitionInput {
 
 extension CostExplorerClientTypes {
 
-    public enum CostCategoryStatusComponent: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum CostCategoryStatusComponent: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case costExplorer
         case sdkUnknown(Swift.String)
 
@@ -1202,7 +1202,7 @@ extension CostExplorerClientTypes {
 
 extension CostExplorerClientTypes {
 
-    public enum CostCategoryStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum CostCategoryStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case applied
         case processing
         case sdkUnknown(Swift.String)
@@ -1230,8 +1230,9 @@ extension CostExplorerClientTypes {
 }
 
 extension CostExplorerClientTypes {
+
     /// The list of processing statuses for Cost Management products for a specific cost category.
-    public struct CostCategoryProcessingStatus {
+    public struct CostCategoryProcessingStatus: Swift.Sendable {
         /// The Cost Management product name of the applied status.
         public var component: CostExplorerClientTypes.CostCategoryStatusComponent?
         /// The process status for a specific cost category.
@@ -1246,7 +1247,6 @@ extension CostExplorerClientTypes {
             self.status = status
         }
     }
-
 }
 
 /// The pagination token is invalid. Try again without a pagination token.
@@ -1275,7 +1275,7 @@ public struct InvalidNextTokenException: ClientRuntime.ModeledError, AWSClientRu
 
 extension CostExplorerClientTypes {
 
-    public enum NumericOperator: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum NumericOperator: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case between
         case equal
         case greaterThan
@@ -1315,8 +1315,9 @@ extension CostExplorerClientTypes {
 }
 
 extension CostExplorerClientTypes {
+
     /// Filters cost anomalies based on the total impact.
-    public struct TotalImpactFilter {
+    public struct TotalImpactFilter: Swift.Sendable {
         /// The upper bound dollar value that's used in the filter.
         public var endValue: Swift.Double
         /// The comparing value that's used in the filter.
@@ -1337,10 +1338,9 @@ extension CostExplorerClientTypes {
             self.startValue = startValue
         }
     }
-
 }
 
-public struct GetAnomaliesInput {
+public struct GetAnomaliesInput: Swift.Sendable {
     /// Assigns the start and end dates for retrieving cost anomalies. The returned anomaly object will have an AnomalyEndDate in the specified time range.
     /// This member is required.
     public var dateInterval: CostExplorerClientTypes.AnomalyDateInterval?
@@ -1373,7 +1373,7 @@ public struct GetAnomaliesInput {
     }
 }
 
-public struct GetAnomaliesOutput {
+public struct GetAnomaliesOutput: Swift.Sendable {
     /// A list of cost anomalies.
     /// This member is required.
     public var anomalies: [CostExplorerClientTypes.Anomaly]?
@@ -1390,7 +1390,7 @@ public struct GetAnomaliesOutput {
     }
 }
 
-public struct GetAnomalyMonitorsInput {
+public struct GetAnomalyMonitorsInput: Swift.Sendable {
     /// The number of entries that a paginated response contains.
     public var maxResults: Swift.Int?
     /// A list of cost anomaly monitor ARNs.
@@ -1410,7 +1410,7 @@ public struct GetAnomalyMonitorsInput {
     }
 }
 
-public struct GetAnomalySubscriptionsInput {
+public struct GetAnomalySubscriptionsInput: Swift.Sendable {
     /// The number of entries a paginated response contains.
     public var maxResults: Swift.Int?
     /// Cost anomaly monitor ARNs.
@@ -1460,7 +1460,7 @@ public struct DataUnavailableException: ClientRuntime.ModeledError, AWSClientRun
 
 extension CostExplorerClientTypes {
 
-    public enum Granularity: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Granularity: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case daily
         case hourly
         case monthly
@@ -1490,7 +1490,7 @@ extension CostExplorerClientTypes {
     }
 }
 
-public struct GetApproximateUsageRecordsInput {
+public struct GetApproximateUsageRecordsInput: Swift.Sendable {
     /// The service to evaluate for the usage records. You can choose resource-level data at daily granularity, or hourly granularity with or without resource-level data.
     /// This member is required.
     public var approximationDimension: CostExplorerClientTypes.ApproximationDimension?
@@ -1513,8 +1513,9 @@ public struct GetApproximateUsageRecordsInput {
 }
 
 extension CostExplorerClientTypes {
+
     /// The time period of the request.
-    public struct DateInterval {
+    public struct DateInterval: Swift.Sendable {
         /// The end of the time period. The end date is exclusive. For example, if end is 2017-05-01, Amazon Web Services retrieves cost and usage data from the start date up to, but not including, 2017-05-01.
         /// This member is required.
         public var end: Swift.String?
@@ -1531,10 +1532,9 @@ extension CostExplorerClientTypes {
             self.start = start
         }
     }
-
 }
 
-public struct GetApproximateUsageRecordsOutput {
+public struct GetApproximateUsageRecordsOutput: Swift.Sendable {
     /// The lookback period that's used for the estimation.
     public var lookbackPeriod: CostExplorerClientTypes.DateInterval?
     /// The service metadata for the service or services in the response.
@@ -1604,7 +1604,7 @@ public struct RequestChangedException: ClientRuntime.ModeledError, AWSClientRunt
 
 extension CostExplorerClientTypes {
 
-    public enum GroupDefinitionType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum GroupDefinitionType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case costCategory
         case dimension
         case tag
@@ -1635,8 +1635,9 @@ extension CostExplorerClientTypes {
 }
 
 extension CostExplorerClientTypes {
+
     /// Represents a group when you specify a group by criteria or in the response to a query with a specific grouping.
-    public struct GroupDefinition {
+    public struct GroupDefinition: Swift.Sendable {
         /// The string that represents a key for a specified group.
         public var key: Swift.String?
         /// The string that represents the type of group.
@@ -1651,12 +1652,12 @@ extension CostExplorerClientTypes {
             self.type = type
         }
     }
-
 }
 
 extension CostExplorerClientTypes {
+
     /// The metadata of a specific type that you can use to filter and group your results. You can use GetDimensionValues to find specific values.
-    public struct DimensionValuesWithAttributes {
+    public struct DimensionValuesWithAttributes: Swift.Sendable {
         /// The attribute that applies to a specific Dimension.
         public var attributes: [Swift.String: Swift.String]?
         /// The value of a dimension with a specific attribute.
@@ -1671,12 +1672,12 @@ extension CostExplorerClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension CostExplorerClientTypes {
+
     /// The aggregated value for a metric.
-    public struct MetricValue {
+    public struct MetricValue: Swift.Sendable {
         /// The actual number that represents the metric.
         public var amount: Swift.String?
         /// The unit that the metric is given in.
@@ -1691,12 +1692,12 @@ extension CostExplorerClientTypes {
             self.unit = unit
         }
     }
-
 }
 
 extension CostExplorerClientTypes {
+
     /// One level of grouped data in the results.
-    public struct Group {
+    public struct Group: Swift.Sendable {
         /// The keys that are included in this group.
         public var keys: [Swift.String]?
         /// The metrics that are included in this group.
@@ -1711,12 +1712,12 @@ extension CostExplorerClientTypes {
             self.metrics = metrics
         }
     }
-
 }
 
 extension CostExplorerClientTypes {
+
     /// The result that's associated with a time period.
-    public struct ResultByTime {
+    public struct ResultByTime: Swift.Sendable {
         /// Determines whether the result is estimated.
         public var estimated: Swift.Bool
         /// The groups that this time period includes.
@@ -1739,10 +1740,9 @@ extension CostExplorerClientTypes {
             self.total = total
         }
     }
-
 }
 
-public struct GetCostAndUsageOutput {
+public struct GetCostAndUsageOutput: Swift.Sendable {
     /// The attributes that apply to a specific dimension value. For example, if the value is a linked account, the attribute is that account name.
     public var dimensionValueAttributes: [CostExplorerClientTypes.DimensionValuesWithAttributes]?
     /// The groups that are specified by the Filter or GroupBy parameters in the request.
@@ -1766,7 +1766,7 @@ public struct GetCostAndUsageOutput {
     }
 }
 
-public struct GetCostAndUsageWithResourcesOutput {
+public struct GetCostAndUsageWithResourcesOutput: Swift.Sendable {
     /// The attributes that apply to a specific dimension value. For example, if the value is a linked account, the attribute is that account name.
     public var dimensionValueAttributes: [CostExplorerClientTypes.DimensionValuesWithAttributes]?
     /// The groups that are specified by the Filter or GroupBy parameters in the request.
@@ -1792,7 +1792,7 @@ public struct GetCostAndUsageWithResourcesOutput {
 
 extension CostExplorerClientTypes {
 
-    public enum SortOrder: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SortOrder: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case ascending
         case descending
         case sdkUnknown(Swift.String)
@@ -1820,8 +1820,9 @@ extension CostExplorerClientTypes {
 }
 
 extension CostExplorerClientTypes {
+
     /// The details for how to sort the data.
-    public struct SortDefinition {
+    public struct SortDefinition: Swift.Sendable {
         /// The key that's used to sort the data.
         /// This member is required.
         public var key: Swift.String?
@@ -1837,10 +1838,9 @@ extension CostExplorerClientTypes {
             self.sortOrder = sortOrder
         }
     }
-
 }
 
-public struct GetCostCategoriesOutput {
+public struct GetCostCategoriesOutput: Swift.Sendable {
     /// The names of the Cost Categories.
     public var costCategoryNames: [Swift.String]?
     /// The Cost Category values. If the CostCategoryName key isn't specified in the request, the CostCategoryValues fields aren't returned.
@@ -1872,7 +1872,7 @@ public struct GetCostCategoriesOutput {
 
 extension CostExplorerClientTypes {
 
-    public enum Metric: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Metric: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case amortizedCost
         case blendedCost
         case netAmortizedCost
@@ -1915,8 +1915,9 @@ extension CostExplorerClientTypes {
 }
 
 extension CostExplorerClientTypes {
+
     /// The forecast that's created for your query.
-    public struct ForecastResult {
+    public struct ForecastResult: Swift.Sendable {
         /// The mean value of the forecast.
         public var meanValue: Swift.String?
         /// The lower limit for the prediction interval.
@@ -1939,10 +1940,9 @@ extension CostExplorerClientTypes {
             self.timePeriod = timePeriod
         }
     }
-
 }
 
-public struct GetCostForecastOutput {
+public struct GetCostForecastOutput: Swift.Sendable {
     /// The forecasts for your query, in order. For DAILY forecasts, this is a list of days. For MONTHLY forecasts, this is a list of months.
     public var forecastResultsByTime: [CostExplorerClientTypes.ForecastResult]?
     /// How much you are forecasted to spend over the forecast period, in USD.
@@ -1960,7 +1960,7 @@ public struct GetCostForecastOutput {
 
 extension CostExplorerClientTypes {
 
-    public enum Context: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Context: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case costAndUsage
         case reservations
         case savingsPlans
@@ -1990,7 +1990,7 @@ extension CostExplorerClientTypes {
     }
 }
 
-public struct GetDimensionValuesOutput {
+public struct GetDimensionValuesOutput: Swift.Sendable {
     /// The filters that you used to filter your request. Some dimensions are available only for a specific context. If you set the context to COST_AND_USAGE, you can use the following dimensions for searching:
     ///
     /// * AZ - The Availability Zone. An example is us-east-1a.
@@ -2084,8 +2084,9 @@ public struct GetDimensionValuesOutput {
 }
 
 extension CostExplorerClientTypes {
+
     /// How much it costs to run an instance.
-    public struct CoverageCost {
+    public struct CoverageCost: Swift.Sendable {
         /// How much an On-Demand Instance costs.
         public var onDemandCost: Swift.String?
 
@@ -2096,12 +2097,12 @@ extension CostExplorerClientTypes {
             self.onDemandCost = onDemandCost
         }
     }
-
 }
 
 extension CostExplorerClientTypes {
+
     /// How long a running instance either used a reservation or was On-Demand.
-    public struct CoverageHours {
+    public struct CoverageHours: Swift.Sendable {
         /// The percentage of instance hours that a reservation covered.
         public var coverageHoursPercentage: Swift.String?
         /// The number of instance running hours that On-Demand Instances covered.
@@ -2124,12 +2125,12 @@ extension CostExplorerClientTypes {
             self.totalRunningHours = totalRunningHours
         }
     }
-
 }
 
 extension CostExplorerClientTypes {
+
     /// The amount of instance usage, in normalized units. You can use normalized units to see your EC2 usage for multiple sizes of instances in a uniform way. For example, suppose that you run an xlarge instance and a 2xlarge instance. If you run both instances for the same amount of time, the 2xlarge instance uses twice as much of your reservation as the xlarge instance, even though both instances show only one instance-hour. When you use normalized units instead of instance-hours, the xlarge instance used 8 normalized units, and the 2xlarge instance used 16 normalized units. For more information, see [Modifying Reserved Instances](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ri-modifying.html) in the Amazon Elastic Compute Cloud User Guide for Linux Instances.
-    public struct CoverageNormalizedUnits {
+    public struct CoverageNormalizedUnits: Swift.Sendable {
         /// The percentage of your used instance normalized units that a reservation covers.
         public var coverageNormalizedUnitsPercentage: Swift.String?
         /// The number of normalized units that are covered by On-Demand Instances instead of a reservation.
@@ -2152,12 +2153,12 @@ extension CostExplorerClientTypes {
             self.totalRunningNormalizedUnits = totalRunningNormalizedUnits
         }
     }
-
 }
 
 extension CostExplorerClientTypes {
+
     /// The amount of instance usage that a reservation covered.
-    public struct Coverage {
+    public struct Coverage: Swift.Sendable {
         /// The amount of cost that the reservation covered.
         public var coverageCost: CostExplorerClientTypes.CoverageCost?
         /// The amount of instance usage that the reservation covered, in hours.
@@ -2176,12 +2177,12 @@ extension CostExplorerClientTypes {
             self.coverageNormalizedUnits = coverageNormalizedUnits
         }
     }
-
 }
 
 extension CostExplorerClientTypes {
+
     /// A group of reservations that share a set of attributes.
-    public struct ReservationCoverageGroup {
+    public struct ReservationCoverageGroup: Swift.Sendable {
         /// The attributes for this group of reservations.
         public var attributes: [Swift.String: Swift.String]?
         /// How much instance usage this group of reservations covered.
@@ -2196,12 +2197,12 @@ extension CostExplorerClientTypes {
             self.coverage = coverage
         }
     }
-
 }
 
 extension CostExplorerClientTypes {
+
     /// Reservation coverage for a specified period, in hours.
-    public struct CoverageByTime {
+    public struct CoverageByTime: Swift.Sendable {
         /// The groups of instances that the reservation covered.
         public var groups: [CostExplorerClientTypes.ReservationCoverageGroup]?
         /// The period that this coverage was used over.
@@ -2220,10 +2221,9 @@ extension CostExplorerClientTypes {
             self.total = total
         }
     }
-
 }
 
-public struct GetReservationCoverageOutput {
+public struct GetReservationCoverageOutput: Swift.Sendable {
     /// The amount of time that your reservations covered.
     /// This member is required.
     public var coveragesByTime: [CostExplorerClientTypes.CoverageByTime]?
@@ -2246,7 +2246,7 @@ public struct GetReservationCoverageOutput {
 
 extension CostExplorerClientTypes {
 
-    public enum LookbackPeriodInDays: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum LookbackPeriodInDays: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case sevenDays
         case sixtyDays
         case thirtyDays
@@ -2278,7 +2278,7 @@ extension CostExplorerClientTypes {
 
 extension CostExplorerClientTypes {
 
-    public enum PaymentOption: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum PaymentOption: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case allUpfront
         case heavyUtilization
         case lightUtilization
@@ -2319,7 +2319,7 @@ extension CostExplorerClientTypes {
 
 extension CostExplorerClientTypes {
 
-    public enum OfferingClass: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum OfferingClass: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case convertible
         case standard
         case sdkUnknown(Swift.String)
@@ -2347,8 +2347,9 @@ extension CostExplorerClientTypes {
 }
 
 extension CostExplorerClientTypes {
+
     /// The Amazon EC2 hardware specifications that you want Amazon Web Services to provide recommendations for.
-    public struct EC2Specification {
+    public struct EC2Specification: Swift.Sendable {
         /// Indicates whether you want a recommendation for standard or convertible reservations.
         public var offeringClass: CostExplorerClientTypes.OfferingClass?
 
@@ -2359,12 +2360,12 @@ extension CostExplorerClientTypes {
             self.offeringClass = offeringClass
         }
     }
-
 }
 
 extension CostExplorerClientTypes {
+
     /// Hardware specifications for the service that you want recommendations for.
-    public struct ServiceSpecification {
+    public struct ServiceSpecification: Swift.Sendable {
         /// The Amazon EC2 hardware specifications that you want Amazon Web Services to provide recommendations for.
         public var ec2Specification: CostExplorerClientTypes.EC2Specification?
 
@@ -2375,12 +2376,11 @@ extension CostExplorerClientTypes {
             self.ec2Specification = ec2Specification
         }
     }
-
 }
 
 extension CostExplorerClientTypes {
 
-    public enum TermInYears: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum TermInYears: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case oneYear
         case threeYears
         case sdkUnknown(Swift.String)
@@ -2408,8 +2408,9 @@ extension CostExplorerClientTypes {
 }
 
 extension CostExplorerClientTypes {
+
     /// Information about a recommendation, such as the timestamp for when Amazon Web Services made a specific recommendation.
-    public struct ReservationPurchaseRecommendationMetadata {
+    public struct ReservationPurchaseRecommendationMetadata: Swift.Sendable {
         /// Additional metadata that might be applicable to the recommendation.
         public var additionalMetadata: Swift.String?
         /// The timestamp for when Amazon Web Services made the recommendation.
@@ -2428,12 +2429,12 @@ extension CostExplorerClientTypes {
             self.recommendationId = recommendationId
         }
     }
-
 }
 
 extension CostExplorerClientTypes {
+
     /// Details about the Amazon EC2 reservations that Amazon Web Services recommends that you purchase.
-    public struct EC2InstanceDetails {
+    public struct EC2InstanceDetails: Swift.Sendable {
         /// The Availability Zone of the recommended reservation.
         public var availabilityZone: Swift.String?
         /// Determines whether the recommendation is for a current-generation instance.
@@ -2472,12 +2473,12 @@ extension CostExplorerClientTypes {
             self.tenancy = tenancy
         }
     }
-
 }
 
 extension CostExplorerClientTypes {
+
     /// Details about the Amazon ElastiCache reservations that Amazon Web Services recommends that you purchase.
-    public struct ElastiCacheInstanceDetails {
+    public struct ElastiCacheInstanceDetails: Swift.Sendable {
         /// Determines whether the recommendation is for a current generation instance.
         public var currentGeneration: Swift.Bool
         /// The instance family of the recommended reservation.
@@ -2508,12 +2509,12 @@ extension CostExplorerClientTypes {
             self.sizeFlexEligible = sizeFlexEligible
         }
     }
-
 }
 
 extension CostExplorerClientTypes {
+
     /// Details about the Amazon OpenSearch Service reservations that Amazon Web Services recommends that you purchase.
-    public struct ESInstanceDetails {
+    public struct ESInstanceDetails: Swift.Sendable {
         /// Determines whether the recommendation is for a current-generation instance.
         public var currentGeneration: Swift.Bool
         /// The class of instance that Amazon Web Services recommends.
@@ -2540,12 +2541,12 @@ extension CostExplorerClientTypes {
             self.sizeFlexEligible = sizeFlexEligible
         }
     }
-
 }
 
 extension CostExplorerClientTypes {
+
     /// Details about the MemoryDB reservations that Amazon Web Services recommends that you purchase.
-    public struct MemoryDBInstanceDetails {
+    public struct MemoryDBInstanceDetails: Swift.Sendable {
         /// Determines whether the recommendation is for a current generation instance.
         public var currentGeneration: Swift.Bool
         /// The instance family of the recommended reservation.
@@ -2572,12 +2573,12 @@ extension CostExplorerClientTypes {
             self.sizeFlexEligible = sizeFlexEligible
         }
     }
-
 }
 
 extension CostExplorerClientTypes {
+
     /// Details about the Amazon RDS reservations that Amazon Web Services recommends that you purchase.
-    public struct RDSInstanceDetails {
+    public struct RDSInstanceDetails: Swift.Sendable {
         /// Determines whether the recommendation is for a current-generation instance.
         public var currentGeneration: Swift.Bool
         /// The database edition that the recommended reservation supports.
@@ -2620,12 +2621,12 @@ extension CostExplorerClientTypes {
             self.sizeFlexEligible = sizeFlexEligible
         }
     }
-
 }
 
 extension CostExplorerClientTypes {
+
     /// Details about the Amazon Redshift reservations that Amazon Web Services recommends that you purchase.
-    public struct RedshiftInstanceDetails {
+    public struct RedshiftInstanceDetails: Swift.Sendable {
         /// Determines whether the recommendation is for a current-generation instance.
         public var currentGeneration: Swift.Bool
         /// The instance family of the recommended reservation.
@@ -2652,12 +2653,12 @@ extension CostExplorerClientTypes {
             self.sizeFlexEligible = sizeFlexEligible
         }
     }
-
 }
 
 extension CostExplorerClientTypes {
+
     /// Details about the reservations that Amazon Web Services recommends that you purchase.
-    public struct InstanceDetails {
+    public struct InstanceDetails: Swift.Sendable {
         /// The Amazon EC2 reservations that Amazon Web Services recommends that you purchase.
         public var ec2InstanceDetails: CostExplorerClientTypes.EC2InstanceDetails?
         /// The ElastiCache reservations that Amazon Web Services recommends that you purchase.
@@ -2688,12 +2689,12 @@ extension CostExplorerClientTypes {
             self.redshiftInstanceDetails = redshiftInstanceDetails
         }
     }
-
 }
 
 extension CostExplorerClientTypes {
+
     /// The DynamoDB reservations that Amazon Web Services recommends that you purchase.
-    public struct DynamoDBCapacityDetails {
+    public struct DynamoDBCapacityDetails: Swift.Sendable {
         /// The capacity unit of the recommended reservation.
         public var capacityUnits: Swift.String?
         /// The Amazon Web Services Region of the recommended reservation.
@@ -2708,12 +2709,12 @@ extension CostExplorerClientTypes {
             self.region = region
         }
     }
-
 }
 
 extension CostExplorerClientTypes {
+
     /// Details about the reservations that Amazon Web Services recommends that you purchase.
-    public struct ReservedCapacityDetails {
+    public struct ReservedCapacityDetails: Swift.Sendable {
         /// The DynamoDB reservations that Amazon Web Services recommends that you purchase.
         public var dynamoDBCapacityDetails: CostExplorerClientTypes.DynamoDBCapacityDetails?
 
@@ -2724,12 +2725,12 @@ extension CostExplorerClientTypes {
             self.dynamoDBCapacityDetails = dynamoDBCapacityDetails
         }
     }
-
 }
 
 extension CostExplorerClientTypes {
+
     /// Details about your recommended reservation purchase.
-    public struct ReservationPurchaseRecommendationDetail {
+    public struct ReservationPurchaseRecommendationDetail: Swift.Sendable {
         /// The account that this Reserved Instance (RI) recommendation is for.
         public var accountId: Swift.String?
         /// The average number of normalized units that you used in an hour during the historical period. Amazon Web Services uses this to calculate your recommended reservation purchases.
@@ -2832,12 +2833,12 @@ extension CostExplorerClientTypes {
             self.upfrontCost = upfrontCost
         }
     }
-
 }
 
 extension CostExplorerClientTypes {
+
     /// A summary about this recommendation, such as the currency code, the amount that Amazon Web Services estimates that you could save, and the total amount of reservation to purchase.
-    public struct ReservationPurchaseRecommendationSummary {
+    public struct ReservationPurchaseRecommendationSummary: Swift.Sendable {
         /// The currency code used for this recommendation.
         public var currencyCode: Swift.String?
         /// The total amount that Amazon Web Services estimates that this recommendation could save you in a month.
@@ -2856,12 +2857,12 @@ extension CostExplorerClientTypes {
             self.totalEstimatedMonthlySavingsPercentage = totalEstimatedMonthlySavingsPercentage
         }
     }
-
 }
 
 extension CostExplorerClientTypes {
+
     /// A specific reservation that Amazon Web Services recommends for purchase.
-    public struct ReservationPurchaseRecommendation {
+    public struct ReservationPurchaseRecommendation: Swift.Sendable {
         /// The account scope that Amazon Web Services recommends that you purchase this instance for. For example, you can purchase this reservation for an entire organization in Amazon Web Services Organizations.
         public var accountScope: CostExplorerClientTypes.AccountScope?
         /// How many days of previous usage that Amazon Web Services considers when making this recommendation.
@@ -2896,10 +2897,9 @@ extension CostExplorerClientTypes {
             self.termInYears = termInYears
         }
     }
-
 }
 
-public struct GetReservationPurchaseRecommendationOutput {
+public struct GetReservationPurchaseRecommendationOutput: Swift.Sendable {
     /// Information about this specific recommendation call, such as the time stamp for when Cost Explorer generated this recommendation.
     public var metadata: CostExplorerClientTypes.ReservationPurchaseRecommendationMetadata?
     /// The pagination token for the next set of retrievable results.
@@ -2920,8 +2920,9 @@ public struct GetReservationPurchaseRecommendationOutput {
 }
 
 extension CostExplorerClientTypes {
+
     /// The aggregated numbers for your reservation usage.
-    public struct ReservationAggregates {
+    public struct ReservationAggregates: Swift.Sendable {
         /// The monthly cost of your reservation. It's amortized over the reservation period.
         public var amortizedRecurringFee: Swift.String?
         /// The upfront cost of your reservation. It's amortized over the reservation period.
@@ -2996,12 +2997,12 @@ extension CostExplorerClientTypes {
             self.utilizationPercentageInUnits = utilizationPercentageInUnits
         }
     }
-
 }
 
 extension CostExplorerClientTypes {
+
     /// A group of reservations that share a set of attributes.
-    public struct ReservationUtilizationGroup {
+    public struct ReservationUtilizationGroup: Swift.Sendable {
         /// The attributes for this group of reservations.
         public var attributes: [Swift.String: Swift.String]?
         /// The key for a specific reservation attribute.
@@ -3024,12 +3025,12 @@ extension CostExplorerClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension CostExplorerClientTypes {
+
     /// The amount of utilization, in hours.
-    public struct UtilizationByTime {
+    public struct UtilizationByTime: Swift.Sendable {
         /// The groups that this utilization result uses.
         public var groups: [CostExplorerClientTypes.ReservationUtilizationGroup]?
         /// The period of time that this utilization was used for.
@@ -3048,10 +3049,9 @@ extension CostExplorerClientTypes {
             self.total = total
         }
     }
-
 }
 
-public struct GetReservationUtilizationOutput {
+public struct GetReservationUtilizationOutput: Swift.Sendable {
     /// The token for the next set of retrievable results. Amazon Web Services provides the token when the response from a previous call has more results than the maximum page size.
     public var nextPageToken: Swift.String?
     /// The total amount of time that you used your Reserved Instances (RIs).
@@ -3074,7 +3074,7 @@ public struct GetReservationUtilizationOutput {
 
 extension CostExplorerClientTypes {
 
-    public enum RecommendationTarget: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum RecommendationTarget: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case crossInstanceFamily
         case sameInstanceFamily
         case sdkUnknown(Swift.String)
@@ -3102,8 +3102,9 @@ extension CostExplorerClientTypes {
 }
 
 extension CostExplorerClientTypes {
+
     /// You can use RightsizingRecommendationConfiguration to customize recommendations across two attributes. You can choose to view recommendations for instances within the same instance families or across different instance families. You can also choose to view your estimated savings that are associated with recommendations with consideration of existing Savings Plans or Reserved Instance (RI) benefits, or neither.
-    public struct RightsizingRecommendationConfiguration {
+    public struct RightsizingRecommendationConfiguration: Swift.Sendable {
         /// The option to consider RI or Savings Plans discount benefits in your savings calculation. The default value is TRUE.
         /// This member is required.
         public var benefitsConsidered: Swift.Bool
@@ -3120,12 +3121,12 @@ extension CostExplorerClientTypes {
             self.recommendationTarget = recommendationTarget
         }
     }
-
 }
 
 extension CostExplorerClientTypes {
+
     /// Metadata for a recommendation set.
-    public struct RightsizingRecommendationMetadata {
+    public struct RightsizingRecommendationMetadata: Swift.Sendable {
         /// Additional metadata that might be applicable to the recommendation.
         public var additionalMetadata: Swift.String?
         /// The timestamp for when Amazon Web Services made the recommendation.
@@ -3148,12 +3149,12 @@ extension CostExplorerClientTypes {
             self.recommendationId = recommendationId
         }
     }
-
 }
 
 extension CostExplorerClientTypes {
+
     /// Details on the Amazon EC2 Resource.
-    public struct EC2ResourceDetails {
+    public struct EC2ResourceDetails: Swift.Sendable {
         /// The hourly public On-Demand rate for the instance type.
         public var hourlyOnDemandRate: Swift.String?
         /// The type of Amazon Web Services instance.
@@ -3196,12 +3197,12 @@ extension CostExplorerClientTypes {
             self.vcpu = vcpu
         }
     }
-
 }
 
 extension CostExplorerClientTypes {
+
     /// Details for the resource.
-    public struct ResourceDetails {
+    public struct ResourceDetails: Swift.Sendable {
         /// Details for the Amazon EC2 resource.
         public var ec2ResourceDetails: CostExplorerClientTypes.EC2ResourceDetails?
 
@@ -3212,12 +3213,12 @@ extension CostExplorerClientTypes {
             self.ec2ResourceDetails = ec2ResourceDetails
         }
     }
-
 }
 
 extension CostExplorerClientTypes {
+
     /// The field that contains a list of disk (local storage) metrics that are associated with the current instance.
-    public struct DiskResourceUtilization {
+    public struct DiskResourceUtilization: Swift.Sendable {
         /// The maximum read throughput operations per second.
         public var diskReadBytesPerSecond: Swift.String?
         /// The maximum number of read operations per second.
@@ -3240,12 +3241,12 @@ extension CostExplorerClientTypes {
             self.diskWriteOpsPerSecond = diskWriteOpsPerSecond
         }
     }
-
 }
 
 extension CostExplorerClientTypes {
+
     /// The EBS field that contains a list of EBS metrics that are associated with the current instance.
-    public struct EBSResourceUtilization {
+    public struct EBSResourceUtilization: Swift.Sendable {
         /// The maximum size of read operations per second
         public var ebsReadBytesPerSecond: Swift.String?
         /// The maximum number of read operations per second.
@@ -3268,12 +3269,12 @@ extension CostExplorerClientTypes {
             self.ebsWriteOpsPerSecond = ebsWriteOpsPerSecond
         }
     }
-
 }
 
 extension CostExplorerClientTypes {
+
     /// The network field that contains a list of network metrics that are associated with the current instance.
-    public struct NetworkResourceUtilization {
+    public struct NetworkResourceUtilization: Swift.Sendable {
         /// The network inbound throughput utilization measured in Bytes per second (Bps).
         public var networkInBytesPerSecond: Swift.String?
         /// The network outbound throughput utilization measured in Bytes per second (Bps).
@@ -3296,12 +3297,12 @@ extension CostExplorerClientTypes {
             self.networkPacketsOutPerSecond = networkPacketsOutPerSecond
         }
     }
-
 }
 
 extension CostExplorerClientTypes {
+
     /// Utilization metrics for the instance.
-    public struct EC2ResourceUtilization {
+    public struct EC2ResourceUtilization: Swift.Sendable {
         /// The field that contains a list of disk (local storage) metrics that are associated with the current instance.
         public var diskResourceUtilization: CostExplorerClientTypes.DiskResourceUtilization?
         /// The EBS field that contains a list of EBS metrics that are associated with the current instance.
@@ -3332,12 +3333,12 @@ extension CostExplorerClientTypes {
             self.networkResourceUtilization = networkResourceUtilization
         }
     }
-
 }
 
 extension CostExplorerClientTypes {
+
     /// Resource utilization of current resource.
-    public struct ResourceUtilization {
+    public struct ResourceUtilization: Swift.Sendable {
         /// The utilization of current Amazon EC2 instance.
         public var ec2ResourceUtilization: CostExplorerClientTypes.EC2ResourceUtilization?
 
@@ -3348,12 +3349,12 @@ extension CostExplorerClientTypes {
             self.ec2ResourceUtilization = ec2ResourceUtilization
         }
     }
-
 }
 
 extension CostExplorerClientTypes {
+
     /// Context about the current instance.
-    public struct CurrentInstance {
+    public struct CurrentInstance: Swift.Sendable {
         /// The currency code that Amazon Web Services used to calculate the costs for this instance.
         public var currencyCode: Swift.String?
         /// The name that you given an instance. This field shows as blank if you haven't given the instance a name.
@@ -3404,12 +3405,11 @@ extension CostExplorerClientTypes {
             self.totalRunningHoursInLookbackPeriod = totalRunningHoursInLookbackPeriod
         }
     }
-
 }
 
 extension CostExplorerClientTypes {
 
-    public enum FindingReasonCode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum FindingReasonCode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case cpuOverProvisioned
         case cpuUnderProvisioned
         case diskIopsOverProvisioned
@@ -3480,7 +3480,7 @@ extension CostExplorerClientTypes {
 
 extension CostExplorerClientTypes {
 
-    public enum PlatformDifference: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum PlatformDifference: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case hypervisor
         case instanceStoreAvailability
         case networkInterface
@@ -3517,8 +3517,9 @@ extension CostExplorerClientTypes {
 }
 
 extension CostExplorerClientTypes {
+
     /// Details on recommended instance.
-    public struct TargetInstance {
+    public struct TargetInstance: Swift.Sendable {
         /// The currency code that Amazon Web Services used to calculate the costs for this instance.
         public var currencyCode: Swift.String?
         /// Determines whether this recommendation is the defaulted Amazon Web Services recommendation.
@@ -3553,12 +3554,12 @@ extension CostExplorerClientTypes {
             self.resourceDetails = resourceDetails
         }
     }
-
 }
 
 extension CostExplorerClientTypes {
+
     /// Details for the modification recommendation.
-    public struct ModifyRecommendationDetail {
+    public struct ModifyRecommendationDetail: Swift.Sendable {
         /// Determines whether this instance type is the Amazon Web Services default recommendation.
         public var targetInstances: [CostExplorerClientTypes.TargetInstance]?
 
@@ -3569,12 +3570,11 @@ extension CostExplorerClientTypes {
             self.targetInstances = targetInstances
         }
     }
-
 }
 
 extension CostExplorerClientTypes {
 
-    public enum RightsizingType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum RightsizingType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case modify
         case terminate
         case sdkUnknown(Swift.String)
@@ -3602,8 +3602,9 @@ extension CostExplorerClientTypes {
 }
 
 extension CostExplorerClientTypes {
+
     /// Details on termination recommendation.
-    public struct TerminateRecommendationDetail {
+    public struct TerminateRecommendationDetail: Swift.Sendable {
         /// The currency code that Amazon Web Services used to calculate the costs for this instance.
         public var currencyCode: Swift.String?
         /// The estimated savings that result from modification, on a monthly basis.
@@ -3618,12 +3619,12 @@ extension CostExplorerClientTypes {
             self.estimatedMonthlySavings = estimatedMonthlySavings
         }
     }
-
 }
 
 extension CostExplorerClientTypes {
+
     /// Recommendations to rightsize resources.
-    public struct RightsizingRecommendation {
+    public struct RightsizingRecommendation: Swift.Sendable {
         /// The account that this recommendation is for.
         public var accountId: Swift.String?
         /// Context regarding the current instance.
@@ -3654,12 +3655,12 @@ extension CostExplorerClientTypes {
             self.terminateRecommendationDetail = terminateRecommendationDetail
         }
     }
-
 }
 
 extension CostExplorerClientTypes {
+
     /// The summary of rightsizing recommendations
-    public struct RightsizingRecommendationSummary {
+    public struct RightsizingRecommendationSummary: Swift.Sendable {
         /// The estimated total savings resulting from modifications, on a monthly basis.
         public var estimatedTotalMonthlySavingsAmount: Swift.String?
         /// The currency code that Amazon Web Services used to calculate the savings.
@@ -3682,10 +3683,9 @@ extension CostExplorerClientTypes {
             self.totalRecommendationCount = totalRecommendationCount
         }
     }
-
 }
 
-public struct GetRightsizingRecommendationOutput {
+public struct GetRightsizingRecommendationOutput: Swift.Sendable {
     /// You can use Configuration to customize recommendations across two attributes. You can choose to view recommendations for instances within the same instance families or across different instance families. You can also choose to view your estimated savings that are associated with recommendations with consideration of existing Savings Plans or RI benefits, or neither.
     public var configuration: CostExplorerClientTypes.RightsizingRecommendationConfiguration?
     /// Information regarding this specific recommendation set.
@@ -3713,7 +3713,7 @@ public struct GetRightsizingRecommendationOutput {
     }
 }
 
-public struct GetSavingsPlanPurchaseRecommendationDetailsInput {
+public struct GetSavingsPlanPurchaseRecommendationDetailsInput: Swift.Sendable {
     /// The ID that is associated with the Savings Plan recommendation.
     /// This member is required.
     public var recommendationDetailId: Swift.String?
@@ -3727,8 +3727,9 @@ public struct GetSavingsPlanPurchaseRecommendationDetailsInput {
 }
 
 extension CostExplorerClientTypes {
+
     /// Contains the hourly metrics for the given recommendation over the lookback period.
-    public struct RecommendationDetailHourlyMetrics {
+    public struct RecommendationDetailHourlyMetrics: Swift.Sendable {
         /// The current amount of Savings Plans eligible usage that the Savings Plan covered.
         public var currentCoverage: Swift.String?
         /// The estimated coverage amount based on the recommended Savings Plan.
@@ -3755,12 +3756,11 @@ extension CostExplorerClientTypes {
             self.startTime = startTime
         }
     }
-
 }
 
 extension CostExplorerClientTypes {
 
-    public enum SupportedSavingsPlansType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SupportedSavingsPlansType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case computeSp
         case ec2InstanceSp
         case sagemakerSp
@@ -3791,8 +3791,9 @@ extension CostExplorerClientTypes {
 }
 
 extension CostExplorerClientTypes {
+
     /// The details and metrics for the given recommendation.
-    public struct RecommendationDetailData {
+    public struct RecommendationDetailData: Swift.Sendable {
         /// The AccountID that the recommendation is generated for.
         public var accountId: Swift.String?
         /// The account scope that you want your recommendations for. Amazon Web Services calculates recommendations including the management account and member accounts if the value is set to PAYER. If the value is LINKED, recommendations are calculated for individual member accounts only.
@@ -3915,10 +3916,9 @@ extension CostExplorerClientTypes {
             self.upfrontCost = upfrontCost
         }
     }
-
 }
 
-public struct GetSavingsPlanPurchaseRecommendationDetailsOutput {
+public struct GetSavingsPlanPurchaseRecommendationDetailsOutput: Swift.Sendable {
     /// Contains detailed information about a specific Savings Plan recommendation.
     public var recommendationDetailData: CostExplorerClientTypes.RecommendationDetailData?
     /// The ID that is associated with the Savings Plan recommendation.
@@ -3935,8 +3935,9 @@ public struct GetSavingsPlanPurchaseRecommendationDetailsOutput {
 }
 
 extension CostExplorerClientTypes {
+
     /// Specific coverage percentage, On-Demand costs, and spend covered by Savings Plans, and total Savings Plans costs for an account.
-    public struct SavingsPlansCoverageData {
+    public struct SavingsPlansCoverageData: Swift.Sendable {
         /// The percentage of your existing Savings Plans covered usage, divided by all of your eligible Savings Plans usage in an account (or set of accounts).
         public var coveragePercentage: Swift.String?
         /// The cost of your Amazon Web Services usage at the public On-Demand rate.
@@ -3959,12 +3960,12 @@ extension CostExplorerClientTypes {
             self.totalCost = totalCost
         }
     }
-
 }
 
 extension CostExplorerClientTypes {
+
     /// The amount of Savings Plans eligible usage that's covered by Savings Plans. All calculations consider the On-Demand equivalent of your Savings Plans usage.
-    public struct SavingsPlansCoverage {
+    public struct SavingsPlansCoverage: Swift.Sendable {
         /// The attribute that applies to a specific Dimension.
         public var attributes: [Swift.String: Swift.String]?
         /// The amount of Savings Plans eligible usage that the Savings Plans covered.
@@ -3983,10 +3984,9 @@ extension CostExplorerClientTypes {
             self.timePeriod = timePeriod
         }
     }
-
 }
 
-public struct GetSavingsPlansCoverageOutput {
+public struct GetSavingsPlansCoverageOutput: Swift.Sendable {
     /// The token to retrieve the next set of results. Amazon Web Services provides the token when the response from a previous call has more results than the maximum page size.
     public var nextToken: Swift.String?
     /// The amount of spend that your Savings Plans covered.
@@ -4004,8 +4004,9 @@ public struct GetSavingsPlansCoverageOutput {
 }
 
 extension CostExplorerClientTypes {
+
     /// Metadata about your Savings Plans Purchase Recommendations.
-    public struct SavingsPlansPurchaseRecommendationMetadata {
+    public struct SavingsPlansPurchaseRecommendationMetadata: Swift.Sendable {
         /// Additional metadata that might be applicable to the recommendation.
         public var additionalMetadata: Swift.String?
         /// The timestamp that shows when the recommendations were generated.
@@ -4024,12 +4025,12 @@ extension CostExplorerClientTypes {
             self.recommendationId = recommendationId
         }
     }
-
 }
 
 extension CostExplorerClientTypes {
+
     /// The attribute details on a specific Savings Plan.
-    public struct SavingsPlansDetails {
+    public struct SavingsPlansDetails: Swift.Sendable {
         /// A group of instance types that Savings Plans applies to.
         public var instanceFamily: Swift.String?
         /// The unique ID that's used to distinguish Savings Plans from one another.
@@ -4048,12 +4049,12 @@ extension CostExplorerClientTypes {
             self.region = region
         }
     }
-
 }
 
 extension CostExplorerClientTypes {
+
     /// Details for your recommended Savings Plans.
-    public struct SavingsPlansPurchaseRecommendationDetail {
+    public struct SavingsPlansPurchaseRecommendationDetail: Swift.Sendable {
         /// The AccountID the recommendation is generated for.
         public var accountId: Swift.String?
         /// The currency code that Amazon Web Services used to generate the recommendations and present potential savings.
@@ -4128,12 +4129,12 @@ extension CostExplorerClientTypes {
             self.upfrontCost = upfrontCost
         }
     }
-
 }
 
 extension CostExplorerClientTypes {
+
     /// Summary metrics for your Savings Plans Purchase Recommendations.
-    public struct SavingsPlansPurchaseRecommendationSummary {
+    public struct SavingsPlansPurchaseRecommendationSummary: Swift.Sendable {
         /// The currency code that Amazon Web Services used to generate the recommendations and present potential savings.
         public var currencyCode: Swift.String?
         /// The current total on demand spend of the applicable usage types over the lookback period.
@@ -4184,12 +4185,12 @@ extension CostExplorerClientTypes {
             self.totalRecommendationCount = totalRecommendationCount
         }
     }
-
 }
 
 extension CostExplorerClientTypes {
+
     /// Contains your request parameters, Savings Plan Recommendations Summary, and Details.
-    public struct SavingsPlansPurchaseRecommendation {
+    public struct SavingsPlansPurchaseRecommendation: Swift.Sendable {
         /// The account scope that you want your recommendations for. Amazon Web Services calculates recommendations that include the management account and member accounts if the value is set to PAYER. If the value is LINKED, recommendations are calculated for individual member accounts only.
         public var accountScope: CostExplorerClientTypes.AccountScope?
         /// The lookback period in days that's used to generate the recommendation.
@@ -4224,10 +4225,9 @@ extension CostExplorerClientTypes {
             self.termInYears = termInYears
         }
     }
-
 }
 
-public struct GetSavingsPlansPurchaseRecommendationOutput {
+public struct GetSavingsPlansPurchaseRecommendationOutput: Swift.Sendable {
     /// Information that regards this specific recommendation set.
     public var metadata: CostExplorerClientTypes.SavingsPlansPurchaseRecommendationMetadata?
     /// The token for the next set of retrievable results. Amazon Web Services provides the token when the response from a previous call has more results than the maximum page size.
@@ -4248,8 +4248,9 @@ public struct GetSavingsPlansPurchaseRecommendationOutput {
 }
 
 extension CostExplorerClientTypes {
+
     /// The amortized amount of Savings Plans purchased in a specific account during a specific time interval.
-    public struct SavingsPlansAmortizedCommitment {
+    public struct SavingsPlansAmortizedCommitment: Swift.Sendable {
         /// The amortized amount of your Savings Plans commitment that was purchased with either a Partial or a NoUpfront.
         public var amortizedRecurringCommitment: Swift.String?
         /// The amortized amount of your Savings Plans commitment that was purchased with an Upfront or PartialUpfront Savings Plans.
@@ -4268,12 +4269,12 @@ extension CostExplorerClientTypes {
             self.totalAmortizedCommitment = totalAmortizedCommitment
         }
     }
-
 }
 
 extension CostExplorerClientTypes {
+
     /// The amount of savings that you're accumulating, against the public On-Demand rate of the usage accrued in an account.
-    public struct SavingsPlansSavings {
+    public struct SavingsPlansSavings: Swift.Sendable {
         /// The savings amount that you're accumulating for the usage that's covered by a Savings Plans, when compared to the On-Demand equivalent of the same usage.
         public var netSavings: Swift.String?
         /// How much the amount that the usage would have cost if it was accrued at the On-Demand rate.
@@ -4288,12 +4289,12 @@ extension CostExplorerClientTypes {
             self.onDemandCostEquivalent = onDemandCostEquivalent
         }
     }
-
 }
 
 extension CostExplorerClientTypes {
+
     /// The measurement of how well you're using your existing Savings Plans.
-    public struct SavingsPlansUtilization {
+    public struct SavingsPlansUtilization: Swift.Sendable {
         /// The total amount of Savings Plans commitment that's been purchased in an account (or set of accounts).
         public var totalCommitment: Swift.String?
         /// The amount of your Savings Plans commitment that wasn't consumed from Savings Plans eligible usage in a specific period.
@@ -4316,12 +4317,12 @@ extension CostExplorerClientTypes {
             self.utilizationPercentage = utilizationPercentage
         }
     }
-
 }
 
 extension CostExplorerClientTypes {
+
     /// The amount of Savings Plans utilization (in hours).
-    public struct SavingsPlansUtilizationByTime {
+    public struct SavingsPlansUtilizationByTime: Swift.Sendable {
         /// The total amortized commitment for a Savings Plans. This includes the sum of the upfront and recurring Savings Plans fees.
         public var amortizedCommitment: CostExplorerClientTypes.SavingsPlansAmortizedCommitment?
         /// The amount that's saved by using existing Savings Plans. Savings returns both net savings from Savings Plans and also the onDemandCostEquivalent of the Savings Plans when considering the utilization rate.
@@ -4346,12 +4347,12 @@ extension CostExplorerClientTypes {
             self.utilization = utilization
         }
     }
-
 }
 
 extension CostExplorerClientTypes {
+
     /// The aggregated utilization metrics for your Savings Plans usage.
-    public struct SavingsPlansUtilizationAggregates {
+    public struct SavingsPlansUtilizationAggregates: Swift.Sendable {
         /// The total amortized commitment for a Savings Plans. This includes the sum of the upfront and recurring Savings Plans fees.
         public var amortizedCommitment: CostExplorerClientTypes.SavingsPlansAmortizedCommitment?
         /// The amount that's saved by using existing Savings Plans. Savings returns both net savings from Savings Plans and also the onDemandCostEquivalent of the Savings Plans when considering the utilization rate.
@@ -4371,10 +4372,9 @@ extension CostExplorerClientTypes {
             self.utilization = utilization
         }
     }
-
 }
 
-public struct GetSavingsPlansUtilizationOutput {
+public struct GetSavingsPlansUtilizationOutput: Swift.Sendable {
     /// The amount of cost/commitment that you used your Savings Plans. You can use it to specify date ranges.
     public var savingsPlansUtilizationsByTime: [CostExplorerClientTypes.SavingsPlansUtilizationByTime]?
     /// The total amount of cost/commitment that you used your Savings Plans, regardless of date ranges.
@@ -4393,7 +4393,7 @@ public struct GetSavingsPlansUtilizationOutput {
 
 extension CostExplorerClientTypes {
 
-    public enum SavingsPlansDataType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SavingsPlansDataType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case amortizedCommitment
         case attributes
         case savings
@@ -4427,8 +4427,9 @@ extension CostExplorerClientTypes {
 }
 
 extension CostExplorerClientTypes {
+
     /// A single daily or monthly Savings Plans utilization rate and details for your account. A management account in an organization have access to member accounts. You can use GetDimensionValues to determine the possible dimension values.
-    public struct SavingsPlansUtilizationDetail {
+    public struct SavingsPlansUtilizationDetail: Swift.Sendable {
         /// The total amortized commitment for a Savings Plans. Includes the sum of the upfront and recurring Savings Plans fees.
         public var amortizedCommitment: CostExplorerClientTypes.SavingsPlansAmortizedCommitment?
         /// The attribute that applies to a specific Dimension.
@@ -4455,10 +4456,9 @@ extension CostExplorerClientTypes {
             self.utilization = utilization
         }
     }
-
 }
 
-public struct GetSavingsPlansUtilizationDetailsOutput {
+public struct GetSavingsPlansUtilizationDetailsOutput: Swift.Sendable {
     /// The token to retrieve the next set of results. Amazon Web Services provides the token when the response from a previous call has more results than the maximum page size.
     public var nextToken: Swift.String?
     /// Retrieves a single daily or monthly Savings Plans utilization rate and details for your account.
@@ -4484,7 +4484,7 @@ public struct GetSavingsPlansUtilizationDetailsOutput {
     }
 }
 
-public struct GetTagsOutput {
+public struct GetTagsOutput: Swift.Sendable {
     /// The token for the next set of retrievable results. Amazon Web Services provides the token when the response from a previous call has more results than the maximum page size.
     public var nextPageToken: Swift.String?
     /// The number of query results that Amazon Web Services returns at a time.
@@ -4535,7 +4535,7 @@ public struct UnresolvableUsageUnitException: ClientRuntime.ModeledError, AWSCli
     }
 }
 
-public struct GetUsageForecastOutput {
+public struct GetUsageForecastOutput: Swift.Sendable {
     /// The forecasts for your query, in order. For DAILY forecasts, this is a list of days. For MONTHLY forecasts, this is a list of months.
     public var forecastResultsByTime: [CostExplorerClientTypes.ForecastResult]?
     /// How much you're forecasted to use over the forecast period.
@@ -4551,7 +4551,7 @@ public struct GetUsageForecastOutput {
     }
 }
 
-public struct ListCostAllocationTagBackfillHistoryInput {
+public struct ListCostAllocationTagBackfillHistoryInput: Swift.Sendable {
     /// The maximum number of objects that are returned for this request.
     public var maxResults: Swift.Int?
     /// The token to retrieve the next set of results. Amazon Web Services provides the token when the response from a previous call has more results than the maximum page size.
@@ -4569,7 +4569,7 @@ public struct ListCostAllocationTagBackfillHistoryInput {
 
 extension CostExplorerClientTypes {
 
-    public enum CostAllocationTagBackfillStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum CostAllocationTagBackfillStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case failed
         case processing
         case succeeded
@@ -4600,8 +4600,9 @@ extension CostExplorerClientTypes {
 }
 
 extension CostExplorerClientTypes {
+
     /// The cost allocation tag backfill request structure that contains metadata and details of a certain backfill.
-    public struct CostAllocationTagBackfillRequest {
+    public struct CostAllocationTagBackfillRequest: Swift.Sendable {
         /// The date the backfill starts from.
         public var backfillFrom: Swift.String?
         /// The status of the cost allocation tag backfill request.
@@ -4628,10 +4629,9 @@ extension CostExplorerClientTypes {
             self.requestedAt = requestedAt
         }
     }
-
 }
 
-public struct ListCostAllocationTagBackfillHistoryOutput {
+public struct ListCostAllocationTagBackfillHistoryOutput: Swift.Sendable {
     /// The list of historical cost allocation tag backfill requests.
     public var backfillRequests: [CostExplorerClientTypes.CostAllocationTagBackfillRequest]?
     /// The token to retrieve the next set of results. Amazon Web Services provides the token when the response from a previous call has more results than the maximum page size.
@@ -4649,7 +4649,7 @@ public struct ListCostAllocationTagBackfillHistoryOutput {
 
 extension CostExplorerClientTypes {
 
-    public enum CostAllocationTagStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum CostAllocationTagStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case active
         case inactive
         case sdkUnknown(Swift.String)
@@ -4678,7 +4678,7 @@ extension CostExplorerClientTypes {
 
 extension CostExplorerClientTypes {
 
-    public enum CostAllocationTagType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum CostAllocationTagType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case awsGenerated
         case userDefined
         case sdkUnknown(Swift.String)
@@ -4705,7 +4705,7 @@ extension CostExplorerClientTypes {
     }
 }
 
-public struct ListCostAllocationTagsInput {
+public struct ListCostAllocationTagsInput: Swift.Sendable {
     /// The maximum number of objects that are returned for this request. By default, the request returns 100 results.
     public var maxResults: Swift.Int?
     /// The token to retrieve the next set of results. Amazon Web Services provides the token when the response from a previous call has more results than the maximum page size.
@@ -4734,8 +4734,9 @@ public struct ListCostAllocationTagsInput {
 }
 
 extension CostExplorerClientTypes {
+
     /// The cost allocation tag structure. This includes detailed metadata for the CostAllocationTag object.
-    public struct CostAllocationTag {
+    public struct CostAllocationTag: Swift.Sendable {
         /// The last date that the tag was either activated or deactivated.
         public var lastUpdatedDate: Swift.String?
         /// The last month that the tag was used on an Amazon Web Services resource.
@@ -4765,10 +4766,9 @@ extension CostExplorerClientTypes {
             self.type = type
         }
     }
-
 }
 
-public struct ListCostAllocationTagsOutput {
+public struct ListCostAllocationTagsOutput: Swift.Sendable {
     /// A list of cost allocation tags that includes the detailed metadata for each one.
     public var costAllocationTags: [CostExplorerClientTypes.CostAllocationTag]?
     /// The token to retrieve the next set of results. Amazon Web Services provides the token when the response from a previous call has more results than the maximum page size.
@@ -4784,7 +4784,7 @@ public struct ListCostAllocationTagsOutput {
     }
 }
 
-public struct ListCostCategoryDefinitionsInput {
+public struct ListCostCategoryDefinitionsInput: Swift.Sendable {
     /// The date when the Cost Category was effective.
     public var effectiveOn: Swift.String?
     /// The number of entries a paginated response contains.
@@ -4805,8 +4805,9 @@ public struct ListCostCategoryDefinitionsInput {
 }
 
 extension CostExplorerClientTypes {
+
     /// A reference to a Cost Category containing only enough information to identify the Cost Category. You can use this information to retrieve the full Cost Category information using DescribeCostCategory.
-    public struct CostCategoryReference {
+    public struct CostCategoryReference: Swift.Sendable {
         /// The unique identifier for your Cost Category.
         public var costCategoryArn: Swift.String?
         /// The default value for the cost category.
@@ -4845,10 +4846,9 @@ extension CostExplorerClientTypes {
             self.values = values
         }
     }
-
 }
 
-public struct ListCostCategoryDefinitionsOutput {
+public struct ListCostCategoryDefinitionsOutput: Swift.Sendable {
     /// A reference to a Cost Category that contains enough information to identify the Cost Category.
     public var costCategoryReferences: [CostExplorerClientTypes.CostCategoryReference]?
     /// The token to retrieve the next set of results. Amazon Web Services provides the token when the response from a previous call has more results than the maximum page size.
@@ -4866,7 +4866,7 @@ public struct ListCostCategoryDefinitionsOutput {
 
 extension CostExplorerClientTypes {
 
-    public enum GenerationStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum GenerationStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case failed
         case processing
         case succeeded
@@ -4896,7 +4896,7 @@ extension CostExplorerClientTypes {
     }
 }
 
-public struct ListSavingsPlansPurchaseRecommendationGenerationInput {
+public struct ListSavingsPlansPurchaseRecommendationGenerationInput: Swift.Sendable {
     /// The status of the recommendation generation.
     public var generationStatus: CostExplorerClientTypes.GenerationStatus?
     /// The token to retrieve the next set of results.
@@ -4921,8 +4921,9 @@ public struct ListSavingsPlansPurchaseRecommendationGenerationInput {
 }
 
 extension CostExplorerClientTypes {
+
     /// The summary of the Savings Plans recommendation generation.
-    public struct GenerationSummary {
+    public struct GenerationSummary: Swift.Sendable {
         /// Indicates the estimated time for when the recommendation generation will complete.
         public var estimatedCompletionTime: Swift.String?
         /// Indicates the completion time of the recommendation generation.
@@ -4949,10 +4950,9 @@ extension CostExplorerClientTypes {
             self.recommendationId = recommendationId
         }
     }
-
 }
 
-public struct ListSavingsPlansPurchaseRecommendationGenerationOutput {
+public struct ListSavingsPlansPurchaseRecommendationGenerationOutput: Swift.Sendable {
     /// The list of historical recommendation generations.
     public var generationSummaryList: [CostExplorerClientTypes.GenerationSummary]?
     /// The token to retrieve the next set of results.
@@ -4968,7 +4968,7 @@ public struct ListSavingsPlansPurchaseRecommendationGenerationOutput {
     }
 }
 
-public struct ListTagsForResourceInput {
+public struct ListTagsForResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the resource. For a list of supported resources, see [ResourceTag](https://docs.aws.amazon.com/aws-cost-management/latest/APIReference/API_ResourceTag.html).
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -4981,7 +4981,7 @@ public struct ListTagsForResourceInput {
     }
 }
 
-public struct ListTagsForResourceOutput {
+public struct ListTagsForResourceOutput: Swift.Sendable {
     /// A list of tag key value pairs that are associated with the resource.
     public var resourceTags: [CostExplorerClientTypes.ResourceTag]?
 
@@ -4993,7 +4993,7 @@ public struct ListTagsForResourceOutput {
     }
 }
 
-public struct ProvideAnomalyFeedbackInput {
+public struct ProvideAnomalyFeedbackInput: Swift.Sendable {
     /// A cost anomaly ID.
     /// This member is required.
     public var anomalyId: Swift.String?
@@ -5011,7 +5011,7 @@ public struct ProvideAnomalyFeedbackInput {
     }
 }
 
-public struct ProvideAnomalyFeedbackOutput {
+public struct ProvideAnomalyFeedbackOutput: Swift.Sendable {
     /// The ID of the modified cost anomaly.
     /// This member is required.
     public var anomalyId: Swift.String?
@@ -5048,7 +5048,7 @@ public struct BackfillLimitExceededException: ClientRuntime.ModeledError, AWSCli
     }
 }
 
-public struct StartCostAllocationTagBackfillInput {
+public struct StartCostAllocationTagBackfillInput: Swift.Sendable {
     /// The date you want the backfill to start from. The date can only be a first day of the month (a billing start date). Dates can't precede the previous twelve months, or in the future.
     /// This member is required.
     public var backfillFrom: Swift.String?
@@ -5061,7 +5061,7 @@ public struct StartCostAllocationTagBackfillInput {
     }
 }
 
-public struct StartCostAllocationTagBackfillOutput {
+public struct StartCostAllocationTagBackfillOutput: Swift.Sendable {
     /// An object containing detailed metadata of your new backfill request.
     public var backfillRequest: CostExplorerClientTypes.CostAllocationTagBackfillRequest?
 
@@ -5097,12 +5097,12 @@ public struct GenerationExistsException: ClientRuntime.ModeledError, AWSClientRu
     }
 }
 
-public struct StartSavingsPlansPurchaseRecommendationGenerationInput {
+public struct StartSavingsPlansPurchaseRecommendationGenerationInput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct StartSavingsPlansPurchaseRecommendationGenerationOutput {
+public struct StartSavingsPlansPurchaseRecommendationGenerationOutput: Swift.Sendable {
     /// The estimated time for when the recommendation generation will complete.
     public var estimatedCompletionTime: Swift.String?
     /// The start time of the recommendation generation.
@@ -5149,7 +5149,7 @@ public struct TooManyTagsException: ClientRuntime.ModeledError, AWSClientRuntime
     }
 }
 
-public struct TagResourceInput {
+public struct TagResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the resource. For a list of supported resources, see [ResourceTag](https://docs.aws.amazon.com/aws-cost-management/latest/APIReference/API_ResourceTag.html).
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -5181,12 +5181,12 @@ public struct TagResourceInput {
     }
 }
 
-public struct TagResourceOutput {
+public struct TagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UntagResourceInput {
+public struct UntagResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the resource. For a list of supported resources, see [ResourceTag](https://docs.aws.amazon.com/aws-cost-management/latest/APIReference/API_ResourceTag.html).
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -5204,12 +5204,12 @@ public struct UntagResourceInput {
     }
 }
 
-public struct UntagResourceOutput {
+public struct UntagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdateAnomalyMonitorInput {
+public struct UpdateAnomalyMonitorInput: Swift.Sendable {
     /// Cost anomaly monitor Amazon Resource Names (ARNs).
     /// This member is required.
     public var monitorArn: Swift.String?
@@ -5226,7 +5226,7 @@ public struct UpdateAnomalyMonitorInput {
     }
 }
 
-public struct UpdateAnomalyMonitorOutput {
+public struct UpdateAnomalyMonitorOutput: Swift.Sendable {
     /// A cost anomaly monitor ARN.
     /// This member is required.
     public var monitorArn: Swift.String?
@@ -5239,7 +5239,7 @@ public struct UpdateAnomalyMonitorOutput {
     }
 }
 
-public struct UpdateAnomalySubscriptionOutput {
+public struct UpdateAnomalySubscriptionOutput: Swift.Sendable {
     /// A cost anomaly subscription ARN.
     /// This member is required.
     public var subscriptionArn: Swift.String?
@@ -5253,8 +5253,9 @@ public struct UpdateAnomalySubscriptionOutput {
 }
 
 extension CostExplorerClientTypes {
+
     /// The cost allocation tag status. The status of a key can either be active or inactive.
-    public struct CostAllocationTagStatusEntry {
+    public struct CostAllocationTagStatusEntry: Swift.Sendable {
         /// The status of a cost allocation tag.
         /// This member is required.
         public var status: CostExplorerClientTypes.CostAllocationTagStatus?
@@ -5271,10 +5272,9 @@ extension CostExplorerClientTypes {
             self.tagKey = tagKey
         }
     }
-
 }
 
-public struct UpdateCostAllocationTagsStatusInput {
+public struct UpdateCostAllocationTagsStatusInput: Swift.Sendable {
     /// The list of CostAllocationTagStatusEntry objects that are used to update cost allocation tags status for this request.
     /// This member is required.
     public var costAllocationTagsStatus: [CostExplorerClientTypes.CostAllocationTagStatusEntry]?
@@ -5288,8 +5288,9 @@ public struct UpdateCostAllocationTagsStatusInput {
 }
 
 extension CostExplorerClientTypes {
+
     /// Gives a detailed description of the result of an action. It's on each cost allocation tag entry in the request.
-    public struct UpdateCostAllocationTagsStatusError {
+    public struct UpdateCostAllocationTagsStatusError: Swift.Sendable {
         /// An error code representing why the action failed on this entry.
         public var code: Swift.String?
         /// A message explaining why the action failed on this entry.
@@ -5308,10 +5309,9 @@ extension CostExplorerClientTypes {
             self.tagKey = tagKey
         }
     }
-
 }
 
-public struct UpdateCostAllocationTagsStatusOutput {
+public struct UpdateCostAllocationTagsStatusOutput: Swift.Sendable {
     /// A list of UpdateCostAllocationTagsStatusError objects with error details about each cost allocation tag that can't be updated. If there's no failure, an empty array returns.
     public var errors: [CostExplorerClientTypes.UpdateCostAllocationTagsStatusError]?
 
@@ -5323,7 +5323,7 @@ public struct UpdateCostAllocationTagsStatusOutput {
     }
 }
 
-public struct UpdateCostCategoryDefinitionOutput {
+public struct UpdateCostCategoryDefinitionOutput: Swift.Sendable {
     /// The unique identifier for your Cost Category.
     public var costCategoryArn: Swift.String?
     /// The Cost Category's effective start date. It can only be a billing start date (first day of the month).
@@ -5340,6 +5340,7 @@ public struct UpdateCostCategoryDefinitionOutput {
 }
 
 extension CostExplorerClientTypes {
+
     /// Use Expression to filter in various Cost Explorer APIs. Not all Expression types are supported in each API. Refer to the documentation for each specific API to see what is supported. There are two patterns:
     ///
     /// * Simple dimension values.
@@ -5391,7 +5392,7 @@ extension CostExplorerClientTypes {
     ///
     ///
     /// For the GetRightsizingRecommendation action, a combination of OR and NOT isn't supported. OR isn't supported between different dimensions, or dimensions and tags. NOT operators aren't supported. Dimensions are also limited to LINKED_ACCOUNT, REGION, or RIGHTSIZING_TYPE. For the GetReservationPurchaseRecommendation action, only NOT is supported. AND and OR aren't supported. Dimensions are limited to LINKED_ACCOUNT.
-    public struct Expression {
+    public struct Expression: Swift.Sendable {
         /// Return results that match both Dimension objects.
         public var and: [CostExplorerClientTypes.Expression]?
         /// The filter that's based on CostCategory values.
@@ -5422,12 +5423,12 @@ extension CostExplorerClientTypes {
             self.tags = tags
         }
     }
-
 }
 
 extension CostExplorerClientTypes {
+
     /// This object continuously inspects your account's cost data for anomalies. It's based on MonitorType and MonitorSpecification. The content consists of detailed metadata and the current status of the monitor object.
-    public struct AnomalyMonitor {
+    public struct AnomalyMonitor: Swift.Sendable {
         /// The date when the monitor was created.
         public var creationDate: Swift.String?
         /// The value for evaluated dimensions.
@@ -5522,12 +5523,12 @@ extension CostExplorerClientTypes {
             self.monitorType = monitorType
         }
     }
-
 }
 
 extension CostExplorerClientTypes {
+
     /// An AnomalySubscription resource (also referred to as an alert subscription) sends notifications about specific anomalies that meet an alerting criteria defined by you. You can specify the frequency of the alerts and the subscribers to notify. Anomaly subscriptions can be associated with one or more [AnomalyMonitor](https://docs.aws.amazon.com/aws-cost-management/latest/APIReference/API_AnomalyMonitor.html) resources, and they only send notifications about anomalies detected by those associated monitors. You can also configure a threshold to further control which anomalies are included in the notifications. Anomalies that don’t exceed the chosen threshold and therefore don’t trigger notifications from an anomaly subscription will still be available on the console and from the [GetAnomalies](https://docs.aws.amazon.com/aws-cost-management/latest/APIReference/API_GetAnomalies.html) API.
-    public struct AnomalySubscription {
+    public struct AnomalySubscription: Swift.Sendable {
         /// Your unique account identifier.
         public var accountId: Swift.String?
         /// The frequency that anomaly notifications are sent. Notifications are sent either over email (for DAILY and WEEKLY frequencies) or SNS (for IMMEDIATE frequency). For more information, see [Creating an Amazon SNS topic for anomaly notifications](https://docs.aws.amazon.com/cost-management/latest/userguide/ad-SNS.html).
@@ -5579,12 +5580,12 @@ extension CostExplorerClientTypes {
             self.thresholdExpression = thresholdExpression
         }
     }
-
 }
 
 extension CostExplorerClientTypes {
+
     /// Rules are processed in order. If there are multiple rules that match the line item, then the first rule to match is used to determine that Cost Category value.
-    public struct CostCategoryRule {
+    public struct CostCategoryRule: Swift.Sendable {
         /// The value the line item is categorized as if the line item contains the matched dimension.
         public var inheritedValue: CostExplorerClientTypes.CostCategoryInheritedValueDimension?
         /// An [Expression](https://docs.aws.amazon.com/aws-cost-management/latest/APIReference/API_Expression.html) object used to categorize costs. This supports dimensions, tags, and nested expressions. Currently the only dimensions supported are LINKED_ACCOUNT, SERVICE_CODE, RECORD_TYPE, LINKED_ACCOUNT_NAME, REGION, and USAGE_TYPE. RECORD_TYPE is a dimension used for Cost Explorer APIs, and is also supported for Cost Category expressions. This dimension uses different terms, depending on whether you're using the console or API/JSON editor. For a detailed comparison, see [Term Comparisons](https://docs.aws.amazon.com/awsaccountbilling/latest/aboutv2/manage-cost-categories.html#cost-categories-terms) in the Billing and Cost Management User Guide.
@@ -5607,10 +5608,9 @@ extension CostExplorerClientTypes {
             self.value = value
         }
     }
-
 }
 
-public struct GetCostAndUsageInput {
+public struct GetCostAndUsageInput: Swift.Sendable {
     /// Filters Amazon Web Services costs by different dimensions. For example, you can specify SERVICE and LINKED_ACCOUNT and get the costs that are associated with that account's usage of that service. You can nest Expression objects to define any combination of dimension filters. For more information, see [Expression](https://docs.aws.amazon.com/aws-cost-management/latest/APIReference/API_Expression.html). Valid values for MatchOptions for Dimensions are EQUALS and CASE_SENSITIVE. Valid values for MatchOptions for CostCategories and Tags are EQUALS, ABSENT, and CASE_SENSITIVE. Default values are EQUALS and CASE_SENSITIVE.
     public var filter: CostExplorerClientTypes.Expression?
     /// Sets the Amazon Web Services cost granularity to MONTHLY or DAILY, or HOURLY. If Granularity isn't set, the response object doesn't include the Granularity, either MONTHLY or DAILY, or HOURLY.
@@ -5645,7 +5645,7 @@ public struct GetCostAndUsageInput {
     }
 }
 
-public struct GetCostAndUsageWithResourcesInput {
+public struct GetCostAndUsageWithResourcesInput: Swift.Sendable {
     /// Filters Amazon Web Services costs by different dimensions. For example, you can specify SERVICE and LINKED_ACCOUNT and get the costs that are associated with that account's usage of that service. You can nest Expression objects to define any combination of dimension filters. For more information, see [Expression](https://docs.aws.amazon.com/aws-cost-management/latest/APIReference/API_Expression.html). The GetCostAndUsageWithResources operation requires that you either group by or filter by a ResourceId. It requires the [Expression](https://docs.aws.amazon.com/aws-cost-management/latest/APIReference/API_Expression.html)"SERVICE = Amazon Elastic Compute Cloud - Compute" in the filter. Valid values for MatchOptions for Dimensions are EQUALS and CASE_SENSITIVE. Valid values for MatchOptions for CostCategories and Tags are EQUALS, ABSENT, and CASE_SENSITIVE. Default values are EQUALS and CASE_SENSITIVE.
     /// This member is required.
     public var filter: CostExplorerClientTypes.Expression?
@@ -5680,7 +5680,7 @@ public struct GetCostAndUsageWithResourcesInput {
     }
 }
 
-public struct GetCostCategoriesInput {
+public struct GetCostCategoriesInput: Swift.Sendable {
     /// The unique name of the Cost Category.
     public var costCategoryName: Swift.String?
     /// Use Expression to filter in various Cost Explorer APIs. Not all Expression types are supported in each API. Refer to the documentation for each specific API to see what is supported. There are two patterns:
@@ -5784,7 +5784,7 @@ public struct GetCostCategoriesInput {
     }
 }
 
-public struct GetCostForecastInput {
+public struct GetCostForecastInput: Swift.Sendable {
     /// The filters that you want to use to filter your forecast. The GetCostForecast API supports filtering by the following dimensions:
     ///
     /// * AZ
@@ -5871,7 +5871,7 @@ public struct GetCostForecastInput {
     }
 }
 
-public struct GetDimensionValuesInput {
+public struct GetDimensionValuesInput: Swift.Sendable {
     /// The context for the call to GetDimensionValues. This can be RESERVATIONS or COST_AND_USAGE. The default value is COST_AND_USAGE. If the context is set to RESERVATIONS, the resulting dimension values can be used in the GetReservationUtilization operation. If the context is set to COST_AND_USAGE, the resulting dimension values can be used in the GetCostAndUsage operation. If you set the context to COST_AND_USAGE, you can use the following dimensions for searching:
     ///
     /// * AZ - The Availability Zone. An example is us-east-1a.
@@ -6067,7 +6067,7 @@ public struct GetDimensionValuesInput {
 }
 
 /// You can use the following request parameters to query for how much of your instance usage a reservation covered.
-public struct GetReservationCoverageInput {
+public struct GetReservationCoverageInput: Swift.Sendable {
     /// Filters utilization data by dimensions. You can filter by the following dimensions:
     ///
     /// * AZ
@@ -6180,7 +6180,7 @@ public struct GetReservationCoverageInput {
     }
 }
 
-public struct GetReservationPurchaseRecommendationInput {
+public struct GetReservationPurchaseRecommendationInput: Swift.Sendable {
     /// The account ID that's associated with the recommendation.
     public var accountId: Swift.String?
     /// The account scope that you want your recommendations for. Amazon Web Services calculates recommendations including the management account and member accounts if the value is set to PAYER. If the value is LINKED, recommendations are calculated for individual member accounts only.
@@ -6279,7 +6279,7 @@ public struct GetReservationPurchaseRecommendationInput {
     }
 }
 
-public struct GetReservationUtilizationInput {
+public struct GetReservationUtilizationInput: Swift.Sendable {
     /// Filters utilization data by dimensions. You can filter by the following dimensions:
     ///
     /// * AZ
@@ -6378,7 +6378,7 @@ public struct GetReservationUtilizationInput {
     }
 }
 
-public struct GetRightsizingRecommendationInput {
+public struct GetRightsizingRecommendationInput: Swift.Sendable {
     /// You can use Configuration to customize recommendations across two attributes. You can choose to view recommendations for instances within the same instance families or across different instance families. You can also choose to view your estimated savings that are associated with recommendations with consideration of existing Savings Plans or RI benefits, or neither.
     public var configuration: CostExplorerClientTypes.RightsizingRecommendationConfiguration?
     /// Use Expression to filter in various Cost Explorer APIs. Not all Expression types are supported in each API. Refer to the documentation for each specific API to see what is supported. There are two patterns:
@@ -6457,7 +6457,7 @@ public struct GetRightsizingRecommendationInput {
     }
 }
 
-public struct GetSavingsPlansCoverageInput {
+public struct GetSavingsPlansCoverageInput: Swift.Sendable {
     /// Filters Savings Plans coverage data by dimensions. You can filter data for Savings Plans usage with the following dimensions:
     ///
     /// * LINKED_ACCOUNT
@@ -6526,7 +6526,7 @@ public struct GetSavingsPlansCoverageInput {
     }
 }
 
-public struct GetSavingsPlansPurchaseRecommendationInput {
+public struct GetSavingsPlansPurchaseRecommendationInput: Swift.Sendable {
     /// The account scope that you want your recommendations for. Amazon Web Services calculates recommendations including the management account and member accounts if the value is set to PAYER. If the value is LINKED, recommendations are calculated for individual member accounts only.
     public var accountScope: CostExplorerClientTypes.AccountScope?
     /// You can filter your recommendations by Account ID with the LINKED_ACCOUNT dimension. To filter your recommendations by Account ID, specify Key as LINKED_ACCOUNT and Value as the comma-separated Acount ID(s) that you want to see Savings Plans purchase recommendations for. For GetSavingsPlansPurchaseRecommendation, the Filter doesn't include CostCategories or Tags. It only includes Dimensions. With Dimensions, Key must be LINKED_ACCOUNT and Value can be a single Account ID or multiple comma-separated Account IDs that you want to see Savings Plans Purchase Recommendations for. AND and OR operators are not supported.
@@ -6570,7 +6570,7 @@ public struct GetSavingsPlansPurchaseRecommendationInput {
     }
 }
 
-public struct GetSavingsPlansUtilizationDetailsInput {
+public struct GetSavingsPlansUtilizationDetailsInput: Swift.Sendable {
     /// The data type.
     public var dataType: [CostExplorerClientTypes.SavingsPlansDataType]?
     /// Filters Savings Plans utilization coverage data for active Savings Plans dimensions. You can filter data with the following dimensions:
@@ -6633,7 +6633,7 @@ public struct GetSavingsPlansUtilizationDetailsInput {
     }
 }
 
-public struct GetSavingsPlansUtilizationInput {
+public struct GetSavingsPlansUtilizationInput: Swift.Sendable {
     /// Filters Savings Plans utilization coverage data for active Savings Plans dimensions. You can filter data with the following dimensions:
     ///
     /// * LINKED_ACCOUNT
@@ -6686,7 +6686,7 @@ public struct GetSavingsPlansUtilizationInput {
     }
 }
 
-public struct GetTagsInput {
+public struct GetTagsInput: Swift.Sendable {
     /// Use Expression to filter in various Cost Explorer APIs. Not all Expression types are supported in each API. Refer to the documentation for each specific API to see what is supported. There are two patterns:
     ///
     /// * Simple dimension values.
@@ -6790,7 +6790,7 @@ public struct GetTagsInput {
     }
 }
 
-public struct GetUsageForecastInput {
+public struct GetUsageForecastInput: Swift.Sendable {
     /// The filters that you want to use to filter your forecast. The GetUsageForecast API supports filtering by the following dimensions:
     ///
     /// * AZ
@@ -6871,7 +6871,7 @@ public struct GetUsageForecastInput {
     }
 }
 
-public struct UpdateAnomalySubscriptionInput {
+public struct UpdateAnomalySubscriptionInput: Swift.Sendable {
     /// The update to the frequency value that subscribers receive notifications.
     public var frequency: CostExplorerClientTypes.AnomalySubscriptionFrequency?
     /// A list of cost anomaly monitor ARNs.
@@ -6917,7 +6917,7 @@ public struct UpdateAnomalySubscriptionInput {
     }
 }
 
-public struct CreateAnomalyMonitorInput {
+public struct CreateAnomalyMonitorInput: Swift.Sendable {
     /// The cost anomaly detection monitor object that you want to create.
     /// This member is required.
     public var anomalyMonitor: CostExplorerClientTypes.AnomalyMonitor?
@@ -6948,7 +6948,7 @@ public struct CreateAnomalyMonitorInput {
     }
 }
 
-public struct CreateAnomalySubscriptionInput {
+public struct CreateAnomalySubscriptionInput: Swift.Sendable {
     /// The cost anomaly subscription object that you want to create.
     /// This member is required.
     public var anomalySubscription: CostExplorerClientTypes.AnomalySubscription?
@@ -6980,8 +6980,9 @@ public struct CreateAnomalySubscriptionInput {
 }
 
 extension CostExplorerClientTypes {
+
     /// The structure of Cost Categories. This includes detailed metadata and the set of rules for the CostCategory object.
-    public struct CostCategory {
+    public struct CostCategory: Swift.Sendable {
         /// The unique identifier for your Cost Category.
         /// This member is required.
         public var costCategoryArn: Swift.String?
@@ -7029,10 +7030,9 @@ extension CostExplorerClientTypes {
             self.splitChargeRules = splitChargeRules
         }
     }
-
 }
 
-public struct CreateCostCategoryDefinitionInput {
+public struct CreateCostCategoryDefinitionInput: Swift.Sendable {
     /// The default value for the cost category.
     public var defaultValue: Swift.String?
     /// The Cost Category's effective start date. It can only be a billing start date (first day of the month). If the date isn't provided, it's the first day of the current month. Dates can't be before the previous twelve months, or in the future.
@@ -7085,7 +7085,7 @@ public struct CreateCostCategoryDefinitionInput {
     }
 }
 
-public struct GetAnomalyMonitorsOutput {
+public struct GetAnomalyMonitorsOutput: Swift.Sendable {
     /// A list of cost anomaly monitors that includes the detailed metadata for each monitor.
     /// This member is required.
     public var anomalyMonitors: [CostExplorerClientTypes.AnomalyMonitor]?
@@ -7102,7 +7102,7 @@ public struct GetAnomalyMonitorsOutput {
     }
 }
 
-public struct GetAnomalySubscriptionsOutput {
+public struct GetAnomalySubscriptionsOutput: Swift.Sendable {
     /// A list of cost anomaly subscriptions that includes the detailed metadata for each one.
     /// This member is required.
     public var anomalySubscriptions: [CostExplorerClientTypes.AnomalySubscription]?
@@ -7119,7 +7119,7 @@ public struct GetAnomalySubscriptionsOutput {
     }
 }
 
-public struct UpdateCostCategoryDefinitionInput {
+public struct UpdateCostCategoryDefinitionInput: Swift.Sendable {
     /// The unique identifier for your Cost Category.
     /// This member is required.
     public var costCategoryArn: Swift.String?
@@ -7154,7 +7154,7 @@ public struct UpdateCostCategoryDefinitionInput {
     }
 }
 
-public struct DescribeCostCategoryDefinitionOutput {
+public struct DescribeCostCategoryDefinitionOutput: Swift.Sendable {
     /// The structure of Cost Categories. This includes detailed metadata and the set of rules for the CostCategory object.
     public var costCategory: CostExplorerClientTypes.CostCategory?
 

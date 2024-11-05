@@ -32,7 +32,7 @@ import struct Smithy.URIQueryItem
 
 extension EMRServerlessClientTypes {
 
-    public enum Architecture: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Architecture: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case arm64
         case x8664
         case sdkUnknown(Swift.String)
@@ -60,8 +60,9 @@ extension EMRServerlessClientTypes {
 }
 
 extension EMRServerlessClientTypes {
+
     /// The configuration for an application to automatically start on job submission.
-    public struct AutoStartConfig {
+    public struct AutoStartConfig: Swift.Sendable {
         /// Enables the application to automatically start on job submission. Defaults to true.
         public var enabled: Swift.Bool?
 
@@ -72,12 +73,12 @@ extension EMRServerlessClientTypes {
             self.enabled = enabled
         }
     }
-
 }
 
 extension EMRServerlessClientTypes {
+
     /// The configuration for an application to automatically stop after a certain amount of time being idle.
-    public struct AutoStopConfig {
+    public struct AutoStopConfig: Swift.Sendable {
         /// Enables the application to automatically stop after a certain amount of time being idle. Defaults to true.
         public var enabled: Swift.Bool?
         /// The amount of idle time in minutes after which your application will automatically stop. Defaults to 15 minutes.
@@ -92,12 +93,12 @@ extension EMRServerlessClientTypes {
             self.idleTimeoutMinutes = idleTimeoutMinutes
         }
     }
-
 }
 
 extension EMRServerlessClientTypes {
+
     /// The applied image configuration.
-    public struct ImageConfiguration {
+    public struct ImageConfiguration: Swift.Sendable {
         /// The image URI.
         /// This member is required.
         public var imageUri: Swift.String?
@@ -113,12 +114,12 @@ extension EMRServerlessClientTypes {
             self.resolvedImageDigest = resolvedImageDigest
         }
     }
-
 }
 
 extension EMRServerlessClientTypes {
+
     /// The cumulative configuration requirements for every worker instance of the worker type.
-    public struct WorkerResourceConfig {
+    public struct WorkerResourceConfig: Swift.Sendable {
         /// The CPU requirements for every worker instance of the worker type.
         /// This member is required.
         public var cpu: Swift.String?
@@ -143,12 +144,12 @@ extension EMRServerlessClientTypes {
             self.memory = memory
         }
     }
-
 }
 
 extension EMRServerlessClientTypes {
+
     /// The initial capacity configuration per worker.
-    public struct InitialCapacityConfig {
+    public struct InitialCapacityConfig: Swift.Sendable {
         /// The resource configuration of the initial capacity configuration.
         public var workerConfiguration: EMRServerlessClientTypes.WorkerResourceConfig?
         /// The number of workers in the initial capacity configuration.
@@ -164,12 +165,12 @@ extension EMRServerlessClientTypes {
             self.workerCount = workerCount
         }
     }
-
 }
 
 extension EMRServerlessClientTypes {
+
     /// The configuration to use to enable the different types of interactive use cases in an application.
-    public struct InteractiveConfiguration {
+    public struct InteractiveConfiguration: Swift.Sendable {
         /// Enables an Apache Livy endpoint that you can connect to and run interactive jobs.
         public var livyEndpointEnabled: Swift.Bool?
         /// Enables you to connect an application to Amazon EMR Studio to run interactive workloads in a notebook.
@@ -184,12 +185,12 @@ extension EMRServerlessClientTypes {
             self.studioEnabled = studioEnabled
         }
     }
-
 }
 
 extension EMRServerlessClientTypes {
+
     /// The maximum allowed cumulative resources for an application. No new resources will be created once the limit is hit.
-    public struct MaximumAllowedResources {
+    public struct MaximumAllowedResources: Swift.Sendable {
         /// The maximum allowed CPU for an application.
         /// This member is required.
         public var cpu: Swift.String?
@@ -210,12 +211,12 @@ extension EMRServerlessClientTypes {
             self.memory = memory
         }
     }
-
 }
 
 extension EMRServerlessClientTypes {
+
     /// The Amazon CloudWatch configuration for monitoring logs. You can configure your jobs to send log information to CloudWatch.
-    public struct CloudWatchLoggingConfiguration {
+    public struct CloudWatchLoggingConfiguration: Swift.Sendable {
         /// Enables CloudWatch logging.
         /// This member is required.
         public var enabled: Swift.Bool?
@@ -247,12 +248,12 @@ extension EMRServerlessClientTypes {
             self.logTypes = logTypes
         }
     }
-
 }
 
 extension EMRServerlessClientTypes {
+
     /// The managed log persistence configuration for a job run.
-    public struct ManagedPersistenceMonitoringConfiguration {
+    public struct ManagedPersistenceMonitoringConfiguration: Swift.Sendable {
         /// Enables managed logging and defaults to true. If set to false, managed logging will be turned off.
         public var enabled: Swift.Bool?
         /// The KMS key ARN to encrypt the logs stored in managed log persistence.
@@ -267,12 +268,12 @@ extension EMRServerlessClientTypes {
             self.encryptionKeyArn = encryptionKeyArn
         }
     }
-
 }
 
 extension EMRServerlessClientTypes {
+
     /// The monitoring configuration object you can configure to send metrics to Amazon Managed Service for Prometheus for a job run.
-    public struct PrometheusMonitoringConfiguration {
+    public struct PrometheusMonitoringConfiguration: Swift.Sendable {
         /// The remote write URL in the Amazon Managed Service for Prometheus workspace to send metrics to.
         public var remoteWriteUrl: Swift.String?
 
@@ -283,12 +284,12 @@ extension EMRServerlessClientTypes {
             self.remoteWriteUrl = remoteWriteUrl
         }
     }
-
 }
 
 extension EMRServerlessClientTypes {
+
     /// The Amazon S3 configuration for monitoring log publishing. You can configure your jobs to send log information to Amazon S3.
-    public struct S3MonitoringConfiguration {
+    public struct S3MonitoringConfiguration: Swift.Sendable {
         /// The KMS key ARN to encrypt the logs published to the given Amazon S3 destination.
         public var encryptionKeyArn: Swift.String?
         /// The Amazon S3 destination URI for log publishing.
@@ -303,12 +304,12 @@ extension EMRServerlessClientTypes {
             self.logUri = logUri
         }
     }
-
 }
 
 extension EMRServerlessClientTypes {
+
     /// The configuration setting for monitoring.
-    public struct MonitoringConfiguration {
+    public struct MonitoringConfiguration: Swift.Sendable {
         /// The Amazon CloudWatch configuration for monitoring logs. You can configure your jobs to send log information to CloudWatch.
         public var cloudWatchLoggingConfiguration: EMRServerlessClientTypes.CloudWatchLoggingConfiguration?
         /// The managed log persistence configuration for a job run.
@@ -331,12 +332,12 @@ extension EMRServerlessClientTypes {
             self.s3MonitoringConfiguration = s3MonitoringConfiguration
         }
     }
-
 }
 
 extension EMRServerlessClientTypes {
+
     /// The network configuration for customer VPC connectivity.
-    public struct NetworkConfiguration {
+    public struct NetworkConfiguration: Swift.Sendable {
         /// The array of security group Ids for customer VPC connectivity.
         public var securityGroupIds: [Swift.String]?
         /// The array of subnet Ids for customer VPC connectivity.
@@ -351,12 +352,12 @@ extension EMRServerlessClientTypes {
             self.subnetIds = subnetIds
         }
     }
-
 }
 
 extension EMRServerlessClientTypes {
+
     /// The scheduler configuration for batch and streaming jobs running on this application. Supported with release labels emr-7.0.0 and above.
-    public struct SchedulerConfiguration {
+    public struct SchedulerConfiguration: Swift.Sendable {
         /// The maximum concurrent job runs on this application. If scheduler configuration is enabled on your application, the default value is 15. The valid range is 1 to 1000.
         public var maxConcurrentRuns: Swift.Int?
         /// The maximum duration in minutes for the job in QUEUED state. If scheduler configuration is enabled on your application, the default value is 360 minutes (6 hours). The valid range is from 15 to 720.
@@ -371,12 +372,11 @@ extension EMRServerlessClientTypes {
             self.queueTimeoutMinutes = queueTimeoutMinutes
         }
     }
-
 }
 
 extension EMRServerlessClientTypes {
 
-    public enum ApplicationState: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ApplicationState: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case created
         case creating
         case started
@@ -419,8 +419,9 @@ extension EMRServerlessClientTypes {
 }
 
 extension EMRServerlessClientTypes {
+
     /// The specifications for a worker type.
-    public struct WorkerTypeSpecification {
+    public struct WorkerTypeSpecification: Swift.Sendable {
         /// The image configuration for a worker type.
         public var imageConfiguration: EMRServerlessClientTypes.ImageConfiguration?
 
@@ -431,12 +432,12 @@ extension EMRServerlessClientTypes {
             self.imageConfiguration = imageConfiguration
         }
     }
-
 }
 
 extension EMRServerlessClientTypes {
+
     /// The summary of attributes associated with an application.
-    public struct ApplicationSummary {
+    public struct ApplicationSummary: Swift.Sendable {
         /// The CPU architecture of an application.
         public var architecture: EMRServerlessClientTypes.Architecture?
         /// The ARN of the application.
@@ -490,7 +491,6 @@ extension EMRServerlessClientTypes {
             self.updatedAt = updatedAt
         }
     }
-
 }
 
 /// The request could not be processed because of conflict in the current state of the resource.
@@ -594,8 +594,9 @@ public struct ValidationException: ClientRuntime.ModeledError, AWSClientRuntime.
 }
 
 extension EMRServerlessClientTypes {
+
     /// The image configuration.
-    public struct ImageConfigurationInput {
+    public struct ImageConfigurationInput: Swift.Sendable {
         /// The URI of an image in the Amazon ECR registry. This field is required when you create a new application. If you leave this field blank in an update, Amazon EMR will remove the image configuration.
         public var imageUri: Swift.String?
 
@@ -606,12 +607,12 @@ extension EMRServerlessClientTypes {
             self.imageUri = imageUri
         }
     }
-
 }
 
 extension EMRServerlessClientTypes {
+
     /// The specifications for a worker type.
-    public struct WorkerTypeSpecificationInput {
+    public struct WorkerTypeSpecificationInput: Swift.Sendable {
         /// The image configuration for a worker type.
         public var imageConfiguration: EMRServerlessClientTypes.ImageConfigurationInput?
 
@@ -622,10 +623,9 @@ extension EMRServerlessClientTypes {
             self.imageConfiguration = imageConfiguration
         }
     }
-
 }
 
-public struct CreateApplicationOutput {
+public struct CreateApplicationOutput: Swift.Sendable {
     /// The output contains the application ID.
     /// This member is required.
     public var applicationId: Swift.String?
@@ -647,7 +647,7 @@ public struct CreateApplicationOutput {
     }
 }
 
-public struct DeleteApplicationInput {
+public struct DeleteApplicationInput: Swift.Sendable {
     /// The ID of the application that will be deleted.
     /// This member is required.
     public var applicationId: Swift.String?
@@ -660,12 +660,12 @@ public struct DeleteApplicationInput {
     }
 }
 
-public struct DeleteApplicationOutput {
+public struct DeleteApplicationOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct GetApplicationInput {
+public struct GetApplicationInput: Swift.Sendable {
     /// The ID of the application that will be described.
     /// This member is required.
     public var applicationId: Swift.String?
@@ -678,7 +678,7 @@ public struct GetApplicationInput {
     }
 }
 
-public struct ListApplicationsInput {
+public struct ListApplicationsInput: Swift.Sendable {
     /// The maximum number of applications that can be listed.
     public var maxResults: Swift.Int?
     /// The token for the next set of application results.
@@ -698,7 +698,7 @@ public struct ListApplicationsInput {
     }
 }
 
-public struct ListApplicationsOutput {
+public struct ListApplicationsOutput: Swift.Sendable {
     /// The output lists the specified applications.
     /// This member is required.
     public var applications: [EMRServerlessClientTypes.ApplicationSummary]?
@@ -740,7 +740,7 @@ public struct ServiceQuotaExceededException: ClientRuntime.ModeledError, AWSClie
     }
 }
 
-public struct StartApplicationInput {
+public struct StartApplicationInput: Swift.Sendable {
     /// The ID of the application to start.
     /// This member is required.
     public var applicationId: Swift.String?
@@ -753,12 +753,12 @@ public struct StartApplicationInput {
     }
 }
 
-public struct StartApplicationOutput {
+public struct StartApplicationOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct StopApplicationInput {
+public struct StopApplicationInput: Swift.Sendable {
     /// The ID of the application to stop.
     /// This member is required.
     public var applicationId: Swift.String?
@@ -771,12 +771,12 @@ public struct StopApplicationInput {
     }
 }
 
-public struct StopApplicationOutput {
+public struct StopApplicationOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct CancelJobRunInput {
+public struct CancelJobRunInput: Swift.Sendable {
     /// The ID of the application on which the job run will be canceled.
     /// This member is required.
     public var applicationId: Swift.String?
@@ -794,7 +794,7 @@ public struct CancelJobRunInput {
     }
 }
 
-public struct CancelJobRunOutput {
+public struct CancelJobRunOutput: Swift.Sendable {
     /// The output contains the application ID on which the job run is cancelled.
     /// This member is required.
     public var applicationId: Swift.String?
@@ -812,7 +812,7 @@ public struct CancelJobRunOutput {
     }
 }
 
-public struct GetDashboardForJobRunInput {
+public struct GetDashboardForJobRunInput: Swift.Sendable {
     /// The ID of the application.
     /// This member is required.
     public var applicationId: Swift.String?
@@ -834,7 +834,7 @@ public struct GetDashboardForJobRunInput {
     }
 }
 
-public struct GetDashboardForJobRunOutput {
+public struct GetDashboardForJobRunOutput: Swift.Sendable {
     /// The URL to view job run's dashboard.
     public var url: Swift.String?
 
@@ -846,7 +846,7 @@ public struct GetDashboardForJobRunOutput {
     }
 }
 
-public struct GetJobRunInput {
+public struct GetJobRunInput: Swift.Sendable {
     /// The ID of the application on which the job run is submitted.
     /// This member is required.
     public var applicationId: Swift.String?
@@ -869,8 +869,9 @@ public struct GetJobRunInput {
 }
 
 extension EMRServerlessClientTypes {
+
     /// The resource utilization for memory, storage, and vCPU for jobs.
-    public struct ResourceUtilization {
+    public struct ResourceUtilization: Swift.Sendable {
         /// The aggregated memory used per hour from the time the job starts executing until the job is terminated.
         public var memoryGBHour: Swift.Double?
         /// The aggregated storage used per hour from the time the job starts executing until the job is terminated.
@@ -889,12 +890,12 @@ extension EMRServerlessClientTypes {
             self.vCPUHour = vCPUHour
         }
     }
-
 }
 
 extension EMRServerlessClientTypes {
+
     /// The configurations for the Hive job driver.
-    public struct Hive {
+    public struct Hive: Swift.Sendable {
         /// The query file for the Hive job run.
         public var initQueryFile: Swift.String?
         /// The parameters for the Hive job run.
@@ -914,7 +915,6 @@ extension EMRServerlessClientTypes {
             self.query = query
         }
     }
-
 }
 
 extension EMRServerlessClientTypes.Hive: Swift.CustomDebugStringConvertible {
@@ -923,8 +923,9 @@ extension EMRServerlessClientTypes.Hive: Swift.CustomDebugStringConvertible {
 }
 
 extension EMRServerlessClientTypes {
+
     /// The configurations for the Spark submit job driver.
-    public struct SparkSubmit {
+    public struct SparkSubmit: Swift.Sendable {
         /// The entry point for the Spark submit job run.
         /// This member is required.
         public var entryPoint: Swift.String?
@@ -944,7 +945,6 @@ extension EMRServerlessClientTypes {
             self.sparkSubmitParameters = sparkSubmitParameters
         }
     }
-
 }
 
 extension EMRServerlessClientTypes.SparkSubmit: Swift.CustomDebugStringConvertible {
@@ -953,20 +953,20 @@ extension EMRServerlessClientTypes.SparkSubmit: Swift.CustomDebugStringConvertib
 }
 
 extension EMRServerlessClientTypes {
+
     /// The driver that the job runs on.
-    public enum JobDriver {
+    public enum JobDriver: Swift.Sendable {
         /// The job driver parameters specified for Spark.
         case sparksubmit(EMRServerlessClientTypes.SparkSubmit)
         /// The job driver parameters specified for Hive.
         case hive(EMRServerlessClientTypes.Hive)
         case sdkUnknown(Swift.String)
     }
-
 }
 
 extension EMRServerlessClientTypes {
 
-    public enum JobRunMode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum JobRunMode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case batch
         case streaming
         case sdkUnknown(Swift.String)
@@ -994,8 +994,9 @@ extension EMRServerlessClientTypes {
 }
 
 extension EMRServerlessClientTypes {
+
     /// The retry policy to use for a job run.
-    public struct RetryPolicy {
+    public struct RetryPolicy: Swift.Sendable {
         /// Maximum number of attempts for the job run. This parameter is only applicable for BATCH mode.
         public var maxAttempts: Swift.Int?
         /// Maximum number of failed attempts per hour. This [arameter is only applicable for STREAMING mode.
@@ -1010,12 +1011,11 @@ extension EMRServerlessClientTypes {
             self.maxFailedAttemptsPerHour = maxFailedAttemptsPerHour
         }
     }
-
 }
 
 extension EMRServerlessClientTypes {
 
-    public enum JobRunState: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum JobRunState: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case cancelled
         case cancelling
         case failed
@@ -1064,8 +1064,9 @@ extension EMRServerlessClientTypes {
 }
 
 extension EMRServerlessClientTypes {
+
     /// The aggregate vCPU, memory, and storage resources used from the time job start executing till the time job is terminated, rounded up to the nearest second.
-    public struct TotalResourceUtilization {
+    public struct TotalResourceUtilization: Swift.Sendable {
         /// The aggregated memory used per hour from the time job start executing till the time job is terminated.
         public var memoryGBHour: Swift.Double?
         /// The aggregated storage used per hour from the time job start executing till the time job is terminated.
@@ -1084,10 +1085,9 @@ extension EMRServerlessClientTypes {
             self.vCPUHour = vCPUHour
         }
     }
-
 }
 
-public struct ListJobRunAttemptsInput {
+public struct ListJobRunAttemptsInput: Swift.Sendable {
     /// The ID of the application for which to list job runs.
     /// This member is required.
     public var applicationId: Swift.String?
@@ -1114,8 +1114,9 @@ public struct ListJobRunAttemptsInput {
 }
 
 extension EMRServerlessClientTypes {
+
     /// The summary of attributes associated with a job run attempt.
-    public struct JobRunAttemptSummary {
+    public struct JobRunAttemptSummary: Swift.Sendable {
         /// The ID of the application the job is running on.
         /// This member is required.
         public var applicationId: Swift.String?
@@ -1193,10 +1194,9 @@ extension EMRServerlessClientTypes {
             self.updatedAt = updatedAt
         }
     }
-
 }
 
-public struct ListJobRunAttemptsOutput {
+public struct ListJobRunAttemptsOutput: Swift.Sendable {
     /// The array of the listed job run attempt objects.
     /// This member is required.
     public var jobRunAttempts: [EMRServerlessClientTypes.JobRunAttemptSummary]?
@@ -1213,7 +1213,7 @@ public struct ListJobRunAttemptsOutput {
     }
 }
 
-public struct ListJobRunsInput {
+public struct ListJobRunsInput: Swift.Sendable {
     /// The ID of the application for which to list the job run.
     /// This member is required.
     public var applicationId: Swift.String?
@@ -1251,8 +1251,9 @@ public struct ListJobRunsInput {
 }
 
 extension EMRServerlessClientTypes {
+
     /// The summary of attributes associated with a job run.
-    public struct JobRunSummary {
+    public struct JobRunSummary: Swift.Sendable {
         /// The ID of the application the job is running on.
         /// This member is required.
         public var applicationId: Swift.String?
@@ -1333,10 +1334,9 @@ extension EMRServerlessClientTypes {
             self.updatedAt = updatedAt
         }
     }
-
 }
 
-public struct ListJobRunsOutput {
+public struct ListJobRunsOutput: Swift.Sendable {
     /// The output lists information about the specified job runs.
     /// This member is required.
     public var jobRuns: [EMRServerlessClientTypes.JobRunSummary]?
@@ -1353,7 +1353,7 @@ public struct ListJobRunsOutput {
     }
 }
 
-public struct StartJobRunOutput {
+public struct StartJobRunOutput: Swift.Sendable {
     /// This output displays the application ID on which the job run was submitted.
     /// This member is required.
     public var applicationId: Swift.String?
@@ -1376,7 +1376,7 @@ public struct StartJobRunOutput {
     }
 }
 
-public struct ListTagsForResourceInput {
+public struct ListTagsForResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) that identifies the resource to list the tags for. Currently, the supported resources are Amazon EMR Serverless applications and job runs.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -1389,7 +1389,7 @@ public struct ListTagsForResourceInput {
     }
 }
 
-public struct ListTagsForResourceOutput {
+public struct ListTagsForResourceOutput: Swift.Sendable {
     /// The tags for the resource.
     public var tags: [Swift.String: Swift.String]?
 
@@ -1401,7 +1401,7 @@ public struct ListTagsForResourceOutput {
     }
 }
 
-public struct TagResourceInput {
+public struct TagResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) that identifies the resource to list the tags for. Currently, the supported resources are Amazon EMR Serverless applications and job runs.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -1419,12 +1419,12 @@ public struct TagResourceInput {
     }
 }
 
-public struct TagResourceOutput {
+public struct TagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UntagResourceInput {
+public struct UntagResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) that identifies the resource to list the tags for. Currently, the supported resources are Amazon EMR Serverless applications and job runs.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -1442,14 +1442,15 @@ public struct UntagResourceInput {
     }
 }
 
-public struct UntagResourceOutput {
+public struct UntagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
 extension EMRServerlessClientTypes {
+
     /// A configuration specification to be used when provisioning an application. A configuration consists of a classification, properties, and optional nested configurations. A classification refers to an application-specific configuration file. Properties are the settings you want to change in that file.
-    public struct Configuration {
+    public struct Configuration: Swift.Sendable {
         /// The classification within a configuration.
         /// This member is required.
         public var classification: Swift.String?
@@ -1469,7 +1470,6 @@ extension EMRServerlessClientTypes {
             self.properties = properties
         }
     }
-
 }
 
 extension EMRServerlessClientTypes.Configuration: Swift.CustomDebugStringConvertible {
@@ -1478,8 +1478,9 @@ extension EMRServerlessClientTypes.Configuration: Swift.CustomDebugStringConvert
 }
 
 extension EMRServerlessClientTypes {
+
     /// Information about an application. Amazon EMR Serverless uses applications to run jobs.
-    public struct Application {
+    public struct Application: Swift.Sendable {
         /// The ID of the application.
         /// This member is required.
         public var applicationId: Swift.String?
@@ -1581,12 +1582,12 @@ extension EMRServerlessClientTypes {
             self.workerTypeSpecifications = workerTypeSpecifications
         }
     }
-
 }
 
 extension EMRServerlessClientTypes {
+
     /// A configuration specification to be used to override existing configurations.
-    public struct ConfigurationOverrides {
+    public struct ConfigurationOverrides: Swift.Sendable {
         /// The override configurations for the application.
         public var applicationConfiguration: [EMRServerlessClientTypes.Configuration]?
         /// The override configurations for monitoring.
@@ -1601,10 +1602,9 @@ extension EMRServerlessClientTypes {
             self.monitoringConfiguration = monitoringConfiguration
         }
     }
-
 }
 
-public struct CreateApplicationInput {
+public struct CreateApplicationInput: Swift.Sendable {
     /// The CPU architecture of an application.
     public var architecture: EMRServerlessClientTypes.Architecture?
     /// The configuration for an application to automatically start on job submission.
@@ -1683,7 +1683,7 @@ public struct CreateApplicationInput {
     }
 }
 
-public struct UpdateApplicationInput {
+public struct UpdateApplicationInput: Swift.Sendable {
     /// The ID of the application to update.
     /// This member is required.
     public var applicationId: Swift.String?
@@ -1754,8 +1754,9 @@ public struct UpdateApplicationInput {
 }
 
 extension EMRServerlessClientTypes {
+
     /// Information about a job run. A job run is a unit of work, such as a Spark JAR, Hive query, or SparkSQL query, that you submit to an Amazon EMR Serverless application.
-    public struct JobRun {
+    public struct JobRun: Swift.Sendable {
         /// The ID of the application the job is running on.
         /// This member is required.
         public var applicationId: Swift.String?
@@ -1881,10 +1882,9 @@ extension EMRServerlessClientTypes {
             self.updatedAt = updatedAt
         }
     }
-
 }
 
-public struct GetApplicationOutput {
+public struct GetApplicationOutput: Swift.Sendable {
     /// The output displays information about the specified application.
     /// This member is required.
     public var application: EMRServerlessClientTypes.Application?
@@ -1897,7 +1897,7 @@ public struct GetApplicationOutput {
     }
 }
 
-public struct StartJobRunInput {
+public struct StartJobRunInput: Swift.Sendable {
     /// The ID of the application on which to run the job.
     /// This member is required.
     public var applicationId: Swift.String?
@@ -1948,7 +1948,7 @@ public struct StartJobRunInput {
     }
 }
 
-public struct UpdateApplicationOutput {
+public struct UpdateApplicationOutput: Swift.Sendable {
     /// Information about the updated application.
     /// This member is required.
     public var application: EMRServerlessClientTypes.Application?
@@ -1961,7 +1961,7 @@ public struct UpdateApplicationOutput {
     }
 }
 
-public struct GetJobRunOutput {
+public struct GetJobRunOutput: Swift.Sendable {
     /// The output displays information about the job run.
     /// This member is required.
     public var jobRun: EMRServerlessClientTypes.JobRun?

@@ -60,7 +60,7 @@ public struct AccessDeniedException: ClientRuntime.ModeledError, AWSClientRuntim
 
 extension BedrockAgentRuntimeClientTypes {
 
-    public enum ExecutionType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ExecutionType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case lambda
         case returnControl
         case sdkUnknown(Swift.String)
@@ -88,8 +88,9 @@ extension BedrockAgentRuntimeClientTypes {
 }
 
 extension BedrockAgentRuntimeClientTypes {
+
     /// A parameter for the API request or function.
-    public struct Parameter {
+    public struct Parameter: Swift.Sendable {
         /// The name of the parameter.
         public var name: Swift.String?
         /// The type of the parameter.
@@ -108,12 +109,12 @@ extension BedrockAgentRuntimeClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension BedrockAgentRuntimeClientTypes {
+
     /// The parameters in the API request body.
-    public struct RequestBody {
+    public struct RequestBody: Swift.Sendable {
         /// The content in the request body.
         public var content: [Swift.String: [BedrockAgentRuntimeClientTypes.Parameter]]?
 
@@ -124,12 +125,12 @@ extension BedrockAgentRuntimeClientTypes {
             self.content = content
         }
     }
-
 }
 
 extension BedrockAgentRuntimeClientTypes {
+
     /// Contains information about the action group being invoked. For more information about the possible structures, see the InvocationInput tab in [OrchestrationTrace](https://docs.aws.amazon.com/bedrock/latest/userguide/trace-orchestration.html) in the Amazon Bedrock User Guide.
-    public struct ActionGroupInvocationInput {
+    public struct ActionGroupInvocationInput: Swift.Sendable {
         /// The name of the action group.
         public var actionGroupName: Swift.String?
         /// The path to the API to call, based off the action group.
@@ -168,7 +169,6 @@ extension BedrockAgentRuntimeClientTypes {
             self.verb = verb
         }
     }
-
 }
 
 extension BedrockAgentRuntimeClientTypes.ActionGroupInvocationInput: Swift.CustomDebugStringConvertible {
@@ -177,8 +177,9 @@ extension BedrockAgentRuntimeClientTypes.ActionGroupInvocationInput: Swift.Custo
 }
 
 extension BedrockAgentRuntimeClientTypes {
+
     /// Contains the JSON-formatted string returned by the API invoked by the action group.
-    public struct ActionGroupInvocationOutput {
+    public struct ActionGroupInvocationOutput: Swift.Sendable {
         /// The JSON-formatted string returned by the API invoked by the action group.
         public var text: Swift.String?
 
@@ -189,7 +190,6 @@ extension BedrockAgentRuntimeClientTypes {
             self.text = text
         }
     }
-
 }
 
 extension BedrockAgentRuntimeClientTypes.ActionGroupInvocationOutput: Swift.CustomDebugStringConvertible {
@@ -199,7 +199,7 @@ extension BedrockAgentRuntimeClientTypes.ActionGroupInvocationOutput: Swift.Cust
 
 extension BedrockAgentRuntimeClientTypes {
 
-    public enum ActionInvocationType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ActionInvocationType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case result
         case userConfirmation
         case userConfirmationAndResult
@@ -430,22 +430,23 @@ public struct ValidationException: ClientRuntime.ModeledError, AWSClientRuntime.
 }
 
 extension BedrockAgentRuntimeClientTypes {
+
     /// Contains information about an input into the flow. This data type is used in the following API operations:
     ///
     /// * [InvokeFlow request](https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent-runtime_InvokeFlow.html#API_agent_InvokeFlow_RequestSyntax)
-    public enum FlowInputContent {
+    public enum FlowInputContent: Swift.Sendable {
         /// The input to send to the prompt flow input node.
         case document(Smithy.Document)
         case sdkUnknown(Swift.String)
     }
-
 }
 
 extension BedrockAgentRuntimeClientTypes {
+
     /// Contains information about an input into the prompt flow and where to send it. This data type is used in the following API operations:
     ///
     /// * [InvokeFlow request](https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent-runtime_InvokeFlow.html#API_agent_InvokeFlow_RequestSyntax)
-    public struct FlowInput {
+    public struct FlowInput: Swift.Sendable {
         /// Contains information about an input into the prompt flow.
         /// This member is required.
         public var content: BedrockAgentRuntimeClientTypes.FlowInputContent?
@@ -467,7 +468,6 @@ extension BedrockAgentRuntimeClientTypes {
             self.nodeOutputName = nodeOutputName
         }
     }
-
 }
 
 extension BedrockAgentRuntimeClientTypes.FlowInput: Swift.CustomDebugStringConvertible {
@@ -475,7 +475,7 @@ extension BedrockAgentRuntimeClientTypes.FlowInput: Swift.CustomDebugStringConve
         "FlowInput(nodeName: \(Swift.String(describing: nodeName)), nodeOutputName: \(Swift.String(describing: nodeOutputName)), content: \"CONTENT_REDACTED\")"}
 }
 
-public struct InvokeFlowInput {
+public struct InvokeFlowInput: Swift.Sendable {
     /// The unique identifier of the flow alias.
     /// This member is required.
     public var flowAliasIdentifier: Swift.String?
@@ -500,7 +500,7 @@ public struct InvokeFlowInput {
 
 extension BedrockAgentRuntimeClientTypes {
 
-    public enum FlowCompletionReason: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum FlowCompletionReason: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case success
         case sdkUnknown(Swift.String)
 
@@ -525,10 +525,11 @@ extension BedrockAgentRuntimeClientTypes {
 }
 
 extension BedrockAgentRuntimeClientTypes {
+
     /// Contains information about why a flow completed. This data type is used in the following API operations:
     ///
     /// * [InvokeFlow response](https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent-runtime_InvokeFlow.html#API_agent_InvokeFlow_ResponseSyntax)
-    public struct FlowCompletionEvent {
+    public struct FlowCompletionEvent: Swift.Sendable {
         /// The reason that the flow completed.
         /// This member is required.
         public var completionReason: BedrockAgentRuntimeClientTypes.FlowCompletionReason?
@@ -540,7 +541,6 @@ extension BedrockAgentRuntimeClientTypes {
             self.completionReason = completionReason
         }
     }
-
 }
 
 extension BedrockAgentRuntimeClientTypes.FlowCompletionEvent: Swift.CustomDebugStringConvertible {
@@ -550,20 +550,20 @@ extension BedrockAgentRuntimeClientTypes.FlowCompletionEvent: Swift.CustomDebugS
 }
 
 extension BedrockAgentRuntimeClientTypes {
+
     /// Contains information about the content in an output from prompt flow invocation. This data type is used in the following API operations:
     ///
     /// * [InvokeFlow request](https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent-runtime_InvokeFlow.html#API_agent_InvokeFlow_RequestSyntax)
-    public enum FlowOutputContent {
+    public enum FlowOutputContent: Swift.Sendable {
         /// The content in the output.
         case document(Smithy.Document)
         case sdkUnknown(Swift.String)
     }
-
 }
 
 extension BedrockAgentRuntimeClientTypes {
 
-    public enum NodeType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum NodeType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case conditionNode
         case flowInputNode
         case flowOutputNode
@@ -606,10 +606,11 @@ extension BedrockAgentRuntimeClientTypes {
 }
 
 extension BedrockAgentRuntimeClientTypes {
+
     /// Contains information about an output from prompt flow invoction. This data type is used in the following API operations:
     ///
     /// * [InvokeFlow response](https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent-runtime_InvokeFlow.html#API_agent_InvokeFlow_ResponseSyntax)
-    public struct FlowOutputEvent {
+    public struct FlowOutputEvent: Swift.Sendable {
         /// The content in the output.
         /// This member is required.
         public var content: BedrockAgentRuntimeClientTypes.FlowOutputContent?
@@ -631,7 +632,6 @@ extension BedrockAgentRuntimeClientTypes {
             self.nodeType = nodeType
         }
     }
-
 }
 
 extension BedrockAgentRuntimeClientTypes.FlowOutputEvent: Swift.CustomDebugStringConvertible {
@@ -641,20 +641,20 @@ extension BedrockAgentRuntimeClientTypes.FlowOutputEvent: Swift.CustomDebugStrin
 }
 
 extension BedrockAgentRuntimeClientTypes {
+
     /// The output of the flow. This data type is used in the following API operations:
     ///
     /// * [InvokeFlow response](https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent-runtime_InvokeFlow.html#API_agent_InvokeFlow_ResponseSyntax)
-    public enum FlowResponseStream {
+    public enum FlowResponseStream: Swift.Sendable {
         /// Contains information about an output from flow invocation.
         case flowoutputevent(BedrockAgentRuntimeClientTypes.FlowOutputEvent)
         /// Contains information about why the flow completed.
         case flowcompletionevent(BedrockAgentRuntimeClientTypes.FlowCompletionEvent)
         case sdkUnknown(Swift.String)
     }
-
 }
 
-public struct InvokeFlowOutput {
+public struct InvokeFlowOutput: Swift.Sendable {
     /// The output of the flow, returned as a stream. If there's an error, the error is returned.
     /// This member is required.
     public var responseStream: AsyncThrowingStream<BedrockAgentRuntimeClientTypes.FlowResponseStream, Swift.Error>?
@@ -668,8 +668,9 @@ public struct InvokeFlowOutput {
 }
 
 extension BedrockAgentRuntimeClientTypes {
+
     /// The property contains the file to chat with, along with its attributes.
-    public struct ByteContentFile {
+    public struct ByteContentFile: Swift.Sendable {
         /// The raw bytes of the file to attach. The maximum size of all files that is attached is 10MB. You can attach a maximum of 5 files.
         /// This member is required.
         public var data: Foundation.Data?
@@ -686,7 +687,6 @@ extension BedrockAgentRuntimeClientTypes {
             self.mediaType = mediaType
         }
     }
-
 }
 
 extension BedrockAgentRuntimeClientTypes.ByteContentFile: Swift.CustomDebugStringConvertible {
@@ -695,8 +695,9 @@ extension BedrockAgentRuntimeClientTypes.ByteContentFile: Swift.CustomDebugStrin
 }
 
 extension BedrockAgentRuntimeClientTypes {
+
     /// Contains details of the s3 object where the source file is located.
-    public struct S3ObjectFile {
+    public struct S3ObjectFile: Swift.Sendable {
         /// The uri of the s3 object.
         /// This member is required.
         public var uri: Swift.String?
@@ -708,12 +709,11 @@ extension BedrockAgentRuntimeClientTypes {
             self.uri = uri
         }
     }
-
 }
 
 extension BedrockAgentRuntimeClientTypes {
 
-    public enum FileSourceType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum FileSourceType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case byteContent
         case s3
         case sdkUnknown(Swift.String)
@@ -741,8 +741,9 @@ extension BedrockAgentRuntimeClientTypes {
 }
 
 extension BedrockAgentRuntimeClientTypes {
+
     /// The source file of the content contained in the wrapper object.
-    public struct FileSource {
+    public struct FileSource: Swift.Sendable {
         /// The data and the text of the attached files.
         public var byteContent: BedrockAgentRuntimeClientTypes.ByteContentFile?
         /// The s3 location of the files to attach.
@@ -762,12 +763,11 @@ extension BedrockAgentRuntimeClientTypes {
             self.sourceType = sourceType
         }
     }
-
 }
 
 extension BedrockAgentRuntimeClientTypes {
 
-    public enum FileUseCase: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum FileUseCase: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case chat
         case codeInterpreter
         case sdkUnknown(Swift.String)
@@ -795,8 +795,9 @@ extension BedrockAgentRuntimeClientTypes {
 }
 
 extension BedrockAgentRuntimeClientTypes {
+
     /// Contains details of the source files.
-    public struct InputFile {
+    public struct InputFile: Swift.Sendable {
         /// The name of the source file.
         /// This member is required.
         public var name: Swift.String?
@@ -818,14 +819,14 @@ extension BedrockAgentRuntimeClientTypes {
             self.useCase = useCase
         }
     }
-
 }
 
 extension BedrockAgentRuntimeClientTypes {
+
     /// Specifies the name that the metadata attribute must match and the value to which to compare the value of the metadata attribute. For more information, see [Query configurations](https://docs.aws.amazon.com/bedrock/latest/userguide/kb-test-config.html). This data type is used in the following API operations:
     ///
     /// * [RetrieveAndGenerate request](https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent-runtime_RetrieveAndGenerate.html#API_agent-runtime_RetrieveAndGenerate_RequestSyntax)
-    public struct FilterAttribute {
+    public struct FilterAttribute: Swift.Sendable {
         /// The name that the metadata attribute must match.
         /// This member is required.
         public var key: Swift.String?
@@ -842,12 +843,11 @@ extension BedrockAgentRuntimeClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension BedrockAgentRuntimeClientTypes {
 
-    public enum SearchType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SearchType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case hybrid
         case semantic
         case sdkUnknown(Swift.String)
@@ -876,7 +876,7 @@ extension BedrockAgentRuntimeClientTypes {
 
 extension BedrockAgentRuntimeClientTypes {
 
-    public enum ConfirmationState: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ConfirmationState: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case confirm
         case deny
         case sdkUnknown(Swift.String)
@@ -904,10 +904,11 @@ extension BedrockAgentRuntimeClientTypes {
 }
 
 extension BedrockAgentRuntimeClientTypes {
+
     /// Contains the body of the API response. This data type is used in the following API operations:
     ///
     /// * In the returnControlInvocationResults field of the [InvokeAgent request](https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent-runtime_InvokeAgent.html#API_agent-runtime_InvokeAgent_RequestSyntax)
-    public struct ContentBody {
+    public struct ContentBody: Swift.Sendable {
         /// The body of the API response.
         public var body: Swift.String?
 
@@ -918,12 +919,11 @@ extension BedrockAgentRuntimeClientTypes {
             self.body = body
         }
     }
-
 }
 
 extension BedrockAgentRuntimeClientTypes {
 
-    public enum ResponseState: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ResponseState: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case failure
         case reprompt
         case sdkUnknown(Swift.String)
@@ -951,10 +951,11 @@ extension BedrockAgentRuntimeClientTypes {
 }
 
 extension BedrockAgentRuntimeClientTypes {
+
     /// Contains information about the API operation that was called from the action group and the response body that was returned. This data type is used in the following API operations:
     ///
     /// * In the returnControlInvocationResults of the [InvokeAgent request](https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent-runtime_InvokeAgent.html#API_agent-runtime_InvokeAgent_RequestSyntax)
-    public struct ApiResult {
+    public struct ApiResult: Swift.Sendable {
         /// The action group that the API operation belongs to.
         /// This member is required.
         public var actionGroup: Swift.String?
@@ -990,7 +991,6 @@ extension BedrockAgentRuntimeClientTypes {
             self.responseState = responseState
         }
     }
-
 }
 
 extension BedrockAgentRuntimeClientTypes.ApiResult: Swift.CustomDebugStringConvertible {
@@ -999,10 +999,11 @@ extension BedrockAgentRuntimeClientTypes.ApiResult: Swift.CustomDebugStringConve
 }
 
 extension BedrockAgentRuntimeClientTypes {
+
     /// Contains information about the function that was called from the action group and the response that was returned. This data type is used in the following API operations:
     ///
     /// * In the returnControlInvocationResults of the [InvokeAgent request](https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent-runtime_InvokeAgent.html#API_agent-runtime_InvokeAgent_RequestSyntax)
-    public struct FunctionResult {
+    public struct FunctionResult: Swift.Sendable {
         /// The action group that the function belongs to.
         /// This member is required.
         public var actionGroup: Swift.String?
@@ -1030,30 +1031,30 @@ extension BedrockAgentRuntimeClientTypes {
             self.responseState = responseState
         }
     }
-
 }
 
 extension BedrockAgentRuntimeClientTypes {
+
     /// A result from the invocation of an action. For more information, see [Return control to the agent developer](https://docs.aws.amazon.com/bedrock/latest/userguide/agents-returncontrol.html) and [Control session context](https://docs.aws.amazon.com/bedrock/latest/userguide/agents-session-state.html). This data type is used in the following API operations:
     ///
     /// * [InvokeAgent request](https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent-runtime_InvokeAgent.html#API_agent-runtime_InvokeAgent_RequestSyntax)
-    public enum InvocationResultMember {
+    public enum InvocationResultMember: Swift.Sendable {
         /// The result from the API response from the action group invocation.
         case apiresult(BedrockAgentRuntimeClientTypes.ApiResult)
         /// The result from the function from the action group invocation.
         case functionresult(BedrockAgentRuntimeClientTypes.FunctionResult)
         case sdkUnknown(Swift.String)
     }
-
 }
 
 extension BedrockAgentRuntimeClientTypes {
+
     /// Contains information about where the text with a citation begins and ends in the generated output. This data type is used in the following API operations:
     ///
     /// * [RetrieveAndGenerate response](https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent-runtime_RetrieveAndGenerate.html#API_agent-runtime_RetrieveAndGenerate_ResponseSyntax) – in the span field
     ///
     /// * [InvokeAgent response](https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent-runtime_InvokeAgent.html#API_agent-runtime_InvokeAgent_ResponseSyntax) – in the span field
-    public struct Span {
+    public struct Span: Swift.Sendable {
         /// Where the text with a citation ends in the generated output.
         public var end: Swift.Int?
         /// Where the text with a citation starts in the generated output.
@@ -1068,16 +1069,16 @@ extension BedrockAgentRuntimeClientTypes {
             self.start = start
         }
     }
-
 }
 
 extension BedrockAgentRuntimeClientTypes {
+
     /// Contains the part of the generated text that contains a citation, alongside where it begins and ends. This data type is used in the following API operations:
     ///
     /// * [RetrieveAndGenerate response](https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent-runtime_RetrieveAndGenerate.html#API_agent-runtime_RetrieveAndGenerate_ResponseSyntax) – in the textResponsePart field
     ///
     /// * [InvokeAgent response](https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent-runtime_InvokeAgent.html#API_agent-runtime_InvokeAgent_ResponseSyntax) – in the textResponsePart field
-    public struct TextResponsePart {
+    public struct TextResponsePart: Swift.Sendable {
         /// Contains information about where the text with a citation begins and ends in the generated output.
         public var span: BedrockAgentRuntimeClientTypes.Span?
         /// The part of the generated text that contains a citation.
@@ -1092,7 +1093,6 @@ extension BedrockAgentRuntimeClientTypes {
             self.text = text
         }
     }
-
 }
 
 extension BedrockAgentRuntimeClientTypes.TextResponsePart: Swift.CustomDebugStringConvertible {
@@ -1102,12 +1102,13 @@ extension BedrockAgentRuntimeClientTypes.TextResponsePart: Swift.CustomDebugStri
 }
 
 extension BedrockAgentRuntimeClientTypes {
+
     /// Contains metadata about a part of the generated response that is accompanied by a citation. This data type is used in the following API operations:
     ///
     /// * [InvokeAgent response](https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent-runtime_InvokeAgent.html#API_agent-runtime_InvokeAgent_ResponseSyntax) – in the generatedResponsePart field
     ///
     /// * [RetrieveAndGenerate response](https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent-runtime_RetrieveAndGenerate.html#API_agent-runtime_RetrieveAndGenerate_ResponseSyntax) – in the generatedResponsePart field
-    public struct GeneratedResponsePart {
+    public struct GeneratedResponsePart: Swift.Sendable {
         /// Contains metadata about a textual part of the generated response that is accompanied by a citation.
         public var textResponsePart: BedrockAgentRuntimeClientTypes.TextResponsePart?
 
@@ -1118,7 +1119,6 @@ extension BedrockAgentRuntimeClientTypes {
             self.textResponsePart = textResponsePart
         }
     }
-
 }
 
 extension BedrockAgentRuntimeClientTypes.GeneratedResponsePart: Swift.CustomDebugStringConvertible {
@@ -1127,6 +1127,7 @@ extension BedrockAgentRuntimeClientTypes.GeneratedResponsePart: Swift.CustomDebu
 }
 
 extension BedrockAgentRuntimeClientTypes {
+
     /// Contains the cited text from the data source. This data type is used in the following API operations:
     ///
     /// * [Retrieve response](https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent-runtime_Retrieve.html#API_agent-runtime_Retrieve_ResponseSyntax) – in the content field
@@ -1134,7 +1135,7 @@ extension BedrockAgentRuntimeClientTypes {
     /// * [RetrieveAndGenerate response](https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent-runtime_RetrieveAndGenerate.html#API_agent-runtime_RetrieveAndGenerate_ResponseSyntax) – in the content field
     ///
     /// * [InvokeAgent response](https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent-runtime_InvokeAgent.html#API_agent-runtime_InvokeAgent_ResponseSyntax) – in the content field
-    public struct RetrievalResultContent {
+    public struct RetrievalResultContent: Swift.Sendable {
         /// The cited text from the data source.
         /// This member is required.
         public var text: Swift.String?
@@ -1146,7 +1147,6 @@ extension BedrockAgentRuntimeClientTypes {
             self.text = text
         }
     }
-
 }
 
 extension BedrockAgentRuntimeClientTypes.RetrievalResultContent: Swift.CustomDebugStringConvertible {
@@ -1156,8 +1156,9 @@ extension BedrockAgentRuntimeClientTypes.RetrievalResultContent: Swift.CustomDeb
 }
 
 extension BedrockAgentRuntimeClientTypes {
+
     /// The Confluence data source location.
-    public struct RetrievalResultConfluenceLocation {
+    public struct RetrievalResultConfluenceLocation: Swift.Sendable {
         /// The Confluence host URL for the data source location.
         public var url: Swift.String?
 
@@ -1168,10 +1169,10 @@ extension BedrockAgentRuntimeClientTypes {
             self.url = url
         }
     }
-
 }
 
 extension BedrockAgentRuntimeClientTypes {
+
     /// The S3 data source location. This data type is used in the following API operations:
     ///
     /// * [Retrieve response](https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent-runtime_Retrieve.html#API_agent-runtime_Retrieve_ResponseSyntax) – in the s3Location field
@@ -1179,7 +1180,7 @@ extension BedrockAgentRuntimeClientTypes {
     /// * [RetrieveAndGenerate response](https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent-runtime_RetrieveAndGenerate.html#API_agent-runtime_RetrieveAndGenerate_ResponseSyntax) – in the s3Location field
     ///
     /// * [InvokeAgent response](https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent-runtime_InvokeAgent.html#API_agent-runtime_InvokeAgent_ResponseSyntax) – in the s3Location field
-    public struct RetrievalResultS3Location {
+    public struct RetrievalResultS3Location: Swift.Sendable {
         /// The S3 URI for the data source location.
         public var uri: Swift.String?
 
@@ -1190,12 +1191,12 @@ extension BedrockAgentRuntimeClientTypes {
             self.uri = uri
         }
     }
-
 }
 
 extension BedrockAgentRuntimeClientTypes {
+
     /// The Salesforce data source location.
-    public struct RetrievalResultSalesforceLocation {
+    public struct RetrievalResultSalesforceLocation: Swift.Sendable {
         /// The Salesforce host URL for the data source location.
         public var url: Swift.String?
 
@@ -1206,12 +1207,12 @@ extension BedrockAgentRuntimeClientTypes {
             self.url = url
         }
     }
-
 }
 
 extension BedrockAgentRuntimeClientTypes {
+
     /// The SharePoint data source location.
-    public struct RetrievalResultSharePointLocation {
+    public struct RetrievalResultSharePointLocation: Swift.Sendable {
         /// The SharePoint site URL for the data source location.
         public var url: Swift.String?
 
@@ -1222,12 +1223,11 @@ extension BedrockAgentRuntimeClientTypes {
             self.url = url
         }
     }
-
 }
 
 extension BedrockAgentRuntimeClientTypes {
 
-    public enum RetrievalResultLocationType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum RetrievalResultLocationType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case confluence
         case s3
         case salesforce
@@ -1264,8 +1264,9 @@ extension BedrockAgentRuntimeClientTypes {
 }
 
 extension BedrockAgentRuntimeClientTypes {
+
     /// The web URL/URLs data source location.
-    public struct RetrievalResultWebLocation {
+    public struct RetrievalResultWebLocation: Swift.Sendable {
         /// The web URL/URLs for the data source location.
         public var url: Swift.String?
 
@@ -1276,10 +1277,10 @@ extension BedrockAgentRuntimeClientTypes {
             self.url = url
         }
     }
-
 }
 
 extension BedrockAgentRuntimeClientTypes {
+
     /// Contains information about the data source location. This data type is used in the following API operations:
     ///
     /// * [Retrieve response](https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent-runtime_Retrieve.html#API_agent-runtime_Retrieve_ResponseSyntax) – in the location field
@@ -1287,7 +1288,7 @@ extension BedrockAgentRuntimeClientTypes {
     /// * [RetrieveAndGenerate response](https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent-runtime_RetrieveAndGenerate.html#API_agent-runtime_RetrieveAndGenerate_ResponseSyntax) – in the location field
     ///
     /// * [InvokeAgent response](https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent-runtime_InvokeAgent.html#API_agent-runtime_InvokeAgent_ResponseSyntax) – in the locatino field
-    public struct RetrievalResultLocation {
+    public struct RetrievalResultLocation: Swift.Sendable {
         /// The Confluence data source location.
         public var confluenceLocation: BedrockAgentRuntimeClientTypes.RetrievalResultConfluenceLocation?
         /// The S3 data source location.
@@ -1319,7 +1320,6 @@ extension BedrockAgentRuntimeClientTypes {
             self.webLocation = webLocation
         }
     }
-
 }
 
 extension BedrockAgentRuntimeClientTypes.RetrievalResultLocation: Swift.CustomDebugStringConvertible {
@@ -1329,12 +1329,13 @@ extension BedrockAgentRuntimeClientTypes.RetrievalResultLocation: Swift.CustomDe
 }
 
 extension BedrockAgentRuntimeClientTypes {
+
     /// Contains metadata about a source cited for the generated response. This data type is used in the following API operations:
     ///
     /// * [RetrieveAndGenerate response](https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent-runtime_RetrieveAndGenerate.html#API_agent-runtime_RetrieveAndGenerate_ResponseSyntax) – in the retrievedReferences field
     ///
     /// * [InvokeAgent response](https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent-runtime_InvokeAgent.html#API_agent-runtime_InvokeAgent_ResponseSyntax) – in the retrievedReferences field
-    public struct RetrievedReference {
+    public struct RetrievedReference: Swift.Sendable {
         /// Contains the cited text from the data source.
         public var content: BedrockAgentRuntimeClientTypes.RetrievalResultContent?
         /// Contains information about the location of the data source.
@@ -1353,7 +1354,6 @@ extension BedrockAgentRuntimeClientTypes {
             self.metadata = metadata
         }
     }
-
 }
 
 extension BedrockAgentRuntimeClientTypes.RetrievedReference: Swift.CustomDebugStringConvertible {
@@ -1362,12 +1362,13 @@ extension BedrockAgentRuntimeClientTypes.RetrievedReference: Swift.CustomDebugSt
 }
 
 extension BedrockAgentRuntimeClientTypes {
+
     /// An object containing a segment of the generated response that is based on a source in the knowledge base, alongside information about the source. This data type is used in the following API operations:
     ///
     /// * [InvokeAgent response](https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent-runtime_InvokeAgent.html#API_agent-runtime_InvokeAgent_ResponseSyntax) – in the citations field
     ///
     /// * [RetrieveAndGenerate response](https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent-runtime_RetrieveAndGenerate.html#API_agent-runtime_RetrieveAndGenerate_ResponseSyntax) – in the citations field
-    public struct Citation {
+    public struct Citation: Swift.Sendable {
         /// Contains the generated response and metadata
         public var generatedResponsePart: BedrockAgentRuntimeClientTypes.GeneratedResponsePart?
         /// Contains metadata about the sources cited for the generated response.
@@ -1382,12 +1383,12 @@ extension BedrockAgentRuntimeClientTypes {
             self.retrievedReferences = retrievedReferences
         }
     }
-
 }
 
 extension BedrockAgentRuntimeClientTypes {
+
     /// Contains citations for a part of an agent response.
-    public struct Attribution {
+    public struct Attribution: Swift.Sendable {
         /// A list of citations and related information for a part of an agent response.
         public var citations: [BedrockAgentRuntimeClientTypes.Citation]?
 
@@ -1398,12 +1399,12 @@ extension BedrockAgentRuntimeClientTypes {
             self.citations = citations
         }
     }
-
 }
 
 extension BedrockAgentRuntimeClientTypes {
+
     /// Contains a part of an agent response and citations for it.
-    public struct PayloadPart {
+    public struct PayloadPart: Swift.Sendable {
         /// Contains citations for a part of an agent response.
         public var attribution: BedrockAgentRuntimeClientTypes.Attribution?
         /// A part of the agent response in bytes.
@@ -1418,7 +1419,6 @@ extension BedrockAgentRuntimeClientTypes {
             self.bytes = bytes
         }
     }
-
 }
 
 extension BedrockAgentRuntimeClientTypes.PayloadPart: Swift.CustomDebugStringConvertible {
@@ -1428,8 +1428,9 @@ extension BedrockAgentRuntimeClientTypes.PayloadPart: Swift.CustomDebugStringCon
 }
 
 extension BedrockAgentRuntimeClientTypes {
+
     /// Contains details of the response from code interpreter.
-    public struct OutputFile {
+    public struct OutputFile: Swift.Sendable {
         /// The byte count of files that contains response from code interpreter.
         public var bytes: Foundation.Data?
         /// The name of the file containing response from code interpreter.
@@ -1448,7 +1449,6 @@ extension BedrockAgentRuntimeClientTypes {
             self.type = type
         }
     }
-
 }
 
 extension BedrockAgentRuntimeClientTypes.OutputFile: Swift.CustomDebugStringConvertible {
@@ -1458,8 +1458,9 @@ extension BedrockAgentRuntimeClientTypes.OutputFile: Swift.CustomDebugStringConv
 }
 
 extension BedrockAgentRuntimeClientTypes {
+
     /// Contains intermediate response for code interpreter if any files have been generated.
-    public struct FilePart {
+    public struct FilePart: Swift.Sendable {
         /// Files containing intermediate response for the user.
         public var files: [BedrockAgentRuntimeClientTypes.OutputFile]?
 
@@ -1470,7 +1471,6 @@ extension BedrockAgentRuntimeClientTypes {
             self.files = files
         }
     }
-
 }
 
 extension BedrockAgentRuntimeClientTypes.FilePart: Swift.CustomDebugStringConvertible {
@@ -1479,10 +1479,11 @@ extension BedrockAgentRuntimeClientTypes.FilePart: Swift.CustomDebugStringConver
 }
 
 extension BedrockAgentRuntimeClientTypes {
+
     /// Information about a parameter to provide to the API request. This data type is used in the following API operations:
     ///
     /// * [InvokeAgent response](https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent-runtime_InvokeAgent.html#API_agent-runtime_InvokeAgent_ResponseSyntax)
-    public struct ApiParameter {
+    public struct ApiParameter: Swift.Sendable {
         /// The name of the parameter.
         public var name: Swift.String?
         /// The data type for the parameter.
@@ -1501,12 +1502,12 @@ extension BedrockAgentRuntimeClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension BedrockAgentRuntimeClientTypes {
+
     /// Contains the parameters in the request body.
-    public struct PropertyParameters {
+    public struct PropertyParameters: Swift.Sendable {
         /// A list of parameters in the request body.
         public var properties: [BedrockAgentRuntimeClientTypes.Parameter]?
 
@@ -1517,14 +1518,14 @@ extension BedrockAgentRuntimeClientTypes {
             self.properties = properties
         }
     }
-
 }
 
 extension BedrockAgentRuntimeClientTypes {
+
     /// The request body to provide for the API request, as the agent elicited from the user. This data type is used in the following API operations:
     ///
     /// * [InvokeAgent response](https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent-runtime_InvokeAgent.html#API_agent-runtime_InvokeAgent_ResponseSyntax)
-    public struct ApiRequestBody {
+    public struct ApiRequestBody: Swift.Sendable {
         /// The content of the request body. The key of the object in this field is a media type defining the format of the request body.
         public var content: [Swift.String: BedrockAgentRuntimeClientTypes.PropertyParameters]?
 
@@ -1535,14 +1536,14 @@ extension BedrockAgentRuntimeClientTypes {
             self.content = content
         }
     }
-
 }
 
 extension BedrockAgentRuntimeClientTypes {
+
     /// Contains information about the API operation that the agent predicts should be called. This data type is used in the following API operations:
     ///
     /// * In the returnControl field of the [InvokeAgent response](https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent-runtime_InvokeAgent.html#API_agent-runtime_InvokeAgent_ResponseSyntax)
-    public struct ApiInvocationInput {
+    public struct ApiInvocationInput: Swift.Sendable {
         /// The action group that the API operation belongs to.
         /// This member is required.
         public var actionGroup: Swift.String?
@@ -1574,7 +1575,6 @@ extension BedrockAgentRuntimeClientTypes {
             self.requestBody = requestBody
         }
     }
-
 }
 
 extension BedrockAgentRuntimeClientTypes.ApiInvocationInput: Swift.CustomDebugStringConvertible {
@@ -1583,10 +1583,11 @@ extension BedrockAgentRuntimeClientTypes.ApiInvocationInput: Swift.CustomDebugSt
 }
 
 extension BedrockAgentRuntimeClientTypes {
+
     /// Contains information about a parameter of the function. This data type is used in the following API operations:
     ///
     /// * In the returnControl field of the [InvokeAgent response](https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent-runtime_InvokeAgent.html#API_agent-runtime_InvokeAgent_ResponseSyntax)
-    public struct FunctionParameter {
+    public struct FunctionParameter: Swift.Sendable {
         /// The name of the parameter.
         public var name: Swift.String?
         /// The data type of the parameter.
@@ -1605,14 +1606,14 @@ extension BedrockAgentRuntimeClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension BedrockAgentRuntimeClientTypes {
+
     /// Contains information about the function that the agent predicts should be called. This data type is used in the following API operations:
     ///
     /// * In the returnControl field of the [InvokeAgent response](https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent-runtime_InvokeAgent.html#API_agent-runtime_InvokeAgent_ResponseSyntax)
-    public struct FunctionInvocationInput {
+    public struct FunctionInvocationInput: Swift.Sendable {
         /// The action group that the function belongs to.
         /// This member is required.
         public var actionGroup: Swift.String?
@@ -1636,28 +1637,28 @@ extension BedrockAgentRuntimeClientTypes {
             self.parameters = parameters
         }
     }
-
 }
 
 extension BedrockAgentRuntimeClientTypes {
+
     /// Contains details about the API operation or function that the agent predicts should be called. This data type is used in the following API operations:
     ///
     /// * In the returnControl field of the [InvokeAgent response](https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent-runtime_InvokeAgent.html#API_agent-runtime_InvokeAgent_ResponseSyntax)
-    public enum InvocationInputMember {
+    public enum InvocationInputMember: Swift.Sendable {
         /// Contains information about the API operation that the agent predicts should be called.
         case apiinvocationinput(BedrockAgentRuntimeClientTypes.ApiInvocationInput)
         /// Contains information about the function that the agent predicts should be called.
         case functioninvocationinput(BedrockAgentRuntimeClientTypes.FunctionInvocationInput)
         case sdkUnknown(Swift.String)
     }
-
 }
 
 extension BedrockAgentRuntimeClientTypes {
+
     /// Contains information to return from the action group that the agent has predicted to invoke. This data type is used in the following API operations:
     ///
     /// * [InvokeAgent response](https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent-runtime_InvokeAgent.html#API_agent-runtime_InvokeAgent_ResponseSyntax)
-    public struct ReturnControlPayload {
+    public struct ReturnControlPayload: Swift.Sendable {
         /// The identifier of the action group invocation.
         public var invocationId: Swift.String?
         /// A list of objects that contain information about the parameters and inputs that need to be sent into the API operation or function, based on what the agent determines from its session with the user.
@@ -1672,7 +1673,6 @@ extension BedrockAgentRuntimeClientTypes {
             self.invocationInputs = invocationInputs
         }
     }
-
 }
 
 extension BedrockAgentRuntimeClientTypes.ReturnControlPayload: Swift.CustomDebugStringConvertible {
@@ -1682,8 +1682,9 @@ extension BedrockAgentRuntimeClientTypes.ReturnControlPayload: Swift.CustomDebug
 }
 
 extension BedrockAgentRuntimeClientTypes {
+
     /// Contains information about the failure of the interaction.
-    public struct FailureTrace {
+    public struct FailureTrace: Swift.Sendable {
         /// The reason the interaction failed.
         public var failureReason: Swift.String?
         /// The unique identifier of the trace.
@@ -1698,7 +1699,6 @@ extension BedrockAgentRuntimeClientTypes {
             self.traceId = traceId
         }
     }
-
 }
 
 extension BedrockAgentRuntimeClientTypes.FailureTrace: Swift.CustomDebugStringConvertible {
@@ -1709,7 +1709,7 @@ extension BedrockAgentRuntimeClientTypes.FailureTrace: Swift.CustomDebugStringCo
 
 extension BedrockAgentRuntimeClientTypes {
 
-    public enum GuardrailAction: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum GuardrailAction: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case intervened
         case `none`
         case sdkUnknown(Swift.String)
@@ -1738,7 +1738,7 @@ extension BedrockAgentRuntimeClientTypes {
 
 extension BedrockAgentRuntimeClientTypes {
 
-    public enum GuardrailContentPolicyAction: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum GuardrailContentPolicyAction: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case blocked
         case sdkUnknown(Swift.String)
 
@@ -1764,7 +1764,7 @@ extension BedrockAgentRuntimeClientTypes {
 
 extension BedrockAgentRuntimeClientTypes {
 
-    public enum GuardrailContentFilterConfidence: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum GuardrailContentFilterConfidence: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case high
         case low
         case medium
@@ -1799,7 +1799,7 @@ extension BedrockAgentRuntimeClientTypes {
 
 extension BedrockAgentRuntimeClientTypes {
 
-    public enum GuardrailContentFilterType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum GuardrailContentFilterType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case hate
         case insults
         case misconduct
@@ -1839,8 +1839,9 @@ extension BedrockAgentRuntimeClientTypes {
 }
 
 extension BedrockAgentRuntimeClientTypes {
+
     /// Details of the content filter used in the Guardrail.
-    public struct GuardrailContentFilter {
+    public struct GuardrailContentFilter: Swift.Sendable {
         /// The action placed on the content by the Guardrail filter.
         public var action: BedrockAgentRuntimeClientTypes.GuardrailContentPolicyAction?
         /// The confidence level regarding the content detected in the filter by the Guardrail.
@@ -1859,7 +1860,6 @@ extension BedrockAgentRuntimeClientTypes {
             self.type = type
         }
     }
-
 }
 
 extension BedrockAgentRuntimeClientTypes.GuardrailContentFilter: Swift.CustomDebugStringConvertible {
@@ -1869,8 +1869,9 @@ extension BedrockAgentRuntimeClientTypes.GuardrailContentFilter: Swift.CustomDeb
 }
 
 extension BedrockAgentRuntimeClientTypes {
+
     /// The details of the policy assessment in the Guardrails filter.
-    public struct GuardrailContentPolicyAssessment {
+    public struct GuardrailContentPolicyAssessment: Swift.Sendable {
         /// The filter details of the policy assessment used in the Guardrails filter.
         public var filters: [BedrockAgentRuntimeClientTypes.GuardrailContentFilter]?
 
@@ -1881,7 +1882,6 @@ extension BedrockAgentRuntimeClientTypes {
             self.filters = filters
         }
     }
-
 }
 
 extension BedrockAgentRuntimeClientTypes.GuardrailContentPolicyAssessment: Swift.CustomDebugStringConvertible {
@@ -1892,7 +1892,7 @@ extension BedrockAgentRuntimeClientTypes.GuardrailContentPolicyAssessment: Swift
 
 extension BedrockAgentRuntimeClientTypes {
 
-    public enum GuardrailSensitiveInformationPolicyAction: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum GuardrailSensitiveInformationPolicyAction: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case anonymized
         case blocked
         case sdkUnknown(Swift.String)
@@ -1921,7 +1921,7 @@ extension BedrockAgentRuntimeClientTypes {
 
 extension BedrockAgentRuntimeClientTypes {
 
-    public enum GuardrailPiiEntityType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum GuardrailPiiEntityType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case address
         case age
         case awsAccessKey
@@ -2036,8 +2036,9 @@ extension BedrockAgentRuntimeClientTypes {
 }
 
 extension BedrockAgentRuntimeClientTypes {
+
     /// The Guardrail filter to identify and remove personally identifiable information (PII).
-    public struct GuardrailPiiEntityFilter {
+    public struct GuardrailPiiEntityFilter: Swift.Sendable {
         /// The action of the Guardrail filter to identify and remove PII.
         public var action: BedrockAgentRuntimeClientTypes.GuardrailSensitiveInformationPolicyAction?
         /// The match to settings in the Guardrail filter to identify and remove PII.
@@ -2056,7 +2057,6 @@ extension BedrockAgentRuntimeClientTypes {
             self.type = type
         }
     }
-
 }
 
 extension BedrockAgentRuntimeClientTypes.GuardrailPiiEntityFilter: Swift.CustomDebugStringConvertible {
@@ -2066,8 +2066,9 @@ extension BedrockAgentRuntimeClientTypes.GuardrailPiiEntityFilter: Swift.CustomD
 }
 
 extension BedrockAgentRuntimeClientTypes {
+
     /// The details for the regex filter used in the Guardrail.
-    public struct GuardrailRegexFilter {
+    public struct GuardrailRegexFilter: Swift.Sendable {
         /// The action details for the regex filter used in the Guardrail.
         public var action: BedrockAgentRuntimeClientTypes.GuardrailSensitiveInformationPolicyAction?
         /// The match details for the regex filter used in the Guardrail.
@@ -2090,7 +2091,6 @@ extension BedrockAgentRuntimeClientTypes {
             self.regex = regex
         }
     }
-
 }
 
 extension BedrockAgentRuntimeClientTypes.GuardrailRegexFilter: Swift.CustomDebugStringConvertible {
@@ -2100,8 +2100,9 @@ extension BedrockAgentRuntimeClientTypes.GuardrailRegexFilter: Swift.CustomDebug
 }
 
 extension BedrockAgentRuntimeClientTypes {
+
     /// The details of the sensitive policy assessment used in the Guardrail.
-    public struct GuardrailSensitiveInformationPolicyAssessment {
+    public struct GuardrailSensitiveInformationPolicyAssessment: Swift.Sendable {
         /// The details of the PII entities used in the sensitive policy assessment for the Guardrail.
         public var piiEntities: [BedrockAgentRuntimeClientTypes.GuardrailPiiEntityFilter]?
         /// The details of the regexes used in the sensitive policy assessment for the Guardrail.
@@ -2116,7 +2117,6 @@ extension BedrockAgentRuntimeClientTypes {
             self.regexes = regexes
         }
     }
-
 }
 
 extension BedrockAgentRuntimeClientTypes.GuardrailSensitiveInformationPolicyAssessment: Swift.CustomDebugStringConvertible {
@@ -2127,7 +2127,7 @@ extension BedrockAgentRuntimeClientTypes.GuardrailSensitiveInformationPolicyAsse
 
 extension BedrockAgentRuntimeClientTypes {
 
-    public enum GuardrailTopicPolicyAction: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum GuardrailTopicPolicyAction: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case blocked
         case sdkUnknown(Swift.String)
 
@@ -2153,7 +2153,7 @@ extension BedrockAgentRuntimeClientTypes {
 
 extension BedrockAgentRuntimeClientTypes {
 
-    public enum GuardrailTopicType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum GuardrailTopicType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case deny
         case sdkUnknown(Swift.String)
 
@@ -2178,8 +2178,9 @@ extension BedrockAgentRuntimeClientTypes {
 }
 
 extension BedrockAgentRuntimeClientTypes {
+
     /// The details for a specific topic defined in the Guardrail.
-    public struct GuardrailTopic {
+    public struct GuardrailTopic: Swift.Sendable {
         /// The action details on a specific topic in the Guardrail.
         public var action: BedrockAgentRuntimeClientTypes.GuardrailTopicPolicyAction?
         /// The name details on a specific topic in the Guardrail.
@@ -2198,7 +2199,6 @@ extension BedrockAgentRuntimeClientTypes {
             self.type = type
         }
     }
-
 }
 
 extension BedrockAgentRuntimeClientTypes.GuardrailTopic: Swift.CustomDebugStringConvertible {
@@ -2208,8 +2208,9 @@ extension BedrockAgentRuntimeClientTypes.GuardrailTopic: Swift.CustomDebugString
 }
 
 extension BedrockAgentRuntimeClientTypes {
+
     /// The details of the policy assessment used in the Guardrail.
-    public struct GuardrailTopicPolicyAssessment {
+    public struct GuardrailTopicPolicyAssessment: Swift.Sendable {
         /// The topic details of the policy assessment used in the Guardrail.
         public var topics: [BedrockAgentRuntimeClientTypes.GuardrailTopic]?
 
@@ -2220,7 +2221,6 @@ extension BedrockAgentRuntimeClientTypes {
             self.topics = topics
         }
     }
-
 }
 
 extension BedrockAgentRuntimeClientTypes.GuardrailTopicPolicyAssessment: Swift.CustomDebugStringConvertible {
@@ -2231,7 +2231,7 @@ extension BedrockAgentRuntimeClientTypes.GuardrailTopicPolicyAssessment: Swift.C
 
 extension BedrockAgentRuntimeClientTypes {
 
-    public enum GuardrailWordPolicyAction: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum GuardrailWordPolicyAction: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case blocked
         case sdkUnknown(Swift.String)
 
@@ -2256,8 +2256,9 @@ extension BedrockAgentRuntimeClientTypes {
 }
 
 extension BedrockAgentRuntimeClientTypes {
+
     /// The custom word details for the filter in the Guardrail.
-    public struct GuardrailCustomWord {
+    public struct GuardrailCustomWord: Swift.Sendable {
         /// The action details for the custom word filter in the Guardrail.
         public var action: BedrockAgentRuntimeClientTypes.GuardrailWordPolicyAction?
         /// The match details for the custom word filter in the Guardrail.
@@ -2272,7 +2273,6 @@ extension BedrockAgentRuntimeClientTypes {
             self.match = match
         }
     }
-
 }
 
 extension BedrockAgentRuntimeClientTypes.GuardrailCustomWord: Swift.CustomDebugStringConvertible {
@@ -2283,7 +2283,7 @@ extension BedrockAgentRuntimeClientTypes.GuardrailCustomWord: Swift.CustomDebugS
 
 extension BedrockAgentRuntimeClientTypes {
 
-    public enum GuardrailManagedWordType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum GuardrailManagedWordType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case profanity
         case sdkUnknown(Swift.String)
 
@@ -2308,8 +2308,9 @@ extension BedrockAgentRuntimeClientTypes {
 }
 
 extension BedrockAgentRuntimeClientTypes {
+
     /// The managed word details for the filter in the Guardrail.
-    public struct GuardrailManagedWord {
+    public struct GuardrailManagedWord: Swift.Sendable {
         /// The action details for the managed word filter in the Guardrail.
         public var action: BedrockAgentRuntimeClientTypes.GuardrailWordPolicyAction?
         /// The match details for the managed word filter in the Guardrail.
@@ -2328,7 +2329,6 @@ extension BedrockAgentRuntimeClientTypes {
             self.type = type
         }
     }
-
 }
 
 extension BedrockAgentRuntimeClientTypes.GuardrailManagedWord: Swift.CustomDebugStringConvertible {
@@ -2338,8 +2338,9 @@ extension BedrockAgentRuntimeClientTypes.GuardrailManagedWord: Swift.CustomDebug
 }
 
 extension BedrockAgentRuntimeClientTypes {
+
     /// The assessment details for words defined in the Guardrail filter.
-    public struct GuardrailWordPolicyAssessment {
+    public struct GuardrailWordPolicyAssessment: Swift.Sendable {
         /// The custom word details for words defined in the Guardrail filter.
         public var customWords: [BedrockAgentRuntimeClientTypes.GuardrailCustomWord]?
         /// The managed word lists for words defined in the Guardrail filter.
@@ -2354,7 +2355,6 @@ extension BedrockAgentRuntimeClientTypes {
             self.managedWordLists = managedWordLists
         }
     }
-
 }
 
 extension BedrockAgentRuntimeClientTypes.GuardrailWordPolicyAssessment: Swift.CustomDebugStringConvertible {
@@ -2364,8 +2364,9 @@ extension BedrockAgentRuntimeClientTypes.GuardrailWordPolicyAssessment: Swift.Cu
 }
 
 extension BedrockAgentRuntimeClientTypes {
+
     /// Assessment details of the content analyzed by Guardrails.
-    public struct GuardrailAssessment {
+    public struct GuardrailAssessment: Swift.Sendable {
         /// Content policy details of the Guardrail.
         public var contentPolicy: BedrockAgentRuntimeClientTypes.GuardrailContentPolicyAssessment?
         /// Sensitive Information policy details of Guardrail.
@@ -2388,7 +2389,6 @@ extension BedrockAgentRuntimeClientTypes {
             self.wordPolicy = wordPolicy
         }
     }
-
 }
 
 extension BedrockAgentRuntimeClientTypes.GuardrailAssessment: Swift.CustomDebugStringConvertible {
@@ -2398,8 +2398,9 @@ extension BedrockAgentRuntimeClientTypes.GuardrailAssessment: Swift.CustomDebugS
 }
 
 extension BedrockAgentRuntimeClientTypes {
+
     /// The trace details used in the Guardrail.
-    public struct GuardrailTrace {
+    public struct GuardrailTrace: Swift.Sendable {
         /// The trace action details used with the Guardrail.
         public var action: BedrockAgentRuntimeClientTypes.GuardrailAction?
         /// The details of the input assessments used in the Guardrail Trace.
@@ -2422,7 +2423,6 @@ extension BedrockAgentRuntimeClientTypes {
             self.traceId = traceId
         }
     }
-
 }
 
 extension BedrockAgentRuntimeClientTypes.GuardrailTrace: Swift.CustomDebugStringConvertible {
@@ -2432,8 +2432,9 @@ extension BedrockAgentRuntimeClientTypes.GuardrailTrace: Swift.CustomDebugString
 }
 
 extension BedrockAgentRuntimeClientTypes {
+
     /// Contains information about the code interpreter being invoked.
-    public struct CodeInterpreterInvocationInput {
+    public struct CodeInterpreterInvocationInput: Swift.Sendable {
         /// The code for the code interpreter to use.
         public var code: Swift.String?
         /// Files that are uploaded for code interpreter to use.
@@ -2448,12 +2449,11 @@ extension BedrockAgentRuntimeClientTypes {
             self.files = files
         }
     }
-
 }
 
 extension BedrockAgentRuntimeClientTypes {
 
-    public enum InvocationType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum InvocationType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case actionGroup
         case actionGroupCodeInterpreter
         case finish
@@ -2487,8 +2487,9 @@ extension BedrockAgentRuntimeClientTypes {
 }
 
 extension BedrockAgentRuntimeClientTypes {
+
     /// Contains details about the knowledge base to look up and the query to be made.
-    public struct KnowledgeBaseLookupInput {
+    public struct KnowledgeBaseLookupInput: Swift.Sendable {
         /// The unique identifier of the knowledge base to look up.
         public var knowledgeBaseId: Swift.String?
         /// The query made to the knowledge base.
@@ -2503,7 +2504,6 @@ extension BedrockAgentRuntimeClientTypes {
             self.text = text
         }
     }
-
 }
 
 extension BedrockAgentRuntimeClientTypes.KnowledgeBaseLookupInput: Swift.CustomDebugStringConvertible {
@@ -2512,8 +2512,9 @@ extension BedrockAgentRuntimeClientTypes.KnowledgeBaseLookupInput: Swift.CustomD
 }
 
 extension BedrockAgentRuntimeClientTypes {
+
     /// Contains information pertaining to the action group or knowledge base that is being invoked.
-    public struct InvocationInput {
+    public struct InvocationInput: Swift.Sendable {
         /// Contains information about the action group to be invoked.
         public var actionGroupInvocationInput: BedrockAgentRuntimeClientTypes.ActionGroupInvocationInput?
         /// Contains information about the code interpreter to be invoked.
@@ -2540,7 +2541,6 @@ extension BedrockAgentRuntimeClientTypes {
             self.traceId = traceId
         }
     }
-
 }
 
 extension BedrockAgentRuntimeClientTypes.InvocationInput: Swift.CustomDebugStringConvertible {
@@ -2550,8 +2550,9 @@ extension BedrockAgentRuntimeClientTypes.InvocationInput: Swift.CustomDebugStrin
 }
 
 extension BedrockAgentRuntimeClientTypes {
+
     /// Specifications about the inference parameters that were provided alongside the prompt. These are specified in the [PromptOverrideConfiguration](https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent_PromptOverrideConfiguration.html) object that was set when the agent was created or updated. For more information, see [Inference parameters for foundation models](https://docs.aws.amazon.com/bedrock/latest/userguide/model-parameters.html).
-    public struct InferenceConfiguration {
+    public struct InferenceConfiguration: Swift.Sendable {
         /// The maximum number of tokens allowed in the generated response.
         public var maximumLength: Swift.Int?
         /// A list of stop sequences. A stop sequence is a sequence of characters that causes the model to stop generating the response.
@@ -2578,12 +2579,11 @@ extension BedrockAgentRuntimeClientTypes {
             self.topp = topp
         }
     }
-
 }
 
 extension BedrockAgentRuntimeClientTypes {
 
-    public enum CreationMode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum CreationMode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case `default`
         case overridden
         case sdkUnknown(Swift.String)
@@ -2612,7 +2612,7 @@ extension BedrockAgentRuntimeClientTypes {
 
 extension BedrockAgentRuntimeClientTypes {
 
-    public enum PromptType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum PromptType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case knowledgeBaseResponseGeneration
         case orchestration
         case postProcessing
@@ -2646,6 +2646,7 @@ extension BedrockAgentRuntimeClientTypes {
 }
 
 extension BedrockAgentRuntimeClientTypes {
+
     /// The input for the pre-processing step.
     ///
     /// * The type matches the agent step.
@@ -2653,7 +2654,7 @@ extension BedrockAgentRuntimeClientTypes {
     /// * The text contains the prompt.
     ///
     /// * The inferenceConfiguration, parserMode, and overrideLambda values are set in the [PromptOverrideConfiguration](https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent_PromptOverrideConfiguration.html) object that was set when the agent was created or updated.
-    public struct ModelInvocationInput {
+    public struct ModelInvocationInput: Swift.Sendable {
         /// Specifications about the inference parameters that were provided alongside the prompt. These are specified in the [PromptOverrideConfiguration](https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent_PromptOverrideConfiguration.html) object that was set when the agent was created or updated. For more information, see [Inference parameters for foundation models](https://docs.aws.amazon.com/bedrock/latest/userguide/model-parameters.html).
         public var inferenceConfiguration: BedrockAgentRuntimeClientTypes.InferenceConfiguration?
         /// The ARN of the Lambda function to use when parsing the raw foundation model output in parts of the agent sequence.
@@ -2688,7 +2689,6 @@ extension BedrockAgentRuntimeClientTypes {
             self.type = type
         }
     }
-
 }
 
 extension BedrockAgentRuntimeClientTypes.ModelInvocationInput: Swift.CustomDebugStringConvertible {
@@ -2698,8 +2698,9 @@ extension BedrockAgentRuntimeClientTypes.ModelInvocationInput: Swift.CustomDebug
 }
 
 extension BedrockAgentRuntimeClientTypes {
+
     /// Contains information of the usage of the foundation model.
-    public struct Usage {
+    public struct Usage: Swift.Sendable {
         /// Contains information about the input tokens from the foundation model usage.
         public var inputTokens: Swift.Int?
         /// Contains information about the output tokens from the foundation model usage.
@@ -2714,7 +2715,6 @@ extension BedrockAgentRuntimeClientTypes {
             self.outputTokens = outputTokens
         }
     }
-
 }
 
 extension BedrockAgentRuntimeClientTypes.Usage: Swift.CustomDebugStringConvertible {
@@ -2724,8 +2724,9 @@ extension BedrockAgentRuntimeClientTypes.Usage: Swift.CustomDebugStringConvertib
 }
 
 extension BedrockAgentRuntimeClientTypes {
+
     /// Provides details of the foundation model.
-    public struct Metadata {
+    public struct Metadata: Swift.Sendable {
         /// Contains details of the foundation model usage.
         public var usage: BedrockAgentRuntimeClientTypes.Usage?
 
@@ -2736,7 +2737,6 @@ extension BedrockAgentRuntimeClientTypes {
             self.usage = usage
         }
     }
-
 }
 
 extension BedrockAgentRuntimeClientTypes.Metadata: Swift.CustomDebugStringConvertible {
@@ -2746,8 +2746,9 @@ extension BedrockAgentRuntimeClientTypes.Metadata: Swift.CustomDebugStringConver
 }
 
 extension BedrockAgentRuntimeClientTypes {
+
     /// Contains the raw output from the foundation model.
-    public struct RawResponse {
+    public struct RawResponse: Swift.Sendable {
         /// The foundation model's raw output content.
         public var content: Swift.String?
 
@@ -2758,7 +2759,6 @@ extension BedrockAgentRuntimeClientTypes {
             self.content = content
         }
     }
-
 }
 
 extension BedrockAgentRuntimeClientTypes.RawResponse: Swift.CustomDebugStringConvertible {
@@ -2768,9 +2768,10 @@ extension BedrockAgentRuntimeClientTypes.RawResponse: Swift.CustomDebugStringCon
 }
 
 extension BedrockAgentRuntimeClientTypes {
+
     /// The foundation model output from the orchestration step.
-    public struct OrchestrationModelInvocationOutput {
-        /// Contains information about the foundation model output.
+    public struct OrchestrationModelInvocationOutput: Swift.Sendable {
+        /// Contains information about the foundation model output from the orchestration step.
         public var metadata: BedrockAgentRuntimeClientTypes.Metadata?
         /// Contains details of the raw response from the foundation model output.
         public var rawResponse: BedrockAgentRuntimeClientTypes.RawResponse?
@@ -2788,7 +2789,6 @@ extension BedrockAgentRuntimeClientTypes {
             self.traceId = traceId
         }
     }
-
 }
 
 extension BedrockAgentRuntimeClientTypes.OrchestrationModelInvocationOutput: Swift.CustomDebugStringConvertible {
@@ -2798,8 +2798,9 @@ extension BedrockAgentRuntimeClientTypes.OrchestrationModelInvocationOutput: Swi
 }
 
 extension BedrockAgentRuntimeClientTypes {
+
     /// Contains the JSON-formatted string returned by the API invoked by the code interpreter.
-    public struct CodeInterpreterInvocationOutput {
+    public struct CodeInterpreterInvocationOutput: Swift.Sendable {
         /// Contains the error returned from code execution.
         public var executionError: Swift.String?
         /// Contains the successful output returned from code execution
@@ -2822,12 +2823,12 @@ extension BedrockAgentRuntimeClientTypes {
             self.files = files
         }
     }
-
 }
 
 extension BedrockAgentRuntimeClientTypes {
+
     /// Contains details about the response to the user.
-    public struct FinalResponse {
+    public struct FinalResponse: Swift.Sendable {
         /// The text in the response to the user.
         public var text: Swift.String?
 
@@ -2838,7 +2839,6 @@ extension BedrockAgentRuntimeClientTypes {
             self.text = text
         }
     }
-
 }
 
 extension BedrockAgentRuntimeClientTypes.FinalResponse: Swift.CustomDebugStringConvertible {
@@ -2847,8 +2847,9 @@ extension BedrockAgentRuntimeClientTypes.FinalResponse: Swift.CustomDebugStringC
 }
 
 extension BedrockAgentRuntimeClientTypes {
+
     /// Contains details about the results from looking up the knowledge base.
-    public struct KnowledgeBaseLookupOutput {
+    public struct KnowledgeBaseLookupOutput: Swift.Sendable {
         /// Contains metadata about the sources cited for the generated response.
         public var retrievedReferences: [BedrockAgentRuntimeClientTypes.RetrievedReference]?
 
@@ -2859,12 +2860,11 @@ extension BedrockAgentRuntimeClientTypes {
             self.retrievedReferences = retrievedReferences
         }
     }
-
 }
 
 extension BedrockAgentRuntimeClientTypes {
 
-    public enum Source: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Source: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case actionGroup
         case knowledgeBase
         case parser
@@ -2895,8 +2895,9 @@ extension BedrockAgentRuntimeClientTypes {
 }
 
 extension BedrockAgentRuntimeClientTypes {
+
     /// Contains details about the agent's response to reprompt the input.
-    public struct RepromptResponse {
+    public struct RepromptResponse: Swift.Sendable {
         /// Specifies what output is prompting the agent to reprompt the input.
         public var source: BedrockAgentRuntimeClientTypes.Source?
         /// The text reprompting the input.
@@ -2911,7 +2912,6 @@ extension BedrockAgentRuntimeClientTypes {
             self.text = text
         }
     }
-
 }
 
 extension BedrockAgentRuntimeClientTypes.RepromptResponse: Swift.CustomDebugStringConvertible {
@@ -2922,7 +2922,7 @@ extension BedrockAgentRuntimeClientTypes.RepromptResponse: Swift.CustomDebugStri
 
 extension BedrockAgentRuntimeClientTypes {
 
-    public enum ModelType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ModelType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case actionGroup
         case askUser
         case finish
@@ -2959,8 +2959,9 @@ extension BedrockAgentRuntimeClientTypes {
 }
 
 extension BedrockAgentRuntimeClientTypes {
+
     /// Contains the result or output of an action group or knowledge base, or the response to the user.
-    public struct Observation {
+    public struct Observation: Swift.Sendable {
         /// Contains the JSON-formatted string returned by the API invoked by the action group.
         public var actionGroupInvocationOutput: BedrockAgentRuntimeClientTypes.ActionGroupInvocationOutput?
         /// Contains the JSON-formatted string returned by the API invoked by the code interpreter.
@@ -3005,7 +3006,6 @@ extension BedrockAgentRuntimeClientTypes {
             self.type = type
         }
     }
-
 }
 
 extension BedrockAgentRuntimeClientTypes.Observation: Swift.CustomDebugStringConvertible {
@@ -3015,8 +3015,9 @@ extension BedrockAgentRuntimeClientTypes.Observation: Swift.CustomDebugStringCon
 }
 
 extension BedrockAgentRuntimeClientTypes {
+
     /// Contains the reasoning, based on the input, that the agent uses to justify carrying out an action group or getting information from a knowledge base.
-    public struct Rationale {
+    public struct Rationale: Swift.Sendable {
         /// The reasoning or thought process of the agent, based on the input.
         public var text: Swift.String?
         /// The unique identifier of the trace step.
@@ -3031,7 +3032,6 @@ extension BedrockAgentRuntimeClientTypes {
             self.traceId = traceId
         }
     }
-
 }
 
 extension BedrockAgentRuntimeClientTypes.Rationale: Swift.CustomDebugStringConvertible {
@@ -3041,8 +3041,9 @@ extension BedrockAgentRuntimeClientTypes.Rationale: Swift.CustomDebugStringConve
 }
 
 extension BedrockAgentRuntimeClientTypes {
+
     /// Details about the orchestration step, in which the agent determines the order in which actions are executed and which knowledge bases are retrieved.
-    public enum OrchestrationTrace {
+    public enum OrchestrationTrace: Swift.Sendable {
         /// Details about the reasoning, based on the input, that the agent uses to justify carrying out an action group or getting information from a knowledge base.
         case rationale(BedrockAgentRuntimeClientTypes.Rationale)
         /// Contains information pertaining to the action group or knowledge base that is being invoked.
@@ -3061,12 +3062,12 @@ extension BedrockAgentRuntimeClientTypes {
         case modelinvocationoutput(BedrockAgentRuntimeClientTypes.OrchestrationModelInvocationOutput)
         case sdkUnknown(Swift.String)
     }
-
 }
 
 extension BedrockAgentRuntimeClientTypes {
+
     /// Details about the response from the Lambda parsing of the output from the post-processing step.
-    public struct PostProcessingParsedResponse {
+    public struct PostProcessingParsedResponse: Swift.Sendable {
         /// The text returned by the parser.
         public var text: Swift.String?
 
@@ -3077,7 +3078,6 @@ extension BedrockAgentRuntimeClientTypes {
             self.text = text
         }
     }
-
 }
 
 extension BedrockAgentRuntimeClientTypes.PostProcessingParsedResponse: Swift.CustomDebugStringConvertible {
@@ -3087,23 +3087,31 @@ extension BedrockAgentRuntimeClientTypes.PostProcessingParsedResponse: Swift.Cus
 }
 
 extension BedrockAgentRuntimeClientTypes {
+
     /// The foundation model output from the post-processing step.
-    public struct PostProcessingModelInvocationOutput {
+    public struct PostProcessingModelInvocationOutput: Swift.Sendable {
+        /// Contains information about the foundation model output from the post-processing step.
+        public var metadata: BedrockAgentRuntimeClientTypes.Metadata?
         /// Details about the response from the Lambda parsing of the output of the post-processing step.
         public var parsedResponse: BedrockAgentRuntimeClientTypes.PostProcessingParsedResponse?
+        /// Details of the raw response from the foundation model output.
+        public var rawResponse: BedrockAgentRuntimeClientTypes.RawResponse?
         /// The unique identifier of the trace.
         public var traceId: Swift.String?
 
         public init(
+            metadata: BedrockAgentRuntimeClientTypes.Metadata? = nil,
             parsedResponse: BedrockAgentRuntimeClientTypes.PostProcessingParsedResponse? = nil,
+            rawResponse: BedrockAgentRuntimeClientTypes.RawResponse? = nil,
             traceId: Swift.String? = nil
         )
         {
+            self.metadata = metadata
             self.parsedResponse = parsedResponse
+            self.rawResponse = rawResponse
             self.traceId = traceId
         }
     }
-
 }
 
 extension BedrockAgentRuntimeClientTypes.PostProcessingModelInvocationOutput: Swift.CustomDebugStringConvertible {
@@ -3113,8 +3121,9 @@ extension BedrockAgentRuntimeClientTypes.PostProcessingModelInvocationOutput: Sw
 }
 
 extension BedrockAgentRuntimeClientTypes {
+
     /// Details about the post-processing step, in which the agent shapes the response.
-    public enum PostProcessingTrace {
+    public enum PostProcessingTrace: Swift.Sendable {
         /// The input for the post-processing step.
         ///
         /// * The type is POST_PROCESSING.
@@ -3127,12 +3136,12 @@ extension BedrockAgentRuntimeClientTypes {
         case modelinvocationoutput(BedrockAgentRuntimeClientTypes.PostProcessingModelInvocationOutput)
         case sdkUnknown(Swift.String)
     }
-
 }
 
 extension BedrockAgentRuntimeClientTypes {
+
     /// Details about the response from the Lambda parsing of the output from the pre-processing step.
-    public struct PreProcessingParsedResponse {
+    public struct PreProcessingParsedResponse: Swift.Sendable {
         /// Whether the user input is valid or not. If false, the agent doesn't proceed to orchestration.
         public var isValid: Swift.Bool?
         /// The text returned by the parsing of the pre-processing step, explaining the steps that the agent plans to take in orchestration, if the user input is valid.
@@ -3147,7 +3156,6 @@ extension BedrockAgentRuntimeClientTypes {
             self.rationale = rationale
         }
     }
-
 }
 
 extension BedrockAgentRuntimeClientTypes.PreProcessingParsedResponse: Swift.CustomDebugStringConvertible {
@@ -3157,23 +3165,31 @@ extension BedrockAgentRuntimeClientTypes.PreProcessingParsedResponse: Swift.Cust
 }
 
 extension BedrockAgentRuntimeClientTypes {
+
     /// The foundation model output from the pre-processing step.
-    public struct PreProcessingModelInvocationOutput {
+    public struct PreProcessingModelInvocationOutput: Swift.Sendable {
+        /// Contains information about the foundation model output from the pre-processing step.
+        public var metadata: BedrockAgentRuntimeClientTypes.Metadata?
         /// Details about the response from the Lambda parsing of the output of the pre-processing step.
         public var parsedResponse: BedrockAgentRuntimeClientTypes.PreProcessingParsedResponse?
+        /// Details of the raw response from the foundation model output.
+        public var rawResponse: BedrockAgentRuntimeClientTypes.RawResponse?
         /// The unique identifier of the trace.
         public var traceId: Swift.String?
 
         public init(
+            metadata: BedrockAgentRuntimeClientTypes.Metadata? = nil,
             parsedResponse: BedrockAgentRuntimeClientTypes.PreProcessingParsedResponse? = nil,
+            rawResponse: BedrockAgentRuntimeClientTypes.RawResponse? = nil,
             traceId: Swift.String? = nil
         )
         {
+            self.metadata = metadata
             self.parsedResponse = parsedResponse
+            self.rawResponse = rawResponse
             self.traceId = traceId
         }
     }
-
 }
 
 extension BedrockAgentRuntimeClientTypes.PreProcessingModelInvocationOutput: Swift.CustomDebugStringConvertible {
@@ -3183,8 +3199,9 @@ extension BedrockAgentRuntimeClientTypes.PreProcessingModelInvocationOutput: Swi
 }
 
 extension BedrockAgentRuntimeClientTypes {
+
     /// Details about the pre-processing step, in which the agent contextualizes and categorizes user inputs.
-    public enum PreProcessingTrace {
+    public enum PreProcessingTrace: Swift.Sendable {
         /// The input for the pre-processing step.
         ///
         /// * The type is PRE_PROCESSING.
@@ -3197,12 +3214,12 @@ extension BedrockAgentRuntimeClientTypes {
         case modelinvocationoutput(BedrockAgentRuntimeClientTypes.PreProcessingModelInvocationOutput)
         case sdkUnknown(Swift.String)
     }
-
 }
 
 extension BedrockAgentRuntimeClientTypes {
+
     /// Contains one part of the agent's reasoning process and results from calling API actions and querying knowledge bases. You can use the trace to understand how the agent arrived at the response it provided the customer. For more information, see [Trace enablement](https://docs.aws.amazon.com/bedrock/latest/userguide/agents-test.html#trace-enablement).
-    public enum Trace {
+    public enum Trace: Swift.Sendable {
         /// The trace details for a trace defined in the Guardrail filter.
         case guardrailtrace(BedrockAgentRuntimeClientTypes.GuardrailTrace)
         /// Details about the pre-processing step, in which the agent contextualizes and categorizes user inputs.
@@ -3215,12 +3232,12 @@ extension BedrockAgentRuntimeClientTypes {
         case failuretrace(BedrockAgentRuntimeClientTypes.FailureTrace)
         case sdkUnknown(Swift.String)
     }
-
 }
 
 extension BedrockAgentRuntimeClientTypes {
+
     /// Contains information about the agent and session, alongside the agent's reasoning process and results from calling API actions and querying knowledge bases and metadata about the trace. You can use the trace to understand how the agent arrived at the response it provided the customer. For more information, see [Trace enablement](https://docs.aws.amazon.com/bedrock/latest/userguide/agents-test.html#trace-enablement).
-    public struct TracePart {
+    public struct TracePart: Swift.Sendable {
         /// The unique identifier of the alias of the agent.
         public var agentAliasId: Swift.String?
         /// The unique identifier of the agent.
@@ -3247,7 +3264,6 @@ extension BedrockAgentRuntimeClientTypes {
             self.trace = trace
         }
     }
-
 }
 
 extension BedrockAgentRuntimeClientTypes.TracePart: Swift.CustomDebugStringConvertible {
@@ -3257,8 +3273,9 @@ extension BedrockAgentRuntimeClientTypes.TracePart: Swift.CustomDebugStringConve
 }
 
 extension BedrockAgentRuntimeClientTypes {
+
     /// The response from invoking the agent and associated citations and trace information.
-    public enum ResponseStream {
+    public enum ResponseStream: Swift.Sendable {
         /// Contains a part of an agent response and citations for it.
         case chunk(BedrockAgentRuntimeClientTypes.PayloadPart)
         /// Contains information about the agent and session, alongside the agent's reasoning process and results from calling actions and querying knowledge bases and metadata about the trace. You can use the trace to understand how the agent arrived at the response it provided the customer. For more information, see [Trace events](https://docs.aws.amazon.com/bedrock/latest/userguide/trace-events.html).
@@ -3269,10 +3286,9 @@ extension BedrockAgentRuntimeClientTypes {
         case files(BedrockAgentRuntimeClientTypes.FilePart)
         case sdkUnknown(Swift.String)
     }
-
 }
 
-public struct InvokeAgentOutput {
+public struct InvokeAgentOutput: Swift.Sendable {
     /// The agent's response to the user prompt.
     /// This member is required.
     public var completion: AsyncThrowingStream<BedrockAgentRuntimeClientTypes.ResponseStream, Swift.Error>?
@@ -3299,7 +3315,7 @@ public struct InvokeAgentOutput {
     }
 }
 
-public struct DeleteAgentMemoryInput {
+public struct DeleteAgentMemoryInput: Swift.Sendable {
     /// The unique identifier of an alias of an agent.
     /// This member is required.
     public var agentAliasId: Swift.String?
@@ -3321,14 +3337,14 @@ public struct DeleteAgentMemoryInput {
     }
 }
 
-public struct DeleteAgentMemoryOutput {
+public struct DeleteAgentMemoryOutput: Swift.Sendable {
 
     public init() { }
 }
 
 extension BedrockAgentRuntimeClientTypes {
 
-    public enum MemoryType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum MemoryType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case sessionSummary
         case sdkUnknown(Swift.String)
 
@@ -3352,7 +3368,7 @@ extension BedrockAgentRuntimeClientTypes {
     }
 }
 
-public struct GetAgentMemoryInput {
+public struct GetAgentMemoryInput: Swift.Sendable {
     /// The unique identifier of an alias of an agent.
     /// This member is required.
     public var agentAliasId: Swift.String?
@@ -3389,8 +3405,9 @@ public struct GetAgentMemoryInput {
 }
 
 extension BedrockAgentRuntimeClientTypes {
+
     /// Contains details of a session summary.
-    public struct MemorySessionSummary {
+    public struct MemorySessionSummary: Swift.Sendable {
         /// The unique identifier of the memory where the session summary is stored.
         public var memoryId: Swift.String?
         /// The time when the memory duration for the session is set to end.
@@ -3417,20 +3434,19 @@ extension BedrockAgentRuntimeClientTypes {
             self.summaryText = summaryText
         }
     }
-
 }
 
 extension BedrockAgentRuntimeClientTypes {
+
     /// Contains sessions summaries.
-    public enum Memory {
+    public enum Memory: Swift.Sendable {
         /// Contains summary of a session.
         case sessionsummary(BedrockAgentRuntimeClientTypes.MemorySessionSummary)
         case sdkUnknown(Swift.String)
     }
-
 }
 
-public struct GetAgentMemoryOutput {
+public struct GetAgentMemoryOutput: Swift.Sendable {
     /// Contains details of the sessions stored in the memory
     public var memoryContents: [BedrockAgentRuntimeClientTypes.Memory]?
     /// If the total number of results is greater than the maxItems value provided in the request, use this token when making another request in the nextToken field to return the next batch of results.
@@ -3447,10 +3463,11 @@ public struct GetAgentMemoryOutput {
 }
 
 extension BedrockAgentRuntimeClientTypes {
+
     /// Contains the query made to the knowledge base. This data type is used in the following API operations:
     ///
     /// * [RetrieveAndGenerate request](https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent-runtime_RetrieveAndGenerate.html#API_agent-runtime_RetrieveAndGenerate_RequestSyntax) – in the input field
-    public struct RetrieveAndGenerateInput {
+    public struct RetrieveAndGenerateInput: Swift.Sendable {
         /// The query made to the knowledge base.
         /// This member is required.
         public var text: Swift.String?
@@ -3462,7 +3479,6 @@ extension BedrockAgentRuntimeClientTypes {
             self.text = text
         }
     }
-
 }
 
 extension BedrockAgentRuntimeClientTypes.RetrieveAndGenerateInput: Swift.CustomDebugStringConvertible {
@@ -3472,8 +3488,9 @@ extension BedrockAgentRuntimeClientTypes.RetrieveAndGenerateInput: Swift.CustomD
 }
 
 extension BedrockAgentRuntimeClientTypes {
+
     /// The configuration details for the guardrail.
-    public struct GuardrailConfiguration {
+    public struct GuardrailConfiguration: Swift.Sendable {
         /// The unique identifier for the guardrail.
         /// This member is required.
         public var guardrailId: Swift.String?
@@ -3490,12 +3507,12 @@ extension BedrockAgentRuntimeClientTypes {
             self.guardrailVersion = guardrailVersion
         }
     }
-
 }
 
 extension BedrockAgentRuntimeClientTypes {
+
     /// Configuration settings for text generation using a language model via the RetrieveAndGenerate operation. Includes parameters like temperature, top-p, maximum token count, and stop sequences. The valid range of maxTokens depends on the accepted values for your chosen model's inference parameters. To see the inference parameters for your model, see [Inference parameters for foundation models.](https://docs.aws.amazon.com/bedrock/latest/userguide/model-parameters.html)
-    public struct TextInferenceConfig {
+    public struct TextInferenceConfig: Swift.Sendable {
         /// The maximum number of tokens to generate in the output text. Do not use the minimum of 0 or the maximum of 65536. The limit values described here are arbitary values, for actual values consult the limits defined by your specific model.
         public var maxTokens: Swift.Int?
         /// A list of sequences of characters that, if generated, will cause the model to stop generating further tokens. Do not use a minimum length of 1 or a maximum length of 1000. The limit values described here are arbitary values, for actual values consult the limits defined by your specific model.
@@ -3518,12 +3535,12 @@ extension BedrockAgentRuntimeClientTypes {
             self.topp = topp
         }
     }
-
 }
 
 extension BedrockAgentRuntimeClientTypes {
+
     /// The configuration for inference settings when generating responses using RetrieveAndGenerate.
-    public struct InferenceConfig {
+    public struct InferenceConfig: Swift.Sendable {
         /// Configuration settings specific to text generation while generating responses using RetrieveAndGenerate.
         public var textInferenceConfig: BedrockAgentRuntimeClientTypes.TextInferenceConfig?
 
@@ -3534,14 +3551,14 @@ extension BedrockAgentRuntimeClientTypes {
             self.textInferenceConfig = textInferenceConfig
         }
     }
-
 }
 
 extension BedrockAgentRuntimeClientTypes {
+
     /// Contains the template for the prompt that's sent to the model for response generation. For more information, see [Knowledge base prompt templates](https://docs.aws.amazon.com/bedrock/latest/userguide/kb-test-config.html#kb-test-config-sysprompt). This data type is used in the following API operations:
     ///
     /// * [RetrieveAndGenerate request](https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent-runtime_RetrieveAndGenerate.html#API_agent-runtime_RetrieveAndGenerate_RequestSyntax) – in the filter field
-    public struct PromptTemplate {
+    public struct PromptTemplate: Swift.Sendable {
         /// The template for the prompt that's sent to the model for response generation. You can include prompt placeholders, which become replaced before the prompt is sent to the model to provide instructions and context to the model. In addition, you can include XML tags to delineate meaningful sections of the prompt template. For more information, see the following resources:
         ///
         /// * [Knowledge base prompt templates](https://docs.aws.amazon.com/bedrock/latest/userguide/kb-test-config.html#kb-test-config-sysprompt)
@@ -3556,7 +3573,6 @@ extension BedrockAgentRuntimeClientTypes {
             self.textPromptTemplate = textPromptTemplate
         }
     }
-
 }
 
 extension BedrockAgentRuntimeClientTypes.PromptTemplate: Swift.CustomDebugStringConvertible {
@@ -3565,8 +3581,9 @@ extension BedrockAgentRuntimeClientTypes.PromptTemplate: Swift.CustomDebugString
 }
 
 extension BedrockAgentRuntimeClientTypes {
+
     /// Contains the generation configuration of the external source wrapper object.
-    public struct ExternalSourcesGenerationConfiguration {
+    public struct ExternalSourcesGenerationConfiguration: Swift.Sendable {
         /// Additional model parameters and their corresponding values not included in the textInferenceConfig structure for an external source. Takes in custom model parameters specific to the language model being used.
         public var additionalModelRequestFields: [Swift.String: Smithy.Document]?
         /// The configuration details for the guardrail.
@@ -3589,12 +3606,12 @@ extension BedrockAgentRuntimeClientTypes {
             self.promptTemplate = promptTemplate
         }
     }
-
 }
 
 extension BedrockAgentRuntimeClientTypes {
+
     /// This property contains the document to chat with, along with its attributes.
-    public struct ByteContentDoc {
+    public struct ByteContentDoc: Swift.Sendable {
         /// The MIME type of the document contained in the wrapper object.
         /// This member is required.
         public var contentType: Swift.String?
@@ -3616,7 +3633,6 @@ extension BedrockAgentRuntimeClientTypes {
             self.identifier = identifier
         }
     }
-
 }
 
 extension BedrockAgentRuntimeClientTypes.ByteContentDoc: Swift.CustomDebugStringConvertible {
@@ -3625,8 +3641,9 @@ extension BedrockAgentRuntimeClientTypes.ByteContentDoc: Swift.CustomDebugString
 }
 
 extension BedrockAgentRuntimeClientTypes {
+
     /// The unique wrapper object of the document from the S3 location.
-    public struct S3ObjectDoc {
+    public struct S3ObjectDoc: Swift.Sendable {
         /// The file location of the S3 wrapper object.
         /// This member is required.
         public var uri: Swift.String?
@@ -3638,12 +3655,11 @@ extension BedrockAgentRuntimeClientTypes {
             self.uri = uri
         }
     }
-
 }
 
 extension BedrockAgentRuntimeClientTypes {
 
-    public enum ExternalSourceType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ExternalSourceType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case byteContent
         case s3
         case sdkUnknown(Swift.String)
@@ -3671,8 +3687,9 @@ extension BedrockAgentRuntimeClientTypes {
 }
 
 extension BedrockAgentRuntimeClientTypes {
+
     /// The unique external source of the content contained in the wrapper object.
-    public struct ExternalSource {
+    public struct ExternalSource: Swift.Sendable {
         /// The identifier, contentType, and data of the external source wrapper object.
         public var byteContent: BedrockAgentRuntimeClientTypes.ByteContentDoc?
         /// The S3 location of the external source wrapper object.
@@ -3692,18 +3709,18 @@ extension BedrockAgentRuntimeClientTypes {
             self.sourceType = sourceType
         }
     }
-
 }
 
 extension BedrockAgentRuntimeClientTypes {
+
     /// The configurations of the external source wrapper object in the retrieveAndGenerate function.
-    public struct ExternalSourcesRetrieveAndGenerateConfiguration {
+    public struct ExternalSourcesRetrieveAndGenerateConfiguration: Swift.Sendable {
         /// The prompt used with the external source wrapper object with the retrieveAndGenerate function.
         public var generationConfiguration: BedrockAgentRuntimeClientTypes.ExternalSourcesGenerationConfiguration?
-        /// The modelArn used with the external source wrapper object in the retrieveAndGenerate function.
+        /// The model Amazon Resource Name (ARN) for the external source wrapper object in the retrieveAndGenerate function.
         /// This member is required.
         public var modelArn: Swift.String?
-        /// The document used with the external source wrapper object in the retrieveAndGenerate function.
+        /// The document for the external source wrapper object in the retrieveAndGenerate function.
         /// This member is required.
         public var sources: [BedrockAgentRuntimeClientTypes.ExternalSource]?
 
@@ -3718,14 +3735,14 @@ extension BedrockAgentRuntimeClientTypes {
             self.sources = sources
         }
     }
-
 }
 
 extension BedrockAgentRuntimeClientTypes {
+
     /// Contains configurations for response generation based on the knowledge base query results. This data type is used in the following API operations:
     ///
     /// * [RetrieveAndGenerate request](https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent-runtime_RetrieveAndGenerate.html#API_agent-runtime_RetrieveAndGenerate_RequestSyntax)
-    public struct GenerationConfiguration {
+    public struct GenerationConfiguration: Swift.Sendable {
         /// Additional model parameters and corresponding values not included in the textInferenceConfig structure for a knowledge base. This allows users to provide custom model parameters specific to the language model being used.
         public var additionalModelRequestFields: [Swift.String: Smithy.Document]?
         /// The configuration details for the guardrail.
@@ -3748,12 +3765,11 @@ extension BedrockAgentRuntimeClientTypes {
             self.promptTemplate = promptTemplate
         }
     }
-
 }
 
 extension BedrockAgentRuntimeClientTypes {
 
-    public enum QueryTransformationType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum QueryTransformationType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case queryDecomposition
         case sdkUnknown(Swift.String)
 
@@ -3778,8 +3794,9 @@ extension BedrockAgentRuntimeClientTypes {
 }
 
 extension BedrockAgentRuntimeClientTypes {
+
     /// To split up the prompt and retrieve multiple sources, set the transformation type to QUERY_DECOMPOSITION.
-    public struct QueryTransformationConfiguration {
+    public struct QueryTransformationConfiguration: Swift.Sendable {
         /// The type of transformation to apply to the prompt.
         /// This member is required.
         public var type: BedrockAgentRuntimeClientTypes.QueryTransformationType?
@@ -3791,29 +3808,39 @@ extension BedrockAgentRuntimeClientTypes {
             self.type = type
         }
     }
-
 }
 
 extension BedrockAgentRuntimeClientTypes {
+
     /// Settings for how the model processes the prompt prior to retrieval and generation.
-    public struct OrchestrationConfiguration {
+    public struct OrchestrationConfiguration: Swift.Sendable {
+        /// Additional model parameters and corresponding values not included in the textInferenceConfig structure for a knowledge base. This allows users to provide custom model parameters specific to the language model being used.
+        public var additionalModelRequestFields: [Swift.String: Smithy.Document]?
+        /// Configuration settings for inference when using RetrieveAndGenerate to generate responses while using a knowledge base as a source.
+        public var inferenceConfig: BedrockAgentRuntimeClientTypes.InferenceConfig?
+        /// Contains the template for the prompt that's sent to the model for response generation.
+        public var promptTemplate: BedrockAgentRuntimeClientTypes.PromptTemplate?
         /// To split up the prompt and retrieve multiple sources, set the transformation type to QUERY_DECOMPOSITION.
-        /// This member is required.
         public var queryTransformationConfiguration: BedrockAgentRuntimeClientTypes.QueryTransformationConfiguration?
 
         public init(
+            additionalModelRequestFields: [Swift.String: Smithy.Document]? = nil,
+            inferenceConfig: BedrockAgentRuntimeClientTypes.InferenceConfig? = nil,
+            promptTemplate: BedrockAgentRuntimeClientTypes.PromptTemplate? = nil,
             queryTransformationConfiguration: BedrockAgentRuntimeClientTypes.QueryTransformationConfiguration? = nil
         )
         {
+            self.additionalModelRequestFields = additionalModelRequestFields
+            self.inferenceConfig = inferenceConfig
+            self.promptTemplate = promptTemplate
             self.queryTransformationConfiguration = queryTransformationConfiguration
         }
     }
-
 }
 
 extension BedrockAgentRuntimeClientTypes {
 
-    public enum RetrieveAndGenerateType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum RetrieveAndGenerateType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case externalSources
         case knowledgeBase
         case sdkUnknown(Swift.String)
@@ -3841,10 +3868,11 @@ extension BedrockAgentRuntimeClientTypes {
 }
 
 extension BedrockAgentRuntimeClientTypes {
+
     /// Contains configuration about the session with the knowledge base. This data type is used in the following API operations:
     ///
     /// * [RetrieveAndGenerate request](https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent-runtime_RetrieveAndGenerate.html#API_agent-runtime_RetrieveAndGenerate_RequestSyntax) – in the sessionConfiguration field
-    public struct RetrieveAndGenerateSessionConfiguration {
+    public struct RetrieveAndGenerateSessionConfiguration: Swift.Sendable {
         /// The ARN of the KMS key encrypting the session.
         /// This member is required.
         public var kmsKeyArn: Swift.String?
@@ -3856,12 +3884,11 @@ extension BedrockAgentRuntimeClientTypes {
             self.kmsKeyArn = kmsKeyArn
         }
     }
-
 }
 
 extension BedrockAgentRuntimeClientTypes {
 
-    public enum GuadrailAction: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum GuadrailAction: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case intervened
         case `none`
         case sdkUnknown(Swift.String)
@@ -3889,10 +3916,11 @@ extension BedrockAgentRuntimeClientTypes {
 }
 
 extension BedrockAgentRuntimeClientTypes {
+
     /// Contains the response generated from querying the knowledge base. This data type is used in the following API operations:
     ///
     /// * [RetrieveAndGenerate response](https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent-runtime_RetrieveAndGenerate.html#API_agent-runtime_RetrieveAndGenerate_ResponseSyntax) – in the output field
-    public struct RetrieveAndGenerateOutput {
+    public struct RetrieveAndGenerateOutput: Swift.Sendable {
         /// The response generated from querying the knowledge base.
         /// This member is required.
         public var text: Swift.String?
@@ -3904,7 +3932,6 @@ extension BedrockAgentRuntimeClientTypes {
             self.text = text
         }
     }
-
 }
 
 extension BedrockAgentRuntimeClientTypes.RetrieveAndGenerateOutput: Swift.CustomDebugStringConvertible {
@@ -3913,7 +3940,7 @@ extension BedrockAgentRuntimeClientTypes.RetrieveAndGenerateOutput: Swift.Custom
     }
 }
 
-public struct RetrieveAndGenerateOutput {
+public struct RetrieveAndGenerateOutput: Swift.Sendable {
     /// A list of segments of the generated response that are based on sources in the knowledge base, alongside information about the sources.
     public var citations: [BedrockAgentRuntimeClientTypes.Citation]?
     /// Specifies if there is a guardrail intervention in the response.
@@ -3945,10 +3972,11 @@ extension RetrieveAndGenerateOutput: Swift.CustomDebugStringConvertible {
 }
 
 extension BedrockAgentRuntimeClientTypes {
+
     /// Contains the query made to the knowledge base. This data type is used in the following API operations:
     ///
     /// * [Retrieve request](https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent-runtime_Retrieve.html#API_agent-runtime_Retrieve_RequestSyntax) – in the retrievalQuery field
-    public struct KnowledgeBaseQuery {
+    public struct KnowledgeBaseQuery: Swift.Sendable {
         /// The text of the query made to the knowledge base.
         /// This member is required.
         public var text: Swift.String?
@@ -3960,7 +3988,6 @@ extension BedrockAgentRuntimeClientTypes {
             self.text = text
         }
     }
-
 }
 
 extension BedrockAgentRuntimeClientTypes.KnowledgeBaseQuery: Swift.CustomDebugStringConvertible {
@@ -3970,10 +3997,11 @@ extension BedrockAgentRuntimeClientTypes.KnowledgeBaseQuery: Swift.CustomDebugSt
 }
 
 extension BedrockAgentRuntimeClientTypes {
+
     /// Details about a result from querying the knowledge base. This data type is used in the following API operations:
     ///
     /// * [Retrieve response](https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent-runtime_Retrieve.html#API_agent-runtime_Retrieve_ResponseSyntax) – in the retrievalResults field
-    public struct KnowledgeBaseRetrievalResult {
+    public struct KnowledgeBaseRetrievalResult: Swift.Sendable {
         /// Contains a chunk of text from a data source in the knowledge base.
         /// This member is required.
         public var content: BedrockAgentRuntimeClientTypes.RetrievalResultContent?
@@ -3997,7 +4025,6 @@ extension BedrockAgentRuntimeClientTypes {
             self.score = score
         }
     }
-
 }
 
 extension BedrockAgentRuntimeClientTypes.KnowledgeBaseRetrievalResult: Swift.CustomDebugStringConvertible {
@@ -4005,7 +4032,7 @@ extension BedrockAgentRuntimeClientTypes.KnowledgeBaseRetrievalResult: Swift.Cus
         "KnowledgeBaseRetrievalResult(score: \(Swift.String(describing: score)), content: \"CONTENT_REDACTED\", location: \"CONTENT_REDACTED\", metadata: \"CONTENT_REDACTED\")"}
 }
 
-public struct RetrieveOutput {
+public struct RetrieveOutput: Swift.Sendable {
     /// If there are more results than can fit in the response, the response returns a nextToken. Use this token in the nextToken field of another request to retrieve the next batch of results.
     public var nextToken: Swift.String?
     /// A list of results from querying the knowledge base.
@@ -4028,12 +4055,13 @@ extension RetrieveOutput: Swift.CustomDebugStringConvertible {
 }
 
 extension BedrockAgentRuntimeClientTypes {
+
     /// Specifies the filters to use on the metadata attributes in the knowledge base data sources before returning results. For more information, see [Query configurations](https://docs.aws.amazon.com/bedrock/latest/userguide/kb-test-config.html). See the examples below to see how to use these filters. This data type is used in the following API operations:
     ///
     /// * [Retrieve request](https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent-runtime_Retrieve.html#API_agent-runtime_Retrieve_RequestSyntax) – in the filter field
     ///
     /// * [RetrieveAndGenerate request](https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent-runtime_RetrieveAndGenerate.html#API_agent-runtime_RetrieveAndGenerate_RequestSyntax) – in the filter field
-    public indirect enum RetrievalFilter {
+    public indirect enum RetrievalFilter: Swift.Sendable {
         /// Knowledge base data sources are returned if they contain a metadata attribute whose name matches the key and whose value matches the value in this object. The following example would return data sources with an animal attribute whose value is cat: "equals": { "key": "animal", "value": "cat" }
         case equals(BedrockAgentRuntimeClientTypes.FilterAttribute)
         /// Knowledge base data sources that contain a metadata attribute whose name matches the key and whose value doesn't match the value in this object are returned. The following example would return data sources that don't contain an animal attribute whose value is cat. "notEquals": { "key": "animal", "value": "cat" }
@@ -4066,16 +4094,16 @@ extension BedrockAgentRuntimeClientTypes {
         case orall([BedrockAgentRuntimeClientTypes.RetrievalFilter])
         case sdkUnknown(Swift.String)
     }
-
 }
 
 extension BedrockAgentRuntimeClientTypes {
+
     /// Configurations for how to perform the search query and return results. For more information, see [Query configurations](https://docs.aws.amazon.com/bedrock/latest/userguide/kb-test-config.html). This data type is used in the following API operations:
     ///
     /// * [Retrieve request](https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent-runtime_Retrieve.html#API_agent-runtime_Retrieve_RequestSyntax) – in the vectorSearchConfiguration field
     ///
     /// * [RetrieveAndGenerate request](https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent-runtime_RetrieveAndGenerate.html#API_agent-runtime_RetrieveAndGenerate_RequestSyntax) – in the vectorSearchConfiguration field
-    public struct KnowledgeBaseVectorSearchConfiguration {
+    public struct KnowledgeBaseVectorSearchConfiguration: Swift.Sendable {
         /// Specifies the filters to use on the metadata in the knowledge base data sources before returning results. For more information, see [Query configurations](https://docs.aws.amazon.com/bedrock/latest/userguide/kb-test-config.html).
         public var filter: BedrockAgentRuntimeClientTypes.RetrievalFilter?
         /// The number of source chunks to retrieve.
@@ -4094,7 +4122,6 @@ extension BedrockAgentRuntimeClientTypes {
             self.overrideSearchType = overrideSearchType
         }
     }
-
 }
 
 extension BedrockAgentRuntimeClientTypes.KnowledgeBaseVectorSearchConfiguration: Swift.CustomDebugStringConvertible {
@@ -4103,12 +4130,13 @@ extension BedrockAgentRuntimeClientTypes.KnowledgeBaseVectorSearchConfiguration:
 }
 
 extension BedrockAgentRuntimeClientTypes {
+
     /// Contains configurations for knowledge base query. For more information, see [Query configurations](https://docs.aws.amazon.com/bedrock/latest/userguide/kb-test-config.html). This data type is used in the following API operations:
     ///
     /// * [Retrieve request](https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent-runtime_Retrieve.html#API_agent-runtime_Retrieve_RequestSyntax) – in the retrievalConfiguration field
     ///
     /// * [RetrieveAndGenerate request](https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent-runtime_RetrieveAndGenerate.html#API_agent-runtime_RetrieveAndGenerate_RequestSyntax) – in the retrievalConfiguration field
-    public struct KnowledgeBaseRetrievalConfiguration {
+    public struct KnowledgeBaseRetrievalConfiguration: Swift.Sendable {
         /// Contains details about how the results from the vector search should be returned. For more information, see [Query configurations](https://docs.aws.amazon.com/bedrock/latest/userguide/kb-test-config.html).
         /// This member is required.
         public var vectorSearchConfiguration: BedrockAgentRuntimeClientTypes.KnowledgeBaseVectorSearchConfiguration?
@@ -4120,12 +4148,12 @@ extension BedrockAgentRuntimeClientTypes {
             self.vectorSearchConfiguration = vectorSearchConfiguration
         }
     }
-
 }
 
 extension BedrockAgentRuntimeClientTypes {
+
     /// Configurations to apply to a knowledge base attached to the agent during query. For more information, see [Knowledge base retrieval configurations](https://docs.aws.amazon.com/bedrock/latest/userguide/agents-session-state.html#session-state-kb).
-    public struct KnowledgeBaseConfiguration {
+    public struct KnowledgeBaseConfiguration: Swift.Sendable {
         /// The unique identifier for a knowledge base attached to the agent.
         /// This member is required.
         public var knowledgeBaseId: Swift.String?
@@ -4142,16 +4170,16 @@ extension BedrockAgentRuntimeClientTypes {
             self.retrievalConfiguration = retrievalConfiguration
         }
     }
-
 }
 
 extension BedrockAgentRuntimeClientTypes {
+
     /// Contains details about the resource being queried. This data type is used in the following API operations:
     ///
     /// * [Retrieve request](https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent-runtime_Retrieve.html#API_agent-runtime_Retrieve_RequestSyntax) – in the knowledgeBaseConfiguration field
     ///
     /// * [RetrieveAndGenerate request](https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent-runtime_RetrieveAndGenerate.html#API_agent-runtime_RetrieveAndGenerate_RequestSyntax) – in the knowledgeBaseConfiguration field
-    public struct KnowledgeBaseRetrieveAndGenerateConfiguration {
+    public struct KnowledgeBaseRetrieveAndGenerateConfiguration: Swift.Sendable {
         /// Contains configurations for response generation based on the knowledge base query results.
         public var generationConfiguration: BedrockAgentRuntimeClientTypes.GenerationConfiguration?
         /// The unique identifier of the knowledge base that is queried.
@@ -4180,10 +4208,9 @@ extension BedrockAgentRuntimeClientTypes {
             self.retrievalConfiguration = retrievalConfiguration
         }
     }
-
 }
 
-public struct RetrieveInput {
+public struct RetrieveInput: Swift.Sendable {
     /// The unique identifier of the knowledge base to query.
     /// This member is required.
     public var knowledgeBaseId: Swift.String?
@@ -4215,15 +4242,16 @@ extension RetrieveInput: Swift.CustomDebugStringConvertible {
 }
 
 extension BedrockAgentRuntimeClientTypes {
+
     /// Contains details about the resource being queried. This data type is used in the following API operations:
     ///
     /// * [RetrieveAndGenerate request](https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent-runtime_RetrieveAndGenerate.html#API_agent-runtime_RetrieveAndGenerate_RequestSyntax) – in the retrieveAndGenerateConfiguration field
-    public struct RetrieveAndGenerateConfiguration {
-        /// The configuration used with the external source wrapper object in the retrieveAndGenerate function.
+    public struct RetrieveAndGenerateConfiguration: Swift.Sendable {
+        /// The configuration for the external source wrapper object in the retrieveAndGenerate function.
         public var externalSourcesConfiguration: BedrockAgentRuntimeClientTypes.ExternalSourcesRetrieveAndGenerateConfiguration?
-        /// Contains details about the resource being queried.
+        /// Contains details about the knowledge base for retrieving information and generating responses.
         public var knowledgeBaseConfiguration: BedrockAgentRuntimeClientTypes.KnowledgeBaseRetrieveAndGenerateConfiguration?
-        /// The type of resource that is queried by the request.
+        /// The type of resource that contains your data for retrieving information and generating responses. If you choose ot use EXTERNAL_SOURCES, then currently only Claude 3 Sonnet models for knowledge bases are supported.
         /// This member is required.
         public var type: BedrockAgentRuntimeClientTypes.RetrieveAndGenerateType?
 
@@ -4238,12 +4266,12 @@ extension BedrockAgentRuntimeClientTypes {
             self.type = type
         }
     }
-
 }
 
 extension BedrockAgentRuntimeClientTypes {
+
     /// Contains parameters that specify various attributes that persist across a session or prompt. You can define session state attributes as key-value pairs when writing a [Lambda function](https://docs.aws.amazon.com/bedrock/latest/userguide/agents-lambda.html) for an action group or pass them when making an [InvokeAgent](https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent-runtime_InvokeAgent.html) request. Use session state attributes to control and provide conversational context for your agent and to help customize your agent's behavior. For more information, see [Control session context](https://docs.aws.amazon.com/bedrock/latest/userguide/agents-session-state.html).
-    public struct SessionState {
+    public struct SessionState: Swift.Sendable {
         /// Contains information about the files used by code interpreter.
         public var files: [BedrockAgentRuntimeClientTypes.InputFile]?
         /// The identifier of the invocation of an action. This value must match the invocationId returned in the InvokeAgent response for the action whose results are provided in the returnControlInvocationResults field. For more information, see [Return control to the agent developer](https://docs.aws.amazon.com/bedrock/latest/userguide/agents-returncontrol.html) and [Control session context](https://docs.aws.amazon.com/bedrock/latest/userguide/agents-session-state.html).
@@ -4274,10 +4302,9 @@ extension BedrockAgentRuntimeClientTypes {
             self.sessionAttributes = sessionAttributes
         }
     }
-
 }
 
-public struct RetrieveAndGenerateInput {
+public struct RetrieveAndGenerateInput: Swift.Sendable {
     /// Contains the query to be made to the knowledge base.
     /// This member is required.
     public var input: BedrockAgentRuntimeClientTypes.RetrieveAndGenerateInput?
@@ -4307,7 +4334,7 @@ extension RetrieveAndGenerateInput: Swift.CustomDebugStringConvertible {
         "RetrieveAndGenerateInput(retrieveAndGenerateConfiguration: \(Swift.String(describing: retrieveAndGenerateConfiguration)), sessionConfiguration: \(Swift.String(describing: sessionConfiguration)), sessionId: \(Swift.String(describing: sessionId)), input: \"CONTENT_REDACTED\")"}
 }
 
-public struct InvokeAgentInput {
+public struct InvokeAgentInput: Swift.Sendable {
     /// The alias of the agent to use.
     /// This member is required.
     public var agentAliasId: Swift.String?
@@ -5295,6 +5322,39 @@ extension BedrockAgentRuntimeClientTypes.PostProcessingModelInvocationOutput {
         var value = BedrockAgentRuntimeClientTypes.PostProcessingModelInvocationOutput()
         value.traceId = try reader["traceId"].readIfPresent()
         value.parsedResponse = try reader["parsedResponse"].readIfPresent(with: BedrockAgentRuntimeClientTypes.PostProcessingParsedResponse.read(from:))
+        value.rawResponse = try reader["rawResponse"].readIfPresent(with: BedrockAgentRuntimeClientTypes.RawResponse.read(from:))
+        value.metadata = try reader["metadata"].readIfPresent(with: BedrockAgentRuntimeClientTypes.Metadata.read(from:))
+        return value
+    }
+}
+
+extension BedrockAgentRuntimeClientTypes.Metadata {
+
+    static func read(from reader: SmithyJSON.Reader) throws -> BedrockAgentRuntimeClientTypes.Metadata {
+        guard reader.hasContent else { throw SmithyReadWrite.ReaderError.requiredValueNotPresent }
+        var value = BedrockAgentRuntimeClientTypes.Metadata()
+        value.usage = try reader["usage"].readIfPresent(with: BedrockAgentRuntimeClientTypes.Usage.read(from:))
+        return value
+    }
+}
+
+extension BedrockAgentRuntimeClientTypes.Usage {
+
+    static func read(from reader: SmithyJSON.Reader) throws -> BedrockAgentRuntimeClientTypes.Usage {
+        guard reader.hasContent else { throw SmithyReadWrite.ReaderError.requiredValueNotPresent }
+        var value = BedrockAgentRuntimeClientTypes.Usage()
+        value.inputTokens = try reader["inputTokens"].readIfPresent()
+        value.outputTokens = try reader["outputTokens"].readIfPresent()
+        return value
+    }
+}
+
+extension BedrockAgentRuntimeClientTypes.RawResponse {
+
+    static func read(from reader: SmithyJSON.Reader) throws -> BedrockAgentRuntimeClientTypes.RawResponse {
+        guard reader.hasContent else { throw SmithyReadWrite.ReaderError.requiredValueNotPresent }
+        var value = BedrockAgentRuntimeClientTypes.RawResponse()
+        value.content = try reader["content"].readIfPresent()
         return value
     }
 }
@@ -5369,37 +5429,6 @@ extension BedrockAgentRuntimeClientTypes.OrchestrationModelInvocationOutput {
         value.traceId = try reader["traceId"].readIfPresent()
         value.rawResponse = try reader["rawResponse"].readIfPresent(with: BedrockAgentRuntimeClientTypes.RawResponse.read(from:))
         value.metadata = try reader["metadata"].readIfPresent(with: BedrockAgentRuntimeClientTypes.Metadata.read(from:))
-        return value
-    }
-}
-
-extension BedrockAgentRuntimeClientTypes.Metadata {
-
-    static func read(from reader: SmithyJSON.Reader) throws -> BedrockAgentRuntimeClientTypes.Metadata {
-        guard reader.hasContent else { throw SmithyReadWrite.ReaderError.requiredValueNotPresent }
-        var value = BedrockAgentRuntimeClientTypes.Metadata()
-        value.usage = try reader["usage"].readIfPresent(with: BedrockAgentRuntimeClientTypes.Usage.read(from:))
-        return value
-    }
-}
-
-extension BedrockAgentRuntimeClientTypes.Usage {
-
-    static func read(from reader: SmithyJSON.Reader) throws -> BedrockAgentRuntimeClientTypes.Usage {
-        guard reader.hasContent else { throw SmithyReadWrite.ReaderError.requiredValueNotPresent }
-        var value = BedrockAgentRuntimeClientTypes.Usage()
-        value.inputTokens = try reader["inputTokens"].readIfPresent()
-        value.outputTokens = try reader["outputTokens"].readIfPresent()
-        return value
-    }
-}
-
-extension BedrockAgentRuntimeClientTypes.RawResponse {
-
-    static func read(from reader: SmithyJSON.Reader) throws -> BedrockAgentRuntimeClientTypes.RawResponse {
-        guard reader.hasContent else { throw SmithyReadWrite.ReaderError.requiredValueNotPresent }
-        var value = BedrockAgentRuntimeClientTypes.RawResponse()
-        value.content = try reader["content"].readIfPresent()
         return value
     }
 }
@@ -5658,6 +5687,8 @@ extension BedrockAgentRuntimeClientTypes.PreProcessingModelInvocationOutput {
         var value = BedrockAgentRuntimeClientTypes.PreProcessingModelInvocationOutput()
         value.traceId = try reader["traceId"].readIfPresent()
         value.parsedResponse = try reader["parsedResponse"].readIfPresent(with: BedrockAgentRuntimeClientTypes.PreProcessingParsedResponse.read(from:))
+        value.rawResponse = try reader["rawResponse"].readIfPresent(with: BedrockAgentRuntimeClientTypes.RawResponse.read(from:))
+        value.metadata = try reader["metadata"].readIfPresent(with: BedrockAgentRuntimeClientTypes.Metadata.read(from:))
         return value
     }
 }
@@ -6258,6 +6289,9 @@ extension BedrockAgentRuntimeClientTypes.OrchestrationConfiguration {
 
     static func write(value: BedrockAgentRuntimeClientTypes.OrchestrationConfiguration?, to writer: SmithyJSON.Writer) throws {
         guard let value else { return }
+        try writer["additionalModelRequestFields"].writeMap(value.additionalModelRequestFields, valueWritingClosure: SmithyReadWrite.WritingClosures.writeDocument(value:to:), keyNodeInfo: "key", valueNodeInfo: "value", isFlattened: false)
+        try writer["inferenceConfig"].write(value.inferenceConfig, with: BedrockAgentRuntimeClientTypes.InferenceConfig.write(value:to:))
+        try writer["promptTemplate"].write(value.promptTemplate, with: BedrockAgentRuntimeClientTypes.PromptTemplate.write(value:to:))
         try writer["queryTransformationConfiguration"].write(value.queryTransformationConfiguration, with: BedrockAgentRuntimeClientTypes.QueryTransformationConfiguration.write(value:to:))
     }
 }

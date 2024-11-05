@@ -203,13 +203,23 @@ val AwsService.modelExtrasDir: String
 
 task("stageSdks") {
     group = "codegen"
-    description = "relocate generated SDK(s) from build directory to Sources and Tests directories"
+    description = "relocate generated SDK artifacts from build directory to correct locations"
     doLast {
         discoveredServices.forEach {
             logger.info("copying ${it.outputDir} source to ${it.sourcesDir}")
             copy {
-                from("${it.outputDir}")
-                into("${it.sourcesDir}")
+                from(it.outputDir)
+                into(it.sourcesDir)
+                exclude { details ->
+                    // Exclude `SmokeTests` directory
+                    details.file.name.endsWith("SmokeTests")
+                }
+            }
+
+            logger.info("copying ${it.outputDir}/SmokeTests to SmokeTests")
+            copy {
+                from("${it.outputDir}/SmokeTests")
+                into(rootProject.file("SmokeTests").absolutePath)
             }
         }
     }

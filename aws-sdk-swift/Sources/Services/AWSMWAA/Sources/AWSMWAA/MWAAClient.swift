@@ -55,6 +55,7 @@ import struct ClientRuntime.SignerMiddleware
 import struct ClientRuntime.URLHostMiddleware
 import struct ClientRuntime.URLPathMiddleware
 import struct Smithy.Attributes
+import struct Smithy.Document
 import struct SmithyIdentity.BearerTokenIdentity
 import struct SmithyIdentity.StaticBearerTokenIdentityResolver
 import struct SmithyRetries.DefaultRetryStrategy
@@ -261,9 +262,9 @@ extension MWAAClient {
 
     /// Performs the `CreateEnvironment` operation on the `AmazonMWAA` service.
     ///
-    /// Creates an Amazon Managed Workflows for Apache Airflow (MWAA) environment.
+    /// Creates an Amazon Managed Workflows for Apache Airflow (Amazon MWAA) environment.
     ///
-    /// - Parameter CreateEnvironmentInput : This section contains the Amazon Managed Workflows for Apache Airflow (MWAA) API reference documentation to create an environment. For more information, see [Get started with Amazon Managed Workflows for Apache Airflow](https://docs.aws.amazon.com/mwaa/latest/userguide/get-started.html).
+    /// - Parameter CreateEnvironmentInput : This section contains the Amazon Managed Workflows for Apache Airflow (Amazon MWAA) API reference documentation to create an environment. For more information, see [Get started with Amazon Managed Workflows for Apache Airflow](https://docs.aws.amazon.com/mwaa/latest/userguide/get-started.html).
     ///
     /// - Returns: `CreateEnvironmentOutput` : [no documentation found]
     ///
@@ -400,7 +401,7 @@ extension MWAAClient {
 
     /// Performs the `DeleteEnvironment` operation on the `AmazonMWAA` service.
     ///
-    /// Deletes an Amazon Managed Workflows for Apache Airflow (MWAA) environment.
+    /// Deletes an Amazon Managed Workflows for Apache Airflow (Amazon MWAA) environment.
     ///
     /// - Parameter DeleteEnvironmentInput : [no documentation found]
     ///
@@ -522,6 +523,80 @@ extension MWAAClient {
         var metricsAttributes = Smithy.Attributes()
         metricsAttributes.set(key: ClientRuntime.OrchestratorMetricsAttributesKeys.service, value: "MWAA")
         metricsAttributes.set(key: ClientRuntime.OrchestratorMetricsAttributesKeys.method, value: "GetEnvironment")
+        let op = builder.attributes(context)
+            .telemetry(ClientRuntime.OrchestratorTelemetry(
+                telemetryProvider: config.telemetryProvider,
+                metricsAttributes: metricsAttributes,
+                meterScope: serviceName,
+                tracerScope: serviceName
+            ))
+            .executeRequest(client)
+            .build()
+        return try await op.execute(input: input)
+    }
+
+    /// Performs the `InvokeRestApi` operation on the `AmazonMWAA` service.
+    ///
+    /// Invokes the Apache Airflow REST API on the webserver with the specified inputs. To learn more, see [Using the Apache Airflow REST API](https://docs.aws.amazon.com/mwaa/latest/userguide/access-mwaa-apache-airflow-rest-api.html)
+    ///
+    /// - Parameter InvokeRestApiInput : [no documentation found]
+    ///
+    /// - Returns: `InvokeRestApiOutput` : [no documentation found]
+    ///
+    /// - Throws: One of the exceptions listed below __Possible Exceptions__.
+    ///
+    /// __Possible Exceptions:__
+    /// - `AccessDeniedException` : Access to the Apache Airflow Web UI or CLI has been denied due to insufficient permissions. To learn more, see [Accessing an Amazon MWAA environment](https://docs.aws.amazon.com/mwaa/latest/userguide/access-policies.html).
+    /// - `InternalServerException` : InternalServerException: An internal error has occurred.
+    /// - `ResourceNotFoundException` : ResourceNotFoundException: The resource is not available.
+    /// - `RestApiClientException` : An exception indicating that a client-side error occurred during the Apache Airflow REST API call.
+    /// - `RestApiServerException` : An exception indicating that a server-side error occurred during the Apache Airflow REST API call.
+    /// - `ValidationException` : ValidationException: The provided input is not valid.
+    public func invokeRestApi(input: InvokeRestApiInput) async throws -> InvokeRestApiOutput {
+        let context = Smithy.ContextBuilder()
+                      .withMethod(value: .post)
+                      .withServiceName(value: serviceName)
+                      .withOperation(value: "invokeRestApi")
+                      .withIdempotencyTokenGenerator(value: config.idempotencyTokenGenerator)
+                      .withLogger(value: config.logger)
+                      .withPartitionID(value: config.partitionID)
+                      .withAuthSchemes(value: config.authSchemes ?? [])
+                      .withAuthSchemeResolver(value: config.authSchemeResolver)
+                      .withUnsignedPayloadTrait(value: false)
+                      .withSocketTimeout(value: config.httpClientConfiguration.socketTimeout)
+                      .withIdentityResolver(value: config.bearerTokenIdentityResolver, schemeID: "smithy.api#httpBearerAuth")
+                      .withIdentityResolver(value: config.awsCredentialIdentityResolver, schemeID: "aws.auth#sigv4")
+                      .withIdentityResolver(value: config.awsCredentialIdentityResolver, schemeID: "aws.auth#sigv4a")
+                      .withRegion(value: config.region)
+                      .withSigningName(value: "airflow")
+                      .withSigningRegion(value: config.signingRegion)
+                      .build()
+        let builder = ClientRuntime.OrchestratorBuilder<InvokeRestApiInput, InvokeRestApiOutput, SmithyHTTPAPI.HTTPRequest, SmithyHTTPAPI.HTTPResponse>()
+        config.interceptorProviders.forEach { provider in
+            builder.interceptors.add(provider.create())
+        }
+        config.httpInterceptorProviders.forEach { provider in
+            builder.interceptors.add(provider.create())
+        }
+        builder.interceptors.add(ClientRuntime.URLPathMiddleware<InvokeRestApiInput, InvokeRestApiOutput>(InvokeRestApiInput.urlPathProvider(_:)))
+        builder.interceptors.add(ClientRuntime.URLHostMiddleware<InvokeRestApiInput, InvokeRestApiOutput>(hostPrefix: "env."))
+        builder.interceptors.add(ClientRuntime.ContentTypeMiddleware<InvokeRestApiInput, InvokeRestApiOutput>(contentType: "application/json"))
+        builder.serialize(ClientRuntime.BodyMiddleware<InvokeRestApiInput, InvokeRestApiOutput, SmithyJSON.Writer>(rootNodeInfo: "", inputWritingClosure: InvokeRestApiInput.write(value:to:)))
+        builder.interceptors.add(ClientRuntime.ContentLengthMiddleware<InvokeRestApiInput, InvokeRestApiOutput>())
+        builder.deserialize(ClientRuntime.DeserializeMiddleware<InvokeRestApiOutput>(InvokeRestApiOutput.httpOutput(from:), InvokeRestApiOutputError.httpError(from:)))
+        builder.interceptors.add(ClientRuntime.LoggerMiddleware<InvokeRestApiInput, InvokeRestApiOutput>(clientLogMode: config.clientLogMode))
+        builder.retryStrategy(SmithyRetries.DefaultRetryStrategy(options: config.retryStrategyOptions))
+        builder.retryErrorInfoProvider(AWSClientRuntime.AWSRetryErrorInfoProvider.errorInfo(for:))
+        builder.applySigner(ClientRuntime.SignerMiddleware<InvokeRestApiOutput>())
+        let endpointParams = EndpointParams(endpoint: config.endpoint, region: config.region, useDualStack: config.useDualStack ?? false, useFIPS: config.useFIPS ?? false)
+        builder.applyEndpoint(AWSClientRuntime.EndpointResolverMiddleware<InvokeRestApiOutput, EndpointParams>(endpointResolverBlock: { [config] in try config.endpointResolver.resolve(params: $0) }, endpointParams: endpointParams))
+        builder.interceptors.add(AWSClientRuntime.UserAgentMiddleware<InvokeRestApiInput, InvokeRestApiOutput>(serviceID: serviceName, version: "1.0", config: config))
+        builder.selectAuthScheme(ClientRuntime.AuthSchemeMiddleware<InvokeRestApiOutput>())
+        builder.interceptors.add(AWSClientRuntime.AmzSdkInvocationIdMiddleware<InvokeRestApiInput, InvokeRestApiOutput>())
+        builder.interceptors.add(AWSClientRuntime.AmzSdkRequestMiddleware<InvokeRestApiInput, InvokeRestApiOutput>(maxRetries: config.retryStrategyOptions.maxRetriesBase))
+        var metricsAttributes = Smithy.Attributes()
+        metricsAttributes.set(key: ClientRuntime.OrchestratorMetricsAttributesKeys.service, value: "MWAA")
+        metricsAttributes.set(key: ClientRuntime.OrchestratorMetricsAttributesKeys.method, value: "InvokeRestApi")
         let op = builder.attributes(context)
             .telemetry(ClientRuntime.OrchestratorTelemetry(
                 telemetryProvider: config.telemetryProvider,

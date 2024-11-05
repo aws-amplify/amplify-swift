@@ -28,44 +28,45 @@ import protocol ClientRuntime.ModeledError
 import struct Smithy.URIQueryItem
 @_spi(SmithyTimestamps) import struct SmithyTimestamps.TimestampFormatter
 
-public struct DeleteMediaCapturePipelineOutput {
+
+public struct DeleteMediaCapturePipelineOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteMediaInsightsPipelineConfigurationOutput {
+public struct DeleteMediaInsightsPipelineConfigurationOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteMediaPipelineKinesisVideoStreamPoolOutput {
+public struct DeleteMediaPipelineKinesisVideoStreamPoolOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteMediaPipelineOutput {
+public struct DeleteMediaPipelineOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct StopSpeakerSearchTaskOutput {
+public struct StopSpeakerSearchTaskOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct StopVoiceToneAnalysisTaskOutput {
+public struct StopVoiceToneAnalysisTaskOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdateMediaInsightsPipelineStatusOutput {
+public struct UpdateMediaInsightsPipelineStatusOutput: Swift.Sendable {
 
     public init() { }
 }
 
 extension ChimeSDKMediaPipelinesClientTypes {
 
-    public enum ActiveSpeakerPosition: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ActiveSpeakerPosition: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case bottomleft
         case bottomright
         case topleft
@@ -99,8 +100,9 @@ extension ChimeSDKMediaPipelinesClientTypes {
 }
 
 extension ChimeSDKMediaPipelinesClientTypes {
+
     /// Defines the configuration for an ActiveSpeakerOnly video tile.
-    public struct ActiveSpeakerOnlyConfiguration {
+    public struct ActiveSpeakerOnlyConfiguration: Swift.Sendable {
         /// The position of the ActiveSpeakerOnly video tile.
         public var activeSpeakerPosition: ChimeSDKMediaPipelinesClientTypes.ActiveSpeakerPosition?
 
@@ -111,12 +113,11 @@ extension ChimeSDKMediaPipelinesClientTypes {
             self.activeSpeakerPosition = activeSpeakerPosition
         }
     }
-
 }
 
 extension ChimeSDKMediaPipelinesClientTypes {
 
-    public enum ContentType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ContentType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case pii
         case sdkUnknown(Swift.String)
 
@@ -142,7 +143,7 @@ extension ChimeSDKMediaPipelinesClientTypes {
 
 extension ChimeSDKMediaPipelinesClientTypes {
 
-    public enum CallAnalyticsLanguageCode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum CallAnalyticsLanguageCode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case deDe
         case enAu
         case enGb
@@ -192,7 +193,7 @@ extension ChimeSDKMediaPipelinesClientTypes {
 
 extension ChimeSDKMediaPipelinesClientTypes {
 
-    public enum PartialResultsStability: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum PartialResultsStability: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case high
         case low
         case medium
@@ -224,7 +225,7 @@ extension ChimeSDKMediaPipelinesClientTypes {
 
 extension ChimeSDKMediaPipelinesClientTypes {
 
-    public enum ContentRedactionOutput: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ContentRedactionOutput: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case redacted
         case redactedAndUnredacted
         case sdkUnknown(Swift.String)
@@ -252,8 +253,9 @@ extension ChimeSDKMediaPipelinesClientTypes {
 }
 
 extension ChimeSDKMediaPipelinesClientTypes {
+
     /// Allows you to specify additional settings for your Call Analytics post-call request, including output locations for your redacted transcript, which IAM role to use, and which encryption key to use. DataAccessRoleArn and OutputLocation are required fields. PostCallAnalyticsSettings provides the same insights as a Call Analytics post-call transcription. For more information, refer to [Post-call analytics with real-time transcriptions](https://docs.aws.amazon.com/transcribe/latest/dg/tca-post-call.html) in the Amazon Transcribe Developer Guide.
-    public struct PostCallAnalyticsSettings {
+    public struct PostCallAnalyticsSettings: Swift.Sendable {
         /// The content redaction output settings for a post-call analysis task.
         public var contentRedactionOutput: ChimeSDKMediaPipelinesClientTypes.ContentRedactionOutput?
         /// The ARN of the role used by Amazon Web Services Transcribe to upload your post call analysis. For more information, see [Post-call analytics with real-time transcriptions](https://docs.aws.amazon.com/transcribe/latest/dg/tca-post-call.html) in the Amazon Transcribe Developer Guide.
@@ -278,12 +280,11 @@ extension ChimeSDKMediaPipelinesClientTypes {
             self.outputLocation = outputLocation
         }
     }
-
 }
 
 extension ChimeSDKMediaPipelinesClientTypes {
 
-    public enum VocabularyFilterMethod: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum VocabularyFilterMethod: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case mask
         case remove
         case tag
@@ -314,8 +315,9 @@ extension ChimeSDKMediaPipelinesClientTypes {
 }
 
 extension ChimeSDKMediaPipelinesClientTypes {
+
     /// A structure that contains the configuration settings for an Amazon Transcribe call analytics processor.
-    public struct AmazonTranscribeCallAnalyticsProcessorConfiguration {
+    public struct AmazonTranscribeCallAnalyticsProcessorConfiguration: Swift.Sendable {
         /// By default, all CategoryEvents are sent to the insights target. If this parameter is specified, only included categories are sent to the insights target.
         public var callAnalyticsStreamCategories: [Swift.String]?
         /// Labels all personally identifiable information (PII) identified in your transcript. Content identification is performed at the segment level; PII specified in PiiEntityTypes is flagged upon complete transcription of an audio segment. You can’t set ContentIdentificationType and ContentRedactionType in the same request. If you do, your request returns a BadRequestException. For more information, see [Redacting or identifying personally identifiable information](https://docs.aws.amazon.com/transcribe/latest/dg/pii-redaction.html) in the Amazon Transcribe Developer Guide.
@@ -375,12 +377,12 @@ extension ChimeSDKMediaPipelinesClientTypes {
             self.vocabularyName = vocabularyName
         }
     }
-
 }
 
 extension ChimeSDKMediaPipelinesClientTypes {
+
     /// A structure that contains the configuration settings for an Amazon Transcribe processor. Calls to this API must include a LanguageCode, IdentifyLanguage, or IdentifyMultipleLanguages parameter. If you include more than one of those parameters, your transcription job fails.
-    public struct AmazonTranscribeProcessorConfiguration {
+    public struct AmazonTranscribeProcessorConfiguration: Swift.Sendable {
         /// Labels all personally identifiable information (PII) identified in your transcript. Content identification is performed at the segment level; PII specified in PiiEntityTypes is flagged upon complete transcription of an audio segment. You can’t set ContentIdentificationType and ContentRedactionType in the same request. If you set both, your request returns a BadRequestException. For more information, see [Redacting or identifying personally identifiable information](https://docs.aws.amazon.com/transcribe/latest/dg/pii-redaction.html) in the Amazon Transcribe Developer Guide.
         public var contentIdentificationType: ChimeSDKMediaPipelinesClientTypes.ContentType?
         /// Redacts all personally identifiable information (PII) identified in your transcript. Content redaction is performed at the segment level; PII specified in PiiEntityTypes is redacted upon complete transcription of an audio segment. You can’t set ContentRedactionType and ContentIdentificationType in the same request. If you set both, your request returns a BadRequestException. For more information, see [Redacting or identifying personally identifiable information](https://docs.aws.amazon.com/transcribe/latest/dg/pii-redaction.html) in the Amazon Transcribe Developer Guide.
@@ -459,12 +461,11 @@ extension ChimeSDKMediaPipelinesClientTypes {
             self.vocabularyNames = vocabularyNames
         }
     }
-
 }
 
 extension ChimeSDKMediaPipelinesClientTypes {
 
-    public enum AudioArtifactsConcatenationState: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AudioArtifactsConcatenationState: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case enabled
         case sdkUnknown(Swift.String)
 
@@ -489,8 +490,9 @@ extension ChimeSDKMediaPipelinesClientTypes {
 }
 
 extension ChimeSDKMediaPipelinesClientTypes {
+
     /// The audio artifact concatenation configuration object.
-    public struct AudioConcatenationConfiguration {
+    public struct AudioConcatenationConfiguration: Swift.Sendable {
         /// Enables or disables the configuration object.
         /// This member is required.
         public var state: ChimeSDKMediaPipelinesClientTypes.AudioArtifactsConcatenationState?
@@ -502,12 +504,11 @@ extension ChimeSDKMediaPipelinesClientTypes {
             self.state = state
         }
     }
-
 }
 
 extension ChimeSDKMediaPipelinesClientTypes {
 
-    public enum ArtifactsConcatenationState: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ArtifactsConcatenationState: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case disabled
         case enabled
         case sdkUnknown(Swift.String)
@@ -535,8 +536,9 @@ extension ChimeSDKMediaPipelinesClientTypes {
 }
 
 extension ChimeSDKMediaPipelinesClientTypes {
+
     /// The composited video configuration object for a specified media pipeline. SourceType must be ChimeSdkMeeting.
-    public struct CompositedVideoConcatenationConfiguration {
+    public struct CompositedVideoConcatenationConfiguration: Swift.Sendable {
         /// Enables or disables the configuration object.
         /// This member is required.
         public var state: ChimeSDKMediaPipelinesClientTypes.ArtifactsConcatenationState?
@@ -548,12 +550,12 @@ extension ChimeSDKMediaPipelinesClientTypes {
             self.state = state
         }
     }
-
 }
 
 extension ChimeSDKMediaPipelinesClientTypes {
+
     /// The composited content configuration object for a specified media pipeline.
-    public struct ContentConcatenationConfiguration {
+    public struct ContentConcatenationConfiguration: Swift.Sendable {
         /// Enables or disables the configuration object.
         /// This member is required.
         public var state: ChimeSDKMediaPipelinesClientTypes.ArtifactsConcatenationState?
@@ -565,12 +567,12 @@ extension ChimeSDKMediaPipelinesClientTypes {
             self.state = state
         }
     }
-
 }
 
 extension ChimeSDKMediaPipelinesClientTypes {
+
     /// The content configuration object's data channel.
-    public struct DataChannelConcatenationConfiguration {
+    public struct DataChannelConcatenationConfiguration: Swift.Sendable {
         /// Enables or disables the configuration object.
         /// This member is required.
         public var state: ChimeSDKMediaPipelinesClientTypes.ArtifactsConcatenationState?
@@ -582,12 +584,12 @@ extension ChimeSDKMediaPipelinesClientTypes {
             self.state = state
         }
     }
-
 }
 
 extension ChimeSDKMediaPipelinesClientTypes {
+
     /// The configuration object for an event concatenation pipeline.
-    public struct MeetingEventsConcatenationConfiguration {
+    public struct MeetingEventsConcatenationConfiguration: Swift.Sendable {
         /// Enables or disables the configuration object.
         /// This member is required.
         public var state: ChimeSDKMediaPipelinesClientTypes.ArtifactsConcatenationState?
@@ -599,12 +601,12 @@ extension ChimeSDKMediaPipelinesClientTypes {
             self.state = state
         }
     }
-
 }
 
 extension ChimeSDKMediaPipelinesClientTypes {
+
     /// The configuration object for concatenating transcription messages.
-    public struct TranscriptionMessagesConcatenationConfiguration {
+    public struct TranscriptionMessagesConcatenationConfiguration: Swift.Sendable {
         /// Enables or disables the configuration object.
         /// This member is required.
         public var state: ChimeSDKMediaPipelinesClientTypes.ArtifactsConcatenationState?
@@ -616,12 +618,12 @@ extension ChimeSDKMediaPipelinesClientTypes {
             self.state = state
         }
     }
-
 }
 
 extension ChimeSDKMediaPipelinesClientTypes {
+
     /// The configuration object of a video concatenation pipeline.
-    public struct VideoConcatenationConfiguration {
+    public struct VideoConcatenationConfiguration: Swift.Sendable {
         /// Enables or disables the configuration object.
         /// This member is required.
         public var state: ChimeSDKMediaPipelinesClientTypes.ArtifactsConcatenationState?
@@ -633,12 +635,12 @@ extension ChimeSDKMediaPipelinesClientTypes {
             self.state = state
         }
     }
-
 }
 
 extension ChimeSDKMediaPipelinesClientTypes {
+
     /// The configuration for the artifacts concatenation.
-    public struct ArtifactsConcatenationConfiguration {
+    public struct ArtifactsConcatenationConfiguration: Swift.Sendable {
         /// The configuration for the audio artifacts concatenation.
         /// This member is required.
         public var audio: ChimeSDKMediaPipelinesClientTypes.AudioConcatenationConfiguration?
@@ -680,12 +682,11 @@ extension ChimeSDKMediaPipelinesClientTypes {
             self.video = video
         }
     }
-
 }
 
 extension ChimeSDKMediaPipelinesClientTypes {
 
-    public enum AudioMuxType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AudioMuxType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case audioonly
         case audiowithactivespeakervideo
         case audiowithcompositedvideo
@@ -716,8 +717,9 @@ extension ChimeSDKMediaPipelinesClientTypes {
 }
 
 extension ChimeSDKMediaPipelinesClientTypes {
+
     /// The audio artifact configuration object.
-    public struct AudioArtifactsConfiguration {
+    public struct AudioArtifactsConfiguration: Swift.Sendable {
         /// The MUX type of the audio artifact configuration object.
         /// This member is required.
         public var muxType: ChimeSDKMediaPipelinesClientTypes.AudioMuxType?
@@ -729,12 +731,11 @@ extension ChimeSDKMediaPipelinesClientTypes {
             self.muxType = muxType
         }
     }
-
 }
 
 extension ChimeSDKMediaPipelinesClientTypes {
 
-    public enum CanvasOrientation: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum CanvasOrientation: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case landscape
         case portrait
         case sdkUnknown(Swift.String)
@@ -763,7 +764,7 @@ extension ChimeSDKMediaPipelinesClientTypes {
 
 extension ChimeSDKMediaPipelinesClientTypes {
 
-    public enum ContentShareLayoutOption: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ContentShareLayoutOption: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case activespeakeronly
         case horizontal
         case presenteronly
@@ -798,7 +799,7 @@ extension ChimeSDKMediaPipelinesClientTypes {
 
 extension ChimeSDKMediaPipelinesClientTypes {
 
-    public enum TileOrder: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum TileOrder: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case joinsequence
         case speakersequence
         case sdkUnknown(Swift.String)
@@ -827,7 +828,7 @@ extension ChimeSDKMediaPipelinesClientTypes {
 
 extension ChimeSDKMediaPipelinesClientTypes {
 
-    public enum HorizontalTilePosition: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum HorizontalTilePosition: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case bottom
         case top
         case sdkUnknown(Swift.String)
@@ -855,8 +856,9 @@ extension ChimeSDKMediaPipelinesClientTypes {
 }
 
 extension ChimeSDKMediaPipelinesClientTypes {
+
     /// Defines the configuration settings for the horizontal layout.
-    public struct HorizontalLayoutConfiguration {
+    public struct HorizontalLayoutConfiguration: Swift.Sendable {
         /// Specifies the aspect ratio of all video tiles.
         public var tileAspectRatio: Swift.String?
         /// The maximum number of video tiles to display.
@@ -879,12 +881,11 @@ extension ChimeSDKMediaPipelinesClientTypes {
             self.tilePosition = tilePosition
         }
     }
-
 }
 
 extension ChimeSDKMediaPipelinesClientTypes {
 
-    public enum PresenterPosition: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum PresenterPosition: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case bottomleft
         case bottomright
         case topleft
@@ -918,8 +919,9 @@ extension ChimeSDKMediaPipelinesClientTypes {
 }
 
 extension ChimeSDKMediaPipelinesClientTypes {
+
     /// Defines the configuration for a presenter-only video tile.
-    public struct PresenterOnlyConfiguration {
+    public struct PresenterOnlyConfiguration: Swift.Sendable {
         /// Defines the position of the presenter video tile. Default: TopRight.
         public var presenterPosition: ChimeSDKMediaPipelinesClientTypes.PresenterPosition?
 
@@ -930,12 +932,11 @@ extension ChimeSDKMediaPipelinesClientTypes {
             self.presenterPosition = presenterPosition
         }
     }
-
 }
 
 extension ChimeSDKMediaPipelinesClientTypes {
 
-    public enum VerticalTilePosition: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum VerticalTilePosition: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case `left`
         case `right`
         case sdkUnknown(Swift.String)
@@ -963,8 +964,9 @@ extension ChimeSDKMediaPipelinesClientTypes {
 }
 
 extension ChimeSDKMediaPipelinesClientTypes {
+
     /// Defines the configuration settings for a vertical layout.
-    public struct VerticalLayoutConfiguration {
+    public struct VerticalLayoutConfiguration: Swift.Sendable {
         /// Sets the aspect ratio of the video tiles, such as 16:9.
         public var tileAspectRatio: Swift.String?
         /// The maximum number of tiles to display.
@@ -987,12 +989,11 @@ extension ChimeSDKMediaPipelinesClientTypes {
             self.tilePosition = tilePosition
         }
     }
-
 }
 
 extension ChimeSDKMediaPipelinesClientTypes {
 
-    public enum BorderColor: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum BorderColor: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case black
         case blue
         case green
@@ -1033,7 +1034,7 @@ extension ChimeSDKMediaPipelinesClientTypes {
 
 extension ChimeSDKMediaPipelinesClientTypes {
 
-    public enum HighlightColor: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum HighlightColor: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case black
         case blue
         case green
@@ -1073,8 +1074,9 @@ extension ChimeSDKMediaPipelinesClientTypes {
 }
 
 extension ChimeSDKMediaPipelinesClientTypes {
+
     /// Defines the settings for a video tile.
-    public struct VideoAttribute {
+    public struct VideoAttribute: Swift.Sendable {
         /// Defines the border color of all video tiles.
         public var borderColor: ChimeSDKMediaPipelinesClientTypes.BorderColor?
         /// Defines the border thickness for all video tiles.
@@ -1097,12 +1099,12 @@ extension ChimeSDKMediaPipelinesClientTypes {
             self.highlightColor = highlightColor
         }
     }
-
 }
 
 extension ChimeSDKMediaPipelinesClientTypes {
+
     /// Specifies the type of grid layout.
-    public struct GridViewConfiguration {
+    public struct GridViewConfiguration: Swift.Sendable {
         /// The configuration settings for an ActiveSpeakerOnly video tile.
         public var activeSpeakerOnlyConfiguration: ChimeSDKMediaPipelinesClientTypes.ActiveSpeakerOnlyConfiguration?
         /// The orientation setting, horizontal or vertical.
@@ -1138,12 +1140,11 @@ extension ChimeSDKMediaPipelinesClientTypes {
             self.videoAttribute = videoAttribute
         }
     }
-
 }
 
 extension ChimeSDKMediaPipelinesClientTypes {
 
-    public enum LayoutOption: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum LayoutOption: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case gridview
         case sdkUnknown(Swift.String)
 
@@ -1169,7 +1170,7 @@ extension ChimeSDKMediaPipelinesClientTypes {
 
 extension ChimeSDKMediaPipelinesClientTypes {
 
-    public enum ResolutionOption: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ResolutionOption: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case fhd
         case hd
         case sdkUnknown(Swift.String)
@@ -1197,8 +1198,9 @@ extension ChimeSDKMediaPipelinesClientTypes {
 }
 
 extension ChimeSDKMediaPipelinesClientTypes {
+
     /// Specifies the configuration for compositing video artifacts.
-    public struct CompositedVideoArtifactsConfiguration {
+    public struct CompositedVideoArtifactsConfiguration: Swift.Sendable {
         /// The GridView configuration setting.
         /// This member is required.
         public var gridViewConfiguration: ChimeSDKMediaPipelinesClientTypes.GridViewConfiguration?
@@ -1218,12 +1220,11 @@ extension ChimeSDKMediaPipelinesClientTypes {
             self.resolution = resolution
         }
     }
-
 }
 
 extension ChimeSDKMediaPipelinesClientTypes {
 
-    public enum ContentMuxType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ContentMuxType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case contentonly
         case sdkUnknown(Swift.String)
 
@@ -1249,7 +1250,7 @@ extension ChimeSDKMediaPipelinesClientTypes {
 
 extension ChimeSDKMediaPipelinesClientTypes {
 
-    public enum ArtifactsState: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ArtifactsState: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case disabled
         case enabled
         case sdkUnknown(Swift.String)
@@ -1277,8 +1278,9 @@ extension ChimeSDKMediaPipelinesClientTypes {
 }
 
 extension ChimeSDKMediaPipelinesClientTypes {
+
     /// The content artifact object.
-    public struct ContentArtifactsConfiguration {
+    public struct ContentArtifactsConfiguration: Swift.Sendable {
         /// The MUX type of the artifact configuration.
         public var muxType: ChimeSDKMediaPipelinesClientTypes.ContentMuxType?
         /// Indicates whether the content artifact is enabled or disabled.
@@ -1294,12 +1296,11 @@ extension ChimeSDKMediaPipelinesClientTypes {
             self.state = state
         }
     }
-
 }
 
 extension ChimeSDKMediaPipelinesClientTypes {
 
-    public enum VideoMuxType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum VideoMuxType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case videoonly
         case sdkUnknown(Swift.String)
 
@@ -1324,8 +1325,9 @@ extension ChimeSDKMediaPipelinesClientTypes {
 }
 
 extension ChimeSDKMediaPipelinesClientTypes {
+
     /// The video artifact configuration object.
-    public struct VideoArtifactsConfiguration {
+    public struct VideoArtifactsConfiguration: Swift.Sendable {
         /// The MUX type of the video artifact configuration object.
         public var muxType: ChimeSDKMediaPipelinesClientTypes.VideoMuxType?
         /// Indicates whether the video artifact is enabled or disabled.
@@ -1341,12 +1343,12 @@ extension ChimeSDKMediaPipelinesClientTypes {
             self.state = state
         }
     }
-
 }
 
 extension ChimeSDKMediaPipelinesClientTypes {
+
     /// The configuration for the artifacts.
-    public struct ArtifactsConfiguration {
+    public struct ArtifactsConfiguration: Swift.Sendable {
         /// The configuration for the audio artifacts.
         /// This member is required.
         public var audio: ChimeSDKMediaPipelinesClientTypes.AudioArtifactsConfiguration?
@@ -1372,12 +1374,11 @@ extension ChimeSDKMediaPipelinesClientTypes {
             self.video = video
         }
     }
-
 }
 
 extension ChimeSDKMediaPipelinesClientTypes {
 
-    public enum AudioChannelsOption: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AudioChannelsOption: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case mono
         case stereo
         case sdkUnknown(Swift.String)
@@ -1406,7 +1407,7 @@ extension ChimeSDKMediaPipelinesClientTypes {
 
 extension ChimeSDKMediaPipelinesClientTypes {
 
-    public enum ErrorCode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ErrorCode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case badrequest
         case forbidden
         case notfound
@@ -1481,7 +1482,7 @@ public struct BadRequestException: ClientRuntime.ModeledError, AWSClientRuntime.
 
 extension ChimeSDKMediaPipelinesClientTypes {
 
-    public enum ParticipantRole: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ParticipantRole: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case agent
         case customer
         case sdkUnknown(Swift.String)
@@ -1509,8 +1510,9 @@ extension ChimeSDKMediaPipelinesClientTypes {
 }
 
 extension ChimeSDKMediaPipelinesClientTypes {
+
     /// Defines an audio channel in a Kinesis video stream.
-    public struct ChannelDefinition {
+    public struct ChannelDefinition: Swift.Sendable {
         /// The channel ID.
         /// This member is required.
         public var channelId: Swift.Int
@@ -1526,7 +1528,6 @@ extension ChimeSDKMediaPipelinesClientTypes {
             self.participantRole = participantRole
         }
     }
-
 }
 
 /// The client is permanently forbidden from making the request.
@@ -1716,8 +1717,9 @@ public struct UnauthorizedClientException: ClientRuntime.ModeledError, AWSClient
 }
 
 extension ChimeSDKMediaPipelinesClientTypes {
+
     /// The video streams for a specified media pipeline. The total number of video streams can't exceed 25.
-    public struct SelectedVideoStreams {
+    public struct SelectedVideoStreams: Swift.Sendable {
         /// The attendee IDs of the streams selected for a media pipeline.
         public var attendeeIds: [Swift.String]?
         /// The external user IDs of the streams selected for a media pipeline.
@@ -1732,7 +1734,6 @@ extension ChimeSDKMediaPipelinesClientTypes {
             self.externalUserIds = externalUserIds
         }
     }
-
 }
 
 extension ChimeSDKMediaPipelinesClientTypes.SelectedVideoStreams: Swift.CustomDebugStringConvertible {
@@ -1741,8 +1742,9 @@ extension ChimeSDKMediaPipelinesClientTypes.SelectedVideoStreams: Swift.CustomDe
 }
 
 extension ChimeSDKMediaPipelinesClientTypes {
+
     /// Source configuration for a specified media pipeline.
-    public struct SourceConfiguration {
+    public struct SourceConfiguration: Swift.Sendable {
         /// The selected video streams for a specified media pipeline. The number of video streams can't exceed 25.
         public var selectedVideoStreams: ChimeSDKMediaPipelinesClientTypes.SelectedVideoStreams?
 
@@ -1753,12 +1755,12 @@ extension ChimeSDKMediaPipelinesClientTypes {
             self.selectedVideoStreams = selectedVideoStreams
         }
     }
-
 }
 
 extension ChimeSDKMediaPipelinesClientTypes {
+
     /// The configuration object of the Amazon Chime SDK meeting for a specified media pipeline. SourceType must be ChimeSdkMeeting.
-    public struct ChimeSdkMeetingConfiguration {
+    public struct ChimeSdkMeetingConfiguration: Swift.Sendable {
         /// The configuration for the artifacts in an Amazon Chime SDK meeting.
         public var artifactsConfiguration: ChimeSDKMediaPipelinesClientTypes.ArtifactsConfiguration?
         /// The source configuration for a specified media pipeline.
@@ -1773,12 +1775,11 @@ extension ChimeSDKMediaPipelinesClientTypes {
             self.sourceConfiguration = sourceConfiguration
         }
     }
-
 }
 
 extension ChimeSDKMediaPipelinesClientTypes {
 
-    public enum MediaPipelineSinkType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum MediaPipelineSinkType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case s3bucket
         case sdkUnknown(Swift.String)
 
@@ -1804,7 +1805,7 @@ extension ChimeSDKMediaPipelinesClientTypes {
 
 extension ChimeSDKMediaPipelinesClientTypes {
 
-    public enum MediaPipelineSourceType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum MediaPipelineSourceType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case chimesdkmeeting
         case sdkUnknown(Swift.String)
 
@@ -1829,8 +1830,9 @@ extension ChimeSDKMediaPipelinesClientTypes {
 }
 
 extension ChimeSDKMediaPipelinesClientTypes {
+
     /// A key/value pair that grants users access to meeting resources.
-    public struct Tag {
+    public struct Tag: Swift.Sendable {
         /// The key half of a tag.
         /// This member is required.
         public var key: Swift.String?
@@ -1847,10 +1849,9 @@ extension ChimeSDKMediaPipelinesClientTypes {
             self.value = value
         }
     }
-
 }
 
-public struct CreateMediaCapturePipelineInput {
+public struct CreateMediaCapturePipelineInput: Swift.Sendable {
     /// The configuration for a specified media pipeline. SourceType must be ChimeSdkMeeting.
     public var chimeSdkMeetingConfiguration: ChimeSDKMediaPipelinesClientTypes.ChimeSdkMeetingConfiguration?
     /// The unique identifier for the client request. The token makes the API request idempotent. Use a unique token for each media pipeline request.
@@ -1897,7 +1898,7 @@ extension CreateMediaCapturePipelineInput: Swift.CustomDebugStringConvertible {
 
 extension ChimeSDKMediaPipelinesClientTypes {
 
-    public enum MediaPipelineStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum MediaPipelineStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case failed
         case inprogress
         case initializing
@@ -1940,8 +1941,9 @@ extension ChimeSDKMediaPipelinesClientTypes {
 }
 
 extension ChimeSDKMediaPipelinesClientTypes {
+
     /// A media pipeline object consisting of an ID, source type, source ARN, a sink type, a sink ARN, and a configuration object.
-    public struct MediaCapturePipeline {
+    public struct MediaCapturePipeline: Swift.Sendable {
         /// The configuration for a specified media pipeline. SourceType must be ChimeSdkMeeting.
         public var chimeSdkMeetingConfiguration: ChimeSDKMediaPipelinesClientTypes.ChimeSdkMeetingConfiguration?
         /// The time at which the pipeline was created, in ISO 8601 format.
@@ -1988,7 +1990,6 @@ extension ChimeSDKMediaPipelinesClientTypes {
             self.updatedTimestamp = updatedTimestamp
         }
     }
-
 }
 
 extension ChimeSDKMediaPipelinesClientTypes.MediaCapturePipeline: Swift.CustomDebugStringConvertible {
@@ -1996,7 +1997,7 @@ extension ChimeSDKMediaPipelinesClientTypes.MediaCapturePipeline: Swift.CustomDe
         "MediaCapturePipeline(chimeSdkMeetingConfiguration: \(Swift.String(describing: chimeSdkMeetingConfiguration)), createdTimestamp: \(Swift.String(describing: createdTimestamp)), mediaPipelineArn: \(Swift.String(describing: mediaPipelineArn)), mediaPipelineId: \(Swift.String(describing: mediaPipelineId)), sinkType: \(Swift.String(describing: sinkType)), sourceType: \(Swift.String(describing: sourceType)), status: \(Swift.String(describing: status)), updatedTimestamp: \(Swift.String(describing: updatedTimestamp)), sinkArn: \"CONTENT_REDACTED\", sourceArn: \"CONTENT_REDACTED\")"}
 }
 
-public struct CreateMediaCapturePipelineOutput {
+public struct CreateMediaCapturePipelineOutput: Swift.Sendable {
     /// A media pipeline object, the ID, source type, source ARN, sink type, and sink ARN of a media pipeline object.
     public var mediaCapturePipeline: ChimeSDKMediaPipelinesClientTypes.MediaCapturePipeline?
 
@@ -2009,8 +2010,9 @@ public struct CreateMediaCapturePipelineOutput {
 }
 
 extension ChimeSDKMediaPipelinesClientTypes {
+
     /// The configuration settings for the S3 bucket.
-    public struct S3BucketSinkConfiguration {
+    public struct S3BucketSinkConfiguration: Swift.Sendable {
         /// The destination URL of the S3 bucket.
         /// This member is required.
         public var destination: Swift.String?
@@ -2022,7 +2024,6 @@ extension ChimeSDKMediaPipelinesClientTypes {
             self.destination = destination
         }
     }
-
 }
 
 extension ChimeSDKMediaPipelinesClientTypes.S3BucketSinkConfiguration: Swift.CustomDebugStringConvertible {
@@ -2032,7 +2033,7 @@ extension ChimeSDKMediaPipelinesClientTypes.S3BucketSinkConfiguration: Swift.Cus
 
 extension ChimeSDKMediaPipelinesClientTypes {
 
-    public enum ConcatenationSinkType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ConcatenationSinkType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case s3bucket
         case sdkUnknown(Swift.String)
 
@@ -2057,8 +2058,9 @@ extension ChimeSDKMediaPipelinesClientTypes {
 }
 
 extension ChimeSDKMediaPipelinesClientTypes {
+
     /// The data sink of the configuration object.
-    public struct ConcatenationSink {
+    public struct ConcatenationSink: Swift.Sendable {
         /// The configuration settings for an Amazon S3 bucket sink.
         /// This member is required.
         public var s3BucketSinkConfiguration: ChimeSDKMediaPipelinesClientTypes.S3BucketSinkConfiguration?
@@ -2075,12 +2077,12 @@ extension ChimeSDKMediaPipelinesClientTypes {
             self.type = type
         }
     }
-
 }
 
 extension ChimeSDKMediaPipelinesClientTypes {
+
     /// The configuration object of the Amazon Chime SDK meeting concatenation for a specified media pipeline.
-    public struct ChimeSdkMeetingConcatenationConfiguration {
+    public struct ChimeSdkMeetingConcatenationConfiguration: Swift.Sendable {
         /// The configuration for the artifacts in an Amazon Chime SDK meeting concatenation.
         /// This member is required.
         public var artifactsConfiguration: ChimeSDKMediaPipelinesClientTypes.ArtifactsConcatenationConfiguration?
@@ -2092,12 +2094,12 @@ extension ChimeSDKMediaPipelinesClientTypes {
             self.artifactsConfiguration = artifactsConfiguration
         }
     }
-
 }
 
 extension ChimeSDKMediaPipelinesClientTypes {
+
     /// The source configuration object of a media capture pipeline.
-    public struct MediaCapturePipelineSourceConfiguration {
+    public struct MediaCapturePipelineSourceConfiguration: Swift.Sendable {
         /// The meeting configuration settings in a media capture pipeline configuration object.
         /// This member is required.
         public var chimeSdkMeetingConfiguration: ChimeSDKMediaPipelinesClientTypes.ChimeSdkMeetingConcatenationConfiguration?
@@ -2114,7 +2116,6 @@ extension ChimeSDKMediaPipelinesClientTypes {
             self.mediaPipelineArn = mediaPipelineArn
         }
     }
-
 }
 
 extension ChimeSDKMediaPipelinesClientTypes.MediaCapturePipelineSourceConfiguration: Swift.CustomDebugStringConvertible {
@@ -2124,7 +2125,7 @@ extension ChimeSDKMediaPipelinesClientTypes.MediaCapturePipelineSourceConfigurat
 
 extension ChimeSDKMediaPipelinesClientTypes {
 
-    public enum ConcatenationSourceType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ConcatenationSourceType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case mediacapturepipeline
         case sdkUnknown(Swift.String)
 
@@ -2149,8 +2150,9 @@ extension ChimeSDKMediaPipelinesClientTypes {
 }
 
 extension ChimeSDKMediaPipelinesClientTypes {
+
     /// The source type and media pipeline configuration settings in a configuration object.
-    public struct ConcatenationSource {
+    public struct ConcatenationSource: Swift.Sendable {
         /// The concatenation settings for the media pipeline in a configuration object.
         /// This member is required.
         public var mediaCapturePipelineSourceConfiguration: ChimeSDKMediaPipelinesClientTypes.MediaCapturePipelineSourceConfiguration?
@@ -2167,10 +2169,9 @@ extension ChimeSDKMediaPipelinesClientTypes {
             self.type = type
         }
     }
-
 }
 
-public struct CreateMediaConcatenationPipelineInput {
+public struct CreateMediaConcatenationPipelineInput: Swift.Sendable {
     /// The unique identifier for the client request. The token makes the API request idempotent. Use a unique token for each media concatenation pipeline request.
     public var clientRequestToken: Swift.String?
     /// An object that specifies the data sinks for the media concatenation pipeline.
@@ -2202,8 +2203,9 @@ extension CreateMediaConcatenationPipelineInput: Swift.CustomDebugStringConverti
 }
 
 extension ChimeSDKMediaPipelinesClientTypes {
+
     /// Concatenates audio and video data from one or more data streams.
-    public struct MediaConcatenationPipeline {
+    public struct MediaConcatenationPipeline: Swift.Sendable {
         /// The time at which the concatenation pipeline was created.
         public var createdTimestamp: Foundation.Date?
         /// The ARN of the media pipeline that you specify in the SourceConfiguration object.
@@ -2238,10 +2240,9 @@ extension ChimeSDKMediaPipelinesClientTypes {
             self.updatedTimestamp = updatedTimestamp
         }
     }
-
 }
 
-public struct CreateMediaConcatenationPipelineOutput {
+public struct CreateMediaConcatenationPipelineOutput: Swift.Sendable {
     /// A media concatenation pipeline object, the ID, source type, MediaPipelineARN, and sink of a media concatenation pipeline object.
     public var mediaConcatenationPipeline: ChimeSDKMediaPipelinesClientTypes.MediaConcatenationPipeline?
 
@@ -2286,7 +2287,7 @@ public struct NotFoundException: ClientRuntime.ModeledError, AWSClientRuntime.AW
 
 extension ChimeSDKMediaPipelinesClientTypes {
 
-    public enum FragmentSelectorType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum FragmentSelectorType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case producertimestamp
         case servertimestamp
         case sdkUnknown(Swift.String)
@@ -2314,8 +2315,9 @@ extension ChimeSDKMediaPipelinesClientTypes {
 }
 
 extension ChimeSDKMediaPipelinesClientTypes {
+
     /// The range of timestamps to return.
-    public struct TimestampRange {
+    public struct TimestampRange: Swift.Sendable {
         /// The ending timestamp for the specified range.
         /// This member is required.
         public var endTimestamp: Foundation.Date?
@@ -2332,10 +2334,10 @@ extension ChimeSDKMediaPipelinesClientTypes {
             self.startTimestamp = startTimestamp
         }
     }
-
 }
 
 extension ChimeSDKMediaPipelinesClientTypes {
+
     /// Describes the timestamp range and timestamp origin of a range of fragments. Only fragments with a start timestamp greater than or equal to the given start time and less than or equal to the end time are returned. For example, say a stream contains fragments with the following start timestamps:
     ///
     /// * 00:00:00
@@ -2348,7 +2350,7 @@ extension ChimeSDKMediaPipelinesClientTypes {
     ///
     ///
     /// A fragment selector range with a start time of 00:00:01 and end time of 00:00:04 would return the fragments with start times of 00:00:02 and 00:00:04.
-    public struct FragmentSelector {
+    public struct FragmentSelector: Swift.Sendable {
         /// The origin of the timestamps to use, Server or Producer. For more information, see [StartSelectorType](https://docs.aws.amazon.com/kinesisvideostreams/latest/dg/API_dataplane_StartSelector.html) in the Amazon Kinesis Video Streams Developer Guide.
         /// This member is required.
         public var fragmentSelectorType: ChimeSDKMediaPipelinesClientTypes.FragmentSelectorType?
@@ -2365,12 +2367,12 @@ extension ChimeSDKMediaPipelinesClientTypes {
             self.timestampRange = timestampRange
         }
     }
-
 }
 
 extension ChimeSDKMediaPipelinesClientTypes {
+
     /// A structure that holds the settings for recording media.
-    public struct RecordingStreamConfiguration {
+    public struct RecordingStreamConfiguration: Swift.Sendable {
         /// The ARN of the recording stream.
         public var streamArn: Swift.String?
 
@@ -2381,12 +2383,12 @@ extension ChimeSDKMediaPipelinesClientTypes {
             self.streamArn = streamArn
         }
     }
-
 }
 
 extension ChimeSDKMediaPipelinesClientTypes {
+
     /// A structure that contains the runtime settings for recording a Kinesis video stream.
-    public struct KinesisVideoStreamRecordingSourceRuntimeConfiguration {
+    public struct KinesisVideoStreamRecordingSourceRuntimeConfiguration: Swift.Sendable {
         /// Describes the timestamp range and timestamp origin of a range of fragments in the Kinesis video stream.
         /// This member is required.
         public var fragmentSelector: ChimeSDKMediaPipelinesClientTypes.FragmentSelector?
@@ -2403,12 +2405,11 @@ extension ChimeSDKMediaPipelinesClientTypes {
             self.streams = streams
         }
     }
-
 }
 
 extension ChimeSDKMediaPipelinesClientTypes {
 
-    public enum MediaEncoding: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum MediaEncoding: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case pcm
         case sdkUnknown(Swift.String)
 
@@ -2433,8 +2434,9 @@ extension ChimeSDKMediaPipelinesClientTypes {
 }
 
 extension ChimeSDKMediaPipelinesClientTypes {
+
     /// Defines a streaming channel.
-    public struct StreamChannelDefinition {
+    public struct StreamChannelDefinition: Swift.Sendable {
         /// The definitions of the channels in a streaming channel.
         public var channelDefinitions: [ChimeSDKMediaPipelinesClientTypes.ChannelDefinition]?
         /// The number of channels in a streaming channel.
@@ -2450,12 +2452,12 @@ extension ChimeSDKMediaPipelinesClientTypes {
             self.numberOfChannels = numberOfChannels
         }
     }
-
 }
 
 extension ChimeSDKMediaPipelinesClientTypes {
+
     /// The configuration settings for a stream.
-    public struct StreamConfiguration {
+    public struct StreamConfiguration: Swift.Sendable {
         /// The unique identifier of the fragment to begin processing.
         public var fragmentNumber: Swift.String?
         /// The ARN of the stream.
@@ -2476,12 +2478,12 @@ extension ChimeSDKMediaPipelinesClientTypes {
             self.streamChannelDefinition = streamChannelDefinition
         }
     }
-
 }
 
 extension ChimeSDKMediaPipelinesClientTypes {
+
     /// The runtime configuration settings for the Kinesis video stream source.
-    public struct KinesisVideoStreamSourceRuntimeConfiguration {
+    public struct KinesisVideoStreamSourceRuntimeConfiguration: Swift.Sendable {
         /// Specifies the encoding of your input audio. Supported format: PCM (only signed 16-bit little-endian audio formats, which does not include WAV) For more information, see [Media formats](https://docs.aws.amazon.com/transcribe/latest/dg/how-input.html#how-input-audio) in the Amazon Transcribe Developer Guide.
         /// This member is required.
         public var mediaEncoding: ChimeSDKMediaPipelinesClientTypes.MediaEncoding?
@@ -2503,12 +2505,11 @@ extension ChimeSDKMediaPipelinesClientTypes {
             self.streams = streams
         }
     }
-
 }
 
 extension ChimeSDKMediaPipelinesClientTypes {
 
-    public enum RecordingFileFormat: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum RecordingFileFormat: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case opus
         case wav
         case sdkUnknown(Swift.String)
@@ -2536,8 +2537,9 @@ extension ChimeSDKMediaPipelinesClientTypes {
 }
 
 extension ChimeSDKMediaPipelinesClientTypes {
+
     /// A structure that holds the settings for transmitting media files to the Amazon S3 bucket. If specified, the settings in this structure override any settings in S3RecordingSinkConfiguration.
-    public struct S3RecordingSinkRuntimeConfiguration {
+    public struct S3RecordingSinkRuntimeConfiguration: Swift.Sendable {
         /// The URI of the S3 bucket used as the sink.
         /// This member is required.
         public var destination: Swift.String?
@@ -2554,7 +2556,6 @@ extension ChimeSDKMediaPipelinesClientTypes {
             self.recordingFileFormat = recordingFileFormat
         }
     }
-
 }
 
 extension ChimeSDKMediaPipelinesClientTypes.S3RecordingSinkRuntimeConfiguration: Swift.CustomDebugStringConvertible {
@@ -2562,7 +2563,7 @@ extension ChimeSDKMediaPipelinesClientTypes.S3RecordingSinkRuntimeConfiguration:
         "S3RecordingSinkRuntimeConfiguration(recordingFileFormat: \(Swift.String(describing: recordingFileFormat)), destination: \"CONTENT_REDACTED\")"}
 }
 
-public struct CreateMediaInsightsPipelineInput {
+public struct CreateMediaInsightsPipelineInput: Swift.Sendable {
     /// The unique identifier for the media insights pipeline request.
     public var clientRequestToken: Swift.String?
     /// The runtime configuration for the Kinesis video recording stream source.
@@ -2606,7 +2607,7 @@ extension CreateMediaInsightsPipelineInput: Swift.CustomDebugStringConvertible {
 
 extension ChimeSDKMediaPipelinesClientTypes {
 
-    public enum MediaPipelineElementStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum MediaPipelineElementStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case failed
         case inprogress
         case initializing
@@ -2653,7 +2654,7 @@ extension ChimeSDKMediaPipelinesClientTypes {
 
 extension ChimeSDKMediaPipelinesClientTypes {
 
-    public enum MediaInsightsPipelineConfigurationElementType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum MediaInsightsPipelineConfigurationElementType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case amazonTranscribeCallAnalyticsProcessor
         case amazonTranscribeProcessor
         case kinesisDataStreamSink
@@ -2702,8 +2703,9 @@ extension ChimeSDKMediaPipelinesClientTypes {
 }
 
 extension ChimeSDKMediaPipelinesClientTypes {
+
     /// The status of the pipeline element.
-    public struct MediaInsightsPipelineElementStatus {
+    public struct MediaInsightsPipelineElementStatus: Swift.Sendable {
         /// The element's status.
         public var status: ChimeSDKMediaPipelinesClientTypes.MediaPipelineElementStatus?
         /// The type of status.
@@ -2718,12 +2720,12 @@ extension ChimeSDKMediaPipelinesClientTypes {
             self.type = type
         }
     }
-
 }
 
 extension ChimeSDKMediaPipelinesClientTypes {
+
     /// A media pipeline that streams call analytics data.
-    public struct MediaInsightsPipeline {
+    public struct MediaInsightsPipeline: Swift.Sendable {
         /// The time at which the media insights pipeline was created.
         public var createdTimestamp: Foundation.Date?
         /// The statuses that the elements in a media insights pipeline can have during data processing.
@@ -2770,7 +2772,6 @@ extension ChimeSDKMediaPipelinesClientTypes {
             self.status = status
         }
     }
-
 }
 
 extension ChimeSDKMediaPipelinesClientTypes.MediaInsightsPipeline: Swift.CustomDebugStringConvertible {
@@ -2778,7 +2779,7 @@ extension ChimeSDKMediaPipelinesClientTypes.MediaInsightsPipeline: Swift.CustomD
         "MediaInsightsPipeline(createdTimestamp: \(Swift.String(describing: createdTimestamp)), elementStatuses: \(Swift.String(describing: elementStatuses)), kinesisVideoStreamRecordingSourceRuntimeConfiguration: \(Swift.String(describing: kinesisVideoStreamRecordingSourceRuntimeConfiguration)), kinesisVideoStreamSourceRuntimeConfiguration: \(Swift.String(describing: kinesisVideoStreamSourceRuntimeConfiguration)), mediaPipelineId: \(Swift.String(describing: mediaPipelineId)), s3RecordingSinkRuntimeConfiguration: \(Swift.String(describing: s3RecordingSinkRuntimeConfiguration)), status: \(Swift.String(describing: status)), mediaInsightsPipelineConfigurationArn: \"CONTENT_REDACTED\", mediaInsightsRuntimeMetadata: \"CONTENT_REDACTED\", mediaPipelineArn: \"CONTENT_REDACTED\")"}
 }
 
-public struct CreateMediaInsightsPipelineOutput {
+public struct CreateMediaInsightsPipelineOutput: Swift.Sendable {
     /// The media insights pipeline object.
     /// This member is required.
     public var mediaInsightsPipeline: ChimeSDKMediaPipelinesClientTypes.MediaInsightsPipeline?
@@ -2792,8 +2793,9 @@ public struct CreateMediaInsightsPipelineOutput {
 }
 
 extension ChimeSDKMediaPipelinesClientTypes {
+
     /// A structure that contains the configuration settings for a Kinesis Data Stream sink.
-    public struct KinesisDataStreamSinkConfiguration {
+    public struct KinesisDataStreamSinkConfiguration: Swift.Sendable {
         /// The ARN of the sink.
         public var insightsTarget: Swift.String?
 
@@ -2804,7 +2806,6 @@ extension ChimeSDKMediaPipelinesClientTypes {
             self.insightsTarget = insightsTarget
         }
     }
-
 }
 
 extension ChimeSDKMediaPipelinesClientTypes.KinesisDataStreamSinkConfiguration: Swift.CustomDebugStringConvertible {
@@ -2813,8 +2814,9 @@ extension ChimeSDKMediaPipelinesClientTypes.KinesisDataStreamSinkConfiguration: 
 }
 
 extension ChimeSDKMediaPipelinesClientTypes {
+
     /// A structure that contains the configuration settings for an AWS Lambda function's data sink.
-    public struct LambdaFunctionSinkConfiguration {
+    public struct LambdaFunctionSinkConfiguration: Swift.Sendable {
         /// The ARN of the sink.
         public var insightsTarget: Swift.String?
 
@@ -2825,7 +2827,6 @@ extension ChimeSDKMediaPipelinesClientTypes {
             self.insightsTarget = insightsTarget
         }
     }
-
 }
 
 extension ChimeSDKMediaPipelinesClientTypes.LambdaFunctionSinkConfiguration: Swift.CustomDebugStringConvertible {
@@ -2834,8 +2835,9 @@ extension ChimeSDKMediaPipelinesClientTypes.LambdaFunctionSinkConfiguration: Swi
 }
 
 extension ChimeSDKMediaPipelinesClientTypes {
+
     /// The structure that holds the settings for transmitting media to the Amazon S3 bucket. These values are used as defaults if S3RecordingSinkRuntimeConfiguration is not specified.
-    public struct S3RecordingSinkConfiguration {
+    public struct S3RecordingSinkConfiguration: Swift.Sendable {
         /// The default URI of the Amazon S3 bucket used as the recording sink.
         public var destination: Swift.String?
         /// The default file format for the media files sent to the Amazon S3 bucket.
@@ -2850,7 +2852,6 @@ extension ChimeSDKMediaPipelinesClientTypes {
             self.recordingFileFormat = recordingFileFormat
         }
     }
-
 }
 
 extension ChimeSDKMediaPipelinesClientTypes.S3RecordingSinkConfiguration: Swift.CustomDebugStringConvertible {
@@ -2859,8 +2860,9 @@ extension ChimeSDKMediaPipelinesClientTypes.S3RecordingSinkConfiguration: Swift.
 }
 
 extension ChimeSDKMediaPipelinesClientTypes {
+
     /// The configuration settings for the SNS topic sink.
-    public struct SnsTopicSinkConfiguration {
+    public struct SnsTopicSinkConfiguration: Swift.Sendable {
         /// The ARN of the SNS sink.
         public var insightsTarget: Swift.String?
 
@@ -2871,7 +2873,6 @@ extension ChimeSDKMediaPipelinesClientTypes {
             self.insightsTarget = insightsTarget
         }
     }
-
 }
 
 extension ChimeSDKMediaPipelinesClientTypes.SnsTopicSinkConfiguration: Swift.CustomDebugStringConvertible {
@@ -2880,8 +2881,9 @@ extension ChimeSDKMediaPipelinesClientTypes.SnsTopicSinkConfiguration: Swift.Cus
 }
 
 extension ChimeSDKMediaPipelinesClientTypes {
+
     /// The configuration settings for the SQS sink.
-    public struct SqsQueueSinkConfiguration {
+    public struct SqsQueueSinkConfiguration: Swift.Sendable {
         /// The ARN of the SQS sink.
         public var insightsTarget: Swift.String?
 
@@ -2892,7 +2894,6 @@ extension ChimeSDKMediaPipelinesClientTypes {
             self.insightsTarget = insightsTarget
         }
     }
-
 }
 
 extension ChimeSDKMediaPipelinesClientTypes.SqsQueueSinkConfiguration: Swift.CustomDebugStringConvertible {
@@ -2902,7 +2903,7 @@ extension ChimeSDKMediaPipelinesClientTypes.SqsQueueSinkConfiguration: Swift.Cus
 
 extension ChimeSDKMediaPipelinesClientTypes {
 
-    public enum VoiceAnalyticsConfigurationStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum VoiceAnalyticsConfigurationStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case disabled
         case enabled
         case sdkUnknown(Swift.String)
@@ -2930,8 +2931,9 @@ extension ChimeSDKMediaPipelinesClientTypes {
 }
 
 extension ChimeSDKMediaPipelinesClientTypes {
+
     /// The configuration settings for a voice analytics processor.
-    public struct VoiceAnalyticsProcessorConfiguration {
+    public struct VoiceAnalyticsProcessorConfiguration: Swift.Sendable {
         /// The status of the speaker search task.
         public var speakerSearchStatus: ChimeSDKMediaPipelinesClientTypes.VoiceAnalyticsConfigurationStatus?
         /// The status of the voice tone analysis task.
@@ -2946,12 +2948,12 @@ extension ChimeSDKMediaPipelinesClientTypes {
             self.voiceToneAnalysisStatus = voiceToneAnalysisStatus
         }
     }
-
 }
 
 extension ChimeSDKMediaPipelinesClientTypes {
+
     /// A static structure that contains the configuration data for a VoiceEnhancementSinkConfiguration element.
-    public struct VoiceEnhancementSinkConfiguration {
+    public struct VoiceEnhancementSinkConfiguration: Swift.Sendable {
         /// Disables the VoiceEnhancementSinkConfiguration element.
         public var disabled: Swift.Bool
 
@@ -2962,12 +2964,12 @@ extension ChimeSDKMediaPipelinesClientTypes {
             self.disabled = disabled
         }
     }
-
 }
 
 extension ChimeSDKMediaPipelinesClientTypes {
+
     /// An element in a media insights pipeline configuration.
-    public struct MediaInsightsPipelineConfigurationElement {
+    public struct MediaInsightsPipelineConfigurationElement: Swift.Sendable {
         /// The analytics configuration settings for transcribing audio in a media insights pipeline configuration element.
         public var amazonTranscribeCallAnalyticsProcessorConfiguration: ChimeSDKMediaPipelinesClientTypes.AmazonTranscribeCallAnalyticsProcessorConfiguration?
         /// The transcription processor configuration settings in a media insights pipeline configuration element.
@@ -3015,12 +3017,12 @@ extension ChimeSDKMediaPipelinesClientTypes {
             self.voiceEnhancementSinkConfiguration = voiceEnhancementSinkConfiguration
         }
     }
-
 }
 
 extension ChimeSDKMediaPipelinesClientTypes {
+
     /// A structure that contains the configuration settings for an issue detection task.
-    public struct IssueDetectionConfiguration {
+    public struct IssueDetectionConfiguration: Swift.Sendable {
         /// The name of the issue detection rule.
         /// This member is required.
         public var ruleName: Swift.String?
@@ -3032,12 +3034,12 @@ extension ChimeSDKMediaPipelinesClientTypes {
             self.ruleName = ruleName
         }
     }
-
 }
 
 extension ChimeSDKMediaPipelinesClientTypes {
+
     /// A structure that contains the settings for a keyword match task.
-    public struct KeywordMatchConfiguration {
+    public struct KeywordMatchConfiguration: Swift.Sendable {
         /// The keywords or phrases that you want to match.
         /// This member is required.
         public var keywords: [Swift.String]?
@@ -3058,12 +3060,11 @@ extension ChimeSDKMediaPipelinesClientTypes {
             self.ruleName = ruleName
         }
     }
-
 }
 
 extension ChimeSDKMediaPipelinesClientTypes {
 
-    public enum SentimentType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SentimentType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case negative
         case sdkUnknown(Swift.String)
 
@@ -3088,8 +3089,9 @@ extension ChimeSDKMediaPipelinesClientTypes {
 }
 
 extension ChimeSDKMediaPipelinesClientTypes {
+
     /// A structure that contains the configuration settings for a sentiment analysis task.
-    public struct SentimentConfiguration {
+    public struct SentimentConfiguration: Swift.Sendable {
         /// The name of the rule in the sentiment configuration.
         /// This member is required.
         public var ruleName: Swift.String?
@@ -3111,12 +3113,11 @@ extension ChimeSDKMediaPipelinesClientTypes {
             self.timePeriod = timePeriod
         }
     }
-
 }
 
 extension ChimeSDKMediaPipelinesClientTypes {
 
-    public enum RealTimeAlertRuleType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum RealTimeAlertRuleType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case issuedetection
         case keywordmatch
         case sentiment
@@ -3147,8 +3148,9 @@ extension ChimeSDKMediaPipelinesClientTypes {
 }
 
 extension ChimeSDKMediaPipelinesClientTypes {
+
     /// Specifies the words or phrases that trigger an alert.
-    public struct RealTimeAlertRule {
+    public struct RealTimeAlertRule: Swift.Sendable {
         /// Specifies the issue detection settings for a real-time alert rule.
         public var issueDetectionConfiguration: ChimeSDKMediaPipelinesClientTypes.IssueDetectionConfiguration?
         /// Specifies the settings for matching the keywords in a real-time alert rule.
@@ -3172,12 +3174,12 @@ extension ChimeSDKMediaPipelinesClientTypes {
             self.type = type
         }
     }
-
 }
 
 extension ChimeSDKMediaPipelinesClientTypes {
+
     /// A structure that contains the configuration settings for real-time alerts.
-    public struct RealTimeAlertConfiguration {
+    public struct RealTimeAlertConfiguration: Swift.Sendable {
         /// Turns off real-time alerts.
         public var disabled: Swift.Bool
         /// The rules in the alert. Rules specify the words or phrases that you want to be notified about.
@@ -3192,10 +3194,9 @@ extension ChimeSDKMediaPipelinesClientTypes {
             self.rules = rules
         }
     }
-
 }
 
-public struct CreateMediaInsightsPipelineConfigurationInput {
+public struct CreateMediaInsightsPipelineConfigurationInput: Swift.Sendable {
     /// The unique identifier for the media insights pipeline configuration request.
     public var clientRequestToken: Swift.String?
     /// The elements in the request, such as a processor for Amazon Transcribe or a sink for a Kinesis Data Stream.
@@ -3236,8 +3237,9 @@ extension CreateMediaInsightsPipelineConfigurationInput: Swift.CustomDebugString
 }
 
 extension ChimeSDKMediaPipelinesClientTypes {
+
     /// A structure that contains the configuration settings for a media insights pipeline.
-    public struct MediaInsightsPipelineConfiguration {
+    public struct MediaInsightsPipelineConfiguration: Swift.Sendable {
         /// The time at which the configuration was created.
         public var createdTimestamp: Foundation.Date?
         /// The elements in the configuration.
@@ -3276,7 +3278,6 @@ extension ChimeSDKMediaPipelinesClientTypes {
             self.updatedTimestamp = updatedTimestamp
         }
     }
-
 }
 
 extension ChimeSDKMediaPipelinesClientTypes.MediaInsightsPipelineConfiguration: Swift.CustomDebugStringConvertible {
@@ -3284,7 +3285,7 @@ extension ChimeSDKMediaPipelinesClientTypes.MediaInsightsPipelineConfiguration: 
         "MediaInsightsPipelineConfiguration(createdTimestamp: \(Swift.String(describing: createdTimestamp)), elements: \(Swift.String(describing: elements)), mediaInsightsPipelineConfigurationId: \(Swift.String(describing: mediaInsightsPipelineConfigurationId)), mediaInsightsPipelineConfigurationName: \(Swift.String(describing: mediaInsightsPipelineConfigurationName)), realTimeAlertConfiguration: \(Swift.String(describing: realTimeAlertConfiguration)), updatedTimestamp: \(Swift.String(describing: updatedTimestamp)), mediaInsightsPipelineConfigurationArn: \"CONTENT_REDACTED\", resourceAccessRoleArn: \"CONTENT_REDACTED\")"}
 }
 
-public struct CreateMediaInsightsPipelineConfigurationOutput {
+public struct CreateMediaInsightsPipelineConfigurationOutput: Swift.Sendable {
     /// The configuration settings for the media insights pipeline.
     public var mediaInsightsPipelineConfiguration: ChimeSDKMediaPipelinesClientTypes.MediaInsightsPipelineConfiguration?
 
@@ -3297,8 +3298,9 @@ public struct CreateMediaInsightsPipelineConfigurationOutput {
 }
 
 extension ChimeSDKMediaPipelinesClientTypes {
+
     /// The media pipeline's RTMP configuration object.
-    public struct LiveConnectorRTMPConfiguration {
+    public struct LiveConnectorRTMPConfiguration: Swift.Sendable {
         /// The audio channels set for the RTMP configuration
         public var audioChannels: ChimeSDKMediaPipelinesClientTypes.AudioChannelsOption?
         /// The audio sample rate set for the RTMP configuration. Default: 48000.
@@ -3318,7 +3320,6 @@ extension ChimeSDKMediaPipelinesClientTypes {
             self.url = url
         }
     }
-
 }
 
 extension ChimeSDKMediaPipelinesClientTypes.LiveConnectorRTMPConfiguration: Swift.CustomDebugStringConvertible {
@@ -3328,7 +3329,7 @@ extension ChimeSDKMediaPipelinesClientTypes.LiveConnectorRTMPConfiguration: Swif
 
 extension ChimeSDKMediaPipelinesClientTypes {
 
-    public enum LiveConnectorSinkType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum LiveConnectorSinkType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case rtmp
         case sdkUnknown(Swift.String)
 
@@ -3353,8 +3354,9 @@ extension ChimeSDKMediaPipelinesClientTypes {
 }
 
 extension ChimeSDKMediaPipelinesClientTypes {
+
     /// The media pipeline's sink configuration settings.
-    public struct LiveConnectorSinkConfiguration {
+    public struct LiveConnectorSinkConfiguration: Swift.Sendable {
         /// The sink configuration's RTMP configuration settings.
         /// This member is required.
         public var rtmpConfiguration: ChimeSDKMediaPipelinesClientTypes.LiveConnectorRTMPConfiguration?
@@ -3371,12 +3373,11 @@ extension ChimeSDKMediaPipelinesClientTypes {
             self.sinkType = sinkType
         }
     }
-
 }
 
 extension ChimeSDKMediaPipelinesClientTypes {
 
-    public enum LiveConnectorMuxType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum LiveConnectorMuxType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case audiowithactivespeakervideo
         case audiowithcompositedvideo
         case sdkUnknown(Swift.String)
@@ -3404,8 +3405,9 @@ extension ChimeSDKMediaPipelinesClientTypes {
 }
 
 extension ChimeSDKMediaPipelinesClientTypes {
+
     /// The media pipeline's configuration object.
-    public struct ChimeSdkMeetingLiveConnectorConfiguration {
+    public struct ChimeSdkMeetingLiveConnectorConfiguration: Swift.Sendable {
         /// The configuration object's Chime SDK meeting ARN.
         /// This member is required.
         public var arn: Swift.String?
@@ -3430,7 +3432,6 @@ extension ChimeSDKMediaPipelinesClientTypes {
             self.sourceConfiguration = sourceConfiguration
         }
     }
-
 }
 
 extension ChimeSDKMediaPipelinesClientTypes.ChimeSdkMeetingLiveConnectorConfiguration: Swift.CustomDebugStringConvertible {
@@ -3440,7 +3441,7 @@ extension ChimeSDKMediaPipelinesClientTypes.ChimeSdkMeetingLiveConnectorConfigur
 
 extension ChimeSDKMediaPipelinesClientTypes {
 
-    public enum LiveConnectorSourceType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum LiveConnectorSourceType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case chimesdkmeeting
         case sdkUnknown(Swift.String)
 
@@ -3465,8 +3466,9 @@ extension ChimeSDKMediaPipelinesClientTypes {
 }
 
 extension ChimeSDKMediaPipelinesClientTypes {
+
     /// The data source configuration object of a streaming media pipeline.
-    public struct LiveConnectorSourceConfiguration {
+    public struct LiveConnectorSourceConfiguration: Swift.Sendable {
         /// The configuration settings of the connector pipeline.
         /// This member is required.
         public var chimeSdkMeetingLiveConnectorConfiguration: ChimeSDKMediaPipelinesClientTypes.ChimeSdkMeetingLiveConnectorConfiguration?
@@ -3483,10 +3485,9 @@ extension ChimeSDKMediaPipelinesClientTypes {
             self.sourceType = sourceType
         }
     }
-
 }
 
-public struct CreateMediaLiveConnectorPipelineInput {
+public struct CreateMediaLiveConnectorPipelineInput: Swift.Sendable {
     /// The token assigned to the client making the request.
     public var clientRequestToken: Swift.String?
     /// The media live connector pipeline's data sinks.
@@ -3518,8 +3519,9 @@ extension CreateMediaLiveConnectorPipelineInput: Swift.CustomDebugStringConverti
 }
 
 extension ChimeSDKMediaPipelinesClientTypes {
+
     /// The connector pipeline.
-    public struct MediaLiveConnectorPipeline {
+    public struct MediaLiveConnectorPipeline: Swift.Sendable {
         /// The time at which the connector pipeline was created.
         public var createdTimestamp: Foundation.Date?
         /// The connector pipeline's ARN.
@@ -3554,10 +3556,9 @@ extension ChimeSDKMediaPipelinesClientTypes {
             self.updatedTimestamp = updatedTimestamp
         }
     }
-
 }
 
-public struct CreateMediaLiveConnectorPipelineOutput {
+public struct CreateMediaLiveConnectorPipelineOutput: Swift.Sendable {
     /// The new media live connector pipeline.
     public var mediaLiveConnectorPipeline: ChimeSDKMediaPipelinesClientTypes.MediaLiveConnectorPipeline?
 
@@ -3601,8 +3602,9 @@ public struct ConflictException: ClientRuntime.ModeledError, AWSClientRuntime.AW
 }
 
 extension ChimeSDKMediaPipelinesClientTypes {
+
     /// The configuration of an Kinesis video stream. If a meeting uses an opt-in Region as its [MediaRegion](https://docs.aws.amazon.com/chime-sdk/latest/APIReference/API_meeting-chime_CreateMeeting.html#chimesdk-meeting-chime_CreateMeeting-request-MediaRegion), the KVS stream must be in that same Region. For example, if a meeting uses the af-south-1 Region, the KVS stream must also be in af-south-1. However, if the meeting uses a Region that AWS turns on by default, the KVS stream can be in any available Region, including an opt-in Region. For example, if the meeting uses ca-central-1, the KVS stream can be in eu-west-2, us-east-1, af-south-1, or any other Region that the Amazon Chime SDK supports. To learn which AWS Region a meeting uses, call the [GetMeeting](https://docs.aws.amazon.com/chime-sdk/latest/APIReference/API_meeting-chime_GetMeeting.html) API and use the [MediaRegion](https://docs.aws.amazon.com/chime-sdk/latest/APIReference/API_meeting-chime_CreateMeeting.html#chimesdk-meeting-chime_CreateMeeting-request-MediaRegion) parameter from the response. For more information about opt-in Regions, refer to [Available Regions](https://docs.aws.amazon.com/chime-sdk/latest/dg/sdk-available-regions.html) in the Amazon Chime SDK Developer Guide, and [Specify which AWS Regions your account can use](https://docs.aws.amazon.com/accounts/latest/reference/manage-acct-regions.html#rande-manage-enable.html), in the AWS Account Management Reference Guide.
-    public struct KinesisVideoStreamConfiguration {
+    public struct KinesisVideoStreamConfiguration: Swift.Sendable {
         /// The amount of time that data is retained.
         public var dataRetentionInHours: Swift.Int?
         /// The Amazon Web Services Region of the video stream.
@@ -3618,10 +3620,9 @@ extension ChimeSDKMediaPipelinesClientTypes {
             self.region = region
         }
     }
-
 }
 
-public struct CreateMediaPipelineKinesisVideoStreamPoolInput {
+public struct CreateMediaPipelineKinesisVideoStreamPoolInput: Swift.Sendable {
     /// The token assigned to the client making the request.
     public var clientRequestToken: Swift.String?
     /// The name of the pool.
@@ -3654,7 +3655,7 @@ extension CreateMediaPipelineKinesisVideoStreamPoolInput: Swift.CustomDebugStrin
 
 extension ChimeSDKMediaPipelinesClientTypes {
 
-    public enum KinesisVideoStreamPoolStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum KinesisVideoStreamPoolStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case active
         case creating
         case deleting
@@ -3691,8 +3692,9 @@ extension ChimeSDKMediaPipelinesClientTypes {
 }
 
 extension ChimeSDKMediaPipelinesClientTypes {
+
     /// The video stream pool configuration object.
-    public struct KinesisVideoStreamPoolConfiguration {
+    public struct KinesisVideoStreamPoolConfiguration: Swift.Sendable {
         /// The time at which the configuration was created.
         public var createdTimestamp: Foundation.Date?
         /// The ARN of the video stream pool configuration.
@@ -3731,7 +3733,6 @@ extension ChimeSDKMediaPipelinesClientTypes {
             self.updatedTimestamp = updatedTimestamp
         }
     }
-
 }
 
 extension ChimeSDKMediaPipelinesClientTypes.KinesisVideoStreamPoolConfiguration: Swift.CustomDebugStringConvertible {
@@ -3739,7 +3740,7 @@ extension ChimeSDKMediaPipelinesClientTypes.KinesisVideoStreamPoolConfiguration:
         "KinesisVideoStreamPoolConfiguration(createdTimestamp: \(Swift.String(describing: createdTimestamp)), poolId: \(Swift.String(describing: poolId)), poolName: \(Swift.String(describing: poolName)), poolSize: \(Swift.String(describing: poolSize)), poolStatus: \(Swift.String(describing: poolStatus)), streamConfiguration: \(Swift.String(describing: streamConfiguration)), updatedTimestamp: \(Swift.String(describing: updatedTimestamp)), poolArn: \"CONTENT_REDACTED\")"}
 }
 
-public struct CreateMediaPipelineKinesisVideoStreamPoolOutput {
+public struct CreateMediaPipelineKinesisVideoStreamPoolOutput: Swift.Sendable {
     /// The configuration for applying the streams to the pool.
     public var kinesisVideoStreamPoolConfiguration: ChimeSDKMediaPipelinesClientTypes.KinesisVideoStreamPoolConfiguration?
 
@@ -3753,7 +3754,7 @@ public struct CreateMediaPipelineKinesisVideoStreamPoolOutput {
 
 extension ChimeSDKMediaPipelinesClientTypes {
 
-    public enum MediaStreamType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum MediaStreamType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case individualaudio
         case mixedaudio
         case sdkUnknown(Swift.String)
@@ -3782,7 +3783,7 @@ extension ChimeSDKMediaPipelinesClientTypes {
 
 extension ChimeSDKMediaPipelinesClientTypes {
 
-    public enum MediaStreamPipelineSinkType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum MediaStreamPipelineSinkType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case kinesisvideostreampool
         case sdkUnknown(Swift.String)
 
@@ -3807,8 +3808,9 @@ extension ChimeSDKMediaPipelinesClientTypes {
 }
 
 extension ChimeSDKMediaPipelinesClientTypes {
+
     /// Structure that contains the settings for a media stream sink.
-    public struct MediaStreamSink {
+    public struct MediaStreamSink: Swift.Sendable {
         /// The media stream sink's media stream type.
         /// This member is required.
         public var mediaStreamType: ChimeSDKMediaPipelinesClientTypes.MediaStreamType?
@@ -3835,7 +3837,6 @@ extension ChimeSDKMediaPipelinesClientTypes {
             self.sinkType = sinkType
         }
     }
-
 }
 
 extension ChimeSDKMediaPipelinesClientTypes.MediaStreamSink: Swift.CustomDebugStringConvertible {
@@ -3844,8 +3845,9 @@ extension ChimeSDKMediaPipelinesClientTypes.MediaStreamSink: Swift.CustomDebugSt
 }
 
 extension ChimeSDKMediaPipelinesClientTypes {
+
     /// Structure that contains the settings for media stream sources.
-    public struct MediaStreamSource {
+    public struct MediaStreamSource: Swift.Sendable {
         /// The ARN of the meeting.
         /// This member is required.
         public var sourceArn: Swift.String?
@@ -3862,7 +3864,6 @@ extension ChimeSDKMediaPipelinesClientTypes {
             self.sourceType = sourceType
         }
     }
-
 }
 
 extension ChimeSDKMediaPipelinesClientTypes.MediaStreamSource: Swift.CustomDebugStringConvertible {
@@ -3870,7 +3871,7 @@ extension ChimeSDKMediaPipelinesClientTypes.MediaStreamSource: Swift.CustomDebug
         "MediaStreamSource(sourceType: \(Swift.String(describing: sourceType)), sourceArn: \"CONTENT_REDACTED\")"}
 }
 
-public struct CreateMediaStreamPipelineInput {
+public struct CreateMediaStreamPipelineInput: Swift.Sendable {
     /// The token assigned to the client making the request.
     public var clientRequestToken: Swift.String?
     /// The data sink for the media pipeline.
@@ -3902,8 +3903,9 @@ extension CreateMediaStreamPipelineInput: Swift.CustomDebugStringConvertible {
 }
 
 extension ChimeSDKMediaPipelinesClientTypes {
+
     /// Structure that contains the settings for a media stream pipeline.
-    public struct MediaStreamPipeline {
+    public struct MediaStreamPipeline: Swift.Sendable {
         /// The time at which the media stream pipeline was created.
         public var createdTimestamp: Foundation.Date?
         /// The ARN of the media stream pipeline.
@@ -3938,10 +3940,9 @@ extension ChimeSDKMediaPipelinesClientTypes {
             self.updatedTimestamp = updatedTimestamp
         }
     }
-
 }
 
-public struct CreateMediaStreamPipelineOutput {
+public struct CreateMediaStreamPipelineOutput: Swift.Sendable {
     /// The requested media pipeline.
     public var mediaStreamPipeline: ChimeSDKMediaPipelinesClientTypes.MediaStreamPipeline?
 
@@ -3953,7 +3954,7 @@ public struct CreateMediaStreamPipelineOutput {
     }
 }
 
-public struct DeleteMediaCapturePipelineInput {
+public struct DeleteMediaCapturePipelineInput: Swift.Sendable {
     /// The ID of the media pipeline being deleted.
     /// This member is required.
     public var mediaPipelineId: Swift.String?
@@ -3966,7 +3967,7 @@ public struct DeleteMediaCapturePipelineInput {
     }
 }
 
-public struct DeleteMediaInsightsPipelineConfigurationInput {
+public struct DeleteMediaInsightsPipelineConfigurationInput: Swift.Sendable {
     /// The unique identifier of the resource to be deleted. Valid values include the name and ARN of the media insights pipeline configuration.
     /// This member is required.
     public var identifier: Swift.String?
@@ -3979,7 +3980,7 @@ public struct DeleteMediaInsightsPipelineConfigurationInput {
     }
 }
 
-public struct DeleteMediaPipelineInput {
+public struct DeleteMediaPipelineInput: Swift.Sendable {
     /// The ID of the media pipeline to delete.
     /// This member is required.
     public var mediaPipelineId: Swift.String?
@@ -3992,7 +3993,7 @@ public struct DeleteMediaPipelineInput {
     }
 }
 
-public struct DeleteMediaPipelineKinesisVideoStreamPoolInput {
+public struct DeleteMediaPipelineKinesisVideoStreamPoolInput: Swift.Sendable {
     /// The unique identifier of the requested resource. Valid values include the name and ARN of the media pipeline Kinesis Video Stream pool.
     /// This member is required.
     public var identifier: Swift.String?
@@ -4005,7 +4006,7 @@ public struct DeleteMediaPipelineKinesisVideoStreamPoolInput {
     }
 }
 
-public struct GetMediaCapturePipelineInput {
+public struct GetMediaCapturePipelineInput: Swift.Sendable {
     /// The ID of the pipeline that you want to get.
     /// This member is required.
     public var mediaPipelineId: Swift.String?
@@ -4018,7 +4019,7 @@ public struct GetMediaCapturePipelineInput {
     }
 }
 
-public struct GetMediaCapturePipelineOutput {
+public struct GetMediaCapturePipelineOutput: Swift.Sendable {
     /// The media pipeline object.
     public var mediaCapturePipeline: ChimeSDKMediaPipelinesClientTypes.MediaCapturePipeline?
 
@@ -4030,7 +4031,7 @@ public struct GetMediaCapturePipelineOutput {
     }
 }
 
-public struct GetMediaInsightsPipelineConfigurationInput {
+public struct GetMediaInsightsPipelineConfigurationInput: Swift.Sendable {
     /// The unique identifier of the requested resource. Valid values include the name and ARN of the media insights pipeline configuration.
     /// This member is required.
     public var identifier: Swift.String?
@@ -4043,7 +4044,7 @@ public struct GetMediaInsightsPipelineConfigurationInput {
     }
 }
 
-public struct GetMediaInsightsPipelineConfigurationOutput {
+public struct GetMediaInsightsPipelineConfigurationOutput: Swift.Sendable {
     /// The requested media insights pipeline configuration.
     public var mediaInsightsPipelineConfiguration: ChimeSDKMediaPipelinesClientTypes.MediaInsightsPipelineConfiguration?
 
@@ -4055,7 +4056,7 @@ public struct GetMediaInsightsPipelineConfigurationOutput {
     }
 }
 
-public struct GetMediaPipelineInput {
+public struct GetMediaPipelineInput: Swift.Sendable {
     /// The ID of the pipeline that you want to get.
     /// This member is required.
     public var mediaPipelineId: Swift.String?
@@ -4069,8 +4070,9 @@ public struct GetMediaPipelineInput {
 }
 
 extension ChimeSDKMediaPipelinesClientTypes {
+
     /// A pipeline consisting of a media capture, media concatenation, or live-streaming pipeline.
-    public struct MediaPipeline {
+    public struct MediaPipeline: Swift.Sendable {
         /// A pipeline that enables users to capture audio and video.
         public var mediaCapturePipeline: ChimeSDKMediaPipelinesClientTypes.MediaCapturePipeline?
         /// The media concatenation pipeline in a media pipeline.
@@ -4097,10 +4099,9 @@ extension ChimeSDKMediaPipelinesClientTypes {
             self.mediaStreamPipeline = mediaStreamPipeline
         }
     }
-
 }
 
-public struct GetMediaPipelineOutput {
+public struct GetMediaPipelineOutput: Swift.Sendable {
     /// The media pipeline object.
     public var mediaPipeline: ChimeSDKMediaPipelinesClientTypes.MediaPipeline?
 
@@ -4112,7 +4113,7 @@ public struct GetMediaPipelineOutput {
     }
 }
 
-public struct GetMediaPipelineKinesisVideoStreamPoolInput {
+public struct GetMediaPipelineKinesisVideoStreamPoolInput: Swift.Sendable {
     /// The unique identifier of the requested resource. Valid values include the name and ARN of the media pipeline Kinesis Video Stream pool.
     /// This member is required.
     public var identifier: Swift.String?
@@ -4125,7 +4126,7 @@ public struct GetMediaPipelineKinesisVideoStreamPoolInput {
     }
 }
 
-public struct GetMediaPipelineKinesisVideoStreamPoolOutput {
+public struct GetMediaPipelineKinesisVideoStreamPoolOutput: Swift.Sendable {
     /// The video stream pool configuration object.
     public var kinesisVideoStreamPoolConfiguration: ChimeSDKMediaPipelinesClientTypes.KinesisVideoStreamPoolConfiguration?
 
@@ -4137,7 +4138,7 @@ public struct GetMediaPipelineKinesisVideoStreamPoolOutput {
     }
 }
 
-public struct GetSpeakerSearchTaskInput {
+public struct GetSpeakerSearchTaskInput: Swift.Sendable {
     /// The unique identifier of the resource to be updated. Valid values include the ID and ARN of the media insights pipeline.
     /// This member is required.
     public var identifier: Swift.String?
@@ -4157,7 +4158,7 @@ public struct GetSpeakerSearchTaskInput {
 
 extension ChimeSDKMediaPipelinesClientTypes {
 
-    public enum MediaPipelineTaskStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum MediaPipelineTaskStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case failed
         case inprogress
         case initializing
@@ -4197,8 +4198,9 @@ extension ChimeSDKMediaPipelinesClientTypes {
 }
 
 extension ChimeSDKMediaPipelinesClientTypes {
+
     /// A representation of an asynchronous request to perform speaker search analysis on a media insights pipeline.
-    public struct SpeakerSearchTask {
+    public struct SpeakerSearchTask: Swift.Sendable {
         /// The time at which a speaker search task was created.
         public var createdTimestamp: Foundation.Date?
         /// The speaker search task ID.
@@ -4221,10 +4223,9 @@ extension ChimeSDKMediaPipelinesClientTypes {
             self.updatedTimestamp = updatedTimestamp
         }
     }
-
 }
 
-public struct GetSpeakerSearchTaskOutput {
+public struct GetSpeakerSearchTaskOutput: Swift.Sendable {
     /// The details of the speaker search task.
     public var speakerSearchTask: ChimeSDKMediaPipelinesClientTypes.SpeakerSearchTask?
 
@@ -4236,7 +4237,7 @@ public struct GetSpeakerSearchTaskOutput {
     }
 }
 
-public struct GetVoiceToneAnalysisTaskInput {
+public struct GetVoiceToneAnalysisTaskInput: Swift.Sendable {
     /// The unique identifier of the resource to be updated. Valid values include the ID and ARN of the media insights pipeline.
     /// This member is required.
     public var identifier: Swift.String?
@@ -4255,8 +4256,9 @@ public struct GetVoiceToneAnalysisTaskInput {
 }
 
 extension ChimeSDKMediaPipelinesClientTypes {
+
     /// A representation of an asynchronous request to perform voice tone analysis on a media insights pipeline.
-    public struct VoiceToneAnalysisTask {
+    public struct VoiceToneAnalysisTask: Swift.Sendable {
         /// The time at which a voice tone analysis task was created.
         public var createdTimestamp: Foundation.Date?
         /// The time at which a voice tone analysis task was updated.
@@ -4279,10 +4281,9 @@ extension ChimeSDKMediaPipelinesClientTypes {
             self.voiceToneAnalysisTaskStatus = voiceToneAnalysisTaskStatus
         }
     }
-
 }
 
-public struct GetVoiceToneAnalysisTaskOutput {
+public struct GetVoiceToneAnalysisTaskOutput: Swift.Sendable {
     /// The details of the voice tone analysis task.
     public var voiceToneAnalysisTask: ChimeSDKMediaPipelinesClientTypes.VoiceToneAnalysisTask?
 
@@ -4294,7 +4295,7 @@ public struct GetVoiceToneAnalysisTaskOutput {
     }
 }
 
-public struct ListMediaCapturePipelinesInput {
+public struct ListMediaCapturePipelinesInput: Swift.Sendable {
     /// The maximum number of results to return in a single call. Valid Range: 1 - 99.
     public var maxResults: Swift.Int?
     /// The token used to retrieve the next page of results.
@@ -4311,8 +4312,9 @@ public struct ListMediaCapturePipelinesInput {
 }
 
 extension ChimeSDKMediaPipelinesClientTypes {
+
     /// The summary data of a media capture pipeline.
-    public struct MediaCapturePipelineSummary {
+    public struct MediaCapturePipelineSummary: Swift.Sendable {
         /// The ARN of the media pipeline in the summary.
         public var mediaPipelineArn: Swift.String?
         /// The ID of the media pipeline in the summary.
@@ -4327,10 +4329,9 @@ extension ChimeSDKMediaPipelinesClientTypes {
             self.mediaPipelineId = mediaPipelineId
         }
     }
-
 }
 
-public struct ListMediaCapturePipelinesOutput {
+public struct ListMediaCapturePipelinesOutput: Swift.Sendable {
     /// The media pipeline objects in the list.
     public var mediaCapturePipelines: [ChimeSDKMediaPipelinesClientTypes.MediaCapturePipelineSummary]?
     /// The token used to retrieve the next page of results.
@@ -4346,7 +4347,7 @@ public struct ListMediaCapturePipelinesOutput {
     }
 }
 
-public struct ListMediaInsightsPipelineConfigurationsInput {
+public struct ListMediaInsightsPipelineConfigurationsInput: Swift.Sendable {
     /// The maximum number of results to return in a single call.
     public var maxResults: Swift.Int?
     /// The token used to return the next page of results.
@@ -4363,8 +4364,9 @@ public struct ListMediaInsightsPipelineConfigurationsInput {
 }
 
 extension ChimeSDKMediaPipelinesClientTypes {
+
     /// A summary of the media insights pipeline configuration.
-    public struct MediaInsightsPipelineConfigurationSummary {
+    public struct MediaInsightsPipelineConfigurationSummary: Swift.Sendable {
         /// The ARN of the media insights pipeline configuration.
         public var mediaInsightsPipelineConfigurationArn: Swift.String?
         /// The ID of the media insights pipeline configuration.
@@ -4383,7 +4385,6 @@ extension ChimeSDKMediaPipelinesClientTypes {
             self.mediaInsightsPipelineConfigurationName = mediaInsightsPipelineConfigurationName
         }
     }
-
 }
 
 extension ChimeSDKMediaPipelinesClientTypes.MediaInsightsPipelineConfigurationSummary: Swift.CustomDebugStringConvertible {
@@ -4391,7 +4392,7 @@ extension ChimeSDKMediaPipelinesClientTypes.MediaInsightsPipelineConfigurationSu
         "MediaInsightsPipelineConfigurationSummary(mediaInsightsPipelineConfigurationId: \(Swift.String(describing: mediaInsightsPipelineConfigurationId)), mediaInsightsPipelineConfigurationName: \(Swift.String(describing: mediaInsightsPipelineConfigurationName)), mediaInsightsPipelineConfigurationArn: \"CONTENT_REDACTED\")"}
 }
 
-public struct ListMediaInsightsPipelineConfigurationsOutput {
+public struct ListMediaInsightsPipelineConfigurationsOutput: Swift.Sendable {
     /// The requested list of media insights pipeline configurations.
     public var mediaInsightsPipelineConfigurations: [ChimeSDKMediaPipelinesClientTypes.MediaInsightsPipelineConfigurationSummary]?
     /// The token used to return the next page of results.
@@ -4407,7 +4408,7 @@ public struct ListMediaInsightsPipelineConfigurationsOutput {
     }
 }
 
-public struct ListMediaPipelineKinesisVideoStreamPoolsInput {
+public struct ListMediaPipelineKinesisVideoStreamPoolsInput: Swift.Sendable {
     /// The maximum number of results to return in a single call.
     public var maxResults: Swift.Int?
     /// The token used to return the next page of results.
@@ -4424,8 +4425,9 @@ public struct ListMediaPipelineKinesisVideoStreamPoolsInput {
 }
 
 extension ChimeSDKMediaPipelinesClientTypes {
+
     /// A summary of the Kinesis video stream pool.
-    public struct KinesisVideoStreamPoolSummary {
+    public struct KinesisVideoStreamPoolSummary: Swift.Sendable {
         /// The ARN of the video stream pool.
         public var poolArn: Swift.String?
         /// The ID of the video stream pool.
@@ -4444,7 +4446,6 @@ extension ChimeSDKMediaPipelinesClientTypes {
             self.poolName = poolName
         }
     }
-
 }
 
 extension ChimeSDKMediaPipelinesClientTypes.KinesisVideoStreamPoolSummary: Swift.CustomDebugStringConvertible {
@@ -4452,7 +4453,7 @@ extension ChimeSDKMediaPipelinesClientTypes.KinesisVideoStreamPoolSummary: Swift
         "KinesisVideoStreamPoolSummary(poolId: \(Swift.String(describing: poolId)), poolName: \(Swift.String(describing: poolName)), poolArn: \"CONTENT_REDACTED\")"}
 }
 
-public struct ListMediaPipelineKinesisVideoStreamPoolsOutput {
+public struct ListMediaPipelineKinesisVideoStreamPoolsOutput: Swift.Sendable {
     /// The list of video stream pools.
     public var kinesisVideoStreamPools: [ChimeSDKMediaPipelinesClientTypes.KinesisVideoStreamPoolSummary]?
     /// The token used to return the next page of results.
@@ -4468,7 +4469,7 @@ public struct ListMediaPipelineKinesisVideoStreamPoolsOutput {
     }
 }
 
-public struct ListMediaPipelinesInput {
+public struct ListMediaPipelinesInput: Swift.Sendable {
     /// The maximum number of results to return in a single call. Valid Range: 1 - 99.
     public var maxResults: Swift.Int?
     /// The token used to retrieve the next page of results.
@@ -4485,8 +4486,9 @@ public struct ListMediaPipelinesInput {
 }
 
 extension ChimeSDKMediaPipelinesClientTypes {
+
     /// The summary of the media pipeline.
-    public struct MediaPipelineSummary {
+    public struct MediaPipelineSummary: Swift.Sendable {
         /// The ARN of the media pipeline in the summary.
         public var mediaPipelineArn: Swift.String?
         /// The ID of the media pipeline in the summary.
@@ -4501,10 +4503,9 @@ extension ChimeSDKMediaPipelinesClientTypes {
             self.mediaPipelineId = mediaPipelineId
         }
     }
-
 }
 
-public struct ListMediaPipelinesOutput {
+public struct ListMediaPipelinesOutput: Swift.Sendable {
     /// The media pipeline objects in the list.
     public var mediaPipelines: [ChimeSDKMediaPipelinesClientTypes.MediaPipelineSummary]?
     /// The token used to retrieve the next page of results.
@@ -4520,7 +4521,7 @@ public struct ListMediaPipelinesOutput {
     }
 }
 
-public struct ListTagsForResourceInput {
+public struct ListTagsForResourceInput: Swift.Sendable {
     /// The ARN of the media pipeline associated with any tags. The ARN consists of the pipeline's region, resource ID, and pipeline ID.
     /// This member is required.
     public var resourceARN: Swift.String?
@@ -4533,7 +4534,7 @@ public struct ListTagsForResourceInput {
     }
 }
 
-public struct ListTagsForResourceOutput {
+public struct ListTagsForResourceOutput: Swift.Sendable {
     /// The tags associated with the specified media pipeline.
     public var tags: [ChimeSDKMediaPipelinesClientTypes.Tag]?
 
@@ -4546,8 +4547,9 @@ public struct ListTagsForResourceOutput {
 }
 
 extension ChimeSDKMediaPipelinesClientTypes {
+
     /// The task configuration settings for the Kinesis video stream source.
-    public struct KinesisVideoStreamSourceTaskConfiguration {
+    public struct KinesisVideoStreamSourceTaskConfiguration: Swift.Sendable {
         /// The channel ID.
         /// This member is required.
         public var channelId: Swift.Int
@@ -4568,10 +4570,9 @@ extension ChimeSDKMediaPipelinesClientTypes {
             self.streamArn = streamArn
         }
     }
-
 }
 
-public struct StartSpeakerSearchTaskInput {
+public struct StartSpeakerSearchTaskInput: Swift.Sendable {
     /// The unique identifier for the client request. Use a different token for different speaker search tasks.
     public var clientRequestToken: Swift.String?
     /// The unique identifier of the resource to be updated. Valid values include the ID and ARN of the media insights pipeline.
@@ -4602,7 +4603,7 @@ extension StartSpeakerSearchTaskInput: Swift.CustomDebugStringConvertible {
         "StartSpeakerSearchTaskInput(identifier: \(Swift.String(describing: identifier)), kinesisVideoStreamSourceTaskConfiguration: \(Swift.String(describing: kinesisVideoStreamSourceTaskConfiguration)), clientRequestToken: \"CONTENT_REDACTED\", voiceProfileDomainArn: \"CONTENT_REDACTED\")"}
 }
 
-public struct StartSpeakerSearchTaskOutput {
+public struct StartSpeakerSearchTaskOutput: Swift.Sendable {
     /// The details of the speaker search task.
     public var speakerSearchTask: ChimeSDKMediaPipelinesClientTypes.SpeakerSearchTask?
 
@@ -4616,7 +4617,7 @@ public struct StartSpeakerSearchTaskOutput {
 
 extension ChimeSDKMediaPipelinesClientTypes {
 
-    public enum VoiceAnalyticsLanguageCode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum VoiceAnalyticsLanguageCode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case enUs
         case sdkUnknown(Swift.String)
 
@@ -4640,7 +4641,7 @@ extension ChimeSDKMediaPipelinesClientTypes {
     }
 }
 
-public struct StartVoiceToneAnalysisTaskInput {
+public struct StartVoiceToneAnalysisTaskInput: Swift.Sendable {
     /// The unique identifier for the client request. Use a different token for different voice tone analysis tasks.
     public var clientRequestToken: Swift.String?
     /// The unique identifier of the resource to be updated. Valid values include the ID and ARN of the media insights pipeline.
@@ -4671,7 +4672,7 @@ extension StartVoiceToneAnalysisTaskInput: Swift.CustomDebugStringConvertible {
         "StartVoiceToneAnalysisTaskInput(identifier: \(Swift.String(describing: identifier)), kinesisVideoStreamSourceTaskConfiguration: \(Swift.String(describing: kinesisVideoStreamSourceTaskConfiguration)), languageCode: \(Swift.String(describing: languageCode)), clientRequestToken: \"CONTENT_REDACTED\")"}
 }
 
-public struct StartVoiceToneAnalysisTaskOutput {
+public struct StartVoiceToneAnalysisTaskOutput: Swift.Sendable {
     /// The details of the voice tone analysis task.
     public var voiceToneAnalysisTask: ChimeSDKMediaPipelinesClientTypes.VoiceToneAnalysisTask?
 
@@ -4683,7 +4684,7 @@ public struct StartVoiceToneAnalysisTaskOutput {
     }
 }
 
-public struct StopSpeakerSearchTaskInput {
+public struct StopSpeakerSearchTaskInput: Swift.Sendable {
     /// The unique identifier of the resource to be updated. Valid values include the ID and ARN of the media insights pipeline.
     /// This member is required.
     public var identifier: Swift.String?
@@ -4701,7 +4702,7 @@ public struct StopSpeakerSearchTaskInput {
     }
 }
 
-public struct StopVoiceToneAnalysisTaskInput {
+public struct StopVoiceToneAnalysisTaskInput: Swift.Sendable {
     /// The unique identifier of the resource to be updated. Valid values include the ID and ARN of the media insights pipeline.
     /// This member is required.
     public var identifier: Swift.String?
@@ -4719,7 +4720,7 @@ public struct StopVoiceToneAnalysisTaskInput {
     }
 }
 
-public struct TagResourceInput {
+public struct TagResourceInput: Swift.Sendable {
     /// The ARN of the media pipeline associated with any tags. The ARN consists of the pipeline's endpoint region, resource ID, and pipeline ID.
     /// This member is required.
     public var resourceARN: Swift.String?
@@ -4737,12 +4738,12 @@ public struct TagResourceInput {
     }
 }
 
-public struct TagResourceOutput {
+public struct TagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UntagResourceInput {
+public struct UntagResourceInput: Swift.Sendable {
     /// The ARN of the pipeline that you want to untag.
     /// This member is required.
     public var resourceARN: Swift.String?
@@ -4760,12 +4761,12 @@ public struct UntagResourceInput {
     }
 }
 
-public struct UntagResourceOutput {
+public struct UntagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdateMediaInsightsPipelineConfigurationInput {
+public struct UpdateMediaInsightsPipelineConfigurationInput: Swift.Sendable {
     /// The elements in the request, such as a processor for Amazon Transcribe or a sink for a Kinesis Data Stream..
     /// This member is required.
     public var elements: [ChimeSDKMediaPipelinesClientTypes.MediaInsightsPipelineConfigurationElement]?
@@ -4797,7 +4798,7 @@ extension UpdateMediaInsightsPipelineConfigurationInput: Swift.CustomDebugString
         "UpdateMediaInsightsPipelineConfigurationInput(elements: \(Swift.String(describing: elements)), identifier: \(Swift.String(describing: identifier)), realTimeAlertConfiguration: \(Swift.String(describing: realTimeAlertConfiguration)), resourceAccessRoleArn: \"CONTENT_REDACTED\")"}
 }
 
-public struct UpdateMediaInsightsPipelineConfigurationOutput {
+public struct UpdateMediaInsightsPipelineConfigurationOutput: Swift.Sendable {
     /// The updated configuration settings.
     public var mediaInsightsPipelineConfiguration: ChimeSDKMediaPipelinesClientTypes.MediaInsightsPipelineConfiguration?
 
@@ -4811,7 +4812,7 @@ public struct UpdateMediaInsightsPipelineConfigurationOutput {
 
 extension ChimeSDKMediaPipelinesClientTypes {
 
-    public enum MediaPipelineStatusUpdate: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum MediaPipelineStatusUpdate: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case pause
         case resume
         case sdkUnknown(Swift.String)
@@ -4838,7 +4839,7 @@ extension ChimeSDKMediaPipelinesClientTypes {
     }
 }
 
-public struct UpdateMediaInsightsPipelineStatusInput {
+public struct UpdateMediaInsightsPipelineStatusInput: Swift.Sendable {
     /// The unique identifier of the resource to be updated. Valid values include the ID and ARN of the media insights pipeline.
     /// This member is required.
     public var identifier: Swift.String?
@@ -4857,8 +4858,9 @@ public struct UpdateMediaInsightsPipelineStatusInput {
 }
 
 extension ChimeSDKMediaPipelinesClientTypes {
+
     /// The updated Kinesis video stream configuration object.
-    public struct KinesisVideoStreamConfigurationUpdate {
+    public struct KinesisVideoStreamConfigurationUpdate: Swift.Sendable {
         /// The updated time that data is retained.
         public var dataRetentionInHours: Swift.Int?
 
@@ -4869,10 +4871,9 @@ extension ChimeSDKMediaPipelinesClientTypes {
             self.dataRetentionInHours = dataRetentionInHours
         }
     }
-
 }
 
-public struct UpdateMediaPipelineKinesisVideoStreamPoolInput {
+public struct UpdateMediaPipelineKinesisVideoStreamPoolInput: Swift.Sendable {
     /// The unique identifier of the requested resource. Valid values include the name and ARN of the media pipeline Kinesis Video Stream pool.
     /// This member is required.
     public var identifier: Swift.String?
@@ -4889,7 +4890,7 @@ public struct UpdateMediaPipelineKinesisVideoStreamPoolInput {
     }
 }
 
-public struct UpdateMediaPipelineKinesisVideoStreamPoolOutput {
+public struct UpdateMediaPipelineKinesisVideoStreamPoolOutput: Swift.Sendable {
     /// The video stream pool configuration object.
     public var kinesisVideoStreamPoolConfiguration: ChimeSDKMediaPipelinesClientTypes.KinesisVideoStreamPoolConfiguration?
 

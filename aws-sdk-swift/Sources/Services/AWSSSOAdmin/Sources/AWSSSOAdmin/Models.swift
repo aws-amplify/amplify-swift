@@ -27,39 +27,41 @@ import protocol ClientRuntime.ModeledError
 @_spi(UnknownAWSHTTPServiceError) import struct AWSClientRuntime.UnknownAWSHTTPServiceError
 import struct Smithy.Document
 
-public struct DeleteApplicationAccessScopeOutput {
+
+public struct DeleteApplicationAccessScopeOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteApplicationAuthenticationMethodOutput {
+public struct DeleteApplicationAuthenticationMethodOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteApplicationGrantOutput {
+public struct DeleteApplicationGrantOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct PutApplicationAccessScopeOutput {
+public struct PutApplicationAccessScopeOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct PutApplicationAuthenticationMethodOutput {
+public struct PutApplicationAuthenticationMethodOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct PutApplicationGrantOutput {
+public struct PutApplicationGrantOutput: Swift.Sendable {
 
     public init() { }
 }
 
 extension SSOAdminClientTypes {
+
     /// The value used for mapping a specified attribute to an identity source. For more information, see [Attribute mappings](https://docs.aws.amazon.com/singlesignon/latest/userguide/attributemappingsconcept.html) in the IAM Identity Center User Guide.
-    public struct AccessControlAttributeValue {
+    public struct AccessControlAttributeValue: Swift.Sendable {
         /// The identity source to use when mapping a specified attribute to IAM Identity Center.
         /// This member is required.
         public var source: [Swift.String]?
@@ -71,12 +73,12 @@ extension SSOAdminClientTypes {
             self.source = source
         }
     }
-
 }
 
 extension SSOAdminClientTypes {
+
     /// These are IAM Identity Center identity store attributes that you can configure for use in attributes-based access control (ABAC). You can create permissions policies that determine who can access your Amazon Web Services resources based upon the configured attribute values. When you enable ABAC and specify AccessControlAttributes, IAM Identity Center passes the attribute values of the authenticated user into IAM for use in policy evaluation.
-    public struct AccessControlAttribute {
+    public struct AccessControlAttribute: Swift.Sendable {
         /// The name of the attribute associated with your identities in your identity source. This is used to map a specified attribute in your identity source with an attribute in IAM Identity Center.
         /// This member is required.
         public var key: Swift.String?
@@ -93,7 +95,6 @@ extension SSOAdminClientTypes {
             self.value = value
         }
     }
-
 }
 
 /// You do not have sufficient access to perform this action.
@@ -122,7 +123,7 @@ public struct AccessDeniedException: ClientRuntime.ModeledError, AWSClientRuntim
 
 extension SSOAdminClientTypes {
 
-    public enum PrincipalType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum PrincipalType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case group
         case user
         case sdkUnknown(Swift.String)
@@ -150,8 +151,9 @@ extension SSOAdminClientTypes {
 }
 
 extension SSOAdminClientTypes {
+
     /// The assignment that indicates a principal's limited access to a specified Amazon Web Services account with a specified permission set. The term principal here refers to a user or group that is defined in IAM Identity Center.
-    public struct AccountAssignment {
+    public struct AccountAssignment: Swift.Sendable {
         /// The identifier of the Amazon Web Services account.
         public var accountId: Swift.String?
         /// The ARN of the permission set. For more information about ARNs, see [Amazon Resource Names (ARNs) and Amazon Web Services Service Namespaces] in the Amazon Web Services General Reference.
@@ -174,12 +176,12 @@ extension SSOAdminClientTypes {
             self.principalType = principalType
         }
     }
-
 }
 
 extension SSOAdminClientTypes {
+
     /// A structure that describes an assignment of an Amazon Web Services account to a principal and the permissions that principal has in the account.
-    public struct AccountAssignmentForPrincipal {
+    public struct AccountAssignmentForPrincipal: Swift.Sendable {
         /// The account ID number of the Amazon Web Services account.
         public var accountId: Swift.String?
         /// The ARN of the IAM Identity Center permission set assigned to this principal for this Amazon Web Services account.
@@ -202,12 +204,11 @@ extension SSOAdminClientTypes {
             self.principalType = principalType
         }
     }
-
 }
 
 extension SSOAdminClientTypes {
 
-    public enum StatusValues: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum StatusValues: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case failed
         case inProgress
         case succeeded
@@ -239,7 +240,7 @@ extension SSOAdminClientTypes {
 
 extension SSOAdminClientTypes {
 
-    public enum TargetType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum TargetType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case awsAccount
         case sdkUnknown(Swift.String)
 
@@ -264,8 +265,9 @@ extension SSOAdminClientTypes {
 }
 
 extension SSOAdminClientTypes {
+
     /// The status of the creation or deletion operation of an assignment that a principal needs to access an account.
-    public struct AccountAssignmentOperationStatus {
+    public struct AccountAssignmentOperationStatus: Swift.Sendable {
         /// The date that the permission set was created.
         public var createdDate: Foundation.Date?
         /// The message that contains an error or exception in case of an operation failure.
@@ -308,12 +310,12 @@ extension SSOAdminClientTypes {
             self.targetType = targetType
         }
     }
-
 }
 
 extension SSOAdminClientTypes {
+
     /// Provides information about the [AccountAssignment] creation request.
-    public struct AccountAssignmentOperationStatusMetadata {
+    public struct AccountAssignmentOperationStatusMetadata: Swift.Sendable {
         /// The date that the permission set was created.
         public var createdDate: Foundation.Date?
         /// The identifier for tracking the request operation that is generated by the universally unique identifier (UUID) workflow.
@@ -332,12 +334,11 @@ extension SSOAdminClientTypes {
             self.status = status
         }
     }
-
 }
 
 extension SSOAdminClientTypes {
 
-    public enum SignInOrigin: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SignInOrigin: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case application
         case identityCenter
         case sdkUnknown(Swift.String)
@@ -365,8 +366,9 @@ extension SSOAdminClientTypes {
 }
 
 extension SSOAdminClientTypes {
+
     /// A structure that describes the sign-in options for an application portal.
-    public struct SignInOptions {
+    public struct SignInOptions: Swift.Sendable {
         /// The URL that accepts authentication requests for an application. This is a required parameter if the Origin parameter is APPLICATION.
         public var applicationUrl: Swift.String?
         /// This determines how IAM Identity Center navigates the user to the target application. It can be one of the following values:
@@ -386,12 +388,11 @@ extension SSOAdminClientTypes {
             self.origin = origin
         }
     }
-
 }
 
 extension SSOAdminClientTypes {
 
-    public enum ApplicationVisibility: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ApplicationVisibility: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case disabled
         case enabled
         case sdkUnknown(Swift.String)
@@ -419,8 +420,9 @@ extension SSOAdminClientTypes {
 }
 
 extension SSOAdminClientTypes {
+
     /// A structure that describes the options for the access portal associated with an application.
-    public struct PortalOptions {
+    public struct PortalOptions: Swift.Sendable {
         /// A structure that describes the sign-in options for the access portal.
         public var signInOptions: SSOAdminClientTypes.SignInOptions?
         /// Indicates whether this application is visible in the access portal.
@@ -435,12 +437,11 @@ extension SSOAdminClientTypes {
             self.visibility = visibility
         }
     }
-
 }
 
 extension SSOAdminClientTypes {
 
-    public enum ApplicationStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ApplicationStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case disabled
         case enabled
         case sdkUnknown(Swift.String)
@@ -468,8 +469,9 @@ extension SSOAdminClientTypes {
 }
 
 extension SSOAdminClientTypes {
+
     /// A structure that describes an application that uses IAM Identity Center for access management.
-    public struct Application {
+    public struct Application: Swift.Sendable {
         /// The Amazon Web Services account ID number of the application.
         public var applicationAccount: Swift.String?
         /// The ARN of the application.
@@ -512,7 +514,6 @@ extension SSOAdminClientTypes {
             self.status = status
         }
     }
-
 }
 
 /// Occurs when a conflict with a previous successful write is detected. This generally occurs when the previous write did not have time to propagate to the host serving the current request. A retry (with appropriate backoff logic) is the recommended response to this exception.
@@ -635,7 +636,7 @@ public struct ValidationException: ClientRuntime.ModeledError, AWSClientRuntime.
     }
 }
 
-public struct DeleteApplicationAccessScopeInput {
+public struct DeleteApplicationAccessScopeInput: Swift.Sendable {
     /// Specifies the ARN of the application with the access scope to delete.
     /// This member is required.
     public var applicationArn: Swift.String?
@@ -653,7 +654,7 @@ public struct DeleteApplicationAccessScopeInput {
     }
 }
 
-public struct GetApplicationAccessScopeInput {
+public struct GetApplicationAccessScopeInput: Swift.Sendable {
     /// Specifies the ARN of the application with the access scope that you want to retrieve.
     /// This member is required.
     public var applicationArn: Swift.String?
@@ -671,7 +672,7 @@ public struct GetApplicationAccessScopeInput {
     }
 }
 
-public struct GetApplicationAccessScopeOutput {
+public struct GetApplicationAccessScopeOutput: Swift.Sendable {
     /// An array of authorized targets associated with this access scope.
     public var authorizedTargets: [Swift.String]?
     /// The name of the access scope that can be used with the authorized targets.
@@ -688,7 +689,7 @@ public struct GetApplicationAccessScopeOutput {
     }
 }
 
-public struct ListApplicationAccessScopesInput {
+public struct ListApplicationAccessScopesInput: Swift.Sendable {
     /// Specifies the ARN of the application.
     /// This member is required.
     public var applicationArn: Swift.String?
@@ -710,8 +711,9 @@ public struct ListApplicationAccessScopesInput {
 }
 
 extension SSOAdminClientTypes {
+
     /// A structure that describes an IAM Identity Center access scope and its authorized targets.
-    public struct ScopeDetails {
+    public struct ScopeDetails: Swift.Sendable {
         /// An array list of ARNs of applications.
         public var authorizedTargets: [Swift.String]?
         /// The name of the access scope.
@@ -727,10 +729,9 @@ extension SSOAdminClientTypes {
             self.scope = scope
         }
     }
-
 }
 
-public struct ListApplicationAccessScopesOutput {
+public struct ListApplicationAccessScopesOutput: Swift.Sendable {
     /// If present, this value indicates that more output is available than is included in the current response. Use this value in the NextToken request parameter in a subsequent call to the operation to get the next part of the output. You should repeat this until the NextToken response element comes back as null. This indicates that this is the last page of results.
     public var nextToken: Swift.String?
     /// An array list of access scopes and their authorized targets that are associated with the application.
@@ -747,7 +748,7 @@ public struct ListApplicationAccessScopesOutput {
     }
 }
 
-public struct PutApplicationAccessScopeInput {
+public struct PutApplicationAccessScopeInput: Swift.Sendable {
     /// Specifies the ARN of the application with the access scope with the targets to add or update.
     /// This member is required.
     public var applicationArn: Swift.String?
@@ -770,8 +771,9 @@ public struct PutApplicationAccessScopeInput {
 }
 
 extension SSOAdminClientTypes {
+
     /// A structure that describes an assignment of a principal to an application.
-    public struct ApplicationAssignment {
+    public struct ApplicationAssignment: Swift.Sendable {
         /// The ARN of the application that has principals assigned.
         /// This member is required.
         public var applicationArn: Swift.String?
@@ -793,12 +795,12 @@ extension SSOAdminClientTypes {
             self.principalType = principalType
         }
     }
-
 }
 
 extension SSOAdminClientTypes {
+
     /// A structure that describes an application to which a principal is assigned.
-    public struct ApplicationAssignmentForPrincipal {
+    public struct ApplicationAssignmentForPrincipal: Swift.Sendable {
         /// The ARN of the application to which the specified principal is assigned.
         public var applicationArn: Swift.String?
         /// The unique identifier of the principal assigned to the application.
@@ -817,12 +819,11 @@ extension SSOAdminClientTypes {
             self.principalType = principalType
         }
     }
-
 }
 
 extension SSOAdminClientTypes {
 
-    public enum AuthenticationMethodType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AuthenticationMethodType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case iam
         case sdkUnknown(Swift.String)
 
@@ -846,7 +847,7 @@ extension SSOAdminClientTypes {
     }
 }
 
-public struct DeleteApplicationAuthenticationMethodInput {
+public struct DeleteApplicationAuthenticationMethodInput: Swift.Sendable {
     /// Specifies the ARN of the application with the authentication method to delete.
     /// This member is required.
     public var applicationArn: Swift.String?
@@ -864,7 +865,7 @@ public struct DeleteApplicationAuthenticationMethodInput {
     }
 }
 
-public struct GetApplicationAuthenticationMethodInput {
+public struct GetApplicationAuthenticationMethodInput: Swift.Sendable {
     /// Specifies the ARN of the application.
     /// This member is required.
     public var applicationArn: Swift.String?
@@ -883,8 +884,9 @@ public struct GetApplicationAuthenticationMethodInput {
 }
 
 extension SSOAdminClientTypes {
+
     /// A structure that describes details for authentication that uses IAM.
-    public struct IamAuthenticationMethod {
+    public struct IamAuthenticationMethod: Swift.Sendable {
         /// An IAM policy document in JSON.
         /// This member is required.
         public var actorPolicy: Smithy.Document?
@@ -896,20 +898,19 @@ extension SSOAdminClientTypes {
             self.actorPolicy = actorPolicy
         }
     }
-
 }
 
 extension SSOAdminClientTypes {
+
     /// A structure that describes an authentication method that can be used by an application.
-    public enum AuthenticationMethod {
+    public enum AuthenticationMethod: Swift.Sendable {
         /// A structure that describes details for IAM authentication.
         case iam(SSOAdminClientTypes.IamAuthenticationMethod)
         case sdkUnknown(Swift.String)
     }
-
 }
 
-public struct GetApplicationAuthenticationMethodOutput {
+public struct GetApplicationAuthenticationMethodOutput: Swift.Sendable {
     /// A structure that contains details about the requested authentication method.
     public var authenticationMethod: SSOAdminClientTypes.AuthenticationMethod?
 
@@ -921,7 +922,7 @@ public struct GetApplicationAuthenticationMethodOutput {
     }
 }
 
-public struct ListApplicationAuthenticationMethodsInput {
+public struct ListApplicationAuthenticationMethodsInput: Swift.Sendable {
     /// Specifies the ARN of the application with the authentication methods you want to list.
     /// This member is required.
     public var applicationArn: Swift.String?
@@ -939,8 +940,9 @@ public struct ListApplicationAuthenticationMethodsInput {
 }
 
 extension SSOAdminClientTypes {
+
     /// A structure that describes an authentication method and its type.
-    public struct AuthenticationMethodItem {
+    public struct AuthenticationMethodItem: Swift.Sendable {
         /// A structure that describes an authentication method. The contents of this structure is determined by the AuthenticationMethodType.
         public var authenticationMethod: SSOAdminClientTypes.AuthenticationMethod?
         /// The type of authentication that is used by this method.
@@ -955,10 +957,9 @@ extension SSOAdminClientTypes {
             self.authenticationMethodType = authenticationMethodType
         }
     }
-
 }
 
-public struct ListApplicationAuthenticationMethodsOutput {
+public struct ListApplicationAuthenticationMethodsOutput: Swift.Sendable {
     /// An array list of authentication methods for the specified application.
     public var authenticationMethods: [SSOAdminClientTypes.AuthenticationMethodItem]?
     /// If present, this value indicates that more output is available than is included in the current response. Use this value in the NextToken request parameter in a subsequent call to the operation to get the next part of the output. You should repeat this until the NextToken response element comes back as null. This indicates that this is the last page of results.
@@ -974,7 +975,7 @@ public struct ListApplicationAuthenticationMethodsOutput {
     }
 }
 
-public struct PutApplicationAuthenticationMethodInput {
+public struct PutApplicationAuthenticationMethodInput: Swift.Sendable {
     /// Specifies the ARN of the application with the authentication method to add or update.
     /// This member is required.
     public var applicationArn: Swift.String?
@@ -999,7 +1000,7 @@ public struct PutApplicationAuthenticationMethodInput {
 
 extension SSOAdminClientTypes {
 
-    public enum GrantType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum GrantType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case authorizationCode
         case jwtBearer
         case refreshToken
@@ -1032,7 +1033,7 @@ extension SSOAdminClientTypes {
     }
 }
 
-public struct DeleteApplicationGrantInput {
+public struct DeleteApplicationGrantInput: Swift.Sendable {
     /// Specifies the ARN of the application with the grant to delete.
     /// This member is required.
     public var applicationArn: Swift.String?
@@ -1050,7 +1051,7 @@ public struct DeleteApplicationGrantInput {
     }
 }
 
-public struct GetApplicationGrantInput {
+public struct GetApplicationGrantInput: Swift.Sendable {
     /// Specifies the ARN of the application that contains the grant.
     /// This member is required.
     public var applicationArn: Swift.String?
@@ -1069,8 +1070,9 @@ public struct GetApplicationGrantInput {
 }
 
 extension SSOAdminClientTypes {
+
     /// A structure that defines configuration settings for an application that supports the OAuth 2.0 Authorization Code Grant.
-    public struct AuthorizationCodeGrant {
+    public struct AuthorizationCodeGrant: Swift.Sendable {
         /// A list of URIs that are valid locations to redirect a user's browser after the user is authorized.
         public var redirectUris: [Swift.String]?
 
@@ -1081,12 +1083,12 @@ extension SSOAdminClientTypes {
             self.redirectUris = redirectUris
         }
     }
-
 }
 
 extension SSOAdminClientTypes {
+
     /// A structure that describes a trusted token issuer and associates it with a set of authorized audiences.
-    public struct AuthorizedTokenIssuer {
+    public struct AuthorizedTokenIssuer: Swift.Sendable {
         /// An array list of authorized audiences, or applications, that can consume the tokens generated by the associated trusted token issuer.
         public var authorizedAudiences: [Swift.String]?
         /// The ARN of the trusted token issuer.
@@ -1101,12 +1103,12 @@ extension SSOAdminClientTypes {
             self.trustedTokenIssuerArn = trustedTokenIssuerArn
         }
     }
-
 }
 
 extension SSOAdminClientTypes {
+
     /// A structure that defines configuration settings for an application that supports the JWT Bearer Token Authorization Grant.
-    public struct JwtBearerGrant {
+    public struct JwtBearerGrant: Swift.Sendable {
         /// A list of allowed token issuers trusted by the Identity Center instances for this application.
         public var authorizedTokenIssuers: [SSOAdminClientTypes.AuthorizedTokenIssuer]?
 
@@ -1117,30 +1119,30 @@ extension SSOAdminClientTypes {
             self.authorizedTokenIssuers = authorizedTokenIssuers
         }
     }
-
 }
 
 extension SSOAdminClientTypes {
+
     /// A structure that defines configuration settings for an application that supports the OAuth 2.0 Refresh Token Grant.
-    public struct RefreshTokenGrant {
+    public struct RefreshTokenGrant: Swift.Sendable {
 
         public init() { }
     }
-
 }
 
 extension SSOAdminClientTypes {
+
     /// A structure that defines configuration settings for an application that supports the OAuth 2.0 Token Exchange Grant.
-    public struct TokenExchangeGrant {
+    public struct TokenExchangeGrant: Swift.Sendable {
 
         public init() { }
     }
-
 }
 
 extension SSOAdminClientTypes {
+
     /// The Grant union represents the set of possible configuration options for the selected grant type. Exactly one member of the union must be specified, and must match the grant type selected.
-    public enum Grant {
+    public enum Grant: Swift.Sendable {
         /// Configuration options for the authorization_code grant type.
         case authorizationcode(SSOAdminClientTypes.AuthorizationCodeGrant)
         /// Configuration options for the urn:ietf:params:oauth:grant-type:jwt-bearer grant type.
@@ -1151,10 +1153,9 @@ extension SSOAdminClientTypes {
         case tokenexchange(SSOAdminClientTypes.TokenExchangeGrant)
         case sdkUnknown(Swift.String)
     }
-
 }
 
-public struct GetApplicationGrantOutput {
+public struct GetApplicationGrantOutput: Swift.Sendable {
     /// A structure that describes the requested grant.
     /// This member is required.
     public var grant: SSOAdminClientTypes.Grant?
@@ -1167,7 +1168,7 @@ public struct GetApplicationGrantOutput {
     }
 }
 
-public struct ListApplicationGrantsInput {
+public struct ListApplicationGrantsInput: Swift.Sendable {
     /// Specifies the ARN of the application whose grants you want to list.
     /// This member is required.
     public var applicationArn: Swift.String?
@@ -1185,8 +1186,9 @@ public struct ListApplicationGrantsInput {
 }
 
 extension SSOAdminClientTypes {
+
     /// A structure that defines a single grant and its configuration.
-    public struct GrantItem {
+    public struct GrantItem: Swift.Sendable {
         /// The configuration structure for the selected grant.
         /// This member is required.
         public var grant: SSOAdminClientTypes.Grant?
@@ -1203,10 +1205,9 @@ extension SSOAdminClientTypes {
             self.grantType = grantType
         }
     }
-
 }
 
-public struct ListApplicationGrantsOutput {
+public struct ListApplicationGrantsOutput: Swift.Sendable {
     /// An array list of structures that describe the requested grants.
     /// This member is required.
     public var grants: [SSOAdminClientTypes.GrantItem]?
@@ -1223,7 +1224,7 @@ public struct ListApplicationGrantsOutput {
     }
 }
 
-public struct PutApplicationGrantInput {
+public struct PutApplicationGrantInput: Swift.Sendable {
     /// Specifies the ARN of the application to update.
     /// This member is required.
     public var applicationArn: Swift.String?
@@ -1247,8 +1248,9 @@ public struct PutApplicationGrantInput {
 }
 
 extension SSOAdminClientTypes {
+
     /// A structure that describes how the portal represents an application provider.
-    public struct DisplayData {
+    public struct DisplayData: Swift.Sendable {
         /// The description of the application provider that appears in the portal.
         public var description: Swift.String?
         /// The name of the application provider that appears in the portal.
@@ -1267,12 +1269,11 @@ extension SSOAdminClientTypes {
             self.iconUrl = iconUrl
         }
     }
-
 }
 
 extension SSOAdminClientTypes {
 
-    public enum FederationProtocol: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum FederationProtocol: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case oauth
         case saml
         case sdkUnknown(Swift.String)
@@ -1300,8 +1301,9 @@ extension SSOAdminClientTypes {
 }
 
 extension SSOAdminClientTypes {
+
     /// A structure that describes details for an IAM Identity Center access scope that is associated with a resource server.
-    public struct ResourceServerScopeDetails {
+    public struct ResourceServerScopeDetails: Swift.Sendable {
         /// The title of an access scope for a resource server.
         public var detailedTitle: Swift.String?
         /// The description of an access scope for a resource server.
@@ -1316,12 +1318,12 @@ extension SSOAdminClientTypes {
             self.longDescription = longDescription
         }
     }
-
 }
 
 extension SSOAdminClientTypes {
+
     /// A structure that describes the configuration of a resource server.
-    public struct ResourceServerConfig {
+    public struct ResourceServerConfig: Swift.Sendable {
         /// A list of the IAM Identity Center access scopes that are associated with this resource server.
         public var scopes: [Swift.String: SSOAdminClientTypes.ResourceServerScopeDetails]?
 
@@ -1332,12 +1334,12 @@ extension SSOAdminClientTypes {
             self.scopes = scopes
         }
     }
-
 }
 
 extension SSOAdminClientTypes {
+
     /// A structure that describes a provider that can be used to connect an Amazon Web Services managed application or customer managed application to IAM Identity Center.
-    public struct ApplicationProvider {
+    public struct ApplicationProvider: Swift.Sendable {
         /// The ARN of the application provider.
         /// This member is required.
         public var applicationProviderArn: Swift.String?
@@ -1361,7 +1363,6 @@ extension SSOAdminClientTypes {
             self.resourceServerConfig = resourceServerConfig
         }
     }
-
 }
 
 /// Indicates that the principal has crossed the permitted number of resources that can be created.
@@ -1389,8 +1390,9 @@ public struct ServiceQuotaExceededException: ClientRuntime.ModeledError, AWSClie
 }
 
 extension SSOAdminClientTypes {
+
     /// Specifies the name and path of a customer managed policy. You must have an IAM policy that matches the name and path in each Amazon Web Services account where you want to deploy your permission set.
-    public struct CustomerManagedPolicyReference {
+    public struct CustomerManagedPolicyReference: Swift.Sendable {
         /// The name of the IAM policy that you have configured in each account where you want to deploy your permission set.
         /// This member is required.
         public var name: Swift.String?
@@ -1406,10 +1408,9 @@ extension SSOAdminClientTypes {
             self.path = path
         }
     }
-
 }
 
-public struct AttachCustomerManagedPolicyReferenceToPermissionSetInput {
+public struct AttachCustomerManagedPolicyReferenceToPermissionSetInput: Swift.Sendable {
     /// Specifies the name and path of a customer managed policy. You must have an IAM policy that matches the name and path in each Amazon Web Services account where you want to deploy your permission set.
     /// This member is required.
     public var customerManagedPolicyReference: SSOAdminClientTypes.CustomerManagedPolicyReference?
@@ -1432,14 +1433,15 @@ public struct AttachCustomerManagedPolicyReferenceToPermissionSetInput {
     }
 }
 
-public struct AttachCustomerManagedPolicyReferenceToPermissionSetOutput {
+public struct AttachCustomerManagedPolicyReferenceToPermissionSetOutput: Swift.Sendable {
 
     public init() { }
 }
 
 extension SSOAdminClientTypes {
+
     /// A structure that stores the details of the Amazon Web Services managed policy.
-    public struct AttachedManagedPolicy {
+    public struct AttachedManagedPolicy: Swift.Sendable {
         /// The ARN of the Amazon Web Services managed policy. For more information about ARNs, see [Amazon Resource Names (ARNs) and Amazon Web Services Service Namespaces] in the Amazon Web Services General Reference.
         public var arn: Swift.String?
         /// The name of the Amazon Web Services managed policy.
@@ -1454,10 +1456,9 @@ extension SSOAdminClientTypes {
             self.name = name
         }
     }
-
 }
 
-public struct AttachManagedPolicyToPermissionSetInput {
+public struct AttachManagedPolicyToPermissionSetInput: Swift.Sendable {
     /// The ARN of the IAM Identity Center instance under which the operation will be executed. For more information about ARNs, see [Amazon Resource Names (ARNs) and Amazon Web Services Service Namespaces] in the Amazon Web Services General Reference.
     /// This member is required.
     public var instanceArn: Swift.String?
@@ -1480,12 +1481,12 @@ public struct AttachManagedPolicyToPermissionSetInput {
     }
 }
 
-public struct AttachManagedPolicyToPermissionSetOutput {
+public struct AttachManagedPolicyToPermissionSetOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct CreateAccountAssignmentInput {
+public struct CreateAccountAssignmentInput: Swift.Sendable {
     /// The ARN of the IAM Identity Center instance under which the operation will be executed. For more information about ARNs, see [Amazon Resource Names (ARNs) and Amazon Web Services Service Namespaces] in the Amazon Web Services General Reference.
     /// This member is required.
     public var instanceArn: Swift.String?
@@ -1523,7 +1524,7 @@ public struct CreateAccountAssignmentInput {
     }
 }
 
-public struct CreateAccountAssignmentOutput {
+public struct CreateAccountAssignmentOutput: Swift.Sendable {
     /// The status object for the account assignment creation operation.
     public var accountAssignmentCreationStatus: SSOAdminClientTypes.AccountAssignmentOperationStatus?
 
@@ -1536,8 +1537,9 @@ public struct CreateAccountAssignmentOutput {
 }
 
 extension SSOAdminClientTypes {
+
     /// A set of key-value pairs that are used to manage the resource. Tags can only be applied to permission sets and cannot be applied to corresponding roles that IAM Identity Center creates in Amazon Web Services accounts.
-    public struct Tag {
+    public struct Tag: Swift.Sendable {
         /// The key for the tag.
         /// This member is required.
         public var key: Swift.String?
@@ -1554,10 +1556,9 @@ extension SSOAdminClientTypes {
             self.value = value
         }
     }
-
 }
 
-public struct CreateApplicationInput {
+public struct CreateApplicationInput: Swift.Sendable {
     /// The ARN of the application provider under which the operation will run.
     /// This member is required.
     public var applicationProviderArn: Swift.String?
@@ -1600,7 +1601,7 @@ public struct CreateApplicationInput {
     }
 }
 
-public struct CreateApplicationOutput {
+public struct CreateApplicationOutput: Swift.Sendable {
     /// Specifies the ARN of the application.
     public var applicationArn: Swift.String?
 
@@ -1612,7 +1613,7 @@ public struct CreateApplicationOutput {
     }
 }
 
-public struct CreateApplicationAssignmentInput {
+public struct CreateApplicationAssignmentInput: Swift.Sendable {
     /// The ARN of the application provider under which the operation will run.
     /// This member is required.
     public var applicationArn: Swift.String?
@@ -1635,12 +1636,12 @@ public struct CreateApplicationAssignmentInput {
     }
 }
 
-public struct CreateApplicationAssignmentOutput {
+public struct CreateApplicationAssignmentOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct CreateInstanceInput {
+public struct CreateInstanceInput: Swift.Sendable {
     /// Specifies a unique, case-sensitive ID that you provide to ensure the idempotency of the request. This lets you safely retry the request without accidentally performing the same operation a second time. Passing the same value to a later call to an operation requires that you also pass the same value for all other parameters. We recommend that you use a [UUID type of value](https://wikipedia.org/wiki/Universally_unique_identifier). If you don't provide this value, then Amazon Web Services generates a random one for you. If you retry the operation with the same ClientToken, but with different parameters, the retry fails with an IdempotentParameterMismatch error.
     public var clientToken: Swift.String?
     /// The name of the instance of IAM Identity Center.
@@ -1660,7 +1661,7 @@ public struct CreateInstanceInput {
     }
 }
 
-public struct CreateInstanceOutput {
+public struct CreateInstanceOutput: Swift.Sendable {
     /// The ARN of the instance of IAM Identity Center under which the operation will run. For more information about ARNs, see [Amazon Resource Names (ARNs) and Amazon Web Services Service Namespaces] in the Amazon Web Services General Reference.
     public var instanceArn: Swift.String?
 
@@ -1673,8 +1674,9 @@ public struct CreateInstanceOutput {
 }
 
 extension SSOAdminClientTypes {
+
     /// Specifies the attributes to add to your attribute-based access control (ABAC) configuration.
-    public struct InstanceAccessControlAttributeConfiguration {
+    public struct InstanceAccessControlAttributeConfiguration: Swift.Sendable {
         /// Lists the attributes that are configured for ABAC in the specified IAM Identity Center instance.
         /// This member is required.
         public var accessControlAttributes: [SSOAdminClientTypes.AccessControlAttribute]?
@@ -1686,10 +1688,9 @@ extension SSOAdminClientTypes {
             self.accessControlAttributes = accessControlAttributes
         }
     }
-
 }
 
-public struct CreateInstanceAccessControlAttributeConfigurationInput {
+public struct CreateInstanceAccessControlAttributeConfigurationInput: Swift.Sendable {
     /// Specifies the IAM Identity Center identity store attributes to add to your ABAC configuration. When using an external identity provider as an identity source, you can pass attributes through the SAML assertion. Doing so provides an alternative to configuring attributes from the IAM Identity Center identity store. If a SAML assertion passes any of these attributes, IAM Identity Center will replace the attribute value with the value from the IAM Identity Center identity store.
     /// This member is required.
     public var instanceAccessControlAttributeConfiguration: SSOAdminClientTypes.InstanceAccessControlAttributeConfiguration?
@@ -1707,12 +1708,12 @@ public struct CreateInstanceAccessControlAttributeConfigurationInput {
     }
 }
 
-public struct CreateInstanceAccessControlAttributeConfigurationOutput {
+public struct CreateInstanceAccessControlAttributeConfigurationOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct CreatePermissionSetInput {
+public struct CreatePermissionSetInput: Swift.Sendable {
     /// The description of the [PermissionSet].
     public var description: Swift.String?
     /// The ARN of the IAM Identity Center instance under which the operation will be executed. For more information about ARNs, see [Amazon Resource Names (ARNs) and Amazon Web Services Service Namespaces] in the Amazon Web Services General Reference.
@@ -1747,8 +1748,9 @@ public struct CreatePermissionSetInput {
 }
 
 extension SSOAdminClientTypes {
+
     /// An entity that contains IAM policies.
-    public struct PermissionSet {
+    public struct PermissionSet: Swift.Sendable {
         /// The date that the permission set was created.
         public var createdDate: Foundation.Date?
         /// The description of the [PermissionSet].
@@ -1779,10 +1781,9 @@ extension SSOAdminClientTypes {
             self.sessionDuration = sessionDuration
         }
     }
-
 }
 
-public struct CreatePermissionSetOutput {
+public struct CreatePermissionSetOutput: Swift.Sendable {
     /// Defines the level of access on an Amazon Web Services account.
     public var permissionSet: SSOAdminClientTypes.PermissionSet?
 
@@ -1796,7 +1797,7 @@ public struct CreatePermissionSetOutput {
 
 extension SSOAdminClientTypes {
 
-    public enum JwksRetrievalOption: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum JwksRetrievalOption: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case openIdDiscovery
         case sdkUnknown(Swift.String)
 
@@ -1821,8 +1822,9 @@ extension SSOAdminClientTypes {
 }
 
 extension SSOAdminClientTypes {
+
     /// A structure that describes configuration settings for a trusted token issuer that supports OpenID Connect (OIDC) and JSON Web Tokens (JWTs).
-    public struct OidcJwtConfiguration {
+    public struct OidcJwtConfiguration: Swift.Sendable {
         /// The path of the source attribute in the JWT from the trusted token issuer. The attribute mapped by this JMESPath expression is compared against the attribute mapped by IdentityStoreAttributePath when a trusted token issuer token is exchanged for an IAM Identity Center token.
         /// This member is required.
         public var claimAttributePath: Swift.String?
@@ -1849,22 +1851,21 @@ extension SSOAdminClientTypes {
             self.jwksRetrievalOption = jwksRetrievalOption
         }
     }
-
 }
 
 extension SSOAdminClientTypes {
+
     /// A structure that describes the configuration of a trusted token issuer. The structure and available settings are determined by the type of the trusted token issuer.
-    public enum TrustedTokenIssuerConfiguration {
+    public enum TrustedTokenIssuerConfiguration: Swift.Sendable {
         /// A structure that describes the settings for a trusted token issuer that works with OpenID Connect (OIDC) by using JSON Web Tokens (JWT).
         case oidcjwtconfiguration(SSOAdminClientTypes.OidcJwtConfiguration)
         case sdkUnknown(Swift.String)
     }
-
 }
 
 extension SSOAdminClientTypes {
 
-    public enum TrustedTokenIssuerType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum TrustedTokenIssuerType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case oidcJwt
         case sdkUnknown(Swift.String)
 
@@ -1888,7 +1889,7 @@ extension SSOAdminClientTypes {
     }
 }
 
-public struct CreateTrustedTokenIssuerInput {
+public struct CreateTrustedTokenIssuerInput: Swift.Sendable {
     /// Specifies a unique, case-sensitive ID that you provide to ensure the idempotency of the request. This lets you safely retry the request without accidentally performing the same operation a second time. Passing the same value to a later call to an operation requires that you also pass the same value for all other parameters. We recommend that you use a [UUID type of value.](https://wikipedia.org/wiki/Universally_unique_identifier). If you don't provide this value, then Amazon Web Services generates a random one for you. If you retry the operation with the same ClientToken, but with different parameters, the retry fails with an IdempotentParameterMismatch error.
     public var clientToken: Swift.String?
     /// Specifies the ARN of the instance of IAM Identity Center to contain the new trusted token issuer configuration.
@@ -1924,7 +1925,7 @@ public struct CreateTrustedTokenIssuerInput {
     }
 }
 
-public struct CreateTrustedTokenIssuerOutput {
+public struct CreateTrustedTokenIssuerOutput: Swift.Sendable {
     /// The ARN of the new trusted token issuer configuration.
     public var trustedTokenIssuerArn: Swift.String?
 
@@ -1936,7 +1937,7 @@ public struct CreateTrustedTokenIssuerOutput {
     }
 }
 
-public struct DeleteAccountAssignmentInput {
+public struct DeleteAccountAssignmentInput: Swift.Sendable {
     /// The ARN of the IAM Identity Center instance under which the operation will be executed. For more information about ARNs, see [Amazon Resource Names (ARNs) and Amazon Web Services Service Namespaces] in the Amazon Web Services General Reference.
     /// This member is required.
     public var instanceArn: Swift.String?
@@ -1974,7 +1975,7 @@ public struct DeleteAccountAssignmentInput {
     }
 }
 
-public struct DeleteAccountAssignmentOutput {
+public struct DeleteAccountAssignmentOutput: Swift.Sendable {
     /// The status object for the account assignment deletion operation.
     public var accountAssignmentDeletionStatus: SSOAdminClientTypes.AccountAssignmentOperationStatus?
 
@@ -1986,7 +1987,7 @@ public struct DeleteAccountAssignmentOutput {
     }
 }
 
-public struct DeleteApplicationInput {
+public struct DeleteApplicationInput: Swift.Sendable {
     /// Specifies the ARN of the application. For more information about ARNs, see [Amazon Resource Names (ARNs) and Amazon Web Services Service Namespaces] in the Amazon Web Services General Reference.
     /// This member is required.
     public var applicationArn: Swift.String?
@@ -1999,12 +2000,12 @@ public struct DeleteApplicationInput {
     }
 }
 
-public struct DeleteApplicationOutput {
+public struct DeleteApplicationOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteApplicationAssignmentInput {
+public struct DeleteApplicationAssignmentInput: Swift.Sendable {
     /// Specifies the ARN of the application.
     /// This member is required.
     public var applicationArn: Swift.String?
@@ -2027,12 +2028,12 @@ public struct DeleteApplicationAssignmentInput {
     }
 }
 
-public struct DeleteApplicationAssignmentOutput {
+public struct DeleteApplicationAssignmentOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteInlinePolicyFromPermissionSetInput {
+public struct DeleteInlinePolicyFromPermissionSetInput: Swift.Sendable {
     /// The ARN of the IAM Identity Center instance under which the operation will be executed. For more information about ARNs, see [Amazon Resource Names (ARNs) and Amazon Web Services Service Namespaces] in the Amazon Web Services General Reference.
     /// This member is required.
     public var instanceArn: Swift.String?
@@ -2050,12 +2051,12 @@ public struct DeleteInlinePolicyFromPermissionSetInput {
     }
 }
 
-public struct DeleteInlinePolicyFromPermissionSetOutput {
+public struct DeleteInlinePolicyFromPermissionSetOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteInstanceInput {
+public struct DeleteInstanceInput: Swift.Sendable {
     /// The ARN of the instance of IAM Identity Center under which the operation will run.
     /// This member is required.
     public var instanceArn: Swift.String?
@@ -2068,12 +2069,12 @@ public struct DeleteInstanceInput {
     }
 }
 
-public struct DeleteInstanceOutput {
+public struct DeleteInstanceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteInstanceAccessControlAttributeConfigurationInput {
+public struct DeleteInstanceAccessControlAttributeConfigurationInput: Swift.Sendable {
     /// The ARN of the IAM Identity Center instance under which the operation will be executed.
     /// This member is required.
     public var instanceArn: Swift.String?
@@ -2086,12 +2087,12 @@ public struct DeleteInstanceAccessControlAttributeConfigurationInput {
     }
 }
 
-public struct DeleteInstanceAccessControlAttributeConfigurationOutput {
+public struct DeleteInstanceAccessControlAttributeConfigurationOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeletePermissionsBoundaryFromPermissionSetInput {
+public struct DeletePermissionsBoundaryFromPermissionSetInput: Swift.Sendable {
     /// The ARN of the IAM Identity Center instance under which the operation will be executed.
     /// This member is required.
     public var instanceArn: Swift.String?
@@ -2109,12 +2110,12 @@ public struct DeletePermissionsBoundaryFromPermissionSetInput {
     }
 }
 
-public struct DeletePermissionsBoundaryFromPermissionSetOutput {
+public struct DeletePermissionsBoundaryFromPermissionSetOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeletePermissionSetInput {
+public struct DeletePermissionSetInput: Swift.Sendable {
     /// The ARN of the IAM Identity Center instance under which the operation will be executed. For more information about ARNs, see [Amazon Resource Names (ARNs) and Amazon Web Services Service Namespaces] in the Amazon Web Services General Reference.
     /// This member is required.
     public var instanceArn: Swift.String?
@@ -2132,12 +2133,12 @@ public struct DeletePermissionSetInput {
     }
 }
 
-public struct DeletePermissionSetOutput {
+public struct DeletePermissionSetOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteTrustedTokenIssuerInput {
+public struct DeleteTrustedTokenIssuerInput: Swift.Sendable {
     /// Specifies the ARN of the trusted token issuer configuration to delete.
     /// This member is required.
     public var trustedTokenIssuerArn: Swift.String?
@@ -2150,12 +2151,12 @@ public struct DeleteTrustedTokenIssuerInput {
     }
 }
 
-public struct DeleteTrustedTokenIssuerOutput {
+public struct DeleteTrustedTokenIssuerOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DescribeAccountAssignmentCreationStatusInput {
+public struct DescribeAccountAssignmentCreationStatusInput: Swift.Sendable {
     /// The identifier that is used to track the request operation progress.
     /// This member is required.
     public var accountAssignmentCreationRequestId: Swift.String?
@@ -2173,7 +2174,7 @@ public struct DescribeAccountAssignmentCreationStatusInput {
     }
 }
 
-public struct DescribeAccountAssignmentCreationStatusOutput {
+public struct DescribeAccountAssignmentCreationStatusOutput: Swift.Sendable {
     /// The status object for the account assignment creation operation.
     public var accountAssignmentCreationStatus: SSOAdminClientTypes.AccountAssignmentOperationStatus?
 
@@ -2185,7 +2186,7 @@ public struct DescribeAccountAssignmentCreationStatusOutput {
     }
 }
 
-public struct DescribeAccountAssignmentDeletionStatusInput {
+public struct DescribeAccountAssignmentDeletionStatusInput: Swift.Sendable {
     /// The identifier that is used to track the request operation progress.
     /// This member is required.
     public var accountAssignmentDeletionRequestId: Swift.String?
@@ -2203,7 +2204,7 @@ public struct DescribeAccountAssignmentDeletionStatusInput {
     }
 }
 
-public struct DescribeAccountAssignmentDeletionStatusOutput {
+public struct DescribeAccountAssignmentDeletionStatusOutput: Swift.Sendable {
     /// The status object for the account assignment deletion operation.
     public var accountAssignmentDeletionStatus: SSOAdminClientTypes.AccountAssignmentOperationStatus?
 
@@ -2215,7 +2216,7 @@ public struct DescribeAccountAssignmentDeletionStatusOutput {
     }
 }
 
-public struct DescribeApplicationInput {
+public struct DescribeApplicationInput: Swift.Sendable {
     /// Specifies the ARN of the application. For more information about ARNs, see [Amazon Resource Names (ARNs) and Amazon Web Services Service Namespaces] in the Amazon Web Services General Reference.
     /// This member is required.
     public var applicationArn: Swift.String?
@@ -2228,7 +2229,7 @@ public struct DescribeApplicationInput {
     }
 }
 
-public struct DescribeApplicationOutput {
+public struct DescribeApplicationOutput: Swift.Sendable {
     /// The account ID.
     public var applicationAccount: Swift.String?
     /// Specifies the ARN of the application.
@@ -2272,7 +2273,7 @@ public struct DescribeApplicationOutput {
     }
 }
 
-public struct DescribeApplicationAssignmentInput {
+public struct DescribeApplicationAssignmentInput: Swift.Sendable {
     /// Specifies the ARN of the application. For more information about ARNs, see [Amazon Resource Names (ARNs) and Amazon Web Services Service Namespaces] in the Amazon Web Services General Reference.
     /// This member is required.
     public var applicationArn: Swift.String?
@@ -2295,7 +2296,7 @@ public struct DescribeApplicationAssignmentInput {
     }
 }
 
-public struct DescribeApplicationAssignmentOutput {
+public struct DescribeApplicationAssignmentOutput: Swift.Sendable {
     /// Specifies the ARN of the application. For more information about ARNs, see [Amazon Resource Names (ARNs) and Amazon Web Services Service Namespaces] in the Amazon Web Services General Reference.
     public var applicationArn: Swift.String?
     /// An identifier for an object in IAM Identity Center, such as a user or group. PrincipalIds are GUIDs (For example, f81d4fae-7dec-11d0-a765-00a0c91e6bf6). For more information about PrincipalIds in IAM Identity Center, see the [IAM Identity Center Identity Store API Reference].
@@ -2315,7 +2316,7 @@ public struct DescribeApplicationAssignmentOutput {
     }
 }
 
-public struct DescribeApplicationProviderInput {
+public struct DescribeApplicationProviderInput: Swift.Sendable {
     /// Specifies the ARN of the application provider for which you want details.
     /// This member is required.
     public var applicationProviderArn: Swift.String?
@@ -2328,7 +2329,7 @@ public struct DescribeApplicationProviderInput {
     }
 }
 
-public struct DescribeApplicationProviderOutput {
+public struct DescribeApplicationProviderOutput: Swift.Sendable {
     /// The ARN of the application provider.
     /// This member is required.
     public var applicationProviderArn: Swift.String?
@@ -2353,7 +2354,7 @@ public struct DescribeApplicationProviderOutput {
     }
 }
 
-public struct DescribeInstanceInput {
+public struct DescribeInstanceInput: Swift.Sendable {
     /// The ARN of the instance of IAM Identity Center under which the operation will run.
     /// This member is required.
     public var instanceArn: Swift.String?
@@ -2368,7 +2369,7 @@ public struct DescribeInstanceInput {
 
 extension SSOAdminClientTypes {
 
-    public enum InstanceStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum InstanceStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case active
         case createInProgress
         case deleteInProgress
@@ -2398,7 +2399,7 @@ extension SSOAdminClientTypes {
     }
 }
 
-public struct DescribeInstanceOutput {
+public struct DescribeInstanceOutput: Swift.Sendable {
     /// The date the instance was created.
     public var createdDate: Foundation.Date?
     /// The identifier of the identity store that is connected to the instance of IAM Identity Center.
@@ -2430,7 +2431,7 @@ public struct DescribeInstanceOutput {
     }
 }
 
-public struct DescribeInstanceAccessControlAttributeConfigurationInput {
+public struct DescribeInstanceAccessControlAttributeConfigurationInput: Swift.Sendable {
     /// The ARN of the IAM Identity Center instance under which the operation will be executed.
     /// This member is required.
     public var instanceArn: Swift.String?
@@ -2445,7 +2446,7 @@ public struct DescribeInstanceAccessControlAttributeConfigurationInput {
 
 extension SSOAdminClientTypes {
 
-    public enum InstanceAccessControlAttributeConfigurationStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum InstanceAccessControlAttributeConfigurationStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case creationFailed
         case creationInProgress
         case enabled
@@ -2475,7 +2476,7 @@ extension SSOAdminClientTypes {
     }
 }
 
-public struct DescribeInstanceAccessControlAttributeConfigurationOutput {
+public struct DescribeInstanceAccessControlAttributeConfigurationOutput: Swift.Sendable {
     /// Gets the list of IAM Identity Center identity store attributes that have been added to your ABAC configuration.
     public var instanceAccessControlAttributeConfiguration: SSOAdminClientTypes.InstanceAccessControlAttributeConfiguration?
     /// The status of the attribute configuration process.
@@ -2495,7 +2496,7 @@ public struct DescribeInstanceAccessControlAttributeConfigurationOutput {
     }
 }
 
-public struct DescribePermissionSetInput {
+public struct DescribePermissionSetInput: Swift.Sendable {
     /// The ARN of the IAM Identity Center instance under which the operation will be executed. For more information about ARNs, see [Amazon Resource Names (ARNs) and Amazon Web Services Service Namespaces] in the Amazon Web Services General Reference.
     /// This member is required.
     public var instanceArn: Swift.String?
@@ -2513,7 +2514,7 @@ public struct DescribePermissionSetInput {
     }
 }
 
-public struct DescribePermissionSetOutput {
+public struct DescribePermissionSetOutput: Swift.Sendable {
     /// Describes the level of access on an Amazon Web Services account.
     public var permissionSet: SSOAdminClientTypes.PermissionSet?
 
@@ -2525,7 +2526,7 @@ public struct DescribePermissionSetOutput {
     }
 }
 
-public struct DescribePermissionSetProvisioningStatusInput {
+public struct DescribePermissionSetProvisioningStatusInput: Swift.Sendable {
     /// The ARN of the IAM Identity Center instance under which the operation will be executed. For more information about ARNs, see [Amazon Resource Names (ARNs) and Amazon Web Services Service Namespaces] in the Amazon Web Services General Reference.
     /// This member is required.
     public var instanceArn: Swift.String?
@@ -2544,8 +2545,9 @@ public struct DescribePermissionSetProvisioningStatusInput {
 }
 
 extension SSOAdminClientTypes {
+
     /// A structure that is used to provide the status of the provisioning operation for a specified permission set.
-    public struct PermissionSetProvisioningStatus {
+    public struct PermissionSetProvisioningStatus: Swift.Sendable {
         /// The identifier of the Amazon Web Services account from which to list the assignments.
         public var accountId: Swift.String?
         /// The date that the permission set was created.
@@ -2576,10 +2578,9 @@ extension SSOAdminClientTypes {
             self.status = status
         }
     }
-
 }
 
-public struct DescribePermissionSetProvisioningStatusOutput {
+public struct DescribePermissionSetProvisioningStatusOutput: Swift.Sendable {
     /// The status object for the permission set provisioning operation.
     public var permissionSetProvisioningStatus: SSOAdminClientTypes.PermissionSetProvisioningStatus?
 
@@ -2591,7 +2592,7 @@ public struct DescribePermissionSetProvisioningStatusOutput {
     }
 }
 
-public struct DescribeTrustedTokenIssuerInput {
+public struct DescribeTrustedTokenIssuerInput: Swift.Sendable {
     /// Specifies the ARN of the trusted token issuer configuration that you want details about.
     /// This member is required.
     public var trustedTokenIssuerArn: Swift.String?
@@ -2604,7 +2605,7 @@ public struct DescribeTrustedTokenIssuerInput {
     }
 }
 
-public struct DescribeTrustedTokenIssuerOutput {
+public struct DescribeTrustedTokenIssuerOutput: Swift.Sendable {
     /// The name of the trusted token issuer configuration.
     public var name: Swift.String?
     /// The ARN of the trusted token issuer configuration.
@@ -2628,7 +2629,7 @@ public struct DescribeTrustedTokenIssuerOutput {
     }
 }
 
-public struct DetachCustomerManagedPolicyReferenceFromPermissionSetInput {
+public struct DetachCustomerManagedPolicyReferenceFromPermissionSetInput: Swift.Sendable {
     /// Specifies the name and path of a customer managed policy. You must have an IAM policy that matches the name and path in each Amazon Web Services account where you want to deploy your permission set.
     /// This member is required.
     public var customerManagedPolicyReference: SSOAdminClientTypes.CustomerManagedPolicyReference?
@@ -2651,12 +2652,12 @@ public struct DetachCustomerManagedPolicyReferenceFromPermissionSetInput {
     }
 }
 
-public struct DetachCustomerManagedPolicyReferenceFromPermissionSetOutput {
+public struct DetachCustomerManagedPolicyReferenceFromPermissionSetOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DetachManagedPolicyFromPermissionSetInput {
+public struct DetachManagedPolicyFromPermissionSetInput: Swift.Sendable {
     /// The ARN of the IAM Identity Center instance under which the operation will be executed. For more information about ARNs, see [Amazon Resource Names (ARNs) and Amazon Web Services Service Namespaces] in the Amazon Web Services General Reference.
     /// This member is required.
     public var instanceArn: Swift.String?
@@ -2679,12 +2680,12 @@ public struct DetachManagedPolicyFromPermissionSetInput {
     }
 }
 
-public struct DetachManagedPolicyFromPermissionSetOutput {
+public struct DetachManagedPolicyFromPermissionSetOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct GetApplicationAssignmentConfigurationInput {
+public struct GetApplicationAssignmentConfigurationInput: Swift.Sendable {
     /// Specifies the ARN of the application. For more information about ARNs, see [Amazon Resource Names (ARNs) and Amazon Web Services Service Namespaces] in the Amazon Web Services General Reference.
     /// This member is required.
     public var applicationArn: Swift.String?
@@ -2697,7 +2698,7 @@ public struct GetApplicationAssignmentConfigurationInput {
     }
 }
 
-public struct GetApplicationAssignmentConfigurationOutput {
+public struct GetApplicationAssignmentConfigurationOutput: Swift.Sendable {
     /// If AssignmentsRequired is true (default value), users don’t have access to the application unless an assignment is created using the [CreateApplicationAssignment API](https://docs.aws.amazon.com/singlesignon/latest/APIReference/API_CreateApplicationAssignment.html). If false, all users have access to the application.
     /// This member is required.
     public var assignmentRequired: Swift.Bool?
@@ -2710,7 +2711,7 @@ public struct GetApplicationAssignmentConfigurationOutput {
     }
 }
 
-public struct GetInlinePolicyForPermissionSetInput {
+public struct GetInlinePolicyForPermissionSetInput: Swift.Sendable {
     /// The ARN of the IAM Identity Center instance under which the operation will be executed. For more information about ARNs, see [Amazon Resource Names (ARNs) and Amazon Web Services Service Namespaces] in the Amazon Web Services General Reference.
     /// This member is required.
     public var instanceArn: Swift.String?
@@ -2728,7 +2729,7 @@ public struct GetInlinePolicyForPermissionSetInput {
     }
 }
 
-public struct GetInlinePolicyForPermissionSetOutput {
+public struct GetInlinePolicyForPermissionSetOutput: Swift.Sendable {
     /// The inline policy that is attached to the permission set. For Length Constraints, if a valid ARN is provided for a permission set, it is possible for an empty inline policy to be returned.
     public var inlinePolicy: Swift.String?
 
@@ -2740,7 +2741,7 @@ public struct GetInlinePolicyForPermissionSetOutput {
     }
 }
 
-public struct GetPermissionsBoundaryForPermissionSetInput {
+public struct GetPermissionsBoundaryForPermissionSetInput: Swift.Sendable {
     /// The ARN of the IAM Identity Center instance under which the operation will be executed.
     /// This member is required.
     public var instanceArn: Swift.String?
@@ -2759,8 +2760,9 @@ public struct GetPermissionsBoundaryForPermissionSetInput {
 }
 
 extension SSOAdminClientTypes {
+
     /// Specifies the configuration of the Amazon Web Services managed or customer managed policy that you want to set as a permissions boundary. Specify either CustomerManagedPolicyReference to use the name and path of a customer managed policy, or ManagedPolicyArn to use the ARN of an Amazon Web Services managed policy. A permissions boundary represents the maximum permissions that any policy can grant your role. For more information, see [Permissions boundaries for IAM entities](https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies_boundaries.html) in the IAM User Guide. Policies used as permissions boundaries don't provide permissions. You must also attach an IAM policy to the role. To learn how the effective permissions for a role are evaluated, see [IAM JSON policy evaluation logic](https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_evaluation-logic.html) in the IAM User Guide.
-    public struct PermissionsBoundary {
+    public struct PermissionsBoundary: Swift.Sendable {
         /// Specifies the name and path of a customer managed policy. You must have an IAM policy that matches the name and path in each Amazon Web Services account where you want to deploy your permission set.
         public var customerManagedPolicyReference: SSOAdminClientTypes.CustomerManagedPolicyReference?
         /// The Amazon Web Services managed policy ARN that you want to attach to a permission set as a permissions boundary.
@@ -2775,10 +2777,9 @@ extension SSOAdminClientTypes {
             self.managedPolicyArn = managedPolicyArn
         }
     }
-
 }
 
-public struct GetPermissionsBoundaryForPermissionSetOutput {
+public struct GetPermissionsBoundaryForPermissionSetOutput: Swift.Sendable {
     /// The permissions boundary attached to the specified permission set.
     public var permissionsBoundary: SSOAdminClientTypes.PermissionsBoundary?
 
@@ -2791,8 +2792,9 @@ public struct GetPermissionsBoundaryForPermissionSetOutput {
 }
 
 extension SSOAdminClientTypes {
+
     /// Provides information about the IAM Identity Center instance.
-    public struct InstanceMetadata {
+    public struct InstanceMetadata: Swift.Sendable {
         /// The date and time that the Identity Center instance was created.
         public var createdDate: Foundation.Date?
         /// The identifier of the identity store that is connected to the Identity Center instance.
@@ -2823,12 +2825,12 @@ extension SSOAdminClientTypes {
             self.status = status
         }
     }
-
 }
 
 extension SSOAdminClientTypes {
+
     /// Filters the operation status list based on the passed attribute value.
-    public struct OperationStatusFilter {
+    public struct OperationStatusFilter: Swift.Sendable {
         /// Filters the list operations result based on the status attribute.
         public var status: SSOAdminClientTypes.StatusValues?
 
@@ -2839,10 +2841,9 @@ extension SSOAdminClientTypes {
             self.status = status
         }
     }
-
 }
 
-public struct ListAccountAssignmentCreationStatusInput {
+public struct ListAccountAssignmentCreationStatusInput: Swift.Sendable {
     /// Filters results based on the passed attribute value.
     public var filter: SSOAdminClientTypes.OperationStatusFilter?
     /// The ARN of the IAM Identity Center instance under which the operation will be executed. For more information about ARNs, see [Amazon Resource Names (ARNs) and Amazon Web Services Service Namespaces] in the Amazon Web Services General Reference.
@@ -2867,7 +2868,7 @@ public struct ListAccountAssignmentCreationStatusInput {
     }
 }
 
-public struct ListAccountAssignmentCreationStatusOutput {
+public struct ListAccountAssignmentCreationStatusOutput: Swift.Sendable {
     /// The status object for the account assignment creation operation.
     public var accountAssignmentsCreationStatus: [SSOAdminClientTypes.AccountAssignmentOperationStatusMetadata]?
     /// The pagination token for the list API. Initially the value is null. Use the output of previous API calls to make subsequent calls.
@@ -2883,7 +2884,7 @@ public struct ListAccountAssignmentCreationStatusOutput {
     }
 }
 
-public struct ListAccountAssignmentDeletionStatusInput {
+public struct ListAccountAssignmentDeletionStatusInput: Swift.Sendable {
     /// Filters results based on the passed attribute value.
     public var filter: SSOAdminClientTypes.OperationStatusFilter?
     /// The ARN of the IAM Identity Center instance under which the operation will be executed. For more information about ARNs, see [Amazon Resource Names (ARNs) and Amazon Web Services Service Namespaces] in the Amazon Web Services General Reference.
@@ -2908,7 +2909,7 @@ public struct ListAccountAssignmentDeletionStatusInput {
     }
 }
 
-public struct ListAccountAssignmentDeletionStatusOutput {
+public struct ListAccountAssignmentDeletionStatusOutput: Swift.Sendable {
     /// The status object for the account assignment deletion operation.
     public var accountAssignmentsDeletionStatus: [SSOAdminClientTypes.AccountAssignmentOperationStatusMetadata]?
     /// The pagination token for the list API. Initially the value is null. Use the output of previous API calls to make subsequent calls.
@@ -2924,7 +2925,7 @@ public struct ListAccountAssignmentDeletionStatusOutput {
     }
 }
 
-public struct ListAccountAssignmentsInput {
+public struct ListAccountAssignmentsInput: Swift.Sendable {
     /// The identifier of the Amazon Web Services account from which to list the assignments.
     /// This member is required.
     public var accountId: Swift.String?
@@ -2955,7 +2956,7 @@ public struct ListAccountAssignmentsInput {
     }
 }
 
-public struct ListAccountAssignmentsOutput {
+public struct ListAccountAssignmentsOutput: Swift.Sendable {
     /// The list of assignments that match the input Amazon Web Services account and permission set.
     public var accountAssignments: [SSOAdminClientTypes.AccountAssignment]?
     /// The pagination token for the list API. Initially the value is null. Use the output of previous API calls to make subsequent calls.
@@ -2972,8 +2973,9 @@ public struct ListAccountAssignmentsOutput {
 }
 
 extension SSOAdminClientTypes {
+
     /// A structure that describes a filter for account assignments.
-    public struct ListAccountAssignmentsFilter {
+    public struct ListAccountAssignmentsFilter: Swift.Sendable {
         /// The ID number of an Amazon Web Services account that filters the results in the response.
         public var accountId: Swift.String?
 
@@ -2984,10 +2986,9 @@ extension SSOAdminClientTypes {
             self.accountId = accountId
         }
     }
-
 }
 
-public struct ListAccountAssignmentsForPrincipalInput {
+public struct ListAccountAssignmentsForPrincipalInput: Swift.Sendable {
     /// Specifies an Amazon Web Services account ID number. Results are filtered to only those that match this ID number.
     public var filter: SSOAdminClientTypes.ListAccountAssignmentsFilter?
     /// Specifies the ARN of the instance of IAM Identity Center that contains the principal.
@@ -3022,7 +3023,7 @@ public struct ListAccountAssignmentsForPrincipalInput {
     }
 }
 
-public struct ListAccountAssignmentsForPrincipalOutput {
+public struct ListAccountAssignmentsForPrincipalOutput: Swift.Sendable {
     /// An array list of the account assignments for the principal.
     public var accountAssignments: [SSOAdminClientTypes.AccountAssignmentForPrincipal]?
     /// If present, this value indicates that more output is available than is included in the current response. Use this value in the NextToken request parameter in a subsequent call to the operation to get the next part of the output. You should repeat this until the NextToken response element comes back as null. This indicates that this is the last page of results.
@@ -3040,7 +3041,7 @@ public struct ListAccountAssignmentsForPrincipalOutput {
 
 extension SSOAdminClientTypes {
 
-    public enum ProvisioningStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ProvisioningStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case latestPermissionSetNotProvisioned
         case latestPermissionSetProvisioned
         case sdkUnknown(Swift.String)
@@ -3067,7 +3068,7 @@ extension SSOAdminClientTypes {
     }
 }
 
-public struct ListAccountsForProvisionedPermissionSetInput {
+public struct ListAccountsForProvisionedPermissionSetInput: Swift.Sendable {
     /// The ARN of the IAM Identity Center instance under which the operation will be executed. For more information about ARNs, see [Amazon Resource Names (ARNs) and Amazon Web Services Service Namespaces] in the Amazon Web Services General Reference.
     /// This member is required.
     public var instanceArn: Swift.String?
@@ -3097,7 +3098,7 @@ public struct ListAccountsForProvisionedPermissionSetInput {
     }
 }
 
-public struct ListAccountsForProvisionedPermissionSetOutput {
+public struct ListAccountsForProvisionedPermissionSetOutput: Swift.Sendable {
     /// The list of Amazon Web Services AccountIds.
     public var accountIds: [Swift.String]?
     /// The pagination token for the list API. Initially the value is null. Use the output of previous API calls to make subsequent calls.
@@ -3113,7 +3114,7 @@ public struct ListAccountsForProvisionedPermissionSetOutput {
     }
 }
 
-public struct ListApplicationAssignmentsInput {
+public struct ListApplicationAssignmentsInput: Swift.Sendable {
     /// Specifies the ARN of the application.
     /// This member is required.
     public var applicationArn: Swift.String?
@@ -3134,7 +3135,7 @@ public struct ListApplicationAssignmentsInput {
     }
 }
 
-public struct ListApplicationAssignmentsOutput {
+public struct ListApplicationAssignmentsOutput: Swift.Sendable {
     /// The list of users assigned to an application.
     public var applicationAssignments: [SSOAdminClientTypes.ApplicationAssignment]?
     /// If present, this value indicates that more output is available than is included in the current response. Use this value in the NextToken request parameter in a subsequent call to the operation to get the next part of the output. You should repeat this until the NextToken response element comes back as null. This indicates that this is the last page of results.
@@ -3151,8 +3152,9 @@ public struct ListApplicationAssignmentsOutput {
 }
 
 extension SSOAdminClientTypes {
+
     /// A structure that describes a filter for application assignments.
-    public struct ListApplicationAssignmentsFilter {
+    public struct ListApplicationAssignmentsFilter: Swift.Sendable {
         /// The ARN of an application.
         public var applicationArn: Swift.String?
 
@@ -3163,10 +3165,9 @@ extension SSOAdminClientTypes {
             self.applicationArn = applicationArn
         }
     }
-
 }
 
-public struct ListApplicationAssignmentsForPrincipalInput {
+public struct ListApplicationAssignmentsForPrincipalInput: Swift.Sendable {
     /// Filters the output to include only assignments associated with the application that has the specified ARN.
     public var filter: SSOAdminClientTypes.ListApplicationAssignmentsFilter?
     /// Specifies the instance of IAM Identity Center that contains principal and applications.
@@ -3201,7 +3202,7 @@ public struct ListApplicationAssignmentsForPrincipalInput {
     }
 }
 
-public struct ListApplicationAssignmentsForPrincipalOutput {
+public struct ListApplicationAssignmentsForPrincipalOutput: Swift.Sendable {
     /// An array list of the application assignments for the specified principal.
     public var applicationAssignments: [SSOAdminClientTypes.ApplicationAssignmentForPrincipal]?
     /// If present, this value indicates that more output is available than is included in the current response. Use this value in the NextToken request parameter in a subsequent call to the operation to get the next part of the output. You should repeat this until the NextToken response element comes back as null. This indicates that this is the last page of results.
@@ -3217,7 +3218,7 @@ public struct ListApplicationAssignmentsForPrincipalOutput {
     }
 }
 
-public struct ListApplicationProvidersInput {
+public struct ListApplicationProvidersInput: Swift.Sendable {
     /// Specifies the total number of results that you want included in each response. If additional items exist beyond the number you specify, the NextToken response element is returned with a value (not null). Include the specified value as the NextToken request parameter in the next call to the operation to get the next set of results. Note that the service might return fewer results than the maximum even when there are more results available. You should check NextToken after every operation to ensure that you receive all of the results.
     public var maxResults: Swift.Int?
     /// Specifies that you want to receive the next page of results. Valid only if you received a NextToken response in the previous request. If you did, it indicates that more output is available. Set this parameter to the value provided by the previous call's NextToken response to request the next page of results.
@@ -3233,7 +3234,7 @@ public struct ListApplicationProvidersInput {
     }
 }
 
-public struct ListApplicationProvidersOutput {
+public struct ListApplicationProvidersOutput: Swift.Sendable {
     /// An array list of structures that describe application providers.
     public var applicationProviders: [SSOAdminClientTypes.ApplicationProvider]?
     /// If present, this value indicates that more output is available than is included in the current response. Use this value in the NextToken request parameter in a subsequent call to the operation to get the next part of the output. You should repeat this until the NextToken response element comes back as null. This indicates that this is the last page of results.
@@ -3250,8 +3251,9 @@ public struct ListApplicationProvidersOutput {
 }
 
 extension SSOAdminClientTypes {
+
     /// A structure that describes a filter for applications.
-    public struct ListApplicationsFilter {
+    public struct ListApplicationsFilter: Swift.Sendable {
         /// An Amazon Web Services account ID number that filters the results in the response.
         public var applicationAccount: Swift.String?
         /// The ARN of an application provider that can filter the results in the response.
@@ -3266,10 +3268,9 @@ extension SSOAdminClientTypes {
             self.applicationProvider = applicationProvider
         }
     }
-
 }
 
-public struct ListApplicationsInput {
+public struct ListApplicationsInput: Swift.Sendable {
     /// Filters response results.
     public var filter: SSOAdminClientTypes.ListApplicationsFilter?
     /// The ARN of the IAM Identity Center application under which the operation will run. For more information about ARNs, see [Amazon Resource Names (ARNs) and Amazon Web Services Service Namespaces] in the Amazon Web Services General Reference.
@@ -3294,7 +3295,7 @@ public struct ListApplicationsInput {
     }
 }
 
-public struct ListApplicationsOutput {
+public struct ListApplicationsOutput: Swift.Sendable {
     /// Retrieves all applications associated with the instance.
     public var applications: [SSOAdminClientTypes.Application]?
     /// If present, this value indicates that more output is available than is included in the current response. Use this value in the NextToken request parameter in a subsequent call to the operation to get the next part of the output. You should repeat this until the NextToken response element comes back as null. This indicates that this is the last page of results.
@@ -3310,7 +3311,7 @@ public struct ListApplicationsOutput {
     }
 }
 
-public struct ListCustomerManagedPolicyReferencesInPermissionSetInput {
+public struct ListCustomerManagedPolicyReferencesInPermissionSetInput: Swift.Sendable {
     /// The ARN of the IAM Identity Center instance under which the operation will be executed.
     /// This member is required.
     public var instanceArn: Swift.String?
@@ -3336,7 +3337,7 @@ public struct ListCustomerManagedPolicyReferencesInPermissionSetInput {
     }
 }
 
-public struct ListCustomerManagedPolicyReferencesInPermissionSetOutput {
+public struct ListCustomerManagedPolicyReferencesInPermissionSetOutput: Swift.Sendable {
     /// Specifies the names and paths of the customer managed policies that you have attached to your permission set.
     public var customerManagedPolicyReferences: [SSOAdminClientTypes.CustomerManagedPolicyReference]?
     /// The pagination token for the list API. Initially the value is null. Use the output of previous API calls to make subsequent calls.
@@ -3352,7 +3353,7 @@ public struct ListCustomerManagedPolicyReferencesInPermissionSetOutput {
     }
 }
 
-public struct ListInstancesInput {
+public struct ListInstancesInput: Swift.Sendable {
     /// The maximum number of results to display for the instance.
     public var maxResults: Swift.Int?
     /// The pagination token for the list API. Initially the value is null. Use the output of previous API calls to make subsequent calls.
@@ -3368,7 +3369,7 @@ public struct ListInstancesInput {
     }
 }
 
-public struct ListInstancesOutput {
+public struct ListInstancesOutput: Swift.Sendable {
     /// Lists the IAM Identity Center instances that the caller has access to.
     public var instances: [SSOAdminClientTypes.InstanceMetadata]?
     /// The pagination token for the list API. Initially the value is null. Use the output of previous API calls to make subsequent calls.
@@ -3384,7 +3385,7 @@ public struct ListInstancesOutput {
     }
 }
 
-public struct ListManagedPoliciesInPermissionSetInput {
+public struct ListManagedPoliciesInPermissionSetInput: Swift.Sendable {
     /// The ARN of the IAM Identity Center instance under which the operation will be executed. For more information about ARNs, see [Amazon Resource Names (ARNs) and Amazon Web Services Service Namespaces] in the Amazon Web Services General Reference.
     /// This member is required.
     public var instanceArn: Swift.String?
@@ -3410,7 +3411,7 @@ public struct ListManagedPoliciesInPermissionSetInput {
     }
 }
 
-public struct ListManagedPoliciesInPermissionSetOutput {
+public struct ListManagedPoliciesInPermissionSetOutput: Swift.Sendable {
     /// An array of the [AttachedManagedPolicy] data type object.
     public var attachedManagedPolicies: [SSOAdminClientTypes.AttachedManagedPolicy]?
     /// The pagination token for the list API. Initially the value is null. Use the output of previous API calls to make subsequent calls.
@@ -3426,7 +3427,7 @@ public struct ListManagedPoliciesInPermissionSetOutput {
     }
 }
 
-public struct ListPermissionSetProvisioningStatusInput {
+public struct ListPermissionSetProvisioningStatusInput: Swift.Sendable {
     /// Filters results based on the passed attribute value.
     public var filter: SSOAdminClientTypes.OperationStatusFilter?
     /// The ARN of the IAM Identity Center instance under which the operation will be executed. For more information about ARNs, see [Amazon Resource Names (ARNs) and Amazon Web Services Service Namespaces] in the Amazon Web Services General Reference.
@@ -3452,8 +3453,9 @@ public struct ListPermissionSetProvisioningStatusInput {
 }
 
 extension SSOAdminClientTypes {
+
     /// Provides information about the permission set provisioning status.
-    public struct PermissionSetProvisioningStatusMetadata {
+    public struct PermissionSetProvisioningStatusMetadata: Swift.Sendable {
         /// The date that the permission set was created.
         public var createdDate: Foundation.Date?
         /// The identifier for tracking the request operation that is generated by the universally unique identifier (UUID) workflow.
@@ -3472,10 +3474,9 @@ extension SSOAdminClientTypes {
             self.status = status
         }
     }
-
 }
 
-public struct ListPermissionSetProvisioningStatusOutput {
+public struct ListPermissionSetProvisioningStatusOutput: Swift.Sendable {
     /// The pagination token for the list API. Initially the value is null. Use the output of previous API calls to make subsequent calls.
     public var nextToken: Swift.String?
     /// The status object for the permission set provisioning operation.
@@ -3491,7 +3492,7 @@ public struct ListPermissionSetProvisioningStatusOutput {
     }
 }
 
-public struct ListPermissionSetsInput {
+public struct ListPermissionSetsInput: Swift.Sendable {
     /// The ARN of the IAM Identity Center instance under which the operation will be executed. For more information about ARNs, see [Amazon Resource Names (ARNs) and Amazon Web Services Service Namespaces] in the Amazon Web Services General Reference.
     /// This member is required.
     public var instanceArn: Swift.String?
@@ -3512,7 +3513,7 @@ public struct ListPermissionSetsInput {
     }
 }
 
-public struct ListPermissionSetsOutput {
+public struct ListPermissionSetsOutput: Swift.Sendable {
     /// The pagination token for the list API. Initially the value is null. Use the output of previous API calls to make subsequent calls.
     public var nextToken: Swift.String?
     /// Defines the level of access on an Amazon Web Services account.
@@ -3528,7 +3529,7 @@ public struct ListPermissionSetsOutput {
     }
 }
 
-public struct ListPermissionSetsProvisionedToAccountInput {
+public struct ListPermissionSetsProvisionedToAccountInput: Swift.Sendable {
     /// The identifier of the Amazon Web Services account from which to list the assignments.
     /// This member is required.
     public var accountId: Swift.String?
@@ -3558,7 +3559,7 @@ public struct ListPermissionSetsProvisionedToAccountInput {
     }
 }
 
-public struct ListPermissionSetsProvisionedToAccountOutput {
+public struct ListPermissionSetsProvisionedToAccountOutput: Swift.Sendable {
     /// The pagination token for the list API. Initially the value is null. Use the output of previous API calls to make subsequent calls.
     public var nextToken: Swift.String?
     /// Defines the level of access that an Amazon Web Services account has.
@@ -3574,7 +3575,7 @@ public struct ListPermissionSetsProvisionedToAccountOutput {
     }
 }
 
-public struct ListTagsForResourceInput {
+public struct ListTagsForResourceInput: Swift.Sendable {
     /// The ARN of the IAM Identity Center instance under which the operation will be executed. For more information about ARNs, see [Amazon Resource Names (ARNs) and Amazon Web Services Service Namespaces] in the Amazon Web Services General Reference.
     public var instanceArn: Swift.String?
     /// The pagination token for the list API. Initially the value is null. Use the output of previous API calls to make subsequent calls.
@@ -3595,7 +3596,7 @@ public struct ListTagsForResourceInput {
     }
 }
 
-public struct ListTagsForResourceOutput {
+public struct ListTagsForResourceOutput: Swift.Sendable {
     /// The pagination token for the list API. Initially the value is null. Use the output of previous API calls to make subsequent calls.
     public var nextToken: Swift.String?
     /// A set of key-value pairs that are used to manage the resource.
@@ -3611,7 +3612,7 @@ public struct ListTagsForResourceOutput {
     }
 }
 
-public struct ListTrustedTokenIssuersInput {
+public struct ListTrustedTokenIssuersInput: Swift.Sendable {
     /// Specifies the ARN of the instance of IAM Identity Center with the trusted token issuer configurations that you want to list.
     /// This member is required.
     public var instanceArn: Swift.String?
@@ -3633,8 +3634,9 @@ public struct ListTrustedTokenIssuersInput {
 }
 
 extension SSOAdminClientTypes {
+
     /// A structure that describes a trusted token issuer.
-    public struct TrustedTokenIssuerMetadata {
+    public struct TrustedTokenIssuerMetadata: Swift.Sendable {
         /// The name of the trusted token issuer configuration in the instance of IAM Identity Center.
         public var name: Swift.String?
         /// The ARN of the trusted token issuer configuration in the instance of IAM Identity Center.
@@ -3653,10 +3655,9 @@ extension SSOAdminClientTypes {
             self.trustedTokenIssuerType = trustedTokenIssuerType
         }
     }
-
 }
 
-public struct ListTrustedTokenIssuersOutput {
+public struct ListTrustedTokenIssuersOutput: Swift.Sendable {
     /// If present, this value indicates that more output is available than is included in the current response. Use this value in the NextToken request parameter in a subsequent call to the operation to get the next part of the output. You should repeat this until the NextToken response element comes back as null. This indicates that this is the last page of results.
     public var nextToken: Swift.String?
     /// An array list of the trusted token issuer configurations.
@@ -3673,8 +3674,9 @@ public struct ListTrustedTokenIssuersOutput {
 }
 
 extension SSOAdminClientTypes {
+
     /// A structure that describes updated configuration settings for a trusted token issuer that supports OpenID Connect (OIDC) and JSON Web Tokens (JWTs).
-    public struct OidcJwtUpdateConfiguration {
+    public struct OidcJwtUpdateConfiguration: Swift.Sendable {
         /// The path of the source attribute in the JWT from the trusted token issuer. The attribute mapped by this JMESPath expression is compared against the attribute mapped by IdentityStoreAttributePath when a trusted token issuer token is exchanged for an IAM Identity Center token.
         public var claimAttributePath: Swift.String?
         /// The path of the destination attribute in a JWT from IAM Identity Center. The attribute mapped by this JMESPath expression is compared against the attribute mapped by ClaimAttributePath when a trusted token issuer token is exchanged for an IAM Identity Center token.
@@ -3693,12 +3695,11 @@ extension SSOAdminClientTypes {
             self.jwksRetrievalOption = jwksRetrievalOption
         }
     }
-
 }
 
 extension SSOAdminClientTypes {
 
-    public enum ProvisionTargetType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ProvisionTargetType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case allProvisionedAccounts
         case awsAccount
         case sdkUnknown(Swift.String)
@@ -3725,7 +3726,7 @@ extension SSOAdminClientTypes {
     }
 }
 
-public struct ProvisionPermissionSetInput {
+public struct ProvisionPermissionSetInput: Swift.Sendable {
     /// The ARN of the IAM Identity Center instance under which the operation will be executed. For more information about ARNs, see [Amazon Resource Names (ARNs) and Amazon Web Services Service Namespaces] in the Amazon Web Services General Reference.
     /// This member is required.
     public var instanceArn: Swift.String?
@@ -3752,7 +3753,7 @@ public struct ProvisionPermissionSetInput {
     }
 }
 
-public struct ProvisionPermissionSetOutput {
+public struct ProvisionPermissionSetOutput: Swift.Sendable {
     /// The status object for the permission set provisioning operation.
     public var permissionSetProvisioningStatus: SSOAdminClientTypes.PermissionSetProvisioningStatus?
 
@@ -3764,7 +3765,7 @@ public struct ProvisionPermissionSetOutput {
     }
 }
 
-public struct PutApplicationAssignmentConfigurationInput {
+public struct PutApplicationAssignmentConfigurationInput: Swift.Sendable {
     /// Specifies the ARN of the application. For more information about ARNs, see [Amazon Resource Names (ARNs) and Amazon Web Services Service Namespaces] in the Amazon Web Services General Reference.
     /// This member is required.
     public var applicationArn: Swift.String?
@@ -3782,12 +3783,12 @@ public struct PutApplicationAssignmentConfigurationInput {
     }
 }
 
-public struct PutApplicationAssignmentConfigurationOutput {
+public struct PutApplicationAssignmentConfigurationOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct PutInlinePolicyToPermissionSetInput {
+public struct PutInlinePolicyToPermissionSetInput: Swift.Sendable {
     /// The inline policy to attach to a [PermissionSet].
     /// This member is required.
     public var inlinePolicy: Swift.String?
@@ -3810,12 +3811,12 @@ public struct PutInlinePolicyToPermissionSetInput {
     }
 }
 
-public struct PutInlinePolicyToPermissionSetOutput {
+public struct PutInlinePolicyToPermissionSetOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct PutPermissionsBoundaryToPermissionSetInput {
+public struct PutPermissionsBoundaryToPermissionSetInput: Swift.Sendable {
     /// The ARN of the IAM Identity Center instance under which the operation will be executed.
     /// This member is required.
     public var instanceArn: Swift.String?
@@ -3838,12 +3839,12 @@ public struct PutPermissionsBoundaryToPermissionSetInput {
     }
 }
 
-public struct PutPermissionsBoundaryToPermissionSetOutput {
+public struct PutPermissionsBoundaryToPermissionSetOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct TagResourceInput {
+public struct TagResourceInput: Swift.Sendable {
     /// The ARN of the IAM Identity Center instance under which the operation will be executed. For more information about ARNs, see [Amazon Resource Names (ARNs) and Amazon Web Services Service Namespaces] in the Amazon Web Services General Reference.
     public var instanceArn: Swift.String?
     /// The ARN of the resource with the tags to be listed.
@@ -3865,12 +3866,12 @@ public struct TagResourceInput {
     }
 }
 
-public struct TagResourceOutput {
+public struct TagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UntagResourceInput {
+public struct UntagResourceInput: Swift.Sendable {
     /// The ARN of the IAM Identity Center instance under which the operation will be executed. For more information about ARNs, see [Amazon Resource Names (ARNs) and Amazon Web Services Service Namespaces] in the Amazon Web Services General Reference.
     public var instanceArn: Swift.String?
     /// The ARN of the resource with the tags to be listed.
@@ -3892,14 +3893,15 @@ public struct UntagResourceInput {
     }
 }
 
-public struct UntagResourceOutput {
+public struct UntagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
 extension SSOAdminClientTypes {
+
     /// A structure that describes the options for the access portal associated with an application that can be updated.
-    public struct UpdateApplicationPortalOptions {
+    public struct UpdateApplicationPortalOptions: Swift.Sendable {
         /// A structure that describes the sign-in options for an application portal.
         public var signInOptions: SSOAdminClientTypes.SignInOptions?
 
@@ -3910,10 +3912,9 @@ extension SSOAdminClientTypes {
             self.signInOptions = signInOptions
         }
     }
-
 }
 
-public struct UpdateApplicationInput {
+public struct UpdateApplicationInput: Swift.Sendable {
     /// Specifies the ARN of the application. For more information about ARNs, see [Amazon Resource Names (ARNs) and Amazon Web Services Service Namespaces] in the Amazon Web Services General Reference.
     /// This member is required.
     public var applicationArn: Swift.String?
@@ -3942,12 +3943,12 @@ public struct UpdateApplicationInput {
     }
 }
 
-public struct UpdateApplicationOutput {
+public struct UpdateApplicationOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdateInstanceInput {
+public struct UpdateInstanceInput: Swift.Sendable {
     /// The ARN of the instance of IAM Identity Center under which the operation will run. For more information about ARNs, see [Amazon Resource Names (ARNs) and Amazon Web Services Service Namespaces] in the Amazon Web Services General Reference.
     /// This member is required.
     public var instanceArn: Swift.String?
@@ -3965,12 +3966,12 @@ public struct UpdateInstanceInput {
     }
 }
 
-public struct UpdateInstanceOutput {
+public struct UpdateInstanceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdateInstanceAccessControlAttributeConfigurationInput {
+public struct UpdateInstanceAccessControlAttributeConfigurationInput: Swift.Sendable {
     /// Updates the attributes for your ABAC configuration.
     /// This member is required.
     public var instanceAccessControlAttributeConfiguration: SSOAdminClientTypes.InstanceAccessControlAttributeConfiguration?
@@ -3988,12 +3989,12 @@ public struct UpdateInstanceAccessControlAttributeConfigurationInput {
     }
 }
 
-public struct UpdateInstanceAccessControlAttributeConfigurationOutput {
+public struct UpdateInstanceAccessControlAttributeConfigurationOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdatePermissionSetInput {
+public struct UpdatePermissionSetInput: Swift.Sendable {
     /// The description of the [PermissionSet].
     public var description: Swift.String?
     /// The ARN of the IAM Identity Center instance under which the operation will be executed. For more information about ARNs, see [Amazon Resource Names (ARNs) and Amazon Web Services Service Namespaces] in the Amazon Web Services General Reference.
@@ -4023,22 +4024,22 @@ public struct UpdatePermissionSetInput {
     }
 }
 
-public struct UpdatePermissionSetOutput {
+public struct UpdatePermissionSetOutput: Swift.Sendable {
 
     public init() { }
 }
 
 extension SSOAdminClientTypes {
+
     /// A structure that contains details to be updated for a trusted token issuer configuration. The structure and settings that you can include depend on the type of the trusted token issuer being updated.
-    public enum TrustedTokenIssuerUpdateConfiguration {
+    public enum TrustedTokenIssuerUpdateConfiguration: Swift.Sendable {
         /// A structure that describes an updated configuration for a trusted token issuer that uses OpenID Connect (OIDC) with JSON web tokens (JWT).
         case oidcjwtconfiguration(SSOAdminClientTypes.OidcJwtUpdateConfiguration)
         case sdkUnknown(Swift.String)
     }
-
 }
 
-public struct UpdateTrustedTokenIssuerInput {
+public struct UpdateTrustedTokenIssuerInput: Swift.Sendable {
     /// Specifies the updated name to be applied to the trusted token issuer configuration.
     public var name: Swift.String?
     /// Specifies the ARN of the trusted token issuer configuration that you want to update.
@@ -4059,7 +4060,7 @@ public struct UpdateTrustedTokenIssuerInput {
     }
 }
 
-public struct UpdateTrustedTokenIssuerOutput {
+public struct UpdateTrustedTokenIssuerOutput: Swift.Sendable {
 
     public init() { }
 }

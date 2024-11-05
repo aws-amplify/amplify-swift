@@ -357,6 +357,7 @@ extension IoTFleetWiseClient {
     /// __Possible Exceptions:__
     /// - `AccessDeniedException` : You don't have sufficient permission to perform this action.
     /// - `InternalServerException` : The request couldn't be completed because the server temporarily failed.
+    /// - `LimitExceededException` : A service quota was exceeded.
     /// - `ThrottlingException` : The request couldn't be completed due to throttling.
     /// - `ValidationException` : The input fails to satisfy the constraints specified by an Amazon Web Services service.
     public func batchUpdateVehicle(input: BatchUpdateVehicleInput) async throws -> BatchUpdateVehicleOutput {
@@ -4035,6 +4036,7 @@ extension IoTFleetWiseClient {
     /// - `AccessDeniedException` : You don't have sufficient permission to perform this action.
     /// - `ConflictException` : The request has conflicting operations. This can occur if you're trying to perform more than one operation on the same resource at the same time.
     /// - `InternalServerException` : The request couldn't be completed because the server temporarily failed.
+    /// - `LimitExceededException` : A service quota was exceeded.
     /// - `ResourceNotFoundException` : The resource wasn't found.
     /// - `ThrottlingException` : The request couldn't be completed due to throttling.
     /// - `ValidationException` : The input fails to satisfy the constraints specified by an Amazon Web Services service.

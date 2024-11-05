@@ -82,6 +82,39 @@ extension DescribeConnectionsInput: ClientRuntime.PaginateToken {
         )}
 }
 extension DatabaseMigrationClient {
+    /// Paginate over `[DescribeDataMigrationsOutput]` results.
+    ///
+    /// When this operation is called, an `AsyncSequence` is created. AsyncSequences are lazy so no service
+    /// calls are made until the sequence is iterated over. This also means there is no guarantee that the request is valid
+    /// until then. If there are errors in your request, you will see the failures only after you start iterating.
+    /// - Parameters:
+    ///     - input: A `[DescribeDataMigrationsInput]` to start pagination
+    /// - Returns: An `AsyncSequence` that can iterate over `DescribeDataMigrationsOutput`
+    public func describeDataMigrationsPaginated(input: DescribeDataMigrationsInput) -> ClientRuntime.PaginatorSequence<DescribeDataMigrationsInput, DescribeDataMigrationsOutput> {
+        return ClientRuntime.PaginatorSequence<DescribeDataMigrationsInput, DescribeDataMigrationsOutput>(input: input, inputKey: \.marker, outputKey: \.marker, paginationFunction: self.describeDataMigrations(input:))
+    }
+}
+
+extension DescribeDataMigrationsInput: ClientRuntime.PaginateToken {
+    public func usingPaginationToken(_ token: Swift.String) -> DescribeDataMigrationsInput {
+        return DescribeDataMigrationsInput(
+            filters: self.filters,
+            marker: token,
+            maxRecords: self.maxRecords,
+            withoutSettings: self.withoutSettings,
+            withoutStatistics: self.withoutStatistics
+        )}
+}
+
+extension PaginatorSequence where OperationStackInput == DescribeDataMigrationsInput, OperationStackOutput == DescribeDataMigrationsOutput {
+    /// This paginator transforms the `AsyncSequence` returned by `describeDataMigrationsPaginated`
+    /// to access the nested member `[DatabaseMigrationClientTypes.DataMigration]`
+    /// - Returns: `[DatabaseMigrationClientTypes.DataMigration]`
+    public func dataMigrations() async throws -> [DatabaseMigrationClientTypes.DataMigration] {
+        return try await self.asyncCompactMap { item in item.dataMigrations }
+    }
+}
+extension DatabaseMigrationClient {
     /// Paginate over `[DescribeDataProvidersOutput]` results.
     ///
     /// When this operation is called, an `AsyncSequence` is created. AsyncSequences are lazy so no service

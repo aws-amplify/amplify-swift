@@ -32,7 +32,7 @@ import struct Smithy.URIQueryItem
 
 extension Route53ClientTypes {
 
-    public enum AccountLimitType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AccountLimitType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case maxHealthChecksByOwner
         case maxHostedZonesByOwner
         case maxReusableDelegationSetsByOwner
@@ -69,8 +69,9 @@ extension Route53ClientTypes {
 }
 
 extension Route53ClientTypes {
+
     /// A complex type that contains the type of limit that you specified in the request and the current value for that limit.
-    public struct AccountLimit {
+    public struct AccountLimit: Swift.Sendable {
         /// The limit that you requested. Valid values include the following:
         ///
         /// * MAX_HEALTH_CHECKS_BY_OWNER: The maximum number of health checks that you can create using the current account.
@@ -97,7 +98,6 @@ extension Route53ClientTypes {
             self.value = value
         }
     }
-
 }
 
 /// Another user submitted a request to create, update, or delete the object at the same time that you did. Retry the request.
@@ -246,7 +246,7 @@ public struct NoSuchKeySigningKey: ClientRuntime.ModeledError, AWSClientRuntime.
     }
 }
 
-public struct ActivateKeySigningKeyInput {
+public struct ActivateKeySigningKeyInput: Swift.Sendable {
     /// A unique string used to identify a hosted zone.
     /// This member is required.
     public var hostedZoneId: Swift.String?
@@ -266,7 +266,7 @@ public struct ActivateKeySigningKeyInput {
 
 extension Route53ClientTypes {
 
-    public enum ChangeStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ChangeStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case insync
         case pending
         case sdkUnknown(Swift.String)
@@ -294,8 +294,9 @@ extension Route53ClientTypes {
 }
 
 extension Route53ClientTypes {
+
     /// A complex type that describes change information about changes made to your hosted zone.
-    public struct ChangeInfo {
+    public struct ChangeInfo: Swift.Sendable {
         /// A comment you can provide.
         public var comment: Swift.String?
         /// This element contains an ID that you use when performing a [GetChange](https://docs.aws.amazon.com/Route53/latest/APIReference/API_GetChange.html) action to get detailed information about the change.
@@ -321,10 +322,9 @@ extension Route53ClientTypes {
             self.submittedAt = submittedAt
         }
     }
-
 }
 
-public struct ActivateKeySigningKeyOutput {
+public struct ActivateKeySigningKeyOutput: Swift.Sendable {
     /// A complex type that describes change information about changes made to your hosted zone.
     /// This member is required.
     public var changeInfo: Route53ClientTypes.ChangeInfo?
@@ -339,7 +339,7 @@ public struct ActivateKeySigningKeyOutput {
 
 extension Route53ClientTypes {
 
-    public enum CloudWatchRegion: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum CloudWatchRegion: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case afSouth1
         case apEast1
         case apNortheast1
@@ -472,8 +472,9 @@ extension Route53ClientTypes {
 }
 
 extension Route53ClientTypes {
+
     /// A complex type that identifies the CloudWatch alarm that you want Amazon Route 53 health checkers to use to determine whether the specified health check is healthy.
-    public struct AlarmIdentifier {
+    public struct AlarmIdentifier: Swift.Sendable {
         /// The name of the CloudWatch alarm that you want Amazon Route 53 health checkers to use to determine whether this health check is healthy. Route 53 supports CloudWatch alarms with the following features:
         ///
         /// * Standard-resolution metrics. High-resolution metrics aren't supported. For more information, see [High-Resolution Metrics](https://docs.aws.amazon.com/AmazonCloudWatch/latest/DeveloperGuide/publishingMetrics.html#high-resolution-metrics) in the Amazon CloudWatch User Guide.
@@ -494,14 +495,14 @@ extension Route53ClientTypes {
             self.region = region
         }
     }
-
 }
 
 extension Route53ClientTypes {
+
     /// Alias resource record sets only: Information about the Amazon Web Services resource, such as a CloudFront distribution or an Amazon S3 bucket, that you want to route traffic to. When creating resource record sets for a private hosted zone, note the following:
     ///
     /// * For information about creating failover resource record sets in a private hosted zone, see [Configuring Failover in a Private Hosted Zone](https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/dns-failover-private-hosted-zones.html).
-    public struct AliasTarget {
+    public struct AliasTarget: Swift.Sendable {
         /// Alias resource record sets only: The value that you specify depends on where you want to route queries: Amazon API Gateway custom regional APIs and edge-optimized APIs Specify the applicable domain name for your API. You can get the applicable value using the CLI command [get-domain-names](https://docs.aws.amazon.com/cli/latest/reference/apigateway/get-domain-names.html):
         ///
         /// * For regional APIs, specify the value of regionalDomainName.
@@ -615,7 +616,6 @@ extension Route53ClientTypes {
             self.hostedZoneId = hostedZoneId
         }
     }
-
 }
 
 /// The cause of this error depends on the operation that you're performing:
@@ -799,7 +799,7 @@ public struct PublicZoneVPCAssociation: ClientRuntime.ModeledError, AWSClientRun
 
 extension Route53ClientTypes {
 
-    public enum VPCRegion: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum VPCRegion: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case afSouth1
         case apEast1
         case apNortheast1
@@ -815,6 +815,7 @@ extension Route53ClientTypes {
         case caCentral1
         case caWest1
         case cnNorth1
+        case cnNorthwest1
         case euCentral1
         case euCentral2
         case euNorth1
@@ -855,6 +856,7 @@ extension Route53ClientTypes {
                 .caCentral1,
                 .caWest1,
                 .cnNorth1,
+                .cnNorthwest1,
                 .euCentral1,
                 .euCentral2,
                 .euNorth1,
@@ -901,6 +903,7 @@ extension Route53ClientTypes {
             case .caCentral1: return "ca-central-1"
             case .caWest1: return "ca-west-1"
             case .cnNorth1: return "cn-north-1"
+            case .cnNorthwest1: return "cn-northwest-1"
             case .euCentral1: return "eu-central-1"
             case .euCentral2: return "eu-central-2"
             case .euNorth1: return "eu-north-1"
@@ -929,8 +932,9 @@ extension Route53ClientTypes {
 }
 
 extension Route53ClientTypes {
+
     /// (Private hosted zones only) A complex type that contains information about an Amazon VPC. If you associate a private hosted zone with an Amazon VPC when you make a [CreateHostedZone](https://docs.aws.amazon.com/Route53/latest/APIReference/API_CreateHostedZone.html) request, the following parameters are also required.
-    public struct VPC {
+    public struct VPC: Swift.Sendable {
         /// (Private hosted zones only) The ID of an Amazon VPC.
         public var vpcId: Swift.String?
         /// (Private hosted zones only) The region that an Amazon VPC was created in.
@@ -945,11 +949,10 @@ extension Route53ClientTypes {
             self.vpcRegion = vpcRegion
         }
     }
-
 }
 
 /// A complex type that contains information about the request to associate a VPC with a private hosted zone.
-public struct AssociateVPCWithHostedZoneInput {
+public struct AssociateVPCWithHostedZoneInput: Swift.Sendable {
     /// Optional: A comment about the association request.
     public var comment: Swift.String?
     /// The ID of the private hosted zone that you want to associate an Amazon VPC with. Note that you can't associate a VPC with a hosted zone that doesn't have an existing VPC association.
@@ -972,7 +975,7 @@ public struct AssociateVPCWithHostedZoneInput {
 }
 
 /// A complex type that contains the response information for the AssociateVPCWithHostedZone request.
-public struct AssociateVPCWithHostedZoneOutput {
+public struct AssociateVPCWithHostedZoneOutput: Swift.Sendable {
     /// A complex type that describes the changes made to your hosted zone.
     /// This member is required.
     public var changeInfo: Route53ClientTypes.ChangeInfo?
@@ -1059,7 +1062,7 @@ public struct NoSuchCidrCollectionException: ClientRuntime.ModeledError, AWSClie
 
 extension Route53ClientTypes {
 
-    public enum CidrCollectionChangeAction: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum CidrCollectionChangeAction: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case deleteIfExists
         case put
         case sdkUnknown(Swift.String)
@@ -1087,8 +1090,9 @@ extension Route53ClientTypes {
 }
 
 extension Route53ClientTypes {
+
     /// A complex type that contains information about the CIDR collection change.
-    public struct CidrCollectionChange {
+    public struct CidrCollectionChange: Swift.Sendable {
         /// CIDR collection change action.
         /// This member is required.
         public var action: Route53ClientTypes.CidrCollectionChangeAction?
@@ -1110,10 +1114,9 @@ extension Route53ClientTypes {
             self.locationName = locationName
         }
     }
-
 }
 
-public struct ChangeCidrCollectionInput {
+public struct ChangeCidrCollectionInput: Swift.Sendable {
     /// Information about changes to a CIDR collection.
     /// This member is required.
     public var changes: [Route53ClientTypes.CidrCollectionChange]?
@@ -1139,7 +1142,7 @@ public struct ChangeCidrCollectionInput {
     }
 }
 
-public struct ChangeCidrCollectionOutput {
+public struct ChangeCidrCollectionOutput: Swift.Sendable {
     /// The ID that is returned by ChangeCidrCollection. You can use it as input to GetChange to see if a CIDR collection change has propagated or not.
     /// This member is required.
     public var id: Swift.String?
@@ -1207,7 +1210,7 @@ public struct NoSuchHealthCheck: ClientRuntime.ModeledError, AWSClientRuntime.AW
 
 extension Route53ClientTypes {
 
-    public enum ChangeAction: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ChangeAction: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case create
         case delete
         case upsert
@@ -1238,8 +1241,9 @@ extension Route53ClientTypes {
 }
 
 extension Route53ClientTypes {
+
     /// The object that is specified in resource record set object when you are linking a resource record set to a CIDR location. A LocationName with an asterisk “*” can be used to create a default CIDR record. CollectionId is still required for default record.
-    public struct CidrRoutingConfig {
+    public struct CidrRoutingConfig: Swift.Sendable {
         /// The CIDR collection ID.
         /// This member is required.
         public var collectionId: Swift.String?
@@ -1256,12 +1260,11 @@ extension Route53ClientTypes {
             self.locationName = locationName
         }
     }
-
 }
 
 extension Route53ClientTypes {
 
-    public enum ResourceRecordSetFailover: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ResourceRecordSetFailover: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case primary
         case secondary
         case sdkUnknown(Swift.String)
@@ -1289,8 +1292,9 @@ extension Route53ClientTypes {
 }
 
 extension Route53ClientTypes {
+
     /// A complex type that contains information about a geographic location.
-    public struct GeoLocation {
+    public struct GeoLocation: Swift.Sendable {
         /// The two-letter code for the continent. Amazon Route 53 supports the following continent codes:
         ///
         /// * AF: Africa
@@ -1326,12 +1330,12 @@ extension Route53ClientTypes {
             self.subdivisionCode = subdivisionCode
         }
     }
-
 }
 
 extension Route53ClientTypes {
+
     /// A complex type that lists the coordinates for a geoproximity resource record.
-    public struct Coordinates {
+    public struct Coordinates: Swift.Sendable {
         /// Specifies a coordinate of the north–south position of a geographic point on the surface of the Earth (-90 - 90).
         /// This member is required.
         public var latitude: Swift.String?
@@ -1348,12 +1352,12 @@ extension Route53ClientTypes {
             self.longitude = longitude
         }
     }
-
 }
 
 extension Route53ClientTypes {
+
     /// (Resource record sets only): A complex type that lets you specify where your resources are located. Only one of LocalZoneGroup, Coordinates, or Amazon Web ServicesRegion is allowed per request at a time. For more information about geoproximity routing, see [Geoproximity routing](https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/routing-policy-geoproximity.html) in the Amazon Route 53 Developer Guide.
-    public struct GeoProximityLocation {
+    public struct GeoProximityLocation: Swift.Sendable {
         /// The Amazon Web Services Region the resource you are directing DNS traffic to, is in.
         public var awsRegion: Swift.String?
         /// The bias increases or decreases the size of the geographic region from which Route 53 routes traffic to a resource. To use Bias to change the size of the geographic region, specify the applicable value for the bias:
@@ -1380,12 +1384,11 @@ extension Route53ClientTypes {
             self.localZoneGroup = localZoneGroup
         }
     }
-
 }
 
 extension Route53ClientTypes {
 
-    public enum ResourceRecordSetRegion: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ResourceRecordSetRegion: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case afSouth1
         case apEast1
         case apNortheast1
@@ -1503,8 +1506,9 @@ extension Route53ClientTypes {
 }
 
 extension Route53ClientTypes {
+
     /// Information specific to the resource record. If you're creating an alias resource record set, omit ResourceRecord.
-    public struct ResourceRecord {
+    public struct ResourceRecord: Swift.Sendable {
         /// The current or new DNS record value, not to exceed 4,000 characters. In the case of a DELETE action, if the current value does not match the actual value, an error is returned. For descriptions about how to format Value for different record types, see [Supported DNS Resource Record Types](https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/ResourceRecordTypes.html) in the Amazon Route 53 Developer Guide. You can specify more than one value for all record types except CNAME and SOA. If you're creating an alias resource record set, omit Value.
         /// This member is required.
         public var value: Swift.String?
@@ -1516,17 +1520,17 @@ extension Route53ClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension Route53ClientTypes {
 
-    public enum RRType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum RRType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case a
         case aaaa
         case caa
         case cname
         case ds
+        case https
         case mx
         case naptr
         case ns
@@ -1534,6 +1538,9 @@ extension Route53ClientTypes {
         case soa
         case spf
         case srv
+        case sshfp
+        case svcb
+        case tlsa
         case txt
         case sdkUnknown(Swift.String)
 
@@ -1544,6 +1551,7 @@ extension Route53ClientTypes {
                 .caa,
                 .cname,
                 .ds,
+                .https,
                 .mx,
                 .naptr,
                 .ns,
@@ -1551,6 +1559,9 @@ extension Route53ClientTypes {
                 .soa,
                 .spf,
                 .srv,
+                .sshfp,
+                .svcb,
+                .tlsa,
                 .txt
             ]
         }
@@ -1567,6 +1578,7 @@ extension Route53ClientTypes {
             case .caa: return "CAA"
             case .cname: return "CNAME"
             case .ds: return "DS"
+            case .https: return "HTTPS"
             case .mx: return "MX"
             case .naptr: return "NAPTR"
             case .ns: return "NS"
@@ -1574,6 +1586,9 @@ extension Route53ClientTypes {
             case .soa: return "SOA"
             case .spf: return "SPF"
             case .srv: return "SRV"
+            case .sshfp: return "SSHFP"
+            case .svcb: return "SVCB"
+            case .tlsa: return "TLSA"
             case .txt: return "TXT"
             case let .sdkUnknown(s): return s
             }
@@ -1582,8 +1597,9 @@ extension Route53ClientTypes {
 }
 
 extension Route53ClientTypes {
+
     /// Information about the resource record set to create or delete.
-    public struct ResourceRecordSet {
+    public struct ResourceRecordSet: Swift.Sendable {
         /// Alias resource record sets only: Information about the Amazon Web Services resource, such as a CloudFront distribution or an Amazon S3 bucket, that you want to route traffic to. If you're creating resource records sets for a private hosted zone, note the following:
         ///
         /// * You can't create an alias resource record set in a private hosted zone to route traffic to a CloudFront distribution.
@@ -1714,7 +1730,7 @@ extension Route53ClientTypes {
         ///
         /// * If a group of weighted resource record sets includes one or more weighted alias resource record sets for which the alias target is an ELB load balancer, we recommend that you specify a TTL of 60 seconds for all of the non-alias weighted resource record sets that have the same name and type. Values other than 60 seconds (the TTL for load balancers) will change the effect of the values that you specify for Weight.
         public var ttl: Swift.Int?
-        /// The DNS record type. For information about different record types and how data is encoded for them, see [Supported DNS Resource Record Types](https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/ResourceRecordTypes.html) in the Amazon Route 53 Developer Guide. Valid values for basic resource record sets: A | AAAA | CAA | CNAME | DS |MX | NAPTR | NS | PTR | SOA | SPF | SRV | TXT Values for weighted, latency, geolocation, and failover resource record sets: A | AAAA | CAA | CNAME | MX | NAPTR | PTR | SPF | SRV | TXT. When creating a group of weighted, latency, geolocation, or failover resource record sets, specify the same value for all of the resource record sets in the group. Valid values for multivalue answer resource record sets: A | AAAA | MX | NAPTR | PTR | SPF | SRV | TXT SPF records were formerly used to verify the identity of the sender of email messages. However, we no longer recommend that you create resource record sets for which the value of Type is SPF. RFC 7208, Sender Policy Framework (SPF) for Authorizing Use of Domains in Email, Version 1, has been updated to say, "...[I]ts existence and mechanism defined in [RFC4408] have led to some interoperability issues. Accordingly, its use is no longer appropriate for SPF version 1; implementations are not to use it." In RFC 7208, see section 14.1, [The SPF DNS Record Type](http://tools.ietf.org/html/rfc7208#section-14.1). Values for alias resource record sets:
+        /// The DNS record type. For information about different record types and how data is encoded for them, see [Supported DNS Resource Record Types](https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/ResourceRecordTypes.html) in the Amazon Route 53 Developer Guide. Valid values for basic resource record sets: A | AAAA | CAA | CNAME | DS |MX | NAPTR | NS | PTR | SOA | SPF | SRV | TXT| TLSA| SSHFP| SVCB| HTTPS Values for weighted, latency, geolocation, and failover resource record sets: A | AAAA | CAA | CNAME | MX | NAPTR | PTR | SPF | SRV | TXT| TLSA| SSHFP| SVCB| HTTPS. When creating a group of weighted, latency, geolocation, or failover resource record sets, specify the same value for all of the resource record sets in the group. Valid values for multivalue answer resource record sets: A | AAAA | MX | NAPTR | PTR | SPF | SRV | TXT| CAA| TLSA| SSHFP| SVCB| HTTPS SPF records were formerly used to verify the identity of the sender of email messages. However, we no longer recommend that you create resource record sets for which the value of Type is SPF. RFC 7208, Sender Policy Framework (SPF) for Authorizing Use of Domains in Email, Version 1, has been updated to say, "...[I]ts existence and mechanism defined in [RFC4408] have led to some interoperability issues. Accordingly, its use is no longer appropriate for SPF version 1; implementations are not to use it." In RFC 7208, see section 14.1, [The SPF DNS Record Type](http://tools.ietf.org/html/rfc7208#section-14.1). Values for alias resource record sets:
         ///
         /// * Amazon API Gateway custom regional APIs and edge-optimized APIs: A
         ///
@@ -1779,12 +1795,12 @@ extension Route53ClientTypes {
             self.weight = weight
         }
     }
-
 }
 
 extension Route53ClientTypes {
+
     /// The information for each resource record set that you want to change.
-    public struct Change {
+    public struct Change: Swift.Sendable {
         /// The action to perform:
         ///
         /// * CREATE: Creates a resource record set that has the specified values.
@@ -1807,12 +1823,12 @@ extension Route53ClientTypes {
             self.resourceRecordSet = resourceRecordSet
         }
     }
-
 }
 
 extension Route53ClientTypes {
+
     /// The information for a change request.
-    public struct ChangeBatch {
+    public struct ChangeBatch: Swift.Sendable {
         /// Information about the changes to make to the record sets.
         /// This member is required.
         public var changes: [Route53ClientTypes.Change]?
@@ -1828,11 +1844,10 @@ extension Route53ClientTypes {
             self.comment = comment
         }
     }
-
 }
 
 /// A complex type that contains change information for the resource record set.
-public struct ChangeResourceRecordSetsInput {
+public struct ChangeResourceRecordSetsInput: Swift.Sendable {
     /// A complex type that contains an optional comment and the Changes element.
     /// This member is required.
     public var changeBatch: Route53ClientTypes.ChangeBatch?
@@ -1851,7 +1866,7 @@ public struct ChangeResourceRecordSetsInput {
 }
 
 /// A complex type containing the response for the request.
-public struct ChangeResourceRecordSetsOutput {
+public struct ChangeResourceRecordSetsOutput: Swift.Sendable {
     /// A complex type that contains information about changes made to your hosted zone. This element contains an ID that you use when performing a [GetChange](https://docs.aws.amazon.com/Route53/latest/APIReference/API_GetChange.html) action to get detailed information about the change.
     /// This member is required.
     public var changeInfo: Route53ClientTypes.ChangeInfo?
@@ -1889,8 +1904,9 @@ public struct ThrottlingException: ClientRuntime.ModeledError, AWSClientRuntime.
 }
 
 extension Route53ClientTypes {
+
     /// A complex type that contains information about a tag that you want to add or edit for the specified health check or hosted zone.
-    public struct Tag {
+    public struct Tag: Swift.Sendable {
         /// The value of Key depends on the operation that you want to perform:
         ///
         /// * Add a tag to a health check or hosted zone: Key is the name that you want to give the new tag.
@@ -1917,12 +1933,11 @@ extension Route53ClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension Route53ClientTypes {
 
-    public enum TagResourceType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum TagResourceType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case healthcheck
         case hostedzone
         case sdkUnknown(Swift.String)
@@ -1950,7 +1965,7 @@ extension Route53ClientTypes {
 }
 
 /// A complex type that contains information about the tags that you want to add, edit, or delete.
-public struct ChangeTagsForResourceInput {
+public struct ChangeTagsForResourceInput: Swift.Sendable {
     /// A complex type that contains a list of the tags that you want to add to the specified health check or hosted zone and/or the tags that you want to edit Value for. You can add a maximum of 10 tags to a health check or a hosted zone.
     public var addTags: [Route53ClientTypes.Tag]?
     /// A complex type that contains a list of the tags that you want to delete from the specified health check or hosted zone. You can specify up to 10 keys.
@@ -1981,7 +1996,7 @@ public struct ChangeTagsForResourceInput {
 }
 
 /// Empty response for the request.
-public struct ChangeTagsForResourceOutput {
+public struct ChangeTagsForResourceOutput: Swift.Sendable {
 
     public init() { }
 }
@@ -2010,7 +2025,7 @@ public struct CidrCollectionAlreadyExistsException: ClientRuntime.ModeledError, 
     }
 }
 
-public struct CreateCidrCollectionInput {
+public struct CreateCidrCollectionInput: Swift.Sendable {
     /// A client-specific token that allows requests to be securely retried so that the intended outcome will only occur once, retries receive a similar response, and there are no additional edge cases to handle.
     /// This member is required.
     public var callerReference: Swift.String?
@@ -2029,8 +2044,9 @@ public struct CreateCidrCollectionInput {
 }
 
 extension Route53ClientTypes {
+
     /// A complex type that identifies a CIDR collection.
-    public struct CidrCollection {
+    public struct CidrCollection: Swift.Sendable {
         /// The ARN of the collection. Can be used to reference the collection in IAM policy or in another Amazon Web Services account.
         public var arn: Swift.String?
         /// The unique ID of the CIDR collection.
@@ -2053,10 +2069,9 @@ extension Route53ClientTypes {
             self.version = version
         }
     }
-
 }
 
-public struct CreateCidrCollectionOutput {
+public struct CreateCidrCollectionOutput: Swift.Sendable {
     /// A complex type that contains information about the CIDR collection.
     public var collection: Route53ClientTypes.CidrCollection?
     /// A unique URL that represents the location for the CIDR collection.
@@ -2127,7 +2142,7 @@ public struct TooManyHealthChecks: ClientRuntime.ModeledError, AWSClientRuntime.
 
 extension Route53ClientTypes {
 
-    public enum InsufficientDataHealthStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum InsufficientDataHealthStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case healthy
         case lastknownstatus
         case unhealthy
@@ -2159,7 +2174,7 @@ extension Route53ClientTypes {
 
 extension Route53ClientTypes {
 
-    public enum HealthCheckRegion: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum HealthCheckRegion: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case apNortheast1
         case apSoutheast1
         case apSoutheast2
@@ -2206,7 +2221,7 @@ extension Route53ClientTypes {
 
 extension Route53ClientTypes {
 
-    public enum HealthCheckType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum HealthCheckType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case calculated
         case cloudwatchMetric
         case http
@@ -2252,8 +2267,9 @@ extension Route53ClientTypes {
 }
 
 extension Route53ClientTypes {
+
     /// A complex type that contains information about the health check.
-    public struct HealthCheckConfig {
+    public struct HealthCheckConfig: Swift.Sendable {
         /// A complex type that identifies the CloudWatch alarm that you want Amazon Route 53 health checkers to use to determine whether the specified health check is healthy.
         public var alarmIdentifier: Route53ClientTypes.AlarmIdentifier?
         /// (CALCULATED Health Checks Only) A complex type that contains one ChildHealthCheck element for each health check that you want to associate with a CALCULATED health check.
@@ -2336,7 +2352,7 @@ extension Route53ClientTypes {
         ///
         /// * HTTP: Route 53 tries to establish a TCP connection. If successful, Route 53 submits an HTTP request and waits for an HTTP status code of 200 or greater and less than 400.
         ///
-        /// * HTTPS: Route 53 tries to establish a TCP connection. If successful, Route 53 submits an HTTPS request and waits for an HTTP status code of 200 or greater and less than 400. If you specify HTTPS for the value of Type, the endpoint must support TLS v1.0 or later.
+        /// * HTTPS: Route 53 tries to establish a TCP connection. If successful, Route 53 submits an HTTPS request and waits for an HTTP status code of 200 or greater and less than 400. If you specify HTTPS for the value of Type, the endpoint must support TLS v1.0, v1.1, or v1.2.
         ///
         /// * HTTP_STR_MATCH: Route 53 tries to establish a TCP connection. If successful, Route 53 submits an HTTP request and searches the first 5,120 bytes of the response body for the string that you specify in SearchString.
         ///
@@ -2396,11 +2412,10 @@ extension Route53ClientTypes {
             self.type = type
         }
     }
-
 }
 
 /// A complex type that contains the health check request information.
-public struct CreateHealthCheckInput {
+public struct CreateHealthCheckInput: Swift.Sendable {
     /// A unique string that identifies the request and that allows you to retry a failed CreateHealthCheck request without the risk of creating two identical health checks:
     ///
     /// * If you send a CreateHealthCheck request with the same CallerReference and settings as a previous request, and if the health check doesn't exist, Amazon Route 53 creates the health check. If the health check does exist, Route 53 returns the settings for the existing health check.
@@ -2431,7 +2446,7 @@ public struct CreateHealthCheckInput {
 
 extension Route53ClientTypes {
 
-    public enum ComparisonOperator: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ComparisonOperator: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case greaterthanorequaltothreshold
         case greaterthanthreshold
         case lessthanorequaltothreshold
@@ -2465,8 +2480,9 @@ extension Route53ClientTypes {
 }
 
 extension Route53ClientTypes {
+
     /// For the metric that the CloudWatch alarm is associated with, a complex type that contains information about one dimension.
-    public struct Dimension {
+    public struct Dimension: Swift.Sendable {
         /// For the metric that the CloudWatch alarm is associated with, the name of one dimension.
         /// This member is required.
         public var name: Swift.String?
@@ -2483,12 +2499,11 @@ extension Route53ClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension Route53ClientTypes {
 
-    public enum Statistic: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Statistic: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case average
         case maximum
         case minimum
@@ -2525,8 +2540,9 @@ extension Route53ClientTypes {
 }
 
 extension Route53ClientTypes {
+
     /// A complex type that contains information about the CloudWatch alarm that Amazon Route 53 is monitoring for this health check.
-    public struct CloudWatchAlarmConfiguration {
+    public struct CloudWatchAlarmConfiguration: Swift.Sendable {
         /// For the metric that the CloudWatch alarm is associated with, the arithmetic operation that is used for the comparison.
         /// This member is required.
         public var comparisonOperator: Route53ClientTypes.ComparisonOperator?
@@ -2572,12 +2588,12 @@ extension Route53ClientTypes {
             self.threshold = threshold
         }
     }
-
 }
 
 extension Route53ClientTypes {
+
     /// If a health check or hosted zone was created by another service, LinkedService is a complex type that describes the service that created the resource. When a resource is created by another service, you can't edit or delete it using Amazon Route 53.
-    public struct LinkedService {
+    public struct LinkedService: Swift.Sendable {
         /// If the health check or hosted zone was created by another service, an optional description that can be provided by the other service. When a resource is created by another service, you can't edit or delete it using Amazon Route 53.
         public var description: Swift.String?
         /// If the health check or hosted zone was created by another service, the service that created the resource. When a resource is created by another service, you can't edit or delete it using Amazon Route 53.
@@ -2592,12 +2608,12 @@ extension Route53ClientTypes {
             self.servicePrincipal = servicePrincipal
         }
     }
-
 }
 
 extension Route53ClientTypes {
+
     /// A complex type that contains information about one health check that is associated with the current Amazon Web Services account.
-    public struct HealthCheck {
+    public struct HealthCheck: Swift.Sendable {
         /// A unique string that you specified when you created the health check.
         /// This member is required.
         public var callerReference: Swift.String?
@@ -2632,11 +2648,10 @@ extension Route53ClientTypes {
             self.linkedService = linkedService
         }
     }
-
 }
 
 /// A complex type containing the response information for the new health check.
-public struct CreateHealthCheckOutput {
+public struct CreateHealthCheckOutput: Swift.Sendable {
     /// A complex type that contains identifying information about the health check.
     /// This member is required.
     public var healthCheck: Route53ClientTypes.HealthCheck?
@@ -2805,8 +2820,9 @@ public struct TooManyHostedZones: ClientRuntime.ModeledError, AWSClientRuntime.A
 }
 
 extension Route53ClientTypes {
+
     /// A complex type that contains an optional comment about your hosted zone. If you don't want to specify a comment, omit both the HostedZoneConfig and Comment elements.
-    public struct HostedZoneConfig {
+    public struct HostedZoneConfig: Swift.Sendable {
         /// Any comments that you want to include about the hosted zone.
         public var comment: Swift.String?
         /// A value that indicates whether this is a private hosted zone.
@@ -2821,11 +2837,10 @@ extension Route53ClientTypes {
             self.privateZone = privateZone
         }
     }
-
 }
 
 /// A complex type that contains information about the request to create a public or private hosted zone.
-public struct CreateHostedZoneInput {
+public struct CreateHostedZoneInput: Swift.Sendable {
     /// A unique string that identifies the request and that allows failed CreateHostedZone requests to be retried without the risk of executing the operation twice. You must use a unique CallerReference string every time you submit a CreateHostedZone request. CallerReference can be any unique string, for example, a date/time stamp.
     /// This member is required.
     public var callerReference: Swift.String?
@@ -2863,8 +2878,9 @@ public struct CreateHostedZoneInput {
 }
 
 extension Route53ClientTypes {
+
     /// A complex type that lists the name servers in a delegation set, as well as the CallerReference and the ID for the delegation set.
-    public struct DelegationSet {
+    public struct DelegationSet: Swift.Sendable {
         /// The value that you specified for CallerReference when you created the reusable delegation set.
         public var callerReference: Swift.String?
         /// The ID that Amazon Route 53 assigns to a reusable delegation set.
@@ -2884,12 +2900,12 @@ extension Route53ClientTypes {
             self.nameServers = nameServers
         }
     }
-
 }
 
 extension Route53ClientTypes {
+
     /// A complex type that contains general information about the hosted zone.
-    public struct HostedZone {
+    public struct HostedZone: Swift.Sendable {
         /// The value that you specified for CallerReference when you created the hosted zone.
         /// This member is required.
         public var callerReference: Swift.String?
@@ -2923,11 +2939,10 @@ extension Route53ClientTypes {
             self.resourceRecordSetCount = resourceRecordSetCount
         }
     }
-
 }
 
 /// A complex type containing the response information for the hosted zone.
-public struct CreateHostedZoneOutput {
+public struct CreateHostedZoneOutput: Swift.Sendable {
     /// A complex type that contains information about the CreateHostedZone request.
     /// This member is required.
     public var changeInfo: Route53ClientTypes.ChangeInfo?
@@ -3056,7 +3071,7 @@ public struct TooManyKeySigningKeys: ClientRuntime.ModeledError, AWSClientRuntim
     }
 }
 
-public struct CreateKeySigningKeyInput {
+public struct CreateKeySigningKeyInput: Swift.Sendable {
     /// A unique string that identifies the request.
     /// This member is required.
     public var callerReference: Swift.String?
@@ -3104,8 +3119,9 @@ public struct CreateKeySigningKeyInput {
 }
 
 extension Route53ClientTypes {
+
     /// A key-signing key (KSK) is a complex type that represents a public/private key pair. The private key is used to generate a digital signature for the zone signing key (ZSK). The public key is stored in the DNS and is used to authenticate the ZSK. A KSK is always associated with a hosted zone; it cannot exist by itself.
-    public struct KeySigningKey {
+    public struct KeySigningKey: Swift.Sendable {
         /// The date when the key-signing key (KSK) was created.
         public var createdDate: Foundation.Date?
         /// A string used to represent the delegation signer digest algorithm. This value must follow the guidelines provided by [RFC-8624 Section 3.3](https://tools.ietf.org/html/rfc8624#section-3.3).
@@ -3190,10 +3206,9 @@ extension Route53ClientTypes {
             self.statusMessage = statusMessage
         }
     }
-
 }
 
-public struct CreateKeySigningKeyOutput {
+public struct CreateKeySigningKeyOutput: Swift.Sendable {
     /// A complex type that describes change information about changes made to your hosted zone.
     /// This member is required.
     public var changeInfo: Route53ClientTypes.ChangeInfo?
@@ -3298,7 +3313,7 @@ public struct QueryLoggingConfigAlreadyExists: ClientRuntime.ModeledError, AWSCl
     }
 }
 
-public struct CreateQueryLoggingConfigInput {
+public struct CreateQueryLoggingConfigInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) for the log group that you want to Amazon Route 53 to send query logs to. This is the format of the ARN: arn:aws:logs:region:account-id:log-group:log_group_name To get the ARN for a log group, you can use the CloudWatch console, the [DescribeLogGroups](https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_DescribeLogGroups.html) API action, the [describe-log-groups](https://docs.aws.amazon.com/cli/latest/reference/logs/describe-log-groups.html) command, or the applicable command in one of the Amazon Web Services SDKs.
     /// This member is required.
     public var cloudWatchLogsLogGroupArn: Swift.String?
@@ -3317,8 +3332,9 @@ public struct CreateQueryLoggingConfigInput {
 }
 
 extension Route53ClientTypes {
+
     /// A complex type that contains information about a configuration for DNS query logging.
-    public struct QueryLoggingConfig {
+    public struct QueryLoggingConfig: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the CloudWatch Logs log group that Amazon Route 53 is publishing logs to.
         /// This member is required.
         public var cloudWatchLogsLogGroupArn: Swift.String?
@@ -3340,10 +3356,9 @@ extension Route53ClientTypes {
             self.id = id
         }
     }
-
 }
 
-public struct CreateQueryLoggingConfigOutput {
+public struct CreateQueryLoggingConfigOutput: Swift.Sendable {
     /// The unique URL representing the new query logging configuration.
     /// This member is required.
     public var location: Swift.String?
@@ -3436,7 +3451,7 @@ public struct HostedZoneNotFound: ClientRuntime.ModeledError, AWSClientRuntime.A
     }
 }
 
-public struct CreateReusableDelegationSetInput {
+public struct CreateReusableDelegationSetInput: Swift.Sendable {
     /// A unique string that identifies the request, and that allows you to retry failed CreateReusableDelegationSet requests without the risk of executing the operation twice. You must use a unique CallerReference string every time you submit a CreateReusableDelegationSet request. CallerReference can be any unique string, for example a date/time stamp.
     /// This member is required.
     public var callerReference: Swift.String?
@@ -3453,7 +3468,7 @@ public struct CreateReusableDelegationSetInput {
     }
 }
 
-public struct CreateReusableDelegationSetOutput {
+public struct CreateReusableDelegationSetOutput: Swift.Sendable {
     /// A complex type that contains name server information.
     /// This member is required.
     public var delegationSet: Route53ClientTypes.DelegationSet?
@@ -3547,7 +3562,7 @@ public struct TrafficPolicyAlreadyExists: ClientRuntime.ModeledError, AWSClientR
 }
 
 /// A complex type that contains information about the traffic policy that you want to create.
-public struct CreateTrafficPolicyInput {
+public struct CreateTrafficPolicyInput: Swift.Sendable {
     /// (Optional) Any comments that you want to include about the traffic policy.
     public var comment: Swift.String?
     /// The definition of this traffic policy in JSON format. For more information, see [Traffic Policy Document Format](https://docs.aws.amazon.com/Route53/latest/APIReference/api-policies-traffic-policy-document-format.html).
@@ -3570,8 +3585,9 @@ public struct CreateTrafficPolicyInput {
 }
 
 extension Route53ClientTypes {
+
     /// A complex type that contains settings for a traffic policy.
-    public struct TrafficPolicy {
+    public struct TrafficPolicy: Swift.Sendable {
         /// The comment that you specify in the CreateTrafficPolicy request, if any.
         public var comment: Swift.String?
         /// The definition of a traffic policy in JSON format. You specify the JSON document to use for a new traffic policy in the CreateTrafficPolicy request. For more information about the JSON format, see [Traffic Policy Document Format](https://docs.aws.amazon.com/Route53/latest/APIReference/api-policies-traffic-policy-document-format.html).
@@ -3607,11 +3623,10 @@ extension Route53ClientTypes {
             self.version = version
         }
     }
-
 }
 
 /// A complex type that contains the response information for the CreateTrafficPolicy request.
-public struct CreateTrafficPolicyOutput {
+public struct CreateTrafficPolicyOutput: Swift.Sendable {
     /// A unique URL that represents a new traffic policy.
     /// This member is required.
     public var location: Swift.String?
@@ -3705,7 +3720,7 @@ public struct TrafficPolicyInstanceAlreadyExists: ClientRuntime.ModeledError, AW
 }
 
 /// A complex type that contains information about the resource record sets that you want to create based on a specified traffic policy.
-public struct CreateTrafficPolicyInstanceInput {
+public struct CreateTrafficPolicyInstanceInput: Swift.Sendable {
     /// The ID of the hosted zone that you want Amazon Route 53 to create resource record sets in by using the configuration in a traffic policy.
     /// This member is required.
     public var hostedZoneId: Swift.String?
@@ -3739,8 +3754,9 @@ public struct CreateTrafficPolicyInstanceInput {
 }
 
 extension Route53ClientTypes {
+
     /// A complex type that contains settings for the new traffic policy instance.
-    public struct TrafficPolicyInstance {
+    public struct TrafficPolicyInstance: Swift.Sendable {
         /// The ID of the hosted zone that Amazon Route 53 created resource record sets in.
         /// This member is required.
         public var hostedZoneId: Swift.String?
@@ -3792,11 +3808,10 @@ extension Route53ClientTypes {
             self.ttl = ttl
         }
     }
-
 }
 
 /// A complex type that contains the response information for the CreateTrafficPolicyInstance request.
-public struct CreateTrafficPolicyInstanceOutput {
+public struct CreateTrafficPolicyInstanceOutput: Swift.Sendable {
     /// A unique URL that represents a new traffic policy instance.
     /// This member is required.
     public var location: Swift.String?
@@ -3840,7 +3855,7 @@ public struct TooManyTrafficPolicyVersionsForCurrentPolicy: ClientRuntime.Modele
 }
 
 /// A complex type that contains information about the traffic policy that you want to create a new version for.
-public struct CreateTrafficPolicyVersionInput {
+public struct CreateTrafficPolicyVersionInput: Swift.Sendable {
     /// The comment that you specified in the CreateTrafficPolicyVersion request, if any.
     public var comment: Swift.String?
     /// The definition of this version of the traffic policy, in JSON format. You specified the JSON in the CreateTrafficPolicyVersion request. For more information about the JSON format, see [CreateTrafficPolicy](https://docs.aws.amazon.com/Route53/latest/APIReference/API_CreateTrafficPolicy.html).
@@ -3863,7 +3878,7 @@ public struct CreateTrafficPolicyVersionInput {
 }
 
 /// A complex type that contains the response information for the CreateTrafficPolicyVersion request.
-public struct CreateTrafficPolicyVersionOutput {
+public struct CreateTrafficPolicyVersionOutput: Swift.Sendable {
     /// A unique URL that represents a new traffic policy version.
     /// This member is required.
     public var location: Swift.String?
@@ -3907,7 +3922,7 @@ public struct TooManyVPCAssociationAuthorizations: ClientRuntime.ModeledError, A
 }
 
 /// A complex type that contains information about the request to authorize associating a VPC with your private hosted zone. Authorization is only required when a private hosted zone and a VPC were created by using different accounts.
-public struct CreateVPCAssociationAuthorizationInput {
+public struct CreateVPCAssociationAuthorizationInput: Swift.Sendable {
     /// The ID of the private hosted zone that you want to authorize associating a VPC with.
     /// This member is required.
     public var hostedZoneId: Swift.String?
@@ -3926,7 +3941,7 @@ public struct CreateVPCAssociationAuthorizationInput {
 }
 
 /// A complex type that contains the response information from a CreateVPCAssociationAuthorization request.
-public struct CreateVPCAssociationAuthorizationOutput {
+public struct CreateVPCAssociationAuthorizationOutput: Swift.Sendable {
     /// The ID of the hosted zone that you authorized associating a VPC with.
     /// This member is required.
     public var hostedZoneId: Swift.String?
@@ -3992,7 +4007,7 @@ public struct KeySigningKeyInUse: ClientRuntime.ModeledError, AWSClientRuntime.A
     }
 }
 
-public struct DeactivateKeySigningKeyInput {
+public struct DeactivateKeySigningKeyInput: Swift.Sendable {
     /// A unique string used to identify a hosted zone.
     /// This member is required.
     public var hostedZoneId: Swift.String?
@@ -4010,7 +4025,7 @@ public struct DeactivateKeySigningKeyInput {
     }
 }
 
-public struct DeactivateKeySigningKeyOutput {
+public struct DeactivateKeySigningKeyOutput: Swift.Sendable {
     /// A complex type that describes change information about changes made to your hosted zone.
     /// This member is required.
     public var changeInfo: Route53ClientTypes.ChangeInfo?
@@ -4047,7 +4062,7 @@ public struct CidrCollectionInUseException: ClientRuntime.ModeledError, AWSClien
     }
 }
 
-public struct DeleteCidrCollectionInput {
+public struct DeleteCidrCollectionInput: Swift.Sendable {
     /// The UUID of the collection to delete.
     /// This member is required.
     public var id: Swift.String?
@@ -4060,7 +4075,7 @@ public struct DeleteCidrCollectionInput {
     }
 }
 
-public struct DeleteCidrCollectionOutput {
+public struct DeleteCidrCollectionOutput: Swift.Sendable {
 
     public init() { }
 }
@@ -4092,7 +4107,7 @@ public struct HealthCheckInUse: ClientRuntime.ModeledError, AWSClientRuntime.AWS
 }
 
 /// This action deletes a health check.
-public struct DeleteHealthCheckInput {
+public struct DeleteHealthCheckInput: Swift.Sendable {
     /// The ID of the health check that you want to delete.
     /// This member is required.
     public var healthCheckId: Swift.String?
@@ -4106,7 +4121,7 @@ public struct DeleteHealthCheckInput {
 }
 
 /// An empty element.
-public struct DeleteHealthCheckOutput {
+public struct DeleteHealthCheckOutput: Swift.Sendable {
 
     public init() { }
 }
@@ -4137,7 +4152,7 @@ public struct HostedZoneNotEmpty: ClientRuntime.ModeledError, AWSClientRuntime.A
 }
 
 /// A request to delete a hosted zone.
-public struct DeleteHostedZoneInput {
+public struct DeleteHostedZoneInput: Swift.Sendable {
     /// The ID of the hosted zone you want to delete.
     /// This member is required.
     public var id: Swift.String?
@@ -4151,7 +4166,7 @@ public struct DeleteHostedZoneInput {
 }
 
 /// A complex type that contains the response to a DeleteHostedZone request.
-public struct DeleteHostedZoneOutput {
+public struct DeleteHostedZoneOutput: Swift.Sendable {
     /// A complex type that contains the ID, the status, and the date and time of a request to delete a hosted zone.
     /// This member is required.
     public var changeInfo: Route53ClientTypes.ChangeInfo?
@@ -4164,7 +4179,7 @@ public struct DeleteHostedZoneOutput {
     }
 }
 
-public struct DeleteKeySigningKeyInput {
+public struct DeleteKeySigningKeyInput: Swift.Sendable {
     /// A unique string used to identify a hosted zone.
     /// This member is required.
     public var hostedZoneId: Swift.String?
@@ -4182,7 +4197,7 @@ public struct DeleteKeySigningKeyInput {
     }
 }
 
-public struct DeleteKeySigningKeyOutput {
+public struct DeleteKeySigningKeyOutput: Swift.Sendable {
     /// A complex type that describes change information about changes made to your hosted zone.
     /// This member is required.
     public var changeInfo: Route53ClientTypes.ChangeInfo?
@@ -4219,7 +4234,7 @@ public struct NoSuchQueryLoggingConfig: ClientRuntime.ModeledError, AWSClientRun
     }
 }
 
-public struct DeleteQueryLoggingConfigInput {
+public struct DeleteQueryLoggingConfigInput: Swift.Sendable {
     /// The ID of the configuration that you want to delete.
     /// This member is required.
     public var id: Swift.String?
@@ -4232,7 +4247,7 @@ public struct DeleteQueryLoggingConfigInput {
     }
 }
 
-public struct DeleteQueryLoggingConfigOutput {
+public struct DeleteQueryLoggingConfigOutput: Swift.Sendable {
 
     public init() { }
 }
@@ -4263,7 +4278,7 @@ public struct DelegationSetInUse: ClientRuntime.ModeledError, AWSClientRuntime.A
 }
 
 /// A request to delete a reusable delegation set.
-public struct DeleteReusableDelegationSetInput {
+public struct DeleteReusableDelegationSetInput: Swift.Sendable {
     /// The ID of the reusable delegation set that you want to delete.
     /// This member is required.
     public var id: Swift.String?
@@ -4277,7 +4292,7 @@ public struct DeleteReusableDelegationSetInput {
 }
 
 /// An empty element.
-public struct DeleteReusableDelegationSetOutput {
+public struct DeleteReusableDelegationSetOutput: Swift.Sendable {
 
     public init() { }
 }
@@ -4308,7 +4323,7 @@ public struct TrafficPolicyInUse: ClientRuntime.ModeledError, AWSClientRuntime.A
 }
 
 /// A request to delete a specified traffic policy version.
-public struct DeleteTrafficPolicyInput {
+public struct DeleteTrafficPolicyInput: Swift.Sendable {
     /// The ID of the traffic policy that you want to delete.
     /// This member is required.
     public var id: Swift.String?
@@ -4327,7 +4342,7 @@ public struct DeleteTrafficPolicyInput {
 }
 
 /// An empty element.
-public struct DeleteTrafficPolicyOutput {
+public struct DeleteTrafficPolicyOutput: Swift.Sendable {
 
     public init() { }
 }
@@ -4358,7 +4373,7 @@ public struct NoSuchTrafficPolicyInstance: ClientRuntime.ModeledError, AWSClient
 }
 
 /// A request to delete a specified traffic policy instance.
-public struct DeleteTrafficPolicyInstanceInput {
+public struct DeleteTrafficPolicyInstanceInput: Swift.Sendable {
     /// The ID of the traffic policy instance that you want to delete. When you delete a traffic policy instance, Amazon Route 53 also deletes all of the resource record sets that were created when you created the traffic policy instance.
     /// This member is required.
     public var id: Swift.String?
@@ -4372,7 +4387,7 @@ public struct DeleteTrafficPolicyInstanceInput {
 }
 
 /// An empty element.
-public struct DeleteTrafficPolicyInstanceOutput {
+public struct DeleteTrafficPolicyInstanceOutput: Swift.Sendable {
 
     public init() { }
 }
@@ -4403,7 +4418,7 @@ public struct VPCAssociationAuthorizationNotFound: ClientRuntime.ModeledError, A
 }
 
 /// A complex type that contains information about the request to remove authorization to associate a VPC that was created by one Amazon Web Services account with a hosted zone that was created with a different Amazon Web Services account.
-public struct DeleteVPCAssociationAuthorizationInput {
+public struct DeleteVPCAssociationAuthorizationInput: Swift.Sendable {
     /// When removing authorization to associate a VPC that was created by one Amazon Web Services account with a hosted zone that was created with a different Amazon Web Services account, the ID of the hosted zone.
     /// This member is required.
     public var hostedZoneId: Swift.String?
@@ -4422,7 +4437,7 @@ public struct DeleteVPCAssociationAuthorizationInput {
 }
 
 /// Empty response for the request.
-public struct DeleteVPCAssociationAuthorizationOutput {
+public struct DeleteVPCAssociationAuthorizationOutput: Swift.Sendable {
 
     public init() { }
 }
@@ -4451,7 +4466,7 @@ public struct DNSSECNotFound: ClientRuntime.ModeledError, AWSClientRuntime.AWSSe
     }
 }
 
-public struct DisableHostedZoneDNSSECInput {
+public struct DisableHostedZoneDNSSECInput: Swift.Sendable {
     /// A unique string used to identify a hosted zone.
     /// This member is required.
     public var hostedZoneId: Swift.String?
@@ -4464,7 +4479,7 @@ public struct DisableHostedZoneDNSSECInput {
     }
 }
 
-public struct DisableHostedZoneDNSSECOutput {
+public struct DisableHostedZoneDNSSECOutput: Swift.Sendable {
     /// A complex type that describes change information about changes made to your hosted zone.
     /// This member is required.
     public var changeInfo: Route53ClientTypes.ChangeInfo?
@@ -4528,7 +4543,7 @@ public struct VPCAssociationNotFound: ClientRuntime.ModeledError, AWSClientRunti
 }
 
 /// A complex type that contains information about the VPC that you want to disassociate from a specified private hosted zone.
-public struct DisassociateVPCFromHostedZoneInput {
+public struct DisassociateVPCFromHostedZoneInput: Swift.Sendable {
     /// Optional: A comment about the disassociation request.
     public var comment: Swift.String?
     /// The ID of the private hosted zone that you want to disassociate a VPC from.
@@ -4551,7 +4566,7 @@ public struct DisassociateVPCFromHostedZoneInput {
 }
 
 /// A complex type that contains the response information for the disassociate request.
-public struct DisassociateVPCFromHostedZoneOutput {
+public struct DisassociateVPCFromHostedZoneOutput: Swift.Sendable {
     /// A complex type that describes the changes made to the specified private hosted zone.
     /// This member is required.
     public var changeInfo: Route53ClientTypes.ChangeInfo?
@@ -4612,7 +4627,7 @@ public struct KeySigningKeyWithActiveStatusNotFound: ClientRuntime.ModeledError,
     }
 }
 
-public struct EnableHostedZoneDNSSECInput {
+public struct EnableHostedZoneDNSSECInput: Swift.Sendable {
     /// A unique string used to identify a hosted zone.
     /// This member is required.
     public var hostedZoneId: Swift.String?
@@ -4625,7 +4640,7 @@ public struct EnableHostedZoneDNSSECInput {
     }
 }
 
-public struct EnableHostedZoneDNSSECOutput {
+public struct EnableHostedZoneDNSSECOutput: Swift.Sendable {
     /// A complex type that describes change information about changes made to your hosted zone.
     /// This member is required.
     public var changeInfo: Route53ClientTypes.ChangeInfo?
@@ -4639,7 +4654,7 @@ public struct EnableHostedZoneDNSSECOutput {
 }
 
 /// A complex type that contains information about the request to create a hosted zone.
-public struct GetAccountLimitInput {
+public struct GetAccountLimitInput: Swift.Sendable {
     /// The limit that you want to get. Valid values include the following:
     ///
     /// * MAX_HEALTH_CHECKS_BY_OWNER: The maximum number of health checks that you can create using the current account.
@@ -4663,7 +4678,7 @@ public struct GetAccountLimitInput {
 }
 
 /// A complex type that contains the requested limit.
-public struct GetAccountLimitOutput {
+public struct GetAccountLimitOutput: Swift.Sendable {
     /// The current number of entities that you have created of the specified type. For example, if you specified MAX_HEALTH_CHECKS_BY_OWNER for the value of Type in the request, the value of Count is the current number of health checks that you have created using the current account.
     /// This member is required.
     public var count: Swift.Int
@@ -4706,7 +4721,7 @@ public struct NoSuchChange: ClientRuntime.ModeledError, AWSClientRuntime.AWSServ
 }
 
 /// The input for a GetChange request.
-public struct GetChangeInput {
+public struct GetChangeInput: Swift.Sendable {
     /// The ID of the change batch request. The value that you specify here is the value that ChangeResourceRecordSets returned in the Id element when you submitted the request.
     /// This member is required.
     public var id: Swift.String?
@@ -4720,7 +4735,7 @@ public struct GetChangeInput {
 }
 
 /// A complex type that contains the ChangeInfo element.
-public struct GetChangeOutput {
+public struct GetChangeOutput: Swift.Sendable {
     /// A complex type that contains information about the specified change batch.
     /// This member is required.
     public var changeInfo: Route53ClientTypes.ChangeInfo?
@@ -4734,13 +4749,13 @@ public struct GetChangeOutput {
 }
 
 /// Empty request.
-public struct GetCheckerIpRangesInput {
+public struct GetCheckerIpRangesInput: Swift.Sendable {
 
     public init() { }
 }
 
 /// A complex type that contains the CheckerIpRanges element.
-public struct GetCheckerIpRangesOutput {
+public struct GetCheckerIpRangesOutput: Swift.Sendable {
     /// A complex type that contains sorted list of IP ranges in CIDR format for Amazon Route 53 health checkers.
     /// This member is required.
     public var checkerIpRanges: [Swift.String]?
@@ -4753,7 +4768,7 @@ public struct GetCheckerIpRangesOutput {
     }
 }
 
-public struct GetDNSSECInput {
+public struct GetDNSSECInput: Swift.Sendable {
     /// A unique string used to identify a hosted zone.
     /// This member is required.
     public var hostedZoneId: Swift.String?
@@ -4767,8 +4782,9 @@ public struct GetDNSSECInput {
 }
 
 extension Route53ClientTypes {
+
     /// A string representing the status of DNSSEC signing.
-    public struct DNSSECStatus {
+    public struct DNSSECStatus: Swift.Sendable {
         /// A string that represents the current hosted zone signing status. Status can have one of the following values: SIGNING DNSSEC signing is enabled for the hosted zone. NOT_SIGNING DNSSEC signing is not enabled for the hosted zone. DELETING DNSSEC signing is in the process of being removed for the hosted zone. ACTION_NEEDED There is a problem with signing in the hosted zone that requires you to take action to resolve. For example, the customer managed key might have been deleted, or the permissions for the customer managed key might have been changed. INTERNAL_FAILURE There was an error during a request. Before you can continue to work with DNSSEC signing, including with key-signing keys (KSKs), you must correct the problem by enabling or disabling DNSSEC signing for the hosted zone.
         public var serveSignature: Swift.String?
         /// The status message provided for the following DNSSEC signing status: INTERNAL_FAILURE. The status message includes information about what the problem might be and steps that you can take to correct the issue.
@@ -4783,10 +4799,9 @@ extension Route53ClientTypes {
             self.statusMessage = statusMessage
         }
     }
-
 }
 
-public struct GetDNSSECOutput {
+public struct GetDNSSECOutput: Swift.Sendable {
     /// The key-signing keys (KSKs) in your account.
     /// This member is required.
     public var keySigningKeys: [Route53ClientTypes.KeySigningKey]?
@@ -4830,7 +4845,7 @@ public struct NoSuchGeoLocation: ClientRuntime.ModeledError, AWSClientRuntime.AW
 }
 
 /// A request for information about whether a specified geographic location is supported for Amazon Route 53 geolocation resource record sets.
-public struct GetGeoLocationInput {
+public struct GetGeoLocationInput: Swift.Sendable {
     /// For geolocation resource record sets, a two-letter abbreviation that identifies a continent. Amazon Route 53 supports the following continent codes:
     ///
     /// * AF: Africa
@@ -4865,8 +4880,9 @@ public struct GetGeoLocationInput {
 }
 
 extension Route53ClientTypes {
+
     /// A complex type that contains the codes and full continent, country, and subdivision names for the specified geolocation code.
-    public struct GeoLocationDetails {
+    public struct GeoLocationDetails: Swift.Sendable {
         /// The two-letter code for the continent.
         public var continentCode: Swift.String?
         /// The full name of the continent.
@@ -4897,11 +4913,10 @@ extension Route53ClientTypes {
             self.subdivisionName = subdivisionName
         }
     }
-
 }
 
 /// A complex type that contains the response information for the specified geolocation code.
-public struct GetGeoLocationOutput {
+public struct GetGeoLocationOutput: Swift.Sendable {
     /// A complex type that contains the codes and full continent, country, and subdivision names for the specified geolocation code.
     /// This member is required.
     public var geoLocationDetails: Route53ClientTypes.GeoLocationDetails?
@@ -4939,7 +4954,7 @@ public struct IncompatibleVersion: ClientRuntime.ModeledError, AWSClientRuntime.
 }
 
 /// A request to get information about a specified health check.
-public struct GetHealthCheckInput {
+public struct GetHealthCheckInput: Swift.Sendable {
     /// The identifier that Amazon Route 53 assigned to the health check when you created it. When you add or update a resource record set, you use this value to specify which health check to use. The value can be up to 64 characters long.
     /// This member is required.
     public var healthCheckId: Swift.String?
@@ -4953,7 +4968,7 @@ public struct GetHealthCheckInput {
 }
 
 /// A complex type that contains the response to a GetHealthCheck request.
-public struct GetHealthCheckOutput {
+public struct GetHealthCheckOutput: Swift.Sendable {
     /// A complex type that contains information about one health check that is associated with the current Amazon Web Services account.
     /// This member is required.
     public var healthCheck: Route53ClientTypes.HealthCheck?
@@ -4967,13 +4982,13 @@ public struct GetHealthCheckOutput {
 }
 
 /// A request for the number of health checks that are associated with the current Amazon Web Services account.
-public struct GetHealthCheckCountInput {
+public struct GetHealthCheckCountInput: Swift.Sendable {
 
     public init() { }
 }
 
 /// A complex type that contains the response to a GetHealthCheckCount request.
-public struct GetHealthCheckCountOutput {
+public struct GetHealthCheckCountOutput: Swift.Sendable {
     /// The number of health checks associated with the current Amazon Web Services account.
     /// This member is required.
     public var healthCheckCount: Swift.Int?
@@ -4987,7 +5002,7 @@ public struct GetHealthCheckCountOutput {
 }
 
 /// A request for the reason that a health check failed most recently.
-public struct GetHealthCheckLastFailureReasonInput {
+public struct GetHealthCheckLastFailureReasonInput: Swift.Sendable {
     /// The ID for the health check for which you want the last failure reason. When you created the health check, CreateHealthCheck returned the ID in the response, in the HealthCheckId element. If you want to get the last failure reason for a calculated health check, you must use the Amazon Route 53 console or the CloudWatch console. You can't use GetHealthCheckLastFailureReason for a calculated health check.
     /// This member is required.
     public var healthCheckId: Swift.String?
@@ -5001,8 +5016,9 @@ public struct GetHealthCheckLastFailureReasonInput {
 }
 
 extension Route53ClientTypes {
+
     /// A complex type that contains the status that one Amazon Route 53 health checker reports and the time of the health check.
-    public struct StatusReport {
+    public struct StatusReport: Swift.Sendable {
         /// The date and time that the health checker performed the health check in [ISO 8601 format](https://en.wikipedia.org/wiki/ISO_8601) and Coordinated Universal Time (UTC). For example, the value 2017-03-27T17:48:16.751Z represents March 27, 2017 at 17:48:16.751 UTC.
         public var checkedTime: Foundation.Date?
         /// A description of the status of the health check endpoint as reported by one of the Amazon Route 53 health checkers.
@@ -5017,12 +5033,12 @@ extension Route53ClientTypes {
             self.status = status
         }
     }
-
 }
 
 extension Route53ClientTypes {
+
     /// A complex type that contains the last failure reason as reported by one Amazon Route 53 health checker.
-    public struct HealthCheckObservation {
+    public struct HealthCheckObservation: Swift.Sendable {
         /// The IP address of the Amazon Route 53 health checker that provided the failure reason in StatusReport.
         public var ipAddress: Swift.String?
         /// The region of the Amazon Route 53 health checker that provided the status in StatusReport.
@@ -5041,11 +5057,10 @@ extension Route53ClientTypes {
             self.statusReport = statusReport
         }
     }
-
 }
 
 /// A complex type that contains the response to a GetHealthCheckLastFailureReason request.
-public struct GetHealthCheckLastFailureReasonOutput {
+public struct GetHealthCheckLastFailureReasonOutput: Swift.Sendable {
     /// A list that contains one Observation element for each Amazon Route 53 health checker that is reporting a last failure reason.
     /// This member is required.
     public var healthCheckObservations: [Route53ClientTypes.HealthCheckObservation]?
@@ -5059,7 +5074,7 @@ public struct GetHealthCheckLastFailureReasonOutput {
 }
 
 /// A request to get the status for a health check.
-public struct GetHealthCheckStatusInput {
+public struct GetHealthCheckStatusInput: Swift.Sendable {
     /// The ID for the health check that you want the current status for. When you created the health check, CreateHealthCheck returned the ID in the response, in the HealthCheckId element. If you want to check the status of a calculated health check, you must use the Amazon Route 53 console or the CloudWatch console. You can't use GetHealthCheckStatus to get the status of a calculated health check.
     /// This member is required.
     public var healthCheckId: Swift.String?
@@ -5073,7 +5088,7 @@ public struct GetHealthCheckStatusInput {
 }
 
 /// A complex type that contains the response to a GetHealthCheck request.
-public struct GetHealthCheckStatusOutput {
+public struct GetHealthCheckStatusOutput: Swift.Sendable {
     /// A list that contains one HealthCheckObservation element for each Amazon Route 53 health checker that is reporting a status about the health check endpoint.
     /// This member is required.
     public var healthCheckObservations: [Route53ClientTypes.HealthCheckObservation]?
@@ -5087,7 +5102,7 @@ public struct GetHealthCheckStatusOutput {
 }
 
 /// A request to get information about a specified hosted zone.
-public struct GetHostedZoneInput {
+public struct GetHostedZoneInput: Swift.Sendable {
     /// The ID of the hosted zone that you want to get information about.
     /// This member is required.
     public var id: Swift.String?
@@ -5101,7 +5116,7 @@ public struct GetHostedZoneInput {
 }
 
 /// A complex type that contain the response to a GetHostedZone request.
-public struct GetHostedZoneOutput {
+public struct GetHostedZoneOutput: Swift.Sendable {
     /// A complex type that lists the Amazon Route 53 name servers for the specified hosted zone.
     public var delegationSet: Route53ClientTypes.DelegationSet?
     /// A complex type that contains general information about the specified hosted zone.
@@ -5123,13 +5138,13 @@ public struct GetHostedZoneOutput {
 }
 
 /// A request to retrieve a count of all the hosted zones that are associated with the current Amazon Web Services account.
-public struct GetHostedZoneCountInput {
+public struct GetHostedZoneCountInput: Swift.Sendable {
 
     public init() { }
 }
 
 /// A complex type that contains the response to a GetHostedZoneCount request.
-public struct GetHostedZoneCountOutput {
+public struct GetHostedZoneCountOutput: Swift.Sendable {
     /// The total number of public and private hosted zones that are associated with the current Amazon Web Services account.
     /// This member is required.
     public var hostedZoneCount: Swift.Int?
@@ -5169,7 +5184,7 @@ public struct HostedZoneNotPrivate: ClientRuntime.ModeledError, AWSClientRuntime
 
 extension Route53ClientTypes {
 
-    public enum HostedZoneLimitType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum HostedZoneLimitType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case maxRrsetsByZone
         case maxVpcsAssociatedByZone
         case sdkUnknown(Swift.String)
@@ -5197,7 +5212,7 @@ extension Route53ClientTypes {
 }
 
 /// A complex type that contains information about the request to create a hosted zone.
-public struct GetHostedZoneLimitInput {
+public struct GetHostedZoneLimitInput: Swift.Sendable {
     /// The ID of the hosted zone that you want to get a limit for.
     /// This member is required.
     public var hostedZoneId: Swift.String?
@@ -5220,8 +5235,9 @@ public struct GetHostedZoneLimitInput {
 }
 
 extension Route53ClientTypes {
+
     /// A complex type that contains the type of limit that you specified in the request and the current value for that limit.
-    public struct HostedZoneLimit {
+    public struct HostedZoneLimit: Swift.Sendable {
         /// The limit that you requested. Valid values include the following:
         ///
         /// * MAX_RRSETS_BY_ZONE: The maximum number of records that you can create in the specified hosted zone.
@@ -5242,11 +5258,10 @@ extension Route53ClientTypes {
             self.value = value
         }
     }
-
 }
 
 /// A complex type that contains the requested limit.
-public struct GetHostedZoneLimitOutput {
+public struct GetHostedZoneLimitOutput: Swift.Sendable {
     /// The current number of entities that you have created of the specified type. For example, if you specified MAX_RRSETS_BY_ZONE for the value of Type in the request, the value of Count is the current number of records that you have created in the specified hosted zone.
     /// This member is required.
     public var count: Swift.Int
@@ -5264,7 +5279,7 @@ public struct GetHostedZoneLimitOutput {
     }
 }
 
-public struct GetQueryLoggingConfigInput {
+public struct GetQueryLoggingConfigInput: Swift.Sendable {
     /// The ID of the configuration for DNS query logging that you want to get information about.
     /// This member is required.
     public var id: Swift.String?
@@ -5277,7 +5292,7 @@ public struct GetQueryLoggingConfigInput {
     }
 }
 
-public struct GetQueryLoggingConfigOutput {
+public struct GetQueryLoggingConfigOutput: Swift.Sendable {
     /// A complex type that contains information about the query logging configuration that you specified in a [GetQueryLoggingConfig](https://docs.aws.amazon.com/Route53/latest/APIReference/API_GetQueryLoggingConfig.html) request.
     /// This member is required.
     public var queryLoggingConfig: Route53ClientTypes.QueryLoggingConfig?
@@ -5291,7 +5306,7 @@ public struct GetQueryLoggingConfigOutput {
 }
 
 /// A request to get information about a specified reusable delegation set.
-public struct GetReusableDelegationSetInput {
+public struct GetReusableDelegationSetInput: Swift.Sendable {
     /// The ID of the reusable delegation set that you want to get a list of name servers for.
     /// This member is required.
     public var id: Swift.String?
@@ -5305,7 +5320,7 @@ public struct GetReusableDelegationSetInput {
 }
 
 /// A complex type that contains the response to the GetReusableDelegationSet request.
-public struct GetReusableDelegationSetOutput {
+public struct GetReusableDelegationSetOutput: Swift.Sendable {
     /// A complex type that contains information about the reusable delegation set.
     /// This member is required.
     public var delegationSet: Route53ClientTypes.DelegationSet?
@@ -5320,7 +5335,7 @@ public struct GetReusableDelegationSetOutput {
 
 extension Route53ClientTypes {
 
-    public enum ReusableDelegationSetLimitType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ReusableDelegationSetLimitType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case maxZonesByReusableDelegationSet
         case sdkUnknown(Swift.String)
 
@@ -5345,7 +5360,7 @@ extension Route53ClientTypes {
 }
 
 /// A complex type that contains information about the request to create a hosted zone.
-public struct GetReusableDelegationSetLimitInput {
+public struct GetReusableDelegationSetLimitInput: Swift.Sendable {
     /// The ID of the delegation set that you want to get the limit for.
     /// This member is required.
     public var delegationSetId: Swift.String?
@@ -5364,8 +5379,9 @@ public struct GetReusableDelegationSetLimitInput {
 }
 
 extension Route53ClientTypes {
+
     /// A complex type that contains the type of limit that you specified in the request and the current value for that limit.
-    public struct ReusableDelegationSetLimit {
+    public struct ReusableDelegationSetLimit: Swift.Sendable {
         /// The limit that you requested: MAX_ZONES_BY_REUSABLE_DELEGATION_SET, the maximum number of hosted zones that you can associate with the specified reusable delegation set.
         /// This member is required.
         public var type: Route53ClientTypes.ReusableDelegationSetLimitType?
@@ -5382,11 +5398,10 @@ extension Route53ClientTypes {
             self.value = value
         }
     }
-
 }
 
 /// A complex type that contains the requested limit.
-public struct GetReusableDelegationSetLimitOutput {
+public struct GetReusableDelegationSetLimitOutput: Swift.Sendable {
     /// The current number of hosted zones that you can associate with the specified reusable delegation set.
     /// This member is required.
     public var count: Swift.Int
@@ -5405,7 +5420,7 @@ public struct GetReusableDelegationSetLimitOutput {
 }
 
 /// Gets information about a specific traffic policy version.
-public struct GetTrafficPolicyInput {
+public struct GetTrafficPolicyInput: Swift.Sendable {
     /// The ID of the traffic policy that you want to get information about.
     /// This member is required.
     public var id: Swift.String?
@@ -5424,7 +5439,7 @@ public struct GetTrafficPolicyInput {
 }
 
 /// A complex type that contains the response information for the request.
-public struct GetTrafficPolicyOutput {
+public struct GetTrafficPolicyOutput: Swift.Sendable {
     /// A complex type that contains settings for the specified traffic policy.
     /// This member is required.
     public var trafficPolicy: Route53ClientTypes.TrafficPolicy?
@@ -5438,7 +5453,7 @@ public struct GetTrafficPolicyOutput {
 }
 
 /// Gets information about a specified traffic policy instance.
-public struct GetTrafficPolicyInstanceInput {
+public struct GetTrafficPolicyInstanceInput: Swift.Sendable {
     /// The ID of the traffic policy instance that you want to get information about.
     /// This member is required.
     public var id: Swift.String?
@@ -5452,7 +5467,7 @@ public struct GetTrafficPolicyInstanceInput {
 }
 
 /// A complex type that contains information about the resource record sets that Amazon Route 53 created based on a specified traffic policy.
-public struct GetTrafficPolicyInstanceOutput {
+public struct GetTrafficPolicyInstanceOutput: Swift.Sendable {
     /// A complex type that contains settings for the traffic policy instance.
     /// This member is required.
     public var trafficPolicyInstance: Route53ClientTypes.TrafficPolicyInstance?
@@ -5466,13 +5481,13 @@ public struct GetTrafficPolicyInstanceOutput {
 }
 
 /// Request to get the number of traffic policy instances that are associated with the current Amazon Web Services account.
-public struct GetTrafficPolicyInstanceCountInput {
+public struct GetTrafficPolicyInstanceCountInput: Swift.Sendable {
 
     public init() { }
 }
 
 /// A complex type that contains information about the resource record sets that Amazon Route 53 created based on a specified traffic policy.
-public struct GetTrafficPolicyInstanceCountOutput {
+public struct GetTrafficPolicyInstanceCountOutput: Swift.Sendable {
     /// The number of traffic policy instances that are associated with the current Amazon Web Services account.
     /// This member is required.
     public var trafficPolicyInstanceCount: Swift.Int?
@@ -5509,7 +5524,7 @@ public struct NoSuchCidrLocationException: ClientRuntime.ModeledError, AWSClient
     }
 }
 
-public struct ListCidrBlocksInput {
+public struct ListCidrBlocksInput: Swift.Sendable {
     /// The UUID of the CIDR collection.
     /// This member is required.
     public var collectionId: Swift.String?
@@ -5535,8 +5550,9 @@ public struct ListCidrBlocksInput {
 }
 
 extension Route53ClientTypes {
+
     /// A complex type that lists the CIDR blocks.
-    public struct CidrBlockSummary {
+    public struct CidrBlockSummary: Swift.Sendable {
         /// Value for the CIDR block.
         public var cidrBlock: Swift.String?
         /// The location name of the CIDR block.
@@ -5551,10 +5567,9 @@ extension Route53ClientTypes {
             self.locationName = locationName
         }
     }
-
 }
 
-public struct ListCidrBlocksOutput {
+public struct ListCidrBlocksOutput: Swift.Sendable {
     /// A complex type that contains information about the CIDR blocks.
     public var cidrBlocks: [Route53ClientTypes.CidrBlockSummary]?
     /// An opaque pagination token to indicate where the service is to begin enumerating results. If no value is provided, the listing of results starts from the beginning.
@@ -5570,7 +5585,7 @@ public struct ListCidrBlocksOutput {
     }
 }
 
-public struct ListCidrCollectionsInput {
+public struct ListCidrCollectionsInput: Swift.Sendable {
     /// The maximum number of CIDR collections to return in the response.
     public var maxResults: Swift.Int?
     /// An opaque pagination token to indicate where the service is to begin enumerating results. If no value is provided, the listing of results starts from the beginning.
@@ -5587,8 +5602,9 @@ public struct ListCidrCollectionsInput {
 }
 
 extension Route53ClientTypes {
+
     /// A complex type that is an entry in an [CidrCollection](https://docs.aws.amazon.com/Route53/latest/APIReference/API_CidrCollection.html) array.
-    public struct CollectionSummary {
+    public struct CollectionSummary: Swift.Sendable {
         /// The ARN of the collection summary. Can be used to reference the collection in IAM policy or cross-account.
         public var arn: Swift.String?
         /// Unique ID for the CIDR collection.
@@ -5611,10 +5627,9 @@ extension Route53ClientTypes {
             self.version = version
         }
     }
-
 }
 
-public struct ListCidrCollectionsOutput {
+public struct ListCidrCollectionsOutput: Swift.Sendable {
     /// A complex type with information about the CIDR collection.
     public var cidrCollections: [Route53ClientTypes.CollectionSummary]?
     /// An opaque pagination token to indicate where the service is to begin enumerating results. If no value is provided, the listing of results starts from the beginning.
@@ -5630,7 +5645,7 @@ public struct ListCidrCollectionsOutput {
     }
 }
 
-public struct ListCidrLocationsInput {
+public struct ListCidrLocationsInput: Swift.Sendable {
     /// The CIDR collection ID.
     /// This member is required.
     public var collectionId: Swift.String?
@@ -5652,8 +5667,9 @@ public struct ListCidrLocationsInput {
 }
 
 extension Route53ClientTypes {
+
     /// A complex type that contains information about the CIDR location.
-    public struct LocationSummary {
+    public struct LocationSummary: Swift.Sendable {
         /// A string that specifies a location name.
         public var locationName: Swift.String?
 
@@ -5664,10 +5680,9 @@ extension Route53ClientTypes {
             self.locationName = locationName
         }
     }
-
 }
 
-public struct ListCidrLocationsOutput {
+public struct ListCidrLocationsOutput: Swift.Sendable {
     /// A complex type that contains information about the list of CIDR locations.
     public var cidrLocations: [Route53ClientTypes.LocationSummary]?
     /// An opaque pagination token to indicate where the service is to begin enumerating results. If no value is provided, the listing of results starts from the beginning.
@@ -5684,7 +5699,7 @@ public struct ListCidrLocationsOutput {
 }
 
 /// A request to get a list of geographic locations that Amazon Route 53 supports for geolocation resource record sets.
-public struct ListGeoLocationsInput {
+public struct ListGeoLocationsInput: Swift.Sendable {
     /// (Optional) The maximum number of geolocations to be included in the response body for this request. If more than maxitems geolocations remain to be listed, then the value of the IsTruncated element in the response is true.
     public var maxItems: Swift.Int?
     /// The code for the continent with which you want to start listing locations that Amazon Route 53 supports for geolocation. If Route 53 has already returned a page or more of results, if IsTruncated is true, and if NextContinentCode from the previous response has a value, enter that value in startcontinentcode to return the next page of results. Include startcontinentcode only if you want to list continents. Don't include startcontinentcode when you're listing countries or countries with their subdivisions.
@@ -5709,7 +5724,7 @@ public struct ListGeoLocationsInput {
 }
 
 /// A complex type containing the response information for the request.
-public struct ListGeoLocationsOutput {
+public struct ListGeoLocationsOutput: Swift.Sendable {
     /// A complex type that contains one GeoLocationDetails element for each location that Amazon Route 53 supports for geolocation.
     /// This member is required.
     public var geoLocationDetailsList: [Route53ClientTypes.GeoLocationDetails]?
@@ -5745,7 +5760,7 @@ public struct ListGeoLocationsOutput {
 }
 
 /// A request to retrieve a list of the health checks that are associated with the current Amazon Web Services account.
-public struct ListHealthChecksInput {
+public struct ListHealthChecksInput: Swift.Sendable {
     /// If the value of IsTruncated in the previous response was true, you have more health checks. To get another group, submit another ListHealthChecks request. For the value of marker, specify the value of NextMarker from the previous response, which is the ID of the first health check that Amazon Route 53 will return if you submit another request. If the value of IsTruncated in the previous response was false, there are no more health checks to get.
     public var marker: Swift.String?
     /// The maximum number of health checks that you want ListHealthChecks to return in response to the current request. Amazon Route 53 returns a maximum of 1000 items. If you set MaxItems to a value greater than 1000, Route 53 returns only the first 1000 health checks.
@@ -5762,7 +5777,7 @@ public struct ListHealthChecksInput {
 }
 
 /// A complex type that contains the response to a ListHealthChecks request.
-public struct ListHealthChecksOutput {
+public struct ListHealthChecksOutput: Swift.Sendable {
     /// A complex type that contains one HealthCheck element for each health check that is associated with the current Amazon Web Services account.
     /// This member is required.
     public var healthChecks: [Route53ClientTypes.HealthCheck]?
@@ -5796,7 +5811,7 @@ public struct ListHealthChecksOutput {
 
 extension Route53ClientTypes {
 
-    public enum HostedZoneType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum HostedZoneType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case privateHostedZone
         case sdkUnknown(Swift.String)
 
@@ -5821,7 +5836,7 @@ extension Route53ClientTypes {
 }
 
 /// A request to retrieve a list of the public and private hosted zones that are associated with the current Amazon Web Services account.
-public struct ListHostedZonesInput {
+public struct ListHostedZonesInput: Swift.Sendable {
     /// If you're using reusable delegation sets and you want to list all of the hosted zones that are associated with a reusable delegation set, specify the ID of that reusable delegation set.
     public var delegationSetId: Swift.String?
     /// (Optional) Specifies if the hosted zone is private.
@@ -5845,7 +5860,7 @@ public struct ListHostedZonesInput {
     }
 }
 
-public struct ListHostedZonesOutput {
+public struct ListHostedZonesOutput: Swift.Sendable {
     /// A complex type that contains general information about the hosted zone.
     /// This member is required.
     public var hostedZones: [Route53ClientTypes.HostedZone]?
@@ -5878,7 +5893,7 @@ public struct ListHostedZonesOutput {
 }
 
 /// Retrieves a list of the public and private hosted zones that are associated with the current Amazon Web Services account in ASCII order by domain name.
-public struct ListHostedZonesByNameInput {
+public struct ListHostedZonesByNameInput: Swift.Sendable {
     /// (Optional) For your first request to ListHostedZonesByName, include the dnsname parameter only if you want to specify the name of the first hosted zone in the response. If you don't include the dnsname parameter, Amazon Route 53 returns all of the hosted zones that were created by the current Amazon Web Services account, in ASCII order. For subsequent requests, include both dnsname and hostedzoneid parameters. For dnsname, specify the value of NextDNSName from the previous response.
     public var dnsName: Swift.String?
     /// (Optional) For your first request to ListHostedZonesByName, do not include the hostedzoneid parameter. If you have more hosted zones than the value of maxitems, ListHostedZonesByName returns only the first maxitems hosted zones. To get the next group of maxitems hosted zones, submit another request to ListHostedZonesByName and include both dnsname and hostedzoneid parameters. For the value of hostedzoneid, specify the value of the NextHostedZoneId element from the previous response.
@@ -5899,7 +5914,7 @@ public struct ListHostedZonesByNameInput {
 }
 
 /// A complex type that contains the response information for the request.
-public struct ListHostedZonesByNameOutput {
+public struct ListHostedZonesByNameOutput: Swift.Sendable {
     /// For the second and subsequent calls to ListHostedZonesByName, DNSName is the value that you specified for the dnsname parameter in the request that produced the current response.
     public var dnsName: Swift.String?
     /// The ID that Amazon Route 53 assigned to the hosted zone when you created it.
@@ -5963,7 +5978,7 @@ public struct InvalidPaginationToken: ClientRuntime.ModeledError, AWSClientRunti
 }
 
 /// Lists all the private hosted zones that a specified VPC is associated with, regardless of which Amazon Web Services account created the hosted zones.
-public struct ListHostedZonesByVPCInput {
+public struct ListHostedZonesByVPCInput: Swift.Sendable {
     /// (Optional) The maximum number of hosted zones that you want Amazon Route 53 to return. If the specified VPC is associated with more than MaxItems hosted zones, the response includes a NextToken element. NextToken contains an encrypted token that identifies the first hosted zone that Route 53 will return if you submit another request.
     public var maxItems: Swift.Int?
     /// If the previous response included a NextToken element, the specified VPC is associated with more hosted zones. To get more hosted zones, submit another ListHostedZonesByVPC request. For the value of NextToken, specify the value of NextToken from the previous response. If the previous response didn't include a NextToken element, there are no more hosted zones to get.
@@ -5990,8 +6005,9 @@ public struct ListHostedZonesByVPCInput {
 }
 
 extension Route53ClientTypes {
+
     /// A complex type that identifies a hosted zone that a specified Amazon VPC is associated with and the owner of the hosted zone. If there is a value for OwningAccount, there is no value for OwningService, and vice versa.
-    public struct HostedZoneOwner {
+    public struct HostedZoneOwner: Swift.Sendable {
         /// If the hosted zone was created by an Amazon Web Services account, or was created by an Amazon Web Services service that creates hosted zones using the current account, OwningAccount contains the account ID of that account. For example, when you use Cloud Map to create a hosted zone, Cloud Map creates the hosted zone using the current Amazon Web Services account.
         public var owningAccount: Swift.String?
         /// If an Amazon Web Services service uses its own account to create a hosted zone and associate the specified VPC with that hosted zone, OwningService contains an abbreviation that identifies the service. For example, if Amazon Elastic File System (Amazon EFS) created a hosted zone and associated a VPC with the hosted zone, the value of OwningService is efs.amazonaws.com.
@@ -6006,12 +6022,12 @@ extension Route53ClientTypes {
             self.owningService = owningService
         }
     }
-
 }
 
 extension Route53ClientTypes {
+
     /// In the response to a ListHostedZonesByVPC request, the HostedZoneSummaries element contains one HostedZoneSummary element for each hosted zone that the specified Amazon VPC is associated with. Each HostedZoneSummary element contains the hosted zone name and ID, and information about who owns the hosted zone.
-    public struct HostedZoneSummary {
+    public struct HostedZoneSummary: Swift.Sendable {
         /// The Route 53 hosted zone ID of a private hosted zone that the specified VPC is associated with.
         /// This member is required.
         public var hostedZoneId: Swift.String?
@@ -6033,10 +6049,9 @@ extension Route53ClientTypes {
             self.owner = owner
         }
     }
-
 }
 
-public struct ListHostedZonesByVPCOutput {
+public struct ListHostedZonesByVPCOutput: Swift.Sendable {
     /// A list that contains one HostedZoneSummary element for each hosted zone that the specified Amazon VPC is associated with. Each HostedZoneSummary element contains the hosted zone name and ID, and information about who owns the hosted zone.
     /// This member is required.
     public var hostedZoneSummaries: [Route53ClientTypes.HostedZoneSummary]?
@@ -6058,7 +6073,7 @@ public struct ListHostedZonesByVPCOutput {
     }
 }
 
-public struct ListQueryLoggingConfigsInput {
+public struct ListQueryLoggingConfigsInput: Swift.Sendable {
     /// (Optional) If you want to list the query logging configuration that is associated with a hosted zone, specify the ID in HostedZoneId. If you don't specify a hosted zone ID, ListQueryLoggingConfigs returns all of the configurations that are associated with the current Amazon Web Services account.
     public var hostedZoneId: Swift.String?
     /// (Optional) The maximum number of query logging configurations that you want Amazon Route 53 to return in response to the current request. If the current Amazon Web Services account has more than MaxResults configurations, use the value of [NextToken](https://docs.aws.amazon.com/Route53/latest/APIReference/API_ListQueryLoggingConfigs.html#API_ListQueryLoggingConfigs_RequestSyntax) in the response to get the next page of results. If you don't specify a value for MaxResults, Route 53 returns up to 100 configurations.
@@ -6078,7 +6093,7 @@ public struct ListQueryLoggingConfigsInput {
     }
 }
 
-public struct ListQueryLoggingConfigsOutput {
+public struct ListQueryLoggingConfigsOutput: Swift.Sendable {
     /// If a response includes the last of the query logging configurations that are associated with the current Amazon Web Services account, NextToken doesn't appear in the response. If a response doesn't include the last of the configurations, you can get more configurations by submitting another [ListQueryLoggingConfigs](https://docs.aws.amazon.com/Route53/latest/APIReference/API_ListQueryLoggingConfigs.html) request. Get the value of NextToken that Amazon Route 53 returned in the previous response and include it in NextToken in the next request.
     public var nextToken: Swift.String?
     /// An array that contains one [QueryLoggingConfig](https://docs.aws.amazon.com/Route53/latest/APIReference/API_QueryLoggingConfig.html) element for each configuration for DNS query logging that is associated with the current Amazon Web Services account.
@@ -6096,7 +6111,7 @@ public struct ListQueryLoggingConfigsOutput {
 }
 
 /// A request for the resource record sets that are associated with a specified hosted zone.
-public struct ListResourceRecordSetsInput {
+public struct ListResourceRecordSetsInput: Swift.Sendable {
     /// The ID of the hosted zone that contains the resource record sets that you want to list.
     /// This member is required.
     public var hostedZoneId: Swift.String?
@@ -6143,7 +6158,7 @@ public struct ListResourceRecordSetsInput {
 }
 
 /// A complex type that contains list information for the resource record set.
-public struct ListResourceRecordSetsOutput {
+public struct ListResourceRecordSetsOutput: Swift.Sendable {
     /// A flag that indicates whether more resource record sets remain to be listed. If your results were truncated, you can make a follow-up pagination request by using the NextRecordName element.
     /// This member is required.
     public var isTruncated: Swift.Bool
@@ -6179,7 +6194,7 @@ public struct ListResourceRecordSetsOutput {
 }
 
 /// A request to get a list of the reusable delegation sets that are associated with the current Amazon Web Services account.
-public struct ListReusableDelegationSetsInput {
+public struct ListReusableDelegationSetsInput: Swift.Sendable {
     /// If the value of IsTruncated in the previous response was true, you have more reusable delegation sets. To get another group, submit another ListReusableDelegationSets request. For the value of marker, specify the value of NextMarker from the previous response, which is the ID of the first reusable delegation set that Amazon Route 53 will return if you submit another request. If the value of IsTruncated in the previous response was false, there are no more reusable delegation sets to get.
     public var marker: Swift.String?
     /// The number of reusable delegation sets that you want Amazon Route 53 to return in the response to this request. If you specify a value greater than 100, Route 53 returns only the first 100 reusable delegation sets.
@@ -6196,7 +6211,7 @@ public struct ListReusableDelegationSetsInput {
 }
 
 /// A complex type that contains information about the reusable delegation sets that are associated with the current Amazon Web Services account.
-public struct ListReusableDelegationSetsOutput {
+public struct ListReusableDelegationSetsOutput: Swift.Sendable {
     /// A complex type that contains one DelegationSet element for each reusable delegation set that was created by the current Amazon Web Services account.
     /// This member is required.
     public var delegationSets: [Route53ClientTypes.DelegationSet]?
@@ -6229,7 +6244,7 @@ public struct ListReusableDelegationSetsOutput {
 }
 
 /// A complex type containing information about a request for a list of the tags that are associated with an individual resource.
-public struct ListTagsForResourceInput {
+public struct ListTagsForResourceInput: Swift.Sendable {
     /// The ID of the resource for which you want to retrieve tags.
     /// This member is required.
     public var resourceId: Swift.String?
@@ -6252,8 +6267,9 @@ public struct ListTagsForResourceInput {
 }
 
 extension Route53ClientTypes {
+
     /// A complex type containing a resource and its associated tags.
-    public struct ResourceTagSet {
+    public struct ResourceTagSet: Swift.Sendable {
         /// The ID for the specified resource.
         public var resourceId: Swift.String?
         /// The type of the resource.
@@ -6276,11 +6292,10 @@ extension Route53ClientTypes {
             self.tags = tags
         }
     }
-
 }
 
 /// A complex type that contains information about the health checks or hosted zones for which you want to list tags.
-public struct ListTagsForResourceOutput {
+public struct ListTagsForResourceOutput: Swift.Sendable {
     /// A ResourceTagSet containing tags associated with the specified resource.
     /// This member is required.
     public var resourceTagSet: Route53ClientTypes.ResourceTagSet?
@@ -6294,7 +6309,7 @@ public struct ListTagsForResourceOutput {
 }
 
 /// A complex type that contains information about the health checks or hosted zones for which you want to list tags.
-public struct ListTagsForResourcesInput {
+public struct ListTagsForResourcesInput: Swift.Sendable {
     /// A complex type that contains the ResourceId element for each resource for which you want to get a list of tags.
     /// This member is required.
     public var resourceIds: [Swift.String]?
@@ -6317,7 +6332,7 @@ public struct ListTagsForResourcesInput {
 }
 
 /// A complex type containing tags for the specified resources.
-public struct ListTagsForResourcesOutput {
+public struct ListTagsForResourcesOutput: Swift.Sendable {
     /// A list of ResourceTagSets containing tags associated with the specified resources.
     /// This member is required.
     public var resourceTagSets: [Route53ClientTypes.ResourceTagSet]?
@@ -6331,7 +6346,7 @@ public struct ListTagsForResourcesOutput {
 }
 
 /// A complex type that contains the information about the request to list the traffic policies that are associated with the current Amazon Web Services account.
-public struct ListTrafficPoliciesInput {
+public struct ListTrafficPoliciesInput: Swift.Sendable {
     /// (Optional) The maximum number of traffic policies that you want Amazon Route 53 to return in response to this request. If you have more than MaxItems traffic policies, the value of IsTruncated in the response is true, and the value of TrafficPolicyIdMarker is the ID of the first traffic policy that Route 53 will return if you submit another request.
     public var maxItems: Swift.Int?
     /// (Conditional) For your first request to ListTrafficPolicies, don't include the TrafficPolicyIdMarker parameter. If you have more traffic policies than the value of MaxItems, ListTrafficPolicies returns only the first MaxItems traffic policies. To get the next group of policies, submit another request to ListTrafficPolicies. For the value of TrafficPolicyIdMarker, specify the value of TrafficPolicyIdMarker that was returned in the previous response.
@@ -6348,8 +6363,9 @@ public struct ListTrafficPoliciesInput {
 }
 
 extension Route53ClientTypes {
+
     /// A complex type that contains information about the latest version of one traffic policy that is associated with the current Amazon Web Services account.
-    public struct TrafficPolicySummary {
+    public struct TrafficPolicySummary: Swift.Sendable {
         /// The ID that Amazon Route 53 assigned to the traffic policy when you created it.
         /// This member is required.
         public var id: Swift.String?
@@ -6381,11 +6397,10 @@ extension Route53ClientTypes {
             self.type = type
         }
     }
-
 }
 
 /// A complex type that contains the response information for the request.
-public struct ListTrafficPoliciesOutput {
+public struct ListTrafficPoliciesOutput: Swift.Sendable {
     /// A flag that indicates whether there are more traffic policies to be listed. If the response was truncated, you can get the next group of traffic policies by submitting another ListTrafficPolicies request and specifying the value of TrafficPolicyIdMarker in the TrafficPolicyIdMarker request parameter.
     /// This member is required.
     public var isTruncated: Swift.Bool
@@ -6414,7 +6429,7 @@ public struct ListTrafficPoliciesOutput {
 }
 
 /// A request to get information about the traffic policy instances that you created by using the current Amazon Web Services account.
-public struct ListTrafficPolicyInstancesInput {
+public struct ListTrafficPolicyInstancesInput: Swift.Sendable {
     /// If the value of IsTruncated in the previous response was true, you have more traffic policy instances. To get more traffic policy instances, submit another ListTrafficPolicyInstances request. For the value of HostedZoneId, specify the value of HostedZoneIdMarker from the previous response, which is the hosted zone ID of the first traffic policy instance in the next group of traffic policy instances. If the value of IsTruncated in the previous response was false, there are no more traffic policy instances to get.
     public var hostedZoneIdMarker: Swift.String?
     /// The maximum number of traffic policy instances that you want Amazon Route 53 to return in response to a ListTrafficPolicyInstances request. If you have more than MaxItems traffic policy instances, the value of the IsTruncated element in the response is true, and the values of HostedZoneIdMarker, TrafficPolicyInstanceNameMarker, and TrafficPolicyInstanceTypeMarker represent the first traffic policy instance in the next group of MaxItems traffic policy instances.
@@ -6439,7 +6454,7 @@ public struct ListTrafficPolicyInstancesInput {
 }
 
 /// A complex type that contains the response information for the request.
-public struct ListTrafficPolicyInstancesOutput {
+public struct ListTrafficPolicyInstancesOutput: Swift.Sendable {
     /// If IsTruncated is true, HostedZoneIdMarker is the ID of the hosted zone of the first traffic policy instance that Route 53 will return if you submit another ListTrafficPolicyInstances request.
     public var hostedZoneIdMarker: Swift.String?
     /// A flag that indicates whether there are more traffic policy instances to be listed. If the response was truncated, you can get more traffic policy instances by calling ListTrafficPolicyInstances again and specifying the values of the HostedZoneIdMarker, TrafficPolicyInstanceNameMarker, and TrafficPolicyInstanceTypeMarker in the corresponding request parameters.
@@ -6475,7 +6490,7 @@ public struct ListTrafficPolicyInstancesOutput {
 }
 
 /// A request for the traffic policy instances that you created in a specified hosted zone.
-public struct ListTrafficPolicyInstancesByHostedZoneInput {
+public struct ListTrafficPolicyInstancesByHostedZoneInput: Swift.Sendable {
     /// The ID of the hosted zone that you want to list traffic policy instances for.
     /// This member is required.
     public var hostedZoneId: Swift.String?
@@ -6501,7 +6516,7 @@ public struct ListTrafficPolicyInstancesByHostedZoneInput {
 }
 
 /// A complex type that contains the response information for the request.
-public struct ListTrafficPolicyInstancesByHostedZoneOutput {
+public struct ListTrafficPolicyInstancesByHostedZoneOutput: Swift.Sendable {
     /// A flag that indicates whether there are more traffic policy instances to be listed. If the response was truncated, you can get the next group of traffic policy instances by submitting another ListTrafficPolicyInstancesByHostedZone request and specifying the values of HostedZoneIdMarker, TrafficPolicyInstanceNameMarker, and TrafficPolicyInstanceTypeMarker in the corresponding request parameters.
     /// This member is required.
     public var isTruncated: Swift.Bool
@@ -6533,7 +6548,7 @@ public struct ListTrafficPolicyInstancesByHostedZoneOutput {
 }
 
 /// A complex type that contains the information about the request to list your traffic policy instances.
-public struct ListTrafficPolicyInstancesByPolicyInput {
+public struct ListTrafficPolicyInstancesByPolicyInput: Swift.Sendable {
     /// If the value of IsTruncated in the previous response was true, you have more traffic policy instances. To get more traffic policy instances, submit another ListTrafficPolicyInstancesByPolicy request. For the value of hostedzoneid, specify the value of HostedZoneIdMarker from the previous response, which is the hosted zone ID of the first traffic policy instance that Amazon Route 53 will return if you submit another request. If the value of IsTruncated in the previous response was false, there are no more traffic policy instances to get.
     public var hostedZoneIdMarker: Swift.String?
     /// The maximum number of traffic policy instances to be included in the response body for this request. If you have more than MaxItems traffic policy instances, the value of the IsTruncated element in the response is true, and the values of HostedZoneIdMarker, TrafficPolicyInstanceNameMarker, and TrafficPolicyInstanceTypeMarker represent the first traffic policy instance that Amazon Route 53 will return if you submit another request.
@@ -6568,7 +6583,7 @@ public struct ListTrafficPolicyInstancesByPolicyInput {
 }
 
 /// A complex type that contains the response information for the request.
-public struct ListTrafficPolicyInstancesByPolicyOutput {
+public struct ListTrafficPolicyInstancesByPolicyOutput: Swift.Sendable {
     /// If IsTruncated is true, HostedZoneIdMarker is the ID of the hosted zone of the first traffic policy instance in the next group of traffic policy instances.
     public var hostedZoneIdMarker: Swift.String?
     /// A flag that indicates whether there are more traffic policy instances to be listed. If the response was truncated, you can get the next group of traffic policy instances by calling ListTrafficPolicyInstancesByPolicy again and specifying the values of the HostedZoneIdMarker, TrafficPolicyInstanceNameMarker, and TrafficPolicyInstanceTypeMarker elements in the corresponding request parameters.
@@ -6604,7 +6619,7 @@ public struct ListTrafficPolicyInstancesByPolicyOutput {
 }
 
 /// A complex type that contains the information about the request to list your traffic policies.
-public struct ListTrafficPolicyVersionsInput {
+public struct ListTrafficPolicyVersionsInput: Swift.Sendable {
     /// Specify the value of Id of the traffic policy for which you want to list all versions.
     /// This member is required.
     public var id: Swift.String?
@@ -6626,7 +6641,7 @@ public struct ListTrafficPolicyVersionsInput {
 }
 
 /// A complex type that contains the response information for the request.
-public struct ListTrafficPolicyVersionsOutput {
+public struct ListTrafficPolicyVersionsOutput: Swift.Sendable {
     /// A flag that indicates whether there are more traffic policies to be listed. If the response was truncated, you can get the next group of traffic policies by submitting another ListTrafficPolicyVersions request and specifying the value of NextMarker in the marker parameter.
     /// This member is required.
     public var isTruncated: Swift.Bool
@@ -6655,7 +6670,7 @@ public struct ListTrafficPolicyVersionsOutput {
 }
 
 /// A complex type that contains information about that can be associated with your hosted zone.
-public struct ListVPCAssociationAuthorizationsInput {
+public struct ListVPCAssociationAuthorizationsInput: Swift.Sendable {
     /// The ID of the hosted zone for which you want a list of VPCs that can be associated with the hosted zone.
     /// This member is required.
     public var hostedZoneId: Swift.String?
@@ -6677,7 +6692,7 @@ public struct ListVPCAssociationAuthorizationsInput {
 }
 
 /// A complex type that contains the response information for the request.
-public struct ListVPCAssociationAuthorizationsOutput {
+public struct ListVPCAssociationAuthorizationsOutput: Swift.Sendable {
     /// The ID of the hosted zone that you can associate the listed VPCs with.
     /// This member is required.
     public var hostedZoneId: Swift.String?
@@ -6700,7 +6715,7 @@ public struct ListVPCAssociationAuthorizationsOutput {
 }
 
 /// Gets the value that Amazon Route 53 returns in response to a DNS request for a specified record name and type. You can optionally specify the IP address of a DNS resolver, an EDNS0 client subnet IP address, and a subnet mask.
-public struct TestDNSAnswerInput {
+public struct TestDNSAnswerInput: Swift.Sendable {
     /// If the resolver that you specified for resolverip supports EDNS0, specify the IPv4 or IPv6 address of a client in the applicable location, for example, 192.0.2.44 or 2001:db8:85a3::8a2e:370:7334.
     public var edns0ClientSubnetIP: Swift.String?
     /// If you specify an IP address for edns0clientsubnetip, you can optionally specify the number of bits of the IP address that you want the checking tool to include in the DNS query. For example, if you specify 192.0.2.44 for edns0clientsubnetip and 24 for edns0clientsubnetmask, the checking tool will simulate a request from 192.0.2.0/24. The default value is 24 bits for IPv4 addresses and 64 bits for IPv6 addresses. The range of valid values depends on whether edns0clientsubnetip is an IPv4 or an IPv6 address:
@@ -6740,7 +6755,7 @@ public struct TestDNSAnswerInput {
 }
 
 /// A complex type that contains the response to a TestDNSAnswer request.
-public struct TestDNSAnswerOutput {
+public struct TestDNSAnswerOutput: Swift.Sendable {
     /// The Amazon Route 53 name server used to respond to the request.
     /// This member is required.
     public var nameserver: Swift.String?
@@ -6804,7 +6819,7 @@ public struct HealthCheckVersionMismatch: ClientRuntime.ModeledError, AWSClientR
 
 extension Route53ClientTypes {
 
-    public enum ResettableElementName: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ResettableElementName: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case childhealthchecks
         case fullyqualifieddomainname
         case regions
@@ -6838,7 +6853,7 @@ extension Route53ClientTypes {
 }
 
 /// A complex type that contains information about a request to update a health check.
-public struct UpdateHealthCheckInput {
+public struct UpdateHealthCheckInput: Swift.Sendable {
     /// A complex type that identifies the CloudWatch alarm that you want Amazon Route 53 health checkers to use to determine whether the specified health check is healthy.
     public var alarmIdentifier: Route53ClientTypes.AlarmIdentifier?
     /// A complex type that contains one ChildHealthCheck element for each health check that you want to associate with a CALCULATED health check.
@@ -6976,7 +6991,7 @@ public struct UpdateHealthCheckInput {
 }
 
 /// A complex type that contains the response to the UpdateHealthCheck request.
-public struct UpdateHealthCheckOutput {
+public struct UpdateHealthCheckOutput: Swift.Sendable {
     /// A complex type that contains the response to an UpdateHealthCheck request.
     /// This member is required.
     public var healthCheck: Route53ClientTypes.HealthCheck?
@@ -6990,7 +7005,7 @@ public struct UpdateHealthCheckOutput {
 }
 
 /// A request to update the comment for a hosted zone.
-public struct UpdateHostedZoneCommentInput {
+public struct UpdateHostedZoneCommentInput: Swift.Sendable {
     /// The new comment for the hosted zone. If you don't specify a value for Comment, Amazon Route 53 deletes the existing value of the Comment element, if any.
     public var comment: Swift.String?
     /// The ID for the hosted zone that you want to update the comment for.
@@ -7008,7 +7023,7 @@ public struct UpdateHostedZoneCommentInput {
 }
 
 /// A complex type that contains the response to the UpdateHostedZoneComment request.
-public struct UpdateHostedZoneCommentOutput {
+public struct UpdateHostedZoneCommentOutput: Swift.Sendable {
     /// A complex type that contains the response to the UpdateHostedZoneComment request.
     /// This member is required.
     public var hostedZone: Route53ClientTypes.HostedZone?
@@ -7022,7 +7037,7 @@ public struct UpdateHostedZoneCommentOutput {
 }
 
 /// A complex type that contains information about the traffic policy that you want to update the comment for.
-public struct UpdateTrafficPolicyCommentInput {
+public struct UpdateTrafficPolicyCommentInput: Swift.Sendable {
     /// The new comment for the specified traffic policy and version.
     /// This member is required.
     public var comment: Swift.String?
@@ -7046,7 +7061,7 @@ public struct UpdateTrafficPolicyCommentInput {
 }
 
 /// A complex type that contains the response information for the traffic policy.
-public struct UpdateTrafficPolicyCommentOutput {
+public struct UpdateTrafficPolicyCommentOutput: Swift.Sendable {
     /// A complex type that contains settings for the specified traffic policy.
     /// This member is required.
     public var trafficPolicy: Route53ClientTypes.TrafficPolicy?
@@ -7085,7 +7100,7 @@ public struct ConflictingTypes: ClientRuntime.ModeledError, AWSClientRuntime.AWS
 }
 
 /// A complex type that contains information about the resource record sets that you want to update based on a specified traffic policy instance.
-public struct UpdateTrafficPolicyInstanceInput {
+public struct UpdateTrafficPolicyInstanceInput: Swift.Sendable {
     /// The ID of the traffic policy instance that you want to update.
     /// This member is required.
     public var id: Swift.String?
@@ -7114,7 +7129,7 @@ public struct UpdateTrafficPolicyInstanceInput {
 }
 
 /// A complex type that contains information about the resource record sets that Amazon Route 53 created based on a specified traffic policy.
-public struct UpdateTrafficPolicyInstanceOutput {
+public struct UpdateTrafficPolicyInstanceOutput: Swift.Sendable {
     /// A complex type that contains settings for the updated traffic policy instance.
     /// This member is required.
     public var trafficPolicyInstance: Route53ClientTypes.TrafficPolicyInstance?

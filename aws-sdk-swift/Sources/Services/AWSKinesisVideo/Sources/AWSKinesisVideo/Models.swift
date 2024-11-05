@@ -100,7 +100,7 @@ public struct AccountStreamLimitExceededException: ClientRuntime.ModeledError, A
 
 extension KinesisVideoClientTypes {
 
-    public enum APIName: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum APIName: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case getClip
         case getDashStreamingSessionUrl
         case getHlsStreamingSessionUrl
@@ -147,7 +147,7 @@ extension KinesisVideoClientTypes {
 
 extension KinesisVideoClientTypes {
 
-    public enum Status: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Status: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case active
         case creating
         case deleting
@@ -182,7 +182,7 @@ extension KinesisVideoClientTypes {
 
 extension KinesisVideoClientTypes {
 
-    public enum ChannelType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ChannelType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case fullMesh
         case singleMaster
         case sdkUnknown(Swift.String)
@@ -210,8 +210,9 @@ extension KinesisVideoClientTypes {
 }
 
 extension KinesisVideoClientTypes {
+
     /// A structure that contains the configuration for the SINGLE_MASTER channel type.
-    public struct SingleMasterConfiguration {
+    public struct SingleMasterConfiguration: Swift.Sendable {
         /// The period of time a signaling channel retains undelivered messages before they are discarded.
         public var messageTtlSeconds: Swift.Int?
 
@@ -222,12 +223,12 @@ extension KinesisVideoClientTypes {
             self.messageTtlSeconds = messageTtlSeconds
         }
     }
-
 }
 
 extension KinesisVideoClientTypes {
+
     /// A structure that encapsulates a signaling channel's metadata and properties.
-    public struct ChannelInfo {
+    public struct ChannelInfo: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the signaling channel.
         public var channelARN: Swift.String?
         /// The name of the signaling channel.
@@ -262,12 +263,11 @@ extension KinesisVideoClientTypes {
             self.version = version
         }
     }
-
 }
 
 extension KinesisVideoClientTypes {
 
-    public enum ComparisonOperator: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ComparisonOperator: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case beginsWith
         case sdkUnknown(Swift.String)
 
@@ -292,8 +292,9 @@ extension KinesisVideoClientTypes {
 }
 
 extension KinesisVideoClientTypes {
+
     /// An optional input parameter for the ListSignalingChannels API. When this parameter is specified while invoking ListSignalingChannels, the API returns only the channels that satisfy a condition specified in ChannelNameCondition.
-    public struct ChannelNameCondition {
+    public struct ChannelNameCondition: Swift.Sendable {
         /// A comparison operator. Currently, you can only specify the BEGINS_WITH operator, which finds signaling channels whose names begin with a given prefix.
         public var comparisonOperator: KinesisVideoClientTypes.ComparisonOperator?
         /// A value to compare.
@@ -308,12 +309,11 @@ extension KinesisVideoClientTypes {
             self.comparisonValue = comparisonValue
         }
     }
-
 }
 
 extension KinesisVideoClientTypes {
 
-    public enum ChannelProtocol: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ChannelProtocol: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case https
         case webrtc
         case wss
@@ -345,7 +345,7 @@ extension KinesisVideoClientTypes {
 
 extension KinesisVideoClientTypes {
 
-    public enum ChannelRole: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ChannelRole: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case master
         case viewer
         case sdkUnknown(Swift.String)
@@ -398,7 +398,7 @@ public struct ClientLimitExceededException: ClientRuntime.ModeledError, AWSClien
 
 extension KinesisVideoClientTypes {
 
-    public enum ConfigurationStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ConfigurationStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case disabled
         case enabled
         case sdkUnknown(Swift.String)
@@ -504,8 +504,9 @@ public struct TagsPerResourceExceededLimitException: ClientRuntime.ModeledError,
 }
 
 extension KinesisVideoClientTypes {
+
     /// A key and value pair that is associated with the specified signaling channel.
-    public struct Tag {
+    public struct Tag: Swift.Sendable {
         /// The key of the tag that is associated with the specified signaling channel.
         /// This member is required.
         public var key: Swift.String?
@@ -522,10 +523,9 @@ extension KinesisVideoClientTypes {
             self.value = value
         }
     }
-
 }
 
-public struct CreateSignalingChannelInput {
+public struct CreateSignalingChannelInput: Swift.Sendable {
     /// A name for the signaling channel that you are creating. It must be unique for each Amazon Web Services account and Amazon Web Services Region.
     /// This member is required.
     public var channelName: Swift.String?
@@ -550,7 +550,7 @@ public struct CreateSignalingChannelInput {
     }
 }
 
-public struct CreateSignalingChannelOutput {
+public struct CreateSignalingChannelOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the created channel.
     public var channelARN: Swift.String?
 
@@ -610,7 +610,7 @@ public struct InvalidDeviceException: ClientRuntime.ModeledError, AWSClientRunti
     }
 }
 
-public struct CreateStreamInput {
+public struct CreateStreamInput: Swift.Sendable {
     /// The number of hours that you want to retain the data in the stream. Kinesis Video Streams retains the data in a data store that is associated with the stream. The default value is 0, indicating that the stream does not persist data. When the DataRetentionInHours value is 0, consumers can still consume the fragments that remain in the service host buffer, which has a retention time limit of 5 minutes and a retention memory limit of 200 MB. Fragments are removed from the buffer when either limit is reached.
     public var dataRetentionInHours: Swift.Int?
     /// The name of the device that is writing to the stream. In the current implementation, Kinesis Video Streams does not use this name.
@@ -643,7 +643,7 @@ public struct CreateStreamInput {
     }
 }
 
-public struct CreateStreamOutput {
+public struct CreateStreamOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the stream.
     public var streamARN: Swift.String?
 
@@ -703,7 +703,7 @@ public struct StreamEdgeConfigurationNotFoundException: ClientRuntime.ModeledErr
     }
 }
 
-public struct DeleteEdgeConfigurationInput {
+public struct DeleteEdgeConfigurationInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the stream. Specify either the StreamName or the StreamARN.
     public var streamARN: Swift.String?
     /// The name of the stream from which to delete the edge configuration. Specify either the StreamName or the StreamARN.
@@ -719,7 +719,7 @@ public struct DeleteEdgeConfigurationInput {
     }
 }
 
-public struct DeleteEdgeConfigurationOutput {
+public struct DeleteEdgeConfigurationOutput: Swift.Sendable {
 
     public init() { }
 }
@@ -748,7 +748,7 @@ public struct VersionMismatchException: ClientRuntime.ModeledError, AWSClientRun
     }
 }
 
-public struct DeleteSignalingChannelInput {
+public struct DeleteSignalingChannelInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the signaling channel that you want to delete.
     /// This member is required.
     public var channelARN: Swift.String?
@@ -765,7 +765,7 @@ public struct DeleteSignalingChannelInput {
     }
 }
 
-public struct DeleteSignalingChannelOutput {
+public struct DeleteSignalingChannelOutput: Swift.Sendable {
 
     public init() { }
 }
@@ -794,7 +794,7 @@ public struct NotAuthorizedException: ClientRuntime.ModeledError, AWSClientRunti
     }
 }
 
-public struct DeleteStreamInput {
+public struct DeleteStreamInput: Swift.Sendable {
     /// Optional: The version of the stream that you want to delete. Specify the version as a safeguard to ensure that your are deleting the correct stream. To get the stream version, use the DescribeStream API. If not specified, only the CreationTime is checked before deleting the stream.
     public var currentVersion: Swift.String?
     /// The Amazon Resource Name (ARN) of the stream that you want to delete.
@@ -811,14 +811,14 @@ public struct DeleteStreamInput {
     }
 }
 
-public struct DeleteStreamOutput {
+public struct DeleteStreamOutput: Swift.Sendable {
 
     public init() { }
 }
 
 extension KinesisVideoClientTypes {
 
-    public enum StrategyOnFullSize: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum StrategyOnFullSize: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case deleteOldestMedia
         case denyNewMedia
         case sdkUnknown(Swift.String)
@@ -846,8 +846,9 @@ extension KinesisVideoClientTypes {
 }
 
 extension KinesisVideoClientTypes {
+
     /// The configuration details that include the maximum size of the media (MaxLocalMediaSizeInMB) that you want to store for a stream on the Edge Agent, as well as the strategy that should be used (StrategyOnFullSize) when a stream's maximum size has been reached.
-    public struct LocalSizeConfig {
+    public struct LocalSizeConfig: Swift.Sendable {
         /// The overall maximum size of the media that you want to store for a stream on the Edge Agent.
         public var maxLocalMediaSizeInMB: Swift.Int?
         /// The strategy to perform when a stream’s MaxLocalMediaSizeInMB limit is reached.
@@ -862,12 +863,12 @@ extension KinesisVideoClientTypes {
             self.strategyOnFullSize = strategyOnFullSize
         }
     }
-
 }
 
 extension KinesisVideoClientTypes {
+
     /// The configuration details required to delete the connection of the stream from the Edge Agent.
-    public struct DeletionConfig {
+    public struct DeletionConfig: Swift.Sendable {
         /// The boolean value used to indicate whether or not you want to mark the media for deletion, once it has been uploaded to the Kinesis Video Stream cloud. The media files can be deleted if any of the deletion configuration values are set to true, such as when the limit for the EdgeRetentionInHours, or the MaxLocalMediaSizeInMB, has been reached. Since the default value is set to true, configure the uploader schedule such that the media files are not being deleted before they are initially uploaded to the Amazon Web Services cloud.
         public var deleteAfterUpload: Swift.Bool?
         /// The number of hours that you want to retain the data in the stream on the Edge Agent. The default value of the retention time is 720 hours, which translates to 30 days.
@@ -886,10 +887,9 @@ extension KinesisVideoClientTypes {
             self.localSizeConfig = localSizeConfig
         }
     }
-
 }
 
-public struct DescribeEdgeConfigurationInput {
+public struct DescribeEdgeConfigurationInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the stream. Specify either the StreamNameor the StreamARN.
     public var streamARN: Swift.String?
     /// The name of the stream whose edge configuration you want to update. Specify either the StreamName or the StreamARN.
@@ -907,7 +907,7 @@ public struct DescribeEdgeConfigurationInput {
 
 extension KinesisVideoClientTypes {
 
-    public enum RecorderStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum RecorderStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case success
         case systemError
         case userError
@@ -938,8 +938,9 @@ extension KinesisVideoClientTypes {
 }
 
 extension KinesisVideoClientTypes {
+
     /// The latest status of a stream's edge recording job.
-    public struct LastRecorderStatus {
+    public struct LastRecorderStatus: Swift.Sendable {
         /// A description of a recorder job’s latest status.
         public var jobStatusDetails: Swift.String?
         /// The timestamp at which the recorder job was last executed and media stored to local disk.
@@ -962,12 +963,11 @@ extension KinesisVideoClientTypes {
             self.recorderStatus = recorderStatus
         }
     }
-
 }
 
 extension KinesisVideoClientTypes {
 
-    public enum UploaderStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum UploaderStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case success
         case systemError
         case userError
@@ -998,8 +998,9 @@ extension KinesisVideoClientTypes {
 }
 
 extension KinesisVideoClientTypes {
+
     /// The latest status of a stream’s edge to cloud uploader job.
-    public struct LastUploaderStatus {
+    public struct LastUploaderStatus: Swift.Sendable {
         /// A description of an uploader job’s latest status.
         public var jobStatusDetails: Swift.String?
         /// The timestamp at which the uploader job was last executed and media collected to the cloud.
@@ -1022,12 +1023,12 @@ extension KinesisVideoClientTypes {
             self.uploaderStatus = uploaderStatus
         }
     }
-
 }
 
 extension KinesisVideoClientTypes {
+
     /// An object that contains the latest status details for an edge agent's recorder and uploader jobs. Use this information to determine the current health of an edge agent.
-    public struct EdgeAgentStatus {
+    public struct EdgeAgentStatus: Swift.Sendable {
         /// The latest status of a stream’s edge recording job.
         public var lastRecorderStatus: KinesisVideoClientTypes.LastRecorderStatus?
         /// The latest status of a stream’s edge to cloud uploader job.
@@ -1042,12 +1043,11 @@ extension KinesisVideoClientTypes {
             self.lastUploaderStatus = lastUploaderStatus
         }
     }
-
 }
 
 extension KinesisVideoClientTypes {
 
-    public enum MediaUriType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum MediaUriType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case fileUri
         case rtspUri
         case sdkUnknown(Swift.String)
@@ -1075,8 +1075,9 @@ extension KinesisVideoClientTypes {
 }
 
 extension KinesisVideoClientTypes {
+
     /// The configuration details that consist of the credentials required (MediaUriSecretArn and MediaUriType) to access the media files that are streamed to the camera.
-    public struct MediaSourceConfig {
+    public struct MediaSourceConfig: Swift.Sendable {
         /// The Amazon Web Services Secrets Manager ARN for the username and password of the camera, or a local media file location.
         /// This member is required.
         public var mediaUriSecretArn: Swift.String?
@@ -1093,7 +1094,6 @@ extension KinesisVideoClientTypes {
             self.mediaUriType = mediaUriType
         }
     }
-
 }
 
 extension KinesisVideoClientTypes.MediaSourceConfig: Swift.CustomDebugStringConvertible {
@@ -1102,8 +1102,9 @@ extension KinesisVideoClientTypes.MediaSourceConfig: Swift.CustomDebugStringConv
 }
 
 extension KinesisVideoClientTypes {
+
     /// This API enables you to specify the duration that the camera, or local media file, should record onto the Edge Agent. The ScheduleConfig consists of the ScheduleExpression and the DurationInMinutes attributes. If the ScheduleConfig is not provided in the RecorderConfig, then the Edge Agent will always be set to recording mode. If the ScheduleConfig is not provided in the UploaderConfig, then the Edge Agent will upload at regular intervals (every 1 hour).
-    public struct ScheduleConfig {
+    public struct ScheduleConfig: Swift.Sendable {
         /// The total duration to record the media. If the ScheduleExpression attribute is provided, then the DurationInSeconds attribute should also be specified.
         /// This member is required.
         public var durationInSeconds: Swift.Int?
@@ -1120,12 +1121,12 @@ extension KinesisVideoClientTypes {
             self.scheduleExpression = scheduleExpression
         }
     }
-
 }
 
 extension KinesisVideoClientTypes {
+
     /// The recorder configuration consists of the local MediaSourceConfig details that are used as credentials to accesss the local media files streamed on the camera.
-    public struct RecorderConfig {
+    public struct RecorderConfig: Swift.Sendable {
         /// The configuration details that consist of the credentials required (MediaUriSecretArn and MediaUriType) to access the media files streamed to the camera.
         /// This member is required.
         public var mediaSourceConfig: KinesisVideoClientTypes.MediaSourceConfig?
@@ -1141,12 +1142,12 @@ extension KinesisVideoClientTypes {
             self.scheduleConfig = scheduleConfig
         }
     }
-
 }
 
 extension KinesisVideoClientTypes {
+
     /// The configuration that consists of the ScheduleExpression and the DurationInMinutes details that specify the scheduling to record from a camera, or local media file, onto the Edge Agent. If the ScheduleConfig is not provided in the UploaderConfig, then the Edge Agent will upload at regular intervals (every 1 hour).
-    public struct UploaderConfig {
+    public struct UploaderConfig: Swift.Sendable {
         /// The configuration that consists of the ScheduleExpression and the DurationInMinutes details that specify the scheduling to record from a camera, or local media file, onto the Edge Agent. If the ScheduleConfig is not provided in this UploaderConfig, then the Edge Agent will upload at regular intervals (every 1 hour).
         /// This member is required.
         public var scheduleConfig: KinesisVideoClientTypes.ScheduleConfig?
@@ -1158,12 +1159,12 @@ extension KinesisVideoClientTypes {
             self.scheduleConfig = scheduleConfig
         }
     }
-
 }
 
 extension KinesisVideoClientTypes {
+
     /// A description of the stream's edge configuration that will be used to sync with the Edge Agent IoT Greengrass component. The Edge Agent component will run on an IoT Hub Device setup at your premise.
-    public struct EdgeConfig {
+    public struct EdgeConfig: Swift.Sendable {
         /// The deletion configuration is made up of the retention time (EdgeRetentionInHours) and local size configuration (LocalSizeConfig) details that are used to make the deletion.
         public var deletionConfig: KinesisVideoClientTypes.DeletionConfig?
         /// The "Internet of Things (IoT) Thing" Arn of the stream.
@@ -1188,12 +1189,11 @@ extension KinesisVideoClientTypes {
             self.uploaderConfig = uploaderConfig
         }
     }
-
 }
 
 extension KinesisVideoClientTypes {
 
-    public enum SyncStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SyncStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case acknowledged
         case deleteFailed
         case deleting
@@ -1235,7 +1235,7 @@ extension KinesisVideoClientTypes {
     }
 }
 
-public struct DescribeEdgeConfigurationOutput {
+public struct DescribeEdgeConfigurationOutput: Swift.Sendable {
     /// The timestamp at which a stream’s edge configuration was first created.
     public var creationTime: Foundation.Date?
     /// An object that contains the latest status details for an edge agent's recorder and uploader jobs. Use this information to determine the current health of an edge agent.
@@ -1275,7 +1275,7 @@ public struct DescribeEdgeConfigurationOutput {
     }
 }
 
-public struct DescribeImageGenerationConfigurationInput {
+public struct DescribeImageGenerationConfigurationInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the Kinesis video stream from which to retrieve the image generation configuration. You must specify either the StreamName or the StreamARN.
     public var streamARN: Swift.String?
     /// The name of the stream from which to retrieve the image generation configuration. You must specify either the StreamName or the StreamARN.
@@ -1292,8 +1292,9 @@ public struct DescribeImageGenerationConfigurationInput {
 }
 
 extension KinesisVideoClientTypes {
+
     /// The structure that contains the information required to deliver images to a customer.
-    public struct ImageGenerationDestinationConfig {
+    public struct ImageGenerationDestinationConfig: Swift.Sendable {
         /// The Amazon Web Services Region of the S3 bucket where images will be delivered. This DestinationRegion must match the Region where the stream is located.
         /// This member is required.
         public var destinationRegion: Swift.String?
@@ -1310,12 +1311,11 @@ extension KinesisVideoClientTypes {
             self.uri = uri
         }
     }
-
 }
 
 extension KinesisVideoClientTypes {
 
-    public enum Format: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Format: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case jpeg
         case png
         case sdkUnknown(Swift.String)
@@ -1344,7 +1344,7 @@ extension KinesisVideoClientTypes {
 
 extension KinesisVideoClientTypes {
 
-    public enum FormatConfigKey: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum FormatConfigKey: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case jpegquality
         case sdkUnknown(Swift.String)
 
@@ -1370,7 +1370,7 @@ extension KinesisVideoClientTypes {
 
 extension KinesisVideoClientTypes {
 
-    public enum ImageSelectorType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ImageSelectorType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case producerTimestamp
         case serverTimestamp
         case sdkUnknown(Swift.String)
@@ -1398,8 +1398,9 @@ extension KinesisVideoClientTypes {
 }
 
 extension KinesisVideoClientTypes {
+
     /// The structure that contains the information required for the KVS images delivery. If null, the configuration will be deleted from the stream.
-    public struct ImageGenerationConfiguration {
+    public struct ImageGenerationConfiguration: Swift.Sendable {
         /// The structure that contains the information required to deliver images to a customer.
         /// This member is required.
         public var destinationConfig: KinesisVideoClientTypes.ImageGenerationDestinationConfig?
@@ -1443,10 +1444,9 @@ extension KinesisVideoClientTypes {
             self.widthPixels = widthPixels
         }
     }
-
 }
 
-public struct DescribeImageGenerationConfigurationOutput {
+public struct DescribeImageGenerationConfigurationOutput: Swift.Sendable {
     /// The structure that contains the information required for the Kinesis video stream (KVS) images delivery. If this structure is null, the configuration will be deleted from the stream.
     public var imageGenerationConfiguration: KinesisVideoClientTypes.ImageGenerationConfiguration?
 
@@ -1458,7 +1458,7 @@ public struct DescribeImageGenerationConfigurationOutput {
     }
 }
 
-public struct DescribeMappedResourceConfigurationInput {
+public struct DescribeMappedResourceConfigurationInput: Swift.Sendable {
     /// The maximum number of results to return in the response.
     public var maxResults: Swift.Int?
     /// The token to provide in your next request, to get another batch of results.
@@ -1483,8 +1483,9 @@ public struct DescribeMappedResourceConfigurationInput {
 }
 
 extension KinesisVideoClientTypes {
+
     /// A structure that encapsulates, or contains, the media storage configuration properties.
-    public struct MappedResourceConfigurationListItem {
+    public struct MappedResourceConfigurationListItem: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the Kinesis Video Stream resource, associated with the stream.
         public var arn: Swift.String?
         /// The type of the associated resource for the kinesis video stream.
@@ -1499,10 +1500,9 @@ extension KinesisVideoClientTypes {
             self.type = type
         }
     }
-
 }
 
-public struct DescribeMappedResourceConfigurationOutput {
+public struct DescribeMappedResourceConfigurationOutput: Swift.Sendable {
     /// A structure that encapsulates, or contains, the media storage configuration properties.
     public var mappedResourceConfigurationList: [KinesisVideoClientTypes.MappedResourceConfigurationListItem]?
     /// The token that was used in the NextTokenrequest to fetch the next set of results.
@@ -1518,7 +1518,7 @@ public struct DescribeMappedResourceConfigurationOutput {
     }
 }
 
-public struct DescribeMediaStorageConfigurationInput {
+public struct DescribeMediaStorageConfigurationInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the channel.
     public var channelARN: Swift.String?
     /// The name of the channel.
@@ -1536,7 +1536,7 @@ public struct DescribeMediaStorageConfigurationInput {
 
 extension KinesisVideoClientTypes {
 
-    public enum MediaStorageConfigurationStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum MediaStorageConfigurationStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case disabled
         case enabled
         case sdkUnknown(Swift.String)
@@ -1564,12 +1564,13 @@ extension KinesisVideoClientTypes {
 }
 
 extension KinesisVideoClientTypes {
+
     /// A structure that encapsulates, or contains, the media storage configuration properties.
     ///
     /// * If StorageStatus is enabled, the data will be stored in the StreamARN provided. In order for WebRTC Ingestion to work, the stream must have data retention enabled.
     ///
     /// * If StorageStatus is disabled, no data will be stored, and the StreamARN parameter will not be needed.
-    public struct MediaStorageConfiguration {
+    public struct MediaStorageConfiguration: Swift.Sendable {
         /// The status of the media storage configuration.
         /// This member is required.
         public var status: KinesisVideoClientTypes.MediaStorageConfigurationStatus?
@@ -1585,10 +1586,9 @@ extension KinesisVideoClientTypes {
             self.streamARN = streamARN
         }
     }
-
 }
 
-public struct DescribeMediaStorageConfigurationOutput {
+public struct DescribeMediaStorageConfigurationOutput: Swift.Sendable {
     /// A structure that encapsulates, or contains, the media storage configuration properties.
     public var mediaStorageConfiguration: KinesisVideoClientTypes.MediaStorageConfiguration?
 
@@ -1600,7 +1600,7 @@ public struct DescribeMediaStorageConfigurationOutput {
     }
 }
 
-public struct DescribeNotificationConfigurationInput {
+public struct DescribeNotificationConfigurationInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the Kinesis video stream from where you want to retrieve the notification configuration. You must specify either the StreamName or the StreamARN.
     public var streamARN: Swift.String?
     /// The name of the stream from which to retrieve the notification configuration. You must specify either the StreamName or the StreamARN.
@@ -1617,8 +1617,9 @@ public struct DescribeNotificationConfigurationInput {
 }
 
 extension KinesisVideoClientTypes {
+
     /// The structure that contains the information required to deliver a notification to a customer.
-    public struct NotificationDestinationConfig {
+    public struct NotificationDestinationConfig: Swift.Sendable {
         /// The Uniform Resource Identifier (URI) that identifies where the images will be delivered.
         /// This member is required.
         public var uri: Swift.String?
@@ -1630,12 +1631,12 @@ extension KinesisVideoClientTypes {
             self.uri = uri
         }
     }
-
 }
 
 extension KinesisVideoClientTypes {
+
     /// The structure that contains the notification information for the KVS images delivery. If this parameter is null, the configuration will be deleted from the stream.
-    public struct NotificationConfiguration {
+    public struct NotificationConfiguration: Swift.Sendable {
         /// The destination information required to deliver a notification to a customer.
         /// This member is required.
         public var destinationConfig: KinesisVideoClientTypes.NotificationDestinationConfig?
@@ -1652,10 +1653,9 @@ extension KinesisVideoClientTypes {
             self.status = status
         }
     }
-
 }
 
-public struct DescribeNotificationConfigurationOutput {
+public struct DescribeNotificationConfigurationOutput: Swift.Sendable {
     /// The structure that contains the information required for notifications. If the structure is null, the configuration will be deleted from the stream.
     public var notificationConfiguration: KinesisVideoClientTypes.NotificationConfiguration?
 
@@ -1667,7 +1667,7 @@ public struct DescribeNotificationConfigurationOutput {
     }
 }
 
-public struct DescribeSignalingChannelInput {
+public struct DescribeSignalingChannelInput: Swift.Sendable {
     /// The ARN of the signaling channel that you want to describe.
     public var channelARN: Swift.String?
     /// The name of the signaling channel that you want to describe.
@@ -1683,7 +1683,7 @@ public struct DescribeSignalingChannelInput {
     }
 }
 
-public struct DescribeSignalingChannelOutput {
+public struct DescribeSignalingChannelOutput: Swift.Sendable {
     /// A structure that encapsulates the specified signaling channel's metadata and properties.
     public var channelInfo: KinesisVideoClientTypes.ChannelInfo?
 
@@ -1695,7 +1695,7 @@ public struct DescribeSignalingChannelOutput {
     }
 }
 
-public struct DescribeStreamInput {
+public struct DescribeStreamInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the stream.
     public var streamARN: Swift.String?
     /// The name of the stream.
@@ -1712,8 +1712,9 @@ public struct DescribeStreamInput {
 }
 
 extension KinesisVideoClientTypes {
+
     /// An object describing a Kinesis video stream.
-    public struct StreamInfo {
+    public struct StreamInfo: Swift.Sendable {
         /// A time stamp that indicates when the stream was created.
         public var creationTime: Foundation.Date?
         /// How long the stream retains data, in hours.
@@ -1756,10 +1757,9 @@ extension KinesisVideoClientTypes {
             self.version = version
         }
     }
-
 }
 
-public struct DescribeStreamOutput {
+public struct DescribeStreamOutput: Swift.Sendable {
     /// An object that describes the stream.
     public var streamInfo: KinesisVideoClientTypes.StreamInfo?
 
@@ -1771,7 +1771,7 @@ public struct DescribeStreamOutput {
     }
 }
 
-public struct GetDataEndpointInput {
+public struct GetDataEndpointInput: Swift.Sendable {
     /// The name of the API action for which to get an endpoint.
     /// This member is required.
     public var apiName: KinesisVideoClientTypes.APIName?
@@ -1792,7 +1792,7 @@ public struct GetDataEndpointInput {
     }
 }
 
-public struct GetDataEndpointOutput {
+public struct GetDataEndpointOutput: Swift.Sendable {
     /// The endpoint value. To read data from the stream or to write data to it, specify this endpoint in your application.
     public var dataEndpoint: Swift.String?
 
@@ -1805,8 +1805,9 @@ public struct GetDataEndpointOutput {
 }
 
 extension KinesisVideoClientTypes {
+
     /// An object that contains the endpoint configuration for the SINGLE_MASTER channel type.
-    public struct SingleMasterChannelEndpointConfiguration {
+    public struct SingleMasterChannelEndpointConfiguration: Swift.Sendable {
         /// This property is used to determine the nature of communication over this SINGLE_MASTER signaling channel. If WSS is specified, this API returns a websocket endpoint. If HTTPS is specified, this API returns an HTTPS endpoint.
         public var protocols: [KinesisVideoClientTypes.ChannelProtocol]?
         /// This property is used to determine messaging permissions in this SINGLE_MASTER signaling channel. If MASTER is specified, this API returns an endpoint that a client can use to receive offers from and send answers to any of the viewers on this signaling channel. If VIEWER is specified, this API returns an endpoint that a client can use only to send offers to another MASTER client on this signaling channel.
@@ -1821,10 +1822,9 @@ extension KinesisVideoClientTypes {
             self.role = role
         }
     }
-
 }
 
-public struct GetSignalingChannelEndpointInput {
+public struct GetSignalingChannelEndpointInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the signalling channel for which you want to get an endpoint.
     /// This member is required.
     public var channelARN: Swift.String?
@@ -1842,8 +1842,9 @@ public struct GetSignalingChannelEndpointInput {
 }
 
 extension KinesisVideoClientTypes {
+
     /// An object that describes the endpoint of the signaling channel returned by the GetSignalingChannelEndpoint API. The media server endpoint will correspond to the WEBRTC Protocol.
-    public struct ResourceEndpointListItem {
+    public struct ResourceEndpointListItem: Swift.Sendable {
         /// The protocol of the signaling channel returned by the GetSignalingChannelEndpoint API.
         public var `protocol`: KinesisVideoClientTypes.ChannelProtocol?
         /// The endpoint of the signaling channel returned by the GetSignalingChannelEndpoint API.
@@ -1858,10 +1859,9 @@ extension KinesisVideoClientTypes {
             self.resourceEndpoint = resourceEndpoint
         }
     }
-
 }
 
-public struct GetSignalingChannelEndpointOutput {
+public struct GetSignalingChannelEndpointOutput: Swift.Sendable {
     /// A list of endpoints for the specified signaling channel.
     public var resourceEndpointList: [KinesisVideoClientTypes.ResourceEndpointListItem]?
 
@@ -1897,7 +1897,7 @@ public struct InvalidResourceFormatException: ClientRuntime.ModeledError, AWSCli
     }
 }
 
-public struct ListEdgeAgentConfigurationsInput {
+public struct ListEdgeAgentConfigurationsInput: Swift.Sendable {
     /// The "Internet of Things (IoT) Thing" Arn of the edge agent.
     /// This member is required.
     public var hubDeviceArn: Swift.String?
@@ -1919,8 +1919,9 @@ public struct ListEdgeAgentConfigurationsInput {
 }
 
 extension KinesisVideoClientTypes {
+
     /// A description of a single stream's edge configuration.
-    public struct ListEdgeAgentConfigurationsEdgeConfig {
+    public struct ListEdgeAgentConfigurationsEdgeConfig: Swift.Sendable {
         /// The timestamp when the stream first created the edge config.
         public var creationTime: Foundation.Date?
         /// A description of the stream's edge configuration that will be used to sync with the Edge Agent IoT Greengrass component. The Edge Agent component will run on an IoT Hub Device setup at your premise.
@@ -1955,10 +1956,9 @@ extension KinesisVideoClientTypes {
             self.syncStatus = syncStatus
         }
     }
-
 }
 
-public struct ListEdgeAgentConfigurationsOutput {
+public struct ListEdgeAgentConfigurationsOutput: Swift.Sendable {
     /// A description of a single stream's edge configuration.
     public var edgeConfigs: [KinesisVideoClientTypes.ListEdgeAgentConfigurationsEdgeConfig]?
     /// If the response is truncated, the call returns this element with a given token. To get the next batch of edge configurations, use this token in your next request.
@@ -1974,7 +1974,7 @@ public struct ListEdgeAgentConfigurationsOutput {
     }
 }
 
-public struct ListSignalingChannelsInput {
+public struct ListSignalingChannelsInput: Swift.Sendable {
     /// Optional: Returns only the channels that satisfy a specific condition.
     public var channelNameCondition: KinesisVideoClientTypes.ChannelNameCondition?
     /// The maximum number of channels to return in the response. The default is 500.
@@ -1994,7 +1994,7 @@ public struct ListSignalingChannelsInput {
     }
 }
 
-public struct ListSignalingChannelsOutput {
+public struct ListSignalingChannelsOutput: Swift.Sendable {
     /// An array of ChannelInfo objects.
     public var channelInfoList: [KinesisVideoClientTypes.ChannelInfo]?
     /// If the response is truncated, the call returns this element with a token. To get the next batch of streams, use this token in your next request.
@@ -2011,8 +2011,9 @@ public struct ListSignalingChannelsOutput {
 }
 
 extension KinesisVideoClientTypes {
+
     /// Specifies the condition that streams must satisfy to be returned when you list streams (see the ListStreams API). A condition has a comparison operation and a value. Currently, you can specify only the BEGINS_WITH operator, which finds streams whose names start with a given prefix.
-    public struct StreamNameCondition {
+    public struct StreamNameCondition: Swift.Sendable {
         /// A comparison operator. Currently, you can specify only the BEGINS_WITH operator, which finds streams whose names start with a given prefix.
         public var comparisonOperator: KinesisVideoClientTypes.ComparisonOperator?
         /// A value to compare.
@@ -2027,10 +2028,9 @@ extension KinesisVideoClientTypes {
             self.comparisonValue = comparisonValue
         }
     }
-
 }
 
-public struct ListStreamsInput {
+public struct ListStreamsInput: Swift.Sendable {
     /// The maximum number of streams to return in the response. The default is 10,000.
     public var maxResults: Swift.Int?
     /// If you specify this parameter, when the result of a ListStreams operation is truncated, the call returns the NextToken in the response. To get another batch of streams, provide this token in your next request.
@@ -2050,7 +2050,7 @@ public struct ListStreamsInput {
     }
 }
 
-public struct ListStreamsOutput {
+public struct ListStreamsOutput: Swift.Sendable {
     /// If the response is truncated, the call returns this element with a token. To get the next batch of streams, use this token in your next request.
     public var nextToken: Swift.String?
     /// An array of StreamInfo objects.
@@ -2066,7 +2066,7 @@ public struct ListStreamsOutput {
     }
 }
 
-public struct ListTagsForResourceInput {
+public struct ListTagsForResourceInput: Swift.Sendable {
     /// If you specify this parameter and the result of a ListTagsForResource call is truncated, the response includes a token that you can use in the next request to fetch the next batch of tags.
     public var nextToken: Swift.String?
     /// The Amazon Resource Name (ARN) of the signaling channel for which you want to list tags.
@@ -2083,7 +2083,7 @@ public struct ListTagsForResourceInput {
     }
 }
 
-public struct ListTagsForResourceOutput {
+public struct ListTagsForResourceOutput: Swift.Sendable {
     /// If you specify this parameter and the result of a ListTagsForResource call is truncated, the response includes a token that you can use in the next request to fetch the next set of tags.
     public var nextToken: Swift.String?
     /// A map of tag keys and values associated with the specified signaling channel.
@@ -2099,7 +2099,7 @@ public struct ListTagsForResourceOutput {
     }
 }
 
-public struct ListTagsForStreamInput {
+public struct ListTagsForStreamInput: Swift.Sendable {
     /// If you specify this parameter and the result of a ListTagsForStream call is truncated, the response includes a token that you can use in the next request to fetch the next batch of tags.
     public var nextToken: Swift.String?
     /// The Amazon Resource Name (ARN) of the stream that you want to list tags for.
@@ -2119,7 +2119,7 @@ public struct ListTagsForStreamInput {
     }
 }
 
-public struct ListTagsForStreamOutput {
+public struct ListTagsForStreamOutput: Swift.Sendable {
     /// If you specify this parameter and the result of a ListTags call is truncated, the response includes a token that you can use in the next request to fetch the next set of tags.
     public var nextToken: Swift.String?
     /// A map of tag keys and values associated with the specified stream.
@@ -2159,7 +2159,7 @@ public struct NoDataRetentionException: ClientRuntime.ModeledError, AWSClientRun
     }
 }
 
-public struct StartEdgeConfigurationUpdateInput {
+public struct StartEdgeConfigurationUpdateInput: Swift.Sendable {
     /// The edge configuration details required to invoke the update process.
     /// This member is required.
     public var edgeConfig: KinesisVideoClientTypes.EdgeConfig?
@@ -2180,7 +2180,7 @@ public struct StartEdgeConfigurationUpdateInput {
     }
 }
 
-public struct StartEdgeConfigurationUpdateOutput {
+public struct StartEdgeConfigurationUpdateOutput: Swift.Sendable {
     /// The timestamp at which a stream’s edge configuration was first created.
     public var creationTime: Foundation.Date?
     /// A description of the stream's edge configuration that will be used to sync with the Edge Agent IoT Greengrass component. The Edge Agent component will run on an IoT Hub Device setup at your premise.
@@ -2216,7 +2216,7 @@ public struct StartEdgeConfigurationUpdateOutput {
     }
 }
 
-public struct TagResourceInput {
+public struct TagResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the signaling channel to which you want to add tags.
     /// This member is required.
     public var resourceARN: Swift.String?
@@ -2234,12 +2234,12 @@ public struct TagResourceInput {
     }
 }
 
-public struct TagResourceOutput {
+public struct TagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct TagStreamInput {
+public struct TagStreamInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the resource that you want to add the tag or tags to.
     public var streamARN: Swift.String?
     /// The name of the stream that you want to add the tag or tags to.
@@ -2260,12 +2260,12 @@ public struct TagStreamInput {
     }
 }
 
-public struct TagStreamOutput {
+public struct TagStreamOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UntagResourceInput {
+public struct UntagResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the signaling channel from which you want to remove tags.
     /// This member is required.
     public var resourceARN: Swift.String?
@@ -2283,12 +2283,12 @@ public struct UntagResourceInput {
     }
 }
 
-public struct UntagResourceOutput {
+public struct UntagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UntagStreamInput {
+public struct UntagStreamInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the stream that you want to remove tags from.
     public var streamARN: Swift.String?
     /// The name of the stream that you want to remove tags from.
@@ -2309,14 +2309,14 @@ public struct UntagStreamInput {
     }
 }
 
-public struct UntagStreamOutput {
+public struct UntagStreamOutput: Swift.Sendable {
 
     public init() { }
 }
 
 extension KinesisVideoClientTypes {
 
-    public enum UpdateDataRetentionOperation: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum UpdateDataRetentionOperation: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case decreaseDataRetention
         case increaseDataRetention
         case sdkUnknown(Swift.String)
@@ -2343,7 +2343,7 @@ extension KinesisVideoClientTypes {
     }
 }
 
-public struct UpdateDataRetentionInput {
+public struct UpdateDataRetentionInput: Swift.Sendable {
     /// The version of the stream whose retention period you want to change. To get the version, call either the DescribeStream or the ListStreams API.
     /// This member is required.
     public var currentVersion: Swift.String?
@@ -2374,12 +2374,12 @@ public struct UpdateDataRetentionInput {
     }
 }
 
-public struct UpdateDataRetentionOutput {
+public struct UpdateDataRetentionOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdateImageGenerationConfigurationInput {
+public struct UpdateImageGenerationConfigurationInput: Swift.Sendable {
     /// The structure that contains the information required for the KVS images delivery. If the structure is null, the configuration will be deleted from the stream.
     public var imageGenerationConfiguration: KinesisVideoClientTypes.ImageGenerationConfiguration?
     /// The Amazon Resource Name (ARN) of the Kinesis video stream from where you want to update the image generation configuration. You must specify either the StreamName or the StreamARN.
@@ -2399,12 +2399,12 @@ public struct UpdateImageGenerationConfigurationInput {
     }
 }
 
-public struct UpdateImageGenerationConfigurationOutput {
+public struct UpdateImageGenerationConfigurationOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdateMediaStorageConfigurationInput {
+public struct UpdateMediaStorageConfigurationInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the channel.
     /// This member is required.
     public var channelARN: Swift.String?
@@ -2422,12 +2422,12 @@ public struct UpdateMediaStorageConfigurationInput {
     }
 }
 
-public struct UpdateMediaStorageConfigurationOutput {
+public struct UpdateMediaStorageConfigurationOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdateNotificationConfigurationInput {
+public struct UpdateNotificationConfigurationInput: Swift.Sendable {
     /// The structure containing the information required for notifications. If the structure is null, the configuration will be deleted from the stream.
     public var notificationConfiguration: KinesisVideoClientTypes.NotificationConfiguration?
     /// The Amazon Resource Name (ARN) of the Kinesis video stream from where you want to update the notification configuration. You must specify either the StreamName or the StreamARN.
@@ -2447,12 +2447,12 @@ public struct UpdateNotificationConfigurationInput {
     }
 }
 
-public struct UpdateNotificationConfigurationOutput {
+public struct UpdateNotificationConfigurationOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdateSignalingChannelInput {
+public struct UpdateSignalingChannelInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the signaling channel that you want to update.
     /// This member is required.
     public var channelARN: Swift.String?
@@ -2474,12 +2474,12 @@ public struct UpdateSignalingChannelInput {
     }
 }
 
-public struct UpdateSignalingChannelOutput {
+public struct UpdateSignalingChannelOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdateStreamInput {
+public struct UpdateStreamInput: Swift.Sendable {
     /// The version of the stream whose metadata you want to update.
     /// This member is required.
     public var currentVersion: Swift.String?
@@ -2508,7 +2508,7 @@ public struct UpdateStreamInput {
     }
 }
 
-public struct UpdateStreamOutput {
+public struct UpdateStreamOutput: Swift.Sendable {
 
     public init() { }
 }

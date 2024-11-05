@@ -702,6 +702,38 @@ extension PaginatorSequence where OperationStackInput == DescribeInboundIntegrat
     }
 }
 extension RedshiftClient {
+    /// Paginate over `[DescribeIntegrationsOutput]` results.
+    ///
+    /// When this operation is called, an `AsyncSequence` is created. AsyncSequences are lazy so no service
+    /// calls are made until the sequence is iterated over. This also means there is no guarantee that the request is valid
+    /// until then. If there are errors in your request, you will see the failures only after you start iterating.
+    /// - Parameters:
+    ///     - input: A `[DescribeIntegrationsInput]` to start pagination
+    /// - Returns: An `AsyncSequence` that can iterate over `DescribeIntegrationsOutput`
+    public func describeIntegrationsPaginated(input: DescribeIntegrationsInput) -> ClientRuntime.PaginatorSequence<DescribeIntegrationsInput, DescribeIntegrationsOutput> {
+        return ClientRuntime.PaginatorSequence<DescribeIntegrationsInput, DescribeIntegrationsOutput>(input: input, inputKey: \.marker, outputKey: \.marker, paginationFunction: self.describeIntegrations(input:))
+    }
+}
+
+extension DescribeIntegrationsInput: ClientRuntime.PaginateToken {
+    public func usingPaginationToken(_ token: Swift.String) -> DescribeIntegrationsInput {
+        return DescribeIntegrationsInput(
+            filters: self.filters,
+            integrationArn: self.integrationArn,
+            marker: token,
+            maxRecords: self.maxRecords
+        )}
+}
+
+extension PaginatorSequence where OperationStackInput == DescribeIntegrationsInput, OperationStackOutput == DescribeIntegrationsOutput {
+    /// This paginator transforms the `AsyncSequence` returned by `describeIntegrationsPaginated`
+    /// to access the nested member `[RedshiftClientTypes.Integration]`
+    /// - Returns: `[RedshiftClientTypes.Integration]`
+    public func integrations() async throws -> [RedshiftClientTypes.Integration] {
+        return try await self.asyncCompactMap { item in item.integrations }
+    }
+}
+extension RedshiftClient {
     /// Paginate over `[DescribeNodeConfigurationOptionsOutput]` results.
     ///
     /// When this operation is called, an `AsyncSequence` is created. AsyncSequences are lazy so no service

@@ -11,7 +11,7 @@ import software.amazon.smithy.model.shapes.ShapeId
 class AWSRestJson1ProtocolGenerator : AWSHTTPBindingProtocolGenerator(RestJSONCustomizations()) {
     override val defaultContentType = "application/json"
     override val protocol: ShapeId = RestJson1Trait.ID
-    override val testsToIgnore = setOf(
+    override val protocolTestsToIgnore = setOf(
         "SDKAppliedContentEncoding_restJson1",
         "SDKAppendedGzipAfterProvidedEncoding_restJson1",
     )

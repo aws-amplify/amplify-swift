@@ -51,7 +51,7 @@ public struct AccessDeniedException: ClientRuntime.ModeledError, AWSClientRuntim
 
 extension HealthLakeClientTypes {
 
-    public enum AuthorizationStrategy: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AuthorizationStrategy: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case awsAuth
         case smartv1
         case sdkUnknown(Swift.String)
@@ -80,7 +80,7 @@ extension HealthLakeClientTypes {
 
 extension HealthLakeClientTypes {
 
-    public enum CmkType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum CmkType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case aoCmk
         case cmCmk
         case sdkUnknown(Swift.String)
@@ -205,7 +205,7 @@ public struct ValidationException: ClientRuntime.ModeledError, AWSClientRuntime.
 
 extension HealthLakeClientTypes {
 
-    public enum FHIRVersion: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum FHIRVersion: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case r4
         case sdkUnknown(Swift.String)
 
@@ -230,8 +230,9 @@ extension HealthLakeClientTypes {
 }
 
 extension HealthLakeClientTypes {
+
     /// The identity provider configuration that you gave when the data store was created.
-    public struct IdentityProviderConfiguration {
+    public struct IdentityProviderConfiguration: Swift.Sendable {
         /// The authorization strategy that you selected when you created the data store.
         /// This member is required.
         public var authorizationStrategy: HealthLakeClientTypes.AuthorizationStrategy?
@@ -255,12 +256,11 @@ extension HealthLakeClientTypes {
             self.metadata = metadata
         }
     }
-
 }
 
 extension HealthLakeClientTypes {
 
-    public enum PreloadDataType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum PreloadDataType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case synthea
         case sdkUnknown(Swift.String)
 
@@ -285,8 +285,9 @@ extension HealthLakeClientTypes {
 }
 
 extension HealthLakeClientTypes {
+
     /// The input properties for the preloaded data store. Only data preloaded from Synthea is supported.
-    public struct PreloadDataConfig {
+    public struct PreloadDataConfig: Swift.Sendable {
         /// The type of preloaded data. Only Synthea preloaded data is supported.
         /// This member is required.
         public var preloadDataType: HealthLakeClientTypes.PreloadDataType?
@@ -298,12 +299,12 @@ extension HealthLakeClientTypes {
             self.preloadDataType = preloadDataType
         }
     }
-
 }
 
 extension HealthLakeClientTypes {
+
     /// The customer-managed-key(CMK) used when creating a data store. If a customer owned key is not specified, an AWS owned key will be used for encryption.
-    public struct KmsEncryptionConfig {
+    public struct KmsEncryptionConfig: Swift.Sendable {
         /// The type of customer-managed-key(CMK) used for encryption. The two types of supported CMKs are customer owned CMKs and AWS owned CMKs.
         /// This member is required.
         public var cmkType: HealthLakeClientTypes.CmkType?
@@ -319,12 +320,12 @@ extension HealthLakeClientTypes {
             self.kmsKeyId = kmsKeyId
         }
     }
-
 }
 
 extension HealthLakeClientTypes {
+
     /// The server-side encryption key configuration for a customer provided encryption key.
-    public struct SseConfiguration {
+    public struct SseConfiguration: Swift.Sendable {
         /// The KMS encryption configuration used to provide details for data encryption.
         /// This member is required.
         public var kmsEncryptionConfig: HealthLakeClientTypes.KmsEncryptionConfig?
@@ -336,12 +337,12 @@ extension HealthLakeClientTypes {
             self.kmsEncryptionConfig = kmsEncryptionConfig
         }
     }
-
 }
 
 extension HealthLakeClientTypes {
+
     /// A tag is a label consisting of a user-defined key and value. The form for tags is {"Key", "Value"}
-    public struct Tag {
+    public struct Tag: Swift.Sendable {
         /// The key portion of a tag. Tag keys are case sensitive.
         /// This member is required.
         public var key: Swift.String?
@@ -358,10 +359,9 @@ extension HealthLakeClientTypes {
             self.value = value
         }
     }
-
 }
 
-public struct CreateFHIRDatastoreInput {
+public struct CreateFHIRDatastoreInput: Swift.Sendable {
     /// Optional user provided token used for ensuring idempotency.
     public var clientToken: Swift.String?
     /// The user generated name for the data store.
@@ -400,7 +400,7 @@ public struct CreateFHIRDatastoreInput {
 
 extension HealthLakeClientTypes {
 
-    public enum DatastoreStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DatastoreStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case active
         case createFailed
         case creating
@@ -436,7 +436,7 @@ extension HealthLakeClientTypes {
     }
 }
 
-public struct CreateFHIRDatastoreOutput {
+public struct CreateFHIRDatastoreOutput: Swift.Sendable {
     /// The data store ARN is generated during the creation of the data store and can be found in the output from the initial data store creation call.
     /// This member is required.
     public var datastoreArn: Swift.String?
@@ -465,8 +465,9 @@ public struct CreateFHIRDatastoreOutput {
 }
 
 extension HealthLakeClientTypes {
+
     /// The filters applied to data store query.
-    public struct DatastoreFilter {
+    public struct DatastoreFilter: Swift.Sendable {
         /// A filter that allows the user to set cutoff dates for records. All data stores created after the specified date will be included in the results.
         public var createdAfter: Foundation.Date?
         /// A filter that allows the user to set cutoff dates for records. All data stores created before the specified date will be included in the results.
@@ -489,12 +490,11 @@ extension HealthLakeClientTypes {
             self.datastoreStatus = datastoreStatus
         }
     }
-
 }
 
 extension HealthLakeClientTypes {
 
-    public enum ErrorCategory: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ErrorCategory: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case nonRetryableError
         case retryableError
         case sdkUnknown(Swift.String)
@@ -522,8 +522,9 @@ extension HealthLakeClientTypes {
 }
 
 extension HealthLakeClientTypes {
+
     /// The error info of the create/delete data store operation.
-    public struct ErrorCause {
+    public struct ErrorCause: Swift.Sendable {
         /// The error category of the create/delete data store operation. Possible statuses are RETRYABLE_ERROR or NON_RETRYABLE_ERROR.
         public var errorCategory: HealthLakeClientTypes.ErrorCategory?
         /// The text of the error message.
@@ -538,12 +539,12 @@ extension HealthLakeClientTypes {
             self.errorMessage = errorMessage
         }
     }
-
 }
 
 extension HealthLakeClientTypes {
+
     /// Displays the properties of the data store, including the ID, ARN, name, and the status of the data store.
-    public struct DatastoreProperties {
+    public struct DatastoreProperties: Swift.Sendable {
         /// The time that a data store was created.
         public var createdAt: Foundation.Date?
         /// The Amazon Resource Name used in the creation of the data store.
@@ -599,7 +600,6 @@ extension HealthLakeClientTypes {
             self.sseConfiguration = sseConfiguration
         }
     }
-
 }
 
 /// The requested data store was not found.
@@ -626,7 +626,7 @@ public struct ResourceNotFoundException: ClientRuntime.ModeledError, AWSClientRu
     }
 }
 
-public struct DeleteFHIRDatastoreInput {
+public struct DeleteFHIRDatastoreInput: Swift.Sendable {
     /// The AWS-generated ID for the data store to be deleted.
     /// This member is required.
     public var datastoreId: Swift.String?
@@ -639,7 +639,7 @@ public struct DeleteFHIRDatastoreInput {
     }
 }
 
-public struct DeleteFHIRDatastoreOutput {
+public struct DeleteFHIRDatastoreOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) that gives AWS HealthLake access permission.
     /// This member is required.
     public var datastoreArn: Swift.String?
@@ -667,7 +667,7 @@ public struct DeleteFHIRDatastoreOutput {
     }
 }
 
-public struct DescribeFHIRDatastoreInput {
+public struct DescribeFHIRDatastoreInput: Swift.Sendable {
     /// The AWS-generated data store ID.
     /// This member is required.
     public var datastoreId: Swift.String?
@@ -680,7 +680,7 @@ public struct DescribeFHIRDatastoreInput {
     }
 }
 
-public struct DescribeFHIRDatastoreOutput {
+public struct DescribeFHIRDatastoreOutput: Swift.Sendable {
     /// All properties associated with a data store, including the data store ID, data store ARN, data store name, data store status, when the data store was created, data store type version, and the data store's endpoint.
     /// This member is required.
     public var datastoreProperties: HealthLakeClientTypes.DatastoreProperties?
@@ -693,7 +693,7 @@ public struct DescribeFHIRDatastoreOutput {
     }
 }
 
-public struct DescribeFHIRExportJobInput {
+public struct DescribeFHIRExportJobInput: Swift.Sendable {
     /// The AWS generated ID for the data store from which files are being exported from for an export job.
     /// This member is required.
     public var datastoreId: Swift.String?
@@ -713,7 +713,7 @@ public struct DescribeFHIRExportJobInput {
 
 extension HealthLakeClientTypes {
 
-    public enum JobStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum JobStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case cancelCompleted
         case cancelFailed
         case cancelInProgress
@@ -762,8 +762,9 @@ extension HealthLakeClientTypes {
 }
 
 extension HealthLakeClientTypes {
+
     /// The configuration of the S3 bucket for either an import or export job. This includes assigning permissions for access.
-    public struct S3Configuration {
+    public struct S3Configuration: Swift.Sendable {
         /// The KMS key ID used to access the S3 bucket.
         /// This member is required.
         public var kmsKeyId: Swift.String?
@@ -780,22 +781,22 @@ extension HealthLakeClientTypes {
             self.s3Uri = s3Uri
         }
     }
-
 }
 
 extension HealthLakeClientTypes {
+
     /// The output data configuration that was supplied when the export job was created.
-    public enum OutputDataConfig {
+    public enum OutputDataConfig: Swift.Sendable {
         /// The output data configuration that was supplied when the export job was created.
         case s3configuration(HealthLakeClientTypes.S3Configuration)
         case sdkUnknown(Swift.String)
     }
-
 }
 
 extension HealthLakeClientTypes {
+
     /// The properties of a FHIR export job, including the ID, ARN, name, and the status of the job.
-    public struct ExportJobProperties {
+    public struct ExportJobProperties: Swift.Sendable {
         /// The Amazon Resource Name used during the initiation of the job.
         public var dataAccessRoleArn: Swift.String?
         /// The AWS generated ID for the data store from which files are being exported for an export job.
@@ -843,10 +844,9 @@ extension HealthLakeClientTypes {
             self.submitTime = submitTime
         }
     }
-
 }
 
-public struct DescribeFHIRExportJobOutput {
+public struct DescribeFHIRExportJobOutput: Swift.Sendable {
     /// Displays the properties of the export job, including the ID, Arn, Name, and the status of the job.
     /// This member is required.
     public var exportJobProperties: HealthLakeClientTypes.ExportJobProperties?
@@ -859,7 +859,7 @@ public struct DescribeFHIRExportJobOutput {
     }
 }
 
-public struct DescribeFHIRImportJobInput {
+public struct DescribeFHIRImportJobInput: Swift.Sendable {
     /// The AWS-generated ID of the data store.
     /// This member is required.
     public var datastoreId: Swift.String?
@@ -878,18 +878,19 @@ public struct DescribeFHIRImportJobInput {
 }
 
 extension HealthLakeClientTypes {
+
     /// The input properties for an import job.
-    public enum InputDataConfig {
+    public enum InputDataConfig: Swift.Sendable {
         /// The S3Uri is the user specified S3 location of the FHIR data to be imported into AWS HealthLake.
         case s3uri(Swift.String)
         case sdkUnknown(Swift.String)
     }
-
 }
 
 extension HealthLakeClientTypes {
+
     /// The progress report of an import job.
-    public struct JobProgressReport {
+    public struct JobProgressReport: Swift.Sendable {
         /// The throughput (in MB/sec) of the import job.
         public var throughput: Swift.Double?
         /// The number of files that failed to be read from the input S3 bucket due to customer error.
@@ -928,12 +929,12 @@ extension HealthLakeClientTypes {
             self.totalSizeOfScannedFilesInMB = totalSizeOfScannedFilesInMB
         }
     }
-
 }
 
 extension HealthLakeClientTypes {
+
     /// Displays the properties of the import job, including the ID, Arn, Name, the status of the job, and the progress report of the job.
-    public struct ImportJobProperties {
+    public struct ImportJobProperties: Swift.Sendable {
         /// The Amazon Resource Name (ARN) that gives AWS HealthLake access to your input data.
         public var dataAccessRoleArn: Swift.String?
         /// The datastore id used when the Import job was created.
@@ -989,10 +990,9 @@ extension HealthLakeClientTypes {
             self.submitTime = submitTime
         }
     }
-
 }
 
-public struct DescribeFHIRImportJobOutput {
+public struct DescribeFHIRImportJobOutput: Swift.Sendable {
     /// The properties of the Import job request, including the ID, ARN, name, status of the job, and the progress report of the job.
     /// This member is required.
     public var importJobProperties: HealthLakeClientTypes.ImportJobProperties?
@@ -1005,7 +1005,7 @@ public struct DescribeFHIRImportJobOutput {
     }
 }
 
-public struct ListFHIRDatastoresInput {
+public struct ListFHIRDatastoresInput: Swift.Sendable {
     /// Lists all filters associated with a FHIR data store request.
     public var filter: HealthLakeClientTypes.DatastoreFilter?
     /// The maximum number of data stores returned in a single page of a ListFHIRDatastoresRequest call.
@@ -1025,7 +1025,7 @@ public struct ListFHIRDatastoresInput {
     }
 }
 
-public struct ListFHIRDatastoresOutput {
+public struct ListFHIRDatastoresOutput: Swift.Sendable {
     /// All properties associated with the listed data stores.
     /// This member is required.
     public var datastorePropertiesList: [HealthLakeClientTypes.DatastoreProperties]?
@@ -1042,7 +1042,7 @@ public struct ListFHIRDatastoresOutput {
     }
 }
 
-public struct ListFHIRExportJobsInput {
+public struct ListFHIRExportJobsInput: Swift.Sendable {
     /// This parameter limits the response to the export job with the specified data store ID.
     /// This member is required.
     public var datastoreId: Swift.String?
@@ -1079,7 +1079,7 @@ public struct ListFHIRExportJobsInput {
     }
 }
 
-public struct ListFHIRExportJobsOutput {
+public struct ListFHIRExportJobsOutput: Swift.Sendable {
     /// The properties of listed FHIR export jobs, including the ID, ARN, name, and the status of the job.
     /// This member is required.
     public var exportJobPropertiesList: [HealthLakeClientTypes.ExportJobProperties]?
@@ -1096,7 +1096,7 @@ public struct ListFHIRExportJobsOutput {
     }
 }
 
-public struct ListFHIRImportJobsInput {
+public struct ListFHIRImportJobsInput: Swift.Sendable {
     /// This parameter limits the response to the import job with the specified data store ID.
     /// This member is required.
     public var datastoreId: Swift.String?
@@ -1133,7 +1133,7 @@ public struct ListFHIRImportJobsInput {
     }
 }
 
-public struct ListFHIRImportJobsOutput {
+public struct ListFHIRImportJobsOutput: Swift.Sendable {
     /// The properties of a listed FHIR import jobs, including the ID, ARN, name, the status of the job, and the progress report of the job.
     /// This member is required.
     public var importJobPropertiesList: [HealthLakeClientTypes.ImportJobProperties]?
@@ -1150,7 +1150,7 @@ public struct ListFHIRImportJobsOutput {
     }
 }
 
-public struct ListTagsForResourceInput {
+public struct ListTagsForResourceInput: Swift.Sendable {
     /// The Amazon Resource Name(ARN) of the data store for which tags are being added.
     /// This member is required.
     public var resourceARN: Swift.String?
@@ -1163,7 +1163,7 @@ public struct ListTagsForResourceInput {
     }
 }
 
-public struct ListTagsForResourceOutput {
+public struct ListTagsForResourceOutput: Swift.Sendable {
     /// Returns a list of tags associated with a data store.
     public var tags: [HealthLakeClientTypes.Tag]?
 
@@ -1175,7 +1175,7 @@ public struct ListTagsForResourceOutput {
     }
 }
 
-public struct StartFHIRExportJobInput {
+public struct StartFHIRExportJobInput: Swift.Sendable {
     /// An optional user provided token used for ensuring idempotency.
     /// This member is required.
     public var clientToken: Swift.String?
@@ -1207,7 +1207,7 @@ public struct StartFHIRExportJobInput {
     }
 }
 
-public struct StartFHIRExportJobOutput {
+public struct StartFHIRExportJobOutput: Swift.Sendable {
     /// The AWS generated ID for the data store from which files are being exported for an export job.
     public var datastoreId: Swift.String?
     /// The AWS generated ID for an export job.
@@ -1229,7 +1229,7 @@ public struct StartFHIRExportJobOutput {
     }
 }
 
-public struct StartFHIRImportJobInput {
+public struct StartFHIRImportJobInput: Swift.Sendable {
     /// Optional user provided token used for ensuring idempotency.
     /// This member is required.
     public var clientToken: Swift.String?
@@ -1266,7 +1266,7 @@ public struct StartFHIRImportJobInput {
     }
 }
 
-public struct StartFHIRImportJobOutput {
+public struct StartFHIRImportJobOutput: Swift.Sendable {
     /// The AWS-generated data store ID.
     public var datastoreId: Swift.String?
     /// The AWS-generated job ID.
@@ -1288,7 +1288,7 @@ public struct StartFHIRImportJobOutput {
     }
 }
 
-public struct TagResourceInput {
+public struct TagResourceInput: Swift.Sendable {
     /// The Amazon Resource Name(ARN)that gives AWS HealthLake access to the data store which tags are being added to.
     /// This member is required.
     public var resourceARN: Swift.String?
@@ -1306,12 +1306,12 @@ public struct TagResourceInput {
     }
 }
 
-public struct TagResourceOutput {
+public struct TagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UntagResourceInput {
+public struct UntagResourceInput: Swift.Sendable {
     /// The Amazon Resource Name(ARN) of the data store for which tags are being removed.
     /// This member is required.
     public var resourceARN: Swift.String?
@@ -1329,7 +1329,7 @@ public struct UntagResourceInput {
     }
 }
 
-public struct UntagResourceOutput {
+public struct UntagResourceOutput: Swift.Sendable {
 
     public init() { }
 }

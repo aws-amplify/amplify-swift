@@ -153,7 +153,7 @@ public struct ValidationException: ClientRuntime.ModeledError, AWSClientRuntime.
     }
 }
 
-public struct AcceptAccountLinkInvitationInput {
+public struct AcceptAccountLinkInvitationInput: Swift.Sendable {
     /// A string of up to 64 ASCII characters that Amazon EFS uses to ensure idempotent creation.
     public var clientToken: Swift.String?
     /// The identifier of the account link.
@@ -172,7 +172,7 @@ public struct AcceptAccountLinkInvitationInput {
 
 extension WorkSpacesClientTypes {
 
-    public enum AccountLinkStatusEnum: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AccountLinkStatusEnum: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case linked
         case linkingFailed
         case linkNotFound
@@ -209,8 +209,9 @@ extension WorkSpacesClientTypes {
 }
 
 extension WorkSpacesClientTypes {
+
     /// Information about about the account link.
-    public struct AccountLink {
+    public struct AccountLink: Swift.Sendable {
         /// The identifier of the account link.
         public var accountLinkId: Swift.String?
         /// The status of the account link.
@@ -233,10 +234,9 @@ extension WorkSpacesClientTypes {
             self.targetAccountId = targetAccountId
         }
     }
-
 }
 
-public struct AcceptAccountLinkInvitationOutput {
+public struct AcceptAccountLinkInvitationOutput: Swift.Sendable {
     /// Information about the account link.
     public var accountLink: WorkSpacesClientTypes.AccountLink?
 
@@ -250,7 +250,7 @@ public struct AcceptAccountLinkInvitationOutput {
 
 extension WorkSpacesClientTypes {
 
-    public enum AccessPropertyValue: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AccessPropertyValue: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case allow
         case deny
         case sdkUnknown(Swift.String)
@@ -279,7 +279,7 @@ extension WorkSpacesClientTypes {
 
 extension WorkSpacesClientTypes {
 
-    public enum DedicatedTenancySupportResultEnum: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DedicatedTenancySupportResultEnum: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case disabled
         case enabled
         case sdkUnknown(Swift.String)
@@ -308,7 +308,7 @@ extension WorkSpacesClientTypes {
 
 extension WorkSpacesClientTypes {
 
-    public enum DedicatedTenancyModificationStateEnum: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DedicatedTenancyModificationStateEnum: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case completed
         case failed
         case pending
@@ -339,8 +339,9 @@ extension WorkSpacesClientTypes {
 }
 
 extension WorkSpacesClientTypes {
+
     /// Describes a modification to the configuration of Bring Your Own License (BYOL) for the specified account.
-    public struct AccountModification {
+    public struct AccountModification: Swift.Sendable {
         /// The IP address range, specified as an IPv4 CIDR block, for the management network interface used for the account.
         public var dedicatedTenancyManagementCidrRange: Swift.String?
         /// The status of BYOL (whether BYOL is being enabled or disabled).
@@ -371,12 +372,12 @@ extension WorkSpacesClientTypes {
             self.startTime = startTime
         }
     }
-
 }
 
 extension WorkSpacesClientTypes {
+
     /// Information about the Active Directory config.
-    public struct ActiveDirectoryConfig {
+    public struct ActiveDirectoryConfig: Swift.Sendable {
         /// The name of the domain.
         /// This member is required.
         public var domainName: Swift.String?
@@ -393,12 +394,11 @@ extension WorkSpacesClientTypes {
             self.serviceAccountSecretArn = serviceAccountSecretArn
         }
     }
-
 }
 
 extension WorkSpacesClientTypes {
 
-    public enum Application: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Application: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case microsoftOffice2016
         case microsoftOffice2019
         case sdkUnknown(Swift.String)
@@ -427,7 +427,7 @@ extension WorkSpacesClientTypes {
 
 extension WorkSpacesClientTypes {
 
-    public enum ApplicationAssociatedResourceType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ApplicationAssociatedResourceType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case bundle
         case image
         case workspace
@@ -472,7 +472,7 @@ public struct ApplicationNotSupportedException: ClientRuntime.ModeledError, AWSC
 
 extension WorkSpacesClientTypes {
 
-    public enum AssociationState: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AssociationState: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case completed
         case error
         case installing
@@ -522,7 +522,7 @@ extension WorkSpacesClientTypes {
 
 extension WorkSpacesClientTypes {
 
-    public enum AssociationErrorCode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AssociationErrorCode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case insufficientDiskspace
         case insufficientMemory
         case internalServerError
@@ -559,8 +559,9 @@ extension WorkSpacesClientTypes {
 }
 
 extension WorkSpacesClientTypes {
+
     /// Indicates the reason that the association deployment failed, including the error code and error message.
-    public struct AssociationStateReason {
+    public struct AssociationStateReason: Swift.Sendable {
         /// The error code of the association deployment failure.
         public var errorCode: WorkSpacesClientTypes.AssociationErrorCode?
         /// The error message of the association deployment failure.
@@ -575,12 +576,12 @@ extension WorkSpacesClientTypes {
             self.errorMessage = errorMessage
         }
     }
-
 }
 
 extension WorkSpacesClientTypes {
+
     /// Describes the association between an application and an application resource.
-    public struct ApplicationResourceAssociation {
+    public struct ApplicationResourceAssociation: Swift.Sendable {
         /// The identifier of the application.
         public var applicationId: Swift.String?
         /// The identifier of the associated resource.
@@ -615,12 +616,11 @@ extension WorkSpacesClientTypes {
             self.stateReason = stateReason
         }
     }
-
 }
 
 extension WorkSpacesClientTypes {
 
-    public enum ApplicationSettingsStatusEnum: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ApplicationSettingsStatusEnum: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case disabled
         case enabled
         case sdkUnknown(Swift.String)
@@ -648,8 +648,9 @@ extension WorkSpacesClientTypes {
 }
 
 extension WorkSpacesClientTypes {
+
     /// The persistent application settings for WorkSpaces Pools users.
-    public struct ApplicationSettingsRequest {
+    public struct ApplicationSettingsRequest: Swift.Sendable {
         /// The path prefix for the S3 bucket where users’ persistent application settings are stored. You can allow the same persistent application settings to be used across multiple pools by specifying the same settings group for each pool.
         public var settingsGroup: Swift.String?
         /// Enables or disables persistent application settings for users during their pool sessions.
@@ -665,12 +666,12 @@ extension WorkSpacesClientTypes {
             self.status = status
         }
     }
-
 }
 
 extension WorkSpacesClientTypes {
+
     /// Describes the persistent application settings for WorkSpaces Pools users.
-    public struct ApplicationSettingsResponse {
+    public struct ApplicationSettingsResponse: Swift.Sendable {
         /// The S3 bucket where users’ persistent application settings are stored. When persistent application settings are enabled for the first time for an account in an Amazon Web Services Region, an S3 bucket is created. The bucket is unique to the Amazon Web Services account and the Region.
         public var s3BucketName: Swift.String?
         /// The path prefix for the S3 bucket where users’ persistent application settings are stored.
@@ -690,7 +691,6 @@ extension WorkSpacesClientTypes {
             self.status = status
         }
     }
-
 }
 
 /// One or more parameter values are not valid.
@@ -795,7 +795,7 @@ public struct ResourceAssociatedException: ClientRuntime.ModeledError, AWSClient
     }
 }
 
-public struct AssociateConnectionAliasInput {
+public struct AssociateConnectionAliasInput: Swift.Sendable {
     /// The identifier of the connection alias.
     /// This member is required.
     public var aliasId: Swift.String?
@@ -813,7 +813,7 @@ public struct AssociateConnectionAliasInput {
     }
 }
 
-public struct AssociateConnectionAliasOutput {
+public struct AssociateConnectionAliasOutput: Swift.Sendable {
     /// The identifier of the connection alias association. You use the connection identifier in the DNS TXT record when you're configuring your DNS routing policies.
     public var connectionIdentifier: Swift.String?
 
@@ -850,7 +850,7 @@ public struct ResourceLimitExceededException: ClientRuntime.ModeledError, AWSCli
     }
 }
 
-public struct AssociateIpGroupsInput {
+public struct AssociateIpGroupsInput: Swift.Sendable {
     /// The identifier of the directory.
     /// This member is required.
     public var directoryId: Swift.String?
@@ -868,7 +868,7 @@ public struct AssociateIpGroupsInput {
     }
 }
 
-public struct AssociateIpGroupsOutput {
+public struct AssociateIpGroupsOutput: Swift.Sendable {
 
     public init() { }
 }
@@ -964,7 +964,7 @@ public struct ResourceInUseException: ClientRuntime.ModeledError, AWSClientRunti
     }
 }
 
-public struct AssociateWorkspaceApplicationInput {
+public struct AssociateWorkspaceApplicationInput: Swift.Sendable {
     /// The identifier of the application.
     /// This member is required.
     public var applicationId: Swift.String?
@@ -984,7 +984,7 @@ public struct AssociateWorkspaceApplicationInput {
 
 extension WorkSpacesClientTypes {
 
-    public enum WorkSpaceAssociatedResourceType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum WorkSpaceAssociatedResourceType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case application
         case sdkUnknown(Swift.String)
 
@@ -1009,8 +1009,9 @@ extension WorkSpacesClientTypes {
 }
 
 extension WorkSpacesClientTypes {
+
     /// Describes the association between an application and a WorkSpace resource.
-    public struct WorkspaceResourceAssociation {
+    public struct WorkspaceResourceAssociation: Swift.Sendable {
         /// The identifier of the associated resource.
         public var associatedResourceId: Swift.String?
         /// The resource types of the associated resource.
@@ -1045,10 +1046,9 @@ extension WorkSpacesClientTypes {
             self.workspaceId = workspaceId
         }
     }
-
 }
 
-public struct AssociateWorkspaceApplicationOutput {
+public struct AssociateWorkspaceApplicationOutput: Swift.Sendable {
     /// Information about the association between the specified WorkSpace and the specified application.
     public var association: WorkSpacesClientTypes.WorkspaceResourceAssociation?
 
@@ -1062,7 +1062,7 @@ public struct AssociateWorkspaceApplicationOutput {
 
 extension WorkSpacesClientTypes {
 
-    public enum AssociationStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AssociationStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case associatedWithOwnerAccount
         case associatedWithSharedAccount
         case notAssociated
@@ -1100,7 +1100,7 @@ extension WorkSpacesClientTypes {
 
 extension WorkSpacesClientTypes {
 
-    public enum AuthenticationType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AuthenticationType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case saml
         case sdkUnknown(Swift.String)
 
@@ -1125,8 +1125,9 @@ extension WorkSpacesClientTypes {
 }
 
 extension WorkSpacesClientTypes {
+
     /// Describes a rule for an IP access control group.
-    public struct IpRuleItem {
+    public struct IpRuleItem: Swift.Sendable {
         /// The IP address range, in CIDR notation.
         public var ipRule: Swift.String?
         /// The description.
@@ -1141,10 +1142,9 @@ extension WorkSpacesClientTypes {
             self.ruleDesc = ruleDesc
         }
     }
-
 }
 
-public struct AuthorizeIpRulesInput {
+public struct AuthorizeIpRulesInput: Swift.Sendable {
     /// The identifier of the group.
     /// This member is required.
     public var groupId: Swift.String?
@@ -1162,14 +1162,14 @@ public struct AuthorizeIpRulesInput {
     }
 }
 
-public struct AuthorizeIpRulesOutput {
+public struct AuthorizeIpRulesOutput: Swift.Sendable {
 
     public init() { }
 }
 
 extension WorkSpacesClientTypes {
 
-    public enum BundleAssociatedResourceType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum BundleAssociatedResourceType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case application
         case sdkUnknown(Swift.String)
 
@@ -1195,7 +1195,7 @@ extension WorkSpacesClientTypes {
 
 extension WorkSpacesClientTypes {
 
-    public enum BundleType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum BundleType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case regular
         case standby
         case sdkUnknown(Swift.String)
@@ -1224,7 +1224,7 @@ extension WorkSpacesClientTypes {
 
 extension WorkSpacesClientTypes {
 
-    public enum Compute: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Compute: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case graphics
         case graphicspro
         case graphicsproG4dn
@@ -1273,8 +1273,9 @@ extension WorkSpacesClientTypes {
 }
 
 extension WorkSpacesClientTypes {
+
     /// Describes the compute type of the bundle.
-    public struct ComputeType {
+    public struct ComputeType: Swift.Sendable {
         /// The compute type.
         public var name: WorkSpacesClientTypes.Compute?
 
@@ -1285,12 +1286,12 @@ extension WorkSpacesClientTypes {
             self.name = name
         }
     }
-
 }
 
 extension WorkSpacesClientTypes {
+
     /// Describes the root volume for a WorkSpace bundle.
-    public struct RootStorage {
+    public struct RootStorage: Swift.Sendable {
         /// The size of the root volume.
         /// This member is required.
         public var capacity: Swift.String?
@@ -1302,12 +1303,11 @@ extension WorkSpacesClientTypes {
             self.capacity = capacity
         }
     }
-
 }
 
 extension WorkSpacesClientTypes {
 
-    public enum WorkspaceBundleState: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum WorkspaceBundleState: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case available
         case error
         case pending
@@ -1338,8 +1338,9 @@ extension WorkSpacesClientTypes {
 }
 
 extension WorkSpacesClientTypes {
+
     /// Describes the user volume for a WorkSpace bundle.
-    public struct UserStorage {
+    public struct UserStorage: Swift.Sendable {
         /// The size of the user volume.
         /// This member is required.
         public var capacity: Swift.String?
@@ -1351,12 +1352,12 @@ extension WorkSpacesClientTypes {
             self.capacity = capacity
         }
     }
-
 }
 
 extension WorkSpacesClientTypes {
+
     /// Describes a WorkSpace bundle.
-    public struct WorkspaceBundle {
+    public struct WorkspaceBundle: Swift.Sendable {
         /// The identifier of the bundle.
         public var bundleId: Swift.String?
         /// The type of WorkSpace bundle.
@@ -1411,12 +1412,12 @@ extension WorkSpacesClientTypes {
             self.userStorage = userStorage
         }
     }
-
 }
 
 extension WorkSpacesClientTypes {
+
     /// Describes the association between an application and a bundle resource.
-    public struct BundleResourceAssociation {
+    public struct BundleResourceAssociation: Swift.Sendable {
         /// The identifier of the associated resource.
         public var associatedResourceId: Swift.String?
         /// The resource type of the associated resources.
@@ -1451,12 +1452,12 @@ extension WorkSpacesClientTypes {
             self.stateReason = stateReason
         }
     }
-
 }
 
 extension WorkSpacesClientTypes {
+
     /// Describes the user capacity for a pool of WorkSpaces.
-    public struct Capacity {
+    public struct Capacity: Swift.Sendable {
         /// The desired number of user sessions for the WorkSpaces in the pool.
         /// This member is required.
         public var desiredUserSessions: Swift.Int?
@@ -1468,12 +1469,12 @@ extension WorkSpacesClientTypes {
             self.desiredUserSessions = desiredUserSessions
         }
     }
-
 }
 
 extension WorkSpacesClientTypes {
+
     /// Describes the capacity status for a pool of WorkSpaces.
-    public struct CapacityStatus {
+    public struct CapacityStatus: Swift.Sendable {
         /// The number of user sessions currently being used for your pool.
         /// This member is required.
         public var activeUserSessions: Swift.Int?
@@ -1500,12 +1501,11 @@ extension WorkSpacesClientTypes {
             self.desiredUserSessions = desiredUserSessions
         }
     }
-
 }
 
 extension WorkSpacesClientTypes {
 
-    public enum CertificateBasedAuthStatusEnum: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum CertificateBasedAuthStatusEnum: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case disabled
         case enabled
         case sdkUnknown(Swift.String)
@@ -1533,8 +1533,9 @@ extension WorkSpacesClientTypes {
 }
 
 extension WorkSpacesClientTypes {
+
     /// Describes the properties of the certificate-based authentication you want to use with your WorkSpaces.
-    public struct CertificateBasedAuthProperties {
+    public struct CertificateBasedAuthProperties: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the Amazon Web Services Certificate Manager Private CA resource.
         public var certificateAuthorityArn: Swift.String?
         /// The status of the certificate-based authentication properties.
@@ -1549,12 +1550,11 @@ extension WorkSpacesClientTypes {
             self.status = status
         }
     }
-
 }
 
 extension WorkSpacesClientTypes {
 
-    public enum ClientDeviceType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ClientDeviceType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case deviceTypeAndroid
         case deviceTypeIos
         case deviceTypeLinux
@@ -1595,7 +1595,7 @@ extension WorkSpacesClientTypes {
 
 extension WorkSpacesClientTypes {
 
-    public enum LogUploadEnum: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum LogUploadEnum: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case disabled
         case enabled
         case sdkUnknown(Swift.String)
@@ -1624,7 +1624,7 @@ extension WorkSpacesClientTypes {
 
 extension WorkSpacesClientTypes {
 
-    public enum ReconnectEnum: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ReconnectEnum: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case disabled
         case enabled
         case sdkUnknown(Swift.String)
@@ -1652,8 +1652,9 @@ extension WorkSpacesClientTypes {
 }
 
 extension WorkSpacesClientTypes {
+
     /// Describes an Amazon WorkSpaces client.
-    public struct ClientProperties {
+    public struct ClientProperties: Swift.Sendable {
         /// Specifies whether users can upload diagnostic log files of Amazon WorkSpaces client directly to WorkSpaces to troubleshoot issues when using the WorkSpaces client. When enabled, the log files will be sent to WorkSpaces automatically and will be applied to all users in the specified directory.
         public var logUploadEnabled: WorkSpacesClientTypes.LogUploadEnum?
         /// Specifies whether users can cache their credentials on the Amazon WorkSpaces client. When enabled, users can choose to reconnect to their WorkSpaces without re-entering their credentials.
@@ -1668,12 +1669,12 @@ extension WorkSpacesClientTypes {
             self.reconnectEnabled = reconnectEnabled
         }
     }
-
 }
 
 extension WorkSpacesClientTypes {
+
     /// Information about the Amazon WorkSpaces client.
-    public struct ClientPropertiesResult {
+    public struct ClientPropertiesResult: Swift.Sendable {
         /// Information about the Amazon WorkSpaces client.
         public var clientProperties: WorkSpacesClientTypes.ClientProperties?
         /// The resource identifier, in the form of a directory ID.
@@ -1688,12 +1689,12 @@ extension WorkSpacesClientTypes {
             self.resourceId = resourceId
         }
     }
-
 }
 
 extension WorkSpacesClientTypes {
+
     /// Describes an Amazon Connect client add-in.
-    public struct ConnectClientAddIn {
+    public struct ConnectClientAddIn: Swift.Sendable {
         /// The client add-in identifier.
         public var addInId: Swift.String?
         /// The name of the client add in.
@@ -1716,12 +1717,12 @@ extension WorkSpacesClientTypes {
             self.url = url
         }
     }
-
 }
 
 extension WorkSpacesClientTypes {
+
     /// Describes a connection alias association that is used for cross-Region redirection. For more information, see [ Cross-Region Redirection for Amazon WorkSpaces](https://docs.aws.amazon.com/workspaces/latest/adminguide/cross-region-redirection.html).
-    public struct ConnectionAliasAssociation {
+    public struct ConnectionAliasAssociation: Swift.Sendable {
         /// The identifier of the Amazon Web Services account that associated the connection alias with a directory.
         public var associatedAccountId: Swift.String?
         /// The association status of the connection alias.
@@ -1744,12 +1745,11 @@ extension WorkSpacesClientTypes {
             self.resourceId = resourceId
         }
     }
-
 }
 
 extension WorkSpacesClientTypes {
 
-    public enum ConnectionAliasState: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ConnectionAliasState: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case created
         case creating
         case deleting
@@ -1780,8 +1780,9 @@ extension WorkSpacesClientTypes {
 }
 
 extension WorkSpacesClientTypes {
+
     /// Describes a connection alias. Connection aliases are used for cross-Region redirection. For more information, see [ Cross-Region Redirection for Amazon WorkSpaces](https://docs.aws.amazon.com/workspaces/latest/adminguide/cross-region-redirection.html).
-    public struct ConnectionAlias {
+    public struct ConnectionAlias: Swift.Sendable {
         /// The identifier of the connection alias.
         public var aliasId: Swift.String?
         /// The association status of the connection alias.
@@ -1808,12 +1809,12 @@ extension WorkSpacesClientTypes {
             self.state = state
         }
     }
-
 }
 
 extension WorkSpacesClientTypes {
+
     /// Describes the permissions for a connection alias. Connection aliases are used for cross-Region redirection. For more information, see [ Cross-Region Redirection for Amazon WorkSpaces](https://docs.aws.amazon.com/workspaces/latest/adminguide/cross-region-redirection.html).
-    public struct ConnectionAliasPermission {
+    public struct ConnectionAliasPermission: Swift.Sendable {
         /// Indicates whether the specified Amazon Web Services account is allowed to associate the connection alias with a directory.
         /// This member is required.
         public var allowAssociation: Swift.Bool?
@@ -1830,12 +1831,11 @@ extension WorkSpacesClientTypes {
             self.sharedAccountId = sharedAccountId
         }
     }
-
 }
 
 extension WorkSpacesClientTypes {
 
-    public enum ConnectionState: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ConnectionState: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case connected
         case disconnected
         case unknown
@@ -1895,8 +1895,9 @@ public struct ResourceUnavailableException: ClientRuntime.ModeledError, AWSClien
 }
 
 extension WorkSpacesClientTypes {
+
     /// Describes a tag.
-    public struct Tag {
+    public struct Tag: Swift.Sendable {
         /// The key of the tag.
         /// This member is required.
         public var key: Swift.String?
@@ -1912,10 +1913,9 @@ extension WorkSpacesClientTypes {
             self.value = value
         }
     }
-
 }
 
-public struct CopyWorkspaceImageInput {
+public struct CopyWorkspaceImageInput: Swift.Sendable {
     /// A description of the image.
     public var description: Swift.String?
     /// The name of the image.
@@ -1946,7 +1946,7 @@ public struct CopyWorkspaceImageInput {
     }
 }
 
-public struct CopyWorkspaceImageOutput {
+public struct CopyWorkspaceImageOutput: Swift.Sendable {
     /// The identifier of the image.
     public var imageId: Swift.String?
 
@@ -1958,7 +1958,7 @@ public struct CopyWorkspaceImageOutput {
     }
 }
 
-public struct CreateAccountLinkInvitationInput {
+public struct CreateAccountLinkInvitationInput: Swift.Sendable {
     /// A string of up to 64 ASCII characters that Amazon EFS uses to ensure idempotent creation.
     public var clientToken: Swift.String?
     /// The identifier of the target account.
@@ -1975,7 +1975,7 @@ public struct CreateAccountLinkInvitationInput {
     }
 }
 
-public struct CreateAccountLinkInvitationOutput {
+public struct CreateAccountLinkInvitationOutput: Swift.Sendable {
     /// Information about the account link.
     public var accountLink: WorkSpacesClientTypes.AccountLink?
 
@@ -2011,7 +2011,7 @@ public struct ResourceCreationFailedException: ClientRuntime.ModeledError, AWSCl
     }
 }
 
-public struct CreateConnectClientAddInInput {
+public struct CreateConnectClientAddInInput: Swift.Sendable {
     /// The name of the client add-in.
     /// This member is required.
     public var name: Swift.String?
@@ -2034,7 +2034,7 @@ public struct CreateConnectClientAddInInput {
     }
 }
 
-public struct CreateConnectClientAddInOutput {
+public struct CreateConnectClientAddInOutput: Swift.Sendable {
     /// The client add-in identifier.
     public var addInId: Swift.String?
 
@@ -2046,7 +2046,7 @@ public struct CreateConnectClientAddInOutput {
     }
 }
 
-public struct CreateConnectionAliasInput {
+public struct CreateConnectionAliasInput: Swift.Sendable {
     /// A connection string in the form of a fully qualified domain name (FQDN), such as www.example.com. After you create a connection string, it is always associated to your Amazon Web Services account. You cannot recreate the same connection string with a different account, even if you delete all instances of it from the original account. The connection string is globally reserved for your account.
     /// This member is required.
     public var connectionString: Swift.String?
@@ -2063,7 +2063,7 @@ public struct CreateConnectionAliasInput {
     }
 }
 
-public struct CreateConnectionAliasOutput {
+public struct CreateConnectionAliasOutput: Swift.Sendable {
     /// The identifier of the connection alias.
     public var aliasId: Swift.String?
 
@@ -2075,7 +2075,7 @@ public struct CreateConnectionAliasOutput {
     }
 }
 
-public struct CreateIpGroupInput {
+public struct CreateIpGroupInput: Swift.Sendable {
     /// The description of the group.
     public var groupDesc: Swift.String?
     /// The name of the group.
@@ -2100,7 +2100,7 @@ public struct CreateIpGroupInput {
     }
 }
 
-public struct CreateIpGroupOutput {
+public struct CreateIpGroupOutput: Swift.Sendable {
     /// The identifier of the group.
     public var groupId: Swift.String?
 
@@ -2114,7 +2114,7 @@ public struct CreateIpGroupOutput {
 
 extension WorkSpacesClientTypes {
 
-    public enum DataReplication: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DataReplication: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case noReplication
         case primaryAsSource
         case sdkUnknown(Swift.String)
@@ -2142,8 +2142,9 @@ extension WorkSpacesClientTypes {
 }
 
 extension WorkSpacesClientTypes {
+
     /// Describes a standby WorkSpace.
-    public struct StandbyWorkspace {
+    public struct StandbyWorkspace: Swift.Sendable {
         /// Indicates whether data replication is enabled, and if enabled, the type of data replication.
         public var dataReplication: WorkSpacesClientTypes.DataReplication?
         /// The identifier of the directory for the standby WorkSpace.
@@ -2172,10 +2173,9 @@ extension WorkSpacesClientTypes {
             self.volumeEncryptionKey = volumeEncryptionKey
         }
     }
-
 }
 
-public struct CreateStandbyWorkspacesInput {
+public struct CreateStandbyWorkspacesInput: Swift.Sendable {
     /// The Region of the primary WorkSpace.
     /// This member is required.
     public var primaryRegion: Swift.String?
@@ -2194,8 +2194,9 @@ public struct CreateStandbyWorkspacesInput {
 }
 
 extension WorkSpacesClientTypes {
+
     /// Describes the standby WorkSpace that could not be created.
-    public struct FailedCreateStandbyWorkspacesRequest {
+    public struct FailedCreateStandbyWorkspacesRequest: Swift.Sendable {
         /// The error code that is returned if the standby WorkSpace could not be created.
         public var errorCode: Swift.String?
         /// The text of the error message that is returned if the standby WorkSpace could not be created.
@@ -2214,12 +2215,11 @@ extension WorkSpacesClientTypes {
             self.standbyWorkspaceRequest = standbyWorkspaceRequest
         }
     }
-
 }
 
 extension WorkSpacesClientTypes {
 
-    public enum WorkspaceState: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum WorkspaceState: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case adminMaintenance
         case available
         case error
@@ -2292,8 +2292,9 @@ extension WorkSpacesClientTypes {
 }
 
 extension WorkSpacesClientTypes {
+
     /// Information about the standby WorkSpace.
-    public struct PendingCreateStandbyWorkspacesRequest {
+    public struct PendingCreateStandbyWorkspacesRequest: Swift.Sendable {
         /// The identifier of the directory for the standby WorkSpace.
         public var directoryId: Swift.String?
         /// The operational state of the standby WorkSpace.
@@ -2316,10 +2317,9 @@ extension WorkSpacesClientTypes {
             self.workspaceId = workspaceId
         }
     }
-
 }
 
-public struct CreateStandbyWorkspacesOutput {
+public struct CreateStandbyWorkspacesOutput: Swift.Sendable {
     /// Information about the standby WorkSpace that could not be created.
     public var failedStandbyRequests: [WorkSpacesClientTypes.FailedCreateStandbyWorkspacesRequest]?
     /// Information about the standby WorkSpace that was created.
@@ -2335,7 +2335,7 @@ public struct CreateStandbyWorkspacesOutput {
     }
 }
 
-public struct CreateTagsInput {
+public struct CreateTagsInput: Swift.Sendable {
     /// The identifier of the WorkSpaces resource. The supported resource types are WorkSpaces, registered directories, images, custom bundles, IP access control groups, and connection aliases.
     /// This member is required.
     public var resourceId: Swift.String?
@@ -2353,12 +2353,12 @@ public struct CreateTagsInput {
     }
 }
 
-public struct CreateTagsOutput {
+public struct CreateTagsOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct CreateUpdatedWorkspaceImageInput {
+public struct CreateUpdatedWorkspaceImageInput: Swift.Sendable {
     /// A description of whether updates for the WorkSpace image are available.
     /// This member is required.
     public var description: Swift.String?
@@ -2385,7 +2385,7 @@ public struct CreateUpdatedWorkspaceImageInput {
     }
 }
 
-public struct CreateUpdatedWorkspaceImageOutput {
+public struct CreateUpdatedWorkspaceImageOutput: Swift.Sendable {
     /// The identifier of the new updated WorkSpace image.
     public var imageId: Swift.String?
 
@@ -2397,7 +2397,7 @@ public struct CreateUpdatedWorkspaceImageOutput {
     }
 }
 
-public struct CreateWorkspaceBundleInput {
+public struct CreateWorkspaceBundleInput: Swift.Sendable {
     /// The description of the bundle.
     /// This member is required.
     public var bundleDescription: Swift.String?
@@ -2438,7 +2438,7 @@ public struct CreateWorkspaceBundleInput {
     }
 }
 
-public struct CreateWorkspaceBundleOutput {
+public struct CreateWorkspaceBundleOutput: Swift.Sendable {
     /// Describes a WorkSpace bundle.
     public var workspaceBundle: WorkSpacesClientTypes.WorkspaceBundle?
 
@@ -2450,7 +2450,7 @@ public struct CreateWorkspaceBundleOutput {
     }
 }
 
-public struct CreateWorkspaceImageInput {
+public struct CreateWorkspaceImageInput: Swift.Sendable {
     /// The description of the new WorkSpace image.
     /// This member is required.
     public var description: Swift.String?
@@ -2479,7 +2479,7 @@ public struct CreateWorkspaceImageInput {
 
 extension WorkSpacesClientTypes {
 
-    public enum OperatingSystemType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum OperatingSystemType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case linux
         case windows
         case sdkUnknown(Swift.String)
@@ -2507,8 +2507,9 @@ extension WorkSpacesClientTypes {
 }
 
 extension WorkSpacesClientTypes {
+
     /// The operating system that the image is running.
-    public struct OperatingSystem {
+    public struct OperatingSystem: Swift.Sendable {
         /// The operating system.
         public var type: WorkSpacesClientTypes.OperatingSystemType?
 
@@ -2519,12 +2520,11 @@ extension WorkSpacesClientTypes {
             self.type = type
         }
     }
-
 }
 
 extension WorkSpacesClientTypes {
 
-    public enum WorkspaceImageRequiredTenancy: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum WorkspaceImageRequiredTenancy: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case dedicated
         case `default`
         case sdkUnknown(Swift.String)
@@ -2553,7 +2553,7 @@ extension WorkSpacesClientTypes {
 
 extension WorkSpacesClientTypes {
 
-    public enum WorkspaceImageState: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum WorkspaceImageState: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case available
         case error
         case pending
@@ -2583,7 +2583,7 @@ extension WorkSpacesClientTypes {
     }
 }
 
-public struct CreateWorkspaceImageOutput {
+public struct CreateWorkspaceImageOutput: Swift.Sendable {
     /// The date when the image was created.
     public var created: Foundation.Date?
     /// The description of the image.
@@ -2625,7 +2625,7 @@ public struct CreateWorkspaceImageOutput {
 
 extension WorkSpacesClientTypes {
 
-    public enum OperatingSystemName: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum OperatingSystemName: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case amazonLinux2
         case rhel8
         case ubuntu1804
@@ -2684,7 +2684,7 @@ extension WorkSpacesClientTypes {
 
 extension WorkSpacesClientTypes {
 
-    public enum ModelProtocol: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ModelProtocol: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case pcoip
         case wsp
         case sdkUnknown(Swift.String)
@@ -2713,7 +2713,7 @@ extension WorkSpacesClientTypes {
 
 extension WorkSpacesClientTypes {
 
-    public enum RunningMode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum RunningMode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case alwaysOn
         case autoStop
         case manual
@@ -2744,8 +2744,9 @@ extension WorkSpacesClientTypes {
 }
 
 extension WorkSpacesClientTypes {
+
     /// Describes a WorkSpace.
-    public struct WorkspaceProperties {
+    public struct WorkspaceProperties: Swift.Sendable {
         /// The compute type. For more information, see [Amazon WorkSpaces Bundles](http://aws.amazon.com/workspaces/details/#Amazon_WorkSpaces_Bundles).
         public var computeTypeName: WorkSpacesClientTypes.Compute?
         /// The name of the operating system.
@@ -2754,7 +2755,7 @@ extension WorkSpacesClientTypes {
         ///
         /// * Only available for WorkSpaces created with PCoIP bundles.
         ///
-        /// * The Protocols property is case sensitive. Ensure you use PCOIP or WSP.
+        /// * The Protocols property is case sensitive. Ensure you use PCOIP or DCV (formerly WSP).
         ///
         /// * Unavailable for Windows 7 WorkSpaces and WorkSpaces using GPU-based bundles (Graphics, GraphicsPro, Graphics.g4dn, and GraphicsPro.g4dn).
         public var protocols: [WorkSpacesClientTypes.ModelProtocol]?
@@ -2786,12 +2787,12 @@ extension WorkSpacesClientTypes {
             self.userVolumeSizeGib = userVolumeSizeGib
         }
     }
-
 }
 
 extension WorkSpacesClientTypes {
+
     /// Describes the information used to create a WorkSpace.
-    public struct WorkspaceRequest {
+    public struct WorkspaceRequest: Swift.Sendable {
         /// The identifier of the bundle for the WorkSpace. You can use [DescribeWorkspaceBundles] to list the available bundles.
         /// This member is required.
         public var bundleId: Swift.String?
@@ -2837,10 +2838,9 @@ extension WorkSpacesClientTypes {
             self.workspaceProperties = workspaceProperties
         }
     }
-
 }
 
-public struct CreateWorkspacesInput {
+public struct CreateWorkspacesInput: Swift.Sendable {
     /// The WorkSpaces to create. You can specify up to 25 WorkSpaces.
     /// This member is required.
     public var workspaces: [WorkSpacesClientTypes.WorkspaceRequest]?
@@ -2854,8 +2854,9 @@ public struct CreateWorkspacesInput {
 }
 
 extension WorkSpacesClientTypes {
+
     /// Describes a WorkSpace that cannot be created.
-    public struct FailedCreateWorkspaceRequest {
+    public struct FailedCreateWorkspaceRequest: Swift.Sendable {
         /// The error code that is returned if the WorkSpace cannot be created.
         public var errorCode: Swift.String?
         /// The text of the error message that is returned if the WorkSpace cannot be created.
@@ -2874,12 +2875,12 @@ extension WorkSpacesClientTypes {
             self.workspaceRequest = workspaceRequest
         }
     }
-
 }
 
 extension WorkSpacesClientTypes {
+
     /// Describes the data replication settings.
-    public struct DataReplicationSettings {
+    public struct DataReplicationSettings: Swift.Sendable {
         /// Indicates whether data replication is enabled, and if enabled, the type of data replication.
         public var dataReplication: WorkSpacesClientTypes.DataReplication?
         /// The date and time at which the last successful snapshot was taken of the primary WorkSpace used for replicating data.
@@ -2894,12 +2895,11 @@ extension WorkSpacesClientTypes {
             self.recoverySnapshotTime = recoverySnapshotTime
         }
     }
-
 }
 
 extension WorkSpacesClientTypes {
 
-    public enum ModificationResourceEnum: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ModificationResourceEnum: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case computeType
         case rootVolume
         case userVolume
@@ -2931,7 +2931,7 @@ extension WorkSpacesClientTypes {
 
 extension WorkSpacesClientTypes {
 
-    public enum ModificationStateEnum: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ModificationStateEnum: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case updateInitiated
         case updateInProgress
         case sdkUnknown(Swift.String)
@@ -2959,8 +2959,9 @@ extension WorkSpacesClientTypes {
 }
 
 extension WorkSpacesClientTypes {
+
     /// Describes a WorkSpace modification.
-    public struct ModificationState {
+    public struct ModificationState: Swift.Sendable {
         /// The resource.
         public var resource: WorkSpacesClientTypes.ModificationResourceEnum?
         /// The modification state.
@@ -2975,12 +2976,11 @@ extension WorkSpacesClientTypes {
             self.state = state
         }
     }
-
 }
 
 extension WorkSpacesClientTypes {
 
-    public enum StandbyWorkspaceRelationshipType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum StandbyWorkspaceRelationshipType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case primary
         case standby
         case sdkUnknown(Swift.String)
@@ -3008,8 +3008,9 @@ extension WorkSpacesClientTypes {
 }
 
 extension WorkSpacesClientTypes {
+
     /// Describes the related WorkSpace. The related WorkSpace could be a standby WorkSpace or primary WorkSpace related to the specified WorkSpace.
-    public struct RelatedWorkspaceProperties {
+    public struct RelatedWorkspaceProperties: Swift.Sendable {
         /// The Region of the related WorkSpace.
         public var region: Swift.String?
         /// Indicates the state of the WorkSpace.
@@ -3032,12 +3033,12 @@ extension WorkSpacesClientTypes {
             self.workspaceId = workspaceId
         }
     }
-
 }
 
 extension WorkSpacesClientTypes {
+
     /// Describes the properties of the related standby WorkSpaces.
-    public struct StandbyWorkspacesProperties {
+    public struct StandbyWorkspacesProperties: Swift.Sendable {
         /// Indicates whether data replication is enabled, and if enabled, the type of data replication.
         public var dataReplication: WorkSpacesClientTypes.DataReplication?
         /// The date and time at which the last successful snapshot was taken of the primary WorkSpace used for replicating data.
@@ -3056,12 +3057,12 @@ extension WorkSpacesClientTypes {
             self.standbyWorkspaceId = standbyWorkspaceId
         }
     }
-
 }
 
 extension WorkSpacesClientTypes {
+
     /// Describes a WorkSpace.
-    public struct Workspace {
+    public struct Workspace: Swift.Sendable {
         /// The identifier of the bundle used to create the WorkSpace.
         public var bundleId: Swift.String?
         /// The name of the WorkSpace, as seen by the operating system. The format of this name varies. For more information, see [ Launch a WorkSpace](https://docs.aws.amazon.com/workspaces/latest/adminguide/launch-workspaces-tutorials.html).
@@ -3181,10 +3182,9 @@ extension WorkSpacesClientTypes {
             self.workspaceProperties = workspaceProperties
         }
     }
-
 }
 
-public struct CreateWorkspacesOutput {
+public struct CreateWorkspacesOutput: Swift.Sendable {
     /// Information about the WorkSpaces that could not be created.
     public var failedRequests: [WorkSpacesClientTypes.FailedCreateWorkspaceRequest]?
     /// Information about the WorkSpaces that were created. Because this operation is asynchronous, the identifier returned is not immediately available for use with other operations. For example, if you call [DescribeWorkspaces] before the WorkSpace is created, the information returned can be incomplete.
@@ -3201,8 +3201,9 @@ public struct CreateWorkspacesOutput {
 }
 
 extension WorkSpacesClientTypes {
+
     /// Describes the timeout settings for a pool of WorkSpaces.
-    public struct TimeoutSettings {
+    public struct TimeoutSettings: Swift.Sendable {
         /// Specifies the amount of time, in seconds, that a streaming session remains active after users disconnect. If users try to reconnect to the streaming session after a disconnection or network interruption within the time set, they are connected to their previous session. Otherwise, they are connected to a new session with a new streaming instance.
         public var disconnectTimeoutInSeconds: Swift.Int?
         /// The amount of time in seconds a connection will stay active while idle.
@@ -3221,10 +3222,9 @@ extension WorkSpacesClientTypes {
             self.maxUserDurationInSeconds = maxUserDurationInSeconds
         }
     }
-
 }
 
-public struct CreateWorkspacesPoolInput {
+public struct CreateWorkspacesPoolInput: Swift.Sendable {
     /// Indicates the application settings of the pool.
     public var applicationSettings: WorkSpacesClientTypes.ApplicationSettingsRequest?
     /// The identifier of the bundle for the pool.
@@ -3271,7 +3271,7 @@ public struct CreateWorkspacesPoolInput {
 
 extension WorkSpacesClientTypes {
 
-    public enum WorkspacesPoolErrorCode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum WorkspacesPoolErrorCode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case bundleNotFound
         case defaultOuIsMissing
         case directoryNotFound
@@ -3413,8 +3413,9 @@ extension WorkSpacesClientTypes {
 }
 
 extension WorkSpacesClientTypes {
+
     /// Describes a pool error.
-    public struct WorkspacesPoolError {
+    public struct WorkspacesPoolError: Swift.Sendable {
         /// The error code.
         public var errorCode: WorkSpacesClientTypes.WorkspacesPoolErrorCode?
         /// The error message.
@@ -3429,12 +3430,11 @@ extension WorkSpacesClientTypes {
             self.errorMessage = errorMessage
         }
     }
-
 }
 
 extension WorkSpacesClientTypes {
 
-    public enum WorkspacesPoolState: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum WorkspacesPoolState: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case creating
         case deleting
         case running
@@ -3477,8 +3477,9 @@ extension WorkSpacesClientTypes {
 }
 
 extension WorkSpacesClientTypes {
+
     /// Describes a pool of WorkSpaces.
-    public struct WorkspacesPool {
+    public struct WorkspacesPool: Swift.Sendable {
         /// The persistent application settings for users of the pool.
         public var applicationSettings: WorkSpacesClientTypes.ApplicationSettingsResponse?
         /// The identifier of the bundle used by the pool.
@@ -3541,10 +3542,9 @@ extension WorkSpacesClientTypes {
             self.timeoutSettings = timeoutSettings
         }
     }
-
 }
 
-public struct CreateWorkspacesPoolOutput {
+public struct CreateWorkspacesPoolOutput: Swift.Sendable {
     /// Indicates the pool to create.
     public var workspacesPool: WorkSpacesClientTypes.WorkspacesPool?
 
@@ -3558,7 +3558,7 @@ public struct CreateWorkspacesPoolOutput {
 
 extension WorkSpacesClientTypes {
 
-    public enum DedicatedTenancyAccountType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DedicatedTenancyAccountType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case sourceAccount
         case targetAccount
         case sdkUnknown(Swift.String)
@@ -3587,7 +3587,7 @@ extension WorkSpacesClientTypes {
 
 extension WorkSpacesClientTypes {
 
-    public enum DedicatedTenancySupportEnum: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DedicatedTenancySupportEnum: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case enabled
         case sdkUnknown(Swift.String)
 
@@ -3612,8 +3612,9 @@ extension WorkSpacesClientTypes {
 }
 
 extension WorkSpacesClientTypes {
+
     /// Returns default client branding attributes that were imported. These attributes display on the client login screen. Client branding attributes are public facing. Ensure that you don't include sensitive information.
-    public struct DefaultClientBrandingAttributes {
+    public struct DefaultClientBrandingAttributes: Swift.Sendable {
         /// The forgotten password link. This is the web address that users can go to if they forget the password for their WorkSpace.
         public var forgotPasswordLink: Swift.String?
         /// The login message. Specified as a key value pair, in which the key is a locale and the value is the localized message for that locale. The only key supported is en_US. The HTML tags supported include the following: a, b, blockquote, br, cite, code, dd, dl, dt, div, em, i, li, ol, p, pre, q, small, span, strike, strong, sub, sup, u, ul.
@@ -3648,12 +3649,12 @@ extension WorkSpacesClientTypes {
             self.supportLink = supportLink
         }
     }
-
 }
 
 extension WorkSpacesClientTypes {
+
     /// The default client branding attributes to be imported. These attributes display on the client login screen. Client branding attributes are public facing. Ensure that you do not include sensitive information.
-    public struct DefaultImportClientBrandingAttributes {
+    public struct DefaultImportClientBrandingAttributes: Swift.Sendable {
         /// The forgotten password link. This is the web address that users can go to if they forget the password for their WorkSpace.
         public var forgotPasswordLink: Swift.String?
         /// The login message. Specified as a key value pair, in which the key is a locale and the value is the localized message for that locale. The only key supported is en_US. The HTML tags supported include the following: a, b, blockquote, br, cite, code, dd, dl, dt, div, em, i, li, ol, p, pre, q, small, span, strike, strong, sub, sup, u, ul.
@@ -3688,12 +3689,12 @@ extension WorkSpacesClientTypes {
             self.supportLink = supportLink
         }
     }
-
 }
 
 extension WorkSpacesClientTypes {
+
     /// Describes the default values that are used to create WorkSpaces. For more information, see [Update Directory Details for Your WorkSpaces](https://docs.aws.amazon.com/workspaces/latest/adminguide/update-directory-details.html).
-    public struct DefaultWorkspaceCreationProperties {
+    public struct DefaultWorkspaceCreationProperties: Swift.Sendable {
         /// The identifier of the default security group to apply to WorkSpaces when they are created. For more information, see [ Security Groups for Your WorkSpaces](https://docs.aws.amazon.com/workspaces/latest/adminguide/amazon-workspaces-security-groups.html).
         public var customSecurityGroupId: Swift.String?
         /// The organizational unit (OU) in the directory for the WorkSpace machine accounts.
@@ -3728,12 +3729,11 @@ extension WorkSpacesClientTypes {
             self.userEnabledAsLocalAdministrator = userEnabledAsLocalAdministrator
         }
     }
-
 }
 
 extension WorkSpacesClientTypes {
 
-    public enum DeletableCertificateBasedAuthProperty: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DeletableCertificateBasedAuthProperty: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case certificateBasedAuthPropertiesCertificateAuthorityArn
         case sdkUnknown(Swift.String)
 
@@ -3759,7 +3759,7 @@ extension WorkSpacesClientTypes {
 
 extension WorkSpacesClientTypes {
 
-    public enum DeletableSamlProperty: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DeletableSamlProperty: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case samlPropertiesRelayStateParameterName
         case samlPropertiesUserAccessUrl
         case sdkUnknown(Swift.String)
@@ -3786,7 +3786,7 @@ extension WorkSpacesClientTypes {
     }
 }
 
-public struct DeleteAccountLinkInvitationInput {
+public struct DeleteAccountLinkInvitationInput: Swift.Sendable {
     /// A string of up to 64 ASCII characters that Amazon EFS uses to ensure idempotent creation.
     public var clientToken: Swift.String?
     /// The identifier of the account link.
@@ -3803,7 +3803,7 @@ public struct DeleteAccountLinkInvitationInput {
     }
 }
 
-public struct DeleteAccountLinkInvitationOutput {
+public struct DeleteAccountLinkInvitationOutput: Swift.Sendable {
     /// Information about the account link.
     public var accountLink: WorkSpacesClientTypes.AccountLink?
 
@@ -3815,7 +3815,7 @@ public struct DeleteAccountLinkInvitationOutput {
     }
 }
 
-public struct DeleteClientBrandingInput {
+public struct DeleteClientBrandingInput: Swift.Sendable {
     /// The device type for which you want to delete client branding.
     /// This member is required.
     public var platforms: [WorkSpacesClientTypes.ClientDeviceType]?
@@ -3833,12 +3833,12 @@ public struct DeleteClientBrandingInput {
     }
 }
 
-public struct DeleteClientBrandingOutput {
+public struct DeleteClientBrandingOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteConnectClientAddInInput {
+public struct DeleteConnectClientAddInInput: Swift.Sendable {
     /// The identifier of the client add-in to delete.
     /// This member is required.
     public var addInId: Swift.String?
@@ -3856,12 +3856,12 @@ public struct DeleteConnectClientAddInInput {
     }
 }
 
-public struct DeleteConnectClientAddInOutput {
+public struct DeleteConnectClientAddInOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteConnectionAliasInput {
+public struct DeleteConnectionAliasInput: Swift.Sendable {
     /// The identifier of the connection alias to delete.
     /// This member is required.
     public var aliasId: Swift.String?
@@ -3874,12 +3874,12 @@ public struct DeleteConnectionAliasInput {
     }
 }
 
-public struct DeleteConnectionAliasOutput {
+public struct DeleteConnectionAliasOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteIpGroupInput {
+public struct DeleteIpGroupInput: Swift.Sendable {
     /// The identifier of the IP access control group.
     /// This member is required.
     public var groupId: Swift.String?
@@ -3892,12 +3892,12 @@ public struct DeleteIpGroupInput {
     }
 }
 
-public struct DeleteIpGroupOutput {
+public struct DeleteIpGroupOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteTagsInput {
+public struct DeleteTagsInput: Swift.Sendable {
     /// The identifier of the WorkSpaces resource. The supported resource types are WorkSpaces, registered directories, images, custom bundles, IP access control groups, and connection aliases.
     /// This member is required.
     public var resourceId: Swift.String?
@@ -3915,12 +3915,12 @@ public struct DeleteTagsInput {
     }
 }
 
-public struct DeleteTagsOutput {
+public struct DeleteTagsOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteWorkspaceBundleInput {
+public struct DeleteWorkspaceBundleInput: Swift.Sendable {
     /// The identifier of the bundle.
     public var bundleId: Swift.String?
 
@@ -3932,12 +3932,12 @@ public struct DeleteWorkspaceBundleInput {
     }
 }
 
-public struct DeleteWorkspaceBundleOutput {
+public struct DeleteWorkspaceBundleOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteWorkspaceImageInput {
+public struct DeleteWorkspaceImageInput: Swift.Sendable {
     /// The identifier of the image.
     /// This member is required.
     public var imageId: Swift.String?
@@ -3950,12 +3950,12 @@ public struct DeleteWorkspaceImageInput {
     }
 }
 
-public struct DeleteWorkspaceImageOutput {
+public struct DeleteWorkspaceImageOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeployWorkspaceApplicationsInput {
+public struct DeployWorkspaceApplicationsInput: Swift.Sendable {
     /// Indicates whether the force flag is applied for the specified WorkSpace. When the force flag is enabled, it allows previously failed deployments to be retried.
     public var force: Swift.Bool?
     /// The identifier of the WorkSpace.
@@ -3973,8 +3973,9 @@ public struct DeployWorkspaceApplicationsInput {
 }
 
 extension WorkSpacesClientTypes {
+
     /// Describes the WorkSpace application deployment.
-    public struct WorkSpaceApplicationDeployment {
+    public struct WorkSpaceApplicationDeployment: Swift.Sendable {
         /// The associations between the applications and the associated resources.
         public var associations: [WorkSpacesClientTypes.WorkspaceResourceAssociation]?
 
@@ -3985,10 +3986,9 @@ extension WorkSpacesClientTypes {
             self.associations = associations
         }
     }
-
 }
 
-public struct DeployWorkspaceApplicationsOutput {
+public struct DeployWorkspaceApplicationsOutput: Swift.Sendable {
     /// The list of deployed associations and information about them.
     public var deployment: WorkSpacesClientTypes.WorkSpaceApplicationDeployment?
 
@@ -4000,7 +4000,7 @@ public struct DeployWorkspaceApplicationsOutput {
     }
 }
 
-public struct DeregisterWorkspaceDirectoryInput {
+public struct DeregisterWorkspaceDirectoryInput: Swift.Sendable {
     /// The identifier of the directory. If any WorkSpaces are registered to this directory, you must remove them before you deregister the directory, or you will receive an OperationNotSupportedException error.
     /// This member is required.
     public var directoryId: Swift.String?
@@ -4013,17 +4013,17 @@ public struct DeregisterWorkspaceDirectoryInput {
     }
 }
 
-public struct DeregisterWorkspaceDirectoryOutput {
+public struct DeregisterWorkspaceDirectoryOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DescribeAccountInput {
+public struct DescribeAccountInput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DescribeAccountOutput {
+public struct DescribeAccountOutput: Swift.Sendable {
     /// The type of linked account.
     public var dedicatedTenancyAccountType: WorkSpacesClientTypes.DedicatedTenancyAccountType?
     /// The IP address range, specified as an IPv4 CIDR block, used for the management network interface. The management network interface is connected to a secure Amazon WorkSpaces management network. It is used for interactive streaming of the WorkSpace desktop to Amazon WorkSpaces clients, and to allow Amazon WorkSpaces to manage the WorkSpace.
@@ -4043,7 +4043,7 @@ public struct DescribeAccountOutput {
     }
 }
 
-public struct DescribeAccountModificationsInput {
+public struct DescribeAccountModificationsInput: Swift.Sendable {
     /// If you received a NextToken from a previous call that was paginated, provide this token to receive the next set of results.
     public var nextToken: Swift.String?
 
@@ -4055,7 +4055,7 @@ public struct DescribeAccountModificationsInput {
     }
 }
 
-public struct DescribeAccountModificationsOutput {
+public struct DescribeAccountModificationsOutput: Swift.Sendable {
     /// The list of modifications to the configuration of BYOL.
     public var accountModifications: [WorkSpacesClientTypes.AccountModification]?
     /// The token to use to retrieve the next page of results. This value is null when there are no more results to return.
@@ -4071,7 +4071,7 @@ public struct DescribeAccountModificationsOutput {
     }
 }
 
-public struct DescribeApplicationAssociationsInput {
+public struct DescribeApplicationAssociationsInput: Swift.Sendable {
     /// The identifier of the specified application.
     /// This member is required.
     public var applicationId: Swift.String?
@@ -4097,7 +4097,7 @@ public struct DescribeApplicationAssociationsInput {
     }
 }
 
-public struct DescribeApplicationAssociationsOutput {
+public struct DescribeApplicationAssociationsOutput: Swift.Sendable {
     /// List of associations and information about them.
     public var associations: [WorkSpacesClientTypes.ApplicationResourceAssociation]?
     /// If you received a NextToken from a previous call that was paginated, provide this token to receive the next set of results.
@@ -4115,7 +4115,7 @@ public struct DescribeApplicationAssociationsOutput {
 
 extension WorkSpacesClientTypes {
 
-    public enum WorkSpaceApplicationLicenseType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum WorkSpaceApplicationLicenseType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case licensed
         case unlicensed
         case sdkUnknown(Swift.String)
@@ -4142,7 +4142,7 @@ extension WorkSpacesClientTypes {
     }
 }
 
-public struct DescribeApplicationsInput {
+public struct DescribeApplicationsInput: Swift.Sendable {
     /// The identifiers of one or more applications.
     public var applicationIds: [Swift.String]?
     /// The compute types supported by the applications.
@@ -4180,7 +4180,7 @@ public struct DescribeApplicationsInput {
 
 extension WorkSpacesClientTypes {
 
-    public enum WorkSpaceApplicationState: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum WorkSpaceApplicationState: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case available
         case error
         case pending
@@ -4214,8 +4214,9 @@ extension WorkSpacesClientTypes {
 }
 
 extension WorkSpacesClientTypes {
+
     /// Describes the WorkSpace application.
-    public struct WorkSpaceApplication {
+    public struct WorkSpaceApplication: Swift.Sendable {
         /// The identifier of the application.
         public var applicationId: Swift.String?
         /// The time the application is created.
@@ -4258,10 +4259,9 @@ extension WorkSpacesClientTypes {
             self.supportedOperatingSystemNames = supportedOperatingSystemNames
         }
     }
-
 }
 
-public struct DescribeApplicationsOutput {
+public struct DescribeApplicationsOutput: Swift.Sendable {
     /// List of information about the specified applications.
     public var applications: [WorkSpacesClientTypes.WorkSpaceApplication]?
     /// If you received a NextToken from a previous call that was paginated, provide this token to receive the next set of results.
@@ -4277,7 +4277,7 @@ public struct DescribeApplicationsOutput {
     }
 }
 
-public struct DescribeBundleAssociationsInput {
+public struct DescribeBundleAssociationsInput: Swift.Sendable {
     /// The resource types of the associated resource.
     /// This member is required.
     public var associatedResourceTypes: [WorkSpacesClientTypes.BundleAssociatedResourceType]?
@@ -4295,7 +4295,7 @@ public struct DescribeBundleAssociationsInput {
     }
 }
 
-public struct DescribeBundleAssociationsOutput {
+public struct DescribeBundleAssociationsOutput: Swift.Sendable {
     /// List of information about the specified associations.
     public var associations: [WorkSpacesClientTypes.BundleResourceAssociation]?
 
@@ -4307,7 +4307,7 @@ public struct DescribeBundleAssociationsOutput {
     }
 }
 
-public struct DescribeClientBrandingInput {
+public struct DescribeClientBrandingInput: Swift.Sendable {
     /// The directory identifier of the WorkSpace for which you want to view client branding information.
     /// This member is required.
     public var resourceId: Swift.String?
@@ -4321,8 +4321,9 @@ public struct DescribeClientBrandingInput {
 }
 
 extension WorkSpacesClientTypes {
+
     /// The client branding attributes for iOS device types. These attributes are displayed on the iOS client login screen only. Client branding attributes are public facing. Ensure you do not include sensitive information.
-    public struct IosClientBrandingAttributes {
+    public struct IosClientBrandingAttributes: Swift.Sendable {
         /// The forgotten password link. This is the web address that users can go to if they forget the password for their WorkSpace.
         public var forgotPasswordLink: Swift.String?
         /// The login message. Specified as a key value pair, in which the key is a locale and the value is the localized message for that locale. The only key supported is en_US. The HTML tags supported include the following: a, b, blockquote, br, cite, code, dd, dl, dt, div, em, i, li, ol, p, pre, q, small, span, strike, strong, sub, sup, u, ul.
@@ -4365,10 +4366,9 @@ extension WorkSpacesClientTypes {
             self.supportLink = supportLink
         }
     }
-
 }
 
-public struct DescribeClientBrandingOutput {
+public struct DescribeClientBrandingOutput: Swift.Sendable {
     /// The branding information for Android devices.
     public var deviceTypeAndroid: WorkSpacesClientTypes.DefaultClientBrandingAttributes?
     /// The branding information for iOS devices.
@@ -4400,7 +4400,7 @@ public struct DescribeClientBrandingOutput {
     }
 }
 
-public struct DescribeClientPropertiesInput {
+public struct DescribeClientPropertiesInput: Swift.Sendable {
     /// The resource identifier, in the form of directory IDs.
     /// This member is required.
     public var resourceIds: [Swift.String]?
@@ -4413,7 +4413,7 @@ public struct DescribeClientPropertiesInput {
     }
 }
 
-public struct DescribeClientPropertiesOutput {
+public struct DescribeClientPropertiesOutput: Swift.Sendable {
     /// Information about the specified Amazon WorkSpaces clients.
     public var clientPropertiesList: [WorkSpacesClientTypes.ClientPropertiesResult]?
 
@@ -4425,7 +4425,7 @@ public struct DescribeClientPropertiesOutput {
     }
 }
 
-public struct DescribeConnectClientAddInsInput {
+public struct DescribeConnectClientAddInsInput: Swift.Sendable {
     /// The maximum number of items to return.
     public var maxResults: Swift.Int?
     /// If you received a NextToken from a previous call that was paginated, provide this token to receive the next set of results.
@@ -4446,7 +4446,7 @@ public struct DescribeConnectClientAddInsInput {
     }
 }
 
-public struct DescribeConnectClientAddInsOutput {
+public struct DescribeConnectClientAddInsOutput: Swift.Sendable {
     /// Information about client add-ins.
     public var addIns: [WorkSpacesClientTypes.ConnectClientAddIn]?
     /// The token to use to retrieve the next page of results. This value is null when there are no more results to return.
@@ -4462,7 +4462,7 @@ public struct DescribeConnectClientAddInsOutput {
     }
 }
 
-public struct DescribeConnectionAliasesInput {
+public struct DescribeConnectionAliasesInput: Swift.Sendable {
     /// The identifiers of the connection aliases to describe.
     public var aliasIds: [Swift.String]?
     /// The maximum number of connection aliases to return.
@@ -4486,7 +4486,7 @@ public struct DescribeConnectionAliasesInput {
     }
 }
 
-public struct DescribeConnectionAliasesOutput {
+public struct DescribeConnectionAliasesOutput: Swift.Sendable {
     /// Information about the specified connection aliases.
     public var connectionAliases: [WorkSpacesClientTypes.ConnectionAlias]?
     /// The token to use to retrieve the next page of results. This value is null when there are no more results to return.
@@ -4502,7 +4502,7 @@ public struct DescribeConnectionAliasesOutput {
     }
 }
 
-public struct DescribeConnectionAliasPermissionsInput {
+public struct DescribeConnectionAliasPermissionsInput: Swift.Sendable {
     /// The identifier of the connection alias.
     /// This member is required.
     public var aliasId: Swift.String?
@@ -4523,7 +4523,7 @@ public struct DescribeConnectionAliasPermissionsInput {
     }
 }
 
-public struct DescribeConnectionAliasPermissionsOutput {
+public struct DescribeConnectionAliasPermissionsOutput: Swift.Sendable {
     /// The identifier of the connection alias.
     public var aliasId: Swift.String?
     /// The permissions associated with a connection alias.
@@ -4545,7 +4545,7 @@ public struct DescribeConnectionAliasPermissionsOutput {
 
 extension WorkSpacesClientTypes {
 
-    public enum ImageAssociatedResourceType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ImageAssociatedResourceType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case application
         case sdkUnknown(Swift.String)
 
@@ -4569,7 +4569,7 @@ extension WorkSpacesClientTypes {
     }
 }
 
-public struct DescribeImageAssociationsInput {
+public struct DescribeImageAssociationsInput: Swift.Sendable {
     /// The resource types of the associated resource.
     /// This member is required.
     public var associatedResourceTypes: [WorkSpacesClientTypes.ImageAssociatedResourceType]?
@@ -4588,8 +4588,9 @@ public struct DescribeImageAssociationsInput {
 }
 
 extension WorkSpacesClientTypes {
+
     /// Describes the association between an application and an image resource.
-    public struct ImageResourceAssociation {
+    public struct ImageResourceAssociation: Swift.Sendable {
         /// The identifier of the associated resource.
         public var associatedResourceId: Swift.String?
         /// The resource type of the associated resources.
@@ -4624,10 +4625,9 @@ extension WorkSpacesClientTypes {
             self.stateReason = stateReason
         }
     }
-
 }
 
-public struct DescribeImageAssociationsOutput {
+public struct DescribeImageAssociationsOutput: Swift.Sendable {
     /// List of information about the specified associations.
     public var associations: [WorkSpacesClientTypes.ImageResourceAssociation]?
 
@@ -4639,7 +4639,7 @@ public struct DescribeImageAssociationsOutput {
     }
 }
 
-public struct DescribeIpGroupsInput {
+public struct DescribeIpGroupsInput: Swift.Sendable {
     /// The identifiers of one or more IP access control groups.
     public var groupIds: [Swift.String]?
     /// The maximum number of items to return.
@@ -4660,8 +4660,9 @@ public struct DescribeIpGroupsInput {
 }
 
 extension WorkSpacesClientTypes {
+
     /// Describes an IP access control group.
-    public struct WorkspacesIpGroup {
+    public struct WorkspacesIpGroup: Swift.Sendable {
         /// The description of the group.
         public var groupDesc: Swift.String?
         /// The identifier of the group.
@@ -4684,10 +4685,9 @@ extension WorkSpacesClientTypes {
             self.userRules = userRules
         }
     }
-
 }
 
-public struct DescribeIpGroupsOutput {
+public struct DescribeIpGroupsOutput: Swift.Sendable {
     /// The token to use to retrieve the next page of results. This value is null when there are no more results to return.
     public var nextToken: Swift.String?
     /// Information about the IP access control groups.
@@ -4703,7 +4703,7 @@ public struct DescribeIpGroupsOutput {
     }
 }
 
-public struct DescribeTagsInput {
+public struct DescribeTagsInput: Swift.Sendable {
     /// The identifier of the WorkSpaces resource. The supported resource types are WorkSpaces, registered directories, images, custom bundles, IP access control groups, and connection aliases.
     /// This member is required.
     public var resourceId: Swift.String?
@@ -4716,7 +4716,7 @@ public struct DescribeTagsInput {
     }
 }
 
-public struct DescribeTagsOutput {
+public struct DescribeTagsOutput: Swift.Sendable {
     /// The tags.
     public var tagList: [WorkSpacesClientTypes.Tag]?
 
@@ -4728,7 +4728,7 @@ public struct DescribeTagsOutput {
     }
 }
 
-public struct DescribeWorkspaceAssociationsInput {
+public struct DescribeWorkspaceAssociationsInput: Swift.Sendable {
     /// The resource types of the associated resources.
     /// This member is required.
     public var associatedResourceTypes: [WorkSpacesClientTypes.WorkSpaceAssociatedResourceType]?
@@ -4746,7 +4746,7 @@ public struct DescribeWorkspaceAssociationsInput {
     }
 }
 
-public struct DescribeWorkspaceAssociationsOutput {
+public struct DescribeWorkspaceAssociationsOutput: Swift.Sendable {
     /// List of information about the specified associations.
     public var associations: [WorkSpacesClientTypes.WorkspaceResourceAssociation]?
 
@@ -4758,7 +4758,7 @@ public struct DescribeWorkspaceAssociationsOutput {
     }
 }
 
-public struct DescribeWorkspaceBundlesInput {
+public struct DescribeWorkspaceBundlesInput: Swift.Sendable {
     /// The identifiers of the bundles. You cannot combine this parameter with any other filter.
     public var bundleIds: [Swift.String]?
     /// The token for the next set of results. (You received this token from a previous call.)
@@ -4778,7 +4778,7 @@ public struct DescribeWorkspaceBundlesInput {
     }
 }
 
-public struct DescribeWorkspaceBundlesOutput {
+public struct DescribeWorkspaceBundlesOutput: Swift.Sendable {
     /// Information about the bundles.
     public var bundles: [WorkSpacesClientTypes.WorkspaceBundle]?
     /// The token to use to retrieve the next page of results. This value is null when there are no more results to return. This token is valid for one day and must be used within that time frame.
@@ -4796,7 +4796,7 @@ public struct DescribeWorkspaceBundlesOutput {
 
 extension WorkSpacesClientTypes {
 
-    public enum DescribeWorkspaceDirectoriesFilterName: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DescribeWorkspaceDirectoriesFilterName: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case userIdentityType
         case workspaceType
         case sdkUnknown(Swift.String)
@@ -4824,8 +4824,9 @@ extension WorkSpacesClientTypes {
 }
 
 extension WorkSpacesClientTypes {
+
     /// Describes the filter conditions for the WorkSpaces to return.
-    public struct DescribeWorkspaceDirectoriesFilter {
+    public struct DescribeWorkspaceDirectoriesFilter: Swift.Sendable {
         /// The name of the WorkSpaces to filter.
         /// This member is required.
         public var name: WorkSpacesClientTypes.DescribeWorkspaceDirectoriesFilterName?
@@ -4842,10 +4843,9 @@ extension WorkSpacesClientTypes {
             self.values = values
         }
     }
-
 }
 
-public struct DescribeWorkspaceDirectoriesInput {
+public struct DescribeWorkspaceDirectoriesInput: Swift.Sendable {
     /// The identifiers of the directories. If the value is null, all directories are retrieved.
     public var directoryIds: [Swift.String]?
     /// The filter condition for the WorkSpaces.
@@ -4875,7 +4875,7 @@ public struct DescribeWorkspaceDirectoriesInput {
 
 extension WorkSpacesClientTypes {
 
-    public enum WorkspaceDirectoryType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum WorkspaceDirectoryType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case adConnector
         case awsIamIdentityCenter
         case customerManaged
@@ -4909,8 +4909,9 @@ extension WorkSpacesClientTypes {
 }
 
 extension WorkSpacesClientTypes {
+
     /// Specifies the configurations of the identity center.
-    public struct IDCConfig {
+    public struct IDCConfig: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the application.
         public var applicationArn: Swift.String?
         /// The Amazon Resource Name (ARN) of the identity center instance.
@@ -4925,12 +4926,12 @@ extension WorkSpacesClientTypes {
             self.instanceArn = instanceArn
         }
     }
-
 }
 
 extension WorkSpacesClientTypes {
+
     /// Specifies the configurations of the Microsoft Entra.
-    public struct MicrosoftEntraConfig {
+    public struct MicrosoftEntraConfig: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the application config.
         public var applicationConfigSecretArn: Swift.String?
         /// The identifier of the tenant.
@@ -4945,12 +4946,11 @@ extension WorkSpacesClientTypes {
             self.tenantId = tenantId
         }
     }
-
 }
 
 extension WorkSpacesClientTypes {
 
-    public enum SamlStatusEnum: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SamlStatusEnum: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case disabled
         case enabled
         case enabledWithDirectoryLoginFallback
@@ -4981,8 +4981,9 @@ extension WorkSpacesClientTypes {
 }
 
 extension WorkSpacesClientTypes {
+
     /// Describes the enablement status, user access URL, and relay state parameter name that are used for configuring federation with an SAML 2.0 identity provider.
-    public struct SamlProperties {
+    public struct SamlProperties: Swift.Sendable {
         /// The relay state parameter name supported by the SAML 2.0 identity provider (IdP). When the end user is redirected to the user access URL from the WorkSpaces client application, this relay state parameter name is appended as a query parameter to the URL along with the relay state endpoint to return the user to the client application session. To use SAML 2.0 authentication with WorkSpaces, the IdP must support IdP-initiated deep linking for the relay state URL. Consult your IdP documentation for more information.
         public var relayStateParameterName: Swift.String?
         /// Indicates the status of SAML 2.0 authentication. These statuses include the following.
@@ -5007,12 +5008,12 @@ extension WorkSpacesClientTypes {
             self.userAccessUrl = userAccessUrl
         }
     }
-
 }
 
 extension WorkSpacesClientTypes {
+
     /// Describes the self-service permissions for a directory. For more information, see [Enable Self-Service WorkSpace Management Capabilities for Your Users](https://docs.aws.amazon.com/workspaces/latest/adminguide/enable-user-self-service-workspace-management.html).
-    public struct SelfservicePermissions {
+    public struct SelfservicePermissions: Swift.Sendable {
         /// Specifies whether users can change the compute type (bundle) for their WorkSpace.
         public var changeComputeType: WorkSpacesClientTypes.ReconnectEnum?
         /// Specifies whether users can increase the volume size of the drives on their WorkSpace.
@@ -5039,12 +5040,11 @@ extension WorkSpacesClientTypes {
             self.switchRunningMode = switchRunningMode
         }
     }
-
 }
 
 extension WorkSpacesClientTypes {
 
-    public enum WorkspaceDirectoryState: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum WorkspaceDirectoryState: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case deregistered
         case deregistering
         case error
@@ -5082,7 +5082,7 @@ extension WorkSpacesClientTypes {
 
 extension WorkSpacesClientTypes {
 
-    public enum StorageConnectorTypeEnum: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum StorageConnectorTypeEnum: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case homeFolder
         case sdkUnknown(Swift.String)
 
@@ -5108,7 +5108,7 @@ extension WorkSpacesClientTypes {
 
 extension WorkSpacesClientTypes {
 
-    public enum StorageConnectorStatusEnum: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum StorageConnectorStatusEnum: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case disabled
         case enabled
         case sdkUnknown(Swift.String)
@@ -5136,8 +5136,9 @@ extension WorkSpacesClientTypes {
 }
 
 extension WorkSpacesClientTypes {
+
     /// Describes the storage connector.
-    public struct StorageConnector {
+    public struct StorageConnector: Swift.Sendable {
         /// The type of connector used to save user files.
         /// This member is required.
         public var connectorType: WorkSpacesClientTypes.StorageConnectorTypeEnum?
@@ -5154,12 +5155,11 @@ extension WorkSpacesClientTypes {
             self.status = status
         }
     }
-
 }
 
 extension WorkSpacesClientTypes {
 
-    public enum StreamingExperiencePreferredProtocolEnum: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum StreamingExperiencePreferredProtocolEnum: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case tcp
         case udp
         case sdkUnknown(Swift.String)
@@ -5188,7 +5188,7 @@ extension WorkSpacesClientTypes {
 
 extension WorkSpacesClientTypes {
 
-    public enum UserSettingActionEnum: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum UserSettingActionEnum: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case clipboardCopyFromLocalDevice
         case clipboardCopyToLocalDevice
         case printingToLocalDevice
@@ -5223,7 +5223,7 @@ extension WorkSpacesClientTypes {
 
 extension WorkSpacesClientTypes {
 
-    public enum UserSettingPermissionEnum: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum UserSettingPermissionEnum: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case disabled
         case enabled
         case sdkUnknown(Swift.String)
@@ -5251,8 +5251,9 @@ extension WorkSpacesClientTypes {
 }
 
 extension WorkSpacesClientTypes {
+
     /// Information about the user's permission settings.
-    public struct UserSetting {
+    public struct UserSetting: Swift.Sendable {
         /// Indicates the type of action.
         /// This member is required.
         public var action: WorkSpacesClientTypes.UserSettingActionEnum?
@@ -5273,12 +5274,12 @@ extension WorkSpacesClientTypes {
             self.permission = permission
         }
     }
-
 }
 
 extension WorkSpacesClientTypes {
+
     /// Describes the streaming properties.
-    public struct StreamingProperties {
+    public struct StreamingProperties: Swift.Sendable {
         /// Indicates the storage connector used
         public var storageConnectors: [WorkSpacesClientTypes.StorageConnector]?
         /// Indicates the type of preferred protocol for the streaming experience.
@@ -5297,12 +5298,11 @@ extension WorkSpacesClientTypes {
             self.userSettings = userSettings
         }
     }
-
 }
 
 extension WorkSpacesClientTypes {
 
-    public enum Tenancy: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Tenancy: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case dedicated
         case shared
         case sdkUnknown(Swift.String)
@@ -5331,7 +5331,7 @@ extension WorkSpacesClientTypes {
 
 extension WorkSpacesClientTypes {
 
-    public enum UserIdentityType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum UserIdentityType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case awsDirectoryService
         case awsIamIdentityCenter
         case customerManaged
@@ -5362,8 +5362,9 @@ extension WorkSpacesClientTypes {
 }
 
 extension WorkSpacesClientTypes {
+
     /// The device types and operating systems that can be used to access a WorkSpace. For more information, see [Amazon WorkSpaces Client Network Requirements](https://docs.aws.amazon.com/workspaces/latest/adminguide/workspaces-network-requirements.html).
-    public struct WorkspaceAccessProperties {
+    public struct WorkspaceAccessProperties: Swift.Sendable {
         /// Indicates whether users can use Android and Android-compatible Chrome OS devices to access their WorkSpaces.
         public var deviceTypeAndroid: WorkSpacesClientTypes.AccessPropertyValue?
         /// Indicates whether users can use Chromebooks to access their WorkSpaces.
@@ -5402,12 +5403,11 @@ extension WorkSpacesClientTypes {
             self.deviceTypeZeroClient = deviceTypeZeroClient
         }
     }
-
 }
 
 extension WorkSpacesClientTypes {
 
-    public enum WorkspaceType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum WorkspaceType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case personal
         case pools
         case sdkUnknown(Swift.String)
@@ -5435,8 +5435,9 @@ extension WorkSpacesClientTypes {
 }
 
 extension WorkSpacesClientTypes {
+
     /// Describes a directory that is used with Amazon WorkSpaces.
-    public struct WorkspaceDirectory {
+    public struct WorkspaceDirectory: Swift.Sendable {
         /// Information about the Active Directory config.
         public var activeDirectoryConfig: WorkSpacesClientTypes.ActiveDirectoryConfig?
         /// The directory alias.
@@ -5551,10 +5552,9 @@ extension WorkSpacesClientTypes {
             self.workspaceType = workspaceType
         }
     }
-
 }
 
-public struct DescribeWorkspaceDirectoriesOutput {
+public struct DescribeWorkspaceDirectoriesOutput: Swift.Sendable {
     /// Information about the directories.
     public var directories: [WorkSpacesClientTypes.WorkspaceDirectory]?
     /// The token to use to retrieve the next page of results. This value is null when there are no more results to return.
@@ -5570,7 +5570,7 @@ public struct DescribeWorkspaceDirectoriesOutput {
     }
 }
 
-public struct DescribeWorkspaceImagePermissionsInput {
+public struct DescribeWorkspaceImagePermissionsInput: Swift.Sendable {
     /// The identifier of the image.
     /// This member is required.
     public var imageId: Swift.String?
@@ -5592,8 +5592,9 @@ public struct DescribeWorkspaceImagePermissionsInput {
 }
 
 extension WorkSpacesClientTypes {
+
     /// Describes the Amazon Web Services accounts that have been granted permission to use a shared image. For more information about sharing images, see [ Share or Unshare a Custom WorkSpaces Image](https://docs.aws.amazon.com/workspaces/latest/adminguide/share-custom-image.html).
-    public struct ImagePermission {
+    public struct ImagePermission: Swift.Sendable {
         /// The identifier of the Amazon Web Services account that an image has been shared with.
         public var sharedAccountId: Swift.String?
 
@@ -5604,10 +5605,9 @@ extension WorkSpacesClientTypes {
             self.sharedAccountId = sharedAccountId
         }
     }
-
 }
 
-public struct DescribeWorkspaceImagePermissionsOutput {
+public struct DescribeWorkspaceImagePermissionsOutput: Swift.Sendable {
     /// The identifier of the image.
     public var imageId: Swift.String?
     /// The identifiers of the Amazon Web Services accounts that the image has been shared with.
@@ -5629,7 +5629,7 @@ public struct DescribeWorkspaceImagePermissionsOutput {
 
 extension WorkSpacesClientTypes {
 
-    public enum ImageType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ImageType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case owned
         case shared
         case sdkUnknown(Swift.String)
@@ -5656,7 +5656,7 @@ extension WorkSpacesClientTypes {
     }
 }
 
-public struct DescribeWorkspaceImagesInput {
+public struct DescribeWorkspaceImagesInput: Swift.Sendable {
     /// The identifier of the image.
     public var imageIds: [Swift.String]?
     /// The type (owned or shared) of the image.
@@ -5682,7 +5682,7 @@ public struct DescribeWorkspaceImagesInput {
 
 extension WorkSpacesClientTypes {
 
-    public enum WorkspaceImageErrorDetailCode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum WorkspaceImageErrorDetailCode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case additionalDrivesAttached
         case antiVirusInstalled
         case appxPackagesInstalled
@@ -5791,8 +5791,9 @@ extension WorkSpacesClientTypes {
 }
 
 extension WorkSpacesClientTypes {
+
     /// Describes in-depth details about the error. These details include the possible causes of the error and troubleshooting information.
-    public struct ErrorDetails {
+    public struct ErrorDetails: Swift.Sendable {
         /// Indicates the error code returned.
         public var errorCode: WorkSpacesClientTypes.WorkspaceImageErrorDetailCode?
         /// The text of the error message related the error code.
@@ -5807,12 +5808,12 @@ extension WorkSpacesClientTypes {
             self.errorMessage = errorMessage
         }
     }
-
 }
 
 extension WorkSpacesClientTypes {
+
     /// Describes whether a WorkSpace image needs to be updated with the latest drivers and other components required by Amazon WorkSpaces. Only Windows 10 WorkSpace images can be programmatically updated at this time.
-    public struct UpdateResult {
+    public struct UpdateResult: Swift.Sendable {
         /// A description of whether updates for the WorkSpace image are pending or available.
         public var description: Swift.String?
         /// Indicates whether updated drivers or other components are available for the specified WorkSpace image.
@@ -5827,12 +5828,12 @@ extension WorkSpacesClientTypes {
             self.updateAvailable = updateAvailable
         }
     }
-
 }
 
 extension WorkSpacesClientTypes {
+
     /// Describes a WorkSpace image.
-    public struct WorkspaceImage {
+    public struct WorkspaceImage: Swift.Sendable {
         /// The date when the image was created. If the image has been shared, the Amazon Web Services account that the image has been shared with sees the original creation date of the image.
         public var created: Foundation.Date?
         /// The description of the image.
@@ -5887,10 +5888,9 @@ extension WorkSpacesClientTypes {
             self.updates = updates
         }
     }
-
 }
 
-public struct DescribeWorkspaceImagesOutput {
+public struct DescribeWorkspaceImagesOutput: Swift.Sendable {
     /// Information about the images.
     public var images: [WorkSpacesClientTypes.WorkspaceImage]?
     /// The token to use to retrieve the next page of results. This value is null when there are no more results to return.
@@ -5906,7 +5906,7 @@ public struct DescribeWorkspaceImagesOutput {
     }
 }
 
-public struct DescribeWorkspacesInput {
+public struct DescribeWorkspacesInput: Swift.Sendable {
     /// The identifier of the bundle. All WorkSpaces that are created from this bundle are retrieved. You cannot combine this parameter with any other filter.
     public var bundleId: Swift.String?
     /// The identifier of the directory. In addition, you can optionally specify a specific directory user (see UserName). You cannot combine this parameter with any other filter.
@@ -5942,7 +5942,7 @@ public struct DescribeWorkspacesInput {
     }
 }
 
-public struct DescribeWorkspacesOutput {
+public struct DescribeWorkspacesOutput: Swift.Sendable {
     /// The token to use to retrieve the next page of results. This value is null when there are no more results to return.
     public var nextToken: Swift.String?
     /// Information about the WorkSpaces. Because [CreateWorkspaces] is an asynchronous operation, some of the returned information could be incomplete.
@@ -5958,7 +5958,7 @@ public struct DescribeWorkspacesOutput {
     }
 }
 
-public struct DescribeWorkspacesConnectionStatusInput {
+public struct DescribeWorkspacesConnectionStatusInput: Swift.Sendable {
     /// If you received a NextToken from a previous call that was paginated, provide this token to receive the next set of results.
     public var nextToken: Swift.String?
     /// The identifiers of the WorkSpaces. You can specify up to 25 WorkSpaces.
@@ -5975,8 +5975,9 @@ public struct DescribeWorkspacesConnectionStatusInput {
 }
 
 extension WorkSpacesClientTypes {
+
     /// Describes the connection status of a WorkSpace.
-    public struct WorkspaceConnectionStatus {
+    public struct WorkspaceConnectionStatus: Swift.Sendable {
         /// The connection state of the WorkSpace. The connection state is unknown if the WorkSpace is stopped.
         public var connectionState: WorkSpacesClientTypes.ConnectionState?
         /// The timestamp of the connection status check.
@@ -5999,10 +6000,9 @@ extension WorkSpacesClientTypes {
             self.workspaceId = workspaceId
         }
     }
-
 }
 
-public struct DescribeWorkspacesConnectionStatusOutput {
+public struct DescribeWorkspacesConnectionStatusOutput: Swift.Sendable {
     /// The token to use to retrieve the next page of results. This value is null when there are no more results to return.
     public var nextToken: Swift.String?
     /// Information about the connection status of the WorkSpace.
@@ -6018,7 +6018,7 @@ public struct DescribeWorkspacesConnectionStatusOutput {
     }
 }
 
-public struct DescribeWorkspaceSnapshotsInput {
+public struct DescribeWorkspaceSnapshotsInput: Swift.Sendable {
     /// The identifier of the WorkSpace.
     /// This member is required.
     public var workspaceId: Swift.String?
@@ -6032,8 +6032,9 @@ public struct DescribeWorkspaceSnapshotsInput {
 }
 
 extension WorkSpacesClientTypes {
+
     /// Describes a snapshot.
-    public struct Snapshot {
+    public struct Snapshot: Swift.Sendable {
         /// The time when the snapshot was created.
         public var snapshotTime: Foundation.Date?
 
@@ -6044,10 +6045,9 @@ extension WorkSpacesClientTypes {
             self.snapshotTime = snapshotTime
         }
     }
-
 }
 
-public struct DescribeWorkspaceSnapshotsOutput {
+public struct DescribeWorkspaceSnapshotsOutput: Swift.Sendable {
     /// Information about the snapshots that can be used to rebuild a WorkSpace. These snapshots include the user volume.
     public var rebuildSnapshots: [WorkSpacesClientTypes.Snapshot]?
     /// Information about the snapshots that can be used to restore a WorkSpace. These snapshots include both the root volume and the user volume.
@@ -6065,7 +6065,7 @@ public struct DescribeWorkspaceSnapshotsOutput {
 
 extension WorkSpacesClientTypes {
 
-    public enum DescribeWorkspacesPoolsFilterName: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DescribeWorkspacesPoolsFilterName: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case poolname
         case sdkUnknown(Swift.String)
 
@@ -6091,7 +6091,7 @@ extension WorkSpacesClientTypes {
 
 extension WorkSpacesClientTypes {
 
-    public enum DescribeWorkspacesPoolsFilterOperator: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DescribeWorkspacesPoolsFilterOperator: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case contains
         case equals
         case notcontains
@@ -6125,8 +6125,9 @@ extension WorkSpacesClientTypes {
 }
 
 extension WorkSpacesClientTypes {
+
     /// Describes the filter conditions for WorkSpaces Pools to return.
-    public struct DescribeWorkspacesPoolsFilter {
+    public struct DescribeWorkspacesPoolsFilter: Swift.Sendable {
         /// The name of the pool to filter.
         /// This member is required.
         public var name: WorkSpacesClientTypes.DescribeWorkspacesPoolsFilterName?
@@ -6148,10 +6149,9 @@ extension WorkSpacesClientTypes {
             self.values = values
         }
     }
-
 }
 
-public struct DescribeWorkspacesPoolsInput {
+public struct DescribeWorkspacesPoolsInput: Swift.Sendable {
     /// The filter conditions for the WorkSpaces Pool to return.
     public var filters: [WorkSpacesClientTypes.DescribeWorkspacesPoolsFilter]?
     /// The maximum number of items to return.
@@ -6175,7 +6175,7 @@ public struct DescribeWorkspacesPoolsInput {
     }
 }
 
-public struct DescribeWorkspacesPoolsOutput {
+public struct DescribeWorkspacesPoolsOutput: Swift.Sendable {
     /// If you received a NextToken from a previous call that was paginated, provide this token to receive the next set of results.
     public var nextToken: Swift.String?
     /// Information about the WorkSpaces Pools.
@@ -6191,7 +6191,7 @@ public struct DescribeWorkspacesPoolsOutput {
     }
 }
 
-public struct DescribeWorkspacesPoolSessionsInput {
+public struct DescribeWorkspacesPoolSessionsInput: Swift.Sendable {
     /// The maximum number of items to return.
     public var limit: Swift.Int?
     /// If you received a NextToken from a previous call that was paginated, provide this token to receive the next set of results.
@@ -6218,7 +6218,7 @@ public struct DescribeWorkspacesPoolSessionsInput {
 
 extension WorkSpacesClientTypes {
 
-    public enum SessionConnectionState: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SessionConnectionState: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case connected
         case notConnected
         case sdkUnknown(Swift.String)
@@ -6246,8 +6246,9 @@ extension WorkSpacesClientTypes {
 }
 
 extension WorkSpacesClientTypes {
+
     /// Describes the network details of a WorkSpaces Pool.
-    public struct NetworkAccessConfiguration {
+    public struct NetworkAccessConfiguration: Swift.Sendable {
         /// The resource identifier of the elastic network interface that is attached to instances in your VPC. All network interfaces have the eni-xxxxxxxx resource identifier.
         public var eniId: Swift.String?
         /// The private IP address of the elastic network interface that is attached to instances in your VPC.
@@ -6262,12 +6263,12 @@ extension WorkSpacesClientTypes {
             self.eniPrivateIpAddress = eniPrivateIpAddress
         }
     }
-
 }
 
 extension WorkSpacesClientTypes {
+
     /// Describes a pool session.
-    public struct WorkspacesPoolSession {
+    public struct WorkspacesPoolSession: Swift.Sendable {
         /// The authentication method. The user is authenticated using a WorkSpaces Pools URL (API) or SAML 2.0 federation (SAML).
         public var authenticationType: WorkSpacesClientTypes.AuthenticationType?
         /// Specifies whether a user is connected to the pool session.
@@ -6313,10 +6314,9 @@ extension WorkSpacesClientTypes {
             self.userId = userId
         }
     }
-
 }
 
-public struct DescribeWorkspacesPoolSessionsOutput {
+public struct DescribeWorkspacesPoolSessionsOutput: Swift.Sendable {
     /// If you received a NextToken from a previous call that was paginated, provide this token to receive the next set of results.
     public var nextToken: Swift.String?
     /// Describes the pool sessions.
@@ -6332,7 +6332,7 @@ public struct DescribeWorkspacesPoolSessionsOutput {
     }
 }
 
-public struct DisassociateConnectionAliasInput {
+public struct DisassociateConnectionAliasInput: Swift.Sendable {
     /// The identifier of the connection alias to disassociate.
     /// This member is required.
     public var aliasId: Swift.String?
@@ -6345,12 +6345,12 @@ public struct DisassociateConnectionAliasInput {
     }
 }
 
-public struct DisassociateConnectionAliasOutput {
+public struct DisassociateConnectionAliasOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DisassociateIpGroupsInput {
+public struct DisassociateIpGroupsInput: Swift.Sendable {
     /// The identifier of the directory.
     /// This member is required.
     public var directoryId: Swift.String?
@@ -6368,12 +6368,12 @@ public struct DisassociateIpGroupsInput {
     }
 }
 
-public struct DisassociateIpGroupsOutput {
+public struct DisassociateIpGroupsOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DisassociateWorkspaceApplicationInput {
+public struct DisassociateWorkspaceApplicationInput: Swift.Sendable {
     /// The identifier of the application.
     /// This member is required.
     public var applicationId: Swift.String?
@@ -6391,7 +6391,7 @@ public struct DisassociateWorkspaceApplicationInput {
     }
 }
 
-public struct DisassociateWorkspaceApplicationOutput {
+public struct DisassociateWorkspaceApplicationOutput: Swift.Sendable {
     /// Information about the targeted association.
     public var association: WorkSpacesClientTypes.WorkspaceResourceAssociation?
 
@@ -6404,8 +6404,9 @@ public struct DisassociateWorkspaceApplicationOutput {
 }
 
 extension WorkSpacesClientTypes {
+
     /// Describes a WorkSpace that could not be rebooted. ([RebootWorkspaces]), rebuilt ([RebuildWorkspaces]), restored ([RestoreWorkspace]), terminated ([TerminateWorkspaces]), started ([StartWorkspaces]), or stopped ([StopWorkspaces]).
-    public struct FailedWorkspaceChangeRequest {
+    public struct FailedWorkspaceChangeRequest: Swift.Sendable {
         /// The error code that is returned if the WorkSpace cannot be rebooted.
         public var errorCode: Swift.String?
         /// The text of the error message that is returned if the WorkSpace cannot be rebooted.
@@ -6424,10 +6425,9 @@ extension WorkSpacesClientTypes {
             self.workspaceId = workspaceId
         }
     }
-
 }
 
-public struct GetAccountLinkInput {
+public struct GetAccountLinkInput: Swift.Sendable {
     /// The identifier of the account to link.
     public var linkId: Swift.String?
     /// The identifier of the account link
@@ -6443,7 +6443,7 @@ public struct GetAccountLinkInput {
     }
 }
 
-public struct GetAccountLinkOutput {
+public struct GetAccountLinkOutput: Swift.Sendable {
     /// The account link of the account link to retrieve.
     public var accountLink: WorkSpacesClientTypes.AccountLink?
 
@@ -6456,8 +6456,9 @@ public struct GetAccountLinkOutput {
 }
 
 extension WorkSpacesClientTypes {
+
     /// The client branding attributes to import for iOS device types. These attributes are displayed on the iOS client login screen. Client branding attributes are public facing. Ensure you do not include sensitive information.
-    public struct IosImportClientBrandingAttributes {
+    public struct IosImportClientBrandingAttributes: Swift.Sendable {
         /// The forgotten password link. This is the web address that users can go to if they forget the password for their WorkSpace.
         public var forgotPasswordLink: Swift.String?
         /// The login message. Specified as a key value pair, in which the key is a locale and the value is the localized message for that locale. The only key supported is en_US. The HTML tags supported include the following: a, b, blockquote, br, cite, code, dd, dl, dt, div, em, i, li, ol, p, pre, q, small, span, strike, strong, sub, sup, u, ul.
@@ -6500,10 +6501,9 @@ extension WorkSpacesClientTypes {
             self.supportLink = supportLink
         }
     }
-
 }
 
-public struct ImportClientBrandingInput {
+public struct ImportClientBrandingInput: Swift.Sendable {
     /// The branding information to import for Android devices.
     public var deviceTypeAndroid: WorkSpacesClientTypes.DefaultImportClientBrandingAttributes?
     /// The branding information to import for iOS devices.
@@ -6540,7 +6540,7 @@ public struct ImportClientBrandingInput {
     }
 }
 
-public struct ImportClientBrandingOutput {
+public struct ImportClientBrandingOutput: Swift.Sendable {
     /// The branding information configured for Android devices.
     public var deviceTypeAndroid: WorkSpacesClientTypes.DefaultClientBrandingAttributes?
     /// The branding information configured for iOS devices.
@@ -6574,7 +6574,7 @@ public struct ImportClientBrandingOutput {
 
 extension WorkSpacesClientTypes {
 
-    public enum WorkspaceImageIngestionProcess: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum WorkspaceImageIngestionProcess: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case byolGraphics
         case byolGraphicspro
         case byolGraphicsG4dn
@@ -6619,12 +6619,12 @@ extension WorkSpacesClientTypes {
     }
 }
 
-public struct ImportWorkspaceImageInput {
+public struct ImportWorkspaceImageInput: Swift.Sendable {
     /// If specified, the version of Microsoft Office to subscribe to. Valid only for Windows 10 and 11 BYOL images. For more information about subscribing to Office for BYOL images, see [ Bring Your Own Windows Desktop Licenses](https://docs.aws.amazon.com/workspaces/latest/adminguide/byol-windows-images.html).
     ///
     /// * Although this parameter is an array, only one item is allowed at this time.
     ///
-    /// * During the image import process, non-GPU WSP WorkSpaces with Windows 11 support only Microsoft_Office_2019. GPU WSP WorkSpaces with Windows 11 do not support Office installation.
+    /// * During the image import process, non-GPU DCV (formerly WSP) WorkSpaces with Windows 11 support only Microsoft_Office_2019. GPU DCV (formerly WSP) WorkSpaces with Windows 11 do not support Office installation.
     public var applications: [WorkSpacesClientTypes.Application]?
     /// The identifier of the EC2 image.
     /// This member is required.
@@ -6635,7 +6635,7 @@ public struct ImportWorkspaceImageInput {
     /// The name of the WorkSpace image.
     /// This member is required.
     public var imageName: Swift.String?
-    /// The ingestion process to be used when importing the image, depending on which protocol you want to use for your BYOL Workspace image, either PCoIP, WorkSpaces Streaming Protocol (WSP), or bring your own protocol (BYOP). To use WSP, specify a value that ends in _WSP. To use PCoIP, specify a value that does not end in _WSP. To use BYOP, specify a value that ends in _BYOP. For non-GPU-enabled bundles (bundles other than Graphics or GraphicsPro), specify BYOL_REGULAR, BYOL_REGULAR_WSP, or BYOL_REGULAR_BYOP, depending on the protocol. The BYOL_REGULAR_BYOP and BYOL_GRAPHICS_G4DN_BYOP values are only supported by Amazon WorkSpaces Core. Contact your account team to be allow-listed to use these values. For more information, see [Amazon WorkSpaces Core](http://aws.amazon.com/workspaces/core/).
+    /// The ingestion process to be used when importing the image, depending on which protocol you want to use for your BYOL Workspace image, either PCoIP, DCV, or bring your own protocol (BYOP). To use WSP, specify a value that ends in _DCV. To use PCoIP, specify a value that does not end in _DCV. To use BYOP, specify a value that ends in _BYOP. For non-GPU-enabled bundles (bundles other than Graphics or GraphicsPro), specify BYOL_REGULAR, BYOL_REGULAR_DCV, or BYOL_REGULAR_BYOP, depending on the protocol. The BYOL_REGULAR_BYOP and BYOL_GRAPHICS_G4DN_BYOP values are only supported by Amazon WorkSpaces Core. Contact your account team to be allow-listed to use these values. For more information, see [Amazon WorkSpaces Core](http://aws.amazon.com/workspaces/core/).
     /// This member is required.
     public var ingestionProcess: WorkSpacesClientTypes.WorkspaceImageIngestionProcess?
     /// The tags. Each WorkSpaces resource can have a maximum of 50 tags.
@@ -6659,7 +6659,7 @@ public struct ImportWorkspaceImageInput {
     }
 }
 
-public struct ImportWorkspaceImageOutput {
+public struct ImportWorkspaceImageOutput: Swift.Sendable {
     /// The identifier of the WorkSpace image.
     public var imageId: Swift.String?
 
@@ -6671,7 +6671,7 @@ public struct ImportWorkspaceImageOutput {
     }
 }
 
-public struct ListAccountLinksInput {
+public struct ListAccountLinksInput: Swift.Sendable {
     /// Filters the account based on their link status.
     public var linkStatusFilter: [WorkSpacesClientTypes.AccountLinkStatusEnum]?
     /// The maximum number of accounts to return.
@@ -6691,7 +6691,7 @@ public struct ListAccountLinksInput {
     }
 }
 
-public struct ListAccountLinksOutput {
+public struct ListAccountLinksOutput: Swift.Sendable {
     /// Information about the account links.
     public var accountLinks: [WorkSpacesClientTypes.AccountLink]?
     /// The token to use to retrieve the next page of results. This value is null when there are no more results to return.
@@ -6707,7 +6707,7 @@ public struct ListAccountLinksOutput {
     }
 }
 
-public struct ListAvailableManagementCidrRangesInput {
+public struct ListAvailableManagementCidrRangesInput: Swift.Sendable {
     /// The IP address range to search. Specify an IP address range that is compatible with your network and in CIDR notation (that is, specify the range as an IPv4 CIDR block).
     /// This member is required.
     public var managementCidrRangeConstraint: Swift.String?
@@ -6728,7 +6728,7 @@ public struct ListAvailableManagementCidrRangesInput {
     }
 }
 
-public struct ListAvailableManagementCidrRangesOutput {
+public struct ListAvailableManagementCidrRangesOutput: Swift.Sendable {
     /// The list of available IP address ranges, specified as IPv4 CIDR blocks.
     public var managementCidrRanges: [Swift.String]?
     /// The token to use to retrieve the next page of results. This value is null when there are no more results to return.
@@ -6768,7 +6768,7 @@ public struct OperationInProgressException: ClientRuntime.ModeledError, AWSClien
     }
 }
 
-public struct MigrateWorkspaceInput {
+public struct MigrateWorkspaceInput: Swift.Sendable {
     /// The identifier of the target bundle type to migrate the WorkSpace to.
     /// This member is required.
     public var bundleId: Swift.String?
@@ -6786,7 +6786,7 @@ public struct MigrateWorkspaceInput {
     }
 }
 
-public struct MigrateWorkspaceOutput {
+public struct MigrateWorkspaceOutput: Swift.Sendable {
     /// The original identifier of the WorkSpace that is being migrated.
     public var sourceWorkspaceId: Swift.String?
     /// The new identifier of the WorkSpace that is being migrated. If the migration does not succeed, the target WorkSpace ID will not be used, and the WorkSpace will still have the original WorkSpace ID.
@@ -6802,7 +6802,7 @@ public struct MigrateWorkspaceOutput {
     }
 }
 
-public struct ModifyAccountInput {
+public struct ModifyAccountInput: Swift.Sendable {
     /// The IP address range, specified as an IPv4 CIDR block, for the management network interface. Specify an IP address range that is compatible with your network and in CIDR notation (that is, specify the range as an IPv4 CIDR block). The CIDR block size must be /16 (for example, 203.0.113.25/16). It must also be specified as available by the ListAvailableManagementCidrRanges operation.
     public var dedicatedTenancyManagementCidrRange: Swift.String?
     /// The status of BYOL.
@@ -6818,12 +6818,12 @@ public struct ModifyAccountInput {
     }
 }
 
-public struct ModifyAccountOutput {
+public struct ModifyAccountOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct ModifyCertificateBasedAuthPropertiesInput {
+public struct ModifyCertificateBasedAuthPropertiesInput: Swift.Sendable {
     /// The properties of the certificate-based authentication.
     public var certificateBasedAuthProperties: WorkSpacesClientTypes.CertificateBasedAuthProperties?
     /// The properties of the certificate-based authentication you want to delete.
@@ -6844,12 +6844,12 @@ public struct ModifyCertificateBasedAuthPropertiesInput {
     }
 }
 
-public struct ModifyCertificateBasedAuthPropertiesOutput {
+public struct ModifyCertificateBasedAuthPropertiesOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct ModifyClientPropertiesInput {
+public struct ModifyClientPropertiesInput: Swift.Sendable {
     /// Information about the Amazon WorkSpaces client.
     /// This member is required.
     public var clientProperties: WorkSpacesClientTypes.ClientProperties?
@@ -6867,12 +6867,12 @@ public struct ModifyClientPropertiesInput {
     }
 }
 
-public struct ModifyClientPropertiesOutput {
+public struct ModifyClientPropertiesOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct ModifySamlPropertiesInput {
+public struct ModifySamlPropertiesInput: Swift.Sendable {
     /// The SAML properties to delete as part of your request. Specify one of the following options:
     ///
     /// * SAML_PROPERTIES_USER_ACCESS_URL to delete the user access URL.
@@ -6897,12 +6897,12 @@ public struct ModifySamlPropertiesInput {
     }
 }
 
-public struct ModifySamlPropertiesOutput {
+public struct ModifySamlPropertiesOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct ModifySelfservicePermissionsInput {
+public struct ModifySelfservicePermissionsInput: Swift.Sendable {
     /// The identifier of the directory.
     /// This member is required.
     public var resourceId: Swift.String?
@@ -6920,12 +6920,12 @@ public struct ModifySelfservicePermissionsInput {
     }
 }
 
-public struct ModifySelfservicePermissionsOutput {
+public struct ModifySelfservicePermissionsOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct ModifyStreamingPropertiesInput {
+public struct ModifyStreamingPropertiesInput: Swift.Sendable {
     /// The identifier of the resource.
     /// This member is required.
     public var resourceId: Swift.String?
@@ -6942,12 +6942,12 @@ public struct ModifyStreamingPropertiesInput {
     }
 }
 
-public struct ModifyStreamingPropertiesOutput {
+public struct ModifyStreamingPropertiesOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct ModifyWorkspaceAccessPropertiesInput {
+public struct ModifyWorkspaceAccessPropertiesInput: Swift.Sendable {
     /// The identifier of the directory.
     /// This member is required.
     public var resourceId: Swift.String?
@@ -6965,14 +6965,15 @@ public struct ModifyWorkspaceAccessPropertiesInput {
     }
 }
 
-public struct ModifyWorkspaceAccessPropertiesOutput {
+public struct ModifyWorkspaceAccessPropertiesOutput: Swift.Sendable {
 
     public init() { }
 }
 
 extension WorkSpacesClientTypes {
+
     /// Describes the default properties that are used for creating WorkSpaces. For more information, see [Update Directory Details for Your WorkSpaces](https://docs.aws.amazon.com/workspaces/latest/adminguide/update-directory-details.html).
-    public struct WorkspaceCreationProperties {
+    public struct WorkspaceCreationProperties: Swift.Sendable {
         /// The identifier of your custom security group.
         public var customSecurityGroupId: Swift.String?
         /// The default organizational unit (OU) for your WorkSpaces directories. This string must be the full Lightweight Directory Access Protocol (LDAP) distinguished name for the target domain and OU. It must be in the form "OU=value,DC=value,DC=value", where value is any string of characters, and the number of domain components (DCs) is two or more. For example, OU=WorkSpaces_machines,DC=machines,DC=example,DC=com.
@@ -7011,10 +7012,9 @@ extension WorkSpacesClientTypes {
             self.userEnabledAsLocalAdministrator = userEnabledAsLocalAdministrator
         }
     }
-
 }
 
-public struct ModifyWorkspaceCreationPropertiesInput {
+public struct ModifyWorkspaceCreationPropertiesInput: Swift.Sendable {
     /// The identifier of the directory.
     /// This member is required.
     public var resourceId: Swift.String?
@@ -7032,7 +7032,7 @@ public struct ModifyWorkspaceCreationPropertiesInput {
     }
 }
 
-public struct ModifyWorkspaceCreationPropertiesOutput {
+public struct ModifyWorkspaceCreationPropertiesOutput: Swift.Sendable {
 
     public init() { }
 }
@@ -7061,7 +7061,7 @@ public struct UnsupportedWorkspaceConfigurationException: ClientRuntime.ModeledE
     }
 }
 
-public struct ModifyWorkspacePropertiesInput {
+public struct ModifyWorkspacePropertiesInput: Swift.Sendable {
     /// Indicates the data replication status.
     public var dataReplication: WorkSpacesClientTypes.DataReplication?
     /// The identifier of the WorkSpace.
@@ -7082,14 +7082,14 @@ public struct ModifyWorkspacePropertiesInput {
     }
 }
 
-public struct ModifyWorkspacePropertiesOutput {
+public struct ModifyWorkspacePropertiesOutput: Swift.Sendable {
 
     public init() { }
 }
 
 extension WorkSpacesClientTypes {
 
-    public enum TargetWorkspaceState: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum TargetWorkspaceState: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case adminMaintenance
         case available
         case sdkUnknown(Swift.String)
@@ -7116,7 +7116,7 @@ extension WorkSpacesClientTypes {
     }
 }
 
-public struct ModifyWorkspaceStateInput {
+public struct ModifyWorkspaceStateInput: Swift.Sendable {
     /// The identifier of the WorkSpace.
     /// This member is required.
     public var workspaceId: Swift.String?
@@ -7134,14 +7134,15 @@ public struct ModifyWorkspaceStateInput {
     }
 }
 
-public struct ModifyWorkspaceStateOutput {
+public struct ModifyWorkspaceStateOutput: Swift.Sendable {
 
     public init() { }
 }
 
 extension WorkSpacesClientTypes {
+
     /// Describes the information used to reboot a WorkSpace.
-    public struct RebootRequest {
+    public struct RebootRequest: Swift.Sendable {
         /// The identifier of the WorkSpace.
         /// This member is required.
         public var workspaceId: Swift.String?
@@ -7153,10 +7154,9 @@ extension WorkSpacesClientTypes {
             self.workspaceId = workspaceId
         }
     }
-
 }
 
-public struct RebootWorkspacesInput {
+public struct RebootWorkspacesInput: Swift.Sendable {
     /// The WorkSpaces to reboot. You can specify up to 25 WorkSpaces.
     /// This member is required.
     public var rebootWorkspaceRequests: [WorkSpacesClientTypes.RebootRequest]?
@@ -7169,7 +7169,7 @@ public struct RebootWorkspacesInput {
     }
 }
 
-public struct RebootWorkspacesOutput {
+public struct RebootWorkspacesOutput: Swift.Sendable {
     /// Information about the WorkSpaces that could not be rebooted.
     public var failedRequests: [WorkSpacesClientTypes.FailedWorkspaceChangeRequest]?
 
@@ -7182,8 +7182,9 @@ public struct RebootWorkspacesOutput {
 }
 
 extension WorkSpacesClientTypes {
+
     /// Describes the information used to rebuild a WorkSpace.
-    public struct RebuildRequest {
+    public struct RebuildRequest: Swift.Sendable {
         /// The identifier of the WorkSpace.
         /// This member is required.
         public var workspaceId: Swift.String?
@@ -7195,10 +7196,9 @@ extension WorkSpacesClientTypes {
             self.workspaceId = workspaceId
         }
     }
-
 }
 
-public struct RebuildWorkspacesInput {
+public struct RebuildWorkspacesInput: Swift.Sendable {
     /// The WorkSpace to rebuild. You can specify a single WorkSpace.
     /// This member is required.
     public var rebuildWorkspaceRequests: [WorkSpacesClientTypes.RebuildRequest]?
@@ -7211,7 +7211,7 @@ public struct RebuildWorkspacesInput {
     }
 }
 
-public struct RebuildWorkspacesOutput {
+public struct RebuildWorkspacesOutput: Swift.Sendable {
     /// Information about the WorkSpace that could not be rebuilt.
     public var failedRequests: [WorkSpacesClientTypes.FailedWorkspaceChangeRequest]?
 
@@ -7271,7 +7271,7 @@ public struct WorkspacesDefaultRoleNotFoundException: ClientRuntime.ModeledError
     }
 }
 
-public struct RegisterWorkspaceDirectoryInput {
+public struct RegisterWorkspaceDirectoryInput: Swift.Sendable {
     /// The active directory config of the directory.
     public var activeDirectoryConfig: WorkSpacesClientTypes.ActiveDirectoryConfig?
     /// The identifier of the directory. You cannot register a directory if it does not have a status of Active. If the directory does not have a status of Active, you will receive an InvalidResourceStateException error. If you have already registered the maximum number of directories that you can register with Amazon WorkSpaces, you will receive a ResourceLimitExceededException error. Deregister directories that you are not using for WorkSpaces, and try again.
@@ -7331,7 +7331,7 @@ public struct RegisterWorkspaceDirectoryInput {
     }
 }
 
-public struct RegisterWorkspaceDirectoryOutput {
+public struct RegisterWorkspaceDirectoryOutput: Swift.Sendable {
     /// The identifier of the directory.
     public var directoryId: Swift.String?
     /// The registration status of the WorkSpace directory.
@@ -7347,7 +7347,7 @@ public struct RegisterWorkspaceDirectoryOutput {
     }
 }
 
-public struct RejectAccountLinkInvitationInput {
+public struct RejectAccountLinkInvitationInput: Swift.Sendable {
     /// The client token of the account link invitation to reject.
     public var clientToken: Swift.String?
     /// The identifier of the account link
@@ -7364,7 +7364,7 @@ public struct RejectAccountLinkInvitationInput {
     }
 }
 
-public struct RejectAccountLinkInvitationOutput {
+public struct RejectAccountLinkInvitationOutput: Swift.Sendable {
     /// Information about the account link.
     public var accountLink: WorkSpacesClientTypes.AccountLink?
 
@@ -7376,7 +7376,7 @@ public struct RejectAccountLinkInvitationOutput {
     }
 }
 
-public struct RestoreWorkspaceInput {
+public struct RestoreWorkspaceInput: Swift.Sendable {
     /// The identifier of the WorkSpace.
     /// This member is required.
     public var workspaceId: Swift.String?
@@ -7389,12 +7389,12 @@ public struct RestoreWorkspaceInput {
     }
 }
 
-public struct RestoreWorkspaceOutput {
+public struct RestoreWorkspaceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct RevokeIpRulesInput {
+public struct RevokeIpRulesInput: Swift.Sendable {
     /// The identifier of the group.
     /// This member is required.
     public var groupId: Swift.String?
@@ -7412,14 +7412,15 @@ public struct RevokeIpRulesInput {
     }
 }
 
-public struct RevokeIpRulesOutput {
+public struct RevokeIpRulesOutput: Swift.Sendable {
 
     public init() { }
 }
 
 extension WorkSpacesClientTypes {
+
     /// Information used to start a WorkSpace.
-    public struct StartRequest {
+    public struct StartRequest: Swift.Sendable {
         /// The identifier of the WorkSpace.
         public var workspaceId: Swift.String?
 
@@ -7430,10 +7431,9 @@ extension WorkSpacesClientTypes {
             self.workspaceId = workspaceId
         }
     }
-
 }
 
-public struct StartWorkspacesInput {
+public struct StartWorkspacesInput: Swift.Sendable {
     /// The WorkSpaces to start. You can specify up to 25 WorkSpaces.
     /// This member is required.
     public var startWorkspaceRequests: [WorkSpacesClientTypes.StartRequest]?
@@ -7446,7 +7446,7 @@ public struct StartWorkspacesInput {
     }
 }
 
-public struct StartWorkspacesOutput {
+public struct StartWorkspacesOutput: Swift.Sendable {
     /// Information about the WorkSpaces that could not be started.
     public var failedRequests: [WorkSpacesClientTypes.FailedWorkspaceChangeRequest]?
 
@@ -7458,7 +7458,7 @@ public struct StartWorkspacesOutput {
     }
 }
 
-public struct StartWorkspacesPoolInput {
+public struct StartWorkspacesPoolInput: Swift.Sendable {
     /// The identifier of the pool.
     /// This member is required.
     public var poolId: Swift.String?
@@ -7471,14 +7471,15 @@ public struct StartWorkspacesPoolInput {
     }
 }
 
-public struct StartWorkspacesPoolOutput {
+public struct StartWorkspacesPoolOutput: Swift.Sendable {
 
     public init() { }
 }
 
 extension WorkSpacesClientTypes {
+
     /// Describes the information used to stop a WorkSpace.
-    public struct StopRequest {
+    public struct StopRequest: Swift.Sendable {
         /// The identifier of the WorkSpace.
         public var workspaceId: Swift.String?
 
@@ -7489,10 +7490,9 @@ extension WorkSpacesClientTypes {
             self.workspaceId = workspaceId
         }
     }
-
 }
 
-public struct StopWorkspacesInput {
+public struct StopWorkspacesInput: Swift.Sendable {
     /// The WorkSpaces to stop. You can specify up to 25 WorkSpaces.
     /// This member is required.
     public var stopWorkspaceRequests: [WorkSpacesClientTypes.StopRequest]?
@@ -7505,7 +7505,7 @@ public struct StopWorkspacesInput {
     }
 }
 
-public struct StopWorkspacesOutput {
+public struct StopWorkspacesOutput: Swift.Sendable {
     /// Information about the WorkSpaces that could not be stopped.
     public var failedRequests: [WorkSpacesClientTypes.FailedWorkspaceChangeRequest]?
 
@@ -7517,7 +7517,7 @@ public struct StopWorkspacesOutput {
     }
 }
 
-public struct StopWorkspacesPoolInput {
+public struct StopWorkspacesPoolInput: Swift.Sendable {
     /// The identifier of the pool.
     /// This member is required.
     public var poolId: Swift.String?
@@ -7530,14 +7530,15 @@ public struct StopWorkspacesPoolInput {
     }
 }
 
-public struct StopWorkspacesPoolOutput {
+public struct StopWorkspacesPoolOutput: Swift.Sendable {
 
     public init() { }
 }
 
 extension WorkSpacesClientTypes {
+
     /// Describes the information used to terminate a WorkSpace.
-    public struct TerminateRequest {
+    public struct TerminateRequest: Swift.Sendable {
         /// The identifier of the WorkSpace.
         /// This member is required.
         public var workspaceId: Swift.String?
@@ -7549,10 +7550,9 @@ extension WorkSpacesClientTypes {
             self.workspaceId = workspaceId
         }
     }
-
 }
 
-public struct TerminateWorkspacesInput {
+public struct TerminateWorkspacesInput: Swift.Sendable {
     /// The WorkSpaces to terminate. You can specify up to 25 WorkSpaces.
     /// This member is required.
     public var terminateWorkspaceRequests: [WorkSpacesClientTypes.TerminateRequest]?
@@ -7565,7 +7565,7 @@ public struct TerminateWorkspacesInput {
     }
 }
 
-public struct TerminateWorkspacesOutput {
+public struct TerminateWorkspacesOutput: Swift.Sendable {
     /// Information about the WorkSpaces that could not be terminated.
     public var failedRequests: [WorkSpacesClientTypes.FailedWorkspaceChangeRequest]?
 
@@ -7577,7 +7577,7 @@ public struct TerminateWorkspacesOutput {
     }
 }
 
-public struct TerminateWorkspacesPoolInput {
+public struct TerminateWorkspacesPoolInput: Swift.Sendable {
     /// The identifier of the pool.
     /// This member is required.
     public var poolId: Swift.String?
@@ -7590,12 +7590,12 @@ public struct TerminateWorkspacesPoolInput {
     }
 }
 
-public struct TerminateWorkspacesPoolOutput {
+public struct TerminateWorkspacesPoolOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct TerminateWorkspacesPoolSessionInput {
+public struct TerminateWorkspacesPoolSessionInput: Swift.Sendable {
     /// The identifier of the pool session.
     /// This member is required.
     public var sessionId: Swift.String?
@@ -7608,12 +7608,12 @@ public struct TerminateWorkspacesPoolSessionInput {
     }
 }
 
-public struct TerminateWorkspacesPoolSessionOutput {
+public struct TerminateWorkspacesPoolSessionOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdateConnectClientAddInInput {
+public struct UpdateConnectClientAddInInput: Swift.Sendable {
     /// The identifier of the client add-in to update.
     /// This member is required.
     public var addInId: Swift.String?
@@ -7639,12 +7639,12 @@ public struct UpdateConnectClientAddInInput {
     }
 }
 
-public struct UpdateConnectClientAddInOutput {
+public struct UpdateConnectClientAddInOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdateConnectionAliasPermissionInput {
+public struct UpdateConnectionAliasPermissionInput: Swift.Sendable {
     /// The identifier of the connection alias that you want to update permissions for.
     /// This member is required.
     public var aliasId: Swift.String?
@@ -7662,12 +7662,12 @@ public struct UpdateConnectionAliasPermissionInput {
     }
 }
 
-public struct UpdateConnectionAliasPermissionOutput {
+public struct UpdateConnectionAliasPermissionOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdateRulesOfIpGroupInput {
+public struct UpdateRulesOfIpGroupInput: Swift.Sendable {
     /// The identifier of the group.
     /// This member is required.
     public var groupId: Swift.String?
@@ -7685,12 +7685,12 @@ public struct UpdateRulesOfIpGroupInput {
     }
 }
 
-public struct UpdateRulesOfIpGroupOutput {
+public struct UpdateRulesOfIpGroupOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdateWorkspaceBundleInput {
+public struct UpdateWorkspaceBundleInput: Swift.Sendable {
     /// The identifier of the bundle.
     public var bundleId: Swift.String?
     /// The identifier of the image.
@@ -7706,12 +7706,12 @@ public struct UpdateWorkspaceBundleInput {
     }
 }
 
-public struct UpdateWorkspaceBundleOutput {
+public struct UpdateWorkspaceBundleOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdateWorkspaceImagePermissionInput {
+public struct UpdateWorkspaceImagePermissionInput: Swift.Sendable {
     /// The permission to copy the image. This permission can be revoked only after an image has been shared.
     /// This member is required.
     public var allowCopyImage: Swift.Bool?
@@ -7734,12 +7734,12 @@ public struct UpdateWorkspaceImagePermissionInput {
     }
 }
 
-public struct UpdateWorkspaceImagePermissionOutput {
+public struct UpdateWorkspaceImagePermissionOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdateWorkspacesPoolInput {
+public struct UpdateWorkspacesPoolInput: Swift.Sendable {
     /// The persistent application settings for users in the pool.
     public var applicationSettings: WorkSpacesClientTypes.ApplicationSettingsRequest?
     /// The identifier of the bundle.
@@ -7776,7 +7776,7 @@ public struct UpdateWorkspacesPoolInput {
     }
 }
 
-public struct UpdateWorkspacesPoolOutput {
+public struct UpdateWorkspacesPoolOutput: Swift.Sendable {
     /// Describes the specified pool.
     public var workspacesPool: WorkSpacesClientTypes.WorkspacesPool?
 

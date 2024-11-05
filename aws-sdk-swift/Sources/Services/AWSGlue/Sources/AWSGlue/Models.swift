@@ -57,8 +57,9 @@ public struct AccessDeniedException: ClientRuntime.ModeledError, AWSClientRuntim
 }
 
 extension GlueClientTypes {
+
     /// Specifies configuration properties of a notification.
-    public struct NotificationProperty {
+    public struct NotificationProperty: Swift.Sendable {
         /// After a job run starts, the number of minutes to wait before sending a job run delay notification.
         public var notifyDelayAfter: Swift.Int?
 
@@ -69,12 +70,12 @@ extension GlueClientTypes {
             self.notifyDelayAfter = notifyDelayAfter
         }
     }
-
 }
 
 extension GlueClientTypes {
+
     /// Defines an action to be initiated by a trigger.
-    public struct Action {
+    public struct Action: Swift.Sendable {
         /// The job arguments used when this trigger fires. For this job run, they replace the default arguments set in the job definition itself. You can specify arguments here that your own job-execution script consumes, as well as arguments that Glue itself consumes. For information about how to specify and consume your own Job arguments, see the [Calling Glue APIs in Python](https://docs.aws.amazon.com/glue/latest/dg/aws-glue-programming-python-calling.html) topic in the developer guide. For information about the key-value pairs that Glue consumes to set up your job, see the [Special Parameters Used by Glue](https://docs.aws.amazon.com/glue/latest/dg/aws-glue-programming-etl-glue-arguments.html) topic in the developer guide.
         public var arguments: [Swift.String: Swift.String]?
         /// The name of the crawler to be used with this action.
@@ -105,12 +106,11 @@ extension GlueClientTypes {
             self.timeout = timeout
         }
     }
-
 }
 
 extension GlueClientTypes {
 
-    public enum AdditionalOptionKeys: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AdditionalOptionKeys: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case cacheoption
         case observationsoption
         case sdkUnknown(Swift.String)
@@ -139,7 +139,7 @@ extension GlueClientTypes {
 
 extension GlueClientTypes {
 
-    public enum AggFunction: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AggFunction: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case avg
         case count
         case countdistinct
@@ -206,8 +206,9 @@ extension GlueClientTypes {
 }
 
 extension GlueClientTypes {
+
     /// Specifies the set of parameters needed to perform aggregation in the aggregate transform.
-    public struct AggregateOperation {
+    public struct AggregateOperation: Swift.Sendable {
         /// Specifies the aggregation function to apply. Possible aggregation functions include: avg countDistinct, count, first, last, kurtosis, max, min, skewness, stddev_samp, stddev_pop, sum, sumDistinct, var_samp, var_pop
         /// This member is required.
         public var aggFunc: GlueClientTypes.AggFunction?
@@ -224,12 +225,12 @@ extension GlueClientTypes {
             self.column = column
         }
     }
-
 }
 
 extension GlueClientTypes {
+
     /// Specifies a transform that groups rows by chosen fields and computes the aggregated value by specified function.
-    public struct Aggregate {
+    public struct Aggregate: Swift.Sendable {
         /// Specifies the aggregate functions to be performed on specified fields.
         /// This member is required.
         public var aggs: [GlueClientTypes.AggregateOperation]?
@@ -256,7 +257,6 @@ extension GlueClientTypes {
             self.name = name
         }
     }
-
 }
 
 /// A resource to be created or added already exists.
@@ -285,8 +285,9 @@ public struct AlreadyExistsException: ClientRuntime.ModeledError, AWSClientRunti
 }
 
 extension GlueClientTypes {
+
     /// Specifies an optional value when connecting to the Redshift cluster.
-    public struct AmazonRedshiftAdvancedOption {
+    public struct AmazonRedshiftAdvancedOption: Swift.Sendable {
         /// The key for the additional connection option.
         public var key: Swift.String?
         /// The value for the additional connection option.
@@ -301,12 +302,12 @@ extension GlueClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension GlueClientTypes {
+
     /// Specifies an option value.
-    public struct Option {
+    public struct Option: Swift.Sendable {
         /// Specifies the description of the option.
         public var description: Swift.String?
         /// Specifies the label of the option.
@@ -325,12 +326,12 @@ extension GlueClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension GlueClientTypes {
+
     /// Specifies an Amazon Redshift node.
-    public struct AmazonRedshiftNodeData {
+    public struct AmazonRedshiftNodeData: Swift.Sendable {
         /// The access type for the Redshift connection. Can be a direct connection or catalog connections.
         public var accessType: Swift.String?
         /// Specifies how writing to a Redshift cluser will occur.
@@ -441,12 +442,12 @@ extension GlueClientTypes {
             self.upsert = upsert
         }
     }
-
 }
 
 extension GlueClientTypes {
+
     /// Specifies an Amazon Redshift source.
-    public struct AmazonRedshiftSource {
+    public struct AmazonRedshiftSource: Swift.Sendable {
         /// Specifies the data of the Amazon Reshift source node.
         public var data: GlueClientTypes.AmazonRedshiftNodeData?
         /// The name of the Amazon Redshift source.
@@ -461,12 +462,12 @@ extension GlueClientTypes {
             self.name = name
         }
     }
-
 }
 
 extension GlueClientTypes {
+
     /// Specifies an Amazon Redshift target.
-    public struct AmazonRedshiftTarget {
+    public struct AmazonRedshiftTarget: Swift.Sendable {
         /// Specifies the data of the Amazon Redshift target node.
         public var data: GlueClientTypes.AmazonRedshiftNodeData?
         /// The nodes that are inputs to the data target.
@@ -485,12 +486,12 @@ extension GlueClientTypes {
             self.name = name
         }
     }
-
 }
 
 extension GlueClientTypes {
+
     /// A failed annotation.
-    public struct AnnotationError {
+    public struct AnnotationError: Swift.Sendable {
         /// The reason why the annotation failed.
         public var failureReason: Swift.String?
         /// The Profile ID for the failed annotation.
@@ -509,12 +510,11 @@ extension GlueClientTypes {
             self.statisticId = statisticId
         }
     }
-
 }
 
 extension GlueClientTypes {
 
-    public enum InclusionAnnotationValue: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum InclusionAnnotationValue: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case exclude
         case include
         case sdkUnknown(Swift.String)
@@ -542,8 +542,9 @@ extension GlueClientTypes {
 }
 
 extension GlueClientTypes {
+
     /// A timestamped inclusion annotation.
-    public struct TimestampedInclusionAnnotation {
+    public struct TimestampedInclusionAnnotation: Swift.Sendable {
         /// The timestamp when the inclusion annotation was last modified.
         public var lastModifiedOn: Foundation.Date?
         /// The inclusion annotation value.
@@ -558,12 +559,12 @@ extension GlueClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension GlueClientTypes {
+
     /// A Statistic Annotation.
-    public struct StatisticAnnotation {
+    public struct StatisticAnnotation: Swift.Sendable {
         /// The inclusion annotation applied to the statistic.
         public var inclusionAnnotation: GlueClientTypes.TimestampedInclusionAnnotation?
         /// The Profile ID.
@@ -586,12 +587,12 @@ extension GlueClientTypes {
             self.statisticRecordedOn = statisticRecordedOn
         }
     }
-
 }
 
 extension GlueClientTypes {
+
     /// Specifies a single column in a Glue schema definition.
-    public struct GlueStudioSchemaColumn {
+    public struct GlueStudioSchemaColumn: Swift.Sendable {
         /// The name of the column in the Glue Studio schema.
         /// This member is required.
         public var name: Swift.String?
@@ -607,12 +608,12 @@ extension GlueClientTypes {
             self.type = type
         }
     }
-
 }
 
 extension GlueClientTypes {
+
     /// Specifies a user-defined schema when a schema cannot be determined by Glue.
-    public struct GlueSchema {
+    public struct GlueSchema: Swift.Sendable {
         /// Specifies the column definitions that make up a Glue schema.
         public var columns: [GlueClientTypes.GlueStudioSchemaColumn]?
 
@@ -623,12 +624,12 @@ extension GlueClientTypes {
             self.columns = columns
         }
     }
-
 }
 
 extension GlueClientTypes {
+
     /// Specifies a connector to an Amazon Athena data source.
-    public struct AthenaConnectorSource {
+    public struct AthenaConnectorSource: Swift.Sendable {
         /// The name of the connection that is associated with the connector.
         /// This member is required.
         public var connectionName: Swift.String?
@@ -668,12 +669,12 @@ extension GlueClientTypes {
             self.schemaName = schemaName
         }
     }
-
 }
 
 extension GlueClientTypes {
+
     /// A structure containing the Lake Formation audit context.
-    public struct AuditContext {
+    public struct AuditContext: Swift.Sendable {
         /// A string containing the additional audit context information.
         public var additionalAuditContext: Swift.String?
         /// All columns request for audit.
@@ -692,12 +693,11 @@ extension GlueClientTypes {
             self.requestedColumns = requestedColumns
         }
     }
-
 }
 
 extension GlueClientTypes {
 
-    public enum AuthenticationType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AuthenticationType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case basic
         case custom
         case oauth2
@@ -728,8 +728,9 @@ extension GlueClientTypes {
 }
 
 extension GlueClientTypes {
+
     /// The OAuth2 client app used for the connection.
-    public struct OAuth2ClientApplication {
+    public struct OAuth2ClientApplication: Swift.Sendable {
         /// The reference to the SaaS-side client app that is Amazon Web Services managed.
         public var awsManagedClientApplicationReference: Swift.String?
         /// The client application clientID if the ClientAppType is USER_MANAGED.
@@ -744,12 +745,11 @@ extension GlueClientTypes {
             self.userManagedClientApplicationClientId = userManagedClientApplicationClientId
         }
     }
-
 }
 
 extension GlueClientTypes {
 
-    public enum OAuth2GrantType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum OAuth2GrantType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case authorizationCode
         case clientCredentials
         case jwtBearer
@@ -780,8 +780,9 @@ extension GlueClientTypes {
 }
 
 extension GlueClientTypes {
+
     /// A structure containing properties for OAuth2 authentication.
-    public struct OAuth2Properties {
+    public struct OAuth2Properties: Swift.Sendable {
         /// The client application type. For example, AWS_MANAGED or USER_MANAGED.
         public var oAuth2ClientApplication: GlueClientTypes.OAuth2ClientApplication?
         /// The OAuth2 grant type. For example, AUTHORIZATION_CODE, JWT_BEARER, or CLIENT_CREDENTIALS.
@@ -804,12 +805,12 @@ extension GlueClientTypes {
             self.tokenUrlParametersMap = tokenUrlParametersMap
         }
     }
-
 }
 
 extension GlueClientTypes {
+
     /// A structure containing the authentication configuration.
-    public struct AuthenticationConfiguration {
+    public struct AuthenticationConfiguration: Swift.Sendable {
         /// A structure containing the authentication configuration.
         public var authenticationType: GlueClientTypes.AuthenticationType?
         /// The properties for OAuth2 authentication.
@@ -828,12 +829,12 @@ extension GlueClientTypes {
             self.secretArn = secretArn
         }
     }
-
 }
 
 extension GlueClientTypes {
+
     /// The set of properties required for the the OAuth2 AUTHORIZATION_CODE grant type workflow.
-    public struct AuthorizationCodeProperties {
+    public struct AuthorizationCodeProperties: Swift.Sendable {
         /// An authorization code to be used in the third leg of the AUTHORIZATION_CODE grant workflow. This is a single-use code which becomes invalid once exchanged for an access token, thus it is acceptable to have this value as a request parameter.
         public var authorizationCode: Swift.String?
         /// The redirect URI where the user gets redirected to by authorization server when issuing an authorization code. The URI is subsequently used when the authorization code is exchanged for an access token.
@@ -848,7 +849,6 @@ extension GlueClientTypes {
             self.redirectUri = redirectUri
         }
     }
-
 }
 
 extension GlueClientTypes.AuthorizationCodeProperties: Swift.CustomDebugStringConvertible {
@@ -857,8 +857,9 @@ extension GlueClientTypes.AuthorizationCodeProperties: Swift.CustomDebugStringCo
 }
 
 extension GlueClientTypes {
+
     /// A structure containing properties for OAuth2 in the CreateConnection request.
-    public struct OAuth2PropertiesInput {
+    public struct OAuth2PropertiesInput: Swift.Sendable {
         /// The set of properties required for the the OAuth2 AUTHORIZATION_CODE grant type.
         public var authorizationCodeProperties: GlueClientTypes.AuthorizationCodeProperties?
         /// The client application type in the CreateConnection request. For example, AWS_MANAGED or USER_MANAGED.
@@ -885,12 +886,12 @@ extension GlueClientTypes {
             self.tokenUrlParametersMap = tokenUrlParametersMap
         }
     }
-
 }
 
 extension GlueClientTypes {
+
     /// A structure containing the authentication configuration in the CreateConnection request.
-    public struct AuthenticationConfigurationInput {
+    public struct AuthenticationConfigurationInput: Swift.Sendable {
         /// A structure containing the authentication configuration in the CreateConnection request.
         public var authenticationType: GlueClientTypes.AuthenticationType?
         /// The properties for OAuth2 authentication in the CreateConnection request.
@@ -909,7 +910,6 @@ extension GlueClientTypes {
             self.secretArn = secretArn
         }
     }
-
 }
 
 /// A specified entity does not exist
@@ -1071,8 +1071,9 @@ public struct ResourceNumberLimitExceededException: ClientRuntime.ModeledError, 
 }
 
 extension GlueClientTypes {
+
     /// A column in a Table.
-    public struct Column {
+    public struct Column: Swift.Sendable {
         /// A free-form text comment.
         public var comment: Swift.String?
         /// The name of the Column.
@@ -1096,12 +1097,12 @@ extension GlueClientTypes {
             self.type = type
         }
     }
-
 }
 
 extension GlueClientTypes {
+
     /// The unique ID of the schema in the Glue schema registry.
-    public struct SchemaId {
+    public struct SchemaId: Swift.Sendable {
         /// The name of the schema registry that contains the schema.
         public var registryName: Swift.String?
         /// The Amazon Resource Name (ARN) of the schema. One of SchemaArn or SchemaName has to be provided.
@@ -1120,12 +1121,12 @@ extension GlueClientTypes {
             self.schemaName = schemaName
         }
     }
-
 }
 
 extension GlueClientTypes {
+
     /// An object that references a schema stored in the Glue Schema Registry.
-    public struct SchemaReference {
+    public struct SchemaReference: Swift.Sendable {
         /// A structure that contains schema identity fields. Either this or the SchemaVersionId has to be provided.
         public var schemaId: GlueClientTypes.SchemaId?
         /// The unique ID assigned to a version of the schema. Either this or the SchemaId has to be provided.
@@ -1144,12 +1145,12 @@ extension GlueClientTypes {
             self.schemaVersionNumber = schemaVersionNumber
         }
     }
-
 }
 
 extension GlueClientTypes {
+
     /// Information about a serialization/deserialization program (SerDe) that serves as an extractor and loader.
-    public struct SerDeInfo {
+    public struct SerDeInfo: Swift.Sendable {
         /// Name of the SerDe.
         public var name: Swift.String?
         /// These key-value pairs define initialization parameters for the SerDe.
@@ -1168,12 +1169,12 @@ extension GlueClientTypes {
             self.serializationLibrary = serializationLibrary
         }
     }
-
 }
 
 extension GlueClientTypes {
+
     /// Specifies skewed values in a table. Skewed values are those that occur with very high frequency.
-    public struct SkewedInfo {
+    public struct SkewedInfo: Swift.Sendable {
         /// A list of names of columns that contain skewed values.
         public var skewedColumnNames: [Swift.String]?
         /// A mapping of skewed values to the columns that contain them.
@@ -1192,12 +1193,12 @@ extension GlueClientTypes {
             self.skewedColumnValues = skewedColumnValues
         }
     }
-
 }
 
 extension GlueClientTypes {
+
     /// Specifies the sort order of a sorted column.
-    public struct Order {
+    public struct Order: Swift.Sendable {
         /// The name of the column.
         /// This member is required.
         public var column: Swift.String?
@@ -1214,12 +1215,12 @@ extension GlueClientTypes {
             self.sortOrder = sortOrder
         }
     }
-
 }
 
 extension GlueClientTypes {
+
     /// Describes the physical storage of table data.
-    public struct StorageDescriptor {
+    public struct StorageDescriptor: Swift.Sendable {
         /// A list of locations that point to the path where a Delta table is located.
         public var additionalLocations: [Swift.String]?
         /// A list of reducer grouping columns, clustering columns, and bucketing columns in the table.
@@ -1282,12 +1283,12 @@ extension GlueClientTypes {
             self.storedAsSubDirectories = storedAsSubDirectories
         }
     }
-
 }
 
 extension GlueClientTypes {
+
     /// The structure used to create and update a partition.
-    public struct PartitionInput {
+    public struct PartitionInput: Swift.Sendable {
         /// The last time at which the partition was accessed.
         public var lastAccessTime: Foundation.Date?
         /// The last time at which column statistics were computed for this partition.
@@ -1314,10 +1315,9 @@ extension GlueClientTypes {
             self.values = values
         }
     }
-
 }
 
-public struct BatchCreatePartitionInput {
+public struct BatchCreatePartitionInput: Swift.Sendable {
     /// The ID of the catalog in which the partition is to be created. Currently, this should be the Amazon Web Services account ID.
     public var catalogId: Swift.String?
     /// The name of the metadata database in which the partition is to be created.
@@ -1345,8 +1345,9 @@ public struct BatchCreatePartitionInput {
 }
 
 extension GlueClientTypes {
+
     /// Contains details about an error.
-    public struct ErrorDetail {
+    public struct ErrorDetail: Swift.Sendable {
         /// The code associated with this error.
         public var errorCode: Swift.String?
         /// A message describing the error.
@@ -1361,12 +1362,12 @@ extension GlueClientTypes {
             self.errorMessage = errorMessage
         }
     }
-
 }
 
 extension GlueClientTypes {
+
     /// Contains information about a partition error.
-    public struct PartitionError {
+    public struct PartitionError: Swift.Sendable {
         /// The details about the partition error.
         public var errorDetail: GlueClientTypes.ErrorDetail?
         /// The values that define the partition.
@@ -1381,10 +1382,9 @@ extension GlueClientTypes {
             self.partitionValues = partitionValues
         }
     }
-
 }
 
-public struct BatchCreatePartitionOutput {
+public struct BatchCreatePartitionOutput: Swift.Sendable {
     /// The errors encountered when trying to create the requested partitions.
     public var errors: [GlueClientTypes.PartitionError]?
 
@@ -1396,7 +1396,7 @@ public struct BatchCreatePartitionOutput {
     }
 }
 
-public struct BatchDeleteConnectionInput {
+public struct BatchDeleteConnectionInput: Swift.Sendable {
     /// The ID of the Data Catalog in which the connections reside. If none is provided, the Amazon Web Services account ID is used by default.
     public var catalogId: Swift.String?
     /// A list of names of the connections to delete.
@@ -1413,7 +1413,7 @@ public struct BatchDeleteConnectionInput {
     }
 }
 
-public struct BatchDeleteConnectionOutput {
+public struct BatchDeleteConnectionOutput: Swift.Sendable {
     /// A map of the names of connections that were not successfully deleted to error details.
     public var errors: [Swift.String: GlueClientTypes.ErrorDetail]?
     /// A list of names of the connection definitions that were successfully deleted.
@@ -1430,8 +1430,9 @@ public struct BatchDeleteConnectionOutput {
 }
 
 extension GlueClientTypes {
+
     /// Contains a list of values defining partitions.
-    public struct PartitionValueList {
+    public struct PartitionValueList: Swift.Sendable {
         /// The list of values.
         /// This member is required.
         public var values: [Swift.String]?
@@ -1443,10 +1444,9 @@ extension GlueClientTypes {
             self.values = values
         }
     }
-
 }
 
-public struct BatchDeletePartitionInput {
+public struct BatchDeletePartitionInput: Swift.Sendable {
     /// The ID of the Data Catalog where the partition to be deleted resides. If none is provided, the Amazon Web Services account ID is used by default.
     public var catalogId: Swift.String?
     /// The name of the catalog database in which the table in question resides.
@@ -1473,7 +1473,7 @@ public struct BatchDeletePartitionInput {
     }
 }
 
-public struct BatchDeletePartitionOutput {
+public struct BatchDeletePartitionOutput: Swift.Sendable {
     /// The errors encountered when trying to delete the requested partitions.
     public var errors: [GlueClientTypes.PartitionError]?
 
@@ -1510,7 +1510,7 @@ public struct ResourceNotReadyException: ClientRuntime.ModeledError, AWSClientRu
     }
 }
 
-public struct BatchDeleteTableInput {
+public struct BatchDeleteTableInput: Swift.Sendable {
     /// The ID of the Data Catalog where the table resides. If none is provided, the Amazon Web Services account ID is used by default.
     public var catalogId: Swift.String?
     /// The name of the catalog database in which the tables to delete reside. For Hive compatibility, this name is entirely lowercase.
@@ -1537,8 +1537,9 @@ public struct BatchDeleteTableInput {
 }
 
 extension GlueClientTypes {
+
     /// An error record for table operations.
-    public struct TableError {
+    public struct TableError: Swift.Sendable {
         /// The details about the error.
         public var errorDetail: GlueClientTypes.ErrorDetail?
         /// The name of the table. For Hive compatibility, this must be entirely lowercase.
@@ -1553,10 +1554,9 @@ extension GlueClientTypes {
             self.tableName = tableName
         }
     }
-
 }
 
-public struct BatchDeleteTableOutput {
+public struct BatchDeleteTableOutput: Swift.Sendable {
     /// A list of errors encountered in attempting to delete the specified tables.
     public var errors: [GlueClientTypes.TableError]?
 
@@ -1568,7 +1568,7 @@ public struct BatchDeleteTableOutput {
     }
 }
 
-public struct BatchDeleteTableVersionInput {
+public struct BatchDeleteTableVersionInput: Swift.Sendable {
     /// The ID of the Data Catalog where the tables reside. If none is provided, the Amazon Web Services account ID is used by default.
     public var catalogId: Swift.String?
     /// The database in the catalog in which the table resides. For Hive compatibility, this name is entirely lowercase.
@@ -1596,8 +1596,9 @@ public struct BatchDeleteTableVersionInput {
 }
 
 extension GlueClientTypes {
+
     /// An error record for table-version operations.
-    public struct TableVersionError {
+    public struct TableVersionError: Swift.Sendable {
         /// The details about the error.
         public var errorDetail: GlueClientTypes.ErrorDetail?
         /// The name of the table in question.
@@ -1616,10 +1617,9 @@ extension GlueClientTypes {
             self.versionId = versionId
         }
     }
-
 }
 
-public struct BatchDeleteTableVersionOutput {
+public struct BatchDeleteTableVersionOutput: Swift.Sendable {
     /// A list of errors encountered while trying to delete the specified table versions.
     public var errors: [GlueClientTypes.TableVersionError]?
 
@@ -1631,7 +1631,7 @@ public struct BatchDeleteTableVersionOutput {
     }
 }
 
-public struct BatchGetBlueprintsInput {
+public struct BatchGetBlueprintsInput: Swift.Sendable {
     /// Specifies whether or not to include the blueprint in the response.
     public var includeBlueprint: Swift.Bool?
     /// Specifies whether or not to include the parameters, as a JSON string, for the blueprint in the response.
@@ -1653,8 +1653,9 @@ public struct BatchGetBlueprintsInput {
 }
 
 extension GlueClientTypes {
+
     /// When there are multiple versions of a blueprint and the latest version has some errors, this attribute indicates the last successful blueprint definition that is available with the service.
-    public struct LastActiveDefinition {
+    public struct LastActiveDefinition: Swift.Sendable {
         /// Specifies a path in Amazon S3 where the blueprint is published by the Glue developer.
         public var blueprintLocation: Swift.String?
         /// Specifies a path in Amazon S3 where the blueprint is copied when you create or update the blueprint.
@@ -1681,12 +1682,11 @@ extension GlueClientTypes {
             self.parameterSpec = parameterSpec
         }
     }
-
 }
 
 extension GlueClientTypes {
 
-    public enum BlueprintStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum BlueprintStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case active
         case creating
         case failed
@@ -1720,8 +1720,9 @@ extension GlueClientTypes {
 }
 
 extension GlueClientTypes {
+
     /// The details of a blueprint.
-    public struct Blueprint {
+    public struct Blueprint: Swift.Sendable {
         /// Specifies the path in Amazon S3 where the blueprint is published.
         public var blueprintLocation: Swift.String?
         /// Specifies a path in Amazon S3 where the blueprint is copied when you call CreateBlueprint/UpdateBlueprint to register the blueprint in Glue.
@@ -1776,10 +1777,9 @@ extension GlueClientTypes {
             self.status = status
         }
     }
-
 }
 
-public struct BatchGetBlueprintsOutput {
+public struct BatchGetBlueprintsOutput: Swift.Sendable {
     /// Returns a list of blueprint as a Blueprints object.
     public var blueprints: [GlueClientTypes.Blueprint]?
     /// Returns a list of BlueprintNames that were not found.
@@ -1795,7 +1795,7 @@ public struct BatchGetBlueprintsOutput {
     }
 }
 
-public struct BatchGetCrawlersInput {
+public struct BatchGetCrawlersInput: Swift.Sendable {
     /// A list of crawler names, which might be the names returned from the ListCrawlers operation.
     /// This member is required.
     public var crawlerNames: [Swift.String]?
@@ -1809,8 +1809,9 @@ public struct BatchGetCrawlersInput {
 }
 
 extension GlueClientTypes {
+
     /// Specifies Lake Formation configuration settings for the crawler.
-    public struct LakeFormationConfiguration {
+    public struct LakeFormationConfiguration: Swift.Sendable {
         /// Required for cross account crawls. For same account crawls as the target data, this can be left as null.
         public var accountId: Swift.String?
         /// Specifies whether to use Lake Formation credentials for the crawler instead of the IAM role credentials.
@@ -1825,12 +1826,11 @@ extension GlueClientTypes {
             self.useLakeFormationCredentials = useLakeFormationCredentials
         }
     }
-
 }
 
 extension GlueClientTypes {
 
-    public enum LastCrawlStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum LastCrawlStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case cancelled
         case failed
         case succeeded
@@ -1861,8 +1861,9 @@ extension GlueClientTypes {
 }
 
 extension GlueClientTypes {
+
     /// Status and error information about the most recent crawl.
-    public struct LastCrawlInfo {
+    public struct LastCrawlInfo: Swift.Sendable {
         /// If an error occurred, the error information about the last crawl.
         public var errorMessage: Swift.String?
         /// The log group for the last crawl.
@@ -1893,12 +1894,11 @@ extension GlueClientTypes {
             self.status = status
         }
     }
-
 }
 
 extension GlueClientTypes {
 
-    public enum CrawlerLineageSettings: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum CrawlerLineageSettings: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case disable
         case enable
         case sdkUnknown(Swift.String)
@@ -1926,8 +1926,9 @@ extension GlueClientTypes {
 }
 
 extension GlueClientTypes {
+
     /// Specifies data lineage configuration settings for the crawler.
-    public struct LineageConfiguration {
+    public struct LineageConfiguration: Swift.Sendable {
         /// Specifies whether data lineage is enabled for the crawler. Valid values are:
         ///
         /// * ENABLE: enables data lineage for the crawler
@@ -1942,12 +1943,11 @@ extension GlueClientTypes {
             self.crawlerLineageSettings = crawlerLineageSettings
         }
     }
-
 }
 
 extension GlueClientTypes {
 
-    public enum RecrawlBehavior: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum RecrawlBehavior: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case crawlEventMode
         case crawlEverything
         case crawlNewFoldersOnly
@@ -1978,8 +1978,9 @@ extension GlueClientTypes {
 }
 
 extension GlueClientTypes {
+
     /// When crawling an Amazon S3 data source after the first crawl is complete, specifies whether to crawl the entire dataset again or to crawl only folders that were added since the last crawler run. For more information, see [Incremental Crawls in Glue](https://docs.aws.amazon.com/glue/latest/dg/incremental-crawls.html) in the developer guide.
-    public struct RecrawlPolicy {
+    public struct RecrawlPolicy: Swift.Sendable {
         /// Specifies whether to crawl the entire dataset again or to crawl only folders that were added since the last crawler run. A value of CRAWL_EVERYTHING specifies crawling the entire dataset again. A value of CRAWL_NEW_FOLDERS_ONLY specifies crawling only folders that were added since the last crawler run. A value of CRAWL_EVENT_MODE specifies crawling only the changes identified by Amazon S3 events.
         public var recrawlBehavior: GlueClientTypes.RecrawlBehavior?
 
@@ -1990,12 +1991,11 @@ extension GlueClientTypes {
             self.recrawlBehavior = recrawlBehavior
         }
     }
-
 }
 
 extension GlueClientTypes {
 
-    public enum ScheduleState: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ScheduleState: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case notScheduled
         case scheduled
         case transitioning
@@ -2026,8 +2026,9 @@ extension GlueClientTypes {
 }
 
 extension GlueClientTypes {
+
     /// A scheduling object using a cron statement to schedule an event.
-    public struct Schedule {
+    public struct Schedule: Swift.Sendable {
         /// A cron expression used to specify the schedule (see [Time-Based Schedules for Jobs and Crawlers](https://docs.aws.amazon.com/glue/latest/dg/monitor-data-warehouse-schedule.html). For example, to run something every day at 12:15 UTC, you would specify: cron(15 12 * * ? *).
         public var scheduleExpression: Swift.String?
         /// The state of the schedule.
@@ -2042,12 +2043,11 @@ extension GlueClientTypes {
             self.state = state
         }
     }
-
 }
 
 extension GlueClientTypes {
 
-    public enum DeleteBehavior: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DeleteBehavior: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case deleteFromDatabase
         case deprecateInDatabase
         case log
@@ -2079,7 +2079,7 @@ extension GlueClientTypes {
 
 extension GlueClientTypes {
 
-    public enum UpdateBehavior: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum UpdateBehavior: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case log
         case updateInDatabase
         case sdkUnknown(Swift.String)
@@ -2107,8 +2107,9 @@ extension GlueClientTypes {
 }
 
 extension GlueClientTypes {
+
     /// A policy that specifies update and deletion behaviors for the crawler.
-    public struct SchemaChangePolicy {
+    public struct SchemaChangePolicy: Swift.Sendable {
         /// The deletion behavior when the crawler finds a deleted object.
         public var deleteBehavior: GlueClientTypes.DeleteBehavior?
         /// The update behavior when the crawler finds a changed schema.
@@ -2123,12 +2124,11 @@ extension GlueClientTypes {
             self.updateBehavior = updateBehavior
         }
     }
-
 }
 
 extension GlueClientTypes {
 
-    public enum CrawlerState: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum CrawlerState: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case ready
         case running
         case stopping
@@ -2159,8 +2159,9 @@ extension GlueClientTypes {
 }
 
 extension GlueClientTypes {
+
     /// Specifies an Glue Data Catalog target.
-    public struct CatalogTarget {
+    public struct CatalogTarget: Swift.Sendable {
         /// The name of the connection for an Amazon S3-backed Data Catalog table to be a target of the crawl when using a Catalog connection type paired with a NETWORK Connection type.
         public var connectionName: Swift.String?
         /// The name of the database to be synchronized.
@@ -2189,12 +2190,12 @@ extension GlueClientTypes {
             self.tables = tables
         }
     }
-
 }
 
 extension GlueClientTypes {
+
     /// Specifies a Delta data store to crawl one or more Delta tables.
-    public struct DeltaTarget {
+    public struct DeltaTarget: Swift.Sendable {
         /// The name of the connection to use to connect to the Delta table target.
         public var connectionName: Swift.String?
         /// Specifies whether the crawler will create native tables, to allow integration with query engines that support querying of the Delta transaction log directly.
@@ -2217,12 +2218,12 @@ extension GlueClientTypes {
             self.writeManifest = writeManifest
         }
     }
-
 }
 
 extension GlueClientTypes {
+
     /// Specifies an Amazon DynamoDB table to crawl.
-    public struct DynamoDBTarget {
+    public struct DynamoDBTarget: Swift.Sendable {
         /// The name of the DynamoDB table to crawl.
         public var path: Swift.String?
         /// Indicates whether to scan all the records, or to sample rows from the table. Scanning all the records can take a long time when the table is not a high throughput table. A value of true means to scan all records, while a value of false means to sample the records. If no value is specified, the value defaults to true.
@@ -2241,12 +2242,12 @@ extension GlueClientTypes {
             self.scanRate = scanRate
         }
     }
-
 }
 
 extension GlueClientTypes {
+
     /// Specifies an Apache Hudi data source.
-    public struct HudiTarget {
+    public struct HudiTarget: Swift.Sendable {
         /// The name of the connection to use to connect to the Hudi target. If your Hudi files are stored in buckets that require VPC authorization, you can set their connection properties here.
         public var connectionName: Swift.String?
         /// A list of glob patterns used to exclude from the crawl. For more information, see [Catalog Tables with a Crawler](https://docs.aws.amazon.com/glue/latest/dg/add-crawler.html).
@@ -2269,12 +2270,12 @@ extension GlueClientTypes {
             self.paths = paths
         }
     }
-
 }
 
 extension GlueClientTypes {
+
     /// Specifies an Apache Iceberg data source where Iceberg tables are stored in Amazon S3.
-    public struct IcebergTarget {
+    public struct IcebergTarget: Swift.Sendable {
         /// The name of the connection to use to connect to the Iceberg target.
         public var connectionName: Swift.String?
         /// A list of glob patterns used to exclude from the crawl. For more information, see [Catalog Tables with a Crawler](https://docs.aws.amazon.com/glue/latest/dg/add-crawler.html).
@@ -2297,12 +2298,11 @@ extension GlueClientTypes {
             self.paths = paths
         }
     }
-
 }
 
 extension GlueClientTypes {
 
-    public enum JdbcMetadataEntry: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum JdbcMetadataEntry: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case comments
         case rawtypes
         case sdkUnknown(Swift.String)
@@ -2330,8 +2330,9 @@ extension GlueClientTypes {
 }
 
 extension GlueClientTypes {
+
     /// Specifies a JDBC data store to crawl.
-    public struct JdbcTarget {
+    public struct JdbcTarget: Swift.Sendable {
         /// The name of the connection to use to connect to the JDBC target.
         public var connectionName: Swift.String?
         /// Specify a value of RAWTYPES or COMMENTS to enable additional metadata in table responses. RAWTYPES provides the native-level datatype. COMMENTS provides comments associated with a column or table in the database. If you do not need additional metadata, keep the field empty.
@@ -2354,12 +2355,12 @@ extension GlueClientTypes {
             self.path = path
         }
     }
-
 }
 
 extension GlueClientTypes {
+
     /// Specifies an Amazon DocumentDB or MongoDB data store to crawl.
-    public struct MongoDBTarget {
+    public struct MongoDBTarget: Swift.Sendable {
         /// The name of the connection to use to connect to the Amazon DocumentDB or MongoDB target.
         public var connectionName: Swift.String?
         /// The path of the Amazon DocumentDB or MongoDB target (database/collection).
@@ -2378,12 +2379,12 @@ extension GlueClientTypes {
             self.scanAll = scanAll
         }
     }
-
 }
 
 extension GlueClientTypes {
+
     /// Specifies a data store in Amazon Simple Storage Service (Amazon S3).
-    public struct S3Target {
+    public struct S3Target: Swift.Sendable {
         /// The name of a connection which allows a job or crawler to access data in Amazon S3 within an Amazon Virtual Private Cloud environment (Amazon VPC).
         public var connectionName: Swift.String?
         /// A valid Amazon dead-letter SQS ARN. For example, arn:aws:sqs:region:account:deadLetterQueue.
@@ -2414,12 +2415,12 @@ extension GlueClientTypes {
             self.sampleSize = sampleSize
         }
     }
-
 }
 
 extension GlueClientTypes {
+
     /// Specifies data stores to crawl.
-    public struct CrawlerTargets {
+    public struct CrawlerTargets: Swift.Sendable {
         /// Specifies Glue Data Catalog targets.
         public var catalogTargets: [GlueClientTypes.CatalogTarget]?
         /// Specifies Delta data store targets.
@@ -2458,12 +2459,12 @@ extension GlueClientTypes {
             self.s3Targets = s3Targets
         }
     }
-
 }
 
 extension GlueClientTypes {
+
     /// Specifies a crawler program that examines a data source and uses classifiers to try to determine its schema. If successful, the crawler records metadata concerning the data source in the Glue Data Catalog.
-    public struct Crawler {
+    public struct Crawler: Swift.Sendable {
         /// A list of UTF-8 strings that specify the custom classifiers that are associated with the crawler.
         public var classifiers: [Swift.String]?
         /// Crawler configuration information. This versioned JSON string allows users to specify aspects of a crawler's behavior. For more information, see [Setting crawler configuration options](https://docs.aws.amazon.com/glue/latest/dg/crawler-configuration.html).
@@ -2550,10 +2551,9 @@ extension GlueClientTypes {
             self.version = version
         }
     }
-
 }
 
-public struct BatchGetCrawlersOutput {
+public struct BatchGetCrawlersOutput: Swift.Sendable {
     /// A list of crawler definitions.
     public var crawlers: [GlueClientTypes.Crawler]?
     /// A list of names of crawlers that were not found.
@@ -2569,7 +2569,7 @@ public struct BatchGetCrawlersOutput {
     }
 }
 
-public struct BatchGetCustomEntityTypesInput {
+public struct BatchGetCustomEntityTypesInput: Swift.Sendable {
     /// A list of names of the custom patterns that you want to retrieve.
     /// This member is required.
     public var names: [Swift.String]?
@@ -2583,8 +2583,9 @@ public struct BatchGetCustomEntityTypesInput {
 }
 
 extension GlueClientTypes {
+
     /// An object representing a custom pattern for detecting sensitive data across the columns and rows of your structured data.
-    public struct CustomEntityType {
+    public struct CustomEntityType: Swift.Sendable {
         /// A list of context words. If none of these context words are found within the vicinity of the regular expression the data will not be detected as sensitive data. If no context words are passed only a regular expression is checked.
         public var contextWords: [Swift.String]?
         /// A name for the custom pattern that allows it to be retrieved or deleted later. This name must be unique per Amazon Web Services account.
@@ -2605,10 +2606,9 @@ extension GlueClientTypes {
             self.regexString = regexString
         }
     }
-
 }
 
-public struct BatchGetCustomEntityTypesOutput {
+public struct BatchGetCustomEntityTypesOutput: Swift.Sendable {
     /// A list of CustomEntityType objects representing the custom patterns that have been created.
     public var customEntityTypes: [GlueClientTypes.CustomEntityType]?
     /// A list of the names of custom patterns that were not found.
@@ -2624,7 +2624,7 @@ public struct BatchGetCustomEntityTypesOutput {
     }
 }
 
-public struct BatchGetDataQualityResultInput {
+public struct BatchGetDataQualityResultInput: Swift.Sendable {
     /// A list of unique result IDs for the data quality results.
     /// This member is required.
     public var resultIds: [Swift.String]?
@@ -2638,8 +2638,9 @@ public struct BatchGetDataQualityResultInput {
 }
 
 extension GlueClientTypes {
+
     /// Describes the result of the evaluation of a data quality analyzer.
-    public struct DataQualityAnalyzerResult {
+    public struct DataQualityAnalyzerResult: Swift.Sendable {
         /// A description of the data quality analyzer.
         public var description: Swift.String?
         /// A map of metrics associated with the evaluation of the analyzer.
@@ -2662,7 +2663,6 @@ extension GlueClientTypes {
             self.name = name
         }
     }
-
 }
 
 extension GlueClientTypes.DataQualityAnalyzerResult: Swift.CustomDebugStringConvertible {
@@ -2671,8 +2671,9 @@ extension GlueClientTypes.DataQualityAnalyzerResult: Swift.CustomDebugStringConv
 }
 
 extension GlueClientTypes {
+
     /// The database and table in the Glue Data Catalog that is used for input or output data.
-    public struct GlueTable {
+    public struct GlueTable: Swift.Sendable {
         /// Additional options for the table. Currently there are two keys supported:
         ///
         /// * pushDownPredicate: to filter on partitions without having to list and read all the files in your dataset.
@@ -2705,12 +2706,12 @@ extension GlueClientTypes {
             self.tableName = tableName
         }
     }
-
 }
 
 extension GlueClientTypes {
+
     /// A data source (an Glue table) for which you want data quality results.
-    public struct DataSource {
+    public struct DataSource: Swift.Sendable {
         /// An Glue table.
         /// This member is required.
         public var glueTable: GlueClientTypes.GlueTable?
@@ -2722,12 +2723,12 @@ extension GlueClientTypes {
             self.glueTable = glueTable
         }
     }
-
 }
 
 extension GlueClientTypes {
+
     /// Describes the data quality metric value according to the analysis of historical data.
-    public struct DataQualityMetricValues {
+    public struct DataQualityMetricValues: Swift.Sendable {
         /// The actual value of the data quality metric.
         public var actualValue: Swift.Double?
         /// The expected value of the data quality metric according to the analysis of historical data.
@@ -2750,12 +2751,12 @@ extension GlueClientTypes {
             self.upperLimit = upperLimit
         }
     }
-
 }
 
 extension GlueClientTypes {
+
     /// Describes the metric based observation generated based on evaluated data quality metrics.
-    public struct MetricBasedObservation {
+    public struct MetricBasedObservation: Swift.Sendable {
         /// The name of the data quality metric used for generating the observation.
         public var metricName: Swift.String?
         /// An object of type DataQualityMetricValues representing the analysis of the data quality metric value.
@@ -2778,12 +2779,12 @@ extension GlueClientTypes {
             self.statisticId = statisticId
         }
     }
-
 }
 
 extension GlueClientTypes {
+
     /// Describes the observation generated after evaluating the rules and analyzers.
-    public struct DataQualityObservation {
+    public struct DataQualityObservation: Swift.Sendable {
         /// A description of the data quality observation.
         public var description: Swift.String?
         /// An object of type MetricBasedObservation representing the observation that is based on evaluated data quality metrics.
@@ -2798,7 +2799,6 @@ extension GlueClientTypes {
             self.metricBasedObservation = metricBasedObservation
         }
     }
-
 }
 
 extension GlueClientTypes.DataQualityObservation: Swift.CustomDebugStringConvertible {
@@ -2808,7 +2808,7 @@ extension GlueClientTypes.DataQualityObservation: Swift.CustomDebugStringConvert
 
 extension GlueClientTypes {
 
-    public enum DataQualityRuleResultStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DataQualityRuleResultStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case error
         case fail
         case pass
@@ -2839,8 +2839,9 @@ extension GlueClientTypes {
 }
 
 extension GlueClientTypes {
+
     /// Describes the result of the evaluation of a data quality rule.
-    public struct DataQualityRuleResult {
+    public struct DataQualityRuleResult: Swift.Sendable {
         /// A description of the data quality rule.
         public var description: Swift.String?
         /// A map of metrics associated with the evaluation of the rule.
@@ -2871,7 +2872,6 @@ extension GlueClientTypes {
             self.result = result
         }
     }
-
 }
 
 extension GlueClientTypes.DataQualityRuleResult: Swift.CustomDebugStringConvertible {
@@ -2880,8 +2880,9 @@ extension GlueClientTypes.DataQualityRuleResult: Swift.CustomDebugStringConverti
 }
 
 extension GlueClientTypes {
+
     /// Describes a data quality result.
-    public struct DataQualityResult {
+    public struct DataQualityResult: Swift.Sendable {
         /// A list of DataQualityAnalyzerResult objects representing the results for each analyzer.
         public var analyzerResults: [GlueClientTypes.DataQualityAnalyzerResult]?
         /// The date and time when this data quality run completed.
@@ -2944,10 +2945,9 @@ extension GlueClientTypes {
             self.startedOn = startedOn
         }
     }
-
 }
 
-public struct BatchGetDataQualityResultOutput {
+public struct BatchGetDataQualityResultOutput: Swift.Sendable {
     /// A list of DataQualityResult objects representing the data quality results.
     /// This member is required.
     public var results: [GlueClientTypes.DataQualityResult]?
@@ -2964,7 +2964,7 @@ public struct BatchGetDataQualityResultOutput {
     }
 }
 
-public struct BatchGetDevEndpointsInput {
+public struct BatchGetDevEndpointsInput: Swift.Sendable {
     /// The list of DevEndpoint names, which might be the names returned from the ListDevEndpoint operation.
     /// This member is required.
     public var devEndpointNames: [Swift.String]?
@@ -2979,7 +2979,7 @@ public struct BatchGetDevEndpointsInput {
 
 extension GlueClientTypes {
 
-    public enum WorkerType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum WorkerType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case g025x
         case g1x
         case g2x
@@ -3022,8 +3022,9 @@ extension GlueClientTypes {
 }
 
 extension GlueClientTypes {
+
     /// A development endpoint where a developer can remotely debug extract, transform, and load (ETL) scripts.
-    public struct DevEndpoint {
+    public struct DevEndpoint: Swift.Sendable {
         /// A map of arguments used to configure the DevEndpoint. Valid arguments are:
         ///
         /// * "--enable-glue-datacatalog": ""
@@ -3144,10 +3145,9 @@ extension GlueClientTypes {
             self.zeppelinRemoteSparkInterpreterPort = zeppelinRemoteSparkInterpreterPort
         }
     }
-
 }
 
-public struct BatchGetDevEndpointsOutput {
+public struct BatchGetDevEndpointsOutput: Swift.Sendable {
     /// A list of DevEndpoint definitions.
     public var devEndpoints: [GlueClientTypes.DevEndpoint]?
     /// A list of DevEndpoints not found.
@@ -3163,7 +3163,7 @@ public struct BatchGetDevEndpointsOutput {
     }
 }
 
-public struct BatchGetJobsInput {
+public struct BatchGetJobsInput: Swift.Sendable {
     /// A list of job names, which might be the names returned from the ListJobs operation.
     /// This member is required.
     public var jobNames: [Swift.String]?
@@ -3177,8 +3177,9 @@ public struct BatchGetJobsInput {
 }
 
 extension GlueClientTypes {
+
     /// Specifies a Delta Lake data source that is registered in the Glue Data Catalog.
-    public struct CatalogDeltaSource {
+    public struct CatalogDeltaSource: Swift.Sendable {
         /// Specifies additional connection options.
         public var additionalDeltaOptions: [Swift.String: Swift.String]?
         /// The name of the database to read from.
@@ -3208,12 +3209,12 @@ extension GlueClientTypes {
             self.table = table
         }
     }
-
 }
 
 extension GlueClientTypes {
+
     /// Specifies a Hudi data source that is registered in the Glue Data Catalog.
-    public struct CatalogHudiSource {
+    public struct CatalogHudiSource: Swift.Sendable {
         /// Specifies additional connection options.
         public var additionalHudiOptions: [Swift.String: Swift.String]?
         /// The name of the database to read from.
@@ -3243,12 +3244,12 @@ extension GlueClientTypes {
             self.table = table
         }
     }
-
 }
 
 extension GlueClientTypes {
+
     /// Specifies options related to data preview for viewing a sample of your data.
-    public struct StreamingDataPreviewOptions {
+    public struct StreamingDataPreviewOptions: Swift.Sendable {
         /// The polling time in milliseconds.
         public var pollingTime: Swift.Int?
         /// The limit to the number of records polled.
@@ -3263,12 +3264,12 @@ extension GlueClientTypes {
             self.recordPollingLimit = recordPollingLimit
         }
     }
-
 }
 
 extension GlueClientTypes {
+
     /// Additional options for streaming.
-    public struct KafkaStreamingSourceOptions {
+    public struct KafkaStreamingSourceOptions: Swift.Sendable {
         /// When this option is set to 'true', the data output will contain an additional column named "__src_timestamp" that indicates the time when the corresponding record received by the topic. The default value is 'false'. This option is supported in Glue version 4.0 or later.
         public var addRecordTimestamp: Swift.String?
         /// The specific TopicPartitions to consume. You must specify at least one of "topicName", "assign" or "subscribePattern".
@@ -3351,12 +3352,12 @@ extension GlueClientTypes {
             self.topicName = topicName
         }
     }
-
 }
 
 extension GlueClientTypes {
+
     /// Specifies an Apache Kafka data store in the Data Catalog.
-    public struct CatalogKafkaSource {
+    public struct CatalogKafkaSource: Swift.Sendable {
         /// Specifies options related to data preview for viewing a sample of your data.
         public var dataPreviewOptions: GlueClientTypes.StreamingDataPreviewOptions?
         /// The name of the database to read from.
@@ -3394,12 +3395,11 @@ extension GlueClientTypes {
             self.windowSize = windowSize
         }
     }
-
 }
 
 extension GlueClientTypes {
 
-    public enum StartingPosition: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum StartingPosition: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case earliest
         case latest
         case timestamp
@@ -3433,8 +3433,9 @@ extension GlueClientTypes {
 }
 
 extension GlueClientTypes {
+
     /// Additional options for the Amazon Kinesis streaming data source.
-    public struct KinesisStreamingSourceOptions {
+    public struct KinesisStreamingSourceOptions: Swift.Sendable {
         /// Adds a time delay between two consecutive getRecords operations. The default value is "False". This option is only configurable for Glue version 2.0 and above.
         public var addIdleTimeBetweenReads: Swift.Bool?
         /// When this option is set to 'true', the data output will contain an additional column named "__src_timestamp" that indicates the time when the corresponding record received by the stream. The default value is 'false'. This option is supported in Glue version 4.0 or later.
@@ -3525,12 +3526,12 @@ extension GlueClientTypes {
             self.streamName = streamName
         }
     }
-
 }
 
 extension GlueClientTypes {
+
     /// Specifies a Kinesis data source in the Glue Data Catalog.
-    public struct CatalogKinesisSource {
+    public struct CatalogKinesisSource: Swift.Sendable {
         /// Additional options for data preview.
         public var dataPreviewOptions: GlueClientTypes.StreamingDataPreviewOptions?
         /// The name of the database to read from.
@@ -3568,12 +3569,12 @@ extension GlueClientTypes {
             self.windowSize = windowSize
         }
     }
-
 }
 
 extension GlueClientTypes {
+
     /// Specifies a data store in the Glue Data Catalog.
-    public struct CatalogSource {
+    public struct CatalogSource: Swift.Sendable {
         /// The name of the database to read from.
         /// This member is required.
         public var database: Swift.String?
@@ -3595,12 +3596,12 @@ extension GlueClientTypes {
             self.table = table
         }
     }
-
 }
 
 extension GlueClientTypes {
+
     /// Specifies a target that uses a Glue Data Catalog table.
-    public struct BasicCatalogTarget {
+    public struct BasicCatalogTarget: Swift.Sendable {
         /// The database that contains the table you want to use as the target. This database must already exist in the Data Catalog.
         /// This member is required.
         public var database: Swift.String?
@@ -3631,12 +3632,12 @@ extension GlueClientTypes {
             self.table = table
         }
     }
-
 }
 
 extension GlueClientTypes {
+
     /// Specifies a source generated with standard connection options.
-    public struct ConnectorDataSource {
+    public struct ConnectorDataSource: Swift.Sendable {
         /// The connectionType, as provided to the underlying Glue library. This node type supports the following connection types:
         ///
         /// * opensearch
@@ -3676,12 +3677,12 @@ extension GlueClientTypes {
             self.outputSchemas = outputSchemas
         }
     }
-
 }
 
 extension GlueClientTypes {
+
     /// Specifies a target generated with standard connection options.
-    public struct ConnectorDataTarget {
+    public struct ConnectorDataTarget: Swift.Sendable {
         /// The connectionType, as provided to the underlying Glue library. This node type supports the following connection types:
         ///
         /// * opensearch
@@ -3721,12 +3722,12 @@ extension GlueClientTypes {
             self.name = name
         }
     }
-
 }
 
 extension GlueClientTypes {
+
     /// Specifies a transform that uses custom code you provide to perform the data transformation. The output is a collection of DynamicFrames.
-    public struct CustomCode {
+    public struct CustomCode: Swift.Sendable {
         /// The name defined for the custom code node class.
         /// This member is required.
         public var className: Swift.String?
@@ -3757,12 +3758,11 @@ extension GlueClientTypes {
             self.outputSchemas = outputSchemas
         }
     }
-
 }
 
 extension GlueClientTypes {
 
-    public enum JDBCConnectionType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum JDBCConnectionType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case mysql
         case oracle
         case postgresql
@@ -3799,8 +3799,9 @@ extension GlueClientTypes {
 }
 
 extension GlueClientTypes {
+
     /// Specifies the direct JDBC source connection.
-    public struct DirectJDBCSource {
+    public struct DirectJDBCSource: Swift.Sendable {
         /// The connection name of the JDBC source.
         /// This member is required.
         public var connectionName: Swift.String?
@@ -3836,12 +3837,12 @@ extension GlueClientTypes {
             self.table = table
         }
     }
-
 }
 
 extension GlueClientTypes {
+
     /// Specifies an Apache Kafka data store.
-    public struct DirectKafkaSource {
+    public struct DirectKafkaSource: Swift.Sendable {
         /// Specifies options related to data preview for viewing a sample of your data.
         public var dataPreviewOptions: GlueClientTypes.StreamingDataPreviewOptions?
         /// Whether to automatically determine the schema from the incoming data.
@@ -3869,12 +3870,12 @@ extension GlueClientTypes {
             self.windowSize = windowSize
         }
     }
-
 }
 
 extension GlueClientTypes {
+
     /// Specifies a direct Amazon Kinesis data source.
-    public struct DirectKinesisSource {
+    public struct DirectKinesisSource: Swift.Sendable {
         /// Additional options for data preview.
         public var dataPreviewOptions: GlueClientTypes.StreamingDataPreviewOptions?
         /// Whether to automatically determine the schema from the incoming data.
@@ -3902,12 +3903,12 @@ extension GlueClientTypes {
             self.windowSize = windowSize
         }
     }
-
 }
 
 extension GlueClientTypes {
+
     /// Specifies a transform that removes rows of repeating data from a data set.
-    public struct DropDuplicates {
+    public struct DropDuplicates: Swift.Sendable {
         /// The name of the columns to be merged or removed if repeating.
         public var columns: [[Swift.String]]?
         /// The data inputs identified by their node names.
@@ -3928,12 +3929,12 @@ extension GlueClientTypes {
             self.name = name
         }
     }
-
 }
 
 extension GlueClientTypes {
+
     /// Specifies a transform that chooses the data property keys that you want to drop.
-    public struct DropFields {
+    public struct DropFields: Swift.Sendable {
         /// The data inputs identified by their node names.
         /// This member is required.
         public var inputs: [Swift.String]?
@@ -3955,12 +3956,12 @@ extension GlueClientTypes {
             self.paths = paths
         }
     }
-
 }
 
 extension GlueClientTypes {
+
     /// Represents whether certain values are recognized as null values for removal.
-    public struct NullCheckBoxList {
+    public struct NullCheckBoxList: Swift.Sendable {
         /// Specifies that an empty string is considered as a null value.
         public var isEmpty: Swift.Bool?
         /// Specifies that an integer value of -1 is considered as a null value.
@@ -3979,12 +3980,12 @@ extension GlueClientTypes {
             self.isNullString = isNullString
         }
     }
-
 }
 
 extension GlueClientTypes {
+
     /// A structure representing the datatype of the value.
-    public struct Datatype {
+    public struct Datatype: Swift.Sendable {
         /// The datatype of the value.
         /// This member is required.
         public var id: Swift.String?
@@ -4001,12 +4002,12 @@ extension GlueClientTypes {
             self.label = label
         }
     }
-
 }
 
 extension GlueClientTypes {
+
     /// Represents a custom null value such as a zeros or other value being used as a null placeholder unique to the dataset.
-    public struct NullValueField {
+    public struct NullValueField: Swift.Sendable {
         /// The datatype of the value.
         /// This member is required.
         public var datatype: GlueClientTypes.Datatype?
@@ -4023,12 +4024,12 @@ extension GlueClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension GlueClientTypes {
+
     /// Specifies a transform that removes columns from the dataset if all values in the column are 'null'. By default, Glue Studio will recognize null objects, but some values such as empty strings, strings that are "null", -1 integers or other placeholders such as zeros, are not automatically recognized as nulls.
-    public struct DropNullFields {
+    public struct DropNullFields: Swift.Sendable {
         /// The data inputs identified by their node names.
         /// This member is required.
         public var inputs: [Swift.String]?
@@ -4053,12 +4054,11 @@ extension GlueClientTypes {
             self.nullTextList = nullTextList
         }
     }
-
 }
 
 extension GlueClientTypes {
 
-    public enum ParamType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ParamType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case bool
         case complex
         case float
@@ -4101,8 +4101,9 @@ extension GlueClientTypes {
 }
 
 extension GlueClientTypes {
+
     /// Specifies the parameters in the config file of the dynamic transform.
-    public struct TransformConfigParameter {
+    public struct TransformConfigParameter: Swift.Sendable {
         /// Specifies whether the parameter is optional or not in the config file of the dynamic transform.
         public var isOptional: Swift.Bool?
         /// Specifies the list type of the parameter in the config file of the dynamic transform.
@@ -4139,12 +4140,12 @@ extension GlueClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension GlueClientTypes {
+
     /// Specifies the set of parameters needed to perform the dynamic transform.
-    public struct DynamicTransform {
+    public struct DynamicTransform: Swift.Sendable {
         /// Specifies the name of the function of the dynamic transform.
         /// This member is required.
         public var functionName: Swift.String?
@@ -4188,12 +4189,12 @@ extension GlueClientTypes {
             self.version = version
         }
     }
-
 }
 
 extension GlueClientTypes {
+
     /// Specifies a DynamoDB data source in the Glue Data Catalog.
-    public struct DynamoDBCatalogSource {
+    public struct DynamoDBCatalogSource: Swift.Sendable {
         /// The name of the database to read from.
         /// This member is required.
         public var database: Swift.String?
@@ -4215,12 +4216,11 @@ extension GlueClientTypes {
             self.table = table
         }
     }
-
 }
 
 extension GlueClientTypes {
 
-    public enum DQTransformOutput: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DQTransformOutput: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case evaluationresults
         case primaryinput
         case sdkUnknown(Swift.String)
@@ -4248,8 +4248,9 @@ extension GlueClientTypes {
 }
 
 extension GlueClientTypes {
+
     /// Options to configure how your data quality evaluation results are published.
-    public struct DQResultsPublishingOptions {
+    public struct DQResultsPublishingOptions: Swift.Sendable {
         /// Enable metrics for your data quality results.
         public var cloudWatchMetricsEnabled: Swift.Bool?
         /// The context of the evaluation.
@@ -4272,12 +4273,11 @@ extension GlueClientTypes {
             self.resultsS3Prefix = resultsS3Prefix
         }
     }
-
 }
 
 extension GlueClientTypes {
 
-    public enum DQStopJobOnFailureTiming: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DQStopJobOnFailureTiming: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case afterdataload
         case immediate
         case sdkUnknown(Swift.String)
@@ -4305,8 +4305,9 @@ extension GlueClientTypes {
 }
 
 extension GlueClientTypes {
+
     /// Options to configure how your job will stop if your data quality evaluation fails.
-    public struct DQStopJobOnFailureOptions {
+    public struct DQStopJobOnFailureOptions: Swift.Sendable {
         /// When to stop job if your data quality evaluation fails. Options are Immediate or AfterDataLoad.
         public var stopJobOnFailureTiming: GlueClientTypes.DQStopJobOnFailureTiming?
 
@@ -4317,12 +4318,12 @@ extension GlueClientTypes {
             self.stopJobOnFailureTiming = stopJobOnFailureTiming
         }
     }
-
 }
 
 extension GlueClientTypes {
+
     /// Specifies your data quality evaluation criteria.
-    public struct EvaluateDataQuality {
+    public struct EvaluateDataQuality: Swift.Sendable {
         /// The inputs of your data quality evaluation.
         /// This member is required.
         public var inputs: [Swift.String]?
@@ -4356,12 +4357,12 @@ extension GlueClientTypes {
             self.stopJobOnFailureOptions = stopJobOnFailureOptions
         }
     }
-
 }
 
 extension GlueClientTypes {
+
     /// Specifies your data quality evaluation criteria.
-    public struct EvaluateDataQualityMultiFrame {
+    public struct EvaluateDataQualityMultiFrame: Swift.Sendable {
         /// The aliases of all data sources except primary.
         public var additionalDataSources: [Swift.String: Swift.String]?
         /// Options to configure runtime behavior of the transform.
@@ -4399,12 +4400,12 @@ extension GlueClientTypes {
             self.stopJobOnFailureOptions = stopJobOnFailureOptions
         }
     }
-
 }
 
 extension GlueClientTypes {
+
     /// Specifies a transform that locates records in the dataset that have missing values and adds a new field with a value determined by imputation. The input data set is used to train the machine learning model that determines what the missing value should be.
-    public struct FillMissingValues {
+    public struct FillMissingValues: Swift.Sendable {
         /// A JSON path to a variable in the data structure for the dataset that is filled.
         public var filledPath: Swift.String?
         /// A JSON path to a variable in the data structure for the dataset that is imputed.
@@ -4430,12 +4431,11 @@ extension GlueClientTypes {
             self.name = name
         }
     }
-
 }
 
 extension GlueClientTypes {
 
-    public enum FilterOperation: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum FilterOperation: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case eq
         case gt
         case gte
@@ -4479,7 +4479,7 @@ extension GlueClientTypes {
 
 extension GlueClientTypes {
 
-    public enum FilterValueType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum FilterValueType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case columnextracted
         case constant
         case sdkUnknown(Swift.String)
@@ -4507,8 +4507,9 @@ extension GlueClientTypes {
 }
 
 extension GlueClientTypes {
+
     /// Represents a single entry in the list of values for a FilterExpression.
-    public struct FilterValue {
+    public struct FilterValue: Swift.Sendable {
         /// The type of filter value.
         /// This member is required.
         public var type: GlueClientTypes.FilterValueType?
@@ -4525,12 +4526,12 @@ extension GlueClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension GlueClientTypes {
+
     /// Specifies a filter expression.
-    public struct FilterExpression {
+    public struct FilterExpression: Swift.Sendable {
         /// Whether the expression is to be negated.
         public var negated: Swift.Bool?
         /// The type of operation to perform in the expression.
@@ -4551,12 +4552,11 @@ extension GlueClientTypes {
             self.values = values
         }
     }
-
 }
 
 extension GlueClientTypes {
 
-    public enum FilterLogicalOperator: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum FilterLogicalOperator: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case and
         case or
         case sdkUnknown(Swift.String)
@@ -4584,8 +4584,9 @@ extension GlueClientTypes {
 }
 
 extension GlueClientTypes {
+
     /// Specifies a transform that splits a dataset into two, based on a filter condition.
-    public struct Filter {
+    public struct Filter: Swift.Sendable {
         /// Specifies a filter expression.
         /// This member is required.
         public var filters: [GlueClientTypes.FilterExpression]?
@@ -4612,12 +4613,12 @@ extension GlueClientTypes {
             self.name = name
         }
     }
-
 }
 
 extension GlueClientTypes {
+
     /// Specifies additional connection options for the Amazon S3 data store.
-    public struct S3SourceAdditionalOptions {
+    public struct S3SourceAdditionalOptions: Swift.Sendable {
         /// Sets the upper limit for the target number of files that will be processed.
         public var boundedFiles: Swift.Int?
         /// Sets the upper limit for the target size of the dataset in bytes that will be processed.
@@ -4632,12 +4633,12 @@ extension GlueClientTypes {
             self.boundedSize = boundedSize
         }
     }
-
 }
 
 extension GlueClientTypes {
+
     /// Specifies the data store in the governed Glue Data Catalog.
-    public struct GovernedCatalogSource {
+    public struct GovernedCatalogSource: Swift.Sendable {
         /// Specifies additional connection options.
         public var additionalOptions: GlueClientTypes.S3SourceAdditionalOptions?
         /// The database to read from.
@@ -4667,12 +4668,11 @@ extension GlueClientTypes {
             self.table = table
         }
     }
-
 }
 
 extension GlueClientTypes {
 
-    public enum UpdateCatalogBehavior: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum UpdateCatalogBehavior: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case log
         case updateInDatabase
         case sdkUnknown(Swift.String)
@@ -4700,8 +4700,9 @@ extension GlueClientTypes {
 }
 
 extension GlueClientTypes {
+
     /// A policy that specifies update behavior for the crawler.
-    public struct CatalogSchemaChangePolicy {
+    public struct CatalogSchemaChangePolicy: Swift.Sendable {
         /// Whether to use the specified update behavior when the crawler finds a changed schema.
         public var enableUpdateCatalog: Swift.Bool?
         /// The update behavior when the crawler finds a changed schema.
@@ -4716,12 +4717,12 @@ extension GlueClientTypes {
             self.updateBehavior = updateBehavior
         }
     }
-
 }
 
 extension GlueClientTypes {
+
     /// Specifies a data target that writes to Amazon S3 using the Glue Data Catalog.
-    public struct GovernedCatalogTarget {
+    public struct GovernedCatalogTarget: Swift.Sendable {
         /// The name of the database to write to.
         /// This member is required.
         public var database: Swift.String?
@@ -4756,12 +4757,11 @@ extension GlueClientTypes {
             self.table = table
         }
     }
-
 }
 
 extension GlueClientTypes {
 
-    public enum JDBCDataType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum JDBCDataType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case array
         case bigint
         case binary
@@ -4901,7 +4901,7 @@ extension GlueClientTypes {
 
 extension GlueClientTypes {
 
-    public enum GlueRecordType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum GlueRecordType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case bigdecimal
         case byte
         case date
@@ -4953,8 +4953,9 @@ extension GlueClientTypes {
 }
 
 extension GlueClientTypes {
+
     /// Additional connection options for the connector.
-    public struct JDBCConnectorOptions {
+    public struct JDBCConnectorOptions: Swift.Sendable {
         /// Custom data type mapping that builds a mapping from a JDBC data type to an Glue data type. For example, the option "dataTypeMapping":{"FLOAT":"STRING"} maps data fields of JDBC type FLOAT into the Java String type by calling the ResultSet.getString() method of the driver, and uses it to build the Glue record. The ResultSet object is implemented by each driver, so the behavior is specific to the driver you use. Refer to the documentation for your JDBC driver to understand how the driver performs the conversions.
         public var dataTypeMapping: [Swift.String: GlueClientTypes.GlueRecordType]?
         /// Extra condition clause to filter data from source. For example: BillingCity='Mountain View' When using a query instead of a table name, you should validate that the query works with the specified filterPredicate.
@@ -4993,12 +4994,12 @@ extension GlueClientTypes {
             self.upperBound = upperBound
         }
     }
-
 }
 
 extension GlueClientTypes {
+
     /// Specifies a connector to a JDBC data source.
-    public struct JDBCConnectorSource {
+    public struct JDBCConnectorSource: Swift.Sendable {
         /// Additional connection options for the connector.
         public var additionalOptions: GlueClientTypes.JDBCConnectorOptions?
         /// The name of the connection that is associated with the connector.
@@ -5041,12 +5042,12 @@ extension GlueClientTypes {
             self.query = query
         }
     }
-
 }
 
 extension GlueClientTypes {
+
     /// Specifies a data target that writes to Amazon S3 in Apache Parquet columnar storage.
-    public struct JDBCConnectorTarget {
+    public struct JDBCConnectorTarget: Swift.Sendable {
         /// Additional connection options for the connector.
         public var additionalOptions: [Swift.String: Swift.String]?
         /// The name of the connection that is associated with the connector.
@@ -5091,12 +5092,12 @@ extension GlueClientTypes {
             self.outputSchemas = outputSchemas
         }
     }
-
 }
 
 extension GlueClientTypes {
+
     /// Specifies a column to be joined.
-    public struct JoinColumn {
+    public struct JoinColumn: Swift.Sendable {
         /// The column to be joined.
         /// This member is required.
         public var from: Swift.String?
@@ -5113,12 +5114,11 @@ extension GlueClientTypes {
             self.keys = keys
         }
     }
-
 }
 
 extension GlueClientTypes {
 
-    public enum JoinType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum JoinType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case equijoin
         case `left`
         case leftAnti
@@ -5158,8 +5158,9 @@ extension GlueClientTypes {
 }
 
 extension GlueClientTypes {
+
     /// Specifies a transform that joins two datasets into one dataset using a comparison phrase on the specified data property keys. You can use inner, outer, left, right, left semi, and left anti joins.
-    public struct Join {
+    public struct Join: Swift.Sendable {
         /// A list of the two columns to be joined.
         /// This member is required.
         public var columns: [GlueClientTypes.JoinColumn]?
@@ -5186,12 +5187,12 @@ extension GlueClientTypes {
             self.name = name
         }
     }
-
 }
 
 extension GlueClientTypes {
+
     /// Specifies a transform that merges a DynamicFrame with a staging DynamicFrame based on the specified primary keys to identify records. Duplicate records (records with the same primary keys) are not de-duplicated.
-    public struct Merge {
+    public struct Merge: Swift.Sendable {
         /// The data inputs identified by their node names.
         /// This member is required.
         public var inputs: [Swift.String]?
@@ -5218,12 +5219,12 @@ extension GlueClientTypes {
             self.source = source
         }
     }
-
 }
 
 extension GlueClientTypes {
+
     /// Specifies a Microsoft SQL server data source in the Glue Data Catalog.
-    public struct MicrosoftSQLServerCatalogSource {
+    public struct MicrosoftSQLServerCatalogSource: Swift.Sendable {
         /// The name of the database to read from.
         /// This member is required.
         public var database: Swift.String?
@@ -5245,12 +5246,12 @@ extension GlueClientTypes {
             self.table = table
         }
     }
-
 }
 
 extension GlueClientTypes {
+
     /// Specifies a target that uses Microsoft SQL.
-    public struct MicrosoftSQLServerCatalogTarget {
+    public struct MicrosoftSQLServerCatalogTarget: Swift.Sendable {
         /// The name of the database to write to.
         /// This member is required.
         public var database: Swift.String?
@@ -5277,12 +5278,12 @@ extension GlueClientTypes {
             self.table = table
         }
     }
-
 }
 
 extension GlueClientTypes {
+
     /// Specifies a MySQL data source in the Glue Data Catalog.
-    public struct MySQLCatalogSource {
+    public struct MySQLCatalogSource: Swift.Sendable {
         /// The name of the database to read from.
         /// This member is required.
         public var database: Swift.String?
@@ -5304,12 +5305,12 @@ extension GlueClientTypes {
             self.table = table
         }
     }
-
 }
 
 extension GlueClientTypes {
+
     /// Specifies a target that uses MySQL.
-    public struct MySQLCatalogTarget {
+    public struct MySQLCatalogTarget: Swift.Sendable {
         /// The name of the database to write to.
         /// This member is required.
         public var database: Swift.String?
@@ -5336,12 +5337,12 @@ extension GlueClientTypes {
             self.table = table
         }
     }
-
 }
 
 extension GlueClientTypes {
+
     /// Specifies an Oracle data source in the Glue Data Catalog.
-    public struct OracleSQLCatalogSource {
+    public struct OracleSQLCatalogSource: Swift.Sendable {
         /// The name of the database to read from.
         /// This member is required.
         public var database: Swift.String?
@@ -5363,12 +5364,12 @@ extension GlueClientTypes {
             self.table = table
         }
     }
-
 }
 
 extension GlueClientTypes {
+
     /// Specifies a target that uses Oracle SQL.
-    public struct OracleSQLCatalogTarget {
+    public struct OracleSQLCatalogTarget: Swift.Sendable {
         /// The name of the database to write to.
         /// This member is required.
         public var database: Swift.String?
@@ -5395,12 +5396,11 @@ extension GlueClientTypes {
             self.table = table
         }
     }
-
 }
 
 extension GlueClientTypes {
 
-    public enum PiiType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum PiiType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case columnaudit
         case columnmasking
         case rowaudit
@@ -5434,8 +5434,9 @@ extension GlueClientTypes {
 }
 
 extension GlueClientTypes {
+
     /// Specifies a transform that identifies, removes or masks PII data.
-    public struct PIIDetection {
+    public struct PIIDetection: Swift.Sendable {
         /// Indicates the types of entities the PIIDetection transform will identify as PII data. PII type entities include: PERSON_NAME, DATE, USA_SNN, EMAIL, USA_ITIN, USA_PASSPORT_NUMBER, PHONE_NUMBER, BANK_ACCOUNT, IP_ADDRESS, MAC_ADDRESS, USA_CPT_CODE, USA_HCPCS_CODE, USA_NATIONAL_DRUG_CODE, USA_MEDICARE_BENEFICIARY_IDENTIFIER, USA_HEALTH_INSURANCE_CLAIM_NUMBER,CREDIT_CARD,USA_NATIONAL_PROVIDER_IDENTIFIER,USA_DEA_NUMBER,USA_DRIVING_LICENSE
         /// This member is required.
         public var entityTypesToDetect: [Swift.String]?
@@ -5478,12 +5479,12 @@ extension GlueClientTypes {
             self.thresholdFraction = thresholdFraction
         }
     }
-
 }
 
 extension GlueClientTypes {
+
     /// Specifies a PostgresSQL data source in the Glue Data Catalog.
-    public struct PostgreSQLCatalogSource {
+    public struct PostgreSQLCatalogSource: Swift.Sendable {
         /// The name of the database to read from.
         /// This member is required.
         public var database: Swift.String?
@@ -5505,12 +5506,12 @@ extension GlueClientTypes {
             self.table = table
         }
     }
-
 }
 
 extension GlueClientTypes {
+
     /// Specifies a target that uses Postgres SQL.
-    public struct PostgreSQLCatalogTarget {
+    public struct PostgreSQLCatalogTarget: Swift.Sendable {
         /// The name of the database to write to.
         /// This member is required.
         public var database: Swift.String?
@@ -5537,12 +5538,12 @@ extension GlueClientTypes {
             self.table = table
         }
     }
-
 }
 
 extension GlueClientTypes {
+
     /// A reference to a Glue DataBrew recipe.
-    public struct RecipeReference {
+    public struct RecipeReference: Swift.Sendable {
         /// The ARN of the DataBrew recipe.
         /// This member is required.
         public var recipeArn: Swift.String?
@@ -5559,12 +5560,12 @@ extension GlueClientTypes {
             self.recipeVersion = recipeVersion
         }
     }
-
 }
 
 extension GlueClientTypes {
+
     /// Actions defined in the Glue Studio data preparation recipe node.
-    public struct RecipeAction {
+    public struct RecipeAction: Swift.Sendable {
         /// The operation of the recipe action.
         /// This member is required.
         public var operation: Swift.String?
@@ -5580,12 +5581,12 @@ extension GlueClientTypes {
             self.parameters = parameters
         }
     }
-
 }
 
 extension GlueClientTypes {
+
     /// Condition expression defined in the Glue Studio data preparation recipe node.
-    public struct ConditionExpression {
+    public struct ConditionExpression: Swift.Sendable {
         /// The condition of the condition expression.
         /// This member is required.
         public var condition: Swift.String?
@@ -5606,12 +5607,12 @@ extension GlueClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension GlueClientTypes {
+
     /// A recipe step used in a Glue Studio data preparation recipe node.
-    public struct RecipeStep {
+    public struct RecipeStep: Swift.Sendable {
         /// The transformation action of the recipe step.
         /// This member is required.
         public var action: GlueClientTypes.RecipeAction?
@@ -5627,12 +5628,12 @@ extension GlueClientTypes {
             self.conditionExpressions = conditionExpressions
         }
     }
-
 }
 
 extension GlueClientTypes {
+
     /// A Glue Studio node that uses a Glue DataBrew recipe in Glue jobs.
-    public struct Recipe {
+    public struct Recipe: Swift.Sendable {
         /// The nodes that are inputs to the recipe node, identified by id.
         /// This member is required.
         public var inputs: [Swift.String]?
@@ -5657,12 +5658,12 @@ extension GlueClientTypes {
             self.recipeSteps = recipeSteps
         }
     }
-
 }
 
 extension GlueClientTypes {
+
     /// Specifies an Amazon Redshift data store.
-    public struct RedshiftSource {
+    public struct RedshiftSource: Swift.Sendable {
         /// The database to read from.
         /// This member is required.
         public var database: Swift.String?
@@ -5692,12 +5693,12 @@ extension GlueClientTypes {
             self.tmpDirIAMRole = tmpDirIAMRole
         }
     }
-
 }
 
 extension GlueClientTypes {
+
     /// The options to configure an upsert operation when writing to a Redshift target .
-    public struct UpsertRedshiftTargetOptions {
+    public struct UpsertRedshiftTargetOptions: Swift.Sendable {
         /// The name of the connection to use to write to Redshift.
         public var connectionName: Swift.String?
         /// The physical location of the Redshift table.
@@ -5716,12 +5717,12 @@ extension GlueClientTypes {
             self.upsertKeys = upsertKeys
         }
     }
-
 }
 
 extension GlueClientTypes {
+
     /// Specifies a target that uses Amazon Redshift.
-    public struct RedshiftTarget {
+    public struct RedshiftTarget: Swift.Sendable {
         /// The name of the database to write to.
         /// This member is required.
         public var database: Swift.String?
@@ -5760,12 +5761,12 @@ extension GlueClientTypes {
             self.upsertRedshiftOptions = upsertRedshiftOptions
         }
     }
-
 }
 
 extension GlueClientTypes {
+
     /// Specifies a Relational database data source in the Glue Data Catalog.
-    public struct RelationalCatalogSource {
+    public struct RelationalCatalogSource: Swift.Sendable {
         /// The name of the database to read from.
         /// This member is required.
         public var database: Swift.String?
@@ -5787,12 +5788,12 @@ extension GlueClientTypes {
             self.table = table
         }
     }
-
 }
 
 extension GlueClientTypes {
+
     /// Specifies a transform that renames a single data property key.
-    public struct RenameField {
+    public struct RenameField: Swift.Sendable {
         /// The data inputs identified by their node names.
         /// This member is required.
         public var inputs: [Swift.String]?
@@ -5819,12 +5820,12 @@ extension GlueClientTypes {
             self.targetPath = targetPath
         }
     }
-
 }
 
 extension GlueClientTypes {
+
     /// Specifies a Delta Lake data source that is registered in the Glue Data Catalog. The data source must be stored in Amazon S3.
-    public struct S3CatalogDeltaSource {
+    public struct S3CatalogDeltaSource: Swift.Sendable {
         /// Specifies additional connection options.
         public var additionalDeltaOptions: [Swift.String: Swift.String]?
         /// The name of the database to read from.
@@ -5854,12 +5855,12 @@ extension GlueClientTypes {
             self.table = table
         }
     }
-
 }
 
 extension GlueClientTypes {
+
     /// Specifies a Hudi data source that is registered in the Glue Data Catalog. The Hudi data source must be stored in Amazon S3.
-    public struct S3CatalogHudiSource {
+    public struct S3CatalogHudiSource: Swift.Sendable {
         /// Specifies additional connection options.
         public var additionalHudiOptions: [Swift.String: Swift.String]?
         /// The name of the database to read from.
@@ -5889,12 +5890,12 @@ extension GlueClientTypes {
             self.table = table
         }
     }
-
 }
 
 extension GlueClientTypes {
+
     /// Specifies an Amazon S3 data store in the Glue Data Catalog.
-    public struct S3CatalogSource {
+    public struct S3CatalogSource: Swift.Sendable {
         /// Specifies additional connection options.
         public var additionalOptions: GlueClientTypes.S3SourceAdditionalOptions?
         /// The database to read from.
@@ -5924,12 +5925,12 @@ extension GlueClientTypes {
             self.table = table
         }
     }
-
 }
 
 extension GlueClientTypes {
+
     /// Specifies a data target that writes to Amazon S3 using the Glue Data Catalog.
-    public struct S3CatalogTarget {
+    public struct S3CatalogTarget: Swift.Sendable {
         /// The name of the database to write to.
         /// This member is required.
         public var database: Swift.String?
@@ -5964,12 +5965,12 @@ extension GlueClientTypes {
             self.table = table
         }
     }
-
 }
 
 extension GlueClientTypes {
+
     /// Specifies additional connection options for the Amazon S3 data store.
-    public struct S3DirectSourceAdditionalOptions {
+    public struct S3DirectSourceAdditionalOptions: Swift.Sendable {
         /// Sets the upper limit for the target number of files that will be processed.
         public var boundedFiles: Swift.Int?
         /// Sets the upper limit for the target size of the dataset in bytes that will be processed.
@@ -5992,12 +5993,11 @@ extension GlueClientTypes {
             self.samplePath = samplePath
         }
     }
-
 }
 
 extension GlueClientTypes {
 
-    public enum CompressionType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum CompressionType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case bzip2
         case gzip
         case sdkUnknown(Swift.String)
@@ -6026,7 +6026,7 @@ extension GlueClientTypes {
 
 extension GlueClientTypes {
 
-    public enum QuoteChar: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum QuoteChar: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case disabled
         case quillemet
         case quote
@@ -6061,7 +6061,7 @@ extension GlueClientTypes {
 
 extension GlueClientTypes {
 
-    public enum Separator: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Separator: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case comma
         case ctrla
         case pipe
@@ -6098,8 +6098,9 @@ extension GlueClientTypes {
 }
 
 extension GlueClientTypes {
+
     /// Specifies a command-separated value (CSV) data store stored in Amazon S3.
-    public struct S3CsvSource {
+    public struct S3CsvSource: Swift.Sendable {
         /// Specifies additional connection options.
         public var additionalOptions: GlueClientTypes.S3DirectSourceAdditionalOptions?
         /// Specifies how the data is compressed. This is generally not necessary if the data has a standard file extension. Possible values are "gzip" and "bzip").
@@ -6186,12 +6187,12 @@ extension GlueClientTypes {
             self.writeHeader = writeHeader
         }
     }
-
 }
 
 extension GlueClientTypes {
+
     /// Specifies a target that writes to a Delta Lake data source in the Glue Data Catalog.
-    public struct S3DeltaCatalogTarget {
+    public struct S3DeltaCatalogTarget: Swift.Sendable {
         /// Specifies additional connection options for the connector.
         public var additionalOptions: [Swift.String: Swift.String]?
         /// The name of the database to write to.
@@ -6230,12 +6231,11 @@ extension GlueClientTypes {
             self.table = table
         }
     }
-
 }
 
 extension GlueClientTypes {
 
-    public enum DeltaTargetCompressionType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DeltaTargetCompressionType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case snappy
         case uncompressed
         case sdkUnknown(Swift.String)
@@ -6264,7 +6264,7 @@ extension GlueClientTypes {
 
 extension GlueClientTypes {
 
-    public enum TargetFormat: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum TargetFormat: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case avro
         case csv
         case delta
@@ -6307,8 +6307,9 @@ extension GlueClientTypes {
 }
 
 extension GlueClientTypes {
+
     /// A policy that specifies update behavior for the crawler.
-    public struct DirectSchemaChangePolicy {
+    public struct DirectSchemaChangePolicy: Swift.Sendable {
         /// Specifies the database that the schema change policy applies to.
         public var database: Swift.String?
         /// Whether to use the specified update behavior when the crawler finds a changed schema.
@@ -6331,12 +6332,12 @@ extension GlueClientTypes {
             self.updateBehavior = updateBehavior
         }
     }
-
 }
 
 extension GlueClientTypes {
+
     /// Specifies a target that writes to a Delta Lake data source in Amazon S3.
-    public struct S3DeltaDirectTarget {
+    public struct S3DeltaDirectTarget: Swift.Sendable {
         /// Specifies additional connection options for the connector.
         public var additionalOptions: [Swift.String: Swift.String]?
         /// Specifies how the data is compressed. This is generally not necessary if the data has a standard file extension. Possible values are "gzip" and "bzip").
@@ -6380,12 +6381,12 @@ extension GlueClientTypes {
             self.schemaChangePolicy = schemaChangePolicy
         }
     }
-
 }
 
 extension GlueClientTypes {
+
     /// Specifies a Delta Lake data source stored in Amazon S3.
-    public struct S3DeltaSource {
+    public struct S3DeltaSource: Swift.Sendable {
         /// Specifies additional connection options.
         public var additionalDeltaOptions: [Swift.String: Swift.String]?
         /// Specifies additional options for the connector.
@@ -6414,12 +6415,12 @@ extension GlueClientTypes {
             self.paths = paths
         }
     }
-
 }
 
 extension GlueClientTypes {
+
     /// Specifies a data target that writes to Amazon S3.
-    public struct S3DirectTarget {
+    public struct S3DirectTarget: Swift.Sendable {
         /// Specifies how the data is compressed. This is generally not necessary if the data has a standard file extension. Possible values are "gzip" and "bzip").
         public var compression: Swift.String?
         /// Specifies the data output format for the target.
@@ -6458,12 +6459,11 @@ extension GlueClientTypes {
             self.schemaChangePolicy = schemaChangePolicy
         }
     }
-
 }
 
 extension GlueClientTypes {
 
-    public enum ParquetCompressionType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ParquetCompressionType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case gzip
         case lzo
         case `none`
@@ -6500,8 +6500,9 @@ extension GlueClientTypes {
 }
 
 extension GlueClientTypes {
+
     /// Specifies a data target that writes to Amazon S3 in Apache Parquet columnar storage.
-    public struct S3GlueParquetTarget {
+    public struct S3GlueParquetTarget: Swift.Sendable {
         /// Specifies how the data is compressed. This is generally not necessary if the data has a standard file extension. Possible values are "gzip" and "bzip").
         public var compression: GlueClientTypes.ParquetCompressionType?
         /// The nodes that are inputs to the data target.
@@ -6535,12 +6536,12 @@ extension GlueClientTypes {
             self.schemaChangePolicy = schemaChangePolicy
         }
     }
-
 }
 
 extension GlueClientTypes {
+
     /// Specifies a target that writes to a Hudi data source in the Glue Data Catalog.
-    public struct S3HudiCatalogTarget {
+    public struct S3HudiCatalogTarget: Swift.Sendable {
         /// Specifies additional connection options for the connector.
         /// This member is required.
         public var additionalOptions: [Swift.String: Swift.String]?
@@ -6580,12 +6581,11 @@ extension GlueClientTypes {
             self.table = table
         }
     }
-
 }
 
 extension GlueClientTypes {
 
-    public enum HudiTargetCompressionType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum HudiTargetCompressionType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case gzip
         case lzo
         case snappy
@@ -6619,8 +6619,9 @@ extension GlueClientTypes {
 }
 
 extension GlueClientTypes {
+
     /// Specifies a target that writes to a Hudi data source in Amazon S3.
-    public struct S3HudiDirectTarget {
+    public struct S3HudiDirectTarget: Swift.Sendable {
         /// Specifies additional connection options for the connector.
         /// This member is required.
         public var additionalOptions: [Swift.String: Swift.String]?
@@ -6665,12 +6666,12 @@ extension GlueClientTypes {
             self.schemaChangePolicy = schemaChangePolicy
         }
     }
-
 }
 
 extension GlueClientTypes {
+
     /// Specifies a Hudi data source stored in Amazon S3.
-    public struct S3HudiSource {
+    public struct S3HudiSource: Swift.Sendable {
         /// Specifies additional connection options.
         public var additionalHudiOptions: [Swift.String: Swift.String]?
         /// Specifies additional options for the connector.
@@ -6699,12 +6700,12 @@ extension GlueClientTypes {
             self.paths = paths
         }
     }
-
 }
 
 extension GlueClientTypes {
+
     /// Specifies a JSON data store stored in Amazon S3.
-    public struct S3JsonSource {
+    public struct S3JsonSource: Swift.Sendable {
         /// Specifies additional connection options.
         public var additionalOptions: GlueClientTypes.S3DirectSourceAdditionalOptions?
         /// Specifies how the data is compressed. This is generally not necessary if the data has a standard file extension. Possible values are "gzip" and "bzip").
@@ -6765,12 +6766,12 @@ extension GlueClientTypes {
             self.recurse = recurse
         }
     }
-
 }
 
 extension GlueClientTypes {
+
     /// Specifies an Apache Parquet data store stored in Amazon S3.
-    public struct S3ParquetSource {
+    public struct S3ParquetSource: Swift.Sendable {
         /// Specifies additional connection options.
         public var additionalOptions: GlueClientTypes.S3DirectSourceAdditionalOptions?
         /// Specifies how the data is compressed. This is generally not necessary if the data has a standard file extension. Possible values are "gzip" and "bzip").
@@ -6823,12 +6824,12 @@ extension GlueClientTypes {
             self.recurse = recurse
         }
     }
-
 }
 
 extension GlueClientTypes {
+
     /// Specifies a transform that chooses the data property keys that you want to keep.
-    public struct SelectFields {
+    public struct SelectFields: Swift.Sendable {
         /// The data inputs identified by their node names.
         /// This member is required.
         public var inputs: [Swift.String]?
@@ -6850,12 +6851,12 @@ extension GlueClientTypes {
             self.paths = paths
         }
     }
-
 }
 
 extension GlueClientTypes {
+
     /// Specifies a transform that chooses one DynamicFrame from a collection of DynamicFrames. The output is the selected DynamicFrame
-    public struct SelectFromCollection {
+    public struct SelectFromCollection: Swift.Sendable {
         /// The index for the DynamicFrame to be selected.
         /// This member is required.
         public var index: Swift.Int
@@ -6877,12 +6878,12 @@ extension GlueClientTypes {
             self.name = name
         }
     }
-
 }
 
 extension GlueClientTypes {
+
     /// Specifies configuration for Snowflake nodes in Glue Studio.
-    public struct SnowflakeNodeData {
+    public struct SnowflakeNodeData: Swift.Sendable {
         /// Specifies what action to take when writing to a table with preexisting data. Valid values:  append, merge, truncate, drop.
         public var action: Swift.String?
         /// Specifies additional options passed to the Snowflake connector. If options are specified elsewhere in this node, this will take precedence.
@@ -6973,12 +6974,12 @@ extension GlueClientTypes {
             self.upsert = upsert
         }
     }
-
 }
 
 extension GlueClientTypes {
+
     /// Specifies a Snowflake data source.
-    public struct SnowflakeSource {
+    public struct SnowflakeSource: Swift.Sendable {
         /// Configuration for the Snowflake data source.
         /// This member is required.
         public var data: GlueClientTypes.SnowflakeNodeData?
@@ -6999,12 +7000,12 @@ extension GlueClientTypes {
             self.outputSchemas = outputSchemas
         }
     }
-
 }
 
 extension GlueClientTypes {
+
     /// Specifies a Snowflake target.
-    public struct SnowflakeTarget {
+    public struct SnowflakeTarget: Swift.Sendable {
         /// Specifies the data of the Snowflake target node.
         /// This member is required.
         public var data: GlueClientTypes.SnowflakeNodeData?
@@ -7025,12 +7026,12 @@ extension GlueClientTypes {
             self.name = name
         }
     }
-
 }
 
 extension GlueClientTypes {
+
     /// Specifies a connector to an Apache Spark data source.
-    public struct SparkConnectorSource {
+    public struct SparkConnectorSource: Swift.Sendable {
         /// Additional connection options for the connector.
         public var additionalOptions: [Swift.String: Swift.String]?
         /// The name of the connection that is associated with the connector.
@@ -7065,12 +7066,12 @@ extension GlueClientTypes {
             self.outputSchemas = outputSchemas
         }
     }
-
 }
 
 extension GlueClientTypes {
+
     /// Specifies a target that uses an Apache Spark connector.
-    public struct SparkConnectorTarget {
+    public struct SparkConnectorTarget: Swift.Sendable {
         /// Additional connection options for the connector.
         public var additionalOptions: [Swift.String: Swift.String]?
         /// The name of a connection for an Apache Spark connector.
@@ -7110,12 +7111,12 @@ extension GlueClientTypes {
             self.outputSchemas = outputSchemas
         }
     }
-
 }
 
 extension GlueClientTypes {
+
     /// Represents a single entry in the list of values for SqlAliases.
-    public struct SqlAlias {
+    public struct SqlAlias: Swift.Sendable {
         /// A temporary name given to a table, or a column in a table.
         /// This member is required.
         public var alias: Swift.String?
@@ -7132,12 +7133,12 @@ extension GlueClientTypes {
             self.from = from
         }
     }
-
 }
 
 extension GlueClientTypes {
+
     /// Specifies a transform where you enter a SQL query using Spark SQL syntax to transform the data. The output is a single DynamicFrame.
-    public struct SparkSQL {
+    public struct SparkSQL: Swift.Sendable {
         /// The data inputs identified by their node names. You can associate a table name with each input node to use in the SQL query. The name you choose must meet the Spark SQL naming restrictions.
         /// This member is required.
         public var inputs: [Swift.String]?
@@ -7168,12 +7169,12 @@ extension GlueClientTypes {
             self.sqlQuery = sqlQuery
         }
     }
-
 }
 
 extension GlueClientTypes {
+
     /// Specifies a transform that writes samples of the data to an Amazon S3 bucket.
-    public struct Spigot {
+    public struct Spigot: Swift.Sendable {
         /// The data inputs identified by their node names.
         /// This member is required.
         public var inputs: [Swift.String]?
@@ -7203,12 +7204,12 @@ extension GlueClientTypes {
             self.topk = topk
         }
     }
-
 }
 
 extension GlueClientTypes {
+
     /// Specifies a transform that splits data property keys into two DynamicFrames. The output is a collection of DynamicFrames: one with selected data property keys, and one with the remaining data property keys.
-    public struct SplitFields {
+    public struct SplitFields: Swift.Sendable {
         /// The data inputs identified by their node names.
         /// This member is required.
         public var inputs: [Swift.String]?
@@ -7230,12 +7231,11 @@ extension GlueClientTypes {
             self.paths = paths
         }
     }
-
 }
 
 extension GlueClientTypes {
 
-    public enum UnionType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum UnionType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case all
         case distinct
         case sdkUnknown(Swift.String)
@@ -7263,8 +7263,9 @@ extension GlueClientTypes {
 }
 
 extension GlueClientTypes {
+
     /// Specifies a transform that combines the rows from two or more datasets into a single result.
-    public struct Union {
+    public struct Union: Swift.Sendable {
         /// The node ID inputs to the transform.
         /// This member is required.
         public var inputs: [Swift.String]?
@@ -7286,12 +7287,12 @@ extension GlueClientTypes {
             self.unionType = unionType
         }
     }
-
 }
 
 extension GlueClientTypes {
+
     /// Specifies code that runs when a job is run.
-    public struct JobCommand {
+    public struct JobCommand: Swift.Sendable {
         /// The name of the job command. For an Apache Spark ETL job, this must be glueetl. For a Python shell job, it must be pythonshell. For an Apache Spark streaming ETL job, this must be gluestreaming. For a Ray job, this must be glueray.
         public var name: Swift.String?
         /// The Python version being used to run a Python shell job. Allowed values are 2 or 3.
@@ -7314,12 +7315,12 @@ extension GlueClientTypes {
             self.scriptLocation = scriptLocation
         }
     }
-
 }
 
 extension GlueClientTypes {
+
     /// Specifies the connections used by a job.
-    public struct ConnectionsList {
+    public struct ConnectionsList: Swift.Sendable {
         /// A list of connections used by the job.
         public var connections: [Swift.String]?
 
@@ -7330,12 +7331,11 @@ extension GlueClientTypes {
             self.connections = connections
         }
     }
-
 }
 
 extension GlueClientTypes {
 
-    public enum ExecutionClass: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ExecutionClass: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case flex
         case standard
         case sdkUnknown(Swift.String)
@@ -7363,8 +7363,9 @@ extension GlueClientTypes {
 }
 
 extension GlueClientTypes {
+
     /// An execution property of a job.
-    public struct ExecutionProperty {
+    public struct ExecutionProperty: Swift.Sendable {
         /// The maximum number of concurrent runs allowed for the job. The default is 1. An error is returned when this threshold is reached. The maximum value you can specify is controlled by a service limit.
         public var maxConcurrentRuns: Swift.Int
 
@@ -7375,12 +7376,11 @@ extension GlueClientTypes {
             self.maxConcurrentRuns = maxConcurrentRuns
         }
     }
-
 }
 
 extension GlueClientTypes {
 
-    public enum JobMode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum JobMode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case notebook
         case script
         case visual
@@ -7412,7 +7412,7 @@ extension GlueClientTypes {
 
 extension GlueClientTypes {
 
-    public enum SourceControlAuthStrategy: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SourceControlAuthStrategy: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case awsSecretsManager
         case personalAccessToken
         case sdkUnknown(Swift.String)
@@ -7441,7 +7441,7 @@ extension GlueClientTypes {
 
 extension GlueClientTypes {
 
-    public enum SourceControlProvider: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SourceControlProvider: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case awsCodeCommit
         case bitbucket
         case github
@@ -7475,8 +7475,9 @@ extension GlueClientTypes {
 }
 
 extension GlueClientTypes {
+
     /// The details for a source control configuration for a job, allowing synchronization of job artifacts to or from a remote repository.
-    public struct SourceControlDetails {
+    public struct SourceControlDetails: Swift.Sendable {
         /// The type of authentication, which can be an authentication token stored in Amazon Web Services Secrets Manager, or a personal access token.
         public var authStrategy: GlueClientTypes.SourceControlAuthStrategy?
         /// The value of an authorization token.
@@ -7515,12 +7516,11 @@ extension GlueClientTypes {
             self.repository = repository
         }
     }
-
 }
 
 extension GlueClientTypes {
 
-    public enum FederationSourceErrorCode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum FederationSourceErrorCode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case accessdeniedexception
         case entitynotfoundexception
         case internalserviceexception
@@ -7650,7 +7650,7 @@ public struct InvalidStateException: ClientRuntime.ModeledError, AWSClientRuntim
     }
 }
 
-public struct BatchGetPartitionInput {
+public struct BatchGetPartitionInput: Swift.Sendable {
     /// The ID of the Data Catalog where the partitions in question reside. If none is supplied, the Amazon Web Services account ID is used by default.
     public var catalogId: Swift.String?
     /// The name of the catalog database where the partitions reside.
@@ -7678,8 +7678,9 @@ public struct BatchGetPartitionInput {
 }
 
 extension GlueClientTypes {
+
     /// Represents a slice of table data.
-    public struct Partition {
+    public struct Partition: Swift.Sendable {
         /// The ID of the Data Catalog in which the partition resides.
         public var catalogId: Swift.String?
         /// The time at which the partition was created.
@@ -7722,10 +7723,9 @@ extension GlueClientTypes {
             self.values = values
         }
     }
-
 }
 
-public struct BatchGetPartitionOutput {
+public struct BatchGetPartitionOutput: Swift.Sendable {
     /// A list of the requested partitions.
     public var partitions: [GlueClientTypes.Partition]?
     /// A list of the partition values in the request for which partitions were not returned.
@@ -7768,7 +7768,7 @@ public struct ThrottlingException: ClientRuntime.ModeledError, AWSClientRuntime.
 
 extension GlueClientTypes {
 
-    public enum TableOptimizerType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum TableOptimizerType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case compaction
         case orphanFileDeletion
         case retention
@@ -7799,8 +7799,9 @@ extension GlueClientTypes {
 }
 
 extension GlueClientTypes {
+
     /// Represents a table optimizer to retrieve in the BatchGetTableOptimizer operation.
-    public struct BatchGetTableOptimizerEntry {
+    public struct BatchGetTableOptimizerEntry: Swift.Sendable {
         /// The Catalog ID of the table.
         public var catalogId: Swift.String?
         /// The name of the database in the catalog in which the table resides.
@@ -7823,10 +7824,9 @@ extension GlueClientTypes {
             self.type = type
         }
     }
-
 }
 
-public struct BatchGetTableOptimizerInput {
+public struct BatchGetTableOptimizerInput: Swift.Sendable {
     /// A list of BatchGetTableOptimizerEntry objects specifying the table optimizers to retrieve.
     /// This member is required.
     public var entries: [GlueClientTypes.BatchGetTableOptimizerEntry]?
@@ -7840,8 +7840,9 @@ public struct BatchGetTableOptimizerInput {
 }
 
 extension GlueClientTypes {
+
     /// Contains details on one of the errors in the error list returned by the BatchGetTableOptimizer operation.
-    public struct BatchGetTableOptimizerError {
+    public struct BatchGetTableOptimizerError: Swift.Sendable {
         /// The Catalog ID of the table.
         public var catalogId: Swift.String?
         /// The name of the database in the catalog in which the table resides.
@@ -7868,12 +7869,12 @@ extension GlueClientTypes {
             self.type = type
         }
     }
-
 }
 
 extension GlueClientTypes {
+
     /// The configuration for an Iceberg orphan file deletion optimizer.
-    public struct IcebergOrphanFileDeletionConfiguration {
+    public struct IcebergOrphanFileDeletionConfiguration: Swift.Sendable {
         /// Specifies a directory in which to look for files (defaults to the table's location). You may choose a sub-directory rather than the top-level table location.
         public var location: Swift.String?
         /// The number of days that orphan files should be retained before file deletion. If an input is not provided, the default value 3 will be used.
@@ -7888,12 +7889,12 @@ extension GlueClientTypes {
             self.orphanFileRetentionPeriodInDays = orphanFileRetentionPeriodInDays
         }
     }
-
 }
 
 extension GlueClientTypes {
+
     /// The configuration for an orphan file deletion optimizer.
-    public struct OrphanFileDeletionConfiguration {
+    public struct OrphanFileDeletionConfiguration: Swift.Sendable {
         /// The configuration for an Iceberg orphan file deletion optimizer.
         public var icebergConfiguration: GlueClientTypes.IcebergOrphanFileDeletionConfiguration?
 
@@ -7904,12 +7905,12 @@ extension GlueClientTypes {
             self.icebergConfiguration = icebergConfiguration
         }
     }
-
 }
 
 extension GlueClientTypes {
+
     /// The configuration for an Iceberg snapshot retention optimizer.
-    public struct IcebergRetentionConfiguration {
+    public struct IcebergRetentionConfiguration: Swift.Sendable {
         /// If set to false, snapshots are only deleted from table metadata, and the underlying data and metadata files are not deleted.
         public var cleanExpiredFiles: Swift.Bool?
         /// The number of Iceberg snapshots to retain within the retention period. If an input is not provided, the corresponding Iceberg table configuration field will be used or if not present, the default value 1 will be used.
@@ -7928,12 +7929,12 @@ extension GlueClientTypes {
             self.snapshotRetentionPeriodInDays = snapshotRetentionPeriodInDays
         }
     }
-
 }
 
 extension GlueClientTypes {
+
     /// The configuration for a snapshot retention optimizer.
-    public struct RetentionConfiguration {
+    public struct RetentionConfiguration: Swift.Sendable {
         /// The configuration for an Iceberg snapshot retention optimizer.
         public var icebergConfiguration: GlueClientTypes.IcebergRetentionConfiguration?
 
@@ -7944,12 +7945,12 @@ extension GlueClientTypes {
             self.icebergConfiguration = icebergConfiguration
         }
     }
-
 }
 
 extension GlueClientTypes {
+
     /// Contains details on the configuration of a table optimizer. You pass this configuration when creating or updating a table optimizer.
-    public struct TableOptimizerConfiguration {
+    public struct TableOptimizerConfiguration: Swift.Sendable {
         /// Whether table optimization is enabled.
         public var enabled: Swift.Bool?
         /// The configuration for an orphan file deletion optimizer.
@@ -7972,12 +7973,12 @@ extension GlueClientTypes {
             self.roleArn = roleArn
         }
     }
-
 }
 
 extension GlueClientTypes {
+
     /// Compaction metrics for Iceberg for the optimizer run.
-    public struct IcebergCompactionMetrics {
+    public struct IcebergCompactionMetrics: Swift.Sendable {
         /// The duration of the job in hours.
         public var jobDurationInHour: Swift.Double
         /// The number of bytes removed by the compaction job run.
@@ -8000,12 +8001,12 @@ extension GlueClientTypes {
             self.numberOfFilesCompacted = numberOfFilesCompacted
         }
     }
-
 }
 
 extension GlueClientTypes {
+
     /// A structure that contains compaction metrics for the optimizer run.
-    public struct CompactionMetrics {
+    public struct CompactionMetrics: Swift.Sendable {
         /// A structure containing the Iceberg compaction metrics for the optimizer run.
         public var icebergMetrics: GlueClientTypes.IcebergCompactionMetrics?
 
@@ -8016,12 +8017,11 @@ extension GlueClientTypes {
             self.icebergMetrics = icebergMetrics
         }
     }
-
 }
 
 extension GlueClientTypes {
 
-    public enum TableOptimizerEventType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum TableOptimizerEventType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case completed
         case failed
         case inProgress
@@ -8055,8 +8055,9 @@ extension GlueClientTypes {
 }
 
 extension GlueClientTypes {
+
     /// Metrics for the optimizer run. This structure is deprecated. See the individual metric members for compaction, retention, and orphan file deletion.
-    public struct RunMetrics {
+    public struct RunMetrics: Swift.Sendable {
         /// The duration of the job in hours.
         public var jobDurationInHour: Swift.String?
         /// The number of bytes removed by the compaction job run.
@@ -8079,12 +8080,12 @@ extension GlueClientTypes {
             self.numberOfFilesCompacted = numberOfFilesCompacted
         }
     }
-
 }
 
 extension GlueClientTypes {
+
     /// Orphan file deletion metrics for Iceberg for the optimizer run.
-    public struct IcebergOrphanFileDeletionMetrics {
+    public struct IcebergOrphanFileDeletionMetrics: Swift.Sendable {
         /// The duration of the job in hours.
         public var jobDurationInHour: Swift.Double
         /// The number of DPU hours consumed by the job.
@@ -8103,12 +8104,12 @@ extension GlueClientTypes {
             self.numberOfOrphanFilesDeleted = numberOfOrphanFilesDeleted
         }
     }
-
 }
 
 extension GlueClientTypes {
+
     /// A structure that contains orphan file deletion metrics for the optimizer run.
-    public struct OrphanFileDeletionMetrics {
+    public struct OrphanFileDeletionMetrics: Swift.Sendable {
         /// A structure containing the Iceberg orphan file deletion metrics for the optimizer run.
         public var icebergMetrics: GlueClientTypes.IcebergOrphanFileDeletionMetrics?
 
@@ -8119,12 +8120,12 @@ extension GlueClientTypes {
             self.icebergMetrics = icebergMetrics
         }
     }
-
 }
 
 extension GlueClientTypes {
+
     /// Snapshot retention metrics for Iceberg for the optimizer run.
-    public struct IcebergRetentionMetrics {
+    public struct IcebergRetentionMetrics: Swift.Sendable {
         /// The duration of the job in hours.
         public var jobDurationInHour: Swift.Double
         /// The number of data files deleted by the retention job run.
@@ -8151,12 +8152,12 @@ extension GlueClientTypes {
             self.numberOfManifestListsDeleted = numberOfManifestListsDeleted
         }
     }
-
 }
 
 extension GlueClientTypes {
+
     /// A structure that contains retention metrics for the optimizer run.
-    public struct RetentionMetrics {
+    public struct RetentionMetrics: Swift.Sendable {
         /// A structure containing the Iceberg retention metrics for the optimizer run.
         public var icebergMetrics: GlueClientTypes.IcebergRetentionMetrics?
 
@@ -8167,12 +8168,12 @@ extension GlueClientTypes {
             self.icebergMetrics = icebergMetrics
         }
     }
-
 }
 
 extension GlueClientTypes {
+
     /// Contains details for a table optimizer run.
-    public struct TableOptimizerRun {
+    public struct TableOptimizerRun: Swift.Sendable {
         /// A CompactionMetrics object containing metrics for the optimizer run.
         public var compactionMetrics: GlueClientTypes.CompactionMetrics?
         /// Represents the epoch timestamp at which the compaction job ended.
@@ -8212,12 +8213,12 @@ extension GlueClientTypes {
             self.startTimestamp = startTimestamp
         }
     }
-
 }
 
 extension GlueClientTypes {
+
     /// Contains details about an optimizer associated with a table.
-    public struct TableOptimizer {
+    public struct TableOptimizer: Swift.Sendable {
         /// A TableOptimizerConfiguration object that was specified when creating or updating a table optimizer.
         public var configuration: GlueClientTypes.TableOptimizerConfiguration?
         /// A TableOptimizerRun object representing the last run of the table optimizer.
@@ -8242,12 +8243,12 @@ extension GlueClientTypes {
             self.type = type
         }
     }
-
 }
 
 extension GlueClientTypes {
+
     /// Contains details for one of the table optimizers returned by the BatchGetTableOptimizer operation.
-    public struct BatchTableOptimizer {
+    public struct BatchTableOptimizer: Swift.Sendable {
         /// The Catalog ID of the table.
         public var catalogId: Swift.String?
         /// The name of the database in the catalog in which the table resides.
@@ -8270,10 +8271,9 @@ extension GlueClientTypes {
             self.tableOptimizer = tableOptimizer
         }
     }
-
 }
 
-public struct BatchGetTableOptimizerOutput {
+public struct BatchGetTableOptimizerOutput: Swift.Sendable {
     /// A list of errors from the operation.
     public var failures: [GlueClientTypes.BatchGetTableOptimizerError]?
     /// A list of BatchTableOptimizer objects.
@@ -8289,7 +8289,7 @@ public struct BatchGetTableOptimizerOutput {
     }
 }
 
-public struct BatchGetTriggersInput {
+public struct BatchGetTriggersInput: Swift.Sendable {
     /// A list of trigger names, which may be the names returned from the ListTriggers operation.
     /// This member is required.
     public var triggerNames: [Swift.String]?
@@ -8303,8 +8303,9 @@ public struct BatchGetTriggersInput {
 }
 
 extension GlueClientTypes {
+
     /// Batch condition that must be met (specified number of events received or batch time window expired) before EventBridge event trigger fires.
-    public struct EventBatchingCondition {
+    public struct EventBatchingCondition: Swift.Sendable {
         /// Number of events that must be received from Amazon EventBridge before EventBridge event trigger fires.
         /// This member is required.
         public var batchSize: Swift.Int?
@@ -8320,12 +8321,11 @@ extension GlueClientTypes {
             self.batchWindow = batchWindow
         }
     }
-
 }
 
 extension GlueClientTypes {
 
-    public enum CrawlState: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum CrawlState: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case cancelled
         case cancelling
         case error
@@ -8366,7 +8366,7 @@ extension GlueClientTypes {
 
 extension GlueClientTypes {
 
-    public enum LogicalOperator: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum LogicalOperator: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case equals
         case sdkUnknown(Swift.String)
 
@@ -8392,7 +8392,7 @@ extension GlueClientTypes {
 
 extension GlueClientTypes {
 
-    public enum JobRunState: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum JobRunState: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case error
         case expired
         case failed
@@ -8444,8 +8444,9 @@ extension GlueClientTypes {
 }
 
 extension GlueClientTypes {
+
     /// Defines a condition under which a trigger fires.
-    public struct Condition {
+    public struct Condition: Swift.Sendable {
         /// The state of the crawler to which this condition applies.
         public var crawlState: GlueClientTypes.CrawlState?
         /// The name of the crawler to which this condition applies.
@@ -8472,12 +8473,11 @@ extension GlueClientTypes {
             self.state = state
         }
     }
-
 }
 
 extension GlueClientTypes {
 
-    public enum Logical: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Logical: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case and
         case any
         case sdkUnknown(Swift.String)
@@ -8505,8 +8505,9 @@ extension GlueClientTypes {
 }
 
 extension GlueClientTypes {
+
     /// Defines the predicate of the trigger, which determines when it fires.
-    public struct Predicate {
+    public struct Predicate: Swift.Sendable {
         /// A list of the conditions that determine when the trigger will fire.
         public var conditions: [GlueClientTypes.Condition]?
         /// An optional field if only one condition is listed. If multiple conditions are listed, then this field is required.
@@ -8521,12 +8522,11 @@ extension GlueClientTypes {
             self.logical = logical
         }
     }
-
 }
 
 extension GlueClientTypes {
 
-    public enum TriggerState: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum TriggerState: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case activated
         case activating
         case created
@@ -8573,7 +8573,7 @@ extension GlueClientTypes {
 
 extension GlueClientTypes {
 
-    public enum TriggerType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum TriggerType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case conditional
         case event
         case onDemand
@@ -8607,8 +8607,9 @@ extension GlueClientTypes {
 }
 
 extension GlueClientTypes {
+
     /// Information about a specific trigger.
-    public struct Trigger {
+    public struct Trigger: Swift.Sendable {
         /// The actions initiated by this trigger.
         public var actions: [GlueClientTypes.Action]?
         /// A description of this trigger.
@@ -8655,10 +8656,9 @@ extension GlueClientTypes {
             self.workflowName = workflowName
         }
     }
-
 }
 
-public struct BatchGetTriggersOutput {
+public struct BatchGetTriggersOutput: Swift.Sendable {
     /// A list of trigger definitions.
     public var triggers: [GlueClientTypes.Trigger]?
     /// A list of names of triggers not found.
@@ -8674,7 +8674,7 @@ public struct BatchGetTriggersOutput {
     }
 }
 
-public struct BatchGetWorkflowsInput {
+public struct BatchGetWorkflowsInput: Swift.Sendable {
     /// Specifies whether to include a graph when returning the workflow resource metadata.
     public var includeGraph: Swift.Bool?
     /// A list of workflow names, which may be the names returned from the ListWorkflows operation.
@@ -8692,8 +8692,9 @@ public struct BatchGetWorkflowsInput {
 }
 
 extension GlueClientTypes {
+
     /// The details of a blueprint.
-    public struct BlueprintDetails {
+    public struct BlueprintDetails: Swift.Sendable {
         /// The name of the blueprint.
         public var blueprintName: Swift.String?
         /// The run ID for this blueprint.
@@ -8708,12 +8709,12 @@ extension GlueClientTypes {
             self.runId = runId
         }
     }
-
 }
 
 extension GlueClientTypes {
+
     /// An edge represents a directed connection between two Glue components that are part of the workflow the edge belongs to.
-    public struct Edge {
+    public struct Edge: Swift.Sendable {
         /// The unique of the node within the workflow where the edge ends.
         public var destinationId: Swift.String?
         /// The unique of the node within the workflow where the edge starts.
@@ -8728,12 +8729,12 @@ extension GlueClientTypes {
             self.sourceId = sourceId
         }
     }
-
 }
 
 extension GlueClientTypes {
+
     /// The details of a crawl in the workflow.
-    public struct Crawl {
+    public struct Crawl: Swift.Sendable {
         /// The date and time on which the crawl completed.
         public var completedOn: Foundation.Date?
         /// The error message associated with the crawl.
@@ -8764,12 +8765,12 @@ extension GlueClientTypes {
             self.state = state
         }
     }
-
 }
 
 extension GlueClientTypes {
+
     /// The details of a Crawler node present in the workflow.
-    public struct CrawlerNodeDetails {
+    public struct CrawlerNodeDetails: Swift.Sendable {
         /// A list of crawls represented by the crawl node.
         public var crawls: [GlueClientTypes.Crawl]?
 
@@ -8780,12 +8781,12 @@ extension GlueClientTypes {
             self.crawls = crawls
         }
     }
-
 }
 
 extension GlueClientTypes {
+
     /// A job run that was used in the predicate of a conditional trigger that triggered this job run.
-    public struct Predecessor {
+    public struct Predecessor: Swift.Sendable {
         /// The name of the job definition used by the predecessor job run.
         public var jobName: Swift.String?
         /// The job-run ID of the predecessor job run.
@@ -8800,12 +8801,12 @@ extension GlueClientTypes {
             self.runId = runId
         }
     }
-
 }
 
 extension GlueClientTypes {
+
     /// Contains information about a job run.
-    public struct JobRun {
+    public struct JobRun: Swift.Sendable {
         /// This field is deprecated. Use MaxCapacity instead. The number of Glue data processing units (DPUs) allocated to this JobRun. From 2 to 100 DPUs can be allocated; the default is 10. A DPU is a relative measure of processing power that consists of 4 vCPUs of compute capacity and 16 GB of memory. For more information, see the [Glue pricing page](https://aws.amazon.com/glue/pricing/).
         @available(*, deprecated, message: "This property is deprecated, use MaxCapacity instead.")
         public var allocatedCapacity: Swift.Int
@@ -8954,12 +8955,12 @@ extension GlueClientTypes {
             self.workerType = workerType
         }
     }
-
 }
 
 extension GlueClientTypes {
+
     /// The details of a Job node present in the workflow.
-    public struct JobNodeDetails {
+    public struct JobNodeDetails: Swift.Sendable {
         /// The information for the job runs represented by the job node.
         public var jobRuns: [GlueClientTypes.JobRun]?
 
@@ -8970,12 +8971,12 @@ extension GlueClientTypes {
             self.jobRuns = jobRuns
         }
     }
-
 }
 
 extension GlueClientTypes {
+
     /// The details of a Trigger node present in the workflow.
-    public struct TriggerNodeDetails {
+    public struct TriggerNodeDetails: Swift.Sendable {
         /// The information of the trigger represented by the trigger node.
         public var trigger: GlueClientTypes.Trigger?
 
@@ -8986,12 +8987,11 @@ extension GlueClientTypes {
             self.trigger = trigger
         }
     }
-
 }
 
 extension GlueClientTypes {
 
-    public enum NodeType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum NodeType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case crawler
         case job
         case trigger
@@ -9022,8 +9022,9 @@ extension GlueClientTypes {
 }
 
 extension GlueClientTypes {
+
     /// A node represents an Glue component (trigger, crawler, or job) on a workflow graph.
-    public struct Node {
+    public struct Node: Swift.Sendable {
         /// Details of the crawler when the node represents a crawler.
         public var crawlerDetails: GlueClientTypes.CrawlerNodeDetails?
         /// Details of the Job when the node represents a Job.
@@ -9054,12 +9055,12 @@ extension GlueClientTypes {
             self.uniqueId = uniqueId
         }
     }
-
 }
 
 extension GlueClientTypes {
+
     /// A workflow graph represents the complete workflow containing all the Glue components present in the workflow and all the directed connections between them.
-    public struct WorkflowGraph {
+    public struct WorkflowGraph: Swift.Sendable {
         /// A list of all the directed connections between the nodes belonging to the workflow.
         public var edges: [GlueClientTypes.Edge]?
         /// A list of the the Glue components belong to the workflow represented as nodes.
@@ -9074,12 +9075,12 @@ extension GlueClientTypes {
             self.nodes = nodes
         }
     }
-
 }
 
 extension GlueClientTypes {
+
     /// The batch condition that started the workflow run. Either the number of events in the batch size arrived, in which case the BatchSize member is non-zero, or the batch window expired, in which case the BatchWindow member is non-zero.
-    public struct StartingEventBatchCondition {
+    public struct StartingEventBatchCondition: Swift.Sendable {
         /// Number of events in the batch.
         public var batchSize: Swift.Int?
         /// Duration of the batch window in seconds.
@@ -9094,12 +9095,12 @@ extension GlueClientTypes {
             self.batchWindow = batchWindow
         }
     }
-
 }
 
 extension GlueClientTypes {
+
     /// Workflow run statistics provides statistics about the workflow run.
-    public struct WorkflowRunStatistics {
+    public struct WorkflowRunStatistics: Swift.Sendable {
         /// Indicates the count of job runs in the ERROR state in the workflow run.
         public var erroredActions: Swift.Int
         /// Total number of Actions that have failed.
@@ -9138,12 +9139,11 @@ extension GlueClientTypes {
             self.waitingActions = waitingActions
         }
     }
-
 }
 
 extension GlueClientTypes {
 
-    public enum WorkflowRunStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum WorkflowRunStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case completed
         case error
         case running
@@ -9180,8 +9180,9 @@ extension GlueClientTypes {
 }
 
 extension GlueClientTypes {
+
     /// A workflow run is an execution of a workflow providing all the runtime information.
-    public struct WorkflowRun {
+    public struct WorkflowRun: Swift.Sendable {
         /// The date and time when the workflow run completed.
         public var completedOn: Foundation.Date?
         /// This error message describes any error that may have occurred in starting the workflow run. Currently the only error message is "Concurrent runs exceeded for workflow: foo."
@@ -9232,12 +9233,12 @@ extension GlueClientTypes {
             self.workflowRunProperties = workflowRunProperties
         }
     }
-
 }
 
 extension GlueClientTypes {
+
     /// A workflow is a collection of multiple dependent Glue jobs and crawlers that are run to complete a complex ETL task. A workflow manages the execution and monitoring of all its jobs and crawlers.
-    public struct Workflow {
+    public struct Workflow: Swift.Sendable {
         /// This structure indicates the details of the blueprint that this particular workflow is created from.
         public var blueprintDetails: GlueClientTypes.BlueprintDetails?
         /// The date and time when the workflow was created.
@@ -9280,10 +9281,9 @@ extension GlueClientTypes {
             self.name = name
         }
     }
-
 }
 
-public struct BatchGetWorkflowsOutput {
+public struct BatchGetWorkflowsOutput: Swift.Sendable {
     /// A list of names of workflows not found.
     public var missingWorkflows: [Swift.String]?
     /// A list of workflow resource metadata.
@@ -9300,8 +9300,9 @@ public struct BatchGetWorkflowsOutput {
 }
 
 extension GlueClientTypes {
+
     /// An Inclusion Annotation.
-    public struct DatapointInclusionAnnotation {
+    public struct DatapointInclusionAnnotation: Swift.Sendable {
         /// The inclusion annotation value to apply to the statistic.
         public var inclusionAnnotation: GlueClientTypes.InclusionAnnotationValue?
         /// The ID of the data quality profile the statistic belongs to.
@@ -9320,10 +9321,9 @@ extension GlueClientTypes {
             self.statisticId = statisticId
         }
     }
-
 }
 
-public struct BatchPutDataQualityStatisticAnnotationInput {
+public struct BatchPutDataQualityStatisticAnnotationInput: Swift.Sendable {
     /// Client Token.
     public var clientToken: Swift.String?
     /// A list of DatapointInclusionAnnotation's.
@@ -9340,7 +9340,7 @@ public struct BatchPutDataQualityStatisticAnnotationInput {
     }
 }
 
-public struct BatchPutDataQualityStatisticAnnotationOutput {
+public struct BatchPutDataQualityStatisticAnnotationOutput: Swift.Sendable {
     /// A list of AnnotationError's.
     public var failedInclusionAnnotations: [GlueClientTypes.AnnotationError]?
 
@@ -9352,7 +9352,7 @@ public struct BatchPutDataQualityStatisticAnnotationOutput {
     }
 }
 
-public struct BatchStopJobRunInput {
+public struct BatchStopJobRunInput: Swift.Sendable {
     /// The name of the job definition for which to stop job runs.
     /// This member is required.
     public var jobName: Swift.String?
@@ -9371,8 +9371,9 @@ public struct BatchStopJobRunInput {
 }
 
 extension GlueClientTypes {
+
     /// Records an error that occurred when attempting to stop a specified job run.
-    public struct BatchStopJobRunError {
+    public struct BatchStopJobRunError: Swift.Sendable {
         /// Specifies details about the error that was encountered.
         public var errorDetail: GlueClientTypes.ErrorDetail?
         /// The name of the job definition that is used in the job run in question.
@@ -9391,12 +9392,12 @@ extension GlueClientTypes {
             self.jobRunId = jobRunId
         }
     }
-
 }
 
 extension GlueClientTypes {
+
     /// Records a successful request to stop a specified JobRun.
-    public struct BatchStopJobRunSuccessfulSubmission {
+    public struct BatchStopJobRunSuccessfulSubmission: Swift.Sendable {
         /// The name of the job definition used in the job run that was stopped.
         public var jobName: Swift.String?
         /// The JobRunId of the job run that was stopped.
@@ -9411,10 +9412,9 @@ extension GlueClientTypes {
             self.jobRunId = jobRunId
         }
     }
-
 }
 
-public struct BatchStopJobRunOutput {
+public struct BatchStopJobRunOutput: Swift.Sendable {
     /// A list of the errors that were encountered in trying to stop JobRuns, including the JobRunId for which each error was encountered and details about the error.
     public var errors: [GlueClientTypes.BatchStopJobRunError]?
     /// A list of the JobRuns that were successfully submitted for stopping.
@@ -9431,8 +9431,9 @@ public struct BatchStopJobRunOutput {
 }
 
 extension GlueClientTypes {
+
     /// A structure that contains the values and structure used to update a partition.
-    public struct BatchUpdatePartitionRequestEntry {
+    public struct BatchUpdatePartitionRequestEntry: Swift.Sendable {
         /// The structure used to update a partition.
         /// This member is required.
         public var partitionInput: GlueClientTypes.PartitionInput?
@@ -9449,10 +9450,9 @@ extension GlueClientTypes {
             self.partitionValueList = partitionValueList
         }
     }
-
 }
 
-public struct BatchUpdatePartitionInput {
+public struct BatchUpdatePartitionInput: Swift.Sendable {
     /// The ID of the catalog in which the partition is to be updated. Currently, this should be the Amazon Web Services account ID.
     public var catalogId: Swift.String?
     /// The name of the metadata database in which the partition is to be updated.
@@ -9480,8 +9480,9 @@ public struct BatchUpdatePartitionInput {
 }
 
 extension GlueClientTypes {
+
     /// Contains information about a batch update partition error.
-    public struct BatchUpdatePartitionFailureEntry {
+    public struct BatchUpdatePartitionFailureEntry: Swift.Sendable {
         /// The details about the batch update partition error.
         public var errorDetail: GlueClientTypes.ErrorDetail?
         /// A list of values defining the partitions.
@@ -9496,10 +9497,9 @@ extension GlueClientTypes {
             self.partitionValueList = partitionValueList
         }
     }
-
 }
 
-public struct BatchUpdatePartitionOutput {
+public struct BatchUpdatePartitionOutput: Swift.Sendable {
     /// The errors encountered when trying to update the requested partitions. A list of BatchUpdatePartitionFailureEntry objects.
     public var errors: [GlueClientTypes.BatchUpdatePartitionFailureEntry]?
 
@@ -9511,7 +9511,7 @@ public struct BatchUpdatePartitionOutput {
     }
 }
 
-public struct CancelDataQualityRuleRecommendationRunInput {
+public struct CancelDataQualityRuleRecommendationRunInput: Swift.Sendable {
     /// The unique run identifier associated with this run.
     /// This member is required.
     public var runId: Swift.String?
@@ -9524,12 +9524,12 @@ public struct CancelDataQualityRuleRecommendationRunInput {
     }
 }
 
-public struct CancelDataQualityRuleRecommendationRunOutput {
+public struct CancelDataQualityRuleRecommendationRunOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct CancelDataQualityRulesetEvaluationRunInput {
+public struct CancelDataQualityRulesetEvaluationRunInput: Swift.Sendable {
     /// The unique run identifier associated with this run.
     /// This member is required.
     public var runId: Swift.String?
@@ -9542,12 +9542,12 @@ public struct CancelDataQualityRulesetEvaluationRunInput {
     }
 }
 
-public struct CancelDataQualityRulesetEvaluationRunOutput {
+public struct CancelDataQualityRulesetEvaluationRunOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct CancelMLTaskRunInput {
+public struct CancelMLTaskRunInput: Swift.Sendable {
     /// A unique identifier for the task run.
     /// This member is required.
     public var taskRunId: Swift.String?
@@ -9567,7 +9567,7 @@ public struct CancelMLTaskRunInput {
 
 extension GlueClientTypes {
 
-    public enum TaskStatusType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum TaskStatusType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case failed
         case running
         case starting
@@ -9609,7 +9609,7 @@ extension GlueClientTypes {
     }
 }
 
-public struct CancelMLTaskRunOutput {
+public struct CancelMLTaskRunOutput: Swift.Sendable {
     /// The status for this run.
     public var status: GlueClientTypes.TaskStatusType?
     /// The unique identifier for the task run.
@@ -9654,7 +9654,7 @@ public struct IllegalSessionStateException: ClientRuntime.ModeledError, AWSClien
     }
 }
 
-public struct CancelStatementInput {
+public struct CancelStatementInput: Swift.Sendable {
     /// The ID of the statement to be cancelled.
     /// This member is required.
     public var id: Swift.Int?
@@ -9676,14 +9676,14 @@ public struct CancelStatementInput {
     }
 }
 
-public struct CancelStatementOutput {
+public struct CancelStatementOutput: Swift.Sendable {
 
     public init() { }
 }
 
 extension GlueClientTypes {
 
-    public enum DataFormat: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DataFormat: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case avro
         case json
         case protobuf
@@ -9713,7 +9713,7 @@ extension GlueClientTypes {
     }
 }
 
-public struct CheckSchemaVersionValidityInput {
+public struct CheckSchemaVersionValidityInput: Swift.Sendable {
     /// The data format of the schema definition. Currently AVRO, JSON and PROTOBUF are supported.
     /// This member is required.
     public var dataFormat: GlueClientTypes.DataFormat?
@@ -9731,7 +9731,7 @@ public struct CheckSchemaVersionValidityInput {
     }
 }
 
-public struct CheckSchemaVersionValidityOutput {
+public struct CheckSchemaVersionValidityOutput: Swift.Sendable {
     /// A validation failure error message.
     public var error: Swift.String?
     /// Return true, if the schema is valid and false otherwise.
@@ -9747,7 +9747,7 @@ public struct CheckSchemaVersionValidityOutput {
     }
 }
 
-public struct CreateBlueprintInput {
+public struct CreateBlueprintInput: Swift.Sendable {
     /// Specifies a path in Amazon S3 where the blueprint is published.
     /// This member is required.
     public var blueprintLocation: Swift.String?
@@ -9773,7 +9773,7 @@ public struct CreateBlueprintInput {
     }
 }
 
-public struct CreateBlueprintOutput {
+public struct CreateBlueprintOutput: Swift.Sendable {
     /// Returns the name of the blueprint that was registered.
     public var name: Swift.String?
 
@@ -9787,7 +9787,7 @@ public struct CreateBlueprintOutput {
 
 extension GlueClientTypes {
 
-    public enum CsvHeaderOption: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum CsvHeaderOption: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case absent
         case present
         case unknown
@@ -9819,7 +9819,7 @@ extension GlueClientTypes {
 
 extension GlueClientTypes {
 
-    public enum CsvSerdeOption: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum CsvSerdeOption: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case lazysimpleserde
         case `none`
         case opencsvserde
@@ -9850,8 +9850,9 @@ extension GlueClientTypes {
 }
 
 extension GlueClientTypes {
+
     /// Specifies a custom CSV classifier for CreateClassifier to create.
-    public struct CreateCsvClassifierRequest {
+    public struct CreateCsvClassifierRequest: Swift.Sendable {
         /// Enables the processing of files that contain only one column.
         public var allowSingleColumn: Swift.Bool?
         /// Indicates whether the CSV file contains a header.
@@ -9899,12 +9900,12 @@ extension GlueClientTypes {
             self.serde = serde
         }
     }
-
 }
 
 extension GlueClientTypes {
+
     /// Specifies a grok classifier for CreateClassifier to create.
-    public struct CreateGrokClassifierRequest {
+    public struct CreateGrokClassifierRequest: Swift.Sendable {
         /// An identifier of the data format that the classifier matches, such as Twitter, JSON, Omniture logs, Amazon CloudWatch Logs, and so on.
         /// This member is required.
         public var classification: Swift.String?
@@ -9930,12 +9931,12 @@ extension GlueClientTypes {
             self.name = name
         }
     }
-
 }
 
 extension GlueClientTypes {
+
     /// Specifies a JSON classifier for CreateClassifier to create.
-    public struct CreateJsonClassifierRequest {
+    public struct CreateJsonClassifierRequest: Swift.Sendable {
         /// A JsonPath string defining the JSON data for the classifier to classify. Glue supports a subset of JsonPath, as described in [Writing JsonPath Custom Classifiers](https://docs.aws.amazon.com/glue/latest/dg/custom-classifier.html#custom-classifier-json).
         /// This member is required.
         public var jsonPath: Swift.String?
@@ -9952,12 +9953,12 @@ extension GlueClientTypes {
             self.name = name
         }
     }
-
 }
 
 extension GlueClientTypes {
+
     /// Specifies an XML classifier for CreateClassifier to create.
-    public struct CreateXMLClassifierRequest {
+    public struct CreateXMLClassifierRequest: Swift.Sendable {
         /// An identifier of the data format that the classifier matches.
         /// This member is required.
         public var classification: Swift.String?
@@ -9978,10 +9979,9 @@ extension GlueClientTypes {
             self.rowTag = rowTag
         }
     }
-
 }
 
-public struct CreateClassifierInput {
+public struct CreateClassifierInput: Swift.Sendable {
     /// A CsvClassifier object specifying the classifier to create.
     public var csvClassifier: GlueClientTypes.CreateCsvClassifierRequest?
     /// A GrokClassifier object specifying the classifier to create.
@@ -10005,14 +10005,91 @@ public struct CreateClassifierInput {
     }
 }
 
-public struct CreateClassifierOutput {
+public struct CreateClassifierOutput: Swift.Sendable {
+
+    public init() { }
+}
+
+/// An exception thrown when you try to start another job while running a column stats generation job.
+public struct ColumnStatisticsTaskRunningException: ClientRuntime.ModeledError, AWSClientRuntime.AWSServiceError, ClientRuntime.HTTPError, Swift.Error {
+
+    public struct Properties {
+        /// A message describing the problem.
+        public internal(set) var message: Swift.String? = nil
+    }
+
+    public internal(set) var properties = Properties()
+    public static var typeName: Swift.String { "ColumnStatisticsTaskRunningException" }
+    public static var fault: ClientRuntime.ErrorFault { .client }
+    public static var isRetryable: Swift.Bool { false }
+    public static var isThrottling: Swift.Bool { false }
+    public internal(set) var httpResponse = SmithyHTTPAPI.HTTPResponse()
+    public internal(set) var message: Swift.String?
+    public internal(set) var requestID: Swift.String?
+
+    public init(
+        message: Swift.String? = nil
+    )
+    {
+        self.properties.message = message
+    }
+}
+
+public struct CreateColumnStatisticsTaskSettingsInput: Swift.Sendable {
+    /// The ID of the Data Catalog in which the database resides.
+    public var catalogID: Swift.String?
+    /// A list of column names for which to run statistics.
+    public var columnNameList: [Swift.String]?
+    /// The name of the database where the table resides.
+    /// This member is required.
+    public var databaseName: Swift.String?
+    /// The role used for running the column statistics.
+    /// This member is required.
+    public var role: Swift.String?
+    /// The percentage of data to sample.
+    public var sampleSize: Swift.Double?
+    /// A schedule for running the column statistics, specified in CRON syntax.
+    public var schedule: Swift.String?
+    /// Name of the security configuration that is used to encrypt CloudWatch logs.
+    public var securityConfiguration: Swift.String?
+    /// The name of the table for which to generate column statistics.
+    /// This member is required.
+    public var tableName: Swift.String?
+    /// A map of tags.
+    public var tags: [Swift.String: Swift.String]?
+
+    public init(
+        catalogID: Swift.String? = nil,
+        columnNameList: [Swift.String]? = nil,
+        databaseName: Swift.String? = nil,
+        role: Swift.String? = nil,
+        sampleSize: Swift.Double? = 0.0,
+        schedule: Swift.String? = nil,
+        securityConfiguration: Swift.String? = nil,
+        tableName: Swift.String? = nil,
+        tags: [Swift.String: Swift.String]? = nil
+    )
+    {
+        self.catalogID = catalogID
+        self.columnNameList = columnNameList
+        self.databaseName = databaseName
+        self.role = role
+        self.sampleSize = sampleSize
+        self.schedule = schedule
+        self.securityConfiguration = securityConfiguration
+        self.tableName = tableName
+        self.tags = tags
+    }
+}
+
+public struct CreateColumnStatisticsTaskSettingsOutput: Swift.Sendable {
 
     public init() { }
 }
 
 extension GlueClientTypes {
 
-    public enum ConnectionPropertyKey: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ConnectionPropertyKey: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case clusterIdentifier
         case configFiles
         case connectionUrl
@@ -10176,7 +10253,7 @@ extension GlueClientTypes {
 
 extension GlueClientTypes {
 
-    public enum ConnectionType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ConnectionType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case custom
         case jdbc
         case kafka
@@ -10228,8 +10305,9 @@ extension GlueClientTypes {
 }
 
 extension GlueClientTypes {
+
     /// The OAuth client app in GetConnection response.
-    public struct PhysicalConnectionRequirements {
+    public struct PhysicalConnectionRequirements: Swift.Sendable {
         /// The connection's Availability Zone.
         public var availabilityZone: Swift.String?
         /// The security group ID list used by the connection.
@@ -10248,12 +10326,12 @@ extension GlueClientTypes {
             self.subnetId = subnetId
         }
     }
-
 }
 
 extension GlueClientTypes {
+
     /// A structure that is used to specify a connection to create or update.
-    public struct ConnectionInput {
+    public struct ConnectionInput: Swift.Sendable {
         /// This field is not currently used.
         public var athenaProperties: [Swift.String: Swift.String]?
         /// The authentication properties of the connection. Used for a Salesforce connection.
@@ -10363,10 +10441,9 @@ extension GlueClientTypes {
             self.validateCredentials = validateCredentials
         }
     }
-
 }
 
-public struct CreateConnectionInput {
+public struct CreateConnectionInput: Swift.Sendable {
     /// The ID of the Data Catalog in which to create the connection. If none is provided, the Amazon Web Services account ID is used by default.
     public var catalogId: Swift.String?
     /// A ConnectionInput object defining the connection to create.
@@ -10389,7 +10466,7 @@ public struct CreateConnectionInput {
 
 extension GlueClientTypes {
 
-    public enum ConnectionStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ConnectionStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case failed
         case inProgress
         case ready
@@ -10419,7 +10496,7 @@ extension GlueClientTypes {
     }
 }
 
-public struct CreateConnectionOutput {
+public struct CreateConnectionOutput: Swift.Sendable {
     /// The status of the connection creation request. The request can take some time for certain authentication types, for example when creating an OAuth connection with token exchange over VPC.
     public var createConnectionStatus: GlueClientTypes.ConnectionStatus?
 
@@ -10431,7 +10508,7 @@ public struct CreateConnectionOutput {
     }
 }
 
-public struct CreateCrawlerInput {
+public struct CreateCrawlerInput: Swift.Sendable {
     /// A list of custom classifiers that the user has registered. By default, all built-in classifiers are included in a crawl, but these custom classifiers always override the default classifiers for a given classification.
     public var classifiers: [Swift.String]?
     /// Crawler configuration information. This versioned JSON string allows users to specify aspects of a crawler's behavior. For more information, see [Setting crawler configuration options](https://docs.aws.amazon.com/glue/latest/dg/crawler-configuration.html).
@@ -10502,7 +10579,7 @@ public struct CreateCrawlerInput {
     }
 }
 
-public struct CreateCrawlerOutput {
+public struct CreateCrawlerOutput: Swift.Sendable {
 
     public init() { }
 }
@@ -10532,7 +10609,7 @@ public struct IdempotentParameterMismatchException: ClientRuntime.ModeledError, 
     }
 }
 
-public struct CreateCustomEntityTypeInput {
+public struct CreateCustomEntityTypeInput: Swift.Sendable {
     /// A list of context words. If none of these context words are found within the vicinity of the regular expression the data will not be detected as sensitive data. If no context words are passed only a regular expression is checked.
     public var contextWords: [Swift.String]?
     /// A name for the custom pattern that allows it to be retrieved or deleted later. This name must be unique per Amazon Web Services account.
@@ -10558,7 +10635,7 @@ public struct CreateCustomEntityTypeInput {
     }
 }
 
-public struct CreateCustomEntityTypeOutput {
+public struct CreateCustomEntityTypeOutput: Swift.Sendable {
     /// The name of the custom pattern you created.
     public var name: Swift.String?
 
@@ -10626,7 +10703,7 @@ public struct FederatedResourceAlreadyExistsException: ClientRuntime.ModeledErro
 
 extension GlueClientTypes {
 
-    public enum Permission: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Permission: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case all
         case alter
         case createDatabase
@@ -10675,8 +10752,9 @@ extension GlueClientTypes {
 }
 
 extension GlueClientTypes {
+
     /// The Lake Formation principal.
-    public struct DataLakePrincipal {
+    public struct DataLakePrincipal: Swift.Sendable {
         /// An identifier for the Lake Formation principal.
         public var dataLakePrincipalIdentifier: Swift.String?
 
@@ -10687,12 +10765,12 @@ extension GlueClientTypes {
             self.dataLakePrincipalIdentifier = dataLakePrincipalIdentifier
         }
     }
-
 }
 
 extension GlueClientTypes {
+
     /// Permissions granted to a principal.
-    public struct PrincipalPermissions {
+    public struct PrincipalPermissions: Swift.Sendable {
         /// The permissions that are granted to the principal.
         public var permissions: [GlueClientTypes.Permission]?
         /// The principal who is granted permissions.
@@ -10707,12 +10785,12 @@ extension GlueClientTypes {
             self.principal = principal
         }
     }
-
 }
 
 extension GlueClientTypes {
+
     /// A database that points to an entity outside the Glue Data Catalog.
-    public struct FederatedDatabase {
+    public struct FederatedDatabase: Swift.Sendable {
         /// The name of the connection to the external metastore.
         public var connectionName: Swift.String?
         /// A unique identifier for the federated database.
@@ -10727,12 +10805,12 @@ extension GlueClientTypes {
             self.identifier = identifier
         }
     }
-
 }
 
 extension GlueClientTypes {
+
     /// A structure that describes a target database for resource linking.
-    public struct DatabaseIdentifier {
+    public struct DatabaseIdentifier: Swift.Sendable {
         /// The ID of the Data Catalog in which the database resides.
         public var catalogId: Swift.String?
         /// The name of the catalog database.
@@ -10751,12 +10829,12 @@ extension GlueClientTypes {
             self.region = region
         }
     }
-
 }
 
 extension GlueClientTypes {
+
     /// The structure used to create or update a database.
-    public struct DatabaseInput {
+    public struct DatabaseInput: Swift.Sendable {
         /// Creates a set of default permissions on the table for principals. Used by Lake Formation. Not used in the normal course of Glue operations.
         public var createTableDefaultPermissions: [GlueClientTypes.PrincipalPermissions]?
         /// A description of the database.
@@ -10792,10 +10870,9 @@ extension GlueClientTypes {
             self.targetDatabase = targetDatabase
         }
     }
-
 }
 
-public struct CreateDatabaseInput {
+public struct CreateDatabaseInput: Swift.Sendable {
     /// The ID of the Data Catalog in which to create the database. If none is provided, the Amazon Web Services account ID is used by default.
     public var catalogId: Swift.String?
     /// The metadata for the database.
@@ -10816,14 +10893,15 @@ public struct CreateDatabaseInput {
     }
 }
 
-public struct CreateDatabaseOutput {
+public struct CreateDatabaseOutput: Swift.Sendable {
 
     public init() { }
 }
 
 extension GlueClientTypes {
+
     /// An object representing an Glue table.
-    public struct DataQualityTargetTable {
+    public struct DataQualityTargetTable: Swift.Sendable {
         /// The catalog id where the Glue table exists.
         public var catalogId: Swift.String?
         /// The name of the database where the Glue table exists.
@@ -10844,10 +10922,9 @@ extension GlueClientTypes {
             self.tableName = tableName
         }
     }
-
 }
 
-public struct CreateDataQualityRulesetInput {
+public struct CreateDataQualityRulesetInput: Swift.Sendable {
     /// Used for idempotency and is recommended to be set to a random ID (such as a UUID) to avoid creating or starting multiple instances of the same resource.
     public var clientToken: Swift.String?
     /// The name of the security configuration created with the data quality encryption option.
@@ -10885,7 +10962,7 @@ public struct CreateDataQualityRulesetInput {
     }
 }
 
-public struct CreateDataQualityRulesetOutput {
+public struct CreateDataQualityRulesetOutput: Swift.Sendable {
     /// A unique name for the data quality ruleset.
     public var name: Swift.String?
 
@@ -10922,7 +10999,7 @@ public struct ValidationException: ClientRuntime.ModeledError, AWSClientRuntime.
     }
 }
 
-public struct CreateDevEndpointInput {
+public struct CreateDevEndpointInput: Swift.Sendable {
     /// A map of arguments used to configure the DevEndpoint.
     public var arguments: [Swift.String: Swift.String]?
     /// The name to be assigned to the new DevEndpoint.
@@ -11001,7 +11078,7 @@ public struct CreateDevEndpointInput {
     }
 }
 
-public struct CreateDevEndpointOutput {
+public struct CreateDevEndpointOutput: Swift.Sendable {
     /// The map of arguments used to configure this DevEndpoint. Valid arguments are:
     ///
     /// * "--enable-glue-datacatalog": ""
@@ -11090,7 +11167,7 @@ public struct CreateDevEndpointOutput {
     }
 }
 
-public struct CreateJobOutput {
+public struct CreateJobOutput: Swift.Sendable {
     /// The unique name that was provided for this job definition.
     public var name: Swift.String?
 
@@ -11103,8 +11180,9 @@ public struct CreateJobOutput {
 }
 
 extension GlueClientTypes {
+
     /// The parameters to configure the find matches transform.
-    public struct FindMatchesParameters {
+    public struct FindMatchesParameters: Swift.Sendable {
         /// The value that is selected when tuning your transform for a balance between accuracy and cost. A value of 0.5 means that the system balances accuracy and cost concerns. A value of 1.0 means a bias purely for accuracy, which typically results in a higher cost, sometimes substantially higher. A value of 0.0 means a bias purely for cost, which results in a less accurate FindMatches transform, sometimes with unacceptable accuracy. Accuracy measures how well the transform finds true positives and true negatives. Increasing accuracy requires more machine resources and cost. But it also results in increased recall. Cost measures how many compute resources, and thus money, are consumed to run the transform.
         public var accuracyCostTradeoff: Swift.Double?
         /// The value to switch on or off to force the output to match the provided labels from users. If the value is True, the find matches transform forces the output to match the provided labels. The results override the normal conflation results. If the value is False, the find matches transform does not ensure all the labels provided are respected, and the results rely on the trained model. Note that setting this value to true may increase the conflation execution time.
@@ -11127,12 +11205,11 @@ extension GlueClientTypes {
             self.primaryKeyColumnName = primaryKeyColumnName
         }
     }
-
 }
 
 extension GlueClientTypes {
 
-    public enum TransformType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum TransformType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case findMatches
         case sdkUnknown(Swift.String)
 
@@ -11157,8 +11234,9 @@ extension GlueClientTypes {
 }
 
 extension GlueClientTypes {
+
     /// The algorithm-specific parameters that are associated with the machine learning transform.
-    public struct TransformParameters {
+    public struct TransformParameters: Swift.Sendable {
         /// The parameters for the find matches algorithm.
         public var findMatchesParameters: GlueClientTypes.FindMatchesParameters?
         /// The type of machine learning transform. For information about the types of machine learning transforms, see [Creating Machine Learning Transforms](https://docs.aws.amazon.com/glue/latest/dg/add-job-machine-learning-transform.html).
@@ -11174,12 +11252,11 @@ extension GlueClientTypes {
             self.transformType = transformType
         }
     }
-
 }
 
 extension GlueClientTypes {
 
-    public enum MLUserDataEncryptionModeString: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum MLUserDataEncryptionModeString: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case disabled
         case ssekms
         case sdkUnknown(Swift.String)
@@ -11207,8 +11284,9 @@ extension GlueClientTypes {
 }
 
 extension GlueClientTypes {
+
     /// The encryption-at-rest settings of the transform that apply to accessing user data.
-    public struct MLUserDataEncryption {
+    public struct MLUserDataEncryption: Swift.Sendable {
         /// The ID for the customer-provided KMS key.
         public var kmsKeyId: Swift.String?
         /// The encryption mode applied to user data. Valid values are:
@@ -11228,12 +11306,12 @@ extension GlueClientTypes {
             self.mlUserDataEncryptionMode = mlUserDataEncryptionMode
         }
     }
-
 }
 
 extension GlueClientTypes {
+
     /// The encryption-at-rest settings of the transform that apply to accessing user data. Machine learning transforms can access user data encrypted in Amazon S3 using KMS. Additionally, imported labels and trained transforms can now be encrypted using a customer provided KMS key.
-    public struct TransformEncryption {
+    public struct TransformEncryption: Swift.Sendable {
         /// An MLUserDataEncryption object containing the encryption mode and customer-provided KMS key ID.
         public var mlUserDataEncryption: GlueClientTypes.MLUserDataEncryption?
         /// The name of the security configuration.
@@ -11248,10 +11326,9 @@ extension GlueClientTypes {
             self.taskRunSecurityConfigurationName = taskRunSecurityConfigurationName
         }
     }
-
 }
 
-public struct CreateMLTransformInput {
+public struct CreateMLTransformInput: Swift.Sendable {
     /// A description of the machine learning transform that is being defined. The default is an empty string.
     public var description: Swift.String?
     /// This value determines which version of Glue this machine learning transform is compatible with. Glue 1.0 is recommended for most customers. If the value is not set, the Glue compatibility defaults to Glue 0.9. For more information, see [Glue Versions](https://docs.aws.amazon.com/glue/latest/dg/release-notes.html#release-notes-versions) in the developer guide.
@@ -11347,7 +11424,7 @@ public struct CreateMLTransformInput {
     }
 }
 
-public struct CreateMLTransformOutput {
+public struct CreateMLTransformOutput: Swift.Sendable {
     /// A unique identifier that is generated for the transform.
     public var transformId: Swift.String?
 
@@ -11359,7 +11436,7 @@ public struct CreateMLTransformOutput {
     }
 }
 
-public struct CreatePartitionInput {
+public struct CreatePartitionInput: Swift.Sendable {
     /// The Amazon Web Services account ID of the catalog in which the partition is to be created.
     public var catalogId: Swift.String?
     /// The name of the metadata database in which the partition is to be created.
@@ -11386,14 +11463,15 @@ public struct CreatePartitionInput {
     }
 }
 
-public struct CreatePartitionOutput {
+public struct CreatePartitionOutput: Swift.Sendable {
 
     public init() { }
 }
 
 extension GlueClientTypes {
+
     /// A structure for a partition index.
-    public struct PartitionIndex {
+    public struct PartitionIndex: Swift.Sendable {
         /// The name of the partition index.
         /// This member is required.
         public var indexName: Swift.String?
@@ -11410,10 +11488,9 @@ extension GlueClientTypes {
             self.keys = keys
         }
     }
-
 }
 
-public struct CreatePartitionIndexInput {
+public struct CreatePartitionIndexInput: Swift.Sendable {
     /// The catalog ID where the table resides.
     public var catalogId: Swift.String?
     /// Specifies the name of a database in which you want to create a partition index.
@@ -11440,12 +11517,12 @@ public struct CreatePartitionIndexInput {
     }
 }
 
-public struct CreatePartitionIndexOutput {
+public struct CreatePartitionIndexOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct CreateRegistryInput {
+public struct CreateRegistryInput: Swift.Sendable {
     /// A description of the registry. If description is not provided, there will not be any default value for this.
     public var description: Swift.String?
     /// Name of the registry to be created of max length of 255, and may only contain letters, numbers, hyphen, underscore, dollar sign, or hash mark. No whitespace.
@@ -11466,7 +11543,7 @@ public struct CreateRegistryInput {
     }
 }
 
-public struct CreateRegistryOutput {
+public struct CreateRegistryOutput: Swift.Sendable {
     /// A description of the registry.
     public var description: Swift.String?
     /// The Amazon Resource Name (ARN) of the newly created registry.
@@ -11492,7 +11569,7 @@ public struct CreateRegistryOutput {
 
 extension GlueClientTypes {
 
-    public enum Compatibility: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Compatibility: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case backward
         case backwardAll
         case disabled
@@ -11538,8 +11615,9 @@ extension GlueClientTypes {
 }
 
 extension GlueClientTypes {
+
     /// A wrapper structure that may contain the registry name and Amazon Resource Name (ARN).
-    public struct RegistryId {
+    public struct RegistryId: Swift.Sendable {
         /// Arn of the registry to be updated. One of RegistryArn or RegistryName has to be provided.
         public var registryArn: Swift.String?
         /// Name of the registry. Used only for lookup. One of RegistryArn or RegistryName has to be provided.
@@ -11554,10 +11632,9 @@ extension GlueClientTypes {
             self.registryName = registryName
         }
     }
-
 }
 
-public struct CreateSchemaInput {
+public struct CreateSchemaInput: Swift.Sendable {
     /// The compatibility mode of the schema. The possible values are:
     ///
     /// * NONE: No compatibility mode applies. You can use this choice in development scenarios or if you do not know the compatibility mode that you want to apply to schemas. Any new version added will be accepted without undergoing a compatibility check.
@@ -11613,7 +11690,7 @@ public struct CreateSchemaInput {
 
 extension GlueClientTypes {
 
-    public enum SchemaStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SchemaStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case available
         case deleting
         case pending
@@ -11645,7 +11722,7 @@ extension GlueClientTypes {
 
 extension GlueClientTypes {
 
-    public enum SchemaVersionStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SchemaVersionStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case available
         case deleting
         case failure
@@ -11678,7 +11755,7 @@ extension GlueClientTypes {
     }
 }
 
-public struct CreateSchemaOutput {
+public struct CreateSchemaOutput: Swift.Sendable {
     /// The schema compatibility mode.
     public var compatibility: GlueClientTypes.Compatibility?
     /// The data format of the schema definition. Currently AVRO, JSON and PROTOBUF are supported.
@@ -11743,8 +11820,9 @@ public struct CreateSchemaOutput {
 }
 
 extension GlueClientTypes {
+
     /// Represents a directional edge in a directed acyclic graph (DAG).
-    public struct CodeGenEdge {
+    public struct CodeGenEdge: Swift.Sendable {
         /// The ID of the node at which the edge starts.
         /// This member is required.
         public var source: Swift.String?
@@ -11765,12 +11843,12 @@ extension GlueClientTypes {
             self.targetParameter = targetParameter
         }
     }
-
 }
 
 extension GlueClientTypes {
+
     /// An argument or property of a node.
-    public struct CodeGenNodeArg {
+    public struct CodeGenNodeArg: Swift.Sendable {
         /// The name of the argument or property.
         /// This member is required.
         public var name: Swift.String?
@@ -11791,12 +11869,12 @@ extension GlueClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension GlueClientTypes {
+
     /// Represents a node in a directed acyclic graph (DAG)
-    public struct CodeGenNode {
+    public struct CodeGenNode: Swift.Sendable {
         /// Properties of the node, in the form of name-value pairs.
         /// This member is required.
         public var args: [GlueClientTypes.CodeGenNodeArg]?
@@ -11822,12 +11900,11 @@ extension GlueClientTypes {
             self.nodeType = nodeType
         }
     }
-
 }
 
 extension GlueClientTypes {
 
-    public enum Language: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Language: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case python
         case scala
         case sdkUnknown(Swift.String)
@@ -11854,7 +11931,7 @@ extension GlueClientTypes {
     }
 }
 
-public struct CreateScriptInput {
+public struct CreateScriptInput: Swift.Sendable {
     /// A list of the edges in the DAG.
     public var dagEdges: [GlueClientTypes.CodeGenEdge]?
     /// A list of the nodes in the DAG.
@@ -11874,7 +11951,7 @@ public struct CreateScriptInput {
     }
 }
 
-public struct CreateScriptOutput {
+public struct CreateScriptOutput: Swift.Sendable {
     /// The Python script generated from the DAG.
     public var pythonScript: Swift.String?
     /// The Scala code generated from the DAG.
@@ -11892,7 +11969,7 @@ public struct CreateScriptOutput {
 
 extension GlueClientTypes {
 
-    public enum CloudWatchEncryptionMode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum CloudWatchEncryptionMode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case disabled
         case ssekms
         case sdkUnknown(Swift.String)
@@ -11920,8 +11997,9 @@ extension GlueClientTypes {
 }
 
 extension GlueClientTypes {
+
     /// Specifies how Amazon CloudWatch data should be encrypted.
-    public struct CloudWatchEncryption {
+    public struct CloudWatchEncryption: Swift.Sendable {
         /// The encryption mode to use for CloudWatch data.
         public var cloudWatchEncryptionMode: GlueClientTypes.CloudWatchEncryptionMode?
         /// The Amazon Resource Name (ARN) of the KMS key to be used to encrypt the data.
@@ -11936,12 +12014,11 @@ extension GlueClientTypes {
             self.kmsKeyArn = kmsKeyArn
         }
     }
-
 }
 
 extension GlueClientTypes {
 
-    public enum JobBookmarksEncryptionMode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum JobBookmarksEncryptionMode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case csekms
         case disabled
         case sdkUnknown(Swift.String)
@@ -11969,8 +12046,9 @@ extension GlueClientTypes {
 }
 
 extension GlueClientTypes {
+
     /// Specifies how job bookmark data should be encrypted.
-    public struct JobBookmarksEncryption {
+    public struct JobBookmarksEncryption: Swift.Sendable {
         /// The encryption mode to use for job bookmarks data.
         public var jobBookmarksEncryptionMode: GlueClientTypes.JobBookmarksEncryptionMode?
         /// The Amazon Resource Name (ARN) of the KMS key to be used to encrypt the data.
@@ -11985,12 +12063,11 @@ extension GlueClientTypes {
             self.kmsKeyArn = kmsKeyArn
         }
     }
-
 }
 
 extension GlueClientTypes {
 
-    public enum S3EncryptionMode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum S3EncryptionMode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case disabled
         case ssekms
         case sses3
@@ -12021,8 +12098,9 @@ extension GlueClientTypes {
 }
 
 extension GlueClientTypes {
+
     /// Specifies how Amazon Simple Storage Service (Amazon S3) data should be encrypted.
-    public struct S3Encryption {
+    public struct S3Encryption: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the KMS key to be used to encrypt the data.
         public var kmsKeyArn: Swift.String?
         /// The encryption mode to use for Amazon S3 data.
@@ -12037,12 +12115,12 @@ extension GlueClientTypes {
             self.s3EncryptionMode = s3EncryptionMode
         }
     }
-
 }
 
 extension GlueClientTypes {
+
     /// Specifies an encryption configuration.
-    public struct EncryptionConfiguration {
+    public struct EncryptionConfiguration: Swift.Sendable {
         /// The encryption configuration for Amazon CloudWatch.
         public var cloudWatchEncryption: GlueClientTypes.CloudWatchEncryption?
         /// The encryption configuration for job bookmarks.
@@ -12061,10 +12139,9 @@ extension GlueClientTypes {
             self.s3Encryption = s3Encryption
         }
     }
-
 }
 
-public struct CreateSecurityConfigurationInput {
+public struct CreateSecurityConfigurationInput: Swift.Sendable {
     /// The encryption configuration for the new security configuration.
     /// This member is required.
     public var encryptionConfiguration: GlueClientTypes.EncryptionConfiguration?
@@ -12082,7 +12159,7 @@ public struct CreateSecurityConfigurationInput {
     }
 }
 
-public struct CreateSecurityConfigurationOutput {
+public struct CreateSecurityConfigurationOutput: Swift.Sendable {
     /// The time at which the new security configuration was created.
     public var createdTimestamp: Foundation.Date?
     /// The name assigned to the new security configuration.
@@ -12099,8 +12176,9 @@ public struct CreateSecurityConfigurationOutput {
 }
 
 extension GlueClientTypes {
+
     /// The SessionCommand that runs the job.
-    public struct SessionCommand {
+    public struct SessionCommand: Swift.Sendable {
         /// Specifies the name of the SessionCommand. Can be 'glueetl' or 'gluestreaming'.
         public var name: Swift.String?
         /// Specifies the Python version. The Python version indicates the version supported for jobs of type Spark.
@@ -12115,11 +12193,10 @@ extension GlueClientTypes {
             self.pythonVersion = pythonVersion
         }
     }
-
 }
 
 /// Request to create a new session.
-public struct CreateSessionInput {
+public struct CreateSessionInput: Swift.Sendable {
     /// The SessionCommand that runs the job.
     /// This member is required.
     public var command: GlueClientTypes.SessionCommand?
@@ -12202,7 +12279,7 @@ public struct CreateSessionInput {
 
 extension GlueClientTypes {
 
-    public enum SessionStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SessionStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case failed
         case provisioning
         case ready
@@ -12242,8 +12319,9 @@ extension GlueClientTypes {
 }
 
 extension GlueClientTypes {
+
     /// The period in which a remote Spark runtime environment is running.
-    public struct Session {
+    public struct Session: Swift.Sendable {
         /// The command object.See SessionCommand.
         public var command: GlueClientTypes.SessionCommand?
         /// The date and time that this session is completed.
@@ -12330,10 +12408,9 @@ extension GlueClientTypes {
             self.workerType = workerType
         }
     }
-
 }
 
-public struct CreateSessionOutput {
+public struct CreateSessionOutput: Swift.Sendable {
     /// Returns the session object in the response.
     public var session: GlueClientTypes.Session?
 
@@ -12347,7 +12424,7 @@ public struct CreateSessionOutput {
 
 extension GlueClientTypes {
 
-    public enum MetadataOperation: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum MetadataOperation: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case create
         case sdkUnknown(Swift.String)
 
@@ -12372,8 +12449,9 @@ extension GlueClientTypes {
 }
 
 extension GlueClientTypes {
+
     /// A structure that defines an Apache Iceberg metadata table to create in the catalog.
-    public struct IcebergInput {
+    public struct IcebergInput: Swift.Sendable {
         /// A required metadata operation. Can only be set to CREATE.
         /// This member is required.
         public var metadataOperation: GlueClientTypes.MetadataOperation?
@@ -12389,12 +12467,12 @@ extension GlueClientTypes {
             self.version = version
         }
     }
-
 }
 
 extension GlueClientTypes {
+
     /// A structure representing an open format table.
-    public struct OpenTableFormatInput {
+    public struct OpenTableFormatInput: Swift.Sendable {
         /// Specifies an IcebergInput structure that defines an Apache Iceberg metadata table.
         public var icebergInput: GlueClientTypes.IcebergInput?
 
@@ -12405,12 +12483,12 @@ extension GlueClientTypes {
             self.icebergInput = icebergInput
         }
     }
-
 }
 
 extension GlueClientTypes {
+
     /// A structure that describes a target table for resource linking.
-    public struct TableIdentifier {
+    public struct TableIdentifier: Swift.Sendable {
         /// The ID of the Data Catalog in which the table resides.
         public var catalogId: Swift.String?
         /// The name of the catalog database that contains the target table.
@@ -12433,12 +12511,11 @@ extension GlueClientTypes {
             self.region = region
         }
     }
-
 }
 
 extension GlueClientTypes {
 
-    public enum ViewDialect: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ViewDialect: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case athena
         case redshift
         case spark
@@ -12469,8 +12546,9 @@ extension GlueClientTypes {
 }
 
 extension GlueClientTypes {
+
     /// A structure containing details of a representation to update or create a Lake Formation view.
-    public struct ViewRepresentationInput {
+    public struct ViewRepresentationInput: Swift.Sendable {
         /// A parameter that specifies the engine type of a specific representation.
         public var dialect: GlueClientTypes.ViewDialect?
         /// A parameter that specifies the version of the engine of a specific representation.
@@ -12497,12 +12575,12 @@ extension GlueClientTypes {
             self.viewOriginalText = viewOriginalText
         }
     }
-
 }
 
 extension GlueClientTypes {
+
     /// A structure containing details for creating or updating an Glue view.
-    public struct ViewDefinitionInput {
+    public struct ViewDefinitionInput: Swift.Sendable {
         /// The definer of a view in SQL.
         public var definer: Swift.String?
         /// You can set this flag as true to instruct the engine not to push user-provided operations into the logical plan of the view during query planning. However, setting this flag does not guarantee that the engine will comply. Refer to the engine's documentation to understand the guarantees provided, if any.
@@ -12525,12 +12603,12 @@ extension GlueClientTypes {
             self.subObjects = subObjects
         }
     }
-
 }
 
 extension GlueClientTypes {
+
     /// A structure used to define a table.
-    public struct TableInput {
+    public struct TableInput: Swift.Sendable {
         /// A description of the table.
         public var description: Swift.String?
         /// The last time that the table was accessed.
@@ -12594,10 +12672,9 @@ extension GlueClientTypes {
             self.viewOriginalText = viewOriginalText
         }
     }
-
 }
 
-public struct CreateTableInput {
+public struct CreateTableInput: Swift.Sendable {
     /// The ID of the Data Catalog in which to create the Table. If none is supplied, the Amazon Web Services account ID is used by default.
     public var catalogId: Swift.String?
     /// The catalog database in which to create the new table. For Hive compatibility, this name is entirely lowercase.
@@ -12631,12 +12708,12 @@ public struct CreateTableInput {
     }
 }
 
-public struct CreateTableOutput {
+public struct CreateTableOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct CreateTableOptimizerInput {
+public struct CreateTableOptimizerInput: Swift.Sendable {
     /// The Catalog ID of the table.
     /// This member is required.
     public var catalogId: Swift.String?
@@ -12669,12 +12746,12 @@ public struct CreateTableOptimizerInput {
     }
 }
 
-public struct CreateTableOptimizerOutput {
+public struct CreateTableOptimizerOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct CreateTriggerInput {
+public struct CreateTriggerInput: Swift.Sendable {
     /// The actions initiated by this trigger when it fires.
     /// This member is required.
     public var actions: [GlueClientTypes.Action]?
@@ -12725,7 +12802,7 @@ public struct CreateTriggerInput {
     }
 }
 
-public struct CreateTriggerOutput {
+public struct CreateTriggerOutput: Swift.Sendable {
     /// The name of the trigger.
     public var name: Swift.String?
 
@@ -12763,8 +12840,9 @@ public struct OperationNotSupportedException: ClientRuntime.ModeledError, AWSCli
 }
 
 extension GlueClientTypes {
+
     /// Specifies the values that an admin sets for each job or session parameter configured in a Glue usage profile.
-    public struct ConfigurationObject {
+    public struct ConfigurationObject: Swift.Sendable {
         /// A list of allowed values for the parameter.
         public var allowedValues: [Swift.String]?
         /// A default value for the parameter.
@@ -12787,12 +12865,12 @@ extension GlueClientTypes {
             self.minValue = minValue
         }
     }
-
 }
 
 extension GlueClientTypes {
+
     /// Specifies the job and session values that an admin configures in an Glue usage profile.
-    public struct ProfileConfiguration {
+    public struct ProfileConfiguration: Swift.Sendable {
         /// A key-value map of configuration parameters for Glue jobs.
         public var jobConfiguration: [Swift.String: GlueClientTypes.ConfigurationObject]?
         /// A key-value map of configuration parameters for Glue sessions.
@@ -12807,10 +12885,9 @@ extension GlueClientTypes {
             self.sessionConfiguration = sessionConfiguration
         }
     }
-
 }
 
-public struct CreateUsageProfileInput {
+public struct CreateUsageProfileInput: Swift.Sendable {
     /// A ProfileConfiguration object specifying the job and session values for the profile.
     /// This member is required.
     public var configuration: GlueClientTypes.ProfileConfiguration?
@@ -12836,7 +12913,7 @@ public struct CreateUsageProfileInput {
     }
 }
 
-public struct CreateUsageProfileOutput {
+public struct CreateUsageProfileOutput: Swift.Sendable {
     /// The name of the usage profile that was created.
     public var name: Swift.String?
 
@@ -12850,7 +12927,7 @@ public struct CreateUsageProfileOutput {
 
 extension GlueClientTypes {
 
-    public enum PrincipalType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum PrincipalType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case group
         case role
         case user
@@ -12882,7 +12959,7 @@ extension GlueClientTypes {
 
 extension GlueClientTypes {
 
-    public enum ResourceType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ResourceType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case archive
         case file
         case jar
@@ -12913,8 +12990,9 @@ extension GlueClientTypes {
 }
 
 extension GlueClientTypes {
+
     /// The URIs for function resources.
-    public struct ResourceUri {
+    public struct ResourceUri: Swift.Sendable {
         /// The type of the resource.
         public var resourceType: GlueClientTypes.ResourceType?
         /// The URI for accessing the resource.
@@ -12929,12 +13007,12 @@ extension GlueClientTypes {
             self.uri = uri
         }
     }
-
 }
 
 extension GlueClientTypes {
+
     /// A structure used to create or update a user-defined function.
-    public struct UserDefinedFunctionInput {
+    public struct UserDefinedFunctionInput: Swift.Sendable {
         /// The Java class that contains the function code.
         public var className: Swift.String?
         /// The name of the function.
@@ -12961,10 +13039,9 @@ extension GlueClientTypes {
             self.resourceUris = resourceUris
         }
     }
-
 }
 
-public struct CreateUserDefinedFunctionInput {
+public struct CreateUserDefinedFunctionInput: Swift.Sendable {
     /// The ID of the Data Catalog in which to create the function. If none is provided, the Amazon Web Services account ID is used by default.
     public var catalogId: Swift.String?
     /// The name of the catalog database in which to create the function.
@@ -12986,12 +13063,12 @@ public struct CreateUserDefinedFunctionInput {
     }
 }
 
-public struct CreateUserDefinedFunctionOutput {
+public struct CreateUserDefinedFunctionOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct CreateWorkflowInput {
+public struct CreateWorkflowInput: Swift.Sendable {
     /// A collection of properties to be used as part of each execution of the workflow.
     public var defaultRunProperties: [Swift.String: Swift.String]?
     /// A description of the workflow.
@@ -13020,7 +13097,7 @@ public struct CreateWorkflowInput {
     }
 }
 
-public struct CreateWorkflowOutput {
+public struct CreateWorkflowOutput: Swift.Sendable {
     /// The name of the workflow which was provided as part of the request.
     public var name: Swift.String?
 
@@ -13032,7 +13109,7 @@ public struct CreateWorkflowOutput {
     }
 }
 
-public struct DeleteBlueprintInput {
+public struct DeleteBlueprintInput: Swift.Sendable {
     /// The name of the blueprint to delete.
     /// This member is required.
     public var name: Swift.String?
@@ -13045,7 +13122,7 @@ public struct DeleteBlueprintInput {
     }
 }
 
-public struct DeleteBlueprintOutput {
+public struct DeleteBlueprintOutput: Swift.Sendable {
     /// Returns the name of the blueprint that was deleted.
     public var name: Swift.String?
 
@@ -13057,7 +13134,7 @@ public struct DeleteBlueprintOutput {
     }
 }
 
-public struct DeleteClassifierInput {
+public struct DeleteClassifierInput: Swift.Sendable {
     /// Name of the classifier to remove.
     /// This member is required.
     public var name: Swift.String?
@@ -13070,12 +13147,12 @@ public struct DeleteClassifierInput {
     }
 }
 
-public struct DeleteClassifierOutput {
+public struct DeleteClassifierOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteColumnStatisticsForPartitionInput {
+public struct DeleteColumnStatisticsForPartitionInput: Swift.Sendable {
     /// The ID of the Data Catalog where the partitions in question reside. If none is supplied, the Amazon Web Services account ID is used by default.
     public var catalogId: Swift.String?
     /// Name of the column.
@@ -13107,12 +13184,12 @@ public struct DeleteColumnStatisticsForPartitionInput {
     }
 }
 
-public struct DeleteColumnStatisticsForPartitionOutput {
+public struct DeleteColumnStatisticsForPartitionOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteColumnStatisticsForTableInput {
+public struct DeleteColumnStatisticsForTableInput: Swift.Sendable {
     /// The ID of the Data Catalog where the partitions in question reside. If none is supplied, the Amazon Web Services account ID is used by default.
     public var catalogId: Swift.String?
     /// The name of the column.
@@ -13139,12 +13216,35 @@ public struct DeleteColumnStatisticsForTableInput {
     }
 }
 
-public struct DeleteColumnStatisticsForTableOutput {
+public struct DeleteColumnStatisticsForTableOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteConnectionInput {
+public struct DeleteColumnStatisticsTaskSettingsInput: Swift.Sendable {
+    /// The name of the database where the table resides.
+    /// This member is required.
+    public var databaseName: Swift.String?
+    /// The name of the table for which to delete column statistics.
+    /// This member is required.
+    public var tableName: Swift.String?
+
+    public init(
+        databaseName: Swift.String? = nil,
+        tableName: Swift.String? = nil
+    )
+    {
+        self.databaseName = databaseName
+        self.tableName = tableName
+    }
+}
+
+public struct DeleteColumnStatisticsTaskSettingsOutput: Swift.Sendable {
+
+    public init() { }
+}
+
+public struct DeleteConnectionInput: Swift.Sendable {
     /// The ID of the Data Catalog in which the connection resides. If none is provided, the Amazon Web Services account ID is used by default.
     public var catalogId: Swift.String?
     /// The name of the connection to delete.
@@ -13161,7 +13261,7 @@ public struct DeleteConnectionInput {
     }
 }
 
-public struct DeleteConnectionOutput {
+public struct DeleteConnectionOutput: Swift.Sendable {
 
     public init() { }
 }
@@ -13216,7 +13316,7 @@ public struct SchedulerTransitioningException: ClientRuntime.ModeledError, AWSCl
     }
 }
 
-public struct DeleteCrawlerInput {
+public struct DeleteCrawlerInput: Swift.Sendable {
     /// The name of the crawler to remove.
     /// This member is required.
     public var name: Swift.String?
@@ -13229,12 +13329,12 @@ public struct DeleteCrawlerInput {
     }
 }
 
-public struct DeleteCrawlerOutput {
+public struct DeleteCrawlerOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteCustomEntityTypeInput {
+public struct DeleteCustomEntityTypeInput: Swift.Sendable {
     /// The name of the custom pattern that you want to delete.
     /// This member is required.
     public var name: Swift.String?
@@ -13247,7 +13347,7 @@ public struct DeleteCustomEntityTypeInput {
     }
 }
 
-public struct DeleteCustomEntityTypeOutput {
+public struct DeleteCustomEntityTypeOutput: Swift.Sendable {
     /// The name of the custom pattern you deleted.
     public var name: Swift.String?
 
@@ -13259,7 +13359,7 @@ public struct DeleteCustomEntityTypeOutput {
     }
 }
 
-public struct DeleteDatabaseInput {
+public struct DeleteDatabaseInput: Swift.Sendable {
     /// The ID of the Data Catalog in which the database resides. If none is provided, the Amazon Web Services account ID is used by default.
     public var catalogId: Swift.String?
     /// The name of the database to delete. For Hive compatibility, this must be all lowercase.
@@ -13276,12 +13376,12 @@ public struct DeleteDatabaseInput {
     }
 }
 
-public struct DeleteDatabaseOutput {
+public struct DeleteDatabaseOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteDataQualityRulesetInput {
+public struct DeleteDataQualityRulesetInput: Swift.Sendable {
     /// A name for the data quality ruleset.
     /// This member is required.
     public var name: Swift.String?
@@ -13294,12 +13394,12 @@ public struct DeleteDataQualityRulesetInput {
     }
 }
 
-public struct DeleteDataQualityRulesetOutput {
+public struct DeleteDataQualityRulesetOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteDevEndpointInput {
+public struct DeleteDevEndpointInput: Swift.Sendable {
     /// The name of the DevEndpoint.
     /// This member is required.
     public var endpointName: Swift.String?
@@ -13312,12 +13412,12 @@ public struct DeleteDevEndpointInput {
     }
 }
 
-public struct DeleteDevEndpointOutput {
+public struct DeleteDevEndpointOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteJobInput {
+public struct DeleteJobInput: Swift.Sendable {
     /// The name of the job definition to delete.
     /// This member is required.
     public var jobName: Swift.String?
@@ -13330,7 +13430,7 @@ public struct DeleteJobInput {
     }
 }
 
-public struct DeleteJobOutput {
+public struct DeleteJobOutput: Swift.Sendable {
     /// The name of the job definition that was deleted.
     public var jobName: Swift.String?
 
@@ -13342,7 +13442,7 @@ public struct DeleteJobOutput {
     }
 }
 
-public struct DeleteMLTransformInput {
+public struct DeleteMLTransformInput: Swift.Sendable {
     /// The unique identifier of the transform to delete.
     /// This member is required.
     public var transformId: Swift.String?
@@ -13355,7 +13455,7 @@ public struct DeleteMLTransformInput {
     }
 }
 
-public struct DeleteMLTransformOutput {
+public struct DeleteMLTransformOutput: Swift.Sendable {
     /// The unique identifier of the transform that was deleted.
     public var transformId: Swift.String?
 
@@ -13367,7 +13467,7 @@ public struct DeleteMLTransformOutput {
     }
 }
 
-public struct DeletePartitionInput {
+public struct DeletePartitionInput: Swift.Sendable {
     /// The ID of the Data Catalog where the partition to be deleted resides. If none is provided, the Amazon Web Services account ID is used by default.
     public var catalogId: Swift.String?
     /// The name of the catalog database in which the table in question resides.
@@ -13394,7 +13494,7 @@ public struct DeletePartitionInput {
     }
 }
 
-public struct DeletePartitionOutput {
+public struct DeletePartitionOutput: Swift.Sendable {
 
     public init() { }
 }
@@ -13424,7 +13524,7 @@ public struct ConflictException: ClientRuntime.ModeledError, AWSClientRuntime.AW
     }
 }
 
-public struct DeletePartitionIndexInput {
+public struct DeletePartitionIndexInput: Swift.Sendable {
     /// The catalog ID where the table resides.
     public var catalogId: Swift.String?
     /// Specifies the name of a database from which you want to delete a partition index.
@@ -13451,12 +13551,12 @@ public struct DeletePartitionIndexInput {
     }
 }
 
-public struct DeletePartitionIndexOutput {
+public struct DeletePartitionIndexOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteRegistryInput {
+public struct DeleteRegistryInput: Swift.Sendable {
     /// This is a wrapper structure that may contain the registry name and Amazon Resource Name (ARN).
     /// This member is required.
     public var registryId: GlueClientTypes.RegistryId?
@@ -13471,7 +13571,7 @@ public struct DeleteRegistryInput {
 
 extension GlueClientTypes {
 
-    public enum RegistryStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum RegistryStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case available
         case deleting
         case sdkUnknown(Swift.String)
@@ -13498,7 +13598,7 @@ extension GlueClientTypes {
     }
 }
 
-public struct DeleteRegistryOutput {
+public struct DeleteRegistryOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the registry being deleted.
     public var registryArn: Swift.String?
     /// The name of the registry being deleted.
@@ -13543,7 +13643,7 @@ public struct ConditionCheckFailureException: ClientRuntime.ModeledError, AWSCli
     }
 }
 
-public struct DeleteResourcePolicyInput {
+public struct DeleteResourcePolicyInput: Swift.Sendable {
     /// The hash value returned when this policy was set.
     public var policyHashCondition: Swift.String?
     /// The ARN of the Glue resource for the resource policy to be deleted.
@@ -13559,12 +13659,12 @@ public struct DeleteResourcePolicyInput {
     }
 }
 
-public struct DeleteResourcePolicyOutput {
+public struct DeleteResourcePolicyOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteSchemaInput {
+public struct DeleteSchemaInput: Swift.Sendable {
     /// This is a wrapper structure that may contain the schema name and Amazon Resource Name (ARN).
     /// This member is required.
     public var schemaId: GlueClientTypes.SchemaId?
@@ -13577,7 +13677,7 @@ public struct DeleteSchemaInput {
     }
 }
 
-public struct DeleteSchemaOutput {
+public struct DeleteSchemaOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the schema being deleted.
     public var schemaArn: Swift.String?
     /// The name of the schema being deleted.
@@ -13597,7 +13697,7 @@ public struct DeleteSchemaOutput {
     }
 }
 
-public struct DeleteSchemaVersionsInput {
+public struct DeleteSchemaVersionsInput: Swift.Sendable {
     /// This is a wrapper structure that may contain the schema name and Amazon Resource Name (ARN).
     /// This member is required.
     public var schemaId: GlueClientTypes.SchemaId?
@@ -13620,8 +13720,9 @@ public struct DeleteSchemaVersionsInput {
 }
 
 extension GlueClientTypes {
+
     /// An object containing error details.
-    public struct ErrorDetails {
+    public struct ErrorDetails: Swift.Sendable {
         /// The error code for an error.
         public var errorCode: Swift.String?
         /// The error message for an error.
@@ -13636,12 +13737,12 @@ extension GlueClientTypes {
             self.errorMessage = errorMessage
         }
     }
-
 }
 
 extension GlueClientTypes {
+
     /// An object that contains the error details for an operation on a schema version.
-    public struct SchemaVersionErrorItem {
+    public struct SchemaVersionErrorItem: Swift.Sendable {
         /// The details of the error for the schema version.
         public var errorDetails: GlueClientTypes.ErrorDetails?
         /// The version number of the schema.
@@ -13656,10 +13757,9 @@ extension GlueClientTypes {
             self.versionNumber = versionNumber
         }
     }
-
 }
 
-public struct DeleteSchemaVersionsOutput {
+public struct DeleteSchemaVersionsOutput: Swift.Sendable {
     /// A list of SchemaVersionErrorItem objects, each containing an error and schema version.
     public var schemaVersionErrors: [GlueClientTypes.SchemaVersionErrorItem]?
 
@@ -13671,7 +13771,7 @@ public struct DeleteSchemaVersionsOutput {
     }
 }
 
-public struct DeleteSecurityConfigurationInput {
+public struct DeleteSecurityConfigurationInput: Swift.Sendable {
     /// The name of the security configuration to delete.
     /// This member is required.
     public var name: Swift.String?
@@ -13684,12 +13784,12 @@ public struct DeleteSecurityConfigurationInput {
     }
 }
 
-public struct DeleteSecurityConfigurationOutput {
+public struct DeleteSecurityConfigurationOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteSessionInput {
+public struct DeleteSessionInput: Swift.Sendable {
     /// The ID of the session to be deleted.
     /// This member is required.
     public var id: Swift.String?
@@ -13706,7 +13806,7 @@ public struct DeleteSessionInput {
     }
 }
 
-public struct DeleteSessionOutput {
+public struct DeleteSessionOutput: Swift.Sendable {
     /// Returns the ID of the deleted session.
     public var id: Swift.String?
 
@@ -13718,7 +13818,7 @@ public struct DeleteSessionOutput {
     }
 }
 
-public struct DeleteTableInput {
+public struct DeleteTableInput: Swift.Sendable {
     /// The ID of the Data Catalog where the table resides. If none is provided, the Amazon Web Services account ID is used by default.
     public var catalogId: Swift.String?
     /// The name of the catalog database in which the table resides. For Hive compatibility, this name is entirely lowercase.
@@ -13744,12 +13844,12 @@ public struct DeleteTableInput {
     }
 }
 
-public struct DeleteTableOutput {
+public struct DeleteTableOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteTableOptimizerInput {
+public struct DeleteTableOptimizerInput: Swift.Sendable {
     /// The Catalog ID of the table.
     /// This member is required.
     public var catalogId: Swift.String?
@@ -13777,12 +13877,12 @@ public struct DeleteTableOptimizerInput {
     }
 }
 
-public struct DeleteTableOptimizerOutput {
+public struct DeleteTableOptimizerOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteTableVersionInput {
+public struct DeleteTableVersionInput: Swift.Sendable {
     /// The ID of the Data Catalog where the tables reside. If none is provided, the Amazon Web Services account ID is used by default.
     public var catalogId: Swift.String?
     /// The database in the catalog in which the table resides. For Hive compatibility, this name is entirely lowercase.
@@ -13809,12 +13909,12 @@ public struct DeleteTableVersionInput {
     }
 }
 
-public struct DeleteTableVersionOutput {
+public struct DeleteTableVersionOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteTriggerInput {
+public struct DeleteTriggerInput: Swift.Sendable {
     /// The name of the trigger to delete.
     /// This member is required.
     public var name: Swift.String?
@@ -13827,7 +13927,7 @@ public struct DeleteTriggerInput {
     }
 }
 
-public struct DeleteTriggerOutput {
+public struct DeleteTriggerOutput: Swift.Sendable {
     /// The name of the trigger that was deleted.
     public var name: Swift.String?
 
@@ -13839,7 +13939,7 @@ public struct DeleteTriggerOutput {
     }
 }
 
-public struct DeleteUsageProfileInput {
+public struct DeleteUsageProfileInput: Swift.Sendable {
     /// The name of the usage profile to delete.
     /// This member is required.
     public var name: Swift.String?
@@ -13852,12 +13952,12 @@ public struct DeleteUsageProfileInput {
     }
 }
 
-public struct DeleteUsageProfileOutput {
+public struct DeleteUsageProfileOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteUserDefinedFunctionInput {
+public struct DeleteUserDefinedFunctionInput: Swift.Sendable {
     /// The ID of the Data Catalog where the function to be deleted is located. If none is supplied, the Amazon Web Services account ID is used by default.
     public var catalogId: Swift.String?
     /// The name of the catalog database where the function is located.
@@ -13879,12 +13979,12 @@ public struct DeleteUserDefinedFunctionInput {
     }
 }
 
-public struct DeleteUserDefinedFunctionOutput {
+public struct DeleteUserDefinedFunctionOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteWorkflowInput {
+public struct DeleteWorkflowInput: Swift.Sendable {
     /// Name of the workflow to be deleted.
     /// This member is required.
     public var name: Swift.String?
@@ -13897,7 +13997,7 @@ public struct DeleteWorkflowInput {
     }
 }
 
-public struct DeleteWorkflowOutput {
+public struct DeleteWorkflowOutput: Swift.Sendable {
     /// Name of the workflow specified in input.
     public var name: Swift.String?
 
@@ -13909,7 +14009,7 @@ public struct DeleteWorkflowOutput {
     }
 }
 
-public struct GetBlueprintInput {
+public struct GetBlueprintInput: Swift.Sendable {
     /// Specifies whether or not to include the blueprint in the response.
     public var includeBlueprint: Swift.Bool?
     /// Specifies whether or not to include the parameter specification.
@@ -13930,7 +14030,7 @@ public struct GetBlueprintInput {
     }
 }
 
-public struct GetBlueprintOutput {
+public struct GetBlueprintOutput: Swift.Sendable {
     /// Returns a Blueprint object.
     public var blueprint: GlueClientTypes.Blueprint?
 
@@ -13942,7 +14042,7 @@ public struct GetBlueprintOutput {
     }
 }
 
-public struct GetBlueprintRunInput {
+public struct GetBlueprintRunInput: Swift.Sendable {
     /// The name of the blueprint.
     /// This member is required.
     public var blueprintName: Swift.String?
@@ -13962,7 +14062,7 @@ public struct GetBlueprintRunInput {
 
 extension GlueClientTypes {
 
-    public enum BlueprintRunState: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum BlueprintRunState: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case failed
         case rollingBack
         case running
@@ -13996,8 +14096,9 @@ extension GlueClientTypes {
 }
 
 extension GlueClientTypes {
+
     /// The details of a blueprint run.
-    public struct BlueprintRun {
+    public struct BlueprintRun: Swift.Sendable {
         /// The name of the blueprint.
         public var blueprintName: Swift.String?
         /// The date and time that the blueprint run completed.
@@ -14052,10 +14153,9 @@ extension GlueClientTypes {
             self.workflowName = workflowName
         }
     }
-
 }
 
-public struct GetBlueprintRunOutput {
+public struct GetBlueprintRunOutput: Swift.Sendable {
     /// Returns a BlueprintRun object.
     public var blueprintRun: GlueClientTypes.BlueprintRun?
 
@@ -14067,7 +14167,7 @@ public struct GetBlueprintRunOutput {
     }
 }
 
-public struct GetBlueprintRunsInput {
+public struct GetBlueprintRunsInput: Swift.Sendable {
     /// The name of the blueprint.
     /// This member is required.
     public var blueprintName: Swift.String?
@@ -14088,7 +14188,7 @@ public struct GetBlueprintRunsInput {
     }
 }
 
-public struct GetBlueprintRunsOutput {
+public struct GetBlueprintRunsOutput: Swift.Sendable {
     /// Returns a list of BlueprintRun objects.
     public var blueprintRuns: [GlueClientTypes.BlueprintRun]?
     /// A continuation token, if not all blueprint runs have been returned.
@@ -14104,7 +14204,7 @@ public struct GetBlueprintRunsOutput {
     }
 }
 
-public struct GetCatalogImportStatusInput {
+public struct GetCatalogImportStatusInput: Swift.Sendable {
     /// The ID of the catalog to migrate. Currently, this should be the Amazon Web Services account ID.
     public var catalogId: Swift.String?
 
@@ -14117,8 +14217,9 @@ public struct GetCatalogImportStatusInput {
 }
 
 extension GlueClientTypes {
+
     /// A structure containing migration status information.
-    public struct CatalogImportStatus {
+    public struct CatalogImportStatus: Swift.Sendable {
         /// True if the migration has completed, or False otherwise.
         public var importCompleted: Swift.Bool
         /// The time that the migration was started.
@@ -14137,10 +14238,9 @@ extension GlueClientTypes {
             self.importedBy = importedBy
         }
     }
-
 }
 
-public struct GetCatalogImportStatusOutput {
+public struct GetCatalogImportStatusOutput: Swift.Sendable {
     /// The status of the specified catalog migration.
     public var importStatus: GlueClientTypes.CatalogImportStatus?
 
@@ -14152,7 +14252,7 @@ public struct GetCatalogImportStatusOutput {
     }
 }
 
-public struct GetClassifierInput {
+public struct GetClassifierInput: Swift.Sendable {
     /// Name of the classifier to retrieve.
     /// This member is required.
     public var name: Swift.String?
@@ -14166,8 +14266,9 @@ public struct GetClassifierInput {
 }
 
 extension GlueClientTypes {
+
     /// A classifier for custom CSV content.
-    public struct CsvClassifier {
+    public struct CsvClassifier: Swift.Sendable {
         /// Enables the processing of files that contain only one column.
         public var allowSingleColumn: Swift.Bool?
         /// Indicates whether the CSV file contains a header.
@@ -14227,12 +14328,12 @@ extension GlueClientTypes {
             self.version = version
         }
     }
-
 }
 
 extension GlueClientTypes {
+
     /// A classifier that uses grok patterns.
-    public struct GrokClassifier {
+    public struct GrokClassifier: Swift.Sendable {
         /// An identifier of the data format that the classifier matches, such as Twitter, JSON, Omniture logs, and so on.
         /// This member is required.
         public var classification: Swift.String?
@@ -14270,12 +14371,12 @@ extension GlueClientTypes {
             self.version = version
         }
     }
-
 }
 
 extension GlueClientTypes {
+
     /// A classifier for JSON content.
-    public struct JsonClassifier {
+    public struct JsonClassifier: Swift.Sendable {
         /// The time that this classifier was registered.
         public var creationTime: Foundation.Date?
         /// A JsonPath string defining the JSON data for the classifier to classify. Glue supports a subset of JsonPath, as described in [Writing JsonPath Custom Classifiers](https://docs.aws.amazon.com/glue/latest/dg/custom-classifier.html#custom-classifier-json).
@@ -14304,12 +14405,12 @@ extension GlueClientTypes {
             self.version = version
         }
     }
-
 }
 
 extension GlueClientTypes {
+
     /// A classifier for XML content.
-    public struct XMLClassifier {
+    public struct XMLClassifier: Swift.Sendable {
         /// An identifier of the data format that the classifier matches.
         /// This member is required.
         public var classification: Swift.String?
@@ -14342,12 +14443,12 @@ extension GlueClientTypes {
             self.version = version
         }
     }
-
 }
 
 extension GlueClientTypes {
+
     /// Classifiers are triggered during a crawl task. A classifier checks whether a given file is in a format it can handle. If it is, the classifier creates a schema in the form of a StructType object that matches that data format. You can use the standard classifiers that Glue provides, or you can write your own classifiers to best categorize your data sources and specify the appropriate schemas to use for them. A classifier can be a grok classifier, an XML classifier, a JSON classifier, or a custom CSV classifier, as specified in one of the fields in the Classifier object.
-    public struct Classifier {
+    public struct Classifier: Swift.Sendable {
         /// A classifier for comma-separated values (CSV).
         public var csvClassifier: GlueClientTypes.CsvClassifier?
         /// A classifier that uses grok.
@@ -14370,10 +14471,9 @@ extension GlueClientTypes {
             self.xmlClassifier = xmlClassifier
         }
     }
-
 }
 
-public struct GetClassifierOutput {
+public struct GetClassifierOutput: Swift.Sendable {
     /// The requested classifier.
     public var classifier: GlueClientTypes.Classifier?
 
@@ -14385,7 +14485,7 @@ public struct GetClassifierOutput {
     }
 }
 
-public struct GetClassifiersInput {
+public struct GetClassifiersInput: Swift.Sendable {
     /// The size of the list to return (optional).
     public var maxResults: Swift.Int?
     /// An optional continuation token.
@@ -14401,7 +14501,7 @@ public struct GetClassifiersInput {
     }
 }
 
-public struct GetClassifiersOutput {
+public struct GetClassifiersOutput: Swift.Sendable {
     /// The requested list of classifier objects.
     public var classifiers: [GlueClientTypes.Classifier]?
     /// A continuation token.
@@ -14417,7 +14517,7 @@ public struct GetClassifiersOutput {
     }
 }
 
-public struct GetColumnStatisticsForPartitionInput {
+public struct GetColumnStatisticsForPartitionInput: Swift.Sendable {
     /// The ID of the Data Catalog where the partitions in question reside. If none is supplied, the Amazon Web Services account ID is used by default.
     public var catalogId: Swift.String?
     /// A list of the column names.
@@ -14450,8 +14550,9 @@ public struct GetColumnStatisticsForPartitionInput {
 }
 
 extension GlueClientTypes {
+
     /// Defines column statistics supported for bit sequence data values.
-    public struct BinaryColumnStatisticsData {
+    public struct BinaryColumnStatisticsData: Swift.Sendable {
         /// The average bit sequence length in the column.
         /// This member is required.
         public var averageLength: Swift.Double
@@ -14473,12 +14574,12 @@ extension GlueClientTypes {
             self.numberOfNulls = numberOfNulls
         }
     }
-
 }
 
 extension GlueClientTypes {
+
     /// Defines column statistics supported for Boolean data columns.
-    public struct BooleanColumnStatisticsData {
+    public struct BooleanColumnStatisticsData: Swift.Sendable {
         /// The number of false values in the column.
         /// This member is required.
         public var numberOfFalses: Swift.Int
@@ -14500,12 +14601,12 @@ extension GlueClientTypes {
             self.numberOfTrues = numberOfTrues
         }
     }
-
 }
 
 extension GlueClientTypes {
+
     /// Defines column statistics supported for timestamp data columns.
-    public struct DateColumnStatisticsData {
+    public struct DateColumnStatisticsData: Swift.Sendable {
         /// The highest value in the column.
         public var maximumValue: Foundation.Date?
         /// The lowest value in the column.
@@ -14530,12 +14631,12 @@ extension GlueClientTypes {
             self.numberOfNulls = numberOfNulls
         }
     }
-
 }
 
 extension GlueClientTypes {
+
     /// Contains a numeric value in decimal format.
-    public struct DecimalNumber {
+    public struct DecimalNumber: Swift.Sendable {
         /// The scale that determines where the decimal point falls in the unscaled value.
         /// This member is required.
         public var scale: Swift.Int
@@ -14552,12 +14653,12 @@ extension GlueClientTypes {
             self.unscaledValue = unscaledValue
         }
     }
-
 }
 
 extension GlueClientTypes {
+
     /// Defines column statistics supported for fixed-point number data columns.
-    public struct DecimalColumnStatisticsData {
+    public struct DecimalColumnStatisticsData: Swift.Sendable {
         /// The highest value in the column.
         public var maximumValue: GlueClientTypes.DecimalNumber?
         /// The lowest value in the column.
@@ -14582,12 +14683,12 @@ extension GlueClientTypes {
             self.numberOfNulls = numberOfNulls
         }
     }
-
 }
 
 extension GlueClientTypes {
+
     /// Defines column statistics supported for floating-point number data columns.
-    public struct DoubleColumnStatisticsData {
+    public struct DoubleColumnStatisticsData: Swift.Sendable {
         /// The highest value in the column.
         public var maximumValue: Swift.Double
         /// The lowest value in the column.
@@ -14612,12 +14713,12 @@ extension GlueClientTypes {
             self.numberOfNulls = numberOfNulls
         }
     }
-
 }
 
 extension GlueClientTypes {
+
     /// Defines column statistics supported for integer data columns.
-    public struct LongColumnStatisticsData {
+    public struct LongColumnStatisticsData: Swift.Sendable {
         /// The highest value in the column.
         public var maximumValue: Swift.Int
         /// The lowest value in the column.
@@ -14642,12 +14743,12 @@ extension GlueClientTypes {
             self.numberOfNulls = numberOfNulls
         }
     }
-
 }
 
 extension GlueClientTypes {
+
     /// Defines column statistics supported for character sequence data values.
-    public struct StringColumnStatisticsData {
+    public struct StringColumnStatisticsData: Swift.Sendable {
         /// The average string length in the column.
         /// This member is required.
         public var averageLength: Swift.Double
@@ -14674,12 +14775,11 @@ extension GlueClientTypes {
             self.numberOfNulls = numberOfNulls
         }
     }
-
 }
 
 extension GlueClientTypes {
 
-    public enum ColumnStatisticsType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ColumnStatisticsType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case binary
         case boolean
         case date
@@ -14722,8 +14822,9 @@ extension GlueClientTypes {
 }
 
 extension GlueClientTypes {
+
     /// Contains the individual types of column statistics data. Only one data object should be set and indicated by the Type attribute.
-    public struct ColumnStatisticsData {
+    public struct ColumnStatisticsData: Swift.Sendable {
         /// Binary column statistics data.
         public var binaryColumnStatisticsData: GlueClientTypes.BinaryColumnStatisticsData?
         /// Boolean column statistics data.
@@ -14763,12 +14864,12 @@ extension GlueClientTypes {
             self.type = type
         }
     }
-
 }
 
 extension GlueClientTypes {
+
     /// Represents the generated column-level statistics for a table or partition.
-    public struct ColumnStatistics {
+    public struct ColumnStatistics: Swift.Sendable {
         /// The timestamp of when column statistics were generated.
         /// This member is required.
         public var analyzedTime: Foundation.Date?
@@ -14795,12 +14896,12 @@ extension GlueClientTypes {
             self.statisticsData = statisticsData
         }
     }
-
 }
 
 extension GlueClientTypes {
+
     /// Encapsulates a column name that failed and the reason for failure.
-    public struct ColumnError {
+    public struct ColumnError: Swift.Sendable {
         /// The name of the column that failed.
         public var columnName: Swift.String?
         /// An error message with the reason for the failure of an operation.
@@ -14815,10 +14916,9 @@ extension GlueClientTypes {
             self.error = error
         }
     }
-
 }
 
-public struct GetColumnStatisticsForPartitionOutput {
+public struct GetColumnStatisticsForPartitionOutput: Swift.Sendable {
     /// List of ColumnStatistics that failed to be retrieved.
     public var columnStatisticsList: [GlueClientTypes.ColumnStatistics]?
     /// Error occurred during retrieving column statistics data.
@@ -14834,7 +14934,7 @@ public struct GetColumnStatisticsForPartitionOutput {
     }
 }
 
-public struct GetColumnStatisticsForTableInput {
+public struct GetColumnStatisticsForTableInput: Swift.Sendable {
     /// The ID of the Data Catalog where the partitions in question reside. If none is supplied, the Amazon Web Services account ID is used by default.
     public var catalogId: Swift.String?
     /// A list of the column names.
@@ -14861,7 +14961,7 @@ public struct GetColumnStatisticsForTableInput {
     }
 }
 
-public struct GetColumnStatisticsForTableOutput {
+public struct GetColumnStatisticsForTableOutput: Swift.Sendable {
     /// List of ColumnStatistics.
     public var columnStatisticsList: [GlueClientTypes.ColumnStatistics]?
     /// List of ColumnStatistics that failed to be retrieved.
@@ -14877,7 +14977,7 @@ public struct GetColumnStatisticsForTableOutput {
     }
 }
 
-public struct GetColumnStatisticsTaskRunInput {
+public struct GetColumnStatisticsTaskRunInput: Swift.Sendable {
     /// The identifier for the particular column statistics task run.
     /// This member is required.
     public var columnStatisticsTaskRunId: Swift.String?
@@ -14892,7 +14992,36 @@ public struct GetColumnStatisticsTaskRunInput {
 
 extension GlueClientTypes {
 
-    public enum ColumnStatisticsState: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ComputationType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+        case full
+        case incremental
+        case sdkUnknown(Swift.String)
+
+        public static var allCases: [ComputationType] {
+            return [
+                .full,
+                .incremental
+            ]
+        }
+
+        public init?(rawValue: Swift.String) {
+            let value = Self.allCases.first(where: { $0.rawValue == rawValue })
+            self = value ?? Self.sdkUnknown(rawValue)
+        }
+
+        public var rawValue: Swift.String {
+            switch self {
+            case .full: return "FULL"
+            case .incremental: return "INCREMENTAL"
+            case let .sdkUnknown(s): return s
+            }
+        }
+    }
+}
+
+extension GlueClientTypes {
+
+    public enum ColumnStatisticsState: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case failed
         case running
         case starting
@@ -14929,14 +15058,17 @@ extension GlueClientTypes {
 }
 
 extension GlueClientTypes {
+
     /// The object that shows the details of the column stats run.
-    public struct ColumnStatisticsTaskRun {
+    public struct ColumnStatisticsTaskRun: Swift.Sendable {
         /// The ID of the Data Catalog where the table resides. If none is supplied, the Amazon Web Services account ID is used by default.
         public var catalogID: Swift.String?
         /// A list of the column names. If none is supplied, all column names for the table will be used by default.
         public var columnNameList: [Swift.String]?
         /// The identifier for the particular column statistics task run.
         public var columnStatisticsTaskRunId: Swift.String?
+        /// The type of column statistics computation.
+        public var computationType: GlueClientTypes.ComputationType?
         /// The time that this task was created.
         public var creationTime: Foundation.Date?
         /// The Amazon Web Services account ID.
@@ -14972,6 +15104,7 @@ extension GlueClientTypes {
             catalogID: Swift.String? = nil,
             columnNameList: [Swift.String]? = nil,
             columnStatisticsTaskRunId: Swift.String? = nil,
+            computationType: GlueClientTypes.ComputationType? = nil,
             creationTime: Foundation.Date? = nil,
             customerId: Swift.String? = nil,
             databaseName: Swift.String? = nil,
@@ -14992,6 +15125,7 @@ extension GlueClientTypes {
             self.catalogID = catalogID
             self.columnNameList = columnNameList
             self.columnStatisticsTaskRunId = columnStatisticsTaskRunId
+            self.computationType = computationType
             self.creationTime = creationTime
             self.customerId = customerId
             self.databaseName = databaseName
@@ -15009,10 +15143,9 @@ extension GlueClientTypes {
             self.workerType = workerType
         }
     }
-
 }
 
-public struct GetColumnStatisticsTaskRunOutput {
+public struct GetColumnStatisticsTaskRunOutput: Swift.Sendable {
     /// A ColumnStatisticsTaskRun object representing the details of the column stats run.
     public var columnStatisticsTaskRun: GlueClientTypes.ColumnStatisticsTaskRun?
 
@@ -15024,7 +15157,7 @@ public struct GetColumnStatisticsTaskRunOutput {
     }
 }
 
-public struct GetColumnStatisticsTaskRunsInput {
+public struct GetColumnStatisticsTaskRunsInput: Swift.Sendable {
     /// The name of the database where the table resides.
     /// This member is required.
     public var databaseName: Swift.String?
@@ -15050,7 +15183,7 @@ public struct GetColumnStatisticsTaskRunsInput {
     }
 }
 
-public struct GetColumnStatisticsTaskRunsOutput {
+public struct GetColumnStatisticsTaskRunsOutput: Swift.Sendable {
     /// A list of column statistics task runs.
     public var columnStatisticsTaskRuns: [GlueClientTypes.ColumnStatisticsTaskRun]?
     /// A continuation token, if not all task runs have yet been returned.
@@ -15066,7 +15199,81 @@ public struct GetColumnStatisticsTaskRunsOutput {
     }
 }
 
-public struct GetConnectionInput {
+public struct GetColumnStatisticsTaskSettingsInput: Swift.Sendable {
+    /// The name of the database where the table resides.
+    /// This member is required.
+    public var databaseName: Swift.String?
+    /// The name of the table for which to retrieve column statistics.
+    /// This member is required.
+    public var tableName: Swift.String?
+
+    public init(
+        databaseName: Swift.String? = nil,
+        tableName: Swift.String? = nil
+    )
+    {
+        self.databaseName = databaseName
+        self.tableName = tableName
+    }
+}
+
+extension GlueClientTypes {
+
+    /// The settings for a column statistics task.
+    public struct ColumnStatisticsTaskSettings: Swift.Sendable {
+        /// The ID of the Data Catalog in which the database resides.
+        public var catalogID: Swift.String?
+        /// A list of column names for which to run statistics.
+        public var columnNameList: [Swift.String]?
+        /// The name of the database where the table resides.
+        public var databaseName: Swift.String?
+        /// The role used for running the column statistics.
+        public var role: Swift.String?
+        /// The percentage of data to sample.
+        public var sampleSize: Swift.Double
+        /// A schedule for running the column statistics, specified in CRON syntax.
+        public var schedule: GlueClientTypes.Schedule?
+        /// Name of the security configuration that is used to encrypt CloudWatch logs.
+        public var securityConfiguration: Swift.String?
+        /// The name of the table for which to generate column statistics.
+        public var tableName: Swift.String?
+
+        public init(
+            catalogID: Swift.String? = nil,
+            columnNameList: [Swift.String]? = nil,
+            databaseName: Swift.String? = nil,
+            role: Swift.String? = nil,
+            sampleSize: Swift.Double = 0.0,
+            schedule: GlueClientTypes.Schedule? = nil,
+            securityConfiguration: Swift.String? = nil,
+            tableName: Swift.String? = nil
+        )
+        {
+            self.catalogID = catalogID
+            self.columnNameList = columnNameList
+            self.databaseName = databaseName
+            self.role = role
+            self.sampleSize = sampleSize
+            self.schedule = schedule
+            self.securityConfiguration = securityConfiguration
+            self.tableName = tableName
+        }
+    }
+}
+
+public struct GetColumnStatisticsTaskSettingsOutput: Swift.Sendable {
+    /// A ColumnStatisticsTaskSettings object representing the settings for the column statistics task.
+    public var columnStatisticsTaskSettings: GlueClientTypes.ColumnStatisticsTaskSettings?
+
+    public init(
+        columnStatisticsTaskSettings: GlueClientTypes.ColumnStatisticsTaskSettings? = nil
+    )
+    {
+        self.columnStatisticsTaskSettings = columnStatisticsTaskSettings
+    }
+}
+
+public struct GetConnectionInput: Swift.Sendable {
     /// The ID of the Data Catalog in which the connection resides. If none is provided, the Amazon Web Services account ID is used by default.
     public var catalogId: Swift.String?
     /// Allows you to retrieve the connection metadata without returning the password. For instance, the Glue console uses this flag to retrieve the connection, and does not display the password. Set this parameter when the caller might not have permission to use the KMS key to decrypt the password, but it does have permission to access the rest of the connection properties.
@@ -15088,8 +15295,9 @@ public struct GetConnectionInput {
 }
 
 extension GlueClientTypes {
+
     /// Defines a connection to a data source.
-    public struct Connection {
+    public struct Connection: Swift.Sendable {
         /// This field is not currently used.
         public var athenaProperties: [Swift.String: Swift.String]?
         /// The authentication properties of the connection.
@@ -15246,10 +15454,9 @@ extension GlueClientTypes {
             self.statusReason = statusReason
         }
     }
-
 }
 
-public struct GetConnectionOutput {
+public struct GetConnectionOutput: Swift.Sendable {
     /// The requested connection definition.
     public var connection: GlueClientTypes.Connection?
 
@@ -15262,8 +15469,9 @@ public struct GetConnectionOutput {
 }
 
 extension GlueClientTypes {
+
     /// Filters the connection definitions that are returned by the GetConnections API operation.
-    public struct GetConnectionsFilter {
+    public struct GetConnectionsFilter: Swift.Sendable {
         /// The type of connections to return. Currently, SFTP is not supported.
         public var connectionType: GlueClientTypes.ConnectionType?
         /// A criteria string that must match the criteria recorded in the connection definition for that connection definition to be returned.
@@ -15278,10 +15486,9 @@ extension GlueClientTypes {
             self.matchCriteria = matchCriteria
         }
     }
-
 }
 
-public struct GetConnectionsInput {
+public struct GetConnectionsInput: Swift.Sendable {
     /// The ID of the Data Catalog in which the connections reside. If none is provided, the Amazon Web Services account ID is used by default.
     public var catalogId: Swift.String?
     /// A filter that controls which connections are returned.
@@ -15309,7 +15516,7 @@ public struct GetConnectionsInput {
     }
 }
 
-public struct GetConnectionsOutput {
+public struct GetConnectionsOutput: Swift.Sendable {
     /// A list of requested connection definitions.
     public var connectionList: [GlueClientTypes.Connection]?
     /// A continuation token, if the list of connections returned does not include the last of the filtered connections.
@@ -15325,7 +15532,7 @@ public struct GetConnectionsOutput {
     }
 }
 
-public struct GetCrawlerInput {
+public struct GetCrawlerInput: Swift.Sendable {
     /// The name of the crawler to retrieve metadata for.
     /// This member is required.
     public var name: Swift.String?
@@ -15338,7 +15545,7 @@ public struct GetCrawlerInput {
     }
 }
 
-public struct GetCrawlerOutput {
+public struct GetCrawlerOutput: Swift.Sendable {
     /// The metadata for the specified crawler.
     public var crawler: GlueClientTypes.Crawler?
 
@@ -15350,7 +15557,7 @@ public struct GetCrawlerOutput {
     }
 }
 
-public struct GetCrawlerMetricsInput {
+public struct GetCrawlerMetricsInput: Swift.Sendable {
     /// A list of the names of crawlers about which to retrieve metrics.
     public var crawlerNameList: [Swift.String]?
     /// The maximum size of a list to return.
@@ -15371,8 +15578,9 @@ public struct GetCrawlerMetricsInput {
 }
 
 extension GlueClientTypes {
+
     /// Metrics for a specified crawler.
-    public struct CrawlerMetrics {
+    public struct CrawlerMetrics: Swift.Sendable {
         /// The name of the crawler.
         public var crawlerName: Swift.String?
         /// The duration of the crawler's most recent run, in seconds.
@@ -15411,10 +15619,9 @@ extension GlueClientTypes {
             self.timeLeftSeconds = timeLeftSeconds
         }
     }
-
 }
 
-public struct GetCrawlerMetricsOutput {
+public struct GetCrawlerMetricsOutput: Swift.Sendable {
     /// A list of metrics for the specified crawler.
     public var crawlerMetricsList: [GlueClientTypes.CrawlerMetrics]?
     /// A continuation token, if the returned list does not contain the last metric available.
@@ -15430,7 +15637,7 @@ public struct GetCrawlerMetricsOutput {
     }
 }
 
-public struct GetCrawlersInput {
+public struct GetCrawlersInput: Swift.Sendable {
     /// The number of crawlers to return on each call.
     public var maxResults: Swift.Int?
     /// A continuation token, if this is a continuation request.
@@ -15446,7 +15653,7 @@ public struct GetCrawlersInput {
     }
 }
 
-public struct GetCrawlersOutput {
+public struct GetCrawlersOutput: Swift.Sendable {
     /// A list of crawler metadata.
     public var crawlers: [GlueClientTypes.Crawler]?
     /// A continuation token, if the returned list has not reached the end of those defined in this customer account.
@@ -15462,7 +15669,7 @@ public struct GetCrawlersOutput {
     }
 }
 
-public struct GetCustomEntityTypeInput {
+public struct GetCustomEntityTypeInput: Swift.Sendable {
     /// The name of the custom pattern that you want to retrieve.
     /// This member is required.
     public var name: Swift.String?
@@ -15475,7 +15682,7 @@ public struct GetCustomEntityTypeInput {
     }
 }
 
-public struct GetCustomEntityTypeOutput {
+public struct GetCustomEntityTypeOutput: Swift.Sendable {
     /// A list of context words if specified when you created the custom pattern. If none of these context words are found within the vicinity of the regular expression the data will not be detected as sensitive data.
     public var contextWords: [Swift.String]?
     /// The name of the custom pattern that you retrieved.
@@ -15495,7 +15702,7 @@ public struct GetCustomEntityTypeOutput {
     }
 }
 
-public struct GetDatabaseInput {
+public struct GetDatabaseInput: Swift.Sendable {
     /// The ID of the Data Catalog in which the database resides. If none is provided, the Amazon Web Services account ID is used by default.
     public var catalogId: Swift.String?
     /// The name of the database to retrieve. For Hive compatibility, this should be all lowercase.
@@ -15513,8 +15720,9 @@ public struct GetDatabaseInput {
 }
 
 extension GlueClientTypes {
+
     /// The Database object represents a logical grouping of tables that might reside in a Hive metastore or an RDBMS.
-    public struct Database {
+    public struct Database: Swift.Sendable {
         /// The ID of the Data Catalog in which the database resides.
         public var catalogId: Swift.String?
         /// Creates a set of default permissions on the table for principals. Used by Lake Formation. Not used in the normal course of Glue operations.
@@ -15558,10 +15766,9 @@ extension GlueClientTypes {
             self.targetDatabase = targetDatabase
         }
     }
-
 }
 
-public struct GetDatabaseOutput {
+public struct GetDatabaseOutput: Swift.Sendable {
     /// The definition of the specified database in the Data Catalog.
     public var database: GlueClientTypes.Database?
 
@@ -15575,7 +15782,7 @@ public struct GetDatabaseOutput {
 
 extension GlueClientTypes {
 
-    public enum DatabaseAttributes: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DatabaseAttributes: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case name
         case sdkUnknown(Swift.String)
 
@@ -15601,7 +15808,7 @@ extension GlueClientTypes {
 
 extension GlueClientTypes {
 
-    public enum ResourceShareType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ResourceShareType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case all
         case federated
         case foreign
@@ -15631,7 +15838,7 @@ extension GlueClientTypes {
     }
 }
 
-public struct GetDatabasesInput {
+public struct GetDatabasesInput: Swift.Sendable {
     /// Specifies the database fields returned by the GetDatabases call. This parameter doesn’t accept an empty list. The request must include the NAME.
     public var attributesToGet: [GlueClientTypes.DatabaseAttributes]?
     /// The ID of the Data Catalog from which to retrieve Databases. If none is provided, the Amazon Web Services account ID is used by default.
@@ -15665,7 +15872,7 @@ public struct GetDatabasesInput {
     }
 }
 
-public struct GetDatabasesOutput {
+public struct GetDatabasesOutput: Swift.Sendable {
     /// A list of Database objects from the specified catalog.
     /// This member is required.
     public var databaseList: [GlueClientTypes.Database]?
@@ -15682,7 +15889,7 @@ public struct GetDatabasesOutput {
     }
 }
 
-public struct GetDataCatalogEncryptionSettingsInput {
+public struct GetDataCatalogEncryptionSettingsInput: Swift.Sendable {
     /// The ID of the Data Catalog to retrieve the security configuration for. If none is provided, the Amazon Web Services account ID is used by default.
     public var catalogId: Swift.String?
 
@@ -15695,8 +15902,9 @@ public struct GetDataCatalogEncryptionSettingsInput {
 }
 
 extension GlueClientTypes {
+
     /// The data structure used by the Data Catalog to encrypt the password as part of CreateConnection or UpdateConnection and store it in the ENCRYPTED_PASSWORD field in the connection properties. You can enable catalog encryption or only password encryption. When a CreationConnection request arrives containing a password, the Data Catalog first encrypts the password using your KMS key. It then encrypts the whole connection object again if catalog encryption is also enabled. This encryption requires that you set KMS key permissions to enable or restrict access on the password key according to your security requirements. For example, you might want only administrators to have decrypt permission on the password key.
-    public struct ConnectionPasswordEncryption {
+    public struct ConnectionPasswordEncryption: Swift.Sendable {
         /// An KMS key that is used to encrypt the connection password. If connection password protection is enabled, the caller of CreateConnection and UpdateConnection needs at least kms:Encrypt permission on the specified KMS key, to encrypt passwords before storing them in the Data Catalog. You can set the decrypt permission to enable or restrict access on the password key according to your security requirements.
         public var awsKmsKeyId: Swift.String?
         /// When the ReturnConnectionPasswordEncrypted flag is set to "true", passwords remain encrypted in the responses of GetConnection and GetConnections. This encryption takes effect independently from catalog encryption.
@@ -15712,12 +15920,11 @@ extension GlueClientTypes {
             self.returnConnectionPasswordEncrypted = returnConnectionPasswordEncrypted
         }
     }
-
 }
 
 extension GlueClientTypes {
 
-    public enum CatalogEncryptionMode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum CatalogEncryptionMode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case disabled
         case ssekms
         case ssekmswithservicerole
@@ -15748,8 +15955,9 @@ extension GlueClientTypes {
 }
 
 extension GlueClientTypes {
+
     /// Specifies the encryption-at-rest configuration for the Data Catalog.
-    public struct EncryptionAtRest {
+    public struct EncryptionAtRest: Swift.Sendable {
         /// The encryption-at-rest mode for encrypting Data Catalog data.
         /// This member is required.
         public var catalogEncryptionMode: GlueClientTypes.CatalogEncryptionMode?
@@ -15769,12 +15977,12 @@ extension GlueClientTypes {
             self.sseAwsKmsKeyId = sseAwsKmsKeyId
         }
     }
-
 }
 
 extension GlueClientTypes {
+
     /// Contains configuration information for maintaining Data Catalog security.
-    public struct DataCatalogEncryptionSettings {
+    public struct DataCatalogEncryptionSettings: Swift.Sendable {
         /// When connection password protection is enabled, the Data Catalog uses a customer-provided key to encrypt the password as part of CreateConnection or UpdateConnection and store it in the ENCRYPTED_PASSWORD field in the connection properties. You can enable catalog encryption or only password encryption.
         public var connectionPasswordEncryption: GlueClientTypes.ConnectionPasswordEncryption?
         /// Specifies the encryption-at-rest configuration for the Data Catalog.
@@ -15789,10 +15997,9 @@ extension GlueClientTypes {
             self.encryptionAtRest = encryptionAtRest
         }
     }
-
 }
 
-public struct GetDataCatalogEncryptionSettingsOutput {
+public struct GetDataCatalogEncryptionSettingsOutput: Swift.Sendable {
     /// The requested security configuration.
     public var dataCatalogEncryptionSettings: GlueClientTypes.DataCatalogEncryptionSettings?
 
@@ -15804,7 +16011,7 @@ public struct GetDataCatalogEncryptionSettingsOutput {
     }
 }
 
-public struct GetDataflowGraphInput {
+public struct GetDataflowGraphInput: Swift.Sendable {
     /// The Python script to transform.
     public var pythonScript: Swift.String?
 
@@ -15816,7 +16023,7 @@ public struct GetDataflowGraphInput {
     }
 }
 
-public struct GetDataflowGraphOutput {
+public struct GetDataflowGraphOutput: Swift.Sendable {
     /// A list of the edges in the resulting DAG.
     public var dagEdges: [GlueClientTypes.CodeGenEdge]?
     /// A list of the nodes in the resulting DAG.
@@ -15832,7 +16039,7 @@ public struct GetDataflowGraphOutput {
     }
 }
 
-public struct GetDataQualityModelInput {
+public struct GetDataQualityModelInput: Swift.Sendable {
     /// The Profile ID.
     /// This member is required.
     public var profileId: Swift.String?
@@ -15851,7 +16058,7 @@ public struct GetDataQualityModelInput {
 
 extension GlueClientTypes {
 
-    public enum DataQualityModelStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DataQualityModelStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case failed
         case running
         case succeeded
@@ -15881,7 +16088,7 @@ extension GlueClientTypes {
     }
 }
 
-public struct GetDataQualityModelOutput {
+public struct GetDataQualityModelOutput: Swift.Sendable {
     /// The timestamp when the data quality model training completed.
     public var completedOn: Foundation.Date?
     /// The training failure reason.
@@ -15905,7 +16112,7 @@ public struct GetDataQualityModelOutput {
     }
 }
 
-public struct GetDataQualityModelResultInput {
+public struct GetDataQualityModelResultInput: Swift.Sendable {
     /// The Profile ID.
     /// This member is required.
     public var profileId: Swift.String?
@@ -15924,8 +16131,9 @@ public struct GetDataQualityModelResultInput {
 }
 
 extension GlueClientTypes {
+
     /// The statistic model result.
-    public struct StatisticModelResult {
+    public struct StatisticModelResult: Swift.Sendable {
         /// The actual value.
         public var actualValue: Swift.Double?
         /// The date.
@@ -15956,10 +16164,9 @@ extension GlueClientTypes {
             self.upperBound = upperBound
         }
     }
-
 }
 
-public struct GetDataQualityModelResultOutput {
+public struct GetDataQualityModelResultOutput: Swift.Sendable {
     /// The timestamp when the data quality model training completed.
     public var completedOn: Foundation.Date?
     /// A list of StatisticModelResult
@@ -15975,7 +16182,7 @@ public struct GetDataQualityModelResultOutput {
     }
 }
 
-public struct GetDataQualityResultInput {
+public struct GetDataQualityResultInput: Swift.Sendable {
     /// A unique result ID for the data quality result.
     /// This member is required.
     public var resultId: Swift.String?
@@ -15988,7 +16195,7 @@ public struct GetDataQualityResultInput {
     }
 }
 
-public struct GetDataQualityResultOutput {
+public struct GetDataQualityResultOutput: Swift.Sendable {
     /// A list of DataQualityAnalyzerResult objects representing the results for each analyzer.
     public var analyzerResults: [GlueClientTypes.DataQualityAnalyzerResult]?
     /// The date and time when the run for this data quality result was completed.
@@ -16052,7 +16259,7 @@ public struct GetDataQualityResultOutput {
     }
 }
 
-public struct GetDataQualityRuleRecommendationRunInput {
+public struct GetDataQualityRuleRecommendationRunInput: Swift.Sendable {
     /// The unique run identifier associated with this run.
     /// This member is required.
     public var runId: Swift.String?
@@ -16065,7 +16272,7 @@ public struct GetDataQualityRuleRecommendationRunInput {
     }
 }
 
-public struct GetDataQualityRuleRecommendationRunOutput {
+public struct GetDataQualityRuleRecommendationRunOutput: Swift.Sendable {
     /// The date and time when this run was completed.
     public var completedOn: Foundation.Date?
     /// The name of the ruleset that was created by the run.
@@ -16129,7 +16336,7 @@ public struct GetDataQualityRuleRecommendationRunOutput {
     }
 }
 
-public struct GetDataQualityRulesetInput {
+public struct GetDataQualityRulesetInput: Swift.Sendable {
     /// The name of the ruleset.
     /// This member is required.
     public var name: Swift.String?
@@ -16142,7 +16349,7 @@ public struct GetDataQualityRulesetInput {
     }
 }
 
-public struct GetDataQualityRulesetOutput {
+public struct GetDataQualityRulesetOutput: Swift.Sendable {
     /// A timestamp. The time and date that this data quality ruleset was created.
     public var createdOn: Foundation.Date?
     /// The name of the security configuration created with the data quality encryption option.
@@ -16182,7 +16389,7 @@ public struct GetDataQualityRulesetOutput {
     }
 }
 
-public struct GetDataQualityRulesetEvaluationRunInput {
+public struct GetDataQualityRulesetEvaluationRunInput: Swift.Sendable {
     /// The unique run identifier associated with this run.
     /// This member is required.
     public var runId: Swift.String?
@@ -16197,7 +16404,7 @@ public struct GetDataQualityRulesetEvaluationRunInput {
 
 extension GlueClientTypes {
 
-    public enum DQCompositeRuleEvaluationMethod: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DQCompositeRuleEvaluationMethod: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case column
         case row
         case sdkUnknown(Swift.String)
@@ -16225,8 +16432,9 @@ extension GlueClientTypes {
 }
 
 extension GlueClientTypes {
+
     /// Additional run options you can specify for an evaluation run.
-    public struct DataQualityEvaluationRunAdditionalRunOptions {
+    public struct DataQualityEvaluationRunAdditionalRunOptions: Swift.Sendable {
         /// Whether or not to enable CloudWatch metrics.
         public var cloudWatchMetricsEnabled: Swift.Bool?
         /// Set the evaluation method for composite rules in the ruleset to ROW/COLUMN
@@ -16245,10 +16453,9 @@ extension GlueClientTypes {
             self.resultsS3Prefix = resultsS3Prefix
         }
     }
-
 }
 
-public struct GetDataQualityRulesetEvaluationRunOutput {
+public struct GetDataQualityRulesetEvaluationRunOutput: Swift.Sendable {
     /// A map of reference strings to additional data sources you can specify for an evaluation run.
     public var additionalDataSources: [Swift.String: GlueClientTypes.DataSource]?
     /// Additional run options you can specify for an evaluation run.
@@ -16316,7 +16523,7 @@ public struct GetDataQualityRulesetEvaluationRunOutput {
     }
 }
 
-public struct GetDevEndpointInput {
+public struct GetDevEndpointInput: Swift.Sendable {
     /// Name of the DevEndpoint to retrieve information for.
     /// This member is required.
     public var endpointName: Swift.String?
@@ -16329,7 +16536,7 @@ public struct GetDevEndpointInput {
     }
 }
 
-public struct GetDevEndpointOutput {
+public struct GetDevEndpointOutput: Swift.Sendable {
     /// A DevEndpoint definition.
     public var devEndpoint: GlueClientTypes.DevEndpoint?
 
@@ -16341,7 +16548,7 @@ public struct GetDevEndpointOutput {
     }
 }
 
-public struct GetDevEndpointsInput {
+public struct GetDevEndpointsInput: Swift.Sendable {
     /// The maximum size of information to return.
     public var maxResults: Swift.Int?
     /// A continuation token, if this is a continuation call.
@@ -16357,7 +16564,7 @@ public struct GetDevEndpointsInput {
     }
 }
 
-public struct GetDevEndpointsOutput {
+public struct GetDevEndpointsOutput: Swift.Sendable {
     /// A list of DevEndpoint definitions.
     public var devEndpoints: [GlueClientTypes.DevEndpoint]?
     /// A continuation token, if not all DevEndpoint definitions have yet been returned.
@@ -16373,7 +16580,7 @@ public struct GetDevEndpointsOutput {
     }
 }
 
-public struct GetJobInput {
+public struct GetJobInput: Swift.Sendable {
     /// The name of the job definition to retrieve.
     /// This member is required.
     public var jobName: Swift.String?
@@ -16386,7 +16593,7 @@ public struct GetJobInput {
     }
 }
 
-public struct GetJobBookmarkInput {
+public struct GetJobBookmarkInput: Swift.Sendable {
     /// The name of the job in question.
     /// This member is required.
     public var jobName: Swift.String?
@@ -16404,8 +16611,9 @@ public struct GetJobBookmarkInput {
 }
 
 extension GlueClientTypes {
+
     /// Defines a point that a job can resume processing.
-    public struct JobBookmarkEntry {
+    public struct JobBookmarkEntry: Swift.Sendable {
         /// The attempt ID number.
         public var attempt: Swift.Int
         /// The bookmark itself.
@@ -16440,10 +16648,9 @@ extension GlueClientTypes {
             self.version = version
         }
     }
-
 }
 
-public struct GetJobBookmarkOutput {
+public struct GetJobBookmarkOutput: Swift.Sendable {
     /// A structure that defines a point that a job can resume processing.
     public var jobBookmarkEntry: GlueClientTypes.JobBookmarkEntry?
 
@@ -16455,7 +16662,7 @@ public struct GetJobBookmarkOutput {
     }
 }
 
-public struct GetJobRunInput {
+public struct GetJobRunInput: Swift.Sendable {
     /// Name of the job definition being run.
     /// This member is required.
     public var jobName: Swift.String?
@@ -16477,7 +16684,7 @@ public struct GetJobRunInput {
     }
 }
 
-public struct GetJobRunOutput {
+public struct GetJobRunOutput: Swift.Sendable {
     /// The requested job-run metadata.
     public var jobRun: GlueClientTypes.JobRun?
 
@@ -16489,7 +16696,7 @@ public struct GetJobRunOutput {
     }
 }
 
-public struct GetJobRunsInput {
+public struct GetJobRunsInput: Swift.Sendable {
     /// The name of the job definition for which to retrieve all job runs.
     /// This member is required.
     public var jobName: Swift.String?
@@ -16510,7 +16717,7 @@ public struct GetJobRunsInput {
     }
 }
 
-public struct GetJobRunsOutput {
+public struct GetJobRunsOutput: Swift.Sendable {
     /// A list of job-run metadata objects.
     public var jobRuns: [GlueClientTypes.JobRun]?
     /// A continuation token, if not all requested job runs have been returned.
@@ -16526,7 +16733,7 @@ public struct GetJobRunsOutput {
     }
 }
 
-public struct GetJobsInput {
+public struct GetJobsInput: Swift.Sendable {
     /// The maximum size of the response.
     public var maxResults: Swift.Int?
     /// A continuation token, if this is a continuation call.
@@ -16543,8 +16750,9 @@ public struct GetJobsInput {
 }
 
 extension GlueClientTypes {
+
     /// The location of resources.
-    public struct Location {
+    public struct Location: Swift.Sendable {
         /// An Amazon DynamoDB table location.
         public var dynamoDB: [GlueClientTypes.CodeGenNodeArg]?
         /// A JDBC location.
@@ -16563,12 +16771,12 @@ extension GlueClientTypes {
             self.s3 = s3
         }
     }
-
 }
 
 extension GlueClientTypes {
+
     /// Specifies a table definition in the Glue Data Catalog.
-    public struct CatalogEntry {
+    public struct CatalogEntry: Swift.Sendable {
         /// The database in which the table metadata resides.
         /// This member is required.
         public var databaseName: Swift.String?
@@ -16585,10 +16793,9 @@ extension GlueClientTypes {
             self.tableName = tableName
         }
     }
-
 }
 
-public struct GetMappingInput {
+public struct GetMappingInput: Swift.Sendable {
     /// Parameters for the mapping.
     public var location: GlueClientTypes.Location?
     /// A list of target tables.
@@ -16610,8 +16817,9 @@ public struct GetMappingInput {
 }
 
 extension GlueClientTypes {
+
     /// Defines a mapping.
-    public struct MappingEntry {
+    public struct MappingEntry: Swift.Sendable {
         /// The source path.
         public var sourcePath: Swift.String?
         /// The name of the source table.
@@ -16642,10 +16850,9 @@ extension GlueClientTypes {
             self.targetType = targetType
         }
     }
-
 }
 
-public struct GetMappingOutput {
+public struct GetMappingOutput: Swift.Sendable {
     /// A list of mappings to the specified targets.
     /// This member is required.
     public var mapping: [GlueClientTypes.MappingEntry]?
@@ -16658,7 +16865,7 @@ public struct GetMappingOutput {
     }
 }
 
-public struct GetMLTaskRunInput {
+public struct GetMLTaskRunInput: Swift.Sendable {
     /// The unique identifier of the task run.
     /// This member is required.
     public var taskRunId: Swift.String?
@@ -16677,8 +16884,9 @@ public struct GetMLTaskRunInput {
 }
 
 extension GlueClientTypes {
+
     /// Specifies configuration properties for an exporting labels task run.
-    public struct ExportLabelsTaskRunProperties {
+    public struct ExportLabelsTaskRunProperties: Swift.Sendable {
         /// The Amazon Simple Storage Service (Amazon S3) path where you will export the labels.
         public var outputS3Path: Swift.String?
 
@@ -16689,12 +16897,12 @@ extension GlueClientTypes {
             self.outputS3Path = outputS3Path
         }
     }
-
 }
 
 extension GlueClientTypes {
+
     /// Specifies configuration properties for a Find Matches task run.
-    public struct FindMatchesTaskRunProperties {
+    public struct FindMatchesTaskRunProperties: Swift.Sendable {
         /// The job ID for the Find Matches task run.
         public var jobId: Swift.String?
         /// The name assigned to the job for the Find Matches task run.
@@ -16713,12 +16921,12 @@ extension GlueClientTypes {
             self.jobRunId = jobRunId
         }
     }
-
 }
 
 extension GlueClientTypes {
+
     /// Specifies configuration properties for an importing labels task run.
-    public struct ImportLabelsTaskRunProperties {
+    public struct ImportLabelsTaskRunProperties: Swift.Sendable {
         /// The Amazon Simple Storage Service (Amazon S3) path from where you will import the labels.
         public var inputS3Path: Swift.String?
         /// Indicates whether to overwrite your existing labels.
@@ -16733,12 +16941,12 @@ extension GlueClientTypes {
             self.replace = replace
         }
     }
-
 }
 
 extension GlueClientTypes {
+
     /// Specifies configuration properties for a labeling set generation task run.
-    public struct LabelingSetGenerationTaskRunProperties {
+    public struct LabelingSetGenerationTaskRunProperties: Swift.Sendable {
         /// The Amazon Simple Storage Service (Amazon S3) path where you will generate the labeling set.
         public var outputS3Path: Swift.String?
 
@@ -16749,12 +16957,11 @@ extension GlueClientTypes {
             self.outputS3Path = outputS3Path
         }
     }
-
 }
 
 extension GlueClientTypes {
 
-    public enum TaskType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum TaskType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case evaluation
         case exportLabels
         case findMatches
@@ -16791,8 +16998,9 @@ extension GlueClientTypes {
 }
 
 extension GlueClientTypes {
+
     /// The configuration properties for the task run.
-    public struct TaskRunProperties {
+    public struct TaskRunProperties: Swift.Sendable {
         /// The configuration properties for an exporting labels task run.
         public var exportLabelsTaskRunProperties: GlueClientTypes.ExportLabelsTaskRunProperties?
         /// The configuration properties for a find matches task run.
@@ -16819,10 +17027,9 @@ extension GlueClientTypes {
             self.taskType = taskType
         }
     }
-
 }
 
-public struct GetMLTaskRunOutput {
+public struct GetMLTaskRunOutput: Swift.Sendable {
     /// The date and time when this task run was completed.
     public var completedOn: Foundation.Date?
     /// The error strings that are associated with the task run.
@@ -16871,8 +17078,9 @@ public struct GetMLTaskRunOutput {
 }
 
 extension GlueClientTypes {
+
     /// The criteria that are used to filter the task runs for the machine learning transform.
-    public struct TaskRunFilterCriteria {
+    public struct TaskRunFilterCriteria: Swift.Sendable {
         /// Filter on task runs started after this date.
         public var startedAfter: Foundation.Date?
         /// Filter on task runs started before this date.
@@ -16895,12 +17103,11 @@ extension GlueClientTypes {
             self.taskRunType = taskRunType
         }
     }
-
 }
 
 extension GlueClientTypes {
 
-    public enum TaskRunSortColumnType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum TaskRunSortColumnType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case started
         case status
         case taskRunType
@@ -16932,7 +17139,7 @@ extension GlueClientTypes {
 
 extension GlueClientTypes {
 
-    public enum SortDirectionType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SortDirectionType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case ascending
         case descending
         case sdkUnknown(Swift.String)
@@ -16960,8 +17167,9 @@ extension GlueClientTypes {
 }
 
 extension GlueClientTypes {
+
     /// The sorting criteria that are used to sort the list of task runs for the machine learning transform.
-    public struct TaskRunSortCriteria {
+    public struct TaskRunSortCriteria: Swift.Sendable {
         /// The column to be used to sort the list of task runs for the machine learning transform.
         /// This member is required.
         public var column: GlueClientTypes.TaskRunSortColumnType?
@@ -16978,10 +17186,9 @@ extension GlueClientTypes {
             self.sortDirection = sortDirection
         }
     }
-
 }
 
-public struct GetMLTaskRunsInput {
+public struct GetMLTaskRunsInput: Swift.Sendable {
     /// The filter criteria, in the TaskRunFilterCriteria structure, for the task run.
     public var filter: GlueClientTypes.TaskRunFilterCriteria?
     /// The maximum number of results to return.
@@ -17011,8 +17218,9 @@ public struct GetMLTaskRunsInput {
 }
 
 extension GlueClientTypes {
+
     /// The sampling parameters that are associated with the machine learning transform.
-    public struct TaskRun {
+    public struct TaskRun: Swift.Sendable {
         /// The last point in time that the requested task run was completed.
         public var completedOn: Foundation.Date?
         /// The list of error strings associated with this task run.
@@ -17059,10 +17267,9 @@ extension GlueClientTypes {
             self.transformId = transformId
         }
     }
-
 }
 
-public struct GetMLTaskRunsOutput {
+public struct GetMLTaskRunsOutput: Swift.Sendable {
     /// A pagination token, if more results are available.
     public var nextToken: Swift.String?
     /// A list of task runs that are associated with the transform.
@@ -17078,7 +17285,7 @@ public struct GetMLTaskRunsOutput {
     }
 }
 
-public struct GetMLTransformInput {
+public struct GetMLTransformInput: Swift.Sendable {
     /// The unique identifier of the transform, generated at the time that the transform was created.
     /// This member is required.
     public var transformId: Swift.String?
@@ -17092,8 +17299,9 @@ public struct GetMLTransformInput {
 }
 
 extension GlueClientTypes {
+
     /// A structure containing the column name and column importance score for a column. Column importance helps you understand how columns contribute to your model, by identifying which columns in your records are more important than others.
-    public struct ColumnImportance {
+    public struct ColumnImportance: Swift.Sendable {
         /// The name of a column.
         public var columnName: Swift.String?
         /// The column importance score for the column, as a decimal.
@@ -17108,12 +17316,12 @@ extension GlueClientTypes {
             self.importance = importance
         }
     }
-
 }
 
 extension GlueClientTypes {
+
     /// The confusion matrix shows you what your transform is predicting accurately and what types of errors it is making. For more information, see [Confusion matrix](https://en.wikipedia.org/wiki/Confusion_matrix) in Wikipedia.
-    public struct ConfusionMatrix {
+    public struct ConfusionMatrix: Swift.Sendable {
         /// The number of matches in the data that the transform didn't find, in the confusion matrix for your transform.
         public var numFalseNegatives: Swift.Int?
         /// The number of nonmatches in the data that the transform incorrectly classified as a match, in the confusion matrix for your transform.
@@ -17136,12 +17344,12 @@ extension GlueClientTypes {
             self.numTruePositives = numTruePositives
         }
     }
-
 }
 
 extension GlueClientTypes {
+
     /// The evaluation metrics for the find matches algorithm. The quality of your machine learning transform is measured by getting your transform to predict some matches and comparing the results to known matches from the same dataset. The quality metrics are based on a subset of your data, so they are not precise.
-    public struct FindMatchesMetrics {
+    public struct FindMatchesMetrics: Swift.Sendable {
         /// The area under the precision/recall curve (AUPRC) is a single number measuring the overall quality of the transform, that is independent of the choice made for precision vs. recall. Higher values indicate that you have a more attractive precision vs. recall tradeoff. For more information, see [Precision and recall](https://en.wikipedia.org/wiki/Precision_and_recall) in Wikipedia.
         public var areaUnderPRCurve: Swift.Double?
         /// A list of ColumnImportance structures containing column importance metrics, sorted in order of descending importance.
@@ -17172,12 +17380,12 @@ extension GlueClientTypes {
             self.recall = recall
         }
     }
-
 }
 
 extension GlueClientTypes {
+
     /// Evaluation metrics provide an estimate of the quality of your machine learning transform.
-    public struct EvaluationMetrics {
+    public struct EvaluationMetrics: Swift.Sendable {
         /// The evaluation metrics for the find matches algorithm.
         public var findMatchesMetrics: GlueClientTypes.FindMatchesMetrics?
         /// The type of machine learning transform.
@@ -17193,12 +17401,12 @@ extension GlueClientTypes {
             self.transformType = transformType
         }
     }
-
 }
 
 extension GlueClientTypes {
+
     /// A key-value pair representing a column and data type that this transform can run against. The Schema parameter of the MLTransform may contain up to 100 of these structures.
-    public struct SchemaColumn {
+    public struct SchemaColumn: Swift.Sendable {
         /// The type of data in the column.
         public var dataType: Swift.String?
         /// The name of the column.
@@ -17213,12 +17421,11 @@ extension GlueClientTypes {
             self.name = name
         }
     }
-
 }
 
 extension GlueClientTypes {
 
-    public enum TransformStatusType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum TransformStatusType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case deleting
         case notReady
         case ready
@@ -17248,7 +17455,7 @@ extension GlueClientTypes {
     }
 }
 
-public struct GetMLTransformOutput {
+public struct GetMLTransformOutput: Swift.Sendable {
     /// The date and time when the transform was created.
     public var createdOn: Foundation.Date?
     /// A description of the transform.
@@ -17339,8 +17546,9 @@ public struct GetMLTransformOutput {
 }
 
 extension GlueClientTypes {
+
     /// The criteria used to filter the machine learning transforms.
-    public struct TransformFilterCriteria {
+    public struct TransformFilterCriteria: Swift.Sendable {
         /// The time and date after which the transforms were created.
         public var createdAfter: Foundation.Date?
         /// The time and date before which the transforms were created.
@@ -17383,12 +17591,11 @@ extension GlueClientTypes {
             self.transformType = transformType
         }
     }
-
 }
 
 extension GlueClientTypes {
 
-    public enum TransformSortColumnType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum TransformSortColumnType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case created
         case lastModified
         case name
@@ -17425,8 +17632,9 @@ extension GlueClientTypes {
 }
 
 extension GlueClientTypes {
+
     /// The sorting criteria that are associated with the machine learning transform.
-    public struct TransformSortCriteria {
+    public struct TransformSortCriteria: Swift.Sendable {
         /// The column to be used in the sorting criteria that are associated with the machine learning transform.
         /// This member is required.
         public var column: GlueClientTypes.TransformSortColumnType?
@@ -17443,10 +17651,9 @@ extension GlueClientTypes {
             self.sortDirection = sortDirection
         }
     }
-
 }
 
-public struct GetMLTransformsInput {
+public struct GetMLTransformsInput: Swift.Sendable {
     /// The filter transformation criteria.
     public var filter: GlueClientTypes.TransformFilterCriteria?
     /// The maximum number of results to return.
@@ -17471,8 +17678,9 @@ public struct GetMLTransformsInput {
 }
 
 extension GlueClientTypes {
+
     /// A structure for a machine learning transform.
-    public struct MLTransform {
+    public struct MLTransform: Swift.Sendable {
         /// A timestamp. The time and date that this machine learning transform was created.
         public var createdOn: Foundation.Date?
         /// A user-defined, long-form description text for the machine learning transform. Descriptions are not guaranteed to be unique and can be changed at any time.
@@ -17587,10 +17795,9 @@ extension GlueClientTypes {
             self.workerType = workerType
         }
     }
-
 }
 
-public struct GetMLTransformsOutput {
+public struct GetMLTransformsOutput: Swift.Sendable {
     /// A pagination token, if more results are available.
     public var nextToken: Swift.String?
     /// A list of machine learning transforms.
@@ -17607,7 +17814,7 @@ public struct GetMLTransformsOutput {
     }
 }
 
-public struct GetPartitionInput {
+public struct GetPartitionInput: Swift.Sendable {
     /// The ID of the Data Catalog where the partition in question resides. If none is provided, the Amazon Web Services account ID is used by default.
     public var catalogId: Swift.String?
     /// The name of the catalog database where the partition resides.
@@ -17634,7 +17841,7 @@ public struct GetPartitionInput {
     }
 }
 
-public struct GetPartitionOutput {
+public struct GetPartitionOutput: Swift.Sendable {
     /// The requested information, in the form of a Partition object.
     public var partition: GlueClientTypes.Partition?
 
@@ -17646,7 +17853,7 @@ public struct GetPartitionOutput {
     }
 }
 
-public struct GetPartitionIndexesInput {
+public struct GetPartitionIndexesInput: Swift.Sendable {
     /// The catalog ID where the table resides.
     public var catalogId: Swift.String?
     /// Specifies the name of a database from which you want to retrieve partition indexes.
@@ -17674,7 +17881,7 @@ public struct GetPartitionIndexesInput {
 
 extension GlueClientTypes {
 
-    public enum BackfillErrorCode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum BackfillErrorCode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case encryptedPartitionError
         case internalError
         case invalidPartitionTypeDataError
@@ -17711,6 +17918,7 @@ extension GlueClientTypes {
 }
 
 extension GlueClientTypes {
+
     /// A list of errors that can occur when registering partition indexes for an existing table. These errors give the details about why an index registration failed and provide a limited number of partitions in the response, so that you can fix the partitions at fault and try registering the index again. The most common set of errors that can occur are categorized as follows:
     ///
     /// * EncryptedPartitionError: The partitions are encrypted.
@@ -17722,7 +17930,7 @@ extension GlueClientTypes {
     /// * UnsupportedPartitionCharacterError: Characters inside the partition value are not supported. For example: U+0000 , U+0001, U+0002.
     ///
     /// * InternalError: Any error which does not belong to other error codes.
-    public struct BackfillError {
+    public struct BackfillError: Swift.Sendable {
         /// The error code for an error that occurred when registering partition indexes for an existing table.
         public var code: GlueClientTypes.BackfillErrorCode?
         /// A list of a limited number of partitions in the response.
@@ -17737,12 +17945,11 @@ extension GlueClientTypes {
             self.partitions = partitions
         }
     }
-
 }
 
 extension GlueClientTypes {
 
-    public enum PartitionIndexStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum PartitionIndexStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case active
         case creating
         case deleting
@@ -17776,8 +17983,9 @@ extension GlueClientTypes {
 }
 
 extension GlueClientTypes {
+
     /// A partition key pair consisting of a name and a type.
-    public struct KeySchemaElement {
+    public struct KeySchemaElement: Swift.Sendable {
         /// The name of a partition key.
         /// This member is required.
         public var name: Swift.String?
@@ -17794,12 +18002,12 @@ extension GlueClientTypes {
             self.type = type
         }
     }
-
 }
 
 extension GlueClientTypes {
+
     /// A descriptor for a partition index in a table.
-    public struct PartitionIndexDescriptor {
+    public struct PartitionIndexDescriptor: Swift.Sendable {
         /// A list of errors that can occur when registering partition indexes for an existing table.
         public var backfillErrors: [GlueClientTypes.BackfillError]?
         /// The name of the partition index.
@@ -17833,10 +18041,9 @@ extension GlueClientTypes {
             self.keys = keys
         }
     }
-
 }
 
-public struct GetPartitionIndexesOutput {
+public struct GetPartitionIndexesOutput: Swift.Sendable {
     /// A continuation token, present if the current list segment is not the last.
     public var nextToken: Swift.String?
     /// A list of index descriptors.
@@ -17853,8 +18060,9 @@ public struct GetPartitionIndexesOutput {
 }
 
 extension GlueClientTypes {
+
     /// Defines a non-overlapping region of a table's partitions, allowing multiple requests to be run in parallel.
-    public struct Segment {
+    public struct Segment: Swift.Sendable {
         /// The zero-based index number of the segment. For example, if the total number of segments is 4, SegmentNumber values range from 0 through 3.
         /// This member is required.
         public var segmentNumber: Swift.Int
@@ -17871,10 +18079,9 @@ extension GlueClientTypes {
             self.totalSegments = totalSegments
         }
     }
-
 }
 
-public struct GetPartitionsInput {
+public struct GetPartitionsInput: Swift.Sendable {
     /// The ID of the Data Catalog where the partitions in question reside. If none is provided, the Amazon Web Services account ID is used by default.
     public var catalogId: Swift.String?
     /// The name of the catalog database where the partitions reside.
@@ -17945,7 +18152,7 @@ public struct GetPartitionsInput {
     }
 }
 
-public struct GetPartitionsOutput {
+public struct GetPartitionsOutput: Swift.Sendable {
     /// A continuation token, if the returned list of partitions does not include the last one.
     public var nextToken: Swift.String?
     /// A list of requested partitions.
@@ -17961,7 +18168,7 @@ public struct GetPartitionsOutput {
     }
 }
 
-public struct GetPlanInput {
+public struct GetPlanInput: Swift.Sendable {
     /// A map to hold additional optional key-value parameters. Currently, these key-value pairs are supported:
     ///
     /// * inferSchema — Specifies whether to set inferSchema to true or false for the default script generated by an Glue job. For example, to set inferSchema to true, pass the following key value pair: --additional-plan-options-map '{"inferSchema":"true"}'
@@ -17997,7 +18204,7 @@ public struct GetPlanInput {
     }
 }
 
-public struct GetPlanOutput {
+public struct GetPlanOutput: Swift.Sendable {
     /// A Python script to perform the mapping.
     public var pythonScript: Swift.String?
     /// The Scala code to perform the mapping.
@@ -18013,7 +18220,7 @@ public struct GetPlanOutput {
     }
 }
 
-public struct GetRegistryInput {
+public struct GetRegistryInput: Swift.Sendable {
     /// This is a wrapper structure that may contain the registry name and Amazon Resource Name (ARN).
     /// This member is required.
     public var registryId: GlueClientTypes.RegistryId?
@@ -18026,7 +18233,7 @@ public struct GetRegistryInput {
     }
 }
 
-public struct GetRegistryOutput {
+public struct GetRegistryOutput: Swift.Sendable {
     /// The date and time the registry was created.
     public var createdTime: Swift.String?
     /// A description of the registry.
@@ -18058,7 +18265,7 @@ public struct GetRegistryOutput {
     }
 }
 
-public struct GetResourcePoliciesInput {
+public struct GetResourcePoliciesInput: Swift.Sendable {
     /// The maximum size of a list to return.
     public var maxResults: Swift.Int?
     /// A continuation token, if this is a continuation request.
@@ -18075,8 +18282,9 @@ public struct GetResourcePoliciesInput {
 }
 
 extension GlueClientTypes {
+
     /// A structure for returning a resource policy.
-    public struct GluePolicy {
+    public struct GluePolicy: Swift.Sendable {
         /// The date and time at which the policy was created.
         public var createTime: Foundation.Date?
         /// Contains the hash value associated with this policy.
@@ -18099,10 +18307,9 @@ extension GlueClientTypes {
             self.updateTime = updateTime
         }
     }
-
 }
 
-public struct GetResourcePoliciesOutput {
+public struct GetResourcePoliciesOutput: Swift.Sendable {
     /// A list of the individual resource policies and the account-level resource policy.
     public var getResourcePoliciesResponseList: [GlueClientTypes.GluePolicy]?
     /// A continuation token, if the returned list does not contain the last resource policy available.
@@ -18118,7 +18325,7 @@ public struct GetResourcePoliciesOutput {
     }
 }
 
-public struct GetResourcePolicyInput {
+public struct GetResourcePolicyInput: Swift.Sendable {
     /// The ARN of the Glue resource for which to retrieve the resource policy. If not supplied, the Data Catalog resource policy is returned. Use GetResourcePolicies to view all existing resource policies. For more information see [Specifying Glue Resource ARNs](https://docs.aws.amazon.com/glue/latest/dg/glue-specifying-resource-arns.html).
     public var resourceArn: Swift.String?
 
@@ -18130,7 +18337,7 @@ public struct GetResourcePolicyInput {
     }
 }
 
-public struct GetResourcePolicyOutput {
+public struct GetResourcePolicyOutput: Swift.Sendable {
     /// The date and time at which the policy was created.
     public var createTime: Foundation.Date?
     /// Contains the hash value associated with this policy.
@@ -18154,7 +18361,7 @@ public struct GetResourcePolicyOutput {
     }
 }
 
-public struct GetSchemaInput {
+public struct GetSchemaInput: Swift.Sendable {
     /// This is a wrapper structure to contain schema identity fields. The structure contains:
     ///
     /// * SchemaId$SchemaArn: The Amazon Resource Name (ARN) of the schema. Either SchemaArn or SchemaName and RegistryName has to be provided.
@@ -18171,7 +18378,7 @@ public struct GetSchemaInput {
     }
 }
 
-public struct GetSchemaOutput {
+public struct GetSchemaOutput: Swift.Sendable {
     /// The compatibility mode of the schema.
     public var compatibility: GlueClientTypes.Compatibility?
     /// The date and time the schema was created.
@@ -18231,7 +18438,7 @@ public struct GetSchemaOutput {
     }
 }
 
-public struct GetSchemaByDefinitionInput {
+public struct GetSchemaByDefinitionInput: Swift.Sendable {
     /// The definition of the schema for which schema details are required.
     /// This member is required.
     public var schemaDefinition: Swift.String?
@@ -18253,7 +18460,7 @@ public struct GetSchemaByDefinitionInput {
     }
 }
 
-public struct GetSchemaByDefinitionOutput {
+public struct GetSchemaByDefinitionOutput: Swift.Sendable {
     /// The date and time the schema was created.
     public var createdTime: Swift.String?
     /// The data format of the schema definition. Currently AVRO, JSON and PROTOBUF are supported.
@@ -18282,8 +18489,9 @@ public struct GetSchemaByDefinitionOutput {
 }
 
 extension GlueClientTypes {
+
     /// A structure containing the schema version information.
-    public struct SchemaVersionNumber {
+    public struct SchemaVersionNumber: Swift.Sendable {
         /// The latest version available for the schema.
         public var latestVersion: Swift.Bool
         /// The version number of the schema.
@@ -18298,10 +18506,9 @@ extension GlueClientTypes {
             self.versionNumber = versionNumber
         }
     }
-
 }
 
-public struct GetSchemaVersionInput {
+public struct GetSchemaVersionInput: Swift.Sendable {
     /// This is a wrapper structure to contain schema identity fields. The structure contains:
     ///
     /// * SchemaId$SchemaArn: The Amazon Resource Name (ARN) of the schema. Either SchemaArn or SchemaName and RegistryName has to be provided.
@@ -18325,7 +18532,7 @@ public struct GetSchemaVersionInput {
     }
 }
 
-public struct GetSchemaVersionOutput {
+public struct GetSchemaVersionOutput: Swift.Sendable {
     /// The date and time the schema version was created.
     public var createdTime: Swift.String?
     /// The data format of the schema definition. Currently AVRO, JSON and PROTOBUF are supported.
@@ -18363,7 +18570,7 @@ public struct GetSchemaVersionOutput {
 
 extension GlueClientTypes {
 
-    public enum SchemaDiffType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SchemaDiffType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case syntaxDiff
         case sdkUnknown(Swift.String)
 
@@ -18387,7 +18594,7 @@ extension GlueClientTypes {
     }
 }
 
-public struct GetSchemaVersionsDiffInput {
+public struct GetSchemaVersionsDiffInput: Swift.Sendable {
     /// The first of the two schema versions to be compared.
     /// This member is required.
     public var firstSchemaVersionNumber: GlueClientTypes.SchemaVersionNumber?
@@ -18419,7 +18626,7 @@ public struct GetSchemaVersionsDiffInput {
     }
 }
 
-public struct GetSchemaVersionsDiffOutput {
+public struct GetSchemaVersionsDiffOutput: Swift.Sendable {
     /// The difference between schemas as a string in JsonPatch format.
     public var diff: Swift.String?
 
@@ -18431,7 +18638,7 @@ public struct GetSchemaVersionsDiffOutput {
     }
 }
 
-public struct GetSecurityConfigurationInput {
+public struct GetSecurityConfigurationInput: Swift.Sendable {
     /// The name of the security configuration to retrieve.
     /// This member is required.
     public var name: Swift.String?
@@ -18445,8 +18652,9 @@ public struct GetSecurityConfigurationInput {
 }
 
 extension GlueClientTypes {
+
     /// Specifies a security configuration.
-    public struct SecurityConfiguration {
+    public struct SecurityConfiguration: Swift.Sendable {
         /// The time at which this security configuration was created.
         public var createdTimeStamp: Foundation.Date?
         /// The encryption configuration associated with this security configuration.
@@ -18465,10 +18673,9 @@ extension GlueClientTypes {
             self.name = name
         }
     }
-
 }
 
-public struct GetSecurityConfigurationOutput {
+public struct GetSecurityConfigurationOutput: Swift.Sendable {
     /// The requested security configuration.
     public var securityConfiguration: GlueClientTypes.SecurityConfiguration?
 
@@ -18480,7 +18687,7 @@ public struct GetSecurityConfigurationOutput {
     }
 }
 
-public struct GetSecurityConfigurationsInput {
+public struct GetSecurityConfigurationsInput: Swift.Sendable {
     /// The maximum number of results to return.
     public var maxResults: Swift.Int?
     /// A continuation token, if this is a continuation call.
@@ -18496,7 +18703,7 @@ public struct GetSecurityConfigurationsInput {
     }
 }
 
-public struct GetSecurityConfigurationsOutput {
+public struct GetSecurityConfigurationsOutput: Swift.Sendable {
     /// A continuation token, if there are more security configurations to return.
     public var nextToken: Swift.String?
     /// A list of security configurations.
@@ -18512,7 +18719,7 @@ public struct GetSecurityConfigurationsOutput {
     }
 }
 
-public struct GetSessionInput {
+public struct GetSessionInput: Swift.Sendable {
     /// The ID of the session.
     /// This member is required.
     public var id: Swift.String?
@@ -18529,7 +18736,7 @@ public struct GetSessionInput {
     }
 }
 
-public struct GetSessionOutput {
+public struct GetSessionOutput: Swift.Sendable {
     /// The session object is returned in the response.
     public var session: GlueClientTypes.Session?
 
@@ -18541,7 +18748,7 @@ public struct GetSessionOutput {
     }
 }
 
-public struct GetStatementInput {
+public struct GetStatementInput: Swift.Sendable {
     /// The Id of the statement.
     /// This member is required.
     public var id: Swift.Int?
@@ -18564,8 +18771,9 @@ public struct GetStatementInput {
 }
 
 extension GlueClientTypes {
+
     /// The code execution output in JSON format.
-    public struct StatementOutputData {
+    public struct StatementOutputData: Swift.Sendable {
         /// The code execution output in text format.
         public var textPlain: Swift.String?
 
@@ -18576,12 +18784,11 @@ extension GlueClientTypes {
             self.textPlain = textPlain
         }
     }
-
 }
 
 extension GlueClientTypes {
 
-    public enum StatementState: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum StatementState: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case available
         case cancelled
         case cancelling
@@ -18621,8 +18828,9 @@ extension GlueClientTypes {
 }
 
 extension GlueClientTypes {
+
     /// The code execution output in JSON format.
-    public struct StatementOutput {
+    public struct StatementOutput: Swift.Sendable {
         /// The code execution output.
         public var data: GlueClientTypes.StatementOutputData?
         /// The name of the error in the output.
@@ -18653,12 +18861,12 @@ extension GlueClientTypes {
             self.traceback = traceback
         }
     }
-
 }
 
 extension GlueClientTypes {
+
     /// The statement or request for a particular action to occur in a session.
-    public struct Statement {
+    public struct Statement: Swift.Sendable {
         /// The execution code of the statement.
         public var code: Swift.String?
         /// The unix time and date that the job definition was completed.
@@ -18693,10 +18901,9 @@ extension GlueClientTypes {
             self.state = state
         }
     }
-
 }
 
-public struct GetStatementOutput {
+public struct GetStatementOutput: Swift.Sendable {
     /// Returns the statement.
     public var statement: GlueClientTypes.Statement?
 
@@ -18708,7 +18915,7 @@ public struct GetStatementOutput {
     }
 }
 
-public struct GetTableInput {
+public struct GetTableInput: Swift.Sendable {
     /// The ID of the Data Catalog where the table resides. If none is provided, the Amazon Web Services account ID is used by default.
     public var catalogId: Swift.String?
     /// The name of the database in the catalog in which the table resides. For Hive compatibility, this name is entirely lowercase.
@@ -18743,8 +18950,9 @@ public struct GetTableInput {
 }
 
 extension GlueClientTypes {
+
     /// A table that points to an entity outside the Glue Data Catalog.
-    public struct FederatedTable {
+    public struct FederatedTable: Swift.Sendable {
         /// The name of the connection to the external metastore.
         public var connectionName: Swift.String?
         /// A unique identifier for the federated database.
@@ -18763,12 +18971,11 @@ extension GlueClientTypes {
             self.identifier = identifier
         }
     }
-
 }
 
 extension GlueClientTypes {
 
-    public enum ResourceAction: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ResourceAction: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case create
         case update
         case sdkUnknown(Swift.String)
@@ -18797,7 +19004,7 @@ extension GlueClientTypes {
 
 extension GlueClientTypes {
 
-    public enum ResourceState: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ResourceState: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case failed
         case inProgress
         case queued
@@ -18834,8 +19041,9 @@ extension GlueClientTypes {
 }
 
 extension GlueClientTypes {
+
     /// A structure that contains information for an analytical engine to validate a view, prior to persisting the view metadata. Used in the case of direct UpdateTable or CreateTable API calls.
-    public struct ViewValidation {
+    public struct ViewValidation: Swift.Sendable {
         /// The dialect of the query engine.
         public var dialect: GlueClientTypes.ViewDialect?
         /// The version of the dialect of the query engine. For example, 3.0.0.
@@ -18866,12 +19074,12 @@ extension GlueClientTypes {
             self.viewValidationText = viewValidationText
         }
     }
-
 }
 
 extension GlueClientTypes {
+
     /// A structure that contains the dialect of the view, and the query that defines the view.
-    public struct ViewRepresentation {
+    public struct ViewRepresentation: Swift.Sendable {
         /// The dialect of the query engine.
         public var dialect: GlueClientTypes.ViewDialect?
         /// The version of the dialect of the query engine. For example, 3.0.0.
@@ -18904,12 +19112,12 @@ extension GlueClientTypes {
             self.viewOriginalText = viewOriginalText
         }
     }
-
 }
 
 extension GlueClientTypes {
+
     /// A structure containing details for representations.
-    public struct ViewDefinition {
+    public struct ViewDefinition: Swift.Sendable {
         /// The definer of a view in SQL.
         public var definer: Swift.String?
         /// You can set this flag as true to instruct the engine not to push user-provided operations into the logical plan of the view during query planning. However, setting this flag does not guarantee that the engine will comply. Refer to the engine's documentation to understand the guarantees provided, if any.
@@ -18932,10 +19140,9 @@ extension GlueClientTypes {
             self.subObjects = subObjects
         }
     }
-
 }
 
-public struct GetTableOptimizerInput {
+public struct GetTableOptimizerInput: Swift.Sendable {
     /// The Catalog ID of the table.
     /// This member is required.
     public var catalogId: Swift.String?
@@ -18963,7 +19170,7 @@ public struct GetTableOptimizerInput {
     }
 }
 
-public struct GetTableOptimizerOutput {
+public struct GetTableOptimizerOutput: Swift.Sendable {
     /// The Catalog ID of the table.
     public var catalogId: Swift.String?
     /// The name of the database in the catalog in which the table resides.
@@ -18989,7 +19196,7 @@ public struct GetTableOptimizerOutput {
 
 extension GlueClientTypes {
 
-    public enum TableAttributes: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum TableAttributes: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case name
         case tableType
         case sdkUnknown(Swift.String)
@@ -19016,7 +19223,7 @@ extension GlueClientTypes {
     }
 }
 
-public struct GetTablesInput {
+public struct GetTablesInput: Swift.Sendable {
     /// Specifies the table fields returned by the GetTables call. This parameter doesn’t accept an empty list. The request must include NAME. The following are the valid combinations of values:
     ///
     /// * NAME - Names of all tables in the database.
@@ -19065,7 +19272,7 @@ public struct GetTablesInput {
     }
 }
 
-public struct GetTableVersionInput {
+public struct GetTableVersionInput: Swift.Sendable {
     /// The ID of the Data Catalog where the tables reside. If none is provided, the Amazon Web Services account ID is used by default.
     public var catalogId: Swift.String?
     /// The database in the catalog in which the table resides. For Hive compatibility, this name is entirely lowercase.
@@ -19091,7 +19298,7 @@ public struct GetTableVersionInput {
     }
 }
 
-public struct GetTableVersionsInput {
+public struct GetTableVersionsInput: Swift.Sendable {
     /// The ID of the Data Catalog where the tables reside. If none is provided, the Amazon Web Services account ID is used by default.
     public var catalogId: Swift.String?
     /// The database in the catalog in which the table resides. For Hive compatibility, this name is entirely lowercase.
@@ -19121,7 +19328,7 @@ public struct GetTableVersionsInput {
     }
 }
 
-public struct GetTagsInput {
+public struct GetTagsInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the resource for which to retrieve tags.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -19134,7 +19341,7 @@ public struct GetTagsInput {
     }
 }
 
-public struct GetTagsOutput {
+public struct GetTagsOutput: Swift.Sendable {
     /// The requested tags.
     public var tags: [Swift.String: Swift.String]?
 
@@ -19146,7 +19353,7 @@ public struct GetTagsOutput {
     }
 }
 
-public struct GetTriggerInput {
+public struct GetTriggerInput: Swift.Sendable {
     /// The name of the trigger to retrieve.
     /// This member is required.
     public var name: Swift.String?
@@ -19159,7 +19366,7 @@ public struct GetTriggerInput {
     }
 }
 
-public struct GetTriggerOutput {
+public struct GetTriggerOutput: Swift.Sendable {
     /// The requested trigger definition.
     public var trigger: GlueClientTypes.Trigger?
 
@@ -19171,7 +19378,7 @@ public struct GetTriggerOutput {
     }
 }
 
-public struct GetTriggersInput {
+public struct GetTriggersInput: Swift.Sendable {
     /// The name of the job to retrieve triggers for. The trigger that can start this job is returned, and if there is no such trigger, all triggers are returned.
     public var dependentJobName: Swift.String?
     /// The maximum size of the response.
@@ -19191,7 +19398,7 @@ public struct GetTriggersInput {
     }
 }
 
-public struct GetTriggersOutput {
+public struct GetTriggersOutput: Swift.Sendable {
     /// A continuation token, if not all the requested triggers have yet been returned.
     public var nextToken: Swift.String?
     /// A list of triggers for the specified job.
@@ -19233,8 +19440,9 @@ public struct PermissionTypeMismatchException: ClientRuntime.ModeledError, AWSCl
 }
 
 extension GlueClientTypes {
+
     /// A structure used as a protocol between query engines and Lake Formation or Glue. Contains both a Lake Formation generated authorization identifier and information from the request's authorization context.
-    public struct QuerySessionContext {
+    public struct QuerySessionContext: Swift.Sendable {
         /// An opaque string-string map passed by the query engine.
         public var additionalContext: [Swift.String: Swift.String]?
         /// An identifier string for the consumer cluster.
@@ -19261,12 +19469,11 @@ extension GlueClientTypes {
             self.queryStartTime = queryStartTime
         }
     }
-
 }
 
 extension GlueClientTypes {
 
-    public enum PermissionType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum PermissionType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case cellFilterPermission
         case columnPermission
         case nestedCellPermission
@@ -19299,7 +19506,7 @@ extension GlueClientTypes {
     }
 }
 
-public struct GetUnfilteredPartitionMetadataInput {
+public struct GetUnfilteredPartitionMetadataInput: Swift.Sendable {
     /// A structure containing Lake Formation audit context information.
     public var auditContext: GlueClientTypes.AuditContext?
     /// The catalog ID where the partition resides.
@@ -19344,7 +19551,7 @@ public struct GetUnfilteredPartitionMetadataInput {
     }
 }
 
-public struct GetUnfilteredPartitionMetadataOutput {
+public struct GetUnfilteredPartitionMetadataOutput: Swift.Sendable {
     /// A list of column names that the user has been granted access to.
     public var authorizedColumns: [Swift.String]?
     /// A Boolean value that indicates whether the partition location is registered with Lake Formation.
@@ -19364,7 +19571,7 @@ public struct GetUnfilteredPartitionMetadataOutput {
     }
 }
 
-public struct GetUnfilteredPartitionsMetadataInput {
+public struct GetUnfilteredPartitionsMetadataInput: Swift.Sendable {
     /// A structure containing Lake Formation audit context information.
     public var auditContext: GlueClientTypes.AuditContext?
     /// The ID of the Data Catalog where the partitions in question reside. If none is provided, the AWS account ID is used by default.
@@ -19442,8 +19649,9 @@ public struct GetUnfilteredPartitionsMetadataInput {
 }
 
 extension GlueClientTypes {
+
     /// A partition that contains unfiltered metadata.
-    public struct UnfilteredPartition {
+    public struct UnfilteredPartition: Swift.Sendable {
         /// The list of columns the user has permissions to access.
         public var authorizedColumns: [Swift.String]?
         /// A Boolean value indicating that the partition location is registered with Lake Formation.
@@ -19462,10 +19670,9 @@ extension GlueClientTypes {
             self.partition = partition
         }
     }
-
 }
 
-public struct GetUnfilteredPartitionsMetadataOutput {
+public struct GetUnfilteredPartitionsMetadataOutput: Swift.Sendable {
     /// A continuation token, if the returned list of partitions does not include the last one.
     public var nextToken: Swift.String?
     /// A list of requested partitions.
@@ -19482,8 +19689,9 @@ public struct GetUnfilteredPartitionsMetadataOutput {
 }
 
 extension GlueClientTypes {
+
     /// A structure specifying the dialect and dialect version used by the query engine.
-    public struct SupportedDialect {
+    public struct SupportedDialect: Swift.Sendable {
         /// The dialect of the query engine.
         public var dialect: GlueClientTypes.ViewDialect?
         /// The version of the dialect of the query engine. For example, 3.0.0.
@@ -19498,10 +19706,9 @@ extension GlueClientTypes {
             self.dialectVersion = dialectVersion
         }
     }
-
 }
 
-public struct GetUnfilteredTableMetadataInput {
+public struct GetUnfilteredTableMetadataInput: Swift.Sendable {
     /// A structure containing Lake Formation audit context information.
     public var auditContext: GlueClientTypes.AuditContext?
     /// The catalog ID where the table resides.
@@ -19569,8 +19776,9 @@ public struct GetUnfilteredTableMetadataInput {
 }
 
 extension GlueClientTypes {
+
     /// A filter that uses both column-level and row-level filtering.
-    public struct ColumnRowFilter {
+    public struct ColumnRowFilter: Swift.Sendable {
         /// A string containing the name of the column.
         public var columnName: Swift.String?
         /// A string containing the row-level filter expression.
@@ -19585,10 +19793,9 @@ extension GlueClientTypes {
             self.rowFilterExpression = rowFilterExpression
         }
     }
-
 }
 
-public struct GetUsageProfileInput {
+public struct GetUsageProfileInput: Swift.Sendable {
     /// The name of the usage profile to retrieve.
     /// This member is required.
     public var name: Swift.String?
@@ -19601,7 +19808,7 @@ public struct GetUsageProfileInput {
     }
 }
 
-public struct GetUsageProfileOutput {
+public struct GetUsageProfileOutput: Swift.Sendable {
     /// A ProfileConfiguration object specifying the job and session values for the profile.
     public var configuration: GlueClientTypes.ProfileConfiguration?
     /// The date and time when the usage profile was created.
@@ -19629,7 +19836,7 @@ public struct GetUsageProfileOutput {
     }
 }
 
-public struct GetUserDefinedFunctionInput {
+public struct GetUserDefinedFunctionInput: Swift.Sendable {
     /// The ID of the Data Catalog where the function to be retrieved is located. If none is provided, the Amazon Web Services account ID is used by default.
     public var catalogId: Swift.String?
     /// The name of the catalog database where the function is located.
@@ -19652,8 +19859,9 @@ public struct GetUserDefinedFunctionInput {
 }
 
 extension GlueClientTypes {
+
     /// Represents the equivalent of a Hive user-defined function (UDF) definition.
-    public struct UserDefinedFunction {
+    public struct UserDefinedFunction: Swift.Sendable {
         /// The ID of the Data Catalog in which the function resides.
         public var catalogId: Swift.String?
         /// The Java class that contains the function code.
@@ -19692,10 +19900,9 @@ extension GlueClientTypes {
             self.resourceUris = resourceUris
         }
     }
-
 }
 
-public struct GetUserDefinedFunctionOutput {
+public struct GetUserDefinedFunctionOutput: Swift.Sendable {
     /// The requested function definition.
     public var userDefinedFunction: GlueClientTypes.UserDefinedFunction?
 
@@ -19707,7 +19914,7 @@ public struct GetUserDefinedFunctionOutput {
     }
 }
 
-public struct GetUserDefinedFunctionsInput {
+public struct GetUserDefinedFunctionsInput: Swift.Sendable {
     /// The ID of the Data Catalog where the functions to be retrieved are located. If none is provided, the Amazon Web Services account ID is used by default.
     public var catalogId: Swift.String?
     /// The name of the catalog database where the functions are located. If none is provided, functions from all the databases across the catalog will be returned.
@@ -19736,7 +19943,7 @@ public struct GetUserDefinedFunctionsInput {
     }
 }
 
-public struct GetUserDefinedFunctionsOutput {
+public struct GetUserDefinedFunctionsOutput: Swift.Sendable {
     /// A continuation token, if the list of functions returned does not include the last requested function.
     public var nextToken: Swift.String?
     /// A list of requested function definitions.
@@ -19752,7 +19959,7 @@ public struct GetUserDefinedFunctionsOutput {
     }
 }
 
-public struct GetWorkflowInput {
+public struct GetWorkflowInput: Swift.Sendable {
     /// Specifies whether to include a graph when returning the workflow resource metadata.
     public var includeGraph: Swift.Bool?
     /// The name of the workflow to retrieve.
@@ -19769,7 +19976,7 @@ public struct GetWorkflowInput {
     }
 }
 
-public struct GetWorkflowOutput {
+public struct GetWorkflowOutput: Swift.Sendable {
     /// The resource metadata for the workflow.
     public var workflow: GlueClientTypes.Workflow?
 
@@ -19781,7 +19988,7 @@ public struct GetWorkflowOutput {
     }
 }
 
-public struct GetWorkflowRunInput {
+public struct GetWorkflowRunInput: Swift.Sendable {
     /// Specifies whether to include the workflow graph in response or not.
     public var includeGraph: Swift.Bool?
     /// Name of the workflow being run.
@@ -19803,7 +20010,7 @@ public struct GetWorkflowRunInput {
     }
 }
 
-public struct GetWorkflowRunOutput {
+public struct GetWorkflowRunOutput: Swift.Sendable {
     /// The requested workflow run metadata.
     public var run: GlueClientTypes.WorkflowRun?
 
@@ -19815,7 +20022,7 @@ public struct GetWorkflowRunOutput {
     }
 }
 
-public struct GetWorkflowRunPropertiesInput {
+public struct GetWorkflowRunPropertiesInput: Swift.Sendable {
     /// Name of the workflow which was run.
     /// This member is required.
     public var name: Swift.String?
@@ -19833,7 +20040,7 @@ public struct GetWorkflowRunPropertiesInput {
     }
 }
 
-public struct GetWorkflowRunPropertiesOutput {
+public struct GetWorkflowRunPropertiesOutput: Swift.Sendable {
     /// The workflow run properties which were set during the specified run.
     public var runProperties: [Swift.String: Swift.String]?
 
@@ -19845,7 +20052,7 @@ public struct GetWorkflowRunPropertiesOutput {
     }
 }
 
-public struct GetWorkflowRunsInput {
+public struct GetWorkflowRunsInput: Swift.Sendable {
     /// Specifies whether to include the workflow graph in response or not.
     public var includeGraph: Swift.Bool?
     /// The maximum number of workflow runs to be included in the response.
@@ -19870,7 +20077,7 @@ public struct GetWorkflowRunsInput {
     }
 }
 
-public struct GetWorkflowRunsOutput {
+public struct GetWorkflowRunsOutput: Swift.Sendable {
     /// A continuation token, if not all requested workflow runs have been returned.
     public var nextToken: Swift.String?
     /// A list of workflow run metadata objects.
@@ -19886,7 +20093,7 @@ public struct GetWorkflowRunsOutput {
     }
 }
 
-public struct ImportCatalogToGlueInput {
+public struct ImportCatalogToGlueInput: Swift.Sendable {
     /// The ID of the catalog to import. Currently, this should be the Amazon Web Services account ID.
     public var catalogId: Swift.String?
 
@@ -19898,12 +20105,12 @@ public struct ImportCatalogToGlueInput {
     }
 }
 
-public struct ImportCatalogToGlueOutput {
+public struct ImportCatalogToGlueOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct ListBlueprintsInput {
+public struct ListBlueprintsInput: Swift.Sendable {
     /// The maximum size of a list to return.
     public var maxResults: Swift.Int?
     /// A continuation token, if this is a continuation request.
@@ -19923,7 +20130,7 @@ public struct ListBlueprintsInput {
     }
 }
 
-public struct ListBlueprintsOutput {
+public struct ListBlueprintsOutput: Swift.Sendable {
     /// List of names of blueprints in the account.
     public var blueprints: [Swift.String]?
     /// A continuation token, if not all blueprint names have been returned.
@@ -19939,7 +20146,7 @@ public struct ListBlueprintsOutput {
     }
 }
 
-public struct ListColumnStatisticsTaskRunsInput {
+public struct ListColumnStatisticsTaskRunsInput: Swift.Sendable {
     /// The maximum size of the response.
     public var maxResults: Swift.Int?
     /// A continuation token, if this is a continuation call.
@@ -19955,7 +20162,7 @@ public struct ListColumnStatisticsTaskRunsInput {
     }
 }
 
-public struct ListColumnStatisticsTaskRunsOutput {
+public struct ListColumnStatisticsTaskRunsOutput: Swift.Sendable {
     /// A list of column statistics task run IDs.
     public var columnStatisticsTaskRunIds: [Swift.String]?
     /// A continuation token, if not all task run IDs have yet been returned.
@@ -19971,7 +20178,7 @@ public struct ListColumnStatisticsTaskRunsOutput {
     }
 }
 
-public struct ListCrawlersInput {
+public struct ListCrawlersInput: Swift.Sendable {
     /// The maximum size of a list to return.
     public var maxResults: Swift.Int?
     /// A continuation token, if this is a continuation request.
@@ -19991,7 +20198,7 @@ public struct ListCrawlersInput {
     }
 }
 
-public struct ListCrawlersOutput {
+public struct ListCrawlersOutput: Swift.Sendable {
     /// The names of all crawlers in the account, or the crawlers with the specified tags.
     public var crawlerNames: [Swift.String]?
     /// A continuation token, if the returned list does not contain the last metric available.
@@ -20009,7 +20216,7 @@ public struct ListCrawlersOutput {
 
 extension GlueClientTypes {
 
-    public enum FieldName: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum FieldName: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case crawlId
         case dpuHour
         case endTime
@@ -20047,7 +20254,7 @@ extension GlueClientTypes {
 
 extension GlueClientTypes {
 
-    public enum FilterOperator: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum FilterOperator: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case eq
         case ge
         case gt
@@ -20087,8 +20294,9 @@ extension GlueClientTypes {
 }
 
 extension GlueClientTypes {
+
     /// A list of fields, comparators and value that you can use to filter the crawler runs for a specified crawler.
-    public struct CrawlsFilter {
+    public struct CrawlsFilter: Swift.Sendable {
         /// A key used to filter the crawler runs for a specified crawler. Valid values for each of the field names are:
         ///
         /// * CRAWL_ID: A string representing the UUID identifier for a crawl.
@@ -20127,10 +20335,9 @@ extension GlueClientTypes {
             self.filterOperator = filterOperator
         }
     }
-
 }
 
-public struct ListCrawlsInput {
+public struct ListCrawlsInput: Swift.Sendable {
     /// The name of the crawler whose runs you want to retrieve.
     /// This member is required.
     public var crawlerName: Swift.String?
@@ -20157,7 +20364,7 @@ public struct ListCrawlsInput {
 
 extension GlueClientTypes {
 
-    public enum CrawlerHistoryState: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum CrawlerHistoryState: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case completed
         case failed
         case running
@@ -20191,8 +20398,9 @@ extension GlueClientTypes {
 }
 
 extension GlueClientTypes {
+
     /// Contains the information for a run of a crawler.
-    public struct CrawlerHistory {
+    public struct CrawlerHistory: Swift.Sendable {
         /// A UUID identifier for each crawl.
         public var crawlId: Swift.String?
         /// The number of data processing units (DPU) used in hours for the crawl.
@@ -20239,10 +20447,9 @@ extension GlueClientTypes {
             self.summary = summary
         }
     }
-
 }
 
-public struct ListCrawlsOutput {
+public struct ListCrawlsOutput: Swift.Sendable {
     /// A list of CrawlerHistory objects representing the crawl runs that meet your criteria.
     public var crawls: [GlueClientTypes.CrawlerHistory]?
     /// A continuation token for paginating the returned list of tokens, returned if the current segment of the list is not the last.
@@ -20258,7 +20465,7 @@ public struct ListCrawlsOutput {
     }
 }
 
-public struct ListCustomEntityTypesInput {
+public struct ListCustomEntityTypesInput: Swift.Sendable {
     /// The maximum number of results to return.
     public var maxResults: Swift.Int?
     /// A paginated token to offset the results.
@@ -20278,7 +20485,7 @@ public struct ListCustomEntityTypesInput {
     }
 }
 
-public struct ListCustomEntityTypesOutput {
+public struct ListCustomEntityTypesOutput: Swift.Sendable {
     /// A list of CustomEntityType objects representing custom patterns.
     public var customEntityTypes: [GlueClientTypes.CustomEntityType]?
     /// A pagination token, if more results are available.
@@ -20295,8 +20502,9 @@ public struct ListCustomEntityTypesOutput {
 }
 
 extension GlueClientTypes {
+
     /// Criteria used to return data quality results.
-    public struct DataQualityResultFilterCriteria {
+    public struct DataQualityResultFilterCriteria: Swift.Sendable {
         /// Filter results by the specified data source. For example, retrieving all results for an Glue table.
         public var dataSource: GlueClientTypes.DataSource?
         /// Filter results by the specified job name.
@@ -20323,10 +20531,9 @@ extension GlueClientTypes {
             self.startedBefore = startedBefore
         }
     }
-
 }
 
-public struct ListDataQualityResultsInput {
+public struct ListDataQualityResultsInput: Swift.Sendable {
     /// The filter criteria.
     public var filter: GlueClientTypes.DataQualityResultFilterCriteria?
     /// The maximum number of results to return.
@@ -20347,8 +20554,9 @@ public struct ListDataQualityResultsInput {
 }
 
 extension GlueClientTypes {
+
     /// Describes a data quality result.
-    public struct DataQualityResultDescription {
+    public struct DataQualityResultDescription: Swift.Sendable {
         /// The table name associated with the data quality result.
         public var dataSource: GlueClientTypes.DataSource?
         /// The job name associated with the data quality result.
@@ -20375,10 +20583,9 @@ extension GlueClientTypes {
             self.startedOn = startedOn
         }
     }
-
 }
 
-public struct ListDataQualityResultsOutput {
+public struct ListDataQualityResultsOutput: Swift.Sendable {
     /// A pagination token, if more results are available.
     public var nextToken: Swift.String?
     /// A list of DataQualityResultDescription objects.
@@ -20396,8 +20603,9 @@ public struct ListDataQualityResultsOutput {
 }
 
 extension GlueClientTypes {
+
     /// A filter for listing data quality recommendation runs.
-    public struct DataQualityRuleRecommendationRunFilter {
+    public struct DataQualityRuleRecommendationRunFilter: Swift.Sendable {
         /// Filter based on a specified data source (Glue table).
         /// This member is required.
         public var dataSource: GlueClientTypes.DataSource?
@@ -20417,10 +20625,9 @@ extension GlueClientTypes {
             self.startedBefore = startedBefore
         }
     }
-
 }
 
-public struct ListDataQualityRuleRecommendationRunsInput {
+public struct ListDataQualityRuleRecommendationRunsInput: Swift.Sendable {
     /// The filter criteria.
     public var filter: GlueClientTypes.DataQualityRuleRecommendationRunFilter?
     /// The maximum number of results to return.
@@ -20441,8 +20648,9 @@ public struct ListDataQualityRuleRecommendationRunsInput {
 }
 
 extension GlueClientTypes {
+
     /// Describes the result of a data quality rule recommendation run.
-    public struct DataQualityRuleRecommendationRunDescription {
+    public struct DataQualityRuleRecommendationRunDescription: Swift.Sendable {
         /// The data source (Glue table) associated with the recommendation run.
         public var dataSource: GlueClientTypes.DataSource?
         /// The unique run identifier associated with this run.
@@ -20465,10 +20673,9 @@ extension GlueClientTypes {
             self.status = status
         }
     }
-
 }
 
-public struct ListDataQualityRuleRecommendationRunsOutput {
+public struct ListDataQualityRuleRecommendationRunsOutput: Swift.Sendable {
     /// A pagination token, if more results are available.
     public var nextToken: Swift.String?
     /// A list of DataQualityRuleRecommendationRunDescription objects.
@@ -20485,8 +20692,9 @@ public struct ListDataQualityRuleRecommendationRunsOutput {
 }
 
 extension GlueClientTypes {
+
     /// The filter criteria.
-    public struct DataQualityRulesetEvaluationRunFilter {
+    public struct DataQualityRulesetEvaluationRunFilter: Swift.Sendable {
         /// Filter based on a data source (an Glue table) associated with the run.
         /// This member is required.
         public var dataSource: GlueClientTypes.DataSource?
@@ -20506,10 +20714,9 @@ extension GlueClientTypes {
             self.startedBefore = startedBefore
         }
     }
-
 }
 
-public struct ListDataQualityRulesetEvaluationRunsInput {
+public struct ListDataQualityRulesetEvaluationRunsInput: Swift.Sendable {
     /// The filter criteria.
     public var filter: GlueClientTypes.DataQualityRulesetEvaluationRunFilter?
     /// The maximum number of results to return.
@@ -20530,8 +20737,9 @@ public struct ListDataQualityRulesetEvaluationRunsInput {
 }
 
 extension GlueClientTypes {
+
     /// Describes the result of a data quality ruleset evaluation run.
-    public struct DataQualityRulesetEvaluationRunDescription {
+    public struct DataQualityRulesetEvaluationRunDescription: Swift.Sendable {
         /// The data source (an Glue table) associated with the run.
         public var dataSource: GlueClientTypes.DataSource?
         /// The unique run identifier associated with this run.
@@ -20554,10 +20762,9 @@ extension GlueClientTypes {
             self.status = status
         }
     }
-
 }
 
-public struct ListDataQualityRulesetEvaluationRunsOutput {
+public struct ListDataQualityRulesetEvaluationRunsOutput: Swift.Sendable {
     /// A pagination token, if more results are available.
     public var nextToken: Swift.String?
     /// A list of DataQualityRulesetEvaluationRunDescription objects representing data quality ruleset runs.
@@ -20574,8 +20781,9 @@ public struct ListDataQualityRulesetEvaluationRunsOutput {
 }
 
 extension GlueClientTypes {
+
     /// The criteria used to filter data quality rulesets.
-    public struct DataQualityRulesetFilterCriteria {
+    public struct DataQualityRulesetFilterCriteria: Swift.Sendable {
         /// Filter on rulesets created after this date.
         public var createdAfter: Foundation.Date?
         /// Filter on rulesets created before this date.
@@ -20610,10 +20818,9 @@ extension GlueClientTypes {
             self.targetTable = targetTable
         }
     }
-
 }
 
-public struct ListDataQualityRulesetsInput {
+public struct ListDataQualityRulesetsInput: Swift.Sendable {
     /// The filter criteria.
     public var filter: GlueClientTypes.DataQualityRulesetFilterCriteria?
     /// The maximum number of results to return.
@@ -20638,8 +20845,9 @@ public struct ListDataQualityRulesetsInput {
 }
 
 extension GlueClientTypes {
+
     /// Describes a data quality ruleset returned by GetDataQualityRuleset.
-    public struct DataQualityRulesetListDetails {
+    public struct DataQualityRulesetListDetails: Swift.Sendable {
         /// The date and time the data quality ruleset was created.
         public var createdOn: Foundation.Date?
         /// A description of the data quality ruleset.
@@ -20674,10 +20882,9 @@ extension GlueClientTypes {
             self.targetTable = targetTable
         }
     }
-
 }
 
-public struct ListDataQualityRulesetsOutput {
+public struct ListDataQualityRulesetsOutput: Swift.Sendable {
     /// A pagination token, if more results are available.
     public var nextToken: Swift.String?
     /// A paginated list of rulesets for the specified list of Glue tables.
@@ -20694,8 +20901,9 @@ public struct ListDataQualityRulesetsOutput {
 }
 
 extension GlueClientTypes {
+
     /// A timestamp filter.
-    public struct TimestampFilter {
+    public struct TimestampFilter: Swift.Sendable {
         /// The timestamp after which statistics should be included in the results.
         public var recordedAfter: Foundation.Date?
         /// The timestamp before which statistics should be included in the results.
@@ -20710,10 +20918,9 @@ extension GlueClientTypes {
             self.recordedBefore = recordedBefore
         }
     }
-
 }
 
-public struct ListDataQualityStatisticAnnotationsInput {
+public struct ListDataQualityStatisticAnnotationsInput: Swift.Sendable {
     /// The maximum number of results to return in this request.
     public var maxResults: Swift.Int?
     /// A pagination token to retrieve the next set of results.
@@ -20741,7 +20948,7 @@ public struct ListDataQualityStatisticAnnotationsInput {
     }
 }
 
-public struct ListDataQualityStatisticAnnotationsOutput {
+public struct ListDataQualityStatisticAnnotationsOutput: Swift.Sendable {
     /// A list of StatisticAnnotation applied to the Statistic
     public var annotations: [GlueClientTypes.StatisticAnnotation]?
     /// A pagination token to retrieve the next set of results.
@@ -20757,7 +20964,7 @@ public struct ListDataQualityStatisticAnnotationsOutput {
     }
 }
 
-public struct ListDataQualityStatisticsInput {
+public struct ListDataQualityStatisticsInput: Swift.Sendable {
     /// The maximum number of results to return in this request.
     public var maxResults: Swift.Int?
     /// A pagination token to request the next page of results.
@@ -20787,7 +20994,7 @@ public struct ListDataQualityStatisticsInput {
 
 extension GlueClientTypes {
 
-    public enum StatisticEvaluationLevel: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum StatisticEvaluationLevel: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case column
         case dataset
         case multicolumn
@@ -20818,8 +21025,9 @@ extension GlueClientTypes {
 }
 
 extension GlueClientTypes {
+
     /// A run identifier.
-    public struct RunIdentifier {
+    public struct RunIdentifier: Swift.Sendable {
         /// The Job Run ID.
         public var jobRunId: Swift.String?
         /// The Run ID.
@@ -20834,12 +21042,12 @@ extension GlueClientTypes {
             self.runId = runId
         }
     }
-
 }
 
 extension GlueClientTypes {
+
     /// Summary information about a statistic.
-    public struct StatisticSummary {
+    public struct StatisticSummary: Swift.Sendable {
         /// The list of columns referenced by the statistic.
         public var columnsReferenced: [Swift.String]?
         /// The value of the statistic.
@@ -20890,7 +21098,6 @@ extension GlueClientTypes {
             self.statisticProperties = statisticProperties
         }
     }
-
 }
 
 extension GlueClientTypes.StatisticSummary: Swift.CustomDebugStringConvertible {
@@ -20898,7 +21105,7 @@ extension GlueClientTypes.StatisticSummary: Swift.CustomDebugStringConvertible {
         "StatisticSummary(columnsReferenced: \(Swift.String(describing: columnsReferenced)), doubleValue: \(Swift.String(describing: doubleValue)), evaluationLevel: \(Swift.String(describing: evaluationLevel)), inclusionAnnotation: \(Swift.String(describing: inclusionAnnotation)), profileId: \(Swift.String(describing: profileId)), recordedOn: \(Swift.String(describing: recordedOn)), referencedDatasets: \(Swift.String(describing: referencedDatasets)), runIdentifier: \(Swift.String(describing: runIdentifier)), statisticId: \(Swift.String(describing: statisticId)), statisticName: \(Swift.String(describing: statisticName)), statisticProperties: \"CONTENT_REDACTED\")"}
 }
 
-public struct ListDataQualityStatisticsOutput {
+public struct ListDataQualityStatisticsOutput: Swift.Sendable {
     /// A pagination token to request the next page of results.
     public var nextToken: Swift.String?
     /// A StatisticSummaryList.
@@ -20914,7 +21121,7 @@ public struct ListDataQualityStatisticsOutput {
     }
 }
 
-public struct ListDevEndpointsInput {
+public struct ListDevEndpointsInput: Swift.Sendable {
     /// The maximum size of a list to return.
     public var maxResults: Swift.Int?
     /// A continuation token, if this is a continuation request.
@@ -20934,7 +21141,7 @@ public struct ListDevEndpointsInput {
     }
 }
 
-public struct ListDevEndpointsOutput {
+public struct ListDevEndpointsOutput: Swift.Sendable {
     /// The names of all the DevEndpoints in the account, or the DevEndpoints with the specified tags.
     public var devEndpointNames: [Swift.String]?
     /// A continuation token, if the returned list does not contain the last metric available.
@@ -20950,7 +21157,7 @@ public struct ListDevEndpointsOutput {
     }
 }
 
-public struct ListJobsInput {
+public struct ListJobsInput: Swift.Sendable {
     /// The maximum size of a list to return.
     public var maxResults: Swift.Int?
     /// A continuation token, if this is a continuation request.
@@ -20970,7 +21177,7 @@ public struct ListJobsInput {
     }
 }
 
-public struct ListJobsOutput {
+public struct ListJobsOutput: Swift.Sendable {
     /// The names of all jobs in the account, or the jobs with the specified tags.
     public var jobNames: [Swift.String]?
     /// A continuation token, if the returned list does not contain the last metric available.
@@ -20986,7 +21193,7 @@ public struct ListJobsOutput {
     }
 }
 
-public struct ListMLTransformsInput {
+public struct ListMLTransformsInput: Swift.Sendable {
     /// A TransformFilterCriteria used to filter the machine learning transforms.
     public var filter: GlueClientTypes.TransformFilterCriteria?
     /// The maximum size of a list to return.
@@ -21014,7 +21221,7 @@ public struct ListMLTransformsInput {
     }
 }
 
-public struct ListMLTransformsOutput {
+public struct ListMLTransformsOutput: Swift.Sendable {
     /// A continuation token, if the returned list does not contain the last metric available.
     public var nextToken: Swift.String?
     /// The identifiers of all the machine learning transforms in the account, or the machine learning transforms with the specified tags.
@@ -21031,7 +21238,7 @@ public struct ListMLTransformsOutput {
     }
 }
 
-public struct ListRegistriesInput {
+public struct ListRegistriesInput: Swift.Sendable {
     /// Maximum number of results required per page. If the value is not supplied, this will be defaulted to 25 per page.
     public var maxResults: Swift.Int?
     /// A continuation token, if this is a continuation call.
@@ -21048,8 +21255,9 @@ public struct ListRegistriesInput {
 }
 
 extension GlueClientTypes {
+
     /// A structure containing the details for a registry.
-    public struct RegistryListItem {
+    public struct RegistryListItem: Swift.Sendable {
         /// The data the registry was created.
         public var createdTime: Swift.String?
         /// A description of the registry.
@@ -21080,10 +21288,9 @@ extension GlueClientTypes {
             self.updatedTime = updatedTime
         }
     }
-
 }
 
-public struct ListRegistriesOutput {
+public struct ListRegistriesOutput: Swift.Sendable {
     /// A continuation token for paginating the returned list of tokens, returned if the current segment of the list is not the last.
     public var nextToken: Swift.String?
     /// An array of RegistryDetailedListItem objects containing minimal details of each registry.
@@ -21099,7 +21306,7 @@ public struct ListRegistriesOutput {
     }
 }
 
-public struct ListSchemasInput {
+public struct ListSchemasInput: Swift.Sendable {
     /// Maximum number of results required per page. If the value is not supplied, this will be defaulted to 25 per page.
     public var maxResults: Swift.Int?
     /// A continuation token, if this is a continuation call.
@@ -21120,8 +21327,9 @@ public struct ListSchemasInput {
 }
 
 extension GlueClientTypes {
+
     /// An object that contains minimal details for a schema.
-    public struct SchemaListItem {
+    public struct SchemaListItem: Swift.Sendable {
         /// The date and time that a schema was created.
         public var createdTime: Swift.String?
         /// A description for the schema.
@@ -21156,10 +21364,9 @@ extension GlueClientTypes {
             self.updatedTime = updatedTime
         }
     }
-
 }
 
-public struct ListSchemasOutput {
+public struct ListSchemasOutput: Swift.Sendable {
     /// A continuation token for paginating the returned list of tokens, returned if the current segment of the list is not the last.
     public var nextToken: Swift.String?
     /// An array of SchemaListItem objects containing details of each schema.
@@ -21175,7 +21382,7 @@ public struct ListSchemasOutput {
     }
 }
 
-public struct ListSchemaVersionsInput {
+public struct ListSchemaVersionsInput: Swift.Sendable {
     /// Maximum number of results required per page. If the value is not supplied, this will be defaulted to 25 per page.
     public var maxResults: Swift.Int?
     /// A continuation token, if this is a continuation call.
@@ -21201,8 +21408,9 @@ public struct ListSchemaVersionsInput {
 }
 
 extension GlueClientTypes {
+
     /// An object containing the details about a schema version.
-    public struct SchemaVersionListItem {
+    public struct SchemaVersionListItem: Swift.Sendable {
         /// The date and time the schema version was created.
         public var createdTime: Swift.String?
         /// The Amazon Resource Name (ARN) of the schema.
@@ -21229,10 +21437,9 @@ extension GlueClientTypes {
             self.versionNumber = versionNumber
         }
     }
-
 }
 
-public struct ListSchemaVersionsOutput {
+public struct ListSchemaVersionsOutput: Swift.Sendable {
     /// A continuation token for paginating the returned list of tokens, returned if the current segment of the list is not the last.
     public var nextToken: Swift.String?
     /// An array of SchemaVersionList objects containing details of each schema version.
@@ -21248,7 +21455,7 @@ public struct ListSchemaVersionsOutput {
     }
 }
 
-public struct ListSessionsInput {
+public struct ListSessionsInput: Swift.Sendable {
     /// The maximum number of results.
     public var maxResults: Swift.Int?
     /// The token for the next set of results, or null if there are no more result.
@@ -21272,7 +21479,7 @@ public struct ListSessionsInput {
     }
 }
 
-public struct ListSessionsOutput {
+public struct ListSessionsOutput: Swift.Sendable {
     /// Returns the ID of the session.
     public var ids: [Swift.String]?
     /// The token for the next set of results, or null if there are no more result.
@@ -21292,7 +21499,7 @@ public struct ListSessionsOutput {
     }
 }
 
-public struct ListStatementsInput {
+public struct ListStatementsInput: Swift.Sendable {
     /// A continuation token, if this is a continuation call.
     public var nextToken: Swift.String?
     /// The origin of the request to list statements.
@@ -21313,7 +21520,7 @@ public struct ListStatementsInput {
     }
 }
 
-public struct ListStatementsOutput {
+public struct ListStatementsOutput: Swift.Sendable {
     /// A continuation token, if not all statements have yet been returned.
     public var nextToken: Swift.String?
     /// Returns the list of statements.
@@ -21329,7 +21536,7 @@ public struct ListStatementsOutput {
     }
 }
 
-public struct ListTableOptimizerRunsInput {
+public struct ListTableOptimizerRunsInput: Swift.Sendable {
     /// The Catalog ID of the table.
     /// This member is required.
     public var catalogId: Swift.String?
@@ -21365,7 +21572,7 @@ public struct ListTableOptimizerRunsInput {
     }
 }
 
-public struct ListTableOptimizerRunsOutput {
+public struct ListTableOptimizerRunsOutput: Swift.Sendable {
     /// The Catalog ID of the table.
     public var catalogId: Swift.String?
     /// The name of the database in the catalog in which the table resides.
@@ -21393,7 +21600,7 @@ public struct ListTableOptimizerRunsOutput {
     }
 }
 
-public struct ListTriggersInput {
+public struct ListTriggersInput: Swift.Sendable {
     /// The name of the job for which to retrieve triggers. The trigger that can start this job is returned. If there is no such trigger, all triggers are returned.
     public var dependentJobName: Swift.String?
     /// The maximum size of a list to return.
@@ -21417,7 +21624,7 @@ public struct ListTriggersInput {
     }
 }
 
-public struct ListTriggersOutput {
+public struct ListTriggersOutput: Swift.Sendable {
     /// A continuation token, if the returned list does not contain the last metric available.
     public var nextToken: Swift.String?
     /// The names of all triggers in the account, or the triggers with the specified tags.
@@ -21433,7 +21640,7 @@ public struct ListTriggersOutput {
     }
 }
 
-public struct ListUsageProfilesInput {
+public struct ListUsageProfilesInput: Swift.Sendable {
     /// The maximum number of usage profiles to return in a single response.
     public var maxResults: Swift.Int?
     /// A continuation token, included if this is a continuation call.
@@ -21450,8 +21657,9 @@ public struct ListUsageProfilesInput {
 }
 
 extension GlueClientTypes {
+
     /// Describes an Glue usage profile.
-    public struct UsageProfileDefinition {
+    public struct UsageProfileDefinition: Swift.Sendable {
         /// The date and time when the usage profile was created.
         public var createdOn: Foundation.Date?
         /// A description of the usage profile.
@@ -21474,10 +21682,9 @@ extension GlueClientTypes {
             self.name = name
         }
     }
-
 }
 
-public struct ListUsageProfilesOutput {
+public struct ListUsageProfilesOutput: Swift.Sendable {
     /// A continuation token, present if the current list segment is not the last.
     public var nextToken: Swift.String?
     /// A list of usage profile (UsageProfileDefinition) objects.
@@ -21493,7 +21700,7 @@ public struct ListUsageProfilesOutput {
     }
 }
 
-public struct ListWorkflowsInput {
+public struct ListWorkflowsInput: Swift.Sendable {
     /// The maximum size of a list to return.
     public var maxResults: Swift.Int?
     /// A continuation token, if this is a continuation request.
@@ -21509,7 +21716,7 @@ public struct ListWorkflowsInput {
     }
 }
 
-public struct ListWorkflowsOutput {
+public struct ListWorkflowsOutput: Swift.Sendable {
     /// A continuation token, if not all workflow names have been returned.
     public var nextToken: Swift.String?
     /// List of names of workflows in the account.
@@ -21525,7 +21732,7 @@ public struct ListWorkflowsOutput {
     }
 }
 
-public struct PutDataCatalogEncryptionSettingsInput {
+public struct PutDataCatalogEncryptionSettingsInput: Swift.Sendable {
     /// The ID of the Data Catalog to set the security configuration for. If none is provided, the Amazon Web Services account ID is used by default.
     public var catalogId: Swift.String?
     /// The security configuration to set.
@@ -21542,12 +21749,12 @@ public struct PutDataCatalogEncryptionSettingsInput {
     }
 }
 
-public struct PutDataCatalogEncryptionSettingsOutput {
+public struct PutDataCatalogEncryptionSettingsOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct PutDataQualityProfileAnnotationInput {
+public struct PutDataQualityProfileAnnotationInput: Swift.Sendable {
     /// The inclusion annotation value to apply to the profile.
     /// This member is required.
     public var inclusionAnnotation: GlueClientTypes.InclusionAnnotationValue?
@@ -21566,14 +21773,14 @@ public struct PutDataQualityProfileAnnotationInput {
 }
 
 /// Left blank.
-public struct PutDataQualityProfileAnnotationOutput {
+public struct PutDataQualityProfileAnnotationOutput: Swift.Sendable {
 
     public init() { }
 }
 
 extension GlueClientTypes {
 
-    public enum EnableHybridValues: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum EnableHybridValues: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case `false`
         case `true`
         case sdkUnknown(Swift.String)
@@ -21602,7 +21809,7 @@ extension GlueClientTypes {
 
 extension GlueClientTypes {
 
-    public enum ExistCondition: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ExistCondition: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case mustExist
         case `none`
         case notExist
@@ -21632,7 +21839,7 @@ extension GlueClientTypes {
     }
 }
 
-public struct PutResourcePolicyInput {
+public struct PutResourcePolicyInput: Swift.Sendable {
     /// If 'TRUE', indicates that you are using both methods to grant cross-account access to Data Catalog resources:
     ///
     /// * By directly updating the resource policy with PutResourePolicy
@@ -21668,7 +21875,7 @@ public struct PutResourcePolicyInput {
     }
 }
 
-public struct PutResourcePolicyOutput {
+public struct PutResourcePolicyOutput: Swift.Sendable {
     /// A hash of the policy that has just been set. This must be included in a subsequent call that overwrites or updates this policy.
     public var policyHash: Swift.String?
 
@@ -21681,8 +21888,9 @@ public struct PutResourcePolicyOutput {
 }
 
 extension GlueClientTypes {
+
     /// A structure containing a key value pair for metadata.
-    public struct MetadataKeyValuePair {
+    public struct MetadataKeyValuePair: Swift.Sendable {
         /// A metadata key.
         public var metadataKey: Swift.String?
         /// A metadata key’s corresponding value.
@@ -21697,10 +21905,9 @@ extension GlueClientTypes {
             self.metadataValue = metadataValue
         }
     }
-
 }
 
-public struct PutSchemaVersionMetadataInput {
+public struct PutSchemaVersionMetadataInput: Swift.Sendable {
     /// The metadata key's corresponding value.
     /// This member is required.
     public var metadataKeyValue: GlueClientTypes.MetadataKeyValuePair?
@@ -21725,7 +21932,7 @@ public struct PutSchemaVersionMetadataInput {
     }
 }
 
-public struct PutSchemaVersionMetadataOutput {
+public struct PutSchemaVersionMetadataOutput: Swift.Sendable {
     /// The latest version of the schema.
     public var latestVersion: Swift.Bool
     /// The metadata key.
@@ -21765,7 +21972,7 @@ public struct PutSchemaVersionMetadataOutput {
     }
 }
 
-public struct PutWorkflowRunPropertiesInput {
+public struct PutWorkflowRunPropertiesInput: Swift.Sendable {
     /// Name of the workflow which was run.
     /// This member is required.
     public var name: Swift.String?
@@ -21788,12 +21995,12 @@ public struct PutWorkflowRunPropertiesInput {
     }
 }
 
-public struct PutWorkflowRunPropertiesOutput {
+public struct PutWorkflowRunPropertiesOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct QuerySchemaVersionMetadataInput {
+public struct QuerySchemaVersionMetadataInput: Swift.Sendable {
     /// Maximum number of results required per page. If the value is not supplied, this will be defaulted to 25 per page.
     public var maxResults: Swift.Int?
     /// Search key-value pairs for metadata, if they are not provided all the metadata information will be fetched.
@@ -21826,8 +22033,9 @@ public struct QuerySchemaVersionMetadataInput {
 }
 
 extension GlueClientTypes {
+
     /// A structure containing other metadata for a schema version belonging to the same metadata key.
-    public struct OtherMetadataValueListItem {
+    public struct OtherMetadataValueListItem: Swift.Sendable {
         /// The time at which the entry was created.
         public var createdTime: Swift.String?
         /// The metadata key’s corresponding value for the other metadata belonging to the same metadata key.
@@ -21842,12 +22050,12 @@ extension GlueClientTypes {
             self.metadataValue = metadataValue
         }
     }
-
 }
 
 extension GlueClientTypes {
+
     /// A structure containing metadata information for a schema version.
-    public struct MetadataInfo {
+    public struct MetadataInfo: Swift.Sendable {
         /// The time at which the entry was created.
         public var createdTime: Swift.String?
         /// The metadata key’s corresponding value.
@@ -21866,10 +22074,9 @@ extension GlueClientTypes {
             self.otherMetadataValueList = otherMetadataValueList
         }
     }
-
 }
 
-public struct QuerySchemaVersionMetadataOutput {
+public struct QuerySchemaVersionMetadataOutput: Swift.Sendable {
     /// A map of a metadata key and associated values.
     public var metadataInfoMap: [Swift.String: GlueClientTypes.MetadataInfo]?
     /// A continuation token for paginating the returned list of tokens, returned if the current segment of the list is not the last.
@@ -21889,7 +22096,7 @@ public struct QuerySchemaVersionMetadataOutput {
     }
 }
 
-public struct RegisterSchemaVersionInput {
+public struct RegisterSchemaVersionInput: Swift.Sendable {
     /// The schema definition using the DataFormat setting for the SchemaName.
     /// This member is required.
     public var schemaDefinition: Swift.String?
@@ -21911,7 +22118,7 @@ public struct RegisterSchemaVersionInput {
     }
 }
 
-public struct RegisterSchemaVersionOutput {
+public struct RegisterSchemaVersionOutput: Swift.Sendable {
     /// The unique ID that represents the version of this schema.
     public var schemaVersionId: Swift.String?
     /// The status of the schema version.
@@ -21931,7 +22138,7 @@ public struct RegisterSchemaVersionOutput {
     }
 }
 
-public struct RemoveSchemaVersionMetadataInput {
+public struct RemoveSchemaVersionMetadataInput: Swift.Sendable {
     /// The value of the metadata key.
     /// This member is required.
     public var metadataKeyValue: GlueClientTypes.MetadataKeyValuePair?
@@ -21956,7 +22163,7 @@ public struct RemoveSchemaVersionMetadataInput {
     }
 }
 
-public struct RemoveSchemaVersionMetadataOutput {
+public struct RemoveSchemaVersionMetadataOutput: Swift.Sendable {
     /// The latest version of the schema.
     public var latestVersion: Swift.Bool
     /// The metadata key.
@@ -21996,7 +22203,7 @@ public struct RemoveSchemaVersionMetadataOutput {
     }
 }
 
-public struct ResetJobBookmarkInput {
+public struct ResetJobBookmarkInput: Swift.Sendable {
     /// The name of the job in question.
     /// This member is required.
     public var jobName: Swift.String?
@@ -22013,7 +22220,7 @@ public struct ResetJobBookmarkInput {
     }
 }
 
-public struct ResetJobBookmarkOutput {
+public struct ResetJobBookmarkOutput: Swift.Sendable {
     /// The reset bookmark entry.
     public var jobBookmarkEntry: GlueClientTypes.JobBookmarkEntry?
 
@@ -22075,7 +22282,7 @@ public struct IllegalWorkflowStateException: ClientRuntime.ModeledError, AWSClie
     }
 }
 
-public struct ResumeWorkflowRunInput {
+public struct ResumeWorkflowRunInput: Swift.Sendable {
     /// The name of the workflow to resume.
     /// This member is required.
     public var name: Swift.String?
@@ -22098,7 +22305,7 @@ public struct ResumeWorkflowRunInput {
     }
 }
 
-public struct ResumeWorkflowRunOutput {
+public struct ResumeWorkflowRunOutput: Swift.Sendable {
     /// A list of the node IDs for the nodes that were actually restarted.
     public var nodeIds: [Swift.String]?
     /// The new ID assigned to the resumed workflow run. Each resume of a workflow run will have a new run ID.
@@ -22114,7 +22321,7 @@ public struct ResumeWorkflowRunOutput {
     }
 }
 
-public struct RunStatementInput {
+public struct RunStatementInput: Swift.Sendable {
     /// The statement code to be run.
     /// This member is required.
     public var code: Swift.String?
@@ -22136,7 +22343,7 @@ public struct RunStatementInput {
     }
 }
 
-public struct RunStatementOutput {
+public struct RunStatementOutput: Swift.Sendable {
     /// Returns the Id of the statement that was run.
     public var id: Swift.Int
 
@@ -22150,7 +22357,7 @@ public struct RunStatementOutput {
 
 extension GlueClientTypes {
 
-    public enum Comparator: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Comparator: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case equals
         case greaterThan
         case greaterThanEquals
@@ -22187,8 +22394,9 @@ extension GlueClientTypes {
 }
 
 extension GlueClientTypes {
+
     /// Defines a property predicate.
-    public struct PropertyPredicate {
+    public struct PropertyPredicate: Swift.Sendable {
         /// The comparator used to compare this property to others.
         public var comparator: GlueClientTypes.Comparator?
         /// The key of the property.
@@ -22207,12 +22415,11 @@ extension GlueClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension GlueClientTypes {
 
-    public enum Sort: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Sort: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case ascending
         case descending
         case sdkUnknown(Swift.String)
@@ -22240,8 +22447,9 @@ extension GlueClientTypes {
 }
 
 extension GlueClientTypes {
+
     /// Specifies a field to sort by and a sort order.
-    public struct SortCriterion {
+    public struct SortCriterion: Swift.Sendable {
         /// The name of the field on which to sort.
         public var fieldName: Swift.String?
         /// An ascending or descending sort.
@@ -22256,10 +22464,9 @@ extension GlueClientTypes {
             self.sort = sort
         }
     }
-
 }
 
-public struct SearchTablesInput {
+public struct SearchTablesInput: Swift.Sendable {
     /// A unique identifier, consisting of  account_id .
     public var catalogId: Swift.String?
     /// A list of key-value pairs, and a comparator used to filter the search results. Returns all entities matching the predicate. The Comparator member of the PropertyPredicate struct is used only for time fields, and can be omitted for other field types. Also, when comparing string values, such as when Key=Name, a fuzzy match algorithm is used. The Key field (for example, the value of the Name field) is split on certain punctuation characters, for example, -, :, #, etc. into tokens. Then each token is exact-match compared with the Value member of PropertyPredicate. For example, if Key=Name and Value=link, tables named customer-link and xx-link-yy are returned, but xxlinkyy is not returned.
@@ -22328,7 +22535,7 @@ public struct IllegalBlueprintStateException: ClientRuntime.ModeledError, AWSCli
     }
 }
 
-public struct StartBlueprintRunInput {
+public struct StartBlueprintRunInput: Swift.Sendable {
     /// The name of the blueprint.
     /// This member is required.
     public var blueprintName: Swift.String?
@@ -22350,7 +22557,7 @@ public struct StartBlueprintRunInput {
     }
 }
 
-public struct StartBlueprintRunOutput {
+public struct StartBlueprintRunOutput: Swift.Sendable {
     /// The run ID for this blueprint run.
     public var runId: Swift.String?
 
@@ -22362,32 +22569,7 @@ public struct StartBlueprintRunOutput {
     }
 }
 
-/// An exception thrown when you try to start another job while running a column stats generation job.
-public struct ColumnStatisticsTaskRunningException: ClientRuntime.ModeledError, AWSClientRuntime.AWSServiceError, ClientRuntime.HTTPError, Swift.Error {
-
-    public struct Properties {
-        /// A message describing the problem.
-        public internal(set) var message: Swift.String? = nil
-    }
-
-    public internal(set) var properties = Properties()
-    public static var typeName: Swift.String { "ColumnStatisticsTaskRunningException" }
-    public static var fault: ClientRuntime.ErrorFault { .client }
-    public static var isRetryable: Swift.Bool { false }
-    public static var isThrottling: Swift.Bool { false }
-    public internal(set) var httpResponse = SmithyHTTPAPI.HTTPResponse()
-    public internal(set) var message: Swift.String?
-    public internal(set) var requestID: Swift.String?
-
-    public init(
-        message: Swift.String? = nil
-    )
-    {
-        self.properties.message = message
-    }
-}
-
-public struct StartColumnStatisticsTaskRunInput {
+public struct StartColumnStatisticsTaskRunInput: Swift.Sendable {
     /// The ID of the Data Catalog where the table reside. If none is supplied, the Amazon Web Services account ID is used by default.
     public var catalogID: Swift.String?
     /// A list of the column names to generate statistics. If none is supplied, all column names for the table will be used by default.
@@ -22426,7 +22608,7 @@ public struct StartColumnStatisticsTaskRunInput {
     }
 }
 
-public struct StartColumnStatisticsTaskRunOutput {
+public struct StartColumnStatisticsTaskRunOutput: Swift.Sendable {
     /// The identifier for the column statistics task run.
     public var columnStatisticsTaskRunId: Swift.String?
 
@@ -22438,7 +22620,30 @@ public struct StartColumnStatisticsTaskRunOutput {
     }
 }
 
-public struct StartCrawlerInput {
+public struct StartColumnStatisticsTaskRunScheduleInput: Swift.Sendable {
+    /// The name of the database where the table resides.
+    /// This member is required.
+    public var databaseName: Swift.String?
+    /// The name of the table for which to start a column statistic task run schedule.
+    /// This member is required.
+    public var tableName: Swift.String?
+
+    public init(
+        databaseName: Swift.String? = nil,
+        tableName: Swift.String? = nil
+    )
+    {
+        self.databaseName = databaseName
+        self.tableName = tableName
+    }
+}
+
+public struct StartColumnStatisticsTaskRunScheduleOutput: Swift.Sendable {
+
+    public init() { }
+}
+
+public struct StartCrawlerInput: Swift.Sendable {
     /// Name of the crawler to start.
     /// This member is required.
     public var name: Swift.String?
@@ -22451,7 +22656,7 @@ public struct StartCrawlerInput {
     }
 }
 
-public struct StartCrawlerOutput {
+public struct StartCrawlerOutput: Swift.Sendable {
 
     public init() { }
 }
@@ -22506,7 +22711,7 @@ public struct SchedulerRunningException: ClientRuntime.ModeledError, AWSClientRu
     }
 }
 
-public struct StartCrawlerScheduleInput {
+public struct StartCrawlerScheduleInput: Swift.Sendable {
     /// Name of the crawler to schedule.
     /// This member is required.
     public var crawlerName: Swift.String?
@@ -22519,12 +22724,12 @@ public struct StartCrawlerScheduleInput {
     }
 }
 
-public struct StartCrawlerScheduleOutput {
+public struct StartCrawlerScheduleOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct StartDataQualityRuleRecommendationRunInput {
+public struct StartDataQualityRuleRecommendationRunInput: Swift.Sendable {
     /// Used for idempotency and is recommended to be set to a random ID (such as a UUID) to avoid creating or starting multiple instances of the same resource.
     public var clientToken: Swift.String?
     /// A name for the ruleset.
@@ -22562,7 +22767,7 @@ public struct StartDataQualityRuleRecommendationRunInput {
     }
 }
 
-public struct StartDataQualityRuleRecommendationRunOutput {
+public struct StartDataQualityRuleRecommendationRunOutput: Swift.Sendable {
     /// The unique run identifier associated with this run.
     public var runId: Swift.String?
 
@@ -22574,7 +22779,7 @@ public struct StartDataQualityRuleRecommendationRunOutput {
     }
 }
 
-public struct StartDataQualityRulesetEvaluationRunInput {
+public struct StartDataQualityRulesetEvaluationRunInput: Swift.Sendable {
     /// A map of reference strings to additional data sources you can specify for an evaluation run.
     public var additionalDataSources: [Swift.String: GlueClientTypes.DataSource]?
     /// Additional run options you can specify for an evaluation run.
@@ -22617,7 +22822,7 @@ public struct StartDataQualityRulesetEvaluationRunInput {
     }
 }
 
-public struct StartDataQualityRulesetEvaluationRunOutput {
+public struct StartDataQualityRulesetEvaluationRunOutput: Swift.Sendable {
     /// The unique run identifier associated with this run.
     public var runId: Swift.String?
 
@@ -22629,7 +22834,7 @@ public struct StartDataQualityRulesetEvaluationRunOutput {
     }
 }
 
-public struct StartExportLabelsTaskRunInput {
+public struct StartExportLabelsTaskRunInput: Swift.Sendable {
     /// The Amazon S3 path where you export the labels.
     /// This member is required.
     public var outputS3Path: Swift.String?
@@ -22647,7 +22852,7 @@ public struct StartExportLabelsTaskRunInput {
     }
 }
 
-public struct StartExportLabelsTaskRunOutput {
+public struct StartExportLabelsTaskRunOutput: Swift.Sendable {
     /// The unique identifier for the task run.
     public var taskRunId: Swift.String?
 
@@ -22659,7 +22864,7 @@ public struct StartExportLabelsTaskRunOutput {
     }
 }
 
-public struct StartImportLabelsTaskRunInput {
+public struct StartImportLabelsTaskRunInput: Swift.Sendable {
     /// The Amazon Simple Storage Service (Amazon S3) path from where you import the labels.
     /// This member is required.
     public var inputS3Path: Swift.String?
@@ -22681,7 +22886,7 @@ public struct StartImportLabelsTaskRunInput {
     }
 }
 
-public struct StartImportLabelsTaskRunOutput {
+public struct StartImportLabelsTaskRunOutput: Swift.Sendable {
     /// The unique identifier for the task run.
     public var taskRunId: Swift.String?
 
@@ -22693,7 +22898,7 @@ public struct StartImportLabelsTaskRunOutput {
     }
 }
 
-public struct StartJobRunInput {
+public struct StartJobRunInput: Swift.Sendable {
     /// This field is deprecated. Use MaxCapacity instead. The number of Glue data processing units (DPUs) to allocate to this JobRun. You can allocate a minimum of 2 DPUs; the default is 10. A DPU is a relative measure of processing power that consists of 4 vCPUs of compute capacity and 16 GB of memory. For more information, see the [Glue pricing page](https://aws.amazon.com/glue/pricing/).
     @available(*, deprecated, message: "This property is deprecated, use MaxCapacity instead.")
     public var allocatedCapacity: Swift.Int?
@@ -22767,7 +22972,7 @@ public struct StartJobRunInput {
     }
 }
 
-public struct StartJobRunOutput {
+public struct StartJobRunOutput: Swift.Sendable {
     /// The ID assigned to this job run.
     public var jobRunId: Swift.String?
 
@@ -22804,7 +23009,7 @@ public struct MLTransformNotReadyException: ClientRuntime.ModeledError, AWSClien
     }
 }
 
-public struct StartMLEvaluationTaskRunInput {
+public struct StartMLEvaluationTaskRunInput: Swift.Sendable {
     /// The unique identifier of the machine learning transform.
     /// This member is required.
     public var transformId: Swift.String?
@@ -22817,7 +23022,7 @@ public struct StartMLEvaluationTaskRunInput {
     }
 }
 
-public struct StartMLEvaluationTaskRunOutput {
+public struct StartMLEvaluationTaskRunOutput: Swift.Sendable {
     /// The unique identifier associated with this run.
     public var taskRunId: Swift.String?
 
@@ -22829,7 +23034,7 @@ public struct StartMLEvaluationTaskRunOutput {
     }
 }
 
-public struct StartMLLabelingSetGenerationTaskRunInput {
+public struct StartMLLabelingSetGenerationTaskRunInput: Swift.Sendable {
     /// The Amazon Simple Storage Service (Amazon S3) path where you generate the labeling set.
     /// This member is required.
     public var outputS3Path: Swift.String?
@@ -22847,7 +23052,7 @@ public struct StartMLLabelingSetGenerationTaskRunInput {
     }
 }
 
-public struct StartMLLabelingSetGenerationTaskRunOutput {
+public struct StartMLLabelingSetGenerationTaskRunOutput: Swift.Sendable {
     /// The unique run identifier that is associated with this task run.
     public var taskRunId: Swift.String?
 
@@ -22859,7 +23064,7 @@ public struct StartMLLabelingSetGenerationTaskRunOutput {
     }
 }
 
-public struct StartTriggerInput {
+public struct StartTriggerInput: Swift.Sendable {
     /// The name of the trigger to start.
     /// This member is required.
     public var name: Swift.String?
@@ -22872,7 +23077,7 @@ public struct StartTriggerInput {
     }
 }
 
-public struct StartTriggerOutput {
+public struct StartTriggerOutput: Swift.Sendable {
     /// The name of the trigger that was started.
     public var name: Swift.String?
 
@@ -22884,7 +23089,7 @@ public struct StartTriggerOutput {
     }
 }
 
-public struct StartWorkflowRunInput {
+public struct StartWorkflowRunInput: Swift.Sendable {
     /// The name of the workflow to start.
     /// This member is required.
     public var name: Swift.String?
@@ -22901,7 +23106,7 @@ public struct StartWorkflowRunInput {
     }
 }
 
-public struct StartWorkflowRunOutput {
+public struct StartWorkflowRunOutput: Swift.Sendable {
     /// An Id for the new run.
     public var runId: Swift.String?
 
@@ -22963,7 +23168,7 @@ public struct ColumnStatisticsTaskStoppingException: ClientRuntime.ModeledError,
     }
 }
 
-public struct StopColumnStatisticsTaskRunInput {
+public struct StopColumnStatisticsTaskRunInput: Swift.Sendable {
     /// The name of the database where the table resides.
     /// This member is required.
     public var databaseName: Swift.String?
@@ -22981,7 +23186,30 @@ public struct StopColumnStatisticsTaskRunInput {
     }
 }
 
-public struct StopColumnStatisticsTaskRunOutput {
+public struct StopColumnStatisticsTaskRunOutput: Swift.Sendable {
+
+    public init() { }
+}
+
+public struct StopColumnStatisticsTaskRunScheduleInput: Swift.Sendable {
+    /// The name of the database where the table resides.
+    /// This member is required.
+    public var databaseName: Swift.String?
+    /// The name of the table for which to stop a column statistic task run schedule.
+    /// This member is required.
+    public var tableName: Swift.String?
+
+    public init(
+        databaseName: Swift.String? = nil,
+        tableName: Swift.String? = nil
+    )
+    {
+        self.databaseName = databaseName
+        self.tableName = tableName
+    }
+}
+
+public struct StopColumnStatisticsTaskRunScheduleOutput: Swift.Sendable {
 
     public init() { }
 }
@@ -23036,7 +23264,7 @@ public struct CrawlerStoppingException: ClientRuntime.ModeledError, AWSClientRun
     }
 }
 
-public struct StopCrawlerInput {
+public struct StopCrawlerInput: Swift.Sendable {
     /// Name of the crawler to stop.
     /// This member is required.
     public var name: Swift.String?
@@ -23049,7 +23277,7 @@ public struct StopCrawlerInput {
     }
 }
 
-public struct StopCrawlerOutput {
+public struct StopCrawlerOutput: Swift.Sendable {
 
     public init() { }
 }
@@ -23079,7 +23307,7 @@ public struct SchedulerNotRunningException: ClientRuntime.ModeledError, AWSClien
     }
 }
 
-public struct StopCrawlerScheduleInput {
+public struct StopCrawlerScheduleInput: Swift.Sendable {
     /// Name of the crawler whose schedule state to set.
     /// This member is required.
     public var crawlerName: Swift.String?
@@ -23092,12 +23320,12 @@ public struct StopCrawlerScheduleInput {
     }
 }
 
-public struct StopCrawlerScheduleOutput {
+public struct StopCrawlerScheduleOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct StopSessionInput {
+public struct StopSessionInput: Swift.Sendable {
     /// The ID of the session to be stopped.
     /// This member is required.
     public var id: Swift.String?
@@ -23114,7 +23342,7 @@ public struct StopSessionInput {
     }
 }
 
-public struct StopSessionOutput {
+public struct StopSessionOutput: Swift.Sendable {
     /// Returns the Id of the stopped session.
     public var id: Swift.String?
 
@@ -23126,7 +23354,7 @@ public struct StopSessionOutput {
     }
 }
 
-public struct StopTriggerInput {
+public struct StopTriggerInput: Swift.Sendable {
     /// The name of the trigger to stop.
     /// This member is required.
     public var name: Swift.String?
@@ -23139,7 +23367,7 @@ public struct StopTriggerInput {
     }
 }
 
-public struct StopTriggerOutput {
+public struct StopTriggerOutput: Swift.Sendable {
     /// The name of the trigger that was stopped.
     public var name: Swift.String?
 
@@ -23151,7 +23379,7 @@ public struct StopTriggerOutput {
     }
 }
 
-public struct StopWorkflowRunInput {
+public struct StopWorkflowRunInput: Swift.Sendable {
     /// The name of the workflow to stop.
     /// This member is required.
     public var name: Swift.String?
@@ -23169,12 +23397,12 @@ public struct StopWorkflowRunInput {
     }
 }
 
-public struct StopWorkflowRunOutput {
+public struct StopWorkflowRunOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct TagResourceInput {
+public struct TagResourceInput: Swift.Sendable {
     /// The ARN of the Glue resource to which to add the tags. For more information about Glue resource ARNs, see the [Glue ARN string pattern](https://docs.aws.amazon.com/glue/latest/dg/aws-glue-api-common.html#aws-glue-api-regex-aws-glue-arn-id).
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -23192,14 +23420,15 @@ public struct TagResourceInput {
     }
 }
 
-public struct TagResourceOutput {
+public struct TagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
 extension GlueClientTypes {
+
     /// A structure that is used to specify testing a connection to a service.
-    public struct TestConnectionInput {
+    public struct TestConnectionInput: Swift.Sendable {
         /// A structure containing the authentication configuration in the TestConnection request. Required for a connection to Salesforce using OAuth authentication.
         public var authenticationConfiguration: GlueClientTypes.AuthenticationConfigurationInput?
         /// The key-value pairs that define parameters for the connection. JDBC connections use the following connection properties:
@@ -23229,10 +23458,9 @@ extension GlueClientTypes {
             self.connectionType = connectionType
         }
     }
-
 }
 
-public struct TestConnectionInput {
+public struct TestConnectionInput: Swift.Sendable {
     /// Optional. The name of the connection to test. If only name is provided, the operation will get the connection and use that for testing.
     public var connectionName: Swift.String?
     /// A structure that is used to specify testing a connection to a service.
@@ -23248,12 +23476,12 @@ public struct TestConnectionInput {
     }
 }
 
-public struct TestConnectionOutput {
+public struct TestConnectionOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UntagResourceInput {
+public struct UntagResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the resource from which to remove the tags.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -23271,12 +23499,12 @@ public struct UntagResourceInput {
     }
 }
 
-public struct UntagResourceOutput {
+public struct UntagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdateBlueprintInput {
+public struct UpdateBlueprintInput: Swift.Sendable {
     /// Specifies a path in Amazon S3 where the blueprint is published.
     /// This member is required.
     public var blueprintLocation: Swift.String?
@@ -23298,7 +23526,7 @@ public struct UpdateBlueprintInput {
     }
 }
 
-public struct UpdateBlueprintOutput {
+public struct UpdateBlueprintOutput: Swift.Sendable {
     /// Returns the name of the blueprint that was updated.
     public var name: Swift.String?
 
@@ -23336,8 +23564,9 @@ public struct VersionMismatchException: ClientRuntime.ModeledError, AWSClientRun
 }
 
 extension GlueClientTypes {
+
     /// Specifies a custom CSV classifier to be updated.
-    public struct UpdateCsvClassifierRequest {
+    public struct UpdateCsvClassifierRequest: Swift.Sendable {
         /// Enables the processing of files that contain only one column.
         public var allowSingleColumn: Swift.Bool?
         /// Indicates whether the CSV file contains a header.
@@ -23385,12 +23614,12 @@ extension GlueClientTypes {
             self.serde = serde
         }
     }
-
 }
 
 extension GlueClientTypes {
+
     /// Specifies a grok classifier to update when passed to UpdateClassifier.
-    public struct UpdateGrokClassifierRequest {
+    public struct UpdateGrokClassifierRequest: Swift.Sendable {
         /// An identifier of the data format that the classifier matches, such as Twitter, JSON, Omniture logs, Amazon CloudWatch Logs, and so on.
         public var classification: Swift.String?
         /// Optional custom grok patterns used by this classifier.
@@ -23414,12 +23643,12 @@ extension GlueClientTypes {
             self.name = name
         }
     }
-
 }
 
 extension GlueClientTypes {
+
     /// Specifies a JSON classifier to be updated.
-    public struct UpdateJsonClassifierRequest {
+    public struct UpdateJsonClassifierRequest: Swift.Sendable {
         /// A JsonPath string defining the JSON data for the classifier to classify. Glue supports a subset of JsonPath, as described in [Writing JsonPath Custom Classifiers](https://docs.aws.amazon.com/glue/latest/dg/custom-classifier.html#custom-classifier-json).
         public var jsonPath: Swift.String?
         /// The name of the classifier.
@@ -23435,12 +23664,12 @@ extension GlueClientTypes {
             self.name = name
         }
     }
-
 }
 
 extension GlueClientTypes {
+
     /// Specifies an XML classifier to be updated.
-    public struct UpdateXMLClassifierRequest {
+    public struct UpdateXMLClassifierRequest: Swift.Sendable {
         /// An identifier of the data format that the classifier matches.
         public var classification: Swift.String?
         /// The name of the classifier.
@@ -23460,10 +23689,9 @@ extension GlueClientTypes {
             self.rowTag = rowTag
         }
     }
-
 }
 
-public struct UpdateClassifierInput {
+public struct UpdateClassifierInput: Swift.Sendable {
     /// A CsvClassifier object with updated fields.
     public var csvClassifier: GlueClientTypes.UpdateCsvClassifierRequest?
     /// A GrokClassifier object with updated fields.
@@ -23487,12 +23715,12 @@ public struct UpdateClassifierInput {
     }
 }
 
-public struct UpdateClassifierOutput {
+public struct UpdateClassifierOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdateColumnStatisticsForPartitionInput {
+public struct UpdateColumnStatisticsForPartitionInput: Swift.Sendable {
     /// The ID of the Data Catalog where the partitions in question reside. If none is supplied, the Amazon Web Services account ID is used by default.
     public var catalogId: Swift.String?
     /// A list of the column statistics.
@@ -23525,8 +23753,9 @@ public struct UpdateColumnStatisticsForPartitionInput {
 }
 
 extension GlueClientTypes {
+
     /// Encapsulates a ColumnStatistics object that failed and the reason for failure.
-    public struct ColumnStatisticsError {
+    public struct ColumnStatisticsError: Swift.Sendable {
         /// The ColumnStatistics of the column.
         public var columnStatistics: GlueClientTypes.ColumnStatistics?
         /// An error message with the reason for the failure of an operation.
@@ -23541,10 +23770,9 @@ extension GlueClientTypes {
             self.error = error
         }
     }
-
 }
 
-public struct UpdateColumnStatisticsForPartitionOutput {
+public struct UpdateColumnStatisticsForPartitionOutput: Swift.Sendable {
     /// Error occurred during updating column statistics data.
     public var errors: [GlueClientTypes.ColumnStatisticsError]?
 
@@ -23556,7 +23784,7 @@ public struct UpdateColumnStatisticsForPartitionOutput {
     }
 }
 
-public struct UpdateColumnStatisticsForTableInput {
+public struct UpdateColumnStatisticsForTableInput: Swift.Sendable {
     /// The ID of the Data Catalog where the partitions in question reside. If none is supplied, the Amazon Web Services account ID is used by default.
     public var catalogId: Swift.String?
     /// A list of the column statistics.
@@ -23583,7 +23811,7 @@ public struct UpdateColumnStatisticsForTableInput {
     }
 }
 
-public struct UpdateColumnStatisticsForTableOutput {
+public struct UpdateColumnStatisticsForTableOutput: Swift.Sendable {
     /// List of ColumnStatisticsErrors.
     public var errors: [GlueClientTypes.ColumnStatisticsError]?
 
@@ -23595,7 +23823,54 @@ public struct UpdateColumnStatisticsForTableOutput {
     }
 }
 
-public struct UpdateConnectionInput {
+public struct UpdateColumnStatisticsTaskSettingsInput: Swift.Sendable {
+    /// The ID of the Data Catalog in which the database resides.
+    public var catalogID: Swift.String?
+    /// A list of column names for which to run statistics.
+    public var columnNameList: [Swift.String]?
+    /// The name of the database where the table resides.
+    /// This member is required.
+    public var databaseName: Swift.String?
+    /// The role used for running the column statistics.
+    public var role: Swift.String?
+    /// The percentage of data to sample.
+    public var sampleSize: Swift.Double?
+    /// A schedule for running the column statistics, specified in CRON syntax.
+    public var schedule: Swift.String?
+    /// Name of the security configuration that is used to encrypt CloudWatch logs.
+    public var securityConfiguration: Swift.String?
+    /// The name of the table for which to generate column statistics.
+    /// This member is required.
+    public var tableName: Swift.String?
+
+    public init(
+        catalogID: Swift.String? = nil,
+        columnNameList: [Swift.String]? = nil,
+        databaseName: Swift.String? = nil,
+        role: Swift.String? = nil,
+        sampleSize: Swift.Double? = 0.0,
+        schedule: Swift.String? = nil,
+        securityConfiguration: Swift.String? = nil,
+        tableName: Swift.String? = nil
+    )
+    {
+        self.catalogID = catalogID
+        self.columnNameList = columnNameList
+        self.databaseName = databaseName
+        self.role = role
+        self.sampleSize = sampleSize
+        self.schedule = schedule
+        self.securityConfiguration = securityConfiguration
+        self.tableName = tableName
+    }
+}
+
+public struct UpdateColumnStatisticsTaskSettingsOutput: Swift.Sendable {
+
+    public init() { }
+}
+
+public struct UpdateConnectionInput: Swift.Sendable {
     /// The ID of the Data Catalog in which the connection resides. If none is provided, the Amazon Web Services account ID is used by default.
     public var catalogId: Swift.String?
     /// A ConnectionInput object that redefines the connection in question.
@@ -23617,12 +23892,12 @@ public struct UpdateConnectionInput {
     }
 }
 
-public struct UpdateConnectionOutput {
+public struct UpdateConnectionOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdateCrawlerInput {
+public struct UpdateCrawlerInput: Swift.Sendable {
     /// A list of custom classifiers that the user has registered. By default, all built-in classifiers are included in a crawl, but these custom classifiers always override the default classifiers for a given classification.
     public var classifiers: [Swift.String]?
     /// Crawler configuration information. This versioned JSON string allows users to specify aspects of a crawler's behavior. For more information, see [Setting crawler configuration options](https://docs.aws.amazon.com/glue/latest/dg/crawler-configuration.html).
@@ -23687,12 +23962,12 @@ public struct UpdateCrawlerInput {
     }
 }
 
-public struct UpdateCrawlerOutput {
+public struct UpdateCrawlerOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdateCrawlerScheduleInput {
+public struct UpdateCrawlerScheduleInput: Swift.Sendable {
     /// The name of the crawler whose schedule to update.
     /// This member is required.
     public var crawlerName: Swift.String?
@@ -23709,12 +23984,12 @@ public struct UpdateCrawlerScheduleInput {
     }
 }
 
-public struct UpdateCrawlerScheduleOutput {
+public struct UpdateCrawlerScheduleOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdateDatabaseInput {
+public struct UpdateDatabaseInput: Swift.Sendable {
     /// The ID of the Data Catalog in which the metadata database resides. If none is provided, the Amazon Web Services account ID is used by default.
     public var catalogId: Swift.String?
     /// A DatabaseInput object specifying the new definition of the metadata database in the catalog.
@@ -23736,12 +24011,12 @@ public struct UpdateDatabaseInput {
     }
 }
 
-public struct UpdateDatabaseOutput {
+public struct UpdateDatabaseOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdateDataQualityRulesetInput {
+public struct UpdateDataQualityRulesetInput: Swift.Sendable {
     /// A description of the ruleset.
     public var description: Swift.String?
     /// The name of the data quality ruleset.
@@ -23762,7 +24037,7 @@ public struct UpdateDataQualityRulesetInput {
     }
 }
 
-public struct UpdateDataQualityRulesetOutput {
+public struct UpdateDataQualityRulesetOutput: Swift.Sendable {
     /// A description of the ruleset.
     public var description: Swift.String?
     /// The name of the data quality ruleset.
@@ -23783,8 +24058,9 @@ public struct UpdateDataQualityRulesetOutput {
 }
 
 extension GlueClientTypes {
+
     /// Custom libraries to be loaded into a development endpoint.
-    public struct DevEndpointCustomLibraries {
+    public struct DevEndpointCustomLibraries: Swift.Sendable {
         /// The path to one or more Java .jar files in an S3 bucket that should be loaded in your DevEndpoint. You can only use pure Java/Scala libraries with a DevEndpoint.
         public var extraJarsS3Path: Swift.String?
         /// The paths to one or more Python libraries in an Amazon Simple Storage Service (Amazon S3) bucket that should be loaded in your DevEndpoint. Multiple values must be complete paths separated by a comma. You can only use pure Python libraries with a DevEndpoint. Libraries that rely on C extensions, such as the [pandas](http://pandas.pydata.org/) Python data analysis library, are not currently supported.
@@ -23799,10 +24075,9 @@ extension GlueClientTypes {
             self.extraPythonLibsS3Path = extraPythonLibsS3Path
         }
     }
-
 }
 
-public struct UpdateDevEndpointInput {
+public struct UpdateDevEndpointInput: Swift.Sendable {
     /// The map of arguments to add the map of arguments used to configure the DevEndpoint. Valid arguments are:
     ///
     /// * "--enable-glue-datacatalog": ""
@@ -23848,12 +24123,12 @@ public struct UpdateDevEndpointInput {
     }
 }
 
-public struct UpdateDevEndpointOutput {
+public struct UpdateDevEndpointOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdateJobOutput {
+public struct UpdateJobOutput: Swift.Sendable {
     /// Returns the name of the updated job definition.
     public var jobName: Swift.String?
 
@@ -23865,7 +24140,7 @@ public struct UpdateJobOutput {
     }
 }
 
-public struct UpdateJobFromSourceControlInput {
+public struct UpdateJobFromSourceControlInput: Swift.Sendable {
     /// The type of authentication, which can be an authentication token stored in Amazon Web Services Secrets Manager, or a personal access token.
     public var authStrategy: GlueClientTypes.SourceControlAuthStrategy?
     /// The value of the authorization token.
@@ -23909,7 +24184,7 @@ public struct UpdateJobFromSourceControlInput {
     }
 }
 
-public struct UpdateJobFromSourceControlOutput {
+public struct UpdateJobFromSourceControlOutput: Swift.Sendable {
     /// The name of the Glue job.
     public var jobName: Swift.String?
 
@@ -23921,7 +24196,7 @@ public struct UpdateJobFromSourceControlOutput {
     }
 }
 
-public struct UpdateMLTransformInput {
+public struct UpdateMLTransformInput: Swift.Sendable {
     /// A description of the transform. The default is an empty string.
     public var description: Swift.String?
     /// This value determines which version of Glue this machine learning transform is compatible with. Glue 1.0 is recommended for most customers. If the value is not set, the Glue compatibility defaults to Glue 0.9. For more information, see [Glue Versions](https://docs.aws.amazon.com/glue/latest/dg/release-notes.html#release-notes-versions) in the developer guide.
@@ -23980,7 +24255,7 @@ public struct UpdateMLTransformInput {
     }
 }
 
-public struct UpdateMLTransformOutput {
+public struct UpdateMLTransformOutput: Swift.Sendable {
     /// The unique identifier for the transform that was updated.
     public var transformId: Swift.String?
 
@@ -23992,7 +24267,7 @@ public struct UpdateMLTransformOutput {
     }
 }
 
-public struct UpdatePartitionInput {
+public struct UpdatePartitionInput: Swift.Sendable {
     /// The ID of the Data Catalog where the partition to be updated resides. If none is provided, the Amazon Web Services account ID is used by default.
     public var catalogId: Swift.String?
     /// The name of the catalog database in which the table in question resides.
@@ -24024,12 +24299,12 @@ public struct UpdatePartitionInput {
     }
 }
 
-public struct UpdatePartitionOutput {
+public struct UpdatePartitionOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdateRegistryInput {
+public struct UpdateRegistryInput: Swift.Sendable {
     /// A description of the registry. If description is not provided, this field will not be updated.
     /// This member is required.
     public var description: Swift.String?
@@ -24047,7 +24322,7 @@ public struct UpdateRegistryInput {
     }
 }
 
-public struct UpdateRegistryOutput {
+public struct UpdateRegistryOutput: Swift.Sendable {
     /// The Amazon Resource name (ARN) of the updated registry.
     public var registryArn: Swift.String?
     /// The name of the updated registry.
@@ -24063,7 +24338,7 @@ public struct UpdateRegistryOutput {
     }
 }
 
-public struct UpdateSchemaInput {
+public struct UpdateSchemaInput: Swift.Sendable {
     /// The new compatibility setting for the schema.
     public var compatibility: GlueClientTypes.Compatibility?
     /// The new description for the schema.
@@ -24092,7 +24367,7 @@ public struct UpdateSchemaInput {
     }
 }
 
-public struct UpdateSchemaOutput {
+public struct UpdateSchemaOutput: Swift.Sendable {
     /// The name of the registry that contains the schema.
     public var registryName: Swift.String?
     /// The Amazon Resource Name (ARN) of the schema.
@@ -24112,7 +24387,7 @@ public struct UpdateSchemaOutput {
     }
 }
 
-public struct UpdateSourceControlFromJobInput {
+public struct UpdateSourceControlFromJobInput: Swift.Sendable {
     /// The type of authentication, which can be an authentication token stored in Amazon Web Services Secrets Manager, or a personal access token.
     public var authStrategy: GlueClientTypes.SourceControlAuthStrategy?
     /// The value of the authorization token.
@@ -24156,7 +24431,7 @@ public struct UpdateSourceControlFromJobInput {
     }
 }
 
-public struct UpdateSourceControlFromJobOutput {
+public struct UpdateSourceControlFromJobOutput: Swift.Sendable {
     /// The name of the Glue job.
     public var jobName: Swift.String?
 
@@ -24170,7 +24445,7 @@ public struct UpdateSourceControlFromJobOutput {
 
 extension GlueClientTypes {
 
-    public enum ViewUpdateAction: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ViewUpdateAction: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case add
         case addOrReplace
         case drop
@@ -24203,7 +24478,7 @@ extension GlueClientTypes {
     }
 }
 
-public struct UpdateTableInput {
+public struct UpdateTableInput: Swift.Sendable {
     /// The ID of the Data Catalog where the table resides. If none is provided, the Amazon Web Services account ID is used by default.
     public var catalogId: Swift.String?
     /// The name of the catalog database in which the table resides. For Hive compatibility, this name is entirely lowercase.
@@ -24245,12 +24520,12 @@ public struct UpdateTableInput {
     }
 }
 
-public struct UpdateTableOutput {
+public struct UpdateTableOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdateTableOptimizerInput {
+public struct UpdateTableOptimizerInput: Swift.Sendable {
     /// The Catalog ID of the table.
     /// This member is required.
     public var catalogId: Swift.String?
@@ -24283,14 +24558,15 @@ public struct UpdateTableOptimizerInput {
     }
 }
 
-public struct UpdateTableOptimizerOutput {
+public struct UpdateTableOptimizerOutput: Swift.Sendable {
 
     public init() { }
 }
 
 extension GlueClientTypes {
+
     /// A structure used to provide information used to update a trigger. This object updates the previous trigger definition by overwriting it completely.
-    public struct TriggerUpdate {
+    public struct TriggerUpdate: Swift.Sendable {
         /// The actions initiated by this trigger.
         public var actions: [GlueClientTypes.Action]?
         /// A description of this trigger.
@@ -24321,10 +24597,9 @@ extension GlueClientTypes {
             self.schedule = schedule
         }
     }
-
 }
 
-public struct UpdateTriggerInput {
+public struct UpdateTriggerInput: Swift.Sendable {
     /// The name of the trigger to update.
     /// This member is required.
     public var name: Swift.String?
@@ -24342,7 +24617,7 @@ public struct UpdateTriggerInput {
     }
 }
 
-public struct UpdateTriggerOutput {
+public struct UpdateTriggerOutput: Swift.Sendable {
     /// The resulting trigger definition.
     public var trigger: GlueClientTypes.Trigger?
 
@@ -24354,7 +24629,7 @@ public struct UpdateTriggerOutput {
     }
 }
 
-public struct UpdateUsageProfileInput {
+public struct UpdateUsageProfileInput: Swift.Sendable {
     /// A ProfileConfiguration object specifying the job and session values for the profile.
     /// This member is required.
     public var configuration: GlueClientTypes.ProfileConfiguration?
@@ -24376,7 +24651,7 @@ public struct UpdateUsageProfileInput {
     }
 }
 
-public struct UpdateUsageProfileOutput {
+public struct UpdateUsageProfileOutput: Swift.Sendable {
     /// The name of the usage profile that was updated.
     public var name: Swift.String?
 
@@ -24388,7 +24663,7 @@ public struct UpdateUsageProfileOutput {
     }
 }
 
-public struct UpdateUserDefinedFunctionInput {
+public struct UpdateUserDefinedFunctionInput: Swift.Sendable {
     /// The ID of the Data Catalog where the function to be updated is located. If none is provided, the Amazon Web Services account ID is used by default.
     public var catalogId: Swift.String?
     /// The name of the catalog database where the function to be updated is located.
@@ -24415,12 +24690,12 @@ public struct UpdateUserDefinedFunctionInput {
     }
 }
 
-public struct UpdateUserDefinedFunctionOutput {
+public struct UpdateUserDefinedFunctionOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdateWorkflowInput {
+public struct UpdateWorkflowInput: Swift.Sendable {
     /// A collection of properties to be used as part of each execution of the workflow.
     public var defaultRunProperties: [Swift.String: Swift.String]?
     /// The description of the workflow.
@@ -24445,7 +24720,7 @@ public struct UpdateWorkflowInput {
     }
 }
 
-public struct UpdateWorkflowOutput {
+public struct UpdateWorkflowOutput: Swift.Sendable {
     /// The name of the workflow which was specified in input.
     public var name: Swift.String?
 
@@ -24458,8 +24733,9 @@ public struct UpdateWorkflowOutput {
 }
 
 extension GlueClientTypes {
+
     /// Specifies the mapping of data property keys.
-    public struct Mapping {
+    public struct Mapping: Swift.Sendable {
         /// Only applicable to nested data structures. If you want to change the parent structure, but also one of its children, you can fill out this data strucutre. It is also Mapping, but its FromPath will be the parent's FromPath plus the FromPath from this structure. For the children part, suppose you have the structure: { "FromPath": "OuterStructure", "ToKey": "OuterStructure", "ToType": "Struct", "Dropped": false, "Chidlren": [{ "FromPath": "inner", "ToKey": "inner", "ToType": "Double", "Dropped": false, }] } You can specify a Mapping that looks like: { "FromPath": "OuterStructure", "ToKey": "OuterStructure", "ToType": "Struct", "Dropped": false, "Chidlren": [{ "FromPath": "inner", "ToKey": "inner", "ToType": "Double", "Dropped": false, }] }
         public var children: [GlueClientTypes.Mapping]?
         /// If true, then the column is removed.
@@ -24490,12 +24766,12 @@ extension GlueClientTypes {
             self.toType = toType
         }
     }
-
 }
 
 extension GlueClientTypes {
+
     /// Specifies a transform that maps data property keys in the data source to data property keys in the data target. You can rename keys, modify the data types for keys, and choose which keys to drop from the dataset.
-    public struct ApplyMapping {
+    public struct ApplyMapping: Swift.Sendable {
         /// The data inputs identified by their node names.
         /// This member is required.
         public var inputs: [Swift.String]?
@@ -24517,12 +24793,12 @@ extension GlueClientTypes {
             self.name = name
         }
     }
-
 }
 
 extension GlueClientTypes {
+
     /// A structure containing information about an asynchronous change to a table.
-    public struct StatusDetails {
+    public struct StatusDetails: Swift.Sendable {
         /// A Table object representing the requested changes.
         @Indirect public var requestedChange: GlueClientTypes.Table?
         /// A list of ViewValidation objects that contain information for an analytical engine to validate a view.
@@ -24537,12 +24813,12 @@ extension GlueClientTypes {
             self.viewValidations = viewValidations
         }
     }
-
 }
 
 extension GlueClientTypes {
+
     /// Represents a collection of related data organized in columns and rows.
-    public struct Table {
+    public struct Table: Swift.Sendable {
         /// The ID of the Data Catalog in which the table resides.
         public var catalogId: Swift.String?
         /// The time when the table definition was created in the Data Catalog.
@@ -24646,12 +24922,12 @@ extension GlueClientTypes {
             self.viewOriginalText = viewOriginalText
         }
     }
-
 }
 
 extension GlueClientTypes {
+
     /// A structure containing information about the state of an asynchronous change to a table.
-    public struct TableStatus {
+    public struct TableStatus: Swift.Sendable {
         /// Indicates which action was called on the table, currently only CREATE or UPDATE.
         public var action: GlueClientTypes.ResourceAction?
         /// A StatusDetails object with information about the requested change.
@@ -24690,12 +24966,12 @@ extension GlueClientTypes {
             self.updatedBy = updatedBy
         }
     }
-
 }
 
 extension GlueClientTypes {
+
     /// CodeGenConfigurationNode enumerates all valid Node types. One and only one of its member variables can be populated.
-    public struct CodeGenConfigurationNode {
+    public struct CodeGenConfigurationNode: Swift.Sendable {
         /// Specifies a transform that groups rows by chosen fields and computes the aggregated value by specified function.
         public var aggregate: GlueClientTypes.Aggregate?
         /// Specifies a target that writes to a data source in Amazon Redshift.
@@ -24986,12 +25262,12 @@ extension GlueClientTypes {
             self.union = union
         }
     }
-
 }
 
 extension GlueClientTypes {
+
     /// Specifies a version of a table.
-    public struct TableVersion {
+    public struct TableVersion: Swift.Sendable {
         /// The table in question.
         public var table: GlueClientTypes.Table?
         /// The ID value that identifies this table version. A VersionId is a string representation of an integer. Each version is incremented by 1.
@@ -25006,10 +25282,9 @@ extension GlueClientTypes {
             self.versionId = versionId
         }
     }
-
 }
 
-public struct GetTableOutput {
+public struct GetTableOutput: Swift.Sendable {
     /// The Table object that defines the specified table.
     public var table: GlueClientTypes.Table?
 
@@ -25021,7 +25296,7 @@ public struct GetTableOutput {
     }
 }
 
-public struct GetUnfilteredTableMetadataOutput {
+public struct GetUnfilteredTableMetadataOutput: Swift.Sendable {
     /// A list of column names that the user has been granted access to.
     public var authorizedColumns: [Swift.String]?
     /// A list of column row filters.
@@ -25069,7 +25344,7 @@ public struct GetUnfilteredTableMetadataOutput {
     }
 }
 
-public struct GetTablesOutput {
+public struct GetTablesOutput: Swift.Sendable {
     /// A continuation token, present if the current list segment is not the last.
     public var nextToken: Swift.String?
     /// A list of the requested Table objects.
@@ -25085,7 +25360,7 @@ public struct GetTablesOutput {
     }
 }
 
-public struct GetTableVersionOutput {
+public struct GetTableVersionOutput: Swift.Sendable {
     /// The requested table version.
     public var tableVersion: GlueClientTypes.TableVersion?
 
@@ -25097,7 +25372,7 @@ public struct GetTableVersionOutput {
     }
 }
 
-public struct SearchTablesOutput {
+public struct SearchTablesOutput: Swift.Sendable {
     /// A continuation token, present if the current list segment is not the last.
     public var nextToken: Swift.String?
     /// A list of the requested Table objects. The SearchTables response returns only the tables that you have access to.
@@ -25114,8 +25389,9 @@ public struct SearchTablesOutput {
 }
 
 extension GlueClientTypes {
+
     /// Specifies a job definition.
-    public struct Job {
+    public struct Job: Swift.Sendable {
         /// This field is deprecated. Use MaxCapacity instead. The number of Glue data processing units (DPUs) allocated to runs of this job. You can allocate a minimum of 2 DPUs; the default is 10. A DPU is a relative measure of processing power that consists of 4 vCPUs of compute capacity and 16 GB of memory. For more information, see the [Glue pricing page](https://aws.amazon.com/glue/pricing/).
         @available(*, deprecated, message: "This property is deprecated, use MaxCapacity instead.")
         public var allocatedCapacity: Swift.Int
@@ -25256,7 +25532,6 @@ extension GlueClientTypes {
             self.workerType = workerType
         }
     }
-
 }
 
 extension GlueClientTypes.Job: Swift.CustomDebugStringConvertible {
@@ -25265,8 +25540,9 @@ extension GlueClientTypes.Job: Swift.CustomDebugStringConvertible {
 }
 
 extension GlueClientTypes {
+
     /// Specifies information used to update an existing job definition. The previous job definition is completely overwritten by this information.
-    public struct JobUpdate {
+    public struct JobUpdate: Swift.Sendable {
         /// This field is deprecated. Use MaxCapacity instead. The number of Glue data processing units (DPUs) to allocate to this job. You can allocate a minimum of 2 DPUs; the default is 10. A DPU is a relative measure of processing power that consists of 4 vCPUs of compute capacity and 16 GB of memory. For more information, see the [Glue pricing page](https://aws.amazon.com/glue/pricing/).
         @available(*, deprecated, message: "This property is deprecated, use MaxCapacity instead.")
         public var allocatedCapacity: Swift.Int
@@ -25391,7 +25667,6 @@ extension GlueClientTypes {
             self.workerType = workerType
         }
     }
-
 }
 
 extension GlueClientTypes.JobUpdate: Swift.CustomDebugStringConvertible {
@@ -25399,7 +25674,7 @@ extension GlueClientTypes.JobUpdate: Swift.CustomDebugStringConvertible {
         "JobUpdate(allocatedCapacity: \(Swift.String(describing: allocatedCapacity)), command: \(Swift.String(describing: command)), connections: \(Swift.String(describing: connections)), defaultArguments: \(Swift.String(describing: defaultArguments)), description: \(Swift.String(describing: description)), executionClass: \(Swift.String(describing: executionClass)), executionProperty: \(Swift.String(describing: executionProperty)), glueVersion: \(Swift.String(describing: glueVersion)), jobMode: \(Swift.String(describing: jobMode)), jobRunQueuingEnabled: \(Swift.String(describing: jobRunQueuingEnabled)), logUri: \(Swift.String(describing: logUri)), maintenanceWindow: \(Swift.String(describing: maintenanceWindow)), maxCapacity: \(Swift.String(describing: maxCapacity)), maxRetries: \(Swift.String(describing: maxRetries)), nonOverridableArguments: \(Swift.String(describing: nonOverridableArguments)), notificationProperty: \(Swift.String(describing: notificationProperty)), numberOfWorkers: \(Swift.String(describing: numberOfWorkers)), role: \(Swift.String(describing: role)), securityConfiguration: \(Swift.String(describing: securityConfiguration)), sourceControlDetails: \(Swift.String(describing: sourceControlDetails)), timeout: \(Swift.String(describing: timeout)), workerType: \(Swift.String(describing: workerType)), codeGenConfigurationNodes: \"CONTENT_REDACTED\")"}
 }
 
-public struct CreateJobInput {
+public struct CreateJobInput: Swift.Sendable {
     /// This parameter is deprecated. Use MaxCapacity instead. The number of Glue data processing units (DPUs) to allocate to this Job. You can allocate a minimum of 2 DPUs; the default is 10. A DPU is a relative measure of processing power that consists of 4 vCPUs of compute capacity and 16 GB of memory. For more information, see the [Glue pricing page](https://aws.amazon.com/glue/pricing/).
     @available(*, deprecated, message: "This property is deprecated, use MaxCapacity instead.")
     public var allocatedCapacity: Swift.Int?
@@ -25541,7 +25816,7 @@ extension CreateJobInput: Swift.CustomDebugStringConvertible {
         "CreateJobInput(allocatedCapacity: \(Swift.String(describing: allocatedCapacity)), command: \(Swift.String(describing: command)), connections: \(Swift.String(describing: connections)), defaultArguments: \(Swift.String(describing: defaultArguments)), description: \(Swift.String(describing: description)), executionClass: \(Swift.String(describing: executionClass)), executionProperty: \(Swift.String(describing: executionProperty)), glueVersion: \(Swift.String(describing: glueVersion)), jobMode: \(Swift.String(describing: jobMode)), jobRunQueuingEnabled: \(Swift.String(describing: jobRunQueuingEnabled)), logUri: \(Swift.String(describing: logUri)), maintenanceWindow: \(Swift.String(describing: maintenanceWindow)), maxCapacity: \(Swift.String(describing: maxCapacity)), maxRetries: \(Swift.String(describing: maxRetries)), name: \(Swift.String(describing: name)), nonOverridableArguments: \(Swift.String(describing: nonOverridableArguments)), notificationProperty: \(Swift.String(describing: notificationProperty)), numberOfWorkers: \(Swift.String(describing: numberOfWorkers)), role: \(Swift.String(describing: role)), securityConfiguration: \(Swift.String(describing: securityConfiguration)), sourceControlDetails: \(Swift.String(describing: sourceControlDetails)), tags: \(Swift.String(describing: tags)), timeout: \(Swift.String(describing: timeout)), workerType: \(Swift.String(describing: workerType)), codeGenConfigurationNodes: \"CONTENT_REDACTED\")"}
 }
 
-public struct GetTableVersionsOutput {
+public struct GetTableVersionsOutput: Swift.Sendable {
     /// A continuation token, if the list of available versions does not include the last one.
     public var nextToken: Swift.String?
     /// A list of strings identifying available versions of the specified table.
@@ -25557,7 +25832,7 @@ public struct GetTableVersionsOutput {
     }
 }
 
-public struct GetJobOutput {
+public struct GetJobOutput: Swift.Sendable {
     /// The requested job definition.
     public var job: GlueClientTypes.Job?
 
@@ -25569,7 +25844,7 @@ public struct GetJobOutput {
     }
 }
 
-public struct UpdateJobInput {
+public struct UpdateJobInput: Swift.Sendable {
     /// The name of the job definition to update.
     /// This member is required.
     public var jobName: Swift.String?
@@ -25587,7 +25862,7 @@ public struct UpdateJobInput {
     }
 }
 
-public struct BatchGetJobsOutput {
+public struct BatchGetJobsOutput: Swift.Sendable {
     /// A list of job definitions.
     public var jobs: [GlueClientTypes.Job]?
     /// A list of names of jobs not found.
@@ -25603,7 +25878,7 @@ public struct BatchGetJobsOutput {
     }
 }
 
-public struct GetJobsOutput {
+public struct GetJobsOutput: Swift.Sendable {
     /// A list of job definitions.
     public var jobs: [GlueClientTypes.Job]?
     /// A continuation token, if not all job definitions have yet been returned.
@@ -25794,6 +26069,13 @@ extension CreateClassifierInput {
     }
 }
 
+extension CreateColumnStatisticsTaskSettingsInput {
+
+    static func urlPathProvider(_ value: CreateColumnStatisticsTaskSettingsInput) -> Swift.String? {
+        return "/"
+    }
+}
+
 extension CreateConnectionInput {
 
     static func urlPathProvider(_ value: CreateConnectionInput) -> Swift.String? {
@@ -25965,6 +26247,13 @@ extension DeleteColumnStatisticsForPartitionInput {
 extension DeleteColumnStatisticsForTableInput {
 
     static func urlPathProvider(_ value: DeleteColumnStatisticsForTableInput) -> Swift.String? {
+        return "/"
+    }
+}
+
+extension DeleteColumnStatisticsTaskSettingsInput {
+
+    static func urlPathProvider(_ value: DeleteColumnStatisticsTaskSettingsInput) -> Swift.String? {
         return "/"
     }
 }
@@ -26196,6 +26485,13 @@ extension GetColumnStatisticsTaskRunInput {
 extension GetColumnStatisticsTaskRunsInput {
 
     static func urlPathProvider(_ value: GetColumnStatisticsTaskRunsInput) -> Swift.String? {
+        return "/"
+    }
+}
+
+extension GetColumnStatisticsTaskSettingsInput {
+
+    static func urlPathProvider(_ value: GetColumnStatisticsTaskSettingsInput) -> Swift.String? {
         return "/"
     }
 }
@@ -26893,6 +27189,13 @@ extension StartColumnStatisticsTaskRunInput {
     }
 }
 
+extension StartColumnStatisticsTaskRunScheduleInput {
+
+    static func urlPathProvider(_ value: StartColumnStatisticsTaskRunScheduleInput) -> Swift.String? {
+        return "/"
+    }
+}
+
 extension StartCrawlerInput {
 
     static func urlPathProvider(_ value: StartCrawlerInput) -> Swift.String? {
@@ -26977,6 +27280,13 @@ extension StopColumnStatisticsTaskRunInput {
     }
 }
 
+extension StopColumnStatisticsTaskRunScheduleInput {
+
+    static func urlPathProvider(_ value: StopColumnStatisticsTaskRunScheduleInput) -> Swift.String? {
+        return "/"
+    }
+}
+
 extension StopCrawlerInput {
 
     static func urlPathProvider(_ value: StopCrawlerInput) -> Swift.String? {
@@ -27057,6 +27367,13 @@ extension UpdateColumnStatisticsForPartitionInput {
 extension UpdateColumnStatisticsForTableInput {
 
     static func urlPathProvider(_ value: UpdateColumnStatisticsForTableInput) -> Swift.String? {
+        return "/"
+    }
+}
+
+extension UpdateColumnStatisticsTaskSettingsInput {
+
+    static func urlPathProvider(_ value: UpdateColumnStatisticsTaskSettingsInput) -> Swift.String? {
         return "/"
     }
 }
@@ -27428,6 +27745,22 @@ extension CreateClassifierInput {
     }
 }
 
+extension CreateColumnStatisticsTaskSettingsInput {
+
+    static func write(value: CreateColumnStatisticsTaskSettingsInput?, to writer: SmithyJSON.Writer) throws {
+        guard let value else { return }
+        try writer["CatalogID"].write(value.catalogID)
+        try writer["ColumnNameList"].writeList(value.columnNameList, memberWritingClosure: SmithyReadWrite.WritingClosures.writeString(value:to:), memberNodeInfo: "member", isFlattened: false)
+        try writer["DatabaseName"].write(value.databaseName)
+        try writer["Role"].write(value.role)
+        try writer["SampleSize"].write(value.sampleSize)
+        try writer["Schedule"].write(value.schedule)
+        try writer["SecurityConfiguration"].write(value.securityConfiguration)
+        try writer["TableName"].write(value.tableName)
+        try writer["Tags"].writeMap(value.tags, valueWritingClosure: SmithyReadWrite.WritingClosures.writeString(value:to:), keyNodeInfo: "key", valueNodeInfo: "value", isFlattened: false)
+    }
+}
+
 extension CreateConnectionInput {
 
     static func write(value: CreateConnectionInput?, to writer: SmithyJSON.Writer) throws {
@@ -27770,6 +28103,15 @@ extension DeleteColumnStatisticsForTableInput {
     }
 }
 
+extension DeleteColumnStatisticsTaskSettingsInput {
+
+    static func write(value: DeleteColumnStatisticsTaskSettingsInput?, to writer: SmithyJSON.Writer) throws {
+        guard let value else { return }
+        try writer["DatabaseName"].write(value.databaseName)
+        try writer["TableName"].write(value.tableName)
+    }
+}
+
 extension DeleteConnectionInput {
 
     static func write(value: DeleteConnectionInput?, to writer: SmithyJSON.Writer) throws {
@@ -28068,6 +28410,15 @@ extension GetColumnStatisticsTaskRunsInput {
         try writer["DatabaseName"].write(value.databaseName)
         try writer["MaxResults"].write(value.maxResults)
         try writer["NextToken"].write(value.nextToken)
+        try writer["TableName"].write(value.tableName)
+    }
+}
+
+extension GetColumnStatisticsTaskSettingsInput {
+
+    static func write(value: GetColumnStatisticsTaskSettingsInput?, to writer: SmithyJSON.Writer) throws {
+        guard let value else { return }
+        try writer["DatabaseName"].write(value.databaseName)
         try writer["TableName"].write(value.tableName)
     }
 }
@@ -29088,6 +29439,15 @@ extension StartColumnStatisticsTaskRunInput {
     }
 }
 
+extension StartColumnStatisticsTaskRunScheduleInput {
+
+    static func write(value: StartColumnStatisticsTaskRunScheduleInput?, to writer: SmithyJSON.Writer) throws {
+        guard let value else { return }
+        try writer["DatabaseName"].write(value.databaseName)
+        try writer["TableName"].write(value.tableName)
+    }
+}
+
 extension StartCrawlerInput {
 
     static func write(value: StartCrawlerInput?, to writer: SmithyJSON.Writer) throws {
@@ -29214,6 +29574,15 @@ extension StopColumnStatisticsTaskRunInput {
     }
 }
 
+extension StopColumnStatisticsTaskRunScheduleInput {
+
+    static func write(value: StopColumnStatisticsTaskRunScheduleInput?, to writer: SmithyJSON.Writer) throws {
+        guard let value else { return }
+        try writer["DatabaseName"].write(value.databaseName)
+        try writer["TableName"].write(value.tableName)
+    }
+}
+
 extension StopCrawlerInput {
 
     static func write(value: StopCrawlerInput?, to writer: SmithyJSON.Writer) throws {
@@ -29323,6 +29692,21 @@ extension UpdateColumnStatisticsForTableInput {
         try writer["CatalogId"].write(value.catalogId)
         try writer["ColumnStatisticsList"].writeList(value.columnStatisticsList, memberWritingClosure: GlueClientTypes.ColumnStatistics.write(value:to:), memberNodeInfo: "member", isFlattened: false)
         try writer["DatabaseName"].write(value.databaseName)
+        try writer["TableName"].write(value.tableName)
+    }
+}
+
+extension UpdateColumnStatisticsTaskSettingsInput {
+
+    static func write(value: UpdateColumnStatisticsTaskSettingsInput?, to writer: SmithyJSON.Writer) throws {
+        guard let value else { return }
+        try writer["CatalogID"].write(value.catalogID)
+        try writer["ColumnNameList"].writeList(value.columnNameList, memberWritingClosure: SmithyReadWrite.WritingClosures.writeString(value:to:), memberNodeInfo: "member", isFlattened: false)
+        try writer["DatabaseName"].write(value.databaseName)
+        try writer["Role"].write(value.role)
+        try writer["SampleSize"].write(value.sampleSize)
+        try writer["Schedule"].write(value.schedule)
+        try writer["SecurityConfiguration"].write(value.securityConfiguration)
         try writer["TableName"].write(value.tableName)
     }
 }
@@ -29856,6 +30240,13 @@ extension CreateClassifierOutput {
     }
 }
 
+extension CreateColumnStatisticsTaskSettingsOutput {
+
+    static func httpOutput(from httpResponse: SmithyHTTPAPI.HTTPResponse) async throws -> CreateColumnStatisticsTaskSettingsOutput {
+        return CreateColumnStatisticsTaskSettingsOutput()
+    }
+}
+
 extension CreateConnectionOutput {
 
     static func httpOutput(from httpResponse: SmithyHTTPAPI.HTTPResponse) async throws -> CreateConnectionOutput {
@@ -30139,6 +30530,13 @@ extension DeleteColumnStatisticsForTableOutput {
 
     static func httpOutput(from httpResponse: SmithyHTTPAPI.HTTPResponse) async throws -> DeleteColumnStatisticsForTableOutput {
         return DeleteColumnStatisticsForTableOutput()
+    }
+}
+
+extension DeleteColumnStatisticsTaskSettingsOutput {
+
+    static func httpOutput(from httpResponse: SmithyHTTPAPI.HTTPResponse) async throws -> DeleteColumnStatisticsTaskSettingsOutput {
+        return DeleteColumnStatisticsTaskSettingsOutput()
     }
 }
 
@@ -30473,6 +30871,18 @@ extension GetColumnStatisticsTaskRunsOutput {
         var value = GetColumnStatisticsTaskRunsOutput()
         value.columnStatisticsTaskRuns = try reader["ColumnStatisticsTaskRuns"].readListIfPresent(memberReadingClosure: GlueClientTypes.ColumnStatisticsTaskRun.read(from:), memberNodeInfo: "member", isFlattened: false)
         value.nextToken = try reader["NextToken"].readIfPresent()
+        return value
+    }
+}
+
+extension GetColumnStatisticsTaskSettingsOutput {
+
+    static func httpOutput(from httpResponse: SmithyHTTPAPI.HTTPResponse) async throws -> GetColumnStatisticsTaskSettingsOutput {
+        let data = try await httpResponse.data()
+        let responseReader = try SmithyJSON.Reader.from(data: data)
+        let reader = responseReader
+        var value = GetColumnStatisticsTaskSettingsOutput()
+        value.columnStatisticsTaskSettings = try reader["ColumnStatisticsTaskSettings"].readIfPresent(with: GlueClientTypes.ColumnStatisticsTaskSettings.read(from:))
         return value
     }
 }
@@ -31841,6 +32251,13 @@ extension StartColumnStatisticsTaskRunOutput {
     }
 }
 
+extension StartColumnStatisticsTaskRunScheduleOutput {
+
+    static func httpOutput(from httpResponse: SmithyHTTPAPI.HTTPResponse) async throws -> StartColumnStatisticsTaskRunScheduleOutput {
+        return StartColumnStatisticsTaskRunScheduleOutput()
+    }
+}
+
 extension StartCrawlerOutput {
 
     static func httpOutput(from httpResponse: SmithyHTTPAPI.HTTPResponse) async throws -> StartCrawlerOutput {
@@ -31970,6 +32387,13 @@ extension StopColumnStatisticsTaskRunOutput {
     }
 }
 
+extension StopColumnStatisticsTaskRunScheduleOutput {
+
+    static func httpOutput(from httpResponse: SmithyHTTPAPI.HTTPResponse) async throws -> StopColumnStatisticsTaskRunScheduleOutput {
+        return StopColumnStatisticsTaskRunScheduleOutput()
+    }
+}
+
 extension StopCrawlerOutput {
 
     static func httpOutput(from httpResponse: SmithyHTTPAPI.HTTPResponse) async throws -> StopCrawlerOutput {
@@ -32076,6 +32500,13 @@ extension UpdateColumnStatisticsForTableOutput {
         var value = UpdateColumnStatisticsForTableOutput()
         value.errors = try reader["Errors"].readListIfPresent(memberReadingClosure: GlueClientTypes.ColumnStatisticsError.read(from:), memberNodeInfo: "member", isFlattened: false)
         return value
+    }
+}
+
+extension UpdateColumnStatisticsTaskSettingsOutput {
+
+    static func httpOutput(from httpResponse: SmithyHTTPAPI.HTTPResponse) async throws -> UpdateColumnStatisticsTaskSettingsOutput {
+        return UpdateColumnStatisticsTaskSettingsOutput()
     }
 }
 
@@ -32693,6 +33124,26 @@ enum CreateClassifierOutputError {
     }
 }
 
+enum CreateColumnStatisticsTaskSettingsOutputError {
+
+    static func httpError(from httpResponse: SmithyHTTPAPI.HTTPResponse) async throws -> Swift.Error {
+        let data = try await httpResponse.data()
+        let responseReader = try SmithyJSON.Reader.from(data: data)
+        let baseError = try AWSClientRuntime.AWSJSONError(httpResponse: httpResponse, responseReader: responseReader, noErrorWrapping: false)
+        if let error = baseError.customError() { return error }
+        switch baseError.code {
+            case "AccessDeniedException": return try AccessDeniedException.makeError(baseError: baseError)
+            case "AlreadyExistsException": return try AlreadyExistsException.makeError(baseError: baseError)
+            case "ColumnStatisticsTaskRunningException": return try ColumnStatisticsTaskRunningException.makeError(baseError: baseError)
+            case "EntityNotFoundException": return try EntityNotFoundException.makeError(baseError: baseError)
+            case "InvalidInputException": return try InvalidInputException.makeError(baseError: baseError)
+            case "OperationTimeoutException": return try OperationTimeoutException.makeError(baseError: baseError)
+            case "ResourceNumberLimitExceededException": return try ResourceNumberLimitExceededException.makeError(baseError: baseError)
+            default: return try AWSClientRuntime.UnknownAWSHTTPServiceError.makeError(baseError: baseError)
+        }
+    }
+}
+
 enum CreateConnectionOutputError {
 
     static func httpError(from httpResponse: SmithyHTTPAPI.HTTPResponse) async throws -> Swift.Error {
@@ -33163,6 +33614,22 @@ enum DeleteColumnStatisticsForTableOutputError {
             case "EntityNotFoundException": return try EntityNotFoundException.makeError(baseError: baseError)
             case "GlueEncryptionException": return try GlueEncryptionException.makeError(baseError: baseError)
             case "InternalServiceException": return try InternalServiceException.makeError(baseError: baseError)
+            case "InvalidInputException": return try InvalidInputException.makeError(baseError: baseError)
+            case "OperationTimeoutException": return try OperationTimeoutException.makeError(baseError: baseError)
+            default: return try AWSClientRuntime.UnknownAWSHTTPServiceError.makeError(baseError: baseError)
+        }
+    }
+}
+
+enum DeleteColumnStatisticsTaskSettingsOutputError {
+
+    static func httpError(from httpResponse: SmithyHTTPAPI.HTTPResponse) async throws -> Swift.Error {
+        let data = try await httpResponse.data()
+        let responseReader = try SmithyJSON.Reader.from(data: data)
+        let baseError = try AWSClientRuntime.AWSJSONError(httpResponse: httpResponse, responseReader: responseReader, noErrorWrapping: false)
+        if let error = baseError.customError() { return error }
+        switch baseError.code {
+            case "EntityNotFoundException": return try EntityNotFoundException.makeError(baseError: baseError)
             case "InvalidInputException": return try InvalidInputException.makeError(baseError: baseError)
             case "OperationTimeoutException": return try OperationTimeoutException.makeError(baseError: baseError)
             default: return try AWSClientRuntime.UnknownAWSHTTPServiceError.makeError(baseError: baseError)
@@ -33722,6 +34189,22 @@ enum GetColumnStatisticsTaskRunsOutputError {
         let baseError = try AWSClientRuntime.AWSJSONError(httpResponse: httpResponse, responseReader: responseReader, noErrorWrapping: false)
         if let error = baseError.customError() { return error }
         switch baseError.code {
+            case "OperationTimeoutException": return try OperationTimeoutException.makeError(baseError: baseError)
+            default: return try AWSClientRuntime.UnknownAWSHTTPServiceError.makeError(baseError: baseError)
+        }
+    }
+}
+
+enum GetColumnStatisticsTaskSettingsOutputError {
+
+    static func httpError(from httpResponse: SmithyHTTPAPI.HTTPResponse) async throws -> Swift.Error {
+        let data = try await httpResponse.data()
+        let responseReader = try SmithyJSON.Reader.from(data: data)
+        let baseError = try AWSClientRuntime.AWSJSONError(httpResponse: httpResponse, responseReader: responseReader, noErrorWrapping: false)
+        if let error = baseError.customError() { return error }
+        switch baseError.code {
+            case "EntityNotFoundException": return try EntityNotFoundException.makeError(baseError: baseError)
+            case "InvalidInputException": return try InvalidInputException.makeError(baseError: baseError)
             case "OperationTimeoutException": return try OperationTimeoutException.makeError(baseError: baseError)
             default: return try AWSClientRuntime.UnknownAWSHTTPServiceError.makeError(baseError: baseError)
         }
@@ -35438,6 +35921,23 @@ enum StartColumnStatisticsTaskRunOutputError {
     }
 }
 
+enum StartColumnStatisticsTaskRunScheduleOutputError {
+
+    static func httpError(from httpResponse: SmithyHTTPAPI.HTTPResponse) async throws -> Swift.Error {
+        let data = try await httpResponse.data()
+        let responseReader = try SmithyJSON.Reader.from(data: data)
+        let baseError = try AWSClientRuntime.AWSJSONError(httpResponse: httpResponse, responseReader: responseReader, noErrorWrapping: false)
+        if let error = baseError.customError() { return error }
+        switch baseError.code {
+            case "AccessDeniedException": return try AccessDeniedException.makeError(baseError: baseError)
+            case "EntityNotFoundException": return try EntityNotFoundException.makeError(baseError: baseError)
+            case "InvalidInputException": return try InvalidInputException.makeError(baseError: baseError)
+            case "OperationTimeoutException": return try OperationTimeoutException.makeError(baseError: baseError)
+            default: return try AWSClientRuntime.UnknownAWSHTTPServiceError.makeError(baseError: baseError)
+        }
+    }
+}
+
 enum StartCrawlerOutputError {
 
     static func httpError(from httpResponse: SmithyHTTPAPI.HTTPResponse) async throws -> Swift.Error {
@@ -35647,6 +36147,22 @@ enum StopColumnStatisticsTaskRunOutputError {
             case "ColumnStatisticsTaskNotRunningException": return try ColumnStatisticsTaskNotRunningException.makeError(baseError: baseError)
             case "ColumnStatisticsTaskStoppingException": return try ColumnStatisticsTaskStoppingException.makeError(baseError: baseError)
             case "EntityNotFoundException": return try EntityNotFoundException.makeError(baseError: baseError)
+            case "OperationTimeoutException": return try OperationTimeoutException.makeError(baseError: baseError)
+            default: return try AWSClientRuntime.UnknownAWSHTTPServiceError.makeError(baseError: baseError)
+        }
+    }
+}
+
+enum StopColumnStatisticsTaskRunScheduleOutputError {
+
+    static func httpError(from httpResponse: SmithyHTTPAPI.HTTPResponse) async throws -> Swift.Error {
+        let data = try await httpResponse.data()
+        let responseReader = try SmithyJSON.Reader.from(data: data)
+        let baseError = try AWSClientRuntime.AWSJSONError(httpResponse: httpResponse, responseReader: responseReader, noErrorWrapping: false)
+        if let error = baseError.customError() { return error }
+        switch baseError.code {
+            case "EntityNotFoundException": return try EntityNotFoundException.makeError(baseError: baseError)
+            case "InvalidInputException": return try InvalidInputException.makeError(baseError: baseError)
             case "OperationTimeoutException": return try OperationTimeoutException.makeError(baseError: baseError)
             default: return try AWSClientRuntime.UnknownAWSHTTPServiceError.makeError(baseError: baseError)
         }
@@ -35865,6 +36381,24 @@ enum UpdateColumnStatisticsForTableOutputError {
             case "InternalServiceException": return try InternalServiceException.makeError(baseError: baseError)
             case "InvalidInputException": return try InvalidInputException.makeError(baseError: baseError)
             case "OperationTimeoutException": return try OperationTimeoutException.makeError(baseError: baseError)
+            default: return try AWSClientRuntime.UnknownAWSHTTPServiceError.makeError(baseError: baseError)
+        }
+    }
+}
+
+enum UpdateColumnStatisticsTaskSettingsOutputError {
+
+    static func httpError(from httpResponse: SmithyHTTPAPI.HTTPResponse) async throws -> Swift.Error {
+        let data = try await httpResponse.data()
+        let responseReader = try SmithyJSON.Reader.from(data: data)
+        let baseError = try AWSClientRuntime.AWSJSONError(httpResponse: httpResponse, responseReader: responseReader, noErrorWrapping: false)
+        if let error = baseError.customError() { return error }
+        switch baseError.code {
+            case "AccessDeniedException": return try AccessDeniedException.makeError(baseError: baseError)
+            case "EntityNotFoundException": return try EntityNotFoundException.makeError(baseError: baseError)
+            case "InvalidInputException": return try InvalidInputException.makeError(baseError: baseError)
+            case "OperationTimeoutException": return try OperationTimeoutException.makeError(baseError: baseError)
+            case "VersionMismatchException": return try VersionMismatchException.makeError(baseError: baseError)
             default: return try AWSClientRuntime.UnknownAWSHTTPServiceError.makeError(baseError: baseError)
         }
     }
@@ -36409,6 +36943,19 @@ extension IllegalSessionStateException {
     }
 }
 
+extension ColumnStatisticsTaskRunningException {
+
+    static func makeError(baseError: AWSClientRuntime.AWSJSONError) throws -> ColumnStatisticsTaskRunningException {
+        let reader = baseError.errorBodyReader
+        var value = ColumnStatisticsTaskRunningException()
+        value.properties.message = try reader["Message"].readIfPresent()
+        value.httpResponse = baseError.httpResponse
+        value.requestID = baseError.requestID
+        value.message = baseError.message
+        return value
+    }
+}
+
 extension IdempotentParameterMismatchException {
 
     static func makeError(baseError: AWSClientRuntime.AWSJSONError) throws -> IdempotentParameterMismatchException {
@@ -36571,19 +37118,6 @@ extension IllegalBlueprintStateException {
     static func makeError(baseError: AWSClientRuntime.AWSJSONError) throws -> IllegalBlueprintStateException {
         let reader = baseError.errorBodyReader
         var value = IllegalBlueprintStateException()
-        value.properties.message = try reader["Message"].readIfPresent()
-        value.httpResponse = baseError.httpResponse
-        value.requestID = baseError.requestID
-        value.message = baseError.message
-        return value
-    }
-}
-
-extension ColumnStatisticsTaskRunningException {
-
-    static func makeError(baseError: AWSClientRuntime.AWSJSONError) throws -> ColumnStatisticsTaskRunningException {
-        let reader = baseError.errorBodyReader
-        var value = ColumnStatisticsTaskRunningException()
         value.properties.message = try reader["Message"].readIfPresent()
         value.httpResponse = baseError.httpResponse
         value.requestID = baseError.requestID
@@ -41151,6 +41685,7 @@ extension GlueClientTypes.ColumnStatisticsTaskRun {
         value.securityConfiguration = try reader["SecurityConfiguration"].readIfPresent()
         value.numberOfWorkers = try reader["NumberOfWorkers"].readIfPresent() ?? 0
         value.workerType = try reader["WorkerType"].readIfPresent()
+        value.computationType = try reader["ComputationType"].readIfPresent()
         value.status = try reader["Status"].readIfPresent()
         value.creationTime = try reader["CreationTime"].readTimestampIfPresent(format: SmithyTimestamps.TimestampFormat.epochSeconds)
         value.lastUpdated = try reader["LastUpdated"].readTimestampIfPresent(format: SmithyTimestamps.TimestampFormat.epochSeconds)
@@ -41158,6 +41693,23 @@ extension GlueClientTypes.ColumnStatisticsTaskRun {
         value.endTime = try reader["EndTime"].readTimestampIfPresent(format: SmithyTimestamps.TimestampFormat.epochSeconds)
         value.errorMessage = try reader["ErrorMessage"].readIfPresent()
         value.dpuSeconds = try reader["DPUSeconds"].readIfPresent() ?? 0
+        return value
+    }
+}
+
+extension GlueClientTypes.ColumnStatisticsTaskSettings {
+
+    static func read(from reader: SmithyJSON.Reader) throws -> GlueClientTypes.ColumnStatisticsTaskSettings {
+        guard reader.hasContent else { throw SmithyReadWrite.ReaderError.requiredValueNotPresent }
+        var value = GlueClientTypes.ColumnStatisticsTaskSettings()
+        value.databaseName = try reader["DatabaseName"].readIfPresent()
+        value.tableName = try reader["TableName"].readIfPresent()
+        value.schedule = try reader["Schedule"].readIfPresent(with: GlueClientTypes.Schedule.read(from:))
+        value.columnNameList = try reader["ColumnNameList"].readListIfPresent(memberReadingClosure: SmithyReadWrite.ReadingClosures.readString(from:), memberNodeInfo: "member", isFlattened: false)
+        value.catalogID = try reader["CatalogID"].readIfPresent()
+        value.role = try reader["Role"].readIfPresent()
+        value.sampleSize = try reader["SampleSize"].readIfPresent() ?? 0
+        value.securityConfiguration = try reader["SecurityConfiguration"].readIfPresent()
         return value
     }
 }

@@ -171,7 +171,7 @@ public struct ValidationException: ClientRuntime.ModeledError, AWSClientRuntime.
     }
 }
 
-public struct DeleteKeyInput {
+public struct DeleteKeyInput: Swift.Sendable {
     /// The current version (ETag) of the Key Value Store that you are deleting keys from, which you can get using DescribeKeyValueStore.
     /// This member is required.
     public var ifMatch: Swift.String?
@@ -195,7 +195,7 @@ public struct DeleteKeyInput {
 }
 
 /// Metadata information about a Key Value Store.
-public struct DeleteKeyOutput {
+public struct DeleteKeyOutput: Swift.Sendable {
     /// The current version identifier of the Key Value Store after the successful delete.
     /// This member is required.
     public var eTag: Swift.String?
@@ -218,7 +218,7 @@ public struct DeleteKeyOutput {
     }
 }
 
-public struct DescribeKeyValueStoreInput {
+public struct DescribeKeyValueStoreInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the Key Value Store.
     /// This member is required.
     public var kvsARN: Swift.String?
@@ -232,7 +232,7 @@ public struct DescribeKeyValueStoreInput {
 }
 
 /// Metadata information about a Key Value Store.
-public struct DescribeKeyValueStoreOutput {
+public struct DescribeKeyValueStoreOutput: Swift.Sendable {
     /// Date and time when the Key Value Store was created.
     /// This member is required.
     public var created: Foundation.Date?
@@ -277,7 +277,7 @@ public struct DescribeKeyValueStoreOutput {
     }
 }
 
-public struct GetKeyInput {
+public struct GetKeyInput: Swift.Sendable {
     /// The key to get.
     /// This member is required.
     public var key: Swift.String?
@@ -296,7 +296,7 @@ public struct GetKeyInput {
 }
 
 /// A key value pair.
-public struct GetKeyOutput {
+public struct GetKeyOutput: Swift.Sendable {
     /// Number of key value pairs in the Key Value Store.
     /// This member is required.
     public var itemCount: Swift.Int?
@@ -329,7 +329,7 @@ extension GetKeyOutput: Swift.CustomDebugStringConvertible {
         "GetKeyOutput(itemCount: \(Swift.String(describing: itemCount)), key: \(Swift.String(describing: key)), totalSizeInBytes: \(Swift.String(describing: totalSizeInBytes)), value: \"CONTENT_REDACTED\")"}
 }
 
-public struct ListKeysInput {
+public struct ListKeysInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the Key Value Store.
     /// This member is required.
     public var kvsARN: Swift.String?
@@ -351,8 +351,9 @@ public struct ListKeysInput {
 }
 
 extension CloudFrontKeyValueStoreClientTypes {
+
     /// A key value pair.
-    public struct ListKeysResponseListItem {
+    public struct ListKeysResponseListItem: Swift.Sendable {
         /// The key of the key value pair.
         /// This member is required.
         public var key: Swift.String?
@@ -369,7 +370,6 @@ extension CloudFrontKeyValueStoreClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension CloudFrontKeyValueStoreClientTypes.ListKeysResponseListItem: Swift.CustomDebugStringConvertible {
@@ -377,7 +377,7 @@ extension CloudFrontKeyValueStoreClientTypes.ListKeysResponseListItem: Swift.Cus
         "ListKeysResponseListItem(key: \(Swift.String(describing: key)), value: \"CONTENT_REDACTED\")"}
 }
 
-public struct ListKeysOutput {
+public struct ListKeysOutput: Swift.Sendable {
     /// Key value pairs
     public var items: [CloudFrontKeyValueStoreClientTypes.ListKeysResponseListItem]?
     /// If nextToken is returned in the response, there are more results available. Make the next call using the returned token to retrieve the next page.
@@ -394,7 +394,7 @@ public struct ListKeysOutput {
 }
 
 /// A key value pair.
-public struct PutKeyInput {
+public struct PutKeyInput: Swift.Sendable {
     /// The current version (ETag) of the Key Value Store that you are putting keys into, which you can get using DescribeKeyValueStore.
     /// This member is required.
     public var ifMatch: Swift.String?
@@ -428,7 +428,7 @@ extension PutKeyInput: Swift.CustomDebugStringConvertible {
 }
 
 /// Metadata information about a Key Value Store.
-public struct PutKeyOutput {
+public struct PutKeyOutput: Swift.Sendable {
     /// The current version identifier of the Key Value Store after the successful put.
     /// This member is required.
     public var eTag: Swift.String?
@@ -452,8 +452,9 @@ public struct PutKeyOutput {
 }
 
 extension CloudFrontKeyValueStoreClientTypes {
+
     /// List item for keys to delete.
-    public struct DeleteKeyRequestListItem {
+    public struct DeleteKeyRequestListItem: Swift.Sendable {
         /// The key of the key value pair to be deleted.
         /// This member is required.
         public var key: Swift.String?
@@ -465,12 +466,12 @@ extension CloudFrontKeyValueStoreClientTypes {
             self.key = key
         }
     }
-
 }
 
 extension CloudFrontKeyValueStoreClientTypes {
+
     /// List item for key value pair to put.
-    public struct PutKeyRequestListItem {
+    public struct PutKeyRequestListItem: Swift.Sendable {
         /// The key of the key value pair list item to put.
         /// This member is required.
         public var key: Swift.String?
@@ -487,7 +488,6 @@ extension CloudFrontKeyValueStoreClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension CloudFrontKeyValueStoreClientTypes.PutKeyRequestListItem: Swift.CustomDebugStringConvertible {
@@ -495,7 +495,7 @@ extension CloudFrontKeyValueStoreClientTypes.PutKeyRequestListItem: Swift.Custom
         "PutKeyRequestListItem(key: \(Swift.String(describing: key)), value: \"CONTENT_REDACTED\")"}
 }
 
-public struct UpdateKeysInput {
+public struct UpdateKeysInput: Swift.Sendable {
     /// List of keys to delete.
     public var deletes: [CloudFrontKeyValueStoreClientTypes.DeleteKeyRequestListItem]?
     /// The current version (ETag) of the Key Value Store that you are updating keys of, which you can get using DescribeKeyValueStore.
@@ -522,7 +522,7 @@ public struct UpdateKeysInput {
 }
 
 /// Metadata information about a Key Value Store.
-public struct UpdateKeysOutput {
+public struct UpdateKeysOutput: Swift.Sendable {
     /// The current version identifier of the Key Value Store after the successful update.
     /// This member is required.
     public var eTag: Swift.String?

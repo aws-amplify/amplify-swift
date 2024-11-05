@@ -50,6 +50,7 @@ import struct ClientRuntime.AuthSchemeMiddleware
 import struct ClientRuntime.ContentLengthMiddleware
 import struct ClientRuntime.ContentTypeMiddleware
 @_spi(SmithyReadWrite) import struct ClientRuntime.DeserializeMiddleware
+import struct ClientRuntime.IdempotencyTokenMiddleware
 import struct ClientRuntime.LoggerMiddleware
 import struct ClientRuntime.QueryItemMiddleware
 import struct ClientRuntime.SignerMiddleware
@@ -233,6 +234,7 @@ extension IotDeviceAdvisorClient {
         config.httpInterceptorProviders.forEach { provider in
             builder.interceptors.add(provider.create())
         }
+        builder.interceptors.add(ClientRuntime.IdempotencyTokenMiddleware<CreateSuiteDefinitionInput, CreateSuiteDefinitionOutput>(keyPath: \.clientToken))
         builder.interceptors.add(ClientRuntime.URLPathMiddleware<CreateSuiteDefinitionInput, CreateSuiteDefinitionOutput>(CreateSuiteDefinitionInput.urlPathProvider(_:)))
         builder.interceptors.add(ClientRuntime.URLHostMiddleware<CreateSuiteDefinitionInput, CreateSuiteDefinitionOutput>())
         builder.interceptors.add(ClientRuntime.ContentTypeMiddleware<CreateSuiteDefinitionInput, CreateSuiteDefinitionOutput>(contentType: "application/json"))

@@ -25,17 +25,18 @@ import protocol ClientRuntime.ModeledError
 @_spi(SmithyReadWrite) import struct AWSClientRuntime.AWSJSONError
 @_spi(UnknownAWSHTTPServiceError) import struct AWSClientRuntime.UnknownAWSHTTPServiceError
 
-public struct DescribeCustomerMetadataInput {
+
+public struct DescribeCustomerMetadataInput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DescribeLocationsInput {
+public struct DescribeLocationsInput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DescribeVirtualGatewaysInput {
+public struct DescribeVirtualGatewaysInput: Swift.Sendable {
 
     public init() { }
 }
@@ -89,8 +90,9 @@ public struct DirectConnectServerException: ClientRuntime.ModeledError, AWSClien
 }
 
 extension DirectConnectClientTypes {
+
     /// Information about a route filter prefix that a customer can advertise through Border Gateway Protocol (BGP) over a public virtual interface.
-    public struct RouteFilterPrefix {
+    public struct RouteFilterPrefix: Swift.Sendable {
         /// The CIDR block for the advertised route. Separate multiple routes using commas. An IPv6 CIDR must use /64 or shorter.
         public var cidr: Swift.String?
 
@@ -101,10 +103,9 @@ extension DirectConnectClientTypes {
             self.cidr = cidr
         }
     }
-
 }
 
-public struct AcceptDirectConnectGatewayAssociationProposalInput {
+public struct AcceptDirectConnectGatewayAssociationProposalInput: Swift.Sendable {
     /// The ID of the Amazon Web Services account that owns the virtual private gateway or transit gateway.
     /// This member is required.
     public var associatedGatewayOwnerAccount: Swift.String?
@@ -133,7 +134,7 @@ public struct AcceptDirectConnectGatewayAssociationProposalInput {
 
 extension DirectConnectClientTypes {
 
-    public enum GatewayType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum GatewayType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case transitgateway
         case virtualprivategateway
         case sdkUnknown(Swift.String)
@@ -161,8 +162,9 @@ extension DirectConnectClientTypes {
 }
 
 extension DirectConnectClientTypes {
+
     /// Information about the associated gateway.
-    public struct AssociatedGateway {
+    public struct AssociatedGateway: Swift.Sendable {
         /// The ID of the associated gateway.
         public var id: Swift.String?
         /// The ID of the Amazon Web Services account that owns the associated virtual private gateway or transit gateway.
@@ -185,12 +187,11 @@ extension DirectConnectClientTypes {
             self.type = type
         }
     }
-
 }
 
 extension DirectConnectClientTypes {
 
-    public enum DirectConnectGatewayAssociationState: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DirectConnectGatewayAssociationState: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case associated
         case associating
         case disassociated
@@ -227,8 +228,9 @@ extension DirectConnectClientTypes {
 }
 
 extension DirectConnectClientTypes {
+
     /// Information about an association between a Direct Connect gateway and a virtual private gateway or transit gateway.
-    public struct DirectConnectGatewayAssociation {
+    public struct DirectConnectGatewayAssociation: Swift.Sendable {
         /// The Amazon VPC prefixes to advertise to the Direct Connect gateway.
         public var allowedPrefixesToDirectConnectGateway: [DirectConnectClientTypes.RouteFilterPrefix]?
         /// Information about the associated gateway.
@@ -286,10 +288,9 @@ extension DirectConnectClientTypes {
             self.virtualGatewayRegion = virtualGatewayRegion
         }
     }
-
 }
 
-public struct AcceptDirectConnectGatewayAssociationProposalOutput {
+public struct AcceptDirectConnectGatewayAssociationProposalOutput: Swift.Sendable {
     /// Information about an association between a Direct Connect gateway and a virtual gateway or transit gateway.
     public var directConnectGatewayAssociation: DirectConnectClientTypes.DirectConnectGatewayAssociation?
 
@@ -303,7 +304,7 @@ public struct AcceptDirectConnectGatewayAssociationProposalOutput {
 
 extension DirectConnectClientTypes {
 
-    public enum AddressFamily: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AddressFamily: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case ipv4
         case ipv6
         case sdkUnknown(Swift.String)
@@ -331,8 +332,9 @@ extension DirectConnectClientTypes {
 }
 
 extension DirectConnectClientTypes {
+
     /// The name and status of a customer agreement.
-    public struct CustomerAgreement {
+    public struct CustomerAgreement: Swift.Sendable {
         /// The name of the agreement.
         public var agreementName: Swift.String?
         /// The status of the customer agreement. This will be either signed or unsigned
@@ -347,10 +349,9 @@ extension DirectConnectClientTypes {
             self.status = status
         }
     }
-
 }
 
-public struct AllocateConnectionOnInterconnectInput {
+public struct AllocateConnectionOnInterconnectInput: Swift.Sendable {
     /// The bandwidth of the connection. The possible values are 50Mbps, 100Mbps, 200Mbps, 300Mbps, 400Mbps, 500Mbps, 1Gbps, 2Gbps, 5Gbps, and 10Gbps. Note that only those Direct Connect Partners who have met specific requirements are allowed to create a 1Gbps, 2Gbps, 5Gbps or 10Gbps hosted connection.
     /// This member is required.
     public var bandwidth: Swift.String?
@@ -385,7 +386,7 @@ public struct AllocateConnectionOnInterconnectInput {
 
 extension DirectConnectClientTypes {
 
-    public enum ConnectionState: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ConnectionState: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case available
         case deleted
         case deleting
@@ -435,7 +436,7 @@ extension DirectConnectClientTypes {
 
 extension DirectConnectClientTypes {
 
-    public enum HasLogicalRedundancy: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum HasLogicalRedundancy: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case no
         case unknown
         case yes
@@ -466,8 +467,9 @@ extension DirectConnectClientTypes {
 }
 
 extension DirectConnectClientTypes {
+
     /// Information about the MAC Security (MACsec) secret key.
-    public struct MacSecKey {
+    public struct MacSecKey: Swift.Sendable {
         /// The Connection Key Name (CKN) for the MAC Security secret key.
         public var ckn: Swift.String?
         /// The Amazon Resource Name (ARN) of the MAC Security (MACsec) secret key.
@@ -498,12 +500,12 @@ extension DirectConnectClientTypes {
             self.state = state
         }
     }
-
 }
 
 extension DirectConnectClientTypes {
+
     /// Information about a tag.
-    public struct Tag {
+    public struct Tag: Swift.Sendable {
         /// The key.
         /// This member is required.
         public var key: Swift.String?
@@ -519,11 +521,10 @@ extension DirectConnectClientTypes {
             self.value = value
         }
     }
-
 }
 
 /// Information about an Direct Connect connection.
-public struct AllocateConnectionOnInterconnectOutput {
+public struct AllocateConnectionOnInterconnectOutput: Swift.Sendable {
     /// The Direct Connect endpoint on which the physical connection terminates.
     @available(*, deprecated)
     public var awsDevice: Swift.String?
@@ -686,7 +687,7 @@ public struct TooManyTagsException: ClientRuntime.ModeledError, AWSClientRuntime
     }
 }
 
-public struct AllocateHostedConnectionInput {
+public struct AllocateHostedConnectionInput: Swift.Sendable {
     /// The bandwidth of the connection. The possible values are 50Mbps, 100Mbps, 200Mbps, 300Mbps, 400Mbps, 500Mbps, 1Gbps, 2Gbps, 5Gbps, 10Gbps, and 25Gbps. Note that only those Direct Connect Partners who have met specific requirements are allowed to create a 1Gbps, 2Gbps, 5Gbps, 10Gbps, or 25Gbps hosted connection.
     /// This member is required.
     public var bandwidth: Swift.String?
@@ -724,7 +725,7 @@ public struct AllocateHostedConnectionInput {
 }
 
 /// Information about an Direct Connect connection.
-public struct AllocateHostedConnectionOutput {
+public struct AllocateHostedConnectionOutput: Swift.Sendable {
     /// The Direct Connect endpoint on which the physical connection terminates.
     @available(*, deprecated)
     public var awsDevice: Swift.String?
@@ -840,8 +841,9 @@ public struct AllocateHostedConnectionOutput {
 }
 
 extension DirectConnectClientTypes {
+
     /// Information about a private virtual interface to be provisioned on a connection.
-    public struct NewPrivateVirtualInterfaceAllocation {
+    public struct NewPrivateVirtualInterfaceAllocation: Swift.Sendable {
         /// The address family for the BGP peer.
         public var addressFamily: DirectConnectClientTypes.AddressFamily?
         /// The IP address assigned to the Amazon interface.
@@ -887,10 +889,9 @@ extension DirectConnectClientTypes {
             self.vlan = vlan
         }
     }
-
 }
 
-public struct AllocatePrivateVirtualInterfaceInput {
+public struct AllocatePrivateVirtualInterfaceInput: Swift.Sendable {
     /// The ID of the connection on which the private virtual interface is provisioned.
     /// This member is required.
     public var connectionId: Swift.String?
@@ -915,7 +916,7 @@ public struct AllocatePrivateVirtualInterfaceInput {
 
 extension DirectConnectClientTypes {
 
-    public enum BGPPeerState: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum BGPPeerState: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case available
         case deleted
         case deleting
@@ -953,7 +954,7 @@ extension DirectConnectClientTypes {
 
 extension DirectConnectClientTypes {
 
-    public enum BGPStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum BGPStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case down
         case unknown
         case up
@@ -984,8 +985,9 @@ extension DirectConnectClientTypes {
 }
 
 extension DirectConnectClientTypes {
+
     /// Information about a BGP peer.
-    public struct BGPPeer {
+    public struct BGPPeer: Swift.Sendable {
         /// The address family for the BGP peer.
         public var addressFamily: DirectConnectClientTypes.AddressFamily?
         /// The IP address assigned to the Amazon interface.
@@ -1048,12 +1050,11 @@ extension DirectConnectClientTypes {
             self.customerAddress = customerAddress
         }
     }
-
 }
 
 extension DirectConnectClientTypes {
 
-    public enum VirtualInterfaceState: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum VirtualInterfaceState: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case available
         case confirming
         case deleted
@@ -1102,7 +1103,7 @@ extension DirectConnectClientTypes {
 }
 
 /// Information about a virtual interface.
-public struct AllocatePrivateVirtualInterfaceOutput {
+public struct AllocatePrivateVirtualInterfaceOutput: Swift.Sendable {
     /// The address family for the BGP peer.
     public var addressFamily: DirectConnectClientTypes.AddressFamily?
     /// The IP address assigned to the Amazon interface.
@@ -1233,8 +1234,9 @@ public struct AllocatePrivateVirtualInterfaceOutput {
 }
 
 extension DirectConnectClientTypes {
+
     /// Information about a public virtual interface to be provisioned on a connection.
-    public struct NewPublicVirtualInterfaceAllocation {
+    public struct NewPublicVirtualInterfaceAllocation: Swift.Sendable {
         /// The address family for the BGP peer.
         public var addressFamily: DirectConnectClientTypes.AddressFamily?
         /// The IP address assigned to the Amazon interface.
@@ -1280,10 +1282,9 @@ extension DirectConnectClientTypes {
             self.vlan = vlan
         }
     }
-
 }
 
-public struct AllocatePublicVirtualInterfaceInput {
+public struct AllocatePublicVirtualInterfaceInput: Swift.Sendable {
     /// The ID of the connection on which the public virtual interface is provisioned.
     /// This member is required.
     public var connectionId: Swift.String?
@@ -1307,7 +1308,7 @@ public struct AllocatePublicVirtualInterfaceInput {
 }
 
 /// Information about a virtual interface.
-public struct AllocatePublicVirtualInterfaceOutput {
+public struct AllocatePublicVirtualInterfaceOutput: Swift.Sendable {
     /// The address family for the BGP peer.
     public var addressFamily: DirectConnectClientTypes.AddressFamily?
     /// The IP address assigned to the Amazon interface.
@@ -1438,8 +1439,9 @@ public struct AllocatePublicVirtualInterfaceOutput {
 }
 
 extension DirectConnectClientTypes {
+
     /// Information about a transit virtual interface to be provisioned on a connection.
-    public struct NewTransitVirtualInterfaceAllocation {
+    public struct NewTransitVirtualInterfaceAllocation: Swift.Sendable {
         /// The address family for the BGP peer.
         public var addressFamily: DirectConnectClientTypes.AddressFamily?
         /// The IP address assigned to the Amazon interface.
@@ -1482,10 +1484,9 @@ extension DirectConnectClientTypes {
             self.vlan = vlan
         }
     }
-
 }
 
-public struct AllocateTransitVirtualInterfaceInput {
+public struct AllocateTransitVirtualInterfaceInput: Swift.Sendable {
     /// The ID of the connection on which the transit virtual interface is provisioned.
     /// This member is required.
     public var connectionId: Swift.String?
@@ -1509,8 +1510,9 @@ public struct AllocateTransitVirtualInterfaceInput {
 }
 
 extension DirectConnectClientTypes {
+
     /// Information about a virtual interface.
-    public struct VirtualInterface {
+    public struct VirtualInterface: Swift.Sendable {
         /// The address family for the BGP peer.
         public var addressFamily: DirectConnectClientTypes.AddressFamily?
         /// The IP address assigned to the Amazon interface.
@@ -1639,10 +1641,9 @@ extension DirectConnectClientTypes {
             self.vlan = vlan
         }
     }
-
 }
 
-public struct AllocateTransitVirtualInterfaceOutput {
+public struct AllocateTransitVirtualInterfaceOutput: Swift.Sendable {
     /// Information about the transit virtual interface.
     public var virtualInterface: DirectConnectClientTypes.VirtualInterface?
 
@@ -1654,7 +1655,7 @@ public struct AllocateTransitVirtualInterfaceOutput {
     }
 }
 
-public struct AssociateConnectionWithLagInput {
+public struct AssociateConnectionWithLagInput: Swift.Sendable {
     /// The ID of the connection.
     /// This member is required.
     public var connectionId: Swift.String?
@@ -1673,7 +1674,7 @@ public struct AssociateConnectionWithLagInput {
 }
 
 /// Information about an Direct Connect connection.
-public struct AssociateConnectionWithLagOutput {
+public struct AssociateConnectionWithLagOutput: Swift.Sendable {
     /// The Direct Connect endpoint on which the physical connection terminates.
     @available(*, deprecated)
     public var awsDevice: Swift.String?
@@ -1788,7 +1789,7 @@ public struct AssociateConnectionWithLagOutput {
     }
 }
 
-public struct AssociateHostedConnectionInput {
+public struct AssociateHostedConnectionInput: Swift.Sendable {
     /// The ID of the hosted connection.
     /// This member is required.
     public var connectionId: Swift.String?
@@ -1807,7 +1808,7 @@ public struct AssociateHostedConnectionInput {
 }
 
 /// Information about an Direct Connect connection.
-public struct AssociateHostedConnectionOutput {
+public struct AssociateHostedConnectionOutput: Swift.Sendable {
     /// The Direct Connect endpoint on which the physical connection terminates.
     @available(*, deprecated)
     public var awsDevice: Swift.String?
@@ -1922,7 +1923,7 @@ public struct AssociateHostedConnectionOutput {
     }
 }
 
-public struct AssociateMacSecKeyInput {
+public struct AssociateMacSecKeyInput: Swift.Sendable {
     /// The MAC Security (MACsec) CAK to associate with the dedicated connection. You can create the CKN/CAK pair using an industry standard tool. The valid values are 64 hexadecimal characters (0-9, A-E). If you use this request parameter, you must use the ckn request parameter and not use the secretARN request parameter.
     public var cak: Swift.String?
     /// The MAC Security (MACsec) CKN to associate with the dedicated connection. You can create the CKN/CAK pair using an industry standard tool. The valid values are 64 hexadecimal characters (0-9, A-E). If you use this request parameter, you must use the cak request parameter and not use the secretARN request parameter.
@@ -1947,7 +1948,7 @@ public struct AssociateMacSecKeyInput {
     }
 }
 
-public struct AssociateMacSecKeyOutput {
+public struct AssociateMacSecKeyOutput: Swift.Sendable {
     /// The ID of the dedicated connection (dxcon-xxxx), or the ID of the LAG (dxlag-xxxx).
     public var connectionId: Swift.String?
     /// The MAC Security (MACsec) security keys associated with the dedicated connection.
@@ -1963,7 +1964,7 @@ public struct AssociateMacSecKeyOutput {
     }
 }
 
-public struct AssociateVirtualInterfaceInput {
+public struct AssociateVirtualInterfaceInput: Swift.Sendable {
     /// The ID of the LAG or connection.
     /// This member is required.
     public var connectionId: Swift.String?
@@ -1982,7 +1983,7 @@ public struct AssociateVirtualInterfaceInput {
 }
 
 /// Information about a virtual interface.
-public struct AssociateVirtualInterfaceOutput {
+public struct AssociateVirtualInterfaceOutput: Swift.Sendable {
     /// The address family for the BGP peer.
     public var addressFamily: DirectConnectClientTypes.AddressFamily?
     /// The IP address assigned to the Amazon interface.
@@ -2112,7 +2113,7 @@ public struct AssociateVirtualInterfaceOutput {
     }
 }
 
-public struct ConfirmConnectionInput {
+public struct ConfirmConnectionInput: Swift.Sendable {
     /// The ID of the hosted connection.
     /// This member is required.
     public var connectionId: Swift.String?
@@ -2125,7 +2126,7 @@ public struct ConfirmConnectionInput {
     }
 }
 
-public struct ConfirmConnectionOutput {
+public struct ConfirmConnectionOutput: Swift.Sendable {
     /// The state of the connection. The following are the possible values:
     ///
     /// * ordering: The initial state of a hosted connection provisioned on an interconnect. The connection stays in the ordering state until the owner of the hosted connection confirms or declines the connection order.
@@ -2155,7 +2156,7 @@ public struct ConfirmConnectionOutput {
     }
 }
 
-public struct ConfirmCustomerAgreementInput {
+public struct ConfirmCustomerAgreementInput: Swift.Sendable {
     /// The name of the customer agreement.
     public var agreementName: Swift.String?
 
@@ -2167,7 +2168,7 @@ public struct ConfirmCustomerAgreementInput {
     }
 }
 
-public struct ConfirmCustomerAgreementOutput {
+public struct ConfirmCustomerAgreementOutput: Swift.Sendable {
     /// The status of the customer agreement when the connection was created. This will be either signed or unsigned.
     public var status: Swift.String?
 
@@ -2179,7 +2180,7 @@ public struct ConfirmCustomerAgreementOutput {
     }
 }
 
-public struct ConfirmPrivateVirtualInterfaceInput {
+public struct ConfirmPrivateVirtualInterfaceInput: Swift.Sendable {
     /// The ID of the Direct Connect gateway.
     public var directConnectGatewayId: Swift.String?
     /// The ID of the virtual private gateway.
@@ -2200,7 +2201,7 @@ public struct ConfirmPrivateVirtualInterfaceInput {
     }
 }
 
-public struct ConfirmPrivateVirtualInterfaceOutput {
+public struct ConfirmPrivateVirtualInterfaceOutput: Swift.Sendable {
     /// The state of the virtual interface. The following are the possible values:
     ///
     /// * confirming: The creation of the virtual interface is pending confirmation from the virtual interface owner. If the owner of the virtual interface is different from the owner of the connection on which it is provisioned, then the virtual interface will remain in this state until it is confirmed by the virtual interface owner.
@@ -2230,7 +2231,7 @@ public struct ConfirmPrivateVirtualInterfaceOutput {
     }
 }
 
-public struct ConfirmPublicVirtualInterfaceInput {
+public struct ConfirmPublicVirtualInterfaceInput: Swift.Sendable {
     /// The ID of the virtual interface.
     /// This member is required.
     public var virtualInterfaceId: Swift.String?
@@ -2243,7 +2244,7 @@ public struct ConfirmPublicVirtualInterfaceInput {
     }
 }
 
-public struct ConfirmPublicVirtualInterfaceOutput {
+public struct ConfirmPublicVirtualInterfaceOutput: Swift.Sendable {
     /// The state of the virtual interface. The following are the possible values:
     ///
     /// * confirming: The creation of the virtual interface is pending confirmation from the virtual interface owner. If the owner of the virtual interface is different from the owner of the connection on which it is provisioned, then the virtual interface will remain in this state until it is confirmed by the virtual interface owner.
@@ -2273,7 +2274,7 @@ public struct ConfirmPublicVirtualInterfaceOutput {
     }
 }
 
-public struct ConfirmTransitVirtualInterfaceInput {
+public struct ConfirmTransitVirtualInterfaceInput: Swift.Sendable {
     /// The ID of the Direct Connect gateway.
     /// This member is required.
     public var directConnectGatewayId: Swift.String?
@@ -2291,7 +2292,7 @@ public struct ConfirmTransitVirtualInterfaceInput {
     }
 }
 
-public struct ConfirmTransitVirtualInterfaceOutput {
+public struct ConfirmTransitVirtualInterfaceOutput: Swift.Sendable {
     /// The state of the virtual interface. The following are the possible values:
     ///
     /// * confirming: The creation of the virtual interface is pending confirmation from the virtual interface owner. If the owner of the virtual interface is different from the owner of the connection on which it is provisioned, then the virtual interface will remain in this state until it is confirmed by the virtual interface owner.
@@ -2322,8 +2323,9 @@ public struct ConfirmTransitVirtualInterfaceOutput {
 }
 
 extension DirectConnectClientTypes {
+
     /// Information about an Direct Connect connection.
-    public struct Connection {
+    public struct Connection: Swift.Sendable {
         /// The Direct Connect endpoint on which the physical connection terminates.
         @available(*, deprecated)
         public var awsDevice: Swift.String?
@@ -2437,12 +2439,12 @@ extension DirectConnectClientTypes {
             self.vlan = vlan
         }
     }
-
 }
 
 extension DirectConnectClientTypes {
+
     /// Information about a new BGP peer.
-    public struct NewBGPPeer {
+    public struct NewBGPPeer: Swift.Sendable {
         /// The address family for the BGP peer.
         public var addressFamily: DirectConnectClientTypes.AddressFamily?
         /// The IP address assigned to the Amazon interface.
@@ -2469,10 +2471,9 @@ extension DirectConnectClientTypes {
             self.customerAddress = customerAddress
         }
     }
-
 }
 
-public struct CreateBGPPeerInput {
+public struct CreateBGPPeerInput: Swift.Sendable {
     /// Information about the BGP peer.
     public var newBGPPeer: DirectConnectClientTypes.NewBGPPeer?
     /// The ID of the virtual interface.
@@ -2488,7 +2489,7 @@ public struct CreateBGPPeerInput {
     }
 }
 
-public struct CreateBGPPeerOutput {
+public struct CreateBGPPeerOutput: Swift.Sendable {
     /// The virtual interface.
     public var virtualInterface: DirectConnectClientTypes.VirtualInterface?
 
@@ -2500,7 +2501,7 @@ public struct CreateBGPPeerOutput {
     }
 }
 
-public struct CreateConnectionInput {
+public struct CreateConnectionInput: Swift.Sendable {
     /// The bandwidth of the connection.
     /// This member is required.
     public var bandwidth: Swift.String?
@@ -2540,7 +2541,7 @@ public struct CreateConnectionInput {
 }
 
 /// Information about an Direct Connect connection.
-public struct CreateConnectionOutput {
+public struct CreateConnectionOutput: Swift.Sendable {
     /// The Direct Connect endpoint on which the physical connection terminates.
     @available(*, deprecated)
     public var awsDevice: Swift.String?
@@ -2655,7 +2656,7 @@ public struct CreateConnectionOutput {
     }
 }
 
-public struct CreateDirectConnectGatewayInput {
+public struct CreateDirectConnectGatewayInput: Swift.Sendable {
     /// The autonomous system number (ASN) for Border Gateway Protocol (BGP) to be configured on the Amazon side of the connection. The ASN must be in the private range of 64,512 to 65,534 or 4,200,000,000 to 4,294,967,294. The default is 64512.
     public var amazonSideAsn: Swift.Int?
     /// The name of the Direct Connect gateway.
@@ -2674,7 +2675,7 @@ public struct CreateDirectConnectGatewayInput {
 
 extension DirectConnectClientTypes {
 
-    public enum DirectConnectGatewayState: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DirectConnectGatewayState: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case available
         case deleted
         case deleting
@@ -2708,8 +2709,9 @@ extension DirectConnectClientTypes {
 }
 
 extension DirectConnectClientTypes {
+
     /// Information about a Direct Connect gateway, which enables you to connect virtual interfaces and virtual private gateway or transit gateways.
-    public struct DirectConnectGateway {
+    public struct DirectConnectGateway: Swift.Sendable {
         /// The autonomous system number (ASN) for the Amazon side of the connection.
         public var amazonSideAsn: Swift.Int?
         /// The ID of the Direct Connect gateway.
@@ -2748,10 +2750,9 @@ extension DirectConnectClientTypes {
             self.stateChangeError = stateChangeError
         }
     }
-
 }
 
-public struct CreateDirectConnectGatewayOutput {
+public struct CreateDirectConnectGatewayOutput: Swift.Sendable {
     /// The Direct Connect gateway.
     public var directConnectGateway: DirectConnectClientTypes.DirectConnectGateway?
 
@@ -2763,7 +2764,7 @@ public struct CreateDirectConnectGatewayOutput {
     }
 }
 
-public struct CreateDirectConnectGatewayAssociationInput {
+public struct CreateDirectConnectGatewayAssociationInput: Swift.Sendable {
     /// The Amazon VPC prefixes to advertise to the Direct Connect gateway This parameter is required when you create an association to a transit gateway. For information about how to set the prefixes, see [Allowed Prefixes](https://docs.aws.amazon.com/directconnect/latest/UserGuide/multi-account-associate-vgw.html#allowed-prefixes) in the Direct Connect User Guide.
     public var addAllowedPrefixesToDirectConnectGateway: [DirectConnectClientTypes.RouteFilterPrefix]?
     /// The ID of the Direct Connect gateway.
@@ -2788,7 +2789,7 @@ public struct CreateDirectConnectGatewayAssociationInput {
     }
 }
 
-public struct CreateDirectConnectGatewayAssociationOutput {
+public struct CreateDirectConnectGatewayAssociationOutput: Swift.Sendable {
     /// The association to be created.
     public var directConnectGatewayAssociation: DirectConnectClientTypes.DirectConnectGatewayAssociation?
 
@@ -2800,7 +2801,7 @@ public struct CreateDirectConnectGatewayAssociationOutput {
     }
 }
 
-public struct CreateDirectConnectGatewayAssociationProposalInput {
+public struct CreateDirectConnectGatewayAssociationProposalInput: Swift.Sendable {
     /// The Amazon VPC prefixes to advertise to the Direct Connect gateway.
     public var addAllowedPrefixesToDirectConnectGateway: [DirectConnectClientTypes.RouteFilterPrefix]?
     /// The ID of the Direct Connect gateway.
@@ -2833,7 +2834,7 @@ public struct CreateDirectConnectGatewayAssociationProposalInput {
 
 extension DirectConnectClientTypes {
 
-    public enum DirectConnectGatewayAssociationProposalState: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DirectConnectGatewayAssociationProposalState: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case accepted
         case deleted
         case requested
@@ -2864,8 +2865,9 @@ extension DirectConnectClientTypes {
 }
 
 extension DirectConnectClientTypes {
+
     /// Information about the proposal request to attach a virtual private gateway to a Direct Connect gateway.
-    public struct DirectConnectGatewayAssociationProposal {
+    public struct DirectConnectGatewayAssociationProposal: Swift.Sendable {
         /// Information about the associated gateway.
         public var associatedGateway: DirectConnectClientTypes.AssociatedGateway?
         /// The ID of the Direct Connect gateway.
@@ -2906,10 +2908,9 @@ extension DirectConnectClientTypes {
             self.requestedAllowedPrefixesToDirectConnectGateway = requestedAllowedPrefixesToDirectConnectGateway
         }
     }
-
 }
 
-public struct CreateDirectConnectGatewayAssociationProposalOutput {
+public struct CreateDirectConnectGatewayAssociationProposalOutput: Swift.Sendable {
     /// Information about the Direct Connect gateway proposal.
     public var directConnectGatewayAssociationProposal: DirectConnectClientTypes.DirectConnectGatewayAssociationProposal?
 
@@ -2921,7 +2922,7 @@ public struct CreateDirectConnectGatewayAssociationProposalOutput {
     }
 }
 
-public struct CreateInterconnectInput {
+public struct CreateInterconnectInput: Swift.Sendable {
     /// The port bandwidth, in Gbps. The possible values are 1, 10, and 100.
     /// This member is required.
     public var bandwidth: Swift.String?
@@ -2958,7 +2959,7 @@ public struct CreateInterconnectInput {
 
 extension DirectConnectClientTypes {
 
-    public enum InterconnectState: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum InterconnectState: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case available
         case deleted
         case deleting
@@ -3001,7 +3002,7 @@ extension DirectConnectClientTypes {
 }
 
 /// Information about an interconnect.
-public struct CreateInterconnectOutput {
+public struct CreateInterconnectOutput: Swift.Sendable {
     /// The Direct Connect endpoint on which the physical connection terminates.
     @available(*, deprecated)
     public var awsDevice: Swift.String?
@@ -3084,7 +3085,7 @@ public struct CreateInterconnectOutput {
     }
 }
 
-public struct CreateLagInput {
+public struct CreateLagInput: Swift.Sendable {
     /// The tags to associate with the automtically created LAGs.
     public var childConnectionTags: [DirectConnectClientTypes.Tag]?
     /// The ID of an existing dedicated connection to migrate to the LAG.
@@ -3134,7 +3135,7 @@ public struct CreateLagInput {
 
 extension DirectConnectClientTypes {
 
-    public enum LagState: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum LagState: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case available
         case deleted
         case deleting
@@ -3177,7 +3178,7 @@ extension DirectConnectClientTypes {
 }
 
 /// Information about a link aggregation group (LAG).
-public struct CreateLagOutput {
+public struct CreateLagOutput: Swift.Sendable {
     /// Indicates whether the LAG can host other connections.
     public var allowsHostedConnections: Swift.Bool
     /// The Direct Connect endpoint that hosts the LAG.
@@ -3285,8 +3286,9 @@ public struct CreateLagOutput {
 }
 
 extension DirectConnectClientTypes {
+
     /// Information about a private virtual interface.
-    public struct NewPrivateVirtualInterface {
+    public struct NewPrivateVirtualInterface: Swift.Sendable {
         /// The address family for the BGP peer.
         public var addressFamily: DirectConnectClientTypes.AddressFamily?
         /// The IP address assigned to the Amazon interface.
@@ -3344,10 +3346,9 @@ extension DirectConnectClientTypes {
             self.vlan = vlan
         }
     }
-
 }
 
-public struct CreatePrivateVirtualInterfaceInput {
+public struct CreatePrivateVirtualInterfaceInput: Swift.Sendable {
     /// The ID of the connection.
     /// This member is required.
     public var connectionId: Swift.String?
@@ -3366,7 +3367,7 @@ public struct CreatePrivateVirtualInterfaceInput {
 }
 
 /// Information about a virtual interface.
-public struct CreatePrivateVirtualInterfaceOutput {
+public struct CreatePrivateVirtualInterfaceOutput: Swift.Sendable {
     /// The address family for the BGP peer.
     public var addressFamily: DirectConnectClientTypes.AddressFamily?
     /// The IP address assigned to the Amazon interface.
@@ -3497,8 +3498,9 @@ public struct CreatePrivateVirtualInterfaceOutput {
 }
 
 extension DirectConnectClientTypes {
+
     /// Information about a public virtual interface.
-    public struct NewPublicVirtualInterface {
+    public struct NewPublicVirtualInterface: Swift.Sendable {
         /// The address family for the BGP peer.
         public var addressFamily: DirectConnectClientTypes.AddressFamily?
         /// The IP address assigned to the Amazon interface.
@@ -3544,10 +3546,9 @@ extension DirectConnectClientTypes {
             self.vlan = vlan
         }
     }
-
 }
 
-public struct CreatePublicVirtualInterfaceInput {
+public struct CreatePublicVirtualInterfaceInput: Swift.Sendable {
     /// The ID of the connection.
     /// This member is required.
     public var connectionId: Swift.String?
@@ -3566,7 +3567,7 @@ public struct CreatePublicVirtualInterfaceInput {
 }
 
 /// Information about a virtual interface.
-public struct CreatePublicVirtualInterfaceOutput {
+public struct CreatePublicVirtualInterfaceOutput: Swift.Sendable {
     /// The address family for the BGP peer.
     public var addressFamily: DirectConnectClientTypes.AddressFamily?
     /// The IP address assigned to the Amazon interface.
@@ -3697,8 +3698,9 @@ public struct CreatePublicVirtualInterfaceOutput {
 }
 
 extension DirectConnectClientTypes {
+
     /// Information about a transit virtual interface.
-    public struct NewTransitVirtualInterface {
+    public struct NewTransitVirtualInterface: Swift.Sendable {
         /// The address family for the BGP peer.
         public var addressFamily: DirectConnectClientTypes.AddressFamily?
         /// The IP address assigned to the Amazon interface.
@@ -3749,10 +3751,9 @@ extension DirectConnectClientTypes {
             self.vlan = vlan
         }
     }
-
 }
 
-public struct CreateTransitVirtualInterfaceInput {
+public struct CreateTransitVirtualInterfaceInput: Swift.Sendable {
     /// The ID of the connection.
     /// This member is required.
     public var connectionId: Swift.String?
@@ -3770,7 +3771,7 @@ public struct CreateTransitVirtualInterfaceInput {
     }
 }
 
-public struct CreateTransitVirtualInterfaceOutput {
+public struct CreateTransitVirtualInterfaceOutput: Swift.Sendable {
     /// Information about a virtual interface.
     public var virtualInterface: DirectConnectClientTypes.VirtualInterface?
 
@@ -3782,7 +3783,7 @@ public struct CreateTransitVirtualInterfaceOutput {
     }
 }
 
-public struct DeleteBGPPeerInput {
+public struct DeleteBGPPeerInput: Swift.Sendable {
     /// The autonomous system (AS) number for Border Gateway Protocol (BGP) configuration.
     public var asn: Swift.Int?
     /// The ID of the BGP peer.
@@ -3806,7 +3807,7 @@ public struct DeleteBGPPeerInput {
     }
 }
 
-public struct DeleteBGPPeerOutput {
+public struct DeleteBGPPeerOutput: Swift.Sendable {
     /// The virtual interface.
     public var virtualInterface: DirectConnectClientTypes.VirtualInterface?
 
@@ -3818,7 +3819,7 @@ public struct DeleteBGPPeerOutput {
     }
 }
 
-public struct DeleteConnectionInput {
+public struct DeleteConnectionInput: Swift.Sendable {
     /// The ID of the connection.
     /// This member is required.
     public var connectionId: Swift.String?
@@ -3832,7 +3833,7 @@ public struct DeleteConnectionInput {
 }
 
 /// Information about an Direct Connect connection.
-public struct DeleteConnectionOutput {
+public struct DeleteConnectionOutput: Swift.Sendable {
     /// The Direct Connect endpoint on which the physical connection terminates.
     @available(*, deprecated)
     public var awsDevice: Swift.String?
@@ -3947,7 +3948,7 @@ public struct DeleteConnectionOutput {
     }
 }
 
-public struct DeleteDirectConnectGatewayInput {
+public struct DeleteDirectConnectGatewayInput: Swift.Sendable {
     /// The ID of the Direct Connect gateway.
     /// This member is required.
     public var directConnectGatewayId: Swift.String?
@@ -3960,7 +3961,7 @@ public struct DeleteDirectConnectGatewayInput {
     }
 }
 
-public struct DeleteDirectConnectGatewayOutput {
+public struct DeleteDirectConnectGatewayOutput: Swift.Sendable {
     /// The Direct Connect gateway.
     public var directConnectGateway: DirectConnectClientTypes.DirectConnectGateway?
 
@@ -3972,7 +3973,7 @@ public struct DeleteDirectConnectGatewayOutput {
     }
 }
 
-public struct DeleteDirectConnectGatewayAssociationInput {
+public struct DeleteDirectConnectGatewayAssociationInput: Swift.Sendable {
     /// The ID of the Direct Connect gateway association.
     public var associationId: Swift.String?
     /// The ID of the Direct Connect gateway.
@@ -3992,7 +3993,7 @@ public struct DeleteDirectConnectGatewayAssociationInput {
     }
 }
 
-public struct DeleteDirectConnectGatewayAssociationOutput {
+public struct DeleteDirectConnectGatewayAssociationOutput: Swift.Sendable {
     /// Information about the deleted association.
     public var directConnectGatewayAssociation: DirectConnectClientTypes.DirectConnectGatewayAssociation?
 
@@ -4004,7 +4005,7 @@ public struct DeleteDirectConnectGatewayAssociationOutput {
     }
 }
 
-public struct DeleteDirectConnectGatewayAssociationProposalInput {
+public struct DeleteDirectConnectGatewayAssociationProposalInput: Swift.Sendable {
     /// The ID of the proposal.
     /// This member is required.
     public var proposalId: Swift.String?
@@ -4017,7 +4018,7 @@ public struct DeleteDirectConnectGatewayAssociationProposalInput {
     }
 }
 
-public struct DeleteDirectConnectGatewayAssociationProposalOutput {
+public struct DeleteDirectConnectGatewayAssociationProposalOutput: Swift.Sendable {
     /// The ID of the associated gateway.
     public var directConnectGatewayAssociationProposal: DirectConnectClientTypes.DirectConnectGatewayAssociationProposal?
 
@@ -4029,7 +4030,7 @@ public struct DeleteDirectConnectGatewayAssociationProposalOutput {
     }
 }
 
-public struct DeleteInterconnectInput {
+public struct DeleteInterconnectInput: Swift.Sendable {
     /// The ID of the interconnect.
     /// This member is required.
     public var interconnectId: Swift.String?
@@ -4042,7 +4043,7 @@ public struct DeleteInterconnectInput {
     }
 }
 
-public struct DeleteInterconnectOutput {
+public struct DeleteInterconnectOutput: Swift.Sendable {
     /// The state of the interconnect. The following are the possible values:
     ///
     /// * requested: The initial state of an interconnect. The interconnect stays in the requested state until the Letter of Authorization (LOA) is sent to the customer.
@@ -4068,7 +4069,7 @@ public struct DeleteInterconnectOutput {
     }
 }
 
-public struct DeleteLagInput {
+public struct DeleteLagInput: Swift.Sendable {
     /// The ID of the LAG.
     /// This member is required.
     public var lagId: Swift.String?
@@ -4082,7 +4083,7 @@ public struct DeleteLagInput {
 }
 
 /// Information about a link aggregation group (LAG).
-public struct DeleteLagOutput {
+public struct DeleteLagOutput: Swift.Sendable {
     /// Indicates whether the LAG can host other connections.
     public var allowsHostedConnections: Swift.Bool
     /// The Direct Connect endpoint that hosts the LAG.
@@ -4189,7 +4190,7 @@ public struct DeleteLagOutput {
     }
 }
 
-public struct DeleteVirtualInterfaceInput {
+public struct DeleteVirtualInterfaceInput: Swift.Sendable {
     /// The ID of the virtual interface.
     /// This member is required.
     public var virtualInterfaceId: Swift.String?
@@ -4202,7 +4203,7 @@ public struct DeleteVirtualInterfaceInput {
     }
 }
 
-public struct DeleteVirtualInterfaceOutput {
+public struct DeleteVirtualInterfaceOutput: Swift.Sendable {
     /// The state of the virtual interface. The following are the possible values:
     ///
     /// * confirming: The creation of the virtual interface is pending confirmation from the virtual interface owner. If the owner of the virtual interface is different from the owner of the connection on which it is provisioned, then the virtual interface will remain in this state until it is confirmed by the virtual interface owner.
@@ -4234,7 +4235,7 @@ public struct DeleteVirtualInterfaceOutput {
 
 extension DirectConnectClientTypes {
 
-    public enum LoaContentType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum LoaContentType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case pdf
         case sdkUnknown(Swift.String)
 
@@ -4258,7 +4259,7 @@ extension DirectConnectClientTypes {
     }
 }
 
-public struct DescribeConnectionLoaInput {
+public struct DescribeConnectionLoaInput: Swift.Sendable {
     /// The ID of the connection.
     /// This member is required.
     public var connectionId: Swift.String?
@@ -4280,8 +4281,9 @@ public struct DescribeConnectionLoaInput {
 }
 
 extension DirectConnectClientTypes {
+
     /// Information about a Letter of Authorization - Connecting Facility Assignment (LOA-CFA) for a connection.
-    public struct Loa {
+    public struct Loa: Swift.Sendable {
         /// The binary contents of the LOA-CFA document.
         public var loaContent: Foundation.Data?
         /// The standard media type for the LOA-CFA document. The only supported value is application/pdf.
@@ -4296,10 +4298,9 @@ extension DirectConnectClientTypes {
             self.loaContentType = loaContentType
         }
     }
-
 }
 
-public struct DescribeConnectionLoaOutput {
+public struct DescribeConnectionLoaOutput: Swift.Sendable {
     /// The Letter of Authorization - Connecting Facility Assignment (LOA-CFA).
     public var loa: DirectConnectClientTypes.Loa?
 
@@ -4311,7 +4312,7 @@ public struct DescribeConnectionLoaOutput {
     }
 }
 
-public struct DescribeConnectionsInput {
+public struct DescribeConnectionsInput: Swift.Sendable {
     /// The ID of the connection.
     public var connectionId: Swift.String?
 
@@ -4323,7 +4324,7 @@ public struct DescribeConnectionsInput {
     }
 }
 
-public struct DescribeConnectionsOutput {
+public struct DescribeConnectionsOutput: Swift.Sendable {
     /// The connections.
     public var connections: [DirectConnectClientTypes.Connection]?
 
@@ -4335,7 +4336,7 @@ public struct DescribeConnectionsOutput {
     }
 }
 
-public struct DescribeConnectionsOnInterconnectInput {
+public struct DescribeConnectionsOnInterconnectInput: Swift.Sendable {
     /// The ID of the interconnect.
     /// This member is required.
     public var interconnectId: Swift.String?
@@ -4348,7 +4349,7 @@ public struct DescribeConnectionsOnInterconnectInput {
     }
 }
 
-public struct DescribeConnectionsOnInterconnectOutput {
+public struct DescribeConnectionsOnInterconnectOutput: Swift.Sendable {
     /// The connections.
     public var connections: [DirectConnectClientTypes.Connection]?
 
@@ -4362,7 +4363,7 @@ public struct DescribeConnectionsOnInterconnectOutput {
 
 extension DirectConnectClientTypes {
 
-    public enum NniPartnerType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum NniPartnerType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case nonpartner
         case v1
         case v2
@@ -4392,7 +4393,7 @@ extension DirectConnectClientTypes {
     }
 }
 
-public struct DescribeCustomerMetadataOutput {
+public struct DescribeCustomerMetadataOutput: Swift.Sendable {
     /// The list of customer agreements.
     public var agreements: [DirectConnectClientTypes.CustomerAgreement]?
     /// The type of network-to-network interface (NNI) partner. The partner type will be one of the following:
@@ -4414,7 +4415,7 @@ public struct DescribeCustomerMetadataOutput {
     }
 }
 
-public struct DescribeDirectConnectGatewayAssociationProposalsInput {
+public struct DescribeDirectConnectGatewayAssociationProposalsInput: Swift.Sendable {
     /// The ID of the associated gateway.
     public var associatedGatewayId: Swift.String?
     /// The ID of the Direct Connect gateway.
@@ -4442,7 +4443,7 @@ public struct DescribeDirectConnectGatewayAssociationProposalsInput {
     }
 }
 
-public struct DescribeDirectConnectGatewayAssociationProposalsOutput {
+public struct DescribeDirectConnectGatewayAssociationProposalsOutput: Swift.Sendable {
     /// Describes the Direct Connect gateway association proposals.
     public var directConnectGatewayAssociationProposals: [DirectConnectClientTypes.DirectConnectGatewayAssociationProposal]?
     /// The token to use to retrieve the next page of results. This value is null when there are no more results to return.
@@ -4458,7 +4459,7 @@ public struct DescribeDirectConnectGatewayAssociationProposalsOutput {
     }
 }
 
-public struct DescribeDirectConnectGatewayAssociationsInput {
+public struct DescribeDirectConnectGatewayAssociationsInput: Swift.Sendable {
     /// The ID of the associated gateway.
     public var associatedGatewayId: Swift.String?
     /// The ID of the Direct Connect gateway association.
@@ -4490,7 +4491,7 @@ public struct DescribeDirectConnectGatewayAssociationsInput {
     }
 }
 
-public struct DescribeDirectConnectGatewayAssociationsOutput {
+public struct DescribeDirectConnectGatewayAssociationsOutput: Swift.Sendable {
     /// Information about the associations.
     public var directConnectGatewayAssociations: [DirectConnectClientTypes.DirectConnectGatewayAssociation]?
     /// The token to retrieve the next page.
@@ -4506,7 +4507,7 @@ public struct DescribeDirectConnectGatewayAssociationsOutput {
     }
 }
 
-public struct DescribeDirectConnectGatewayAttachmentsInput {
+public struct DescribeDirectConnectGatewayAttachmentsInput: Swift.Sendable {
     /// The ID of the Direct Connect gateway.
     public var directConnectGatewayId: Swift.String?
     /// The maximum number of results to return with a single call. To retrieve the remaining results, make another call with the returned nextToken value. If MaxResults is given a value larger than 100, only 100 results are returned.
@@ -4532,7 +4533,7 @@ public struct DescribeDirectConnectGatewayAttachmentsInput {
 
 extension DirectConnectClientTypes {
 
-    public enum DirectConnectGatewayAttachmentState: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DirectConnectGatewayAttachmentState: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case attached
         case attaching
         case detached
@@ -4567,7 +4568,7 @@ extension DirectConnectClientTypes {
 
 extension DirectConnectClientTypes {
 
-    public enum DirectConnectGatewayAttachmentType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DirectConnectGatewayAttachmentType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case privatevirtualinterface
         case transitvirtualinterface
         case sdkUnknown(Swift.String)
@@ -4595,8 +4596,9 @@ extension DirectConnectClientTypes {
 }
 
 extension DirectConnectClientTypes {
+
     /// Information about an attachment between a Direct Connect gateway and a virtual interface.
-    public struct DirectConnectGatewayAttachment {
+    public struct DirectConnectGatewayAttachment: Swift.Sendable {
         /// The state of the attachment. The following are the possible values:
         ///
         /// * attaching: The initial state after a virtual interface is created using the Direct Connect gateway.
@@ -4639,10 +4641,9 @@ extension DirectConnectClientTypes {
             self.virtualInterfaceRegion = virtualInterfaceRegion
         }
     }
-
 }
 
-public struct DescribeDirectConnectGatewayAttachmentsOutput {
+public struct DescribeDirectConnectGatewayAttachmentsOutput: Swift.Sendable {
     /// The attachments.
     public var directConnectGatewayAttachments: [DirectConnectClientTypes.DirectConnectGatewayAttachment]?
     /// The token to retrieve the next page.
@@ -4658,7 +4659,7 @@ public struct DescribeDirectConnectGatewayAttachmentsOutput {
     }
 }
 
-public struct DescribeDirectConnectGatewaysInput {
+public struct DescribeDirectConnectGatewaysInput: Swift.Sendable {
     /// The ID of the Direct Connect gateway.
     public var directConnectGatewayId: Swift.String?
     /// The maximum number of results to return with a single call. To retrieve the remaining results, make another call with the returned nextToken value. If MaxResults is given a value larger than 100, only 100 results are returned.
@@ -4678,7 +4679,7 @@ public struct DescribeDirectConnectGatewaysInput {
     }
 }
 
-public struct DescribeDirectConnectGatewaysOutput {
+public struct DescribeDirectConnectGatewaysOutput: Swift.Sendable {
     /// The Direct Connect gateways.
     public var directConnectGateways: [DirectConnectClientTypes.DirectConnectGateway]?
     /// The token to retrieve the next page.
@@ -4694,7 +4695,7 @@ public struct DescribeDirectConnectGatewaysOutput {
     }
 }
 
-public struct DescribeHostedConnectionsInput {
+public struct DescribeHostedConnectionsInput: Swift.Sendable {
     /// The ID of the interconnect or LAG.
     /// This member is required.
     public var connectionId: Swift.String?
@@ -4707,7 +4708,7 @@ public struct DescribeHostedConnectionsInput {
     }
 }
 
-public struct DescribeHostedConnectionsOutput {
+public struct DescribeHostedConnectionsOutput: Swift.Sendable {
     /// The connections.
     public var connections: [DirectConnectClientTypes.Connection]?
 
@@ -4719,7 +4720,7 @@ public struct DescribeHostedConnectionsOutput {
     }
 }
 
-public struct DescribeInterconnectLoaInput {
+public struct DescribeInterconnectLoaInput: Swift.Sendable {
     /// The ID of the interconnect.
     /// This member is required.
     public var interconnectId: Swift.String?
@@ -4740,7 +4741,7 @@ public struct DescribeInterconnectLoaInput {
     }
 }
 
-public struct DescribeInterconnectLoaOutput {
+public struct DescribeInterconnectLoaOutput: Swift.Sendable {
     /// The Letter of Authorization - Connecting Facility Assignment (LOA-CFA).
     public var loa: DirectConnectClientTypes.Loa?
 
@@ -4752,7 +4753,7 @@ public struct DescribeInterconnectLoaOutput {
     }
 }
 
-public struct DescribeInterconnectsInput {
+public struct DescribeInterconnectsInput: Swift.Sendable {
     /// The ID of the interconnect.
     public var interconnectId: Swift.String?
 
@@ -4765,8 +4766,9 @@ public struct DescribeInterconnectsInput {
 }
 
 extension DirectConnectClientTypes {
+
     /// Information about an interconnect.
-    public struct Interconnect {
+    public struct Interconnect: Swift.Sendable {
         /// The Direct Connect endpoint on which the physical connection terminates.
         @available(*, deprecated)
         public var awsDevice: Swift.String?
@@ -4848,10 +4850,9 @@ extension DirectConnectClientTypes {
             self.tags = tags
         }
     }
-
 }
 
-public struct DescribeInterconnectsOutput {
+public struct DescribeInterconnectsOutput: Swift.Sendable {
     /// The interconnects.
     public var interconnects: [DirectConnectClientTypes.Interconnect]?
 
@@ -4863,7 +4864,7 @@ public struct DescribeInterconnectsOutput {
     }
 }
 
-public struct DescribeLagsInput {
+public struct DescribeLagsInput: Swift.Sendable {
     /// The ID of the LAG.
     public var lagId: Swift.String?
 
@@ -4876,8 +4877,9 @@ public struct DescribeLagsInput {
 }
 
 extension DirectConnectClientTypes {
+
     /// Information about a link aggregation group (LAG).
-    public struct Lag {
+    public struct Lag: Swift.Sendable {
         /// Indicates whether the LAG can host other connections.
         public var allowsHostedConnections: Swift.Bool
         /// The Direct Connect endpoint that hosts the LAG.
@@ -4983,10 +4985,9 @@ extension DirectConnectClientTypes {
             self.tags = tags
         }
     }
-
 }
 
-public struct DescribeLagsOutput {
+public struct DescribeLagsOutput: Swift.Sendable {
     /// The LAGs.
     public var lags: [DirectConnectClientTypes.Lag]?
 
@@ -4998,7 +4999,7 @@ public struct DescribeLagsOutput {
     }
 }
 
-public struct DescribeLoaInput {
+public struct DescribeLoaInput: Swift.Sendable {
     /// The ID of a connection, LAG, or interconnect.
     /// This member is required.
     public var connectionId: Swift.String?
@@ -5020,7 +5021,7 @@ public struct DescribeLoaInput {
 }
 
 /// Information about a Letter of Authorization - Connecting Facility Assignment (LOA-CFA) for a connection.
-public struct DescribeLoaOutput {
+public struct DescribeLoaOutput: Swift.Sendable {
     /// The binary contents of the LOA-CFA document.
     public var loaContent: Foundation.Data?
     /// The standard media type for the LOA-CFA document. The only supported value is application/pdf.
@@ -5037,8 +5038,9 @@ public struct DescribeLoaOutput {
 }
 
 extension DirectConnectClientTypes {
+
     /// Information about an Direct Connect location.
-    public struct Location {
+    public struct Location: Swift.Sendable {
         /// The available MAC Security (MACsec) port speeds for the location.
         public var availableMacSecPortSpeeds: [Swift.String]?
         /// The available port speeds for the location.
@@ -5069,10 +5071,9 @@ extension DirectConnectClientTypes {
             self.region = region
         }
     }
-
 }
 
-public struct DescribeLocationsOutput {
+public struct DescribeLocationsOutput: Swift.Sendable {
     /// The locations.
     public var locations: [DirectConnectClientTypes.Location]?
 
@@ -5085,7 +5086,7 @@ public struct DescribeLocationsOutput {
 }
 
 /// Provides the details about a virtual interface's router.
-public struct DescribeRouterConfigurationInput {
+public struct DescribeRouterConfigurationInput: Swift.Sendable {
     /// Identifies the router by a combination of vendor, platform, and software version. For example, CiscoSystemsInc-2900SeriesRouters-IOS124.
     public var routerTypeIdentifier: Swift.String?
     /// The ID of the virtual interface.
@@ -5103,8 +5104,9 @@ public struct DescribeRouterConfigurationInput {
 }
 
 extension DirectConnectClientTypes {
+
     /// Information about the virtual router.
-    public struct RouterType {
+    public struct RouterType: Swift.Sendable {
         /// The virtual interface router platform.
         public var platform: Swift.String?
         /// Identifies the router by a combination of vendor, platform, and software version. For example, CiscoSystemsInc-2900SeriesRouters-IOS124.
@@ -5135,10 +5137,9 @@ extension DirectConnectClientTypes {
             self.xsltTemplateNameForMacSec = xsltTemplateNameForMacSec
         }
     }
-
 }
 
-public struct DescribeRouterConfigurationOutput {
+public struct DescribeRouterConfigurationOutput: Swift.Sendable {
     /// The customer router configuration.
     public var customerRouterConfig: Swift.String?
     /// The details about the router.
@@ -5162,7 +5163,7 @@ public struct DescribeRouterConfigurationOutput {
     }
 }
 
-public struct DescribeTagsInput {
+public struct DescribeTagsInput: Swift.Sendable {
     /// The Amazon Resource Names (ARNs) of the resources.
     /// This member is required.
     public var resourceArns: [Swift.String]?
@@ -5176,8 +5177,9 @@ public struct DescribeTagsInput {
 }
 
 extension DirectConnectClientTypes {
+
     /// Information about a tag associated with an Direct Connect resource.
-    public struct ResourceTag {
+    public struct ResourceTag: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the resource.
         public var resourceArn: Swift.String?
         /// The tags.
@@ -5192,10 +5194,9 @@ extension DirectConnectClientTypes {
             self.tags = tags
         }
     }
-
 }
 
-public struct DescribeTagsOutput {
+public struct DescribeTagsOutput: Swift.Sendable {
     /// Information about the tags.
     public var resourceTags: [DirectConnectClientTypes.ResourceTag]?
 
@@ -5208,8 +5209,9 @@ public struct DescribeTagsOutput {
 }
 
 extension DirectConnectClientTypes {
+
     /// Information about a virtual private gateway for a private virtual interface.
-    public struct VirtualGateway {
+    public struct VirtualGateway: Swift.Sendable {
         /// The ID of the virtual private gateway.
         public var virtualGatewayId: Swift.String?
         /// The state of the virtual private gateway. The following are the possible values:
@@ -5232,10 +5234,9 @@ extension DirectConnectClientTypes {
             self.virtualGatewayState = virtualGatewayState
         }
     }
-
 }
 
-public struct DescribeVirtualGatewaysOutput {
+public struct DescribeVirtualGatewaysOutput: Swift.Sendable {
     /// The virtual private gateways.
     public var virtualGateways: [DirectConnectClientTypes.VirtualGateway]?
 
@@ -5247,7 +5248,7 @@ public struct DescribeVirtualGatewaysOutput {
     }
 }
 
-public struct DescribeVirtualInterfacesInput {
+public struct DescribeVirtualInterfacesInput: Swift.Sendable {
     /// The ID of the connection.
     public var connectionId: Swift.String?
     /// The ID of the virtual interface.
@@ -5263,7 +5264,7 @@ public struct DescribeVirtualInterfacesInput {
     }
 }
 
-public struct DescribeVirtualInterfacesOutput {
+public struct DescribeVirtualInterfacesOutput: Swift.Sendable {
     /// The virtual interfaces
     public var virtualInterfaces: [DirectConnectClientTypes.VirtualInterface]?
 
@@ -5275,7 +5276,7 @@ public struct DescribeVirtualInterfacesOutput {
     }
 }
 
-public struct DisassociateConnectionFromLagInput {
+public struct DisassociateConnectionFromLagInput: Swift.Sendable {
     /// The ID of the connection.
     /// This member is required.
     public var connectionId: Swift.String?
@@ -5294,7 +5295,7 @@ public struct DisassociateConnectionFromLagInput {
 }
 
 /// Information about an Direct Connect connection.
-public struct DisassociateConnectionFromLagOutput {
+public struct DisassociateConnectionFromLagOutput: Swift.Sendable {
     /// The Direct Connect endpoint on which the physical connection terminates.
     @available(*, deprecated)
     public var awsDevice: Swift.String?
@@ -5409,7 +5410,7 @@ public struct DisassociateConnectionFromLagOutput {
     }
 }
 
-public struct DisassociateMacSecKeyInput {
+public struct DisassociateMacSecKeyInput: Swift.Sendable {
     /// The ID of the dedicated connection (dxcon-xxxx), or the ID of the LAG (dxlag-xxxx). You can use [DescribeConnections] or [DescribeLags] to retrieve connection ID.
     /// This member is required.
     public var connectionId: Swift.String?
@@ -5427,7 +5428,7 @@ public struct DisassociateMacSecKeyInput {
     }
 }
 
-public struct DisassociateMacSecKeyOutput {
+public struct DisassociateMacSecKeyOutput: Swift.Sendable {
     /// The ID of the dedicated connection (dxcon-xxxx), or the ID of the LAG (dxlag-xxxx).
     public var connectionId: Swift.String?
     /// The MAC Security (MACsec) security keys no longer associated with the dedicated connection.
@@ -5443,7 +5444,7 @@ public struct DisassociateMacSecKeyOutput {
     }
 }
 
-public struct ListVirtualInterfaceTestHistoryInput {
+public struct ListVirtualInterfaceTestHistoryInput: Swift.Sendable {
     /// The BGP peers that were placed in the DOWN state during the virtual interface failover test.
     public var bgpPeers: [Swift.String]?
     /// The maximum number of results to return with a single call. To retrieve the remaining results, make another call with the returned nextToken value. If MaxResults is given a value larger than 100, only 100 results are returned.
@@ -5476,8 +5477,9 @@ public struct ListVirtualInterfaceTestHistoryInput {
 }
 
 extension DirectConnectClientTypes {
+
     /// Information about the virtual interface failover test.
-    public struct VirtualInterfaceTestHistory {
+    public struct VirtualInterfaceTestHistory: Swift.Sendable {
         /// The BGP peers that were put in the DOWN state as part of the virtual interface failover test.
         public var bgpPeers: [Swift.String]?
         /// The time that the virtual interface moves out of the DOWN state.
@@ -5516,10 +5518,9 @@ extension DirectConnectClientTypes {
             self.virtualInterfaceId = virtualInterfaceId
         }
     }
-
 }
 
-public struct ListVirtualInterfaceTestHistoryOutput {
+public struct ListVirtualInterfaceTestHistoryOutput: Swift.Sendable {
     /// The token to use to retrieve the next page of results. This value is null when there are no more results to return.
     public var nextToken: Swift.String?
     /// The ID of the tested virtual interface.
@@ -5535,7 +5536,7 @@ public struct ListVirtualInterfaceTestHistoryOutput {
     }
 }
 
-public struct StartBgpFailoverTestInput {
+public struct StartBgpFailoverTestInput: Swift.Sendable {
     /// The BGP peers to place in the DOWN state.
     public var bgpPeers: [Swift.String]?
     /// The time in minutes that the virtual interface failover test will last. Maximum value: 4,320 minutes (72 hours). Default: 180 minutes (3 hours).
@@ -5556,7 +5557,7 @@ public struct StartBgpFailoverTestInput {
     }
 }
 
-public struct StartBgpFailoverTestOutput {
+public struct StartBgpFailoverTestOutput: Swift.Sendable {
     /// Information about the virtual interface failover test.
     public var virtualInterfaceTest: DirectConnectClientTypes.VirtualInterfaceTestHistory?
 
@@ -5568,7 +5569,7 @@ public struct StartBgpFailoverTestOutput {
     }
 }
 
-public struct StopBgpFailoverTestInput {
+public struct StopBgpFailoverTestInput: Swift.Sendable {
     /// The ID of the virtual interface you no longer want to test.
     /// This member is required.
     public var virtualInterfaceId: Swift.String?
@@ -5581,7 +5582,7 @@ public struct StopBgpFailoverTestInput {
     }
 }
 
-public struct StopBgpFailoverTestOutput {
+public struct StopBgpFailoverTestOutput: Swift.Sendable {
     /// Information about the virtual interface failover test.
     public var virtualInterfaceTest: DirectConnectClientTypes.VirtualInterfaceTestHistory?
 
@@ -5593,7 +5594,7 @@ public struct StopBgpFailoverTestOutput {
     }
 }
 
-public struct TagResourceInput {
+public struct TagResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the resource.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -5611,12 +5612,12 @@ public struct TagResourceInput {
     }
 }
 
-public struct TagResourceOutput {
+public struct TagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UntagResourceInput {
+public struct UntagResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the resource.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -5634,12 +5635,12 @@ public struct UntagResourceInput {
     }
 }
 
-public struct UntagResourceOutput {
+public struct UntagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdateConnectionInput {
+public struct UpdateConnectionInput: Swift.Sendable {
     /// The ID of the dedicated connection. You can use [DescribeConnections] to retrieve the connection ID.
     /// This member is required.
     public var connectionId: Swift.String?
@@ -5661,7 +5662,7 @@ public struct UpdateConnectionInput {
 }
 
 /// Information about an Direct Connect connection.
-public struct UpdateConnectionOutput {
+public struct UpdateConnectionOutput: Swift.Sendable {
     /// The Direct Connect endpoint on which the physical connection terminates.
     @available(*, deprecated)
     public var awsDevice: Swift.String?
@@ -5776,7 +5777,7 @@ public struct UpdateConnectionOutput {
     }
 }
 
-public struct UpdateDirectConnectGatewayInput {
+public struct UpdateDirectConnectGatewayInput: Swift.Sendable {
     /// The ID of the Direct Connect gateway to update.
     /// This member is required.
     public var directConnectGatewayId: Swift.String?
@@ -5794,7 +5795,7 @@ public struct UpdateDirectConnectGatewayInput {
     }
 }
 
-public struct UpdateDirectConnectGatewayOutput {
+public struct UpdateDirectConnectGatewayOutput: Swift.Sendable {
     /// Informaiton about a Direct Connect gateway, which enables you to connect virtual interfaces and virtual private gateways or transit gateways.
     public var directConnectGateway: DirectConnectClientTypes.DirectConnectGateway?
 
@@ -5806,7 +5807,7 @@ public struct UpdateDirectConnectGatewayOutput {
     }
 }
 
-public struct UpdateDirectConnectGatewayAssociationInput {
+public struct UpdateDirectConnectGatewayAssociationInput: Swift.Sendable {
     /// The Amazon VPC prefixes to advertise to the Direct Connect gateway.
     public var addAllowedPrefixesToDirectConnectGateway: [DirectConnectClientTypes.RouteFilterPrefix]?
     /// The ID of the Direct Connect gateway association.
@@ -5826,7 +5827,7 @@ public struct UpdateDirectConnectGatewayAssociationInput {
     }
 }
 
-public struct UpdateDirectConnectGatewayAssociationOutput {
+public struct UpdateDirectConnectGatewayAssociationOutput: Swift.Sendable {
     /// Information about an association between a Direct Connect gateway and a virtual private gateway or transit gateway.
     public var directConnectGatewayAssociation: DirectConnectClientTypes.DirectConnectGatewayAssociation?
 
@@ -5838,7 +5839,7 @@ public struct UpdateDirectConnectGatewayAssociationOutput {
     }
 }
 
-public struct UpdateLagInput {
+public struct UpdateLagInput: Swift.Sendable {
     /// The LAG MAC Security (MACsec) encryption mode. Amazon Web Services applies the value to all connections which are part of the LAG.
     public var encryptionMode: Swift.String?
     /// The ID of the LAG.
@@ -5864,7 +5865,7 @@ public struct UpdateLagInput {
 }
 
 /// Information about a link aggregation group (LAG).
-public struct UpdateLagOutput {
+public struct UpdateLagOutput: Swift.Sendable {
     /// Indicates whether the LAG can host other connections.
     public var allowsHostedConnections: Swift.Bool
     /// The Direct Connect endpoint that hosts the LAG.
@@ -5971,7 +5972,7 @@ public struct UpdateLagOutput {
     }
 }
 
-public struct UpdateVirtualInterfaceAttributesInput {
+public struct UpdateVirtualInterfaceAttributesInput: Swift.Sendable {
     /// Indicates whether to enable or disable SiteLink.
     public var enableSiteLink: Swift.Bool?
     /// The maximum transmission unit (MTU), in bytes. The supported values are 1500 and 8500. The default value is 1500.
@@ -5997,7 +5998,7 @@ public struct UpdateVirtualInterfaceAttributesInput {
 }
 
 /// Information about a virtual interface.
-public struct UpdateVirtualInterfaceAttributesOutput {
+public struct UpdateVirtualInterfaceAttributesOutput: Swift.Sendable {
     /// The address family for the BGP peer.
     public var addressFamily: DirectConnectClientTypes.AddressFamily?
     /// The IP address assigned to the Amazon interface.

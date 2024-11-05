@@ -50,8 +50,9 @@ public struct AccessDeniedException: ClientRuntime.ModeledError, AWSClientRuntim
 }
 
 extension ElasticTranscoderClientTypes {
+
     /// The encryption settings, if any, that are used for decrypting your input files or encrypting your output files. If your input file is encrypted, you must specify the mode that Elastic Transcoder uses to decrypt your file, otherwise you must specify the mode you want Elastic Transcoder to use to encrypt your output files.
-    public struct Encryption {
+    public struct Encryption: Swift.Sendable {
         /// The series of random bits created by a random bit generator, unique for every encryption operation, that you used to encrypt your input files or that you want Elastic Transcoder to use to encrypt your output files. The initialization vector must be base64-encoded, and it must be exactly 16 bytes long before being base64-encoded.
         public var initializationVector: Swift.String?
         /// The data encryption key that you want Elastic Transcoder to use to encrypt your output file, or that was used to encrypt your input file. The key must be base64-encoded and it must be one of the following bit lengths before being base64-encoded: 128, 192, or 256. The key must also be encrypted by using the Amazon Key Management Service.
@@ -96,12 +97,12 @@ extension ElasticTranscoderClientTypes {
             self.mode = mode
         }
     }
-
 }
 
 extension ElasticTranscoderClientTypes {
+
     /// The file to be used as album art. There can be multiple artworks associated with an audio file, to a maximum of 20. To remove artwork or leave the artwork empty, you can either set Artwork to null, or set the Merge Policy to "Replace" and use an empty Artwork array. To pass through existing artwork unchanged, set the Merge Policy to "Prepend", "Append", or "Fallback", and use an empty Artwork array.
-    public struct Artwork {
+    public struct Artwork: Swift.Sendable {
         /// The format of album art, if any. Valid formats are .jpg and .png.
         public var albumArtFormat: Swift.String?
         /// The encryption settings, if any, that you want Elastic Transcoder to apply to your artwork.
@@ -148,12 +149,12 @@ extension ElasticTranscoderClientTypes {
             self.sizingPolicy = sizingPolicy
         }
     }
-
 }
 
 extension ElasticTranscoderClientTypes {
+
     /// Options associated with your audio codec.
-    public struct AudioCodecOptions {
+    public struct AudioCodecOptions: Swift.Sendable {
         /// You can only choose an audio bit depth when you specify flac or pcm for the value of Audio:Codec. The bit depth of a sample is how many bits of information are included in the audio samples. The higher the bit depth, the better the audio, but the larger the file. Valid values are 16 and 24. The most common bit depth is 24.
         public var bitDepth: Swift.String?
         /// You can only choose an audio bit order when you specify pcm for the value of Audio:Codec. The order the bits of a PCM sample are stored in. The supported value is LittleEndian.
@@ -187,12 +188,12 @@ extension ElasticTranscoderClientTypes {
             self.signed = signed
         }
     }
-
 }
 
 extension ElasticTranscoderClientTypes {
+
     /// Parameters required for transcoding audio.
-    public struct AudioParameters {
+    public struct AudioParameters: Swift.Sendable {
         /// The method of organizing audio channels and tracks. Use Audio:Channels to specify the number of channels in your output, and Audio:AudioPackingMode to specify the number of tracks and their relation to the channels. If you do not specify an Audio:AudioPackingMode, Elastic Transcoder uses SingleTrack. The following values are valid: SingleTrack, OneChannelPerTrack, and OneChannelPerTrackWithMosTo8Tracks When you specify SingleTrack, Elastic Transcoder creates a single track for your output. The track can have up to eight channels. Use SingleTrack for all non-mxf containers. The outputs of SingleTrack for a specific channel value and inputs are as follows:
         ///
         /// * 0 channels with any input: Audio omitted from the output
@@ -294,7 +295,6 @@ extension ElasticTranscoderClientTypes {
             self.sampleRate = sampleRate
         }
     }
-
 }
 
 public struct IncompatibleVersionException: ClientRuntime.ModeledError, AWSClientRuntime.AWSServiceError, ClientRuntime.HTTPError, Swift.Error {
@@ -422,7 +422,7 @@ public struct ValidationException: ClientRuntime.ModeledError, AWSClientRuntime.
 }
 
 /// The CancelJobRequest structure.
-public struct CancelJobInput {
+public struct CancelJobInput: Swift.Sendable {
     /// The identifier of the job that you want to cancel. To get a list of the jobs (including their jobId) that have a status of Submitted, use the [ListJobsByStatus] API action.
     /// This member is required.
     public var id: Swift.String?
@@ -436,14 +436,15 @@ public struct CancelJobInput {
 }
 
 /// The response body contains a JSON object. If the job is successfully canceled, the value of Success is true.
-public struct CancelJobOutput {
+public struct CancelJobOutput: Swift.Sendable {
 
     public init() { }
 }
 
 extension ElasticTranscoderClientTypes {
+
     /// The file format of the output captions. If you leave this value blank, Elastic Transcoder returns an error.
-    public struct CaptionFormat {
+    public struct CaptionFormat: Swift.Sendable {
         /// The encryption settings, if any, that you want Elastic Transcoder to apply to your caption formats.
         public var encryption: ElasticTranscoderClientTypes.Encryption?
         /// The format you specify determines whether Elastic Transcoder generates an embedded or sidecar caption for this output.
@@ -495,12 +496,12 @@ extension ElasticTranscoderClientTypes {
             self.pattern = pattern
         }
     }
-
 }
 
 extension ElasticTranscoderClientTypes {
+
     /// A source file for the input sidecar captions used during the transcoding process.
-    public struct CaptionSource {
+    public struct CaptionSource: Swift.Sendable {
         /// The encryption settings, if any, that Elastic Transcoder needs to decyrpt your caption sources, or that you want Elastic Transcoder to apply to your caption sources.
         public var encryption: ElasticTranscoderClientTypes.Encryption?
         /// The name of the sidecar caption file that you want Elastic Transcoder to include in the output file.
@@ -534,12 +535,12 @@ extension ElasticTranscoderClientTypes {
             self.timeOffset = timeOffset
         }
     }
-
 }
 
 extension ElasticTranscoderClientTypes {
+
     /// The captions to be created, if any.
-    public struct Captions {
+    public struct Captions: Swift.Sendable {
         /// The array of file formats for the output captions. If you leave this value blank, Elastic Transcoder returns an error.
         public var captionFormats: [ElasticTranscoderClientTypes.CaptionFormat]?
         /// Source files for the input sidecar captions used during the transcoding process. To omit all sidecar captions, leave CaptionSources blank.
@@ -569,12 +570,12 @@ extension ElasticTranscoderClientTypes {
             self.mergePolicy = mergePolicy
         }
     }
-
 }
 
 extension ElasticTranscoderClientTypes {
+
     /// Settings that determine when a clip begins and how long it lasts.
-    public struct TimeSpan {
+    public struct TimeSpan: Swift.Sendable {
         /// The duration of the clip. The format can be either HH:mm:ss.SSS (maximum value: 23:59:59.999; SSS is thousandths of a second) or sssss.SSS (maximum value: 86399.999). If you don't specify a value, Elastic Transcoder creates an output file from StartTime to the end of the file. If you specify a value longer than the duration of the input file, Elastic Transcoder transcodes the file and returns a warning message.
         public var duration: Swift.String?
         /// The place in the input file where you want a clip to start. The format can be either HH:mm:ss.SSS (maximum value: 23:59:59.999; SSS is thousandths of a second) or sssss.SSS (maximum value: 86399.999). If you don't specify a value, Elastic Transcoder starts at the beginning of the input file.
@@ -589,13 +590,13 @@ extension ElasticTranscoderClientTypes {
             self.startTime = startTime
         }
     }
-
 }
 
 extension ElasticTranscoderClientTypes {
+
     /// Settings for one clip in a composition. All jobs in a playlist must have the same clip settings.
     @available(*, deprecated)
-    public struct Clip {
+    public struct Clip: Swift.Sendable {
         /// Settings that determine when a clip begins and how long it lasts.
         public var timeSpan: ElasticTranscoderClientTypes.TimeSpan?
 
@@ -606,7 +607,6 @@ extension ElasticTranscoderClientTypes {
             self.timeSpan = timeSpan
         }
     }
-
 }
 
 /// Too many operations for a given AWS account. For example, the number of pipelines exceeds the maximum allowed.
@@ -635,8 +635,9 @@ public struct LimitExceededException: ClientRuntime.ModeledError, AWSClientRunti
 }
 
 extension ElasticTranscoderClientTypes {
+
     /// The detected properties of the input file. Elastic Transcoder identifies these values from the input file.
-    public struct DetectedProperties {
+    public struct DetectedProperties: Swift.Sendable {
         /// The detected duration of the input file, in milliseconds.
         public var durationMillis: Swift.Int?
         /// The detected file size of the input file, in bytes.
@@ -663,12 +664,12 @@ extension ElasticTranscoderClientTypes {
             self.width = width
         }
     }
-
 }
 
 extension ElasticTranscoderClientTypes {
+
     /// The captions to be created, if any.
-    public struct InputCaptions {
+    public struct InputCaptions: Swift.Sendable {
         /// Source files for the input sidecar captions used during the transcoding process. To omit all sidecar captions, leave CaptionSources blank.
         public var captionSources: [ElasticTranscoderClientTypes.CaptionSource]?
         /// A policy that determines how Elastic Transcoder handles the existence of multiple captions.
@@ -692,12 +693,12 @@ extension ElasticTranscoderClientTypes {
             self.mergePolicy = mergePolicy
         }
     }
-
 }
 
 extension ElasticTranscoderClientTypes {
+
     /// Information about the file that you're transcoding.
-    public struct JobInput {
+    public struct JobInput: Swift.Sendable {
         /// The aspect ratio of the input file. If you want Elastic Transcoder to automatically detect the aspect ratio of the input file, specify auto. If you want to specify the aspect ratio for the output file, enter one of the following values: 1:1, 4:3, 3:2, 16:9 If you specify a value other than auto, Elastic Transcoder disables automatic detection of the aspect ratio.
         public var aspectRatio: Swift.String?
         /// The container type for the input file. If you want Elastic Transcoder to automatically detect the container type of the input file, specify auto. If you want to specify the container type for the input file, enter one of the following values: 3gp, aac, asf, avi, divx, flv, m4a, mkv, mov, mp3, mp4, mpeg, mpeg-ps, mpeg-ts, mxf, ogg, vob, wav, webm
@@ -751,12 +752,12 @@ extension ElasticTranscoderClientTypes {
             self.timeSpan = timeSpan
         }
     }
-
 }
 
 extension ElasticTranscoderClientTypes {
+
     /// The .jpg or .png file associated with an audio file.
-    public struct JobAlbumArt {
+    public struct JobAlbumArt: Swift.Sendable {
         /// The file to be used as album art. There can be multiple artworks associated with an audio file, to a maximum of 20. Valid formats are .jpg and .png
         public var artwork: [ElasticTranscoderClientTypes.Artwork]?
         /// A policy that determines how Elastic Transcoder handles the existence of multiple album artwork files.
@@ -779,12 +780,12 @@ extension ElasticTranscoderClientTypes {
             self.mergePolicy = mergePolicy
         }
     }
-
 }
 
 extension ElasticTranscoderClientTypes {
+
     /// Watermarks can be in .png or .jpg format. If you want to display a watermark that is not rectangular, use the .png format, which supports transparency.
-    public struct JobWatermark {
+    public struct JobWatermark: Swift.Sendable {
         /// The encryption settings, if any, that you want Elastic Transcoder to apply to your watermarks.
         public var encryption: ElasticTranscoderClientTypes.Encryption?
         /// The name of the .png or .jpg file that you want to use for the watermark. To determine which Amazon S3 bucket contains the specified file, Elastic Transcoder checks the pipeline specified by Pipeline; the Input Bucket object in that pipeline identifies the bucket. If the file name includes a prefix, for example, logos/128x64.png, include the prefix in the key. If the file isn't in the specified bucket, Elastic Transcoder returns an error.
@@ -803,12 +804,12 @@ extension ElasticTranscoderClientTypes {
             self.presetWatermarkId = presetWatermarkId
         }
     }
-
 }
 
 extension ElasticTranscoderClientTypes {
+
     /// The CreateJobOutput structure.
-    public struct CreateJobOutput {
+    public struct CreateJobOutput: Swift.Sendable {
         /// Information about the album art that you want Elastic Transcoder to add to the file during transcoding. You can specify up to twenty album artworks for each output. Settings for each artwork must be defined in the job for the current output.
         public var albumArt: ElasticTranscoderClientTypes.JobAlbumArt?
         /// You can configure Elastic Transcoder to transcode captions, or subtitles, from one format to another. All captions must be in UTF-8. Elastic Transcoder supports two types of captions:
@@ -876,12 +877,12 @@ extension ElasticTranscoderClientTypes {
             self.watermarks = watermarks
         }
     }
-
 }
 
 extension ElasticTranscoderClientTypes {
+
     /// The HLS content protection settings, if any, that you want Elastic Transcoder to apply to your output files.
-    public struct HlsContentProtection {
+    public struct HlsContentProtection: Swift.Sendable {
         /// If Elastic Transcoder is generating your key for you, you must leave this field blank. The series of random bits created by a random bit generator, unique for every encryption operation, that you want Elastic Transcoder to use to encrypt your output files. The initialization vector must be base64-encoded, and it must be exactly 16 bytes before being base64-encoded.
         public var initializationVector: Swift.String?
         /// If you want Elastic Transcoder to generate a key for you, leave this field blank. If you choose to supply your own key, you must encrypt the key by using AWS KMS. The key must be base64-encoded, and it must be one of the following bit lengths before being base64-encoded: 128, 192, or 256.
@@ -912,12 +913,12 @@ extension ElasticTranscoderClientTypes {
             self.method = method
         }
     }
-
 }
 
 extension ElasticTranscoderClientTypes {
+
     /// The PlayReady DRM settings, if any, that you want Elastic Transcoder to apply to the output files associated with this playlist. PlayReady DRM encrypts your media files using aes-ctr encryption. If you use DRM for an HLSv3 playlist, your outputs must have a master playlist.
-    public struct PlayReadyDrm {
+    public struct PlayReadyDrm: Swift.Sendable {
         /// The type of DRM, if any, that you want Elastic Transcoder to apply to the output files associated with this playlist.
         public var format: Swift.String?
         /// The series of random bits created by a random bit generator, unique for every encryption operation, that you want Elastic Transcoder to use to encrypt your files. The initialization vector must be base64-encoded, and it must be exactly 8 bytes long before being base64-encoded. If no initialization vector is provided, Elastic Transcoder generates one for you.
@@ -948,12 +949,12 @@ extension ElasticTranscoderClientTypes {
             self.licenseAcquisitionUrl = licenseAcquisitionUrl
         }
     }
-
 }
 
 extension ElasticTranscoderClientTypes {
+
     /// Information about the master playlist.
-    public struct CreateJobPlaylist {
+    public struct CreateJobPlaylist: Swift.Sendable {
         /// The format of the output playlist. Valid formats include HLSv3, HLSv4, and Smooth.
         public var format: Swift.String?
         /// The HLS content protection settings, if any, that you want Elastic Transcoder to apply to the output files associated with this playlist.
@@ -989,11 +990,10 @@ extension ElasticTranscoderClientTypes {
             self.playReadyDrm = playReadyDrm
         }
     }
-
 }
 
 /// The CreateJobRequest structure.
-public struct CreateJobInput {
+public struct CreateJobInput: Swift.Sendable {
     /// A section of the request body that provides information about the file that is being transcoded.
     public var input: ElasticTranscoderClientTypes.JobInput?
     /// A section of the request body that provides information about the files that are being transcoded.
@@ -1035,8 +1035,9 @@ public struct CreateJobInput {
 }
 
 extension ElasticTranscoderClientTypes {
+
     /// Outputs recommended instead. If you specified one output for a job, information about that output. If you specified multiple outputs for a job, the Output object lists information about the first output. This duplicates the information that is listed for the first output in the Outputs object.
-    public struct JobOutput {
+    public struct JobOutput: Swift.Sendable {
         /// The album art to be associated with the output file, if any.
         public var albumArt: ElasticTranscoderClientTypes.JobAlbumArt?
         /// If Elastic Transcoder used a preset with a ColorSpaceConversionMode to transcode the output file, the AppliedColorSpaceConversion parameter shows the conversion used. If no ColorSpaceConversionMode was defined in the preset, this parameter is not be included in the job response.
@@ -1155,12 +1156,12 @@ extension ElasticTranscoderClientTypes {
             self.width = width
         }
     }
-
 }
 
 extension ElasticTranscoderClientTypes {
+
     /// Use Only for Fragmented MP4 or MPEG-TS Outputs. If you specify a preset for which the value of Container is fmp4 (Fragmented MP4) or ts (MPEG-TS), Playlists contains information about the master playlists that you want Elastic Transcoder to create. We recommend that you create only one master playlist per output format. The maximum number of master playlists in a job is 30.
-    public struct Playlist {
+    public struct Playlist: Swift.Sendable {
         /// The format of the output playlist. Valid formats include HLSv3, HLSv4, and Smooth.
         public var format: Swift.String?
         /// The HLS content protection settings, if any, that you want Elastic Transcoder to apply to the output files associated with this playlist.
@@ -1207,12 +1208,12 @@ extension ElasticTranscoderClientTypes {
             self.statusDetail = statusDetail
         }
     }
-
 }
 
 extension ElasticTranscoderClientTypes {
+
     /// Details about the timing of a job.
-    public struct Timing {
+    public struct Timing: Swift.Sendable {
         /// The time the job finished transcoding, in epoch milliseconds.
         public var finishTimeMillis: Swift.Int?
         /// The time the job began transcoding, in epoch milliseconds.
@@ -1231,12 +1232,12 @@ extension ElasticTranscoderClientTypes {
             self.submitTimeMillis = submitTimeMillis
         }
     }
-
 }
 
 extension ElasticTranscoderClientTypes {
+
     /// A section of the response body that provides information about the job that is created.
-    public struct Job {
+    public struct Job: Swift.Sendable {
         /// The Amazon Resource Name (ARN) for the job.
         public var arn: Swift.String?
         /// The identifier that Elastic Transcoder assigned to the job. You use this value to get settings for the job or to delete the job.
@@ -1299,11 +1300,10 @@ extension ElasticTranscoderClientTypes {
             self.userMetadata = userMetadata
         }
     }
-
 }
 
 /// The CreateJobResponse structure.
-public struct CreateJobOutput {
+public struct CreateJobOutput: Swift.Sendable {
     /// A section of the response body that provides information about the job that is created.
     public var job: ElasticTranscoderClientTypes.Job?
 
@@ -1316,8 +1316,9 @@ public struct CreateJobOutput {
 }
 
 extension ElasticTranscoderClientTypes {
+
     /// The Permission structure.
-    public struct Permission {
+    public struct Permission: Swift.Sendable {
         /// The permission that you want to give to the AWS user that is listed in Grantee. Valid values include:
         ///
         /// * READ: The grantee can read the thumbnails and metadata for thumbnails that Elastic Transcoder adds to the Amazon S3 bucket.
@@ -1350,12 +1351,12 @@ extension ElasticTranscoderClientTypes {
             self.granteeType = granteeType
         }
     }
-
 }
 
 extension ElasticTranscoderClientTypes {
+
     /// The PipelineOutputConfig structure.
-    public struct PipelineOutputConfig {
+    public struct PipelineOutputConfig: Swift.Sendable {
         /// The Amazon S3 bucket in which you want Elastic Transcoder to save the transcoded files. Specify this value when all of the following are true:
         ///
         /// * You want to save transcoded files, thumbnails (if any), and playlists (if any) together in one bucket.
@@ -1385,12 +1386,12 @@ extension ElasticTranscoderClientTypes {
             self.storageClass = storageClass
         }
     }
-
 }
 
 extension ElasticTranscoderClientTypes {
+
     /// The Amazon Simple Notification Service (Amazon SNS) topic or topics to notify in order to report job status. To receive notifications, you must also subscribe to the new topic in the Amazon SNS console.
-    public struct Notifications {
+    public struct Notifications: Swift.Sendable {
         /// The Amazon SNS topic that you want to notify when Elastic Transcoder has finished processing the job.
         public var completed: Swift.String?
         /// The Amazon SNS topic that you want to notify when Elastic Transcoder encounters an error condition.
@@ -1413,11 +1414,10 @@ extension ElasticTranscoderClientTypes {
             self.warning = warning
         }
     }
-
 }
 
 /// The CreatePipelineRequest structure.
-public struct CreatePipelineInput {
+public struct CreatePipelineInput: Swift.Sendable {
     /// The AWS Key Management Service (AWS KMS) key that you want to use with this pipeline. If you use either s3 or s3-aws-kms as your Encryption:Mode, you don't need to provide a key with your job because a default key, known as an AWS-KMS key, is created for you automatically. You need to provide an AWS-KMS key only if you want to use a non-default AWS-KMS key, or if you are using an Encryption:Mode of aes-cbc-pkcs7, aes-ctr, or aes-gcm.
     public var awsKmsKeyArn: Swift.String?
     /// The optional ContentConfig object specifies information about the Amazon S3 bucket in which you want Elastic Transcoder to save transcoded files and playlists: which bucket to use, which users you want to have access to the files, the type of access you want users to have, and the storage class that you want to assign to the files. If you specify values for ContentConfig, you must also specify values for ThumbnailConfig. If you specify values for ContentConfig and ThumbnailConfig, omit the OutputBucket object.
@@ -1544,8 +1544,9 @@ public struct CreatePipelineInput {
 }
 
 extension ElasticTranscoderClientTypes {
+
     /// The pipeline (queue) that is used to manage jobs.
-    public struct Pipeline {
+    public struct Pipeline: Swift.Sendable {
         /// The Amazon Resource Name (ARN) for the pipeline.
         public var arn: Swift.String?
         /// The AWS Key Management Service (AWS KMS) key that you want to use with this pipeline. If you use either s3 or s3-aws-kms as your Encryption:Mode, you don't need to provide a key with your job because a default key, known as an AWS-KMS key, is created for you automatically. You need to provide an AWS-KMS key only if you want to use a non-default AWS-KMS key, or if you are using an Encryption:Mode of aes-cbc-pkcs7, aes-ctr, or aes-gcm.
@@ -1678,12 +1679,12 @@ extension ElasticTranscoderClientTypes {
             self.thumbnailConfig = thumbnailConfig
         }
     }
-
 }
 
 extension ElasticTranscoderClientTypes {
+
     /// Elastic Transcoder returns a warning if the resources used by your pipeline are not in the same region as the pipeline. Using resources in the same region, such as your Amazon S3 buckets, Amazon SNS notification topics, and AWS KMS key, reduces processing time and prevents cross-regional charges.
-    public struct Warning {
+    public struct Warning: Swift.Sendable {
         /// The code of the cross-regional warning.
         public var code: Swift.String?
         /// The message explaining what resources are in a different region from the pipeline. AWS KMS keys must be in the same region as the pipeline.
@@ -1698,11 +1699,10 @@ extension ElasticTranscoderClientTypes {
             self.message = message
         }
     }
-
 }
 
 /// When you create a pipeline, Elastic Transcoder returns the values that you specified in the request.
-public struct CreatePipelineOutput {
+public struct CreatePipelineOutput: Swift.Sendable {
     /// A section of the response body that provides information about the pipeline that is created.
     public var pipeline: ElasticTranscoderClientTypes.Pipeline?
     /// Elastic Transcoder returns a warning if the resources used by your pipeline are not in the same region as the pipeline. Using resources in the same region, such as your Amazon S3 buckets, Amazon SNS notification topics, and AWS KMS key, reduces processing time and prevents cross-regional charges.
@@ -1719,8 +1719,9 @@ public struct CreatePipelineOutput {
 }
 
 extension ElasticTranscoderClientTypes {
+
     /// Thumbnails for videos.
-    public struct Thumbnails {
+    public struct Thumbnails: Swift.Sendable {
         /// To better control resolution and aspect ratio of thumbnails, we recommend that you use the values MaxWidth, MaxHeight, SizingPolicy, and PaddingPolicy instead of Resolution and AspectRatio. The two groups of settings are mutually exclusive. Do not use them together. The aspect ratio of thumbnails. Valid values include: auto, 1:1, 4:3, 3:2, 16:9 If you specify auto, Elastic Transcoder tries to preserve the aspect ratio of the video in the output file.
         public var aspectRatio: Swift.String?
         /// The format of thumbnails, if any. Valid values are jpg and png. You specify whether you want Elastic Transcoder to create thumbnails when you create a job.
@@ -1771,12 +1772,12 @@ extension ElasticTranscoderClientTypes {
             self.sizingPolicy = sizingPolicy
         }
     }
-
 }
 
 extension ElasticTranscoderClientTypes {
+
     /// Settings for the size, location, and opacity of graphics that you want Elastic Transcoder to overlay over videos that are transcoded using this preset. You can specify settings for up to four watermarks. Watermarks appear in the specified size and location, and with the specified opacity for the duration of the transcoded video. Watermarks can be in .png or .jpg format. If you want to display a watermark that is not rectangular, use the .png format, which supports transparency. When you create a job that uses this preset, you specify the .png or .jpg graphics that you want Elastic Transcoder to include in the transcoded videos. You can specify fewer graphics in the job than you specify watermark settings in the preset, which allows you to use the same preset for up to four watermarks that have different dimensions.
-    public struct PresetWatermark {
+    public struct PresetWatermark: Swift.Sendable {
         /// The horizontal position of the watermark unless you specify a non-zero value for HorizontalOffset:
         ///
         /// * Left: The left edge of the watermark is aligned with the left border of the video.
@@ -1870,12 +1871,12 @@ extension ElasticTranscoderClientTypes {
             self.verticalOffset = verticalOffset
         }
     }
-
 }
 
 extension ElasticTranscoderClientTypes {
+
     /// The VideoParameters structure.
-    public struct VideoParameters {
+    public struct VideoParameters: Swift.Sendable {
         /// To better control resolution and aspect ratio of output videos, we recommend that you use the values MaxWidth, MaxHeight, SizingPolicy, PaddingPolicy, and DisplayAspectRatio instead of Resolution and AspectRatio. The two groups of settings are mutually exclusive. Do not use them together. The display aspect ratio of the video in the output file. Valid values include: auto, 1:1, 4:3, 3:2, 16:9 If you specify auto, Elastic Transcoder tries to preserve the aspect ratio of the input file. If you specify an aspect ratio for the output file that differs from aspect ratio of the input file, Elastic Transcoder adds pillarboxing (black bars on the sides) or letterboxing (black bars on the top and bottom) to maintain the aspect ratio of the active region of the video.
         public var aspectRatio: Swift.String?
         /// The bit rate of the video stream in the output file, in kilobits/second. Valid values depend on the values of Level and Profile. If you specify auto, Elastic Transcoder uses the detected bit rate of the input source. If you specify a value other than auto, we recommend that you specify a value less than or equal to the maximum H.264-compliant value listed for your level and profile: Level - Maximum video bit rate in kilobits/second (baseline and main Profile) : maximum video bit rate in kilobits/second (high Profile)
@@ -2108,11 +2109,10 @@ extension ElasticTranscoderClientTypes {
             self.watermarks = watermarks
         }
     }
-
 }
 
 /// The CreatePresetRequest structure.
-public struct CreatePresetInput {
+public struct CreatePresetInput: Swift.Sendable {
     /// A section of the request body that specifies the audio parameters.
     public var audio: ElasticTranscoderClientTypes.AudioParameters?
     /// The container type for the output file. Valid values include flac, flv, fmp4, gif, mp3, mp4, mpg, mxf, oga, ogg, ts, and webm.
@@ -2147,8 +2147,9 @@ public struct CreatePresetInput {
 }
 
 extension ElasticTranscoderClientTypes {
+
     /// Presets are templates that contain most of the settings for transcoding media files from one format to another. Elastic Transcoder includes some default presets for common formats, for example, several iPod and iPhone versions. You can also create your own presets for formats that aren't included among the default presets. You specify which preset you want to use when you create a job.
-    public struct Preset {
+    public struct Preset: Swift.Sendable {
         /// The Amazon Resource Name (ARN) for the preset.
         public var arn: Swift.String?
         /// A section of the response body that provides information about the audio preset values.
@@ -2191,11 +2192,10 @@ extension ElasticTranscoderClientTypes {
             self.video = video
         }
     }
-
 }
 
 /// The CreatePresetResponse structure.
-public struct CreatePresetOutput {
+public struct CreatePresetOutput: Swift.Sendable {
     /// A section of the response body that provides information about the preset that is created.
     public var preset: ElasticTranscoderClientTypes.Preset?
     /// If the preset settings don't comply with the standards for the video codec but Elastic Transcoder created the preset, this message explains the reason the preset settings don't meet the standard. Elastic Transcoder created the preset because the settings might produce acceptable output.
@@ -2212,7 +2212,7 @@ public struct CreatePresetOutput {
 }
 
 /// The DeletePipelineRequest structure.
-public struct DeletePipelineInput {
+public struct DeletePipelineInput: Swift.Sendable {
     /// The identifier of the pipeline that you want to delete.
     /// This member is required.
     public var id: Swift.String?
@@ -2226,13 +2226,13 @@ public struct DeletePipelineInput {
 }
 
 /// The DeletePipelineResponse structure.
-public struct DeletePipelineOutput {
+public struct DeletePipelineOutput: Swift.Sendable {
 
     public init() { }
 }
 
 /// The DeletePresetRequest structure.
-public struct DeletePresetInput {
+public struct DeletePresetInput: Swift.Sendable {
     /// The identifier of the preset for which you want to get detailed information.
     /// This member is required.
     public var id: Swift.String?
@@ -2246,13 +2246,13 @@ public struct DeletePresetInput {
 }
 
 /// The DeletePresetResponse structure.
-public struct DeletePresetOutput {
+public struct DeletePresetOutput: Swift.Sendable {
 
     public init() { }
 }
 
 /// The ListJobsByPipelineRequest structure.
-public struct ListJobsByPipelineInput {
+public struct ListJobsByPipelineInput: Swift.Sendable {
     /// To list jobs in chronological order by the date and time that they were submitted, enter true. To list jobs in reverse chronological order, enter false.
     public var ascending: Swift.String?
     /// When Elastic Transcoder returns more than one page of results, use pageToken in subsequent GET requests to get each successive page of results.
@@ -2274,7 +2274,7 @@ public struct ListJobsByPipelineInput {
 }
 
 /// The ListJobsByPipelineResponse structure.
-public struct ListJobsByPipelineOutput {
+public struct ListJobsByPipelineOutput: Swift.Sendable {
     /// An array of Job objects that are in the specified pipeline.
     public var jobs: [ElasticTranscoderClientTypes.Job]?
     /// A value that you use to access the second and subsequent pages of results, if any. When the jobs in the specified pipeline fit on one page or when you've reached the last page of results, the value of NextPageToken is null.
@@ -2291,7 +2291,7 @@ public struct ListJobsByPipelineOutput {
 }
 
 /// The ListJobsByStatusRequest structure.
-public struct ListJobsByStatusInput {
+public struct ListJobsByStatusInput: Swift.Sendable {
     /// To list jobs in chronological order by the date and time that they were submitted, enter true. To list jobs in reverse chronological order, enter false.
     public var ascending: Swift.String?
     /// When Elastic Transcoder returns more than one page of results, use pageToken in subsequent GET requests to get each successive page of results.
@@ -2313,7 +2313,7 @@ public struct ListJobsByStatusInput {
 }
 
 /// The ListJobsByStatusResponse structure.
-public struct ListJobsByStatusOutput {
+public struct ListJobsByStatusOutput: Swift.Sendable {
     /// An array of Job objects that have the specified status.
     public var jobs: [ElasticTranscoderClientTypes.Job]?
     /// A value that you use to access the second and subsequent pages of results, if any. When the jobs in the specified pipeline fit on one page or when you've reached the last page of results, the value of NextPageToken is null.
@@ -2330,7 +2330,7 @@ public struct ListJobsByStatusOutput {
 }
 
 /// The ListPipelineRequest structure.
-public struct ListPipelinesInput {
+public struct ListPipelinesInput: Swift.Sendable {
     /// To list pipelines in chronological order by the date and time that they were created, enter true. To list pipelines in reverse chronological order, enter false.
     public var ascending: Swift.String?
     /// When Elastic Transcoder returns more than one page of results, use pageToken in subsequent GET requests to get each successive page of results.
@@ -2347,7 +2347,7 @@ public struct ListPipelinesInput {
 }
 
 /// A list of the pipelines associated with the current AWS account.
-public struct ListPipelinesOutput {
+public struct ListPipelinesOutput: Swift.Sendable {
     /// A value that you use to access the second and subsequent pages of results, if any. When the pipelines fit on one page or when you've reached the last page of results, the value of NextPageToken is null.
     public var nextPageToken: Swift.String?
     /// An array of Pipeline objects.
@@ -2364,7 +2364,7 @@ public struct ListPipelinesOutput {
 }
 
 /// The ListPresetsRequest structure.
-public struct ListPresetsInput {
+public struct ListPresetsInput: Swift.Sendable {
     /// To list presets in chronological order by the date and time that they were created, enter true. To list presets in reverse chronological order, enter false.
     public var ascending: Swift.String?
     /// When Elastic Transcoder returns more than one page of results, use pageToken in subsequent GET requests to get each successive page of results.
@@ -2381,7 +2381,7 @@ public struct ListPresetsInput {
 }
 
 /// The ListPresetsResponse structure.
-public struct ListPresetsOutput {
+public struct ListPresetsOutput: Swift.Sendable {
     /// A value that you use to access the second and subsequent pages of results, if any. When the presets fit on one page or when you've reached the last page of results, the value of NextPageToken is null.
     public var nextPageToken: Swift.String?
     /// An array of Preset objects.
@@ -2398,7 +2398,7 @@ public struct ListPresetsOutput {
 }
 
 /// The ReadJobRequest structure.
-public struct ReadJobInput {
+public struct ReadJobInput: Swift.Sendable {
     /// The identifier of the job for which you want to get detailed information.
     /// This member is required.
     public var id: Swift.String?
@@ -2412,7 +2412,7 @@ public struct ReadJobInput {
 }
 
 /// The ReadJobResponse structure.
-public struct ReadJobOutput {
+public struct ReadJobOutput: Swift.Sendable {
     /// A section of the response body that provides information about the job.
     public var job: ElasticTranscoderClientTypes.Job?
 
@@ -2425,7 +2425,7 @@ public struct ReadJobOutput {
 }
 
 /// The ReadPipelineRequest structure.
-public struct ReadPipelineInput {
+public struct ReadPipelineInput: Swift.Sendable {
     /// The identifier of the pipeline to read.
     /// This member is required.
     public var id: Swift.String?
@@ -2439,7 +2439,7 @@ public struct ReadPipelineInput {
 }
 
 /// The ReadPipelineResponse structure.
-public struct ReadPipelineOutput {
+public struct ReadPipelineOutput: Swift.Sendable {
     /// A section of the response body that provides information about the pipeline.
     public var pipeline: ElasticTranscoderClientTypes.Pipeline?
     /// Elastic Transcoder returns a warning if the resources used by your pipeline are not in the same region as the pipeline. Using resources in the same region, such as your Amazon S3 buckets, Amazon SNS notification topics, and AWS KMS key, reduces processing time and prevents cross-regional charges.
@@ -2456,7 +2456,7 @@ public struct ReadPipelineOutput {
 }
 
 /// The ReadPresetRequest structure.
-public struct ReadPresetInput {
+public struct ReadPresetInput: Swift.Sendable {
     /// The identifier of the preset for which you want to get detailed information.
     /// This member is required.
     public var id: Swift.String?
@@ -2470,7 +2470,7 @@ public struct ReadPresetInput {
 }
 
 /// The ReadPresetResponse structure.
-public struct ReadPresetOutput {
+public struct ReadPresetOutput: Swift.Sendable {
     /// A section of the response body that provides information about the preset.
     public var preset: ElasticTranscoderClientTypes.Preset?
 
@@ -2484,7 +2484,7 @@ public struct ReadPresetOutput {
 
 /// The TestRoleRequest structure.
 @available(*, deprecated)
-public struct TestRoleInput {
+public struct TestRoleInput: Swift.Sendable {
     /// The Amazon S3 bucket that contains media files to be transcoded. The action attempts to read from this bucket.
     /// This member is required.
     public var inputBucket: Swift.String?
@@ -2514,7 +2514,7 @@ public struct TestRoleInput {
 
 /// The TestRoleResponse structure.
 @available(*, deprecated)
-public struct TestRoleOutput {
+public struct TestRoleOutput: Swift.Sendable {
     /// If the Success element contains false, this value is an array of one or more error messages that were generated during the test process.
     public var messages: [Swift.String]?
     /// If the operation is successful, this value is true; otherwise, the value is false.
@@ -2531,7 +2531,7 @@ public struct TestRoleOutput {
 }
 
 /// The UpdatePipelineRequest structure.
-public struct UpdatePipelineInput {
+public struct UpdatePipelineInput: Swift.Sendable {
     /// The AWS Key Management Service (AWS KMS) key that you want to use with this pipeline. If you use either s3 or s3-aws-kms as your Encryption:Mode, you don't need to provide a key with your job because a default key, known as an AWS-KMS key, is created for you automatically. You need to provide an AWS-KMS key only if you want to use a non-default AWS-KMS key, or if you are using an Encryption:Mode of aes-cbc-pkcs7, aes-ctr, or aes-gcm.
     public var awsKmsKeyArn: Swift.String?
     /// The optional ContentConfig object specifies information about the Amazon S3 bucket in which you want Elastic Transcoder to save transcoded files and playlists: which bucket to use, which users you want to have access to the files, the type of access you want users to have, and the storage class that you want to assign to the files. If you specify values for ContentConfig, you must also specify values for ThumbnailConfig. If you specify values for ContentConfig and ThumbnailConfig, omit the OutputBucket object.
@@ -2645,7 +2645,7 @@ public struct UpdatePipelineInput {
 }
 
 /// When you update a pipeline, Elastic Transcoder returns the values that you specified in the request.
-public struct UpdatePipelineOutput {
+public struct UpdatePipelineOutput: Swift.Sendable {
     /// The pipeline updated by this UpdatePipelineResponse call.
     public var pipeline: ElasticTranscoderClientTypes.Pipeline?
     /// Elastic Transcoder returns a warning if the resources used by your pipeline are not in the same region as the pipeline. Using resources in the same region, such as your Amazon S3 buckets, Amazon SNS notification topics, and AWS KMS key, reduces processing time and prevents cross-regional charges.
@@ -2662,7 +2662,7 @@ public struct UpdatePipelineOutput {
 }
 
 /// The UpdatePipelineNotificationsRequest structure.
-public struct UpdatePipelineNotificationsInput {
+public struct UpdatePipelineNotificationsInput: Swift.Sendable {
     /// The identifier of the pipeline for which you want to change notification settings.
     /// This member is required.
     public var id: Swift.String?
@@ -2689,7 +2689,7 @@ public struct UpdatePipelineNotificationsInput {
 }
 
 /// The UpdatePipelineNotificationsResponse structure.
-public struct UpdatePipelineNotificationsOutput {
+public struct UpdatePipelineNotificationsOutput: Swift.Sendable {
     /// A section of the response body that provides information about the pipeline associated with this notification.
     public var pipeline: ElasticTranscoderClientTypes.Pipeline?
 
@@ -2702,7 +2702,7 @@ public struct UpdatePipelineNotificationsOutput {
 }
 
 /// The UpdatePipelineStatusRequest structure.
-public struct UpdatePipelineStatusInput {
+public struct UpdatePipelineStatusInput: Swift.Sendable {
     /// The identifier of the pipeline to update.
     /// This member is required.
     public var id: Swift.String?
@@ -2725,7 +2725,7 @@ public struct UpdatePipelineStatusInput {
 }
 
 /// When you update status for a pipeline, Elastic Transcoder returns the values that you specified in the request.
-public struct UpdatePipelineStatusOutput {
+public struct UpdatePipelineStatusOutput: Swift.Sendable {
     /// A section of the response body that provides information about the pipeline.
     public var pipeline: ElasticTranscoderClientTypes.Pipeline?
 

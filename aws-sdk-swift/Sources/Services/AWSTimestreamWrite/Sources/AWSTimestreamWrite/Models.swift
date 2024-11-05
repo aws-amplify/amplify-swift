@@ -24,12 +24,13 @@ import protocol ClientRuntime.ModeledError
 @_spi(SmithyReadWrite) import struct AWSClientRuntime.AWSJSONError
 @_spi(UnknownAWSHTTPServiceError) import struct AWSClientRuntime.UnknownAWSHTTPServiceError
 
-public struct DeleteDatabaseOutput {
+
+public struct DeleteDatabaseOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteTableOutput {
+public struct DeleteTableOutput: Swift.Sendable {
 
     public init() { }
 }
@@ -61,7 +62,7 @@ public struct AccessDeniedException: ClientRuntime.ModeledError, AWSClientRuntim
 
 extension TimestreamWriteClientTypes {
 
-    public enum BatchLoadDataFormat: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum BatchLoadDataFormat: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case csv
         case sdkUnknown(Swift.String)
 
@@ -86,8 +87,9 @@ extension TimestreamWriteClientTypes {
 }
 
 extension TimestreamWriteClientTypes {
+
     /// Details about the progress of a batch load task.
-    public struct BatchLoadProgressReport {
+    public struct BatchLoadProgressReport: Swift.Sendable {
         ///
         public var bytesMetered: Swift.Int
         ///
@@ -118,12 +120,11 @@ extension TimestreamWriteClientTypes {
             self.recordsProcessed = recordsProcessed
         }
     }
-
 }
 
 extension TimestreamWriteClientTypes {
 
-    public enum BatchLoadStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum BatchLoadStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case created
         case failed
         case inProgress
@@ -163,8 +164,9 @@ extension TimestreamWriteClientTypes {
 }
 
 extension TimestreamWriteClientTypes {
+
     /// Details about a batch load task.
-    public struct BatchLoadTask {
+    public struct BatchLoadTask: Swift.Sendable {
         /// The time when the Timestream batch load task was created.
         public var creationTime: Foundation.Date?
         /// Database name for the database into which a batch load task loads data.
@@ -199,12 +201,12 @@ extension TimestreamWriteClientTypes {
             self.taskStatus = taskStatus
         }
     }
-
 }
 
 extension TimestreamWriteClientTypes {
+
     ///
-    public struct DimensionMapping {
+    public struct DimensionMapping: Swift.Sendable {
         ///
         public var destinationColumn: Swift.String?
         ///
@@ -219,12 +221,11 @@ extension TimestreamWriteClientTypes {
             self.sourceColumn = sourceColumn
         }
     }
-
 }
 
 extension TimestreamWriteClientTypes {
 
-    public enum MeasureValueType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum MeasureValueType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case bigint
         case boolean
         case double
@@ -265,7 +266,7 @@ extension TimestreamWriteClientTypes {
 
 extension TimestreamWriteClientTypes {
 
-    public enum ScalarMeasureValueType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ScalarMeasureValueType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case bigint
         case boolean
         case double
@@ -302,8 +303,9 @@ extension TimestreamWriteClientTypes {
 }
 
 extension TimestreamWriteClientTypes {
+
     ///
-    public struct MultiMeasureAttributeMapping {
+    public struct MultiMeasureAttributeMapping: Swift.Sendable {
         ///
         public var measureValueType: TimestreamWriteClientTypes.ScalarMeasureValueType?
         ///
@@ -323,12 +325,12 @@ extension TimestreamWriteClientTypes {
             self.targetMultiMeasureAttributeName = targetMultiMeasureAttributeName
         }
     }
-
 }
 
 extension TimestreamWriteClientTypes {
+
     ///
-    public struct MixedMeasureMapping {
+    public struct MixedMeasureMapping: Swift.Sendable {
         ///
         public var measureName: Swift.String?
         ///
@@ -356,12 +358,12 @@ extension TimestreamWriteClientTypes {
             self.targetMeasureName = targetMeasureName
         }
     }
-
 }
 
 extension TimestreamWriteClientTypes {
+
     ///
-    public struct MultiMeasureMappings {
+    public struct MultiMeasureMappings: Swift.Sendable {
         ///
         /// This member is required.
         public var multiMeasureAttributeMappings: [TimestreamWriteClientTypes.MultiMeasureAttributeMapping]?
@@ -377,12 +379,11 @@ extension TimestreamWriteClientTypes {
             self.targetMultiMeasureName = targetMultiMeasureName
         }
     }
-
 }
 
 extension TimestreamWriteClientTypes {
 
-    public enum TimeUnit: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum TimeUnit: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case microseconds
         case milliseconds
         case nanoseconds
@@ -416,8 +417,9 @@ extension TimestreamWriteClientTypes {
 }
 
 extension TimestreamWriteClientTypes {
+
     /// Data model for a batch load task.
-    public struct DataModel {
+    public struct DataModel: Swift.Sendable {
         /// Source to target mappings for dimensions.
         /// This member is required.
         public var dimensionMappings: [TimestreamWriteClientTypes.DimensionMapping]?
@@ -449,12 +451,12 @@ extension TimestreamWriteClientTypes {
             self.timeUnit = timeUnit
         }
     }
-
 }
 
 extension TimestreamWriteClientTypes {
+
     ///
-    public struct DataModelS3Configuration {
+    public struct DataModelS3Configuration: Swift.Sendable {
         ///
         public var bucketName: Swift.String?
         ///
@@ -469,12 +471,12 @@ extension TimestreamWriteClientTypes {
             self.objectKey = objectKey
         }
     }
-
 }
 
 extension TimestreamWriteClientTypes {
+
     ///
-    public struct DataModelConfiguration {
+    public struct DataModelConfiguration: Swift.Sendable {
         ///
         public var dataModel: TimestreamWriteClientTypes.DataModel?
         ///
@@ -489,12 +491,12 @@ extension TimestreamWriteClientTypes {
             self.dataModelS3Configuration = dataModelS3Configuration
         }
     }
-
 }
 
 extension TimestreamWriteClientTypes {
+
     /// A delimited data format where the column separator can be a comma and the record separator is a newline character.
-    public struct CsvConfiguration {
+    public struct CsvConfiguration: Swift.Sendable {
         /// Column separator can be one of comma (','), pipe ('|), semicolon (';'), tab('/t'), or blank space (' ').
         public var columnSeparator: Swift.String?
         /// Escape character can be one of
@@ -521,12 +523,12 @@ extension TimestreamWriteClientTypes {
             self.trimWhiteSpace = trimWhiteSpace
         }
     }
-
 }
 
 extension TimestreamWriteClientTypes {
+
     ///
-    public struct DataSourceS3Configuration {
+    public struct DataSourceS3Configuration: Swift.Sendable {
         /// The bucket name of the customer S3 bucket.
         /// This member is required.
         public var bucketName: Swift.String?
@@ -542,12 +544,12 @@ extension TimestreamWriteClientTypes {
             self.objectKeyPrefix = objectKeyPrefix
         }
     }
-
 }
 
 extension TimestreamWriteClientTypes {
+
     /// Defines configuration details about the data source.
-    public struct DataSourceConfiguration {
+    public struct DataSourceConfiguration: Swift.Sendable {
         /// A delimited data format where the column separator can be a comma and the record separator is a newline character.
         public var csvConfiguration: TimestreamWriteClientTypes.CsvConfiguration?
         /// This is currently CSV.
@@ -568,12 +570,11 @@ extension TimestreamWriteClientTypes {
             self.dataSourceS3Configuration = dataSourceS3Configuration
         }
     }
-
 }
 
 extension TimestreamWriteClientTypes {
 
-    public enum S3EncryptionOption: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum S3EncryptionOption: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case sseKms
         case sseS3
         case sdkUnknown(Swift.String)
@@ -601,8 +602,9 @@ extension TimestreamWriteClientTypes {
 }
 
 extension TimestreamWriteClientTypes {
+
     ///
-    public struct ReportS3Configuration {
+    public struct ReportS3Configuration: Swift.Sendable {
         ///
         /// This member is required.
         public var bucketName: Swift.String?
@@ -626,12 +628,12 @@ extension TimestreamWriteClientTypes {
             self.objectKeyPrefix = objectKeyPrefix
         }
     }
-
 }
 
 extension TimestreamWriteClientTypes {
+
     /// Report configuration for a batch load task. This contains details about where error reports are stored.
-    public struct ReportConfiguration {
+    public struct ReportConfiguration: Swift.Sendable {
         /// Configuration of an S3 location to write error reports and events for a batch load.
         public var reportS3Configuration: TimestreamWriteClientTypes.ReportS3Configuration?
 
@@ -642,12 +644,12 @@ extension TimestreamWriteClientTypes {
             self.reportS3Configuration = reportS3Configuration
         }
     }
-
 }
 
 extension TimestreamWriteClientTypes {
+
     /// Details about a batch load task.
-    public struct BatchLoadTaskDescription {
+    public struct BatchLoadTaskDescription: Swift.Sendable {
         /// The time when the Timestream batch load task was created.
         public var creationTime: Foundation.Date?
         /// Data model configuration for a batch load task. This contains details about where a data model for a batch load task is stored.
@@ -706,7 +708,6 @@ extension TimestreamWriteClientTypes {
             self.taskStatus = taskStatus
         }
     }
-
 }
 
 /// Timestream was unable to process this request because it contains resource that already exists.
@@ -881,7 +882,7 @@ public struct ValidationException: ClientRuntime.ModeledError, AWSClientRuntime.
     }
 }
 
-public struct CreateBatchLoadTaskInput {
+public struct CreateBatchLoadTaskInput: Swift.Sendable {
     ///
     public var clientToken: Swift.String?
     ///
@@ -926,7 +927,7 @@ extension CreateBatchLoadTaskInput: Swift.CustomDebugStringConvertible {
         "CreateBatchLoadTaskInput(dataModelConfiguration: \(Swift.String(describing: dataModelConfiguration)), dataSourceConfiguration: \(Swift.String(describing: dataSourceConfiguration)), recordVersion: \(Swift.String(describing: recordVersion)), reportConfiguration: \(Swift.String(describing: reportConfiguration)), targetDatabaseName: \(Swift.String(describing: targetDatabaseName)), targetTableName: \(Swift.String(describing: targetTableName)), clientToken: \"CONTENT_REDACTED\")"}
 }
 
-public struct CreateBatchLoadTaskOutput {
+public struct CreateBatchLoadTaskOutput: Swift.Sendable {
     /// The ID of the batch load task.
     /// This member is required.
     public var taskId: Swift.String?
@@ -940,8 +941,9 @@ public struct CreateBatchLoadTaskOutput {
 }
 
 extension TimestreamWriteClientTypes {
+
     /// A tag is a label that you assign to a Timestream database and/or table. Each tag consists of a key and an optional value, both of which you define. With tags, you can categorize databases and/or tables, for example, by purpose, owner, or environment.
-    public struct Tag {
+    public struct Tag: Swift.Sendable {
         /// The key of the tag. Tag keys are case sensitive.
         /// This member is required.
         public var key: Swift.String?
@@ -958,10 +960,9 @@ extension TimestreamWriteClientTypes {
             self.value = value
         }
     }
-
 }
 
-public struct CreateDatabaseInput {
+public struct CreateDatabaseInput: Swift.Sendable {
     /// The name of the Timestream database.
     /// This member is required.
     public var databaseName: Swift.String?
@@ -983,8 +984,9 @@ public struct CreateDatabaseInput {
 }
 
 extension TimestreamWriteClientTypes {
+
     /// A top-level container for a table. Databases and tables are the fundamental management concepts in Amazon Timestream. All tables in a database are encrypted with the same KMS key.
-    public struct Database {
+    public struct Database: Swift.Sendable {
         /// The Amazon Resource Name that uniquely identifies this database.
         public var arn: Swift.String?
         /// The time when the database was created, calculated from the Unix epoch time.
@@ -1015,10 +1017,9 @@ extension TimestreamWriteClientTypes {
             self.tableCount = tableCount
         }
     }
-
 }
 
-public struct CreateDatabaseOutput {
+public struct CreateDatabaseOutput: Swift.Sendable {
     /// The newly created Timestream database.
     public var database: TimestreamWriteClientTypes.Database?
 
@@ -1031,8 +1032,9 @@ public struct CreateDatabaseOutput {
 }
 
 extension TimestreamWriteClientTypes {
+
     /// The configuration that specifies an S3 location.
-    public struct S3Configuration {
+    public struct S3Configuration: Swift.Sendable {
         /// The bucket name of the customer S3 bucket.
         public var bucketName: Swift.String?
         /// The encryption option for the customer S3 location. Options are S3 server-side encryption with an S3 managed key or Amazon Web Services managed key.
@@ -1055,12 +1057,12 @@ extension TimestreamWriteClientTypes {
             self.objectKeyPrefix = objectKeyPrefix
         }
     }
-
 }
 
 extension TimestreamWriteClientTypes {
+
     /// The location to write error reports for records rejected, asynchronously, during magnetic store writes.
-    public struct MagneticStoreRejectedDataLocation {
+    public struct MagneticStoreRejectedDataLocation: Swift.Sendable {
         /// Configuration of an S3 location to write error reports for records rejected, asynchronously, during magnetic store writes.
         public var s3Configuration: TimestreamWriteClientTypes.S3Configuration?
 
@@ -1071,12 +1073,12 @@ extension TimestreamWriteClientTypes {
             self.s3Configuration = s3Configuration
         }
     }
-
 }
 
 extension TimestreamWriteClientTypes {
+
     /// The set of properties on a table for configuring magnetic store writes.
-    public struct MagneticStoreWriteProperties {
+    public struct MagneticStoreWriteProperties: Swift.Sendable {
         /// A flag to enable magnetic store writes.
         /// This member is required.
         public var enableMagneticStoreWrites: Swift.Bool?
@@ -1092,12 +1094,12 @@ extension TimestreamWriteClientTypes {
             self.magneticStoreRejectedDataLocation = magneticStoreRejectedDataLocation
         }
     }
-
 }
 
 extension TimestreamWriteClientTypes {
+
     /// Retention properties contain the duration for which your time-series data must be stored in the magnetic store and the memory store.
-    public struct RetentionProperties {
+    public struct RetentionProperties: Swift.Sendable {
         /// The duration for which data must be stored in the magnetic store.
         /// This member is required.
         public var magneticStoreRetentionPeriodInDays: Swift.Int?
@@ -1114,12 +1116,11 @@ extension TimestreamWriteClientTypes {
             self.memoryStoreRetentionPeriodInHours = memoryStoreRetentionPeriodInHours
         }
     }
-
 }
 
 extension TimestreamWriteClientTypes {
 
-    public enum PartitionKeyEnforcementLevel: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum PartitionKeyEnforcementLevel: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case `optional`
         case `required`
         case sdkUnknown(Swift.String)
@@ -1148,7 +1149,7 @@ extension TimestreamWriteClientTypes {
 
 extension TimestreamWriteClientTypes {
 
-    public enum PartitionKeyType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum PartitionKeyType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case dimension
         case measure
         case sdkUnknown(Swift.String)
@@ -1176,8 +1177,9 @@ extension TimestreamWriteClientTypes {
 }
 
 extension TimestreamWriteClientTypes {
+
     /// An attribute used in partitioning data in a table. A dimension key partitions data using the values of the dimension specified by the dimension-name as partition key, while a measure key partitions data using measure names (values of the 'measure_name' column).
-    public struct PartitionKey {
+    public struct PartitionKey: Swift.Sendable {
         /// The level of enforcement for the specification of a dimension key in ingested records. Options are REQUIRED (dimension key must be specified) and OPTIONAL (dimension key does not have to be specified).
         public var enforcementInRecord: TimestreamWriteClientTypes.PartitionKeyEnforcementLevel?
         /// The name of the attribute used for a dimension key.
@@ -1197,12 +1199,12 @@ extension TimestreamWriteClientTypes {
             self.type = type
         }
     }
-
 }
 
 extension TimestreamWriteClientTypes {
+
     /// A Schema specifies the expected data model of the table.
-    public struct Schema {
+    public struct Schema: Swift.Sendable {
         /// A non-empty list of partition keys defining the attributes used to partition the table data. The order of the list determines the partition hierarchy. The name and type of each partition key as well as the partition key order cannot be changed after the table is created. However, the enforcement level of each partition key can be changed.
         public var compositePartitionKey: [TimestreamWriteClientTypes.PartitionKey]?
 
@@ -1213,10 +1215,9 @@ extension TimestreamWriteClientTypes {
             self.compositePartitionKey = compositePartitionKey
         }
     }
-
 }
 
-public struct CreateTableInput {
+public struct CreateTableInput: Swift.Sendable {
     /// The name of the Timestream database.
     /// This member is required.
     public var databaseName: Swift.String?
@@ -1252,7 +1253,7 @@ public struct CreateTableInput {
 
 extension TimestreamWriteClientTypes {
 
-    public enum TableStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum TableStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case active
         case deleting
         case restoring
@@ -1283,8 +1284,9 @@ extension TimestreamWriteClientTypes {
 }
 
 extension TimestreamWriteClientTypes {
+
     /// Represents a database table in Timestream. Tables contain one or more related time series. You can modify the retention duration of the memory store and the magnetic store for a table.
-    public struct Table {
+    public struct Table: Swift.Sendable {
         /// The Amazon Resource Name that uniquely identifies this table.
         public var arn: Swift.String?
         /// The time when the Timestream table was created.
@@ -1331,10 +1333,9 @@ extension TimestreamWriteClientTypes {
             self.tableStatus = tableStatus
         }
     }
-
 }
 
-public struct CreateTableOutput {
+public struct CreateTableOutput: Swift.Sendable {
     /// The newly created Timestream table.
     public var table: TimestreamWriteClientTypes.Table?
 
@@ -1346,7 +1347,7 @@ public struct CreateTableOutput {
     }
 }
 
-public struct DeleteDatabaseInput {
+public struct DeleteDatabaseInput: Swift.Sendable {
     /// The name of the Timestream database to be deleted.
     /// This member is required.
     public var databaseName: Swift.String?
@@ -1359,7 +1360,7 @@ public struct DeleteDatabaseInput {
     }
 }
 
-public struct DeleteTableInput {
+public struct DeleteTableInput: Swift.Sendable {
     /// The name of the database where the Timestream database is to be deleted.
     /// This member is required.
     public var databaseName: Swift.String?
@@ -1377,7 +1378,7 @@ public struct DeleteTableInput {
     }
 }
 
-public struct DescribeBatchLoadTaskInput {
+public struct DescribeBatchLoadTaskInput: Swift.Sendable {
     /// The ID of the batch load task.
     /// This member is required.
     public var taskId: Swift.String?
@@ -1390,7 +1391,7 @@ public struct DescribeBatchLoadTaskInput {
     }
 }
 
-public struct DescribeBatchLoadTaskOutput {
+public struct DescribeBatchLoadTaskOutput: Swift.Sendable {
     /// Description of the batch load task.
     /// This member is required.
     public var batchLoadTaskDescription: TimestreamWriteClientTypes.BatchLoadTaskDescription?
@@ -1403,7 +1404,7 @@ public struct DescribeBatchLoadTaskOutput {
     }
 }
 
-public struct DescribeDatabaseInput {
+public struct DescribeDatabaseInput: Swift.Sendable {
     /// The name of the Timestream database.
     /// This member is required.
     public var databaseName: Swift.String?
@@ -1416,7 +1417,7 @@ public struct DescribeDatabaseInput {
     }
 }
 
-public struct DescribeDatabaseOutput {
+public struct DescribeDatabaseOutput: Swift.Sendable {
     /// The name of the Timestream table.
     public var database: TimestreamWriteClientTypes.Database?
 
@@ -1428,14 +1429,15 @@ public struct DescribeDatabaseOutput {
     }
 }
 
-public struct DescribeEndpointsInput {
+public struct DescribeEndpointsInput: Swift.Sendable {
 
     public init() { }
 }
 
 extension TimestreamWriteClientTypes {
+
     /// Represents an available endpoint against which to make API calls against, as well as the TTL for that endpoint.
-    public struct Endpoint {
+    public struct Endpoint: Swift.Sendable {
         /// An endpoint address.
         /// This member is required.
         public var address: Swift.String?
@@ -1452,10 +1454,9 @@ extension TimestreamWriteClientTypes {
             self.cachePeriodInMinutes = cachePeriodInMinutes
         }
     }
-
 }
 
-public struct DescribeEndpointsOutput {
+public struct DescribeEndpointsOutput: Swift.Sendable {
     /// An Endpoints object is returned when a DescribeEndpoints request is made.
     /// This member is required.
     public var endpoints: [TimestreamWriteClientTypes.Endpoint]?
@@ -1468,7 +1469,7 @@ public struct DescribeEndpointsOutput {
     }
 }
 
-public struct DescribeTableInput {
+public struct DescribeTableInput: Swift.Sendable {
     /// The name of the Timestream database.
     /// This member is required.
     public var databaseName: Swift.String?
@@ -1486,7 +1487,7 @@ public struct DescribeTableInput {
     }
 }
 
-public struct DescribeTableOutput {
+public struct DescribeTableOutput: Swift.Sendable {
     /// The Timestream table.
     public var table: TimestreamWriteClientTypes.Table?
 
@@ -1500,7 +1501,7 @@ public struct DescribeTableOutput {
 
 extension TimestreamWriteClientTypes {
 
-    public enum DimensionValueType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DimensionValueType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case varchar
         case sdkUnknown(Swift.String)
 
@@ -1525,8 +1526,9 @@ extension TimestreamWriteClientTypes {
 }
 
 extension TimestreamWriteClientTypes {
+
     /// Represents the metadata attributes of the time series. For example, the name and Availability Zone of an EC2 instance or the name of the manufacturer of a wind turbine are dimensions.
-    public struct Dimension {
+    public struct Dimension: Swift.Sendable {
         /// The data type of the dimension for the time-series data point.
         public var dimensionValueType: TimestreamWriteClientTypes.DimensionValueType?
         /// Dimension represents the metadata attributes of the time series. For example, the name and Availability Zone of an EC2 instance or the name of the manufacturer of a wind turbine are dimensions. For constraints on dimension names, see [Naming Constraints](https://docs.aws.amazon.com/timestream/latest/developerguide/ts-limits.html#limits.naming).
@@ -1547,10 +1549,9 @@ extension TimestreamWriteClientTypes {
             self.value = value
         }
     }
-
 }
 
-public struct ListBatchLoadTasksInput {
+public struct ListBatchLoadTasksInput: Swift.Sendable {
     /// The total number of items to return in the output. If the total number of items available is more than the value specified, a NextToken is provided in the output. To resume pagination, provide the NextToken value as argument of a subsequent API invocation.
     public var maxResults: Swift.Int?
     /// A token to specify where to start paginating. This is the NextToken from a previously truncated response.
@@ -1570,7 +1571,7 @@ public struct ListBatchLoadTasksInput {
     }
 }
 
-public struct ListBatchLoadTasksOutput {
+public struct ListBatchLoadTasksOutput: Swift.Sendable {
     /// A list of batch load task details.
     public var batchLoadTasks: [TimestreamWriteClientTypes.BatchLoadTask]?
     /// A token to specify where to start paginating. Provide the next ListBatchLoadTasksRequest.
@@ -1586,7 +1587,7 @@ public struct ListBatchLoadTasksOutput {
     }
 }
 
-public struct ListDatabasesInput {
+public struct ListDatabasesInput: Swift.Sendable {
     /// The total number of items to return in the output. If the total number of items available is more than the value specified, a NextToken is provided in the output. To resume pagination, provide the NextToken value as argument of a subsequent API invocation.
     public var maxResults: Swift.Int?
     /// The pagination token. To resume pagination, provide the NextToken value as argument of a subsequent API invocation.
@@ -1602,7 +1603,7 @@ public struct ListDatabasesInput {
     }
 }
 
-public struct ListDatabasesOutput {
+public struct ListDatabasesOutput: Swift.Sendable {
     /// A list of database names.
     public var databases: [TimestreamWriteClientTypes.Database]?
     /// The pagination token. This parameter is returned when the response is truncated.
@@ -1618,7 +1619,7 @@ public struct ListDatabasesOutput {
     }
 }
 
-public struct ListTablesInput {
+public struct ListTablesInput: Swift.Sendable {
     /// The name of the Timestream database.
     public var databaseName: Swift.String?
     /// The total number of items to return in the output. If the total number of items available is more than the value specified, a NextToken is provided in the output. To resume pagination, provide the NextToken value as argument of a subsequent API invocation.
@@ -1638,7 +1639,7 @@ public struct ListTablesInput {
     }
 }
 
-public struct ListTablesOutput {
+public struct ListTablesOutput: Swift.Sendable {
     /// A token to specify where to start paginating. This is the NextToken from a previously truncated response.
     public var nextToken: Swift.String?
     /// A list of tables.
@@ -1654,7 +1655,7 @@ public struct ListTablesOutput {
     }
 }
 
-public struct ListTagsForResourceInput {
+public struct ListTagsForResourceInput: Swift.Sendable {
     /// The Timestream resource with tags to be listed. This value is an Amazon Resource Name (ARN).
     /// This member is required.
     public var resourceARN: Swift.String?
@@ -1667,7 +1668,7 @@ public struct ListTagsForResourceInput {
     }
 }
 
-public struct ListTagsForResourceOutput {
+public struct ListTagsForResourceOutput: Swift.Sendable {
     /// The tags currently associated with the Timestream resource.
     public var tags: [TimestreamWriteClientTypes.Tag]?
 
@@ -1680,8 +1681,9 @@ public struct ListTagsForResourceOutput {
 }
 
 extension TimestreamWriteClientTypes {
+
     /// Represents the data attribute of the time series. For example, the CPU utilization of an EC2 instance or the RPM of a wind turbine are measures. MeasureValue has both name and value. MeasureValue is only allowed for type MULTI. Using MULTI type, you can pass multiple data attributes associated with the same time series in a single record
-    public struct MeasureValue {
+    public struct MeasureValue: Swift.Sendable {
         /// The name of the MeasureValue. For constraints on MeasureValue names, see [ Naming Constraints](https://docs.aws.amazon.com/timestream/latest/developerguide/ts-limits.html#limits.naming) in the Amazon Timestream Developer Guide.
         /// This member is required.
         public var name: Swift.String?
@@ -1703,12 +1705,12 @@ extension TimestreamWriteClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension TimestreamWriteClientTypes {
+
     /// Represents a time-series data point being written into Timestream. Each record contains an array of dimensions. Dimensions represent the metadata attributes of a time-series data point, such as the instance name or Availability Zone of an EC2 instance. A record also contains the measure name, which is the name of the measure being collected (for example, the CPU utilization of an EC2 instance). Additionally, a record contains the measure value and the value type, which is the data type of the measure value. Also, the record contains the timestamp of when the measure was collected and the timestamp unit, which represents the granularity of the timestamp. Records have a Version field, which is a 64-bit long that you can use for updating data points. Writes of a duplicate record with the same dimension, timestamp, and measure name but different measure value will only succeed if the Version attribute of the record in the write request is higher than that of the existing record. Timestream defaults to a Version of 1 for records without the Version field.
-    public struct Record {
+    public struct Record: Swift.Sendable {
         /// Contains the list of dimensions for time-series data points.
         public var dimensions: [TimestreamWriteClientTypes.Dimension]?
         /// Measure represents the data attribute of the time series. For example, the CPU utilization of an EC2 instance or the RPM of a wind turbine are measures.
@@ -1747,12 +1749,12 @@ extension TimestreamWriteClientTypes {
             self.version = version
         }
     }
-
 }
 
 extension TimestreamWriteClientTypes {
+
     /// Information on the records ingested by this request.
-    public struct RecordsIngested {
+    public struct RecordsIngested: Swift.Sendable {
         /// Count of records ingested into the magnetic store.
         public var magneticStore: Swift.Int
         /// Count of records ingested into the memory store.
@@ -1771,12 +1773,12 @@ extension TimestreamWriteClientTypes {
             self.total = total
         }
     }
-
 }
 
 extension TimestreamWriteClientTypes {
+
     /// Represents records that were not successfully inserted into Timestream due to data validation issues that must be resolved before reinserting time-series data into the system.
-    public struct RejectedRecord {
+    public struct RejectedRecord: Swift.Sendable {
         /// The existing version of the record. This value is populated in scenarios where an identical record exists with a higher version than the version in the write request.
         public var existingVersion: Swift.Int?
         /// The reason why a record was not successfully inserted into Timestream. Possible causes of failure include:
@@ -1811,7 +1813,6 @@ extension TimestreamWriteClientTypes {
             self.recordIndex = recordIndex
         }
     }
-
 }
 
 /// WriteRecords would throw this exception in the following cases:
@@ -1858,7 +1859,7 @@ public struct RejectedRecordsException: ClientRuntime.ModeledError, AWSClientRun
     }
 }
 
-public struct ResumeBatchLoadTaskInput {
+public struct ResumeBatchLoadTaskInput: Swift.Sendable {
     /// The ID of the batch load task to resume.
     /// This member is required.
     public var taskId: Swift.String?
@@ -1871,12 +1872,12 @@ public struct ResumeBatchLoadTaskInput {
     }
 }
 
-public struct ResumeBatchLoadTaskOutput {
+public struct ResumeBatchLoadTaskOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct TagResourceInput {
+public struct TagResourceInput: Swift.Sendable {
     /// Identifies the Timestream resource to which tags should be added. This value is an Amazon Resource Name (ARN).
     /// This member is required.
     public var resourceARN: Swift.String?
@@ -1894,12 +1895,12 @@ public struct TagResourceInput {
     }
 }
 
-public struct TagResourceOutput {
+public struct TagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UntagResourceInput {
+public struct UntagResourceInput: Swift.Sendable {
     /// The Timestream resource that the tags will be removed from. This value is an Amazon Resource Name (ARN).
     /// This member is required.
     public var resourceARN: Swift.String?
@@ -1917,12 +1918,12 @@ public struct UntagResourceInput {
     }
 }
 
-public struct UntagResourceOutput {
+public struct UntagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdateDatabaseInput {
+public struct UpdateDatabaseInput: Swift.Sendable {
     /// The name of the database.
     /// This member is required.
     public var databaseName: Swift.String?
@@ -1948,7 +1949,7 @@ public struct UpdateDatabaseInput {
     }
 }
 
-public struct UpdateDatabaseOutput {
+public struct UpdateDatabaseOutput: Swift.Sendable {
     /// A top-level container for a table. Databases and tables are the fundamental management concepts in Amazon Timestream. All tables in a database are encrypted with the same KMS key.
     public var database: TimestreamWriteClientTypes.Database?
 
@@ -1960,7 +1961,7 @@ public struct UpdateDatabaseOutput {
     }
 }
 
-public struct UpdateTableInput {
+public struct UpdateTableInput: Swift.Sendable {
     /// The name of the Timestream database.
     /// This member is required.
     public var databaseName: Swift.String?
@@ -1990,7 +1991,7 @@ public struct UpdateTableInput {
     }
 }
 
-public struct UpdateTableOutput {
+public struct UpdateTableOutput: Swift.Sendable {
     /// The updated Timestream table.
     public var table: TimestreamWriteClientTypes.Table?
 
@@ -2002,7 +2003,7 @@ public struct UpdateTableOutput {
     }
 }
 
-public struct WriteRecordsInput {
+public struct WriteRecordsInput: Swift.Sendable {
     /// A record that contains the common measure, dimension, time, and version attributes shared across all the records in the request. The measure and dimension attributes specified will be merged with the measure and dimension attributes in the records object when the data is written into Timestream. Dimensions may not overlap, or a ValidationException will be thrown. In other words, a record must contain dimensions with unique names.
     public var commonAttributes: TimestreamWriteClientTypes.Record?
     /// The name of the Timestream database.
@@ -2029,7 +2030,7 @@ public struct WriteRecordsInput {
     }
 }
 
-public struct WriteRecordsOutput {
+public struct WriteRecordsOutput: Swift.Sendable {
     /// Information on the records ingested by this request.
     public var recordsIngested: TimestreamWriteClientTypes.RecordsIngested?
 

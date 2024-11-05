@@ -171,7 +171,7 @@ public struct ServiceException: ClientRuntime.ModeledError, AWSClientRuntime.AWS
     }
 }
 
-public struct AcceptSharedDirectoryInput {
+public struct AcceptSharedDirectoryInput: Swift.Sendable {
     /// Identifier of the shared directory in the directory consumer account. This identifier is different for each directory owner account.
     /// This member is required.
     public var sharedDirectoryId: Swift.String?
@@ -186,7 +186,7 @@ public struct AcceptSharedDirectoryInput {
 
 extension DirectoryClientTypes {
 
-    public enum ShareMethod: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ShareMethod: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case handshake
         case organizations
         case sdkUnknown(Swift.String)
@@ -215,7 +215,7 @@ extension DirectoryClientTypes {
 
 extension DirectoryClientTypes {
 
-    public enum ShareStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ShareStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case deleted
         case deleting
         case pendingAcceptance
@@ -264,8 +264,9 @@ extension DirectoryClientTypes {
 }
 
 extension DirectoryClientTypes {
+
     /// Details about the shared directory in the directory owner account for which the share request in the directory consumer account has been accepted.
-    public struct SharedDirectory {
+    public struct SharedDirectory: Swift.Sendable {
         /// The date and time that the shared directory was created.
         public var createdDateTime: Foundation.Date?
         /// The date and time that the shared directory was last updated.
@@ -308,7 +309,6 @@ extension DirectoryClientTypes {
             self.sharedDirectoryId = sharedDirectoryId
         }
     }
-
 }
 
 extension DirectoryClientTypes.SharedDirectory: Swift.CustomDebugStringConvertible {
@@ -316,7 +316,7 @@ extension DirectoryClientTypes.SharedDirectory: Swift.CustomDebugStringConvertib
         "SharedDirectory(createdDateTime: \(Swift.String(describing: createdDateTime)), lastUpdatedDateTime: \(Swift.String(describing: lastUpdatedDateTime)), ownerAccountId: \(Swift.String(describing: ownerAccountId)), ownerDirectoryId: \(Swift.String(describing: ownerDirectoryId)), shareMethod: \(Swift.String(describing: shareMethod)), shareStatus: \(Swift.String(describing: shareStatus)), sharedAccountId: \(Swift.String(describing: sharedAccountId)), sharedDirectoryId: \(Swift.String(describing: sharedDirectoryId)), shareNotes: \"CONTENT_REDACTED\")"}
 }
 
-public struct AcceptSharedDirectoryOutput {
+public struct AcceptSharedDirectoryOutput: Swift.Sendable {
     /// The shared directory in the directory consumer account.
     public var sharedDirectory: DirectoryClientTypes.SharedDirectory?
 
@@ -445,8 +445,9 @@ public struct IpRouteLimitExceededException: ClientRuntime.ModeledError, AWSClie
 }
 
 extension DirectoryClientTypes {
+
     /// IP address block. This is often the address block of the DNS server used for your self-managed domain.
-    public struct IpRoute {
+    public struct IpRoute: Swift.Sendable {
         /// IP address block using CIDR format, for example 10.0.0.0/24. This is often the address block of the DNS server used for your self-managed domain. For a single IP address use a CIDR address block with /32. For example 10.0.0.0/32.
         public var cidrIp: Swift.String?
         /// Description of the address block.
@@ -461,10 +462,9 @@ extension DirectoryClientTypes {
             self.description = description
         }
     }
-
 }
 
-public struct AddIpRoutesInput {
+public struct AddIpRoutesInput: Swift.Sendable {
     /// Identifier (ID) of the directory to which to add the address block.
     /// This member is required.
     public var directoryId: Swift.String?
@@ -528,7 +528,7 @@ public struct AddIpRoutesInput {
     }
 }
 
-public struct AddIpRoutesOutput {
+public struct AddIpRoutesOutput: Swift.Sendable {
 
     public init() { }
 }
@@ -650,8 +650,9 @@ public struct UnsupportedOperationException: ClientRuntime.ModeledError, AWSClie
 }
 
 extension DirectoryClientTypes {
+
     /// Contains VPC information for the [CreateDirectory] or [CreateMicrosoftAD] operation.
-    public struct DirectoryVpcSettings {
+    public struct DirectoryVpcSettings: Swift.Sendable {
         /// The identifiers of the subnets for the directory servers. The two subnets must be in different Availability Zones. Directory Service creates a directory server and a DNS server in each of these subnets.
         /// This member is required.
         public var subnetIds: [Swift.String]?
@@ -668,10 +669,9 @@ extension DirectoryClientTypes {
             self.vpcId = vpcId
         }
     }
-
 }
 
-public struct AddRegionInput {
+public struct AddRegionInput: Swift.Sendable {
     /// The identifier of the directory to which you want to add Region replication.
     /// This member is required.
     public var directoryId: Swift.String?
@@ -694,7 +694,7 @@ public struct AddRegionInput {
     }
 }
 
-public struct AddRegionOutput {
+public struct AddRegionOutput: Swift.Sendable {
 
     public init() { }
 }
@@ -729,8 +729,9 @@ public struct TagLimitExceededException: ClientRuntime.ModeledError, AWSClientRu
 }
 
 extension DirectoryClientTypes {
+
     /// Metadata assigned to a directory consisting of a key-value pair.
-    public struct Tag {
+    public struct Tag: Swift.Sendable {
         /// Required name of the tag. The string value can be Unicode characters and cannot be prefixed with "aws:". The string can contain only the set of Unicode letters, digits, white-space, '_', '.', '/', '=', '+', '-', ':', '@'(Java regex: "^([\\p{L}\\p{Z}\\p{N}_.:/=+\\-]*)$").
         /// This member is required.
         public var key: Swift.String?
@@ -747,10 +748,9 @@ extension DirectoryClientTypes {
             self.value = value
         }
     }
-
 }
 
-public struct AddTagsToResourceInput {
+public struct AddTagsToResourceInput: Swift.Sendable {
     /// Identifier (ID) for the directory to which to add the tag.
     /// This member is required.
     public var resourceId: Swift.String?
@@ -768,14 +768,15 @@ public struct AddTagsToResourceInput {
     }
 }
 
-public struct AddTagsToResourceOutput {
+public struct AddTagsToResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
 extension DirectoryClientTypes {
+
     /// Represents a named directory attribute.
-    public struct Attribute {
+    public struct Attribute: Swift.Sendable {
         /// The name of the attribute.
         public var name: Swift.String?
         /// The value of the attribute.
@@ -790,7 +791,6 @@ extension DirectoryClientTypes {
             self.value = value
         }
     }
-
 }
 
 /// An authentication error occurred.
@@ -822,7 +822,7 @@ public struct AuthenticationFailedException: ClientRuntime.ModeledError, AWSClie
     }
 }
 
-public struct CancelSchemaExtensionInput {
+public struct CancelSchemaExtensionInput: Swift.Sendable {
     /// The identifier of the directory whose schema extension will be canceled.
     /// This member is required.
     public var directoryId: Swift.String?
@@ -840,14 +840,15 @@ public struct CancelSchemaExtensionInput {
     }
 }
 
-public struct CancelSchemaExtensionOutput {
+public struct CancelSchemaExtensionOutput: Swift.Sendable {
 
     public init() { }
 }
 
 extension DirectoryClientTypes {
+
     /// Contains information about the client certificate authentication settings for the RegisterCertificate and DescribeCertificate operations.
-    public struct ClientCertAuthSettings {
+    public struct ClientCertAuthSettings: Swift.Sendable {
         /// Specifies the URL of the default OCSP server used to check for revocation status. A secondary value to any OCSP address found in the AIA extension of the user certificate.
         public var ocspUrl: Swift.String?
 
@@ -858,12 +859,11 @@ extension DirectoryClientTypes {
             self.ocspUrl = ocspUrl
         }
     }
-
 }
 
 extension DirectoryClientTypes {
 
-    public enum CertificateState: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum CertificateState: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case deregistered
         case deregistering
         case deregisterFailed
@@ -904,7 +904,7 @@ extension DirectoryClientTypes {
 
 extension DirectoryClientTypes {
 
-    public enum CertificateType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum CertificateType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case clientCertAuth
         case clientLdaps
         case sdkUnknown(Swift.String)
@@ -932,8 +932,9 @@ extension DirectoryClientTypes {
 }
 
 extension DirectoryClientTypes {
+
     /// Information about the certificate.
-    public struct Certificate {
+    public struct Certificate: Swift.Sendable {
         /// The identifier of the certificate.
         public var certificateId: Swift.String?
         /// A ClientCertAuthSettings object that contains client certificate authentication settings.
@@ -972,7 +973,6 @@ extension DirectoryClientTypes {
             self.type = type
         }
     }
-
 }
 
 /// The certificate has already been registered into the system.
@@ -1034,8 +1034,9 @@ public struct CertificateDoesNotExistException: ClientRuntime.ModeledError, AWSC
 }
 
 extension DirectoryClientTypes {
+
     /// Contains general information about a certificate.
-    public struct CertificateInfo {
+    public struct CertificateInfo: Swift.Sendable {
         /// The identifier of the certificate.
         public var certificateId: Swift.String?
         /// The common name for the certificate.
@@ -1062,7 +1063,6 @@ extension DirectoryClientTypes {
             self.type = type
         }
     }
-
 }
 
 /// The certificate is being used for the LDAP security connection and cannot be removed without disabling LDAP security.
@@ -1125,7 +1125,7 @@ public struct CertificateLimitExceededException: ClientRuntime.ModeledError, AWS
 
 extension DirectoryClientTypes {
 
-    public enum ClientAuthenticationStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ClientAuthenticationStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case disabled
         case enabled
         case sdkUnknown(Swift.String)
@@ -1154,7 +1154,7 @@ extension DirectoryClientTypes {
 
 extension DirectoryClientTypes {
 
-    public enum ClientAuthenticationType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ClientAuthenticationType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case smartCard
         case smartCardOrPassword
         case sdkUnknown(Swift.String)
@@ -1182,8 +1182,9 @@ extension DirectoryClientTypes {
 }
 
 extension DirectoryClientTypes {
+
     /// Contains information about a client authentication method for a directory.
-    public struct ClientAuthenticationSettingInfo {
+    public struct ClientAuthenticationSettingInfo: Swift.Sendable {
         /// The date and time when the status of the client authentication type was last updated.
         public var lastUpdatedDateTime: Foundation.Date?
         /// Whether the client authentication type is enabled or disabled for the specified directory.
@@ -1202,12 +1203,12 @@ extension DirectoryClientTypes {
             self.type = type
         }
     }
-
 }
 
 extension DirectoryClientTypes {
+
     /// Contains information about a computer account in a directory.
-    public struct Computer {
+    public struct Computer: Swift.Sendable {
         /// An array of [Attribute] objects containing the LDAP attributes that belong to the computer account.
         public var computerAttributes: [DirectoryClientTypes.Attribute]?
         /// The identifier of the computer.
@@ -1226,12 +1227,11 @@ extension DirectoryClientTypes {
             self.computerName = computerName
         }
     }
-
 }
 
 extension DirectoryClientTypes {
 
-    public enum ReplicationScope: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ReplicationScope: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case domain
         case sdkUnknown(Swift.String)
 
@@ -1256,8 +1256,9 @@ extension DirectoryClientTypes {
 }
 
 extension DirectoryClientTypes {
+
     /// Points to a remote domain with which you are setting up a trust relationship. Conditional forwarders are required in order to set up a trust relationship with another domain.
-    public struct ConditionalForwarder {
+    public struct ConditionalForwarder: Swift.Sendable {
         /// The IP addresses of the remote DNS server associated with RemoteDomainName. This is the IP address of the DNS server that your conditional forwarder points to.
         public var dnsIpAddrs: [Swift.String]?
         /// The fully qualified domain name (FQDN) of the remote domains pointed to by the conditional forwarder.
@@ -1276,7 +1277,6 @@ extension DirectoryClientTypes {
             self.replicationScope = replicationScope
         }
     }
-
 }
 
 /// The maximum number of directories in the region has been reached. You can use the [GetDirectoryLimits] operation to determine your directory limits in the region.
@@ -1309,8 +1309,9 @@ public struct DirectoryLimitExceededException: ClientRuntime.ModeledError, AWSCl
 }
 
 extension DirectoryClientTypes {
+
     /// Contains information for the [ConnectDirectory] operation when an AD Connector directory is being created.
-    public struct DirectoryConnectSettings {
+    public struct DirectoryConnectSettings: Swift.Sendable {
         /// A list of one or more IP addresses of DNS servers or domain controllers in your self-managed directory.
         /// This member is required.
         public var customerDnsIps: [Swift.String]?
@@ -1343,12 +1344,11 @@ extension DirectoryClientTypes {
             self.vpcId = vpcId
         }
     }
-
 }
 
 extension DirectoryClientTypes {
 
-    public enum DirectorySize: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DirectorySize: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case large
         case small
         case sdkUnknown(Swift.String)
@@ -1376,7 +1376,7 @@ extension DirectoryClientTypes {
 }
 
 /// Contains the inputs for the [ConnectDirectory] operation.
-public struct ConnectDirectoryInput {
+public struct ConnectDirectoryInput: Swift.Sendable {
     /// A [DirectoryConnectSettings] object that contains additional information for the operation.
     /// This member is required.
     public var connectSettings: DirectoryClientTypes.DirectoryConnectSettings?
@@ -1422,7 +1422,7 @@ extension ConnectDirectoryInput: Swift.CustomDebugStringConvertible {
 }
 
 /// Contains the results of the [ConnectDirectory] operation.
-public struct ConnectDirectoryOutput {
+public struct ConnectDirectoryOutput: Swift.Sendable {
     /// The identifier of the new directory.
     public var directoryId: Swift.String?
 
@@ -1435,7 +1435,7 @@ public struct ConnectDirectoryOutput {
 }
 
 /// Contains the inputs for the [CreateAlias] operation.
-public struct CreateAliasInput {
+public struct CreateAliasInput: Swift.Sendable {
     /// The requested alias. The alias must be unique amongst all aliases in Amazon Web Services. This operation throws an EntityAlreadyExistsException error if the alias already exists.
     /// This member is required.
     public var alias: Swift.String?
@@ -1454,7 +1454,7 @@ public struct CreateAliasInput {
 }
 
 /// Contains the results of the [CreateAlias] operation.
-public struct CreateAliasOutput {
+public struct CreateAliasOutput: Swift.Sendable {
     /// The alias for the directory.
     public var alias: Swift.String?
     /// The identifier of the directory.
@@ -1471,7 +1471,7 @@ public struct CreateAliasOutput {
 }
 
 /// Contains the inputs for the [CreateComputer] operation.
-public struct CreateComputerInput {
+public struct CreateComputerInput: Swift.Sendable {
     /// An array of [Attribute] objects that contain any LDAP attributes to apply to the computer account.
     public var computerAttributes: [DirectoryClientTypes.Attribute]?
     /// The name of the computer account.
@@ -1508,7 +1508,7 @@ extension CreateComputerInput: Swift.CustomDebugStringConvertible {
 }
 
 /// Contains the results for the [CreateComputer] operation.
-public struct CreateComputerOutput {
+public struct CreateComputerOutput: Swift.Sendable {
     /// A [Computer] object that represents the computer account.
     public var computer: DirectoryClientTypes.Computer?
 
@@ -1521,7 +1521,7 @@ public struct CreateComputerOutput {
 }
 
 /// Initiates the creation of a conditional forwarder for your Directory Service for Microsoft Active Directory. Conditional forwarders are required in order to set up a trust relationship with another domain.
-public struct CreateConditionalForwarderInput {
+public struct CreateConditionalForwarderInput: Swift.Sendable {
     /// The directory ID of the Amazon Web Services directory for which you are creating the conditional forwarder.
     /// This member is required.
     public var directoryId: Swift.String?
@@ -1545,13 +1545,13 @@ public struct CreateConditionalForwarderInput {
 }
 
 /// The result of a CreateConditinalForwarder request.
-public struct CreateConditionalForwarderOutput {
+public struct CreateConditionalForwarderOutput: Swift.Sendable {
 
     public init() { }
 }
 
 /// Contains the inputs for the [CreateDirectory] operation.
-public struct CreateDirectoryInput {
+public struct CreateDirectoryInput: Swift.Sendable {
     /// A description for the directory.
     public var description: Swift.String?
     /// The fully qualified name for the directory, such as corp.example.com.
@@ -1612,7 +1612,7 @@ extension CreateDirectoryInput: Swift.CustomDebugStringConvertible {
 }
 
 /// Contains the results of the [CreateDirectory] operation.
-public struct CreateDirectoryOutput {
+public struct CreateDirectoryOutput: Swift.Sendable {
     /// The identifier of the directory that was created.
     public var directoryId: Swift.String?
 
@@ -1653,7 +1653,7 @@ public struct InsufficientPermissionsException: ClientRuntime.ModeledError, AWSC
     }
 }
 
-public struct CreateLogSubscriptionInput {
+public struct CreateLogSubscriptionInput: Swift.Sendable {
     /// Identifier of the directory to which you want to subscribe and receive real-time logs to your specified CloudWatch log group.
     /// This member is required.
     public var directoryId: Swift.String?
@@ -1671,14 +1671,14 @@ public struct CreateLogSubscriptionInput {
     }
 }
 
-public struct CreateLogSubscriptionOutput {
+public struct CreateLogSubscriptionOutput: Swift.Sendable {
 
     public init() { }
 }
 
 extension DirectoryClientTypes {
 
-    public enum DirectoryEdition: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DirectoryEdition: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case enterprise
         case standard
         case sdkUnknown(Swift.String)
@@ -1706,7 +1706,7 @@ extension DirectoryClientTypes {
 }
 
 /// Creates an Managed Microsoft AD directory.
-public struct CreateMicrosoftADInput {
+public struct CreateMicrosoftADInput: Swift.Sendable {
     /// A description for the directory. This label will appear on the Amazon Web Services console Directory Details page after the directory is created.
     public var description: Swift.String?
     /// Managed Microsoft AD is available in two editions: Standard and Enterprise. Enterprise is the default.
@@ -1751,7 +1751,7 @@ extension CreateMicrosoftADInput: Swift.CustomDebugStringConvertible {
 }
 
 /// Result of a CreateMicrosoftAD request.
-public struct CreateMicrosoftADOutput {
+public struct CreateMicrosoftADOutput: Swift.Sendable {
     /// The identifier of the directory that was created.
     public var directoryId: Swift.String?
 
@@ -1793,7 +1793,7 @@ public struct SnapshotLimitExceededException: ClientRuntime.ModeledError, AWSCli
 }
 
 /// Contains the inputs for the [CreateSnapshot] operation.
-public struct CreateSnapshotInput {
+public struct CreateSnapshotInput: Swift.Sendable {
     /// The identifier of the directory of which to take a snapshot.
     /// This member is required.
     public var directoryId: Swift.String?
@@ -1811,7 +1811,7 @@ public struct CreateSnapshotInput {
 }
 
 /// Contains the results of the [CreateSnapshot] operation.
-public struct CreateSnapshotOutput {
+public struct CreateSnapshotOutput: Swift.Sendable {
     /// The identifier of the snapshot that was created.
     public var snapshotId: Swift.String?
 
@@ -1825,7 +1825,7 @@ public struct CreateSnapshotOutput {
 
 extension DirectoryClientTypes {
 
-    public enum SelectiveAuth: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SelectiveAuth: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case disabled
         case enabled
         case sdkUnknown(Swift.String)
@@ -1854,7 +1854,7 @@ extension DirectoryClientTypes {
 
 extension DirectoryClientTypes {
 
-    public enum TrustDirection: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum TrustDirection: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case oneWayIncoming
         case oneWayOutgoing
         case twoWay
@@ -1886,7 +1886,7 @@ extension DirectoryClientTypes {
 
 extension DirectoryClientTypes {
 
-    public enum TrustType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum TrustType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case external
         case forest
         case sdkUnknown(Swift.String)
@@ -1914,7 +1914,7 @@ extension DirectoryClientTypes {
 }
 
 /// Directory Service for Microsoft Active Directory allows you to configure trust relationships. For example, you can establish a trust between your Managed Microsoft AD directory, and your existing self-managed Microsoft Active Directory. This would allow you to provide users and groups access to resources in either domain, with a single set of credentials. This action initiates the creation of the Amazon Web Services side of a trust relationship between an Managed Microsoft AD directory and an external domain.
-public struct CreateTrustInput {
+public struct CreateTrustInput: Swift.Sendable {
     /// The IP addresses of the remote DNS server associated with RemoteDomainName.
     public var conditionalForwarderIpAddrs: [Swift.String]?
     /// The Directory ID of the Managed Microsoft AD directory for which to establish the trust relationship.
@@ -1960,7 +1960,7 @@ extension CreateTrustInput: Swift.CustomDebugStringConvertible {
 }
 
 /// The result of a CreateTrust request.
-public struct CreateTrustOutput {
+public struct CreateTrustOutput: Swift.Sendable {
     /// A unique identifier for the trust relationship that was created.
     public var trustId: Swift.String?
 
@@ -1974,7 +1974,7 @@ public struct CreateTrustOutput {
 
 extension DirectoryClientTypes {
 
-    public enum DataAccessStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DataAccessStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case disabled
         case disabling
         case enabled
@@ -2011,7 +2011,7 @@ extension DirectoryClientTypes {
 }
 
 /// Deletes a conditional forwarder.
-public struct DeleteConditionalForwarderInput {
+public struct DeleteConditionalForwarderInput: Swift.Sendable {
     /// The directory ID for which you are deleting the conditional forwarder.
     /// This member is required.
     public var directoryId: Swift.String?
@@ -2030,13 +2030,13 @@ public struct DeleteConditionalForwarderInput {
 }
 
 /// The result of a DeleteConditionalForwarder request.
-public struct DeleteConditionalForwarderOutput {
+public struct DeleteConditionalForwarderOutput: Swift.Sendable {
 
     public init() { }
 }
 
 /// Contains the inputs for the [DeleteDirectory] operation.
-public struct DeleteDirectoryInput {
+public struct DeleteDirectoryInput: Swift.Sendable {
     /// The identifier of the directory to delete.
     /// This member is required.
     public var directoryId: Swift.String?
@@ -2050,7 +2050,7 @@ public struct DeleteDirectoryInput {
 }
 
 /// Contains the results of the [DeleteDirectory] operation.
-public struct DeleteDirectoryOutput {
+public struct DeleteDirectoryOutput: Swift.Sendable {
     /// The directory identifier.
     public var directoryId: Swift.String?
 
@@ -2062,7 +2062,7 @@ public struct DeleteDirectoryOutput {
     }
 }
 
-public struct DeleteLogSubscriptionInput {
+public struct DeleteLogSubscriptionInput: Swift.Sendable {
     /// Identifier of the directory whose log subscription you want to delete.
     /// This member is required.
     public var directoryId: Swift.String?
@@ -2075,13 +2075,13 @@ public struct DeleteLogSubscriptionInput {
     }
 }
 
-public struct DeleteLogSubscriptionOutput {
+public struct DeleteLogSubscriptionOutput: Swift.Sendable {
 
     public init() { }
 }
 
 /// Contains the inputs for the [DeleteSnapshot] operation.
-public struct DeleteSnapshotInput {
+public struct DeleteSnapshotInput: Swift.Sendable {
     /// The identifier of the directory snapshot to be deleted.
     /// This member is required.
     public var snapshotId: Swift.String?
@@ -2095,7 +2095,7 @@ public struct DeleteSnapshotInput {
 }
 
 /// Contains the results of the [DeleteSnapshot] operation.
-public struct DeleteSnapshotOutput {
+public struct DeleteSnapshotOutput: Swift.Sendable {
     /// The identifier of the directory snapshot that was deleted.
     public var snapshotId: Swift.String?
 
@@ -2108,7 +2108,7 @@ public struct DeleteSnapshotOutput {
 }
 
 /// Deletes the local side of an existing trust relationship between the Managed Microsoft AD directory and the external domain.
-public struct DeleteTrustInput {
+public struct DeleteTrustInput: Swift.Sendable {
     /// Delete a conditional forwarder as part of a DeleteTrustRequest.
     public var deleteAssociatedConditionalForwarder: Swift.Bool?
     /// The Trust ID of the trust relationship to be deleted.
@@ -2126,7 +2126,7 @@ public struct DeleteTrustInput {
 }
 
 /// The result of a DeleteTrust request.
-public struct DeleteTrustOutput {
+public struct DeleteTrustOutput: Swift.Sendable {
     /// The Trust ID of the trust relationship that was deleted.
     public var trustId: Swift.String?
 
@@ -2138,7 +2138,7 @@ public struct DeleteTrustOutput {
     }
 }
 
-public struct DeregisterCertificateInput {
+public struct DeregisterCertificateInput: Swift.Sendable {
     /// The identifier of the certificate.
     /// This member is required.
     public var certificateId: Swift.String?
@@ -2156,13 +2156,13 @@ public struct DeregisterCertificateInput {
     }
 }
 
-public struct DeregisterCertificateOutput {
+public struct DeregisterCertificateOutput: Swift.Sendable {
 
     public init() { }
 }
 
 /// Removes the specified directory as a publisher to the specified Amazon SNS topic.
-public struct DeregisterEventTopicInput {
+public struct DeregisterEventTopicInput: Swift.Sendable {
     /// The Directory ID to remove as a publisher. This directory will no longer send messages to the specified Amazon SNS topic.
     /// This member is required.
     public var directoryId: Swift.String?
@@ -2181,12 +2181,12 @@ public struct DeregisterEventTopicInput {
 }
 
 /// The result of a DeregisterEventTopic request.
-public struct DeregisterEventTopicOutput {
+public struct DeregisterEventTopicOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DescribeCertificateInput {
+public struct DescribeCertificateInput: Swift.Sendable {
     /// The identifier of the certificate.
     /// This member is required.
     public var certificateId: Swift.String?
@@ -2204,7 +2204,7 @@ public struct DescribeCertificateInput {
     }
 }
 
-public struct DescribeCertificateOutput {
+public struct DescribeCertificateOutput: Swift.Sendable {
     /// Information about the certificate, including registered date time, certificate state, the reason for the state, expiration date time, and certificate common name.
     public var certificate: DirectoryClientTypes.Certificate?
 
@@ -2216,7 +2216,7 @@ public struct DescribeCertificateOutput {
     }
 }
 
-public struct DescribeClientAuthenticationSettingsInput {
+public struct DescribeClientAuthenticationSettingsInput: Swift.Sendable {
     /// The identifier of the directory for which to retrieve information.
     /// This member is required.
     public var directoryId: Swift.String?
@@ -2241,7 +2241,7 @@ public struct DescribeClientAuthenticationSettingsInput {
     }
 }
 
-public struct DescribeClientAuthenticationSettingsOutput {
+public struct DescribeClientAuthenticationSettingsOutput: Swift.Sendable {
     /// Information about the type of client authentication for the specified directory. The following information is retrieved: The date and time when the status of the client authentication type was last updated, whether the client authentication type is enabled or disabled, and the type of client authentication.
     public var clientAuthenticationSettingsInfo: [DirectoryClientTypes.ClientAuthenticationSettingInfo]?
     /// The next token used to retrieve the client authentication settings if the number of setting types exceeds page limit and there is another page.
@@ -2258,7 +2258,7 @@ public struct DescribeClientAuthenticationSettingsOutput {
 }
 
 /// Describes a conditional forwarder.
-public struct DescribeConditionalForwardersInput {
+public struct DescribeConditionalForwardersInput: Swift.Sendable {
     /// The directory ID for which to get the list of associated conditional forwarders.
     /// This member is required.
     public var directoryId: Swift.String?
@@ -2276,7 +2276,7 @@ public struct DescribeConditionalForwardersInput {
 }
 
 /// The result of a DescribeConditionalForwarder request.
-public struct DescribeConditionalForwardersOutput {
+public struct DescribeConditionalForwardersOutput: Swift.Sendable {
     /// The list of conditional forwarders that have been created.
     public var conditionalForwarders: [DirectoryClientTypes.ConditionalForwarder]?
 
@@ -2318,7 +2318,7 @@ public struct InvalidNextTokenException: ClientRuntime.ModeledError, AWSClientRu
 }
 
 /// Contains the inputs for the [DescribeDirectories] operation.
-public struct DescribeDirectoriesInput {
+public struct DescribeDirectoriesInput: Swift.Sendable {
     /// A list of identifiers of the directories for which to obtain the information. If this member is null, all directories that belong to the current account are returned. An empty list results in an InvalidParameterException being thrown.
     public var directoryIds: [Swift.String]?
     /// The maximum number of items to return. If this value is zero, the maximum number of items is specified by the limitations of the operation.
@@ -2339,8 +2339,9 @@ public struct DescribeDirectoriesInput {
 }
 
 extension DirectoryClientTypes {
+
     /// Contains information about an AD Connector directory.
-    public struct DirectoryConnectSettingsDescription {
+    public struct DirectoryConnectSettingsDescription: Swift.Sendable {
         /// A list of the Availability Zones that the directory is in.
         public var availabilityZones: [Swift.String]?
         /// The IP addresses of the AD Connector servers.
@@ -2371,12 +2372,11 @@ extension DirectoryClientTypes {
             self.vpcId = vpcId
         }
     }
-
 }
 
 extension DirectoryClientTypes {
 
-    public enum OSVersion: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum OSVersion: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case version2012
         case version2019
         case sdkUnknown(Swift.String)
@@ -2405,7 +2405,7 @@ extension DirectoryClientTypes {
 
 extension DirectoryClientTypes {
 
-    public enum RadiusAuthenticationProtocol: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum RadiusAuthenticationProtocol: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case chap
         case mschapv1
         case mschapv2
@@ -2439,8 +2439,9 @@ extension DirectoryClientTypes {
 }
 
 extension DirectoryClientTypes {
+
     /// Contains information about a Remote Authentication Dial In User Service (RADIUS) server.
-    public struct RadiusSettings {
+    public struct RadiusSettings: Swift.Sendable {
         /// The protocol specified for your RADIUS endpoints.
         public var authenticationProtocol: DirectoryClientTypes.RadiusAuthenticationProtocol?
         /// Not currently used.
@@ -2479,7 +2480,6 @@ extension DirectoryClientTypes {
             self.useSameUsername = useSameUsername
         }
     }
-
 }
 
 extension DirectoryClientTypes.RadiusSettings: Swift.CustomDebugStringConvertible {
@@ -2489,7 +2489,7 @@ extension DirectoryClientTypes.RadiusSettings: Swift.CustomDebugStringConvertibl
 
 extension DirectoryClientTypes {
 
-    public enum RadiusStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum RadiusStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case completed
         case creating
         case failed
@@ -2520,8 +2520,9 @@ extension DirectoryClientTypes {
 }
 
 extension DirectoryClientTypes {
+
     /// Contains information about the directory.
-    public struct DirectoryVpcSettingsDescription {
+    public struct DirectoryVpcSettingsDescription: Swift.Sendable {
         /// The list of Availability Zones that the directory is in.
         public var availabilityZones: [Swift.String]?
         /// The domain controller security group identifier for the directory.
@@ -2544,12 +2545,12 @@ extension DirectoryClientTypes {
             self.vpcId = vpcId
         }
     }
-
 }
 
 extension DirectoryClientTypes {
+
     /// Describes the directory owner account details that have been shared to the directory consumer account.
-    public struct OwnerDirectoryDescription {
+    public struct OwnerDirectoryDescription: Swift.Sendable {
         /// Identifier of the directory owner account.
         public var accountId: Swift.String?
         /// Identifier of the Managed Microsoft AD directory in the directory owner account.
@@ -2580,12 +2581,12 @@ extension DirectoryClientTypes {
             self.vpcSettings = vpcSettings
         }
     }
-
 }
 
 extension DirectoryClientTypes {
+
     /// Provides information about the Regions that are configured for multi-Region replication.
-    public struct RegionsInfo {
+    public struct RegionsInfo: Swift.Sendable {
         /// Lists the Regions where the directory has been replicated, excluding the primary Region.
         public var additionalRegions: [Swift.String]?
         /// The Region where the Managed Microsoft AD directory was originally created.
@@ -2600,12 +2601,11 @@ extension DirectoryClientTypes {
             self.primaryRegion = primaryRegion
         }
     }
-
 }
 
 extension DirectoryClientTypes {
 
-    public enum DirectoryStage: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DirectoryStage: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case active
         case created
         case creating
@@ -2664,7 +2664,7 @@ extension DirectoryClientTypes {
 
 extension DirectoryClientTypes {
 
-    public enum DirectoryType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DirectoryType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case adConnector
         case microsoftAd
         case sharedMicrosoftAd
@@ -2698,8 +2698,9 @@ extension DirectoryClientTypes {
 }
 
 extension DirectoryClientTypes {
+
     /// Contains information about an Directory Service directory.
-    public struct DirectoryDescription {
+    public struct DirectoryDescription: Swift.Sendable {
         /// The access URL for the directory, such as http://.awsapps.com. If no alias has been created for the directory,  is the directory identifier, such as d-XXXXXXXXXX.
         public var accessUrl: Swift.String?
         /// The alias for the directory. If no alias has been created for the directory, the alias is the directory identifier, such as d-XXXXXXXXXX.
@@ -2810,7 +2811,6 @@ extension DirectoryClientTypes {
             self.vpcSettings = vpcSettings
         }
     }
-
 }
 
 extension DirectoryClientTypes.DirectoryDescription: Swift.CustomDebugStringConvertible {
@@ -2819,7 +2819,7 @@ extension DirectoryClientTypes.DirectoryDescription: Swift.CustomDebugStringConv
 }
 
 /// Contains the results of the [DescribeDirectories] operation.
-public struct DescribeDirectoriesOutput {
+public struct DescribeDirectoriesOutput: Swift.Sendable {
     /// The list of [DirectoryDescription] objects that were retrieved. It is possible that this list contains less than the number of items specified in the Limit member of the request. This occurs if there are less than the requested number of items left to retrieve, or if the limitations of the operation have been exceeded.
     public var directoryDescriptions: [DirectoryClientTypes.DirectoryDescription]?
     /// If not null, more results are available. Pass this value for the NextToken parameter in a subsequent call to [DescribeDirectories] to retrieve the next set of items.
@@ -2835,7 +2835,7 @@ public struct DescribeDirectoriesOutput {
     }
 }
 
-public struct DescribeDirectoryDataAccessInput {
+public struct DescribeDirectoryDataAccessInput: Swift.Sendable {
     /// The directory identifier.
     /// This member is required.
     public var directoryId: Swift.String?
@@ -2848,7 +2848,7 @@ public struct DescribeDirectoryDataAccessInput {
     }
 }
 
-public struct DescribeDirectoryDataAccessOutput {
+public struct DescribeDirectoryDataAccessOutput: Swift.Sendable {
     /// The current status of data access through the Directory Service Data API.
     public var dataAccessStatus: DirectoryClientTypes.DataAccessStatus?
 
@@ -2860,7 +2860,7 @@ public struct DescribeDirectoryDataAccessOutput {
     }
 }
 
-public struct DescribeDomainControllersInput {
+public struct DescribeDomainControllersInput: Swift.Sendable {
     /// Identifier of the directory for which to retrieve the domain controller information.
     /// This member is required.
     public var directoryId: Swift.String?
@@ -2887,7 +2887,7 @@ public struct DescribeDomainControllersInput {
 
 extension DirectoryClientTypes {
 
-    public enum DomainControllerStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DomainControllerStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case active
         case creating
         case deleted
@@ -2933,8 +2933,9 @@ extension DirectoryClientTypes {
 }
 
 extension DirectoryClientTypes {
+
     /// Contains information about the domain controllers for a specified directory.
-    public struct DomainController {
+    public struct DomainController: Swift.Sendable {
         /// The Availability Zone where the domain controller is located.
         public var availabilityZone: Swift.String?
         /// Identifier of the directory where the domain controller resides.
@@ -2981,10 +2982,9 @@ extension DirectoryClientTypes {
             self.vpcId = vpcId
         }
     }
-
 }
 
-public struct DescribeDomainControllersOutput {
+public struct DescribeDomainControllersOutput: Swift.Sendable {
     /// List of the [DomainController] objects that were retrieved.
     public var domainControllers: [DirectoryClientTypes.DomainController]?
     /// If not null, more results are available. Pass this value for the NextToken parameter in a subsequent call to [DescribeDomainControllers] retrieve the next set of items.
@@ -3001,7 +3001,7 @@ public struct DescribeDomainControllersOutput {
 }
 
 /// Describes event topics.
-public struct DescribeEventTopicsInput {
+public struct DescribeEventTopicsInput: Swift.Sendable {
     /// The Directory ID for which to get the list of associated Amazon SNS topics. If this member is null, associations for all Directory IDs are returned.
     public var directoryId: Swift.String?
     /// A list of Amazon SNS topic names for which to obtain the information. If this member is null, all associations for the specified Directory ID are returned. An empty list results in an InvalidParameterException being thrown.
@@ -3019,7 +3019,7 @@ public struct DescribeEventTopicsInput {
 
 extension DirectoryClientTypes {
 
-    public enum TopicStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum TopicStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case deleted
         case failed
         case registered
@@ -3053,8 +3053,9 @@ extension DirectoryClientTypes {
 }
 
 extension DirectoryClientTypes {
+
     /// Information about Amazon SNS topic and Directory Service directory associations.
-    public struct EventTopic {
+    public struct EventTopic: Swift.Sendable {
         /// The date and time of when you associated your directory with the Amazon SNS topic.
         public var createdDateTime: Foundation.Date?
         /// The Directory ID of an Directory Service directory that will publish status messages to an Amazon SNS topic.
@@ -3081,11 +3082,10 @@ extension DirectoryClientTypes {
             self.topicName = topicName
         }
     }
-
 }
 
 /// The result of a DescribeEventTopic request.
-public struct DescribeEventTopicsOutput {
+public struct DescribeEventTopicsOutput: Swift.Sendable {
     /// A list of Amazon SNS topic names that receive status messages from the specified Directory ID.
     public var eventTopics: [DirectoryClientTypes.EventTopic]?
 
@@ -3099,7 +3099,7 @@ public struct DescribeEventTopicsOutput {
 
 extension DirectoryClientTypes {
 
-    public enum LDAPSType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum LDAPSType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case client
         case sdkUnknown(Swift.String)
 
@@ -3123,7 +3123,7 @@ extension DirectoryClientTypes {
     }
 }
 
-public struct DescribeLDAPSSettingsInput {
+public struct DescribeLDAPSSettingsInput: Swift.Sendable {
     /// The identifier of the directory.
     /// This member is required.
     public var directoryId: Swift.String?
@@ -3150,7 +3150,7 @@ public struct DescribeLDAPSSettingsInput {
 
 extension DirectoryClientTypes {
 
-    public enum LDAPSStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum LDAPSStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case disabled
         case enabled
         case enableFailed
@@ -3184,8 +3184,9 @@ extension DirectoryClientTypes {
 }
 
 extension DirectoryClientTypes {
+
     /// Contains general information about the LDAPS settings.
-    public struct LDAPSSettingInfo {
+    public struct LDAPSSettingInfo: Swift.Sendable {
         /// The date and time when the LDAPS settings were last updated.
         public var lastUpdatedDateTime: Foundation.Date?
         /// The state of the LDAPS settings.
@@ -3204,10 +3205,9 @@ extension DirectoryClientTypes {
             self.ldapsStatusReason = ldapsStatusReason
         }
     }
-
 }
 
-public struct DescribeLDAPSSettingsOutput {
+public struct DescribeLDAPSSettingsOutput: Swift.Sendable {
     /// Information about LDAP security for the specified directory, including status of enablement, state last updated date time, and the reason for the state.
     public var ldapsSettingsInfo: [DirectoryClientTypes.LDAPSSettingInfo]?
     /// The next token used to retrieve the LDAPS settings if the number of setting types exceeds page limit and there is another page.
@@ -3223,7 +3223,7 @@ public struct DescribeLDAPSSettingsOutput {
     }
 }
 
-public struct DescribeRegionsInput {
+public struct DescribeRegionsInput: Swift.Sendable {
     /// The identifier of the directory.
     /// This member is required.
     public var directoryId: Swift.String?
@@ -3246,7 +3246,7 @@ public struct DescribeRegionsInput {
 
 extension DirectoryClientTypes {
 
-    public enum RegionType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum RegionType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case additional
         case primary
         case sdkUnknown(Swift.String)
@@ -3274,8 +3274,9 @@ extension DirectoryClientTypes {
 }
 
 extension DirectoryClientTypes {
+
     /// The replicated Region information for a directory.
-    public struct RegionDescription {
+    public struct RegionDescription: Swift.Sendable {
         /// The desired number of domain controllers in the specified Region for the specified directory.
         public var desiredNumberOfDomainControllers: Swift.Int?
         /// The identifier of the directory.
@@ -3318,10 +3319,9 @@ extension DirectoryClientTypes {
             self.vpcSettings = vpcSettings
         }
     }
-
 }
 
-public struct DescribeRegionsOutput {
+public struct DescribeRegionsOutput: Swift.Sendable {
     /// If not null, more results are available. Pass this value for the NextToken parameter in a subsequent call to [DescribeRegions] to retrieve the next set of items.
     public var nextToken: Swift.String?
     /// List of Region information related to the directory for each replicated Region.
@@ -3339,7 +3339,7 @@ public struct DescribeRegionsOutput {
 
 extension DirectoryClientTypes {
 
-    public enum DirectoryConfigurationStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DirectoryConfigurationStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case `default`
         case failed
         case requested
@@ -3375,7 +3375,7 @@ extension DirectoryClientTypes {
     }
 }
 
-public struct DescribeSettingsInput {
+public struct DescribeSettingsInput: Swift.Sendable {
     /// The identifier of the directory for which to retrieve information.
     /// This member is required.
     public var directoryId: Swift.String?
@@ -3397,8 +3397,9 @@ public struct DescribeSettingsInput {
 }
 
 extension DirectoryClientTypes {
+
     /// Contains information about the specified configurable setting for a directory.
-    public struct SettingEntry {
+    public struct SettingEntry: Swift.Sendable {
         /// The valid range of values for the directory setting. These values depend on the DataType of your directory.
         public var allowedValues: Swift.String?
         /// The value of the directory setting that is applied to the directory.
@@ -3449,10 +3450,9 @@ extension DirectoryClientTypes {
             self.type = type
         }
     }
-
 }
 
-public struct DescribeSettingsOutput {
+public struct DescribeSettingsOutput: Swift.Sendable {
     /// The identifier of the directory.
     public var directoryId: Swift.String?
     /// If not null, token that indicates that more results are available. Pass this value for the NextToken parameter in a subsequent call to DescribeSettings to retrieve the next set of items.
@@ -3472,7 +3472,7 @@ public struct DescribeSettingsOutput {
     }
 }
 
-public struct DescribeSharedDirectoriesInput {
+public struct DescribeSharedDirectoriesInput: Swift.Sendable {
     /// The number of shared directories to return in the response object.
     public var limit: Swift.Int?
     /// The DescribeSharedDirectoriesResult.NextToken value from a previous call to [DescribeSharedDirectories]. Pass null if this is the first call.
@@ -3497,7 +3497,7 @@ public struct DescribeSharedDirectoriesInput {
     }
 }
 
-public struct DescribeSharedDirectoriesOutput {
+public struct DescribeSharedDirectoriesOutput: Swift.Sendable {
     /// If not null, token that indicates that more results are available. Pass this value for the NextToken parameter in a subsequent call to [DescribeSharedDirectories] to retrieve the next set of items.
     public var nextToken: Swift.String?
     /// A list of all shared directories in your account.
@@ -3514,7 +3514,7 @@ public struct DescribeSharedDirectoriesOutput {
 }
 
 /// Contains the inputs for the [DescribeSnapshots] operation.
-public struct DescribeSnapshotsInput {
+public struct DescribeSnapshotsInput: Swift.Sendable {
     /// The identifier of the directory for which to retrieve snapshot information.
     public var directoryId: Swift.String?
     /// The maximum number of objects to return.
@@ -3540,7 +3540,7 @@ public struct DescribeSnapshotsInput {
 
 extension DirectoryClientTypes {
 
-    public enum SnapshotStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SnapshotStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case completed
         case creating
         case failed
@@ -3572,7 +3572,7 @@ extension DirectoryClientTypes {
 
 extension DirectoryClientTypes {
 
-    public enum SnapshotType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SnapshotType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case auto
         case manual
         case sdkUnknown(Swift.String)
@@ -3600,8 +3600,9 @@ extension DirectoryClientTypes {
 }
 
 extension DirectoryClientTypes {
+
     /// Describes a directory snapshot.
-    public struct Snapshot {
+    public struct Snapshot: Swift.Sendable {
         /// The directory identifier.
         public var directoryId: Swift.String?
         /// The descriptive name of the snapshot.
@@ -3632,11 +3633,10 @@ extension DirectoryClientTypes {
             self.type = type
         }
     }
-
 }
 
 /// Contains the results of the [DescribeSnapshots] operation.
-public struct DescribeSnapshotsOutput {
+public struct DescribeSnapshotsOutput: Swift.Sendable {
     /// If not null, more results are available. Pass this value in the NextToken member of a subsequent call to [DescribeSnapshots].
     public var nextToken: Swift.String?
     /// The list of [Snapshot] objects that were retrieved. It is possible that this list contains less than the number of items specified in the Limit member of the request. This occurs if there are less than the requested number of items left to retrieve, or if the limitations of the operation have been exceeded.
@@ -3653,7 +3653,7 @@ public struct DescribeSnapshotsOutput {
 }
 
 /// Describes the trust relationships for a particular Managed Microsoft AD directory. If no input parameters are provided, such as directory ID or trust ID, this request describes all the trust relationships.
-public struct DescribeTrustsInput {
+public struct DescribeTrustsInput: Swift.Sendable {
     /// The Directory ID of the Amazon Web Services directory that is a part of the requested trust relationship.
     public var directoryId: Swift.String?
     /// The maximum number of objects to return.
@@ -3679,7 +3679,7 @@ public struct DescribeTrustsInput {
 
 extension DirectoryClientTypes {
 
-    public enum TrustState: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum TrustState: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case created
         case creating
         case deleted
@@ -3734,8 +3734,9 @@ extension DirectoryClientTypes {
 }
 
 extension DirectoryClientTypes {
+
     /// Describes a trust relationship between an Managed Microsoft AD directory and an external domain.
-    public struct Trust {
+    public struct Trust: Swift.Sendable {
         /// The date and time that the trust relationship was created.
         public var createdDateTime: Foundation.Date?
         /// The Directory ID of the Amazon Web Services directory involved in the trust relationship.
@@ -3786,11 +3787,10 @@ extension DirectoryClientTypes {
             self.trustType = trustType
         }
     }
-
 }
 
 /// The result of a DescribeTrust request.
-public struct DescribeTrustsOutput {
+public struct DescribeTrustsOutput: Swift.Sendable {
     /// If not null, more results are available. Pass this value for the NextToken parameter in a subsequent call to [DescribeTrusts] to retrieve the next set of items.
     public var nextToken: Swift.String?
     /// The list of Trust objects that were retrieved. It is possible that this list contains less than the number of items specified in the Limit member of the request. This occurs if there are less than the requested number of items left to retrieve, or if the limitations of the operation have been exceeded.
@@ -3808,7 +3808,7 @@ public struct DescribeTrustsOutput {
 
 extension DirectoryClientTypes {
 
-    public enum UpdateType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum UpdateType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case os
         case sdkUnknown(Swift.String)
 
@@ -3832,7 +3832,7 @@ extension DirectoryClientTypes {
     }
 }
 
-public struct DescribeUpdateDirectoryInput {
+public struct DescribeUpdateDirectoryInput: Swift.Sendable {
     /// The unique identifier of the directory.
     /// This member is required.
     public var directoryId: Swift.String?
@@ -3859,8 +3859,9 @@ public struct DescribeUpdateDirectoryInput {
 }
 
 extension DirectoryClientTypes {
+
     /// OS version that the directory needs to be updated to.
-    public struct OSUpdateSettings {
+    public struct OSUpdateSettings: Swift.Sendable {
         /// OS version that the directory needs to be updated to.
         public var osVersion: DirectoryClientTypes.OSVersion?
 
@@ -3871,12 +3872,12 @@ extension DirectoryClientTypes {
             self.osVersion = osVersion
         }
     }
-
 }
 
 extension DirectoryClientTypes {
+
     /// The value for a given type of UpdateSettings.
-    public struct UpdateValue {
+    public struct UpdateValue: Swift.Sendable {
         /// The OS update related settings.
         public var osUpdateSettings: DirectoryClientTypes.OSUpdateSettings?
 
@@ -3887,12 +3888,11 @@ extension DirectoryClientTypes {
             self.osUpdateSettings = osUpdateSettings
         }
     }
-
 }
 
 extension DirectoryClientTypes {
 
-    public enum UpdateStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum UpdateStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case updated
         case updateFailed
         case updating
@@ -3923,8 +3923,9 @@ extension DirectoryClientTypes {
 }
 
 extension DirectoryClientTypes {
+
     /// An entry of update information related to a requested update type.
-    public struct UpdateInfoEntry {
+    public struct UpdateInfoEntry: Swift.Sendable {
         /// This specifies if the update was initiated by the customer or by the service team.
         public var initiatedBy: Swift.String?
         /// The last updated date and time of a particular directory setting.
@@ -3963,10 +3964,9 @@ extension DirectoryClientTypes {
             self.statusReason = statusReason
         }
     }
-
 }
 
-public struct DescribeUpdateDirectoryOutput {
+public struct DescribeUpdateDirectoryOutput: Swift.Sendable {
     /// If not null, more results are available. Pass this value for the NextToken parameter.
     public var nextToken: Swift.String?
     /// The list of update activities on a directory for the requested update type.
@@ -4012,8 +4012,9 @@ public struct DirectoryInDesiredStateException: ClientRuntime.ModeledError, AWSC
 }
 
 extension DirectoryClientTypes {
+
     /// Contains directory limit information for a Region.
-    public struct DirectoryLimits {
+    public struct DirectoryLimits: Swift.Sendable {
         /// The current number of cloud directories in the Region.
         public var cloudOnlyDirectoriesCurrentCount: Swift.Int?
         /// The maximum number of cloud directories allowed in the Region.
@@ -4056,7 +4057,6 @@ extension DirectoryClientTypes {
             self.connectedDirectoriesLimitReached = connectedDirectoriesLimitReached
         }
     }
-
 }
 
 /// The specified directory has not been shared with this Amazon Web Services account.
@@ -4117,7 +4117,7 @@ public struct InvalidClientAuthStatusException: ClientRuntime.ModeledError, AWSC
     }
 }
 
-public struct DisableClientAuthenticationInput {
+public struct DisableClientAuthenticationInput: Swift.Sendable {
     /// The identifier of the directory
     /// This member is required.
     public var directoryId: Swift.String?
@@ -4135,12 +4135,12 @@ public struct DisableClientAuthenticationInput {
     }
 }
 
-public struct DisableClientAuthenticationOutput {
+public struct DisableClientAuthenticationOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DisableDirectoryDataAccessInput {
+public struct DisableDirectoryDataAccessInput: Swift.Sendable {
     /// The directory identifier.
     /// This member is required.
     public var directoryId: Swift.String?
@@ -4153,7 +4153,7 @@ public struct DisableDirectoryDataAccessInput {
     }
 }
 
-public struct DisableDirectoryDataAccessOutput {
+public struct DisableDirectoryDataAccessOutput: Swift.Sendable {
 
     public init() { }
 }
@@ -4187,7 +4187,7 @@ public struct InvalidLDAPSStatusException: ClientRuntime.ModeledError, AWSClient
     }
 }
 
-public struct DisableLDAPSInput {
+public struct DisableLDAPSInput: Swift.Sendable {
     /// The identifier of the directory.
     /// This member is required.
     public var directoryId: Swift.String?
@@ -4205,13 +4205,13 @@ public struct DisableLDAPSInput {
     }
 }
 
-public struct DisableLDAPSOutput {
+public struct DisableLDAPSOutput: Swift.Sendable {
 
     public init() { }
 }
 
 /// Contains the inputs for the [DisableRadius] operation.
-public struct DisableRadiusInput {
+public struct DisableRadiusInput: Swift.Sendable {
     /// The identifier of the directory for which to disable MFA.
     /// This member is required.
     public var directoryId: Swift.String?
@@ -4225,13 +4225,13 @@ public struct DisableRadiusInput {
 }
 
 /// Contains the results of the [DisableRadius] operation.
-public struct DisableRadiusOutput {
+public struct DisableRadiusOutput: Swift.Sendable {
 
     public init() { }
 }
 
 /// Contains the inputs for the [DisableSso] operation.
-public struct DisableSsoInput {
+public struct DisableSsoInput: Swift.Sendable {
     /// The identifier of the directory for which to disable single-sign on.
     /// This member is required.
     public var directoryId: Swift.String?
@@ -4258,7 +4258,7 @@ extension DisableSsoInput: Swift.CustomDebugStringConvertible {
 }
 
 /// Contains the results of the [DisableSso] operation.
-public struct DisableSsoOutput {
+public struct DisableSsoOutput: Swift.Sendable {
 
     public init() { }
 }
@@ -4292,7 +4292,7 @@ public struct NoAvailableCertificateException: ClientRuntime.ModeledError, AWSCl
     }
 }
 
-public struct EnableClientAuthenticationInput {
+public struct EnableClientAuthenticationInput: Swift.Sendable {
     /// The identifier of the specified directory.
     /// This member is required.
     public var directoryId: Swift.String?
@@ -4310,12 +4310,12 @@ public struct EnableClientAuthenticationInput {
     }
 }
 
-public struct EnableClientAuthenticationOutput {
+public struct EnableClientAuthenticationOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct EnableDirectoryDataAccessInput {
+public struct EnableDirectoryDataAccessInput: Swift.Sendable {
     /// The directory identifier.
     /// This member is required.
     public var directoryId: Swift.String?
@@ -4328,12 +4328,12 @@ public struct EnableDirectoryDataAccessInput {
     }
 }
 
-public struct EnableDirectoryDataAccessOutput {
+public struct EnableDirectoryDataAccessOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct EnableLDAPSInput {
+public struct EnableLDAPSInput: Swift.Sendable {
     /// The identifier of the directory.
     /// This member is required.
     public var directoryId: Swift.String?
@@ -4351,13 +4351,13 @@ public struct EnableLDAPSInput {
     }
 }
 
-public struct EnableLDAPSOutput {
+public struct EnableLDAPSOutput: Swift.Sendable {
 
     public init() { }
 }
 
 /// Contains the inputs for the [EnableRadius] operation.
-public struct EnableRadiusInput {
+public struct EnableRadiusInput: Swift.Sendable {
     /// The identifier of the directory for which to enable MFA.
     /// This member is required.
     public var directoryId: Swift.String?
@@ -4376,13 +4376,13 @@ public struct EnableRadiusInput {
 }
 
 /// Contains the results of the [EnableRadius] operation.
-public struct EnableRadiusOutput {
+public struct EnableRadiusOutput: Swift.Sendable {
 
     public init() { }
 }
 
 /// Contains the inputs for the [EnableSso] operation.
-public struct EnableSsoInput {
+public struct EnableSsoInput: Swift.Sendable {
     /// The identifier of the directory for which to enable single-sign on.
     /// This member is required.
     public var directoryId: Swift.String?
@@ -4409,19 +4409,19 @@ extension EnableSsoInput: Swift.CustomDebugStringConvertible {
 }
 
 /// Contains the results of the [EnableSso] operation.
-public struct EnableSsoOutput {
+public struct EnableSsoOutput: Swift.Sendable {
 
     public init() { }
 }
 
 /// Contains the inputs for the [GetDirectoryLimits] operation.
-public struct GetDirectoryLimitsInput {
+public struct GetDirectoryLimitsInput: Swift.Sendable {
 
     public init() { }
 }
 
 /// Contains the results of the [GetDirectoryLimits] operation.
-public struct GetDirectoryLimitsOutput {
+public struct GetDirectoryLimitsOutput: Swift.Sendable {
     /// A [DirectoryLimits] object that contains the directory limits for the current Region.
     public var directoryLimits: DirectoryClientTypes.DirectoryLimits?
 
@@ -4434,7 +4434,7 @@ public struct GetDirectoryLimitsOutput {
 }
 
 /// Contains the inputs for the [GetSnapshotLimits] operation.
-public struct GetSnapshotLimitsInput {
+public struct GetSnapshotLimitsInput: Swift.Sendable {
     /// Contains the identifier of the directory to obtain the limits for.
     /// This member is required.
     public var directoryId: Swift.String?
@@ -4448,8 +4448,9 @@ public struct GetSnapshotLimitsInput {
 }
 
 extension DirectoryClientTypes {
+
     /// Contains manual snapshot limit information for a directory.
-    public struct SnapshotLimits {
+    public struct SnapshotLimits: Swift.Sendable {
         /// The current number of manual snapshots of the directory.
         public var manualSnapshotsCurrentCount: Swift.Int?
         /// The maximum number of manual snapshots allowed.
@@ -4468,11 +4469,10 @@ extension DirectoryClientTypes {
             self.manualSnapshotsLimitReached = manualSnapshotsLimitReached
         }
     }
-
 }
 
 /// Contains the results of the [GetSnapshotLimits] operation.
-public struct GetSnapshotLimitsOutput {
+public struct GetSnapshotLimitsOutput: Swift.Sendable {
     /// A [SnapshotLimits] object that contains the manual snapshot limits for the specified directory.
     public var snapshotLimits: DirectoryClientTypes.SnapshotLimits?
 
@@ -4484,7 +4484,7 @@ public struct GetSnapshotLimitsOutput {
     }
 }
 
-public struct ListCertificatesInput {
+public struct ListCertificatesInput: Swift.Sendable {
     /// The identifier of the directory.
     /// This member is required.
     public var directoryId: Swift.String?
@@ -4505,7 +4505,7 @@ public struct ListCertificatesInput {
     }
 }
 
-public struct ListCertificatesOutput {
+public struct ListCertificatesOutput: Swift.Sendable {
     /// A list of certificates with basic details including certificate ID, certificate common name, certificate state.
     public var certificatesInfo: [DirectoryClientTypes.CertificateInfo]?
     /// Indicates whether another page of certificates is available when the number of available certificates exceeds the page limit.
@@ -4521,7 +4521,7 @@ public struct ListCertificatesOutput {
     }
 }
 
-public struct ListIpRoutesInput {
+public struct ListIpRoutesInput: Swift.Sendable {
     /// Identifier (ID) of the directory for which you want to retrieve the IP addresses.
     /// This member is required.
     public var directoryId: Swift.String?
@@ -4544,7 +4544,7 @@ public struct ListIpRoutesInput {
 
 extension DirectoryClientTypes {
 
-    public enum IpRouteStatusMsg: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum IpRouteStatusMsg: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case added
         case adding
         case addFailed
@@ -4584,8 +4584,9 @@ extension DirectoryClientTypes {
 }
 
 extension DirectoryClientTypes {
+
     /// Information about one or more IP address blocks.
-    public struct IpRouteInfo {
+    public struct IpRouteInfo: Swift.Sendable {
         /// The date and time the address block was added to the directory.
         public var addedDateTime: Foundation.Date?
         /// IP address block in the [IpRoute].
@@ -4616,10 +4617,9 @@ extension DirectoryClientTypes {
             self.ipRouteStatusReason = ipRouteStatusReason
         }
     }
-
 }
 
-public struct ListIpRoutesOutput {
+public struct ListIpRoutesOutput: Swift.Sendable {
     /// A list of [IpRoute]s.
     public var ipRoutesInfo: [DirectoryClientTypes.IpRouteInfo]?
     /// If not null, more results are available. Pass this value for the NextToken parameter in a subsequent call to [ListIpRoutes] to retrieve the next set of items.
@@ -4635,7 +4635,7 @@ public struct ListIpRoutesOutput {
     }
 }
 
-public struct ListLogSubscriptionsInput {
+public struct ListLogSubscriptionsInput: Swift.Sendable {
     /// If a DirectoryID is provided, lists only the log subscription associated with that directory. If no DirectoryId is provided, lists all log subscriptions associated with your Amazon Web Services account. If there are no log subscriptions for the Amazon Web Services account or the directory, an empty list will be returned.
     public var directoryId: Swift.String?
     /// The maximum number of items returned.
@@ -4656,8 +4656,9 @@ public struct ListLogSubscriptionsInput {
 }
 
 extension DirectoryClientTypes {
+
     /// Represents a log subscription, which tracks real-time data from a chosen log group to a specified destination.
-    public struct LogSubscription {
+    public struct LogSubscription: Swift.Sendable {
         /// Identifier (ID) of the directory that you want to associate with the log subscription.
         public var directoryId: Swift.String?
         /// The name of the log group.
@@ -4676,10 +4677,9 @@ extension DirectoryClientTypes {
             self.subscriptionCreatedDateTime = subscriptionCreatedDateTime
         }
     }
-
 }
 
-public struct ListLogSubscriptionsOutput {
+public struct ListLogSubscriptionsOutput: Swift.Sendable {
     /// A list of active [LogSubscription] objects for calling the Amazon Web Services account.
     public var logSubscriptions: [DirectoryClientTypes.LogSubscription]?
     /// The token for the next set of items to return.
@@ -4695,7 +4695,7 @@ public struct ListLogSubscriptionsOutput {
     }
 }
 
-public struct ListSchemaExtensionsInput {
+public struct ListSchemaExtensionsInput: Swift.Sendable {
     /// The identifier of the directory from which to retrieve the schema extension information.
     /// This member is required.
     public var directoryId: Swift.String?
@@ -4718,7 +4718,7 @@ public struct ListSchemaExtensionsInput {
 
 extension DirectoryClientTypes {
 
-    public enum SchemaExtensionStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SchemaExtensionStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case cancelled
         case cancelInProgress
         case completed
@@ -4767,8 +4767,9 @@ extension DirectoryClientTypes {
 }
 
 extension DirectoryClientTypes {
+
     /// Information about a schema extension.
-    public struct SchemaExtensionInfo {
+    public struct SchemaExtensionInfo: Swift.Sendable {
         /// A description of the schema extension.
         public var description: Swift.String?
         /// The identifier of the directory to which the schema extension is applied.
@@ -4803,10 +4804,9 @@ extension DirectoryClientTypes {
             self.startDateTime = startDateTime
         }
     }
-
 }
 
-public struct ListSchemaExtensionsOutput {
+public struct ListSchemaExtensionsOutput: Swift.Sendable {
     /// If not null, more results are available. Pass this value for the NextToken parameter in a subsequent call to ListSchemaExtensions to retrieve the next set of items.
     public var nextToken: Swift.String?
     /// Information about the schema extensions applied to the directory.
@@ -4822,7 +4822,7 @@ public struct ListSchemaExtensionsOutput {
     }
 }
 
-public struct ListTagsForResourceInput {
+public struct ListTagsForResourceInput: Swift.Sendable {
     /// Reserved for future use.
     public var limit: Swift.Int?
     /// Reserved for future use.
@@ -4843,7 +4843,7 @@ public struct ListTagsForResourceInput {
     }
 }
 
-public struct ListTagsForResourceOutput {
+public struct ListTagsForResourceOutput: Swift.Sendable {
     /// Reserved for future use.
     public var nextToken: Swift.String?
     /// List of tags returned by the ListTagsForResource operation.
@@ -4888,7 +4888,7 @@ public struct InvalidCertificateException: ClientRuntime.ModeledError, AWSClient
     }
 }
 
-public struct RegisterCertificateInput {
+public struct RegisterCertificateInput: Swift.Sendable {
     /// The certificate PEM string that needs to be registered.
     /// This member is required.
     public var certificateData: Swift.String?
@@ -4914,7 +4914,7 @@ public struct RegisterCertificateInput {
     }
 }
 
-public struct RegisterCertificateOutput {
+public struct RegisterCertificateOutput: Swift.Sendable {
     /// The identifier of the certificate.
     public var certificateId: Swift.String?
 
@@ -4927,7 +4927,7 @@ public struct RegisterCertificateOutput {
 }
 
 /// Registers a new event topic.
-public struct RegisterEventTopicInput {
+public struct RegisterEventTopicInput: Swift.Sendable {
     /// The Directory ID that will publish status messages to the Amazon SNS topic.
     /// This member is required.
     public var directoryId: Swift.String?
@@ -4946,12 +4946,12 @@ public struct RegisterEventTopicInput {
 }
 
 /// The result of a RegisterEventTopic request.
-public struct RegisterEventTopicOutput {
+public struct RegisterEventTopicOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct RejectSharedDirectoryInput {
+public struct RejectSharedDirectoryInput: Swift.Sendable {
     /// Identifier of the shared directory in the directory consumer account. This identifier is different for each directory owner account.
     /// This member is required.
     public var sharedDirectoryId: Swift.String?
@@ -4964,7 +4964,7 @@ public struct RejectSharedDirectoryInput {
     }
 }
 
-public struct RejectSharedDirectoryOutput {
+public struct RejectSharedDirectoryOutput: Swift.Sendable {
     /// Identifier of the shared directory in the directory consumer account.
     public var sharedDirectoryId: Swift.String?
 
@@ -4976,7 +4976,7 @@ public struct RejectSharedDirectoryOutput {
     }
 }
 
-public struct RemoveIpRoutesInput {
+public struct RemoveIpRoutesInput: Swift.Sendable {
     /// IP address blocks that you want to remove.
     /// This member is required.
     public var cidrIps: [Swift.String]?
@@ -4994,12 +4994,12 @@ public struct RemoveIpRoutesInput {
     }
 }
 
-public struct RemoveIpRoutesOutput {
+public struct RemoveIpRoutesOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct RemoveRegionInput {
+public struct RemoveRegionInput: Swift.Sendable {
     /// The identifier of the directory for which you want to remove Region replication.
     /// This member is required.
     public var directoryId: Swift.String?
@@ -5012,12 +5012,12 @@ public struct RemoveRegionInput {
     }
 }
 
-public struct RemoveRegionOutput {
+public struct RemoveRegionOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct RemoveTagsFromResourceInput {
+public struct RemoveTagsFromResourceInput: Swift.Sendable {
     /// Identifier (ID) of the directory from which to remove the tag.
     /// This member is required.
     public var resourceId: Swift.String?
@@ -5035,7 +5035,7 @@ public struct RemoveTagsFromResourceInput {
     }
 }
 
-public struct RemoveTagsFromResourceOutput {
+public struct RemoveTagsFromResourceOutput: Swift.Sendable {
 
     public init() { }
 }
@@ -5098,7 +5098,7 @@ public struct UserDoesNotExistException: ClientRuntime.ModeledError, AWSClientRu
     }
 }
 
-public struct ResetUserPasswordInput {
+public struct ResetUserPasswordInput: Swift.Sendable {
     /// Identifier of the Managed Microsoft AD or Simple AD directory in which the user resides.
     /// This member is required.
     public var directoryId: Swift.String?
@@ -5126,13 +5126,13 @@ extension ResetUserPasswordInput: Swift.CustomDebugStringConvertible {
         "ResetUserPasswordInput(directoryId: \(Swift.String(describing: directoryId)), userName: \(Swift.String(describing: userName)), newPassword: \"CONTENT_REDACTED\")"}
 }
 
-public struct ResetUserPasswordOutput {
+public struct ResetUserPasswordOutput: Swift.Sendable {
 
     public init() { }
 }
 
 /// An object representing the inputs for the [RestoreFromSnapshot] operation.
-public struct RestoreFromSnapshotInput {
+public struct RestoreFromSnapshotInput: Swift.Sendable {
     /// The identifier of the snapshot to restore from.
     /// This member is required.
     public var snapshotId: Swift.String?
@@ -5146,7 +5146,7 @@ public struct RestoreFromSnapshotInput {
 }
 
 /// Contains the results of the [RestoreFromSnapshot] operation.
-public struct RestoreFromSnapshotOutput {
+public struct RestoreFromSnapshotOutput: Swift.Sendable {
 
     public init() { }
 }
@@ -5240,7 +5240,7 @@ public struct ShareLimitExceededException: ClientRuntime.ModeledError, AWSClient
 
 extension DirectoryClientTypes {
 
-    public enum TargetType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum TargetType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case account
         case sdkUnknown(Swift.String)
 
@@ -5265,8 +5265,9 @@ extension DirectoryClientTypes {
 }
 
 extension DirectoryClientTypes {
+
     /// Identifier that contains details about the directory consumer account.
-    public struct ShareTarget {
+    public struct ShareTarget: Swift.Sendable {
         /// Identifier of the directory consumer account.
         /// This member is required.
         public var id: Swift.String?
@@ -5283,10 +5284,9 @@ extension DirectoryClientTypes {
             self.type = type
         }
     }
-
 }
 
-public struct ShareDirectoryInput {
+public struct ShareDirectoryInput: Swift.Sendable {
     /// Identifier of the Managed Microsoft AD directory that you want to share with other Amazon Web Services accounts.
     /// This member is required.
     public var directoryId: Swift.String?
@@ -5318,7 +5318,7 @@ extension ShareDirectoryInput: Swift.CustomDebugStringConvertible {
         "ShareDirectoryInput(directoryId: \(Swift.String(describing: directoryId)), shareMethod: \(Swift.String(describing: shareMethod)), shareTarget: \(Swift.String(describing: shareTarget)), shareNotes: \"CONTENT_REDACTED\")"}
 }
 
-public struct ShareDirectoryOutput {
+public struct ShareDirectoryOutput: Swift.Sendable {
     /// Identifier of the directory that is stored in the directory consumer account that is shared from the specified directory (DirectoryId).
     public var sharedDirectoryId: Swift.String?
 
@@ -5330,7 +5330,7 @@ public struct ShareDirectoryOutput {
     }
 }
 
-public struct StartSchemaExtensionInput {
+public struct StartSchemaExtensionInput: Swift.Sendable {
     /// If true, creates a snapshot of the directory before applying the schema extension.
     /// This member is required.
     public var createSnapshotBeforeSchemaExtension: Swift.Bool?
@@ -5358,7 +5358,7 @@ public struct StartSchemaExtensionInput {
     }
 }
 
-public struct StartSchemaExtensionOutput {
+public struct StartSchemaExtensionOutput: Swift.Sendable {
     /// The identifier of the schema extension that will be applied.
     public var schemaExtensionId: Swift.String?
 
@@ -5371,8 +5371,9 @@ public struct StartSchemaExtensionOutput {
 }
 
 extension DirectoryClientTypes {
+
     /// Identifier that contains details about the directory consumer account with whom the directory is being unshared.
-    public struct UnshareTarget {
+    public struct UnshareTarget: Swift.Sendable {
         /// Identifier of the directory consumer account.
         /// This member is required.
         public var id: Swift.String?
@@ -5389,10 +5390,9 @@ extension DirectoryClientTypes {
             self.type = type
         }
     }
-
 }
 
-public struct UnshareDirectoryInput {
+public struct UnshareDirectoryInput: Swift.Sendable {
     /// The identifier of the Managed Microsoft AD directory that you want to stop sharing.
     /// This member is required.
     public var directoryId: Swift.String?
@@ -5410,7 +5410,7 @@ public struct UnshareDirectoryInput {
     }
 }
 
-public struct UnshareDirectoryOutput {
+public struct UnshareDirectoryOutput: Swift.Sendable {
     /// Identifier of the directory stored in the directory consumer account that is to be unshared from the specified directory (DirectoryId).
     public var sharedDirectoryId: Swift.String?
 
@@ -5423,7 +5423,7 @@ public struct UnshareDirectoryOutput {
 }
 
 /// Updates a conditional forwarder.
-public struct UpdateConditionalForwarderInput {
+public struct UpdateConditionalForwarderInput: Swift.Sendable {
     /// The directory ID of the Amazon Web Services directory for which to update the conditional forwarder.
     /// This member is required.
     public var directoryId: Swift.String?
@@ -5447,12 +5447,12 @@ public struct UpdateConditionalForwarderInput {
 }
 
 /// The result of an UpdateConditionalForwarder request.
-public struct UpdateConditionalForwarderOutput {
+public struct UpdateConditionalForwarderOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdateDirectorySetupInput {
+public struct UpdateDirectorySetupInput: Swift.Sendable {
     /// The boolean that specifies if a snapshot for the directory needs to be taken before updating the directory.
     public var createSnapshotBeforeUpdate: Swift.Bool?
     /// The identifier of the directory on which you want to perform the update.
@@ -5478,7 +5478,7 @@ public struct UpdateDirectorySetupInput {
     }
 }
 
-public struct UpdateDirectorySetupOutput {
+public struct UpdateDirectorySetupOutput: Swift.Sendable {
 
     public init() { }
 }
@@ -5512,7 +5512,7 @@ public struct DomainControllerLimitExceededException: ClientRuntime.ModeledError
     }
 }
 
-public struct UpdateNumberOfDomainControllersInput {
+public struct UpdateNumberOfDomainControllersInput: Swift.Sendable {
     /// The number of domain controllers desired in the directory.
     /// This member is required.
     public var desiredNumber: Swift.Int?
@@ -5530,13 +5530,13 @@ public struct UpdateNumberOfDomainControllersInput {
     }
 }
 
-public struct UpdateNumberOfDomainControllersOutput {
+public struct UpdateNumberOfDomainControllersOutput: Swift.Sendable {
 
     public init() { }
 }
 
 /// Contains the inputs for the [UpdateRadius] operation.
-public struct UpdateRadiusInput {
+public struct UpdateRadiusInput: Swift.Sendable {
     /// The identifier of the directory for which to update the RADIUS server information.
     /// This member is required.
     public var directoryId: Swift.String?
@@ -5555,7 +5555,7 @@ public struct UpdateRadiusInput {
 }
 
 /// Contains the results of the [UpdateRadius] operation.
-public struct UpdateRadiusOutput {
+public struct UpdateRadiusOutput: Swift.Sendable {
 
     public init() { }
 }
@@ -5619,8 +5619,9 @@ public struct UnsupportedSettingsException: ClientRuntime.ModeledError, AWSClien
 }
 
 extension DirectoryClientTypes {
+
     /// Contains information about the configurable settings for a directory.
-    public struct Setting {
+    public struct Setting: Swift.Sendable {
         /// The name of the directory setting. For example: TLS_1_0
         /// This member is required.
         public var name: Swift.String?
@@ -5637,10 +5638,9 @@ extension DirectoryClientTypes {
             self.value = value
         }
     }
-
 }
 
-public struct UpdateSettingsInput {
+public struct UpdateSettingsInput: Swift.Sendable {
     /// The identifier of the directory for which to update settings.
     /// This member is required.
     public var directoryId: Swift.String?
@@ -5658,7 +5658,7 @@ public struct UpdateSettingsInput {
     }
 }
 
-public struct UpdateSettingsOutput {
+public struct UpdateSettingsOutput: Swift.Sendable {
     /// The identifier of the directory.
     public var directoryId: Swift.String?
 
@@ -5670,7 +5670,7 @@ public struct UpdateSettingsOutput {
     }
 }
 
-public struct UpdateTrustInput {
+public struct UpdateTrustInput: Swift.Sendable {
     /// Updates selective authentication for the trust.
     public var selectiveAuth: DirectoryClientTypes.SelectiveAuth?
     /// Identifier of the trust relationship.
@@ -5687,7 +5687,7 @@ public struct UpdateTrustInput {
     }
 }
 
-public struct UpdateTrustOutput {
+public struct UpdateTrustOutput: Swift.Sendable {
     /// The Amazon Web Services request identifier.
     public var requestId: Swift.String?
     /// Identifier of the trust relationship.
@@ -5704,7 +5704,7 @@ public struct UpdateTrustOutput {
 }
 
 /// Initiates the verification of an existing trust relationship between an Managed Microsoft AD directory and an external domain.
-public struct VerifyTrustInput {
+public struct VerifyTrustInput: Swift.Sendable {
     /// The unique Trust ID of the trust relationship to verify.
     /// This member is required.
     public var trustId: Swift.String?
@@ -5718,7 +5718,7 @@ public struct VerifyTrustInput {
 }
 
 /// Result of a VerifyTrust request.
-public struct VerifyTrustOutput {
+public struct VerifyTrustOutput: Swift.Sendable {
     /// The unique Trust ID of the trust relationship that was verified.
     public var trustId: Swift.String?
 

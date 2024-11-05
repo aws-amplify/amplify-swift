@@ -123,7 +123,7 @@ public struct ValidationException: ClientRuntime.ModeledError, AWSClientRuntime.
     }
 }
 
-public struct CreateDeploymentInput {
+public struct CreateDeploymentInput: Swift.Sendable {
     /// The name of the deployment pattern supported by a given workload. You can use the [ListWorkloadDeploymentPatterns](https://docs.aws.amazon.com/launchwizard/latest/APIReference/API_ListWorkloadDeploymentPatterns.html) operation to discover supported values for this parameter.
     /// This member is required.
     public var deploymentPatternName: Swift.String?
@@ -164,7 +164,7 @@ extension CreateDeploymentInput: Swift.CustomDebugStringConvertible {
         "CreateDeploymentInput(deploymentPatternName: \(Swift.String(describing: deploymentPatternName)), dryRun: \(Swift.String(describing: dryRun)), name: \(Swift.String(describing: name)), tags: \(Swift.String(describing: tags)), workloadName: \(Swift.String(describing: workloadName)), specifications: \"CONTENT_REDACTED\")"}
 }
 
-public struct CreateDeploymentOutput {
+public struct CreateDeploymentOutput: Swift.Sendable {
     /// The ID of the deployment.
     public var deploymentId: Swift.String?
 
@@ -176,7 +176,7 @@ public struct CreateDeploymentOutput {
     }
 }
 
-public struct DeleteDeploymentInput {
+public struct DeleteDeploymentInput: Swift.Sendable {
     /// The ID of the deployment.
     /// This member is required.
     public var deploymentId: Swift.String?
@@ -191,7 +191,7 @@ public struct DeleteDeploymentInput {
 
 extension LaunchWizardClientTypes {
 
-    public enum DeploymentStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DeploymentStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case completed
         case creating
         case deleted
@@ -239,7 +239,7 @@ extension LaunchWizardClientTypes {
     }
 }
 
-public struct DeleteDeploymentOutput {
+public struct DeleteDeploymentOutput: Swift.Sendable {
     /// The status of the deployment.
     public var status: LaunchWizardClientTypes.DeploymentStatus?
     /// The reason for the deployment status.
@@ -255,7 +255,7 @@ public struct DeleteDeploymentOutput {
     }
 }
 
-public struct ListDeploymentEventsInput {
+public struct ListDeploymentEventsInput: Swift.Sendable {
     /// The ID of the deployment.
     /// This member is required.
     public var deploymentId: Swift.String?
@@ -278,7 +278,7 @@ public struct ListDeploymentEventsInput {
 
 extension LaunchWizardClientTypes {
 
-    public enum EventStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum EventStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case canceled
         case canceling
         case completed
@@ -324,8 +324,9 @@ extension LaunchWizardClientTypes {
 }
 
 extension LaunchWizardClientTypes {
+
     /// A summary of the deployment event data.
-    public struct DeploymentEventDataSummary {
+    public struct DeploymentEventDataSummary: Swift.Sendable {
         /// The description of the deployment event.
         public var description: Swift.String?
         /// The name of the deployment event.
@@ -352,10 +353,9 @@ extension LaunchWizardClientTypes {
             self.timestamp = timestamp
         }
     }
-
 }
 
-public struct ListDeploymentEventsOutput {
+public struct ListDeploymentEventsOutput: Swift.Sendable {
     /// Lists the deployment events.
     public var deploymentEvents: [LaunchWizardClientTypes.DeploymentEventDataSummary]?
     /// The token to include in another request to get the next page of items. This value is null when there are no more items to return.
@@ -371,7 +371,7 @@ public struct ListDeploymentEventsOutput {
     }
 }
 
-public struct GetDeploymentInput {
+public struct GetDeploymentInput: Swift.Sendable {
     /// The ID of the deployment.
     /// This member is required.
     public var deploymentId: Swift.String?
@@ -385,8 +385,9 @@ public struct GetDeploymentInput {
 }
 
 extension LaunchWizardClientTypes {
+
     /// The data associated with a deployment.
-    public struct DeploymentData {
+    public struct DeploymentData: Swift.Sendable {
         /// The time the deployment was created.
         public var createdAt: Foundation.Date?
         /// The time the deployment was deleted.
@@ -437,7 +438,6 @@ extension LaunchWizardClientTypes {
             self.workloadName = workloadName
         }
     }
-
 }
 
 extension LaunchWizardClientTypes.DeploymentData: Swift.CustomDebugStringConvertible {
@@ -445,7 +445,7 @@ extension LaunchWizardClientTypes.DeploymentData: Swift.CustomDebugStringConvert
         "DeploymentData(createdAt: \(Swift.String(describing: createdAt)), deletedAt: \(Swift.String(describing: deletedAt)), deploymentArn: \(Swift.String(describing: deploymentArn)), id: \(Swift.String(describing: id)), name: \(Swift.String(describing: name)), patternName: \(Swift.String(describing: patternName)), resourceGroup: \(Swift.String(describing: resourceGroup)), status: \(Swift.String(describing: status)), tags: \(Swift.String(describing: tags)), workloadName: \(Swift.String(describing: workloadName)), specifications: \"CONTENT_REDACTED\")"}
 }
 
-public struct GetDeploymentOutput {
+public struct GetDeploymentOutput: Swift.Sendable {
     /// An object that details the deployment.
     public var deployment: LaunchWizardClientTypes.DeploymentData?
 
@@ -459,7 +459,7 @@ public struct GetDeploymentOutput {
 
 extension LaunchWizardClientTypes {
 
-    public enum DeploymentFilterKey: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DeploymentFilterKey: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case deploymentStatus
         case workloadName
         case sdkUnknown(Swift.String)
@@ -487,8 +487,9 @@ extension LaunchWizardClientTypes {
 }
 
 extension LaunchWizardClientTypes {
+
     /// A filter name and value pair that is used to return more specific results from a describe operation. Filters can be used to match a set of resources by specific criteria.
-    public struct DeploymentFilter {
+    public struct DeploymentFilter: Swift.Sendable {
         /// The name of the filter. Filter names are case-sensitive.
         public var name: LaunchWizardClientTypes.DeploymentFilterKey?
         /// The filter values. Filter values are case-sensitive. If you specify multiple values for a filter, the values are joined with an OR, and the request returns all results that match any of the specified values.
@@ -503,10 +504,9 @@ extension LaunchWizardClientTypes {
             self.values = values
         }
     }
-
 }
 
-public struct ListDeploymentsInput {
+public struct ListDeploymentsInput: Swift.Sendable {
     /// Filters to scope the results. The following filters are supported:
     ///
     /// * WORKLOAD_NAME - The name used in deployments.
@@ -531,8 +531,9 @@ public struct ListDeploymentsInput {
 }
 
 extension LaunchWizardClientTypes {
+
     /// A summary of the deployment data.
-    public struct DeploymentDataSummary {
+    public struct DeploymentDataSummary: Swift.Sendable {
         /// The time the deployment was created.
         public var createdAt: Foundation.Date?
         /// The ID of the deployment.
@@ -563,10 +564,9 @@ extension LaunchWizardClientTypes {
             self.workloadName = workloadName
         }
     }
-
 }
 
-public struct ListDeploymentsOutput {
+public struct ListDeploymentsOutput: Swift.Sendable {
     /// Lists the deployments.
     public var deployments: [LaunchWizardClientTypes.DeploymentDataSummary]?
     /// The token to include in another request to get the next page of items. This value is null when there are no more items to return.
@@ -583,8 +583,9 @@ public struct ListDeploymentsOutput {
 }
 
 extension LaunchWizardClientTypes {
+
     /// A field that details a condition of the specifications for a deployment.
-    public struct DeploymentConditionalField {
+    public struct DeploymentConditionalField: Swift.Sendable {
         /// The comparator of the condition. Valid values: Equal | NotEqual
         public var comparator: Swift.String?
         /// The name of the deployment condition.
@@ -603,12 +604,12 @@ extension LaunchWizardClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension LaunchWizardClientTypes {
+
     /// A field that details a specification of a deployment pattern.
-    public struct DeploymentSpecificationsField {
+    public struct DeploymentSpecificationsField: Swift.Sendable {
         /// The allowed values of the deployment specification.
         public var allowedValues: [Swift.String]?
         /// The conditionals used for the deployment specification.
@@ -635,10 +636,9 @@ extension LaunchWizardClientTypes {
             self.`required` = `required`
         }
     }
-
 }
 
-public struct GetWorkloadInput {
+public struct GetWorkloadInput: Swift.Sendable {
     /// The name of the workload.
     /// This member is required.
     public var workloadName: Swift.String?
@@ -653,7 +653,7 @@ public struct GetWorkloadInput {
 
 extension LaunchWizardClientTypes {
 
-    public enum WorkloadStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum WorkloadStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case active
         case deleted
         case disabled
@@ -687,8 +687,9 @@ extension LaunchWizardClientTypes {
 }
 
 extension LaunchWizardClientTypes {
+
     /// Describes a workload.
-    public struct WorkloadData {
+    public struct WorkloadData: Swift.Sendable {
         /// The description of a workload.
         public var description: Swift.String?
         /// The display name of a workload.
@@ -723,10 +724,9 @@ extension LaunchWizardClientTypes {
             self.workloadName = workloadName
         }
     }
-
 }
 
-public struct GetWorkloadOutput {
+public struct GetWorkloadOutput: Swift.Sendable {
     /// Information about the workload.
     public var workload: LaunchWizardClientTypes.WorkloadData?
 
@@ -738,7 +738,7 @@ public struct GetWorkloadOutput {
     }
 }
 
-public struct GetWorkloadDeploymentPatternInput {
+public struct GetWorkloadDeploymentPatternInput: Swift.Sendable {
     /// The name of the deployment pattern.
     /// This member is required.
     public var deploymentPatternName: Swift.String?
@@ -758,7 +758,7 @@ public struct GetWorkloadDeploymentPatternInput {
 
 extension LaunchWizardClientTypes {
 
-    public enum WorkloadDeploymentPatternStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum WorkloadDeploymentPatternStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case active
         case deleted
         case disabled
@@ -792,8 +792,9 @@ extension LaunchWizardClientTypes {
 }
 
 extension LaunchWizardClientTypes {
+
     /// The data that details a workload deployment pattern.
-    public struct WorkloadDeploymentPatternData {
+    public struct WorkloadDeploymentPatternData: Swift.Sendable {
         /// The name of the deployment pattern.
         public var deploymentPatternName: Swift.String?
         /// The description of the deployment pattern.
@@ -832,10 +833,9 @@ extension LaunchWizardClientTypes {
             self.workloadVersionName = workloadVersionName
         }
     }
-
 }
 
-public struct GetWorkloadDeploymentPatternOutput {
+public struct GetWorkloadDeploymentPatternOutput: Swift.Sendable {
     /// Details about the workload deployment pattern.
     public var workloadDeploymentPattern: LaunchWizardClientTypes.WorkloadDeploymentPatternData?
 
@@ -847,7 +847,7 @@ public struct GetWorkloadDeploymentPatternOutput {
     }
 }
 
-public struct ListTagsForResourceInput {
+public struct ListTagsForResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the resource.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -860,7 +860,7 @@ public struct ListTagsForResourceInput {
     }
 }
 
-public struct ListTagsForResourceOutput {
+public struct ListTagsForResourceOutput: Swift.Sendable {
     /// Information about the tags.
     public var tags: [Swift.String: Swift.String]?
 
@@ -872,7 +872,7 @@ public struct ListTagsForResourceOutput {
     }
 }
 
-public struct TagResourceInput {
+public struct TagResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the resource.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -890,12 +890,12 @@ public struct TagResourceInput {
     }
 }
 
-public struct TagResourceOutput {
+public struct TagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UntagResourceInput {
+public struct UntagResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the resource.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -913,12 +913,12 @@ public struct UntagResourceInput {
     }
 }
 
-public struct UntagResourceOutput {
+public struct UntagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct ListWorkloadsInput {
+public struct ListWorkloadsInput: Swift.Sendable {
     /// The maximum number of items to return for this request. To get the next page of items, make another request with the token returned in the output.
     public var maxResults: Swift.Int?
     /// The token returned from a previous paginated request. Pagination continues from the end of the items returned by the previous request.
@@ -935,8 +935,9 @@ public struct ListWorkloadsInput {
 }
 
 extension LaunchWizardClientTypes {
+
     /// Describes workload data.
-    public struct WorkloadDataSummary {
+    public struct WorkloadDataSummary: Swift.Sendable {
         /// The display name of the workload data.
         public var displayName: Swift.String?
         /// The name of the workload.
@@ -951,10 +952,9 @@ extension LaunchWizardClientTypes {
             self.workloadName = workloadName
         }
     }
-
 }
 
-public struct ListWorkloadsOutput {
+public struct ListWorkloadsOutput: Swift.Sendable {
     /// The token to include in another request to get the next page of items. This value is null when there are no more items to return.
     public var nextToken: Swift.String?
     /// Information about the workloads.
@@ -970,7 +970,7 @@ public struct ListWorkloadsOutput {
     }
 }
 
-public struct ListWorkloadDeploymentPatternsInput {
+public struct ListWorkloadDeploymentPatternsInput: Swift.Sendable {
     /// The maximum number of items to return for this request. To get the next page of items, make another request with the token returned in the output.
     public var maxResults: Swift.Int?
     /// The token returned from a previous paginated request. Pagination continues from the end of the items returned by the previous request.
@@ -992,8 +992,9 @@ public struct ListWorkloadDeploymentPatternsInput {
 }
 
 extension LaunchWizardClientTypes {
+
     /// Describes a workload deployment pattern.
-    public struct WorkloadDeploymentPatternDataSummary {
+    public struct WorkloadDeploymentPatternDataSummary: Swift.Sendable {
         /// The name of a workload deployment pattern.
         public var deploymentPatternName: Swift.String?
         /// The description of a workload deployment pattern.
@@ -1028,10 +1029,9 @@ extension LaunchWizardClientTypes {
             self.workloadVersionName = workloadVersionName
         }
     }
-
 }
 
-public struct ListWorkloadDeploymentPatternsOutput {
+public struct ListWorkloadDeploymentPatternsOutput: Swift.Sendable {
     /// The token to include in another request to get the next page of items. This value is null when there are no more items to return.
     public var nextToken: Swift.String?
     /// Describes the workload deployment patterns.

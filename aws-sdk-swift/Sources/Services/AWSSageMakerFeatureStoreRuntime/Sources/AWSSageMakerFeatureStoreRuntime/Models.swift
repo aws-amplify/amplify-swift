@@ -26,12 +26,13 @@ import protocol ClientRuntime.ModeledError
 import struct Smithy.URIQueryItem
 @_spi(SmithyReadWrite) import struct SmithyReadWrite.WritingClosureBox
 
-public struct DeleteRecordOutput {
+
+public struct DeleteRecordOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct PutRecordOutput {
+public struct PutRecordOutput: Swift.Sendable {
 
     public init() { }
 }
@@ -134,7 +135,7 @@ public struct ValidationError: ClientRuntime.ModeledError, AWSClientRuntime.AWSS
 
 extension SageMakerFeatureStoreRuntimeClientTypes {
 
-    public enum ExpirationTimeResponse: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ExpirationTimeResponse: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case disabled
         case enabled
         case sdkUnknown(Swift.String)
@@ -162,8 +163,9 @@ extension SageMakerFeatureStoreRuntimeClientTypes {
 }
 
 extension SageMakerFeatureStoreRuntimeClientTypes {
+
     /// The identifier that identifies the batch of Records you are retrieving in a batch.
-    public struct BatchGetRecordIdentifier {
+    public struct BatchGetRecordIdentifier: Swift.Sendable {
         /// The name or Amazon Resource Name (ARN) of the FeatureGroup containing the records you are retrieving in a batch.
         /// This member is required.
         public var featureGroupName: Swift.String?
@@ -184,10 +186,9 @@ extension SageMakerFeatureStoreRuntimeClientTypes {
             self.recordIdentifiersValueAsString = recordIdentifiersValueAsString
         }
     }
-
 }
 
-public struct BatchGetRecordInput {
+public struct BatchGetRecordInput: Swift.Sendable {
     /// Parameter to request ExpiresAt in response. If Enabled, BatchGetRecord will return the value of ExpiresAt, if it is not null. If Disabled and null, BatchGetRecord will return null.
     public var expirationTimeResponse: SageMakerFeatureStoreRuntimeClientTypes.ExpirationTimeResponse?
     /// A list containing the name or Amazon Resource Name (ARN) of the FeatureGroup, the list of names of Features to be retrieved, and the corresponding RecordIdentifier values as strings.
@@ -205,8 +206,9 @@ public struct BatchGetRecordInput {
 }
 
 extension SageMakerFeatureStoreRuntimeClientTypes {
+
     /// The error that has occurred when attempting to retrieve a batch of Records.
-    public struct BatchGetRecordError {
+    public struct BatchGetRecordError: Swift.Sendable {
         /// The error code of an error that has occurred when attempting to retrieve a batch of Records. For more information on errors, see [Errors](https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_feature_store_GetRecord.html#API_feature_store_GetRecord_Errors).
         /// This member is required.
         public var errorCode: Swift.String?
@@ -233,12 +235,12 @@ extension SageMakerFeatureStoreRuntimeClientTypes {
             self.recordIdentifierValueAsString = recordIdentifierValueAsString
         }
     }
-
 }
 
 extension SageMakerFeatureStoreRuntimeClientTypes {
+
     /// The value associated with a feature.
-    public struct FeatureValue {
+    public struct FeatureValue: Swift.Sendable {
         /// The name of a feature that a feature value corresponds to.
         /// This member is required.
         public var featureName: Swift.String?
@@ -258,12 +260,12 @@ extension SageMakerFeatureStoreRuntimeClientTypes {
             self.valueAsStringList = valueAsStringList
         }
     }
-
 }
 
 extension SageMakerFeatureStoreRuntimeClientTypes {
+
     /// The output of records that have been retrieved in a batch.
-    public struct BatchGetRecordResultDetail {
+    public struct BatchGetRecordResultDetail: Swift.Sendable {
         /// The ExpiresAt ISO string of the requested record.
         public var expiresAt: Swift.String?
         /// The FeatureGroupName containing Records you retrieved in a batch.
@@ -289,10 +291,9 @@ extension SageMakerFeatureStoreRuntimeClientTypes {
             self.recordIdentifierValueAsString = recordIdentifierValueAsString
         }
     }
-
 }
 
-public struct BatchGetRecordOutput {
+public struct BatchGetRecordOutput: Swift.Sendable {
     /// A list of errors that have occurred when retrieving a batch of Records.
     /// This member is required.
     public var errors: [SageMakerFeatureStoreRuntimeClientTypes.BatchGetRecordError]?
@@ -317,7 +318,7 @@ public struct BatchGetRecordOutput {
 
 extension SageMakerFeatureStoreRuntimeClientTypes {
 
-    public enum DeletionMode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DeletionMode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case hardDelete
         case softDelete
         case sdkUnknown(Swift.String)
@@ -346,7 +347,7 @@ extension SageMakerFeatureStoreRuntimeClientTypes {
 
 extension SageMakerFeatureStoreRuntimeClientTypes {
 
-    public enum TargetStore: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum TargetStore: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case offlineStore
         case onlineStore
         case sdkUnknown(Swift.String)
@@ -373,7 +374,7 @@ extension SageMakerFeatureStoreRuntimeClientTypes {
     }
 }
 
-public struct DeleteRecordInput {
+public struct DeleteRecordInput: Swift.Sendable {
     /// The name of the deletion mode for deleting the record. By default, the deletion mode is set to SoftDelete.
     public var deletionMode: SageMakerFeatureStoreRuntimeClientTypes.DeletionMode?
     /// Timestamp indicating when the deletion event occurred. EventTime can be used to query data at a certain point in time.
@@ -428,7 +429,7 @@ public struct ResourceNotFound: ClientRuntime.ModeledError, AWSClientRuntime.AWS
     }
 }
 
-public struct GetRecordInput {
+public struct GetRecordInput: Swift.Sendable {
     /// Parameter to request ExpiresAt in response. If Enabled, GetRecord will return the value of ExpiresAt, if it is not null. If Disabled and null, GetRecord will return null.
     public var expirationTimeResponse: SageMakerFeatureStoreRuntimeClientTypes.ExpirationTimeResponse?
     /// The name or Amazon Resource Name (ARN) of the feature group from which you want to retrieve a record.
@@ -454,7 +455,7 @@ public struct GetRecordInput {
     }
 }
 
-public struct GetRecordOutput {
+public struct GetRecordOutput: Swift.Sendable {
     /// The ExpiresAt ISO string of the requested record.
     public var expiresAt: Swift.String?
     /// The record you requested. A list of FeatureValues.
@@ -472,7 +473,7 @@ public struct GetRecordOutput {
 
 extension SageMakerFeatureStoreRuntimeClientTypes {
 
-    public enum TtlDurationUnit: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum TtlDurationUnit: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case days
         case hours
         case minutes
@@ -509,8 +510,9 @@ extension SageMakerFeatureStoreRuntimeClientTypes {
 }
 
 extension SageMakerFeatureStoreRuntimeClientTypes {
+
     /// Time to live duration, where the record is hard deleted after the expiration time is reached; ExpiresAt = EventTime + TtlDuration. For information on HardDelete, see the [DeleteRecord](https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_feature_store_DeleteRecord.html) API in the Amazon SageMaker API Reference guide.
-    public struct TtlDuration {
+    public struct TtlDuration: Swift.Sendable {
         /// TtlDuration time unit.
         /// This member is required.
         public var unit: SageMakerFeatureStoreRuntimeClientTypes.TtlDurationUnit?
@@ -527,10 +529,9 @@ extension SageMakerFeatureStoreRuntimeClientTypes {
             self.value = value
         }
     }
-
 }
 
-public struct PutRecordInput {
+public struct PutRecordInput: Swift.Sendable {
     /// The name or Amazon Resource Name (ARN) of the feature group that you want to insert the record into.
     /// This member is required.
     public var featureGroupName: Swift.String?

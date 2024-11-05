@@ -26,109 +26,111 @@ import protocol ClientRuntime.ModeledError
 @_spi(UnknownAWSHTTPServiceError) import struct AWSClientRuntime.UnknownAWSHTTPServiceError
 @_spi(SmithyTimestamps) import struct SmithyTimestamps.TimestampFormatter
 
-public struct DeleteActivityTypeOutput {
+
+public struct DeleteActivityTypeOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteWorkflowTypeOutput {
+public struct DeleteWorkflowTypeOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeprecateActivityTypeOutput {
+public struct DeprecateActivityTypeOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeprecateDomainOutput {
+public struct DeprecateDomainOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeprecateWorkflowTypeOutput {
+public struct DeprecateWorkflowTypeOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct RegisterActivityTypeOutput {
+public struct RegisterActivityTypeOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct RegisterDomainOutput {
+public struct RegisterDomainOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct RegisterWorkflowTypeOutput {
+public struct RegisterWorkflowTypeOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct RequestCancelWorkflowExecutionOutput {
+public struct RequestCancelWorkflowExecutionOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct RespondActivityTaskCanceledOutput {
+public struct RespondActivityTaskCanceledOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct RespondActivityTaskCompletedOutput {
+public struct RespondActivityTaskCompletedOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct RespondActivityTaskFailedOutput {
+public struct RespondActivityTaskFailedOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct RespondDecisionTaskCompletedOutput {
+public struct RespondDecisionTaskCompletedOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct SignalWorkflowExecutionOutput {
+public struct SignalWorkflowExecutionOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct TagResourceOutput {
+public struct TagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct TerminateWorkflowExecutionOutput {
+public struct TerminateWorkflowExecutionOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UndeprecateActivityTypeOutput {
+public struct UndeprecateActivityTypeOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UndeprecateDomainOutput {
+public struct UndeprecateDomainOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UndeprecateWorkflowTypeOutput {
+public struct UndeprecateWorkflowTypeOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UntagResourceOutput {
+public struct UntagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
 extension SWFClientTypes {
+
     /// Represents an activity type.
-    public struct ActivityType {
+    public struct ActivityType: Swift.Sendable {
         /// The name of this activity. The combination of activity type name and version must be unique within a domain.
         /// This member is required.
         public var name: Swift.String?
@@ -145,12 +147,12 @@ extension SWFClientTypes {
             self.version = version
         }
     }
-
 }
 
 extension SWFClientTypes {
+
     /// Represents a workflow execution.
-    public struct WorkflowExecution {
+    public struct WorkflowExecution: Swift.Sendable {
         /// A system-generated unique identifier for the workflow execution.
         /// This member is required.
         public var runId: Swift.String?
@@ -167,12 +169,12 @@ extension SWFClientTypes {
             self.workflowId = workflowId
         }
     }
-
 }
 
 extension SWFClientTypes {
+
     /// Provides the details of the ActivityTaskCanceled event.
-    public struct ActivityTaskCanceledEventAttributes {
+    public struct ActivityTaskCanceledEventAttributes: Swift.Sendable {
         /// Details of the cancellation.
         public var details: Swift.String?
         /// If set, contains the ID of the last ActivityTaskCancelRequested event recorded for this activity task. This information can be useful for diagnosing problems by tracing back the chain of events leading up to this event.
@@ -197,12 +199,12 @@ extension SWFClientTypes {
             self.startedEventId = startedEventId
         }
     }
-
 }
 
 extension SWFClientTypes {
+
     /// Provides the details of the ActivityTaskCancelRequested event.
-    public struct ActivityTaskCancelRequestedEventAttributes {
+    public struct ActivityTaskCancelRequestedEventAttributes: Swift.Sendable {
         /// The unique ID of the task.
         /// This member is required.
         public var activityId: Swift.String?
@@ -219,12 +221,12 @@ extension SWFClientTypes {
             self.decisionTaskCompletedEventId = decisionTaskCompletedEventId
         }
     }
-
 }
 
 extension SWFClientTypes {
+
     /// Provides the details of the ActivityTaskCompleted event.
-    public struct ActivityTaskCompletedEventAttributes {
+    public struct ActivityTaskCompletedEventAttributes: Swift.Sendable {
         /// The results of the activity task.
         public var result: Swift.String?
         /// The ID of the ActivityTaskScheduled event that was recorded when this activity task was scheduled. This information can be useful for diagnosing problems by tracing back the chain of events leading up to this event.
@@ -245,12 +247,12 @@ extension SWFClientTypes {
             self.startedEventId = startedEventId
         }
     }
-
 }
 
 extension SWFClientTypes {
+
     /// Provides the details of the ActivityTaskFailed event.
-    public struct ActivityTaskFailedEventAttributes {
+    public struct ActivityTaskFailedEventAttributes: Swift.Sendable {
         /// The details of the failure.
         public var details: Swift.String?
         /// The reason provided for the failure.
@@ -275,12 +277,12 @@ extension SWFClientTypes {
             self.startedEventId = startedEventId
         }
     }
-
 }
 
 extension SWFClientTypes {
+
     /// Represents a task list.
-    public struct TaskList {
+    public struct TaskList: Swift.Sendable {
         /// The name of the task list.
         /// This member is required.
         public var name: Swift.String?
@@ -292,12 +294,12 @@ extension SWFClientTypes {
             self.name = name
         }
     }
-
 }
 
 extension SWFClientTypes {
+
     /// Provides the details of the ActivityTaskScheduled event.
-    public struct ActivityTaskScheduledEventAttributes {
+    public struct ActivityTaskScheduledEventAttributes: Swift.Sendable {
         /// The unique ID of the activity task.
         /// This member is required.
         public var activityId: Swift.String?
@@ -352,12 +354,12 @@ extension SWFClientTypes {
             self.taskPriority = taskPriority
         }
     }
-
 }
 
 extension SWFClientTypes {
+
     /// Provides the details of the ActivityTaskStarted event.
-    public struct ActivityTaskStartedEventAttributes {
+    public struct ActivityTaskStartedEventAttributes: Swift.Sendable {
         /// Identity of the worker that was assigned this task. This aids diagnostics when problems arise. The form of this identity is user defined.
         public var identity: Swift.String?
         /// The ID of the ActivityTaskScheduled event that was recorded when this activity task was scheduled. This information can be useful for diagnosing problems by tracing back the chain of events leading up to this event.
@@ -373,12 +375,11 @@ extension SWFClientTypes {
             self.scheduledEventId = scheduledEventId
         }
     }
-
 }
 
 extension SWFClientTypes {
 
-    public enum ActivityTaskTimeoutType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ActivityTaskTimeoutType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case heartbeat
         case scheduleToClose
         case scheduleToStart
@@ -412,8 +413,9 @@ extension SWFClientTypes {
 }
 
 extension SWFClientTypes {
+
     /// Provides the details of the ActivityTaskTimedOut event.
-    public struct ActivityTaskTimedOutEventAttributes {
+    public struct ActivityTaskTimedOutEventAttributes: Swift.Sendable {
         /// Contains the content of the details parameter for the last call made by the activity to RecordActivityTaskHeartbeat.
         public var details: Swift.String?
         /// The ID of the ActivityTaskScheduled event that was recorded when this activity task was scheduled. This information can be useful for diagnosing problems by tracing back the chain of events leading up to this event.
@@ -439,12 +441,12 @@ extension SWFClientTypes {
             self.timeoutType = timeoutType
         }
     }
-
 }
 
 extension SWFClientTypes {
+
     /// Configuration settings registered with the activity type.
-    public struct ActivityTypeConfiguration {
+    public struct ActivityTypeConfiguration: Swift.Sendable {
         /// The default maximum time, in seconds, before which a worker processing a task must report progress by calling [RecordActivityTaskHeartbeat]. You can specify this value only when registering an activity type. The registered default value can be overridden when you schedule a task through the ScheduleActivityTask[Decision]. If the activity worker subsequently attempts to record a heartbeat or returns a result, the activity worker receives an UnknownResource fault. In this case, Amazon SWF no longer considers the activity task to be valid; the activity worker should clean up the activity task. The duration is specified in seconds, an integer greater than or equal to 0. You can use NONE to specify unlimited duration.
         public var defaultTaskHeartbeatTimeout: Swift.String?
         /// The default task list specified for this activity type at registration. This default is used if a task list isn't provided when a task is scheduled through the ScheduleActivityTask[Decision]. You can override the default registered task list when scheduling a task through the ScheduleActivityTask[Decision].
@@ -475,12 +477,11 @@ extension SWFClientTypes {
             self.defaultTaskStartToCloseTimeout = defaultTaskStartToCloseTimeout
         }
     }
-
 }
 
 extension SWFClientTypes {
 
-    public enum RegistrationStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum RegistrationStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case deprecated
         case registered
         case sdkUnknown(Swift.String)
@@ -508,8 +509,9 @@ extension SWFClientTypes {
 }
 
 extension SWFClientTypes {
+
     /// Detailed information about an activity type.
-    public struct ActivityTypeInfo {
+    public struct ActivityTypeInfo: Swift.Sendable {
         /// The [ActivityType] type structure representing the activity type.
         /// This member is required.
         public var activityType: SWFClientTypes.ActivityType?
@@ -539,10 +541,10 @@ extension SWFClientTypes {
             self.status = status
         }
     }
-
 }
 
 extension SWFClientTypes {
+
     /// Provides the details of the CancelTimer decision. Access Control You can use IAM policies to control this decision's access to Amazon SWF resources as follows:
     ///
     /// * Use a Resource element with the domain name to limit the action to only specified domains.
@@ -553,7 +555,7 @@ extension SWFClientTypes {
     ///
     ///
     /// If the caller doesn't have sufficient permissions to invoke the action, or the parameter values fall outside the specified constraints, the action fails. The associated event attribute's cause parameter is set to OPERATION_NOT_PERMITTED. For details and example IAM policies, see [Using IAM to Manage Access to Amazon SWF Workflows](https://docs.aws.amazon.com/amazonswf/latest/developerguide/swf-dev-iam.html) in the Amazon SWF Developer Guide.
-    public struct CancelTimerDecisionAttributes {
+    public struct CancelTimerDecisionAttributes: Swift.Sendable {
         /// The unique ID of the timer to cancel.
         /// This member is required.
         public var timerId: Swift.String?
@@ -565,12 +567,11 @@ extension SWFClientTypes {
             self.timerId = timerId
         }
     }
-
 }
 
 extension SWFClientTypes {
 
-    public enum CancelTimerFailedCause: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum CancelTimerFailedCause: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case operationNotPermitted
         case timerIdUnknown
         case sdkUnknown(Swift.String)
@@ -598,8 +599,9 @@ extension SWFClientTypes {
 }
 
 extension SWFClientTypes {
+
     /// Provides the details of the CancelTimerFailed event.
-    public struct CancelTimerFailedEventAttributes {
+    public struct CancelTimerFailedEventAttributes: Swift.Sendable {
         /// The cause of the failure. This information is generated by the system and can be useful for diagnostic purposes. If cause is set to OPERATION_NOT_PERMITTED, the decision failed because it lacked sufficient permissions. For details and example IAM policies, see [Using IAM to Manage Access to Amazon SWF Workflows](https://docs.aws.amazon.com/amazonswf/latest/developerguide/swf-dev-iam.html) in the Amazon SWF Developer Guide.
         /// This member is required.
         public var cause: SWFClientTypes.CancelTimerFailedCause?
@@ -621,10 +623,10 @@ extension SWFClientTypes {
             self.timerId = timerId
         }
     }
-
 }
 
 extension SWFClientTypes {
+
     /// Provides the details of the CancelWorkflowExecution decision. Access Control You can use IAM policies to control this decision's access to Amazon SWF resources as follows:
     ///
     /// * Use a Resource element with the domain name to limit the action to only specified domains.
@@ -635,7 +637,7 @@ extension SWFClientTypes {
     ///
     ///
     /// If the caller doesn't have sufficient permissions to invoke the action, or the parameter values fall outside the specified constraints, the action fails. The associated event attribute's cause parameter is set to OPERATION_NOT_PERMITTED. For details and example IAM policies, see [Using IAM to Manage Access to Amazon SWF Workflows](https://docs.aws.amazon.com/amazonswf/latest/developerguide/swf-dev-iam.html) in the Amazon SWF Developer Guide.
-    public struct CancelWorkflowExecutionDecisionAttributes {
+    public struct CancelWorkflowExecutionDecisionAttributes: Swift.Sendable {
         /// Details of the cancellation.
         public var details: Swift.String?
 
@@ -646,12 +648,11 @@ extension SWFClientTypes {
             self.details = details
         }
     }
-
 }
 
 extension SWFClientTypes {
 
-    public enum CancelWorkflowExecutionFailedCause: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum CancelWorkflowExecutionFailedCause: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case operationNotPermitted
         case unhandledDecision
         case sdkUnknown(Swift.String)
@@ -679,8 +680,9 @@ extension SWFClientTypes {
 }
 
 extension SWFClientTypes {
+
     /// Provides the details of the CancelWorkflowExecutionFailed event.
-    public struct CancelWorkflowExecutionFailedEventAttributes {
+    public struct CancelWorkflowExecutionFailedEventAttributes: Swift.Sendable {
         /// The cause of the failure. This information is generated by the system and can be useful for diagnostic purposes. If cause is set to OPERATION_NOT_PERMITTED, the decision failed because it lacked sufficient permissions. For details and example IAM policies, see [Using IAM to Manage Access to Amazon SWF Workflows](https://docs.aws.amazon.com/amazonswf/latest/developerguide/swf-dev-iam.html) in the Amazon SWF Developer Guide.
         /// This member is required.
         public var cause: SWFClientTypes.CancelWorkflowExecutionFailedCause?
@@ -697,12 +699,11 @@ extension SWFClientTypes {
             self.decisionTaskCompletedEventId = decisionTaskCompletedEventId
         }
     }
-
 }
 
 extension SWFClientTypes {
 
-    public enum ChildPolicy: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ChildPolicy: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case abandon
         case requestCancel
         case terminate
@@ -733,8 +734,9 @@ extension SWFClientTypes {
 }
 
 extension SWFClientTypes {
+
     /// Represents a workflow type.
-    public struct WorkflowType {
+    public struct WorkflowType: Swift.Sendable {
         /// The name of the workflow type. The combination of workflow type name and version must be unique with in a domain.
         /// This member is required.
         public var name: Swift.String?
@@ -751,12 +753,12 @@ extension SWFClientTypes {
             self.version = version
         }
     }
-
 }
 
 extension SWFClientTypes {
+
     /// Provide details of the ChildWorkflowExecutionCanceled event.
-    public struct ChildWorkflowExecutionCanceledEventAttributes {
+    public struct ChildWorkflowExecutionCanceledEventAttributes: Swift.Sendable {
         /// Details of the cancellation (if provided).
         public var details: Swift.String?
         /// The ID of the StartChildWorkflowExecutionInitiated event corresponding to the StartChildWorkflowExecution[Decision] to start this child workflow execution. This information can be useful for diagnosing problems by tracing back the chain of events leading up to this event.
@@ -787,12 +789,12 @@ extension SWFClientTypes {
             self.workflowType = workflowType
         }
     }
-
 }
 
 extension SWFClientTypes {
+
     /// Provides the details of the ChildWorkflowExecutionCompleted event.
-    public struct ChildWorkflowExecutionCompletedEventAttributes {
+    public struct ChildWorkflowExecutionCompletedEventAttributes: Swift.Sendable {
         /// The ID of the StartChildWorkflowExecutionInitiated event corresponding to the StartChildWorkflowExecution[Decision] to start this child workflow execution. This information can be useful for diagnosing problems by tracing back the chain of events leading up to this event.
         /// This member is required.
         public var initiatedEventId: Swift.Int
@@ -823,12 +825,12 @@ extension SWFClientTypes {
             self.workflowType = workflowType
         }
     }
-
 }
 
 extension SWFClientTypes {
+
     /// Provides the details of the ChildWorkflowExecutionFailed event.
-    public struct ChildWorkflowExecutionFailedEventAttributes {
+    public struct ChildWorkflowExecutionFailedEventAttributes: Swift.Sendable {
         /// The details of the failure (if provided).
         public var details: Swift.String?
         /// The ID of the StartChildWorkflowExecutionInitiated event corresponding to the StartChildWorkflowExecution[Decision] to start this child workflow execution. This information can be useful for diagnosing problems by tracing back the chain of events leading up to this event.
@@ -863,12 +865,12 @@ extension SWFClientTypes {
             self.workflowType = workflowType
         }
     }
-
 }
 
 extension SWFClientTypes {
+
     /// Provides the details of the ChildWorkflowExecutionStarted event.
-    public struct ChildWorkflowExecutionStartedEventAttributes {
+    public struct ChildWorkflowExecutionStartedEventAttributes: Swift.Sendable {
         /// The ID of the StartChildWorkflowExecutionInitiated event corresponding to the StartChildWorkflowExecution[Decision] to start this child workflow execution. This information can be useful for diagnosing problems by tracing back the chain of events leading up to this event.
         /// This member is required.
         public var initiatedEventId: Swift.Int
@@ -890,12 +892,12 @@ extension SWFClientTypes {
             self.workflowType = workflowType
         }
     }
-
 }
 
 extension SWFClientTypes {
+
     /// Provides the details of the ChildWorkflowExecutionTerminated event.
-    public struct ChildWorkflowExecutionTerminatedEventAttributes {
+    public struct ChildWorkflowExecutionTerminatedEventAttributes: Swift.Sendable {
         /// The ID of the StartChildWorkflowExecutionInitiated event corresponding to the StartChildWorkflowExecution[Decision] to start this child workflow execution. This information can be useful for diagnosing problems by tracing back the chain of events leading up to this event.
         /// This member is required.
         public var initiatedEventId: Swift.Int
@@ -922,12 +924,11 @@ extension SWFClientTypes {
             self.workflowType = workflowType
         }
     }
-
 }
 
 extension SWFClientTypes {
 
-    public enum WorkflowExecutionTimeoutType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum WorkflowExecutionTimeoutType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case startToClose
         case sdkUnknown(Swift.String)
 
@@ -952,8 +953,9 @@ extension SWFClientTypes {
 }
 
 extension SWFClientTypes {
+
     /// Provides the details of the ChildWorkflowExecutionTimedOut event.
-    public struct ChildWorkflowExecutionTimedOutEventAttributes {
+    public struct ChildWorkflowExecutionTimedOutEventAttributes: Swift.Sendable {
         /// The ID of the StartChildWorkflowExecutionInitiated event corresponding to the StartChildWorkflowExecution[Decision] to start this child workflow execution. This information can be useful for diagnosing problems by tracing back the chain of events leading up to this event.
         /// This member is required.
         public var initiatedEventId: Swift.Int
@@ -985,12 +987,11 @@ extension SWFClientTypes {
             self.workflowType = workflowType
         }
     }
-
 }
 
 extension SWFClientTypes {
 
-    public enum CloseStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum CloseStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case canceled
         case completed
         case continuedAsNew
@@ -1030,8 +1031,9 @@ extension SWFClientTypes {
 }
 
 extension SWFClientTypes {
+
     /// Used to filter the closed workflow executions in visibility APIs by their close status.
-    public struct CloseStatusFilter {
+    public struct CloseStatusFilter: Swift.Sendable {
         /// The close status that must match the close status of an execution for it to meet the criteria of this filter.
         /// This member is required.
         public var status: SWFClientTypes.CloseStatus?
@@ -1043,10 +1045,10 @@ extension SWFClientTypes {
             self.status = status
         }
     }
-
 }
 
 extension SWFClientTypes {
+
     /// Provides the details of the CompleteWorkflowExecution decision. Access Control You can use IAM policies to control this decision's access to Amazon SWF resources as follows:
     ///
     /// * Use a Resource element with the domain name to limit the action to only specified domains.
@@ -1057,7 +1059,7 @@ extension SWFClientTypes {
     ///
     ///
     /// If the caller doesn't have sufficient permissions to invoke the action, or the parameter values fall outside the specified constraints, the action fails. The associated event attribute's cause parameter is set to OPERATION_NOT_PERMITTED. For details and example IAM policies, see [Using IAM to Manage Access to Amazon SWF Workflows](https://docs.aws.amazon.com/amazonswf/latest/developerguide/swf-dev-iam.html) in the Amazon SWF Developer Guide.
-    public struct CompleteWorkflowExecutionDecisionAttributes {
+    public struct CompleteWorkflowExecutionDecisionAttributes: Swift.Sendable {
         /// The result of the workflow execution. The form of the result is implementation defined.
         public var result: Swift.String?
 
@@ -1068,12 +1070,11 @@ extension SWFClientTypes {
             self.result = result
         }
     }
-
 }
 
 extension SWFClientTypes {
 
-    public enum CompleteWorkflowExecutionFailedCause: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum CompleteWorkflowExecutionFailedCause: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case operationNotPermitted
         case unhandledDecision
         case sdkUnknown(Swift.String)
@@ -1101,8 +1102,9 @@ extension SWFClientTypes {
 }
 
 extension SWFClientTypes {
+
     /// Provides the details of the CompleteWorkflowExecutionFailed event.
-    public struct CompleteWorkflowExecutionFailedEventAttributes {
+    public struct CompleteWorkflowExecutionFailedEventAttributes: Swift.Sendable {
         /// The cause of the failure. This information is generated by the system and can be useful for diagnostic purposes. If cause is set to OPERATION_NOT_PERMITTED, the decision failed because it lacked sufficient permissions. For details and example IAM policies, see [Using IAM to Manage Access to Amazon SWF Workflows](https://docs.aws.amazon.com/amazonswf/latest/developerguide/swf-dev-iam.html) in the Amazon SWF Developer Guide.
         /// This member is required.
         public var cause: SWFClientTypes.CompleteWorkflowExecutionFailedCause?
@@ -1119,10 +1121,10 @@ extension SWFClientTypes {
             self.decisionTaskCompletedEventId = decisionTaskCompletedEventId
         }
     }
-
 }
 
 extension SWFClientTypes {
+
     /// Provides the details of the ContinueAsNewWorkflowExecution decision. Access Control You can use IAM policies to control this decision's access to Amazon SWF resources as follows:
     ///
     /// * Use a Resource element with the domain name to limit the action to only specified domains.
@@ -1142,7 +1144,7 @@ extension SWFClientTypes {
     ///
     ///
     /// If the caller doesn't have sufficient permissions to invoke the action, or the parameter values fall outside the specified constraints, the action fails. The associated event attribute's cause parameter is set to OPERATION_NOT_PERMITTED. For details and example IAM policies, see [Using IAM to Manage Access to Amazon SWF Workflows](https://docs.aws.amazon.com/amazonswf/latest/developerguide/swf-dev-iam.html) in the Amazon SWF Developer Guide.
-    public struct ContinueAsNewWorkflowExecutionDecisionAttributes {
+    public struct ContinueAsNewWorkflowExecutionDecisionAttributes: Swift.Sendable {
         /// If set, specifies the policy to use for the child workflow executions of the new execution if it is terminated by calling the [TerminateWorkflowExecution] action explicitly or due to an expired timeout. This policy overrides the default child policy specified when registering the workflow type using [RegisterWorkflowType]. The supported child policies are:
         ///
         /// * TERMINATE – The child executions are terminated.
@@ -1194,12 +1196,11 @@ extension SWFClientTypes {
             self.workflowTypeVersion = workflowTypeVersion
         }
     }
-
 }
 
 extension SWFClientTypes {
 
-    public enum ContinueAsNewWorkflowExecutionFailedCause: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ContinueAsNewWorkflowExecutionFailedCause: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case continueAsNewWorkflowExecutionRateExceeded
         case defaultChildPolicyUndefined
         case defaultExecutionStartToCloseTimeoutUndefined
@@ -1248,8 +1249,9 @@ extension SWFClientTypes {
 }
 
 extension SWFClientTypes {
+
     /// Provides the details of the ContinueAsNewWorkflowExecutionFailed event.
-    public struct ContinueAsNewWorkflowExecutionFailedEventAttributes {
+    public struct ContinueAsNewWorkflowExecutionFailedEventAttributes: Swift.Sendable {
         /// The cause of the failure. This information is generated by the system and can be useful for diagnostic purposes. If cause is set to OPERATION_NOT_PERMITTED, the decision failed because it lacked sufficient permissions. For details and example IAM policies, see [Using IAM to Manage Access to Amazon SWF Workflows](https://docs.aws.amazon.com/amazonswf/latest/developerguide/swf-dev-iam.html) in the Amazon SWF Developer Guide.
         /// This member is required.
         public var cause: SWFClientTypes.ContinueAsNewWorkflowExecutionFailedCause?
@@ -1266,7 +1268,6 @@ extension SWFClientTypes {
             self.decisionTaskCompletedEventId = decisionTaskCompletedEventId
         }
     }
-
 }
 
 /// Returned when the caller doesn't have sufficient permissions to invoke the action.
@@ -1320,8 +1321,9 @@ public struct UnknownResourceFault: ClientRuntime.ModeledError, AWSClientRuntime
 }
 
 extension SWFClientTypes {
+
     /// Used to filter the workflow executions in visibility APIs by various time-based rules. Each parameter, if specified, defines a rule that must be satisfied by each returned query result. The parameter values are in the [Unix Time format](https://en.wikipedia.org/wiki/Unix_time). For example: "oldestDate": 1325376070.
-    public struct ExecutionTimeFilter {
+    public struct ExecutionTimeFilter: Swift.Sendable {
         /// Specifies the latest start or close date and time to return.
         public var latestDate: Foundation.Date?
         /// Specifies the oldest start or close date and time to return.
@@ -1337,12 +1339,12 @@ extension SWFClientTypes {
             self.oldestDate = oldestDate
         }
     }
-
 }
 
 extension SWFClientTypes {
+
     /// Used to filter the workflow executions in visibility APIs by their workflowId.
-    public struct WorkflowExecutionFilter {
+    public struct WorkflowExecutionFilter: Swift.Sendable {
         /// The workflowId to pass of match the criteria of this filter.
         /// This member is required.
         public var workflowId: Swift.String?
@@ -1354,12 +1356,12 @@ extension SWFClientTypes {
             self.workflowId = workflowId
         }
     }
-
 }
 
 extension SWFClientTypes {
+
     /// Used to filter the workflow executions in visibility APIs based on a tag.
-    public struct TagFilter {
+    public struct TagFilter: Swift.Sendable {
         /// Specifies the tag that must be associated with the execution for it to meet the filter criteria. Tags may only contain unicode letters, digits, whitespace, or these symbols: _ . : / = + - @.
         /// This member is required.
         public var tag: Swift.String?
@@ -1371,12 +1373,12 @@ extension SWFClientTypes {
             self.tag = tag
         }
     }
-
 }
 
 extension SWFClientTypes {
+
     /// Used to filter workflow execution query results by type. Each parameter, if specified, defines a rule that must be satisfied by each returned result.
-    public struct WorkflowTypeFilter {
+    public struct WorkflowTypeFilter: Swift.Sendable {
         /// Name of the workflow type.
         /// This member is required.
         public var name: Swift.String?
@@ -1392,10 +1394,9 @@ extension SWFClientTypes {
             self.version = version
         }
     }
-
 }
 
-public struct CountClosedWorkflowExecutionsInput {
+public struct CountClosedWorkflowExecutionsInput: Swift.Sendable {
     /// If specified, only workflow executions that match this close status are counted. This filter has an affect only if executionStatus is specified as CLOSED. closeStatusFilter, executionFilter, typeFilter and tagFilter are mutually exclusive. You can specify at most one of these in a request.
     public var closeStatusFilter: SWFClientTypes.CloseStatusFilter?
     /// If specified, only workflow executions that meet the close time criteria of the filter are counted. startTimeFilter and closeTimeFilter are mutually exclusive. You must specify one of these in a request but not both.
@@ -1433,7 +1434,7 @@ public struct CountClosedWorkflowExecutionsInput {
 }
 
 /// Contains the count of workflow executions returned from [CountOpenWorkflowExecutions] or [CountClosedWorkflowExecutions]
-public struct CountClosedWorkflowExecutionsOutput {
+public struct CountClosedWorkflowExecutionsOutput: Swift.Sendable {
     /// The number of workflow executions.
     /// This member is required.
     public var count: Swift.Int
@@ -1450,7 +1451,7 @@ public struct CountClosedWorkflowExecutionsOutput {
     }
 }
 
-public struct CountOpenWorkflowExecutionsInput {
+public struct CountOpenWorkflowExecutionsInput: Swift.Sendable {
     /// The name of the domain containing the workflow executions to count.
     /// This member is required.
     public var domain: Swift.String?
@@ -1481,7 +1482,7 @@ public struct CountOpenWorkflowExecutionsInput {
 }
 
 /// Contains the count of workflow executions returned from [CountOpenWorkflowExecutions] or [CountClosedWorkflowExecutions]
-public struct CountOpenWorkflowExecutionsOutput {
+public struct CountOpenWorkflowExecutionsOutput: Swift.Sendable {
     /// The number of workflow executions.
     /// This member is required.
     public var count: Swift.Int
@@ -1498,7 +1499,7 @@ public struct CountOpenWorkflowExecutionsOutput {
     }
 }
 
-public struct CountPendingActivityTasksInput {
+public struct CountPendingActivityTasksInput: Swift.Sendable {
     /// The name of the domain that contains the task list.
     /// This member is required.
     public var domain: Swift.String?
@@ -1517,7 +1518,7 @@ public struct CountPendingActivityTasksInput {
 }
 
 /// Contains the count of tasks in a task list.
-public struct CountPendingActivityTasksOutput {
+public struct CountPendingActivityTasksOutput: Swift.Sendable {
     /// The number of tasks in the task list.
     /// This member is required.
     public var count: Swift.Int
@@ -1534,7 +1535,7 @@ public struct CountPendingActivityTasksOutput {
     }
 }
 
-public struct CountPendingDecisionTasksInput {
+public struct CountPendingDecisionTasksInput: Swift.Sendable {
     /// The name of the domain that contains the task list.
     /// This member is required.
     public var domain: Swift.String?
@@ -1553,7 +1554,7 @@ public struct CountPendingDecisionTasksInput {
 }
 
 /// Contains the count of tasks in a task list.
-public struct CountPendingDecisionTasksOutput {
+public struct CountPendingDecisionTasksOutput: Swift.Sendable {
     /// The number of tasks in the task list.
     /// This member is required.
     public var count: Swift.Int
@@ -1572,7 +1573,7 @@ public struct CountPendingDecisionTasksOutput {
 
 extension SWFClientTypes {
 
-    public enum DecisionType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DecisionType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case canceltimer
         case cancelworkflowexecution
         case completeworkflowexecution
@@ -1633,6 +1634,7 @@ extension SWFClientTypes {
 }
 
 extension SWFClientTypes {
+
     /// Provides the details of the FailWorkflowExecution decision. Access Control You can use IAM policies to control this decision's access to Amazon SWF resources as follows:
     ///
     /// * Use a Resource element with the domain name to limit the action to only specified domains.
@@ -1643,7 +1645,7 @@ extension SWFClientTypes {
     ///
     ///
     /// If the caller doesn't have sufficient permissions to invoke the action, or the parameter values fall outside the specified constraints, the action fails. The associated event attribute's cause parameter is set to OPERATION_NOT_PERMITTED. For details and example IAM policies, see [Using IAM to Manage Access to Amazon SWF Workflows](https://docs.aws.amazon.com/amazonswf/latest/developerguide/swf-dev-iam.html) in the Amazon SWF Developer Guide.
-    public struct FailWorkflowExecutionDecisionAttributes {
+    public struct FailWorkflowExecutionDecisionAttributes: Swift.Sendable {
         /// Details of the failure.
         public var details: Swift.String?
         /// A descriptive reason for the failure that may help in diagnostics.
@@ -1658,10 +1660,10 @@ extension SWFClientTypes {
             self.reason = reason
         }
     }
-
 }
 
 extension SWFClientTypes {
+
     /// Provides the details of the RecordMarker decision. Access Control You can use IAM policies to control this decision's access to Amazon SWF resources as follows:
     ///
     /// * Use a Resource element with the domain name to limit the action to only specified domains.
@@ -1672,7 +1674,7 @@ extension SWFClientTypes {
     ///
     ///
     /// If the caller doesn't have sufficient permissions to invoke the action, or the parameter values fall outside the specified constraints, the action fails. The associated event attribute's cause parameter is set to OPERATION_NOT_PERMITTED. For details and example IAM policies, see [Using IAM to Manage Access to Amazon SWF Workflows](https://docs.aws.amazon.com/amazonswf/latest/developerguide/swf-dev-iam.html) in the Amazon SWF Developer Guide.
-    public struct RecordMarkerDecisionAttributes {
+    public struct RecordMarkerDecisionAttributes: Swift.Sendable {
         /// The details of the marker.
         public var details: Swift.String?
         /// The name of the marker.
@@ -1688,10 +1690,10 @@ extension SWFClientTypes {
             self.markerName = markerName
         }
     }
-
 }
 
 extension SWFClientTypes {
+
     /// Provides the details of the RequestCancelActivityTask decision. Access Control You can use IAM policies to control this decision's access to Amazon SWF resources as follows:
     ///
     /// * Use a Resource element with the domain name to limit the action to only specified domains.
@@ -1702,7 +1704,7 @@ extension SWFClientTypes {
     ///
     ///
     /// If the caller doesn't have sufficient permissions to invoke the action, or the parameter values fall outside the specified constraints, the action fails. The associated event attribute's cause parameter is set to OPERATION_NOT_PERMITTED. For details and example IAM policies, see [Using IAM to Manage Access to Amazon SWF Workflows](https://docs.aws.amazon.com/amazonswf/latest/developerguide/swf-dev-iam.html) in the Amazon SWF Developer Guide.
-    public struct RequestCancelActivityTaskDecisionAttributes {
+    public struct RequestCancelActivityTaskDecisionAttributes: Swift.Sendable {
         /// The activityId of the activity task to be canceled.
         /// This member is required.
         public var activityId: Swift.String?
@@ -1714,10 +1716,10 @@ extension SWFClientTypes {
             self.activityId = activityId
         }
     }
-
 }
 
 extension SWFClientTypes {
+
     /// Provides the details of the RequestCancelExternalWorkflowExecution decision. Access Control You can use IAM policies to control this decision's access to Amazon SWF resources as follows:
     ///
     /// * Use a Resource element with the domain name to limit the action to only specified domains.
@@ -1728,7 +1730,7 @@ extension SWFClientTypes {
     ///
     ///
     /// If the caller doesn't have sufficient permissions to invoke the action, or the parameter values fall outside the specified constraints, the action fails. The associated event attribute's cause parameter is set to OPERATION_NOT_PERMITTED. For details and example IAM policies, see [Using IAM to Manage Access to Amazon SWF Workflows](https://docs.aws.amazon.com/amazonswf/latest/developerguide/swf-dev-iam.html) in the Amazon SWF Developer Guide.
-    public struct RequestCancelExternalWorkflowExecutionDecisionAttributes {
+    public struct RequestCancelExternalWorkflowExecutionDecisionAttributes: Swift.Sendable {
         /// The data attached to the event that can be used by the decider in subsequent workflow tasks.
         public var control: Swift.String?
         /// The runId of the external workflow execution to cancel.
@@ -1748,10 +1750,10 @@ extension SWFClientTypes {
             self.workflowId = workflowId
         }
     }
-
 }
 
 extension SWFClientTypes {
+
     /// Provides the details of the ScheduleActivityTask decision. Access Control You can use IAM policies to control this decision's access to Amazon SWF resources as follows:
     ///
     /// * Use a Resource element with the domain name to limit the action to only specified domains.
@@ -1771,7 +1773,7 @@ extension SWFClientTypes {
     ///
     ///
     /// If the caller doesn't have sufficient permissions to invoke the action, or the parameter values fall outside the specified constraints, the action fails. The associated event attribute's cause parameter is set to OPERATION_NOT_PERMITTED. For details and example IAM policies, see [Using IAM to Manage Access to Amazon SWF Workflows](https://docs.aws.amazon.com/amazonswf/latest/developerguide/swf-dev-iam.html) in the Amazon SWF Developer Guide.
-    public struct ScheduleActivityTaskDecisionAttributes {
+    public struct ScheduleActivityTaskDecisionAttributes: Swift.Sendable {
         /// The activityId of the activity task. The specified string must not contain a : (colon), / (slash), | (vertical bar), or any control characters (\u0000-\u001f | \u007f-\u009f). Also, it must not be the literal string arn.
         /// This member is required.
         public var activityId: Swift.String?
@@ -1820,12 +1822,12 @@ extension SWFClientTypes {
             self.taskPriority = taskPriority
         }
     }
-
 }
 
 extension SWFClientTypes {
+
     /// Decision attributes specified in scheduleLambdaFunctionDecisionAttributes within the list of decisions decisions passed to [RespondDecisionTaskCompleted].
-    public struct ScheduleLambdaFunctionDecisionAttributes {
+    public struct ScheduleLambdaFunctionDecisionAttributes: Swift.Sendable {
         /// The data attached to the event that the decider can use in subsequent workflow tasks. This data isn't sent to the Lambda task.
         public var control: Swift.String?
         /// A string that identifies the Lambda function execution in the event history.
@@ -1854,10 +1856,10 @@ extension SWFClientTypes {
             self.startToCloseTimeout = startToCloseTimeout
         }
     }
-
 }
 
 extension SWFClientTypes {
+
     /// Provides the details of the SignalExternalWorkflowExecution decision. Access Control You can use IAM policies to control this decision's access to Amazon SWF resources as follows:
     ///
     /// * Use a Resource element with the domain name to limit the action to only specified domains.
@@ -1868,7 +1870,7 @@ extension SWFClientTypes {
     ///
     ///
     /// If the caller doesn't have sufficient permissions to invoke the action, or the parameter values fall outside the specified constraints, the action fails. The associated event attribute's cause parameter is set to OPERATION_NOT_PERMITTED. For details and example IAM policies, see [Using IAM to Manage Access to Amazon SWF Workflows](https://docs.aws.amazon.com/amazonswf/latest/developerguide/swf-dev-iam.html) in the Amazon SWF Developer Guide.
-    public struct SignalExternalWorkflowExecutionDecisionAttributes {
+    public struct SignalExternalWorkflowExecutionDecisionAttributes: Swift.Sendable {
         /// The data attached to the event that can be used by the decider in subsequent decision tasks.
         public var control: Swift.String?
         /// The input data to be provided with the signal. The target workflow execution uses the signal name and input data to process the signal.
@@ -1897,10 +1899,10 @@ extension SWFClientTypes {
             self.workflowId = workflowId
         }
     }
-
 }
 
 extension SWFClientTypes {
+
     /// Provides the details of the StartChildWorkflowExecution decision. Access Control You can use IAM policies to control this decision's access to Amazon SWF resources as follows:
     ///
     /// * Use a Resource element with the domain name to limit the action to only specified domains.
@@ -1922,7 +1924,7 @@ extension SWFClientTypes {
     ///
     ///
     /// If the caller doesn't have sufficient permissions to invoke the action, or the parameter values fall outside the specified constraints, the action fails. The associated event attribute's cause parameter is set to OPERATION_NOT_PERMITTED. For details and example IAM policies, see [Using IAM to Manage Access to Amazon SWF Workflows](https://docs.aws.amazon.com/amazonswf/latest/developerguide/swf-dev-iam.html) in the Amazon SWF Developer Guide.
-    public struct StartChildWorkflowExecutionDecisionAttributes {
+    public struct StartChildWorkflowExecutionDecisionAttributes: Swift.Sendable {
         /// If set, specifies the policy to use for the child workflow executions if the workflow execution being started is terminated by calling the [TerminateWorkflowExecution] action explicitly or due to an expired timeout. This policy overrides the default child policy specified when registering the workflow type using [RegisterWorkflowType]. The supported child policies are:
         ///
         /// * TERMINATE – The child executions are terminated.
@@ -1984,10 +1986,10 @@ extension SWFClientTypes {
             self.workflowType = workflowType
         }
     }
-
 }
 
 extension SWFClientTypes {
+
     /// Provides the details of the StartTimer decision. Access Control You can use IAM policies to control this decision's access to Amazon SWF resources as follows:
     ///
     /// * Use a Resource element with the domain name to limit the action to only specified domains.
@@ -1998,7 +2000,7 @@ extension SWFClientTypes {
     ///
     ///
     /// If the caller doesn't have sufficient permissions to invoke the action, or the parameter values fall outside the specified constraints, the action fails. The associated event attribute's cause parameter is set to OPERATION_NOT_PERMITTED. For details and example IAM policies, see [Using IAM to Manage Access to Amazon SWF Workflows](https://docs.aws.amazon.com/amazonswf/latest/developerguide/swf-dev-iam.html) in the Amazon SWF Developer Guide.
-    public struct StartTimerDecisionAttributes {
+    public struct StartTimerDecisionAttributes: Swift.Sendable {
         /// The data attached to the event that can be used by the decider in subsequent workflow tasks.
         public var control: Swift.String?
         /// The duration to wait before firing the timer. The duration is specified in seconds, an integer greater than or equal to 0.
@@ -2019,10 +2021,10 @@ extension SWFClientTypes {
             self.timerId = timerId
         }
     }
-
 }
 
 extension SWFClientTypes {
+
     /// Specifies a decision made by the decider. A decision can be one of these types:
     ///
     /// * CancelTimer – Cancels a previously started timer and records a TimerCanceled event in the history.
@@ -2109,7 +2111,7 @@ extension SWFClientTypes {
     /// * [RequestCancelExternalWorkflowExecutionDecisionAttributes]
     ///
     /// * [StartChildWorkflowExecutionDecisionAttributes]
-    public struct Decision {
+    public struct Decision: Swift.Sendable {
         /// Provides the details of the CancelTimer decision. It isn't set for other decision types.
         public var cancelTimerDecisionAttributes: SWFClientTypes.CancelTimerDecisionAttributes?
         /// Provides the details of the CancelWorkflowExecution decision. It isn't set for other decision types.
@@ -2173,12 +2175,12 @@ extension SWFClientTypes {
             self.startTimerDecisionAttributes = startTimerDecisionAttributes
         }
     }
-
 }
 
 extension SWFClientTypes {
+
     /// Provides the details of the DecisionTaskCompleted event.
-    public struct DecisionTaskCompletedEventAttributes {
+    public struct DecisionTaskCompletedEventAttributes: Swift.Sendable {
         /// User defined context for the workflow execution.
         public var executionContext: Swift.String?
         /// The ID of the DecisionTaskScheduled event that was recorded when this decision task was scheduled. This information can be useful for diagnosing problems by tracing back the chain of events leading up to this event.
@@ -2207,12 +2209,12 @@ extension SWFClientTypes {
             self.taskListScheduleToStartTimeout = taskListScheduleToStartTimeout
         }
     }
-
 }
 
 extension SWFClientTypes {
+
     /// Provides details about the DecisionTaskScheduled event.
-    public struct DecisionTaskScheduledEventAttributes {
+    public struct DecisionTaskScheduledEventAttributes: Swift.Sendable {
         /// The maximum amount of time the decision task can wait to be assigned to a worker.
         public var scheduleToStartTimeout: Swift.String?
         /// The maximum duration for this decision task. The task is considered timed out if it doesn't completed within this duration. The duration is specified in seconds, an integer greater than or equal to 0. You can use NONE to specify unlimited duration.
@@ -2236,12 +2238,12 @@ extension SWFClientTypes {
             self.taskPriority = taskPriority
         }
     }
-
 }
 
 extension SWFClientTypes {
+
     /// Provides the details of the DecisionTaskStarted event.
-    public struct DecisionTaskStartedEventAttributes {
+    public struct DecisionTaskStartedEventAttributes: Swift.Sendable {
         /// Identity of the decider making the request. This enables diagnostic tracing when problems arise. The form of this identity is user defined.
         public var identity: Swift.String?
         /// The ID of the DecisionTaskScheduled event that was recorded when this decision task was scheduled. This information can be useful for diagnosing problems by tracing back the chain of events leading up to this event.
@@ -2257,12 +2259,11 @@ extension SWFClientTypes {
             self.scheduledEventId = scheduledEventId
         }
     }
-
 }
 
 extension SWFClientTypes {
 
-    public enum DecisionTaskTimeoutType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DecisionTaskTimeoutType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case scheduleToStart
         case startToClose
         case sdkUnknown(Swift.String)
@@ -2290,8 +2291,9 @@ extension SWFClientTypes {
 }
 
 extension SWFClientTypes {
+
     /// Provides the details of the DecisionTaskTimedOut event.
-    public struct DecisionTaskTimedOutEventAttributes {
+    public struct DecisionTaskTimedOutEventAttributes: Swift.Sendable {
         /// The ID of the DecisionTaskScheduled event that was recorded when this decision task was scheduled. This information can be useful for diagnosing problems by tracing back the chain of events leading up to this event.
         /// This member is required.
         public var scheduledEventId: Swift.Int
@@ -2313,12 +2315,11 @@ extension SWFClientTypes {
             self.timeoutType = timeoutType
         }
     }
-
 }
 
 extension SWFClientTypes {
 
-    public enum EventType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum EventType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case activitytaskcancelrequested
         case activitytaskcanceled
         case activitytaskcompleted
@@ -2502,8 +2503,9 @@ extension SWFClientTypes {
 }
 
 extension SWFClientTypes {
+
     /// Provides the details of the ExternalWorkflowExecutionCancelRequested event.
-    public struct ExternalWorkflowExecutionCancelRequestedEventAttributes {
+    public struct ExternalWorkflowExecutionCancelRequestedEventAttributes: Swift.Sendable {
         /// The ID of the RequestCancelExternalWorkflowExecutionInitiated event corresponding to the RequestCancelExternalWorkflowExecution decision to cancel this external workflow execution. This information can be useful for diagnosing problems by tracing back the chain of events leading up to this event.
         /// This member is required.
         public var initiatedEventId: Swift.Int
@@ -2520,12 +2522,12 @@ extension SWFClientTypes {
             self.workflowExecution = workflowExecution
         }
     }
-
 }
 
 extension SWFClientTypes {
+
     /// Provides the details of the ExternalWorkflowExecutionSignaled event.
-    public struct ExternalWorkflowExecutionSignaledEventAttributes {
+    public struct ExternalWorkflowExecutionSignaledEventAttributes: Swift.Sendable {
         /// The ID of the SignalExternalWorkflowExecutionInitiated event corresponding to the SignalExternalWorkflowExecution decision to request this signal. This information can be useful for diagnosing problems by tracing back the chain of events leading up to this event.
         /// This member is required.
         public var initiatedEventId: Swift.Int
@@ -2542,12 +2544,11 @@ extension SWFClientTypes {
             self.workflowExecution = workflowExecution
         }
     }
-
 }
 
 extension SWFClientTypes {
 
-    public enum FailWorkflowExecutionFailedCause: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum FailWorkflowExecutionFailedCause: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case operationNotPermitted
         case unhandledDecision
         case sdkUnknown(Swift.String)
@@ -2575,8 +2576,9 @@ extension SWFClientTypes {
 }
 
 extension SWFClientTypes {
+
     /// Provides the details of the FailWorkflowExecutionFailed event.
-    public struct FailWorkflowExecutionFailedEventAttributes {
+    public struct FailWorkflowExecutionFailedEventAttributes: Swift.Sendable {
         /// The cause of the failure. This information is generated by the system and can be useful for diagnostic purposes. If cause is set to OPERATION_NOT_PERMITTED, the decision failed because it lacked sufficient permissions. For details and example IAM policies, see [Using IAM to Manage Access to Amazon SWF Workflows](https://docs.aws.amazon.com/amazonswf/latest/developerguide/swf-dev-iam.html) in the Amazon SWF Developer Guide.
         /// This member is required.
         public var cause: SWFClientTypes.FailWorkflowExecutionFailedCause?
@@ -2593,12 +2595,12 @@ extension SWFClientTypes {
             self.decisionTaskCompletedEventId = decisionTaskCompletedEventId
         }
     }
-
 }
 
 extension SWFClientTypes {
+
     /// Provides the details of the LambdaFunctionCompleted event. It isn't set for other event types.
-    public struct LambdaFunctionCompletedEventAttributes {
+    public struct LambdaFunctionCompletedEventAttributes: Swift.Sendable {
         /// The results of the Lambda task.
         public var result: Swift.String?
         /// The ID of the LambdaFunctionScheduled event that was recorded when this Lambda task was scheduled. To help diagnose issues, use this information to trace back the chain of events leading up to this event.
@@ -2619,12 +2621,12 @@ extension SWFClientTypes {
             self.startedEventId = startedEventId
         }
     }
-
 }
 
 extension SWFClientTypes {
+
     /// Provides the details of the LambdaFunctionFailed event. It isn't set for other event types.
-    public struct LambdaFunctionFailedEventAttributes {
+    public struct LambdaFunctionFailedEventAttributes: Swift.Sendable {
         /// The details of the failure.
         public var details: Swift.String?
         /// The reason provided for the failure.
@@ -2649,12 +2651,12 @@ extension SWFClientTypes {
             self.startedEventId = startedEventId
         }
     }
-
 }
 
 extension SWFClientTypes {
+
     /// Provides the details of the LambdaFunctionScheduled event. It isn't set for other event types.
-    public struct LambdaFunctionScheduledEventAttributes {
+    public struct LambdaFunctionScheduledEventAttributes: Swift.Sendable {
         /// Data attached to the event that the decider can use in subsequent workflow tasks. This data isn't sent to the Lambda task.
         public var control: Swift.String?
         /// The ID of the LambdaFunctionCompleted event corresponding to the decision that resulted in scheduling this activity task. To help diagnose issues, use this information to trace back the chain of events leading up to this event.
@@ -2688,12 +2690,12 @@ extension SWFClientTypes {
             self.startToCloseTimeout = startToCloseTimeout
         }
     }
-
 }
 
 extension SWFClientTypes {
+
     /// Provides the details of the LambdaFunctionStarted event. It isn't set for other event types.
-    public struct LambdaFunctionStartedEventAttributes {
+    public struct LambdaFunctionStartedEventAttributes: Swift.Sendable {
         /// The ID of the LambdaFunctionScheduled event that was recorded when this activity task was scheduled. To help diagnose issues, use this information to trace back the chain of events leading up to this event.
         /// This member is required.
         public var scheduledEventId: Swift.Int
@@ -2705,12 +2707,11 @@ extension SWFClientTypes {
             self.scheduledEventId = scheduledEventId
         }
     }
-
 }
 
 extension SWFClientTypes {
 
-    public enum LambdaFunctionTimeoutType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum LambdaFunctionTimeoutType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case startToClose
         case sdkUnknown(Swift.String)
 
@@ -2735,8 +2736,9 @@ extension SWFClientTypes {
 }
 
 extension SWFClientTypes {
+
     /// Provides details of the LambdaFunctionTimedOut event.
-    public struct LambdaFunctionTimedOutEventAttributes {
+    public struct LambdaFunctionTimedOutEventAttributes: Swift.Sendable {
         /// The ID of the LambdaFunctionScheduled event that was recorded when this activity task was scheduled. To help diagnose issues, use this information to trace back the chain of events leading up to this event.
         /// This member is required.
         public var scheduledEventId: Swift.Int
@@ -2757,12 +2759,12 @@ extension SWFClientTypes {
             self.timeoutType = timeoutType
         }
     }
-
 }
 
 extension SWFClientTypes {
+
     /// Provides the details of the MarkerRecorded event.
-    public struct MarkerRecordedEventAttributes {
+    public struct MarkerRecordedEventAttributes: Swift.Sendable {
         /// The ID of the DecisionTaskCompleted event corresponding to the decision task that resulted in the RecordMarker decision that requested this marker. This information can be useful for diagnosing problems by tracing back the chain of events leading up to this event.
         /// This member is required.
         public var decisionTaskCompletedEventId: Swift.Int
@@ -2783,12 +2785,11 @@ extension SWFClientTypes {
             self.markerName = markerName
         }
     }
-
 }
 
 extension SWFClientTypes {
 
-    public enum RecordMarkerFailedCause: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum RecordMarkerFailedCause: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case operationNotPermitted
         case sdkUnknown(Swift.String)
 
@@ -2813,8 +2814,9 @@ extension SWFClientTypes {
 }
 
 extension SWFClientTypes {
+
     /// Provides the details of the RecordMarkerFailed event.
-    public struct RecordMarkerFailedEventAttributes {
+    public struct RecordMarkerFailedEventAttributes: Swift.Sendable {
         /// The cause of the failure. This information is generated by the system and can be useful for diagnostic purposes. If cause is set to OPERATION_NOT_PERMITTED, the decision failed because it lacked sufficient permissions. For details and example IAM policies, see [Using IAM to Manage Access to Amazon SWF Workflows](https://docs.aws.amazon.com/amazonswf/latest/developerguide/swf-dev-iam.html) in the Amazon SWF Developer Guide.
         /// This member is required.
         public var cause: SWFClientTypes.RecordMarkerFailedCause?
@@ -2836,12 +2838,11 @@ extension SWFClientTypes {
             self.markerName = markerName
         }
     }
-
 }
 
 extension SWFClientTypes {
 
-    public enum RequestCancelActivityTaskFailedCause: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum RequestCancelActivityTaskFailedCause: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case activityIdUnknown
         case operationNotPermitted
         case sdkUnknown(Swift.String)
@@ -2869,8 +2870,9 @@ extension SWFClientTypes {
 }
 
 extension SWFClientTypes {
+
     /// Provides the details of the RequestCancelActivityTaskFailed event.
-    public struct RequestCancelActivityTaskFailedEventAttributes {
+    public struct RequestCancelActivityTaskFailedEventAttributes: Swift.Sendable {
         /// The activityId provided in the RequestCancelActivityTask decision that failed.
         /// This member is required.
         public var activityId: Swift.String?
@@ -2892,12 +2894,11 @@ extension SWFClientTypes {
             self.decisionTaskCompletedEventId = decisionTaskCompletedEventId
         }
     }
-
 }
 
 extension SWFClientTypes {
 
-    public enum RequestCancelExternalWorkflowExecutionFailedCause: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum RequestCancelExternalWorkflowExecutionFailedCause: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case operationNotPermitted
         case requestCancelExternalWorkflowExecutionRateExceeded
         case unknownExternalWorkflowExecution
@@ -2928,8 +2929,9 @@ extension SWFClientTypes {
 }
 
 extension SWFClientTypes {
+
     /// Provides the details of the RequestCancelExternalWorkflowExecutionFailed event.
-    public struct RequestCancelExternalWorkflowExecutionFailedEventAttributes {
+    public struct RequestCancelExternalWorkflowExecutionFailedEventAttributes: Swift.Sendable {
         /// The cause of the failure. This information is generated by the system and can be useful for diagnostic purposes. If cause is set to OPERATION_NOT_PERMITTED, the decision failed because it lacked sufficient permissions. For details and example IAM policies, see [Using IAM to Manage Access to Amazon SWF Workflows](https://docs.aws.amazon.com/amazonswf/latest/developerguide/swf-dev-iam.html) in the Amazon SWF Developer Guide.
         /// This member is required.
         public var cause: SWFClientTypes.RequestCancelExternalWorkflowExecutionFailedCause?
@@ -2964,12 +2966,12 @@ extension SWFClientTypes {
             self.workflowId = workflowId
         }
     }
-
 }
 
 extension SWFClientTypes {
+
     /// Provides the details of the RequestCancelExternalWorkflowExecutionInitiated event.
-    public struct RequestCancelExternalWorkflowExecutionInitiatedEventAttributes {
+    public struct RequestCancelExternalWorkflowExecutionInitiatedEventAttributes: Swift.Sendable {
         /// Data attached to the event that can be used by the decider in subsequent workflow tasks.
         public var control: Swift.String?
         /// The ID of the DecisionTaskCompleted event corresponding to the decision task that resulted in the RequestCancelExternalWorkflowExecution decision for this cancellation request. This information can be useful for diagnosing problems by tracing back the chain of events leading up to this event.
@@ -2994,12 +2996,11 @@ extension SWFClientTypes {
             self.workflowId = workflowId
         }
     }
-
 }
 
 extension SWFClientTypes {
 
-    public enum ScheduleActivityTaskFailedCause: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ScheduleActivityTaskFailedCause: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case activityCreationRateExceeded
         case activityIdAlreadyInUse
         case activityTypeDeprecated
@@ -3054,8 +3055,9 @@ extension SWFClientTypes {
 }
 
 extension SWFClientTypes {
+
     /// Provides the details of the ScheduleActivityTaskFailed event.
-    public struct ScheduleActivityTaskFailedEventAttributes {
+    public struct ScheduleActivityTaskFailedEventAttributes: Swift.Sendable {
         /// The activityId provided in the ScheduleActivityTask decision that failed.
         /// This member is required.
         public var activityId: Swift.String?
@@ -3082,12 +3084,11 @@ extension SWFClientTypes {
             self.decisionTaskCompletedEventId = decisionTaskCompletedEventId
         }
     }
-
 }
 
 extension SWFClientTypes {
 
-    public enum ScheduleLambdaFunctionFailedCause: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ScheduleLambdaFunctionFailedCause: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case idAlreadyInUse
         case lambdaFunctionCreationRateExceeded
         case lambdaServiceNotAvailableInRegion
@@ -3121,8 +3122,9 @@ extension SWFClientTypes {
 }
 
 extension SWFClientTypes {
+
     /// Provides the details of the ScheduleLambdaFunctionFailed event. It isn't set for other event types.
-    public struct ScheduleLambdaFunctionFailedEventAttributes {
+    public struct ScheduleLambdaFunctionFailedEventAttributes: Swift.Sendable {
         /// The cause of the failure. To help diagnose issues, use this information to trace back the chain of events leading up to this event. If cause is set to OPERATION_NOT_PERMITTED, the decision failed because it lacked sufficient permissions. For details and example IAM policies, see [Using IAM to Manage Access to Amazon SWF Workflows](https://docs.aws.amazon.com/amazonswf/latest/developerguide/swf-dev-iam.html) in the Amazon SWF Developer Guide.
         /// This member is required.
         public var cause: SWFClientTypes.ScheduleLambdaFunctionFailedCause?
@@ -3149,12 +3151,11 @@ extension SWFClientTypes {
             self.name = name
         }
     }
-
 }
 
 extension SWFClientTypes {
 
-    public enum SignalExternalWorkflowExecutionFailedCause: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SignalExternalWorkflowExecutionFailedCause: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case operationNotPermitted
         case signalExternalWorkflowExecutionRateExceeded
         case unknownExternalWorkflowExecution
@@ -3185,8 +3186,9 @@ extension SWFClientTypes {
 }
 
 extension SWFClientTypes {
+
     /// Provides the details of the SignalExternalWorkflowExecutionFailed event.
-    public struct SignalExternalWorkflowExecutionFailedEventAttributes {
+    public struct SignalExternalWorkflowExecutionFailedEventAttributes: Swift.Sendable {
         /// The cause of the failure. This information is generated by the system and can be useful for diagnostic purposes. If cause is set to OPERATION_NOT_PERMITTED, the decision failed because it lacked sufficient permissions. For details and example IAM policies, see [Using IAM to Manage Access to Amazon SWF Workflows](https://docs.aws.amazon.com/amazonswf/latest/developerguide/swf-dev-iam.html) in the Amazon SWF Developer Guide.
         /// This member is required.
         public var cause: SWFClientTypes.SignalExternalWorkflowExecutionFailedCause?
@@ -3221,12 +3223,12 @@ extension SWFClientTypes {
             self.workflowId = workflowId
         }
     }
-
 }
 
 extension SWFClientTypes {
+
     /// Provides the details of the SignalExternalWorkflowExecutionInitiated event.
-    public struct SignalExternalWorkflowExecutionInitiatedEventAttributes {
+    public struct SignalExternalWorkflowExecutionInitiatedEventAttributes: Swift.Sendable {
         /// Data attached to the event that can be used by the decider in subsequent decision tasks.
         public var control: Swift.String?
         /// The ID of the DecisionTaskCompleted event corresponding to the decision task that resulted in the SignalExternalWorkflowExecution decision for this signal. This information can be useful for diagnosing problems by tracing back the chain of events leading up to this event.
@@ -3260,12 +3262,11 @@ extension SWFClientTypes {
             self.workflowId = workflowId
         }
     }
-
 }
 
 extension SWFClientTypes {
 
-    public enum StartChildWorkflowExecutionFailedCause: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum StartChildWorkflowExecutionFailedCause: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case childCreationRateExceeded
         case defaultChildPolicyUndefined
         case defaultExecutionStartToCloseTimeoutUndefined
@@ -3320,8 +3321,9 @@ extension SWFClientTypes {
 }
 
 extension SWFClientTypes {
+
     /// Provides the details of the StartChildWorkflowExecutionFailed event.
-    public struct StartChildWorkflowExecutionFailedEventAttributes {
+    public struct StartChildWorkflowExecutionFailedEventAttributes: Swift.Sendable {
         /// The cause of the failure. This information is generated by the system and can be useful for diagnostic purposes. When cause is set to OPERATION_NOT_PERMITTED, the decision fails because it lacks sufficient permissions. For details and example IAM policies, see [ Using IAM to Manage Access to Amazon SWF Workflows](https://docs.aws.amazon.com/amazonswf/latest/developerguide/swf-dev-iam.html) in the Amazon SWF Developer Guide.
         /// This member is required.
         public var cause: SWFClientTypes.StartChildWorkflowExecutionFailedCause?
@@ -3357,12 +3359,12 @@ extension SWFClientTypes {
             self.workflowType = workflowType
         }
     }
-
 }
 
 extension SWFClientTypes {
+
     /// Provides the details of the StartChildWorkflowExecutionInitiated event.
-    public struct StartChildWorkflowExecutionInitiatedEventAttributes {
+    public struct StartChildWorkflowExecutionInitiatedEventAttributes: Swift.Sendable {
         /// The policy to use for the child workflow executions if this execution gets terminated by explicitly calling the [TerminateWorkflowExecution] action or due to an expired timeout. The supported child policies are:
         ///
         /// * TERMINATE – The child executions are terminated.
@@ -3428,12 +3430,11 @@ extension SWFClientTypes {
             self.workflowType = workflowType
         }
     }
-
 }
 
 extension SWFClientTypes {
 
-    public enum StartLambdaFunctionFailedCause: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum StartLambdaFunctionFailedCause: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case assumeRoleFailed
         case sdkUnknown(Swift.String)
 
@@ -3458,8 +3459,9 @@ extension SWFClientTypes {
 }
 
 extension SWFClientTypes {
+
     /// Provides the details of the StartLambdaFunctionFailed event. It isn't set for other event types.
-    public struct StartLambdaFunctionFailedEventAttributes {
+    public struct StartLambdaFunctionFailedEventAttributes: Swift.Sendable {
         /// The cause of the failure. To help diagnose issues, use this information to trace back the chain of events leading up to this event. If cause is set to OPERATION_NOT_PERMITTED, the decision failed because the IAM role attached to the execution lacked sufficient permissions. For details and example IAM policies, see [Lambda Tasks](https://docs.aws.amazon.com/amazonswf/latest/developerguide/lambda-task.html) in the Amazon SWF Developer Guide.
         public var cause: SWFClientTypes.StartLambdaFunctionFailedCause?
         /// A description that can help diagnose the cause of the fault.
@@ -3478,12 +3480,11 @@ extension SWFClientTypes {
             self.scheduledEventId = scheduledEventId
         }
     }
-
 }
 
 extension SWFClientTypes {
 
-    public enum StartTimerFailedCause: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum StartTimerFailedCause: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case openTimersLimitExceeded
         case operationNotPermitted
         case timerCreationRateExceeded
@@ -3517,8 +3518,9 @@ extension SWFClientTypes {
 }
 
 extension SWFClientTypes {
+
     /// Provides the details of the StartTimerFailed event.
-    public struct StartTimerFailedEventAttributes {
+    public struct StartTimerFailedEventAttributes: Swift.Sendable {
         /// The cause of the failure. This information is generated by the system and can be useful for diagnostic purposes. If cause is set to OPERATION_NOT_PERMITTED, the decision failed because it lacked sufficient permissions. For details and example IAM policies, see [Using IAM to Manage Access to Amazon SWF Workflows](https://docs.aws.amazon.com/amazonswf/latest/developerguide/swf-dev-iam.html) in the Amazon SWF Developer Guide.
         /// This member is required.
         public var cause: SWFClientTypes.StartTimerFailedCause?
@@ -3540,12 +3542,12 @@ extension SWFClientTypes {
             self.timerId = timerId
         }
     }
-
 }
 
 extension SWFClientTypes {
+
     /// Provides the details of the TimerCanceled event.
-    public struct TimerCanceledEventAttributes {
+    public struct TimerCanceledEventAttributes: Swift.Sendable {
         /// The ID of the DecisionTaskCompleted event corresponding to the decision task that resulted in the CancelTimer decision to cancel this timer. This information can be useful for diagnosing problems by tracing back the chain of events leading up to this event.
         /// This member is required.
         public var decisionTaskCompletedEventId: Swift.Int
@@ -3567,12 +3569,12 @@ extension SWFClientTypes {
             self.timerId = timerId
         }
     }
-
 }
 
 extension SWFClientTypes {
+
     /// Provides the details of the TimerFired event.
-    public struct TimerFiredEventAttributes {
+    public struct TimerFiredEventAttributes: Swift.Sendable {
         /// The ID of the TimerStarted event that was recorded when this timer was started. This information can be useful for diagnosing problems by tracing back the chain of events leading up to this event.
         /// This member is required.
         public var startedEventId: Swift.Int
@@ -3589,12 +3591,12 @@ extension SWFClientTypes {
             self.timerId = timerId
         }
     }
-
 }
 
 extension SWFClientTypes {
+
     /// Provides the details of the TimerStarted event.
-    public struct TimerStartedEventAttributes {
+    public struct TimerStartedEventAttributes: Swift.Sendable {
         /// Data attached to the event that can be used by the decider in subsequent workflow tasks.
         public var control: Swift.String?
         /// The ID of the DecisionTaskCompleted event corresponding to the decision task that resulted in the StartTimer decision for this activity task. This information can be useful for diagnosing problems by tracing back the chain of events leading up to this event.
@@ -3620,12 +3622,12 @@ extension SWFClientTypes {
             self.timerId = timerId
         }
     }
-
 }
 
 extension SWFClientTypes {
+
     /// Provides the details of the WorkflowExecutionCanceled event.
-    public struct WorkflowExecutionCanceledEventAttributes {
+    public struct WorkflowExecutionCanceledEventAttributes: Swift.Sendable {
         /// The ID of the DecisionTaskCompleted event corresponding to the decision task that resulted in the CancelWorkflowExecution decision for this cancellation request. This information can be useful for diagnosing problems by tracing back the chain of events leading up to this event.
         /// This member is required.
         public var decisionTaskCompletedEventId: Swift.Int
@@ -3641,12 +3643,11 @@ extension SWFClientTypes {
             self.details = details
         }
     }
-
 }
 
 extension SWFClientTypes {
 
-    public enum WorkflowExecutionCancelRequestedCause: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum WorkflowExecutionCancelRequestedCause: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case childPolicyApplied
         case sdkUnknown(Swift.String)
 
@@ -3671,8 +3672,9 @@ extension SWFClientTypes {
 }
 
 extension SWFClientTypes {
+
     /// Provides the details of the WorkflowExecutionCancelRequested event.
-    public struct WorkflowExecutionCancelRequestedEventAttributes {
+    public struct WorkflowExecutionCancelRequestedEventAttributes: Swift.Sendable {
         /// If set, indicates that the request to cancel the workflow execution was automatically generated, and specifies the cause. This happens if the parent workflow execution times out or is terminated, and the child policy is set to cancel child executions.
         public var cause: SWFClientTypes.WorkflowExecutionCancelRequestedCause?
         /// The ID of the RequestCancelExternalWorkflowExecutionInitiated event corresponding to the RequestCancelExternalWorkflowExecution decision to cancel this workflow execution.The source event with this ID can be found in the history of the source workflow execution. This information can be useful for diagnosing problems by tracing back the chain of events leading up to this event.
@@ -3691,12 +3693,12 @@ extension SWFClientTypes {
             self.externalWorkflowExecution = externalWorkflowExecution
         }
     }
-
 }
 
 extension SWFClientTypes {
+
     /// Provides the details of the WorkflowExecutionCompleted event.
-    public struct WorkflowExecutionCompletedEventAttributes {
+    public struct WorkflowExecutionCompletedEventAttributes: Swift.Sendable {
         /// The ID of the DecisionTaskCompleted event corresponding to the decision task that resulted in the CompleteWorkflowExecution decision to complete this execution. This information can be useful for diagnosing problems by tracing back the chain of events leading up to this event.
         /// This member is required.
         public var decisionTaskCompletedEventId: Swift.Int
@@ -3712,12 +3714,12 @@ extension SWFClientTypes {
             self.result = result
         }
     }
-
 }
 
 extension SWFClientTypes {
+
     /// Provides the details of the WorkflowExecutionContinuedAsNew event.
-    public struct WorkflowExecutionContinuedAsNewEventAttributes {
+    public struct WorkflowExecutionContinuedAsNewEventAttributes: Swift.Sendable {
         /// The policy to use for the child workflow executions of the new execution if it is terminated by calling the [TerminateWorkflowExecution] action explicitly or due to an expired timeout. The supported child policies are:
         ///
         /// * TERMINATE – The child executions are terminated.
@@ -3779,12 +3781,12 @@ extension SWFClientTypes {
             self.workflowType = workflowType
         }
     }
-
 }
 
 extension SWFClientTypes {
+
     /// Provides the details of the WorkflowExecutionFailed event.
-    public struct WorkflowExecutionFailedEventAttributes {
+    public struct WorkflowExecutionFailedEventAttributes: Swift.Sendable {
         /// The ID of the DecisionTaskCompleted event corresponding to the decision task that resulted in the FailWorkflowExecution decision to fail this execution. This information can be useful for diagnosing problems by tracing back the chain of events leading up to this event.
         /// This member is required.
         public var decisionTaskCompletedEventId: Swift.Int
@@ -3804,12 +3806,12 @@ extension SWFClientTypes {
             self.reason = reason
         }
     }
-
 }
 
 extension SWFClientTypes {
+
     /// Provides the details of the WorkflowExecutionSignaled event.
-    public struct WorkflowExecutionSignaledEventAttributes {
+    public struct WorkflowExecutionSignaledEventAttributes: Swift.Sendable {
         /// The ID of the SignalExternalWorkflowExecutionInitiated event corresponding to the SignalExternalWorkflow decision to signal this workflow execution.The source event with this ID can be found in the history of the source workflow execution. This information can be useful for diagnosing problems by tracing back the chain of events leading up to this event. This field is set only if the signal was initiated by another workflow execution.
         public var externalInitiatedEventId: Swift.Int
         /// The workflow execution that sent the signal. This is set only of the signal was sent by another workflow execution.
@@ -3833,12 +3835,12 @@ extension SWFClientTypes {
             self.signalName = signalName
         }
     }
-
 }
 
 extension SWFClientTypes {
+
     /// Provides details of WorkflowExecutionStarted event.
-    public struct WorkflowExecutionStartedEventAttributes {
+    public struct WorkflowExecutionStartedEventAttributes: Swift.Sendable {
         /// The policy to use for the child workflow executions if this workflow execution is terminated, by calling the [TerminateWorkflowExecution] action explicitly or due to an expired timeout. The supported child policies are:
         ///
         /// * TERMINATE – The child executions are terminated.
@@ -3902,12 +3904,11 @@ extension SWFClientTypes {
             self.workflowType = workflowType
         }
     }
-
 }
 
 extension SWFClientTypes {
 
-    public enum WorkflowExecutionTerminatedCause: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum WorkflowExecutionTerminatedCause: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case childPolicyApplied
         case eventLimitExceeded
         case operatorInitiated
@@ -3938,8 +3939,9 @@ extension SWFClientTypes {
 }
 
 extension SWFClientTypes {
+
     /// Provides the details of the WorkflowExecutionTerminated event.
-    public struct WorkflowExecutionTerminatedEventAttributes {
+    public struct WorkflowExecutionTerminatedEventAttributes: Swift.Sendable {
         /// If set, indicates that the workflow execution was automatically terminated, and specifies the cause. This happens if the parent workflow execution times out or is terminated and the child policy is set to terminate child executions.
         public var cause: SWFClientTypes.WorkflowExecutionTerminatedCause?
         /// The policy used for the child workflow executions of this workflow execution. The supported child policies are:
@@ -3969,12 +3971,12 @@ extension SWFClientTypes {
             self.reason = reason
         }
     }
-
 }
 
 extension SWFClientTypes {
+
     /// Provides the details of the WorkflowExecutionTimedOut event.
-    public struct WorkflowExecutionTimedOutEventAttributes {
+    public struct WorkflowExecutionTimedOutEventAttributes: Swift.Sendable {
         /// The policy used for the child workflow executions of this workflow execution. The supported child policies are:
         ///
         /// * TERMINATE – The child executions are terminated.
@@ -3997,10 +3999,10 @@ extension SWFClientTypes {
             self.timeoutType = timeoutType
         }
     }
-
 }
 
 extension SWFClientTypes {
+
     /// Event within a workflow execution. A history event can be one of these types:
     ///
     /// * ActivityTaskCancelRequested – A RequestCancelActivityTask decision was received by the system.
@@ -4098,7 +4100,7 @@ extension SWFClientTypes {
     /// * WorkflowExecutionTerminated – The workflow execution was terminated.
     ///
     /// * WorkflowExecutionTimedOut – The workflow execution was closed because a time out was exceeded.
-    public struct HistoryEvent {
+    public struct HistoryEvent: Swift.Sendable {
         /// If the event is of type ActivityTaskcancelRequested then this member is set and provides detailed information about the event. It isn't set for other event types.
         public var activityTaskCancelRequestedEventAttributes: SWFClientTypes.ActivityTaskCancelRequestedEventAttributes?
         /// If the event is of type ActivityTaskCanceled then this member is set and provides detailed information about the event. It isn't set for other event types.
@@ -4336,7 +4338,6 @@ extension SWFClientTypes {
             self.workflowExecutionTimedOutEventAttributes = workflowExecutionTimedOutEventAttributes
         }
     }
-
 }
 
 /// The StartWorkflowExecution API action was called without the required parameters set. Some workflow execution parameters, such as the decision taskList, must be set to start the execution. However, these parameters might have been set as defaults when the workflow type was registered. In this case, you can omit these parameters from the StartWorkflowExecution call and Amazon SWF uses the values defined in the workflow type. If these parameters aren't set and no default parameters were defined in the workflow type, this error is displayed.
@@ -4387,7 +4388,7 @@ public struct TypeNotDeprecatedFault: ClientRuntime.ModeledError, AWSClientRunti
     }
 }
 
-public struct DeleteActivityTypeInput {
+public struct DeleteActivityTypeInput: Swift.Sendable {
     /// The activity type to delete.
     /// This member is required.
     public var activityType: SWFClientTypes.ActivityType?
@@ -4405,7 +4406,7 @@ public struct DeleteActivityTypeInput {
     }
 }
 
-public struct DeleteWorkflowTypeInput {
+public struct DeleteWorkflowTypeInput: Swift.Sendable {
     /// The name of the domain in which the workflow type is registered.
     /// This member is required.
     public var domain: Swift.String?
@@ -4448,7 +4449,7 @@ public struct TypeDeprecatedFault: ClientRuntime.ModeledError, AWSClientRuntime.
     }
 }
 
-public struct DeprecateActivityTypeInput {
+public struct DeprecateActivityTypeInput: Swift.Sendable {
     /// The activity type to deprecate.
     /// This member is required.
     public var activityType: SWFClientTypes.ActivityType?
@@ -4491,7 +4492,7 @@ public struct DomainDeprecatedFault: ClientRuntime.ModeledError, AWSClientRuntim
     }
 }
 
-public struct DeprecateDomainInput {
+public struct DeprecateDomainInput: Swift.Sendable {
     /// The name of the domain to deprecate.
     /// This member is required.
     public var name: Swift.String?
@@ -4504,7 +4505,7 @@ public struct DeprecateDomainInput {
     }
 }
 
-public struct DeprecateWorkflowTypeInput {
+public struct DeprecateWorkflowTypeInput: Swift.Sendable {
     /// The name of the domain in which the workflow type is registered.
     /// This member is required.
     public var domain: Swift.String?
@@ -4522,7 +4523,7 @@ public struct DeprecateWorkflowTypeInput {
     }
 }
 
-public struct DescribeActivityTypeInput {
+public struct DescribeActivityTypeInput: Swift.Sendable {
     /// The activity type to get information about. Activity types are identified by the name and version that were supplied when the activity was registered.
     /// This member is required.
     public var activityType: SWFClientTypes.ActivityType?
@@ -4541,7 +4542,7 @@ public struct DescribeActivityTypeInput {
 }
 
 /// Detailed information about an activity type.
-public struct DescribeActivityTypeOutput {
+public struct DescribeActivityTypeOutput: Swift.Sendable {
     /// The configuration settings registered with the activity type.
     /// This member is required.
     public var configuration: SWFClientTypes.ActivityTypeConfiguration?
@@ -4563,7 +4564,7 @@ public struct DescribeActivityTypeOutput {
     }
 }
 
-public struct DescribeDomainInput {
+public struct DescribeDomainInput: Swift.Sendable {
     /// The name of the domain to describe.
     /// This member is required.
     public var name: Swift.String?
@@ -4577,8 +4578,9 @@ public struct DescribeDomainInput {
 }
 
 extension SWFClientTypes {
+
     /// Contains the configuration settings of a domain.
-    public struct DomainConfiguration {
+    public struct DomainConfiguration: Swift.Sendable {
         /// The retention period for workflow executions in this domain.
         /// This member is required.
         public var workflowExecutionRetentionPeriodInDays: Swift.String?
@@ -4590,12 +4592,12 @@ extension SWFClientTypes {
             self.workflowExecutionRetentionPeriodInDays = workflowExecutionRetentionPeriodInDays
         }
     }
-
 }
 
 extension SWFClientTypes {
+
     /// Contains general information about a domain.
-    public struct DomainInfo {
+    public struct DomainInfo: Swift.Sendable {
         /// The ARN of the domain.
         public var arn: Swift.String?
         /// The description of the domain provided through [RegisterDomain].
@@ -4624,11 +4626,10 @@ extension SWFClientTypes {
             self.status = status
         }
     }
-
 }
 
 /// Contains details of a domain.
-public struct DescribeDomainOutput {
+public struct DescribeDomainOutput: Swift.Sendable {
     /// The domain configuration. Currently, this includes only the domain's retention period.
     /// This member is required.
     public var configuration: SWFClientTypes.DomainConfiguration?
@@ -4646,7 +4647,7 @@ public struct DescribeDomainOutput {
     }
 }
 
-public struct DescribeWorkflowExecutionInput {
+public struct DescribeWorkflowExecutionInput: Swift.Sendable {
     /// The name of the domain containing the workflow execution.
     /// This member is required.
     public var domain: Swift.String?
@@ -4665,8 +4666,9 @@ public struct DescribeWorkflowExecutionInput {
 }
 
 extension SWFClientTypes {
+
     /// The configuration settings for a workflow execution including timeout values, tasklist etc. These configuration settings are determined from the defaults specified when registering the workflow type and those specified when starting the workflow execution.
-    public struct WorkflowExecutionConfiguration {
+    public struct WorkflowExecutionConfiguration: Swift.Sendable {
         /// The policy to use for the child workflow executions if this workflow execution is terminated, by calling the [TerminateWorkflowExecution] action explicitly or due to an expired timeout. The supported child policies are:
         ///
         /// * TERMINATE – The child executions are terminated.
@@ -4707,12 +4709,11 @@ extension SWFClientTypes {
             self.taskStartToCloseTimeout = taskStartToCloseTimeout
         }
     }
-
 }
 
 extension SWFClientTypes {
 
-    public enum ExecutionStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ExecutionStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case closed
         case `open`
         case sdkUnknown(Swift.String)
@@ -4740,8 +4741,9 @@ extension SWFClientTypes {
 }
 
 extension SWFClientTypes {
+
     /// Contains information about a workflow execution.
-    public struct WorkflowExecutionInfo {
+    public struct WorkflowExecutionInfo: Swift.Sendable {
         /// Set to true if a cancellation is requested for this workflow execution.
         public var cancelRequested: Swift.Bool
         /// If the execution status is closed then this specifies how the execution was closed:
@@ -4800,12 +4802,12 @@ extension SWFClientTypes {
             self.workflowType = workflowType
         }
     }
-
 }
 
 extension SWFClientTypes {
+
     /// Contains the counts of open tasks, child workflow executions and timers for a workflow execution.
-    public struct WorkflowExecutionOpenCounts {
+    public struct WorkflowExecutionOpenCounts: Swift.Sendable {
         /// The count of activity tasks whose status is OPEN.
         /// This member is required.
         public var openActivityTasks: Swift.Int
@@ -4836,11 +4838,10 @@ extension SWFClientTypes {
             self.openTimers = openTimers
         }
     }
-
 }
 
 /// Contains details about a workflow execution.
-public struct DescribeWorkflowExecutionOutput {
+public struct DescribeWorkflowExecutionOutput: Swift.Sendable {
     /// The configuration settings for this workflow execution including timeout values, tasklist etc.
     /// This member is required.
     public var executionConfiguration: SWFClientTypes.WorkflowExecutionConfiguration?
@@ -4871,7 +4872,7 @@ public struct DescribeWorkflowExecutionOutput {
     }
 }
 
-public struct DescribeWorkflowTypeInput {
+public struct DescribeWorkflowTypeInput: Swift.Sendable {
     /// The name of the domain in which this workflow type is registered.
     /// This member is required.
     public var domain: Swift.String?
@@ -4890,8 +4891,9 @@ public struct DescribeWorkflowTypeInput {
 }
 
 extension SWFClientTypes {
+
     /// The configuration settings of a workflow type.
-    public struct WorkflowTypeConfiguration {
+    public struct WorkflowTypeConfiguration: Swift.Sendable {
         /// The default policy to use for the child workflow executions when a workflow execution of this type is terminated, by calling the [TerminateWorkflowExecution] action explicitly or due to an expired timeout. This default can be overridden when starting a workflow execution using the [StartWorkflowExecution] action or the StartChildWorkflowExecution[Decision]. The supported child policies are:
         ///
         /// * TERMINATE – The child executions are terminated.
@@ -4928,12 +4930,12 @@ extension SWFClientTypes {
             self.defaultTaskStartToCloseTimeout = defaultTaskStartToCloseTimeout
         }
     }
-
 }
 
 extension SWFClientTypes {
+
     /// Contains information about a workflow type.
-    public struct WorkflowTypeInfo {
+    public struct WorkflowTypeInfo: Swift.Sendable {
         /// The date when this type was registered.
         /// This member is required.
         public var creationDate: Foundation.Date?
@@ -4963,11 +4965,10 @@ extension SWFClientTypes {
             self.workflowType = workflowType
         }
     }
-
 }
 
 /// Contains details about a workflow type.
-public struct DescribeWorkflowTypeOutput {
+public struct DescribeWorkflowTypeOutput: Swift.Sendable {
     /// Configuration settings of the workflow type registered through [RegisterWorkflowType]
     /// This member is required.
     public var configuration: SWFClientTypes.WorkflowTypeConfiguration?
@@ -5014,7 +5015,7 @@ public struct DomainAlreadyExistsFault: ClientRuntime.ModeledError, AWSClientRun
     }
 }
 
-public struct GetWorkflowExecutionHistoryInput {
+public struct GetWorkflowExecutionHistoryInput: Swift.Sendable {
     /// The name of the domain containing the workflow execution.
     /// This member is required.
     public var domain: Swift.String?
@@ -5045,7 +5046,7 @@ public struct GetWorkflowExecutionHistoryInput {
 }
 
 /// Paginated representation of a workflow history for a workflow execution. This is the up to date, complete and authoritative record of the events related to all tasks and events in the life of the workflow execution.
-public struct GetWorkflowExecutionHistoryOutput {
+public struct GetWorkflowExecutionHistoryOutput: Swift.Sendable {
     /// The list of history events.
     /// This member is required.
     public var events: [SWFClientTypes.HistoryEvent]?
@@ -5087,7 +5088,7 @@ public struct LimitExceededFault: ClientRuntime.ModeledError, AWSClientRuntime.A
     }
 }
 
-public struct ListActivityTypesInput {
+public struct ListActivityTypesInput: Swift.Sendable {
     /// The name of the domain in which the activity types have been registered.
     /// This member is required.
     public var domain: Swift.String?
@@ -5122,7 +5123,7 @@ public struct ListActivityTypesInput {
 }
 
 /// Contains a paginated list of activity type information structures.
-public struct ListActivityTypesOutput {
+public struct ListActivityTypesOutput: Swift.Sendable {
     /// If a NextPageToken was returned by a previous call, there are more results available. To retrieve the next page of results, make the call again using the returned token in nextPageToken. Keep all other arguments unchanged. The configured maximumPageSize determines how many results can be returned in a single call.
     public var nextPageToken: Swift.String?
     /// List of activity type information.
@@ -5139,7 +5140,7 @@ public struct ListActivityTypesOutput {
     }
 }
 
-public struct ListClosedWorkflowExecutionsInput {
+public struct ListClosedWorkflowExecutionsInput: Swift.Sendable {
     /// If specified, only workflow executions that match this close status are listed. For example, if TERMINATED is specified, then only TERMINATED workflow executions are listed. closeStatusFilter, executionFilter, typeFilter and tagFilter are mutually exclusive. You can specify at most one of these in a request.
     public var closeStatusFilter: SWFClientTypes.CloseStatusFilter?
     /// If specified, the workflow executions are included in the returned results based on whether their close times are within the range specified by this filter. Also, if this parameter is specified, the returned results are ordered by their close times. startTimeFilter and closeTimeFilter are mutually exclusive. You must specify one of these in a request but not both.
@@ -5189,7 +5190,7 @@ public struct ListClosedWorkflowExecutionsInput {
 }
 
 /// Contains a paginated list of information about workflow executions.
-public struct ListClosedWorkflowExecutionsOutput {
+public struct ListClosedWorkflowExecutionsOutput: Swift.Sendable {
     /// The list of workflow information structures.
     /// This member is required.
     public var executionInfos: [SWFClientTypes.WorkflowExecutionInfo]?
@@ -5206,7 +5207,7 @@ public struct ListClosedWorkflowExecutionsOutput {
     }
 }
 
-public struct ListDomainsInput {
+public struct ListDomainsInput: Swift.Sendable {
     /// The maximum number of results that are returned per call. Use nextPageToken to obtain further pages of results.
     public var maximumPageSize: Swift.Int?
     /// If NextPageToken is returned there are more results available. The value of NextPageToken is a unique pagination token for each page. Make the call again using the returned token to retrieve the next page. Keep all other arguments unchanged. Each pagination token expires after 24 hours. Using an expired pagination token will return a 400 error: "Specified token has exceeded its maximum lifetime". The configured maximumPageSize determines how many results can be returned in a single call.
@@ -5232,7 +5233,7 @@ public struct ListDomainsInput {
 }
 
 /// Contains a paginated collection of DomainInfo structures.
-public struct ListDomainsOutput {
+public struct ListDomainsOutput: Swift.Sendable {
     /// A list of DomainInfo structures.
     /// This member is required.
     public var domainInfos: [SWFClientTypes.DomainInfo]?
@@ -5249,7 +5250,7 @@ public struct ListDomainsOutput {
     }
 }
 
-public struct ListOpenWorkflowExecutionsInput {
+public struct ListOpenWorkflowExecutionsInput: Swift.Sendable {
     /// The name of the domain that contains the workflow executions to list.
     /// This member is required.
     public var domain: Swift.String?
@@ -5292,7 +5293,7 @@ public struct ListOpenWorkflowExecutionsInput {
 }
 
 /// Contains a paginated list of information about workflow executions.
-public struct ListOpenWorkflowExecutionsOutput {
+public struct ListOpenWorkflowExecutionsOutput: Swift.Sendable {
     /// The list of workflow information structures.
     /// This member is required.
     public var executionInfos: [SWFClientTypes.WorkflowExecutionInfo]?
@@ -5309,7 +5310,7 @@ public struct ListOpenWorkflowExecutionsOutput {
     }
 }
 
-public struct ListTagsForResourceInput {
+public struct ListTagsForResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) for the Amazon SWF domain.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -5323,8 +5324,9 @@ public struct ListTagsForResourceInput {
 }
 
 extension SWFClientTypes {
+
     /// Tags are key-value pairs that can be associated with Amazon SWF state machines and activities. Tags may only contain unicode letters, digits, whitespace, or these symbols: _ . : / = + - @.
-    public struct ResourceTag {
+    public struct ResourceTag: Swift.Sendable {
         /// The key of a tag.
         /// This member is required.
         public var key: Swift.String?
@@ -5340,10 +5342,9 @@ extension SWFClientTypes {
             self.value = value
         }
     }
-
 }
 
-public struct ListTagsForResourceOutput {
+public struct ListTagsForResourceOutput: Swift.Sendable {
     /// An array of tags associated with the domain.
     public var tags: [SWFClientTypes.ResourceTag]?
 
@@ -5355,7 +5356,7 @@ public struct ListTagsForResourceOutput {
     }
 }
 
-public struct ListWorkflowTypesInput {
+public struct ListWorkflowTypesInput: Swift.Sendable {
     /// The name of the domain in which the workflow types have been registered.
     /// This member is required.
     public var domain: Swift.String?
@@ -5390,7 +5391,7 @@ public struct ListWorkflowTypesInput {
 }
 
 /// Contains a paginated list of information structures about workflow types.
-public struct ListWorkflowTypesOutput {
+public struct ListWorkflowTypesOutput: Swift.Sendable {
     /// If a NextPageToken was returned by a previous call, there are more results available. To retrieve the next page of results, make the call again using the returned token in nextPageToken. Keep all other arguments unchanged. The configured maximumPageSize determines how many results can be returned in a single call.
     public var nextPageToken: Swift.String?
     /// The list of workflow type information.
@@ -5407,7 +5408,7 @@ public struct ListWorkflowTypesOutput {
     }
 }
 
-public struct PollForActivityTaskInput {
+public struct PollForActivityTaskInput: Swift.Sendable {
     /// The name of the domain that contains the task lists being polled.
     /// This member is required.
     public var domain: Swift.String?
@@ -5430,7 +5431,7 @@ public struct PollForActivityTaskInput {
 }
 
 /// Unit of work sent to an activity worker.
-public struct PollForActivityTaskOutput {
+public struct PollForActivityTaskOutput: Swift.Sendable {
     /// The unique ID of the task.
     /// This member is required.
     public var activityId: Swift.String?
@@ -5467,7 +5468,7 @@ public struct PollForActivityTaskOutput {
     }
 }
 
-public struct PollForDecisionTaskInput {
+public struct PollForDecisionTaskInput: Swift.Sendable {
     /// The name of the domain containing the task lists to poll.
     /// This member is required.
     public var domain: Swift.String?
@@ -5506,7 +5507,7 @@ public struct PollForDecisionTaskInput {
 }
 
 /// A structure that represents a decision task. Decision tasks are sent to deciders in order for them to make decisions.
-public struct PollForDecisionTaskOutput {
+public struct PollForDecisionTaskOutput: Swift.Sendable {
     /// A paginated list of history events of the workflow execution. The decider uses this during the processing of the decision task.
     /// This member is required.
     public var events: [SWFClientTypes.HistoryEvent]?
@@ -5547,7 +5548,7 @@ public struct PollForDecisionTaskOutput {
     }
 }
 
-public struct RecordActivityTaskHeartbeatInput {
+public struct RecordActivityTaskHeartbeatInput: Swift.Sendable {
     /// If specified, contains details about the progress of the task.
     public var details: Swift.String?
     /// The taskToken of the [ActivityTask]. taskToken is generated by the service and should be treated as an opaque value. If the task is passed to another process, its taskToken must also be passed. This enables it to provide its progress and respond with results.
@@ -5565,7 +5566,7 @@ public struct RecordActivityTaskHeartbeatInput {
 }
 
 /// Status information about an activity task.
-public struct RecordActivityTaskHeartbeatOutput {
+public struct RecordActivityTaskHeartbeatOutput: Swift.Sendable {
     /// Set to true if cancellation of the task is requested.
     /// This member is required.
     public var cancelRequested: Swift.Bool
@@ -5603,7 +5604,7 @@ public struct TypeAlreadyExistsFault: ClientRuntime.ModeledError, AWSClientRunti
     }
 }
 
-public struct RegisterActivityTypeInput {
+public struct RegisterActivityTypeInput: Swift.Sendable {
     /// If set, specifies the default maximum time before which a worker processing a task of this type must report progress by calling [RecordActivityTaskHeartbeat]. If the timeout is exceeded, the activity task is automatically timed out. This default can be overridden when scheduling an activity task using the ScheduleActivityTask[Decision]. If the activity worker subsequently attempts to record a heartbeat or returns a result, the activity worker receives an UnknownResource fault. In this case, Amazon SWF no longer considers the activity task to be valid; the activity worker should clean up the activity task. The duration is specified in seconds, an integer greater than or equal to 0. You can use NONE to specify unlimited duration.
     public var defaultTaskHeartbeatTimeout: Swift.String?
     /// If set, specifies the default task list to use for scheduling tasks of this activity type. This default task list is used if a task list isn't provided when a task is scheduled through the ScheduleActivityTask[Decision].
@@ -5678,7 +5679,7 @@ public struct TooManyTagsFault: ClientRuntime.ModeledError, AWSClientRuntime.AWS
     }
 }
 
-public struct RegisterDomainInput {
+public struct RegisterDomainInput: Swift.Sendable {
     /// A text description of the domain.
     public var description: Swift.String?
     /// Name of the domain to register. The name must be unique in the region that the domain is registered in. The specified string must not start or end with whitespace. It must not contain a : (colon), / (slash), | (vertical bar), or any control characters (\u0000-\u001f | \u007f-\u009f). Also, it must not be the literal string arn.
@@ -5704,7 +5705,7 @@ public struct RegisterDomainInput {
     }
 }
 
-public struct RegisterWorkflowTypeInput {
+public struct RegisterWorkflowTypeInput: Swift.Sendable {
     /// If set, specifies the default policy to use for the child workflow executions when a workflow execution of this type is terminated, by calling the [TerminateWorkflowExecution] action explicitly or due to an expired timeout. This default can be overridden when starting a workflow execution using the [StartWorkflowExecution] action or the StartChildWorkflowExecution[Decision]. The supported child policies are:
     ///
     /// * TERMINATE – The child executions are terminated.
@@ -5761,7 +5762,7 @@ public struct RegisterWorkflowTypeInput {
     }
 }
 
-public struct RequestCancelWorkflowExecutionInput {
+public struct RequestCancelWorkflowExecutionInput: Swift.Sendable {
     /// The name of the domain containing the workflow execution to cancel.
     /// This member is required.
     public var domain: Swift.String?
@@ -5783,7 +5784,7 @@ public struct RequestCancelWorkflowExecutionInput {
     }
 }
 
-public struct RespondActivityTaskCanceledInput {
+public struct RespondActivityTaskCanceledInput: Swift.Sendable {
     /// Information about the cancellation.
     public var details: Swift.String?
     /// The taskToken of the [ActivityTask]. taskToken is generated by the service and should be treated as an opaque value. If the task is passed to another process, its taskToken must also be passed. This enables it to provide its progress and respond with results.
@@ -5800,7 +5801,7 @@ public struct RespondActivityTaskCanceledInput {
     }
 }
 
-public struct RespondActivityTaskCompletedInput {
+public struct RespondActivityTaskCompletedInput: Swift.Sendable {
     /// The result of the activity task. It is a free form string that is implementation specific.
     public var result: Swift.String?
     /// The taskToken of the [ActivityTask]. taskToken is generated by the service and should be treated as an opaque value. If the task is passed to another process, its taskToken must also be passed. This enables it to provide its progress and respond with results.
@@ -5817,7 +5818,7 @@ public struct RespondActivityTaskCompletedInput {
     }
 }
 
-public struct RespondActivityTaskFailedInput {
+public struct RespondActivityTaskFailedInput: Swift.Sendable {
     /// Detailed information about the failure.
     public var details: Swift.String?
     /// Description of the error that may assist in diagnostics.
@@ -5839,7 +5840,7 @@ public struct RespondActivityTaskFailedInput {
 }
 
 /// Input data for a TaskCompleted response to a decision task.
-public struct RespondDecisionTaskCompletedInput {
+public struct RespondDecisionTaskCompletedInput: Swift.Sendable {
     /// The list of decisions (possibly empty) made by the decider while processing this decision task. See the docs for the [Decision] structure for details.
     public var decisions: [SWFClientTypes.Decision]?
     /// User defined context to add to workflow execution.
@@ -5868,7 +5869,7 @@ public struct RespondDecisionTaskCompletedInput {
     }
 }
 
-public struct SignalWorkflowExecutionInput {
+public struct SignalWorkflowExecutionInput: Swift.Sendable {
     /// The name of the domain containing the workflow execution to signal.
     /// This member is required.
     public var domain: Swift.String?
@@ -5924,7 +5925,7 @@ public struct WorkflowExecutionAlreadyStartedFault: ClientRuntime.ModeledError, 
     }
 }
 
-public struct StartWorkflowExecutionInput {
+public struct StartWorkflowExecutionInput: Swift.Sendable {
     /// If set, specifies the policy to use for the child workflow executions of this workflow execution if it is terminated, by calling the [TerminateWorkflowExecution] action explicitly or due to an expired timeout. This policy overrides the default child policy specified when registering the workflow type using [RegisterWorkflowType]. The supported child policies are:
     ///
     /// * TERMINATE – The child executions are terminated.
@@ -5989,7 +5990,7 @@ public struct StartWorkflowExecutionInput {
 }
 
 /// Specifies the runId of a workflow execution.
-public struct StartWorkflowExecutionOutput {
+public struct StartWorkflowExecutionOutput: Swift.Sendable {
     /// The runId of a workflow execution. This ID is generated by the service and can be used to uniquely identify the workflow execution within a domain.
     public var runId: Swift.String?
 
@@ -6001,7 +6002,7 @@ public struct StartWorkflowExecutionOutput {
     }
 }
 
-public struct TagResourceInput {
+public struct TagResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) for the Amazon SWF domain.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -6019,7 +6020,7 @@ public struct TagResourceInput {
     }
 }
 
-public struct TerminateWorkflowExecutionInput {
+public struct TerminateWorkflowExecutionInput: Swift.Sendable {
     /// If set, specifies the policy to use for the child workflow executions of the workflow execution being terminated. This policy overrides the child policy specified for the workflow execution at registration time or when starting the execution. The supported child policies are:
     ///
     /// * TERMINATE – The child executions are terminated.
@@ -6062,7 +6063,7 @@ public struct TerminateWorkflowExecutionInput {
     }
 }
 
-public struct UndeprecateActivityTypeInput {
+public struct UndeprecateActivityTypeInput: Swift.Sendable {
     /// The activity type to undeprecate.
     /// This member is required.
     public var activityType: SWFClientTypes.ActivityType?
@@ -6080,7 +6081,7 @@ public struct UndeprecateActivityTypeInput {
     }
 }
 
-public struct UndeprecateDomainInput {
+public struct UndeprecateDomainInput: Swift.Sendable {
     /// The name of the domain of the deprecated workflow type.
     /// This member is required.
     public var name: Swift.String?
@@ -6093,7 +6094,7 @@ public struct UndeprecateDomainInput {
     }
 }
 
-public struct UndeprecateWorkflowTypeInput {
+public struct UndeprecateWorkflowTypeInput: Swift.Sendable {
     /// The name of the domain of the deprecated workflow type.
     /// This member is required.
     public var domain: Swift.String?
@@ -6111,7 +6112,7 @@ public struct UndeprecateWorkflowTypeInput {
     }
 }
 
-public struct UntagResourceInput {
+public struct UntagResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) for the Amazon SWF domain.
     /// This member is required.
     public var resourceArn: Swift.String?

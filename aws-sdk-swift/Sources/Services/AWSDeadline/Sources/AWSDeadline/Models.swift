@@ -36,8 +36,9 @@ import struct SmithyHTTPAPI.Headers
 @_spi(SmithyTimestamps) import struct SmithyTimestamps.TimestampFormatter
 
 extension DeadlineClientTypes {
+
     /// The range for the GPU fleet acceleration.
-    public struct AcceleratorCountRange {
+    public struct AcceleratorCountRange: Swift.Sendable {
         /// The maximum GPU for the accelerator.
         public var max: Swift.Int?
         /// The minimum GPU for the accelerator.
@@ -53,12 +54,12 @@ extension DeadlineClientTypes {
             self.min = min
         }
     }
-
 }
 
 extension DeadlineClientTypes {
+
     /// The range for memory, in MiB, to use for the accelerator.
-    public struct AcceleratorTotalMemoryMiBRange {
+    public struct AcceleratorTotalMemoryMiBRange: Swift.Sendable {
         /// The maximum amount of memory to use for the accelerator, measured in MiB.
         public var max: Swift.Int?
         /// The minimum amount of memory to use for the accelerator, measured in MiB.
@@ -74,12 +75,11 @@ extension DeadlineClientTypes {
             self.min = min
         }
     }
-
 }
 
 extension DeadlineClientTypes {
 
-    public enum AcceleratorType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AcceleratorType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         /// GPU accelerator type.
         case gpu
         case sdkUnknown(Swift.String)
@@ -134,8 +134,9 @@ public struct AccessDeniedException: ClientRuntime.ModeledError, AWSClientRuntim
 }
 
 extension DeadlineClientTypes {
+
     /// The assigned starting environment for a worker during session.
-    public struct AssignedEnvironmentEnterSessionActionDefinition {
+    public struct AssignedEnvironmentEnterSessionActionDefinition: Swift.Sendable {
         /// The environment ID of the assigned environment at the start of a session.
         /// This member is required.
         public var environmentId: Swift.String?
@@ -147,12 +148,12 @@ extension DeadlineClientTypes {
             self.environmentId = environmentId
         }
     }
-
 }
 
 extension DeadlineClientTypes {
+
     /// The assigned environment when a worker exits a session.
-    public struct AssignedEnvironmentExitSessionActionDefinition {
+    public struct AssignedEnvironmentExitSessionActionDefinition: Swift.Sendable {
         /// The environment ID of the assigned environment when exiting a session.
         /// This member is required.
         public var environmentId: Swift.String?
@@ -164,12 +165,12 @@ extension DeadlineClientTypes {
             self.environmentId = environmentId
         }
     }
-
 }
 
 extension DeadlineClientTypes {
+
     /// Log configuration details.
-    public struct LogConfiguration {
+    public struct LogConfiguration: Swift.Sendable {
         /// The log configuration error details.
         public var error: Swift.String?
         /// The log drivers for worker related logs.
@@ -193,12 +194,12 @@ extension DeadlineClientTypes {
             self.parameters = parameters
         }
     }
-
 }
 
 extension DeadlineClientTypes {
+
     /// The details for an assigned session action as it relates to a job attachment.
-    public struct AssignedSyncInputJobAttachmentsSessionActionDefinition {
+    public struct AssignedSyncInputJobAttachmentsSessionActionDefinition: Swift.Sendable {
         /// The step ID.
         public var stepId: Swift.String?
 
@@ -209,12 +210,12 @@ extension DeadlineClientTypes {
             self.stepId = stepId
         }
     }
-
 }
 
 extension DeadlineClientTypes {
+
     /// The data types for the task parameters.
-    public enum TaskParameterValue {
+    public enum TaskParameterValue: Swift.Sendable {
         /// A signed integer represented as a string.
         case int(Swift.String)
         /// A double precision IEEE-754 floating point number represented as a string.
@@ -225,12 +226,12 @@ extension DeadlineClientTypes {
         case path(Swift.String)
         case sdkUnknown(Swift.String)
     }
-
 }
 
 extension DeadlineClientTypes {
+
     /// The specific task, step, and parameters to include.
-    public struct AssignedTaskRunSessionActionDefinition {
+    public struct AssignedTaskRunSessionActionDefinition: Swift.Sendable {
         /// The parameters to include.
         /// This member is required.
         public var parameters: [Swift.String: DeadlineClientTypes.TaskParameterValue]?
@@ -252,7 +253,6 @@ extension DeadlineClientTypes {
             self.taskId = taskId
         }
     }
-
 }
 
 extension DeadlineClientTypes.AssignedTaskRunSessionActionDefinition: Swift.CustomDebugStringConvertible {
@@ -261,8 +261,9 @@ extension DeadlineClientTypes.AssignedTaskRunSessionActionDefinition: Swift.Cust
 }
 
 extension DeadlineClientTypes {
+
     /// The definition of the assigned session action.
-    public enum AssignedSessionActionDefinition {
+    public enum AssignedSessionActionDefinition: Swift.Sendable {
         /// The environment a session starts on.
         case enventer(DeadlineClientTypes.AssignedEnvironmentEnterSessionActionDefinition)
         /// The environment a session exits from.
@@ -273,12 +274,12 @@ extension DeadlineClientTypes {
         case syncinputjobattachments(DeadlineClientTypes.AssignedSyncInputJobAttachmentsSessionActionDefinition)
         case sdkUnknown(Swift.String)
     }
-
 }
 
 extension DeadlineClientTypes {
+
     /// The action for a session defined by the session action ID.
-    public struct AssignedSessionAction {
+    public struct AssignedSessionAction: Swift.Sendable {
         /// The definition of the assigned session action.
         /// This member is required.
         public var definition: DeadlineClientTypes.AssignedSessionActionDefinition?
@@ -295,12 +296,12 @@ extension DeadlineClientTypes {
             self.sessionActionId = sessionActionId
         }
     }
-
 }
 
 extension DeadlineClientTypes {
+
     /// The assigned session for the worker.
-    public struct AssignedSession {
+    public struct AssignedSession: Swift.Sendable {
         /// The job ID for the assigned session.
         /// This member is required.
         public var jobId: Swift.String?
@@ -327,7 +328,6 @@ extension DeadlineClientTypes {
             self.sessionActions = sessionActions
         }
     }
-
 }
 
 /// Deadline Cloud can't process your request right now. Try again later.
@@ -400,7 +400,7 @@ public struct ResourceNotFoundException: ClientRuntime.ModeledError, AWSClientRu
 
 extension DeadlineClientTypes {
 
-    public enum ServiceQuotaExceededExceptionReason: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ServiceQuotaExceededExceptionReason: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case kmsKeyLimitExceeded
         case serviceQuotaExceededException
         case sdkUnknown(Swift.String)
@@ -522,8 +522,9 @@ public struct ThrottlingException: ClientRuntime.ModeledError, AWSClientRuntime.
 }
 
 extension DeadlineClientTypes {
+
     /// The details of a validation exception.
-    public struct ValidationExceptionField {
+    public struct ValidationExceptionField: Swift.Sendable {
         /// The error message for the validation exception.
         /// This member is required.
         public var message: Swift.String?
@@ -540,12 +541,11 @@ extension DeadlineClientTypes {
             self.name = name
         }
     }
-
 }
 
 extension DeadlineClientTypes {
 
-    public enum ValidationExceptionReason: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ValidationExceptionReason: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case cannotParse
         case fieldValidationFailed
         case other
@@ -618,7 +618,7 @@ public struct ValidationException: ClientRuntime.ModeledError, AWSClientRuntime.
 
 extension DeadlineClientTypes {
 
-    public enum MembershipLevel: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum MembershipLevel: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case contributor
         case manager
         case owner
@@ -653,7 +653,7 @@ extension DeadlineClientTypes {
 
 extension DeadlineClientTypes {
 
-    public enum DeadlinePrincipalType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DeadlinePrincipalType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case group
         case user
         case sdkUnknown(Swift.String)
@@ -680,7 +680,7 @@ extension DeadlineClientTypes {
     }
 }
 
-public struct AssociateMemberToFarmInput {
+public struct AssociateMemberToFarmInput: Swift.Sendable {
     /// The ID of the farm to associate with the member.
     /// This member is required.
     public var farmId: Swift.String?
@@ -713,12 +713,12 @@ public struct AssociateMemberToFarmInput {
     }
 }
 
-public struct AssociateMemberToFarmOutput {
+public struct AssociateMemberToFarmOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct AssociateMemberToFleetInput {
+public struct AssociateMemberToFleetInput: Swift.Sendable {
     /// The farm ID of the fleet to associate with the member.
     /// This member is required.
     public var farmId: Swift.String?
@@ -756,12 +756,12 @@ public struct AssociateMemberToFleetInput {
     }
 }
 
-public struct AssociateMemberToFleetOutput {
+public struct AssociateMemberToFleetOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct AssociateMemberToJobInput {
+public struct AssociateMemberToJobInput: Swift.Sendable {
     /// The farm ID of the job to associate with the member.
     /// This member is required.
     public var farmId: Swift.String?
@@ -804,12 +804,12 @@ public struct AssociateMemberToJobInput {
     }
 }
 
-public struct AssociateMemberToJobOutput {
+public struct AssociateMemberToJobOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct AssociateMemberToQueueInput {
+public struct AssociateMemberToQueueInput: Swift.Sendable {
     /// The farm ID of the queue to associate with the member.
     /// This member is required.
     public var farmId: Swift.String?
@@ -847,12 +847,12 @@ public struct AssociateMemberToQueueInput {
     }
 }
 
-public struct AssociateMemberToQueueOutput {
+public struct AssociateMemberToQueueOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct AssumeFleetRoleForReadInput {
+public struct AssumeFleetRoleForReadInput: Swift.Sendable {
     /// The farm ID for the fleet's farm.
     /// This member is required.
     public var farmId: Swift.String?
@@ -871,8 +871,9 @@ public struct AssumeFleetRoleForReadInput {
 }
 
 extension DeadlineClientTypes {
+
     /// The Identity and Access Management credentials.
-    public struct AwsCredentials {
+    public struct AwsCredentials: Swift.Sendable {
         /// The IAM access key ID.
         /// This member is required.
         public var accessKeyId: Swift.String?
@@ -899,7 +900,6 @@ extension DeadlineClientTypes {
             self.sessionToken = sessionToken
         }
     }
-
 }
 
 extension DeadlineClientTypes.AwsCredentials: Swift.CustomDebugStringConvertible {
@@ -908,7 +908,7 @@ extension DeadlineClientTypes.AwsCredentials: Swift.CustomDebugStringConvertible
     }
 }
 
-public struct AssumeFleetRoleForReadOutput {
+public struct AssumeFleetRoleForReadOutput: Swift.Sendable {
     /// The credentials for the fleet role.
     /// This member is required.
     public var credentials: DeadlineClientTypes.AwsCredentials?
@@ -929,7 +929,7 @@ extension AssumeFleetRoleForReadOutput: Swift.CustomDebugStringConvertible {
 
 extension DeadlineClientTypes {
 
-    public enum ConflictExceptionReason: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ConflictExceptionReason: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case concurrentModification
         case conflictException
         case resourceAlreadyExists
@@ -1009,7 +1009,7 @@ public struct ConflictException: ClientRuntime.ModeledError, AWSClientRuntime.AW
     }
 }
 
-public struct AssumeFleetRoleForWorkerInput {
+public struct AssumeFleetRoleForWorkerInput: Swift.Sendable {
     /// The farm ID for the fleet's farm.
     /// This member is required.
     public var farmId: Swift.String?
@@ -1032,7 +1032,7 @@ public struct AssumeFleetRoleForWorkerInput {
     }
 }
 
-public struct AssumeFleetRoleForWorkerOutput {
+public struct AssumeFleetRoleForWorkerOutput: Swift.Sendable {
     /// The credentials for the worker.
     /// This member is required.
     public var credentials: DeadlineClientTypes.AwsCredentials?
@@ -1051,7 +1051,7 @@ extension AssumeFleetRoleForWorkerOutput: Swift.CustomDebugStringConvertible {
     }
 }
 
-public struct AssumeQueueRoleForReadInput {
+public struct AssumeQueueRoleForReadInput: Swift.Sendable {
     /// The farm ID of the farm containing the queue.
     /// This member is required.
     public var farmId: Swift.String?
@@ -1069,7 +1069,7 @@ public struct AssumeQueueRoleForReadInput {
     }
 }
 
-public struct AssumeQueueRoleForReadOutput {
+public struct AssumeQueueRoleForReadOutput: Swift.Sendable {
     /// The credentials for the queue role.
     /// This member is required.
     public var credentials: DeadlineClientTypes.AwsCredentials?
@@ -1088,7 +1088,7 @@ extension AssumeQueueRoleForReadOutput: Swift.CustomDebugStringConvertible {
     }
 }
 
-public struct AssumeQueueRoleForUserInput {
+public struct AssumeQueueRoleForUserInput: Swift.Sendable {
     /// The farm ID of the queue that the user assumes the role for.
     /// This member is required.
     public var farmId: Swift.String?
@@ -1106,7 +1106,7 @@ public struct AssumeQueueRoleForUserInput {
     }
 }
 
-public struct AssumeQueueRoleForUserOutput {
+public struct AssumeQueueRoleForUserOutput: Swift.Sendable {
     /// The credentials for the queue role that a user has access to.
     /// This member is required.
     public var credentials: DeadlineClientTypes.AwsCredentials?
@@ -1125,7 +1125,7 @@ extension AssumeQueueRoleForUserOutput: Swift.CustomDebugStringConvertible {
     }
 }
 
-public struct AssumeQueueRoleForWorkerInput {
+public struct AssumeQueueRoleForWorkerInput: Swift.Sendable {
     /// The farm ID of the worker assuming the queue role.
     /// This member is required.
     public var farmId: Swift.String?
@@ -1153,7 +1153,7 @@ public struct AssumeQueueRoleForWorkerInput {
     }
 }
 
-public struct AssumeQueueRoleForWorkerOutput {
+public struct AssumeQueueRoleForWorkerOutput: Swift.Sendable {
     /// The Amazon Web Services credentials for the role that the worker is assuming.
     public var credentials: DeadlineClientTypes.AwsCredentials?
 
@@ -1173,7 +1173,7 @@ extension AssumeQueueRoleForWorkerOutput: Swift.CustomDebugStringConvertible {
 
 extension DeadlineClientTypes {
 
-    public enum JobAttachmentsFileSystem: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum JobAttachmentsFileSystem: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case copied
         case virtual
         case sdkUnknown(Swift.String)
@@ -1202,7 +1202,7 @@ extension DeadlineClientTypes {
 
 extension DeadlineClientTypes {
 
-    public enum PathFormat: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum PathFormat: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case posix
         case windows
         case sdkUnknown(Swift.String)
@@ -1230,8 +1230,9 @@ extension DeadlineClientTypes {
 }
 
 extension DeadlineClientTypes {
+
     /// The details of the manifest that links a job's source information.
-    public struct ManifestProperties {
+    public struct ManifestProperties: Swift.Sendable {
         /// The file system location name.
         public var fileSystemLocationName: Swift.String?
         /// The has value of the file.
@@ -1264,7 +1265,6 @@ extension DeadlineClientTypes {
             self.rootPathFormat = rootPathFormat
         }
     }
-
 }
 
 extension DeadlineClientTypes.ManifestProperties: Swift.CustomDebugStringConvertible {
@@ -1274,8 +1274,9 @@ extension DeadlineClientTypes.ManifestProperties: Swift.CustomDebugStringConvert
 }
 
 extension DeadlineClientTypes {
+
     /// The attachments for jobs.
-    public struct Attachments {
+    public struct Attachments: Swift.Sendable {
         /// The file system.
         public var fileSystem: DeadlineClientTypes.JobAttachmentsFileSystem?
         /// A list of manifests which describe job attachment configurations.
@@ -1291,7 +1292,6 @@ extension DeadlineClientTypes {
             self.manifests = manifests
         }
     }
-
 }
 
 extension DeadlineClientTypes.Attachments: Swift.CustomDebugStringConvertible {
@@ -1301,7 +1301,7 @@ extension DeadlineClientTypes.Attachments: Swift.CustomDebugStringConvertible {
 
 extension DeadlineClientTypes {
 
-    public enum AutoScalingMode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AutoScalingMode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case eventBasedAutoScaling
         case noScaling
         case sdkUnknown(Swift.String)
@@ -1330,7 +1330,7 @@ extension DeadlineClientTypes {
 
 extension DeadlineClientTypes {
 
-    public enum AutoScalingStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AutoScalingStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case growing
         case shrinking
         case steady
@@ -1361,8 +1361,9 @@ extension DeadlineClientTypes {
 }
 
 extension DeadlineClientTypes {
+
     /// The IDs of the job and environment.
-    public struct EnvironmentDetailsIdentifiers {
+    public struct EnvironmentDetailsIdentifiers: Swift.Sendable {
         /// The environment ID.
         /// This member is required.
         public var environmentId: Swift.String?
@@ -1379,12 +1380,12 @@ extension DeadlineClientTypes {
             self.jobId = jobId
         }
     }
-
 }
 
 extension DeadlineClientTypes {
+
     /// Identifier details for job attachments.
-    public struct JobAttachmentDetailsIdentifiers {
+    public struct JobAttachmentDetailsIdentifiers: Swift.Sendable {
         /// The job ID.
         /// This member is required.
         public var jobId: Swift.String?
@@ -1396,12 +1397,12 @@ extension DeadlineClientTypes {
             self.jobId = jobId
         }
     }
-
 }
 
 extension DeadlineClientTypes {
+
     /// The identifiers for a job.
-    public struct JobDetailsIdentifiers {
+    public struct JobDetailsIdentifiers: Swift.Sendable {
         /// The job ID.
         /// This member is required.
         public var jobId: Swift.String?
@@ -1413,12 +1414,12 @@ extension DeadlineClientTypes {
             self.jobId = jobId
         }
     }
-
 }
 
 extension DeadlineClientTypes {
+
     /// The details of identifiers for a step.
-    public struct StepDetailsIdentifiers {
+    public struct StepDetailsIdentifiers: Swift.Sendable {
         /// The job ID.
         /// This member is required.
         public var jobId: Swift.String?
@@ -1435,12 +1436,12 @@ extension DeadlineClientTypes {
             self.stepId = stepId
         }
     }
-
 }
 
 extension DeadlineClientTypes {
+
     /// The details of a job entity identifier.
-    public enum JobEntityIdentifiersUnion {
+    public enum JobEntityIdentifiersUnion: Swift.Sendable {
         /// The job details.
         case jobdetails(DeadlineClientTypes.JobDetailsIdentifiers)
         /// The job attachment details.
@@ -1451,10 +1452,9 @@ extension DeadlineClientTypes {
         case environmentdetails(DeadlineClientTypes.EnvironmentDetailsIdentifiers)
         case sdkUnknown(Swift.String)
     }
-
 }
 
-public struct BatchGetJobEntityInput {
+public struct BatchGetJobEntityInput: Swift.Sendable {
     /// The farm ID of the worker that's fetching job details. The worker must have an assignment on a job to fetch job details.
     /// This member is required.
     public var farmId: Swift.String?
@@ -1483,8 +1483,9 @@ public struct BatchGetJobEntityInput {
 }
 
 extension DeadlineClientTypes {
+
     /// The details of a specified environment.
-    public struct EnvironmentDetailsEntity {
+    public struct EnvironmentDetailsEntity: Swift.Sendable {
         /// The environment ID.
         /// This member is required.
         public var environmentId: Swift.String?
@@ -1511,7 +1512,6 @@ extension DeadlineClientTypes {
             self.template = template
         }
     }
-
 }
 
 extension DeadlineClientTypes.EnvironmentDetailsEntity: Swift.CustomDebugStringConvertible {
@@ -1520,8 +1520,9 @@ extension DeadlineClientTypes.EnvironmentDetailsEntity: Swift.CustomDebugStringC
 }
 
 extension DeadlineClientTypes {
+
     /// The job attachments.
-    public struct JobAttachmentDetailsEntity {
+    public struct JobAttachmentDetailsEntity: Swift.Sendable {
         /// The job attachments.
         /// This member is required.
         public var attachments: DeadlineClientTypes.Attachments?
@@ -1538,12 +1539,12 @@ extension DeadlineClientTypes {
             self.jobId = jobId
         }
     }
-
 }
 
 extension DeadlineClientTypes {
+
     /// The job attachment settings. These are the Amazon S3 bucket name and the Amazon S3 prefix.
-    public struct JobAttachmentSettings {
+    public struct JobAttachmentSettings: Swift.Sendable {
         /// The root prefix.
         /// This member is required.
         public var rootPrefix: Swift.String?
@@ -1560,12 +1561,12 @@ extension DeadlineClientTypes {
             self.s3BucketName = s3BucketName
         }
     }
-
 }
 
 extension DeadlineClientTypes {
+
     /// The POSIX user.
-    public struct PosixUser {
+    public struct PosixUser: Swift.Sendable {
         /// The name of the POSIX user's group.
         /// This member is required.
         public var group: Swift.String?
@@ -1582,12 +1583,11 @@ extension DeadlineClientTypes {
             self.user = user
         }
     }
-
 }
 
 extension DeadlineClientTypes {
 
-    public enum RunAs: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum RunAs: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case queueConfiguredUser
         case workerAgentUser
         case sdkUnknown(Swift.String)
@@ -1615,8 +1615,9 @@ extension DeadlineClientTypes {
 }
 
 extension DeadlineClientTypes {
+
     /// The Windows user details.
-    public struct WindowsUser {
+    public struct WindowsUser: Swift.Sendable {
         /// The password ARN for the Windows user.
         /// This member is required.
         public var passwordArn: Swift.String?
@@ -1633,12 +1634,12 @@ extension DeadlineClientTypes {
             self.user = user
         }
     }
-
 }
 
 extension DeadlineClientTypes {
+
     /// Identifies the user for a job.
-    public struct JobRunAsUser {
+    public struct JobRunAsUser: Swift.Sendable {
         /// The user and group that the jobs in the queue run as.
         public var posix: DeadlineClientTypes.PosixUser?
         /// Specifies whether the job should run using the queue's system user or if the job should run using the worker agent system user.
@@ -1658,12 +1659,12 @@ extension DeadlineClientTypes {
             self.windows = windows
         }
     }
-
 }
 
 extension DeadlineClientTypes {
+
     /// The details of job parameters.
-    public enum JobParameter {
+    public enum JobParameter: Swift.Sendable {
         /// A signed integer represented as a string.
         case int(Swift.String)
         /// A double precision IEEE-754 floating point number represented as a string.
@@ -1674,12 +1675,12 @@ extension DeadlineClientTypes {
         case path(Swift.String)
         case sdkUnknown(Swift.String)
     }
-
 }
 
 extension DeadlineClientTypes {
+
     /// The details of a source and destination path.
-    public struct PathMappingRule {
+    public struct PathMappingRule: Swift.Sendable {
         /// The destination path.
         /// This member is required.
         public var destinationPath: Swift.String?
@@ -1701,7 +1702,6 @@ extension DeadlineClientTypes {
             self.sourcePathFormat = sourcePathFormat
         }
     }
-
 }
 
 extension DeadlineClientTypes.PathMappingRule: Swift.CustomDebugStringConvertible {
@@ -1711,8 +1711,9 @@ extension DeadlineClientTypes.PathMappingRule: Swift.CustomDebugStringConvertibl
 }
 
 extension DeadlineClientTypes {
+
     /// The job details for a specific job.
-    public struct JobDetailsEntity {
+    public struct JobDetailsEntity: Swift.Sendable {
         /// The job attachment settings.
         public var jobAttachmentSettings: DeadlineClientTypes.JobAttachmentSettings?
         /// The job ID.
@@ -1754,7 +1755,6 @@ extension DeadlineClientTypes {
             self.schemaVersion = schemaVersion
         }
     }
-
 }
 
 extension DeadlineClientTypes.JobDetailsEntity: Swift.CustomDebugStringConvertible {
@@ -1763,8 +1763,9 @@ extension DeadlineClientTypes.JobDetailsEntity: Swift.CustomDebugStringConvertib
 }
 
 extension DeadlineClientTypes {
+
     /// The details of a step entity.
-    public struct StepDetailsEntity {
+    public struct StepDetailsEntity: Swift.Sendable {
         /// The dependencies for a step.
         /// This member is required.
         public var dependencies: [Swift.String]?
@@ -1796,7 +1797,6 @@ extension DeadlineClientTypes {
             self.template = template
         }
     }
-
 }
 
 extension DeadlineClientTypes.StepDetailsEntity: Swift.CustomDebugStringConvertible {
@@ -1805,8 +1805,9 @@ extension DeadlineClientTypes.StepDetailsEntity: Swift.CustomDebugStringConverti
 }
 
 extension DeadlineClientTypes {
+
     /// The details of a job entity.
-    public enum JobEntity {
+    public enum JobEntity: Swift.Sendable {
         /// The job details.
         case jobdetails(DeadlineClientTypes.JobDetailsEntity)
         /// The job attachment details.
@@ -1817,12 +1818,11 @@ extension DeadlineClientTypes {
         case environmentdetails(DeadlineClientTypes.EnvironmentDetailsEntity)
         case sdkUnknown(Swift.String)
     }
-
 }
 
 extension DeadlineClientTypes {
 
-    public enum JobEntityErrorCode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum JobEntityErrorCode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case accessdeniedexception
         case conflictexception
         case internalserverexception
@@ -1862,8 +1862,9 @@ extension DeadlineClientTypes {
 }
 
 extension DeadlineClientTypes {
+
     /// The error details for the environment.
-    public struct EnvironmentDetailsError {
+    public struct EnvironmentDetailsError: Swift.Sendable {
         /// The error code.
         /// This member is required.
         public var code: DeadlineClientTypes.JobEntityErrorCode?
@@ -1890,12 +1891,12 @@ extension DeadlineClientTypes {
             self.message = message
         }
     }
-
 }
 
 extension DeadlineClientTypes {
+
     /// The error details for job attachments.
-    public struct JobAttachmentDetailsError {
+    public struct JobAttachmentDetailsError: Swift.Sendable {
         /// The error code.
         /// This member is required.
         public var code: DeadlineClientTypes.JobEntityErrorCode?
@@ -1917,12 +1918,12 @@ extension DeadlineClientTypes {
             self.message = message
         }
     }
-
 }
 
 extension DeadlineClientTypes {
+
     /// The details of a job error.
-    public struct JobDetailsError {
+    public struct JobDetailsError: Swift.Sendable {
         /// The error code.
         /// This member is required.
         public var code: DeadlineClientTypes.JobEntityErrorCode?
@@ -1944,12 +1945,12 @@ extension DeadlineClientTypes {
             self.message = message
         }
     }
-
 }
 
 extension DeadlineClientTypes {
+
     /// The details of the step error.
-    public struct StepDetailsError {
+    public struct StepDetailsError: Swift.Sendable {
         /// The error code.
         /// This member is required.
         public var code: DeadlineClientTypes.JobEntityErrorCode?
@@ -1976,12 +1977,12 @@ extension DeadlineClientTypes {
             self.stepId = stepId
         }
     }
-
 }
 
 extension DeadlineClientTypes {
+
     /// The error for the job entity.
-    public enum GetJobEntityError {
+    public enum GetJobEntityError: Swift.Sendable {
         /// The job details for the failed job entity.
         case jobdetails(DeadlineClientTypes.JobDetailsError)
         /// The job attachment details for the failed job entity.
@@ -1992,10 +1993,9 @@ extension DeadlineClientTypes {
         case environmentdetails(DeadlineClientTypes.EnvironmentDetailsError)
         case sdkUnknown(Swift.String)
     }
-
 }
 
-public struct BatchGetJobEntityOutput {
+public struct BatchGetJobEntityOutput: Swift.Sendable {
     /// A list of the job entities, or details, in the batch.
     /// This member is required.
     public var entities: [DeadlineClientTypes.JobEntity]?
@@ -2015,7 +2015,7 @@ public struct BatchGetJobEntityOutput {
 
 extension DeadlineClientTypes {
 
-    public enum BudgetActionType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum BudgetActionType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case stopSchedulingAndCancelTasks
         case stopSchedulingAndCompleteTasks
         case sdkUnknown(Swift.String)
@@ -2043,8 +2043,9 @@ extension DeadlineClientTypes {
 }
 
 extension DeadlineClientTypes {
+
     /// The budget action to add.
-    public struct BudgetActionToAdd {
+    public struct BudgetActionToAdd: Swift.Sendable {
         /// A description for the budget action to add. This field can store any content. Escape or encode this content before displaying it on a webpage or any other system that might interpret the content of this field.
         public var description: Swift.String?
         /// The percentage threshold for the budget action to add.
@@ -2065,7 +2066,6 @@ extension DeadlineClientTypes {
             self.type = type
         }
     }
-
 }
 
 extension DeadlineClientTypes.BudgetActionToAdd: Swift.CustomDebugStringConvertible {
@@ -2074,8 +2074,9 @@ extension DeadlineClientTypes.BudgetActionToAdd: Swift.CustomDebugStringConverti
 }
 
 extension DeadlineClientTypes {
+
     /// The budget action to remove.
-    public struct BudgetActionToRemove {
+    public struct BudgetActionToRemove: Swift.Sendable {
         /// The percentage threshold for the budget action to remove.
         /// This member is required.
         public var thresholdPercentage: Swift.Float?
@@ -2092,12 +2093,12 @@ extension DeadlineClientTypes {
             self.type = type
         }
     }
-
 }
 
 extension DeadlineClientTypes {
+
     /// The details of a fixed budget schedule.
-    public struct FixedBudgetSchedule {
+    public struct FixedBudgetSchedule: Swift.Sendable {
         /// When the budget ends.
         /// This member is required.
         public var endTime: Foundation.Date?
@@ -2114,30 +2115,29 @@ extension DeadlineClientTypes {
             self.startTime = startTime
         }
     }
-
 }
 
 extension DeadlineClientTypes {
+
     /// The start and end time of the budget.
-    public enum BudgetSchedule {
+    public enum BudgetSchedule: Swift.Sendable {
         /// The fixed start and end time of the budget's schedule.
         case fixed(DeadlineClientTypes.FixedBudgetSchedule)
         case sdkUnknown(Swift.String)
     }
-
 }
 
 extension DeadlineClientTypes {
+
     /// The usage details of the allotted budget.
-    public enum UsageTrackingResource {
+    public enum UsageTrackingResource: Swift.Sendable {
         /// The queue ID.
         case queueid(Swift.String)
         case sdkUnknown(Swift.String)
     }
-
 }
 
-public struct CreateBudgetInput {
+public struct CreateBudgetInput: Swift.Sendable {
     /// The budget actions to specify what happens when the budget runs out.
     /// This member is required.
     public var actions: [DeadlineClientTypes.BudgetActionToAdd]?
@@ -2188,7 +2188,7 @@ extension CreateBudgetInput: Swift.CustomDebugStringConvertible {
         "CreateBudgetInput(actions: \(Swift.String(describing: actions)), approximateDollarLimit: \(Swift.String(describing: approximateDollarLimit)), clientToken: \(Swift.String(describing: clientToken)), displayName: \(Swift.String(describing: displayName)), farmId: \(Swift.String(describing: farmId)), schedule: \(Swift.String(describing: schedule)), usageTrackingResource: \(Swift.String(describing: usageTrackingResource)), description: \"CONTENT_REDACTED\")"}
 }
 
-public struct CreateBudgetOutput {
+public struct CreateBudgetOutput: Swift.Sendable {
     /// The budget ID.
     /// This member is required.
     public var budgetId: Swift.String?
@@ -2201,7 +2201,7 @@ public struct CreateBudgetOutput {
     }
 }
 
-public struct DeleteBudgetInput {
+public struct DeleteBudgetInput: Swift.Sendable {
     /// The budget ID of the budget to delete.
     /// This member is required.
     public var budgetId: Swift.String?
@@ -2219,12 +2219,12 @@ public struct DeleteBudgetInput {
     }
 }
 
-public struct DeleteBudgetOutput {
+public struct DeleteBudgetOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct GetBudgetInput {
+public struct GetBudgetInput: Swift.Sendable {
     /// The budget ID.
     /// This member is required.
     public var budgetId: Swift.String?
@@ -2243,8 +2243,9 @@ public struct GetBudgetInput {
 }
 
 extension DeadlineClientTypes {
+
     /// The details of a budget action.
-    public struct ResponseBudgetAction {
+    public struct ResponseBudgetAction: Swift.Sendable {
         /// The budget action description. This field can store any content. Escape or encode this content before displaying it on a webpage or any other system that might interpret the content of this field.
         public var description: Swift.String?
         /// The percentage threshold for the budget.
@@ -2265,7 +2266,6 @@ extension DeadlineClientTypes {
             self.type = type
         }
     }
-
 }
 
 extension DeadlineClientTypes.ResponseBudgetAction: Swift.CustomDebugStringConvertible {
@@ -2275,7 +2275,7 @@ extension DeadlineClientTypes.ResponseBudgetAction: Swift.CustomDebugStringConve
 
 extension DeadlineClientTypes {
 
-    public enum BudgetStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum BudgetStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case active
         case inactive
         case sdkUnknown(Swift.String)
@@ -2303,8 +2303,9 @@ extension DeadlineClientTypes {
 }
 
 extension DeadlineClientTypes {
+
     /// The consumed usage for the resource.
-    public struct ConsumedUsages {
+    public struct ConsumedUsages: Swift.Sendable {
         /// The amount of the budget consumed.
         /// This member is required.
         public var approximateDollarUsage: Swift.Float?
@@ -2316,10 +2317,9 @@ extension DeadlineClientTypes {
             self.approximateDollarUsage = approximateDollarUsage
         }
     }
-
 }
 
-public struct GetBudgetOutput {
+public struct GetBudgetOutput: Swift.Sendable {
     /// The budget actions for the budget.
     /// This member is required.
     public var actions: [DeadlineClientTypes.ResponseBudgetAction]?
@@ -2402,7 +2402,7 @@ extension GetBudgetOutput: Swift.CustomDebugStringConvertible {
         "GetBudgetOutput(actions: \(Swift.String(describing: actions)), approximateDollarLimit: \(Swift.String(describing: approximateDollarLimit)), budgetId: \(Swift.String(describing: budgetId)), createdAt: \(Swift.String(describing: createdAt)), createdBy: \(Swift.String(describing: createdBy)), displayName: \(Swift.String(describing: displayName)), queueStoppedAt: \(Swift.String(describing: queueStoppedAt)), schedule: \(Swift.String(describing: schedule)), status: \(Swift.String(describing: status)), updatedAt: \(Swift.String(describing: updatedAt)), updatedBy: \(Swift.String(describing: updatedBy)), usageTrackingResource: \(Swift.String(describing: usageTrackingResource)), usages: \(Swift.String(describing: usages)), description: \"CONTENT_REDACTED\")"}
 }
 
-public struct ListBudgetsInput {
+public struct ListBudgetsInput: Swift.Sendable {
     /// The farm ID associated with the budgets.
     /// This member is required.
     public var farmId: Swift.String?
@@ -2428,8 +2428,9 @@ public struct ListBudgetsInput {
 }
 
 extension DeadlineClientTypes {
+
     /// The budget summary.
-    public struct BudgetSummary {
+    public struct BudgetSummary: Swift.Sendable {
         /// The approximate dollar limit of the budget.
         /// This member is required.
         public var approximateDollarLimit: Swift.Float?
@@ -2493,7 +2494,6 @@ extension DeadlineClientTypes {
             self.usages = usages
         }
     }
-
 }
 
 extension DeadlineClientTypes.BudgetSummary: Swift.CustomDebugStringConvertible {
@@ -2501,7 +2501,7 @@ extension DeadlineClientTypes.BudgetSummary: Swift.CustomDebugStringConvertible 
         "BudgetSummary(approximateDollarLimit: \(Swift.String(describing: approximateDollarLimit)), budgetId: \(Swift.String(describing: budgetId)), createdAt: \(Swift.String(describing: createdAt)), createdBy: \(Swift.String(describing: createdBy)), displayName: \(Swift.String(describing: displayName)), status: \(Swift.String(describing: status)), updatedAt: \(Swift.String(describing: updatedAt)), updatedBy: \(Swift.String(describing: updatedBy)), usageTrackingResource: \(Swift.String(describing: usageTrackingResource)), usages: \(Swift.String(describing: usages)), description: \"CONTENT_REDACTED\")"}
 }
 
-public struct ListBudgetsOutput {
+public struct ListBudgetsOutput: Swift.Sendable {
     /// The budgets to include on the list.
     /// This member is required.
     public var budgets: [DeadlineClientTypes.BudgetSummary]?
@@ -2518,7 +2518,7 @@ public struct ListBudgetsOutput {
     }
 }
 
-public struct UpdateBudgetInput {
+public struct UpdateBudgetInput: Swift.Sendable {
     /// The budget actions to add. Budget actions specify what happens when the budget runs out.
     public var actionsToAdd: [DeadlineClientTypes.BudgetActionToAdd]?
     /// The budget actions to remove from the budget.
@@ -2577,14 +2577,14 @@ extension UpdateBudgetInput: Swift.CustomDebugStringConvertible {
         "UpdateBudgetInput(actionsToAdd: \(Swift.String(describing: actionsToAdd)), actionsToRemove: \(Swift.String(describing: actionsToRemove)), approximateDollarLimit: \(Swift.String(describing: approximateDollarLimit)), budgetId: \(Swift.String(describing: budgetId)), clientToken: \(Swift.String(describing: clientToken)), displayName: \(Swift.String(describing: displayName)), farmId: \(Swift.String(describing: farmId)), schedule: \(Swift.String(describing: schedule)), status: \(Swift.String(describing: status)), description: \"CONTENT_REDACTED\")"}
 }
 
-public struct UpdateBudgetOutput {
+public struct UpdateBudgetOutput: Swift.Sendable {
 
     public init() { }
 }
 
 extension DeadlineClientTypes {
 
-    public enum ComparisonOperator: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ComparisonOperator: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case equal
         case greaterThan
         case greaterThanEqualTo
@@ -2625,7 +2625,7 @@ extension DeadlineClientTypes {
 
 extension DeadlineClientTypes {
 
-    public enum CompletedStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum CompletedStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case canceled
         case failed
         case interrupted
@@ -2662,8 +2662,9 @@ extension DeadlineClientTypes {
 }
 
 extension DeadlineClientTypes {
+
     /// The Amazon S3 location information.
-    public struct S3Location {
+    public struct S3Location: Swift.Sendable {
         /// The name of the Amazon S3 bucket.
         /// This member is required.
         public var bucketName: Swift.String?
@@ -2680,10 +2681,9 @@ extension DeadlineClientTypes {
             self.key = key
         }
     }
-
 }
 
-public struct CopyJobTemplateInput {
+public struct CopyJobTemplateInput: Swift.Sendable {
     /// The farm ID to copy.
     /// This member is required.
     public var farmId: Swift.String?
@@ -2713,7 +2713,7 @@ public struct CopyJobTemplateInput {
 
 extension DeadlineClientTypes {
 
-    public enum JobTemplateType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum JobTemplateType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case json
         case yaml
         case sdkUnknown(Swift.String)
@@ -2740,7 +2740,7 @@ extension DeadlineClientTypes {
     }
 }
 
-public struct CopyJobTemplateOutput {
+public struct CopyJobTemplateOutput: Swift.Sendable {
     /// The format of the job template, either JSON or YAML.
     /// This member is required.
     public var templateType: DeadlineClientTypes.JobTemplateType?
@@ -2755,7 +2755,7 @@ public struct CopyJobTemplateOutput {
 
 extension DeadlineClientTypes {
 
-    public enum CpuArchitectureType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum CpuArchitectureType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case arm64
         case x8664
         case sdkUnknown(Swift.String)
@@ -2782,7 +2782,7 @@ extension DeadlineClientTypes {
     }
 }
 
-public struct CreateFarmInput {
+public struct CreateFarmInput: Swift.Sendable {
     /// The unique token which the server uses to recognize retries of the same request.
     public var clientToken: Swift.String?
     /// The description of the farm. This field can store any content. Escape or encode this content before displaying it on a webpage or any other system that might interpret the content of this field.
@@ -2816,7 +2816,7 @@ extension CreateFarmInput: Swift.CustomDebugStringConvertible {
         "CreateFarmInput(clientToken: \(Swift.String(describing: clientToken)), displayName: \(Swift.String(describing: displayName)), kmsKeyArn: \(Swift.String(describing: kmsKeyArn)), tags: \(Swift.String(describing: tags)), description: \"CONTENT_REDACTED\")"}
 }
 
-public struct CreateFarmOutput {
+public struct CreateFarmOutput: Swift.Sendable {
     /// The farm ID.
     /// This member is required.
     public var farmId: Swift.String?
@@ -2830,8 +2830,9 @@ public struct CreateFarmOutput {
 }
 
 extension DeadlineClientTypes {
+
     /// The fleet amount and attribute capabilities.
-    public struct FleetAmountCapability {
+    public struct FleetAmountCapability: Swift.Sendable {
         /// The maximum amount of the fleet worker capability.
         public var max: Swift.Float?
         /// The minimum amount of fleet worker capability.
@@ -2852,12 +2853,12 @@ extension DeadlineClientTypes {
             self.name = name
         }
     }
-
 }
 
 extension DeadlineClientTypes {
+
     /// Defines the fleet's capability name, minimum, and maximum.
-    public struct FleetAttributeCapability {
+    public struct FleetAttributeCapability: Swift.Sendable {
         /// The name of the fleet attribute capability for the worker.
         /// This member is required.
         public var name: Swift.String?
@@ -2874,12 +2875,12 @@ extension DeadlineClientTypes {
             self.values = values
         }
     }
-
 }
 
 extension DeadlineClientTypes {
+
     /// The range of memory in MiB.
-    public struct MemoryMiBRange {
+    public struct MemoryMiBRange: Swift.Sendable {
         /// The maximum amount of memory (in MiB).
         public var max: Swift.Int?
         /// The minimum amount of memory (in MiB).
@@ -2895,12 +2896,11 @@ extension DeadlineClientTypes {
             self.min = min
         }
     }
-
 }
 
 extension DeadlineClientTypes {
 
-    public enum CustomerManagedFleetOperatingSystemFamily: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum CustomerManagedFleetOperatingSystemFamily: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case linux
         case macos
         case windows
@@ -2931,8 +2931,9 @@ extension DeadlineClientTypes {
 }
 
 extension DeadlineClientTypes {
+
     /// The allowable range of vCPU processing power for the fleet.
-    public struct VCpuCountRange {
+    public struct VCpuCountRange: Swift.Sendable {
         /// The maximum amount of vCPU.
         public var max: Swift.Int?
         /// The minimum amount of vCPU.
@@ -2948,12 +2949,12 @@ extension DeadlineClientTypes {
             self.min = min
         }
     }
-
 }
 
 extension DeadlineClientTypes {
+
     /// The worker capabilities for a customer managed workflow.
-    public struct CustomerManagedWorkerCapabilities {
+    public struct CustomerManagedWorkerCapabilities: Swift.Sendable {
         /// The range of the accelerator.
         public var acceleratorCount: DeadlineClientTypes.AcceleratorCountRange?
         /// The total memory (MiB) for the customer managed worker capabilities.
@@ -3000,12 +3001,12 @@ extension DeadlineClientTypes {
             self.vCpuCount = vCpuCount
         }
     }
-
 }
 
 extension DeadlineClientTypes {
+
     /// The details of a customer managed fleet configuration.
-    public struct CustomerManagedFleetConfiguration {
+    public struct CustomerManagedFleetConfiguration: Swift.Sendable {
         /// The Auto Scaling mode for the customer managed fleet configuration.
         /// This member is required.
         public var mode: DeadlineClientTypes.AutoScalingMode?
@@ -3026,12 +3027,11 @@ extension DeadlineClientTypes {
             self.workerCapabilities = workerCapabilities
         }
     }
-
 }
 
 extension DeadlineClientTypes {
 
-    public enum ServiceManagedFleetOperatingSystemFamily: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ServiceManagedFleetOperatingSystemFamily: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case linux
         case windows
         case sdkUnknown(Swift.String)
@@ -3059,8 +3059,9 @@ extension DeadlineClientTypes {
 }
 
 extension DeadlineClientTypes {
+
     /// Specifies the EBS volume.
-    public struct Ec2EbsVolume {
+    public struct Ec2EbsVolume: Swift.Sendable {
         /// The IOPS per volume.
         public var iops: Swift.Int?
         /// The EBS volume size in GiB.
@@ -3079,12 +3080,12 @@ extension DeadlineClientTypes {
             self.throughputMiB = throughputMiB
         }
     }
-
 }
 
 extension DeadlineClientTypes {
+
     /// The Amazon EC2 instance capabilities.
-    public struct ServiceManagedEc2InstanceCapabilities {
+    public struct ServiceManagedEc2InstanceCapabilities: Swift.Sendable {
         /// The allowable Amazon EC2 instance types.
         public var allowedInstanceTypes: [Swift.String]?
         /// The CPU architecture type.
@@ -3131,12 +3132,11 @@ extension DeadlineClientTypes {
             self.vCpuCount = vCpuCount
         }
     }
-
 }
 
 extension DeadlineClientTypes {
 
-    public enum Ec2MarketType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Ec2MarketType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case onDemand
         case spot
         case sdkUnknown(Swift.String)
@@ -3164,8 +3164,9 @@ extension DeadlineClientTypes {
 }
 
 extension DeadlineClientTypes {
+
     /// The details of the Amazon EC2 instance market options for a service managed fleet.
-    public struct ServiceManagedEc2InstanceMarketOptions {
+    public struct ServiceManagedEc2InstanceMarketOptions: Swift.Sendable {
         /// The Amazon EC2 instance type.
         /// This member is required.
         public var type: DeadlineClientTypes.Ec2MarketType?
@@ -3177,12 +3178,12 @@ extension DeadlineClientTypes {
             self.type = type
         }
     }
-
 }
 
 extension DeadlineClientTypes {
+
     /// The configuration details for a service managed Amazon EC2 fleet.
-    public struct ServiceManagedEc2FleetConfiguration {
+    public struct ServiceManagedEc2FleetConfiguration: Swift.Sendable {
         /// The Amazon EC2 instance capabilities.
         /// This member is required.
         public var instanceCapabilities: DeadlineClientTypes.ServiceManagedEc2InstanceCapabilities?
@@ -3199,22 +3200,21 @@ extension DeadlineClientTypes {
             self.instanceMarketOptions = instanceMarketOptions
         }
     }
-
 }
 
 extension DeadlineClientTypes {
+
     /// Fleet configuration details.
-    public enum FleetConfiguration {
+    public enum FleetConfiguration: Swift.Sendable {
         /// The customer managed fleets within a fleet configuration.
         case customermanaged(DeadlineClientTypes.CustomerManagedFleetConfiguration)
         /// The service managed Amazon EC2 instances for a fleet configuration.
         case servicemanagedec2(DeadlineClientTypes.ServiceManagedEc2FleetConfiguration)
         case sdkUnknown(Swift.String)
     }
-
 }
 
-public struct CreateFleetInput {
+public struct CreateFleetInput: Swift.Sendable {
     /// The unique token which the server uses to recognize retries of the same request.
     public var clientToken: Swift.String?
     /// The configuration settings for the fleet. Customer managed fleets are self-managed. Service managed Amazon EC2 fleets are managed by Deadline Cloud.
@@ -3268,7 +3268,7 @@ extension CreateFleetInput: Swift.CustomDebugStringConvertible {
         "CreateFleetInput(clientToken: \(Swift.String(describing: clientToken)), configuration: \(Swift.String(describing: configuration)), displayName: \(Swift.String(describing: displayName)), farmId: \(Swift.String(describing: farmId)), maxWorkerCount: \(Swift.String(describing: maxWorkerCount)), minWorkerCount: \(Swift.String(describing: minWorkerCount)), roleArn: \(Swift.String(describing: roleArn)), tags: \(Swift.String(describing: tags)), description: \"CONTENT_REDACTED\")"}
 }
 
-public struct CreateFleetOutput {
+public struct CreateFleetOutput: Swift.Sendable {
     /// The fleet ID.
     /// This member is required.
     public var fleetId: Swift.String?
@@ -3283,7 +3283,7 @@ public struct CreateFleetOutput {
 
 extension DeadlineClientTypes {
 
-    public enum CreateJobTargetTaskRunStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum CreateJobTargetTaskRunStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case ready
         case suspended
         case sdkUnknown(Swift.String)
@@ -3310,7 +3310,7 @@ extension DeadlineClientTypes {
     }
 }
 
-public struct CreateJobInput {
+public struct CreateJobInput: Swift.Sendable {
     /// The attachments for the job. Attach files required for the job to run to a render job.
     public var attachments: DeadlineClientTypes.Attachments?
     /// The unique token which the server uses to recognize retries of the same request.
@@ -3330,15 +3330,15 @@ public struct CreateJobInput {
     /// The ID of the queue that the job is submitted to.
     /// This member is required.
     public var queueId: Swift.String?
+    /// The job ID for the source job.
+    public var sourceJobId: Swift.String?
     /// The storage profile ID for the storage profile to connect to the job.
     public var storageProfileId: Swift.String?
     /// The initial job status when it is created. Jobs that are created with a SUSPENDED status will not run until manually requeued.
     public var targetTaskRunStatus: DeadlineClientTypes.CreateJobTargetTaskRunStatus?
     /// The job template to use for this job.
-    /// This member is required.
     public var template: Swift.String?
     /// The file type for the job template.
-    /// This member is required.
     public var templateType: DeadlineClientTypes.JobTemplateType?
 
     public init(
@@ -3350,6 +3350,7 @@ public struct CreateJobInput {
         parameters: [Swift.String: DeadlineClientTypes.JobParameter]? = nil,
         priority: Swift.Int? = nil,
         queueId: Swift.String? = nil,
+        sourceJobId: Swift.String? = nil,
         storageProfileId: Swift.String? = nil,
         targetTaskRunStatus: DeadlineClientTypes.CreateJobTargetTaskRunStatus? = nil,
         template: Swift.String? = nil,
@@ -3364,6 +3365,7 @@ public struct CreateJobInput {
         self.parameters = parameters
         self.priority = priority
         self.queueId = queueId
+        self.sourceJobId = sourceJobId
         self.storageProfileId = storageProfileId
         self.targetTaskRunStatus = targetTaskRunStatus
         self.template = template
@@ -3373,10 +3375,10 @@ public struct CreateJobInput {
 
 extension CreateJobInput: Swift.CustomDebugStringConvertible {
     public var debugDescription: Swift.String {
-        "CreateJobInput(attachments: \(Swift.String(describing: attachments)), clientToken: \(Swift.String(describing: clientToken)), farmId: \(Swift.String(describing: farmId)), maxFailedTasksCount: \(Swift.String(describing: maxFailedTasksCount)), maxRetriesPerTask: \(Swift.String(describing: maxRetriesPerTask)), priority: \(Swift.String(describing: priority)), queueId: \(Swift.String(describing: queueId)), storageProfileId: \(Swift.String(describing: storageProfileId)), targetTaskRunStatus: \(Swift.String(describing: targetTaskRunStatus)), templateType: \(Swift.String(describing: templateType)), parameters: \"CONTENT_REDACTED\", template: \"CONTENT_REDACTED\")"}
+        "CreateJobInput(attachments: \(Swift.String(describing: attachments)), clientToken: \(Swift.String(describing: clientToken)), farmId: \(Swift.String(describing: farmId)), maxFailedTasksCount: \(Swift.String(describing: maxFailedTasksCount)), maxRetriesPerTask: \(Swift.String(describing: maxRetriesPerTask)), priority: \(Swift.String(describing: priority)), queueId: \(Swift.String(describing: queueId)), sourceJobId: \(Swift.String(describing: sourceJobId)), storageProfileId: \(Swift.String(describing: storageProfileId)), targetTaskRunStatus: \(Swift.String(describing: targetTaskRunStatus)), templateType: \(Swift.String(describing: templateType)), parameters: \"CONTENT_REDACTED\", template: \"CONTENT_REDACTED\")"}
 }
 
-public struct CreateJobOutput {
+public struct CreateJobOutput: Swift.Sendable {
     /// The job ID.
     /// This member is required.
     public var jobId: Swift.String?
@@ -3389,7 +3391,7 @@ public struct CreateJobOutput {
     }
 }
 
-public struct CreateLicenseEndpointInput {
+public struct CreateLicenseEndpointInput: Swift.Sendable {
     /// The unique token which the server uses to recognize retries of the same request.
     public var clientToken: Swift.String?
     /// The security group IDs.
@@ -3420,7 +3422,7 @@ public struct CreateLicenseEndpointInput {
     }
 }
 
-public struct CreateLicenseEndpointOutput {
+public struct CreateLicenseEndpointOutput: Swift.Sendable {
     /// The license endpoint ID.
     /// This member is required.
     public var licenseEndpointId: Swift.String?
@@ -3433,7 +3435,7 @@ public struct CreateLicenseEndpointOutput {
     }
 }
 
-public struct CreateMonitorInput {
+public struct CreateMonitorInput: Swift.Sendable {
     /// The unique token which the server uses to recognize retries of the same request.
     public var clientToken: Swift.String?
     /// The name that you give the monitor that is displayed in the Deadline Cloud console. This field can store any content. Escape or encode this content before displaying it on a webpage or any other system that might interpret the content of this field.
@@ -3465,7 +3467,7 @@ public struct CreateMonitorInput {
     }
 }
 
-public struct CreateMonitorOutput {
+public struct CreateMonitorOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) that IAM Identity Center assigns to the monitor.
     /// This member is required.
     public var identityCenterApplicationArn: Swift.String?
@@ -3485,7 +3487,7 @@ public struct CreateMonitorOutput {
 
 extension DeadlineClientTypes {
 
-    public enum DefaultQueueBudgetAction: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DefaultQueueBudgetAction: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case `none`
         case stopSchedulingAndCancelTasks
         case stopSchedulingAndCompleteTasks
@@ -3515,7 +3517,7 @@ extension DeadlineClientTypes {
     }
 }
 
-public struct CreateQueueInput {
+public struct CreateQueueInput: Swift.Sendable {
     /// The storage profile IDs to include in the queue.
     public var allowedStorageProfileIds: [Swift.String]?
     /// The unique token which the server uses to recognize retries of the same request.
@@ -3574,7 +3576,7 @@ extension CreateQueueInput: Swift.CustomDebugStringConvertible {
         "CreateQueueInput(allowedStorageProfileIds: \(Swift.String(describing: allowedStorageProfileIds)), clientToken: \(Swift.String(describing: clientToken)), defaultBudgetAction: \(Swift.String(describing: defaultBudgetAction)), displayName: \(Swift.String(describing: displayName)), farmId: \(Swift.String(describing: farmId)), jobAttachmentSettings: \(Swift.String(describing: jobAttachmentSettings)), jobRunAsUser: \(Swift.String(describing: jobRunAsUser)), roleArn: \(Swift.String(describing: roleArn)), tags: \(Swift.String(describing: tags)), description: \"CONTENT_REDACTED\", requiredFileSystemLocationNames: \"CONTENT_REDACTED\")"}
 }
 
-public struct CreateQueueOutput {
+public struct CreateQueueOutput: Swift.Sendable {
     /// The queue ID.
     /// This member is required.
     public var queueId: Swift.String?
@@ -3589,7 +3591,7 @@ public struct CreateQueueOutput {
 
 extension DeadlineClientTypes {
 
-    public enum EnvironmentTemplateType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum EnvironmentTemplateType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case json
         case yaml
         case sdkUnknown(Swift.String)
@@ -3616,7 +3618,7 @@ extension DeadlineClientTypes {
     }
 }
 
-public struct CreateQueueEnvironmentInput {
+public struct CreateQueueEnvironmentInput: Swift.Sendable {
     /// The unique token which the server uses to recognize retries of the same request.
     public var clientToken: Swift.String?
     /// The farm ID of the farm to connect to the environment.
@@ -3658,7 +3660,7 @@ extension CreateQueueEnvironmentInput: Swift.CustomDebugStringConvertible {
         "CreateQueueEnvironmentInput(clientToken: \(Swift.String(describing: clientToken)), farmId: \(Swift.String(describing: farmId)), priority: \(Swift.String(describing: priority)), queueId: \(Swift.String(describing: queueId)), templateType: \(Swift.String(describing: templateType)), template: \"CONTENT_REDACTED\")"}
 }
 
-public struct CreateQueueEnvironmentOutput {
+public struct CreateQueueEnvironmentOutput: Swift.Sendable {
     /// The queue environment ID.
     /// This member is required.
     public var queueEnvironmentId: Swift.String?
@@ -3671,7 +3673,7 @@ public struct CreateQueueEnvironmentOutput {
     }
 }
 
-public struct CreateQueueFleetAssociationInput {
+public struct CreateQueueFleetAssociationInput: Swift.Sendable {
     /// The ID of the farm that the queue and fleet belong to.
     /// This member is required.
     public var farmId: Swift.String?
@@ -3694,14 +3696,14 @@ public struct CreateQueueFleetAssociationInput {
     }
 }
 
-public struct CreateQueueFleetAssociationOutput {
+public struct CreateQueueFleetAssociationOutput: Swift.Sendable {
 
     public init() { }
 }
 
 extension DeadlineClientTypes {
 
-    public enum FileSystemLocationType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum FileSystemLocationType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case local
         case shared
         case sdkUnknown(Swift.String)
@@ -3729,8 +3731,9 @@ extension DeadlineClientTypes {
 }
 
 extension DeadlineClientTypes {
+
     /// The details of the file system location for the resource.
-    public struct FileSystemLocation {
+    public struct FileSystemLocation: Swift.Sendable {
         /// The location name.
         /// This member is required.
         public var name: Swift.String?
@@ -3752,7 +3755,6 @@ extension DeadlineClientTypes {
             self.type = type
         }
     }
-
 }
 
 extension DeadlineClientTypes.FileSystemLocation: Swift.CustomDebugStringConvertible {
@@ -3763,7 +3765,7 @@ extension DeadlineClientTypes.FileSystemLocation: Swift.CustomDebugStringConvert
 
 extension DeadlineClientTypes {
 
-    public enum StorageProfileOperatingSystemFamily: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum StorageProfileOperatingSystemFamily: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case linux
         case macos
         case windows
@@ -3793,7 +3795,7 @@ extension DeadlineClientTypes {
     }
 }
 
-public struct CreateStorageProfileInput {
+public struct CreateStorageProfileInput: Swift.Sendable {
     /// The unique token which the server uses to recognize retries of the same request.
     public var clientToken: Swift.String?
     /// The display name of the storage profile. This field can store any content. Escape or encode this content before displaying it on a webpage or any other system that might interpret the content of this field.
@@ -3829,7 +3831,7 @@ extension CreateStorageProfileInput: Swift.CustomDebugStringConvertible {
         "CreateStorageProfileInput(clientToken: \(Swift.String(describing: clientToken)), displayName: \(Swift.String(describing: displayName)), farmId: \(Swift.String(describing: farmId)), osFamily: \(Swift.String(describing: osFamily)), fileSystemLocations: \"CONTENT_REDACTED\")"}
 }
 
-public struct CreateStorageProfileOutput {
+public struct CreateStorageProfileOutput: Swift.Sendable {
     /// The storage profile ID.
     /// This member is required.
     public var storageProfileId: Swift.String?
@@ -3843,8 +3845,9 @@ public struct CreateStorageProfileOutput {
 }
 
 extension DeadlineClientTypes {
+
     /// The IP addresses for a host.
-    public struct IpAddresses {
+    public struct IpAddresses: Swift.Sendable {
         /// The IpV4 address of the network.
         public var ipV4Addresses: [Swift.String]?
         /// The IpV6 address for the network and node component.
@@ -3859,12 +3862,12 @@ extension DeadlineClientTypes {
             self.ipV6Addresses = ipV6Addresses
         }
     }
-
 }
 
 extension DeadlineClientTypes {
+
     /// The host property details.
-    public struct HostPropertiesRequest {
+    public struct HostPropertiesRequest: Swift.Sendable {
         /// The host name.
         public var hostName: Swift.String?
         /// The IP address of the host.
@@ -3879,10 +3882,9 @@ extension DeadlineClientTypes {
             self.ipAddresses = ipAddresses
         }
     }
-
 }
 
-public struct CreateWorkerInput {
+public struct CreateWorkerInput: Swift.Sendable {
     /// The unique token which the server uses to recognize retries of the same request.
     public var clientToken: Swift.String?
     /// The farm ID of the farm to connect to the worker.
@@ -3908,7 +3910,7 @@ public struct CreateWorkerInput {
     }
 }
 
-public struct CreateWorkerOutput {
+public struct CreateWorkerOutput: Swift.Sendable {
     /// The worker ID.
     /// This member is required.
     public var workerId: Swift.String?
@@ -3922,8 +3924,9 @@ public struct CreateWorkerOutput {
 }
 
 extension DeadlineClientTypes {
+
     /// The time stamp in date-time format.
-    public struct DateTimeFilterExpression {
+    public struct DateTimeFilterExpression: Swift.Sendable {
         /// The date and time.
         /// This member is required.
         public var dateTime: Foundation.Date?
@@ -3945,10 +3948,9 @@ extension DeadlineClientTypes {
             self.`operator` = `operator`
         }
     }
-
 }
 
-public struct DeleteQueueFleetAssociationInput {
+public struct DeleteQueueFleetAssociationInput: Swift.Sendable {
     /// The farm ID of the farm that holds the queue-fleet association.
     /// This member is required.
     public var farmId: Swift.String?
@@ -3971,12 +3973,12 @@ public struct DeleteQueueFleetAssociationInput {
     }
 }
 
-public struct DeleteQueueFleetAssociationOutput {
+public struct DeleteQueueFleetAssociationOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteFarmInput {
+public struct DeleteFarmInput: Swift.Sendable {
     /// The farm ID of the farm to delete.
     /// This member is required.
     public var farmId: Swift.String?
@@ -3989,12 +3991,12 @@ public struct DeleteFarmInput {
     }
 }
 
-public struct DeleteFarmOutput {
+public struct DeleteFarmOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteStorageProfileInput {
+public struct DeleteStorageProfileInput: Swift.Sendable {
     /// The farm ID of the farm from which to remove the storage profile.
     /// This member is required.
     public var farmId: Swift.String?
@@ -4012,12 +4014,12 @@ public struct DeleteStorageProfileInput {
     }
 }
 
-public struct DeleteStorageProfileOutput {
+public struct DeleteStorageProfileOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DisassociateMemberFromFarmInput {
+public struct DisassociateMemberFromFarmInput: Swift.Sendable {
     /// The farm ID of the farm to disassociate from the member.
     /// This member is required.
     public var farmId: Swift.String?
@@ -4035,12 +4037,12 @@ public struct DisassociateMemberFromFarmInput {
     }
 }
 
-public struct DisassociateMemberFromFarmOutput {
+public struct DisassociateMemberFromFarmOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteFleetInput {
+public struct DeleteFleetInput: Swift.Sendable {
     /// The unique token which the server uses to recognize retries of the same request.
     public var clientToken: Swift.String?
     /// The farm ID of the farm to remove from the fleet.
@@ -4062,12 +4064,12 @@ public struct DeleteFleetInput {
     }
 }
 
-public struct DeleteFleetOutput {
+public struct DeleteFleetOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DisassociateMemberFromFleetInput {
+public struct DisassociateMemberFromFleetInput: Swift.Sendable {
     /// The farm ID of the fleet to disassociate a member from.
     /// This member is required.
     public var farmId: Swift.String?
@@ -4090,12 +4092,12 @@ public struct DisassociateMemberFromFleetInput {
     }
 }
 
-public struct DisassociateMemberFromFleetOutput {
+public struct DisassociateMemberFromFleetOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct GetFleetInput {
+public struct GetFleetInput: Swift.Sendable {
     /// The farm ID of the farm in the fleet.
     /// This member is required.
     public var farmId: Swift.String?
@@ -4114,8 +4116,9 @@ public struct GetFleetInput {
 }
 
 extension DeadlineClientTypes {
+
     /// The amounts and attributes of fleets.
-    public struct FleetCapabilities {
+    public struct FleetCapabilities: Swift.Sendable {
         /// Amount capabilities of the fleet.
         public var amounts: [DeadlineClientTypes.FleetAmountCapability]?
         /// Attribute capabilities of the fleet.
@@ -4130,12 +4133,11 @@ extension DeadlineClientTypes {
             self.attributes = attributes
         }
     }
-
 }
 
 extension DeadlineClientTypes {
 
-    public enum FleetStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum FleetStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case active
         case createFailed
         case createInProgress
@@ -4171,7 +4173,7 @@ extension DeadlineClientTypes {
     }
 }
 
-public struct GetFleetOutput {
+public struct GetFleetOutput: Swift.Sendable {
     /// The Auto Scaling status of the fleet. Either GROWING, STEADY, or SHRINKING.
     public var autoScalingStatus: DeadlineClientTypes.AutoScalingStatus?
     /// Outlines what the fleet is capable of for minimums, maximums, and naming, in addition to attribute names and values.
@@ -4263,7 +4265,7 @@ extension GetFleetOutput: Swift.CustomDebugStringConvertible {
         "GetFleetOutput(autoScalingStatus: \(Swift.String(describing: autoScalingStatus)), capabilities: \(Swift.String(describing: capabilities)), configuration: \(Swift.String(describing: configuration)), createdAt: \(Swift.String(describing: createdAt)), createdBy: \(Swift.String(describing: createdBy)), displayName: \(Swift.String(describing: displayName)), farmId: \(Swift.String(describing: farmId)), fleetId: \(Swift.String(describing: fleetId)), maxWorkerCount: \(Swift.String(describing: maxWorkerCount)), minWorkerCount: \(Swift.String(describing: minWorkerCount)), roleArn: \(Swift.String(describing: roleArn)), status: \(Swift.String(describing: status)), targetWorkerCount: \(Swift.String(describing: targetWorkerCount)), updatedAt: \(Swift.String(describing: updatedAt)), updatedBy: \(Swift.String(describing: updatedBy)), workerCount: \(Swift.String(describing: workerCount)), description: \"CONTENT_REDACTED\")"}
 }
 
-public struct ListFleetMembersInput {
+public struct ListFleetMembersInput: Swift.Sendable {
     /// The farm ID of the fleet.
     /// This member is required.
     public var farmId: Swift.String?
@@ -4290,8 +4292,9 @@ public struct ListFleetMembersInput {
 }
 
 extension DeadlineClientTypes {
+
     /// The fleet member.
-    public struct FleetMember {
+    public struct FleetMember: Swift.Sendable {
         /// The farm ID.
         /// This member is required.
         public var farmId: Swift.String?
@@ -4328,10 +4331,9 @@ extension DeadlineClientTypes {
             self.principalType = principalType
         }
     }
-
 }
 
-public struct ListFleetMembersOutput {
+public struct ListFleetMembersOutput: Swift.Sendable {
     /// The members on the list.
     /// This member is required.
     public var members: [DeadlineClientTypes.FleetMember]?
@@ -4348,7 +4350,7 @@ public struct ListFleetMembersOutput {
     }
 }
 
-public struct ListFleetsInput {
+public struct ListFleetsInput: Swift.Sendable {
     /// The display names of a list of fleets. This field can store any content. Escape or encode this content before displaying it on a webpage or any other system that might interpret the content of this field.
     public var displayName: Swift.String?
     /// The farm ID of the fleets.
@@ -4382,8 +4384,9 @@ public struct ListFleetsInput {
 }
 
 extension DeadlineClientTypes {
+
     /// The details of a fleet.
-    public struct FleetSummary {
+    public struct FleetSummary: Swift.Sendable {
         /// The Auto Scaling status of a fleet.
         public var autoScalingStatus: DeadlineClientTypes.AutoScalingStatus?
         /// The configuration details for the fleet.
@@ -4456,10 +4459,9 @@ extension DeadlineClientTypes {
             self.workerCount = workerCount
         }
     }
-
 }
 
-public struct ListFleetsOutput {
+public struct ListFleetsOutput: Swift.Sendable {
     /// The fleets on the list.
     /// This member is required.
     public var fleets: [DeadlineClientTypes.FleetSummary]?
@@ -4476,7 +4478,7 @@ public struct ListFleetsOutput {
     }
 }
 
-public struct UpdateFleetInput {
+public struct UpdateFleetInput: Swift.Sendable {
     /// The unique token which the server uses to recognize retries of the same request.
     public var clientToken: Swift.String?
     /// The fleet configuration to update.
@@ -4527,12 +4529,12 @@ extension UpdateFleetInput: Swift.CustomDebugStringConvertible {
         "UpdateFleetInput(clientToken: \(Swift.String(describing: clientToken)), configuration: \(Swift.String(describing: configuration)), displayName: \(Swift.String(describing: displayName)), farmId: \(Swift.String(describing: farmId)), fleetId: \(Swift.String(describing: fleetId)), maxWorkerCount: \(Swift.String(describing: maxWorkerCount)), minWorkerCount: \(Swift.String(describing: minWorkerCount)), roleArn: \(Swift.String(describing: roleArn)), description: \"CONTENT_REDACTED\")"}
 }
 
-public struct UpdateFleetOutput {
+public struct UpdateFleetOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteWorkerInput {
+public struct DeleteWorkerInput: Swift.Sendable {
     /// The farm ID of the worker to delete.
     /// This member is required.
     public var farmId: Swift.String?
@@ -4555,12 +4557,12 @@ public struct DeleteWorkerInput {
     }
 }
 
-public struct DeleteWorkerOutput {
+public struct DeleteWorkerOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct GetWorkerInput {
+public struct GetWorkerInput: Swift.Sendable {
     /// The farm ID for the worker.
     /// This member is required.
     public var farmId: Swift.String?
@@ -4584,8 +4586,9 @@ public struct GetWorkerInput {
 }
 
 extension DeadlineClientTypes {
+
     /// The host property details.
-    public struct HostPropertiesResponse {
+    public struct HostPropertiesResponse: Swift.Sendable {
         /// The ARN of the host EC2 instance.
         public var ec2InstanceArn: Swift.String?
         /// The instance type of the host EC2 instance.
@@ -4608,12 +4611,11 @@ extension DeadlineClientTypes {
             self.ipAddresses = ipAddresses
         }
     }
-
 }
 
 extension DeadlineClientTypes {
 
-    public enum WorkerStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum WorkerStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case created
         case idle
         case notCompatible
@@ -4658,7 +4660,7 @@ extension DeadlineClientTypes {
     }
 }
 
-public struct GetWorkerOutput {
+public struct GetWorkerOutput: Swift.Sendable {
     /// The date and time the resource was created.
     /// This member is required.
     public var createdAt: Foundation.Date?
@@ -4712,7 +4714,7 @@ public struct GetWorkerOutput {
     }
 }
 
-public struct ListSessionsForWorkerInput {
+public struct ListSessionsForWorkerInput: Swift.Sendable {
     /// The farm ID for the session.
     /// This member is required.
     public var farmId: Swift.String?
@@ -4745,7 +4747,7 @@ public struct ListSessionsForWorkerInput {
 
 extension DeadlineClientTypes {
 
-    public enum SessionLifecycleStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SessionLifecycleStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case ended
         case started
         case updateFailed
@@ -4783,7 +4785,7 @@ extension DeadlineClientTypes {
 
 extension DeadlineClientTypes {
 
-    public enum SessionLifecycleTargetStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SessionLifecycleTargetStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case ended
         case sdkUnknown(Swift.String)
 
@@ -4808,8 +4810,9 @@ extension DeadlineClientTypes {
 }
 
 extension DeadlineClientTypes {
+
     /// Summarizes the session for a particular worker.
-    public struct WorkerSessionSummary {
+    public struct WorkerSessionSummary: Swift.Sendable {
         /// The date and time the resource ended running.
         public var endedAt: Foundation.Date?
         /// The job ID for the job associated with the worker's session.
@@ -4849,10 +4852,9 @@ extension DeadlineClientTypes {
             self.targetLifecycleStatus = targetLifecycleStatus
         }
     }
-
 }
 
-public struct ListSessionsForWorkerOutput {
+public struct ListSessionsForWorkerOutput: Swift.Sendable {
     /// The token for the next set of results, or null to start from the beginning.
     public var nextToken: Swift.String?
     /// The sessions in the response.
@@ -4869,7 +4871,7 @@ public struct ListSessionsForWorkerOutput {
     }
 }
 
-public struct ListWorkersInput {
+public struct ListWorkersInput: Swift.Sendable {
     /// The farm ID connected to the workers.
     /// This member is required.
     public var farmId: Swift.String?
@@ -4896,8 +4898,9 @@ public struct ListWorkersInput {
 }
 
 extension DeadlineClientTypes {
+
     /// The summary of details for a worker.
-    public struct WorkerSummary {
+    public struct WorkerSummary: Swift.Sendable {
         /// The date and time the resource was created.
         /// This member is required.
         public var createdAt: Foundation.Date?
@@ -4950,10 +4953,9 @@ extension DeadlineClientTypes {
             self.workerId = workerId
         }
     }
-
 }
 
-public struct ListWorkersOutput {
+public struct ListWorkersOutput: Swift.Sendable {
     /// If Deadline Cloud returns nextToken, then there are more results available. The value of nextToken is a unique pagination token for each page. To retrieve the next page, call the operation again using the returned token. Keep all other arguments unchanged. If no results remain, then nextToken is set to null. Each pagination token expires after 24 hours. If you provide a token that isn't valid, then you receive an HTTP 400 ValidationException error.
     public var nextToken: Swift.String?
     /// The workers on the list.
@@ -4971,8 +4973,9 @@ public struct ListWorkersOutput {
 }
 
 extension DeadlineClientTypes {
+
     /// The details of the worker amount capability.
-    public struct WorkerAmountCapability {
+    public struct WorkerAmountCapability: Swift.Sendable {
         /// The name of the worker amount capability.
         /// This member is required.
         public var name: Swift.String?
@@ -4989,12 +4992,12 @@ extension DeadlineClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension DeadlineClientTypes {
+
     /// The details of the worker attribute capability.
-    public struct WorkerAttributeCapability {
+    public struct WorkerAttributeCapability: Swift.Sendable {
         /// The name of the worker attribute capability.
         /// This member is required.
         public var name: Swift.String?
@@ -5011,12 +5014,12 @@ extension DeadlineClientTypes {
             self.values = values
         }
     }
-
 }
 
 extension DeadlineClientTypes {
+
     /// The details for worker capabilities.
-    public struct WorkerCapabilities {
+    public struct WorkerCapabilities: Swift.Sendable {
         /// The worker capabilities amounts on a list of worker capabilities.
         /// This member is required.
         public var amounts: [DeadlineClientTypes.WorkerAmountCapability]?
@@ -5033,12 +5036,11 @@ extension DeadlineClientTypes {
             self.attributes = attributes
         }
     }
-
 }
 
 extension DeadlineClientTypes {
 
-    public enum UpdatedWorkerStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum UpdatedWorkerStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case started
         case stopped
         case stopping
@@ -5068,7 +5070,7 @@ extension DeadlineClientTypes {
     }
 }
 
-public struct UpdateWorkerInput {
+public struct UpdateWorkerInput: Swift.Sendable {
     /// The worker capabilities to update.
     public var capabilities: DeadlineClientTypes.WorkerCapabilities?
     /// The farm ID to update.
@@ -5103,7 +5105,7 @@ public struct UpdateWorkerInput {
     }
 }
 
-public struct UpdateWorkerOutput {
+public struct UpdateWorkerOutput: Swift.Sendable {
     /// The worker log to update.
     public var log: DeadlineClientTypes.LogConfiguration?
 
@@ -5116,8 +5118,9 @@ public struct UpdateWorkerOutput {
 }
 
 extension DeadlineClientTypes {
+
     /// The updated session action information as it relates to completion and progress of the session.
-    public struct UpdatedSessionActionInfo {
+    public struct UpdatedSessionActionInfo: Swift.Sendable {
         /// The status of the session upon completion.
         public var completedStatus: DeadlineClientTypes.CompletedStatus?
         /// The date and time the resource ended running.
@@ -5152,7 +5155,6 @@ extension DeadlineClientTypes {
             self.updatedAt = updatedAt
         }
     }
-
 }
 
 extension DeadlineClientTypes.UpdatedSessionActionInfo: Swift.CustomDebugStringConvertible {
@@ -5160,7 +5162,7 @@ extension DeadlineClientTypes.UpdatedSessionActionInfo: Swift.CustomDebugStringC
         "UpdatedSessionActionInfo(completedStatus: \(Swift.String(describing: completedStatus)), endedAt: \(Swift.String(describing: endedAt)), processExitCode: \(Swift.String(describing: processExitCode)), progressPercent: \(Swift.String(describing: progressPercent)), startedAt: \(Swift.String(describing: startedAt)), updatedAt: \(Swift.String(describing: updatedAt)), progressMessage: \"CONTENT_REDACTED\")"}
 }
 
-public struct UpdateWorkerScheduleInput {
+public struct UpdateWorkerScheduleInput: Swift.Sendable {
     /// The farm ID to update.
     /// This member is required.
     public var farmId: Swift.String?
@@ -5189,7 +5191,7 @@ public struct UpdateWorkerScheduleInput {
 
 extension DeadlineClientTypes {
 
-    public enum DesiredWorkerStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DesiredWorkerStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case stopped
         case sdkUnknown(Swift.String)
 
@@ -5213,7 +5215,7 @@ extension DeadlineClientTypes {
     }
 }
 
-public struct UpdateWorkerScheduleOutput {
+public struct UpdateWorkerScheduleOutput: Swift.Sendable {
     /// The assigned sessions to update.
     /// This member is required.
     public var assignedSessions: [Swift.String: DeadlineClientTypes.AssignedSession]?
@@ -5240,7 +5242,7 @@ public struct UpdateWorkerScheduleOutput {
     }
 }
 
-public struct GetFarmInput {
+public struct GetFarmInput: Swift.Sendable {
     /// The farm ID of the farm.
     /// This member is required.
     public var farmId: Swift.String?
@@ -5253,7 +5255,7 @@ public struct GetFarmInput {
     }
 }
 
-public struct GetFarmOutput {
+public struct GetFarmOutput: Swift.Sendable {
     /// The date and time the resource was created.
     /// This member is required.
     public var createdAt: Foundation.Date?
@@ -5303,7 +5305,7 @@ extension GetFarmOutput: Swift.CustomDebugStringConvertible {
         "GetFarmOutput(createdAt: \(Swift.String(describing: createdAt)), createdBy: \(Swift.String(describing: createdBy)), displayName: \(Swift.String(describing: displayName)), farmId: \(Swift.String(describing: farmId)), kmsKeyArn: \(Swift.String(describing: kmsKeyArn)), updatedAt: \(Swift.String(describing: updatedAt)), updatedBy: \(Swift.String(describing: updatedBy)), description: \"CONTENT_REDACTED\")"}
 }
 
-public struct GetStorageProfileInput {
+public struct GetStorageProfileInput: Swift.Sendable {
     /// The farm ID for the storage profile.
     /// This member is required.
     public var farmId: Swift.String?
@@ -5321,7 +5323,7 @@ public struct GetStorageProfileInput {
     }
 }
 
-public struct GetStorageProfileOutput {
+public struct GetStorageProfileOutput: Swift.Sendable {
     /// The date and time the resource was created.
     /// This member is required.
     public var createdAt: Foundation.Date?
@@ -5371,7 +5373,7 @@ extension GetStorageProfileOutput: Swift.CustomDebugStringConvertible {
         "GetStorageProfileOutput(createdAt: \(Swift.String(describing: createdAt)), createdBy: \(Swift.String(describing: createdBy)), displayName: \(Swift.String(describing: displayName)), osFamily: \(Swift.String(describing: osFamily)), storageProfileId: \(Swift.String(describing: storageProfileId)), updatedAt: \(Swift.String(describing: updatedAt)), updatedBy: \(Swift.String(describing: updatedBy)), fileSystemLocations: \"CONTENT_REDACTED\")"}
 }
 
-public struct ListFarmMembersInput {
+public struct ListFarmMembersInput: Swift.Sendable {
     /// The farm ID.
     /// This member is required.
     public var farmId: Swift.String?
@@ -5393,8 +5395,9 @@ public struct ListFarmMembersInput {
 }
 
 extension DeadlineClientTypes {
+
     /// The member of a farm.
-    public struct FarmMember {
+    public struct FarmMember: Swift.Sendable {
         /// The farm ID of the farm member.
         /// This member is required.
         public var farmId: Swift.String?
@@ -5426,10 +5429,9 @@ extension DeadlineClientTypes {
             self.principalType = principalType
         }
     }
-
 }
 
-public struct ListFarmMembersOutput {
+public struct ListFarmMembersOutput: Swift.Sendable {
     /// The members on the list.
     /// This member is required.
     public var members: [DeadlineClientTypes.FarmMember]?
@@ -5446,7 +5448,7 @@ public struct ListFarmMembersOutput {
     }
 }
 
-public struct ListFarmsInput {
+public struct ListFarmsInput: Swift.Sendable {
     /// The maximum number of results to return. Use this parameter with NextToken to get results as a set of sequential pages.
     public var maxResults: Swift.Int?
     /// The token for the next set of results, or null to start from the beginning.
@@ -5467,8 +5469,9 @@ public struct ListFarmsInput {
 }
 
 extension DeadlineClientTypes {
+
     /// The summary of details for a farm.
-    public struct FarmSummary {
+    public struct FarmSummary: Swift.Sendable {
         /// The date and time the resource was created.
         /// This member is required.
         public var createdAt: Foundation.Date?
@@ -5507,10 +5510,9 @@ extension DeadlineClientTypes {
             self.updatedBy = updatedBy
         }
     }
-
 }
 
-public struct ListFarmsOutput {
+public struct ListFarmsOutput: Swift.Sendable {
     /// Farms on the list.
     /// This member is required.
     public var farms: [DeadlineClientTypes.FarmSummary]?
@@ -5527,7 +5529,7 @@ public struct ListFarmsOutput {
     }
 }
 
-public struct ListStorageProfilesInput {
+public struct ListStorageProfilesInput: Swift.Sendable {
     /// The farm ID of the storage profile.
     /// This member is required.
     public var farmId: Swift.String?
@@ -5549,8 +5551,9 @@ public struct ListStorageProfilesInput {
 }
 
 extension DeadlineClientTypes {
+
     /// The details of a storage profile.
-    public struct StorageProfileSummary {
+    public struct StorageProfileSummary: Swift.Sendable {
         /// The display name of the storage profile summary to update. This field can store any content. Escape or encode this content before displaying it on a webpage or any other system that might interpret the content of this field.
         /// This member is required.
         public var displayName: Swift.String?
@@ -5572,10 +5575,9 @@ extension DeadlineClientTypes {
             self.storageProfileId = storageProfileId
         }
     }
-
 }
 
-public struct ListStorageProfilesOutput {
+public struct ListStorageProfilesOutput: Swift.Sendable {
     /// If Deadline Cloud returns nextToken, then there are more results available. The value of nextToken is a unique pagination token for each page. To retrieve the next page, call the operation again using the returned token. Keep all other arguments unchanged. If no results remain, then nextToken is set to null. Each pagination token expires after 24 hours. If you provide a token that isn't valid, then you receive an HTTP 400 ValidationException error.
     public var nextToken: Swift.String?
     /// The storage profiles.
@@ -5592,7 +5594,7 @@ public struct ListStorageProfilesOutput {
     }
 }
 
-public struct DeleteQueueInput {
+public struct DeleteQueueInput: Swift.Sendable {
     /// The ID of the farm from which to remove the queue.
     /// This member is required.
     public var farmId: Swift.String?
@@ -5610,12 +5612,12 @@ public struct DeleteQueueInput {
     }
 }
 
-public struct DeleteQueueOutput {
+public struct DeleteQueueOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteQueueEnvironmentInput {
+public struct DeleteQueueEnvironmentInput: Swift.Sendable {
     /// The farm ID of the farm from which to remove the queue environment.
     /// This member is required.
     public var farmId: Swift.String?
@@ -5638,12 +5640,12 @@ public struct DeleteQueueEnvironmentInput {
     }
 }
 
-public struct DeleteQueueEnvironmentOutput {
+public struct DeleteQueueEnvironmentOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DisassociateMemberFromQueueInput {
+public struct DisassociateMemberFromQueueInput: Swift.Sendable {
     /// The farm ID for the queue to disassociate from a member.
     /// This member is required.
     public var farmId: Swift.String?
@@ -5666,12 +5668,12 @@ public struct DisassociateMemberFromQueueInput {
     }
 }
 
-public struct DisassociateMemberFromQueueOutput {
+public struct DisassociateMemberFromQueueOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct GetQueueInput {
+public struct GetQueueInput: Swift.Sendable {
     /// The farm ID of the farm in the queue.
     /// This member is required.
     public var farmId: Swift.String?
@@ -5691,7 +5693,7 @@ public struct GetQueueInput {
 
 extension DeadlineClientTypes {
 
-    public enum QueueBlockedReason: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum QueueBlockedReason: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case budgetThresholdReached
         case noBudgetConfigured
         case sdkUnknown(Swift.String)
@@ -5720,7 +5722,7 @@ extension DeadlineClientTypes {
 
 extension DeadlineClientTypes {
 
-    public enum QueueStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum QueueStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case idle
         case scheduling
         case schedulingBlocked
@@ -5750,7 +5752,7 @@ extension DeadlineClientTypes {
     }
 }
 
-public struct GetQueueOutput {
+public struct GetQueueOutput: Swift.Sendable {
     /// The storage profile IDs for the queue.
     public var allowedStorageProfileIds: [Swift.String]?
     /// The reason the queue was blocked.
@@ -5840,7 +5842,7 @@ extension GetQueueOutput: Swift.CustomDebugStringConvertible {
         "GetQueueOutput(allowedStorageProfileIds: \(Swift.String(describing: allowedStorageProfileIds)), blockedReason: \(Swift.String(describing: blockedReason)), createdAt: \(Swift.String(describing: createdAt)), createdBy: \(Swift.String(describing: createdBy)), defaultBudgetAction: \(Swift.String(describing: defaultBudgetAction)), displayName: \(Swift.String(describing: displayName)), farmId: \(Swift.String(describing: farmId)), jobAttachmentSettings: \(Swift.String(describing: jobAttachmentSettings)), jobRunAsUser: \(Swift.String(describing: jobRunAsUser)), queueId: \(Swift.String(describing: queueId)), roleArn: \(Swift.String(describing: roleArn)), status: \(Swift.String(describing: status)), updatedAt: \(Swift.String(describing: updatedAt)), updatedBy: \(Swift.String(describing: updatedBy)), description: \"CONTENT_REDACTED\", requiredFileSystemLocationNames: \"CONTENT_REDACTED\")"}
 }
 
-public struct GetQueueEnvironmentInput {
+public struct GetQueueEnvironmentInput: Swift.Sendable {
     /// The farm ID for the queue environment.
     /// This member is required.
     public var farmId: Swift.String?
@@ -5863,7 +5865,7 @@ public struct GetQueueEnvironmentInput {
     }
 }
 
-public struct GetQueueEnvironmentOutput {
+public struct GetQueueEnvironmentOutput: Swift.Sendable {
     /// The date and time the resource was created.
     /// This member is required.
     public var createdAt: Foundation.Date?
@@ -5919,7 +5921,7 @@ extension GetQueueEnvironmentOutput: Swift.CustomDebugStringConvertible {
         "GetQueueEnvironmentOutput(createdAt: \(Swift.String(describing: createdAt)), createdBy: \(Swift.String(describing: createdBy)), name: \(Swift.String(describing: name)), priority: \(Swift.String(describing: priority)), queueEnvironmentId: \(Swift.String(describing: queueEnvironmentId)), templateType: \(Swift.String(describing: templateType)), updatedAt: \(Swift.String(describing: updatedAt)), updatedBy: \(Swift.String(describing: updatedBy)), template: \"CONTENT_REDACTED\")"}
 }
 
-public struct GetStorageProfileForQueueInput {
+public struct GetStorageProfileForQueueInput: Swift.Sendable {
     /// The farm ID for the queue in storage profile.
     /// This member is required.
     public var farmId: Swift.String?
@@ -5942,7 +5944,7 @@ public struct GetStorageProfileForQueueInput {
     }
 }
 
-public struct GetStorageProfileForQueueOutput {
+public struct GetStorageProfileForQueueOutput: Swift.Sendable {
     /// The display name of the storage profile connected to a queue. This field can store any content. Escape or encode this content before displaying it on a webpage or any other system that might interpret the content of this field.
     /// This member is required.
     public var displayName: Swift.String?
@@ -5974,7 +5976,7 @@ extension GetStorageProfileForQueueOutput: Swift.CustomDebugStringConvertible {
         "GetStorageProfileForQueueOutput(displayName: \(Swift.String(describing: displayName)), osFamily: \(Swift.String(describing: osFamily)), storageProfileId: \(Swift.String(describing: storageProfileId)), fileSystemLocations: \"CONTENT_REDACTED\")"}
 }
 
-public struct DisassociateMemberFromJobInput {
+public struct DisassociateMemberFromJobInput: Swift.Sendable {
     /// The farm ID for the job to disassociate from the member.
     /// This member is required.
     public var farmId: Swift.String?
@@ -6002,12 +6004,12 @@ public struct DisassociateMemberFromJobInput {
     }
 }
 
-public struct DisassociateMemberFromJobOutput {
+public struct DisassociateMemberFromJobOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct GetJobInput {
+public struct GetJobInput: Swift.Sendable {
     /// The farm ID of the farm in the job.
     /// This member is required.
     public var farmId: Swift.String?
@@ -6032,7 +6034,7 @@ public struct GetJobInput {
 
 extension DeadlineClientTypes {
 
-    public enum JobLifecycleStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum JobLifecycleStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case archived
         case createComplete
         case createFailed
@@ -6082,7 +6084,7 @@ extension DeadlineClientTypes {
 
 extension DeadlineClientTypes {
 
-    public enum JobTargetTaskRunStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum JobTargetTaskRunStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case canceled
         case failed
         case pending
@@ -6123,7 +6125,7 @@ extension DeadlineClientTypes {
 
 extension DeadlineClientTypes {
 
-    public enum TaskRunStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum TaskRunStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case assigned
         case canceled
         case failed
@@ -6180,7 +6182,7 @@ extension DeadlineClientTypes {
     }
 }
 
-public struct GetJobOutput {
+public struct GetJobOutput: Swift.Sendable {
     /// The attachments for the job.
     public var attachments: DeadlineClientTypes.Attachments?
     /// The date and time the resource was created.
@@ -6214,6 +6216,8 @@ public struct GetJobOutput {
     /// The job priority.
     /// This member is required.
     public var priority: Swift.Int?
+    /// The job ID for the source job.
+    public var sourceJobId: Swift.String?
     /// The date and time the resource started running.
     public var startedAt: Foundation.Date?
     /// The storage profile ID associated with the job.
@@ -6243,6 +6247,7 @@ public struct GetJobOutput {
         name: Swift.String? = nil,
         parameters: [Swift.String: DeadlineClientTypes.JobParameter]? = nil,
         priority: Swift.Int? = nil,
+        sourceJobId: Swift.String? = nil,
         startedAt: Foundation.Date? = nil,
         storageProfileId: Swift.String? = nil,
         targetTaskRunStatus: DeadlineClientTypes.JobTargetTaskRunStatus? = nil,
@@ -6265,6 +6270,7 @@ public struct GetJobOutput {
         self.name = name
         self.parameters = parameters
         self.priority = priority
+        self.sourceJobId = sourceJobId
         self.startedAt = startedAt
         self.storageProfileId = storageProfileId
         self.targetTaskRunStatus = targetTaskRunStatus
@@ -6277,10 +6283,10 @@ public struct GetJobOutput {
 
 extension GetJobOutput: Swift.CustomDebugStringConvertible {
     public var debugDescription: Swift.String {
-        "GetJobOutput(attachments: \(Swift.String(describing: attachments)), createdAt: \(Swift.String(describing: createdAt)), createdBy: \(Swift.String(describing: createdBy)), endedAt: \(Swift.String(describing: endedAt)), jobId: \(Swift.String(describing: jobId)), lifecycleStatus: \(Swift.String(describing: lifecycleStatus)), lifecycleStatusMessage: \(Swift.String(describing: lifecycleStatusMessage)), maxFailedTasksCount: \(Swift.String(describing: maxFailedTasksCount)), maxRetriesPerTask: \(Swift.String(describing: maxRetriesPerTask)), name: \(Swift.String(describing: name)), priority: \(Swift.String(describing: priority)), startedAt: \(Swift.String(describing: startedAt)), storageProfileId: \(Swift.String(describing: storageProfileId)), targetTaskRunStatus: \(Swift.String(describing: targetTaskRunStatus)), taskRunStatus: \(Swift.String(describing: taskRunStatus)), taskRunStatusCounts: \(Swift.String(describing: taskRunStatusCounts)), updatedAt: \(Swift.String(describing: updatedAt)), updatedBy: \(Swift.String(describing: updatedBy)), description: \"CONTENT_REDACTED\", parameters: \"CONTENT_REDACTED\")"}
+        "GetJobOutput(attachments: \(Swift.String(describing: attachments)), createdAt: \(Swift.String(describing: createdAt)), createdBy: \(Swift.String(describing: createdBy)), endedAt: \(Swift.String(describing: endedAt)), jobId: \(Swift.String(describing: jobId)), lifecycleStatus: \(Swift.String(describing: lifecycleStatus)), lifecycleStatusMessage: \(Swift.String(describing: lifecycleStatusMessage)), maxFailedTasksCount: \(Swift.String(describing: maxFailedTasksCount)), maxRetriesPerTask: \(Swift.String(describing: maxRetriesPerTask)), name: \(Swift.String(describing: name)), priority: \(Swift.String(describing: priority)), sourceJobId: \(Swift.String(describing: sourceJobId)), startedAt: \(Swift.String(describing: startedAt)), storageProfileId: \(Swift.String(describing: storageProfileId)), targetTaskRunStatus: \(Swift.String(describing: targetTaskRunStatus)), taskRunStatus: \(Swift.String(describing: taskRunStatus)), taskRunStatusCounts: \(Swift.String(describing: taskRunStatusCounts)), updatedAt: \(Swift.String(describing: updatedAt)), updatedBy: \(Swift.String(describing: updatedBy)), description: \"CONTENT_REDACTED\", parameters: \"CONTENT_REDACTED\")"}
 }
 
-public struct GetSessionInput {
+public struct GetSessionInput: Swift.Sendable {
     /// The farm ID for the session.
     /// This member is required.
     public var farmId: Swift.String?
@@ -6308,7 +6314,7 @@ public struct GetSessionInput {
     }
 }
 
-public struct GetSessionOutput {
+public struct GetSessionOutput: Swift.Sendable {
     /// The date and time the resource ended running.
     public var endedAt: Foundation.Date?
     /// The fleet ID for the session.
@@ -6370,7 +6376,7 @@ public struct GetSessionOutput {
     }
 }
 
-public struct GetSessionActionInput {
+public struct GetSessionActionInput: Swift.Sendable {
     /// The farm ID for the session action.
     /// This member is required.
     public var farmId: Swift.String?
@@ -6399,8 +6405,9 @@ public struct GetSessionActionInput {
 }
 
 extension DeadlineClientTypes {
+
     /// The environment ID to use to enter a session action.
-    public struct EnvironmentEnterSessionActionDefinition {
+    public struct EnvironmentEnterSessionActionDefinition: Swift.Sendable {
         /// The environment ID.
         /// This member is required.
         public var environmentId: Swift.String?
@@ -6412,12 +6419,12 @@ extension DeadlineClientTypes {
             self.environmentId = environmentId
         }
     }
-
 }
 
 extension DeadlineClientTypes {
+
     /// Defines the environment a session action exits from.
-    public struct EnvironmentExitSessionActionDefinition {
+    public struct EnvironmentExitSessionActionDefinition: Swift.Sendable {
         /// The environment ID.
         /// This member is required.
         public var environmentId: Swift.String?
@@ -6429,12 +6436,12 @@ extension DeadlineClientTypes {
             self.environmentId = environmentId
         }
     }
-
 }
 
 extension DeadlineClientTypes {
+
     /// The job attachment in a session action to sync.
-    public struct SyncInputJobAttachmentsSessionActionDefinition {
+    public struct SyncInputJobAttachmentsSessionActionDefinition: Swift.Sendable {
         /// The step ID for the step in the job attachment.
         public var stepId: Swift.String?
 
@@ -6445,12 +6452,12 @@ extension DeadlineClientTypes {
             self.stepId = stepId
         }
     }
-
 }
 
 extension DeadlineClientTypes {
+
     /// The task, step, and parameters for the task run in the session action.
-    public struct TaskRunSessionActionDefinition {
+    public struct TaskRunSessionActionDefinition: Swift.Sendable {
         /// The task parameters.
         /// This member is required.
         public var parameters: [Swift.String: DeadlineClientTypes.TaskParameterValue]?
@@ -6472,7 +6479,6 @@ extension DeadlineClientTypes {
             self.taskId = taskId
         }
     }
-
 }
 
 extension DeadlineClientTypes.TaskRunSessionActionDefinition: Swift.CustomDebugStringConvertible {
@@ -6481,8 +6487,9 @@ extension DeadlineClientTypes.TaskRunSessionActionDefinition: Swift.CustomDebugS
 }
 
 extension DeadlineClientTypes {
+
     /// The definition of the session action.
-    public enum SessionActionDefinition {
+    public enum SessionActionDefinition: Swift.Sendable {
         /// The environment to enter into.
         case enventer(DeadlineClientTypes.EnvironmentEnterSessionActionDefinition)
         /// The environment to exit from.
@@ -6493,12 +6500,11 @@ extension DeadlineClientTypes {
         case syncinputjobattachments(DeadlineClientTypes.SyncInputJobAttachmentsSessionActionDefinition)
         case sdkUnknown(Swift.String)
     }
-
 }
 
 extension DeadlineClientTypes {
 
-    public enum SessionActionStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SessionActionStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case assigned
         case canceled
         case canceling
@@ -6552,7 +6558,7 @@ extension DeadlineClientTypes {
     }
 }
 
-public struct GetSessionActionOutput {
+public struct GetSessionActionOutput: Swift.Sendable {
     /// The session action definition.
     /// This member is required.
     public var definition: DeadlineClientTypes.SessionActionDefinition?
@@ -6609,7 +6615,7 @@ extension GetSessionActionOutput: Swift.CustomDebugStringConvertible {
         "GetSessionActionOutput(definition: \(Swift.String(describing: definition)), endedAt: \(Swift.String(describing: endedAt)), processExitCode: \(Swift.String(describing: processExitCode)), progressPercent: \(Swift.String(describing: progressPercent)), sessionActionId: \(Swift.String(describing: sessionActionId)), sessionId: \(Swift.String(describing: sessionId)), startedAt: \(Swift.String(describing: startedAt)), status: \(Swift.String(describing: status)), workerUpdatedAt: \(Swift.String(describing: workerUpdatedAt)), progressMessage: \"CONTENT_REDACTED\")"}
 }
 
-public struct GetStepInput {
+public struct GetStepInput: Swift.Sendable {
     /// The farm ID for the step.
     /// This member is required.
     public var farmId: Swift.String?
@@ -6638,8 +6644,9 @@ public struct GetStepInput {
 }
 
 extension DeadlineClientTypes {
+
     /// The number of dependencies for the consumer.
-    public struct DependencyCounts {
+    public struct DependencyCounts: Swift.Sendable {
         /// The number of consumers resolved.
         /// This member is required.
         public var consumersResolved: Swift.Int?
@@ -6666,12 +6673,11 @@ extension DeadlineClientTypes {
             self.dependenciesUnresolved = dependenciesUnresolved
         }
     }
-
 }
 
 extension DeadlineClientTypes {
 
-    public enum StepLifecycleStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum StepLifecycleStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case createComplete
         case updateFailed
         case updateInProgress
@@ -6706,7 +6712,7 @@ extension DeadlineClientTypes {
 
 extension DeadlineClientTypes {
 
-    public enum StepParameterType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum StepParameterType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case float
         case int
         case path
@@ -6740,8 +6746,9 @@ extension DeadlineClientTypes {
 }
 
 extension DeadlineClientTypes {
+
     /// The details of a step parameter.
-    public struct StepParameter {
+    public struct StepParameter: Swift.Sendable {
         /// The name of the parameter.
         /// This member is required.
         public var name: Swift.String?
@@ -6758,12 +6765,12 @@ extension DeadlineClientTypes {
             self.type = type
         }
     }
-
 }
 
 extension DeadlineClientTypes {
+
     /// The details of a search for two or more step parameters.
-    public struct ParameterSpace {
+    public struct ParameterSpace: Swift.Sendable {
         /// The combination expression to use in the search.
         public var combination: Swift.String?
         /// The parameters to search for.
@@ -6779,12 +6786,12 @@ extension DeadlineClientTypes {
             self.parameters = parameters
         }
     }
-
 }
 
 extension DeadlineClientTypes {
+
     /// The details outlining the minimum and maximum capability of a step.
-    public struct StepAmountCapability {
+    public struct StepAmountCapability: Swift.Sendable {
         /// The maximum amount.
         public var max: Swift.Double?
         /// The minimum amount.
@@ -6808,12 +6815,12 @@ extension DeadlineClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension DeadlineClientTypes {
+
     /// The list of step attributes.
-    public struct StepAttributeCapability {
+    public struct StepAttributeCapability: Swift.Sendable {
         /// Requires all of the step attribute values.
         public var allOf: [Swift.String]?
         /// Requires any of the step attributes in a given list.
@@ -6833,12 +6840,12 @@ extension DeadlineClientTypes {
             self.name = name
         }
     }
-
 }
 
 extension DeadlineClientTypes {
+
     /// The details of required step capabilities.
-    public struct StepRequiredCapabilities {
+    public struct StepRequiredCapabilities: Swift.Sendable {
         /// The capability amounts that the step requires.
         /// This member is required.
         public var amounts: [DeadlineClientTypes.StepAmountCapability]?
@@ -6855,12 +6862,11 @@ extension DeadlineClientTypes {
             self.attributes = attributes
         }
     }
-
 }
 
 extension DeadlineClientTypes {
 
-    public enum StepTargetTaskRunStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum StepTargetTaskRunStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case canceled
         case failed
         case pending
@@ -6899,7 +6905,7 @@ extension DeadlineClientTypes {
     }
 }
 
-public struct GetStepOutput {
+public struct GetStepOutput: Swift.Sendable {
     /// The date and time the resource was created.
     /// This member is required.
     public var createdAt: Foundation.Date?
@@ -6987,7 +6993,7 @@ extension GetStepOutput: Swift.CustomDebugStringConvertible {
         "GetStepOutput(createdAt: \(Swift.String(describing: createdAt)), createdBy: \(Swift.String(describing: createdBy)), dependencyCounts: \(Swift.String(describing: dependencyCounts)), endedAt: \(Swift.String(describing: endedAt)), lifecycleStatus: \(Swift.String(describing: lifecycleStatus)), lifecycleStatusMessage: \(Swift.String(describing: lifecycleStatusMessage)), name: \(Swift.String(describing: name)), parameterSpace: \(Swift.String(describing: parameterSpace)), requiredCapabilities: \(Swift.String(describing: requiredCapabilities)), startedAt: \(Swift.String(describing: startedAt)), stepId: \(Swift.String(describing: stepId)), targetTaskRunStatus: \(Swift.String(describing: targetTaskRunStatus)), taskRunStatus: \(Swift.String(describing: taskRunStatus)), taskRunStatusCounts: \(Swift.String(describing: taskRunStatusCounts)), updatedAt: \(Swift.String(describing: updatedAt)), updatedBy: \(Swift.String(describing: updatedBy)), description: \"CONTENT_REDACTED\")"}
 }
 
-public struct GetTaskInput {
+public struct GetTaskInput: Swift.Sendable {
     /// The farm ID of the farm connected to the task.
     /// This member is required.
     public var farmId: Swift.String?
@@ -7022,7 +7028,7 @@ public struct GetTaskInput {
 
 extension DeadlineClientTypes {
 
-    public enum TaskTargetRunStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum TaskTargetRunStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case canceled
         case failed
         case pending
@@ -7061,7 +7067,7 @@ extension DeadlineClientTypes {
     }
 }
 
-public struct GetTaskOutput {
+public struct GetTaskOutput: Swift.Sendable {
     /// The date and time the resource was created.
     /// This member is required.
     public var createdAt: Foundation.Date?
@@ -7126,7 +7132,7 @@ extension GetTaskOutput: Swift.CustomDebugStringConvertible {
         "GetTaskOutput(createdAt: \(Swift.String(describing: createdAt)), createdBy: \(Swift.String(describing: createdBy)), endedAt: \(Swift.String(describing: endedAt)), failureRetryCount: \(Swift.String(describing: failureRetryCount)), latestSessionActionId: \(Swift.String(describing: latestSessionActionId)), runStatus: \(Swift.String(describing: runStatus)), startedAt: \(Swift.String(describing: startedAt)), targetRunStatus: \(Swift.String(describing: targetRunStatus)), taskId: \(Swift.String(describing: taskId)), updatedAt: \(Swift.String(describing: updatedAt)), updatedBy: \(Swift.String(describing: updatedBy)), parameters: \"CONTENT_REDACTED\")"}
 }
 
-public struct ListJobMembersInput {
+public struct ListJobMembersInput: Swift.Sendable {
     /// The farm ID of the job to list.
     /// This member is required.
     public var farmId: Swift.String?
@@ -7158,8 +7164,9 @@ public struct ListJobMembersInput {
 }
 
 extension DeadlineClientTypes {
+
     /// The details for a job member.
-    public struct JobMember {
+    public struct JobMember: Swift.Sendable {
         /// The farm ID.
         /// This member is required.
         public var farmId: Swift.String?
@@ -7201,10 +7208,9 @@ extension DeadlineClientTypes {
             self.queueId = queueId
         }
     }
-
 }
 
-public struct ListJobMembersOutput {
+public struct ListJobMembersOutput: Swift.Sendable {
     /// The members on the list.
     /// This member is required.
     public var members: [DeadlineClientTypes.JobMember]?
@@ -7221,7 +7227,55 @@ public struct ListJobMembersOutput {
     }
 }
 
-public struct ListJobsInput {
+public struct ListJobParameterDefinitionsInput: Swift.Sendable {
+    /// The farm ID of the job to list.
+    /// This member is required.
+    public var farmId: Swift.String?
+    /// The job ID to include on the list.
+    /// This member is required.
+    public var jobId: Swift.String?
+    /// The maximum number of results to return. Use this parameter with NextToken to get results as a set of sequential pages.
+    public var maxResults: Swift.Int?
+    /// The token for the next set of results, or null to start from the beginning.
+    public var nextToken: Swift.String?
+    /// The queue ID to include on the list.
+    /// This member is required.
+    public var queueId: Swift.String?
+
+    public init(
+        farmId: Swift.String? = nil,
+        jobId: Swift.String? = nil,
+        maxResults: Swift.Int? = 100,
+        nextToken: Swift.String? = nil,
+        queueId: Swift.String? = nil
+    )
+    {
+        self.farmId = farmId
+        self.jobId = jobId
+        self.maxResults = maxResults
+        self.nextToken = nextToken
+        self.queueId = queueId
+    }
+}
+
+public struct ListJobParameterDefinitionsOutput: Swift.Sendable {
+    /// Lists parameter definitions of a job.
+    /// This member is required.
+    public var jobParameterDefinitions: [Smithy.Document]?
+    /// If Deadline Cloud returns nextToken, then there are more results available. The value of nextToken is a unique pagination token for each page. To retrieve the next page, call the operation again using the returned token. Keep all other arguments unchanged. If no results remain, then nextToken is set to null. Each pagination token expires after 24 hours. If you provide a token that isn't valid, then you receive an HTTP 400 ValidationException error.
+    public var nextToken: Swift.String?
+
+    public init(
+        jobParameterDefinitions: [Smithy.Document]? = nil,
+        nextToken: Swift.String? = nil
+    )
+    {
+        self.jobParameterDefinitions = jobParameterDefinitions
+        self.nextToken = nextToken
+    }
+}
+
+public struct ListJobsInput: Swift.Sendable {
     /// The farm ID for the jobs.
     /// This member is required.
     public var farmId: Swift.String?
@@ -7252,8 +7306,9 @@ public struct ListJobsInput {
 }
 
 extension DeadlineClientTypes {
+
     /// A summary of job details.
-    public struct JobSummary {
+    public struct JobSummary: Swift.Sendable {
         /// The date and time the resource was created.
         /// This member is required.
         public var createdAt: Foundation.Date?
@@ -7281,6 +7336,8 @@ extension DeadlineClientTypes {
         /// The job priority.
         /// This member is required.
         public var priority: Swift.Int?
+        /// The job ID for the source job.
+        public var sourceJobId: Swift.String?
         /// The date and time the resource started running.
         public var startedAt: Foundation.Date?
         /// The task status to start with on the job.
@@ -7325,6 +7382,7 @@ extension DeadlineClientTypes {
             maxRetriesPerTask: Swift.Int? = nil,
             name: Swift.String? = nil,
             priority: Swift.Int? = nil,
+            sourceJobId: Swift.String? = nil,
             startedAt: Foundation.Date? = nil,
             targetTaskRunStatus: DeadlineClientTypes.JobTargetTaskRunStatus? = nil,
             taskRunStatus: DeadlineClientTypes.TaskRunStatus? = nil,
@@ -7343,6 +7401,7 @@ extension DeadlineClientTypes {
             self.maxRetriesPerTask = maxRetriesPerTask
             self.name = name
             self.priority = priority
+            self.sourceJobId = sourceJobId
             self.startedAt = startedAt
             self.targetTaskRunStatus = targetTaskRunStatus
             self.taskRunStatus = taskRunStatus
@@ -7351,10 +7410,9 @@ extension DeadlineClientTypes {
             self.updatedBy = updatedBy
         }
     }
-
 }
 
-public struct ListJobsOutput {
+public struct ListJobsOutput: Swift.Sendable {
     /// The jobs on the list.
     /// This member is required.
     public var jobs: [DeadlineClientTypes.JobSummary]?
@@ -7371,7 +7429,7 @@ public struct ListJobsOutput {
     }
 }
 
-public struct ListSessionActionsInput {
+public struct ListSessionActionsInput: Swift.Sendable {
     /// The farm ID for the session actions list.
     /// This member is required.
     public var farmId: Swift.String?
@@ -7411,8 +7469,9 @@ public struct ListSessionActionsInput {
 }
 
 extension DeadlineClientTypes {
+
     /// Defines the environment a session action enters in.
-    public struct EnvironmentEnterSessionActionDefinitionSummary {
+    public struct EnvironmentEnterSessionActionDefinitionSummary: Swift.Sendable {
         /// The environment ID.
         /// This member is required.
         public var environmentId: Swift.String?
@@ -7424,12 +7483,12 @@ extension DeadlineClientTypes {
             self.environmentId = environmentId
         }
     }
-
 }
 
 extension DeadlineClientTypes {
+
     /// A summary of the environment details for which a session action to exits.
-    public struct EnvironmentExitSessionActionDefinitionSummary {
+    public struct EnvironmentExitSessionActionDefinitionSummary: Swift.Sendable {
         /// The environment ID.
         /// This member is required.
         public var environmentId: Swift.String?
@@ -7441,12 +7500,12 @@ extension DeadlineClientTypes {
             self.environmentId = environmentId
         }
     }
-
 }
 
 extension DeadlineClientTypes {
+
     /// The details of a synced job attachment.
-    public struct SyncInputJobAttachmentsSessionActionDefinitionSummary {
+    public struct SyncInputJobAttachmentsSessionActionDefinitionSummary: Swift.Sendable {
         /// The step ID of the step in the job attachment.
         public var stepId: Swift.String?
 
@@ -7457,12 +7516,12 @@ extension DeadlineClientTypes {
             self.stepId = stepId
         }
     }
-
 }
 
 extension DeadlineClientTypes {
+
     /// The details of a task run in a session action.
-    public struct TaskRunSessionActionDefinitionSummary {
+    public struct TaskRunSessionActionDefinitionSummary: Swift.Sendable {
         /// The step ID.
         /// This member is required.
         public var stepId: Swift.String?
@@ -7479,12 +7538,12 @@ extension DeadlineClientTypes {
             self.taskId = taskId
         }
     }
-
 }
 
 extension DeadlineClientTypes {
+
     /// The details of a session action definition.
-    public enum SessionActionDefinitionSummary {
+    public enum SessionActionDefinitionSummary: Swift.Sendable {
         /// The environment to enter into.
         case enventer(DeadlineClientTypes.EnvironmentEnterSessionActionDefinitionSummary)
         /// The environment to exit from.
@@ -7495,12 +7554,12 @@ extension DeadlineClientTypes {
         case syncinputjobattachments(DeadlineClientTypes.SyncInputJobAttachmentsSessionActionDefinitionSummary)
         case sdkUnknown(Swift.String)
     }
-
 }
 
 extension DeadlineClientTypes {
+
     /// The details of a session action.
-    public struct SessionActionSummary {
+    public struct SessionActionSummary: Swift.Sendable {
         /// The session action definition.
         /// This member is required.
         public var definition: DeadlineClientTypes.SessionActionDefinitionSummary?
@@ -7538,10 +7597,9 @@ extension DeadlineClientTypes {
             self.workerUpdatedAt = workerUpdatedAt
         }
     }
-
 }
 
-public struct ListSessionActionsOutput {
+public struct ListSessionActionsOutput: Swift.Sendable {
     /// If Deadline Cloud returns nextToken, then there are more results available. The value of nextToken is a unique pagination token for each page. To retrieve the next page, call the operation again using the returned token. Keep all other arguments unchanged. If no results remain, then nextToken is set to null. Each pagination token expires after 24 hours. If you provide a token that isn't valid, then you receive an HTTP 400 ValidationException error.
     public var nextToken: Swift.String?
     /// The session actions.
@@ -7558,7 +7616,7 @@ public struct ListSessionActionsOutput {
     }
 }
 
-public struct ListSessionsInput {
+public struct ListSessionsInput: Swift.Sendable {
     /// The farm ID for the list of sessions.
     /// This member is required.
     public var farmId: Swift.String?
@@ -7590,8 +7648,9 @@ public struct ListSessionsInput {
 }
 
 extension DeadlineClientTypes {
+
     /// The summary of a session.
-    public struct SessionSummary {
+    public struct SessionSummary: Swift.Sendable {
         /// The date and time the resource ended running.
         public var endedAt: Foundation.Date?
         /// The fleet ID.
@@ -7639,10 +7698,9 @@ extension DeadlineClientTypes {
             self.workerId = workerId
         }
     }
-
 }
 
-public struct ListSessionsOutput {
+public struct ListSessionsOutput: Swift.Sendable {
     /// If Deadline Cloud returns nextToken, then there are more results available. The value of nextToken is a unique pagination token for each page. To retrieve the next page, call the operation again using the returned token. Keep all other arguments unchanged. If no results remain, then nextToken is set to null. Each pagination token expires after 24 hours. If you provide a token that isn't valid, then you receive an HTTP 400 ValidationException error.
     public var nextToken: Swift.String?
     /// The sessions on the list.
@@ -7659,7 +7717,7 @@ public struct ListSessionsOutput {
     }
 }
 
-public struct ListStepConsumersInput {
+public struct ListStepConsumersInput: Swift.Sendable {
     /// The farm ID for the list of step consumers.
     /// This member is required.
     public var farmId: Swift.String?
@@ -7697,7 +7755,7 @@ public struct ListStepConsumersInput {
 
 extension DeadlineClientTypes {
 
-    public enum DependencyConsumerResolutionStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DependencyConsumerResolutionStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case resolved
         case unresolved
         case sdkUnknown(Swift.String)
@@ -7725,8 +7783,9 @@ extension DeadlineClientTypes {
 }
 
 extension DeadlineClientTypes {
+
     /// The details of a step consumer.
-    public struct StepConsumer {
+    public struct StepConsumer: Swift.Sendable {
         /// The step consumer status.
         /// This member is required.
         public var status: DeadlineClientTypes.DependencyConsumerResolutionStatus?
@@ -7743,10 +7802,9 @@ extension DeadlineClientTypes {
             self.stepId = stepId
         }
     }
-
 }
 
-public struct ListStepConsumersOutput {
+public struct ListStepConsumersOutput: Swift.Sendable {
     /// The consumers on the list.
     /// This member is required.
     public var consumers: [DeadlineClientTypes.StepConsumer]?
@@ -7763,7 +7821,7 @@ public struct ListStepConsumersOutput {
     }
 }
 
-public struct ListStepDependenciesInput {
+public struct ListStepDependenciesInput: Swift.Sendable {
     /// The farm ID for the step dependencies list.
     /// This member is required.
     public var farmId: Swift.String?
@@ -7800,8 +7858,9 @@ public struct ListStepDependenciesInput {
 }
 
 extension DeadlineClientTypes {
+
     /// The details of step dependency.
-    public struct StepDependency {
+    public struct StepDependency: Swift.Sendable {
         /// The step dependency status.
         /// This member is required.
         public var status: DeadlineClientTypes.DependencyConsumerResolutionStatus?
@@ -7818,10 +7877,9 @@ extension DeadlineClientTypes {
             self.stepId = stepId
         }
     }
-
 }
 
-public struct ListStepDependenciesOutput {
+public struct ListStepDependenciesOutput: Swift.Sendable {
     /// The dependencies on the list.
     /// This member is required.
     public var dependencies: [DeadlineClientTypes.StepDependency]?
@@ -7838,7 +7896,7 @@ public struct ListStepDependenciesOutput {
     }
 }
 
-public struct ListStepsInput {
+public struct ListStepsInput: Swift.Sendable {
     /// The farm ID to include on the list of steps.
     /// This member is required.
     public var farmId: Swift.String?
@@ -7870,8 +7928,9 @@ public struct ListStepsInput {
 }
 
 extension DeadlineClientTypes {
+
     /// The details for a step.
-    public struct StepSummary {
+    public struct StepSummary: Swift.Sendable {
         /// The date and time the resource was created.
         /// This member is required.
         public var createdAt: Foundation.Date?
@@ -7961,10 +8020,9 @@ extension DeadlineClientTypes {
             self.updatedBy = updatedBy
         }
     }
-
 }
 
-public struct ListStepsOutput {
+public struct ListStepsOutput: Swift.Sendable {
     /// If Deadline Cloud returns nextToken, then there are more results available. The value of nextToken is a unique pagination token for each page. To retrieve the next page, call the operation again using the returned token. Keep all other arguments unchanged. If no results remain, then nextToken is set to null. Each pagination token expires after 24 hours. If you provide a token that isn't valid, then you receive an HTTP 400 ValidationException error.
     public var nextToken: Swift.String?
     /// The steps on the list.
@@ -7981,7 +8039,7 @@ public struct ListStepsOutput {
     }
 }
 
-public struct ListTasksInput {
+public struct ListTasksInput: Swift.Sendable {
     /// The farm ID connected to the tasks.
     /// This member is required.
     public var farmId: Swift.String?
@@ -8018,8 +8076,9 @@ public struct ListTasksInput {
 }
 
 extension DeadlineClientTypes {
+
     /// The details of a task.
-    public struct TaskSummary {
+    public struct TaskSummary: Swift.Sendable {
         /// The date and time the resource was created.
         /// This member is required.
         public var createdAt: Foundation.Date?
@@ -8078,7 +8137,6 @@ extension DeadlineClientTypes {
             self.updatedBy = updatedBy
         }
     }
-
 }
 
 extension DeadlineClientTypes.TaskSummary: Swift.CustomDebugStringConvertible {
@@ -8086,7 +8144,7 @@ extension DeadlineClientTypes.TaskSummary: Swift.CustomDebugStringConvertible {
         "TaskSummary(createdAt: \(Swift.String(describing: createdAt)), createdBy: \(Swift.String(describing: createdBy)), endedAt: \(Swift.String(describing: endedAt)), failureRetryCount: \(Swift.String(describing: failureRetryCount)), latestSessionActionId: \(Swift.String(describing: latestSessionActionId)), runStatus: \(Swift.String(describing: runStatus)), startedAt: \(Swift.String(describing: startedAt)), targetRunStatus: \(Swift.String(describing: targetRunStatus)), taskId: \(Swift.String(describing: taskId)), updatedAt: \(Swift.String(describing: updatedAt)), updatedBy: \(Swift.String(describing: updatedBy)), parameters: \"CONTENT_REDACTED\")"}
 }
 
-public struct ListTasksOutput {
+public struct ListTasksOutput: Swift.Sendable {
     /// If Deadline Cloud returns nextToken, then there are more results available. The value of nextToken is a unique pagination token for each page. To retrieve the next page, call the operation again using the returned token. Keep all other arguments unchanged. If no results remain, then nextToken is set to null. Each pagination token expires after 24 hours. If you provide a token that isn't valid, then you receive an HTTP 400 ValidationException error.
     public var nextToken: Swift.String?
     /// Tasks for the job.
@@ -8105,7 +8163,7 @@ public struct ListTasksOutput {
 
 extension DeadlineClientTypes {
 
-    public enum UpdateJobLifecycleStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum UpdateJobLifecycleStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case archived
         case sdkUnknown(Swift.String)
 
@@ -8129,7 +8187,7 @@ extension DeadlineClientTypes {
     }
 }
 
-public struct UpdateJobInput {
+public struct UpdateJobInput: Swift.Sendable {
     /// The unique token which the server uses to recognize retries of the same request.
     public var clientToken: Swift.String?
     /// The farm ID of the job to update.
@@ -8176,12 +8234,12 @@ public struct UpdateJobInput {
     }
 }
 
-public struct UpdateJobOutput {
+public struct UpdateJobOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdateSessionInput {
+public struct UpdateSessionInput: Swift.Sendable {
     /// The unique token which the server uses to recognize retries of the same request.
     public var clientToken: Swift.String?
     /// The farm ID to update in the session.
@@ -8218,12 +8276,12 @@ public struct UpdateSessionInput {
     }
 }
 
-public struct UpdateSessionOutput {
+public struct UpdateSessionOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdateStepInput {
+public struct UpdateStepInput: Swift.Sendable {
     /// The unique token which the server uses to recognize retries of the same request.
     public var clientToken: Swift.String?
     /// The farm ID to update.
@@ -8260,12 +8318,12 @@ public struct UpdateStepInput {
     }
 }
 
-public struct UpdateStepOutput {
+public struct UpdateStepOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdateTaskInput {
+public struct UpdateTaskInput: Swift.Sendable {
     /// The unique token which the server uses to recognize retries of the same request.
     public var clientToken: Swift.String?
     /// The farm ID to update.
@@ -8307,12 +8365,12 @@ public struct UpdateTaskInput {
     }
 }
 
-public struct UpdateTaskOutput {
+public struct UpdateTaskOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct ListQueueEnvironmentsInput {
+public struct ListQueueEnvironmentsInput: Swift.Sendable {
     /// The farm ID for the queue environment list.
     /// This member is required.
     public var farmId: Swift.String?
@@ -8339,8 +8397,9 @@ public struct ListQueueEnvironmentsInput {
 }
 
 extension DeadlineClientTypes {
+
     /// The summary of a queue environment.
-    public struct QueueEnvironmentSummary {
+    public struct QueueEnvironmentSummary: Swift.Sendable {
         /// The name of the queue environment.
         /// This member is required.
         public var name: Swift.String?
@@ -8362,10 +8421,9 @@ extension DeadlineClientTypes {
             self.queueEnvironmentId = queueEnvironmentId
         }
     }
-
 }
 
-public struct ListQueueEnvironmentsOutput {
+public struct ListQueueEnvironmentsOutput: Swift.Sendable {
     /// The environments to include in the queue environments list.
     /// This member is required.
     public var environments: [DeadlineClientTypes.QueueEnvironmentSummary]?
@@ -8382,7 +8440,7 @@ public struct ListQueueEnvironmentsOutput {
     }
 }
 
-public struct ListQueueMembersInput {
+public struct ListQueueMembersInput: Swift.Sendable {
     /// The farm ID for the queue.
     /// This member is required.
     public var farmId: Swift.String?
@@ -8409,8 +8467,9 @@ public struct ListQueueMembersInput {
 }
 
 extension DeadlineClientTypes {
+
     /// The details of a queue member.
-    public struct QueueMember {
+    public struct QueueMember: Swift.Sendable {
         /// The farm ID.
         /// This member is required.
         public var farmId: Swift.String?
@@ -8447,10 +8506,9 @@ extension DeadlineClientTypes {
             self.queueId = queueId
         }
     }
-
 }
 
-public struct ListQueueMembersOutput {
+public struct ListQueueMembersOutput: Swift.Sendable {
     /// The members on the list.
     /// This member is required.
     public var members: [DeadlineClientTypes.QueueMember]?
@@ -8467,7 +8525,7 @@ public struct ListQueueMembersOutput {
     }
 }
 
-public struct ListQueuesInput {
+public struct ListQueuesInput: Swift.Sendable {
     /// The farm ID of the queue.
     /// This member is required.
     public var farmId: Swift.String?
@@ -8503,8 +8561,9 @@ public struct ListQueuesInput {
 }
 
 extension DeadlineClientTypes {
+
     /// The details of a queue summary.
-    public struct QueueSummary {
+    public struct QueueSummary: Swift.Sendable {
         /// The reason the queue is blocked, if applicable.
         public var blockedReason: DeadlineClientTypes.QueueBlockedReason?
         /// The date and time the resource was created.
@@ -8558,10 +8617,9 @@ extension DeadlineClientTypes {
             self.updatedBy = updatedBy
         }
     }
-
 }
 
-public struct ListQueuesOutput {
+public struct ListQueuesOutput: Swift.Sendable {
     /// If Deadline Cloud returns nextToken, then there are more results available. The value of nextToken is a unique pagination token for each page. To retrieve the next page, call the operation again using the returned token. Keep all other arguments unchanged. If no results remain, then nextToken is set to null. Each pagination token expires after 24 hours. If you provide a token that isn't valid, then you receive an HTTP 400 ValidationException error.
     public var nextToken: Swift.String?
     /// The queues on the list.
@@ -8578,7 +8636,7 @@ public struct ListQueuesOutput {
     }
 }
 
-public struct ListStorageProfilesForQueueInput {
+public struct ListStorageProfilesForQueueInput: Swift.Sendable {
     /// The farm ID of the queue's storage profile.
     /// This member is required.
     public var farmId: Swift.String?
@@ -8604,7 +8662,7 @@ public struct ListStorageProfilesForQueueInput {
     }
 }
 
-public struct ListStorageProfilesForQueueOutput {
+public struct ListStorageProfilesForQueueOutput: Swift.Sendable {
     /// If Deadline Cloud returns nextToken, then there are more results available. The value of nextToken is a unique pagination token for each page. To retrieve the next page, call the operation again using the returned token. Keep all other arguments unchanged. If no results remain, then nextToken is set to null. Each pagination token expires after 24 hours. If you provide a token that isn't valid, then you receive an HTTP 400 ValidationException error.
     public var nextToken: Swift.String?
     /// The storage profiles in the queue.
@@ -8621,7 +8679,7 @@ public struct ListStorageProfilesForQueueOutput {
     }
 }
 
-public struct UpdateQueueInput {
+public struct UpdateQueueInput: Swift.Sendable {
     /// The storage profile IDs to add.
     public var allowedStorageProfileIdsToAdd: [Swift.String]?
     /// The storage profile ID to remove.
@@ -8688,12 +8746,12 @@ extension UpdateQueueInput: Swift.CustomDebugStringConvertible {
         "UpdateQueueInput(allowedStorageProfileIdsToAdd: \(Swift.String(describing: allowedStorageProfileIdsToAdd)), allowedStorageProfileIdsToRemove: \(Swift.String(describing: allowedStorageProfileIdsToRemove)), clientToken: \(Swift.String(describing: clientToken)), defaultBudgetAction: \(Swift.String(describing: defaultBudgetAction)), displayName: \(Swift.String(describing: displayName)), farmId: \(Swift.String(describing: farmId)), jobAttachmentSettings: \(Swift.String(describing: jobAttachmentSettings)), jobRunAsUser: \(Swift.String(describing: jobRunAsUser)), queueId: \(Swift.String(describing: queueId)), roleArn: \(Swift.String(describing: roleArn)), description: \"CONTENT_REDACTED\", requiredFileSystemLocationNamesToAdd: \"CONTENT_REDACTED\", requiredFileSystemLocationNamesToRemove: \"CONTENT_REDACTED\")"}
 }
 
-public struct UpdateQueueOutput {
+public struct UpdateQueueOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdateQueueEnvironmentInput {
+public struct UpdateQueueEnvironmentInput: Swift.Sendable {
     /// The unique token which the server uses to recognize retries of the same request.
     public var clientToken: Swift.String?
     /// The farm ID of the queue environment to update.
@@ -8737,12 +8795,12 @@ extension UpdateQueueEnvironmentInput: Swift.CustomDebugStringConvertible {
         "UpdateQueueEnvironmentInput(clientToken: \(Swift.String(describing: clientToken)), farmId: \(Swift.String(describing: farmId)), priority: \(Swift.String(describing: priority)), queueEnvironmentId: \(Swift.String(describing: queueEnvironmentId)), queueId: \(Swift.String(describing: queueId)), templateType: \(Swift.String(describing: templateType)), template: \"CONTENT_REDACTED\")"}
 }
 
-public struct UpdateQueueEnvironmentOutput {
+public struct UpdateQueueEnvironmentOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdateFarmInput {
+public struct UpdateFarmInput: Swift.Sendable {
     /// The description of the farm to update. This field can store any content. Escape or encode this content before displaying it on a webpage or any other system that might interpret the content of this field.
     public var description: Swift.String?
     /// The display name of the farm to update. This field can store any content. Escape or encode this content before displaying it on a webpage or any other system that might interpret the content of this field.
@@ -8768,12 +8826,12 @@ extension UpdateFarmInput: Swift.CustomDebugStringConvertible {
         "UpdateFarmInput(displayName: \(Swift.String(describing: displayName)), farmId: \(Swift.String(describing: farmId)), description: \"CONTENT_REDACTED\")"}
 }
 
-public struct UpdateFarmOutput {
+public struct UpdateFarmOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdateStorageProfileInput {
+public struct UpdateStorageProfileInput: Swift.Sendable {
     /// The unique token which the server uses to recognize retries of the same request.
     public var clientToken: Swift.String?
     /// The display name of the storage profile to update. This field can store any content. Escape or encode this content before displaying it on a webpage or any other system that might interpret the content of this field.
@@ -8816,12 +8874,12 @@ extension UpdateStorageProfileInput: Swift.CustomDebugStringConvertible {
         "UpdateStorageProfileInput(clientToken: \(Swift.String(describing: clientToken)), displayName: \(Swift.String(describing: displayName)), farmId: \(Swift.String(describing: farmId)), osFamily: \(Swift.String(describing: osFamily)), storageProfileId: \(Swift.String(describing: storageProfileId)), fileSystemLocationsToAdd: \"CONTENT_REDACTED\", fileSystemLocationsToRemove: \"CONTENT_REDACTED\")"}
 }
 
-public struct UpdateStorageProfileOutput {
+public struct UpdateStorageProfileOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct GetQueueFleetAssociationInput {
+public struct GetQueueFleetAssociationInput: Swift.Sendable {
     /// The farm ID of the farm that contains the queue-fleet association.
     /// This member is required.
     public var farmId: Swift.String?
@@ -8846,7 +8904,7 @@ public struct GetQueueFleetAssociationInput {
 
 extension DeadlineClientTypes {
 
-    public enum QueueFleetAssociationStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum QueueFleetAssociationStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case active
         case stopped
         case stopSchedulingAndCancelTasks
@@ -8879,7 +8937,7 @@ extension DeadlineClientTypes {
     }
 }
 
-public struct GetQueueFleetAssociationOutput {
+public struct GetQueueFleetAssociationOutput: Swift.Sendable {
     /// The date and time the resource was created.
     /// This member is required.
     public var createdAt: Foundation.Date?
@@ -8920,7 +8978,7 @@ public struct GetQueueFleetAssociationOutput {
     }
 }
 
-public struct GetSessionsStatisticsAggregationInput {
+public struct GetSessionsStatisticsAggregationInput: Swift.Sendable {
     /// The identifier returned by the StartSessionsStatisticsAggregation operation that identifies the aggregated statistics.
     /// This member is required.
     public var aggregationId: Swift.String?
@@ -8947,8 +9005,9 @@ public struct GetSessionsStatisticsAggregationInput {
 }
 
 extension DeadlineClientTypes {
+
     /// The minimum, maximum, average, and sum.
-    public struct Stats {
+    public struct Stats: Swift.Sendable {
         /// The average of the usage statistics.
         public var avg: Swift.Double?
         /// The maximum among the usage statistics.
@@ -8971,12 +9030,11 @@ extension DeadlineClientTypes {
             self.sum = sum
         }
     }
-
 }
 
 extension DeadlineClientTypes {
 
-    public enum UsageType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum UsageType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case compute
         case license
         case sdkUnknown(Swift.String)
@@ -9004,8 +9062,9 @@ extension DeadlineClientTypes {
 }
 
 extension DeadlineClientTypes {
+
     /// A list of statistics for a session.
-    public struct Statistics {
+    public struct Statistics: Swift.Sendable {
         /// The end time for the aggregation.
         public var aggregationEndTime: Foundation.Date?
         /// The start time for the aggregation.
@@ -9067,12 +9126,11 @@ extension DeadlineClientTypes {
             self.userId = userId
         }
     }
-
 }
 
 extension DeadlineClientTypes {
 
-    public enum SessionsStatisticsAggregationStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SessionsStatisticsAggregationStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case completed
         case failed
         case inProgress
@@ -9105,7 +9163,7 @@ extension DeadlineClientTypes {
     }
 }
 
-public struct GetSessionsStatisticsAggregationOutput {
+public struct GetSessionsStatisticsAggregationOutput: Swift.Sendable {
     /// If Deadline Cloud returns nextToken, then there are more results available. The value of nextToken is a unique pagination token for each page. To retrieve the next page, call the operation again using the returned token. Keep all other arguments unchanged. If no results remain, then nextToken is set to null. Each pagination token expires after 24 hours. If you provide a token that isn't valid, then you receive an HTTP 400 ValidationException error.
     public var nextToken: Swift.String?
     /// The statistics for the specified fleets or queues.
@@ -9130,7 +9188,7 @@ public struct GetSessionsStatisticsAggregationOutput {
     }
 }
 
-public struct DeleteLicenseEndpointInput {
+public struct DeleteLicenseEndpointInput: Swift.Sendable {
     /// The license endpoint ID of the license endpoint to delete.
     /// This member is required.
     public var licenseEndpointId: Swift.String?
@@ -9143,12 +9201,12 @@ public struct DeleteLicenseEndpointInput {
     }
 }
 
-public struct DeleteLicenseEndpointOutput {
+public struct DeleteLicenseEndpointOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct GetLicenseEndpointInput {
+public struct GetLicenseEndpointInput: Swift.Sendable {
     /// The license endpoint ID.
     /// This member is required.
     public var licenseEndpointId: Swift.String?
@@ -9163,7 +9221,7 @@ public struct GetLicenseEndpointInput {
 
 extension DeadlineClientTypes {
 
-    public enum LicenseEndpointStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum LicenseEndpointStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case createInProgress
         case deleteInProgress
         case notReady
@@ -9196,7 +9254,7 @@ extension DeadlineClientTypes {
     }
 }
 
-public struct GetLicenseEndpointOutput {
+public struct GetLicenseEndpointOutput: Swift.Sendable {
     /// The DNS name.
     public var dnsName: Swift.String?
     /// The license endpoint ID.
@@ -9235,7 +9293,7 @@ public struct GetLicenseEndpointOutput {
     }
 }
 
-public struct ListLicenseEndpointsInput {
+public struct ListLicenseEndpointsInput: Swift.Sendable {
     /// The maximum number of results to return. Use this parameter with NextToken to get results as a set of sequential pages.
     public var maxResults: Swift.Int?
     /// The token for the next set of results, or null to start from the beginning.
@@ -9252,8 +9310,9 @@ public struct ListLicenseEndpointsInput {
 }
 
 extension DeadlineClientTypes {
+
     /// The details for a license endpoint.
-    public struct LicenseEndpointSummary {
+    public struct LicenseEndpointSummary: Swift.Sendable {
         /// The license endpoint ID.
         public var licenseEndpointId: Swift.String?
         /// The status of the license endpoint.
@@ -9276,10 +9335,9 @@ extension DeadlineClientTypes {
             self.vpcId = vpcId
         }
     }
-
 }
 
-public struct ListLicenseEndpointsOutput {
+public struct ListLicenseEndpointsOutput: Swift.Sendable {
     /// The license endpoints.
     /// This member is required.
     public var licenseEndpoints: [DeadlineClientTypes.LicenseEndpointSummary]?
@@ -9296,7 +9354,7 @@ public struct ListLicenseEndpointsOutput {
     }
 }
 
-public struct DeleteMeteredProductInput {
+public struct DeleteMeteredProductInput: Swift.Sendable {
     /// The ID of the license endpoint from which to remove the metered product.
     /// This member is required.
     public var licenseEndpointId: Swift.String?
@@ -9314,12 +9372,12 @@ public struct DeleteMeteredProductInput {
     }
 }
 
-public struct DeleteMeteredProductOutput {
+public struct DeleteMeteredProductOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct ListMeteredProductsInput {
+public struct ListMeteredProductsInput: Swift.Sendable {
     /// The license endpoint ID to include on the list of metered products.
     /// This member is required.
     public var licenseEndpointId: Swift.String?
@@ -9341,8 +9399,9 @@ public struct ListMeteredProductsInput {
 }
 
 extension DeadlineClientTypes {
+
     /// The details of a metered product.
-    public struct MeteredProductSummary {
+    public struct MeteredProductSummary: Swift.Sendable {
         /// The family to which the metered product belongs.
         /// This member is required.
         public var family: Swift.String?
@@ -9369,10 +9428,9 @@ extension DeadlineClientTypes {
             self.vendor = vendor
         }
     }
-
 }
 
-public struct ListMeteredProductsOutput {
+public struct ListMeteredProductsOutput: Swift.Sendable {
     /// The metered products to list.
     /// This member is required.
     public var meteredProducts: [DeadlineClientTypes.MeteredProductSummary]?
@@ -9389,7 +9447,7 @@ public struct ListMeteredProductsOutput {
     }
 }
 
-public struct PutMeteredProductInput {
+public struct PutMeteredProductInput: Swift.Sendable {
     /// The license endpoint ID to add to the metered product.
     /// This member is required.
     public var licenseEndpointId: Swift.String?
@@ -9407,12 +9465,12 @@ public struct PutMeteredProductInput {
     }
 }
 
-public struct PutMeteredProductOutput {
+public struct PutMeteredProductOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct ListAvailableMeteredProductsInput {
+public struct ListAvailableMeteredProductsInput: Swift.Sendable {
     /// The maximum number of results to return. Use this parameter with NextToken to get results as a set of sequential pages.
     public var maxResults: Swift.Int?
     /// The token for the next set of results, or null to start from the beginning.
@@ -9428,7 +9486,7 @@ public struct ListAvailableMeteredProductsInput {
     }
 }
 
-public struct ListAvailableMeteredProductsOutput {
+public struct ListAvailableMeteredProductsOutput: Swift.Sendable {
     /// The metered products.
     /// This member is required.
     public var meteredProducts: [DeadlineClientTypes.MeteredProductSummary]?
@@ -9445,7 +9503,7 @@ public struct ListAvailableMeteredProductsOutput {
     }
 }
 
-public struct ListQueueFleetAssociationsInput {
+public struct ListQueueFleetAssociationsInput: Swift.Sendable {
     /// The farm ID for the queue-fleet association list.
     /// This member is required.
     public var farmId: Swift.String?
@@ -9475,8 +9533,9 @@ public struct ListQueueFleetAssociationsInput {
 }
 
 extension DeadlineClientTypes {
+
     /// The details of a queue-fleet association.
-    public struct QueueFleetAssociationSummary {
+    public struct QueueFleetAssociationSummary: Swift.Sendable {
         /// The date and time the resource was created.
         /// This member is required.
         public var createdAt: Foundation.Date?
@@ -9524,10 +9583,9 @@ extension DeadlineClientTypes {
             self.updatedBy = updatedBy
         }
     }
-
 }
 
-public struct ListQueueFleetAssociationsOutput {
+public struct ListQueueFleetAssociationsOutput: Swift.Sendable {
     /// If Deadline Cloud returns nextToken, then there are more results available. The value of nextToken is a unique pagination token for each page. To retrieve the next page, call the operation again using the returned token. Keep all other arguments unchanged. If no results remain, then nextToken is set to null. Each pagination token expires after 24 hours. If you provide a token that isn't valid, then you receive an HTTP 400 ValidationException error.
     public var nextToken: Swift.String?
     /// The queue-fleet associations on the list.
@@ -9544,7 +9602,7 @@ public struct ListQueueFleetAssociationsOutput {
     }
 }
 
-public struct ListTagsForResourceInput {
+public struct ListTagsForResourceInput: Swift.Sendable {
     /// The resource ARN to list tags for.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -9557,7 +9615,7 @@ public struct ListTagsForResourceInput {
     }
 }
 
-public struct ListTagsForResourceOutput {
+public struct ListTagsForResourceOutput: Swift.Sendable {
     /// Each tag consists of a tag key and a tag value. Tag keys and values are both required, but tag values can be empty strings.
     public var tags: [Swift.String: Swift.String]?
 
@@ -9569,7 +9627,7 @@ public struct ListTagsForResourceOutput {
     }
 }
 
-public struct DeleteMonitorInput {
+public struct DeleteMonitorInput: Swift.Sendable {
     /// The unique identifier of the monitor to delete. This ID is returned by the CreateMonitor operation, and is included in the response to the GetMonitor operation.
     /// This member is required.
     public var monitorId: Swift.String?
@@ -9582,12 +9640,12 @@ public struct DeleteMonitorInput {
     }
 }
 
-public struct DeleteMonitorOutput {
+public struct DeleteMonitorOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct GetMonitorInput {
+public struct GetMonitorInput: Swift.Sendable {
     /// The unique identifier for the monitor. This ID is returned by the CreateMonitor operation.
     /// This member is required.
     public var monitorId: Swift.String?
@@ -9600,7 +9658,7 @@ public struct GetMonitorInput {
     }
 }
 
-public struct GetMonitorOutput {
+public struct GetMonitorOutput: Swift.Sendable {
     /// The UNIX timestamp of the date and time that the monitor was created.
     /// This member is required.
     public var createdAt: Foundation.Date?
@@ -9661,7 +9719,7 @@ public struct GetMonitorOutput {
     }
 }
 
-public struct ListMonitorsInput {
+public struct ListMonitorsInput: Swift.Sendable {
     /// The maximum number of results to return. Use this parameter with NextToken to get results as a set of sequential pages.
     public var maxResults: Swift.Int?
     /// The token for the next set of results, or null to start from the beginning.
@@ -9678,8 +9736,9 @@ public struct ListMonitorsInput {
 }
 
 extension DeadlineClientTypes {
+
     /// Provides information about a monitor in Deadline Cloud.
-    public struct MonitorSummary {
+    public struct MonitorSummary: Swift.Sendable {
         /// The UNIX timestamp of the date and time that the monitor was created.
         /// This member is required.
         public var createdAt: Foundation.Date?
@@ -9739,10 +9798,9 @@ extension DeadlineClientTypes {
             self.url = url
         }
     }
-
 }
 
-public struct ListMonitorsOutput {
+public struct ListMonitorsOutput: Swift.Sendable {
     /// A list of MonitorSummary objects that describe your monitors in the Deadline Cloud.
     /// This member is required.
     public var monitors: [DeadlineClientTypes.MonitorSummary]?
@@ -9759,7 +9817,7 @@ public struct ListMonitorsOutput {
     }
 }
 
-public struct UpdateMonitorInput {
+public struct UpdateMonitorInput: Swift.Sendable {
     /// The new value to use for the monitor's display name. This field can store any content. Escape or encode this content before displaying it on a webpage or any other system that might interpret the content of this field.
     public var displayName: Swift.String?
     /// The unique identifier of the monitor to update.
@@ -9784,14 +9842,15 @@ public struct UpdateMonitorInput {
     }
 }
 
-public struct UpdateMonitorOutput {
+public struct UpdateMonitorOutput: Swift.Sendable {
 
     public init() { }
 }
 
 extension DeadlineClientTypes {
+
     /// The details of a filtered search for parameters.
-    public struct ParameterFilterExpression {
+    public struct ParameterFilterExpression: Swift.Sendable {
         /// The name of the parameter to filter on.
         /// This member is required.
         public var name: Swift.String?
@@ -9813,12 +9872,12 @@ extension DeadlineClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension DeadlineClientTypes {
+
     /// Searches for a particular search term.
-    public struct SearchTermFilterExpression {
+    public struct SearchTermFilterExpression: Swift.Sendable {
         /// The term to search for.
         /// This member is required.
         public var searchTerm: Swift.String?
@@ -9830,12 +9889,12 @@ extension DeadlineClientTypes {
             self.searchTerm = searchTerm
         }
     }
-
 }
 
 extension DeadlineClientTypes {
+
     /// Searches for a particular string.
-    public struct StringFilterExpression {
+    public struct StringFilterExpression: Swift.Sendable {
         /// The field name to search.
         /// This member is required.
         public var name: Swift.String?
@@ -9857,12 +9916,11 @@ extension DeadlineClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension DeadlineClientTypes {
 
-    public enum LogicalOperator: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum LogicalOperator: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case and
         case or
         case sdkUnknown(Swift.String)
@@ -9891,7 +9949,7 @@ extension DeadlineClientTypes {
 
 extension DeadlineClientTypes {
 
-    public enum SortOrder: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SortOrder: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case ascending
         case descending
         case sdkUnknown(Swift.String)
@@ -9919,8 +9977,9 @@ extension DeadlineClientTypes {
 }
 
 extension DeadlineClientTypes {
+
     /// The field sorting order and name of the field.
-    public struct FieldSortExpression {
+    public struct FieldSortExpression: Swift.Sendable {
         /// The name of the field.
         /// This member is required.
         public var name: Swift.String?
@@ -9937,12 +9996,12 @@ extension DeadlineClientTypes {
             self.sortOrder = sortOrder
         }
     }
-
 }
 
 extension DeadlineClientTypes {
+
     /// Organizes parameters according to your specifications.
-    public struct ParameterSortExpression {
+    public struct ParameterSortExpression: Swift.Sendable {
         /// The parameter name to sort by.
         /// This member is required.
         public var name: Swift.String?
@@ -9959,12 +10018,12 @@ extension DeadlineClientTypes {
             self.sortOrder = sortOrder
         }
     }
-
 }
 
 extension DeadlineClientTypes {
+
     /// Allows setting a specific user's job to run first.
-    public struct UserJobsFirst {
+    public struct UserJobsFirst: Swift.Sendable {
         /// The user's ID.
         /// This member is required.
         public var userIdentityId: Swift.String?
@@ -9976,12 +10035,12 @@ extension DeadlineClientTypes {
             self.userIdentityId = userIdentityId
         }
     }
-
 }
 
 extension DeadlineClientTypes {
+
     /// The resources to search.
-    public enum SearchSortExpression {
+    public enum SearchSortExpression: Swift.Sendable {
         /// Options for sorting a particular user's jobs first.
         case userjobsfirst(DeadlineClientTypes.UserJobsFirst)
         /// Options for sorting by a field.
@@ -9990,12 +10049,12 @@ extension DeadlineClientTypes {
         case parametersort(DeadlineClientTypes.ParameterSortExpression)
         case sdkUnknown(Swift.String)
     }
-
 }
 
 extension DeadlineClientTypes {
+
     /// The details of a job search.
-    public struct JobSearchSummary {
+    public struct JobSearchSummary: Swift.Sendable {
         /// The date and time the resource was created.
         public var createdAt: Foundation.Date?
         /// The user or system that created this resource.
@@ -10020,6 +10079,8 @@ extension DeadlineClientTypes {
         public var priority: Swift.Int?
         /// The queue ID.
         public var queueId: Swift.String?
+        /// The job ID for the source job.
+        public var sourceJobId: Swift.String?
         /// The date and time the resource started running.
         public var startedAt: Foundation.Date?
         /// The task status to start with on the job.
@@ -10062,6 +10123,7 @@ extension DeadlineClientTypes {
             name: Swift.String? = nil,
             priority: Swift.Int? = nil,
             queueId: Swift.String? = nil,
+            sourceJobId: Swift.String? = nil,
             startedAt: Foundation.Date? = nil,
             targetTaskRunStatus: DeadlineClientTypes.JobTargetTaskRunStatus? = nil,
             taskRunStatus: DeadlineClientTypes.TaskRunStatus? = nil,
@@ -10080,21 +10142,21 @@ extension DeadlineClientTypes {
             self.name = name
             self.priority = priority
             self.queueId = queueId
+            self.sourceJobId = sourceJobId
             self.startedAt = startedAt
             self.targetTaskRunStatus = targetTaskRunStatus
             self.taskRunStatus = taskRunStatus
             self.taskRunStatusCounts = taskRunStatusCounts
         }
     }
-
 }
 
 extension DeadlineClientTypes.JobSearchSummary: Swift.CustomDebugStringConvertible {
     public var debugDescription: Swift.String {
-        "JobSearchSummary(createdAt: \(Swift.String(describing: createdAt)), createdBy: \(Swift.String(describing: createdBy)), endedAt: \(Swift.String(describing: endedAt)), jobId: \(Swift.String(describing: jobId)), lifecycleStatus: \(Swift.String(describing: lifecycleStatus)), lifecycleStatusMessage: \(Swift.String(describing: lifecycleStatusMessage)), maxFailedTasksCount: \(Swift.String(describing: maxFailedTasksCount)), maxRetriesPerTask: \(Swift.String(describing: maxRetriesPerTask)), name: \(Swift.String(describing: name)), priority: \(Swift.String(describing: priority)), queueId: \(Swift.String(describing: queueId)), startedAt: \(Swift.String(describing: startedAt)), targetTaskRunStatus: \(Swift.String(describing: targetTaskRunStatus)), taskRunStatus: \(Swift.String(describing: taskRunStatus)), taskRunStatusCounts: \(Swift.String(describing: taskRunStatusCounts)), jobParameters: \"CONTENT_REDACTED\")"}
+        "JobSearchSummary(createdAt: \(Swift.String(describing: createdAt)), createdBy: \(Swift.String(describing: createdBy)), endedAt: \(Swift.String(describing: endedAt)), jobId: \(Swift.String(describing: jobId)), lifecycleStatus: \(Swift.String(describing: lifecycleStatus)), lifecycleStatusMessage: \(Swift.String(describing: lifecycleStatusMessage)), maxFailedTasksCount: \(Swift.String(describing: maxFailedTasksCount)), maxRetriesPerTask: \(Swift.String(describing: maxRetriesPerTask)), name: \(Swift.String(describing: name)), priority: \(Swift.String(describing: priority)), queueId: \(Swift.String(describing: queueId)), sourceJobId: \(Swift.String(describing: sourceJobId)), startedAt: \(Swift.String(describing: startedAt)), targetTaskRunStatus: \(Swift.String(describing: targetTaskRunStatus)), taskRunStatus: \(Swift.String(describing: taskRunStatus)), taskRunStatusCounts: \(Swift.String(describing: taskRunStatusCounts)), jobParameters: \"CONTENT_REDACTED\")"}
 }
 
-public struct SearchJobsOutput {
+public struct SearchJobsOutput: Swift.Sendable {
     /// The jobs in the search.
     /// This member is required.
     public var jobs: [DeadlineClientTypes.JobSearchSummary]?
@@ -10117,8 +10179,9 @@ public struct SearchJobsOutput {
 }
 
 extension DeadlineClientTypes {
+
     /// The details of a step search.
-    public struct StepSearchSummary {
+    public struct StepSearchSummary: Swift.Sendable {
         /// The date and time the resource was created.
         public var createdAt: Foundation.Date?
         /// The date and time the resource ended running.
@@ -10197,10 +10260,9 @@ extension DeadlineClientTypes {
             self.taskRunStatusCounts = taskRunStatusCounts
         }
     }
-
 }
 
-public struct SearchStepsOutput {
+public struct SearchStepsOutput: Swift.Sendable {
     /// The next incremental starting point after the defined itemOffset.
     public var nextItemOffset: Swift.Int?
     /// The steps in the search.
@@ -10223,8 +10285,9 @@ public struct SearchStepsOutput {
 }
 
 extension DeadlineClientTypes {
+
     /// The details of a task search.
-    public struct TaskSearchSummary {
+    public struct TaskSearchSummary: Swift.Sendable {
         /// The date and time the resource ended running.
         public var endedAt: Foundation.Date?
         /// The number of times that the task failed and was retried.
@@ -10271,7 +10334,6 @@ extension DeadlineClientTypes {
             self.taskId = taskId
         }
     }
-
 }
 
 extension DeadlineClientTypes.TaskSearchSummary: Swift.CustomDebugStringConvertible {
@@ -10279,7 +10341,7 @@ extension DeadlineClientTypes.TaskSearchSummary: Swift.CustomDebugStringConverti
         "TaskSearchSummary(endedAt: \(Swift.String(describing: endedAt)), failureRetryCount: \(Swift.String(describing: failureRetryCount)), jobId: \(Swift.String(describing: jobId)), queueId: \(Swift.String(describing: queueId)), runStatus: \(Swift.String(describing: runStatus)), startedAt: \(Swift.String(describing: startedAt)), stepId: \(Swift.String(describing: stepId)), targetRunStatus: \(Swift.String(describing: targetRunStatus)), taskId: \(Swift.String(describing: taskId)), parameters: \"CONTENT_REDACTED\")"}
 }
 
-public struct SearchTasksOutput {
+public struct SearchTasksOutput: Swift.Sendable {
     /// The next incremental starting point after the defined itemOffset.
     public var nextItemOffset: Swift.Int?
     /// Tasks in the search.
@@ -10302,8 +10364,9 @@ public struct SearchTasksOutput {
 }
 
 extension DeadlineClientTypes {
+
     /// The details of a worker search.
-    public struct WorkerSearchSummary {
+    public struct WorkerSearchSummary: Swift.Sendable {
         /// The date and time the resource was created.
         public var createdAt: Foundation.Date?
         /// The user or system that created this resource.
@@ -10342,10 +10405,9 @@ extension DeadlineClientTypes {
             self.workerId = workerId
         }
     }
-
 }
 
-public struct SearchWorkersOutput {
+public struct SearchWorkersOutput: Swift.Sendable {
     /// The next incremental starting point after the defined itemOffset.
     public var nextItemOffset: Swift.Int?
     /// The total number of results in the search.
@@ -10369,7 +10431,7 @@ public struct SearchWorkersOutput {
 
 extension DeadlineClientTypes {
 
-    public enum UsageGroupByField: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum UsageGroupByField: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case fleetId
         case instanceType
         case jobId
@@ -10413,7 +10475,7 @@ extension DeadlineClientTypes {
 
 extension DeadlineClientTypes {
 
-    public enum Period: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Period: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case daily
         case hourly
         case monthly
@@ -10447,20 +10509,20 @@ extension DeadlineClientTypes {
 }
 
 extension DeadlineClientTypes {
+
     /// Specifies the fleet IDs or queue IDs to return statistics. You can specify only fleet IDs or queue IDS, not both.
-    public enum SessionsStatisticsResources {
+    public enum SessionsStatisticsResources: Swift.Sendable {
         /// One to 10 queue IDs that specify the queues to return statistics for. If you specify the queueIds field, you can't specify the fleetIds field.
         case queueids([Swift.String])
         /// One to 10 fleet IDs that specify the fleets to return statistics for. If you specify the fleetIds field, you can't specify the queueIds field.
         case fleetids([Swift.String])
         case sdkUnknown(Swift.String)
     }
-
 }
 
 extension DeadlineClientTypes {
 
-    public enum UsageStatistic: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum UsageStatistic: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case avg
         case max
         case min
@@ -10493,7 +10555,7 @@ extension DeadlineClientTypes {
     }
 }
 
-public struct StartSessionsStatisticsAggregationInput {
+public struct StartSessionsStatisticsAggregationInput: Swift.Sendable {
     /// The Linux timestamp of the date and time that the statistics end.
     /// This member is required.
     public var endTime: Foundation.Date?
@@ -10539,7 +10601,7 @@ public struct StartSessionsStatisticsAggregationInput {
     }
 }
 
-public struct StartSessionsStatisticsAggregationOutput {
+public struct StartSessionsStatisticsAggregationOutput: Swift.Sendable {
     /// A unique identifier for the aggregated statistics. Use this identifier with the GetAggregatedStatisticsForSessions operation to return the statistics.
     /// This member is required.
     public var aggregationId: Swift.String?
@@ -10552,7 +10614,7 @@ public struct StartSessionsStatisticsAggregationOutput {
     }
 }
 
-public struct TagResourceInput {
+public struct TagResourceInput: Swift.Sendable {
     /// The ARN of the resource to apply tags to.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -10569,12 +10631,12 @@ public struct TagResourceInput {
     }
 }
 
-public struct TagResourceOutput {
+public struct TagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UntagResourceInput {
+public struct UntagResourceInput: Swift.Sendable {
     /// The ARN of the resource to remove the tag from.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -10592,14 +10654,14 @@ public struct UntagResourceInput {
     }
 }
 
-public struct UntagResourceOutput {
+public struct UntagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
 extension DeadlineClientTypes {
 
-    public enum UpdateQueueFleetAssociationStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum UpdateQueueFleetAssociationStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case active
         case stopSchedulingAndCancelTasks
         case stopSchedulingAndCompleteTasks
@@ -10629,7 +10691,7 @@ extension DeadlineClientTypes {
     }
 }
 
-public struct UpdateQueueFleetAssociationInput {
+public struct UpdateQueueFleetAssociationInput: Swift.Sendable {
     /// The farm ID to update.
     /// This member is required.
     public var farmId: Swift.String?
@@ -10657,14 +10719,15 @@ public struct UpdateQueueFleetAssociationInput {
     }
 }
 
-public struct UpdateQueueFleetAssociationOutput {
+public struct UpdateQueueFleetAssociationOutput: Swift.Sendable {
 
     public init() { }
 }
 
 extension DeadlineClientTypes {
+
     /// The type of search filter to apply.
-    public indirect enum SearchFilterExpression {
+    public indirect enum SearchFilterExpression: Swift.Sendable {
         /// Filters based on date and time.
         case datetimefilter(DeadlineClientTypes.DateTimeFilterExpression)
         /// Filters by parameter.
@@ -10677,12 +10740,12 @@ extension DeadlineClientTypes {
         case groupfilter(DeadlineClientTypes.SearchGroupedFilterExpressions)
         case sdkUnknown(Swift.String)
     }
-
 }
 
 extension DeadlineClientTypes {
+
     /// The filter expression, AND or OR, to use when searching among a group of search strings in a resource. You can use two groupings per search each within parenthesis ().
-    public struct SearchGroupedFilterExpressions {
+    public struct SearchGroupedFilterExpressions: Swift.Sendable {
         /// The filters to use for the search.
         /// This member is required.
         public var filters: [DeadlineClientTypes.SearchFilterExpression]?
@@ -10699,10 +10762,9 @@ extension DeadlineClientTypes {
             self.`operator` = `operator`
         }
     }
-
 }
 
-public struct SearchJobsInput {
+public struct SearchJobsInput: Swift.Sendable {
     /// The farm ID of the job.
     /// This member is required.
     public var farmId: Swift.String?
@@ -10737,7 +10799,7 @@ public struct SearchJobsInput {
     }
 }
 
-public struct SearchStepsInput {
+public struct SearchStepsInput: Swift.Sendable {
     /// The farm ID to use for the step search.
     /// This member is required.
     public var farmId: Swift.String?
@@ -10776,7 +10838,7 @@ public struct SearchStepsInput {
     }
 }
 
-public struct SearchTasksInput {
+public struct SearchTasksInput: Swift.Sendable {
     /// The farm ID of the task.
     /// This member is required.
     public var farmId: Swift.String?
@@ -10815,7 +10877,7 @@ public struct SearchTasksInput {
     }
 }
 
-public struct SearchWorkersInput {
+public struct SearchWorkersInput: Swift.Sendable {
     /// The farm ID in the workers search.
     /// This member is required.
     public var farmId: Swift.String?
@@ -11947,6 +12009,38 @@ extension ListJobMembersInput {
     }
 }
 
+extension ListJobParameterDefinitionsInput {
+
+    static func urlPathProvider(_ value: ListJobParameterDefinitionsInput) -> Swift.String? {
+        guard let farmId = value.farmId else {
+            return nil
+        }
+        guard let queueId = value.queueId else {
+            return nil
+        }
+        guard let jobId = value.jobId else {
+            return nil
+        }
+        return "/2023-10-12/farms/\(farmId.urlPercentEncoding())/queues/\(queueId.urlPercentEncoding())/jobs/\(jobId.urlPercentEncoding())/parameter-definitions"
+    }
+}
+
+extension ListJobParameterDefinitionsInput {
+
+    static func queryItemProvider(_ value: ListJobParameterDefinitionsInput) throws -> [Smithy.URIQueryItem] {
+        var items = [Smithy.URIQueryItem]()
+        if let nextToken = value.nextToken {
+            let nextTokenQueryItem = Smithy.URIQueryItem(name: "nextToken".urlPercentEncoding(), value: Swift.String(nextToken).urlPercentEncoding())
+            items.append(nextTokenQueryItem)
+        }
+        if let maxResults = value.maxResults {
+            let maxResultsQueryItem = Smithy.URIQueryItem(name: "maxResults".urlPercentEncoding(), value: Swift.String(maxResults).urlPercentEncoding())
+            items.append(maxResultsQueryItem)
+        }
+        return items
+    }
+}
+
 extension ListJobsInput {
 
     static func urlPathProvider(_ value: ListJobsInput) -> Swift.String? {
@@ -13026,6 +13120,7 @@ extension CreateJobInput {
         try writer["maxRetriesPerTask"].write(value.maxRetriesPerTask)
         try writer["parameters"].writeMap(value.parameters, valueWritingClosure: DeadlineClientTypes.JobParameter.write(value:to:), keyNodeInfo: "key", valueNodeInfo: "value", isFlattened: false)
         try writer["priority"].write(value.priority)
+        try writer["sourceJobId"].write(value.sourceJobId)
         try writer["storageProfileId"].write(value.storageProfileId)
         try writer["targetTaskRunStatus"].write(value.targetTaskRunStatus)
         try writer["template"].write(value.template)
@@ -13764,6 +13859,7 @@ extension GetJobOutput {
         value.name = try reader["name"].readIfPresent() ?? ""
         value.parameters = try reader["parameters"].readMapIfPresent(valueReadingClosure: DeadlineClientTypes.JobParameter.read(from:), keyNodeInfo: "key", valueNodeInfo: "value", isFlattened: false)
         value.priority = try reader["priority"].readIfPresent() ?? 0
+        value.sourceJobId = try reader["sourceJobId"].readIfPresent()
         value.startedAt = try reader["startedAt"].readTimestampIfPresent(format: SmithyTimestamps.TimestampFormat.dateTime)
         value.storageProfileId = try reader["storageProfileId"].readIfPresent()
         value.targetTaskRunStatus = try reader["targetTaskRunStatus"].readIfPresent()
@@ -14131,6 +14227,19 @@ extension ListJobMembersOutput {
         let reader = responseReader
         var value = ListJobMembersOutput()
         value.members = try reader["members"].readListIfPresent(memberReadingClosure: DeadlineClientTypes.JobMember.read(from:), memberNodeInfo: "member", isFlattened: false) ?? []
+        value.nextToken = try reader["nextToken"].readIfPresent()
+        return value
+    }
+}
+
+extension ListJobParameterDefinitionsOutput {
+
+    static func httpOutput(from httpResponse: SmithyHTTPAPI.HTTPResponse) async throws -> ListJobParameterDefinitionsOutput {
+        let data = try await httpResponse.data()
+        let responseReader = try SmithyJSON.Reader.from(data: data)
+        let reader = responseReader
+        var value = ListJobParameterDefinitionsOutput()
+        value.jobParameterDefinitions = try reader["jobParameterDefinitions"].readListIfPresent(memberReadingClosure: SmithyReadWrite.ReadingClosures.readDocument(from:), memberNodeInfo: "member", isFlattened: false) ?? []
         value.nextToken = try reader["nextToken"].readIfPresent()
         return value
     }
@@ -15679,6 +15788,24 @@ enum ListFleetsOutputError {
 }
 
 enum ListJobMembersOutputError {
+
+    static func httpError(from httpResponse: SmithyHTTPAPI.HTTPResponse) async throws -> Swift.Error {
+        let data = try await httpResponse.data()
+        let responseReader = try SmithyJSON.Reader.from(data: data)
+        let baseError = try AWSClientRuntime.RestJSONError(httpResponse: httpResponse, responseReader: responseReader, noErrorWrapping: false)
+        if let error = baseError.customError() { return error }
+        switch baseError.code {
+            case "AccessDeniedException": return try AccessDeniedException.makeError(baseError: baseError)
+            case "InternalServerErrorException": return try InternalServerErrorException.makeError(baseError: baseError)
+            case "ResourceNotFoundException": return try ResourceNotFoundException.makeError(baseError: baseError)
+            case "ThrottlingException": return try ThrottlingException.makeError(baseError: baseError)
+            case "ValidationException": return try ValidationException.makeError(baseError: baseError)
+            default: return try AWSClientRuntime.UnknownAWSHTTPServiceError.makeError(baseError: baseError)
+        }
+    }
+}
+
+enum ListJobParameterDefinitionsOutputError {
 
     static func httpError(from httpResponse: SmithyHTTPAPI.HTTPResponse) async throws -> Swift.Error {
         let data = try await httpResponse.data()
@@ -17628,6 +17755,7 @@ extension DeadlineClientTypes.JobSummary {
         value.taskRunStatusCounts = try reader["taskRunStatusCounts"].readMapIfPresent(valueReadingClosure: SmithyReadWrite.ReadingClosures.readInt(from:), keyNodeInfo: "key", valueNodeInfo: "value", isFlattened: false)
         value.maxFailedTasksCount = try reader["maxFailedTasksCount"].readIfPresent()
         value.maxRetriesPerTask = try reader["maxRetriesPerTask"].readIfPresent()
+        value.sourceJobId = try reader["sourceJobId"].readIfPresent()
         return value
     }
 }
@@ -17956,6 +18084,7 @@ extension DeadlineClientTypes.JobSearchSummary {
         value.endedAt = try reader["endedAt"].readTimestampIfPresent(format: SmithyTimestamps.TimestampFormat.dateTime)
         value.startedAt = try reader["startedAt"].readTimestampIfPresent(format: SmithyTimestamps.TimestampFormat.dateTime)
         value.jobParameters = try reader["jobParameters"].readMapIfPresent(valueReadingClosure: DeadlineClientTypes.JobParameter.read(from:), keyNodeInfo: "key", valueNodeInfo: "value", isFlattened: false)
+        value.sourceJobId = try reader["sourceJobId"].readIfPresent()
         return value
     }
 }

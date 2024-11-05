@@ -243,7 +243,7 @@ public struct UnsupportedStreamMediaTypeException: ClientRuntime.ModeledError, A
 
 extension KinesisVideoArchivedMediaClientTypes {
 
-    public enum ClipFragmentSelectorType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ClipFragmentSelectorType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case producerTimestamp
         case serverTimestamp
         case sdkUnknown(Swift.String)
@@ -271,8 +271,9 @@ extension KinesisVideoArchivedMediaClientTypes {
 }
 
 extension KinesisVideoArchivedMediaClientTypes {
+
     /// The range of timestamps for which to return fragments.
-    public struct ClipTimestampRange {
+    public struct ClipTimestampRange: Swift.Sendable {
         /// The end of the timestamp range for the requested media. This value must be within 24 hours of the specified StartTimestamp, and it must be later than the StartTimestamp value. If FragmentSelectorType for the request is SERVER_TIMESTAMP, this value must be in the past. This value is inclusive. The EndTimestamp is compared to the (starting) timestamp of the fragment. Fragments that start before the EndTimestamp value and continue past it are included in the session.
         /// This member is required.
         public var endTimestamp: Foundation.Date?
@@ -289,12 +290,12 @@ extension KinesisVideoArchivedMediaClientTypes {
             self.startTimestamp = startTimestamp
         }
     }
-
 }
 
 extension KinesisVideoArchivedMediaClientTypes {
+
     /// Describes the timestamp range and timestamp origin of a range of fragments. Fragments that have duplicate producer timestamps are deduplicated. This means that if producers are producing a stream of fragments with producer timestamps that are approximately equal to the true clock time, the clip will contain all of the fragments within the requested timestamp range. If some fragments are ingested within the same time range and very different points in time, only the oldest ingested collection of fragments are returned.
-    public struct ClipFragmentSelector {
+    public struct ClipFragmentSelector: Swift.Sendable {
         /// The origin of the timestamps to use (Server or Producer).
         /// This member is required.
         public var fragmentSelectorType: KinesisVideoArchivedMediaClientTypes.ClipFragmentSelectorType?
@@ -311,10 +312,9 @@ extension KinesisVideoArchivedMediaClientTypes {
             self.timestampRange = timestampRange
         }
     }
-
 }
 
-public struct GetClipInput {
+public struct GetClipInput: Swift.Sendable {
     /// The time range of the requested clip and the source of the timestamps.
     /// This member is required.
     public var clipFragmentSelector: KinesisVideoArchivedMediaClientTypes.ClipFragmentSelector?
@@ -335,7 +335,7 @@ public struct GetClipInput {
     }
 }
 
-public struct GetClipOutput {
+public struct GetClipOutput: Swift.Sendable {
     /// The content type of the media in the requested clip.
     public var contentType: Swift.String?
     /// Traditional MP4 file that contains the media clip from the specified video stream. The output will contain the first 100 MB or the first 200 fragments from the specified start timestamp. For more information, see [Kinesis Video Streams Limits](https://docs.aws.amazon.com/kinesisvideostreams/latest/dg/limits.html).
@@ -353,7 +353,7 @@ public struct GetClipOutput {
 
 extension KinesisVideoArchivedMediaClientTypes {
 
-    public enum DASHFragmentSelectorType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DASHFragmentSelectorType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case producerTimestamp
         case serverTimestamp
         case sdkUnknown(Swift.String)
@@ -381,8 +381,9 @@ extension KinesisVideoArchivedMediaClientTypes {
 }
 
 extension KinesisVideoArchivedMediaClientTypes {
+
     /// The start and end of the timestamp range for the requested media. This value should not be present if PlaybackType is LIVE. The values in DASHimestampRange are inclusive. Fragments that start exactly at or after the start time are included in the session. Fragments that start before the start time and continue past it are not included in the session.
-    public struct DASHTimestampRange {
+    public struct DASHTimestampRange: Swift.Sendable {
         /// The end of the timestamp range for the requested media. This value must be within 24 hours of the specified StartTimestamp, and it must be later than the StartTimestamp value. If FragmentSelectorType for the request is SERVER_TIMESTAMP, this value must be in the past. The EndTimestamp value is required for ON_DEMAND mode, but optional for LIVE_REPLAY mode. If the EndTimestamp is not set for LIVE_REPLAY mode then the session will continue to include newly ingested fragments until the session expires. This value is inclusive. The EndTimestamp is compared to the (starting) timestamp of the fragment. Fragments that start before the EndTimestamp value and continue past it are included in the session.
         public var endTimestamp: Foundation.Date?
         /// The start of the timestamp range for the requested media. If the DASHTimestampRange value is specified, the StartTimestamp value is required. Only fragments that start exactly at or after StartTimestamp are included in the session. Fragments that start before StartTimestamp and continue past it aren't included in the session. If FragmentSelectorType is SERVER_TIMESTAMP, the StartTimestamp must be later than the stream head.
@@ -397,12 +398,12 @@ extension KinesisVideoArchivedMediaClientTypes {
             self.startTimestamp = startTimestamp
         }
     }
-
 }
 
 extension KinesisVideoArchivedMediaClientTypes {
+
     /// Contains the range of timestamps for the requested media, and the source of the timestamps.
-    public struct DASHFragmentSelector {
+    public struct DASHFragmentSelector: Swift.Sendable {
         /// The source of the timestamps for the requested media. When FragmentSelectorType is set to PRODUCER_TIMESTAMP and [GetDASHStreamingSessionURLInput$PlaybackMode] is ON_DEMAND or LIVE_REPLAY, the first fragment ingested with a producer timestamp within the specified [FragmentSelector$TimestampRange] is included in the media playlist. In addition, the fragments with producer timestamps within the TimestampRange ingested immediately following the first fragment (up to the [GetDASHStreamingSessionURLInput$MaxManifestFragmentResults] value) are included. Fragments that have duplicate producer timestamps are deduplicated. This means that if producers are producing a stream of fragments with producer timestamps that are approximately equal to the true clock time, the MPEG-DASH manifest will contain all of the fragments within the requested timestamp range. If some fragments are ingested within the same time range and very different points in time, only the oldest ingested collection of fragments are returned. When FragmentSelectorType is set to PRODUCER_TIMESTAMP and [GetDASHStreamingSessionURLInput$PlaybackMode] is LIVE, the producer timestamps are used in the MP4 fragments and for deduplication. But the most recently ingested fragments based on server timestamps are included in the MPEG-DASH manifest. This means that even if fragments ingested in the past have producer timestamps with values now, they are not included in the HLS media playlist. The default is SERVER_TIMESTAMP.
         public var fragmentSelectorType: KinesisVideoArchivedMediaClientTypes.DASHFragmentSelectorType?
         /// The start and end of the timestamp range for the requested media. This value should not be present if PlaybackType is LIVE.
@@ -417,12 +418,11 @@ extension KinesisVideoArchivedMediaClientTypes {
             self.timestampRange = timestampRange
         }
     }
-
 }
 
 extension KinesisVideoArchivedMediaClientTypes {
 
-    public enum DASHDisplayFragmentNumber: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DASHDisplayFragmentNumber: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case always
         case never
         case sdkUnknown(Swift.String)
@@ -451,7 +451,7 @@ extension KinesisVideoArchivedMediaClientTypes {
 
 extension KinesisVideoArchivedMediaClientTypes {
 
-    public enum DASHDisplayFragmentTimestamp: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DASHDisplayFragmentTimestamp: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case always
         case never
         case sdkUnknown(Swift.String)
@@ -480,7 +480,7 @@ extension KinesisVideoArchivedMediaClientTypes {
 
 extension KinesisVideoArchivedMediaClientTypes {
 
-    public enum DASHPlaybackMode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DASHPlaybackMode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case live
         case liveReplay
         case onDemand
@@ -510,7 +510,7 @@ extension KinesisVideoArchivedMediaClientTypes {
     }
 }
 
-public struct GetDASHStreamingSessionURLInput {
+public struct GetDASHStreamingSessionURLInput: Swift.Sendable {
     /// The time range of the requested fragment and the source of the timestamps. This parameter is required if PlaybackMode is ON_DEMAND or LIVE_REPLAY. This parameter is optional if PlaybackMode isLIVE. If PlaybackMode is LIVE, the FragmentSelectorType can be set, but the TimestampRange should not be set. If PlaybackMode is ON_DEMAND or LIVE_REPLAY, both FragmentSelectorType and TimestampRange must be set.
     public var dashFragmentSelector: KinesisVideoArchivedMediaClientTypes.DASHFragmentSelector?
     /// Fragments are identified in the manifest file based on their sequence number in the session. If DisplayFragmentNumber is set to ALWAYS, the Kinesis Video Streams fragment number is added to each S element in the manifest file with the attribute name “kvs:fn”. These fragment numbers can be used for logging or for use with other APIs (e.g. GetMedia and GetMediaForFragmentList). A custom MPEG-DASH media player is necessary to leverage these this custom attribute. The default value is NEVER.
@@ -559,7 +559,7 @@ public struct GetDASHStreamingSessionURLInput {
     }
 }
 
-public struct GetDASHStreamingSessionURLOutput {
+public struct GetDASHStreamingSessionURLOutput: Swift.Sendable {
     /// The URL (containing the session token) that a media player can use to retrieve the MPEG-DASH manifest.
     public var dashStreamingSessionURL: Swift.String?
 
@@ -573,7 +573,7 @@ public struct GetDASHStreamingSessionURLOutput {
 
 extension KinesisVideoArchivedMediaClientTypes {
 
-    public enum ContainerFormat: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ContainerFormat: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case fragmentedMp4
         case mpegTs
         case sdkUnknown(Swift.String)
@@ -602,7 +602,7 @@ extension KinesisVideoArchivedMediaClientTypes {
 
 extension KinesisVideoArchivedMediaClientTypes {
 
-    public enum HLSDiscontinuityMode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum HLSDiscontinuityMode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case always
         case never
         case onDiscontinuity
@@ -634,7 +634,7 @@ extension KinesisVideoArchivedMediaClientTypes {
 
 extension KinesisVideoArchivedMediaClientTypes {
 
-    public enum HLSDisplayFragmentTimestamp: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum HLSDisplayFragmentTimestamp: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case always
         case never
         case sdkUnknown(Swift.String)
@@ -663,7 +663,7 @@ extension KinesisVideoArchivedMediaClientTypes {
 
 extension KinesisVideoArchivedMediaClientTypes {
 
-    public enum HLSFragmentSelectorType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum HLSFragmentSelectorType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case producerTimestamp
         case serverTimestamp
         case sdkUnknown(Swift.String)
@@ -691,8 +691,9 @@ extension KinesisVideoArchivedMediaClientTypes {
 }
 
 extension KinesisVideoArchivedMediaClientTypes {
+
     /// The start and end of the timestamp range for the requested media. This value should not be present if PlaybackType is LIVE.
-    public struct HLSTimestampRange {
+    public struct HLSTimestampRange: Swift.Sendable {
         /// The end of the timestamp range for the requested media. This value must be within 24 hours of the specified StartTimestamp, and it must be later than the StartTimestamp value. If FragmentSelectorType for the request is SERVER_TIMESTAMP, this value must be in the past. The EndTimestamp value is required for ON_DEMAND mode, but optional for LIVE_REPLAY mode. If the EndTimestamp is not set for LIVE_REPLAY mode then the session will continue to include newly ingested fragments until the session expires. This value is inclusive. The EndTimestamp is compared to the (starting) timestamp of the fragment. Fragments that start before the EndTimestamp value and continue past it are included in the session.
         public var endTimestamp: Foundation.Date?
         /// The start of the timestamp range for the requested media. If the HLSTimestampRange value is specified, the StartTimestamp value is required. Only fragments that start exactly at or after StartTimestamp are included in the session. Fragments that start before StartTimestamp and continue past it aren't included in the session. If FragmentSelectorType is SERVER_TIMESTAMP, the StartTimestamp must be later than the stream head.
@@ -707,12 +708,12 @@ extension KinesisVideoArchivedMediaClientTypes {
             self.startTimestamp = startTimestamp
         }
     }
-
 }
 
 extension KinesisVideoArchivedMediaClientTypes {
+
     /// Contains the range of timestamps for the requested media, and the source of the timestamps.
-    public struct HLSFragmentSelector {
+    public struct HLSFragmentSelector: Swift.Sendable {
         /// The source of the timestamps for the requested media. When FragmentSelectorType is set to PRODUCER_TIMESTAMP and [GetHLSStreamingSessionURLInput$PlaybackMode] is ON_DEMAND or LIVE_REPLAY, the first fragment ingested with a producer timestamp within the specified [FragmentSelector$TimestampRange] is included in the media playlist. In addition, the fragments with producer timestamps within the TimestampRange ingested immediately following the first fragment (up to the [GetHLSStreamingSessionURLInput$MaxMediaPlaylistFragmentResults] value) are included. Fragments that have duplicate producer timestamps are deduplicated. This means that if producers are producing a stream of fragments with producer timestamps that are approximately equal to the true clock time, the HLS media playlists will contain all of the fragments within the requested timestamp range. If some fragments are ingested within the same time range and very different points in time, only the oldest ingested collection of fragments are returned. When FragmentSelectorType is set to PRODUCER_TIMESTAMP and [GetHLSStreamingSessionURLInput$PlaybackMode] is LIVE, the producer timestamps are used in the MP4 fragments and for deduplication. But the most recently ingested fragments based on server timestamps are included in the HLS media playlist. This means that even if fragments ingested in the past have producer timestamps with values now, they are not included in the HLS media playlist. The default is SERVER_TIMESTAMP.
         public var fragmentSelectorType: KinesisVideoArchivedMediaClientTypes.HLSFragmentSelectorType?
         /// The start and end of the timestamp range for the requested media. This value should not be present if PlaybackType is LIVE.
@@ -727,12 +728,11 @@ extension KinesisVideoArchivedMediaClientTypes {
             self.timestampRange = timestampRange
         }
     }
-
 }
 
 extension KinesisVideoArchivedMediaClientTypes {
 
-    public enum HLSPlaybackMode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum HLSPlaybackMode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case live
         case liveReplay
         case onDemand
@@ -762,7 +762,7 @@ extension KinesisVideoArchivedMediaClientTypes {
     }
 }
 
-public struct GetHLSStreamingSessionURLInput {
+public struct GetHLSStreamingSessionURLInput: Swift.Sendable {
     /// Specifies which format should be used for packaging the media. Specifying the FRAGMENTED_MP4 container format packages the media into MP4 fragments (fMP4 or CMAF). This is the recommended packaging because there is minimal packaging overhead. The other container format option is MPEG_TS. HLS has supported MPEG TS chunks since it was released and is sometimes the only supported packaging on older HLS players. MPEG TS typically has a 5-25 percent packaging overhead. This means MPEG TS typically requires 5-25 percent more bandwidth and cost than fMP4. The default is FRAGMENTED_MP4.
     public var containerFormat: KinesisVideoArchivedMediaClientTypes.ContainerFormat?
     /// Specifies when flags marking discontinuities between fragments are added to the media playlists. Media players typically build a timeline of media content to play, based on the timestamps of each fragment. This means that if there is any overlap or gap between fragments (as is typical if [HLSFragmentSelector] is set to SERVER_TIMESTAMP), the media player timeline will also have small gaps between fragments in some places, and will overwrite frames in other places. Gaps in the media player timeline can cause playback to stall and overlaps can cause playback to be jittery. When there are discontinuity flags between fragments, the media player is expected to reset the timeline, resulting in the next fragment being played immediately after the previous fragment. The following modes are supported:
@@ -824,7 +824,7 @@ public struct GetHLSStreamingSessionURLInput {
     }
 }
 
-public struct GetHLSStreamingSessionURLOutput {
+public struct GetHLSStreamingSessionURLOutput: Swift.Sendable {
     /// The URL (containing the session token) that a media player can use to retrieve the HLS master playlist.
     public var hlsStreamingSessionURL: Swift.String?
 
@@ -838,7 +838,7 @@ public struct GetHLSStreamingSessionURLOutput {
 
 extension KinesisVideoArchivedMediaClientTypes {
 
-    public enum Format: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Format: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case jpeg
         case png
         case sdkUnknown(Swift.String)
@@ -867,7 +867,7 @@ extension KinesisVideoArchivedMediaClientTypes {
 
 extension KinesisVideoArchivedMediaClientTypes {
 
-    public enum FormatConfigKey: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum FormatConfigKey: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case jpegquality
         case sdkUnknown(Swift.String)
 
@@ -893,7 +893,7 @@ extension KinesisVideoArchivedMediaClientTypes {
 
 extension KinesisVideoArchivedMediaClientTypes {
 
-    public enum ImageSelectorType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ImageSelectorType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case producerTimestamp
         case serverTimestamp
         case sdkUnknown(Swift.String)
@@ -920,7 +920,7 @@ extension KinesisVideoArchivedMediaClientTypes {
     }
 }
 
-public struct GetImagesInput {
+public struct GetImagesInput: Swift.Sendable {
     /// The end timestamp for the range of images to be generated. If the time range between StartTimestamp and EndTimestamp is more than 300 seconds above StartTimestamp, you will receive an IllegalArgumentException.
     /// This member is required.
     public var endTimestamp: Foundation.Date?
@@ -982,7 +982,7 @@ public struct GetImagesInput {
 
 extension KinesisVideoArchivedMediaClientTypes {
 
-    public enum ImageError: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ImageError: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case mediaError
         case noMedia
         case sdkUnknown(Swift.String)
@@ -1010,8 +1010,9 @@ extension KinesisVideoArchivedMediaClientTypes {
 }
 
 extension KinesisVideoArchivedMediaClientTypes {
+
     /// A structure that contains the Timestamp, Error, and ImageContent.
-    public struct Image {
+    public struct Image: Swift.Sendable {
         /// The error message shown when the image for the provided timestamp was not extracted due to a non-tryable error. An error will be returned if:
         ///
         /// * There is no media that exists for the specified Timestamp.
@@ -1037,10 +1038,9 @@ extension KinesisVideoArchivedMediaClientTypes {
             self.timeStamp = timeStamp
         }
     }
-
 }
 
-public struct GetImagesOutput {
+public struct GetImagesOutput: Swift.Sendable {
     /// The list of images generated from the video stream. If there is no media available for the given timestamp, the NO_MEDIA error will be listed in the output. If an error occurs while the image is being generated, the MEDIA_ERROR will be listed in the output as the cause of the missing image.
     public var images: [KinesisVideoArchivedMediaClientTypes.Image]?
     /// The encrypted token that was used in the request to get more images.
@@ -1056,7 +1056,7 @@ public struct GetImagesOutput {
     }
 }
 
-public struct GetMediaForFragmentListInput {
+public struct GetMediaForFragmentListInput: Swift.Sendable {
     /// A list of the numbers of fragments for which to retrieve media. You retrieve these values with [ListFragments].
     /// This member is required.
     public var fragments: [Swift.String]?
@@ -1077,7 +1077,7 @@ public struct GetMediaForFragmentListInput {
     }
 }
 
-public struct GetMediaForFragmentListOutput {
+public struct GetMediaForFragmentListOutput: Swift.Sendable {
     /// The content type of the requested media.
     public var contentType: Swift.String?
     /// The payload that Kinesis Video Streams returns is a sequence of chunks from the specified stream. For information about the chunks, see [PutMedia](http://docs.aws.amazon.com/kinesisvideostreams/latest/dg/API_dataplane_PutMedia.html). The chunks that Kinesis Video Streams returns in the GetMediaForFragmentList call also include the following additional Matroska (MKV) tags:
@@ -1110,7 +1110,7 @@ public struct GetMediaForFragmentListOutput {
 
 extension KinesisVideoArchivedMediaClientTypes {
 
-    public enum FragmentSelectorType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum FragmentSelectorType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case producerTimestamp
         case serverTimestamp
         case sdkUnknown(Swift.String)
@@ -1138,8 +1138,9 @@ extension KinesisVideoArchivedMediaClientTypes {
 }
 
 extension KinesisVideoArchivedMediaClientTypes {
+
     /// The range of timestamps for which to return fragments.
-    public struct TimestampRange {
+    public struct TimestampRange: Swift.Sendable {
         /// The ending timestamp in the range of timestamps for which to return fragments.
         /// This member is required.
         public var endTimestamp: Foundation.Date?
@@ -1156,10 +1157,10 @@ extension KinesisVideoArchivedMediaClientTypes {
             self.startTimestamp = startTimestamp
         }
     }
-
 }
 
 extension KinesisVideoArchivedMediaClientTypes {
+
     /// Describes the timestamp range and timestamp origin of a range of fragments. Only fragments with a start timestamp greater than or equal to the given start time and less than or equal to the end time are returned. For example, if a stream contains fragments with the following start timestamps:
     ///
     /// * 00:00:00
@@ -1172,7 +1173,7 @@ extension KinesisVideoArchivedMediaClientTypes {
     ///
     ///
     /// A fragment selector range with a start time of 00:00:01 and end time of 00:00:04 would return the fragments with start times of 00:00:02 and 00:00:04.
-    public struct FragmentSelector {
+    public struct FragmentSelector: Swift.Sendable {
         /// The origin of the timestamps to use (Server or Producer).
         /// This member is required.
         public var fragmentSelectorType: KinesisVideoArchivedMediaClientTypes.FragmentSelectorType?
@@ -1189,10 +1190,9 @@ extension KinesisVideoArchivedMediaClientTypes {
             self.timestampRange = timestampRange
         }
     }
-
 }
 
-public struct ListFragmentsInput {
+public struct ListFragmentsInput: Swift.Sendable {
     /// Describes the timestamp range and timestamp origin for the range of fragments to return. This is only required when the NextToken isn't passed in the API.
     public var fragmentSelector: KinesisVideoArchivedMediaClientTypes.FragmentSelector?
     /// The total number of fragments to return. If the total number of fragments available is more than the value specified in max-results, then a [ListFragmentsOutput$NextToken] is provided in the output that you can use to resume pagination.
@@ -1221,8 +1221,9 @@ public struct ListFragmentsInput {
 }
 
 extension KinesisVideoArchivedMediaClientTypes {
+
     /// Represents a segment of video or other time-delimited data.
-    public struct Fragment {
+    public struct Fragment: Swift.Sendable {
         /// The playback duration or other time value associated with the fragment.
         public var fragmentLengthInMilliseconds: Swift.Int
         /// The unique identifier of the fragment. This value monotonically increases based on the ingestion order.
@@ -1249,10 +1250,9 @@ extension KinesisVideoArchivedMediaClientTypes {
             self.serverTimestamp = serverTimestamp
         }
     }
-
 }
 
-public struct ListFragmentsOutput {
+public struct ListFragmentsOutput: Swift.Sendable {
     /// A list of archived [Fragment] objects from the stream that meet the selector criteria. Results are in no specific order, even across pages.
     public var fragments: [KinesisVideoArchivedMediaClientTypes.Fragment]?
     /// If the returned list is truncated, the operation returns this token to use to retrieve the next page of results. This value is null when there are no more results to return.

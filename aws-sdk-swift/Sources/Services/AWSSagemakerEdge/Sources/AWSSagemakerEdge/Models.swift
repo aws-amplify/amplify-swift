@@ -23,7 +23,8 @@ import protocol ClientRuntime.ModeledError
 @_spi(SmithyReadWrite) import struct AWSClientRuntime.RestJSONError
 @_spi(UnknownAWSHTTPServiceError) import struct AWSClientRuntime.UnknownAWSHTTPServiceError
 
-public struct SendHeartbeatOutput {
+
+public struct SendHeartbeatOutput: Swift.Sendable {
 
     public init() { }
 }
@@ -52,7 +53,7 @@ public struct InternalServiceException: ClientRuntime.ModeledError, AWSClientRun
     }
 }
 
-public struct GetDeploymentsInput {
+public struct GetDeploymentsInput: Swift.Sendable {
     /// The name of the fleet that the device belongs to.
     /// This member is required.
     public var deviceFleetName: Swift.String?
@@ -72,7 +73,7 @@ public struct GetDeploymentsInput {
 
 extension SagemakerEdgeClientTypes {
 
-    public enum ChecksumType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ChecksumType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case sha1
         case sdkUnknown(Swift.String)
 
@@ -97,8 +98,9 @@ extension SagemakerEdgeClientTypes {
 }
 
 extension SagemakerEdgeClientTypes {
+
     /// Information about the checksum of a model deployed on a device.
-    public struct Checksum {
+    public struct Checksum: Swift.Sendable {
         /// The checksum of the model.
         public var sum: Swift.String?
         /// The type of the checksum.
@@ -113,12 +115,11 @@ extension SagemakerEdgeClientTypes {
             self.type = type
         }
     }
-
 }
 
 extension SagemakerEdgeClientTypes {
 
-    public enum ModelState: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ModelState: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case deploy
         case undeploy
         case sdkUnknown(Swift.String)
@@ -146,8 +147,9 @@ extension SagemakerEdgeClientTypes {
 }
 
 extension SagemakerEdgeClientTypes {
+
     ///
-    public struct Definition {
+    public struct Definition: Swift.Sendable {
         /// The checksum information of the model.
         public var checksum: SagemakerEdgeClientTypes.Checksum?
         /// The unique model handle.
@@ -170,12 +172,11 @@ extension SagemakerEdgeClientTypes {
             self.state = state
         }
     }
-
 }
 
 extension SagemakerEdgeClientTypes {
 
-    public enum FailureHandlingPolicy: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum FailureHandlingPolicy: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case donothing
         case rollbackonfailure
         case sdkUnknown(Swift.String)
@@ -204,7 +205,7 @@ extension SagemakerEdgeClientTypes {
 
 extension SagemakerEdgeClientTypes {
 
-    public enum DeploymentType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DeploymentType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case model
         case sdkUnknown(Swift.String)
 
@@ -229,8 +230,9 @@ extension SagemakerEdgeClientTypes {
 }
 
 extension SagemakerEdgeClientTypes {
+
     /// Information about a deployment on an edge device that is registered with SageMaker Edge Manager.
-    public struct EdgeDeployment {
+    public struct EdgeDeployment: Swift.Sendable {
         /// Returns a list of Definition objects.
         public var definitions: [SagemakerEdgeClientTypes.Definition]?
         /// The name and unique ID of the deployment.
@@ -253,10 +255,9 @@ extension SagemakerEdgeClientTypes {
             self.type = type
         }
     }
-
 }
 
-public struct GetDeploymentsOutput {
+public struct GetDeploymentsOutput: Swift.Sendable {
     /// Returns a list of the configurations of the active deployments on the device.
     public var deployments: [SagemakerEdgeClientTypes.EdgeDeployment]?
 
@@ -268,7 +269,7 @@ public struct GetDeploymentsOutput {
     }
 }
 
-public struct GetDeviceRegistrationInput {
+public struct GetDeviceRegistrationInput: Swift.Sendable {
     /// The name of the fleet that the device belongs to.
     /// This member is required.
     public var deviceFleetName: Swift.String?
@@ -286,7 +287,7 @@ public struct GetDeviceRegistrationInput {
     }
 }
 
-public struct GetDeviceRegistrationOutput {
+public struct GetDeviceRegistrationOutput: Swift.Sendable {
     /// The amount of time, in seconds, that the registration status is stored on the device’s cache before it is refreshed.
     public var cacheTTL: Swift.String?
     /// Describes if the device is currently registered with SageMaker Edge Manager.
@@ -303,8 +304,9 @@ public struct GetDeviceRegistrationOutput {
 }
 
 extension SagemakerEdgeClientTypes {
+
     /// Information required for edge device metrics.
-    public struct EdgeMetric {
+    public struct EdgeMetric: Swift.Sendable {
         /// The dimension of metrics published.
         public var dimension: Swift.String?
         /// Returns the name of the metric.
@@ -327,12 +329,11 @@ extension SagemakerEdgeClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension SagemakerEdgeClientTypes {
 
-    public enum DeploymentStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DeploymentStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case fail
         case success
         case sdkUnknown(Swift.String)
@@ -360,8 +361,9 @@ extension SagemakerEdgeClientTypes {
 }
 
 extension SagemakerEdgeClientTypes {
+
     ///
-    public struct DeploymentModel {
+    public struct DeploymentModel: Swift.Sendable {
         /// The desired state of the model.
         public var desiredState: SagemakerEdgeClientTypes.ModelState?
         /// The unique handle of the model.
@@ -400,12 +402,12 @@ extension SagemakerEdgeClientTypes {
             self.statusReason = statusReason
         }
     }
-
 }
 
 extension SagemakerEdgeClientTypes {
+
     /// Information about the result of a deployment on an edge device that is registered with SageMaker Edge Manager.
-    public struct DeploymentResult {
+    public struct DeploymentResult: Swift.Sendable {
         /// The timestamp of when the deployment was ended, and the agent got the deployment results.
         public var deploymentEndTime: Foundation.Date?
         /// Returns a list of models deployed on the agent.
@@ -436,12 +438,12 @@ extension SagemakerEdgeClientTypes {
             self.deploymentStatusMessage = deploymentStatusMessage
         }
     }
-
 }
 
 extension SagemakerEdgeClientTypes {
+
     /// Information about a model deployed on an edge device that is registered with SageMaker Edge Manager.
-    public struct Model {
+    public struct Model: Swift.Sendable {
         /// The timestamp of the last inference that was made.
         public var latestInference: Foundation.Date?
         /// The timestamp of the last data sample taken.
@@ -468,10 +470,9 @@ extension SagemakerEdgeClientTypes {
             self.modelVersion = modelVersion
         }
     }
-
 }
 
-public struct SendHeartbeatInput {
+public struct SendHeartbeatInput: Swift.Sendable {
     /// For internal use. Returns a list of SageMaker Edge Manager agent operating metrics.
     public var agentMetrics: [SagemakerEdgeClientTypes.EdgeMetric]?
     /// Returns the version of the agent.

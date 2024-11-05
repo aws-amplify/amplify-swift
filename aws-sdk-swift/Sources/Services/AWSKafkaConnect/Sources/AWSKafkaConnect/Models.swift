@@ -28,8 +28,9 @@ import protocol ClientRuntime.ModeledError
 import struct Smithy.URIQueryItem
 
 extension KafkaConnectClientTypes {
+
     /// The description of the scale-in policy for the connector.
-    public struct ScaleInPolicyDescription {
+    public struct ScaleInPolicyDescription: Swift.Sendable {
         /// Specifies the CPU utilization percentage threshold at which you want connector scale in to be triggered.
         public var cpuUtilizationPercentage: Swift.Int
 
@@ -40,12 +41,12 @@ extension KafkaConnectClientTypes {
             self.cpuUtilizationPercentage = cpuUtilizationPercentage
         }
     }
-
 }
 
 extension KafkaConnectClientTypes {
+
     /// The description of the scale-out policy for the connector.
-    public struct ScaleOutPolicyDescription {
+    public struct ScaleOutPolicyDescription: Swift.Sendable {
         /// The CPU utilization percentage threshold at which you want connector scale out to be triggered.
         public var cpuUtilizationPercentage: Swift.Int
 
@@ -56,12 +57,12 @@ extension KafkaConnectClientTypes {
             self.cpuUtilizationPercentage = cpuUtilizationPercentage
         }
     }
-
 }
 
 extension KafkaConnectClientTypes {
+
     /// Information about the auto scaling parameters for the connector.
-    public struct AutoScalingDescription {
+    public struct AutoScalingDescription: Swift.Sendable {
         /// The maximum number of workers allocated to the connector.
         public var maxWorkerCount: Swift.Int
         /// The number of microcontroller units (MCUs) allocated to each connector worker. The valid values are 1,2,4,8.
@@ -88,12 +89,12 @@ extension KafkaConnectClientTypes {
             self.scaleOutPolicy = scaleOutPolicy
         }
     }
-
 }
 
 extension KafkaConnectClientTypes {
+
     /// The description of a connector's provisioned capacity.
-    public struct ProvisionedCapacityDescription {
+    public struct ProvisionedCapacityDescription: Swift.Sendable {
         /// The number of microcontroller units (MCUs) allocated to each connector worker. The valid values are 1,2,4,8.
         public var mcuCount: Swift.Int
         /// The number of workers that are allocated to the connector.
@@ -108,12 +109,12 @@ extension KafkaConnectClientTypes {
             self.workerCount = workerCount
         }
     }
-
 }
 
 extension KafkaConnectClientTypes {
+
     /// A description of the connector's capacity.
-    public struct CapacityDescription {
+    public struct CapacityDescription: Swift.Sendable {
         /// Describes the connector's auto scaling capacity.
         public var autoScaling: KafkaConnectClientTypes.AutoScalingDescription?
         /// Describes a connector's provisioned capacity.
@@ -128,12 +129,11 @@ extension KafkaConnectClientTypes {
             self.provisionedCapacity = provisionedCapacity
         }
     }
-
 }
 
 extension KafkaConnectClientTypes {
 
-    public enum ConnectorState: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ConnectorState: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case creating
         case deleting
         case failed
@@ -170,8 +170,9 @@ extension KafkaConnectClientTypes {
 }
 
 extension KafkaConnectClientTypes {
+
     /// The description of the VPC in which the connector resides.
-    public struct VpcDescription {
+    public struct VpcDescription: Swift.Sendable {
         /// The security groups for the connector.
         public var securityGroups: [Swift.String]?
         /// The subnets for the connector.
@@ -186,12 +187,12 @@ extension KafkaConnectClientTypes {
             self.subnets = subnets
         }
     }
-
 }
 
 extension KafkaConnectClientTypes {
+
     /// The description of the Apache Kafka cluster to which the connector is connected.
-    public struct ApacheKafkaClusterDescription {
+    public struct ApacheKafkaClusterDescription: Swift.Sendable {
         /// The bootstrap servers of the cluster.
         public var bootstrapServers: Swift.String?
         /// Details of an Amazon VPC which has network connectivity to the Apache Kafka cluster.
@@ -206,12 +207,12 @@ extension KafkaConnectClientTypes {
             self.vpc = vpc
         }
     }
-
 }
 
 extension KafkaConnectClientTypes {
+
     /// Details of how to connect to the Apache Kafka cluster.
-    public struct KafkaClusterDescription {
+    public struct KafkaClusterDescription: Swift.Sendable {
         /// The Apache Kafka cluster to which the connector is connected.
         public var apacheKafkaCluster: KafkaConnectClientTypes.ApacheKafkaClusterDescription?
 
@@ -222,12 +223,11 @@ extension KafkaConnectClientTypes {
             self.apacheKafkaCluster = apacheKafkaCluster
         }
     }
-
 }
 
 extension KafkaConnectClientTypes {
 
-    public enum KafkaClusterClientAuthenticationType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum KafkaClusterClientAuthenticationType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case iam
         case `none`
         case sdkUnknown(Swift.String)
@@ -255,8 +255,9 @@ extension KafkaConnectClientTypes {
 }
 
 extension KafkaConnectClientTypes {
+
     /// The client authentication information used in order to authenticate with the Apache Kafka cluster.
-    public struct KafkaClusterClientAuthenticationDescription {
+    public struct KafkaClusterClientAuthenticationDescription: Swift.Sendable {
         /// The type of client authentication used to connect to the Apache Kafka cluster. Value NONE means that no client authentication is used.
         public var authenticationType: KafkaConnectClientTypes.KafkaClusterClientAuthenticationType?
 
@@ -267,12 +268,11 @@ extension KafkaConnectClientTypes {
             self.authenticationType = authenticationType
         }
     }
-
 }
 
 extension KafkaConnectClientTypes {
 
-    public enum KafkaClusterEncryptionInTransitType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum KafkaClusterEncryptionInTransitType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case plaintext
         case tls
         case sdkUnknown(Swift.String)
@@ -300,8 +300,9 @@ extension KafkaConnectClientTypes {
 }
 
 extension KafkaConnectClientTypes {
+
     /// The description of the encryption in transit to the Apache Kafka cluster.
-    public struct KafkaClusterEncryptionInTransitDescription {
+    public struct KafkaClusterEncryptionInTransitDescription: Swift.Sendable {
         /// The type of encryption in transit to the Apache Kafka cluster.
         public var encryptionType: KafkaConnectClientTypes.KafkaClusterEncryptionInTransitType?
 
@@ -312,12 +313,12 @@ extension KafkaConnectClientTypes {
             self.encryptionType = encryptionType
         }
     }
-
 }
 
 extension KafkaConnectClientTypes {
+
     /// A description of the log delivery settings.
-    public struct CloudWatchLogsLogDeliveryDescription {
+    public struct CloudWatchLogsLogDeliveryDescription: Swift.Sendable {
         /// Whether log delivery to Amazon CloudWatch Logs is enabled.
         public var enabled: Swift.Bool
         /// The name of the CloudWatch log group that is the destination for log delivery.
@@ -332,12 +333,12 @@ extension KafkaConnectClientTypes {
             self.logGroup = logGroup
         }
     }
-
 }
 
 extension KafkaConnectClientTypes {
+
     /// A description of the settings for delivering logs to Amazon Kinesis Data Firehose.
-    public struct FirehoseLogDeliveryDescription {
+    public struct FirehoseLogDeliveryDescription: Swift.Sendable {
         /// The name of the Kinesis Data Firehose delivery stream that is the destination for log delivery.
         public var deliveryStream: Swift.String?
         /// Specifies whether connector logs get delivered to Amazon Kinesis Data Firehose.
@@ -352,12 +353,12 @@ extension KafkaConnectClientTypes {
             self.enabled = enabled
         }
     }
-
 }
 
 extension KafkaConnectClientTypes {
+
     /// The description of the details about delivering logs to Amazon S3.
-    public struct S3LogDeliveryDescription {
+    public struct S3LogDeliveryDescription: Swift.Sendable {
         /// The name of the S3 bucket that is the destination for log delivery.
         public var bucket: Swift.String?
         /// Specifies whether connector logs get sent to the specified Amazon S3 destination.
@@ -376,12 +377,12 @@ extension KafkaConnectClientTypes {
             self.`prefix` = `prefix`
         }
     }
-
 }
 
 extension KafkaConnectClientTypes {
+
     /// Workers can send worker logs to different destination types. This configuration specifies the details of these destinations.
-    public struct WorkerLogDeliveryDescription {
+    public struct WorkerLogDeliveryDescription: Swift.Sendable {
         /// Details about delivering logs to Amazon CloudWatch Logs.
         public var cloudWatchLogs: KafkaConnectClientTypes.CloudWatchLogsLogDeliveryDescription?
         /// Details about delivering logs to Amazon Kinesis Data Firehose.
@@ -400,12 +401,12 @@ extension KafkaConnectClientTypes {
             self.s3 = s3
         }
     }
-
 }
 
 extension KafkaConnectClientTypes {
+
     /// The description of the log delivery settings.
-    public struct LogDeliveryDescription {
+    public struct LogDeliveryDescription: Swift.Sendable {
         /// The workers can send worker logs to different destination types. This configuration specifies the details of these destinations.
         public var workerLogDelivery: KafkaConnectClientTypes.WorkerLogDeliveryDescription?
 
@@ -416,12 +417,12 @@ extension KafkaConnectClientTypes {
             self.workerLogDelivery = workerLogDelivery
         }
     }
-
 }
 
 extension KafkaConnectClientTypes {
+
     /// Details about a custom plugin.
-    public struct CustomPluginDescription {
+    public struct CustomPluginDescription: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the custom plugin.
         public var customPluginArn: Swift.String?
         /// The revision of the custom plugin.
@@ -436,12 +437,12 @@ extension KafkaConnectClientTypes {
             self.revision = revision
         }
     }
-
 }
 
 extension KafkaConnectClientTypes {
+
     /// The description of the plugin.
-    public struct PluginDescription {
+    public struct PluginDescription: Swift.Sendable {
         /// Details about a custom plugin.
         public var customPlugin: KafkaConnectClientTypes.CustomPluginDescription?
 
@@ -452,12 +453,12 @@ extension KafkaConnectClientTypes {
             self.customPlugin = customPlugin
         }
     }
-
 }
 
 extension KafkaConnectClientTypes {
+
     /// The description of the worker configuration.
-    public struct WorkerConfigurationDescription {
+    public struct WorkerConfigurationDescription: Swift.Sendable {
         /// The revision of the worker configuration.
         public var revision: Swift.Int
         /// The Amazon Resource Name (ARN) of the worker configuration.
@@ -472,12 +473,12 @@ extension KafkaConnectClientTypes {
             self.workerConfigurationArn = workerConfigurationArn
         }
     }
-
 }
 
 extension KafkaConnectClientTypes {
+
     /// Summary of a connector.
-    public struct ConnectorSummary {
+    public struct ConnectorSummary: Swift.Sendable {
         /// The connector's compute capacity settings.
         public var capacity: KafkaConnectClientTypes.CapacityDescription?
         /// The Amazon Resource Name (ARN) of the connector.
@@ -544,12 +545,11 @@ extension KafkaConnectClientTypes {
             self.workerConfiguration = workerConfiguration
         }
     }
-
 }
 
 extension KafkaConnectClientTypes {
 
-    public enum CustomPluginState: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum CustomPluginState: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case active
         case createFailed
         case creating
@@ -590,7 +590,7 @@ extension KafkaConnectClientTypes {
 
 extension KafkaConnectClientTypes {
 
-    public enum CustomPluginContentType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum CustomPluginContentType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case jar
         case zip
         case sdkUnknown(Swift.String)
@@ -618,8 +618,9 @@ extension KafkaConnectClientTypes {
 }
 
 extension KafkaConnectClientTypes {
+
     /// Details about a custom plugin file.
-    public struct CustomPluginFileDescription {
+    public struct CustomPluginFileDescription: Swift.Sendable {
         /// The hex-encoded MD5 checksum of the custom plugin file. You can use it to validate the file.
         public var fileMd5: Swift.String?
         /// The size in bytes of the custom plugin file. You can use it to validate the file.
@@ -634,12 +635,12 @@ extension KafkaConnectClientTypes {
             self.fileSize = fileSize
         }
     }
-
 }
 
 extension KafkaConnectClientTypes {
+
     /// The description of the location of an object in Amazon S3.
-    public struct S3LocationDescription {
+    public struct S3LocationDescription: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of an S3 bucket.
         public var bucketArn: Swift.String?
         /// The file key for an object in an S3 bucket.
@@ -658,12 +659,12 @@ extension KafkaConnectClientTypes {
             self.objectVersion = objectVersion
         }
     }
-
 }
 
 extension KafkaConnectClientTypes {
+
     /// Information about the location of a custom plugin.
-    public struct CustomPluginLocationDescription {
+    public struct CustomPluginLocationDescription: Swift.Sendable {
         /// The S3 bucket Amazon Resource Name (ARN), file key, and object version of the plugin file stored in Amazon S3.
         public var s3Location: KafkaConnectClientTypes.S3LocationDescription?
 
@@ -674,12 +675,12 @@ extension KafkaConnectClientTypes {
             self.s3Location = s3Location
         }
     }
-
 }
 
 extension KafkaConnectClientTypes {
+
     /// Details about the revision of a custom plugin.
-    public struct CustomPluginRevisionSummary {
+    public struct CustomPluginRevisionSummary: Swift.Sendable {
         /// The format of the plugin file.
         public var contentType: KafkaConnectClientTypes.CustomPluginContentType?
         /// The time that the custom plugin was created.
@@ -710,12 +711,12 @@ extension KafkaConnectClientTypes {
             self.revision = revision
         }
     }
-
 }
 
 extension KafkaConnectClientTypes {
+
     /// A summary of the custom plugin.
-    public struct CustomPluginSummary {
+    public struct CustomPluginSummary: Swift.Sendable {
         /// The time that the custom plugin was created.
         public var creationTime: Foundation.Date?
         /// The Amazon Resource Name (ARN) of the custom plugin.
@@ -746,12 +747,12 @@ extension KafkaConnectClientTypes {
             self.name = name
         }
     }
-
 }
 
 extension KafkaConnectClientTypes {
+
     /// A plugin is an Amazon Web Services resource that contains the code that defines a connector's logic.
-    public struct CustomPlugin {
+    public struct CustomPlugin: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the custom plugin.
         /// This member is required.
         public var customPluginArn: Swift.String?
@@ -768,12 +769,12 @@ extension KafkaConnectClientTypes {
             self.revision = revision
         }
     }
-
 }
 
 extension KafkaConnectClientTypes {
+
     /// A plugin is an Amazon Web Services resource that contains the code that defines your connector logic.
-    public struct Plugin {
+    public struct Plugin: Swift.Sendable {
         /// Details about a custom plugin.
         /// This member is required.
         public var customPlugin: KafkaConnectClientTypes.CustomPlugin?
@@ -785,12 +786,12 @@ extension KafkaConnectClientTypes {
             self.customPlugin = customPlugin
         }
     }
-
 }
 
 extension KafkaConnectClientTypes {
+
     /// The summary of a worker configuration revision.
-    public struct WorkerConfigurationRevisionSummary {
+    public struct WorkerConfigurationRevisionSummary: Swift.Sendable {
         /// The time that a worker configuration revision was created.
         public var creationTime: Foundation.Date?
         /// The description of a worker configuration revision.
@@ -809,12 +810,11 @@ extension KafkaConnectClientTypes {
             self.revision = revision
         }
     }
-
 }
 
 extension KafkaConnectClientTypes {
 
-    public enum WorkerConfigurationState: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum WorkerConfigurationState: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case active
         case deleting
         case sdkUnknown(Swift.String)
@@ -842,8 +842,9 @@ extension KafkaConnectClientTypes {
 }
 
 extension KafkaConnectClientTypes {
+
     /// The summary of a worker configuration.
-    public struct WorkerConfigurationSummary {
+    public struct WorkerConfigurationSummary: Swift.Sendable {
         /// The time that a worker configuration was created.
         public var creationTime: Foundation.Date?
         /// The description of a worker configuration.
@@ -874,12 +875,12 @@ extension KafkaConnectClientTypes {
             self.workerConfigurationState = workerConfigurationState
         }
     }
-
 }
 
 extension KafkaConnectClientTypes {
+
     /// Information about the VPC in which the connector resides.
-    public struct Vpc {
+    public struct Vpc: Swift.Sendable {
         /// The security groups for the connector.
         public var securityGroups: [Swift.String]?
         /// The subnets for the connector.
@@ -895,12 +896,12 @@ extension KafkaConnectClientTypes {
             self.subnets = subnets
         }
     }
-
 }
 
 extension KafkaConnectClientTypes {
+
     /// The details of the Apache Kafka cluster to which the connector is connected.
-    public struct ApacheKafkaCluster {
+    public struct ApacheKafkaCluster: Swift.Sendable {
         /// The bootstrap servers of the cluster.
         /// This member is required.
         public var bootstrapServers: Swift.String?
@@ -917,12 +918,12 @@ extension KafkaConnectClientTypes {
             self.vpc = vpc
         }
     }
-
 }
 
 extension KafkaConnectClientTypes {
+
     /// The scale-in policy for the connector.
-    public struct ScaleInPolicy {
+    public struct ScaleInPolicy: Swift.Sendable {
         /// Specifies the CPU utilization percentage threshold at which you want connector scale in to be triggered.
         /// This member is required.
         public var cpuUtilizationPercentage: Swift.Int
@@ -934,12 +935,12 @@ extension KafkaConnectClientTypes {
             self.cpuUtilizationPercentage = cpuUtilizationPercentage
         }
     }
-
 }
 
 extension KafkaConnectClientTypes {
+
     /// The scale-out policy for the connector.
-    public struct ScaleOutPolicy {
+    public struct ScaleOutPolicy: Swift.Sendable {
         /// The CPU utilization percentage threshold at which you want connector scale out to be triggered.
         /// This member is required.
         public var cpuUtilizationPercentage: Swift.Int
@@ -951,12 +952,12 @@ extension KafkaConnectClientTypes {
             self.cpuUtilizationPercentage = cpuUtilizationPercentage
         }
     }
-
 }
 
 extension KafkaConnectClientTypes {
+
     /// Specifies how the connector scales.
-    public struct AutoScaling {
+    public struct AutoScaling: Swift.Sendable {
         /// The maximum number of workers allocated to the connector.
         /// This member is required.
         public var maxWorkerCount: Swift.Int
@@ -986,12 +987,12 @@ extension KafkaConnectClientTypes {
             self.scaleOutPolicy = scaleOutPolicy
         }
     }
-
 }
 
 extension KafkaConnectClientTypes {
+
     /// An update to the connector's scale-in policy.
-    public struct ScaleInPolicyUpdate {
+    public struct ScaleInPolicyUpdate: Swift.Sendable {
         /// The target CPU utilization percentage threshold at which you want connector scale in to be triggered.
         /// This member is required.
         public var cpuUtilizationPercentage: Swift.Int
@@ -1003,12 +1004,12 @@ extension KafkaConnectClientTypes {
             self.cpuUtilizationPercentage = cpuUtilizationPercentage
         }
     }
-
 }
 
 extension KafkaConnectClientTypes {
+
     /// An update to the connector's scale-out policy.
-    public struct ScaleOutPolicyUpdate {
+    public struct ScaleOutPolicyUpdate: Swift.Sendable {
         /// The target CPU utilization percentage threshold at which you want connector scale out to be triggered.
         /// This member is required.
         public var cpuUtilizationPercentage: Swift.Int
@@ -1020,12 +1021,12 @@ extension KafkaConnectClientTypes {
             self.cpuUtilizationPercentage = cpuUtilizationPercentage
         }
     }
-
 }
 
 extension KafkaConnectClientTypes {
+
     /// The updates to the auto scaling parameters for the connector.
-    public struct AutoScalingUpdate {
+    public struct AutoScalingUpdate: Swift.Sendable {
         /// The target maximum number of workers allocated to the connector.
         /// This member is required.
         public var maxWorkerCount: Swift.Int
@@ -1057,7 +1058,6 @@ extension KafkaConnectClientTypes {
             self.scaleOutPolicy = scaleOutPolicy
         }
     }
-
 }
 
 /// HTTP Status Code 400: Bad request due to incorrect input. Correct your request and then retry it.
@@ -1085,8 +1085,9 @@ public struct BadRequestException: ClientRuntime.ModeledError, AWSClientRuntime.
 }
 
 extension KafkaConnectClientTypes {
+
     /// Details about a connector's provisioned capacity.
-    public struct ProvisionedCapacity {
+    public struct ProvisionedCapacity: Swift.Sendable {
         /// The number of microcontroller units (MCUs) allocated to each connector worker. The valid values are 1,2,4,8.
         /// This member is required.
         public var mcuCount: Swift.Int
@@ -1103,12 +1104,12 @@ extension KafkaConnectClientTypes {
             self.workerCount = workerCount
         }
     }
-
 }
 
 extension KafkaConnectClientTypes {
+
     /// Information about the capacity of the connector, whether it is auto scaled or provisioned.
-    public struct Capacity {
+    public struct Capacity: Swift.Sendable {
         /// Information about the auto scaling parameters for the connector.
         public var autoScaling: KafkaConnectClientTypes.AutoScaling?
         /// Details about a fixed capacity allocated to a connector.
@@ -1123,12 +1124,12 @@ extension KafkaConnectClientTypes {
             self.provisionedCapacity = provisionedCapacity
         }
     }
-
 }
 
 extension KafkaConnectClientTypes {
+
     /// An update to a connector's fixed capacity.
-    public struct ProvisionedCapacityUpdate {
+    public struct ProvisionedCapacityUpdate: Swift.Sendable {
         /// The number of microcontroller units (MCUs) allocated to each connector worker. The valid values are 1,2,4,8.
         /// This member is required.
         public var mcuCount: Swift.Int
@@ -1145,12 +1146,12 @@ extension KafkaConnectClientTypes {
             self.workerCount = workerCount
         }
     }
-
 }
 
 extension KafkaConnectClientTypes {
+
     /// The target capacity for the connector. The capacity can be auto scaled or provisioned.
-    public struct CapacityUpdate {
+    public struct CapacityUpdate: Swift.Sendable {
         /// The target auto scaling setting.
         public var autoScaling: KafkaConnectClientTypes.AutoScalingUpdate?
         /// The target settings for provisioned capacity.
@@ -1165,12 +1166,12 @@ extension KafkaConnectClientTypes {
             self.provisionedCapacity = provisionedCapacity
         }
     }
-
 }
 
 extension KafkaConnectClientTypes {
+
     /// The settings for delivering connector logs to Amazon CloudWatch Logs.
-    public struct CloudWatchLogsLogDelivery {
+    public struct CloudWatchLogsLogDelivery: Swift.Sendable {
         /// Whether log delivery to Amazon CloudWatch Logs is enabled.
         /// This member is required.
         public var enabled: Swift.Bool
@@ -1186,7 +1187,6 @@ extension KafkaConnectClientTypes {
             self.logGroup = logGroup
         }
     }
-
 }
 
 /// HTTP Status Code 409: Conflict. A resource with this name already exists. Retry your request with another name.
@@ -1358,8 +1358,9 @@ public struct UnauthorizedException: ClientRuntime.ModeledError, AWSClientRuntim
 }
 
 extension KafkaConnectClientTypes {
+
     /// The details of the Apache Kafka cluster to which the connector is connected.
-    public struct KafkaCluster {
+    public struct KafkaCluster: Swift.Sendable {
         /// The Apache Kafka cluster to which the connector is connected.
         /// This member is required.
         public var apacheKafkaCluster: KafkaConnectClientTypes.ApacheKafkaCluster?
@@ -1371,12 +1372,12 @@ extension KafkaConnectClientTypes {
             self.apacheKafkaCluster = apacheKafkaCluster
         }
     }
-
 }
 
 extension KafkaConnectClientTypes {
+
     /// The client authentication information used in order to authenticate with the Apache Kafka cluster.
-    public struct KafkaClusterClientAuthentication {
+    public struct KafkaClusterClientAuthentication: Swift.Sendable {
         /// The type of client authentication used to connect to the Apache Kafka cluster. Value NONE means that no client authentication is used.
         /// This member is required.
         public var authenticationType: KafkaConnectClientTypes.KafkaClusterClientAuthenticationType?
@@ -1388,12 +1389,12 @@ extension KafkaConnectClientTypes {
             self.authenticationType = authenticationType
         }
     }
-
 }
 
 extension KafkaConnectClientTypes {
+
     /// Details of encryption in transit to the Apache Kafka cluster.
-    public struct KafkaClusterEncryptionInTransit {
+    public struct KafkaClusterEncryptionInTransit: Swift.Sendable {
         /// The type of encryption in transit to the Apache Kafka cluster.
         /// This member is required.
         public var encryptionType: KafkaConnectClientTypes.KafkaClusterEncryptionInTransitType?
@@ -1405,12 +1406,12 @@ extension KafkaConnectClientTypes {
             self.encryptionType = encryptionType
         }
     }
-
 }
 
 extension KafkaConnectClientTypes {
+
     /// The settings for delivering logs to Amazon Kinesis Data Firehose.
-    public struct FirehoseLogDelivery {
+    public struct FirehoseLogDelivery: Swift.Sendable {
         /// The name of the Kinesis Data Firehose delivery stream that is the destination for log delivery.
         public var deliveryStream: Swift.String?
         /// Specifies whether connector logs get delivered to Amazon Kinesis Data Firehose.
@@ -1426,12 +1427,12 @@ extension KafkaConnectClientTypes {
             self.enabled = enabled
         }
     }
-
 }
 
 extension KafkaConnectClientTypes {
+
     /// Details about delivering logs to Amazon S3.
-    public struct S3LogDelivery {
+    public struct S3LogDelivery: Swift.Sendable {
         /// The name of the S3 bucket that is the destination for log delivery.
         public var bucket: Swift.String?
         /// Specifies whether connector logs get sent to the specified Amazon S3 destination.
@@ -1451,12 +1452,12 @@ extension KafkaConnectClientTypes {
             self.`prefix` = `prefix`
         }
     }
-
 }
 
 extension KafkaConnectClientTypes {
+
     /// Workers can send worker logs to different destination types. This configuration specifies the details of these destinations.
-    public struct WorkerLogDelivery {
+    public struct WorkerLogDelivery: Swift.Sendable {
         /// Details about delivering logs to Amazon CloudWatch Logs.
         public var cloudWatchLogs: KafkaConnectClientTypes.CloudWatchLogsLogDelivery?
         /// Details about delivering logs to Amazon Kinesis Data Firehose.
@@ -1475,12 +1476,12 @@ extension KafkaConnectClientTypes {
             self.s3 = s3
         }
     }
-
 }
 
 extension KafkaConnectClientTypes {
+
     /// Details about log delivery.
-    public struct LogDelivery {
+    public struct LogDelivery: Swift.Sendable {
         /// The workers can send worker logs to different destination types. This configuration specifies the details of these destinations.
         /// This member is required.
         public var workerLogDelivery: KafkaConnectClientTypes.WorkerLogDelivery?
@@ -1492,12 +1493,12 @@ extension KafkaConnectClientTypes {
             self.workerLogDelivery = workerLogDelivery
         }
     }
-
 }
 
 extension KafkaConnectClientTypes {
+
     /// The configuration of the workers, which are the processes that run the connector logic.
-    public struct WorkerConfiguration {
+    public struct WorkerConfiguration: Swift.Sendable {
         /// The revision of the worker configuration.
         /// This member is required.
         public var revision: Swift.Int
@@ -1514,10 +1515,9 @@ extension KafkaConnectClientTypes {
             self.workerConfigurationArn = workerConfigurationArn
         }
     }
-
 }
 
-public struct CreateConnectorInput {
+public struct CreateConnectorInput: Swift.Sendable {
     /// Information about the capacity allocated to the connector. Exactly one of the two properties must be specified.
     /// This member is required.
     public var capacity: KafkaConnectClientTypes.Capacity?
@@ -1591,7 +1591,7 @@ extension CreateConnectorInput: Swift.CustomDebugStringConvertible {
         "CreateConnectorInput(capacity: \(Swift.String(describing: capacity)), connectorDescription: \(Swift.String(describing: connectorDescription)), connectorName: \(Swift.String(describing: connectorName)), kafkaCluster: \(Swift.String(describing: kafkaCluster)), kafkaClusterClientAuthentication: \(Swift.String(describing: kafkaClusterClientAuthentication)), kafkaClusterEncryptionInTransit: \(Swift.String(describing: kafkaClusterEncryptionInTransit)), kafkaConnectVersion: \(Swift.String(describing: kafkaConnectVersion)), logDelivery: \(Swift.String(describing: logDelivery)), plugins: \(Swift.String(describing: plugins)), serviceExecutionRoleArn: \(Swift.String(describing: serviceExecutionRoleArn)), tags: \(Swift.String(describing: tags)), workerConfiguration: \(Swift.String(describing: workerConfiguration)), connectorConfiguration: \"CONTENT_REDACTED\")"}
 }
 
-public struct CreateConnectorOutput {
+public struct CreateConnectorOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) that Amazon assigned to the connector.
     public var connectorArn: Swift.String?
     /// The name of the connector.
@@ -1612,8 +1612,9 @@ public struct CreateConnectorOutput {
 }
 
 extension KafkaConnectClientTypes {
+
     /// The location of an object in Amazon S3.
-    public struct S3Location {
+    public struct S3Location: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of an S3 bucket.
         /// This member is required.
         public var bucketArn: Swift.String?
@@ -1634,12 +1635,12 @@ extension KafkaConnectClientTypes {
             self.objectVersion = objectVersion
         }
     }
-
 }
 
 extension KafkaConnectClientTypes {
+
     /// Information about the location of a custom plugin.
-    public struct CustomPluginLocation {
+    public struct CustomPluginLocation: Swift.Sendable {
         /// The S3 bucket Amazon Resource Name (ARN), file key, and object version of the plugin file stored in Amazon S3.
         /// This member is required.
         public var s3Location: KafkaConnectClientTypes.S3Location?
@@ -1651,10 +1652,9 @@ extension KafkaConnectClientTypes {
             self.s3Location = s3Location
         }
     }
-
 }
 
-public struct CreateCustomPluginInput {
+public struct CreateCustomPluginInput: Swift.Sendable {
     /// The type of the plugin file.
     /// This member is required.
     public var contentType: KafkaConnectClientTypes.CustomPluginContentType?
@@ -1685,7 +1685,7 @@ public struct CreateCustomPluginInput {
     }
 }
 
-public struct CreateCustomPluginOutput {
+public struct CreateCustomPluginOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) that Amazon assigned to the custom plugin.
     public var customPluginArn: Swift.String?
     /// The state of the custom plugin.
@@ -1709,7 +1709,7 @@ public struct CreateCustomPluginOutput {
     }
 }
 
-public struct CreateWorkerConfigurationInput {
+public struct CreateWorkerConfigurationInput: Swift.Sendable {
     /// A summary description of the worker configuration.
     public var description: Swift.String?
     /// The name of the worker configuration.
@@ -1740,7 +1740,7 @@ extension CreateWorkerConfigurationInput: Swift.CustomDebugStringConvertible {
         "CreateWorkerConfigurationInput(description: \(Swift.String(describing: description)), name: \(Swift.String(describing: name)), tags: \(Swift.String(describing: tags)), propertiesFileContent: \"CONTENT_REDACTED\")"}
 }
 
-public struct CreateWorkerConfigurationOutput {
+public struct CreateWorkerConfigurationOutput: Swift.Sendable {
     /// The time that the worker configuration was created.
     public var creationTime: Foundation.Date?
     /// The latest revision of the worker configuration.
@@ -1768,7 +1768,7 @@ public struct CreateWorkerConfigurationOutput {
     }
 }
 
-public struct DeleteConnectorInput {
+public struct DeleteConnectorInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the connector that you want to delete.
     /// This member is required.
     public var connectorArn: Swift.String?
@@ -1785,7 +1785,7 @@ public struct DeleteConnectorInput {
     }
 }
 
-public struct DeleteConnectorOutput {
+public struct DeleteConnectorOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the connector that you requested to delete.
     public var connectorArn: Swift.String?
     /// The state of the connector that you requested to delete.
@@ -1801,7 +1801,7 @@ public struct DeleteConnectorOutput {
     }
 }
 
-public struct DeleteCustomPluginInput {
+public struct DeleteCustomPluginInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the custom plugin that you want to delete.
     /// This member is required.
     public var customPluginArn: Swift.String?
@@ -1814,7 +1814,7 @@ public struct DeleteCustomPluginInput {
     }
 }
 
-public struct DeleteCustomPluginOutput {
+public struct DeleteCustomPluginOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the custom plugin that you requested to delete.
     public var customPluginArn: Swift.String?
     /// The state of the custom plugin.
@@ -1830,7 +1830,7 @@ public struct DeleteCustomPluginOutput {
     }
 }
 
-public struct DeleteWorkerConfigurationInput {
+public struct DeleteWorkerConfigurationInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the worker configuration that you want to delete.
     /// This member is required.
     public var workerConfigurationArn: Swift.String?
@@ -1843,7 +1843,7 @@ public struct DeleteWorkerConfigurationInput {
     }
 }
 
-public struct DeleteWorkerConfigurationOutput {
+public struct DeleteWorkerConfigurationOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the worker configuration that you requested to delete.
     public var workerConfigurationArn: Swift.String?
     /// The state of the worker configuration.
@@ -1859,7 +1859,7 @@ public struct DeleteWorkerConfigurationOutput {
     }
 }
 
-public struct DescribeConnectorInput {
+public struct DescribeConnectorInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the connector that you want to describe.
     /// This member is required.
     public var connectorArn: Swift.String?
@@ -1873,8 +1873,9 @@ public struct DescribeConnectorInput {
 }
 
 extension KafkaConnectClientTypes {
+
     /// Details about the state of a resource.
-    public struct StateDescription {
+    public struct StateDescription: Swift.Sendable {
         /// A code that describes the state of a resource.
         public var code: Swift.String?
         /// A message that describes the state of a resource.
@@ -1889,10 +1890,9 @@ extension KafkaConnectClientTypes {
             self.message = message
         }
     }
-
 }
 
-public struct DescribeConnectorOutput {
+public struct DescribeConnectorOutput: Swift.Sendable {
     /// Information about the capacity of the connector, whether it is auto scaled or provisioned.
     public var capacity: KafkaConnectClientTypes.CapacityDescription?
     /// The Amazon Resource Name (ARN) of the connector.
@@ -1973,7 +1973,7 @@ extension DescribeConnectorOutput: Swift.CustomDebugStringConvertible {
         "DescribeConnectorOutput(capacity: \(Swift.String(describing: capacity)), connectorArn: \(Swift.String(describing: connectorArn)), connectorDescription: \(Swift.String(describing: connectorDescription)), connectorName: \(Swift.String(describing: connectorName)), connectorState: \(Swift.String(describing: connectorState)), creationTime: \(Swift.String(describing: creationTime)), currentVersion: \(Swift.String(describing: currentVersion)), kafkaCluster: \(Swift.String(describing: kafkaCluster)), kafkaClusterClientAuthentication: \(Swift.String(describing: kafkaClusterClientAuthentication)), kafkaClusterEncryptionInTransit: \(Swift.String(describing: kafkaClusterEncryptionInTransit)), kafkaConnectVersion: \(Swift.String(describing: kafkaConnectVersion)), logDelivery: \(Swift.String(describing: logDelivery)), plugins: \(Swift.String(describing: plugins)), serviceExecutionRoleArn: \(Swift.String(describing: serviceExecutionRoleArn)), stateDescription: \(Swift.String(describing: stateDescription)), workerConfiguration: \(Swift.String(describing: workerConfiguration)), connectorConfiguration: \"CONTENT_REDACTED\")"}
 }
 
-public struct DescribeCustomPluginInput {
+public struct DescribeCustomPluginInput: Swift.Sendable {
     /// Returns information about a custom plugin.
     /// This member is required.
     public var customPluginArn: Swift.String?
@@ -1986,7 +1986,7 @@ public struct DescribeCustomPluginInput {
     }
 }
 
-public struct DescribeCustomPluginOutput {
+public struct DescribeCustomPluginOutput: Swift.Sendable {
     /// The time that the custom plugin was created.
     public var creationTime: Foundation.Date?
     /// The Amazon Resource Name (ARN) of the custom plugin.
@@ -2022,7 +2022,7 @@ public struct DescribeCustomPluginOutput {
     }
 }
 
-public struct DescribeWorkerConfigurationInput {
+public struct DescribeWorkerConfigurationInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the worker configuration that you want to get information about.
     /// This member is required.
     public var workerConfigurationArn: Swift.String?
@@ -2036,8 +2036,9 @@ public struct DescribeWorkerConfigurationInput {
 }
 
 extension KafkaConnectClientTypes {
+
     /// The description of the worker configuration revision.
-    public struct WorkerConfigurationRevisionDescription {
+    public struct WorkerConfigurationRevisionDescription: Swift.Sendable {
         /// The time that the worker configuration was created.
         public var creationTime: Foundation.Date?
         /// The description of the worker configuration revision.
@@ -2060,7 +2061,6 @@ extension KafkaConnectClientTypes {
             self.revision = revision
         }
     }
-
 }
 
 extension KafkaConnectClientTypes.WorkerConfigurationRevisionDescription: Swift.CustomDebugStringConvertible {
@@ -2068,7 +2068,7 @@ extension KafkaConnectClientTypes.WorkerConfigurationRevisionDescription: Swift.
         "WorkerConfigurationRevisionDescription(creationTime: \(Swift.String(describing: creationTime)), description: \(Swift.String(describing: description)), revision: \(Swift.String(describing: revision)), propertiesFileContent: \"CONTENT_REDACTED\")"}
 }
 
-public struct DescribeWorkerConfigurationOutput {
+public struct DescribeWorkerConfigurationOutput: Swift.Sendable {
     /// The time that the worker configuration was created.
     public var creationTime: Foundation.Date?
     /// The description of the worker configuration.
@@ -2100,7 +2100,7 @@ public struct DescribeWorkerConfigurationOutput {
     }
 }
 
-public struct ListConnectorsInput {
+public struct ListConnectorsInput: Swift.Sendable {
     /// The name prefix that you want to use to search for and list connectors.
     public var connectorNamePrefix: Swift.String?
     /// The maximum number of connectors to list in one response.
@@ -2120,7 +2120,7 @@ public struct ListConnectorsInput {
     }
 }
 
-public struct ListConnectorsOutput {
+public struct ListConnectorsOutput: Swift.Sendable {
     /// An array of connector descriptions.
     public var connectors: [KafkaConnectClientTypes.ConnectorSummary]?
     /// If the response of a ListConnectors operation is truncated, it will include a NextToken. Send this NextToken in a subsequent request to continue listing from where it left off.
@@ -2136,7 +2136,7 @@ public struct ListConnectorsOutput {
     }
 }
 
-public struct ListCustomPluginsInput {
+public struct ListCustomPluginsInput: Swift.Sendable {
     /// The maximum number of custom plugins to list in one response.
     public var maxResults: Swift.Int
     /// Lists custom plugin names that start with the specified text string.
@@ -2156,7 +2156,7 @@ public struct ListCustomPluginsInput {
     }
 }
 
-public struct ListCustomPluginsOutput {
+public struct ListCustomPluginsOutput: Swift.Sendable {
     /// An array of custom plugin descriptions.
     public var customPlugins: [KafkaConnectClientTypes.CustomPluginSummary]?
     /// If the response of a ListCustomPlugins operation is truncated, it will include a NextToken. Send this NextToken in a subsequent request to continue listing from where the previous operation left off.
@@ -2172,7 +2172,7 @@ public struct ListCustomPluginsOutput {
     }
 }
 
-public struct ListTagsForResourceInput {
+public struct ListTagsForResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the resource for which you want to list all attached tags.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -2185,7 +2185,7 @@ public struct ListTagsForResourceInput {
     }
 }
 
-public struct ListTagsForResourceOutput {
+public struct ListTagsForResourceOutput: Swift.Sendable {
     /// Lists the tags attached to the specified resource in the corresponding request.
     public var tags: [Swift.String: Swift.String]?
 
@@ -2197,7 +2197,7 @@ public struct ListTagsForResourceOutput {
     }
 }
 
-public struct ListWorkerConfigurationsInput {
+public struct ListWorkerConfigurationsInput: Swift.Sendable {
     /// The maximum number of worker configurations to list in one response.
     public var maxResults: Swift.Int
     /// Lists worker configuration names that start with the specified text string.
@@ -2217,7 +2217,7 @@ public struct ListWorkerConfigurationsInput {
     }
 }
 
-public struct ListWorkerConfigurationsOutput {
+public struct ListWorkerConfigurationsOutput: Swift.Sendable {
     /// If the response of a ListWorkerConfigurations operation is truncated, it will include a NextToken. Send this NextToken in a subsequent request to continue listing from where the previous operation left off.
     public var nextToken: Swift.String?
     /// An array of worker configuration descriptions.
@@ -2233,7 +2233,7 @@ public struct ListWorkerConfigurationsOutput {
     }
 }
 
-public struct TagResourceInput {
+public struct TagResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the resource to which you want to attach tags.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -2251,12 +2251,12 @@ public struct TagResourceInput {
     }
 }
 
-public struct TagResourceOutput {
+public struct TagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UntagResourceInput {
+public struct UntagResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the resource from which you want to remove tags.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -2274,12 +2274,12 @@ public struct UntagResourceInput {
     }
 }
 
-public struct UntagResourceOutput {
+public struct UntagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdateConnectorInput {
+public struct UpdateConnectorInput: Swift.Sendable {
     /// The target capacity.
     /// This member is required.
     public var capacity: KafkaConnectClientTypes.CapacityUpdate?
@@ -2302,7 +2302,7 @@ public struct UpdateConnectorInput {
     }
 }
 
-public struct UpdateConnectorOutput {
+public struct UpdateConnectorOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the connector.
     public var connectorArn: Swift.String?
     /// The state of the connector.

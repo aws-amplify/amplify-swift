@@ -29,7 +29,7 @@ import protocol ClientRuntime.ModeledError
 
 extension WorkMailClientTypes {
 
-    public enum AccessControlRuleEffect: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AccessControlRuleEffect: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case allow
         case deny
         case sdkUnknown(Swift.String)
@@ -57,8 +57,9 @@ extension WorkMailClientTypes {
 }
 
 extension WorkMailClientTypes {
+
     /// A rule that controls access to an WorkMail organization.
-    public struct AccessControlRule {
+    public struct AccessControlRule: Swift.Sendable {
         /// Access protocol actions to include in the rule. Valid values include ActiveSync, AutoDiscover, EWS, IMAP, SMTP, WindowsOutlook, and WebMail.
         public var actions: [Swift.String]?
         /// The date that the rule was created.
@@ -117,12 +118,11 @@ extension WorkMailClientTypes {
             self.userIds = userIds
         }
     }
-
 }
 
 extension WorkMailClientTypes {
 
-    public enum AccessEffect: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AccessEffect: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case allow
         case deny
         case sdkUnknown(Swift.String)
@@ -293,7 +293,7 @@ public struct UnsupportedOperationException: ClientRuntime.ModeledError, AWSClie
     }
 }
 
-public struct AssociateDelegateToResourceInput {
+public struct AssociateDelegateToResourceInput: Swift.Sendable {
     /// The member (user or group) to associate to the resource. The entity ID can accept UserId or GroupID, Username or Groupname, or email.
     ///
     /// * Entity: 12345678-1234-1234-1234-123456789012 or S-1-1-12-1234567890-123456789-123456789-1234
@@ -328,7 +328,7 @@ public struct AssociateDelegateToResourceInput {
     }
 }
 
-public struct AssociateDelegateToResourceOutput {
+public struct AssociateDelegateToResourceOutput: Swift.Sendable {
 
     public init() { }
 }
@@ -381,7 +381,7 @@ public struct DirectoryUnavailableException: ClientRuntime.ModeledError, AWSClie
     }
 }
 
-public struct AssociateMemberToGroupInput {
+public struct AssociateMemberToGroupInput: Swift.Sendable {
     /// The group to which the member (user or group) is associated. The identifier can accept GroupId, Groupname, or email. The following identity formats are available:
     ///
     /// * Group ID: 12345678-1234-1234-1234-123456789012 or S-1-1-12-1234567890-123456789-123456789-1234
@@ -416,7 +416,7 @@ public struct AssociateMemberToGroupInput {
     }
 }
 
-public struct AssociateMemberToGroupOutput {
+public struct AssociateMemberToGroupOutput: Swift.Sendable {
 
     public init() { }
 }
@@ -445,7 +445,7 @@ public struct ResourceNotFoundException: ClientRuntime.ModeledError, AWSClientRu
     }
 }
 
-public struct AssumeImpersonationRoleInput {
+public struct AssumeImpersonationRoleInput: Swift.Sendable {
     /// The impersonation role ID to assume.
     /// This member is required.
     public var impersonationRoleId: Swift.String?
@@ -463,7 +463,7 @@ public struct AssumeImpersonationRoleInput {
     }
 }
 
-public struct AssumeImpersonationRoleOutput {
+public struct AssumeImpersonationRoleOutput: Swift.Sendable {
     /// The authentication token's validity, in seconds.
     public var expiresIn: Swift.Int?
     /// The authentication token for the impersonation role.
@@ -480,8 +480,9 @@ public struct AssumeImpersonationRoleOutput {
 }
 
 extension WorkMailClientTypes {
+
     /// Describes an EWS based availability provider when returned from the service. It does not contain the password of the endpoint.
-    public struct RedactedEwsAvailabilityProvider {
+    public struct RedactedEwsAvailabilityProvider: Swift.Sendable {
         /// The endpoint of the remote EWS server.
         public var ewsEndpoint: Swift.String?
         /// The username used to authenticate the remote EWS server.
@@ -496,12 +497,12 @@ extension WorkMailClientTypes {
             self.ewsUsername = ewsUsername
         }
     }
-
 }
 
 extension WorkMailClientTypes {
+
     /// Describes a Lambda based availability provider.
-    public struct LambdaAvailabilityProvider {
+    public struct LambdaAvailabilityProvider: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the Lambda that acts as the availability provider.
         /// This member is required.
         public var lambdaArn: Swift.String?
@@ -513,12 +514,11 @@ extension WorkMailClientTypes {
             self.lambdaArn = lambdaArn
         }
     }
-
 }
 
 extension WorkMailClientTypes {
 
-    public enum AvailabilityProviderType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AvailabilityProviderType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case ews
         case lambda
         case sdkUnknown(Swift.String)
@@ -546,8 +546,9 @@ extension WorkMailClientTypes {
 }
 
 extension WorkMailClientTypes {
+
     /// List all the AvailabilityConfiguration's for the given WorkMail organization.
-    public struct AvailabilityConfiguration {
+    public struct AvailabilityConfiguration: Swift.Sendable {
         /// The date and time at which the availability configuration was created.
         public var dateCreated: Foundation.Date?
         /// The date and time at which the availability configuration was last modified.
@@ -578,12 +579,12 @@ extension WorkMailClientTypes {
             self.providerType = providerType
         }
     }
-
 }
 
 extension WorkMailClientTypes {
+
     /// At least one delegate must be associated to the resource to disable automatic replies from the resource.
-    public struct BookingOptions {
+    public struct BookingOptions: Swift.Sendable {
         /// The resource's ability to automatically reply to requests. If disabled, delegates must be associated to the resource.
         public var autoAcceptRequests: Swift.Bool
         /// The resource's ability to automatically decline any conflicting requests.
@@ -602,10 +603,9 @@ extension WorkMailClientTypes {
             self.autoDeclineRecurringRequests = autoDeclineRecurringRequests
         }
     }
-
 }
 
-public struct CancelMailboxExportJobInput {
+public struct CancelMailboxExportJobInput: Swift.Sendable {
     /// The idempotency token for the client request.
     /// This member is required.
     public var clientToken: Swift.String?
@@ -628,7 +628,7 @@ public struct CancelMailboxExportJobInput {
     }
 }
 
-public struct CancelMailboxExportJobOutput {
+public struct CancelMailboxExportJobOutput: Swift.Sendable {
 
     public init() { }
 }
@@ -729,7 +729,7 @@ public struct MailDomainStateException: ClientRuntime.ModeledError, AWSClientRun
     }
 }
 
-public struct CreateAliasInput {
+public struct CreateAliasInput: Swift.Sendable {
     /// The alias to add to the member set.
     /// This member is required.
     public var alias: Swift.String?
@@ -752,7 +752,7 @@ public struct CreateAliasInput {
     }
 }
 
-public struct CreateAliasOutput {
+public struct CreateAliasOutput: Swift.Sendable {
 
     public init() { }
 }
@@ -782,8 +782,9 @@ public struct NameAvailabilityException: ClientRuntime.ModeledError, AWSClientRu
 }
 
 extension WorkMailClientTypes {
+
     /// Describes an EWS based availability provider. This is only used as input to the service.
-    public struct EwsAvailabilityProvider {
+    public struct EwsAvailabilityProvider: Swift.Sendable {
         /// The endpoint of the remote EWS server.
         /// This member is required.
         public var ewsEndpoint: Swift.String?
@@ -805,7 +806,6 @@ extension WorkMailClientTypes {
             self.ewsUsername = ewsUsername
         }
     }
-
 }
 
 extension WorkMailClientTypes.EwsAvailabilityProvider: Swift.CustomDebugStringConvertible {
@@ -813,7 +813,7 @@ extension WorkMailClientTypes.EwsAvailabilityProvider: Swift.CustomDebugStringCo
         "EwsAvailabilityProvider(ewsEndpoint: \(Swift.String(describing: ewsEndpoint)), ewsUsername: \(Swift.String(describing: ewsUsername)), ewsPassword: \"CONTENT_REDACTED\")"}
 }
 
-public struct CreateAvailabilityConfigurationInput {
+public struct CreateAvailabilityConfigurationInput: Swift.Sendable {
     /// An idempotent token that ensures that an API request is executed only once.
     public var clientToken: Swift.String?
     /// The domain to which the provider applies.
@@ -843,7 +843,7 @@ public struct CreateAvailabilityConfigurationInput {
     }
 }
 
-public struct CreateAvailabilityConfigurationOutput {
+public struct CreateAvailabilityConfigurationOutput: Swift.Sendable {
 
     public init() { }
 }
@@ -872,7 +872,7 @@ public struct ReservedNameException: ClientRuntime.ModeledError, AWSClientRuntim
     }
 }
 
-public struct CreateGroupInput {
+public struct CreateGroupInput: Swift.Sendable {
     /// If this parameter is enabled, the group will be hidden from the address book.
     public var hiddenFromGlobalAddressList: Swift.Bool?
     /// The name of the group.
@@ -894,7 +894,7 @@ public struct CreateGroupInput {
     }
 }
 
-public struct CreateGroupOutput {
+public struct CreateGroupOutput: Swift.Sendable {
     /// The identifier of the group.
     public var groupId: Swift.String?
 
@@ -906,9 +906,44 @@ public struct CreateGroupOutput {
     }
 }
 
+public struct CreateIdentityCenterApplicationInput: Swift.Sendable {
+    /// The idempotency token associated with the request.
+    public var clientToken: Swift.String?
+    /// The Amazon Resource Name (ARN) of the instance.
+    /// This member is required.
+    public var instanceArn: Swift.String?
+    /// The name of the IAM Identity Center application.
+    /// This member is required.
+    public var name: Swift.String?
+
+    public init(
+        clientToken: Swift.String? = nil,
+        instanceArn: Swift.String? = nil,
+        name: Swift.String? = nil
+    )
+    {
+        self.clientToken = clientToken
+        self.instanceArn = instanceArn
+        self.name = name
+    }
+}
+
+public struct CreateIdentityCenterApplicationOutput: Swift.Sendable {
+    /// The Amazon Resource Name (ARN) of the application.
+    public var applicationArn: Swift.String?
+
+    public init(
+        applicationArn: Swift.String? = nil
+    )
+    {
+        self.applicationArn = applicationArn
+    }
+}
+
 extension WorkMailClientTypes {
+
     /// The rules for the given impersonation role.
-    public struct ImpersonationRule {
+    public struct ImpersonationRule: Swift.Sendable {
         /// The rule description.
         public var description: Swift.String?
         /// The effect of the rule when it matches the input. Allowed effect values are ALLOW or DENY.
@@ -941,12 +976,11 @@ extension WorkMailClientTypes {
             self.targetUsers = targetUsers
         }
     }
-
 }
 
 extension WorkMailClientTypes {
 
-    public enum ImpersonationRoleType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ImpersonationRoleType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case fullAccess
         case readOnly
         case sdkUnknown(Swift.String)
@@ -973,7 +1007,7 @@ extension WorkMailClientTypes {
     }
 }
 
-public struct CreateImpersonationRoleInput {
+public struct CreateImpersonationRoleInput: Swift.Sendable {
     /// The idempotency token for the client request.
     public var clientToken: Swift.String?
     /// The description of the new impersonation role.
@@ -1009,7 +1043,7 @@ public struct CreateImpersonationRoleInput {
     }
 }
 
-public struct CreateImpersonationRoleOutput {
+public struct CreateImpersonationRoleOutput: Swift.Sendable {
     /// The new impersonation role ID.
     public var impersonationRoleId: Swift.String?
 
@@ -1023,7 +1057,7 @@ public struct CreateImpersonationRoleOutput {
 
 extension WorkMailClientTypes {
 
-    public enum MobileDeviceAccessRuleEffect: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum MobileDeviceAccessRuleEffect: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case allow
         case deny
         case sdkUnknown(Swift.String)
@@ -1050,7 +1084,7 @@ extension WorkMailClientTypes {
     }
 }
 
-public struct CreateMobileDeviceAccessRuleInput {
+public struct CreateMobileDeviceAccessRuleInput: Swift.Sendable {
     /// The idempotency token for the client request.
     public var clientToken: Swift.String?
     /// The rule description.
@@ -1113,7 +1147,7 @@ public struct CreateMobileDeviceAccessRuleInput {
     }
 }
 
-public struct CreateMobileDeviceAccessRuleOutput {
+public struct CreateMobileDeviceAccessRuleOutput: Swift.Sendable {
     /// The identifier for the newly created mobile device access rule.
     public var mobileDeviceAccessRuleId: Swift.String?
 
@@ -1150,8 +1184,9 @@ public struct DirectoryInUseException: ClientRuntime.ModeledError, AWSClientRunt
 }
 
 extension WorkMailClientTypes {
+
     /// The domain to associate with an WorkMail organization. When you configure a domain hosted in Amazon Route 53 (Route 53), all recommended DNS records are added to the organization when you create it. For more information, see [Adding a domain](https://docs.aws.amazon.com/workmail/latest/adminguide/add_domain.html) in the WorkMail Administrator Guide.
-    public struct Domain {
+    public struct Domain: Swift.Sendable {
         /// The fully qualified domain name.
         /// This member is required.
         public var domainName: Swift.String?
@@ -1167,10 +1202,9 @@ extension WorkMailClientTypes {
             self.hostedZoneId = hostedZoneId
         }
     }
-
 }
 
-public struct CreateOrganizationInput {
+public struct CreateOrganizationInput: Swift.Sendable {
     /// The organization alias.
     /// This member is required.
     public var alias: Swift.String?
@@ -1203,7 +1237,7 @@ public struct CreateOrganizationInput {
     }
 }
 
-public struct CreateOrganizationOutput {
+public struct CreateOrganizationOutput: Swift.Sendable {
     /// The organization ID.
     public var organizationId: Swift.String?
 
@@ -1217,7 +1251,7 @@ public struct CreateOrganizationOutput {
 
 extension WorkMailClientTypes {
 
-    public enum ResourceType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ResourceType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case equipment
         case room
         case sdkUnknown(Swift.String)
@@ -1244,7 +1278,7 @@ extension WorkMailClientTypes {
     }
 }
 
-public struct CreateResourceInput {
+public struct CreateResourceInput: Swift.Sendable {
     /// Resource description.
     public var description: Swift.String?
     /// If this parameter is enabled, the resource will be hidden from the address book.
@@ -1275,7 +1309,12 @@ public struct CreateResourceInput {
     }
 }
 
-public struct CreateResourceOutput {
+extension CreateResourceInput: Swift.CustomDebugStringConvertible {
+    public var debugDescription: Swift.String {
+        "CreateResourceInput(hiddenFromGlobalAddressList: \(Swift.String(describing: hiddenFromGlobalAddressList)), name: \(Swift.String(describing: name)), organizationId: \(Swift.String(describing: organizationId)), type: \(Swift.String(describing: type)), description: \"CONTENT_REDACTED\")"}
+}
+
+public struct CreateResourceOutput: Swift.Sendable {
     /// The identifier of the new resource.
     public var resourceId: Swift.String?
 
@@ -1313,7 +1352,7 @@ public struct InvalidPasswordException: ClientRuntime.ModeledError, AWSClientRun
 
 extension WorkMailClientTypes {
 
-    public enum UserRole: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum UserRole: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case remoteUser
         case resource
         case systemUser
@@ -1346,7 +1385,7 @@ extension WorkMailClientTypes {
     }
 }
 
-public struct CreateUserInput {
+public struct CreateUserInput: Swift.Sendable {
     /// The display name for the new user.
     /// This member is required.
     public var displayName: Swift.String?
@@ -1354,6 +1393,8 @@ public struct CreateUserInput {
     public var firstName: Swift.String?
     /// If this parameter is enabled, the user will be hidden from the address book.
     public var hiddenFromGlobalAddressList: Swift.Bool?
+    /// User ID from the IAM Identity Center. If this parameter is empty it will be updated automatically when the user logs in for the first time to the mailbox associated with WorkMail.
+    public var identityProviderUserId: Swift.String?
     /// The last name of the new user.
     public var lastName: Swift.String?
     /// The name for the new user. WorkMail directory user names have a maximum length of 64. All others have a maximum length of 20.
@@ -1371,6 +1412,7 @@ public struct CreateUserInput {
         displayName: Swift.String? = nil,
         firstName: Swift.String? = nil,
         hiddenFromGlobalAddressList: Swift.Bool? = false,
+        identityProviderUserId: Swift.String? = nil,
         lastName: Swift.String? = nil,
         name: Swift.String? = nil,
         organizationId: Swift.String? = nil,
@@ -1381,6 +1423,7 @@ public struct CreateUserInput {
         self.displayName = displayName
         self.firstName = firstName
         self.hiddenFromGlobalAddressList = hiddenFromGlobalAddressList
+        self.identityProviderUserId = identityProviderUserId
         self.lastName = lastName
         self.name = name
         self.organizationId = organizationId
@@ -1391,10 +1434,10 @@ public struct CreateUserInput {
 
 extension CreateUserInput: Swift.CustomDebugStringConvertible {
     public var debugDescription: Swift.String {
-        "CreateUserInput(hiddenFromGlobalAddressList: \(Swift.String(describing: hiddenFromGlobalAddressList)), name: \(Swift.String(describing: name)), organizationId: \(Swift.String(describing: organizationId)), role: \(Swift.String(describing: role)), displayName: \"CONTENT_REDACTED\", firstName: \"CONTENT_REDACTED\", lastName: \"CONTENT_REDACTED\", password: \"CONTENT_REDACTED\")"}
+        "CreateUserInput(hiddenFromGlobalAddressList: \(Swift.String(describing: hiddenFromGlobalAddressList)), identityProviderUserId: \(Swift.String(describing: identityProviderUserId)), name: \(Swift.String(describing: name)), organizationId: \(Swift.String(describing: organizationId)), role: \(Swift.String(describing: role)), displayName: \"CONTENT_REDACTED\", firstName: \"CONTENT_REDACTED\", lastName: \"CONTENT_REDACTED\", password: \"CONTENT_REDACTED\")"}
 }
 
-public struct CreateUserOutput {
+public struct CreateUserOutput: Swift.Sendable {
     /// The identifier for the new user.
     public var userId: Swift.String?
 
@@ -1408,7 +1451,7 @@ public struct CreateUserOutput {
 
 extension WorkMailClientTypes {
 
-    public enum MemberType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum MemberType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case group
         case user
         case sdkUnknown(Swift.String)
@@ -1436,8 +1479,9 @@ extension WorkMailClientTypes {
 }
 
 extension WorkMailClientTypes {
+
     /// The name of the attribute, which is one of the values defined in the UserAttribute enumeration.
-    public struct Delegate {
+    public struct Delegate: Swift.Sendable {
         /// The identifier for the user or group associated as the resource's delegate.
         /// This member is required.
         public var id: Swift.String?
@@ -1454,10 +1498,9 @@ extension WorkMailClientTypes {
             self.type = type
         }
     }
-
 }
 
-public struct DeleteAccessControlRuleInput {
+public struct DeleteAccessControlRuleInput: Swift.Sendable {
     /// The name of the access control rule.
     /// This member is required.
     public var name: Swift.String?
@@ -1475,12 +1518,12 @@ public struct DeleteAccessControlRuleInput {
     }
 }
 
-public struct DeleteAccessControlRuleOutput {
+public struct DeleteAccessControlRuleOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteAliasInput {
+public struct DeleteAliasInput: Swift.Sendable {
     /// The aliases to be removed from the user's set of aliases. Duplicate entries in the list are collapsed into single entries (the list is transformed into a set).
     /// This member is required.
     public var alias: Swift.String?
@@ -1503,12 +1546,12 @@ public struct DeleteAliasInput {
     }
 }
 
-public struct DeleteAliasOutput {
+public struct DeleteAliasOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteAvailabilityConfigurationInput {
+public struct DeleteAvailabilityConfigurationInput: Swift.Sendable {
     /// The domain for which the AvailabilityConfiguration will be deleted.
     /// This member is required.
     public var domainName: Swift.String?
@@ -1526,12 +1569,12 @@ public struct DeleteAvailabilityConfigurationInput {
     }
 }
 
-public struct DeleteAvailabilityConfigurationOutput {
+public struct DeleteAvailabilityConfigurationOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteEmailMonitoringConfigurationInput {
+public struct DeleteEmailMonitoringConfigurationInput: Swift.Sendable {
     /// The ID of the organization from which the email monitoring configuration is deleted.
     /// This member is required.
     public var organizationId: Swift.String?
@@ -1544,12 +1587,12 @@ public struct DeleteEmailMonitoringConfigurationInput {
     }
 }
 
-public struct DeleteEmailMonitoringConfigurationOutput {
+public struct DeleteEmailMonitoringConfigurationOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteGroupInput {
+public struct DeleteGroupInput: Swift.Sendable {
     /// The identifier of the group to be deleted. The identifier can be the GroupId, or Groupname. The following identity formats are available:
     ///
     /// * Group ID: 12345678-1234-1234-1234-123456789012 or S-1-1-12-1234567890-123456789-123456789-1234
@@ -1571,12 +1614,48 @@ public struct DeleteGroupInput {
     }
 }
 
-public struct DeleteGroupOutput {
+public struct DeleteGroupOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteImpersonationRoleInput {
+public struct DeleteIdentityCenterApplicationInput: Swift.Sendable {
+    /// The Amazon Resource Name (ARN) of the application.
+    /// This member is required.
+    public var applicationArn: Swift.String?
+
+    public init(
+        applicationArn: Swift.String? = nil
+    )
+    {
+        self.applicationArn = applicationArn
+    }
+}
+
+public struct DeleteIdentityCenterApplicationOutput: Swift.Sendable {
+
+    public init() { }
+}
+
+public struct DeleteIdentityProviderConfigurationInput: Swift.Sendable {
+    /// The Organization ID.
+    /// This member is required.
+    public var organizationId: Swift.String?
+
+    public init(
+        organizationId: Swift.String? = nil
+    )
+    {
+        self.organizationId = organizationId
+    }
+}
+
+public struct DeleteIdentityProviderConfigurationOutput: Swift.Sendable {
+
+    public init() { }
+}
+
+public struct DeleteImpersonationRoleInput: Swift.Sendable {
     /// The ID of the impersonation role to delete.
     /// This member is required.
     public var impersonationRoleId: Swift.String?
@@ -1594,12 +1673,12 @@ public struct DeleteImpersonationRoleInput {
     }
 }
 
-public struct DeleteImpersonationRoleOutput {
+public struct DeleteImpersonationRoleOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteMailboxPermissionsInput {
+public struct DeleteMailboxPermissionsInput: Swift.Sendable {
     /// The identifier of the entity that owns the mailbox. The identifier can be UserId or Group Id, Username or Groupname, or email.
     ///
     /// * Entity ID: 12345678-1234-1234-1234-123456789012, r-0123456789a0123456789b0123456789, or S-1-1-12-1234567890-123456789-123456789-1234
@@ -1634,12 +1713,12 @@ public struct DeleteMailboxPermissionsInput {
     }
 }
 
-public struct DeleteMailboxPermissionsOutput {
+public struct DeleteMailboxPermissionsOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteMobileDeviceAccessOverrideInput {
+public struct DeleteMobileDeviceAccessOverrideInput: Swift.Sendable {
     /// The mobile device for which you delete the override. DeviceId is case insensitive.
     /// This member is required.
     public var deviceId: Swift.String?
@@ -1668,12 +1747,12 @@ public struct DeleteMobileDeviceAccessOverrideInput {
     }
 }
 
-public struct DeleteMobileDeviceAccessOverrideOutput {
+public struct DeleteMobileDeviceAccessOverrideOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteMobileDeviceAccessRuleInput {
+public struct DeleteMobileDeviceAccessRuleInput: Swift.Sendable {
     /// The identifier of the rule to be deleted.
     /// This member is required.
     public var mobileDeviceAccessRuleId: Swift.String?
@@ -1691,17 +1770,19 @@ public struct DeleteMobileDeviceAccessRuleInput {
     }
 }
 
-public struct DeleteMobileDeviceAccessRuleOutput {
+public struct DeleteMobileDeviceAccessRuleOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteOrganizationInput {
+public struct DeleteOrganizationInput: Swift.Sendable {
     /// The idempotency token associated with the request.
     public var clientToken: Swift.String?
     /// If true, deletes the AWS Directory Service directory associated with the organization.
     /// This member is required.
     public var deleteDirectory: Swift.Bool?
+    /// Deletes IAM Identity Center application for WorkMail. This action does not affect authentication settings for any organization.
+    public var deleteIdentityCenterApplication: Swift.Bool?
     /// Deletes a WorkMail organization even if the organization has enabled users.
     public var forceDelete: Swift.Bool?
     /// The organization ID.
@@ -1711,18 +1792,20 @@ public struct DeleteOrganizationInput {
     public init(
         clientToken: Swift.String? = nil,
         deleteDirectory: Swift.Bool? = false,
+        deleteIdentityCenterApplication: Swift.Bool? = false,
         forceDelete: Swift.Bool? = false,
         organizationId: Swift.String? = nil
     )
     {
         self.clientToken = clientToken
         self.deleteDirectory = deleteDirectory
+        self.deleteIdentityCenterApplication = deleteIdentityCenterApplication
         self.forceDelete = forceDelete
         self.organizationId = organizationId
     }
 }
 
-public struct DeleteOrganizationOutput {
+public struct DeleteOrganizationOutput: Swift.Sendable {
     /// The organization ID.
     public var organizationId: Swift.String?
     /// The state of the organization.
@@ -1738,7 +1821,30 @@ public struct DeleteOrganizationOutput {
     }
 }
 
-public struct DeleteResourceInput {
+public struct DeletePersonalAccessTokenInput: Swift.Sendable {
+    /// The Organization ID.
+    /// This member is required.
+    public var organizationId: Swift.String?
+    /// The Personal Access Token ID.
+    /// This member is required.
+    public var personalAccessTokenId: Swift.String?
+
+    public init(
+        organizationId: Swift.String? = nil,
+        personalAccessTokenId: Swift.String? = nil
+    )
+    {
+        self.organizationId = organizationId
+        self.personalAccessTokenId = personalAccessTokenId
+    }
+}
+
+public struct DeletePersonalAccessTokenOutput: Swift.Sendable {
+
+    public init() { }
+}
+
+public struct DeleteResourceInput: Swift.Sendable {
     /// The identifier associated with the organization from which the resource is deleted.
     /// This member is required.
     public var organizationId: Swift.String?
@@ -1760,12 +1866,12 @@ public struct DeleteResourceInput {
     }
 }
 
-public struct DeleteResourceOutput {
+public struct DeleteResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteRetentionPolicyInput {
+public struct DeleteRetentionPolicyInput: Swift.Sendable {
     /// The retention policy ID.
     /// This member is required.
     public var id: Swift.String?
@@ -1783,12 +1889,12 @@ public struct DeleteRetentionPolicyInput {
     }
 }
 
-public struct DeleteRetentionPolicyOutput {
+public struct DeleteRetentionPolicyOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteUserInput {
+public struct DeleteUserInput: Swift.Sendable {
     /// The organization that contains the user to be deleted.
     /// This member is required.
     public var organizationId: Swift.String?
@@ -1810,12 +1916,12 @@ public struct DeleteUserInput {
     }
 }
 
-public struct DeleteUserOutput {
+public struct DeleteUserOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeregisterFromWorkMailInput {
+public struct DeregisterFromWorkMailInput: Swift.Sendable {
     /// The identifier for the member to be updated. The identifier can be UserId, ResourceId, or Group Id, Username, Resourcename, or Groupname, or email.
     ///
     /// * Entity ID: 12345678-1234-1234-1234-123456789012, r-0123456789a0123456789b0123456789, or S-1-1-12-1234567890-123456789-123456789-1234
@@ -1839,7 +1945,7 @@ public struct DeregisterFromWorkMailInput {
     }
 }
 
-public struct DeregisterFromWorkMailOutput {
+public struct DeregisterFromWorkMailOutput: Swift.Sendable {
 
     public init() { }
 }
@@ -1892,7 +1998,7 @@ public struct MailDomainInUseException: ClientRuntime.ModeledError, AWSClientRun
     }
 }
 
-public struct DeregisterMailDomainInput {
+public struct DeregisterMailDomainInput: Swift.Sendable {
     /// The domain to deregister in WorkMail and SES.
     /// This member is required.
     public var domainName: Swift.String?
@@ -1910,12 +2016,12 @@ public struct DeregisterMailDomainInput {
     }
 }
 
-public struct DeregisterMailDomainOutput {
+public struct DeregisterMailDomainOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DescribeEmailMonitoringConfigurationInput {
+public struct DescribeEmailMonitoringConfigurationInput: Swift.Sendable {
     /// The ID of the organization for which the email monitoring configuration is described.
     /// This member is required.
     public var organizationId: Swift.String?
@@ -1928,7 +2034,7 @@ public struct DescribeEmailMonitoringConfigurationInput {
     }
 }
 
-public struct DescribeEmailMonitoringConfigurationOutput {
+public struct DescribeEmailMonitoringConfigurationOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the CloudWatch Log group associated with the email monitoring configuration.
     public var logGroupArn: Swift.String?
     /// The Amazon Resource Name (ARN) of the IAM Role associated with the email monitoring configuration.
@@ -1944,7 +2050,7 @@ public struct DescribeEmailMonitoringConfigurationOutput {
     }
 }
 
-public struct DescribeEntityInput {
+public struct DescribeEntityInput: Swift.Sendable {
     /// The email under which the entity exists.
     /// This member is required.
     public var email: Swift.String?
@@ -1964,7 +2070,7 @@ public struct DescribeEntityInput {
 
 extension WorkMailClientTypes {
 
-    public enum EntityType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum EntityType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case group
         case resource
         case user
@@ -1994,7 +2100,7 @@ extension WorkMailClientTypes {
     }
 }
 
-public struct DescribeEntityOutput {
+public struct DescribeEntityOutput: Swift.Sendable {
     /// The entity ID under which the entity exists.
     public var entityId: Swift.String?
     /// Username, GroupName, or ResourceName based on entity type.
@@ -2014,7 +2120,7 @@ public struct DescribeEntityOutput {
     }
 }
 
-public struct DescribeGroupInput {
+public struct DescribeGroupInput: Swift.Sendable {
     /// The identifier for the group to be described. The identifier can accept GroupId, Groupname, or email. The following identity formats are available:
     ///
     /// * Group ID: 12345678-1234-1234-1234-123456789012 or S-1-1-12-1234567890-123456789-123456789-1234
@@ -2040,7 +2146,7 @@ public struct DescribeGroupInput {
 
 extension WorkMailClientTypes {
 
-    public enum EntityState: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum EntityState: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case deleted
         case disabled
         case enabled
@@ -2070,7 +2176,7 @@ extension WorkMailClientTypes {
     }
 }
 
-public struct DescribeGroupOutput {
+public struct DescribeGroupOutput: Swift.Sendable {
     /// The date and time when a user was deregistered from WorkMail, in UNIX epoch time format.
     public var disabledDate: Foundation.Date?
     /// The email of the described group.
@@ -2106,7 +2212,145 @@ public struct DescribeGroupOutput {
     }
 }
 
-public struct DescribeInboundDmarcSettingsInput {
+public struct DescribeIdentityProviderConfigurationInput: Swift.Sendable {
+    /// The Organization ID.
+    /// This member is required.
+    public var organizationId: Swift.String?
+
+    public init(
+        organizationId: Swift.String? = nil
+    )
+    {
+        self.organizationId = organizationId
+    }
+}
+
+extension WorkMailClientTypes {
+
+    public enum IdentityProviderAuthenticationMode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+        case identityProviderAndDirectory
+        case identityProviderOnly
+        case sdkUnknown(Swift.String)
+
+        public static var allCases: [IdentityProviderAuthenticationMode] {
+            return [
+                .identityProviderAndDirectory,
+                .identityProviderOnly
+            ]
+        }
+
+        public init?(rawValue: Swift.String) {
+            let value = Self.allCases.first(where: { $0.rawValue == rawValue })
+            self = value ?? Self.sdkUnknown(rawValue)
+        }
+
+        public var rawValue: Swift.String {
+            switch self {
+            case .identityProviderAndDirectory: return "IDENTITY_PROVIDER_AND_DIRECTORY"
+            case .identityProviderOnly: return "IDENTITY_PROVIDER_ONLY"
+            case let .sdkUnknown(s): return s
+            }
+        }
+    }
+}
+
+extension WorkMailClientTypes {
+
+    /// The IAM Identity Center configuration.
+    public struct IdentityCenterConfiguration: Swift.Sendable {
+        /// The Amazon Resource Name (ARN) of IAMIdentity Center Application for WorkMail. Must be created by the WorkMail API, see CreateIdentityCenterApplication.
+        /// This member is required.
+        public var applicationArn: Swift.String?
+        /// The Amazon Resource Name (ARN) of the of IAM Identity Center instance. Must be in the same AWS account and region as WorkMail organization.
+        /// This member is required.
+        public var instanceArn: Swift.String?
+
+        public init(
+            applicationArn: Swift.String? = nil,
+            instanceArn: Swift.String? = nil
+        )
+        {
+            self.applicationArn = applicationArn
+            self.instanceArn = instanceArn
+        }
+    }
+}
+
+extension WorkMailClientTypes {
+
+    public enum PersonalAccessTokenConfigurationStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+        case active
+        case inactive
+        case sdkUnknown(Swift.String)
+
+        public static var allCases: [PersonalAccessTokenConfigurationStatus] {
+            return [
+                .active,
+                .inactive
+            ]
+        }
+
+        public init?(rawValue: Swift.String) {
+            let value = Self.allCases.first(where: { $0.rawValue == rawValue })
+            self = value ?? Self.sdkUnknown(rawValue)
+        }
+
+        public var rawValue: Swift.String {
+            switch self {
+            case .active: return "ACTIVE"
+            case .inactive: return "INACTIVE"
+            case let .sdkUnknown(s): return s
+            }
+        }
+    }
+}
+
+extension WorkMailClientTypes {
+
+    /// Displays the Personal Access Token status.
+    public struct PersonalAccessTokenConfiguration: Swift.Sendable {
+        /// The validity of the Personal Access Token status in days.
+        public var lifetimeInDays: Swift.Int?
+        /// The status of the Personal Access Token allowed for the organization.
+        ///
+        /// * Active - Mailbox users can login to the web application and choose Settings to see the new Personal Access Tokens page to create and delete the Personal Access Tokens. Mailbox users can use the Personal Access Tokens to set up mailbox connection from desktop or mobile email clients.
+        ///
+        /// * Inactive - Personal Access Tokens are disabled for your organization. Mailbox users can’t create, list, or delete Personal Access Tokens and can’t use them to connect to their mailboxes from desktop or mobile email clients.
+        /// This member is required.
+        public var status: WorkMailClientTypes.PersonalAccessTokenConfigurationStatus?
+
+        public init(
+            lifetimeInDays: Swift.Int? = nil,
+            status: WorkMailClientTypes.PersonalAccessTokenConfigurationStatus? = nil
+        )
+        {
+            self.lifetimeInDays = lifetimeInDays
+            self.status = status
+        }
+    }
+}
+
+public struct DescribeIdentityProviderConfigurationOutput: Swift.Sendable {
+    /// The authentication mode used in WorkMail.
+    public var authenticationMode: WorkMailClientTypes.IdentityProviderAuthenticationMode?
+    /// The details of the IAM Identity Center configuration.
+    public var identityCenterConfiguration: WorkMailClientTypes.IdentityCenterConfiguration?
+    /// The details of the Personal Access Token configuration.
+    public var personalAccessTokenConfiguration: WorkMailClientTypes.PersonalAccessTokenConfiguration?
+
+    public init(
+        authenticationMode: WorkMailClientTypes.IdentityProviderAuthenticationMode? = nil,
+        identityCenterConfiguration: WorkMailClientTypes.IdentityCenterConfiguration? = nil,
+        personalAccessTokenConfiguration: WorkMailClientTypes.PersonalAccessTokenConfiguration? = nil
+    )
+    {
+        self.authenticationMode = authenticationMode
+        self.identityCenterConfiguration = identityCenterConfiguration
+        self.personalAccessTokenConfiguration = personalAccessTokenConfiguration
+    }
+}
+
+public struct DescribeInboundDmarcSettingsInput: Swift.Sendable {
     /// Lists the ID of the given organization.
     /// This member is required.
     public var organizationId: Swift.String?
@@ -2119,7 +2363,7 @@ public struct DescribeInboundDmarcSettingsInput {
     }
 }
 
-public struct DescribeInboundDmarcSettingsOutput {
+public struct DescribeInboundDmarcSettingsOutput: Swift.Sendable {
     /// Lists the enforcement setting of the applied policy.
     public var enforced: Swift.Bool
 
@@ -2131,7 +2375,7 @@ public struct DescribeInboundDmarcSettingsOutput {
     }
 }
 
-public struct DescribeMailboxExportJobInput {
+public struct DescribeMailboxExportJobInput: Swift.Sendable {
     /// The mailbox export job ID.
     /// This member is required.
     public var jobId: Swift.String?
@@ -2151,7 +2395,7 @@ public struct DescribeMailboxExportJobInput {
 
 extension WorkMailClientTypes {
 
-    public enum MailboxExportJobState: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum MailboxExportJobState: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case cancelled
         case completed
         case failed
@@ -2184,7 +2428,7 @@ extension WorkMailClientTypes {
     }
 }
 
-public struct DescribeMailboxExportJobOutput {
+public struct DescribeMailboxExportJobOutput: Swift.Sendable {
     /// The mailbox export job description.
     public var description: Swift.String?
     /// The mailbox export job end timestamp.
@@ -2240,7 +2484,7 @@ public struct DescribeMailboxExportJobOutput {
     }
 }
 
-public struct DescribeOrganizationInput {
+public struct DescribeOrganizationInput: Swift.Sendable {
     /// The identifier for the organization to be described.
     /// This member is required.
     public var organizationId: Swift.String?
@@ -2253,7 +2497,7 @@ public struct DescribeOrganizationInput {
     }
 }
 
-public struct DescribeOrganizationOutput {
+public struct DescribeOrganizationOutput: Swift.Sendable {
     /// The alias for an organization.
     public var alias: Swift.String?
     /// The Amazon Resource Name (ARN) of the organization.
@@ -2305,7 +2549,7 @@ public struct DescribeOrganizationOutput {
     }
 }
 
-public struct DescribeResourceInput {
+public struct DescribeResourceInput: Swift.Sendable {
     /// The identifier associated with the organization for which the resource is described.
     /// This member is required.
     public var organizationId: Swift.String?
@@ -2329,7 +2573,7 @@ public struct DescribeResourceInput {
     }
 }
 
-public struct DescribeResourceOutput {
+public struct DescribeResourceOutput: Swift.Sendable {
     /// The booking options for the described resource.
     public var bookingOptions: WorkMailClientTypes.BookingOptions?
     /// Description of the resource.
@@ -2377,7 +2621,12 @@ public struct DescribeResourceOutput {
     }
 }
 
-public struct DescribeUserInput {
+extension DescribeResourceOutput: Swift.CustomDebugStringConvertible {
+    public var debugDescription: Swift.String {
+        "DescribeResourceOutput(bookingOptions: \(Swift.String(describing: bookingOptions)), disabledDate: \(Swift.String(describing: disabledDate)), email: \(Swift.String(describing: email)), enabledDate: \(Swift.String(describing: enabledDate)), hiddenFromGlobalAddressList: \(Swift.String(describing: hiddenFromGlobalAddressList)), name: \(Swift.String(describing: name)), resourceId: \(Swift.String(describing: resourceId)), state: \(Swift.String(describing: state)), type: \(Swift.String(describing: type)), description: \"CONTENT_REDACTED\")"}
+}
+
+public struct DescribeUserInput: Swift.Sendable {
     /// The identifier for the organization under which the user exists.
     /// This member is required.
     public var organizationId: Swift.String?
@@ -2401,7 +2650,7 @@ public struct DescribeUserInput {
     }
 }
 
-public struct DescribeUserOutput {
+public struct DescribeUserOutput: Swift.Sendable {
     /// City where the user is located.
     public var city: Swift.String?
     /// Company of the user.
@@ -2422,6 +2671,10 @@ public struct DescribeUserOutput {
     public var firstName: Swift.String?
     /// If enabled, the user is hidden from the global address list.
     public var hiddenFromGlobalAddressList: Swift.Bool
+    /// Identity Store ID from the IAM Identity Center. If this parameter is empty it will be updated automatically when the user logs in for the first time to the mailbox associated with WorkMail.
+    public var identityProviderIdentityStoreId: Swift.String?
+    /// User ID from the IAM Identity Center. If this parameter is empty it will be updated automatically when the user logs in for the first time to the mailbox associated with WorkMail.
+    public var identityProviderUserId: Swift.String?
     /// Initials of the user.
     public var initials: Swift.String?
     /// Job title of the user.
@@ -2460,6 +2713,8 @@ public struct DescribeUserOutput {
         enabledDate: Foundation.Date? = nil,
         firstName: Swift.String? = nil,
         hiddenFromGlobalAddressList: Swift.Bool = false,
+        identityProviderIdentityStoreId: Swift.String? = nil,
+        identityProviderUserId: Swift.String? = nil,
         initials: Swift.String? = nil,
         jobTitle: Swift.String? = nil,
         lastName: Swift.String? = nil,
@@ -2485,6 +2740,8 @@ public struct DescribeUserOutput {
         self.enabledDate = enabledDate
         self.firstName = firstName
         self.hiddenFromGlobalAddressList = hiddenFromGlobalAddressList
+        self.identityProviderIdentityStoreId = identityProviderIdentityStoreId
+        self.identityProviderUserId = identityProviderUserId
         self.initials = initials
         self.jobTitle = jobTitle
         self.lastName = lastName
@@ -2503,10 +2760,10 @@ public struct DescribeUserOutput {
 
 extension DescribeUserOutput: Swift.CustomDebugStringConvertible {
     public var debugDescription: Swift.String {
-        "DescribeUserOutput(disabledDate: \(Swift.String(describing: disabledDate)), email: \(Swift.String(describing: email)), enabledDate: \(Swift.String(describing: enabledDate)), hiddenFromGlobalAddressList: \(Swift.String(describing: hiddenFromGlobalAddressList)), mailboxDeprovisionedDate: \(Swift.String(describing: mailboxDeprovisionedDate)), mailboxProvisionedDate: \(Swift.String(describing: mailboxProvisionedDate)), name: \(Swift.String(describing: name)), state: \(Swift.String(describing: state)), userId: \(Swift.String(describing: userId)), userRole: \(Swift.String(describing: userRole)), city: \"CONTENT_REDACTED\", company: \"CONTENT_REDACTED\", country: \"CONTENT_REDACTED\", department: \"CONTENT_REDACTED\", displayName: \"CONTENT_REDACTED\", firstName: \"CONTENT_REDACTED\", initials: \"CONTENT_REDACTED\", jobTitle: \"CONTENT_REDACTED\", lastName: \"CONTENT_REDACTED\", office: \"CONTENT_REDACTED\", street: \"CONTENT_REDACTED\", telephone: \"CONTENT_REDACTED\", zipCode: \"CONTENT_REDACTED\")"}
+        "DescribeUserOutput(disabledDate: \(Swift.String(describing: disabledDate)), email: \(Swift.String(describing: email)), enabledDate: \(Swift.String(describing: enabledDate)), hiddenFromGlobalAddressList: \(Swift.String(describing: hiddenFromGlobalAddressList)), identityProviderIdentityStoreId: \(Swift.String(describing: identityProviderIdentityStoreId)), identityProviderUserId: \(Swift.String(describing: identityProviderUserId)), mailboxDeprovisionedDate: \(Swift.String(describing: mailboxDeprovisionedDate)), mailboxProvisionedDate: \(Swift.String(describing: mailboxProvisionedDate)), name: \(Swift.String(describing: name)), state: \(Swift.String(describing: state)), userId: \(Swift.String(describing: userId)), userRole: \(Swift.String(describing: userRole)), city: \"CONTENT_REDACTED\", company: \"CONTENT_REDACTED\", country: \"CONTENT_REDACTED\", department: \"CONTENT_REDACTED\", displayName: \"CONTENT_REDACTED\", firstName: \"CONTENT_REDACTED\", initials: \"CONTENT_REDACTED\", jobTitle: \"CONTENT_REDACTED\", lastName: \"CONTENT_REDACTED\", office: \"CONTENT_REDACTED\", street: \"CONTENT_REDACTED\", telephone: \"CONTENT_REDACTED\", zipCode: \"CONTENT_REDACTED\")"}
 }
 
-public struct DisassociateDelegateFromResourceInput {
+public struct DisassociateDelegateFromResourceInput: Swift.Sendable {
     /// The identifier for the member (user, group) to be removed from the resource's delegates. The entity ID can accept UserId or GroupID, Username or Groupname, or email.
     ///
     /// * Entity: 12345678-1234-1234-1234-123456789012 or S-1-1-12-1234567890-123456789-123456789-1234
@@ -2541,12 +2798,12 @@ public struct DisassociateDelegateFromResourceInput {
     }
 }
 
-public struct DisassociateDelegateFromResourceOutput {
+public struct DisassociateDelegateFromResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DisassociateMemberFromGroupInput {
+public struct DisassociateMemberFromGroupInput: Swift.Sendable {
     /// The identifier for the group from which members are removed. The identifier can accept GroupId, Groupname, or email. The following identity formats are available:
     ///
     /// * Group ID: 12345678-1234-1234-1234-123456789012 or S-1-1-12-1234567890-123456789-123456789-1234
@@ -2581,14 +2838,15 @@ public struct DisassociateMemberFromGroupInput {
     }
 }
 
-public struct DisassociateMemberFromGroupOutput {
+public struct DisassociateMemberFromGroupOutput: Swift.Sendable {
 
     public init() { }
 }
 
 extension WorkMailClientTypes {
+
     /// A DNS record uploaded to your DNS provider.
-    public struct DnsRecord {
+    public struct DnsRecord: Swift.Sendable {
         /// The DNS hostname.- For example, domain.example.com.
         public var hostname: Swift.String?
         /// The RFC 1035 record type. Possible values: CNAME, A, MX.
@@ -2607,12 +2865,11 @@ extension WorkMailClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension WorkMailClientTypes {
 
-    public enum DnsRecordVerificationStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DnsRecordVerificationStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case failed
         case pending
         case verified
@@ -2668,7 +2925,7 @@ public struct EntityAlreadyRegisteredException: ClientRuntime.ModeledError, AWSC
 
 extension WorkMailClientTypes {
 
-    public enum RetentionAction: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum RetentionAction: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case delete
         case `none`
         case permanentlyDelete
@@ -2700,7 +2957,7 @@ extension WorkMailClientTypes {
 
 extension WorkMailClientTypes {
 
-    public enum FolderName: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum FolderName: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case deletedItems
         case drafts
         case inbox
@@ -2737,8 +2994,9 @@ extension WorkMailClientTypes {
 }
 
 extension WorkMailClientTypes {
+
     /// The configuration applied to an organization's folders by its retention policy.
-    public struct FolderConfiguration {
+    public struct FolderConfiguration: Swift.Sendable {
         /// The action to take on the folder contents at the end of the folder configuration period.
         /// This member is required.
         public var action: WorkMailClientTypes.RetentionAction?
@@ -2759,10 +3017,9 @@ extension WorkMailClientTypes {
             self.period = period
         }
     }
-
 }
 
-public struct GetAccessControlEffectInput {
+public struct GetAccessControlEffectInput: Swift.Sendable {
     /// The access protocol action. Valid values include ActiveSync, AutoDiscover, EWS, IMAP, SMTP, WindowsOutlook, and WebMail.
     /// This member is required.
     public var action: Swift.String?
@@ -2793,7 +3050,7 @@ public struct GetAccessControlEffectInput {
     }
 }
 
-public struct GetAccessControlEffectOutput {
+public struct GetAccessControlEffectOutput: Swift.Sendable {
     /// The rule effect.
     public var effect: WorkMailClientTypes.AccessControlRuleEffect?
     /// The rules that match the given parameters, resulting in an effect.
@@ -2809,7 +3066,7 @@ public struct GetAccessControlEffectOutput {
     }
 }
 
-public struct GetDefaultRetentionPolicyInput {
+public struct GetDefaultRetentionPolicyInput: Swift.Sendable {
     /// The organization ID.
     /// This member is required.
     public var organizationId: Swift.String?
@@ -2822,7 +3079,7 @@ public struct GetDefaultRetentionPolicyInput {
     }
 }
 
-public struct GetDefaultRetentionPolicyOutput {
+public struct GetDefaultRetentionPolicyOutput: Swift.Sendable {
     /// The retention policy description.
     public var description: Swift.String?
     /// The retention policy folder configurations.
@@ -2846,7 +3103,7 @@ public struct GetDefaultRetentionPolicyOutput {
     }
 }
 
-public struct GetImpersonationRoleInput {
+public struct GetImpersonationRoleInput: Swift.Sendable {
     /// The impersonation role ID to retrieve.
     /// This member is required.
     public var impersonationRoleId: Swift.String?
@@ -2864,7 +3121,7 @@ public struct GetImpersonationRoleInput {
     }
 }
 
-public struct GetImpersonationRoleOutput {
+public struct GetImpersonationRoleOutput: Swift.Sendable {
     /// The date when the impersonation role was created.
     public var dateCreated: Foundation.Date?
     /// The date when the impersonation role was last modified.
@@ -2900,7 +3157,7 @@ public struct GetImpersonationRoleOutput {
     }
 }
 
-public struct GetImpersonationRoleEffectInput {
+public struct GetImpersonationRoleEffectInput: Swift.Sendable {
     /// The impersonation role ID to test.
     /// This member is required.
     public var impersonationRoleId: Swift.String?
@@ -2930,8 +3187,9 @@ public struct GetImpersonationRoleEffectInput {
 }
 
 extension WorkMailClientTypes {
+
     /// The impersonation rule that matched the input.
-    public struct ImpersonationMatchedRule {
+    public struct ImpersonationMatchedRule: Swift.Sendable {
         /// The ID of the rule that matched the input
         public var impersonationRuleId: Swift.String?
         /// The name of the rule that matched the input.
@@ -2946,10 +3204,9 @@ extension WorkMailClientTypes {
             self.name = name
         }
     }
-
 }
 
-public struct GetImpersonationRoleEffectOutput {
+public struct GetImpersonationRoleEffectOutput: Swift.Sendable {
     /// Effect of the impersonation role on the target user based on its rules. Available effects are ALLOW or DENY.
     public var effect: WorkMailClientTypes.AccessEffect?
     /// A list of the rules that match the input and produce the configured effect.
@@ -2969,7 +3226,7 @@ public struct GetImpersonationRoleEffectOutput {
     }
 }
 
-public struct GetMailboxDetailsInput {
+public struct GetMailboxDetailsInput: Swift.Sendable {
     /// The identifier for the organization that contains the user whose mailbox details are being requested.
     /// This member is required.
     public var organizationId: Swift.String?
@@ -2993,7 +3250,7 @@ public struct GetMailboxDetailsInput {
     }
 }
 
-public struct GetMailboxDetailsOutput {
+public struct GetMailboxDetailsOutput: Swift.Sendable {
     /// The maximum allowed mailbox size, in MB, for the specified user.
     public var mailboxQuota: Swift.Int?
     /// The current mailbox size, in MB, for the specified user.
@@ -3009,7 +3266,7 @@ public struct GetMailboxDetailsOutput {
     }
 }
 
-public struct GetMailDomainInput {
+public struct GetMailDomainInput: Swift.Sendable {
     /// The domain from which you want to retrieve details.
     /// This member is required.
     public var domainName: Swift.String?
@@ -3027,7 +3284,7 @@ public struct GetMailDomainInput {
     }
 }
 
-public struct GetMailDomainOutput {
+public struct GetMailDomainOutput: Swift.Sendable {
     /// Indicates the status of a DKIM verification.
     public var dkimVerificationStatus: WorkMailClientTypes.DnsRecordVerificationStatus?
     /// Specifies whether the domain is the default domain for your organization.
@@ -3055,7 +3312,7 @@ public struct GetMailDomainOutput {
     }
 }
 
-public struct GetMobileDeviceAccessEffectInput {
+public struct GetMobileDeviceAccessEffectInput: Swift.Sendable {
     /// Device model the simulated user will report.
     public var deviceModel: Swift.String?
     /// Device operating system the simulated user will report.
@@ -3085,8 +3342,9 @@ public struct GetMobileDeviceAccessEffectInput {
 }
 
 extension WorkMailClientTypes {
+
     /// The rule that a simulated user matches.
-    public struct MobileDeviceAccessMatchedRule {
+    public struct MobileDeviceAccessMatchedRule: Swift.Sendable {
         /// Identifier of the rule that a simulated user matches.
         public var mobileDeviceAccessRuleId: Swift.String?
         /// Name of a rule that a simulated user matches.
@@ -3101,10 +3359,9 @@ extension WorkMailClientTypes {
             self.name = name
         }
     }
-
 }
 
-public struct GetMobileDeviceAccessEffectOutput {
+public struct GetMobileDeviceAccessEffectOutput: Swift.Sendable {
     /// The effect of the simulated access, ALLOW or DENY, after evaluating mobile device access rules in the WorkMail organization for the simulated user parameters.
     public var effect: WorkMailClientTypes.MobileDeviceAccessRuleEffect?
     /// A list of the rules which matched the simulated user input and produced the effect.
@@ -3120,7 +3377,7 @@ public struct GetMobileDeviceAccessEffectOutput {
     }
 }
 
-public struct GetMobileDeviceAccessOverrideInput {
+public struct GetMobileDeviceAccessOverrideInput: Swift.Sendable {
     /// The mobile device to which the override applies. DeviceId is case insensitive.
     /// This member is required.
     public var deviceId: Swift.String?
@@ -3149,7 +3406,7 @@ public struct GetMobileDeviceAccessOverrideInput {
     }
 }
 
-public struct GetMobileDeviceAccessOverrideOutput {
+public struct GetMobileDeviceAccessOverrideOutput: Swift.Sendable {
     /// The date the override was first created.
     public var dateCreated: Foundation.Date?
     /// The date the description was last modified.
@@ -3181,9 +3438,64 @@ public struct GetMobileDeviceAccessOverrideOutput {
     }
 }
 
+public struct GetPersonalAccessTokenMetadataInput: Swift.Sendable {
+    /// The Organization ID.
+    /// This member is required.
+    public var organizationId: Swift.String?
+    /// The Personal Access Token ID.
+    /// This member is required.
+    public var personalAccessTokenId: Swift.String?
+
+    public init(
+        organizationId: Swift.String? = nil,
+        personalAccessTokenId: Swift.String? = nil
+    )
+    {
+        self.organizationId = organizationId
+        self.personalAccessTokenId = personalAccessTokenId
+    }
+}
+
+public struct GetPersonalAccessTokenMetadataOutput: Swift.Sendable {
+    /// The date when the Personal Access Token ID was created.
+    public var dateCreated: Foundation.Date?
+    /// The date when the Personal Access Token ID was last used.
+    public var dateLastUsed: Foundation.Date?
+    /// The time when the Personal Access Token ID will expire.
+    public var expiresTime: Foundation.Date?
+    /// The Personal Access Token name.
+    public var name: Swift.String?
+    /// The Personal Access Token ID.
+    public var personalAccessTokenId: Swift.String?
+    /// Lists all the Personal Access Token permissions for a mailbox.
+    public var scopes: [Swift.String]?
+    /// The WorkMail User ID.
+    public var userId: Swift.String?
+
+    public init(
+        dateCreated: Foundation.Date? = nil,
+        dateLastUsed: Foundation.Date? = nil,
+        expiresTime: Foundation.Date? = nil,
+        name: Swift.String? = nil,
+        personalAccessTokenId: Swift.String? = nil,
+        scopes: [Swift.String]? = nil,
+        userId: Swift.String? = nil
+    )
+    {
+        self.dateCreated = dateCreated
+        self.dateLastUsed = dateLastUsed
+        self.expiresTime = expiresTime
+        self.name = name
+        self.personalAccessTokenId = personalAccessTokenId
+        self.scopes = scopes
+        self.userId = userId
+    }
+}
+
 extension WorkMailClientTypes {
+
     /// The representation of an WorkMail group.
-    public struct Group {
+    public struct Group: Swift.Sendable {
         /// The date indicating when the group was disabled from WorkMail use.
         public var disabledDate: Foundation.Date?
         /// The email of the group.
@@ -3214,12 +3526,12 @@ extension WorkMailClientTypes {
             self.state = state
         }
     }
-
 }
 
 extension WorkMailClientTypes {
+
     /// The identifier that contains the Group ID and name of a group.
-    public struct GroupIdentifier {
+    public struct GroupIdentifier: Swift.Sendable {
         /// Group ID that matched the group.
         public var groupId: Swift.String?
         /// Group name that matched the group.
@@ -3234,12 +3546,12 @@ extension WorkMailClientTypes {
             self.groupName = groupName
         }
     }
-
 }
 
 extension WorkMailClientTypes {
+
     /// An impersonation role for the given WorkMail organization.
-    public struct ImpersonationRole {
+    public struct ImpersonationRole: Swift.Sendable {
         /// The date when the impersonation role was created.
         public var dateCreated: Foundation.Date?
         /// The date when the impersonation role was last modified.
@@ -3266,7 +3578,6 @@ extension WorkMailClientTypes {
             self.type = type
         }
     }
-
 }
 
 /// The configuration for a resource isn't valid. A resource must either be able to auto-respond to requests or have at least one delegate associated that can do so on its behalf.
@@ -3294,8 +3605,9 @@ public struct InvalidConfigurationException: ClientRuntime.ModeledError, AWSClie
 }
 
 extension WorkMailClientTypes {
+
     /// The details of a mailbox export job, including the user or resource ID associated with the mailbox and the S3 bucket that the mailbox contents are exported to.
-    public struct MailboxExportJob {
+    public struct MailboxExportJob: Swift.Sendable {
         /// The mailbox export job description.
         public var description: Swift.String?
         /// The mailbox export job end timestamp.
@@ -3338,10 +3650,9 @@ extension WorkMailClientTypes {
             self.state = state
         }
     }
-
 }
 
-public struct ListAccessControlRulesInput {
+public struct ListAccessControlRulesInput: Swift.Sendable {
     /// The identifier for the organization.
     /// This member is required.
     public var organizationId: Swift.String?
@@ -3354,7 +3665,7 @@ public struct ListAccessControlRulesInput {
     }
 }
 
-public struct ListAccessControlRulesOutput {
+public struct ListAccessControlRulesOutput: Swift.Sendable {
     /// The access control rules.
     public var rules: [WorkMailClientTypes.AccessControlRule]?
 
@@ -3366,7 +3677,7 @@ public struct ListAccessControlRulesOutput {
     }
 }
 
-public struct ListAliasesInput {
+public struct ListAliasesInput: Swift.Sendable {
     /// The identifier for the entity for which to list the aliases.
     /// This member is required.
     public var entityId: Swift.String?
@@ -3392,7 +3703,7 @@ public struct ListAliasesInput {
     }
 }
 
-public struct ListAliasesOutput {
+public struct ListAliasesOutput: Swift.Sendable {
     /// The entity's paginated aliases.
     public var aliases: [Swift.String]?
     /// The token to use to retrieve the next page of results. The value is "null" when there are no more results to return.
@@ -3408,7 +3719,7 @@ public struct ListAliasesOutput {
     }
 }
 
-public struct ListAvailabilityConfigurationsInput {
+public struct ListAvailabilityConfigurationsInput: Swift.Sendable {
     /// The maximum number of results to return in a single call.
     public var maxResults: Swift.Int?
     /// The token to use to retrieve the next page of results. The first call does not require a token.
@@ -3429,7 +3740,7 @@ public struct ListAvailabilityConfigurationsInput {
     }
 }
 
-public struct ListAvailabilityConfigurationsOutput {
+public struct ListAvailabilityConfigurationsOutput: Swift.Sendable {
     /// The list of AvailabilityConfiguration's that exist for the specified WorkMail organization.
     public var availabilityConfigurations: [WorkMailClientTypes.AvailabilityConfiguration]?
     /// The token to use to retrieve the next page of results. The value is null when there are no further results to return.
@@ -3445,7 +3756,7 @@ public struct ListAvailabilityConfigurationsOutput {
     }
 }
 
-public struct ListGroupMembersInput {
+public struct ListGroupMembersInput: Swift.Sendable {
     /// The identifier for the group to which the members (users or groups) are associated. The identifier can accept GroupId, Groupname, or email. The following identity formats are available:
     ///
     /// * Group ID: 12345678-1234-1234-1234-123456789012 or S-1-1-12-1234567890-123456789-123456789-1234
@@ -3478,8 +3789,9 @@ public struct ListGroupMembersInput {
 }
 
 extension WorkMailClientTypes {
+
     /// The representation of a user or group.
-    public struct Member {
+    public struct Member: Swift.Sendable {
         /// The date indicating when the member was disabled from WorkMail use.
         public var disabledDate: Foundation.Date?
         /// The date indicating when the member was enabled for WorkMail use.
@@ -3510,10 +3822,9 @@ extension WorkMailClientTypes {
             self.type = type
         }
     }
-
 }
 
-public struct ListGroupMembersOutput {
+public struct ListGroupMembersOutput: Swift.Sendable {
     /// The members associated to the group.
     public var members: [WorkMailClientTypes.Member]?
     /// The token to use to retrieve the next page of results. The first call does not contain any tokens.
@@ -3530,8 +3841,9 @@ public struct ListGroupMembersOutput {
 }
 
 extension WorkMailClientTypes {
+
     /// Filtering options for ListGroups operation. This is only used as input to Operation.
-    public struct ListGroupsFilters {
+    public struct ListGroupsFilters: Swift.Sendable {
         /// Filters only groups with the provided name prefix.
         public var namePrefix: Swift.String?
         /// Filters only groups with the provided primary email prefix.
@@ -3550,10 +3862,9 @@ extension WorkMailClientTypes {
             self.state = state
         }
     }
-
 }
 
-public struct ListGroupsInput {
+public struct ListGroupsInput: Swift.Sendable {
     /// Limit the search results based on the filter criteria. Only one filter per request is supported.
     public var filters: WorkMailClientTypes.ListGroupsFilters?
     /// The maximum number of results to return in a single call.
@@ -3578,7 +3889,7 @@ public struct ListGroupsInput {
     }
 }
 
-public struct ListGroupsOutput {
+public struct ListGroupsOutput: Swift.Sendable {
     /// The overview of groups for an organization.
     public var groups: [WorkMailClientTypes.Group]?
     /// The token to use to retrieve the next page of results. The value is "null" when there are no more results to return.
@@ -3595,8 +3906,9 @@ public struct ListGroupsOutput {
 }
 
 extension WorkMailClientTypes {
+
     /// Filtering options for ListGroupsForEntity operation. This is only used as input to Operation.
-    public struct ListGroupsForEntityFilters {
+    public struct ListGroupsForEntityFilters: Swift.Sendable {
         /// Filters only group names that start with the provided name prefix.
         public var groupNamePrefix: Swift.String?
 
@@ -3607,10 +3919,9 @@ extension WorkMailClientTypes {
             self.groupNamePrefix = groupNamePrefix
         }
     }
-
 }
 
-public struct ListGroupsForEntityInput {
+public struct ListGroupsForEntityInput: Swift.Sendable {
     /// The identifier for the entity. The entity ID can accept UserId or GroupID, Username or Groupname, or email.
     ///
     /// * Entity ID: 12345678-1234-1234-1234-123456789012 or S-1-1-12-1234567890-123456789-123456789-1234
@@ -3646,7 +3957,7 @@ public struct ListGroupsForEntityInput {
     }
 }
 
-public struct ListGroupsForEntityOutput {
+public struct ListGroupsForEntityOutput: Swift.Sendable {
     /// The overview of groups in an organization.
     public var groups: [WorkMailClientTypes.GroupIdentifier]?
     /// The token to use to retrieve the next page of results. This value is `null` when there are no more results to return.
@@ -3662,7 +3973,7 @@ public struct ListGroupsForEntityOutput {
     }
 }
 
-public struct ListImpersonationRolesInput {
+public struct ListImpersonationRolesInput: Swift.Sendable {
     /// The maximum number of results returned in a single call.
     public var maxResults: Swift.Int?
     /// The token used to retrieve the next page of results. The first call doesn't require a token.
@@ -3683,7 +3994,7 @@ public struct ListImpersonationRolesInput {
     }
 }
 
-public struct ListImpersonationRolesOutput {
+public struct ListImpersonationRolesOutput: Swift.Sendable {
     /// The token to retrieve the next page of results. The value is null when there are no results to return.
     public var nextToken: Swift.String?
     /// The list of impersonation roles under the given WorkMail organization.
@@ -3699,7 +4010,7 @@ public struct ListImpersonationRolesOutput {
     }
 }
 
-public struct ListMailboxExportJobsInput {
+public struct ListMailboxExportJobsInput: Swift.Sendable {
     /// The maximum number of results to return in a single call.
     public var maxResults: Swift.Int?
     /// The token to use to retrieve the next page of results.
@@ -3720,7 +4031,7 @@ public struct ListMailboxExportJobsInput {
     }
 }
 
-public struct ListMailboxExportJobsOutput {
+public struct ListMailboxExportJobsOutput: Swift.Sendable {
     /// The mailbox export job details.
     public var jobs: [WorkMailClientTypes.MailboxExportJob]?
     /// The token to use to retrieve the next page of results.
@@ -3736,7 +4047,7 @@ public struct ListMailboxExportJobsOutput {
     }
 }
 
-public struct ListMailboxPermissionsInput {
+public struct ListMailboxPermissionsInput: Swift.Sendable {
     /// The identifier of the user, or resource for which to list mailbox permissions. The entity ID can accept UserId or ResourceId, Username or Resourcename, or email.
     ///
     /// * Entity ID: 12345678-1234-1234-1234-123456789012, or r-0123456789a0123456789b0123456789
@@ -3770,7 +4081,7 @@ public struct ListMailboxPermissionsInput {
 
 extension WorkMailClientTypes {
 
-    public enum PermissionType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum PermissionType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case fullAccess
         case sendAs
         case sendOnBehalf
@@ -3801,8 +4112,9 @@ extension WorkMailClientTypes {
 }
 
 extension WorkMailClientTypes {
+
     /// Permission granted to a user, group, or resource to access a certain aspect of another user, group, or resource mailbox.
-    public struct Permission {
+    public struct Permission: Swift.Sendable {
         /// The identifier of the user, group, or resource to which the permissions are granted.
         /// This member is required.
         public var granteeId: Swift.String?
@@ -3824,10 +4136,9 @@ extension WorkMailClientTypes {
             self.permissionValues = permissionValues
         }
     }
-
 }
 
-public struct ListMailboxPermissionsOutput {
+public struct ListMailboxPermissionsOutput: Swift.Sendable {
     /// The token to use to retrieve the next page of results. The value is "null" when there are no more results to return.
     public var nextToken: Swift.String?
     /// One page of the user, group, or resource mailbox permissions.
@@ -3843,7 +4154,7 @@ public struct ListMailboxPermissionsOutput {
     }
 }
 
-public struct ListMailDomainsInput {
+public struct ListMailDomainsInput: Swift.Sendable {
     /// The maximum number of results to return in a single call.
     public var maxResults: Swift.Int?
     /// The token to use to retrieve the next page of results. The first call does not require a token.
@@ -3865,8 +4176,9 @@ public struct ListMailDomainsInput {
 }
 
 extension WorkMailClientTypes {
+
     /// The data for a given domain.
-    public struct MailDomainSummary {
+    public struct MailDomainSummary: Swift.Sendable {
         /// Whether the domain is default or not.
         public var defaultDomain: Swift.Bool
         /// The domain name.
@@ -3881,10 +4193,9 @@ extension WorkMailClientTypes {
             self.domainName = domainName
         }
     }
-
 }
 
-public struct ListMailDomainsOutput {
+public struct ListMailDomainsOutput: Swift.Sendable {
     /// The list of mail domain summaries, specifying domains that exist in the specified WorkMail organization, along with the information about whether the domain is or isn't the default.
     public var mailDomains: [WorkMailClientTypes.MailDomainSummary]?
     /// The token to use to retrieve the next page of results. The value becomes null when there are no more results to return.
@@ -3900,7 +4211,7 @@ public struct ListMailDomainsOutput {
     }
 }
 
-public struct ListMobileDeviceAccessOverridesInput {
+public struct ListMobileDeviceAccessOverridesInput: Swift.Sendable {
     /// The mobile device to which the access override applies.
     public var deviceId: Swift.String?
     /// The maximum number of results to return in a single call.
@@ -3936,8 +4247,9 @@ public struct ListMobileDeviceAccessOverridesInput {
 }
 
 extension WorkMailClientTypes {
+
     /// The override object.
-    public struct MobileDeviceAccessOverride {
+    public struct MobileDeviceAccessOverride: Swift.Sendable {
         /// The date the override was first created.
         public var dateCreated: Foundation.Date?
         /// The date the override was last modified.
@@ -3968,10 +4280,9 @@ extension WorkMailClientTypes {
             self.userId = userId
         }
     }
-
 }
 
-public struct ListMobileDeviceAccessOverridesOutput {
+public struct ListMobileDeviceAccessOverridesOutput: Swift.Sendable {
     /// The token to use to retrieve the next page of results. The value is “null” when there are no more results to return.
     public var nextToken: Swift.String?
     /// The list of mobile device access overrides that exist for the specified WorkMail organization and user.
@@ -3987,7 +4298,7 @@ public struct ListMobileDeviceAccessOverridesOutput {
     }
 }
 
-public struct ListMobileDeviceAccessRulesInput {
+public struct ListMobileDeviceAccessRulesInput: Swift.Sendable {
     /// The WorkMail organization for which to list the rules.
     /// This member is required.
     public var organizationId: Swift.String?
@@ -4001,8 +4312,9 @@ public struct ListMobileDeviceAccessRulesInput {
 }
 
 extension WorkMailClientTypes {
+
     /// A rule that controls access to mobile devices for an WorkMail group.
-    public struct MobileDeviceAccessRule {
+    public struct MobileDeviceAccessRule: Swift.Sendable {
         /// The date and time at which an access rule was created.
         public var dateCreated: Foundation.Date?
         /// The date and time at which an access rule was modified.
@@ -4065,10 +4377,9 @@ extension WorkMailClientTypes {
             self.notDeviceUserAgents = notDeviceUserAgents
         }
     }
-
 }
 
-public struct ListMobileDeviceAccessRulesOutput {
+public struct ListMobileDeviceAccessRulesOutput: Swift.Sendable {
     /// The list of mobile device access rules that exist under the specified WorkMail organization.
     public var rules: [WorkMailClientTypes.MobileDeviceAccessRule]?
 
@@ -4080,7 +4391,7 @@ public struct ListMobileDeviceAccessRulesOutput {
     }
 }
 
-public struct ListOrganizationsInput {
+public struct ListOrganizationsInput: Swift.Sendable {
     /// The maximum number of results to return in a single call.
     public var maxResults: Swift.Int?
     /// The token to use to retrieve the next page of results. The first call does not contain any tokens.
@@ -4097,8 +4408,9 @@ public struct ListOrganizationsInput {
 }
 
 extension WorkMailClientTypes {
+
     /// The representation of an organization.
-    public struct OrganizationSummary {
+    public struct OrganizationSummary: Swift.Sendable {
         /// The alias associated with the organization.
         public var alias: Swift.String?
         /// The default email domain associated with the organization.
@@ -4125,10 +4437,9 @@ extension WorkMailClientTypes {
             self.state = state
         }
     }
-
 }
 
-public struct ListOrganizationsOutput {
+public struct ListOrganizationsOutput: Swift.Sendable {
     /// The token to use to retrieve the next page of results. The value is "null" when there are no more results to return.
     public var nextToken: Swift.String?
     /// The overview of owned organizations presented as a list of organization summaries.
@@ -4144,7 +4455,88 @@ public struct ListOrganizationsOutput {
     }
 }
 
-public struct ListResourceDelegatesInput {
+public struct ListPersonalAccessTokensInput: Swift.Sendable {
+    /// The maximum amount of items that should be returned in a response.
+    public var maxResults: Swift.Int?
+    /// The token from the previous response to query the next page.
+    public var nextToken: Swift.String?
+    /// The Organization ID.
+    /// This member is required.
+    public var organizationId: Swift.String?
+    /// The WorkMail User ID.
+    public var userId: Swift.String?
+
+    public init(
+        maxResults: Swift.Int? = nil,
+        nextToken: Swift.String? = nil,
+        organizationId: Swift.String? = nil,
+        userId: Swift.String? = nil
+    )
+    {
+        self.maxResults = maxResults
+        self.nextToken = nextToken
+        self.organizationId = organizationId
+        self.userId = userId
+    }
+}
+
+extension WorkMailClientTypes {
+
+    /// The summary of the Personal Access Token.
+    public struct PersonalAccessTokenSummary: Swift.Sendable {
+        /// The date when the Personal Access Token was created.
+        public var dateCreated: Foundation.Date?
+        /// The date when the Personal Access Token was last used.
+        public var dateLastUsed: Foundation.Date?
+        /// The date when the Personal Access Token will expire.
+        public var expiresTime: Foundation.Date?
+        /// The name of the Personal Access Token.
+        public var name: Swift.String?
+        /// The ID of the Personal Access Token.
+        public var personalAccessTokenId: Swift.String?
+        /// Lists all the Personal Access Token permissions for a mailbox.
+        public var scopes: [Swift.String]?
+        /// The user ID of the WorkMail user associated with the Personal Access Token.
+        public var userId: Swift.String?
+
+        public init(
+            dateCreated: Foundation.Date? = nil,
+            dateLastUsed: Foundation.Date? = nil,
+            expiresTime: Foundation.Date? = nil,
+            name: Swift.String? = nil,
+            personalAccessTokenId: Swift.String? = nil,
+            scopes: [Swift.String]? = nil,
+            userId: Swift.String? = nil
+        )
+        {
+            self.dateCreated = dateCreated
+            self.dateLastUsed = dateLastUsed
+            self.expiresTime = expiresTime
+            self.name = name
+            self.personalAccessTokenId = personalAccessTokenId
+            self.scopes = scopes
+            self.userId = userId
+        }
+    }
+}
+
+public struct ListPersonalAccessTokensOutput: Swift.Sendable {
+    /// The token from the previous response to query the next page.
+    public var nextToken: Swift.String?
+    /// Lists all the personal tokens in an organization or user, if user ID is provided.
+    public var personalAccessTokenSummaries: [WorkMailClientTypes.PersonalAccessTokenSummary]?
+
+    public init(
+        nextToken: Swift.String? = nil,
+        personalAccessTokenSummaries: [WorkMailClientTypes.PersonalAccessTokenSummary]? = nil
+    )
+    {
+        self.nextToken = nextToken
+        self.personalAccessTokenSummaries = personalAccessTokenSummaries
+    }
+}
+
+public struct ListResourceDelegatesInput: Swift.Sendable {
     /// The number of maximum results in a page.
     public var maxResults: Swift.Int?
     /// The token used to paginate through the delegates associated with a resource.
@@ -4176,7 +4568,7 @@ public struct ListResourceDelegatesInput {
     }
 }
 
-public struct ListResourceDelegatesOutput {
+public struct ListResourceDelegatesOutput: Swift.Sendable {
     /// One page of the resource's delegates.
     public var delegates: [WorkMailClientTypes.Delegate]?
     /// The token used to paginate through the delegates associated with a resource. While results are still available, it has an associated value. When the last page is reached, the token is empty.
@@ -4193,8 +4585,9 @@ public struct ListResourceDelegatesOutput {
 }
 
 extension WorkMailClientTypes {
+
     /// Filtering options for ListResources operation. This is only used as input to Operation.
-    public struct ListResourcesFilters {
+    public struct ListResourcesFilters: Swift.Sendable {
         /// Filters only resource that start with the entered name prefix .
         public var namePrefix: Swift.String?
         /// Filters only resource with the provided primary email prefix.
@@ -4213,10 +4606,9 @@ extension WorkMailClientTypes {
             self.state = state
         }
     }
-
 }
 
-public struct ListResourcesInput {
+public struct ListResourcesInput: Swift.Sendable {
     /// Limit the resource search results based on the filter criteria. You can only use one filter per request.
     public var filters: WorkMailClientTypes.ListResourcesFilters?
     /// The maximum number of results to return in a single call.
@@ -4242,8 +4634,9 @@ public struct ListResourcesInput {
 }
 
 extension WorkMailClientTypes {
+
     /// The representation of a resource.
-    public struct Resource {
+    public struct Resource: Swift.Sendable {
         /// Resource description.
         public var description: Swift.String?
         /// The date indicating when the resource was disabled from WorkMail use.
@@ -4282,10 +4675,14 @@ extension WorkMailClientTypes {
             self.type = type
         }
     }
-
 }
 
-public struct ListResourcesOutput {
+extension WorkMailClientTypes.Resource: Swift.CustomDebugStringConvertible {
+    public var debugDescription: Swift.String {
+        "Resource(disabledDate: \(Swift.String(describing: disabledDate)), email: \(Swift.String(describing: email)), enabledDate: \(Swift.String(describing: enabledDate)), id: \(Swift.String(describing: id)), name: \(Swift.String(describing: name)), state: \(Swift.String(describing: state)), type: \(Swift.String(describing: type)), description: \"CONTENT_REDACTED\")"}
+}
+
+public struct ListResourcesOutput: Swift.Sendable {
     /// The token used to paginate through all the organization's resources. While results are still available, it has an associated value. When the last page is reached, the token is empty.
     public var nextToken: Swift.String?
     /// One page of the organization's resource representation.
@@ -4301,7 +4698,7 @@ public struct ListResourcesOutput {
     }
 }
 
-public struct ListTagsForResourceInput {
+public struct ListTagsForResourceInput: Swift.Sendable {
     /// The resource ARN.
     /// This member is required.
     public var resourceARN: Swift.String?
@@ -4315,8 +4712,9 @@ public struct ListTagsForResourceInput {
 }
 
 extension WorkMailClientTypes {
+
     /// Describes a tag applied to a resource.
-    public struct Tag {
+    public struct Tag: Swift.Sendable {
         /// The key of the tag.
         /// This member is required.
         public var key: Swift.String?
@@ -4333,10 +4731,9 @@ extension WorkMailClientTypes {
             self.value = value
         }
     }
-
 }
 
-public struct ListTagsForResourceOutput {
+public struct ListTagsForResourceOutput: Swift.Sendable {
     /// A list of tag key-value pairs.
     public var tags: [WorkMailClientTypes.Tag]?
 
@@ -4349,10 +4746,13 @@ public struct ListTagsForResourceOutput {
 }
 
 extension WorkMailClientTypes {
+
     /// Filtering options for ListUsers operation. This is only used as input to Operation.
-    public struct ListUsersFilters {
+    public struct ListUsersFilters: Swift.Sendable {
         /// Filters only users with the provided display name prefix.
         public var displayNamePrefix: Swift.String?
+        /// Filters only users with the ID from the IAM Identity Center.
+        public var identityProviderUserIdPrefix: Swift.String?
         /// Filters only users with the provided email prefix.
         public var primaryEmailPrefix: Swift.String?
         /// Filters only users with the provided state.
@@ -4362,26 +4762,27 @@ extension WorkMailClientTypes {
 
         public init(
             displayNamePrefix: Swift.String? = nil,
+            identityProviderUserIdPrefix: Swift.String? = nil,
             primaryEmailPrefix: Swift.String? = nil,
             state: WorkMailClientTypes.EntityState? = nil,
             usernamePrefix: Swift.String? = nil
         )
         {
             self.displayNamePrefix = displayNamePrefix
+            self.identityProviderUserIdPrefix = identityProviderUserIdPrefix
             self.primaryEmailPrefix = primaryEmailPrefix
             self.state = state
             self.usernamePrefix = usernamePrefix
         }
     }
-
 }
 
 extension WorkMailClientTypes.ListUsersFilters: Swift.CustomDebugStringConvertible {
     public var debugDescription: Swift.String {
-        "ListUsersFilters(primaryEmailPrefix: \(Swift.String(describing: primaryEmailPrefix)), state: \(Swift.String(describing: state)), usernamePrefix: \(Swift.String(describing: usernamePrefix)), displayNamePrefix: \"CONTENT_REDACTED\")"}
+        "ListUsersFilters(identityProviderUserIdPrefix: \(Swift.String(describing: identityProviderUserIdPrefix)), primaryEmailPrefix: \(Swift.String(describing: primaryEmailPrefix)), state: \(Swift.String(describing: state)), usernamePrefix: \(Swift.String(describing: usernamePrefix)), displayNamePrefix: \"CONTENT_REDACTED\")"}
 }
 
-public struct ListUsersInput {
+public struct ListUsersInput: Swift.Sendable {
     /// Limit the user search results based on the filter criteria. You can only use one filter per request.
     public var filters: WorkMailClientTypes.ListUsersFilters?
     /// The maximum number of results to return in a single call.
@@ -4407,8 +4808,9 @@ public struct ListUsersInput {
 }
 
 extension WorkMailClientTypes {
+
     /// The representation of an WorkMail user.
-    public struct User {
+    public struct User: Swift.Sendable {
         /// The date indicating when the user was disabled from WorkMail use.
         public var disabledDate: Foundation.Date?
         /// The display name of the user.
@@ -4419,6 +4821,10 @@ extension WorkMailClientTypes {
         public var enabledDate: Foundation.Date?
         /// The identifier of the user.
         public var id: Swift.String?
+        /// Identity store ID from the IAM Identity Center. If this parameter is empty it will be updated automatically when the user logs in for the first time to the mailbox associated with WorkMail.
+        public var identityProviderIdentityStoreId: Swift.String?
+        /// User ID from the IAM Identity Center. If this parameter is empty it will be updated automatically when the user logs in for the first time to the mailbox associated with WorkMail.
+        public var identityProviderUserId: Swift.String?
         /// The name of the user.
         public var name: Swift.String?
         /// The state of the user, which can be ENABLED, DISABLED, or DELETED.
@@ -4432,6 +4838,8 @@ extension WorkMailClientTypes {
             email: Swift.String? = nil,
             enabledDate: Foundation.Date? = nil,
             id: Swift.String? = nil,
+            identityProviderIdentityStoreId: Swift.String? = nil,
+            identityProviderUserId: Swift.String? = nil,
             name: Swift.String? = nil,
             state: WorkMailClientTypes.EntityState? = nil,
             userRole: WorkMailClientTypes.UserRole? = nil
@@ -4442,15 +4850,16 @@ extension WorkMailClientTypes {
             self.email = email
             self.enabledDate = enabledDate
             self.id = id
+            self.identityProviderIdentityStoreId = identityProviderIdentityStoreId
+            self.identityProviderUserId = identityProviderUserId
             self.name = name
             self.state = state
             self.userRole = userRole
         }
     }
-
 }
 
-public struct ListUsersOutput {
+public struct ListUsersOutput: Swift.Sendable {
     /// The token to use to retrieve the next page of results. This value is `null` when there are no more results to return.
     public var nextToken: Swift.String?
     /// The overview of users for an organization.
@@ -4466,7 +4875,7 @@ public struct ListUsersOutput {
     }
 }
 
-public struct PutAccessControlRuleInput {
+public struct PutAccessControlRuleInput: Swift.Sendable {
     /// Access protocol actions to include in the rule. Valid values include ActiveSync, AutoDiscover, EWS, IMAP, SMTP, WindowsOutlook, and WebMail.
     public var actions: [Swift.String]?
     /// The rule description.
@@ -4526,12 +4935,12 @@ public struct PutAccessControlRuleInput {
     }
 }
 
-public struct PutAccessControlRuleOutput {
+public struct PutAccessControlRuleOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct PutEmailMonitoringConfigurationInput {
+public struct PutEmailMonitoringConfigurationInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the CloudWatch Log group associated with the email monitoring configuration.
     /// This member is required.
     public var logGroupArn: Swift.String?
@@ -4554,12 +4963,45 @@ public struct PutEmailMonitoringConfigurationInput {
     }
 }
 
-public struct PutEmailMonitoringConfigurationOutput {
+public struct PutEmailMonitoringConfigurationOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct PutInboundDmarcSettingsInput {
+public struct PutIdentityProviderConfigurationInput: Swift.Sendable {
+    /// The authentication mode used in WorkMail.
+    /// This member is required.
+    public var authenticationMode: WorkMailClientTypes.IdentityProviderAuthenticationMode?
+    /// The details of the IAM Identity Center configuration.
+    /// This member is required.
+    public var identityCenterConfiguration: WorkMailClientTypes.IdentityCenterConfiguration?
+    /// The ID of the WorkMail Organization.
+    /// This member is required.
+    public var organizationId: Swift.String?
+    /// The details of the Personal Access Token configuration.
+    /// This member is required.
+    public var personalAccessTokenConfiguration: WorkMailClientTypes.PersonalAccessTokenConfiguration?
+
+    public init(
+        authenticationMode: WorkMailClientTypes.IdentityProviderAuthenticationMode? = nil,
+        identityCenterConfiguration: WorkMailClientTypes.IdentityCenterConfiguration? = nil,
+        organizationId: Swift.String? = nil,
+        personalAccessTokenConfiguration: WorkMailClientTypes.PersonalAccessTokenConfiguration? = nil
+    )
+    {
+        self.authenticationMode = authenticationMode
+        self.identityCenterConfiguration = identityCenterConfiguration
+        self.organizationId = organizationId
+        self.personalAccessTokenConfiguration = personalAccessTokenConfiguration
+    }
+}
+
+public struct PutIdentityProviderConfigurationOutput: Swift.Sendable {
+
+    public init() { }
+}
+
+public struct PutInboundDmarcSettingsInput: Swift.Sendable {
     /// Enforces or suspends a policy after it's applied.
     /// This member is required.
     public var enforced: Swift.Bool?
@@ -4577,12 +5019,12 @@ public struct PutInboundDmarcSettingsInput {
     }
 }
 
-public struct PutInboundDmarcSettingsOutput {
+public struct PutInboundDmarcSettingsOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct PutMailboxPermissionsInput {
+public struct PutMailboxPermissionsInput: Swift.Sendable {
     /// The identifier of the user or resource for which to update mailbox permissions. The identifier can be UserId, ResourceID, or Group Id, Username, Resourcename, or Groupname, or email.
     ///
     /// * Entity ID: 12345678-1234-1234-1234-123456789012, r-0123456789a0123456789b0123456789, or S-1-1-12-1234567890-123456789-123456789-1234
@@ -4622,12 +5064,12 @@ public struct PutMailboxPermissionsInput {
     }
 }
 
-public struct PutMailboxPermissionsOutput {
+public struct PutMailboxPermissionsOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct PutMobileDeviceAccessOverrideInput {
+public struct PutMobileDeviceAccessOverrideInput: Swift.Sendable {
     /// A description of the override.
     public var description: Swift.String?
     /// The mobile device for which you create the override. DeviceId is case insensitive.
@@ -4665,12 +5107,12 @@ public struct PutMobileDeviceAccessOverrideInput {
     }
 }
 
-public struct PutMobileDeviceAccessOverrideOutput {
+public struct PutMobileDeviceAccessOverrideOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct PutRetentionPolicyInput {
+public struct PutRetentionPolicyInput: Swift.Sendable {
     /// The retention policy description.
     public var description: Swift.String?
     /// The retention policy folder configurations.
@@ -4706,12 +5148,12 @@ extension PutRetentionPolicyInput: Swift.CustomDebugStringConvertible {
         "PutRetentionPolicyInput(folderConfigurations: \(Swift.String(describing: folderConfigurations)), id: \(Swift.String(describing: id)), name: \(Swift.String(describing: name)), organizationId: \(Swift.String(describing: organizationId)), description: \"CONTENT_REDACTED\")"}
 }
 
-public struct PutRetentionPolicyOutput {
+public struct PutRetentionPolicyOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct RegisterMailDomainInput {
+public struct RegisterMailDomainInput: Swift.Sendable {
     /// Idempotency token used when retrying requests.
     public var clientToken: Swift.String?
     /// The name of the mail domain to create in WorkMail and SES.
@@ -4733,12 +5175,12 @@ public struct RegisterMailDomainInput {
     }
 }
 
-public struct RegisterMailDomainOutput {
+public struct RegisterMailDomainOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct RegisterToWorkMailInput {
+public struct RegisterToWorkMailInput: Swift.Sendable {
     /// The email for the user, group, or resource to be updated.
     /// This member is required.
     public var email: Swift.String?
@@ -4765,12 +5207,12 @@ public struct RegisterToWorkMailInput {
     }
 }
 
-public struct RegisterToWorkMailOutput {
+public struct RegisterToWorkMailOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct ResetPasswordInput {
+public struct ResetPasswordInput: Swift.Sendable {
     /// The identifier of the organization that contains the user for which the password is reset.
     /// This member is required.
     public var organizationId: Swift.String?
@@ -4798,12 +5240,12 @@ extension ResetPasswordInput: Swift.CustomDebugStringConvertible {
         "ResetPasswordInput(organizationId: \(Swift.String(describing: organizationId)), userId: \(Swift.String(describing: userId)), password: \"CONTENT_REDACTED\")"}
 }
 
-public struct ResetPasswordOutput {
+public struct ResetPasswordOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct StartMailboxExportJobInput {
+public struct StartMailboxExportJobInput: Swift.Sendable {
     /// The idempotency token for the client request.
     /// This member is required.
     public var clientToken: Swift.String?
@@ -4856,7 +5298,7 @@ public struct StartMailboxExportJobInput {
     }
 }
 
-public struct StartMailboxExportJobOutput {
+public struct StartMailboxExportJobOutput: Swift.Sendable {
     /// The job ID.
     public var jobId: Swift.String?
 
@@ -4892,7 +5334,7 @@ public struct TooManyTagsException: ClientRuntime.ModeledError, AWSClientRuntime
     }
 }
 
-public struct TagResourceInput {
+public struct TagResourceInput: Swift.Sendable {
     /// The resource ARN.
     /// This member is required.
     public var resourceARN: Swift.String?
@@ -4910,12 +5352,12 @@ public struct TagResourceInput {
     }
 }
 
-public struct TagResourceOutput {
+public struct TagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct TestAvailabilityConfigurationInput {
+public struct TestAvailabilityConfigurationInput: Swift.Sendable {
     /// The domain to which the provider applies. If this field is provided, a stored availability provider associated to this domain name will be tested.
     public var domainName: Swift.String?
     /// Describes an EWS based availability provider. This is only used as input to the service.
@@ -4940,7 +5382,7 @@ public struct TestAvailabilityConfigurationInput {
     }
 }
 
-public struct TestAvailabilityConfigurationOutput {
+public struct TestAvailabilityConfigurationOutput: Swift.Sendable {
     /// String containing the reason for a failed test if TestPassed is false.
     public var failureReason: Swift.String?
     /// Boolean indicating whether the test passed or failed.
@@ -4956,7 +5398,7 @@ public struct TestAvailabilityConfigurationOutput {
     }
 }
 
-public struct UntagResourceInput {
+public struct UntagResourceInput: Swift.Sendable {
     /// The resource ARN.
     /// This member is required.
     public var resourceARN: Swift.String?
@@ -4974,12 +5416,12 @@ public struct UntagResourceInput {
     }
 }
 
-public struct UntagResourceOutput {
+public struct UntagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdateAvailabilityConfigurationInput {
+public struct UpdateAvailabilityConfigurationInput: Swift.Sendable {
     /// The domain to which the provider applies the availability configuration.
     /// This member is required.
     public var domainName: Swift.String?
@@ -5005,12 +5447,12 @@ public struct UpdateAvailabilityConfigurationInput {
     }
 }
 
-public struct UpdateAvailabilityConfigurationOutput {
+public struct UpdateAvailabilityConfigurationOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdateDefaultMailDomainInput {
+public struct UpdateDefaultMailDomainInput: Swift.Sendable {
     /// The domain name that will become the default domain.
     /// This member is required.
     public var domainName: Swift.String?
@@ -5028,12 +5470,12 @@ public struct UpdateDefaultMailDomainInput {
     }
 }
 
-public struct UpdateDefaultMailDomainOutput {
+public struct UpdateDefaultMailDomainOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdateGroupInput {
+public struct UpdateGroupInput: Swift.Sendable {
     /// The identifier for the group to be updated. The identifier can accept GroupId, Groupname, or email. The following identity formats are available:
     ///
     /// * Group ID: 12345678-1234-1234-1234-123456789012 or S-1-1-12-1234567890-123456789-123456789-1234
@@ -5061,12 +5503,12 @@ public struct UpdateGroupInput {
     }
 }
 
-public struct UpdateGroupOutput {
+public struct UpdateGroupOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdateImpersonationRoleInput {
+public struct UpdateImpersonationRoleInput: Swift.Sendable {
     /// The updated impersonation role description.
     public var description: Swift.String?
     /// The ID of the impersonation role to update.
@@ -5103,12 +5545,12 @@ public struct UpdateImpersonationRoleInput {
     }
 }
 
-public struct UpdateImpersonationRoleOutput {
+public struct UpdateImpersonationRoleOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdateMailboxQuotaInput {
+public struct UpdateMailboxQuotaInput: Swift.Sendable {
     /// The updated mailbox quota, in MB, for the specified user.
     /// This member is required.
     public var mailboxQuota: Swift.Int?
@@ -5137,12 +5579,12 @@ public struct UpdateMailboxQuotaInput {
     }
 }
 
-public struct UpdateMailboxQuotaOutput {
+public struct UpdateMailboxQuotaOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdateMobileDeviceAccessRuleInput {
+public struct UpdateMobileDeviceAccessRuleInput: Swift.Sendable {
     /// The updated rule description.
     public var description: Swift.String?
     /// Device models that the updated rule will match.
@@ -5206,12 +5648,12 @@ public struct UpdateMobileDeviceAccessRuleInput {
     }
 }
 
-public struct UpdateMobileDeviceAccessRuleOutput {
+public struct UpdateMobileDeviceAccessRuleOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdatePrimaryEmailAddressInput {
+public struct UpdatePrimaryEmailAddressInput: Swift.Sendable {
     /// The value of the email to be updated as primary.
     /// This member is required.
     public var email: Swift.String?
@@ -5240,12 +5682,12 @@ public struct UpdatePrimaryEmailAddressInput {
     }
 }
 
-public struct UpdatePrimaryEmailAddressOutput {
+public struct UpdatePrimaryEmailAddressOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdateResourceInput {
+public struct UpdateResourceInput: Swift.Sendable {
     /// The resource's booking options to be updated.
     public var bookingOptions: WorkMailClientTypes.BookingOptions?
     /// Updates the resource description.
@@ -5289,12 +5731,17 @@ public struct UpdateResourceInput {
     }
 }
 
-public struct UpdateResourceOutput {
+extension UpdateResourceInput: Swift.CustomDebugStringConvertible {
+    public var debugDescription: Swift.String {
+        "UpdateResourceInput(bookingOptions: \(Swift.String(describing: bookingOptions)), hiddenFromGlobalAddressList: \(Swift.String(describing: hiddenFromGlobalAddressList)), name: \(Swift.String(describing: name)), organizationId: \(Swift.String(describing: organizationId)), resourceId: \(Swift.String(describing: resourceId)), type: \(Swift.String(describing: type)), description: \"CONTENT_REDACTED\")"}
+}
+
+public struct UpdateResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdateUserInput {
+public struct UpdateUserInput: Swift.Sendable {
     /// Updates the user's city.
     public var city: Swift.String?
     /// Updates the user's company.
@@ -5309,6 +5756,8 @@ public struct UpdateUserInput {
     public var firstName: Swift.String?
     /// If enabled, the user is hidden from the global address list.
     public var hiddenFromGlobalAddressList: Swift.Bool?
+    /// User ID from the IAM Identity Center. If this parameter is empty it will be updated automatically when the user logs in for the first time to the mailbox associated with WorkMail.
+    public var identityProviderUserId: Swift.String?
     /// Updates the user's initials.
     public var initials: Swift.String?
     /// Updates the user's job title.
@@ -5335,7 +5784,7 @@ public struct UpdateUserInput {
     /// * User name: user
     /// This member is required.
     public var userId: Swift.String?
-    /// Updates the user's zipcode.
+    /// Updates the user's zip code.
     public var zipCode: Swift.String?
 
     public init(
@@ -5346,6 +5795,7 @@ public struct UpdateUserInput {
         displayName: Swift.String? = nil,
         firstName: Swift.String? = nil,
         hiddenFromGlobalAddressList: Swift.Bool? = nil,
+        identityProviderUserId: Swift.String? = nil,
         initials: Swift.String? = nil,
         jobTitle: Swift.String? = nil,
         lastName: Swift.String? = nil,
@@ -5365,6 +5815,7 @@ public struct UpdateUserInput {
         self.displayName = displayName
         self.firstName = firstName
         self.hiddenFromGlobalAddressList = hiddenFromGlobalAddressList
+        self.identityProviderUserId = identityProviderUserId
         self.initials = initials
         self.jobTitle = jobTitle
         self.lastName = lastName
@@ -5380,10 +5831,10 @@ public struct UpdateUserInput {
 
 extension UpdateUserInput: Swift.CustomDebugStringConvertible {
     public var debugDescription: Swift.String {
-        "UpdateUserInput(hiddenFromGlobalAddressList: \(Swift.String(describing: hiddenFromGlobalAddressList)), organizationId: \(Swift.String(describing: organizationId)), role: \(Swift.String(describing: role)), userId: \(Swift.String(describing: userId)), city: \"CONTENT_REDACTED\", company: \"CONTENT_REDACTED\", country: \"CONTENT_REDACTED\", department: \"CONTENT_REDACTED\", displayName: \"CONTENT_REDACTED\", firstName: \"CONTENT_REDACTED\", initials: \"CONTENT_REDACTED\", jobTitle: \"CONTENT_REDACTED\", lastName: \"CONTENT_REDACTED\", office: \"CONTENT_REDACTED\", street: \"CONTENT_REDACTED\", telephone: \"CONTENT_REDACTED\", zipCode: \"CONTENT_REDACTED\")"}
+        "UpdateUserInput(hiddenFromGlobalAddressList: \(Swift.String(describing: hiddenFromGlobalAddressList)), identityProviderUserId: \(Swift.String(describing: identityProviderUserId)), organizationId: \(Swift.String(describing: organizationId)), role: \(Swift.String(describing: role)), userId: \(Swift.String(describing: userId)), city: \"CONTENT_REDACTED\", company: \"CONTENT_REDACTED\", country: \"CONTENT_REDACTED\", department: \"CONTENT_REDACTED\", displayName: \"CONTENT_REDACTED\", firstName: \"CONTENT_REDACTED\", initials: \"CONTENT_REDACTED\", jobTitle: \"CONTENT_REDACTED\", lastName: \"CONTENT_REDACTED\", office: \"CONTENT_REDACTED\", street: \"CONTENT_REDACTED\", telephone: \"CONTENT_REDACTED\", zipCode: \"CONTENT_REDACTED\")"}
 }
 
-public struct UpdateUserOutput {
+public struct UpdateUserOutput: Swift.Sendable {
 
     public init() { }
 }
@@ -5433,6 +5884,13 @@ extension CreateAvailabilityConfigurationInput {
 extension CreateGroupInput {
 
     static func urlPathProvider(_ value: CreateGroupInput) -> Swift.String? {
+        return "/"
+    }
+}
+
+extension CreateIdentityCenterApplicationInput {
+
+    static func urlPathProvider(_ value: CreateIdentityCenterApplicationInput) -> Swift.String? {
         return "/"
     }
 }
@@ -5507,6 +5965,20 @@ extension DeleteGroupInput {
     }
 }
 
+extension DeleteIdentityCenterApplicationInput {
+
+    static func urlPathProvider(_ value: DeleteIdentityCenterApplicationInput) -> Swift.String? {
+        return "/"
+    }
+}
+
+extension DeleteIdentityProviderConfigurationInput {
+
+    static func urlPathProvider(_ value: DeleteIdentityProviderConfigurationInput) -> Swift.String? {
+        return "/"
+    }
+}
+
 extension DeleteImpersonationRoleInput {
 
     static func urlPathProvider(_ value: DeleteImpersonationRoleInput) -> Swift.String? {
@@ -5538,6 +6010,13 @@ extension DeleteMobileDeviceAccessRuleInput {
 extension DeleteOrganizationInput {
 
     static func urlPathProvider(_ value: DeleteOrganizationInput) -> Swift.String? {
+        return "/"
+    }
+}
+
+extension DeletePersonalAccessTokenInput {
+
+    static func urlPathProvider(_ value: DeletePersonalAccessTokenInput) -> Swift.String? {
         return "/"
     }
 }
@@ -5594,6 +6073,13 @@ extension DescribeEntityInput {
 extension DescribeGroupInput {
 
     static func urlPathProvider(_ value: DescribeGroupInput) -> Swift.String? {
+        return "/"
+    }
+}
+
+extension DescribeIdentityProviderConfigurationInput {
+
+    static func urlPathProvider(_ value: DescribeIdentityProviderConfigurationInput) -> Swift.String? {
         return "/"
     }
 }
@@ -5703,6 +6189,13 @@ extension GetMobileDeviceAccessOverrideInput {
     }
 }
 
+extension GetPersonalAccessTokenMetadataInput {
+
+    static func urlPathProvider(_ value: GetPersonalAccessTokenMetadataInput) -> Swift.String? {
+        return "/"
+    }
+}
+
 extension ListAccessControlRulesInput {
 
     static func urlPathProvider(_ value: ListAccessControlRulesInput) -> Swift.String? {
@@ -5794,6 +6287,13 @@ extension ListOrganizationsInput {
     }
 }
 
+extension ListPersonalAccessTokensInput {
+
+    static func urlPathProvider(_ value: ListPersonalAccessTokensInput) -> Swift.String? {
+        return "/"
+    }
+}
+
 extension ListResourceDelegatesInput {
 
     static func urlPathProvider(_ value: ListResourceDelegatesInput) -> Swift.String? {
@@ -5832,6 +6332,13 @@ extension PutAccessControlRuleInput {
 extension PutEmailMonitoringConfigurationInput {
 
     static func urlPathProvider(_ value: PutEmailMonitoringConfigurationInput) -> Swift.String? {
+        return "/"
+    }
+}
+
+extension PutIdentityProviderConfigurationInput {
+
+    static func urlPathProvider(_ value: PutIdentityProviderConfigurationInput) -> Swift.String? {
         return "/"
     }
 }
@@ -6047,6 +6554,16 @@ extension CreateGroupInput {
     }
 }
 
+extension CreateIdentityCenterApplicationInput {
+
+    static func write(value: CreateIdentityCenterApplicationInput?, to writer: SmithyJSON.Writer) throws {
+        guard let value else { return }
+        try writer["ClientToken"].write(value.clientToken)
+        try writer["InstanceArn"].write(value.instanceArn)
+        try writer["Name"].write(value.name)
+    }
+}
+
 extension CreateImpersonationRoleInput {
 
     static func write(value: CreateImpersonationRoleInput?, to writer: SmithyJSON.Writer) throws {
@@ -6112,6 +6629,7 @@ extension CreateUserInput {
         try writer["DisplayName"].write(value.displayName)
         try writer["FirstName"].write(value.firstName)
         try writer["HiddenFromGlobalAddressList"].write(value.hiddenFromGlobalAddressList)
+        try writer["IdentityProviderUserId"].write(value.identityProviderUserId)
         try writer["LastName"].write(value.lastName)
         try writer["Name"].write(value.name)
         try writer["OrganizationId"].write(value.organizationId)
@@ -6165,6 +6683,22 @@ extension DeleteGroupInput {
     }
 }
 
+extension DeleteIdentityCenterApplicationInput {
+
+    static func write(value: DeleteIdentityCenterApplicationInput?, to writer: SmithyJSON.Writer) throws {
+        guard let value else { return }
+        try writer["ApplicationArn"].write(value.applicationArn)
+    }
+}
+
+extension DeleteIdentityProviderConfigurationInput {
+
+    static func write(value: DeleteIdentityProviderConfigurationInput?, to writer: SmithyJSON.Writer) throws {
+        guard let value else { return }
+        try writer["OrganizationId"].write(value.organizationId)
+    }
+}
+
 extension DeleteImpersonationRoleInput {
 
     static func write(value: DeleteImpersonationRoleInput?, to writer: SmithyJSON.Writer) throws {
@@ -6209,8 +6743,18 @@ extension DeleteOrganizationInput {
         guard let value else { return }
         try writer["ClientToken"].write(value.clientToken)
         try writer["DeleteDirectory"].write(value.deleteDirectory)
+        try writer["DeleteIdentityCenterApplication"].write(value.deleteIdentityCenterApplication)
         try writer["ForceDelete"].write(value.forceDelete)
         try writer["OrganizationId"].write(value.organizationId)
+    }
+}
+
+extension DeletePersonalAccessTokenInput {
+
+    static func write(value: DeletePersonalAccessTokenInput?, to writer: SmithyJSON.Writer) throws {
+        guard let value else { return }
+        try writer["OrganizationId"].write(value.organizationId)
+        try writer["PersonalAccessTokenId"].write(value.personalAccessTokenId)
     }
 }
 
@@ -6281,6 +6825,14 @@ extension DescribeGroupInput {
     static func write(value: DescribeGroupInput?, to writer: SmithyJSON.Writer) throws {
         guard let value else { return }
         try writer["GroupId"].write(value.groupId)
+        try writer["OrganizationId"].write(value.organizationId)
+    }
+}
+
+extension DescribeIdentityProviderConfigurationInput {
+
+    static func write(value: DescribeIdentityProviderConfigurationInput?, to writer: SmithyJSON.Writer) throws {
+        guard let value else { return }
         try writer["OrganizationId"].write(value.organizationId)
     }
 }
@@ -6427,6 +6979,15 @@ extension GetMobileDeviceAccessOverrideInput {
     }
 }
 
+extension GetPersonalAccessTokenMetadataInput {
+
+    static func write(value: GetPersonalAccessTokenMetadataInput?, to writer: SmithyJSON.Writer) throws {
+        guard let value else { return }
+        try writer["OrganizationId"].write(value.organizationId)
+        try writer["PersonalAccessTokenId"].write(value.personalAccessTokenId)
+    }
+}
+
 extension ListAccessControlRulesInput {
 
     static func write(value: ListAccessControlRulesInput?, to writer: SmithyJSON.Writer) throws {
@@ -6560,6 +7121,17 @@ extension ListOrganizationsInput {
     }
 }
 
+extension ListPersonalAccessTokensInput {
+
+    static func write(value: ListPersonalAccessTokensInput?, to writer: SmithyJSON.Writer) throws {
+        guard let value else { return }
+        try writer["MaxResults"].write(value.maxResults)
+        try writer["NextToken"].write(value.nextToken)
+        try writer["OrganizationId"].write(value.organizationId)
+        try writer["UserId"].write(value.userId)
+    }
+}
+
 extension ListResourceDelegatesInput {
 
     static func write(value: ListResourceDelegatesInput?, to writer: SmithyJSON.Writer) throws {
@@ -6627,6 +7199,17 @@ extension PutEmailMonitoringConfigurationInput {
         try writer["LogGroupArn"].write(value.logGroupArn)
         try writer["OrganizationId"].write(value.organizationId)
         try writer["RoleArn"].write(value.roleArn)
+    }
+}
+
+extension PutIdentityProviderConfigurationInput {
+
+    static func write(value: PutIdentityProviderConfigurationInput?, to writer: SmithyJSON.Writer) throws {
+        guard let value else { return }
+        try writer["AuthenticationMode"].write(value.authenticationMode)
+        try writer["IdentityCenterConfiguration"].write(value.identityCenterConfiguration, with: WorkMailClientTypes.IdentityCenterConfiguration.write(value:to:))
+        try writer["OrganizationId"].write(value.organizationId)
+        try writer["PersonalAccessTokenConfiguration"].write(value.personalAccessTokenConfiguration, with: WorkMailClientTypes.PersonalAccessTokenConfiguration.write(value:to:))
     }
 }
 
@@ -6856,6 +7439,7 @@ extension UpdateUserInput {
         try writer["DisplayName"].write(value.displayName)
         try writer["FirstName"].write(value.firstName)
         try writer["HiddenFromGlobalAddressList"].write(value.hiddenFromGlobalAddressList)
+        try writer["IdentityProviderUserId"].write(value.identityProviderUserId)
         try writer["Initials"].write(value.initials)
         try writer["JobTitle"].write(value.jobTitle)
         try writer["LastName"].write(value.lastName)
@@ -6925,6 +7509,18 @@ extension CreateGroupOutput {
         let reader = responseReader
         var value = CreateGroupOutput()
         value.groupId = try reader["GroupId"].readIfPresent()
+        return value
+    }
+}
+
+extension CreateIdentityCenterApplicationOutput {
+
+    static func httpOutput(from httpResponse: SmithyHTTPAPI.HTTPResponse) async throws -> CreateIdentityCenterApplicationOutput {
+        let data = try await httpResponse.data()
+        let responseReader = try SmithyJSON.Reader.from(data: data)
+        let reader = responseReader
+        var value = CreateIdentityCenterApplicationOutput()
+        value.applicationArn = try reader["ApplicationArn"].readIfPresent()
         return value
     }
 }
@@ -7024,6 +7620,20 @@ extension DeleteGroupOutput {
     }
 }
 
+extension DeleteIdentityCenterApplicationOutput {
+
+    static func httpOutput(from httpResponse: SmithyHTTPAPI.HTTPResponse) async throws -> DeleteIdentityCenterApplicationOutput {
+        return DeleteIdentityCenterApplicationOutput()
+    }
+}
+
+extension DeleteIdentityProviderConfigurationOutput {
+
+    static func httpOutput(from httpResponse: SmithyHTTPAPI.HTTPResponse) async throws -> DeleteIdentityProviderConfigurationOutput {
+        return DeleteIdentityProviderConfigurationOutput()
+    }
+}
+
 extension DeleteImpersonationRoleOutput {
 
     static func httpOutput(from httpResponse: SmithyHTTPAPI.HTTPResponse) async throws -> DeleteImpersonationRoleOutput {
@@ -7062,6 +7672,13 @@ extension DeleteOrganizationOutput {
         value.organizationId = try reader["OrganizationId"].readIfPresent()
         value.state = try reader["State"].readIfPresent()
         return value
+    }
+}
+
+extension DeletePersonalAccessTokenOutput {
+
+    static func httpOutput(from httpResponse: SmithyHTTPAPI.HTTPResponse) async throws -> DeletePersonalAccessTokenOutput {
+        return DeletePersonalAccessTokenOutput()
     }
 }
 
@@ -7141,6 +7758,20 @@ extension DescribeGroupOutput {
         value.hiddenFromGlobalAddressList = try reader["HiddenFromGlobalAddressList"].readIfPresent() ?? false
         value.name = try reader["Name"].readIfPresent()
         value.state = try reader["State"].readIfPresent()
+        return value
+    }
+}
+
+extension DescribeIdentityProviderConfigurationOutput {
+
+    static func httpOutput(from httpResponse: SmithyHTTPAPI.HTTPResponse) async throws -> DescribeIdentityProviderConfigurationOutput {
+        let data = try await httpResponse.data()
+        let responseReader = try SmithyJSON.Reader.from(data: data)
+        let reader = responseReader
+        var value = DescribeIdentityProviderConfigurationOutput()
+        value.authenticationMode = try reader["AuthenticationMode"].readIfPresent()
+        value.identityCenterConfiguration = try reader["IdentityCenterConfiguration"].readIfPresent(with: WorkMailClientTypes.IdentityCenterConfiguration.read(from:))
+        value.personalAccessTokenConfiguration = try reader["PersonalAccessTokenConfiguration"].readIfPresent(with: WorkMailClientTypes.PersonalAccessTokenConfiguration.read(from:))
         return value
     }
 }
@@ -7240,6 +7871,8 @@ extension DescribeUserOutput {
         value.enabledDate = try reader["EnabledDate"].readTimestampIfPresent(format: SmithyTimestamps.TimestampFormat.epochSeconds)
         value.firstName = try reader["FirstName"].readIfPresent()
         value.hiddenFromGlobalAddressList = try reader["HiddenFromGlobalAddressList"].readIfPresent() ?? false
+        value.identityProviderIdentityStoreId = try reader["IdentityProviderIdentityStoreId"].readIfPresent()
+        value.identityProviderUserId = try reader["IdentityProviderUserId"].readIfPresent()
         value.initials = try reader["Initials"].readIfPresent()
         value.jobTitle = try reader["JobTitle"].readIfPresent()
         value.lastName = try reader["LastName"].readIfPresent()
@@ -7385,6 +8018,24 @@ extension GetMobileDeviceAccessOverrideOutput {
         value.description = try reader["Description"].readIfPresent()
         value.deviceId = try reader["DeviceId"].readIfPresent()
         value.effect = try reader["Effect"].readIfPresent()
+        value.userId = try reader["UserId"].readIfPresent()
+        return value
+    }
+}
+
+extension GetPersonalAccessTokenMetadataOutput {
+
+    static func httpOutput(from httpResponse: SmithyHTTPAPI.HTTPResponse) async throws -> GetPersonalAccessTokenMetadataOutput {
+        let data = try await httpResponse.data()
+        let responseReader = try SmithyJSON.Reader.from(data: data)
+        let reader = responseReader
+        var value = GetPersonalAccessTokenMetadataOutput()
+        value.dateCreated = try reader["DateCreated"].readTimestampIfPresent(format: SmithyTimestamps.TimestampFormat.epochSeconds)
+        value.dateLastUsed = try reader["DateLastUsed"].readTimestampIfPresent(format: SmithyTimestamps.TimestampFormat.epochSeconds)
+        value.expiresTime = try reader["ExpiresTime"].readTimestampIfPresent(format: SmithyTimestamps.TimestampFormat.epochSeconds)
+        value.name = try reader["Name"].readIfPresent()
+        value.personalAccessTokenId = try reader["PersonalAccessTokenId"].readIfPresent()
+        value.scopes = try reader["Scopes"].readListIfPresent(memberReadingClosure: SmithyReadWrite.ReadingClosures.readString(from:), memberNodeInfo: "member", isFlattened: false)
         value.userId = try reader["UserId"].readIfPresent()
         return value
     }
@@ -7557,6 +8208,19 @@ extension ListOrganizationsOutput {
     }
 }
 
+extension ListPersonalAccessTokensOutput {
+
+    static func httpOutput(from httpResponse: SmithyHTTPAPI.HTTPResponse) async throws -> ListPersonalAccessTokensOutput {
+        let data = try await httpResponse.data()
+        let responseReader = try SmithyJSON.Reader.from(data: data)
+        let reader = responseReader
+        var value = ListPersonalAccessTokensOutput()
+        value.nextToken = try reader["NextToken"].readIfPresent()
+        value.personalAccessTokenSummaries = try reader["PersonalAccessTokenSummaries"].readListIfPresent(memberReadingClosure: WorkMailClientTypes.PersonalAccessTokenSummary.read(from:), memberNodeInfo: "member", isFlattened: false)
+        return value
+    }
+}
+
 extension ListResourceDelegatesOutput {
 
     static func httpOutput(from httpResponse: SmithyHTTPAPI.HTTPResponse) async throws -> ListResourceDelegatesOutput {
@@ -7619,6 +8283,13 @@ extension PutEmailMonitoringConfigurationOutput {
 
     static func httpOutput(from httpResponse: SmithyHTTPAPI.HTTPResponse) async throws -> PutEmailMonitoringConfigurationOutput {
         return PutEmailMonitoringConfigurationOutput()
+    }
+}
+
+extension PutIdentityProviderConfigurationOutput {
+
+    static func httpOutput(from httpResponse: SmithyHTTPAPI.HTTPResponse) async throws -> PutIdentityProviderConfigurationOutput {
+        return PutIdentityProviderConfigurationOutput()
     }
 }
 
@@ -7908,6 +8579,20 @@ enum CreateGroupOutputError {
     }
 }
 
+enum CreateIdentityCenterApplicationOutputError {
+
+    static func httpError(from httpResponse: SmithyHTTPAPI.HTTPResponse) async throws -> Swift.Error {
+        let data = try await httpResponse.data()
+        let responseReader = try SmithyJSON.Reader.from(data: data)
+        let baseError = try AWSClientRuntime.AWSJSONError(httpResponse: httpResponse, responseReader: responseReader, noErrorWrapping: false)
+        if let error = baseError.customError() { return error }
+        switch baseError.code {
+            case "InvalidParameterException": return try InvalidParameterException.makeError(baseError: baseError)
+            default: return try AWSClientRuntime.UnknownAWSHTTPServiceError.makeError(baseError: baseError)
+        }
+    }
+}
+
 enum CreateImpersonationRoleOutputError {
 
     static func httpError(from httpResponse: SmithyHTTPAPI.HTTPResponse) async throws -> Swift.Error {
@@ -8089,6 +8774,37 @@ enum DeleteGroupOutputError {
     }
 }
 
+enum DeleteIdentityCenterApplicationOutputError {
+
+    static func httpError(from httpResponse: SmithyHTTPAPI.HTTPResponse) async throws -> Swift.Error {
+        let data = try await httpResponse.data()
+        let responseReader = try SmithyJSON.Reader.from(data: data)
+        let baseError = try AWSClientRuntime.AWSJSONError(httpResponse: httpResponse, responseReader: responseReader, noErrorWrapping: false)
+        if let error = baseError.customError() { return error }
+        switch baseError.code {
+            case "InvalidParameterException": return try InvalidParameterException.makeError(baseError: baseError)
+            case "OrganizationStateException": return try OrganizationStateException.makeError(baseError: baseError)
+            default: return try AWSClientRuntime.UnknownAWSHTTPServiceError.makeError(baseError: baseError)
+        }
+    }
+}
+
+enum DeleteIdentityProviderConfigurationOutputError {
+
+    static func httpError(from httpResponse: SmithyHTTPAPI.HTTPResponse) async throws -> Swift.Error {
+        let data = try await httpResponse.data()
+        let responseReader = try SmithyJSON.Reader.from(data: data)
+        let baseError = try AWSClientRuntime.AWSJSONError(httpResponse: httpResponse, responseReader: responseReader, noErrorWrapping: false)
+        if let error = baseError.customError() { return error }
+        switch baseError.code {
+            case "InvalidParameterException": return try InvalidParameterException.makeError(baseError: baseError)
+            case "OrganizationNotFoundException": return try OrganizationNotFoundException.makeError(baseError: baseError)
+            case "OrganizationStateException": return try OrganizationStateException.makeError(baseError: baseError)
+            default: return try AWSClientRuntime.UnknownAWSHTTPServiceError.makeError(baseError: baseError)
+        }
+    }
+}
+
 enum DeleteImpersonationRoleOutputError {
 
     static func httpError(from httpResponse: SmithyHTTPAPI.HTTPResponse) async throws -> Swift.Error {
@@ -8157,6 +8873,22 @@ enum DeleteMobileDeviceAccessRuleOutputError {
 }
 
 enum DeleteOrganizationOutputError {
+
+    static func httpError(from httpResponse: SmithyHTTPAPI.HTTPResponse) async throws -> Swift.Error {
+        let data = try await httpResponse.data()
+        let responseReader = try SmithyJSON.Reader.from(data: data)
+        let baseError = try AWSClientRuntime.AWSJSONError(httpResponse: httpResponse, responseReader: responseReader, noErrorWrapping: false)
+        if let error = baseError.customError() { return error }
+        switch baseError.code {
+            case "InvalidParameterException": return try InvalidParameterException.makeError(baseError: baseError)
+            case "OrganizationNotFoundException": return try OrganizationNotFoundException.makeError(baseError: baseError)
+            case "OrganizationStateException": return try OrganizationStateException.makeError(baseError: baseError)
+            default: return try AWSClientRuntime.UnknownAWSHTTPServiceError.makeError(baseError: baseError)
+        }
+    }
+}
+
+enum DeletePersonalAccessTokenOutputError {
 
     static func httpError(from httpResponse: SmithyHTTPAPI.HTTPResponse) async throws -> Swift.Error {
         let data = try await httpResponse.data()
@@ -8313,6 +9045,23 @@ enum DescribeGroupOutputError {
     }
 }
 
+enum DescribeIdentityProviderConfigurationOutputError {
+
+    static func httpError(from httpResponse: SmithyHTTPAPI.HTTPResponse) async throws -> Swift.Error {
+        let data = try await httpResponse.data()
+        let responseReader = try SmithyJSON.Reader.from(data: data)
+        let baseError = try AWSClientRuntime.AWSJSONError(httpResponse: httpResponse, responseReader: responseReader, noErrorWrapping: false)
+        if let error = baseError.customError() { return error }
+        switch baseError.code {
+            case "InvalidParameterException": return try InvalidParameterException.makeError(baseError: baseError)
+            case "OrganizationNotFoundException": return try OrganizationNotFoundException.makeError(baseError: baseError)
+            case "OrganizationStateException": return try OrganizationStateException.makeError(baseError: baseError)
+            case "ResourceNotFoundException": return try ResourceNotFoundException.makeError(baseError: baseError)
+            default: return try AWSClientRuntime.UnknownAWSHTTPServiceError.makeError(baseError: baseError)
+        }
+    }
+}
+
 enum DescribeInboundDmarcSettingsOutputError {
 
     static func httpError(from httpResponse: SmithyHTTPAPI.HTTPResponse) async throws -> Swift.Error {
@@ -8386,6 +9135,8 @@ enum DescribeUserOutputError {
         let baseError = try AWSClientRuntime.AWSJSONError(httpResponse: httpResponse, responseReader: responseReader, noErrorWrapping: false)
         if let error = baseError.customError() { return error }
         switch baseError.code {
+            case "DirectoryServiceAuthenticationFailedException": return try DirectoryServiceAuthenticationFailedException.makeError(baseError: baseError)
+            case "DirectoryUnavailableException": return try DirectoryUnavailableException.makeError(baseError: baseError)
             case "EntityNotFoundException": return try EntityNotFoundException.makeError(baseError: baseError)
             case "InvalidParameterException": return try InvalidParameterException.makeError(baseError: baseError)
             case "OrganizationNotFoundException": return try OrganizationNotFoundException.makeError(baseError: baseError)
@@ -8574,6 +9325,23 @@ enum GetMobileDeviceAccessOverrideOutputError {
     }
 }
 
+enum GetPersonalAccessTokenMetadataOutputError {
+
+    static func httpError(from httpResponse: SmithyHTTPAPI.HTTPResponse) async throws -> Swift.Error {
+        let data = try await httpResponse.data()
+        let responseReader = try SmithyJSON.Reader.from(data: data)
+        let baseError = try AWSClientRuntime.AWSJSONError(httpResponse: httpResponse, responseReader: responseReader, noErrorWrapping: false)
+        if let error = baseError.customError() { return error }
+        switch baseError.code {
+            case "InvalidParameterException": return try InvalidParameterException.makeError(baseError: baseError)
+            case "OrganizationNotFoundException": return try OrganizationNotFoundException.makeError(baseError: baseError)
+            case "OrganizationStateException": return try OrganizationStateException.makeError(baseError: baseError)
+            case "ResourceNotFoundException": return try ResourceNotFoundException.makeError(baseError: baseError)
+            default: return try AWSClientRuntime.UnknownAWSHTTPServiceError.makeError(baseError: baseError)
+        }
+    }
+}
+
 enum ListAccessControlRulesOutputError {
 
     static func httpError(from httpResponse: SmithyHTTPAPI.HTTPResponse) async throws -> Swift.Error {
@@ -8615,6 +9383,7 @@ enum ListAvailabilityConfigurationsOutputError {
         let baseError = try AWSClientRuntime.AWSJSONError(httpResponse: httpResponse, responseReader: responseReader, noErrorWrapping: false)
         if let error = baseError.customError() { return error }
         switch baseError.code {
+            case "InvalidParameterException": return try InvalidParameterException.makeError(baseError: baseError)
             case "OrganizationNotFoundException": return try OrganizationNotFoundException.makeError(baseError: baseError)
             case "OrganizationStateException": return try OrganizationStateException.makeError(baseError: baseError)
             default: return try AWSClientRuntime.UnknownAWSHTTPServiceError.makeError(baseError: baseError)
@@ -8787,6 +9556,24 @@ enum ListOrganizationsOutputError {
     }
 }
 
+enum ListPersonalAccessTokensOutputError {
+
+    static func httpError(from httpResponse: SmithyHTTPAPI.HTTPResponse) async throws -> Swift.Error {
+        let data = try await httpResponse.data()
+        let responseReader = try SmithyJSON.Reader.from(data: data)
+        let baseError = try AWSClientRuntime.AWSJSONError(httpResponse: httpResponse, responseReader: responseReader, noErrorWrapping: false)
+        if let error = baseError.customError() { return error }
+        switch baseError.code {
+            case "EntityNotFoundException": return try EntityNotFoundException.makeError(baseError: baseError)
+            case "EntityStateException": return try EntityStateException.makeError(baseError: baseError)
+            case "InvalidParameterException": return try InvalidParameterException.makeError(baseError: baseError)
+            case "OrganizationNotFoundException": return try OrganizationNotFoundException.makeError(baseError: baseError)
+            case "OrganizationStateException": return try OrganizationStateException.makeError(baseError: baseError)
+            default: return try AWSClientRuntime.UnknownAWSHTTPServiceError.makeError(baseError: baseError)
+        }
+    }
+}
+
 enum ListResourceDelegatesOutputError {
 
     static func httpError(from httpResponse: SmithyHTTPAPI.HTTPResponse) async throws -> Swift.Error {
@@ -8873,6 +9660,23 @@ enum PutAccessControlRuleOutputError {
 }
 
 enum PutEmailMonitoringConfigurationOutputError {
+
+    static func httpError(from httpResponse: SmithyHTTPAPI.HTTPResponse) async throws -> Swift.Error {
+        let data = try await httpResponse.data()
+        let responseReader = try SmithyJSON.Reader.from(data: data)
+        let baseError = try AWSClientRuntime.AWSJSONError(httpResponse: httpResponse, responseReader: responseReader, noErrorWrapping: false)
+        if let error = baseError.customError() { return error }
+        switch baseError.code {
+            case "InvalidParameterException": return try InvalidParameterException.makeError(baseError: baseError)
+            case "OrganizationNotFoundException": return try OrganizationNotFoundException.makeError(baseError: baseError)
+            case "OrganizationStateException": return try OrganizationStateException.makeError(baseError: baseError)
+            case "ResourceNotFoundException": return try ResourceNotFoundException.makeError(baseError: baseError)
+            default: return try AWSClientRuntime.UnknownAWSHTTPServiceError.makeError(baseError: baseError)
+        }
+    }
+}
+
+enum PutIdentityProviderConfigurationOutputError {
 
     static func httpError(from httpResponse: SmithyHTTPAPI.HTTPResponse) async throws -> Swift.Error {
         let data = try await httpResponse.data()
@@ -9552,6 +10356,40 @@ extension InvalidConfigurationException {
     }
 }
 
+extension WorkMailClientTypes.IdentityCenterConfiguration {
+
+    static func write(value: WorkMailClientTypes.IdentityCenterConfiguration?, to writer: SmithyJSON.Writer) throws {
+        guard let value else { return }
+        try writer["ApplicationArn"].write(value.applicationArn)
+        try writer["InstanceArn"].write(value.instanceArn)
+    }
+
+    static func read(from reader: SmithyJSON.Reader) throws -> WorkMailClientTypes.IdentityCenterConfiguration {
+        guard reader.hasContent else { throw SmithyReadWrite.ReaderError.requiredValueNotPresent }
+        var value = WorkMailClientTypes.IdentityCenterConfiguration()
+        value.instanceArn = try reader["InstanceArn"].readIfPresent() ?? ""
+        value.applicationArn = try reader["ApplicationArn"].readIfPresent() ?? ""
+        return value
+    }
+}
+
+extension WorkMailClientTypes.PersonalAccessTokenConfiguration {
+
+    static func write(value: WorkMailClientTypes.PersonalAccessTokenConfiguration?, to writer: SmithyJSON.Writer) throws {
+        guard let value else { return }
+        try writer["LifetimeInDays"].write(value.lifetimeInDays)
+        try writer["Status"].write(value.status)
+    }
+
+    static func read(from reader: SmithyJSON.Reader) throws -> WorkMailClientTypes.PersonalAccessTokenConfiguration {
+        guard reader.hasContent else { throw SmithyReadWrite.ReaderError.requiredValueNotPresent }
+        var value = WorkMailClientTypes.PersonalAccessTokenConfiguration()
+        value.status = try reader["Status"].readIfPresent() ?? .sdkUnknown("")
+        value.lifetimeInDays = try reader["LifetimeInDays"].readIfPresent()
+        return value
+    }
+}
+
 extension WorkMailClientTypes.BookingOptions {
 
     static func write(value: WorkMailClientTypes.BookingOptions?, to writer: SmithyJSON.Writer) throws {
@@ -9860,6 +10698,22 @@ extension WorkMailClientTypes.OrganizationSummary {
     }
 }
 
+extension WorkMailClientTypes.PersonalAccessTokenSummary {
+
+    static func read(from reader: SmithyJSON.Reader) throws -> WorkMailClientTypes.PersonalAccessTokenSummary {
+        guard reader.hasContent else { throw SmithyReadWrite.ReaderError.requiredValueNotPresent }
+        var value = WorkMailClientTypes.PersonalAccessTokenSummary()
+        value.personalAccessTokenId = try reader["PersonalAccessTokenId"].readIfPresent()
+        value.userId = try reader["UserId"].readIfPresent()
+        value.name = try reader["Name"].readIfPresent()
+        value.dateCreated = try reader["DateCreated"].readTimestampIfPresent(format: SmithyTimestamps.TimestampFormat.epochSeconds)
+        value.dateLastUsed = try reader["DateLastUsed"].readTimestampIfPresent(format: SmithyTimestamps.TimestampFormat.epochSeconds)
+        value.expiresTime = try reader["ExpiresTime"].readTimestampIfPresent(format: SmithyTimestamps.TimestampFormat.epochSeconds)
+        value.scopes = try reader["Scopes"].readListIfPresent(memberReadingClosure: SmithyReadWrite.ReadingClosures.readString(from:), memberNodeInfo: "member", isFlattened: false)
+        return value
+    }
+}
+
 extension WorkMailClientTypes.Delegate {
 
     static func read(from reader: SmithyJSON.Reader) throws -> WorkMailClientTypes.Delegate {
@@ -9918,6 +10772,8 @@ extension WorkMailClientTypes.User {
         value.userRole = try reader["UserRole"].readIfPresent()
         value.enabledDate = try reader["EnabledDate"].readTimestampIfPresent(format: SmithyTimestamps.TimestampFormat.epochSeconds)
         value.disabledDate = try reader["DisabledDate"].readTimestampIfPresent(format: SmithyTimestamps.TimestampFormat.epochSeconds)
+        value.identityProviderUserId = try reader["IdentityProviderUserId"].readIfPresent()
+        value.identityProviderIdentityStoreId = try reader["IdentityProviderIdentityStoreId"].readIfPresent()
         return value
     }
 }
@@ -9974,6 +10830,7 @@ extension WorkMailClientTypes.ListUsersFilters {
     static func write(value: WorkMailClientTypes.ListUsersFilters?, to writer: SmithyJSON.Writer) throws {
         guard let value else { return }
         try writer["DisplayNamePrefix"].write(value.displayNamePrefix)
+        try writer["IdentityProviderUserIdPrefix"].write(value.identityProviderUserIdPrefix)
         try writer["PrimaryEmailPrefix"].write(value.primaryEmailPrefix)
         try writer["State"].write(value.state)
         try writer["UsernamePrefix"].write(value.usernamePrefix)

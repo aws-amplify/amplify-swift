@@ -52,8 +52,9 @@ public struct AccessDeniedException: ClientRuntime.ModeledError, AWSClientRuntim
 }
 
 extension VerifiedPermissionsClientTypes {
+
     /// Contains information about an action for a request for which an authorization decision is made. This data type is used as a request parameter to the [IsAuthorized](https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_IsAuthorized.html), [BatchIsAuthorized](https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_BatchIsAuthorized.html), and [IsAuthorizedWithToken](https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_IsAuthorizedWithToken.html) operations. Example: { "actionId": "<action name>", "actionType": "Action" }
-    public struct ActionIdentifier {
+    public struct ActionIdentifier: Swift.Sendable {
         /// The ID of an action.
         /// This member is required.
         public var actionId: Swift.String?
@@ -70,7 +71,6 @@ extension VerifiedPermissionsClientTypes {
             self.actionType = actionType
         }
     }
-
 }
 
 extension VerifiedPermissionsClientTypes.ActionIdentifier: Swift.CustomDebugStringConvertible {
@@ -79,8 +79,9 @@ extension VerifiedPermissionsClientTypes.ActionIdentifier: Swift.CustomDebugStri
 }
 
 extension VerifiedPermissionsClientTypes {
+
     /// Contains the identifier of an entity, including its ID and type. This data type is used as a request parameter for [IsAuthorized](https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_IsAuthorized.html) operation, and as a response parameter for the [CreatePolicy](https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_CreatePolicy.html), [GetPolicy](https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_GetPolicy.html), and [UpdatePolicy](https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_UpdatePolicy.html) operations. Example: {"entityId":"string","entityType":"string"}
-    public struct EntityIdentifier {
+    public struct EntityIdentifier: Swift.Sendable {
         /// The identifier of an entity. "entityId":"identifier"
         /// This member is required.
         public var entityId: Swift.String?
@@ -97,7 +98,6 @@ extension VerifiedPermissionsClientTypes {
             self.entityType = entityType
         }
     }
-
 }
 
 extension VerifiedPermissionsClientTypes.EntityIdentifier: Swift.CustomDebugStringConvertible {
@@ -107,7 +107,7 @@ extension VerifiedPermissionsClientTypes.EntityIdentifier: Swift.CustomDebugStri
 
 extension VerifiedPermissionsClientTypes {
 
-    public enum ResourceType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ResourceType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case identitySource
         case policy
         case policyStore
@@ -180,7 +180,7 @@ public struct ResourceNotFoundException: ClientRuntime.ModeledError, AWSClientRu
 
 extension VerifiedPermissionsClientTypes {
 
-    public enum Decision: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Decision: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case allow
         case deny
         case sdkUnknown(Swift.String)
@@ -208,8 +208,9 @@ extension VerifiedPermissionsClientTypes {
 }
 
 extension VerifiedPermissionsClientTypes {
+
     /// Contains information about one of the policies that determined an authorization decision. This data type is used as an element in a response parameter for the [IsAuthorized](https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_IsAuthorized.html), [BatchIsAuthorized](https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_BatchIsAuthorized.html), and [IsAuthorizedWithToken](https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_IsAuthorizedWithToken.html) operations. Example: "determiningPolicies":[{"policyId":"SPEXAMPLEabcdefg111111"}]
-    public struct DeterminingPolicyItem {
+    public struct DeterminingPolicyItem: Swift.Sendable {
         /// The Id of a policy that determined to an authorization decision. Example: "policyId":"SPEXAMPLEabcdefg111111"
         /// This member is required.
         public var policyId: Swift.String?
@@ -221,12 +222,12 @@ extension VerifiedPermissionsClientTypes {
             self.policyId = policyId
         }
     }
-
 }
 
 extension VerifiedPermissionsClientTypes {
+
     /// Contains a description of an evaluation error. This data type is a response parameter of the [IsAuthorized](https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_IsAuthorized.html), [BatchIsAuthorized](https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_BatchIsAuthorized.html), and [IsAuthorizedWithToken](https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_IsAuthorizedWithToken.html) operations.
-    public struct EvaluationErrorItem {
+    public struct EvaluationErrorItem: Swift.Sendable {
         /// The error description.
         /// This member is required.
         public var errorDescription: Swift.String?
@@ -238,7 +239,6 @@ extension VerifiedPermissionsClientTypes {
             self.errorDescription = errorDescription
         }
     }
-
 }
 
 extension VerifiedPermissionsClientTypes.EvaluationErrorItem: Swift.CustomDebugStringConvertible {
@@ -248,8 +248,9 @@ extension VerifiedPermissionsClientTypes.EvaluationErrorItem: Swift.CustomDebugS
 }
 
 extension VerifiedPermissionsClientTypes {
+
     /// The type of entity that a policy store maps to groups from an Amazon Cognito user pool identity source. This data type is part of a [CognitoUserPoolConfiguration](https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_CognitoUserPoolConfiguration.html) structure and is a request parameter in [CreateIdentitySource](https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_CreateIdentitySource.html).
-    public struct CognitoGroupConfiguration {
+    public struct CognitoGroupConfiguration: Swift.Sendable {
         /// The name of the schema entity type that's mapped to the user pool group. Defaults to AWS::CognitoGroup.
         /// This member is required.
         public var groupEntityType: Swift.String?
@@ -261,7 +262,6 @@ extension VerifiedPermissionsClientTypes {
             self.groupEntityType = groupEntityType
         }
     }
-
 }
 
 extension VerifiedPermissionsClientTypes.CognitoGroupConfiguration: Swift.CustomDebugStringConvertible {
@@ -270,8 +270,9 @@ extension VerifiedPermissionsClientTypes.CognitoGroupConfiguration: Swift.Custom
 }
 
 extension VerifiedPermissionsClientTypes {
+
     /// The type of entity that a policy store maps to groups from an Amazon Cognito user pool identity source. This data type is part of an [CognitoUserPoolConfigurationDetail](https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_CognitoUserPoolConfigurationItem.html) structure and is a response parameter to [GetIdentitySource](https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_GetIdentitySource.html).
-    public struct CognitoGroupConfigurationDetail {
+    public struct CognitoGroupConfigurationDetail: Swift.Sendable {
         /// The name of the schema entity type that's mapped to the user pool group. Defaults to AWS::CognitoGroup.
         public var groupEntityType: Swift.String?
 
@@ -282,7 +283,6 @@ extension VerifiedPermissionsClientTypes {
             self.groupEntityType = groupEntityType
         }
     }
-
 }
 
 extension VerifiedPermissionsClientTypes.CognitoGroupConfigurationDetail: Swift.CustomDebugStringConvertible {
@@ -291,8 +291,9 @@ extension VerifiedPermissionsClientTypes.CognitoGroupConfigurationDetail: Swift.
 }
 
 extension VerifiedPermissionsClientTypes {
+
     /// The type of entity that a policy store maps to groups from an Amazon Cognito user pool identity source. This data type is part of an [CognitoUserPoolConfigurationItem](https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_CognitoUserPoolConfigurationDetail.html) structure and is a response parameter to [ListIdentitySources](http://forums.aws.amazon.com/verifiedpermissions/latest/apireference/API_ListIdentitySources.html).
-    public struct CognitoGroupConfigurationItem {
+    public struct CognitoGroupConfigurationItem: Swift.Sendable {
         /// The name of the schema entity type that's mapped to the user pool group. Defaults to AWS::CognitoGroup.
         public var groupEntityType: Swift.String?
 
@@ -303,7 +304,6 @@ extension VerifiedPermissionsClientTypes {
             self.groupEntityType = groupEntityType
         }
     }
-
 }
 
 extension VerifiedPermissionsClientTypes.CognitoGroupConfigurationItem: Swift.CustomDebugStringConvertible {
@@ -312,8 +312,9 @@ extension VerifiedPermissionsClientTypes.CognitoGroupConfigurationItem: Swift.Cu
 }
 
 extension VerifiedPermissionsClientTypes {
+
     /// The configuration for an identity source that represents a connection to an Amazon Cognito user pool used as an identity provider for Verified Permissions. This data type part of a [Configuration](https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_Configuration.html) structure that is used as a parameter to [CreateIdentitySource](https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_CreateIdentitySource.html). Example:"CognitoUserPoolConfiguration":{"UserPoolArn":"arn:aws:cognito-idp:us-east-1:123456789012:userpool/us-east-1_1a2b3c4d5","ClientIds": ["a1b2c3d4e5f6g7h8i9j0kalbmc"],"groupConfiguration": {"groupEntityType": "MyCorp::Group"}}
-    public struct CognitoUserPoolConfiguration {
+    public struct CognitoUserPoolConfiguration: Swift.Sendable {
         /// The unique application client IDs that are associated with the specified Amazon Cognito user pool. Example: "ClientIds": ["&ExampleCogClientId;"]
         public var clientIds: [Swift.String]?
         /// The type of entity that a policy store maps to groups from an Amazon Cognito user pool identity source.
@@ -333,7 +334,6 @@ extension VerifiedPermissionsClientTypes {
             self.userPoolArn = userPoolArn
         }
     }
-
 }
 
 extension VerifiedPermissionsClientTypes.CognitoUserPoolConfiguration: Swift.CustomDebugStringConvertible {
@@ -342,8 +342,9 @@ extension VerifiedPermissionsClientTypes.CognitoUserPoolConfiguration: Swift.Cus
 }
 
 extension VerifiedPermissionsClientTypes {
+
     /// The configuration for an identity source that represents a connection to an Amazon Cognito user pool used as an identity provider for Verified Permissions. This data type is used as a field that is part of an [ConfigurationDetail](https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_ConfigurationDetail.html) structure that is part of the response to [GetIdentitySource](https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_GetIdentitySource.html). Example:"CognitoUserPoolConfiguration":{"UserPoolArn":"arn:aws:cognito-idp:us-east-1:123456789012:userpool/us-east-1_1a2b3c4d5","ClientIds": ["a1b2c3d4e5f6g7h8i9j0kalbmc"],"groupConfiguration": {"groupEntityType": "MyCorp::Group"}}
-    public struct CognitoUserPoolConfigurationDetail {
+    public struct CognitoUserPoolConfigurationDetail: Swift.Sendable {
         /// The unique application client IDs that are associated with the specified Amazon Cognito user pool. Example: "clientIds": ["&ExampleCogClientId;"]
         /// This member is required.
         public var clientIds: [Swift.String]?
@@ -369,7 +370,6 @@ extension VerifiedPermissionsClientTypes {
             self.userPoolArn = userPoolArn
         }
     }
-
 }
 
 extension VerifiedPermissionsClientTypes.CognitoUserPoolConfigurationDetail: Swift.CustomDebugStringConvertible {
@@ -378,8 +378,9 @@ extension VerifiedPermissionsClientTypes.CognitoUserPoolConfigurationDetail: Swi
 }
 
 extension VerifiedPermissionsClientTypes {
+
     /// The configuration for an identity source that represents a connection to an Amazon Cognito user pool used as an identity provider for Verified Permissions. This data type is used as a field that is part of the [ConfigurationItem](https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_ConfigurationItem.html) structure that is part of the response to [ListIdentitySources](https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_ListIdentitySources.html). Example:"CognitoUserPoolConfiguration":{"UserPoolArn":"arn:aws:cognito-idp:us-east-1:123456789012:userpool/us-east-1_1a2b3c4d5","ClientIds": ["a1b2c3d4e5f6g7h8i9j0kalbmc"],"groupConfiguration": {"groupEntityType": "MyCorp::Group"}}
-    public struct CognitoUserPoolConfigurationItem {
+    public struct CognitoUserPoolConfigurationItem: Swift.Sendable {
         /// The unique application client IDs that are associated with the specified Amazon Cognito user pool. Example: "clientIds": ["&ExampleCogClientId;"]
         /// This member is required.
         public var clientIds: [Swift.String]?
@@ -405,7 +406,6 @@ extension VerifiedPermissionsClientTypes {
             self.userPoolArn = userPoolArn
         }
     }
-
 }
 
 extension VerifiedPermissionsClientTypes.CognitoUserPoolConfigurationItem: Swift.CustomDebugStringConvertible {
@@ -414,8 +414,9 @@ extension VerifiedPermissionsClientTypes.CognitoUserPoolConfigurationItem: Swift
 }
 
 extension VerifiedPermissionsClientTypes {
+
     /// The claim in OIDC identity provider tokens that indicates a user's group membership, and the entity type that you want to map it to. For example, this object can map the contents of a groups claim to MyCorp::UserGroup. This data type is part of a [OpenIdConnectConfiguration](https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_OpenIdConnectConfiguration.html) structure, which is a parameter of [CreateIdentitySource](https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_CreateIdentitySource.html).
-    public struct OpenIdConnectGroupConfiguration {
+    public struct OpenIdConnectGroupConfiguration: Swift.Sendable {
         /// The token claim that you want Verified Permissions to interpret as group membership. For example, groups.
         /// This member is required.
         public var groupClaim: Swift.String?
@@ -432,7 +433,6 @@ extension VerifiedPermissionsClientTypes {
             self.groupEntityType = groupEntityType
         }
     }
-
 }
 
 extension VerifiedPermissionsClientTypes.OpenIdConnectGroupConfiguration: Swift.CustomDebugStringConvertible {
@@ -441,8 +441,9 @@ extension VerifiedPermissionsClientTypes.OpenIdConnectGroupConfiguration: Swift.
 }
 
 extension VerifiedPermissionsClientTypes {
+
     /// The configuration of an OpenID Connect (OIDC) identity source for handling access token claims. Contains the claim that you want to identify as the principal in an authorization request, and the values of the aud claim, or audiences, that you want to accept. This data type is part of a [OpenIdConnectTokenSelection](https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_OpenIdConnectTokenSelection.html) structure, which is a parameter of [CreateIdentitySource](https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_CreateIdentitySource.html).
-    public struct OpenIdConnectAccessTokenConfiguration {
+    public struct OpenIdConnectAccessTokenConfiguration: Swift.Sendable {
         /// The access token aud claim values that you want to accept in your policy store. For example, https://myapp.example.com, https://myapp2.example.com.
         public var audiences: [Swift.String]?
         /// The claim that determines the principal in OIDC access tokens. For example, sub.
@@ -457,7 +458,6 @@ extension VerifiedPermissionsClientTypes {
             self.principalIdClaim = principalIdClaim
         }
     }
-
 }
 
 extension VerifiedPermissionsClientTypes.OpenIdConnectAccessTokenConfiguration: Swift.CustomDebugStringConvertible {
@@ -466,8 +466,9 @@ extension VerifiedPermissionsClientTypes.OpenIdConnectAccessTokenConfiguration: 
 }
 
 extension VerifiedPermissionsClientTypes {
+
     /// The configuration of an OpenID Connect (OIDC) identity source for handling identity (ID) token claims. Contains the claim that you want to identify as the principal in an authorization request, and the values of the aud claim, or audiences, that you want to accept. This data type is part of a [OpenIdConnectTokenSelection](https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_OpenIdConnectTokenSelection.html) structure, which is a parameter of [CreateIdentitySource](https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_CreateIdentitySource.html).
-    public struct OpenIdConnectIdentityTokenConfiguration {
+    public struct OpenIdConnectIdentityTokenConfiguration: Swift.Sendable {
         /// The ID token audience, or client ID, claim values that you want to accept in your policy store from an OIDC identity provider. For example, 1example23456789, 2example10111213.
         public var clientIds: [Swift.String]?
         /// The claim that determines the principal in OIDC access tokens. For example, sub.
@@ -482,7 +483,6 @@ extension VerifiedPermissionsClientTypes {
             self.principalIdClaim = principalIdClaim
         }
     }
-
 }
 
 extension VerifiedPermissionsClientTypes.OpenIdConnectIdentityTokenConfiguration: Swift.CustomDebugStringConvertible {
@@ -491,20 +491,21 @@ extension VerifiedPermissionsClientTypes.OpenIdConnectIdentityTokenConfiguration
 }
 
 extension VerifiedPermissionsClientTypes {
+
     /// The token type that you want to process from your OIDC identity provider. Your policy store can process either identity (ID) or access tokens from a given OIDC identity source. This data type is part of a [OpenIdConnectConfiguration](https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_OpenIdConnectConfiguration.html) structure, which is a parameter of [CreateIdentitySource](https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_CreateIdentitySource.html).
-    public enum OpenIdConnectTokenSelection {
+    public enum OpenIdConnectTokenSelection: Swift.Sendable {
         /// The OIDC configuration for processing access tokens. Contains allowed audience claims, for example https://auth.example.com, and the claim that you want to map to the principal, for example sub.
         case accesstokenonly(VerifiedPermissionsClientTypes.OpenIdConnectAccessTokenConfiguration)
         /// The OIDC configuration for processing identity (ID) tokens. Contains allowed client ID claims, for example 1example23456789, and the claim that you want to map to the principal, for example sub.
         case identitytokenonly(VerifiedPermissionsClientTypes.OpenIdConnectIdentityTokenConfiguration)
         case sdkUnknown(Swift.String)
     }
-
 }
 
 extension VerifiedPermissionsClientTypes {
+
     /// Contains configuration details of an OpenID Connect (OIDC) identity provider, or identity source, that Verified Permissions can use to generate entities from authenticated identities. It specifies the issuer URL, token type that you want to use, and policy store entity details. This data type is part of a [Configuration](https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_Configuration.html) structure, which is a parameter to [CreateIdentitySource](https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_CreateIdentitySource.html).
-    public struct OpenIdConnectConfiguration {
+    public struct OpenIdConnectConfiguration: Swift.Sendable {
         /// A descriptive string that you want to prefix to user entities from your OIDC identity provider. For example, if you set an entityIdPrefix of MyOIDCProvider, you can reference principals in your policies in the format MyCorp::User::MyOIDCProvider|Carlos.
         public var entityIdPrefix: Swift.String?
         /// The claim in OIDC identity provider tokens that indicates a user's group membership, and the entity type that you want to map it to. For example, this object can map the contents of a groups claim to MyCorp::UserGroup.
@@ -529,7 +530,6 @@ extension VerifiedPermissionsClientTypes {
             self.tokenSelection = tokenSelection
         }
     }
-
 }
 
 extension VerifiedPermissionsClientTypes.OpenIdConnectConfiguration: Swift.CustomDebugStringConvertible {
@@ -538,20 +538,21 @@ extension VerifiedPermissionsClientTypes.OpenIdConnectConfiguration: Swift.Custo
 }
 
 extension VerifiedPermissionsClientTypes {
+
     /// Contains configuration information used when creating a new identity source. This data type is used as a request parameter for the [CreateIdentitySource](https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_CreateIdentitySource.html) operation.
-    public enum Configuration {
+    public enum Configuration: Swift.Sendable {
         /// Contains configuration details of a Amazon Cognito user pool that Verified Permissions can use as a source of authenticated identities as entities. It specifies the [Amazon Resource Name (ARN)](https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html) of a Amazon Cognito user pool and one or more application client IDs. Example: "configuration":{"cognitoUserPoolConfiguration":{"userPoolArn":"arn:aws:cognito-idp:us-east-1:123456789012:userpool/us-east-1_1a2b3c4d5","clientIds": ["a1b2c3d4e5f6g7h8i9j0kalbmc"],"groupConfiguration": {"groupEntityType": "MyCorp::Group"}}}
         case cognitouserpoolconfiguration(VerifiedPermissionsClientTypes.CognitoUserPoolConfiguration)
         /// Contains configuration details of an OpenID Connect (OIDC) identity provider, or identity source, that Verified Permissions can use to generate entities from authenticated identities. It specifies the issuer URL, token type that you want to use, and policy store entity details. Example:"configuration":{"openIdConnectConfiguration":{"issuer":"https://auth.example.com","tokenSelection":{"accessTokenOnly":{"audiences":["https://myapp.example.com","https://myapp2.example.com"],"principalIdClaim":"sub"}},"entityIdPrefix":"MyOIDCProvider","groupConfiguration":{"groupClaim":"groups","groupEntityType":"MyCorp::UserGroup"}}}
         case openidconnectconfiguration(VerifiedPermissionsClientTypes.OpenIdConnectConfiguration)
         case sdkUnknown(Swift.String)
     }
-
 }
 
 extension VerifiedPermissionsClientTypes {
+
     /// The claim in OIDC identity provider tokens that indicates a user's group membership, and the entity type that you want to map it to. For example, this object can map the contents of a groups claim to MyCorp::UserGroup. This data type is part of a [OpenIdConnectConfigurationDetail](https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_OpenIdConnectConfigurationDetail.html) structure, which is a parameter of [GetIdentitySource](https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_GetIdentitySource.html).
-    public struct OpenIdConnectGroupConfigurationDetail {
+    public struct OpenIdConnectGroupConfigurationDetail: Swift.Sendable {
         /// The token claim that you want Verified Permissions to interpret as group membership. For example, groups.
         /// This member is required.
         public var groupClaim: Swift.String?
@@ -568,7 +569,6 @@ extension VerifiedPermissionsClientTypes {
             self.groupEntityType = groupEntityType
         }
     }
-
 }
 
 extension VerifiedPermissionsClientTypes.OpenIdConnectGroupConfigurationDetail: Swift.CustomDebugStringConvertible {
@@ -577,8 +577,9 @@ extension VerifiedPermissionsClientTypes.OpenIdConnectGroupConfigurationDetail: 
 }
 
 extension VerifiedPermissionsClientTypes {
+
     /// The configuration of an OpenID Connect (OIDC) identity source for handling access token claims. Contains the claim that you want to identify as the principal in an authorization request, and the values of the aud claim, or audiences, that you want to accept. This data type is part of a [OpenIdConnectTokenSelectionDetail](https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_OpenIdConnectTokenSelectionDetail.html) structure, which is a parameter of [GetIdentitySource](https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_GetIdentitySource.html).
-    public struct OpenIdConnectAccessTokenConfigurationDetail {
+    public struct OpenIdConnectAccessTokenConfigurationDetail: Swift.Sendable {
         /// The access token aud claim values that you want to accept in your policy store. For example, https://myapp.example.com, https://myapp2.example.com.
         public var audiences: [Swift.String]?
         /// The claim that determines the principal in OIDC access tokens. For example, sub.
@@ -593,7 +594,6 @@ extension VerifiedPermissionsClientTypes {
             self.principalIdClaim = principalIdClaim
         }
     }
-
 }
 
 extension VerifiedPermissionsClientTypes.OpenIdConnectAccessTokenConfigurationDetail: Swift.CustomDebugStringConvertible {
@@ -602,8 +602,9 @@ extension VerifiedPermissionsClientTypes.OpenIdConnectAccessTokenConfigurationDe
 }
 
 extension VerifiedPermissionsClientTypes {
+
     /// The configuration of an OpenID Connect (OIDC) identity source for handling identity (ID) token claims. Contains the claim that you want to identify as the principal in an authorization request, and the values of the aud claim, or audiences, that you want to accept. This data type is part of a [OpenIdConnectTokenSelectionDetail](https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_OpenIdConnectTokenSelectionDetail.html) structure, which is a parameter of [GetIdentitySource](https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_GetIdentitySource.html).
-    public struct OpenIdConnectIdentityTokenConfigurationDetail {
+    public struct OpenIdConnectIdentityTokenConfigurationDetail: Swift.Sendable {
         /// The ID token audience, or client ID, claim values that you want to accept in your policy store from an OIDC identity provider. For example, 1example23456789, 2example10111213.
         public var clientIds: [Swift.String]?
         /// The claim that determines the principal in OIDC access tokens. For example, sub.
@@ -618,7 +619,6 @@ extension VerifiedPermissionsClientTypes {
             self.principalIdClaim = principalIdClaim
         }
     }
-
 }
 
 extension VerifiedPermissionsClientTypes.OpenIdConnectIdentityTokenConfigurationDetail: Swift.CustomDebugStringConvertible {
@@ -627,20 +627,21 @@ extension VerifiedPermissionsClientTypes.OpenIdConnectIdentityTokenConfiguration
 }
 
 extension VerifiedPermissionsClientTypes {
+
     /// The token type that you want to process from your OIDC identity provider. Your policy store can process either identity (ID) or access tokens from a given OIDC identity source. This data type is part of a [OpenIdConnectConfigurationDetail](https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_OpenIdConnectConfigurationDetail.html) structure, which is a parameter of [GetIdentitySource](https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_GetIdentitySource.html).
-    public enum OpenIdConnectTokenSelectionDetail {
+    public enum OpenIdConnectTokenSelectionDetail: Swift.Sendable {
         /// The OIDC configuration for processing access tokens. Contains allowed audience claims, for example https://auth.example.com, and the claim that you want to map to the principal, for example sub.
         case accesstokenonly(VerifiedPermissionsClientTypes.OpenIdConnectAccessTokenConfigurationDetail)
         /// The OIDC configuration for processing identity (ID) tokens. Contains allowed client ID claims, for example 1example23456789, and the claim that you want to map to the principal, for example sub.
         case identitytokenonly(VerifiedPermissionsClientTypes.OpenIdConnectIdentityTokenConfigurationDetail)
         case sdkUnknown(Swift.String)
     }
-
 }
 
 extension VerifiedPermissionsClientTypes {
+
     /// Contains configuration details of an OpenID Connect (OIDC) identity provider, or identity source, that Verified Permissions can use to generate entities from authenticated identities. It specifies the issuer URL, token type that you want to use, and policy store entity details. This data type is part of a [ConfigurationDetail](https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_ConfigurationDetail.html) structure, which is a parameter to [GetIdentitySource](https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_GetIdentitySource.html).
-    public struct OpenIdConnectConfigurationDetail {
+    public struct OpenIdConnectConfigurationDetail: Swift.Sendable {
         /// A descriptive string that you want to prefix to user entities from your OIDC identity provider. For example, if you set an entityIdPrefix of MyOIDCProvider, you can reference principals in your policies in the format MyCorp::User::MyOIDCProvider|Carlos.
         public var entityIdPrefix: Swift.String?
         /// The claim in OIDC identity provider tokens that indicates a user's group membership, and the entity type that you want to map it to. For example, this object can map the contents of a groups claim to MyCorp::UserGroup.
@@ -665,7 +666,6 @@ extension VerifiedPermissionsClientTypes {
             self.tokenSelection = tokenSelection
         }
     }
-
 }
 
 extension VerifiedPermissionsClientTypes.OpenIdConnectConfigurationDetail: Swift.CustomDebugStringConvertible {
@@ -674,20 +674,21 @@ extension VerifiedPermissionsClientTypes.OpenIdConnectConfigurationDetail: Swift
 }
 
 extension VerifiedPermissionsClientTypes {
+
     /// Contains configuration information about an identity source. This data type is a response parameter to the [GetIdentitySource](https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_GetIdentitySource.html) operation.
-    public enum ConfigurationDetail {
+    public enum ConfigurationDetail: Swift.Sendable {
         /// Contains configuration details of a Amazon Cognito user pool that Verified Permissions can use as a source of authenticated identities as entities. It specifies the [Amazon Resource Name (ARN)](https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html) of a Amazon Cognito user pool, the policy store entity that you want to assign to user groups, and one or more application client IDs. Example: "configuration":{"cognitoUserPoolConfiguration":{"userPoolArn":"arn:aws:cognito-idp:us-east-1:123456789012:userpool/us-east-1_1a2b3c4d5","clientIds": ["a1b2c3d4e5f6g7h8i9j0kalbmc"],"groupConfiguration": {"groupEntityType": "MyCorp::Group"}}}
         case cognitouserpoolconfiguration(VerifiedPermissionsClientTypes.CognitoUserPoolConfigurationDetail)
         /// Contains configuration details of an OpenID Connect (OIDC) identity provider, or identity source, that Verified Permissions can use to generate entities from authenticated identities. It specifies the issuer URL, token type that you want to use, and policy store entity details. Example:"configuration":{"openIdConnectConfiguration":{"issuer":"https://auth.example.com","tokenSelection":{"accessTokenOnly":{"audiences":["https://myapp.example.com","https://myapp2.example.com"],"principalIdClaim":"sub"}},"entityIdPrefix":"MyOIDCProvider","groupConfiguration":{"groupClaim":"groups","groupEntityType":"MyCorp::UserGroup"}}}
         case openidconnectconfiguration(VerifiedPermissionsClientTypes.OpenIdConnectConfigurationDetail)
         case sdkUnknown(Swift.String)
     }
-
 }
 
 extension VerifiedPermissionsClientTypes {
+
     /// The claim in OIDC identity provider tokens that indicates a user's group membership, and the entity type that you want to map it to. For example, this object can map the contents of a groups claim to MyCorp::UserGroup. This data type is part of a [OpenIdConnectConfigurationItem](https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_OpenIdConnectConfigurationItem.html) structure, which is a parameter of [ListIdentitySourcea](https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_ListIdentitySources.html).
-    public struct OpenIdConnectGroupConfigurationItem {
+    public struct OpenIdConnectGroupConfigurationItem: Swift.Sendable {
         /// The token claim that you want Verified Permissions to interpret as group membership. For example, groups.
         /// This member is required.
         public var groupClaim: Swift.String?
@@ -704,7 +705,6 @@ extension VerifiedPermissionsClientTypes {
             self.groupEntityType = groupEntityType
         }
     }
-
 }
 
 extension VerifiedPermissionsClientTypes.OpenIdConnectGroupConfigurationItem: Swift.CustomDebugStringConvertible {
@@ -713,8 +713,9 @@ extension VerifiedPermissionsClientTypes.OpenIdConnectGroupConfigurationItem: Sw
 }
 
 extension VerifiedPermissionsClientTypes {
+
     /// The configuration of an OpenID Connect (OIDC) identity source for handling access token claims. Contains the claim that you want to identify as the principal in an authorization request, and the values of the aud claim, or audiences, that you want to accept. This data type is part of a [OpenIdConnectTokenSelectionItem](https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_OpenIdConnectTokenSelectionItem.html) structure, which is a parameter of [ListIdentitySources](https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_ListIdentitySources.html).
-    public struct OpenIdConnectAccessTokenConfigurationItem {
+    public struct OpenIdConnectAccessTokenConfigurationItem: Swift.Sendable {
         /// The access token aud claim values that you want to accept in your policy store. For example, https://myapp.example.com, https://myapp2.example.com.
         public var audiences: [Swift.String]?
         /// The claim that determines the principal in OIDC access tokens. For example, sub.
@@ -729,7 +730,6 @@ extension VerifiedPermissionsClientTypes {
             self.principalIdClaim = principalIdClaim
         }
     }
-
 }
 
 extension VerifiedPermissionsClientTypes.OpenIdConnectAccessTokenConfigurationItem: Swift.CustomDebugStringConvertible {
@@ -738,8 +738,9 @@ extension VerifiedPermissionsClientTypes.OpenIdConnectAccessTokenConfigurationIt
 }
 
 extension VerifiedPermissionsClientTypes {
+
     /// The configuration of an OpenID Connect (OIDC) identity source for handling identity (ID) token claims. Contains the claim that you want to identify as the principal in an authorization request, and the values of the aud claim, or audiences, that you want to accept. This data type is part of a [OpenIdConnectTokenSelectionItem](https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_OpenIdConnectTokenSelectionItem.html) structure, which is a parameter of [ListIdentitySources](https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_ListIdentitySources.html).
-    public struct OpenIdConnectIdentityTokenConfigurationItem {
+    public struct OpenIdConnectIdentityTokenConfigurationItem: Swift.Sendable {
         /// The ID token audience, or client ID, claim values that you want to accept in your policy store from an OIDC identity provider. For example, 1example23456789, 2example10111213.
         public var clientIds: [Swift.String]?
         /// The claim that determines the principal in OIDC access tokens. For example, sub.
@@ -754,7 +755,6 @@ extension VerifiedPermissionsClientTypes {
             self.principalIdClaim = principalIdClaim
         }
     }
-
 }
 
 extension VerifiedPermissionsClientTypes.OpenIdConnectIdentityTokenConfigurationItem: Swift.CustomDebugStringConvertible {
@@ -763,20 +763,21 @@ extension VerifiedPermissionsClientTypes.OpenIdConnectIdentityTokenConfiguration
 }
 
 extension VerifiedPermissionsClientTypes {
+
     /// The token type that you want to process from your OIDC identity provider. Your policy store can process either identity (ID) or access tokens from a given OIDC identity source. This data type is part of a [OpenIdConnectConfigurationItem](https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_OpenIdConnectConfigurationItem.html) structure, which is a parameter of [ListIdentitySources](http://amazonaws.com/verifiedpermissions/latest/apireference/API_ListIdentitySources.html).
-    public enum OpenIdConnectTokenSelectionItem {
+    public enum OpenIdConnectTokenSelectionItem: Swift.Sendable {
         /// The OIDC configuration for processing access tokens. Contains allowed audience claims, for example https://auth.example.com, and the claim that you want to map to the principal, for example sub.
         case accesstokenonly(VerifiedPermissionsClientTypes.OpenIdConnectAccessTokenConfigurationItem)
         /// The OIDC configuration for processing identity (ID) tokens. Contains allowed client ID claims, for example 1example23456789, and the claim that you want to map to the principal, for example sub.
         case identitytokenonly(VerifiedPermissionsClientTypes.OpenIdConnectIdentityTokenConfigurationItem)
         case sdkUnknown(Swift.String)
     }
-
 }
 
 extension VerifiedPermissionsClientTypes {
+
     /// Contains configuration details of an OpenID Connect (OIDC) identity provider, or identity source, that Verified Permissions can use to generate entities from authenticated identities. It specifies the issuer URL, token type that you want to use, and policy store entity details. This data type is part of a [ConfigurationItem](https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_ConfigurationDetail.html) structure, which is a parameter to [ListIdentitySources](https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_ListIdentitySources.html).
-    public struct OpenIdConnectConfigurationItem {
+    public struct OpenIdConnectConfigurationItem: Swift.Sendable {
         /// A descriptive string that you want to prefix to user entities from your OIDC identity provider. For example, if you set an entityIdPrefix of MyOIDCProvider, you can reference principals in your policies in the format MyCorp::User::MyOIDCProvider|Carlos.
         public var entityIdPrefix: Swift.String?
         /// The claim in OIDC identity provider tokens that indicates a user's group membership, and the entity type that you want to map it to. For example, this object can map the contents of a groups claim to MyCorp::UserGroup.
@@ -801,7 +802,6 @@ extension VerifiedPermissionsClientTypes {
             self.tokenSelection = tokenSelection
         }
     }
-
 }
 
 extension VerifiedPermissionsClientTypes.OpenIdConnectConfigurationItem: Swift.CustomDebugStringConvertible {
@@ -810,20 +810,21 @@ extension VerifiedPermissionsClientTypes.OpenIdConnectConfigurationItem: Swift.C
 }
 
 extension VerifiedPermissionsClientTypes {
+
     /// Contains configuration information about an identity source. This data type is a response parameter to the [ListIdentitySources](https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_ListIdentitySources.html) operation.
-    public enum ConfigurationItem {
+    public enum ConfigurationItem: Swift.Sendable {
         /// Contains configuration details of a Amazon Cognito user pool that Verified Permissions can use as a source of authenticated identities as entities. It specifies the [Amazon Resource Name (ARN)](https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html) of a Amazon Cognito user pool, the policy store entity that you want to assign to user groups, and one or more application client IDs. Example: "configuration":{"cognitoUserPoolConfiguration":{"userPoolArn":"arn:aws:cognito-idp:us-east-1:123456789012:userpool/us-east-1_1a2b3c4d5","clientIds": ["a1b2c3d4e5f6g7h8i9j0kalbmc"],"groupConfiguration": {"groupEntityType": "MyCorp::Group"}}}
         case cognitouserpoolconfiguration(VerifiedPermissionsClientTypes.CognitoUserPoolConfigurationItem)
         /// Contains configuration details of an OpenID Connect (OIDC) identity provider, or identity source, that Verified Permissions can use to generate entities from authenticated identities. It specifies the issuer URL, token type that you want to use, and policy store entity details. Example:"configuration":{"openIdConnectConfiguration":{"issuer":"https://auth.example.com","tokenSelection":{"accessTokenOnly":{"audiences":["https://myapp.example.com","https://myapp2.example.com"],"principalIdClaim":"sub"}},"entityIdPrefix":"MyOIDCProvider","groupConfiguration":{"groupClaim":"groups","groupEntityType":"MyCorp::UserGroup"}}}
         case openidconnectconfiguration(VerifiedPermissionsClientTypes.OpenIdConnectConfigurationItem)
         case sdkUnknown(Swift.String)
     }
-
 }
 
 extension VerifiedPermissionsClientTypes {
+
     /// Contains information about a resource conflict.
-    public struct ResourceConflict {
+    public struct ResourceConflict: Swift.Sendable {
         /// The unique identifier of the resource involved in a conflict.
         /// This member is required.
         public var resourceId: Swift.String?
@@ -840,7 +841,6 @@ extension VerifiedPermissionsClientTypes {
             self.resourceType = resourceType
         }
     }
-
 }
 
 /// The request failed because another request to modify a resource occurred at the same.
@@ -886,7 +886,7 @@ public struct ServiceQuotaExceededException: ClientRuntime.ModeledError, AWSClie
         /// The resource type of the resource referenced in the failed request.
         /// This member is required.
         public internal(set) var resourceType: VerifiedPermissionsClientTypes.ResourceType? = nil
-        /// The code for the Amazon Web Service that owns the quota.
+        /// The code for the Amazon Web Services service that owns the quota.
         public internal(set) var serviceCode: Swift.String? = nil
     }
 
@@ -915,7 +915,7 @@ public struct ServiceQuotaExceededException: ClientRuntime.ModeledError, AWSClie
     }
 }
 
-public struct CreateIdentitySourceInput {
+public struct CreateIdentitySourceInput: Swift.Sendable {
     /// Specifies a unique, case-sensitive ID that you provide to ensure the idempotency of the request. This lets you safely retry the request without accidentally performing the same operation a second time. Passing the same value to a later call to an operation requires that you also pass the same value for all other parameters. We recommend that you use a [UUID type of value.](https://wikipedia.org/wiki/Universally_unique_identifier). If you don't provide this value, then Amazon Web Services generates a random one for you. If you retry the operation with the same ClientToken, but with different parameters, the retry fails with an ConflictException error. Verified Permissions recognizes a ClientToken for eight hours. After eight hours, the next request with the same parameters performs the operation again regardless of the value of ClientToken.
     public var clientToken: Swift.String?
     /// Specifies the details required to communicate with the identity provider (IdP) associated with this identity source.
@@ -946,7 +946,7 @@ extension CreateIdentitySourceInput: Swift.CustomDebugStringConvertible {
         "CreateIdentitySourceInput(clientToken: \(Swift.String(describing: clientToken)), configuration: \(Swift.String(describing: configuration)), policyStoreId: \(Swift.String(describing: policyStoreId)), principalEntityType: \"CONTENT_REDACTED\")"}
 }
 
-public struct CreateIdentitySourceOutput {
+public struct CreateIdentitySourceOutput: Swift.Sendable {
     /// The date and time the identity source was originally created.
     /// This member is required.
     public var createdDate: Foundation.Date?
@@ -975,8 +975,9 @@ public struct CreateIdentitySourceOutput {
 }
 
 extension VerifiedPermissionsClientTypes {
+
     /// Contains information about a static policy. This data type is used as a field that is part of the [PolicyDefinitionDetail](https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_PolicyDefinitionDetail.html) type.
-    public struct StaticPolicyDefinition {
+    public struct StaticPolicyDefinition: Swift.Sendable {
         /// The description of the static policy.
         public var description: Swift.String?
         /// The policy content of the static policy, written in the Cedar policy language.
@@ -992,7 +993,6 @@ extension VerifiedPermissionsClientTypes {
             self.statement = statement
         }
     }
-
 }
 
 extension VerifiedPermissionsClientTypes.StaticPolicyDefinition: Swift.CustomDebugStringConvertible {
@@ -1001,8 +1001,9 @@ extension VerifiedPermissionsClientTypes.StaticPolicyDefinition: Swift.CustomDeb
 }
 
 extension VerifiedPermissionsClientTypes {
+
     /// Contains information about a policy created by instantiating a policy template.
-    public struct TemplateLinkedPolicyDefinition {
+    public struct TemplateLinkedPolicyDefinition: Swift.Sendable {
         /// The unique identifier of the policy template used to create this policy.
         /// This member is required.
         public var policyTemplateId: Swift.String?
@@ -1022,22 +1023,21 @@ extension VerifiedPermissionsClientTypes {
             self.resource = resource
         }
     }
-
 }
 
 extension VerifiedPermissionsClientTypes {
+
     /// A structure that contains the details for a Cedar policy definition. It includes the policy type, a description, and a policy body. This is a top level data type used to create a policy. This data type is used as a request parameter for the [CreatePolicy](https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_CreatePolicy.html) operation. This structure must always have either an static or a templateLinked element.
-    public enum PolicyDefinition {
+    public enum PolicyDefinition: Swift.Sendable {
         /// A structure that describes a static policy. An static policy doesn't use a template or allow placeholders for entities.
         case `static`(VerifiedPermissionsClientTypes.StaticPolicyDefinition)
         /// A structure that describes a policy that was instantiated from a template. The template can specify placeholders for principal and resource. When you use [CreatePolicy](https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_CreatePolicy.html) to create a policy from a template, you specify the exact principal and resource to use for the instantiated policy.
         case templatelinked(VerifiedPermissionsClientTypes.TemplateLinkedPolicyDefinition)
         case sdkUnknown(Swift.String)
     }
-
 }
 
-public struct CreatePolicyInput {
+public struct CreatePolicyInput: Swift.Sendable {
     /// Specifies a unique, case-sensitive ID that you provide to ensure the idempotency of the request. This lets you safely retry the request without accidentally performing the same operation a second time. Passing the same value to a later call to an operation requires that you also pass the same value for all other parameters. We recommend that you use a [UUID type of value.](https://wikipedia.org/wiki/Universally_unique_identifier). If you don't provide this value, then Amazon Web Services generates a random one for you. If you retry the operation with the same ClientToken, but with different parameters, the retry fails with an ConflictException error. Verified Permissions recognizes a ClientToken for eight hours. After eight hours, the next request with the same parameters performs the operation again regardless of the value of ClientToken.
     public var clientToken: Swift.String?
     /// A structure that specifies the policy type and content to use for the new policy. You must include either a static or a templateLinked element. The policy content must be written in the Cedar policy language.
@@ -1061,7 +1061,7 @@ public struct CreatePolicyInput {
 
 extension VerifiedPermissionsClientTypes {
 
-    public enum PolicyEffect: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum PolicyEffect: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case forbid
         case permit
         case sdkUnknown(Swift.String)
@@ -1090,7 +1090,7 @@ extension VerifiedPermissionsClientTypes {
 
 extension VerifiedPermissionsClientTypes {
 
-    public enum PolicyType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum PolicyType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case `static`
         case templateLinked
         case sdkUnknown(Swift.String)
@@ -1117,7 +1117,7 @@ extension VerifiedPermissionsClientTypes {
     }
 }
 
-public struct CreatePolicyOutput {
+public struct CreatePolicyOutput: Swift.Sendable {
     /// The action that a policy permits or forbids. For example, {"actions": [{"actionId": "ViewPhoto", "actionType": "PhotoFlash::Action"}, {"entityID": "SharePhoto", "entityType": "PhotoFlash::Action"}]}.
     public var actions: [VerifiedPermissionsClientTypes.ActionIdentifier]?
     /// The date and time the policy was originally created.
@@ -1168,7 +1168,7 @@ public struct CreatePolicyOutput {
 
 extension VerifiedPermissionsClientTypes {
 
-    public enum ValidationMode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ValidationMode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case off
         case strict
         case sdkUnknown(Swift.String)
@@ -1196,8 +1196,9 @@ extension VerifiedPermissionsClientTypes {
 }
 
 extension VerifiedPermissionsClientTypes {
+
     /// A structure that contains Cedar policy validation settings for the policy store. The validation mode determines which validation failures that Cedar considers serious enough to block acceptance of a new or edited static policy or policy template. This data type is used as a request parameter in the [CreatePolicyStore](https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_CreatePolicyStore.html) and [UpdatePolicyStore](https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_UpdatePolicyStore.html) operations.
-    public struct ValidationSettings {
+    public struct ValidationSettings: Swift.Sendable {
         /// The validation mode currently configured for this policy store. The valid values are:
         ///
         /// * OFF – Neither Verified Permissions nor Cedar perform any validation on policies. No validation errors are reported by either service.
@@ -1216,10 +1217,9 @@ extension VerifiedPermissionsClientTypes {
             self.mode = mode
         }
     }
-
 }
 
-public struct CreatePolicyStoreInput {
+public struct CreatePolicyStoreInput: Swift.Sendable {
     /// Specifies a unique, case-sensitive ID that you provide to ensure the idempotency of the request. This lets you safely retry the request without accidentally performing the same operation a second time. Passing the same value to a later call to an operation requires that you also pass the same value for all other parameters. We recommend that you use a [UUID type of value.](https://wikipedia.org/wiki/Universally_unique_identifier). If you don't provide this value, then Amazon Web Services generates a random one for you. If you retry the operation with the same ClientToken, but with different parameters, the retry fails with an ConflictException error. Verified Permissions recognizes a ClientToken for eight hours. After eight hours, the next request with the same parameters performs the operation again regardless of the value of ClientToken.
     public var clientToken: Swift.String?
     /// Descriptive text that you can provide to help with identification of the current policy store.
@@ -1245,7 +1245,7 @@ extension CreatePolicyStoreInput: Swift.CustomDebugStringConvertible {
         "CreatePolicyStoreInput(clientToken: \(Swift.String(describing: clientToken)), validationSettings: \(Swift.String(describing: validationSettings)), description: \"CONTENT_REDACTED\")"}
 }
 
-public struct CreatePolicyStoreOutput {
+public struct CreatePolicyStoreOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the new policy store.
     /// This member is required.
     public var arn: Swift.String?
@@ -1273,7 +1273,7 @@ public struct CreatePolicyStoreOutput {
     }
 }
 
-public struct CreatePolicyTemplateInput {
+public struct CreatePolicyTemplateInput: Swift.Sendable {
     /// Specifies a unique, case-sensitive ID that you provide to ensure the idempotency of the request. This lets you safely retry the request without accidentally performing the same operation a second time. Passing the same value to a later call to an operation requires that you also pass the same value for all other parameters. We recommend that you use a [UUID type of value.](https://wikipedia.org/wiki/Universally_unique_identifier). If you don't provide this value, then Amazon Web Services generates a random one for you. If you retry the operation with the same ClientToken, but with different parameters, the retry fails with an ConflictException error. Verified Permissions recognizes a ClientToken for eight hours. After eight hours, the next request with the same parameters performs the operation again regardless of the value of ClientToken.
     public var clientToken: Swift.String?
     /// Specifies a description for the policy template.
@@ -1304,7 +1304,7 @@ extension CreatePolicyTemplateInput: Swift.CustomDebugStringConvertible {
         "CreatePolicyTemplateInput(clientToken: \(Swift.String(describing: clientToken)), policyStoreId: \(Swift.String(describing: policyStoreId)), description: \"CONTENT_REDACTED\", statement: \"CONTENT_REDACTED\")"}
 }
 
-public struct CreatePolicyTemplateOutput {
+public struct CreatePolicyTemplateOutput: Swift.Sendable {
     /// The date and time the policy template was originally created.
     /// This member is required.
     public var createdDate: Foundation.Date?
@@ -1332,7 +1332,7 @@ public struct CreatePolicyTemplateOutput {
     }
 }
 
-public struct DeleteIdentitySourceInput {
+public struct DeleteIdentitySourceInput: Swift.Sendable {
     /// Specifies the ID of the identity source that you want to delete.
     /// This member is required.
     public var identitySourceId: Swift.String?
@@ -1350,12 +1350,12 @@ public struct DeleteIdentitySourceInput {
     }
 }
 
-public struct DeleteIdentitySourceOutput {
+public struct DeleteIdentitySourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeletePolicyInput {
+public struct DeletePolicyInput: Swift.Sendable {
     /// Specifies the ID of the policy that you want to delete.
     /// This member is required.
     public var policyId: Swift.String?
@@ -1373,12 +1373,12 @@ public struct DeletePolicyInput {
     }
 }
 
-public struct DeletePolicyOutput {
+public struct DeletePolicyOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeletePolicyStoreInput {
+public struct DeletePolicyStoreInput: Swift.Sendable {
     /// Specifies the ID of the policy store that you want to delete.
     /// This member is required.
     public var policyStoreId: Swift.String?
@@ -1391,12 +1391,12 @@ public struct DeletePolicyStoreInput {
     }
 }
 
-public struct DeletePolicyStoreOutput {
+public struct DeletePolicyStoreOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeletePolicyTemplateInput {
+public struct DeletePolicyTemplateInput: Swift.Sendable {
     /// Specifies the ID of the policy store that contains the policy template that you want to delete.
     /// This member is required.
     public var policyStoreId: Swift.String?
@@ -1414,24 +1414,24 @@ public struct DeletePolicyTemplateInput {
     }
 }
 
-public struct DeletePolicyTemplateOutput {
+public struct DeletePolicyTemplateOutput: Swift.Sendable {
 
     public init() { }
 }
 
 extension VerifiedPermissionsClientTypes {
+
     /// Contains information about a principal or resource that can be referenced in a Cedar policy. This data type is used as part of the [PolicyFilter](https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_PolicyFilter.html) structure that is used as a request parameter for the [ListPolicies](https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_ListPolicies.html) operation..
-    public enum EntityReference {
+    public enum EntityReference: Swift.Sendable {
         /// Used to indicate that a principal or resource is not specified. This can be used to search for policies that are not associated with a specific principal or resource.
         case unspecified(Swift.Bool)
         /// The identifier of the entity. It can consist of either an EntityType and EntityId, a principal, or a resource.
         case identifier(VerifiedPermissionsClientTypes.EntityIdentifier)
         case sdkUnknown(Swift.String)
     }
-
 }
 
-public struct GetIdentitySourceInput {
+public struct GetIdentitySourceInput: Swift.Sendable {
     /// Specifies the ID of the identity source you want information about.
     /// This member is required.
     public var identitySourceId: Swift.String?
@@ -1451,7 +1451,7 @@ public struct GetIdentitySourceInput {
 
 extension VerifiedPermissionsClientTypes {
 
-    public enum OpenIdIssuer: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum OpenIdIssuer: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case cognito
         case sdkUnknown(Swift.String)
 
@@ -1476,9 +1476,10 @@ extension VerifiedPermissionsClientTypes {
 }
 
 extension VerifiedPermissionsClientTypes {
+
     /// A structure that contains configuration of the identity source. This data type was a response parameter for the [GetIdentitySource](https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_GetIdentitySource.html) operation. Replaced by [ConfigurationDetail](https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_ConfigurationDetail.html).
     @available(*, deprecated, message: "This shape has been replaced by ConfigurationDetail")
-    public struct IdentitySourceDetails {
+    public struct IdentitySourceDetails: Swift.Sendable {
         /// The application client IDs associated with the specified Amazon Cognito user pool that are enabled for this identity source.
         @available(*, deprecated, message: "This attribute has been replaced by configuration.cognitoUserPoolConfiguration.clientIds")
         public var clientIds: [Swift.String]?
@@ -1505,7 +1506,6 @@ extension VerifiedPermissionsClientTypes {
             self.userPoolArn = userPoolArn
         }
     }
-
 }
 
 extension VerifiedPermissionsClientTypes.IdentitySourceDetails: Swift.CustomDebugStringConvertible {
@@ -1513,7 +1513,7 @@ extension VerifiedPermissionsClientTypes.IdentitySourceDetails: Swift.CustomDebu
         "IdentitySourceDetails(discoveryUrl: \(Swift.String(describing: discoveryUrl)), openIdIssuer: \(Swift.String(describing: openIdIssuer)), userPoolArn: \(Swift.String(describing: userPoolArn)), clientIds: \"CONTENT_REDACTED\")"}
 }
 
-public struct GetIdentitySourceOutput {
+public struct GetIdentitySourceOutput: Swift.Sendable {
     /// Contains configuration information about an identity source.
     public var configuration: VerifiedPermissionsClientTypes.ConfigurationDetail?
     /// The date and time that the identity source was originally created.
@@ -1560,7 +1560,7 @@ extension GetIdentitySourceOutput: Swift.CustomDebugStringConvertible {
         "GetIdentitySourceOutput(configuration: \(Swift.String(describing: configuration)), createdDate: \(Swift.String(describing: createdDate)), details: \(Swift.String(describing: details)), identitySourceId: \(Swift.String(describing: identitySourceId)), lastUpdatedDate: \(Swift.String(describing: lastUpdatedDate)), policyStoreId: \(Swift.String(describing: policyStoreId)), principalEntityType: \"CONTENT_REDACTED\")"}
 }
 
-public struct GetPolicyInput {
+public struct GetPolicyInput: Swift.Sendable {
     /// Specifies the ID of the policy you want information about.
     /// This member is required.
     public var policyId: Swift.String?
@@ -1579,8 +1579,9 @@ public struct GetPolicyInput {
 }
 
 extension VerifiedPermissionsClientTypes {
+
     /// A structure that contains details about a static policy. It includes the description and policy body. This data type is used within a [PolicyDefinition](https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_PolicyDefinition.html) structure as part of a request parameter for the [CreatePolicy](https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_CreatePolicy.html) operation.
-    public struct StaticPolicyDefinitionDetail {
+    public struct StaticPolicyDefinitionDetail: Swift.Sendable {
         /// A description of the static policy.
         public var description: Swift.String?
         /// The content of the static policy written in the Cedar policy language.
@@ -1596,7 +1597,6 @@ extension VerifiedPermissionsClientTypes {
             self.statement = statement
         }
     }
-
 }
 
 extension VerifiedPermissionsClientTypes.StaticPolicyDefinitionDetail: Swift.CustomDebugStringConvertible {
@@ -1605,8 +1605,9 @@ extension VerifiedPermissionsClientTypes.StaticPolicyDefinitionDetail: Swift.Cus
 }
 
 extension VerifiedPermissionsClientTypes {
+
     /// Contains information about a policy that was created by instantiating a policy template.
-    public struct TemplateLinkedPolicyDefinitionDetail {
+    public struct TemplateLinkedPolicyDefinitionDetail: Swift.Sendable {
         /// The unique identifier of the policy template used to create this policy.
         /// This member is required.
         public var policyTemplateId: Swift.String?
@@ -1626,22 +1627,21 @@ extension VerifiedPermissionsClientTypes {
             self.resource = resource
         }
     }
-
 }
 
 extension VerifiedPermissionsClientTypes {
+
     /// A structure that describes a policy definition. It must always have either an static or a templateLinked element. This data type is used as a response parameter for the [GetPolicy](https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_GetPolicy.html) operation.
-    public enum PolicyDefinitionDetail {
+    public enum PolicyDefinitionDetail: Swift.Sendable {
         /// Information about a static policy that wasn't created with a policy template.
         case `static`(VerifiedPermissionsClientTypes.StaticPolicyDefinitionDetail)
         /// Information about a template-linked policy that was created by instantiating a policy template.
         case templatelinked(VerifiedPermissionsClientTypes.TemplateLinkedPolicyDefinitionDetail)
         case sdkUnknown(Swift.String)
     }
-
 }
 
-public struct GetPolicyOutput {
+public struct GetPolicyOutput: Swift.Sendable {
     /// The action that a policy permits or forbids. For example, {"actions": [{"actionId": "ViewPhoto", "actionType": "PhotoFlash::Action"}, {"entityID": "SharePhoto", "entityType": "PhotoFlash::Action"}]}.
     public var actions: [VerifiedPermissionsClientTypes.ActionIdentifier]?
     /// The date and time that the policy was originally created.
@@ -1695,7 +1695,7 @@ public struct GetPolicyOutput {
     }
 }
 
-public struct GetPolicyStoreInput {
+public struct GetPolicyStoreInput: Swift.Sendable {
     /// Specifies the ID of the policy store that you want information about.
     /// This member is required.
     public var policyStoreId: Swift.String?
@@ -1708,7 +1708,7 @@ public struct GetPolicyStoreInput {
     }
 }
 
-public struct GetPolicyStoreOutput {
+public struct GetPolicyStoreOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the policy store.
     /// This member is required.
     public var arn: Swift.String?
@@ -1750,7 +1750,7 @@ extension GetPolicyStoreOutput: Swift.CustomDebugStringConvertible {
         "GetPolicyStoreOutput(arn: \(Swift.String(describing: arn)), createdDate: \(Swift.String(describing: createdDate)), lastUpdatedDate: \(Swift.String(describing: lastUpdatedDate)), policyStoreId: \(Swift.String(describing: policyStoreId)), validationSettings: \(Swift.String(describing: validationSettings)), description: \"CONTENT_REDACTED\")"}
 }
 
-public struct GetPolicyTemplateInput {
+public struct GetPolicyTemplateInput: Swift.Sendable {
     /// Specifies the ID of the policy store that contains the policy template that you want information about.
     /// This member is required.
     public var policyStoreId: Swift.String?
@@ -1768,7 +1768,7 @@ public struct GetPolicyTemplateInput {
     }
 }
 
-public struct GetPolicyTemplateOutput {
+public struct GetPolicyTemplateOutput: Swift.Sendable {
     /// The date and time that the policy template was originally created.
     /// This member is required.
     public var createdDate: Foundation.Date?
@@ -1810,7 +1810,7 @@ extension GetPolicyTemplateOutput: Swift.CustomDebugStringConvertible {
         "GetPolicyTemplateOutput(createdDate: \(Swift.String(describing: createdDate)), lastUpdatedDate: \(Swift.String(describing: lastUpdatedDate)), policyStoreId: \(Swift.String(describing: policyStoreId)), policyTemplateId: \(Swift.String(describing: policyTemplateId)), description: \"CONTENT_REDACTED\", statement: \"CONTENT_REDACTED\")"}
 }
 
-public struct GetSchemaInput {
+public struct GetSchemaInput: Swift.Sendable {
     /// Specifies the ID of the policy store that contains the schema.
     /// This member is required.
     public var policyStoreId: Swift.String?
@@ -1823,7 +1823,7 @@ public struct GetSchemaInput {
     }
 }
 
-public struct GetSchemaOutput {
+public struct GetSchemaOutput: Swift.Sendable {
     /// The date and time that the schema was originally created.
     /// This member is required.
     public var createdDate: Foundation.Date?
@@ -1861,8 +1861,9 @@ extension GetSchemaOutput: Swift.CustomDebugStringConvertible {
 }
 
 extension VerifiedPermissionsClientTypes {
+
     /// A structure that defines characteristics of an identity source that you can use to filter. This data type is a request parameter for the [ListIdentityStores](https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_ListIdentityStores.html) operation.
-    public struct IdentitySourceFilter {
+    public struct IdentitySourceFilter: Swift.Sendable {
         /// The Cedar entity type of the principals returned by the identity provider (IdP) associated with this identity source.
         public var principalEntityType: Swift.String?
 
@@ -1873,7 +1874,6 @@ extension VerifiedPermissionsClientTypes {
             self.principalEntityType = principalEntityType
         }
     }
-
 }
 
 extension VerifiedPermissionsClientTypes.IdentitySourceFilter: Swift.CustomDebugStringConvertible {
@@ -1881,7 +1881,7 @@ extension VerifiedPermissionsClientTypes.IdentitySourceFilter: Swift.CustomDebug
         "IdentitySourceFilter(principalEntityType: \"CONTENT_REDACTED\")"}
 }
 
-public struct ListIdentitySourcesInput {
+public struct ListIdentitySourcesInput: Swift.Sendable {
     /// Specifies characteristics of an identity source that you can use to limit the output to matching identity sources.
     public var filters: [VerifiedPermissionsClientTypes.IdentitySourceFilter]?
     /// Specifies the total number of results that you want included in each response. If additional items exist beyond the number you specify, the NextToken response element is returned with a value (not null). Include the specified value as the NextToken request parameter in the next call to the operation to get the next set of results. Note that the service might return fewer results than the maximum even when there are more results available. You should check NextToken after every operation to ensure that you receive all of the results. If you do not specify this parameter, the operation defaults to 10 identity sources per response. You can specify a maximum of 50 identity sources per response.
@@ -1907,9 +1907,10 @@ public struct ListIdentitySourcesInput {
 }
 
 extension VerifiedPermissionsClientTypes {
+
     /// A structure that contains configuration of the identity source. This data type was a response parameter for the [ListIdentitySources](https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_ListIdentitySources.html) operation. Replaced by [ConfigurationItem](https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_ConfigurationItem.html).
     @available(*, deprecated, message: "This shape has been replaced by ConfigurationItem")
-    public struct IdentitySourceItemDetails {
+    public struct IdentitySourceItemDetails: Swift.Sendable {
         /// The application client IDs associated with the specified Amazon Cognito user pool that are enabled for this identity source.
         @available(*, deprecated, message: "This attribute has been replaced by configuration.cognitoUserPoolConfiguration.clientIds")
         public var clientIds: [Swift.String]?
@@ -1936,7 +1937,6 @@ extension VerifiedPermissionsClientTypes {
             self.userPoolArn = userPoolArn
         }
     }
-
 }
 
 extension VerifiedPermissionsClientTypes.IdentitySourceItemDetails: Swift.CustomDebugStringConvertible {
@@ -1945,8 +1945,9 @@ extension VerifiedPermissionsClientTypes.IdentitySourceItemDetails: Swift.Custom
 }
 
 extension VerifiedPermissionsClientTypes {
+
     /// A structure that defines an identity source. This data type is a response parameter to the [ListIdentitySources](https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_ListIdentitySources.html) operation.
-    public struct IdentitySourceItem {
+    public struct IdentitySourceItem: Swift.Sendable {
         /// Contains configuration information about an identity source.
         public var configuration: VerifiedPermissionsClientTypes.ConfigurationItem?
         /// The date and time the identity source was originally created.
@@ -1987,7 +1988,6 @@ extension VerifiedPermissionsClientTypes {
             self.principalEntityType = principalEntityType
         }
     }
-
 }
 
 extension VerifiedPermissionsClientTypes.IdentitySourceItem: Swift.CustomDebugStringConvertible {
@@ -1995,7 +1995,7 @@ extension VerifiedPermissionsClientTypes.IdentitySourceItem: Swift.CustomDebugSt
         "IdentitySourceItem(configuration: \(Swift.String(describing: configuration)), createdDate: \(Swift.String(describing: createdDate)), details: \(Swift.String(describing: details)), identitySourceId: \(Swift.String(describing: identitySourceId)), lastUpdatedDate: \(Swift.String(describing: lastUpdatedDate)), policyStoreId: \(Swift.String(describing: policyStoreId)), principalEntityType: \"CONTENT_REDACTED\")"}
 }
 
-public struct ListIdentitySourcesOutput {
+public struct ListIdentitySourcesOutput: Swift.Sendable {
     /// The list of identity sources stored in the specified policy store.
     /// This member is required.
     public var identitySources: [VerifiedPermissionsClientTypes.IdentitySourceItem]?
@@ -2013,8 +2013,9 @@ public struct ListIdentitySourcesOutput {
 }
 
 extension VerifiedPermissionsClientTypes {
+
     /// The user group entities from an Amazon Cognito user pool identity source.
-    public struct UpdateCognitoGroupConfiguration {
+    public struct UpdateCognitoGroupConfiguration: Swift.Sendable {
         /// The name of the schema entity type that's mapped to the user pool group. Defaults to AWS::CognitoGroup.
         /// This member is required.
         public var groupEntityType: Swift.String?
@@ -2026,7 +2027,6 @@ extension VerifiedPermissionsClientTypes {
             self.groupEntityType = groupEntityType
         }
     }
-
 }
 
 extension VerifiedPermissionsClientTypes.UpdateCognitoGroupConfiguration: Swift.CustomDebugStringConvertible {
@@ -2035,8 +2035,9 @@ extension VerifiedPermissionsClientTypes.UpdateCognitoGroupConfiguration: Swift.
 }
 
 extension VerifiedPermissionsClientTypes {
+
     /// Contains configuration details of a Amazon Cognito user pool for use with an identity source.
-    public struct UpdateCognitoUserPoolConfiguration {
+    public struct UpdateCognitoUserPoolConfiguration: Swift.Sendable {
         /// The client ID of an app client that is configured for the specified Amazon Cognito user pool.
         public var clientIds: [Swift.String]?
         /// The configuration of the user groups from an Amazon Cognito user pool identity source.
@@ -2056,7 +2057,6 @@ extension VerifiedPermissionsClientTypes {
             self.userPoolArn = userPoolArn
         }
     }
-
 }
 
 extension VerifiedPermissionsClientTypes.UpdateCognitoUserPoolConfiguration: Swift.CustomDebugStringConvertible {
@@ -2065,8 +2065,9 @@ extension VerifiedPermissionsClientTypes.UpdateCognitoUserPoolConfiguration: Swi
 }
 
 extension VerifiedPermissionsClientTypes {
+
     /// The claim in OIDC identity provider tokens that indicates a user's group membership, and the entity type that you want to map it to. For example, this object can map the contents of a groups claim to MyCorp::UserGroup. This data type is part of a [UpdateOpenIdConnectConfiguration](https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_UpdateOpenIdConnectConfiguration.html) structure, which is a parameter to [UpdateIdentitySource](https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_UpdateIdentitySource.html).
-    public struct UpdateOpenIdConnectGroupConfiguration {
+    public struct UpdateOpenIdConnectGroupConfiguration: Swift.Sendable {
         /// The token claim that you want Verified Permissions to interpret as group membership. For example, groups.
         /// This member is required.
         public var groupClaim: Swift.String?
@@ -2083,7 +2084,6 @@ extension VerifiedPermissionsClientTypes {
             self.groupEntityType = groupEntityType
         }
     }
-
 }
 
 extension VerifiedPermissionsClientTypes.UpdateOpenIdConnectGroupConfiguration: Swift.CustomDebugStringConvertible {
@@ -2092,8 +2092,9 @@ extension VerifiedPermissionsClientTypes.UpdateOpenIdConnectGroupConfiguration: 
 }
 
 extension VerifiedPermissionsClientTypes {
+
     /// The configuration of an OpenID Connect (OIDC) identity source for handling access token claims. Contains the claim that you want to identify as the principal in an authorization request, and the values of the aud claim, or audiences, that you want to accept. This data type is part of a [UpdateOpenIdConnectTokenSelection](https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_UpdateOpenIdConnectTokenSelection.html) structure, which is a parameter to [UpdateIdentitySource](https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_UpdateIdentitySource.html).
-    public struct UpdateOpenIdConnectAccessTokenConfiguration {
+    public struct UpdateOpenIdConnectAccessTokenConfiguration: Swift.Sendable {
         /// The access token aud claim values that you want to accept in your policy store. For example, https://myapp.example.com, https://myapp2.example.com.
         public var audiences: [Swift.String]?
         /// The claim that determines the principal in OIDC access tokens. For example, sub.
@@ -2108,7 +2109,6 @@ extension VerifiedPermissionsClientTypes {
             self.principalIdClaim = principalIdClaim
         }
     }
-
 }
 
 extension VerifiedPermissionsClientTypes.UpdateOpenIdConnectAccessTokenConfiguration: Swift.CustomDebugStringConvertible {
@@ -2117,8 +2117,9 @@ extension VerifiedPermissionsClientTypes.UpdateOpenIdConnectAccessTokenConfigura
 }
 
 extension VerifiedPermissionsClientTypes {
+
     /// The configuration of an OpenID Connect (OIDC) identity source for handling identity (ID) token claims. Contains the claim that you want to identify as the principal in an authorization request, and the values of the aud claim, or audiences, that you want to accept. This data type is part of a [UpdateOpenIdConnectTokenSelection](https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_UpdateOpenIdConnectTokenSelection.html) structure, which is a parameter to [UpdateIdentitySource](https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_UpdateIdentitySource.html).
-    public struct UpdateOpenIdConnectIdentityTokenConfiguration {
+    public struct UpdateOpenIdConnectIdentityTokenConfiguration: Swift.Sendable {
         /// The ID token audience, or client ID, claim values that you want to accept in your policy store from an OIDC identity provider. For example, 1example23456789, 2example10111213.
         public var clientIds: [Swift.String]?
         /// The claim that determines the principal in OIDC access tokens. For example, sub.
@@ -2133,7 +2134,6 @@ extension VerifiedPermissionsClientTypes {
             self.principalIdClaim = principalIdClaim
         }
     }
-
 }
 
 extension VerifiedPermissionsClientTypes.UpdateOpenIdConnectIdentityTokenConfiguration: Swift.CustomDebugStringConvertible {
@@ -2142,20 +2142,21 @@ extension VerifiedPermissionsClientTypes.UpdateOpenIdConnectIdentityTokenConfigu
 }
 
 extension VerifiedPermissionsClientTypes {
+
     /// The token type that you want to process from your OIDC identity provider. Your policy store can process either identity (ID) or access tokens from a given OIDC identity source. This data type is part of a [UpdateOpenIdConnectConfiguration](https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_UpdateOpenIdConnectConfiguration.html) structure, which is a parameter to [UpdateIdentitySource](https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_UpdateIdentitySource.html).
-    public enum UpdateOpenIdConnectTokenSelection {
+    public enum UpdateOpenIdConnectTokenSelection: Swift.Sendable {
         /// The OIDC configuration for processing access tokens. Contains allowed audience claims, for example https://auth.example.com, and the claim that you want to map to the principal, for example sub.
         case accesstokenonly(VerifiedPermissionsClientTypes.UpdateOpenIdConnectAccessTokenConfiguration)
         /// The OIDC configuration for processing identity (ID) tokens. Contains allowed client ID claims, for example 1example23456789, and the claim that you want to map to the principal, for example sub.
         case identitytokenonly(VerifiedPermissionsClientTypes.UpdateOpenIdConnectIdentityTokenConfiguration)
         case sdkUnknown(Swift.String)
     }
-
 }
 
 extension VerifiedPermissionsClientTypes {
+
     /// Contains configuration details of an OpenID Connect (OIDC) identity provider, or identity source, that Verified Permissions can use to generate entities from authenticated identities. It specifies the issuer URL, token type that you want to use, and policy store entity details. This data type is part of a [UpdateConfiguration](https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_UpdateConfiguration.html) structure, which is a parameter to [UpdateIdentitySource](https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_UpdateIdentitySource.html).
-    public struct UpdateOpenIdConnectConfiguration {
+    public struct UpdateOpenIdConnectConfiguration: Swift.Sendable {
         /// A descriptive string that you want to prefix to user entities from your OIDC identity provider. For example, if you set an entityIdPrefix of MyOIDCProvider, you can reference principals in your policies in the format MyCorp::User::MyOIDCProvider|Carlos.
         public var entityIdPrefix: Swift.String?
         /// The claim in OIDC identity provider tokens that indicates a user's group membership, and the entity type that you want to map it to. For example, this object can map the contents of a groups claim to MyCorp::UserGroup.
@@ -2180,7 +2181,6 @@ extension VerifiedPermissionsClientTypes {
             self.tokenSelection = tokenSelection
         }
     }
-
 }
 
 extension VerifiedPermissionsClientTypes.UpdateOpenIdConnectConfiguration: Swift.CustomDebugStringConvertible {
@@ -2189,18 +2189,18 @@ extension VerifiedPermissionsClientTypes.UpdateOpenIdConnectConfiguration: Swift
 }
 
 extension VerifiedPermissionsClientTypes {
+
     /// Contains an update to replace the configuration in an existing identity source.
-    public enum UpdateConfiguration {
+    public enum UpdateConfiguration: Swift.Sendable {
         /// Contains configuration details of a Amazon Cognito user pool.
         case cognitouserpoolconfiguration(VerifiedPermissionsClientTypes.UpdateCognitoUserPoolConfiguration)
         /// Contains configuration details of an OpenID Connect (OIDC) identity provider, or identity source, that Verified Permissions can use to generate entities from authenticated identities. It specifies the issuer URL, token type that you want to use, and policy store entity details.
         case openidconnectconfiguration(VerifiedPermissionsClientTypes.UpdateOpenIdConnectConfiguration)
         case sdkUnknown(Swift.String)
     }
-
 }
 
-public struct UpdateIdentitySourceInput {
+public struct UpdateIdentitySourceInput: Swift.Sendable {
     /// Specifies the ID of the identity source that you want to update.
     /// This member is required.
     public var identitySourceId: Swift.String?
@@ -2209,7 +2209,7 @@ public struct UpdateIdentitySourceInput {
     public var policyStoreId: Swift.String?
     /// Specifies the data type of principals generated for identities authenticated by the identity source.
     public var principalEntityType: Swift.String?
-    /// Specifies the details required to communicate with the identity provider (IdP) associated with this identity source. At this time, the only valid member of this structure is a Amazon Cognito user pool configuration. You must specify a userPoolArn, and optionally, a ClientId.
+    /// Specifies the details required to communicate with the identity provider (IdP) associated with this identity source.
     /// This member is required.
     public var updateConfiguration: VerifiedPermissionsClientTypes.UpdateConfiguration?
 
@@ -2232,7 +2232,7 @@ extension UpdateIdentitySourceInput: Swift.CustomDebugStringConvertible {
         "UpdateIdentitySourceInput(identitySourceId: \(Swift.String(describing: identitySourceId)), policyStoreId: \(Swift.String(describing: policyStoreId)), updateConfiguration: \(Swift.String(describing: updateConfiguration)), principalEntityType: \"CONTENT_REDACTED\")"}
 }
 
-public struct UpdateIdentitySourceOutput {
+public struct UpdateIdentitySourceOutput: Swift.Sendable {
     /// The date and time that the updated identity source was originally created.
     /// This member is required.
     public var createdDate: Foundation.Date?
@@ -2285,7 +2285,7 @@ public struct InternalServerException: ClientRuntime.ModeledError, AWSClientRunt
     }
 }
 
-public struct IsAuthorizedOutput {
+public struct IsAuthorizedOutput: Swift.Sendable {
     /// An authorization decision that indicates if the authorization request should be allowed or denied.
     /// This member is required.
     public var decision: VerifiedPermissionsClientTypes.Decision?
@@ -2313,7 +2313,7 @@ extension IsAuthorizedOutput: Swift.CustomDebugStringConvertible {
         "IsAuthorizedOutput(decision: \(Swift.String(describing: decision)), determiningPolicies: \(Swift.String(describing: determiningPolicies)), errors: \"CONTENT_REDACTED\")"}
 }
 
-public struct IsAuthorizedWithTokenOutput {
+public struct IsAuthorizedWithTokenOutput: Swift.Sendable {
     /// An authorization decision that indicates if the authorization request should be allowed or denied.
     /// This member is required.
     public var decision: VerifiedPermissionsClientTypes.Decision?
@@ -2346,8 +2346,9 @@ extension IsAuthorizedWithTokenOutput: Swift.CustomDebugStringConvertible {
 }
 
 extension VerifiedPermissionsClientTypes {
+
     /// Contains information about a filter to refine policies returned in a query. This data type is used as a response parameter for the [ListPolicies](https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_ListPolicies.html) operation.
-    public struct PolicyFilter {
+    public struct PolicyFilter: Swift.Sendable {
         /// Filters the output to only template-linked policies that were instantiated from the specified policy template.
         public var policyTemplateId: Swift.String?
         /// Filters the output to only policies of the specified type.
@@ -2370,10 +2371,9 @@ extension VerifiedPermissionsClientTypes {
             self.resource = resource
         }
     }
-
 }
 
-public struct ListPoliciesInput {
+public struct ListPoliciesInput: Swift.Sendable {
     /// Specifies a filter that limits the response to only policies that match the specified criteria. For example, you list only the policies that reference a specified principal.
     public var filter: VerifiedPermissionsClientTypes.PolicyFilter?
     /// Specifies the total number of results that you want included in each response. If additional items exist beyond the number you specify, the NextToken response element is returned with a value (not null). Include the specified value as the NextToken request parameter in the next call to the operation to get the next set of results. Note that the service might return fewer results than the maximum even when there are more results available. You should check NextToken after every operation to ensure that you receive all of the results. If you do not specify this parameter, the operation defaults to 10 policies per response. You can specify a maximum of 50 policies per response.
@@ -2399,8 +2399,9 @@ public struct ListPoliciesInput {
 }
 
 extension VerifiedPermissionsClientTypes {
+
     /// A structure that contains details about a static policy. It includes the description and policy statement. This data type is used within a [PolicyDefinition](https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_PolicyDefinition.html) structure as part of a request parameter for the [CreatePolicy](https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_CreatePolicy.html) operation.
-    public struct StaticPolicyDefinitionItem {
+    public struct StaticPolicyDefinitionItem: Swift.Sendable {
         /// A description of the static policy.
         public var description: Swift.String?
 
@@ -2411,7 +2412,6 @@ extension VerifiedPermissionsClientTypes {
             self.description = description
         }
     }
-
 }
 
 extension VerifiedPermissionsClientTypes.StaticPolicyDefinitionItem: Swift.CustomDebugStringConvertible {
@@ -2420,8 +2420,9 @@ extension VerifiedPermissionsClientTypes.StaticPolicyDefinitionItem: Swift.Custo
 }
 
 extension VerifiedPermissionsClientTypes {
+
     /// Contains information about a policy created by instantiating a policy template. This
-    public struct TemplateLinkedPolicyDefinitionItem {
+    public struct TemplateLinkedPolicyDefinitionItem: Swift.Sendable {
         /// The unique identifier of the policy template used to create this policy.
         /// This member is required.
         public var policyTemplateId: Swift.String?
@@ -2441,24 +2442,24 @@ extension VerifiedPermissionsClientTypes {
             self.resource = resource
         }
     }
-
 }
 
 extension VerifiedPermissionsClientTypes {
+
     /// A structure that describes a [PolicyDefinintion](https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_PolicyDefinintion.html). It will always have either an StaticPolicy or a TemplateLinkedPolicy element. This data type is used as a response parameter for the [CreatePolicy](https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_CreatePolicy.html) and [ListPolicies](https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_ListPolicies.html) operations.
-    public enum PolicyDefinitionItem {
+    public enum PolicyDefinitionItem: Swift.Sendable {
         /// Information about a static policy that wasn't created with a policy template.
         case `static`(VerifiedPermissionsClientTypes.StaticPolicyDefinitionItem)
         /// Information about a template-linked policy that was created by instantiating a policy template.
         case templatelinked(VerifiedPermissionsClientTypes.TemplateLinkedPolicyDefinitionItem)
         case sdkUnknown(Swift.String)
     }
-
 }
 
 extension VerifiedPermissionsClientTypes {
+
     /// Contains information about a policy. This data type is used as a response parameter for the [ListPolicies](https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_ListPolicies.html) operation.
-    public struct PolicyItem {
+    public struct PolicyItem: Swift.Sendable {
         /// The action that a policy permits or forbids. For example, {"actions": [{"actionId": "ViewPhoto", "actionType": "PhotoFlash::Action"}, {"entityID": "SharePhoto", "entityType": "PhotoFlash::Action"}]}.
         public var actions: [VerifiedPermissionsClientTypes.ActionIdentifier]?
         /// The date and time the policy was created.
@@ -2480,9 +2481,9 @@ extension VerifiedPermissionsClientTypes {
         public var policyStoreId: Swift.String?
         /// The type of the policy. This is one of the following values:
         ///
-        /// * static
+        /// * STATIC
         ///
-        /// * templateLinked
+        /// * TEMPLATE_LINKED
         /// This member is required.
         public var policyType: VerifiedPermissionsClientTypes.PolicyType?
         /// The principal associated with the policy.
@@ -2515,10 +2516,9 @@ extension VerifiedPermissionsClientTypes {
             self.resource = resource
         }
     }
-
 }
 
-public struct ListPoliciesOutput {
+public struct ListPoliciesOutput: Swift.Sendable {
     /// If present, this value indicates that more output is available than is included in the current response. Use this value in the NextToken request parameter in a subsequent call to the operation to get the next part of the output. You should repeat this until the NextToken response element comes back as null. This indicates that this is the last page of results.
     public var nextToken: Swift.String?
     /// Lists all policies that are available in the specified policy store.
@@ -2535,7 +2535,7 @@ public struct ListPoliciesOutput {
     }
 }
 
-public struct ListPolicyStoresInput {
+public struct ListPolicyStoresInput: Swift.Sendable {
     /// Specifies the total number of results that you want included in each response. If additional items exist beyond the number you specify, the NextToken response element is returned with a value (not null). Include the specified value as the NextToken request parameter in the next call to the operation to get the next set of results. Note that the service might return fewer results than the maximum even when there are more results available. You should check NextToken after every operation to ensure that you receive all of the results. If you do not specify this parameter, the operation defaults to 10 policy stores per response. You can specify a maximum of 50 policy stores per response.
     public var maxResults: Swift.Int?
     /// Specifies that you want to receive the next page of results. Valid only if you received a NextToken response in the previous request. If you did, it indicates that more output is available. Set this parameter to the value provided by the previous call's NextToken response to request the next page of results.
@@ -2552,8 +2552,9 @@ public struct ListPolicyStoresInput {
 }
 
 extension VerifiedPermissionsClientTypes {
+
     /// Contains information about a policy store. This data type is used as a response parameter for the [ListPolicyStores](https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_ListPolicyStores.html) operation.
-    public struct PolicyStoreItem {
+    public struct PolicyStoreItem: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the policy store.
         /// This member is required.
         public var arn: Swift.String?
@@ -2583,7 +2584,6 @@ extension VerifiedPermissionsClientTypes {
             self.policyStoreId = policyStoreId
         }
     }
-
 }
 
 extension VerifiedPermissionsClientTypes.PolicyStoreItem: Swift.CustomDebugStringConvertible {
@@ -2591,7 +2591,7 @@ extension VerifiedPermissionsClientTypes.PolicyStoreItem: Swift.CustomDebugStrin
         "PolicyStoreItem(arn: \(Swift.String(describing: arn)), createdDate: \(Swift.String(describing: createdDate)), lastUpdatedDate: \(Swift.String(describing: lastUpdatedDate)), policyStoreId: \(Swift.String(describing: policyStoreId)), description: \"CONTENT_REDACTED\")"}
 }
 
-public struct ListPolicyStoresOutput {
+public struct ListPolicyStoresOutput: Swift.Sendable {
     /// If present, this value indicates that more output is available than is included in the current response. Use this value in the NextToken request parameter in a subsequent call to the operation to get the next part of the output. You should repeat this until the NextToken response element comes back as null. This indicates that this is the last page of results.
     public var nextToken: Swift.String?
     /// The list of policy stores in the account.
@@ -2608,7 +2608,7 @@ public struct ListPolicyStoresOutput {
     }
 }
 
-public struct ListPolicyTemplatesInput {
+public struct ListPolicyTemplatesInput: Swift.Sendable {
     /// Specifies the total number of results that you want included in each response. If additional items exist beyond the number you specify, the NextToken response element is returned with a value (not null). Include the specified value as the NextToken request parameter in the next call to the operation to get the next set of results. Note that the service might return fewer results than the maximum even when there are more results available. You should check NextToken after every operation to ensure that you receive all of the results. If you do not specify this parameter, the operation defaults to 10 policy templates per response. You can specify a maximum of 50 policy templates per response.
     public var maxResults: Swift.Int?
     /// Specifies that you want to receive the next page of results. Valid only if you received a NextToken response in the previous request. If you did, it indicates that more output is available. Set this parameter to the value provided by the previous call's NextToken response to request the next page of results.
@@ -2630,8 +2630,9 @@ public struct ListPolicyTemplatesInput {
 }
 
 extension VerifiedPermissionsClientTypes {
+
     /// Contains details about a policy template This data type is used as a response parameter for the [ListPolicyTemplates](https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_ListPolicyTemplates.html) operation.
-    public struct PolicyTemplateItem {
+    public struct PolicyTemplateItem: Swift.Sendable {
         /// The date and time that the policy template was created.
         /// This member is required.
         public var createdDate: Foundation.Date?
@@ -2662,7 +2663,6 @@ extension VerifiedPermissionsClientTypes {
             self.policyTemplateId = policyTemplateId
         }
     }
-
 }
 
 extension VerifiedPermissionsClientTypes.PolicyTemplateItem: Swift.CustomDebugStringConvertible {
@@ -2670,7 +2670,7 @@ extension VerifiedPermissionsClientTypes.PolicyTemplateItem: Swift.CustomDebugSt
         "PolicyTemplateItem(createdDate: \(Swift.String(describing: createdDate)), lastUpdatedDate: \(Swift.String(describing: lastUpdatedDate)), policyStoreId: \(Swift.String(describing: policyStoreId)), policyTemplateId: \(Swift.String(describing: policyTemplateId)), description: \"CONTENT_REDACTED\")"}
 }
 
-public struct ListPolicyTemplatesOutput {
+public struct ListPolicyTemplatesOutput: Swift.Sendable {
     /// If present, this value indicates that more output is available than is included in the current response. Use this value in the NextToken request parameter in a subsequent call to the operation to get the next part of the output. You should repeat this until the NextToken response element comes back as null. This indicates that this is the last page of results.
     public var nextToken: Swift.String?
     /// The list of the policy templates in the specified policy store.
@@ -2688,8 +2688,9 @@ public struct ListPolicyTemplatesOutput {
 }
 
 extension VerifiedPermissionsClientTypes {
+
     /// Contains information about an update to a static policy.
-    public struct UpdateStaticPolicyDefinition {
+    public struct UpdateStaticPolicyDefinition: Swift.Sendable {
         /// Specifies the description to be added to or replaced on the static policy.
         public var description: Swift.String?
         /// Specifies the Cedar policy language text to be added to or replaced on the static policy. You can change only the following elements from the original content:
@@ -2720,7 +2721,6 @@ extension VerifiedPermissionsClientTypes {
             self.statement = statement
         }
     }
-
 }
 
 extension VerifiedPermissionsClientTypes.UpdateStaticPolicyDefinition: Swift.CustomDebugStringConvertible {
@@ -2729,16 +2729,16 @@ extension VerifiedPermissionsClientTypes.UpdateStaticPolicyDefinition: Swift.Cus
 }
 
 extension VerifiedPermissionsClientTypes {
+
     /// Contains information about updates to be applied to a policy. This data type is used as a request parameter in the [UpdatePolicy](https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_UpdatePolicy.html) operation.
-    public enum UpdatePolicyDefinition {
+    public enum UpdatePolicyDefinition: Swift.Sendable {
         /// Contains details about the updates to be applied to a static policy.
         case `static`(VerifiedPermissionsClientTypes.UpdateStaticPolicyDefinition)
         case sdkUnknown(Swift.String)
     }
-
 }
 
-public struct UpdatePolicyInput {
+public struct UpdatePolicyInput: Swift.Sendable {
     /// Specifies the updated policy content that you want to replace on the specified policy. The content must be valid Cedar policy language text. You can change only the following elements from the policy definition:
     ///
     /// * The action referenced by the policy.
@@ -2776,7 +2776,7 @@ public struct UpdatePolicyInput {
     }
 }
 
-public struct UpdatePolicyOutput {
+public struct UpdatePolicyOutput: Swift.Sendable {
     /// The action that a policy permits or forbids. For example, {"actions": [{"actionId": "ViewPhoto", "actionType": "PhotoFlash::Action"}, {"entityID": "SharePhoto", "entityType": "PhotoFlash::Action"}]}.
     public var actions: [VerifiedPermissionsClientTypes.ActionIdentifier]?
     /// The date and time that the policy was originally created.
@@ -2825,7 +2825,7 @@ public struct UpdatePolicyOutput {
     }
 }
 
-public struct UpdatePolicyTemplateInput {
+public struct UpdatePolicyTemplateInput: Swift.Sendable {
     /// Specifies a new description to apply to the policy template.
     public var description: Swift.String?
     /// Specifies the ID of the policy store that contains the policy template that you want to update.
@@ -2870,7 +2870,7 @@ extension UpdatePolicyTemplateInput: Swift.CustomDebugStringConvertible {
         "UpdatePolicyTemplateInput(policyStoreId: \(Swift.String(describing: policyStoreId)), policyTemplateId: \(Swift.String(describing: policyTemplateId)), description: \"CONTENT_REDACTED\", statement: \"CONTENT_REDACTED\")"}
 }
 
-public struct UpdatePolicyTemplateOutput {
+public struct UpdatePolicyTemplateOutput: Swift.Sendable {
     /// The date and time that the policy template was originally created.
     /// This member is required.
     public var createdDate: Foundation.Date?
@@ -2899,16 +2899,16 @@ public struct UpdatePolicyTemplateOutput {
 }
 
 extension VerifiedPermissionsClientTypes {
+
     /// Contains a list of principal types, resource types, and actions that can be specified in policies stored in the same policy store. If the validation mode for the policy store is set to STRICT, then policies that can't be validated by this schema are rejected by Verified Permissions and can't be stored in the policy store.
-    public enum SchemaDefinition {
-        /// A JSON string representation of the schema supported by applications that use this policy store. For more information, see [Policy store schema](https://docs.aws.amazon.com/verifiedpermissions/latest/userguide/schema.html) in the Amazon Verified Permissions User Guide.
+    public enum SchemaDefinition: Swift.Sendable {
+        /// A JSON string representation of the schema supported by applications that use this policy store. To delete the schema, run [PutSchema](https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_PutSchema.html) with {} for this parameter. For more information, see [Policy store schema](https://docs.aws.amazon.com/verifiedpermissions/latest/userguide/schema.html) in the Amazon Verified Permissions User Guide.
         case cedarjson(Swift.String)
         case sdkUnknown(Swift.String)
     }
-
 }
 
-public struct PutSchemaInput {
+public struct PutSchemaInput: Swift.Sendable {
     /// Specifies the definition of the schema to be stored. The schema definition must be written in Cedar schema JSON.
     /// This member is required.
     public var definition: VerifiedPermissionsClientTypes.SchemaDefinition?
@@ -2926,7 +2926,7 @@ public struct PutSchemaInput {
     }
 }
 
-public struct PutSchemaOutput {
+public struct PutSchemaOutput: Swift.Sendable {
     /// The date and time that the schema was originally created.
     /// This member is required.
     public var createdDate: Foundation.Date?
@@ -2959,7 +2959,7 @@ extension PutSchemaOutput: Swift.CustomDebugStringConvertible {
         "PutSchemaOutput(createdDate: \(Swift.String(describing: createdDate)), lastUpdatedDate: \(Swift.String(describing: lastUpdatedDate)), policyStoreId: \(Swift.String(describing: policyStoreId)), namespaces: \"CONTENT_REDACTED\")"}
 }
 
-public struct UpdatePolicyStoreInput {
+public struct UpdatePolicyStoreInput: Swift.Sendable {
     /// Descriptive text that you can provide to help with identification of the current policy store.
     public var description: Swift.String?
     /// Specifies the ID of the policy store that you want to update
@@ -2986,7 +2986,7 @@ extension UpdatePolicyStoreInput: Swift.CustomDebugStringConvertible {
         "UpdatePolicyStoreInput(policyStoreId: \(Swift.String(describing: policyStoreId)), validationSettings: \(Swift.String(describing: validationSettings)), description: \"CONTENT_REDACTED\")"}
 }
 
-public struct UpdatePolicyStoreOutput {
+public struct UpdatePolicyStoreOutput: Swift.Sendable {
     /// The [Amazon Resource Name (ARN)](https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html) of the updated policy store.
     /// This member is required.
     public var arn: Swift.String?
@@ -3022,7 +3022,7 @@ public struct ThrottlingException: ClientRuntime.ModeledError, AWSClientRuntime.
         public internal(set) var message: Swift.String? = nil
         /// The quota code recognized by the Amazon Web Services Service Quotas service.
         public internal(set) var quotaCode: Swift.String? = nil
-        /// The code for the Amazon Web Service that owns the quota.
+        /// The code for the Amazon Web Services service that owns the quota.
         public internal(set) var serviceCode: Swift.String? = nil
     }
 
@@ -3048,8 +3048,9 @@ public struct ThrottlingException: ClientRuntime.ModeledError, AWSClientRuntime.
 }
 
 extension VerifiedPermissionsClientTypes {
+
     /// Details about a field that failed policy validation.
-    public struct ValidationExceptionField {
+    public struct ValidationExceptionField: Swift.Sendable {
         /// Describes the policy validation error.
         /// This member is required.
         public var message: Swift.String?
@@ -3066,7 +3067,6 @@ extension VerifiedPermissionsClientTypes {
             self.path = path
         }
     }
-
 }
 
 /// The request failed because one or more input parameters don't satisfy their constraint requirements. The output is provided as a list of fields and a reason for each field that isn't valid. The possible reasons include the following:
@@ -3119,8 +3119,9 @@ public struct ValidationException: ClientRuntime.ModeledError, AWSClientRuntime.
 }
 
 extension VerifiedPermissionsClientTypes {
+
     /// The value of an attribute. Contains information about the runtime context for a request for which an authorization decision is made. This data type is used as a member of the [ContextDefinition](https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_ContextDefinition.html) structure which is uses as a request parameter for the [IsAuthorized](https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_IsAuthorized.html), [BatchIsAuthorized](https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_BatchIsAuthorized.html), and [IsAuthorizedWithToken](https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_IsAuthorizedWithToken.html) operations.
-    public indirect enum AttributeValue {
+    public indirect enum AttributeValue: Swift.Sendable {
         /// An attribute value of [Boolean](https://docs.cedarpolicy.com/policies/syntax-datatypes.html#boolean) type. Example: {"boolean": true}
         case boolean(Swift.Bool)
         /// An attribute value of type [EntityIdentifier](https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_EntityIdentifier.html). Example: "entityIdentifier": { "entityId": "<id>", "entityType": "<entity type>"}
@@ -3135,22 +3136,22 @@ extension VerifiedPermissionsClientTypes {
         case record([Swift.String: VerifiedPermissionsClientTypes.AttributeValue])
         case sdkUnknown(Swift.String)
     }
-
 }
 
 extension VerifiedPermissionsClientTypes {
+
     /// Contains additional details about the context of the request. Verified Permissions evaluates this information in an authorization request as part of the when and unless clauses in a policy. This data type is used as a request parameter for the [IsAuthorized](https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_IsAuthorized.html), [BatchIsAuthorized](https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_BatchIsAuthorized.html), and [IsAuthorizedWithToken](https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_IsAuthorizedWithToken.html) operations. Example: "context":{"contextMap":{"<KeyName1>":{"boolean":true},"<KeyName2>":{"long":1234}}}
-    public indirect enum ContextDefinition {
+    public indirect enum ContextDefinition: Swift.Sendable {
         /// An list of attributes that are needed to successfully evaluate an authorization request. Each attribute in this array must include a map of a data type and its value. Example: "contextMap":{"<KeyName1>":{"boolean":true},"<KeyName2>":{"long":1234}}
         case contextmap([Swift.String: VerifiedPermissionsClientTypes.AttributeValue])
         case sdkUnknown(Swift.String)
     }
-
 }
 
 extension VerifiedPermissionsClientTypes {
+
     /// Contains information about an entity that can be referenced in a Cedar policy. This data type is used as one of the fields in the [EntitiesDefinition](https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_EntitiesDefinition.html) structure. { "identifier": { "entityType": "Photo", "entityId": "VacationPhoto94.jpg" }, "attributes": {}, "parents": [ { "entityType": "Album", "entityId": "alice_folder" } ] }
-    public struct EntityItem {
+    public struct EntityItem: Swift.Sendable {
         /// A list of attributes for the entity.
         public var attributes: [Swift.String: VerifiedPermissionsClientTypes.AttributeValue]?
         /// The identifier of the entity.
@@ -3170,12 +3171,12 @@ extension VerifiedPermissionsClientTypes {
             self.parents = parents
         }
     }
-
 }
 
 extension VerifiedPermissionsClientTypes {
+
     /// An authorization request that you include in a BatchIsAuthorized API request.
-    public struct BatchIsAuthorizedInputItem {
+    public struct BatchIsAuthorizedInputItem: Swift.Sendable {
         /// Specifies the requested action to be authorized. For example, PhotoFlash::ReadPhoto.
         public var action: VerifiedPermissionsClientTypes.ActionIdentifier?
         /// Specifies additional context that can be used to make more granular authorization decisions.
@@ -3198,12 +3199,12 @@ extension VerifiedPermissionsClientTypes {
             self.resource = resource
         }
     }
-
 }
 
 extension VerifiedPermissionsClientTypes {
+
     /// An authorization request that you include in a BatchIsAuthorizedWithToken API request.
-    public struct BatchIsAuthorizedWithTokenInputItem {
+    public struct BatchIsAuthorizedWithTokenInputItem: Swift.Sendable {
         /// Specifies the requested action to be authorized. For example, PhotoFlash::ReadPhoto.
         public var action: VerifiedPermissionsClientTypes.ActionIdentifier?
         /// Specifies additional context that can be used to make more granular authorization decisions.
@@ -3222,12 +3223,12 @@ extension VerifiedPermissionsClientTypes {
             self.resource = resource
         }
     }
-
 }
 
 extension VerifiedPermissionsClientTypes {
+
     /// The decision, based on policy evaluation, from an individual authorization request in a BatchIsAuthorized API request.
-    public struct BatchIsAuthorizedOutputItem {
+    public struct BatchIsAuthorizedOutputItem: Swift.Sendable {
         /// An authorization decision that indicates if the authorization request should be allowed or denied.
         /// This member is required.
         public var decision: VerifiedPermissionsClientTypes.Decision?
@@ -3254,7 +3255,6 @@ extension VerifiedPermissionsClientTypes {
             self.request = request
         }
     }
-
 }
 
 extension VerifiedPermissionsClientTypes.BatchIsAuthorizedOutputItem: Swift.CustomDebugStringConvertible {
@@ -3263,8 +3263,9 @@ extension VerifiedPermissionsClientTypes.BatchIsAuthorizedOutputItem: Swift.Cust
 }
 
 extension VerifiedPermissionsClientTypes {
+
     /// The decision, based on policy evaluation, from an individual authorization request in a BatchIsAuthorizedWithToken API request.
-    public struct BatchIsAuthorizedWithTokenOutputItem {
+    public struct BatchIsAuthorizedWithTokenOutputItem: Swift.Sendable {
         /// An authorization decision that indicates if the authorization request should be allowed or denied.
         /// This member is required.
         public var decision: VerifiedPermissionsClientTypes.Decision?
@@ -3291,7 +3292,6 @@ extension VerifiedPermissionsClientTypes {
             self.request = request
         }
     }
-
 }
 
 extension VerifiedPermissionsClientTypes.BatchIsAuthorizedWithTokenOutputItem: Swift.CustomDebugStringConvertible {
@@ -3300,16 +3300,16 @@ extension VerifiedPermissionsClientTypes.BatchIsAuthorizedWithTokenOutputItem: S
 }
 
 extension VerifiedPermissionsClientTypes {
+
     /// Contains the list of entities to be considered during an authorization request. This includes all principals, resources, and actions required to successfully evaluate the request. This data type is used as a field in the response parameter for the [IsAuthorized](https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_IsAuthorized.html) and [IsAuthorizedWithToken](https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_IsAuthorizedWithToken.html) operations.
-    public indirect enum EntitiesDefinition {
+    public indirect enum EntitiesDefinition: Swift.Sendable {
         /// An array of entities that are needed to successfully evaluate an authorization request. Each entity in this array must include an identifier for the entity, the attributes of the entity, and a list of any parent entities.
         case entitylist([VerifiedPermissionsClientTypes.EntityItem])
         case sdkUnknown(Swift.String)
     }
-
 }
 
-public struct BatchIsAuthorizedOutput {
+public struct BatchIsAuthorizedOutput: Swift.Sendable {
     /// A series of Allow or Deny decisions for each request, and the policies that produced them.
     /// This member is required.
     public var results: [VerifiedPermissionsClientTypes.BatchIsAuthorizedOutputItem]?
@@ -3322,7 +3322,7 @@ public struct BatchIsAuthorizedOutput {
     }
 }
 
-public struct BatchIsAuthorizedWithTokenOutput {
+public struct BatchIsAuthorizedWithTokenOutput: Swift.Sendable {
     /// The identifier of the principal in the ID or access token.
     public var principal: VerifiedPermissionsClientTypes.EntityIdentifier?
     /// A series of Allow or Deny decisions for each request, and the policies that produced them.
@@ -3339,7 +3339,7 @@ public struct BatchIsAuthorizedWithTokenOutput {
     }
 }
 
-public struct IsAuthorizedInput {
+public struct IsAuthorizedInput: Swift.Sendable {
     /// Specifies the requested action to be authorized. For example, is the principal authorized to perform this action on the resource?
     public var action: VerifiedPermissionsClientTypes.ActionIdentifier?
     /// Specifies additional context that can be used to make more granular authorization decisions.
@@ -3372,7 +3372,7 @@ public struct IsAuthorizedInput {
     }
 }
 
-public struct IsAuthorizedWithTokenInput {
+public struct IsAuthorizedWithTokenInput: Swift.Sendable {
     /// Specifies an access token for the principal to be authorized. This token is provided to you by the identity provider (IdP) associated with the specified identity source. You must specify either an accessToken, an identityToken, or both. Must be an access token. Verified Permissions returns an error if the token_use claim in the submitted token isn't access.
     public var accessToken: Swift.String?
     /// Specifies the requested action to be authorized. Is the specified principal authorized to perform this action on the specified resource.
@@ -3418,7 +3418,7 @@ extension IsAuthorizedWithTokenInput: Swift.CustomDebugStringConvertible {
         "IsAuthorizedWithTokenInput(action: \(Swift.String(describing: action)), context: \(Swift.String(describing: context)), entities: \(Swift.String(describing: entities)), policyStoreId: \(Swift.String(describing: policyStoreId)), resource: \(Swift.String(describing: resource)), accessToken: \"CONTENT_REDACTED\", identityToken: \"CONTENT_REDACTED\")"}
 }
 
-public struct BatchIsAuthorizedInput {
+public struct BatchIsAuthorizedInput: Swift.Sendable {
     /// Specifies the list of resources and principals and their associated attributes that Verified Permissions can examine when evaluating the policies. You can include only principal and resource entities in this parameter; you can't include actions. You must specify actions in the schema.
     public var entities: VerifiedPermissionsClientTypes.EntitiesDefinition?
     /// Specifies the ID of the policy store. Policies in this policy store will be used to make the authorization decisions for the input.
@@ -3440,7 +3440,7 @@ public struct BatchIsAuthorizedInput {
     }
 }
 
-public struct BatchIsAuthorizedWithTokenInput {
+public struct BatchIsAuthorizedWithTokenInput: Swift.Sendable {
     /// Specifies an access token for the principal that you want to authorize in each request. This token is provided to you by the identity provider (IdP) associated with the specified identity source. You must specify either an accessToken, an identityToken, or both. Must be an access token. Verified Permissions returns an error if the token_use claim in the submitted token isn't access.
     public var accessToken: Swift.String?
     /// Specifies the list of resources and their associated attributes that Verified Permissions can examine when evaluating the policies. You can't include principals in this parameter, only resource and action entities. This parameter can't include any entities of a type that matches the user or group entity types that you defined in your identity source.

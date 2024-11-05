@@ -26,44 +26,45 @@ import protocol ClientRuntime.ModeledError
 @_spi(UnknownAWSHTTPServiceError) import struct AWSClientRuntime.UnknownAWSHTTPServiceError
 import struct Smithy.URIQueryItem
 
-public struct DeleteAppInstanceAdminOutput {
+
+public struct DeleteAppInstanceAdminOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteAppInstanceBotOutput {
+public struct DeleteAppInstanceBotOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteAppInstanceOutput {
+public struct DeleteAppInstanceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteAppInstanceUserOutput {
+public struct DeleteAppInstanceUserOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeregisterAppInstanceUserEndpointOutput {
+public struct DeregisterAppInstanceUserEndpointOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct TagResourceOutput {
+public struct TagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UntagResourceOutput {
+public struct UntagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
 extension ChimeSDKIdentityClientTypes {
 
-    public enum AllowMessages: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AllowMessages: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case all
         case `none`
         case sdkUnknown(Swift.String)
@@ -91,8 +92,9 @@ extension ChimeSDKIdentityClientTypes {
 }
 
 extension ChimeSDKIdentityClientTypes {
+
     /// The details of an AppInstance, an instance of an Amazon Chime SDK messaging application.
-    public struct AppInstance {
+    public struct AppInstance: Swift.Sendable {
         /// The ARN of the messaging instance.
         public var appInstanceArn: Swift.String?
         /// The time at which an AppInstance was created. In epoch milliseconds.
@@ -119,7 +121,6 @@ extension ChimeSDKIdentityClientTypes {
             self.name = name
         }
     }
-
 }
 
 extension ChimeSDKIdentityClientTypes.AppInstance: Swift.CustomDebugStringConvertible {
@@ -128,8 +129,9 @@ extension ChimeSDKIdentityClientTypes.AppInstance: Swift.CustomDebugStringConver
 }
 
 extension ChimeSDKIdentityClientTypes {
+
     /// The details of a user or bot.
-    public struct Identity {
+    public struct Identity: Swift.Sendable {
         /// The ARN in an Identity.
         public var arn: Swift.String?
         /// The name in an Identity.
@@ -144,7 +146,6 @@ extension ChimeSDKIdentityClientTypes {
             self.name = name
         }
     }
-
 }
 
 extension ChimeSDKIdentityClientTypes.Identity: Swift.CustomDebugStringConvertible {
@@ -153,8 +154,9 @@ extension ChimeSDKIdentityClientTypes.Identity: Swift.CustomDebugStringConvertib
 }
 
 extension ChimeSDKIdentityClientTypes {
+
     /// The name and ARN of the admin for the AppInstance.
-    public struct AppInstanceAdmin {
+    public struct AppInstanceAdmin: Swift.Sendable {
         /// The AppInstanceAdmin data.
         public var admin: ChimeSDKIdentityClientTypes.Identity?
         /// The ARN of the AppInstance for which the user is an administrator.
@@ -173,12 +175,12 @@ extension ChimeSDKIdentityClientTypes {
             self.createdTimestamp = createdTimestamp
         }
     }
-
 }
 
 extension ChimeSDKIdentityClientTypes {
+
     /// Summary of the details of an AppInstanceAdmin.
-    public struct AppInstanceAdminSummary {
+    public struct AppInstanceAdminSummary: Swift.Sendable {
         /// The details of the AppInstanceAdmin.
         public var admin: ChimeSDKIdentityClientTypes.Identity?
 
@@ -189,12 +191,11 @@ extension ChimeSDKIdentityClientTypes {
             self.admin = admin
         }
     }
-
 }
 
 extension ChimeSDKIdentityClientTypes {
 
-    public enum StandardMessages: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum StandardMessages: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case all
         case auto
         case mentions
@@ -229,7 +230,7 @@ extension ChimeSDKIdentityClientTypes {
 
 extension ChimeSDKIdentityClientTypes {
 
-    public enum TargetedMessages: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum TargetedMessages: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case all
         case `none`
         case sdkUnknown(Swift.String)
@@ -257,8 +258,9 @@ extension ChimeSDKIdentityClientTypes {
 }
 
 extension ChimeSDKIdentityClientTypes {
+
     /// Specifies the type of message that triggers a bot.
-    public struct InvokedBy {
+    public struct InvokedBy: Swift.Sendable {
         /// Sets standard messages as the bot trigger. For standard messages:
         ///
         /// * ALL: The bot processes all standard messages.
@@ -287,12 +289,11 @@ extension ChimeSDKIdentityClientTypes {
             self.targetedMessages = targetedMessages
         }
     }
-
 }
 
 extension ChimeSDKIdentityClientTypes {
 
-    public enum RespondsTo: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum RespondsTo: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case standardMessages
         case sdkUnknown(Swift.String)
 
@@ -317,8 +318,9 @@ extension ChimeSDKIdentityClientTypes {
 }
 
 extension ChimeSDKIdentityClientTypes {
+
     /// The configuration for an Amazon Lex V2 bot.
-    public struct LexConfiguration {
+    public struct LexConfiguration: Swift.Sendable {
         /// Specifies the type of message that triggers a bot.
         public var invokedBy: ChimeSDKIdentityClientTypes.InvokedBy?
         /// The ARN of the Amazon Lex V2 bot's alias. The ARN uses this format: arn:aws:lex:REGION:ACCOUNT:bot-alias/MYBOTID/MYBOTALIAS
@@ -347,12 +349,12 @@ extension ChimeSDKIdentityClientTypes {
             self.welcomeIntent = welcomeIntent
         }
     }
-
 }
 
 extension ChimeSDKIdentityClientTypes {
+
     /// A structure that contains configuration data.
-    public struct Configuration {
+    public struct Configuration: Swift.Sendable {
         /// The configuration for an Amazon Lex V2 bot.
         /// This member is required.
         public var lex: ChimeSDKIdentityClientTypes.LexConfiguration?
@@ -364,12 +366,12 @@ extension ChimeSDKIdentityClientTypes {
             self.lex = lex
         }
     }
-
 }
 
 extension ChimeSDKIdentityClientTypes {
+
     /// An Amazon Lex V2 chat bot created under an AppInstance.
-    public struct AppInstanceBot {
+    public struct AppInstanceBot: Swift.Sendable {
         /// The ARN of the AppInstanceBot.
         public var appInstanceBotArn: Swift.String?
         /// The data processing instructions for an AppInstanceBot.
@@ -400,7 +402,6 @@ extension ChimeSDKIdentityClientTypes {
             self.name = name
         }
     }
-
 }
 
 extension ChimeSDKIdentityClientTypes.AppInstanceBot: Swift.CustomDebugStringConvertible {
@@ -409,8 +410,9 @@ extension ChimeSDKIdentityClientTypes.AppInstanceBot: Swift.CustomDebugStringCon
 }
 
 extension ChimeSDKIdentityClientTypes {
+
     /// High-level information about an AppInstanceBot.
-    public struct AppInstanceBotSummary {
+    public struct AppInstanceBotSummary: Swift.Sendable {
         /// The ARN of the AppInstanceBot.
         public var appInstanceBotArn: Swift.String?
         /// The metadata of the AppInstanceBot.
@@ -429,7 +431,6 @@ extension ChimeSDKIdentityClientTypes {
             self.name = name
         }
     }
-
 }
 
 extension ChimeSDKIdentityClientTypes.AppInstanceBotSummary: Swift.CustomDebugStringConvertible {
@@ -438,8 +439,9 @@ extension ChimeSDKIdentityClientTypes.AppInstanceBotSummary: Swift.CustomDebugSt
 }
 
 extension ChimeSDKIdentityClientTypes {
+
     /// Summary of the data for an AppInstance.
-    public struct AppInstanceSummary {
+    public struct AppInstanceSummary: Swift.Sendable {
         /// The AppInstance ARN.
         public var appInstanceArn: Swift.String?
         /// The metadata of the AppInstance.
@@ -458,7 +460,6 @@ extension ChimeSDKIdentityClientTypes {
             self.name = name
         }
     }
-
 }
 
 extension ChimeSDKIdentityClientTypes.AppInstanceSummary: Swift.CustomDebugStringConvertible {
@@ -467,8 +468,9 @@ extension ChimeSDKIdentityClientTypes.AppInstanceSummary: Swift.CustomDebugStrin
 }
 
 extension ChimeSDKIdentityClientTypes {
+
     /// The details of the retention settings for a channel.
-    public struct ChannelRetentionSettings {
+    public struct ChannelRetentionSettings: Swift.Sendable {
         /// The time in days to retain the messages in a channel.
         public var retentionDays: Swift.Int?
 
@@ -479,12 +481,12 @@ extension ChimeSDKIdentityClientTypes {
             self.retentionDays = retentionDays
         }
     }
-
 }
 
 extension ChimeSDKIdentityClientTypes {
+
     /// The details of the data-retention settings for an AppInstance.
-    public struct AppInstanceRetentionSettings {
+    public struct AppInstanceRetentionSettings: Swift.Sendable {
         /// The length of time in days to retain the messages in a channel.
         public var channelRetentionSettings: ChimeSDKIdentityClientTypes.ChannelRetentionSettings?
 
@@ -495,12 +497,11 @@ extension ChimeSDKIdentityClientTypes {
             self.channelRetentionSettings = channelRetentionSettings
         }
     }
-
 }
 
 extension ChimeSDKIdentityClientTypes {
 
-    public enum ExpirationCriterion: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ExpirationCriterion: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case createdTimestamp
         case sdkUnknown(Swift.String)
 
@@ -525,8 +526,9 @@ extension ChimeSDKIdentityClientTypes {
 }
 
 extension ChimeSDKIdentityClientTypes {
+
     /// Determines the interval after which an AppInstanceUser is automatically deleted.
-    public struct ExpirationSettings {
+    public struct ExpirationSettings: Swift.Sendable {
         /// Specifies the conditions under which an AppInstanceUser will expire.
         /// This member is required.
         public var expirationCriterion: ChimeSDKIdentityClientTypes.ExpirationCriterion?
@@ -543,12 +545,12 @@ extension ChimeSDKIdentityClientTypes {
             self.expirationDays = expirationDays
         }
     }
-
 }
 
 extension ChimeSDKIdentityClientTypes {
+
     /// The details of an AppInstanceUser.
-    public struct AppInstanceUser {
+    public struct AppInstanceUser: Swift.Sendable {
         /// The ARN of the AppInstanceUser.
         public var appInstanceUserArn: Swift.String?
         /// The time at which the AppInstanceUser was created.
@@ -579,7 +581,6 @@ extension ChimeSDKIdentityClientTypes {
             self.name = name
         }
     }
-
 }
 
 extension ChimeSDKIdentityClientTypes.AppInstanceUser: Swift.CustomDebugStringConvertible {
@@ -588,8 +589,9 @@ extension ChimeSDKIdentityClientTypes.AppInstanceUser: Swift.CustomDebugStringCo
 }
 
 extension ChimeSDKIdentityClientTypes {
+
     /// The attributes of an Endpoint.
-    public struct EndpointAttributes {
+    public struct EndpointAttributes: Swift.Sendable {
         /// The device token for the GCM, APNS, and APNS_SANDBOX endpoint types.
         /// This member is required.
         public var deviceToken: Swift.String?
@@ -605,7 +607,6 @@ extension ChimeSDKIdentityClientTypes {
             self.voipDeviceToken = voipDeviceToken
         }
     }
-
 }
 
 extension ChimeSDKIdentityClientTypes.EndpointAttributes: Swift.CustomDebugStringConvertible {
@@ -615,7 +616,7 @@ extension ChimeSDKIdentityClientTypes.EndpointAttributes: Swift.CustomDebugStrin
 
 extension ChimeSDKIdentityClientTypes {
 
-    public enum EndpointStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum EndpointStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case active
         case inactive
         case sdkUnknown(Swift.String)
@@ -644,7 +645,7 @@ extension ChimeSDKIdentityClientTypes {
 
 extension ChimeSDKIdentityClientTypes {
 
-    public enum EndpointStatusReason: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum EndpointStatusReason: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case invalidDeviceToken
         case invalidPinpointArn
         case sdkUnknown(Swift.String)
@@ -672,6 +673,7 @@ extension ChimeSDKIdentityClientTypes {
 }
 
 extension ChimeSDKIdentityClientTypes {
+
     /// A read-only field that represents the state of an AppInstanceUserEndpoint. Supported values:
     ///
     /// * ACTIVE: The AppInstanceUserEndpoint is active and able to receive messages. When ACTIVE, the EndpointStatusReason remains empty.
@@ -681,7 +683,7 @@ extension ChimeSDKIdentityClientTypes {
     /// * INVALID_DEVICE_TOKEN indicates that an AppInstanceUserEndpoint is INACTIVE due to invalid device token
     ///
     /// * INVALID_PINPOINT_ARN indicates that an AppInstanceUserEndpoint is INACTIVE due to an invalid pinpoint ARN that was input through the ResourceArn field.
-    public struct EndpointState {
+    public struct EndpointState: Swift.Sendable {
         /// Enum that indicates the Status of an AppInstanceUserEndpoint.
         /// This member is required.
         public var status: ChimeSDKIdentityClientTypes.EndpointStatus?
@@ -697,12 +699,11 @@ extension ChimeSDKIdentityClientTypes {
             self.statusReason = statusReason
         }
     }
-
 }
 
 extension ChimeSDKIdentityClientTypes {
 
-    public enum AppInstanceUserEndpointType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AppInstanceUserEndpointType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case apns
         case apnsSandbox
         case gcm
@@ -733,8 +734,9 @@ extension ChimeSDKIdentityClientTypes {
 }
 
 extension ChimeSDKIdentityClientTypes {
+
     /// An endpoint under an Amazon Chime AppInstanceUser that receives messages for a user. For push notifications, the endpoint is a mobile device used to receive mobile push notifications for a user.
-    public struct AppInstanceUserEndpoint {
+    public struct AppInstanceUserEndpoint: Swift.Sendable {
         /// Boolean that controls whether the AppInstanceUserEndpoint is opted in to receive messages. ALL indicates the endpoint will receive all messages. NONE indicates the endpoint will receive no messages.
         public var allowMessages: ChimeSDKIdentityClientTypes.AllowMessages?
         /// The ARN of the AppInstanceUser.
@@ -789,7 +791,6 @@ extension ChimeSDKIdentityClientTypes {
             self.type = type
         }
     }
-
 }
 
 extension ChimeSDKIdentityClientTypes.AppInstanceUserEndpoint: Swift.CustomDebugStringConvertible {
@@ -798,8 +799,9 @@ extension ChimeSDKIdentityClientTypes.AppInstanceUserEndpoint: Swift.CustomDebug
 }
 
 extension ChimeSDKIdentityClientTypes {
+
     /// Summary of the details of an AppInstanceUserEndpoint.
-    public struct AppInstanceUserEndpointSummary {
+    public struct AppInstanceUserEndpointSummary: Swift.Sendable {
         /// BBoolean that controls whether the AppInstanceUserEndpoint is opted in to receive messages. ALL indicates the endpoint will receive all messages. NONE indicates the endpoint will receive no messages.
         public var allowMessages: ChimeSDKIdentityClientTypes.AllowMessages?
         /// The ARN of the AppInstanceUser.
@@ -830,7 +832,6 @@ extension ChimeSDKIdentityClientTypes {
             self.type = type
         }
     }
-
 }
 
 extension ChimeSDKIdentityClientTypes.AppInstanceUserEndpointSummary: Swift.CustomDebugStringConvertible {
@@ -839,8 +840,9 @@ extension ChimeSDKIdentityClientTypes.AppInstanceUserEndpointSummary: Swift.Cust
 }
 
 extension ChimeSDKIdentityClientTypes {
+
     /// Summary of the details of an AppInstanceUser.
-    public struct AppInstanceUserSummary {
+    public struct AppInstanceUserSummary: Swift.Sendable {
         /// The ARN of the AppInstanceUser.
         public var appInstanceUserArn: Swift.String?
         /// The metadata of the AppInstanceUser.
@@ -859,7 +861,6 @@ extension ChimeSDKIdentityClientTypes {
             self.name = name
         }
     }
-
 }
 
 extension ChimeSDKIdentityClientTypes.AppInstanceUserSummary: Swift.CustomDebugStringConvertible {
@@ -869,7 +870,7 @@ extension ChimeSDKIdentityClientTypes.AppInstanceUserSummary: Swift.CustomDebugS
 
 extension ChimeSDKIdentityClientTypes {
 
-    public enum ErrorCode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ErrorCode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case accessdenied
         case badrequest
         case conflict
@@ -1152,8 +1153,9 @@ public struct UnauthorizedClientException: ClientRuntime.ModeledError, AWSClient
 }
 
 extension ChimeSDKIdentityClientTypes {
+
     /// A tag object containing a key-value pair.
-    public struct Tag {
+    public struct Tag: Swift.Sendable {
         /// The key in a tag.
         /// This member is required.
         public var key: Swift.String?
@@ -1170,7 +1172,6 @@ extension ChimeSDKIdentityClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension ChimeSDKIdentityClientTypes.Tag: Swift.CustomDebugStringConvertible {
@@ -1178,7 +1179,7 @@ extension ChimeSDKIdentityClientTypes.Tag: Swift.CustomDebugStringConvertible {
         "Tag(key: \"CONTENT_REDACTED\", value: \"CONTENT_REDACTED\")"}
 }
 
-public struct CreateAppInstanceInput {
+public struct CreateAppInstanceInput: Swift.Sendable {
     /// The unique ID of the request. Use different tokens to create different AppInstances.
     /// This member is required.
     public var clientRequestToken: Swift.String?
@@ -1209,7 +1210,7 @@ extension CreateAppInstanceInput: Swift.CustomDebugStringConvertible {
         "CreateAppInstanceInput(clientRequestToken: \(Swift.String(describing: clientRequestToken)), tags: \(Swift.String(describing: tags)), metadata: \"CONTENT_REDACTED\", name: \"CONTENT_REDACTED\")"}
 }
 
-public struct CreateAppInstanceOutput {
+public struct CreateAppInstanceOutput: Swift.Sendable {
     /// The Amazon Resource Number (ARN) of the AppInstance.
     public var appInstanceArn: Swift.String?
 
@@ -1221,7 +1222,7 @@ public struct CreateAppInstanceOutput {
     }
 }
 
-public struct CreateAppInstanceAdminInput {
+public struct CreateAppInstanceAdminInput: Swift.Sendable {
     /// The ARN of the administrator of the current AppInstance.
     /// This member is required.
     public var appInstanceAdminArn: Swift.String?
@@ -1239,7 +1240,7 @@ public struct CreateAppInstanceAdminInput {
     }
 }
 
-public struct CreateAppInstanceAdminOutput {
+public struct CreateAppInstanceAdminOutput: Swift.Sendable {
     /// The ARN and name of the administrator, the ARN of the AppInstance, and the created and last-updated timestamps. All timestamps use epoch milliseconds.
     public var appInstanceAdmin: ChimeSDKIdentityClientTypes.Identity?
     /// The ARN of the of the admin for the AppInstance.
@@ -1255,7 +1256,7 @@ public struct CreateAppInstanceAdminOutput {
     }
 }
 
-public struct CreateAppInstanceBotInput {
+public struct CreateAppInstanceBotInput: Swift.Sendable {
     /// The ARN of the AppInstance request.
     /// This member is required.
     public var appInstanceArn: Swift.String?
@@ -1295,7 +1296,7 @@ extension CreateAppInstanceBotInput: Swift.CustomDebugStringConvertible {
         "CreateAppInstanceBotInput(appInstanceArn: \(Swift.String(describing: appInstanceArn)), clientRequestToken: \(Swift.String(describing: clientRequestToken)), configuration: \(Swift.String(describing: configuration)), tags: \(Swift.String(describing: tags)), metadata: \"CONTENT_REDACTED\", name: \"CONTENT_REDACTED\")"}
 }
 
-public struct CreateAppInstanceBotOutput {
+public struct CreateAppInstanceBotOutput: Swift.Sendable {
     /// The ARN of the AppinstanceBot.
     public var appInstanceBotArn: Swift.String?
 
@@ -1307,7 +1308,7 @@ public struct CreateAppInstanceBotOutput {
     }
 }
 
-public struct CreateAppInstanceUserInput {
+public struct CreateAppInstanceUserInput: Swift.Sendable {
     /// The ARN of the AppInstance request.
     /// This member is required.
     public var appInstanceArn: Swift.String?
@@ -1352,7 +1353,7 @@ extension CreateAppInstanceUserInput: Swift.CustomDebugStringConvertible {
         "CreateAppInstanceUserInput(appInstanceArn: \(Swift.String(describing: appInstanceArn)), clientRequestToken: \(Swift.String(describing: clientRequestToken)), expirationSettings: \(Swift.String(describing: expirationSettings)), tags: \(Swift.String(describing: tags)), appInstanceUserId: \"CONTENT_REDACTED\", metadata: \"CONTENT_REDACTED\", name: \"CONTENT_REDACTED\")"}
 }
 
-public struct CreateAppInstanceUserOutput {
+public struct CreateAppInstanceUserOutput: Swift.Sendable {
     /// The user's ARN.
     public var appInstanceUserArn: Swift.String?
 
@@ -1364,7 +1365,7 @@ public struct CreateAppInstanceUserOutput {
     }
 }
 
-public struct DeleteAppInstanceInput {
+public struct DeleteAppInstanceInput: Swift.Sendable {
     /// The ARN of the AppInstance.
     /// This member is required.
     public var appInstanceArn: Swift.String?
@@ -1377,7 +1378,7 @@ public struct DeleteAppInstanceInput {
     }
 }
 
-public struct DeleteAppInstanceAdminInput {
+public struct DeleteAppInstanceAdminInput: Swift.Sendable {
     /// The ARN of the AppInstance's administrator.
     /// This member is required.
     public var appInstanceAdminArn: Swift.String?
@@ -1395,7 +1396,7 @@ public struct DeleteAppInstanceAdminInput {
     }
 }
 
-public struct DeleteAppInstanceBotInput {
+public struct DeleteAppInstanceBotInput: Swift.Sendable {
     /// The ARN of the AppInstanceBot being deleted.
     /// This member is required.
     public var appInstanceBotArn: Swift.String?
@@ -1408,7 +1409,7 @@ public struct DeleteAppInstanceBotInput {
     }
 }
 
-public struct DeleteAppInstanceUserInput {
+public struct DeleteAppInstanceUserInput: Swift.Sendable {
     /// The ARN of the user request being deleted.
     /// This member is required.
     public var appInstanceUserArn: Swift.String?
@@ -1421,7 +1422,7 @@ public struct DeleteAppInstanceUserInput {
     }
 }
 
-public struct DeregisterAppInstanceUserEndpointInput {
+public struct DeregisterAppInstanceUserEndpointInput: Swift.Sendable {
     /// The ARN of the AppInstanceUser.
     /// This member is required.
     public var appInstanceUserArn: Swift.String?
@@ -1439,7 +1440,7 @@ public struct DeregisterAppInstanceUserEndpointInput {
     }
 }
 
-public struct DescribeAppInstanceInput {
+public struct DescribeAppInstanceInput: Swift.Sendable {
     /// The ARN of the AppInstance.
     /// This member is required.
     public var appInstanceArn: Swift.String?
@@ -1452,7 +1453,7 @@ public struct DescribeAppInstanceInput {
     }
 }
 
-public struct DescribeAppInstanceOutput {
+public struct DescribeAppInstanceOutput: Swift.Sendable {
     /// The ARN, metadata, created and last-updated timestamps, and the name of the AppInstance. All timestamps use epoch milliseconds.
     public var appInstance: ChimeSDKIdentityClientTypes.AppInstance?
 
@@ -1464,7 +1465,7 @@ public struct DescribeAppInstanceOutput {
     }
 }
 
-public struct DescribeAppInstanceAdminInput {
+public struct DescribeAppInstanceAdminInput: Swift.Sendable {
     /// The ARN of the AppInstanceAdmin.
     /// This member is required.
     public var appInstanceAdminArn: Swift.String?
@@ -1482,7 +1483,7 @@ public struct DescribeAppInstanceAdminInput {
     }
 }
 
-public struct DescribeAppInstanceAdminOutput {
+public struct DescribeAppInstanceAdminOutput: Swift.Sendable {
     /// The ARN and name of the AppInstanceUser, the ARN of the AppInstance, and the created and last-updated timestamps. All timestamps use epoch milliseconds.
     public var appInstanceAdmin: ChimeSDKIdentityClientTypes.AppInstanceAdmin?
 
@@ -1521,7 +1522,7 @@ public struct NotFoundException: ClientRuntime.ModeledError, AWSClientRuntime.AW
     }
 }
 
-public struct DescribeAppInstanceBotInput {
+public struct DescribeAppInstanceBotInput: Swift.Sendable {
     /// The ARN of the AppInstanceBot.
     /// This member is required.
     public var appInstanceBotArn: Swift.String?
@@ -1534,7 +1535,7 @@ public struct DescribeAppInstanceBotInput {
     }
 }
 
-public struct DescribeAppInstanceBotOutput {
+public struct DescribeAppInstanceBotOutput: Swift.Sendable {
     /// The detials of the AppInstanceBot.
     public var appInstanceBot: ChimeSDKIdentityClientTypes.AppInstanceBot?
 
@@ -1546,7 +1547,7 @@ public struct DescribeAppInstanceBotOutput {
     }
 }
 
-public struct DescribeAppInstanceUserInput {
+public struct DescribeAppInstanceUserInput: Swift.Sendable {
     /// The ARN of the AppInstanceUser.
     /// This member is required.
     public var appInstanceUserArn: Swift.String?
@@ -1559,7 +1560,7 @@ public struct DescribeAppInstanceUserInput {
     }
 }
 
-public struct DescribeAppInstanceUserOutput {
+public struct DescribeAppInstanceUserOutput: Swift.Sendable {
     /// The name of the AppInstanceUser.
     public var appInstanceUser: ChimeSDKIdentityClientTypes.AppInstanceUser?
 
@@ -1571,7 +1572,7 @@ public struct DescribeAppInstanceUserOutput {
     }
 }
 
-public struct DescribeAppInstanceUserEndpointInput {
+public struct DescribeAppInstanceUserEndpointInput: Swift.Sendable {
     /// The ARN of the AppInstanceUser.
     /// This member is required.
     public var appInstanceUserArn: Swift.String?
@@ -1589,7 +1590,7 @@ public struct DescribeAppInstanceUserEndpointInput {
     }
 }
 
-public struct DescribeAppInstanceUserEndpointOutput {
+public struct DescribeAppInstanceUserEndpointOutput: Swift.Sendable {
     /// The full details of an AppInstanceUserEndpoint: the AppInstanceUserArn, ID, name, type, resource ARN, attributes, allow messages, state, and created and last updated timestamps. All timestamps use epoch milliseconds.
     public var appInstanceUserEndpoint: ChimeSDKIdentityClientTypes.AppInstanceUserEndpoint?
 
@@ -1601,7 +1602,7 @@ public struct DescribeAppInstanceUserEndpointOutput {
     }
 }
 
-public struct GetAppInstanceRetentionSettingsInput {
+public struct GetAppInstanceRetentionSettingsInput: Swift.Sendable {
     /// The ARN of the AppInstance.
     /// This member is required.
     public var appInstanceArn: Swift.String?
@@ -1614,7 +1615,7 @@ public struct GetAppInstanceRetentionSettingsInput {
     }
 }
 
-public struct GetAppInstanceRetentionSettingsOutput {
+public struct GetAppInstanceRetentionSettingsOutput: Swift.Sendable {
     /// The retention settings for the AppInstance.
     public var appInstanceRetentionSettings: ChimeSDKIdentityClientTypes.AppInstanceRetentionSettings?
     /// The timestamp representing the time at which the specified items are retained, in Epoch Seconds.
@@ -1630,7 +1631,7 @@ public struct GetAppInstanceRetentionSettingsOutput {
     }
 }
 
-public struct ListAppInstanceAdminsInput {
+public struct ListAppInstanceAdminsInput: Swift.Sendable {
     /// The ARN of the AppInstance.
     /// This member is required.
     public var appInstanceArn: Swift.String?
@@ -1656,7 +1657,7 @@ extension ListAppInstanceAdminsInput: Swift.CustomDebugStringConvertible {
         "ListAppInstanceAdminsInput(appInstanceArn: \(Swift.String(describing: appInstanceArn)), maxResults: \(Swift.String(describing: maxResults)), nextToken: \"CONTENT_REDACTED\")"}
 }
 
-public struct ListAppInstanceAdminsOutput {
+public struct ListAppInstanceAdminsOutput: Swift.Sendable {
     /// The information for each administrator.
     public var appInstanceAdmins: [ChimeSDKIdentityClientTypes.AppInstanceAdminSummary]?
     /// The ARN of the AppInstance.
@@ -1681,7 +1682,7 @@ extension ListAppInstanceAdminsOutput: Swift.CustomDebugStringConvertible {
         "ListAppInstanceAdminsOutput(appInstanceAdmins: \(Swift.String(describing: appInstanceAdmins)), appInstanceArn: \(Swift.String(describing: appInstanceArn)), nextToken: \"CONTENT_REDACTED\")"}
 }
 
-public struct ListAppInstanceBotsInput {
+public struct ListAppInstanceBotsInput: Swift.Sendable {
     /// The ARN of the AppInstance.
     /// This member is required.
     public var appInstanceArn: Swift.String?
@@ -1707,7 +1708,7 @@ extension ListAppInstanceBotsInput: Swift.CustomDebugStringConvertible {
         "ListAppInstanceBotsInput(appInstanceArn: \(Swift.String(describing: appInstanceArn)), maxResults: \(Swift.String(describing: maxResults)), nextToken: \"CONTENT_REDACTED\")"}
 }
 
-public struct ListAppInstanceBotsOutput {
+public struct ListAppInstanceBotsOutput: Swift.Sendable {
     /// The ARN of the AppInstance.
     public var appInstanceArn: Swift.String?
     /// The information for each requested AppInstanceBot.
@@ -1732,7 +1733,7 @@ extension ListAppInstanceBotsOutput: Swift.CustomDebugStringConvertible {
         "ListAppInstanceBotsOutput(appInstanceArn: \(Swift.String(describing: appInstanceArn)), appInstanceBots: \(Swift.String(describing: appInstanceBots)), nextToken: \"CONTENT_REDACTED\")"}
 }
 
-public struct ListAppInstancesInput {
+public struct ListAppInstancesInput: Swift.Sendable {
     /// The maximum number of AppInstances that you want to return.
     public var maxResults: Swift.Int?
     /// The token passed by previous API requests until you reach the maximum number of AppInstances.
@@ -1753,7 +1754,7 @@ extension ListAppInstancesInput: Swift.CustomDebugStringConvertible {
         "ListAppInstancesInput(maxResults: \(Swift.String(describing: maxResults)), nextToken: \"CONTENT_REDACTED\")"}
 }
 
-public struct ListAppInstancesOutput {
+public struct ListAppInstancesOutput: Swift.Sendable {
     /// The information for each AppInstance.
     public var appInstances: [ChimeSDKIdentityClientTypes.AppInstanceSummary]?
     /// The token passed by previous API requests until the maximum number of AppInstances is reached.
@@ -1774,7 +1775,7 @@ extension ListAppInstancesOutput: Swift.CustomDebugStringConvertible {
         "ListAppInstancesOutput(appInstances: \(Swift.String(describing: appInstances)), nextToken: \"CONTENT_REDACTED\")"}
 }
 
-public struct ListAppInstanceUserEndpointsInput {
+public struct ListAppInstanceUserEndpointsInput: Swift.Sendable {
     /// The ARN of the AppInstanceUser.
     /// This member is required.
     public var appInstanceUserArn: Swift.String?
@@ -1800,7 +1801,7 @@ extension ListAppInstanceUserEndpointsInput: Swift.CustomDebugStringConvertible 
         "ListAppInstanceUserEndpointsInput(maxResults: \(Swift.String(describing: maxResults)), appInstanceUserArn: \"CONTENT_REDACTED\", nextToken: \"CONTENT_REDACTED\")"}
 }
 
-public struct ListAppInstanceUserEndpointsOutput {
+public struct ListAppInstanceUserEndpointsOutput: Swift.Sendable {
     /// The information for each requested AppInstanceUserEndpoint.
     public var appInstanceUserEndpoints: [ChimeSDKIdentityClientTypes.AppInstanceUserEndpointSummary]?
     /// The token passed by previous API calls until all requested endpoints are returned.
@@ -1821,7 +1822,7 @@ extension ListAppInstanceUserEndpointsOutput: Swift.CustomDebugStringConvertible
         "ListAppInstanceUserEndpointsOutput(appInstanceUserEndpoints: \(Swift.String(describing: appInstanceUserEndpoints)), nextToken: \"CONTENT_REDACTED\")"}
 }
 
-public struct ListAppInstanceUsersInput {
+public struct ListAppInstanceUsersInput: Swift.Sendable {
     /// The ARN of the AppInstance.
     /// This member is required.
     public var appInstanceArn: Swift.String?
@@ -1847,7 +1848,7 @@ extension ListAppInstanceUsersInput: Swift.CustomDebugStringConvertible {
         "ListAppInstanceUsersInput(appInstanceArn: \(Swift.String(describing: appInstanceArn)), maxResults: \(Swift.String(describing: maxResults)), nextToken: \"CONTENT_REDACTED\")"}
 }
 
-public struct ListAppInstanceUsersOutput {
+public struct ListAppInstanceUsersOutput: Swift.Sendable {
     /// The ARN of the AppInstance.
     public var appInstanceArn: Swift.String?
     /// The information for each requested AppInstanceUser.
@@ -1872,7 +1873,7 @@ extension ListAppInstanceUsersOutput: Swift.CustomDebugStringConvertible {
         "ListAppInstanceUsersOutput(appInstanceArn: \(Swift.String(describing: appInstanceArn)), appInstanceUsers: \(Swift.String(describing: appInstanceUsers)), nextToken: \"CONTENT_REDACTED\")"}
 }
 
-public struct ListTagsForResourceInput {
+public struct ListTagsForResourceInput: Swift.Sendable {
     /// The ARN of the resource.
     /// This member is required.
     public var resourceARN: Swift.String?
@@ -1885,7 +1886,7 @@ public struct ListTagsForResourceInput {
     }
 }
 
-public struct ListTagsForResourceOutput {
+public struct ListTagsForResourceOutput: Swift.Sendable {
     /// The tag key-value pairs.
     public var tags: [ChimeSDKIdentityClientTypes.Tag]?
 
@@ -1897,7 +1898,7 @@ public struct ListTagsForResourceOutput {
     }
 }
 
-public struct PutAppInstanceRetentionSettingsInput {
+public struct PutAppInstanceRetentionSettingsInput: Swift.Sendable {
     /// The ARN of the AppInstance.
     /// This member is required.
     public var appInstanceArn: Swift.String?
@@ -1915,7 +1916,7 @@ public struct PutAppInstanceRetentionSettingsInput {
     }
 }
 
-public struct PutAppInstanceRetentionSettingsOutput {
+public struct PutAppInstanceRetentionSettingsOutput: Swift.Sendable {
     /// The time in days to retain data. Data type: number.
     public var appInstanceRetentionSettings: ChimeSDKIdentityClientTypes.AppInstanceRetentionSettings?
     /// The time at which the API deletes data.
@@ -1931,7 +1932,7 @@ public struct PutAppInstanceRetentionSettingsOutput {
     }
 }
 
-public struct PutAppInstanceUserExpirationSettingsInput {
+public struct PutAppInstanceUserExpirationSettingsInput: Swift.Sendable {
     /// The ARN of the AppInstanceUser.
     /// This member is required.
     public var appInstanceUserArn: Swift.String?
@@ -1948,7 +1949,7 @@ public struct PutAppInstanceUserExpirationSettingsInput {
     }
 }
 
-public struct PutAppInstanceUserExpirationSettingsOutput {
+public struct PutAppInstanceUserExpirationSettingsOutput: Swift.Sendable {
     /// The ARN of the AppInstanceUser.
     public var appInstanceUserArn: Swift.String?
     /// Settings that control the interval after which an AppInstanceUser is automatically deleted.
@@ -1964,7 +1965,7 @@ public struct PutAppInstanceUserExpirationSettingsOutput {
     }
 }
 
-public struct RegisterAppInstanceUserEndpointInput {
+public struct RegisterAppInstanceUserEndpointInput: Swift.Sendable {
     /// Boolean that controls whether the AppInstanceUserEndpoint is opted in to receive messages. ALL indicates the endpoint receives all messages. NONE indicates the endpoint receives no messages.
     public var allowMessages: ChimeSDKIdentityClientTypes.AllowMessages?
     /// The ARN of the AppInstanceUser.
@@ -2019,7 +2020,7 @@ extension RegisterAppInstanceUserEndpointInput: Swift.CustomDebugStringConvertib
         "RegisterAppInstanceUserEndpointInput(allowMessages: \(Swift.String(describing: allowMessages)), clientRequestToken: \(Swift.String(describing: clientRequestToken)), endpointAttributes: \(Swift.String(describing: endpointAttributes)), resourceArn: \(Swift.String(describing: resourceArn)), type: \(Swift.String(describing: type)), appInstanceUserArn: \"CONTENT_REDACTED\", name: \"CONTENT_REDACTED\")"}
 }
 
-public struct RegisterAppInstanceUserEndpointOutput {
+public struct RegisterAppInstanceUserEndpointOutput: Swift.Sendable {
     /// The ARN of the AppInstanceUser.
     public var appInstanceUserArn: Swift.String?
     /// The unique identifier of the AppInstanceUserEndpoint.
@@ -2035,7 +2036,7 @@ public struct RegisterAppInstanceUserEndpointOutput {
     }
 }
 
-public struct TagResourceInput {
+public struct TagResourceInput: Swift.Sendable {
     /// The resource ARN.
     /// This member is required.
     public var resourceARN: Swift.String?
@@ -2053,7 +2054,7 @@ public struct TagResourceInput {
     }
 }
 
-public struct UntagResourceInput {
+public struct UntagResourceInput: Swift.Sendable {
     /// The resource ARN.
     /// This member is required.
     public var resourceARN: Swift.String?
@@ -2076,7 +2077,7 @@ extension UntagResourceInput: Swift.CustomDebugStringConvertible {
         "UntagResourceInput(resourceARN: \(Swift.String(describing: resourceARN)), tagKeys: \"CONTENT_REDACTED\")"}
 }
 
-public struct UpdateAppInstanceInput {
+public struct UpdateAppInstanceInput: Swift.Sendable {
     /// The ARN of the AppInstance.
     /// This member is required.
     public var appInstanceArn: Swift.String?
@@ -2104,7 +2105,7 @@ extension UpdateAppInstanceInput: Swift.CustomDebugStringConvertible {
         "UpdateAppInstanceInput(appInstanceArn: \(Swift.String(describing: appInstanceArn)), metadata: \"CONTENT_REDACTED\", name: \"CONTENT_REDACTED\")"}
 }
 
-public struct UpdateAppInstanceOutput {
+public struct UpdateAppInstanceOutput: Swift.Sendable {
     /// The ARN of the AppInstance.
     public var appInstanceArn: Swift.String?
 
@@ -2116,7 +2117,7 @@ public struct UpdateAppInstanceOutput {
     }
 }
 
-public struct UpdateAppInstanceBotInput {
+public struct UpdateAppInstanceBotInput: Swift.Sendable {
     /// The ARN of the AppInstanceBot.
     /// This member is required.
     public var appInstanceBotArn: Swift.String?
@@ -2148,7 +2149,7 @@ extension UpdateAppInstanceBotInput: Swift.CustomDebugStringConvertible {
         "UpdateAppInstanceBotInput(appInstanceBotArn: \(Swift.String(describing: appInstanceBotArn)), configuration: \(Swift.String(describing: configuration)), metadata: \"CONTENT_REDACTED\", name: \"CONTENT_REDACTED\")"}
 }
 
-public struct UpdateAppInstanceBotOutput {
+public struct UpdateAppInstanceBotOutput: Swift.Sendable {
     /// The ARN of the AppInstanceBot.
     public var appInstanceBotArn: Swift.String?
 
@@ -2160,7 +2161,7 @@ public struct UpdateAppInstanceBotOutput {
     }
 }
 
-public struct UpdateAppInstanceUserInput {
+public struct UpdateAppInstanceUserInput: Swift.Sendable {
     /// The ARN of the AppInstanceUser.
     /// This member is required.
     public var appInstanceUserArn: Swift.String?
@@ -2188,7 +2189,7 @@ extension UpdateAppInstanceUserInput: Swift.CustomDebugStringConvertible {
         "UpdateAppInstanceUserInput(appInstanceUserArn: \(Swift.String(describing: appInstanceUserArn)), metadata: \"CONTENT_REDACTED\", name: \"CONTENT_REDACTED\")"}
 }
 
-public struct UpdateAppInstanceUserOutput {
+public struct UpdateAppInstanceUserOutput: Swift.Sendable {
     /// The ARN of the AppInstanceUser.
     public var appInstanceUserArn: Swift.String?
 
@@ -2200,7 +2201,7 @@ public struct UpdateAppInstanceUserOutput {
     }
 }
 
-public struct UpdateAppInstanceUserEndpointInput {
+public struct UpdateAppInstanceUserEndpointInput: Swift.Sendable {
     /// Boolean that controls whether the AppInstanceUserEndpoint is opted in to receive messages. ALL indicates the endpoint will receive all messages. NONE indicates the endpoint will receive no messages.
     public var allowMessages: ChimeSDKIdentityClientTypes.AllowMessages?
     /// The ARN of the AppInstanceUser.
@@ -2231,7 +2232,7 @@ extension UpdateAppInstanceUserEndpointInput: Swift.CustomDebugStringConvertible
         "UpdateAppInstanceUserEndpointInput(allowMessages: \(Swift.String(describing: allowMessages)), appInstanceUserArn: \(Swift.String(describing: appInstanceUserArn)), endpointId: \(Swift.String(describing: endpointId)), name: \"CONTENT_REDACTED\")"}
 }
 
-public struct UpdateAppInstanceUserEndpointOutput {
+public struct UpdateAppInstanceUserEndpointOutput: Swift.Sendable {
     /// The ARN of the AppInstanceUser.
     public var appInstanceUserArn: Swift.String?
     /// The unique identifier of the AppInstanceUserEndpoint.

@@ -27,17 +27,18 @@ import protocol ClientRuntime.ModeledError
 @_spi(SmithyReadWrite) import struct SmithyReadWrite.ReadingClosureBox
 @_spi(SmithyReadWrite) import struct SmithyReadWrite.WritingClosureBox
 
-public struct DeleteCacheParameterGroupOutput {
+
+public struct DeleteCacheParameterGroupOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteCacheSecurityGroupOutput {
+public struct DeleteCacheSecurityGroupOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteCacheSubnetGroupOutput {
+public struct DeleteCacheSubnetGroupOutput: Swift.Sendable {
 
     public init() { }
 }
@@ -186,7 +187,7 @@ public struct InvalidReplicationGroupStateFault: ClientRuntime.ModeledError, AWS
     }
 }
 
-/// The state of the serverless cache snapshot was not received. Available for Redis OSS and Serverless Memcached only.
+/// The state of the serverless cache snapshot was not received. Available for Valkey, Redis OSS and Serverless Memcached only.
 public struct InvalidServerlessCacheSnapshotStateFault: ClientRuntime.ModeledError, AWSClientRuntime.AWSServiceError, ClientRuntime.HTTPError, Swift.Error {
 
     public struct Properties {
@@ -306,7 +307,7 @@ public struct ServerlessCacheNotFoundFault: ClientRuntime.ModeledError, AWSClien
     }
 }
 
-/// This serverless cache snapshot could not be found or does not exist. Available for Redis OSS and Serverless Memcached only.
+/// This serverless cache snapshot could not be found or does not exist. Available for Valkey, Redis OSS and Serverless Memcached only.
 public struct ServerlessCacheSnapshotNotFoundFault: ClientRuntime.ModeledError, AWSClientRuntime.AWSServiceError, ClientRuntime.HTTPError, Swift.Error {
 
     public struct Properties {
@@ -427,8 +428,9 @@ public struct UserNotFoundFault: ClientRuntime.ModeledError, AWSClientRuntime.AW
 }
 
 extension ElastiCacheClientTypes {
+
     /// A tag that can be added to an ElastiCache cluster or replication group. Tags are composed of a Key/Value pair. You can use tags to categorize and track all your ElastiCache resources, with the exception of global replication group. When you add or remove tags on replication groups, those actions will be replicated to all nodes in the replication group. A tag with a null Value is permitted.
-    public struct Tag {
+    public struct Tag: Swift.Sendable {
         /// The key for the tag. May not be null.
         public var key: Swift.String?
         /// The tag's value. May be null.
@@ -443,11 +445,10 @@ extension ElastiCacheClientTypes {
             self.value = value
         }
     }
-
 }
 
 /// Represents the input of an AddTagsToResource operation.
-public struct AddTagsToResourceInput {
+public struct AddTagsToResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the resource to which the tags are to be added, for example arn:aws:elasticache:us-west-2:0123456789:cluster:myCluster or arn:aws:elasticache:us-west-2:0123456789:snapshot:mySnapshot. ElastiCache resources are cluster and snapshot. For more information about ARNs, see [Amazon Resource Names (ARNs) and Amazon Service Namespaces](https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html).
     /// This member is required.
     public var resourceName: Swift.String?
@@ -466,7 +467,7 @@ public struct AddTagsToResourceInput {
 }
 
 /// Represents the output from the AddTagsToResource, ListTagsForResource, and RemoveTagsFromResource operations.
-public struct AddTagsToResourceOutput {
+public struct AddTagsToResourceOutput: Swift.Sendable {
     /// A list of tags as key-value pairs.
     public var tagList: [ElastiCacheClientTypes.Tag]?
 
@@ -577,7 +578,7 @@ public struct InvalidParameterValueException: ClientRuntime.ModeledError, AWSCli
 }
 
 /// Represents the input of an AuthorizeCacheSecurityGroupIngress operation.
-public struct AuthorizeCacheSecurityGroupIngressInput {
+public struct AuthorizeCacheSecurityGroupIngressInput: Swift.Sendable {
     /// The cache security group that allows network ingress.
     /// This member is required.
     public var cacheSecurityGroupName: Swift.String?
@@ -601,8 +602,9 @@ public struct AuthorizeCacheSecurityGroupIngressInput {
 }
 
 extension ElastiCacheClientTypes {
+
     /// Provides ownership and status information for an Amazon EC2 security group.
-    public struct EC2SecurityGroup {
+    public struct EC2SecurityGroup: Swift.Sendable {
         /// The name of the Amazon EC2 security group.
         public var ec2SecurityGroupName: Swift.String?
         /// The Amazon account ID of the Amazon EC2 security group owner.
@@ -621,10 +623,10 @@ extension ElastiCacheClientTypes {
             self.status = status
         }
     }
-
 }
 
 extension ElastiCacheClientTypes {
+
     /// Represents the output of one of the following operations:
     ///
     /// * AuthorizeCacheSecurityGroupIngress
@@ -632,7 +634,7 @@ extension ElastiCacheClientTypes {
     /// * CreateCacheSecurityGroup
     ///
     /// * RevokeCacheSecurityGroupIngress
-    public struct CacheSecurityGroup {
+    public struct CacheSecurityGroup: Swift.Sendable {
         /// The ARN of the cache security group,
         public var arn: Swift.String?
         /// The name of the cache security group.
@@ -659,10 +661,9 @@ extension ElastiCacheClientTypes {
             self.ownerId = ownerId
         }
     }
-
 }
 
-public struct AuthorizeCacheSecurityGroupIngressOutput {
+public struct AuthorizeCacheSecurityGroupIngressOutput: Swift.Sendable {
     /// Represents the output of one of the following operations:
     ///
     /// * AuthorizeCacheSecurityGroupIngress
@@ -704,7 +705,7 @@ public struct ServiceUpdateNotFoundFault: ClientRuntime.ModeledError, AWSClientR
     }
 }
 
-public struct BatchApplyUpdateActionInput {
+public struct BatchApplyUpdateActionInput: Swift.Sendable {
     /// The cache cluster IDs
     public var cacheClusterIds: [Swift.String]?
     /// The replication group IDs
@@ -727,7 +728,7 @@ public struct BatchApplyUpdateActionInput {
 
 extension ElastiCacheClientTypes {
 
-    public enum UpdateActionStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum UpdateActionStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case complete
         case inProgress
         case notApplicable
@@ -776,15 +777,16 @@ extension ElastiCacheClientTypes {
 }
 
 extension ElastiCacheClientTypes {
+
     /// Update action that has been processed for the corresponding apply/stop request
-    public struct ProcessedUpdateAction {
+    public struct ProcessedUpdateAction: Swift.Sendable {
         /// The ID of the cache cluster
         public var cacheClusterId: Swift.String?
         /// The ID of the replication group
         public var replicationGroupId: Swift.String?
         /// The unique ID of the service update
         public var serviceUpdateName: Swift.String?
-        /// The status of the update action on the Redis OSS cluster
+        /// The status of the update action on the Valkey or Redis OSS cluster
         public var updateActionStatus: ElastiCacheClientTypes.UpdateActionStatus?
 
         public init(
@@ -800,12 +802,12 @@ extension ElastiCacheClientTypes {
             self.updateActionStatus = updateActionStatus
         }
     }
-
 }
 
 extension ElastiCacheClientTypes {
+
     /// Update action that has failed to be processed for the corresponding apply/stop request
-    public struct UnprocessedUpdateAction {
+    public struct UnprocessedUpdateAction: Swift.Sendable {
         /// The ID of the cache cluster
         public var cacheClusterId: Swift.String?
         /// The error message that describes the reason the request was not processed
@@ -832,10 +834,9 @@ extension ElastiCacheClientTypes {
             self.serviceUpdateName = serviceUpdateName
         }
     }
-
 }
 
-public struct BatchApplyUpdateActionOutput {
+public struct BatchApplyUpdateActionOutput: Swift.Sendable {
     /// Update actions that have been processed successfully
     public var processedUpdateActions: [ElastiCacheClientTypes.ProcessedUpdateAction]?
     /// Update actions that haven't been processed successfully
@@ -851,7 +852,7 @@ public struct BatchApplyUpdateActionOutput {
     }
 }
 
-public struct BatchStopUpdateActionInput {
+public struct BatchStopUpdateActionInput: Swift.Sendable {
     /// The cache cluster IDs
     public var cacheClusterIds: [Swift.String]?
     /// The replication group IDs
@@ -872,7 +873,7 @@ public struct BatchStopUpdateActionInput {
     }
 }
 
-public struct BatchStopUpdateActionOutput {
+public struct BatchStopUpdateActionOutput: Swift.Sendable {
     /// Update actions that have been processed successfully
     public var processedUpdateActions: [ElastiCacheClientTypes.ProcessedUpdateAction]?
     /// Update actions that haven't been processed successfully
@@ -912,7 +913,7 @@ public struct ReplicationGroupNotUnderMigrationFault: ClientRuntime.ModeledError
     }
 }
 
-public struct CompleteMigrationInput {
+public struct CompleteMigrationInput: Swift.Sendable {
     /// Forces the migration to stop without ensuring that data is in sync. It is recommended to use this option only to abort the migration and not recommended when application wants to continue migration to ElastiCache.
     public var force: Swift.Bool?
     /// The ID of the replication group to which data is being migrated.
@@ -931,7 +932,7 @@ public struct CompleteMigrationInput {
 
 extension ElastiCacheClientTypes {
 
-    public enum AutomaticFailoverStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AutomaticFailoverStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case disabled
         case disabling
         case enabled
@@ -966,7 +967,7 @@ extension ElastiCacheClientTypes {
 
 extension ElastiCacheClientTypes {
 
-    public enum ClusterMode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ClusterMode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case compatible
         case disabled
         case enabled
@@ -997,8 +998,9 @@ extension ElastiCacheClientTypes {
 }
 
 extension ElastiCacheClientTypes {
+
     /// Represents the information required for client programs to connect to a cache node. This value is read-only.
-    public struct Endpoint {
+    public struct Endpoint: Swift.Sendable {
         /// The DNS hostname of the cache node.
         public var address: Swift.String?
         /// The port number that the cache engine is listening on.
@@ -1013,12 +1015,11 @@ extension ElastiCacheClientTypes {
             self.port = port
         }
     }
-
 }
 
 extension ElastiCacheClientTypes {
 
-    public enum DataTieringStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DataTieringStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case disabled
         case enabled
         case sdkUnknown(Swift.String)
@@ -1046,8 +1047,9 @@ extension ElastiCacheClientTypes {
 }
 
 extension ElastiCacheClientTypes {
+
     /// The name of the Global datastore and role of this replication group in the Global datastore.
-    public struct GlobalReplicationGroupInfo {
+    public struct GlobalReplicationGroupInfo: Swift.Sendable {
         /// The name of the Global datastore
         public var globalReplicationGroupId: Swift.String?
         /// The role of the replication group in a Global datastore. Can be primary or secondary.
@@ -1062,12 +1064,11 @@ extension ElastiCacheClientTypes {
             self.globalReplicationGroupMemberRole = globalReplicationGroupMemberRole
         }
     }
-
 }
 
 extension ElastiCacheClientTypes {
 
-    public enum IpDiscovery: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum IpDiscovery: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case ipv4
         case ipv6
         case sdkUnknown(Swift.String)
@@ -1095,8 +1096,9 @@ extension ElastiCacheClientTypes {
 }
 
 extension ElastiCacheClientTypes {
+
     /// The configuration details of the CloudWatch Logs destination.
-    public struct CloudWatchLogsDestinationDetails {
+    public struct CloudWatchLogsDestinationDetails: Swift.Sendable {
         /// The name of the CloudWatch Logs log group.
         public var logGroup: Swift.String?
 
@@ -1107,12 +1109,12 @@ extension ElastiCacheClientTypes {
             self.logGroup = logGroup
         }
     }
-
 }
 
 extension ElastiCacheClientTypes {
+
     /// The configuration details of the Kinesis Data Firehose destination.
-    public struct KinesisFirehoseDestinationDetails {
+    public struct KinesisFirehoseDestinationDetails: Swift.Sendable {
         /// The name of the Kinesis Data Firehose delivery stream.
         public var deliveryStream: Swift.String?
 
@@ -1123,12 +1125,12 @@ extension ElastiCacheClientTypes {
             self.deliveryStream = deliveryStream
         }
     }
-
 }
 
 extension ElastiCacheClientTypes {
+
     /// Configuration details of either a CloudWatch Logs destination or Kinesis Data Firehose destination.
-    public struct DestinationDetails {
+    public struct DestinationDetails: Swift.Sendable {
         /// The configuration details of the CloudWatch Logs destination.
         public var cloudWatchLogsDetails: ElastiCacheClientTypes.CloudWatchLogsDestinationDetails?
         /// The configuration details of the Kinesis Data Firehose destination.
@@ -1143,12 +1145,11 @@ extension ElastiCacheClientTypes {
             self.kinesisFirehoseDetails = kinesisFirehoseDetails
         }
     }
-
 }
 
 extension ElastiCacheClientTypes {
 
-    public enum DestinationType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DestinationType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case cloudwatchlogs
         case kinesisfirehose
         case sdkUnknown(Swift.String)
@@ -1177,7 +1178,7 @@ extension ElastiCacheClientTypes {
 
 extension ElastiCacheClientTypes {
 
-    public enum LogFormat: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum LogFormat: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case json
         case text
         case sdkUnknown(Swift.String)
@@ -1206,7 +1207,7 @@ extension ElastiCacheClientTypes {
 
 extension ElastiCacheClientTypes {
 
-    public enum LogType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum LogType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case engineLog
         case slowLog
         case sdkUnknown(Swift.String)
@@ -1235,7 +1236,7 @@ extension ElastiCacheClientTypes {
 
 extension ElastiCacheClientTypes {
 
-    public enum LogDeliveryConfigurationStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum LogDeliveryConfigurationStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case active
         case disabling
         case enabling
@@ -1272,8 +1273,9 @@ extension ElastiCacheClientTypes {
 }
 
 extension ElastiCacheClientTypes {
+
     /// Returns the destination, format and type of the logs.
-    public struct LogDeliveryConfiguration {
+    public struct LogDeliveryConfiguration: Swift.Sendable {
         /// Configuration details of either a CloudWatch Logs destination or Kinesis Data Firehose destination.
         public var destinationDetails: ElastiCacheClientTypes.DestinationDetails?
         /// Returns the destination type, either cloudwatch-logs or kinesis-firehose.
@@ -1304,12 +1306,11 @@ extension ElastiCacheClientTypes {
             self.status = status
         }
     }
-
 }
 
 extension ElastiCacheClientTypes {
 
-    public enum MultiAZStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum MultiAZStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case disabled
         case enabled
         case sdkUnknown(Swift.String)
@@ -1338,7 +1339,7 @@ extension ElastiCacheClientTypes {
 
 extension ElastiCacheClientTypes {
 
-    public enum NetworkType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum NetworkType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case dualStack
         case ipv4
         case ipv6
@@ -1369,19 +1370,20 @@ extension ElastiCacheClientTypes {
 }
 
 extension ElastiCacheClientTypes {
+
     /// Represents a single node within a node group (shard).
-    public struct NodeGroupMember {
+    public struct NodeGroupMember: Swift.Sendable {
         /// The ID of the cluster to which the node belongs.
         public var cacheClusterId: Swift.String?
         /// The ID of the node within its cluster. A node ID is a numeric identifier (0001, 0002, etc.).
         public var cacheNodeId: Swift.String?
-        /// The role that is currently assigned to the node - primary or replica. This member is only applicable for Redis OSS (cluster mode disabled) replication groups.
+        /// The role that is currently assigned to the node - primary or replica. This member is only applicable for Valkey or Redis OSS (cluster mode disabled) replication groups.
         public var currentRole: Swift.String?
         /// The name of the Availability Zone in which the node is located.
         public var preferredAvailabilityZone: Swift.String?
         /// The outpost ARN of the node group member.
         public var preferredOutpostArn: Swift.String?
-        /// The information required for client programs to connect to a node for read operations. The read endpoint is only applicable on Redis OSS (cluster mode disabled) clusters.
+        /// The information required for client programs to connect to a node for read operations. The read endpoint is only applicable on Valkey or Redis OSS (cluster mode disabled) clusters.
         public var readEndpoint: ElastiCacheClientTypes.Endpoint?
 
         public init(
@@ -1401,13 +1403,13 @@ extension ElastiCacheClientTypes {
             self.readEndpoint = readEndpoint
         }
     }
-
 }
 
 extension ElastiCacheClientTypes {
+
     /// Represents a collection of cache nodes in a replication group. One node in the node group is the read/write primary node. All the other nodes are read-only Replica nodes.
-    public struct NodeGroup {
-        /// The identifier for the node group (shard). A Redis OSS (cluster mode disabled) replication group contains only 1 node group; therefore, the node group ID is 0001. A Redis OSS (cluster mode enabled) replication group contains 1 to 90 node groups numbered 0001 to 0090. Optionally, the user can provide the id for a node group.
+    public struct NodeGroup: Swift.Sendable {
+        /// The identifier for the node group (shard). A Valkey or Redis OSS (cluster mode disabled) replication group contains only 1 node group; therefore, the node group ID is 0001. A Valkey or Redis OSS (cluster mode enabled) replication group contains 1 to 90 node groups numbered 0001 to 0090. Optionally, the user can provide the id for a node group.
         public var nodeGroupId: Swift.String?
         /// A list containing information about individual nodes within the node group (shard).
         public var nodeGroupMembers: [ElastiCacheClientTypes.NodeGroupMember]?
@@ -1437,12 +1439,11 @@ extension ElastiCacheClientTypes {
             self.status = status
         }
     }
-
 }
 
 extension ElastiCacheClientTypes {
 
-    public enum AuthTokenUpdateStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AuthTokenUpdateStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case rotating
         case setting
         case sdkUnknown(Swift.String)
@@ -1471,7 +1472,7 @@ extension ElastiCacheClientTypes {
 
 extension ElastiCacheClientTypes {
 
-    public enum PendingAutomaticFailoverStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum PendingAutomaticFailoverStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case disabled
         case enabled
         case sdkUnknown(Swift.String)
@@ -1499,8 +1500,9 @@ extension ElastiCacheClientTypes {
 }
 
 extension ElastiCacheClientTypes {
+
     /// The log delivery configurations being modified
-    public struct PendingLogDeliveryConfiguration {
+    public struct PendingLogDeliveryConfiguration: Swift.Sendable {
         /// Configuration details of either a CloudWatch Logs destination or Kinesis Data Firehose destination.
         public var destinationDetails: ElastiCacheClientTypes.DestinationDetails?
         /// Returns the destination type, either CloudWatch Logs or Kinesis Data Firehose.
@@ -1523,12 +1525,12 @@ extension ElastiCacheClientTypes {
             self.logType = logType
         }
     }
-
 }
 
 extension ElastiCacheClientTypes {
+
     /// Represents the progress of an online resharding operation.
-    public struct SlotMigration {
+    public struct SlotMigration: Swift.Sendable {
         /// The percentage of the slot migration that is complete.
         public var progressPercentage: Swift.Double?
 
@@ -1539,12 +1541,12 @@ extension ElastiCacheClientTypes {
             self.progressPercentage = progressPercentage
         }
     }
-
 }
 
 extension ElastiCacheClientTypes {
+
     /// The status of an online resharding operation.
-    public struct ReshardingStatus {
+    public struct ReshardingStatus: Swift.Sendable {
         /// Represents the progress of an online resharding operation.
         public var slotMigration: ElastiCacheClientTypes.SlotMigration?
 
@@ -1555,12 +1557,11 @@ extension ElastiCacheClientTypes {
             self.slotMigration = slotMigration
         }
     }
-
 }
 
 extension ElastiCacheClientTypes {
 
-    public enum TransitEncryptionMode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum TransitEncryptionMode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case preferred
         case `required`
         case sdkUnknown(Swift.String)
@@ -1588,8 +1589,9 @@ extension ElastiCacheClientTypes {
 }
 
 extension ElastiCacheClientTypes {
+
     /// The status of the user group update.
-    public struct UserGroupsUpdateStatus {
+    public struct UserGroupsUpdateStatus: Swift.Sendable {
         /// The ID of the user group to add.
         public var userGroupIdsToAdd: [Swift.String]?
         /// The ID of the user group to remove.
@@ -1604,17 +1606,17 @@ extension ElastiCacheClientTypes {
             self.userGroupIdsToRemove = userGroupIdsToRemove
         }
     }
-
 }
 
 extension ElastiCacheClientTypes {
-    /// The settings to be applied to the Redis OSS replication group, either immediately or during the next maintenance window.
-    public struct ReplicationGroupPendingModifiedValues {
+
+    /// The settings to be applied to the Valkey or Redis OSS replication group, either immediately or during the next maintenance window.
+    public struct ReplicationGroupPendingModifiedValues: Swift.Sendable {
         /// The auth token status
         public var authTokenStatus: ElastiCacheClientTypes.AuthTokenUpdateStatus?
-        /// Indicates the status of automatic failover for this Redis OSS replication group.
+        /// Indicates the status of automatic failover for this Valkey or Redis OSS replication group.
         public var automaticFailoverStatus: ElastiCacheClientTypes.PendingAutomaticFailoverStatus?
-        /// Enabled or Disabled. To modify cluster mode from Disabled to Enabled, you must first set the cluster mode to Compatible. Compatible mode allows your Redis OSS clients to connect using both cluster mode enabled and cluster mode disabled. After you migrate all Redis OSS clients to use cluster mode enabled, you can then complete cluster mode configuration and set the cluster mode to Enabled.
+        /// Enabled or Disabled. To modify cluster mode from Disabled to Enabled, you must first set the cluster mode to Compatible. Compatible mode allows your Valkey or Redis OSS clients to connect using both cluster mode enabled and cluster mode disabled. After you migrate all Valkey or Redis OSS clients to use cluster mode enabled, you can then complete cluster mode configuration and set the cluster mode to Enabled.
         public var clusterMode: ElastiCacheClientTypes.ClusterMode?
         /// The log delivery configurations being modified
         public var logDeliveryConfigurations: [ElastiCacheClientTypes.PendingLogDeliveryConfiguration]?
@@ -1652,29 +1654,29 @@ extension ElastiCacheClientTypes {
             self.userGroups = userGroups
         }
     }
-
 }
 
 extension ElastiCacheClientTypes {
-    /// Contains all of the attributes of a specific Redis OSS replication group.
-    public struct ReplicationGroup {
+
+    /// Contains all of the attributes of a specific Valkey or Redis OSS replication group.
+    public struct ReplicationGroup: Swift.Sendable {
         /// The ARN (Amazon Resource Name) of the replication group.
         public var arn: Swift.String?
         /// A flag that enables encryption at-rest when set to true. You cannot modify the value of AtRestEncryptionEnabled after the cluster is created. To enable encryption at-rest on a cluster you must set AtRestEncryptionEnabled to true when you create a cluster. Required: Only available when creating a replication group in an Amazon VPC using Redis OSS version 3.2.6, 4.x or later. Default: false
         public var atRestEncryptionEnabled: Swift.Bool?
-        /// A flag that enables using an AuthToken (password) when issuing Redis OSS commands. Default: false
+        /// A flag that enables using an AuthToken (password) when issuing Valkey or Redis OSS commands. Default: false
         public var authTokenEnabled: Swift.Bool?
         /// The date the auth token was last modified
         public var authTokenLastModifiedDate: Foundation.Date?
-        /// If you are running Redis OSS engine version 6.0 or later, set this parameter to yes if you want to opt-in to the next auto minor version upgrade campaign. This parameter is disabled for previous versions.
+        /// If you are running Valkey 7.2 and above, or Redis OSS engine version 6.0 and above, set this parameter to yes if you want to opt-in to the next auto minor version upgrade campaign. This parameter is disabled for previous versions.
         public var autoMinorVersionUpgrade: Swift.Bool?
-        /// Indicates the status of automatic failover for this Redis OSS replication group.
+        /// Indicates the status of automatic failover for this Valkey or Redis OSS replication group.
         public var automaticFailover: ElastiCacheClientTypes.AutomaticFailoverStatus?
         /// The name of the compute and memory capacity node type for each node in the replication group.
         public var cacheNodeType: Swift.String?
         /// A flag indicating whether or not this replication group is cluster enabled; i.e., whether its data can be partitioned across multiple shards (API/CLI: node groups). Valid values: true | false
         public var clusterEnabled: Swift.Bool?
-        /// Enabled or Disabled. To modify cluster mode from Disabled to Enabled, you must first set the cluster mode to Compatible. Compatible mode allows your Redis OSS clients to connect using both cluster mode enabled and cluster mode disabled. After you migrate all Redis OSS clients to use cluster mode enabled, you can then complete cluster mode configuration and set the cluster mode to Enabled.
+        /// Enabled or Disabled. To modify cluster mode from Disabled to Enabled, you must first set the cluster mode to Compatible. Compatible mode allows your Valkey or Redis OSS clients to connect using both cluster mode enabled and cluster mode disabled. After you migrate all Valkey or Redis OSS clients to use cluster mode enabled, you can then complete cluster mode configuration and set the cluster mode to Enabled.
         public var clusterMode: ElastiCacheClientTypes.ClusterMode?
         /// The configuration endpoint for this replication group. Use the configuration endpoint to connect to this replication group.
         public var configurationEndpoint: ElastiCacheClientTypes.Endpoint?
@@ -1682,9 +1684,11 @@ extension ElastiCacheClientTypes {
         public var dataTiering: ElastiCacheClientTypes.DataTieringStatus?
         /// The user supplied description of the replication group.
         public var description: Swift.String?
+        /// The engine used in a replication group. The options are redis, memcached or valkey.
+        public var engine: Swift.String?
         /// The name of the Global datastore and role of this replication group in the Global datastore.
         public var globalReplicationGroupInfo: ElastiCacheClientTypes.GlobalReplicationGroupInfo?
-        /// The network type you choose when modifying a cluster, either ipv4 | ipv6. IPv6 is supported for workloads using Redis OSS engine version 6.2 onward or Memcached engine version 1.6.6 on all instances built on the [Nitro system](http://aws.amazon.com/ec2/nitro/).
+        /// The network type you choose when modifying a cluster, either ipv4 | ipv6. IPv6 is supported for workloads using Valkey 7.2 and above, Redis OSS engine version 6.2 and above or Memcached engine version 1.6.6 and above on all instances built on the [Nitro system](http://aws.amazon.com/ec2/nitro/).
         public var ipDiscovery: ElastiCacheClientTypes.IpDiscovery?
         /// The ID of the KMS key used to encrypt the disk in the cluster.
         public var kmsKeyId: Swift.String?
@@ -1696,9 +1700,9 @@ extension ElastiCacheClientTypes {
         public var memberClustersOutpostArns: [Swift.String]?
         /// A flag indicating if you have Multi-AZ enabled to enhance fault tolerance. For more information, see [Minimizing Downtime: Multi-AZ](http://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/AutoFailover.html)
         public var multiAZ: ElastiCacheClientTypes.MultiAZStatus?
-        /// Must be either ipv4 | ipv6 | dual_stack. IPv6 is supported for workloads using Redis OSS engine version 6.2 onward or Memcached engine version 1.6.6 on all instances built on the [Nitro system](http://aws.amazon.com/ec2/nitro/).
+        /// Must be either ipv4 | ipv6 | dual_stack. IPv6 is supported for workloads using Valkey 7.2 and above, Redis OSS engine version 6.2 and above or Memcached engine version 1.6.6 and above on all instances built on the [Nitro system](http://aws.amazon.com/ec2/nitro/).
         public var networkType: ElastiCacheClientTypes.NetworkType?
-        /// A list of node groups in this replication group. For Redis OSS (cluster mode disabled) replication groups, this is a single-element list. For Redis OSS (cluster mode enabled) replication groups, the list contains an entry for each node group (shard).
+        /// A list of node groups in this replication group. For Valkey or Redis OSS (cluster mode disabled) replication groups, this is a single-element list. For Valkey or Redis OSS (cluster mode enabled) replication groups, the list contains an entry for each node group (shard).
         public var nodeGroups: [ElastiCacheClientTypes.NodeGroup]?
         /// A group of settings to be applied to the replication group, either immediately or during the next maintenance window.
         public var pendingModifiedValues: ElastiCacheClientTypes.ReplicationGroupPendingModifiedValues?
@@ -1734,6 +1738,7 @@ extension ElastiCacheClientTypes {
             configurationEndpoint: ElastiCacheClientTypes.Endpoint? = nil,
             dataTiering: ElastiCacheClientTypes.DataTieringStatus? = nil,
             description: Swift.String? = nil,
+            engine: Swift.String? = nil,
             globalReplicationGroupInfo: ElastiCacheClientTypes.GlobalReplicationGroupInfo? = nil,
             ipDiscovery: ElastiCacheClientTypes.IpDiscovery? = nil,
             kmsKeyId: Swift.String? = nil,
@@ -1767,6 +1772,7 @@ extension ElastiCacheClientTypes {
             self.configurationEndpoint = configurationEndpoint
             self.dataTiering = dataTiering
             self.description = description
+            self.engine = engine
             self.globalReplicationGroupInfo = globalReplicationGroupInfo
             self.ipDiscovery = ipDiscovery
             self.kmsKeyId = kmsKeyId
@@ -1788,11 +1794,10 @@ extension ElastiCacheClientTypes {
             self.userGroupIds = userGroupIds
         }
     }
-
 }
 
-public struct CompleteMigrationOutput {
-    /// Contains all of the attributes of a specific Redis OSS replication group.
+public struct CompleteMigrationOutput: Swift.Sendable {
+    /// Contains all of the attributes of a specific Valkey or Redis OSS replication group.
     public var replicationGroup: ElastiCacheClientTypes.ReplicationGroup?
 
     public init(
@@ -1803,7 +1808,7 @@ public struct CompleteMigrationOutput {
     }
 }
 
-/// A serverless cache snapshot with this name already exists. Available for Redis OSS and Serverless Memcached only.
+/// A serverless cache snapshot with this name already exists. Available for Valkey, Redis OSS and Serverless Memcached only.
 public struct ServerlessCacheSnapshotAlreadyExistsFault: ClientRuntime.ModeledError, AWSClientRuntime.AWSServiceError, ClientRuntime.HTTPError, Swift.Error {
 
     public struct Properties {
@@ -1827,7 +1832,7 @@ public struct ServerlessCacheSnapshotAlreadyExistsFault: ClientRuntime.ModeledEr
     }
 }
 
-/// The number of serverless cache snapshots exceeds the customer snapshot quota. Available for Redis OSS and Serverless Memcached only.
+/// The number of serverless cache snapshots exceeds the customer snapshot quota. Available for Valkey, Redis OSS and Serverless Memcached only.
 public struct ServerlessCacheSnapshotQuotaExceededFault: ClientRuntime.ModeledError, AWSClientRuntime.AWSServiceError, ClientRuntime.HTTPError, Swift.Error {
 
     public struct Properties {
@@ -1875,15 +1880,15 @@ public struct ServiceLinkedRoleNotFoundFault: ClientRuntime.ModeledError, AWSCli
     }
 }
 
-public struct CopyServerlessCacheSnapshotInput {
-    /// The identifier of the KMS key used to encrypt the target snapshot. Available for Redis OSS and Serverless Memcached only.
+public struct CopyServerlessCacheSnapshotInput: Swift.Sendable {
+    /// The identifier of the KMS key used to encrypt the target snapshot. Available for Valkey, Redis OSS and Serverless Memcached only.
     public var kmsKeyId: Swift.String?
-    /// The identifier of the existing serverless cache’s snapshot to be copied. Available for Redis OSS and Serverless Memcached only.
+    /// The identifier of the existing serverless cache’s snapshot to be copied. Available for Valkey, Redis OSS and Serverless Memcached only.
     /// This member is required.
     public var sourceServerlessCacheSnapshotName: Swift.String?
-    /// A list of tags to be added to the target snapshot resource. A tag is a key-value pair. Available for Redis OSS and Serverless Memcached only. Default: NULL
+    /// A list of tags to be added to the target snapshot resource. A tag is a key-value pair. Available for Valkey, Redis OSS and Serverless Memcached only. Default: NULL
     public var tags: [ElastiCacheClientTypes.Tag]?
-    /// The identifier for the snapshot to be created. Available for Redis OSS and Serverless Memcached only.
+    /// The identifier for the snapshot to be created. Available for Valkey, Redis OSS and Serverless Memcached only.
     /// This member is required.
     public var targetServerlessCacheSnapshotName: Swift.String?
 
@@ -1902,8 +1907,9 @@ public struct CopyServerlessCacheSnapshotInput {
 }
 
 extension ElastiCacheClientTypes {
+
     /// The configuration settings for a specific serverless cache.
-    public struct ServerlessCacheConfiguration {
+    public struct ServerlessCacheConfiguration: Swift.Sendable {
         /// The engine that the serverless cache is configured with.
         public var engine: Swift.String?
         /// The engine version number that the serverless cache is configured with.
@@ -1922,29 +1928,29 @@ extension ElastiCacheClientTypes {
             self.serverlessCacheName = serverlessCacheName
         }
     }
-
 }
 
 extension ElastiCacheClientTypes {
-    /// The resource representing a serverless cache snapshot. Available for Redis OSS and Serverless Memcached only.
-    public struct ServerlessCacheSnapshot {
-        /// The Amazon Resource Name (ARN) of a serverless cache snapshot. Available for Redis OSS and Serverless Memcached only.
+
+    /// The resource representing a serverless cache snapshot. Available for Valkey, Redis OSS and Serverless Memcached only.
+    public struct ServerlessCacheSnapshot: Swift.Sendable {
+        /// The Amazon Resource Name (ARN) of a serverless cache snapshot. Available for Valkey, Redis OSS and Serverless Memcached only.
         public var arn: Swift.String?
-        /// The total size of a serverless cache snapshot, in bytes. Available for Redis OSS and Serverless Memcached only.
+        /// The total size of a serverless cache snapshot, in bytes. Available for Valkey, Redis OSS and Serverless Memcached only.
         public var bytesUsedForCache: Swift.String?
-        /// The date and time that the source serverless cache's metadata and cache data set was obtained for the snapshot. Available for Redis OSS and Serverless Memcached only.
+        /// The date and time that the source serverless cache's metadata and cache data set was obtained for the snapshot. Available for Valkey, Redis OSS and Serverless Memcached only.
         public var createTime: Foundation.Date?
-        /// The time that the serverless cache snapshot will expire. Available for Redis OSS and Serverless Memcached only.
+        /// The time that the serverless cache snapshot will expire. Available for Valkey, Redis OSS and Serverless Memcached only.
         public var expiryTime: Foundation.Date?
-        /// The ID of the Amazon Web Services Key Management Service (KMS) key of a serverless cache snapshot. Available for Redis OSS and Serverless Memcached only.
+        /// The ID of the Amazon Web Services Key Management Service (KMS) key of a serverless cache snapshot. Available for Valkey, Redis OSS and Serverless Memcached only.
         public var kmsKeyId: Swift.String?
-        /// The configuration of the serverless cache, at the time the snapshot was taken. Available for Redis OSS and Serverless Memcached only.
+        /// The configuration of the serverless cache, at the time the snapshot was taken. Available for Valkey, Redis OSS and Serverless Memcached only.
         public var serverlessCacheConfiguration: ElastiCacheClientTypes.ServerlessCacheConfiguration?
-        /// The identifier of a serverless cache snapshot. Available for Redis OSS and Serverless Memcached only.
+        /// The identifier of a serverless cache snapshot. Available for Valkey, Redis OSS and Serverless Memcached only.
         public var serverlessCacheSnapshotName: Swift.String?
-        /// The type of snapshot of serverless cache. Available for Redis OSS and Serverless Memcached only.
+        /// The type of snapshot of serverless cache. Available for Valkey, Redis OSS and Serverless Memcached only.
         public var snapshotType: Swift.String?
-        /// The current status of the serverless cache. Available for Redis OSS and Serverless Memcached only.
+        /// The current status of the serverless cache. Available for Valkey, Redis OSS and Serverless Memcached only.
         public var status: Swift.String?
 
         public init(
@@ -1970,11 +1976,10 @@ extension ElastiCacheClientTypes {
             self.status = status
         }
     }
-
 }
 
-public struct CopyServerlessCacheSnapshotOutput {
-    /// The response for the attempt to copy the serverless cache snapshot. Available for Redis OSS and Serverless Memcached only.
+public struct CopyServerlessCacheSnapshotOutput: Swift.Sendable {
+    /// The response for the attempt to copy the serverless cache snapshot. Available for Valkey, Redis OSS and Serverless Memcached only.
     public var serverlessCacheSnapshot: ElastiCacheClientTypes.ServerlessCacheSnapshot?
 
     public init(
@@ -2058,7 +2063,7 @@ public struct SnapshotQuotaExceededFault: ClientRuntime.ModeledError, AWSClientR
 }
 
 /// Represents the input of a CopySnapshotMessage operation.
-public struct CopySnapshotInput {
+public struct CopySnapshotInput: Swift.Sendable {
     /// The ID of the KMS key used to encrypt the target snapshot.
     public var kmsKeyId: Swift.String?
     /// The name of an existing snapshot from which to make a copy.
@@ -2089,9 +2094,10 @@ public struct CopySnapshotInput {
 }
 
 extension ElastiCacheClientTypes {
+
     /// Node group (shard) configuration options. Each node group (shard) configuration has the following: Slots, PrimaryAvailabilityZone, ReplicaAvailabilityZones, ReplicaCount.
-    public struct NodeGroupConfiguration {
-        /// Either the ElastiCache (Redis OSS) supplied 4-digit id or a user supplied id for the node group these configuration values apply to.
+    public struct NodeGroupConfiguration: Swift.Sendable {
+        /// Either the ElastiCache supplied 4-digit id or a user supplied id for the node group these configuration values apply to.
         public var nodeGroupId: Swift.String?
         /// The Availability Zone where the primary node of this node group (shard) is launched.
         public var primaryAvailabilityZone: Swift.String?
@@ -2125,12 +2131,12 @@ extension ElastiCacheClientTypes {
             self.slots = slots
         }
     }
-
 }
 
 extension ElastiCacheClientTypes {
+
     /// Represents an individual cache node in a snapshot of a cluster.
-    public struct NodeSnapshot {
+    public struct NodeSnapshot: Swift.Sendable {
         /// A unique identifier for the source cluster.
         public var cacheClusterId: Swift.String?
         /// The date and time when the cache node was created in the source cluster.
@@ -2165,17 +2171,17 @@ extension ElastiCacheClientTypes {
             self.snapshotCreateTime = snapshotCreateTime
         }
     }
-
 }
 
 extension ElastiCacheClientTypes {
-    /// Represents a copy of an entire Redis OSS cluster as of the time when the snapshot was taken.
-    public struct Snapshot {
+
+    /// Represents a copy of an entire Valkey or Redis OSS cluster as of the time when the snapshot was taken.
+    public struct Snapshot: Swift.Sendable {
         /// The ARN (Amazon Resource Name) of the snapshot.
         public var arn: Swift.String?
-        ///  If you are running Redis OSS engine version 6.0 or later, set this parameter to yes if you want to opt-in to the next auto minor version upgrade campaign. This parameter is disabled for previous versions.
+        ///  If you are running Valkey 7.2 and above or Redis OSS engine version 6.0 and above, set this parameter to yes if you want to opt-in to the next auto minor version upgrade campaign. This parameter is disabled for previous versions.
         public var autoMinorVersionUpgrade: Swift.Bool?
-        /// Indicates the status of automatic failover for the source Redis OSS replication group.
+        /// Indicates the status of automatic failover for the source Valkey or Redis OSS replication group.
         public var automaticFailover: ElastiCacheClientTypes.AutomaticFailoverStatus?
         /// The date and time when the source cluster was created.
         public var cacheClusterCreateTime: Foundation.Date?
@@ -2216,11 +2222,11 @@ extension ElastiCacheClientTypes {
         ///
         /// * All current generation instance types are created in Amazon VPC by default.
         ///
-        /// * Redis OSS append-only files (AOF) are not supported for T1 or T2 instances.
+        /// * Valkey or Redis OSS append-only files (AOF) are not supported for T1 or T2 instances.
         ///
-        /// * Redis OSS Multi-AZ with automatic failover is not supported on T1 instances.
+        /// * Valkey or Redis OSS Multi-AZ with automatic failover is not supported on T1 instances.
         ///
-        /// * Redis OSS configuration variables appendonly and appendfsync are not supported on Redis OSS version 2.8.22 and later.
+        /// * The configuration variables appendonly and appendfsync are not supported on Valkey, or on Redis OSS version 2.8.22 and later.
         public var cacheNodeType: Swift.String?
         /// The cache parameter group that is associated with the source cluster.
         public var cacheParameterGroupName: Swift.String?
@@ -2236,7 +2242,7 @@ extension ElastiCacheClientTypes {
         public var kmsKeyId: Swift.String?
         /// A list of the cache nodes in the source cluster.
         public var nodeSnapshots: [ElastiCacheClientTypes.NodeSnapshot]?
-        /// The number of cache nodes in the source cluster. For clusters running Redis OSS, this value must be 1. For clusters running Memcached, this value must be between 1 and 40.
+        /// The number of cache nodes in the source cluster. For clusters running Valkey or Redis OSS, this value must be 1. For clusters running Memcached, this value must be between 1 and 40.
         public var numCacheNodes: Swift.Int?
         /// The number of node groups (shards) in this snapshot. When restoring from a snapshot, the number of node groups (shards) in the snapshot and in the restored replication group must be the same.
         public var numNodeGroups: Swift.Int?
@@ -2345,11 +2351,10 @@ extension ElastiCacheClientTypes {
             self.vpcId = vpcId
         }
     }
-
 }
 
-public struct CopySnapshotOutput {
-    /// Represents a copy of an entire Redis OSS cluster as of the time when the snapshot was taken.
+public struct CopySnapshotOutput: Swift.Sendable {
+    /// Represents a copy of an entire Valkey or Redis OSS cluster as of the time when the snapshot was taken.
     public var snapshot: ElastiCacheClientTypes.Snapshot?
 
     public init(
@@ -2506,7 +2511,7 @@ public struct NodeQuotaForCustomerExceededFault: ClientRuntime.ModeledError, AWS
 
 extension ElastiCacheClientTypes {
 
-    public enum AZMode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AZMode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case crossAz
         case singleAz
         case sdkUnknown(Swift.String)
@@ -2534,8 +2539,9 @@ extension ElastiCacheClientTypes {
 }
 
 extension ElastiCacheClientTypes {
+
     /// Specifies the destination, format and type of the logs.
-    public struct LogDeliveryConfigurationRequest {
+    public struct LogDeliveryConfigurationRequest: Swift.Sendable {
         /// Configuration details of either a CloudWatch Logs destination or Kinesis Data Firehose destination.
         public var destinationDetails: ElastiCacheClientTypes.DestinationDetails?
         /// Specify either cloudwatch-logs or kinesis-firehose as the destination type.
@@ -2562,12 +2568,11 @@ extension ElastiCacheClientTypes {
             self.logType = logType
         }
     }
-
 }
 
 extension ElastiCacheClientTypes {
 
-    public enum OutpostMode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum OutpostMode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case crossOutpost
         case singleOutpost
         case sdkUnknown(Swift.String)
@@ -2595,7 +2600,7 @@ extension ElastiCacheClientTypes {
 }
 
 /// Represents the input of a CreateCacheCluster operation.
-public struct CreateCacheClusterInput {
+public struct CreateCacheClusterInput: Swift.Sendable {
     /// Reserved parameter. The password used to access a password protected server. Password constraints:
     ///
     /// * Must be only printable ASCII characters.
@@ -2607,7 +2612,7 @@ public struct CreateCacheClusterInput {
     ///
     /// For more information, see [AUTH password](http://redis.io/commands/AUTH) at http://redis.io/commands/AUTH.
     public var authToken: Swift.String?
-    ///  If you are running Redis OSS engine version 6.0 or later, set this parameter to yes if you want to opt-in to the next auto minor version upgrade campaign. This parameter is disabled for previous versions.
+    ///  If you are running Valkey 7.2 and above or Redis OSS engine version 6.0 and above, set this parameter to yes to opt-in to the next auto minor version upgrade campaign. This parameter is disabled for previous versions.
     public var autoMinorVersionUpgrade: Swift.Bool?
     /// Specifies whether the nodes in this Memcached cluster are created in a single Availability Zone or created across multiple Availability Zones in the cluster's region. This parameter is only supported for Memcached clusters. If the AZMode and PreferredAvailabilityZones are not specified, ElastiCache assumes single-az mode.
     public var azMode: ElastiCacheClientTypes.AZMode?
@@ -2655,11 +2660,11 @@ public struct CreateCacheClusterInput {
     ///
     /// * All current generation instance types are created in Amazon VPC by default.
     ///
-    /// * Redis OSS append-only files (AOF) are not supported for T1 or T2 instances.
+    /// * Valkey or Redis OSS append-only files (AOF) are not supported for T1 or T2 instances.
     ///
-    /// * Redis OSS Multi-AZ with automatic failover is not supported on T1 instances.
+    /// * Valkey or Redis OSS Multi-AZ with automatic failover is not supported on T1 instances.
     ///
-    /// * Redis OSS configuration variables appendonly and appendfsync are not supported on Redis OSS version 2.8.22 and later.
+    /// * The configuration variables appendonly and appendfsync are not supported on Valkey, or on Redis OSS version 2.8.22 and later.
     public var cacheNodeType: Swift.String?
     /// The name of the parameter group to associate with this cluster. If this argument is omitted, the default parameter group for the specified engine is used. You cannot use any parameter group which has cluster-enabled='yes' when creating a cluster.
     public var cacheParameterGroupName: Swift.String?
@@ -2671,15 +2676,15 @@ public struct CreateCacheClusterInput {
     public var engine: Swift.String?
     /// The version number of the cache engine to be used for this cluster. To view the supported cache engine versions, use the DescribeCacheEngineVersions operation. Important: You can upgrade to a newer engine version (see [Selecting a Cache Engine and Version](https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/SelectEngine.html#VersionManagement)), but you cannot downgrade to an earlier engine version. If you want to use an earlier engine version, you must delete the existing cluster or replication group and create it anew with the earlier engine version.
     public var engineVersion: Swift.String?
-    /// The network type you choose when modifying a cluster, either ipv4 | ipv6. IPv6 is supported for workloads using Redis OSS engine version 6.2 onward or Memcached engine version 1.6.6 on all instances built on the [Nitro system](http://aws.amazon.com/ec2/nitro/).
+    /// The network type you choose when modifying a cluster, either ipv4 | ipv6. IPv6 is supported for workloads using Valkey 7.2 and above, Redis OSS engine version 6.2 and above or Memcached engine version 1.6.6 and above on all instances built on the [Nitro system](http://aws.amazon.com/ec2/nitro/).
     public var ipDiscovery: ElastiCacheClientTypes.IpDiscovery?
     /// Specifies the destination, format and type of the logs.
     public var logDeliveryConfigurations: [ElastiCacheClientTypes.LogDeliveryConfigurationRequest]?
-    /// Must be either ipv4 | ipv6 | dual_stack. IPv6 is supported for workloads using Redis OSS engine version 6.2 onward or Memcached engine version 1.6.6 on all instances built on the [Nitro system](http://aws.amazon.com/ec2/nitro/).
+    /// Must be either ipv4 | ipv6 | dual_stack. IPv6 is supported for workloads using Valkey 7.2 and above, Redis OSS engine version 6.2 and above or Memcached engine version 1.6.6 and above on all instances built on the [Nitro system](http://aws.amazon.com/ec2/nitro/).
     public var networkType: ElastiCacheClientTypes.NetworkType?
     /// The Amazon Resource Name (ARN) of the Amazon Simple Notification Service (SNS) topic to which notifications are sent. The Amazon SNS topic owner must be the same as the cluster owner.
     public var notificationTopicArn: Swift.String?
-    /// The initial number of cache nodes that the cluster has. For clusters running Redis OSS, this value must be 1. For clusters running Memcached, this value must be between 1 and 40. If you need more than 40 nodes for your Memcached cluster, please fill out the ElastiCache Limit Increase Request form at [http://aws.amazon.com/contact-us/elasticache-node-limit-request/](http://aws.amazon.com/contact-us/elasticache-node-limit-request/).
+    /// The initial number of cache nodes that the cluster has. For clusters running Valkey or Redis OSS, this value must be 1. For clusters running Memcached, this value must be between 1 and 40. If you need more than 40 nodes for your Memcached cluster, please fill out the ElastiCache Limit Increase Request form at [http://aws.amazon.com/contact-us/elasticache-node-limit-request/](http://aws.amazon.com/contact-us/elasticache-node-limit-request/).
     public var numCacheNodes: Swift.Int?
     /// Specifies whether the nodes in the cluster are created in a single outpost or across multiple outposts.
     public var outpostMode: ElastiCacheClientTypes.OutpostMode?
@@ -2699,9 +2704,9 @@ public struct CreateCacheClusterInput {
     public var replicationGroupId: Swift.String?
     /// One or more VPC security groups associated with the cluster. Use this parameter only when you are creating a cluster in an Amazon Virtual Private Cloud (Amazon VPC).
     public var securityGroupIds: [Swift.String]?
-    /// A single-element string list containing an Amazon Resource Name (ARN) that uniquely identifies a Redis OSS RDB snapshot file stored in Amazon S3. The snapshot file is used to populate the node group (shard). The Amazon S3 object name in the ARN cannot contain any commas. This parameter is only valid if the Engine parameter is redis. Example of an Amazon S3 ARN: arn:aws:s3:::my_bucket/snapshot1.rdb
+    /// A single-element string list containing an Amazon Resource Name (ARN) that uniquely identifies a Valkey or Redis OSS RDB snapshot file stored in Amazon S3. The snapshot file is used to populate the node group (shard). The Amazon S3 object name in the ARN cannot contain any commas. This parameter is only valid if the Engine parameter is redis. Example of an Amazon S3 ARN: arn:aws:s3:::my_bucket/snapshot1.rdb
     public var snapshotArns: [Swift.String]?
-    /// The name of a Redis OSS snapshot from which to restore data into the new node group (shard). The snapshot status changes to restoring while the new node group (shard) is being created. This parameter is only valid if the Engine parameter is redis.
+    /// The name of a Valkey or Redis OSS snapshot from which to restore data into the new node group (shard). The snapshot status changes to restoring while the new node group (shard) is being created. This parameter is only valid if the Engine parameter is redis.
     public var snapshotName: Swift.String?
     /// The number of days for which ElastiCache retains automatic snapshots before deleting them. For example, if you set SnapshotRetentionLimit to 5, a snapshot taken today is retained for 5 days before being deleted. This parameter is only valid if the Engine parameter is redis. Default: 0 (i.e., automatic backups are disabled for this cache cluster).
     public var snapshotRetentionLimit: Swift.Int?
@@ -2779,7 +2784,8 @@ public struct CreateCacheClusterInput {
 }
 
 extension ElastiCacheClientTypes {
-    /// Represents an individual cache node within a cluster. Each cache node runs its own instance of the cluster's protocol-compliant caching software - either Memcached or Redis OSS. The following node types are supported by ElastiCache. Generally speaking, the current generation types provide more memory and computational power at lower cost when compared to their equivalent previous generation counterparts.
+
+    /// Represents an individual cache node within a cluster. Each cache node runs its own instance of the cluster's protocol-compliant caching software - either Memcached, Valkey or Redis OSS. The following node types are supported by ElastiCache. Generally speaking, the current generation types provide more memory and computational power at lower cost when compared to their equivalent previous generation counterparts.
     ///
     /// * General purpose:
     ///
@@ -2814,12 +2820,12 @@ extension ElastiCacheClientTypes {
     ///
     /// * All current generation instance types are created in Amazon VPC by default.
     ///
-    /// * Redis OSS append-only files (AOF) are not supported for T1 or T2 instances.
+    /// * Valkey or Redis OSS append-only files (AOF) are not supported for T1 or T2 instances.
     ///
-    /// * Redis OSS Multi-AZ with automatic failover is not supported on T1 instances.
+    /// * Valkey or Redis OSS Multi-AZ with automatic failover is not supported on T1 instances.
     ///
-    /// * Redis OSS configuration variables appendonly and appendfsync are not supported on Redis OSS version 2.8.22 and later.
-    public struct CacheNode {
+    /// * The configuration variables appendonly and appendfsync are not supported on Valkey, or on Redis OSS version 2.8.22 and later.
+    public struct CacheNode: Swift.Sendable {
         /// The date and time when the cache node was created.
         public var cacheNodeCreateTime: Foundation.Date?
         /// The cache node identifier. A node ID is a numeric identifier (0001, 0002, etc.). The combination of cluster ID and node ID uniquely identifies every cache node used in a customer's Amazon account.
@@ -2858,12 +2864,12 @@ extension ElastiCacheClientTypes {
             self.sourceCacheNodeId = sourceCacheNodeId
         }
     }
-
 }
 
 extension ElastiCacheClientTypes {
+
     /// Status of the cache parameter group.
-    public struct CacheParameterGroupStatus {
+    public struct CacheParameterGroupStatus: Swift.Sendable {
         /// A list of the cache node IDs which need to be rebooted for parameter changes to be applied. A node ID is a numeric identifier (0001, 0002, etc.).
         public var cacheNodeIdsToReboot: [Swift.String]?
         /// The name of the cache parameter group.
@@ -2882,12 +2888,12 @@ extension ElastiCacheClientTypes {
             self.parameterApplyStatus = parameterApplyStatus
         }
     }
-
 }
 
 extension ElastiCacheClientTypes {
+
     /// Represents a cluster's status within a particular cache security group.
-    public struct CacheSecurityGroupMembership {
+    public struct CacheSecurityGroupMembership: Swift.Sendable {
         /// The name of the cache security group.
         public var cacheSecurityGroupName: Swift.String?
         /// The membership status in the cache security group. The status changes when a cache security group is modified, or when the cache security groups assigned to a cluster are modified.
@@ -2902,12 +2908,12 @@ extension ElastiCacheClientTypes {
             self.status = status
         }
     }
-
 }
 
 extension ElastiCacheClientTypes {
+
     /// Describes a notification topic and its status. Notification topics are used for publishing ElastiCache events to subscribers using Amazon Simple Notification Service (SNS).
-    public struct NotificationConfiguration {
+    public struct NotificationConfiguration: Swift.Sendable {
         /// The Amazon Resource Name (ARN) that identifies the topic.
         public var topicArn: Swift.String?
         /// The current state of the topic.
@@ -2922,12 +2928,12 @@ extension ElastiCacheClientTypes {
             self.topicStatus = topicStatus
         }
     }
-
 }
 
 extension ElastiCacheClientTypes {
+
     /// A group of settings that are applied to the cluster in the future, or that are currently being applied.
-    public struct PendingModifiedValues {
+    public struct PendingModifiedValues: Swift.Sendable {
         /// The auth token status
         public var authTokenStatus: ElastiCacheClientTypes.AuthTokenUpdateStatus?
         /// A list of cache node IDs that are being removed (or will be removed) from the cluster. A node ID is a 4-digit numeric identifier (0001, 0002, etc.).
@@ -2938,7 +2944,7 @@ extension ElastiCacheClientTypes {
         public var engineVersion: Swift.String?
         /// The log delivery configurations being modified
         public var logDeliveryConfigurations: [ElastiCacheClientTypes.PendingLogDeliveryConfiguration]?
-        /// The new number of cache nodes for the cluster. For clusters running Redis OSS, this value must be 1. For clusters running Memcached, this value must be between 1 and 40.
+        /// The new number of cache nodes for the cluster. For clusters running Valkey or Redis OSS, this value must be 1. For clusters running Memcached, this value must be between 1 and 40.
         public var numCacheNodes: Swift.Int?
         /// A flag that enables in-transit encryption when set to true.
         public var transitEncryptionEnabled: Swift.Bool?
@@ -2966,12 +2972,12 @@ extension ElastiCacheClientTypes {
             self.transitEncryptionMode = transitEncryptionMode
         }
     }
-
 }
 
 extension ElastiCacheClientTypes {
+
     /// Represents a single cache security group and its status.
-    public struct SecurityGroupMembership {
+    public struct SecurityGroupMembership: Swift.Sendable {
         /// The identifier of the cache security group.
         public var securityGroupId: Swift.String?
         /// The status of the cache security group membership. The status changes whenever a cache security group is modified, or when the cache security groups assigned to a cluster are modified.
@@ -2986,21 +2992,21 @@ extension ElastiCacheClientTypes {
             self.status = status
         }
     }
-
 }
 
 extension ElastiCacheClientTypes {
+
     /// Contains all of the attributes of a specific cluster.
-    public struct CacheCluster {
+    public struct CacheCluster: Swift.Sendable {
         /// The ARN (Amazon Resource Name) of the cache cluster.
         public var arn: Swift.String?
         /// A flag that enables encryption at-rest when set to true. You cannot modify the value of AtRestEncryptionEnabled after the cluster is created. To enable at-rest encryption on a cluster you must set AtRestEncryptionEnabled to true when you create a cluster. Required: Only available when creating a replication group in an Amazon VPC using Redis OSS version 3.2.6, 4.x or later. Default: false
         public var atRestEncryptionEnabled: Swift.Bool?
-        /// A flag that enables using an AuthToken (password) when issuing Redis OSS commands. Default: false
+        /// A flag that enables using an AuthToken (password) when issuing Valkey or Redis OSS commands. Default: false
         public var authTokenEnabled: Swift.Bool?
         /// The date the auth token was last modified
         public var authTokenLastModifiedDate: Foundation.Date?
-        ///  If you are running Redis OSS engine version 6.0 or later, set this parameter to yes if you want to opt-in to the next auto minor version upgrade campaign. This parameter is disabled for previous versions.
+        ///  If you are running Valkey or Redis OSS engine version 6.0 or later, set this parameter to yes if you want to opt-in to the next auto minor version upgrade campaign. This parameter is disabled for previous versions.
         public var autoMinorVersionUpgrade: Swift.Bool?
         /// The date and time when the cluster was created.
         public var cacheClusterCreateTime: Foundation.Date?
@@ -3043,11 +3049,11 @@ extension ElastiCacheClientTypes {
         ///
         /// * All current generation instance types are created in Amazon VPC by default.
         ///
-        /// * Redis OSS append-only files (AOF) are not supported for T1 or T2 instances.
+        /// * Valkey or Redis OSS append-only files (AOF) are not supported for T1 or T2 instances.
         ///
-        /// * Redis OSS Multi-AZ with automatic failover is not supported on T1 instances.
+        /// * Valkey or Redis OSS Multi-AZ with automatic failover is not supported on T1 instances.
         ///
-        /// * Redis OSS configuration variables appendonly and appendfsync are not supported on Redis OSS version 2.8.22 and later.
+        /// * The configuration variables appendonly and appendfsync are not supported on Valkey, or on Redis OSS version 2.8.22 and later.
         public var cacheNodeType: Swift.String?
         /// A list of cache nodes that are members of the cluster.
         public var cacheNodes: [ElastiCacheClientTypes.CacheNode]?
@@ -3065,15 +3071,15 @@ extension ElastiCacheClientTypes {
         public var engine: Swift.String?
         /// The version of the cache engine that is used in this cluster.
         public var engineVersion: Swift.String?
-        /// The network type associated with the cluster, either ipv4 | ipv6. IPv6 is supported for workloads using Redis OSS engine version 6.2 onward or Memcached engine version 1.6.6 on all instances built on the [Nitro system](http://aws.amazon.com/ec2/nitro/).
+        /// The network type associated with the cluster, either ipv4 | ipv6. IPv6 is supported for workloads using Valkey 7.2 and above, Redis OSS engine version 6.2 and above or Memcached engine version 1.6.6 and above on all instances built on the [Nitro system](http://aws.amazon.com/ec2/nitro/).
         public var ipDiscovery: ElastiCacheClientTypes.IpDiscovery?
         /// Returns the destination, format and type of the logs.
         public var logDeliveryConfigurations: [ElastiCacheClientTypes.LogDeliveryConfiguration]?
-        /// Must be either ipv4 | ipv6 | dual_stack. IPv6 is supported for workloads using Redis OSS engine version 6.2 onward or Memcached engine version 1.6.6 on all instances built on the [Nitro system](http://aws.amazon.com/ec2/nitro/).
+        /// Must be either ipv4 | ipv6 | dual_stack. IPv6 is supported for workloads using Valkey 7.2 and above, Redis OSS engine version 6.2 and above or Memcached engine version 1.6.6 and above on all instances built on the [Nitro system](http://aws.amazon.com/ec2/nitro/).
         public var networkType: ElastiCacheClientTypes.NetworkType?
         /// Describes a notification topic and its status. Notification topics are used for publishing ElastiCache events to subscribers using Amazon Simple Notification Service (SNS).
         public var notificationConfiguration: ElastiCacheClientTypes.NotificationConfiguration?
-        /// The number of cache nodes in the cluster. For clusters running Redis OSS, this value must be 1. For clusters running Memcached, this value must be between 1 and 40.
+        /// The number of cache nodes in the cluster. For clusters running Valkey or Redis OSS, this value must be 1. For clusters running Memcached, this value must be between 1 and 40.
         public var numCacheNodes: Swift.Int?
         /// A group of settings that are applied to the cluster in the future, or that are currently being applied.
         public var pendingModifiedValues: ElastiCacheClientTypes.PendingModifiedValues?
@@ -3186,10 +3192,9 @@ extension ElastiCacheClientTypes {
             self.transitEncryptionMode = transitEncryptionMode
         }
     }
-
 }
 
-public struct CreateCacheClusterOutput {
+public struct CreateCacheClusterOutput: Swift.Sendable {
     /// Contains all of the attributes of a specific cluster.
     public var cacheCluster: ElastiCacheClientTypes.CacheCluster?
 
@@ -3274,7 +3279,7 @@ public struct InvalidCacheParameterGroupStateFault: ClientRuntime.ModeledError, 
 }
 
 /// Represents the input of a CreateCacheParameterGroup operation.
-public struct CreateCacheParameterGroupInput {
+public struct CreateCacheParameterGroupInput: Swift.Sendable {
     /// The name of the cache parameter group family that the cache parameter group can be used with. Valid values are: memcached1.4 | memcached1.5 | memcached1.6 | redis2.6 | redis2.8 | redis3.2 | redis4.0 | redis5.0 | redis6.x | redis7
     /// This member is required.
     public var cacheParameterGroupFamily: Swift.String?
@@ -3302,8 +3307,9 @@ public struct CreateCacheParameterGroupInput {
 }
 
 extension ElastiCacheClientTypes {
+
     /// Represents the output of a CreateCacheParameterGroup operation.
-    public struct CacheParameterGroup {
+    public struct CacheParameterGroup: Swift.Sendable {
         /// The ARN (Amazon Resource Name) of the cache parameter group.
         public var arn: Swift.String?
         /// The name of the cache parameter group family that this cache parameter group is compatible with. Valid values are: memcached1.4 | memcached1.5 | memcached1.6 | redis2.6 | redis2.8 | redis3.2 | redis4.0 | redis5.0 | redis6.x | redis7
@@ -3330,10 +3336,9 @@ extension ElastiCacheClientTypes {
             self.isGlobal = isGlobal
         }
     }
-
 }
 
-public struct CreateCacheParameterGroupOutput {
+public struct CreateCacheParameterGroupOutput: Swift.Sendable {
     /// Represents the output of a CreateCacheParameterGroup operation.
     public var cacheParameterGroup: ElastiCacheClientTypes.CacheParameterGroup?
 
@@ -3394,7 +3399,7 @@ public struct CacheSecurityGroupQuotaExceededFault: ClientRuntime.ModeledError, 
 }
 
 /// Represents the input of a CreateCacheSecurityGroup operation.
-public struct CreateCacheSecurityGroupInput {
+public struct CreateCacheSecurityGroupInput: Swift.Sendable {
     /// A name for the cache security group. This value is stored as a lowercase string. Constraints: Must contain no more than 255 alphanumeric characters. Cannot be the word "Default". Example: mysecuritygroup
     /// This member is required.
     public var cacheSecurityGroupName: Swift.String?
@@ -3416,7 +3421,7 @@ public struct CreateCacheSecurityGroupInput {
     }
 }
 
-public struct CreateCacheSecurityGroupOutput {
+public struct CreateCacheSecurityGroupOutput: Swift.Sendable {
     /// Represents the output of one of the following operations:
     ///
     /// * AuthorizeCacheSecurityGroupIngress
@@ -3555,7 +3560,7 @@ public struct SubnetNotAllowedFault: ClientRuntime.ModeledError, AWSClientRuntim
 }
 
 /// Represents the input of a CreateCacheSubnetGroup operation.
-public struct CreateCacheSubnetGroupInput {
+public struct CreateCacheSubnetGroupInput: Swift.Sendable {
     /// A description for the cache subnet group.
     /// This member is required.
     public var cacheSubnetGroupDescription: Swift.String?
@@ -3583,8 +3588,9 @@ public struct CreateCacheSubnetGroupInput {
 }
 
 extension ElastiCacheClientTypes {
+
     /// Describes an Availability Zone in which the cluster is launched.
-    public struct AvailabilityZone {
+    public struct AvailabilityZone: Swift.Sendable {
         /// The name of the Availability Zone.
         public var name: Swift.String?
 
@@ -3595,12 +3601,12 @@ extension ElastiCacheClientTypes {
             self.name = name
         }
     }
-
 }
 
 extension ElastiCacheClientTypes {
+
     /// The ID of the outpost subnet.
-    public struct SubnetOutpost {
+    public struct SubnetOutpost: Swift.Sendable {
         /// The outpost ARN of the subnet.
         public var subnetOutpostArn: Swift.String?
 
@@ -3611,19 +3617,19 @@ extension ElastiCacheClientTypes {
             self.subnetOutpostArn = subnetOutpostArn
         }
     }
-
 }
 
 extension ElastiCacheClientTypes {
+
     /// Represents the subnet associated with a cluster. This parameter refers to subnets defined in Amazon Virtual Private Cloud (Amazon VPC) and used with ElastiCache.
-    public struct Subnet {
+    public struct Subnet: Swift.Sendable {
         /// The Availability Zone associated with the subnet.
         public var subnetAvailabilityZone: ElastiCacheClientTypes.AvailabilityZone?
         /// The unique identifier for the subnet.
         public var subnetIdentifier: Swift.String?
         /// The outpost ARN of the subnet.
         public var subnetOutpost: ElastiCacheClientTypes.SubnetOutpost?
-        /// Either ipv4 | ipv6 | dual_stack. IPv6 is supported for workloads using Redis OSS engine version 6.2 onward or Memcached engine version 1.6.6 on all instances built on the [Nitro system](http://aws.amazon.com/ec2/nitro/).
+        /// Either ipv4 | ipv6 | dual_stack. IPv6 is supported for workloads using Valkey 7.2 and above, Redis OSS engine version 6.2 and above or Memcached engine version 1.6.6 and above on all instances built on the [Nitro system](http://aws.amazon.com/ec2/nitro/).
         public var supportedNetworkTypes: [ElastiCacheClientTypes.NetworkType]?
 
         public init(
@@ -3639,16 +3645,16 @@ extension ElastiCacheClientTypes {
             self.supportedNetworkTypes = supportedNetworkTypes
         }
     }
-
 }
 
 extension ElastiCacheClientTypes {
+
     /// Represents the output of one of the following operations:
     ///
     /// * CreateCacheSubnetGroup
     ///
     /// * ModifyCacheSubnetGroup
-    public struct CacheSubnetGroup {
+    public struct CacheSubnetGroup: Swift.Sendable {
         /// The ARN (Amazon Resource Name) of the cache subnet group.
         public var arn: Swift.String?
         /// The description of the cache subnet group.
@@ -3657,7 +3663,7 @@ extension ElastiCacheClientTypes {
         public var cacheSubnetGroupName: Swift.String?
         /// A list of subnets associated with the cache subnet group.
         public var subnets: [ElastiCacheClientTypes.Subnet]?
-        /// Either ipv4 | ipv6 | dual_stack. IPv6 is supported for workloads using Redis OSS engine version 6.2 onward or Memcached engine version 1.6.6 on all instances built on the [Nitro system](http://aws.amazon.com/ec2/nitro/).
+        /// Either ipv4 | ipv6 | dual_stack. IPv6 is supported for workloads using Valkey 7.2 and above, Redis OSS engine version 6.2 and above or Memcached engine version 1.6.6 and above on all instances built on the [Nitro system](http://aws.amazon.com/ec2/nitro/).
         public var supportedNetworkTypes: [ElastiCacheClientTypes.NetworkType]?
         /// The Amazon Virtual Private Cloud identifier (VPC ID) of the cache subnet group.
         public var vpcId: Swift.String?
@@ -3679,10 +3685,9 @@ extension ElastiCacheClientTypes {
             self.vpcId = vpcId
         }
     }
-
 }
 
-public struct CreateCacheSubnetGroupOutput {
+public struct CreateCacheSubnetGroupOutput: Swift.Sendable {
     /// Represents the output of one of the following operations:
     ///
     /// * CreateCacheSubnetGroup
@@ -3722,7 +3727,7 @@ public struct GlobalReplicationGroupAlreadyExistsFault: ClientRuntime.ModeledErr
     }
 }
 
-public struct CreateGlobalReplicationGroupInput {
+public struct CreateGlobalReplicationGroupInput: Swift.Sendable {
     /// Provides details of the Global datastore
     public var globalReplicationGroupDescription: Swift.String?
     /// The suffix name of a Global datastore. Amazon ElastiCache automatically applies a prefix to the Global datastore ID when it is created. Each Amazon Region has its own prefix. For instance, a Global datastore ID created in the US-West-1 region will begin with "dsdfu" along with the suffix name you provide. The suffix, combined with the auto-generated prefix, guarantees uniqueness of the Global datastore name across multiple regions. For a full list of Amazon Regions and their respective Global datastore iD prefixes, see [Using the Amazon CLI with Global datastores ](http://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/Redis-Global-Datastores-CLI.html).
@@ -3745,8 +3750,9 @@ public struct CreateGlobalReplicationGroupInput {
 }
 
 extension ElastiCacheClientTypes {
+
     /// Indicates the slot configuration and global identifier for a slice group.
-    public struct GlobalNodeGroup {
+    public struct GlobalNodeGroup: Swift.Sendable {
         /// The name of the global node group
         public var globalNodeGroupId: Swift.String?
         /// The keyspace for this node group
@@ -3761,12 +3767,12 @@ extension ElastiCacheClientTypes {
             self.slots = slots
         }
     }
-
 }
 
 extension ElastiCacheClientTypes {
+
     /// A member of a Global datastore. It contains the Replication Group Id, the Amazon region and the role of the replication group.
-    public struct GlobalReplicationGroupMember {
+    public struct GlobalReplicationGroupMember: Swift.Sendable {
         /// Indicates whether automatic failover is enabled for the replication group.
         public var automaticFailover: ElastiCacheClientTypes.AutomaticFailoverStatus?
         /// The replication group id of the Global datastore member.
@@ -3793,27 +3799,27 @@ extension ElastiCacheClientTypes {
             self.status = status
         }
     }
-
 }
 
 extension ElastiCacheClientTypes {
+
     /// Consists of a primary cluster that accepts writes and an associated secondary cluster that resides in a different Amazon region. The secondary cluster accepts only reads. The primary cluster automatically replicates updates to the secondary cluster.
     ///
     /// * The GlobalReplicationGroupIdSuffix represents the name of the Global datastore, which is what you use to associate a secondary cluster.
-    public struct GlobalReplicationGroup {
+    public struct GlobalReplicationGroup: Swift.Sendable {
         /// The ARN (Amazon Resource Name) of the global replication group.
         public var arn: Swift.String?
         /// A flag that enables encryption at rest when set to true. You cannot modify the value of AtRestEncryptionEnabled after the replication group is created. To enable encryption at rest on a replication group you must set AtRestEncryptionEnabled to true when you create the replication group. Required: Only available when creating a replication group in an Amazon VPC using Redis OSS version 3.2.6, 4.x or later.
         public var atRestEncryptionEnabled: Swift.Bool?
-        /// A flag that enables using an AuthToken (password) when issuing Redis OSS commands. Default: false
+        /// A flag that enables using an AuthToken (password) when issuing Valkey or Redis OSS commands. Default: false
         public var authTokenEnabled: Swift.Bool?
         /// The cache node type of the Global datastore
         public var cacheNodeType: Swift.String?
         /// A flag that indicates whether the Global datastore is cluster enabled.
         public var clusterEnabled: Swift.Bool?
-        /// The Elasticache engine. For Redis OSS only.
+        /// The ElastiCache engine. For Valkey or Redis OSS only.
         public var engine: Swift.String?
-        /// The Elasticache (Redis OSS) engine version.
+        /// The ElastiCache engine version.
         public var engineVersion: Swift.String?
         /// Indicates the slot configuration and global identifier for each slice group.
         public var globalNodeGroups: [ElastiCacheClientTypes.GlobalNodeGroup]?
@@ -3859,10 +3865,9 @@ extension ElastiCacheClientTypes {
             self.transitEncryptionEnabled = transitEncryptionEnabled
         }
     }
-
 }
 
-public struct CreateGlobalReplicationGroupOutput {
+public struct CreateGlobalReplicationGroupOutput: Swift.Sendable {
     /// Consists of a primary cluster that accepts writes and an associated secondary cluster that resides in a different Amazon region. The secondary cluster accepts only reads. The primary cluster automatically replicates updates to the secondary cluster.
     ///
     /// * The GlobalReplicationGroupIdSuffix represents the name of the Global datastore, which is what you use to associate a secondary cluster.
@@ -4021,7 +4026,7 @@ public struct ReplicationGroupAlreadyExistsFault: ClientRuntime.ModeledError, AW
 }
 
 /// Represents the input of a CreateReplicationGroup operation.
-public struct CreateReplicationGroupInput {
+public struct CreateReplicationGroupInput: Swift.Sendable {
     /// A flag that enables encryption at rest when set to true. You cannot modify the value of AtRestEncryptionEnabled after the replication group is created. To enable encryption at rest on a replication group you must set AtRestEncryptionEnabled to true when you create the replication group. Required: Only available when creating a replication group in an Amazon VPC using Redis OSS version 3.2.6, 4.x or later. Default: false
     public var atRestEncryptionEnabled: Swift.Bool?
     /// Reserved parameter. The password used to access a password protected server. AuthToken can be specified only on replication groups where TransitEncryptionEnabled is true. For HIPAA compliance, you must specify TransitEncryptionEnabled as true, an AuthToken, and a CacheSubnetGroup. Password constraints:
@@ -4035,9 +4040,9 @@ public struct CreateReplicationGroupInput {
     ///
     /// For more information, see [AUTH password](http://redis.io/commands/AUTH) at http://redis.io/commands/AUTH.
     public var authToken: Swift.String?
-    ///  If you are running Redis OSS engine version 6.0 or later, set this parameter to yes if you want to opt-in to the next auto minor version upgrade campaign. This parameter is disabled for previous versions.
+    ///  If you are running Valkey 7.2 and above or Redis OSS engine version 6.0 and above, set this parameter to yes to opt-in to the next auto minor version upgrade campaign. This parameter is disabled for previous versions.
     public var autoMinorVersionUpgrade: Swift.Bool?
-    /// Specifies whether a read-only replica is automatically promoted to read/write primary if the existing primary fails. AutomaticFailoverEnabled must be enabled for Redis OSS (cluster mode enabled) replication groups. Default: false
+    /// Specifies whether a read-only replica is automatically promoted to read/write primary if the existing primary fails. AutomaticFailoverEnabled must be enabled for Valkey or Redis OSS (cluster mode enabled) replication groups. Default: false
     public var automaticFailoverEnabled: Swift.Bool?
     /// The compute and memory capacity of the nodes in the node group (shard). The following node types are supported by ElastiCache. Generally speaking, the current generation types provide more memory and computational power at lower cost when compared to their equivalent previous generation counterparts.
     ///
@@ -4074,23 +4079,23 @@ public struct CreateReplicationGroupInput {
     ///
     /// * All current generation instance types are created in Amazon VPC by default.
     ///
-    /// * Redis OSS append-only files (AOF) are not supported for T1 or T2 instances.
+    /// * Valkey or Redis OSS append-only files (AOF) are not supported for T1 or T2 instances.
     ///
-    /// * Redis OSS Multi-AZ with automatic failover is not supported on T1 instances.
+    /// * Valkey or Redis OSS Multi-AZ with automatic failover is not supported on T1 instances.
     ///
-    /// * Redis OSS configuration variables appendonly and appendfsync are not supported on Redis OSS version 2.8.22 and later.
+    /// * The configuration variables appendonly and appendfsync are not supported on Valkey, or on Redis OSS version 2.8.22 and later.
     public var cacheNodeType: Swift.String?
-    /// The name of the parameter group to associate with this replication group. If this argument is omitted, the default cache parameter group for the specified engine is used. If you are running Redis OSS version 3.2.4 or later, only one node group (shard), and want to use a default parameter group, we recommend that you specify the parameter group by name.
+    /// The name of the parameter group to associate with this replication group. If this argument is omitted, the default cache parameter group for the specified engine is used. If you are running Valkey or Redis OSS version 3.2.4 or later, only one node group (shard), and want to use a default parameter group, we recommend that you specify the parameter group by name.
     ///
-    /// * To create a Redis OSS (cluster mode disabled) replication group, use CacheParameterGroupName=default.redis3.2.
+    /// * To create a Valkey or Redis OSS (cluster mode disabled) replication group, use CacheParameterGroupName=default.redis3.2.
     ///
-    /// * To create a Redis OSS (cluster mode enabled) replication group, use CacheParameterGroupName=default.redis3.2.cluster.on.
+    /// * To create a Valkey or Redis OSS (cluster mode enabled) replication group, use CacheParameterGroupName=default.redis3.2.cluster.on.
     public var cacheParameterGroupName: Swift.String?
     /// A list of cache security group names to associate with this replication group.
     public var cacheSecurityGroupNames: [Swift.String]?
     /// The name of the cache subnet group to be used for the replication group. If you're going to launch your cluster in an Amazon VPC, you need to create a subnet group before you start creating a cluster. For more information, see [Subnets and Subnet Groups](https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/SubnetGroups.html).
     public var cacheSubnetGroupName: Swift.String?
-    /// Enabled or Disabled. To modify cluster mode from Disabled to Enabled, you must first set the cluster mode to Compatible. Compatible mode allows your Redis OSS clients to connect using both cluster mode enabled and cluster mode disabled. After you migrate all Redis OSS clients to use cluster mode enabled, you can then complete cluster mode configuration and set the cluster mode to Enabled.
+    /// Enabled or Disabled. To modify cluster mode from Disabled to Enabled, you must first set the cluster mode to Compatible. Compatible mode allows your Valkey or Redis OSS clients to connect using both cluster mode enabled and cluster mode disabled. After you migrate all Valkey or Redis OSS clients to use cluster mode enabled, you can then complete cluster mode configuration and set the cluster mode to Enabled.
     public var clusterMode: ElastiCacheClientTypes.ClusterMode?
     /// Enables data tiering. Data tiering is only supported for replication groups using the r6gd node type. This parameter must be set to true when using r6gd nodes. For more information, see [Data tiering](https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/data-tiering.html).
     public var dataTieringEnabled: Swift.Bool?
@@ -4100,7 +4105,7 @@ public struct CreateReplicationGroupInput {
     public var engineVersion: Swift.String?
     /// The name of the Global datastore
     public var globalReplicationGroupId: Swift.String?
-    /// The network type you choose when creating a replication group, either ipv4 | ipv6. IPv6 is supported for workloads using Redis OSS engine version 6.2 onward or Memcached engine version 1.6.6 on all instances built on the [Nitro system](http://aws.amazon.com/ec2/nitro/).
+    /// The network type you choose when creating a replication group, either ipv4 | ipv6. IPv6 is supported for workloads using Valkey 7.2 and above, Redis OSS engine version 6.2 and above or Memcached engine version 1.6.6 and above on all instances built on the [Nitro system](http://aws.amazon.com/ec2/nitro/).
     public var ipDiscovery: ElastiCacheClientTypes.IpDiscovery?
     /// The ID of the KMS key used to encrypt the disk in the cluster.
     public var kmsKeyId: Swift.String?
@@ -4108,15 +4113,15 @@ public struct CreateReplicationGroupInput {
     public var logDeliveryConfigurations: [ElastiCacheClientTypes.LogDeliveryConfigurationRequest]?
     /// A flag indicating if you have Multi-AZ enabled to enhance fault tolerance. For more information, see [Minimizing Downtime: Multi-AZ](http://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/AutoFailover.html).
     public var multiAZEnabled: Swift.Bool?
-    /// Must be either ipv4 | ipv6 | dual_stack. IPv6 is supported for workloads using Redis OSS engine version 6.2 onward or Memcached engine version 1.6.6 on all instances built on the [Nitro system](http://aws.amazon.com/ec2/nitro/).
+    /// Must be either ipv4 | ipv6 | dual_stack. IPv6 is supported for workloads using Valkey 7.2 and above, Redis OSS engine version 6.2 and above or Memcached engine version 1.6.6 and above on all instances built on the [Nitro system](http://aws.amazon.com/ec2/nitro/).
     public var networkType: ElastiCacheClientTypes.NetworkType?
-    /// A list of node group (shard) configuration options. Each node group (shard) configuration has the following members: PrimaryAvailabilityZone, ReplicaAvailabilityZones, ReplicaCount, and Slots. If you're creating a Redis OSS (cluster mode disabled) or a Redis OSS (cluster mode enabled) replication group, you can use this parameter to individually configure each node group (shard), or you can omit this parameter. However, it is required when seeding a Redis OSS (cluster mode enabled) cluster from a S3 rdb file. You must configure each node group (shard) using this parameter because you must specify the slots for each node group.
+    /// A list of node group (shard) configuration options. Each node group (shard) configuration has the following members: PrimaryAvailabilityZone, ReplicaAvailabilityZones, ReplicaCount, and Slots. If you're creating a Valkey or Redis OSS (cluster mode disabled) or a Valkey or Redis OSS (cluster mode enabled) replication group, you can use this parameter to individually configure each node group (shard), or you can omit this parameter. However, it is required when seeding a Valkey or Redis OSS (cluster mode enabled) cluster from a S3 rdb file. You must configure each node group (shard) using this parameter because you must specify the slots for each node group.
     public var nodeGroupConfiguration: [ElastiCacheClientTypes.NodeGroupConfiguration]?
     /// The Amazon Resource Name (ARN) of the Amazon Simple Notification Service (SNS) topic to which notifications are sent. The Amazon SNS topic owner must be the same as the cluster owner.
     public var notificationTopicArn: Swift.String?
     /// The number of clusters this replication group initially has. This parameter is not used if there is more than one node group (shard). You should use ReplicasPerNodeGroup instead. If AutomaticFailoverEnabled is true, the value of this parameter must be at least 2. If AutomaticFailoverEnabled is false you can omit this parameter (it will default to 1), or you can explicitly set it to a value between 2 and 6. The maximum permitted value for NumCacheClusters is 6 (1 primary plus 5 replicas).
     public var numCacheClusters: Swift.Int?
-    /// An optional parameter that specifies the number of node groups (shards) for this Redis OSS (cluster mode enabled) replication group. For Redis OSS (cluster mode disabled) either omit this parameter or set it to 1. Default: 1
+    /// An optional parameter that specifies the number of node groups (shards) for this Valkey or Redis OSS (cluster mode enabled) replication group. For Valkey or Redis OSS (cluster mode disabled) either omit this parameter or set it to 1. Default: 1
     public var numNodeGroups: Swift.Int?
     /// The port number on which each member of the replication group accepts connections.
     public var port: Swift.Int?
@@ -4159,9 +4164,9 @@ public struct CreateReplicationGroupInput {
     public var replicationGroupId: Swift.String?
     /// One or more Amazon VPC security groups associated with this replication group. Use this parameter only when you are creating a replication group in an Amazon Virtual Private Cloud (Amazon VPC).
     public var securityGroupIds: [Swift.String]?
-    /// The name of the snapshot used to create a replication group. Available for Redis OSS only.
+    /// The name of the snapshot used to create a replication group. Available for Valkey, Redis OSS only.
     public var serverlessCacheSnapshotName: Swift.String?
-    /// A list of Amazon Resource Names (ARN) that uniquely identify the Redis OSS RDB snapshot files stored in Amazon S3. The snapshot files are used to populate the new replication group. The Amazon S3 object name in the ARN cannot contain any commas. The new replication group will have the number of node groups (console: shards) specified by the parameter NumNodeGroups or the number of node groups configured by NodeGroupConfiguration regardless of the number of ARNs specified here. Example of an Amazon S3 ARN: arn:aws:s3:::my_bucket/snapshot1.rdb
+    /// A list of Amazon Resource Names (ARN) that uniquely identify the Valkey or Redis OSS RDB snapshot files stored in Amazon S3. The snapshot files are used to populate the new replication group. The Amazon S3 object name in the ARN cannot contain any commas. The new replication group will have the number of node groups (console: shards) specified by the parameter NumNodeGroups or the number of node groups configured by NodeGroupConfiguration regardless of the number of ARNs specified here. Example of an Amazon S3 ARN: arn:aws:s3:::my_bucket/snapshot1.rdb
     public var snapshotArns: [Swift.String]?
     /// The name of a snapshot from which to restore data into the new replication group. The snapshot status changes to restoring while the new replication group is being created.
     public var snapshotName: Swift.String?
@@ -4173,7 +4178,7 @@ public struct CreateReplicationGroupInput {
     public var tags: [ElastiCacheClientTypes.Tag]?
     /// A flag that enables in-transit encryption when set to true. This parameter is valid only if the Engine parameter is redis, the EngineVersion parameter is 3.2.6, 4.x or later, and the cluster is being created in an Amazon VPC. If you enable in-transit encryption, you must also specify a value for CacheSubnetGroup. Required: Only available when creating a replication group in an Amazon VPC using Redis OSS version 3.2.6, 4.x or later. Default: false For HIPAA compliance, you must specify TransitEncryptionEnabled as true, an AuthToken, and a CacheSubnetGroup.
     public var transitEncryptionEnabled: Swift.Bool?
-    /// A setting that allows you to migrate your clients to use in-transit encryption, with no downtime. When setting TransitEncryptionEnabled to true, you can set your TransitEncryptionMode to preferred in the same request, to allow both encrypted and unencrypted connections at the same time. Once you migrate all your Redis OSS clients to use encrypted connections you can modify the value to required to allow encrypted connections only. Setting TransitEncryptionMode to required is a two-step process that requires you to first set the TransitEncryptionMode to preferred, after that you can set TransitEncryptionMode to required. This process will not trigger the replacement of the replication group.
+    /// A setting that allows you to migrate your clients to use in-transit encryption, with no downtime. When setting TransitEncryptionEnabled to true, you can set your TransitEncryptionMode to preferred in the same request, to allow both encrypted and unencrypted connections at the same time. Once you migrate all your Valkey or Redis OSS clients to use encrypted connections you can modify the value to required to allow encrypted connections only. Setting TransitEncryptionMode to required is a two-step process that requires you to first set the TransitEncryptionMode to preferred, after that you can set TransitEncryptionMode to required. This process will not trigger the replacement of the replication group.
     public var transitEncryptionMode: ElastiCacheClientTypes.TransitEncryptionMode?
     /// The user group to associate with the replication group.
     public var userGroupIds: [Swift.String]?
@@ -4262,8 +4267,8 @@ public struct CreateReplicationGroupInput {
     }
 }
 
-public struct CreateReplicationGroupOutput {
-    /// Contains all of the attributes of a specific Redis OSS replication group.
+public struct CreateReplicationGroupOutput: Swift.Sendable {
+    /// Contains all of the attributes of a specific Valkey or Redis OSS replication group.
     public var replicationGroup: ElastiCacheClientTypes.ReplicationGroup?
 
     public init(
@@ -4348,7 +4353,7 @@ public struct ServerlessCacheQuotaForCustomerExceededFault: ClientRuntime.Modele
 
 extension ElastiCacheClientTypes {
 
-    public enum DataStorageUnit: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DataStorageUnit: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case gb
         case sdkUnknown(Swift.String)
 
@@ -4373,8 +4378,9 @@ extension ElastiCacheClientTypes {
 }
 
 extension ElastiCacheClientTypes {
+
     /// The data storage limit.
-    public struct DataStorage {
+    public struct DataStorage: Swift.Sendable {
         /// The upper limit for data storage the cache is set to use.
         public var maximum: Swift.Int?
         /// The lower limit for data storage the cache is set to use.
@@ -4394,12 +4400,12 @@ extension ElastiCacheClientTypes {
             self.unit = unit
         }
     }
-
 }
 
 extension ElastiCacheClientTypes {
+
     /// The configuration for the number of ElastiCache Processing Units (ECPU) the cache can consume per second.
-    public struct ECPUPerSecond {
+    public struct ECPUPerSecond: Swift.Sendable {
         /// The configuration for the maximum number of ECPUs the cache can consume per second.
         public var maximum: Swift.Int?
         /// The configuration for the minimum number of ECPUs the cache should be able consume per second.
@@ -4414,12 +4420,12 @@ extension ElastiCacheClientTypes {
             self.minimum = minimum
         }
     }
-
 }
 
 extension ElastiCacheClientTypes {
+
     /// The usage limits for storage and ElastiCache Processing Units for the cache.
-    public struct CacheUsageLimits {
+    public struct CacheUsageLimits: Swift.Sendable {
         /// The maximum data storage limit in the cache, expressed in Gigabytes.
         public var dataStorage: ElastiCacheClientTypes.DataStorage?
         /// The configuration for the number of ElastiCache Processing Units (ECPU) the cache can consume per second.
@@ -4434,13 +4440,12 @@ extension ElastiCacheClientTypes {
             self.ecpuPerSecond = ecpuPerSecond
         }
     }
-
 }
 
-public struct CreateServerlessCacheInput {
+public struct CreateServerlessCacheInput: Swift.Sendable {
     /// Sets the cache usage limits for storage and ElastiCache Processing Units for the cache.
     public var cacheUsageLimits: ElastiCacheClientTypes.CacheUsageLimits?
-    /// The daily time that snapshots will be created from the new serverless cache. By default this number is populated with 0, i.e. no snapshots will be created on an automatic daily basis. Available for Redis OSS and Serverless Memcached only.
+    /// The daily time that snapshots will be created from the new serverless cache. By default this number is populated with 0, i.e. no snapshots will be created on an automatic daily basis. Available for Valkey, Redis OSS and Serverless Memcached only.
     public var dailySnapshotTime: Swift.String?
     /// User-provided description for the serverless cache. The default is NULL, i.e. if no description is provided then an empty string will be returned. The maximum length is 255 characters.
     public var description: Swift.String?
@@ -4456,15 +4461,15 @@ public struct CreateServerlessCacheInput {
     /// User-provided identifier for the serverless cache. This parameter is stored as a lowercase string.
     /// This member is required.
     public var serverlessCacheName: Swift.String?
-    /// The ARN(s) of the snapshot that the new serverless cache will be created from. Available for Redis OSS and Serverless Memcached only.
+    /// The ARN(s) of the snapshot that the new serverless cache will be created from. Available for Valkey, Redis OSS and Serverless Memcached only.
     public var snapshotArnsToRestore: [Swift.String]?
-    /// The number of snapshots that will be retained for the serverless cache that is being created. As new snapshots beyond this limit are added, the oldest snapshots will be deleted on a rolling basis. Available for Redis OSS and Serverless Memcached only.
+    /// The number of snapshots that will be retained for the serverless cache that is being created. As new snapshots beyond this limit are added, the oldest snapshots will be deleted on a rolling basis. Available for Valkey, Redis OSS and Serverless Memcached only.
     public var snapshotRetentionLimit: Swift.Int?
     /// A list of the identifiers of the subnets where the VPC endpoint for the serverless cache will be deployed. All the subnetIds must belong to the same VPC.
     public var subnetIds: [Swift.String]?
     /// The list of tags (key, value) pairs to be added to the serverless cache resource. Default is NULL.
     public var tags: [ElastiCacheClientTypes.Tag]?
-    /// The identifier of the UserGroup to be associated with the serverless cache. Available for Redis OSS only. Default is NULL.
+    /// The identifier of the UserGroup to be associated with the serverless cache. Available for Valkey and Redis OSS only. Default is NULL.
     public var userGroupId: Swift.String?
 
     public init(
@@ -4500,15 +4505,16 @@ public struct CreateServerlessCacheInput {
 }
 
 extension ElastiCacheClientTypes {
+
     /// The resource representing a serverless cache.
-    public struct ServerlessCache {
+    public struct ServerlessCache: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the serverless cache.
         public var arn: Swift.String?
         /// The cache usage limit for the serverless cache.
         public var cacheUsageLimits: ElastiCacheClientTypes.CacheUsageLimits?
         /// When the serverless cache was created.
         public var createTime: Foundation.Date?
-        /// The daily time that a cache snapshot will be created. Default is NULL, i.e. snapshots will not be created at a specific time on a daily basis. Available for Redis OSS and Serverless Memcached only.
+        /// The daily time that a cache snapshot will be created. Default is NULL, i.e. snapshots will not be created at a specific time on a daily basis. Available for Valkey, Redis OSS and Serverless Memcached only.
         public var dailySnapshotTime: Swift.String?
         /// A description of the serverless cache.
         public var description: Swift.String?
@@ -4528,13 +4534,13 @@ extension ElastiCacheClientTypes {
         public var securityGroupIds: [Swift.String]?
         /// The unique identifier of the serverless cache.
         public var serverlessCacheName: Swift.String?
-        /// The current setting for the number of serverless cache snapshots the system will retain. Available for Redis OSS and Serverless Memcached only.
+        /// The current setting for the number of serverless cache snapshots the system will retain. Available for Valkey, Redis OSS and Serverless Memcached only.
         public var snapshotRetentionLimit: Swift.Int?
         /// The current status of the serverless cache. The allowed values are CREATING, AVAILABLE, DELETING, CREATE-FAILED and MODIFYING.
         public var status: Swift.String?
         /// If no subnet IDs are given and your VPC is in us-west-1, then ElastiCache will select 2 default subnets across AZs in your VPC. For all other Regions, if no subnet IDs are given then ElastiCache will select 3 default subnets across AZs in your default VPC.
         public var subnetIds: [Swift.String]?
-        /// The identifier of the user group associated with the serverless cache. Available for Redis OSS only. Default is NULL.
+        /// The identifier of the user group associated with the serverless cache. Available for Valkey and Redis OSS only. Default is NULL.
         public var userGroupId: Swift.String?
 
         public init(
@@ -4576,10 +4582,9 @@ extension ElastiCacheClientTypes {
             self.userGroupId = userGroupId
         }
     }
-
 }
 
-public struct CreateServerlessCacheOutput {
+public struct CreateServerlessCacheOutput: Swift.Sendable {
     /// The response for the attempt to create the serverless cache.
     public var serverlessCache: ElastiCacheClientTypes.ServerlessCache?
 
@@ -4591,16 +4596,16 @@ public struct CreateServerlessCacheOutput {
     }
 }
 
-public struct CreateServerlessCacheSnapshotInput {
-    /// The ID of the KMS key used to encrypt the snapshot. Available for Redis OSS and Serverless Memcached only. Default: NULL
+public struct CreateServerlessCacheSnapshotInput: Swift.Sendable {
+    /// The ID of the KMS key used to encrypt the snapshot. Available for Valkey, Redis OSS and Serverless Memcached only. Default: NULL
     public var kmsKeyId: Swift.String?
-    /// The name of an existing serverless cache. The snapshot is created from this cache. Available for Redis OSS and Serverless Memcached only.
+    /// The name of an existing serverless cache. The snapshot is created from this cache. Available for Valkey, Redis OSS and Serverless Memcached only.
     /// This member is required.
     public var serverlessCacheName: Swift.String?
-    /// The name for the snapshot being created. Must be unique for the customer account. Available for Redis OSS and Serverless Memcached only. Must be between 1 and 255 characters.
+    /// The name for the snapshot being created. Must be unique for the customer account. Available for Valkey, Redis OSS and Serverless Memcached only. Must be between 1 and 255 characters.
     /// This member is required.
     public var serverlessCacheSnapshotName: Swift.String?
-    /// A list of tags to be added to the snapshot resource. A tag is a key-value pair. Available for Redis OSS and Serverless Memcached only.
+    /// A list of tags to be added to the snapshot resource. A tag is a key-value pair. Available for Valkey, Redis OSS and Serverless Memcached only.
     public var tags: [ElastiCacheClientTypes.Tag]?
 
     public init(
@@ -4617,8 +4622,8 @@ public struct CreateServerlessCacheSnapshotInput {
     }
 }
 
-public struct CreateServerlessCacheSnapshotOutput {
-    /// The state of a serverless cache snapshot at a specific point in time, to the millisecond. Available for Redis OSS and Serverless Memcached only.
+public struct CreateServerlessCacheSnapshotOutput: Swift.Sendable {
+    /// The state of a serverless cache snapshot at a specific point in time, to the millisecond. Available for Valkey, Redis OSS and Serverless Memcached only.
     public var serverlessCacheSnapshot: ElastiCacheClientTypes.ServerlessCacheSnapshot?
 
     public init(
@@ -4631,9 +4636,9 @@ public struct CreateServerlessCacheSnapshotOutput {
 
 /// You attempted one of the following operations:
 ///
-/// * Creating a snapshot of a Redis OSS cluster running on a cache.t1.micro cache node.
+/// * Creating a snapshot of a Valkey or Redis OSS cluster running on a cache.t1.micro cache node.
 ///
-/// * Creating a snapshot of a cluster that is running Memcached rather than Redis OSS.
+/// * Creating a snapshot of a cluster that is running Memcached rather than Valkey or Redis OSS.
 ///
 ///
 /// Neither of these are supported by ElastiCache.
@@ -4661,7 +4666,7 @@ public struct SnapshotFeatureNotSupportedFault: ClientRuntime.ModeledError, AWSC
 }
 
 /// Represents the input of a CreateSnapshot operation.
-public struct CreateSnapshotInput {
+public struct CreateSnapshotInput: Swift.Sendable {
     /// The identifier of an existing cluster. The snapshot is created from this cluster.
     public var cacheClusterId: Swift.String?
     /// The ID of the KMS key used to encrypt the snapshot.
@@ -4690,8 +4695,8 @@ public struct CreateSnapshotInput {
     }
 }
 
-public struct CreateSnapshotOutput {
-    /// Represents a copy of an entire Redis OSS cluster as of the time when the snapshot was taken.
+public struct CreateSnapshotOutput: Swift.Sendable {
+    /// Represents a copy of an entire Valkey or Redis OSS cluster as of the time when the snapshot was taken.
     public var snapshot: ElastiCacheClientTypes.Snapshot?
 
     public init(
@@ -4776,7 +4781,7 @@ public struct UserQuotaExceededFault: ClientRuntime.ModeledError, AWSClientRunti
 
 extension ElastiCacheClientTypes {
 
-    public enum InputAuthenticationType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum InputAuthenticationType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case iam
         case noPassword
         case password
@@ -4807,8 +4812,9 @@ extension ElastiCacheClientTypes {
 }
 
 extension ElastiCacheClientTypes {
+
     /// Specifies the authentication mode to use.
-    public struct AuthenticationMode {
+    public struct AuthenticationMode: Swift.Sendable {
         /// Specifies the passwords to use for authentication if Type is set to password.
         public var passwords: [Swift.String]?
         /// Specifies the authentication type. Possible options are IAM authentication, password and no password.
@@ -4823,10 +4829,9 @@ extension ElastiCacheClientTypes {
             self.type = type
         }
     }
-
 }
 
-public struct CreateUserInput {
+public struct CreateUserInput: Swift.Sendable {
     /// Access permissions string used for this user.
     /// This member is required.
     public var accessString: Swift.String?
@@ -4872,7 +4877,7 @@ public struct CreateUserInput {
 
 extension ElastiCacheClientTypes {
 
-    public enum AuthenticationType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AuthenticationType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case iam
         case noPassword
         case password
@@ -4903,8 +4908,9 @@ extension ElastiCacheClientTypes {
 }
 
 extension ElastiCacheClientTypes {
+
     /// Indicates whether the user requires a password to authenticate.
-    public struct Authentication {
+    public struct Authentication: Swift.Sendable {
         /// The number of passwords belonging to the user. The maximum is two.
         public var passwordCount: Swift.Int?
         /// Indicates whether the user requires a password to authenticate.
@@ -4919,10 +4925,9 @@ extension ElastiCacheClientTypes {
             self.type = type
         }
     }
-
 }
 
-public struct CreateUserOutput {
+public struct CreateUserOutput: Swift.Sendable {
     /// Access permissions string used for this user.
     public var accessString: Swift.String?
     /// The Amazon Resource Name (ARN) of the user.
@@ -5038,11 +5043,11 @@ public struct UserGroupQuotaExceededFault: ClientRuntime.ModeledError, AWSClient
     }
 }
 
-public struct CreateUserGroupInput {
+public struct CreateUserGroupInput: Swift.Sendable {
     /// The current supported value is Redis user.
     /// This member is required.
     public var engine: Swift.String?
-    /// A list of tags to be added to this resource. A tag is a key-value pair. A tag key must be accompanied by a tag value, although null is accepted. Available for Redis OSS only.
+    /// A list of tags to be added to this resource. A tag is a key-value pair. A tag key must be accompanied by a tag value, although null is accepted. Available for Valkey and Redis OSS only.
     public var tags: [ElastiCacheClientTypes.Tag]?
     /// The ID of the user group.
     /// This member is required.
@@ -5065,8 +5070,9 @@ public struct CreateUserGroupInput {
 }
 
 extension ElastiCacheClientTypes {
+
     /// Returns the updates being applied to the user group.
-    public struct UserGroupPendingChanges {
+    public struct UserGroupPendingChanges: Swift.Sendable {
         /// The list of user IDs to add.
         public var userIdsToAdd: [Swift.String]?
         /// The list of user IDs to remove.
@@ -5081,10 +5087,9 @@ extension ElastiCacheClientTypes {
             self.userIdsToRemove = userIdsToRemove
         }
     }
-
 }
 
-public struct CreateUserGroupOutput {
+public struct CreateUserGroupOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the user group.
     public var arn: Swift.String?
     /// The current supported value is Redis user.
@@ -5095,7 +5100,7 @@ public struct CreateUserGroupOutput {
     public var pendingChanges: ElastiCacheClientTypes.UserGroupPendingChanges?
     /// A list of replication groups that the user group can access.
     public var replicationGroups: [Swift.String]?
-    /// Indicates which serverless caches the specified user group is associated with. Available for Redis OSS and Serverless Memcached only.
+    /// Indicates which serverless caches the specified user group is associated with. Available for Valkey, Redis OSS and Serverless Memcached only.
     public var serverlessCaches: [Swift.String]?
     /// Indicates user group status. Can be "creating", "active", "modifying", "deleting".
     public var status: Swift.String?
@@ -5128,13 +5133,13 @@ public struct CreateUserGroupOutput {
     }
 }
 
-public struct DecreaseNodeGroupsInGlobalReplicationGroupInput {
+public struct DecreaseNodeGroupsInGlobalReplicationGroupInput: Swift.Sendable {
     /// Indicates that the shard reconfiguration process begins immediately. At present, the only permitted value for this parameter is true.
     /// This member is required.
     public var applyImmediately: Swift.Bool?
-    /// If the value of NodeGroupCount is less than the current number of node groups (shards), then either NodeGroupsToRemove or NodeGroupsToRetain is required. GlobalNodeGroupsToRemove is a list of NodeGroupIds to remove from the cluster. ElastiCache (Redis OSS) will attempt to remove all node groups listed by GlobalNodeGroupsToRemove from the cluster.
+    /// If the value of NodeGroupCount is less than the current number of node groups (shards), then either NodeGroupsToRemove or NodeGroupsToRetain is required. GlobalNodeGroupsToRemove is a list of NodeGroupIds to remove from the cluster. ElastiCache will attempt to remove all node groups listed by GlobalNodeGroupsToRemove from the cluster.
     public var globalNodeGroupsToRemove: [Swift.String]?
-    /// If the value of NodeGroupCount is less than the current number of node groups (shards), then either NodeGroupsToRemove or NodeGroupsToRetain is required. GlobalNodeGroupsToRetain is a list of NodeGroupIds to retain from the cluster. ElastiCache (Redis OSS) will attempt to retain all node groups listed by GlobalNodeGroupsToRetain from the cluster.
+    /// If the value of NodeGroupCount is less than the current number of node groups (shards), then either NodeGroupsToRemove or NodeGroupsToRetain is required. GlobalNodeGroupsToRetain is a list of NodeGroupIds to retain from the cluster. ElastiCache will attempt to retain all node groups listed by GlobalNodeGroupsToRetain from the cluster.
     public var globalNodeGroupsToRetain: [Swift.String]?
     /// The name of the Global datastore
     /// This member is required.
@@ -5159,7 +5164,7 @@ public struct DecreaseNodeGroupsInGlobalReplicationGroupInput {
     }
 }
 
-public struct DecreaseNodeGroupsInGlobalReplicationGroupOutput {
+public struct DecreaseNodeGroupsInGlobalReplicationGroupOutput: Swift.Sendable {
     /// Consists of a primary cluster that accepts writes and an associated secondary cluster that resides in a different Amazon region. The secondary cluster accepts only reads. The primary cluster automatically replicates updates to the secondary cluster.
     ///
     /// * The GlobalReplicationGroupIdSuffix represents the name of the Global datastore, which is what you use to associate a secondary cluster.
@@ -5198,11 +5203,12 @@ public struct NoOperationFault: ClientRuntime.ModeledError, AWSClientRuntime.AWS
 }
 
 extension ElastiCacheClientTypes {
+
     /// Node group (shard) configuration options when adding or removing replicas. Each node group (shard) configuration has the following members: NodeGroupId, NewReplicaCount, and PreferredAvailabilityZones.
-    public struct ConfigureShard {
-        /// The number of replicas you want in this node group at the end of this operation. The maximum value for NewReplicaCount is 5. The minimum value depends upon the type of Redis OSS replication group you are working with. The minimum number of replicas in a shard or replication group is:
+    public struct ConfigureShard: Swift.Sendable {
+        /// The number of replicas you want in this node group at the end of this operation. The maximum value for NewReplicaCount is 5. The minimum value depends upon the type of Valkey or Redis OSS replication group you are working with. The minimum number of replicas in a shard or replication group is:
         ///
-        /// * Redis OSS (cluster mode disabled)
+        /// * Valkey or Redis OSS (cluster mode disabled)
         ///
         /// * If Multi-AZ: 1
         ///
@@ -5211,13 +5217,13 @@ extension ElastiCacheClientTypes {
         ///
         ///
         ///
-        /// * Redis OSS (cluster mode enabled): 0 (though you will not be able to failover to a replica if your primary node fails)
+        /// * Valkey or Redis OSS (cluster mode enabled): 0 (though you will not be able to failover to a replica if your primary node fails)
         /// This member is required.
         public var newReplicaCount: Swift.Int?
-        /// The 4-digit id for the node group you are configuring. For Redis OSS (cluster mode disabled) replication groups, the node group id is always 0001. To find a Redis OSS (cluster mode enabled)'s node group's (shard's) id, see [Finding a Shard's Id](https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/shard-find-id.html).
+        /// The 4-digit id for the node group you are configuring. For Valkey or Redis OSS (cluster mode disabled) replication groups, the node group id is always 0001. To find a Valkey or Redis OSS (cluster mode enabled)'s node group's (shard's) id, see [Finding a Shard's Id](https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/shard-find-id.html).
         /// This member is required.
         public var nodeGroupId: Swift.String?
-        /// A list of PreferredAvailabilityZone strings that specify which availability zones the replication group's nodes are to be in. The nummber of PreferredAvailabilityZone values must equal the value of NewReplicaCount plus 1 to account for the primary node. If this member of ReplicaConfiguration is omitted, ElastiCache (Redis OSS) selects the availability zone for each of the replicas.
+        /// A list of PreferredAvailabilityZone strings that specify which availability zones the replication group's nodes are to be in. The nummber of PreferredAvailabilityZone values must equal the value of NewReplicaCount plus 1 to account for the primary node. If this member of ReplicaConfiguration is omitted, ElastiCache selects the availability zone for each of the replicas.
         public var preferredAvailabilityZones: [Swift.String]?
         /// The outpost ARNs in which the cache cluster is created.
         public var preferredOutpostArns: [Swift.String]?
@@ -5235,16 +5241,15 @@ extension ElastiCacheClientTypes {
             self.preferredOutpostArns = preferredOutpostArns
         }
     }
-
 }
 
-public struct DecreaseReplicaCountInput {
+public struct DecreaseReplicaCountInput: Swift.Sendable {
     /// If True, the number of replica nodes is decreased immediately. ApplyImmediately=False is not currently supported.
     /// This member is required.
     public var applyImmediately: Swift.Bool?
-    /// The number of read replica nodes you want at the completion of this operation. For Redis OSS (cluster mode disabled) replication groups, this is the number of replica nodes in the replication group. For Redis OSS (cluster mode enabled) replication groups, this is the number of replica nodes in each of the replication group's node groups. The minimum number of replicas in a shard or replication group is:
+    /// The number of read replica nodes you want at the completion of this operation. For Valkey or Redis OSS (cluster mode disabled) replication groups, this is the number of replica nodes in the replication group. For Valkey or Redis OSS (cluster mode enabled) replication groups, this is the number of replica nodes in each of the replication group's node groups. The minimum number of replicas in a shard or replication group is:
     ///
-    /// * Redis OSS (cluster mode disabled)
+    /// * Valkey or Redis OSS (cluster mode disabled)
     ///
     /// * If Multi-AZ is enabled: 1
     ///
@@ -5253,9 +5258,9 @@ public struct DecreaseReplicaCountInput {
     ///
     ///
     ///
-    /// * Redis OSS (cluster mode enabled): 0 (though you will not be able to failover to a replica if your primary node fails)
+    /// * Valkey or Redis OSS (cluster mode enabled): 0 (though you will not be able to failover to a replica if your primary node fails)
     public var newReplicaCount: Swift.Int?
-    /// A list of ConfigureShard objects that can be used to configure each shard in a Redis OSS (cluster mode enabled) replication group. The ConfigureShard has three members: NewReplicaCount, NodeGroupId, and PreferredAvailabilityZones.
+    /// A list of ConfigureShard objects that can be used to configure each shard in a Valkey or Redis OSS (cluster mode enabled) replication group. The ConfigureShard has three members: NewReplicaCount, NodeGroupId, and PreferredAvailabilityZones.
     public var replicaConfiguration: [ElastiCacheClientTypes.ConfigureShard]?
     /// A list of the node ids to remove from the replication group or node group (shard).
     public var replicasToRemove: [Swift.String]?
@@ -5279,8 +5284,8 @@ public struct DecreaseReplicaCountInput {
     }
 }
 
-public struct DecreaseReplicaCountOutput {
-    /// Contains all of the attributes of a specific Redis OSS replication group.
+public struct DecreaseReplicaCountOutput: Swift.Sendable {
+    /// Contains all of the attributes of a specific Valkey or Redis OSS replication group.
     public var replicationGroup: ElastiCacheClientTypes.ReplicationGroup?
 
     public init(
@@ -5292,7 +5297,7 @@ public struct DecreaseReplicaCountOutput {
 }
 
 /// Represents the input of a DeleteCacheCluster operation.
-public struct DeleteCacheClusterInput {
+public struct DeleteCacheClusterInput: Swift.Sendable {
     /// The cluster identifier for the cluster to be deleted. This parameter is not case sensitive.
     /// This member is required.
     public var cacheClusterId: Swift.String?
@@ -5309,7 +5314,7 @@ public struct DeleteCacheClusterInput {
     }
 }
 
-public struct DeleteCacheClusterOutput {
+public struct DeleteCacheClusterOutput: Swift.Sendable {
     /// Contains all of the attributes of a specific cluster.
     public var cacheCluster: ElastiCacheClientTypes.CacheCluster?
 
@@ -5322,7 +5327,7 @@ public struct DeleteCacheClusterOutput {
 }
 
 /// Represents the input of a DeleteCacheParameterGroup operation.
-public struct DeleteCacheParameterGroupInput {
+public struct DeleteCacheParameterGroupInput: Swift.Sendable {
     /// The name of the cache parameter group to delete. The specified cache security group must not be associated with any clusters.
     /// This member is required.
     public var cacheParameterGroupName: Swift.String?
@@ -5336,7 +5341,7 @@ public struct DeleteCacheParameterGroupInput {
 }
 
 /// Represents the input of a DeleteCacheSecurityGroup operation.
-public struct DeleteCacheSecurityGroupInput {
+public struct DeleteCacheSecurityGroupInput: Swift.Sendable {
     /// The name of the cache security group to delete. You cannot delete the default security group.
     /// This member is required.
     public var cacheSecurityGroupName: Swift.String?
@@ -5374,7 +5379,7 @@ public struct CacheSubnetGroupInUse: ClientRuntime.ModeledError, AWSClientRuntim
 }
 
 /// Represents the input of a DeleteCacheSubnetGroup operation.
-public struct DeleteCacheSubnetGroupInput {
+public struct DeleteCacheSubnetGroupInput: Swift.Sendable {
     /// The name of the cache subnet group to delete. Constraints: Must contain no more than 255 alphanumeric characters or hyphens.
     /// This member is required.
     public var cacheSubnetGroupName: Swift.String?
@@ -5387,7 +5392,7 @@ public struct DeleteCacheSubnetGroupInput {
     }
 }
 
-public struct DeleteGlobalReplicationGroupInput {
+public struct DeleteGlobalReplicationGroupInput: Swift.Sendable {
     /// The name of the Global datastore
     /// This member is required.
     public var globalReplicationGroupId: Swift.String?
@@ -5405,7 +5410,7 @@ public struct DeleteGlobalReplicationGroupInput {
     }
 }
 
-public struct DeleteGlobalReplicationGroupOutput {
+public struct DeleteGlobalReplicationGroupOutput: Swift.Sendable {
     /// Consists of a primary cluster that accepts writes and an associated secondary cluster that resides in a different Amazon region. The secondary cluster accepts only reads. The primary cluster automatically replicates updates to the secondary cluster.
     ///
     /// * The GlobalReplicationGroupIdSuffix represents the name of the Global datastore, which is what you use to associate a secondary cluster.
@@ -5420,7 +5425,7 @@ public struct DeleteGlobalReplicationGroupOutput {
 }
 
 /// Represents the input of a DeleteReplicationGroup operation.
-public struct DeleteReplicationGroupInput {
+public struct DeleteReplicationGroupInput: Swift.Sendable {
     /// The name of a final node group (shard) snapshot. ElastiCache creates the snapshot from the primary node in the cluster, rather than one of the replicas; this is to ensure that it captures the freshest data. After the final snapshot is taken, the replication group is immediately deleted.
     public var finalSnapshotIdentifier: Swift.String?
     /// The identifier for the cluster to be deleted. This parameter is not case sensitive.
@@ -5441,8 +5446,8 @@ public struct DeleteReplicationGroupInput {
     }
 }
 
-public struct DeleteReplicationGroupOutput {
-    /// Contains all of the attributes of a specific Redis OSS replication group.
+public struct DeleteReplicationGroupOutput: Swift.Sendable {
+    /// Contains all of the attributes of a specific Valkey or Redis OSS replication group.
     public var replicationGroup: ElastiCacheClientTypes.ReplicationGroup?
 
     public init(
@@ -5453,8 +5458,8 @@ public struct DeleteReplicationGroupOutput {
     }
 }
 
-public struct DeleteServerlessCacheInput {
-    /// Name of the final snapshot to be taken before the serverless cache is deleted. Available for Redis OSS and Serverless Memcached only. Default: NULL, i.e. a final snapshot is not taken.
+public struct DeleteServerlessCacheInput: Swift.Sendable {
+    /// Name of the final snapshot to be taken before the serverless cache is deleted. Available for Valkey, Redis OSS and Serverless Memcached only. Default: NULL, i.e. a final snapshot is not taken.
     public var finalSnapshotName: Swift.String?
     /// The identifier of the serverless cache to be deleted.
     /// This member is required.
@@ -5470,7 +5475,7 @@ public struct DeleteServerlessCacheInput {
     }
 }
 
-public struct DeleteServerlessCacheOutput {
+public struct DeleteServerlessCacheOutput: Swift.Sendable {
     /// Provides the details of the specified serverless cache that is about to be deleted.
     public var serverlessCache: ElastiCacheClientTypes.ServerlessCache?
 
@@ -5482,8 +5487,8 @@ public struct DeleteServerlessCacheOutput {
     }
 }
 
-public struct DeleteServerlessCacheSnapshotInput {
-    /// Idenfitier of the snapshot to be deleted. Available for Redis OSS and Serverless Memcached only.
+public struct DeleteServerlessCacheSnapshotInput: Swift.Sendable {
+    /// Idenfitier of the snapshot to be deleted. Available for Valkey, Redis OSS and Serverless Memcached only.
     /// This member is required.
     public var serverlessCacheSnapshotName: Swift.String?
 
@@ -5495,8 +5500,8 @@ public struct DeleteServerlessCacheSnapshotInput {
     }
 }
 
-public struct DeleteServerlessCacheSnapshotOutput {
-    /// The snapshot to be deleted. Available for Redis OSS and Serverless Memcached only.
+public struct DeleteServerlessCacheSnapshotOutput: Swift.Sendable {
+    /// The snapshot to be deleted. Available for Valkey, Redis OSS and Serverless Memcached only.
     public var serverlessCacheSnapshot: ElastiCacheClientTypes.ServerlessCacheSnapshot?
 
     public init(
@@ -5508,7 +5513,7 @@ public struct DeleteServerlessCacheSnapshotOutput {
 }
 
 /// Represents the input of a DeleteSnapshot operation.
-public struct DeleteSnapshotInput {
+public struct DeleteSnapshotInput: Swift.Sendable {
     /// The name of the snapshot to be deleted.
     /// This member is required.
     public var snapshotName: Swift.String?
@@ -5521,8 +5526,8 @@ public struct DeleteSnapshotInput {
     }
 }
 
-public struct DeleteSnapshotOutput {
-    /// Represents a copy of an entire Redis OSS cluster as of the time when the snapshot was taken.
+public struct DeleteSnapshotOutput: Swift.Sendable {
+    /// Represents a copy of an entire Valkey or Redis OSS cluster as of the time when the snapshot was taken.
     public var snapshot: ElastiCacheClientTypes.Snapshot?
 
     public init(
@@ -5581,7 +5586,7 @@ public struct InvalidUserStateFault: ClientRuntime.ModeledError, AWSClientRuntim
     }
 }
 
-public struct DeleteUserInput {
+public struct DeleteUserInput: Swift.Sendable {
     /// The ID of the user.
     /// This member is required.
     public var userId: Swift.String?
@@ -5594,7 +5599,7 @@ public struct DeleteUserInput {
     }
 }
 
-public struct DeleteUserOutput {
+public struct DeleteUserOutput: Swift.Sendable {
     /// Access permissions string used for this user.
     public var accessString: Swift.String?
     /// The Amazon Resource Name (ARN) of the user.
@@ -5638,7 +5643,7 @@ public struct DeleteUserOutput {
     }
 }
 
-public struct DeleteUserGroupInput {
+public struct DeleteUserGroupInput: Swift.Sendable {
     /// The ID of the user group.
     /// This member is required.
     public var userGroupId: Swift.String?
@@ -5651,7 +5656,7 @@ public struct DeleteUserGroupInput {
     }
 }
 
-public struct DeleteUserGroupOutput {
+public struct DeleteUserGroupOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the user group.
     public var arn: Swift.String?
     /// The current supported value is Redis user.
@@ -5662,7 +5667,7 @@ public struct DeleteUserGroupOutput {
     public var pendingChanges: ElastiCacheClientTypes.UserGroupPendingChanges?
     /// A list of replication groups that the user group can access.
     public var replicationGroups: [Swift.String]?
-    /// Indicates which serverless caches the specified user group is associated with. Available for Redis OSS and Serverless Memcached only.
+    /// Indicates which serverless caches the specified user group is associated with. Available for Valkey, Redis OSS and Serverless Memcached only.
     public var serverlessCaches: [Swift.String]?
     /// Indicates user group status. Can be "creating", "active", "modifying", "deleting".
     public var status: Swift.String?
@@ -5696,14 +5701,14 @@ public struct DeleteUserGroupOutput {
 }
 
 /// Represents the input of a DescribeCacheClusters operation.
-public struct DescribeCacheClustersInput {
+public struct DescribeCacheClustersInput: Swift.Sendable {
     /// The user-supplied cluster identifier. If this parameter is specified, only information about that specific cluster is returned. This parameter isn't case sensitive.
     public var cacheClusterId: Swift.String?
     /// An optional marker returned from a prior request. Use this marker for pagination of results from this operation. If this parameter is specified, the response includes only records beyond the marker, up to the value specified by MaxRecords.
     public var marker: Swift.String?
     /// The maximum number of records to include in the response. If more records exist than the specified MaxRecords value, a marker is included in the response so that the remaining results can be retrieved. Default: 100 Constraints: minimum 20; maximum 100.
     public var maxRecords: Swift.Int?
-    /// An optional flag that can be included in the DescribeCacheCluster request to show only nodes (API/CLI: clusters) that are not members of a replication group. In practice, this mean Memcached and single node Redis OSS clusters.
+    /// An optional flag that can be included in the DescribeCacheCluster request to show only nodes (API/CLI: clusters) that are not members of a replication group. In practice, this means Memcached and single node Valkey or Redis OSS clusters.
     public var showCacheClustersNotInReplicationGroups: Swift.Bool?
     /// An optional flag that can be included in the DescribeCacheCluster request to retrieve information about the individual cache nodes.
     public var showCacheNodeInfo: Swift.Bool?
@@ -5725,7 +5730,7 @@ public struct DescribeCacheClustersInput {
 }
 
 /// Represents the output of a DescribeCacheClusters operation.
-public struct DescribeCacheClustersOutput {
+public struct DescribeCacheClustersOutput: Swift.Sendable {
     /// A list of clusters. Each item in the list contains detailed information about one cluster.
     public var cacheClusters: [ElastiCacheClientTypes.CacheCluster]?
     /// Provides an identifier to allow retrieval of paginated results.
@@ -5742,8 +5747,8 @@ public struct DescribeCacheClustersOutput {
 }
 
 /// Represents the input of a DescribeCacheEngineVersions operation.
-public struct DescribeCacheEngineVersionsInput {
-    /// The name of a specific cache parameter group family to return details for. Valid values are: memcached1.4 | memcached1.5 | memcached1.6 | redis2.6 | redis2.8 | redis3.2 | redis4.0 | redis5.0 | redis6.x | redis6.2 | redis7 Constraints:
+public struct DescribeCacheEngineVersionsInput: Swift.Sendable {
+    /// The name of a specific cache parameter group family to return details for. Valid values are: memcached1.4 | memcached1.5 | memcached1.6 | redis2.6 | redis2.8 | redis3.2 | redis4.0 | redis5.0 | redis6.x | redis6.2 | redis7 | valkey7 Constraints:
     ///
     /// * Must be 1 to 255 alphanumeric characters
     ///
@@ -5781,8 +5786,9 @@ public struct DescribeCacheEngineVersionsInput {
 }
 
 extension ElastiCacheClientTypes {
+
     /// Provides all of the details about a particular cache engine version.
-    public struct CacheEngineVersion {
+    public struct CacheEngineVersion: Swift.Sendable {
         /// The description of the cache engine.
         public var cacheEngineDescription: Swift.String?
         /// The description of the cache engine version.
@@ -5809,11 +5815,10 @@ extension ElastiCacheClientTypes {
             self.engineVersion = engineVersion
         }
     }
-
 }
 
 /// Represents the output of a [DescribeCacheEngineVersions] operation.
-public struct DescribeCacheEngineVersionsOutput {
+public struct DescribeCacheEngineVersionsOutput: Swift.Sendable {
     /// A list of cache engine version details. Each element in the list contains detailed information about one cache engine version.
     public var cacheEngineVersions: [ElastiCacheClientTypes.CacheEngineVersion]?
     /// Provides an identifier to allow retrieval of paginated results.
@@ -5830,7 +5835,7 @@ public struct DescribeCacheEngineVersionsOutput {
 }
 
 /// Represents the input of a DescribeCacheParameterGroups operation.
-public struct DescribeCacheParameterGroupsInput {
+public struct DescribeCacheParameterGroupsInput: Swift.Sendable {
     /// The name of a specific cache parameter group to return details for.
     public var cacheParameterGroupName: Swift.String?
     /// An optional marker returned from a prior request. Use this marker for pagination of results from this operation. If this parameter is specified, the response includes only records beyond the marker, up to the value specified by MaxRecords.
@@ -5851,7 +5856,7 @@ public struct DescribeCacheParameterGroupsInput {
 }
 
 /// Represents the output of a DescribeCacheParameterGroups operation.
-public struct DescribeCacheParameterGroupsOutput {
+public struct DescribeCacheParameterGroupsOutput: Swift.Sendable {
     /// A list of cache parameter groups. Each element in the list contains detailed information about one cache parameter group.
     public var cacheParameterGroups: [ElastiCacheClientTypes.CacheParameterGroup]?
     /// Provides an identifier to allow retrieval of paginated results.
@@ -5868,7 +5873,7 @@ public struct DescribeCacheParameterGroupsOutput {
 }
 
 /// Represents the input of a DescribeCacheParameters operation.
-public struct DescribeCacheParametersInput {
+public struct DescribeCacheParametersInput: Swift.Sendable {
     /// The name of a specific cache parameter group to return details for.
     /// This member is required.
     public var cacheParameterGroupName: Swift.String?
@@ -5894,8 +5899,9 @@ public struct DescribeCacheParametersInput {
 }
 
 extension ElastiCacheClientTypes {
+
     /// A value that applies only to a certain cache node type.
-    public struct CacheNodeTypeSpecificValue : Swift.Equatable {
+    public struct CacheNodeTypeSpecificValue: Swift.Sendable, Swift.Equatable {
         /// The cache node type for which this value applies.
         public var cacheNodeType: Swift.String?
         /// The value for the cache node type.
@@ -5910,12 +5916,11 @@ extension ElastiCacheClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension ElastiCacheClientTypes {
 
-    public enum ChangeType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ChangeType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case immediate
         case requiresReboot
         case sdkUnknown(Swift.String)
@@ -5943,8 +5948,9 @@ extension ElastiCacheClientTypes {
 }
 
 extension ElastiCacheClientTypes {
-    /// A parameter that has a different value for each cache node type it is applied to. For example, in a Redis OSS cluster, a cache.m1.large cache node type would have a larger maxmemory value than a cache.m1.small type.
-    public struct CacheNodeTypeSpecificParameter : Swift.Equatable {
+
+    /// A parameter that has a different value for each cache node type it is applied to. For example, in a Valkey or Redis OSS cluster, a cache.m1.large cache node type would have a larger maxmemory value than a cache.m1.small type.
+    public struct CacheNodeTypeSpecificParameter: Swift.Sendable, Swift.Equatable {
         /// The valid range of values for the parameter.
         public var allowedValues: Swift.String?
         /// A list of cache node types and their corresponding values for this parameter.
@@ -5987,12 +5993,12 @@ extension ElastiCacheClientTypes {
             self.source = source
         }
     }
-
 }
 
 extension ElastiCacheClientTypes {
+
     /// Describes an individual setting that controls some aspect of ElastiCache behavior.
-    public struct Parameter : Swift.Equatable {
+    public struct Parameter: Swift.Sendable, Swift.Equatable {
         /// The valid range of values for the parameter.
         public var allowedValues: Swift.String?
         /// Indicates whether a change to the parameter is applied immediately or requires a reboot for the change to be applied. You can force a reboot or wait until the next maintenance window's reboot. For more information, see [Rebooting a Cluster](https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/Clusters.Rebooting.html).
@@ -6035,11 +6041,10 @@ extension ElastiCacheClientTypes {
             self.source = source
         }
     }
-
 }
 
 /// Represents the output of a DescribeCacheParameters operation.
-public struct DescribeCacheParametersOutput {
+public struct DescribeCacheParametersOutput: Swift.Sendable {
     /// A list of parameters specific to a particular cache node type. Each element in the list contains detailed information about one parameter.
     public var cacheNodeTypeSpecificParameters: [ElastiCacheClientTypes.CacheNodeTypeSpecificParameter]?
     /// Provides an identifier to allow retrieval of paginated results.
@@ -6060,7 +6065,7 @@ public struct DescribeCacheParametersOutput {
 }
 
 /// Represents the input of a DescribeCacheSecurityGroups operation.
-public struct DescribeCacheSecurityGroupsInput {
+public struct DescribeCacheSecurityGroupsInput: Swift.Sendable {
     /// The name of the cache security group to return details for.
     public var cacheSecurityGroupName: Swift.String?
     /// An optional marker returned from a prior request. Use this marker for pagination of results from this operation. If this parameter is specified, the response includes only records beyond the marker, up to the value specified by MaxRecords.
@@ -6081,7 +6086,7 @@ public struct DescribeCacheSecurityGroupsInput {
 }
 
 /// Represents the output of a DescribeCacheSecurityGroups operation.
-public struct DescribeCacheSecurityGroupsOutput {
+public struct DescribeCacheSecurityGroupsOutput: Swift.Sendable {
     /// A list of cache security groups. Each element in the list contains detailed information about one group.
     public var cacheSecurityGroups: [ElastiCacheClientTypes.CacheSecurityGroup]?
     /// Provides an identifier to allow retrieval of paginated results.
@@ -6098,7 +6103,7 @@ public struct DescribeCacheSecurityGroupsOutput {
 }
 
 /// Represents the input of a DescribeCacheSubnetGroups operation.
-public struct DescribeCacheSubnetGroupsInput {
+public struct DescribeCacheSubnetGroupsInput: Swift.Sendable {
     /// The name of the cache subnet group to return details for.
     public var cacheSubnetGroupName: Swift.String?
     /// An optional marker returned from a prior request. Use this marker for pagination of results from this operation. If this parameter is specified, the response includes only records beyond the marker, up to the value specified by MaxRecords.
@@ -6119,7 +6124,7 @@ public struct DescribeCacheSubnetGroupsInput {
 }
 
 /// Represents the output of a DescribeCacheSubnetGroups operation.
-public struct DescribeCacheSubnetGroupsOutput {
+public struct DescribeCacheSubnetGroupsOutput: Swift.Sendable {
     /// A list of cache subnet groups. Each element in the list contains detailed information about one group.
     public var cacheSubnetGroups: [ElastiCacheClientTypes.CacheSubnetGroup]?
     /// Provides an identifier to allow retrieval of paginated results.
@@ -6136,7 +6141,7 @@ public struct DescribeCacheSubnetGroupsOutput {
 }
 
 /// Represents the input of a DescribeEngineDefaultParameters operation.
-public struct DescribeEngineDefaultParametersInput {
+public struct DescribeEngineDefaultParametersInput: Swift.Sendable {
     /// The name of the cache parameter group family. Valid values are: memcached1.4 | memcached1.5 | memcached1.6 | redis2.6 | redis2.8 | redis3.2 | redis4.0 | redis5.0 | redis6.x | redis6.2 | redis7
     /// This member is required.
     public var cacheParameterGroupFamily: Swift.String?
@@ -6158,8 +6163,9 @@ public struct DescribeEngineDefaultParametersInput {
 }
 
 extension ElastiCacheClientTypes {
+
     /// Represents the output of a DescribeEngineDefaultParameters operation.
-    public struct EngineDefaults : Swift.Equatable {
+    public struct EngineDefaults: Swift.Sendable, Swift.Equatable {
         /// A list of parameters specific to a particular cache node type. Each element in the list contains detailed information about one parameter.
         public var cacheNodeTypeSpecificParameters: [ElastiCacheClientTypes.CacheNodeTypeSpecificParameter]?
         /// Specifies the name of the cache parameter group family to which the engine default parameters apply. Valid values are: memcached1.4 | memcached1.5 | memcached1.6 | redis2.6 | redis2.8 | redis3.2 | redis4.0 | redis5.0 | redis6.0 | redis6.x | redis7
@@ -6182,10 +6188,9 @@ extension ElastiCacheClientTypes {
             self.parameters = parameters
         }
     }
-
 }
 
-public struct DescribeEngineDefaultParametersOutput {
+public struct DescribeEngineDefaultParametersOutput: Swift.Sendable {
     /// Represents the output of a DescribeEngineDefaultParameters operation.
     public var engineDefaults: ElastiCacheClientTypes.EngineDefaults?
 
@@ -6199,7 +6204,7 @@ public struct DescribeEngineDefaultParametersOutput {
 
 extension ElastiCacheClientTypes {
 
-    public enum SourceType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SourceType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case cacheCluster
         case cacheParameterGroup
         case cacheSecurityGroup
@@ -6248,7 +6253,7 @@ extension ElastiCacheClientTypes {
 }
 
 /// Represents the input of a DescribeEvents operation.
-public struct DescribeEventsInput {
+public struct DescribeEventsInput: Swift.Sendable {
     /// The number of minutes worth of events to retrieve.
     public var duration: Swift.Int?
     /// The end of the time interval for which to retrieve events, specified in ISO 8601 format. Example: 2017-03-30T07:03:49.555Z
@@ -6285,8 +6290,9 @@ public struct DescribeEventsInput {
 }
 
 extension ElastiCacheClientTypes {
+
     /// Represents a single occurrence of something interesting within the system. Some examples of events are creating a cluster, adding or removing a cache node, or rebooting a node.
-    public struct Event {
+    public struct Event: Swift.Sendable {
         /// The date and time when the event occurred.
         public var date: Foundation.Date?
         /// The text of the event.
@@ -6309,11 +6315,10 @@ extension ElastiCacheClientTypes {
             self.sourceType = sourceType
         }
     }
-
 }
 
 /// Represents the output of a DescribeEvents operation.
-public struct DescribeEventsOutput {
+public struct DescribeEventsOutput: Swift.Sendable {
     /// A list of events. Each element in the list contains detailed information about one event.
     public var events: [ElastiCacheClientTypes.Event]?
     /// Provides an identifier to allow retrieval of paginated results.
@@ -6329,7 +6334,7 @@ public struct DescribeEventsOutput {
     }
 }
 
-public struct DescribeGlobalReplicationGroupsInput {
+public struct DescribeGlobalReplicationGroupsInput: Swift.Sendable {
     /// The name of the Global datastore
     public var globalReplicationGroupId: Swift.String?
     /// An optional marker returned from a prior request. Use this marker for pagination of results from this operation. If this parameter is specified, the response includes only records beyond the marker, up to the value specified by MaxRecords.
@@ -6353,7 +6358,7 @@ public struct DescribeGlobalReplicationGroupsInput {
     }
 }
 
-public struct DescribeGlobalReplicationGroupsOutput {
+public struct DescribeGlobalReplicationGroupsOutput: Swift.Sendable {
     /// Indicates the slot configuration and global identifier for each slice group.
     public var globalReplicationGroups: [ElastiCacheClientTypes.GlobalReplicationGroup]?
     /// An optional marker returned from a prior request. Use this marker for pagination of results from this operation. If this parameter is specified, the response includes only records beyond the marker, up to the value specified by MaxRecords. >
@@ -6370,7 +6375,7 @@ public struct DescribeGlobalReplicationGroupsOutput {
 }
 
 /// Represents the input of a DescribeReplicationGroups operation.
-public struct DescribeReplicationGroupsInput {
+public struct DescribeReplicationGroupsInput: Swift.Sendable {
     /// An optional marker returned from a prior request. Use this marker for pagination of results from this operation. If this parameter is specified, the response includes only records beyond the marker, up to the value specified by MaxRecords.
     public var marker: Swift.String?
     /// The maximum number of records to include in the response. If more records exist than the specified MaxRecords value, a marker is included in the response so that the remaining results can be retrieved. Default: 100 Constraints: minimum 20; maximum 100.
@@ -6391,7 +6396,7 @@ public struct DescribeReplicationGroupsInput {
 }
 
 /// Represents the output of a DescribeReplicationGroups operation.
-public struct DescribeReplicationGroupsOutput {
+public struct DescribeReplicationGroupsOutput: Swift.Sendable {
     /// Provides an identifier to allow retrieval of paginated results.
     public var marker: Swift.String?
     /// A list of replication groups. Each item in the list contains detailed information about one replication group.
@@ -6408,7 +6413,7 @@ public struct DescribeReplicationGroupsOutput {
 }
 
 /// Represents the input of a DescribeReservedCacheNodes operation.
-public struct DescribeReservedCacheNodesInput {
+public struct DescribeReservedCacheNodesInput: Swift.Sendable {
     /// The cache node type filter value. Use this parameter to show only those reservations matching the specified cache node type. The following node types are supported by ElastiCache. Generally speaking, the current generation types provide more memory and computational power at lower cost when compared to their equivalent previous generation counterparts.
     ///
     /// * General purpose:
@@ -6444,11 +6449,11 @@ public struct DescribeReservedCacheNodesInput {
     ///
     /// * All current generation instance types are created in Amazon VPC by default.
     ///
-    /// * Redis OSS append-only files (AOF) are not supported for T1 or T2 instances.
+    /// * Valkey or Redis OSS append-only files (AOF) are not supported for T1 or T2 instances.
     ///
-    /// * Redis OSS Multi-AZ with automatic failover is not supported on T1 instances.
+    /// * Valkey or Redis OSS Multi-AZ with automatic failover is not supported on T1 instances.
     ///
-    /// * Redis OSS configuration variables appendonly and appendfsync are not supported on Redis OSS version 2.8.22 and later.
+    /// * The configuration variables appendonly and appendfsync are not supported on Valkey, or on Redis OSS version 2.8.22 and later.
     public var cacheNodeType: Swift.String?
     /// The duration filter value, specified in years or seconds. Use this parameter to show only reservations for this duration. Valid Values: 1 | 3 | 31536000 | 94608000
     public var duration: Swift.String?
@@ -6488,8 +6493,9 @@ public struct DescribeReservedCacheNodesInput {
 }
 
 extension ElastiCacheClientTypes {
+
     /// Contains the specific price and frequency of a recurring charges for a reserved cache node, or for a reserved cache node offering.
-    public struct RecurringCharge {
+    public struct RecurringCharge: Swift.Sendable {
         /// The monetary amount of the recurring charge.
         public var recurringChargeAmount: Swift.Double?
         /// The frequency of the recurring charge.
@@ -6504,12 +6510,12 @@ extension ElastiCacheClientTypes {
             self.recurringChargeFrequency = recurringChargeFrequency
         }
     }
-
 }
 
 extension ElastiCacheClientTypes {
+
     /// Represents the output of a PurchaseReservedCacheNodesOffering operation.
-    public struct ReservedCacheNode {
+    public struct ReservedCacheNode: Swift.Sendable {
         /// The number of cache nodes that have been reserved.
         public var cacheNodeCount: Swift.Int?
         /// The cache node type for the reserved cache nodes. The following node types are supported by ElastiCache. Generally speaking, the current generation types provide more memory and computational power at lower cost when compared to their equivalent previous generation counterparts.
@@ -6547,11 +6553,11 @@ extension ElastiCacheClientTypes {
         ///
         /// * All current generation instance types are created in Amazon VPC by default.
         ///
-        /// * Redis OSS append-only files (AOF) are not supported for T1 or T2 instances.
+        /// * Valkey or Redis OSS append-only files (AOF) are not supported for T1 or T2 instances.
         ///
-        /// * Redis OSS Multi-AZ with automatic failover is not supported on T1 instances.
+        /// * Valkey or Redis OSS Multi-AZ with automatic failover is not supported on T1 instances.
         ///
-        /// * Redis OSS configuration variables appendonly and appendfsync are not supported on Redis OSS version 2.8.22 and later.
+        /// * The configuration variables appendonly and appendfsync are not supported on Valkey, or on Redis OSS version 2.8.22 and later.
         public var cacheNodeType: Swift.String?
         /// The duration of the reservation in seconds.
         public var duration: Swift.Int?
@@ -6607,11 +6613,10 @@ extension ElastiCacheClientTypes {
             self.usagePrice = usagePrice
         }
     }
-
 }
 
 /// Represents the output of a DescribeReservedCacheNodes operation.
-public struct DescribeReservedCacheNodesOutput {
+public struct DescribeReservedCacheNodesOutput: Swift.Sendable {
     /// Provides an identifier to allow retrieval of paginated results.
     public var marker: Swift.String?
     /// A list of reserved cache nodes. Each element in the list contains detailed information about one node.
@@ -6652,7 +6657,7 @@ public struct ReservedCacheNodesOfferingNotFoundFault: ClientRuntime.ModeledErro
 }
 
 /// Represents the input of a DescribeReservedCacheNodesOfferings operation.
-public struct DescribeReservedCacheNodesOfferingsInput {
+public struct DescribeReservedCacheNodesOfferingsInput: Swift.Sendable {
     /// The cache node type filter value. Use this parameter to show only the available offerings matching the specified cache node type. The following node types are supported by ElastiCache. Generally speaking, the current generation types provide more memory and computational power at lower cost when compared to their equivalent previous generation counterparts.
     ///
     /// * General purpose:
@@ -6688,11 +6693,11 @@ public struct DescribeReservedCacheNodesOfferingsInput {
     ///
     /// * All current generation instance types are created in Amazon VPC by default.
     ///
-    /// * Redis OSS append-only files (AOF) are not supported for T1 or T2 instances.
+    /// * Valkey or Redis OSS append-only files (AOF) are not supported for T1 or T2 instances.
     ///
-    /// * Redis OSS Multi-AZ with automatic failover is not supported on T1 instances.
+    /// * Valkey or Redis OSS Multi-AZ with automatic failover is not supported on T1 instances.
     ///
-    /// * Redis OSS configuration variables appendonly and appendfsync are not supported on Redis OSS version 2.8.22 and later.
+    /// * The configuration variables appendonly and appendfsync are not supported on Valkey, or on Redis OSS version 2.8.22 and later.
     public var cacheNodeType: Swift.String?
     /// Duration filter value, specified in years or seconds. Use this parameter to show only reservations for a given duration. Valid Values: 1 | 3 | 31536000 | 94608000
     public var duration: Swift.String?
@@ -6728,8 +6733,9 @@ public struct DescribeReservedCacheNodesOfferingsInput {
 }
 
 extension ElastiCacheClientTypes {
+
     /// Describes all of the attributes of a reserved cache node offering.
-    public struct ReservedCacheNodesOffering {
+    public struct ReservedCacheNodesOffering: Swift.Sendable {
         /// The cache node type for the reserved cache node. The following node types are supported by ElastiCache. Generally speaking, the current generation types provide more memory and computational power at lower cost when compared to their equivalent previous generation counterparts.
         ///
         /// * General purpose:
@@ -6765,11 +6771,11 @@ extension ElastiCacheClientTypes {
         ///
         /// * All current generation instance types are created in Amazon VPC by default.
         ///
-        /// * Redis OSS append-only files (AOF) are not supported for T1 or T2 instances.
+        /// * Valkey or Redis OSS append-only files (AOF) are not supported for T1 or T2 instances.
         ///
-        /// * Redis OSS Multi-AZ with automatic failover is not supported on T1 instances.
+        /// * Valkey or Redis OSS Multi-AZ with automatic failover is not supported on T1 instances.
         ///
-        /// * Redis OSS configuration variables appendonly and appendfsync are not supported on Redis OSS version 2.8.22 and later.
+        /// * The configuration variables appendonly and appendfsync are not supported on Valkey, or on Redis OSS version 2.8.22 and later.
         public var cacheNodeType: Swift.String?
         /// The duration of the offering. in seconds.
         public var duration: Swift.Int?
@@ -6807,11 +6813,10 @@ extension ElastiCacheClientTypes {
             self.usagePrice = usagePrice
         }
     }
-
 }
 
 /// Represents the output of a DescribeReservedCacheNodesOfferings operation.
-public struct DescribeReservedCacheNodesOfferingsOutput {
+public struct DescribeReservedCacheNodesOfferingsOutput: Swift.Sendable {
     /// Provides an identifier to allow retrieval of paginated results.
     public var marker: Swift.String?
     /// A list of reserved cache node offerings. Each element in the list contains detailed information about one offering.
@@ -6827,7 +6832,7 @@ public struct DescribeReservedCacheNodesOfferingsOutput {
     }
 }
 
-public struct DescribeServerlessCachesInput {
+public struct DescribeServerlessCachesInput: Swift.Sendable {
     /// The maximum number of records in the response. If more records exist than the specified max-records value, the next token is included in the response so that remaining results can be retrieved. The default is 50.
     public var maxResults: Swift.Int?
     /// An optional marker returned from a prior request to support pagination of results from this operation. If this parameter is specified, the response includes only records beyond the marker, up to the value specified by MaxResults.
@@ -6847,7 +6852,7 @@ public struct DescribeServerlessCachesInput {
     }
 }
 
-public struct DescribeServerlessCachesOutput {
+public struct DescribeServerlessCachesOutput: Swift.Sendable {
     /// An optional marker returned from a prior request to support pagination of results from this operation. If this parameter is specified, the response includes only records beyond the marker, up to the value specified by MaxResults.
     public var nextToken: Swift.String?
     /// The serverless caches associated with a given description request.
@@ -6863,16 +6868,16 @@ public struct DescribeServerlessCachesOutput {
     }
 }
 
-public struct DescribeServerlessCacheSnapshotsInput {
-    /// The maximum number of records to include in the response. If more records exist than the specified max-results value, a market is included in the response so that remaining results can be retrieved. Available for Redis OSS and Serverless Memcached only.The default is 50. The Validation Constraints are a maximum of 50.
+public struct DescribeServerlessCacheSnapshotsInput: Swift.Sendable {
+    /// The maximum number of records to include in the response. If more records exist than the specified max-results value, a market is included in the response so that remaining results can be retrieved. Available for Valkey, Redis OSS and Serverless Memcached only.The default is 50. The Validation Constraints are a maximum of 50.
     public var maxResults: Swift.Int?
-    /// An optional marker returned from a prior request to support pagination of results from this operation. If this parameter is specified, the response includes only records beyond the marker, up to the value specified by max-results. Available for Redis OSS and Serverless Memcached only.
+    /// An optional marker returned from a prior request to support pagination of results from this operation. If this parameter is specified, the response includes only records beyond the marker, up to the value specified by max-results. Available for Valkey, Redis OSS and Serverless Memcached only.
     public var nextToken: Swift.String?
-    /// The identifier of serverless cache. If this parameter is specified, only snapshots associated with that specific serverless cache are described. Available for Redis OSS and Serverless Memcached only.
+    /// The identifier of serverless cache. If this parameter is specified, only snapshots associated with that specific serverless cache are described. Available for Valkey, Redis OSS and Serverless Memcached only.
     public var serverlessCacheName: Swift.String?
-    /// The identifier of the serverless cache’s snapshot. If this parameter is specified, only this snapshot is described. Available for Redis OSS and Serverless Memcached only.
+    /// The identifier of the serverless cache’s snapshot. If this parameter is specified, only this snapshot is described. Available for Valkey, Redis OSS and Serverless Memcached only.
     public var serverlessCacheSnapshotName: Swift.String?
-    /// The type of snapshot that is being described. Available for Redis OSS and Serverless Memcached only.
+    /// The type of snapshot that is being described. Available for Valkey, Redis OSS and Serverless Memcached only.
     public var snapshotType: Swift.String?
 
     public init(
@@ -6891,10 +6896,10 @@ public struct DescribeServerlessCacheSnapshotsInput {
     }
 }
 
-public struct DescribeServerlessCacheSnapshotsOutput {
-    /// An optional marker returned from a prior request to support pagination of results from this operation. If this parameter is specified, the response includes only records beyond the marker, up to the value specified by max-results. Available for Redis OSS and Serverless Memcached only.
+public struct DescribeServerlessCacheSnapshotsOutput: Swift.Sendable {
+    /// An optional marker returned from a prior request to support pagination of results from this operation. If this parameter is specified, the response includes only records beyond the marker, up to the value specified by max-results. Available for Valkey, Redis OSS and Serverless Memcached only.
     public var nextToken: Swift.String?
-    /// The serverless caches snapshots associated with a given description request. Available for Redis OSS and Serverless Memcached only.
+    /// The serverless caches snapshots associated with a given description request. Available for Valkey, Redis OSS and Serverless Memcached only.
     public var serverlessCacheSnapshots: [ElastiCacheClientTypes.ServerlessCacheSnapshot]?
 
     public init(
@@ -6909,7 +6914,7 @@ public struct DescribeServerlessCacheSnapshotsOutput {
 
 extension ElastiCacheClientTypes {
 
-    public enum ServiceUpdateStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ServiceUpdateStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case available
         case cancelled
         case expired
@@ -6939,7 +6944,7 @@ extension ElastiCacheClientTypes {
     }
 }
 
-public struct DescribeServiceUpdatesInput {
+public struct DescribeServiceUpdatesInput: Swift.Sendable {
     /// An optional marker returned from a prior request. Use this marker for pagination of results from this operation. If this parameter is specified, the response includes only records beyond the marker, up to the value specified by MaxRecords.
     public var marker: Swift.String?
     /// The maximum number of records to include in the response
@@ -6965,7 +6970,7 @@ public struct DescribeServiceUpdatesInput {
 
 extension ElastiCacheClientTypes {
 
-    public enum ServiceUpdateSeverity: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ServiceUpdateSeverity: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case critical
         case important
         case low
@@ -7000,7 +7005,7 @@ extension ElastiCacheClientTypes {
 
 extension ElastiCacheClientTypes {
 
-    public enum ServiceUpdateType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ServiceUpdateType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case securityUpdate
         case sdkUnknown(Swift.String)
 
@@ -7025,13 +7030,14 @@ extension ElastiCacheClientTypes {
 }
 
 extension ElastiCacheClientTypes {
-    /// An update that you can apply to your Redis OSS clusters.
-    public struct ServiceUpdate {
+
+    /// An update that you can apply to your Valkey or Redis OSS clusters.
+    public struct ServiceUpdate: Swift.Sendable {
         /// Indicates whether the service update will be automatically applied once the recommended apply-by date has expired.
         public var autoUpdateAfterRecommendedApplyByDate: Swift.Bool?
-        /// The Elasticache engine to which the update applies. Either Redis OSS or Memcached.
+        /// The Elasticache engine to which the update applies. Either Valkey, Redis OSS or Memcached.
         public var engine: Swift.String?
-        /// The Elasticache engine version to which the update applies. Either Redis OSS or Memcached engine version.
+        /// The Elasticache engine version to which the update applies. Either Valkey, Redis OSS or Memcached engine version.
         public var engineVersion: Swift.String?
         /// The estimated length of time the service update will take
         public var estimatedUpdateTime: Swift.String?
@@ -7081,10 +7087,9 @@ extension ElastiCacheClientTypes {
             self.serviceUpdateType = serviceUpdateType
         }
     }
-
 }
 
-public struct DescribeServiceUpdatesOutput {
+public struct DescribeServiceUpdatesOutput: Swift.Sendable {
     /// An optional marker returned from a prior request. Use this marker for pagination of results from this operation. If this parameter is specified, the response includes only records beyond the marker, up to the value specified by MaxRecords.
     public var marker: Swift.String?
     /// A list of service updates
@@ -7101,7 +7106,7 @@ public struct DescribeServiceUpdatesOutput {
 }
 
 /// Represents the input of a DescribeSnapshotsMessage operation.
-public struct DescribeSnapshotsInput {
+public struct DescribeSnapshotsInput: Swift.Sendable {
     /// A user-supplied cluster identifier. If this parameter is specified, only snapshots associated with that specific cluster are described.
     public var cacheClusterId: Swift.String?
     /// An optional marker returned from a prior request. Use this marker for pagination of results from this operation. If this parameter is specified, the response includes only records beyond the marker, up to the value specified by MaxRecords.
@@ -7138,7 +7143,7 @@ public struct DescribeSnapshotsInput {
 }
 
 /// Represents the output of a DescribeSnapshots operation.
-public struct DescribeSnapshotsOutput {
+public struct DescribeSnapshotsOutput: Swift.Sendable {
     /// An optional marker returned from a prior request. Use this marker for pagination of results from this operation. If this parameter is specified, the response includes only records beyond the marker, up to the value specified by MaxRecords.
     public var marker: Swift.String?
     /// A list of snapshots. Each item in the list contains detailed information about one snapshot.
@@ -7155,8 +7160,9 @@ public struct DescribeSnapshotsOutput {
 }
 
 extension ElastiCacheClientTypes {
+
     /// Filters update actions from the service updates that are in available status during the time range.
-    public struct TimeRangeFilter {
+    public struct TimeRangeFilter: Swift.Sendable {
         /// The end time of the time range filter
         public var endTime: Foundation.Date?
         /// The start time of the time range filter
@@ -7171,13 +7177,12 @@ extension ElastiCacheClientTypes {
             self.startTime = startTime
         }
     }
-
 }
 
-public struct DescribeUpdateActionsInput {
+public struct DescribeUpdateActionsInput: Swift.Sendable {
     /// The cache cluster IDs
     public var cacheClusterIds: [Swift.String]?
-    /// The Elasticache engine to which the update applies. Either Redis OSS or Memcached.
+    /// The Elasticache engine to which the update applies. Either Valkey, Redis OSS or Memcached.
     public var engine: Swift.String?
     /// An optional marker returned from a prior request. Use this marker for pagination of results from this operation. If this parameter is specified, the response includes only records beyond the marker, up to the value specified by MaxRecords.
     public var marker: Swift.String?
@@ -7224,7 +7229,7 @@ public struct DescribeUpdateActionsInput {
 
 extension ElastiCacheClientTypes {
 
-    public enum NodeUpdateInitiatedBy: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum NodeUpdateInitiatedBy: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case customer
         case system
         case sdkUnknown(Swift.String)
@@ -7253,7 +7258,7 @@ extension ElastiCacheClientTypes {
 
 extension ElastiCacheClientTypes {
 
-    public enum NodeUpdateStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum NodeUpdateStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case complete
         case inProgress
         case notApplied
@@ -7293,8 +7298,9 @@ extension ElastiCacheClientTypes {
 }
 
 extension ElastiCacheClientTypes {
+
     /// The status of the service update on the cache node
-    public struct CacheNodeUpdateStatus {
+    public struct CacheNodeUpdateStatus: Swift.Sendable {
         /// The node ID of the cache cluster
         public var cacheNodeId: Swift.String?
         /// The deletion date of the node
@@ -7333,12 +7339,12 @@ extension ElastiCacheClientTypes {
             self.nodeUpdateStatusModifiedDate = nodeUpdateStatusModifiedDate
         }
     }
-
 }
 
 extension ElastiCacheClientTypes {
+
     /// The status of the service update on the node group member
-    public struct NodeGroupMemberUpdateStatus {
+    public struct NodeGroupMemberUpdateStatus: Swift.Sendable {
         /// The cache cluster ID
         public var cacheClusterId: Swift.String?
         /// The node ID of the cache cluster
@@ -7381,12 +7387,12 @@ extension ElastiCacheClientTypes {
             self.nodeUpdateStatusModifiedDate = nodeUpdateStatusModifiedDate
         }
     }
-
 }
 
 extension ElastiCacheClientTypes {
+
     /// The status of the service update on the node group
-    public struct NodeGroupUpdateStatus {
+    public struct NodeGroupUpdateStatus: Swift.Sendable {
         /// The ID of the node group
         public var nodeGroupId: Swift.String?
         /// The status of the service update on the node group member
@@ -7401,12 +7407,11 @@ extension ElastiCacheClientTypes {
             self.nodeGroupMemberUpdateStatus = nodeGroupMemberUpdateStatus
         }
     }
-
 }
 
 extension ElastiCacheClientTypes {
 
-    public enum SlaMet: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SlaMet: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case na
         case no
         case yes
@@ -7437,13 +7442,14 @@ extension ElastiCacheClientTypes {
 }
 
 extension ElastiCacheClientTypes {
+
     /// The status of the service update for a specific replication group
-    public struct UpdateAction {
+    public struct UpdateAction: Swift.Sendable {
         /// The ID of the cache cluster
         public var cacheClusterId: Swift.String?
         /// The status of the service update on the cache node
         public var cacheNodeUpdateStatus: [ElastiCacheClientTypes.CacheNodeUpdateStatus]?
-        /// The Elasticache engine to which the update applies. Either Redis OSS or Memcached.
+        /// The Elasticache engine to which the update applies. Either Valkey, Redis OSS or Memcached.
         public var engine: Swift.String?
         /// The estimated length of time for the update to complete
         public var estimatedUpdateTime: Swift.String?
@@ -7513,10 +7519,9 @@ extension ElastiCacheClientTypes {
             self.updateActionStatusModifiedDate = updateActionStatusModifiedDate
         }
     }
-
 }
 
-public struct DescribeUpdateActionsOutput {
+public struct DescribeUpdateActionsOutput: Swift.Sendable {
     /// An optional marker returned from a prior request. Use this marker for pagination of results from this operation. If this parameter is specified, the response includes only records beyond the marker, up to the value specified by MaxRecords.
     public var marker: Swift.String?
     /// Returns a list of update actions
@@ -7532,7 +7537,7 @@ public struct DescribeUpdateActionsOutput {
     }
 }
 
-public struct DescribeUserGroupsInput {
+public struct DescribeUserGroupsInput: Swift.Sendable {
     /// An optional marker returned from a prior request. Use this marker for pagination of results from this operation. If this parameter is specified, the response includes only records beyond the marker, up to the value specified by MaxRecords. >
     public var marker: Swift.String?
     /// The maximum number of records to include in the response. If more records exist than the specified MaxRecords value, a marker is included in the response so that the remaining results can be retrieved.
@@ -7553,7 +7558,8 @@ public struct DescribeUserGroupsInput {
 }
 
 extension ElastiCacheClientTypes {
-    public struct UserGroup {
+
+    public struct UserGroup: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the user group.
         public var arn: Swift.String?
         /// The current supported value is Redis user.
@@ -7564,7 +7570,7 @@ extension ElastiCacheClientTypes {
         public var pendingChanges: ElastiCacheClientTypes.UserGroupPendingChanges?
         /// A list of replication groups that the user group can access.
         public var replicationGroups: [Swift.String]?
-        /// Indicates which serverless caches the specified user group is associated with. Available for Redis OSS and Serverless Memcached only.
+        /// Indicates which serverless caches the specified user group is associated with. Available for Valkey, Redis OSS and Serverless Memcached only.
         public var serverlessCaches: [Swift.String]?
         /// Indicates user group status. Can be "creating", "active", "modifying", "deleting".
         public var status: Swift.String?
@@ -7596,10 +7602,9 @@ extension ElastiCacheClientTypes {
             self.userIds = userIds
         }
     }
-
 }
 
-public struct DescribeUserGroupsOutput {
+public struct DescribeUserGroupsOutput: Swift.Sendable {
     /// An optional marker returned from a prior request. Use this marker for pagination of results from this operation. If this parameter is specified, the response includes only records beyond the marker, up to the value specified by MaxRecords.>
     public var marker: Swift.String?
     /// Returns a list of user groups.
@@ -7616,8 +7621,9 @@ public struct DescribeUserGroupsOutput {
 }
 
 extension ElastiCacheClientTypes {
+
     /// Used to streamline results of a search based on the property being filtered.
-    public struct Filter {
+    public struct Filter: Swift.Sendable {
         /// The property being filtered. For example, UserId.
         /// This member is required.
         public var name: Swift.String?
@@ -7634,11 +7640,10 @@ extension ElastiCacheClientTypes {
             self.values = values
         }
     }
-
 }
 
-public struct DescribeUsersInput {
-    /// The Redis OSS engine.
+public struct DescribeUsersInput: Swift.Sendable {
+    /// The engine.
     public var engine: Swift.String?
     /// Filter to determine the list of User IDs to return.
     public var filters: [ElastiCacheClientTypes.Filter]?
@@ -7666,7 +7671,8 @@ public struct DescribeUsersInput {
 }
 
 extension ElastiCacheClientTypes {
-    public struct User {
+
+    public struct User: Swift.Sendable {
         /// Access permissions string used for this user.
         public var accessString: Swift.String?
         /// The Amazon Resource Name (ARN) of the user.
@@ -7709,10 +7715,9 @@ extension ElastiCacheClientTypes {
             self.userName = userName
         }
     }
-
 }
 
-public struct DescribeUsersOutput {
+public struct DescribeUsersOutput: Swift.Sendable {
     /// An optional marker returned from a prior request. Use this marker for pagination of results from this operation. If this parameter is specified, the response includes only records beyond the marker, up to the value specified by MaxRecords. >
     public var marker: Swift.String?
     /// A list of users.
@@ -7728,7 +7733,7 @@ public struct DescribeUsersOutput {
     }
 }
 
-public struct DisassociateGlobalReplicationGroupInput {
+public struct DisassociateGlobalReplicationGroupInput: Swift.Sendable {
     /// The name of the Global datastore
     /// This member is required.
     public var globalReplicationGroupId: Swift.String?
@@ -7751,7 +7756,7 @@ public struct DisassociateGlobalReplicationGroupInput {
     }
 }
 
-public struct DisassociateGlobalReplicationGroupOutput {
+public struct DisassociateGlobalReplicationGroupOutput: Swift.Sendable {
     /// Consists of a primary cluster that accepts writes and an associated secondary cluster that resides in a different Amazon region. The secondary cluster accepts only reads. The primary cluster automatically replicates updates to the secondary cluster.
     ///
     /// * The GlobalReplicationGroupIdSuffix represents the name of the Global datastore, which is what you use to associate a secondary cluster.
@@ -7765,11 +7770,11 @@ public struct DisassociateGlobalReplicationGroupOutput {
     }
 }
 
-public struct ExportServerlessCacheSnapshotInput {
-    /// Name of the Amazon S3 bucket to export the snapshot to. The Amazon S3 bucket must also be in same region as the snapshot. Available for Redis OSS only.
+public struct ExportServerlessCacheSnapshotInput: Swift.Sendable {
+    /// Name of the Amazon S3 bucket to export the snapshot to. The Amazon S3 bucket must also be in same region as the snapshot. Available for Valkey and Redis OSS only.
     /// This member is required.
     public var s3BucketName: Swift.String?
-    /// The identifier of the serverless cache snapshot to be exported to S3. Available for Redis OSS only.
+    /// The identifier of the serverless cache snapshot to be exported to S3. Available for Valkey and Redis OSS only.
     /// This member is required.
     public var serverlessCacheSnapshotName: Swift.String?
 
@@ -7783,8 +7788,8 @@ public struct ExportServerlessCacheSnapshotInput {
     }
 }
 
-public struct ExportServerlessCacheSnapshotOutput {
-    /// The state of a serverless cache at a specific point in time, to the millisecond. Available for Redis OSS and Serverless Memcached only.
+public struct ExportServerlessCacheSnapshotOutput: Swift.Sendable {
+    /// The state of a serverless cache at a specific point in time, to the millisecond. Available for Valkey, Redis OSS and Serverless Memcached only.
     public var serverlessCacheSnapshot: ElastiCacheClientTypes.ServerlessCacheSnapshot?
 
     public init(
@@ -7795,7 +7800,7 @@ public struct ExportServerlessCacheSnapshotOutput {
     }
 }
 
-public struct FailoverGlobalReplicationGroupInput {
+public struct FailoverGlobalReplicationGroupInput: Swift.Sendable {
     /// The name of the Global datastore
     /// This member is required.
     public var globalReplicationGroupId: Swift.String?
@@ -7818,7 +7823,7 @@ public struct FailoverGlobalReplicationGroupInput {
     }
 }
 
-public struct FailoverGlobalReplicationGroupOutput {
+public struct FailoverGlobalReplicationGroupOutput: Swift.Sendable {
     /// Consists of a primary cluster that accepts writes and an associated secondary cluster that resides in a different Amazon region. The secondary cluster accepts only reads. The primary cluster automatically replicates updates to the secondary cluster.
     ///
     /// * The GlobalReplicationGroupIdSuffix represents the name of the Global datastore, which is what you use to associate a secondary cluster.
@@ -7833,9 +7838,10 @@ public struct FailoverGlobalReplicationGroupOutput {
 }
 
 extension ElastiCacheClientTypes {
+
     /// A list of PreferredAvailabilityZones objects that specifies the configuration of a node group in the resharded cluster.
-    public struct ReshardingConfiguration {
-        /// Either the ElastiCache (Redis OSS) supplied 4-digit id or a user supplied id for the node group these configuration values apply to.
+    public struct ReshardingConfiguration: Swift.Sendable {
+        /// Either the ElastiCache supplied 4-digit id or a user supplied id for the node group these configuration values apply to.
         public var nodeGroupId: Swift.String?
         /// A list of preferred availability zones for the nodes in this cluster.
         public var preferredAvailabilityZones: [Swift.String]?
@@ -7849,12 +7855,12 @@ extension ElastiCacheClientTypes {
             self.preferredAvailabilityZones = preferredAvailabilityZones
         }
     }
-
 }
 
 extension ElastiCacheClientTypes {
+
     /// A list of the replication groups
-    public struct RegionalConfiguration {
+    public struct RegionalConfiguration: Swift.Sendable {
         /// The name of the secondary cluster
         /// This member is required.
         public var replicationGroupId: Swift.String?
@@ -7876,10 +7882,9 @@ extension ElastiCacheClientTypes {
             self.reshardingConfiguration = reshardingConfiguration
         }
     }
-
 }
 
-public struct IncreaseNodeGroupsInGlobalReplicationGroupInput {
+public struct IncreaseNodeGroupsInGlobalReplicationGroupInput: Swift.Sendable {
     /// Indicates that the process begins immediately. At present, the only permitted value for this parameter is true.
     /// This member is required.
     public var applyImmediately: Swift.Bool?
@@ -7906,7 +7911,7 @@ public struct IncreaseNodeGroupsInGlobalReplicationGroupInput {
     }
 }
 
-public struct IncreaseNodeGroupsInGlobalReplicationGroupOutput {
+public struct IncreaseNodeGroupsInGlobalReplicationGroupOutput: Swift.Sendable {
     /// Consists of a primary cluster that accepts writes and an associated secondary cluster that resides in a different Amazon region. The secondary cluster accepts only reads. The primary cluster automatically replicates updates to the secondary cluster.
     ///
     /// * The GlobalReplicationGroupIdSuffix represents the name of the Global datastore, which is what you use to associate a secondary cluster.
@@ -7944,13 +7949,13 @@ public struct InvalidKMSKeyFault: ClientRuntime.ModeledError, AWSClientRuntime.A
     }
 }
 
-public struct IncreaseReplicaCountInput {
+public struct IncreaseReplicaCountInput: Swift.Sendable {
     /// If True, the number of replica nodes is increased immediately. ApplyImmediately=False is not currently supported.
     /// This member is required.
     public var applyImmediately: Swift.Bool?
-    /// The number of read replica nodes you want at the completion of this operation. For Redis OSS (cluster mode disabled) replication groups, this is the number of replica nodes in the replication group. For Redis OSS (cluster mode enabled) replication groups, this is the number of replica nodes in each of the replication group's node groups.
+    /// The number of read replica nodes you want at the completion of this operation. For Valkey or Redis OSS (cluster mode disabled) replication groups, this is the number of replica nodes in the replication group. For Valkey or Redis OSS (cluster mode enabled) replication groups, this is the number of replica nodes in each of the replication group's node groups.
     public var newReplicaCount: Swift.Int?
-    /// A list of ConfigureShard objects that can be used to configure each shard in a Redis OSS (cluster mode enabled) replication group. The ConfigureShard has three members: NewReplicaCount, NodeGroupId, and PreferredAvailabilityZones.
+    /// A list of ConfigureShard objects that can be used to configure each shard in a Valkey or Redis OSS (cluster mode enabled) replication group. The ConfigureShard has three members: NewReplicaCount, NodeGroupId, and PreferredAvailabilityZones.
     public var replicaConfiguration: [ElastiCacheClientTypes.ConfigureShard]?
     /// The id of the replication group to which you want to add replica nodes.
     /// This member is required.
@@ -7970,8 +7975,8 @@ public struct IncreaseReplicaCountInput {
     }
 }
 
-public struct IncreaseReplicaCountOutput {
-    /// Contains all of the attributes of a specific Redis OSS replication group.
+public struct IncreaseReplicaCountOutput: Swift.Sendable {
+    /// Contains all of the attributes of a specific Valkey or Redis OSS replication group.
     public var replicationGroup: ElastiCacheClientTypes.ReplicationGroup?
 
     public init(
@@ -7983,7 +7988,7 @@ public struct IncreaseReplicaCountOutput {
 }
 
 /// The input parameters for the ListAllowedNodeTypeModifications operation.
-public struct ListAllowedNodeTypeModificationsInput {
+public struct ListAllowedNodeTypeModificationsInput: Swift.Sendable {
     /// The name of the cluster you want to scale up to a larger node instanced type. ElastiCache uses the cluster id to identify the current node type of this cluster and from that to create a list of node types you can scale up to. You must provide a value for either the CacheClusterId or the ReplicationGroupId.
     public var cacheClusterId: Swift.String?
     /// The name of the replication group want to scale up to a larger node type. ElastiCache uses the replication group id to identify the current node type being used by this replication group, and from that to create a list of node types you can scale up to. You must provide a value for either the CacheClusterId or the ReplicationGroupId.
@@ -8000,10 +8005,10 @@ public struct ListAllowedNodeTypeModificationsInput {
 }
 
 /// Represents the allowed node types you can use to modify your cluster or replication group.
-public struct ListAllowedNodeTypeModificationsOutput {
-    /// A string list, each element of which specifies a cache node type which you can use to scale your cluster or replication group. When scaling down a Redis OSS cluster or replication group using ModifyCacheCluster or ModifyReplicationGroup, use a value from this list for the CacheNodeType parameter.
+public struct ListAllowedNodeTypeModificationsOutput: Swift.Sendable {
+    /// A string list, each element of which specifies a cache node type which you can use to scale your cluster or replication group. When scaling down a Valkey or Redis OSS cluster or replication group using ModifyCacheCluster or ModifyReplicationGroup, use a value from this list for the CacheNodeType parameter.
     public var scaleDownModifications: [Swift.String]?
-    /// A string list, each element of which specifies a cache node type which you can use to scale your cluster or replication group. When scaling up a Redis OSS cluster or replication group using ModifyCacheCluster or ModifyReplicationGroup, use a value from this list for the CacheNodeType parameter.
+    /// A string list, each element of which specifies a cache node type which you can use to scale your cluster or replication group. When scaling up a Valkey or Redis OSS cluster or replication group using ModifyCacheCluster or ModifyReplicationGroup, use a value from this list for the CacheNodeType parameter.
     public var scaleUpModifications: [Swift.String]?
 
     public init(
@@ -8017,7 +8022,7 @@ public struct ListAllowedNodeTypeModificationsOutput {
 }
 
 /// The input parameters for the ListTagsForResource operation.
-public struct ListTagsForResourceInput {
+public struct ListTagsForResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the resource for which you want the list of tags, for example arn:aws:elasticache:us-west-2:0123456789:cluster:myCluster or arn:aws:elasticache:us-west-2:0123456789:snapshot:mySnapshot. For more information about ARNs, see [Amazon Resource Names (ARNs) and Amazon Web Services Service Namespaces](https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html).
     /// This member is required.
     public var resourceName: Swift.String?
@@ -8031,7 +8036,7 @@ public struct ListTagsForResourceInput {
 }
 
 /// Represents the output from the AddTagsToResource, ListTagsForResource, and RemoveTagsFromResource operations.
-public struct ListTagsForResourceOutput {
+public struct ListTagsForResourceOutput: Swift.Sendable {
     /// A list of tags as key-value pairs.
     public var tagList: [ElastiCacheClientTypes.Tag]?
 
@@ -8045,7 +8050,7 @@ public struct ListTagsForResourceOutput {
 
 extension ElastiCacheClientTypes {
 
-    public enum AuthTokenUpdateStrategyType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AuthTokenUpdateStrategyType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case delete
         case rotate
         case `set`
@@ -8076,7 +8081,7 @@ extension ElastiCacheClientTypes {
 }
 
 /// Represents the input of a ModifyCacheCluster operation.
-public struct ModifyCacheClusterInput {
+public struct ModifyCacheClusterInput: Swift.Sendable {
     /// If true, this parameter causes the modifications in this request and any pending modifications to be applied, asynchronously and as soon as possible, regardless of the PreferredMaintenanceWindow setting for the cluster. If false, changes to the cluster are applied on the next maintenance reboot, or the next failure reboot, whichever occurs first. If you perform a ModifyCacheCluster before a pending modification is applied, the pending modification is replaced by the newer modification. Valid values: true | false Default: false
     public var applyImmediately: Swift.Bool?
     /// Reserved parameter. The password used to access a password protected server. This parameter must be specified with the auth-token-update parameter. Password constraints:
@@ -8099,9 +8104,9 @@ public struct ModifyCacheClusterInput {
     /// * DELETE - allowed only when transitioning to RBAC
     ///
     ///
-    /// For more information, see [Authenticating Users with Redis OSS AUTH](http://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/auth.html)
+    /// For more information, see [Authenticating Users with AUTH](http://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/auth.html)
     public var authTokenUpdateStrategy: ElastiCacheClientTypes.AuthTokenUpdateStrategyType?
-    ///  If you are running Redis OSS engine version 6.0 or later, set this parameter to yes if you want to opt-in to the next auto minor version upgrade campaign. This parameter is disabled for previous versions.
+    ///  If you are running Valkey 7.2 or Redis OSS engine version 6.0 or later, set this parameter to yes to opt-in to the next auto minor version upgrade campaign. This parameter is disabled for previous versions.
     public var autoMinorVersionUpgrade: Swift.Bool?
     /// Specifies whether the new nodes in this Memcached cluster are all created in a single Availability Zone or created across multiple Availability Zones. Valid values: single-az | cross-az. This option is only supported for Memcached clusters. You cannot specify single-az if the Memcached cluster already has cache nodes in different Availability Zones. If cross-az is specified, existing Memcached nodes remain in their current Availability Zone. Only newly created nodes are located in different Availability Zones.
     public var azMode: ElastiCacheClientTypes.AZMode?
@@ -8116,9 +8121,11 @@ public struct ModifyCacheClusterInput {
     public var cacheParameterGroupName: Swift.String?
     /// A list of cache security group names to authorize on this cluster. This change is asynchronously applied as soon as possible. You can use this parameter only with clusters that are created outside of an Amazon Virtual Private Cloud (Amazon VPC). Constraints: Must contain no more than 255 alphanumeric characters. Must not be "Default".
     public var cacheSecurityGroupNames: [Swift.String]?
+    /// Modifies the engine listed in a cluster message. The options are redis, memcached or valkey.
+    public var engine: Swift.String?
     /// The upgraded version of the cache engine to be run on the cache nodes. Important: You can upgrade to a newer engine version (see [Selecting a Cache Engine and Version](https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/SelectEngine.html#VersionManagement)), but you cannot downgrade to an earlier engine version. If you want to use an earlier engine version, you must delete the existing cluster and create it anew with the earlier engine version.
     public var engineVersion: Swift.String?
-    /// The network type you choose when modifying a cluster, either ipv4 | ipv6. IPv6 is supported for workloads using Redis OSS engine version 6.2 onward or Memcached engine version 1.6.6 on all instances built on the [Nitro system](http://aws.amazon.com/ec2/nitro/).
+    /// The network type you choose when modifying a cluster, either ipv4 | ipv6. IPv6 is supported for workloads using Valkey 7.2 and above, Redis OSS engine version 6.2 and above or Memcached engine version 1.6.6 and above on all instances built on the [Nitro system](http://aws.amazon.com/ec2/nitro/).
     public var ipDiscovery: ElastiCacheClientTypes.IpDiscovery?
     /// Specifies the destination, format and type of the logs.
     public var logDeliveryConfigurations: [ElastiCacheClientTypes.LogDeliveryConfigurationRequest]?
@@ -8178,7 +8185,7 @@ public struct ModifyCacheClusterInput {
     public var notificationTopicArn: Swift.String?
     /// The status of the Amazon SNS notification topic. Notifications are sent only if the status is active. Valid values: active | inactive
     public var notificationTopicStatus: Swift.String?
-    /// The number of cache nodes that the cluster should have. If the value for NumCacheNodes is greater than the sum of the number of current cache nodes and the number of cache nodes pending creation (which may be zero), more nodes are added. If the value is less than the number of existing cache nodes, nodes are removed. If the value is equal to the number of current cache nodes, any pending add or remove requests are canceled. If you are removing cache nodes, you must use the CacheNodeIdsToRemove parameter to provide the IDs of the specific cache nodes to remove. For clusters running Redis OSS, this value must be 1. For clusters running Memcached, this value must be between 1 and 40. Adding or removing Memcached cache nodes can be applied immediately or as a pending operation (see ApplyImmediately). A pending operation to modify the number of cache nodes in a cluster during its maintenance window, whether by adding or removing nodes in accordance with the scale out architecture, is not queued. The customer's latest request to add or remove nodes to the cluster overrides any previous pending operations to modify the number of cache nodes in the cluster. For example, a request to remove 2 nodes would override a previous pending operation to remove 3 nodes. Similarly, a request to add 2 nodes would override a previous pending operation to remove 3 nodes and vice versa. As Memcached cache nodes may now be provisioned in different Availability Zones with flexible cache node placement, a request to add nodes does not automatically override a previous pending operation to add nodes. The customer can modify the previous pending operation to add more nodes or explicitly cancel the pending request and retry the new request. To cancel pending operations to modify the number of cache nodes in a cluster, use the ModifyCacheCluster request and set NumCacheNodes equal to the number of cache nodes currently in the cluster.
+    /// The number of cache nodes that the cluster should have. If the value for NumCacheNodes is greater than the sum of the number of current cache nodes and the number of cache nodes pending creation (which may be zero), more nodes are added. If the value is less than the number of existing cache nodes, nodes are removed. If the value is equal to the number of current cache nodes, any pending add or remove requests are canceled. If you are removing cache nodes, you must use the CacheNodeIdsToRemove parameter to provide the IDs of the specific cache nodes to remove. For clusters running Valkey or Redis OSS, this value must be 1. For clusters running Memcached, this value must be between 1 and 40. Adding or removing Memcached cache nodes can be applied immediately or as a pending operation (see ApplyImmediately). A pending operation to modify the number of cache nodes in a cluster during its maintenance window, whether by adding or removing nodes in accordance with the scale out architecture, is not queued. The customer's latest request to add or remove nodes to the cluster overrides any previous pending operations to modify the number of cache nodes in the cluster. For example, a request to remove 2 nodes would override a previous pending operation to remove 3 nodes. Similarly, a request to add 2 nodes would override a previous pending operation to remove 3 nodes and vice versa. As Memcached cache nodes may now be provisioned in different Availability Zones with flexible cache node placement, a request to add nodes does not automatically override a previous pending operation to add nodes. The customer can modify the previous pending operation to add more nodes or explicitly cancel the pending request and retry the new request. To cancel pending operations to modify the number of cache nodes in a cluster, use the ModifyCacheCluster request and set NumCacheNodes equal to the number of cache nodes currently in the cluster.
     public var numCacheNodes: Swift.Int?
     /// Specifies the weekly time range during which maintenance on the cluster is performed. It is specified as a range in the format ddd:hh24:mi-ddd:hh24:mi (24H Clock UTC). The minimum maintenance window is a 60 minute period. Valid values for ddd are:
     ///
@@ -8217,6 +8224,7 @@ public struct ModifyCacheClusterInput {
         cacheNodeType: Swift.String? = nil,
         cacheParameterGroupName: Swift.String? = nil,
         cacheSecurityGroupNames: [Swift.String]? = nil,
+        engine: Swift.String? = nil,
         engineVersion: Swift.String? = nil,
         ipDiscovery: ElastiCacheClientTypes.IpDiscovery? = nil,
         logDeliveryConfigurations: [ElastiCacheClientTypes.LogDeliveryConfigurationRequest]? = nil,
@@ -8240,6 +8248,7 @@ public struct ModifyCacheClusterInput {
         self.cacheNodeType = cacheNodeType
         self.cacheParameterGroupName = cacheParameterGroupName
         self.cacheSecurityGroupNames = cacheSecurityGroupNames
+        self.engine = engine
         self.engineVersion = engineVersion
         self.ipDiscovery = ipDiscovery
         self.logDeliveryConfigurations = logDeliveryConfigurations
@@ -8254,7 +8263,7 @@ public struct ModifyCacheClusterInput {
     }
 }
 
-public struct ModifyCacheClusterOutput {
+public struct ModifyCacheClusterOutput: Swift.Sendable {
     /// Contains all of the attributes of a specific cluster.
     public var cacheCluster: ElastiCacheClientTypes.CacheCluster?
 
@@ -8267,8 +8276,9 @@ public struct ModifyCacheClusterOutput {
 }
 
 extension ElastiCacheClientTypes {
+
     /// Describes a name-value pair that is used to update the value of a parameter.
-    public struct ParameterNameValue {
+    public struct ParameterNameValue: Swift.Sendable {
         /// The name of the parameter.
         public var parameterName: Swift.String?
         /// The value of the parameter.
@@ -8283,11 +8293,10 @@ extension ElastiCacheClientTypes {
             self.parameterValue = parameterValue
         }
     }
-
 }
 
 /// Represents the input of a ModifyCacheParameterGroup operation.
-public struct ModifyCacheParameterGroupInput {
+public struct ModifyCacheParameterGroupInput: Swift.Sendable {
     /// The name of the cache parameter group to modify.
     /// This member is required.
     public var cacheParameterGroupName: Swift.String?
@@ -8310,7 +8319,7 @@ public struct ModifyCacheParameterGroupInput {
 /// * ModifyCacheParameterGroup
 ///
 /// * ResetCacheParameterGroup
-public struct ModifyCacheParameterGroupOutput {
+public struct ModifyCacheParameterGroupOutput: Swift.Sendable {
     /// The name of the cache parameter group.
     public var cacheParameterGroupName: Swift.String?
 
@@ -8347,7 +8356,7 @@ public struct SubnetInUse: ClientRuntime.ModeledError, AWSClientRuntime.AWSServi
 }
 
 /// Represents the input of a ModifyCacheSubnetGroup operation.
-public struct ModifyCacheSubnetGroupInput {
+public struct ModifyCacheSubnetGroupInput: Swift.Sendable {
     /// A description of the cache subnet group.
     public var cacheSubnetGroupDescription: Swift.String?
     /// The name for the cache subnet group. This value is stored as a lowercase string. Constraints: Must contain no more than 255 alphanumeric characters or hyphens. Example: mysubnetgroup
@@ -8368,7 +8377,7 @@ public struct ModifyCacheSubnetGroupInput {
     }
 }
 
-public struct ModifyCacheSubnetGroupOutput {
+public struct ModifyCacheSubnetGroupOutput: Swift.Sendable {
     /// Represents the output of one of the following operations:
     ///
     /// * CreateCacheSubnetGroup
@@ -8384,7 +8393,7 @@ public struct ModifyCacheSubnetGroupOutput {
     }
 }
 
-public struct ModifyGlobalReplicationGroupInput {
+public struct ModifyGlobalReplicationGroupInput: Swift.Sendable {
     /// This parameter causes the modifications in this request and any pending modifications to be applied, asynchronously and as soon as possible. Modifications to Global Replication Groups cannot be requested to be applied in PreferredMaintenceWindow.
     /// This member is required.
     public var applyImmediately: Swift.Bool?
@@ -8394,6 +8403,8 @@ public struct ModifyGlobalReplicationGroupInput {
     public var cacheNodeType: Swift.String?
     /// The name of the cache parameter group to use with the Global datastore. It must be compatible with the major engine version used by the Global datastore.
     public var cacheParameterGroupName: Swift.String?
+    /// Modifies the engine listed in a global replication group message. The options are redis, memcached or valkey.
+    public var engine: Swift.String?
     /// The upgraded version of the cache engine to be run on the clusters in the Global datastore.
     public var engineVersion: Swift.String?
     /// A description of the Global datastore
@@ -8407,6 +8418,7 @@ public struct ModifyGlobalReplicationGroupInput {
         automaticFailoverEnabled: Swift.Bool? = nil,
         cacheNodeType: Swift.String? = nil,
         cacheParameterGroupName: Swift.String? = nil,
+        engine: Swift.String? = nil,
         engineVersion: Swift.String? = nil,
         globalReplicationGroupDescription: Swift.String? = nil,
         globalReplicationGroupId: Swift.String? = nil
@@ -8416,13 +8428,14 @@ public struct ModifyGlobalReplicationGroupInput {
         self.automaticFailoverEnabled = automaticFailoverEnabled
         self.cacheNodeType = cacheNodeType
         self.cacheParameterGroupName = cacheParameterGroupName
+        self.engine = engine
         self.engineVersion = engineVersion
         self.globalReplicationGroupDescription = globalReplicationGroupDescription
         self.globalReplicationGroupId = globalReplicationGroupId
     }
 }
 
-public struct ModifyGlobalReplicationGroupOutput {
+public struct ModifyGlobalReplicationGroupOutput: Swift.Sendable {
     /// Consists of a primary cluster that accepts writes and an associated secondary cluster that resides in a different Amazon region. The secondary cluster accepts only reads. The primary cluster automatically replicates updates to the secondary cluster.
     ///
     /// * The GlobalReplicationGroupIdSuffix represents the name of the Global datastore, which is what you use to associate a secondary cluster.
@@ -8437,7 +8450,7 @@ public struct ModifyGlobalReplicationGroupOutput {
 }
 
 /// Represents the input of a ModifyReplicationGroups operation.
-public struct ModifyReplicationGroupInput {
+public struct ModifyReplicationGroupInput: Swift.Sendable {
     /// If true, this parameter causes the modifications in this request and any pending modifications to be applied, asynchronously and as soon as possible, regardless of the PreferredMaintenanceWindow setting for the replication group. If false, changes to the nodes in the replication group are applied on the next maintenance reboot, or the next failure reboot, whichever occurs first. Valid values: true | false Default: false
     public var applyImmediately: Swift.Bool?
     /// Reserved parameter. The password used to access a password protected server. This parameter must be specified with the auth-token-update-strategy  parameter. Password constraints:
@@ -8460,9 +8473,9 @@ public struct ModifyReplicationGroupInput {
     /// * DELETE - allowed only when transitioning to RBAC
     ///
     ///
-    /// For more information, see [Authenticating Users with Redis OSS AUTH](http://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/auth.html)
+    /// For more information, see [Authenticating Users with AUTH](http://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/auth.html)
     public var authTokenUpdateStrategy: ElastiCacheClientTypes.AuthTokenUpdateStrategyType?
-    ///  If you are running Redis OSS engine version 6.0 or later, set this parameter to yes if you want to opt-in to the next auto minor version upgrade campaign. This parameter is disabled for previous versions.
+    ///  If you are running Valkey or Redis OSS engine version 6.0 or later, set this parameter to yes if you want to opt-in to the next auto minor version upgrade campaign. This parameter is disabled for previous versions.
     public var autoMinorVersionUpgrade: Swift.Bool?
     /// Determines whether a read replica is automatically promoted to read/write primary if the existing primary encounters a failure. Valid values: true | false
     public var automaticFailoverEnabled: Swift.Bool?
@@ -8472,11 +8485,13 @@ public struct ModifyReplicationGroupInput {
     public var cacheParameterGroupName: Swift.String?
     /// A list of cache security group names to authorize for the clusters in this replication group. This change is asynchronously applied as soon as possible. This parameter can be used only with replication group containing clusters running outside of an Amazon Virtual Private Cloud (Amazon VPC). Constraints: Must contain no more than 255 alphanumeric characters. Must not be Default.
     public var cacheSecurityGroupNames: [Swift.String]?
-    /// Enabled or Disabled. To modify cluster mode from Disabled to Enabled, you must first set the cluster mode to Compatible. Compatible mode allows your Redis OSS clients to connect using both cluster mode enabled and cluster mode disabled. After you migrate all Redis OSS clients to use cluster mode enabled, you can then complete cluster mode configuration and set the cluster mode to Enabled.
+    /// Enabled or Disabled. To modify cluster mode from Disabled to Enabled, you must first set the cluster mode to Compatible. Compatible mode allows your Valkey or Redis OSS clients to connect using both cluster mode enabled and cluster mode disabled. After you migrate all Valkey or Redis OSS clients to use cluster mode enabled, you can then complete cluster mode configuration and set the cluster mode to Enabled.
     public var clusterMode: ElastiCacheClientTypes.ClusterMode?
+    /// Modifies the engine listed in a replication group message. The options are redis, memcached or valkey.
+    public var engine: Swift.String?
     /// The upgraded version of the cache engine to be run on the clusters in the replication group. Important: You can upgrade to a newer engine version (see [Selecting a Cache Engine and Version](https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/SelectEngine.html#VersionManagement)), but you cannot downgrade to an earlier engine version. If you want to use an earlier engine version, you must delete the existing replication group and create it anew with the earlier engine version.
     public var engineVersion: Swift.String?
-    /// The network type you choose when modifying a cluster, either ipv4 | ipv6. IPv6 is supported for workloads using Redis OSS engine version 6.2 onward or Memcached engine version 1.6.6 on all instances built on the [Nitro system](http://aws.amazon.com/ec2/nitro/).
+    /// The network type you choose when modifying a cluster, either ipv4 | ipv6. IPv6 is supported for workloads using Valkey 7.2 and above, Redis OSS engine version 6.2 and above or Memcached engine version 1.6.6 and above on all instances built on the [Nitro system](http://aws.amazon.com/ec2/nitro/).
     public var ipDiscovery: ElastiCacheClientTypes.IpDiscovery?
     /// Specifies the destination, format and type of the logs.
     public var logDeliveryConfigurations: [ElastiCacheClientTypes.LogDeliveryConfigurationRequest]?
@@ -8523,11 +8538,11 @@ public struct ModifyReplicationGroupInput {
     public var snapshotRetentionLimit: Swift.Int?
     /// The daily time range (in UTC) during which ElastiCache begins taking a daily snapshot of the node group (shard) specified by SnapshottingClusterId. Example: 05:00-09:00 If you do not specify this parameter, ElastiCache automatically chooses an appropriate time range.
     public var snapshotWindow: Swift.String?
-    /// The cluster ID that is used as the daily snapshot source for the replication group. This parameter cannot be set for Redis OSS (cluster mode enabled) replication groups.
+    /// The cluster ID that is used as the daily snapshot source for the replication group. This parameter cannot be set for Valkey or Redis OSS (cluster mode enabled) replication groups.
     public var snapshottingClusterId: Swift.String?
     /// A flag that enables in-transit encryption when set to true. If you are enabling in-transit encryption for an existing cluster, you must also set TransitEncryptionMode to preferred.
     public var transitEncryptionEnabled: Swift.Bool?
-    /// A setting that allows you to migrate your clients to use in-transit encryption, with no downtime. You must set TransitEncryptionEnabled to true, for your existing cluster, and set TransitEncryptionMode to preferred in the same request to allow both encrypted and unencrypted connections at the same time. Once you migrate all your Redis OSS clients to use encrypted connections you can set the value to required to allow encrypted connections only. Setting TransitEncryptionMode to required is a two-step process that requires you to first set the TransitEncryptionMode to preferred, after that you can set TransitEncryptionMode to required.
+    /// A setting that allows you to migrate your clients to use in-transit encryption, with no downtime. You must set TransitEncryptionEnabled to true, for your existing cluster, and set TransitEncryptionMode to preferred in the same request to allow both encrypted and unencrypted connections at the same time. Once you migrate all your Valkey or Redis OSS clients to use encrypted connections you can set the value to required to allow encrypted connections only. Setting TransitEncryptionMode to required is a two-step process that requires you to first set the TransitEncryptionMode to preferred, after that you can set TransitEncryptionMode to required.
     public var transitEncryptionMode: ElastiCacheClientTypes.TransitEncryptionMode?
     /// The ID of the user group you are associating with the replication group.
     public var userGroupIdsToAdd: [Swift.String]?
@@ -8544,6 +8559,7 @@ public struct ModifyReplicationGroupInput {
         cacheParameterGroupName: Swift.String? = nil,
         cacheSecurityGroupNames: [Swift.String]? = nil,
         clusterMode: ElastiCacheClientTypes.ClusterMode? = nil,
+        engine: Swift.String? = nil,
         engineVersion: Swift.String? = nil,
         ipDiscovery: ElastiCacheClientTypes.IpDiscovery? = nil,
         logDeliveryConfigurations: [ElastiCacheClientTypes.LogDeliveryConfigurationRequest]? = nil,
@@ -8575,6 +8591,7 @@ public struct ModifyReplicationGroupInput {
         self.cacheParameterGroupName = cacheParameterGroupName
         self.cacheSecurityGroupNames = cacheSecurityGroupNames
         self.clusterMode = clusterMode
+        self.engine = engine
         self.engineVersion = engineVersion
         self.ipDiscovery = ipDiscovery
         self.logDeliveryConfigurations = logDeliveryConfigurations
@@ -8598,8 +8615,8 @@ public struct ModifyReplicationGroupInput {
     }
 }
 
-public struct ModifyReplicationGroupOutput {
-    /// Contains all of the attributes of a specific Redis OSS replication group.
+public struct ModifyReplicationGroupOutput: Swift.Sendable {
+    /// Contains all of the attributes of a specific Valkey or Redis OSS replication group.
     public var replicationGroup: ElastiCacheClientTypes.ReplicationGroup?
 
     public init(
@@ -8611,18 +8628,18 @@ public struct ModifyReplicationGroupOutput {
 }
 
 /// Represents the input for a ModifyReplicationGroupShardConfiguration operation.
-public struct ModifyReplicationGroupShardConfigurationInput {
+public struct ModifyReplicationGroupShardConfigurationInput: Swift.Sendable {
     /// Indicates that the shard reconfiguration process begins immediately. At present, the only permitted value for this parameter is true. Value: true
     /// This member is required.
     public var applyImmediately: Swift.Bool?
     /// The number of node groups (shards) that results from the modification of the shard configuration.
     /// This member is required.
     public var nodeGroupCount: Swift.Int?
-    /// If the value of NodeGroupCount is less than the current number of node groups (shards), then either NodeGroupsToRemove or NodeGroupsToRetain is required. NodeGroupsToRemove is a list of NodeGroupIds to remove from the cluster. ElastiCache (Redis OSS) will attempt to remove all node groups listed by NodeGroupsToRemove from the cluster.
+    /// If the value of NodeGroupCount is less than the current number of node groups (shards), then either NodeGroupsToRemove or NodeGroupsToRetain is required. NodeGroupsToRemove is a list of NodeGroupIds to remove from the cluster. ElastiCache will attempt to remove all node groups listed by NodeGroupsToRemove from the cluster.
     public var nodeGroupsToRemove: [Swift.String]?
-    /// If the value of NodeGroupCount is less than the current number of node groups (shards), then either NodeGroupsToRemove or NodeGroupsToRetain is required. NodeGroupsToRetain is a list of NodeGroupIds to retain in the cluster. ElastiCache (Redis OSS) will attempt to remove all node groups except those listed by NodeGroupsToRetain from the cluster.
+    /// If the value of NodeGroupCount is less than the current number of node groups (shards), then either NodeGroupsToRemove or NodeGroupsToRetain is required. NodeGroupsToRetain is a list of NodeGroupIds to retain in the cluster. ElastiCache will attempt to remove all node groups except those listed by NodeGroupsToRetain from the cluster.
     public var nodeGroupsToRetain: [Swift.String]?
-    /// The name of the Redis OSS (cluster mode enabled) cluster (replication group) on which the shards are to be configured.
+    /// The name of the Valkey or Redis OSS (cluster mode enabled) cluster (replication group) on which the shards are to be configured.
     /// This member is required.
     public var replicationGroupId: Swift.String?
     /// Specifies the preferred availability zones for each node group in the cluster. If the value of NodeGroupCount is greater than the current number of node groups (shards), you can use this parameter to specify the preferred availability zones of the cluster's shards. If you omit this parameter ElastiCache selects availability zones for you. You can specify this parameter only if the value of NodeGroupCount is greater than the current number of node groups (shards).
@@ -8646,8 +8663,8 @@ public struct ModifyReplicationGroupShardConfigurationInput {
     }
 }
 
-public struct ModifyReplicationGroupShardConfigurationOutput {
-    /// Contains all of the attributes of a specific Redis OSS replication group.
+public struct ModifyReplicationGroupShardConfigurationOutput: Swift.Sendable {
+    /// Contains all of the attributes of a specific Valkey or Redis OSS replication group.
     public var replicationGroup: ElastiCacheClientTypes.ReplicationGroup?
 
     public init(
@@ -8658,29 +8675,35 @@ public struct ModifyReplicationGroupShardConfigurationOutput {
     }
 }
 
-public struct ModifyServerlessCacheInput {
+public struct ModifyServerlessCacheInput: Swift.Sendable {
     /// Modify the cache usage limit for the serverless cache.
     public var cacheUsageLimits: ElastiCacheClientTypes.CacheUsageLimits?
-    /// The daily time during which Elasticache begins taking a daily snapshot of the serverless cache. Available for Redis OSS and Serverless Memcached only. The default is NULL, i.e. the existing snapshot time configured for the cluster is not removed.
+    /// The daily time during which Elasticache begins taking a daily snapshot of the serverless cache. Available for Valkey, Redis OSS and Serverless Memcached only. The default is NULL, i.e. the existing snapshot time configured for the cluster is not removed.
     public var dailySnapshotTime: Swift.String?
     /// User provided description for the serverless cache. Default = NULL, i.e. the existing description is not removed/modified. The description has a maximum length of 255 characters.
     public var description: Swift.String?
-    /// The identifier of the UserGroup to be removed from association with the Redis OSS serverless cache. Available for Redis OSS only. Default is NULL.
+    /// Modifies the engine listed in a serverless cache request. The options are redis, memcached or valkey.
+    public var engine: Swift.String?
+    /// Modifies the engine vesion listed in a serverless cache request.
+    public var majorEngineVersion: Swift.String?
+    /// The identifier of the UserGroup to be removed from association with the Valkey and Redis OSS serverless cache. Available for Valkey and Redis OSS only. Default is NULL.
     public var removeUserGroup: Swift.Bool?
     /// The new list of VPC security groups to be associated with the serverless cache. Populating this list means the current VPC security groups will be removed. This security group is used to authorize traffic access for the VPC end-point (private-link). Default = NULL - the existing list of VPC security groups is not removed.
     public var securityGroupIds: [Swift.String]?
     /// User-provided identifier for the serverless cache to be modified.
     /// This member is required.
     public var serverlessCacheName: Swift.String?
-    /// The number of days for which Elasticache retains automatic snapshots before deleting them. Available for Redis OSS and Serverless Memcached only. Default = NULL, i.e. the existing snapshot-retention-limit will not be removed or modified. The maximum value allowed is 35 days.
+    /// The number of days for which Elasticache retains automatic snapshots before deleting them. Available for Valkey, Redis OSS and Serverless Memcached only. Default = NULL, i.e. the existing snapshot-retention-limit will not be removed or modified. The maximum value allowed is 35 days.
     public var snapshotRetentionLimit: Swift.Int?
-    /// The identifier of the UserGroup to be associated with the serverless cache. Available for Redis OSS only. Default is NULL - the existing UserGroup is not removed.
+    /// The identifier of the UserGroup to be associated with the serverless cache. Available for Valkey and Redis OSS only. Default is NULL - the existing UserGroup is not removed.
     public var userGroupId: Swift.String?
 
     public init(
         cacheUsageLimits: ElastiCacheClientTypes.CacheUsageLimits? = nil,
         dailySnapshotTime: Swift.String? = nil,
         description: Swift.String? = nil,
+        engine: Swift.String? = nil,
+        majorEngineVersion: Swift.String? = nil,
         removeUserGroup: Swift.Bool? = nil,
         securityGroupIds: [Swift.String]? = nil,
         serverlessCacheName: Swift.String? = nil,
@@ -8691,6 +8714,8 @@ public struct ModifyServerlessCacheInput {
         self.cacheUsageLimits = cacheUsageLimits
         self.dailySnapshotTime = dailySnapshotTime
         self.description = description
+        self.engine = engine
+        self.majorEngineVersion = majorEngineVersion
         self.removeUserGroup = removeUserGroup
         self.securityGroupIds = securityGroupIds
         self.serverlessCacheName = serverlessCacheName
@@ -8699,7 +8724,7 @@ public struct ModifyServerlessCacheInput {
     }
 }
 
-public struct ModifyServerlessCacheOutput {
+public struct ModifyServerlessCacheOutput: Swift.Sendable {
     /// The response for the attempt to modify the serverless cache.
     public var serverlessCache: ElastiCacheClientTypes.ServerlessCache?
 
@@ -8711,7 +8736,7 @@ public struct ModifyServerlessCacheOutput {
     }
 }
 
-public struct ModifyUserInput {
+public struct ModifyUserInput: Swift.Sendable {
     /// Access permissions string used for this user.
     public var accessString: Swift.String?
     /// Adds additional user permissions to the access string.
@@ -8744,7 +8769,7 @@ public struct ModifyUserInput {
     }
 }
 
-public struct ModifyUserOutput {
+public struct ModifyUserOutput: Swift.Sendable {
     /// Access permissions string used for this user.
     public var accessString: Swift.String?
     /// The Amazon Resource Name (ARN) of the user.
@@ -8788,7 +8813,7 @@ public struct ModifyUserOutput {
     }
 }
 
-public struct ModifyUserGroupInput {
+public struct ModifyUserGroupInput: Swift.Sendable {
     /// The ID of the user group.
     /// This member is required.
     public var userGroupId: Swift.String?
@@ -8809,7 +8834,7 @@ public struct ModifyUserGroupInput {
     }
 }
 
-public struct ModifyUserGroupOutput {
+public struct ModifyUserGroupOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the user group.
     public var arn: Swift.String?
     /// The current supported value is Redis user.
@@ -8820,7 +8845,7 @@ public struct ModifyUserGroupOutput {
     public var pendingChanges: ElastiCacheClientTypes.UserGroupPendingChanges?
     /// A list of replication groups that the user group can access.
     public var replicationGroups: [Swift.String]?
-    /// Indicates which serverless caches the specified user group is associated with. Available for Redis OSS and Serverless Memcached only.
+    /// Indicates which serverless caches the specified user group is associated with. Available for Valkey, Redis OSS and Serverless Memcached only.
     public var serverlessCaches: [Swift.String]?
     /// Indicates user group status. Can be "creating", "active", "modifying", "deleting".
     public var status: Swift.String?
@@ -8902,7 +8927,7 @@ public struct ReservedCacheNodeQuotaExceededFault: ClientRuntime.ModeledError, A
 }
 
 /// Represents the input of a PurchaseReservedCacheNodesOffering operation.
-public struct PurchaseReservedCacheNodesOfferingInput {
+public struct PurchaseReservedCacheNodesOfferingInput: Swift.Sendable {
     /// The number of cache node instances to reserve. Default: 1
     public var cacheNodeCount: Swift.Int?
     /// A customer-specified identifier to track this reservation. The Reserved Cache Node ID is an unique customer-specified identifier to track this reservation. If this parameter is not specified, ElastiCache automatically generates an identifier for the reservation. Example: myreservationID
@@ -8927,7 +8952,7 @@ public struct PurchaseReservedCacheNodesOfferingInput {
     }
 }
 
-public struct PurchaseReservedCacheNodesOfferingOutput {
+public struct PurchaseReservedCacheNodesOfferingOutput: Swift.Sendable {
     /// Represents the output of a PurchaseReservedCacheNodesOffering operation.
     public var reservedCacheNode: ElastiCacheClientTypes.ReservedCacheNode?
 
@@ -8939,7 +8964,7 @@ public struct PurchaseReservedCacheNodesOfferingOutput {
     }
 }
 
-public struct RebalanceSlotsInGlobalReplicationGroupInput {
+public struct RebalanceSlotsInGlobalReplicationGroupInput: Swift.Sendable {
     /// If True, redistribution is applied immediately.
     /// This member is required.
     public var applyImmediately: Swift.Bool?
@@ -8957,7 +8982,7 @@ public struct RebalanceSlotsInGlobalReplicationGroupInput {
     }
 }
 
-public struct RebalanceSlotsInGlobalReplicationGroupOutput {
+public struct RebalanceSlotsInGlobalReplicationGroupOutput: Swift.Sendable {
     /// Consists of a primary cluster that accepts writes and an associated secondary cluster that resides in a different Amazon region. The secondary cluster accepts only reads. The primary cluster automatically replicates updates to the secondary cluster.
     ///
     /// * The GlobalReplicationGroupIdSuffix represents the name of the Global datastore, which is what you use to associate a secondary cluster.
@@ -8972,7 +8997,7 @@ public struct RebalanceSlotsInGlobalReplicationGroupOutput {
 }
 
 /// Represents the input of a RebootCacheCluster operation.
-public struct RebootCacheClusterInput {
+public struct RebootCacheClusterInput: Swift.Sendable {
     /// The cluster identifier. This parameter is stored as a lowercase string.
     /// This member is required.
     public var cacheClusterId: Swift.String?
@@ -8990,7 +9015,7 @@ public struct RebootCacheClusterInput {
     }
 }
 
-public struct RebootCacheClusterOutput {
+public struct RebootCacheClusterOutput: Swift.Sendable {
     /// Contains all of the attributes of a specific cluster.
     public var cacheCluster: ElastiCacheClientTypes.CacheCluster?
 
@@ -9027,7 +9052,7 @@ public struct TagNotFoundFault: ClientRuntime.ModeledError, AWSClientRuntime.AWS
 }
 
 /// Represents the input of a RemoveTagsFromResource operation.
-public struct RemoveTagsFromResourceInput {
+public struct RemoveTagsFromResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the resource from which you want the tags removed, for example arn:aws:elasticache:us-west-2:0123456789:cluster:myCluster or arn:aws:elasticache:us-west-2:0123456789:snapshot:mySnapshot. For more information about ARNs, see [Amazon Resource Names (ARNs) and Amazon Service Namespaces](https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html).
     /// This member is required.
     public var resourceName: Swift.String?
@@ -9046,7 +9071,7 @@ public struct RemoveTagsFromResourceInput {
 }
 
 /// Represents the output from the AddTagsToResource, ListTagsForResource, and RemoveTagsFromResource operations.
-public struct RemoveTagsFromResourceOutput {
+public struct RemoveTagsFromResourceOutput: Swift.Sendable {
     /// A list of tags as key-value pairs.
     public var tagList: [ElastiCacheClientTypes.Tag]?
 
@@ -9059,7 +9084,7 @@ public struct RemoveTagsFromResourceOutput {
 }
 
 /// Represents the input of a ResetCacheParameterGroup operation.
-public struct ResetCacheParameterGroupInput {
+public struct ResetCacheParameterGroupInput: Swift.Sendable {
     /// The name of the cache parameter group to reset.
     /// This member is required.
     public var cacheParameterGroupName: Swift.String?
@@ -9085,7 +9110,7 @@ public struct ResetCacheParameterGroupInput {
 /// * ModifyCacheParameterGroup
 ///
 /// * ResetCacheParameterGroup
-public struct ResetCacheParameterGroupOutput {
+public struct ResetCacheParameterGroupOutput: Swift.Sendable {
     /// The name of the cache parameter group.
     public var cacheParameterGroupName: Swift.String?
 
@@ -9122,7 +9147,7 @@ public struct AuthorizationNotFoundFault: ClientRuntime.ModeledError, AWSClientR
 }
 
 /// Represents the input of a RevokeCacheSecurityGroupIngress operation.
-public struct RevokeCacheSecurityGroupIngressInput {
+public struct RevokeCacheSecurityGroupIngressInput: Swift.Sendable {
     /// The name of the cache security group to revoke ingress from.
     /// This member is required.
     public var cacheSecurityGroupName: Swift.String?
@@ -9145,7 +9170,7 @@ public struct RevokeCacheSecurityGroupIngressInput {
     }
 }
 
-public struct RevokeCacheSecurityGroupIngressOutput {
+public struct RevokeCacheSecurityGroupIngressOutput: Swift.Sendable {
     /// Represents the output of one of the following operations:
     ///
     /// * AuthorizeCacheSecurityGroupIngress
@@ -9188,8 +9213,9 @@ public struct ReplicationGroupAlreadyUnderMigrationFault: ClientRuntime.ModeledE
 }
 
 extension ElastiCacheClientTypes {
+
     /// The endpoint from which data should be migrated.
-    public struct CustomerNodeEndpoint {
+    public struct CustomerNodeEndpoint: Swift.Sendable {
         /// The address of the node endpoint
         public var address: Swift.String?
         /// The port of the node endpoint
@@ -9204,11 +9230,10 @@ extension ElastiCacheClientTypes {
             self.port = port
         }
     }
-
 }
 
-public struct StartMigrationInput {
-    /// List of endpoints from which data should be migrated. For Redis OSS (cluster mode disabled), list should have only one element.
+public struct StartMigrationInput: Swift.Sendable {
+    /// List of endpoints from which data should be migrated. For Valkey or Redis OSS (cluster mode disabled), the list should have only one element.
     /// This member is required.
     public var customerNodeEndpointList: [ElastiCacheClientTypes.CustomerNodeEndpoint]?
     /// The ID of the replication group to which data should be migrated.
@@ -9225,8 +9250,8 @@ public struct StartMigrationInput {
     }
 }
 
-public struct StartMigrationOutput {
-    /// Contains all of the attributes of a specific Redis OSS replication group.
+public struct StartMigrationOutput: Swift.Sendable {
+    /// Contains all of the attributes of a specific Valkey or Redis OSS replication group.
     public var replicationGroup: ElastiCacheClientTypes.ReplicationGroup?
 
     public init(
@@ -9309,7 +9334,7 @@ public struct TestFailoverNotAvailableFault: ClientRuntime.ModeledError, AWSClie
     }
 }
 
-public struct TestFailoverInput {
+public struct TestFailoverInput: Swift.Sendable {
     /// The name of the node group (called shard in the console) in this replication group on which automatic failover is to be tested. You may test automatic failover on up to 15 node groups in any rolling 24-hour period.
     /// This member is required.
     public var nodeGroupId: Swift.String?
@@ -9327,8 +9352,8 @@ public struct TestFailoverInput {
     }
 }
 
-public struct TestFailoverOutput {
-    /// Contains all of the attributes of a specific Redis OSS replication group.
+public struct TestFailoverOutput: Swift.Sendable {
+    /// Contains all of the attributes of a specific Valkey or Redis OSS replication group.
     public var replicationGroup: ElastiCacheClientTypes.ReplicationGroup?
 
     public init(
@@ -9339,7 +9364,7 @@ public struct TestFailoverOutput {
     }
 }
 
-public struct TestMigrationInput {
+public struct TestMigrationInput: Swift.Sendable {
     /// List of endpoints from which data should be migrated. List should have only one element.
     /// This member is required.
     public var customerNodeEndpointList: [ElastiCacheClientTypes.CustomerNodeEndpoint]?
@@ -9357,8 +9382,8 @@ public struct TestMigrationInput {
     }
 }
 
-public struct TestMigrationOutput {
-    /// Contains all of the attributes of a specific Redis OSS replication group.
+public struct TestMigrationOutput: Swift.Sendable {
+    /// Contains all of the attributes of a specific Valkey or Redis OSS replication group.
     public var replicationGroup: ElastiCacheClientTypes.ReplicationGroup?
 
     public init(
@@ -10698,6 +10723,7 @@ extension ModifyCacheClusterInput {
         try writer["CacheNodeType"].write(value.cacheNodeType)
         try writer["CacheParameterGroupName"].write(value.cacheParameterGroupName)
         try writer["CacheSecurityGroupNames"].writeList(value.cacheSecurityGroupNames, memberWritingClosure: SmithyReadWrite.WritingClosures.writeString(value:to:), memberNodeInfo: "CacheSecurityGroupName", isFlattened: false)
+        try writer["Engine"].write(value.engine)
         try writer["EngineVersion"].write(value.engineVersion)
         try writer["IpDiscovery"].write(value.ipDiscovery)
         try writer["LogDeliveryConfigurations"].writeList(value.logDeliveryConfigurations, memberWritingClosure: ElastiCacheClientTypes.LogDeliveryConfigurationRequest.write(value:to:), memberNodeInfo: "LogDeliveryConfigurationRequest", isFlattened: false)
@@ -10745,6 +10771,7 @@ extension ModifyGlobalReplicationGroupInput {
         try writer["AutomaticFailoverEnabled"].write(value.automaticFailoverEnabled)
         try writer["CacheNodeType"].write(value.cacheNodeType)
         try writer["CacheParameterGroupName"].write(value.cacheParameterGroupName)
+        try writer["Engine"].write(value.engine)
         try writer["EngineVersion"].write(value.engineVersion)
         try writer["GlobalReplicationGroupDescription"].write(value.globalReplicationGroupDescription)
         try writer["GlobalReplicationGroupId"].write(value.globalReplicationGroupId)
@@ -10766,6 +10793,7 @@ extension ModifyReplicationGroupInput {
         try writer["CacheParameterGroupName"].write(value.cacheParameterGroupName)
         try writer["CacheSecurityGroupNames"].writeList(value.cacheSecurityGroupNames, memberWritingClosure: SmithyReadWrite.WritingClosures.writeString(value:to:), memberNodeInfo: "CacheSecurityGroupName", isFlattened: false)
         try writer["ClusterMode"].write(value.clusterMode)
+        try writer["Engine"].write(value.engine)
         try writer["EngineVersion"].write(value.engineVersion)
         try writer["IpDiscovery"].write(value.ipDiscovery)
         try writer["LogDeliveryConfigurations"].writeList(value.logDeliveryConfigurations, memberWritingClosure: ElastiCacheClientTypes.LogDeliveryConfigurationRequest.write(value:to:), memberNodeInfo: "LogDeliveryConfigurationRequest", isFlattened: false)
@@ -10813,6 +10841,8 @@ extension ModifyServerlessCacheInput {
         try writer["CacheUsageLimits"].write(value.cacheUsageLimits, with: ElastiCacheClientTypes.CacheUsageLimits.write(value:to:))
         try writer["DailySnapshotTime"].write(value.dailySnapshotTime)
         try writer["Description"].write(value.description)
+        try writer["Engine"].write(value.engine)
+        try writer["MajorEngineVersion"].write(value.majorEngineVersion)
         try writer["RemoveUserGroup"].write(value.removeUserGroup)
         try writer["SecurityGroupIds"].writeList(value.securityGroupIds, memberWritingClosure: SmithyReadWrite.WritingClosures.writeString(value:to:), memberNodeInfo: "SecurityGroupId", isFlattened: false)
         try writer["ServerlessCacheName"].write(value.serverlessCacheName)
@@ -14408,6 +14438,7 @@ extension ElastiCacheClientTypes.ReplicationGroup {
         value.ipDiscovery = try reader["IpDiscovery"].readIfPresent()
         value.transitEncryptionMode = try reader["TransitEncryptionMode"].readIfPresent()
         value.clusterMode = try reader["ClusterMode"].readIfPresent()
+        value.engine = try reader["Engine"].readIfPresent()
         return value
     }
 }

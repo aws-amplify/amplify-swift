@@ -23,14 +23,16 @@ import struct Smithy.URIQueryItem
 import struct SmithyHTTPAPI.Header
 import struct SmithyHTTPAPI.Headers
 
-public struct LogoutOutput {
+
+public struct LogoutOutput: Swift.Sendable {
 
     public init() { }
 }
 
 extension SSOClientTypes {
+
     /// Provides information about your AWS account.
-    public struct AccountInfo {
+    public struct AccountInfo: Swift.Sendable {
         /// The identifier of the AWS account that is assigned to the user.
         public var accountId: Swift.String?
         /// The display name of the AWS account that is assigned to the user.
@@ -49,7 +51,6 @@ extension SSOClientTypes {
             self.emailAddress = emailAddress
         }
     }
-
 }
 
 /// Indicates that a problem occurred with the input to the request. For example, a required parameter might be missing or out of range.
@@ -148,7 +149,7 @@ public struct UnauthorizedException: ClientRuntime.ModeledError, AWSClientRuntim
     }
 }
 
-public struct GetRoleCredentialsInput {
+public struct GetRoleCredentialsInput: Swift.Sendable {
     /// The token issued by the CreateToken API call. For more information, see [CreateToken](https://docs.aws.amazon.com/singlesignon/latest/OIDCAPIReference/API_CreateToken.html) in the IAM Identity Center OIDC API Reference Guide.
     /// This member is required.
     public var accessToken: Swift.String?
@@ -177,8 +178,9 @@ extension GetRoleCredentialsInput: Swift.CustomDebugStringConvertible {
 }
 
 extension SSOClientTypes {
+
     /// Provides information about the role credentials that are assigned to the user.
-    public struct RoleCredentials {
+    public struct RoleCredentials: Swift.Sendable {
         /// The identifier used for the temporary security credentials. For more information, see [Using Temporary Security Credentials to Request Access to AWS Resources](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_temp_use-resources.html) in the AWS IAM User Guide.
         public var accessKeyId: Swift.String?
         /// The date on which temporary security credentials expire.
@@ -201,7 +203,6 @@ extension SSOClientTypes {
             self.sessionToken = sessionToken
         }
     }
-
 }
 
 extension SSOClientTypes.RoleCredentials: Swift.CustomDebugStringConvertible {
@@ -209,7 +210,7 @@ extension SSOClientTypes.RoleCredentials: Swift.CustomDebugStringConvertible {
         "RoleCredentials(accessKeyId: \(Swift.String(describing: accessKeyId)), expiration: \(Swift.String(describing: expiration)), secretAccessKey: \"CONTENT_REDACTED\", sessionToken: \"CONTENT_REDACTED\")"}
 }
 
-public struct GetRoleCredentialsOutput {
+public struct GetRoleCredentialsOutput: Swift.Sendable {
     /// The credentials for the role that is assigned to the user.
     public var roleCredentials: SSOClientTypes.RoleCredentials?
 
@@ -221,7 +222,7 @@ public struct GetRoleCredentialsOutput {
     }
 }
 
-public struct ListAccountRolesInput {
+public struct ListAccountRolesInput: Swift.Sendable {
     /// The token issued by the CreateToken API call. For more information, see [CreateToken](https://docs.aws.amazon.com/singlesignon/latest/OIDCAPIReference/API_CreateToken.html) in the IAM Identity Center OIDC API Reference Guide.
     /// This member is required.
     public var accessToken: Swift.String?
@@ -253,8 +254,9 @@ extension ListAccountRolesInput: Swift.CustomDebugStringConvertible {
 }
 
 extension SSOClientTypes {
+
     /// Provides information about the role that is assigned to the user.
-    public struct RoleInfo {
+    public struct RoleInfo: Swift.Sendable {
         /// The identifier of the AWS account assigned to the user.
         public var accountId: Swift.String?
         /// The friendly name of the role that is assigned to the user.
@@ -269,10 +271,9 @@ extension SSOClientTypes {
             self.roleName = roleName
         }
     }
-
 }
 
-public struct ListAccountRolesOutput {
+public struct ListAccountRolesOutput: Swift.Sendable {
     /// The page token client that is used to retrieve the list of accounts.
     public var nextToken: Swift.String?
     /// A paginated response with the list of roles and the next token if more results are available.
@@ -288,7 +289,7 @@ public struct ListAccountRolesOutput {
     }
 }
 
-public struct ListAccountsInput {
+public struct ListAccountsInput: Swift.Sendable {
     /// The token issued by the CreateToken API call. For more information, see [CreateToken](https://docs.aws.amazon.com/singlesignon/latest/OIDCAPIReference/API_CreateToken.html) in the IAM Identity Center OIDC API Reference Guide.
     /// This member is required.
     public var accessToken: Swift.String?
@@ -314,7 +315,7 @@ extension ListAccountsInput: Swift.CustomDebugStringConvertible {
         "ListAccountsInput(maxResults: \(Swift.String(describing: maxResults)), nextToken: \(Swift.String(describing: nextToken)), accessToken: \"CONTENT_REDACTED\")"}
 }
 
-public struct ListAccountsOutput {
+public struct ListAccountsOutput: Swift.Sendable {
     /// A paginated response with the list of account information and the next token if more results are available.
     public var accountList: [SSOClientTypes.AccountInfo]?
     /// The page token client that is used to retrieve the list of accounts.
@@ -330,7 +331,7 @@ public struct ListAccountsOutput {
     }
 }
 
-public struct LogoutInput {
+public struct LogoutInput: Swift.Sendable {
     /// The token issued by the CreateToken API call. For more information, see [CreateToken](https://docs.aws.amazon.com/singlesignon/latest/OIDCAPIReference/API_CreateToken.html) in the IAM Identity Center OIDC API Reference Guide.
     /// This member is required.
     public var accessToken: Swift.String?

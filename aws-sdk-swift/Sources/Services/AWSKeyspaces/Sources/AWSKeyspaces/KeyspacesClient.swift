@@ -196,7 +196,7 @@ extension KeyspacesClient {
 extension KeyspacesClient {
     /// Performs the `CreateKeyspace` operation on the `KeyspacesService` service.
     ///
-    /// The CreateKeyspace operation adds a new keyspace to your account. In an Amazon Web Services account, keyspace names must be unique within each Region. CreateKeyspace is an asynchronous operation. You can monitor the creation status of the new keyspace by using the GetKeyspace operation. For more information, see [Creating keyspaces](https://docs.aws.amazon.com/keyspaces/latest/devguide/working-with-keyspaces.html#keyspaces-create) in the Amazon Keyspaces Developer Guide.
+    /// The CreateKeyspace operation adds a new keyspace to your account. In an Amazon Web Services account, keyspace names must be unique within each Region. CreateKeyspace is an asynchronous operation. You can monitor the creation status of the new keyspace by using the GetKeyspace operation. For more information, see [Create a keyspace](https://docs.aws.amazon.com/keyspaces/latest/devguide/getting-started.keyspaces.html) in the Amazon Keyspaces Developer Guide.
     ///
     /// - Parameter CreateKeyspaceInput : [no documentation found]
     ///
@@ -270,7 +270,7 @@ extension KeyspacesClient {
 
     /// Performs the `CreateTable` operation on the `KeyspacesService` service.
     ///
-    /// The CreateTable operation adds a new table to the specified keyspace. Within a keyspace, table names must be unique. CreateTable is an asynchronous operation. When the request is received, the status of the table is set to CREATING. You can monitor the creation status of the new table by using the GetTable operation, which returns the current status of the table. You can start using a table when the status is ACTIVE. For more information, see [Creating tables](https://docs.aws.amazon.com/keyspaces/latest/devguide/working-with-tables.html#tables-create) in the Amazon Keyspaces Developer Guide.
+    /// The CreateTable operation adds a new table to the specified keyspace. Within a keyspace, table names must be unique. CreateTable is an asynchronous operation. When the request is received, the status of the table is set to CREATING. You can monitor the creation status of the new table by using the GetTable operation, which returns the current status of the table. You can start using a table when the status is ACTIVE. For more information, see [Create a table](https://docs.aws.amazon.com/keyspaces/latest/devguide/getting-started.tables.html) in the Amazon Keyspaces Developer Guide.
     ///
     /// - Parameter CreateTableInput : [no documentation found]
     ///
@@ -282,7 +282,7 @@ extension KeyspacesClient {
     /// - `AccessDeniedException` : You don't have sufficient access permissions to perform this action.
     /// - `ConflictException` : Amazon Keyspaces couldn't complete the requested action. This error may occur if you try to perform an action and the same or a different action is already in progress, or if you try to create a resource that already exists.
     /// - `InternalServerException` : Amazon Keyspaces was unable to fully process this request because of an internal server error.
-    /// - `ResourceNotFoundException` : The operation tried to access a keyspace or table that doesn't exist. The resource might not be specified correctly, or its status might not be ACTIVE.
+    /// - `ResourceNotFoundException` : The operation tried to access a keyspace, table, or type that doesn't exist. The resource might not be specified correctly, or its status might not be ACTIVE.
     /// - `ServiceQuotaExceededException` : The operation exceeded the service quota for this resource. For more information on service quotas, see [Quotas](https://docs.aws.amazon.com/keyspaces/latest/devguide/quotas.html) in the Amazon Keyspaces Developer Guide.
     /// - `ValidationException` : The operation failed due to an invalid or malformed request.
     public func createTable(input: CreateTableInput) async throws -> CreateTableOutput {
@@ -343,6 +343,81 @@ extension KeyspacesClient {
         return try await op.execute(input: input)
     }
 
+    /// Performs the `CreateType` operation on the `KeyspacesService` service.
+    ///
+    /// The CreateType operation creates a new user-defined type in the specified keyspace. For more information, see [User-defined types (UDTs)](https://docs.aws.amazon.com/keyspaces/latest/devguide/udts.html) in the Amazon Keyspaces Developer Guide.
+    ///
+    /// - Parameter CreateTypeInput : [no documentation found]
+    ///
+    /// - Returns: `CreateTypeOutput` : [no documentation found]
+    ///
+    /// - Throws: One of the exceptions listed below __Possible Exceptions__.
+    ///
+    /// __Possible Exceptions:__
+    /// - `AccessDeniedException` : You don't have sufficient access permissions to perform this action.
+    /// - `ConflictException` : Amazon Keyspaces couldn't complete the requested action. This error may occur if you try to perform an action and the same or a different action is already in progress, or if you try to create a resource that already exists.
+    /// - `InternalServerException` : Amazon Keyspaces was unable to fully process this request because of an internal server error.
+    /// - `ResourceNotFoundException` : The operation tried to access a keyspace, table, or type that doesn't exist. The resource might not be specified correctly, or its status might not be ACTIVE.
+    /// - `ServiceQuotaExceededException` : The operation exceeded the service quota for this resource. For more information on service quotas, see [Quotas](https://docs.aws.amazon.com/keyspaces/latest/devguide/quotas.html) in the Amazon Keyspaces Developer Guide.
+    /// - `ValidationException` : The operation failed due to an invalid or malformed request.
+    public func createType(input: CreateTypeInput) async throws -> CreateTypeOutput {
+        let context = Smithy.ContextBuilder()
+                      .withMethod(value: .post)
+                      .withServiceName(value: serviceName)
+                      .withOperation(value: "createType")
+                      .withIdempotencyTokenGenerator(value: config.idempotencyTokenGenerator)
+                      .withLogger(value: config.logger)
+                      .withPartitionID(value: config.partitionID)
+                      .withAuthSchemes(value: config.authSchemes ?? [])
+                      .withAuthSchemeResolver(value: config.authSchemeResolver)
+                      .withUnsignedPayloadTrait(value: false)
+                      .withSocketTimeout(value: config.httpClientConfiguration.socketTimeout)
+                      .withIdentityResolver(value: config.bearerTokenIdentityResolver, schemeID: "smithy.api#httpBearerAuth")
+                      .withIdentityResolver(value: config.awsCredentialIdentityResolver, schemeID: "aws.auth#sigv4")
+                      .withIdentityResolver(value: config.awsCredentialIdentityResolver, schemeID: "aws.auth#sigv4a")
+                      .withRegion(value: config.region)
+                      .withSigningName(value: "cassandra")
+                      .withSigningRegion(value: config.signingRegion)
+                      .build()
+        let builder = ClientRuntime.OrchestratorBuilder<CreateTypeInput, CreateTypeOutput, SmithyHTTPAPI.HTTPRequest, SmithyHTTPAPI.HTTPResponse>()
+        config.interceptorProviders.forEach { provider in
+            builder.interceptors.add(provider.create())
+        }
+        config.httpInterceptorProviders.forEach { provider in
+            builder.interceptors.add(provider.create())
+        }
+        builder.interceptors.add(ClientRuntime.URLPathMiddleware<CreateTypeInput, CreateTypeOutput>(CreateTypeInput.urlPathProvider(_:)))
+        builder.interceptors.add(ClientRuntime.URLHostMiddleware<CreateTypeInput, CreateTypeOutput>())
+        builder.interceptors.add(ClientRuntime.ContentLengthMiddleware<CreateTypeInput, CreateTypeOutput>())
+        builder.deserialize(ClientRuntime.DeserializeMiddleware<CreateTypeOutput>(CreateTypeOutput.httpOutput(from:), CreateTypeOutputError.httpError(from:)))
+        builder.interceptors.add(ClientRuntime.LoggerMiddleware<CreateTypeInput, CreateTypeOutput>(clientLogMode: config.clientLogMode))
+        builder.retryStrategy(SmithyRetries.DefaultRetryStrategy(options: config.retryStrategyOptions))
+        builder.retryErrorInfoProvider(AWSClientRuntime.AWSRetryErrorInfoProvider.errorInfo(for:))
+        builder.applySigner(ClientRuntime.SignerMiddleware<CreateTypeOutput>())
+        let endpointParams = EndpointParams(endpoint: config.endpoint, region: config.region, useDualStack: config.useDualStack ?? false, useFIPS: config.useFIPS ?? false)
+        builder.applyEndpoint(AWSClientRuntime.EndpointResolverMiddleware<CreateTypeOutput, EndpointParams>(endpointResolverBlock: { [config] in try config.endpointResolver.resolve(params: $0) }, endpointParams: endpointParams))
+        builder.interceptors.add(AWSClientRuntime.UserAgentMiddleware<CreateTypeInput, CreateTypeOutput>(serviceID: serviceName, version: "1.0", config: config))
+        builder.interceptors.add(AWSClientRuntime.XAmzTargetMiddleware<CreateTypeInput, CreateTypeOutput>(xAmzTarget: "KeyspacesService.CreateType"))
+        builder.serialize(ClientRuntime.BodyMiddleware<CreateTypeInput, CreateTypeOutput, SmithyJSON.Writer>(rootNodeInfo: "", inputWritingClosure: CreateTypeInput.write(value:to:)))
+        builder.interceptors.add(ClientRuntime.ContentTypeMiddleware<CreateTypeInput, CreateTypeOutput>(contentType: "application/x-amz-json-1.0"))
+        builder.selectAuthScheme(ClientRuntime.AuthSchemeMiddleware<CreateTypeOutput>())
+        builder.interceptors.add(AWSClientRuntime.AmzSdkInvocationIdMiddleware<CreateTypeInput, CreateTypeOutput>())
+        builder.interceptors.add(AWSClientRuntime.AmzSdkRequestMiddleware<CreateTypeInput, CreateTypeOutput>(maxRetries: config.retryStrategyOptions.maxRetriesBase))
+        var metricsAttributes = Smithy.Attributes()
+        metricsAttributes.set(key: ClientRuntime.OrchestratorMetricsAttributesKeys.service, value: "Keyspaces")
+        metricsAttributes.set(key: ClientRuntime.OrchestratorMetricsAttributesKeys.method, value: "CreateType")
+        let op = builder.attributes(context)
+            .telemetry(ClientRuntime.OrchestratorTelemetry(
+                telemetryProvider: config.telemetryProvider,
+                metricsAttributes: metricsAttributes,
+                meterScope: serviceName,
+                tracerScope: serviceName
+            ))
+            .executeRequest(client)
+            .build()
+        return try await op.execute(input: input)
+    }
+
     /// Performs the `DeleteKeyspace` operation on the `KeyspacesService` service.
     ///
     /// The DeleteKeyspace operation deletes a keyspace and all of its tables.
@@ -357,7 +432,7 @@ extension KeyspacesClient {
     /// - `AccessDeniedException` : You don't have sufficient access permissions to perform this action.
     /// - `ConflictException` : Amazon Keyspaces couldn't complete the requested action. This error may occur if you try to perform an action and the same or a different action is already in progress, or if you try to create a resource that already exists.
     /// - `InternalServerException` : Amazon Keyspaces was unable to fully process this request because of an internal server error.
-    /// - `ResourceNotFoundException` : The operation tried to access a keyspace or table that doesn't exist. The resource might not be specified correctly, or its status might not be ACTIVE.
+    /// - `ResourceNotFoundException` : The operation tried to access a keyspace, table, or type that doesn't exist. The resource might not be specified correctly, or its status might not be ACTIVE.
     /// - `ServiceQuotaExceededException` : The operation exceeded the service quota for this resource. For more information on service quotas, see [Quotas](https://docs.aws.amazon.com/keyspaces/latest/devguide/quotas.html) in the Amazon Keyspaces Developer Guide.
     /// - `ValidationException` : The operation failed due to an invalid or malformed request.
     public func deleteKeyspace(input: DeleteKeyspaceInput) async throws -> DeleteKeyspaceOutput {
@@ -432,7 +507,7 @@ extension KeyspacesClient {
     /// - `AccessDeniedException` : You don't have sufficient access permissions to perform this action.
     /// - `ConflictException` : Amazon Keyspaces couldn't complete the requested action. This error may occur if you try to perform an action and the same or a different action is already in progress, or if you try to create a resource that already exists.
     /// - `InternalServerException` : Amazon Keyspaces was unable to fully process this request because of an internal server error.
-    /// - `ResourceNotFoundException` : The operation tried to access a keyspace or table that doesn't exist. The resource might not be specified correctly, or its status might not be ACTIVE.
+    /// - `ResourceNotFoundException` : The operation tried to access a keyspace, table, or type that doesn't exist. The resource might not be specified correctly, or its status might not be ACTIVE.
     /// - `ServiceQuotaExceededException` : The operation exceeded the service quota for this resource. For more information on service quotas, see [Quotas](https://docs.aws.amazon.com/keyspaces/latest/devguide/quotas.html) in the Amazon Keyspaces Developer Guide.
     /// - `ValidationException` : The operation failed due to an invalid or malformed request.
     public func deleteTable(input: DeleteTableInput) async throws -> DeleteTableOutput {
@@ -493,6 +568,81 @@ extension KeyspacesClient {
         return try await op.execute(input: input)
     }
 
+    /// Performs the `DeleteType` operation on the `KeyspacesService` service.
+    ///
+    /// The DeleteType operation deletes a user-defined type (UDT). You can only delete a type that is not used in a table or another UDT.
+    ///
+    /// - Parameter DeleteTypeInput : [no documentation found]
+    ///
+    /// - Returns: `DeleteTypeOutput` : [no documentation found]
+    ///
+    /// - Throws: One of the exceptions listed below __Possible Exceptions__.
+    ///
+    /// __Possible Exceptions:__
+    /// - `AccessDeniedException` : You don't have sufficient access permissions to perform this action.
+    /// - `ConflictException` : Amazon Keyspaces couldn't complete the requested action. This error may occur if you try to perform an action and the same or a different action is already in progress, or if you try to create a resource that already exists.
+    /// - `InternalServerException` : Amazon Keyspaces was unable to fully process this request because of an internal server error.
+    /// - `ResourceNotFoundException` : The operation tried to access a keyspace, table, or type that doesn't exist. The resource might not be specified correctly, or its status might not be ACTIVE.
+    /// - `ServiceQuotaExceededException` : The operation exceeded the service quota for this resource. For more information on service quotas, see [Quotas](https://docs.aws.amazon.com/keyspaces/latest/devguide/quotas.html) in the Amazon Keyspaces Developer Guide.
+    /// - `ValidationException` : The operation failed due to an invalid or malformed request.
+    public func deleteType(input: DeleteTypeInput) async throws -> DeleteTypeOutput {
+        let context = Smithy.ContextBuilder()
+                      .withMethod(value: .post)
+                      .withServiceName(value: serviceName)
+                      .withOperation(value: "deleteType")
+                      .withIdempotencyTokenGenerator(value: config.idempotencyTokenGenerator)
+                      .withLogger(value: config.logger)
+                      .withPartitionID(value: config.partitionID)
+                      .withAuthSchemes(value: config.authSchemes ?? [])
+                      .withAuthSchemeResolver(value: config.authSchemeResolver)
+                      .withUnsignedPayloadTrait(value: false)
+                      .withSocketTimeout(value: config.httpClientConfiguration.socketTimeout)
+                      .withIdentityResolver(value: config.bearerTokenIdentityResolver, schemeID: "smithy.api#httpBearerAuth")
+                      .withIdentityResolver(value: config.awsCredentialIdentityResolver, schemeID: "aws.auth#sigv4")
+                      .withIdentityResolver(value: config.awsCredentialIdentityResolver, schemeID: "aws.auth#sigv4a")
+                      .withRegion(value: config.region)
+                      .withSigningName(value: "cassandra")
+                      .withSigningRegion(value: config.signingRegion)
+                      .build()
+        let builder = ClientRuntime.OrchestratorBuilder<DeleteTypeInput, DeleteTypeOutput, SmithyHTTPAPI.HTTPRequest, SmithyHTTPAPI.HTTPResponse>()
+        config.interceptorProviders.forEach { provider in
+            builder.interceptors.add(provider.create())
+        }
+        config.httpInterceptorProviders.forEach { provider in
+            builder.interceptors.add(provider.create())
+        }
+        builder.interceptors.add(ClientRuntime.URLPathMiddleware<DeleteTypeInput, DeleteTypeOutput>(DeleteTypeInput.urlPathProvider(_:)))
+        builder.interceptors.add(ClientRuntime.URLHostMiddleware<DeleteTypeInput, DeleteTypeOutput>())
+        builder.interceptors.add(ClientRuntime.ContentLengthMiddleware<DeleteTypeInput, DeleteTypeOutput>())
+        builder.deserialize(ClientRuntime.DeserializeMiddleware<DeleteTypeOutput>(DeleteTypeOutput.httpOutput(from:), DeleteTypeOutputError.httpError(from:)))
+        builder.interceptors.add(ClientRuntime.LoggerMiddleware<DeleteTypeInput, DeleteTypeOutput>(clientLogMode: config.clientLogMode))
+        builder.retryStrategy(SmithyRetries.DefaultRetryStrategy(options: config.retryStrategyOptions))
+        builder.retryErrorInfoProvider(AWSClientRuntime.AWSRetryErrorInfoProvider.errorInfo(for:))
+        builder.applySigner(ClientRuntime.SignerMiddleware<DeleteTypeOutput>())
+        let endpointParams = EndpointParams(endpoint: config.endpoint, region: config.region, useDualStack: config.useDualStack ?? false, useFIPS: config.useFIPS ?? false)
+        builder.applyEndpoint(AWSClientRuntime.EndpointResolverMiddleware<DeleteTypeOutput, EndpointParams>(endpointResolverBlock: { [config] in try config.endpointResolver.resolve(params: $0) }, endpointParams: endpointParams))
+        builder.interceptors.add(AWSClientRuntime.UserAgentMiddleware<DeleteTypeInput, DeleteTypeOutput>(serviceID: serviceName, version: "1.0", config: config))
+        builder.interceptors.add(AWSClientRuntime.XAmzTargetMiddleware<DeleteTypeInput, DeleteTypeOutput>(xAmzTarget: "KeyspacesService.DeleteType"))
+        builder.serialize(ClientRuntime.BodyMiddleware<DeleteTypeInput, DeleteTypeOutput, SmithyJSON.Writer>(rootNodeInfo: "", inputWritingClosure: DeleteTypeInput.write(value:to:)))
+        builder.interceptors.add(ClientRuntime.ContentTypeMiddleware<DeleteTypeInput, DeleteTypeOutput>(contentType: "application/x-amz-json-1.0"))
+        builder.selectAuthScheme(ClientRuntime.AuthSchemeMiddleware<DeleteTypeOutput>())
+        builder.interceptors.add(AWSClientRuntime.AmzSdkInvocationIdMiddleware<DeleteTypeInput, DeleteTypeOutput>())
+        builder.interceptors.add(AWSClientRuntime.AmzSdkRequestMiddleware<DeleteTypeInput, DeleteTypeOutput>(maxRetries: config.retryStrategyOptions.maxRetriesBase))
+        var metricsAttributes = Smithy.Attributes()
+        metricsAttributes.set(key: ClientRuntime.OrchestratorMetricsAttributesKeys.service, value: "Keyspaces")
+        metricsAttributes.set(key: ClientRuntime.OrchestratorMetricsAttributesKeys.method, value: "DeleteType")
+        let op = builder.attributes(context)
+            .telemetry(ClientRuntime.OrchestratorTelemetry(
+                telemetryProvider: config.telemetryProvider,
+                metricsAttributes: metricsAttributes,
+                meterScope: serviceName,
+                tracerScope: serviceName
+            ))
+            .executeRequest(client)
+            .build()
+        return try await op.execute(input: input)
+    }
+
     /// Performs the `GetKeyspace` operation on the `KeyspacesService` service.
     ///
     /// Returns the name and the Amazon Resource Name (ARN) of the specified table.
@@ -506,7 +656,7 @@ extension KeyspacesClient {
     /// __Possible Exceptions:__
     /// - `AccessDeniedException` : You don't have sufficient access permissions to perform this action.
     /// - `InternalServerException` : Amazon Keyspaces was unable to fully process this request because of an internal server error.
-    /// - `ResourceNotFoundException` : The operation tried to access a keyspace or table that doesn't exist. The resource might not be specified correctly, or its status might not be ACTIVE.
+    /// - `ResourceNotFoundException` : The operation tried to access a keyspace, table, or type that doesn't exist. The resource might not be specified correctly, or its status might not be ACTIVE.
     /// - `ServiceQuotaExceededException` : The operation exceeded the service quota for this resource. For more information on service quotas, see [Quotas](https://docs.aws.amazon.com/keyspaces/latest/devguide/quotas.html) in the Amazon Keyspaces Developer Guide.
     /// - `ValidationException` : The operation failed due to an invalid or malformed request.
     public func getKeyspace(input: GetKeyspaceInput) async throws -> GetKeyspaceOutput {
@@ -569,7 +719,7 @@ extension KeyspacesClient {
 
     /// Performs the `GetTable` operation on the `KeyspacesService` service.
     ///
-    /// Returns information about the table, including the table's name and current status, the keyspace name, configuration settings, and metadata. To read table metadata using GetTable, Select action permissions for the table and system tables are required to complete the operation.
+    /// Returns information about the table, including the table's name and current status, the keyspace name, configuration settings, and metadata. To read table metadata using GetTable, the IAM principal needs Select action permissions for the table and the system keyspace.
     ///
     /// - Parameter GetTableInput : [no documentation found]
     ///
@@ -580,7 +730,7 @@ extension KeyspacesClient {
     /// __Possible Exceptions:__
     /// - `AccessDeniedException` : You don't have sufficient access permissions to perform this action.
     /// - `InternalServerException` : Amazon Keyspaces was unable to fully process this request because of an internal server error.
-    /// - `ResourceNotFoundException` : The operation tried to access a keyspace or table that doesn't exist. The resource might not be specified correctly, or its status might not be ACTIVE.
+    /// - `ResourceNotFoundException` : The operation tried to access a keyspace, table, or type that doesn't exist. The resource might not be specified correctly, or its status might not be ACTIVE.
     /// - `ServiceQuotaExceededException` : The operation exceeded the service quota for this resource. For more information on service quotas, see [Quotas](https://docs.aws.amazon.com/keyspaces/latest/devguide/quotas.html) in the Amazon Keyspaces Developer Guide.
     /// - `ValidationException` : The operation failed due to an invalid or malformed request.
     public func getTable(input: GetTableInput) async throws -> GetTableOutput {
@@ -658,7 +808,7 @@ extension KeyspacesClient {
     /// __Possible Exceptions:__
     /// - `AccessDeniedException` : You don't have sufficient access permissions to perform this action.
     /// - `InternalServerException` : Amazon Keyspaces was unable to fully process this request because of an internal server error.
-    /// - `ResourceNotFoundException` : The operation tried to access a keyspace or table that doesn't exist. The resource might not be specified correctly, or its status might not be ACTIVE.
+    /// - `ResourceNotFoundException` : The operation tried to access a keyspace, table, or type that doesn't exist. The resource might not be specified correctly, or its status might not be ACTIVE.
     /// - `ServiceQuotaExceededException` : The operation exceeded the service quota for this resource. For more information on service quotas, see [Quotas](https://docs.aws.amazon.com/keyspaces/latest/devguide/quotas.html) in the Amazon Keyspaces Developer Guide.
     /// - `ValidationException` : The operation failed due to an invalid or malformed request.
     public func getTableAutoScalingSettings(input: GetTableAutoScalingSettingsInput) async throws -> GetTableAutoScalingSettingsOutput {
@@ -719,9 +869,83 @@ extension KeyspacesClient {
         return try await op.execute(input: input)
     }
 
+    /// Performs the `GetType` operation on the `KeyspacesService` service.
+    ///
+    /// The GetType operation returns information about the type, for example the field definitions, the timestamp when the type was last modified, the level of nesting, the status, and details about if the type is used in other types and tables. To read keyspace metadata using GetType, the IAM principal needs Select action permissions for the system keyspace.
+    ///
+    /// - Parameter GetTypeInput : [no documentation found]
+    ///
+    /// - Returns: `GetTypeOutput` : [no documentation found]
+    ///
+    /// - Throws: One of the exceptions listed below __Possible Exceptions__.
+    ///
+    /// __Possible Exceptions:__
+    /// - `AccessDeniedException` : You don't have sufficient access permissions to perform this action.
+    /// - `InternalServerException` : Amazon Keyspaces was unable to fully process this request because of an internal server error.
+    /// - `ResourceNotFoundException` : The operation tried to access a keyspace, table, or type that doesn't exist. The resource might not be specified correctly, or its status might not be ACTIVE.
+    /// - `ServiceQuotaExceededException` : The operation exceeded the service quota for this resource. For more information on service quotas, see [Quotas](https://docs.aws.amazon.com/keyspaces/latest/devguide/quotas.html) in the Amazon Keyspaces Developer Guide.
+    /// - `ValidationException` : The operation failed due to an invalid or malformed request.
+    public func getType(input: GetTypeInput) async throws -> GetTypeOutput {
+        let context = Smithy.ContextBuilder()
+                      .withMethod(value: .post)
+                      .withServiceName(value: serviceName)
+                      .withOperation(value: "getType")
+                      .withIdempotencyTokenGenerator(value: config.idempotencyTokenGenerator)
+                      .withLogger(value: config.logger)
+                      .withPartitionID(value: config.partitionID)
+                      .withAuthSchemes(value: config.authSchemes ?? [])
+                      .withAuthSchemeResolver(value: config.authSchemeResolver)
+                      .withUnsignedPayloadTrait(value: false)
+                      .withSocketTimeout(value: config.httpClientConfiguration.socketTimeout)
+                      .withIdentityResolver(value: config.bearerTokenIdentityResolver, schemeID: "smithy.api#httpBearerAuth")
+                      .withIdentityResolver(value: config.awsCredentialIdentityResolver, schemeID: "aws.auth#sigv4")
+                      .withIdentityResolver(value: config.awsCredentialIdentityResolver, schemeID: "aws.auth#sigv4a")
+                      .withRegion(value: config.region)
+                      .withSigningName(value: "cassandra")
+                      .withSigningRegion(value: config.signingRegion)
+                      .build()
+        let builder = ClientRuntime.OrchestratorBuilder<GetTypeInput, GetTypeOutput, SmithyHTTPAPI.HTTPRequest, SmithyHTTPAPI.HTTPResponse>()
+        config.interceptorProviders.forEach { provider in
+            builder.interceptors.add(provider.create())
+        }
+        config.httpInterceptorProviders.forEach { provider in
+            builder.interceptors.add(provider.create())
+        }
+        builder.interceptors.add(ClientRuntime.URLPathMiddleware<GetTypeInput, GetTypeOutput>(GetTypeInput.urlPathProvider(_:)))
+        builder.interceptors.add(ClientRuntime.URLHostMiddleware<GetTypeInput, GetTypeOutput>())
+        builder.interceptors.add(ClientRuntime.ContentLengthMiddleware<GetTypeInput, GetTypeOutput>())
+        builder.deserialize(ClientRuntime.DeserializeMiddleware<GetTypeOutput>(GetTypeOutput.httpOutput(from:), GetTypeOutputError.httpError(from:)))
+        builder.interceptors.add(ClientRuntime.LoggerMiddleware<GetTypeInput, GetTypeOutput>(clientLogMode: config.clientLogMode))
+        builder.retryStrategy(SmithyRetries.DefaultRetryStrategy(options: config.retryStrategyOptions))
+        builder.retryErrorInfoProvider(AWSClientRuntime.AWSRetryErrorInfoProvider.errorInfo(for:))
+        builder.applySigner(ClientRuntime.SignerMiddleware<GetTypeOutput>())
+        let endpointParams = EndpointParams(endpoint: config.endpoint, region: config.region, useDualStack: config.useDualStack ?? false, useFIPS: config.useFIPS ?? false)
+        builder.applyEndpoint(AWSClientRuntime.EndpointResolverMiddleware<GetTypeOutput, EndpointParams>(endpointResolverBlock: { [config] in try config.endpointResolver.resolve(params: $0) }, endpointParams: endpointParams))
+        builder.interceptors.add(AWSClientRuntime.UserAgentMiddleware<GetTypeInput, GetTypeOutput>(serviceID: serviceName, version: "1.0", config: config))
+        builder.interceptors.add(AWSClientRuntime.XAmzTargetMiddleware<GetTypeInput, GetTypeOutput>(xAmzTarget: "KeyspacesService.GetType"))
+        builder.serialize(ClientRuntime.BodyMiddleware<GetTypeInput, GetTypeOutput, SmithyJSON.Writer>(rootNodeInfo: "", inputWritingClosure: GetTypeInput.write(value:to:)))
+        builder.interceptors.add(ClientRuntime.ContentTypeMiddleware<GetTypeInput, GetTypeOutput>(contentType: "application/x-amz-json-1.0"))
+        builder.selectAuthScheme(ClientRuntime.AuthSchemeMiddleware<GetTypeOutput>())
+        builder.interceptors.add(AWSClientRuntime.AmzSdkInvocationIdMiddleware<GetTypeInput, GetTypeOutput>())
+        builder.interceptors.add(AWSClientRuntime.AmzSdkRequestMiddleware<GetTypeInput, GetTypeOutput>(maxRetries: config.retryStrategyOptions.maxRetriesBase))
+        var metricsAttributes = Smithy.Attributes()
+        metricsAttributes.set(key: ClientRuntime.OrchestratorMetricsAttributesKeys.service, value: "Keyspaces")
+        metricsAttributes.set(key: ClientRuntime.OrchestratorMetricsAttributesKeys.method, value: "GetType")
+        let op = builder.attributes(context)
+            .telemetry(ClientRuntime.OrchestratorTelemetry(
+                telemetryProvider: config.telemetryProvider,
+                metricsAttributes: metricsAttributes,
+                meterScope: serviceName,
+                tracerScope: serviceName
+            ))
+            .executeRequest(client)
+            .build()
+        return try await op.execute(input: input)
+    }
+
     /// Performs the `ListKeyspaces` operation on the `KeyspacesService` service.
     ///
-    /// Returns a list of keyspaces.
+    /// The ListKeyspaces operation returns a list of keyspaces.
     ///
     /// - Parameter ListKeyspacesInput : [no documentation found]
     ///
@@ -732,7 +956,7 @@ extension KeyspacesClient {
     /// __Possible Exceptions:__
     /// - `AccessDeniedException` : You don't have sufficient access permissions to perform this action.
     /// - `InternalServerException` : Amazon Keyspaces was unable to fully process this request because of an internal server error.
-    /// - `ResourceNotFoundException` : The operation tried to access a keyspace or table that doesn't exist. The resource might not be specified correctly, or its status might not be ACTIVE.
+    /// - `ResourceNotFoundException` : The operation tried to access a keyspace, table, or type that doesn't exist. The resource might not be specified correctly, or its status might not be ACTIVE.
     /// - `ServiceQuotaExceededException` : The operation exceeded the service quota for this resource. For more information on service quotas, see [Quotas](https://docs.aws.amazon.com/keyspaces/latest/devguide/quotas.html) in the Amazon Keyspaces Developer Guide.
     /// - `ValidationException` : The operation failed due to an invalid or malformed request.
     public func listKeyspaces(input: ListKeyspacesInput) async throws -> ListKeyspacesOutput {
@@ -795,7 +1019,7 @@ extension KeyspacesClient {
 
     /// Performs the `ListTables` operation on the `KeyspacesService` service.
     ///
-    /// Returns a list of tables for a specified keyspace.
+    /// The ListTables operation returns a list of tables for a specified keyspace. To read keyspace metadata using ListTables, the IAM principal needs Select action permissions for the system keyspace.
     ///
     /// - Parameter ListTablesInput : [no documentation found]
     ///
@@ -806,7 +1030,7 @@ extension KeyspacesClient {
     /// __Possible Exceptions:__
     /// - `AccessDeniedException` : You don't have sufficient access permissions to perform this action.
     /// - `InternalServerException` : Amazon Keyspaces was unable to fully process this request because of an internal server error.
-    /// - `ResourceNotFoundException` : The operation tried to access a keyspace or table that doesn't exist. The resource might not be specified correctly, or its status might not be ACTIVE.
+    /// - `ResourceNotFoundException` : The operation tried to access a keyspace, table, or type that doesn't exist. The resource might not be specified correctly, or its status might not be ACTIVE.
     /// - `ServiceQuotaExceededException` : The operation exceeded the service quota for this resource. For more information on service quotas, see [Quotas](https://docs.aws.amazon.com/keyspaces/latest/devguide/quotas.html) in the Amazon Keyspaces Developer Guide.
     /// - `ValidationException` : The operation failed due to an invalid or malformed request.
     public func listTables(input: ListTablesInput) async throws -> ListTablesOutput {
@@ -869,7 +1093,7 @@ extension KeyspacesClient {
 
     /// Performs the `ListTagsForResource` operation on the `KeyspacesService` service.
     ///
-    /// Returns a list of all tags associated with the specified Amazon Keyspaces resource.
+    /// Returns a list of all tags associated with the specified Amazon Keyspaces resource. To read keyspace metadata using ListTagsForResource, the IAM principal needs Select action permissions for the specified resource and the system keyspace.
     ///
     /// - Parameter ListTagsForResourceInput : [no documentation found]
     ///
@@ -880,7 +1104,7 @@ extension KeyspacesClient {
     /// __Possible Exceptions:__
     /// - `AccessDeniedException` : You don't have sufficient access permissions to perform this action.
     /// - `InternalServerException` : Amazon Keyspaces was unable to fully process this request because of an internal server error.
-    /// - `ResourceNotFoundException` : The operation tried to access a keyspace or table that doesn't exist. The resource might not be specified correctly, or its status might not be ACTIVE.
+    /// - `ResourceNotFoundException` : The operation tried to access a keyspace, table, or type that doesn't exist. The resource might not be specified correctly, or its status might not be ACTIVE.
     /// - `ServiceQuotaExceededException` : The operation exceeded the service quota for this resource. For more information on service quotas, see [Quotas](https://docs.aws.amazon.com/keyspaces/latest/devguide/quotas.html) in the Amazon Keyspaces Developer Guide.
     /// - `ValidationException` : The operation failed due to an invalid or malformed request.
     public func listTagsForResource(input: ListTagsForResourceInput) async throws -> ListTagsForResourceOutput {
@@ -941,6 +1165,80 @@ extension KeyspacesClient {
         return try await op.execute(input: input)
     }
 
+    /// Performs the `ListTypes` operation on the `KeyspacesService` service.
+    ///
+    /// The ListTypes operation returns a list of types for a specified keyspace. To read keyspace metadata using ListTypes, the IAM principal needs Select action permissions for the system keyspace.
+    ///
+    /// - Parameter ListTypesInput : [no documentation found]
+    ///
+    /// - Returns: `ListTypesOutput` : [no documentation found]
+    ///
+    /// - Throws: One of the exceptions listed below __Possible Exceptions__.
+    ///
+    /// __Possible Exceptions:__
+    /// - `AccessDeniedException` : You don't have sufficient access permissions to perform this action.
+    /// - `InternalServerException` : Amazon Keyspaces was unable to fully process this request because of an internal server error.
+    /// - `ResourceNotFoundException` : The operation tried to access a keyspace, table, or type that doesn't exist. The resource might not be specified correctly, or its status might not be ACTIVE.
+    /// - `ServiceQuotaExceededException` : The operation exceeded the service quota for this resource. For more information on service quotas, see [Quotas](https://docs.aws.amazon.com/keyspaces/latest/devguide/quotas.html) in the Amazon Keyspaces Developer Guide.
+    /// - `ValidationException` : The operation failed due to an invalid or malformed request.
+    public func listTypes(input: ListTypesInput) async throws -> ListTypesOutput {
+        let context = Smithy.ContextBuilder()
+                      .withMethod(value: .post)
+                      .withServiceName(value: serviceName)
+                      .withOperation(value: "listTypes")
+                      .withIdempotencyTokenGenerator(value: config.idempotencyTokenGenerator)
+                      .withLogger(value: config.logger)
+                      .withPartitionID(value: config.partitionID)
+                      .withAuthSchemes(value: config.authSchemes ?? [])
+                      .withAuthSchemeResolver(value: config.authSchemeResolver)
+                      .withUnsignedPayloadTrait(value: false)
+                      .withSocketTimeout(value: config.httpClientConfiguration.socketTimeout)
+                      .withIdentityResolver(value: config.bearerTokenIdentityResolver, schemeID: "smithy.api#httpBearerAuth")
+                      .withIdentityResolver(value: config.awsCredentialIdentityResolver, schemeID: "aws.auth#sigv4")
+                      .withIdentityResolver(value: config.awsCredentialIdentityResolver, schemeID: "aws.auth#sigv4a")
+                      .withRegion(value: config.region)
+                      .withSigningName(value: "cassandra")
+                      .withSigningRegion(value: config.signingRegion)
+                      .build()
+        let builder = ClientRuntime.OrchestratorBuilder<ListTypesInput, ListTypesOutput, SmithyHTTPAPI.HTTPRequest, SmithyHTTPAPI.HTTPResponse>()
+        config.interceptorProviders.forEach { provider in
+            builder.interceptors.add(provider.create())
+        }
+        config.httpInterceptorProviders.forEach { provider in
+            builder.interceptors.add(provider.create())
+        }
+        builder.interceptors.add(ClientRuntime.URLPathMiddleware<ListTypesInput, ListTypesOutput>(ListTypesInput.urlPathProvider(_:)))
+        builder.interceptors.add(ClientRuntime.URLHostMiddleware<ListTypesInput, ListTypesOutput>())
+        builder.interceptors.add(ClientRuntime.ContentLengthMiddleware<ListTypesInput, ListTypesOutput>())
+        builder.deserialize(ClientRuntime.DeserializeMiddleware<ListTypesOutput>(ListTypesOutput.httpOutput(from:), ListTypesOutputError.httpError(from:)))
+        builder.interceptors.add(ClientRuntime.LoggerMiddleware<ListTypesInput, ListTypesOutput>(clientLogMode: config.clientLogMode))
+        builder.retryStrategy(SmithyRetries.DefaultRetryStrategy(options: config.retryStrategyOptions))
+        builder.retryErrorInfoProvider(AWSClientRuntime.AWSRetryErrorInfoProvider.errorInfo(for:))
+        builder.applySigner(ClientRuntime.SignerMiddleware<ListTypesOutput>())
+        let endpointParams = EndpointParams(endpoint: config.endpoint, region: config.region, useDualStack: config.useDualStack ?? false, useFIPS: config.useFIPS ?? false)
+        builder.applyEndpoint(AWSClientRuntime.EndpointResolverMiddleware<ListTypesOutput, EndpointParams>(endpointResolverBlock: { [config] in try config.endpointResolver.resolve(params: $0) }, endpointParams: endpointParams))
+        builder.interceptors.add(AWSClientRuntime.UserAgentMiddleware<ListTypesInput, ListTypesOutput>(serviceID: serviceName, version: "1.0", config: config))
+        builder.interceptors.add(AWSClientRuntime.XAmzTargetMiddleware<ListTypesInput, ListTypesOutput>(xAmzTarget: "KeyspacesService.ListTypes"))
+        builder.serialize(ClientRuntime.BodyMiddleware<ListTypesInput, ListTypesOutput, SmithyJSON.Writer>(rootNodeInfo: "", inputWritingClosure: ListTypesInput.write(value:to:)))
+        builder.interceptors.add(ClientRuntime.ContentTypeMiddleware<ListTypesInput, ListTypesOutput>(contentType: "application/x-amz-json-1.0"))
+        builder.selectAuthScheme(ClientRuntime.AuthSchemeMiddleware<ListTypesOutput>())
+        builder.interceptors.add(AWSClientRuntime.AmzSdkInvocationIdMiddleware<ListTypesInput, ListTypesOutput>())
+        builder.interceptors.add(AWSClientRuntime.AmzSdkRequestMiddleware<ListTypesInput, ListTypesOutput>(maxRetries: config.retryStrategyOptions.maxRetriesBase))
+        var metricsAttributes = Smithy.Attributes()
+        metricsAttributes.set(key: ClientRuntime.OrchestratorMetricsAttributesKeys.service, value: "Keyspaces")
+        metricsAttributes.set(key: ClientRuntime.OrchestratorMetricsAttributesKeys.method, value: "ListTypes")
+        let op = builder.attributes(context)
+            .telemetry(ClientRuntime.OrchestratorTelemetry(
+                telemetryProvider: config.telemetryProvider,
+                metricsAttributes: metricsAttributes,
+                meterScope: serviceName,
+                tracerScope: serviceName
+            ))
+            .executeRequest(client)
+            .build()
+        return try await op.execute(input: input)
+    }
+
     /// Performs the `RestoreTable` operation on the `KeyspacesService` service.
     ///
     /// Restores the table to the specified point in time within the earliest_restorable_timestamp and the current time. For more information about restore points, see [ Time window for PITR continuous backups](https://docs.aws.amazon.com/keyspaces/latest/devguide/PointInTimeRecovery_HowItWorks.html#howitworks_backup_window) in the Amazon Keyspaces Developer Guide. Any number of users can execute up to 4 concurrent restores (any type of restore) in a given account. When you restore using point in time recovery, Amazon Keyspaces restores your source table's schema and data to the state based on the selected timestamp (day:hour:minute:second) to a new table. The Time to Live (TTL) settings are also restored to the state based on the selected timestamp. In addition to the table's schema, data, and TTL settings, RestoreTable restores the capacity mode, auto scaling settings, encryption settings, and point-in-time recovery settings from the source table. Unlike the table's schema data and TTL settings, which are restored based on the selected timestamp, these settings are always restored based on the table's settings as of the current time or when the table was deleted. You can also overwrite these settings during restore:
@@ -972,7 +1270,7 @@ extension KeyspacesClient {
     /// - `AccessDeniedException` : You don't have sufficient access permissions to perform this action.
     /// - `ConflictException` : Amazon Keyspaces couldn't complete the requested action. This error may occur if you try to perform an action and the same or a different action is already in progress, or if you try to create a resource that already exists.
     /// - `InternalServerException` : Amazon Keyspaces was unable to fully process this request because of an internal server error.
-    /// - `ResourceNotFoundException` : The operation tried to access a keyspace or table that doesn't exist. The resource might not be specified correctly, or its status might not be ACTIVE.
+    /// - `ResourceNotFoundException` : The operation tried to access a keyspace, table, or type that doesn't exist. The resource might not be specified correctly, or its status might not be ACTIVE.
     /// - `ServiceQuotaExceededException` : The operation exceeded the service quota for this resource. For more information on service quotas, see [Quotas](https://docs.aws.amazon.com/keyspaces/latest/devguide/quotas.html) in the Amazon Keyspaces Developer Guide.
     /// - `ValidationException` : The operation failed due to an invalid or malformed request.
     public func restoreTable(input: RestoreTableInput) async throws -> RestoreTableOutput {
@@ -1045,8 +1343,9 @@ extension KeyspacesClient {
     ///
     /// __Possible Exceptions:__
     /// - `AccessDeniedException` : You don't have sufficient access permissions to perform this action.
+    /// - `ConflictException` : Amazon Keyspaces couldn't complete the requested action. This error may occur if you try to perform an action and the same or a different action is already in progress, or if you try to create a resource that already exists.
     /// - `InternalServerException` : Amazon Keyspaces was unable to fully process this request because of an internal server error.
-    /// - `ResourceNotFoundException` : The operation tried to access a keyspace or table that doesn't exist. The resource might not be specified correctly, or its status might not be ACTIVE.
+    /// - `ResourceNotFoundException` : The operation tried to access a keyspace, table, or type that doesn't exist. The resource might not be specified correctly, or its status might not be ACTIVE.
     /// - `ServiceQuotaExceededException` : The operation exceeded the service quota for this resource. For more information on service quotas, see [Quotas](https://docs.aws.amazon.com/keyspaces/latest/devguide/quotas.html) in the Amazon Keyspaces Developer Guide.
     /// - `ValidationException` : The operation failed due to an invalid or malformed request.
     public func tagResource(input: TagResourceInput) async throws -> TagResourceOutput {
@@ -1121,7 +1420,7 @@ extension KeyspacesClient {
     /// - `AccessDeniedException` : You don't have sufficient access permissions to perform this action.
     /// - `ConflictException` : Amazon Keyspaces couldn't complete the requested action. This error may occur if you try to perform an action and the same or a different action is already in progress, or if you try to create a resource that already exists.
     /// - `InternalServerException` : Amazon Keyspaces was unable to fully process this request because of an internal server error.
-    /// - `ResourceNotFoundException` : The operation tried to access a keyspace or table that doesn't exist. The resource might not be specified correctly, or its status might not be ACTIVE.
+    /// - `ResourceNotFoundException` : The operation tried to access a keyspace, table, or type that doesn't exist. The resource might not be specified correctly, or its status might not be ACTIVE.
     /// - `ServiceQuotaExceededException` : The operation exceeded the service quota for this resource. For more information on service quotas, see [Quotas](https://docs.aws.amazon.com/keyspaces/latest/devguide/quotas.html) in the Amazon Keyspaces Developer Guide.
     /// - `ValidationException` : The operation failed due to an invalid or malformed request.
     public func untagResource(input: UntagResourceInput) async throws -> UntagResourceOutput {
@@ -1196,7 +1495,7 @@ extension KeyspacesClient {
     /// - `AccessDeniedException` : You don't have sufficient access permissions to perform this action.
     /// - `ConflictException` : Amazon Keyspaces couldn't complete the requested action. This error may occur if you try to perform an action and the same or a different action is already in progress, or if you try to create a resource that already exists.
     /// - `InternalServerException` : Amazon Keyspaces was unable to fully process this request because of an internal server error.
-    /// - `ResourceNotFoundException` : The operation tried to access a keyspace or table that doesn't exist. The resource might not be specified correctly, or its status might not be ACTIVE.
+    /// - `ResourceNotFoundException` : The operation tried to access a keyspace, table, or type that doesn't exist. The resource might not be specified correctly, or its status might not be ACTIVE.
     /// - `ServiceQuotaExceededException` : The operation exceeded the service quota for this resource. For more information on service quotas, see [Quotas](https://docs.aws.amazon.com/keyspaces/latest/devguide/quotas.html) in the Amazon Keyspaces Developer Guide.
     /// - `ValidationException` : The operation failed due to an invalid or malformed request.
     public func updateTable(input: UpdateTableInput) async throws -> UpdateTableOutput {

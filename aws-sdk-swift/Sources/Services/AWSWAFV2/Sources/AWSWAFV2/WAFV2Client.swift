@@ -884,7 +884,7 @@ extension WAFV2Client {
 
     /// Performs the `DeleteFirewallManagerRuleGroups` operation on the `AWSWAF_20190729` service.
     ///
-    /// Deletes all rule groups that are managed by Firewall Manager for the specified web ACL. You can only use this if ManagedByFirewallManager is false in the specified [WebACL].
+    /// Deletes all rule groups that are managed by Firewall Manager from the specified [WebACL]. You can only use this if ManagedByFirewallManager and RetrofittedByFirewallManager are both false in the web ACL.
     ///
     /// - Parameter DeleteFirewallManagerRuleGroupsInput : [no documentation found]
     ///
@@ -1383,7 +1383,7 @@ extension WAFV2Client {
 
     /// Performs the `DeleteWebACL` operation on the `AWSWAF_20190729` service.
     ///
-    /// Deletes the specified [WebACL]. You can only use this if ManagedByFirewallManager is false in the specified [WebACL]. Before deleting any web ACL, first disassociate it from all resources.
+    /// Deletes the specified [WebACL]. You can only use this if ManagedByFirewallManager is false in the web ACL. Before deleting any web ACL, first disassociate it from all resources.
     ///
     /// * To retrieve a list of the resources that are associated with a web ACL, use the following calls:
     ///

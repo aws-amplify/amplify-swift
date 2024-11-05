@@ -23,6 +23,7 @@ rm -rf codegen/sdk-codegen/build/smithyprojections/sdk-codegen/*
 rm -rf ServiceClients/*
 rm -rf Sources/Services/*
 rm -rf Tests/Services/*
+rm -rf SmokeTests/*
 
 # Regenerate code
 ./gradlew -p codegen/sdk-codegen build

@@ -28,44 +28,46 @@ import struct Smithy.URIQueryItem
 @_spi(SmithyReadWrite) import struct SmithyReadWrite.ReadingClosureBox
 @_spi(SmithyReadWrite) import struct SmithyReadWrite.WritingClosureBox
 
-public struct DeleteLanguageModelOutput {
+
+public struct DeleteLanguageModelOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteMedicalScribeJobOutput {
+public struct DeleteMedicalScribeJobOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteMedicalTranscriptionJobOutput {
+public struct DeleteMedicalTranscriptionJobOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteMedicalVocabularyOutput {
+public struct DeleteMedicalVocabularyOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteTranscriptionJobOutput {
+public struct DeleteTranscriptionJobOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteVocabularyFilterOutput {
+public struct DeleteVocabularyFilterOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteVocabularyOutput {
+public struct DeleteVocabularyOutput: Swift.Sendable {
 
     public init() { }
 }
 
 extension TranscribeClientTypes {
+
     /// A time range, in milliseconds, between two points in your media file. You can use StartTime and EndTime to search a custom segment. For example, setting StartTime to 10000 and EndTime to 50000 only searches for your specified criteria in the audio contained between the 10,000 millisecond mark and the 50,000 millisecond mark of your media file. You must use StartTime and EndTime as a set; that is, if you include one, you must include both. You can use also First to search from the start of the audio until the time that you specify, or Last to search from the time that you specify until the end of the audio. For example, setting First to 50000 only searches for your specified criteria in the audio contained between the start of the media file to the 50,000 millisecond mark. You can use First and Last independently of each other. If you prefer to use percentage instead of milliseconds, see .
-    public struct AbsoluteTimeRange {
+    public struct AbsoluteTimeRange: Swift.Sendable {
         /// The time, in milliseconds, when Amazon Transcribe stops searching for the specified criteria in your audio. If you include EndTime in your request, you must also include StartTime.
         public var endTime: Swift.Int?
         /// The time, in milliseconds, from the start of your media file until the specified value. Amazon Transcribe searches for your specified criteria in this time segment.
@@ -88,7 +90,6 @@ extension TranscribeClientTypes {
             self.startTime = startTime
         }
     }
-
 }
 
 /// Your request didn't pass one or more validation tests. This can occur when the entity you're trying to delete doesn't exist or if it's in a non-terminal state (such as IN PROGRESS). See the exception message field for more information.
@@ -117,7 +118,7 @@ public struct BadRequestException: ClientRuntime.ModeledError, AWSClientRuntime.
 
 extension TranscribeClientTypes {
 
-    public enum BaseModelName: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum BaseModelName: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case narrowBand
         case wideBand
         case sdkUnknown(Swift.String)
@@ -146,7 +147,7 @@ extension TranscribeClientTypes {
 
 extension TranscribeClientTypes {
 
-    public enum CallAnalyticsFeature: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum CallAnalyticsFeature: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case generativeSummarization
         case sdkUnknown(Swift.String)
 
@@ -172,7 +173,7 @@ extension TranscribeClientTypes {
 
 extension TranscribeClientTypes {
 
-    public enum CallAnalyticsSkippedReasonCode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum CallAnalyticsSkippedReasonCode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case failedSafetyGuidelines
         case insufficientConversationContent
         case sdkUnknown(Swift.String)
@@ -200,8 +201,9 @@ extension TranscribeClientTypes {
 }
 
 extension TranscribeClientTypes {
+
     /// Represents a skipped analytics feature during the analysis of a call analytics job. The Feature field indicates the type of analytics feature that was skipped. The Message field contains additional information or a message explaining why the analytics feature was skipped. The ReasonCode field provides a code indicating the reason why the analytics feature was skipped.
-    public struct CallAnalyticsSkippedFeature {
+    public struct CallAnalyticsSkippedFeature: Swift.Sendable {
         /// Indicates the type of analytics feature that was skipped during the analysis of a call analytics job.
         public var feature: TranscribeClientTypes.CallAnalyticsFeature?
         /// Contains additional information or a message explaining why a specific analytics feature was skipped during the analysis of a call analytics job.
@@ -220,12 +222,12 @@ extension TranscribeClientTypes {
             self.reasonCode = reasonCode
         }
     }
-
 }
 
 extension TranscribeClientTypes {
+
     /// Contains details about a call analytics job, including information about skipped analytics features.
-    public struct CallAnalyticsJobDetails {
+    public struct CallAnalyticsJobDetails: Swift.Sendable {
         /// Contains information about any skipped analytics features during the analysis of a call analytics job. This array lists all the analytics features that were skipped, along with their corresponding reason code and message.
         public var skipped: [TranscribeClientTypes.CallAnalyticsSkippedFeature]?
 
@@ -236,12 +238,11 @@ extension TranscribeClientTypes {
             self.skipped = skipped
         }
     }
-
 }
 
 extension TranscribeClientTypes {
 
-    public enum CallAnalyticsJobStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum CallAnalyticsJobStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case completed
         case failed
         case inProgress
@@ -276,7 +277,7 @@ extension TranscribeClientTypes {
 
 extension TranscribeClientTypes {
 
-    public enum ParticipantRole: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ParticipantRole: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case agent
         case customer
         case sdkUnknown(Swift.String)
@@ -304,8 +305,9 @@ extension TranscribeClientTypes {
 }
 
 extension TranscribeClientTypes {
+
     /// Makes it possible to specify which speaker is on which channel. For example, if your agent is the first participant to speak, you would set ChannelId to 0 (to indicate the first channel) and ParticipantRole to AGENT (to indicate that it's the agent speaking).
-    public struct ChannelDefinition {
+    public struct ChannelDefinition: Swift.Sendable {
         /// Specify the audio channel you want to define.
         public var channelId: Swift.Int
         /// Specify the speaker you want to define. Omitting this parameter is equivalent to specifying both participants.
@@ -320,12 +322,11 @@ extension TranscribeClientTypes {
             self.participantRole = participantRole
         }
     }
-
 }
 
 extension TranscribeClientTypes {
 
-    public enum LanguageCode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum LanguageCode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case abGe
         case afZa
         case arAe
@@ -656,8 +657,9 @@ extension TranscribeClientTypes {
 }
 
 extension TranscribeClientTypes {
+
     /// Describes the Amazon S3 location of the media file you want to use in your request. For information on supported media formats, refer to the MediaFormat parameter or the [Media formats](https://docs.aws.amazon.com/transcribe/latest/dg/how-input.html#how-input-audio) section in the Amazon S3 Developer Guide.
-    public struct Media {
+    public struct Media: Swift.Sendable {
         /// The Amazon S3 location of the media file you want to transcribe. For example:
         ///
         /// * s3://DOC-EXAMPLE-BUCKET/my-media-file.flac
@@ -686,12 +688,11 @@ extension TranscribeClientTypes {
             self.redactedMediaFileUri = redactedMediaFileUri
         }
     }
-
 }
 
 extension TranscribeClientTypes {
 
-    public enum MediaFormat: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum MediaFormat: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case amr
         case flac
         case m4a
@@ -738,7 +739,7 @@ extension TranscribeClientTypes {
 
 extension TranscribeClientTypes {
 
-    public enum PiiEntityType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum PiiEntityType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case address
         case all
         case bankAccountNumber
@@ -797,7 +798,7 @@ extension TranscribeClientTypes {
 
 extension TranscribeClientTypes {
 
-    public enum RedactionOutput: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum RedactionOutput: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case redacted
         case redactedAndUnredacted
         case sdkUnknown(Swift.String)
@@ -826,7 +827,7 @@ extension TranscribeClientTypes {
 
 extension TranscribeClientTypes {
 
-    public enum RedactionType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum RedactionType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case pii
         case sdkUnknown(Swift.String)
 
@@ -851,8 +852,9 @@ extension TranscribeClientTypes {
 }
 
 extension TranscribeClientTypes {
+
     /// Makes it possible to redact or flag specified personally identifiable information (PII) in your transcript. If you use ContentRedaction, you must also include the sub-parameters: RedactionOutput and RedactionType. You can optionally include PiiEntityTypes to choose which types of PII you want to redact.
-    public struct ContentRedaction {
+    public struct ContentRedaction: Swift.Sendable {
         /// Specify which types of personally identifiable information (PII) you want to redact in your transcript. You can include as many types as you'd like, or you can select ALL. If you do not include PiiEntityTypes in your request, all PII is redacted.
         public var piiEntityTypes: [TranscribeClientTypes.PiiEntityType]?
         /// Specify if you want only a redacted transcript, or if you want a redacted and an unredacted transcript. When you choose redacted Amazon Transcribe creates only a redacted transcript. When you choose redacted_and_unredacted Amazon Transcribe creates a redacted and an unredacted transcript (as two separate files).
@@ -873,12 +875,12 @@ extension TranscribeClientTypes {
             self.redactionType = redactionType
         }
     }
-
 }
 
 extension TranscribeClientTypes {
+
     /// If using automatic language identification in your request and you want to apply a custom language model, a custom vocabulary, or a custom vocabulary filter, include LanguageIdSettings with the relevant sub-parameters (VocabularyName, LanguageModelName, and VocabularyFilterName). Note that multi-language identification (IdentifyMultipleLanguages) doesn't support custom language models. LanguageIdSettings supports two to five language codes. Each language code you include can have an associated custom language model, custom vocabulary, and custom vocabulary filter. The language codes that you specify must match the languages of the associated custom language models, custom vocabularies, and custom vocabulary filters. It's recommended that you include LanguageOptions when using LanguageIdSettings to ensure that the correct language dialect is identified. For example, if you specify a custom vocabulary that is in en-US but Amazon Transcribe determines that the language spoken in your media is en-AU, your custom vocabulary is not applied to your transcription. If you include LanguageOptions and include en-US as the only English language dialect, your custom vocabulary is applied to your transcription. If you want to include a custom language model with your request but do not want to use automatic language identification, use instead the  parameter with the LanguageModelName sub-parameter. If you want to include a custom vocabulary or a custom vocabulary filter (or both) with your request but do not want to use automatic language identification, use instead the  parameter with the VocabularyName or VocabularyFilterName (or both) sub-parameter.
-    public struct LanguageIdSettings {
+    public struct LanguageIdSettings: Swift.Sendable {
         /// The name of the custom language model you want to use when processing your transcription job. Note that custom language model names are case sensitive. The language of the specified custom language model must match the language code that you specify in your transcription request. If the languages do not match, the custom language model isn't applied. There are no errors or warnings associated with a language mismatch.
         public var languageModelName: Swift.String?
         /// The name of the custom vocabulary filter you want to use when processing your transcription job. Custom vocabulary filter names are case sensitive. The language of the specified custom vocabulary filter must match the language code that you specify in your transcription request. If the languages do not match, the custom vocabulary filter isn't applied. There are no errors or warnings associated with a language mismatch. Note that if you include VocabularyFilterName in your request, you must also include VocabularyFilterMethod.
@@ -897,12 +899,12 @@ extension TranscribeClientTypes {
             self.vocabularyName = vocabularyName
         }
     }
-
 }
 
 extension TranscribeClientTypes {
+
     /// Contains GenerateAbstractiveSummary, which is a required parameter if you want to enable Generative call summarization in your Call Analytics request.
-    public struct Summarization {
+    public struct Summarization: Swift.Sendable {
         /// Enables Generative call summarization in your Call Analytics request Generative call summarization provides a summary of the transcript including important components discussed in the conversation. For more information, see [Enabling generative call summarization](https://docs.aws.amazon.com/transcribe/latest/dg/tca-enable-summarization.html).
         /// This member is required.
         public var generateAbstractiveSummary: Swift.Bool?
@@ -914,12 +916,11 @@ extension TranscribeClientTypes {
             self.generateAbstractiveSummary = generateAbstractiveSummary
         }
     }
-
 }
 
 extension TranscribeClientTypes {
 
-    public enum VocabularyFilterMethod: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum VocabularyFilterMethod: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case mask
         case remove
         case tag
@@ -950,8 +951,9 @@ extension TranscribeClientTypes {
 }
 
 extension TranscribeClientTypes {
+
     /// Provides additional optional settings for your request, including content redaction, automatic language identification; allows you to apply custom language models, custom vocabulary filters, and custom vocabularies.
-    public struct CallAnalyticsJobSettings {
+    public struct CallAnalyticsJobSettings: Swift.Sendable {
         /// Makes it possible to redact or flag specified personally identifiable information (PII) in your transcript. If you use ContentRedaction, you must also include the sub-parameters: RedactionOutput and RedactionType. You can optionally include PiiEntityTypes to choose which types of PII you want to redact.
         public var contentRedaction: TranscribeClientTypes.ContentRedaction?
         /// If using automatic language identification in your request and you want to apply a custom language model, a custom vocabulary, or a custom vocabulary filter, include LanguageIdSettings with the relevant sub-parameters (VocabularyName, LanguageModelName, and VocabularyFilterName). LanguageIdSettings supports two to five language codes. Each language code you include can have an associated custom language model, custom vocabulary, and custom vocabulary filter. The language codes that you specify must match the languages of the associated custom language models, custom vocabularies, and custom vocabulary filters. It's recommended that you include LanguageOptions when using LanguageIdSettings to ensure that the correct language dialect is identified. For example, if you specify a custom vocabulary that is in en-US but Amazon Transcribe determines that the language spoken in your media is en-AU, your custom vocabulary is not applied to your transcription. If you include LanguageOptions and include en-US as the only English language dialect, your custom vocabulary is applied to your transcription. If you want to include a custom language model, custom vocabulary, or custom vocabulary filter with your request but do not want to use automatic language identification, use instead the  parameter with the LanguageModelName, VocabularyName, or VocabularyFilterName sub-parameters. For a list of languages supported with Call Analytics, refer to [Supported languages and language-specific features](https://docs.aws.amazon.com/transcribe/latest/dg/supported-languages.html).
@@ -990,12 +992,12 @@ extension TranscribeClientTypes {
             self.vocabularyName = vocabularyName
         }
     }
-
 }
 
 extension TranscribeClientTypes {
+
     /// Provides you with the Amazon S3 URI you can use to access your transcript.
-    public struct Transcript {
+    public struct Transcript: Swift.Sendable {
         /// The Amazon S3 location of your redacted transcript. You can use this URI to access or download your transcript. If you included OutputBucketName in your transcription job request, this is the URI of that bucket. If you also included OutputKey in your request, your output is located in the path you specified in your request. If you didn't include OutputBucketName in your transcription job request, your transcript is stored in a service-managed bucket, and RedactedTranscriptFileUri provides you with a temporary URI you can use for secure access to your transcript. Temporary URIs for service-managed Amazon S3 buckets are only valid for 15 minutes. If you get an AccesDenied error, you can get a new temporary URI by running a GetTranscriptionJob or ListTranscriptionJob request.
         public var redactedTranscriptFileUri: Swift.String?
         /// The Amazon S3 location of your transcript. You can use this URI to access or download your transcript. If you included OutputBucketName in your transcription job request, this is the URI of that bucket. If you also included OutputKey in your request, your output is located in the path you specified in your request. If you didn't include OutputBucketName in your transcription job request, your transcript is stored in a service-managed bucket, and TranscriptFileUri provides you with a temporary URI you can use for secure access to your transcript. Temporary URIs for service-managed Amazon S3 buckets are only valid for 15 minutes. If you get an AccesDenied error, you can get a new temporary URI by running a GetTranscriptionJob or ListTranscriptionJob request.
@@ -1010,12 +1012,12 @@ extension TranscribeClientTypes {
             self.transcriptFileUri = transcriptFileUri
         }
     }
-
 }
 
 extension TranscribeClientTypes {
+
     /// Provides detailed information about a Call Analytics job. To view the job's status, refer to CallAnalyticsJobStatus. If the status is COMPLETED, the job is finished. You can find your completed transcript at the URI specified in TranscriptFileUri. If the status is FAILED, FailureReason provides details on why your transcription job failed. If you enabled personally identifiable information (PII) redaction, the redacted transcript appears at the location specified in RedactedTranscriptFileUri. If you chose to redact the audio in your media file, you can find your redacted media file at the location specified in the RedactedMediaFileUri field of your response.
-    public struct CallAnalyticsJob {
+    public struct CallAnalyticsJob: Swift.Sendable {
         /// Provides detailed information about a call analytics job, including information about skipped analytics features.
         public var callAnalyticsJobDetails: TranscribeClientTypes.CallAnalyticsJobDetails?
         /// The name of the Call Analytics job. Job names are case sensitive and must be unique within an Amazon Web Services account.
@@ -1098,12 +1100,12 @@ extension TranscribeClientTypes {
             self.transcript = transcript
         }
     }
-
 }
 
 extension TranscribeClientTypes {
+
     /// Provides detailed information about a specific Call Analytics job.
-    public struct CallAnalyticsJobSummary {
+    public struct CallAnalyticsJobSummary: Swift.Sendable {
         /// Provides detailed information about a call analytics job, including information about skipped analytics features.
         public var callAnalyticsJobDetails: TranscribeClientTypes.CallAnalyticsJobDetails?
         /// The name of the Call Analytics job. Job names are case sensitive and must be unique within an Amazon Web Services account.
@@ -1142,12 +1144,11 @@ extension TranscribeClientTypes {
             self.startTime = startTime
         }
     }
-
 }
 
 extension TranscribeClientTypes {
 
-    public enum InputType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum InputType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case postCall
         case realTime
         case sdkUnknown(Swift.String)
@@ -1175,8 +1176,9 @@ extension TranscribeClientTypes {
 }
 
 extension TranscribeClientTypes {
+
     /// A time range, in percentage, between two points in your media file. You can use StartPercentage and EndPercentage to search a custom segment. For example, setting StartPercentage to 10 and EndPercentage to 50 only searches for your specified criteria in the audio contained between the 10 percent mark and the 50 percent mark of your media file. You can use also First to search from the start of the media file until the time that you specify. Or use Last to search from the time that you specify until the end of the media file. For example, setting First to 10 only searches for your specified criteria in the audio contained in the first 10 percent of the media file. If you prefer to use milliseconds instead of percentage, see .
-    public struct RelativeTimeRange {
+    public struct RelativeTimeRange: Swift.Sendable {
         /// The time, in percentage, when Amazon Transcribe stops searching for the specified criteria in your media file. If you include EndPercentage in your request, you must also include StartPercentage.
         public var endPercentage: Swift.Int?
         /// The time, in percentage, from the start of your media file until the specified value. Amazon Transcribe searches for your specified criteria in this time segment.
@@ -1199,10 +1201,10 @@ extension TranscribeClientTypes {
             self.startPercentage = startPercentage
         }
     }
-
 }
 
 extension TranscribeClientTypes {
+
     /// Flag the presence or absence of interruptions in your Call Analytics transcription output. Rules using InterruptionFilter are designed to match:
     ///
     /// * Instances where an agent interrupts a customer
@@ -1215,7 +1217,7 @@ extension TranscribeClientTypes {
     ///
     ///
     /// See [Rule criteria for post-call categories](https://docs.aws.amazon.com/transcribe/latest/dg/tca-categories-batch.html#tca-rules-batch) for usage examples.
-    public struct InterruptionFilter {
+    public struct InterruptionFilter: Swift.Sendable {
         /// Makes it possible to specify a time range (in milliseconds) in your audio, during which you want to search for an interruption. See for more detail.
         public var absoluteTimeRange: TranscribeClientTypes.AbsoluteTimeRange?
         /// Set to TRUE to flag speech that does not contain interruptions. Set to FALSE to flag speech that contains interruptions.
@@ -1242,10 +1244,10 @@ extension TranscribeClientTypes {
             self.threshold = threshold
         }
     }
-
 }
 
 extension TranscribeClientTypes {
+
     /// Flag the presence or absence of periods of silence in your Call Analytics transcription output. Rules using NonTalkTimeFilter are designed to match:
     ///
     /// * The presence of silence at specified periods throughout the call
@@ -1254,7 +1256,7 @@ extension TranscribeClientTypes {
     ///
     ///
     /// See [Rule criteria for post-call categories](https://docs.aws.amazon.com/transcribe/latest/dg/tca-categories-batch.html#tca-rules-batch) for usage examples.
-    public struct NonTalkTimeFilter {
+    public struct NonTalkTimeFilter: Swift.Sendable {
         /// Makes it possible to specify a time range (in milliseconds) in your audio, during which you want to search for a period of silence. See for more detail.
         public var absoluteTimeRange: TranscribeClientTypes.AbsoluteTimeRange?
         /// Set to TRUE to flag periods of speech. Set to FALSE to flag periods of silence
@@ -1277,12 +1279,11 @@ extension TranscribeClientTypes {
             self.threshold = threshold
         }
     }
-
 }
 
 extension TranscribeClientTypes {
 
-    public enum SentimentValue: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SentimentValue: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case mixed
         case negative
         case neutral
@@ -1316,6 +1317,7 @@ extension TranscribeClientTypes {
 }
 
 extension TranscribeClientTypes {
+
     /// Flag the presence or absence of specific sentiments detected in your Call Analytics transcription output. Rules using SentimentFilter are designed to match:
     ///
     /// * The presence or absence of a positive sentiment felt by the customer, agent, or both at specified points in the call
@@ -1328,7 +1330,7 @@ extension TranscribeClientTypes {
     ///
     ///
     /// See [Rule criteria for post-call categories](https://docs.aws.amazon.com/transcribe/latest/dg/tca-categories-batch.html#tca-rules-batch) for usage examples.
-    public struct SentimentFilter {
+    public struct SentimentFilter: Swift.Sendable {
         /// Makes it possible to specify a time range (in milliseconds) in your audio, during which you want to search for the specified sentiments. See for more detail.
         public var absoluteTimeRange: TranscribeClientTypes.AbsoluteTimeRange?
         /// Set to TRUE to flag the sentiments that you didn't include in your request. Set to FALSE to flag the sentiments that you specified in your request.
@@ -1356,12 +1358,11 @@ extension TranscribeClientTypes {
             self.sentiments = sentiments
         }
     }
-
 }
 
 extension TranscribeClientTypes {
 
-    public enum TranscriptFilterType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum TranscriptFilterType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case exact
         case sdkUnknown(Swift.String)
 
@@ -1386,6 +1387,7 @@ extension TranscribeClientTypes {
 }
 
 extension TranscribeClientTypes {
+
     /// Flag the presence or absence of specific words or phrases detected in your Call Analytics transcription output. Rules using TranscriptFilter are designed to match:
     ///
     /// * Custom words or phrases spoken by the agent, the customer, or both
@@ -1396,7 +1398,7 @@ extension TranscribeClientTypes {
     ///
     ///
     /// See [Rule criteria for post-call categories](https://docs.aws.amazon.com/transcribe/latest/dg/tca-categories-batch.html#tca-rules-batch) and [Rule criteria for streaming categories](https://docs.aws.amazon.com/transcribe/latest/dg/tca-categories-stream.html#tca-rules-stream) for usage examples.
-    public struct TranscriptFilter {
+    public struct TranscriptFilter: Swift.Sendable {
         /// Makes it possible to specify a time range (in milliseconds) in your audio, during which you want to search for the specified key words or phrases. See for more detail.
         public var absoluteTimeRange: TranscribeClientTypes.AbsoluteTimeRange?
         /// Set to TRUE to flag the absence of the phrase that you specified in your request. Set to FALSE to flag the presence of the phrase that you specified in your request.
@@ -1429,12 +1431,12 @@ extension TranscribeClientTypes {
             self.transcriptFilterType = transcriptFilterType
         }
     }
-
 }
 
 extension TranscribeClientTypes {
+
     /// A rule is a set of criteria that you can specify to flag an attribute in your Call Analytics output. Rules define a Call Analytics category. Rules can include these parameters: , , , and . To learn more about Call Analytics rules and categories, see [Creating categories for post-call transcriptions](https://docs.aws.amazon.com/transcribe/latest/dg/tca-categories-batch.html) and [Creating categories for real-time transcriptions](https://docs.aws.amazon.com/transcribe/latest/dg/tca-categories-stream.html). To learn more about Call Analytics, see [Analyzing call center audio with Call Analytics](https://docs.aws.amazon.com/transcribe/latest/dg/call-analytics.html).
-    public enum Rule {
+    public enum Rule: Swift.Sendable {
         /// Flag the presence or absence of periods of silence in your Call Analytics transcription output. Refer to for more detail.
         case nontalktimefilter(TranscribeClientTypes.NonTalkTimeFilter)
         /// Flag the presence or absence of interruptions in your Call Analytics transcription output. Refer to for more detail.
@@ -1445,12 +1447,12 @@ extension TranscribeClientTypes {
         case sentimentfilter(TranscribeClientTypes.SentimentFilter)
         case sdkUnknown(Swift.String)
     }
-
 }
 
 extension TranscribeClientTypes {
+
     /// Provides you with the properties of the Call Analytics category you specified in your request. This includes the list of rules that define the specified category.
-    public struct CategoryProperties {
+    public struct CategoryProperties: Swift.Sendable {
         /// The name of the Call Analytics category. Category names are case sensitive and must be unique within an Amazon Web Services account.
         public var categoryName: Swift.String?
         /// The date and time the specified Call Analytics category was created. Timestamps are in the format YYYY-MM-DD'T'HH:MM:SS.SSSSSS-UTC. For example, 2022-05-04T12:32:58.761000-07:00 represents 12:32 PM UTC-7 on May 4, 2022.
@@ -1477,12 +1479,11 @@ extension TranscribeClientTypes {
             self.rules = rules
         }
     }
-
 }
 
 extension TranscribeClientTypes {
 
-    public enum CLMLanguageCode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum CLMLanguageCode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case deDe
         case enAu
         case enGb
@@ -1596,7 +1597,7 @@ public struct LimitExceededException: ClientRuntime.ModeledError, AWSClientRunti
     }
 }
 
-public struct CreateCallAnalyticsCategoryInput {
+public struct CreateCallAnalyticsCategoryInput: Swift.Sendable {
     /// A unique name, chosen by you, for your Call Analytics category. It's helpful to use a detailed naming system that will make sense to you in the future. For example, it's better to use sentiment-positive-last30seconds for a category over a generic name like test-category. Category names are case sensitive.
     /// This member is required.
     public var categoryName: Swift.String?
@@ -1618,7 +1619,7 @@ public struct CreateCallAnalyticsCategoryInput {
     }
 }
 
-public struct CreateCallAnalyticsCategoryOutput {
+public struct CreateCallAnalyticsCategoryOutput: Swift.Sendable {
     /// Provides you with the properties of your new category, including its associated rules.
     public var categoryProperties: TranscribeClientTypes.CategoryProperties?
 
@@ -1631,8 +1632,9 @@ public struct CreateCallAnalyticsCategoryOutput {
 }
 
 extension TranscribeClientTypes {
+
     /// Contains the Amazon S3 location of the training data you want to use to create a new custom language model, and permissions to access this location. When using InputDataConfig, you must include these sub-parameters: S3Uri and DataAccessRoleArn. You can optionally include TuningDataS3Uri.
-    public struct InputDataConfig {
+    public struct InputDataConfig: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of an IAM role that has permissions to access the Amazon S3 bucket that contains your input files. If the role that you specify doesn’t have the appropriate permissions to access the specified Amazon S3 location, your request fails. IAM role ARNs have the format arn:partition:iam::account:role/role-name-with-path. For example: arn:aws:iam::111122223333:role/Admin. For more information, see [IAM ARNs](https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_identifiers.html#identifiers-arns).
         /// This member is required.
         public var dataAccessRoleArn: Swift.String?
@@ -1653,12 +1655,12 @@ extension TranscribeClientTypes {
             self.tuningDataS3Uri = tuningDataS3Uri
         }
     }
-
 }
 
 extension TranscribeClientTypes {
+
     /// Adds metadata, in the form of a key:value pair, to the specified resource. For example, you could add the tag Department:Sales to a resource to indicate that it pertains to your organization's sales department. You can also use tags for tag-based access control. To learn more about tagging, see [Tagging resources](https://docs.aws.amazon.com/transcribe/latest/dg/tagging.html).
-    public struct Tag {
+    public struct Tag: Swift.Sendable {
         /// The first part of a key:value pair that forms a tag associated with a given resource. For example, in the tag Department:Sales, the key is 'Department'.
         /// This member is required.
         public var key: Swift.String?
@@ -1675,10 +1677,9 @@ extension TranscribeClientTypes {
             self.value = value
         }
     }
-
 }
 
-public struct CreateLanguageModelInput {
+public struct CreateLanguageModelInput: Swift.Sendable {
     /// The Amazon Transcribe standard language model, or base model, used to create your custom language model. Amazon Transcribe offers two options for base models: Wideband and Narrowband. If the audio you want to transcribe has a sample rate of 16,000 Hz or greater, choose WideBand. To transcribe audio with a sample rate less than 16,000 Hz, choose NarrowBand.
     /// This member is required.
     public var baseModelName: TranscribeClientTypes.BaseModelName?
@@ -1712,7 +1713,7 @@ public struct CreateLanguageModelInput {
 
 extension TranscribeClientTypes {
 
-    public enum ModelStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ModelStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case completed
         case failed
         case inProgress
@@ -1742,7 +1743,7 @@ extension TranscribeClientTypes {
     }
 }
 
-public struct CreateLanguageModelOutput {
+public struct CreateLanguageModelOutput: Swift.Sendable {
     /// The Amazon Transcribe standard language model, or base model, you specified when creating your custom language model.
     public var baseModelName: TranscribeClientTypes.BaseModelName?
     /// Lists your data access role ARN (Amazon Resource Name) and the Amazon S3 locations you provided for your training (S3Uri) and tuning (TuningDataS3Uri) data.
@@ -1770,7 +1771,7 @@ public struct CreateLanguageModelOutput {
     }
 }
 
-public struct CreateMedicalVocabularyInput {
+public struct CreateMedicalVocabularyInput: Swift.Sendable {
     /// The language code that represents the language of the entries in your custom vocabulary. US English (en-US) is the only language supported with Amazon Transcribe Medical.
     /// This member is required.
     public var languageCode: TranscribeClientTypes.LanguageCode?
@@ -1799,7 +1800,7 @@ public struct CreateMedicalVocabularyInput {
 
 extension TranscribeClientTypes {
 
-    public enum VocabularyState: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum VocabularyState: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case failed
         case pending
         case ready
@@ -1829,7 +1830,7 @@ extension TranscribeClientTypes {
     }
 }
 
-public struct CreateMedicalVocabularyOutput {
+public struct CreateMedicalVocabularyOutput: Swift.Sendable {
     /// If VocabularyState is FAILED, FailureReason contains information about why the medical transcription job request failed. See also: [Common Errors](https://docs.aws.amazon.com/transcribe/latest/APIReference/CommonErrors.html).
     public var failureReason: Swift.String?
     /// The language code you selected for your custom medical vocabulary. US English (en-US) is the only language supported with Amazon Transcribe Medical.
@@ -1857,7 +1858,7 @@ public struct CreateMedicalVocabularyOutput {
     }
 }
 
-public struct CreateVocabularyInput {
+public struct CreateVocabularyInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of an IAM role that has permissions to access the Amazon S3 bucket that contains your input files (in this case, your custom vocabulary). If the role that you specify doesn’t have the appropriate permissions to access the specified Amazon S3 location, your request fails. IAM role ARNs have the format arn:partition:iam::account:role/role-name-with-path. For example: arn:aws:iam::111122223333:role/Admin. For more information, see [IAM ARNs](https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_identifiers.html#identifiers-arns).
     public var dataAccessRoleArn: Swift.String?
     /// The language code that represents the language of the entries in your custom vocabulary. Each custom vocabulary must contain terms in only one language. A custom vocabulary can only be used to transcribe files in the same language as the custom vocabulary. For example, if you create a custom vocabulary using US English (en-US), you can only apply this custom vocabulary to files that contain English audio. For a list of supported languages and their associated language codes, refer to the [Supported languages](https://docs.aws.amazon.com/transcribe/latest/dg/supported-languages.html) table.
@@ -1891,7 +1892,7 @@ public struct CreateVocabularyInput {
     }
 }
 
-public struct CreateVocabularyOutput {
+public struct CreateVocabularyOutput: Swift.Sendable {
     /// If VocabularyState is FAILED, FailureReason contains information about why the custom vocabulary request failed. See also: [Common Errors](https://docs.aws.amazon.com/transcribe/latest/APIReference/CommonErrors.html).
     public var failureReason: Swift.String?
     /// The language code you selected for your custom vocabulary.
@@ -1919,7 +1920,7 @@ public struct CreateVocabularyOutput {
     }
 }
 
-public struct CreateVocabularyFilterInput {
+public struct CreateVocabularyFilterInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of an IAM role that has permissions to access the Amazon S3 bucket that contains your input files (in this case, your custom vocabulary filter). If the role that you specify doesn’t have the appropriate permissions to access the specified Amazon S3 location, your request fails. IAM role ARNs have the format arn:partition:iam::account:role/role-name-with-path. For example: arn:aws:iam::111122223333:role/Admin. For more information, see [IAM ARNs](https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_identifiers.html#identifiers-arns).
     public var dataAccessRoleArn: Swift.String?
     /// The language code that represents the language of the entries in your vocabulary filter. Each custom vocabulary filter must contain terms in only one language. A custom vocabulary filter can only be used to transcribe files in the same language as the filter. For example, if you create a custom vocabulary filter using US English (en-US), you can only apply this filter to files that contain English audio. For a list of supported languages and their associated language codes, refer to the [Supported languages](https://docs.aws.amazon.com/transcribe/latest/dg/supported-languages.html) table.
@@ -1953,7 +1954,7 @@ public struct CreateVocabularyFilterInput {
     }
 }
 
-public struct CreateVocabularyFilterOutput {
+public struct CreateVocabularyFilterOutput: Swift.Sendable {
     /// The language code you selected for your custom vocabulary filter.
     public var languageCode: TranscribeClientTypes.LanguageCode?
     /// The date and time you created your custom vocabulary filter. Timestamps are in the format YYYY-MM-DD'T'HH:MM:SS.SSSSSS-UTC. For example, 2022-05-04T12:32:58.761000-07:00 represents 12:32 PM UTC-7 on May 4, 2022.
@@ -1997,7 +1998,7 @@ public struct NotFoundException: ClientRuntime.ModeledError, AWSClientRuntime.AW
     }
 }
 
-public struct DeleteCallAnalyticsCategoryInput {
+public struct DeleteCallAnalyticsCategoryInput: Swift.Sendable {
     /// The name of the Call Analytics category you want to delete. Category names are case sensitive.
     /// This member is required.
     public var categoryName: Swift.String?
@@ -2010,12 +2011,12 @@ public struct DeleteCallAnalyticsCategoryInput {
     }
 }
 
-public struct DeleteCallAnalyticsCategoryOutput {
+public struct DeleteCallAnalyticsCategoryOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteCallAnalyticsJobInput {
+public struct DeleteCallAnalyticsJobInput: Swift.Sendable {
     /// The name of the Call Analytics job you want to delete. Job names are case sensitive.
     /// This member is required.
     public var callAnalyticsJobName: Swift.String?
@@ -2028,12 +2029,12 @@ public struct DeleteCallAnalyticsJobInput {
     }
 }
 
-public struct DeleteCallAnalyticsJobOutput {
+public struct DeleteCallAnalyticsJobOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteLanguageModelInput {
+public struct DeleteLanguageModelInput: Swift.Sendable {
     /// The name of the custom language model you want to delete. Model names are case sensitive.
     /// This member is required.
     public var modelName: Swift.String?
@@ -2046,7 +2047,7 @@ public struct DeleteLanguageModelInput {
     }
 }
 
-public struct DeleteMedicalScribeJobInput {
+public struct DeleteMedicalScribeJobInput: Swift.Sendable {
     /// The name of the Medical Scribe job you want to delete. Job names are case sensitive.
     /// This member is required.
     public var medicalScribeJobName: Swift.String?
@@ -2059,7 +2060,7 @@ public struct DeleteMedicalScribeJobInput {
     }
 }
 
-public struct DeleteMedicalTranscriptionJobInput {
+public struct DeleteMedicalTranscriptionJobInput: Swift.Sendable {
     /// The name of the medical transcription job you want to delete. Job names are case sensitive.
     /// This member is required.
     public var medicalTranscriptionJobName: Swift.String?
@@ -2072,7 +2073,7 @@ public struct DeleteMedicalTranscriptionJobInput {
     }
 }
 
-public struct DeleteMedicalVocabularyInput {
+public struct DeleteMedicalVocabularyInput: Swift.Sendable {
     /// The name of the custom medical vocabulary you want to delete. Custom medical vocabulary names are case sensitive.
     /// This member is required.
     public var vocabularyName: Swift.String?
@@ -2085,7 +2086,7 @@ public struct DeleteMedicalVocabularyInput {
     }
 }
 
-public struct DeleteTranscriptionJobInput {
+public struct DeleteTranscriptionJobInput: Swift.Sendable {
     /// The name of the transcription job you want to delete. Job names are case sensitive.
     /// This member is required.
     public var transcriptionJobName: Swift.String?
@@ -2098,7 +2099,7 @@ public struct DeleteTranscriptionJobInput {
     }
 }
 
-public struct DeleteVocabularyInput {
+public struct DeleteVocabularyInput: Swift.Sendable {
     /// The name of the custom vocabulary you want to delete. Custom vocabulary names are case sensitive.
     /// This member is required.
     public var vocabularyName: Swift.String?
@@ -2111,7 +2112,7 @@ public struct DeleteVocabularyInput {
     }
 }
 
-public struct DeleteVocabularyFilterInput {
+public struct DeleteVocabularyFilterInput: Swift.Sendable {
     /// The name of the custom vocabulary filter you want to delete. Custom vocabulary filter names are case sensitive.
     /// This member is required.
     public var vocabularyFilterName: Swift.String?
@@ -2124,7 +2125,7 @@ public struct DeleteVocabularyFilterInput {
     }
 }
 
-public struct DescribeLanguageModelInput {
+public struct DescribeLanguageModelInput: Swift.Sendable {
     /// The name of the custom language model you want information about. Model names are case sensitive.
     /// This member is required.
     public var modelName: Swift.String?
@@ -2138,6 +2139,7 @@ public struct DescribeLanguageModelInput {
 }
 
 extension TranscribeClientTypes {
+
     /// Provides information about a custom language model, including:
     ///
     /// * The base model name
@@ -2155,7 +2157,7 @@ extension TranscribeClientTypes {
     /// * The model's processing state
     ///
     /// * Any available upgrades for the base model
-    public struct LanguageModel {
+    public struct LanguageModel: Swift.Sendable {
         /// The Amazon Transcribe standard language model, or base model, used to create your custom language model.
         public var baseModelName: TranscribeClientTypes.BaseModelName?
         /// The date and time the specified custom language model was created. Timestamps are in the format YYYY-MM-DD'T'HH:MM:SS.SSSSSS-UTC. For example, 2022-05-04T12:32:58.761000-07:00 represents 12:32 PM UTC-7 on May 4, 2022.
@@ -2198,10 +2200,9 @@ extension TranscribeClientTypes {
             self.upgradeAvailability = upgradeAvailability
         }
     }
-
 }
 
-public struct DescribeLanguageModelOutput {
+public struct DescribeLanguageModelOutput: Swift.Sendable {
     /// Provides information about the specified custom language model. This parameter also shows if the base language model you used to create your custom language model has been updated. If Amazon Transcribe has updated the base model, you can create a new custom language model using the updated base model. If you tried to create a new custom language model and the request wasn't successful, you can use this DescribeLanguageModel to help identify the reason for this failure.
     public var languageModel: TranscribeClientTypes.LanguageModel?
 
@@ -2213,7 +2214,7 @@ public struct DescribeLanguageModelOutput {
     }
 }
 
-public struct GetCallAnalyticsCategoryInput {
+public struct GetCallAnalyticsCategoryInput: Swift.Sendable {
     /// The name of the Call Analytics category you want information about. Category names are case sensitive.
     /// This member is required.
     public var categoryName: Swift.String?
@@ -2226,7 +2227,7 @@ public struct GetCallAnalyticsCategoryInput {
     }
 }
 
-public struct GetCallAnalyticsCategoryOutput {
+public struct GetCallAnalyticsCategoryOutput: Swift.Sendable {
     /// Provides you with the properties of the Call Analytics category you specified in your GetCallAnalyticsCategory request.
     public var categoryProperties: TranscribeClientTypes.CategoryProperties?
 
@@ -2238,7 +2239,7 @@ public struct GetCallAnalyticsCategoryOutput {
     }
 }
 
-public struct GetCallAnalyticsJobInput {
+public struct GetCallAnalyticsJobInput: Swift.Sendable {
     /// The name of the Call Analytics job you want information about. Job names are case sensitive.
     /// This member is required.
     public var callAnalyticsJobName: Swift.String?
@@ -2251,7 +2252,7 @@ public struct GetCallAnalyticsJobInput {
     }
 }
 
-public struct GetCallAnalyticsJobOutput {
+public struct GetCallAnalyticsJobOutput: Swift.Sendable {
     /// Provides detailed information about the specified Call Analytics job, including job status and, if applicable, failure reason.
     public var callAnalyticsJob: TranscribeClientTypes.CallAnalyticsJob?
 
@@ -2263,7 +2264,7 @@ public struct GetCallAnalyticsJobOutput {
     }
 }
 
-public struct GetMedicalScribeJobInput {
+public struct GetMedicalScribeJobInput: Swift.Sendable {
     /// The name of the Medical Scribe job you want information about. Job names are case sensitive.
     /// This member is required.
     public var medicalScribeJobName: Swift.String?
@@ -2278,7 +2279,7 @@ public struct GetMedicalScribeJobInput {
 
 extension TranscribeClientTypes {
 
-    public enum MedicalScribeParticipantRole: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum MedicalScribeParticipantRole: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case clinician
         case patient
         case sdkUnknown(Swift.String)
@@ -2306,8 +2307,9 @@ extension TranscribeClientTypes {
 }
 
 extension TranscribeClientTypes {
+
     /// Indicates which speaker is on which channel. The options are CLINICIAN and PATIENT
-    public struct MedicalScribeChannelDefinition {
+    public struct MedicalScribeChannelDefinition: Swift.Sendable {
         /// Specify the audio channel you want to define.
         /// This member is required.
         public var channelId: Swift.Int
@@ -2324,12 +2326,11 @@ extension TranscribeClientTypes {
             self.participantRole = participantRole
         }
     }
-
 }
 
 extension TranscribeClientTypes {
 
-    public enum MedicalScribeLanguageCode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum MedicalScribeLanguageCode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case enUs
         case sdkUnknown(Swift.String)
 
@@ -2355,7 +2356,7 @@ extension TranscribeClientTypes {
 
 extension TranscribeClientTypes {
 
-    public enum MedicalScribeJobStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum MedicalScribeJobStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case completed
         case failed
         case inProgress
@@ -2389,8 +2390,9 @@ extension TranscribeClientTypes {
 }
 
 extension TranscribeClientTypes {
+
     /// The location of the output of your Medical Scribe job. ClinicalDocumentUri holds the Amazon S3 URI for the Clinical Document and TranscriptFileUri holds the Amazon S3 URI for the Transcript.
-    public struct MedicalScribeOutput {
+    public struct MedicalScribeOutput: Swift.Sendable {
         /// Holds the Amazon S3 URI for the Clinical Document.
         /// This member is required.
         public var clinicalDocumentUri: Swift.String?
@@ -2407,12 +2409,12 @@ extension TranscribeClientTypes {
             self.transcriptFileUri = transcriptFileUri
         }
     }
-
 }
 
 extension TranscribeClientTypes {
+
     /// Makes it possible to control how your Medical Scribe job is processed using a MedicalScribeSettings object. Specify ChannelIdentification if ChannelDefinitions are set. Enabled ShowSpeakerLabels if ChannelIdentification and ChannelDefinitions are not set. One and only one of ChannelIdentification and ShowSpeakerLabels must be set. If ShowSpeakerLabels is set, MaxSpeakerLabels must also be set. Use Settings to specify a vocabulary or vocabulary filter or both using VocabularyName, VocabularyFilterName. VocabularyFilterMethod must be specified if VocabularyFilterName is set.
-    public struct MedicalScribeSettings {
+    public struct MedicalScribeSettings: Swift.Sendable {
         /// Enables channel identification in multi-channel audio. Channel identification transcribes the audio on each channel independently, then appends the output for each channel into one transcript. For more information, see [Transcribing multi-channel audio](https://docs.aws.amazon.com/transcribe/latest/dg/channel-id.html).
         public var channelIdentification: Swift.Bool?
         /// Specify the maximum number of speakers you want to partition in your media. Note that if your media contains more speakers than the specified number, multiple speakers are treated as a single speaker. If you specify the MaxSpeakerLabels field, you must set the ShowSpeakerLabels field to true.
@@ -2443,12 +2445,12 @@ extension TranscribeClientTypes {
             self.vocabularyName = vocabularyName
         }
     }
-
 }
 
 extension TranscribeClientTypes {
+
     /// Provides detailed information about a Medical Scribe job. To view the status of the specified Medical Scribe job, check the MedicalScribeJobStatus field. If the status is COMPLETED, the job is finished and you can find the results at the locations specified in MedicalScribeOutput. If the status is FAILED, FailureReason provides details on why your Medical Scribe job failed.
-    public struct MedicalScribeJob {
+    public struct MedicalScribeJob: Swift.Sendable {
         /// Makes it possible to specify which speaker is on which channel. For example, if the clinician is the first participant to speak, you would set ChannelId of the first ChannelDefinition in the list to 0 (to indicate the first channel) and ParticipantRole to CLINICIAN (to indicate that it's the clinician speaking). Then you would set the ChannelId of the second ChannelDefinition in the list to 1 (to indicate the second channel) and ParticipantRole to PATIENT (to indicate that it's the patient speaking).
         public var channelDefinitions: [TranscribeClientTypes.MedicalScribeChannelDefinition]?
         /// The date and time the specified Medical Scribe job finished processing. Timestamps are in the format YYYY-MM-DD'T'HH:MM:SS.SSSSSS-UTC. For example, 2022-05-04T12:32:58.761000-07:00 represents a Medical Scribe job that finished processing at 12:32 PM UTC-7 on May 4, 2022.
@@ -2507,10 +2509,9 @@ extension TranscribeClientTypes {
             self.tags = tags
         }
     }
-
 }
 
-public struct GetMedicalScribeJobOutput {
+public struct GetMedicalScribeJobOutput: Swift.Sendable {
     /// Provides detailed information about the specified Medical Scribe job, including job status and, if applicable, failure reason
     public var medicalScribeJob: TranscribeClientTypes.MedicalScribeJob?
 
@@ -2522,7 +2523,7 @@ public struct GetMedicalScribeJobOutput {
     }
 }
 
-public struct GetMedicalTranscriptionJobInput {
+public struct GetMedicalTranscriptionJobInput: Swift.Sendable {
     /// The name of the medical transcription job you want information about. Job names are case sensitive.
     /// This member is required.
     public var medicalTranscriptionJobName: Swift.String?
@@ -2537,7 +2538,7 @@ public struct GetMedicalTranscriptionJobInput {
 
 extension TranscribeClientTypes {
 
-    public enum MedicalContentIdentificationType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum MedicalContentIdentificationType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case phi
         case sdkUnknown(Swift.String)
 
@@ -2562,8 +2563,9 @@ extension TranscribeClientTypes {
 }
 
 extension TranscribeClientTypes {
+
     /// Allows additional optional settings in your request, including channel identification, alternative transcriptions, and speaker partitioning. You can use that to apply custom vocabularies to your medical transcription job.
-    public struct MedicalTranscriptionSetting {
+    public struct MedicalTranscriptionSetting: Swift.Sendable {
         /// Enables channel identification in multi-channel audio. Channel identification transcribes the audio on each channel independently, then appends the output for each channel into one transcript. If you have multi-channel audio and do not enable channel identification, your audio is transcribed in a continuous manner and your transcript does not separate the speech by channel. For more information, see [Transcribing multi-channel audio](https://docs.aws.amazon.com/transcribe/latest/dg/channel-id.html).
         public var channelIdentification: Swift.Bool?
         /// Indicate the maximum number of alternative transcriptions you want Amazon Transcribe Medical to include in your transcript. If you select a number greater than the number of alternative transcriptions generated by Amazon Transcribe Medical, only the actual number of alternative transcriptions are included. If you include MaxAlternatives in your request, you must also include ShowAlternatives with a value of true. For more information, see [Alternative transcriptions](https://docs.aws.amazon.com/transcribe/latest/dg/how-alternatives.html).
@@ -2594,12 +2596,11 @@ extension TranscribeClientTypes {
             self.vocabularyName = vocabularyName
         }
     }
-
 }
 
 extension TranscribeClientTypes {
 
-    public enum Specialty: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Specialty: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case primarycare
         case sdkUnknown(Swift.String)
 
@@ -2624,8 +2625,9 @@ extension TranscribeClientTypes {
 }
 
 extension TranscribeClientTypes {
+
     /// Provides you with the Amazon S3 URI you can use to access your transcript.
-    public struct MedicalTranscript {
+    public struct MedicalTranscript: Swift.Sendable {
         /// The Amazon S3 location of your transcript. You can use this URI to access or download your transcript. Note that this is the Amazon S3 location you specified in your request using the OutputBucketName parameter.
         public var transcriptFileUri: Swift.String?
 
@@ -2636,12 +2638,11 @@ extension TranscribeClientTypes {
             self.transcriptFileUri = transcriptFileUri
         }
     }
-
 }
 
 extension TranscribeClientTypes {
 
-    public enum TranscriptionJobStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum TranscriptionJobStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case completed
         case failed
         case inProgress
@@ -2676,7 +2677,7 @@ extension TranscribeClientTypes {
 
 extension TranscribeClientTypes {
 
-    public enum ModelType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ModelType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case conversation
         case dictation
         case sdkUnknown(Swift.String)
@@ -2704,8 +2705,9 @@ extension TranscribeClientTypes {
 }
 
 extension TranscribeClientTypes {
+
     /// Provides detailed information about a medical transcription job. To view the status of the specified medical transcription job, check the TranscriptionJobStatus field. If the status is COMPLETED, the job is finished and you can find the results at the location specified in TranscriptFileUri. If the status is FAILED, FailureReason provides details on why your transcription job failed.
-    public struct MedicalTranscriptionJob {
+    public struct MedicalTranscriptionJob: Swift.Sendable {
         /// The date and time the specified medical transcription job finished processing. Timestamps are in the format YYYY-MM-DD'T'HH:MM:SS.SSSSSS-UTC. For example, 2022-05-04T12:33:13.922000-07:00 represents a transcription job that started processing at 12:33 PM UTC-7 on May 4, 2022.
         public var completionTime: Foundation.Date?
         /// Indicates whether content identification was enabled for your transcription request.
@@ -2788,10 +2790,9 @@ extension TranscribeClientTypes {
             self.type = type
         }
     }
-
 }
 
-public struct GetMedicalTranscriptionJobOutput {
+public struct GetMedicalTranscriptionJobOutput: Swift.Sendable {
     /// Provides detailed information about the specified medical transcription job, including job status and, if applicable, failure reason.
     public var medicalTranscriptionJob: TranscribeClientTypes.MedicalTranscriptionJob?
 
@@ -2803,7 +2804,7 @@ public struct GetMedicalTranscriptionJobOutput {
     }
 }
 
-public struct GetMedicalVocabularyInput {
+public struct GetMedicalVocabularyInput: Swift.Sendable {
     /// The name of the custom medical vocabulary you want information about. Custom medical vocabulary names are case sensitive.
     /// This member is required.
     public var vocabularyName: Swift.String?
@@ -2816,7 +2817,7 @@ public struct GetMedicalVocabularyInput {
     }
 }
 
-public struct GetMedicalVocabularyOutput {
+public struct GetMedicalVocabularyOutput: Swift.Sendable {
     /// The Amazon S3 location where the specified custom medical vocabulary is stored; use this URI to view or download the custom vocabulary.
     public var downloadUri: Swift.String?
     /// If VocabularyState is FAILED, FailureReason contains information about why the custom medical vocabulary request failed. See also: [Common Errors](https://docs.aws.amazon.com/transcribe/latest/APIReference/CommonErrors.html).
@@ -2848,7 +2849,7 @@ public struct GetMedicalVocabularyOutput {
     }
 }
 
-public struct GetTranscriptionJobInput {
+public struct GetTranscriptionJobInput: Swift.Sendable {
     /// The name of the transcription job you want information about. Job names are case sensitive.
     /// This member is required.
     public var transcriptionJobName: Swift.String?
@@ -2862,8 +2863,9 @@ public struct GetTranscriptionJobInput {
 }
 
 extension TranscribeClientTypes {
+
     /// Makes it possible to control how your transcription job is processed. Currently, the only JobExecutionSettings modification you can choose is enabling job queueing using the AllowDeferredExecution sub-parameter. If you include JobExecutionSettings in your request, you must also include the sub-parameters: AllowDeferredExecution and DataAccessRoleArn.
-    public struct JobExecutionSettings {
+    public struct JobExecutionSettings: Swift.Sendable {
         /// Makes it possible to enable job queuing when your concurrent request limit is exceeded. When AllowDeferredExecution is set to true, transcription job requests are placed in a queue until the number of jobs falls below the concurrent request limit. If AllowDeferredExecution is set to false and the number of transcription job requests exceed the concurrent request limit, you get a LimitExceededException error. If you include AllowDeferredExecution in your request, you must also include DataAccessRoleArn.
         public var allowDeferredExecution: Swift.Bool?
         /// The Amazon Resource Name (ARN) of an IAM role that has permissions to access the Amazon S3 bucket that contains your input files. If the role that you specify doesn’t have the appropriate permissions to access the specified Amazon S3 location, your request fails. IAM role ARNs have the format arn:partition:iam::account:role/role-name-with-path. For example: arn:aws:iam::111122223333:role/Admin. For more information, see [IAM ARNs](https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_identifiers.html#identifiers-arns). Note that if you include DataAccessRoleArn in your request, you must also include AllowDeferredExecution.
@@ -2878,12 +2880,12 @@ extension TranscribeClientTypes {
             self.dataAccessRoleArn = dataAccessRoleArn
         }
     }
-
 }
 
 extension TranscribeClientTypes {
+
     /// Provides information on the speech contained in a discreet utterance when multi-language identification is enabled in your request. This utterance represents a block of speech consisting of one language, preceded or followed by a block of speech in a different language.
-    public struct LanguageCodeItem {
+    public struct LanguageCodeItem: Swift.Sendable {
         /// Provides the total time, in seconds, each identified language is spoken in your media.
         public var durationInSeconds: Swift.Float?
         /// Provides the language code for each language identified in your media.
@@ -2898,12 +2900,12 @@ extension TranscribeClientTypes {
             self.languageCode = languageCode
         }
     }
-
 }
 
 extension TranscribeClientTypes {
+
     /// Provides the name of the custom language model that was included in the specified transcription job. Only use ModelSettings with the LanguageModelName sub-parameter if you're not using automatic language identification (). If using LanguageIdSettings in your request, this parameter contains a LanguageModelName sub-parameter.
-    public struct ModelSettings {
+    public struct ModelSettings: Swift.Sendable {
         /// The name of the custom language model you want to use when processing your transcription job. Note that custom language model names are case sensitive. The language of the specified custom language model must match the language code that you specify in your transcription request. If the languages do not match, the custom language model isn't applied. There are no errors or warnings associated with a language mismatch.
         public var languageModelName: Swift.String?
 
@@ -2914,12 +2916,12 @@ extension TranscribeClientTypes {
             self.languageModelName = languageModelName
         }
     }
-
 }
 
 extension TranscribeClientTypes {
+
     /// Allows additional optional settings in your request, including channel identification, alternative transcriptions, and speaker partitioning. You can use that to apply custom vocabularies to your transcription job.
-    public struct Settings {
+    public struct Settings: Swift.Sendable {
         /// Enables channel identification in multi-channel audio. Channel identification transcribes the audio on each channel independently, then appends the output for each channel into one transcript. For more information, see [Transcribing multi-channel audio](https://docs.aws.amazon.com/transcribe/latest/dg/channel-id.html).
         public var channelIdentification: Swift.Bool?
         /// Indicate the maximum number of alternative transcriptions you want Amazon Transcribe to include in your transcript. If you select a number greater than the number of alternative transcriptions generated by Amazon Transcribe, only the actual number of alternative transcriptions are included. If you include MaxAlternatives in your request, you must also include ShowAlternatives with a value of true. For more information, see [Alternative transcriptions](https://docs.aws.amazon.com/transcribe/latest/dg/how-alternatives.html).
@@ -2958,12 +2960,11 @@ extension TranscribeClientTypes {
             self.vocabularyName = vocabularyName
         }
     }
-
 }
 
 extension TranscribeClientTypes {
 
-    public enum SubtitleFormat: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SubtitleFormat: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case srt
         case vtt
         case sdkUnknown(Swift.String)
@@ -2991,8 +2992,9 @@ extension TranscribeClientTypes {
 }
 
 extension TranscribeClientTypes {
+
     /// Provides information about your subtitle file, including format, start index, and Amazon S3 location.
-    public struct SubtitlesOutput {
+    public struct SubtitlesOutput: Swift.Sendable {
         /// Provides the format of your subtitle files. If your request included both WebVTT (vtt) and SubRip (srt) formats, both formats are shown.
         public var formats: [TranscribeClientTypes.SubtitleFormat]?
         /// Provides the start index value for your subtitle files. If you did not specify a value in your request, the default value of 0 is used.
@@ -3011,12 +3013,11 @@ extension TranscribeClientTypes {
             self.subtitleFileUris = subtitleFileUris
         }
     }
-
 }
 
 extension TranscribeClientTypes {
 
-    public enum ToxicityCategory: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ToxicityCategory: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case all
         case sdkUnknown(Swift.String)
 
@@ -3041,8 +3042,9 @@ extension TranscribeClientTypes {
 }
 
 extension TranscribeClientTypes {
+
     /// Contains ToxicityCategories, which is a required parameter if you want to enable toxicity detection (ToxicityDetection) in your transcription request.
-    public struct ToxicityDetectionSettings {
+    public struct ToxicityDetectionSettings: Swift.Sendable {
         /// If you include ToxicityDetection in your transcription request, you must also include ToxicityCategories. The only accepted value for this parameter is ALL.
         /// This member is required.
         public var toxicityCategories: [TranscribeClientTypes.ToxicityCategory]?
@@ -3054,12 +3056,12 @@ extension TranscribeClientTypes {
             self.toxicityCategories = toxicityCategories
         }
     }
-
 }
 
 extension TranscribeClientTypes {
+
     /// Provides detailed information about a transcription job. To view the status of the specified transcription job, check the TranscriptionJobStatus field. If the status is COMPLETED, the job is finished and you can find the results at the location specified in TranscriptFileUri. If the status is FAILED, FailureReason provides details on why your transcription job failed. If you enabled content redaction, the redacted transcript can be found at the location specified in RedactedTranscriptFileUri.
-    public struct TranscriptionJob {
+    public struct TranscriptionJob: Swift.Sendable {
         /// The date and time the specified transcription job finished processing. Timestamps are in the format YYYY-MM-DD'T'HH:MM:SS.SSSSSS-UTC. For example, 2022-05-04T12:33:13.922000-07:00 represents a transcription job that started processing at 12:33 PM UTC-7 on May 4, 2022.
         public var completionTime: Foundation.Date?
         /// Indicates whether redaction was enabled in your transcript.
@@ -3174,10 +3176,9 @@ extension TranscribeClientTypes {
             self.transcriptionJobStatus = transcriptionJobStatus
         }
     }
-
 }
 
-public struct GetTranscriptionJobOutput {
+public struct GetTranscriptionJobOutput: Swift.Sendable {
     /// Provides detailed information about the specified transcription job, including job status and, if applicable, failure reason.
     public var transcriptionJob: TranscribeClientTypes.TranscriptionJob?
 
@@ -3189,7 +3190,7 @@ public struct GetTranscriptionJobOutput {
     }
 }
 
-public struct GetVocabularyInput {
+public struct GetVocabularyInput: Swift.Sendable {
     /// The name of the custom vocabulary you want information about. Custom vocabulary names are case sensitive.
     /// This member is required.
     public var vocabularyName: Swift.String?
@@ -3202,7 +3203,7 @@ public struct GetVocabularyInput {
     }
 }
 
-public struct GetVocabularyOutput {
+public struct GetVocabularyOutput: Swift.Sendable {
     /// The Amazon S3 location where the custom vocabulary is stored; use this URI to view or download the custom vocabulary.
     public var downloadUri: Swift.String?
     /// If VocabularyState is FAILED, FailureReason contains information about why the custom vocabulary request failed. See also: [Common Errors](https://docs.aws.amazon.com/transcribe/latest/APIReference/CommonErrors.html).
@@ -3234,7 +3235,7 @@ public struct GetVocabularyOutput {
     }
 }
 
-public struct GetVocabularyFilterInput {
+public struct GetVocabularyFilterInput: Swift.Sendable {
     /// The name of the custom vocabulary filter you want information about. Custom vocabulary filter names are case sensitive.
     /// This member is required.
     public var vocabularyFilterName: Swift.String?
@@ -3247,7 +3248,7 @@ public struct GetVocabularyFilterInput {
     }
 }
 
-public struct GetVocabularyFilterOutput {
+public struct GetVocabularyFilterOutput: Swift.Sendable {
     /// The Amazon S3 location where the custom vocabulary filter is stored; use this URI to view or download the custom vocabulary filter.
     public var downloadUri: Swift.String?
     /// The language code you selected for your custom vocabulary filter.
@@ -3271,7 +3272,7 @@ public struct GetVocabularyFilterOutput {
     }
 }
 
-public struct ListCallAnalyticsCategoriesInput {
+public struct ListCallAnalyticsCategoriesInput: Swift.Sendable {
     /// The maximum number of Call Analytics categories to return in each page of results. If there are fewer results than the value that you specify, only the actual results are returned. If you do not specify a value, a default of 5 is used.
     public var maxResults: Swift.Int?
     /// If your ListCallAnalyticsCategories request returns more results than can be displayed, NextToken is displayed in the response with an associated string. To get the next page of results, copy this string and repeat your request, including NextToken with the value of the copied string. Repeat as needed to view all your results.
@@ -3287,7 +3288,7 @@ public struct ListCallAnalyticsCategoriesInput {
     }
 }
 
-public struct ListCallAnalyticsCategoriesOutput {
+public struct ListCallAnalyticsCategoriesOutput: Swift.Sendable {
     /// Provides detailed information about your Call Analytics categories, including all the rules associated with each category.
     public var categories: [TranscribeClientTypes.CategoryProperties]?
     /// If NextToken is present in your response, it indicates that not all results are displayed. To view the next set of results, copy the string associated with the NextToken parameter in your results output, then run your request again including NextToken with the value of the copied string. Repeat as needed to view all your results.
@@ -3303,7 +3304,7 @@ public struct ListCallAnalyticsCategoriesOutput {
     }
 }
 
-public struct ListCallAnalyticsJobsInput {
+public struct ListCallAnalyticsJobsInput: Swift.Sendable {
     /// Returns only the Call Analytics jobs that contain the specified string. The search is not case sensitive.
     public var jobNameContains: Swift.String?
     /// The maximum number of Call Analytics jobs to return in each page of results. If there are fewer results than the value that you specify, only the actual results are returned. If you do not specify a value, a default of 5 is used.
@@ -3327,7 +3328,7 @@ public struct ListCallAnalyticsJobsInput {
     }
 }
 
-public struct ListCallAnalyticsJobsOutput {
+public struct ListCallAnalyticsJobsOutput: Swift.Sendable {
     /// Provides a summary of information about each result.
     public var callAnalyticsJobSummaries: [TranscribeClientTypes.CallAnalyticsJobSummary]?
     /// If NextToken is present in your response, it indicates that not all results are displayed. To view the next set of results, copy the string associated with the NextToken parameter in your results output, then run your request again including NextToken with the value of the copied string. Repeat as needed to view all your results.
@@ -3347,7 +3348,7 @@ public struct ListCallAnalyticsJobsOutput {
     }
 }
 
-public struct ListLanguageModelsInput {
+public struct ListLanguageModelsInput: Swift.Sendable {
     /// The maximum number of custom language models to return in each page of results. If there are fewer results than the value that you specify, only the actual results are returned. If you do not specify a value, a default of 5 is used.
     public var maxResults: Swift.Int?
     /// Returns only the custom language models that contain the specified string. The search is not case sensitive.
@@ -3371,7 +3372,7 @@ public struct ListLanguageModelsInput {
     }
 }
 
-public struct ListLanguageModelsOutput {
+public struct ListLanguageModelsOutput: Swift.Sendable {
     /// Provides information about the custom language models that match the criteria specified in your request.
     public var models: [TranscribeClientTypes.LanguageModel]?
     /// If NextToken is present in your response, it indicates that not all results are displayed. To view the next set of results, copy the string associated with the NextToken parameter in your results output, then run your request again including NextToken with the value of the copied string. Repeat as needed to view all your results.
@@ -3387,7 +3388,7 @@ public struct ListLanguageModelsOutput {
     }
 }
 
-public struct ListMedicalScribeJobsInput {
+public struct ListMedicalScribeJobsInput: Swift.Sendable {
     /// Returns only the Medical Scribe jobs that contain the specified string. The search is not case sensitive.
     public var jobNameContains: Swift.String?
     /// The maximum number of Medical Scribe jobs to return in each page of results. If there are fewer results than the value that you specify, only the actual results are returned. If you do not specify a value, a default of 5 is used.
@@ -3412,8 +3413,9 @@ public struct ListMedicalScribeJobsInput {
 }
 
 extension TranscribeClientTypes {
+
     /// Provides detailed information about a specific Medical Scribe job.
-    public struct MedicalScribeJobSummary {
+    public struct MedicalScribeJobSummary: Swift.Sendable {
         /// The date and time the specified Medical Scribe job finished processing. Timestamps are in the format YYYY-MM-DD'T'HH:MM:SS.SSSSSS-UTC. For example, 2022-05-04T12:32:58.761000-07:00 represents a Medical Scribe job that finished processing at 12:32 PM UTC-7 on May 4, 2022.
         public var completionTime: Foundation.Date?
         /// The date and time the specified Medical Scribe job request was made. Timestamps are in the format YYYY-MM-DD'T'HH:MM:SS.SSSSSS-UTC. For example, 2022-05-04T12:32:58.761000-07:00 represents a Medical Scribe job that started processing at 12:32 PM UTC-7 on May 4, 2022.
@@ -3448,10 +3450,9 @@ extension TranscribeClientTypes {
             self.startTime = startTime
         }
     }
-
 }
 
-public struct ListMedicalScribeJobsOutput {
+public struct ListMedicalScribeJobsOutput: Swift.Sendable {
     /// Provides a summary of information about each result.
     public var medicalScribeJobSummaries: [TranscribeClientTypes.MedicalScribeJobSummary]?
     /// If NextToken is present in your response, it indicates that not all results are displayed. To view the next set of results, copy the string associated with the NextToken parameter in your results output, then run your request again including NextToken with the value of the copied string. Repeat as needed to view all your results.
@@ -3471,7 +3472,7 @@ public struct ListMedicalScribeJobsOutput {
     }
 }
 
-public struct ListMedicalTranscriptionJobsInput {
+public struct ListMedicalTranscriptionJobsInput: Swift.Sendable {
     /// Returns only the medical transcription jobs that contain the specified string. The search is not case sensitive.
     public var jobNameContains: Swift.String?
     /// The maximum number of medical transcription jobs to return in each page of results. If there are fewer results than the value that you specify, only the actual results are returned. If you do not specify a value, a default of 5 is used.
@@ -3497,7 +3498,7 @@ public struct ListMedicalTranscriptionJobsInput {
 
 extension TranscribeClientTypes {
 
-    public enum OutputLocationType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum OutputLocationType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case customerBucket
         case serviceBucket
         case sdkUnknown(Swift.String)
@@ -3525,8 +3526,9 @@ extension TranscribeClientTypes {
 }
 
 extension TranscribeClientTypes {
+
     /// Provides detailed information about a specific medical transcription job.
-    public struct MedicalTranscriptionJobSummary {
+    public struct MedicalTranscriptionJobSummary: Swift.Sendable {
         /// The date and time the specified medical transcription job finished processing. Timestamps are in the format YYYY-MM-DD'T'HH:MM:SS.SSSSSS-UTC. For example, 2022-05-04T12:33:13.922000-07:00 represents a transcription job that started processing at 12:33 PM UTC-7 on May 4, 2022.
         public var completionTime: Foundation.Date?
         /// Labels all personal health information (PHI) identified in your transcript. For more information, see [Identifying personal health information (PHI) in a transcription](https://docs.aws.amazon.com/transcribe/latest/dg/phi-id.html).
@@ -3577,10 +3579,9 @@ extension TranscribeClientTypes {
             self.type = type
         }
     }
-
 }
 
-public struct ListMedicalTranscriptionJobsOutput {
+public struct ListMedicalTranscriptionJobsOutput: Swift.Sendable {
     /// Provides a summary of information about each result.
     public var medicalTranscriptionJobSummaries: [TranscribeClientTypes.MedicalTranscriptionJobSummary]?
     /// If NextToken is present in your response, it indicates that not all results are displayed. To view the next set of results, copy the string associated with the NextToken parameter in your results output, then run your request again including NextToken with the value of the copied string. Repeat as needed to view all your results.
@@ -3600,7 +3601,7 @@ public struct ListMedicalTranscriptionJobsOutput {
     }
 }
 
-public struct ListMedicalVocabulariesInput {
+public struct ListMedicalVocabulariesInput: Swift.Sendable {
     /// The maximum number of custom medical vocabularies to return in each page of results. If there are fewer results than the value that you specify, only the actual results are returned. If you do not specify a value, a default of 5 is used.
     public var maxResults: Swift.Int?
     /// Returns only the custom medical vocabularies that contain the specified string. The search is not case sensitive.
@@ -3625,8 +3626,9 @@ public struct ListMedicalVocabulariesInput {
 }
 
 extension TranscribeClientTypes {
+
     /// Provides information about a custom vocabulary, including the language of the custom vocabulary, when it was last modified, its name, and the processing state.
-    public struct VocabularyInfo {
+    public struct VocabularyInfo: Swift.Sendable {
         /// The language code used to create your custom vocabulary. Each custom vocabulary must contain terms in only one language. A custom vocabulary can only be used to transcribe files in the same language as the custom vocabulary. For example, if you create a custom vocabulary using US English (en-US), you can only apply this custom vocabulary to files that contain English audio.
         public var languageCode: TranscribeClientTypes.LanguageCode?
         /// The date and time the specified custom vocabulary was last modified. Timestamps are in the format YYYY-MM-DD'T'HH:MM:SS.SSSSSS-UTC. For example, 2022-05-04T12:32:58.761000-07:00 represents 12:32 PM UTC-7 on May 4, 2022.
@@ -3649,10 +3651,9 @@ extension TranscribeClientTypes {
             self.vocabularyState = vocabularyState
         }
     }
-
 }
 
-public struct ListMedicalVocabulariesOutput {
+public struct ListMedicalVocabulariesOutput: Swift.Sendable {
     /// If NextToken is present in your response, it indicates that not all results are displayed. To view the next set of results, copy the string associated with the NextToken parameter in your results output, then run your request again including NextToken with the value of the copied string. Repeat as needed to view all your results.
     public var nextToken: Swift.String?
     /// Lists all custom medical vocabularies that have the status specified in your request. Custom vocabularies are ordered by creation date, with the newest vocabulary first.
@@ -3672,7 +3673,7 @@ public struct ListMedicalVocabulariesOutput {
     }
 }
 
-public struct ListTagsForResourceInput {
+public struct ListTagsForResourceInput: Swift.Sendable {
     /// Returns a list of all tags associated with the specified Amazon Resource Name (ARN). ARNs have the format arn:partition:service:region:account-id:resource-type/resource-id. For example, arn:aws:transcribe:us-west-2:111122223333:transcription-job/transcription-job-name. Valid values for resource-type are: transcription-job, medical-transcription-job, vocabulary, medical-vocabulary, vocabulary-filter, and language-model.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -3685,7 +3686,7 @@ public struct ListTagsForResourceInput {
     }
 }
 
-public struct ListTagsForResourceOutput {
+public struct ListTagsForResourceOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) specified in your request.
     public var resourceArn: Swift.String?
     /// Lists all tags associated with the given transcription job, vocabulary, model, or resource.
@@ -3701,7 +3702,7 @@ public struct ListTagsForResourceOutput {
     }
 }
 
-public struct ListTranscriptionJobsInput {
+public struct ListTranscriptionJobsInput: Swift.Sendable {
     /// Returns only the transcription jobs that contain the specified string. The search is not case sensitive.
     public var jobNameContains: Swift.String?
     /// The maximum number of transcription jobs to return in each page of results. If there are fewer results than the value that you specify, only the actual results are returned. If you do not specify a value, a default of 5 is used.
@@ -3726,8 +3727,9 @@ public struct ListTranscriptionJobsInput {
 }
 
 extension TranscribeClientTypes {
+
     /// Provides detailed information about a specific transcription job.
-    public struct TranscriptionJobSummary {
+    public struct TranscriptionJobSummary: Swift.Sendable {
         /// The date and time the specified transcription job finished processing. Timestamps are in the format YYYY-MM-DD'T'HH:MM:SS.SSSSSS-UTC. For example, 2022-05-04T12:33:13.922000-07:00 represents a transcription job that started processing at 12:33 PM UTC-7 on May 4, 2022.
         public var completionTime: Foundation.Date?
         /// The content redaction settings of the transcription job.
@@ -3794,10 +3796,9 @@ extension TranscribeClientTypes {
             self.transcriptionJobStatus = transcriptionJobStatus
         }
     }
-
 }
 
-public struct ListTranscriptionJobsOutput {
+public struct ListTranscriptionJobsOutput: Swift.Sendable {
     /// If NextToken is present in your response, it indicates that not all results are displayed. To view the next set of results, copy the string associated with the NextToken parameter in your results output, then run your request again including NextToken with the value of the copied string. Repeat as needed to view all your results.
     public var nextToken: Swift.String?
     /// Lists all transcription jobs that have the status specified in your request. Jobs are ordered by creation date, with the newest job first.
@@ -3817,7 +3818,7 @@ public struct ListTranscriptionJobsOutput {
     }
 }
 
-public struct ListVocabulariesInput {
+public struct ListVocabulariesInput: Swift.Sendable {
     /// The maximum number of custom vocabularies to return in each page of results. If there are fewer results than the value that you specify, only the actual results are returned. If you do not specify a value, a default of 5 is used.
     public var maxResults: Swift.Int?
     /// Returns only the custom vocabularies that contain the specified string. The search is not case sensitive.
@@ -3841,7 +3842,7 @@ public struct ListVocabulariesInput {
     }
 }
 
-public struct ListVocabulariesOutput {
+public struct ListVocabulariesOutput: Swift.Sendable {
     /// If NextToken is present in your response, it indicates that not all results are displayed. To view the next set of results, copy the string associated with the NextToken parameter in your results output, then run your request again including NextToken with the value of the copied string. Repeat as needed to view all your results.
     public var nextToken: Swift.String?
     /// Lists all custom vocabularies that have the status specified in your request. Vocabularies are ordered by creation date, with the newest vocabulary first.
@@ -3861,7 +3862,7 @@ public struct ListVocabulariesOutput {
     }
 }
 
-public struct ListVocabularyFiltersInput {
+public struct ListVocabularyFiltersInput: Swift.Sendable {
     /// The maximum number of custom vocabulary filters to return in each page of results. If there are fewer results than the value that you specify, only the actual results are returned. If you do not specify a value, a default of 5 is used.
     public var maxResults: Swift.Int?
     /// Returns only the custom vocabulary filters that contain the specified string. The search is not case sensitive.
@@ -3882,8 +3883,9 @@ public struct ListVocabularyFiltersInput {
 }
 
 extension TranscribeClientTypes {
+
     /// Provides information about a custom vocabulary filter, including the language of the filter, when it was last modified, and its name.
-    public struct VocabularyFilterInfo {
+    public struct VocabularyFilterInfo: Swift.Sendable {
         /// The language code that represents the language of the entries in your vocabulary filter. Each custom vocabulary filter must contain terms in only one language. A custom vocabulary filter can only be used to transcribe files in the same language as the filter. For example, if you create a custom vocabulary filter using US English (en-US), you can only apply this filter to files that contain English audio. For a list of supported languages and their associated language codes, refer to the [Supported languages](https://docs.aws.amazon.com/transcribe/latest/dg/supported-languages.html) table.
         public var languageCode: TranscribeClientTypes.LanguageCode?
         /// The date and time the specified custom vocabulary filter was last modified. Timestamps are in the format YYYY-MM-DD'T'HH:MM:SS.SSSSSS-UTC. For example, 2022-05-04T12:32:58.761000-07:00 represents 12:32 PM UTC-7 on May 4, 2022.
@@ -3902,10 +3904,9 @@ extension TranscribeClientTypes {
             self.vocabularyFilterName = vocabularyFilterName
         }
     }
-
 }
 
-public struct ListVocabularyFiltersOutput {
+public struct ListVocabularyFiltersOutput: Swift.Sendable {
     /// If NextToken is present in your response, it indicates that not all results are displayed. To view the next set of results, copy the string associated with the NextToken parameter in your results output, then run your request again including NextToken with the value of the copied string. Repeat as needed to view all your results.
     public var nextToken: Swift.String?
     /// Provides information about the custom vocabulary filters that match the criteria specified in your request.
@@ -3921,7 +3922,7 @@ public struct ListVocabularyFiltersOutput {
     }
 }
 
-public struct StartCallAnalyticsJobInput {
+public struct StartCallAnalyticsJobInput: Swift.Sendable {
     /// A unique name, chosen by you, for your Call Analytics job. This name is case sensitive, cannot contain spaces, and must be unique within an Amazon Web Services account. If you try to create a new job with the same name as an existing job, you get a ConflictException error.
     /// This member is required.
     public var callAnalyticsJobName: Swift.String?
@@ -3986,7 +3987,7 @@ public struct StartCallAnalyticsJobInput {
     }
 }
 
-public struct StartCallAnalyticsJobOutput {
+public struct StartCallAnalyticsJobOutput: Swift.Sendable {
     /// Provides detailed information about the current Call Analytics job, including job status and, if applicable, failure reason.
     public var callAnalyticsJob: TranscribeClientTypes.CallAnalyticsJob?
 
@@ -3998,7 +3999,7 @@ public struct StartCallAnalyticsJobOutput {
     }
 }
 
-public struct StartMedicalScribeJobInput {
+public struct StartMedicalScribeJobInput: Swift.Sendable {
     /// Makes it possible to specify which speaker is on which channel. For example, if the clinician is the first participant to speak, you would set ChannelId of the first ChannelDefinition in the list to 0 (to indicate the first channel) and ParticipantRole to CLINICIAN (to indicate that it's the clinician speaking). Then you would set the ChannelId of the second ChannelDefinition in the list to 1 (to indicate the second channel) and ParticipantRole to PATIENT (to indicate that it's the patient speaking).
     public var channelDefinitions: [TranscribeClientTypes.MedicalScribeChannelDefinition]?
     /// The Amazon Resource Name (ARN) of an IAM role that has permissions to access the Amazon S3 bucket that contains your input files, write to the output bucket, and use your KMS key if supplied. If the role that you specify doesn’t have the appropriate permissions your request fails. IAM role ARNs have the format arn:partition:iam::account:role/role-name-with-path. For example: arn:aws:iam::111122223333:role/Admin. For more information, see [IAM ARNs](https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_identifiers.html#identifiers-arns).
@@ -4065,7 +4066,7 @@ public struct StartMedicalScribeJobInput {
     }
 }
 
-public struct StartMedicalScribeJobOutput {
+public struct StartMedicalScribeJobOutput: Swift.Sendable {
     /// Provides detailed information about the current Medical Scribe job, including job status and, if applicable, failure reason.
     public var medicalScribeJob: TranscribeClientTypes.MedicalScribeJob?
 
@@ -4077,7 +4078,7 @@ public struct StartMedicalScribeJobOutput {
     }
 }
 
-public struct StartMedicalTranscriptionJobInput {
+public struct StartMedicalTranscriptionJobInput: Swift.Sendable {
     /// Labels all personal health information (PHI) identified in your transcript. For more information, see [Identifying personal health information (PHI) in a transcription](https://docs.aws.amazon.com/transcribe/latest/dg/phi-id.html).
     public var contentIdentificationType: TranscribeClientTypes.MedicalContentIdentificationType?
     /// A map of plain text, non-secret key:value pairs, known as encryption context pairs, that provide an added layer of security for your data. For more information, see [KMS encryption context](https://docs.aws.amazon.com/transcribe/latest/dg/key-management.html#kms-context) and [Asymmetric keys in KMS](https://docs.aws.amazon.com/transcribe/latest/dg/symmetric-asymmetric.html).
@@ -4176,7 +4177,7 @@ public struct StartMedicalTranscriptionJobInput {
     }
 }
 
-public struct StartMedicalTranscriptionJobOutput {
+public struct StartMedicalTranscriptionJobOutput: Swift.Sendable {
     /// Provides detailed information about the current medical transcription job, including job status and, if applicable, failure reason.
     public var medicalTranscriptionJob: TranscribeClientTypes.MedicalTranscriptionJob?
 
@@ -4189,8 +4190,9 @@ public struct StartMedicalTranscriptionJobOutput {
 }
 
 extension TranscribeClientTypes {
+
     /// Generate subtitles for your media file with your transcription request. You can choose a start index of 0 or 1, and you can specify either WebVTT or SubRip (or both) as your output format. Note that your subtitle files are placed in the same location as your transcription output.
-    public struct Subtitles {
+    public struct Subtitles: Swift.Sendable {
         /// Specify the output format for your subtitle file; if you select both WebVTT (vtt) and SubRip (srt) formats, two output files are generated.
         public var formats: [TranscribeClientTypes.SubtitleFormat]?
         /// Specify the starting value that is assigned to the first subtitle segment. The default start index for Amazon Transcribe is 0, which differs from the more widely used standard of 1. If you're uncertain which value to use, we recommend choosing 1, as this may improve compatibility with other services.
@@ -4205,10 +4207,9 @@ extension TranscribeClientTypes {
             self.outputStartIndex = outputStartIndex
         }
     }
-
 }
 
-public struct StartTranscriptionJobInput {
+public struct StartTranscriptionJobInput: Swift.Sendable {
     /// Makes it possible to redact or flag specified personally identifiable information (PII) in your transcript. If you use ContentRedaction, you must also include the sub-parameters: RedactionOutput and RedactionType. You can optionally include PiiEntityTypes to choose which types of PII you want to redact. If you do not include PiiEntityTypes in your request, all PII is redacted.
     public var contentRedaction: TranscribeClientTypes.ContentRedaction?
     /// Enables automatic language identification in your transcription job request. Use this parameter if your media file contains only one language. If your media contains multiple languages, use IdentifyMultipleLanguages instead. If you include IdentifyLanguage, you can optionally include a list of language codes, using LanguageOptions, that you think may be present in your media file. Including LanguageOptions restricts IdentifyLanguage to only the language options that you specify, which can improve transcription accuracy. If you want to apply a custom language model, a custom vocabulary, or a custom vocabulary filter to your automatic language identification request, include LanguageIdSettings with the relevant sub-parameters (VocabularyName, LanguageModelName, and VocabularyFilterName). If you include LanguageIdSettings, also include LanguageOptions. Note that you must include one of LanguageCode, IdentifyLanguage, or IdentifyMultipleLanguages in your request. If you include more than one of these parameters, your transcription job fails.
@@ -4327,7 +4328,7 @@ public struct StartTranscriptionJobInput {
     }
 }
 
-public struct StartTranscriptionJobOutput {
+public struct StartTranscriptionJobOutput: Swift.Sendable {
     /// Provides detailed information about the current transcription job, including job status and, if applicable, failure reason.
     public var transcriptionJob: TranscribeClientTypes.TranscriptionJob?
 
@@ -4339,7 +4340,7 @@ public struct StartTranscriptionJobOutput {
     }
 }
 
-public struct TagResourceInput {
+public struct TagResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the resource you want to tag. ARNs have the format arn:partition:service:region:account-id:resource-type/resource-id. For example, arn:aws:transcribe:us-west-2:111122223333:transcription-job/transcription-job-name. Valid values for resource-type are: transcription-job, medical-transcription-job, vocabulary, medical-vocabulary, vocabulary-filter, and language-model.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -4357,12 +4358,12 @@ public struct TagResourceInput {
     }
 }
 
-public struct TagResourceOutput {
+public struct TagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UntagResourceInput {
+public struct UntagResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the Amazon Transcribe resource you want to remove tags from. ARNs have the format arn:partition:service:region:account-id:resource-type/resource-id. For example, arn:aws:transcribe:us-west-2:111122223333:transcription-job/transcription-job-name. Valid values for resource-type are: transcription-job, medical-transcription-job, vocabulary, medical-vocabulary, vocabulary-filter, and language-model.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -4380,12 +4381,12 @@ public struct UntagResourceInput {
     }
 }
 
-public struct UntagResourceOutput {
+public struct UntagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdateCallAnalyticsCategoryInput {
+public struct UpdateCallAnalyticsCategoryInput: Swift.Sendable {
     /// The name of the Call Analytics category you want to update. Category names are case sensitive.
     /// This member is required.
     public var categoryName: Swift.String?
@@ -4407,7 +4408,7 @@ public struct UpdateCallAnalyticsCategoryInput {
     }
 }
 
-public struct UpdateCallAnalyticsCategoryOutput {
+public struct UpdateCallAnalyticsCategoryOutput: Swift.Sendable {
     /// Provides you with the properties of the Call Analytics category you specified in your UpdateCallAnalyticsCategory request.
     public var categoryProperties: TranscribeClientTypes.CategoryProperties?
 
@@ -4419,7 +4420,7 @@ public struct UpdateCallAnalyticsCategoryOutput {
     }
 }
 
-public struct UpdateMedicalVocabularyInput {
+public struct UpdateMedicalVocabularyInput: Swift.Sendable {
     /// The language code that represents the language of the entries in the custom vocabulary you want to update. US English (en-US) is the only language supported with Amazon Transcribe Medical.
     /// This member is required.
     public var languageCode: TranscribeClientTypes.LanguageCode?
@@ -4442,7 +4443,7 @@ public struct UpdateMedicalVocabularyInput {
     }
 }
 
-public struct UpdateMedicalVocabularyOutput {
+public struct UpdateMedicalVocabularyOutput: Swift.Sendable {
     /// The language code you selected for your custom medical vocabulary. US English (en-US) is the only language supported with Amazon Transcribe Medical.
     public var languageCode: TranscribeClientTypes.LanguageCode?
     /// The date and time the specified custom medical vocabulary was last updated. Timestamps are in the format YYYY-MM-DD'T'HH:MM:SS.SSSSSS-UTC. For example, 2022-05-04T12:32:58.761000-07:00 represents 12:32 PM UTC-7 on May 4, 2022.
@@ -4466,7 +4467,7 @@ public struct UpdateMedicalVocabularyOutput {
     }
 }
 
-public struct UpdateVocabularyInput {
+public struct UpdateVocabularyInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of an IAM role that has permissions to access the Amazon S3 bucket that contains your input files (in this case, your custom vocabulary). If the role that you specify doesn’t have the appropriate permissions to access the specified Amazon S3 location, your request fails. IAM role ARNs have the format arn:partition:iam::account:role/role-name-with-path. For example: arn:aws:iam::111122223333:role/Admin. For more information, see [IAM ARNs](https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_identifiers.html#identifiers-arns).
     public var dataAccessRoleArn: Swift.String?
     /// The language code that represents the language of the entries in the custom vocabulary you want to update. Each custom vocabulary must contain terms in only one language. A custom vocabulary can only be used to transcribe files in the same language as the custom vocabulary. For example, if you create a custom vocabulary using US English (en-US), you can only apply this custom vocabulary to files that contain English audio. For a list of supported languages and their associated language codes, refer to the [Supported languages](https://docs.aws.amazon.com/transcribe/latest/dg/supported-languages.html) table.
@@ -4496,7 +4497,7 @@ public struct UpdateVocabularyInput {
     }
 }
 
-public struct UpdateVocabularyOutput {
+public struct UpdateVocabularyOutput: Swift.Sendable {
     /// The language code you selected for your custom vocabulary.
     public var languageCode: TranscribeClientTypes.LanguageCode?
     /// The date and time the specified custom vocabulary was last updated. Timestamps are in the format YYYY-MM-DD'T'HH:MM:SS.SSSSSS-UTC. For example, 2022-05-04T12:32:58.761000-07:00 represents 12:32 PM UTC-7 on May 4, 2022.
@@ -4520,7 +4521,7 @@ public struct UpdateVocabularyOutput {
     }
 }
 
-public struct UpdateVocabularyFilterInput {
+public struct UpdateVocabularyFilterInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of an IAM role that has permissions to access the Amazon S3 bucket that contains your input files (in this case, your custom vocabulary filter). If the role that you specify doesn’t have the appropriate permissions to access the specified Amazon S3 location, your request fails. IAM role ARNs have the format arn:partition:iam::account:role/role-name-with-path. For example: arn:aws:iam::111122223333:role/Admin. For more information, see [IAM ARNs](https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_identifiers.html#identifiers-arns).
     public var dataAccessRoleArn: Swift.String?
     /// The Amazon S3 location of the text file that contains your custom vocabulary filter terms. The URI must be located in the same Amazon Web Services Region as the resource you're calling. Here's an example URI path: s3://DOC-EXAMPLE-BUCKET/my-vocab-filter-file.txt Note that if you include VocabularyFilterFileUri in your request, you cannot use Words; you must choose one or the other.
@@ -4545,7 +4546,7 @@ public struct UpdateVocabularyFilterInput {
     }
 }
 
-public struct UpdateVocabularyFilterOutput {
+public struct UpdateVocabularyFilterOutput: Swift.Sendable {
     /// The language code you selected for your custom vocabulary filter.
     public var languageCode: TranscribeClientTypes.LanguageCode?
     /// The date and time the specified custom vocabulary filter was last updated. Timestamps are in the format YYYY-MM-DD'T'HH:MM:SS.SSSSSS-UTC. For example, 2022-05-04T12:32:58.761000-07:00 represents 12:32 PM UTC-7 on May 4, 2022.

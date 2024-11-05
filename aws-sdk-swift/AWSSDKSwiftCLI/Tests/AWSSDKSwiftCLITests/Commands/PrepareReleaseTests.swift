@@ -45,6 +45,16 @@ class PrepareReleaseTests: CLITestCase {
         createPackageVersion(previousVersion)
         createNextPackageVersion(newVersion)
 
+        let buildRequest = """
+        {
+            "features": []
+        }
+        """
+        FileManager.default.createFile(atPath: "../build-request.json", contents: Data(buildRequest.utf8))
+
+        let mapping = "{}"
+        FileManager.default.createFile(atPath: "../feature-service-id.json", contents: Data(mapping.utf8))
+
         let subject = PrepareRelease.mock(repoType: .awsSdkSwift, diffChecker: { _,_ in true })
         try! subject.run()
         

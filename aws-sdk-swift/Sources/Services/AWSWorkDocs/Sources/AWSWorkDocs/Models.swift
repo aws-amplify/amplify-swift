@@ -31,77 +31,78 @@ import struct SmithyHTTPAPI.Headers
 @_spi(SmithyReadWrite) import struct SmithyReadWrite.WritingClosureBox
 @_spi(SmithyTimestamps) import struct SmithyTimestamps.TimestampFormatter
 
-public struct AbortDocumentVersionUploadOutput {
+
+public struct AbortDocumentVersionUploadOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeactivateUserOutput {
+public struct DeactivateUserOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteCommentOutput {
+public struct DeleteCommentOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteDocumentOutput {
+public struct DeleteDocumentOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteDocumentVersionOutput {
+public struct DeleteDocumentVersionOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteFolderContentsOutput {
+public struct DeleteFolderContentsOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteFolderOutput {
+public struct DeleteFolderOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteNotificationSubscriptionOutput {
+public struct DeleteNotificationSubscriptionOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteUserOutput {
+public struct DeleteUserOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct RemoveAllResourcePermissionsOutput {
+public struct RemoveAllResourcePermissionsOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct RemoveResourcePermissionOutput {
+public struct RemoveResourcePermissionOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct RestoreDocumentVersionsOutput {
+public struct RestoreDocumentVersionsOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdateDocumentOutput {
+public struct UpdateDocumentOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdateDocumentVersionOutput {
+public struct UpdateDocumentVersionOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdateFolderOutput {
+public struct UpdateFolderOutput: Swift.Sendable {
 
     public init() { }
 }
@@ -281,7 +282,7 @@ public struct UnauthorizedResourceAccessException: ClientRuntime.ModeledError, A
     }
 }
 
-public struct AbortDocumentVersionUploadInput {
+public struct AbortDocumentVersionUploadInput: Swift.Sendable {
     /// Amazon WorkDocs authentication token. Not required when using Amazon Web Services administrator credentials to access the API.
     public var authenticationToken: Swift.String?
     /// The ID of the document.
@@ -308,7 +309,7 @@ extension AbortDocumentVersionUploadInput: Swift.CustomDebugStringConvertible {
         "AbortDocumentVersionUploadInput(documentId: \(Swift.String(describing: documentId)), versionId: \(Swift.String(describing: versionId)), authenticationToken: \"CONTENT_REDACTED\")"}
 }
 
-public struct ActivateUserInput {
+public struct ActivateUserInput: Swift.Sendable {
     /// Amazon WorkDocs authentication token. Not required when using Amazon Web Services administrator credentials to access the API.
     public var authenticationToken: Swift.String?
     /// The ID of the user.
@@ -332,7 +333,7 @@ extension ActivateUserInput: Swift.CustomDebugStringConvertible {
 
 extension WorkDocsClientTypes {
 
-    public enum LocaleType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum LocaleType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case de
         case `default`
         case en
@@ -388,7 +389,7 @@ extension WorkDocsClientTypes {
 
 extension WorkDocsClientTypes {
 
-    public enum UserStatusType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum UserStatusType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case active
         case inactive
         case pending
@@ -420,7 +421,7 @@ extension WorkDocsClientTypes {
 
 extension WorkDocsClientTypes {
 
-    public enum StorageType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum StorageType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case quota
         case unlimited
         case sdkUnknown(Swift.String)
@@ -448,8 +449,9 @@ extension WorkDocsClientTypes {
 }
 
 extension WorkDocsClientTypes {
+
     /// Describes the storage for a user.
-    public struct StorageRuleType {
+    public struct StorageRuleType: Swift.Sendable {
         /// The amount of storage allocated, in bytes.
         public var storageAllocatedInBytes: Swift.Int?
         /// The type of storage.
@@ -464,12 +466,12 @@ extension WorkDocsClientTypes {
             self.storageType = storageType
         }
     }
-
 }
 
 extension WorkDocsClientTypes {
+
     /// Describes the storage for a user.
-    public struct UserStorageMetadata {
+    public struct UserStorageMetadata: Swift.Sendable {
         /// The storage for a user.
         public var storageRule: WorkDocsClientTypes.StorageRuleType?
         /// The amount of storage used, in bytes.
@@ -484,12 +486,11 @@ extension WorkDocsClientTypes {
             self.storageUtilizedInBytes = storageUtilizedInBytes
         }
     }
-
 }
 
 extension WorkDocsClientTypes {
 
-    public enum UserType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum UserType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case admin
         case minimaluser
         case poweruser
@@ -526,8 +527,9 @@ extension WorkDocsClientTypes {
 }
 
 extension WorkDocsClientTypes {
+
     /// Describes a user.
-    public struct User {
+    public struct User: Swift.Sendable {
         /// The time when the user was created.
         public var createdTimestamp: Foundation.Date?
         /// The email address of the user.
@@ -594,7 +596,6 @@ extension WorkDocsClientTypes {
             self.username = username
         }
     }
-
 }
 
 extension WorkDocsClientTypes.User: Swift.CustomDebugStringConvertible {
@@ -602,7 +603,7 @@ extension WorkDocsClientTypes.User: Swift.CustomDebugStringConvertible {
         "User(createdTimestamp: \(Swift.String(describing: createdTimestamp)), id: \(Swift.String(describing: id)), locale: \(Swift.String(describing: locale)), modifiedTimestamp: \(Swift.String(describing: modifiedTimestamp)), organizationId: \(Swift.String(describing: organizationId)), recycleBinFolderId: \(Swift.String(describing: recycleBinFolderId)), rootFolderId: \(Swift.String(describing: rootFolderId)), status: \(Swift.String(describing: status)), storage: \(Swift.String(describing: storage)), timeZoneId: \(Swift.String(describing: timeZoneId)), type: \(Swift.String(describing: type)), emailAddress: \"CONTENT_REDACTED\", givenName: \"CONTENT_REDACTED\", surname: \"CONTENT_REDACTED\", username: \"CONTENT_REDACTED\")"}
 }
 
-public struct ActivateUserOutput {
+public struct ActivateUserOutput: Swift.Sendable {
     /// The user information.
     public var user: WorkDocsClientTypes.User?
 
@@ -616,7 +617,7 @@ public struct ActivateUserOutput {
 
 extension WorkDocsClientTypes {
 
-    public enum CommentStatusType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum CommentStatusType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case deleted
         case draft
         case published
@@ -647,8 +648,9 @@ extension WorkDocsClientTypes {
 }
 
 extension WorkDocsClientTypes {
+
     /// Describes the metadata of a comment.
-    public struct CommentMetadata {
+    public struct CommentMetadata: Swift.Sendable {
         /// The ID of the comment.
         public var commentId: Swift.String?
         /// The status of the comment.
@@ -679,12 +681,12 @@ extension WorkDocsClientTypes {
             self.recipientId = recipientId
         }
     }
-
 }
 
 extension WorkDocsClientTypes {
+
     /// Describes the metadata of the user.
-    public struct UserMetadata {
+    public struct UserMetadata: Swift.Sendable {
         /// The email address of the user.
         public var emailAddress: Swift.String?
         /// The given name of the user before a rename operation.
@@ -711,7 +713,6 @@ extension WorkDocsClientTypes {
             self.username = username
         }
     }
-
 }
 
 extension WorkDocsClientTypes.UserMetadata: Swift.CustomDebugStringConvertible {
@@ -721,7 +722,7 @@ extension WorkDocsClientTypes.UserMetadata: Swift.CustomDebugStringConvertible {
 
 extension WorkDocsClientTypes {
 
-    public enum ResourceType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ResourceType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case document
         case folder
         case sdkUnknown(Swift.String)
@@ -749,8 +750,9 @@ extension WorkDocsClientTypes {
 }
 
 extension WorkDocsClientTypes {
+
     /// Describes the metadata of a resource.
-    public struct ResourceMetadata {
+    public struct ResourceMetadata: Swift.Sendable {
         /// The ID of the resource.
         public var id: Swift.String?
         /// The name of the resource.
@@ -785,7 +787,6 @@ extension WorkDocsClientTypes {
             self.versionId = versionId
         }
     }
-
 }
 
 extension WorkDocsClientTypes.ResourceMetadata: Swift.CustomDebugStringConvertible {
@@ -794,8 +795,9 @@ extension WorkDocsClientTypes.ResourceMetadata: Swift.CustomDebugStringConvertib
 }
 
 extension WorkDocsClientTypes {
+
     /// Describes the metadata of a user group.
-    public struct GroupMetadata {
+    public struct GroupMetadata: Swift.Sendable {
         /// The ID of the user group.
         public var id: Swift.String?
         /// The name of the group.
@@ -810,12 +812,12 @@ extension WorkDocsClientTypes {
             self.name = name
         }
     }
-
 }
 
 extension WorkDocsClientTypes {
+
     /// Describes the users or user groups.
-    public struct Participants {
+    public struct Participants: Swift.Sendable {
         /// The list of user groups.
         public var groups: [WorkDocsClientTypes.GroupMetadata]?
         /// The list of users.
@@ -830,12 +832,11 @@ extension WorkDocsClientTypes {
             self.users = users
         }
     }
-
 }
 
 extension WorkDocsClientTypes {
 
-    public enum ActivityType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ActivityType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case documentAnnotationAdded
         case documentAnnotationDeleted
         case documentCheckedIn
@@ -956,8 +957,9 @@ extension WorkDocsClientTypes {
 }
 
 extension WorkDocsClientTypes {
+
     /// Describes the activity information.
-    public struct Activity {
+    public struct Activity: Swift.Sendable {
         /// Metadata of the commenting activity. This is an optional field and is filled for commenting activities.
         public var commentMetadata: WorkDocsClientTypes.CommentMetadata?
         /// The user who performed the action.
@@ -1000,12 +1002,11 @@ extension WorkDocsClientTypes {
             self.type = type
         }
     }
-
 }
 
 extension WorkDocsClientTypes {
 
-    public enum AdditionalResponseFieldType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AdditionalResponseFieldType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case weburl
         case sdkUnknown(Swift.String)
 
@@ -1030,8 +1031,9 @@ extension WorkDocsClientTypes {
 }
 
 extension WorkDocsClientTypes {
+
     /// Set of options which defines notification preferences of given action.
-    public struct NotificationOptions {
+    public struct NotificationOptions: Swift.Sendable {
         /// Text value to be included in the email body.
         public var emailMessage: Swift.String?
         /// Boolean value to indicate an email notification should be sent to the recipients.
@@ -1046,7 +1048,6 @@ extension WorkDocsClientTypes {
             self.sendEmail = sendEmail
         }
     }
-
 }
 
 extension WorkDocsClientTypes.NotificationOptions: Swift.CustomDebugStringConvertible {
@@ -1056,7 +1057,7 @@ extension WorkDocsClientTypes.NotificationOptions: Swift.CustomDebugStringConver
 
 extension WorkDocsClientTypes {
 
-    public enum RoleType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum RoleType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case contributor
         case coowner
         case owner
@@ -1091,7 +1092,7 @@ extension WorkDocsClientTypes {
 
 extension WorkDocsClientTypes {
 
-    public enum PrincipalType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum PrincipalType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case anonymous
         case group
         case invite
@@ -1128,8 +1129,9 @@ extension WorkDocsClientTypes {
 }
 
 extension WorkDocsClientTypes {
+
     /// Describes the recipient type and ID, if available.
-    public struct SharePrincipal {
+    public struct SharePrincipal: Swift.Sendable {
         /// The ID of the recipient.
         /// This member is required.
         public var id: Swift.String?
@@ -1151,10 +1153,9 @@ extension WorkDocsClientTypes {
             self.type = type
         }
     }
-
 }
 
-public struct AddResourcePermissionsInput {
+public struct AddResourcePermissionsInput: Swift.Sendable {
     /// Amazon WorkDocs authentication token. Not required when using Amazon Web Services administrator credentials to access the API.
     public var authenticationToken: Swift.String?
     /// The notification options.
@@ -1187,7 +1188,7 @@ extension AddResourcePermissionsInput: Swift.CustomDebugStringConvertible {
 
 extension WorkDocsClientTypes {
 
-    public enum ShareStatusType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ShareStatusType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case failure
         case success
         case sdkUnknown(Swift.String)
@@ -1215,8 +1216,9 @@ extension WorkDocsClientTypes {
 }
 
 extension WorkDocsClientTypes {
+
     /// Describes the share results of a resource.
-    public struct ShareResult {
+    public struct ShareResult: Swift.Sendable {
         /// The ID of the invited user.
         public var inviteePrincipalId: Swift.String?
         /// The ID of the principal.
@@ -1247,7 +1249,6 @@ extension WorkDocsClientTypes {
             self.statusMessage = statusMessage
         }
     }
-
 }
 
 extension WorkDocsClientTypes.ShareResult: Swift.CustomDebugStringConvertible {
@@ -1255,7 +1256,7 @@ extension WorkDocsClientTypes.ShareResult: Swift.CustomDebugStringConvertible {
         "ShareResult(inviteePrincipalId: \(Swift.String(describing: inviteePrincipalId)), principalId: \(Swift.String(describing: principalId)), role: \(Swift.String(describing: role)), shareId: \(Swift.String(describing: shareId)), status: \(Swift.String(describing: status)), statusMessage: \"CONTENT_REDACTED\")"}
 }
 
-public struct AddResourcePermissionsOutput {
+public struct AddResourcePermissionsOutput: Swift.Sendable {
     /// The share results.
     public var shareResults: [WorkDocsClientTypes.ShareResult]?
 
@@ -1317,7 +1318,7 @@ public struct InvalidCommentOperationException: ClientRuntime.ModeledError, AWSC
 
 extension WorkDocsClientTypes {
 
-    public enum CommentVisibilityType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum CommentVisibilityType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case `private`
         case `public`
         case sdkUnknown(Swift.String)
@@ -1344,7 +1345,7 @@ extension WorkDocsClientTypes {
     }
 }
 
-public struct CreateCommentInput {
+public struct CreateCommentInput: Swift.Sendable {
     /// Amazon WorkDocs authentication token. Not required when using Amazon Web Services administrator credentials to access the API.
     public var authenticationToken: Swift.String?
     /// The ID of the document.
@@ -1393,8 +1394,9 @@ extension CreateCommentInput: Swift.CustomDebugStringConvertible {
 }
 
 extension WorkDocsClientTypes {
+
     /// Describes a comment.
-    public struct Comment {
+    public struct Comment: Swift.Sendable {
         /// The ID of the comment.
         /// This member is required.
         public var commentId: Swift.String?
@@ -1438,7 +1440,6 @@ extension WorkDocsClientTypes {
             self.visibility = visibility
         }
     }
-
 }
 
 extension WorkDocsClientTypes.Comment: Swift.CustomDebugStringConvertible {
@@ -1446,7 +1447,7 @@ extension WorkDocsClientTypes.Comment: Swift.CustomDebugStringConvertible {
         "Comment(commentId: \(Swift.String(describing: commentId)), contributor: \(Swift.String(describing: contributor)), createdTimestamp: \(Swift.String(describing: createdTimestamp)), parentId: \(Swift.String(describing: parentId)), recipientId: \(Swift.String(describing: recipientId)), status: \(Swift.String(describing: status)), threadId: \(Swift.String(describing: threadId)), visibility: \(Swift.String(describing: visibility)), text: \"CONTENT_REDACTED\")"}
 }
 
-public struct CreateCommentOutput {
+public struct CreateCommentOutput: Swift.Sendable {
     /// The comment that has been created.
     public var comment: WorkDocsClientTypes.Comment?
 
@@ -1482,7 +1483,7 @@ public struct CustomMetadataLimitExceededException: ClientRuntime.ModeledError, 
     }
 }
 
-public struct CreateCustomMetadataInput {
+public struct CreateCustomMetadataInput: Swift.Sendable {
     /// Amazon WorkDocs authentication token. Not required when using Amazon Web Services administrator credentials to access the API.
     public var authenticationToken: Swift.String?
     /// Custom metadata in the form of name-value pairs.
@@ -1513,7 +1514,7 @@ extension CreateCustomMetadataInput: Swift.CustomDebugStringConvertible {
         "CreateCustomMetadataInput(customMetadata: \(Swift.String(describing: customMetadata)), resourceId: \(Swift.String(describing: resourceId)), versionId: \(Swift.String(describing: versionId)), authenticationToken: \"CONTENT_REDACTED\")"}
 }
 
-public struct CreateCustomMetadataOutput {
+public struct CreateCustomMetadataOutput: Swift.Sendable {
 
     public init() { }
 }
@@ -1590,7 +1591,7 @@ public struct LimitExceededException: ClientRuntime.ModeledError, AWSClientRunti
     }
 }
 
-public struct CreateFolderInput {
+public struct CreateFolderInput: Swift.Sendable {
     /// Amazon WorkDocs authentication token. Not required when using Amazon Web Services administrator credentials to access the API.
     public var authenticationToken: Swift.String?
     /// The name of the new folder.
@@ -1618,7 +1619,7 @@ extension CreateFolderInput: Swift.CustomDebugStringConvertible {
 
 extension WorkDocsClientTypes {
 
-    public enum ResourceStateType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ResourceStateType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case active
         case recycled
         case recycling
@@ -1652,8 +1653,9 @@ extension WorkDocsClientTypes {
 }
 
 extension WorkDocsClientTypes {
+
     /// Describes a folder.
-    public struct FolderMetadata {
+    public struct FolderMetadata: Swift.Sendable {
         /// The time when the folder was created.
         public var createdTimestamp: Foundation.Date?
         /// The ID of the creator.
@@ -1704,7 +1706,6 @@ extension WorkDocsClientTypes {
             self.size = size
         }
     }
-
 }
 
 extension WorkDocsClientTypes.FolderMetadata: Swift.CustomDebugStringConvertible {
@@ -1712,7 +1713,7 @@ extension WorkDocsClientTypes.FolderMetadata: Swift.CustomDebugStringConvertible
         "FolderMetadata(createdTimestamp: \(Swift.String(describing: createdTimestamp)), creatorId: \(Swift.String(describing: creatorId)), id: \(Swift.String(describing: id)), labels: \(Swift.String(describing: labels)), latestVersionSize: \(Swift.String(describing: latestVersionSize)), modifiedTimestamp: \(Swift.String(describing: modifiedTimestamp)), parentFolderId: \(Swift.String(describing: parentFolderId)), resourceState: \(Swift.String(describing: resourceState)), signature: \(Swift.String(describing: signature)), size: \(Swift.String(describing: size)), name: \"CONTENT_REDACTED\")"}
 }
 
-public struct CreateFolderOutput {
+public struct CreateFolderOutput: Swift.Sendable {
     /// The metadata of the folder.
     public var metadata: WorkDocsClientTypes.FolderMetadata?
 
@@ -1748,7 +1749,7 @@ public struct TooManyLabelsException: ClientRuntime.ModeledError, AWSClientRunti
     }
 }
 
-public struct CreateLabelsInput {
+public struct CreateLabelsInput: Swift.Sendable {
     /// Amazon WorkDocs authentication token. Not required when using Amazon Web Services administrator credentials to access the API.
     public var authenticationToken: Swift.String?
     /// List of labels to add to the resource.
@@ -1775,7 +1776,7 @@ extension CreateLabelsInput: Swift.CustomDebugStringConvertible {
         "CreateLabelsInput(labels: \(Swift.String(describing: labels)), resourceId: \(Swift.String(describing: resourceId)), authenticationToken: \"CONTENT_REDACTED\")"}
 }
 
-public struct CreateLabelsOutput {
+public struct CreateLabelsOutput: Swift.Sendable {
 
     public init() { }
 }
@@ -1830,7 +1831,7 @@ public struct TooManySubscriptionsException: ClientRuntime.ModeledError, AWSClie
 
 extension WorkDocsClientTypes {
 
-    public enum SubscriptionProtocolType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SubscriptionProtocolType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case https
         case sqs
         case sdkUnknown(Swift.String)
@@ -1859,7 +1860,7 @@ extension WorkDocsClientTypes {
 
 extension WorkDocsClientTypes {
 
-    public enum SubscriptionType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SubscriptionType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case all
         case sdkUnknown(Swift.String)
 
@@ -1883,7 +1884,7 @@ extension WorkDocsClientTypes {
     }
 }
 
-public struct CreateNotificationSubscriptionInput {
+public struct CreateNotificationSubscriptionInput: Swift.Sendable {
     /// The endpoint to receive the notifications. If the protocol is HTTPS, the endpoint is a URL that begins with https.
     /// This member is required.
     public var endpoint: Swift.String?
@@ -1912,8 +1913,9 @@ public struct CreateNotificationSubscriptionInput {
 }
 
 extension WorkDocsClientTypes {
+
     /// Describes a subscription.
-    public struct Subscription {
+    public struct Subscription: Swift.Sendable {
         /// The endpoint of the subscription.
         public var endPoint: Swift.String?
         /// The protocol of the subscription.
@@ -1932,10 +1934,9 @@ extension WorkDocsClientTypes {
             self.subscriptionId = subscriptionId
         }
     }
-
 }
 
-public struct CreateNotificationSubscriptionOutput {
+public struct CreateNotificationSubscriptionOutput: Swift.Sendable {
     /// The subscription.
     public var subscription: WorkDocsClientTypes.Subscription?
 
@@ -1947,7 +1948,7 @@ public struct CreateNotificationSubscriptionOutput {
     }
 }
 
-public struct CreateUserInput {
+public struct CreateUserInput: Swift.Sendable {
     /// Amazon WorkDocs authentication token. Not required when using Amazon Web Services administrator credentials to access the API.
     public var authenticationToken: Swift.String?
     /// The email address of the user.
@@ -2000,7 +2001,7 @@ extension CreateUserInput: Swift.CustomDebugStringConvertible {
         "CreateUserInput(organizationId: \(Swift.String(describing: organizationId)), storageRule: \(Swift.String(describing: storageRule)), timeZoneId: \(Swift.String(describing: timeZoneId)), authenticationToken: \"CONTENT_REDACTED\", emailAddress: \"CONTENT_REDACTED\", givenName: \"CONTENT_REDACTED\", password: \"CONTENT_REDACTED\", surname: \"CONTENT_REDACTED\", username: \"CONTENT_REDACTED\")"}
 }
 
-public struct CreateUserOutput {
+public struct CreateUserOutput: Swift.Sendable {
     /// The user information.
     public var user: WorkDocsClientTypes.User?
 
@@ -2012,7 +2013,7 @@ public struct CreateUserOutput {
     }
 }
 
-public struct DeactivateUserInput {
+public struct DeactivateUserInput: Swift.Sendable {
     /// Amazon WorkDocs authentication token. Not required when using Amazon Web Services administrator credentials to access the API.
     public var authenticationToken: Swift.String?
     /// The ID of the user.
@@ -2034,7 +2035,7 @@ extension DeactivateUserInput: Swift.CustomDebugStringConvertible {
         "DeactivateUserInput(userId: \(Swift.String(describing: userId)), authenticationToken: \"CONTENT_REDACTED\")"}
 }
 
-public struct DeleteCommentInput {
+public struct DeleteCommentInput: Swift.Sendable {
     /// Amazon WorkDocs authentication token. Not required when using Amazon Web Services administrator credentials to access the API.
     public var authenticationToken: Swift.String?
     /// The ID of the comment.
@@ -2066,7 +2067,7 @@ extension DeleteCommentInput: Swift.CustomDebugStringConvertible {
         "DeleteCommentInput(commentId: \(Swift.String(describing: commentId)), documentId: \(Swift.String(describing: documentId)), versionId: \(Swift.String(describing: versionId)), authenticationToken: \"CONTENT_REDACTED\")"}
 }
 
-public struct DeleteCustomMetadataInput {
+public struct DeleteCustomMetadataInput: Swift.Sendable {
     /// Amazon WorkDocs authentication token. Not required when using Amazon Web Services administrator credentials to access the API.
     public var authenticationToken: Swift.String?
     /// Flag to indicate removal of all custom metadata properties from the specified resource.
@@ -2100,12 +2101,12 @@ extension DeleteCustomMetadataInput: Swift.CustomDebugStringConvertible {
         "DeleteCustomMetadataInput(deleteAll: \(Swift.String(describing: deleteAll)), keys: \(Swift.String(describing: keys)), resourceId: \(Swift.String(describing: resourceId)), versionId: \(Swift.String(describing: versionId)), authenticationToken: \"CONTENT_REDACTED\")"}
 }
 
-public struct DeleteCustomMetadataOutput {
+public struct DeleteCustomMetadataOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteDocumentInput {
+public struct DeleteDocumentInput: Swift.Sendable {
     /// Amazon WorkDocs authentication token. Not required when using Amazon Web Services administrator credentials to access the API.
     public var authenticationToken: Swift.String?
     /// The ID of the document.
@@ -2151,7 +2152,7 @@ public struct InvalidOperationException: ClientRuntime.ModeledError, AWSClientRu
     }
 }
 
-public struct DeleteDocumentVersionInput {
+public struct DeleteDocumentVersionInput: Swift.Sendable {
     /// Amazon WorkDocs authentication token. Not required when using Amazon Web Services administrator credentials to access the API.
     public var authenticationToken: Swift.String?
     /// Deletes all versions of a document prior to the current version.
@@ -2183,7 +2184,7 @@ extension DeleteDocumentVersionInput: Swift.CustomDebugStringConvertible {
         "DeleteDocumentVersionInput(deletePriorVersions: \(Swift.String(describing: deletePriorVersions)), documentId: \(Swift.String(describing: documentId)), versionId: \(Swift.String(describing: versionId)), authenticationToken: \"CONTENT_REDACTED\")"}
 }
 
-public struct DeleteFolderInput {
+public struct DeleteFolderInput: Swift.Sendable {
     /// Amazon WorkDocs authentication token. Not required when using Amazon Web Services administrator credentials to access the API.
     public var authenticationToken: Swift.String?
     /// The ID of the folder.
@@ -2205,7 +2206,7 @@ extension DeleteFolderInput: Swift.CustomDebugStringConvertible {
         "DeleteFolderInput(folderId: \(Swift.String(describing: folderId)), authenticationToken: \"CONTENT_REDACTED\")"}
 }
 
-public struct DeleteFolderContentsInput {
+public struct DeleteFolderContentsInput: Swift.Sendable {
     /// Amazon WorkDocs authentication token. Not required when using Amazon Web Services administrator credentials to access the API.
     public var authenticationToken: Swift.String?
     /// The ID of the folder.
@@ -2227,7 +2228,7 @@ extension DeleteFolderContentsInput: Swift.CustomDebugStringConvertible {
         "DeleteFolderContentsInput(folderId: \(Swift.String(describing: folderId)), authenticationToken: \"CONTENT_REDACTED\")"}
 }
 
-public struct DeleteLabelsInput {
+public struct DeleteLabelsInput: Swift.Sendable {
     /// Amazon WorkDocs authentication token. Not required when using Amazon Web Services administrator credentials to access the API.
     public var authenticationToken: Swift.String?
     /// Flag to request removal of all labels from the specified resource.
@@ -2257,12 +2258,12 @@ extension DeleteLabelsInput: Swift.CustomDebugStringConvertible {
         "DeleteLabelsInput(deleteAll: \(Swift.String(describing: deleteAll)), labels: \(Swift.String(describing: labels)), resourceId: \(Swift.String(describing: resourceId)), authenticationToken: \"CONTENT_REDACTED\")"}
 }
 
-public struct DeleteLabelsOutput {
+public struct DeleteLabelsOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteNotificationSubscriptionInput {
+public struct DeleteNotificationSubscriptionInput: Swift.Sendable {
     /// The ID of the organization.
     /// This member is required.
     public var organizationId: Swift.String?
@@ -2280,7 +2281,7 @@ public struct DeleteNotificationSubscriptionInput {
     }
 }
 
-public struct DeleteUserInput {
+public struct DeleteUserInput: Swift.Sendable {
     /// Amazon WorkDocs authentication token. Do not set this field when using administrative API actions, as in accessing the API using Amazon Web Services credentials.
     public var authenticationToken: Swift.String?
     /// The ID of the user.
@@ -2302,7 +2303,7 @@ extension DeleteUserInput: Swift.CustomDebugStringConvertible {
         "DeleteUserInput(userId: \(Swift.String(describing: userId)), authenticationToken: \"CONTENT_REDACTED\")"}
 }
 
-public struct DescribeActivitiesInput {
+public struct DescribeActivitiesInput: Swift.Sendable {
     /// Specifies which activity types to include in the response. If this field is left empty, all activity types are returned.
     public var activityTypes: Swift.String?
     /// Amazon WorkDocs authentication token. Not required when using Amazon Web Services administrator credentials to access the API.
@@ -2355,7 +2356,7 @@ extension DescribeActivitiesInput: Swift.CustomDebugStringConvertible {
         "DescribeActivitiesInput(activityTypes: \(Swift.String(describing: activityTypes)), endTime: \(Swift.String(describing: endTime)), includeIndirectActivities: \(Swift.String(describing: includeIndirectActivities)), limit: \(Swift.String(describing: limit)), marker: \(Swift.String(describing: marker)), organizationId: \(Swift.String(describing: organizationId)), resourceId: \(Swift.String(describing: resourceId)), startTime: \(Swift.String(describing: startTime)), userId: \(Swift.String(describing: userId)), authenticationToken: \"CONTENT_REDACTED\")"}
 }
 
-public struct DescribeActivitiesOutput {
+public struct DescribeActivitiesOutput: Swift.Sendable {
     /// The marker for the next set of results.
     public var marker: Swift.String?
     /// The list of activities for the specified user and time period.
@@ -2371,7 +2372,7 @@ public struct DescribeActivitiesOutput {
     }
 }
 
-public struct DescribeCommentsInput {
+public struct DescribeCommentsInput: Swift.Sendable {
     /// Amazon WorkDocs authentication token. Not required when using Amazon Web Services administrator credentials to access the API.
     public var authenticationToken: Swift.String?
     /// The ID of the document.
@@ -2406,7 +2407,7 @@ extension DescribeCommentsInput: Swift.CustomDebugStringConvertible {
         "DescribeCommentsInput(documentId: \(Swift.String(describing: documentId)), limit: \(Swift.String(describing: limit)), marker: \(Swift.String(describing: marker)), versionId: \(Swift.String(describing: versionId)), authenticationToken: \"CONTENT_REDACTED\")"}
 }
 
-public struct DescribeCommentsOutput {
+public struct DescribeCommentsOutput: Swift.Sendable {
     /// The list of comments for the specified document version.
     public var comments: [WorkDocsClientTypes.Comment]?
     /// The marker for the next set of results. This marker was received from a previous call.
@@ -2446,7 +2447,7 @@ public struct InvalidPasswordException: ClientRuntime.ModeledError, AWSClientRun
     }
 }
 
-public struct DescribeDocumentVersionsInput {
+public struct DescribeDocumentVersionsInput: Swift.Sendable {
     /// Amazon WorkDocs authentication token. Not required when using Amazon Web Services administrator credentials to access the API.
     public var authenticationToken: Swift.String?
     /// The ID of the document.
@@ -2486,7 +2487,7 @@ extension DescribeDocumentVersionsInput: Swift.CustomDebugStringConvertible {
 
 extension WorkDocsClientTypes {
 
-    public enum DocumentSourceType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DocumentSourceType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case original
         case withComments
         case sdkUnknown(Swift.String)
@@ -2515,7 +2516,7 @@ extension WorkDocsClientTypes {
 
 extension WorkDocsClientTypes {
 
-    public enum DocumentStatusType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DocumentStatusType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case active
         case initialized
         case sdkUnknown(Swift.String)
@@ -2544,7 +2545,7 @@ extension WorkDocsClientTypes {
 
 extension WorkDocsClientTypes {
 
-    public enum DocumentThumbnailType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DocumentThumbnailType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case large
         case small
         case smallHq
@@ -2575,8 +2576,9 @@ extension WorkDocsClientTypes {
 }
 
 extension WorkDocsClientTypes {
+
     /// Describes a version of a document.
-    public struct DocumentVersionMetadata {
+    public struct DocumentVersionMetadata: Swift.Sendable {
         /// The timestamp when the content of the document was originally created.
         public var contentCreatedTimestamp: Foundation.Date?
         /// The timestamp when the content of the document was modified.
@@ -2635,7 +2637,6 @@ extension WorkDocsClientTypes {
             self.thumbnail = thumbnail
         }
     }
-
 }
 
 extension WorkDocsClientTypes.DocumentVersionMetadata: Swift.CustomDebugStringConvertible {
@@ -2643,7 +2644,7 @@ extension WorkDocsClientTypes.DocumentVersionMetadata: Swift.CustomDebugStringCo
         "DocumentVersionMetadata(contentCreatedTimestamp: \(Swift.String(describing: contentCreatedTimestamp)), contentModifiedTimestamp: \(Swift.String(describing: contentModifiedTimestamp)), contentType: \(Swift.String(describing: contentType)), createdTimestamp: \(Swift.String(describing: createdTimestamp)), creatorId: \(Swift.String(describing: creatorId)), id: \(Swift.String(describing: id)), modifiedTimestamp: \(Swift.String(describing: modifiedTimestamp)), signature: \(Swift.String(describing: signature)), size: \(Swift.String(describing: size)), status: \(Swift.String(describing: status)), name: \"CONTENT_REDACTED\", source: [keys: \(Swift.String(describing: source?.keys)), values: \"CONTENT_REDACTED\"], thumbnail: [keys: \(Swift.String(describing: thumbnail?.keys)), values: \"CONTENT_REDACTED\"])"}
 }
 
-public struct DescribeDocumentVersionsOutput {
+public struct DescribeDocumentVersionsOutput: Swift.Sendable {
     /// The document versions.
     public var documentVersions: [WorkDocsClientTypes.DocumentVersionMetadata]?
     /// The marker to use when requesting the next set of results. If there are no additional results, the string is empty.
@@ -2661,7 +2662,7 @@ public struct DescribeDocumentVersionsOutput {
 
 extension WorkDocsClientTypes {
 
-    public enum OrderType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum OrderType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case ascending
         case descending
         case sdkUnknown(Swift.String)
@@ -2690,7 +2691,7 @@ extension WorkDocsClientTypes {
 
 extension WorkDocsClientTypes {
 
-    public enum ResourceSortType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ResourceSortType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case date
         case name
         case sdkUnknown(Swift.String)
@@ -2719,7 +2720,7 @@ extension WorkDocsClientTypes {
 
 extension WorkDocsClientTypes {
 
-    public enum FolderContentType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum FolderContentType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case all
         case document
         case folder
@@ -2749,7 +2750,7 @@ extension WorkDocsClientTypes {
     }
 }
 
-public struct DescribeFolderContentsInput {
+public struct DescribeFolderContentsInput: Swift.Sendable {
     /// Amazon WorkDocs authentication token. Not required when using Amazon Web Services administrator credentials to access the API.
     public var authenticationToken: Swift.String?
     /// The ID of the folder.
@@ -2796,8 +2797,9 @@ extension DescribeFolderContentsInput: Swift.CustomDebugStringConvertible {
 }
 
 extension WorkDocsClientTypes {
+
     /// Describes the document.
-    public struct DocumentMetadata {
+    public struct DocumentMetadata: Swift.Sendable {
         /// The time when the document was created.
         public var createdTimestamp: Foundation.Date?
         /// The ID of the creator.
@@ -2836,10 +2838,9 @@ extension WorkDocsClientTypes {
             self.resourceState = resourceState
         }
     }
-
 }
 
-public struct DescribeFolderContentsOutput {
+public struct DescribeFolderContentsOutput: Swift.Sendable {
     /// The documents in the specified folder.
     public var documents: [WorkDocsClientTypes.DocumentMetadata]?
     /// The subfolders in the specified folder.
@@ -2859,7 +2860,7 @@ public struct DescribeFolderContentsOutput {
     }
 }
 
-public struct DescribeGroupsInput {
+public struct DescribeGroupsInput: Swift.Sendable {
     /// Amazon WorkDocs authentication token. Not required when using Amazon Web Services administrator credentials to access the API.
     public var authenticationToken: Swift.String?
     /// The maximum number of items to return with this call.
@@ -2893,7 +2894,7 @@ extension DescribeGroupsInput: Swift.CustomDebugStringConvertible {
         "DescribeGroupsInput(limit: \(Swift.String(describing: limit)), marker: \(Swift.String(describing: marker)), organizationId: \(Swift.String(describing: organizationId)), authenticationToken: \"CONTENT_REDACTED\", searchQuery: \"CONTENT_REDACTED\")"}
 }
 
-public struct DescribeGroupsOutput {
+public struct DescribeGroupsOutput: Swift.Sendable {
     /// The list of groups.
     public var groups: [WorkDocsClientTypes.GroupMetadata]?
     /// The marker to use when requesting the next set of results. If there are no additional results, the string is empty.
@@ -2909,7 +2910,7 @@ public struct DescribeGroupsOutput {
     }
 }
 
-public struct DescribeNotificationSubscriptionsInput {
+public struct DescribeNotificationSubscriptionsInput: Swift.Sendable {
     /// The maximum number of items to return with this call.
     public var limit: Swift.Int?
     /// The marker for the next set of results. (You received this marker from a previous call.)
@@ -2930,7 +2931,7 @@ public struct DescribeNotificationSubscriptionsInput {
     }
 }
 
-public struct DescribeNotificationSubscriptionsOutput {
+public struct DescribeNotificationSubscriptionsOutput: Swift.Sendable {
     /// The marker to use when requesting the next set of results. If there are no additional results, the string is empty.
     public var marker: Swift.String?
     /// The subscriptions.
@@ -2946,7 +2947,7 @@ public struct DescribeNotificationSubscriptionsOutput {
     }
 }
 
-public struct DescribeResourcePermissionsInput {
+public struct DescribeResourcePermissionsInput: Swift.Sendable {
     /// Amazon WorkDocs authentication token. Not required when using Amazon Web Services administrator credentials to access the API.
     public var authenticationToken: Swift.String?
     /// The maximum number of items to return with this call.
@@ -2982,7 +2983,7 @@ extension DescribeResourcePermissionsInput: Swift.CustomDebugStringConvertible {
 
 extension WorkDocsClientTypes {
 
-    public enum RolePermissionType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum RolePermissionType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case direct
         case inherited
         case sdkUnknown(Swift.String)
@@ -3010,8 +3011,9 @@ extension WorkDocsClientTypes {
 }
 
 extension WorkDocsClientTypes {
+
     /// Describes the permissions.
-    public struct PermissionInfo {
+    public struct PermissionInfo: Swift.Sendable {
         /// The role of the user.
         public var role: WorkDocsClientTypes.RoleType?
         /// The type of permissions.
@@ -3026,12 +3028,12 @@ extension WorkDocsClientTypes {
             self.type = type
         }
     }
-
 }
 
 extension WorkDocsClientTypes {
+
     /// Describes a resource.
-    public struct Principal {
+    public struct Principal: Swift.Sendable {
         /// The ID of the resource.
         public var id: Swift.String?
         /// The permission information for the resource.
@@ -3050,10 +3052,9 @@ extension WorkDocsClientTypes {
             self.type = type
         }
     }
-
 }
 
-public struct DescribeResourcePermissionsOutput {
+public struct DescribeResourcePermissionsOutput: Swift.Sendable {
     /// The marker to use when requesting the next set of results. If there are no additional results, the string is empty.
     public var marker: Swift.String?
     /// The principals.
@@ -3069,7 +3070,7 @@ public struct DescribeResourcePermissionsOutput {
     }
 }
 
-public struct DescribeRootFoldersInput {
+public struct DescribeRootFoldersInput: Swift.Sendable {
     /// Amazon WorkDocs authentication token.
     /// This member is required.
     public var authenticationToken: Swift.String?
@@ -3095,7 +3096,7 @@ extension DescribeRootFoldersInput: Swift.CustomDebugStringConvertible {
         "DescribeRootFoldersInput(limit: \(Swift.String(describing: limit)), marker: \(Swift.String(describing: marker)), authenticationToken: \"CONTENT_REDACTED\")"}
 }
 
-public struct DescribeRootFoldersOutput {
+public struct DescribeRootFoldersOutput: Swift.Sendable {
     /// The user's special folders.
     public var folders: [WorkDocsClientTypes.FolderMetadata]?
     /// The marker for the next set of results.
@@ -3137,7 +3138,7 @@ public struct RequestedEntityTooLargeException: ClientRuntime.ModeledError, AWSC
 
 extension WorkDocsClientTypes {
 
-    public enum UserFilterType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum UserFilterType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case activePending
         case all
         case sdkUnknown(Swift.String)
@@ -3166,7 +3167,7 @@ extension WorkDocsClientTypes {
 
 extension WorkDocsClientTypes {
 
-    public enum UserSortType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum UserSortType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case fullName
         case storageLimit
         case storageUsed
@@ -3202,7 +3203,7 @@ extension WorkDocsClientTypes {
     }
 }
 
-public struct DescribeUsersInput {
+public struct DescribeUsersInput: Swift.Sendable {
     /// Amazon WorkDocs authentication token. Not required when using Amazon Web Services administrator credentials to access the API.
     public var authenticationToken: Swift.String?
     /// A comma-separated list of values. Specify "STORAGE_METADATA" to include the user storage quota and utilization information.
@@ -3263,7 +3264,7 @@ extension DescribeUsersInput: Swift.CustomDebugStringConvertible {
         "DescribeUsersInput(fields: \(Swift.String(describing: fields)), include: \(Swift.String(describing: include)), limit: \(Swift.String(describing: limit)), marker: \(Swift.String(describing: marker)), order: \(Swift.String(describing: order)), organizationId: \(Swift.String(describing: organizationId)), sort: \(Swift.String(describing: sort)), userIds: \(Swift.String(describing: userIds)), authenticationToken: \"CONTENT_REDACTED\", query: \"CONTENT_REDACTED\")"}
 }
 
-public struct DescribeUsersOutput {
+public struct DescribeUsersOutput: Swift.Sendable {
     /// The marker to use when requesting the next set of results. If there are no additional results, the string is empty.
     public var marker: Swift.String?
     /// The total number of users included in the results.
@@ -3284,7 +3285,7 @@ public struct DescribeUsersOutput {
     }
 }
 
-public struct GetCurrentUserInput {
+public struct GetCurrentUserInput: Swift.Sendable {
     /// Amazon WorkDocs authentication token.
     /// This member is required.
     public var authenticationToken: Swift.String?
@@ -3302,7 +3303,7 @@ extension GetCurrentUserInput: Swift.CustomDebugStringConvertible {
         "GetCurrentUserInput(authenticationToken: \"CONTENT_REDACTED\")"}
 }
 
-public struct GetCurrentUserOutput {
+public struct GetCurrentUserOutput: Swift.Sendable {
     /// Metadata of the user.
     public var user: WorkDocsClientTypes.User?
 
@@ -3314,7 +3315,7 @@ public struct GetCurrentUserOutput {
     }
 }
 
-public struct GetDocumentInput {
+public struct GetDocumentInput: Swift.Sendable {
     /// Amazon WorkDocs authentication token. Not required when using Amazon Web Services administrator credentials to access the API.
     public var authenticationToken: Swift.String?
     /// The ID of the document.
@@ -3340,7 +3341,7 @@ extension GetDocumentInput: Swift.CustomDebugStringConvertible {
         "GetDocumentInput(documentId: \(Swift.String(describing: documentId)), includeCustomMetadata: \(Swift.String(describing: includeCustomMetadata)), authenticationToken: \"CONTENT_REDACTED\")"}
 }
 
-public struct GetDocumentOutput {
+public struct GetDocumentOutput: Swift.Sendable {
     /// The custom metadata on the document.
     public var customMetadata: [Swift.String: Swift.String]?
     /// The metadata details of the document.
@@ -3356,7 +3357,7 @@ public struct GetDocumentOutput {
     }
 }
 
-public struct GetDocumentPathInput {
+public struct GetDocumentPathInput: Swift.Sendable {
     /// Amazon WorkDocs authentication token. Not required when using Amazon Web Services administrator credentials to access the API.
     public var authenticationToken: Swift.String?
     /// The ID of the document.
@@ -3391,8 +3392,9 @@ extension GetDocumentPathInput: Swift.CustomDebugStringConvertible {
 }
 
 extension WorkDocsClientTypes {
+
     /// Describes the resource path.
-    public struct ResourcePathComponent {
+    public struct ResourcePathComponent: Swift.Sendable {
         /// The ID of the resource path.
         public var id: Swift.String?
         /// The name of the resource path.
@@ -3407,7 +3409,6 @@ extension WorkDocsClientTypes {
             self.name = name
         }
     }
-
 }
 
 extension WorkDocsClientTypes.ResourcePathComponent: Swift.CustomDebugStringConvertible {
@@ -3416,8 +3417,9 @@ extension WorkDocsClientTypes.ResourcePathComponent: Swift.CustomDebugStringConv
 }
 
 extension WorkDocsClientTypes {
+
     /// Describes the path information of a resource.
-    public struct ResourcePath {
+    public struct ResourcePath: Swift.Sendable {
         /// The components of the resource path.
         public var components: [WorkDocsClientTypes.ResourcePathComponent]?
 
@@ -3428,10 +3430,9 @@ extension WorkDocsClientTypes {
             self.components = components
         }
     }
-
 }
 
-public struct GetDocumentPathOutput {
+public struct GetDocumentPathOutput: Swift.Sendable {
     /// The path information.
     public var path: WorkDocsClientTypes.ResourcePath?
 
@@ -3443,7 +3444,7 @@ public struct GetDocumentPathOutput {
     }
 }
 
-public struct GetDocumentVersionInput {
+public struct GetDocumentVersionInput: Swift.Sendable {
     /// Amazon WorkDocs authentication token. Not required when using Amazon Web Services administrator credentials to access the API.
     public var authenticationToken: Swift.String?
     /// The ID of the document.
@@ -3478,7 +3479,7 @@ extension GetDocumentVersionInput: Swift.CustomDebugStringConvertible {
         "GetDocumentVersionInput(documentId: \(Swift.String(describing: documentId)), fields: \(Swift.String(describing: fields)), includeCustomMetadata: \(Swift.String(describing: includeCustomMetadata)), versionId: \(Swift.String(describing: versionId)), authenticationToken: \"CONTENT_REDACTED\")"}
 }
 
-public struct GetDocumentVersionOutput {
+public struct GetDocumentVersionOutput: Swift.Sendable {
     /// The custom metadata on the document version.
     public var customMetadata: [Swift.String: Swift.String]?
     /// The version metadata.
@@ -3494,7 +3495,7 @@ public struct GetDocumentVersionOutput {
     }
 }
 
-public struct GetFolderInput {
+public struct GetFolderInput: Swift.Sendable {
     /// Amazon WorkDocs authentication token. Not required when using Amazon Web Services administrator credentials to access the API.
     public var authenticationToken: Swift.String?
     /// The ID of the folder.
@@ -3520,7 +3521,7 @@ extension GetFolderInput: Swift.CustomDebugStringConvertible {
         "GetFolderInput(folderId: \(Swift.String(describing: folderId)), includeCustomMetadata: \(Swift.String(describing: includeCustomMetadata)), authenticationToken: \"CONTENT_REDACTED\")"}
 }
 
-public struct GetFolderOutput {
+public struct GetFolderOutput: Swift.Sendable {
     /// The custom metadata on the folder.
     public var customMetadata: [Swift.String: Swift.String]?
     /// The metadata of the folder.
@@ -3536,7 +3537,7 @@ public struct GetFolderOutput {
     }
 }
 
-public struct GetFolderPathInput {
+public struct GetFolderPathInput: Swift.Sendable {
     /// Amazon WorkDocs authentication token. Not required when using Amazon Web Services administrator credentials to access the API.
     public var authenticationToken: Swift.String?
     /// A comma-separated list of values. Specify "NAME" to include the names of the parent folders.
@@ -3570,7 +3571,7 @@ extension GetFolderPathInput: Swift.CustomDebugStringConvertible {
         "GetFolderPathInput(fields: \(Swift.String(describing: fields)), folderId: \(Swift.String(describing: folderId)), limit: \(Swift.String(describing: limit)), marker: \(Swift.String(describing: marker)), authenticationToken: \"CONTENT_REDACTED\")"}
 }
 
-public struct GetFolderPathOutput {
+public struct GetFolderPathOutput: Swift.Sendable {
     /// The path information.
     public var path: WorkDocsClientTypes.ResourcePath?
 
@@ -3584,7 +3585,7 @@ public struct GetFolderPathOutput {
 
 extension WorkDocsClientTypes {
 
-    public enum ResourceCollectionType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ResourceCollectionType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case sharedWithMe
         case sdkUnknown(Swift.String)
 
@@ -3608,7 +3609,7 @@ extension WorkDocsClientTypes {
     }
 }
 
-public struct GetResourcesInput {
+public struct GetResourcesInput: Swift.Sendable {
     /// The Amazon WorkDocs authentication token. Not required when using Amazon Web Services administrator credentials to access the API.
     public var authenticationToken: Swift.String?
     /// The collection type.
@@ -3641,7 +3642,7 @@ extension GetResourcesInput: Swift.CustomDebugStringConvertible {
         "GetResourcesInput(collectionType: \(Swift.String(describing: collectionType)), limit: \(Swift.String(describing: limit)), marker: \(Swift.String(describing: marker)), userId: \(Swift.String(describing: userId)), authenticationToken: \"CONTENT_REDACTED\")"}
 }
 
-public struct GetResourcesOutput {
+public struct GetResourcesOutput: Swift.Sendable {
     /// The documents in the specified collection.
     public var documents: [WorkDocsClientTypes.DocumentMetadata]?
     /// The folders in the specified folder.
@@ -3757,7 +3758,7 @@ public struct StorageLimitWillExceedException: ClientRuntime.ModeledError, AWSCl
     }
 }
 
-public struct InitiateDocumentVersionUploadInput {
+public struct InitiateDocumentVersionUploadInput: Swift.Sendable {
     /// Amazon WorkDocs authentication token. Not required when using Amazon Web Services administrator credentials to access the API.
     public var authenticationToken: Swift.String?
     /// The timestamp when the content of the document was originally created.
@@ -3803,8 +3804,9 @@ extension InitiateDocumentVersionUploadInput: Swift.CustomDebugStringConvertible
 }
 
 extension WorkDocsClientTypes {
+
     /// Describes the upload.
-    public struct UploadMetadata {
+    public struct UploadMetadata: Swift.Sendable {
         /// The signed headers.
         public var signedHeaders: [Swift.String: Swift.String]?
         /// The URL of the upload.
@@ -3819,7 +3821,6 @@ extension WorkDocsClientTypes {
             self.uploadUrl = uploadUrl
         }
     }
-
 }
 
 extension WorkDocsClientTypes.UploadMetadata: Swift.CustomDebugStringConvertible {
@@ -3827,7 +3828,7 @@ extension WorkDocsClientTypes.UploadMetadata: Swift.CustomDebugStringConvertible
         "UploadMetadata(signedHeaders: \(Swift.String(describing: signedHeaders)), uploadUrl: \"CONTENT_REDACTED\")"}
 }
 
-public struct InitiateDocumentVersionUploadOutput {
+public struct InitiateDocumentVersionUploadOutput: Swift.Sendable {
     /// The document metadata.
     public var metadata: WorkDocsClientTypes.DocumentMetadata?
     /// The upload metadata.
@@ -3843,7 +3844,7 @@ public struct InitiateDocumentVersionUploadOutput {
     }
 }
 
-public struct RemoveAllResourcePermissionsInput {
+public struct RemoveAllResourcePermissionsInput: Swift.Sendable {
     /// Amazon WorkDocs authentication token. Not required when using Amazon Web Services administrator credentials to access the API.
     public var authenticationToken: Swift.String?
     /// The ID of the resource.
@@ -3865,7 +3866,7 @@ extension RemoveAllResourcePermissionsInput: Swift.CustomDebugStringConvertible 
         "RemoveAllResourcePermissionsInput(resourceId: \(Swift.String(describing: resourceId)), authenticationToken: \"CONTENT_REDACTED\")"}
 }
 
-public struct RemoveResourcePermissionInput {
+public struct RemoveResourcePermissionInput: Swift.Sendable {
     /// Amazon WorkDocs authentication token. Not required when using Amazon Web Services administrator credentials to access the API.
     public var authenticationToken: Swift.String?
     /// The principal ID of the resource.
@@ -3896,7 +3897,7 @@ extension RemoveResourcePermissionInput: Swift.CustomDebugStringConvertible {
         "RemoveResourcePermissionInput(principalId: \(Swift.String(describing: principalId)), principalType: \(Swift.String(describing: principalType)), resourceId: \(Swift.String(describing: resourceId)), authenticationToken: \"CONTENT_REDACTED\")"}
 }
 
-public struct RestoreDocumentVersionsInput {
+public struct RestoreDocumentVersionsInput: Swift.Sendable {
     /// Amazon WorkDocs authentication token. Not required when using Amazon Web Services administrator credentials to access the API.
     public var authenticationToken: Swift.String?
     /// The ID of the document.
@@ -3920,7 +3921,7 @@ extension RestoreDocumentVersionsInput: Swift.CustomDebugStringConvertible {
 
 extension WorkDocsClientTypes {
 
-    public enum ContentCategoryType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ContentCategoryType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case audio
         case document
         case image
@@ -3969,8 +3970,9 @@ extension WorkDocsClientTypes {
 }
 
 extension WorkDocsClientTypes {
+
     /// Filters results based on timestamp range (in epochs).
-    public struct DateRangeType {
+    public struct DateRangeType: Swift.Sendable {
         /// Timestamp range end value (in epochs).
         public var endValue: Foundation.Date?
         /// Timestamp range start value (in epochs)
@@ -3985,12 +3987,11 @@ extension WorkDocsClientTypes {
             self.startValue = startValue
         }
     }
-
 }
 
 extension WorkDocsClientTypes {
 
-    public enum PrincipalRoleType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum PrincipalRoleType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case contributor
         case coowner
         case owner
@@ -4024,8 +4025,9 @@ extension WorkDocsClientTypes {
 }
 
 extension WorkDocsClientTypes {
+
     /// Filter based on UserIds or GroupIds.
-    public struct SearchPrincipalType {
+    public struct SearchPrincipalType: Swift.Sendable {
         /// UserIds or GroupIds.
         /// This member is required.
         public var id: Swift.String?
@@ -4041,12 +4043,11 @@ extension WorkDocsClientTypes {
             self.roles = roles
         }
     }
-
 }
 
 extension WorkDocsClientTypes {
 
-    public enum SearchResourceType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SearchResourceType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case comment
         case document
         case documentVersion
@@ -4081,7 +4082,7 @@ extension WorkDocsClientTypes {
 
 extension WorkDocsClientTypes {
 
-    public enum SearchCollectionType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SearchCollectionType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case owned
         case sharedWithMe
         case sdkUnknown(Swift.String)
@@ -4109,8 +4110,9 @@ extension WorkDocsClientTypes {
 }
 
 extension WorkDocsClientTypes {
+
     /// Filter based on size (in bytes).
-    public struct LongRangeType {
+    public struct LongRangeType: Swift.Sendable {
         /// The size end range (in bytes).
         public var endValue: Swift.Int?
         /// The size start range (in bytes).
@@ -4125,12 +4127,11 @@ extension WorkDocsClientTypes {
             self.startValue = startValue
         }
     }
-
 }
 
 extension WorkDocsClientTypes {
 
-    public enum LanguageCodeType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum LanguageCodeType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case ar
         case bg
         case bn
@@ -4245,8 +4246,9 @@ extension WorkDocsClientTypes {
 }
 
 extension WorkDocsClientTypes {
+
     /// Filters results based on entity metadata.
-    public struct Filters {
+    public struct Filters: Swift.Sendable {
         /// Filter based on resource’s path.
         public var ancestorIds: [Swift.String]?
         /// Filters by content category.
@@ -4293,12 +4295,11 @@ extension WorkDocsClientTypes {
             self.textLocales = textLocales
         }
     }
-
 }
 
 extension WorkDocsClientTypes {
 
-    public enum OrderByFieldType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum OrderByFieldType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case createdTimestamp
         case modifiedTimestamp
         case name
@@ -4336,7 +4337,7 @@ extension WorkDocsClientTypes {
 
 extension WorkDocsClientTypes {
 
-    public enum SortOrder: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SortOrder: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case asc
         case desc
         case sdkUnknown(Swift.String)
@@ -4364,8 +4365,9 @@ extension WorkDocsClientTypes {
 }
 
 extension WorkDocsClientTypes {
+
     /// The result of the sort operation.
-    public struct SearchSortResult {
+    public struct SearchSortResult: Swift.Sendable {
         /// Sort search results based on this field name.
         public var field: WorkDocsClientTypes.OrderByFieldType?
         /// Sort direction.
@@ -4380,12 +4382,11 @@ extension WorkDocsClientTypes {
             self.order = order
         }
     }
-
 }
 
 extension WorkDocsClientTypes {
 
-    public enum SearchQueryScopeType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SearchQueryScopeType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case content
         case name
         case sdkUnknown(Swift.String)
@@ -4412,7 +4413,7 @@ extension WorkDocsClientTypes {
     }
 }
 
-public struct SearchResourcesInput {
+public struct SearchResourcesInput: Swift.Sendable {
     /// A list of attributes to include in the response. Used to request fields that are not normally returned in a standard response.
     public var additionalResponseFields: [WorkDocsClientTypes.AdditionalResponseFieldType]?
     /// Amazon WorkDocs authentication token. Not required when using Amazon Web Services administrator credentials to access the API.
@@ -4463,7 +4464,7 @@ extension SearchResourcesInput: Swift.CustomDebugStringConvertible {
 
 extension WorkDocsClientTypes {
 
-    public enum ResponseItemType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ResponseItemType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case comment
         case document
         case documentVersion
@@ -4497,8 +4498,9 @@ extension WorkDocsClientTypes {
 }
 
 extension WorkDocsClientTypes {
+
     /// List of Documents, Folders, Comments, and Document Versions matching the query.
-    public struct ResponseItem {
+    public struct ResponseItem: Swift.Sendable {
         /// The comment that matches the query.
         public var commentMetadata: WorkDocsClientTypes.CommentMetadata?
         /// The document that matches the query.
@@ -4529,7 +4531,6 @@ extension WorkDocsClientTypes {
             self.webUrl = webUrl
         }
     }
-
 }
 
 extension WorkDocsClientTypes.ResponseItem: Swift.CustomDebugStringConvertible {
@@ -4537,7 +4538,7 @@ extension WorkDocsClientTypes.ResponseItem: Swift.CustomDebugStringConvertible {
         "ResponseItem(commentMetadata: \(Swift.String(describing: commentMetadata)), documentMetadata: \(Swift.String(describing: documentMetadata)), documentVersionMetadata: \(Swift.String(describing: documentVersionMetadata)), folderMetadata: \(Swift.String(describing: folderMetadata)), resourceType: \(Swift.String(describing: resourceType)), webUrl: \"CONTENT_REDACTED\")"}
 }
 
-public struct SearchResourcesOutput {
+public struct SearchResourcesOutput: Swift.Sendable {
     /// List of Documents, Folders, Comments, and Document Versions matching the query.
     public var items: [WorkDocsClientTypes.ResponseItem]?
     /// The marker to use when requesting the next set of results. If there are no additional results, the string is empty.
@@ -4553,7 +4554,7 @@ public struct SearchResourcesOutput {
     }
 }
 
-public struct UpdateDocumentInput {
+public struct UpdateDocumentInput: Swift.Sendable {
     /// Amazon WorkDocs authentication token. Not required when using Amazon Web Services administrator credentials to access the API.
     public var authenticationToken: Swift.String?
     /// The ID of the document.
@@ -4589,7 +4590,7 @@ extension UpdateDocumentInput: Swift.CustomDebugStringConvertible {
 
 extension WorkDocsClientTypes {
 
-    public enum DocumentVersionStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DocumentVersionStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case active
         case sdkUnknown(Swift.String)
 
@@ -4613,7 +4614,7 @@ extension WorkDocsClientTypes {
     }
 }
 
-public struct UpdateDocumentVersionInput {
+public struct UpdateDocumentVersionInput: Swift.Sendable {
     /// Amazon WorkDocs authentication token. Not required when using Amazon Web Services administrator credentials to access the API.
     public var authenticationToken: Swift.String?
     /// The ID of the document.
@@ -4644,7 +4645,7 @@ extension UpdateDocumentVersionInput: Swift.CustomDebugStringConvertible {
         "UpdateDocumentVersionInput(documentId: \(Swift.String(describing: documentId)), versionId: \(Swift.String(describing: versionId)), versionStatus: \(Swift.String(describing: versionStatus)), authenticationToken: \"CONTENT_REDACTED\")"}
 }
 
-public struct UpdateFolderInput {
+public struct UpdateFolderInput: Swift.Sendable {
     /// Amazon WorkDocs authentication token. Not required when using Amazon Web Services administrator credentials to access the API.
     public var authenticationToken: Swift.String?
     /// The ID of the folder.
@@ -4731,7 +4732,7 @@ public struct IllegalUserStateException: ClientRuntime.ModeledError, AWSClientRu
 
 extension WorkDocsClientTypes {
 
-    public enum BooleanEnumType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum BooleanEnumType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case `false`
         case `true`
         case sdkUnknown(Swift.String)
@@ -4758,7 +4759,7 @@ extension WorkDocsClientTypes {
     }
 }
 
-public struct UpdateUserInput {
+public struct UpdateUserInput: Swift.Sendable {
     /// Amazon WorkDocs authentication token. Not required when using Amazon Web Services administrator credentials to access the API.
     public var authenticationToken: Swift.String?
     /// The given name of the user.
@@ -4808,7 +4809,7 @@ extension UpdateUserInput: Swift.CustomDebugStringConvertible {
         "UpdateUserInput(grantPoweruserPrivileges: \(Swift.String(describing: grantPoweruserPrivileges)), locale: \(Swift.String(describing: locale)), storageRule: \(Swift.String(describing: storageRule)), timeZoneId: \(Swift.String(describing: timeZoneId)), type: \(Swift.String(describing: type)), userId: \(Swift.String(describing: userId)), authenticationToken: \"CONTENT_REDACTED\", givenName: \"CONTENT_REDACTED\", surname: \"CONTENT_REDACTED\")"}
 }
 
-public struct UpdateUserOutput {
+public struct UpdateUserOutput: Swift.Sendable {
     /// The user information.
     public var user: WorkDocsClientTypes.User?
 

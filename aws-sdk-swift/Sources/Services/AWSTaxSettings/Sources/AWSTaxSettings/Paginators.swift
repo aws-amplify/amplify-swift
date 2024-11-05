@@ -11,6 +11,36 @@ import protocol ClientRuntime.PaginateToken
 import struct ClientRuntime.PaginatorSequence
 
 extension TaxSettingsClient {
+    /// Paginate over `[ListSupplementalTaxRegistrationsOutput]` results.
+    ///
+    /// When this operation is called, an `AsyncSequence` is created. AsyncSequences are lazy so no service
+    /// calls are made until the sequence is iterated over. This also means there is no guarantee that the request is valid
+    /// until then. If there are errors in your request, you will see the failures only after you start iterating.
+    /// - Parameters:
+    ///     - input: A `[ListSupplementalTaxRegistrationsInput]` to start pagination
+    /// - Returns: An `AsyncSequence` that can iterate over `ListSupplementalTaxRegistrationsOutput`
+    public func listSupplementalTaxRegistrationsPaginated(input: ListSupplementalTaxRegistrationsInput) -> ClientRuntime.PaginatorSequence<ListSupplementalTaxRegistrationsInput, ListSupplementalTaxRegistrationsOutput> {
+        return ClientRuntime.PaginatorSequence<ListSupplementalTaxRegistrationsInput, ListSupplementalTaxRegistrationsOutput>(input: input, inputKey: \.nextToken, outputKey: \.nextToken, paginationFunction: self.listSupplementalTaxRegistrations(input:))
+    }
+}
+
+extension ListSupplementalTaxRegistrationsInput: ClientRuntime.PaginateToken {
+    public func usingPaginationToken(_ token: Swift.String) -> ListSupplementalTaxRegistrationsInput {
+        return ListSupplementalTaxRegistrationsInput(
+            maxResults: self.maxResults,
+            nextToken: token
+        )}
+}
+
+extension PaginatorSequence where OperationStackInput == ListSupplementalTaxRegistrationsInput, OperationStackOutput == ListSupplementalTaxRegistrationsOutput {
+    /// This paginator transforms the `AsyncSequence` returned by `listSupplementalTaxRegistrationsPaginated`
+    /// to access the nested member `[TaxSettingsClientTypes.SupplementalTaxRegistration]`
+    /// - Returns: `[TaxSettingsClientTypes.SupplementalTaxRegistration]`
+    public func taxRegistrations() async throws -> [TaxSettingsClientTypes.SupplementalTaxRegistration] {
+        return try await self.asyncCompactMap { item in item.taxRegistrations }
+    }
+}
+extension TaxSettingsClient {
     /// Paginate over `[ListTaxRegistrationsOutput]` results.
     ///
     /// When this operation is called, an `AsyncSequence` is created. AsyncSequences are lazy so no service

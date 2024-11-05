@@ -55,8 +55,9 @@ public struct AccessDeniedException: ClientRuntime.ModeledError, AWSClientRuntim
 }
 
 extension BillingconductorClientTypes {
+
     /// A representation of a linked account.
-    public struct AccountAssociationsListElement {
+    public struct AccountAssociationsListElement: Swift.Sendable {
         /// The Amazon Web Services account email.
         public var accountEmail: Swift.String?
         /// The associating array of account IDs.
@@ -79,7 +80,6 @@ extension BillingconductorClientTypes {
             self.billingGroupArn = billingGroupArn
         }
     }
-
 }
 
 extension BillingconductorClientTypes.AccountAssociationsListElement: Swift.CustomDebugStringConvertible {
@@ -88,8 +88,9 @@ extension BillingconductorClientTypes.AccountAssociationsListElement: Swift.Cust
 }
 
 extension BillingconductorClientTypes {
+
     /// The set of accounts that will be under the billing group. The set of accounts resemble the linked accounts in a consolidated billing family.
-    public struct AccountGrouping {
+    public struct AccountGrouping: Swift.Sendable {
         /// Specifies if this billing group will automatically associate newly added Amazon Web Services accounts that join your consolidated billing family.
         public var autoAssociate: Swift.Bool?
         /// The account IDs that make up the billing group. Account IDs must be a part of the consolidated billing family, and not associated with another billing group.
@@ -105,12 +106,11 @@ extension BillingconductorClientTypes {
             self.linkedAccountIds = linkedAccountIds
         }
     }
-
 }
 
 extension BillingconductorClientTypes {
 
-    public enum ConflictExceptionReason: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ConflictExceptionReason: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case pricingPlanAttachedToBillingGroupDeleteConflict
         case pricingRuleAttachedToPricingPlanDeleteConflict
         case pricingRuleInPricingPlanConflict
@@ -322,8 +322,9 @@ public struct ThrottlingException: ClientRuntime.ModeledError, AWSClientRuntime.
 }
 
 extension BillingconductorClientTypes {
+
     /// The field's information of a request that resulted in an exception.
-    public struct ValidationExceptionField {
+    public struct ValidationExceptionField: Swift.Sendable {
         /// The message describing why the field failed validation.
         /// This member is required.
         public var message: Swift.String?
@@ -340,12 +341,11 @@ extension BillingconductorClientTypes {
             self.name = name
         }
     }
-
 }
 
 extension BillingconductorClientTypes {
 
-    public enum ValidationExceptionReason: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ValidationExceptionReason: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case accountsAlreadyAssociated
         case accountsNotAssociated
         case cannotDeleteAutoAssociateBillingGroup
@@ -579,7 +579,7 @@ public struct ValidationException: ClientRuntime.ModeledError, AWSClientRuntime.
     }
 }
 
-public struct AssociateAccountsInput {
+public struct AssociateAccountsInput: Swift.Sendable {
     /// The associating array of account IDs.
     /// This member is required.
     public var accountIds: [Swift.String]?
@@ -597,7 +597,7 @@ public struct AssociateAccountsInput {
     }
 }
 
-public struct AssociateAccountsOutput {
+public struct AssociateAccountsOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the billing group that associates the array of account IDs.
     public var arn: Swift.String?
 
@@ -609,7 +609,7 @@ public struct AssociateAccountsOutput {
     }
 }
 
-public struct AssociatePricingRulesInput {
+public struct AssociatePricingRulesInput: Swift.Sendable {
     /// The PricingPlanArn that the PricingRuleArns are associated with.
     /// This member is required.
     public var arn: Swift.String?
@@ -627,7 +627,7 @@ public struct AssociatePricingRulesInput {
     }
 }
 
-public struct AssociatePricingRulesOutput {
+public struct AssociatePricingRulesOutput: Swift.Sendable {
     /// The PricingPlanArn that the PricingRuleArns are associated with.
     public var arn: Swift.String?
 
@@ -641,7 +641,7 @@ public struct AssociatePricingRulesOutput {
 
 extension BillingconductorClientTypes {
 
-    public enum AssociateResourceErrorReason: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AssociateResourceErrorReason: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case illegalCustomlineitem
         case internalServerException
         case invalidArn
@@ -678,8 +678,9 @@ extension BillingconductorClientTypes {
 }
 
 extension BillingconductorClientTypes {
+
     /// A representation of a resource association error.
-    public struct AssociateResourceError {
+    public struct AssociateResourceError: Swift.Sendable {
         /// The reason why the resource association failed.
         public var message: Swift.String?
         /// A static error code that's used to classify the type of failure.
@@ -694,12 +695,12 @@ extension BillingconductorClientTypes {
             self.reason = reason
         }
     }
-
 }
 
 extension BillingconductorClientTypes {
+
     /// A resource association result for a percentage custom line item.
-    public struct AssociateResourceResponseElement {
+    public struct AssociateResourceResponseElement: Swift.Sendable {
         /// The resource ARN that was associated to the custom line item.
         public var arn: Swift.String?
         /// An AssociateResourceError that will populate if the resource association fails.
@@ -714,12 +715,12 @@ extension BillingconductorClientTypes {
             self.error = error
         }
     }
-
 }
 
 extension BillingconductorClientTypes {
+
     /// The key-value pair that represents the attribute by which the BillingGroupCostReportResults are grouped. For example, if you want a service-level breakdown for Amazon Simple Storage Service (Amazon S3) of the billing group, the attribute will be a key-value pair of "PRODUCT_NAME" and "S3".
-    public struct Attribute {
+    public struct Attribute: Swift.Sendable {
         /// The key in a key-value pair that describes the margin summary.
         public var key: Swift.String?
         /// The value in a key-value pair that describes the margin summary.
@@ -734,12 +735,12 @@ extension BillingconductorClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension BillingconductorClientTypes {
+
     /// The preferences and settings that will be used to compute the Amazon Web Services charges for a billing group.
-    public struct ComputationPreference {
+    public struct ComputationPreference: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the pricing plan that's used to compute the Amazon Web Services charges for a billing group.
         /// This member is required.
         public var pricingPlanArn: Swift.String?
@@ -751,10 +752,9 @@ extension BillingconductorClientTypes {
             self.pricingPlanArn = pricingPlanArn
         }
     }
-
 }
 
-public struct CreateBillingGroupInput {
+public struct CreateBillingGroupInput: Swift.Sendable {
     /// The set of accounts that will be under the billing group. The set of accounts resemble the linked accounts in a consolidated billing family.
     /// This member is required.
     public var accountGrouping: BillingconductorClientTypes.AccountGrouping?
@@ -798,7 +798,7 @@ extension CreateBillingGroupInput: Swift.CustomDebugStringConvertible {
         "CreateBillingGroupInput(accountGrouping: \(Swift.String(describing: accountGrouping)), clientToken: \(Swift.String(describing: clientToken)), computationPreference: \(Swift.String(describing: computationPreference)), primaryAccountId: \(Swift.String(describing: primaryAccountId)), tags: \(Swift.String(describing: tags)), description: \"CONTENT_REDACTED\", name: \"CONTENT_REDACTED\")"}
 }
 
-public struct CreateBillingGroupOutput {
+public struct CreateBillingGroupOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the created billing group.
     public var arn: Swift.String?
 
@@ -810,7 +810,7 @@ public struct CreateBillingGroupOutput {
     }
 }
 
-public struct DeleteBillingGroupInput {
+public struct DeleteBillingGroupInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the billing group that you're deleting.
     /// This member is required.
     public var arn: Swift.String?
@@ -823,7 +823,7 @@ public struct DeleteBillingGroupInput {
     }
 }
 
-public struct DeleteBillingGroupOutput {
+public struct DeleteBillingGroupOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the deleted billing group.
     public var arn: Swift.String?
 
@@ -835,7 +835,7 @@ public struct DeleteBillingGroupOutput {
     }
 }
 
-public struct DisassociateAccountsInput {
+public struct DisassociateAccountsInput: Swift.Sendable {
     /// The array of account IDs to disassociate.
     /// This member is required.
     public var accountIds: [Swift.String]?
@@ -853,7 +853,7 @@ public struct DisassociateAccountsInput {
     }
 }
 
-public struct DisassociateAccountsOutput {
+public struct DisassociateAccountsOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the billing group that the array of account IDs is disassociated from.
     public var arn: Swift.String?
 
@@ -867,7 +867,7 @@ public struct DisassociateAccountsOutput {
 
 extension BillingconductorClientTypes {
 
-    public enum BillingGroupStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum BillingGroupStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case active
         case primaryAccountMissing
         case sdkUnknown(Swift.String)
@@ -895,8 +895,9 @@ extension BillingconductorClientTypes {
 }
 
 extension BillingconductorClientTypes {
+
     /// The filter that specifies the billing groups and pricing plans to retrieve billing group information.
-    public struct ListBillingGroupsFilter {
+    public struct ListBillingGroupsFilter: Swift.Sendable {
         /// The list of billing group Amazon Resource Names (ARNs) to retrieve information.
         public var arns: [Swift.String]?
         /// Specifies if this billing group will automatically associate newly added Amazon Web Services accounts that join your consolidated billing family.
@@ -919,10 +920,9 @@ extension BillingconductorClientTypes {
             self.statuses = statuses
         }
     }
-
 }
 
-public struct ListBillingGroupsInput {
+public struct ListBillingGroupsInput: Swift.Sendable {
     /// The preferred billing period to get billing groups.
     public var billingPeriod: Swift.String?
     /// A ListBillingGroupsFilter that specifies the billing group and pricing plan to retrieve billing group information.
@@ -947,8 +947,9 @@ public struct ListBillingGroupsInput {
 }
 
 extension BillingconductorClientTypes {
+
     /// Specifies if the billing group has the following features enabled.
-    public struct ListBillingGroupAccountGrouping {
+    public struct ListBillingGroupAccountGrouping: Swift.Sendable {
         /// Specifies if this billing group will automatically associate newly added Amazon Web Services accounts that join your consolidated billing family.
         public var autoAssociate: Swift.Bool?
 
@@ -959,12 +960,12 @@ extension BillingconductorClientTypes {
             self.autoAssociate = autoAssociate
         }
     }
-
 }
 
 extension BillingconductorClientTypes {
+
     /// A representation of a billing group.
-    public struct BillingGroupListElement {
+    public struct BillingGroupListElement: Swift.Sendable {
         /// Specifies if the billing group has automatic account association (AutoAssociate) enabled.
         public var accountGrouping: BillingconductorClientTypes.ListBillingGroupAccountGrouping?
         /// The Amazon Resource Number (ARN) that can be used to uniquely identify the billing group.
@@ -1015,7 +1016,6 @@ extension BillingconductorClientTypes {
             self.statusReason = statusReason
         }
     }
-
 }
 
 extension BillingconductorClientTypes.BillingGroupListElement: Swift.CustomDebugStringConvertible {
@@ -1023,7 +1023,7 @@ extension BillingconductorClientTypes.BillingGroupListElement: Swift.CustomDebug
         "BillingGroupListElement(accountGrouping: \(Swift.String(describing: accountGrouping)), arn: \(Swift.String(describing: arn)), computationPreference: \(Swift.String(describing: computationPreference)), creationTime: \(Swift.String(describing: creationTime)), lastModifiedTime: \(Swift.String(describing: lastModifiedTime)), primaryAccountId: \(Swift.String(describing: primaryAccountId)), size: \(Swift.String(describing: size)), status: \(Swift.String(describing: status)), statusReason: \(Swift.String(describing: statusReason)), description: \"CONTENT_REDACTED\", name: \"CONTENT_REDACTED\")"}
 }
 
-public struct ListBillingGroupsOutput {
+public struct ListBillingGroupsOutput: Swift.Sendable {
     /// A list of BillingGroupListElement retrieved.
     public var billingGroups: [BillingconductorClientTypes.BillingGroupListElement]?
     /// The pagination token that's used on subsequent calls to get billing groups.
@@ -1040,8 +1040,9 @@ public struct ListBillingGroupsOutput {
 }
 
 extension BillingconductorClientTypes {
+
     /// Specifies if the billing group has the following features enabled.
-    public struct UpdateBillingGroupAccountGrouping {
+    public struct UpdateBillingGroupAccountGrouping: Swift.Sendable {
         /// Specifies if this billing group will automatically associate newly added Amazon Web Services accounts that join your consolidated billing family.
         public var autoAssociate: Swift.Bool?
 
@@ -1052,10 +1053,9 @@ extension BillingconductorClientTypes {
             self.autoAssociate = autoAssociate
         }
     }
-
 }
 
-public struct UpdateBillingGroupInput {
+public struct UpdateBillingGroupInput: Swift.Sendable {
     /// Specifies if the billing group has automatic account association (AutoAssociate) enabled.
     public var accountGrouping: BillingconductorClientTypes.UpdateBillingGroupAccountGrouping?
     /// The Amazon Resource Name (ARN) of the billing group being updated.
@@ -1093,7 +1093,7 @@ extension UpdateBillingGroupInput: Swift.CustomDebugStringConvertible {
         "UpdateBillingGroupInput(accountGrouping: \(Swift.String(describing: accountGrouping)), arn: \(Swift.String(describing: arn)), computationPreference: \(Swift.String(describing: computationPreference)), status: \(Swift.String(describing: status)), description: \"CONTENT_REDACTED\", name: \"CONTENT_REDACTED\")"}
 }
 
-public struct UpdateBillingGroupOutput {
+public struct UpdateBillingGroupOutput: Swift.Sendable {
     /// Specifies if the billing group has automatic account association (AutoAssociate) enabled.
     public var accountGrouping: BillingconductorClientTypes.UpdateBillingGroupAccountGrouping?
     /// The Amazon Resource Name (ARN) of the billing group that was updated.
@@ -1147,8 +1147,9 @@ extension UpdateBillingGroupOutput: Swift.CustomDebugStringConvertible {
 }
 
 extension BillingconductorClientTypes {
+
     /// The billing period range in which the custom line item request will be applied.
-    public struct CustomLineItemBillingPeriodRange {
+    public struct CustomLineItemBillingPeriodRange: Swift.Sendable {
         /// The inclusive end billing period that defines a billing period range where a custom line is applied.
         public var exclusiveEndBillingPeriod: Swift.String?
         /// The inclusive start billing period that defines a billing period range where a custom line is applied.
@@ -1164,10 +1165,9 @@ extension BillingconductorClientTypes {
             self.inclusiveStartBillingPeriod = inclusiveStartBillingPeriod
         }
     }
-
 }
 
-public struct BatchAssociateResourcesToCustomLineItemInput {
+public struct BatchAssociateResourcesToCustomLineItemInput: Swift.Sendable {
     /// The billing period range in which the custom line item request will be applied.
     public var billingPeriodRange: BillingconductorClientTypes.CustomLineItemBillingPeriodRange?
     /// A list containing the ARNs of the resources to be associated.
@@ -1189,7 +1189,7 @@ public struct BatchAssociateResourcesToCustomLineItemInput {
     }
 }
 
-public struct BatchAssociateResourcesToCustomLineItemOutput {
+public struct BatchAssociateResourcesToCustomLineItemOutput: Swift.Sendable {
     /// A list of AssociateResourceResponseElement for each resource that failed association to a percentage custom line item.
     public var failedAssociatedResources: [BillingconductorClientTypes.AssociateResourceResponseElement]?
     /// A list of AssociateResourceResponseElement for each resource that's been associated to a percentage custom line item successfully.
@@ -1205,7 +1205,7 @@ public struct BatchAssociateResourcesToCustomLineItemOutput {
     }
 }
 
-public struct BatchDisassociateResourcesFromCustomLineItemInput {
+public struct BatchDisassociateResourcesFromCustomLineItemInput: Swift.Sendable {
     /// The billing period range in which the custom line item request will be applied.
     public var billingPeriodRange: BillingconductorClientTypes.CustomLineItemBillingPeriodRange?
     /// A list containing the ARNs of resources to be disassociated.
@@ -1228,8 +1228,9 @@ public struct BatchDisassociateResourcesFromCustomLineItemInput {
 }
 
 extension BillingconductorClientTypes {
+
     /// A resource disassociation result for a percentage custom line item.
-    public struct DisassociateResourceResponseElement {
+    public struct DisassociateResourceResponseElement: Swift.Sendable {
         /// The resource ARN that was disassociated from the custom line item.
         public var arn: Swift.String?
         /// An AssociateResourceError that's shown if the resource disassociation fails.
@@ -1244,10 +1245,9 @@ extension BillingconductorClientTypes {
             self.error = error
         }
     }
-
 }
 
-public struct BatchDisassociateResourcesFromCustomLineItemOutput {
+public struct BatchDisassociateResourcesFromCustomLineItemOutput: Swift.Sendable {
     /// A list of DisassociateResourceResponseElement for each resource that failed disassociation from a percentage custom line item.
     public var failedDisassociatedResources: [BillingconductorClientTypes.DisassociateResourceResponseElement]?
     /// A list of DisassociateResourceResponseElement for each resource that's been disassociated from a percentage custom line item successfully.
@@ -1264,8 +1264,9 @@ public struct BatchDisassociateResourcesFromCustomLineItemOutput {
 }
 
 extension BillingconductorClientTypes {
+
     /// A representation of the charge details that are associated with a flat custom line item.
-    public struct CustomLineItemFlatChargeDetails {
+    public struct CustomLineItemFlatChargeDetails: Swift.Sendable {
         /// The custom line item's fixed charge value in USD.
         /// This member is required.
         public var chargeValue: Swift.Double?
@@ -1277,12 +1278,11 @@ extension BillingconductorClientTypes {
             self.chargeValue = chargeValue
         }
     }
-
 }
 
 extension BillingconductorClientTypes {
 
-    public enum LineItemFilterAttributeName: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum LineItemFilterAttributeName: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case lineItemType
         case sdkUnknown(Swift.String)
 
@@ -1308,7 +1308,7 @@ extension BillingconductorClientTypes {
 
 extension BillingconductorClientTypes {
 
-    public enum MatchOption: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum MatchOption: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case notEqual
         case sdkUnknown(Swift.String)
 
@@ -1334,7 +1334,7 @@ extension BillingconductorClientTypes {
 
 extension BillingconductorClientTypes {
 
-    public enum LineItemFilterValue: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum LineItemFilterValue: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case savingsPlanNegation
         case sdkUnknown(Swift.String)
 
@@ -1359,8 +1359,9 @@ extension BillingconductorClientTypes {
 }
 
 extension BillingconductorClientTypes {
+
     /// A representation of the line item filter for your custom line item. You can use line item filters to include or exclude specific resource values from the billing group's total cost. For example, if you create a custom line item and you want to filter out a value, such as Savings Plan discounts, you can update LineItemFilter to exclude it.
-    public struct LineItemFilter {
+    public struct LineItemFilter: Swift.Sendable {
         /// The attribute of the line item filter. This specifies what attribute that you can filter on.
         /// This member is required.
         public var attribute: BillingconductorClientTypes.LineItemFilterAttributeName?
@@ -1382,12 +1383,12 @@ extension BillingconductorClientTypes {
             self.values = values
         }
     }
-
 }
 
 extension BillingconductorClientTypes {
+
     /// A representation of the charge details that are associated with a percentage custom line item.
-    public struct CustomLineItemPercentageChargeDetails {
+    public struct CustomLineItemPercentageChargeDetails: Swift.Sendable {
         /// A list of resource ARNs to associate to the percentage custom line item.
         public var associatedValues: [Swift.String]?
         /// The custom line item's percentage value. This will be multiplied against the combined value of its associated resources to determine its charge value.
@@ -1403,12 +1404,11 @@ extension BillingconductorClientTypes {
             self.percentageValue = percentageValue
         }
     }
-
 }
 
 extension BillingconductorClientTypes {
 
-    public enum CustomLineItemType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum CustomLineItemType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case credit
         case fee
         case sdkUnknown(Swift.String)
@@ -1436,8 +1436,9 @@ extension BillingconductorClientTypes {
 }
 
 extension BillingconductorClientTypes {
+
     /// The charge details of a custom line item. It should contain only one of Flat or Percentage.
-    public struct CustomLineItemChargeDetails {
+    public struct CustomLineItemChargeDetails: Swift.Sendable {
         /// A CustomLineItemFlatChargeDetails that describes the charge details of a flat custom line item.
         public var flat: BillingconductorClientTypes.CustomLineItemFlatChargeDetails?
         /// A representation of the line item filter.
@@ -1461,10 +1462,9 @@ extension BillingconductorClientTypes {
             self.type = type
         }
     }
-
 }
 
-public struct CreateCustomLineItemInput {
+public struct CreateCustomLineItemInput: Swift.Sendable {
     /// The Amazon Web Services account in which this custom line item will be applied to.
     public var accountId: Swift.String?
     /// The Amazon Resource Name (ARN) that references the billing group where the custom line item applies to.
@@ -1513,7 +1513,7 @@ extension CreateCustomLineItemInput: Swift.CustomDebugStringConvertible {
         "CreateCustomLineItemInput(accountId: \(Swift.String(describing: accountId)), billingGroupArn: \(Swift.String(describing: billingGroupArn)), billingPeriodRange: \(Swift.String(describing: billingPeriodRange)), chargeDetails: \(Swift.String(describing: chargeDetails)), clientToken: \(Swift.String(describing: clientToken)), tags: \(Swift.String(describing: tags)), description: \"CONTENT_REDACTED\", name: \"CONTENT_REDACTED\")"}
 }
 
-public struct CreateCustomLineItemOutput {
+public struct CreateCustomLineItemOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the created custom line item.
     public var arn: Swift.String?
 
@@ -1525,7 +1525,7 @@ public struct CreateCustomLineItemOutput {
     }
 }
 
-public struct DeleteCustomLineItemInput {
+public struct DeleteCustomLineItemInput: Swift.Sendable {
     /// The ARN of the custom line item to be deleted.
     /// This member is required.
     public var arn: Swift.String?
@@ -1542,7 +1542,7 @@ public struct DeleteCustomLineItemInput {
     }
 }
 
-public struct DeleteCustomLineItemOutput {
+public struct DeleteCustomLineItemOutput: Swift.Sendable {
     /// The ARN of the deleted custom line item.
     public var arn: Swift.String?
 
@@ -1555,8 +1555,9 @@ public struct DeleteCustomLineItemOutput {
 }
 
 extension BillingconductorClientTypes {
+
     /// A filter that specifies the custom line items and billing groups to retrieve FFLI information.
-    public struct ListCustomLineItemsFilter {
+    public struct ListCustomLineItemsFilter: Swift.Sendable {
         /// The Amazon Web Services accounts in which this custom line item will be applied to.
         public var accountIds: [Swift.String]?
         /// A list of custom line item ARNs to retrieve information.
@@ -1579,7 +1580,6 @@ extension BillingconductorClientTypes {
             self.names = names
         }
     }
-
 }
 
 extension BillingconductorClientTypes.ListCustomLineItemsFilter: Swift.CustomDebugStringConvertible {
@@ -1587,7 +1587,7 @@ extension BillingconductorClientTypes.ListCustomLineItemsFilter: Swift.CustomDeb
         "ListCustomLineItemsFilter(accountIds: \(Swift.String(describing: accountIds)), arns: \(Swift.String(describing: arns)), billingGroups: \(Swift.String(describing: billingGroups)), names: \"CONTENT_REDACTED\")"}
 }
 
-public struct ListCustomLineItemsInput {
+public struct ListCustomLineItemsInput: Swift.Sendable {
     /// The preferred billing period to get custom line items (FFLIs).
     public var billingPeriod: Swift.String?
     /// A ListCustomLineItemsFilter that specifies the custom line item names and/or billing group Amazon Resource Names (ARNs) to retrieve FFLI information.
@@ -1612,8 +1612,9 @@ public struct ListCustomLineItemsInput {
 }
 
 extension BillingconductorClientTypes {
+
     /// A representation of the charge details that are associated with a flat custom line item.
-    public struct ListCustomLineItemFlatChargeDetails {
+    public struct ListCustomLineItemFlatChargeDetails: Swift.Sendable {
         /// The custom line item's fixed charge value in USD.
         /// This member is required.
         public var chargeValue: Swift.Double?
@@ -1625,12 +1626,12 @@ extension BillingconductorClientTypes {
             self.chargeValue = chargeValue
         }
     }
-
 }
 
 extension BillingconductorClientTypes {
+
     /// A representation of the charge details that are associated with a percentage custom line item.
-    public struct ListCustomLineItemPercentageChargeDetails {
+    public struct ListCustomLineItemPercentageChargeDetails: Swift.Sendable {
         /// The custom line item's percentage value. This will be multiplied against the combined value of its associated resources to determine its charge value.
         /// This member is required.
         public var percentageValue: Swift.Double?
@@ -1642,12 +1643,12 @@ extension BillingconductorClientTypes {
             self.percentageValue = percentageValue
         }
     }
-
 }
 
 extension BillingconductorClientTypes {
+
     /// A representation of the charge details of a custom line item.
-    public struct ListCustomLineItemChargeDetails {
+    public struct ListCustomLineItemChargeDetails: Swift.Sendable {
         /// A ListCustomLineItemFlatChargeDetails that describes the charge details of a flat custom line item.
         public var flat: BillingconductorClientTypes.ListCustomLineItemFlatChargeDetails?
         /// A representation of the line item filter.
@@ -1671,12 +1672,11 @@ extension BillingconductorClientTypes {
             self.type = type
         }
     }
-
 }
 
 extension BillingconductorClientTypes {
 
-    public enum CurrencyCode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum CurrencyCode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case cny
         case usd
         case sdkUnknown(Swift.String)
@@ -1704,8 +1704,9 @@ extension BillingconductorClientTypes {
 }
 
 extension BillingconductorClientTypes {
+
     /// A representation of a custom line item.
-    public struct CustomLineItemListElement {
+    public struct CustomLineItemListElement: Swift.Sendable {
         /// The Amazon Web Services account in which this custom line item will be applied to.
         public var accountId: Swift.String?
         /// The Amazon Resource Names (ARNs) for custom line items.
@@ -1756,7 +1757,6 @@ extension BillingconductorClientTypes {
             self.productCode = productCode
         }
     }
-
 }
 
 extension BillingconductorClientTypes.CustomLineItemListElement: Swift.CustomDebugStringConvertible {
@@ -1764,7 +1764,7 @@ extension BillingconductorClientTypes.CustomLineItemListElement: Swift.CustomDeb
         "CustomLineItemListElement(accountId: \(Swift.String(describing: accountId)), arn: \(Swift.String(describing: arn)), associationSize: \(Swift.String(describing: associationSize)), billingGroupArn: \(Swift.String(describing: billingGroupArn)), chargeDetails: \(Swift.String(describing: chargeDetails)), creationTime: \(Swift.String(describing: creationTime)), currencyCode: \(Swift.String(describing: currencyCode)), lastModifiedTime: \(Swift.String(describing: lastModifiedTime)), productCode: \(Swift.String(describing: productCode)), description: \"CONTENT_REDACTED\", name: \"CONTENT_REDACTED\")"}
 }
 
-public struct ListCustomLineItemsOutput {
+public struct ListCustomLineItemsOutput: Swift.Sendable {
     /// A list of FreeFormLineItemListElements received.
     public var customLineItems: [BillingconductorClientTypes.CustomLineItemListElement]?
     /// The pagination token that's used on subsequent calls to get custom line items (FFLIs).
@@ -1781,8 +1781,9 @@ public struct ListCustomLineItemsOutput {
 }
 
 extension BillingconductorClientTypes {
+
     /// A billing period filter that specifies the custom line item versions to retrieve.
-    public struct ListCustomLineItemVersionsBillingPeriodRangeFilter {
+    public struct ListCustomLineItemVersionsBillingPeriodRangeFilter: Swift.Sendable {
         /// The exclusive end billing period that defines a billing period range where a custom line item version is applied.
         public var endBillingPeriod: Swift.String?
         /// The inclusive start billing period that defines a billing period range where a custom line item version is applied.
@@ -1797,12 +1798,12 @@ extension BillingconductorClientTypes {
             self.startBillingPeriod = startBillingPeriod
         }
     }
-
 }
 
 extension BillingconductorClientTypes {
+
     /// A filter that specifies the billing period range where the custom line item versions reside.
-    public struct ListCustomLineItemVersionsFilter {
+    public struct ListCustomLineItemVersionsFilter: Swift.Sendable {
         /// The billing period range in which the custom line item version is applied.
         public var billingPeriodRange: BillingconductorClientTypes.ListCustomLineItemVersionsBillingPeriodRangeFilter?
 
@@ -1813,10 +1814,9 @@ extension BillingconductorClientTypes {
             self.billingPeriodRange = billingPeriodRange
         }
     }
-
 }
 
-public struct ListCustomLineItemVersionsInput {
+public struct ListCustomLineItemVersionsInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) for the custom line item.
     /// This member is required.
     public var arn: Swift.String?
@@ -1842,8 +1842,9 @@ public struct ListCustomLineItemVersionsInput {
 }
 
 extension BillingconductorClientTypes {
+
     /// A representation of a custom line item version.
-    public struct CustomLineItemVersionListElement {
+    public struct CustomLineItemVersionListElement: Swift.Sendable {
         /// The Amazon Web Services account in which this custom line item will be applied to.
         public var accountId: Swift.String?
         /// A list of custom line item Amazon Resource Names (ARNs) to retrieve information.
@@ -1906,7 +1907,6 @@ extension BillingconductorClientTypes {
             self.startTime = startTime
         }
     }
-
 }
 
 extension BillingconductorClientTypes.CustomLineItemVersionListElement: Swift.CustomDebugStringConvertible {
@@ -1914,7 +1914,7 @@ extension BillingconductorClientTypes.CustomLineItemVersionListElement: Swift.Cu
         "CustomLineItemVersionListElement(accountId: \(Swift.String(describing: accountId)), arn: \(Swift.String(describing: arn)), associationSize: \(Swift.String(describing: associationSize)), billingGroupArn: \(Swift.String(describing: billingGroupArn)), chargeDetails: \(Swift.String(describing: chargeDetails)), creationTime: \(Swift.String(describing: creationTime)), currencyCode: \(Swift.String(describing: currencyCode)), endBillingPeriod: \(Swift.String(describing: endBillingPeriod)), lastModifiedTime: \(Swift.String(describing: lastModifiedTime)), productCode: \(Swift.String(describing: productCode)), startBillingPeriod: \(Swift.String(describing: startBillingPeriod)), startTime: \(Swift.String(describing: startTime)), description: \"CONTENT_REDACTED\", name: \"CONTENT_REDACTED\")"}
 }
 
-public struct ListCustomLineItemVersionsOutput {
+public struct ListCustomLineItemVersionsOutput: Swift.Sendable {
     /// A list of CustomLineItemVersionListElements that are received.
     public var customLineItemVersions: [BillingconductorClientTypes.CustomLineItemVersionListElement]?
     /// The pagination token that's used on subsequent calls to retrieve custom line item versions.
@@ -1932,7 +1932,7 @@ public struct ListCustomLineItemVersionsOutput {
 
 extension BillingconductorClientTypes {
 
-    public enum CustomLineItemRelationship: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum CustomLineItemRelationship: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case child
         case parent
         case sdkUnknown(Swift.String)
@@ -1960,8 +1960,9 @@ extension BillingconductorClientTypes {
 }
 
 extension BillingconductorClientTypes {
+
     /// A filter that specifies the type of resource associations that should be retrieved for a custom line item.
-    public struct ListResourcesAssociatedToCustomLineItemFilter {
+    public struct ListResourcesAssociatedToCustomLineItemFilter: Swift.Sendable {
         /// The type of relationship between the custom line item and the associated resource.
         public var relationship: BillingconductorClientTypes.CustomLineItemRelationship?
 
@@ -1972,10 +1973,9 @@ extension BillingconductorClientTypes {
             self.relationship = relationship
         }
     }
-
 }
 
-public struct ListResourcesAssociatedToCustomLineItemInput {
+public struct ListResourcesAssociatedToCustomLineItemInput: Swift.Sendable {
     /// The ARN of the custom line item for which the resource associations will be listed.
     /// This member is required.
     public var arn: Swift.String?
@@ -2005,8 +2005,9 @@ public struct ListResourcesAssociatedToCustomLineItemInput {
 }
 
 extension BillingconductorClientTypes {
+
     /// A representation of a resource association for a custom line item.
-    public struct ListResourcesAssociatedToCustomLineItemResponseElement {
+    public struct ListResourcesAssociatedToCustomLineItemResponseElement: Swift.Sendable {
         /// The ARN of the associated resource.
         public var arn: Swift.String?
         /// The end billing period of the associated resource.
@@ -2025,10 +2026,9 @@ extension BillingconductorClientTypes {
             self.relationship = relationship
         }
     }
-
 }
 
-public struct ListResourcesAssociatedToCustomLineItemOutput {
+public struct ListResourcesAssociatedToCustomLineItemOutput: Swift.Sendable {
     /// The custom line item ARN for which the resource associations are listed.
     public var arn: Swift.String?
     /// A list of ListResourcesAssociatedToCustomLineItemResponseElement for each resource association retrieved.
@@ -2049,8 +2049,9 @@ public struct ListResourcesAssociatedToCustomLineItemOutput {
 }
 
 extension BillingconductorClientTypes {
+
     /// A representation of the new charge details that are associated with a flat custom line item.
-    public struct UpdateCustomLineItemFlatChargeDetails {
+    public struct UpdateCustomLineItemFlatChargeDetails: Swift.Sendable {
         /// The custom line item's new fixed charge value in USD.
         /// This member is required.
         public var chargeValue: Swift.Double?
@@ -2062,12 +2063,12 @@ extension BillingconductorClientTypes {
             self.chargeValue = chargeValue
         }
     }
-
 }
 
 extension BillingconductorClientTypes {
+
     /// A representation of the new charge details that are associated with a percentage custom line item.
-    public struct UpdateCustomLineItemPercentageChargeDetails {
+    public struct UpdateCustomLineItemPercentageChargeDetails: Swift.Sendable {
         /// The custom line item's new percentage value. This will be multiplied against the combined value of its associated resources to determine its charge value.
         /// This member is required.
         public var percentageValue: Swift.Double?
@@ -2079,12 +2080,12 @@ extension BillingconductorClientTypes {
             self.percentageValue = percentageValue
         }
     }
-
 }
 
 extension BillingconductorClientTypes {
+
     /// A representation of the new charge details of a custom line item. This should contain only one of Flat or Percentage.
-    public struct UpdateCustomLineItemChargeDetails {
+    public struct UpdateCustomLineItemChargeDetails: Swift.Sendable {
         /// An UpdateCustomLineItemFlatChargeDetails that describes the new charge details of a flat custom line item.
         public var flat: BillingconductorClientTypes.UpdateCustomLineItemFlatChargeDetails?
         /// A representation of the line item filter.
@@ -2103,10 +2104,9 @@ extension BillingconductorClientTypes {
             self.percentage = percentage
         }
     }
-
 }
 
-public struct UpdateCustomLineItemInput {
+public struct UpdateCustomLineItemInput: Swift.Sendable {
     /// The ARN of the custom line item to be updated.
     /// This member is required.
     public var arn: Swift.String?
@@ -2140,7 +2140,7 @@ extension UpdateCustomLineItemInput: Swift.CustomDebugStringConvertible {
         "UpdateCustomLineItemInput(arn: \(Swift.String(describing: arn)), billingPeriodRange: \(Swift.String(describing: billingPeriodRange)), chargeDetails: \(Swift.String(describing: chargeDetails)), description: \"CONTENT_REDACTED\", name: \"CONTENT_REDACTED\")"}
 }
 
-public struct UpdateCustomLineItemOutput {
+public struct UpdateCustomLineItemOutput: Swift.Sendable {
     /// The ARN of the successfully updated custom line item.
     public var arn: Swift.String?
     /// The number of resources that are associated to the custom line item.
@@ -2182,8 +2182,9 @@ extension UpdateCustomLineItemOutput: Swift.CustomDebugStringConvertible {
 }
 
 extension BillingconductorClientTypes {
+
     /// A time range for which the margin summary is effective. The time range can be up to 12 months.
-    public struct BillingPeriodRange {
+    public struct BillingPeriodRange: Swift.Sendable {
         /// The exclusive end billing period that defines a billing period range for the margin summary. For example, if you choose a billing period that starts in October 2023 and ends in December 2023, the margin summary will only include data from October 2023 and November 2023.
         /// This member is required.
         public var exclusiveEndBillingPeriod: Swift.String?
@@ -2200,12 +2201,11 @@ extension BillingconductorClientTypes {
             self.inclusiveStartBillingPeriod = inclusiveStartBillingPeriod
         }
     }
-
 }
 
 extension BillingconductorClientTypes {
 
-    public enum GroupByAttributeName: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum GroupByAttributeName: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case billingPeriod
         case productName
         case sdkUnknown(Swift.String)
@@ -2232,7 +2232,7 @@ extension BillingconductorClientTypes {
     }
 }
 
-public struct GetBillingGroupCostReportInput {
+public struct GetBillingGroupCostReportInput: Swift.Sendable {
     /// The Amazon Resource Number (ARN) that uniquely identifies the billing group.
     /// This member is required.
     public var arn: Swift.String?
@@ -2262,8 +2262,9 @@ public struct GetBillingGroupCostReportInput {
 }
 
 extension BillingconductorClientTypes {
+
     /// A paginated call to retrieve a list of summary reports of actual Amazon Web Services charges and the calculated Amazon Web Services charges, broken down by attributes.
-    public struct BillingGroupCostReportResultElement {
+    public struct BillingGroupCostReportResultElement: Swift.Sendable {
         /// The Amazon Resource Number (ARN) that uniquely identifies the billing group.
         public var arn: Swift.String?
         /// The list of key-value pairs that represent the attributes by which the BillingGroupCostReportResults are grouped. For example, if you want the Amazon S3 service-level breakdown of a billing group for November 2023, the attributes list will contain a key-value pair of "PRODUCT_NAME" and "S3" and a key-value pair of "BILLING_PERIOD" and "Nov 2023".
@@ -2298,10 +2299,9 @@ extension BillingconductorClientTypes {
             self.proformaCost = proformaCost
         }
     }
-
 }
 
-public struct GetBillingGroupCostReportOutput {
+public struct GetBillingGroupCostReportOutput: Swift.Sendable {
     /// The list of margin summary reports.
     public var billingGroupCostReportResults: [BillingconductorClientTypes.BillingGroupCostReportResultElement]?
     /// The pagination token used on subsequent calls to get reports.
@@ -2318,8 +2318,9 @@ public struct GetBillingGroupCostReportOutput {
 }
 
 extension BillingconductorClientTypes {
+
     /// The filter on the account ID of the linked account, or any of the following: MONITORED: linked accounts that are associated to billing groups. UNMONITORED: linked accounts that are not associated to billing groups. Billing Group Arn: linked accounts that are associated to the provided Billing Group Arn.
-    public struct ListAccountAssociationsFilter {
+    public struct ListAccountAssociationsFilter: Swift.Sendable {
         /// The Amazon Web Services account ID to filter on.
         public var accountId: Swift.String?
         /// The list of Amazon Web Services IDs to retrieve their associated billing group for a given time range.
@@ -2338,10 +2339,9 @@ extension BillingconductorClientTypes {
             self.association = association
         }
     }
-
 }
 
-public struct ListAccountAssociationsInput {
+public struct ListAccountAssociationsInput: Swift.Sendable {
     /// The preferred billing period to get account associations.
     public var billingPeriod: Swift.String?
     /// The filter on the account ID of the linked account, or any of the following: MONITORED: linked accounts that are associated to billing groups. UNMONITORED: linked accounts that aren't associated to billing groups. Billing Group Arn: linked accounts that are associated to the provided billing group Arn.
@@ -2361,7 +2361,7 @@ public struct ListAccountAssociationsInput {
     }
 }
 
-public struct ListAccountAssociationsOutput {
+public struct ListAccountAssociationsOutput: Swift.Sendable {
     /// The list of linked accounts in the payer account.
     public var linkedAccounts: [BillingconductorClientTypes.AccountAssociationsListElement]?
     /// The pagination token that's used on subsequent calls to get accounts.
@@ -2378,8 +2378,9 @@ public struct ListAccountAssociationsOutput {
 }
 
 extension BillingconductorClientTypes {
+
     /// The filter used to retrieve specific BillingGroupCostReportElements.
-    public struct ListBillingGroupCostReportsFilter {
+    public struct ListBillingGroupCostReportsFilter: Swift.Sendable {
         /// The list of Amazon Resource Names (ARNs) used to filter billing groups to retrieve reports.
         public var billingGroupArns: [Swift.String]?
 
@@ -2390,10 +2391,9 @@ extension BillingconductorClientTypes {
             self.billingGroupArns = billingGroupArns
         }
     }
-
 }
 
-public struct ListBillingGroupCostReportsInput {
+public struct ListBillingGroupCostReportsInput: Swift.Sendable {
     /// The preferred billing period for your report.
     public var billingPeriod: Swift.String?
     /// A ListBillingGroupCostReportsFilter to specify billing groups to retrieve reports from.
@@ -2418,8 +2418,9 @@ public struct ListBillingGroupCostReportsInput {
 }
 
 extension BillingconductorClientTypes {
+
     /// A summary report of actual Amazon Web Services charges and calculated Amazon Web Services charges, based on the associated pricing plan of a billing group.
-    public struct BillingGroupCostReportElement {
+    public struct BillingGroupCostReportElement: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of a billing group.
         public var arn: Swift.String?
         /// The actual Amazon Web Services charges for the billing group.
@@ -2450,10 +2451,9 @@ extension BillingconductorClientTypes {
             self.proformaCost = proformaCost
         }
     }
-
 }
 
-public struct ListBillingGroupCostReportsOutput {
+public struct ListBillingGroupCostReportsOutput: Swift.Sendable {
     /// A list of BillingGroupCostReportElement retrieved.
     public var billingGroupCostReports: [BillingconductorClientTypes.BillingGroupCostReportElement]?
     /// The pagination token that's used on subsequent calls to get reports.
@@ -2469,7 +2469,7 @@ public struct ListBillingGroupCostReportsOutput {
     }
 }
 
-public struct ListTagsForResourceInput {
+public struct ListTagsForResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) that identifies the resource to list the tags.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -2482,7 +2482,7 @@ public struct ListTagsForResourceInput {
     }
 }
 
-public struct ListTagsForResourceOutput {
+public struct ListTagsForResourceOutput: Swift.Sendable {
     /// The tags for the resource.
     public var tags: [Swift.String: Swift.String]?
 
@@ -2494,7 +2494,7 @@ public struct ListTagsForResourceOutput {
     }
 }
 
-public struct CreatePricingPlanInput {
+public struct CreatePricingPlanInput: Swift.Sendable {
     /// The token that is needed to support idempotency. Idempotency isn't currently supported, but will be implemented in a future update.
     public var clientToken: Swift.String?
     /// The description of the pricing plan.
@@ -2528,7 +2528,7 @@ extension CreatePricingPlanInput: Swift.CustomDebugStringConvertible {
         "CreatePricingPlanInput(clientToken: \(Swift.String(describing: clientToken)), pricingRuleArns: \(Swift.String(describing: pricingRuleArns)), tags: \(Swift.String(describing: tags)), description: \"CONTENT_REDACTED\", name: \"CONTENT_REDACTED\")"}
 }
 
-public struct CreatePricingPlanOutput {
+public struct CreatePricingPlanOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the created pricing plan.
     public var arn: Swift.String?
 
@@ -2540,7 +2540,7 @@ public struct CreatePricingPlanOutput {
     }
 }
 
-public struct DeletePricingPlanInput {
+public struct DeletePricingPlanInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the pricing plan that you're deleting.
     /// This member is required.
     public var arn: Swift.String?
@@ -2553,7 +2553,7 @@ public struct DeletePricingPlanInput {
     }
 }
 
-public struct DeletePricingPlanOutput {
+public struct DeletePricingPlanOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the deleted pricing plan.
     public var arn: Swift.String?
 
@@ -2565,7 +2565,7 @@ public struct DeletePricingPlanOutput {
     }
 }
 
-public struct DisassociatePricingRulesInput {
+public struct DisassociatePricingRulesInput: Swift.Sendable {
     /// The pricing plan Amazon Resource Name (ARN) to disassociate pricing rules from.
     /// This member is required.
     public var arn: Swift.String?
@@ -2583,7 +2583,7 @@ public struct DisassociatePricingRulesInput {
     }
 }
 
-public struct DisassociatePricingRulesOutput {
+public struct DisassociatePricingRulesOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the pricing plan that the pricing rules successfully disassociated from.
     public var arn: Swift.String?
 
@@ -2596,8 +2596,9 @@ public struct DisassociatePricingRulesOutput {
 }
 
 extension BillingconductorClientTypes {
+
     /// The filter that specifies the Amazon Resource Names (ARNs) of pricing plans, to retrieve pricing plan information.
-    public struct ListPricingPlansFilter {
+    public struct ListPricingPlansFilter: Swift.Sendable {
         /// A list of pricing plan Amazon Resource Names (ARNs) to retrieve information.
         public var arns: [Swift.String]?
 
@@ -2608,10 +2609,9 @@ extension BillingconductorClientTypes {
             self.arns = arns
         }
     }
-
 }
 
-public struct ListPricingPlansInput {
+public struct ListPricingPlansInput: Swift.Sendable {
     /// The preferred billing period to get pricing plan.
     public var billingPeriod: Swift.String?
     /// A ListPricingPlansFilter that specifies the Amazon Resource Name (ARNs) of pricing plans to retrieve pricing plans information.
@@ -2636,8 +2636,9 @@ public struct ListPricingPlansInput {
 }
 
 extension BillingconductorClientTypes {
+
     /// A representation of a pricing plan.
-    public struct PricingPlanListElement {
+    public struct PricingPlanListElement: Swift.Sendable {
         /// The pricing plan Amazon Resource Names (ARN). This can be used to uniquely identify a pricing plan.
         public var arn: Swift.String?
         /// The time when the pricing plan was created.
@@ -2668,7 +2669,6 @@ extension BillingconductorClientTypes {
             self.size = size
         }
     }
-
 }
 
 extension BillingconductorClientTypes.PricingPlanListElement: Swift.CustomDebugStringConvertible {
@@ -2676,7 +2676,7 @@ extension BillingconductorClientTypes.PricingPlanListElement: Swift.CustomDebugS
         "PricingPlanListElement(arn: \(Swift.String(describing: arn)), creationTime: \(Swift.String(describing: creationTime)), lastModifiedTime: \(Swift.String(describing: lastModifiedTime)), size: \(Swift.String(describing: size)), description: \"CONTENT_REDACTED\", name: \"CONTENT_REDACTED\")"}
 }
 
-public struct ListPricingPlansOutput {
+public struct ListPricingPlansOutput: Swift.Sendable {
     /// The billing period for which the described pricing plans are applicable.
     public var billingPeriod: Swift.String?
     /// The pagination token that's used on subsequent calls to get pricing plans.
@@ -2696,7 +2696,7 @@ public struct ListPricingPlansOutput {
     }
 }
 
-public struct ListPricingPlansAssociatedWithPricingRuleInput {
+public struct ListPricingPlansAssociatedWithPricingRuleInput: Swift.Sendable {
     /// The pricing plan billing period for which associations will be listed.
     public var billingPeriod: Swift.String?
     /// The optional maximum number of pricing rule associations to retrieve.
@@ -2721,7 +2721,7 @@ public struct ListPricingPlansAssociatedWithPricingRuleInput {
     }
 }
 
-public struct ListPricingPlansAssociatedWithPricingRuleOutput {
+public struct ListPricingPlansAssociatedWithPricingRuleOutput: Swift.Sendable {
     /// The pricing plan billing period for which associations will be listed.
     public var billingPeriod: Swift.String?
     /// The pagination token to be used on subsequent calls.
@@ -2745,7 +2745,7 @@ public struct ListPricingPlansAssociatedWithPricingRuleOutput {
     }
 }
 
-public struct UpdatePricingPlanInput {
+public struct UpdatePricingPlanInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the pricing plan that you're updating.
     /// This member is required.
     public var arn: Swift.String?
@@ -2771,7 +2771,7 @@ extension UpdatePricingPlanInput: Swift.CustomDebugStringConvertible {
         "UpdatePricingPlanInput(arn: \(Swift.String(describing: arn)), description: \"CONTENT_REDACTED\", name: \"CONTENT_REDACTED\")"}
 }
 
-public struct UpdatePricingPlanOutput {
+public struct UpdatePricingPlanOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the updated pricing plan.
     public var arn: Swift.String?
     /// The new description for the pricing rule.
@@ -2806,7 +2806,7 @@ extension UpdatePricingPlanOutput: Swift.CustomDebugStringConvertible {
 
 extension BillingconductorClientTypes {
 
-    public enum PricingRuleScope: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum PricingRuleScope: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case billingEntity
         case global
         case service
@@ -2840,8 +2840,9 @@ extension BillingconductorClientTypes {
 }
 
 extension BillingconductorClientTypes {
+
     /// The possible Amazon Web Services Free Tier configurations.
-    public struct CreateFreeTierConfig {
+    public struct CreateFreeTierConfig: Swift.Sendable {
         /// Activate or deactivate Amazon Web Services Free Tier.
         /// This member is required.
         public var activated: Swift.Bool?
@@ -2853,12 +2854,12 @@ extension BillingconductorClientTypes {
             self.activated = activated
         }
     }
-
 }
 
 extension BillingconductorClientTypes {
+
     /// The set of tiering configurations for the pricing rule.
-    public struct CreateTieringInput {
+    public struct CreateTieringInput: Swift.Sendable {
         /// The possible Amazon Web Services Free Tier configurations.
         /// This member is required.
         public var freeTier: BillingconductorClientTypes.CreateFreeTierConfig?
@@ -2870,12 +2871,11 @@ extension BillingconductorClientTypes {
             self.freeTier = freeTier
         }
     }
-
 }
 
 extension BillingconductorClientTypes {
 
-    public enum PricingRuleType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum PricingRuleType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case discount
         case markup
         case tiering
@@ -2905,7 +2905,7 @@ extension BillingconductorClientTypes {
     }
 }
 
-public struct CreatePricingRuleInput {
+public struct CreatePricingRuleInput: Swift.Sendable {
     /// The seller of services provided by Amazon Web Services, their affiliates, or third-party providers selling services via Amazon Web Services Marketplace.
     public var billingEntity: Swift.String?
     /// The token that's needed to support idempotency. Idempotency isn't currently supported, but will be implemented in a future update.
@@ -2969,7 +2969,7 @@ extension CreatePricingRuleInput: Swift.CustomDebugStringConvertible {
         "CreatePricingRuleInput(billingEntity: \(Swift.String(describing: billingEntity)), clientToken: \(Swift.String(describing: clientToken)), modifierPercentage: \(Swift.String(describing: modifierPercentage)), operation: \(Swift.String(describing: operation)), scope: \(Swift.String(describing: scope)), service: \(Swift.String(describing: service)), tags: \(Swift.String(describing: tags)), tiering: \(Swift.String(describing: tiering)), type: \(Swift.String(describing: type)), usageType: \(Swift.String(describing: usageType)), description: \"CONTENT_REDACTED\", name: \"CONTENT_REDACTED\")"}
 }
 
-public struct CreatePricingRuleOutput {
+public struct CreatePricingRuleOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the created pricing rule.
     public var arn: Swift.String?
 
@@ -2981,7 +2981,7 @@ public struct CreatePricingRuleOutput {
     }
 }
 
-public struct DeletePricingRuleInput {
+public struct DeletePricingRuleInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the pricing rule that you are deleting.
     /// This member is required.
     public var arn: Swift.String?
@@ -2994,7 +2994,7 @@ public struct DeletePricingRuleInput {
     }
 }
 
-public struct DeletePricingRuleOutput {
+public struct DeletePricingRuleOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the deleted pricing rule.
     public var arn: Swift.String?
 
@@ -3007,8 +3007,9 @@ public struct DeletePricingRuleOutput {
 }
 
 extension BillingconductorClientTypes {
+
     /// The filter that specifies criteria that the pricing rules returned by the ListPricingRules API will adhere to.
-    public struct ListPricingRulesFilter {
+    public struct ListPricingRulesFilter: Swift.Sendable {
         /// A list containing the pricing rule Amazon Resource Names (ARNs) to include in the API response.
         public var arns: [Swift.String]?
 
@@ -3019,10 +3020,9 @@ extension BillingconductorClientTypes {
             self.arns = arns
         }
     }
-
 }
 
-public struct ListPricingRulesInput {
+public struct ListPricingRulesInput: Swift.Sendable {
     /// The preferred billing period to get the pricing plan.
     public var billingPeriod: Swift.String?
     /// A DescribePricingRuleFilter that specifies the Amazon Resource Name (ARNs) of pricing rules to retrieve pricing rules information.
@@ -3047,8 +3047,9 @@ public struct ListPricingRulesInput {
 }
 
 extension BillingconductorClientTypes {
+
     /// The possible Amazon Web Services Free Tier configurations.
-    public struct FreeTierConfig {
+    public struct FreeTierConfig: Swift.Sendable {
         /// Activate or deactivate Amazon Web Services Free Tier application.
         /// This member is required.
         public var activated: Swift.Bool?
@@ -3060,12 +3061,12 @@ extension BillingconductorClientTypes {
             self.activated = activated
         }
     }
-
 }
 
 extension BillingconductorClientTypes {
+
     /// The set of tiering configurations for the pricing rule.
-    public struct Tiering {
+    public struct Tiering: Swift.Sendable {
         /// The possible Amazon Web Services Free Tier configurations.
         /// This member is required.
         public var freeTier: BillingconductorClientTypes.FreeTierConfig?
@@ -3077,12 +3078,12 @@ extension BillingconductorClientTypes {
             self.freeTier = freeTier
         }
     }
-
 }
 
 extension BillingconductorClientTypes {
+
     /// A representation of a pricing rule.
-    public struct PricingRuleListElement {
+    public struct PricingRuleListElement: Swift.Sendable {
         /// The Amazon Resource Name (ARN) used to uniquely identify a pricing rule.
         public var arn: Swift.String?
         /// The pricing plans count that this pricing rule is associated with.
@@ -3145,7 +3146,6 @@ extension BillingconductorClientTypes {
             self.usageType = usageType
         }
     }
-
 }
 
 extension BillingconductorClientTypes.PricingRuleListElement: Swift.CustomDebugStringConvertible {
@@ -3153,7 +3153,7 @@ extension BillingconductorClientTypes.PricingRuleListElement: Swift.CustomDebugS
         "PricingRuleListElement(arn: \(Swift.String(describing: arn)), associatedPricingPlanCount: \(Swift.String(describing: associatedPricingPlanCount)), billingEntity: \(Swift.String(describing: billingEntity)), creationTime: \(Swift.String(describing: creationTime)), lastModifiedTime: \(Swift.String(describing: lastModifiedTime)), modifierPercentage: \(Swift.String(describing: modifierPercentage)), operation: \(Swift.String(describing: operation)), scope: \(Swift.String(describing: scope)), service: \(Swift.String(describing: service)), tiering: \(Swift.String(describing: tiering)), type: \(Swift.String(describing: type)), usageType: \(Swift.String(describing: usageType)), description: \"CONTENT_REDACTED\", name: \"CONTENT_REDACTED\")"}
 }
 
-public struct ListPricingRulesOutput {
+public struct ListPricingRulesOutput: Swift.Sendable {
     /// The billing period for which the described pricing rules are applicable.
     public var billingPeriod: Swift.String?
     /// The pagination token that's used on subsequent calls to get pricing rules.
@@ -3173,7 +3173,7 @@ public struct ListPricingRulesOutput {
     }
 }
 
-public struct ListPricingRulesAssociatedToPricingPlanInput {
+public struct ListPricingRulesAssociatedToPricingPlanInput: Swift.Sendable {
     /// The billing period for which the pricing rule associations are to be listed.
     public var billingPeriod: Swift.String?
     /// The optional maximum number of pricing rule associations to retrieve.
@@ -3198,7 +3198,7 @@ public struct ListPricingRulesAssociatedToPricingPlanInput {
     }
 }
 
-public struct ListPricingRulesAssociatedToPricingPlanOutput {
+public struct ListPricingRulesAssociatedToPricingPlanOutput: Swift.Sendable {
     /// The billing period for which the pricing rule associations are listed.
     public var billingPeriod: Swift.String?
     /// The pagination token to be used on subsequent calls.
@@ -3223,8 +3223,9 @@ public struct ListPricingRulesAssociatedToPricingPlanOutput {
 }
 
 extension BillingconductorClientTypes {
+
     /// The possible Amazon Web Services Free Tier configurations.
-    public struct UpdateFreeTierConfig {
+    public struct UpdateFreeTierConfig: Swift.Sendable {
         /// Activate or deactivate application of Amazon Web Services Free Tier.
         /// This member is required.
         public var activated: Swift.Bool?
@@ -3236,12 +3237,12 @@ extension BillingconductorClientTypes {
             self.activated = activated
         }
     }
-
 }
 
 extension BillingconductorClientTypes {
+
     /// The set of tiering configurations for the pricing rule.
-    public struct UpdateTieringInput {
+    public struct UpdateTieringInput: Swift.Sendable {
         /// The possible Amazon Web Services Free Tier configurations.
         /// This member is required.
         public var freeTier: BillingconductorClientTypes.UpdateFreeTierConfig?
@@ -3253,10 +3254,9 @@ extension BillingconductorClientTypes {
             self.freeTier = freeTier
         }
     }
-
 }
 
-public struct UpdatePricingRuleInput {
+public struct UpdatePricingRuleInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the pricing rule to update.
     /// This member is required.
     public var arn: Swift.String?
@@ -3294,7 +3294,7 @@ extension UpdatePricingRuleInput: Swift.CustomDebugStringConvertible {
         "UpdatePricingRuleInput(arn: \(Swift.String(describing: arn)), modifierPercentage: \(Swift.String(describing: modifierPercentage)), tiering: \(Swift.String(describing: tiering)), type: \(Swift.String(describing: type)), description: \"CONTENT_REDACTED\", name: \"CONTENT_REDACTED\")"}
 }
 
-public struct UpdatePricingRuleOutput {
+public struct UpdatePricingRuleOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the successfully updated pricing rule.
     public var arn: Swift.String?
     /// The pricing plans count that this pricing rule is associated with.
@@ -3359,7 +3359,7 @@ extension UpdatePricingRuleOutput: Swift.CustomDebugStringConvertible {
         "UpdatePricingRuleOutput(arn: \(Swift.String(describing: arn)), associatedPricingPlanCount: \(Swift.String(describing: associatedPricingPlanCount)), billingEntity: \(Swift.String(describing: billingEntity)), lastModifiedTime: \(Swift.String(describing: lastModifiedTime)), modifierPercentage: \(Swift.String(describing: modifierPercentage)), operation: \(Swift.String(describing: operation)), scope: \(Swift.String(describing: scope)), service: \(Swift.String(describing: service)), tiering: \(Swift.String(describing: tiering)), type: \(Swift.String(describing: type)), usageType: \(Swift.String(describing: usageType)), description: \"CONTENT_REDACTED\", name: \"CONTENT_REDACTED\")"}
 }
 
-public struct TagResourceInput {
+public struct TagResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the resource to which to add tags.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -3377,12 +3377,12 @@ public struct TagResourceInput {
     }
 }
 
-public struct TagResourceOutput {
+public struct TagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UntagResourceInput {
+public struct UntagResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the resource to which to delete tags.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -3400,7 +3400,7 @@ public struct UntagResourceInput {
     }
 }
 
-public struct UntagResourceOutput {
+public struct UntagResourceOutput: Swift.Sendable {
 
     public init() { }
 }

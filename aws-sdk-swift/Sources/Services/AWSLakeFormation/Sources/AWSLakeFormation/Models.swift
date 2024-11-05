@@ -180,8 +180,9 @@ public struct OperationTimeoutException: ClientRuntime.ModeledError, AWSClientRu
 }
 
 extension LakeFormationClientTypes {
+
     /// A structure containing an LF-tag key-value pair.
-    public struct LFTagPair {
+    public struct LFTagPair: Swift.Sendable {
         /// The identifier for the Data Catalog. By default, the account ID. The Data Catalog is the persistent metadata store. It contains database definitions, table definitions, and other control information to manage your Lake Formation environment.
         public var catalogId: Swift.String?
         /// The key-name for the LF-tag.
@@ -202,21 +203,21 @@ extension LakeFormationClientTypes {
             self.tagValues = tagValues
         }
     }
-
 }
 
 extension LakeFormationClientTypes {
+
     /// A structure for the catalog object.
-    public struct CatalogResource {
+    public struct CatalogResource: Swift.Sendable {
 
         public init() { }
     }
-
 }
 
 extension LakeFormationClientTypes {
+
     /// A structure for the database object.
-    public struct DatabaseResource {
+    public struct DatabaseResource: Swift.Sendable {
         /// The identifier for the Data Catalog. By default, it is the account ID of the caller.
         public var catalogId: Swift.String?
         /// The name of the database resource. Unique to the Data Catalog.
@@ -232,12 +233,12 @@ extension LakeFormationClientTypes {
             self.name = name
         }
     }
-
 }
 
 extension LakeFormationClientTypes {
+
     /// A structure for a data cells filter resource.
-    public struct DataCellsFilterResource {
+    public struct DataCellsFilterResource: Swift.Sendable {
         /// A database in the Glue Data Catalog.
         public var databaseName: Swift.String?
         /// The name of the data cells filter.
@@ -260,12 +261,12 @@ extension LakeFormationClientTypes {
             self.tableName = tableName
         }
     }
-
 }
 
 extension LakeFormationClientTypes {
+
     /// A structure for a data location object where permissions are granted or revoked.
-    public struct DataLocationResource {
+    public struct DataLocationResource: Swift.Sendable {
         /// The identifier for the Data Catalog where the location is registered with Lake Formation. By default, it is the account ID of the caller.
         public var catalogId: Swift.String?
         /// The Amazon Resource Name (ARN) that uniquely identifies the data location resource.
@@ -281,12 +282,12 @@ extension LakeFormationClientTypes {
             self.resourceArn = resourceArn
         }
     }
-
 }
 
 extension LakeFormationClientTypes {
+
     /// A structure containing an LF-tag key and values for a resource.
-    public struct LFTagKeyResource {
+    public struct LFTagKeyResource: Swift.Sendable {
         /// The identifier for the Data Catalog. By default, the account ID. The Data Catalog is the persistent metadata store. It contains database definitions, table definitions, and other control information to manage your Lake Formation environment.
         public var catalogId: Swift.String?
         /// The key-name for the LF-tag.
@@ -307,12 +308,12 @@ extension LakeFormationClientTypes {
             self.tagValues = tagValues
         }
     }
-
 }
 
 extension LakeFormationClientTypes {
+
     /// A structure that allows an admin to grant user permissions on certain conditions. For example, granting a role access to all columns that do not have the LF-tag 'PII' in tables that have the LF-tag 'Prod'.
-    public struct LFTag {
+    public struct LFTag: Swift.Sendable {
         /// The key-name for the LF-tag.
         /// This member is required.
         public var tagKey: Swift.String?
@@ -329,12 +330,11 @@ extension LakeFormationClientTypes {
             self.tagValues = tagValues
         }
     }
-
 }
 
 extension LakeFormationClientTypes {
 
-    public enum ResourceType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ResourceType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case database
         case table
         case sdkUnknown(Swift.String)
@@ -362,8 +362,9 @@ extension LakeFormationClientTypes {
 }
 
 extension LakeFormationClientTypes {
+
     /// A structure containing a list of LF-tag conditions that apply to a resource's LF-tag policy.
-    public struct LFTagPolicyResource {
+    public struct LFTagPolicyResource: Swift.Sendable {
         /// The identifier for the Data Catalog. By default, the account ID. The Data Catalog is the persistent metadata store. It contains database definitions, table definitions, and other control information to manage your Lake Formation environment.
         public var catalogId: Swift.String?
         /// A list of LF-tag conditions that apply to the resource's LF-tag policy.
@@ -384,21 +385,21 @@ extension LakeFormationClientTypes {
             self.resourceType = resourceType
         }
     }
-
 }
 
 extension LakeFormationClientTypes {
+
     /// A wildcard object representing every table under a database.
-    public struct TableWildcard {
+    public struct TableWildcard: Swift.Sendable {
 
         public init() { }
     }
-
 }
 
 extension LakeFormationClientTypes {
+
     /// A structure for the table object. A table is a metadata definition that represents your data. You can Grant and Revoke table privileges to a principal.
-    public struct TableResource {
+    public struct TableResource: Swift.Sendable {
         /// The identifier for the Data Catalog. By default, it is the account ID of the caller.
         public var catalogId: Swift.String?
         /// The name of the database for the table. Unique to a Data Catalog. A database is a set of associated table definitions organized into a logical group. You can Grant and Revoke database privileges to a principal.
@@ -422,12 +423,12 @@ extension LakeFormationClientTypes {
             self.tableWildcard = tableWildcard
         }
     }
-
 }
 
 extension LakeFormationClientTypes {
+
     /// A wildcard object, consisting of an optional list of excluded column names or indexes.
-    public struct ColumnWildcard {
+    public struct ColumnWildcard: Swift.Sendable {
         /// Excludes column names. Any column with this name will be excluded.
         public var excludedColumnNames: [Swift.String]?
 
@@ -438,12 +439,12 @@ extension LakeFormationClientTypes {
             self.excludedColumnNames = excludedColumnNames
         }
     }
-
 }
 
 extension LakeFormationClientTypes {
+
     /// A structure for a table with columns object. This object is only used when granting a SELECT permission. This object must take a value for at least one of ColumnsNames, ColumnsIndexes, or ColumnsWildcard.
-    public struct TableWithColumnsResource {
+    public struct TableWithColumnsResource: Swift.Sendable {
         /// The identifier for the Data Catalog. By default, it is the account ID of the caller.
         public var catalogId: Swift.String?
         /// The list of column names for the table. At least one of ColumnNames or ColumnWildcard is required.
@@ -472,12 +473,12 @@ extension LakeFormationClientTypes {
             self.name = name
         }
     }
-
 }
 
 extension LakeFormationClientTypes {
+
     /// A structure for the resource.
-    public struct Resource {
+    public struct Resource: Swift.Sendable {
         /// The identifier for the Data Catalog. By default, the account ID. The Data Catalog is the persistent metadata store. It contains database definitions, table definitions, and other control information to manage your Lake Formation environment.
         public var catalog: LakeFormationClientTypes.CatalogResource?
         /// A data cell filter.
@@ -516,10 +517,9 @@ extension LakeFormationClientTypes {
             self.tableWithColumns = tableWithColumns
         }
     }
-
 }
 
-public struct AddLFTagsToResourceInput {
+public struct AddLFTagsToResourceInput: Swift.Sendable {
     /// The identifier for the Data Catalog. By default, the account ID. The Data Catalog is the persistent metadata store. It contains database definitions, table definitions, and other control information to manage your Lake Formation environment.
     public var catalogId: Swift.String?
     /// The LF-tags to attach to the resource.
@@ -542,8 +542,9 @@ public struct AddLFTagsToResourceInput {
 }
 
 extension LakeFormationClientTypes {
+
     /// Contains details about an error.
-    public struct ErrorDetail {
+    public struct ErrorDetail: Swift.Sendable {
         /// The code associated with this error.
         public var errorCode: Swift.String?
         /// A message describing the error.
@@ -558,12 +559,12 @@ extension LakeFormationClientTypes {
             self.errorMessage = errorMessage
         }
     }
-
 }
 
 extension LakeFormationClientTypes {
+
     /// A structure containing an error related to a TagResource or UnTagResource operation.
-    public struct LFTagError {
+    public struct LFTagError: Swift.Sendable {
         /// An error that occurred with the attachment or detachment of the LF-tag.
         public var error: LakeFormationClientTypes.ErrorDetail?
         /// The key-name of the LF-tag.
@@ -578,10 +579,9 @@ extension LakeFormationClientTypes {
             self.lfTag = lfTag
         }
     }
-
 }
 
-public struct AddLFTagsToResourceOutput {
+public struct AddLFTagsToResourceOutput: Swift.Sendable {
     /// A list of failures to tag the resource.
     public var failures: [LakeFormationClientTypes.LFTagError]?
 
@@ -594,8 +594,9 @@ public struct AddLFTagsToResourceOutput {
 }
 
 extension LakeFormationClientTypes {
+
     /// A new object to add to the governed table.
-    public struct AddObjectInput {
+    public struct AddObjectInput: Swift.Sendable {
         /// The Amazon S3 ETag of the object. Returned by GetTableObjects for validation and used to identify changes to the underlying data.
         /// This member is required.
         public var eTag: Swift.String?
@@ -621,16 +622,15 @@ extension LakeFormationClientTypes {
             self.uri = uri
         }
     }
-
 }
 
 extension LakeFormationClientTypes {
+
     /// A structure that you pass to indicate you want all rows in a filter.
-    public struct AllRowsWildcard {
+    public struct AllRowsWildcard: Swift.Sendable {
 
         public init() { }
     }
-
 }
 
 /// A resource to be created or added already exists.
@@ -660,7 +660,7 @@ public struct AlreadyExistsException: ClientRuntime.ModeledError, AWSClientRunti
 
 extension LakeFormationClientTypes {
 
-    public enum ApplicationStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ApplicationStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case disabled
         case enabled
         case sdkUnknown(Swift.String)
@@ -687,7 +687,7 @@ extension LakeFormationClientTypes {
     }
 }
 
-public struct AssumeDecoratedRoleWithSAMLInput {
+public struct AssumeDecoratedRoleWithSAMLInput: Swift.Sendable {
     /// The time period, between 900 and 43,200 seconds, for the timeout of the temporary credentials.
     public var durationSeconds: Swift.Int?
     /// The Amazon Resource Name (ARN) of the SAML provider in IAM that describes the IdP.
@@ -714,7 +714,7 @@ public struct AssumeDecoratedRoleWithSAMLInput {
     }
 }
 
-public struct AssumeDecoratedRoleWithSAMLOutput {
+public struct AssumeDecoratedRoleWithSAMLOutput: Swift.Sendable {
     /// The access key ID for the temporary credentials. (The access key consists of an access key ID and a secret key).
     public var accessKeyId: Swift.String?
     /// The date and time when the temporary credentials expire.
@@ -739,8 +739,9 @@ public struct AssumeDecoratedRoleWithSAMLOutput {
 }
 
 extension LakeFormationClientTypes {
+
     /// A structure used to include auditing information on the privileged API.
-    public struct AuditContext {
+    public struct AuditContext: Swift.Sendable {
         /// The filter engine can populate the 'AdditionalAuditContext' information with the request ID for you to track. This information will be displayed in CloudTrail log in your account.
         public var additionalAuditContext: Swift.String?
 
@@ -751,12 +752,11 @@ extension LakeFormationClientTypes {
             self.additionalAuditContext = additionalAuditContext
         }
     }
-
 }
 
 extension LakeFormationClientTypes {
 
-    public enum Permission: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Permission: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case all
         case alter
         case associate
@@ -817,8 +817,9 @@ extension LakeFormationClientTypes {
 }
 
 extension LakeFormationClientTypes {
+
     /// The Lake Formation principal. Supported principals are IAM users or IAM roles.
-    public struct DataLakePrincipal {
+    public struct DataLakePrincipal: Swift.Sendable {
         /// An identifier for the Lake Formation principal.
         public var dataLakePrincipalIdentifier: Swift.String?
 
@@ -829,12 +830,12 @@ extension LakeFormationClientTypes {
             self.dataLakePrincipalIdentifier = dataLakePrincipalIdentifier
         }
     }
-
 }
 
 extension LakeFormationClientTypes {
+
     /// A permission to a resource granted by batch operation to the principal.
-    public struct BatchPermissionsRequestEntry {
+    public struct BatchPermissionsRequestEntry: Swift.Sendable {
         /// A unique identifier for the batch permissions request entry.
         /// This member is required.
         public var id: Swift.String?
@@ -862,10 +863,9 @@ extension LakeFormationClientTypes {
             self.resource = resource
         }
     }
-
 }
 
-public struct BatchGrantPermissionsInput {
+public struct BatchGrantPermissionsInput: Swift.Sendable {
     /// The identifier for the Data Catalog. By default, the account ID. The Data Catalog is the persistent metadata store. It contains database definitions, table definitions, and other control information to manage your Lake Formation environment.
     public var catalogId: Swift.String?
     /// A list of up to 20 entries for resource permissions to be granted by batch operation to the principal.
@@ -883,8 +883,9 @@ public struct BatchGrantPermissionsInput {
 }
 
 extension LakeFormationClientTypes {
+
     /// A list of failures when performing a batch grant or batch revoke operation.
-    public struct BatchPermissionsFailureEntry {
+    public struct BatchPermissionsFailureEntry: Swift.Sendable {
         /// An error message that applies to the failure of the entry.
         public var error: LakeFormationClientTypes.ErrorDetail?
         /// An identifier for an entry of the batch request.
@@ -899,10 +900,9 @@ extension LakeFormationClientTypes {
             self.requestEntry = requestEntry
         }
     }
-
 }
 
-public struct BatchGrantPermissionsOutput {
+public struct BatchGrantPermissionsOutput: Swift.Sendable {
     /// A list of failures to grant permissions to the resources.
     public var failures: [LakeFormationClientTypes.BatchPermissionsFailureEntry]?
 
@@ -914,7 +914,7 @@ public struct BatchGrantPermissionsOutput {
     }
 }
 
-public struct BatchRevokePermissionsInput {
+public struct BatchRevokePermissionsInput: Swift.Sendable {
     /// The identifier for the Data Catalog. By default, the account ID. The Data Catalog is the persistent metadata store. It contains database definitions, table definitions, and other control information to manage your Lake Formation environment.
     public var catalogId: Swift.String?
     /// A list of up to 20 entries for resource permissions to be revoked by batch operation to the principal.
@@ -931,7 +931,7 @@ public struct BatchRevokePermissionsInput {
     }
 }
 
-public struct BatchRevokePermissionsOutput {
+public struct BatchRevokePermissionsOutput: Swift.Sendable {
     /// A list of failures to revoke permissions to the resources.
     public var failures: [LakeFormationClientTypes.BatchPermissionsFailureEntry]?
 
@@ -993,7 +993,7 @@ public struct TransactionCommittedException: ClientRuntime.ModeledError, AWSClie
     }
 }
 
-public struct CancelTransactionInput {
+public struct CancelTransactionInput: Swift.Sendable {
     /// The transaction to cancel.
     /// This member is required.
     public var transactionId: Swift.String?
@@ -1006,7 +1006,7 @@ public struct CancelTransactionInput {
     }
 }
 
-public struct CancelTransactionOutput {
+public struct CancelTransactionOutput: Swift.Sendable {
 
     public init() { }
 }
@@ -1036,7 +1036,7 @@ public struct TransactionCanceledException: ClientRuntime.ModeledError, AWSClien
     }
 }
 
-public struct CommitTransactionInput {
+public struct CommitTransactionInput: Swift.Sendable {
     /// The transaction to commit.
     /// This member is required.
     public var transactionId: Swift.String?
@@ -1051,7 +1051,7 @@ public struct CommitTransactionInput {
 
 extension LakeFormationClientTypes {
 
-    public enum TransactionStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum TransactionStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case aborted
         case active
         case committed
@@ -1084,7 +1084,7 @@ extension LakeFormationClientTypes {
     }
 }
 
-public struct CommitTransactionOutput {
+public struct CommitTransactionOutput: Swift.Sendable {
     /// The status of the transaction.
     public var transactionStatus: LakeFormationClientTypes.TransactionStatus?
 
@@ -1122,8 +1122,9 @@ public struct ResourceNumberLimitExceededException: ClientRuntime.ModeledError, 
 }
 
 extension LakeFormationClientTypes {
+
     /// A PartiQL predicate.
-    public struct RowFilter {
+    public struct RowFilter: Swift.Sendable {
         /// A wildcard for all rows.
         public var allRowsWildcard: LakeFormationClientTypes.AllRowsWildcard?
         /// A filter expression.
@@ -1138,12 +1139,12 @@ extension LakeFormationClientTypes {
             self.filterExpression = filterExpression
         }
     }
-
 }
 
 extension LakeFormationClientTypes {
+
     /// A structure that describes certain columns on certain rows.
-    public struct DataCellsFilter {
+    public struct DataCellsFilter: Swift.Sendable {
         /// A list of column names and/or nested column attributes. When specifying nested attributes, use a qualified dot (.) delimited format such as "address"."zip". Nested attributes within this list may not exceed a depth of 5.
         public var columnNames: [Swift.String]?
         /// A wildcard with exclusions. You must specify either a ColumnNames list or the ColumnWildCard.
@@ -1186,10 +1187,9 @@ extension LakeFormationClientTypes {
             self.versionId = versionId
         }
     }
-
 }
 
-public struct CreateDataCellsFilterInput {
+public struct CreateDataCellsFilterInput: Swift.Sendable {
     /// A DataCellsFilter structure containing information about the data cells filter.
     /// This member is required.
     public var tableData: LakeFormationClientTypes.DataCellsFilter?
@@ -1202,14 +1202,14 @@ public struct CreateDataCellsFilterInput {
     }
 }
 
-public struct CreateDataCellsFilterOutput {
+public struct CreateDataCellsFilterOutput: Swift.Sendable {
 
     public init() { }
 }
 
 extension LakeFormationClientTypes {
 
-    public enum EnableStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum EnableStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case disabled
         case enabled
         case sdkUnknown(Swift.String)
@@ -1237,8 +1237,9 @@ extension LakeFormationClientTypes {
 }
 
 extension LakeFormationClientTypes {
+
     /// Configuration for enabling external data filtering for third-party applications to access data managed by Lake Formation .
-    public struct ExternalFilteringConfiguration {
+    public struct ExternalFilteringConfiguration: Swift.Sendable {
         /// List of third-party application ARNs integrated with Lake Formation.
         /// This member is required.
         public var authorizedTargets: [Swift.String]?
@@ -1255,10 +1256,9 @@ extension LakeFormationClientTypes {
             self.status = status
         }
     }
-
 }
 
-public struct CreateLakeFormationIdentityCenterConfigurationInput {
+public struct CreateLakeFormationIdentityCenterConfigurationInput: Swift.Sendable {
     /// The identifier for the Data Catalog. By default, the account ID. The Data Catalog is the persistent metadata store. It contains database definitions, table definitions, view definitions, and other control information to manage your Lake Formation environment.
     public var catalogId: Swift.String?
     /// A list of the account IDs of Amazon Web Services accounts of third-party applications that are allowed to access data managed by Lake Formation.
@@ -1282,7 +1282,7 @@ public struct CreateLakeFormationIdentityCenterConfigurationInput {
     }
 }
 
-public struct CreateLakeFormationIdentityCenterConfigurationOutput {
+public struct CreateLakeFormationIdentityCenterConfigurationOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the Lake Formation application integrated with IAM Identity Center.
     public var applicationArn: Swift.String?
 
@@ -1294,7 +1294,7 @@ public struct CreateLakeFormationIdentityCenterConfigurationOutput {
     }
 }
 
-public struct CreateLakeFormationOptInInput {
+public struct CreateLakeFormationOptInInput: Swift.Sendable {
     /// The Lake Formation principal. Supported principals are IAM users or IAM roles.
     /// This member is required.
     public var principal: LakeFormationClientTypes.DataLakePrincipal?
@@ -1312,12 +1312,12 @@ public struct CreateLakeFormationOptInInput {
     }
 }
 
-public struct CreateLakeFormationOptInOutput {
+public struct CreateLakeFormationOptInOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct CreateLFTagInput {
+public struct CreateLFTagInput: Swift.Sendable {
     /// The identifier for the Data Catalog. By default, the account ID. The Data Catalog is the persistent metadata store. It contains database definitions, table definitions, and other control information to manage your Lake Formation environment.
     public var catalogId: Swift.String?
     /// The key-name for the LF-tag.
@@ -1339,12 +1339,12 @@ public struct CreateLFTagInput {
     }
 }
 
-public struct CreateLFTagOutput {
+public struct CreateLFTagOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteDataCellsFilterInput {
+public struct DeleteDataCellsFilterInput: Swift.Sendable {
     /// A database in the Glue Data Catalog.
     public var databaseName: Swift.String?
     /// The name given by the user to the data filter cell.
@@ -1368,12 +1368,12 @@ public struct DeleteDataCellsFilterInput {
     }
 }
 
-public struct DeleteDataCellsFilterOutput {
+public struct DeleteDataCellsFilterOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteLakeFormationIdentityCenterConfigurationInput {
+public struct DeleteLakeFormationIdentityCenterConfigurationInput: Swift.Sendable {
     /// The identifier for the Data Catalog. By default, the account ID. The Data Catalog is the persistent metadata store. It contains database definitions, table definitions, view definition, and other control information to manage your Lake Formation environment.
     public var catalogId: Swift.String?
 
@@ -1385,12 +1385,12 @@ public struct DeleteLakeFormationIdentityCenterConfigurationInput {
     }
 }
 
-public struct DeleteLakeFormationIdentityCenterConfigurationOutput {
+public struct DeleteLakeFormationIdentityCenterConfigurationOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteLakeFormationOptInInput {
+public struct DeleteLakeFormationOptInInput: Swift.Sendable {
     /// The Lake Formation principal. Supported principals are IAM users or IAM roles.
     /// This member is required.
     public var principal: LakeFormationClientTypes.DataLakePrincipal?
@@ -1408,12 +1408,12 @@ public struct DeleteLakeFormationOptInInput {
     }
 }
 
-public struct DeleteLakeFormationOptInOutput {
+public struct DeleteLakeFormationOptInOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteLFTagInput {
+public struct DeleteLFTagInput: Swift.Sendable {
     /// The identifier for the Data Catalog. By default, the account ID. The Data Catalog is the persistent metadata store. It contains database definitions, table definitions, and other control information to manage your Lake Formation environment.
     public var catalogId: Swift.String?
     /// The key-name for the LF-tag to delete.
@@ -1430,7 +1430,7 @@ public struct DeleteLFTagInput {
     }
 }
 
-public struct DeleteLFTagOutput {
+public struct DeleteLFTagOutput: Swift.Sendable {
 
     public init() { }
 }
@@ -1461,8 +1461,9 @@ public struct ResourceNotReadyException: ClientRuntime.ModeledError, AWSClientRu
 }
 
 extension LakeFormationClientTypes {
+
     /// An object that defines an Amazon S3 object to be deleted if a transaction cancels, provided that VirtualPut was called before writing the object.
-    public struct VirtualObject {
+    public struct VirtualObject: Swift.Sendable {
         /// The ETag of the Amazon S3 object.
         public var eTag: Swift.String?
         /// The path to the Amazon S3 object. Must start with s3://
@@ -1478,10 +1479,9 @@ extension LakeFormationClientTypes {
             self.uri = uri
         }
     }
-
 }
 
-public struct DeleteObjectsOnCancelInput {
+public struct DeleteObjectsOnCancelInput: Swift.Sendable {
     /// The Glue data catalog that contains the governed table. Defaults to the current account ID.
     public var catalogId: Swift.String?
     /// The database that contains the governed table.
@@ -1513,12 +1513,12 @@ public struct DeleteObjectsOnCancelInput {
     }
 }
 
-public struct DeleteObjectsOnCancelOutput {
+public struct DeleteObjectsOnCancelOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeregisterResourceInput {
+public struct DeregisterResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the resource that you want to deregister.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -1531,12 +1531,12 @@ public struct DeregisterResourceInput {
     }
 }
 
-public struct DeregisterResourceOutput {
+public struct DeregisterResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DescribeLakeFormationIdentityCenterConfigurationInput {
+public struct DescribeLakeFormationIdentityCenterConfigurationInput: Swift.Sendable {
     /// The identifier for the Data Catalog. By default, the account ID. The Data Catalog is the persistent metadata store. It contains database definitions, table definitions, and other control information to manage your Lake Formation environment.
     public var catalogId: Swift.String?
 
@@ -1548,7 +1548,7 @@ public struct DescribeLakeFormationIdentityCenterConfigurationInput {
     }
 }
 
-public struct DescribeLakeFormationIdentityCenterConfigurationOutput {
+public struct DescribeLakeFormationIdentityCenterConfigurationOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the Lake Formation application integrated with IAM Identity Center.
     public var applicationArn: Swift.String?
     /// The identifier for the Data Catalog. By default, the account ID. The Data Catalog is the persistent metadata store. It contains database definitions, table definitions, and other control information to manage your Lake Formation environment.
@@ -1580,7 +1580,7 @@ public struct DescribeLakeFormationIdentityCenterConfigurationOutput {
     }
 }
 
-public struct DescribeResourceInput {
+public struct DescribeResourceInput: Swift.Sendable {
     /// The resource ARN.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -1594,8 +1594,9 @@ public struct DescribeResourceInput {
 }
 
 extension LakeFormationClientTypes {
+
     /// A structure containing information about an Lake Formation resource.
-    public struct ResourceInfo {
+    public struct ResourceInfo: Swift.Sendable {
         /// Indicates whether the data access of tables pointing to the location can be managed by both Lake Formation permissions as well as Amazon S3 bucket policies.
         public var hybridAccessEnabled: Swift.Bool?
         /// The date and time the resource was last modified.
@@ -1622,10 +1623,9 @@ extension LakeFormationClientTypes {
             self.withFederation = withFederation
         }
     }
-
 }
 
-public struct DescribeResourceOutput {
+public struct DescribeResourceOutput: Swift.Sendable {
     /// A structure containing information about an Lake Formation resource.
     public var resourceInfo: LakeFormationClientTypes.ResourceInfo?
 
@@ -1637,7 +1637,7 @@ public struct DescribeResourceOutput {
     }
 }
 
-public struct DescribeTransactionInput {
+public struct DescribeTransactionInput: Swift.Sendable {
     /// The transaction for which to return status.
     /// This member is required.
     public var transactionId: Swift.String?
@@ -1651,8 +1651,9 @@ public struct DescribeTransactionInput {
 }
 
 extension LakeFormationClientTypes {
+
     /// A structure that contains information about a transaction.
-    public struct TransactionDescription {
+    public struct TransactionDescription: Swift.Sendable {
         /// The time when the transaction committed or aborted, if it is not currently active.
         public var transactionEndTime: Foundation.Date?
         /// The ID of the transaction.
@@ -1675,10 +1676,9 @@ extension LakeFormationClientTypes {
             self.transactionStatus = transactionStatus
         }
     }
-
 }
 
-public struct DescribeTransactionOutput {
+public struct DescribeTransactionOutput: Swift.Sendable {
     /// Returns a TransactionDescription object containing information about the transaction.
     public var transactionDescription: LakeFormationClientTypes.TransactionDescription?
 
@@ -1690,7 +1690,7 @@ public struct DescribeTransactionOutput {
     }
 }
 
-public struct ExtendTransactionInput {
+public struct ExtendTransactionInput: Swift.Sendable {
     /// The transaction to extend.
     public var transactionId: Swift.String?
 
@@ -1702,12 +1702,12 @@ public struct ExtendTransactionInput {
     }
 }
 
-public struct ExtendTransactionOutput {
+public struct ExtendTransactionOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct GetDataCellsFilterInput {
+public struct GetDataCellsFilterInput: Swift.Sendable {
     /// A database in the Glue Data Catalog.
     /// This member is required.
     public var databaseName: Swift.String?
@@ -1735,7 +1735,7 @@ public struct GetDataCellsFilterInput {
     }
 }
 
-public struct GetDataCellsFilterOutput {
+public struct GetDataCellsFilterOutput: Swift.Sendable {
     /// A structure that describes certain columns on certain rows.
     public var dataCellsFilter: LakeFormationClientTypes.DataCellsFilter?
 
@@ -1747,12 +1747,12 @@ public struct GetDataCellsFilterOutput {
     }
 }
 
-public struct GetDataLakePrincipalInput {
+public struct GetDataLakePrincipalInput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct GetDataLakePrincipalOutput {
+public struct GetDataLakePrincipalOutput: Swift.Sendable {
     /// A unique identifier of the invoking principal.
     public var identity: Swift.String?
 
@@ -1764,7 +1764,7 @@ public struct GetDataLakePrincipalOutput {
     }
 }
 
-public struct GetDataLakeSettingsInput {
+public struct GetDataLakeSettingsInput: Swift.Sendable {
     /// The identifier for the Data Catalog. By default, the account ID. The Data Catalog is the persistent metadata store. It contains database definitions, table definitions, and other control information to manage your Lake Formation environment.
     public var catalogId: Swift.String?
 
@@ -1777,8 +1777,9 @@ public struct GetDataLakeSettingsInput {
 }
 
 extension LakeFormationClientTypes {
+
     /// Permissions granted to a principal.
-    public struct PrincipalPermissions {
+    public struct PrincipalPermissions: Swift.Sendable {
         /// The permissions that are granted to the principal.
         public var permissions: [LakeFormationClientTypes.Permission]?
         /// The principal who is granted permissions.
@@ -1793,12 +1794,12 @@ extension LakeFormationClientTypes {
             self.principal = principal
         }
     }
-
 }
 
 extension LakeFormationClientTypes {
+
     /// A structure representing a list of Lake Formation principals designated as data lake administrators and lists of principal permission entries for default create database and default create table permissions.
-    public struct DataLakeSettings {
+    public struct DataLakeSettings: Swift.Sendable {
         /// Whether to allow Amazon EMR clusters to access data managed by Lake Formation. If true, you allow Amazon EMR clusters to access data in Amazon S3 locations that are registered with Lake Formation. If false or null, no Amazon EMR clusters will be able to access data in Amazon S3 locations that are registered with Lake Formation. For more information, see [(Optional) Allow external data filtering](https://docs.aws.amazon.com/lake-formation/latest/dg/initial-LF-setup.html#external-data-filter).
         public var allowExternalDataFiltering: Swift.Bool?
         /// Whether to allow a third-party query engine to get data access credentials without session tags when a caller has full data access permissions.
@@ -1845,10 +1846,9 @@ extension LakeFormationClientTypes {
             self.trustedResourceOwners = trustedResourceOwners
         }
     }
-
 }
 
-public struct GetDataLakeSettingsOutput {
+public struct GetDataLakeSettingsOutput: Swift.Sendable {
     /// A structure representing a list of Lake Formation principals designated as data lake administrators.
     public var dataLakeSettings: LakeFormationClientTypes.DataLakeSettings?
 
@@ -1860,7 +1860,7 @@ public struct GetDataLakeSettingsOutput {
     }
 }
 
-public struct GetEffectivePermissionsForPathInput {
+public struct GetEffectivePermissionsForPathInput: Swift.Sendable {
     /// The identifier for the Data Catalog. By default, the account ID. The Data Catalog is the persistent metadata store. It contains database definitions, table definitions, and other control information to manage your Lake Formation environment.
     public var catalogId: Swift.String?
     /// The maximum number of results to return.
@@ -1886,8 +1886,9 @@ public struct GetEffectivePermissionsForPathInput {
 }
 
 extension LakeFormationClientTypes {
+
     /// A structure containing the additional details to be returned in the AdditionalDetails attribute of PrincipalResourcePermissions. If a catalog resource is shared through Resource Access Manager (RAM), then there will exist a corresponding RAM resource share ARN.
-    public struct DetailsMap {
+    public struct DetailsMap: Swift.Sendable {
         /// A resource share ARN for a catalog resource shared through RAM.
         public var resourceShare: [Swift.String]?
 
@@ -1898,12 +1899,12 @@ extension LakeFormationClientTypes {
             self.resourceShare = resourceShare
         }
     }
-
 }
 
 extension LakeFormationClientTypes {
+
     /// The permissions granted or revoked on a resource.
-    public struct PrincipalResourcePermissions {
+    public struct PrincipalResourcePermissions: Swift.Sendable {
         /// This attribute can be used to return any additional details of PrincipalResourcePermissions. Currently returns only as a RAM resource share ARN.
         public var additionalDetails: LakeFormationClientTypes.DetailsMap?
         /// The date and time when the resource was last updated.
@@ -1938,10 +1939,9 @@ extension LakeFormationClientTypes {
             self.resource = resource
         }
     }
-
 }
 
-public struct GetEffectivePermissionsForPathOutput {
+public struct GetEffectivePermissionsForPathOutput: Swift.Sendable {
     /// A continuation token, if this is not the first call to retrieve this list.
     public var nextToken: Swift.String?
     /// A list of the permissions for the specified table or database resource located at the path in Amazon S3.
@@ -1957,7 +1957,7 @@ public struct GetEffectivePermissionsForPathOutput {
     }
 }
 
-public struct GetLFTagInput {
+public struct GetLFTagInput: Swift.Sendable {
     /// The identifier for the Data Catalog. By default, the account ID. The Data Catalog is the persistent metadata store. It contains database definitions, table definitions, and other control information to manage your Lake Formation environment.
     public var catalogId: Swift.String?
     /// The key-name for the LF-tag.
@@ -1974,7 +1974,7 @@ public struct GetLFTagInput {
     }
 }
 
-public struct GetLFTagOutput {
+public struct GetLFTagOutput: Swift.Sendable {
     /// The identifier for the Data Catalog. By default, the account ID. The Data Catalog is the persistent metadata store. It contains database definitions, table definitions, and other control information to manage your Lake Formation environment.
     public var catalogId: Swift.String?
     /// The key-name for the LF-tag.
@@ -1994,7 +1994,7 @@ public struct GetLFTagOutput {
     }
 }
 
-public struct GetQueryStateInput {
+public struct GetQueryStateInput: Swift.Sendable {
     /// The ID of the plan query operation.
     /// This member is required.
     public var queryId: Swift.String?
@@ -2009,7 +2009,7 @@ public struct GetQueryStateInput {
 
 extension LakeFormationClientTypes {
 
-    public enum QueryStateString: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum QueryStateString: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case error
         case expired
         case finished
@@ -2046,7 +2046,7 @@ extension LakeFormationClientTypes {
 }
 
 /// A structure for the output.
-public struct GetQueryStateOutput {
+public struct GetQueryStateOutput: Swift.Sendable {
     /// An error message when the operation fails.
     public var error: Swift.String?
     /// The state of a query previously submitted. The possible states are:
@@ -2146,7 +2146,7 @@ public struct ThrottledException: ClientRuntime.ModeledError, AWSClientRuntime.A
     }
 }
 
-public struct GetQueryStatisticsInput {
+public struct GetQueryStatisticsInput: Swift.Sendable {
     /// The ID of the plan query operation.
     /// This member is required.
     public var queryId: Swift.String?
@@ -2160,8 +2160,9 @@ public struct GetQueryStatisticsInput {
 }
 
 extension LakeFormationClientTypes {
+
     /// Statistics related to the processing of a query statement.
-    public struct ExecutionStatistics {
+    public struct ExecutionStatistics: Swift.Sendable {
         /// The average time the request took to be executed.
         public var averageExecutionTimeMillis: Swift.Int
         /// The amount of data that was scanned in bytes.
@@ -2180,12 +2181,12 @@ extension LakeFormationClientTypes {
             self.workUnitsExecutedCount = workUnitsExecutedCount
         }
     }
-
 }
 
 extension LakeFormationClientTypes {
+
     /// Statistics related to the processing of a query statement.
-    public struct PlanningStatistics {
+    public struct PlanningStatistics: Swift.Sendable {
         /// An estimate of the data that was scanned in bytes.
         public var estimatedDataToScanBytes: Swift.Int
         /// The time that it took to process the request.
@@ -2208,10 +2209,9 @@ extension LakeFormationClientTypes {
             self.workUnitsGeneratedCount = workUnitsGeneratedCount
         }
     }
-
 }
 
-public struct GetQueryStatisticsOutput {
+public struct GetQueryStatisticsOutput: Swift.Sendable {
     /// An ExecutionStatistics structure containing execution statistics.
     public var executionStatistics: LakeFormationClientTypes.ExecutionStatistics?
     /// A PlanningStatistics structure containing query planning statistics.
@@ -2256,7 +2256,7 @@ public struct GlueEncryptionException: ClientRuntime.ModeledError, AWSClientRunt
     }
 }
 
-public struct GetResourceLFTagsInput {
+public struct GetResourceLFTagsInput: Swift.Sendable {
     /// The identifier for the Data Catalog. By default, the account ID. The Data Catalog is the persistent metadata store. It contains database definitions, table definitions, and other control information to manage your Lake Formation environment.
     public var catalogId: Swift.String?
     /// The database, table, or column resource for which you want to return LF-tags.
@@ -2278,8 +2278,9 @@ public struct GetResourceLFTagsInput {
 }
 
 extension LakeFormationClientTypes {
+
     /// A structure containing the name of a column resource and the LF-tags attached to it.
-    public struct ColumnLFTag {
+    public struct ColumnLFTag: Swift.Sendable {
         /// The LF-tags attached to a column resource.
         public var lfTags: [LakeFormationClientTypes.LFTagPair]?
         /// The name of a column resource.
@@ -2294,10 +2295,9 @@ extension LakeFormationClientTypes {
             self.name = name
         }
     }
-
 }
 
-public struct GetResourceLFTagsOutput {
+public struct GetResourceLFTagsOutput: Swift.Sendable {
     /// A list of LF-tags applied to a database resource.
     public var lfTagOnDatabase: [LakeFormationClientTypes.LFTagPair]?
     /// A list of LF-tags applied to a column resource.
@@ -2317,7 +2317,7 @@ public struct GetResourceLFTagsOutput {
     }
 }
 
-public struct GetTableObjectsInput {
+public struct GetTableObjectsInput: Swift.Sendable {
     /// The catalog containing the governed table. Defaults to the caller’s account.
     public var catalogId: Swift.String?
     /// The database containing the governed table.
@@ -2366,8 +2366,9 @@ public struct GetTableObjectsInput {
 }
 
 extension LakeFormationClientTypes {
+
     /// Specifies the details of a governed table.
-    public struct TableObject {
+    public struct TableObject: Swift.Sendable {
         /// The Amazon S3 ETag of the object. Returned by GetTableObjects for validation and used to identify changes to the underlying data.
         public var eTag: Swift.String?
         /// The size of the Amazon S3 object in bytes.
@@ -2386,12 +2387,12 @@ extension LakeFormationClientTypes {
             self.uri = uri
         }
     }
-
 }
 
 extension LakeFormationClientTypes {
+
     /// A structure containing a list of partition values and table objects.
-    public struct PartitionObjects {
+    public struct PartitionObjects: Swift.Sendable {
         /// A list of table objects
         public var objects: [LakeFormationClientTypes.TableObject]?
         /// A list of partition values.
@@ -2406,10 +2407,9 @@ extension LakeFormationClientTypes {
             self.partitionValues = partitionValues
         }
     }
-
 }
 
-public struct GetTableObjectsOutput {
+public struct GetTableObjectsOutput: Swift.Sendable {
     /// A continuation token indicating whether additional data is available.
     public var nextToken: Swift.String?
     /// A list of objects organized by partition keys.
@@ -2451,8 +2451,9 @@ public struct PermissionTypeMismatchException: ClientRuntime.ModeledError, AWSCl
 }
 
 extension LakeFormationClientTypes {
+
     /// Contains a list of values defining partitions.
-    public struct PartitionValueList {
+    public struct PartitionValueList: Swift.Sendable {
         /// The list of partition values.
         /// This member is required.
         public var values: [Swift.String]?
@@ -2464,12 +2465,11 @@ extension LakeFormationClientTypes {
             self.values = values
         }
     }
-
 }
 
 extension LakeFormationClientTypes {
 
-    public enum PermissionType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum PermissionType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case cellFilterPermission
         case columnPermission
         case nestedCellPermission
@@ -2502,7 +2502,7 @@ extension LakeFormationClientTypes {
     }
 }
 
-public struct GetTemporaryGluePartitionCredentialsInput {
+public struct GetTemporaryGluePartitionCredentialsInput: Swift.Sendable {
     /// A structure representing context to access a resource (column names, query ID, etc).
     public var auditContext: LakeFormationClientTypes.AuditContext?
     /// The time period, between 900 and 21,600 seconds, for the timeout of the temporary credentials.
@@ -2536,7 +2536,7 @@ public struct GetTemporaryGluePartitionCredentialsInput {
     }
 }
 
-public struct GetTemporaryGluePartitionCredentialsOutput {
+public struct GetTemporaryGluePartitionCredentialsOutput: Swift.Sendable {
     /// The access key ID for the temporary credentials.
     public var accessKeyId: Swift.String?
     /// The date and time when the temporary credentials expire.
@@ -2561,8 +2561,9 @@ public struct GetTemporaryGluePartitionCredentialsOutput {
 }
 
 extension LakeFormationClientTypes {
+
     /// A structure used as a protocol between query engines and Lake Formation or Glue. Contains both a Lake Formation generated authorization identifier and information from the request's authorization context.
-    public struct QuerySessionContext {
+    public struct QuerySessionContext: Swift.Sendable {
         /// An opaque string-string map passed by the query engine.
         public var additionalContext: [Swift.String: Swift.String]?
         /// An identifier string for the consumer cluster.
@@ -2589,10 +2590,9 @@ extension LakeFormationClientTypes {
             self.queryStartTime = queryStartTime
         }
     }
-
 }
 
-public struct GetTemporaryGlueTableCredentialsInput {
+public struct GetTemporaryGlueTableCredentialsInput: Swift.Sendable {
     /// A structure representing context to access a resource (column names, query ID, etc).
     public var auditContext: LakeFormationClientTypes.AuditContext?
     /// The time period, between 900 and 21,600 seconds, for the timeout of the temporary credentials.
@@ -2629,7 +2629,7 @@ public struct GetTemporaryGlueTableCredentialsInput {
     }
 }
 
-public struct GetTemporaryGlueTableCredentialsOutput {
+public struct GetTemporaryGlueTableCredentialsOutput: Swift.Sendable {
     /// The access key ID for the temporary credentials.
     public var accessKeyId: Swift.String?
     /// The date and time when the temporary credentials expire.
@@ -2657,7 +2657,7 @@ public struct GetTemporaryGlueTableCredentialsOutput {
     }
 }
 
-public struct GetWorkUnitResultsInput {
+public struct GetWorkUnitResultsInput: Swift.Sendable {
     /// The ID of the plan query operation for which to get results.
     /// This member is required.
     public var queryId: Swift.String?
@@ -2686,7 +2686,7 @@ extension GetWorkUnitResultsInput: Swift.CustomDebugStringConvertible {
 }
 
 /// A structure for the output.
-public struct GetWorkUnitResultsOutput {
+public struct GetWorkUnitResultsOutput: Swift.Sendable {
     /// Rows returned from the GetWorkUnitResults operation as a stream of Apache Arrow v1.0 messages.
     public var resultStream: Smithy.ByteStream?
 
@@ -2723,7 +2723,7 @@ public struct WorkUnitsNotReadyYetException: ClientRuntime.ModeledError, AWSClie
     }
 }
 
-public struct GetWorkUnitsInput {
+public struct GetWorkUnitsInput: Swift.Sendable {
     /// A continuation token, if this is a continuation call.
     public var nextToken: Swift.String?
     /// The size of each page to get in the Amazon Web Services service call. This does not affect the number of items returned in the command's output. Setting a smaller page size results in more calls to the Amazon Web Services service, retrieving fewer items in each call. This can help prevent the Amazon Web Services service calls from timing out.
@@ -2745,8 +2745,9 @@ public struct GetWorkUnitsInput {
 }
 
 extension LakeFormationClientTypes {
+
     /// Defines the valid range of work unit IDs for querying the execution service.
-    public struct WorkUnitRange {
+    public struct WorkUnitRange: Swift.Sendable {
         /// Defines the maximum work unit ID in the range. The maximum value is inclusive.
         /// This member is required.
         public var workUnitIdMax: Swift.Int
@@ -2768,11 +2769,10 @@ extension LakeFormationClientTypes {
             self.workUnitToken = workUnitToken
         }
     }
-
 }
 
 /// A structure for the output.
-public struct GetWorkUnitsOutput {
+public struct GetWorkUnitsOutput: Swift.Sendable {
     /// A continuation token for paginating the returned list of tokens, returned if the current segment of the list is not the last.
     public var nextToken: Swift.String?
     /// The ID of the plan query operation.
@@ -2794,7 +2794,7 @@ public struct GetWorkUnitsOutput {
     }
 }
 
-public struct GrantPermissionsInput {
+public struct GrantPermissionsInput: Swift.Sendable {
     /// The identifier for the Data Catalog. By default, the account ID. The Data Catalog is the persistent metadata store. It contains database definitions, table definitions, and other control information to manage your Lake Formation environment.
     public var catalogId: Swift.String?
     /// The permissions granted to the principal on the resource. Lake Formation defines privileges to grant and revoke access to metadata in the Data Catalog and data organized in underlying data storage such as Amazon S3. Lake Formation requires that each principal be authorized to perform a specific task on Lake Formation resources.
@@ -2825,12 +2825,12 @@ public struct GrantPermissionsInput {
     }
 }
 
-public struct GrantPermissionsOutput {
+public struct GrantPermissionsOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct ListDataCellsFilterInput {
+public struct ListDataCellsFilterInput: Swift.Sendable {
     /// The maximum size of the response.
     public var maxResults: Swift.Int?
     /// A continuation token, if this is a continuation call.
@@ -2850,7 +2850,7 @@ public struct ListDataCellsFilterInput {
     }
 }
 
-public struct ListDataCellsFilterOutput {
+public struct ListDataCellsFilterOutput: Swift.Sendable {
     /// A list of DataCellFilter structures.
     public var dataCellsFilters: [LakeFormationClientTypes.DataCellsFilter]?
     /// A continuation token, if not all requested data cell filters have been returned.
@@ -2866,7 +2866,7 @@ public struct ListDataCellsFilterOutput {
     }
 }
 
-public struct ListLakeFormationOptInsInput {
+public struct ListLakeFormationOptInsInput: Swift.Sendable {
     /// The maximum number of results to return.
     public var maxResults: Swift.Int?
     /// A continuation token, if this is not the first call to retrieve this list.
@@ -2891,8 +2891,9 @@ public struct ListLakeFormationOptInsInput {
 }
 
 extension LakeFormationClientTypes {
+
     /// A single principal-resource pair that has Lake Formation permissins enforced.
-    public struct LakeFormationOptInsInfo {
+    public struct LakeFormationOptInsInfo: Swift.Sendable {
         /// The last modified date and time of the record.
         public var lastModified: Foundation.Date?
         /// The user who updated the record.
@@ -2915,10 +2916,9 @@ extension LakeFormationClientTypes {
             self.resource = resource
         }
     }
-
 }
 
-public struct ListLakeFormationOptInsOutput {
+public struct ListLakeFormationOptInsOutput: Swift.Sendable {
     /// A list of principal-resource pairs that have Lake Formation permissins enforced.
     public var lakeFormationOptInsInfoList: [LakeFormationClientTypes.LakeFormationOptInsInfo]?
     /// A continuation token, if this is not the first call to retrieve this list.
@@ -2936,7 +2936,7 @@ public struct ListLakeFormationOptInsOutput {
 
 extension LakeFormationClientTypes {
 
-    public enum ResourceShareType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ResourceShareType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case all
         case foreign
         case sdkUnknown(Swift.String)
@@ -2963,7 +2963,7 @@ extension LakeFormationClientTypes {
     }
 }
 
-public struct ListLFTagsInput {
+public struct ListLFTagsInput: Swift.Sendable {
     /// The identifier for the Data Catalog. By default, the account ID. The Data Catalog is the persistent metadata store. It contains database definitions, table definitions, and other control information to manage your Lake Formation environment.
     public var catalogId: Swift.String?
     /// The maximum number of results to return.
@@ -2987,7 +2987,7 @@ public struct ListLFTagsInput {
     }
 }
 
-public struct ListLFTagsOutput {
+public struct ListLFTagsOutput: Swift.Sendable {
     /// A list of LF-tags that the requested has permission to view.
     public var lfTags: [LakeFormationClientTypes.LFTagPair]?
     /// A continuation token, present if the current list segment is not the last.
@@ -3005,7 +3005,7 @@ public struct ListLFTagsOutput {
 
 extension LakeFormationClientTypes {
 
-    public enum DataLakeResourceType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DataLakeResourceType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case catalog
         case database
         case dataLocation
@@ -3050,7 +3050,7 @@ extension LakeFormationClientTypes {
     }
 }
 
-public struct ListPermissionsInput {
+public struct ListPermissionsInput: Swift.Sendable {
     /// The identifier for the Data Catalog. By default, the account ID. The Data Catalog is the persistent metadata store. It contains database definitions, table definitions, and other control information to manage your Lake Formation environment.
     public var catalogId: Swift.String?
     /// Indicates that related permissions should be included in the results.
@@ -3086,7 +3086,7 @@ public struct ListPermissionsInput {
     }
 }
 
-public struct ListPermissionsOutput {
+public struct ListPermissionsOutput: Swift.Sendable {
     /// A continuation token, if this is not the first call to retrieve this list.
     public var nextToken: Swift.String?
     /// A list of principals and their permissions on the resource for the specified principal and resource types.
@@ -3104,7 +3104,7 @@ public struct ListPermissionsOutput {
 
 extension LakeFormationClientTypes {
 
-    public enum ComparisonOperator: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ComparisonOperator: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case beginsWith
         case between
         case contains
@@ -3160,7 +3160,7 @@ extension LakeFormationClientTypes {
 
 extension LakeFormationClientTypes {
 
-    public enum FieldNameString: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum FieldNameString: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case lastModified
         case resourceArn
         case roleArn
@@ -3191,8 +3191,9 @@ extension LakeFormationClientTypes {
 }
 
 extension LakeFormationClientTypes {
+
     /// This structure describes the filtering of columns in a table based on a filter condition.
-    public struct FilterCondition {
+    public struct FilterCondition: Swift.Sendable {
         /// The comparison operator used in the filter condition.
         public var comparisonOperator: LakeFormationClientTypes.ComparisonOperator?
         /// The field to filter in the filter condition.
@@ -3211,10 +3212,9 @@ extension LakeFormationClientTypes {
             self.stringValueList = stringValueList
         }
     }
-
 }
 
-public struct ListResourcesInput {
+public struct ListResourcesInput: Swift.Sendable {
     /// Any applicable row-level and/or column-level filtering conditions for the resources.
     public var filterConditionList: [LakeFormationClientTypes.FilterCondition]?
     /// The maximum number of resource results.
@@ -3234,7 +3234,7 @@ public struct ListResourcesInput {
     }
 }
 
-public struct ListResourcesOutput {
+public struct ListResourcesOutput: Swift.Sendable {
     /// A continuation token, if this is not the first call to retrieve these resources.
     public var nextToken: Swift.String?
     /// A summary of the data lake resources.
@@ -3252,7 +3252,7 @@ public struct ListResourcesOutput {
 
 extension LakeFormationClientTypes {
 
-    public enum OptimizerType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum OptimizerType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case compaction
         case garbageCollection
         case generic
@@ -3282,7 +3282,7 @@ extension LakeFormationClientTypes {
     }
 }
 
-public struct ListTableStorageOptimizersInput {
+public struct ListTableStorageOptimizersInput: Swift.Sendable {
     /// The Catalog ID of the table.
     public var catalogId: Swift.String?
     /// Name of the database where the table is present.
@@ -3317,8 +3317,9 @@ public struct ListTableStorageOptimizersInput {
 }
 
 extension LakeFormationClientTypes {
+
     /// A structure describing the configuration and details of a storage optimizer.
-    public struct StorageOptimizer {
+    public struct StorageOptimizer: Swift.Sendable {
         /// A map of the storage optimizer configuration. Currently contains only one key-value pair: is_enabled indicates true or false for acceleration.
         public var config: [Swift.String: Swift.String]?
         /// A message that contains information about any error (if present). When an acceleration result has an enabled status, the error message is empty. When an acceleration result has a disabled status, the message describes an error or simply indicates "disabled by the user".
@@ -3345,10 +3346,9 @@ extension LakeFormationClientTypes {
             self.warnings = warnings
         }
     }
-
 }
 
-public struct ListTableStorageOptimizersOutput {
+public struct ListTableStorageOptimizersOutput: Swift.Sendable {
     /// A continuation token for paginating the returned list of tokens, returned if the current segment of the list is not the last.
     public var nextToken: Swift.String?
     /// A list of the storage optimizers associated with a table.
@@ -3366,7 +3366,7 @@ public struct ListTableStorageOptimizersOutput {
 
 extension LakeFormationClientTypes {
 
-    public enum TransactionStatusFilter: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum TransactionStatusFilter: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case aborted
         case active
         case all
@@ -3402,7 +3402,7 @@ extension LakeFormationClientTypes {
     }
 }
 
-public struct ListTransactionsInput {
+public struct ListTransactionsInput: Swift.Sendable {
     /// The catalog for which to list transactions. Defaults to the account ID of the caller.
     public var catalogId: Swift.String?
     /// The maximum number of transactions to return in a single call.
@@ -3426,7 +3426,7 @@ public struct ListTransactionsInput {
     }
 }
 
-public struct ListTransactionsOutput {
+public struct ListTransactionsOutput: Swift.Sendable {
     /// A continuation token indicating whether additional data is available.
     public var nextToken: Swift.String?
     /// A list of transactions. The record for each transaction is a TransactionDescription object.
@@ -3442,7 +3442,7 @@ public struct ListTransactionsOutput {
     }
 }
 
-public struct PutDataLakeSettingsInput {
+public struct PutDataLakeSettingsInput: Swift.Sendable {
     /// The identifier for the Data Catalog. By default, the account ID. The Data Catalog is the persistent metadata store. It contains database definitions, table definitions, and other control information to manage your Lake Formation environment.
     public var catalogId: Swift.String?
     /// A structure representing a list of Lake Formation principals designated as data lake administrators.
@@ -3459,12 +3459,12 @@ public struct PutDataLakeSettingsInput {
     }
 }
 
-public struct PutDataLakeSettingsOutput {
+public struct PutDataLakeSettingsOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct RegisterResourceInput {
+public struct RegisterResourceInput: Swift.Sendable {
     /// Specifies whether the data access of tables pointing to the location can be managed by both Lake Formation permissions as well as Amazon S3 bucket policies.
     public var hybridAccessEnabled: Swift.Bool?
     /// The Amazon Resource Name (ARN) of the resource that you want to register.
@@ -3493,12 +3493,12 @@ public struct RegisterResourceInput {
     }
 }
 
-public struct RegisterResourceOutput {
+public struct RegisterResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct RemoveLFTagsFromResourceInput {
+public struct RemoveLFTagsFromResourceInput: Swift.Sendable {
     /// The identifier for the Data Catalog. By default, the account ID. The Data Catalog is the persistent metadata store. It contains database definitions, table definitions, and other control information to manage your Lake Formation environment.
     public var catalogId: Swift.String?
     /// The LF-tags to be removed from the resource.
@@ -3520,7 +3520,7 @@ public struct RemoveLFTagsFromResourceInput {
     }
 }
 
-public struct RemoveLFTagsFromResourceOutput {
+public struct RemoveLFTagsFromResourceOutput: Swift.Sendable {
     /// A list of failures to untag a resource.
     public var failures: [LakeFormationClientTypes.LFTagError]?
 
@@ -3532,7 +3532,7 @@ public struct RemoveLFTagsFromResourceOutput {
     }
 }
 
-public struct RevokePermissionsInput {
+public struct RevokePermissionsInput: Swift.Sendable {
     /// The identifier for the Data Catalog. By default, the account ID. The Data Catalog is the persistent metadata store. It contains database definitions, table definitions, and other control information to manage your Lake Formation environment.
     public var catalogId: Swift.String?
     /// The permissions revoked to the principal on the resource. For information about permissions, see [Security and Access Control to Metadata and Data](https://docs.aws.amazon.com/lake-formation/latest/dg/security-data-access.html).
@@ -3563,12 +3563,12 @@ public struct RevokePermissionsInput {
     }
 }
 
-public struct RevokePermissionsOutput {
+public struct RevokePermissionsOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct SearchDatabasesByLFTagsInput {
+public struct SearchDatabasesByLFTagsInput: Swift.Sendable {
     /// The identifier for the Data Catalog. By default, the account ID. The Data Catalog is the persistent metadata store. It contains database definitions, table definitions, and other control information to manage your Lake Formation environment.
     public var catalogId: Swift.String?
     /// A list of conditions (LFTag structures) to search for in database resources.
@@ -3594,8 +3594,9 @@ public struct SearchDatabasesByLFTagsInput {
 }
 
 extension LakeFormationClientTypes {
+
     /// A structure describing a database resource with LF-tags.
-    public struct TaggedDatabase {
+    public struct TaggedDatabase: Swift.Sendable {
         /// A database that has LF-tags attached to it.
         public var database: LakeFormationClientTypes.DatabaseResource?
         /// A list of LF-tags attached to the database.
@@ -3610,10 +3611,9 @@ extension LakeFormationClientTypes {
             self.lfTags = lfTags
         }
     }
-
 }
 
-public struct SearchDatabasesByLFTagsOutput {
+public struct SearchDatabasesByLFTagsOutput: Swift.Sendable {
     /// A list of databases that meet the LF-tag conditions.
     public var databaseList: [LakeFormationClientTypes.TaggedDatabase]?
     /// A continuation token, present if the current list segment is not the last.
@@ -3629,7 +3629,7 @@ public struct SearchDatabasesByLFTagsOutput {
     }
 }
 
-public struct SearchTablesByLFTagsInput {
+public struct SearchTablesByLFTagsInput: Swift.Sendable {
     /// The identifier for the Data Catalog. By default, the account ID. The Data Catalog is the persistent metadata store. It contains database definitions, table definitions, and other control information to manage your Lake Formation environment.
     public var catalogId: Swift.String?
     /// A list of conditions (LFTag structures) to search for in table resources.
@@ -3655,8 +3655,9 @@ public struct SearchTablesByLFTagsInput {
 }
 
 extension LakeFormationClientTypes {
+
     /// A structure describing a table resource with LF-tags.
-    public struct TaggedTable {
+    public struct TaggedTable: Swift.Sendable {
         /// A list of LF-tags attached to the database where the table resides.
         public var lfTagOnDatabase: [LakeFormationClientTypes.LFTagPair]?
         /// A list of LF-tags attached to columns in the table.
@@ -3679,10 +3680,9 @@ extension LakeFormationClientTypes {
             self.table = table
         }
     }
-
 }
 
-public struct SearchTablesByLFTagsOutput {
+public struct SearchTablesByLFTagsOutput: Swift.Sendable {
     /// A continuation token, present if the current list segment is not the last. On the first run, if you include a not null (a value) token you can get empty pages.
     public var nextToken: Swift.String?
     /// A list of tables that meet the LF-tag conditions.
@@ -3699,8 +3699,9 @@ public struct SearchTablesByLFTagsOutput {
 }
 
 extension LakeFormationClientTypes {
+
     /// A structure containing information about the query plan.
-    public struct QueryPlanningContext {
+    public struct QueryPlanningContext: Swift.Sendable {
         /// The ID of the Data Catalog where the partition in question resides. If none is provided, the Amazon Web Services account ID is used by default.
         public var catalogId: Swift.String?
         /// The database containing the table.
@@ -3728,10 +3729,9 @@ extension LakeFormationClientTypes {
             self.transactionId = transactionId
         }
     }
-
 }
 
-public struct StartQueryPlanningInput {
+public struct StartQueryPlanningInput: Swift.Sendable {
     /// A structure containing information about the query plan.
     /// This member is required.
     public var queryPlanningContext: LakeFormationClientTypes.QueryPlanningContext?
@@ -3755,7 +3755,7 @@ extension StartQueryPlanningInput: Swift.CustomDebugStringConvertible {
 }
 
 /// A structure for the output.
-public struct StartQueryPlanningOutput {
+public struct StartQueryPlanningOutput: Swift.Sendable {
     /// The ID of the plan query operation can be used to fetch the actual work unit descriptors that are produced as the result of the operation. The ID is also used to get the query state and as an input to the Execute operation.
     /// This member is required.
     public var queryId: Swift.String?
@@ -3770,7 +3770,7 @@ public struct StartQueryPlanningOutput {
 
 extension LakeFormationClientTypes {
 
-    public enum TransactionType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum TransactionType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case readAndWrite
         case readOnly
         case sdkUnknown(Swift.String)
@@ -3797,7 +3797,7 @@ extension LakeFormationClientTypes {
     }
 }
 
-public struct StartTransactionInput {
+public struct StartTransactionInput: Swift.Sendable {
     /// Indicates whether this transaction should be read only or read and write. Writes made using a read-only transaction ID will be rejected. Read-only transactions do not need to be committed.
     public var transactionType: LakeFormationClientTypes.TransactionType?
 
@@ -3809,7 +3809,7 @@ public struct StartTransactionInput {
     }
 }
 
-public struct StartTransactionOutput {
+public struct StartTransactionOutput: Swift.Sendable {
     /// An opaque identifier for the transaction.
     public var transactionId: Swift.String?
 
@@ -3821,7 +3821,7 @@ public struct StartTransactionOutput {
     }
 }
 
-public struct UpdateDataCellsFilterInput {
+public struct UpdateDataCellsFilterInput: Swift.Sendable {
     /// A DataCellsFilter structure containing information about the data cells filter.
     /// This member is required.
     public var tableData: LakeFormationClientTypes.DataCellsFilter?
@@ -3834,12 +3834,12 @@ public struct UpdateDataCellsFilterInput {
     }
 }
 
-public struct UpdateDataCellsFilterOutput {
+public struct UpdateDataCellsFilterOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdateLakeFormationIdentityCenterConfigurationInput {
+public struct UpdateLakeFormationIdentityCenterConfigurationInput: Swift.Sendable {
     /// Allows to enable or disable the IAM Identity Center connection.
     public var applicationStatus: LakeFormationClientTypes.ApplicationStatus?
     /// The identifier for the Data Catalog. By default, the account ID. The Data Catalog is the persistent metadata store. It contains database definitions, table definitions, view definitions, and other control information to manage your Lake Formation environment.
@@ -3863,12 +3863,12 @@ public struct UpdateLakeFormationIdentityCenterConfigurationInput {
     }
 }
 
-public struct UpdateLakeFormationIdentityCenterConfigurationOutput {
+public struct UpdateLakeFormationIdentityCenterConfigurationOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdateLFTagInput {
+public struct UpdateLFTagInput: Swift.Sendable {
     /// The identifier for the Data Catalog. By default, the account ID. The Data Catalog is the persistent metadata store. It contains database definitions, table definitions, and other control information to manage your Lake Formation environment.
     public var catalogId: Swift.String?
     /// The key-name for the LF-tag for which to add or delete values.
@@ -3893,12 +3893,12 @@ public struct UpdateLFTagInput {
     }
 }
 
-public struct UpdateLFTagOutput {
+public struct UpdateLFTagOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdateResourceInput {
+public struct UpdateResourceInput: Swift.Sendable {
     /// Specifies whether the data access of tables pointing to the location can be managed by both Lake Formation permissions as well as Amazon S3 bucket policies.
     public var hybridAccessEnabled: Swift.Bool?
     /// The resource ARN.
@@ -3924,14 +3924,15 @@ public struct UpdateResourceInput {
     }
 }
 
-public struct UpdateResourceOutput {
+public struct UpdateResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
 extension LakeFormationClientTypes {
+
     /// An object to delete from the governed table.
-    public struct DeleteObjectInput {
+    public struct DeleteObjectInput: Swift.Sendable {
         /// The Amazon S3 ETag of the object. Returned by GetTableObjects for validation and used to identify changes to the underlying data.
         public var eTag: Swift.String?
         /// A list of partition values for the object. A value must be specified for each partition key associated with the governed table.
@@ -3951,12 +3952,12 @@ extension LakeFormationClientTypes {
             self.uri = uri
         }
     }
-
 }
 
 extension LakeFormationClientTypes {
+
     /// Defines an object to add to or delete from a governed table.
-    public struct WriteOperation {
+    public struct WriteOperation: Swift.Sendable {
         /// A new object to add to the governed table.
         public var addObject: LakeFormationClientTypes.AddObjectInput?
         /// An object to delete from the governed table.
@@ -3971,10 +3972,9 @@ extension LakeFormationClientTypes {
             self.deleteObject = deleteObject
         }
     }
-
 }
 
-public struct UpdateTableObjectsInput {
+public struct UpdateTableObjectsInput: Swift.Sendable {
     /// The catalog containing the governed table to update. Defaults to the caller’s account ID.
     public var catalogId: Swift.String?
     /// The database containing the governed table to update.
@@ -4005,12 +4005,12 @@ public struct UpdateTableObjectsInput {
     }
 }
 
-public struct UpdateTableObjectsOutput {
+public struct UpdateTableObjectsOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdateTableStorageOptimizerInput {
+public struct UpdateTableStorageOptimizerInput: Swift.Sendable {
     /// The Catalog ID of the table.
     public var catalogId: Swift.String?
     /// Name of the database where the table is present.
@@ -4037,7 +4037,7 @@ public struct UpdateTableStorageOptimizerInput {
     }
 }
 
-public struct UpdateTableStorageOptimizerOutput {
+public struct UpdateTableStorageOptimizerOutput: Swift.Sendable {
     /// A response indicating the success of failure of the operation.
     public var result: Swift.String?
 

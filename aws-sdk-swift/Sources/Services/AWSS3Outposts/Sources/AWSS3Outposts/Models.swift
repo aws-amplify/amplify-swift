@@ -25,7 +25,8 @@ import protocol ClientRuntime.ModeledError
 @_spi(UnknownAWSHTTPServiceError) import struct AWSClientRuntime.UnknownAWSHTTPServiceError
 import struct Smithy.URIQueryItem
 
-public struct DeleteEndpointOutput {
+
+public struct DeleteEndpointOutput: Swift.Sendable {
 
     public init() { }
 }
@@ -200,7 +201,7 @@ public struct ValidationException: ClientRuntime.ModeledError, AWSClientRuntime.
 
 extension S3OutpostsClientTypes {
 
-    public enum EndpointAccessType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum EndpointAccessType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case customerOwnedIp
         case `private`
         case sdkUnknown(Swift.String)
@@ -227,7 +228,7 @@ extension S3OutpostsClientTypes {
     }
 }
 
-public struct CreateEndpointInput {
+public struct CreateEndpointInput: Swift.Sendable {
     /// The type of access for the network connectivity for the Amazon S3 on Outposts endpoint. To use the Amazon Web Services VPC, choose Private. To use the endpoint with an on-premises network, choose CustomerOwnedIp. If you choose CustomerOwnedIp, you must also provide the customer-owned IP address pool (CoIP pool). Private is the default access type value.
     public var accessType: S3OutpostsClientTypes.EndpointAccessType?
     /// The ID of the customer-owned IPv4 address pool (CoIP pool) for the endpoint. IP addresses are allocated from this pool for the endpoint.
@@ -258,7 +259,7 @@ public struct CreateEndpointInput {
     }
 }
 
-public struct CreateEndpointOutput {
+public struct CreateEndpointOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the endpoint.
     public var endpointArn: Swift.String?
 
@@ -270,7 +271,7 @@ public struct CreateEndpointOutput {
     }
 }
 
-public struct DeleteEndpointInput {
+public struct DeleteEndpointInput: Swift.Sendable {
     /// The ID of the endpoint.
     /// This member is required.
     public var endpointId: Swift.String?
@@ -289,8 +290,9 @@ public struct DeleteEndpointInput {
 }
 
 extension S3OutpostsClientTypes {
+
     /// The failure reason, if any, for a create or delete endpoint operation.
-    public struct FailedReason {
+    public struct FailedReason: Swift.Sendable {
         /// The failure code, if any, for a create or delete endpoint operation.
         public var errorCode: Swift.String?
         /// Additional error details describing the endpoint failure and recommended action.
@@ -305,12 +307,12 @@ extension S3OutpostsClientTypes {
             self.message = message
         }
     }
-
 }
 
 extension S3OutpostsClientTypes {
+
     /// The container for the network interface.
-    public struct NetworkInterface {
+    public struct NetworkInterface: Swift.Sendable {
         /// The ID for the network interface.
         public var networkInterfaceId: Swift.String?
 
@@ -321,12 +323,11 @@ extension S3OutpostsClientTypes {
             self.networkInterfaceId = networkInterfaceId
         }
     }
-
 }
 
 extension S3OutpostsClientTypes {
 
-    public enum EndpointStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum EndpointStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case available
         case createFailed
         case deleteFailed
@@ -363,8 +364,9 @@ extension S3OutpostsClientTypes {
 }
 
 extension S3OutpostsClientTypes {
+
     /// Amazon S3 on Outposts Access Points simplify managing data access at scale for shared datasets in S3 on Outposts. S3 on Outposts uses endpoints to connect to Outposts buckets so that you can perform actions within your virtual private cloud (VPC). For more information, see [ Accessing S3 on Outposts using VPC-only access points](https://docs.aws.amazon.com/AmazonS3/latest/userguide/WorkingWithS3Outposts.html) in the Amazon Simple Storage Service User Guide.
-    public struct Endpoint {
+    public struct Endpoint: Swift.Sendable {
         /// The type of connectivity used to access the Amazon S3 on Outposts endpoint.
         public var accessType: S3OutpostsClientTypes.EndpointAccessType?
         /// The VPC CIDR committed by this endpoint.
@@ -419,10 +421,9 @@ extension S3OutpostsClientTypes {
             self.vpcId = vpcId
         }
     }
-
 }
 
-public struct ListEndpointsInput {
+public struct ListEndpointsInput: Swift.Sendable {
     /// The maximum number of endpoints that will be returned in the response.
     public var maxResults: Swift.Int?
     /// If a previous response from this operation included a NextToken value, provide that value here to retrieve the next page of results.
@@ -438,7 +439,7 @@ public struct ListEndpointsInput {
     }
 }
 
-public struct ListEndpointsOutput {
+public struct ListEndpointsOutput: Swift.Sendable {
     /// The list of endpoints associated with the specified Outpost.
     public var endpoints: [S3OutpostsClientTypes.Endpoint]?
     /// If the number of endpoints associated with the specified Outpost exceeds MaxResults, you can include this value in subsequent calls to this operation to retrieve more results.
@@ -454,7 +455,7 @@ public struct ListEndpointsOutput {
     }
 }
 
-public struct ListOutpostsWithS3Input {
+public struct ListOutpostsWithS3Input: Swift.Sendable {
     /// The maximum number of Outposts to return. The limit is 100.
     public var maxResults: Swift.Int?
     /// When you can get additional results from the ListOutpostsWithS3 call, a NextToken parameter is returned in the output. You can then pass in a subsequent command to the NextToken parameter to continue listing additional Outposts.
@@ -471,8 +472,9 @@ public struct ListOutpostsWithS3Input {
 }
 
 extension S3OutpostsClientTypes {
+
     /// Contains the details for the Outpost object.
-    public struct Outpost {
+    public struct Outpost: Swift.Sendable {
         /// The Amazon S3 capacity of the outpost in bytes.
         public var capacityInBytes: Swift.Int
         /// Specifies the unique Amazon Resource Name (ARN) for the outpost.
@@ -499,10 +501,9 @@ extension S3OutpostsClientTypes {
             self.s3OutpostArn = s3OutpostArn
         }
     }
-
 }
 
-public struct ListOutpostsWithS3Output {
+public struct ListOutpostsWithS3Output: Swift.Sendable {
     /// Returns a token that you can use to call ListOutpostsWithS3 again and receive additional results, if there are any.
     public var nextToken: Swift.String?
     /// Returns the list of Outposts that have the following characteristics:
@@ -524,7 +525,7 @@ public struct ListOutpostsWithS3Output {
     }
 }
 
-public struct ListSharedEndpointsInput {
+public struct ListSharedEndpointsInput: Swift.Sendable {
     /// The maximum number of endpoints that will be returned in the response.
     public var maxResults: Swift.Int?
     /// If a previous response from this operation included a NextToken value, you can provide that value here to retrieve the next page of results.
@@ -545,7 +546,7 @@ public struct ListSharedEndpointsInput {
     }
 }
 
-public struct ListSharedEndpointsOutput {
+public struct ListSharedEndpointsOutput: Swift.Sendable {
     /// The list of endpoints associated with the specified Outpost that have been shared by Amazon Web Services Resource Access Manager (RAM).
     public var endpoints: [S3OutpostsClientTypes.Endpoint]?
     /// If the number of endpoints associated with the specified Outpost exceeds MaxResults, you can include this value in subsequent calls to this operation to retrieve more results.

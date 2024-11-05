@@ -29,94 +29,96 @@ import protocol ClientRuntime.ModeledError
 @_spi(UnknownAWSHTTPServiceError) import struct AWSClientRuntime.UnknownAWSHTTPServiceError
 import struct Smithy.URIQueryItem
 
-public struct DeleteAccessLogSettingsOutput {
+
+public struct DeleteAccessLogSettingsOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteApiMappingOutput {
+public struct DeleteApiMappingOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteApiOutput {
+public struct DeleteApiOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteAuthorizerOutput {
+public struct DeleteAuthorizerOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteCorsConfigurationOutput {
+public struct DeleteCorsConfigurationOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteDeploymentOutput {
+public struct DeleteDeploymentOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteDomainNameOutput {
+public struct DeleteDomainNameOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteIntegrationOutput {
+public struct DeleteIntegrationOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteIntegrationResponseOutput {
+public struct DeleteIntegrationResponseOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteModelOutput {
+public struct DeleteModelOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteRouteOutput {
+public struct DeleteRouteOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteRouteRequestParameterOutput {
+public struct DeleteRouteRequestParameterOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteRouteResponseOutput {
+public struct DeleteRouteResponseOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteRouteSettingsOutput {
+public struct DeleteRouteSettingsOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteStageOutput {
+public struct DeleteStageOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct ResetAuthorizersCacheOutput {
+public struct ResetAuthorizersCacheOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UntagResourceOutput {
+public struct UntagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
 extension ApiGatewayV2ClientTypes {
+
     /// Represents a CORS configuration. Supported only for HTTP APIs. See [Configuring CORS](https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-cors.html) for more information.
-    public struct Cors {
+    public struct Cors: Swift.Sendable {
         /// Specifies whether credentials are included in the CORS request. Supported only for HTTP APIs.
         public var allowCredentials: Swift.Bool?
         /// Represents a collection of allowed headers. Supported only for HTTP APIs.
@@ -147,13 +149,12 @@ extension ApiGatewayV2ClientTypes {
             self.maxAge = maxAge
         }
     }
-
 }
 
 extension ApiGatewayV2ClientTypes {
 
     /// Represents a protocol type.
-    public enum ProtocolType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ProtocolType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case http
         case websocket
         case sdkUnknown(Swift.String)
@@ -181,8 +182,9 @@ extension ApiGatewayV2ClientTypes {
 }
 
 extension ApiGatewayV2ClientTypes {
+
     /// Represents an API.
-    public struct Api {
+    public struct Api: Swift.Sendable {
         /// The URI of the API, of the form {api-id}.execute-api.{region}.amazonaws.com. The stage name is typically appended to this URI to form a complete path to a deployed API stage.
         public var apiEndpoint: Swift.String?
         /// Specifies whether an API is managed by API Gateway. You can't update or delete a managed API by using API Gateway. A managed API can be deleted only through the tooling or service that created it.
@@ -256,12 +258,12 @@ extension ApiGatewayV2ClientTypes {
             self.warnings = warnings
         }
     }
-
 }
 
 extension ApiGatewayV2ClientTypes {
+
     /// Represents an API mapping.
-    public struct ApiMapping {
+    public struct ApiMapping: Swift.Sendable {
         /// The API identifier.
         /// This member is required.
         public var apiId: Swift.String?
@@ -286,13 +288,12 @@ extension ApiGatewayV2ClientTypes {
             self.stage = stage
         }
     }
-
 }
 
 extension ApiGatewayV2ClientTypes {
 
     /// The authorizer type. Specify REQUEST for a Lambda function using incoming request parameters. Specify JWT to use JSON Web Tokens (supported only for HTTP APIs).
-    public enum AuthorizerType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AuthorizerType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case jwt
         case request
         case sdkUnknown(Swift.String)
@@ -320,8 +321,9 @@ extension ApiGatewayV2ClientTypes {
 }
 
 extension ApiGatewayV2ClientTypes {
+
     /// Represents the configuration of a JWT authorizer. Required for the JWT authorizer type. Supported only for HTTP APIs.
-    public struct JWTConfiguration {
+    public struct JWTConfiguration: Swift.Sendable {
         /// A list of the intended recipients of the JWT. A valid JWT must provide an aud that matches at least one entry in this list. See [RFC 7519](https://tools.ietf.org/html/rfc7519#section-4.1.3). Supported only for HTTP APIs.
         public var audience: [Swift.String]?
         /// The base domain of the identity provider that issues JSON Web Tokens. For example, an Amazon Cognito user pool has the following format: https://cognito-idp.{region}.amazonaws.com/{userPoolId} . Required for the JWT authorizer type. Supported only for HTTP APIs.
@@ -336,12 +338,12 @@ extension ApiGatewayV2ClientTypes {
             self.issuer = issuer
         }
     }
-
 }
 
 extension ApiGatewayV2ClientTypes {
+
     /// Represents an authorizer.
-    public struct Authorizer {
+    public struct Authorizer: Swift.Sendable {
         /// Specifies the required credentials as an IAM role for API Gateway to invoke the authorizer. To specify an IAM role for API Gateway to assume, use the role's Amazon Resource Name (ARN). To use resource-based permissions on the Lambda function, don't specify this parameter. Supported only for REQUEST authorizers.
         public var authorizerCredentialsArn: Swift.String?
         /// The authorizer identifier.
@@ -393,13 +395,12 @@ extension ApiGatewayV2ClientTypes {
             self.name = name
         }
     }
-
 }
 
 extension ApiGatewayV2ClientTypes {
 
     /// Represents a deployment status.
-    public enum DeploymentStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DeploymentStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case deployed
         case failed
         case pending
@@ -430,8 +431,9 @@ extension ApiGatewayV2ClientTypes {
 }
 
 extension ApiGatewayV2ClientTypes {
+
     /// An immutable representation of an API that can be called by users. A Deployment must be associated with a Stage for it to be callable over the internet.
-    public struct Deployment {
+    public struct Deployment: Swift.Sendable {
         /// Specifies whether a deployment was automatically released.
         public var autoDeployed: Swift.Bool?
         /// The date and time when the Deployment resource was created.
@@ -462,13 +464,12 @@ extension ApiGatewayV2ClientTypes {
             self.description = description
         }
     }
-
 }
 
 extension ApiGatewayV2ClientTypes {
 
     /// The status of the domain name migration. The valid values are AVAILABLE, UPDATING, PENDING_CERTIFICATE_REIMPORT, and PENDING_OWNERSHIP_VERIFICATION. If the status is UPDATING, the domain cannot be modified further until the existing operation is complete. If it is AVAILABLE, the domain can be updated.
-    public enum DomainNameStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DomainNameStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case available
         case pendingCertificateReimport
         case pendingOwnershipVerification
@@ -504,7 +505,7 @@ extension ApiGatewayV2ClientTypes {
 extension ApiGatewayV2ClientTypes {
 
     /// Represents an endpoint type.
-    public enum EndpointType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum EndpointType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case edge
         case regional
         case sdkUnknown(Swift.String)
@@ -534,7 +535,7 @@ extension ApiGatewayV2ClientTypes {
 extension ApiGatewayV2ClientTypes {
 
     /// The Transport Layer Security (TLS) version of the security policy for this domain name. The valid values are TLS_1_0 and TLS_1_2.
-    public enum SecurityPolicy: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SecurityPolicy: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case tls10
         case tls12
         case sdkUnknown(Swift.String)
@@ -562,8 +563,9 @@ extension ApiGatewayV2ClientTypes {
 }
 
 extension ApiGatewayV2ClientTypes {
+
     /// The domain name configuration.
-    public struct DomainNameConfiguration {
+    public struct DomainNameConfiguration: Swift.Sendable {
         /// A domain name for the API.
         public var apiGatewayDomainName: Swift.String?
         /// An AWS-managed certificate that will be used by the edge-optimized endpoint for this domain name. AWS Certificate Manager is the only supported source.
@@ -610,11 +612,11 @@ extension ApiGatewayV2ClientTypes {
             self.securityPolicy = securityPolicy
         }
     }
-
 }
 
 extension ApiGatewayV2ClientTypes {
-    public struct MutualTlsAuthentication {
+
+    public struct MutualTlsAuthentication: Swift.Sendable {
         /// An Amazon S3 URL that specifies the truststore for mutual TLS authentication, for example, s3://bucket-name/key-name. The truststore can contain certificates from public or private certificate authorities. To update the truststore, upload a new version to S3, and then update your custom domain name to use the new version. To update the truststore, you must have permissions to access the S3 object.
         public var truststoreUri: Swift.String?
         /// The version of the S3 object that contains your truststore. To specify a version, you must have versioning enabled for the S3 bucket.
@@ -633,12 +635,12 @@ extension ApiGatewayV2ClientTypes {
             self.truststoreWarnings = truststoreWarnings
         }
     }
-
 }
 
 extension ApiGatewayV2ClientTypes {
+
     /// Represents a domain name.
-    public struct DomainName {
+    public struct DomainName: Swift.Sendable {
         /// The API mapping selection expression.
         public var apiMappingSelectionExpression: Swift.String?
         /// The name of the DomainName resource.
@@ -666,13 +668,12 @@ extension ApiGatewayV2ClientTypes {
             self.tags = tags
         }
     }
-
 }
 
 extension ApiGatewayV2ClientTypes {
 
     /// Represents a connection type.
-    public enum ConnectionType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ConnectionType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case internet
         case vpcLink
         case sdkUnknown(Swift.String)
@@ -702,7 +703,7 @@ extension ApiGatewayV2ClientTypes {
 extension ApiGatewayV2ClientTypes {
 
     /// Specifies how to handle response payload content type conversions. Supported only for WebSocket APIs.
-    public enum ContentHandlingStrategy: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ContentHandlingStrategy: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case convertToBinary
         case convertToText
         case sdkUnknown(Swift.String)
@@ -732,7 +733,7 @@ extension ApiGatewayV2ClientTypes {
 extension ApiGatewayV2ClientTypes {
 
     /// Represents an API method integration type.
-    public enum IntegrationType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum IntegrationType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case aws
         case awsProxy
         case http
@@ -771,7 +772,7 @@ extension ApiGatewayV2ClientTypes {
 extension ApiGatewayV2ClientTypes {
 
     /// Represents passthrough behavior for an integration response. Supported only for WebSocket APIs.
-    public enum PassthroughBehavior: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum PassthroughBehavior: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case never
         case whenNoMatch
         case whenNoTemplates
@@ -802,8 +803,9 @@ extension ApiGatewayV2ClientTypes {
 }
 
 extension ApiGatewayV2ClientTypes {
+
     /// The TLS configuration for a private integration. If you specify a TLS configuration, private integration traffic uses the HTTPS protocol. Supported only for HTTP APIs.
-    public struct TlsConfig {
+    public struct TlsConfig: Swift.Sendable {
         /// If you specify a server name, API Gateway uses it to verify the hostname on the integration's certificate. The server name is also included in the TLS handshake to support Server Name Indication (SNI) or virtual hosting.
         public var serverNameToVerify: Swift.String?
 
@@ -814,12 +816,12 @@ extension ApiGatewayV2ClientTypes {
             self.serverNameToVerify = serverNameToVerify
         }
     }
-
 }
 
 extension ApiGatewayV2ClientTypes {
+
     /// Represents an integration.
-    public struct Integration {
+    public struct Integration: Swift.Sendable {
         /// Specifies whether an integration is managed by API Gateway. If you created an API using using quick create, the resulting integration is managed by API Gateway. You can update a managed integration, but you can't delete it.
         public var apiGatewayManaged: Swift.Bool?
         /// The ID of the VPC link for a private integration. Supported only for HTTP APIs.
@@ -906,12 +908,12 @@ extension ApiGatewayV2ClientTypes {
             self.tlsConfig = tlsConfig
         }
     }
-
 }
 
 extension ApiGatewayV2ClientTypes {
+
     /// Represents an integration response.
-    public struct IntegrationResponse {
+    public struct IntegrationResponse: Swift.Sendable {
         /// Supported only for WebSocket APIs. Specifies how to handle response payload content type conversions. Supported values are CONVERT_TO_BINARY and CONVERT_TO_TEXT, with the following behaviors: CONVERT_TO_BINARY: Converts a response payload from a Base64-encoded string to the corresponding binary blob. CONVERT_TO_TEXT: Converts a response payload from a binary blob to a Base64-encoded string. If this property is not defined, the response payload will be passed through from the integration response to the route response or method response without modification.
         public var contentHandlingStrategy: ApiGatewayV2ClientTypes.ContentHandlingStrategy?
         /// The integration response ID.
@@ -943,12 +945,12 @@ extension ApiGatewayV2ClientTypes {
             self.templateSelectionExpression = templateSelectionExpression
         }
     }
-
 }
 
 extension ApiGatewayV2ClientTypes {
+
     /// Represents a data model for an API. Supported only for WebSocket APIs. See [Create Models and Mapping Templates for Request and Response Mappings](https://docs.aws.amazon.com/apigateway/latest/developerguide/models-mappings.html).
-    public struct Model {
+    public struct Model: Swift.Sendable {
         /// The content-type for the model, for example, "application/json".
         public var contentType: Swift.String?
         /// The description of the model.
@@ -976,13 +978,12 @@ extension ApiGatewayV2ClientTypes {
             self.schema = schema
         }
     }
-
 }
 
 extension ApiGatewayV2ClientTypes {
 
     /// The authorization type. For WebSocket APIs, valid values are NONE for open access, AWS_IAM for using AWS IAM permissions, and CUSTOM for using a Lambda authorizer. For HTTP APIs, valid values are NONE for open access, JWT for using JSON Web Tokens, AWS_IAM for using AWS IAM permissions, and CUSTOM for using a Lambda authorizer.
-    public enum AuthorizationType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AuthorizationType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case awsIam
         case custom
         case jwt
@@ -1016,8 +1017,9 @@ extension ApiGatewayV2ClientTypes {
 }
 
 extension ApiGatewayV2ClientTypes {
+
     /// Validation constraints imposed on parameters of a request (path, query string, headers).
-    public struct ParameterConstraints {
+    public struct ParameterConstraints: Swift.Sendable {
         /// Whether or not the parameter is required.
         public var `required`: Swift.Bool?
 
@@ -1028,12 +1030,12 @@ extension ApiGatewayV2ClientTypes {
             self.`required` = `required`
         }
     }
-
 }
 
 extension ApiGatewayV2ClientTypes {
+
     /// Represents a route.
-    public struct Route {
+    public struct Route: Swift.Sendable {
         /// Specifies whether a route is managed by API Gateway. If you created an API using quick create, the $default route is managed by API Gateway. You can't modify the $default route key.
         public var apiGatewayManaged: Swift.Bool?
         /// Specifies whether an API key is required for this route. Supported only for WebSocket APIs.
@@ -1093,12 +1095,12 @@ extension ApiGatewayV2ClientTypes {
             self.target = target
         }
     }
-
 }
 
 extension ApiGatewayV2ClientTypes {
+
     /// Represents a route response.
-    public struct RouteResponse {
+    public struct RouteResponse: Swift.Sendable {
         /// Represents the model selection expression of a route response. Supported only for WebSocket APIs.
         public var modelSelectionExpression: Swift.String?
         /// Represents the response models of a route response.
@@ -1126,12 +1128,12 @@ extension ApiGatewayV2ClientTypes {
             self.routeResponseKey = routeResponseKey
         }
     }
-
 }
 
 extension ApiGatewayV2ClientTypes {
+
     /// Settings for logging access in a stage.
-    public struct AccessLogSettings {
+    public struct AccessLogSettings: Swift.Sendable {
         /// The ARN of the CloudWatch Logs log group to receive access logs.
         public var destinationArn: Swift.String?
         /// A single line format of the access logs of data, as specified by selected $context variables. The format must include at least $context.requestId.
@@ -1146,13 +1148,12 @@ extension ApiGatewayV2ClientTypes {
             self.format = format
         }
     }
-
 }
 
 extension ApiGatewayV2ClientTypes {
 
     /// The logging level.
-    public enum LoggingLevel: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum LoggingLevel: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case error
         case info
         case off
@@ -1183,8 +1184,9 @@ extension ApiGatewayV2ClientTypes {
 }
 
 extension ApiGatewayV2ClientTypes {
+
     /// Represents a collection of route settings.
-    public struct RouteSettings {
+    public struct RouteSettings: Swift.Sendable {
         /// Specifies whether (true) or not (false) data trace logging is enabled for this route. This property affects the log entries pushed to Amazon CloudWatch Logs. Supported only for WebSocket APIs.
         public var dataTraceEnabled: Swift.Bool?
         /// Specifies whether detailed metrics are enabled.
@@ -1211,12 +1213,12 @@ extension ApiGatewayV2ClientTypes {
             self.throttlingRateLimit = throttlingRateLimit
         }
     }
-
 }
 
 extension ApiGatewayV2ClientTypes {
+
     /// Represents an API stage.
-    public struct Stage {
+    public struct Stage: Swift.Sendable {
         /// Settings for logging access in this stage.
         public var accessLogSettings: ApiGatewayV2ClientTypes.AccessLogSettings?
         /// Specifies whether a stage is managed by API Gateway. If you created an API using quick create, the $default stage is managed by API Gateway. You can't modify the $default stage.
@@ -1280,13 +1282,12 @@ extension ApiGatewayV2ClientTypes {
             self.tags = tags
         }
     }
-
 }
 
 extension ApiGatewayV2ClientTypes {
 
     /// The status of the VPC link.
-    public enum VpcLinkStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum VpcLinkStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case available
         case deleting
         case failed
@@ -1325,7 +1326,7 @@ extension ApiGatewayV2ClientTypes {
 extension ApiGatewayV2ClientTypes {
 
     /// The version of the VPC link.
-    public enum VpcLinkVersion: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum VpcLinkVersion: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case v2
         case sdkUnknown(Swift.String)
 
@@ -1350,8 +1351,9 @@ extension ApiGatewayV2ClientTypes {
 }
 
 extension ApiGatewayV2ClientTypes {
+
     /// Represents a VPC link.
-    public struct VpcLink {
+    public struct VpcLink: Swift.Sendable {
         /// The timestamp when the VPC link was created.
         public var createdDate: Foundation.Date?
         /// The name of the VPC link.
@@ -1398,7 +1400,6 @@ extension ApiGatewayV2ClientTypes {
             self.vpcLinkVersion = vpcLinkVersion
         }
     }
-
 }
 
 public struct AccessDeniedException: ClientRuntime.ModeledError, AWSClientRuntime.AWSServiceError, ClientRuntime.HTTPError, Swift.Error {
@@ -1533,7 +1534,7 @@ public struct TooManyRequestsException: ClientRuntime.ModeledError, AWSClientRun
 }
 
 /// Creates a new Api resource to represent an API.
-public struct CreateApiInput {
+public struct CreateApiInput: Swift.Sendable {
     /// An API key selection expression. Supported only for WebSocket APIs. See [API Key Selection Expressions](https://docs.aws.amazon.com/apigateway/latest/developerguide/apigateway-websocket-api-selection-expressions.html#apigateway-websocket-api-apikey-selection-expressions).
     public var apiKeySelectionExpression: Swift.String?
     /// A CORS configuration. Supported only for HTTP APIs. See [Configuring CORS](https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-cors.html) for more information.
@@ -1595,7 +1596,7 @@ public struct CreateApiInput {
     }
 }
 
-public struct CreateApiOutput {
+public struct CreateApiOutput: Swift.Sendable {
     /// The URI of the API, of the form {api-id}.execute-api.{region}.amazonaws.com. The stage name is typically appended to this URI to form a complete path to a deployed API stage.
     public var apiEndpoint: Swift.String?
     /// Specifies whether an API is managed by API Gateway. You can't update or delete a managed API by using API Gateway. A managed API can be deleted only through the tooling or service that created it.
@@ -1668,7 +1669,7 @@ public struct CreateApiOutput {
 }
 
 /// Creates a new ApiMapping resource to represent an API mapping.
-public struct CreateApiMappingInput {
+public struct CreateApiMappingInput: Swift.Sendable {
     /// The API identifier.
     /// This member is required.
     public var apiId: Swift.String?
@@ -1695,7 +1696,7 @@ public struct CreateApiMappingInput {
     }
 }
 
-public struct CreateApiMappingOutput {
+public struct CreateApiMappingOutput: Swift.Sendable {
     /// The API identifier.
     public var apiId: Swift.String?
     /// The API mapping identifier.
@@ -1720,7 +1721,7 @@ public struct CreateApiMappingOutput {
 }
 
 /// Creates a new Authorizer resource to represent an authorizer.
-public struct CreateAuthorizerInput {
+public struct CreateAuthorizerInput: Swift.Sendable {
     /// The API identifier.
     /// This member is required.
     public var apiId: Swift.String?
@@ -1776,7 +1777,7 @@ public struct CreateAuthorizerInput {
     }
 }
 
-public struct CreateAuthorizerOutput {
+public struct CreateAuthorizerOutput: Swift.Sendable {
     /// Specifies the required credentials as an IAM role for API Gateway to invoke the authorizer. To specify an IAM role for API Gateway to assume, use the role's Amazon Resource Name (ARN). To use resource-based permissions on the Lambda function, don't specify this parameter. Supported only for REQUEST authorizers.
     public var authorizerCredentialsArn: Swift.String?
     /// The authorizer identifier.
@@ -1829,7 +1830,7 @@ public struct CreateAuthorizerOutput {
 }
 
 /// Creates a new Deployment resource to represent a deployment.
-public struct CreateDeploymentInput {
+public struct CreateDeploymentInput: Swift.Sendable {
     /// The API identifier.
     /// This member is required.
     public var apiId: Swift.String?
@@ -1850,7 +1851,7 @@ public struct CreateDeploymentInput {
     }
 }
 
-public struct CreateDeploymentOutput {
+public struct CreateDeploymentOutput: Swift.Sendable {
     /// Specifies whether a deployment was automatically released.
     public var autoDeployed: Swift.Bool?
     /// The date and time when the Deployment resource was created.
@@ -1883,7 +1884,8 @@ public struct CreateDeploymentOutput {
 }
 
 extension ApiGatewayV2ClientTypes {
-    public struct MutualTlsAuthenticationInput {
+
+    public struct MutualTlsAuthenticationInput: Swift.Sendable {
         /// An Amazon S3 URL that specifies the truststore for mutual TLS authentication, for example, s3://bucket-name/key-name. The truststore can contain certificates from public or private certificate authorities. To update the truststore, upload a new version to S3, and then update your custom domain name to use the new version. To update the truststore, you must have permissions to access the S3 object.
         public var truststoreUri: Swift.String?
         /// The version of the S3 object that contains your truststore. To specify a version, you must have versioning enabled for the S3 bucket.
@@ -1898,11 +1900,10 @@ extension ApiGatewayV2ClientTypes {
             self.truststoreVersion = truststoreVersion
         }
     }
-
 }
 
 /// Creates a new DomainName resource to represent a domain name.
-public struct CreateDomainNameInput {
+public struct CreateDomainNameInput: Swift.Sendable {
     /// The domain name.
     /// This member is required.
     public var domainName: Swift.String?
@@ -1927,7 +1928,7 @@ public struct CreateDomainNameInput {
     }
 }
 
-public struct CreateDomainNameOutput {
+public struct CreateDomainNameOutput: Swift.Sendable {
     /// The API mapping selection expression.
     public var apiMappingSelectionExpression: Swift.String?
     /// The name of the DomainName resource.
@@ -1956,8 +1957,9 @@ public struct CreateDomainNameOutput {
 }
 
 extension ApiGatewayV2ClientTypes {
+
     /// The TLS configuration for a private integration. If you specify a TLS configuration, private integration traffic uses the HTTPS protocol. Supported only for HTTP APIs.
-    public struct TlsConfigInput {
+    public struct TlsConfigInput: Swift.Sendable {
         /// If you specify a server name, API Gateway uses it to verify the hostname on the integration's certificate. The server name is also included in the TLS handshake to support Server Name Indication (SNI) or virtual hosting.
         public var serverNameToVerify: Swift.String?
 
@@ -1968,11 +1970,10 @@ extension ApiGatewayV2ClientTypes {
             self.serverNameToVerify = serverNameToVerify
         }
     }
-
 }
 
 /// Creates a new Integration resource to represent an integration.
-public struct CreateIntegrationInput {
+public struct CreateIntegrationInput: Swift.Sendable {
     /// The API identifier.
     /// This member is required.
     public var apiId: Swift.String?
@@ -2054,7 +2055,7 @@ public struct CreateIntegrationInput {
     }
 }
 
-public struct CreateIntegrationOutput {
+public struct CreateIntegrationOutput: Swift.Sendable {
     /// Specifies whether an integration is managed by API Gateway. If you created an API using using quick create, the resulting integration is managed by API Gateway. You can update a managed integration, but you can't delete it.
     public var apiGatewayManaged: Swift.Bool?
     /// The ID of the VPC link for a private integration. Supported only for HTTP APIs.
@@ -2143,7 +2144,7 @@ public struct CreateIntegrationOutput {
 }
 
 /// Creates a new IntegrationResponse resource to represent an integration response.
-public struct CreateIntegrationResponseInput {
+public struct CreateIntegrationResponseInput: Swift.Sendable {
     /// The API identifier.
     /// This member is required.
     public var apiId: Swift.String?
@@ -2182,7 +2183,7 @@ public struct CreateIntegrationResponseInput {
     }
 }
 
-public struct CreateIntegrationResponseOutput {
+public struct CreateIntegrationResponseOutput: Swift.Sendable {
     /// Supported only for WebSocket APIs. Specifies how to handle response payload content type conversions. Supported values are CONVERT_TO_BINARY and CONVERT_TO_TEXT, with the following behaviors: CONVERT_TO_BINARY: Converts a response payload from a Base64-encoded string to the corresponding binary blob. CONVERT_TO_TEXT: Converts a response payload from a binary blob to a Base64-encoded string. If this property is not defined, the response payload will be passed through from the integration response to the route response or method response without modification.
     public var contentHandlingStrategy: ApiGatewayV2ClientTypes.ContentHandlingStrategy?
     /// The integration response ID.
@@ -2215,7 +2216,7 @@ public struct CreateIntegrationResponseOutput {
 }
 
 /// Creates a new Model.
-public struct CreateModelInput {
+public struct CreateModelInput: Swift.Sendable {
     /// The API identifier.
     /// This member is required.
     public var apiId: Swift.String?
@@ -2246,7 +2247,7 @@ public struct CreateModelInput {
     }
 }
 
-public struct CreateModelOutput {
+public struct CreateModelOutput: Swift.Sendable {
     /// The content-type for the model, for example, "application/json".
     public var contentType: Swift.String?
     /// The description of the model.
@@ -2275,7 +2276,7 @@ public struct CreateModelOutput {
 }
 
 /// Creates a new Route resource to represent a route.
-public struct CreateRouteInput {
+public struct CreateRouteInput: Swift.Sendable {
     /// The API identifier.
     /// This member is required.
     public var apiId: Swift.String?
@@ -2333,7 +2334,7 @@ public struct CreateRouteInput {
     }
 }
 
-public struct CreateRouteOutput {
+public struct CreateRouteOutput: Swift.Sendable {
     /// Specifies whether a route is managed by API Gateway. If you created an API using quick create, the $default route is managed by API Gateway. You can't modify the $default route key.
     public var apiGatewayManaged: Swift.Bool?
     /// Specifies whether an API key is required for this route. Supported only for WebSocket APIs.
@@ -2394,7 +2395,7 @@ public struct CreateRouteOutput {
 }
 
 /// Creates a new RouteResponse resource to represent a route response.
-public struct CreateRouteResponseInput {
+public struct CreateRouteResponseInput: Swift.Sendable {
     /// The API identifier.
     /// This member is required.
     public var apiId: Swift.String?
@@ -2429,7 +2430,7 @@ public struct CreateRouteResponseInput {
     }
 }
 
-public struct CreateRouteResponseOutput {
+public struct CreateRouteResponseOutput: Swift.Sendable {
     /// Represents the model selection expression of a route response. Supported only for WebSocket APIs.
     public var modelSelectionExpression: Swift.String?
     /// Represents the response models of a route response.
@@ -2458,7 +2459,7 @@ public struct CreateRouteResponseOutput {
 }
 
 /// Creates a new Stage resource to represent a stage.
-public struct CreateStageInput {
+public struct CreateStageInput: Swift.Sendable {
     /// Settings for logging access in this stage.
     public var accessLogSettings: ApiGatewayV2ClientTypes.AccessLogSettings?
     /// The API identifier.
@@ -2512,7 +2513,7 @@ public struct CreateStageInput {
     }
 }
 
-public struct CreateStageOutput {
+public struct CreateStageOutput: Swift.Sendable {
     /// Settings for logging access in this stage.
     public var accessLogSettings: ApiGatewayV2ClientTypes.AccessLogSettings?
     /// Specifies whether a stage is managed by API Gateway. If you created an API using quick create, the $default stage is managed by API Gateway. You can't modify the $default stage.
@@ -2577,7 +2578,7 @@ public struct CreateStageOutput {
 }
 
 /// Creates a VPC link
-public struct CreateVpcLinkInput {
+public struct CreateVpcLinkInput: Swift.Sendable {
     /// The name of the VPC link.
     /// This member is required.
     public var name: Swift.String?
@@ -2603,7 +2604,7 @@ public struct CreateVpcLinkInput {
     }
 }
 
-public struct CreateVpcLinkOutput {
+public struct CreateVpcLinkOutput: Swift.Sendable {
     /// The timestamp when the VPC link was created.
     public var createdDate: Foundation.Date?
     /// The name of the VPC link.
@@ -2647,7 +2648,7 @@ public struct CreateVpcLinkOutput {
     }
 }
 
-public struct DeleteAccessLogSettingsInput {
+public struct DeleteAccessLogSettingsInput: Swift.Sendable {
     /// The API identifier.
     /// This member is required.
     public var apiId: Swift.String?
@@ -2665,7 +2666,7 @@ public struct DeleteAccessLogSettingsInput {
     }
 }
 
-public struct DeleteApiInput {
+public struct DeleteApiInput: Swift.Sendable {
     /// The API identifier.
     /// This member is required.
     public var apiId: Swift.String?
@@ -2678,7 +2679,7 @@ public struct DeleteApiInput {
     }
 }
 
-public struct DeleteApiMappingInput {
+public struct DeleteApiMappingInput: Swift.Sendable {
     /// The API mapping identifier.
     /// This member is required.
     public var apiMappingId: Swift.String?
@@ -2696,7 +2697,7 @@ public struct DeleteApiMappingInput {
     }
 }
 
-public struct DeleteAuthorizerInput {
+public struct DeleteAuthorizerInput: Swift.Sendable {
     /// The API identifier.
     /// This member is required.
     public var apiId: Swift.String?
@@ -2714,7 +2715,7 @@ public struct DeleteAuthorizerInput {
     }
 }
 
-public struct DeleteCorsConfigurationInput {
+public struct DeleteCorsConfigurationInput: Swift.Sendable {
     /// The API identifier.
     /// This member is required.
     public var apiId: Swift.String?
@@ -2727,7 +2728,7 @@ public struct DeleteCorsConfigurationInput {
     }
 }
 
-public struct DeleteDeploymentInput {
+public struct DeleteDeploymentInput: Swift.Sendable {
     /// The API identifier.
     /// This member is required.
     public var apiId: Swift.String?
@@ -2745,7 +2746,7 @@ public struct DeleteDeploymentInput {
     }
 }
 
-public struct DeleteDomainNameInput {
+public struct DeleteDomainNameInput: Swift.Sendable {
     /// The domain name.
     /// This member is required.
     public var domainName: Swift.String?
@@ -2758,7 +2759,7 @@ public struct DeleteDomainNameInput {
     }
 }
 
-public struct DeleteIntegrationInput {
+public struct DeleteIntegrationInput: Swift.Sendable {
     /// The API identifier.
     /// This member is required.
     public var apiId: Swift.String?
@@ -2776,7 +2777,7 @@ public struct DeleteIntegrationInput {
     }
 }
 
-public struct DeleteIntegrationResponseInput {
+public struct DeleteIntegrationResponseInput: Swift.Sendable {
     /// The API identifier.
     /// This member is required.
     public var apiId: Swift.String?
@@ -2799,7 +2800,7 @@ public struct DeleteIntegrationResponseInput {
     }
 }
 
-public struct DeleteModelInput {
+public struct DeleteModelInput: Swift.Sendable {
     /// The API identifier.
     /// This member is required.
     public var apiId: Swift.String?
@@ -2817,7 +2818,7 @@ public struct DeleteModelInput {
     }
 }
 
-public struct DeleteRouteInput {
+public struct DeleteRouteInput: Swift.Sendable {
     /// The API identifier.
     /// This member is required.
     public var apiId: Swift.String?
@@ -2835,7 +2836,7 @@ public struct DeleteRouteInput {
     }
 }
 
-public struct DeleteRouteRequestParameterInput {
+public struct DeleteRouteRequestParameterInput: Swift.Sendable {
     /// The API identifier.
     /// This member is required.
     public var apiId: Swift.String?
@@ -2858,7 +2859,7 @@ public struct DeleteRouteRequestParameterInput {
     }
 }
 
-public struct DeleteRouteResponseInput {
+public struct DeleteRouteResponseInput: Swift.Sendable {
     /// The API identifier.
     /// This member is required.
     public var apiId: Swift.String?
@@ -2881,7 +2882,7 @@ public struct DeleteRouteResponseInput {
     }
 }
 
-public struct DeleteRouteSettingsInput {
+public struct DeleteRouteSettingsInput: Swift.Sendable {
     /// The API identifier.
     /// This member is required.
     public var apiId: Swift.String?
@@ -2904,7 +2905,7 @@ public struct DeleteRouteSettingsInput {
     }
 }
 
-public struct DeleteStageInput {
+public struct DeleteStageInput: Swift.Sendable {
     /// The API identifier.
     /// This member is required.
     public var apiId: Swift.String?
@@ -2922,7 +2923,7 @@ public struct DeleteStageInput {
     }
 }
 
-public struct DeleteVpcLinkInput {
+public struct DeleteVpcLinkInput: Swift.Sendable {
     /// The ID of the VPC link.
     /// This member is required.
     public var vpcLinkId: Swift.String?
@@ -2935,12 +2936,12 @@ public struct DeleteVpcLinkInput {
     }
 }
 
-public struct DeleteVpcLinkOutput {
+public struct DeleteVpcLinkOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct ExportApiInput {
+public struct ExportApiInput: Swift.Sendable {
     /// The API identifier.
     /// This member is required.
     public var apiId: Swift.String?
@@ -2975,7 +2976,7 @@ public struct ExportApiInput {
     }
 }
 
-public struct ExportApiOutput {
+public struct ExportApiOutput: Swift.Sendable {
     /// Represents an exported definition of an API in a particular output format, for example, YAML. The API is serialized to the requested specification, for example, OpenAPI 3.0.
     public var body: Foundation.Data?
 
@@ -2987,7 +2988,7 @@ public struct ExportApiOutput {
     }
 }
 
-public struct GetApiInput {
+public struct GetApiInput: Swift.Sendable {
     /// The API identifier.
     /// This member is required.
     public var apiId: Swift.String?
@@ -3000,7 +3001,7 @@ public struct GetApiInput {
     }
 }
 
-public struct GetApiOutput {
+public struct GetApiOutput: Swift.Sendable {
     /// The URI of the API, of the form {api-id}.execute-api.{region}.amazonaws.com. The stage name is typically appended to this URI to form a complete path to a deployed API stage.
     public var apiEndpoint: Swift.String?
     /// Specifies whether an API is managed by API Gateway. You can't update or delete a managed API by using API Gateway. A managed API can be deleted only through the tooling or service that created it.
@@ -3072,7 +3073,7 @@ public struct GetApiOutput {
     }
 }
 
-public struct GetApiMappingInput {
+public struct GetApiMappingInput: Swift.Sendable {
     /// The API mapping identifier.
     /// This member is required.
     public var apiMappingId: Swift.String?
@@ -3090,7 +3091,7 @@ public struct GetApiMappingInput {
     }
 }
 
-public struct GetApiMappingOutput {
+public struct GetApiMappingOutput: Swift.Sendable {
     /// The API identifier.
     public var apiId: Swift.String?
     /// The API mapping identifier.
@@ -3114,7 +3115,7 @@ public struct GetApiMappingOutput {
     }
 }
 
-public struct GetApiMappingsInput {
+public struct GetApiMappingsInput: Swift.Sendable {
     /// The domain name.
     /// This member is required.
     public var domainName: Swift.String?
@@ -3135,7 +3136,7 @@ public struct GetApiMappingsInput {
     }
 }
 
-public struct GetApiMappingsOutput {
+public struct GetApiMappingsOutput: Swift.Sendable {
     /// The elements from this collection.
     public var items: [ApiGatewayV2ClientTypes.ApiMapping]?
     /// The next page of elements from this collection. Not valid for the last element of the collection.
@@ -3151,7 +3152,7 @@ public struct GetApiMappingsOutput {
     }
 }
 
-public struct GetApisInput {
+public struct GetApisInput: Swift.Sendable {
     /// The maximum number of elements to be returned for this resource.
     public var maxResults: Swift.String?
     /// The next page of elements from this collection. Not valid for the last element of the collection.
@@ -3167,7 +3168,7 @@ public struct GetApisInput {
     }
 }
 
-public struct GetApisOutput {
+public struct GetApisOutput: Swift.Sendable {
     /// The elements from this collection.
     public var items: [ApiGatewayV2ClientTypes.Api]?
     /// The next page of elements from this collection. Not valid for the last element of the collection.
@@ -3183,7 +3184,7 @@ public struct GetApisOutput {
     }
 }
 
-public struct GetAuthorizerInput {
+public struct GetAuthorizerInput: Swift.Sendable {
     /// The API identifier.
     /// This member is required.
     public var apiId: Swift.String?
@@ -3201,7 +3202,7 @@ public struct GetAuthorizerInput {
     }
 }
 
-public struct GetAuthorizerOutput {
+public struct GetAuthorizerOutput: Swift.Sendable {
     /// Specifies the required credentials as an IAM role for API Gateway to invoke the authorizer. To specify an IAM role for API Gateway to assume, use the role's Amazon Resource Name (ARN). To use resource-based permissions on the Lambda function, don't specify this parameter. Supported only for REQUEST authorizers.
     public var authorizerCredentialsArn: Swift.String?
     /// The authorizer identifier.
@@ -3253,7 +3254,7 @@ public struct GetAuthorizerOutput {
     }
 }
 
-public struct GetAuthorizersInput {
+public struct GetAuthorizersInput: Swift.Sendable {
     /// The API identifier.
     /// This member is required.
     public var apiId: Swift.String?
@@ -3274,7 +3275,7 @@ public struct GetAuthorizersInput {
     }
 }
 
-public struct GetAuthorizersOutput {
+public struct GetAuthorizersOutput: Swift.Sendable {
     /// The elements from this collection.
     public var items: [ApiGatewayV2ClientTypes.Authorizer]?
     /// The next page of elements from this collection. Not valid for the last element of the collection.
@@ -3290,7 +3291,7 @@ public struct GetAuthorizersOutput {
     }
 }
 
-public struct GetDeploymentInput {
+public struct GetDeploymentInput: Swift.Sendable {
     /// The API identifier.
     /// This member is required.
     public var apiId: Swift.String?
@@ -3308,7 +3309,7 @@ public struct GetDeploymentInput {
     }
 }
 
-public struct GetDeploymentOutput {
+public struct GetDeploymentOutput: Swift.Sendable {
     /// Specifies whether a deployment was automatically released.
     public var autoDeployed: Swift.Bool?
     /// The date and time when the Deployment resource was created.
@@ -3340,7 +3341,7 @@ public struct GetDeploymentOutput {
     }
 }
 
-public struct GetDeploymentsInput {
+public struct GetDeploymentsInput: Swift.Sendable {
     /// The API identifier.
     /// This member is required.
     public var apiId: Swift.String?
@@ -3361,7 +3362,7 @@ public struct GetDeploymentsInput {
     }
 }
 
-public struct GetDeploymentsOutput {
+public struct GetDeploymentsOutput: Swift.Sendable {
     /// The elements from this collection.
     public var items: [ApiGatewayV2ClientTypes.Deployment]?
     /// The next page of elements from this collection. Not valid for the last element of the collection.
@@ -3377,7 +3378,7 @@ public struct GetDeploymentsOutput {
     }
 }
 
-public struct GetDomainNameInput {
+public struct GetDomainNameInput: Swift.Sendable {
     /// The domain name.
     /// This member is required.
     public var domainName: Swift.String?
@@ -3390,7 +3391,7 @@ public struct GetDomainNameInput {
     }
 }
 
-public struct GetDomainNameOutput {
+public struct GetDomainNameOutput: Swift.Sendable {
     /// The API mapping selection expression.
     public var apiMappingSelectionExpression: Swift.String?
     /// The name of the DomainName resource.
@@ -3418,7 +3419,7 @@ public struct GetDomainNameOutput {
     }
 }
 
-public struct GetDomainNamesInput {
+public struct GetDomainNamesInput: Swift.Sendable {
     /// The maximum number of elements to be returned for this resource.
     public var maxResults: Swift.String?
     /// The next page of elements from this collection. Not valid for the last element of the collection.
@@ -3434,7 +3435,7 @@ public struct GetDomainNamesInput {
     }
 }
 
-public struct GetDomainNamesOutput {
+public struct GetDomainNamesOutput: Swift.Sendable {
     /// The elements from this collection.
     public var items: [ApiGatewayV2ClientTypes.DomainName]?
     /// The next page of elements from this collection. Not valid for the last element of the collection.
@@ -3450,7 +3451,7 @@ public struct GetDomainNamesOutput {
     }
 }
 
-public struct GetIntegrationInput {
+public struct GetIntegrationInput: Swift.Sendable {
     /// The API identifier.
     /// This member is required.
     public var apiId: Swift.String?
@@ -3468,7 +3469,7 @@ public struct GetIntegrationInput {
     }
 }
 
-public struct GetIntegrationOutput {
+public struct GetIntegrationOutput: Swift.Sendable {
     /// Specifies whether an integration is managed by API Gateway. If you created an API using using quick create, the resulting integration is managed by API Gateway. You can update a managed integration, but you can't delete it.
     public var apiGatewayManaged: Swift.Bool?
     /// The ID of the VPC link for a private integration. Supported only for HTTP APIs.
@@ -3556,7 +3557,7 @@ public struct GetIntegrationOutput {
     }
 }
 
-public struct GetIntegrationResponseInput {
+public struct GetIntegrationResponseInput: Swift.Sendable {
     /// The API identifier.
     /// This member is required.
     public var apiId: Swift.String?
@@ -3579,7 +3580,7 @@ public struct GetIntegrationResponseInput {
     }
 }
 
-public struct GetIntegrationResponseOutput {
+public struct GetIntegrationResponseOutput: Swift.Sendable {
     /// Supported only for WebSocket APIs. Specifies how to handle response payload content type conversions. Supported values are CONVERT_TO_BINARY and CONVERT_TO_TEXT, with the following behaviors: CONVERT_TO_BINARY: Converts a response payload from a Base64-encoded string to the corresponding binary blob. CONVERT_TO_TEXT: Converts a response payload from a binary blob to a Base64-encoded string. If this property is not defined, the response payload will be passed through from the integration response to the route response or method response without modification.
     public var contentHandlingStrategy: ApiGatewayV2ClientTypes.ContentHandlingStrategy?
     /// The integration response ID.
@@ -3611,7 +3612,7 @@ public struct GetIntegrationResponseOutput {
     }
 }
 
-public struct GetIntegrationResponsesInput {
+public struct GetIntegrationResponsesInput: Swift.Sendable {
     /// The API identifier.
     /// This member is required.
     public var apiId: Swift.String?
@@ -3637,7 +3638,7 @@ public struct GetIntegrationResponsesInput {
     }
 }
 
-public struct GetIntegrationResponsesOutput {
+public struct GetIntegrationResponsesOutput: Swift.Sendable {
     /// The elements from this collection.
     public var items: [ApiGatewayV2ClientTypes.IntegrationResponse]?
     /// The next page of elements from this collection. Not valid for the last element of the collection.
@@ -3653,7 +3654,7 @@ public struct GetIntegrationResponsesOutput {
     }
 }
 
-public struct GetIntegrationsInput {
+public struct GetIntegrationsInput: Swift.Sendable {
     /// The API identifier.
     /// This member is required.
     public var apiId: Swift.String?
@@ -3674,7 +3675,7 @@ public struct GetIntegrationsInput {
     }
 }
 
-public struct GetIntegrationsOutput {
+public struct GetIntegrationsOutput: Swift.Sendable {
     /// The elements from this collection.
     public var items: [ApiGatewayV2ClientTypes.Integration]?
     /// The next page of elements from this collection. Not valid for the last element of the collection.
@@ -3690,7 +3691,7 @@ public struct GetIntegrationsOutput {
     }
 }
 
-public struct GetModelInput {
+public struct GetModelInput: Swift.Sendable {
     /// The API identifier.
     /// This member is required.
     public var apiId: Swift.String?
@@ -3708,7 +3709,7 @@ public struct GetModelInput {
     }
 }
 
-public struct GetModelOutput {
+public struct GetModelOutput: Swift.Sendable {
     /// The content-type for the model, for example, "application/json".
     public var contentType: Swift.String?
     /// The description of the model.
@@ -3736,7 +3737,7 @@ public struct GetModelOutput {
     }
 }
 
-public struct GetModelsInput {
+public struct GetModelsInput: Swift.Sendable {
     /// The API identifier.
     /// This member is required.
     public var apiId: Swift.String?
@@ -3757,7 +3758,7 @@ public struct GetModelsInput {
     }
 }
 
-public struct GetModelsOutput {
+public struct GetModelsOutput: Swift.Sendable {
     /// The elements from this collection.
     public var items: [ApiGatewayV2ClientTypes.Model]?
     /// The next page of elements from this collection. Not valid for the last element of the collection.
@@ -3773,7 +3774,7 @@ public struct GetModelsOutput {
     }
 }
 
-public struct GetModelTemplateInput {
+public struct GetModelTemplateInput: Swift.Sendable {
     /// The API identifier.
     /// This member is required.
     public var apiId: Swift.String?
@@ -3791,7 +3792,7 @@ public struct GetModelTemplateInput {
     }
 }
 
-public struct GetModelTemplateOutput {
+public struct GetModelTemplateOutput: Swift.Sendable {
     /// The template value.
     public var value: Swift.String?
 
@@ -3803,7 +3804,7 @@ public struct GetModelTemplateOutput {
     }
 }
 
-public struct GetRouteInput {
+public struct GetRouteInput: Swift.Sendable {
     /// The API identifier.
     /// This member is required.
     public var apiId: Swift.String?
@@ -3821,7 +3822,7 @@ public struct GetRouteInput {
     }
 }
 
-public struct GetRouteOutput {
+public struct GetRouteOutput: Swift.Sendable {
     /// Specifies whether a route is managed by API Gateway. If you created an API using quick create, the $default route is managed by API Gateway. You can't modify the $default route key.
     public var apiGatewayManaged: Swift.Bool?
     /// Specifies whether an API key is required for this route. Supported only for WebSocket APIs.
@@ -3881,7 +3882,7 @@ public struct GetRouteOutput {
     }
 }
 
-public struct GetRouteResponseInput {
+public struct GetRouteResponseInput: Swift.Sendable {
     /// The API identifier.
     /// This member is required.
     public var apiId: Swift.String?
@@ -3904,7 +3905,7 @@ public struct GetRouteResponseInput {
     }
 }
 
-public struct GetRouteResponseOutput {
+public struct GetRouteResponseOutput: Swift.Sendable {
     /// Represents the model selection expression of a route response. Supported only for WebSocket APIs.
     public var modelSelectionExpression: Swift.String?
     /// Represents the response models of a route response.
@@ -3932,7 +3933,7 @@ public struct GetRouteResponseOutput {
     }
 }
 
-public struct GetRouteResponsesInput {
+public struct GetRouteResponsesInput: Swift.Sendable {
     /// The API identifier.
     /// This member is required.
     public var apiId: Swift.String?
@@ -3958,7 +3959,7 @@ public struct GetRouteResponsesInput {
     }
 }
 
-public struct GetRouteResponsesOutput {
+public struct GetRouteResponsesOutput: Swift.Sendable {
     /// The elements from this collection.
     public var items: [ApiGatewayV2ClientTypes.RouteResponse]?
     /// The next page of elements from this collection. Not valid for the last element of the collection.
@@ -3974,7 +3975,7 @@ public struct GetRouteResponsesOutput {
     }
 }
 
-public struct GetRoutesInput {
+public struct GetRoutesInput: Swift.Sendable {
     /// The API identifier.
     /// This member is required.
     public var apiId: Swift.String?
@@ -3995,7 +3996,7 @@ public struct GetRoutesInput {
     }
 }
 
-public struct GetRoutesOutput {
+public struct GetRoutesOutput: Swift.Sendable {
     /// The elements from this collection.
     public var items: [ApiGatewayV2ClientTypes.Route]?
     /// The next page of elements from this collection. Not valid for the last element of the collection.
@@ -4011,7 +4012,7 @@ public struct GetRoutesOutput {
     }
 }
 
-public struct GetStageInput {
+public struct GetStageInput: Swift.Sendable {
     /// The API identifier.
     /// This member is required.
     public var apiId: Swift.String?
@@ -4029,7 +4030,7 @@ public struct GetStageInput {
     }
 }
 
-public struct GetStageOutput {
+public struct GetStageOutput: Swift.Sendable {
     /// Settings for logging access in this stage.
     public var accessLogSettings: ApiGatewayV2ClientTypes.AccessLogSettings?
     /// Specifies whether a stage is managed by API Gateway. If you created an API using quick create, the $default stage is managed by API Gateway. You can't modify the $default stage.
@@ -4093,7 +4094,7 @@ public struct GetStageOutput {
     }
 }
 
-public struct GetStagesInput {
+public struct GetStagesInput: Swift.Sendable {
     /// The API identifier.
     /// This member is required.
     public var apiId: Swift.String?
@@ -4114,7 +4115,7 @@ public struct GetStagesInput {
     }
 }
 
-public struct GetStagesOutput {
+public struct GetStagesOutput: Swift.Sendable {
     /// The elements from this collection.
     public var items: [ApiGatewayV2ClientTypes.Stage]?
     /// The next page of elements from this collection. Not valid for the last element of the collection.
@@ -4130,7 +4131,7 @@ public struct GetStagesOutput {
     }
 }
 
-public struct GetTagsInput {
+public struct GetTagsInput: Swift.Sendable {
     /// The resource ARN for the tag.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -4143,7 +4144,7 @@ public struct GetTagsInput {
     }
 }
 
-public struct GetTagsOutput {
+public struct GetTagsOutput: Swift.Sendable {
     /// Represents a collection of tags associated with the resource.
     public var tags: [Swift.String: Swift.String]?
 
@@ -4155,7 +4156,7 @@ public struct GetTagsOutput {
     }
 }
 
-public struct GetVpcLinkInput {
+public struct GetVpcLinkInput: Swift.Sendable {
     /// The ID of the VPC link.
     /// This member is required.
     public var vpcLinkId: Swift.String?
@@ -4168,7 +4169,7 @@ public struct GetVpcLinkInput {
     }
 }
 
-public struct GetVpcLinkOutput {
+public struct GetVpcLinkOutput: Swift.Sendable {
     /// The timestamp when the VPC link was created.
     public var createdDate: Foundation.Date?
     /// The name of the VPC link.
@@ -4212,7 +4213,7 @@ public struct GetVpcLinkOutput {
     }
 }
 
-public struct GetVpcLinksInput {
+public struct GetVpcLinksInput: Swift.Sendable {
     /// The maximum number of elements to be returned for this resource.
     public var maxResults: Swift.String?
     /// The next page of elements from this collection. Not valid for the last element of the collection.
@@ -4228,7 +4229,7 @@ public struct GetVpcLinksInput {
     }
 }
 
-public struct GetVpcLinksOutput {
+public struct GetVpcLinksOutput: Swift.Sendable {
     /// A collection of VPC links.
     public var items: [ApiGatewayV2ClientTypes.VpcLink]?
     /// The next page of elements from this collection. Not valid for the last element of the collection.
@@ -4245,7 +4246,7 @@ public struct GetVpcLinksOutput {
 }
 
 ///
-public struct ImportApiInput {
+public struct ImportApiInput: Swift.Sendable {
     /// Specifies how to interpret the base path of the API during import. Valid values are ignore, prepend, and split. The default value is ignore. To learn more, see [Set the OpenAPI basePath Property](https://docs.aws.amazon.com/apigateway/latest/developerguide/api-gateway-import-api-basePath.html). Supported only for HTTP APIs.
     public var basepath: Swift.String?
     /// The OpenAPI definition. Supported only for HTTP APIs.
@@ -4266,7 +4267,7 @@ public struct ImportApiInput {
     }
 }
 
-public struct ImportApiOutput {
+public struct ImportApiOutput: Swift.Sendable {
     /// The URI of the API, of the form {api-id}.execute-api.{region}.amazonaws.com. The stage name is typically appended to this URI to form a complete path to a deployed API stage.
     public var apiEndpoint: Swift.String?
     /// Specifies whether an API is managed by API Gateway. You can't update or delete a managed API by using API Gateway. A managed API can be deleted only through the tooling or service that created it.
@@ -4339,7 +4340,7 @@ public struct ImportApiOutput {
 }
 
 ///
-public struct ReimportApiInput {
+public struct ReimportApiInput: Swift.Sendable {
     /// The API identifier.
     /// This member is required.
     public var apiId: Swift.String?
@@ -4365,7 +4366,7 @@ public struct ReimportApiInput {
     }
 }
 
-public struct ReimportApiOutput {
+public struct ReimportApiOutput: Swift.Sendable {
     /// The URI of the API, of the form {api-id}.execute-api.{region}.amazonaws.com. The stage name is typically appended to this URI to form a complete path to a deployed API stage.
     public var apiEndpoint: Swift.String?
     /// Specifies whether an API is managed by API Gateway. You can't update or delete a managed API by using API Gateway. A managed API can be deleted only through the tooling or service that created it.
@@ -4437,7 +4438,7 @@ public struct ReimportApiOutput {
     }
 }
 
-public struct ResetAuthorizersCacheInput {
+public struct ResetAuthorizersCacheInput: Swift.Sendable {
     /// The API identifier.
     /// This member is required.
     public var apiId: Swift.String?
@@ -4456,7 +4457,7 @@ public struct ResetAuthorizersCacheInput {
 }
 
 /// Creates a new Tag resource to represent a tag.
-public struct TagResourceInput {
+public struct TagResourceInput: Swift.Sendable {
     /// The resource ARN for the tag.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -4473,12 +4474,12 @@ public struct TagResourceInput {
     }
 }
 
-public struct TagResourceOutput {
+public struct TagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UntagResourceInput {
+public struct UntagResourceInput: Swift.Sendable {
     /// The resource ARN for the tag.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -4497,7 +4498,7 @@ public struct UntagResourceInput {
 }
 
 /// Updates an Api.
-public struct UpdateApiInput {
+public struct UpdateApiInput: Swift.Sendable {
     /// The API identifier.
     /// This member is required.
     public var apiId: Swift.String?
@@ -4554,7 +4555,7 @@ public struct UpdateApiInput {
     }
 }
 
-public struct UpdateApiOutput {
+public struct UpdateApiOutput: Swift.Sendable {
     /// The URI of the API, of the form {api-id}.execute-api.{region}.amazonaws.com. The stage name is typically appended to this URI to form a complete path to a deployed API stage.
     public var apiEndpoint: Swift.String?
     /// Specifies whether an API is managed by API Gateway. You can't update or delete a managed API by using API Gateway. A managed API can be deleted only through the tooling or service that created it.
@@ -4627,7 +4628,7 @@ public struct UpdateApiOutput {
 }
 
 /// Updates an ApiMapping.
-public struct UpdateApiMappingInput {
+public struct UpdateApiMappingInput: Swift.Sendable {
     /// The API identifier.
     /// This member is required.
     public var apiId: Swift.String?
@@ -4658,7 +4659,7 @@ public struct UpdateApiMappingInput {
     }
 }
 
-public struct UpdateApiMappingOutput {
+public struct UpdateApiMappingOutput: Swift.Sendable {
     /// The API identifier.
     public var apiId: Swift.String?
     /// The API mapping identifier.
@@ -4683,7 +4684,7 @@ public struct UpdateApiMappingOutput {
 }
 
 /// Updates an Authorizer.
-public struct UpdateAuthorizerInput {
+public struct UpdateAuthorizerInput: Swift.Sendable {
     /// The API identifier.
     /// This member is required.
     public var apiId: Swift.String?
@@ -4741,7 +4742,7 @@ public struct UpdateAuthorizerInput {
     }
 }
 
-public struct UpdateAuthorizerOutput {
+public struct UpdateAuthorizerOutput: Swift.Sendable {
     /// Specifies the required credentials as an IAM role for API Gateway to invoke the authorizer. To specify an IAM role for API Gateway to assume, use the role's Amazon Resource Name (ARN). To use resource-based permissions on the Lambda function, don't specify this parameter. Supported only for REQUEST authorizers.
     public var authorizerCredentialsArn: Swift.String?
     /// The authorizer identifier.
@@ -4794,7 +4795,7 @@ public struct UpdateAuthorizerOutput {
 }
 
 /// Updates a Deployment.
-public struct UpdateDeploymentInput {
+public struct UpdateDeploymentInput: Swift.Sendable {
     /// The API identifier.
     /// This member is required.
     public var apiId: Swift.String?
@@ -4816,7 +4817,7 @@ public struct UpdateDeploymentInput {
     }
 }
 
-public struct UpdateDeploymentOutput {
+public struct UpdateDeploymentOutput: Swift.Sendable {
     /// Specifies whether a deployment was automatically released.
     public var autoDeployed: Swift.Bool?
     /// The date and time when the Deployment resource was created.
@@ -4849,7 +4850,7 @@ public struct UpdateDeploymentOutput {
 }
 
 /// Updates a DomainName.
-public struct UpdateDomainNameInput {
+public struct UpdateDomainNameInput: Swift.Sendable {
     /// The domain name.
     /// This member is required.
     public var domainName: Swift.String?
@@ -4870,7 +4871,7 @@ public struct UpdateDomainNameInput {
     }
 }
 
-public struct UpdateDomainNameOutput {
+public struct UpdateDomainNameOutput: Swift.Sendable {
     /// The API mapping selection expression.
     public var apiMappingSelectionExpression: Swift.String?
     /// The name of the DomainName resource.
@@ -4899,7 +4900,7 @@ public struct UpdateDomainNameOutput {
 }
 
 /// Updates an Integration.
-public struct UpdateIntegrationInput {
+public struct UpdateIntegrationInput: Swift.Sendable {
     /// The API identifier.
     /// This member is required.
     public var apiId: Swift.String?
@@ -4985,7 +4986,7 @@ public struct UpdateIntegrationInput {
     }
 }
 
-public struct UpdateIntegrationOutput {
+public struct UpdateIntegrationOutput: Swift.Sendable {
     /// Specifies whether an integration is managed by API Gateway. If you created an API using using quick create, the resulting integration is managed by API Gateway. You can update a managed integration, but you can't delete it.
     public var apiGatewayManaged: Swift.Bool?
     /// The ID of the VPC link for a private integration. Supported only for HTTP APIs.
@@ -5074,7 +5075,7 @@ public struct UpdateIntegrationOutput {
 }
 
 /// Updates an IntegrationResponses.
-public struct UpdateIntegrationResponseInput {
+public struct UpdateIntegrationResponseInput: Swift.Sendable {
     /// The API identifier.
     /// This member is required.
     public var apiId: Swift.String?
@@ -5117,7 +5118,7 @@ public struct UpdateIntegrationResponseInput {
     }
 }
 
-public struct UpdateIntegrationResponseOutput {
+public struct UpdateIntegrationResponseOutput: Swift.Sendable {
     /// Supported only for WebSocket APIs. Specifies how to handle response payload content type conversions. Supported values are CONVERT_TO_BINARY and CONVERT_TO_TEXT, with the following behaviors: CONVERT_TO_BINARY: Converts a response payload from a Base64-encoded string to the corresponding binary blob. CONVERT_TO_TEXT: Converts a response payload from a binary blob to a Base64-encoded string. If this property is not defined, the response payload will be passed through from the integration response to the route response or method response without modification.
     public var contentHandlingStrategy: ApiGatewayV2ClientTypes.ContentHandlingStrategy?
     /// The integration response ID.
@@ -5150,7 +5151,7 @@ public struct UpdateIntegrationResponseOutput {
 }
 
 /// Updates a Model.
-public struct UpdateModelInput {
+public struct UpdateModelInput: Swift.Sendable {
     /// The API identifier.
     /// This member is required.
     public var apiId: Swift.String?
@@ -5184,7 +5185,7 @@ public struct UpdateModelInput {
     }
 }
 
-public struct UpdateModelOutput {
+public struct UpdateModelOutput: Swift.Sendable {
     /// The content-type for the model, for example, "application/json".
     public var contentType: Swift.String?
     /// The description of the model.
@@ -5213,7 +5214,7 @@ public struct UpdateModelOutput {
 }
 
 /// Updates a Route.
-public struct UpdateRouteInput {
+public struct UpdateRouteInput: Swift.Sendable {
     /// The API identifier.
     /// This member is required.
     public var apiId: Swift.String?
@@ -5275,7 +5276,7 @@ public struct UpdateRouteInput {
     }
 }
 
-public struct UpdateRouteOutput {
+public struct UpdateRouteOutput: Swift.Sendable {
     /// Specifies whether a route is managed by API Gateway. If you created an API using quick create, the $default route is managed by API Gateway. You can't modify the $default route key.
     public var apiGatewayManaged: Swift.Bool?
     /// Specifies whether an API key is required for this route. Supported only for WebSocket APIs.
@@ -5336,7 +5337,7 @@ public struct UpdateRouteOutput {
 }
 
 /// Updates a RouteResponse.
-public struct UpdateRouteResponseInput {
+public struct UpdateRouteResponseInput: Swift.Sendable {
     /// The API identifier.
     /// This member is required.
     public var apiId: Swift.String?
@@ -5375,7 +5376,7 @@ public struct UpdateRouteResponseInput {
     }
 }
 
-public struct UpdateRouteResponseOutput {
+public struct UpdateRouteResponseOutput: Swift.Sendable {
     /// Represents the model selection expression of a route response. Supported only for WebSocket APIs.
     public var modelSelectionExpression: Swift.String?
     /// Represents the response models of a route response.
@@ -5404,7 +5405,7 @@ public struct UpdateRouteResponseOutput {
 }
 
 /// Updates a Stage.
-public struct UpdateStageInput {
+public struct UpdateStageInput: Swift.Sendable {
     /// Settings for logging access in this stage.
     public var accessLogSettings: ApiGatewayV2ClientTypes.AccessLogSettings?
     /// The API identifier.
@@ -5454,7 +5455,7 @@ public struct UpdateStageInput {
     }
 }
 
-public struct UpdateStageOutput {
+public struct UpdateStageOutput: Swift.Sendable {
     /// Settings for logging access in this stage.
     public var accessLogSettings: ApiGatewayV2ClientTypes.AccessLogSettings?
     /// Specifies whether a stage is managed by API Gateway. If you created an API using quick create, the $default stage is managed by API Gateway. You can't modify the $default stage.
@@ -5519,7 +5520,7 @@ public struct UpdateStageOutput {
 }
 
 /// Updates a VPC link.
-public struct UpdateVpcLinkInput {
+public struct UpdateVpcLinkInput: Swift.Sendable {
     /// The name of the VPC link.
     public var name: Swift.String?
     /// The ID of the VPC link.
@@ -5536,7 +5537,7 @@ public struct UpdateVpcLinkInput {
     }
 }
 
-public struct UpdateVpcLinkOutput {
+public struct UpdateVpcLinkOutput: Swift.Sendable {
     /// The timestamp when the VPC link was created.
     public var createdDate: Foundation.Date?
     /// The name of the VPC link.

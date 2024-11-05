@@ -26,7 +26,8 @@ import struct Smithy.URIQueryItem
 import struct SmithyHTTPAPI.Header
 import struct SmithyHTTPAPI.Headers
 
-public struct PublishOutput {
+
+public struct PublishOutput: Swift.Sendable {
 
     public init() { }
 }
@@ -257,7 +258,7 @@ public struct UnsupportedDocumentEncodingException: ClientRuntime.ModeledError, 
 }
 
 /// The input for the DeleteThingShadow operation.
-public struct DeleteThingShadowInput {
+public struct DeleteThingShadowInput: Swift.Sendable {
     /// The name of the shadow.
     public var shadowName: Swift.String?
     /// The name of the thing.
@@ -275,7 +276,7 @@ public struct DeleteThingShadowInput {
 }
 
 /// The output from the DeleteThingShadow operation.
-public struct DeleteThingShadowOutput {
+public struct DeleteThingShadowOutput: Swift.Sendable {
     /// The state information, in JSON format.
     /// This member is required.
     public var payload: Foundation.Data?
@@ -289,7 +290,7 @@ public struct DeleteThingShadowOutput {
 }
 
 /// The input for the GetRetainedMessage operation.
-public struct GetRetainedMessageInput {
+public struct GetRetainedMessageInput: Swift.Sendable {
     /// The topic name of the retained message to retrieve.
     /// This member is required.
     public var topic: Swift.String?
@@ -303,7 +304,7 @@ public struct GetRetainedMessageInput {
 }
 
 /// The output from the GetRetainedMessage operation.
-public struct GetRetainedMessageOutput {
+public struct GetRetainedMessageOutput: Swift.Sendable {
     /// The Epoch date and time, in milliseconds, when the retained message was stored by IoT.
     public var lastModifiedTime: Swift.Int
     /// The Base64-encoded message payload of the retained message body.
@@ -332,7 +333,7 @@ public struct GetRetainedMessageOutput {
 }
 
 /// The input for the GetThingShadow operation.
-public struct GetThingShadowInput {
+public struct GetThingShadowInput: Swift.Sendable {
     /// The name of the shadow.
     public var shadowName: Swift.String?
     /// The name of the thing.
@@ -350,7 +351,7 @@ public struct GetThingShadowInput {
 }
 
 /// The output from the GetThingShadow operation.
-public struct GetThingShadowOutput {
+public struct GetThingShadowOutput: Swift.Sendable {
     /// The state information, in JSON format.
     public var payload: Foundation.Data?
 
@@ -362,7 +363,7 @@ public struct GetThingShadowOutput {
     }
 }
 
-public struct ListNamedShadowsForThingInput {
+public struct ListNamedShadowsForThingInput: Swift.Sendable {
     /// The token to retrieve the next set of results.
     public var nextToken: Swift.String?
     /// The result page size.
@@ -383,7 +384,7 @@ public struct ListNamedShadowsForThingInput {
     }
 }
 
-public struct ListNamedShadowsForThingOutput {
+public struct ListNamedShadowsForThingOutput: Swift.Sendable {
     /// The token to use to get the next set of results, or null if there are no additional results.
     public var nextToken: Swift.String?
     /// The list of shadows for the specified thing.
@@ -403,7 +404,7 @@ public struct ListNamedShadowsForThingOutput {
     }
 }
 
-public struct ListRetainedMessagesInput {
+public struct ListRetainedMessagesInput: Swift.Sendable {
     /// The maximum number of results to return at one time.
     public var maxResults: Swift.Int?
     /// To retrieve the next set of results, the nextToken value from a previous response; otherwise null to receive the first set of results.
@@ -420,8 +421,9 @@ public struct ListRetainedMessagesInput {
 }
 
 extension IoTDataPlaneClientTypes {
+
     /// Information about a single retained message.
-    public struct RetainedMessageSummary {
+    public struct RetainedMessageSummary: Swift.Sendable {
         /// The Epoch date and time, in milliseconds, when the retained message was stored by IoT.
         public var lastModifiedTime: Swift.Int
         /// The size of the retained message's payload in bytes.
@@ -444,10 +446,9 @@ extension IoTDataPlaneClientTypes {
             self.topic = topic
         }
     }
-
 }
 
-public struct ListRetainedMessagesOutput {
+public struct ListRetainedMessagesOutput: Swift.Sendable {
     /// The token for the next set of results, or null if there are no additional results.
     public var nextToken: Swift.String?
     /// A summary list the account's retained messages. The information returned doesn't include the message payloads of the retained messages.
@@ -465,7 +466,7 @@ public struct ListRetainedMessagesOutput {
 
 extension IoTDataPlaneClientTypes {
 
-    public enum PayloadFormatIndicator: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum PayloadFormatIndicator: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case unspecifiedBytes
         case utf8Data
         case sdkUnknown(Swift.String)
@@ -493,7 +494,7 @@ extension IoTDataPlaneClientTypes {
 }
 
 /// The input for the Publish operation.
-public struct PublishInput {
+public struct PublishInput: Swift.Sendable {
     /// A UTF-8 encoded string that describes the content of the publishing message.
     public var contentType: Swift.String?
     /// The base64-encoded binary data used by the sender of the request message to identify which request the response message is for when it's received. correlationData is an HTTP header value in the API.
@@ -568,7 +569,7 @@ public struct RequestEntityTooLargeException: ClientRuntime.ModeledError, AWSCli
 }
 
 /// The input for the UpdateThingShadow operation.
-public struct UpdateThingShadowInput {
+public struct UpdateThingShadowInput: Swift.Sendable {
     /// The state information, in JSON format.
     /// This member is required.
     public var payload: Foundation.Data?
@@ -591,7 +592,7 @@ public struct UpdateThingShadowInput {
 }
 
 /// The output from the UpdateThingShadow operation.
-public struct UpdateThingShadowOutput {
+public struct UpdateThingShadowOutput: Swift.Sendable {
     /// The state information, in JSON format.
     public var payload: Foundation.Data?
 

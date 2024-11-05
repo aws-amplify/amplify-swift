@@ -27,89 +27,90 @@ import protocol ClientRuntime.ModeledError
 @_spi(SmithyReadWrite) import struct AWSClientRuntime.AWSJSONError
 @_spi(UnknownAWSHTTPServiceError) import struct AWSClientRuntime.UnknownAWSHTTPServiceError
 
-public struct DeleteDatasetGroupOutput {
+
+public struct DeleteDatasetGroupOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteDatasetImportJobOutput {
+public struct DeleteDatasetImportJobOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteDatasetOutput {
+public struct DeleteDatasetOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteExplainabilityExportOutput {
+public struct DeleteExplainabilityExportOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteExplainabilityOutput {
+public struct DeleteExplainabilityOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteForecastExportJobOutput {
+public struct DeleteForecastExportJobOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteForecastOutput {
+public struct DeleteForecastOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteMonitorOutput {
+public struct DeleteMonitorOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeletePredictorBacktestExportJobOutput {
+public struct DeletePredictorBacktestExportJobOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeletePredictorOutput {
+public struct DeletePredictorOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteResourceTreeOutput {
+public struct DeleteResourceTreeOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteWhatIfAnalysisOutput {
+public struct DeleteWhatIfAnalysisOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteWhatIfForecastExportOutput {
+public struct DeleteWhatIfForecastExportOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteWhatIfForecastOutput {
+public struct DeleteWhatIfForecastOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct ResumeResourceOutput {
+public struct ResumeResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct StopResourceOutput {
+public struct StopResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
 extension ForecastClientTypes {
 
-    public enum Operation: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Operation: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case add
         case divide
         case multiply
@@ -143,8 +144,9 @@ extension ForecastClientTypes {
 }
 
 extension ForecastClientTypes {
+
     /// Defines the modifications that you are making to an attribute for a what-if forecast. For example, you can use this operation to create a what-if forecast that investigates a 10% off sale on all shoes. To do this, you specify "AttributeName": "shoes", "Operation": "MULTIPLY", and "Value": "0.90". Pair this operation with the [TimeSeriesCondition] operation within the [CreateWhatIfForecastRequest$TimeSeriesTransformations] operation to define a subset of attribute items that are modified.
-    public struct Action {
+    public struct Action: Swift.Sendable {
         /// The related time series that you are modifying. This value is case insensitive.
         /// This member is required.
         public var attributeName: Swift.String?
@@ -174,12 +176,12 @@ extension ForecastClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension ForecastClientTypes {
+
     /// Describes an additional dataset. This object is part of the [DataConfig] object. Forecast supports the Weather Index and Holidays additional datasets. Weather Index The Amazon Forecast Weather Index is a built-in dataset that incorporates historical and projected weather information into your model. The Weather Index supplements your datasets with over two years of historical weather data and up to 14 days of projected weather data. For more information, see [Amazon Forecast Weather Index](https://docs.aws.amazon.com/forecast/latest/dg/weather.html). Holidays Holidays is a built-in dataset that incorporates national holiday information into your model. It provides native support for the holiday calendars of 66 countries. To view the holiday calendars, refer to the [Jollyday](http://jollyday.sourceforge.net/data.html) library. For more information, see [Holidays Featurization](https://docs.aws.amazon.com/forecast/latest/dg/holidays.html).
-    public struct AdditionalDataset {
+    public struct AdditionalDataset: Swift.Sendable {
         /// Weather Index To enable the Weather Index, do not specify a value for Configuration. Holidays Holidays To enable Holidays, set CountryCode to one of the following two-letter country codes:
         ///
         /// * "AL" - ALBANIA
@@ -327,7 +329,6 @@ extension ForecastClientTypes {
             self.name = name
         }
     }
-
 }
 
 /// We can't process the request because it includes an invalid value or a value that exceeds the valid range.
@@ -451,6 +452,7 @@ public struct ResourceNotFoundException: ClientRuntime.ModeledError, AWSClientRu
 }
 
 extension ForecastClientTypes {
+
     /// Provides information about the method used to transform attributes. The following is an example using the RETAIL domain: {
     ///     "AttributeName": "demand",
     ///
@@ -459,7 +461,7 @@ extension ForecastClientTypes {
     ///
     ///
     ///     }
-    public struct AttributeConfig {
+    public struct AttributeConfig: Swift.Sendable {
         /// The name of the attribute as specified in the schema. Amazon Forecast supports the target field of the target time series and the related time series datasets. For example, for the RETAIL domain, the target is demand.
         /// This member is required.
         public var attributeName: Swift.String?
@@ -496,12 +498,12 @@ extension ForecastClientTypes {
             self.transformations = transformations
         }
     }
-
 }
 
 extension ForecastClientTypes {
+
     /// The data configuration for your dataset group and any additional datasets.
-    public struct DataConfig {
+    public struct DataConfig: Swift.Sendable {
         /// Additional built-in datasets like Holidays and the Weather Index.
         public var additionalDatasets: [ForecastClientTypes.AdditionalDataset]?
         /// Aggregation and filling options for attributes in your dataset group.
@@ -521,12 +523,12 @@ extension ForecastClientTypes {
             self.datasetGroupArn = datasetGroupArn
         }
     }
-
 }
 
 extension ForecastClientTypes {
+
     /// An Key Management Service (KMS) key and an Identity and Access Management (IAM) role that Amazon Forecast can assume to access the key. You can specify this optional object in the [CreateDataset] and [CreatePredictor] requests.
-    public struct EncryptionConfig {
+    public struct EncryptionConfig: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the KMS key.
         /// This member is required.
         public var kmsKeyArn: Swift.String?
@@ -543,12 +545,12 @@ extension ForecastClientTypes {
             self.roleArn = roleArn
         }
     }
-
 }
 
 extension ForecastClientTypes {
+
     /// The configuration details for the predictor monitor.
-    public struct MonitorConfig {
+    public struct MonitorConfig: Swift.Sendable {
         /// The name of the monitor resource.
         /// This member is required.
         public var monitorName: Swift.String?
@@ -560,12 +562,11 @@ extension ForecastClientTypes {
             self.monitorName = monitorName
         }
     }
-
 }
 
 extension ForecastClientTypes {
 
-    public enum OptimizationMetric: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum OptimizationMetric: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case averageweightedquantileloss
         case mape
         case mase
@@ -602,6 +603,7 @@ extension ForecastClientTypes {
 }
 
 extension ForecastClientTypes {
+
     /// The optional metadata that you apply to a resource to help you categorize and organize them. Each tag consists of a key and an optional value, both of which you define. The following basic restrictions apply to tags:
     ///
     /// * Maximum number of tags per resource - 50.
@@ -617,7 +619,7 @@ extension ForecastClientTypes {
     /// * Tag keys and values are case sensitive.
     ///
     /// * Do not use aws:, AWS:, or any upper or lowercase combination of such as a prefix for keys as it is reserved for Amazon Web Services use. You cannot edit or delete tag keys with this prefix. Values can have this prefix. If a tag value has aws as its prefix but the key does not, then Forecast considers it to be a user tag and will count against the limit of 50 tags. Tags with only the key prefix of aws do not count against your tags per resource limit.
-    public struct Tag {
+    public struct Tag: Swift.Sendable {
         /// One part of a key-value pair that makes up a tag. A key is a general label that acts like a category for more specific tag values.
         /// This member is required.
         public var key: Swift.String?
@@ -634,7 +636,6 @@ extension ForecastClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension ForecastClientTypes.Tag: Swift.CustomDebugStringConvertible {
@@ -644,7 +645,7 @@ extension ForecastClientTypes.Tag: Swift.CustomDebugStringConvertible {
 
 extension ForecastClientTypes {
 
-    public enum DayOfWeek: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DayOfWeek: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case friday
         case monday
         case saturday
@@ -688,7 +689,7 @@ extension ForecastClientTypes {
 
 extension ForecastClientTypes {
 
-    public enum Month: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Month: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case april
         case august
         case december
@@ -746,8 +747,9 @@ extension ForecastClientTypes {
 }
 
 extension ForecastClientTypes {
+
     /// The time boundary Forecast uses to align and aggregate your data to match your forecast frequency. Provide the unit of time and the time boundary as a key value pair. If you don't provide a time boundary, Forecast uses a set of [Default Time Boundaries](https://docs.aws.amazon.com/forecast/latest/dg/data-aggregation.html#default-time-boundaries). For more information about aggregation, see [Data Aggregation for Different Forecast Frequencies](https://docs.aws.amazon.com/forecast/latest/dg/data-aggregation.html). For more information setting a custom time boundary, see [Specifying a Time Boundary](https://docs.aws.amazon.com/forecast/latest/dg/data-aggregation.html#specifying-time-boundary).
-    public struct TimeAlignmentBoundary {
+    public struct TimeAlignmentBoundary: Swift.Sendable {
         /// The day of the month to use for time alignment during aggregation.
         public var dayOfMonth: Swift.Int?
         /// The day of week to use for time alignment during aggregation. The day must be in uppercase.
@@ -770,10 +772,9 @@ extension ForecastClientTypes {
             self.month = month
         }
     }
-
 }
 
-public struct CreateAutoPredictorInput {
+public struct CreateAutoPredictorInput: Swift.Sendable {
     /// The data configuration for your dataset group and any additional datasets.
     public var dataConfig: ForecastClientTypes.DataConfig?
     /// An Key Management Service (KMS) key and an Identity and Access Management (IAM) role that Amazon Forecast can assume to access the key. You can specify this optional object in the [CreateDataset] and [CreatePredictor] requests.
@@ -861,7 +862,7 @@ public struct CreateAutoPredictorInput {
     }
 }
 
-public struct CreateAutoPredictorOutput {
+public struct CreateAutoPredictorOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the predictor.
     public var predictorArn: Swift.String?
 
@@ -875,7 +876,7 @@ public struct CreateAutoPredictorOutput {
 
 extension ForecastClientTypes {
 
-    public enum DatasetType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DatasetType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case itemMetadata
         case relatedTimeSeries
         case targetTimeSeries
@@ -907,7 +908,7 @@ extension ForecastClientTypes {
 
 extension ForecastClientTypes {
 
-    public enum Domain: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Domain: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case custom
         case ec2Capacity
         case inventoryPlanning
@@ -951,7 +952,7 @@ extension ForecastClientTypes {
 
 extension ForecastClientTypes {
 
-    public enum AttributeType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AttributeType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case float
         case geolocation
         case integer
@@ -988,8 +989,9 @@ extension ForecastClientTypes {
 }
 
 extension ForecastClientTypes {
+
     /// An attribute of a schema, which defines a dataset field. A schema attribute is required for every field in a dataset. The [Schema](https://docs.aws.amazon.com/forecast/latest/dg/API_Schema.html) object contains an array of SchemaAttribute objects.
-    public struct SchemaAttribute {
+    public struct SchemaAttribute: Swift.Sendable {
         /// The name of the dataset field.
         public var attributeName: Swift.String?
         /// The data type of the field. For a related time series dataset, other than date, item_id, and forecast dimensions attributes, all attributes should be of numerical type (integer/float).
@@ -1004,12 +1006,12 @@ extension ForecastClientTypes {
             self.attributeType = attributeType
         }
     }
-
 }
 
 extension ForecastClientTypes {
+
     /// Defines the fields of a dataset.
-    public struct Schema {
+    public struct Schema: Swift.Sendable {
         /// An array of attributes specifying the name and type of each field in a dataset.
         public var attributes: [ForecastClientTypes.SchemaAttribute]?
 
@@ -1020,10 +1022,9 @@ extension ForecastClientTypes {
             self.attributes = attributes
         }
     }
-
 }
 
-public struct CreateDatasetInput {
+public struct CreateDatasetInput: Swift.Sendable {
     /// The frequency of data collection. This parameter is required for RELATED_TIME_SERIES datasets. Valid intervals are an integer followed by Y (Year), M (Month), W (Week), D (Day), H (Hour), and min (Minute). For example, "1D" indicates every day and "15min" indicates every 15 minutes. You cannot specify a value that would overlap with the next larger frequency. That means, for example, you cannot specify a frequency of 60 minutes, because that is equivalent to 1 hour. The valid values for each frequency are the following:
     ///
     /// * Minute - 1-59
@@ -1092,7 +1093,7 @@ public struct CreateDatasetInput {
     }
 }
 
-public struct CreateDatasetOutput {
+public struct CreateDatasetOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the dataset.
     public var datasetArn: Swift.String?
 
@@ -1104,7 +1105,7 @@ public struct CreateDatasetOutput {
     }
 }
 
-public struct CreateDatasetGroupInput {
+public struct CreateDatasetGroupInput: Swift.Sendable {
     /// An array of Amazon Resource Names (ARNs) of the datasets that you want to include in the dataset group.
     public var datasetArns: [Swift.String]?
     /// A name for the dataset group.
@@ -1144,7 +1145,7 @@ public struct CreateDatasetGroupInput {
     }
 }
 
-public struct CreateDatasetGroupOutput {
+public struct CreateDatasetGroupOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the dataset group.
     public var datasetGroupArn: Swift.String?
 
@@ -1157,8 +1158,9 @@ public struct CreateDatasetGroupOutput {
 }
 
 extension ForecastClientTypes {
+
     /// The path to the file(s) in an Amazon Simple Storage Service (Amazon S3) bucket, and an Identity and Access Management (IAM) role that Amazon Forecast can assume to access the file(s). Optionally, includes an Key Management Service (KMS) key. This object is part of the [DataSource] object that is submitted in the [CreateDatasetImportJob] request, and part of the [DataDestination] object.
-    public struct S3Config {
+    public struct S3Config: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of an Key Management Service (KMS) key.
         public var kmsKeyArn: Swift.String?
         /// The path to an Amazon Simple Storage Service (Amazon S3) bucket or file(s) in an Amazon S3 bucket.
@@ -1179,12 +1181,12 @@ extension ForecastClientTypes {
             self.roleArn = roleArn
         }
     }
-
 }
 
 extension ForecastClientTypes {
+
     /// The source of your data, an Identity and Access Management (IAM) role that allows Amazon Forecast to access the data and, optionally, an Key Management Service (KMS) key.
-    public struct DataSource {
+    public struct DataSource: Swift.Sendable {
         /// The path to the data stored in an Amazon Simple Storage Service (Amazon S3) bucket along with the credentials to access the data.
         /// This member is required.
         public var s3Config: ForecastClientTypes.S3Config?
@@ -1196,12 +1198,11 @@ extension ForecastClientTypes {
             self.s3Config = s3Config
         }
     }
-
 }
 
 extension ForecastClientTypes {
 
-    public enum ImportMode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ImportMode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case full
         case incremental
         case sdkUnknown(Swift.String)
@@ -1228,7 +1229,7 @@ extension ForecastClientTypes {
     }
 }
 
-public struct CreateDatasetImportJobInput {
+public struct CreateDatasetImportJobInput: Swift.Sendable {
     /// The location of the training data to import and an Identity and Access Management (IAM) role that Amazon Forecast can assume to access the data. The training data must be stored in an Amazon S3 bucket. If encryption is used, DataSource must include an Key Management Service (KMS) key and the IAM role must allow Amazon Forecast permission to access the key. The KMS key and IAM role must match those specified in the EncryptionConfig parameter of the [CreateDataset](https://docs.aws.amazon.com/forecast/latest/dg/API_CreateDataset.html) operation.
     /// This member is required.
     public var dataSource: ForecastClientTypes.DataSource?
@@ -1304,7 +1305,7 @@ public struct CreateDatasetImportJobInput {
     }
 }
 
-public struct CreateDatasetImportJobOutput {
+public struct CreateDatasetImportJobOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the dataset import job.
     public var datasetImportJobArn: Swift.String?
 
@@ -1318,7 +1319,7 @@ public struct CreateDatasetImportJobOutput {
 
 extension ForecastClientTypes {
 
-    public enum TimePointGranularity: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum TimePointGranularity: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case all
         case specific
         case sdkUnknown(Swift.String)
@@ -1347,7 +1348,7 @@ extension ForecastClientTypes {
 
 extension ForecastClientTypes {
 
-    public enum TimeSeriesGranularity: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum TimeSeriesGranularity: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case all
         case specific
         case sdkUnknown(Swift.String)
@@ -1375,8 +1376,9 @@ extension ForecastClientTypes {
 }
 
 extension ForecastClientTypes {
+
     /// The ExplainabilityConfig data type defines the number of time series and time points included in [CreateExplainability]. If you provide a predictor ARN for ResourceArn, you must set both TimePointGranularity and TimeSeriesGranularity to “ALL”. When creating Predictor Explainability, Amazon Forecast considers all time series and time points. If you provide a forecast ARN for ResourceArn, you can set TimePointGranularity and TimeSeriesGranularity to either “ALL” or “Specific”.
-    public struct ExplainabilityConfig {
+    public struct ExplainabilityConfig: Swift.Sendable {
         /// To create an Explainability for all time points in your forecast horizon, use ALL. To create an Explainability for specific time points in your forecast horizon, use SPECIFIC. Specify time points with the StartDateTime and EndDateTime parameters within the [CreateExplainability] operation.
         /// This member is required.
         public var timePointGranularity: ForecastClientTypes.TimePointGranularity?
@@ -1393,10 +1395,9 @@ extension ForecastClientTypes {
             self.timeSeriesGranularity = timeSeriesGranularity
         }
     }
-
 }
 
-public struct CreateExplainabilityInput {
+public struct CreateExplainabilityInput: Swift.Sendable {
     /// The source of your data, an Identity and Access Management (IAM) role that allows Amazon Forecast to access the data and, optionally, an Key Management Service (KMS) key.
     public var dataSource: ForecastClientTypes.DataSource?
     /// Create an Explainability visualization that is viewable within the Amazon Web Services console.
@@ -1455,7 +1456,7 @@ public struct CreateExplainabilityInput {
     }
 }
 
-public struct CreateExplainabilityOutput {
+public struct CreateExplainabilityOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the Explainability.
     public var explainabilityArn: Swift.String?
 
@@ -1468,8 +1469,9 @@ public struct CreateExplainabilityOutput {
 }
 
 extension ForecastClientTypes {
+
     /// The destination for an export job. Provide an S3 path, an Identity and Access Management (IAM) role that allows Amazon Forecast to access the location, and an Key Management Service (KMS) key (optional).
-    public struct DataDestination {
+    public struct DataDestination: Swift.Sendable {
         /// The path to an Amazon Simple Storage Service (Amazon S3) bucket along with the credentials to access the bucket.
         /// This member is required.
         public var s3Config: ForecastClientTypes.S3Config?
@@ -1481,10 +1483,9 @@ extension ForecastClientTypes {
             self.s3Config = s3Config
         }
     }
-
 }
 
-public struct CreateExplainabilityExportInput {
+public struct CreateExplainabilityExportInput: Swift.Sendable {
     /// The destination for an export job. Provide an S3 path, an Identity and Access Management (IAM) role that allows Amazon Forecast to access the location, and an Key Management Service (KMS) key (optional).
     /// This member is required.
     public var destination: ForecastClientTypes.DataDestination?
@@ -1527,7 +1528,7 @@ public struct CreateExplainabilityExportInput {
     }
 }
 
-public struct CreateExplainabilityExportOutput {
+public struct CreateExplainabilityExportOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the export.
     public var explainabilityExportArn: Swift.String?
 
@@ -1540,8 +1541,9 @@ public struct CreateExplainabilityExportOutput {
 }
 
 extension ForecastClientTypes {
+
     /// Details about the import file that contains the time series for which you want to create forecasts.
-    public struct TimeSeriesIdentifiers {
+    public struct TimeSeriesIdentifiers: Swift.Sendable {
         /// The source of your data, an Identity and Access Management (IAM) role that allows Amazon Forecast to access the data and, optionally, an Key Management Service (KMS) key.
         public var dataSource: ForecastClientTypes.DataSource?
         /// The format of the data, either CSV or PARQUET.
@@ -1560,10 +1562,10 @@ extension ForecastClientTypes {
             self.schema = schema
         }
     }
-
 }
 
 extension ForecastClientTypes {
+
     /// Defines the set of time series that are used to create the forecasts in a TimeSeriesIdentifiers object. The TimeSeriesIdentifiers object needs the following information:
     ///
     /// * DataSource
@@ -1571,7 +1573,7 @@ extension ForecastClientTypes {
     /// * Format
     ///
     /// * Schema
-    public struct TimeSeriesSelector {
+    public struct TimeSeriesSelector: Swift.Sendable {
         /// Details about the import file that contains the time series for which you want to create forecasts.
         public var timeSeriesIdentifiers: ForecastClientTypes.TimeSeriesIdentifiers?
 
@@ -1582,10 +1584,9 @@ extension ForecastClientTypes {
             self.timeSeriesIdentifiers = timeSeriesIdentifiers
         }
     }
-
 }
 
-public struct CreateForecastInput {
+public struct CreateForecastInput: Swift.Sendable {
     /// A name for the forecast.
     /// This member is required.
     public var forecastName: Swift.String?
@@ -1635,7 +1636,7 @@ public struct CreateForecastInput {
     }
 }
 
-public struct CreateForecastOutput {
+public struct CreateForecastOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the forecast.
     public var forecastArn: Swift.String?
 
@@ -1647,7 +1648,7 @@ public struct CreateForecastOutput {
     }
 }
 
-public struct CreateForecastExportJobInput {
+public struct CreateForecastExportJobInput: Swift.Sendable {
     /// The location where you want to save the forecast and an Identity and Access Management (IAM) role that Amazon Forecast can assume to access the location. The forecast must be exported to an Amazon S3 bucket. If encryption is used, Destination must include an Key Management Service (KMS) key. The IAM role must allow Amazon Forecast permission to access the key.
     /// This member is required.
     public var destination: ForecastClientTypes.DataDestination?
@@ -1692,7 +1693,7 @@ public struct CreateForecastExportJobInput {
     }
 }
 
-public struct CreateForecastExportJobOutput {
+public struct CreateForecastExportJobOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the export job.
     public var forecastExportJobArn: Swift.String?
 
@@ -1704,7 +1705,7 @@ public struct CreateForecastExportJobOutput {
     }
 }
 
-public struct CreateMonitorInput {
+public struct CreateMonitorInput: Swift.Sendable {
     /// The name of the monitor resource.
     /// This member is required.
     public var monitorName: Swift.String?
@@ -1726,7 +1727,7 @@ public struct CreateMonitorInput {
     }
 }
 
-public struct CreateMonitorOutput {
+public struct CreateMonitorOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the monitor resource.
     public var monitorArn: Swift.String?
 
@@ -1740,7 +1741,7 @@ public struct CreateMonitorOutput {
 
 extension ForecastClientTypes {
 
-    public enum AutoMLOverrideStrategy: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AutoMLOverrideStrategy: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case accuracyoptimized
         case latencyoptimized
         case sdkUnknown(Swift.String)
@@ -1768,8 +1769,9 @@ extension ForecastClientTypes {
 }
 
 extension ForecastClientTypes {
+
     /// Parameters that define how to split a dataset into training data and testing data, and the number of iterations to perform. These parameters are specified in the predefined algorithms but you can override them in the [CreatePredictor] request.
-    public struct EvaluationParameters {
+    public struct EvaluationParameters: Swift.Sendable {
         /// The point from the end of the dataset where you want to split the data for model training and testing (evaluation). Specify the value as the number of data points. The default is the value of the forecast horizon. BackTestWindowOffset can be used to mimic a past virtual forecast start date. This value must be greater than or equal to the forecast horizon and less than half of the TARGET_TIME_SERIES dataset length. ForecastHorizon <= BackTestWindowOffset < 1/2 * TARGET_TIME_SERIES dataset length
         public var backTestWindowOffset: Swift.Int?
         /// The number of times to split the input data. The default is 1. Valid values are 1 through 5.
@@ -1784,12 +1786,11 @@ extension ForecastClientTypes {
             self.numberOfBacktestWindows = numberOfBacktestWindows
         }
     }
-
 }
 
 extension ForecastClientTypes {
 
-    public enum FeaturizationMethodName: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum FeaturizationMethodName: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case filling
         case sdkUnknown(Swift.String)
 
@@ -1814,6 +1815,7 @@ extension ForecastClientTypes {
 }
 
 extension ForecastClientTypes {
+
     /// Provides information about the method that featurizes (transforms) a dataset field. The method is part of the FeaturizationPipeline of the [Featurization] object. The following is an example of how you specify a FeaturizationMethod object. {
     ///     "FeaturizationMethodName": "filling",
     ///
@@ -1822,7 +1824,7 @@ extension ForecastClientTypes {
     ///
     ///
     ///     }
-    public struct FeaturizationMethod {
+    public struct FeaturizationMethod: Swift.Sendable {
         /// The name of the method. The "filling" method is the only supported method.
         /// This member is required.
         public var featurizationMethodName: ForecastClientTypes.FeaturizationMethodName?
@@ -1858,10 +1860,10 @@ extension ForecastClientTypes {
             self.featurizationMethodParameters = featurizationMethodParameters
         }
     }
-
 }
 
 extension ForecastClientTypes {
+
     /// This object belongs to the [CreatePredictor] operation. If you created your predictor with [CreateAutoPredictor], see [AttributeConfig]. Provides featurization (transformation) information for a dataset field. This object is part of the [FeaturizationConfig] object. For example: {
     ///     "AttributeName": "demand",
     ///
@@ -1879,7 +1881,7 @@ extension ForecastClientTypes {
     ///
     ///
     ///     }
-    public struct Featurization {
+    public struct Featurization: Swift.Sendable {
         /// The name of the schema attribute that specifies the data field to be featurized. Amazon Forecast supports the target field of the TARGET_TIME_SERIES and the RELATED_TIME_SERIES datasets. For example, for the RETAIL domain, the target is demand, and for the CUSTOM domain, the target is target_value. For more information, see [howitworks-missing-values].
         /// This member is required.
         public var attributeName: Swift.String?
@@ -1895,12 +1897,12 @@ extension ForecastClientTypes {
             self.featurizationPipeline = featurizationPipeline
         }
     }
-
 }
 
 extension ForecastClientTypes {
+
     /// This object belongs to the [CreatePredictor] operation. If you created your predictor with [CreateAutoPredictor], see [AttributeConfig]. In a [CreatePredictor] operation, the specified algorithm trains a model using the specified dataset group. You can optionally tell the operation to modify data fields prior to training a model. These modifications are referred to as featurization. You define featurization using the FeaturizationConfig object. You specify an array of transformations, one for each field that you want to featurize. You then include the FeaturizationConfig object in your CreatePredictor request. Amazon Forecast applies the featurization to the TARGET_TIME_SERIES and RELATED_TIME_SERIES datasets before model training. You can create multiple featurization configurations. For example, you might call the CreatePredictor operation twice by specifying different featurization configurations.
-    public struct FeaturizationConfig {
+    public struct FeaturizationConfig: Swift.Sendable {
         /// An array of featurization (transformation) information for the fields of a dataset.
         public var featurizations: [ForecastClientTypes.Featurization]?
         /// An array of dimension (field) names that specify how to group the generated forecast. For example, suppose that you are generating a forecast for item sales across all of your stores, and your dataset contains a store_id field. If you want the sales forecast for each item by store, you would specify store_id as the dimension. All forecast dimensions specified in the TARGET_TIME_SERIES dataset don't need to be specified in the CreatePredictor request. All forecast dimensions specified in the RELATED_TIME_SERIES dataset must be specified in the CreatePredictor request.
@@ -1935,12 +1937,12 @@ extension ForecastClientTypes {
             self.forecastFrequency = forecastFrequency
         }
     }
-
 }
 
 extension ForecastClientTypes {
+
     /// Specifies a categorical hyperparameter and it's range of tunable values. This object is part of the [ParameterRanges] object.
-    public struct CategoricalParameterRange {
+    public struct CategoricalParameterRange: Swift.Sendable {
         /// The name of the categorical hyperparameter to tune.
         /// This member is required.
         public var name: Swift.String?
@@ -1957,12 +1959,11 @@ extension ForecastClientTypes {
             self.values = values
         }
     }
-
 }
 
 extension ForecastClientTypes {
 
-    public enum ScalingType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ScalingType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case auto
         case linear
         case logarithmic
@@ -1996,8 +1997,9 @@ extension ForecastClientTypes {
 }
 
 extension ForecastClientTypes {
+
     /// Specifies a continuous hyperparameter and it's range of tunable values. This object is part of the [ParameterRanges] object.
-    public struct ContinuousParameterRange {
+    public struct ContinuousParameterRange: Swift.Sendable {
         /// The maximum tunable value of the hyperparameter.
         /// This member is required.
         public var maxValue: Swift.Double?
@@ -2023,12 +2025,12 @@ extension ForecastClientTypes {
             self.scalingType = scalingType
         }
     }
-
 }
 
 extension ForecastClientTypes {
+
     /// Specifies an integer hyperparameter and it's range of tunable values. This object is part of the [ParameterRanges] object.
-    public struct IntegerParameterRange {
+    public struct IntegerParameterRange: Swift.Sendable {
         /// The maximum tunable value of the hyperparameter.
         /// This member is required.
         public var maxValue: Swift.Int?
@@ -2054,12 +2056,12 @@ extension ForecastClientTypes {
             self.scalingType = scalingType
         }
     }
-
 }
 
 extension ForecastClientTypes {
+
     /// Specifies the categorical, continuous, and integer hyperparameters, and their ranges of tunable values. The range of tunable values determines which values that a hyperparameter tuning job can choose for the specified hyperparameter. This object is part of the [HyperParameterTuningJobConfig] object.
-    public struct ParameterRanges {
+    public struct ParameterRanges: Swift.Sendable {
         /// Specifies the tunable range for each categorical hyperparameter.
         public var categoricalParameterRanges: [ForecastClientTypes.CategoricalParameterRange]?
         /// Specifies the tunable range for each continuous hyperparameter.
@@ -2078,12 +2080,12 @@ extension ForecastClientTypes {
             self.integerParameterRanges = integerParameterRanges
         }
     }
-
 }
 
 extension ForecastClientTypes {
+
     /// Configuration information for a hyperparameter tuning job. You specify this object in the [CreatePredictor] request. A hyperparameter is a parameter that governs the model training process. You set hyperparameters before training starts, unlike model parameters, which are determined during training. The values of the hyperparameters effect which values are chosen for the model parameters. In a hyperparameter tuning job, Amazon Forecast chooses the set of hyperparameter values that optimize a specified metric. Forecast accomplishes this by running many training jobs over a range of hyperparameter values. The optimum set of values depends on the algorithm, the training data, and the specified metric objective.
-    public struct HyperParameterTuningJobConfig {
+    public struct HyperParameterTuningJobConfig: Swift.Sendable {
         /// Specifies the ranges of valid values for the hyperparameters.
         public var parameterRanges: ForecastClientTypes.ParameterRanges?
 
@@ -2094,12 +2096,12 @@ extension ForecastClientTypes {
             self.parameterRanges = parameterRanges
         }
     }
-
 }
 
 extension ForecastClientTypes {
+
     /// This object belongs to the [CreatePredictor] operation. If you created your predictor with [CreateAutoPredictor], see [AdditionalDataset]. Describes a supplementary feature of a dataset group. This object is part of the [InputDataConfig] object. Forecast supports the Weather Index and Holidays built-in featurizations. Weather Index The Amazon Forecast Weather Index is a built-in featurization that incorporates historical and projected weather information into your model. The Weather Index supplements your datasets with over two years of historical weather data and up to 14 days of projected weather data. For more information, see [Amazon Forecast Weather Index](https://docs.aws.amazon.com/forecast/latest/dg/weather.html). Holidays Holidays is a built-in featurization that incorporates a feature-engineered dataset of national holiday information into your model. It provides native support for the holiday calendars of 66 countries. To view the holiday calendars, refer to the [Jollyday](http://jollyday.sourceforge.net/data.html) library. For more information, see [Holidays Featurization](https://docs.aws.amazon.com/forecast/latest/dg/holidays.html).
-    public struct SupplementaryFeature {
+    public struct SupplementaryFeature: Swift.Sendable {
         /// The name of the feature. Valid values: "holiday" and "weather".
         /// This member is required.
         public var name: Swift.String?
@@ -2248,12 +2250,12 @@ extension ForecastClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension ForecastClientTypes {
+
     /// This object belongs to the [CreatePredictor] operation. If you created your predictor with [CreateAutoPredictor], see [DataConfig]. The data used to train a predictor. The data includes a dataset group and any supplementary features. You specify this object in the [CreatePredictor] request.
-    public struct InputDataConfig {
+    public struct InputDataConfig: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the dataset group.
         /// This member is required.
         public var datasetGroupArn: Swift.String?
@@ -2269,10 +2271,9 @@ extension ForecastClientTypes {
             self.supplementaryFeatures = supplementaryFeatures
         }
     }
-
 }
 
-public struct CreatePredictorInput {
+public struct CreatePredictorInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the algorithm to use for model training. Required if PerformAutoML is not set to true. Supported algorithms:
     ///
     /// * arn:aws:forecast:::algorithm/ARIMA
@@ -2374,7 +2375,7 @@ public struct CreatePredictorInput {
     }
 }
 
-public struct CreatePredictorOutput {
+public struct CreatePredictorOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the predictor.
     public var predictorArn: Swift.String?
 
@@ -2386,7 +2387,7 @@ public struct CreatePredictorOutput {
     }
 }
 
-public struct CreatePredictorBacktestExportJobInput {
+public struct CreatePredictorBacktestExportJobInput: Swift.Sendable {
     /// The destination for an export job. Provide an S3 path, an Identity and Access Management (IAM) role that allows Amazon Forecast to access the location, and an Key Management Service (KMS) key (optional).
     /// This member is required.
     public var destination: ForecastClientTypes.DataDestination?
@@ -2429,7 +2430,7 @@ public struct CreatePredictorBacktestExportJobInput {
     }
 }
 
-public struct CreatePredictorBacktestExportJobOutput {
+public struct CreatePredictorBacktestExportJobOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the predictor backtest export job that you want to export.
     public var predictorBacktestExportJobArn: Swift.String?
 
@@ -2441,7 +2442,7 @@ public struct CreatePredictorBacktestExportJobOutput {
     }
 }
 
-public struct CreateWhatIfAnalysisInput {
+public struct CreateWhatIfAnalysisInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the baseline forecast.
     /// This member is required.
     public var forecastArn: Swift.String?
@@ -2473,7 +2474,7 @@ public struct CreateWhatIfAnalysisInput {
     }
 }
 
-public struct CreateWhatIfAnalysisOutput {
+public struct CreateWhatIfAnalysisOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the what-if analysis.
     public var whatIfAnalysisArn: Swift.String?
 
@@ -2486,8 +2487,9 @@ public struct CreateWhatIfAnalysisOutput {
 }
 
 extension ForecastClientTypes {
+
     /// A replacement dataset is a modified version of the baseline related time series that contains only the values that you want to include in a what-if forecast. The replacement dataset must contain the forecast dimensions and item identifiers in the baseline related time series as well as at least 1 changed time series. This dataset is merged with the baseline related time series to create a transformed dataset that is used for the what-if forecast.
-    public struct TimeSeriesReplacementsDataSource {
+    public struct TimeSeriesReplacementsDataSource: Swift.Sendable {
         /// The format of the replacement data, CSV or PARQUET.
         public var format: Swift.String?
         /// The path to the file(s) in an Amazon Simple Storage Service (Amazon S3) bucket, and an Identity and Access Management (IAM) role that Amazon Forecast can assume to access the file(s). Optionally, includes an Key Management Service (KMS) key. This object is part of the [DataSource] object that is submitted in the [CreateDatasetImportJob] request, and part of the [DataDestination] object.
@@ -2512,12 +2514,11 @@ extension ForecastClientTypes {
             self.timestampFormat = timestampFormat
         }
     }
-
 }
 
 extension ForecastClientTypes {
 
-    public enum Condition: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Condition: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case equals
         case greaterThan
         case lessThan
@@ -2551,8 +2552,9 @@ extension ForecastClientTypes {
 }
 
 extension ForecastClientTypes {
+
     /// Creates a subset of items within an attribute that are modified. For example, you can use this operation to create a subset of items that cost $5 or less. To do this, you specify "AttributeName": "price", "AttributeValue": "5", and "Condition": "LESS_THAN". Pair this operation with the [Action] operation within the [CreateWhatIfForecastRequest$TimeSeriesTransformations] operation to define how the attribute is modified.
-    public struct TimeSeriesCondition {
+    public struct TimeSeriesCondition: Swift.Sendable {
         /// The item_id, dimension name, IM name, or timestamp that you are modifying.
         /// This member is required.
         public var attributeName: Swift.String?
@@ -2574,12 +2576,12 @@ extension ForecastClientTypes {
             self.condition = condition
         }
     }
-
 }
 
 extension ForecastClientTypes {
+
     /// A transformation function is a pair of operations that select and modify the rows in a related time series. You select the rows that you want with a condition operation and you modify the rows with a transformation operation. All conditions are joined with an AND operation, meaning that all conditions must be true for the transformation to be applied. Transformations are applied in the order that they are listed.
-    public struct TimeSeriesTransformation {
+    public struct TimeSeriesTransformation: Swift.Sendable {
         /// An array of actions that define a time series and how it is transformed. These transformations create a new time series that is used for the what-if analysis.
         public var action: ForecastClientTypes.Action?
         /// An array of conditions that define which members of the related time series are transformed.
@@ -2594,10 +2596,9 @@ extension ForecastClientTypes {
             self.timeSeriesConditions = timeSeriesConditions
         }
     }
-
 }
 
-public struct CreateWhatIfForecastInput {
+public struct CreateWhatIfForecastInput: Swift.Sendable {
     /// A list of [tags](https://docs.aws.amazon.com/forecast/latest/dg/tagging-forecast-resources.html) to apply to the what if forecast.
     public var tags: [ForecastClientTypes.Tag]?
     /// The replacement time series dataset, which contains the rows that you want to change in the related time series dataset. A replacement time series does not need to contain all rows that are in the baseline related time series. Include only the rows (measure-dimension combinations) that you want to include in the what-if forecast. This dataset is merged with the original time series to create a transformed dataset that is used for the what-if analysis. This dataset should contain the items to modify (such as item_id or workforce_type), any relevant dimensions, the timestamp column, and at least one of the related time series columns. This file should not contain duplicate timestamps for the same time series. Timestamps and item_ids not included in this dataset are not included in the what-if analysis.
@@ -2627,7 +2628,7 @@ public struct CreateWhatIfForecastInput {
     }
 }
 
-public struct CreateWhatIfForecastOutput {
+public struct CreateWhatIfForecastOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the what-if forecast.
     public var whatIfForecastArn: Swift.String?
 
@@ -2639,7 +2640,7 @@ public struct CreateWhatIfForecastOutput {
     }
 }
 
-public struct CreateWhatIfForecastExportInput {
+public struct CreateWhatIfForecastExportInput: Swift.Sendable {
     /// The location where you want to save the forecast and an Identity and Access Management (IAM) role that Amazon Forecast can assume to access the location. The forecast must be exported to an Amazon S3 bucket. If encryption is used, Destination must include an Key Management Service (KMS) key. The IAM role must allow Amazon Forecast permission to access the key.
     /// This member is required.
     public var destination: ForecastClientTypes.DataDestination?
@@ -2670,7 +2671,7 @@ public struct CreateWhatIfForecastExportInput {
     }
 }
 
-public struct CreateWhatIfForecastExportOutput {
+public struct CreateWhatIfForecastExportOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the what-if forecast.
     public var whatIfForecastExportArn: Swift.String?
 
@@ -2682,7 +2683,7 @@ public struct CreateWhatIfForecastExportOutput {
     }
 }
 
-public struct DeleteDatasetInput {
+public struct DeleteDatasetInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the dataset to delete.
     /// This member is required.
     public var datasetArn: Swift.String?
@@ -2695,7 +2696,7 @@ public struct DeleteDatasetInput {
     }
 }
 
-public struct DeleteDatasetGroupInput {
+public struct DeleteDatasetGroupInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the dataset group to delete.
     /// This member is required.
     public var datasetGroupArn: Swift.String?
@@ -2708,7 +2709,7 @@ public struct DeleteDatasetGroupInput {
     }
 }
 
-public struct DeleteDatasetImportJobInput {
+public struct DeleteDatasetImportJobInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the dataset import job to delete.
     /// This member is required.
     public var datasetImportJobArn: Swift.String?
@@ -2721,7 +2722,7 @@ public struct DeleteDatasetImportJobInput {
     }
 }
 
-public struct DeleteExplainabilityInput {
+public struct DeleteExplainabilityInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the Explainability resource to delete.
     /// This member is required.
     public var explainabilityArn: Swift.String?
@@ -2734,7 +2735,7 @@ public struct DeleteExplainabilityInput {
     }
 }
 
-public struct DeleteExplainabilityExportInput {
+public struct DeleteExplainabilityExportInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the Explainability export to delete.
     /// This member is required.
     public var explainabilityExportArn: Swift.String?
@@ -2747,7 +2748,7 @@ public struct DeleteExplainabilityExportInput {
     }
 }
 
-public struct DeleteForecastInput {
+public struct DeleteForecastInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the forecast to delete.
     /// This member is required.
     public var forecastArn: Swift.String?
@@ -2760,7 +2761,7 @@ public struct DeleteForecastInput {
     }
 }
 
-public struct DeleteForecastExportJobInput {
+public struct DeleteForecastExportJobInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the forecast export job to delete.
     /// This member is required.
     public var forecastExportJobArn: Swift.String?
@@ -2773,7 +2774,7 @@ public struct DeleteForecastExportJobInput {
     }
 }
 
-public struct DeleteMonitorInput {
+public struct DeleteMonitorInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the monitor resource to delete.
     /// This member is required.
     public var monitorArn: Swift.String?
@@ -2786,7 +2787,7 @@ public struct DeleteMonitorInput {
     }
 }
 
-public struct DeletePredictorInput {
+public struct DeletePredictorInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the predictor to delete.
     /// This member is required.
     public var predictorArn: Swift.String?
@@ -2799,7 +2800,7 @@ public struct DeletePredictorInput {
     }
 }
 
-public struct DeletePredictorBacktestExportJobInput {
+public struct DeletePredictorBacktestExportJobInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the predictor backtest export job to delete.
     /// This member is required.
     public var predictorBacktestExportJobArn: Swift.String?
@@ -2812,7 +2813,7 @@ public struct DeletePredictorBacktestExportJobInput {
     }
 }
 
-public struct DeleteResourceTreeInput {
+public struct DeleteResourceTreeInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the parent resource to delete. All child resources of the parent resource will also be deleted.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -2825,7 +2826,7 @@ public struct DeleteResourceTreeInput {
     }
 }
 
-public struct DeleteWhatIfAnalysisInput {
+public struct DeleteWhatIfAnalysisInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the what-if analysis that you want to delete.
     /// This member is required.
     public var whatIfAnalysisArn: Swift.String?
@@ -2838,7 +2839,7 @@ public struct DeleteWhatIfAnalysisInput {
     }
 }
 
-public struct DeleteWhatIfForecastInput {
+public struct DeleteWhatIfForecastInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the what-if forecast that you want to delete.
     /// This member is required.
     public var whatIfForecastArn: Swift.String?
@@ -2851,7 +2852,7 @@ public struct DeleteWhatIfForecastInput {
     }
 }
 
-public struct DeleteWhatIfForecastExportInput {
+public struct DeleteWhatIfForecastExportInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the what-if forecast export that you want to delete.
     /// This member is required.
     public var whatIfForecastExportArn: Swift.String?
@@ -2864,7 +2865,7 @@ public struct DeleteWhatIfForecastExportInput {
     }
 }
 
-public struct DescribeAutoPredictorInput {
+public struct DescribeAutoPredictorInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the predictor.
     /// This member is required.
     public var predictorArn: Swift.String?
@@ -2878,8 +2879,9 @@ public struct DescribeAutoPredictorInput {
 }
 
 extension ForecastClientTypes {
+
     /// Provides information about the Explainability resource.
-    public struct ExplainabilityInfo {
+    public struct ExplainabilityInfo: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the Explainability.
         public var explainabilityArn: Swift.String?
         /// The status of the Explainability. States include:
@@ -2902,12 +2904,12 @@ extension ForecastClientTypes {
             self.status = status
         }
     }
-
 }
 
 extension ForecastClientTypes {
+
     /// Provides information about the monitor resource.
-    public struct MonitorInfo {
+    public struct MonitorInfo: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the monitor resource.
         public var monitorArn: Swift.String?
         /// The status of the monitor. States include:
@@ -2932,12 +2934,11 @@ extension ForecastClientTypes {
             self.status = status
         }
     }
-
 }
 
 extension ForecastClientTypes {
 
-    public enum State: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum State: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case active
         case deleted
         case sdkUnknown(Swift.String)
@@ -2965,8 +2966,9 @@ extension ForecastClientTypes {
 }
 
 extension ForecastClientTypes {
+
     /// Provides a summary of the reference predictor used when retraining or upgrading a predictor.
-    public struct ReferencePredictorSummary {
+    public struct ReferencePredictorSummary: Swift.Sendable {
         /// The ARN of the reference predictor.
         public var arn: Swift.String?
         /// Whether the reference predictor is Active or Deleted.
@@ -2981,10 +2983,9 @@ extension ForecastClientTypes {
             self.state = state
         }
     }
-
 }
 
-public struct DescribeAutoPredictorOutput {
+public struct DescribeAutoPredictorOutput: Swift.Sendable {
     /// The timestamp of the CreateAutoPredictor request.
     public var creationTime: Foundation.Date?
     /// The data configuration for your dataset group and any additional datasets.
@@ -3086,7 +3087,7 @@ public struct DescribeAutoPredictorOutput {
     }
 }
 
-public struct DescribeDatasetInput {
+public struct DescribeDatasetInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the dataset.
     /// This member is required.
     public var datasetArn: Swift.String?
@@ -3099,7 +3100,7 @@ public struct DescribeDatasetInput {
     }
 }
 
-public struct DescribeDatasetOutput {
+public struct DescribeDatasetOutput: Swift.Sendable {
     /// When the dataset was created.
     public var creationTime: Foundation.Date?
     /// The frequency of data collection. Valid intervals are Y (Year), M (Month), W (Week), D (Day), H (Hour), 30min (30 minutes), 15min (15 minutes), 10min (10 minutes), 5min (5 minutes), and 1min (1 minute). For example, "M" indicates every month and "30min" indicates every 30 minutes.
@@ -3158,7 +3159,7 @@ public struct DescribeDatasetOutput {
     }
 }
 
-public struct DescribeDatasetGroupInput {
+public struct DescribeDatasetGroupInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the dataset group.
     /// This member is required.
     public var datasetGroupArn: Swift.String?
@@ -3171,7 +3172,7 @@ public struct DescribeDatasetGroupInput {
     }
 }
 
-public struct DescribeDatasetGroupOutput {
+public struct DescribeDatasetGroupOutput: Swift.Sendable {
     /// When the dataset group was created.
     public var creationTime: Foundation.Date?
     /// An array of Amazon Resource Names (ARNs) of the datasets contained in the dataset group.
@@ -3218,7 +3219,7 @@ public struct DescribeDatasetGroupOutput {
     }
 }
 
-public struct DescribeDatasetImportJobInput {
+public struct DescribeDatasetImportJobInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the dataset import job.
     /// This member is required.
     public var datasetImportJobArn: Swift.String?
@@ -3232,8 +3233,9 @@ public struct DescribeDatasetImportJobInput {
 }
 
 extension ForecastClientTypes {
+
     /// Provides statistics for each data field imported into to an Amazon Forecast dataset with the [CreateDatasetImportJob](https://docs.aws.amazon.com/forecast/latest/dg/API_CreateDatasetImportJob.html) operation.
-    public struct Statistics {
+    public struct Statistics: Swift.Sendable {
         /// For a numeric field, the average value in the field.
         public var avg: Swift.Double?
         /// The number of values in the field. If the response value is -1, refer to CountLong.
@@ -3288,10 +3290,9 @@ extension ForecastClientTypes {
             self.stddev = stddev
         }
     }
-
 }
 
-public struct DescribeDatasetImportJobOutput {
+public struct DescribeDatasetImportJobOutput: Swift.Sendable {
     /// When the dataset import job was created.
     public var creationTime: Foundation.Date?
     /// The size of the dataset in gigabytes (GB) after the import job has finished.
@@ -3389,7 +3390,7 @@ public struct DescribeDatasetImportJobOutput {
     }
 }
 
-public struct DescribeExplainabilityInput {
+public struct DescribeExplainabilityInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the Explaianability to describe.
     /// This member is required.
     public var explainabilityArn: Swift.String?
@@ -3402,7 +3403,7 @@ public struct DescribeExplainabilityInput {
     }
 }
 
-public struct DescribeExplainabilityOutput {
+public struct DescribeExplainabilityOutput: Swift.Sendable {
     /// When the Explainability resource was created.
     public var creationTime: Foundation.Date?
     /// The source of your data, an Identity and Access Management (IAM) role that allows Amazon Forecast to access the data and, optionally, an Key Management Service (KMS) key.
@@ -3484,7 +3485,7 @@ public struct DescribeExplainabilityOutput {
     }
 }
 
-public struct DescribeExplainabilityExportInput {
+public struct DescribeExplainabilityExportInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the Explainability export.
     /// This member is required.
     public var explainabilityExportArn: Swift.String?
@@ -3497,7 +3498,7 @@ public struct DescribeExplainabilityExportInput {
     }
 }
 
-public struct DescribeExplainabilityExportOutput {
+public struct DescribeExplainabilityExportOutput: Swift.Sendable {
     /// When the Explainability export was created.
     public var creationTime: Foundation.Date?
     /// The destination for an export job. Provide an S3 path, an Identity and Access Management (IAM) role that allows Amazon Forecast to access the location, and an Key Management Service (KMS) key (optional).
@@ -3559,7 +3560,7 @@ public struct DescribeExplainabilityExportOutput {
     }
 }
 
-public struct DescribeForecastInput {
+public struct DescribeForecastInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the forecast.
     /// This member is required.
     public var forecastArn: Swift.String?
@@ -3572,7 +3573,7 @@ public struct DescribeForecastInput {
     }
 }
 
-public struct DescribeForecastOutput {
+public struct DescribeForecastOutput: Swift.Sendable {
     /// When the forecast creation task was created.
     public var creationTime: Foundation.Date?
     /// The ARN of the dataset group that provided the data used to train the predictor.
@@ -3645,7 +3646,7 @@ public struct DescribeForecastOutput {
     }
 }
 
-public struct DescribeForecastExportJobInput {
+public struct DescribeForecastExportJobInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the forecast export job.
     /// This member is required.
     public var forecastExportJobArn: Swift.String?
@@ -3658,7 +3659,7 @@ public struct DescribeForecastExportJobInput {
     }
 }
 
-public struct DescribeForecastExportJobOutput {
+public struct DescribeForecastExportJobOutput: Swift.Sendable {
     /// When the forecast export job was created.
     public var creationTime: Foundation.Date?
     /// The path to the Amazon Simple Storage Service (Amazon S3) bucket where the forecast is exported.
@@ -3723,7 +3724,7 @@ public struct DescribeForecastExportJobOutput {
     }
 }
 
-public struct DescribeMonitorInput {
+public struct DescribeMonitorInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the monitor resource to describe.
     /// This member is required.
     public var monitorArn: Swift.String?
@@ -3737,8 +3738,9 @@ public struct DescribeMonitorInput {
 }
 
 extension ForecastClientTypes {
+
     /// An individual metric that you can use for comparison as you evaluate your monitoring results.
-    public struct BaselineMetric {
+    public struct BaselineMetric: Swift.Sendable {
         /// The name of the metric.
         public var name: Swift.String?
         /// The value for the metric.
@@ -3753,12 +3755,12 @@ extension ForecastClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension ForecastClientTypes {
+
     /// Metrics you can use as a baseline for comparison purposes. Use these metrics when you interpret monitoring results for an auto predictor.
-    public struct PredictorBaseline {
+    public struct PredictorBaseline: Swift.Sendable {
         /// The initial [accuracy metrics](https://docs.aws.amazon.com/forecast/latest/dg/metrics.html) for the predictor. Use these metrics as a baseline for comparison purposes as you use your predictor and the metrics change.
         public var baselineMetrics: [ForecastClientTypes.BaselineMetric]?
 
@@ -3769,12 +3771,12 @@ extension ForecastClientTypes {
             self.baselineMetrics = baselineMetrics
         }
     }
-
 }
 
 extension ForecastClientTypes {
+
     /// Metrics you can use as a baseline for comparison purposes. Use these metrics when you interpret monitoring results for an auto predictor.
-    public struct Baseline {
+    public struct Baseline: Swift.Sendable {
         /// The initial [accuracy metrics](https://docs.aws.amazon.com/forecast/latest/dg/metrics.html) for the predictor you are monitoring. Use these metrics as a baseline for comparison purposes as you use your predictor and the metrics change.
         public var predictorBaseline: ForecastClientTypes.PredictorBaseline?
 
@@ -3785,10 +3787,9 @@ extension ForecastClientTypes {
             self.predictorBaseline = predictorBaseline
         }
     }
-
 }
 
-public struct DescribeMonitorOutput {
+public struct DescribeMonitorOutput: Swift.Sendable {
     /// Metrics you can use as a baseline for comparison purposes. Use these values you interpret monitoring results for an auto predictor.
     public var baseline: ForecastClientTypes.Baseline?
     /// The timestamp for when the monitor resource was created.
@@ -3840,7 +3841,7 @@ public struct DescribeMonitorOutput {
     }
 }
 
-public struct DescribePredictorInput {
+public struct DescribePredictorInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the predictor that you want information about.
     /// This member is required.
     public var predictorArn: Swift.String?
@@ -3854,8 +3855,9 @@ public struct DescribePredictorInput {
 }
 
 extension ForecastClientTypes {
+
     /// The status, start time, and end time of a backtest, as well as a failure reason if applicable.
-    public struct TestWindowSummary {
+    public struct TestWindowSummary: Swift.Sendable {
         /// If the test failed, the reason why it failed.
         public var message: Swift.String?
         /// The status of the test. Possible status values are:
@@ -3884,12 +3886,12 @@ extension ForecastClientTypes {
             self.testWindowStart = testWindowStart
         }
     }
-
 }
 
 extension ForecastClientTypes {
+
     /// The algorithm used to perform a backtest and the status of those tests.
-    public struct PredictorExecution {
+    public struct PredictorExecution: Swift.Sendable {
         /// The ARN of the algorithm used to test the predictor.
         public var algorithmArn: Swift.String?
         /// An array of test windows used to evaluate the algorithm. The NumberOfBacktestWindows from the object determines the number of windows in the array.
@@ -3904,12 +3906,12 @@ extension ForecastClientTypes {
             self.testWindows = testWindows
         }
     }
-
 }
 
 extension ForecastClientTypes {
+
     /// Contains details on the backtests performed to evaluate the accuracy of the predictor. The tests are returned in descending order of accuracy, with the most accurate backtest appearing first. You specify the number of backtests to perform when you call the operation.
-    public struct PredictorExecutionDetails {
+    public struct PredictorExecutionDetails: Swift.Sendable {
         /// An array of the backtests performed to evaluate the accuracy of the predictor against a particular algorithm. The NumberOfBacktestWindows from the object determines the number of windows in the array.
         public var predictorExecutions: [ForecastClientTypes.PredictorExecution]?
 
@@ -3920,10 +3922,9 @@ extension ForecastClientTypes {
             self.predictorExecutions = predictorExecutions
         }
     }
-
 }
 
-public struct DescribePredictorOutput {
+public struct DescribePredictorOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the algorithm used for model training.
     public var algorithmArn: Swift.String?
     /// When PerformAutoML is specified, the ARN of the chosen algorithm.
@@ -4048,7 +4049,7 @@ public struct DescribePredictorOutput {
     }
 }
 
-public struct DescribePredictorBacktestExportJobInput {
+public struct DescribePredictorBacktestExportJobInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the predictor backtest export job.
     /// This member is required.
     public var predictorBacktestExportJobArn: Swift.String?
@@ -4061,7 +4062,7 @@ public struct DescribePredictorBacktestExportJobInput {
     }
 }
 
-public struct DescribePredictorBacktestExportJobOutput {
+public struct DescribePredictorBacktestExportJobOutput: Swift.Sendable {
     /// When the predictor backtest export job was created.
     public var creationTime: Foundation.Date?
     /// The destination for an export job. Provide an S3 path, an Identity and Access Management (IAM) role that allows Amazon Forecast to access the location, and an Key Management Service (KMS) key (optional).
@@ -4123,7 +4124,7 @@ public struct DescribePredictorBacktestExportJobOutput {
     }
 }
 
-public struct DescribeWhatIfAnalysisInput {
+public struct DescribeWhatIfAnalysisInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the what-if analysis that you are interested in.
     /// This member is required.
     public var whatIfAnalysisArn: Swift.String?
@@ -4136,7 +4137,7 @@ public struct DescribeWhatIfAnalysisInput {
     }
 }
 
-public struct DescribeWhatIfAnalysisOutput {
+public struct DescribeWhatIfAnalysisOutput: Swift.Sendable {
     /// When the what-if analysis was created.
     public var creationTime: Foundation.Date?
     /// The approximate time remaining to complete the what-if analysis, in minutes.
@@ -4207,7 +4208,7 @@ public struct DescribeWhatIfAnalysisOutput {
     }
 }
 
-public struct DescribeWhatIfForecastInput {
+public struct DescribeWhatIfForecastInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the what-if forecast that you are interested in.
     /// This member is required.
     public var whatIfForecastArn: Swift.String?
@@ -4220,7 +4221,7 @@ public struct DescribeWhatIfForecastInput {
     }
 }
 
-public struct DescribeWhatIfForecastOutput {
+public struct DescribeWhatIfForecastOutput: Swift.Sendable {
     /// When the what-if forecast was created.
     public var creationTime: Foundation.Date?
     /// The approximate time remaining to complete the what-if forecast, in minutes.
@@ -4293,7 +4294,7 @@ public struct DescribeWhatIfForecastOutput {
     }
 }
 
-public struct DescribeWhatIfForecastExportInput {
+public struct DescribeWhatIfForecastExportInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the what-if forecast export that you are interested in.
     /// This member is required.
     public var whatIfForecastExportArn: Swift.String?
@@ -4306,7 +4307,7 @@ public struct DescribeWhatIfForecastExportInput {
     }
 }
 
-public struct DescribeWhatIfForecastExportOutput {
+public struct DescribeWhatIfForecastExportOutput: Swift.Sendable {
     /// When the what-if forecast export was created.
     public var creationTime: Foundation.Date?
     /// The destination for an export job. Provide an S3 path, an Identity and Access Management (IAM) role that allows Amazon Forecast to access the location, and an Key Management Service (KMS) key (optional).
@@ -4375,7 +4376,7 @@ public struct DescribeWhatIfForecastExportOutput {
     }
 }
 
-public struct GetAccuracyMetricsInput {
+public struct GetAccuracyMetricsInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the predictor to get metrics for.
     /// This member is required.
     public var predictorArn: Swift.String?
@@ -4390,7 +4391,7 @@ public struct GetAccuracyMetricsInput {
 
 extension ForecastClientTypes {
 
-    public enum EvaluationType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum EvaluationType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case computed
         case summary
         case sdkUnknown(Swift.String)
@@ -4418,8 +4419,9 @@ extension ForecastClientTypes {
 }
 
 extension ForecastClientTypes {
+
     /// Provides detailed error metrics to evaluate the performance of a predictor. This object is part of the [Metrics] object.
-    public struct ErrorMetric {
+    public struct ErrorMetric: Swift.Sendable {
         /// The Forecast type used to compute WAPE, MAPE, MASE, and RMSE.
         public var forecastType: Swift.String?
         /// The Mean Absolute Percentage Error (MAPE)
@@ -4446,12 +4448,12 @@ extension ForecastClientTypes {
             self.wape = wape
         }
     }
-
 }
 
 extension ForecastClientTypes {
+
     /// The weighted loss value for a quantile. This object is part of the [Metrics] object.
-    public struct WeightedQuantileLoss {
+    public struct WeightedQuantileLoss: Swift.Sendable {
         /// The difference between the predicted value and the actual value over the quantile, weighted (normalized) by dividing by the sum over all quantiles.
         public var lossValue: Swift.Double?
         /// The quantile. Quantiles divide a probability distribution into regions of equal probability. For example, if the distribution was divided into 5 regions of equal probability, the quantiles would be 0.2, 0.4, 0.6, and 0.8.
@@ -4466,12 +4468,12 @@ extension ForecastClientTypes {
             self.quantile = quantile
         }
     }
-
 }
 
 extension ForecastClientTypes {
+
     /// Provides metrics that are used to evaluate the performance of a predictor. This object is part of the [WindowSummary] object.
-    public struct Metrics {
+    public struct Metrics: Swift.Sendable {
         /// The average value of all weighted quantile losses.
         public var averageWeightedQuantileLoss: Swift.Double?
         /// Provides detailed error metrics for each forecast type. Metrics include root-mean square-error (RMSE), mean absolute percentage error (MAPE), mean absolute scaled error (MASE), and weighted average percentage error (WAPE).
@@ -4495,12 +4497,12 @@ extension ForecastClientTypes {
             self.weightedQuantileLosses = weightedQuantileLosses
         }
     }
-
 }
 
 extension ForecastClientTypes {
+
     /// The metrics for a time range within the evaluation portion of a dataset. This object is part of the [EvaluationResult] object. The TestWindowStart and TestWindowEnd parameters are determined by the BackTestWindowOffset parameter of the [EvaluationParameters] object.
-    public struct WindowSummary {
+    public struct WindowSummary: Swift.Sendable {
         /// The type of evaluation.
         ///
         /// * SUMMARY - The average metrics across all windows.
@@ -4531,12 +4533,12 @@ extension ForecastClientTypes {
             self.testWindowStart = testWindowStart
         }
     }
-
 }
 
 extension ForecastClientTypes {
+
     /// The results of evaluating an algorithm. Returned as part of the [GetAccuracyMetrics] response.
-    public struct EvaluationResult {
+    public struct EvaluationResult: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the algorithm that was evaluated.
         public var algorithmArn: Swift.String?
         /// The array of test windows used for evaluating the algorithm. The NumberOfBacktestWindows from the [EvaluationParameters] object determines the number of windows in the array.
@@ -4551,10 +4553,9 @@ extension ForecastClientTypes {
             self.testWindows = testWindows
         }
     }
-
 }
 
-public struct GetAccuracyMetricsOutput {
+public struct GetAccuracyMetricsOutput: Swift.Sendable {
     /// The LatencyOptimized AutoML override strategy is only available in private beta. Contact Amazon Web Services Support or your account manager to learn more about access privileges. The AutoML strategy used to train the predictor. Unless LatencyOptimized is specified, the AutoML strategy optimizes predictor accuracy. This parameter is only valid for predictors trained using AutoML.
     public var autoMLOverrideStrategy: ForecastClientTypes.AutoMLOverrideStrategy?
     /// Whether the predictor was created with [CreateAutoPredictor].
@@ -4602,7 +4603,7 @@ public struct InvalidNextTokenException: ClientRuntime.ModeledError, AWSClientRu
     }
 }
 
-public struct ListDatasetGroupsInput {
+public struct ListDatasetGroupsInput: Swift.Sendable {
     /// The number of items to return in the response.
     public var maxResults: Swift.Int?
     /// If the result of the previous request was truncated, the response includes a NextToken. To retrieve the next set of results, use the token in the next request. Tokens expire after 24 hours.
@@ -4619,8 +4620,9 @@ public struct ListDatasetGroupsInput {
 }
 
 extension ForecastClientTypes {
+
     /// Provides a summary of the dataset group properties used in the [ListDatasetGroups](https://docs.aws.amazon.com/forecast/latest/dg/API_ListDatasetGroups.html) operation. To get the complete set of properties, call the [DescribeDatasetGroup](https://docs.aws.amazon.com/forecast/latest/dg/API_DescribeDatasetGroup.html) operation, and provide the DatasetGroupArn.
-    public struct DatasetGroupSummary {
+    public struct DatasetGroupSummary: Swift.Sendable {
         /// When the dataset group was created.
         public var creationTime: Foundation.Date?
         /// The Amazon Resource Name (ARN) of the dataset group.
@@ -4643,10 +4645,9 @@ extension ForecastClientTypes {
             self.lastModificationTime = lastModificationTime
         }
     }
-
 }
 
-public struct ListDatasetGroupsOutput {
+public struct ListDatasetGroupsOutput: Swift.Sendable {
     /// An array of objects that summarize each dataset group's properties.
     public var datasetGroups: [ForecastClientTypes.DatasetGroupSummary]?
     /// If the response is truncated, Amazon Forecast returns this token. To retrieve the next set of results, use the token in the next request.
@@ -4664,7 +4665,7 @@ public struct ListDatasetGroupsOutput {
 
 extension ForecastClientTypes {
 
-    public enum FilterConditionString: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum FilterConditionString: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case `is`
         case isNot
         case sdkUnknown(Swift.String)
@@ -4692,8 +4693,9 @@ extension ForecastClientTypes {
 }
 
 extension ForecastClientTypes {
+
     /// Describes a filter for choosing a subset of objects. Each filter consists of a condition and a match statement. The condition is either IS or IS_NOT, which specifies whether to include or exclude the objects that match the statement, respectively. The match statement consists of a key and a value.
-    public struct Filter {
+    public struct Filter: Swift.Sendable {
         /// The condition to apply. To include the objects that match the statement, specify IS. To exclude matching objects, specify IS_NOT.
         /// This member is required.
         public var condition: ForecastClientTypes.FilterConditionString?
@@ -4715,10 +4717,9 @@ extension ForecastClientTypes {
             self.value = value
         }
     }
-
 }
 
-public struct ListDatasetImportJobsInput {
+public struct ListDatasetImportJobsInput: Swift.Sendable {
     /// An array of filters. For each filter, you provide a condition and a match statement. The condition is either IS or IS_NOT, which specifies whether to include or exclude the datasets that match the statement from the list, respectively. The match statement consists of a key and a value. Filter properties
     ///
     /// * Condition - The condition to apply. Valid values are IS and IS_NOT. To include the datasets that match the statement, specify IS. To exclude matching datasets, specify IS_NOT.
@@ -4748,8 +4749,9 @@ public struct ListDatasetImportJobsInput {
 }
 
 extension ForecastClientTypes {
+
     /// Provides a summary of the dataset import job properties used in the [ListDatasetImportJobs](https://docs.aws.amazon.com/forecast/latest/dg/API_ListDatasetImportJobs.html) operation. To get the complete set of properties, call the [DescribeDatasetImportJob](https://docs.aws.amazon.com/forecast/latest/dg/API_DescribeDatasetImportJob.html) operation, and provide the DatasetImportJobArn.
-    public struct DatasetImportJobSummary {
+    public struct DatasetImportJobSummary: Swift.Sendable {
         /// When the dataset import job was created.
         public var creationTime: Foundation.Date?
         /// The location of the training data to import and an Identity and Access Management (IAM) role that Amazon Forecast can assume to access the data. The training data must be stored in an Amazon S3 bucket. If encryption is used, DataSource includes an Key Management Service (KMS) key.
@@ -4806,10 +4808,9 @@ extension ForecastClientTypes {
             self.status = status
         }
     }
-
 }
 
-public struct ListDatasetImportJobsOutput {
+public struct ListDatasetImportJobsOutput: Swift.Sendable {
     /// An array of objects that summarize each dataset import job's properties.
     public var datasetImportJobs: [ForecastClientTypes.DatasetImportJobSummary]?
     /// If the response is truncated, Amazon Forecast returns this token. To retrieve the next set of results, use the token in the next request.
@@ -4825,7 +4826,7 @@ public struct ListDatasetImportJobsOutput {
     }
 }
 
-public struct ListDatasetsInput {
+public struct ListDatasetsInput: Swift.Sendable {
     /// The number of items to return in the response.
     public var maxResults: Swift.Int?
     /// If the result of the previous request was truncated, the response includes a NextToken. To retrieve the next set of results, use the token in the next request. Tokens expire after 24 hours.
@@ -4842,8 +4843,9 @@ public struct ListDatasetsInput {
 }
 
 extension ForecastClientTypes {
+
     /// Provides a summary of the dataset properties used in the [ListDatasets](https://docs.aws.amazon.com/forecast/latest/dg/API_ListDatasets.html) operation. To get the complete set of properties, call the [DescribeDataset](https://docs.aws.amazon.com/forecast/latest/dg/API_DescribeDataset.html) operation, and provide the DatasetArn.
-    public struct DatasetSummary {
+    public struct DatasetSummary: Swift.Sendable {
         /// When the dataset was created.
         public var creationTime: Foundation.Date?
         /// The Amazon Resource Name (ARN) of the dataset.
@@ -4874,10 +4876,9 @@ extension ForecastClientTypes {
             self.lastModificationTime = lastModificationTime
         }
     }
-
 }
 
-public struct ListDatasetsOutput {
+public struct ListDatasetsOutput: Swift.Sendable {
     /// An array of objects that summarize each dataset's properties.
     public var datasets: [ForecastClientTypes.DatasetSummary]?
     /// If the response is truncated, Amazon Forecast returns this token. To retrieve the next set of results, use the token in the next request.
@@ -4893,7 +4894,7 @@ public struct ListDatasetsOutput {
     }
 }
 
-public struct ListExplainabilitiesInput {
+public struct ListExplainabilitiesInput: Swift.Sendable {
     /// An array of filters. For each filter, provide a condition and a match statement. The condition is either IS or IS_NOT, which specifies whether to include or exclude the resources that match the statement from the list. The match statement consists of a key and a value. Filter properties
     ///
     /// * Condition - The condition to apply. Valid values are IS and IS_NOT.
@@ -4920,8 +4921,9 @@ public struct ListExplainabilitiesInput {
 }
 
 extension ForecastClientTypes {
+
     /// Provides a summary of the Explainability properties used in the [ListExplainabilities] operation. To get a complete set of properties, call the [DescribeExplainability] operation, and provide the listed ExplainabilityArn.
-    public struct ExplainabilitySummary {
+    public struct ExplainabilitySummary: Swift.Sendable {
         /// When the Explainability was created.
         public var creationTime: Foundation.Date?
         /// The Amazon Resource Name (ARN) of the Explainability.
@@ -4978,10 +4980,9 @@ extension ForecastClientTypes {
             self.status = status
         }
     }
-
 }
 
-public struct ListExplainabilitiesOutput {
+public struct ListExplainabilitiesOutput: Swift.Sendable {
     /// An array of objects that summarize the properties of each Explainability resource.
     public var explainabilities: [ForecastClientTypes.ExplainabilitySummary]?
     /// Returns this token if the response is truncated. To retrieve the next set of results, use the token in the next request.
@@ -4997,7 +4998,7 @@ public struct ListExplainabilitiesOutput {
     }
 }
 
-public struct ListExplainabilityExportsInput {
+public struct ListExplainabilityExportsInput: Swift.Sendable {
     /// An array of filters. For each filter, provide a condition and a match statement. The condition is either IS or IS_NOT, which specifies whether to include or exclude resources that match the statement from the list. The match statement consists of a key and a value. Filter properties
     ///
     /// * Condition - The condition to apply. Valid values are IS and IS_NOT.
@@ -5024,8 +5025,9 @@ public struct ListExplainabilityExportsInput {
 }
 
 extension ForecastClientTypes {
+
     /// Provides a summary of the Explainability export properties used in the [ListExplainabilityExports] operation. To get a complete set of properties, call the [DescribeExplainabilityExport] operation, and provide the ExplainabilityExportArn.
-    public struct ExplainabilityExportSummary {
+    public struct ExplainabilityExportSummary: Swift.Sendable {
         /// When the Explainability was created.
         public var creationTime: Foundation.Date?
         /// The destination for an export job. Provide an S3 path, an Identity and Access Management (IAM) role that allows Amazon Forecast to access the location, and an Key Management Service (KMS) key (optional).
@@ -5078,10 +5080,9 @@ extension ForecastClientTypes {
             self.status = status
         }
     }
-
 }
 
-public struct ListExplainabilityExportsOutput {
+public struct ListExplainabilityExportsOutput: Swift.Sendable {
     /// An array of objects that summarize the properties of each Explainability export.
     public var explainabilityExports: [ForecastClientTypes.ExplainabilityExportSummary]?
     /// Returns this token if the response is truncated. To retrieve the next set of results, use the token in the next request.
@@ -5097,7 +5098,7 @@ public struct ListExplainabilityExportsOutput {
     }
 }
 
-public struct ListForecastExportJobsInput {
+public struct ListForecastExportJobsInput: Swift.Sendable {
     /// An array of filters. For each filter, you provide a condition and a match statement. The condition is either IS or IS_NOT, which specifies whether to include or exclude the forecast export jobs that match the statement from the list, respectively. The match statement consists of a key and a value. Filter properties
     ///
     /// * Condition - The condition to apply. Valid values are IS and IS_NOT. To include the forecast export jobs that match the statement, specify IS. To exclude matching forecast export jobs, specify IS_NOT.
@@ -5127,8 +5128,9 @@ public struct ListForecastExportJobsInput {
 }
 
 extension ForecastClientTypes {
+
     /// Provides a summary of the forecast export job properties used in the [ListForecastExportJobs] operation. To get the complete set of properties, call the [DescribeForecastExportJob] operation, and provide the listed ForecastExportJobArn.
-    public struct ForecastExportJobSummary {
+    public struct ForecastExportJobSummary: Swift.Sendable {
         /// When the forecast export job was created.
         public var creationTime: Foundation.Date?
         /// The path to the Amazon Simple Storage Service (Amazon S3) bucket where the forecast is exported.
@@ -5184,10 +5186,9 @@ extension ForecastClientTypes {
             self.status = status
         }
     }
-
 }
 
-public struct ListForecastExportJobsOutput {
+public struct ListForecastExportJobsOutput: Swift.Sendable {
     /// An array of objects that summarize each export job's properties.
     public var forecastExportJobs: [ForecastClientTypes.ForecastExportJobSummary]?
     /// If the response is truncated, Amazon Forecast returns this token. To retrieve the next set of results, use the token in the next request.
@@ -5203,7 +5204,7 @@ public struct ListForecastExportJobsOutput {
     }
 }
 
-public struct ListForecastsInput {
+public struct ListForecastsInput: Swift.Sendable {
     /// An array of filters. For each filter, you provide a condition and a match statement. The condition is either IS or IS_NOT, which specifies whether to include or exclude the forecasts that match the statement from the list, respectively. The match statement consists of a key and a value. Filter properties
     ///
     /// * Condition - The condition to apply. Valid values are IS and IS_NOT. To include the forecasts that match the statement, specify IS. To exclude matching forecasts, specify IS_NOT.
@@ -5233,8 +5234,9 @@ public struct ListForecastsInput {
 }
 
 extension ForecastClientTypes {
+
     /// Provides a summary of the forecast properties used in the [ListForecasts] operation. To get the complete set of properties, call the [DescribeForecast] operation, and provide the ForecastArn that is listed in the summary.
-    public struct ForecastSummary {
+    public struct ForecastSummary: Swift.Sendable {
         /// Whether the Forecast was created from an AutoPredictor.
         public var createdUsingAutoPredictor: Swift.Bool?
         /// When the forecast creation task was created.
@@ -5298,10 +5300,9 @@ extension ForecastClientTypes {
             self.status = status
         }
     }
-
 }
 
-public struct ListForecastsOutput {
+public struct ListForecastsOutput: Swift.Sendable {
     /// An array of objects that summarize each forecast's properties.
     public var forecasts: [ForecastClientTypes.ForecastSummary]?
     /// If the response is truncated, Amazon Forecast returns this token. To retrieve the next set of results, use the token in the next request.
@@ -5317,7 +5318,7 @@ public struct ListForecastsOutput {
     }
 }
 
-public struct ListMonitorEvaluationsInput {
+public struct ListMonitorEvaluationsInput: Swift.Sendable {
     /// An array of filters. For each filter, provide a condition and a match statement. The condition is either IS or IS_NOT, which specifies whether to include or exclude the resources that match the statement from the list. The match statement consists of a key and a value. Filter properties
     ///
     /// * Condition - The condition to apply. Valid values are IS and IS_NOT.
@@ -5352,8 +5353,9 @@ public struct ListMonitorEvaluationsInput {
 }
 
 extension ForecastClientTypes {
+
     /// An individual metric Forecast calculated when monitoring predictor usage. You can compare the value for this metric to the metric's value in the [Baseline] to see how your predictor's performance is changing. For more information about metrics generated by Forecast see [Evaluating Predictor Accuracy](https://docs.aws.amazon.com/forecast/latest/dg/metrics.html)
-    public struct MetricResult {
+    public struct MetricResult: Swift.Sendable {
         /// The name of the metric.
         public var metricName: Swift.String?
         /// The value for the metric.
@@ -5368,12 +5370,12 @@ extension ForecastClientTypes {
             self.metricValue = metricValue
         }
     }
-
 }
 
 extension ForecastClientTypes {
+
     /// The source of the data the monitor used during the evaluation.
-    public struct MonitorDataSource {
+    public struct MonitorDataSource: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the dataset import job used to import the data that initiated the monitor evaluation.
         public var datasetImportJobArn: Swift.String?
         /// The Amazon Resource Name (ARN) of the forecast the monitor used during the evaluation.
@@ -5392,12 +5394,12 @@ extension ForecastClientTypes {
             self.predictorArn = predictorArn
         }
     }
-
 }
 
 extension ForecastClientTypes {
+
     /// Provides details about a predictor event, such as a retraining.
-    public struct PredictorEvent {
+    public struct PredictorEvent: Swift.Sendable {
         /// The timestamp for when the event occurred.
         public var datetime: Foundation.Date?
         /// The type of event. For example, Retrain. A retraining event denotes the timepoint when a predictor was retrained. Any monitor results from before the Datetime are from the previous predictor. Any new metrics are for the newly retrained predictor.
@@ -5412,12 +5414,12 @@ extension ForecastClientTypes {
             self.detail = detail
         }
     }
-
 }
 
 extension ForecastClientTypes {
+
     /// Describes the results of a monitor evaluation.
-    public struct PredictorMonitorEvaluation {
+    public struct PredictorMonitorEvaluation: Swift.Sendable {
         /// The status of the monitor evaluation. The state can be SUCCESS or FAILURE.
         public var evaluationState: Swift.String?
         /// The timestamp that indicates when the monitor evaluation was started.
@@ -5468,10 +5470,9 @@ extension ForecastClientTypes {
             self.windowStartDatetime = windowStartDatetime
         }
     }
-
 }
 
-public struct ListMonitorEvaluationsOutput {
+public struct ListMonitorEvaluationsOutput: Swift.Sendable {
     /// If the response is truncated, Amazon Forecast returns this token. To retrieve the next set of results, use the token in the next request. Tokens expire after 24 hours.
     public var nextToken: Swift.String?
     /// The monitoring results and predictor events collected by the monitor resource during different windows of time. For information about monitoring see [Viewing Monitoring Results](https://docs.aws.amazon.com/forecast/latest/dg/predictor-monitoring-results.html). For more information about retrieving monitoring results see [Viewing Monitoring Results](https://docs.aws.amazon.com/forecast/latest/dg/predictor-monitoring-results.html).
@@ -5487,7 +5488,7 @@ public struct ListMonitorEvaluationsOutput {
     }
 }
 
-public struct ListMonitorsInput {
+public struct ListMonitorsInput: Swift.Sendable {
     /// An array of filters. For each filter, provide a condition and a match statement. The condition is either IS or IS_NOT, which specifies whether to include or exclude the resources that match the statement from the list. The match statement consists of a key and a value. Filter properties
     ///
     /// * Condition - The condition to apply. Valid values are IS and IS_NOT.
@@ -5517,8 +5518,9 @@ public struct ListMonitorsInput {
 }
 
 extension ForecastClientTypes {
+
     /// Provides a summary of the monitor properties used in the [ListMonitors] operation. To get a complete set of properties, call the [DescribeMonitor] operation, and provide the listed MonitorArn.
-    public struct MonitorSummary {
+    public struct MonitorSummary: Swift.Sendable {
         /// When the monitor resource was created.
         public var creationTime: Foundation.Date?
         /// The last time the monitor resource was modified. The timestamp depends on the status of the job:
@@ -5567,10 +5569,9 @@ extension ForecastClientTypes {
             self.status = status
         }
     }
-
 }
 
-public struct ListMonitorsOutput {
+public struct ListMonitorsOutput: Swift.Sendable {
     /// An array of objects that summarize each monitor's properties.
     public var monitors: [ForecastClientTypes.MonitorSummary]?
     /// If the response is truncated, Amazon Forecast returns this token. To retrieve the next set of results, use the token in the next request.
@@ -5586,7 +5587,7 @@ public struct ListMonitorsOutput {
     }
 }
 
-public struct ListPredictorBacktestExportJobsInput {
+public struct ListPredictorBacktestExportJobsInput: Swift.Sendable {
     /// An array of filters. For each filter, provide a condition and a match statement. The condition is either IS or IS_NOT, which specifies whether to include or exclude the predictor backtest export jobs that match the statement from the list. The match statement consists of a key and a value. Filter properties
     ///
     /// * Condition - The condition to apply. Valid values are IS and IS_NOT. To include the predictor backtest export jobs that match the statement, specify IS. To exclude matching predictor backtest export jobs, specify IS_NOT.
@@ -5613,8 +5614,9 @@ public struct ListPredictorBacktestExportJobsInput {
 }
 
 extension ForecastClientTypes {
+
     /// Provides a summary of the predictor backtest export job properties used in the [ListPredictorBacktestExportJobs] operation. To get a complete set of properties, call the [DescribePredictorBacktestExportJob] operation, and provide the listed PredictorBacktestExportJobArn.
-    public struct PredictorBacktestExportJobSummary {
+    public struct PredictorBacktestExportJobSummary: Swift.Sendable {
         /// When the predictor backtest export job was created.
         public var creationTime: Foundation.Date?
         /// The destination for an export job. Provide an S3 path, an Identity and Access Management (IAM) role that allows Amazon Forecast to access the location, and an Key Management Service (KMS) key (optional).
@@ -5667,10 +5669,9 @@ extension ForecastClientTypes {
             self.status = status
         }
     }
-
 }
 
-public struct ListPredictorBacktestExportJobsOutput {
+public struct ListPredictorBacktestExportJobsOutput: Swift.Sendable {
     /// Returns this token if the response is truncated. To retrieve the next set of results, use the token in the next request.
     public var nextToken: Swift.String?
     /// An array of objects that summarize the properties of each predictor backtest export job.
@@ -5686,7 +5687,7 @@ public struct ListPredictorBacktestExportJobsOutput {
     }
 }
 
-public struct ListPredictorsInput {
+public struct ListPredictorsInput: Swift.Sendable {
     /// An array of filters. For each filter, you provide a condition and a match statement. The condition is either IS or IS_NOT, which specifies whether to include or exclude the predictors that match the statement from the list, respectively. The match statement consists of a key and a value. Filter properties
     ///
     /// * Condition - The condition to apply. Valid values are IS and IS_NOT. To include the predictors that match the statement, specify IS. To exclude matching predictors, specify IS_NOT.
@@ -5716,8 +5717,9 @@ public struct ListPredictorsInput {
 }
 
 extension ForecastClientTypes {
+
     /// Provides a summary of the predictor properties that are used in the [ListPredictors] operation. To get the complete set of properties, call the [DescribePredictor] operation, and provide the listed PredictorArn.
-    public struct PredictorSummary {
+    public struct PredictorSummary: Swift.Sendable {
         /// When the model training task was created.
         public var creationTime: Foundation.Date?
         /// The Amazon Resource Name (ARN) of the dataset group that contains the data used to train the predictor.
@@ -5781,10 +5783,9 @@ extension ForecastClientTypes {
             self.status = status
         }
     }
-
 }
 
-public struct ListPredictorsOutput {
+public struct ListPredictorsOutput: Swift.Sendable {
     /// If the response is truncated, Amazon Forecast returns this token. To retrieve the next set of results, use the token in the next request.
     public var nextToken: Swift.String?
     /// An array of objects that summarize each predictor's properties.
@@ -5800,7 +5801,7 @@ public struct ListPredictorsOutput {
     }
 }
 
-public struct ListTagsForResourceInput {
+public struct ListTagsForResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) that identifies the resource for which to list the tags.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -5813,7 +5814,7 @@ public struct ListTagsForResourceInput {
     }
 }
 
-public struct ListTagsForResourceOutput {
+public struct ListTagsForResourceOutput: Swift.Sendable {
     /// The tags for the resource.
     public var tags: [ForecastClientTypes.Tag]?
 
@@ -5825,7 +5826,7 @@ public struct ListTagsForResourceOutput {
     }
 }
 
-public struct ListWhatIfAnalysesInput {
+public struct ListWhatIfAnalysesInput: Swift.Sendable {
     /// An array of filters. For each filter, you provide a condition and a match statement. The condition is either IS or IS_NOT, which specifies whether to include or exclude the what-if analysis jobs that match the statement from the list, respectively. The match statement consists of a key and a value. Filter properties
     ///
     /// * Condition - The condition to apply. Valid values are IS and IS_NOT. To include the what-if analysis jobs that match the statement, specify IS. To exclude matching what-if analysis jobs, specify IS_NOT.
@@ -5855,8 +5856,9 @@ public struct ListWhatIfAnalysesInput {
 }
 
 extension ForecastClientTypes {
+
     /// Provides a summary of the what-if analysis properties used in the [ListWhatIfAnalyses] operation. To get the complete set of properties, call the [DescribeWhatIfAnalysis] operation, and provide the WhatIfAnalysisArn that is listed in the summary.
-    public struct WhatIfAnalysisSummary {
+    public struct WhatIfAnalysisSummary: Swift.Sendable {
         /// When the what-if analysis was created.
         public var creationTime: Foundation.Date?
         /// The Amazon Resource Name (ARN) of the baseline forecast that is being used in this what-if analysis.
@@ -5912,10 +5914,9 @@ extension ForecastClientTypes {
             self.whatIfAnalysisName = whatIfAnalysisName
         }
     }
-
 }
 
-public struct ListWhatIfAnalysesOutput {
+public struct ListWhatIfAnalysesOutput: Swift.Sendable {
     /// If the response is truncated, Forecast returns this token. To retrieve the next set of results, use the token in the next request.
     public var nextToken: Swift.String?
     /// An array of WhatIfAnalysisSummary objects that describe the matched analyses.
@@ -5931,7 +5932,7 @@ public struct ListWhatIfAnalysesOutput {
     }
 }
 
-public struct ListWhatIfForecastExportsInput {
+public struct ListWhatIfForecastExportsInput: Swift.Sendable {
     /// An array of filters. For each filter, you provide a condition and a match statement. The condition is either IS or IS_NOT, which specifies whether to include or exclude the what-if forecast export jobs that match the statement from the list, respectively. The match statement consists of a key and a value. Filter properties
     ///
     /// * Condition - The condition to apply. Valid values are IS and IS_NOT. To include the forecast export jobs that match the statement, specify IS. To exclude matching forecast export jobs, specify IS_NOT.
@@ -5961,8 +5962,9 @@ public struct ListWhatIfForecastExportsInput {
 }
 
 extension ForecastClientTypes {
+
     /// Provides a summary of the what-if forecast export properties used in the [ListWhatIfForecastExports] operation. To get the complete set of properties, call the [DescribeWhatIfForecastExport] operation, and provide the WhatIfForecastExportArn that is listed in the summary.
-    public struct WhatIfForecastExportSummary {
+    public struct WhatIfForecastExportSummary: Swift.Sendable {
         /// When the what-if forecast export was created.
         public var creationTime: Foundation.Date?
         /// The path to the Amazon Simple Storage Service (Amazon S3) bucket where the forecast is exported.
@@ -6022,10 +6024,9 @@ extension ForecastClientTypes {
             self.whatIfForecastExportName = whatIfForecastExportName
         }
     }
-
 }
 
-public struct ListWhatIfForecastExportsOutput {
+public struct ListWhatIfForecastExportsOutput: Swift.Sendable {
     /// If the response is truncated, Forecast returns this token. To retrieve the next set of results, use the token in the next request.
     public var nextToken: Swift.String?
     /// An array of WhatIfForecastExports objects that describe the matched forecast exports.
@@ -6041,7 +6042,7 @@ public struct ListWhatIfForecastExportsOutput {
     }
 }
 
-public struct ListWhatIfForecastsInput {
+public struct ListWhatIfForecastsInput: Swift.Sendable {
     /// An array of filters. For each filter, you provide a condition and a match statement. The condition is either IS or IS_NOT, which specifies whether to include or exclude the what-if forecast export jobs that match the statement from the list, respectively. The match statement consists of a key and a value. Filter properties
     ///
     /// * Condition - The condition to apply. Valid values are IS and IS_NOT. To include the forecast export jobs that match the statement, specify IS. To exclude matching forecast export jobs, specify IS_NOT.
@@ -6071,8 +6072,9 @@ public struct ListWhatIfForecastsInput {
 }
 
 extension ForecastClientTypes {
+
     /// Provides a summary of the what-if forecast properties used in the [ListWhatIfForecasts] operation. To get the complete set of properties, call the [DescribeWhatIfForecast] operation, and provide the WhatIfForecastArn that is listed in the summary.
-    public struct WhatIfForecastSummary {
+    public struct WhatIfForecastSummary: Swift.Sendable {
         /// When the what-if forecast was created.
         public var creationTime: Foundation.Date?
         /// The last time the resource was modified. The timestamp depends on the status of the job:
@@ -6128,10 +6130,9 @@ extension ForecastClientTypes {
             self.whatIfForecastName = whatIfForecastName
         }
     }
-
 }
 
-public struct ListWhatIfForecastsOutput {
+public struct ListWhatIfForecastsOutput: Swift.Sendable {
     /// If the result of the previous request was truncated, the response includes a NextToken. To retrieve the next set of results, use the token in the next  request. Tokens expire after 24 hours.
     public var nextToken: Swift.String?
     /// An array of WhatIfForecasts objects that describe the matched forecasts.
@@ -6147,7 +6148,7 @@ public struct ListWhatIfForecastsOutput {
     }
 }
 
-public struct ResumeResourceInput {
+public struct ResumeResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the monitor resource to resume.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -6160,7 +6161,7 @@ public struct ResumeResourceInput {
     }
 }
 
-public struct StopResourceInput {
+public struct StopResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) that identifies the resource to stop. The supported ARNs are DatasetImportJobArn, PredictorArn, PredictorBacktestExportJobArn, ForecastArn, ForecastExportJobArn, ExplainabilityArn, and ExplainabilityExportArn.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -6173,7 +6174,7 @@ public struct StopResourceInput {
     }
 }
 
-public struct TagResourceInput {
+public struct TagResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) that identifies the resource for which to list the tags.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -6205,12 +6206,12 @@ public struct TagResourceInput {
     }
 }
 
-public struct TagResourceOutput {
+public struct TagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UntagResourceInput {
+public struct UntagResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) that identifies the resource for which to list the tags.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -6233,12 +6234,12 @@ extension UntagResourceInput: Swift.CustomDebugStringConvertible {
         "UntagResourceInput(resourceArn: \(Swift.String(describing: resourceArn)), tagKeys: \"CONTENT_REDACTED\")"}
 }
 
-public struct UntagResourceOutput {
+public struct UntagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdateDatasetGroupInput {
+public struct UpdateDatasetGroupInput: Swift.Sendable {
     /// An array of the Amazon Resource Names (ARNs) of the datasets to add to the dataset group.
     /// This member is required.
     public var datasetArns: [Swift.String]?
@@ -6256,7 +6257,7 @@ public struct UpdateDatasetGroupInput {
     }
 }
 
-public struct UpdateDatasetGroupOutput {
+public struct UpdateDatasetGroupOutput: Swift.Sendable {
 
     public init() { }
 }

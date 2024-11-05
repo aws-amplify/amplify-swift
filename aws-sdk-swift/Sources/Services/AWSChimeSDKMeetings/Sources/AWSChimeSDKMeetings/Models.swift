@@ -25,34 +25,35 @@ import protocol ClientRuntime.ModeledError
 @_spi(UnknownAWSHTTPServiceError) import struct AWSClientRuntime.UnknownAWSHTTPServiceError
 import struct Smithy.URIQueryItem
 
-public struct BatchUpdateAttendeeCapabilitiesExceptOutput {
+
+public struct BatchUpdateAttendeeCapabilitiesExceptOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteAttendeeOutput {
+public struct DeleteAttendeeOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteMeetingOutput {
+public struct DeleteMeetingOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct StartMeetingTranscriptionOutput {
+public struct StartMeetingTranscriptionOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct StopMeetingTranscriptionOutput {
+public struct StopMeetingTranscriptionOutput: Swift.Sendable {
 
     public init() { }
 }
 
 extension ChimeSDKMeetingsClientTypes {
 
-    public enum MediaCapabilities: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum MediaCapabilities: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case `none`
         case receive
         case send
@@ -86,6 +87,7 @@ extension ChimeSDKMeetingsClientTypes {
 }
 
 extension ChimeSDKMeetingsClientTypes {
+
     /// The media capabilities of an attendee: audio, video, or content. You use the capabilities with a set of values that control what the capabilities can do, such as SendReceive data. For more information, refer to and . When using capabilities, be aware of these corner cases:
     ///
     /// * If you specify MeetingFeatures:Video:MaxResolution:None when you create a meeting, all API requests that include SendReceive, Send, or Receive for AttendeeCapabilities:Video will be rejected with ValidationError 400.
@@ -97,7 +99,7 @@ extension ChimeSDKMeetingsClientTypes {
     /// * When you change an audio capability from None or Receive to Send or SendReceive , and an attendee unmutes their microphone, audio flows from the attendee to the other meeting participants.
     ///
     /// * When you change a video or content capability from None or Receive to Send or SendReceive , and the attendee turns on their video or content streams, remote attendees can receive those streams, but only after media renegotiation between the client and the Amazon Chime back-end server.
-    public struct AttendeeCapabilities {
+    public struct AttendeeCapabilities: Swift.Sendable {
         /// The audio capability assigned to an attendee.
         /// This member is required.
         public var audio: ChimeSDKMeetingsClientTypes.MediaCapabilities?
@@ -119,12 +121,12 @@ extension ChimeSDKMeetingsClientTypes {
             self.video = video
         }
     }
-
 }
 
 extension ChimeSDKMeetingsClientTypes {
+
     /// An Amazon Chime SDK meeting attendee. Includes a unique AttendeeId and JoinToken. The JoinToken allows a client to authenticate and join as the specified attendee. The JoinToken expires when the meeting ends, or when [DeleteAttendee] is called. After that, the attendee is unable to join the meeting. We recommend securely transferring each JoinToken from your server application to the client so that no other client has access to the token except for the one authorized to represent the attendee.
-    public struct Attendee {
+    public struct Attendee: Swift.Sendable {
         /// The Amazon Chime SDK attendee ID.
         public var attendeeId: Swift.String?
         /// The capabilities assigned to an attendee: audio, video, or content. You use the capabilities with a set of values that control what the capabilities can do, such as SendReceive data. For more information about those values, see . When using capabilities, be aware of these corner cases:
@@ -157,7 +159,6 @@ extension ChimeSDKMeetingsClientTypes {
             self.joinToken = joinToken
         }
     }
-
 }
 
 extension ChimeSDKMeetingsClientTypes.Attendee: Swift.CustomDebugStringConvertible {
@@ -166,8 +167,9 @@ extension ChimeSDKMeetingsClientTypes.Attendee: Swift.CustomDebugStringConvertib
 }
 
 extension ChimeSDKMeetingsClientTypes {
+
     /// Lists the maximum number of attendees allowed into the meeting. If you specify FHD for MeetingFeatures:Video:MaxResolution, or if you specify UHD for MeetingFeatures:Content:MaxResolution, the maximum number of attendees changes from the default of 250 to 25.
-    public struct AttendeeFeatures {
+    public struct AttendeeFeatures: Swift.Sendable {
         /// The maximum number of attendees allowed into the meeting.
         public var maxCount: Swift.Int?
 
@@ -178,12 +180,12 @@ extension ChimeSDKMeetingsClientTypes {
             self.maxCount = maxCount
         }
     }
-
 }
 
 extension ChimeSDKMeetingsClientTypes {
+
     /// A structure that contains one or more attendee IDs.
-    public struct AttendeeIdItem {
+    public struct AttendeeIdItem: Swift.Sendable {
         /// A list of one or more attendee IDs.
         /// This member is required.
         public var attendeeId: Swift.String?
@@ -195,12 +197,11 @@ extension ChimeSDKMeetingsClientTypes {
             self.attendeeId = attendeeId
         }
     }
-
 }
 
 extension ChimeSDKMeetingsClientTypes {
 
-    public enum MeetingFeatureStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum MeetingFeatureStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case available
         case unavailable
         case sdkUnknown(Swift.String)
@@ -228,8 +229,9 @@ extension ChimeSDKMeetingsClientTypes {
 }
 
 extension ChimeSDKMeetingsClientTypes {
+
     /// An optional category of meeting features that contains audio-specific configurations, such as operating parameters for Amazon Voice Focus.
-    public struct AudioFeatures {
+    public struct AudioFeatures: Swift.Sendable {
         /// Makes echo reduction available to clients who connect to the meeting.
         public var echoReduction: ChimeSDKMeetingsClientTypes.MeetingFeatureStatus?
 
@@ -240,7 +242,6 @@ extension ChimeSDKMeetingsClientTypes {
             self.echoReduction = echoReduction
         }
     }
-
 }
 
 /// The input parameters don't match the service's restrictions.
@@ -527,8 +528,9 @@ public struct UnprocessableEntityException: ClientRuntime.ModeledError, AWSClien
 }
 
 extension ChimeSDKMeetingsClientTypes {
+
     /// The Amazon Chime SDK attendee fields to create, used with the BatchCreateAttendee action.
-    public struct CreateAttendeeRequestItem {
+    public struct CreateAttendeeRequestItem: Swift.Sendable {
         /// A list of one or more capabilities.
         public var capabilities: ChimeSDKMeetingsClientTypes.AttendeeCapabilities?
         /// The Amazon Chime SDK external user ID. An idempotency token. Links the attendee to an identity managed by a builder application. Pattern: [-_&@+=,(){}\[\]\/«».:|'"#a-zA-Z0-9À-ÿ\s]* Values that begin with aws: are reserved. You can't configure a value that uses this prefix. Case insensitive.
@@ -544,7 +546,6 @@ extension ChimeSDKMeetingsClientTypes {
             self.externalUserId = externalUserId
         }
     }
-
 }
 
 extension ChimeSDKMeetingsClientTypes.CreateAttendeeRequestItem: Swift.CustomDebugStringConvertible {
@@ -552,7 +553,7 @@ extension ChimeSDKMeetingsClientTypes.CreateAttendeeRequestItem: Swift.CustomDeb
         "CreateAttendeeRequestItem(capabilities: \(Swift.String(describing: capabilities)), externalUserId: \"CONTENT_REDACTED\")"}
 }
 
-public struct BatchCreateAttendeeInput {
+public struct BatchCreateAttendeeInput: Swift.Sendable {
     /// The attendee information, including attendees' IDs and join tokens.
     /// This member is required.
     public var attendees: [ChimeSDKMeetingsClientTypes.CreateAttendeeRequestItem]?
@@ -571,8 +572,9 @@ public struct BatchCreateAttendeeInput {
 }
 
 extension ChimeSDKMeetingsClientTypes {
+
     /// The list of errors returned when errors are encountered during the BatchCreateAttendee and CreateAttendee actions. This includes external user IDs, error codes, and error messages.
-    public struct CreateAttendeeError {
+    public struct CreateAttendeeError: Swift.Sendable {
         /// The error code.
         public var errorCode: Swift.String?
         /// The error message.
@@ -591,7 +593,6 @@ extension ChimeSDKMeetingsClientTypes {
             self.externalUserId = externalUserId
         }
     }
-
 }
 
 extension ChimeSDKMeetingsClientTypes.CreateAttendeeError: Swift.CustomDebugStringConvertible {
@@ -599,7 +600,7 @@ extension ChimeSDKMeetingsClientTypes.CreateAttendeeError: Swift.CustomDebugStri
         "CreateAttendeeError(errorCode: \(Swift.String(describing: errorCode)), errorMessage: \(Swift.String(describing: errorMessage)), externalUserId: \"CONTENT_REDACTED\")"}
 }
 
-public struct BatchCreateAttendeeOutput {
+public struct BatchCreateAttendeeOutput: Swift.Sendable {
     /// The attendee information, including attendees' IDs and join tokens.
     public var attendees: [ChimeSDKMeetingsClientTypes.Attendee]?
     /// If the action fails for one or more of the attendees in the request, a list of the attendees is returned, along with error codes and error messages.
@@ -646,7 +647,7 @@ public struct ConflictException: ClientRuntime.ModeledError, AWSClientRuntime.AW
     }
 }
 
-public struct BatchUpdateAttendeeCapabilitiesExceptInput {
+public struct BatchUpdateAttendeeCapabilitiesExceptInput: Swift.Sendable {
     /// The capabilities (audio, video, or content) that you want to update.
     /// This member is required.
     public var capabilities: ChimeSDKMeetingsClientTypes.AttendeeCapabilities?
@@ -669,7 +670,7 @@ public struct BatchUpdateAttendeeCapabilitiesExceptInput {
     }
 }
 
-public struct CreateAttendeeInput {
+public struct CreateAttendeeInput: Swift.Sendable {
     /// The capabilities (audio, video, or content) that you want to grant an attendee. If you don't specify capabilities, all users have send and receive capabilities on all media channels by default. You use the capabilities with a set of values that control what the capabilities can do, such as SendReceive data. For more information about those values, see . When using capabilities, be aware of these corner cases:
     ///
     /// * If you specify MeetingFeatures:Video:MaxResolution:None when you create a meeting, all API requests that include SendReceive, Send, or Receive for AttendeeCapabilities:Video will be rejected with ValidationError 400.
@@ -706,7 +707,7 @@ extension CreateAttendeeInput: Swift.CustomDebugStringConvertible {
         "CreateAttendeeInput(capabilities: \(Swift.String(describing: capabilities)), meetingId: \(Swift.String(describing: meetingId)), externalUserId: \"CONTENT_REDACTED\")"}
 }
 
-public struct CreateAttendeeOutput {
+public struct CreateAttendeeOutput: Swift.Sendable {
     /// The attendee information, including attendee ID and join token.
     public var attendee: ChimeSDKMeetingsClientTypes.Attendee?
 
@@ -720,7 +721,7 @@ public struct CreateAttendeeOutput {
 
 extension ChimeSDKMeetingsClientTypes {
 
-    public enum ContentResolution: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ContentResolution: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case fhd
         case `none`
         case uhd
@@ -751,8 +752,9 @@ extension ChimeSDKMeetingsClientTypes {
 }
 
 extension ChimeSDKMeetingsClientTypes {
+
     /// Lists the content (screen share) features for the meeting. Applies to all attendees. If you specify MeetingFeatures:Content:MaxResolution:None when you create a meeting, all API requests that include SendReceive, Send, or Receive for AttendeeCapabilities:Content will be rejected with ValidationError 400.
-    public struct ContentFeatures {
+    public struct ContentFeatures: Swift.Sendable {
         /// The maximum resolution for the meeting content. Defaults to FHD. To use UHD, you must also provide a MeetingFeatures:Attendee:MaxCount value and override the default size limit of 250 attendees.
         public var maxResolution: ChimeSDKMeetingsClientTypes.ContentResolution?
 
@@ -763,12 +765,11 @@ extension ChimeSDKMeetingsClientTypes {
             self.maxResolution = maxResolution
         }
     }
-
 }
 
 extension ChimeSDKMeetingsClientTypes {
 
-    public enum VideoResolution: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum VideoResolution: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case fhd
         case hd
         case `none`
@@ -799,8 +800,9 @@ extension ChimeSDKMeetingsClientTypes {
 }
 
 extension ChimeSDKMeetingsClientTypes {
+
     /// The video features set for the meeting. Applies to all attendees. If you specify MeetingFeatures:Video:MaxResolution:None when you create a meeting, all API requests that include SendReceive, Send, or Receive for AttendeeCapabilities:Video will be rejected with ValidationError 400.
-    public struct VideoFeatures {
+    public struct VideoFeatures: Swift.Sendable {
         /// The maximum video resolution for the meeting. Applies to all attendees. Defaults to HD. To use FHD, you must also provide a MeetingFeatures:Attendee:MaxCount value and override the default size limit of 250 attendees.
         public var maxResolution: ChimeSDKMeetingsClientTypes.VideoResolution?
 
@@ -811,12 +813,12 @@ extension ChimeSDKMeetingsClientTypes {
             self.maxResolution = maxResolution
         }
     }
-
 }
 
 extension ChimeSDKMeetingsClientTypes {
+
     /// The configuration settings of the features available to a meeting.
-    public struct MeetingFeaturesConfiguration {
+    public struct MeetingFeaturesConfiguration: Swift.Sendable {
         /// The configuration settings for the attendee features available to a meeting.
         public var attendee: ChimeSDKMeetingsClientTypes.AttendeeFeatures?
         /// The configuration settings for the audio features available to a meeting.
@@ -839,12 +841,12 @@ extension ChimeSDKMeetingsClientTypes {
             self.video = video
         }
     }
-
 }
 
 extension ChimeSDKMeetingsClientTypes {
+
     /// The configuration for resource targets to receive notifications when meeting and attendee events occur.
-    public struct NotificationsConfiguration {
+    public struct NotificationsConfiguration: Swift.Sendable {
         /// The ARN of the Amazon Web Services Lambda function in the notifications configuration.
         public var lambdaFunctionArn: Swift.String?
         /// The ARN of the SNS topic.
@@ -863,7 +865,6 @@ extension ChimeSDKMeetingsClientTypes {
             self.sqsQueueArn = sqsQueueArn
         }
     }
-
 }
 
 extension ChimeSDKMeetingsClientTypes.NotificationsConfiguration: Swift.CustomDebugStringConvertible {
@@ -872,8 +873,9 @@ extension ChimeSDKMeetingsClientTypes.NotificationsConfiguration: Swift.CustomDe
 }
 
 extension ChimeSDKMeetingsClientTypes {
+
     /// A key-value pair that you define.
-    public struct Tag {
+    public struct Tag: Swift.Sendable {
         /// The tag's key.
         /// This member is required.
         public var key: Swift.String?
@@ -890,10 +892,9 @@ extension ChimeSDKMeetingsClientTypes {
             self.value = value
         }
     }
-
 }
 
-public struct CreateMeetingInput {
+public struct CreateMeetingInput: Swift.Sendable {
     /// The unique identifier for the client request. Use a different token for different meetings.
     /// This member is required.
     public var clientRequestToken: Swift.String?
@@ -957,8 +958,9 @@ extension CreateMeetingInput: Swift.CustomDebugStringConvertible {
 }
 
 extension ChimeSDKMeetingsClientTypes {
+
     /// A set of endpoints used by clients to connect to the media service group for an Amazon Chime SDK meeting.
-    public struct MediaPlacement {
+    public struct MediaPlacement: Swift.Sendable {
         /// The audio fallback URL.
         public var audioFallbackUrl: Swift.String?
         /// The audio host URL.
@@ -997,12 +999,12 @@ extension ChimeSDKMeetingsClientTypes {
             self.turnControlUrl = turnControlUrl
         }
     }
-
 }
 
 extension ChimeSDKMeetingsClientTypes {
+
     /// A meeting created using the Amazon Chime SDK.
-    public struct Meeting {
+    public struct Meeting: Swift.Sendable {
         /// The external meeting ID. Pattern: [-_&@+=,(){}\[\]\/«».:|'"#a-zA-Z0-9À-ÿ\s]* Values that begin with aws: are reserved. You can't configure a value that uses this prefix. Case insensitive.
         public var externalMeetingId: Swift.String?
         /// The media placement for the meeting.
@@ -1045,7 +1047,6 @@ extension ChimeSDKMeetingsClientTypes {
             self.tenantIds = tenantIds
         }
     }
-
 }
 
 extension ChimeSDKMeetingsClientTypes.Meeting: Swift.CustomDebugStringConvertible {
@@ -1053,7 +1054,7 @@ extension ChimeSDKMeetingsClientTypes.Meeting: Swift.CustomDebugStringConvertibl
         "Meeting(mediaPlacement: \(Swift.String(describing: mediaPlacement)), mediaRegion: \(Swift.String(describing: mediaRegion)), meetingArn: \(Swift.String(describing: meetingArn)), meetingFeatures: \(Swift.String(describing: meetingFeatures)), meetingId: \(Swift.String(describing: meetingId)), primaryMeetingId: \(Swift.String(describing: primaryMeetingId)), tenantIds: \(Swift.String(describing: tenantIds)), externalMeetingId: \"CONTENT_REDACTED\", meetingHostId: \"CONTENT_REDACTED\")"}
 }
 
-public struct CreateMeetingOutput {
+public struct CreateMeetingOutput: Swift.Sendable {
     /// The meeting information, including the meeting ID and MediaPlacement.
     public var meeting: ChimeSDKMeetingsClientTypes.Meeting?
 
@@ -1065,7 +1066,7 @@ public struct CreateMeetingOutput {
     }
 }
 
-public struct CreateMeetingWithAttendeesInput {
+public struct CreateMeetingWithAttendeesInput: Swift.Sendable {
     /// The attendee information, including attendees' IDs and join tokens.
     /// This member is required.
     public var attendees: [ChimeSDKMeetingsClientTypes.CreateAttendeeRequestItem]?
@@ -1122,7 +1123,7 @@ extension CreateMeetingWithAttendeesInput: Swift.CustomDebugStringConvertible {
         "CreateMeetingWithAttendeesInput(attendees: \(Swift.String(describing: attendees)), mediaRegion: \(Swift.String(describing: mediaRegion)), meetingFeatures: \(Swift.String(describing: meetingFeatures)), notificationsConfiguration: \(Swift.String(describing: notificationsConfiguration)), primaryMeetingId: \(Swift.String(describing: primaryMeetingId)), tags: \(Swift.String(describing: tags)), tenantIds: \(Swift.String(describing: tenantIds)), clientRequestToken: \"CONTENT_REDACTED\", externalMeetingId: \"CONTENT_REDACTED\", meetingHostId: \"CONTENT_REDACTED\")"}
 }
 
-public struct CreateMeetingWithAttendeesOutput {
+public struct CreateMeetingWithAttendeesOutput: Swift.Sendable {
     /// The attendee information, including attendees' IDs and join tokens.
     public var attendees: [ChimeSDKMeetingsClientTypes.Attendee]?
     /// If the action fails for one or more of the attendees in the request, a list of the attendees is returned, along with error codes and error messages.
@@ -1142,7 +1143,7 @@ public struct CreateMeetingWithAttendeesOutput {
     }
 }
 
-public struct DeleteAttendeeInput {
+public struct DeleteAttendeeInput: Swift.Sendable {
     /// The Amazon Chime SDK attendee ID.
     /// This member is required.
     public var attendeeId: Swift.String?
@@ -1160,7 +1161,7 @@ public struct DeleteAttendeeInput {
     }
 }
 
-public struct DeleteMeetingInput {
+public struct DeleteMeetingInput: Swift.Sendable {
     /// The Amazon Chime SDK meeting ID.
     /// This member is required.
     public var meetingId: Swift.String?
@@ -1173,7 +1174,7 @@ public struct DeleteMeetingInput {
     }
 }
 
-public struct GetAttendeeInput {
+public struct GetAttendeeInput: Swift.Sendable {
     /// The Amazon Chime SDK attendee ID.
     /// This member is required.
     public var attendeeId: Swift.String?
@@ -1191,7 +1192,7 @@ public struct GetAttendeeInput {
     }
 }
 
-public struct GetAttendeeOutput {
+public struct GetAttendeeOutput: Swift.Sendable {
     /// The Amazon Chime SDK attendee information.
     public var attendee: ChimeSDKMeetingsClientTypes.Attendee?
 
@@ -1203,7 +1204,7 @@ public struct GetAttendeeOutput {
     }
 }
 
-public struct GetMeetingInput {
+public struct GetMeetingInput: Swift.Sendable {
     /// The Amazon Chime SDK meeting ID.
     /// This member is required.
     public var meetingId: Swift.String?
@@ -1216,7 +1217,7 @@ public struct GetMeetingInput {
     }
 }
 
-public struct GetMeetingOutput {
+public struct GetMeetingOutput: Swift.Sendable {
     /// The Amazon Chime SDK meeting information.
     public var meeting: ChimeSDKMeetingsClientTypes.Meeting?
 
@@ -1228,7 +1229,7 @@ public struct GetMeetingOutput {
     }
 }
 
-public struct ListAttendeesInput {
+public struct ListAttendeesInput: Swift.Sendable {
     /// The maximum number of results to return in a single call.
     public var maxResults: Swift.Int?
     /// The Amazon Chime SDK meeting ID.
@@ -1249,7 +1250,7 @@ public struct ListAttendeesInput {
     }
 }
 
-public struct ListAttendeesOutput {
+public struct ListAttendeesOutput: Swift.Sendable {
     /// The Amazon Chime SDK attendee information.
     public var attendees: [ChimeSDKMeetingsClientTypes.Attendee]?
     /// The token to use to retrieve the next page of results.
@@ -1300,7 +1301,7 @@ public struct ResourceNotFoundException: ClientRuntime.ModeledError, AWSClientRu
     }
 }
 
-public struct ListTagsForResourceInput {
+public struct ListTagsForResourceInput: Swift.Sendable {
     /// The ARN of the resource.
     /// This member is required.
     public var resourceARN: Swift.String?
@@ -1313,7 +1314,7 @@ public struct ListTagsForResourceInput {
     }
 }
 
-public struct ListTagsForResourceOutput {
+public struct ListTagsForResourceOutput: Swift.Sendable {
     /// The tags requested for the specified resource.
     public var tags: [ChimeSDKMeetingsClientTypes.Tag]?
 
@@ -1327,7 +1328,7 @@ public struct ListTagsForResourceOutput {
 
 extension ChimeSDKMeetingsClientTypes {
 
-    public enum TranscribeMedicalContentIdentificationType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum TranscribeMedicalContentIdentificationType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case phi
         case sdkUnknown(Swift.String)
 
@@ -1353,7 +1354,7 @@ extension ChimeSDKMeetingsClientTypes {
 
 extension ChimeSDKMeetingsClientTypes {
 
-    public enum TranscribeMedicalLanguageCode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum TranscribeMedicalLanguageCode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case enUs
         case sdkUnknown(Swift.String)
 
@@ -1379,7 +1380,7 @@ extension ChimeSDKMeetingsClientTypes {
 
 extension ChimeSDKMeetingsClientTypes {
 
-    public enum TranscribeMedicalRegion: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum TranscribeMedicalRegion: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case apSoutheast2
         case auto
         case caCentral1
@@ -1423,7 +1424,7 @@ extension ChimeSDKMeetingsClientTypes {
 
 extension ChimeSDKMeetingsClientTypes {
 
-    public enum TranscribeMedicalSpecialty: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum TranscribeMedicalSpecialty: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case cardiology
         case neurology
         case oncology
@@ -1464,7 +1465,7 @@ extension ChimeSDKMeetingsClientTypes {
 
 extension ChimeSDKMeetingsClientTypes {
 
-    public enum TranscribeMedicalType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum TranscribeMedicalType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case conversation
         case dictation
         case sdkUnknown(Swift.String)
@@ -1492,8 +1493,9 @@ extension ChimeSDKMeetingsClientTypes {
 }
 
 extension ChimeSDKMeetingsClientTypes {
+
     /// Settings specific to the Amazon Transcribe Medical engine.
-    public struct EngineTranscribeMedicalSettings {
+    public struct EngineTranscribeMedicalSettings: Swift.Sendable {
         /// Set this field to PHI to identify personal health information in the transcription output.
         public var contentIdentificationType: ChimeSDKMeetingsClientTypes.TranscribeMedicalContentIdentificationType?
         /// The language code specified for the Amazon Transcribe Medical engine.
@@ -1527,12 +1529,11 @@ extension ChimeSDKMeetingsClientTypes {
             self.vocabularyName = vocabularyName
         }
     }
-
 }
 
 extension ChimeSDKMeetingsClientTypes {
 
-    public enum TranscribeContentIdentificationType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum TranscribeContentIdentificationType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case pii
         case sdkUnknown(Swift.String)
 
@@ -1558,7 +1559,7 @@ extension ChimeSDKMeetingsClientTypes {
 
 extension ChimeSDKMeetingsClientTypes {
 
-    public enum TranscribeContentRedactionType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum TranscribeContentRedactionType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case pii
         case sdkUnknown(Swift.String)
 
@@ -1584,7 +1585,7 @@ extension ChimeSDKMeetingsClientTypes {
 
 extension ChimeSDKMeetingsClientTypes {
 
-    public enum TranscribeLanguageCode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum TranscribeLanguageCode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case deDe
         case enAu
         case enGb
@@ -1649,7 +1650,7 @@ extension ChimeSDKMeetingsClientTypes {
 
 extension ChimeSDKMeetingsClientTypes {
 
-    public enum TranscribePartialResultsStability: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum TranscribePartialResultsStability: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case high
         case low
         case medium
@@ -1681,7 +1682,7 @@ extension ChimeSDKMeetingsClientTypes {
 
 extension ChimeSDKMeetingsClientTypes {
 
-    public enum TranscribeRegion: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum TranscribeRegion: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case apNortheast1
         case apNortheast2
         case apSoutheast2
@@ -1743,7 +1744,7 @@ extension ChimeSDKMeetingsClientTypes {
 
 extension ChimeSDKMeetingsClientTypes {
 
-    public enum TranscribeVocabularyFilterMethod: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum TranscribeVocabularyFilterMethod: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case mask
         case remove
         case tag
@@ -1774,8 +1775,9 @@ extension ChimeSDKMeetingsClientTypes {
 }
 
 extension ChimeSDKMeetingsClientTypes {
+
     /// Settings specific for Amazon Transcribe as the live transcription engine. If you specify an invalid combination of parameters, a TranscriptFailed event will be sent with the contents of the BadRequestException generated by Amazon Transcribe. For more information on each parameter and which combinations are valid, refer to the [StartStreamTranscription](https://docs.aws.amazon.com/transcribe/latest/APIReference/API_streaming_StartStreamTranscription.html) API in the Amazon Transcribe Developer Guide.
-    public struct EngineTranscribeSettings {
+    public struct EngineTranscribeSettings: Swift.Sendable {
         /// Labels all personally identifiable information (PII) identified in your transcript. If you don't include PiiEntityTypes, all PII is identified. You can’t set ContentIdentificationType and ContentRedactionType.
         public var contentIdentificationType: ChimeSDKMeetingsClientTypes.TranscribeContentIdentificationType?
         /// Content redaction is performed at the segment level. If you don't include PiiEntityTypes, all PII is redacted. You can’t set ContentRedactionType and ContentIdentificationType.
@@ -1846,12 +1848,12 @@ extension ChimeSDKMeetingsClientTypes {
             self.vocabularyNames = vocabularyNames
         }
     }
-
 }
 
 extension ChimeSDKMeetingsClientTypes {
+
     /// The configuration for the current transcription operation. Must contain EngineTranscribeSettings or EngineTranscribeMedicalSettings.
-    public struct TranscriptionConfiguration {
+    public struct TranscriptionConfiguration: Swift.Sendable {
         /// The transcription configuration settings passed to Amazon Transcribe Medical.
         public var engineTranscribeMedicalSettings: ChimeSDKMeetingsClientTypes.EngineTranscribeMedicalSettings?
         /// The transcription configuration settings passed to Amazon Transcribe.
@@ -1866,10 +1868,9 @@ extension ChimeSDKMeetingsClientTypes {
             self.engineTranscribeSettings = engineTranscribeSettings
         }
     }
-
 }
 
-public struct StartMeetingTranscriptionInput {
+public struct StartMeetingTranscriptionInput: Swift.Sendable {
     /// The unique ID of the meeting being transcribed.
     /// This member is required.
     public var meetingId: Swift.String?
@@ -1887,7 +1888,7 @@ public struct StartMeetingTranscriptionInput {
     }
 }
 
-public struct StopMeetingTranscriptionInput {
+public struct StopMeetingTranscriptionInput: Swift.Sendable {
     /// The unique ID of the meeting for which you stop transcription.
     /// This member is required.
     public var meetingId: Swift.String?
@@ -1935,7 +1936,7 @@ public struct TooManyTagsException: ClientRuntime.ModeledError, AWSClientRuntime
     }
 }
 
-public struct TagResourceInput {
+public struct TagResourceInput: Swift.Sendable {
     /// The ARN of the resource.
     /// This member is required.
     public var resourceARN: Swift.String?
@@ -1953,12 +1954,12 @@ public struct TagResourceInput {
     }
 }
 
-public struct TagResourceOutput {
+public struct TagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UntagResourceInput {
+public struct UntagResourceInput: Swift.Sendable {
     /// The ARN of the resource that you're removing tags from.
     /// This member is required.
     public var resourceARN: Swift.String?
@@ -1976,12 +1977,12 @@ public struct UntagResourceInput {
     }
 }
 
-public struct UntagResourceOutput {
+public struct UntagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdateAttendeeCapabilitiesInput {
+public struct UpdateAttendeeCapabilitiesInput: Swift.Sendable {
     /// The ID of the attendee associated with the update request.
     /// This member is required.
     public var attendeeId: Swift.String?
@@ -2004,7 +2005,7 @@ public struct UpdateAttendeeCapabilitiesInput {
     }
 }
 
-public struct UpdateAttendeeCapabilitiesOutput {
+public struct UpdateAttendeeCapabilitiesOutput: Swift.Sendable {
     /// The updated attendee data.
     public var attendee: ChimeSDKMeetingsClientTypes.Attendee?
 

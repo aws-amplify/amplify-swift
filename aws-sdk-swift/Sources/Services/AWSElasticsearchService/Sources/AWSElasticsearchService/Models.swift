@@ -29,22 +29,23 @@ import struct Smithy.URIQueryItem
 @_spi(SmithyReadWrite) import struct SmithyReadWrite.ReadingClosureBox
 @_spi(SmithyTimestamps) import struct SmithyTimestamps.TimestampFormatter
 
-public struct AddTagsOutput {
+
+public struct AddTagsOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteElasticsearchServiceRoleInput {
+public struct DeleteElasticsearchServiceRoleInput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteElasticsearchServiceRoleOutput {
+public struct DeleteElasticsearchServiceRoleOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct RemoveTagsOutput {
+public struct RemoveTagsOutput: Swift.Sendable {
 
     public init() { }
 }
@@ -125,7 +126,7 @@ public struct ResourceNotFoundException: ClientRuntime.ModeledError, AWSClientRu
 }
 
 /// Container for the parameters to the [AcceptInboundCrossClusterSearchConnection] operation.
-public struct AcceptInboundCrossClusterSearchConnectionInput {
+public struct AcceptInboundCrossClusterSearchConnectionInput: Swift.Sendable {
     /// The id of the inbound connection that you want to accept.
     /// This member is required.
     public var crossClusterSearchConnectionId: Swift.String?
@@ -140,7 +141,7 @@ public struct AcceptInboundCrossClusterSearchConnectionInput {
 
 extension ElasticsearchClientTypes {
 
-    public enum InboundCrossClusterSearchConnectionStatusCode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum InboundCrossClusterSearchConnectionStatusCode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case approved
         case deleted
         case deleting
@@ -180,8 +181,9 @@ extension ElasticsearchClientTypes {
 }
 
 extension ElasticsearchClientTypes {
+
     /// Specifies the coonection status of an inbound cross-cluster search connection.
-    public struct InboundCrossClusterSearchConnectionStatus {
+    public struct InboundCrossClusterSearchConnectionStatus: Swift.Sendable {
         /// Specifies verbose information for the inbound connection status.
         public var message: Swift.String?
         /// The state code for inbound connection. This can be one of the following:
@@ -208,11 +210,11 @@ extension ElasticsearchClientTypes {
             self.statusCode = statusCode
         }
     }
-
 }
 
 extension ElasticsearchClientTypes {
-    public struct DomainInformation {
+
+    public struct DomainInformation: Swift.Sendable {
         /// The name of an Elasticsearch domain. Domain names are unique across the domains owned by an account within an AWS region. Domain names start with a letter or number and can contain the following characters: a-z (lowercase), 0-9, and - (hyphen).
         /// This member is required.
         public var domainName: Swift.String?
@@ -230,12 +232,12 @@ extension ElasticsearchClientTypes {
             self.region = region
         }
     }
-
 }
 
 extension ElasticsearchClientTypes {
+
     /// Specifies details of an inbound connection.
-    public struct InboundCrossClusterSearchConnection {
+    public struct InboundCrossClusterSearchConnection: Swift.Sendable {
         /// Specifies the [InboundCrossClusterSearchConnectionStatus] for the outbound connection.
         public var connectionStatus: ElasticsearchClientTypes.InboundCrossClusterSearchConnectionStatus?
         /// Specifies the connection id for the inbound cross-cluster search connection.
@@ -258,11 +260,10 @@ extension ElasticsearchClientTypes {
             self.sourceDomainInfo = sourceDomainInfo
         }
     }
-
 }
 
 /// The result of a [AcceptInboundCrossClusterSearchConnection] operation. Contains details of accepted inbound connection.
-public struct AcceptInboundCrossClusterSearchConnectionOutput {
+public struct AcceptInboundCrossClusterSearchConnectionOutput: Swift.Sendable {
     /// Specifies the [InboundCrossClusterSearchConnection] of accepted inbound connection.
     public var crossClusterSearchConnection: ElasticsearchClientTypes.InboundCrossClusterSearchConnection?
 
@@ -306,7 +307,7 @@ extension ElasticsearchClientTypes {
     /// * Processing: The request change is still in-process.
     ///
     /// * Active: The request change is processed and deployed to the Elasticsearch domain.
-    public enum OptionState: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum OptionState: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case active
         case processing
         case requiresindexdocuments
@@ -337,8 +338,9 @@ extension ElasticsearchClientTypes {
 }
 
 extension ElasticsearchClientTypes {
+
     /// Provides the current status of the entity.
-    public struct OptionStatus {
+    public struct OptionStatus: Swift.Sendable {
         /// Timestamp which tells the creation date for the entity.
         /// This member is required.
         public var creationDate: Foundation.Date?
@@ -368,12 +370,12 @@ extension ElasticsearchClientTypes {
             self.updateVersion = updateVersion
         }
     }
-
 }
 
 extension ElasticsearchClientTypes {
+
     /// The configured access rules for the domain's document and search endpoints, and the current status of those rules.
-    public struct AccessPoliciesStatus {
+    public struct AccessPoliciesStatus: Swift.Sendable {
         /// The access policy configured for the Elasticsearch domain. Access policies may be resource-based, IP-based, or IAM-based. See [ Configuring Access Policies](http://docs.aws.amazon.com/elasticsearch-service/latest/developerguide/es-createupdatedomains.html#es-createdomain-configure-access-policies)for more information.
         /// This member is required.
         public var options: Swift.String?
@@ -390,12 +392,12 @@ extension ElasticsearchClientTypes {
             self.status = status
         }
     }
-
 }
 
 extension ElasticsearchClientTypes {
+
     /// List of limits that are specific to a given InstanceType and for each of it's [InstanceRole] .
-    public struct AdditionalLimit {
+    public struct AdditionalLimit: Swift.Sendable {
         /// Name of Additional Limit is specific to a given InstanceType and for each of it's [InstanceRole] etc.
         ///
         ///
@@ -427,7 +429,6 @@ extension ElasticsearchClientTypes {
             self.limitValues = limitValues
         }
     }
-
 }
 
 /// An error occurred while processing the request.
@@ -506,8 +507,9 @@ public struct ValidationException: ClientRuntime.ModeledError, AWSClientRuntime.
 }
 
 extension ElasticsearchClientTypes {
+
     /// Specifies a key value pair for a resource tag.
-    public struct Tag {
+    public struct Tag: Swift.Sendable {
         /// Specifies the TagKey, the name of the tag. Tag keys must be unique for the Elasticsearch domain to which they are attached.
         /// This member is required.
         public var key: Swift.String?
@@ -524,11 +526,10 @@ extension ElasticsearchClientTypes {
             self.value = value
         }
     }
-
 }
 
 /// Container for the parameters to the [AddTags] operation. Specify the tags that you want to attach to the Elasticsearch domain.
-public struct AddTagsInput {
+public struct AddTagsInput: Swift.Sendable {
     /// Specify the ARN for which you want to add the tags.
     /// This member is required.
     public var arn: Swift.String?
@@ -547,6 +548,7 @@ public struct AddTagsInput {
 }
 
 extension ElasticsearchClientTypes {
+
     /// Status of the advanced options for the specified Elasticsearch domain. Currently, the following advanced options are available:
     ///
     /// * Option to allow references to indices in an HTTP request body. Must be false when configuring access to individual sub-resources. By default, the value is true. See [Configuration Advanced Options](http://docs.aws.amazon.com/elasticsearch-service/latest/developerguide/es-createupdatedomains.html#es-createdomain-configure-advanced-options) for more information.
@@ -555,7 +557,7 @@ extension ElasticsearchClientTypes {
     ///
     ///
     /// For more information, see [Configuring Advanced Options](http://docs.aws.amazon.com/elasticsearch-service/latest/developerguide/es-createupdatedomains.html#es-createdomain-configure-advanced-options).
-    public struct AdvancedOptionsStatus {
+    public struct AdvancedOptionsStatus: Swift.Sendable {
         /// Specifies the status of advanced options for the specified Elasticsearch domain.
         /// This member is required.
         public var options: [Swift.String: Swift.String]?
@@ -572,12 +574,12 @@ extension ElasticsearchClientTypes {
             self.status = status
         }
     }
-
 }
 
 extension ElasticsearchClientTypes {
+
     /// Specifies the SAML Identity Provider's information.
-    public struct SAMLIdp {
+    public struct SAMLIdp: Swift.Sendable {
         /// The unique Entity ID of the application in SAML Identity Provider.
         /// This member is required.
         public var entityId: Swift.String?
@@ -594,12 +596,12 @@ extension ElasticsearchClientTypes {
             self.metadataContent = metadataContent
         }
     }
-
 }
 
 extension ElasticsearchClientTypes {
+
     /// Describes the SAML application configured for the domain.
-    public struct SAMLOptionsOutput {
+    public struct SAMLOptionsOutput: Swift.Sendable {
         /// True if SAML is enabled.
         public var enabled: Swift.Bool?
         /// Describes the SAML Identity Provider's information.
@@ -626,12 +628,12 @@ extension ElasticsearchClientTypes {
             self.subjectKey = subjectKey
         }
     }
-
 }
 
 extension ElasticsearchClientTypes {
+
     /// Specifies the advanced security configuration: whether advanced security is enabled, whether the internal database option is enabled.
-    public struct AdvancedSecurityOptions {
+    public struct AdvancedSecurityOptions: Swift.Sendable {
         /// Specifies the Anonymous Auth Disable Date when Anonymous Auth is enabled.
         public var anonymousAuthDisableDate: Foundation.Date?
         /// True if Anonymous auth is enabled. Anonymous auth can be enabled only when AdvancedSecurity is enabled on existing domains.
@@ -658,12 +660,12 @@ extension ElasticsearchClientTypes {
             self.samlOptions = samlOptions
         }
     }
-
 }
 
 extension ElasticsearchClientTypes {
+
     /// Credentials for the master user: username and password, ARN, or both.
-    public struct MasterUserOptions {
+    public struct MasterUserOptions: Swift.Sendable {
         /// ARN for the master user (if IAM is enabled).
         public var masterUserARN: Swift.String?
         /// The master user's username, which is stored in the Amazon Elasticsearch Service domain's internal database.
@@ -682,7 +684,6 @@ extension ElasticsearchClientTypes {
             self.masterUserPassword = masterUserPassword
         }
     }
-
 }
 
 extension ElasticsearchClientTypes.MasterUserOptions: Swift.CustomDebugStringConvertible {
@@ -691,8 +692,9 @@ extension ElasticsearchClientTypes.MasterUserOptions: Swift.CustomDebugStringCon
 }
 
 extension ElasticsearchClientTypes {
+
     /// Specifies the SAML application configuration for the domain.
-    public struct SAMLOptionsInput {
+    public struct SAMLOptionsInput: Swift.Sendable {
         /// True if SAML is enabled.
         public var enabled: Swift.Bool?
         /// Specifies the SAML Identity Provider's information.
@@ -727,7 +729,6 @@ extension ElasticsearchClientTypes {
             self.subjectKey = subjectKey
         }
     }
-
 }
 
 extension ElasticsearchClientTypes.SAMLOptionsInput: Swift.CustomDebugStringConvertible {
@@ -736,8 +737,9 @@ extension ElasticsearchClientTypes.SAMLOptionsInput: Swift.CustomDebugStringConv
 }
 
 extension ElasticsearchClientTypes {
+
     /// Specifies the advanced security configuration: whether advanced security is enabled, whether the internal database option is enabled, master username and password (if internal database is enabled), and master user ARN (if IAM is enabled).
-    public struct AdvancedSecurityOptionsInput {
+    public struct AdvancedSecurityOptionsInput: Swift.Sendable {
         /// True if Anonymous auth is enabled. Anonymous auth can be enabled only when AdvancedSecurity is enabled on existing domains.
         public var anonymousAuthEnabled: Swift.Bool?
         /// True if advanced security is enabled.
@@ -764,12 +766,12 @@ extension ElasticsearchClientTypes {
             self.samlOptions = samlOptions
         }
     }
-
 }
 
 extension ElasticsearchClientTypes {
+
     /// Specifies the status of advanced security options for the specified Elasticsearch domain.
-    public struct AdvancedSecurityOptionsStatus {
+    public struct AdvancedSecurityOptionsStatus: Swift.Sendable {
         /// Specifies advanced security options for the specified Elasticsearch domain.
         /// This member is required.
         public var options: ElasticsearchClientTypes.AdvancedSecurityOptions?
@@ -786,7 +788,6 @@ extension ElasticsearchClientTypes {
             self.status = status
         }
     }
-
 }
 
 /// An error occurred because the client attempts to remove a resource that is currently in use. Returns HTTP status code 409.
@@ -815,7 +816,7 @@ public struct ConflictException: ClientRuntime.ModeledError, AWSClientRuntime.AW
 }
 
 /// Container for request parameters to [AssociatePackage] operation.
-public struct AssociatePackageInput {
+public struct AssociatePackageInput: Swift.Sendable {
     /// Name of the domain that you want to associate the package with.
     /// This member is required.
     public var domainName: Swift.String?
@@ -835,7 +836,7 @@ public struct AssociatePackageInput {
 
 extension ElasticsearchClientTypes {
 
-    public enum DomainPackageStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DomainPackageStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case active
         case associating
         case associationFailed
@@ -872,7 +873,8 @@ extension ElasticsearchClientTypes {
 }
 
 extension ElasticsearchClientTypes {
-    public struct ErrorDetails {
+
+    public struct ErrorDetails: Swift.Sendable {
         public var errorMessage: Swift.String?
         public var errorType: Swift.String?
 
@@ -885,12 +887,11 @@ extension ElasticsearchClientTypes {
             self.errorType = errorType
         }
     }
-
 }
 
 extension ElasticsearchClientTypes {
 
-    public enum PackageType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum PackageType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case txtDictionary
         case sdkUnknown(Swift.String)
 
@@ -915,8 +916,9 @@ extension ElasticsearchClientTypes {
 }
 
 extension ElasticsearchClientTypes {
+
     /// Information on a package that is associated with a domain.
-    public struct DomainPackageDetails {
+    public struct DomainPackageDetails: Swift.Sendable {
         /// Name of the domain you've associated a package with.
         public var domainName: Swift.String?
         /// State of the association. Values are ASSOCIATING/ASSOCIATION_FAILED/ACTIVE/DISSOCIATING/DISSOCIATION_FAILED.
@@ -958,11 +960,10 @@ extension ElasticsearchClientTypes {
             self.referencePath = referencePath
         }
     }
-
 }
 
 /// Container for response returned by [AssociatePackage] operation.
-public struct AssociatePackageOutput {
+public struct AssociatePackageOutput: Swift.Sendable {
     ///     DomainPackageDetails
     public var domainPackageDetails: ElasticsearchClientTypes.DomainPackageDetails?
 
@@ -975,7 +976,7 @@ public struct AssociatePackageOutput {
 }
 
 /// Container for request parameters to the [AuthorizeVpcEndpointAccess] operation. Specifies the account to be permitted to manage VPC endpoints against the domain.
-public struct AuthorizeVpcEndpointAccessInput {
+public struct AuthorizeVpcEndpointAccessInput: Swift.Sendable {
     /// The account ID to grant access to.
     /// This member is required.
     public var account: Swift.String?
@@ -1000,7 +1001,7 @@ extension ElasticsearchClientTypes {
     /// * AWS_ACCOUNT: Indicates that the account is owned by an AWS user.
     ///
     /// * AWS_SERVICE: Indicates the the account is owned by an AWS service.
-    public enum PrincipalType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum PrincipalType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case awsAccount
         case awsService
         case sdkUnknown(Swift.String)
@@ -1028,8 +1029,9 @@ extension ElasticsearchClientTypes {
 }
 
 extension ElasticsearchClientTypes {
+
     /// Information about an account or service that has access to an Amazon OpenSearch Service domain through the use of an interface VPC endpoint.
-    public struct AuthorizedPrincipal {
+    public struct AuthorizedPrincipal: Swift.Sendable {
         /// The IAM principal that is allowed access to the domain.
         public var principal: Swift.String?
         /// The type of principal.
@@ -1044,11 +1046,10 @@ extension ElasticsearchClientTypes {
             self.principalType = principalType
         }
     }
-
 }
 
 /// Container for response parameters to the [AuthorizeVpcEndpointAccess] operation. Contains the account ID and the type of the account being authorized to access the VPC endpoint.
-public struct AuthorizeVpcEndpointAccessOutput {
+public struct AuthorizeVpcEndpointAccessOutput: Swift.Sendable {
     /// Information about the account or service that was provided access to the domain.
     /// This member is required.
     public var authorizedPrincipal: ElasticsearchClientTypes.AuthorizedPrincipal?
@@ -1062,7 +1063,7 @@ public struct AuthorizeVpcEndpointAccessOutput {
 }
 
 /// Container for parameters of the CancelDomainConfigChange operation.
-public struct CancelDomainConfigChangeInput {
+public struct CancelDomainConfigChangeInput: Swift.Sendable {
     /// Name of the OpenSearch Service domain configuration request to cancel.
     /// This member is required.
     public var domainName: Swift.String?
@@ -1080,8 +1081,9 @@ public struct CancelDomainConfigChangeInput {
 }
 
 extension ElasticsearchClientTypes {
+
     /// A property change that was cancelled for an Amazon OpenSearch Service domain.
-    public struct CancelledChangeProperty {
+    public struct CancelledChangeProperty: Swift.Sendable {
         /// The current value of the property, after the change was cancelled.
         public var activeValue: Swift.String?
         /// The pending value of the property that was cancelled. This would have been the eventual value of the property if the chance had not been cancelled.
@@ -1100,11 +1102,10 @@ extension ElasticsearchClientTypes {
             self.propertyName = propertyName
         }
     }
-
 }
 
 /// Contains the details of the cancelled domain config change.
-public struct CancelDomainConfigChangeOutput {
+public struct CancelDomainConfigChangeOutput: Swift.Sendable {
     /// The unique identifiers of the changes that were cancelled.
     public var cancelledChangeIds: [Swift.String]?
     /// The domain change properties that were cancelled.
@@ -1125,7 +1126,7 @@ public struct CancelDomainConfigChangeOutput {
 }
 
 /// Container for the parameters to the [CancelElasticsearchServiceSoftwareUpdate] operation. Specifies the name of the Elasticsearch domain that you wish to cancel a service software update on.
-public struct CancelElasticsearchServiceSoftwareUpdateInput {
+public struct CancelElasticsearchServiceSoftwareUpdateInput: Swift.Sendable {
     /// The name of the domain that you want to stop the latest service software update on.
     /// This member is required.
     public var domainName: Swift.String?
@@ -1140,7 +1141,7 @@ public struct CancelElasticsearchServiceSoftwareUpdateInput {
 
 extension ElasticsearchClientTypes {
 
-    public enum DeploymentStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DeploymentStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case completed
         case eligible
         case inProgress
@@ -1177,8 +1178,9 @@ extension ElasticsearchClientTypes {
 }
 
 extension ElasticsearchClientTypes {
+
     /// The current options of an Elasticsearch domain service software options.
-    public struct ServiceSoftwareOptions {
+    public struct ServiceSoftwareOptions: Swift.Sendable {
         /// Timestamp, in Epoch time, until which you can manually request a service software update. After this date, we automatically update your service software.
         public var automatedUpdateDate: Foundation.Date?
         /// True if you are able to cancel your service software version update. False if you are not able to cancel your service software version.
@@ -1217,11 +1219,10 @@ extension ElasticsearchClientTypes {
             self.updateStatus = updateStatus
         }
     }
-
 }
 
 /// The result of a CancelElasticsearchServiceSoftwareUpdate operation. Contains the status of the update.
-public struct CancelElasticsearchServiceSoftwareUpdateOutput {
+public struct CancelElasticsearchServiceSoftwareUpdateOutput: Swift.Sendable {
     /// The current status of the Elasticsearch service software update.
     public var serviceSoftwareOptions: ElasticsearchClientTypes.ServiceSoftwareOptions?
 
@@ -1286,7 +1287,7 @@ public struct ResourceAlreadyExistsException: ClientRuntime.ModeledError, AWSCli
 extension ElasticsearchClientTypes {
 
     /// Specifies the Auto-Tune desired state. Valid values are ENABLED, DISABLED.
-    public enum AutoTuneDesiredState: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AutoTuneDesiredState: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case disabled
         case enabled
         case sdkUnknown(Swift.String)
@@ -1316,7 +1317,7 @@ extension ElasticsearchClientTypes {
 extension ElasticsearchClientTypes {
 
     /// Specifies the unit of a maintenance schedule duration. Valid value is HOUR. See the [Developer Guide](https://docs.aws.amazon.com/elasticsearch-service/latest/developerguide/auto-tune.html) for more information.
-    public enum TimeUnit: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum TimeUnit: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case hours
         case sdkUnknown(Swift.String)
 
@@ -1341,8 +1342,9 @@ extension ElasticsearchClientTypes {
 }
 
 extension ElasticsearchClientTypes {
+
     /// Specifies maintenance schedule duration: duration value and duration unit. See the [Developer Guide](https://docs.aws.amazon.com/elasticsearch-service/latest/developerguide/auto-tune.html) for more information.
-    public struct Duration {
+    public struct Duration: Swift.Sendable {
         /// Specifies the unit of a maintenance schedule duration. Valid value is HOURS. See the [Developer Guide](https://docs.aws.amazon.com/elasticsearch-service/latest/developerguide/auto-tune.html) for more information.
         public var unit: ElasticsearchClientTypes.TimeUnit?
         /// Integer to specify the value of a maintenance schedule duration. See the [Developer Guide](https://docs.aws.amazon.com/elasticsearch-service/latest/developerguide/auto-tune.html) for more information.
@@ -1357,12 +1359,12 @@ extension ElasticsearchClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension ElasticsearchClientTypes {
+
     /// Specifies Auto-Tune maitenance schedule. See the [Developer Guide](https://docs.aws.amazon.com/elasticsearch-service/latest/developerguide/auto-tune.html) for more information.
-    public struct AutoTuneMaintenanceSchedule {
+    public struct AutoTuneMaintenanceSchedule: Swift.Sendable {
         /// Specifies cron expression for a recurring maintenance schedule. See the [Developer Guide](https://docs.aws.amazon.com/elasticsearch-service/latest/developerguide/auto-tune.html) for more information.
         public var cronExpressionForRecurrence: Swift.String?
         /// Specifies maintenance schedule duration: duration value and duration unit. See the [Developer Guide](https://docs.aws.amazon.com/elasticsearch-service/latest/developerguide/auto-tune.html) for more information.
@@ -1381,12 +1383,12 @@ extension ElasticsearchClientTypes {
             self.startAt = startAt
         }
     }
-
 }
 
 extension ElasticsearchClientTypes {
+
     /// Specifies the Auto-Tune options: the Auto-Tune desired state for the domain and list of maintenance schedules.
-    public struct AutoTuneOptionsInput {
+    public struct AutoTuneOptionsInput: Swift.Sendable {
         /// Specifies the Auto-Tune desired state. Valid values are ENABLED, DISABLED.
         public var desiredState: ElasticsearchClientTypes.AutoTuneDesiredState?
         /// Specifies list of maitenance schedules. See the [Developer Guide](https://docs.aws.amazon.com/elasticsearch-service/latest/developerguide/auto-tune.html) for more information.
@@ -1401,12 +1403,12 @@ extension ElasticsearchClientTypes {
             self.maintenanceSchedules = maintenanceSchedules
         }
     }
-
 }
 
 extension ElasticsearchClientTypes {
+
     /// Options to specify the Cognito user and identity pools for Kibana authentication. For more information, see [Amazon Cognito Authentication for Kibana](http://docs.aws.amazon.com/elasticsearch-service/latest/developerguide/es-cognito-auth.html).
-    public struct CognitoOptions {
+    public struct CognitoOptions: Swift.Sendable {
         /// Specifies the option to enable Cognito for Kibana authentication.
         public var enabled: Swift.Bool?
         /// Specifies the Cognito identity pool ID for Kibana authentication.
@@ -1429,12 +1431,11 @@ extension ElasticsearchClientTypes {
             self.userPoolId = userPoolId
         }
     }
-
 }
 
 extension ElasticsearchClientTypes {
 
-    public enum TLSSecurityPolicy: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum TLSSecurityPolicy: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case policyMinTls10201907
         case policyMinTls12201907
         case policyMinTls12Pfs202310
@@ -1465,8 +1466,9 @@ extension ElasticsearchClientTypes {
 }
 
 extension ElasticsearchClientTypes {
+
     /// Options to configure endpoint for the Elasticsearch domain.
-    public struct DomainEndpointOptions {
+    public struct DomainEndpointOptions: Swift.Sendable {
         /// Specify the fully qualified domain for your custom endpoint.
         public var customEndpoint: Swift.String?
         /// Specify ACM certificate ARN for your custom endpoint.
@@ -1505,13 +1507,12 @@ extension ElasticsearchClientTypes {
             self.tlsSecurityPolicy = tlsSecurityPolicy
         }
     }
-
 }
 
 extension ElasticsearchClientTypes {
 
     /// The type of EBS volume, standard, gp2, gp3 or io1. See [Configuring EBS-based Storage](http://docs.aws.amazon.com/elasticsearch-service/latest/developerguide/es-createupdatedomains.html#es-createdomain-configure-ebs)for more information.
-    public enum VolumeType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum VolumeType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case gp2
         case gp3
         case io1
@@ -1545,8 +1546,9 @@ extension ElasticsearchClientTypes {
 }
 
 extension ElasticsearchClientTypes {
+
     /// Options to enable, disable, and specify the properties of EBS storage volumes. For more information, see [ Configuring EBS-based Storage](http://docs.aws.amazon.com/elasticsearch-service/latest/developerguide/es-createupdatedomains.html#es-createdomain-configure-ebs).
-    public struct EBSOptions {
+    public struct EBSOptions: Swift.Sendable {
         /// Specifies whether EBS-based storage is enabled.
         public var ebsEnabled: Swift.Bool?
         /// Specifies the IOPS for Provisioned IOPS And GP3 EBS volume (SSD).
@@ -1573,12 +1575,12 @@ extension ElasticsearchClientTypes {
             self.volumeType = volumeType
         }
     }
-
 }
 
 extension ElasticsearchClientTypes {
+
     /// Specifies the configuration for cold storage options such as enabled
-    public struct ColdStorageOptions {
+    public struct ColdStorageOptions: Swift.Sendable {
         /// Enable cold storage option. Accepted values true or false
         /// This member is required.
         public var enabled: Swift.Bool?
@@ -1590,12 +1592,11 @@ extension ElasticsearchClientTypes {
             self.enabled = enabled
         }
     }
-
 }
 
 extension ElasticsearchClientTypes {
 
-    public enum ESPartitionInstanceType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ESPartitionInstanceType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case c42xlargeElasticsearch
         case c44xlargeElasticsearch
         case c48xlargeElasticsearch
@@ -1792,7 +1793,7 @@ extension ElasticsearchClientTypes {
 
 extension ElasticsearchClientTypes {
 
-    public enum ESWarmPartitionInstanceType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ESWarmPartitionInstanceType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case ultrawarm1LargeElasticsearch
         case ultrawarm1MediumElasticsearch
         case sdkUnknown(Swift.String)
@@ -1820,8 +1821,9 @@ extension ElasticsearchClientTypes {
 }
 
 extension ElasticsearchClientTypes {
+
     /// Specifies the zone awareness configuration for the domain cluster, such as the number of availability zones.
-    public struct ZoneAwarenessConfig {
+    public struct ZoneAwarenessConfig: Swift.Sendable {
         /// An integer value to indicate the number of availability zones for a domain when zone awareness is enabled. This should be equal to number of subnets if VPC endpoints is enabled
         public var availabilityZoneCount: Swift.Int?
 
@@ -1832,12 +1834,12 @@ extension ElasticsearchClientTypes {
             self.availabilityZoneCount = availabilityZoneCount
         }
     }
-
 }
 
 extension ElasticsearchClientTypes {
+
     /// Specifies the configuration for the domain cluster, such as the type and number of instances.
-    public struct ElasticsearchClusterConfig {
+    public struct ElasticsearchClusterConfig: Swift.Sendable {
         /// Specifies the ColdStorageOptions config for Elasticsearch Domain
         public var coldStorageOptions: ElasticsearchClientTypes.ColdStorageOptions?
         /// Total number of dedicated master nodes, active and on standby, for the cluster.
@@ -1888,12 +1890,12 @@ extension ElasticsearchClientTypes {
             self.zoneAwarenessEnabled = zoneAwarenessEnabled
         }
     }
-
 }
 
 extension ElasticsearchClientTypes {
+
     /// Specifies the Encryption At Rest Options.
-    public struct EncryptionAtRestOptions {
+    public struct EncryptionAtRestOptions: Swift.Sendable {
         /// Specifies the option to enable Encryption At Rest.
         public var enabled: Swift.Bool?
         /// Specifies the KMS Key ID for Encryption At Rest options.
@@ -1908,7 +1910,6 @@ extension ElasticsearchClientTypes {
             self.kmsKeyId = kmsKeyId
         }
     }
-
 }
 
 extension ElasticsearchClientTypes {
@@ -1922,7 +1923,7 @@ extension ElasticsearchClientTypes {
     /// * ES_APPLICATION_LOGS: Elasticsearch application logs contain information about errors and warnings raised during the operation of the service and can be useful for troubleshooting.
     ///
     /// * AUDIT_LOGS: Audit logs contain records of user requests for access from the domain.
-    public enum LogType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum LogType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case auditLogs
         case esApplicationLogs
         case indexSlowLogs
@@ -1956,6 +1957,7 @@ extension ElasticsearchClientTypes {
 }
 
 extension ElasticsearchClientTypes {
+
     /// Log Publishing option that is set for given domain.
     ///
     ///
@@ -1967,7 +1969,7 @@ extension ElasticsearchClientTypes {
     /// * CloudWatchLogsLogGroupArn: ARN of the Cloudwatch log group to which log needs to be published.
     ///
     /// * Enabled: Whether the log publishing for given log type is enabled or not
-    public struct LogPublishingOption {
+    public struct LogPublishingOption: Swift.Sendable {
         /// ARN of the Cloudwatch log group to which log needs to be published.
         public var cloudWatchLogsLogGroupArn: Swift.String?
         /// Specifies whether given log publishing option is enabled or not.
@@ -1982,12 +1984,12 @@ extension ElasticsearchClientTypes {
             self.enabled = enabled
         }
     }
-
 }
 
 extension ElasticsearchClientTypes {
+
     /// Specifies the node-to-node encryption options.
-    public struct NodeToNodeEncryptionOptions {
+    public struct NodeToNodeEncryptionOptions: Swift.Sendable {
         /// Specify true to enable node-to-node encryption.
         public var enabled: Swift.Bool?
 
@@ -1998,12 +2000,12 @@ extension ElasticsearchClientTypes {
             self.enabled = enabled
         }
     }
-
 }
 
 extension ElasticsearchClientTypes {
+
     /// Specifies the time, in UTC format, when the service takes a daily automated snapshot of the specified Elasticsearch domain. Default value is 0 hours.
-    public struct SnapshotOptions {
+    public struct SnapshotOptions: Swift.Sendable {
         /// Specifies the time, in UTC format, when the service takes a daily automated snapshot of the specified Elasticsearch domain. Default value is 0 hours.
         public var automatedSnapshotStartHour: Swift.Int?
 
@@ -2014,12 +2016,12 @@ extension ElasticsearchClientTypes {
             self.automatedSnapshotStartHour = automatedSnapshotStartHour
         }
     }
-
 }
 
 extension ElasticsearchClientTypes {
+
     /// Options to specify the subnets and security groups for VPC endpoint. For more information, see [ VPC Endpoints for Amazon Elasticsearch Service Domains](http://docs.aws.amazon.com/elasticsearch-service/latest/developerguide/es-vpc.html).
-    public struct VPCOptions {
+    public struct VPCOptions: Swift.Sendable {
         /// Specifies the security groups for VPC endpoint.
         public var securityGroupIds: [Swift.String]?
         /// Specifies the subnets for VPC endpoint.
@@ -2034,10 +2036,9 @@ extension ElasticsearchClientTypes {
             self.subnetIds = subnetIds
         }
     }
-
 }
 
-public struct CreateElasticsearchDomainInput {
+public struct CreateElasticsearchDomainInput: Swift.Sendable {
     /// IAM access policy as a JSON-formatted string.
     public var accessPolicies: Swift.String?
     /// Option to allow references to indices in an HTTP request body. Must be false when configuring access to individual sub-resources. By default, the value is true. See [Configuration Advanced Options](http://docs.aws.amazon.com/elasticsearch-service/latest/developerguide/es-createupdatedomains.html#es-createdomain-configure-advanced-options) for more information.
@@ -2113,7 +2114,7 @@ public struct CreateElasticsearchDomainInput {
 extension ElasticsearchClientTypes {
 
     /// Specifies the Auto-Tune state for the Elasticsearch domain. For valid states see the [Developer Guide](https://docs.aws.amazon.com/elasticsearch-service/latest/developerguide/auto-tune.html).
-    public enum AutoTuneState: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AutoTuneState: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case disabled
         case disabledAndRollbackComplete
         case disabledAndRollbackError
@@ -2162,8 +2163,9 @@ extension ElasticsearchClientTypes {
 }
 
 extension ElasticsearchClientTypes {
+
     /// Specifies the Auto-Tune options: the Auto-Tune desired state for the domain and list of maintenance schedules.
-    public struct AutoTuneOptionsOutput {
+    public struct AutoTuneOptionsOutput: Swift.Sendable {
         /// Specifies the error message while enabling or disabling the Auto-Tune.
         public var errorMessage: Swift.String?
         /// Specifies the AutoTuneState for the Elasticsearch domain.
@@ -2178,12 +2180,11 @@ extension ElasticsearchClientTypes {
             self.state = state
         }
     }
-
 }
 
 extension ElasticsearchClientTypes {
 
-    public enum ConfigChangeStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ConfigChangeStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case applyingChanges
         case cancelled
         case completed
@@ -2230,7 +2231,7 @@ extension ElasticsearchClientTypes {
 
 extension ElasticsearchClientTypes {
 
-    public enum InitiatedBy: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum InitiatedBy: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case customer
         case service
         case sdkUnknown(Swift.String)
@@ -2258,8 +2259,9 @@ extension ElasticsearchClientTypes {
 }
 
 extension ElasticsearchClientTypes {
+
     /// Specifies change details of the domain configuration change.
-    public struct ChangeProgressDetails {
+    public struct ChangeProgressDetails: Swift.Sendable {
         /// The unique change identifier associated with a specific domain configuration change.
         public var changeId: Swift.String?
         /// The current status of the configuration change.
@@ -2290,12 +2292,11 @@ extension ElasticsearchClientTypes {
             self.startTime = startTime
         }
     }
-
 }
 
 extension ElasticsearchClientTypes {
 
-    public enum DomainProcessingStatusType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DomainProcessingStatusType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case active
         case creating
         case deleting
@@ -2339,7 +2340,7 @@ extension ElasticsearchClientTypes {
 
 extension ElasticsearchClientTypes {
 
-    public enum PropertyValueType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum PropertyValueType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case plainText
         case stringifiedJson
         case sdkUnknown(Swift.String)
@@ -2367,8 +2368,9 @@ extension ElasticsearchClientTypes {
 }
 
 extension ElasticsearchClientTypes {
+
     /// Information about the domain properties that are currently being modified.
-    public struct ModifyingProperties {
+    public struct ModifyingProperties: Swift.Sendable {
         /// The current value of the domain property that is being modified.
         public var activeValue: Swift.String?
         /// The name of the property that is currently being modified.
@@ -2395,12 +2397,12 @@ extension ElasticsearchClientTypes {
             self.valueType = valueType
         }
     }
-
 }
 
 extension ElasticsearchClientTypes {
+
     /// Options to specify the subnets and security groups for VPC endpoint. For more information, see [ VPC Endpoints for Amazon Elasticsearch Service Domains](http://docs.aws.amazon.com/elasticsearch-service/latest/developerguide/es-vpc.html).
-    public struct VPCDerivedInfo {
+    public struct VPCDerivedInfo: Swift.Sendable {
         /// The availability zones for the Elasticsearch domain. Exists only if the domain was created with VPCOptions.
         public var availabilityZones: [Swift.String]?
         /// Specifies the security groups for VPC endpoint.
@@ -2423,12 +2425,12 @@ extension ElasticsearchClientTypes {
             self.vpcId = vpcId
         }
     }
-
 }
 
 extension ElasticsearchClientTypes {
+
     /// The current status of an Elasticsearch domain.
-    public struct ElasticsearchDomainStatus {
+    public struct ElasticsearchDomainStatus: Swift.Sendable {
         /// IAM access policy as a JSON-formatted string.
         public var accessPolicies: Swift.String?
         /// Specifies the status of the AdvancedOptions
@@ -2546,11 +2548,10 @@ extension ElasticsearchClientTypes {
             self.vpcOptions = vpcOptions
         }
     }
-
 }
 
 /// The result of a CreateElasticsearchDomain operation. Contains the status of the newly created Elasticsearch domain.
-public struct CreateElasticsearchDomainOutput {
+public struct CreateElasticsearchDomainOutput: Swift.Sendable {
     /// The status of the newly created Elasticsearch domain.
     public var domainStatus: ElasticsearchClientTypes.ElasticsearchDomainStatus?
 
@@ -2563,7 +2564,7 @@ public struct CreateElasticsearchDomainOutput {
 }
 
 /// Container for the parameters to the [CreateOutboundCrossClusterSearchConnection] operation.
-public struct CreateOutboundCrossClusterSearchConnectionInput {
+public struct CreateOutboundCrossClusterSearchConnectionInput: Swift.Sendable {
     /// Specifies the connection alias that will be used by the customer for this connection.
     /// This member is required.
     public var connectionAlias: Swift.String?
@@ -2588,7 +2589,7 @@ public struct CreateOutboundCrossClusterSearchConnectionInput {
 
 extension ElasticsearchClientTypes {
 
-    public enum OutboundCrossClusterSearchConnectionStatusCode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum OutboundCrossClusterSearchConnectionStatusCode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case active
         case deleted
         case deleting
@@ -2634,8 +2635,9 @@ extension ElasticsearchClientTypes {
 }
 
 extension ElasticsearchClientTypes {
+
     /// Specifies the connection status of an outbound cross-cluster search connection.
-    public struct OutboundCrossClusterSearchConnectionStatus {
+    public struct OutboundCrossClusterSearchConnectionStatus: Swift.Sendable {
         /// Specifies verbose information for the outbound connection status.
         public var message: Swift.String?
         /// The state code for outbound connection. This can be one of the following:
@@ -2666,11 +2668,10 @@ extension ElasticsearchClientTypes {
             self.statusCode = statusCode
         }
     }
-
 }
 
 /// The result of a [CreateOutboundCrossClusterSearchConnection] request. Contains the details of the newly created cross-cluster search connection.
-public struct CreateOutboundCrossClusterSearchConnectionOutput {
+public struct CreateOutboundCrossClusterSearchConnectionOutput: Swift.Sendable {
     /// Specifies the connection alias provided during the create connection request.
     public var connectionAlias: Swift.String?
     /// Specifies the [OutboundCrossClusterSearchConnectionStatus] for the newly created connection.
@@ -2699,8 +2700,9 @@ public struct CreateOutboundCrossClusterSearchConnectionOutput {
 }
 
 extension ElasticsearchClientTypes {
+
     /// The S3 location for importing the package specified as S3BucketName and S3Key
-    public struct PackageSource {
+    public struct PackageSource: Swift.Sendable {
         /// Name of the bucket containing the package.
         public var s3BucketName: Swift.String?
         /// Key (file name) of the package.
@@ -2715,11 +2717,10 @@ extension ElasticsearchClientTypes {
             self.s3Key = s3Key
         }
     }
-
 }
 
 /// Container for request parameters to [CreatePackage] operation.
-public struct CreatePackageInput {
+public struct CreatePackageInput: Swift.Sendable {
     /// Description of the package.
     public var packageDescription: Swift.String?
     /// Unique identifier for the package.
@@ -2748,7 +2749,7 @@ public struct CreatePackageInput {
 
 extension ElasticsearchClientTypes {
 
-    public enum PackageStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum PackageStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case available
         case copying
         case copyFailed
@@ -2794,8 +2795,9 @@ extension ElasticsearchClientTypes {
 }
 
 extension ElasticsearchClientTypes {
+
     /// Basic information about a package.
-    public struct PackageDetails {
+    public struct PackageDetails: Swift.Sendable {
         public var availablePackageVersion: Swift.String?
         /// Timestamp which tells creation date of the package.
         public var createdAt: Foundation.Date?
@@ -2836,11 +2838,10 @@ extension ElasticsearchClientTypes {
             self.packageType = packageType
         }
     }
-
 }
 
 /// Container for response returned by [CreatePackage] operation.
-public struct CreatePackageOutput {
+public struct CreatePackageOutput: Swift.Sendable {
     /// Information about the package PackageDetails.
     public var packageDetails: ElasticsearchClientTypes.PackageDetails?
 
@@ -2853,7 +2854,7 @@ public struct CreatePackageOutput {
 }
 
 /// Container for the parameters to the [CreateVpcEndpointRequest] operation.
-public struct CreateVpcEndpointInput {
+public struct CreateVpcEndpointInput: Swift.Sendable {
     /// Unique, case-sensitive identifier to ensure idempotency of the request.
     public var clientToken: Swift.String?
     /// The Amazon Resource Name (ARN) of the domain to grant access to.
@@ -2892,7 +2893,7 @@ extension ElasticsearchClientTypes {
     /// * DELETING: Indicates that the VPC endpoint is currently being deleted.
     ///
     /// * DELETE_FAILED: Indicates that the VPC endpoint deletion failed.
-    public enum VpcEndpointStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum VpcEndpointStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case active
         case createFailed
         case creating
@@ -2935,8 +2936,9 @@ extension ElasticsearchClientTypes {
 }
 
 extension ElasticsearchClientTypes {
+
     /// The connection endpoint for connecting to an Amazon OpenSearch Service domain through a proxy.
-    public struct VpcEndpoint {
+    public struct VpcEndpoint: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the domain associated with the endpoint.
         public var domainArn: Swift.String?
         /// The connection endpoint ID for connecting to the domain.
@@ -2967,11 +2969,10 @@ extension ElasticsearchClientTypes {
             self.vpcOptions = vpcOptions
         }
     }
-
 }
 
 /// Container for response parameters to the [CreateVpcEndpoint] operation. Contains the configuration and status of the VPC Endpoint being created.
-public struct CreateVpcEndpointOutput {
+public struct CreateVpcEndpointOutput: Swift.Sendable {
     /// Information about the newly created VPC endpoint.
     /// This member is required.
     public var vpcEndpoint: ElasticsearchClientTypes.VpcEndpoint?
@@ -2985,7 +2986,7 @@ public struct CreateVpcEndpointOutput {
 }
 
 /// Container for the parameters to the [DeleteElasticsearchDomain] operation. Specifies the name of the Elasticsearch domain that you want to delete.
-public struct DeleteElasticsearchDomainInput {
+public struct DeleteElasticsearchDomainInput: Swift.Sendable {
     /// The name of the Elasticsearch domain that you want to permanently delete.
     /// This member is required.
     public var domainName: Swift.String?
@@ -2999,7 +3000,7 @@ public struct DeleteElasticsearchDomainInput {
 }
 
 /// The result of a DeleteElasticsearchDomain request. Contains the status of the pending deletion, or no status if the domain and all of its resources have been deleted.
-public struct DeleteElasticsearchDomainOutput {
+public struct DeleteElasticsearchDomainOutput: Swift.Sendable {
     /// The status of the Elasticsearch domain being deleted.
     public var domainStatus: ElasticsearchClientTypes.ElasticsearchDomainStatus?
 
@@ -3012,7 +3013,7 @@ public struct DeleteElasticsearchDomainOutput {
 }
 
 /// Container for the parameters to the [DeleteInboundCrossClusterSearchConnection] operation.
-public struct DeleteInboundCrossClusterSearchConnectionInput {
+public struct DeleteInboundCrossClusterSearchConnectionInput: Swift.Sendable {
     /// The id of the inbound connection that you want to permanently delete.
     /// This member is required.
     public var crossClusterSearchConnectionId: Swift.String?
@@ -3026,7 +3027,7 @@ public struct DeleteInboundCrossClusterSearchConnectionInput {
 }
 
 /// The result of a [DeleteInboundCrossClusterSearchConnection] operation. Contains details of deleted inbound connection.
-public struct DeleteInboundCrossClusterSearchConnectionOutput {
+public struct DeleteInboundCrossClusterSearchConnectionOutput: Swift.Sendable {
     /// Specifies the [InboundCrossClusterSearchConnection] of deleted inbound connection.
     public var crossClusterSearchConnection: ElasticsearchClientTypes.InboundCrossClusterSearchConnection?
 
@@ -3039,7 +3040,7 @@ public struct DeleteInboundCrossClusterSearchConnectionOutput {
 }
 
 /// Container for the parameters to the [DeleteOutboundCrossClusterSearchConnection] operation.
-public struct DeleteOutboundCrossClusterSearchConnectionInput {
+public struct DeleteOutboundCrossClusterSearchConnectionInput: Swift.Sendable {
     /// The id of the outbound connection that you want to permanently delete.
     /// This member is required.
     public var crossClusterSearchConnectionId: Swift.String?
@@ -3053,8 +3054,9 @@ public struct DeleteOutboundCrossClusterSearchConnectionInput {
 }
 
 extension ElasticsearchClientTypes {
+
     /// Specifies details of an outbound connection.
-    public struct OutboundCrossClusterSearchConnection {
+    public struct OutboundCrossClusterSearchConnection: Swift.Sendable {
         /// Specifies the connection alias for the outbound cross-cluster search connection.
         public var connectionAlias: Swift.String?
         /// Specifies the [OutboundCrossClusterSearchConnectionStatus] for the outbound connection.
@@ -3081,11 +3083,10 @@ extension ElasticsearchClientTypes {
             self.sourceDomainInfo = sourceDomainInfo
         }
     }
-
 }
 
 /// The result of a [DeleteOutboundCrossClusterSearchConnection] operation. Contains details of deleted outbound connection.
-public struct DeleteOutboundCrossClusterSearchConnectionOutput {
+public struct DeleteOutboundCrossClusterSearchConnectionOutput: Swift.Sendable {
     /// Specifies the [OutboundCrossClusterSearchConnection] of deleted outbound connection.
     public var crossClusterSearchConnection: ElasticsearchClientTypes.OutboundCrossClusterSearchConnection?
 
@@ -3098,7 +3099,7 @@ public struct DeleteOutboundCrossClusterSearchConnectionOutput {
 }
 
 /// Container for request parameters to [DeletePackage] operation.
-public struct DeletePackageInput {
+public struct DeletePackageInput: Swift.Sendable {
     /// Internal ID of the package that you want to delete. Use DescribePackages to find this value.
     /// This member is required.
     public var packageID: Swift.String?
@@ -3112,7 +3113,7 @@ public struct DeletePackageInput {
 }
 
 /// Container for response parameters to [DeletePackage] operation.
-public struct DeletePackageOutput {
+public struct DeletePackageOutput: Swift.Sendable {
     ///     PackageDetails
     public var packageDetails: ElasticsearchClientTypes.PackageDetails?
 
@@ -3125,7 +3126,7 @@ public struct DeletePackageOutput {
 }
 
 /// Deletes an Amazon OpenSearch Service-managed interface VPC endpoint.
-public struct DeleteVpcEndpointInput {
+public struct DeleteVpcEndpointInput: Swift.Sendable {
     /// The unique identifier of the endpoint to be deleted.
     /// This member is required.
     public var vpcEndpointId: Swift.String?
@@ -3139,8 +3140,9 @@ public struct DeleteVpcEndpointInput {
 }
 
 extension ElasticsearchClientTypes {
+
     /// Summary information for an Amazon OpenSearch Service-managed VPC endpoint.
-    public struct VpcEndpointSummary {
+    public struct VpcEndpointSummary: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the domain associated with the endpoint.
         public var domainArn: Swift.String?
         /// The current status of the endpoint.
@@ -3163,11 +3165,10 @@ extension ElasticsearchClientTypes {
             self.vpcEndpointOwner = vpcEndpointOwner
         }
     }
-
 }
 
 /// Container for response parameters to the [DeleteVpcEndpoint] operation. Contains the summarized detail of the VPC Endpoint being deleted.
-public struct DeleteVpcEndpointOutput {
+public struct DeleteVpcEndpointOutput: Swift.Sendable {
     /// Information about the deleted endpoint, including its current status (DELETING or DELETE_FAILED).
     /// This member is required.
     public var vpcEndpointSummary: ElasticsearchClientTypes.VpcEndpointSummary?
@@ -3181,7 +3182,7 @@ public struct DeleteVpcEndpointOutput {
 }
 
 /// Container for the parameters to the DescribeDomainAutoTunes operation.
-public struct DescribeDomainAutoTunesInput {
+public struct DescribeDomainAutoTunesInput: Swift.Sendable {
     /// Specifies the domain name for which you want Auto-Tune action details.
     /// This member is required.
     public var domainName: Swift.String?
@@ -3205,7 +3206,7 @@ public struct DescribeDomainAutoTunesInput {
 extension ElasticsearchClientTypes {
 
     /// Specifies Auto-Tune action type. Valid values are JVM_HEAP_SIZE_TUNING and JVM_YOUNG_GEN_TUNING.
-    public enum ScheduledAutoTuneActionType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ScheduledAutoTuneActionType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case jvmHeapSizeTuning
         case jvmYoungGenTuning
         case sdkUnknown(Swift.String)
@@ -3235,7 +3236,7 @@ extension ElasticsearchClientTypes {
 extension ElasticsearchClientTypes {
 
     /// Specifies Auto-Tune action severity. Valid values are LOW, MEDIUM and HIGH.
-    public enum ScheduledAutoTuneSeverityType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ScheduledAutoTuneSeverityType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case high
         case low
         case medium
@@ -3266,8 +3267,9 @@ extension ElasticsearchClientTypes {
 }
 
 extension ElasticsearchClientTypes {
+
     /// Specifies details of the scheduled Auto-Tune action. See the [Developer Guide](https://docs.aws.amazon.com/elasticsearch-service/latest/developerguide/auto-tune.html) for more information.
-    public struct ScheduledAutoTuneDetails {
+    public struct ScheduledAutoTuneDetails: Swift.Sendable {
         /// Specifies Auto-Tune action description.
         public var action: Swift.String?
         /// Specifies Auto-Tune action type. Valid values are JVM_HEAP_SIZE_TUNING and JVM_YOUNG_GEN_TUNING.
@@ -3290,12 +3292,12 @@ extension ElasticsearchClientTypes {
             self.severity = severity
         }
     }
-
 }
 
 extension ElasticsearchClientTypes {
+
     /// Specifies details of the Auto-Tune action. See the [Developer Guide](https://docs.aws.amazon.com/elasticsearch-service/latest/developerguide/auto-tune.html) for more information.
-    public struct AutoTuneDetails {
+    public struct AutoTuneDetails: Swift.Sendable {
         /// Specifies details of the scheduled Auto-Tune action. See the [Developer Guide](https://docs.aws.amazon.com/elasticsearch-service/latest/developerguide/auto-tune.html) for more information.
         public var scheduledAutoTuneDetails: ElasticsearchClientTypes.ScheduledAutoTuneDetails?
 
@@ -3306,13 +3308,12 @@ extension ElasticsearchClientTypes {
             self.scheduledAutoTuneDetails = scheduledAutoTuneDetails
         }
     }
-
 }
 
 extension ElasticsearchClientTypes {
 
     /// Specifies Auto-Tune type. Valid value is SCHEDULED_ACTION.
-    public enum AutoTuneType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AutoTuneType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case scheduledAction
         case sdkUnknown(Swift.String)
 
@@ -3337,8 +3338,9 @@ extension ElasticsearchClientTypes {
 }
 
 extension ElasticsearchClientTypes {
+
     /// Specifies Auto-Tune type and Auto-Tune action details.
-    public struct AutoTune {
+    public struct AutoTune: Swift.Sendable {
         /// Specifies details of the Auto-Tune action. See the [Developer Guide](https://docs.aws.amazon.com/elasticsearch-service/latest/developerguide/auto-tune.html) for more information.
         public var autoTuneDetails: ElasticsearchClientTypes.AutoTuneDetails?
         /// Specifies Auto-Tune type. Valid value is SCHEDULED_ACTION.
@@ -3353,11 +3355,10 @@ extension ElasticsearchClientTypes {
             self.autoTuneType = autoTuneType
         }
     }
-
 }
 
 /// The result of DescribeDomainAutoTunes request. See the [Developer Guide](https://docs.aws.amazon.com/elasticsearch-service/latest/developerguide/auto-tune.html) for more information.
-public struct DescribeDomainAutoTunesOutput {
+public struct DescribeDomainAutoTunesOutput: Swift.Sendable {
     /// Specifies the list of setting adjustments that Auto-Tune has made to the domain. See the [Developer Guide](https://docs.aws.amazon.com/elasticsearch-service/latest/developerguide/auto-tune.html) for more information.
     public var autoTunes: [ElasticsearchClientTypes.AutoTune]?
     /// Specifies an identifier to allow retrieval of paginated results.
@@ -3374,7 +3375,7 @@ public struct DescribeDomainAutoTunesOutput {
 }
 
 /// Container for the parameters to the DescribeDomainChangeProgress operation. Specifies the domain name and optional change specific identity for which you want progress information.
-public struct DescribeDomainChangeProgressInput {
+public struct DescribeDomainChangeProgressInput: Swift.Sendable {
     /// The specific change ID for which you want to get progress information. This is an optional parameter. If omitted, the service returns information about the most recent configuration change.
     public var changeId: Swift.String?
     /// The domain you want to get the progress information about.
@@ -3392,8 +3393,9 @@ public struct DescribeDomainChangeProgressInput {
 }
 
 extension ElasticsearchClientTypes {
+
     /// A progress stage details of a specific domain configuration change.
-    public struct ChangeProgressStage {
+    public struct ChangeProgressStage: Swift.Sendable {
         /// The description of the progress stage.
         public var description: Swift.String?
         /// The last updated timestamp of the progress stage.
@@ -3416,13 +3418,12 @@ extension ElasticsearchClientTypes {
             self.status = status
         }
     }
-
 }
 
 extension ElasticsearchClientTypes {
 
     /// The overall status value of the domain configuration change.
-    public enum OverallChangeStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum OverallChangeStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case completed
         case failed
         case pending
@@ -3456,8 +3457,9 @@ extension ElasticsearchClientTypes {
 }
 
 extension ElasticsearchClientTypes {
+
     /// The progress details of a specific domain configuration change.
-    public struct ChangeProgressStatusDetails {
+    public struct ChangeProgressStatusDetails: Swift.Sendable {
         /// The unique change identifier associated with a specific domain configuration change.
         public var changeId: Swift.String?
         /// The specific stages that the domain is going through to perform the configuration change.
@@ -3504,11 +3506,10 @@ extension ElasticsearchClientTypes {
             self.totalNumberOfStages = totalNumberOfStages
         }
     }
-
 }
 
 /// The result of a DescribeDomainChangeProgress request. Contains the progress information of the requested domain change.
-public struct DescribeDomainChangeProgressOutput {
+public struct DescribeDomainChangeProgressOutput: Swift.Sendable {
     /// Progress information for the configuration change that is requested in the DescribeDomainChangeProgress request.
     public var changeProgressStatus: ElasticsearchClientTypes.ChangeProgressStatusDetails?
 
@@ -3521,7 +3522,7 @@ public struct DescribeDomainChangeProgressOutput {
 }
 
 /// Container for the parameters to the [DescribeElasticsearchDomain] operation.
-public struct DescribeElasticsearchDomainInput {
+public struct DescribeElasticsearchDomainInput: Swift.Sendable {
     /// The name of the Elasticsearch domain for which you want information.
     /// This member is required.
     public var domainName: Swift.String?
@@ -3535,7 +3536,7 @@ public struct DescribeElasticsearchDomainInput {
 }
 
 /// The result of a DescribeElasticsearchDomain request. Contains the status of the domain specified in the request.
-public struct DescribeElasticsearchDomainOutput {
+public struct DescribeElasticsearchDomainOutput: Swift.Sendable {
     /// The current status of the Elasticsearch domain.
     /// This member is required.
     public var domainStatus: ElasticsearchClientTypes.ElasticsearchDomainStatus?
@@ -3549,7 +3550,7 @@ public struct DescribeElasticsearchDomainOutput {
 }
 
 /// Container for the parameters to the DescribeElasticsearchDomainConfig operation. Specifies the domain name for which you want configuration information.
-public struct DescribeElasticsearchDomainConfigInput {
+public struct DescribeElasticsearchDomainConfigInput: Swift.Sendable {
     /// The Elasticsearch domain that you want to get information about.
     /// This member is required.
     public var domainName: Swift.String?
@@ -3565,7 +3566,7 @@ public struct DescribeElasticsearchDomainConfigInput {
 extension ElasticsearchClientTypes {
 
     /// Specifies the rollback state while disabling Auto-Tune for the domain. Valid values are NO_ROLLBACK, DEFAULT_ROLLBACK.
-    public enum RollbackOnDisable: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum RollbackOnDisable: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case defaultRollback
         case noRollback
         case sdkUnknown(Swift.String)
@@ -3593,8 +3594,9 @@ extension ElasticsearchClientTypes {
 }
 
 extension ElasticsearchClientTypes {
+
     /// Specifies the Auto-Tune options: the Auto-Tune desired state for the domain, rollback state when disabling Auto-Tune options and list of maintenance schedules.
-    public struct AutoTuneOptions {
+    public struct AutoTuneOptions: Swift.Sendable {
         /// Specifies the Auto-Tune desired state. Valid values are ENABLED, DISABLED.
         public var desiredState: ElasticsearchClientTypes.AutoTuneDesiredState?
         /// Specifies list of maitenance schedules. See the [Developer Guide](https://docs.aws.amazon.com/elasticsearch-service/latest/developerguide/auto-tune.html) for more information.
@@ -3613,12 +3615,12 @@ extension ElasticsearchClientTypes {
             self.rollbackOnDisable = rollbackOnDisable
         }
     }
-
 }
 
 extension ElasticsearchClientTypes {
+
     /// Provides the current status of the Auto-Tune options.
-    public struct AutoTuneStatus {
+    public struct AutoTuneStatus: Swift.Sendable {
         /// Timestamp which tells Auto-Tune options creation date .
         /// This member is required.
         public var creationDate: Foundation.Date?
@@ -3652,12 +3654,12 @@ extension ElasticsearchClientTypes {
             self.updateVersion = updateVersion
         }
     }
-
 }
 
 extension ElasticsearchClientTypes {
+
     /// Specifies the status of Auto-Tune options for the specified Elasticsearch domain.
-    public struct AutoTuneOptionsStatus {
+    public struct AutoTuneOptionsStatus: Swift.Sendable {
         /// Specifies Auto-Tune options for the specified Elasticsearch domain.
         public var options: ElasticsearchClientTypes.AutoTuneOptions?
         /// Specifies Status of the Auto-Tune options for the specified Elasticsearch domain.
@@ -3672,12 +3674,12 @@ extension ElasticsearchClientTypes {
             self.status = status
         }
     }
-
 }
 
 extension ElasticsearchClientTypes {
+
     /// Status of the Cognito options for the specified Elasticsearch domain.
-    public struct CognitoOptionsStatus {
+    public struct CognitoOptionsStatus: Swift.Sendable {
         /// Specifies the Cognito options for the specified Elasticsearch domain.
         /// This member is required.
         public var options: ElasticsearchClientTypes.CognitoOptions?
@@ -3694,12 +3696,12 @@ extension ElasticsearchClientTypes {
             self.status = status
         }
     }
-
 }
 
 extension ElasticsearchClientTypes {
+
     /// The configured endpoint options for the domain and their current status.
-    public struct DomainEndpointOptionsStatus {
+    public struct DomainEndpointOptionsStatus: Swift.Sendable {
         /// Options to configure endpoint for the Elasticsearch domain.
         /// This member is required.
         public var options: ElasticsearchClientTypes.DomainEndpointOptions?
@@ -3716,12 +3718,12 @@ extension ElasticsearchClientTypes {
             self.status = status
         }
     }
-
 }
 
 extension ElasticsearchClientTypes {
+
     /// Status of the EBS options for the specified Elasticsearch domain.
-    public struct EBSOptionsStatus {
+    public struct EBSOptionsStatus: Swift.Sendable {
         /// Specifies the EBS options for the specified Elasticsearch domain.
         /// This member is required.
         public var options: ElasticsearchClientTypes.EBSOptions?
@@ -3738,12 +3740,12 @@ extension ElasticsearchClientTypes {
             self.status = status
         }
     }
-
 }
 
 extension ElasticsearchClientTypes {
+
     /// Specifies the configuration status for the specified Elasticsearch domain.
-    public struct ElasticsearchClusterConfigStatus {
+    public struct ElasticsearchClusterConfigStatus: Swift.Sendable {
         /// Specifies the cluster configuration for the specified Elasticsearch domain.
         /// This member is required.
         public var options: ElasticsearchClientTypes.ElasticsearchClusterConfig?
@@ -3760,12 +3762,12 @@ extension ElasticsearchClientTypes {
             self.status = status
         }
     }
-
 }
 
 extension ElasticsearchClientTypes {
+
     /// Status of the Elasticsearch version options for the specified Elasticsearch domain.
-    public struct ElasticsearchVersionStatus {
+    public struct ElasticsearchVersionStatus: Swift.Sendable {
         /// Specifies the Elasticsearch version for the specified Elasticsearch domain.
         /// This member is required.
         public var options: Swift.String?
@@ -3782,12 +3784,12 @@ extension ElasticsearchClientTypes {
             self.status = status
         }
     }
-
 }
 
 extension ElasticsearchClientTypes {
+
     /// Status of the Encryption At Rest options for the specified Elasticsearch domain.
-    public struct EncryptionAtRestOptionsStatus {
+    public struct EncryptionAtRestOptionsStatus: Swift.Sendable {
         /// Specifies the Encryption At Rest options for the specified Elasticsearch domain.
         /// This member is required.
         public var options: ElasticsearchClientTypes.EncryptionAtRestOptions?
@@ -3804,12 +3806,12 @@ extension ElasticsearchClientTypes {
             self.status = status
         }
     }
-
 }
 
 extension ElasticsearchClientTypes {
+
     /// The configured log publishing options for the domain and their current status.
-    public struct LogPublishingOptionsStatus {
+    public struct LogPublishingOptionsStatus: Swift.Sendable {
         /// The log publishing options configured for the Elasticsearch domain.
         public var options: [Swift.String: ElasticsearchClientTypes.LogPublishingOption]?
         /// The status of the log publishing options for the Elasticsearch domain. See OptionStatus for the status information that's included.
@@ -3824,12 +3826,12 @@ extension ElasticsearchClientTypes {
             self.status = status
         }
     }
-
 }
 
 extension ElasticsearchClientTypes {
+
     /// Status of the node-to-node encryption options for the specified Elasticsearch domain.
-    public struct NodeToNodeEncryptionOptionsStatus {
+    public struct NodeToNodeEncryptionOptionsStatus: Swift.Sendable {
         /// Specifies the node-to-node encryption options for the specified Elasticsearch domain.
         /// This member is required.
         public var options: ElasticsearchClientTypes.NodeToNodeEncryptionOptions?
@@ -3846,12 +3848,12 @@ extension ElasticsearchClientTypes {
             self.status = status
         }
     }
-
 }
 
 extension ElasticsearchClientTypes {
+
     /// Status of a daily automated snapshot.
-    public struct SnapshotOptionsStatus {
+    public struct SnapshotOptionsStatus: Swift.Sendable {
         /// Specifies the daily snapshot options specified for the Elasticsearch domain.
         /// This member is required.
         public var options: ElasticsearchClientTypes.SnapshotOptions?
@@ -3868,12 +3870,12 @@ extension ElasticsearchClientTypes {
             self.status = status
         }
     }
-
 }
 
 extension ElasticsearchClientTypes {
+
     /// Status of the VPC options for the specified Elasticsearch domain.
-    public struct VPCDerivedInfoStatus {
+    public struct VPCDerivedInfoStatus: Swift.Sendable {
         /// Specifies the VPC options for the specified Elasticsearch domain.
         /// This member is required.
         public var options: ElasticsearchClientTypes.VPCDerivedInfo?
@@ -3890,12 +3892,12 @@ extension ElasticsearchClientTypes {
             self.status = status
         }
     }
-
 }
 
 extension ElasticsearchClientTypes {
+
     /// The configuration of an Elasticsearch domain.
-    public struct ElasticsearchDomainConfig {
+    public struct ElasticsearchDomainConfig: Swift.Sendable {
         /// IAM access policy as a JSON-formatted string.
         public var accessPolicies: ElasticsearchClientTypes.AccessPoliciesStatus?
         /// Specifies the AdvancedOptions for the domain. See [Configuring Advanced Options](http://docs.aws.amazon.com/elasticsearch-service/latest/developerguide/es-createupdatedomains.html#es-createdomain-configure-advanced-options) for more information.
@@ -3966,11 +3968,10 @@ extension ElasticsearchClientTypes {
             self.vpcOptions = vpcOptions
         }
     }
-
 }
 
 /// The result of a DescribeElasticsearchDomainConfig request. Contains the configuration information of the requested domain.
-public struct DescribeElasticsearchDomainConfigOutput {
+public struct DescribeElasticsearchDomainConfigOutput: Swift.Sendable {
     /// The configuration information of the domain requested in the DescribeElasticsearchDomainConfig request.
     /// This member is required.
     public var domainConfig: ElasticsearchClientTypes.ElasticsearchDomainConfig?
@@ -3984,7 +3985,7 @@ public struct DescribeElasticsearchDomainConfigOutput {
 }
 
 /// Container for the parameters to the [DescribeElasticsearchDomains] operation. By default, the API returns the status of all Elasticsearch domains.
-public struct DescribeElasticsearchDomainsInput {
+public struct DescribeElasticsearchDomainsInput: Swift.Sendable {
     /// The Elasticsearch domains for which you want information.
     /// This member is required.
     public var domainNames: [Swift.String]?
@@ -3998,7 +3999,7 @@ public struct DescribeElasticsearchDomainsInput {
 }
 
 /// The result of a DescribeElasticsearchDomains request. Contains the status of the specified domains or all domains owned by the account.
-public struct DescribeElasticsearchDomainsOutput {
+public struct DescribeElasticsearchDomainsOutput: Swift.Sendable {
     /// The status of the domains requested in the DescribeElasticsearchDomains request.
     /// This member is required.
     public var domainStatusList: [ElasticsearchClientTypes.ElasticsearchDomainStatus]?
@@ -4012,7 +4013,7 @@ public struct DescribeElasticsearchDomainsOutput {
 }
 
 /// Container for the parameters to [DescribeElasticsearchInstanceTypeLimits] operation.
-public struct DescribeElasticsearchInstanceTypeLimitsInput {
+public struct DescribeElasticsearchInstanceTypeLimitsInput: Swift.Sendable {
     /// DomainName represents the name of the Domain that we are trying to modify. This should be present only if we are querying for Elasticsearch [Limits] for existing domain.
     public var domainName: Swift.String?
     /// Version of Elasticsearch for which [Limits] are needed.
@@ -4035,8 +4036,9 @@ public struct DescribeElasticsearchInstanceTypeLimitsInput {
 }
 
 extension ElasticsearchClientTypes {
+
     /// InstanceCountLimits represents the limits on number of instances that be created in Amazon Elasticsearch for given InstanceType.
-    public struct InstanceCountLimits {
+    public struct InstanceCountLimits: Swift.Sendable {
         /// Maximum number of Instances that can be instantiated for given InstanceType.
         public var maximumInstanceCount: Swift.Int
         /// Minimum number of Instances that can be instantiated for given InstanceType.
@@ -4051,12 +4053,12 @@ extension ElasticsearchClientTypes {
             self.minimumInstanceCount = minimumInstanceCount
         }
     }
-
 }
 
 extension ElasticsearchClientTypes {
+
     /// InstanceLimits represents the list of instance related attributes that are available for given InstanceType.
-    public struct InstanceLimits {
+    public struct InstanceLimits: Swift.Sendable {
         /// InstanceCountLimits represents the limits on number of instances that be created in Amazon Elasticsearch for given InstanceType.
         public var instanceCountLimits: ElasticsearchClientTypes.InstanceCountLimits?
 
@@ -4067,12 +4069,12 @@ extension ElasticsearchClientTypes {
             self.instanceCountLimits = instanceCountLimits
         }
     }
-
 }
 
 extension ElasticsearchClientTypes {
+
     /// Limits that are applicable for given storage type.
-    public struct StorageTypeLimit {
+    public struct StorageTypeLimit: Swift.Sendable {
         /// Name of storage limits that are applicable for given storage type. If [StorageType] is ebs, following storage options are applicable
         ///
         /// * MinimumVolumeSize
@@ -4100,12 +4102,12 @@ extension ElasticsearchClientTypes {
             self.limitValues = limitValues
         }
     }
-
 }
 
 extension ElasticsearchClientTypes {
+
     /// StorageTypes represents the list of storage related types and their attributes that are available for given InstanceType.
-    public struct StorageType {
+    public struct StorageType: Swift.Sendable {
         /// SubType of the given storage type. List of available sub-storage options: For "instance" storageType we wont have any storageSubType, in case of "ebs" storageType we will have following valid storageSubTypes
         ///
         /// * standard
@@ -4140,10 +4142,10 @@ extension ElasticsearchClientTypes {
             self.storageTypeName = storageTypeName
         }
     }
-
 }
 
 extension ElasticsearchClientTypes {
+
     /// Limits for given InstanceType and for each of it's role.
     ///
     ///
@@ -4151,7 +4153,7 @@ extension ElasticsearchClientTypes {
     ///
     ///
     /// Limits contains following [StorageTypes,][InstanceLimits] and [AdditionalLimits]
-    public struct Limits {
+    public struct Limits: Swift.Sendable {
         /// List of additional limits that are specific to a given InstanceType and for each of it's [InstanceRole] .
         public var additionalLimits: [ElasticsearchClientTypes.AdditionalLimit]?
         /// InstanceLimits represents the list of instance related attributes that are available for given InstanceType.
@@ -4170,11 +4172,10 @@ extension ElasticsearchClientTypes {
             self.storageTypes = storageTypes
         }
     }
-
 }
 
 /// Container for the parameters received from [DescribeElasticsearchInstanceTypeLimits] operation.
-public struct DescribeElasticsearchInstanceTypeLimitsOutput {
+public struct DescribeElasticsearchInstanceTypeLimitsOutput: Swift.Sendable {
     /// Map of Role of the Instance and Limits that are applicable. Role performed by given Instance in Elasticsearch can be one of the following:
     ///
     /// * data: If the given InstanceType is used as data node
@@ -4218,8 +4219,9 @@ public struct InvalidPaginationTokenException: ClientRuntime.ModeledError, AWSCl
 }
 
 extension ElasticsearchClientTypes {
+
     /// A filter used to limit results when describing inbound or outbound cross-cluster search connections. Multiple values can be specified per filter. A cross-cluster search connection must match at least one of the specified values for it to be returned from an operation.
-    public struct Filter {
+    public struct Filter: Swift.Sendable {
         /// Specifies the name of the filter.
         public var name: Swift.String?
         /// Contains one or more values for the filter.
@@ -4234,11 +4236,10 @@ extension ElasticsearchClientTypes {
             self.values = values
         }
     }
-
 }
 
 /// Container for the parameters to the [DescribeInboundCrossClusterSearchConnections] operation.
-public struct DescribeInboundCrossClusterSearchConnectionsInput {
+public struct DescribeInboundCrossClusterSearchConnectionsInput: Swift.Sendable {
     /// A list of filters used to match properties for inbound cross-cluster search connection. Available [Filter] names for this operation are:
     ///
     /// * cross-cluster-search-connection-id
@@ -4269,7 +4270,7 @@ public struct DescribeInboundCrossClusterSearchConnectionsInput {
 }
 
 /// The result of a [DescribeInboundCrossClusterSearchConnections] request. Contains the list of connections matching the filter criteria.
-public struct DescribeInboundCrossClusterSearchConnectionsOutput {
+public struct DescribeInboundCrossClusterSearchConnectionsOutput: Swift.Sendable {
     /// Consists of list of [InboundCrossClusterSearchConnection] matching the specified filter criteria.
     public var crossClusterSearchConnections: [ElasticsearchClientTypes.InboundCrossClusterSearchConnection]?
     /// If more results are available and NextToken is present, make the next request to the same API with the received NextToken to paginate the remaining results.
@@ -4286,7 +4287,7 @@ public struct DescribeInboundCrossClusterSearchConnectionsOutput {
 }
 
 /// Container for the parameters to the [DescribeOutboundCrossClusterSearchConnections] operation.
-public struct DescribeOutboundCrossClusterSearchConnectionsInput {
+public struct DescribeOutboundCrossClusterSearchConnectionsInput: Swift.Sendable {
     /// A list of filters used to match properties for outbound cross-cluster search connection. Available [Filter] names for this operation are:
     ///
     /// * cross-cluster-search-connection-id
@@ -4317,7 +4318,7 @@ public struct DescribeOutboundCrossClusterSearchConnectionsInput {
 }
 
 /// The result of a [DescribeOutboundCrossClusterSearchConnections] request. Contains the list of connections matching the filter criteria.
-public struct DescribeOutboundCrossClusterSearchConnectionsOutput {
+public struct DescribeOutboundCrossClusterSearchConnectionsOutput: Swift.Sendable {
     /// Consists of list of [OutboundCrossClusterSearchConnection] matching the specified filter criteria.
     public var crossClusterSearchConnections: [ElasticsearchClientTypes.OutboundCrossClusterSearchConnection]?
     /// If more results are available and NextToken is present, make the next request to the same API with the received NextToken to paginate the remaining results.
@@ -4335,7 +4336,7 @@ public struct DescribeOutboundCrossClusterSearchConnectionsOutput {
 
 extension ElasticsearchClientTypes {
 
-    public enum DescribePackagesFilterName: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DescribePackagesFilterName: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case packageid
         case packagename
         case packagestatus
@@ -4366,8 +4367,9 @@ extension ElasticsearchClientTypes {
 }
 
 extension ElasticsearchClientTypes {
+
     /// Filter to apply in DescribePackage response.
-    public struct DescribePackagesFilter {
+    public struct DescribePackagesFilter: Swift.Sendable {
         /// Any field from PackageDetails.
         public var name: ElasticsearchClientTypes.DescribePackagesFilterName?
         /// A non-empty list of values for the specified field.
@@ -4382,11 +4384,10 @@ extension ElasticsearchClientTypes {
             self.value = value
         }
     }
-
 }
 
 /// Container for request parameters to [DescribePackage] operation.
-public struct DescribePackagesInput {
+public struct DescribePackagesInput: Swift.Sendable {
     /// Only returns packages that match the DescribePackagesFilterList values.
     public var filters: [ElasticsearchClientTypes.DescribePackagesFilter]?
     /// Limits results to a maximum number of packages.
@@ -4407,7 +4408,7 @@ public struct DescribePackagesInput {
 }
 
 /// Container for response returned by [DescribePackages] operation.
-public struct DescribePackagesOutput {
+public struct DescribePackagesOutput: Swift.Sendable {
     public var nextToken: Swift.String?
     /// List of PackageDetails objects.
     public var packageDetailsList: [ElasticsearchClientTypes.PackageDetails]?
@@ -4423,7 +4424,7 @@ public struct DescribePackagesOutput {
 }
 
 /// Container for parameters to DescribeReservedElasticsearchInstanceOfferings
-public struct DescribeReservedElasticsearchInstanceOfferingsInput {
+public struct DescribeReservedElasticsearchInstanceOfferingsInput: Swift.Sendable {
     /// Set this value to limit the number of results returned. If not specified, defaults to 100.
     public var maxResults: Swift.Int?
     /// NextToken should be sent in case if earlier API call produced result containing NextToken. It is used for pagination.
@@ -4445,7 +4446,7 @@ public struct DescribeReservedElasticsearchInstanceOfferingsInput {
 
 extension ElasticsearchClientTypes {
 
-    public enum ReservedElasticsearchInstancePaymentOption: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ReservedElasticsearchInstancePaymentOption: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case allUpfront
         case noUpfront
         case partialUpfront
@@ -4476,8 +4477,9 @@ extension ElasticsearchClientTypes {
 }
 
 extension ElasticsearchClientTypes {
+
     /// Contains the specific price and frequency of a recurring charges for a reserved Elasticsearch instance, or for a reserved Elasticsearch instance offering.
-    public struct RecurringCharge {
+    public struct RecurringCharge: Swift.Sendable {
         /// The monetary amount of the recurring charge.
         public var recurringChargeAmount: Swift.Double?
         /// The frequency of the recurring charge.
@@ -4492,12 +4494,12 @@ extension ElasticsearchClientTypes {
             self.recurringChargeFrequency = recurringChargeFrequency
         }
     }
-
 }
 
 extension ElasticsearchClientTypes {
+
     /// Details of a reserved Elasticsearch instance offering.
-    public struct ReservedElasticsearchInstanceOffering {
+    public struct ReservedElasticsearchInstanceOffering: Swift.Sendable {
         /// The currency code for the reserved Elasticsearch instance offering.
         public var currencyCode: Swift.String?
         /// The duration, in seconds, for which the offering will reserve the Elasticsearch instance.
@@ -4536,11 +4538,10 @@ extension ElasticsearchClientTypes {
             self.usagePrice = usagePrice
         }
     }
-
 }
 
 /// Container for results from DescribeReservedElasticsearchInstanceOfferings
-public struct DescribeReservedElasticsearchInstanceOfferingsOutput {
+public struct DescribeReservedElasticsearchInstanceOfferingsOutput: Swift.Sendable {
     /// Provides an identifier to allow retrieval of paginated results.
     public var nextToken: Swift.String?
     /// List of reserved Elasticsearch instance offerings
@@ -4557,7 +4558,7 @@ public struct DescribeReservedElasticsearchInstanceOfferingsOutput {
 }
 
 /// Container for parameters to DescribeReservedElasticsearchInstances
-public struct DescribeReservedElasticsearchInstancesInput {
+public struct DescribeReservedElasticsearchInstancesInput: Swift.Sendable {
     /// Set this value to limit the number of results returned. If not specified, defaults to 100.
     public var maxResults: Swift.Int?
     /// NextToken should be sent in case if earlier API call produced result containing NextToken. It is used for pagination.
@@ -4578,8 +4579,9 @@ public struct DescribeReservedElasticsearchInstancesInput {
 }
 
 extension ElasticsearchClientTypes {
+
     /// Details of a reserved Elasticsearch instance.
-    public struct ReservedElasticsearchInstance {
+    public struct ReservedElasticsearchInstance: Swift.Sendable {
         /// The currency code for the reserved Elasticsearch instance offering.
         public var currencyCode: Swift.String?
         /// The duration, in seconds, for which the Elasticsearch instance is reserved.
@@ -4638,11 +4640,10 @@ extension ElasticsearchClientTypes {
             self.usagePrice = usagePrice
         }
     }
-
 }
 
 /// Container for results from DescribeReservedElasticsearchInstances
-public struct DescribeReservedElasticsearchInstancesOutput {
+public struct DescribeReservedElasticsearchInstancesOutput: Swift.Sendable {
     /// Provides an identifier to allow retrieval of paginated results.
     public var nextToken: Swift.String?
     /// List of reserved Elasticsearch instances.
@@ -4659,7 +4660,7 @@ public struct DescribeReservedElasticsearchInstancesOutput {
 }
 
 /// Container for request parameters to the [DescribeVpcEndpoints] operation. Specifies the list of VPC endpoints to be described.
-public struct DescribeVpcEndpointsInput {
+public struct DescribeVpcEndpointsInput: Swift.Sendable {
     /// The unique identifiers of the endpoints to get information about.
     /// This member is required.
     public var vpcEndpointIds: [Swift.String]?
@@ -4679,7 +4680,7 @@ extension ElasticsearchClientTypes {
     /// * ENDPOINT_NOT_FOUND: Indicates that the requested VPC endpoint does not exist.
     ///
     /// * SERVER_ERROR: Indicates the describe endpoint operation failed due to an internal server error.
-    public enum VpcEndpointErrorCode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum VpcEndpointErrorCode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case endpointNotFound
         case serverError
         case sdkUnknown(Swift.String)
@@ -4707,8 +4708,9 @@ extension ElasticsearchClientTypes {
 }
 
 extension ElasticsearchClientTypes {
+
     /// Error information when attempting to describe an Amazon OpenSearch Service-managed VPC endpoint.
-    public struct VpcEndpointError {
+    public struct VpcEndpointError: Swift.Sendable {
         /// The code associated with the error.
         public var errorCode: ElasticsearchClientTypes.VpcEndpointErrorCode?
         /// A message describing the error.
@@ -4727,11 +4729,10 @@ extension ElasticsearchClientTypes {
             self.vpcEndpointId = vpcEndpointId
         }
     }
-
 }
 
 /// Container for response parameters to the [DescribeVpcEndpoints] operation. Returns a list containing configuration details and status of the VPC Endpoints as well as a list containing error responses of the endpoints that could not be described
-public struct DescribeVpcEndpointsOutput {
+public struct DescribeVpcEndpointsOutput: Swift.Sendable {
     /// Any errors associated with the request.
     /// This member is required.
     public var vpcEndpointErrors: [ElasticsearchClientTypes.VpcEndpointError]?
@@ -4750,7 +4751,7 @@ public struct DescribeVpcEndpointsOutput {
 }
 
 /// Container for request parameters to [DissociatePackage] operation.
-public struct DissociatePackageInput {
+public struct DissociatePackageInput: Swift.Sendable {
     /// Name of the domain that you want to associate the package with.
     /// This member is required.
     public var domainName: Swift.String?
@@ -4769,7 +4770,7 @@ public struct DissociatePackageInput {
 }
 
 /// Container for response returned by [DissociatePackage] operation.
-public struct DissociatePackageOutput {
+public struct DissociatePackageOutput: Swift.Sendable {
     ///     DomainPackageDetails
     public var domainPackageDetails: ElasticsearchClientTypes.DomainPackageDetails?
 
@@ -4782,7 +4783,7 @@ public struct DissociatePackageOutput {
 }
 
 /// Container for request parameters to [GetCompatibleElasticsearchVersions] operation.
-public struct GetCompatibleElasticsearchVersionsInput {
+public struct GetCompatibleElasticsearchVersionsInput: Swift.Sendable {
     /// The name of an Elasticsearch domain. Domain names are unique across the domains owned by an account within an AWS region. Domain names start with a letter or number and can contain the following characters: a-z (lowercase), 0-9, and - (hyphen).
     public var domainName: Swift.String?
 
@@ -4795,8 +4796,9 @@ public struct GetCompatibleElasticsearchVersionsInput {
 }
 
 extension ElasticsearchClientTypes {
+
     /// A map from an [ElasticsearchVersion] to a list of compatible [ElasticsearchVersion] s to which the domain can be upgraded.
-    public struct CompatibleVersionsMap {
+    public struct CompatibleVersionsMap: Swift.Sendable {
         /// The current version of Elasticsearch on which a domain is.
         public var sourceVersion: Swift.String?
         /// List of supported elastic search versions.
@@ -4811,11 +4813,10 @@ extension ElasticsearchClientTypes {
             self.targetVersions = targetVersions
         }
     }
-
 }
 
 /// Container for response returned by [GetCompatibleElasticsearchVersions] operation.
-public struct GetCompatibleElasticsearchVersionsOutput {
+public struct GetCompatibleElasticsearchVersionsOutput: Swift.Sendable {
     /// A map of compatible Elasticsearch versions returned as part of the [GetCompatibleElasticsearchVersions] operation.
     public var compatibleElasticsearchVersions: [ElasticsearchClientTypes.CompatibleVersionsMap]?
 
@@ -4828,7 +4829,7 @@ public struct GetCompatibleElasticsearchVersionsOutput {
 }
 
 /// Container for request parameters to [GetPackageVersionHistory] operation.
-public struct GetPackageVersionHistoryInput {
+public struct GetPackageVersionHistoryInput: Swift.Sendable {
     /// Limits results to a maximum number of versions.
     public var maxResults: Swift.Int?
     /// Used for pagination. Only necessary if a previous API call includes a non-null NextToken value. If provided, returns results for the next page.
@@ -4850,8 +4851,9 @@ public struct GetPackageVersionHistoryInput {
 }
 
 extension ElasticsearchClientTypes {
+
     /// Details of a package version.
-    public struct PackageVersionHistory {
+    public struct PackageVersionHistory: Swift.Sendable {
         /// A message associated with the version.
         public var commitMessage: Swift.String?
         /// Timestamp which tells creation time of the package version.
@@ -4870,11 +4872,10 @@ extension ElasticsearchClientTypes {
             self.packageVersion = packageVersion
         }
     }
-
 }
 
 /// Container for response returned by [GetPackageVersionHistory] operation.
-public struct GetPackageVersionHistoryOutput {
+public struct GetPackageVersionHistoryOutput: Swift.Sendable {
     public var nextToken: Swift.String?
     public var packageID: Swift.String?
     /// List of PackageVersionHistory objects.
@@ -4893,7 +4894,7 @@ public struct GetPackageVersionHistoryOutput {
 }
 
 /// Container for request parameters to [GetUpgradeHistory] operation.
-public struct GetUpgradeHistoryInput {
+public struct GetUpgradeHistoryInput: Swift.Sendable {
     /// The name of an Elasticsearch domain. Domain names are unique across the domains owned by an account within an AWS region. Domain names start with a letter or number and can contain the following characters: a-z (lowercase), 0-9, and - (hyphen).
     /// This member is required.
     public var domainName: Swift.String?
@@ -4916,7 +4917,7 @@ public struct GetUpgradeHistoryInput {
 
 extension ElasticsearchClientTypes {
 
-    public enum UpgradeStep: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum UpgradeStep: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case preUpgradeCheck
         case snapshot
         case upgrade
@@ -4948,7 +4949,7 @@ extension ElasticsearchClientTypes {
 
 extension ElasticsearchClientTypes {
 
-    public enum UpgradeStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum UpgradeStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case failed
         case inProgress
         case succeeded
@@ -4982,8 +4983,9 @@ extension ElasticsearchClientTypes {
 }
 
 extension ElasticsearchClientTypes {
+
     /// Represents a single step of the Upgrade or Upgrade Eligibility Check workflow.
-    public struct UpgradeStepItem {
+    public struct UpgradeStepItem: Swift.Sendable {
         /// A list of strings containing detailed information about the errors encountered in a particular step.
         public var issues: [Swift.String]?
         /// The Floating point value representing progress percentage of a particular step.
@@ -5020,12 +5022,12 @@ extension ElasticsearchClientTypes {
             self.upgradeStepStatus = upgradeStepStatus
         }
     }
-
 }
 
 extension ElasticsearchClientTypes {
+
     /// History of the last 10 Upgrades and Upgrade Eligibility Checks.
-    public struct UpgradeHistory {
+    public struct UpgradeHistory: Swift.Sendable {
         /// UTC Timestamp at which the Upgrade API call was made in "yyyy-MM-ddTHH:mm:ssZ" format.
         public var startTimestamp: Foundation.Date?
         /// A list of [UpgradeStepItem] s representing information about each step performed as pard of a specific Upgrade or Upgrade Eligibility Check.
@@ -5056,11 +5058,10 @@ extension ElasticsearchClientTypes {
             self.upgradeStatus = upgradeStatus
         }
     }
-
 }
 
 /// Container for response returned by [GetUpgradeHistory] operation.
-public struct GetUpgradeHistoryOutput {
+public struct GetUpgradeHistoryOutput: Swift.Sendable {
     /// Pagination token that needs to be supplied to the next call to get the next page of results
     public var nextToken: Swift.String?
     /// A list of [UpgradeHistory] objects corresponding to each Upgrade or Upgrade Eligibility Check performed on a domain returned as part of [GetUpgradeHistoryResponse] object.
@@ -5077,7 +5078,7 @@ public struct GetUpgradeHistoryOutput {
 }
 
 /// Container for request parameters to [GetUpgradeStatus] operation.
-public struct GetUpgradeStatusInput {
+public struct GetUpgradeStatusInput: Swift.Sendable {
     /// The name of an Elasticsearch domain. Domain names are unique across the domains owned by an account within an AWS region. Domain names start with a letter or number and can contain the following characters: a-z (lowercase), 0-9, and - (hyphen).
     /// This member is required.
     public var domainName: Swift.String?
@@ -5091,7 +5092,7 @@ public struct GetUpgradeStatusInput {
 }
 
 /// Container for response returned by [GetUpgradeStatus] operation.
-public struct GetUpgradeStatusOutput {
+public struct GetUpgradeStatusOutput: Swift.Sendable {
     /// One of 4 statuses that a step can go through returned as part of the [GetUpgradeStatusResponse] object. The status can take one of the following values:
     ///
     /// * In Progress
@@ -5127,7 +5128,7 @@ public struct GetUpgradeStatusOutput {
 
 extension ElasticsearchClientTypes {
 
-    public enum EngineType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum EngineType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case elasticsearch
         case opensearch
         case sdkUnknown(Swift.String)
@@ -5155,7 +5156,7 @@ extension ElasticsearchClientTypes {
 }
 
 /// Container for the parameters to the [ListDomainNames] operation.
-public struct ListDomainNamesInput {
+public struct ListDomainNamesInput: Swift.Sendable {
     /// Optional parameter to filter the output by domain engine type. Acceptable values are 'Elasticsearch' and 'OpenSearch'.
     public var engineType: ElasticsearchClientTypes.EngineType?
 
@@ -5168,7 +5169,8 @@ public struct ListDomainNamesInput {
 }
 
 extension ElasticsearchClientTypes {
-    public struct DomainInfo {
+
+    public struct DomainInfo: Swift.Sendable {
         /// Specifies the DomainName.
         public var domainName: Swift.String?
         /// Specifies the EngineType of the domain.
@@ -5183,11 +5185,10 @@ extension ElasticsearchClientTypes {
             self.engineType = engineType
         }
     }
-
 }
 
 /// The result of a ListDomainNames operation. Contains the names of all domains owned by this account and their respective engine types.
-public struct ListDomainNamesOutput {
+public struct ListDomainNamesOutput: Swift.Sendable {
     /// List of domain names and respective engine types.
     public var domainNames: [ElasticsearchClientTypes.DomainInfo]?
 
@@ -5200,7 +5201,7 @@ public struct ListDomainNamesOutput {
 }
 
 /// Container for request parameters to [ListDomainsForPackage] operation.
-public struct ListDomainsForPackageInput {
+public struct ListDomainsForPackageInput: Swift.Sendable {
     /// Limits results to a maximum number of domains.
     public var maxResults: Swift.Int?
     /// Used for pagination. Only necessary if a previous API call includes a non-null NextToken value. If provided, returns results for the next page.
@@ -5222,7 +5223,7 @@ public struct ListDomainsForPackageInput {
 }
 
 /// Container for response parameters to [ListDomainsForPackage] operation.
-public struct ListDomainsForPackageOutput {
+public struct ListDomainsForPackageOutput: Swift.Sendable {
     /// List of DomainPackageDetails objects.
     public var domainPackageDetailsList: [ElasticsearchClientTypes.DomainPackageDetails]?
     public var nextToken: Swift.String?
@@ -5238,7 +5239,7 @@ public struct ListDomainsForPackageOutput {
 }
 
 /// Container for the parameters to the [ListElasticsearchInstanceTypes] operation.
-public struct ListElasticsearchInstanceTypesInput {
+public struct ListElasticsearchInstanceTypesInput: Swift.Sendable {
     /// DomainName represents the name of the Domain that we are trying to modify. This should be present only if we are querying for list of available Elasticsearch instance types when modifying existing domain.
     public var domainName: Swift.String?
     /// Version of Elasticsearch for which list of supported elasticsearch instance types are needed.
@@ -5264,7 +5265,7 @@ public struct ListElasticsearchInstanceTypesInput {
 }
 
 /// Container for the parameters returned by [ListElasticsearchInstanceTypes] operation.
-public struct ListElasticsearchInstanceTypesOutput {
+public struct ListElasticsearchInstanceTypesOutput: Swift.Sendable {
     /// List of instance types supported by Amazon Elasticsearch service for given [ElasticsearchVersion]
     public var elasticsearchInstanceTypes: [ElasticsearchClientTypes.ESPartitionInstanceType]?
     /// In case if there are more results available NextToken would be present, make further request to the same API with received NextToken to paginate remaining results.
@@ -5281,7 +5282,7 @@ public struct ListElasticsearchInstanceTypesOutput {
 }
 
 /// Container for the parameters to the [ListElasticsearchVersions] operation. Use [MaxResults] to control the maximum number of results to retrieve in a single call. Use [NextToken] in response to retrieve more results. If the received response does not contain a NextToken, then there are no more results to retrieve.
-public struct ListElasticsearchVersionsInput {
+public struct ListElasticsearchVersionsInput: Swift.Sendable {
     /// Set this value to limit the number of results returned. Value provided must be greater than 10 else it wont be honored.
     public var maxResults: Swift.Int?
     /// Paginated APIs accepts NextToken input to returns next page results and provides a NextToken output in the response which can be used by the client to retrieve more results.
@@ -5298,7 +5299,7 @@ public struct ListElasticsearchVersionsInput {
 }
 
 /// Container for the parameters for response received from [ListElasticsearchVersions] operation.
-public struct ListElasticsearchVersionsOutput {
+public struct ListElasticsearchVersionsOutput: Swift.Sendable {
     /// List of supported elastic search versions.
     public var elasticsearchVersions: [Swift.String]?
     /// Paginated APIs accepts NextToken input to returns next page results and provides a NextToken output in the response which can be used by the client to retrieve more results.
@@ -5315,7 +5316,7 @@ public struct ListElasticsearchVersionsOutput {
 }
 
 /// Container for request parameters to [ListPackagesForDomain] operation.
-public struct ListPackagesForDomainInput {
+public struct ListPackagesForDomainInput: Swift.Sendable {
     /// The name of the domain for which you want to list associated packages.
     /// This member is required.
     public var domainName: Swift.String?
@@ -5337,7 +5338,7 @@ public struct ListPackagesForDomainInput {
 }
 
 /// Container for response parameters to [ListPackagesForDomain] operation.
-public struct ListPackagesForDomainOutput {
+public struct ListPackagesForDomainOutput: Swift.Sendable {
     /// List of DomainPackageDetails objects.
     public var domainPackageDetailsList: [ElasticsearchClientTypes.DomainPackageDetails]?
     /// Pagination token that needs to be supplied to the next call to get the next page of results.
@@ -5354,7 +5355,7 @@ public struct ListPackagesForDomainOutput {
 }
 
 /// Container for the parameters to the [ListTags] operation. Specify the ARN for the Elasticsearch domain to which the tags are attached that you want to view are attached.
-public struct ListTagsInput {
+public struct ListTagsInput: Swift.Sendable {
     /// Specify the ARN for the Elasticsearch domain to which the tags are attached that you want to view.
     /// This member is required.
     public var arn: Swift.String?
@@ -5368,7 +5369,7 @@ public struct ListTagsInput {
 }
 
 /// The result of a ListTags operation. Contains tags for all requested Elasticsearch domains.
-public struct ListTagsOutput {
+public struct ListTagsOutput: Swift.Sendable {
     /// List of Tag for the requested Elasticsearch domain.
     public var tagList: [ElasticsearchClientTypes.Tag]?
 
@@ -5381,7 +5382,7 @@ public struct ListTagsOutput {
 }
 
 /// Retrieves information about each principal that is allowed to access a given Amazon OpenSearch Service domain through the use of an interface VPC endpoint
-public struct ListVpcEndpointAccessInput {
+public struct ListVpcEndpointAccessInput: Swift.Sendable {
     /// The name of the OpenSearch Service domain to retrieve access information for.
     /// This member is required.
     public var domainName: Swift.String?
@@ -5399,7 +5400,7 @@ public struct ListVpcEndpointAccessInput {
 }
 
 /// Container for response parameters to the [ListVpcEndpointAccess] operation. Returns a list of accounts id and account type authorized to manage VPC endpoints.
-public struct ListVpcEndpointAccessOutput {
+public struct ListVpcEndpointAccessOutput: Swift.Sendable {
     /// List of AuthorizedPrincipal describing the details of the permissions to manage VPC endpoints against the specified domain.
     /// This member is required.
     public var authorizedPrincipalList: [ElasticsearchClientTypes.AuthorizedPrincipal]?
@@ -5418,7 +5419,7 @@ public struct ListVpcEndpointAccessOutput {
 }
 
 /// Container for request parameters to the [ListVpcEndpoints] operation.
-public struct ListVpcEndpointsInput {
+public struct ListVpcEndpointsInput: Swift.Sendable {
     /// Identifier to allow retrieval of paginated results.
     public var nextToken: Swift.String?
 
@@ -5431,7 +5432,7 @@ public struct ListVpcEndpointsInput {
 }
 
 /// Container for response parameters to the [ListVpcEndpoints] operation. Returns a list containing summarized details of the VPC endpoints.
-public struct ListVpcEndpointsOutput {
+public struct ListVpcEndpointsOutput: Swift.Sendable {
     /// Provides an identifier to allow retrieval of paginated results.
     /// This member is required.
     public var nextToken: Swift.String?
@@ -5450,7 +5451,7 @@ public struct ListVpcEndpointsOutput {
 }
 
 /// Container for request parameters to the [ListVpcEndpointsForDomain] operation. Specifies the domain whose VPC endpoints will be listed.
-public struct ListVpcEndpointsForDomainInput {
+public struct ListVpcEndpointsForDomainInput: Swift.Sendable {
     /// Name of the ElasticSearch domain whose VPC endpoints are to be listed.
     /// This member is required.
     public var domainName: Swift.String?
@@ -5468,7 +5469,7 @@ public struct ListVpcEndpointsForDomainInput {
 }
 
 /// Container for response parameters to the [ListVpcEndpointsForDomain] operation. Returns a list containing summarized details of the VPC endpoints.
-public struct ListVpcEndpointsForDomainOutput {
+public struct ListVpcEndpointsForDomainOutput: Swift.Sendable {
     /// Information about each endpoint associated with the domain.
     /// This member is required.
     public var nextToken: Swift.String?
@@ -5487,7 +5488,7 @@ public struct ListVpcEndpointsForDomainOutput {
 }
 
 /// Container for parameters to PurchaseReservedElasticsearchInstanceOffering
-public struct PurchaseReservedElasticsearchInstanceOfferingInput {
+public struct PurchaseReservedElasticsearchInstanceOfferingInput: Swift.Sendable {
     /// The number of Elasticsearch instances to reserve.
     public var instanceCount: Swift.Int?
     /// A customer-specified identifier to track this reservation.
@@ -5510,7 +5511,7 @@ public struct PurchaseReservedElasticsearchInstanceOfferingInput {
 }
 
 /// Represents the output of a PurchaseReservedElasticsearchInstanceOffering operation.
-public struct PurchaseReservedElasticsearchInstanceOfferingOutput {
+public struct PurchaseReservedElasticsearchInstanceOfferingOutput: Swift.Sendable {
     /// The customer-specified identifier used to track this reservation.
     public var reservationName: Swift.String?
     /// Details of the reserved Elasticsearch instance which was purchased.
@@ -5527,7 +5528,7 @@ public struct PurchaseReservedElasticsearchInstanceOfferingOutput {
 }
 
 /// Container for the parameters to the [RejectInboundCrossClusterSearchConnection] operation.
-public struct RejectInboundCrossClusterSearchConnectionInput {
+public struct RejectInboundCrossClusterSearchConnectionInput: Swift.Sendable {
     /// The id of the inbound connection that you want to reject.
     /// This member is required.
     public var crossClusterSearchConnectionId: Swift.String?
@@ -5541,7 +5542,7 @@ public struct RejectInboundCrossClusterSearchConnectionInput {
 }
 
 /// The result of a [RejectInboundCrossClusterSearchConnection] operation. Contains details of rejected inbound connection.
-public struct RejectInboundCrossClusterSearchConnectionOutput {
+public struct RejectInboundCrossClusterSearchConnectionOutput: Swift.Sendable {
     /// Specifies the [InboundCrossClusterSearchConnection] of rejected inbound connection.
     public var crossClusterSearchConnection: ElasticsearchClientTypes.InboundCrossClusterSearchConnection?
 
@@ -5554,7 +5555,7 @@ public struct RejectInboundCrossClusterSearchConnectionOutput {
 }
 
 /// Container for the parameters to the [RemoveTags] operation. Specify the ARN for the Elasticsearch domain from which you want to remove the specified TagKey.
-public struct RemoveTagsInput {
+public struct RemoveTagsInput: Swift.Sendable {
     /// Specifies the ARN for the Elasticsearch domain from which you want to delete the specified tags.
     /// This member is required.
     public var arn: Swift.String?
@@ -5573,7 +5574,7 @@ public struct RemoveTagsInput {
 }
 
 /// Revokes access to an Amazon OpenSearch Service domain that was provided through an interface VPC endpoint.
-public struct RevokeVpcEndpointAccessInput {
+public struct RevokeVpcEndpointAccessInput: Swift.Sendable {
     /// The account ID to revoke access from.
     /// This member is required.
     public var account: Swift.String?
@@ -5592,13 +5593,13 @@ public struct RevokeVpcEndpointAccessInput {
 }
 
 /// Container for response parameters to the [RevokeVpcEndpointAccess] operation. The response body for this operation is empty.
-public struct RevokeVpcEndpointAccessOutput {
+public struct RevokeVpcEndpointAccessOutput: Swift.Sendable {
 
     public init() { }
 }
 
 /// Container for the parameters to the [StartElasticsearchServiceSoftwareUpdate] operation. Specifies the name of the Elasticsearch domain that you wish to schedule a service software update on.
-public struct StartElasticsearchServiceSoftwareUpdateInput {
+public struct StartElasticsearchServiceSoftwareUpdateInput: Swift.Sendable {
     /// The name of the domain that you want to update to the latest service software.
     /// This member is required.
     public var domainName: Swift.String?
@@ -5612,7 +5613,7 @@ public struct StartElasticsearchServiceSoftwareUpdateInput {
 }
 
 /// The result of a StartElasticsearchServiceSoftwareUpdate operation. Contains the status of the update.
-public struct StartElasticsearchServiceSoftwareUpdateOutput {
+public struct StartElasticsearchServiceSoftwareUpdateOutput: Swift.Sendable {
     /// The current status of the Elasticsearch service software update.
     public var serviceSoftwareOptions: ElasticsearchClientTypes.ServiceSoftwareOptions?
 
@@ -5625,7 +5626,7 @@ public struct StartElasticsearchServiceSoftwareUpdateOutput {
 }
 
 /// Container for the parameters to the [UpdateElasticsearchDomain] operation. Specifies the type and number of instances in the domain cluster.
-public struct UpdateElasticsearchDomainConfigInput {
+public struct UpdateElasticsearchDomainConfigInput: Swift.Sendable {
     /// IAM access policy as a JSON-formatted string.
     public var accessPolicies: Swift.String?
     /// Modifies the advanced option to allow references to indices in an HTTP request body. Must be false when configuring access to individual sub-resources. By default, the value is true. See [Configuration Advanced Options](http://docs.aws.amazon.com/elasticsearch-service/latest/developerguide/es-createupdatedomains.html#es-createdomain-configure-advanced-options) for more information.
@@ -5695,7 +5696,8 @@ public struct UpdateElasticsearchDomainConfigInput {
 }
 
 extension ElasticsearchClientTypes {
-    public struct DryRunResults {
+
+    public struct DryRunResults: Swift.Sendable {
         /// Specifies the deployment mechanism through which the update shall be applied on the domain. Possible responses are Blue/Green (The update will require a blue/green deployment.) DynamicUpdate (The update can be applied in-place without a Blue/Green deployment required.) Undetermined (The domain is undergoing an update which needs to complete before the deployment type can be predicted.) None (The configuration change matches the current configuration and will not result in any update.)
         public var deploymentType: Swift.String?
         /// Contains an optional message associated with the DryRunResults.
@@ -5710,11 +5712,10 @@ extension ElasticsearchClientTypes {
             self.message = message
         }
     }
-
 }
 
 /// The result of an UpdateElasticsearchDomain request. Contains the status of the Elasticsearch domain being updated.
-public struct UpdateElasticsearchDomainConfigOutput {
+public struct UpdateElasticsearchDomainConfigOutput: Swift.Sendable {
     /// The status of the updated Elasticsearch domain.
     /// This member is required.
     public var domainConfig: ElasticsearchClientTypes.ElasticsearchDomainConfig?
@@ -5732,7 +5733,7 @@ public struct UpdateElasticsearchDomainConfigOutput {
 }
 
 /// Container for request parameters to [UpdatePackage] operation.
-public struct UpdatePackageInput {
+public struct UpdatePackageInput: Swift.Sendable {
     /// An info message for the new version which will be shown as part of GetPackageVersionHistoryResponse.
     public var commitMessage: Swift.String?
     /// New description of the package.
@@ -5759,7 +5760,7 @@ public struct UpdatePackageInput {
 }
 
 /// Container for response returned by [UpdatePackage] operation.
-public struct UpdatePackageOutput {
+public struct UpdatePackageOutput: Swift.Sendable {
     /// Information about the package PackageDetails.
     public var packageDetails: ElasticsearchClientTypes.PackageDetails?
 
@@ -5772,7 +5773,7 @@ public struct UpdatePackageOutput {
 }
 
 /// Modifies an Amazon OpenSearch Service-managed interface VPC endpoint.
-public struct UpdateVpcEndpointInput {
+public struct UpdateVpcEndpointInput: Swift.Sendable {
     /// Unique identifier of the VPC endpoint to be updated.
     /// This member is required.
     public var vpcEndpointId: Swift.String?
@@ -5791,7 +5792,7 @@ public struct UpdateVpcEndpointInput {
 }
 
 /// Contains the configuration and status of the VPC endpoint being updated.
-public struct UpdateVpcEndpointOutput {
+public struct UpdateVpcEndpointOutput: Swift.Sendable {
     /// The endpoint to be updated.
     /// This member is required.
     public var vpcEndpoint: ElasticsearchClientTypes.VpcEndpoint?
@@ -5805,7 +5806,7 @@ public struct UpdateVpcEndpointOutput {
 }
 
 /// Container for request parameters to [UpgradeElasticsearchDomain] operation.
-public struct UpgradeElasticsearchDomainInput {
+public struct UpgradeElasticsearchDomainInput: Swift.Sendable {
     /// The name of an Elasticsearch domain. Domain names are unique across the domains owned by an account within an AWS region. Domain names start with a letter or number and can contain the following characters: a-z (lowercase), 0-9, and - (hyphen).
     /// This member is required.
     public var domainName: Swift.String?
@@ -5828,7 +5829,7 @@ public struct UpgradeElasticsearchDomainInput {
 }
 
 /// Container for response returned by [UpgradeElasticsearchDomain] operation.
-public struct UpgradeElasticsearchDomainOutput {
+public struct UpgradeElasticsearchDomainOutput: Swift.Sendable {
     /// Specifies change details of the domain configuration change.
     public var changeProgressDetails: ElasticsearchClientTypes.ChangeProgressDetails?
     /// The name of an Elasticsearch domain. Domain names are unique across the domains owned by an account within an AWS region. Domain names start with a letter or number and can contain the following characters: a-z (lowercase), 0-9, and - (hyphen).

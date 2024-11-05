@@ -13,7 +13,7 @@ import software.amazon.smithy.swift.codegen.integration.ProtocolGenerator
 class RestXMLProtocolGenerator : AWSHTTPBindingProtocolGenerator(RestXMLCustomizations()) {
     override val defaultContentType: String = "application/xml"
     override val protocol: ShapeId = RestXmlTrait.ID
-    override val testsToIgnore: Set<String> = setOf(
+    override val protocolTestsToIgnore: Set<String> = setOf(
         "S3DefaultAddressing", // can leave disabled, pre-endpoints 2.0
         "S3VirtualHostAddressing", // can leave disabled, pre-endpoints 2.0
         "S3VirtualHostDualstackAddressing", // can leave disabled, pre-endpoints 2.0

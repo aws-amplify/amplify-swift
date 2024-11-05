@@ -821,7 +821,7 @@ extension BedrockAgentClient {
 
     /// Performs the `CreateKnowledgeBase` operation on the `AmazonBedrockAgentBuildTimeLambda` service.
     ///
-    /// Creates a knowledge base that contains data sources from which information can be queried and used by LLMs. To create a knowledge base, you must first set up your data sources and configure a supported vector store. For more information, see [Set up your data for ingestion](https://docs.aws.amazon.com/bedrock/latest/userguide/knowledge-base-setup.html). If you prefer to let Amazon Bedrock create and manage a vector store for you in Amazon OpenSearch Service, use the console. For more information, see [Create a knowledge base](https://docs.aws.amazon.com/bedrock/latest/userguide/knowledge-base-create).
+    /// Creates a knowledge base. A knowledge base contains your data sources so that Large Language Models (LLMs) can use your data. To create a knowledge base, you must first set up your data sources and configure a supported vector store. For more information, see [Set up a knowledge base](https://docs.aws.amazon.com/bedrock/latest/userguide/knowlege-base-prereq.html). If you prefer to let Amazon Bedrock create and manage a vector store for you in Amazon OpenSearch Service, use the console. For more information, see [Create a knowledge base](https://docs.aws.amazon.com/bedrock/latest/userguide/knowledge-base-create).
     ///
     /// * Provide the name and an optional description.
     ///
@@ -2479,7 +2479,7 @@ extension BedrockAgentClient {
 
     /// Performs the `GetIngestionJob` operation on the `AmazonBedrockAgentBuildTimeLambda` service.
     ///
-    /// Gets information about a ingestion job, in which a data source is added to a knowledge base.
+    /// Gets information about a data ingestion job. Data sources are ingested into your knowledge base so that Large Language Models (LLMs) can use your data.
     ///
     /// - Parameter GetIngestionJobInput : [no documentation found]
     ///
@@ -3339,7 +3339,7 @@ extension BedrockAgentClient {
 
     /// Performs the `ListIngestionJobs` operation on the `AmazonBedrockAgentBuildTimeLambda` service.
     ///
-    /// Lists the ingestion jobs for a data source and information about each of them.
+    /// Lists the data ingestion jobs for a data source. The list also includes information about each job.
     ///
     /// - Parameter ListIngestionJobsInput : [no documentation found]
     ///
@@ -3412,7 +3412,7 @@ extension BedrockAgentClient {
 
     /// Performs the `ListKnowledgeBases` operation on the `AmazonBedrockAgentBuildTimeLambda` service.
     ///
-    /// Lists the knowledge bases in an account and information about each of them.
+    /// Lists the knowledge bases in an account. The list also includesinformation about each knowledge base.
     ///
     /// - Parameter ListKnowledgeBasesInput : [no documentation found]
     ///
@@ -3769,7 +3769,7 @@ extension BedrockAgentClient {
 
     /// Performs the `StartIngestionJob` operation on the `AmazonBedrockAgentBuildTimeLambda` service.
     ///
-    /// Begins an ingestion job, in which a data source is added to a knowledge base.
+    /// Begins a data ingestion job. Data sources are ingested into your knowledge base so that Large Language Models (LLMs) can use your data.
     ///
     /// - Parameter StartIngestionJobInput : [no documentation found]
     ///
@@ -3831,6 +3831,77 @@ extension BedrockAgentClient {
         var metricsAttributes = Smithy.Attributes()
         metricsAttributes.set(key: ClientRuntime.OrchestratorMetricsAttributesKeys.service, value: "BedrockAgent")
         metricsAttributes.set(key: ClientRuntime.OrchestratorMetricsAttributesKeys.method, value: "StartIngestionJob")
+        let op = builder.attributes(context)
+            .telemetry(ClientRuntime.OrchestratorTelemetry(
+                telemetryProvider: config.telemetryProvider,
+                metricsAttributes: metricsAttributes,
+                meterScope: serviceName,
+                tracerScope: serviceName
+            ))
+            .executeRequest(client)
+            .build()
+        return try await op.execute(input: input)
+    }
+
+    /// Performs the `StopIngestionJob` operation on the `AmazonBedrockAgentBuildTimeLambda` service.
+    ///
+    /// Stops a currently running data ingestion job. You can send a StartIngestionJob request again to ingest the rest of your data when you are ready.
+    ///
+    /// - Parameter StopIngestionJobInput : [no documentation found]
+    ///
+    /// - Returns: `StopIngestionJobOutput` : [no documentation found]
+    ///
+    /// - Throws: One of the exceptions listed below __Possible Exceptions__.
+    ///
+    /// __Possible Exceptions:__
+    /// - `AccessDeniedException` : The request is denied because of missing access permissions.
+    /// - `ConflictException` : There was a conflict performing an operation.
+    /// - `InternalServerException` : An internal server error occurred. Retry your request.
+    /// - `ResourceNotFoundException` : The specified resource Amazon Resource Name (ARN) was not found. Check the Amazon Resource Name (ARN) and try your request again.
+    /// - `ThrottlingException` : The number of requests exceeds the limit. Resubmit your request later.
+    /// - `ValidationException` : Input validation failed. Check your request parameters and retry the request.
+    public func stopIngestionJob(input: StopIngestionJobInput) async throws -> StopIngestionJobOutput {
+        let context = Smithy.ContextBuilder()
+                      .withMethod(value: .post)
+                      .withServiceName(value: serviceName)
+                      .withOperation(value: "stopIngestionJob")
+                      .withIdempotencyTokenGenerator(value: config.idempotencyTokenGenerator)
+                      .withLogger(value: config.logger)
+                      .withPartitionID(value: config.partitionID)
+                      .withAuthSchemes(value: config.authSchemes ?? [])
+                      .withAuthSchemeResolver(value: config.authSchemeResolver)
+                      .withUnsignedPayloadTrait(value: false)
+                      .withSocketTimeout(value: config.httpClientConfiguration.socketTimeout)
+                      .withIdentityResolver(value: config.bearerTokenIdentityResolver, schemeID: "smithy.api#httpBearerAuth")
+                      .withIdentityResolver(value: config.awsCredentialIdentityResolver, schemeID: "aws.auth#sigv4")
+                      .withIdentityResolver(value: config.awsCredentialIdentityResolver, schemeID: "aws.auth#sigv4a")
+                      .withRegion(value: config.region)
+                      .withSigningName(value: "bedrock")
+                      .withSigningRegion(value: config.signingRegion)
+                      .build()
+        let builder = ClientRuntime.OrchestratorBuilder<StopIngestionJobInput, StopIngestionJobOutput, SmithyHTTPAPI.HTTPRequest, SmithyHTTPAPI.HTTPResponse>()
+        config.interceptorProviders.forEach { provider in
+            builder.interceptors.add(provider.create())
+        }
+        config.httpInterceptorProviders.forEach { provider in
+            builder.interceptors.add(provider.create())
+        }
+        builder.interceptors.add(ClientRuntime.URLPathMiddleware<StopIngestionJobInput, StopIngestionJobOutput>(StopIngestionJobInput.urlPathProvider(_:)))
+        builder.interceptors.add(ClientRuntime.URLHostMiddleware<StopIngestionJobInput, StopIngestionJobOutput>())
+        builder.deserialize(ClientRuntime.DeserializeMiddleware<StopIngestionJobOutput>(StopIngestionJobOutput.httpOutput(from:), StopIngestionJobOutputError.httpError(from:)))
+        builder.interceptors.add(ClientRuntime.LoggerMiddleware<StopIngestionJobInput, StopIngestionJobOutput>(clientLogMode: config.clientLogMode))
+        builder.retryStrategy(SmithyRetries.DefaultRetryStrategy(options: config.retryStrategyOptions))
+        builder.retryErrorInfoProvider(AWSClientRuntime.AWSRetryErrorInfoProvider.errorInfo(for:))
+        builder.applySigner(ClientRuntime.SignerMiddleware<StopIngestionJobOutput>())
+        let endpointParams = EndpointParams(endpoint: config.endpoint, region: config.region, useDualStack: config.useDualStack ?? false, useFIPS: config.useFIPS ?? false)
+        builder.applyEndpoint(AWSClientRuntime.EndpointResolverMiddleware<StopIngestionJobOutput, EndpointParams>(endpointResolverBlock: { [config] in try config.endpointResolver.resolve(params: $0) }, endpointParams: endpointParams))
+        builder.interceptors.add(AWSClientRuntime.UserAgentMiddleware<StopIngestionJobInput, StopIngestionJobOutput>(serviceID: serviceName, version: "1.0", config: config))
+        builder.selectAuthScheme(ClientRuntime.AuthSchemeMiddleware<StopIngestionJobOutput>())
+        builder.interceptors.add(AWSClientRuntime.AmzSdkInvocationIdMiddleware<StopIngestionJobInput, StopIngestionJobOutput>())
+        builder.interceptors.add(AWSClientRuntime.AmzSdkRequestMiddleware<StopIngestionJobInput, StopIngestionJobOutput>(maxRetries: config.retryStrategyOptions.maxRetriesBase))
+        var metricsAttributes = Smithy.Attributes()
+        metricsAttributes.set(key: ClientRuntime.OrchestratorMetricsAttributesKeys.service, value: "BedrockAgent")
+        metricsAttributes.set(key: ClientRuntime.OrchestratorMetricsAttributesKeys.method, value: "StopIngestionJob")
         let op = builder.attributes(context)
             .telemetry(ClientRuntime.OrchestratorTelemetry(
                 telemetryProvider: config.telemetryProvider,

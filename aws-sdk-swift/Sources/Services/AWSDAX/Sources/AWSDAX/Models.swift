@@ -376,7 +376,7 @@ public struct TagQuotaPerResourceExceeded: ClientRuntime.ModeledError, AWSClient
 
 extension DAXClientTypes {
 
-    public enum ClusterEndpointEncryptionType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ClusterEndpointEncryptionType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case `none`
         case tls
         case sdkUnknown(Swift.String)
@@ -404,8 +404,9 @@ extension DAXClientTypes {
 }
 
 extension DAXClientTypes {
+
     /// Represents the settings used to enable server-side encryption.
-    public struct SSESpecification {
+    public struct SSESpecification: Swift.Sendable {
         /// Indicates whether server-side encryption is enabled (true) or disabled (false) on the cluster.
         /// This member is required.
         public var enabled: Swift.Bool?
@@ -417,12 +418,12 @@ extension DAXClientTypes {
             self.enabled = enabled
         }
     }
-
 }
 
 extension DAXClientTypes {
+
     /// A description of a tag. Every tag is a key-value pair. You can add up to 50 tags to a single DAX cluster. AWS-assigned tag names and values are automatically assigned the aws: prefix, which the user cannot assign. AWS-assigned tag names do not count towards the tag limit of 50. User-assigned tag names have the prefix user:. You cannot backdate the application of a tag.
-    public struct Tag {
+    public struct Tag: Swift.Sendable {
         /// The key for the tag. Tag keys are case sensitive. Every DAX cluster can only have one tag with the same key. If you try to add an existing tag (same key), the existing tag value will be updated to the new value.
         public var key: Swift.String?
         /// The value of the tag. Tag values are case-sensitive and can be null.
@@ -437,10 +438,9 @@ extension DAXClientTypes {
             self.value = value
         }
     }
-
 }
 
-public struct CreateClusterInput {
+public struct CreateClusterInput: Swift.Sendable {
     /// The Availability Zones (AZs) in which the cluster nodes will reside after the cluster has been created or updated. If provided, the length of this list must equal the ReplicationFactor parameter. If you omit this parameter, DAX will spread the nodes across Availability Zones for the highest availability.
     public var availabilityZones: [Swift.String]?
     /// The type of encryption the cluster's endpoint should support. Values are:
@@ -536,8 +536,9 @@ public struct CreateClusterInput {
 }
 
 extension DAXClientTypes {
+
     /// Represents the information required for client programs to connect to the endpoint for a DAX cluster.
-    public struct Endpoint {
+    public struct Endpoint: Swift.Sendable {
         /// The DNS hostname of the endpoint.
         public var address: Swift.String?
         /// The port number that applications should use to connect to the endpoint.
@@ -556,12 +557,12 @@ extension DAXClientTypes {
             self.url = url
         }
     }
-
 }
 
 extension DAXClientTypes {
+
     /// Represents an individual node within a DAX cluster.
-    public struct Node {
+    public struct Node: Swift.Sendable {
         /// The Availability Zone (AZ) in which the node has been deployed.
         public var availabilityZone: Swift.String?
         /// The endpoint for the node, consisting of a DNS name and a port number. Client applications can connect directly to a node endpoint, if desired (as an alternative to allowing DAX client software to intelligently route requests and responses to nodes in the DAX cluster.
@@ -592,12 +593,12 @@ extension DAXClientTypes {
             self.parameterGroupStatus = parameterGroupStatus
         }
     }
-
 }
 
 extension DAXClientTypes {
+
     /// Describes a notification topic and its status. Notification topics are used for publishing DAX events to subscribers using Amazon Simple Notification Service (SNS).
-    public struct NotificationConfiguration {
+    public struct NotificationConfiguration: Swift.Sendable {
         /// The Amazon Resource Name (ARN) that identifies the topic.
         public var topicArn: Swift.String?
         /// The current state of the topic. A value of “active” means that notifications will be sent to the topic. A value of “inactive” means that notifications will not be sent to the topic.
@@ -612,12 +613,12 @@ extension DAXClientTypes {
             self.topicStatus = topicStatus
         }
     }
-
 }
 
 extension DAXClientTypes {
+
     /// The status of a parameter group.
-    public struct ParameterGroupStatus {
+    public struct ParameterGroupStatus: Swift.Sendable {
         /// The node IDs of one or more nodes to be rebooted.
         public var nodeIdsToReboot: [Swift.String]?
         /// The status of parameter updates.
@@ -636,12 +637,12 @@ extension DAXClientTypes {
             self.parameterGroupName = parameterGroupName
         }
     }
-
 }
 
 extension DAXClientTypes {
+
     /// An individual VPC security group and its status.
-    public struct SecurityGroupMembership {
+    public struct SecurityGroupMembership: Swift.Sendable {
         /// The unique ID for this security group.
         public var securityGroupIdentifier: Swift.String?
         /// The status of this security group.
@@ -656,12 +657,11 @@ extension DAXClientTypes {
             self.status = status
         }
     }
-
 }
 
 extension DAXClientTypes {
 
-    public enum SSEStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SSEStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case disabled
         case disabling
         case enabled
@@ -695,8 +695,9 @@ extension DAXClientTypes {
 }
 
 extension DAXClientTypes {
+
     /// The description of the server-side encryption status on the specified DAX cluster.
-    public struct SSEDescription {
+    public struct SSEDescription: Swift.Sendable {
         /// The current state of server-side encryption:
         ///
         /// * ENABLING - Server-side encryption is being enabled.
@@ -715,12 +716,12 @@ extension DAXClientTypes {
             self.status = status
         }
     }
-
 }
 
 extension DAXClientTypes {
+
     /// Contains all of the attributes of a specific DAX cluster.
-    public struct Cluster {
+    public struct Cluster: Swift.Sendable {
         /// The number of nodes in the cluster that are active (i.e., capable of serving requests).
         public var activeNodes: Swift.Int?
         /// The Amazon Resource Name (ARN) that uniquely identifies the cluster.
@@ -801,10 +802,9 @@ extension DAXClientTypes {
             self.totalNodes = totalNodes
         }
     }
-
 }
 
-public struct CreateClusterOutput {
+public struct CreateClusterOutput: Swift.Sendable {
     /// A description of the DAX cluster that you have created.
     public var cluster: DAXClientTypes.Cluster?
 
@@ -864,7 +864,7 @@ public struct ParameterGroupQuotaExceededFault: ClientRuntime.ModeledError, AWSC
     }
 }
 
-public struct CreateParameterGroupInput {
+public struct CreateParameterGroupInput: Swift.Sendable {
     /// A description of the parameter group.
     public var description: Swift.String?
     /// The name of the parameter group to apply to all of the clusters in this replication group.
@@ -882,8 +882,9 @@ public struct CreateParameterGroupInput {
 }
 
 extension DAXClientTypes {
+
     /// A named set of parameters that are applied to all of the nodes in a DAX cluster.
-    public struct ParameterGroup {
+    public struct ParameterGroup: Swift.Sendable {
         /// A description of the parameter group.
         public var description: Swift.String?
         /// The name of the parameter group.
@@ -898,10 +899,9 @@ extension DAXClientTypes {
             self.parameterGroupName = parameterGroupName
         }
     }
-
 }
 
-public struct CreateParameterGroupOutput {
+public struct CreateParameterGroupOutput: Swift.Sendable {
     /// Represents the output of a CreateParameterGroup action.
     public var parameterGroup: DAXClientTypes.ParameterGroup?
 
@@ -1009,7 +1009,7 @@ public struct SubnetQuotaExceededFault: ClientRuntime.ModeledError, AWSClientRun
     }
 }
 
-public struct CreateSubnetGroupInput {
+public struct CreateSubnetGroupInput: Swift.Sendable {
     /// A description for the subnet group
     public var description: Swift.String?
     /// A name for the subnet group. This value is stored as a lowercase string.
@@ -1032,8 +1032,9 @@ public struct CreateSubnetGroupInput {
 }
 
 extension DAXClientTypes {
+
     /// Represents the subnet associated with a DAX cluster. This parameter refers to subnets defined in Amazon Virtual Private Cloud (Amazon VPC) and used with DAX.
-    public struct Subnet {
+    public struct Subnet: Swift.Sendable {
         /// The Availability Zone (AZ) for the subnet.
         public var subnetAvailabilityZone: Swift.String?
         /// The system-assigned identifier for the subnet.
@@ -1048,16 +1049,16 @@ extension DAXClientTypes {
             self.subnetIdentifier = subnetIdentifier
         }
     }
-
 }
 
 extension DAXClientTypes {
+
     /// Represents the output of one of the following actions:
     ///
     /// * CreateSubnetGroup
     ///
     /// * ModifySubnetGroup
-    public struct SubnetGroup {
+    public struct SubnetGroup: Swift.Sendable {
         /// The description of the subnet group.
         public var description: Swift.String?
         /// The name of the subnet group.
@@ -1080,10 +1081,9 @@ extension DAXClientTypes {
             self.vpcId = vpcId
         }
     }
-
 }
 
-public struct CreateSubnetGroupOutput {
+public struct CreateSubnetGroupOutput: Swift.Sendable {
     /// Represents the output of a CreateSubnetGroup operation.
     public var subnetGroup: DAXClientTypes.SubnetGroup?
 
@@ -1143,7 +1143,7 @@ public struct NodeNotFoundFault: ClientRuntime.ModeledError, AWSClientRuntime.AW
     }
 }
 
-public struct DecreaseReplicationFactorInput {
+public struct DecreaseReplicationFactorInput: Swift.Sendable {
     /// The Availability Zone(s) from which to remove nodes.
     public var availabilityZones: [Swift.String]?
     /// The name of the DAX cluster from which you want to remove nodes.
@@ -1169,7 +1169,7 @@ public struct DecreaseReplicationFactorInput {
     }
 }
 
-public struct DecreaseReplicationFactorOutput {
+public struct DecreaseReplicationFactorOutput: Swift.Sendable {
     /// A description of the DAX cluster, after you have decreased its replication factor.
     public var cluster: DAXClientTypes.Cluster?
 
@@ -1181,7 +1181,7 @@ public struct DecreaseReplicationFactorOutput {
     }
 }
 
-public struct DeleteClusterInput {
+public struct DeleteClusterInput: Swift.Sendable {
     /// The name of the cluster to be deleted.
     /// This member is required.
     public var clusterName: Swift.String?
@@ -1194,7 +1194,7 @@ public struct DeleteClusterInput {
     }
 }
 
-public struct DeleteClusterOutput {
+public struct DeleteClusterOutput: Swift.Sendable {
     /// A description of the DAX cluster that is being deleted.
     public var cluster: DAXClientTypes.Cluster?
 
@@ -1206,7 +1206,7 @@ public struct DeleteClusterOutput {
     }
 }
 
-public struct DeleteParameterGroupInput {
+public struct DeleteParameterGroupInput: Swift.Sendable {
     /// The name of the parameter group to delete.
     /// This member is required.
     public var parameterGroupName: Swift.String?
@@ -1219,7 +1219,7 @@ public struct DeleteParameterGroupInput {
     }
 }
 
-public struct DeleteParameterGroupOutput {
+public struct DeleteParameterGroupOutput: Swift.Sendable {
     /// A user-specified message for this action (i.e., a reason for deleting the parameter group).
     public var deletionMessage: Swift.String?
 
@@ -1255,7 +1255,7 @@ public struct SubnetGroupInUseFault: ClientRuntime.ModeledError, AWSClientRuntim
     }
 }
 
-public struct DeleteSubnetGroupInput {
+public struct DeleteSubnetGroupInput: Swift.Sendable {
     /// The name of the subnet group to delete.
     /// This member is required.
     public var subnetGroupName: Swift.String?
@@ -1268,7 +1268,7 @@ public struct DeleteSubnetGroupInput {
     }
 }
 
-public struct DeleteSubnetGroupOutput {
+public struct DeleteSubnetGroupOutput: Swift.Sendable {
     /// A user-specified message for this action (i.e., a reason for deleting the subnet group).
     public var deletionMessage: Swift.String?
 
@@ -1280,7 +1280,7 @@ public struct DeleteSubnetGroupOutput {
     }
 }
 
-public struct DescribeClustersInput {
+public struct DescribeClustersInput: Swift.Sendable {
     /// The names of the DAX clusters being described.
     public var clusterNames: [Swift.String]?
     /// The maximum number of results to include in the response. If more results exist than the specified MaxResults value, a token is included in the response so that the remaining results can be retrieved. The value for MaxResults must be between 20 and 100.
@@ -1300,7 +1300,7 @@ public struct DescribeClustersInput {
     }
 }
 
-public struct DescribeClustersOutput {
+public struct DescribeClustersOutput: Swift.Sendable {
     /// The descriptions of your DAX clusters, in response to a DescribeClusters request.
     public var clusters: [DAXClientTypes.Cluster]?
     /// Provides an identifier to allow retrieval of paginated results.
@@ -1316,7 +1316,7 @@ public struct DescribeClustersOutput {
     }
 }
 
-public struct DescribeDefaultParametersInput {
+public struct DescribeDefaultParametersInput: Swift.Sendable {
     /// The maximum number of results to include in the response. If more results exist than the specified MaxResults value, a token is included in the response so that the remaining results can be retrieved. The value for MaxResults must be between 20 and 100.
     public var maxResults: Swift.Int?
     /// An optional token returned from a prior request. Use this token for pagination of results from this action. If this parameter is specified, the response includes only results beyond the token, up to the value specified by MaxResults.
@@ -1334,7 +1334,7 @@ public struct DescribeDefaultParametersInput {
 
 extension DAXClientTypes {
 
-    public enum ChangeType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ChangeType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case immediate
         case requiresReboot
         case sdkUnknown(Swift.String)
@@ -1363,7 +1363,7 @@ extension DAXClientTypes {
 
 extension DAXClientTypes {
 
-    public enum IsModifiable: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum IsModifiable: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case conditional
         case `false`
         case `true`
@@ -1394,8 +1394,9 @@ extension DAXClientTypes {
 }
 
 extension DAXClientTypes {
+
     /// Represents a parameter value that is applicable to a particular node type.
-    public struct NodeTypeSpecificValue {
+    public struct NodeTypeSpecificValue: Swift.Sendable {
         /// A node type to which the parameter value applies.
         public var nodeType: Swift.String?
         /// The parameter value for this node type.
@@ -1410,12 +1411,11 @@ extension DAXClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension DAXClientTypes {
 
-    public enum ParameterType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ParameterType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case `default`
         case nodeTypeSpecific
         case sdkUnknown(Swift.String)
@@ -1443,8 +1443,9 @@ extension DAXClientTypes {
 }
 
 extension DAXClientTypes {
+
     /// Describes an individual setting that controls some aspect of DAX behavior.
-    public struct Parameter {
+    public struct Parameter: Swift.Sendable {
         /// A range of values within which the parameter can be set.
         public var allowedValues: Swift.String?
         /// The conditions under which changes to this parameter can be applied. For example, requires-reboot indicates that a new value for this parameter will only take effect if a node is rebooted.
@@ -1491,10 +1492,9 @@ extension DAXClientTypes {
             self.source = source
         }
     }
-
 }
 
-public struct DescribeDefaultParametersOutput {
+public struct DescribeDefaultParametersOutput: Swift.Sendable {
     /// Provides an identifier to allow retrieval of paginated results.
     public var nextToken: Swift.String?
     /// A list of parameters. Each element in the list represents one parameter.
@@ -1512,7 +1512,7 @@ public struct DescribeDefaultParametersOutput {
 
 extension DAXClientTypes {
 
-    public enum SourceType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SourceType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case cluster
         case parameterGroup
         case subnetGroup
@@ -1542,7 +1542,7 @@ extension DAXClientTypes {
     }
 }
 
-public struct DescribeEventsInput {
+public struct DescribeEventsInput: Swift.Sendable {
     /// The number of minutes' worth of events to retrieve.
     public var duration: Swift.Int?
     /// The end of the time interval for which to retrieve events, specified in ISO 8601 format.
@@ -1579,8 +1579,9 @@ public struct DescribeEventsInput {
 }
 
 extension DAXClientTypes {
+
     /// Represents a single occurrence of something interesting within the system. Some examples of events are creating a DAX cluster, adding or removing a node, or rebooting a node.
-    public struct Event {
+    public struct Event: Swift.Sendable {
         /// The date and time when the event occurred.
         public var date: Foundation.Date?
         /// A user-defined message associated with the event.
@@ -1603,10 +1604,9 @@ extension DAXClientTypes {
             self.sourceType = sourceType
         }
     }
-
 }
 
-public struct DescribeEventsOutput {
+public struct DescribeEventsOutput: Swift.Sendable {
     /// An array of events. Each element in the array represents one event.
     public var events: [DAXClientTypes.Event]?
     /// Provides an identifier to allow retrieval of paginated results.
@@ -1622,7 +1622,7 @@ public struct DescribeEventsOutput {
     }
 }
 
-public struct DescribeParameterGroupsInput {
+public struct DescribeParameterGroupsInput: Swift.Sendable {
     /// The maximum number of results to include in the response. If more results exist than the specified MaxResults value, a token is included in the response so that the remaining results can be retrieved. The value for MaxResults must be between 20 and 100.
     public var maxResults: Swift.Int?
     /// An optional token returned from a prior request. Use this token for pagination of results from this action. If this parameter is specified, the response includes only results beyond the token, up to the value specified by MaxResults.
@@ -1642,7 +1642,7 @@ public struct DescribeParameterGroupsInput {
     }
 }
 
-public struct DescribeParameterGroupsOutput {
+public struct DescribeParameterGroupsOutput: Swift.Sendable {
     /// Provides an identifier to allow retrieval of paginated results.
     public var nextToken: Swift.String?
     /// An array of parameter groups. Each element in the array represents one parameter group.
@@ -1658,7 +1658,7 @@ public struct DescribeParameterGroupsOutput {
     }
 }
 
-public struct DescribeParametersInput {
+public struct DescribeParametersInput: Swift.Sendable {
     /// The maximum number of results to include in the response. If more results exist than the specified MaxResults value, a token is included in the response so that the remaining results can be retrieved. The value for MaxResults must be between 20 and 100.
     public var maxResults: Swift.Int?
     /// An optional token returned from a prior request. Use this token for pagination of results from this action. If this parameter is specified, the response includes only results beyond the token, up to the value specified by MaxResults.
@@ -1683,7 +1683,7 @@ public struct DescribeParametersInput {
     }
 }
 
-public struct DescribeParametersOutput {
+public struct DescribeParametersOutput: Swift.Sendable {
     /// Provides an identifier to allow retrieval of paginated results.
     public var nextToken: Swift.String?
     /// A list of parameters within a parameter group. Each element in the list represents one parameter.
@@ -1699,7 +1699,7 @@ public struct DescribeParametersOutput {
     }
 }
 
-public struct DescribeSubnetGroupsInput {
+public struct DescribeSubnetGroupsInput: Swift.Sendable {
     /// The maximum number of results to include in the response. If more results exist than the specified MaxResults value, a token is included in the response so that the remaining results can be retrieved. The value for MaxResults must be between 20 and 100.
     public var maxResults: Swift.Int?
     /// An optional token returned from a prior request. Use this token for pagination of results from this action. If this parameter is specified, the response includes only results beyond the token, up to the value specified by MaxResults.
@@ -1719,7 +1719,7 @@ public struct DescribeSubnetGroupsInput {
     }
 }
 
-public struct DescribeSubnetGroupsOutput {
+public struct DescribeSubnetGroupsOutput: Swift.Sendable {
     /// Provides an identifier to allow retrieval of paginated results.
     public var nextToken: Swift.String?
     /// An array of subnet groups. Each element in the array represents a single subnet group.
@@ -1735,7 +1735,7 @@ public struct DescribeSubnetGroupsOutput {
     }
 }
 
-public struct IncreaseReplicationFactorInput {
+public struct IncreaseReplicationFactorInput: Swift.Sendable {
     /// The Availability Zones (AZs) in which the cluster nodes will be created. All nodes belonging to the cluster are placed in these Availability Zones. Use this parameter if you want to distribute the nodes across multiple AZs.
     public var availabilityZones: [Swift.String]?
     /// The name of the DAX cluster that will receive additional nodes.
@@ -1757,7 +1757,7 @@ public struct IncreaseReplicationFactorInput {
     }
 }
 
-public struct IncreaseReplicationFactorOutput {
+public struct IncreaseReplicationFactorOutput: Swift.Sendable {
     /// A description of the DAX cluster. with its new replication factor.
     public var cluster: DAXClientTypes.Cluster?
 
@@ -1793,7 +1793,7 @@ public struct InvalidARNFault: ClientRuntime.ModeledError, AWSClientRuntime.AWSS
     }
 }
 
-public struct ListTagsInput {
+public struct ListTagsInput: Swift.Sendable {
     /// An optional token returned from a prior request. Use this token for pagination of results from this action. If this parameter is specified, the response includes only results beyond the token.
     public var nextToken: Swift.String?
     /// The name of the DAX resource to which the tags belong.
@@ -1810,7 +1810,7 @@ public struct ListTagsInput {
     }
 }
 
-public struct ListTagsOutput {
+public struct ListTagsOutput: Swift.Sendable {
     /// If this value is present, there are additional results to be displayed. To retrieve them, call ListTags again, with NextToken set to this value.
     public var nextToken: Swift.String?
     /// A list of tags currently associated with the DAX cluster.
@@ -1826,7 +1826,7 @@ public struct ListTagsOutput {
     }
 }
 
-public struct RebootNodeInput {
+public struct RebootNodeInput: Swift.Sendable {
     /// The name of the DAX cluster containing the node to be rebooted.
     /// This member is required.
     public var clusterName: Swift.String?
@@ -1844,7 +1844,7 @@ public struct RebootNodeInput {
     }
 }
 
-public struct RebootNodeOutput {
+public struct RebootNodeOutput: Swift.Sendable {
     /// A description of the DAX cluster after a node has been rebooted.
     public var cluster: DAXClientTypes.Cluster?
 
@@ -1856,7 +1856,7 @@ public struct RebootNodeOutput {
     }
 }
 
-public struct TagResourceInput {
+public struct TagResourceInput: Swift.Sendable {
     /// The name of the DAX resource to which tags should be added.
     /// This member is required.
     public var resourceName: Swift.String?
@@ -1874,7 +1874,7 @@ public struct TagResourceInput {
     }
 }
 
-public struct TagResourceOutput {
+public struct TagResourceOutput: Swift.Sendable {
     /// The list of tags that are associated with the DAX resource.
     public var tags: [DAXClientTypes.Tag]?
 
@@ -1910,7 +1910,7 @@ public struct TagNotFoundFault: ClientRuntime.ModeledError, AWSClientRuntime.AWS
     }
 }
 
-public struct UntagResourceInput {
+public struct UntagResourceInput: Swift.Sendable {
     /// The name of the DAX resource from which the tags should be removed.
     /// This member is required.
     public var resourceName: Swift.String?
@@ -1928,7 +1928,7 @@ public struct UntagResourceInput {
     }
 }
 
-public struct UntagResourceOutput {
+public struct UntagResourceOutput: Swift.Sendable {
     /// The tag keys that have been removed from the cluster.
     public var tags: [DAXClientTypes.Tag]?
 
@@ -1940,7 +1940,7 @@ public struct UntagResourceOutput {
     }
 }
 
-public struct UpdateClusterInput {
+public struct UpdateClusterInput: Swift.Sendable {
     /// The name of the DAX cluster to be modified.
     /// This member is required.
     public var clusterName: Swift.String?
@@ -1977,7 +1977,7 @@ public struct UpdateClusterInput {
     }
 }
 
-public struct UpdateClusterOutput {
+public struct UpdateClusterOutput: Swift.Sendable {
     /// A description of the DAX cluster, after it has been modified.
     public var cluster: DAXClientTypes.Cluster?
 
@@ -1990,8 +1990,9 @@ public struct UpdateClusterOutput {
 }
 
 extension DAXClientTypes {
+
     /// An individual DAX parameter.
-    public struct ParameterNameValue {
+    public struct ParameterNameValue: Swift.Sendable {
         /// The name of the parameter.
         public var parameterName: Swift.String?
         /// The value of the parameter.
@@ -2006,10 +2007,9 @@ extension DAXClientTypes {
             self.parameterValue = parameterValue
         }
     }
-
 }
 
-public struct UpdateParameterGroupInput {
+public struct UpdateParameterGroupInput: Swift.Sendable {
     /// The name of the parameter group.
     /// This member is required.
     public var parameterGroupName: Swift.String?
@@ -2027,7 +2027,7 @@ public struct UpdateParameterGroupInput {
     }
 }
 
-public struct UpdateParameterGroupOutput {
+public struct UpdateParameterGroupOutput: Swift.Sendable {
     /// The parameter group that has been modified.
     public var parameterGroup: DAXClientTypes.ParameterGroup?
 
@@ -2063,7 +2063,7 @@ public struct SubnetInUse: ClientRuntime.ModeledError, AWSClientRuntime.AWSServi
     }
 }
 
-public struct UpdateSubnetGroupInput {
+public struct UpdateSubnetGroupInput: Swift.Sendable {
     /// A description of the subnet group.
     public var description: Swift.String?
     /// The name of the subnet group.
@@ -2084,7 +2084,7 @@ public struct UpdateSubnetGroupInput {
     }
 }
 
-public struct UpdateSubnetGroupOutput {
+public struct UpdateSubnetGroupOutput: Swift.Sendable {
     /// The subnet group that has been modified.
     public var subnetGroup: DAXClientTypes.SubnetGroup?
 

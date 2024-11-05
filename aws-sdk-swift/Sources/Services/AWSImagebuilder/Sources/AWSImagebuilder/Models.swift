@@ -28,8 +28,9 @@ import protocol ClientRuntime.ModeledError
 import struct Smithy.URIQueryItem
 
 extension ImagebuilderClientTypes {
+
     /// Includes counts by severity level for medium severity and higher level findings, plus a total for all of the findings for the specified filter.
-    public struct SeverityCounts {
+    public struct SeverityCounts: Swift.Sendable {
         /// The total number of findings across all severity levels for the specified filter.
         public var all: Swift.Int?
         /// The number of critical severity findings for the specified filter.
@@ -52,12 +53,12 @@ extension ImagebuilderClientTypes {
             self.medium = medium
         }
     }
-
 }
 
 extension ImagebuilderClientTypes {
+
     /// Contains counts of vulnerability findings from image scans that run when you create new Image Builder images, or build new versions of existing images. The vulnerability counts are grouped by severity level. The counts are aggregated across resources to create the final tally for the account that owns them.
-    public struct AccountAggregation {
+    public struct AccountAggregation: Swift.Sendable {
         /// Identifies the account that owns the aggregated resource findings.
         public var accountId: Swift.String?
         /// Counts by severity level for medium severity and higher level findings, plus a total for all of the findings.
@@ -72,12 +73,12 @@ extension ImagebuilderClientTypes {
             self.severityCounts = severityCounts
         }
     }
-
 }
 
 extension ImagebuilderClientTypes {
+
     /// Contains settings for the Systems Manager agent on your build instance.
-    public struct SystemsManagerAgent {
+    public struct SystemsManagerAgent: Swift.Sendable {
         /// Controls whether the Systems Manager agent is removed from your final build image, prior to creating the new AMI. If this is set to true, then the agent is removed from the final image. If it's set to false, then the agent is left in, so that it is included in the new AMI. The default value is false.
         public var uninstallAfterBuild: Swift.Bool?
 
@@ -88,12 +89,12 @@ extension ImagebuilderClientTypes {
             self.uninstallAfterBuild = uninstallAfterBuild
         }
     }
-
 }
 
 extension ImagebuilderClientTypes {
+
     /// In addition to your infrastructure configuration, these settings provide an extra layer of control over your build instances. You can also specify commands to run on launch for all of your build instances. Image Builder does not automatically install the Systems Manager agent on Windows instances. If your base image includes the Systems Manager agent, then the AMI that you create will also include the agent. For Linux instances, if the base image does not already include the Systems Manager agent, Image Builder installs it. For Linux instances where Image Builder installs the Systems Manager agent, you can choose whether to keep it for the AMI that you create.
-    public struct AdditionalInstanceConfiguration {
+    public struct AdditionalInstanceConfiguration: Swift.Sendable {
         /// Contains settings for the Systems Manager agent on your build instance.
         public var systemsManagerAgent: ImagebuilderClientTypes.SystemsManagerAgent?
         /// Use this property to provide commands or a command script to run when you launch your build instance. The userDataOverride property replaces any commands that Image Builder might have added to ensure that Systems Manager is installed on your Linux build instance. If you override the user data, make sure that you add commands to install Systems Manager, if it is not pre-installed on your base image. The user data is always base 64 encoded. For example, the following commands are encoded as IyEvYmluL2Jhc2gKbWtkaXIgLXAgL3Zhci9iYi8KdG91Y2ggL3Zhci$: #!/bin/bash mkdir -p /var/bb/ touch /var
@@ -108,12 +109,11 @@ extension ImagebuilderClientTypes {
             self.userDataOverride = userDataOverride
         }
     }
-
 }
 
 extension ImagebuilderClientTypes {
 
-    public enum ImageStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ImageStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case available
         case building
         case cancelled
@@ -171,8 +171,9 @@ extension ImagebuilderClientTypes {
 }
 
 extension ImagebuilderClientTypes {
+
     /// Image status and the reason for that status.
-    public struct ImageState {
+    public struct ImageState: Swift.Sendable {
         /// The reason for the status of the image.
         public var reason: Swift.String?
         /// The status of the image.
@@ -187,12 +188,12 @@ extension ImagebuilderClientTypes {
             self.status = status
         }
     }
-
 }
 
 extension ImagebuilderClientTypes {
+
     /// Details of an Amazon EC2 AMI.
-    public struct Ami {
+    public struct Ami: Swift.Sendable {
         /// The account ID of the owner of the AMI.
         public var accountId: Swift.String?
         /// The description of the Amazon EC2 AMI. Minimum and maximum length are in characters.
@@ -223,12 +224,12 @@ extension ImagebuilderClientTypes {
             self.state = state
         }
     }
-
 }
 
 extension ImagebuilderClientTypes {
+
     /// Describes the configuration for a launch permission. The launch permission modification request is sent to the [Amazon EC2 ModifyImageAttribute](https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_ModifyImageAttribute.html) API on behalf of the user for each Region they have selected to distribute the AMI. To make an AMI public, set the launch permission authorized accounts to all. See the examples for making an AMI public at [Amazon EC2 ModifyImageAttribute](https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_ModifyImageAttribute.html).
-    public struct LaunchPermissionConfiguration {
+    public struct LaunchPermissionConfiguration: Swift.Sendable {
         /// The ARN for an Amazon Web Services Organization that you want to share your AMI with. For more information, see [What is Organizations?](https://docs.aws.amazon.com/organizations/latest/userguide/orgs_introduction.html).
         public var organizationArns: [Swift.String]?
         /// The ARN for an Organizations organizational unit (OU) that you want to share your AMI with. For more information about key concepts for Organizations, see [Organizations terminology and concepts](https://docs.aws.amazon.com/organizations/latest/userguide/orgs_getting-started_concepts.html).
@@ -251,12 +252,12 @@ extension ImagebuilderClientTypes {
             self.userIds = userIds
         }
     }
-
 }
 
 extension ImagebuilderClientTypes {
+
     /// Define and configure the output AMIs of the pipeline.
-    public struct AmiDistributionConfiguration {
+    public struct AmiDistributionConfiguration: Swift.Sendable {
         /// The tags to apply to AMIs distributed to this Region.
         public var amiTags: [Swift.String: Swift.String]?
         /// The description of the AMI distribution configuration. Minimum and maximum length are in characters.
@@ -287,12 +288,11 @@ extension ImagebuilderClientTypes {
             self.targetAccountIds = targetAccountIds
         }
     }
-
 }
 
 extension ImagebuilderClientTypes {
 
-    public enum BuildType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum BuildType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case `import`
         case scheduled
         case userInitiated
@@ -514,7 +514,7 @@ public struct ServiceUnavailableException: ClientRuntime.ModeledError, AWSClient
     }
 }
 
-public struct CancelImageCreationInput {
+public struct CancelImageCreationInput: Swift.Sendable {
     /// Unique, case-sensitive identifier you provide to ensure idempotency of the request. For more information, see [Ensuring idempotency](https://docs.aws.amazon.com/AWSEC2/latest/APIReference/Run_Instance_Idempotency.html) in the Amazon EC2 API Reference.
     /// This member is required.
     public var clientToken: Swift.String?
@@ -532,7 +532,7 @@ public struct CancelImageCreationInput {
     }
 }
 
-public struct CancelImageCreationOutput {
+public struct CancelImageCreationOutput: Swift.Sendable {
     /// The client token that uniquely identifies the request.
     public var clientToken: Swift.String?
     /// The ARN of the image whose creation this request canceled.
@@ -552,7 +552,7 @@ public struct CancelImageCreationOutput {
     }
 }
 
-public struct CancelLifecycleExecutionInput {
+public struct CancelLifecycleExecutionInput: Swift.Sendable {
     /// Unique, case-sensitive identifier you provide to ensure idempotency of the request. For more information, see [Ensuring idempotency](https://docs.aws.amazon.com/AWSEC2/latest/APIReference/Run_Instance_Idempotency.html) in the Amazon EC2 API Reference.
     /// This member is required.
     public var clientToken: Swift.String?
@@ -570,7 +570,7 @@ public struct CancelLifecycleExecutionInput {
     }
 }
 
-public struct CancelLifecycleExecutionOutput {
+public struct CancelLifecycleExecutionOutput: Swift.Sendable {
     /// The unique identifier for the image lifecycle runtime instance that was canceled.
     public var lifecycleExecutionId: Swift.String?
 
@@ -583,8 +583,9 @@ public struct CancelLifecycleExecutionOutput {
 }
 
 extension ImagebuilderClientTypes {
+
     /// Defines a parameter that is used to provide configuration details for the component.
-    public struct ComponentParameterDetail {
+    public struct ComponentParameterDetail: Swift.Sendable {
         /// The default value of this parameter if no input is provided.
         public var defaultValue: [Swift.String]?
         /// Describes this parameter.
@@ -609,19 +610,20 @@ extension ImagebuilderClientTypes {
             self.type = type
         }
     }
-
 }
 
 extension ImagebuilderClientTypes {
 
-    public enum Platform: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Platform: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case linux
+        case macos
         case windows
         case sdkUnknown(Swift.String)
 
         public static var allCases: [Platform] {
             return [
                 .linux,
+                .macos,
                 .windows
             ]
         }
@@ -634,6 +636,7 @@ extension ImagebuilderClientTypes {
         public var rawValue: Swift.String {
             switch self {
             case .linux: return "Linux"
+            case .macos: return "macOS"
             case .windows: return "Windows"
             case let .sdkUnknown(s): return s
             }
@@ -643,7 +646,7 @@ extension ImagebuilderClientTypes {
 
 extension ImagebuilderClientTypes {
 
-    public enum ComponentStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ComponentStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case deprecated
         case sdkUnknown(Swift.String)
 
@@ -668,8 +671,9 @@ extension ImagebuilderClientTypes {
 }
 
 extension ImagebuilderClientTypes {
+
     /// A group of fields that describe the current status of components.
-    public struct ComponentState {
+    public struct ComponentState: Swift.Sendable {
         /// Describes how or why the component changed state.
         public var reason: Swift.String?
         /// The current state of the component.
@@ -684,12 +688,11 @@ extension ImagebuilderClientTypes {
             self.status = status
         }
     }
-
 }
 
 extension ImagebuilderClientTypes {
 
-    public enum ComponentType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ComponentType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case build
         case test
         case sdkUnknown(Swift.String)
@@ -717,8 +720,9 @@ extension ImagebuilderClientTypes {
 }
 
 extension ImagebuilderClientTypes {
+
     /// A detailed view of a component.
-    public struct Component {
+    public struct Component: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the component.
         public var arn: Swift.String?
         /// Describes what change has been made in this version of the component, or what makes this version different from other versions of the component.
@@ -797,12 +801,12 @@ extension ImagebuilderClientTypes {
             self.version = version
         }
     }
-
 }
 
 extension ImagebuilderClientTypes {
+
     /// Contains a key/value pair that sets the named component parameter.
-    public struct ComponentParameter {
+    public struct ComponentParameter: Swift.Sendable {
         /// The name of the component parameter to set.
         /// This member is required.
         public var name: Swift.String?
@@ -819,12 +823,12 @@ extension ImagebuilderClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension ImagebuilderClientTypes {
+
     /// Configuration details of the component.
-    public struct ComponentConfiguration {
+    public struct ComponentConfiguration: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the component.
         /// This member is required.
         public var componentArn: Swift.String?
@@ -840,12 +844,11 @@ extension ImagebuilderClientTypes {
             self.parameters = parameters
         }
     }
-
 }
 
 extension ImagebuilderClientTypes {
 
-    public enum ComponentFormat: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ComponentFormat: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case shell
         case sdkUnknown(Swift.String)
 
@@ -870,8 +873,9 @@ extension ImagebuilderClientTypes {
 }
 
 extension ImagebuilderClientTypes {
+
     /// A high-level summary of a component.
-    public struct ComponentSummary {
+    public struct ComponentSummary: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the component.
         public var arn: Swift.String?
         /// The change description for the current version of the component.
@@ -934,12 +938,12 @@ extension ImagebuilderClientTypes {
             self.version = version
         }
     }
-
 }
 
 extension ImagebuilderClientTypes {
+
     /// The defining characteristics of a specific version of an Amazon Web Services TOE component.
-    public struct ComponentVersion {
+    public struct ComponentVersion: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the component. Semantic versioning is included in each object's Amazon Resource Name (ARN), at the level that applies to that object as follows:
         ///
         /// * Versionless ARNs and Name ARNs do not include specific values in any of the nodes. The nodes are either left off entirely, or they are specified as wildcards, for example: x.x.x.
@@ -988,12 +992,12 @@ extension ImagebuilderClientTypes {
             self.version = version
         }
     }
-
 }
 
 extension ImagebuilderClientTypes {
+
     /// A container encapsulates the runtime environment for an application.
-    public struct Container {
+    public struct Container: Swift.Sendable {
         /// A list of URIs for containers created in the context Region.
         public var imageUris: [Swift.String]?
         /// Containers and container images are Region-specific. This is the Region context for the container.
@@ -1008,12 +1012,11 @@ extension ImagebuilderClientTypes {
             self.region = region
         }
     }
-
 }
 
 extension ImagebuilderClientTypes {
 
-    public enum ContainerRepositoryService: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ContainerRepositoryService: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case ecr
         case sdkUnknown(Swift.String)
 
@@ -1038,8 +1041,9 @@ extension ImagebuilderClientTypes {
 }
 
 extension ImagebuilderClientTypes {
+
     /// The container repository where the output container image is stored.
-    public struct TargetContainerRepository {
+    public struct TargetContainerRepository: Swift.Sendable {
         /// The name of the container repository where the output container image is stored. This name is prefixed by the repository location.
         /// This member is required.
         public var repositoryName: Swift.String?
@@ -1056,12 +1060,12 @@ extension ImagebuilderClientTypes {
             self.service = service
         }
     }
-
 }
 
 extension ImagebuilderClientTypes {
+
     /// Container distribution settings for encryption, licensing, and sharing in a specific Region.
-    public struct ContainerDistributionConfiguration {
+    public struct ContainerDistributionConfiguration: Swift.Sendable {
         /// Tags that are attached to the container distribution configuration.
         public var containerTags: [Swift.String]?
         /// The description of the container distribution configuration.
@@ -1081,12 +1085,11 @@ extension ImagebuilderClientTypes {
             self.targetRepository = targetRepository
         }
     }
-
 }
 
 extension ImagebuilderClientTypes {
 
-    public enum ContainerType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ContainerType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case docker
         case sdkUnknown(Swift.String)
 
@@ -1112,7 +1115,7 @@ extension ImagebuilderClientTypes {
 
 extension ImagebuilderClientTypes {
 
-    public enum EbsVolumeType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum EbsVolumeType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case gp2
         case gp3
         case io1
@@ -1155,8 +1158,9 @@ extension ImagebuilderClientTypes {
 }
 
 extension ImagebuilderClientTypes {
+
     /// Amazon EBS-specific block device mapping specifications.
-    public struct EbsInstanceBlockDeviceSpecification {
+    public struct EbsInstanceBlockDeviceSpecification: Swift.Sendable {
         /// Use to configure delete on termination of the associated device.
         public var deleteOnTermination: Swift.Bool?
         /// Use to configure device encryption.
@@ -1195,12 +1199,12 @@ extension ImagebuilderClientTypes {
             self.volumeType = volumeType
         }
     }
-
 }
 
 extension ImagebuilderClientTypes {
+
     /// Defines block device mappings for the instance used to configure your image.
-    public struct InstanceBlockDeviceMapping {
+    public struct InstanceBlockDeviceMapping: Swift.Sendable {
         /// The device to which these mappings apply.
         public var deviceName: Swift.String?
         /// Use to manage Amazon EBS-specific configuration for this mapping.
@@ -1223,12 +1227,12 @@ extension ImagebuilderClientTypes {
             self.virtualName = virtualName
         }
     }
-
 }
 
 extension ImagebuilderClientTypes {
+
     /// Defines a custom base AMI and block device mapping configurations of an instance used for building and testing container images.
-    public struct InstanceConfiguration {
+    public struct InstanceConfiguration: Swift.Sendable {
         /// Defines the block devices to attach for building an instance from this Image Builder AMI.
         public var blockDeviceMappings: [ImagebuilderClientTypes.InstanceBlockDeviceMapping]?
         /// The AMI ID to use as the base image for a container build and test instance. If not specified, Image Builder will use the appropriate ECS-optimized AMI as a base image.
@@ -1243,12 +1247,12 @@ extension ImagebuilderClientTypes {
             self.image = image
         }
     }
-
 }
 
 extension ImagebuilderClientTypes {
+
     /// A container recipe.
-    public struct ContainerRecipe {
+    public struct ContainerRecipe: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the container recipe. Semantic versioning is included in each object's Amazon Resource Name (ARN), at the level that applies to that object as follows:
         ///
         /// * Versionless ARNs and Name ARNs do not include specific values in any of the nodes. The nodes are either left off entirely, or they are specified as wildcards, for example: x.x.x.
@@ -1329,12 +1333,12 @@ extension ImagebuilderClientTypes {
             self.workingDirectory = workingDirectory
         }
     }
-
 }
 
 extension ImagebuilderClientTypes {
+
     /// A summary of a container recipe
-    public struct ContainerRecipeSummary {
+    public struct ContainerRecipeSummary: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the container recipe.
         public var arn: Swift.String?
         /// Specifies the type of container, such as "Docker".
@@ -1373,7 +1377,6 @@ extension ImagebuilderClientTypes {
             self.tags = tags
         }
     }
-
 }
 
 /// You have specified two or more mutually exclusive parameters. Review the error message for details.
@@ -1448,7 +1451,7 @@ public struct ServiceQuotaExceededException: ClientRuntime.ModeledError, AWSClie
     }
 }
 
-public struct CreateComponentInput {
+public struct CreateComponentInput: Swift.Sendable {
     /// The change description of the component. Describes what change has been made in this version, or what makes this version different from other versions of the component.
     public var changeDescription: Swift.String?
     /// Unique, case-sensitive identifier you provide to ensure idempotency of the request. For more information, see [Ensuring idempotency](https://docs.aws.amazon.com/AWSEC2/latest/APIReference/Run_Instance_Idempotency.html) in the Amazon EC2 API Reference.
@@ -1504,7 +1507,7 @@ public struct CreateComponentInput {
     }
 }
 
-public struct CreateComponentOutput {
+public struct CreateComponentOutput: Swift.Sendable {
     /// The client token that uniquely identifies the request.
     public var clientToken: Swift.String?
     /// The Amazon Resource Name (ARN) of the component that the request created.
@@ -1548,7 +1551,7 @@ public struct ResourceAlreadyExistsException: ClientRuntime.ModeledError, AWSCli
     }
 }
 
-public struct CreateContainerRecipeInput {
+public struct CreateContainerRecipeInput: Swift.Sendable {
     /// Unique, case-sensitive identifier you provide to ensure idempotency of the request. For more information, see [Ensuring idempotency](https://docs.aws.amazon.com/AWSEC2/latest/APIReference/Run_Instance_Idempotency.html) in the Amazon EC2 API Reference.
     /// This member is required.
     public var clientToken: Swift.String?
@@ -1568,7 +1571,7 @@ public struct CreateContainerRecipeInput {
     public var imageOsVersionOverride: Swift.String?
     /// A group of options that can be used to configure an instance for building and testing container images.
     public var instanceConfiguration: ImagebuilderClientTypes.InstanceConfiguration?
-    /// Identifies which KMS key is used to encrypt the container image.
+    /// Identifies which KMS key is used to encrypt the Dockerfile template.
     public var kmsKeyId: Swift.String?
     /// The name of the container recipe.
     /// This member is required.
@@ -1627,7 +1630,7 @@ public struct CreateContainerRecipeInput {
     }
 }
 
-public struct CreateContainerRecipeOutput {
+public struct CreateContainerRecipeOutput: Swift.Sendable {
     /// The client token that uniquely identifies the request.
     public var clientToken: Swift.String?
     /// Returns the Amazon Resource Name (ARN) of the container recipe that the request created.
@@ -1648,8 +1651,9 @@ public struct CreateContainerRecipeOutput {
 }
 
 extension ImagebuilderClientTypes {
+
     /// Identifies the launch template that the associated Windows AMI uses for launching an instance when faster launching is enabled. You can specify either the launchTemplateName or the launchTemplateId, but not both.
-    public struct FastLaunchLaunchTemplateSpecification {
+    public struct FastLaunchLaunchTemplateSpecification: Swift.Sendable {
         /// The ID of the launch template to use for faster launching for a Windows AMI.
         public var launchTemplateId: Swift.String?
         /// The name of the launch template to use for faster launching for a Windows AMI.
@@ -1668,12 +1672,12 @@ extension ImagebuilderClientTypes {
             self.launchTemplateVersion = launchTemplateVersion
         }
     }
-
 }
 
 extension ImagebuilderClientTypes {
+
     /// Configuration settings for creating and managing pre-provisioned snapshots for a fast-launch enabled Windows AMI.
-    public struct FastLaunchSnapshotConfiguration {
+    public struct FastLaunchSnapshotConfiguration: Swift.Sendable {
         /// The number of pre-provisioned snapshots to keep on hand for a fast-launch enabled Windows AMI.
         public var targetResourceCount: Swift.Int?
 
@@ -1684,12 +1688,12 @@ extension ImagebuilderClientTypes {
             self.targetResourceCount = targetResourceCount
         }
     }
-
 }
 
 extension ImagebuilderClientTypes {
+
     /// Define and configure faster launching for output Windows AMIs.
-    public struct FastLaunchConfiguration {
+    public struct FastLaunchConfiguration: Swift.Sendable {
         /// The owner account ID for the fast-launch enabled Windows AMI.
         public var accountId: Swift.String?
         /// A Boolean that represents the current state of faster launching for the Windows AMI. Set to true to start using Windows faster launching, or false to stop using it.
@@ -1717,12 +1721,12 @@ extension ImagebuilderClientTypes {
             self.snapshotConfiguration = snapshotConfiguration
         }
     }
-
 }
 
 extension ImagebuilderClientTypes {
+
     /// Identifies an Amazon EC2 launch template to use for a specific account.
-    public struct LaunchTemplateConfiguration {
+    public struct LaunchTemplateConfiguration: Swift.Sendable {
         /// The account ID that this configuration applies to.
         public var accountId: Swift.String?
         /// Identifies the Amazon EC2 launch template to use.
@@ -1742,12 +1746,11 @@ extension ImagebuilderClientTypes {
             self.setDefaultVersion = setDefaultVersion
         }
     }
-
 }
 
 extension ImagebuilderClientTypes {
 
-    public enum DiskImageFormat: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DiskImageFormat: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case raw
         case vhd
         case vmdk
@@ -1778,8 +1781,9 @@ extension ImagebuilderClientTypes {
 }
 
 extension ImagebuilderClientTypes {
+
     /// Properties that configure export from your build instance to a compatible file format for your VM.
-    public struct S3ExportConfiguration {
+    public struct S3ExportConfiguration: Swift.Sendable {
         /// Export the updated image to one of the following supported disk image formats:
         ///
         /// * Virtual Hard Disk (VHD) – Compatible with Citrix Xen and Microsoft Hyper-V virtualization products.
@@ -1811,12 +1815,12 @@ extension ImagebuilderClientTypes {
             self.s3Prefix = s3Prefix
         }
     }
-
 }
 
 extension ImagebuilderClientTypes {
+
     /// Defines the settings for a specific Region.
-    public struct Distribution {
+    public struct Distribution: Swift.Sendable {
         /// The specific AMI settings; for example, launch permissions or AMI tags.
         public var amiDistributionConfiguration: ImagebuilderClientTypes.AmiDistributionConfiguration?
         /// Container distribution settings for encryption, licensing, and sharing in a specific Region.
@@ -1852,10 +1856,9 @@ extension ImagebuilderClientTypes {
             self.s3ExportConfiguration = s3ExportConfiguration
         }
     }
-
 }
 
-public struct CreateDistributionConfigurationInput {
+public struct CreateDistributionConfigurationInput: Swift.Sendable {
     /// Unique, case-sensitive identifier you provide to ensure idempotency of the request. For more information, see [Ensuring idempotency](https://docs.aws.amazon.com/AWSEC2/latest/APIReference/Run_Instance_Idempotency.html) in the Amazon EC2 API Reference.
     /// This member is required.
     public var clientToken: Swift.String?
@@ -1886,7 +1889,7 @@ public struct CreateDistributionConfigurationInput {
     }
 }
 
-public struct CreateDistributionConfigurationOutput {
+public struct CreateDistributionConfigurationOutput: Swift.Sendable {
     /// The client token that uniquely identifies the request.
     public var clientToken: Swift.String?
     /// The Amazon Resource Name (ARN) of the distribution configuration that was created by this request.
@@ -1907,9 +1910,10 @@ public struct CreateDistributionConfigurationOutput {
 }
 
 extension ImagebuilderClientTypes {
+
     /// Settings that Image Builder uses to configure the ECR repository and the output container images that Amazon Inspector scans.
-    public struct EcrConfiguration {
-        /// Tags for Image Builder to apply to the output container image that &INS; scans. Tags can help you identify and manage your scanned images.
+    public struct EcrConfiguration: Swift.Sendable {
+        /// Tags for Image Builder to apply to the output container image that Amazon Inspector scans. Tags can help you identify and manage your scanned images.
         public var containerTags: [Swift.String]?
         /// The name of the container repository that Amazon Inspector scans to identify findings for your container images. The name includes the path for the repository location. If you don’t provide this information, Image Builder creates a repository in your account named image-builder-image-scanning-repository for vulnerability scans of your output container images.
         public var repositoryName: Swift.String?
@@ -1923,12 +1927,12 @@ extension ImagebuilderClientTypes {
             self.repositoryName = repositoryName
         }
     }
-
 }
 
 extension ImagebuilderClientTypes {
+
     /// Contains settings for Image Builder image resource and container image scans.
-    public struct ImageScanningConfiguration {
+    public struct ImageScanningConfiguration: Swift.Sendable {
         /// Contains Amazon ECR settings for vulnerability scans.
         public var ecrConfiguration: ImagebuilderClientTypes.EcrConfiguration?
         /// A setting that indicates whether Image Builder keeps a snapshot of the vulnerability scans that Amazon Inspector runs against the build instance when you create a new image.
@@ -1943,12 +1947,12 @@ extension ImagebuilderClientTypes {
             self.imageScanningEnabled = imageScanningEnabled
         }
     }
-
 }
 
 extension ImagebuilderClientTypes {
+
     /// Configure image tests for your pipeline build. Tests run after building the image, to verify that the AMI or container image is valid before distributing it.
-    public struct ImageTestsConfiguration {
+    public struct ImageTestsConfiguration: Swift.Sendable {
         /// Determines if tests should run after building the image. Image Builder defaults to enable tests to run following the image build, before image distribution.
         public var imageTestsEnabled: Swift.Bool?
         /// The maximum time in minutes that tests are permitted to run. The timeoutMinutes attribute is not currently active. This value is ignored.
@@ -1963,12 +1967,11 @@ extension ImagebuilderClientTypes {
             self.timeoutMinutes = timeoutMinutes
         }
     }
-
 }
 
 extension ImagebuilderClientTypes {
 
-    public enum OnWorkflowFailure: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum OnWorkflowFailure: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case abort
         case `continue`
         case sdkUnknown(Swift.String)
@@ -1996,8 +1999,9 @@ extension ImagebuilderClientTypes {
 }
 
 extension ImagebuilderClientTypes {
+
     /// Contains a key/value pair that sets the named workflow parameter.
-    public struct WorkflowParameter {
+    public struct WorkflowParameter: Swift.Sendable {
         /// The name of the workflow parameter to set.
         /// This member is required.
         public var name: Swift.String?
@@ -2014,12 +2018,12 @@ extension ImagebuilderClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension ImagebuilderClientTypes {
+
     /// Contains control settings and configurable inputs for a workflow resource.
-    public struct WorkflowConfiguration {
+    public struct WorkflowConfiguration: Swift.Sendable {
         /// The action to take if the workflow fails.
         public var onFailure: ImagebuilderClientTypes.OnWorkflowFailure?
         /// Test workflows are defined within named runtime groups called parallel groups. The parallel group is the named group that contains this test workflow. Test workflows within a parallel group can run at the same time. Image Builder starts up to five test workflows in the group at the same time, and starts additional workflows as others complete, until all workflows in the group have completed. This field only applies for test workflows.
@@ -2043,10 +2047,9 @@ extension ImagebuilderClientTypes {
             self.workflowArn = workflowArn
         }
     }
-
 }
 
-public struct CreateImageInput {
+public struct CreateImageInput: Swift.Sendable {
     /// Unique, case-sensitive identifier you provide to ensure idempotency of the request. For more information, see [Ensuring idempotency](https://docs.aws.amazon.com/AWSEC2/latest/APIReference/Run_Instance_Idempotency.html) in the Amazon EC2 API Reference.
     /// This member is required.
     public var clientToken: Swift.String?
@@ -2100,7 +2103,7 @@ public struct CreateImageInput {
     }
 }
 
-public struct CreateImageOutput {
+public struct CreateImageOutput: Swift.Sendable {
     /// The client token that uniquely identifies the request.
     public var clientToken: Swift.String?
     /// The Amazon Resource Name (ARN) of the image that the request created.
@@ -2122,7 +2125,7 @@ public struct CreateImageOutput {
 
 extension ImagebuilderClientTypes {
 
-    public enum PipelineExecutionStartCondition: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum PipelineExecutionStartCondition: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case expressionMatchAndDependencyUpdatesAvailable
         case expressionMatchOnly
         case sdkUnknown(Swift.String)
@@ -2150,8 +2153,9 @@ extension ImagebuilderClientTypes {
 }
 
 extension ImagebuilderClientTypes {
+
     /// A schedule configures when and how often a pipeline will automatically create a new image.
-    public struct Schedule {
+    public struct Schedule: Swift.Sendable {
         /// The condition configures when the pipeline should trigger a new image build. When the pipelineExecutionStartCondition is set to EXPRESSION_MATCH_AND_DEPENDENCY_UPDATES_AVAILABLE, and you use semantic version filters on the base image or components in your image recipe, EC2 Image Builder will build a new image only when there are new versions of the image or components in your recipe that match the semantic version filter. When it is set to EXPRESSION_MATCH_ONLY, it will build a new image every time the CRON expression matches the current time. For semantic version syntax, see [CreateComponent](https://docs.aws.amazon.com/imagebuilder/latest/APIReference/API_CreateComponent.html) in the EC2 Image Builder API Reference.
         public var pipelineExecutionStartCondition: ImagebuilderClientTypes.PipelineExecutionStartCondition?
         /// The cron expression determines how often EC2 Image Builder evaluates your pipelineExecutionStartCondition. For information on how to format a cron expression in Image Builder, see [Use cron expressions in EC2 Image Builder](https://docs.aws.amazon.com/imagebuilder/latest/userguide/image-builder-cron.html).
@@ -2170,12 +2174,11 @@ extension ImagebuilderClientTypes {
             self.timezone = timezone
         }
     }
-
 }
 
 extension ImagebuilderClientTypes {
 
-    public enum PipelineStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum PipelineStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case disabled
         case enabled
         case sdkUnknown(Swift.String)
@@ -2202,7 +2205,7 @@ extension ImagebuilderClientTypes {
     }
 }
 
-public struct CreateImagePipelineInput {
+public struct CreateImagePipelineInput: Swift.Sendable {
     /// Unique, case-sensitive identifier you provide to ensure idempotency of the request. For more information, see [Ensuring idempotency](https://docs.aws.amazon.com/AWSEC2/latest/APIReference/Run_Instance_Idempotency.html) in the Amazon EC2 API Reference.
     /// This member is required.
     public var clientToken: Swift.String?
@@ -2273,7 +2276,7 @@ public struct CreateImagePipelineInput {
     }
 }
 
-public struct CreateImagePipelineOutput {
+public struct CreateImagePipelineOutput: Swift.Sendable {
     /// The client token that uniquely identifies the request.
     public var clientToken: Swift.String?
     /// The Amazon Resource Name (ARN) of the image pipeline that was created by this request.
@@ -2293,7 +2296,7 @@ public struct CreateImagePipelineOutput {
     }
 }
 
-public struct CreateImageRecipeInput {
+public struct CreateImageRecipeInput: Swift.Sendable {
     /// Specify additional settings and launch scripts for your build instances.
     public var additionalInstanceConfiguration: ImagebuilderClientTypes.AdditionalInstanceConfiguration?
     /// The block device mappings of the image recipe.
@@ -2346,7 +2349,7 @@ public struct CreateImageRecipeInput {
     }
 }
 
-public struct CreateImageRecipeOutput {
+public struct CreateImageRecipeOutput: Swift.Sendable {
     /// The client token that uniquely identifies the request.
     public var clientToken: Swift.String?
     /// The Amazon Resource Name (ARN) of the image recipe that was created by this request.
@@ -2367,8 +2370,9 @@ public struct CreateImageRecipeOutput {
 }
 
 extension ImagebuilderClientTypes {
+
     /// The instance metadata options that apply to the HTTP requests that pipeline builds use to launch EC2 build and test instances. For more information about instance metadata options, see [Configure the instance metadata options](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/configuring-instance-metadata-options.html) in the Amazon EC2 User Guide for Linux instances, or [Configure the instance metadata options](https://docs.aws.amazon.com/AWSEC2/latest/WindowsGuide/configuring-instance-metadata-options.html) in the Amazon EC2 Windows Guide for Windows instances.
-    public struct InstanceMetadataOptions {
+    public struct InstanceMetadataOptions: Swift.Sendable {
         /// Limit the number of hops that an instance metadata request can traverse to reach its destination. The default is one hop. However, if HTTP tokens are required, container image builds need a minimum of two hops.
         public var httpPutResponseHopLimit: Swift.Int?
         /// Indicates whether a signed token header is required for instance metadata retrieval requests. The values affect the response as follows:
@@ -2390,12 +2394,12 @@ extension ImagebuilderClientTypes {
             self.httpTokens = httpTokens
         }
     }
-
 }
 
 extension ImagebuilderClientTypes {
+
     /// Amazon S3 logging configuration.
-    public struct S3Logs {
+    public struct S3Logs: Swift.Sendable {
         /// The S3 bucket in which to store the logs.
         public var s3BucketName: Swift.String?
         /// The Amazon S3 path to the bucket where the logs are stored.
@@ -2410,12 +2414,12 @@ extension ImagebuilderClientTypes {
             self.s3KeyPrefix = s3KeyPrefix
         }
     }
-
 }
 
 extension ImagebuilderClientTypes {
+
     /// Logging configuration defines where Image Builder uploads your logs.
-    public struct Logging {
+    public struct Logging: Swift.Sendable {
         /// The Amazon S3 logging configuration.
         public var s3Logs: ImagebuilderClientTypes.S3Logs?
 
@@ -2426,10 +2430,69 @@ extension ImagebuilderClientTypes {
             self.s3Logs = s3Logs
         }
     }
-
 }
 
-public struct CreateInfrastructureConfigurationInput {
+extension ImagebuilderClientTypes {
+
+    public enum TenancyType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+        case dedicated
+        case `default`
+        case host
+        case sdkUnknown(Swift.String)
+
+        public static var allCases: [TenancyType] {
+            return [
+                .dedicated,
+                .default,
+                .host
+            ]
+        }
+
+        public init?(rawValue: Swift.String) {
+            let value = Self.allCases.first(where: { $0.rawValue == rawValue })
+            self = value ?? Self.sdkUnknown(rawValue)
+        }
+
+        public var rawValue: Swift.String {
+            switch self {
+            case .dedicated: return "dedicated"
+            case .default: return "default"
+            case .host: return "host"
+            case let .sdkUnknown(s): return s
+            }
+        }
+    }
+}
+
+extension ImagebuilderClientTypes {
+
+    /// By default, EC2 instances run on shared tenancy hardware. This means that multiple Amazon Web Services accounts might share the same physical hardware. When you use dedicated hardware, the physical server that hosts your instances is dedicated to your Amazon Web Services account. Instance placement settings contain the details for the physical hardware where instances that Image Builder launches during image creation will run.
+    public struct Placement: Swift.Sendable {
+        /// The Availability Zone where your build and test instances will launch.
+        public var availabilityZone: Swift.String?
+        /// The ID of the Dedicated Host on which build and test instances run. This only applies if tenancy is host. If you specify the host ID, you must not specify the resource group ARN. If you specify both, Image Builder returns an error.
+        public var hostId: Swift.String?
+        /// The Amazon Resource Name (ARN) of the host resource group in which to launch build and test instances. This only applies if tenancy is host. If you specify the resource group ARN, you must not specify the host ID. If you specify both, Image Builder returns an error.
+        public var hostResourceGroupArn: Swift.String?
+        /// The tenancy of the instance. An instance with a tenancy of dedicated runs on single-tenant hardware. An instance with a tenancy of host runs on a Dedicated Host. If tenancy is set to host, then you can optionally specify one target for placement – either host ID or host resource group ARN. If automatic placement is enabled for your host, and you don't specify any placement target, Amazon EC2 will try to find an available host for your build and test instances.
+        public var tenancy: ImagebuilderClientTypes.TenancyType?
+
+        public init(
+            availabilityZone: Swift.String? = nil,
+            hostId: Swift.String? = nil,
+            hostResourceGroupArn: Swift.String? = nil,
+            tenancy: ImagebuilderClientTypes.TenancyType? = nil
+        )
+        {
+            self.availabilityZone = availabilityZone
+            self.hostId = hostId
+            self.hostResourceGroupArn = hostResourceGroupArn
+            self.tenancy = tenancy
+        }
+    }
+}
+
+public struct CreateInfrastructureConfigurationInput: Swift.Sendable {
     /// Unique, case-sensitive identifier you provide to ensure idempotency of the request. For more information, see [Ensuring idempotency](https://docs.aws.amazon.com/AWSEC2/latest/APIReference/Run_Instance_Idempotency.html) in the Amazon EC2 API Reference.
     /// This member is required.
     public var clientToken: Swift.String?
@@ -2449,7 +2512,9 @@ public struct CreateInfrastructureConfigurationInput {
     /// The name of the infrastructure configuration.
     /// This member is required.
     public var name: Swift.String?
-    /// The tags attached to the resource created by Image Builder.
+    /// The instance placement settings that define where the instances that are launched from your image will run.
+    public var placement: ImagebuilderClientTypes.Placement?
+    /// The metadata tags to assign to the Amazon EC2 instance that Image Builder launches during the build process. Tags are formatted as key value pairs.
     public var resourceTags: [Swift.String: Swift.String]?
     /// The security group IDs to associate with the instance used to customize your Amazon EC2 AMI.
     public var securityGroupIds: [Swift.String]?
@@ -2457,7 +2522,7 @@ public struct CreateInfrastructureConfigurationInput {
     public var snsTopicArn: Swift.String?
     /// The subnet ID in which to place the instance used to customize your Amazon EC2 AMI.
     public var subnetId: Swift.String?
-    /// The tags of the infrastructure configuration.
+    /// The metadata tags to assign to the infrastructure configuration resource that Image Builder creates as output. Tags are formatted as key value pairs.
     public var tags: [Swift.String: Swift.String]?
     /// The terminate instance on failure setting of the infrastructure configuration. Set to false if you want Image Builder to retain the instance used to configure your AMI if the build or test phase of your workflow fails.
     public var terminateInstanceOnFailure: Swift.Bool?
@@ -2471,6 +2536,7 @@ public struct CreateInfrastructureConfigurationInput {
         keyPair: Swift.String? = nil,
         logging: ImagebuilderClientTypes.Logging? = nil,
         name: Swift.String? = nil,
+        placement: ImagebuilderClientTypes.Placement? = nil,
         resourceTags: [Swift.String: Swift.String]? = nil,
         securityGroupIds: [Swift.String]? = nil,
         snsTopicArn: Swift.String? = nil,
@@ -2487,6 +2553,7 @@ public struct CreateInfrastructureConfigurationInput {
         self.keyPair = keyPair
         self.logging = logging
         self.name = name
+        self.placement = placement
         self.resourceTags = resourceTags
         self.securityGroupIds = securityGroupIds
         self.snsTopicArn = snsTopicArn
@@ -2496,7 +2563,7 @@ public struct CreateInfrastructureConfigurationInput {
     }
 }
 
-public struct CreateInfrastructureConfigurationOutput {
+public struct CreateInfrastructureConfigurationOutput: Swift.Sendable {
     /// The client token that uniquely identifies the request.
     public var clientToken: Swift.String?
     /// The Amazon Resource Name (ARN) of the infrastructure configuration that was created by this request.
@@ -2517,8 +2584,9 @@ public struct CreateInfrastructureConfigurationOutput {
 }
 
 extension ImagebuilderClientTypes {
+
     /// Specifies how the lifecycle policy should apply actions to selected resources.
-    public struct LifecyclePolicyDetailActionIncludeResources {
+    public struct LifecyclePolicyDetailActionIncludeResources: Swift.Sendable {
         /// Specifies whether the lifecycle action should apply to distributed AMIs.
         public var amis: Swift.Bool
         /// Specifies whether the lifecycle action should apply to distributed containers.
@@ -2537,12 +2605,11 @@ extension ImagebuilderClientTypes {
             self.snapshots = snapshots
         }
     }
-
 }
 
 extension ImagebuilderClientTypes {
 
-    public enum LifecyclePolicyDetailActionType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum LifecyclePolicyDetailActionType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case delete
         case deprecate
         case disable
@@ -2573,8 +2640,9 @@ extension ImagebuilderClientTypes {
 }
 
 extension ImagebuilderClientTypes {
+
     /// Contains selection criteria for the lifecycle policy.
-    public struct LifecyclePolicyDetailAction {
+    public struct LifecyclePolicyDetailAction: Swift.Sendable {
         /// Specifies the resources that the lifecycle policy applies to.
         public var includeResources: ImagebuilderClientTypes.LifecyclePolicyDetailActionIncludeResources?
         /// Specifies the lifecycle action to take.
@@ -2590,12 +2658,11 @@ extension ImagebuilderClientTypes {
             self.type = type
         }
     }
-
 }
 
 extension ImagebuilderClientTypes {
 
-    public enum LifecyclePolicyTimeUnit: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum LifecyclePolicyTimeUnit: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case days
         case months
         case weeks
@@ -2629,8 +2696,9 @@ extension ImagebuilderClientTypes {
 }
 
 extension ImagebuilderClientTypes {
+
     /// Defines criteria to exclude AMIs from lifecycle actions based on the last time they were used to launch an instance.
-    public struct LifecyclePolicyDetailExclusionRulesAmisLastLaunched {
+    public struct LifecyclePolicyDetailExclusionRulesAmisLastLaunched: Swift.Sendable {
         /// Defines the unit of time that the lifecycle policy uses to calculate elapsed time since the last instance launched from the AMI. For example: days, weeks, months, or years.
         /// This member is required.
         public var unit: ImagebuilderClientTypes.LifecyclePolicyTimeUnit?
@@ -2647,12 +2715,12 @@ extension ImagebuilderClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension ImagebuilderClientTypes {
+
     /// Defines criteria for AMIs that are excluded from lifecycle actions.
-    public struct LifecyclePolicyDetailExclusionRulesAmis {
+    public struct LifecyclePolicyDetailExclusionRulesAmis: Swift.Sendable {
         /// Configures whether public AMIs are excluded from the lifecycle action.
         public var isPublic: Swift.Bool
         /// Specifies configuration details for Image Builder to exclude the most recent resources from lifecycle actions.
@@ -2679,12 +2747,12 @@ extension ImagebuilderClientTypes {
             self.tagMap = tagMap
         }
     }
-
 }
 
 extension ImagebuilderClientTypes {
+
     /// Specifies resources that lifecycle policy actions should not apply to.
-    public struct LifecyclePolicyDetailExclusionRules {
+    public struct LifecyclePolicyDetailExclusionRules: Swift.Sendable {
         /// Lists configuration values that apply to AMIs that Image Builder should exclude from the lifecycle action.
         public var amis: ImagebuilderClientTypes.LifecyclePolicyDetailExclusionRulesAmis?
         /// Contains a list of tags that Image Builder uses to skip lifecycle actions for Image Builder image resources that have them.
@@ -2699,12 +2767,11 @@ extension ImagebuilderClientTypes {
             self.tagMap = tagMap
         }
     }
-
 }
 
 extension ImagebuilderClientTypes {
 
-    public enum LifecyclePolicyDetailFilterType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum LifecyclePolicyDetailFilterType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case age
         case count
         case sdkUnknown(Swift.String)
@@ -2732,8 +2799,9 @@ extension ImagebuilderClientTypes {
 }
 
 extension ImagebuilderClientTypes {
+
     /// Defines filters that the lifecycle policy uses to determine impacted resource.
-    public struct LifecyclePolicyDetailFilter {
+    public struct LifecyclePolicyDetailFilter: Swift.Sendable {
         /// For age-based filters, this is the number of resources to keep on hand after the lifecycle DELETE action is applied. Impacted resources are only deleted if you have more than this number of resources. If you have fewer resources than this number, the impacted resource is not deleted.
         public var retainAtLeast: Swift.Int?
         /// Filter resources based on either age or count.
@@ -2758,12 +2826,12 @@ extension ImagebuilderClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension ImagebuilderClientTypes {
+
     /// The configuration details for a lifecycle policy resource.
-    public struct LifecyclePolicyDetail {
+    public struct LifecyclePolicyDetail: Swift.Sendable {
         /// Configuration details for the policy action.
         /// This member is required.
         public var action: ImagebuilderClientTypes.LifecyclePolicyDetailAction?
@@ -2784,12 +2852,12 @@ extension ImagebuilderClientTypes {
             self.filter = filter
         }
     }
-
 }
 
 extension ImagebuilderClientTypes {
+
     /// Specifies an Image Builder recipe that the lifecycle policy uses for resource selection.
-    public struct LifecyclePolicyResourceSelectionRecipe {
+    public struct LifecyclePolicyResourceSelectionRecipe: Swift.Sendable {
         /// The name of an Image Builder recipe that the lifecycle policy uses for resource selection.
         /// This member is required.
         public var name: Swift.String?
@@ -2806,12 +2874,12 @@ extension ImagebuilderClientTypes {
             self.semanticVersion = semanticVersion
         }
     }
-
 }
 
 extension ImagebuilderClientTypes {
+
     /// Resource selection criteria for the lifecycle policy.
-    public struct LifecyclePolicyResourceSelection {
+    public struct LifecyclePolicyResourceSelection: Swift.Sendable {
         /// A list of recipes that are used as selection criteria for the output images that the lifecycle policy applies to.
         public var recipes: [ImagebuilderClientTypes.LifecyclePolicyResourceSelectionRecipe]?
         /// A list of tags that are used as selection criteria for the Image Builder image resources that the lifecycle policy applies to.
@@ -2826,12 +2894,11 @@ extension ImagebuilderClientTypes {
             self.tagMap = tagMap
         }
     }
-
 }
 
 extension ImagebuilderClientTypes {
 
-    public enum LifecyclePolicyResourceType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum LifecyclePolicyResourceType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case amiImage
         case containerImage
         case sdkUnknown(Swift.String)
@@ -2860,7 +2927,7 @@ extension ImagebuilderClientTypes {
 
 extension ImagebuilderClientTypes {
 
-    public enum LifecyclePolicyStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum LifecyclePolicyStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case disabled
         case enabled
         case sdkUnknown(Swift.String)
@@ -2887,7 +2954,7 @@ extension ImagebuilderClientTypes {
     }
 }
 
-public struct CreateLifecyclePolicyInput {
+public struct CreateLifecyclePolicyInput: Swift.Sendable {
     /// Unique, case-sensitive identifier you provide to ensure idempotency of the request. For more information, see [Ensuring idempotency](https://docs.aws.amazon.com/AWSEC2/latest/APIReference/Run_Instance_Idempotency.html) in the Amazon EC2 API Reference.
     /// This member is required.
     public var clientToken: Swift.String?
@@ -2937,7 +3004,7 @@ public struct CreateLifecyclePolicyInput {
     }
 }
 
-public struct CreateLifecyclePolicyOutput {
+public struct CreateLifecyclePolicyOutput: Swift.Sendable {
     /// The client token that uniquely identifies the request.
     public var clientToken: Swift.String?
     /// The Amazon Resource Name (ARN) of the lifecycle policy that the request created.
@@ -2955,7 +3022,7 @@ public struct CreateLifecyclePolicyOutput {
 
 extension ImagebuilderClientTypes {
 
-    public enum WorkflowType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum WorkflowType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case build
         case distribution
         case test
@@ -2985,7 +3052,7 @@ extension ImagebuilderClientTypes {
     }
 }
 
-public struct CreateWorkflowInput {
+public struct CreateWorkflowInput: Swift.Sendable {
     /// Describes what change has been made in this version of the workflow, or what makes this version different from other versions of the workflow.
     public var changeDescription: Swift.String?
     /// Unique, case-sensitive identifier you provide to ensure idempotency of the request. For more information, see [Ensuring idempotency](https://docs.aws.amazon.com/AWSEC2/latest/APIReference/Run_Instance_Idempotency.html) in the Amazon EC2 API Reference.
@@ -3037,7 +3104,7 @@ public struct CreateWorkflowInput {
     }
 }
 
-public struct CreateWorkflowOutput {
+public struct CreateWorkflowOutput: Swift.Sendable {
     /// The client token that uniquely identifies the request.
     public var clientToken: Swift.String?
     /// The Amazon Resource Name (ARN) of the workflow resource that the request created.
@@ -3054,8 +3121,9 @@ public struct CreateWorkflowOutput {
 }
 
 extension ImagebuilderClientTypes {
+
     /// Amazon Inspector generates a risk score for each finding. This score helps you to prioritize findings, to focus on the most critical findings and the most vulnerable resources. The score uses the Common Vulnerability Scoring System (CVSS) format. This format is a modification of the base CVSS score that the National Vulnerability Database (NVD) provides. For more information about severity levels, see [Severity levels for Amazon Inspector findings](https://docs.aws.amazon.com/inspector/latest/user/findings-understanding-severity.html) in the Amazon Inspector User Guide.
-    public struct CvssScore {
+    public struct CvssScore: Swift.Sendable {
         /// The CVSS base score.
         public var baseScore: Swift.Double?
         /// The vector string of the CVSS score.
@@ -3078,12 +3146,12 @@ extension ImagebuilderClientTypes {
             self.version = version
         }
     }
-
 }
 
 extension ImagebuilderClientTypes {
+
     /// Details about an adjustment that Amazon Inspector made to the CVSS score for a finding.
-    public struct CvssScoreAdjustment {
+    public struct CvssScoreAdjustment: Swift.Sendable {
         /// The metric that Amazon Inspector used to adjust the CVSS score.
         public var metric: Swift.String?
         /// The reason for the CVSS score adjustment.
@@ -3098,12 +3166,12 @@ extension ImagebuilderClientTypes {
             self.reason = reason
         }
     }
-
 }
 
 extension ImagebuilderClientTypes {
+
     /// Details about the source of the score, and the factors that determined the adjustments to create the final score.
-    public struct CvssScoreDetails {
+    public struct CvssScoreDetails: Swift.Sendable {
         /// An object that contains details about an adjustment that Amazon Inspector made to the CVSS score for the finding.
         public var adjustments: [ImagebuilderClientTypes.CvssScoreAdjustment]?
         /// The source of the finding.
@@ -3134,7 +3202,6 @@ extension ImagebuilderClientTypes {
             self.version = version
         }
     }
-
 }
 
 /// You have attempted to mutate or delete a resource with a dependency that prohibits this action. See the error message for more details.
@@ -3161,7 +3228,7 @@ public struct ResourceDependencyException: ClientRuntime.ModeledError, AWSClient
     }
 }
 
-public struct DeleteComponentInput {
+public struct DeleteComponentInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the component build version to delete.
     /// This member is required.
     public var componentBuildVersionArn: Swift.String?
@@ -3174,7 +3241,7 @@ public struct DeleteComponentInput {
     }
 }
 
-public struct DeleteComponentOutput {
+public struct DeleteComponentOutput: Swift.Sendable {
     /// The ARN of the component build version that this request deleted.
     public var componentBuildVersionArn: Swift.String?
     /// The request ID that uniquely identifies this request.
@@ -3190,7 +3257,7 @@ public struct DeleteComponentOutput {
     }
 }
 
-public struct DeleteContainerRecipeInput {
+public struct DeleteContainerRecipeInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the container recipe to delete.
     /// This member is required.
     public var containerRecipeArn: Swift.String?
@@ -3203,7 +3270,7 @@ public struct DeleteContainerRecipeInput {
     }
 }
 
-public struct DeleteContainerRecipeOutput {
+public struct DeleteContainerRecipeOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the container recipe that was deleted.
     public var containerRecipeArn: Swift.String?
     /// The request ID that uniquely identifies this request.
@@ -3219,7 +3286,7 @@ public struct DeleteContainerRecipeOutput {
     }
 }
 
-public struct DeleteDistributionConfigurationInput {
+public struct DeleteDistributionConfigurationInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the distribution configuration to delete.
     /// This member is required.
     public var distributionConfigurationArn: Swift.String?
@@ -3232,7 +3299,7 @@ public struct DeleteDistributionConfigurationInput {
     }
 }
 
-public struct DeleteDistributionConfigurationOutput {
+public struct DeleteDistributionConfigurationOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the distribution configuration that was deleted.
     public var distributionConfigurationArn: Swift.String?
     /// The request ID that uniquely identifies this request.
@@ -3248,7 +3315,7 @@ public struct DeleteDistributionConfigurationOutput {
     }
 }
 
-public struct DeleteImageInput {
+public struct DeleteImageInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the Image Builder image resource to delete.
     /// This member is required.
     public var imageBuildVersionArn: Swift.String?
@@ -3261,7 +3328,7 @@ public struct DeleteImageInput {
     }
 }
 
-public struct DeleteImageOutput {
+public struct DeleteImageOutput: Swift.Sendable {
     /// The ARN of the Image Builder image resource that this request deleted.
     public var imageBuildVersionArn: Swift.String?
     /// The request ID that uniquely identifies this request.
@@ -3277,7 +3344,7 @@ public struct DeleteImageOutput {
     }
 }
 
-public struct DeleteImagePipelineInput {
+public struct DeleteImagePipelineInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the image pipeline to delete.
     /// This member is required.
     public var imagePipelineArn: Swift.String?
@@ -3290,7 +3357,7 @@ public struct DeleteImagePipelineInput {
     }
 }
 
-public struct DeleteImagePipelineOutput {
+public struct DeleteImagePipelineOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the image pipeline that was deleted.
     public var imagePipelineArn: Swift.String?
     /// The request ID that uniquely identifies this request.
@@ -3306,7 +3373,7 @@ public struct DeleteImagePipelineOutput {
     }
 }
 
-public struct DeleteImageRecipeInput {
+public struct DeleteImageRecipeInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the image recipe to delete.
     /// This member is required.
     public var imageRecipeArn: Swift.String?
@@ -3319,7 +3386,7 @@ public struct DeleteImageRecipeInput {
     }
 }
 
-public struct DeleteImageRecipeOutput {
+public struct DeleteImageRecipeOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the image recipe that was deleted.
     public var imageRecipeArn: Swift.String?
     /// The request ID that uniquely identifies this request.
@@ -3335,7 +3402,7 @@ public struct DeleteImageRecipeOutput {
     }
 }
 
-public struct DeleteInfrastructureConfigurationInput {
+public struct DeleteInfrastructureConfigurationInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the infrastructure configuration to delete.
     /// This member is required.
     public var infrastructureConfigurationArn: Swift.String?
@@ -3348,7 +3415,7 @@ public struct DeleteInfrastructureConfigurationInput {
     }
 }
 
-public struct DeleteInfrastructureConfigurationOutput {
+public struct DeleteInfrastructureConfigurationOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the infrastructure configuration that was deleted.
     public var infrastructureConfigurationArn: Swift.String?
     /// The request ID that uniquely identifies this request.
@@ -3364,7 +3431,7 @@ public struct DeleteInfrastructureConfigurationOutput {
     }
 }
 
-public struct DeleteLifecyclePolicyInput {
+public struct DeleteLifecyclePolicyInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the lifecycle policy resource to delete.
     /// This member is required.
     public var lifecyclePolicyArn: Swift.String?
@@ -3377,7 +3444,7 @@ public struct DeleteLifecyclePolicyInput {
     }
 }
 
-public struct DeleteLifecyclePolicyOutput {
+public struct DeleteLifecyclePolicyOutput: Swift.Sendable {
     /// The ARN of the lifecycle policy that was deleted.
     public var lifecyclePolicyArn: Swift.String?
 
@@ -3389,7 +3456,7 @@ public struct DeleteLifecyclePolicyOutput {
     }
 }
 
-public struct DeleteWorkflowInput {
+public struct DeleteWorkflowInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the workflow resource to delete.
     /// This member is required.
     public var workflowBuildVersionArn: Swift.String?
@@ -3402,7 +3469,7 @@ public struct DeleteWorkflowInput {
     }
 }
 
-public struct DeleteWorkflowOutput {
+public struct DeleteWorkflowOutput: Swift.Sendable {
     /// The ARN of the workflow resource that this request deleted.
     public var workflowBuildVersionArn: Swift.String?
 
@@ -3415,8 +3482,9 @@ public struct DeleteWorkflowOutput {
 }
 
 extension ImagebuilderClientTypes {
+
     /// A distribution configuration.
-    public struct DistributionConfiguration {
+    public struct DistributionConfiguration: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the distribution configuration.
         public var arn: Swift.String?
         /// The date on which this distribution configuration was created.
@@ -3456,12 +3524,12 @@ extension ImagebuilderClientTypes {
             self.timeoutMinutes = timeoutMinutes
         }
     }
-
 }
 
 extension ImagebuilderClientTypes {
+
     /// A high-level overview of a distribution configuration.
-    public struct DistributionConfigurationSummary {
+    public struct DistributionConfigurationSummary: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the distribution configuration.
         public var arn: Swift.String?
         /// The date on which the distribution configuration was created.
@@ -3496,12 +3564,12 @@ extension ImagebuilderClientTypes {
             self.tags = tags
         }
     }
-
 }
 
 extension ImagebuilderClientTypes {
+
     /// A filter name and value pair that is used to return a more specific list of results from a list operation. Filters can be used to match a set of resources by specific criteria, such as tags, attributes, or IDs.
-    public struct Filter {
+    public struct Filter: Swift.Sendable {
         /// The name of the filter. Filter names are case-sensitive.
         public var name: Swift.String?
         /// The filter values. Filter values are case-sensitive.
@@ -3516,10 +3584,9 @@ extension ImagebuilderClientTypes {
             self.values = values
         }
     }
-
 }
 
-public struct GetComponentInput {
+public struct GetComponentInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the component that you want to get. Regex requires the suffix /\d+$.
     /// This member is required.
     public var componentBuildVersionArn: Swift.String?
@@ -3532,7 +3599,7 @@ public struct GetComponentInput {
     }
 }
 
-public struct GetComponentOutput {
+public struct GetComponentOutput: Swift.Sendable {
     /// The component object specified in the request.
     public var component: ImagebuilderClientTypes.Component?
     /// The request ID that uniquely identifies this request.
@@ -3572,7 +3639,7 @@ public struct ResourceNotFoundException: ClientRuntime.ModeledError, AWSClientRu
     }
 }
 
-public struct GetComponentPolicyInput {
+public struct GetComponentPolicyInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the component whose policy you want to retrieve.
     /// This member is required.
     public var componentArn: Swift.String?
@@ -3585,7 +3652,7 @@ public struct GetComponentPolicyInput {
     }
 }
 
-public struct GetComponentPolicyOutput {
+public struct GetComponentPolicyOutput: Swift.Sendable {
     /// The component policy.
     public var policy: Swift.String?
     /// The request ID that uniquely identifies this request.
@@ -3601,7 +3668,7 @@ public struct GetComponentPolicyOutput {
     }
 }
 
-public struct GetContainerRecipeInput {
+public struct GetContainerRecipeInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the container recipe to retrieve.
     /// This member is required.
     public var containerRecipeArn: Swift.String?
@@ -3614,7 +3681,7 @@ public struct GetContainerRecipeInput {
     }
 }
 
-public struct GetContainerRecipeOutput {
+public struct GetContainerRecipeOutput: Swift.Sendable {
     /// The container recipe object that is returned.
     public var containerRecipe: ImagebuilderClientTypes.ContainerRecipe?
     /// The request ID that uniquely identifies this request.
@@ -3630,7 +3697,7 @@ public struct GetContainerRecipeOutput {
     }
 }
 
-public struct GetContainerRecipePolicyInput {
+public struct GetContainerRecipePolicyInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the container recipe for the policy being requested.
     /// This member is required.
     public var containerRecipeArn: Swift.String?
@@ -3643,7 +3710,7 @@ public struct GetContainerRecipePolicyInput {
     }
 }
 
-public struct GetContainerRecipePolicyOutput {
+public struct GetContainerRecipePolicyOutput: Swift.Sendable {
     /// The container recipe policy object that is returned.
     public var policy: Swift.String?
     /// The request ID that uniquely identifies this request.
@@ -3659,7 +3726,7 @@ public struct GetContainerRecipePolicyOutput {
     }
 }
 
-public struct GetDistributionConfigurationInput {
+public struct GetDistributionConfigurationInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the distribution configuration that you want to retrieve.
     /// This member is required.
     public var distributionConfigurationArn: Swift.String?
@@ -3672,7 +3739,7 @@ public struct GetDistributionConfigurationInput {
     }
 }
 
-public struct GetDistributionConfigurationOutput {
+public struct GetDistributionConfigurationOutput: Swift.Sendable {
     /// The distribution configuration object.
     public var distributionConfiguration: ImagebuilderClientTypes.DistributionConfiguration?
     /// The request ID that uniquely identifies this request.
@@ -3688,7 +3755,7 @@ public struct GetDistributionConfigurationOutput {
     }
 }
 
-public struct GetImageInput {
+public struct GetImageInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the image that you want to get.
     /// This member is required.
     public var imageBuildVersionArn: Swift.String?
@@ -3703,7 +3770,7 @@ public struct GetImageInput {
 
 extension ImagebuilderClientTypes {
 
-    public enum ImageType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ImageType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case ami
         case docker
         case sdkUnknown(Swift.String)
@@ -3731,8 +3798,9 @@ extension ImagebuilderClientTypes {
 }
 
 extension ImagebuilderClientTypes {
+
     /// An image recipe.
-    public struct ImageRecipe {
+    public struct ImageRecipe: Swift.Sendable {
         /// Before you create a new AMI, Image Builder launches temporary Amazon EC2 instances to build and test your image configuration. Instance configuration adds a layer of control over those instances. You can define settings and add scripts to run when an instance is launched from your AMI.
         public var additionalInstanceConfiguration: ImagebuilderClientTypes.AdditionalInstanceConfiguration?
         /// The Amazon Resource Name (ARN) of the image recipe.
@@ -3795,12 +3863,11 @@ extension ImagebuilderClientTypes {
             self.workingDirectory = workingDirectory
         }
     }
-
 }
 
 extension ImagebuilderClientTypes {
 
-    public enum ImageSource: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ImageSource: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case amazonManaged
         case awsMarketplace
         case custom
@@ -3834,8 +3901,9 @@ extension ImagebuilderClientTypes {
 }
 
 extension ImagebuilderClientTypes {
+
     /// Details of the infrastructure configuration.
-    public struct InfrastructureConfiguration {
+    public struct InfrastructureConfiguration: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the infrastructure configuration.
         public var arn: Swift.String?
         /// The date on which the infrastructure configuration was created.
@@ -3856,6 +3924,8 @@ extension ImagebuilderClientTypes {
         public var logging: ImagebuilderClientTypes.Logging?
         /// The name of the infrastructure configuration.
         public var name: Swift.String?
+        /// The instance placement settings that define where the instances that are launched from your image will run.
+        public var placement: ImagebuilderClientTypes.Placement?
         /// The tags attached to the resource created by Image Builder.
         public var resourceTags: [Swift.String: Swift.String]?
         /// The security group IDs of the infrastructure configuration.
@@ -3880,6 +3950,7 @@ extension ImagebuilderClientTypes {
             keyPair: Swift.String? = nil,
             logging: ImagebuilderClientTypes.Logging? = nil,
             name: Swift.String? = nil,
+            placement: ImagebuilderClientTypes.Placement? = nil,
             resourceTags: [Swift.String: Swift.String]? = nil,
             securityGroupIds: [Swift.String]? = nil,
             snsTopicArn: Swift.String? = nil,
@@ -3898,6 +3969,7 @@ extension ImagebuilderClientTypes {
             self.keyPair = keyPair
             self.logging = logging
             self.name = name
+            self.placement = placement
             self.resourceTags = resourceTags
             self.securityGroupIds = securityGroupIds
             self.snsTopicArn = snsTopicArn
@@ -3906,12 +3978,12 @@ extension ImagebuilderClientTypes {
             self.terminateInstanceOnFailure = terminateInstanceOnFailure
         }
     }
-
 }
 
 extension ImagebuilderClientTypes {
+
     /// The resources produced by this image.
-    public struct OutputResources {
+    public struct OutputResources: Swift.Sendable {
         /// The Amazon EC2 AMIs created by this image.
         public var amis: [ImagebuilderClientTypes.Ami]?
         /// Container images that the pipeline has generated and stored in the output repository.
@@ -3926,12 +3998,11 @@ extension ImagebuilderClientTypes {
             self.containers = containers
         }
     }
-
 }
 
 extension ImagebuilderClientTypes {
 
-    public enum ImageScanStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ImageScanStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case abandoned
         case collecting
         case completed
@@ -3974,8 +4045,9 @@ extension ImagebuilderClientTypes {
 }
 
 extension ImagebuilderClientTypes {
+
     /// Shows the vulnerability scan status for a specific image, and the reason for that status.
-    public struct ImageScanState {
+    public struct ImageScanState: Swift.Sendable {
         /// The reason for the scan status for the image.
         public var reason: Swift.String?
         /// The current state of vulnerability scans for the image.
@@ -3990,12 +4062,12 @@ extension ImagebuilderClientTypes {
             self.status = status
         }
     }
-
 }
 
 extension ImagebuilderClientTypes {
+
     /// An Image Builder image. You must specify exactly one recipe for the image – either a container recipe (containerRecipe), which creates a container image, or an image recipe (imageRecipe), which creates an AMI.
-    public struct Image {
+    public struct Image: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the image. Semantic versioning is included in each object's Amazon Resource Name (ARN), at the level that applies to that object as follows:
         ///
         /// * Versionless ARNs and Name ARNs do not include specific values in any of the nodes. The nodes are either left off entirely, or they are specified as wildcards, for example: x.x.x.
@@ -4118,10 +4190,9 @@ extension ImagebuilderClientTypes {
             self.workflows = workflows
         }
     }
-
 }
 
-public struct GetImageOutput {
+public struct GetImageOutput: Swift.Sendable {
     /// The image object.
     public var image: ImagebuilderClientTypes.Image?
     /// The request ID that uniquely identifies this request.
@@ -4137,7 +4208,7 @@ public struct GetImageOutput {
     }
 }
 
-public struct GetImagePipelineInput {
+public struct GetImagePipelineInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the image pipeline that you want to retrieve.
     /// This member is required.
     public var imagePipelineArn: Swift.String?
@@ -4151,8 +4222,9 @@ public struct GetImagePipelineInput {
 }
 
 extension ImagebuilderClientTypes {
+
     /// Details of an image pipeline.
-    public struct ImagePipeline {
+    public struct ImagePipeline: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the image pipeline.
         public var arn: Swift.String?
         /// The Amazon Resource Name (ARN) of the container recipe that is used for this pipeline.
@@ -4239,10 +4311,9 @@ extension ImagebuilderClientTypes {
             self.workflows = workflows
         }
     }
-
 }
 
-public struct GetImagePipelineOutput {
+public struct GetImagePipelineOutput: Swift.Sendable {
     /// The image pipeline object.
     public var imagePipeline: ImagebuilderClientTypes.ImagePipeline?
     /// The request ID that uniquely identifies this request.
@@ -4258,7 +4329,7 @@ public struct GetImagePipelineOutput {
     }
 }
 
-public struct GetImagePolicyInput {
+public struct GetImagePolicyInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the image whose policy you want to retrieve.
     /// This member is required.
     public var imageArn: Swift.String?
@@ -4271,7 +4342,7 @@ public struct GetImagePolicyInput {
     }
 }
 
-public struct GetImagePolicyOutput {
+public struct GetImagePolicyOutput: Swift.Sendable {
     /// The image policy object.
     public var policy: Swift.String?
     /// The request ID that uniquely identifies this request.
@@ -4287,7 +4358,7 @@ public struct GetImagePolicyOutput {
     }
 }
 
-public struct GetImageRecipeInput {
+public struct GetImageRecipeInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the image recipe that you want to retrieve.
     /// This member is required.
     public var imageRecipeArn: Swift.String?
@@ -4300,7 +4371,7 @@ public struct GetImageRecipeInput {
     }
 }
 
-public struct GetImageRecipeOutput {
+public struct GetImageRecipeOutput: Swift.Sendable {
     /// The image recipe object.
     public var imageRecipe: ImagebuilderClientTypes.ImageRecipe?
     /// The request ID that uniquely identifies this request.
@@ -4316,7 +4387,7 @@ public struct GetImageRecipeOutput {
     }
 }
 
-public struct GetImageRecipePolicyInput {
+public struct GetImageRecipePolicyInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the image recipe whose policy you want to retrieve.
     /// This member is required.
     public var imageRecipeArn: Swift.String?
@@ -4329,7 +4400,7 @@ public struct GetImageRecipePolicyInput {
     }
 }
 
-public struct GetImageRecipePolicyOutput {
+public struct GetImageRecipePolicyOutput: Swift.Sendable {
     /// The image recipe policy object.
     public var policy: Swift.String?
     /// The request ID that uniquely identifies this request.
@@ -4346,7 +4417,7 @@ public struct GetImageRecipePolicyOutput {
 }
 
 /// GetInfrastructureConfiguration request object.
-public struct GetInfrastructureConfigurationInput {
+public struct GetInfrastructureConfigurationInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the infrastructure configuration that you want to retrieve.
     /// This member is required.
     public var infrastructureConfigurationArn: Swift.String?
@@ -4360,7 +4431,7 @@ public struct GetInfrastructureConfigurationInput {
 }
 
 /// GetInfrastructureConfiguration response object.
-public struct GetInfrastructureConfigurationOutput {
+public struct GetInfrastructureConfigurationOutput: Swift.Sendable {
     /// The infrastructure configuration object.
     public var infrastructureConfiguration: ImagebuilderClientTypes.InfrastructureConfiguration?
     /// The request ID that uniquely identifies this request.
@@ -4376,7 +4447,7 @@ public struct GetInfrastructureConfigurationOutput {
     }
 }
 
-public struct GetLifecycleExecutionInput {
+public struct GetLifecycleExecutionInput: Swift.Sendable {
     /// Use the unique identifier for a runtime instance of the lifecycle policy to get runtime details.
     /// This member is required.
     public var lifecycleExecutionId: Swift.String?
@@ -4390,8 +4461,9 @@ public struct GetLifecycleExecutionInput {
 }
 
 extension ImagebuilderClientTypes {
+
     /// Contains details for an image resource that was identified for a lifecycle action.
-    public struct LifecycleExecutionResourcesImpactedSummary {
+    public struct LifecycleExecutionResourcesImpactedSummary: Swift.Sendable {
         /// Indicates whether an image resource that was identified for a lifecycle action has associated resources that are also impacted.
         public var hasImpactedResources: Swift.Bool
 
@@ -4402,12 +4474,11 @@ extension ImagebuilderClientTypes {
             self.hasImpactedResources = hasImpactedResources
         }
     }
-
 }
 
 extension ImagebuilderClientTypes {
 
-    public enum LifecycleExecutionStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum LifecycleExecutionStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case cancelled
         case cancelling
         case failed
@@ -4447,8 +4518,9 @@ extension ImagebuilderClientTypes {
 }
 
 extension ImagebuilderClientTypes {
+
     /// The current state of the runtime instance of the lifecycle policy.
-    public struct LifecycleExecutionState {
+    public struct LifecycleExecutionState: Swift.Sendable {
         /// The reason for the current status.
         public var reason: Swift.String?
         /// The runtime status of the lifecycle execution.
@@ -4463,12 +4535,12 @@ extension ImagebuilderClientTypes {
             self.status = status
         }
     }
-
 }
 
 extension ImagebuilderClientTypes {
+
     /// Contains metadata from a runtime instance of a lifecycle policy.
-    public struct LifecycleExecution {
+    public struct LifecycleExecution: Swift.Sendable {
         /// The timestamp when the lifecycle runtime instance completed.
         public var endTime: Foundation.Date?
         /// Identifies the lifecycle policy runtime instance.
@@ -4499,10 +4571,9 @@ extension ImagebuilderClientTypes {
             self.state = state
         }
     }
-
 }
 
-public struct GetLifecycleExecutionOutput {
+public struct GetLifecycleExecutionOutput: Swift.Sendable {
     /// Runtime details for the specified runtime instance of the lifecycle policy.
     public var lifecycleExecution: ImagebuilderClientTypes.LifecycleExecution?
 
@@ -4514,7 +4585,7 @@ public struct GetLifecycleExecutionOutput {
     }
 }
 
-public struct GetLifecyclePolicyInput {
+public struct GetLifecyclePolicyInput: Swift.Sendable {
     /// Specifies the Amazon Resource Name (ARN) of the image lifecycle policy resource to get.
     /// This member is required.
     public var lifecyclePolicyArn: Swift.String?
@@ -4528,8 +4599,9 @@ public struct GetLifecyclePolicyInput {
 }
 
 extension ImagebuilderClientTypes {
+
     /// The configuration details for a lifecycle policy resource.
-    public struct LifecyclePolicy {
+    public struct LifecyclePolicy: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the lifecycle policy resource.
         public var arn: Swift.String?
         /// The timestamp when Image Builder created the lifecycle policy resource.
@@ -4584,10 +4656,9 @@ extension ImagebuilderClientTypes {
             self.tags = tags
         }
     }
-
 }
 
-public struct GetLifecyclePolicyOutput {
+public struct GetLifecyclePolicyOutput: Swift.Sendable {
     /// The ARN of the image lifecycle policy resource that was returned.
     public var lifecyclePolicy: ImagebuilderClientTypes.LifecyclePolicy?
 
@@ -4599,7 +4670,7 @@ public struct GetLifecyclePolicyOutput {
     }
 }
 
-public struct GetWorkflowInput {
+public struct GetWorkflowInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the workflow resource that you want to get.
     /// This member is required.
     public var workflowBuildVersionArn: Swift.String?
@@ -4613,8 +4684,9 @@ public struct GetWorkflowInput {
 }
 
 extension ImagebuilderClientTypes {
+
     /// Defines a parameter that's used to provide configuration details for the workflow.
-    public struct WorkflowParameterDetail {
+    public struct WorkflowParameterDetail: Swift.Sendable {
         /// The default value of this parameter if no input is provided.
         public var defaultValue: [Swift.String]?
         /// Describes this parameter.
@@ -4639,12 +4711,11 @@ extension ImagebuilderClientTypes {
             self.type = type
         }
     }
-
 }
 
 extension ImagebuilderClientTypes {
 
-    public enum WorkflowStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum WorkflowStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case deprecated
         case sdkUnknown(Swift.String)
 
@@ -4669,8 +4740,9 @@ extension ImagebuilderClientTypes {
 }
 
 extension ImagebuilderClientTypes {
+
     /// A group of fields that describe the current status of workflow.
-    public struct WorkflowState {
+    public struct WorkflowState: Swift.Sendable {
         /// Describes how or why the workflow changed state.
         public var reason: Swift.String?
         /// The current state of the workflow.
@@ -4685,12 +4757,12 @@ extension ImagebuilderClientTypes {
             self.status = status
         }
     }
-
 }
 
 extension ImagebuilderClientTypes {
+
     /// Defines a process that Image Builder uses to build and test images during the image creation process.
-    public struct Workflow {
+    public struct Workflow: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the workflow resource.
         public var arn: Swift.String?
         /// Describes what change has been made in this version of the workflow, or what makes this version different from other versions of the workflow.
@@ -4749,10 +4821,9 @@ extension ImagebuilderClientTypes {
             self.version = version
         }
     }
-
 }
 
-public struct GetWorkflowOutput {
+public struct GetWorkflowOutput: Swift.Sendable {
     /// The workflow resource specified in the request.
     public var workflow: ImagebuilderClientTypes.Workflow?
 
@@ -4764,7 +4835,7 @@ public struct GetWorkflowOutput {
     }
 }
 
-public struct GetWorkflowExecutionInput {
+public struct GetWorkflowExecutionInput: Swift.Sendable {
     /// Use the unique identifier for a runtime instance of the workflow to get runtime details.
     /// This member is required.
     public var workflowExecutionId: Swift.String?
@@ -4779,7 +4850,7 @@ public struct GetWorkflowExecutionInput {
 
 extension ImagebuilderClientTypes {
 
-    public enum WorkflowExecutionStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum WorkflowExecutionStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case cancelled
         case completed
         case failed
@@ -4824,7 +4895,7 @@ extension ImagebuilderClientTypes {
     }
 }
 
-public struct GetWorkflowExecutionOutput {
+public struct GetWorkflowExecutionOutput: Swift.Sendable {
     /// The timestamp when the specified runtime instance of the workflow finished.
     public var endTime: Swift.String?
     /// The Amazon Resource Name (ARN) of the image resource build version that the specified runtime instance of the workflow created.
@@ -4888,7 +4959,7 @@ public struct GetWorkflowExecutionOutput {
     }
 }
 
-public struct GetWorkflowStepExecutionInput {
+public struct GetWorkflowStepExecutionInput: Swift.Sendable {
     /// Use the unique identifier for a specific runtime instance of the workflow step to get runtime details for that step.
     /// This member is required.
     public var stepExecutionId: Swift.String?
@@ -4903,7 +4974,7 @@ public struct GetWorkflowStepExecutionInput {
 
 extension ImagebuilderClientTypes {
 
-    public enum WorkflowStepExecutionRollbackStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum WorkflowStepExecutionRollbackStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case completed
         case failed
         case running
@@ -4938,7 +5009,7 @@ extension ImagebuilderClientTypes {
 
 extension ImagebuilderClientTypes {
 
-    public enum WorkflowStepExecutionStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum WorkflowStepExecutionStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case cancelled
         case completed
         case failed
@@ -4977,7 +5048,7 @@ extension ImagebuilderClientTypes {
     }
 }
 
-public struct GetWorkflowStepExecutionOutput {
+public struct GetWorkflowStepExecutionOutput: Swift.Sendable {
     /// The name of the action that the specified step performs.
     public var action: Swift.String?
     /// Describes the specified workflow step.
@@ -5054,8 +5125,9 @@ public struct GetWorkflowStepExecutionOutput {
 }
 
 extension ImagebuilderClientTypes {
+
     /// Contains vulnerability counts for a specific image.
-    public struct ImageAggregation {
+    public struct ImageAggregation: Swift.Sendable {
         /// The Amazon Resource Name (ARN) that identifies the image for this aggregation.
         public var imageBuildVersionArn: Swift.String?
         /// Counts by severity level for medium severity and higher level findings, plus a total for all of the findings for the specified image.
@@ -5070,10 +5142,9 @@ extension ImagebuilderClientTypes {
             self.severityCounts = severityCounts
         }
     }
-
 }
 
-public struct ImportComponentInput {
+public struct ImportComponentInput: Swift.Sendable {
     /// The change description of the component. This description indicates the change that has been made in this version, or what makes this version different from other versions of the component.
     public var changeDescription: Swift.String?
     /// Unique, case-sensitive identifier you provide to ensure idempotency of the request. For more information, see [Ensuring idempotency](https://docs.aws.amazon.com/AWSEC2/latest/APIReference/Run_Instance_Idempotency.html) in the Amazon EC2 API Reference.
@@ -5135,7 +5206,7 @@ public struct ImportComponentInput {
     }
 }
 
-public struct ImportComponentOutput {
+public struct ImportComponentOutput: Swift.Sendable {
     /// The client token that uniquely identifies the request.
     public var clientToken: Swift.String?
     /// The Amazon Resource Name (ARN) of the imported component.
@@ -5155,7 +5226,7 @@ public struct ImportComponentOutput {
     }
 }
 
-public struct ImportVmImageInput {
+public struct ImportVmImageInput: Swift.Sendable {
     /// Unique, case-sensitive identifier you provide to ensure idempotency of the request. For more information, see [Ensuring idempotency](https://docs.aws.amazon.com/AWSEC2/latest/APIReference/Run_Instance_Idempotency.html) in the Amazon EC2 API Reference.
     /// This member is required.
     public var clientToken: Swift.String?
@@ -5200,7 +5271,7 @@ public struct ImportVmImageInput {
     }
 }
 
-public struct ImportVmImageOutput {
+public struct ImportVmImageOutput: Swift.Sendable {
     /// The client token that uniquely identifies the request.
     public var clientToken: Swift.String?
     /// The Amazon Resource Name (ARN) of the AMI that was created during the VM import process. This AMI is used as the base image for the recipe that imported the VM.
@@ -5244,7 +5315,7 @@ public struct InvalidPaginationTokenException: ClientRuntime.ModeledError, AWSCl
     }
 }
 
-public struct ListComponentBuildVersionsInput {
+public struct ListComponentBuildVersionsInput: Swift.Sendable {
     /// The component version Amazon Resource Name (ARN) whose versions you want to list.
     /// This member is required.
     public var componentVersionArn: Swift.String?
@@ -5265,7 +5336,7 @@ public struct ListComponentBuildVersionsInput {
     }
 }
 
-public struct ListComponentBuildVersionsOutput {
+public struct ListComponentBuildVersionsOutput: Swift.Sendable {
     /// The list of component summaries for the specified semantic version.
     public var componentSummaryList: [ImagebuilderClientTypes.ComponentSummary]?
     /// The next token used for paginated responses. When this field isn't empty, there are additional elements that the service hasn't included in this request. Use this token with the next request to retrieve additional objects.
@@ -5287,7 +5358,7 @@ public struct ListComponentBuildVersionsOutput {
 
 extension ImagebuilderClientTypes {
 
-    public enum Ownership: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Ownership: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case amazon
         case `self`
         case shared
@@ -5320,7 +5391,7 @@ extension ImagebuilderClientTypes {
     }
 }
 
-public struct ListComponentsInput {
+public struct ListComponentsInput: Swift.Sendable {
     /// Returns the list of components for the specified name.
     public var byName: Swift.Bool?
     /// Use the following filters to streamline results:
@@ -5360,7 +5431,7 @@ public struct ListComponentsInput {
     }
 }
 
-public struct ListComponentsOutput {
+public struct ListComponentsOutput: Swift.Sendable {
     /// The list of component semantic versions. The semantic version has four nodes: ../. You can assign values for the first three, and can filter on all of them.
     public var componentVersionList: [ImagebuilderClientTypes.ComponentVersion]?
     /// The next token used for paginated responses. When this field isn't empty, there are additional elements that the service hasn't included in this request. Use this token with the next request to retrieve additional objects.
@@ -5380,7 +5451,7 @@ public struct ListComponentsOutput {
     }
 }
 
-public struct ListContainerRecipesInput {
+public struct ListContainerRecipesInput: Swift.Sendable {
     /// Use the following filters to streamline results:
     ///
     /// * containerType
@@ -5412,7 +5483,7 @@ public struct ListContainerRecipesInput {
     }
 }
 
-public struct ListContainerRecipesOutput {
+public struct ListContainerRecipesOutput: Swift.Sendable {
     /// The list of container recipes returned for the request.
     public var containerRecipeSummaryList: [ImagebuilderClientTypes.ContainerRecipeSummary]?
     /// The next token used for paginated responses. When this field isn't empty, there are additional elements that the service hasn't included in this request. Use this token with the next request to retrieve additional objects.
@@ -5432,7 +5503,7 @@ public struct ListContainerRecipesOutput {
     }
 }
 
-public struct ListDistributionConfigurationsInput {
+public struct ListDistributionConfigurationsInput: Swift.Sendable {
     /// You can filter on name to streamline results.
     public var filters: [ImagebuilderClientTypes.Filter]?
     /// The maximum items to return in a request.
@@ -5452,7 +5523,7 @@ public struct ListDistributionConfigurationsInput {
     }
 }
 
-public struct ListDistributionConfigurationsOutput {
+public struct ListDistributionConfigurationsOutput: Swift.Sendable {
     /// The list of distributions.
     public var distributionConfigurationSummaryList: [ImagebuilderClientTypes.DistributionConfigurationSummary]?
     /// The next token used for paginated responses. When this field isn't empty, there are additional elements that the service hasn't included in this request. Use this token with the next request to retrieve additional objects.
@@ -5472,7 +5543,7 @@ public struct ListDistributionConfigurationsOutput {
     }
 }
 
-public struct ListImageBuildVersionsInput {
+public struct ListImageBuildVersionsInput: Swift.Sendable {
     /// Use the following filters to streamline results:
     ///
     /// * name
@@ -5508,8 +5579,9 @@ public struct ListImageBuildVersionsInput {
 }
 
 extension ImagebuilderClientTypes {
+
     /// An image summary.
-    public struct ImageSummary {
+    public struct ImageSummary: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the image.
         public var arn: Swift.String?
         /// Indicates the type of build that created this image. The build can be initiated in the following ways:
@@ -5582,10 +5654,9 @@ extension ImagebuilderClientTypes {
             self.version = version
         }
     }
-
 }
 
-public struct ListImageBuildVersionsOutput {
+public struct ListImageBuildVersionsOutput: Swift.Sendable {
     /// The list of image build versions.
     public var imageSummaryList: [ImagebuilderClientTypes.ImageSummary]?
     /// The next token used for paginated responses. When this field isn't empty, there are additional elements that the service hasn't included in this request. Use this token with the next request to retrieve additional objects.
@@ -5605,7 +5676,7 @@ public struct ListImageBuildVersionsOutput {
     }
 }
 
-public struct ListImagePackagesInput {
+public struct ListImagePackagesInput: Swift.Sendable {
     /// Filter results for the ListImagePackages request by the Image Build Version ARN
     /// This member is required.
     public var imageBuildVersionArn: Swift.String?
@@ -5627,8 +5698,9 @@ public struct ListImagePackagesInput {
 }
 
 extension ImagebuilderClientTypes {
+
     /// Represents a package installed on an Image Builder image.
-    public struct ImagePackage {
+    public struct ImagePackage: Swift.Sendable {
         /// The name of the package as reported to the operating system package manager.
         public var packageName: Swift.String?
         /// The version of the package as reported to the operating system package manager.
@@ -5643,10 +5715,9 @@ extension ImagebuilderClientTypes {
             self.packageVersion = packageVersion
         }
     }
-
 }
 
-public struct ListImagePackagesOutput {
+public struct ListImagePackagesOutput: Swift.Sendable {
     /// The list of Image Packages returned in the response.
     public var imagePackageList: [ImagebuilderClientTypes.ImagePackage]?
     /// The next token used for paginated responses. When this field isn't empty, there are additional elements that the service hasn't included in this request. Use this token with the next request to retrieve additional objects.
@@ -5666,7 +5737,7 @@ public struct ListImagePackagesOutput {
     }
 }
 
-public struct ListImagePipelineImagesInput {
+public struct ListImagePipelineImagesInput: Swift.Sendable {
     /// Use the following filters to streamline results:
     ///
     /// * name
@@ -5695,7 +5766,7 @@ public struct ListImagePipelineImagesInput {
     }
 }
 
-public struct ListImagePipelineImagesOutput {
+public struct ListImagePipelineImagesOutput: Swift.Sendable {
     /// The list of images built by this pipeline.
     public var imageSummaryList: [ImagebuilderClientTypes.ImageSummary]?
     /// The next token used for paginated responses. When this field isn't empty, there are additional elements that the service hasn't included in this request. Use this token with the next request to retrieve additional objects.
@@ -5715,7 +5786,7 @@ public struct ListImagePipelineImagesOutput {
     }
 }
 
-public struct ListImagePipelinesInput {
+public struct ListImagePipelinesInput: Swift.Sendable {
     /// Use the following filters to streamline results:
     ///
     /// * description
@@ -5747,7 +5818,7 @@ public struct ListImagePipelinesInput {
     }
 }
 
-public struct ListImagePipelinesOutput {
+public struct ListImagePipelinesOutput: Swift.Sendable {
     /// The list of image pipelines.
     public var imagePipelineList: [ImagebuilderClientTypes.ImagePipeline]?
     /// The next token used for paginated responses. When this field isn't empty, there are additional elements that the service hasn't included in this request. Use this token with the next request to retrieve additional objects.
@@ -5767,7 +5838,7 @@ public struct ListImagePipelinesOutput {
     }
 }
 
-public struct ListImageRecipesInput {
+public struct ListImageRecipesInput: Swift.Sendable {
     /// Use the following filters to streamline results:
     ///
     /// * name
@@ -5798,8 +5869,9 @@ public struct ListImageRecipesInput {
 }
 
 extension ImagebuilderClientTypes {
+
     /// A summary of an image recipe.
-    public struct ImageRecipeSummary {
+    public struct ImageRecipeSummary: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the image recipe.
         public var arn: Swift.String?
         /// The date on which this image recipe was created.
@@ -5834,10 +5906,9 @@ extension ImagebuilderClientTypes {
             self.tags = tags
         }
     }
-
 }
 
-public struct ListImageRecipesOutput {
+public struct ListImageRecipesOutput: Swift.Sendable {
     /// The list of image pipelines.
     public var imageRecipeSummaryList: [ImagebuilderClientTypes.ImageRecipeSummary]?
     /// The next token used for paginated responses. When this field isn't empty, there are additional elements that the service hasn't included in this request. Use this token with the next request to retrieve additional objects.
@@ -5857,7 +5928,7 @@ public struct ListImageRecipesOutput {
     }
 }
 
-public struct ListImagesInput {
+public struct ListImagesInput: Swift.Sendable {
     /// Requests a list of images with a specific recipe name.
     public var byName: Swift.Bool?
     /// Use the following filters to streamline results:
@@ -5900,8 +5971,9 @@ public struct ListImagesInput {
 }
 
 extension ImagebuilderClientTypes {
+
     /// The defining characteristics of a specific version of an Image Builder image.
-    public struct ImageVersion {
+    public struct ImageVersion: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of a specific version of an Image Builder image. Semantic versioning is included in each object's Amazon Resource Name (ARN), at the level that applies to that object as follows:
         ///
         /// * Versionless ARNs and Name ARNs do not include specific values in any of the nodes. The nodes are either left off entirely, or they are specified as wildcards, for example: x.x.x.
@@ -5960,10 +6032,9 @@ extension ImagebuilderClientTypes {
             self.version = version
         }
     }
-
 }
 
-public struct ListImagesOutput {
+public struct ListImagesOutput: Swift.Sendable {
     /// The list of image semantic versions. The semantic version has four nodes: ../. You can assign values for the first three, and can filter on all of them. Filtering: With semantic versioning, you have the flexibility to use wildcards (x) to specify the most recent versions or nodes when selecting the base image or components for your recipe. When you use a wildcard in any node, all nodes to the right of the first wildcard must also be wildcards.
     public var imageVersionList: [ImagebuilderClientTypes.ImageVersion]?
     /// The next token used for paginated responses. When this field isn't empty, there are additional elements that the service hasn't included in this request. Use this token with the next request to retrieve additional objects.
@@ -5983,7 +6054,7 @@ public struct ListImagesOutput {
     }
 }
 
-public struct ListImageScanFindingAggregationsInput {
+public struct ListImageScanFindingAggregationsInput: Swift.Sendable {
     /// A filter name and value pair that is used to return a more specific list of results from a list operation. Filters can be used to match a set of resources by specific criteria, such as tags, attributes, or IDs.
     public var filter: ImagebuilderClientTypes.Filter?
     /// A token to specify where to start paginating. This is the nextToken from a previously truncated response.
@@ -6000,8 +6071,9 @@ public struct ListImageScanFindingAggregationsInput {
 }
 
 extension ImagebuilderClientTypes {
+
     /// Contains vulnerability counts for a specific image pipeline.
-    public struct ImagePipelineAggregation {
+    public struct ImagePipelineAggregation: Swift.Sendable {
         /// The Amazon Resource Name (ARN) that identifies the image pipeline for this aggregation.
         public var imagePipelineArn: Swift.String?
         /// Counts by severity level for medium severity and higher level findings, plus a total for all of the findings for the specified image pipeline.
@@ -6016,12 +6088,12 @@ extension ImagebuilderClientTypes {
             self.severityCounts = severityCounts
         }
     }
-
 }
 
 extension ImagebuilderClientTypes {
+
     /// Includes counts of image and pipeline resource findings by vulnerability.
-    public struct VulnerabilityIdAggregation {
+    public struct VulnerabilityIdAggregation: Swift.Sendable {
         /// Counts by severity level for medium severity and higher level findings, plus a total for all of the findings for the specified vulnerability.
         public var severityCounts: ImagebuilderClientTypes.SeverityCounts?
         /// The vulnerability Id for this set of counts.
@@ -6036,12 +6108,12 @@ extension ImagebuilderClientTypes {
             self.vulnerabilityId = vulnerabilityId
         }
     }
-
 }
 
 extension ImagebuilderClientTypes {
+
     /// This returns exactly one type of aggregation, based on the filter that Image Builder applies in its API action.
-    public struct ImageScanFindingAggregation {
+    public struct ImageScanFindingAggregation: Swift.Sendable {
         /// Returns an object that contains severity counts based on an account ID.
         public var accountAggregation: ImagebuilderClientTypes.AccountAggregation?
         /// Returns an object that contains severity counts based on the Amazon Resource Name (ARN) for a specific image.
@@ -6064,10 +6136,9 @@ extension ImagebuilderClientTypes {
             self.vulnerabilityIdAggregation = vulnerabilityIdAggregation
         }
     }
-
 }
 
-public struct ListImageScanFindingAggregationsOutput {
+public struct ListImageScanFindingAggregationsOutput: Swift.Sendable {
     /// The aggregation type specifies what type of key is used to group the image scan findings. Image Builder returns results based on the request filter. If you didn't specify a filter in the request, the type defaults to accountId. Aggregation types
     ///
     /// * accountId
@@ -6103,8 +6174,9 @@ public struct ListImageScanFindingAggregationsOutput {
 }
 
 extension ImagebuilderClientTypes {
+
     /// A name value pair that Image Builder applies to streamline results from the vulnerability scan findings list action.
-    public struct ImageScanFindingsFilter {
+    public struct ImageScanFindingsFilter: Swift.Sendable {
         /// The name of the image scan finding filter. Filter names are case-sensitive.
         public var name: Swift.String?
         /// The filter values. Filter values are case-sensitive.
@@ -6119,10 +6191,9 @@ extension ImagebuilderClientTypes {
             self.values = values
         }
     }
-
 }
 
-public struct ListImageScanFindingsInput {
+public struct ListImageScanFindingsInput: Swift.Sendable {
     /// An array of name value pairs that you can use to filter your results. You can use the following filters to streamline results:
     ///
     /// * imageBuildVersionArn
@@ -6154,8 +6225,9 @@ public struct ListImageScanFindingsInput {
 }
 
 extension ImagebuilderClientTypes {
+
     /// Information about the factors that influenced the score that Amazon Inspector assigned for a finding.
-    public struct InspectorScoreDetails {
+    public struct InspectorScoreDetails: Swift.Sendable {
         /// An object that contains details about an adjustment that Amazon Inspector made to the CVSS score for the finding.
         public var adjustedCvss: ImagebuilderClientTypes.CvssScoreDetails?
 
@@ -6166,12 +6238,12 @@ extension ImagebuilderClientTypes {
             self.adjustedCvss = adjustedCvss
         }
     }
-
 }
 
 extension ImagebuilderClientTypes {
+
     /// Information about a vulnerable package that Amazon Inspector identifies in a finding.
-    public struct VulnerablePackage {
+    public struct VulnerablePackage: Swift.Sendable {
         /// The architecture of the vulnerable package.
         public var arch: Swift.String?
         /// The epoch of the vulnerable package.
@@ -6218,12 +6290,12 @@ extension ImagebuilderClientTypes {
             self.version = version
         }
     }
-
 }
 
 extension ImagebuilderClientTypes {
+
     /// Information about package vulnerability findings.
-    public struct PackageVulnerabilityDetails {
+    public struct PackageVulnerabilityDetails: Swift.Sendable {
         /// CVSS scores for one or more vulnerabilities that Amazon Inspector identified for a package.
         public var cvss: [ImagebuilderClientTypes.CvssScore]?
         /// Links to web pages that contain details about the vulnerabilities that Amazon Inspector identified for the package.
@@ -6271,12 +6343,12 @@ extension ImagebuilderClientTypes {
             self.vulnerablePackages = vulnerablePackages
         }
     }
-
 }
 
 extension ImagebuilderClientTypes {
+
     /// Details about the recommended course of action to remediate the finding.
-    public struct RemediationRecommendation {
+    public struct RemediationRecommendation: Swift.Sendable {
         /// The recommended course of action to remediate the finding.
         public var text: Swift.String?
         /// A link to more information about the recommended remediation for this vulnerability.
@@ -6291,12 +6363,12 @@ extension ImagebuilderClientTypes {
             self.url = url
         }
     }
-
 }
 
 extension ImagebuilderClientTypes {
+
     /// Information about how to remediate a finding.
-    public struct Remediation {
+    public struct Remediation: Swift.Sendable {
         /// An object that contains information about the recommended course of action to remediate the finding.
         public var recommendation: ImagebuilderClientTypes.RemediationRecommendation?
 
@@ -6307,12 +6379,12 @@ extension ImagebuilderClientTypes {
             self.recommendation = recommendation
         }
     }
-
 }
 
 extension ImagebuilderClientTypes {
+
     /// Contains details about a vulnerability scan finding.
-    public struct ImageScanFinding {
+    public struct ImageScanFinding: Swift.Sendable {
         /// The Amazon Web Services account ID that's associated with the finding.
         public var awsAccountId: Swift.String?
         /// The description of the finding.
@@ -6375,10 +6447,9 @@ extension ImagebuilderClientTypes {
             self.updatedAt = updatedAt
         }
     }
-
 }
 
-public struct ListImageScanFindingsOutput {
+public struct ListImageScanFindingsOutput: Swift.Sendable {
     /// The image scan findings for your account that meet your request filter criteria.
     public var findings: [ImagebuilderClientTypes.ImageScanFinding]?
     /// The next token used for paginated responses. When this field isn't empty, there are additional elements that the service hasn't included in this request. Use this token with the next request to retrieve additional objects.
@@ -6398,7 +6469,7 @@ public struct ListImageScanFindingsOutput {
     }
 }
 
-public struct ListInfrastructureConfigurationsInput {
+public struct ListInfrastructureConfigurationsInput: Swift.Sendable {
     /// You can filter on name to streamline results.
     public var filters: [ImagebuilderClientTypes.Filter]?
     /// The maximum items to return in a request.
@@ -6419,8 +6490,9 @@ public struct ListInfrastructureConfigurationsInput {
 }
 
 extension ImagebuilderClientTypes {
+
     /// The infrastructure used when building Amazon EC2 AMIs.
-    public struct InfrastructureConfigurationSummary {
+    public struct InfrastructureConfigurationSummary: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the infrastructure configuration.
         public var arn: Swift.String?
         /// The date on which the infrastructure configuration was created.
@@ -6435,6 +6507,8 @@ extension ImagebuilderClientTypes {
         public var instanceTypes: [Swift.String]?
         /// The name of the infrastructure configuration.
         public var name: Swift.String?
+        /// The instance placement settings that define where the instances that are launched from your image will run.
+        public var placement: ImagebuilderClientTypes.Placement?
         /// The tags attached to the image created by Image Builder.
         public var resourceTags: [Swift.String: Swift.String]?
         /// The tags of the infrastructure configuration.
@@ -6448,6 +6522,7 @@ extension ImagebuilderClientTypes {
             instanceProfileName: Swift.String? = nil,
             instanceTypes: [Swift.String]? = nil,
             name: Swift.String? = nil,
+            placement: ImagebuilderClientTypes.Placement? = nil,
             resourceTags: [Swift.String: Swift.String]? = nil,
             tags: [Swift.String: Swift.String]? = nil
         )
@@ -6459,14 +6534,14 @@ extension ImagebuilderClientTypes {
             self.instanceProfileName = instanceProfileName
             self.instanceTypes = instanceTypes
             self.name = name
+            self.placement = placement
             self.resourceTags = resourceTags
             self.tags = tags
         }
     }
-
 }
 
-public struct ListInfrastructureConfigurationsOutput {
+public struct ListInfrastructureConfigurationsOutput: Swift.Sendable {
     /// The list of infrastructure configurations.
     public var infrastructureConfigurationSummaryList: [ImagebuilderClientTypes.InfrastructureConfigurationSummary]?
     /// The next token used for paginated responses. When this field isn't empty, there are additional elements that the service hasn't included in this request. Use this token with the next request to retrieve additional objects.
@@ -6486,7 +6561,7 @@ public struct ListInfrastructureConfigurationsOutput {
     }
 }
 
-public struct ListLifecycleExecutionResourcesInput {
+public struct ListLifecycleExecutionResourcesInput: Swift.Sendable {
     /// Use the unique identifier for a runtime instance of the lifecycle policy to get runtime details.
     /// This member is required.
     public var lifecycleExecutionId: Swift.String?
@@ -6513,7 +6588,7 @@ public struct ListLifecycleExecutionResourcesInput {
 
 extension ImagebuilderClientTypes {
 
-    public enum LifecycleExecutionResourceActionName: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum LifecycleExecutionResourceActionName: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case available
         case delete
         case deprecate
@@ -6547,8 +6622,9 @@ extension ImagebuilderClientTypes {
 }
 
 extension ImagebuilderClientTypes {
+
     /// The lifecycle policy action that was identified for the impacted resource.
-    public struct LifecycleExecutionResourceAction {
+    public struct LifecycleExecutionResourceAction: Swift.Sendable {
         /// The name of the resource that was identified for a lifecycle policy action.
         public var name: ImagebuilderClientTypes.LifecycleExecutionResourceActionName?
         /// The reason why the lifecycle policy action is taken.
@@ -6563,12 +6639,11 @@ extension ImagebuilderClientTypes {
             self.reason = reason
         }
     }
-
 }
 
 extension ImagebuilderClientTypes {
 
-    public enum LifecycleExecutionResourceStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum LifecycleExecutionResourceStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case failed
         case inProgress
         case skipped
@@ -6602,8 +6677,9 @@ extension ImagebuilderClientTypes {
 }
 
 extension ImagebuilderClientTypes {
+
     /// Contains the state of an impacted resource that the runtime instance of the lifecycle policy identified for action.
-    public struct LifecycleExecutionResourceState {
+    public struct LifecycleExecutionResourceState: Swift.Sendable {
         /// Messaging that clarifies the reason for the assigned status.
         public var reason: Swift.String?
         /// The runtime status of the lifecycle action taken for the impacted resource.
@@ -6618,12 +6694,12 @@ extension ImagebuilderClientTypes {
             self.status = status
         }
     }
-
 }
 
 extension ImagebuilderClientTypes {
+
     /// Contains the state of an impacted snapshot resource that the runtime instance of the lifecycle policy identified for action.
-    public struct LifecycleExecutionSnapshotResource {
+    public struct LifecycleExecutionSnapshotResource: Swift.Sendable {
         /// Identifies the impacted snapshot resource.
         public var snapshotId: Swift.String?
         /// The runtime status of the lifecycle action taken for the snapshot.
@@ -6638,12 +6714,12 @@ extension ImagebuilderClientTypes {
             self.state = state
         }
     }
-
 }
 
 extension ImagebuilderClientTypes {
+
     /// Contains details for a resource that the runtime instance of the lifecycle policy identified for action.
-    public struct LifecycleExecutionResource {
+    public struct LifecycleExecutionResource: Swift.Sendable {
         /// The account that owns the impacted resource.
         public var accountId: Swift.String?
         /// The action to take for the identified resource.
@@ -6692,10 +6768,9 @@ extension ImagebuilderClientTypes {
             self.state = state
         }
     }
-
 }
 
-public struct ListLifecycleExecutionResourcesOutput {
+public struct ListLifecycleExecutionResourcesOutput: Swift.Sendable {
     /// Runtime details for the specified runtime instance of the lifecycle policy.
     public var lifecycleExecutionId: Swift.String?
     /// The current state of the lifecycle runtime instance.
@@ -6719,7 +6794,7 @@ public struct ListLifecycleExecutionResourcesOutput {
     }
 }
 
-public struct ListLifecycleExecutionsInput {
+public struct ListLifecycleExecutionsInput: Swift.Sendable {
     /// The maximum items to return in a request.
     public var maxResults: Swift.Int?
     /// A token to specify where to start paginating. This is the nextToken from a previously truncated response.
@@ -6740,7 +6815,7 @@ public struct ListLifecycleExecutionsInput {
     }
 }
 
-public struct ListLifecycleExecutionsOutput {
+public struct ListLifecycleExecutionsOutput: Swift.Sendable {
     /// A list of lifecycle runtime instances for the specified resource.
     public var lifecycleExecutions: [ImagebuilderClientTypes.LifecycleExecution]?
     /// The next token used for paginated responses. When this field isn't empty, there are additional elements that the service hasn't included in this request. Use this token with the next request to retrieve additional objects.
@@ -6756,7 +6831,7 @@ public struct ListLifecycleExecutionsOutput {
     }
 }
 
-public struct ListLifecyclePoliciesInput {
+public struct ListLifecyclePoliciesInput: Swift.Sendable {
     /// Streamline results based on one of the following values: Name, Status.
     public var filters: [ImagebuilderClientTypes.Filter]?
     /// The maximum items to return in a request.
@@ -6777,8 +6852,9 @@ public struct ListLifecyclePoliciesInput {
 }
 
 extension ImagebuilderClientTypes {
+
     /// Contains a summary of lifecycle policy resources.
-    public struct LifecyclePolicySummary {
+    public struct LifecyclePolicySummary: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the lifecycle policy summary resource.
         public var arn: Swift.String?
         /// The timestamp when Image Builder created the lifecycle policy resource.
@@ -6825,10 +6901,9 @@ extension ImagebuilderClientTypes {
             self.tags = tags
         }
     }
-
 }
 
-public struct ListLifecyclePoliciesOutput {
+public struct ListLifecyclePoliciesOutput: Swift.Sendable {
     /// A list of lifecycle policies in your Amazon Web Services account that meet the criteria specified in the request.
     public var lifecyclePolicySummaryList: [ImagebuilderClientTypes.LifecyclePolicySummary]?
     /// The next token used for paginated responses. When this field isn't empty, there are additional elements that the service hasn't included in this request. Use this token with the next request to retrieve additional objects.
@@ -6868,7 +6943,7 @@ public struct InvalidParameterException: ClientRuntime.ModeledError, AWSClientRu
     }
 }
 
-public struct ListTagsForResourceInput {
+public struct ListTagsForResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the resource whose tags you want to retrieve.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -6881,7 +6956,7 @@ public struct ListTagsForResourceInput {
     }
 }
 
-public struct ListTagsForResourceOutput {
+public struct ListTagsForResourceOutput: Swift.Sendable {
     /// The tags for the specified resource.
     public var tags: [Swift.String: Swift.String]?
 
@@ -6893,7 +6968,7 @@ public struct ListTagsForResourceOutput {
     }
 }
 
-public struct ListWaitingWorkflowStepsInput {
+public struct ListWaitingWorkflowStepsInput: Swift.Sendable {
     /// The maximum items to return in a request.
     public var maxResults: Swift.Int?
     /// A token to specify where to start paginating. This is the nextToken from a previously truncated response.
@@ -6910,8 +6985,9 @@ public struct ListWaitingWorkflowStepsInput {
 }
 
 extension ImagebuilderClientTypes {
+
     /// Contains runtime details for an instance of a workflow that ran for the associated image build version.
-    public struct WorkflowStepExecution {
+    public struct WorkflowStepExecution: Swift.Sendable {
         /// The name of the step action.
         public var action: Swift.String?
         /// The Amazon Resource Name (ARN) of the image build version that ran the workflow.
@@ -6946,10 +7022,9 @@ extension ImagebuilderClientTypes {
             self.workflowExecutionId = workflowExecutionId
         }
     }
-
 }
 
-public struct ListWaitingWorkflowStepsOutput {
+public struct ListWaitingWorkflowStepsOutput: Swift.Sendable {
     /// The next token used for paginated responses. When this field isn't empty, there are additional elements that the service hasn't included in this request. Use this token with the next request to retrieve additional objects.
     public var nextToken: Swift.String?
     /// An array of the workflow steps that are waiting for action in your Amazon Web Services account.
@@ -6965,7 +7040,7 @@ public struct ListWaitingWorkflowStepsOutput {
     }
 }
 
-public struct ListWorkflowBuildVersionsInput {
+public struct ListWorkflowBuildVersionsInput: Swift.Sendable {
     /// The maximum items to return in a request.
     public var maxResults: Swift.Int?
     /// A token to specify where to start paginating. This is the nextToken from a previously truncated response.
@@ -6987,8 +7062,9 @@ public struct ListWorkflowBuildVersionsInput {
 }
 
 extension ImagebuilderClientTypes {
+
     /// Contains metadata about the workflow resource.
-    public struct WorkflowSummary {
+    public struct WorkflowSummary: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the workflow resource.
         public var arn: Swift.String?
         /// The change description for the current version of the workflow resource.
@@ -7035,10 +7111,9 @@ extension ImagebuilderClientTypes {
             self.version = version
         }
     }
-
 }
 
-public struct ListWorkflowBuildVersionsOutput {
+public struct ListWorkflowBuildVersionsOutput: Swift.Sendable {
     /// The next token used for paginated responses. When this field isn't empty, there are additional elements that the service hasn't included in this request. Use this token with the next request to retrieve additional objects.
     public var nextToken: Swift.String?
     /// A list that contains metadata for the workflow builds that have run for the workflow resource specified in the request.
@@ -7054,7 +7129,7 @@ public struct ListWorkflowBuildVersionsOutput {
     }
 }
 
-public struct ListWorkflowExecutionsInput {
+public struct ListWorkflowExecutionsInput: Swift.Sendable {
     /// List all workflow runtime instances for the specified image build version resource ARN.
     /// This member is required.
     public var imageBuildVersionArn: Swift.String?
@@ -7076,8 +7151,9 @@ public struct ListWorkflowExecutionsInput {
 }
 
 extension ImagebuilderClientTypes {
+
     /// Metadata that includes details and status from this runtime instance of the workflow.
-    public struct WorkflowExecutionMetadata {
+    public struct WorkflowExecutionMetadata: Swift.Sendable {
         /// The timestamp when this runtime instance of the workflow finished.
         public var endTime: Swift.String?
         /// The runtime output message from the workflow, if applicable.
@@ -7132,10 +7208,9 @@ extension ImagebuilderClientTypes {
             self.workflowExecutionId = workflowExecutionId
         }
     }
-
 }
 
-public struct ListWorkflowExecutionsOutput {
+public struct ListWorkflowExecutionsOutput: Swift.Sendable {
     /// The resource ARN of the image build version for which you requested a list of workflow runtime details.
     public var imageBuildVersionArn: Swift.String?
     /// The output message from the list action, if applicable.
@@ -7163,7 +7238,7 @@ public struct ListWorkflowExecutionsOutput {
     }
 }
 
-public struct ListWorkflowsInput {
+public struct ListWorkflowsInput: Swift.Sendable {
     /// Specify all or part of the workflow name to streamline results.
     public var byName: Swift.Bool?
     /// Used to streamline search results.
@@ -7192,8 +7267,9 @@ public struct ListWorkflowsInput {
 }
 
 extension ImagebuilderClientTypes {
+
     /// Contains details about this version of the workflow.
-    public struct WorkflowVersion {
+    public struct WorkflowVersion: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the workflow resource.
         public var arn: Swift.String?
         /// The timestamp when Image Builder created the workflow version.
@@ -7228,10 +7304,9 @@ extension ImagebuilderClientTypes {
             self.version = version
         }
     }
-
 }
 
-public struct ListWorkflowsOutput {
+public struct ListWorkflowsOutput: Swift.Sendable {
     /// The next token used for paginated responses. When this field isn't empty, there are additional elements that the service hasn't included in this request. Use this token with the next request to retrieve additional objects.
     public var nextToken: Swift.String?
     /// A list of workflow build versions that match the request criteria.
@@ -7247,7 +7322,7 @@ public struct ListWorkflowsOutput {
     }
 }
 
-public struct ListWorkflowStepExecutionsInput {
+public struct ListWorkflowStepExecutionsInput: Swift.Sendable {
     /// The maximum items to return in a request.
     public var maxResults: Swift.Int?
     /// A token to specify where to start paginating. This is the nextToken from a previously truncated response.
@@ -7269,8 +7344,9 @@ public struct ListWorkflowStepExecutionsInput {
 }
 
 extension ImagebuilderClientTypes {
+
     /// Runtime details and status for the workflow step.
-    public struct WorkflowStepMetadata {
+    public struct WorkflowStepMetadata: Swift.Sendable {
         /// The step action name.
         public var action: Swift.String?
         /// Description of the workflow step.
@@ -7321,10 +7397,9 @@ extension ImagebuilderClientTypes {
             self.stepExecutionId = stepExecutionId
         }
     }
-
 }
 
-public struct ListWorkflowStepExecutionsOutput {
+public struct ListWorkflowStepExecutionsOutput: Swift.Sendable {
     /// The image build version resource ARN that's associated with the specified runtime instance of the workflow.
     public var imageBuildVersionArn: Swift.String?
     /// The output message from the list action, if applicable.
@@ -7384,7 +7459,7 @@ public struct InvalidParameterValueException: ClientRuntime.ModeledError, AWSCli
     }
 }
 
-public struct PutComponentPolicyInput {
+public struct PutComponentPolicyInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the component that this policy should be applied to.
     /// This member is required.
     public var componentArn: Swift.String?
@@ -7402,7 +7477,7 @@ public struct PutComponentPolicyInput {
     }
 }
 
-public struct PutComponentPolicyOutput {
+public struct PutComponentPolicyOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the component that this policy was applied to.
     public var componentArn: Swift.String?
     /// The request ID that uniquely identifies this request.
@@ -7418,7 +7493,7 @@ public struct PutComponentPolicyOutput {
     }
 }
 
-public struct PutContainerRecipePolicyInput {
+public struct PutContainerRecipePolicyInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the container recipe that this policy should be applied to.
     /// This member is required.
     public var containerRecipeArn: Swift.String?
@@ -7436,7 +7511,7 @@ public struct PutContainerRecipePolicyInput {
     }
 }
 
-public struct PutContainerRecipePolicyOutput {
+public struct PutContainerRecipePolicyOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the container recipe that this policy was applied to.
     public var containerRecipeArn: Swift.String?
     /// The request ID that uniquely identifies this request.
@@ -7452,7 +7527,7 @@ public struct PutContainerRecipePolicyOutput {
     }
 }
 
-public struct PutImagePolicyInput {
+public struct PutImagePolicyInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the image that this policy should be applied to.
     /// This member is required.
     public var imageArn: Swift.String?
@@ -7470,7 +7545,7 @@ public struct PutImagePolicyInput {
     }
 }
 
-public struct PutImagePolicyOutput {
+public struct PutImagePolicyOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the image that this policy was applied to.
     public var imageArn: Swift.String?
     /// The request ID that uniquely identifies this request.
@@ -7486,7 +7561,7 @@ public struct PutImagePolicyOutput {
     }
 }
 
-public struct PutImageRecipePolicyInput {
+public struct PutImageRecipePolicyInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the image recipe that this policy should be applied to.
     /// This member is required.
     public var imageRecipeArn: Swift.String?
@@ -7504,7 +7579,7 @@ public struct PutImageRecipePolicyInput {
     }
 }
 
-public struct PutImageRecipePolicyOutput {
+public struct PutImageRecipePolicyOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the image recipe that this policy was applied to.
     public var imageRecipeArn: Swift.String?
     /// The request ID that uniquely identifies this request.
@@ -7522,7 +7597,7 @@ public struct PutImageRecipePolicyOutput {
 
 extension ImagebuilderClientTypes {
 
-    public enum WorkflowStepActionType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum WorkflowStepActionType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case resume
         case stop
         case sdkUnknown(Swift.String)
@@ -7549,7 +7624,7 @@ extension ImagebuilderClientTypes {
     }
 }
 
-public struct SendWorkflowStepActionInput {
+public struct SendWorkflowStepActionInput: Swift.Sendable {
     /// The action for the image creation process to take while a workflow WaitForAction step waits for an asynchronous action to complete.
     /// This member is required.
     public var action: ImagebuilderClientTypes.WorkflowStepActionType?
@@ -7581,7 +7656,7 @@ public struct SendWorkflowStepActionInput {
     }
 }
 
-public struct SendWorkflowStepActionOutput {
+public struct SendWorkflowStepActionOutput: Swift.Sendable {
     /// The client token that uniquely identifies the request.
     public var clientToken: Swift.String?
     /// The Amazon Resource Name (ARN) of the image build version that received the action request.
@@ -7601,7 +7676,7 @@ public struct SendWorkflowStepActionOutput {
     }
 }
 
-public struct StartImagePipelineExecutionInput {
+public struct StartImagePipelineExecutionInput: Swift.Sendable {
     /// Unique, case-sensitive identifier you provide to ensure idempotency of the request. For more information, see [Ensuring idempotency](https://docs.aws.amazon.com/AWSEC2/latest/APIReference/Run_Instance_Idempotency.html) in the Amazon EC2 API Reference.
     /// This member is required.
     public var clientToken: Swift.String?
@@ -7619,7 +7694,7 @@ public struct StartImagePipelineExecutionInput {
     }
 }
 
-public struct StartImagePipelineExecutionOutput {
+public struct StartImagePipelineExecutionOutput: Swift.Sendable {
     /// The client token that uniquely identifies the request.
     public var clientToken: Swift.String?
     /// The Amazon Resource Name (ARN) of the image that the request created.
@@ -7640,8 +7715,9 @@ public struct StartImagePipelineExecutionOutput {
 }
 
 extension ImagebuilderClientTypes {
+
     /// Additional rules to specify resources that should be exempt from ad-hoc lifecycle actions.
-    public struct ResourceStateUpdateExclusionRules {
+    public struct ResourceStateUpdateExclusionRules: Swift.Sendable {
         /// Defines criteria for AMIs that are excluded from lifecycle actions.
         public var amis: ImagebuilderClientTypes.LifecyclePolicyDetailExclusionRulesAmis?
 
@@ -7652,12 +7728,12 @@ extension ImagebuilderClientTypes {
             self.amis = amis
         }
     }
-
 }
 
 extension ImagebuilderClientTypes {
+
     /// Specifies if the lifecycle policy should apply actions to selected resources.
-    public struct ResourceStateUpdateIncludeResources {
+    public struct ResourceStateUpdateIncludeResources: Swift.Sendable {
         /// Specifies whether the lifecycle action should apply to distributed AMIs
         public var amis: Swift.Bool
         /// Specifies whether the lifecycle action should apply to distributed containers.
@@ -7676,12 +7752,11 @@ extension ImagebuilderClientTypes {
             self.snapshots = snapshots
         }
     }
-
 }
 
 extension ImagebuilderClientTypes {
 
-    public enum ResourceStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ResourceStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case available
         case deleted
         case deprecated
@@ -7715,8 +7790,9 @@ extension ImagebuilderClientTypes {
 }
 
 extension ImagebuilderClientTypes {
+
     /// The current state of an impacted resource.
-    public struct ResourceState {
+    public struct ResourceState: Swift.Sendable {
         /// Shows the current lifecycle policy action that was applied to an impacted resource.
         public var status: ImagebuilderClientTypes.ResourceStatus?
 
@@ -7727,10 +7803,9 @@ extension ImagebuilderClientTypes {
             self.status = status
         }
     }
-
 }
 
-public struct StartResourceStateUpdateInput {
+public struct StartResourceStateUpdateInput: Swift.Sendable {
     /// Unique, case-sensitive identifier you provide to ensure idempotency of the request. For more information, see [Ensuring idempotency](https://docs.aws.amazon.com/AWSEC2/latest/APIReference/Run_Instance_Idempotency.html) in the Amazon EC2 API Reference.
     /// This member is required.
     public var clientToken: Swift.String?
@@ -7769,7 +7844,7 @@ public struct StartResourceStateUpdateInput {
     }
 }
 
-public struct StartResourceStateUpdateOutput {
+public struct StartResourceStateUpdateOutput: Swift.Sendable {
     /// Identifies the lifecycle runtime instance that started the resource state update.
     public var lifecycleExecutionId: Swift.String?
     /// The requested ARN of the Image Builder resource for the asynchronous update.
@@ -7785,7 +7860,7 @@ public struct StartResourceStateUpdateOutput {
     }
 }
 
-public struct TagResourceInput {
+public struct TagResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the resource that you want to tag.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -7803,12 +7878,12 @@ public struct TagResourceInput {
     }
 }
 
-public struct TagResourceOutput {
+public struct TagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UntagResourceInput {
+public struct UntagResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the resource that you want to untag.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -7826,12 +7901,12 @@ public struct UntagResourceInput {
     }
 }
 
-public struct UntagResourceOutput {
+public struct UntagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdateDistributionConfigurationInput {
+public struct UpdateDistributionConfigurationInput: Swift.Sendable {
     /// Unique, case-sensitive identifier you provide to ensure idempotency of the request. For more information, see [Ensuring idempotency](https://docs.aws.amazon.com/AWSEC2/latest/APIReference/Run_Instance_Idempotency.html) in the Amazon EC2 API Reference.
     /// This member is required.
     public var clientToken: Swift.String?
@@ -7858,7 +7933,7 @@ public struct UpdateDistributionConfigurationInput {
     }
 }
 
-public struct UpdateDistributionConfigurationOutput {
+public struct UpdateDistributionConfigurationOutput: Swift.Sendable {
     /// The client token that uniquely identifies the request.
     public var clientToken: Swift.String?
     /// The Amazon Resource Name (ARN) of the distribution configuration that was updated by this request.
@@ -7878,7 +7953,7 @@ public struct UpdateDistributionConfigurationOutput {
     }
 }
 
-public struct UpdateImagePipelineInput {
+public struct UpdateImagePipelineInput: Swift.Sendable {
     /// Unique, case-sensitive identifier you provide to ensure idempotency of the request. For more information, see [Ensuring idempotency](https://docs.aws.amazon.com/AWSEC2/latest/APIReference/Run_Instance_Idempotency.html) in the Amazon EC2 API Reference.
     /// This member is required.
     public var clientToken: Swift.String?
@@ -7945,7 +8020,7 @@ public struct UpdateImagePipelineInput {
     }
 }
 
-public struct UpdateImagePipelineOutput {
+public struct UpdateImagePipelineOutput: Swift.Sendable {
     /// The client token that uniquely identifies the request.
     public var clientToken: Swift.String?
     /// The Amazon Resource Name (ARN) of the image pipeline that was updated by this request.
@@ -7965,7 +8040,7 @@ public struct UpdateImagePipelineOutput {
     }
 }
 
-public struct UpdateInfrastructureConfigurationInput {
+public struct UpdateInfrastructureConfigurationInput: Swift.Sendable {
     /// Unique, case-sensitive identifier you provide to ensure idempotency of the request. For more information, see [Ensuring idempotency](https://docs.aws.amazon.com/AWSEC2/latest/APIReference/Run_Instance_Idempotency.html) in the Amazon EC2 API Reference.
     /// This member is required.
     public var clientToken: Swift.String?
@@ -7989,6 +8064,8 @@ public struct UpdateInfrastructureConfigurationInput {
     public var keyPair: Swift.String?
     /// The logging configuration of the infrastructure configuration.
     public var logging: ImagebuilderClientTypes.Logging?
+    /// The instance placement settings that define where the instances that are launched from your image will run.
+    public var placement: ImagebuilderClientTypes.Placement?
     /// The tags attached to the resource created by Image Builder.
     public var resourceTags: [Swift.String: Swift.String]?
     /// The security group IDs to associate with the instance used to customize your Amazon EC2 AMI.
@@ -8009,6 +8086,7 @@ public struct UpdateInfrastructureConfigurationInput {
         instanceTypes: [Swift.String]? = nil,
         keyPair: Swift.String? = nil,
         logging: ImagebuilderClientTypes.Logging? = nil,
+        placement: ImagebuilderClientTypes.Placement? = nil,
         resourceTags: [Swift.String: Swift.String]? = nil,
         securityGroupIds: [Swift.String]? = nil,
         snsTopicArn: Swift.String? = nil,
@@ -8024,6 +8102,7 @@ public struct UpdateInfrastructureConfigurationInput {
         self.instanceTypes = instanceTypes
         self.keyPair = keyPair
         self.logging = logging
+        self.placement = placement
         self.resourceTags = resourceTags
         self.securityGroupIds = securityGroupIds
         self.snsTopicArn = snsTopicArn
@@ -8032,7 +8111,7 @@ public struct UpdateInfrastructureConfigurationInput {
     }
 }
 
-public struct UpdateInfrastructureConfigurationOutput {
+public struct UpdateInfrastructureConfigurationOutput: Swift.Sendable {
     /// The client token that uniquely identifies the request.
     public var clientToken: Swift.String?
     /// The Amazon Resource Name (ARN) of the infrastructure configuration that was updated by this request.
@@ -8052,7 +8131,7 @@ public struct UpdateInfrastructureConfigurationOutput {
     }
 }
 
-public struct UpdateLifecyclePolicyInput {
+public struct UpdateLifecyclePolicyInput: Swift.Sendable {
     /// Unique, case-sensitive identifier you provide to ensure idempotency of the request. For more information, see [Ensuring idempotency](https://docs.aws.amazon.com/AWSEC2/latest/APIReference/Run_Instance_Idempotency.html) in the Amazon EC2 API Reference.
     /// This member is required.
     public var clientToken: Swift.String?
@@ -8098,7 +8177,7 @@ public struct UpdateLifecyclePolicyInput {
     }
 }
 
-public struct UpdateLifecyclePolicyOutput {
+public struct UpdateLifecyclePolicyOutput: Swift.Sendable {
     /// The ARN of the image lifecycle policy resource that was updated.
     public var lifecyclePolicyArn: Swift.String?
 
@@ -9136,6 +9215,7 @@ extension CreateInfrastructureConfigurationInput {
         try writer["keyPair"].write(value.keyPair)
         try writer["logging"].write(value.logging, with: ImagebuilderClientTypes.Logging.write(value:to:))
         try writer["name"].write(value.name)
+        try writer["placement"].write(value.placement, with: ImagebuilderClientTypes.Placement.write(value:to:))
         try writer["resourceTags"].writeMap(value.resourceTags, valueWritingClosure: SmithyReadWrite.WritingClosures.writeString(value:to:), keyNodeInfo: "key", valueNodeInfo: "value", isFlattened: false)
         try writer["securityGroupIds"].writeList(value.securityGroupIds, memberWritingClosure: SmithyReadWrite.WritingClosures.writeString(value:to:), memberNodeInfo: "member", isFlattened: false)
         try writer["snsTopicArn"].write(value.snsTopicArn)
@@ -9555,6 +9635,7 @@ extension UpdateInfrastructureConfigurationInput {
         try writer["instanceTypes"].writeList(value.instanceTypes, memberWritingClosure: SmithyReadWrite.WritingClosures.writeString(value:to:), memberNodeInfo: "member", isFlattened: false)
         try writer["keyPair"].write(value.keyPair)
         try writer["logging"].write(value.logging, with: ImagebuilderClientTypes.Logging.write(value:to:))
+        try writer["placement"].write(value.placement, with: ImagebuilderClientTypes.Placement.write(value:to:))
         try writer["resourceTags"].writeMap(value.resourceTags, valueWritingClosure: SmithyReadWrite.WritingClosures.writeString(value:to:), keyNodeInfo: "key", valueNodeInfo: "value", isFlattened: false)
         try writer["securityGroupIds"].writeList(value.securityGroupIds, memberWritingClosure: SmithyReadWrite.WritingClosures.writeString(value:to:), memberNodeInfo: "member", isFlattened: false)
         try writer["snsTopicArn"].write(value.snsTopicArn)
@@ -12882,6 +12963,28 @@ extension ImagebuilderClientTypes.InfrastructureConfiguration {
         value.resourceTags = try reader["resourceTags"].readMapIfPresent(valueReadingClosure: SmithyReadWrite.ReadingClosures.readString(from:), keyNodeInfo: "key", valueNodeInfo: "value", isFlattened: false)
         value.instanceMetadataOptions = try reader["instanceMetadataOptions"].readIfPresent(with: ImagebuilderClientTypes.InstanceMetadataOptions.read(from:))
         value.tags = try reader["tags"].readMapIfPresent(valueReadingClosure: SmithyReadWrite.ReadingClosures.readString(from:), keyNodeInfo: "key", valueNodeInfo: "value", isFlattened: false)
+        value.placement = try reader["placement"].readIfPresent(with: ImagebuilderClientTypes.Placement.read(from:))
+        return value
+    }
+}
+
+extension ImagebuilderClientTypes.Placement {
+
+    static func write(value: ImagebuilderClientTypes.Placement?, to writer: SmithyJSON.Writer) throws {
+        guard let value else { return }
+        try writer["availabilityZone"].write(value.availabilityZone)
+        try writer["hostId"].write(value.hostId)
+        try writer["hostResourceGroupArn"].write(value.hostResourceGroupArn)
+        try writer["tenancy"].write(value.tenancy)
+    }
+
+    static func read(from reader: SmithyJSON.Reader) throws -> ImagebuilderClientTypes.Placement {
+        guard reader.hasContent else { throw SmithyReadWrite.ReaderError.requiredValueNotPresent }
+        var value = ImagebuilderClientTypes.Placement()
+        value.availabilityZone = try reader["availabilityZone"].readIfPresent()
+        value.tenancy = try reader["tenancy"].readIfPresent()
+        value.hostId = try reader["hostId"].readIfPresent()
+        value.hostResourceGroupArn = try reader["hostResourceGroupArn"].readIfPresent()
         return value
     }
 }
@@ -13667,6 +13770,7 @@ extension ImagebuilderClientTypes.InfrastructureConfigurationSummary {
         value.tags = try reader["tags"].readMapIfPresent(valueReadingClosure: SmithyReadWrite.ReadingClosures.readString(from:), keyNodeInfo: "key", valueNodeInfo: "value", isFlattened: false)
         value.instanceTypes = try reader["instanceTypes"].readListIfPresent(memberReadingClosure: SmithyReadWrite.ReadingClosures.readString(from:), memberNodeInfo: "member", isFlattened: false)
         value.instanceProfileName = try reader["instanceProfileName"].readIfPresent()
+        value.placement = try reader["placement"].readIfPresent(with: ImagebuilderClientTypes.Placement.read(from:))
         return value
     }
 }

@@ -56,7 +56,7 @@ public struct AccessDeniedException: ClientRuntime.ModeledError, AWSClientRuntim
 
 extension RUMClientTypes {
 
-    public enum Telemetry: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Telemetry: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         /// Includes JS error event plugin
         case errors
         /// Includes X-Ray Xhr and X-Ray Fetch plugin
@@ -90,8 +90,9 @@ extension RUMClientTypes {
 }
 
 extension RUMClientTypes {
+
     /// This structure contains much of the configuration data for the app monitor.
-    public struct AppMonitorConfiguration {
+    public struct AppMonitorConfiguration: Swift.Sendable {
         /// If you set this to true, the RUM web client sets two cookies, a session cookie and a user cookie. The cookies allow the RUM web client to collect data relating to the number of users an application has and the behavior of the application across a sequence of events. Cookies are stored in the top-level domain of the current page.
         public var allowCookies: Swift.Bool?
         /// If you set this to true, RUM enables X-Ray tracing for the user sessions that RUM samples. RUM adds an X-Ray trace header to allowed HTTP requests. It also records an X-Ray segment for allowed HTTP requests. You can see traces and segments from these user sessions in the X-Ray console and the CloudWatch ServiceLens console. For more information, see [What is X-Ray?](https://docs.aws.amazon.com/xray/latest/devguide/aws-xray.html)
@@ -144,12 +145,11 @@ extension RUMClientTypes {
             self.telemetries = telemetries
         }
     }
-
 }
 
 extension RUMClientTypes {
 
-    public enum CustomEventsStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum CustomEventsStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case disabled
         case enabled
         case sdkUnknown(Swift.String)
@@ -177,8 +177,9 @@ extension RUMClientTypes {
 }
 
 extension RUMClientTypes {
+
     /// A structure that contains information about custom events for this app monitor.
-    public struct CustomEvents {
+    public struct CustomEvents: Swift.Sendable {
         /// Specifies whether this app monitor allows the web client to define and send custom events. The default is for custom events to be DISABLED.
         public var status: RUMClientTypes.CustomEventsStatus?
 
@@ -189,12 +190,12 @@ extension RUMClientTypes {
             self.status = status
         }
     }
-
 }
 
 extension RUMClientTypes {
+
     /// A structure that contains the information about whether the app monitor stores copies of the data that RUM collects in CloudWatch Logs. If it does, this structure also contains the name of the log group.
-    public struct CwLog {
+    public struct CwLog: Swift.Sendable {
         /// Indicated whether the app monitor stores copies of the data that RUM collects in CloudWatch Logs.
         public var cwLogEnabled: Swift.Bool?
         /// The name of the log group where the copies are stored.
@@ -209,12 +210,12 @@ extension RUMClientTypes {
             self.cwLogGroup = cwLogGroup
         }
     }
-
 }
 
 extension RUMClientTypes {
+
     /// A structure that contains information about whether this app monitor stores a copy of the telemetry data that RUM collects using CloudWatch Logs.
-    public struct DataStorage {
+    public struct DataStorage: Swift.Sendable {
         /// A structure that contains the information about whether the app monitor stores copies of the data that RUM collects in CloudWatch Logs. If it does, this structure also contains the name of the log group.
         public var cwLog: RUMClientTypes.CwLog?
 
@@ -225,12 +226,11 @@ extension RUMClientTypes {
             self.cwLog = cwLog
         }
     }
-
 }
 
 extension RUMClientTypes {
 
-    public enum StateEnum: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum StateEnum: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case active
         case created
         case deleting
@@ -261,8 +261,9 @@ extension RUMClientTypes {
 }
 
 extension RUMClientTypes {
+
     /// A RUM app monitor collects telemetry data from your application and sends that data to RUM. The data includes performance and reliability information such as page load time, client-side errors, and user behavior.
-    public struct AppMonitor {
+    public struct AppMonitor: Swift.Sendable {
         /// A structure that contains much of the configuration data for the app monitor.
         public var appMonitorConfiguration: RUMClientTypes.AppMonitorConfiguration?
         /// The date and time that this app monitor was created.
@@ -309,12 +310,12 @@ extension RUMClientTypes {
             self.tags = tags
         }
     }
-
 }
 
 extension RUMClientTypes {
+
     /// A structure that contains information about the RUM app monitor.
-    public struct AppMonitorDetails {
+    public struct AppMonitorDetails: Swift.Sendable {
         /// The unique ID of the app monitor.
         public var id: Swift.String?
         /// The name of the app monitor.
@@ -333,7 +334,6 @@ extension RUMClientTypes {
             self.version = version
         }
     }
-
 }
 
 /// This operation attempted to create a resource that already exists.
@@ -522,7 +522,7 @@ public struct ValidationException: ClientRuntime.ModeledError, AWSClientRuntime.
 
 extension RUMClientTypes {
 
-    public enum MetricDestination: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum MetricDestination: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case cloudwatch
         case evidently
         case sdkUnknown(Swift.String)
@@ -550,6 +550,7 @@ extension RUMClientTypes {
 }
 
 extension RUMClientTypes {
+
     /// Use this structure to define one extended metric or custom metric that RUM will send to CloudWatch or CloudWatch Evidently. For more information, see [ Custom metrics and extended metrics that you can send to CloudWatch and CloudWatch Evidently](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-RUM-custom-and-extended-metrics.html). This structure is validated differently for extended metrics and custom metrics. For extended metrics that are sent to the AWS/RUM namespace, the following validations apply:
     ///
     /// * The Namespace parameter must be omitted or set to AWS/RUM.
@@ -638,7 +639,7 @@ extension RUMClientTypes {
     /// * user_details
     ///
     /// * userId
-    public struct MetricDefinitionRequest {
+    public struct MetricDefinitionRequest: Swift.Sendable {
         /// Use this field only if you are sending the metric to CloudWatch. This field is a map of field paths to dimension names. It defines the dimensions to associate with this metric in CloudWatch. For extended metrics, valid values for the entries in this field are the following:
         ///
         /// * "metadata.pageId": "PageId"
@@ -716,10 +717,9 @@ extension RUMClientTypes {
             self.valueKey = valueKey
         }
     }
-
 }
 
-public struct BatchCreateRumMetricDefinitionsInput {
+public struct BatchCreateRumMetricDefinitionsInput: Swift.Sendable {
     /// The name of the CloudWatch RUM app monitor that is to send the metrics.
     /// This member is required.
     public var appMonitorName: Swift.String?
@@ -747,8 +747,9 @@ public struct BatchCreateRumMetricDefinitionsInput {
 }
 
 extension RUMClientTypes {
+
     /// A structure that defines one error caused by a [BatchCreateRumMetricsDefinitions](https://docs.aws.amazon.com/cloudwatchrum/latest/APIReference/API_BatchCreateRumMetricsDefinitions.html) operation.
-    public struct BatchCreateRumMetricDefinitionsError {
+    public struct BatchCreateRumMetricDefinitionsError: Swift.Sendable {
         /// The error code.
         /// This member is required.
         public var errorCode: Swift.String?
@@ -770,12 +771,12 @@ extension RUMClientTypes {
             self.metricDefinition = metricDefinition
         }
     }
-
 }
 
 extension RUMClientTypes {
+
     /// A structure that displays the definition of one extended metric that RUM sends to CloudWatch or CloudWatch Evidently. For more information, see [ Additional metrics that you can send to CloudWatch and CloudWatch Evidently](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-RUM-vended-metrics.html).
-    public struct MetricDefinition {
+    public struct MetricDefinition: Swift.Sendable {
         /// This field is a map of field paths to dimension names. It defines the dimensions to associate with this metric in CloudWatch The value of this field is used only if the metric destination is CloudWatch. If the metric destination is Evidently, the value of DimensionKeys is ignored.
         public var dimensionKeys: [Swift.String: Swift.String]?
         /// The pattern that defines the metric. RUM checks events that happen in a user's session against the pattern, and events that match the pattern are sent to the metric destination. If the metrics destination is CloudWatch and the event also matches a value in DimensionKeys, then the metric is published with the specified dimensions.
@@ -812,10 +813,9 @@ extension RUMClientTypes {
             self.valueKey = valueKey
         }
     }
-
 }
 
-public struct BatchCreateRumMetricDefinitionsOutput {
+public struct BatchCreateRumMetricDefinitionsOutput: Swift.Sendable {
     /// An array of error objects, if the operation caused any errors.
     /// This member is required.
     public var errors: [RUMClientTypes.BatchCreateRumMetricDefinitionsError]?
@@ -832,7 +832,7 @@ public struct BatchCreateRumMetricDefinitionsOutput {
     }
 }
 
-public struct BatchDeleteRumMetricDefinitionsInput {
+public struct BatchDeleteRumMetricDefinitionsInput: Swift.Sendable {
     /// The name of the CloudWatch RUM app monitor that is sending these metrics.
     /// This member is required.
     public var appMonitorName: Swift.String?
@@ -860,8 +860,9 @@ public struct BatchDeleteRumMetricDefinitionsInput {
 }
 
 extension RUMClientTypes {
+
     /// A structure that defines one error caused by a [BatchCreateRumMetricsDefinitions](https://docs.aws.amazon.com/cloudwatchrum/latest/APIReference/API_BatchDeleteRumMetricsDefinitions.html) operation.
-    public struct BatchDeleteRumMetricDefinitionsError {
+    public struct BatchDeleteRumMetricDefinitionsError: Swift.Sendable {
         /// The error code.
         /// This member is required.
         public var errorCode: Swift.String?
@@ -883,10 +884,9 @@ extension RUMClientTypes {
             self.metricDefinitionId = metricDefinitionId
         }
     }
-
 }
 
-public struct BatchDeleteRumMetricDefinitionsOutput {
+public struct BatchDeleteRumMetricDefinitionsOutput: Swift.Sendable {
     /// An array of error objects, if the operation caused any errors.
     /// This member is required.
     public var errors: [RUMClientTypes.BatchDeleteRumMetricDefinitionsError]?
@@ -903,7 +903,7 @@ public struct BatchDeleteRumMetricDefinitionsOutput {
     }
 }
 
-public struct BatchGetRumMetricDefinitionsInput {
+public struct BatchGetRumMetricDefinitionsInput: Swift.Sendable {
     /// The name of the CloudWatch RUM app monitor that is sending the metrics.
     /// This member is required.
     public var appMonitorName: Swift.String?
@@ -933,7 +933,7 @@ public struct BatchGetRumMetricDefinitionsInput {
     }
 }
 
-public struct BatchGetRumMetricDefinitionsOutput {
+public struct BatchGetRumMetricDefinitionsOutput: Swift.Sendable {
     /// An array of structures that display information about the metrics that are sent by the specified app monitor to the specified destination.
     public var metricDefinitions: [RUMClientTypes.MetricDefinition]?
     /// A token that you can use in a subsequent operation to retrieve the next set of results.
@@ -949,7 +949,7 @@ public struct BatchGetRumMetricDefinitionsOutput {
     }
 }
 
-public struct CreateAppMonitorInput {
+public struct CreateAppMonitorInput: Swift.Sendable {
     /// A structure that contains much of the configuration data for the app monitor. If you are using Amazon Cognito for authorization, you must include this structure in your request, and it must include the ID of the Amazon Cognito identity pool to use for authorization. If you don't include AppMonitorConfiguration, you must set up your own authorization method. For more information, see [Authorize your application to send data to Amazon Web Services](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-RUM-get-started-authorization.html). If you omit this argument, the sample rate used for RUM is set to 10% of the user sessions.
     public var appMonitorConfiguration: RUMClientTypes.AppMonitorConfiguration?
     /// Specifies whether this app monitor allows the web client to define and send custom events. If you omit this parameter, custom events are DISABLED. For more information about custom events, see [Send custom events](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-RUM-custom-events.html).
@@ -983,7 +983,7 @@ public struct CreateAppMonitorInput {
     }
 }
 
-public struct CreateAppMonitorOutput {
+public struct CreateAppMonitorOutput: Swift.Sendable {
     /// The unique ID of the new app monitor.
     public var id: Swift.String?
 
@@ -995,7 +995,7 @@ public struct CreateAppMonitorOutput {
     }
 }
 
-public struct DeleteAppMonitorInput {
+public struct DeleteAppMonitorInput: Swift.Sendable {
     /// The name of the app monitor to delete.
     /// This member is required.
     public var name: Swift.String?
@@ -1008,12 +1008,12 @@ public struct DeleteAppMonitorInput {
     }
 }
 
-public struct DeleteAppMonitorOutput {
+public struct DeleteAppMonitorOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteRumMetricsDestinationInput {
+public struct DeleteRumMetricsDestinationInput: Swift.Sendable {
     /// The name of the app monitor that is sending metrics to the destination that you want to delete.
     /// This member is required.
     public var appMonitorName: Swift.String?
@@ -1035,12 +1035,12 @@ public struct DeleteRumMetricsDestinationInput {
     }
 }
 
-public struct DeleteRumMetricsDestinationOutput {
+public struct DeleteRumMetricsDestinationOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct GetAppMonitorInput {
+public struct GetAppMonitorInput: Swift.Sendable {
     /// The app monitor to retrieve information for.
     /// This member is required.
     public var name: Swift.String?
@@ -1053,7 +1053,7 @@ public struct GetAppMonitorInput {
     }
 }
 
-public struct GetAppMonitorOutput {
+public struct GetAppMonitorOutput: Swift.Sendable {
     /// A structure containing all the configuration information for the app monitor.
     public var appMonitor: RUMClientTypes.AppMonitor?
 
@@ -1066,8 +1066,9 @@ public struct GetAppMonitorOutput {
 }
 
 extension RUMClientTypes {
+
     /// A structure that defines a key and values that you can use to filter the results. The only performance events that are returned are those that have values matching the ones that you specify in one of your QueryFilter structures. For example, you could specify Browser as the Name and specify Chrome,Firefox as the Values to return events generated only from those browsers. Specifying Invert as the Name works as a "not equal to" filter. For example, specify Invert as the Name and specify Chrome as the value to return all events except events from user sessions with the Chrome browser.
-    public struct QueryFilter {
+    public struct QueryFilter: Swift.Sendable {
         /// The name of a key to search for. The filter returns only the events that match the Name and Values that you specify. Valid values for Name are Browser | Device | Country | Page | OS | EventType | Invert
         public var name: Swift.String?
         /// The values of the Name that are to be be included in the returned results.
@@ -1082,12 +1083,12 @@ extension RUMClientTypes {
             self.values = values
         }
     }
-
 }
 
 extension RUMClientTypes {
+
     /// A structure that defines the time range that you want to retrieve results from.
-    public struct TimeRange {
+    public struct TimeRange: Swift.Sendable {
         /// The beginning of the time range to retrieve performance events from.
         /// This member is required.
         public var after: Swift.Int
@@ -1103,10 +1104,9 @@ extension RUMClientTypes {
             self.before = before
         }
     }
-
 }
 
-public struct GetAppMonitorDataInput {
+public struct GetAppMonitorDataInput: Swift.Sendable {
     /// An array of structures that you can use to filter the results to those that match one or more sets of key-value pairs that you specify.
     public var filters: [RUMClientTypes.QueryFilter]?
     /// The maximum number of results to return in one operation.
@@ -1136,7 +1136,7 @@ public struct GetAppMonitorDataInput {
     }
 }
 
-public struct GetAppMonitorDataOutput {
+public struct GetAppMonitorDataOutput: Swift.Sendable {
     /// The events that RUM collected that match your request.
     public var events: [Swift.String]?
     /// A token that you can use in a subsequent operation to retrieve the next set of results.
@@ -1152,7 +1152,7 @@ public struct GetAppMonitorDataOutput {
     }
 }
 
-public struct ListAppMonitorsInput {
+public struct ListAppMonitorsInput: Swift.Sendable {
     /// The maximum number of results to return in one operation. The default is 50. The maximum that you can specify is 100.
     public var maxResults: Swift.Int?
     /// Use the token returned by the previous operation to request the next page of results.
@@ -1169,8 +1169,9 @@ public struct ListAppMonitorsInput {
 }
 
 extension RUMClientTypes {
+
     /// A structure that includes some data about app monitors and their settings.
-    public struct AppMonitorSummary {
+    public struct AppMonitorSummary: Swift.Sendable {
         /// The date and time that the app monitor was created.
         public var created: Swift.String?
         /// The unique ID of this app monitor.
@@ -1197,10 +1198,9 @@ extension RUMClientTypes {
             self.state = state
         }
     }
-
 }
 
-public struct ListAppMonitorsOutput {
+public struct ListAppMonitorsOutput: Swift.Sendable {
     /// An array of structures that contain information about the returned app monitors.
     public var appMonitorSummaries: [RUMClientTypes.AppMonitorSummary]?
     /// A token that you can use in a subsequent operation to retrieve the next set of results.
@@ -1216,7 +1216,7 @@ public struct ListAppMonitorsOutput {
     }
 }
 
-public struct ListRumMetricsDestinationsInput {
+public struct ListRumMetricsDestinationsInput: Swift.Sendable {
     /// The name of the app monitor associated with the destinations that you want to retrieve.
     /// This member is required.
     public var appMonitorName: Swift.String?
@@ -1238,8 +1238,9 @@ public struct ListRumMetricsDestinationsInput {
 }
 
 extension RUMClientTypes {
+
     /// A structure that displays information about one destination that CloudWatch RUM sends extended metrics to.
-    public struct MetricDestinationSummary {
+    public struct MetricDestinationSummary: Swift.Sendable {
         /// Specifies whether the destination is CloudWatch or Evidently.
         public var destination: RUMClientTypes.MetricDestination?
         /// If the destination is Evidently, this specifies the ARN of the Evidently experiment that receives the metrics.
@@ -1258,10 +1259,9 @@ extension RUMClientTypes {
             self.iamRoleArn = iamRoleArn
         }
     }
-
 }
 
-public struct ListRumMetricsDestinationsOutput {
+public struct ListRumMetricsDestinationsOutput: Swift.Sendable {
     /// The list of CloudWatch RUM extended metrics destinations associated with the app monitor that you specified.
     public var destinations: [RUMClientTypes.MetricDestinationSummary]?
     /// A token that you can use in a subsequent operation to retrieve the next set of results.
@@ -1277,7 +1277,7 @@ public struct ListRumMetricsDestinationsOutput {
     }
 }
 
-public struct PutRumMetricsDestinationInput {
+public struct PutRumMetricsDestinationInput: Swift.Sendable {
     /// The name of the CloudWatch RUM app monitor that will send the metrics.
     /// This member is required.
     public var appMonitorName: Swift.String?
@@ -1303,12 +1303,12 @@ public struct PutRumMetricsDestinationInput {
     }
 }
 
-public struct PutRumMetricsDestinationOutput {
+public struct PutRumMetricsDestinationOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdateAppMonitorInput {
+public struct UpdateAppMonitorInput: Swift.Sendable {
     /// A structure that contains much of the configuration data for the app monitor. If you are using Amazon Cognito for authorization, you must include this structure in your request, and it must include the ID of the Amazon Cognito identity pool to use for authorization. If you don't include AppMonitorConfiguration, you must set up your own authorization method. For more information, see [Authorize your application to send data to Amazon Web Services](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-RUM-get-started-authorization.html).
     public var appMonitorConfiguration: RUMClientTypes.AppMonitorConfiguration?
     /// Specifies whether this app monitor allows the web client to define and send custom events. The default is for custom events to be DISABLED. For more information about custom events, see [Send custom events](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-RUM-custom-events.html).
@@ -1337,12 +1337,12 @@ public struct UpdateAppMonitorInput {
     }
 }
 
-public struct UpdateAppMonitorOutput {
+public struct UpdateAppMonitorOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdateRumMetricDefinitionInput {
+public struct UpdateRumMetricDefinitionInput: Swift.Sendable {
     /// The name of the CloudWatch RUM app monitor that sends these metrics.
     /// This member is required.
     public var appMonitorName: Swift.String?
@@ -1374,12 +1374,12 @@ public struct UpdateRumMetricDefinitionInput {
     }
 }
 
-public struct UpdateRumMetricDefinitionOutput {
+public struct UpdateRumMetricDefinitionOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct ListTagsForResourceInput {
+public struct ListTagsForResourceInput: Swift.Sendable {
     /// The ARN of the resource that you want to see the tags of.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -1392,7 +1392,7 @@ public struct ListTagsForResourceInput {
     }
 }
 
-public struct ListTagsForResourceOutput {
+public struct ListTagsForResourceOutput: Swift.Sendable {
     /// The ARN of the resource that you are viewing.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -1411,8 +1411,9 @@ public struct ListTagsForResourceOutput {
 }
 
 extension RUMClientTypes {
+
     /// A structure that contains the information for one performance event that RUM collects from a user session with your application.
-    public struct RumEvent {
+    public struct RumEvent: Swift.Sendable {
         /// A string containing details about the event.
         /// This member is required.
         public var details: Swift.String?
@@ -1443,12 +1444,12 @@ extension RUMClientTypes {
             self.type = type
         }
     }
-
 }
 
 extension RUMClientTypes {
+
     /// A structure that contains information about the user session that this batch of events was collected from.
-    public struct UserDetails {
+    public struct UserDetails: Swift.Sendable {
         /// The session ID that the performance events are from.
         public var sessionId: Swift.String?
         /// The ID of the user for this user session. This ID is generated by RUM and does not include any personally identifiable information about the user.
@@ -1463,10 +1464,9 @@ extension RUMClientTypes {
             self.userId = userId
         }
     }
-
 }
 
-public struct PutRumEventsInput {
+public struct PutRumEventsInput: Swift.Sendable {
     /// A structure that contains information about the app monitor that collected this telemetry information.
     /// This member is required.
     public var appMonitorDetails: RUMClientTypes.AppMonitorDetails?
@@ -1499,12 +1499,12 @@ public struct PutRumEventsInput {
     }
 }
 
-public struct PutRumEventsOutput {
+public struct PutRumEventsOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct TagResourceInput {
+public struct TagResourceInput: Swift.Sendable {
     /// The ARN of the CloudWatch RUM resource that you're adding tags to.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -1522,12 +1522,12 @@ public struct TagResourceInput {
     }
 }
 
-public struct TagResourceOutput {
+public struct TagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UntagResourceInput {
+public struct UntagResourceInput: Swift.Sendable {
     /// The ARN of the CloudWatch RUM resource that you're removing tags from.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -1545,7 +1545,7 @@ public struct UntagResourceInput {
     }
 }
 
-public struct UntagResourceOutput {
+public struct UntagResourceOutput: Swift.Sendable {
 
     public init() { }
 }

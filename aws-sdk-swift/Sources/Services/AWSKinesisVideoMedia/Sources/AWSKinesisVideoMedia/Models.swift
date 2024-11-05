@@ -169,7 +169,7 @@ public struct ResourceNotFoundException: ClientRuntime.ModeledError, AWSClientRu
 
 extension KinesisVideoMediaClientTypes {
 
-    public enum StartSelectorType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum StartSelectorType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case continuationToken
         case earliest
         case fragmentNumber
@@ -209,6 +209,7 @@ extension KinesisVideoMediaClientTypes {
 }
 
 extension KinesisVideoMediaClientTypes {
+
     /// Identifies the chunk on the Kinesis video stream where you want the GetMedia API to start returning media data. You have the following options to identify the starting chunk:
     ///
     /// * Choose the latest (or oldest) chunk.
@@ -216,7 +217,7 @@ extension KinesisVideoMediaClientTypes {
     /// * Identify a specific chunk. You can identify a specific chunk either by providing a fragment number or timestamp (server or producer).
     ///
     /// * Each chunk's metadata includes a continuation token as a Matroska (MKV) tag (AWS_KINESISVIDEO_CONTINUATION_TOKEN). If your previous GetMedia request terminated, you can use this tag value in your next GetMedia request. The API then starts returning chunks starting where the last API ended.
-    public struct StartSelector {
+    public struct StartSelector: Swift.Sendable {
         /// Specifies the fragment number from where you want the GetMedia API to start returning the fragments.
         public var afterFragmentNumber: Swift.String?
         /// Continuation token that Kinesis Video Streams returned in the previous GetMedia response. The GetMedia API then starts with the chunk identified by the continuation token.
@@ -253,10 +254,9 @@ extension KinesisVideoMediaClientTypes {
             self.startTimestamp = startTimestamp
         }
     }
-
 }
 
-public struct GetMediaInput {
+public struct GetMediaInput: Swift.Sendable {
     /// Identifies the starting chunk to get from the specified stream.
     /// This member is required.
     public var startSelector: KinesisVideoMediaClientTypes.StartSelector?
@@ -277,7 +277,7 @@ public struct GetMediaInput {
     }
 }
 
-public struct GetMediaOutput {
+public struct GetMediaOutput: Swift.Sendable {
     /// The content type of the requested media.
     public var contentType: Swift.String?
     /// The payload Kinesis Video Streams returns is a sequence of chunks from the specified stream. For information about the chunks, see . The chunks that Kinesis Video Streams returns in the GetMedia call also include the following additional Matroska (MKV) tags:

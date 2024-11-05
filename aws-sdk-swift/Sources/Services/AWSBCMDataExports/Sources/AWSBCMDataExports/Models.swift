@@ -129,8 +129,9 @@ public struct ThrottlingException: ClientRuntime.ModeledError, AWSClientRuntime.
 }
 
 extension BCMDataExportsClientTypes {
+
     /// The input failed to meet the constraints specified by the Amazon Web Services service in a specified field.
-    public struct ValidationExceptionField {
+    public struct ValidationExceptionField: Swift.Sendable {
         /// A message with the reason for the validation exception error.
         /// This member is required.
         public var message: Swift.String?
@@ -147,12 +148,11 @@ extension BCMDataExportsClientTypes {
             self.name = name
         }
     }
-
 }
 
 extension BCMDataExportsClientTypes {
 
-    public enum ValidationExceptionReason: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ValidationExceptionReason: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case cannotParse
         case fieldValidationFailed
         case other
@@ -219,8 +219,9 @@ public struct ValidationException: ClientRuntime.ModeledError, AWSClientRuntime.
 }
 
 extension BCMDataExportsClientTypes {
+
     /// The SQL query of column selections and row filters from the data table you want.
-    public struct DataQuery {
+    public struct DataQuery: Swift.Sendable {
         /// The query statement.
         /// This member is required.
         public var queryStatement: Swift.String?
@@ -236,12 +237,11 @@ extension BCMDataExportsClientTypes {
             self.tableConfigurations = tableConfigurations
         }
     }
-
 }
 
 extension BCMDataExportsClientTypes {
 
-    public enum CompressionOption: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum CompressionOption: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case gzip
         case parquet
         case sdkUnknown(Swift.String)
@@ -270,7 +270,7 @@ extension BCMDataExportsClientTypes {
 
 extension BCMDataExportsClientTypes {
 
-    public enum FormatOption: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum FormatOption: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case parquet
         case textOrCsv
         case sdkUnknown(Swift.String)
@@ -299,7 +299,7 @@ extension BCMDataExportsClientTypes {
 
 extension BCMDataExportsClientTypes {
 
-    public enum S3OutputType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum S3OutputType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case custom
         case sdkUnknown(Swift.String)
 
@@ -325,7 +325,7 @@ extension BCMDataExportsClientTypes {
 
 extension BCMDataExportsClientTypes {
 
-    public enum OverwriteOption: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum OverwriteOption: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case createNewReport
         case overwriteReport
         case sdkUnknown(Swift.String)
@@ -353,8 +353,9 @@ extension BCMDataExportsClientTypes {
 }
 
 extension BCMDataExportsClientTypes {
+
     /// The compression type, file format, and overwrite preference for the data export.
-    public struct S3OutputConfigurations {
+    public struct S3OutputConfigurations: Swift.Sendable {
         /// The compression type for the data export.
         /// This member is required.
         public var compression: BCMDataExportsClientTypes.CompressionOption?
@@ -381,12 +382,12 @@ extension BCMDataExportsClientTypes {
             self.overwrite = overwrite
         }
     }
-
 }
 
 extension BCMDataExportsClientTypes {
+
     /// Describes the destination Amazon Simple Storage Service (Amazon S3) bucket name and object keys of a data exports file.
-    public struct S3Destination {
+    public struct S3Destination: Swift.Sendable {
         /// The name of the Amazon S3 bucket used as the destination of a data export file.
         /// This member is required.
         public var s3Bucket: Swift.String?
@@ -413,12 +414,12 @@ extension BCMDataExportsClientTypes {
             self.s3Region = s3Region
         }
     }
-
 }
 
 extension BCMDataExportsClientTypes {
+
     /// The destinations used for data exports.
-    public struct DestinationConfigurations {
+    public struct DestinationConfigurations: Swift.Sendable {
         /// An object that describes the destination of the data exports file.
         /// This member is required.
         public var s3Destination: BCMDataExportsClientTypes.S3Destination?
@@ -430,12 +431,11 @@ extension BCMDataExportsClientTypes {
             self.s3Destination = s3Destination
         }
     }
-
 }
 
 extension BCMDataExportsClientTypes {
 
-    public enum FrequencyOption: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum FrequencyOption: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case synchronous
         case sdkUnknown(Swift.String)
 
@@ -460,8 +460,9 @@ extension BCMDataExportsClientTypes {
 }
 
 extension BCMDataExportsClientTypes {
+
     /// The cadence for Amazon Web Services to update the data export in your S3 bucket.
-    public struct RefreshCadence {
+    public struct RefreshCadence: Swift.Sendable {
         /// The frequency that data exports are updated. The export refreshes each time the source data updates, up to three times daily.
         /// This member is required.
         public var frequency: BCMDataExportsClientTypes.FrequencyOption?
@@ -473,12 +474,12 @@ extension BCMDataExportsClientTypes {
             self.frequency = frequency
         }
     }
-
 }
 
 extension BCMDataExportsClientTypes {
+
     /// The details that are available for an export.
-    public struct Export {
+    public struct Export: Swift.Sendable {
         /// The data query for this specific data export.
         /// This member is required.
         public var dataQuery: BCMDataExportsClientTypes.DataQuery?
@@ -513,12 +514,12 @@ extension BCMDataExportsClientTypes {
             self.refreshCadence = refreshCadence
         }
     }
-
 }
 
 extension BCMDataExportsClientTypes {
+
     /// The tag structure that contains a tag key and value.
-    public struct ResourceTag {
+    public struct ResourceTag: Swift.Sendable {
         /// The key that's associated with the tag.
         /// This member is required.
         public var key: Swift.String?
@@ -535,10 +536,9 @@ extension BCMDataExportsClientTypes {
             self.value = value
         }
     }
-
 }
 
-public struct CreateExportInput {
+public struct CreateExportInput: Swift.Sendable {
     /// The details of the export, including data query, name, description, and destination configuration.
     /// This member is required.
     public var export: BCMDataExportsClientTypes.Export?
@@ -555,7 +555,7 @@ public struct CreateExportInput {
     }
 }
 
-public struct CreateExportOutput {
+public struct CreateExportOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) for this export.
     public var exportArn: Swift.String?
 
@@ -602,7 +602,7 @@ public struct ResourceNotFoundException: ClientRuntime.ModeledError, AWSClientRu
     }
 }
 
-public struct DeleteExportInput {
+public struct DeleteExportInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) for this export.
     /// This member is required.
     public var exportArn: Swift.String?
@@ -615,7 +615,7 @@ public struct DeleteExportInput {
     }
 }
 
-public struct DeleteExportOutput {
+public struct DeleteExportOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) for this export.
     public var exportArn: Swift.String?
 
@@ -627,7 +627,7 @@ public struct DeleteExportOutput {
     }
 }
 
-public struct GetExecutionInput {
+public struct GetExecutionInput: Swift.Sendable {
     /// The ID for this specific execution.
     /// This member is required.
     public var executionId: Swift.String?
@@ -647,7 +647,7 @@ public struct GetExecutionInput {
 
 extension BCMDataExportsClientTypes {
 
-    public enum ExecutionStatusCode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ExecutionStatusCode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case deliveryFailure
         case deliveryInProcess
         case deliverySuccess
@@ -691,7 +691,7 @@ extension BCMDataExportsClientTypes {
 
 extension BCMDataExportsClientTypes {
 
-    public enum ExecutionStatusReason: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ExecutionStatusReason: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case billOwnerChanged
         case insufficientPermission
         case internalFailure
@@ -722,8 +722,9 @@ extension BCMDataExportsClientTypes {
 }
 
 extension BCMDataExportsClientTypes {
+
     /// The status of the execution.
-    public struct ExecutionStatus {
+    public struct ExecutionStatus: Swift.Sendable {
         /// The time when the execution was completed.
         public var completedAt: Foundation.Date?
         /// The time when the execution was created.
@@ -750,10 +751,9 @@ extension BCMDataExportsClientTypes {
             self.statusReason = statusReason
         }
     }
-
 }
 
-public struct GetExecutionOutput {
+public struct GetExecutionOutput: Swift.Sendable {
     /// The ID for this specific execution.
     public var executionId: Swift.String?
     /// The status of this specific execution.
@@ -773,7 +773,7 @@ public struct GetExecutionOutput {
     }
 }
 
-public struct GetExportInput {
+public struct GetExportInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) for this export.
     /// This member is required.
     public var exportArn: Swift.String?
@@ -788,7 +788,7 @@ public struct GetExportInput {
 
 extension BCMDataExportsClientTypes {
 
-    public enum ExportStatusCode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ExportStatusCode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case healthy
         case unhealthy
         case sdkUnknown(Swift.String)
@@ -816,8 +816,9 @@ extension BCMDataExportsClientTypes {
 }
 
 extension BCMDataExportsClientTypes {
+
     /// The status of the data export.
-    public struct ExportStatus {
+    public struct ExportStatus: Swift.Sendable {
         /// The timestamp of when the export was created.
         public var createdAt: Foundation.Date?
         /// The timestamp of when the export was last generated.
@@ -844,10 +845,9 @@ extension BCMDataExportsClientTypes {
             self.statusReason = statusReason
         }
     }
-
 }
 
-public struct GetExportOutput {
+public struct GetExportOutput: Swift.Sendable {
     /// The data for this specific export.
     public var export: BCMDataExportsClientTypes.Export?
     /// The status of this specific export.
@@ -863,7 +863,7 @@ public struct GetExportOutput {
     }
 }
 
-public struct GetTableInput {
+public struct GetTableInput: Swift.Sendable {
     /// The name of the table.
     /// This member is required.
     public var tableName: Swift.String?
@@ -881,8 +881,9 @@ public struct GetTableInput {
 }
 
 extension BCMDataExportsClientTypes {
+
     /// Includes basic information for a data column such as its description, name, and type.
-    public struct Column {
+    public struct Column: Swift.Sendable {
         /// The description for a column.
         public var description: Swift.String?
         /// The column name.
@@ -901,10 +902,9 @@ extension BCMDataExportsClientTypes {
             self.type = type
         }
     }
-
 }
 
-public struct GetTableOutput {
+public struct GetTableOutput: Swift.Sendable {
     /// The table description.
     public var description: Swift.String?
     /// The schema of the table.
@@ -928,7 +928,7 @@ public struct GetTableOutput {
     }
 }
 
-public struct ListExecutionsInput {
+public struct ListExecutionsInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) for this export.
     /// This member is required.
     public var exportArn: Swift.String?
@@ -950,8 +950,9 @@ public struct ListExecutionsInput {
 }
 
 extension BCMDataExportsClientTypes {
+
     /// The reference for the data export update.
-    public struct ExecutionReference {
+    public struct ExecutionReference: Swift.Sendable {
         /// The ID for this specific execution.
         /// This member is required.
         public var executionId: Swift.String?
@@ -968,10 +969,9 @@ extension BCMDataExportsClientTypes {
             self.executionStatus = executionStatus
         }
     }
-
 }
 
-public struct ListExecutionsOutput {
+public struct ListExecutionsOutput: Swift.Sendable {
     /// The list of executions.
     public var executions: [BCMDataExportsClientTypes.ExecutionReference]?
     /// The token to retrieve the next set of results.
@@ -987,7 +987,7 @@ public struct ListExecutionsOutput {
     }
 }
 
-public struct ListExportsInput {
+public struct ListExportsInput: Swift.Sendable {
     /// The maximum number of objects that are returned for the request.
     public var maxResults: Swift.Int?
     /// The token to retrieve the next set of results.
@@ -1004,8 +1004,9 @@ public struct ListExportsInput {
 }
 
 extension BCMDataExportsClientTypes {
+
     /// The reference details for a given export.
-    public struct ExportReference {
+    public struct ExportReference: Swift.Sendable {
         /// The Amazon Resource Name (ARN) for this export.
         /// This member is required.
         public var exportArn: Swift.String?
@@ -1027,10 +1028,9 @@ extension BCMDataExportsClientTypes {
             self.exportStatus = exportStatus
         }
     }
-
 }
 
-public struct ListExportsOutput {
+public struct ListExportsOutput: Swift.Sendable {
     /// The details of the exports, including name and export status.
     public var exports: [BCMDataExportsClientTypes.ExportReference]?
     /// The token to retrieve the next set of results.
@@ -1046,7 +1046,7 @@ public struct ListExportsOutput {
     }
 }
 
-public struct ListTablesInput {
+public struct ListTablesInput: Swift.Sendable {
     /// The maximum number of objects that are returned for the request.
     public var maxResults: Swift.Int?
     /// The token to retrieve the next set of results.
@@ -1063,8 +1063,9 @@ public struct ListTablesInput {
 }
 
 extension BCMDataExportsClientTypes {
+
     /// The properties for the data export table.
-    public struct TablePropertyDescription {
+    public struct TablePropertyDescription: Swift.Sendable {
         /// The default value for the table.
         public var defaultValue: Swift.String?
         /// The description for the table.
@@ -1087,12 +1088,12 @@ extension BCMDataExportsClientTypes {
             self.validValues = validValues
         }
     }
-
 }
 
 extension BCMDataExportsClientTypes {
+
     /// The details for the data export table.
-    public struct Table {
+    public struct Table: Swift.Sendable {
         /// The description for the table.
         public var description: Swift.String?
         /// The name of the table.
@@ -1111,10 +1112,9 @@ extension BCMDataExportsClientTypes {
             self.tableProperties = tableProperties
         }
     }
-
 }
 
-public struct ListTablesOutput {
+public struct ListTablesOutput: Swift.Sendable {
     /// The token to retrieve the next set of results.
     public var nextToken: Swift.String?
     /// The list of tables.
@@ -1130,7 +1130,7 @@ public struct ListTablesOutput {
     }
 }
 
-public struct ListTagsForResourceInput {
+public struct ListTagsForResourceInput: Swift.Sendable {
     /// The maximum number of objects that are returned for the request.
     public var maxResults: Swift.Int?
     /// The token to retrieve the next set of results.
@@ -1151,7 +1151,7 @@ public struct ListTagsForResourceInput {
     }
 }
 
-public struct ListTagsForResourceOutput {
+public struct ListTagsForResourceOutput: Swift.Sendable {
     /// The token to retrieve the next set of results.
     public var nextToken: Swift.String?
     /// An optional list of tags to associate with the specified export. Each tag consists of a key and a value, and each key must be unique for the resource.
@@ -1167,7 +1167,7 @@ public struct ListTagsForResourceOutput {
     }
 }
 
-public struct TagResourceInput {
+public struct TagResourceInput: Swift.Sendable {
     /// The unique identifier for the resource.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -1185,12 +1185,12 @@ public struct TagResourceInput {
     }
 }
 
-public struct TagResourceOutput {
+public struct TagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UntagResourceInput {
+public struct UntagResourceInput: Swift.Sendable {
     /// The unique identifier for the resource.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -1208,12 +1208,12 @@ public struct UntagResourceInput {
     }
 }
 
-public struct UntagResourceOutput {
+public struct UntagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdateExportInput {
+public struct UpdateExportInput: Swift.Sendable {
     /// The name and query details for the export.
     /// This member is required.
     public var export: BCMDataExportsClientTypes.Export?
@@ -1231,7 +1231,7 @@ public struct UpdateExportInput {
     }
 }
 
-public struct UpdateExportOutput {
+public struct UpdateExportOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) for this export.
     public var exportArn: Swift.String?
 

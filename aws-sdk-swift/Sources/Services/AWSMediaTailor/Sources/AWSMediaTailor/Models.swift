@@ -32,19 +32,21 @@ import struct Smithy.URIQueryItem
 @_spi(SmithyReadWrite) import struct SmithyReadWrite.WritingClosureBox
 @_spi(SmithyTimestamps) import struct SmithyTimestamps.TimestampFormatter
 
-public struct TagResourceOutput {
+
+public struct TagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UntagResourceOutput {
+public struct UntagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
 extension MediaTailorClientTypes {
+
     /// For SCTE35_ENHANCED output, defines a key and corresponding value. MediaTailor generates these pairs within the EXT-X-ASSETtag.
-    public struct KeyValuePair {
+    public struct KeyValuePair: Swift.Sendable {
         /// For SCTE35_ENHANCED output, defines a key. MediaTailor takes this key, and its associated value, and generates the key/value pair within the EXT-X-ASSETtag. If you specify a key, you must also specify a corresponding value.
         /// This member is required.
         public var key: Swift.String?
@@ -61,12 +63,11 @@ extension MediaTailorClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension MediaTailorClientTypes {
 
-    public enum MessageType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum MessageType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case spliceInsert
         case timeSignal
         case sdkUnknown(Swift.String)
@@ -94,8 +95,9 @@ extension MediaTailorClientTypes {
 }
 
 extension MediaTailorClientTypes {
+
     /// Slate VOD source configuration.
-    public struct SlateSource {
+    public struct SlateSource: Swift.Sendable {
         /// The name of the source location where the slate VOD source is stored.
         public var sourceLocationName: Swift.String?
         /// The slate VOD source name. The VOD source must already exist in a source location before it can be used for slate.
@@ -110,12 +112,12 @@ extension MediaTailorClientTypes {
             self.vodSourceName = vodSourceName
         }
     }
-
 }
 
 extension MediaTailorClientTypes {
+
     /// Splice insert message configuration.
-    public struct SpliceInsertMessage {
+    public struct SpliceInsertMessage: Swift.Sendable {
         /// This is written to splice_insert.avail_num, as defined in section 9.7.3.1 of the SCTE-35 specification. The default value is 0. Values must be between 0 and 256, inclusive.
         public var availNum: Swift.Int?
         /// This is written to splice_insert.avails_expected, as defined in section 9.7.3.1 of the SCTE-35 specification. The default value is 0. Values must be between 0 and 256, inclusive.
@@ -138,12 +140,12 @@ extension MediaTailorClientTypes {
             self.uniqueProgramId = uniqueProgramId
         }
     }
-
 }
 
 extension MediaTailorClientTypes {
+
     /// The segmentation_descriptor message can contain advanced metadata fields, like content identifiers, to convey a wide range of information about the ad break. MediaTailor writes the ad metadata in the egress manifest as part of the EXT-X-DATERANGE or EventStream ad marker's SCTE-35 data. segmentation_descriptor messages must be sent with the time_signal message type. See the segmentation_descriptor() table of the 2022 SCTE-35 specification for more information.
-    public struct SegmentationDescriptor {
+    public struct SegmentationDescriptor: Swift.Sendable {
         /// The segment number to assign to the segmentation_descriptor.segment_num message, as defined in section 10.3.3.1 of the 2022 SCTE-35 specification Values must be between 0 and 256, inclusive. The default value is 0.
         public var segmentNum: Swift.Int?
         /// The Event Identifier to assign to the segmentation_descriptor.segmentation_event_id message, as defined in section 10.3.3.1 of the 2022 SCTE-35 specification. The default value is 1.
@@ -182,12 +184,12 @@ extension MediaTailorClientTypes {
             self.subSegmentsExpected = subSegmentsExpected
         }
     }
-
 }
 
 extension MediaTailorClientTypes {
+
     /// The SCTE-35 time_signal message can be sent with one or more segmentation_descriptor messages. A time_signal message can be sent only if a single segmentation_descriptor message is sent. The time_signal message contains only the splice_time field which is constructed using a given presentation timestamp. When sending a time_signal message, the splice_command_type field in the splice_info_section message is set to 6 (0x06). See the time_signal() table of the 2022 SCTE-35 specification for more information.
-    public struct TimeSignalMessage {
+    public struct TimeSignalMessage: Swift.Sendable {
         /// The configurations for the SCTE-35 segmentation_descriptor message(s) sent with the time_signal message.
         public var segmentationDescriptors: [MediaTailorClientTypes.SegmentationDescriptor]?
 
@@ -198,12 +200,12 @@ extension MediaTailorClientTypes {
             self.segmentationDescriptors = segmentationDescriptors
         }
     }
-
 }
 
 extension MediaTailorClientTypes {
+
     /// Ad break configuration parameters.
-    public struct AdBreak {
+    public struct AdBreak: Swift.Sendable {
         /// Defines a list of key/value pairs that MediaTailor generates within the EXT-X-ASSETtag for SCTE35_ENHANCED output.
         public var adBreakMetadata: [MediaTailorClientTypes.KeyValuePair]?
         /// The SCTE-35 ad insertion type. Accepted value: SPLICE_INSERT, TIME_SIGNAL.
@@ -235,12 +237,11 @@ extension MediaTailorClientTypes {
             self.timeSignalMessage = timeSignalMessage
         }
     }
-
 }
 
 extension MediaTailorClientTypes {
 
-    public enum AlertCategory: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AlertCategory: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case info
         case playbackWarning
         case schedulingError
@@ -271,8 +272,9 @@ extension MediaTailorClientTypes {
 }
 
 extension MediaTailorClientTypes {
+
     /// Alert configuration parameters.
-    public struct Alert {
+    public struct Alert: Swift.Sendable {
         /// The code for the alert. For example, NOT_PROCESSED.
         /// This member is required.
         public var alertCode: Swift.String?
@@ -308,12 +310,12 @@ extension MediaTailorClientTypes {
             self.resourceArn = resourceArn
         }
     }
-
 }
 
 extension MediaTailorClientTypes {
+
     /// Clip range configuration for the VOD source associated with the program.
-    public struct ClipRange {
+    public struct ClipRange: Swift.Sendable {
         /// The end offset of the clip range, in milliseconds, starting from the beginning of the VOD source associated with the program.
         public var endOffsetMillis: Swift.Int?
         /// The start offset of the clip range, in milliseconds. This offset truncates the start at the number of milliseconds into the duration of the VOD source.
@@ -328,12 +330,12 @@ extension MediaTailorClientTypes {
             self.startOffsetMillis = startOffsetMillis
         }
     }
-
 }
 
 extension MediaTailorClientTypes {
+
     /// A playlist of media (VOD and/or live) to be played instead of the default media on a particular program.
-    public struct AlternateMedia {
+    public struct AlternateMedia: Swift.Sendable {
         /// Ad break configuration parameters defined in AlternateMedia.
         public var adBreaks: [MediaTailorClientTypes.AdBreak]?
         /// Clip range configuration for the VOD source associated with the program.
@@ -368,12 +370,12 @@ extension MediaTailorClientTypes {
             self.vodSourceName = vodSourceName
         }
     }
-
 }
 
 extension MediaTailorClientTypes {
+
     /// An AudienceMedia object contains an Audience and a list of AlternateMedia.
-    public struct AudienceMedia {
+    public struct AudienceMedia: Swift.Sendable {
         /// The list of AlternateMedia defined in AudienceMedia.
         public var alternateMedia: [MediaTailorClientTypes.AlternateMedia]?
         /// The Audience defined in AudienceMedia.
@@ -388,12 +390,11 @@ extension MediaTailorClientTypes {
             self.audience = audience
         }
     }
-
 }
 
 extension MediaTailorClientTypes {
 
-    public enum Operator: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Operator: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case equals
         case sdkUnknown(Swift.String)
 
@@ -418,8 +419,9 @@ extension MediaTailorClientTypes {
 }
 
 extension MediaTailorClientTypes {
+
     /// MediaTailor only places (consumes) prefetched ads if the ad break meets the criteria defined by the dynamic variables. This gives you granular control over which ad break to place the prefetched ads into. As an example, let's say that you set DynamicVariable to scte.event_id and Operator to EQUALS, and your playback configuration has an ADS URL of https://my.ads.server.com/path?&podId=[scte.avail_num]&event=[scte.event_id]&duration=[session.avail_duration_secs]. And the prefetch request to the ADS contains these values https://my.ads.server.com/path?&podId=3&event=my-awesome-event&duration=30. MediaTailor will only insert the prefetched ads into the ad break if has a SCTE marker with an event id of my-awesome-event, since it must match the event id that MediaTailor uses to query the ADS. You can specify up to five AvailMatchingCriteria. If you specify multiple AvailMatchingCriteria, MediaTailor combines them to match using a logical AND. You can model logical OR combinations by creating multiple prefetch schedules.
-    public struct AvailMatchingCriteria {
+    public struct AvailMatchingCriteria: Swift.Sendable {
         /// The dynamic variable(s) that MediaTailor should use as avail matching criteria. MediaTailor only places the prefetched ads into the avail if the avail matches the criteria defined by the dynamic variable. For information about dynamic variables, see [Using dynamic ad variables](https://docs.aws.amazon.com/mediatailor/latest/ug/variables.html) in the MediaTailor User Guide. You can include up to 100 dynamic variables.
         /// This member is required.
         public var dynamicVariable: Swift.String?
@@ -436,12 +438,11 @@ extension MediaTailorClientTypes {
             self.`operator` = `operator`
         }
     }
-
 }
 
 extension MediaTailorClientTypes {
 
-    public enum LogType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum LogType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case asRun
         case sdkUnknown(Swift.String)
 
@@ -466,8 +467,9 @@ extension MediaTailorClientTypes {
 }
 
 extension MediaTailorClientTypes {
+
     /// The log configuration for the channel.
-    public struct LogConfigurationForChannel {
+    public struct LogConfigurationForChannel: Swift.Sendable {
         /// The log types.
         public var logTypes: [MediaTailorClientTypes.LogType]?
 
@@ -478,12 +480,12 @@ extension MediaTailorClientTypes {
             self.logTypes = logTypes
         }
     }
-
 }
 
 extension MediaTailorClientTypes {
+
     /// Dash manifest configuration parameters.
-    public struct DashPlaylistSettings {
+    public struct DashPlaylistSettings: Swift.Sendable {
         /// The total duration (in seconds) of each manifest. Minimum value: 30 seconds. Maximum value: 3600 seconds.
         public var manifestWindowSeconds: Swift.Int?
         /// Minimum amount of content (measured in seconds) that a player must keep available in the buffer. Minimum value: 2 seconds. Maximum value: 60 seconds.
@@ -506,12 +508,11 @@ extension MediaTailorClientTypes {
             self.suggestedPresentationDelaySeconds = suggestedPresentationDelaySeconds
         }
     }
-
 }
 
 extension MediaTailorClientTypes {
 
-    public enum AdMarkupType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AdMarkupType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case daterange
         case scte35Enhanced
         case sdkUnknown(Swift.String)
@@ -539,8 +540,9 @@ extension MediaTailorClientTypes {
 }
 
 extension MediaTailorClientTypes {
+
     /// HLS playlist configuration parameters.
-    public struct HlsPlaylistSettings {
+    public struct HlsPlaylistSettings: Swift.Sendable {
         /// Determines the type of SCTE 35 tags to use in ad markup. Specify DATERANGE to use DATERANGE tags (for live or VOD content). Specify SCTE35_ENHANCED to use EXT-X-CUE-OUT and EXT-X-CUE-IN tags (for VOD content only).
         public var adMarkupType: [MediaTailorClientTypes.AdMarkupType]?
         /// The total duration (in seconds) of each manifest. Minimum value: 30 seconds. Maximum value: 3600 seconds.
@@ -555,12 +557,12 @@ extension MediaTailorClientTypes {
             self.manifestWindowSeconds = manifestWindowSeconds
         }
     }
-
 }
 
 extension MediaTailorClientTypes {
+
     /// The output item response.
-    public struct ResponseOutputItem {
+    public struct ResponseOutputItem: Swift.Sendable {
         /// DASH manifest configuration settings.
         public var dashPlaylistSettings: MediaTailorClientTypes.DashPlaylistSettings?
         /// HLS manifest configuration settings.
@@ -590,12 +592,12 @@ extension MediaTailorClientTypes {
             self.sourceGroup = sourceGroup
         }
     }
-
 }
 
 extension MediaTailorClientTypes {
+
     /// The configuration parameters for a channel. For information about MediaTailor channels, see [Working with channels](https://docs.aws.amazon.com/mediatailor/latest/ug/channel-assembly-channels.html) in the MediaTailor User Guide.
-    public struct Channel {
+    public struct Channel: Swift.Sendable {
         /// The ARN of the channel.
         /// This member is required.
         public var arn: Swift.String?
@@ -657,12 +659,11 @@ extension MediaTailorClientTypes {
             self.tier = tier
         }
     }
-
 }
 
 extension MediaTailorClientTypes {
 
-    public enum ModelType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ModelType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case dash
         case hls
         case sdkUnknown(Swift.String)
@@ -690,8 +691,9 @@ extension MediaTailorClientTypes {
 }
 
 extension MediaTailorClientTypes {
+
     /// The HTTP package configuration properties for the requested VOD source.
-    public struct HttpPackageConfiguration {
+    public struct HttpPackageConfiguration: Swift.Sendable {
         /// The relative path to the URL for this VOD source. This is combined with SourceLocation::HttpConfiguration::BaseUrl to form a valid URL.
         /// This member is required.
         public var path: Swift.String?
@@ -713,12 +715,12 @@ extension MediaTailorClientTypes {
             self.type = type
         }
     }
-
 }
 
 extension MediaTailorClientTypes {
+
     /// Live source configuration parameters.
-    public struct LiveSource {
+    public struct LiveSource: Swift.Sendable {
         /// The ARN for the live source.
         /// This member is required.
         public var arn: Swift.String?
@@ -757,12 +759,11 @@ extension MediaTailorClientTypes {
             self.tags = tags
         }
     }
-
 }
 
 extension MediaTailorClientTypes {
 
-    public enum FillPolicy: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum FillPolicy: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case fullAvailOnly
         case partialAvail
         case sdkUnknown(Swift.String)
@@ -791,7 +792,7 @@ extension MediaTailorClientTypes {
 
 extension MediaTailorClientTypes {
 
-    public enum Mode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Mode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case afterLiveEdge
         case behindLiveEdge
         case off
@@ -822,8 +823,9 @@ extension MediaTailorClientTypes {
 }
 
 extension MediaTailorClientTypes {
+
     /// The configuration for avail suppression, also known as ad suppression. For more information about ad suppression, see [Ad Suppression](https://docs.aws.amazon.com/mediatailor/latest/ug/ad-behavior.html).
-    public struct AvailSuppression {
+    public struct AvailSuppression: Swift.Sendable {
         /// Defines the policy to apply to the avail suppression mode. BEHIND_LIVE_EDGE will always use the full avail suppression policy. AFTER_LIVE_EDGE mode can be used to invoke partial ad break fills when a session starts mid-break.
         public var fillPolicy: MediaTailorClientTypes.FillPolicy?
         /// Sets the ad suppression mode. By default, ad suppression is off and all ad breaks are filled with ads or slate. When Mode is set to BEHIND_LIVE_EDGE, ad suppression is active and MediaTailor won't fill ad breaks on or behind the ad suppression Value time in the manifest lookback window. When Mode is set to AFTER_LIVE_EDGE, ad suppression is active and MediaTailor won't fill ad breaks that are within the live edge plus the avail suppression value.
@@ -842,12 +844,12 @@ extension MediaTailorClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension MediaTailorClientTypes {
+
     /// The configuration for bumpers. Bumpers are short audio or video clips that play at the start or before the end of an ad break. To learn more about bumpers, see [Bumpers](https://docs.aws.amazon.com/mediatailor/latest/ug/bumpers.html).
-    public struct Bumper {
+    public struct Bumper: Swift.Sendable {
         /// The URL for the end bumper asset.
         public var endUrl: Swift.String?
         /// The URL for the start bumper asset.
@@ -862,12 +864,12 @@ extension MediaTailorClientTypes {
             self.startUrl = startUrl
         }
     }
-
 }
 
 extension MediaTailorClientTypes {
+
     /// The configuration for using a content delivery network (CDN), like Amazon CloudFront, for content and ad segment management.
-    public struct CdnConfiguration {
+    public struct CdnConfiguration: Swift.Sendable {
         /// A non-default content delivery network (CDN) to serve ad segments. By default, AWS Elemental MediaTailor uses Amazon CloudFront with default cache settings as its CDN for ad segments. To set up an alternate CDN, create a rule in your CDN for the origin ads.mediatailor.<region>.amazonaws.com. Then specify the rule's name in this AdSegmentUrlPrefix. When AWS Elemental MediaTailor serves a manifest, it reports your CDN as the source for ad segments.
         public var adSegmentUrlPrefix: Swift.String?
         /// A content delivery network (CDN) to cache content segments, so that content requests don’t always have to go to the origin server. First, create a rule in your CDN for the content segment origin server. Then specify the rule's name in this ContentSegmentUrlPrefix. When AWS Elemental MediaTailor serves a manifest, it reports your CDN as the source for content segments.
@@ -882,12 +884,11 @@ extension MediaTailorClientTypes {
             self.contentSegmentUrlPrefix = contentSegmentUrlPrefix
         }
     }
-
 }
 
 extension MediaTailorClientTypes {
 
-    public enum OriginManifestType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum OriginManifestType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case multiPeriod
         case singlePeriod
         case sdkUnknown(Swift.String)
@@ -915,8 +916,9 @@ extension MediaTailorClientTypes {
 }
 
 extension MediaTailorClientTypes {
+
     /// The configuration for DASH content.
-    public struct DashConfiguration {
+    public struct DashConfiguration: Swift.Sendable {
         /// The URL generated by MediaTailor to initiate a playback session. The session uses server-side reporting. This setting is ignored in PUT operations.
         public var manifestEndpointPrefix: Swift.String?
         /// The setting that controls whether MediaTailor includes the Location tag in DASH manifests. MediaTailor populates the Location tag with the URL for manifest update requests, to be used by players that don't support sticky redirects. Disable this if you have CDN routing rules set up for accessing MediaTailor manifests, and you are either using client-side reporting or your players support sticky HTTP redirects. Valid values are DISABLED and EMT_DEFAULT. The EMT_DEFAULT setting enables the inclusion of the tag and is the default value.
@@ -935,12 +937,12 @@ extension MediaTailorClientTypes {
             self.originManifestType = originManifestType
         }
     }
-
 }
 
 extension MediaTailorClientTypes {
+
     /// The configuration for HLS content.
-    public struct HlsConfiguration {
+    public struct HlsConfiguration: Swift.Sendable {
         /// The URL that is used to initiate a playback session for devices that support Apple HLS. The session uses server-side reporting.
         public var manifestEndpointPrefix: Swift.String?
 
@@ -951,13 +953,12 @@ extension MediaTailorClientTypes {
             self.manifestEndpointPrefix = manifestEndpointPrefix
         }
     }
-
 }
 
 extension MediaTailorClientTypes {
 
     /// Insertion Mode controls whether players can use stitched or guided ad insertion.
-    public enum InsertionMode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum InsertionMode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case playerSelect
         case stitchedOnly
         case sdkUnknown(Swift.String)
@@ -985,8 +986,9 @@ extension MediaTailorClientTypes {
 }
 
 extension MediaTailorClientTypes {
+
     /// The configuration for pre-roll ad insertion.
-    public struct LivePreRollConfiguration {
+    public struct LivePreRollConfiguration: Swift.Sendable {
         /// The URL for the ad decision server (ADS) for pre-roll ads. This includes the specification of static parameters and placeholders for dynamic parameters. AWS Elemental MediaTailor substitutes player-specific and session-specific parameters as needed when calling the ADS. Alternately, for testing, you can provide a static VAST URL. The maximum length is 25,000 characters.
         public var adDecisionServerUrl: Swift.String?
         /// The maximum allowed duration for the pre-roll ad avail. AWS Elemental MediaTailor won't play pre-roll ads to exceed this duration, regardless of the total duration of ads that the ADS returns.
@@ -1001,12 +1003,12 @@ extension MediaTailorClientTypes {
             self.maxDurationSeconds = maxDurationSeconds
         }
     }
-
 }
 
 extension MediaTailorClientTypes {
+
     /// Returns Amazon CloudWatch log settings for a playback configuration.
-    public struct LogConfiguration {
+    public struct LogConfiguration: Swift.Sendable {
         /// The percentage of session logs that MediaTailor sends to your Cloudwatch Logs account. For example, if your playback configuration has 1000 sessions and percentEnabled is set to 60, MediaTailor sends logs for 600 of the sessions to CloudWatch Logs. MediaTailor decides at random which of the playback configuration sessions to send logs for. If you want to view logs for a specific session, you can use the [debug log mode](https://docs.aws.amazon.com/mediatailor/latest/ug/debug-log-mode.html). Valid values: 0 - 100
         /// This member is required.
         public var percentEnabled: Swift.Int?
@@ -1018,12 +1020,12 @@ extension MediaTailorClientTypes {
             self.percentEnabled = percentEnabled
         }
     }
-
 }
 
 extension MediaTailorClientTypes {
+
     /// For HLS, when set to true, MediaTailor passes through EXT-X-CUE-IN, EXT-X-CUE-OUT, and EXT-X-SPLICEPOINT-SCTE35 ad markers from the origin manifest to the MediaTailor personalized manifest. No logic is applied to these ad markers. For example, if EXT-X-CUE-OUT has a value of 60, but no ads are filled for that ad break, MediaTailor will not set the value to 0.
-    public struct AdMarkerPassthrough {
+    public struct AdMarkerPassthrough: Swift.Sendable {
         /// Enables ad marker passthrough for your configuration.
         public var enabled: Swift.Bool?
 
@@ -1034,12 +1036,12 @@ extension MediaTailorClientTypes {
             self.enabled = enabled
         }
     }
-
 }
 
 extension MediaTailorClientTypes {
+
     /// The configuration for manifest processing rules. Manifest processing rules enable customization of the personalized manifests created by MediaTailor.
-    public struct ManifestProcessingRules {
+    public struct ManifestProcessingRules: Swift.Sendable {
         /// For HLS, when set to true, MediaTailor passes through EXT-X-CUE-IN, EXT-X-CUE-OUT, and EXT-X-SPLICEPOINT-SCTE35 ad markers from the origin manifest to the MediaTailor personalized manifest. No logic is applied to these ad markers. For example, if EXT-X-CUE-OUT has a value of 60, but no ads are filled for that ad break, MediaTailor will not set the value to 0.
         public var adMarkerPassthrough: MediaTailorClientTypes.AdMarkerPassthrough?
 
@@ -1050,12 +1052,12 @@ extension MediaTailorClientTypes {
             self.adMarkerPassthrough = adMarkerPassthrough
         }
     }
-
 }
 
 extension MediaTailorClientTypes {
+
     /// A playback configuration. For information about MediaTailor configurations, see [Working with configurations in AWS Elemental MediaTailor](https://docs.aws.amazon.com/mediatailor/latest/ug/configurations.html).
-    public struct PlaybackConfiguration {
+    public struct PlaybackConfiguration: Swift.Sendable {
         /// The URL for the ad decision server (ADS). This includes the specification of static parameters and placeholders for dynamic parameters. AWS Elemental MediaTailor substitutes player-specific and session-specific parameters as needed when calling the ADS. Alternately, for testing you can provide a static VAST URL. The maximum length is 25,000 characters.
         public var adDecisionServerUrl: Swift.String?
         /// The configuration for avail suppression, also known as ad suppression. For more information about ad suppression, see [Ad Suppression](https://docs.aws.amazon.com/mediatailor/latest/ug/ad-behavior.html).
@@ -1142,12 +1144,12 @@ extension MediaTailorClientTypes {
             self.videoContentSourceUrl = videoContentSourceUrl
         }
     }
-
 }
 
 extension MediaTailorClientTypes {
+
     /// A complex type that contains settings that determine how and when that MediaTailor places prefetched ads into upcoming ad breaks.
-    public struct PrefetchConsumption {
+    public struct PrefetchConsumption: Swift.Sendable {
         /// If you only want MediaTailor to insert prefetched ads into avails (ad breaks) that match specific dynamic variables, such as scte.event_id, set the avail matching criteria.
         public var availMatchingCriteria: [MediaTailorClientTypes.AvailMatchingCriteria]?
         /// The time when MediaTailor no longer considers the prefetched ads for use in an ad break. MediaTailor automatically deletes prefetch schedules no less than seven days after the end time. If you'd like to manually delete the prefetch schedule, you can call DeletePrefetchSchedule.
@@ -1167,12 +1169,12 @@ extension MediaTailorClientTypes {
             self.startTime = startTime
         }
     }
-
 }
 
 extension MediaTailorClientTypes {
+
     /// A complex type that contains settings governing when MediaTailor prefetches ads, and which dynamic variables that MediaTailor includes in the request to the ad decision server.
-    public struct PrefetchRetrieval {
+    public struct PrefetchRetrieval: Swift.Sendable {
         /// The dynamic variables to use for substitution during prefetch requests to the ad decision server (ADS). You initially configure [dynamic variables](https://docs.aws.amazon.com/mediatailor/latest/ug/variables.html) for the ADS URL when you set up your playback configuration. When you specify DynamicVariables for prefetch retrieval, MediaTailor includes the dynamic variables in the request to the ADS.
         public var dynamicVariables: [Swift.String: Swift.String]?
         /// The time when prefetch retrieval ends for the ad break. Prefetching will be attempted for manifest requests that occur at or before this time.
@@ -1192,12 +1194,12 @@ extension MediaTailorClientTypes {
             self.startTime = startTime
         }
     }
-
 }
 
 extension MediaTailorClientTypes {
+
     /// A prefetch schedule allows you to tell MediaTailor to fetch and prepare certain ads before an ad break happens. For more information about ad prefetching, see [Using ad prefetching](https://docs.aws.amazon.com/mediatailor/latest/ug/prefetching-ads.html) in the MediaTailor User Guide.
-    public struct PrefetchSchedule {
+    public struct PrefetchSchedule: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the prefetch schedule.
         /// This member is required.
         public var arn: Swift.String?
@@ -1233,12 +1235,12 @@ extension MediaTailorClientTypes {
             self.streamId = streamId
         }
     }
-
 }
 
 extension MediaTailorClientTypes {
+
     /// The schedule's ad break properties.
-    public struct ScheduleAdBreak {
+    public struct ScheduleAdBreak: Swift.Sendable {
         /// The approximate duration of the ad break, in seconds.
         public var approximateDurationSeconds: Swift.Int?
         /// The approximate time that the ad will start playing.
@@ -1261,12 +1263,11 @@ extension MediaTailorClientTypes {
             self.vodSourceName = vodSourceName
         }
     }
-
 }
 
 extension MediaTailorClientTypes {
 
-    public enum ScheduleEntryType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ScheduleEntryType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case alternateMedia
         case fillerSlate
         case program
@@ -1297,8 +1298,9 @@ extension MediaTailorClientTypes {
 }
 
 extension MediaTailorClientTypes {
+
     /// The properties for a schedule.
-    public struct ScheduleEntry {
+    public struct ScheduleEntry: Swift.Sendable {
         /// The approximate duration of this program, in seconds.
         public var approximateDurationSeconds: Swift.Int?
         /// The approximate time that the program will start playing.
@@ -1353,12 +1355,12 @@ extension MediaTailorClientTypes {
             self.vodSourceName = vodSourceName
         }
     }
-
 }
 
 extension MediaTailorClientTypes {
+
     /// The segment delivery configuration settings.
-    public struct SegmentDeliveryConfiguration {
+    public struct SegmentDeliveryConfiguration: Swift.Sendable {
         /// The base URL of the host or path of the segment delivery server that you're using to serve segments. This is typically a content delivery network (CDN). The URL can be absolute or relative. To use an absolute URL include the protocol, such as https://example.com/some/path. To use a relative URL specify the relative path, such as /some/path*.
         public var baseUrl: Swift.String?
         /// A unique identifier used to distinguish between multiple segment delivery configurations in a source location.
@@ -1373,12 +1375,11 @@ extension MediaTailorClientTypes {
             self.name = name
         }
     }
-
 }
 
 extension MediaTailorClientTypes {
 
-    public enum AccessType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AccessType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case autodetectSigv4
         case s3Sigv4
         case secretsManagerAccessToken
@@ -1409,8 +1410,9 @@ extension MediaTailorClientTypes {
 }
 
 extension MediaTailorClientTypes {
+
     /// AWS Secrets Manager access token configuration parameters. For information about Secrets Manager access token authentication, see [Working with AWS Secrets Manager access token authentication](https://docs.aws.amazon.com/mediatailor/latest/ug/channel-assembly-access-configuration-access-token.html).
-    public struct SecretsManagerAccessTokenConfiguration {
+    public struct SecretsManagerAccessTokenConfiguration: Swift.Sendable {
         /// The name of the HTTP header used to supply the access token in requests to the source location.
         public var headerName: Swift.String?
         /// The Amazon Resource Name (ARN) of the AWS Secrets Manager secret that contains the access token.
@@ -1429,12 +1431,12 @@ extension MediaTailorClientTypes {
             self.secretStringKey = secretStringKey
         }
     }
-
 }
 
 extension MediaTailorClientTypes {
+
     /// Access configuration parameters.
-    public struct AccessConfiguration {
+    public struct AccessConfiguration: Swift.Sendable {
         /// The type of authentication used to access content from HttpConfiguration::BaseUrl on your source location. S3_SIGV4 - AWS Signature Version 4 authentication for Amazon S3 hosted virtual-style access. If your source location base URL is an Amazon S3 bucket, MediaTailor can use AWS Signature Version 4 (SigV4) authentication to access the bucket where your source content is stored. Your MediaTailor source location baseURL must follow the S3 virtual hosted-style request URL format. For example, https://bucket-name.s3.Region.amazonaws.com/key-name. Before you can use S3_SIGV4, you must meet these requirements: • You must allow MediaTailor to access your S3 bucket by granting mediatailor.amazonaws.com principal access in IAM. For information about configuring access in IAM, see Access management in the IAM User Guide. • The mediatailor.amazonaws.com service principal must have permissions to read all top level manifests referenced by the VodSource packaging configurations. • The caller of the API must have s3:GetObject IAM permissions to read all top level manifests referenced by your MediaTailor VodSource packaging configurations. AUTODETECT_SIGV4 - AWS Signature Version 4 authentication for a set of supported services: MediaPackage Version 2 and Amazon S3 hosted virtual-style access. If your source location base URL is a MediaPackage Version 2 endpoint or an Amazon S3 bucket, MediaTailor can use AWS Signature Version 4 (SigV4) authentication to access the resource where your source content is stored. Before you can use AUTODETECT_SIGV4 with a MediaPackage Version 2 endpoint, you must meet these requirements: • You must grant MediaTailor access to your MediaPackage endpoint by granting mediatailor.amazonaws.com principal access in an Origin Access policy on the endpoint. • Your MediaTailor source location base URL must be a MediaPackage V2 endpoint. • The caller of the API must have mediapackagev2:GetObject IAM permissions to read all top level manifests referenced by the MediaTailor source packaging configurations. Before you can use AUTODETECT_SIGV4 with an Amazon S3 bucket, you must meet these requirements: • You must grant MediaTailor access to your S3 bucket by granting mediatailor.amazonaws.com principal access in IAM. For more information about configuring access in IAM, see [Access management](https://docs.aws.amazon.com/IAM/latest/UserGuide/access.html) in the IAM User Guide.. • The mediatailor.amazonaws.com service principal must have permissions to read all top-level manifests referenced by the VodSource packaging configurations. • The caller of the API must have s3:GetObject IAM permissions to read all top level manifests referenced by your MediaTailor VodSource packaging configurations.
         public var accessType: MediaTailorClientTypes.AccessType?
         /// AWS Secrets Manager access token configuration parameters.
@@ -1449,12 +1451,12 @@ extension MediaTailorClientTypes {
             self.secretsManagerAccessTokenConfiguration = secretsManagerAccessTokenConfiguration
         }
     }
-
 }
 
 extension MediaTailorClientTypes {
+
     /// The optional configuration for a server that serves segments. Use this if you want the segment delivery server to be different from the source location server. For example, you can configure your source location server to be an origination server, such as MediaPackage, and the segment delivery server to be a content delivery network (CDN), such as CloudFront. If you don't specify a segment delivery server, then the source location server is used.
-    public struct DefaultSegmentDeliveryConfiguration {
+    public struct DefaultSegmentDeliveryConfiguration: Swift.Sendable {
         /// The hostname of the server that will be used to serve segments. This string must include the protocol, such as https://.
         public var baseUrl: Swift.String?
 
@@ -1465,12 +1467,12 @@ extension MediaTailorClientTypes {
             self.baseUrl = baseUrl
         }
     }
-
 }
 
 extension MediaTailorClientTypes {
+
     /// The HTTP configuration for the source location.
-    public struct HttpConfiguration {
+    public struct HttpConfiguration: Swift.Sendable {
         /// The base URL for the source location host server. This string must include the protocol, such as https://.
         /// This member is required.
         public var baseUrl: Swift.String?
@@ -1482,12 +1484,12 @@ extension MediaTailorClientTypes {
             self.baseUrl = baseUrl
         }
     }
-
 }
 
 extension MediaTailorClientTypes {
+
     /// A source location is a container for sources. For more information about source locations, see [Working with source locations](https://docs.aws.amazon.com/mediatailor/latest/ug/channel-assembly-source-locations.html) in the MediaTailor User Guide.
-    public struct SourceLocation {
+    public struct SourceLocation: Swift.Sendable {
         /// The access configuration for the source location.
         public var accessConfiguration: MediaTailorClientTypes.AccessConfiguration?
         /// The ARN of the SourceLocation.
@@ -1533,12 +1535,12 @@ extension MediaTailorClientTypes {
             self.tags = tags
         }
     }
-
 }
 
 extension MediaTailorClientTypes {
+
     /// VOD source configuration parameters.
-    public struct VodSource {
+    public struct VodSource: Swift.Sendable {
         /// The ARN for the VOD source.
         /// This member is required.
         public var arn: Swift.String?
@@ -1577,12 +1579,12 @@ extension MediaTailorClientTypes {
             self.vodSourceName = vodSourceName
         }
     }
-
 }
 
 extension MediaTailorClientTypes {
+
     /// A location at which a zero-duration ad marker was detected in a VOD source manifest.
-    public struct AdBreakOpportunity {
+    public struct AdBreakOpportunity: Swift.Sendable {
         /// The offset in milliseconds from the start of the VOD source at which an ad marker was detected.
         /// This member is required.
         public var offsetMillis: Swift.Int?
@@ -1594,7 +1596,6 @@ extension MediaTailorClientTypes {
             self.offsetMillis = offsetMillis
         }
     }
-
 }
 
 /// A request contains unexpected data.
@@ -1621,7 +1622,7 @@ public struct BadRequestException: ClientRuntime.ModeledError, AWSClientRuntime.
     }
 }
 
-public struct DeleteChannelPolicyInput {
+public struct DeleteChannelPolicyInput: Swift.Sendable {
     /// The name of the channel associated with this channel policy.
     /// This member is required.
     public var channelName: Swift.String?
@@ -1634,12 +1635,12 @@ public struct DeleteChannelPolicyInput {
     }
 }
 
-public struct DeleteChannelPolicyOutput {
+public struct DeleteChannelPolicyOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct GetChannelPolicyInput {
+public struct GetChannelPolicyInput: Swift.Sendable {
     /// The name of the channel associated with this Channel Policy.
     /// This member is required.
     public var channelName: Swift.String?
@@ -1652,7 +1653,7 @@ public struct GetChannelPolicyInput {
     }
 }
 
-public struct GetChannelPolicyOutput {
+public struct GetChannelPolicyOutput: Swift.Sendable {
     /// The IAM policy for the channel. IAM policies are used to control access to your channel.
     public var policy: Swift.String?
 
@@ -1664,7 +1665,7 @@ public struct GetChannelPolicyOutput {
     }
 }
 
-public struct PutChannelPolicyInput {
+public struct PutChannelPolicyInput: Swift.Sendable {
     /// The channel name associated with this Channel Policy.
     /// This member is required.
     public var channelName: Swift.String?
@@ -1682,12 +1683,12 @@ public struct PutChannelPolicyInput {
     }
 }
 
-public struct PutChannelPolicyOutput {
+public struct PutChannelPolicyOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct ConfigureLogsForChannelInput {
+public struct ConfigureLogsForChannelInput: Swift.Sendable {
     /// The name of the channel.
     /// This member is required.
     public var channelName: Swift.String?
@@ -1705,7 +1706,7 @@ public struct ConfigureLogsForChannelInput {
     }
 }
 
-public struct ConfigureLogsForChannelOutput {
+public struct ConfigureLogsForChannelOutput: Swift.Sendable {
     /// The name of the channel.
     public var channelName: Swift.String?
     /// The types of logs collected.
@@ -1722,8 +1723,9 @@ public struct ConfigureLogsForChannelOutput {
 }
 
 extension MediaTailorClientTypes {
+
     /// The output configuration for this channel.
-    public struct RequestOutputItem {
+    public struct RequestOutputItem: Swift.Sendable {
         /// DASH manifest configuration parameters.
         public var dashPlaylistSettings: MediaTailorClientTypes.DashPlaylistSettings?
         /// HLS playlist configuration parameters.
@@ -1748,12 +1750,11 @@ extension MediaTailorClientTypes {
             self.sourceGroup = sourceGroup
         }
     }
-
 }
 
 extension MediaTailorClientTypes {
 
-    public enum PlaybackMode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum PlaybackMode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case linear
         case loop
         case sdkUnknown(Swift.String)
@@ -1782,7 +1783,7 @@ extension MediaTailorClientTypes {
 
 extension MediaTailorClientTypes {
 
-    public enum Tier: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Tier: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case basic
         case standard
         case sdkUnknown(Swift.String)
@@ -1810,8 +1811,9 @@ extension MediaTailorClientTypes {
 }
 
 extension MediaTailorClientTypes {
+
     /// The configuration for time-shifted viewing.
-    public struct TimeShiftConfiguration {
+    public struct TimeShiftConfiguration: Swift.Sendable {
         /// The maximum time delay for time-shifted viewing. The minimum allowed maximum time delay is 0 seconds, and the maximum allowed maximum time delay is 21600 seconds (6 hours).
         /// This member is required.
         public var maxTimeDelaySeconds: Swift.Int?
@@ -1823,10 +1825,9 @@ extension MediaTailorClientTypes {
             self.maxTimeDelaySeconds = maxTimeDelaySeconds
         }
     }
-
 }
 
-public struct CreateChannelInput {
+public struct CreateChannelInput: Swift.Sendable {
     /// The list of audiences defined in channel.
     public var audiences: [Swift.String]?
     /// The name of the channel.
@@ -1871,7 +1872,7 @@ public struct CreateChannelInput {
 
 extension MediaTailorClientTypes {
 
-    public enum ChannelState: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ChannelState: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case running
         case stopped
         case sdkUnknown(Swift.String)
@@ -1898,7 +1899,7 @@ extension MediaTailorClientTypes {
     }
 }
 
-public struct CreateChannelOutput {
+public struct CreateChannelOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) to assign to the channel.
     public var arn: Swift.String?
     /// The list of audiences defined in channel.
@@ -1954,7 +1955,7 @@ public struct CreateChannelOutput {
     }
 }
 
-public struct DeleteChannelInput {
+public struct DeleteChannelInput: Swift.Sendable {
     /// The name of the channel.
     /// This member is required.
     public var channelName: Swift.String?
@@ -1967,12 +1968,12 @@ public struct DeleteChannelInput {
     }
 }
 
-public struct DeleteChannelOutput {
+public struct DeleteChannelOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DescribeChannelInput {
+public struct DescribeChannelInput: Swift.Sendable {
     /// The name of the channel.
     /// This member is required.
     public var channelName: Swift.String?
@@ -1985,7 +1986,7 @@ public struct DescribeChannelInput {
     }
 }
 
-public struct DescribeChannelOutput {
+public struct DescribeChannelOutput: Swift.Sendable {
     /// The ARN of the channel.
     public var arn: Swift.String?
     /// The list of audiences defined in channel.
@@ -2046,7 +2047,7 @@ public struct DescribeChannelOutput {
     }
 }
 
-public struct GetChannelScheduleInput {
+public struct GetChannelScheduleInput: Swift.Sendable {
     /// The single audience for GetChannelScheduleRequest.
     public var audience: Swift.String?
     /// The name of the channel associated with this Channel Schedule.
@@ -2075,7 +2076,7 @@ public struct GetChannelScheduleInput {
     }
 }
 
-public struct GetChannelScheduleOutput {
+public struct GetChannelScheduleOutput: Swift.Sendable {
     /// A list of schedule entries for the channel.
     public var items: [MediaTailorClientTypes.ScheduleEntry]?
     /// Pagination token returned by the list request when results exceed the maximum allowed. Use the token to fetch the next page of results.
@@ -2091,7 +2092,7 @@ public struct GetChannelScheduleOutput {
     }
 }
 
-public struct ListChannelsInput {
+public struct ListChannelsInput: Swift.Sendable {
     /// The maximum number of channels that you want MediaTailor to return in response to the current request. If there are more than MaxResults channels, use the value of NextToken in the response to get the next page of results.
     public var maxResults: Swift.Int?
     /// Pagination token returned by the list request when results exceed the maximum allowed. Use the token to fetch the next page of results.
@@ -2107,7 +2108,7 @@ public struct ListChannelsInput {
     }
 }
 
-public struct ListChannelsOutput {
+public struct ListChannelsOutput: Swift.Sendable {
     /// A list of channels that are associated with this account.
     public var items: [MediaTailorClientTypes.Channel]?
     /// Pagination token returned by the list request when results exceed the maximum allowed. Use the token to fetch the next page of results.
@@ -2125,7 +2126,7 @@ public struct ListChannelsOutput {
 
 extension MediaTailorClientTypes {
 
-    public enum RelativePosition: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum RelativePosition: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case afterProgram
         case beforeProgram
         case sdkUnknown(Swift.String)
@@ -2153,8 +2154,9 @@ extension MediaTailorClientTypes {
 }
 
 extension MediaTailorClientTypes {
+
     /// Program transition configuration.
-    public struct Transition {
+    public struct Transition: Swift.Sendable {
         /// The duration of the live program in seconds.
         public var durationMillis: Swift.Int?
         /// The position where this program will be inserted relative to the RelativePosition.
@@ -2183,12 +2185,12 @@ extension MediaTailorClientTypes {
             self.type = type
         }
     }
-
 }
 
 extension MediaTailorClientTypes {
+
     /// Schedule configuration parameters. A channel must be stopped before changes can be made to the schedule.
-    public struct ScheduleConfiguration {
+    public struct ScheduleConfiguration: Swift.Sendable {
         /// Program clip range configuration.
         public var clipRange: MediaTailorClientTypes.ClipRange?
         /// Program transition configurations.
@@ -2204,10 +2206,9 @@ extension MediaTailorClientTypes {
             self.transition = transition
         }
     }
-
 }
 
-public struct CreateProgramInput {
+public struct CreateProgramInput: Swift.Sendable {
     /// The ad break configuration settings.
     public var adBreaks: [MediaTailorClientTypes.AdBreak]?
     /// The list of AudienceMedia defined in program.
@@ -2251,7 +2252,7 @@ public struct CreateProgramInput {
     }
 }
 
-public struct CreateProgramOutput {
+public struct CreateProgramOutput: Swift.Sendable {
     /// The ad break configuration settings.
     public var adBreaks: [MediaTailorClientTypes.AdBreak]?
     /// The ARN to assign to the program.
@@ -2307,7 +2308,7 @@ public struct CreateProgramOutput {
     }
 }
 
-public struct DeleteProgramInput {
+public struct DeleteProgramInput: Swift.Sendable {
     /// The name of the channel.
     /// This member is required.
     public var channelName: Swift.String?
@@ -2325,12 +2326,12 @@ public struct DeleteProgramInput {
     }
 }
 
-public struct DeleteProgramOutput {
+public struct DeleteProgramOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DescribeProgramInput {
+public struct DescribeProgramInput: Swift.Sendable {
     /// The name of the channel associated with this Program.
     /// This member is required.
     public var channelName: Swift.String?
@@ -2348,7 +2349,7 @@ public struct DescribeProgramInput {
     }
 }
 
-public struct DescribeProgramOutput {
+public struct DescribeProgramOutput: Swift.Sendable {
     /// The ad break configuration settings.
     public var adBreaks: [MediaTailorClientTypes.AdBreak]?
     /// The ARN of the program.
@@ -2405,8 +2406,9 @@ public struct DescribeProgramOutput {
 }
 
 extension MediaTailorClientTypes {
+
     /// Program transition configuration.
-    public struct UpdateProgramTransition {
+    public struct UpdateProgramTransition: Swift.Sendable {
         /// The duration of the live program in seconds.
         public var durationMillis: Swift.Int?
         /// The date and time that the program is scheduled to start, in epoch milliseconds.
@@ -2421,12 +2423,12 @@ extension MediaTailorClientTypes {
             self.scheduledStartTimeMillis = scheduledStartTimeMillis
         }
     }
-
 }
 
 extension MediaTailorClientTypes {
+
     /// Schedule configuration parameters.
-    public struct UpdateProgramScheduleConfiguration {
+    public struct UpdateProgramScheduleConfiguration: Swift.Sendable {
         /// Program clip range configuration.
         public var clipRange: MediaTailorClientTypes.ClipRange?
         /// Program transition configuration.
@@ -2441,10 +2443,9 @@ extension MediaTailorClientTypes {
             self.transition = transition
         }
     }
-
 }
 
-public struct UpdateProgramInput {
+public struct UpdateProgramInput: Swift.Sendable {
     /// The ad break configuration settings.
     public var adBreaks: [MediaTailorClientTypes.AdBreak]?
     /// The list of AudienceMedia defined in program.
@@ -2475,7 +2476,7 @@ public struct UpdateProgramInput {
     }
 }
 
-public struct UpdateProgramOutput {
+public struct UpdateProgramOutput: Swift.Sendable {
     /// The ad break configuration settings.
     public var adBreaks: [MediaTailorClientTypes.AdBreak]?
     /// The ARN to assign to the program.
@@ -2531,7 +2532,7 @@ public struct UpdateProgramOutput {
     }
 }
 
-public struct StartChannelInput {
+public struct StartChannelInput: Swift.Sendable {
     /// The name of the channel.
     /// This member is required.
     public var channelName: Swift.String?
@@ -2544,12 +2545,12 @@ public struct StartChannelInput {
     }
 }
 
-public struct StartChannelOutput {
+public struct StartChannelOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct StopChannelInput {
+public struct StopChannelInput: Swift.Sendable {
     /// The name of the channel.
     /// This member is required.
     public var channelName: Swift.String?
@@ -2562,12 +2563,12 @@ public struct StopChannelInput {
     }
 }
 
-public struct StopChannelOutput {
+public struct StopChannelOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdateChannelInput {
+public struct UpdateChannelInput: Swift.Sendable {
     /// The list of audiences defined in channel.
     public var audiences: [Swift.String]?
     /// The name of the channel.
@@ -2597,7 +2598,7 @@ public struct UpdateChannelInput {
     }
 }
 
-public struct UpdateChannelOutput {
+public struct UpdateChannelOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) associated with the channel.
     public var arn: Swift.String?
     /// The list of audiences defined in channel.
@@ -2654,7 +2655,7 @@ public struct UpdateChannelOutput {
 }
 
 /// Configures Amazon CloudWatch log settings for a playback configuration.
-public struct ConfigureLogsForPlaybackConfigurationInput {
+public struct ConfigureLogsForPlaybackConfigurationInput: Swift.Sendable {
     /// The percentage of session logs that MediaTailor sends to your Cloudwatch Logs account. For example, if your playback configuration has 1000 sessions and percentEnabled is set to 60, MediaTailor sends logs for 600 of the sessions to CloudWatch Logs. MediaTailor decides at random which of the playback configuration sessions to send logs for. If you want to view logs for a specific session, you can use the [debug log mode](https://docs.aws.amazon.com/mediatailor/latest/ug/debug-log-mode.html). Valid values: 0 - 100
     /// This member is required.
     public var percentEnabled: Swift.Int?
@@ -2672,7 +2673,7 @@ public struct ConfigureLogsForPlaybackConfigurationInput {
     }
 }
 
-public struct ConfigureLogsForPlaybackConfigurationOutput {
+public struct ConfigureLogsForPlaybackConfigurationOutput: Swift.Sendable {
     /// The percentage of session logs that MediaTailor sends to your Cloudwatch Logs account.
     /// This member is required.
     public var percentEnabled: Swift.Int?
@@ -2689,7 +2690,7 @@ public struct ConfigureLogsForPlaybackConfigurationOutput {
     }
 }
 
-public struct CreateLiveSourceInput {
+public struct CreateLiveSourceInput: Swift.Sendable {
     /// A list of HTTP package configuration parameters for this live source.
     /// This member is required.
     public var httpPackageConfigurations: [MediaTailorClientTypes.HttpPackageConfiguration]?
@@ -2716,7 +2717,7 @@ public struct CreateLiveSourceInput {
     }
 }
 
-public struct CreateLiveSourceOutput {
+public struct CreateLiveSourceOutput: Swift.Sendable {
     /// The ARN to assign to the live source.
     public var arn: Swift.String?
     /// The time the live source was created.
@@ -2752,7 +2753,7 @@ public struct CreateLiveSourceOutput {
     }
 }
 
-public struct CreatePrefetchScheduleInput {
+public struct CreatePrefetchScheduleInput: Swift.Sendable {
     /// The configuration settings for MediaTailor's consumption of the prefetched ads from the ad decision server. Each consumption configuration contains an end time and an optional start time that define the consumption window. Prefetch schedules automatically expire no earlier than seven days after the end time.
     /// This member is required.
     public var consumption: MediaTailorClientTypes.PrefetchConsumption?
@@ -2784,7 +2785,7 @@ public struct CreatePrefetchScheduleInput {
     }
 }
 
-public struct CreatePrefetchScheduleOutput {
+public struct CreatePrefetchScheduleOutput: Swift.Sendable {
     /// The ARN to assign to the prefetch schedule.
     public var arn: Swift.String?
     /// The configuration settings for MediaTailor's consumption of the prefetched ads from the ad decision server. Each consumption configuration contains an end time and an optional start time that define the consumption window. Prefetch schedules automatically expire no earlier than seven days after the end time.
@@ -2816,7 +2817,7 @@ public struct CreatePrefetchScheduleOutput {
     }
 }
 
-public struct CreateSourceLocationInput {
+public struct CreateSourceLocationInput: Swift.Sendable {
     /// Access configuration parameters. Configures the type of authentication used to access content from your source location.
     public var accessConfiguration: MediaTailorClientTypes.AccessConfiguration?
     /// The optional configuration for the server that serves segments.
@@ -2850,7 +2851,7 @@ public struct CreateSourceLocationInput {
     }
 }
 
-public struct CreateSourceLocationOutput {
+public struct CreateSourceLocationOutput: Swift.Sendable {
     /// Access configuration parameters. Configures the type of authentication used to access content from your source location.
     public var accessConfiguration: MediaTailorClientTypes.AccessConfiguration?
     /// The ARN to assign to the source location.
@@ -2894,7 +2895,7 @@ public struct CreateSourceLocationOutput {
     }
 }
 
-public struct CreateVodSourceInput {
+public struct CreateVodSourceInput: Swift.Sendable {
     /// A list of HTTP package configuration parameters for this VOD source.
     /// This member is required.
     public var httpPackageConfigurations: [MediaTailorClientTypes.HttpPackageConfiguration]?
@@ -2921,7 +2922,7 @@ public struct CreateVodSourceInput {
     }
 }
 
-public struct CreateVodSourceOutput {
+public struct CreateVodSourceOutput: Swift.Sendable {
     /// The ARN to assign to this VOD source.
     public var arn: Swift.String?
     /// The time the VOD source was created.
@@ -2958,8 +2959,9 @@ public struct CreateVodSourceOutput {
 }
 
 extension MediaTailorClientTypes {
+
     /// The configuration for DASH PUT operations.
-    public struct DashConfigurationForPut {
+    public struct DashConfigurationForPut: Swift.Sendable {
         /// The setting that controls whether MediaTailor includes the Location tag in DASH manifests. MediaTailor populates the Location tag with the URL for manifest update requests, to be used by players that don't support sticky redirects. Disable this if you have CDN routing rules set up for accessing MediaTailor manifests, and you are either using client-side reporting or your players support sticky HTTP redirects. Valid values are DISABLED and EMT_DEFAULT. The EMT_DEFAULT setting enables the inclusion of the tag and is the default value.
         public var mpdLocation: Swift.String?
         /// The setting that controls whether MediaTailor handles manifests from the origin server as multi-period manifests or single-period manifests. If your origin server produces single-period manifests, set this to SINGLE_PERIOD. The default setting is MULTI_PERIOD. For multi-period manifests, omit this setting or set it to MULTI_PERIOD.
@@ -2974,10 +2976,9 @@ extension MediaTailorClientTypes {
             self.originManifestType = originManifestType
         }
     }
-
 }
 
-public struct DeleteLiveSourceInput {
+public struct DeleteLiveSourceInput: Swift.Sendable {
     /// The name of the live source.
     /// This member is required.
     public var liveSourceName: Swift.String?
@@ -2995,12 +2996,12 @@ public struct DeleteLiveSourceInput {
     }
 }
 
-public struct DeleteLiveSourceOutput {
+public struct DeleteLiveSourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeletePlaybackConfigurationInput {
+public struct DeletePlaybackConfigurationInput: Swift.Sendable {
     /// The name of the playback configuration.
     /// This member is required.
     public var name: Swift.String?
@@ -3013,12 +3014,12 @@ public struct DeletePlaybackConfigurationInput {
     }
 }
 
-public struct DeletePlaybackConfigurationOutput {
+public struct DeletePlaybackConfigurationOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeletePrefetchScheduleInput {
+public struct DeletePrefetchScheduleInput: Swift.Sendable {
     /// The name of the prefetch schedule. If the action is successful, the service sends back an HTTP 204 response with an empty HTTP body.
     /// This member is required.
     public var name: Swift.String?
@@ -3036,12 +3037,12 @@ public struct DeletePrefetchScheduleInput {
     }
 }
 
-public struct DeletePrefetchScheduleOutput {
+public struct DeletePrefetchScheduleOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteSourceLocationInput {
+public struct DeleteSourceLocationInput: Swift.Sendable {
     /// The name of the source location.
     /// This member is required.
     public var sourceLocationName: Swift.String?
@@ -3054,12 +3055,12 @@ public struct DeleteSourceLocationInput {
     }
 }
 
-public struct DeleteSourceLocationOutput {
+public struct DeleteSourceLocationOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteVodSourceInput {
+public struct DeleteVodSourceInput: Swift.Sendable {
     /// The name of the source location associated with this VOD Source.
     /// This member is required.
     public var sourceLocationName: Swift.String?
@@ -3077,12 +3078,12 @@ public struct DeleteVodSourceInput {
     }
 }
 
-public struct DeleteVodSourceOutput {
+public struct DeleteVodSourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DescribeLiveSourceInput {
+public struct DescribeLiveSourceInput: Swift.Sendable {
     /// The name of the live source.
     /// This member is required.
     public var liveSourceName: Swift.String?
@@ -3100,7 +3101,7 @@ public struct DescribeLiveSourceInput {
     }
 }
 
-public struct DescribeLiveSourceOutput {
+public struct DescribeLiveSourceOutput: Swift.Sendable {
     /// The ARN of the live source.
     public var arn: Swift.String?
     /// The timestamp that indicates when the live source was created.
@@ -3136,7 +3137,7 @@ public struct DescribeLiveSourceOutput {
     }
 }
 
-public struct DescribeSourceLocationInput {
+public struct DescribeSourceLocationInput: Swift.Sendable {
     /// The name of the source location.
     /// This member is required.
     public var sourceLocationName: Swift.String?
@@ -3149,7 +3150,7 @@ public struct DescribeSourceLocationInput {
     }
 }
 
-public struct DescribeSourceLocationOutput {
+public struct DescribeSourceLocationOutput: Swift.Sendable {
     /// The access configuration for the source location.
     public var accessConfiguration: MediaTailorClientTypes.AccessConfiguration?
     /// The ARN of the source location.
@@ -3193,7 +3194,7 @@ public struct DescribeSourceLocationOutput {
     }
 }
 
-public struct DescribeVodSourceInput {
+public struct DescribeVodSourceInput: Swift.Sendable {
     /// The name of the source location associated with this VOD Source.
     /// This member is required.
     public var sourceLocationName: Swift.String?
@@ -3211,7 +3212,7 @@ public struct DescribeVodSourceInput {
     }
 }
 
-public struct DescribeVodSourceOutput {
+public struct DescribeVodSourceOutput: Swift.Sendable {
     /// The ad break opportunities within the VOD source.
     public var adBreakOpportunities: [MediaTailorClientTypes.AdBreakOpportunity]?
     /// The ARN of the VOD source.
@@ -3251,7 +3252,7 @@ public struct DescribeVodSourceOutput {
     }
 }
 
-public struct GetPlaybackConfigurationInput {
+public struct GetPlaybackConfigurationInput: Swift.Sendable {
     /// The identifier for the playback configuration.
     /// This member is required.
     public var name: Swift.String?
@@ -3264,7 +3265,7 @@ public struct GetPlaybackConfigurationInput {
     }
 }
 
-public struct GetPlaybackConfigurationOutput {
+public struct GetPlaybackConfigurationOutput: Swift.Sendable {
     /// The URL for the ad decision server (ADS). This includes the specification of static parameters and placeholders for dynamic parameters. AWS Elemental MediaTailor substitutes player-specific and session-specific parameters as needed when calling the ADS. Alternately, for testing, you can provide a static VAST URL. The maximum length is 25,000 characters.
     public var adDecisionServerUrl: Swift.String?
     /// The configuration for avail suppression, also known as ad suppression. For more information about ad suppression, see [Ad Suppression](https://docs.aws.amazon.com/mediatailor/latest/ug/ad-behavior.html).
@@ -3352,7 +3353,7 @@ public struct GetPlaybackConfigurationOutput {
     }
 }
 
-public struct GetPrefetchScheduleInput {
+public struct GetPrefetchScheduleInput: Swift.Sendable {
     /// The name of the prefetch schedule. The name must be unique among all prefetch schedules that are associated with the specified playback configuration.
     /// This member is required.
     public var name: Swift.String?
@@ -3370,7 +3371,7 @@ public struct GetPrefetchScheduleInput {
     }
 }
 
-public struct GetPrefetchScheduleOutput {
+public struct GetPrefetchScheduleOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the prefetch schedule.
     public var arn: Swift.String?
     /// Consumption settings determine how, and when, MediaTailor places the prefetched ads into ad breaks. Ad consumption occurs within a span of time that you define, called a consumption window. You can designate which ad breaks that MediaTailor fills with prefetch ads by setting avail matching criteria.
@@ -3402,7 +3403,7 @@ public struct GetPrefetchScheduleOutput {
     }
 }
 
-public struct ListAlertsInput {
+public struct ListAlertsInput: Swift.Sendable {
     /// The maximum number of alerts that you want MediaTailor to return in response to the current request. If there are more than MaxResults alerts, use the value of NextToken in the response to get the next page of results.
     public var maxResults: Swift.Int?
     /// Pagination token returned by the list request when results exceed the maximum allowed. Use the token to fetch the next page of results.
@@ -3423,7 +3424,7 @@ public struct ListAlertsInput {
     }
 }
 
-public struct ListAlertsOutput {
+public struct ListAlertsOutput: Swift.Sendable {
     /// A list of alerts that are associated with this resource.
     public var items: [MediaTailorClientTypes.Alert]?
     /// Pagination token returned by the list request when results exceed the maximum allowed. Use the token to fetch the next page of results.
@@ -3439,7 +3440,7 @@ public struct ListAlertsOutput {
     }
 }
 
-public struct ListLiveSourcesInput {
+public struct ListLiveSourcesInput: Swift.Sendable {
     /// The maximum number of live sources that you want MediaTailor to return in response to the current request. If there are more than MaxResults live sources, use the value of NextToken in the response to get the next page of results.
     public var maxResults: Swift.Int?
     /// Pagination token returned by the list request when results exceed the maximum allowed. Use the token to fetch the next page of results.
@@ -3460,7 +3461,7 @@ public struct ListLiveSourcesInput {
     }
 }
 
-public struct ListLiveSourcesOutput {
+public struct ListLiveSourcesOutput: Swift.Sendable {
     /// Lists the live sources.
     public var items: [MediaTailorClientTypes.LiveSource]?
     /// Pagination token returned by the list request when results exceed the maximum allowed. Use the token to fetch the next page of results.
@@ -3476,7 +3477,7 @@ public struct ListLiveSourcesOutput {
     }
 }
 
-public struct ListPlaybackConfigurationsInput {
+public struct ListPlaybackConfigurationsInput: Swift.Sendable {
     /// The maximum number of playback configurations that you want MediaTailor to return in response to the current request. If there are more than MaxResults playback configurations, use the value of NextToken in the response to get the next page of results.
     public var maxResults: Swift.Int?
     /// Pagination token returned by the list request when results exceed the maximum allowed. Use the token to fetch the next page of results.
@@ -3492,7 +3493,7 @@ public struct ListPlaybackConfigurationsInput {
     }
 }
 
-public struct ListPlaybackConfigurationsOutput {
+public struct ListPlaybackConfigurationsOutput: Swift.Sendable {
     /// Array of playback configurations. This might be all the available configurations or a subset, depending on the settings that you provide and the total number of configurations stored.
     public var items: [MediaTailorClientTypes.PlaybackConfiguration]?
     /// Pagination token returned by the GET list request when results exceed the maximum allowed. Use the token to fetch the next page of results.
@@ -3508,7 +3509,7 @@ public struct ListPlaybackConfigurationsOutput {
     }
 }
 
-public struct ListPrefetchSchedulesInput {
+public struct ListPrefetchSchedulesInput: Swift.Sendable {
     /// The maximum number of prefetch schedules that you want MediaTailor to return in response to the current request. If there are more than MaxResults prefetch schedules, use the value of NextToken in the response to get the next page of results.
     public var maxResults: Swift.Int?
     /// (Optional) If the playback configuration has more than MaxResults prefetch schedules, use NextToken to get the second and subsequent pages of results. For the first ListPrefetchSchedulesRequest request, omit this value. For the second and subsequent requests, get the value of NextToken from the previous response and specify that value for NextToken in the request. If the previous response didn't include a NextToken element, there are no more prefetch schedules to get.
@@ -3533,7 +3534,7 @@ public struct ListPrefetchSchedulesInput {
     }
 }
 
-public struct ListPrefetchSchedulesOutput {
+public struct ListPrefetchSchedulesOutput: Swift.Sendable {
     /// Lists the prefetch schedules. An empty Items list doesn't mean there aren't more items to fetch, just that that page was empty.
     public var items: [MediaTailorClientTypes.PrefetchSchedule]?
     /// Pagination token returned by the list request when results exceed the maximum allowed. Use the token to fetch the next page of results.
@@ -3549,7 +3550,7 @@ public struct ListPrefetchSchedulesOutput {
     }
 }
 
-public struct ListSourceLocationsInput {
+public struct ListSourceLocationsInput: Swift.Sendable {
     /// The maximum number of source locations that you want MediaTailor to return in response to the current request. If there are more than MaxResults source locations, use the value of NextToken in the response to get the next page of results.
     public var maxResults: Swift.Int?
     /// Pagination token returned by the list request when results exceed the maximum allowed. Use the token to fetch the next page of results.
@@ -3565,7 +3566,7 @@ public struct ListSourceLocationsInput {
     }
 }
 
-public struct ListSourceLocationsOutput {
+public struct ListSourceLocationsOutput: Swift.Sendable {
     /// A list of source locations.
     public var items: [MediaTailorClientTypes.SourceLocation]?
     /// Pagination token returned by the list request when results exceed the maximum allowed. Use the token to fetch the next page of results.
@@ -3581,7 +3582,7 @@ public struct ListSourceLocationsOutput {
     }
 }
 
-public struct ListTagsForResourceInput {
+public struct ListTagsForResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) associated with this resource.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -3594,7 +3595,7 @@ public struct ListTagsForResourceInput {
     }
 }
 
-public struct ListTagsForResourceOutput {
+public struct ListTagsForResourceOutput: Swift.Sendable {
     /// The tags associated with this resource. Tags are key-value pairs that you can associate with Amazon resources to help with organization, access control, and cost tracking. For more information, see [Tagging AWS Elemental MediaTailor Resources](https://docs.aws.amazon.com/mediatailor/latest/ug/tagging.html).
     public var tags: [Swift.String: Swift.String]?
 
@@ -3606,7 +3607,7 @@ public struct ListTagsForResourceOutput {
     }
 }
 
-public struct ListVodSourcesInput {
+public struct ListVodSourcesInput: Swift.Sendable {
     /// The maximum number of VOD sources that you want MediaTailor to return in response to the current request. If there are more than MaxResults VOD sources, use the value of NextToken in the response to get the next page of results.
     public var maxResults: Swift.Int?
     /// Pagination token returned by the list request when results exceed the maximum allowed. Use the token to fetch the next page of results.
@@ -3627,7 +3628,7 @@ public struct ListVodSourcesInput {
     }
 }
 
-public struct ListVodSourcesOutput {
+public struct ListVodSourcesOutput: Swift.Sendable {
     /// Lists the VOD sources.
     public var items: [MediaTailorClientTypes.VodSource]?
     /// Pagination token returned by the list request when results exceed the maximum allowed. Use the token to fetch the next page of results.
@@ -3643,7 +3644,7 @@ public struct ListVodSourcesOutput {
     }
 }
 
-public struct UpdateLiveSourceInput {
+public struct UpdateLiveSourceInput: Swift.Sendable {
     /// A list of HTTP package configurations for the live source on this account.
     /// This member is required.
     public var httpPackageConfigurations: [MediaTailorClientTypes.HttpPackageConfiguration]?
@@ -3666,7 +3667,7 @@ public struct UpdateLiveSourceInput {
     }
 }
 
-public struct UpdateLiveSourceOutput {
+public struct UpdateLiveSourceOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) associated with this live source.
     public var arn: Swift.String?
     /// The timestamp that indicates when the live source was created.
@@ -3702,7 +3703,7 @@ public struct UpdateLiveSourceOutput {
     }
 }
 
-public struct PutPlaybackConfigurationInput {
+public struct PutPlaybackConfigurationInput: Swift.Sendable {
     /// The URL for the ad decision server (ADS). This includes the specification of static parameters and placeholders for dynamic parameters. AWS Elemental MediaTailor substitutes player-specific and session-specific parameters as needed when calling the ADS. Alternately, for testing you can provide a static VAST URL. The maximum length is 25,000 characters.
     public var adDecisionServerUrl: Swift.String?
     /// The configuration for avail suppression, also known as ad suppression. For more information about ad suppression, see [Ad Suppression](https://docs.aws.amazon.com/mediatailor/latest/ug/ad-behavior.html).
@@ -3771,7 +3772,7 @@ public struct PutPlaybackConfigurationInput {
     }
 }
 
-public struct PutPlaybackConfigurationOutput {
+public struct PutPlaybackConfigurationOutput: Swift.Sendable {
     /// The URL for the ad decision server (ADS). This includes the specification of static parameters and placeholders for dynamic parameters. AWS Elemental MediaTailor substitutes player-specific and session-specific parameters as needed when calling the ADS. Alternately, for testing you can provide a static VAST URL. The maximum length is 25,000 characters.
     public var adDecisionServerUrl: Swift.String?
     /// The configuration for avail suppression, also known as ad suppression. For more information about ad suppression, see [Ad Suppression](https://docs.aws.amazon.com/mediatailor/latest/ug/ad-behavior.html).
@@ -3859,7 +3860,7 @@ public struct PutPlaybackConfigurationOutput {
     }
 }
 
-public struct UpdateSourceLocationInput {
+public struct UpdateSourceLocationInput: Swift.Sendable {
     /// Access configuration parameters. Configures the type of authentication used to access content from your source location.
     public var accessConfiguration: MediaTailorClientTypes.AccessConfiguration?
     /// The optional configuration for the host server that serves segments.
@@ -3889,7 +3890,7 @@ public struct UpdateSourceLocationInput {
     }
 }
 
-public struct UpdateSourceLocationOutput {
+public struct UpdateSourceLocationOutput: Swift.Sendable {
     /// Access configuration parameters. Configures the type of authentication used to access content from your source location.
     public var accessConfiguration: MediaTailorClientTypes.AccessConfiguration?
     /// The Amazon Resource Name (ARN) associated with the source location.
@@ -3933,7 +3934,7 @@ public struct UpdateSourceLocationOutput {
     }
 }
 
-public struct TagResourceInput {
+public struct TagResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) associated with the resource.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -3951,7 +3952,7 @@ public struct TagResourceInput {
     }
 }
 
-public struct UntagResourceInput {
+public struct UntagResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the resource to untag.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -3969,7 +3970,7 @@ public struct UntagResourceInput {
     }
 }
 
-public struct UpdateVodSourceInput {
+public struct UpdateVodSourceInput: Swift.Sendable {
     /// A list of HTTP package configurations for the VOD source on this account.
     /// This member is required.
     public var httpPackageConfigurations: [MediaTailorClientTypes.HttpPackageConfiguration]?
@@ -3992,7 +3993,7 @@ public struct UpdateVodSourceInput {
     }
 }
 
-public struct UpdateVodSourceOutput {
+public struct UpdateVodSourceOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) associated with the VOD source.
     public var arn: Swift.String?
     /// The timestamp that indicates when the VOD source was created.

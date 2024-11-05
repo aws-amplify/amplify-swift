@@ -29,92 +29,93 @@ import struct Smithy.URIQueryItem
 @_spi(SmithyReadWrite) import struct SmithyReadWrite.ReadingClosureBox
 @_spi(SmithyReadWrite) import struct SmithyReadWrite.WritingClosureBox
 
-public struct AssociateLensesOutput {
+
+public struct AssociateLensesOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct AssociateProfilesOutput {
+public struct AssociateProfilesOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteLensOutput {
+public struct DeleteLensOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteLensShareOutput {
+public struct DeleteLensShareOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteProfileOutput {
+public struct DeleteProfileOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteProfileShareOutput {
+public struct DeleteProfileShareOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteReviewTemplateOutput {
+public struct DeleteReviewTemplateOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteTemplateShareOutput {
+public struct DeleteTemplateShareOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteWorkloadOutput {
+public struct DeleteWorkloadOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteWorkloadShareOutput {
+public struct DeleteWorkloadShareOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DisassociateLensesOutput {
+public struct DisassociateLensesOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DisassociateProfilesOutput {
+public struct DisassociateProfilesOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct GetGlobalSettingsInput {
+public struct GetGlobalSettingsInput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdateGlobalSettingsOutput {
+public struct UpdateGlobalSettingsOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdateIntegrationOutput {
+public struct UpdateIntegrationOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpgradeLensReviewOutput {
+public struct UpgradeLensReviewOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpgradeProfileVersionOutput {
+public struct UpgradeProfileVersionOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpgradeReviewTemplateLensReviewOutput {
+public struct UpgradeReviewTemplateLensReviewOutput: Swift.Sendable {
 
     public init() { }
 }
@@ -147,7 +148,7 @@ public struct AccessDeniedException: ClientRuntime.ModeledError, AWSClientRuntim
 
 extension WellArchitectedClientTypes {
 
-    public enum IntegrationStatusInput: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum IntegrationStatusInput: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case notConfigured
         case sdkUnknown(Swift.String)
 
@@ -173,7 +174,7 @@ extension WellArchitectedClientTypes {
 
 extension WellArchitectedClientTypes {
 
-    public enum AccountJiraIssueManagementStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AccountJiraIssueManagementStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case disabled
         case enabled
         case sdkUnknown(Swift.String)
@@ -202,7 +203,7 @@ extension WellArchitectedClientTypes {
 
 extension WellArchitectedClientTypes {
 
-    public enum IssueManagementType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum IssueManagementType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case auto
         case manual
         case sdkUnknown(Swift.String)
@@ -230,8 +231,9 @@ extension WellArchitectedClientTypes {
 }
 
 extension WellArchitectedClientTypes {
+
     /// Account-level: Input for the Jira configuration.
-    public struct AccountJiraConfigurationInput {
+    public struct AccountJiraConfigurationInput: Swift.Sendable {
         /// Account-level: Configuration status of the Jira integration.
         public var integrationStatus: WellArchitectedClientTypes.IntegrationStatusInput?
         /// Account-level: Jira issue management status.
@@ -254,12 +256,11 @@ extension WellArchitectedClientTypes {
             self.jiraProjectKey = jiraProjectKey
         }
     }
-
 }
 
 extension WellArchitectedClientTypes {
 
-    public enum IntegrationStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum IntegrationStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case configured
         case notConfigured
         case sdkUnknown(Swift.String)
@@ -287,8 +288,9 @@ extension WellArchitectedClientTypes {
 }
 
 extension WellArchitectedClientTypes {
+
     /// Account-level: Output configuration of the Jira integration.
-    public struct AccountJiraConfigurationOutput {
+    public struct AccountJiraConfigurationOutput: Swift.Sendable {
         /// Account-level: Configuration status of the Jira integration.
         public var integrationStatus: WellArchitectedClientTypes.IntegrationStatus?
         /// Account-level: Jira issue management status.
@@ -319,12 +321,11 @@ extension WellArchitectedClientTypes {
             self.subdomain = subdomain
         }
     }
-
 }
 
 extension WellArchitectedClientTypes {
 
-    public enum CheckStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum CheckStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case error
         case fetchFailed
         case notAvailable
@@ -361,8 +362,9 @@ extension WellArchitectedClientTypes {
 }
 
 extension WellArchitectedClientTypes {
+
     /// The choice content.
-    public struct ChoiceContent {
+    public struct ChoiceContent: Swift.Sendable {
         /// The display text for the choice content.
         public var displayText: Swift.String?
         /// The URL for the choice content.
@@ -377,12 +379,11 @@ extension WellArchitectedClientTypes {
             self.url = url
         }
     }
-
 }
 
 extension WellArchitectedClientTypes {
 
-    public enum AdditionalResourceType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AdditionalResourceType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case helpfulResource
         case improvementPlan
         case sdkUnknown(Swift.String)
@@ -410,8 +411,9 @@ extension WellArchitectedClientTypes {
 }
 
 extension WellArchitectedClientTypes {
+
     /// The choice level additional resources for a custom lens. This field does not apply to Amazon Web Services official lenses.
-    public struct AdditionalResources {
+    public struct AdditionalResources: Swift.Sendable {
         /// The URLs for additional resources, either helpful resources or improvement plans, for a custom lens. Up to five additional URLs can be specified.
         public var content: [WellArchitectedClientTypes.ChoiceContent]?
         /// Type of additional resource for a custom lens.
@@ -426,12 +428,11 @@ extension WellArchitectedClientTypes {
             self.type = type
         }
     }
-
 }
 
 extension WellArchitectedClientTypes {
 
-    public enum ChoiceReason: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ChoiceReason: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case architectureConstraints
         case businessPriorities
         case `none`
@@ -469,7 +470,7 @@ extension WellArchitectedClientTypes {
 
 extension WellArchitectedClientTypes {
 
-    public enum ChoiceStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ChoiceStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case notApplicable
         case selected
         case unselected
@@ -500,8 +501,9 @@ extension WellArchitectedClientTypes {
 }
 
 extension WellArchitectedClientTypes {
+
     /// A choice that has been answered on a question in your workload.
-    public struct ChoiceAnswer {
+    public struct ChoiceAnswer: Swift.Sendable {
         /// The ID of a choice.
         public var choiceId: Swift.String?
         /// The notes associated with a choice.
@@ -524,12 +526,12 @@ extension WellArchitectedClientTypes {
             self.status = status
         }
     }
-
 }
 
 extension WellArchitectedClientTypes {
+
     /// A choice available to answer question.
-    public struct Choice {
+    public struct Choice: Swift.Sendable {
         /// The additional resources for a choice in a custom lens. A choice can have up to two additional resources: one of type HELPFUL_RESOURCE, one of type IMPROVEMENT_PLAN, or both.
         public var additionalResources: [WellArchitectedClientTypes.AdditionalResources]?
         /// The ID of a choice.
@@ -560,12 +562,12 @@ extension WellArchitectedClientTypes {
             self.title = title
         }
     }
-
 }
 
 extension WellArchitectedClientTypes {
+
     /// Configuration of the Jira integration.
-    public struct JiraConfiguration {
+    public struct JiraConfiguration: Swift.Sendable {
         /// The URL of the associated Jira issue.
         public var jiraIssueUrl: Swift.String?
         /// The date and time recorded.
@@ -580,12 +582,11 @@ extension WellArchitectedClientTypes {
             self.lastSyncedTime = lastSyncedTime
         }
     }
-
 }
 
 extension WellArchitectedClientTypes {
 
-    public enum AnswerReason: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AnswerReason: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case architectureConstraints
         case businessPriorities
         case `none`
@@ -624,7 +625,7 @@ extension WellArchitectedClientTypes {
 extension WellArchitectedClientTypes {
 
     /// The risk for a given workload, lens review, pillar, or question.
-    public enum Risk: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Risk: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case high
         case medium
         case `none`
@@ -661,8 +662,9 @@ extension WellArchitectedClientTypes {
 }
 
 extension WellArchitectedClientTypes {
+
     /// An answer of the question.
-    public struct Answer {
+    public struct Answer: Swift.Sendable {
         /// A list of selected choices to a question in your workload.
         public var choiceAnswers: [WellArchitectedClientTypes.ChoiceAnswer]?
         /// List of choices available for a question.
@@ -729,12 +731,12 @@ extension WellArchitectedClientTypes {
             self.selectedChoices = selectedChoices
         }
     }
-
 }
 
 extension WellArchitectedClientTypes {
+
     /// A choice summary that has been answered on a question in your workload.
-    public struct ChoiceAnswerSummary {
+    public struct ChoiceAnswerSummary: Swift.Sendable {
         /// The ID of a choice.
         public var choiceId: Swift.String?
         /// The reason why a choice is non-applicable to a question in your workload.
@@ -753,12 +755,11 @@ extension WellArchitectedClientTypes {
             self.status = status
         }
     }
-
 }
 
 extension WellArchitectedClientTypes {
 
-    public enum QuestionType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum QuestionType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case nonPrioritized
         case prioritized
         case sdkUnknown(Swift.String)
@@ -786,8 +787,9 @@ extension WellArchitectedClientTypes {
 }
 
 extension WellArchitectedClientTypes {
+
     /// An answer summary of a lens review in a workload.
-    public struct AnswerSummary {
+    public struct AnswerSummary: Swift.Sendable {
         /// A list of selected choices to a question in your workload.
         public var choiceAnswerSummaries: [WellArchitectedClientTypes.ChoiceAnswerSummary]?
         /// List of choices available for a question.
@@ -838,7 +840,6 @@ extension WellArchitectedClientTypes {
             self.selectedChoices = selectedChoices
         }
     }
-
 }
 
 /// The resource has already been processed, was deleted, or is too large.
@@ -974,8 +975,9 @@ public struct ThrottlingException: ClientRuntime.ModeledError, AWSClientRuntime.
 }
 
 extension WellArchitectedClientTypes {
+
     /// Stores information about a field passed inside a request that resulted in an exception.
-    public struct ValidationExceptionField {
+    public struct ValidationExceptionField: Swift.Sendable {
         /// Description of the error.
         /// This member is required.
         public var message: Swift.String?
@@ -992,13 +994,12 @@ extension WellArchitectedClientTypes {
             self.name = name
         }
     }
-
 }
 
 extension WellArchitectedClientTypes {
 
     /// The reason why the request failed validation.
-    public enum ValidationExceptionReason: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ValidationExceptionReason: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case cannotParse
         case fieldValidationFailed
         case other
@@ -1066,7 +1067,7 @@ public struct ValidationException: ClientRuntime.ModeledError, AWSClientRuntime.
 }
 
 /// Input to associate lens reviews.
-public struct AssociateLensesInput {
+public struct AssociateLensesInput: Swift.Sendable {
     /// List of lens aliases to associate or disassociate with a workload. Up to 10 lenses can be specified. Identify a lens using its [LensSummary$LensAlias].
     /// This member is required.
     public var lensAliases: [Swift.String]?
@@ -1084,7 +1085,7 @@ public struct AssociateLensesInput {
     }
 }
 
-public struct AssociateProfilesInput {
+public struct AssociateProfilesInput: Swift.Sendable {
     /// The list of profile ARNs to associate with the workload.
     /// This member is required.
     public var profileArns: [Swift.String]?
@@ -1103,8 +1104,9 @@ public struct AssociateProfilesInput {
 }
 
 extension WellArchitectedClientTypes {
+
     /// A best practice, or question choice, that has been identified as a risk in this question.
-    public struct BestPractice {
+    public struct BestPractice: Swift.Sendable {
         /// The ID of a choice.
         public var choiceId: Swift.String?
         /// The title of a choice.
@@ -1119,12 +1121,11 @@ extension WellArchitectedClientTypes {
             self.choiceTitle = choiceTitle
         }
     }
-
 }
 
 extension WellArchitectedClientTypes {
 
-    public enum CheckProvider: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum CheckProvider: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case trustedAdvisor
         case sdkUnknown(Swift.String)
 
@@ -1150,7 +1151,7 @@ extension WellArchitectedClientTypes {
 
 extension WellArchitectedClientTypes {
 
-    public enum CheckFailureReason: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum CheckFailureReason: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case accessDenied
         case assumeRoleError
         case premiumSupportRequired
@@ -1184,8 +1185,9 @@ extension WellArchitectedClientTypes {
 }
 
 extension WellArchitectedClientTypes {
+
     /// Account details for a Well-Architected best practice in relation to Trusted Advisor checks.
-    public struct CheckDetail {
+    public struct CheckDetail: Swift.Sendable {
         /// An Amazon Web Services account ID.
         public var accountId: Swift.String?
         /// The ID of a choice.
@@ -1244,12 +1246,12 @@ extension WellArchitectedClientTypes {
             self.updatedAt = updatedAt
         }
     }
-
 }
 
 extension WellArchitectedClientTypes {
+
     /// Trusted Advisor check summary.
-    public struct CheckSummary {
+    public struct CheckSummary: Swift.Sendable {
         /// Account summary associated to the check.
         public var accountSummary: [Swift.String: Swift.Int]?
         /// The ID of a choice.
@@ -1300,12 +1302,12 @@ extension WellArchitectedClientTypes {
             self.updatedAt = updatedAt
         }
     }
-
 }
 
 extension WellArchitectedClientTypes {
+
     /// The choice level improvement plan.
-    public struct ChoiceImprovementPlan {
+    public struct ChoiceImprovementPlan: Swift.Sendable {
         /// The ID of a choice.
         public var choiceId: Swift.String?
         /// The display text for the improvement plan.
@@ -1324,12 +1326,12 @@ extension WellArchitectedClientTypes {
             self.improvementPlanUrl = improvementPlanUrl
         }
     }
-
 }
 
 extension WellArchitectedClientTypes {
+
     /// A list of choices to be updated.
-    public struct ChoiceUpdate {
+    public struct ChoiceUpdate: Swift.Sendable {
         /// The notes associated with a choice.
         public var notes: Swift.String?
         /// The reason why a choice is non-applicable to a question in your workload.
@@ -1349,12 +1351,12 @@ extension WellArchitectedClientTypes {
             self.status = status
         }
     }
-
 }
 
 extension WellArchitectedClientTypes {
+
     /// A metric for a particular question in the pillar.
-    public struct QuestionMetric {
+    public struct QuestionMetric: Swift.Sendable {
         /// The best practices, or choices, that have been identified as contributing to risk in a question.
         public var bestPractices: [WellArchitectedClientTypes.BestPractice]?
         /// The ID of the question.
@@ -1373,12 +1375,12 @@ extension WellArchitectedClientTypes {
             self.risk = risk
         }
     }
-
 }
 
 extension WellArchitectedClientTypes {
+
     /// A metric for a particular pillar in a lens.
-    public struct PillarMetric {
+    public struct PillarMetric: Swift.Sendable {
         /// The ID used to identify a pillar, for example, security. A pillar is identified by its [PillarReviewSummary$PillarId].
         public var pillarId: Swift.String?
         /// The questions that have been identified as risks in the pillar.
@@ -1397,12 +1399,12 @@ extension WellArchitectedClientTypes {
             self.riskCounts = riskCounts
         }
     }
-
 }
 
 extension WellArchitectedClientTypes {
+
     /// A metric for a particular lens in a workload.
-    public struct LensMetric {
+    public struct LensMetric: Swift.Sendable {
         /// The lens ARN.
         public var lensArn: Swift.String?
         /// The metrics for the pillars in a lens.
@@ -1421,12 +1423,11 @@ extension WellArchitectedClientTypes {
             self.riskCounts = riskCounts
         }
     }
-
 }
 
 extension WellArchitectedClientTypes {
 
-    public enum MetricType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum MetricType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case workload
         case sdkUnknown(Swift.String)
 
@@ -1451,8 +1452,9 @@ extension WellArchitectedClientTypes {
 }
 
 extension WellArchitectedClientTypes {
+
     /// A metric that contributes to the consolidated report.
-    public struct ConsolidatedReportMetric {
+    public struct ConsolidatedReportMetric: Swift.Sendable {
         /// The metrics for the lenses in the workload.
         public var lenses: [WellArchitectedClientTypes.LensMetric]?
         /// The total number of lenses applied to the workload.
@@ -1491,7 +1493,6 @@ extension WellArchitectedClientTypes {
             self.workloadName = workloadName
         }
     }
-
 }
 
 /// The user has reached their resource quota.
@@ -1538,7 +1539,7 @@ public struct ServiceQuotaExceededException: ClientRuntime.ModeledError, AWSClie
     }
 }
 
-public struct CreateLensShareInput {
+public struct CreateLensShareInput: Swift.Sendable {
     /// A unique case-sensitive string used to ensure that this request is idempotent (executes only once). You should not reuse the same token for other requests. If you retry a request with the same client request token and the same parameters after the original request has completed successfully, the result of the original request is returned. This token is listed as required, however, if you do not specify it, the Amazon Web Services SDKs automatically generate one for you. If you are not using the Amazon Web Services SDK or the CLI, you must provide this token or the request will fail.
     /// This member is required.
     public var clientRequestToken: Swift.String?
@@ -1561,7 +1562,7 @@ public struct CreateLensShareInput {
     }
 }
 
-public struct CreateLensShareOutput {
+public struct CreateLensShareOutput: Swift.Sendable {
     /// The ID associated with the share.
     public var shareId: Swift.String?
 
@@ -1573,7 +1574,7 @@ public struct CreateLensShareOutput {
     }
 }
 
-public struct CreateLensVersionInput {
+public struct CreateLensVersionInput: Swift.Sendable {
     /// A unique case-sensitive string used to ensure that this request is idempotent (executes only once). You should not reuse the same token for other requests. If you retry a request with the same client request token and the same parameters after the original request has completed successfully, the result of the original request is returned. This token is listed as required, however, if you do not specify it, the Amazon Web Services SDKs automatically generate one for you. If you are not using the Amazon Web Services SDK or the CLI, you must provide this token or the request will fail.
     /// This member is required.
     public var clientRequestToken: Swift.String?
@@ -1600,7 +1601,7 @@ public struct CreateLensVersionInput {
     }
 }
 
-public struct CreateLensVersionOutput {
+public struct CreateLensVersionOutput: Swift.Sendable {
     /// The ARN for the lens.
     public var lensArn: Swift.String?
     /// The version of the lens.
@@ -1617,7 +1618,7 @@ public struct CreateLensVersionOutput {
 }
 
 /// Input for milestone creation.
-public struct CreateMilestoneInput {
+public struct CreateMilestoneInput: Swift.Sendable {
     /// A unique case-sensitive string used to ensure that this request is idempotent (executes only once). You should not reuse the same token for other requests. If you retry a request with the same client request token and the same parameters after the original request has completed successfully, the result of the original request is returned. This token is listed as required, however, if you do not specify it, the Amazon Web Services SDKs automatically generate one for you. If you are not using the Amazon Web Services SDK or the CLI, you must provide this token or the request will fail.
     /// This member is required.
     public var clientRequestToken: Swift.String?
@@ -1641,7 +1642,7 @@ public struct CreateMilestoneInput {
 }
 
 /// Output of a create milestone call.
-public struct CreateMilestoneOutput {
+public struct CreateMilestoneOutput: Swift.Sendable {
     /// The milestone number. A workload can have a maximum of 100 milestones.
     public var milestoneNumber: Swift.Int?
     /// The ID assigned to the workload. This ID is unique within an Amazon Web Services Region.
@@ -1658,8 +1659,9 @@ public struct CreateMilestoneOutput {
 }
 
 extension WellArchitectedClientTypes {
+
     /// An update to a profile question.
-    public struct ProfileQuestionUpdate {
+    public struct ProfileQuestionUpdate: Swift.Sendable {
         /// The ID of the question.
         public var questionId: Swift.String?
         /// The selected choices.
@@ -1674,10 +1676,9 @@ extension WellArchitectedClientTypes {
             self.selectedChoiceIds = selectedChoiceIds
         }
     }
-
 }
 
-public struct CreateProfileInput {
+public struct CreateProfileInput: Swift.Sendable {
     /// A unique case-sensitive string used to ensure that this request is idempotent (executes only once). You should not reuse the same token for other requests. If you retry a request with the same client request token and the same parameters after the original request has completed successfully, the result of the original request is returned. This token is listed as required, however, if you do not specify it, the Amazon Web Services SDKs automatically generate one for you. If you are not using the Amazon Web Services SDK or the CLI, you must provide this token or the request will fail.
     /// This member is required.
     public var clientRequestToken: Swift.String?
@@ -1709,7 +1710,7 @@ public struct CreateProfileInput {
     }
 }
 
-public struct CreateProfileOutput {
+public struct CreateProfileOutput: Swift.Sendable {
     /// The profile ARN.
     public var profileArn: Swift.String?
     /// Version of the profile.
@@ -1725,7 +1726,7 @@ public struct CreateProfileOutput {
     }
 }
 
-public struct CreateProfileShareInput {
+public struct CreateProfileShareInput: Swift.Sendable {
     /// A unique case-sensitive string used to ensure that this request is idempotent (executes only once). You should not reuse the same token for other requests. If you retry a request with the same client request token and the same parameters after the original request has completed successfully, the result of the original request is returned. This token is listed as required, however, if you do not specify it, the Amazon Web Services SDKs automatically generate one for you. If you are not using the Amazon Web Services SDK or the CLI, you must provide this token or the request will fail.
     /// This member is required.
     public var clientRequestToken: Swift.String?
@@ -1748,7 +1749,7 @@ public struct CreateProfileShareInput {
     }
 }
 
-public struct CreateProfileShareOutput {
+public struct CreateProfileShareOutput: Swift.Sendable {
     /// The profile ARN.
     public var profileArn: Swift.String?
     /// The ID associated with the share.
@@ -1764,7 +1765,7 @@ public struct CreateProfileShareOutput {
     }
 }
 
-public struct CreateReviewTemplateInput {
+public struct CreateReviewTemplateInput: Swift.Sendable {
     /// A unique case-sensitive string used to ensure that this request is idempotent (executes only once). You should not reuse the same token for other requests. If you retry a request with the same client request token and the same parameters after the original request has completed successfully, the result of the original request is returned. This token is listed as required, however, if you do not specify it, the Amazon Web Services SDKs automatically generate one for you. If you are not using the Amazon Web Services SDK or the CLI, you must provide this token or the request will fail.
     /// This member is required.
     public var clientRequestToken: Swift.String?
@@ -1800,7 +1801,7 @@ public struct CreateReviewTemplateInput {
     }
 }
 
-public struct CreateReviewTemplateOutput {
+public struct CreateReviewTemplateOutput: Swift.Sendable {
     /// The review template ARN.
     public var templateArn: Swift.String?
 
@@ -1812,7 +1813,7 @@ public struct CreateReviewTemplateOutput {
     }
 }
 
-public struct CreateTemplateShareInput {
+public struct CreateTemplateShareInput: Swift.Sendable {
     /// A unique case-sensitive string used to ensure that this request is idempotent (executes only once). You should not reuse the same token for other requests. If you retry a request with the same client request token and the same parameters after the original request has completed successfully, the result of the original request is returned. This token is listed as required, however, if you do not specify it, the Amazon Web Services SDKs automatically generate one for you. If you are not using the Amazon Web Services SDK or the CLI, you must provide this token or the request will fail.
     /// This member is required.
     public var clientRequestToken: Swift.String?
@@ -1835,7 +1836,7 @@ public struct CreateTemplateShareInput {
     }
 }
 
-public struct CreateTemplateShareOutput {
+public struct CreateTemplateShareOutput: Swift.Sendable {
     /// The ID associated with the share.
     public var shareId: Swift.String?
     /// The review template ARN.
@@ -1853,7 +1854,7 @@ public struct CreateTemplateShareOutput {
 
 extension WellArchitectedClientTypes {
 
-    public enum TrustedAdvisorIntegrationStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum TrustedAdvisorIntegrationStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case disabled
         case enabled
         case sdkUnknown(Swift.String)
@@ -1882,7 +1883,7 @@ extension WellArchitectedClientTypes {
 
 extension WellArchitectedClientTypes {
 
-    public enum DefinitionType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DefinitionType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case appRegistry
         case workloadMetadata
         case sdkUnknown(Swift.String)
@@ -1910,8 +1911,9 @@ extension WellArchitectedClientTypes {
 }
 
 extension WellArchitectedClientTypes {
+
     /// Discovery configuration associated to the workload.
-    public struct WorkloadDiscoveryConfig {
+    public struct WorkloadDiscoveryConfig: Swift.Sendable {
         /// Discovery integration status in respect to Trusted Advisor for the workload.
         public var trustedAdvisorIntegrationStatus: WellArchitectedClientTypes.TrustedAdvisorIntegrationStatus?
         /// The mode to use for identifying resources associated with the workload. You can specify WORKLOAD_METADATA, APP_REGISTRY, or both.
@@ -1926,13 +1928,12 @@ extension WellArchitectedClientTypes {
             self.workloadResourceDefinition = workloadResourceDefinition
         }
     }
-
 }
 
 extension WellArchitectedClientTypes {
 
     /// The environment for the workload.
-    public enum WorkloadEnvironment: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum WorkloadEnvironment: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case preproduction
         case production
         case sdkUnknown(Swift.String)
@@ -1961,7 +1962,7 @@ extension WellArchitectedClientTypes {
 
 extension WellArchitectedClientTypes {
 
-    public enum WorkloadIssueManagementStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum WorkloadIssueManagementStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case disabled
         case enabled
         case inherit
@@ -1992,8 +1993,9 @@ extension WellArchitectedClientTypes {
 }
 
 extension WellArchitectedClientTypes {
+
     /// Workload-level: Input for the Jira configuration.
-    public struct WorkloadJiraConfigurationInput {
+    public struct WorkloadJiraConfigurationInput: Swift.Sendable {
         /// Workload-level: Jira issue management status.
         public var issueManagementStatus: WellArchitectedClientTypes.WorkloadIssueManagementStatus?
         /// Workload-level: Jira issue management type.
@@ -2012,11 +2014,10 @@ extension WellArchitectedClientTypes {
             self.jiraProjectKey = jiraProjectKey
         }
     }
-
 }
 
 /// Input for workload creation.
-public struct CreateWorkloadInput {
+public struct CreateWorkloadInput: Swift.Sendable {
     /// The list of Amazon Web Services account IDs associated with the workload.
     public var accountIds: [Swift.String]?
     /// List of AppRegistry application ARNs associated to the workload.
@@ -2164,7 +2165,7 @@ public struct CreateWorkloadInput {
 }
 
 /// Output of a create workload call.
-public struct CreateWorkloadOutput {
+public struct CreateWorkloadOutput: Swift.Sendable {
     /// The ARN for the workload.
     public var workloadArn: Swift.String?
     /// The ID assigned to the workload. This ID is unique within an Amazon Web Services Region.
@@ -2183,7 +2184,7 @@ public struct CreateWorkloadOutput {
 extension WellArchitectedClientTypes {
 
     /// Permission granted on a share request.
-    public enum PermissionType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum PermissionType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case contributor
         case readonly
         case sdkUnknown(Swift.String)
@@ -2211,7 +2212,7 @@ extension WellArchitectedClientTypes {
 }
 
 /// Input for Create Workload Share
-public struct CreateWorkloadShareInput {
+public struct CreateWorkloadShareInput: Swift.Sendable {
     /// A unique case-sensitive string used to ensure that this request is idempotent (executes only once). You should not reuse the same token for other requests. If you retry a request with the same client request token and the same parameters after the original request has completed successfully, the result of the original request is returned. This token is listed as required, however, if you do not specify it, the Amazon Web Services SDKs automatically generate one for you. If you are not using the Amazon Web Services SDK or the CLI, you must provide this token or the request will fail.
     /// This member is required.
     public var clientRequestToken: Swift.String?
@@ -2240,7 +2241,7 @@ public struct CreateWorkloadShareInput {
 }
 
 /// Input for Create Workload Share
-public struct CreateWorkloadShareOutput {
+public struct CreateWorkloadShareOutput: Swift.Sendable {
     /// The ID associated with the share.
     public var shareId: Swift.String?
     /// The ID assigned to the workload. This ID is unique within an Amazon Web Services Region.
@@ -2258,7 +2259,7 @@ public struct CreateWorkloadShareOutput {
 
 extension WellArchitectedClientTypes {
 
-    public enum LensStatusType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum LensStatusType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case all
         case draft
         case published
@@ -2288,7 +2289,7 @@ extension WellArchitectedClientTypes {
     }
 }
 
-public struct DeleteLensInput {
+public struct DeleteLensInput: Swift.Sendable {
     /// A unique case-sensitive string used to ensure that this request is idempotent (executes only once). You should not reuse the same token for other requests. If you retry a request with the same client request token and the same parameters after the original request has completed successfully, the result of the original request is returned. This token is listed as required, however, if you do not specify it, the Amazon Web Services SDKs automatically generate one for you. If you are not using the Amazon Web Services SDK or the CLI, you must provide this token or the request will fail.
     /// This member is required.
     public var clientRequestToken: Swift.String?
@@ -2311,7 +2312,7 @@ public struct DeleteLensInput {
     }
 }
 
-public struct DeleteLensShareInput {
+public struct DeleteLensShareInput: Swift.Sendable {
     /// A unique case-sensitive string used to ensure that this request is idempotent (executes only once). You should not reuse the same token for other requests. If you retry a request with the same client request token and the same parameters after the original request has completed successfully, the result of the original request is returned. This token is listed as required, however, if you do not specify it, the Amazon Web Services SDKs automatically generate one for you. If you are not using the Amazon Web Services SDK or the CLI, you must provide this token or the request will fail.
     /// This member is required.
     public var clientRequestToken: Swift.String?
@@ -2334,7 +2335,7 @@ public struct DeleteLensShareInput {
     }
 }
 
-public struct DeleteProfileInput {
+public struct DeleteProfileInput: Swift.Sendable {
     /// A unique case-sensitive string used to ensure that this request is idempotent (executes only once). You should not reuse the same token for other requests. If you retry a request with the same client request token and the same parameters after the original request has completed successfully, the result of the original request is returned. This token is listed as required, however, if you do not specify it, the Amazon Web Services SDKs automatically generate one for you. If you are not using the Amazon Web Services SDK or the CLI, you must provide this token or the request will fail.
     /// This member is required.
     public var clientRequestToken: Swift.String?
@@ -2352,7 +2353,7 @@ public struct DeleteProfileInput {
     }
 }
 
-public struct DeleteProfileShareInput {
+public struct DeleteProfileShareInput: Swift.Sendable {
     /// A unique case-sensitive string used to ensure that this request is idempotent (executes only once). You should not reuse the same token for other requests. If you retry a request with the same client request token and the same parameters after the original request has completed successfully, the result of the original request is returned. This token is listed as required, however, if you do not specify it, the Amazon Web Services SDKs automatically generate one for you. If you are not using the Amazon Web Services SDK or the CLI, you must provide this token or the request will fail.
     /// This member is required.
     public var clientRequestToken: Swift.String?
@@ -2375,7 +2376,7 @@ public struct DeleteProfileShareInput {
     }
 }
 
-public struct DeleteReviewTemplateInput {
+public struct DeleteReviewTemplateInput: Swift.Sendable {
     /// A unique case-sensitive string used to ensure that this request is idempotent (executes only once). You should not reuse the same token for other requests. If you retry a request with the same client request token and the same parameters after the original request has completed successfully, the result of the original request is returned. This token is listed as required, however, if you do not specify it, the Amazon Web Services SDKs automatically generate one for you. If you are not using the Amazon Web Services SDK or the CLI, you must provide this token or the request will fail.
     /// This member is required.
     public var clientRequestToken: Swift.String?
@@ -2393,7 +2394,7 @@ public struct DeleteReviewTemplateInput {
     }
 }
 
-public struct DeleteTemplateShareInput {
+public struct DeleteTemplateShareInput: Swift.Sendable {
     /// A unique case-sensitive string used to ensure that this request is idempotent (executes only once). You should not reuse the same token for other requests. If you retry a request with the same client request token and the same parameters after the original request has completed successfully, the result of the original request is returned. This token is listed as required, however, if you do not specify it, the Amazon Web Services SDKs automatically generate one for you. If you are not using the Amazon Web Services SDK or the CLI, you must provide this token or the request will fail.
     /// This member is required.
     public var clientRequestToken: Swift.String?
@@ -2417,7 +2418,7 @@ public struct DeleteTemplateShareInput {
 }
 
 /// Input for workload deletion.
-public struct DeleteWorkloadInput {
+public struct DeleteWorkloadInput: Swift.Sendable {
     /// A unique case-sensitive string used to ensure that this request is idempotent (executes only once). You should not reuse the same token for other requests. If you retry a request with the same client request token and the same parameters after the original request has completed successfully, the result of the original request is returned. This token is listed as required, however, if you do not specify it, the Amazon Web Services SDKs automatically generate one for you. If you are not using the Amazon Web Services SDK or the CLI, you must provide this token or the request will fail.
     /// This member is required.
     public var clientRequestToken: Swift.String?
@@ -2436,7 +2437,7 @@ public struct DeleteWorkloadInput {
 }
 
 /// Input for Delete Workload Share
-public struct DeleteWorkloadShareInput {
+public struct DeleteWorkloadShareInput: Swift.Sendable {
     /// A unique case-sensitive string used to ensure that this request is idempotent (executes only once). You should not reuse the same token for other requests. If you retry a request with the same client request token and the same parameters after the original request has completed successfully, the result of the original request is returned. This token is listed as required, however, if you do not specify it, the Amazon Web Services SDKs automatically generate one for you. If you are not using the Amazon Web Services SDK or the CLI, you must provide this token or the request will fail.
     /// This member is required.
     public var clientRequestToken: Swift.String?
@@ -2461,7 +2462,7 @@ public struct DeleteWorkloadShareInput {
 
 extension WellArchitectedClientTypes {
 
-    public enum DifferenceStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DifferenceStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case deleted
         case new
         case updated
@@ -2492,7 +2493,7 @@ extension WellArchitectedClientTypes {
 }
 
 /// Input to disassociate lens reviews.
-public struct DisassociateLensesInput {
+public struct DisassociateLensesInput: Swift.Sendable {
     /// List of lens aliases to associate or disassociate with a workload. Up to 10 lenses can be specified. Identify a lens using its [LensSummary$LensAlias].
     /// This member is required.
     public var lensAliases: [Swift.String]?
@@ -2510,7 +2511,7 @@ public struct DisassociateLensesInput {
     }
 }
 
-public struct DisassociateProfilesInput {
+public struct DisassociateProfilesInput: Swift.Sendable {
     /// The list of profile ARNs to disassociate from the workload.
     /// This member is required.
     public var profileArns: [Swift.String]?
@@ -2530,7 +2531,7 @@ public struct DisassociateProfilesInput {
 
 extension WellArchitectedClientTypes {
 
-    public enum DiscoveryIntegrationStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DiscoveryIntegrationStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case disabled
         case enabled
         case sdkUnknown(Swift.String)
@@ -2557,7 +2558,7 @@ extension WellArchitectedClientTypes {
     }
 }
 
-public struct ExportLensInput {
+public struct ExportLensInput: Swift.Sendable {
     /// The alias of the lens. For Amazon Web Services official lenses, this is either the lens alias, such as serverless, or the lens ARN, such as arn:aws:wellarchitected:us-east-1::lens/serverless. Note that some operations (such as ExportLens and CreateLensShare) are not permitted on Amazon Web Services official lenses. For custom lenses, this is the lens ARN, such as arn:aws:wellarchitected:us-west-2:123456789012:lens/0123456789abcdef01234567890abcdef. Each lens is identified by its [LensSummary$LensAlias].
     /// This member is required.
     public var lensAlias: Swift.String?
@@ -2574,7 +2575,7 @@ public struct ExportLensInput {
     }
 }
 
-public struct ExportLensOutput {
+public struct ExportLensOutput: Swift.Sendable {
     /// The JSON representation of a lens.
     public var lensJSON: Swift.String?
 
@@ -2587,7 +2588,7 @@ public struct ExportLensOutput {
 }
 
 /// Input to get answer.
-public struct GetAnswerInput {
+public struct GetAnswerInput: Swift.Sendable {
     /// The alias of the lens. For Amazon Web Services official lenses, this is either the lens alias, such as serverless, or the lens ARN, such as arn:aws:wellarchitected:us-east-1::lens/serverless. Note that some operations (such as ExportLens and CreateLensShare) are not permitted on Amazon Web Services official lenses. For custom lenses, this is the lens ARN, such as arn:aws:wellarchitected:us-west-2:123456789012:lens/0123456789abcdef01234567890abcdef. Each lens is identified by its [LensSummary$LensAlias].
     /// This member is required.
     public var lensAlias: Swift.String?
@@ -2615,7 +2616,7 @@ public struct GetAnswerInput {
 }
 
 /// Output of a get answer call.
-public struct GetAnswerOutput {
+public struct GetAnswerOutput: Swift.Sendable {
     /// An answer of the question.
     public var answer: WellArchitectedClientTypes.Answer?
     /// The alias of the lens. For Amazon Web Services official lenses, this is either the lens alias, such as serverless, or the lens ARN, such as arn:aws:wellarchitected:us-east-1::lens/serverless. Note that some operations (such as ExportLens and CreateLensShare) are not permitted on Amazon Web Services official lenses. For custom lenses, this is the lens ARN, such as arn:aws:wellarchitected:us-west-2:123456789012:lens/0123456789abcdef01234567890abcdef. Each lens is identified by its [LensSummary$LensAlias].
@@ -2645,7 +2646,7 @@ public struct GetAnswerOutput {
 
 extension WellArchitectedClientTypes {
 
-    public enum ReportFormat: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ReportFormat: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case json
         case pdf
         case sdkUnknown(Swift.String)
@@ -2672,7 +2673,7 @@ extension WellArchitectedClientTypes {
     }
 }
 
-public struct GetConsolidatedReportInput {
+public struct GetConsolidatedReportInput: Swift.Sendable {
     /// The format of the consolidated report. For PDF, Base64String is returned. For JSON, Metrics is returned.
     /// This member is required.
     public var format: WellArchitectedClientTypes.ReportFormat?
@@ -2697,7 +2698,7 @@ public struct GetConsolidatedReportInput {
     }
 }
 
-public struct GetConsolidatedReportOutput {
+public struct GetConsolidatedReportOutput: Swift.Sendable {
     /// The Base64-encoded string representation of a lens review report. This data can be used to create a PDF file. Only returned by [GetConsolidatedReport] when PDF format is requested.
     public var base64String: Swift.String?
     /// The metrics that make up the consolidated report. Only returned when JSON format is requested.
@@ -2719,7 +2720,7 @@ public struct GetConsolidatedReportOutput {
 
 extension WellArchitectedClientTypes {
 
-    public enum OrganizationSharingStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum OrganizationSharingStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case disabled
         case enabled
         case sdkUnknown(Swift.String)
@@ -2746,7 +2747,7 @@ extension WellArchitectedClientTypes {
     }
 }
 
-public struct GetGlobalSettingsOutput {
+public struct GetGlobalSettingsOutput: Swift.Sendable {
     /// Discovery integration status.
     public var discoveryIntegrationStatus: WellArchitectedClientTypes.DiscoveryIntegrationStatus?
     /// Jira configuration status.
@@ -2766,7 +2767,7 @@ public struct GetGlobalSettingsOutput {
     }
 }
 
-public struct GetLensInput {
+public struct GetLensInput: Swift.Sendable {
     /// The alias of the lens. For Amazon Web Services official lenses, this is either the lens alias, such as serverless, or the lens ARN, such as arn:aws:wellarchitected:us-east-1::lens/serverless. Note that some operations (such as ExportLens and CreateLensShare) are not permitted on Amazon Web Services official lenses. For custom lenses, this is the lens ARN, such as arn:aws:wellarchitected:us-west-2:123456789012:lens/0123456789abcdef01234567890abcdef. Each lens is identified by its [LensSummary$LensAlias].
     /// This member is required.
     public var lensAlias: Swift.String?
@@ -2784,8 +2785,9 @@ public struct GetLensInput {
 }
 
 extension WellArchitectedClientTypes {
+
     /// A lens return object.
-    public struct Lens {
+    public struct Lens: Swift.Sendable {
         /// The description of the lens.
         public var description: Swift.String?
         /// The ARN of a lens.
@@ -2820,10 +2822,9 @@ extension WellArchitectedClientTypes {
             self.tags = tags
         }
     }
-
 }
 
-public struct GetLensOutput {
+public struct GetLensOutput: Swift.Sendable {
     /// A lens return object.
     public var lens: WellArchitectedClientTypes.Lens?
 
@@ -2836,7 +2837,7 @@ public struct GetLensOutput {
 }
 
 /// Input to get lens review.
-public struct GetLensReviewInput {
+public struct GetLensReviewInput: Swift.Sendable {
     /// The alias of the lens. For Amazon Web Services official lenses, this is either the lens alias, such as serverless, or the lens ARN, such as arn:aws:wellarchitected:us-east-1::lens/serverless. Note that some operations (such as ExportLens and CreateLensShare) are not permitted on Amazon Web Services official lenses. For custom lenses, this is the lens ARN, such as arn:aws:wellarchitected:us-west-2:123456789012:lens/0123456789abcdef01234567890abcdef. Each lens is identified by its [LensSummary$LensAlias].
     /// This member is required.
     public var lensAlias: Swift.String?
@@ -2859,8 +2860,9 @@ public struct GetLensReviewInput {
 }
 
 extension WellArchitectedClientTypes {
+
     /// The selected pillar.
-    public struct SelectedPillar {
+    public struct SelectedPillar: Swift.Sendable {
         /// The ID used to identify a pillar, for example, security. A pillar is identified by its [PillarReviewSummary$PillarId].
         public var pillarId: Swift.String?
         /// Selected question IDs in the selected pillar.
@@ -2875,12 +2877,12 @@ extension WellArchitectedClientTypes {
             self.selectedQuestionIds = selectedQuestionIds
         }
     }
-
 }
 
 extension WellArchitectedClientTypes {
+
     /// Selected questions in the workload.
-    public struct JiraSelectedQuestionConfiguration {
+    public struct JiraSelectedQuestionConfiguration: Swift.Sendable {
         /// Selected pillars in the workload.
         public var selectedPillars: [WellArchitectedClientTypes.SelectedPillar]?
 
@@ -2891,12 +2893,11 @@ extension WellArchitectedClientTypes {
             self.selectedPillars = selectedPillars
         }
     }
-
 }
 
 extension WellArchitectedClientTypes {
 
-    public enum LensStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum LensStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case current
         case deleted
         case deprecated
@@ -2933,8 +2934,9 @@ extension WellArchitectedClientTypes {
 }
 
 extension WellArchitectedClientTypes {
+
     /// A pillar review summary of a lens review.
-    public struct PillarReviewSummary {
+    public struct PillarReviewSummary: Swift.Sendable {
         /// The notes associated with the workload. For a review template, these are the notes that will be associated with the workload when the template is applied.
         public var notes: Swift.String?
         /// The ID used to identify a pillar, for example, security. A pillar is identified by its [PillarReviewSummary$PillarId].
@@ -2961,12 +2963,12 @@ extension WellArchitectedClientTypes {
             self.riskCounts = riskCounts
         }
     }
-
 }
 
 extension WellArchitectedClientTypes {
+
     /// The profile associated with a workload.
-    public struct WorkloadProfile {
+    public struct WorkloadProfile: Swift.Sendable {
         /// The profile ARN.
         public var profileArn: Swift.String?
         /// The profile version.
@@ -2981,12 +2983,12 @@ extension WellArchitectedClientTypes {
             self.profileVersion = profileVersion
         }
     }
-
 }
 
 extension WellArchitectedClientTypes {
+
     /// A lens review of a question.
-    public struct LensReview {
+    public struct LensReview: Swift.Sendable {
         /// Jira configuration status of the Lens review.
         public var jiraConfiguration: WellArchitectedClientTypes.JiraSelectedQuestionConfiguration?
         /// The alias of the lens. For Amazon Web Services official lenses, this is either the lens alias, such as serverless, or the lens ARN, such as arn:aws:wellarchitected:us-east-1::lens/serverless. Note that some operations (such as ExportLens and CreateLensShare) are not permitted on Amazon Web Services official lenses. For custom lenses, this is the lens ARN, such as arn:aws:wellarchitected:us-west-2:123456789012:lens/0123456789abcdef01234567890abcdef. Each lens is identified by its [LensSummary$LensAlias].
@@ -3045,11 +3047,10 @@ extension WellArchitectedClientTypes {
             self.updatedAt = updatedAt
         }
     }
-
 }
 
 /// Output of a get lens review call.
-public struct GetLensReviewOutput {
+public struct GetLensReviewOutput: Swift.Sendable {
     /// A lens review of a question.
     public var lensReview: WellArchitectedClientTypes.LensReview?
     /// The milestone number. A workload can have a maximum of 100 milestones.
@@ -3070,7 +3071,7 @@ public struct GetLensReviewOutput {
 }
 
 /// Input to get lens review report.
-public struct GetLensReviewReportInput {
+public struct GetLensReviewReportInput: Swift.Sendable {
     /// The alias of the lens. For Amazon Web Services official lenses, this is either the lens alias, such as serverless, or the lens ARN, such as arn:aws:wellarchitected:us-east-1::lens/serverless. Note that some operations (such as ExportLens and CreateLensShare) are not permitted on Amazon Web Services official lenses. For custom lenses, this is the lens ARN, such as arn:aws:wellarchitected:us-west-2:123456789012:lens/0123456789abcdef01234567890abcdef. Each lens is identified by its [LensSummary$LensAlias].
     /// This member is required.
     public var lensAlias: Swift.String?
@@ -3093,8 +3094,9 @@ public struct GetLensReviewReportInput {
 }
 
 extension WellArchitectedClientTypes {
+
     /// A report of a lens review.
-    public struct LensReviewReport {
+    public struct LensReviewReport: Swift.Sendable {
         /// The Base64-encoded string representation of a lens review report. This data can be used to create a PDF file. Only returned by [GetConsolidatedReport] when PDF format is requested.
         public var base64String: Swift.String?
         /// The alias of the lens. For Amazon Web Services official lenses, this is either the lens alias, such as serverless, or the lens ARN, such as arn:aws:wellarchitected:us-east-1::lens/serverless. Note that some operations (such as ExportLens and CreateLensShare) are not permitted on Amazon Web Services official lenses. For custom lenses, this is the lens ARN, such as arn:aws:wellarchitected:us-west-2:123456789012:lens/0123456789abcdef01234567890abcdef. Each lens is identified by its [LensSummary$LensAlias].
@@ -3113,11 +3115,10 @@ extension WellArchitectedClientTypes {
             self.lensArn = lensArn
         }
     }
-
 }
 
 /// Output of a get lens review report call.
-public struct GetLensReviewReportOutput {
+public struct GetLensReviewReportOutput: Swift.Sendable {
     /// A report of a lens review.
     public var lensReviewReport: WellArchitectedClientTypes.LensReviewReport?
     /// The milestone number. A workload can have a maximum of 100 milestones.
@@ -3137,7 +3138,7 @@ public struct GetLensReviewReportOutput {
     }
 }
 
-public struct GetLensVersionDifferenceInput {
+public struct GetLensVersionDifferenceInput: Swift.Sendable {
     /// The base version of the lens.
     public var baseLensVersion: Swift.String?
     /// The alias of the lens. For Amazon Web Services official lenses, this is either the lens alias, such as serverless, or the lens ARN, such as arn:aws:wellarchitected:us-east-1::lens/serverless. Note that some operations (such as ExportLens and CreateLensShare) are not permitted on Amazon Web Services official lenses. For custom lenses, this is the lens ARN, such as arn:aws:wellarchitected:us-west-2:123456789012:lens/0123456789abcdef01234567890abcdef. Each lens is identified by its [LensSummary$LensAlias].
@@ -3159,8 +3160,9 @@ public struct GetLensVersionDifferenceInput {
 }
 
 extension WellArchitectedClientTypes {
+
     /// A question difference return object.
-    public struct QuestionDifference {
+    public struct QuestionDifference: Swift.Sendable {
         /// Indicates the type of change to the question.
         public var differenceStatus: WellArchitectedClientTypes.DifferenceStatus?
         /// The ID of the question.
@@ -3179,12 +3181,12 @@ extension WellArchitectedClientTypes {
             self.questionTitle = questionTitle
         }
     }
-
 }
 
 extension WellArchitectedClientTypes {
+
     /// A pillar difference return object.
-    public struct PillarDifference {
+    public struct PillarDifference: Swift.Sendable {
         /// Indicates the type of change to the pillar.
         public var differenceStatus: WellArchitectedClientTypes.DifferenceStatus?
         /// The ID used to identify a pillar, for example, security. A pillar is identified by its [PillarReviewSummary$PillarId].
@@ -3207,12 +3209,12 @@ extension WellArchitectedClientTypes {
             self.questionDifferences = questionDifferences
         }
     }
-
 }
 
 extension WellArchitectedClientTypes {
+
     /// The differences between the base and latest versions of the lens.
-    public struct VersionDifferences {
+    public struct VersionDifferences: Swift.Sendable {
         /// The differences between the base and latest versions of the lens.
         public var pillarDifferences: [WellArchitectedClientTypes.PillarDifference]?
 
@@ -3223,10 +3225,9 @@ extension WellArchitectedClientTypes {
             self.pillarDifferences = pillarDifferences
         }
     }
-
 }
 
-public struct GetLensVersionDifferenceOutput {
+public struct GetLensVersionDifferenceOutput: Swift.Sendable {
     /// The base version of the lens.
     public var baseLensVersion: Swift.String?
     /// The latest version of the lens.
@@ -3259,7 +3260,7 @@ public struct GetLensVersionDifferenceOutput {
 }
 
 /// Input to get a milestone.
-public struct GetMilestoneInput {
+public struct GetMilestoneInput: Swift.Sendable {
     /// The milestone number. A workload can have a maximum of 100 milestones.
     /// This member is required.
     public var milestoneNumber: Swift.Int?
@@ -3280,7 +3281,7 @@ public struct GetMilestoneInput {
 extension WellArchitectedClientTypes {
 
     /// The improvement status for a workload.
-    public enum WorkloadImprovementStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum WorkloadImprovementStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case complete
         case inProgress
         case notApplicable
@@ -3317,8 +3318,9 @@ extension WellArchitectedClientTypes {
 }
 
 extension WellArchitectedClientTypes {
+
     /// Workload-level: Output configuration of the Jira integration.
-    public struct WorkloadJiraConfigurationOutput {
+    public struct WorkloadJiraConfigurationOutput: Swift.Sendable {
         /// Workload-level: Jira issue management status.
         public var issueManagementStatus: WellArchitectedClientTypes.WorkloadIssueManagementStatus?
         /// Workload-level: Jira issue management type.
@@ -3341,12 +3343,12 @@ extension WellArchitectedClientTypes {
             self.statusMessage = statusMessage
         }
     }
-
 }
 
 extension WellArchitectedClientTypes {
+
     /// A workload return object.
-    public struct Workload {
+    public struct Workload: Swift.Sendable {
         /// The list of Amazon Web Services account IDs associated with the workload.
         public var accountIds: [Swift.String]?
         /// List of AppRegistry application ARNs associated to the workload.
@@ -3519,12 +3521,12 @@ extension WellArchitectedClientTypes {
             self.workloadName = workloadName
         }
     }
-
 }
 
 extension WellArchitectedClientTypes {
+
     /// A milestone return object.
-    public struct Milestone {
+    public struct Milestone: Swift.Sendable {
         /// The name of the milestone in a workload. Milestone names must be unique within a workload.
         public var milestoneName: Swift.String?
         /// The milestone number. A workload can have a maximum of 100 milestones.
@@ -3547,11 +3549,10 @@ extension WellArchitectedClientTypes {
             self.workload = workload
         }
     }
-
 }
 
 /// Output of a get milestone call.
-public struct GetMilestoneOutput {
+public struct GetMilestoneOutput: Swift.Sendable {
     /// A milestone return object.
     public var milestone: WellArchitectedClientTypes.Milestone?
     /// The ID assigned to the workload. This ID is unique within an Amazon Web Services Region.
@@ -3567,7 +3568,7 @@ public struct GetMilestoneOutput {
     }
 }
 
-public struct GetProfileInput {
+public struct GetProfileInput: Swift.Sendable {
     /// The profile ARN.
     /// This member is required.
     public var profileArn: Swift.String?
@@ -3585,8 +3586,9 @@ public struct GetProfileInput {
 }
 
 extension WellArchitectedClientTypes {
+
     /// The profile choice.
-    public struct ProfileChoice {
+    public struct ProfileChoice: Swift.Sendable {
         /// The description of a choice.
         public var choiceDescription: Swift.String?
         /// The ID of a choice.
@@ -3605,12 +3607,12 @@ extension WellArchitectedClientTypes {
             self.choiceTitle = choiceTitle
         }
     }
-
 }
 
 extension WellArchitectedClientTypes {
+
     /// A profile question.
-    public struct ProfileQuestion {
+    public struct ProfileQuestion: Swift.Sendable {
         /// The maximum number of selected choices.
         public var maxSelectedChoices: Swift.Int?
         /// The minimum number of selected choices.
@@ -3645,12 +3647,12 @@ extension WellArchitectedClientTypes {
             self.selectedChoiceIds = selectedChoiceIds
         }
     }
-
 }
 
 extension WellArchitectedClientTypes {
+
     /// A profile.
-    public struct Profile {
+    public struct Profile: Swift.Sendable {
         /// The date and time recorded.
         public var createdAt: Foundation.Date?
         /// An Amazon Web Services account ID.
@@ -3697,10 +3699,9 @@ extension WellArchitectedClientTypes {
             self.updatedAt = updatedAt
         }
     }
-
 }
 
-public struct GetProfileOutput {
+public struct GetProfileOutput: Swift.Sendable {
     /// The profile.
     public var profile: WellArchitectedClientTypes.Profile?
 
@@ -3712,14 +3713,15 @@ public struct GetProfileOutput {
     }
 }
 
-public struct GetProfileTemplateInput {
+public struct GetProfileTemplateInput: Swift.Sendable {
 
     public init() { }
 }
 
 extension WellArchitectedClientTypes {
+
     /// A profile template choice.
-    public struct ProfileTemplateChoice {
+    public struct ProfileTemplateChoice: Swift.Sendable {
         /// The description of a choice.
         public var choiceDescription: Swift.String?
         /// The ID of a choice.
@@ -3738,12 +3740,12 @@ extension WellArchitectedClientTypes {
             self.choiceTitle = choiceTitle
         }
     }
-
 }
 
 extension WellArchitectedClientTypes {
+
     /// A profile template question.
-    public struct ProfileTemplateQuestion {
+    public struct ProfileTemplateQuestion: Swift.Sendable {
         /// The maximum number of choices selected.
         public var maxSelectedChoices: Swift.Int?
         /// The minimum number of choices selected.
@@ -3774,12 +3776,12 @@ extension WellArchitectedClientTypes {
             self.questionTitle = questionTitle
         }
     }
-
 }
 
 extension WellArchitectedClientTypes {
+
     /// The profile template.
-    public struct ProfileTemplate {
+    public struct ProfileTemplate: Swift.Sendable {
         /// The date and time recorded.
         public var createdAt: Foundation.Date?
         /// The name of the profile template.
@@ -3802,10 +3804,9 @@ extension WellArchitectedClientTypes {
             self.updatedAt = updatedAt
         }
     }
-
 }
 
-public struct GetProfileTemplateOutput {
+public struct GetProfileTemplateOutput: Swift.Sendable {
     /// The profile template.
     public var profileTemplate: WellArchitectedClientTypes.ProfileTemplate?
 
@@ -3817,7 +3818,7 @@ public struct GetProfileTemplateOutput {
     }
 }
 
-public struct GetReviewTemplateInput {
+public struct GetReviewTemplateInput: Swift.Sendable {
     /// The review template ARN.
     /// This member is required.
     public var templateArn: Swift.String?
@@ -3832,7 +3833,7 @@ public struct GetReviewTemplateInput {
 
 extension WellArchitectedClientTypes {
 
-    public enum Question: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Question: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case answered
         case unanswered
         case sdkUnknown(Swift.String)
@@ -3861,7 +3862,7 @@ extension WellArchitectedClientTypes {
 
 extension WellArchitectedClientTypes {
 
-    public enum ReviewTemplateUpdateStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ReviewTemplateUpdateStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case current
         case lensNotCurrent
         case sdkUnknown(Swift.String)
@@ -3889,8 +3890,9 @@ extension WellArchitectedClientTypes {
 }
 
 extension WellArchitectedClientTypes {
+
     /// A review template.
-    public struct ReviewTemplate {
+    public struct ReviewTemplate: Swift.Sendable {
         /// The review template description.
         public var description: Swift.String?
         /// The lenses applied to the review template.
@@ -3941,10 +3943,9 @@ extension WellArchitectedClientTypes {
             self.updatedAt = updatedAt
         }
     }
-
 }
 
-public struct GetReviewTemplateOutput {
+public struct GetReviewTemplateOutput: Swift.Sendable {
     /// The review template.
     public var reviewTemplate: WellArchitectedClientTypes.ReviewTemplate?
 
@@ -3956,7 +3957,7 @@ public struct GetReviewTemplateOutput {
     }
 }
 
-public struct GetReviewTemplateAnswerInput {
+public struct GetReviewTemplateAnswerInput: Swift.Sendable {
     /// The alias of the lens. For Amazon Web Services official lenses, this is either the lens alias, such as serverless, or the lens ARN, such as arn:aws:wellarchitected:us-east-1::lens/serverless. Note that some operations (such as ExportLens and CreateLensShare) are not permitted on Amazon Web Services official lenses. For custom lenses, this is the lens ARN, such as arn:aws:wellarchitected:us-west-2:123456789012:lens/0123456789abcdef01234567890abcdef. Each lens is identified by its [LensSummary$LensAlias].
     /// This member is required.
     public var lensAlias: Swift.String?
@@ -3981,7 +3982,7 @@ public struct GetReviewTemplateAnswerInput {
 
 extension WellArchitectedClientTypes {
 
-    public enum ReviewTemplateAnswerStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ReviewTemplateAnswerStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case answered
         case unanswered
         case sdkUnknown(Swift.String)
@@ -4009,8 +4010,9 @@ extension WellArchitectedClientTypes {
 }
 
 extension WellArchitectedClientTypes {
+
     /// An answer of the question.
-    public struct ReviewTemplateAnswer {
+    public struct ReviewTemplateAnswer: Swift.Sendable {
         /// The status of whether or not this question has been answered.
         public var answerStatus: WellArchitectedClientTypes.ReviewTemplateAnswerStatus?
         /// A list of selected choices to a question in your review template.
@@ -4073,10 +4075,9 @@ extension WellArchitectedClientTypes {
             self.selectedChoices = selectedChoices
         }
     }
-
 }
 
-public struct GetReviewTemplateAnswerOutput {
+public struct GetReviewTemplateAnswerOutput: Swift.Sendable {
     /// An answer of the question.
     public var answer: WellArchitectedClientTypes.ReviewTemplateAnswer?
     /// The alias of the lens. For Amazon Web Services official lenses, this is either the lens alias, such as serverless, or the lens ARN, such as arn:aws:wellarchitected:us-east-1::lens/serverless. Note that some operations (such as ExportLens and CreateLensShare) are not permitted on Amazon Web Services official lenses. For custom lenses, this is the lens ARN, such as arn:aws:wellarchitected:us-west-2:123456789012:lens/0123456789abcdef01234567890abcdef. Each lens is identified by its [LensSummary$LensAlias].
@@ -4096,7 +4097,7 @@ public struct GetReviewTemplateAnswerOutput {
     }
 }
 
-public struct GetReviewTemplateLensReviewInput {
+public struct GetReviewTemplateLensReviewInput: Swift.Sendable {
     /// The alias of the lens. For Amazon Web Services official lenses, this is either the lens alias, such as serverless, or the lens ARN, such as arn:aws:wellarchitected:us-east-1::lens/serverless. Note that some operations (such as ExportLens and CreateLensShare) are not permitted on Amazon Web Services official lenses. For custom lenses, this is the lens ARN, such as arn:aws:wellarchitected:us-west-2:123456789012:lens/0123456789abcdef01234567890abcdef. Each lens is identified by its [LensSummary$LensAlias].
     /// This member is required.
     public var lensAlias: Swift.String?
@@ -4115,8 +4116,9 @@ public struct GetReviewTemplateLensReviewInput {
 }
 
 extension WellArchitectedClientTypes {
+
     /// Summary of a review template.
-    public struct ReviewTemplatePillarReviewSummary {
+    public struct ReviewTemplatePillarReviewSummary: Swift.Sendable {
         /// The notes associated with the workload. For a review template, these are the notes that will be associated with the workload when the template is applied.
         public var notes: Swift.String?
         /// The ID used to identify a pillar, for example, security. A pillar is identified by its [PillarReviewSummary$PillarId].
@@ -4139,12 +4141,12 @@ extension WellArchitectedClientTypes {
             self.questionCounts = questionCounts
         }
     }
-
 }
 
 extension WellArchitectedClientTypes {
+
     /// The lens review of a review template.
-    public struct ReviewTemplateLensReview {
+    public struct ReviewTemplateLensReview: Swift.Sendable {
         /// The alias of the lens. For Amazon Web Services official lenses, this is either the lens alias, such as serverless, or the lens ARN, such as arn:aws:wellarchitected:us-east-1::lens/serverless. Note that some operations (such as ExportLens and CreateLensShare) are not permitted on Amazon Web Services official lenses. For custom lenses, this is the lens ARN, such as arn:aws:wellarchitected:us-west-2:123456789012:lens/0123456789abcdef01234567890abcdef. Each lens is identified by its [LensSummary$LensAlias].
         public var lensAlias: Swift.String?
         /// The lens ARN.
@@ -4191,10 +4193,9 @@ extension WellArchitectedClientTypes {
             self.updatedAt = updatedAt
         }
     }
-
 }
 
-public struct GetReviewTemplateLensReviewOutput {
+public struct GetReviewTemplateLensReviewOutput: Swift.Sendable {
     /// A lens review of a question.
     public var lensReview: WellArchitectedClientTypes.ReviewTemplateLensReview?
     /// The review template ARN.
@@ -4211,7 +4212,7 @@ public struct GetReviewTemplateLensReviewOutput {
 }
 
 /// Input to get a workload.
-public struct GetWorkloadInput {
+public struct GetWorkloadInput: Swift.Sendable {
     /// The ID assigned to the workload. This ID is unique within an Amazon Web Services Region.
     /// This member is required.
     public var workloadId: Swift.String?
@@ -4225,7 +4226,7 @@ public struct GetWorkloadInput {
 }
 
 /// Output of a get workload call.
-public struct GetWorkloadOutput {
+public struct GetWorkloadOutput: Swift.Sendable {
     /// A workload return object.
     public var workload: WellArchitectedClientTypes.Workload?
 
@@ -4237,7 +4238,7 @@ public struct GetWorkloadOutput {
     }
 }
 
-public struct ImportLensInput {
+public struct ImportLensInput: Swift.Sendable {
     /// A unique case-sensitive string used to ensure that this request is idempotent (executes only once). You should not reuse the same token for other requests. If you retry a request with the same client request token and the same parameters after the original request has completed successfully, the result of the original request is returned. This token is listed as required, however, if you do not specify it, the Amazon Web Services SDKs automatically generate one for you. If you are not using the Amazon Web Services SDK or the CLI, you must provide this token or the request will fail.
     /// This member is required.
     public var clientRequestToken: Swift.String?
@@ -4265,7 +4266,7 @@ public struct ImportLensInput {
 
 extension WellArchitectedClientTypes {
 
-    public enum ImportLensStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ImportLensStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case complete
         case error
         case inProgress
@@ -4295,7 +4296,7 @@ extension WellArchitectedClientTypes {
     }
 }
 
-public struct ImportLensOutput {
+public struct ImportLensOutput: Swift.Sendable {
     /// The ARN for the lens that was created or updated.
     public var lensArn: Swift.String?
     /// The status of the imported lens.
@@ -4312,8 +4313,9 @@ public struct ImportLensOutput {
 }
 
 extension WellArchitectedClientTypes {
+
     /// An improvement summary of a lens review in a workload.
-    public struct ImprovementSummary {
+    public struct ImprovementSummary: Swift.Sendable {
         /// The improvement plan URL for a question in an Amazon Web Services official lenses. This value is only available if the question has been answered. This value does not apply to custom lenses.
         public var improvementPlanUrl: Swift.String?
         /// The improvement plan details.
@@ -4348,12 +4350,11 @@ extension WellArchitectedClientTypes {
             self.risk = risk
         }
     }
-
 }
 
 extension WellArchitectedClientTypes {
 
-    public enum IntegratingService: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum IntegratingService: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case jira
         case sdkUnknown(Swift.String)
 
@@ -4378,8 +4379,9 @@ extension WellArchitectedClientTypes {
 }
 
 extension WellArchitectedClientTypes {
+
     /// A lens review summary of a workload.
-    public struct LensReviewSummary {
+    public struct LensReviewSummary: Swift.Sendable {
         /// The alias of the lens. For Amazon Web Services official lenses, this is either the lens alias, such as serverless, or the lens ARN, such as arn:aws:wellarchitected:us-east-1::lens/serverless. Note that some operations (such as ExportLens and CreateLensShare) are not permitted on Amazon Web Services official lenses. For custom lenses, this is the lens ARN, such as arn:aws:wellarchitected:us-west-2:123456789012:lens/0123456789abcdef01234567890abcdef. Each lens is identified by its [LensSummary$LensAlias].
         public var lensAlias: Swift.String?
         /// The ARN for the lens.
@@ -4422,13 +4424,12 @@ extension WellArchitectedClientTypes {
             self.updatedAt = updatedAt
         }
     }
-
 }
 
 extension WellArchitectedClientTypes {
 
     /// The status of the share request.
-    public enum ShareStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ShareStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case accepted
         case associated
         case associating
@@ -4474,8 +4475,9 @@ extension WellArchitectedClientTypes {
 }
 
 extension WellArchitectedClientTypes {
+
     /// A lens share summary return object.
-    public struct LensShareSummary {
+    public struct LensShareSummary: Swift.Sendable {
         /// The ID associated with the share.
         public var shareId: Swift.String?
         /// The Amazon Web Services account ID, organization ID, or organizational unit (OU) ID with which the workload, lens, profile, or review template is shared.
@@ -4498,12 +4500,11 @@ extension WellArchitectedClientTypes {
             self.statusMessage = statusMessage
         }
     }
-
 }
 
 extension WellArchitectedClientTypes {
 
-    public enum LensType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum LensType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case awsOfficial
         case customSelf
         case customShared
@@ -4534,8 +4535,9 @@ extension WellArchitectedClientTypes {
 }
 
 extension WellArchitectedClientTypes {
+
     /// A lens summary of a lens.
-    public struct LensSummary {
+    public struct LensSummary: Swift.Sendable {
         /// The date and time recorded.
         public var createdAt: Foundation.Date?
         /// The description of the lens.
@@ -4582,12 +4584,12 @@ extension WellArchitectedClientTypes {
             self.updatedAt = updatedAt
         }
     }
-
 }
 
 extension WellArchitectedClientTypes {
+
     /// Lens upgrade summary return object.
-    public struct LensUpgradeSummary {
+    public struct LensUpgradeSummary: Swift.Sendable {
         /// The current version of the lens.
         public var currentLensVersion: Swift.String?
         /// The latest version of the lens.
@@ -4626,12 +4628,11 @@ extension WellArchitectedClientTypes {
             self.workloadName = workloadName
         }
     }
-
 }
 
 extension WellArchitectedClientTypes {
 
-    public enum QuestionPriority: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum QuestionPriority: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case `none`
         case prioritized
         case sdkUnknown(Swift.String)
@@ -4659,7 +4660,7 @@ extension WellArchitectedClientTypes {
 }
 
 /// Input to list answers.
-public struct ListAnswersInput {
+public struct ListAnswersInput: Swift.Sendable {
     /// The alias of the lens. For Amazon Web Services official lenses, this is either the lens alias, such as serverless, or the lens ARN, such as arn:aws:wellarchitected:us-east-1::lens/serverless. Note that some operations (such as ExportLens and CreateLensShare) are not permitted on Amazon Web Services official lenses. For custom lenses, this is the lens ARN, such as arn:aws:wellarchitected:us-west-2:123456789012:lens/0123456789abcdef01234567890abcdef. Each lens is identified by its [LensSummary$LensAlias].
     /// This member is required.
     public var lensAlias: Swift.String?
@@ -4698,7 +4699,7 @@ public struct ListAnswersInput {
 }
 
 /// Output of a list answers call.
-public struct ListAnswersOutput {
+public struct ListAnswersOutput: Swift.Sendable {
     /// List of answer summaries of lens review in a workload.
     public var answerSummaries: [WellArchitectedClientTypes.AnswerSummary]?
     /// The alias of the lens. For Amazon Web Services official lenses, this is either the lens alias, such as serverless, or the lens ARN, such as arn:aws:wellarchitected:us-east-1::lens/serverless. Note that some operations (such as ExportLens and CreateLensShare) are not permitted on Amazon Web Services official lenses. For custom lenses, this is the lens ARN, such as arn:aws:wellarchitected:us-west-2:123456789012:lens/0123456789abcdef01234567890abcdef. Each lens is identified by its [LensSummary$LensAlias].
@@ -4730,7 +4731,7 @@ public struct ListAnswersOutput {
     }
 }
 
-public struct ListCheckDetailsInput {
+public struct ListCheckDetailsInput: Swift.Sendable {
     /// The ID of a choice.
     /// This member is required.
     public var choiceId: Swift.String?
@@ -4771,7 +4772,7 @@ public struct ListCheckDetailsInput {
     }
 }
 
-public struct ListCheckDetailsOutput {
+public struct ListCheckDetailsOutput: Swift.Sendable {
     /// The details about the Trusted Advisor checks related to the Well-Architected best practice.
     public var checkDetails: [WellArchitectedClientTypes.CheckDetail]?
     /// The token to use to retrieve the next set of results.
@@ -4787,7 +4788,7 @@ public struct ListCheckDetailsOutput {
     }
 }
 
-public struct ListCheckSummariesInput {
+public struct ListCheckSummariesInput: Swift.Sendable {
     /// The ID of a choice.
     /// This member is required.
     public var choiceId: Swift.String?
@@ -4828,7 +4829,7 @@ public struct ListCheckSummariesInput {
     }
 }
 
-public struct ListCheckSummariesOutput {
+public struct ListCheckSummariesOutput: Swift.Sendable {
     /// List of Trusted Advisor summaries related to the Well-Architected best practice.
     public var checkSummaries: [WellArchitectedClientTypes.CheckSummary]?
     /// The token to use to retrieve the next set of results.
@@ -4845,7 +4846,7 @@ public struct ListCheckSummariesOutput {
 }
 
 /// Input to list lenses.
-public struct ListLensesInput {
+public struct ListLensesInput: Swift.Sendable {
     /// The full name of the lens.
     public var lensName: Swift.String?
     /// The status of lenses to be returned.
@@ -4874,7 +4875,7 @@ public struct ListLensesInput {
 }
 
 /// Output of a list lenses call.
-public struct ListLensesOutput {
+public struct ListLensesOutput: Swift.Sendable {
     /// List of lens summaries of available lenses.
     public var lensSummaries: [WellArchitectedClientTypes.LensSummary]?
     /// The token to use to retrieve the next set of results.
@@ -4891,7 +4892,7 @@ public struct ListLensesOutput {
 }
 
 /// Input to list lens review improvements.
-public struct ListLensReviewImprovementsInput {
+public struct ListLensReviewImprovementsInput: Swift.Sendable {
     /// The alias of the lens. For Amazon Web Services official lenses, this is either the lens alias, such as serverless, or the lens ARN, such as arn:aws:wellarchitected:us-east-1::lens/serverless. Note that some operations (such as ExportLens and CreateLensShare) are not permitted on Amazon Web Services official lenses. For custom lenses, this is the lens ARN, such as arn:aws:wellarchitected:us-west-2:123456789012:lens/0123456789abcdef01234567890abcdef. Each lens is identified by its [LensSummary$LensAlias].
     /// This member is required.
     public var lensAlias: Swift.String?
@@ -4930,7 +4931,7 @@ public struct ListLensReviewImprovementsInput {
 }
 
 /// Output of a list lens review improvements call.
-public struct ListLensReviewImprovementsOutput {
+public struct ListLensReviewImprovementsOutput: Swift.Sendable {
     /// List of improvement summaries of lens review in a workload.
     public var improvementSummaries: [WellArchitectedClientTypes.ImprovementSummary]?
     /// The alias of the lens. For Amazon Web Services official lenses, this is either the lens alias, such as serverless, or the lens ARN, such as arn:aws:wellarchitected:us-east-1::lens/serverless. Note that some operations (such as ExportLens and CreateLensShare) are not permitted on Amazon Web Services official lenses. For custom lenses, this is the lens ARN, such as arn:aws:wellarchitected:us-west-2:123456789012:lens/0123456789abcdef01234567890abcdef. Each lens is identified by its [LensSummary$LensAlias].
@@ -4963,7 +4964,7 @@ public struct ListLensReviewImprovementsOutput {
 }
 
 /// Input to list lens reviews.
-public struct ListLensReviewsInput {
+public struct ListLensReviewsInput: Swift.Sendable {
     /// The maximum number of results to return for this request.
     public var maxResults: Swift.Int?
     /// The milestone number. A workload can have a maximum of 100 milestones.
@@ -4989,7 +4990,7 @@ public struct ListLensReviewsInput {
 }
 
 /// Output of a list lens reviews call.
-public struct ListLensReviewsOutput {
+public struct ListLensReviewsOutput: Swift.Sendable {
     /// List of lens summaries of lens reviews of a workload.
     public var lensReviewSummaries: [WellArchitectedClientTypes.LensReviewSummary]?
     /// The milestone number. A workload can have a maximum of 100 milestones.
@@ -5013,7 +5014,7 @@ public struct ListLensReviewsOutput {
     }
 }
 
-public struct ListLensSharesInput {
+public struct ListLensSharesInput: Swift.Sendable {
     /// The alias of the lens. For Amazon Web Services official lenses, this is either the lens alias, such as serverless, or the lens ARN, such as arn:aws:wellarchitected:us-east-1::lens/serverless. Note that some operations (such as ExportLens and CreateLensShare) are not permitted on Amazon Web Services official lenses. For custom lenses, this is the lens ARN, such as arn:aws:wellarchitected:us-west-2:123456789012:lens/0123456789abcdef01234567890abcdef. Each lens is identified by its [LensSummary$LensAlias].
     /// This member is required.
     public var lensAlias: Swift.String?
@@ -5042,7 +5043,7 @@ public struct ListLensSharesInput {
     }
 }
 
-public struct ListLensSharesOutput {
+public struct ListLensSharesOutput: Swift.Sendable {
     /// A list of lens share summaries.
     public var lensShareSummaries: [WellArchitectedClientTypes.LensShareSummary]?
     /// The token to use to retrieve the next set of results.
@@ -5059,7 +5060,7 @@ public struct ListLensSharesOutput {
 }
 
 /// Input to list all milestones for a workload.
-public struct ListMilestonesInput {
+public struct ListMilestonesInput: Swift.Sendable {
     /// The maximum number of results to return for this request.
     public var maxResults: Swift.Int?
     /// The token to use to retrieve the next set of results.
@@ -5081,8 +5082,9 @@ public struct ListMilestonesInput {
 }
 
 extension WellArchitectedClientTypes {
+
     /// A workload summary return object.
-    public struct WorkloadSummary {
+    public struct WorkloadSummary: Swift.Sendable {
         /// The improvement status for a workload.
         public var improvementStatus: WellArchitectedClientTypes.WorkloadImprovementStatus?
         /// The list of lenses associated with the workload. Each lens is identified by its [LensSummary$LensAlias]. If a review template that specifies lenses is applied to the workload, those lenses are applied to the workload in addition to these lenses.
@@ -5129,12 +5131,12 @@ extension WellArchitectedClientTypes {
             self.workloadName = workloadName
         }
     }
-
 }
 
 extension WellArchitectedClientTypes {
+
     /// A milestone summary return object.
-    public struct MilestoneSummary {
+    public struct MilestoneSummary: Swift.Sendable {
         /// The name of the milestone in a workload. Milestone names must be unique within a workload.
         public var milestoneName: Swift.String?
         /// The milestone number. A workload can have a maximum of 100 milestones.
@@ -5157,11 +5159,10 @@ extension WellArchitectedClientTypes {
             self.workloadSummary = workloadSummary
         }
     }
-
 }
 
 /// Output of a list milestones call.
-public struct ListMilestonesOutput {
+public struct ListMilestonesOutput: Swift.Sendable {
     /// A list of milestone summaries.
     public var milestoneSummaries: [WellArchitectedClientTypes.MilestoneSummary]?
     /// The token to use to retrieve the next set of results.
@@ -5181,7 +5182,7 @@ public struct ListMilestonesOutput {
     }
 }
 
-public struct ListNotificationsInput {
+public struct ListNotificationsInput: Swift.Sendable {
     /// The maximum number of results to return for this request.
     public var maxResults: Swift.Int?
     /// The token to use to retrieve the next set of results.
@@ -5207,7 +5208,7 @@ public struct ListNotificationsInput {
 
 extension WellArchitectedClientTypes {
 
-    public enum NotificationType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum NotificationType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case lensVersionDeprecated
         case lensVersionUpgraded
         case sdkUnknown(Swift.String)
@@ -5235,8 +5236,9 @@ extension WellArchitectedClientTypes {
 }
 
 extension WellArchitectedClientTypes {
+
     /// A notification summary return object.
-    public struct NotificationSummary {
+    public struct NotificationSummary: Swift.Sendable {
         /// Summary of lens upgrade.
         public var lensUpgradeSummary: WellArchitectedClientTypes.LensUpgradeSummary?
         /// The type of notification.
@@ -5251,10 +5253,9 @@ extension WellArchitectedClientTypes {
             self.type = type
         }
     }
-
 }
 
-public struct ListNotificationsOutput {
+public struct ListNotificationsOutput: Swift.Sendable {
     /// The token to use to retrieve the next set of results.
     public var nextToken: Swift.String?
     /// List of lens notification summaries in a workload.
@@ -5270,7 +5271,7 @@ public struct ListNotificationsOutput {
     }
 }
 
-public struct ListProfileNotificationsInput {
+public struct ListProfileNotificationsInput: Swift.Sendable {
     /// The maximum number of results to return for this request.
     public var maxResults: Swift.Int?
     /// The token to use to retrieve the next set of results.
@@ -5292,7 +5293,7 @@ public struct ListProfileNotificationsInput {
 
 extension WellArchitectedClientTypes {
 
-    public enum ProfileNotificationType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ProfileNotificationType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case profileAnswersUpdated
         case profileDeleted
         case sdkUnknown(Swift.String)
@@ -5320,8 +5321,9 @@ extension WellArchitectedClientTypes {
 }
 
 extension WellArchitectedClientTypes {
+
     /// The profile notification summary.
-    public struct ProfileNotificationSummary {
+    public struct ProfileNotificationSummary: Swift.Sendable {
         /// The current profile version.
         public var currentProfileVersion: Swift.String?
         /// The latest profile version.
@@ -5356,10 +5358,9 @@ extension WellArchitectedClientTypes {
             self.workloadName = workloadName
         }
     }
-
 }
 
-public struct ListProfileNotificationsOutput {
+public struct ListProfileNotificationsOutput: Swift.Sendable {
     /// The token to use to retrieve the next set of results.
     public var nextToken: Swift.String?
     /// Notification summaries.
@@ -5377,7 +5378,7 @@ public struct ListProfileNotificationsOutput {
 
 extension WellArchitectedClientTypes {
 
-    public enum ProfileOwnerType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ProfileOwnerType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case `self`
         case shared
         case sdkUnknown(Swift.String)
@@ -5404,7 +5405,7 @@ extension WellArchitectedClientTypes {
     }
 }
 
-public struct ListProfilesInput {
+public struct ListProfilesInput: Swift.Sendable {
     /// The maximum number of results to return for this request.
     public var maxResults: Swift.Int?
     /// The token to use to retrieve the next set of results.
@@ -5429,8 +5430,9 @@ public struct ListProfilesInput {
 }
 
 extension WellArchitectedClientTypes {
+
     /// Summary of a profile.
-    public struct ProfileSummary {
+    public struct ProfileSummary: Swift.Sendable {
         /// The date and time recorded.
         public var createdAt: Foundation.Date?
         /// An Amazon Web Services account ID.
@@ -5465,10 +5467,9 @@ extension WellArchitectedClientTypes {
             self.updatedAt = updatedAt
         }
     }
-
 }
 
-public struct ListProfilesOutput {
+public struct ListProfilesOutput: Swift.Sendable {
     /// The token to use to retrieve the next set of results.
     public var nextToken: Swift.String?
     /// Profile summaries.
@@ -5484,7 +5485,7 @@ public struct ListProfilesOutput {
     }
 }
 
-public struct ListProfileSharesInput {
+public struct ListProfileSharesInput: Swift.Sendable {
     /// The maximum number of results to return for this request.
     public var maxResults: Swift.Int?
     /// The token to use to retrieve the next set of results.
@@ -5514,8 +5515,9 @@ public struct ListProfileSharesInput {
 }
 
 extension WellArchitectedClientTypes {
+
     /// Summary of a profile share.
-    public struct ProfileShareSummary {
+    public struct ProfileShareSummary: Swift.Sendable {
         /// The ID associated with the share.
         public var shareId: Swift.String?
         /// The Amazon Web Services account ID, organization ID, or organizational unit (OU) ID with which the workload, lens, profile, or review template is shared.
@@ -5538,10 +5540,9 @@ extension WellArchitectedClientTypes {
             self.statusMessage = statusMessage
         }
     }
-
 }
 
-public struct ListProfileSharesOutput {
+public struct ListProfileSharesOutput: Swift.Sendable {
     /// The token to use to retrieve the next set of results.
     public var nextToken: Swift.String?
     /// Profile share summaries.
@@ -5557,7 +5558,7 @@ public struct ListProfileSharesOutput {
     }
 }
 
-public struct ListReviewTemplateAnswersInput {
+public struct ListReviewTemplateAnswersInput: Swift.Sendable {
     /// The alias of the lens. For Amazon Web Services official lenses, this is either the lens alias, such as serverless, or the lens ARN, such as arn:aws:wellarchitected:us-east-1::lens/serverless. Note that some operations (such as ExportLens and CreateLensShare) are not permitted on Amazon Web Services official lenses. For custom lenses, this is the lens ARN, such as arn:aws:wellarchitected:us-west-2:123456789012:lens/0123456789abcdef01234567890abcdef. Each lens is identified by its [LensSummary$LensAlias].
     /// This member is required.
     public var lensAlias: Swift.String?
@@ -5588,8 +5589,9 @@ public struct ListReviewTemplateAnswersInput {
 }
 
 extension WellArchitectedClientTypes {
+
     /// The summary of review template answers.
-    public struct ReviewTemplateAnswerSummary {
+    public struct ReviewTemplateAnswerSummary: Swift.Sendable {
         /// The status of whether or not this question has been answered.
         public var answerStatus: WellArchitectedClientTypes.ReviewTemplateAnswerStatus?
         /// A list of selected choices to a question in the review template.
@@ -5636,10 +5638,9 @@ extension WellArchitectedClientTypes {
             self.selectedChoices = selectedChoices
         }
     }
-
 }
 
-public struct ListReviewTemplateAnswersOutput {
+public struct ListReviewTemplateAnswersOutput: Swift.Sendable {
     /// List of answer summaries of a lens review in a review template.
     public var answerSummaries: [WellArchitectedClientTypes.ReviewTemplateAnswerSummary]?
     /// The alias of the lens. For Amazon Web Services official lenses, this is either the lens alias, such as serverless, or the lens ARN, such as arn:aws:wellarchitected:us-east-1::lens/serverless. Note that some operations (such as ExportLens and CreateLensShare) are not permitted on Amazon Web Services official lenses. For custom lenses, this is the lens ARN, such as arn:aws:wellarchitected:us-west-2:123456789012:lens/0123456789abcdef01234567890abcdef. Each lens is identified by its [LensSummary$LensAlias].
@@ -5663,7 +5664,7 @@ public struct ListReviewTemplateAnswersOutput {
     }
 }
 
-public struct ListReviewTemplatesInput {
+public struct ListReviewTemplatesInput: Swift.Sendable {
     /// The maximum number of results to return for this request.
     public var maxResults: Swift.Int?
     /// The token to use to retrieve the next set of results.
@@ -5680,8 +5681,9 @@ public struct ListReviewTemplatesInput {
 }
 
 extension WellArchitectedClientTypes {
+
     /// Summary of a review template.
-    public struct ReviewTemplateSummary {
+    public struct ReviewTemplateSummary: Swift.Sendable {
         /// Description of the review template.
         public var description: Swift.String?
         /// Lenses associated with the review template.
@@ -5716,10 +5718,9 @@ extension WellArchitectedClientTypes {
             self.updatedAt = updatedAt
         }
     }
-
 }
 
-public struct ListReviewTemplatesOutput {
+public struct ListReviewTemplatesOutput: Swift.Sendable {
     /// The token to use to retrieve the next set of results.
     public var nextToken: Swift.String?
     /// List of review templates.
@@ -5737,7 +5738,7 @@ public struct ListReviewTemplatesOutput {
 
 extension WellArchitectedClientTypes {
 
-    public enum ShareResourceType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ShareResourceType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case lens
         case profile
         case template
@@ -5771,7 +5772,7 @@ extension WellArchitectedClientTypes {
 }
 
 /// Input for List Share Invitations
-public struct ListShareInvitationsInput {
+public struct ListShareInvitationsInput: Swift.Sendable {
     /// An optional string added to the beginning of each lens name returned in the results.
     public var lensNamePrefix: Swift.String?
     /// The maximum number of results to return for this request.
@@ -5808,8 +5809,9 @@ public struct ListShareInvitationsInput {
 }
 
 extension WellArchitectedClientTypes {
+
     /// A share invitation summary return object.
-    public struct ShareInvitationSummary {
+    public struct ShareInvitationSummary: Swift.Sendable {
         /// The ARN for the lens.
         public var lensArn: Swift.String?
         /// The full name of the lens.
@@ -5868,11 +5870,10 @@ extension WellArchitectedClientTypes {
             self.workloadName = workloadName
         }
     }
-
 }
 
 /// Input for List Share Invitations
-public struct ListShareInvitationsOutput {
+public struct ListShareInvitationsOutput: Swift.Sendable {
     /// The token to use to retrieve the next set of results.
     public var nextToken: Swift.String?
     /// List of share invitation summaries in a workload.
@@ -5888,7 +5889,7 @@ public struct ListShareInvitationsOutput {
     }
 }
 
-public struct ListTagsForResourceInput {
+public struct ListTagsForResourceInput: Swift.Sendable {
     /// The ARN for the workload.
     /// This member is required.
     public var workloadArn: Swift.String?
@@ -5901,7 +5902,7 @@ public struct ListTagsForResourceInput {
     }
 }
 
-public struct ListTagsForResourceOutput {
+public struct ListTagsForResourceOutput: Swift.Sendable {
     /// The tags for the resource.
     public var tags: [Swift.String: Swift.String]?
 
@@ -5913,7 +5914,7 @@ public struct ListTagsForResourceOutput {
     }
 }
 
-public struct ListTemplateSharesInput {
+public struct ListTemplateSharesInput: Swift.Sendable {
     /// The maximum number of results to return for this request.
     public var maxResults: Swift.Int?
     /// The token to use to retrieve the next set of results.
@@ -5943,8 +5944,9 @@ public struct ListTemplateSharesInput {
 }
 
 extension WellArchitectedClientTypes {
+
     /// Summary of a review template share.
-    public struct TemplateShareSummary {
+    public struct TemplateShareSummary: Swift.Sendable {
         /// The ID associated with the share.
         public var shareId: Swift.String?
         /// The Amazon Web Services account ID, organization ID, or organizational unit (OU) ID with which the workload, lens, profile, or review template is shared.
@@ -5967,10 +5969,9 @@ extension WellArchitectedClientTypes {
             self.statusMessage = statusMessage
         }
     }
-
 }
 
-public struct ListTemplateSharesOutput {
+public struct ListTemplateSharesOutput: Swift.Sendable {
     /// The token to use to retrieve the next set of results.
     public var nextToken: Swift.String?
     /// The review template ARN.
@@ -5991,7 +5992,7 @@ public struct ListTemplateSharesOutput {
 }
 
 /// Input to list all workloads.
-public struct ListWorkloadsInput {
+public struct ListWorkloadsInput: Swift.Sendable {
     /// The maximum number of results to return for this request.
     public var maxResults: Swift.Int?
     /// The token to use to retrieve the next set of results.
@@ -6012,7 +6013,7 @@ public struct ListWorkloadsInput {
 }
 
 /// Output of a list workloads call.
-public struct ListWorkloadsOutput {
+public struct ListWorkloadsOutput: Swift.Sendable {
     /// The token to use to retrieve the next set of results.
     public var nextToken: Swift.String?
     /// A list of workload summaries.
@@ -6029,7 +6030,7 @@ public struct ListWorkloadsOutput {
 }
 
 /// Input for List Workload Share
-public struct ListWorkloadSharesInput {
+public struct ListWorkloadSharesInput: Swift.Sendable {
     /// The maximum number of results to return for this request.
     public var maxResults: Swift.Int?
     /// The token to use to retrieve the next set of results.
@@ -6059,8 +6060,9 @@ public struct ListWorkloadSharesInput {
 }
 
 extension WellArchitectedClientTypes {
+
     /// A workload share summary return object.
-    public struct WorkloadShareSummary {
+    public struct WorkloadShareSummary: Swift.Sendable {
         /// Permission granted on a share request.
         public var permissionType: WellArchitectedClientTypes.PermissionType?
         /// The ID associated with the share.
@@ -6087,11 +6089,10 @@ extension WellArchitectedClientTypes {
             self.statusMessage = statusMessage
         }
     }
-
 }
 
 /// Input for List Workload Share
-public struct ListWorkloadSharesOutput {
+public struct ListWorkloadSharesOutput: Swift.Sendable {
     /// The token to use to retrieve the next set of results.
     public var nextToken: Swift.String?
     /// The ID assigned to the workload. This ID is unique within an Amazon Web Services Region.
@@ -6112,8 +6113,9 @@ public struct ListWorkloadSharesOutput {
 }
 
 extension WellArchitectedClientTypes {
+
     /// The share invitation.
-    public struct ShareInvitation {
+    public struct ShareInvitation: Swift.Sendable {
         /// The alias of the lens. For Amazon Web Services official lenses, this is either the lens alias, such as serverless, or the lens ARN, such as arn:aws:wellarchitected:us-east-1::lens/serverless. Note that some operations (such as ExportLens and CreateLensShare) are not permitted on Amazon Web Services official lenses. For custom lenses, this is the lens ARN, such as arn:aws:wellarchitected:us-west-2:123456789012:lens/0123456789abcdef01234567890abcdef. Each lens is identified by its [LensSummary$LensAlias].
         public var lensAlias: Swift.String?
         /// The ARN for the lens.
@@ -6148,13 +6150,12 @@ extension WellArchitectedClientTypes {
             self.workloadId = workloadId
         }
     }
-
 }
 
 extension WellArchitectedClientTypes {
 
     /// Share invitation action taken by contributor.
-    public enum ShareInvitationAction: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ShareInvitationAction: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case accept
         case reject
         case sdkUnknown(Swift.String)
@@ -6181,7 +6182,7 @@ extension WellArchitectedClientTypes {
     }
 }
 
-public struct TagResourceInput {
+public struct TagResourceInput: Swift.Sendable {
     /// The tags for the resource.
     /// This member is required.
     public var tags: [Swift.String: Swift.String]?
@@ -6199,12 +6200,12 @@ public struct TagResourceInput {
     }
 }
 
-public struct TagResourceOutput {
+public struct TagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UntagResourceInput {
+public struct UntagResourceInput: Swift.Sendable {
     /// A list of tag keys. Existing tags of the resource whose keys are members of this list are removed from the resource.
     /// This member is required.
     public var tagKeys: [Swift.String]?
@@ -6222,13 +6223,13 @@ public struct UntagResourceInput {
     }
 }
 
-public struct UntagResourceOutput {
+public struct UntagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
 /// Input to update answer.
-public struct UpdateAnswerInput {
+public struct UpdateAnswerInput: Swift.Sendable {
     /// A list of choices to update on a question in your workload. The String key corresponds to the choice ID to be updated.
     public var choiceUpdates: [Swift.String: WellArchitectedClientTypes.ChoiceUpdate]?
     /// Defines whether this question is applicable to a lens review.
@@ -6272,7 +6273,7 @@ public struct UpdateAnswerInput {
 }
 
 /// Output of a update answer call.
-public struct UpdateAnswerOutput {
+public struct UpdateAnswerOutput: Swift.Sendable {
     /// An answer of the question.
     public var answer: WellArchitectedClientTypes.Answer?
     /// The alias of the lens. For Amazon Web Services official lenses, this is either the lens alias, such as serverless, or the lens ARN, such as arn:aws:wellarchitected:us-east-1::lens/serverless. Note that some operations (such as ExportLens and CreateLensShare) are not permitted on Amazon Web Services official lenses. For custom lenses, this is the lens ARN, such as arn:aws:wellarchitected:us-west-2:123456789012:lens/0123456789abcdef01234567890abcdef. Each lens is identified by its [LensSummary$LensAlias].
@@ -6296,7 +6297,7 @@ public struct UpdateAnswerOutput {
     }
 }
 
-public struct UpdateGlobalSettingsInput {
+public struct UpdateGlobalSettingsInput: Swift.Sendable {
     /// The status of discovery support settings.
     public var discoveryIntegrationStatus: WellArchitectedClientTypes.DiscoveryIntegrationStatus?
     /// The status of Jira integration settings.
@@ -6316,7 +6317,7 @@ public struct UpdateGlobalSettingsInput {
     }
 }
 
-public struct UpdateIntegrationInput {
+public struct UpdateIntegrationInput: Swift.Sendable {
     /// A unique case-sensitive string used to ensure that this request is idempotent (executes only once). You should not reuse the same token for other requests. If you retry a request with the same client request token and the same parameters after the original request has completed successfully, the result of the original request is returned. This token is listed as required, however, if you do not specify it, the Amazon Web Services SDKs automatically generate one for you. If you are not using the Amazon Web Services SDK or the CLI, you must provide this token or the request will fail.
     /// This member is required.
     public var clientRequestToken: Swift.String?
@@ -6340,7 +6341,7 @@ public struct UpdateIntegrationInput {
 }
 
 /// Input for update lens review.
-public struct UpdateLensReviewInput {
+public struct UpdateLensReviewInput: Swift.Sendable {
     /// Configuration of the Jira integration.
     public var jiraConfiguration: WellArchitectedClientTypes.JiraSelectedQuestionConfiguration?
     /// The alias of the lens. For Amazon Web Services official lenses, this is either the lens alias, such as serverless, or the lens ARN, such as arn:aws:wellarchitected:us-east-1::lens/serverless. Note that some operations (such as ExportLens and CreateLensShare) are not permitted on Amazon Web Services official lenses. For custom lenses, this is the lens ARN, such as arn:aws:wellarchitected:us-west-2:123456789012:lens/0123456789abcdef01234567890abcdef. Each lens is identified by its [LensSummary$LensAlias].
@@ -6371,7 +6372,7 @@ public struct UpdateLensReviewInput {
 }
 
 /// Output of a update lens review call.
-public struct UpdateLensReviewOutput {
+public struct UpdateLensReviewOutput: Swift.Sendable {
     /// A lens review of a question.
     public var lensReview: WellArchitectedClientTypes.LensReview?
     /// The ID assigned to the workload. This ID is unique within an Amazon Web Services Region.
@@ -6387,7 +6388,7 @@ public struct UpdateLensReviewOutput {
     }
 }
 
-public struct UpdateProfileInput {
+public struct UpdateProfileInput: Swift.Sendable {
     /// The profile ARN.
     /// This member is required.
     public var profileArn: Swift.String?
@@ -6408,7 +6409,7 @@ public struct UpdateProfileInput {
     }
 }
 
-public struct UpdateProfileOutput {
+public struct UpdateProfileOutput: Swift.Sendable {
     /// The profile.
     public var profile: WellArchitectedClientTypes.Profile?
 
@@ -6420,7 +6421,7 @@ public struct UpdateProfileOutput {
     }
 }
 
-public struct UpdateReviewTemplateInput {
+public struct UpdateReviewTemplateInput: Swift.Sendable {
     /// The review template description.
     public var description: Swift.String?
     /// A list of lens aliases or ARNs to apply to the review template.
@@ -6453,7 +6454,7 @@ public struct UpdateReviewTemplateInput {
     }
 }
 
-public struct UpdateReviewTemplateOutput {
+public struct UpdateReviewTemplateOutput: Swift.Sendable {
     /// A review template.
     public var reviewTemplate: WellArchitectedClientTypes.ReviewTemplate?
 
@@ -6465,7 +6466,7 @@ public struct UpdateReviewTemplateOutput {
     }
 }
 
-public struct UpdateReviewTemplateAnswerInput {
+public struct UpdateReviewTemplateAnswerInput: Swift.Sendable {
     /// A list of choices to be updated.
     public var choiceUpdates: [Swift.String: WellArchitectedClientTypes.ChoiceUpdate]?
     /// Defines whether this question is applicable to a lens review.
@@ -6508,7 +6509,7 @@ public struct UpdateReviewTemplateAnswerInput {
     }
 }
 
-public struct UpdateReviewTemplateAnswerOutput {
+public struct UpdateReviewTemplateAnswerOutput: Swift.Sendable {
     /// An answer of the question.
     public var answer: WellArchitectedClientTypes.ReviewTemplateAnswer?
     /// The alias of the lens. For Amazon Web Services official lenses, this is either the lens alias, such as serverless, or the lens ARN, such as arn:aws:wellarchitected:us-east-1::lens/serverless. Note that some operations (such as ExportLens and CreateLensShare) are not permitted on Amazon Web Services official lenses. For custom lenses, this is the lens ARN, such as arn:aws:wellarchitected:us-west-2:123456789012:lens/0123456789abcdef01234567890abcdef. Each lens is identified by its [LensSummary$LensAlias].
@@ -6528,7 +6529,7 @@ public struct UpdateReviewTemplateAnswerOutput {
     }
 }
 
-public struct UpdateReviewTemplateLensReviewInput {
+public struct UpdateReviewTemplateLensReviewInput: Swift.Sendable {
     /// The alias of the lens. For Amazon Web Services official lenses, this is either the lens alias, such as serverless, or the lens ARN, such as arn:aws:wellarchitected:us-east-1::lens/serverless. Note that some operations (such as ExportLens and CreateLensShare) are not permitted on Amazon Web Services official lenses. For custom lenses, this is the lens ARN, such as arn:aws:wellarchitected:us-west-2:123456789012:lens/0123456789abcdef01234567890abcdef. Each lens is identified by its [LensSummary$LensAlias].
     /// This member is required.
     public var lensAlias: Swift.String?
@@ -6554,7 +6555,7 @@ public struct UpdateReviewTemplateLensReviewInput {
     }
 }
 
-public struct UpdateReviewTemplateLensReviewOutput {
+public struct UpdateReviewTemplateLensReviewOutput: Swift.Sendable {
     /// A lens review of a question.
     public var lensReview: WellArchitectedClientTypes.ReviewTemplateLensReview?
     /// The review template ARN.
@@ -6571,7 +6572,7 @@ public struct UpdateReviewTemplateLensReviewOutput {
 }
 
 /// Input for Update Share Invitation
-public struct UpdateShareInvitationInput {
+public struct UpdateShareInvitationInput: Swift.Sendable {
     /// Share invitation action taken by contributor.
     /// This member is required.
     public var shareInvitationAction: WellArchitectedClientTypes.ShareInvitationAction?
@@ -6589,7 +6590,7 @@ public struct UpdateShareInvitationInput {
     }
 }
 
-public struct UpdateShareInvitationOutput {
+public struct UpdateShareInvitationOutput: Swift.Sendable {
     /// The updated workload or custom lens share invitation.
     public var shareInvitation: WellArchitectedClientTypes.ShareInvitation?
 
@@ -6602,7 +6603,7 @@ public struct UpdateShareInvitationOutput {
 }
 
 /// Input to update a workload.
-public struct UpdateWorkloadInput {
+public struct UpdateWorkloadInput: Swift.Sendable {
     /// The list of Amazon Web Services account IDs associated with the workload.
     public var accountIds: [Swift.String]?
     /// List of AppRegistry application ARNs to associate to the workload.
@@ -6738,7 +6739,7 @@ public struct UpdateWorkloadInput {
 }
 
 /// Output of an update workload call.
-public struct UpdateWorkloadOutput {
+public struct UpdateWorkloadOutput: Swift.Sendable {
     /// A workload return object.
     public var workload: WellArchitectedClientTypes.Workload?
 
@@ -6751,7 +6752,7 @@ public struct UpdateWorkloadOutput {
 }
 
 /// Input for Update Workload Share
-public struct UpdateWorkloadShareInput {
+public struct UpdateWorkloadShareInput: Swift.Sendable {
     /// Permission granted on a share request.
     /// This member is required.
     public var permissionType: WellArchitectedClientTypes.PermissionType?
@@ -6775,8 +6776,9 @@ public struct UpdateWorkloadShareInput {
 }
 
 extension WellArchitectedClientTypes {
+
     /// A workload share return object.
-    public struct WorkloadShare {
+    public struct WorkloadShare: Swift.Sendable {
         /// Permission granted on a share request.
         public var permissionType: WellArchitectedClientTypes.PermissionType?
         /// The ID associated with the share.
@@ -6811,11 +6813,10 @@ extension WellArchitectedClientTypes {
             self.workloadName = workloadName
         }
     }
-
 }
 
 /// Input for Update Workload Share
-public struct UpdateWorkloadShareOutput {
+public struct UpdateWorkloadShareOutput: Swift.Sendable {
     /// The ID assigned to the workload. This ID is unique within an Amazon Web Services Region.
     public var workloadId: Swift.String?
     /// A workload share return object.
@@ -6831,7 +6832,7 @@ public struct UpdateWorkloadShareOutput {
     }
 }
 
-public struct UpgradeLensReviewInput {
+public struct UpgradeLensReviewInput: Swift.Sendable {
     /// A unique case-sensitive string used to ensure that this request is idempotent (executes only once). You should not reuse the same token for other requests. If you retry a request with the same client request token and the same parameters after the original request has completed successfully, the result of the original request is returned. This token is listed as required, however, if you do not specify it, the Amazon Web Services SDKs automatically generate one for you. If you are not using the Amazon Web Services SDK or the CLI, you must provide this token or the request will fail.
     public var clientRequestToken: Swift.String?
     /// The alias of the lens. For Amazon Web Services official lenses, this is either the lens alias, such as serverless, or the lens ARN, such as arn:aws:wellarchitected:us-east-1::lens/serverless. Note that some operations (such as ExportLens and CreateLensShare) are not permitted on Amazon Web Services official lenses. For custom lenses, this is the lens ARN, such as arn:aws:wellarchitected:us-west-2:123456789012:lens/0123456789abcdef01234567890abcdef. Each lens is identified by its [LensSummary$LensAlias].
@@ -6858,7 +6859,7 @@ public struct UpgradeLensReviewInput {
     }
 }
 
-public struct UpgradeProfileVersionInput {
+public struct UpgradeProfileVersionInput: Swift.Sendable {
     /// A unique case-sensitive string used to ensure that this request is idempotent (executes only once). You should not reuse the same token for other requests. If you retry a request with the same client request token and the same parameters after the original request has completed successfully, the result of the original request is returned. This token is listed as required, however, if you do not specify it, the Amazon Web Services SDKs automatically generate one for you. If you are not using the Amazon Web Services SDK or the CLI, you must provide this token or the request will fail.
     public var clientRequestToken: Swift.String?
     /// The name of the milestone in a workload. Milestone names must be unique within a workload.
@@ -6884,7 +6885,7 @@ public struct UpgradeProfileVersionInput {
     }
 }
 
-public struct UpgradeReviewTemplateLensReviewInput {
+public struct UpgradeReviewTemplateLensReviewInput: Swift.Sendable {
     /// A unique case-sensitive string used to ensure that this request is idempotent (executes only once). You should not reuse the same token for other requests. If you retry a request with the same client request token and the same parameters after the original request has completed successfully, the result of the original request is returned. This token is listed as required, however, if you do not specify it, the Amazon Web Services SDKs automatically generate one for you. If you are not using the Amazon Web Services SDK or the CLI, you must provide this token or the request will fail.
     public var clientRequestToken: Swift.String?
     /// The alias of the lens. For Amazon Web Services official lenses, this is either the lens alias, such as serverless, or the lens ARN, such as arn:aws:wellarchitected:us-east-1::lens/serverless. Note that some operations (such as ExportLens and CreateLensShare) are not permitted on Amazon Web Services official lenses. For custom lenses, this is the lens ARN, such as arn:aws:wellarchitected:us-west-2:123456789012:lens/0123456789abcdef01234567890abcdef. Each lens is identified by its [LensSummary$LensAlias].

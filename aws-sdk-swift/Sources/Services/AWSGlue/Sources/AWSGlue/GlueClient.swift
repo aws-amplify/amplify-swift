@@ -2020,6 +2020,82 @@ extension GlueClient {
         return try await op.execute(input: input)
     }
 
+    /// Performs the `CreateColumnStatisticsTaskSettings` operation on the `AWSGlue` service.
+    ///
+    /// Creates settings for a column statistics task.
+    ///
+    /// - Parameter CreateColumnStatisticsTaskSettingsInput : [no documentation found]
+    ///
+    /// - Returns: `CreateColumnStatisticsTaskSettingsOutput` : [no documentation found]
+    ///
+    /// - Throws: One of the exceptions listed below __Possible Exceptions__.
+    ///
+    /// __Possible Exceptions:__
+    /// - `AccessDeniedException` : Access to a resource was denied.
+    /// - `AlreadyExistsException` : A resource to be created or added already exists.
+    /// - `ColumnStatisticsTaskRunningException` : An exception thrown when you try to start another job while running a column stats generation job.
+    /// - `EntityNotFoundException` : A specified entity does not exist
+    /// - `InvalidInputException` : The input provided was not valid.
+    /// - `OperationTimeoutException` : The operation timed out.
+    /// - `ResourceNumberLimitExceededException` : A resource numerical limit was exceeded.
+    public func createColumnStatisticsTaskSettings(input: CreateColumnStatisticsTaskSettingsInput) async throws -> CreateColumnStatisticsTaskSettingsOutput {
+        let context = Smithy.ContextBuilder()
+                      .withMethod(value: .post)
+                      .withServiceName(value: serviceName)
+                      .withOperation(value: "createColumnStatisticsTaskSettings")
+                      .withIdempotencyTokenGenerator(value: config.idempotencyTokenGenerator)
+                      .withLogger(value: config.logger)
+                      .withPartitionID(value: config.partitionID)
+                      .withAuthSchemes(value: config.authSchemes ?? [])
+                      .withAuthSchemeResolver(value: config.authSchemeResolver)
+                      .withUnsignedPayloadTrait(value: false)
+                      .withSocketTimeout(value: config.httpClientConfiguration.socketTimeout)
+                      .withIdentityResolver(value: config.bearerTokenIdentityResolver, schemeID: "smithy.api#httpBearerAuth")
+                      .withIdentityResolver(value: config.awsCredentialIdentityResolver, schemeID: "aws.auth#sigv4")
+                      .withIdentityResolver(value: config.awsCredentialIdentityResolver, schemeID: "aws.auth#sigv4a")
+                      .withRegion(value: config.region)
+                      .withSigningName(value: "glue")
+                      .withSigningRegion(value: config.signingRegion)
+                      .build()
+        let builder = ClientRuntime.OrchestratorBuilder<CreateColumnStatisticsTaskSettingsInput, CreateColumnStatisticsTaskSettingsOutput, SmithyHTTPAPI.HTTPRequest, SmithyHTTPAPI.HTTPResponse>()
+        config.interceptorProviders.forEach { provider in
+            builder.interceptors.add(provider.create())
+        }
+        config.httpInterceptorProviders.forEach { provider in
+            builder.interceptors.add(provider.create())
+        }
+        builder.interceptors.add(ClientRuntime.URLPathMiddleware<CreateColumnStatisticsTaskSettingsInput, CreateColumnStatisticsTaskSettingsOutput>(CreateColumnStatisticsTaskSettingsInput.urlPathProvider(_:)))
+        builder.interceptors.add(ClientRuntime.URLHostMiddleware<CreateColumnStatisticsTaskSettingsInput, CreateColumnStatisticsTaskSettingsOutput>())
+        builder.interceptors.add(ClientRuntime.ContentLengthMiddleware<CreateColumnStatisticsTaskSettingsInput, CreateColumnStatisticsTaskSettingsOutput>())
+        builder.deserialize(ClientRuntime.DeserializeMiddleware<CreateColumnStatisticsTaskSettingsOutput>(CreateColumnStatisticsTaskSettingsOutput.httpOutput(from:), CreateColumnStatisticsTaskSettingsOutputError.httpError(from:)))
+        builder.interceptors.add(ClientRuntime.LoggerMiddleware<CreateColumnStatisticsTaskSettingsInput, CreateColumnStatisticsTaskSettingsOutput>(clientLogMode: config.clientLogMode))
+        builder.retryStrategy(SmithyRetries.DefaultRetryStrategy(options: config.retryStrategyOptions))
+        builder.retryErrorInfoProvider(AWSClientRuntime.AWSRetryErrorInfoProvider.errorInfo(for:))
+        builder.applySigner(ClientRuntime.SignerMiddleware<CreateColumnStatisticsTaskSettingsOutput>())
+        let endpointParams = EndpointParams(endpoint: config.endpoint, region: config.region, useDualStack: config.useDualStack ?? false, useFIPS: config.useFIPS ?? false)
+        builder.applyEndpoint(AWSClientRuntime.EndpointResolverMiddleware<CreateColumnStatisticsTaskSettingsOutput, EndpointParams>(endpointResolverBlock: { [config] in try config.endpointResolver.resolve(params: $0) }, endpointParams: endpointParams))
+        builder.interceptors.add(AWSClientRuntime.UserAgentMiddleware<CreateColumnStatisticsTaskSettingsInput, CreateColumnStatisticsTaskSettingsOutput>(serviceID: serviceName, version: "1.0", config: config))
+        builder.interceptors.add(AWSClientRuntime.XAmzTargetMiddleware<CreateColumnStatisticsTaskSettingsInput, CreateColumnStatisticsTaskSettingsOutput>(xAmzTarget: "AWSGlue.CreateColumnStatisticsTaskSettings"))
+        builder.serialize(ClientRuntime.BodyMiddleware<CreateColumnStatisticsTaskSettingsInput, CreateColumnStatisticsTaskSettingsOutput, SmithyJSON.Writer>(rootNodeInfo: "", inputWritingClosure: CreateColumnStatisticsTaskSettingsInput.write(value:to:)))
+        builder.interceptors.add(ClientRuntime.ContentTypeMiddleware<CreateColumnStatisticsTaskSettingsInput, CreateColumnStatisticsTaskSettingsOutput>(contentType: "application/x-amz-json-1.1"))
+        builder.selectAuthScheme(ClientRuntime.AuthSchemeMiddleware<CreateColumnStatisticsTaskSettingsOutput>())
+        builder.interceptors.add(AWSClientRuntime.AmzSdkInvocationIdMiddleware<CreateColumnStatisticsTaskSettingsInput, CreateColumnStatisticsTaskSettingsOutput>())
+        builder.interceptors.add(AWSClientRuntime.AmzSdkRequestMiddleware<CreateColumnStatisticsTaskSettingsInput, CreateColumnStatisticsTaskSettingsOutput>(maxRetries: config.retryStrategyOptions.maxRetriesBase))
+        var metricsAttributes = Smithy.Attributes()
+        metricsAttributes.set(key: ClientRuntime.OrchestratorMetricsAttributesKeys.service, value: "Glue")
+        metricsAttributes.set(key: ClientRuntime.OrchestratorMetricsAttributesKeys.method, value: "CreateColumnStatisticsTaskSettings")
+        let op = builder.attributes(context)
+            .telemetry(ClientRuntime.OrchestratorTelemetry(
+                telemetryProvider: config.telemetryProvider,
+                metricsAttributes: metricsAttributes,
+                meterScope: serviceName,
+                tracerScope: serviceName
+            ))
+            .executeRequest(client)
+            .build()
+        return try await op.execute(input: input)
+    }
+
     /// Performs the `CreateConnection` operation on the `AWSGlue` service.
     ///
     /// Creates a connection definition in the Data Catalog. Connections used for creating federated resources require the IAM glue:PassConnection permission.
@@ -3885,6 +3961,78 @@ extension GlueClient {
         var metricsAttributes = Smithy.Attributes()
         metricsAttributes.set(key: ClientRuntime.OrchestratorMetricsAttributesKeys.service, value: "Glue")
         metricsAttributes.set(key: ClientRuntime.OrchestratorMetricsAttributesKeys.method, value: "DeleteColumnStatisticsForTable")
+        let op = builder.attributes(context)
+            .telemetry(ClientRuntime.OrchestratorTelemetry(
+                telemetryProvider: config.telemetryProvider,
+                metricsAttributes: metricsAttributes,
+                meterScope: serviceName,
+                tracerScope: serviceName
+            ))
+            .executeRequest(client)
+            .build()
+        return try await op.execute(input: input)
+    }
+
+    /// Performs the `DeleteColumnStatisticsTaskSettings` operation on the `AWSGlue` service.
+    ///
+    /// Deletes settings for a column statistics task.
+    ///
+    /// - Parameter DeleteColumnStatisticsTaskSettingsInput : [no documentation found]
+    ///
+    /// - Returns: `DeleteColumnStatisticsTaskSettingsOutput` : [no documentation found]
+    ///
+    /// - Throws: One of the exceptions listed below __Possible Exceptions__.
+    ///
+    /// __Possible Exceptions:__
+    /// - `EntityNotFoundException` : A specified entity does not exist
+    /// - `InvalidInputException` : The input provided was not valid.
+    /// - `OperationTimeoutException` : The operation timed out.
+    public func deleteColumnStatisticsTaskSettings(input: DeleteColumnStatisticsTaskSettingsInput) async throws -> DeleteColumnStatisticsTaskSettingsOutput {
+        let context = Smithy.ContextBuilder()
+                      .withMethod(value: .post)
+                      .withServiceName(value: serviceName)
+                      .withOperation(value: "deleteColumnStatisticsTaskSettings")
+                      .withIdempotencyTokenGenerator(value: config.idempotencyTokenGenerator)
+                      .withLogger(value: config.logger)
+                      .withPartitionID(value: config.partitionID)
+                      .withAuthSchemes(value: config.authSchemes ?? [])
+                      .withAuthSchemeResolver(value: config.authSchemeResolver)
+                      .withUnsignedPayloadTrait(value: false)
+                      .withSocketTimeout(value: config.httpClientConfiguration.socketTimeout)
+                      .withIdentityResolver(value: config.bearerTokenIdentityResolver, schemeID: "smithy.api#httpBearerAuth")
+                      .withIdentityResolver(value: config.awsCredentialIdentityResolver, schemeID: "aws.auth#sigv4")
+                      .withIdentityResolver(value: config.awsCredentialIdentityResolver, schemeID: "aws.auth#sigv4a")
+                      .withRegion(value: config.region)
+                      .withSigningName(value: "glue")
+                      .withSigningRegion(value: config.signingRegion)
+                      .build()
+        let builder = ClientRuntime.OrchestratorBuilder<DeleteColumnStatisticsTaskSettingsInput, DeleteColumnStatisticsTaskSettingsOutput, SmithyHTTPAPI.HTTPRequest, SmithyHTTPAPI.HTTPResponse>()
+        config.interceptorProviders.forEach { provider in
+            builder.interceptors.add(provider.create())
+        }
+        config.httpInterceptorProviders.forEach { provider in
+            builder.interceptors.add(provider.create())
+        }
+        builder.interceptors.add(ClientRuntime.URLPathMiddleware<DeleteColumnStatisticsTaskSettingsInput, DeleteColumnStatisticsTaskSettingsOutput>(DeleteColumnStatisticsTaskSettingsInput.urlPathProvider(_:)))
+        builder.interceptors.add(ClientRuntime.URLHostMiddleware<DeleteColumnStatisticsTaskSettingsInput, DeleteColumnStatisticsTaskSettingsOutput>())
+        builder.interceptors.add(ClientRuntime.ContentLengthMiddleware<DeleteColumnStatisticsTaskSettingsInput, DeleteColumnStatisticsTaskSettingsOutput>())
+        builder.deserialize(ClientRuntime.DeserializeMiddleware<DeleteColumnStatisticsTaskSettingsOutput>(DeleteColumnStatisticsTaskSettingsOutput.httpOutput(from:), DeleteColumnStatisticsTaskSettingsOutputError.httpError(from:)))
+        builder.interceptors.add(ClientRuntime.LoggerMiddleware<DeleteColumnStatisticsTaskSettingsInput, DeleteColumnStatisticsTaskSettingsOutput>(clientLogMode: config.clientLogMode))
+        builder.retryStrategy(SmithyRetries.DefaultRetryStrategy(options: config.retryStrategyOptions))
+        builder.retryErrorInfoProvider(AWSClientRuntime.AWSRetryErrorInfoProvider.errorInfo(for:))
+        builder.applySigner(ClientRuntime.SignerMiddleware<DeleteColumnStatisticsTaskSettingsOutput>())
+        let endpointParams = EndpointParams(endpoint: config.endpoint, region: config.region, useDualStack: config.useDualStack ?? false, useFIPS: config.useFIPS ?? false)
+        builder.applyEndpoint(AWSClientRuntime.EndpointResolverMiddleware<DeleteColumnStatisticsTaskSettingsOutput, EndpointParams>(endpointResolverBlock: { [config] in try config.endpointResolver.resolve(params: $0) }, endpointParams: endpointParams))
+        builder.interceptors.add(AWSClientRuntime.UserAgentMiddleware<DeleteColumnStatisticsTaskSettingsInput, DeleteColumnStatisticsTaskSettingsOutput>(serviceID: serviceName, version: "1.0", config: config))
+        builder.interceptors.add(AWSClientRuntime.XAmzTargetMiddleware<DeleteColumnStatisticsTaskSettingsInput, DeleteColumnStatisticsTaskSettingsOutput>(xAmzTarget: "AWSGlue.DeleteColumnStatisticsTaskSettings"))
+        builder.serialize(ClientRuntime.BodyMiddleware<DeleteColumnStatisticsTaskSettingsInput, DeleteColumnStatisticsTaskSettingsOutput, SmithyJSON.Writer>(rootNodeInfo: "", inputWritingClosure: DeleteColumnStatisticsTaskSettingsInput.write(value:to:)))
+        builder.interceptors.add(ClientRuntime.ContentTypeMiddleware<DeleteColumnStatisticsTaskSettingsInput, DeleteColumnStatisticsTaskSettingsOutput>(contentType: "application/x-amz-json-1.1"))
+        builder.selectAuthScheme(ClientRuntime.AuthSchemeMiddleware<DeleteColumnStatisticsTaskSettingsOutput>())
+        builder.interceptors.add(AWSClientRuntime.AmzSdkInvocationIdMiddleware<DeleteColumnStatisticsTaskSettingsInput, DeleteColumnStatisticsTaskSettingsOutput>())
+        builder.interceptors.add(AWSClientRuntime.AmzSdkRequestMiddleware<DeleteColumnStatisticsTaskSettingsInput, DeleteColumnStatisticsTaskSettingsOutput>(maxRetries: config.retryStrategyOptions.maxRetriesBase))
+        var metricsAttributes = Smithy.Attributes()
+        metricsAttributes.set(key: ClientRuntime.OrchestratorMetricsAttributesKeys.service, value: "Glue")
+        metricsAttributes.set(key: ClientRuntime.OrchestratorMetricsAttributesKeys.method, value: "DeleteColumnStatisticsTaskSettings")
         let op = builder.attributes(context)
             .telemetry(ClientRuntime.OrchestratorTelemetry(
                 telemetryProvider: config.telemetryProvider,
@@ -6291,6 +6439,78 @@ extension GlueClient {
         var metricsAttributes = Smithy.Attributes()
         metricsAttributes.set(key: ClientRuntime.OrchestratorMetricsAttributesKeys.service, value: "Glue")
         metricsAttributes.set(key: ClientRuntime.OrchestratorMetricsAttributesKeys.method, value: "GetColumnStatisticsTaskRuns")
+        let op = builder.attributes(context)
+            .telemetry(ClientRuntime.OrchestratorTelemetry(
+                telemetryProvider: config.telemetryProvider,
+                metricsAttributes: metricsAttributes,
+                meterScope: serviceName,
+                tracerScope: serviceName
+            ))
+            .executeRequest(client)
+            .build()
+        return try await op.execute(input: input)
+    }
+
+    /// Performs the `GetColumnStatisticsTaskSettings` operation on the `AWSGlue` service.
+    ///
+    /// Gets settings for a column statistics task.
+    ///
+    /// - Parameter GetColumnStatisticsTaskSettingsInput : [no documentation found]
+    ///
+    /// - Returns: `GetColumnStatisticsTaskSettingsOutput` : [no documentation found]
+    ///
+    /// - Throws: One of the exceptions listed below __Possible Exceptions__.
+    ///
+    /// __Possible Exceptions:__
+    /// - `EntityNotFoundException` : A specified entity does not exist
+    /// - `InvalidInputException` : The input provided was not valid.
+    /// - `OperationTimeoutException` : The operation timed out.
+    public func getColumnStatisticsTaskSettings(input: GetColumnStatisticsTaskSettingsInput) async throws -> GetColumnStatisticsTaskSettingsOutput {
+        let context = Smithy.ContextBuilder()
+                      .withMethod(value: .post)
+                      .withServiceName(value: serviceName)
+                      .withOperation(value: "getColumnStatisticsTaskSettings")
+                      .withIdempotencyTokenGenerator(value: config.idempotencyTokenGenerator)
+                      .withLogger(value: config.logger)
+                      .withPartitionID(value: config.partitionID)
+                      .withAuthSchemes(value: config.authSchemes ?? [])
+                      .withAuthSchemeResolver(value: config.authSchemeResolver)
+                      .withUnsignedPayloadTrait(value: false)
+                      .withSocketTimeout(value: config.httpClientConfiguration.socketTimeout)
+                      .withIdentityResolver(value: config.bearerTokenIdentityResolver, schemeID: "smithy.api#httpBearerAuth")
+                      .withIdentityResolver(value: config.awsCredentialIdentityResolver, schemeID: "aws.auth#sigv4")
+                      .withIdentityResolver(value: config.awsCredentialIdentityResolver, schemeID: "aws.auth#sigv4a")
+                      .withRegion(value: config.region)
+                      .withSigningName(value: "glue")
+                      .withSigningRegion(value: config.signingRegion)
+                      .build()
+        let builder = ClientRuntime.OrchestratorBuilder<GetColumnStatisticsTaskSettingsInput, GetColumnStatisticsTaskSettingsOutput, SmithyHTTPAPI.HTTPRequest, SmithyHTTPAPI.HTTPResponse>()
+        config.interceptorProviders.forEach { provider in
+            builder.interceptors.add(provider.create())
+        }
+        config.httpInterceptorProviders.forEach { provider in
+            builder.interceptors.add(provider.create())
+        }
+        builder.interceptors.add(ClientRuntime.URLPathMiddleware<GetColumnStatisticsTaskSettingsInput, GetColumnStatisticsTaskSettingsOutput>(GetColumnStatisticsTaskSettingsInput.urlPathProvider(_:)))
+        builder.interceptors.add(ClientRuntime.URLHostMiddleware<GetColumnStatisticsTaskSettingsInput, GetColumnStatisticsTaskSettingsOutput>())
+        builder.interceptors.add(ClientRuntime.ContentLengthMiddleware<GetColumnStatisticsTaskSettingsInput, GetColumnStatisticsTaskSettingsOutput>())
+        builder.deserialize(ClientRuntime.DeserializeMiddleware<GetColumnStatisticsTaskSettingsOutput>(GetColumnStatisticsTaskSettingsOutput.httpOutput(from:), GetColumnStatisticsTaskSettingsOutputError.httpError(from:)))
+        builder.interceptors.add(ClientRuntime.LoggerMiddleware<GetColumnStatisticsTaskSettingsInput, GetColumnStatisticsTaskSettingsOutput>(clientLogMode: config.clientLogMode))
+        builder.retryStrategy(SmithyRetries.DefaultRetryStrategy(options: config.retryStrategyOptions))
+        builder.retryErrorInfoProvider(AWSClientRuntime.AWSRetryErrorInfoProvider.errorInfo(for:))
+        builder.applySigner(ClientRuntime.SignerMiddleware<GetColumnStatisticsTaskSettingsOutput>())
+        let endpointParams = EndpointParams(endpoint: config.endpoint, region: config.region, useDualStack: config.useDualStack ?? false, useFIPS: config.useFIPS ?? false)
+        builder.applyEndpoint(AWSClientRuntime.EndpointResolverMiddleware<GetColumnStatisticsTaskSettingsOutput, EndpointParams>(endpointResolverBlock: { [config] in try config.endpointResolver.resolve(params: $0) }, endpointParams: endpointParams))
+        builder.interceptors.add(AWSClientRuntime.UserAgentMiddleware<GetColumnStatisticsTaskSettingsInput, GetColumnStatisticsTaskSettingsOutput>(serviceID: serviceName, version: "1.0", config: config))
+        builder.interceptors.add(AWSClientRuntime.XAmzTargetMiddleware<GetColumnStatisticsTaskSettingsInput, GetColumnStatisticsTaskSettingsOutput>(xAmzTarget: "AWSGlue.GetColumnStatisticsTaskSettings"))
+        builder.serialize(ClientRuntime.BodyMiddleware<GetColumnStatisticsTaskSettingsInput, GetColumnStatisticsTaskSettingsOutput, SmithyJSON.Writer>(rootNodeInfo: "", inputWritingClosure: GetColumnStatisticsTaskSettingsInput.write(value:to:)))
+        builder.interceptors.add(ClientRuntime.ContentTypeMiddleware<GetColumnStatisticsTaskSettingsInput, GetColumnStatisticsTaskSettingsOutput>(contentType: "application/x-amz-json-1.1"))
+        builder.selectAuthScheme(ClientRuntime.AuthSchemeMiddleware<GetColumnStatisticsTaskSettingsOutput>())
+        builder.interceptors.add(AWSClientRuntime.AmzSdkInvocationIdMiddleware<GetColumnStatisticsTaskSettingsInput, GetColumnStatisticsTaskSettingsOutput>())
+        builder.interceptors.add(AWSClientRuntime.AmzSdkRequestMiddleware<GetColumnStatisticsTaskSettingsInput, GetColumnStatisticsTaskSettingsOutput>(maxRetries: config.retryStrategyOptions.maxRetriesBase))
+        var metricsAttributes = Smithy.Attributes()
+        metricsAttributes.set(key: ClientRuntime.OrchestratorMetricsAttributesKeys.service, value: "Glue")
+        metricsAttributes.set(key: ClientRuntime.OrchestratorMetricsAttributesKeys.method, value: "GetColumnStatisticsTaskSettings")
         let op = builder.attributes(context)
             .telemetry(ClientRuntime.OrchestratorTelemetry(
                 telemetryProvider: config.telemetryProvider,
@@ -13577,6 +13797,79 @@ extension GlueClient {
         return try await op.execute(input: input)
     }
 
+    /// Performs the `StartColumnStatisticsTaskRunSchedule` operation on the `AWSGlue` service.
+    ///
+    /// Starts a column statistics task run schedule.
+    ///
+    /// - Parameter StartColumnStatisticsTaskRunScheduleInput : [no documentation found]
+    ///
+    /// - Returns: `StartColumnStatisticsTaskRunScheduleOutput` : [no documentation found]
+    ///
+    /// - Throws: One of the exceptions listed below __Possible Exceptions__.
+    ///
+    /// __Possible Exceptions:__
+    /// - `AccessDeniedException` : Access to a resource was denied.
+    /// - `EntityNotFoundException` : A specified entity does not exist
+    /// - `InvalidInputException` : The input provided was not valid.
+    /// - `OperationTimeoutException` : The operation timed out.
+    public func startColumnStatisticsTaskRunSchedule(input: StartColumnStatisticsTaskRunScheduleInput) async throws -> StartColumnStatisticsTaskRunScheduleOutput {
+        let context = Smithy.ContextBuilder()
+                      .withMethod(value: .post)
+                      .withServiceName(value: serviceName)
+                      .withOperation(value: "startColumnStatisticsTaskRunSchedule")
+                      .withIdempotencyTokenGenerator(value: config.idempotencyTokenGenerator)
+                      .withLogger(value: config.logger)
+                      .withPartitionID(value: config.partitionID)
+                      .withAuthSchemes(value: config.authSchemes ?? [])
+                      .withAuthSchemeResolver(value: config.authSchemeResolver)
+                      .withUnsignedPayloadTrait(value: false)
+                      .withSocketTimeout(value: config.httpClientConfiguration.socketTimeout)
+                      .withIdentityResolver(value: config.bearerTokenIdentityResolver, schemeID: "smithy.api#httpBearerAuth")
+                      .withIdentityResolver(value: config.awsCredentialIdentityResolver, schemeID: "aws.auth#sigv4")
+                      .withIdentityResolver(value: config.awsCredentialIdentityResolver, schemeID: "aws.auth#sigv4a")
+                      .withRegion(value: config.region)
+                      .withSigningName(value: "glue")
+                      .withSigningRegion(value: config.signingRegion)
+                      .build()
+        let builder = ClientRuntime.OrchestratorBuilder<StartColumnStatisticsTaskRunScheduleInput, StartColumnStatisticsTaskRunScheduleOutput, SmithyHTTPAPI.HTTPRequest, SmithyHTTPAPI.HTTPResponse>()
+        config.interceptorProviders.forEach { provider in
+            builder.interceptors.add(provider.create())
+        }
+        config.httpInterceptorProviders.forEach { provider in
+            builder.interceptors.add(provider.create())
+        }
+        builder.interceptors.add(ClientRuntime.URLPathMiddleware<StartColumnStatisticsTaskRunScheduleInput, StartColumnStatisticsTaskRunScheduleOutput>(StartColumnStatisticsTaskRunScheduleInput.urlPathProvider(_:)))
+        builder.interceptors.add(ClientRuntime.URLHostMiddleware<StartColumnStatisticsTaskRunScheduleInput, StartColumnStatisticsTaskRunScheduleOutput>())
+        builder.interceptors.add(ClientRuntime.ContentLengthMiddleware<StartColumnStatisticsTaskRunScheduleInput, StartColumnStatisticsTaskRunScheduleOutput>())
+        builder.deserialize(ClientRuntime.DeserializeMiddleware<StartColumnStatisticsTaskRunScheduleOutput>(StartColumnStatisticsTaskRunScheduleOutput.httpOutput(from:), StartColumnStatisticsTaskRunScheduleOutputError.httpError(from:)))
+        builder.interceptors.add(ClientRuntime.LoggerMiddleware<StartColumnStatisticsTaskRunScheduleInput, StartColumnStatisticsTaskRunScheduleOutput>(clientLogMode: config.clientLogMode))
+        builder.retryStrategy(SmithyRetries.DefaultRetryStrategy(options: config.retryStrategyOptions))
+        builder.retryErrorInfoProvider(AWSClientRuntime.AWSRetryErrorInfoProvider.errorInfo(for:))
+        builder.applySigner(ClientRuntime.SignerMiddleware<StartColumnStatisticsTaskRunScheduleOutput>())
+        let endpointParams = EndpointParams(endpoint: config.endpoint, region: config.region, useDualStack: config.useDualStack ?? false, useFIPS: config.useFIPS ?? false)
+        builder.applyEndpoint(AWSClientRuntime.EndpointResolverMiddleware<StartColumnStatisticsTaskRunScheduleOutput, EndpointParams>(endpointResolverBlock: { [config] in try config.endpointResolver.resolve(params: $0) }, endpointParams: endpointParams))
+        builder.interceptors.add(AWSClientRuntime.UserAgentMiddleware<StartColumnStatisticsTaskRunScheduleInput, StartColumnStatisticsTaskRunScheduleOutput>(serviceID: serviceName, version: "1.0", config: config))
+        builder.interceptors.add(AWSClientRuntime.XAmzTargetMiddleware<StartColumnStatisticsTaskRunScheduleInput, StartColumnStatisticsTaskRunScheduleOutput>(xAmzTarget: "AWSGlue.StartColumnStatisticsTaskRunSchedule"))
+        builder.serialize(ClientRuntime.BodyMiddleware<StartColumnStatisticsTaskRunScheduleInput, StartColumnStatisticsTaskRunScheduleOutput, SmithyJSON.Writer>(rootNodeInfo: "", inputWritingClosure: StartColumnStatisticsTaskRunScheduleInput.write(value:to:)))
+        builder.interceptors.add(ClientRuntime.ContentTypeMiddleware<StartColumnStatisticsTaskRunScheduleInput, StartColumnStatisticsTaskRunScheduleOutput>(contentType: "application/x-amz-json-1.1"))
+        builder.selectAuthScheme(ClientRuntime.AuthSchemeMiddleware<StartColumnStatisticsTaskRunScheduleOutput>())
+        builder.interceptors.add(AWSClientRuntime.AmzSdkInvocationIdMiddleware<StartColumnStatisticsTaskRunScheduleInput, StartColumnStatisticsTaskRunScheduleOutput>())
+        builder.interceptors.add(AWSClientRuntime.AmzSdkRequestMiddleware<StartColumnStatisticsTaskRunScheduleInput, StartColumnStatisticsTaskRunScheduleOutput>(maxRetries: config.retryStrategyOptions.maxRetriesBase))
+        var metricsAttributes = Smithy.Attributes()
+        metricsAttributes.set(key: ClientRuntime.OrchestratorMetricsAttributesKeys.service, value: "Glue")
+        metricsAttributes.set(key: ClientRuntime.OrchestratorMetricsAttributesKeys.method, value: "StartColumnStatisticsTaskRunSchedule")
+        let op = builder.attributes(context)
+            .telemetry(ClientRuntime.OrchestratorTelemetry(
+                telemetryProvider: config.telemetryProvider,
+                metricsAttributes: metricsAttributes,
+                meterScope: serviceName,
+                tracerScope: serviceName
+            ))
+            .executeRequest(client)
+            .build()
+        return try await op.execute(input: input)
+    }
+
     /// Performs the `StartCrawler` operation on the `AWSGlue` service.
     ///
     /// Starts a crawl using the specified crawler, regardless of what is scheduled. If the crawler is already running, returns a [CrawlerRunningException](https://docs.aws.amazon.com/glue/latest/dg/aws-glue-api-exceptions.html#aws-glue-api-exceptions-CrawlerRunningException).
@@ -14452,6 +14745,78 @@ extension GlueClient {
         var metricsAttributes = Smithy.Attributes()
         metricsAttributes.set(key: ClientRuntime.OrchestratorMetricsAttributesKeys.service, value: "Glue")
         metricsAttributes.set(key: ClientRuntime.OrchestratorMetricsAttributesKeys.method, value: "StopColumnStatisticsTaskRun")
+        let op = builder.attributes(context)
+            .telemetry(ClientRuntime.OrchestratorTelemetry(
+                telemetryProvider: config.telemetryProvider,
+                metricsAttributes: metricsAttributes,
+                meterScope: serviceName,
+                tracerScope: serviceName
+            ))
+            .executeRequest(client)
+            .build()
+        return try await op.execute(input: input)
+    }
+
+    /// Performs the `StopColumnStatisticsTaskRunSchedule` operation on the `AWSGlue` service.
+    ///
+    /// Stops a column statistics task run schedule.
+    ///
+    /// - Parameter StopColumnStatisticsTaskRunScheduleInput : [no documentation found]
+    ///
+    /// - Returns: `StopColumnStatisticsTaskRunScheduleOutput` : [no documentation found]
+    ///
+    /// - Throws: One of the exceptions listed below __Possible Exceptions__.
+    ///
+    /// __Possible Exceptions:__
+    /// - `EntityNotFoundException` : A specified entity does not exist
+    /// - `InvalidInputException` : The input provided was not valid.
+    /// - `OperationTimeoutException` : The operation timed out.
+    public func stopColumnStatisticsTaskRunSchedule(input: StopColumnStatisticsTaskRunScheduleInput) async throws -> StopColumnStatisticsTaskRunScheduleOutput {
+        let context = Smithy.ContextBuilder()
+                      .withMethod(value: .post)
+                      .withServiceName(value: serviceName)
+                      .withOperation(value: "stopColumnStatisticsTaskRunSchedule")
+                      .withIdempotencyTokenGenerator(value: config.idempotencyTokenGenerator)
+                      .withLogger(value: config.logger)
+                      .withPartitionID(value: config.partitionID)
+                      .withAuthSchemes(value: config.authSchemes ?? [])
+                      .withAuthSchemeResolver(value: config.authSchemeResolver)
+                      .withUnsignedPayloadTrait(value: false)
+                      .withSocketTimeout(value: config.httpClientConfiguration.socketTimeout)
+                      .withIdentityResolver(value: config.bearerTokenIdentityResolver, schemeID: "smithy.api#httpBearerAuth")
+                      .withIdentityResolver(value: config.awsCredentialIdentityResolver, schemeID: "aws.auth#sigv4")
+                      .withIdentityResolver(value: config.awsCredentialIdentityResolver, schemeID: "aws.auth#sigv4a")
+                      .withRegion(value: config.region)
+                      .withSigningName(value: "glue")
+                      .withSigningRegion(value: config.signingRegion)
+                      .build()
+        let builder = ClientRuntime.OrchestratorBuilder<StopColumnStatisticsTaskRunScheduleInput, StopColumnStatisticsTaskRunScheduleOutput, SmithyHTTPAPI.HTTPRequest, SmithyHTTPAPI.HTTPResponse>()
+        config.interceptorProviders.forEach { provider in
+            builder.interceptors.add(provider.create())
+        }
+        config.httpInterceptorProviders.forEach { provider in
+            builder.interceptors.add(provider.create())
+        }
+        builder.interceptors.add(ClientRuntime.URLPathMiddleware<StopColumnStatisticsTaskRunScheduleInput, StopColumnStatisticsTaskRunScheduleOutput>(StopColumnStatisticsTaskRunScheduleInput.urlPathProvider(_:)))
+        builder.interceptors.add(ClientRuntime.URLHostMiddleware<StopColumnStatisticsTaskRunScheduleInput, StopColumnStatisticsTaskRunScheduleOutput>())
+        builder.interceptors.add(ClientRuntime.ContentLengthMiddleware<StopColumnStatisticsTaskRunScheduleInput, StopColumnStatisticsTaskRunScheduleOutput>())
+        builder.deserialize(ClientRuntime.DeserializeMiddleware<StopColumnStatisticsTaskRunScheduleOutput>(StopColumnStatisticsTaskRunScheduleOutput.httpOutput(from:), StopColumnStatisticsTaskRunScheduleOutputError.httpError(from:)))
+        builder.interceptors.add(ClientRuntime.LoggerMiddleware<StopColumnStatisticsTaskRunScheduleInput, StopColumnStatisticsTaskRunScheduleOutput>(clientLogMode: config.clientLogMode))
+        builder.retryStrategy(SmithyRetries.DefaultRetryStrategy(options: config.retryStrategyOptions))
+        builder.retryErrorInfoProvider(AWSClientRuntime.AWSRetryErrorInfoProvider.errorInfo(for:))
+        builder.applySigner(ClientRuntime.SignerMiddleware<StopColumnStatisticsTaskRunScheduleOutput>())
+        let endpointParams = EndpointParams(endpoint: config.endpoint, region: config.region, useDualStack: config.useDualStack ?? false, useFIPS: config.useFIPS ?? false)
+        builder.applyEndpoint(AWSClientRuntime.EndpointResolverMiddleware<StopColumnStatisticsTaskRunScheduleOutput, EndpointParams>(endpointResolverBlock: { [config] in try config.endpointResolver.resolve(params: $0) }, endpointParams: endpointParams))
+        builder.interceptors.add(AWSClientRuntime.UserAgentMiddleware<StopColumnStatisticsTaskRunScheduleInput, StopColumnStatisticsTaskRunScheduleOutput>(serviceID: serviceName, version: "1.0", config: config))
+        builder.interceptors.add(AWSClientRuntime.XAmzTargetMiddleware<StopColumnStatisticsTaskRunScheduleInput, StopColumnStatisticsTaskRunScheduleOutput>(xAmzTarget: "AWSGlue.StopColumnStatisticsTaskRunSchedule"))
+        builder.serialize(ClientRuntime.BodyMiddleware<StopColumnStatisticsTaskRunScheduleInput, StopColumnStatisticsTaskRunScheduleOutput, SmithyJSON.Writer>(rootNodeInfo: "", inputWritingClosure: StopColumnStatisticsTaskRunScheduleInput.write(value:to:)))
+        builder.interceptors.add(ClientRuntime.ContentTypeMiddleware<StopColumnStatisticsTaskRunScheduleInput, StopColumnStatisticsTaskRunScheduleOutput>(contentType: "application/x-amz-json-1.1"))
+        builder.selectAuthScheme(ClientRuntime.AuthSchemeMiddleware<StopColumnStatisticsTaskRunScheduleOutput>())
+        builder.interceptors.add(AWSClientRuntime.AmzSdkInvocationIdMiddleware<StopColumnStatisticsTaskRunScheduleInput, StopColumnStatisticsTaskRunScheduleOutput>())
+        builder.interceptors.add(AWSClientRuntime.AmzSdkRequestMiddleware<StopColumnStatisticsTaskRunScheduleInput, StopColumnStatisticsTaskRunScheduleOutput>(maxRetries: config.retryStrategyOptions.maxRetriesBase))
+        var metricsAttributes = Smithy.Attributes()
+        metricsAttributes.set(key: ClientRuntime.OrchestratorMetricsAttributesKeys.service, value: "Glue")
+        metricsAttributes.set(key: ClientRuntime.OrchestratorMetricsAttributesKeys.method, value: "StopColumnStatisticsTaskRunSchedule")
         let op = builder.attributes(context)
             .telemetry(ClientRuntime.OrchestratorTelemetry(
                 telemetryProvider: config.telemetryProvider,
@@ -15341,6 +15706,80 @@ extension GlueClient {
         var metricsAttributes = Smithy.Attributes()
         metricsAttributes.set(key: ClientRuntime.OrchestratorMetricsAttributesKeys.service, value: "Glue")
         metricsAttributes.set(key: ClientRuntime.OrchestratorMetricsAttributesKeys.method, value: "UpdateColumnStatisticsForTable")
+        let op = builder.attributes(context)
+            .telemetry(ClientRuntime.OrchestratorTelemetry(
+                telemetryProvider: config.telemetryProvider,
+                metricsAttributes: metricsAttributes,
+                meterScope: serviceName,
+                tracerScope: serviceName
+            ))
+            .executeRequest(client)
+            .build()
+        return try await op.execute(input: input)
+    }
+
+    /// Performs the `UpdateColumnStatisticsTaskSettings` operation on the `AWSGlue` service.
+    ///
+    /// Updates settings for a column statistics task.
+    ///
+    /// - Parameter UpdateColumnStatisticsTaskSettingsInput : [no documentation found]
+    ///
+    /// - Returns: `UpdateColumnStatisticsTaskSettingsOutput` : [no documentation found]
+    ///
+    /// - Throws: One of the exceptions listed below __Possible Exceptions__.
+    ///
+    /// __Possible Exceptions:__
+    /// - `AccessDeniedException` : Access to a resource was denied.
+    /// - `EntityNotFoundException` : A specified entity does not exist
+    /// - `InvalidInputException` : The input provided was not valid.
+    /// - `OperationTimeoutException` : The operation timed out.
+    /// - `VersionMismatchException` : There was a version conflict.
+    public func updateColumnStatisticsTaskSettings(input: UpdateColumnStatisticsTaskSettingsInput) async throws -> UpdateColumnStatisticsTaskSettingsOutput {
+        let context = Smithy.ContextBuilder()
+                      .withMethod(value: .post)
+                      .withServiceName(value: serviceName)
+                      .withOperation(value: "updateColumnStatisticsTaskSettings")
+                      .withIdempotencyTokenGenerator(value: config.idempotencyTokenGenerator)
+                      .withLogger(value: config.logger)
+                      .withPartitionID(value: config.partitionID)
+                      .withAuthSchemes(value: config.authSchemes ?? [])
+                      .withAuthSchemeResolver(value: config.authSchemeResolver)
+                      .withUnsignedPayloadTrait(value: false)
+                      .withSocketTimeout(value: config.httpClientConfiguration.socketTimeout)
+                      .withIdentityResolver(value: config.bearerTokenIdentityResolver, schemeID: "smithy.api#httpBearerAuth")
+                      .withIdentityResolver(value: config.awsCredentialIdentityResolver, schemeID: "aws.auth#sigv4")
+                      .withIdentityResolver(value: config.awsCredentialIdentityResolver, schemeID: "aws.auth#sigv4a")
+                      .withRegion(value: config.region)
+                      .withSigningName(value: "glue")
+                      .withSigningRegion(value: config.signingRegion)
+                      .build()
+        let builder = ClientRuntime.OrchestratorBuilder<UpdateColumnStatisticsTaskSettingsInput, UpdateColumnStatisticsTaskSettingsOutput, SmithyHTTPAPI.HTTPRequest, SmithyHTTPAPI.HTTPResponse>()
+        config.interceptorProviders.forEach { provider in
+            builder.interceptors.add(provider.create())
+        }
+        config.httpInterceptorProviders.forEach { provider in
+            builder.interceptors.add(provider.create())
+        }
+        builder.interceptors.add(ClientRuntime.URLPathMiddleware<UpdateColumnStatisticsTaskSettingsInput, UpdateColumnStatisticsTaskSettingsOutput>(UpdateColumnStatisticsTaskSettingsInput.urlPathProvider(_:)))
+        builder.interceptors.add(ClientRuntime.URLHostMiddleware<UpdateColumnStatisticsTaskSettingsInput, UpdateColumnStatisticsTaskSettingsOutput>())
+        builder.interceptors.add(ClientRuntime.ContentLengthMiddleware<UpdateColumnStatisticsTaskSettingsInput, UpdateColumnStatisticsTaskSettingsOutput>())
+        builder.deserialize(ClientRuntime.DeserializeMiddleware<UpdateColumnStatisticsTaskSettingsOutput>(UpdateColumnStatisticsTaskSettingsOutput.httpOutput(from:), UpdateColumnStatisticsTaskSettingsOutputError.httpError(from:)))
+        builder.interceptors.add(ClientRuntime.LoggerMiddleware<UpdateColumnStatisticsTaskSettingsInput, UpdateColumnStatisticsTaskSettingsOutput>(clientLogMode: config.clientLogMode))
+        builder.retryStrategy(SmithyRetries.DefaultRetryStrategy(options: config.retryStrategyOptions))
+        builder.retryErrorInfoProvider(AWSClientRuntime.AWSRetryErrorInfoProvider.errorInfo(for:))
+        builder.applySigner(ClientRuntime.SignerMiddleware<UpdateColumnStatisticsTaskSettingsOutput>())
+        let endpointParams = EndpointParams(endpoint: config.endpoint, region: config.region, useDualStack: config.useDualStack ?? false, useFIPS: config.useFIPS ?? false)
+        builder.applyEndpoint(AWSClientRuntime.EndpointResolverMiddleware<UpdateColumnStatisticsTaskSettingsOutput, EndpointParams>(endpointResolverBlock: { [config] in try config.endpointResolver.resolve(params: $0) }, endpointParams: endpointParams))
+        builder.interceptors.add(AWSClientRuntime.UserAgentMiddleware<UpdateColumnStatisticsTaskSettingsInput, UpdateColumnStatisticsTaskSettingsOutput>(serviceID: serviceName, version: "1.0", config: config))
+        builder.interceptors.add(AWSClientRuntime.XAmzTargetMiddleware<UpdateColumnStatisticsTaskSettingsInput, UpdateColumnStatisticsTaskSettingsOutput>(xAmzTarget: "AWSGlue.UpdateColumnStatisticsTaskSettings"))
+        builder.serialize(ClientRuntime.BodyMiddleware<UpdateColumnStatisticsTaskSettingsInput, UpdateColumnStatisticsTaskSettingsOutput, SmithyJSON.Writer>(rootNodeInfo: "", inputWritingClosure: UpdateColumnStatisticsTaskSettingsInput.write(value:to:)))
+        builder.interceptors.add(ClientRuntime.ContentTypeMiddleware<UpdateColumnStatisticsTaskSettingsInput, UpdateColumnStatisticsTaskSettingsOutput>(contentType: "application/x-amz-json-1.1"))
+        builder.selectAuthScheme(ClientRuntime.AuthSchemeMiddleware<UpdateColumnStatisticsTaskSettingsOutput>())
+        builder.interceptors.add(AWSClientRuntime.AmzSdkInvocationIdMiddleware<UpdateColumnStatisticsTaskSettingsInput, UpdateColumnStatisticsTaskSettingsOutput>())
+        builder.interceptors.add(AWSClientRuntime.AmzSdkRequestMiddleware<UpdateColumnStatisticsTaskSettingsInput, UpdateColumnStatisticsTaskSettingsOutput>(maxRetries: config.retryStrategyOptions.maxRetriesBase))
+        var metricsAttributes = Smithy.Attributes()
+        metricsAttributes.set(key: ClientRuntime.OrchestratorMetricsAttributesKeys.service, value: "Glue")
+        metricsAttributes.set(key: ClientRuntime.OrchestratorMetricsAttributesKeys.method, value: "UpdateColumnStatisticsTaskSettings")
         let op = builder.attributes(context)
             .telemetry(ClientRuntime.OrchestratorTelemetry(
                 telemetryProvider: config.telemetryProvider,

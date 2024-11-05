@@ -28,34 +28,36 @@ import protocol ClientRuntime.ModeledError
 import struct Smithy.URIQueryItem
 @_spi(SmithyTimestamps) import struct SmithyTimestamps.TimestampFormatter
 
-public struct DeleteCellOutput {
+
+public struct DeleteCellOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteReadinessCheckOutput {
+public struct DeleteReadinessCheckOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteRecoveryGroupOutput {
+public struct DeleteRecoveryGroupOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteResourceSetOutput {
+public struct DeleteResourceSetOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UntagResourceOutput {
+public struct UntagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
 extension Route53RecoveryReadinessClientTypes {
+
     /// Information about a cell.
-    public struct CellOutput {
+    public struct CellOutput: Swift.Sendable {
         /// The Amazon Resource Name (ARN) for the cell.
         /// This member is required.
         public var cellArn: Swift.String?
@@ -86,12 +88,12 @@ extension Route53RecoveryReadinessClientTypes {
             self.tags = tags
         }
     }
-
 }
 
 extension Route53RecoveryReadinessClientTypes {
+
     /// Readiness rule information, including the resource type, rule ID, and rule description.
-    public struct ListRulesOutput {
+    public struct ListRulesOutput: Swift.Sendable {
         /// The resource type that the readiness rule applies to.
         /// This member is required.
         public var resourceType: Swift.String?
@@ -113,12 +115,12 @@ extension Route53RecoveryReadinessClientTypes {
             self.ruleId = ruleId
         }
     }
-
 }
 
 extension Route53RecoveryReadinessClientTypes {
+
     /// Information relating to readiness check status.
-    public struct Message {
+    public struct Message: Swift.Sendable {
         /// The text of a readiness check message.
         public var messageText: Swift.String?
 
@@ -129,12 +131,12 @@ extension Route53RecoveryReadinessClientTypes {
             self.messageText = messageText
         }
     }
-
 }
 
 extension Route53RecoveryReadinessClientTypes {
+
     /// A readiness check.
-    public struct ReadinessCheckOutput {
+    public struct ReadinessCheckOutput: Swift.Sendable {
         /// The Amazon Resource Name (ARN) associated with a readiness check.
         /// This member is required.
         public var readinessCheckArn: Swift.String?
@@ -159,13 +161,12 @@ extension Route53RecoveryReadinessClientTypes {
             self.tags = tags
         }
     }
-
 }
 
 extension Route53RecoveryReadinessClientTypes {
 
     /// The readiness status.
-    public enum Readiness: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Readiness: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case notAuthorized
         case notReady
         case ready
@@ -199,8 +200,9 @@ extension Route53RecoveryReadinessClientTypes {
 }
 
 extension Route53RecoveryReadinessClientTypes {
+
     /// Summary of all readiness check statuses in a recovery group, paginated in GetRecoveryGroupReadinessSummary and GetCellReadinessSummary.
-    public struct ReadinessCheckSummary {
+    public struct ReadinessCheckSummary: Swift.Sendable {
         /// The readiness status of this readiness check.
         public var readiness: Route53RecoveryReadinessClientTypes.Readiness?
         /// The name of a readiness check.
@@ -215,12 +217,12 @@ extension Route53RecoveryReadinessClientTypes {
             self.readinessCheckName = readinessCheckName
         }
     }
-
 }
 
 extension Route53RecoveryReadinessClientTypes {
+
     /// Recommendations that are provided to make an application more recovery resilient.
-    public struct Recommendation {
+    public struct Recommendation: Swift.Sendable {
         /// Text of the recommendations that are provided to make an application more recovery resilient.
         /// This member is required.
         public var recommendationText: Swift.String?
@@ -232,12 +234,12 @@ extension Route53RecoveryReadinessClientTypes {
             self.recommendationText = recommendationText
         }
     }
-
 }
 
 extension Route53RecoveryReadinessClientTypes {
+
     /// A representation of the application, typically containing multiple cells.
-    public struct RecoveryGroupOutput {
+    public struct RecoveryGroupOutput: Swift.Sendable {
         /// A list of a cell's Amazon Resource Names (ARNs).
         /// This member is required.
         public var cells: [Swift.String]?
@@ -263,12 +265,12 @@ extension Route53RecoveryReadinessClientTypes {
             self.tags = tags
         }
     }
-
 }
 
 extension Route53RecoveryReadinessClientTypes {
+
     /// The Network Load Balancer resource that a DNS target resource points to.
-    public struct NLBResource {
+    public struct NLBResource: Swift.Sendable {
         /// The Network Load Balancer resource Amazon Resource Name (ARN).
         public var arn: Swift.String?
 
@@ -279,12 +281,12 @@ extension Route53RecoveryReadinessClientTypes {
             self.arn = arn
         }
     }
-
 }
 
 extension Route53RecoveryReadinessClientTypes {
+
     /// The Route 53 resource that a DNS target resource record points to.
-    public struct R53ResourceRecord {
+    public struct R53ResourceRecord: Swift.Sendable {
         /// The DNS target domain name.
         public var domainName: Swift.String?
         /// The Route 53 Resource Record Set ID.
@@ -299,12 +301,12 @@ extension Route53RecoveryReadinessClientTypes {
             self.recordSetId = recordSetId
         }
     }
-
 }
 
 extension Route53RecoveryReadinessClientTypes {
+
     /// The target resource that the Route 53 record points to.
-    public struct TargetResource {
+    public struct TargetResource: Swift.Sendable {
         /// The Network Load Balancer Resource.
         public var nlbResource: Route53RecoveryReadinessClientTypes.NLBResource?
         /// The Route 53 resource.
@@ -319,12 +321,12 @@ extension Route53RecoveryReadinessClientTypes {
             self.r53Resource = r53Resource
         }
     }
-
 }
 
 extension Route53RecoveryReadinessClientTypes {
+
     /// A component for DNS/routing control readiness checks and architecture checks.
-    public struct DNSTargetResource {
+    public struct DNSTargetResource: Swift.Sendable {
         /// The domain name that acts as an ingress point to a portion of the customer application.
         public var domainName: Swift.String?
         /// The hosted zone Amazon Resource Name (ARN) that contains the DNS record with the provided name of the target resource.
@@ -351,12 +353,12 @@ extension Route53RecoveryReadinessClientTypes {
             self.targetResource = targetResource
         }
     }
-
 }
 
 extension Route53RecoveryReadinessClientTypes {
+
     /// The resource element of a resource set.
-    public struct Resource {
+    public struct Resource: Swift.Sendable {
         /// The component identifier of the resource, generated when DNS target resource is used.
         public var componentId: Swift.String?
         /// The DNS target resource.
@@ -379,12 +381,12 @@ extension Route53RecoveryReadinessClientTypes {
             self.resourceArn = resourceArn
         }
     }
-
 }
 
 extension Route53RecoveryReadinessClientTypes {
+
     /// The result of a successful Resource request, with status for an individual resource.
-    public struct ResourceResult {
+    public struct ResourceResult: Swift.Sendable {
         /// The component id of the resource.
         public var componentId: Swift.String?
         /// The time (UTC) that the resource was last checked for readiness, in ISO-8601 format.
@@ -409,12 +411,12 @@ extension Route53RecoveryReadinessClientTypes {
             self.resourceArn = resourceArn
         }
     }
-
 }
 
 extension Route53RecoveryReadinessClientTypes {
+
     /// A collection of resources of the same type.
-    public struct ResourceSetOutput {
+    public struct ResourceSetOutput: Swift.Sendable {
         /// The Amazon Resource Name (ARN) for the resource set.
         /// This member is required.
         public var resourceSetArn: Swift.String?
@@ -445,12 +447,12 @@ extension Route53RecoveryReadinessClientTypes {
             self.tags = tags
         }
     }
-
 }
 
 extension Route53RecoveryReadinessClientTypes {
+
     /// The result of a successful Rule request, with status for an individual rule.
-    public struct RuleResult {
+    public struct RuleResult: Swift.Sendable {
         /// The time the resource was last checked for readiness, in ISO-8601 format, UTC.
         /// This member is required.
         public var lastCheckedTimestamp: Foundation.Date?
@@ -477,7 +479,6 @@ extension Route53RecoveryReadinessClientTypes {
             self.ruleId = ruleId
         }
     }
-
 }
 
 /// User does not have sufficient access to perform this action.
@@ -600,7 +601,7 @@ public struct ValidationException: ClientRuntime.ModeledError, AWSClientRuntime.
     }
 }
 
-public struct CreateCellInput {
+public struct CreateCellInput: Swift.Sendable {
     /// The name of the cell to create.
     /// This member is required.
     public var cellName: Swift.String?
@@ -621,7 +622,7 @@ public struct CreateCellInput {
     }
 }
 
-public struct CreateCellOutput {
+public struct CreateCellOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) for the cell.
     public var cellArn: Swift.String?
     /// The name of the cell.
@@ -649,7 +650,7 @@ public struct CreateCellOutput {
     }
 }
 
-public struct CreateCrossAccountAuthorizationInput {
+public struct CreateCrossAccountAuthorizationInput: Swift.Sendable {
     /// The cross-account authorization.
     /// This member is required.
     public var crossAccountAuthorization: Swift.String?
@@ -662,7 +663,7 @@ public struct CreateCrossAccountAuthorizationInput {
     }
 }
 
-public struct CreateCrossAccountAuthorizationOutput {
+public struct CreateCrossAccountAuthorizationOutput: Swift.Sendable {
     /// The cross-account authorization.
     public var crossAccountAuthorization: Swift.String?
 
@@ -674,7 +675,7 @@ public struct CreateCrossAccountAuthorizationOutput {
     }
 }
 
-public struct CreateReadinessCheckInput {
+public struct CreateReadinessCheckInput: Swift.Sendable {
     /// The name of the readiness check to create.
     /// This member is required.
     public var readinessCheckName: Swift.String?
@@ -696,7 +697,7 @@ public struct CreateReadinessCheckInput {
     }
 }
 
-public struct CreateReadinessCheckOutput {
+public struct CreateReadinessCheckOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) associated with a readiness check.
     public var readinessCheckArn: Swift.String?
     /// Name of a readiness check.
@@ -720,7 +721,7 @@ public struct CreateReadinessCheckOutput {
     }
 }
 
-public struct CreateRecoveryGroupInput {
+public struct CreateRecoveryGroupInput: Swift.Sendable {
     /// A list of the cell Amazon Resource Names (ARNs) in the recovery group.
     public var cells: [Swift.String]?
     /// The name of the recovery group to create.
@@ -741,7 +742,7 @@ public struct CreateRecoveryGroupInput {
     }
 }
 
-public struct CreateRecoveryGroupOutput {
+public struct CreateRecoveryGroupOutput: Swift.Sendable {
     /// A list of a cell's Amazon Resource Names (ARNs).
     public var cells: [Swift.String]?
     /// The Amazon Resource Name (ARN) for the recovery group.
@@ -765,7 +766,7 @@ public struct CreateRecoveryGroupOutput {
     }
 }
 
-public struct CreateResourceSetInput {
+public struct CreateResourceSetInput: Swift.Sendable {
     /// The name of the resource set to create.
     /// This member is required.
     public var resourceSetName: Swift.String?
@@ -792,7 +793,7 @@ public struct CreateResourceSetInput {
     }
 }
 
-public struct CreateResourceSetOutput {
+public struct CreateResourceSetOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) for the resource set.
     public var resourceSetArn: Swift.String?
     /// The name of the resource set.
@@ -844,7 +845,7 @@ public struct ResourceNotFoundException: ClientRuntime.ModeledError, AWSClientRu
     }
 }
 
-public struct DeleteCellInput {
+public struct DeleteCellInput: Swift.Sendable {
     /// The name of the cell.
     /// This member is required.
     public var cellName: Swift.String?
@@ -857,7 +858,7 @@ public struct DeleteCellInput {
     }
 }
 
-public struct DeleteCrossAccountAuthorizationInput {
+public struct DeleteCrossAccountAuthorizationInput: Swift.Sendable {
     /// The cross-account authorization.
     /// This member is required.
     public var crossAccountAuthorization: Swift.String?
@@ -870,12 +871,12 @@ public struct DeleteCrossAccountAuthorizationInput {
     }
 }
 
-public struct DeleteCrossAccountAuthorizationOutput {
+public struct DeleteCrossAccountAuthorizationOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteReadinessCheckInput {
+public struct DeleteReadinessCheckInput: Swift.Sendable {
     /// Name of a readiness check.
     /// This member is required.
     public var readinessCheckName: Swift.String?
@@ -888,7 +889,7 @@ public struct DeleteReadinessCheckInput {
     }
 }
 
-public struct DeleteRecoveryGroupInput {
+public struct DeleteRecoveryGroupInput: Swift.Sendable {
     /// The name of a recovery group.
     /// This member is required.
     public var recoveryGroupName: Swift.String?
@@ -901,7 +902,7 @@ public struct DeleteRecoveryGroupInput {
     }
 }
 
-public struct DeleteResourceSetInput {
+public struct DeleteResourceSetInput: Swift.Sendable {
     /// Name of a resource set.
     /// This member is required.
     public var resourceSetName: Swift.String?
@@ -914,7 +915,7 @@ public struct DeleteResourceSetInput {
     }
 }
 
-public struct GetArchitectureRecommendationsInput {
+public struct GetArchitectureRecommendationsInput: Swift.Sendable {
     /// The number of objects that you want to return with this call.
     public var maxResults: Swift.Int?
     /// The token that identifies which batch of results you want to see.
@@ -935,7 +936,7 @@ public struct GetArchitectureRecommendationsInput {
     }
 }
 
-public struct GetArchitectureRecommendationsOutput {
+public struct GetArchitectureRecommendationsOutput: Swift.Sendable {
     /// The time that a recovery group was last assessed for recommendations, in UTC ISO-8601 format.
     public var lastAuditTimestamp: Foundation.Date?
     /// The token that identifies which batch of results you want to see.
@@ -955,7 +956,7 @@ public struct GetArchitectureRecommendationsOutput {
     }
 }
 
-public struct GetCellInput {
+public struct GetCellInput: Swift.Sendable {
     /// The name of the cell.
     /// This member is required.
     public var cellName: Swift.String?
@@ -968,7 +969,7 @@ public struct GetCellInput {
     }
 }
 
-public struct GetCellOutput {
+public struct GetCellOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) for the cell.
     public var cellArn: Swift.String?
     /// The name of the cell.
@@ -996,7 +997,7 @@ public struct GetCellOutput {
     }
 }
 
-public struct GetCellReadinessSummaryInput {
+public struct GetCellReadinessSummaryInput: Swift.Sendable {
     /// The name of the cell.
     /// This member is required.
     public var cellName: Swift.String?
@@ -1017,7 +1018,7 @@ public struct GetCellReadinessSummaryInput {
     }
 }
 
-public struct GetCellReadinessSummaryOutput {
+public struct GetCellReadinessSummaryOutput: Swift.Sendable {
     /// The token that identifies which batch of results you want to see.
     public var nextToken: Swift.String?
     /// The readiness at a cell level.
@@ -1037,7 +1038,7 @@ public struct GetCellReadinessSummaryOutput {
     }
 }
 
-public struct GetReadinessCheckInput {
+public struct GetReadinessCheckInput: Swift.Sendable {
     /// Name of a readiness check.
     /// This member is required.
     public var readinessCheckName: Swift.String?
@@ -1050,7 +1051,7 @@ public struct GetReadinessCheckInput {
     }
 }
 
-public struct GetReadinessCheckOutput {
+public struct GetReadinessCheckOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) associated with a readiness check.
     public var readinessCheckArn: Swift.String?
     /// Name of a readiness check.
@@ -1074,7 +1075,7 @@ public struct GetReadinessCheckOutput {
     }
 }
 
-public struct GetReadinessCheckResourceStatusInput {
+public struct GetReadinessCheckResourceStatusInput: Swift.Sendable {
     /// The number of objects that you want to return with this call.
     public var maxResults: Swift.Int?
     /// The token that identifies which batch of results you want to see.
@@ -1100,7 +1101,7 @@ public struct GetReadinessCheckResourceStatusInput {
     }
 }
 
-public struct GetReadinessCheckResourceStatusOutput {
+public struct GetReadinessCheckResourceStatusOutput: Swift.Sendable {
     /// The token that identifies which batch of results you want to see.
     public var nextToken: Swift.String?
     /// The readiness at a rule level.
@@ -1120,7 +1121,7 @@ public struct GetReadinessCheckResourceStatusOutput {
     }
 }
 
-public struct GetReadinessCheckStatusInput {
+public struct GetReadinessCheckStatusInput: Swift.Sendable {
     /// The number of objects that you want to return with this call.
     public var maxResults: Swift.Int?
     /// The token that identifies which batch of results you want to see.
@@ -1141,7 +1142,7 @@ public struct GetReadinessCheckStatusInput {
     }
 }
 
-public struct GetReadinessCheckStatusOutput {
+public struct GetReadinessCheckStatusOutput: Swift.Sendable {
     /// Top level messages for readiness check status
     public var messages: [Route53RecoveryReadinessClientTypes.Message]?
     /// The token that identifies which batch of results you want to see.
@@ -1165,7 +1166,7 @@ public struct GetReadinessCheckStatusOutput {
     }
 }
 
-public struct GetRecoveryGroupInput {
+public struct GetRecoveryGroupInput: Swift.Sendable {
     /// The name of a recovery group.
     /// This member is required.
     public var recoveryGroupName: Swift.String?
@@ -1178,7 +1179,7 @@ public struct GetRecoveryGroupInput {
     }
 }
 
-public struct GetRecoveryGroupOutput {
+public struct GetRecoveryGroupOutput: Swift.Sendable {
     /// A list of a cell's Amazon Resource Names (ARNs).
     public var cells: [Swift.String]?
     /// The Amazon Resource Name (ARN) for the recovery group.
@@ -1202,7 +1203,7 @@ public struct GetRecoveryGroupOutput {
     }
 }
 
-public struct GetRecoveryGroupReadinessSummaryInput {
+public struct GetRecoveryGroupReadinessSummaryInput: Swift.Sendable {
     /// The number of objects that you want to return with this call.
     public var maxResults: Swift.Int?
     /// The token that identifies which batch of results you want to see.
@@ -1223,7 +1224,7 @@ public struct GetRecoveryGroupReadinessSummaryInput {
     }
 }
 
-public struct GetRecoveryGroupReadinessSummaryOutput {
+public struct GetRecoveryGroupReadinessSummaryOutput: Swift.Sendable {
     /// The token that identifies which batch of results you want to see.
     public var nextToken: Swift.String?
     /// The readiness status at a recovery group level.
@@ -1243,7 +1244,7 @@ public struct GetRecoveryGroupReadinessSummaryOutput {
     }
 }
 
-public struct GetResourceSetInput {
+public struct GetResourceSetInput: Swift.Sendable {
     /// Name of a resource set.
     /// This member is required.
     public var resourceSetName: Swift.String?
@@ -1256,7 +1257,7 @@ public struct GetResourceSetInput {
     }
 }
 
-public struct GetResourceSetOutput {
+public struct GetResourceSetOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) for the resource set.
     public var resourceSetArn: Swift.String?
     /// The name of the resource set.
@@ -1284,7 +1285,7 @@ public struct GetResourceSetOutput {
     }
 }
 
-public struct ListCellsInput {
+public struct ListCellsInput: Swift.Sendable {
     /// The number of objects that you want to return with this call.
     public var maxResults: Swift.Int?
     /// The token that identifies which batch of results you want to see.
@@ -1300,7 +1301,7 @@ public struct ListCellsInput {
     }
 }
 
-public struct ListCellsOutput {
+public struct ListCellsOutput: Swift.Sendable {
     /// A list of cells.
     public var cells: [Route53RecoveryReadinessClientTypes.CellOutput]?
     /// The token that identifies which batch of results you want to see.
@@ -1316,7 +1317,7 @@ public struct ListCellsOutput {
     }
 }
 
-public struct ListCrossAccountAuthorizationsInput {
+public struct ListCrossAccountAuthorizationsInput: Swift.Sendable {
     /// The number of objects that you want to return with this call.
     public var maxResults: Swift.Int?
     /// The token that identifies which batch of results you want to see.
@@ -1332,7 +1333,7 @@ public struct ListCrossAccountAuthorizationsInput {
     }
 }
 
-public struct ListCrossAccountAuthorizationsOutput {
+public struct ListCrossAccountAuthorizationsOutput: Swift.Sendable {
     /// A list of cross-account authorizations.
     public var crossAccountAuthorizations: [Swift.String]?
     /// The token that identifies which batch of results you want to see.
@@ -1348,7 +1349,7 @@ public struct ListCrossAccountAuthorizationsOutput {
     }
 }
 
-public struct ListReadinessChecksInput {
+public struct ListReadinessChecksInput: Swift.Sendable {
     /// The number of objects that you want to return with this call.
     public var maxResults: Swift.Int?
     /// The token that identifies which batch of results you want to see.
@@ -1364,7 +1365,7 @@ public struct ListReadinessChecksInput {
     }
 }
 
-public struct ListReadinessChecksOutput {
+public struct ListReadinessChecksOutput: Swift.Sendable {
     /// The token that identifies which batch of results you want to see.
     public var nextToken: Swift.String?
     /// A list of readiness checks associated with the account.
@@ -1380,7 +1381,7 @@ public struct ListReadinessChecksOutput {
     }
 }
 
-public struct ListRecoveryGroupsInput {
+public struct ListRecoveryGroupsInput: Swift.Sendable {
     /// The number of objects that you want to return with this call.
     public var maxResults: Swift.Int?
     /// The token that identifies which batch of results you want to see.
@@ -1396,7 +1397,7 @@ public struct ListRecoveryGroupsInput {
     }
 }
 
-public struct ListRecoveryGroupsOutput {
+public struct ListRecoveryGroupsOutput: Swift.Sendable {
     /// The token that identifies which batch of results you want to see.
     public var nextToken: Swift.String?
     /// A list of recovery groups.
@@ -1412,7 +1413,7 @@ public struct ListRecoveryGroupsOutput {
     }
 }
 
-public struct ListResourceSetsInput {
+public struct ListResourceSetsInput: Swift.Sendable {
     /// The number of objects that you want to return with this call.
     public var maxResults: Swift.Int?
     /// The token that identifies which batch of results you want to see.
@@ -1428,7 +1429,7 @@ public struct ListResourceSetsInput {
     }
 }
 
-public struct ListResourceSetsOutput {
+public struct ListResourceSetsOutput: Swift.Sendable {
     /// The token that identifies which batch of results you want to see.
     public var nextToken: Swift.String?
     /// A list of resource sets associated with the account.
@@ -1444,7 +1445,7 @@ public struct ListResourceSetsOutput {
     }
 }
 
-public struct ListRulesInput {
+public struct ListRulesInput: Swift.Sendable {
     /// The number of objects that you want to return with this call.
     public var maxResults: Swift.Int?
     /// The token that identifies which batch of results you want to see.
@@ -1464,7 +1465,7 @@ public struct ListRulesInput {
     }
 }
 
-public struct ListRulesOutput {
+public struct ListRulesOutput: Swift.Sendable {
     /// The token that identifies which batch of results you want to see.
     public var nextToken: Swift.String?
     /// A list of readiness rules for a specific resource type.
@@ -1480,7 +1481,7 @@ public struct ListRulesOutput {
     }
 }
 
-public struct ListTagsForResourcesInput {
+public struct ListTagsForResourcesInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) for a resource.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -1493,7 +1494,7 @@ public struct ListTagsForResourcesInput {
     }
 }
 
-public struct ListTagsForResourcesOutput {
+public struct ListTagsForResourcesOutput: Swift.Sendable {
     ///
     public var tags: [Swift.String: Swift.String]?
 
@@ -1505,7 +1506,7 @@ public struct ListTagsForResourcesOutput {
     }
 }
 
-public struct TagResourceInput {
+public struct TagResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) for a resource.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -1523,12 +1524,12 @@ public struct TagResourceInput {
     }
 }
 
-public struct TagResourceOutput {
+public struct TagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UntagResourceInput {
+public struct UntagResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) for a resource.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -1546,7 +1547,7 @@ public struct UntagResourceInput {
     }
 }
 
-public struct UpdateCellInput {
+public struct UpdateCellInput: Swift.Sendable {
     /// The name of the cell.
     /// This member is required.
     public var cellName: Swift.String?
@@ -1564,7 +1565,7 @@ public struct UpdateCellInput {
     }
 }
 
-public struct UpdateCellOutput {
+public struct UpdateCellOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) for the cell.
     public var cellArn: Swift.String?
     /// The name of the cell.
@@ -1593,7 +1594,7 @@ public struct UpdateCellOutput {
 }
 
 /// Name of a readiness check to describe.
-public struct UpdateReadinessCheckInput {
+public struct UpdateReadinessCheckInput: Swift.Sendable {
     /// Name of a readiness check.
     /// This member is required.
     public var readinessCheckName: Swift.String?
@@ -1611,7 +1612,7 @@ public struct UpdateReadinessCheckInput {
     }
 }
 
-public struct UpdateReadinessCheckOutput {
+public struct UpdateReadinessCheckOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) associated with a readiness check.
     public var readinessCheckArn: Swift.String?
     /// Name of a readiness check.
@@ -1636,7 +1637,7 @@ public struct UpdateReadinessCheckOutput {
 }
 
 /// Name of a recovery group.
-public struct UpdateRecoveryGroupInput {
+public struct UpdateRecoveryGroupInput: Swift.Sendable {
     /// A list of cell Amazon Resource Names (ARNs). This list completely replaces the previous list.
     /// This member is required.
     public var cells: [Swift.String]?
@@ -1654,7 +1655,7 @@ public struct UpdateRecoveryGroupInput {
     }
 }
 
-public struct UpdateRecoveryGroupOutput {
+public struct UpdateRecoveryGroupOutput: Swift.Sendable {
     /// A list of a cell's Amazon Resource Names (ARNs).
     public var cells: [Swift.String]?
     /// The Amazon Resource Name (ARN) for the recovery group.
@@ -1679,7 +1680,7 @@ public struct UpdateRecoveryGroupOutput {
 }
 
 /// Name of a resource set.
-public struct UpdateResourceSetInput {
+public struct UpdateResourceSetInput: Swift.Sendable {
     /// Name of a resource set.
     /// This member is required.
     public var resourceSetName: Swift.String?
@@ -1702,7 +1703,7 @@ public struct UpdateResourceSetInput {
     }
 }
 
-public struct UpdateResourceSetOutput {
+public struct UpdateResourceSetOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) for the resource set.
     public var resourceSetArn: Swift.String?
     /// The name of the resource set.

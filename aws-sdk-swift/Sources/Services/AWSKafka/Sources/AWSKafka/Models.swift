@@ -28,19 +28,21 @@ import protocol ClientRuntime.ModeledError
 import struct Smithy.URIQueryItem
 @_spi(SmithyTimestamps) import struct SmithyTimestamps.TimestampFormatter
 
-public struct TagResourceOutput {
+
+public struct TagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UntagResourceOutput {
+public struct UntagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
 extension KafkaClientTypes {
+
     /// Contains information about provisioned throughput for EBS storage volumes attached to kafka broker nodes.
-    public struct ProvisionedThroughput {
+    public struct ProvisionedThroughput: Swift.Sendable {
         /// Provisioned throughput is enabled or not.
         public var enabled: Swift.Bool?
         /// Throughput value of the EBS volumes for the data drive on each kafka broker node in MiB per second.
@@ -55,12 +57,12 @@ extension KafkaClientTypes {
             self.volumeThroughput = volumeThroughput
         }
     }
-
 }
 
 extension KafkaClientTypes {
+
     /// Specifies the EBS volume upgrade information. The broker identifier must be set to the keyword ALL. This means the changes apply to all the brokers in the cluster.
-    public struct BrokerEBSVolumeInfo {
+    public struct BrokerEBSVolumeInfo: Swift.Sendable {
         /// The ID of the broker to update.
         /// This member is required.
         public var kafkaBrokerNodeId: Swift.String?
@@ -80,13 +82,12 @@ extension KafkaClientTypes {
             self.volumeSizeGB = volumeSizeGB
         }
     }
-
 }
 
 extension KafkaClientTypes {
 
     /// The state of a VPC connection.
-    public enum VpcConnectionState: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum VpcConnectionState: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case available
         case creating
         case deactivating
@@ -132,8 +133,9 @@ extension KafkaClientTypes {
 }
 
 extension KafkaClientTypes {
+
     /// The client VPC connection object.
-    public struct ClientVpcConnection {
+    public struct ClientVpcConnection: Swift.Sendable {
         /// Information about the auth scheme of Vpc Connection.
         public var authentication: Swift.String?
         /// Creation time of the Vpc Connection.
@@ -161,13 +163,12 @@ extension KafkaClientTypes {
             self.vpcConnectionArn = vpcConnectionArn
         }
     }
-
 }
 
 extension KafkaClientTypes {
 
     /// The type of cluster.
-    public enum ClusterType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ClusterType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case provisioned
         case serverless
         case sdkUnknown(Swift.String)
@@ -197,7 +198,7 @@ extension KafkaClientTypes {
 extension KafkaClientTypes {
 
     /// The distribution of broker nodes across Availability Zones. This is an optional parameter. If you don't specify it, Amazon MSK gives it the value DEFAULT. You can also explicitly set this parameter to the value DEFAULT. No other values are currently allowed. Amazon MSK distributes the broker nodes evenly across the Availability Zones that correspond to the subnets you provide when you create the cluster.
-    public enum BrokerAZDistribution: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum BrokerAZDistribution: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case `default`
         case sdkUnknown(Swift.String)
 
@@ -222,8 +223,9 @@ extension KafkaClientTypes {
 }
 
 extension KafkaClientTypes {
+
     /// Public access control for brokers.
-    public struct PublicAccess {
+    public struct PublicAccess: Swift.Sendable {
         /// The value DISABLED indicates that public access is turned off. SERVICE_PROVIDED_EIPS indicates that public access is turned on.
         public var type: Swift.String?
 
@@ -234,12 +236,12 @@ extension KafkaClientTypes {
             self.type = type
         }
     }
-
 }
 
 extension KafkaClientTypes {
+
     /// Details for IAM access control for VPC connectivity.
-    public struct VpcConnectivityIam {
+    public struct VpcConnectivityIam: Swift.Sendable {
         /// SASL/IAM authentication is on or off for VPC connectivity.
         public var enabled: Swift.Bool?
 
@@ -250,12 +252,12 @@ extension KafkaClientTypes {
             self.enabled = enabled
         }
     }
-
 }
 
 extension KafkaClientTypes {
+
     /// Details for SASL/SCRAM client authentication for VPC connectivity.
-    public struct VpcConnectivityScram {
+    public struct VpcConnectivityScram: Swift.Sendable {
         /// SASL/SCRAM authentication is on or off for VPC connectivity.
         public var enabled: Swift.Bool?
 
@@ -266,12 +268,12 @@ extension KafkaClientTypes {
             self.enabled = enabled
         }
     }
-
 }
 
 extension KafkaClientTypes {
+
     /// Details for SASL client authentication for VPC connectivity.
-    public struct VpcConnectivitySasl {
+    public struct VpcConnectivitySasl: Swift.Sendable {
         /// Details for SASL/IAM client authentication for VPC connectivity.
         public var iam: KafkaClientTypes.VpcConnectivityIam?
         /// Details for SASL/SCRAM client authentication for VPC connectivity.
@@ -286,12 +288,12 @@ extension KafkaClientTypes {
             self.scram = scram
         }
     }
-
 }
 
 extension KafkaClientTypes {
+
     /// Details for TLS client authentication for VPC connectivity.
-    public struct VpcConnectivityTls {
+    public struct VpcConnectivityTls: Swift.Sendable {
         /// TLS authentication is on or off for VPC connectivity.
         public var enabled: Swift.Bool?
 
@@ -302,12 +304,12 @@ extension KafkaClientTypes {
             self.enabled = enabled
         }
     }
-
 }
 
 extension KafkaClientTypes {
+
     /// Includes all client authentication information for VPC connectivity.
-    public struct VpcConnectivityClientAuthentication {
+    public struct VpcConnectivityClientAuthentication: Swift.Sendable {
         /// SASL authentication type details for VPC connectivity.
         public var sasl: KafkaClientTypes.VpcConnectivitySasl?
         /// TLS authentication type details for VPC connectivity.
@@ -322,12 +324,12 @@ extension KafkaClientTypes {
             self.tls = tls
         }
     }
-
 }
 
 extension KafkaClientTypes {
+
     /// VPC connectivity access control for brokers.
-    public struct VpcConnectivity {
+    public struct VpcConnectivity: Swift.Sendable {
         /// Includes all client authentication information for VPC connectivity.
         public var clientAuthentication: KafkaClientTypes.VpcConnectivityClientAuthentication?
 
@@ -338,12 +340,12 @@ extension KafkaClientTypes {
             self.clientAuthentication = clientAuthentication
         }
     }
-
 }
 
 extension KafkaClientTypes {
+
     /// Information about the broker access configuration.
-    public struct ConnectivityInfo {
+    public struct ConnectivityInfo: Swift.Sendable {
         /// Public access control for brokers.
         public var publicAccess: KafkaClientTypes.PublicAccess?
         /// VPC connectivity access control for brokers.
@@ -358,12 +360,12 @@ extension KafkaClientTypes {
             self.vpcConnectivity = vpcConnectivity
         }
     }
-
 }
 
 extension KafkaClientTypes {
+
     /// Contains information about the EBS storage volumes attached to Apache Kafka broker nodes.
-    public struct EBSStorageInfo {
+    public struct EBSStorageInfo: Swift.Sendable {
         /// EBS volume provisioned throughput information.
         public var provisionedThroughput: KafkaClientTypes.ProvisionedThroughput?
         /// The size in GiB of the EBS volume for the data drive on each broker node.
@@ -378,12 +380,12 @@ extension KafkaClientTypes {
             self.volumeSize = volumeSize
         }
     }
-
 }
 
 extension KafkaClientTypes {
+
     /// Contains information about storage volumes attached to MSK broker nodes.
-    public struct StorageInfo {
+    public struct StorageInfo: Swift.Sendable {
         /// EBS volume information.
         public var ebsStorageInfo: KafkaClientTypes.EBSStorageInfo?
 
@@ -394,12 +396,12 @@ extension KafkaClientTypes {
             self.ebsStorageInfo = ebsStorageInfo
         }
     }
-
 }
 
 extension KafkaClientTypes {
+
     /// Describes the setup to be used for Apache Kafka broker nodes in the cluster.
-    public struct BrokerNodeGroupInfo {
+    public struct BrokerNodeGroupInfo: Swift.Sendable {
         /// The distribution of broker nodes across Availability Zones. This is an optional parameter. If you don't specify it, Amazon MSK gives it the value DEFAULT. You can also explicitly set this parameter to the value DEFAULT. No other values are currently allowed. Amazon MSK distributes the broker nodes evenly across the Availability Zones that correspond to the subnets you provide when you create the cluster.
         public var brokerAZDistribution: KafkaClientTypes.BrokerAZDistribution?
         /// The list of subnets to connect to in the client virtual private cloud (VPC). AWS creates elastic network interfaces inside these subnets. Client applications use elastic network interfaces to produce and consume data. Client subnets can't occupy the Availability Zone with ID use use1-az3.
@@ -436,12 +438,12 @@ extension KafkaClientTypes {
             self.zoneIds = zoneIds
         }
     }
-
 }
 
 extension KafkaClientTypes {
+
     /// Details for IAM access control.
-    public struct Iam {
+    public struct Iam: Swift.Sendable {
         /// Indicates whether IAM access control is enabled.
         public var enabled: Swift.Bool?
 
@@ -452,12 +454,12 @@ extension KafkaClientTypes {
             self.enabled = enabled
         }
     }
-
 }
 
 extension KafkaClientTypes {
+
     /// Details for SASL/SCRAM client authentication.
-    public struct Scram {
+    public struct Scram: Swift.Sendable {
         /// SASL/SCRAM authentication is enabled or not.
         public var enabled: Swift.Bool?
 
@@ -468,12 +470,12 @@ extension KafkaClientTypes {
             self.enabled = enabled
         }
     }
-
 }
 
 extension KafkaClientTypes {
+
     /// Details for client authentication using SASL.
-    public struct Sasl {
+    public struct Sasl: Swift.Sendable {
         /// Indicates whether IAM access control is enabled.
         public var iam: KafkaClientTypes.Iam?
         /// Details for SASL/SCRAM client authentication.
@@ -488,12 +490,12 @@ extension KafkaClientTypes {
             self.scram = scram
         }
     }
-
 }
 
 extension KafkaClientTypes {
+
     /// Details for client authentication using TLS.
-    public struct Tls {
+    public struct Tls: Swift.Sendable {
         /// List of ACM Certificate Authority ARNs.
         public var certificateAuthorityArnList: [Swift.String]?
         /// Specifies whether you want to turn on or turn off TLS authentication.
@@ -508,11 +510,11 @@ extension KafkaClientTypes {
             self.enabled = enabled
         }
     }
-
 }
 
 extension KafkaClientTypes {
-    public struct Unauthenticated {
+
+    public struct Unauthenticated: Swift.Sendable {
         /// Specifies whether you want to turn on or turn off unauthenticated traffic to your cluster.
         public var enabled: Swift.Bool?
 
@@ -523,12 +525,12 @@ extension KafkaClientTypes {
             self.enabled = enabled
         }
     }
-
 }
 
 extension KafkaClientTypes {
+
     /// Includes all client authentication information.
-    public struct ClientAuthentication {
+    public struct ClientAuthentication: Swift.Sendable {
         /// Details for ClientAuthentication using SASL.
         public var sasl: KafkaClientTypes.Sasl?
         /// Details for ClientAuthentication using TLS.
@@ -547,12 +549,12 @@ extension KafkaClientTypes {
             self.unauthenticated = unauthenticated
         }
     }
-
 }
 
 extension KafkaClientTypes {
+
     /// Information about the current software installed on the cluster.
-    public struct BrokerSoftwareInfo {
+    public struct BrokerSoftwareInfo: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the configuration used for the cluster. This field isn't visible in this preview release.
         public var configurationArn: Swift.String?
         /// The revision of the configuration to use. This field isn't visible in this preview release.
@@ -571,13 +573,12 @@ extension KafkaClientTypes {
             self.kafkaVersion = kafkaVersion
         }
     }
-
 }
 
 extension KafkaClientTypes {
 
     /// A type of an action required from the customer.
-    public enum CustomerActionStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum CustomerActionStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case actionRecommended
         case criticalActionRequired
         case `none`
@@ -608,8 +609,9 @@ extension KafkaClientTypes {
 }
 
 extension KafkaClientTypes {
+
     /// The data-volume encryption details.
-    public struct EncryptionAtRest {
+    public struct EncryptionAtRest: Swift.Sendable {
         /// The ARN of the AWS KMS key for encrypting data at rest. If you don't specify a KMS key, MSK creates one for you and uses it.
         /// This member is required.
         public var dataVolumeKMSKeyId: Swift.String?
@@ -621,13 +623,12 @@ extension KafkaClientTypes {
             self.dataVolumeKMSKeyId = dataVolumeKMSKeyId
         }
     }
-
 }
 
 extension KafkaClientTypes {
 
     /// Client-broker encryption in transit setting.
-    public enum ClientBroker: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ClientBroker: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case plaintext
         case tls
         case tlsPlaintext
@@ -658,8 +659,9 @@ extension KafkaClientTypes {
 }
 
 extension KafkaClientTypes {
+
     /// The settings for encrypting data in transit.
-    public struct EncryptionInTransit {
+    public struct EncryptionInTransit: Swift.Sendable {
         /// Indicates the encryption setting for data in transit between clients and brokers. The following are the possible values. TLS means that client-broker communication is enabled with TLS only. TLS_PLAINTEXT means that client-broker communication is enabled for both TLS-encrypted, as well as plaintext data. PLAINTEXT means that client-broker communication is enabled in plaintext only. The default value is TLS_PLAINTEXT.
         public var clientBroker: KafkaClientTypes.ClientBroker?
         /// When set to true, it indicates that data communication among the broker nodes of the cluster is encrypted. When set to false, the communication happens in plaintext. The default value is true.
@@ -674,12 +676,12 @@ extension KafkaClientTypes {
             self.inCluster = inCluster
         }
     }
-
 }
 
 extension KafkaClientTypes {
+
     /// Includes encryption-related information, such as the AWS KMS key used for encrypting data at rest and whether you want MSK to encrypt your data in transit.
-    public struct EncryptionInfo {
+    public struct EncryptionInfo: Swift.Sendable {
         /// The data-volume encryption details.
         public var encryptionAtRest: KafkaClientTypes.EncryptionAtRest?
         /// The details for encryption in transit.
@@ -694,13 +696,12 @@ extension KafkaClientTypes {
             self.encryptionInTransit = encryptionInTransit
         }
     }
-
 }
 
 extension KafkaClientTypes {
 
     /// Specifies which metrics are gathered for the MSK cluster. This property has the following possible values: DEFAULT, PER_BROKER, PER_TOPIC_PER_BROKER, and PER_TOPIC_PER_PARTITION. For a list of the metrics associated with each of these levels of monitoring, see [Monitoring](https://docs.aws.amazon.com/msk/latest/developerguide/monitoring.html).
-    public enum EnhancedMonitoring: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum EnhancedMonitoring: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case `default`
         case perBroker
         case perTopicPerBroker
@@ -734,7 +735,8 @@ extension KafkaClientTypes {
 }
 
 extension KafkaClientTypes {
-    public struct CloudWatchLogs {
+
+    public struct CloudWatchLogs: Swift.Sendable {
         /// This member is required.
         public var enabled: Swift.Bool?
         public var logGroup: Swift.String?
@@ -748,11 +750,11 @@ extension KafkaClientTypes {
             self.logGroup = logGroup
         }
     }
-
 }
 
 extension KafkaClientTypes {
-    public struct Firehose {
+
+    public struct Firehose: Swift.Sendable {
         public var deliveryStream: Swift.String?
         /// This member is required.
         public var enabled: Swift.Bool?
@@ -766,11 +768,11 @@ extension KafkaClientTypes {
             self.enabled = enabled
         }
     }
-
 }
 
 extension KafkaClientTypes {
-    public struct S3 {
+
+    public struct S3: Swift.Sendable {
         public var bucket: Swift.String?
         /// This member is required.
         public var enabled: Swift.Bool?
@@ -787,11 +789,11 @@ extension KafkaClientTypes {
             self.`prefix` = `prefix`
         }
     }
-
 }
 
 extension KafkaClientTypes {
-    public struct BrokerLogs {
+
+    public struct BrokerLogs: Swift.Sendable {
         public var cloudWatchLogs: KafkaClientTypes.CloudWatchLogs?
         public var firehose: KafkaClientTypes.Firehose?
         public var s3: KafkaClientTypes.S3?
@@ -807,11 +809,11 @@ extension KafkaClientTypes {
             self.s3 = s3
         }
     }
-
 }
 
 extension KafkaClientTypes {
-    public struct LoggingInfo {
+
+    public struct LoggingInfo: Swift.Sendable {
         /// This member is required.
         public var brokerLogs: KafkaClientTypes.BrokerLogs?
 
@@ -822,12 +824,12 @@ extension KafkaClientTypes {
             self.brokerLogs = brokerLogs
         }
     }
-
 }
 
 extension KafkaClientTypes {
+
     /// Indicates whether you want to turn on or turn off the JMX Exporter.
-    public struct JmxExporterInfo {
+    public struct JmxExporterInfo: Swift.Sendable {
         /// Indicates whether you want to turn on or turn off the JMX Exporter.
         /// This member is required.
         public var enabledInBroker: Swift.Bool?
@@ -839,12 +841,12 @@ extension KafkaClientTypes {
             self.enabledInBroker = enabledInBroker
         }
     }
-
 }
 
 extension KafkaClientTypes {
+
     /// Indicates whether you want to turn on or turn off the Node Exporter.
-    public struct NodeExporterInfo {
+    public struct NodeExporterInfo: Swift.Sendable {
         /// Indicates whether you want to turn on or turn off the Node Exporter.
         /// This member is required.
         public var enabledInBroker: Swift.Bool?
@@ -856,12 +858,12 @@ extension KafkaClientTypes {
             self.enabledInBroker = enabledInBroker
         }
     }
-
 }
 
 extension KafkaClientTypes {
+
     /// Prometheus settings.
-    public struct PrometheusInfo {
+    public struct PrometheusInfo: Swift.Sendable {
         /// Indicates whether you want to turn on or turn off the JMX Exporter.
         public var jmxExporter: KafkaClientTypes.JmxExporterInfo?
         /// Indicates whether you want to turn on or turn off the Node Exporter.
@@ -876,12 +878,12 @@ extension KafkaClientTypes {
             self.nodeExporter = nodeExporter
         }
     }
-
 }
 
 extension KafkaClientTypes {
+
     /// JMX and Node monitoring for the MSK cluster.
-    public struct OpenMonitoringInfo {
+    public struct OpenMonitoringInfo: Swift.Sendable {
         /// Prometheus settings.
         /// This member is required.
         public var prometheus: KafkaClientTypes.PrometheusInfo?
@@ -893,13 +895,12 @@ extension KafkaClientTypes {
             self.prometheus = prometheus
         }
     }
-
 }
 
 extension KafkaClientTypes {
 
     /// Controls storage mode for various supported storage tiers.
-    public enum StorageMode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum StorageMode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case local
         case tiered
         case sdkUnknown(Swift.String)
@@ -927,8 +928,9 @@ extension KafkaClientTypes {
 }
 
 extension KafkaClientTypes {
+
     /// Provisioned cluster.
-    public struct Provisioned {
+    public struct Provisioned: Swift.Sendable {
         /// Information about the brokers.
         /// This member is required.
         public var brokerNodeGroupInfo: KafkaClientTypes.BrokerNodeGroupInfo?
@@ -985,12 +987,12 @@ extension KafkaClientTypes {
             self.zookeeperConnectStringTls = zookeeperConnectStringTls
         }
     }
-
 }
 
 extension KafkaClientTypes {
+
     /// Details for client authentication using SASL.
-    public struct ServerlessSasl {
+    public struct ServerlessSasl: Swift.Sendable {
         /// Indicates whether IAM access control is enabled.
         public var iam: KafkaClientTypes.Iam?
 
@@ -1001,12 +1003,12 @@ extension KafkaClientTypes {
             self.iam = iam
         }
     }
-
 }
 
 extension KafkaClientTypes {
+
     /// Includes all client authentication information.
-    public struct ServerlessClientAuthentication {
+    public struct ServerlessClientAuthentication: Swift.Sendable {
         /// Details for ClientAuthentication using SASL.
         public var sasl: KafkaClientTypes.ServerlessSasl?
 
@@ -1017,12 +1019,12 @@ extension KafkaClientTypes {
             self.sasl = sasl
         }
     }
-
 }
 
 extension KafkaClientTypes {
+
     /// The configuration of the Amazon VPCs for the cluster.
-    public struct VpcConfig {
+    public struct VpcConfig: Swift.Sendable {
         /// The IDs of the security groups associated with the cluster.
         public var securityGroupIds: [Swift.String]?
         /// The IDs of the subnets associated with the cluster.
@@ -1038,12 +1040,12 @@ extension KafkaClientTypes {
             self.subnetIds = subnetIds
         }
     }
-
 }
 
 extension KafkaClientTypes {
+
     /// Serverless cluster.
-    public struct Serverless {
+    public struct Serverless: Swift.Sendable {
         /// Includes all client authentication information.
         public var clientAuthentication: KafkaClientTypes.ServerlessClientAuthentication?
         /// The configuration of the Amazon VPCs for the cluster.
@@ -1059,13 +1061,12 @@ extension KafkaClientTypes {
             self.vpcConfigs = vpcConfigs
         }
     }
-
 }
 
 extension KafkaClientTypes {
 
     /// The state of the Apache Kafka cluster.
-    public enum ClusterState: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ClusterState: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case active
         case creating
         case deleting
@@ -1111,7 +1112,8 @@ extension KafkaClientTypes {
 }
 
 extension KafkaClientTypes {
-    public struct StateInfo {
+
+    public struct StateInfo: Swift.Sendable {
         public var code: Swift.String?
         public var message: Swift.String?
 
@@ -1124,12 +1126,12 @@ extension KafkaClientTypes {
             self.message = message
         }
     }
-
 }
 
 extension KafkaClientTypes {
+
     /// Returns information about a cluster.
-    public struct Cluster {
+    public struct Cluster: Swift.Sendable {
         /// The Amazon Resource Name (ARN) that uniquely identifies a cluster operation.
         public var activeOperationArn: Swift.String?
         /// The Amazon Resource Name (ARN) that uniquely identifies the cluster.
@@ -1180,12 +1182,12 @@ extension KafkaClientTypes {
             self.tags = tags
         }
     }
-
 }
 
 extension KafkaClientTypes {
+
     /// Indicates whether you want to turn on or turn off the JMX Exporter.
-    public struct JmxExporter {
+    public struct JmxExporter: Swift.Sendable {
         /// Indicates whether you want to turn on or turn off the JMX Exporter.
         /// This member is required.
         public var enabledInBroker: Swift.Bool?
@@ -1197,12 +1199,12 @@ extension KafkaClientTypes {
             self.enabledInBroker = enabledInBroker
         }
     }
-
 }
 
 extension KafkaClientTypes {
+
     /// Indicates whether you want to turn on or turn off the Node Exporter.
-    public struct NodeExporter {
+    public struct NodeExporter: Swift.Sendable {
         /// Indicates whether you want to turn on or turn off the Node Exporter.
         /// This member is required.
         public var enabledInBroker: Swift.Bool?
@@ -1214,12 +1216,12 @@ extension KafkaClientTypes {
             self.enabledInBroker = enabledInBroker
         }
     }
-
 }
 
 extension KafkaClientTypes {
+
     /// Prometheus settings.
-    public struct Prometheus {
+    public struct Prometheus: Swift.Sendable {
         /// Indicates whether you want to turn on or turn off the JMX Exporter.
         public var jmxExporter: KafkaClientTypes.JmxExporter?
         /// Indicates whether you want to turn on or turn off the Node Exporter.
@@ -1234,12 +1236,12 @@ extension KafkaClientTypes {
             self.nodeExporter = nodeExporter
         }
     }
-
 }
 
 extension KafkaClientTypes {
+
     /// JMX and Node monitoring for the MSK cluster.
-    public struct OpenMonitoring {
+    public struct OpenMonitoring: Swift.Sendable {
         /// Prometheus settings.
         /// This member is required.
         public var prometheus: KafkaClientTypes.Prometheus?
@@ -1251,12 +1253,12 @@ extension KafkaClientTypes {
             self.prometheus = prometheus
         }
     }
-
 }
 
 extension KafkaClientTypes {
+
     /// Returns information about a cluster.
-    public struct ClusterInfo {
+    public struct ClusterInfo: Swift.Sendable {
         /// Arn of active cluster operation.
         public var activeOperationArn: Swift.String?
         /// Information about the broker nodes.
@@ -1341,12 +1343,12 @@ extension KafkaClientTypes {
             self.zookeeperConnectStringTls = zookeeperConnectStringTls
         }
     }
-
 }
 
 extension KafkaClientTypes {
+
     /// Returns information about an error state of the cluster.
-    public struct ErrorInfo {
+    public struct ErrorInfo: Swift.Sendable {
         /// A number describing the error programmatically.
         public var errorCode: Swift.String?
         /// An optional field to provide more details about the error.
@@ -1361,12 +1363,12 @@ extension KafkaClientTypes {
             self.errorString = errorString
         }
     }
-
 }
 
 extension KafkaClientTypes {
+
     /// State information about the operation step.
-    public struct ClusterOperationStepInfo {
+    public struct ClusterOperationStepInfo: Swift.Sendable {
         /// The steps current status.
         public var stepStatus: Swift.String?
 
@@ -1377,12 +1379,12 @@ extension KafkaClientTypes {
             self.stepStatus = stepStatus
         }
     }
-
 }
 
 extension KafkaClientTypes {
+
     /// Step taken during a cluster operation.
-    public struct ClusterOperationStep {
+    public struct ClusterOperationStep: Swift.Sendable {
         /// Information about the step and its status.
         public var stepInfo: KafkaClientTypes.ClusterOperationStepInfo?
         /// The name of the step.
@@ -1397,12 +1399,12 @@ extension KafkaClientTypes {
             self.stepName = stepName
         }
     }
-
 }
 
 extension KafkaClientTypes {
+
     /// Information regarding UpdateBrokerCount.
-    public struct BrokerCountUpdateInfo {
+    public struct BrokerCountUpdateInfo: Swift.Sendable {
         /// Kafka Broker IDs of brokers being created.
         public var createdBrokerIds: [Swift.Double]?
         /// Kafka Broker IDs of brokers being deleted.
@@ -1417,12 +1419,12 @@ extension KafkaClientTypes {
             self.deletedBrokerIds = deletedBrokerIds
         }
     }
-
 }
 
 extension KafkaClientTypes {
+
     /// Specifies the configuration to use for the brokers.
-    public struct ConfigurationInfo {
+    public struct ConfigurationInfo: Swift.Sendable {
         /// ARN of the configuration to use.
         /// This member is required.
         public var arn: Swift.String?
@@ -1439,12 +1441,12 @@ extension KafkaClientTypes {
             self.revision = revision
         }
     }
-
 }
 
 extension KafkaClientTypes {
+
     /// Information about cluster attributes that can be updated via update APIs.
-    public struct MutableClusterInfo {
+    public struct MutableClusterInfo: Swift.Sendable {
         /// Describes brokers being changed during a broker count update.
         public var brokerCountUpdateInfo: KafkaClientTypes.BrokerCountUpdateInfo?
         /// Specifies the size of the EBS volume and the ID of the associated broker.
@@ -1503,13 +1505,12 @@ extension KafkaClientTypes {
             self.storageMode = storageMode
         }
     }
-
 }
 
 extension KafkaClientTypes {
 
     /// The identity type of the requester that calls the API operation.
-    public enum UserIdentityType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum UserIdentityType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case awsaccount
         case awsservice
         case sdkUnknown(Swift.String)
@@ -1537,8 +1538,9 @@ extension KafkaClientTypes {
 }
 
 extension KafkaClientTypes {
+
     /// Description of the requester that calls the API operation.
-    public struct UserIdentity {
+    public struct UserIdentity: Swift.Sendable {
         /// A unique identifier for the requester that calls the API operation.
         public var principalId: Swift.String?
         /// The identity type of the requester that calls the API operation.
@@ -1553,12 +1555,12 @@ extension KafkaClientTypes {
             self.type = type
         }
     }
-
 }
 
 extension KafkaClientTypes {
+
     /// Description of the VPC connection.
-    public struct VpcConnectionInfo {
+    public struct VpcConnectionInfo: Swift.Sendable {
         /// The time when Amazon MSK creates the VPC Connnection.
         public var creationTime: Foundation.Date?
         /// The owner of the VPC Connection.
@@ -1581,12 +1583,12 @@ extension KafkaClientTypes {
             self.vpcConnectionArn = vpcConnectionArn
         }
     }
-
 }
 
 extension KafkaClientTypes {
+
     /// Returns information about a cluster operation.
-    public struct ClusterOperationInfo {
+    public struct ClusterOperationInfo: Swift.Sendable {
         /// The ID of the API request that triggered this operation.
         public var clientRequestId: Swift.String?
         /// ARN of the cluster.
@@ -1641,12 +1643,12 @@ extension KafkaClientTypes {
             self.vpcConnectionInfo = vpcConnectionInfo
         }
     }
-
 }
 
 extension KafkaClientTypes {
+
     /// Returns information about a cluster operation.
-    public struct ClusterOperationV2Summary {
+    public struct ClusterOperationV2Summary: Swift.Sendable {
         /// ARN of the cluster.
         public var clusterArn: Swift.String?
         /// Type of the backend cluster.
@@ -1681,12 +1683,12 @@ extension KafkaClientTypes {
             self.startTime = startTime
         }
     }
-
 }
 
 extension KafkaClientTypes {
+
     /// Contains source Apache Kafka versions and compatible target Apache Kafka versions.
-    public struct CompatibleKafkaVersion {
+    public struct CompatibleKafkaVersion: Swift.Sendable {
         /// An Apache Kafka version.
         public var sourceVersion: Swift.String?
         /// A list of Apache Kafka versions.
@@ -1701,12 +1703,12 @@ extension KafkaClientTypes {
             self.targetVersions = targetVersions
         }
     }
-
 }
 
 extension KafkaClientTypes {
+
     /// Describes a configuration revision.
-    public struct ConfigurationRevision {
+    public struct ConfigurationRevision: Swift.Sendable {
         /// The time when the configuration revision was created.
         /// This member is required.
         public var creationTime: Foundation.Date?
@@ -1727,13 +1729,12 @@ extension KafkaClientTypes {
             self.revision = revision
         }
     }
-
 }
 
 extension KafkaClientTypes {
 
     /// The state of a configuration.
-    public enum ConfigurationState: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ConfigurationState: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case active
         case deleteFailed
         case deleting
@@ -1764,8 +1765,9 @@ extension KafkaClientTypes {
 }
 
 extension KafkaClientTypes {
+
     /// Represents an MSK Configuration.
-    public struct Configuration {
+    public struct Configuration: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the configuration.
         /// This member is required.
         public var arn: Swift.String?
@@ -1807,12 +1809,12 @@ extension KafkaClientTypes {
             self.state = state
         }
     }
-
 }
 
 extension KafkaClientTypes {
+
     /// Details of an Amazon MSK Cluster.
-    public struct AmazonMskCluster {
+    public struct AmazonMskCluster: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of an Amazon MSK cluster.
         /// This member is required.
         public var mskClusterArn: Swift.String?
@@ -1824,12 +1826,12 @@ extension KafkaClientTypes {
             self.mskClusterArn = mskClusterArn
         }
     }
-
 }
 
 extension KafkaClientTypes {
+
     /// Details of an Amazon VPC which has network connectivity to the Apache Kafka cluster.
-    public struct KafkaClusterClientVpcConfig {
+    public struct KafkaClusterClientVpcConfig: Swift.Sendable {
         /// The security groups to attach to the ENIs for the broker nodes.
         public var securityGroupIds: [Swift.String]?
         /// The list of subnets in the client VPC to connect to.
@@ -1845,12 +1847,12 @@ extension KafkaClientTypes {
             self.subnetIds = subnetIds
         }
     }
-
 }
 
 extension KafkaClientTypes {
+
     /// Information about Kafka Cluster to be used as source / target for replication.
-    public struct KafkaCluster {
+    public struct KafkaCluster: Swift.Sendable {
         /// Details of an Amazon MSK Cluster.
         /// This member is required.
         public var amazonMskCluster: KafkaClientTypes.AmazonMskCluster?
@@ -1867,12 +1869,12 @@ extension KafkaClientTypes {
             self.vpcConfig = vpcConfig
         }
     }
-
 }
 
 extension KafkaClientTypes {
+
     /// Information about Kafka Cluster used as source / target for replication.
-    public struct KafkaClusterDescription {
+    public struct KafkaClusterDescription: Swift.Sendable {
         /// Details of an Amazon MSK Cluster.
         public var amazonMskCluster: KafkaClientTypes.AmazonMskCluster?
         /// The alias of the Kafka cluster. Used to prefix names of replicated topics.
@@ -1891,12 +1893,12 @@ extension KafkaClientTypes {
             self.vpcConfig = vpcConfig
         }
     }
-
 }
 
 extension KafkaClientTypes {
+
     /// Summarized information about Kafka Cluster used as source / target for replication.
-    public struct KafkaClusterSummary {
+    public struct KafkaClusterSummary: Swift.Sendable {
         /// Details of an Amazon MSK Cluster.
         public var amazonMskCluster: KafkaClientTypes.AmazonMskCluster?
         /// The alias of the Kafka cluster. Used to prefix names of replicated topics.
@@ -1911,12 +1913,11 @@ extension KafkaClientTypes {
             self.kafkaClusterAlias = kafkaClusterAlias
         }
     }
-
 }
 
 extension KafkaClientTypes {
 
-    public enum KafkaVersionStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum KafkaVersionStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case active
         case deprecated
         case sdkUnknown(Swift.String)
@@ -1944,7 +1945,8 @@ extension KafkaClientTypes {
 }
 
 extension KafkaClientTypes {
-    public struct KafkaVersion {
+
+    public struct KafkaVersion: Swift.Sendable {
         public var status: KafkaClientTypes.KafkaVersionStatus?
         public var version: Swift.String?
 
@@ -1957,12 +1959,12 @@ extension KafkaClientTypes {
             self.version = version
         }
     }
-
 }
 
 extension KafkaClientTypes {
+
     /// BrokerNodeInfo
-    public struct BrokerNodeInfo {
+    public struct BrokerNodeInfo: Swift.Sendable {
         /// The attached elastic network interface of the broker.
         public var attachedENIId: Swift.String?
         /// The ID of the broker.
@@ -1993,12 +1995,12 @@ extension KafkaClientTypes {
             self.endpoints = endpoints
         }
     }
-
 }
 
 extension KafkaClientTypes {
+
     /// Controller node information.
-    public struct ControllerNodeInfo {
+    public struct ControllerNodeInfo: Swift.Sendable {
         /// Endpoints for accessing the Controller.
         public var endpoints: [Swift.String]?
 
@@ -2009,13 +2011,12 @@ extension KafkaClientTypes {
             self.endpoints = endpoints
         }
     }
-
 }
 
 extension KafkaClientTypes {
 
     /// The broker or Zookeeper node.
-    public enum NodeType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum NodeType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case broker
         case sdkUnknown(Swift.String)
 
@@ -2040,8 +2041,9 @@ extension KafkaClientTypes {
 }
 
 extension KafkaClientTypes {
+
     /// Zookeeper node information.
-    public struct ZookeeperNodeInfo {
+    public struct ZookeeperNodeInfo: Swift.Sendable {
         /// The attached elastic network interface of the broker.
         public var attachedENIId: Swift.String?
         /// The virtual private cloud (VPC) IP address of the client.
@@ -2068,12 +2070,12 @@ extension KafkaClientTypes {
             self.zookeeperVersion = zookeeperVersion
         }
     }
-
 }
 
 extension KafkaClientTypes {
+
     /// The node information object.
-    public struct NodeInfo {
+    public struct NodeInfo: Swift.Sendable {
         /// The start time.
         public var addedToClusterTime: Swift.String?
         /// The broker node info.
@@ -2108,12 +2110,12 @@ extension KafkaClientTypes {
             self.zookeeperNodeInfo = zookeeperNodeInfo
         }
     }
-
 }
 
 extension KafkaClientTypes {
+
     /// Details about consumer group replication.
-    public struct ConsumerGroupReplication {
+    public struct ConsumerGroupReplication: Swift.Sendable {
         /// List of regular expression patterns indicating the consumer groups that should not be replicated.
         public var consumerGroupsToExclude: [Swift.String]?
         /// List of regular expression patterns indicating the consumer groups to copy.
@@ -2137,13 +2139,12 @@ extension KafkaClientTypes {
             self.synchroniseConsumerGroupOffsets = synchroniseConsumerGroupOffsets
         }
     }
-
 }
 
 extension KafkaClientTypes {
 
     /// The type of compression to use producing records to the target cluster.
-    public enum TargetCompressionType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum TargetCompressionType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case gzip
         case lz4
         case `none`
@@ -2182,7 +2183,7 @@ extension KafkaClientTypes {
 extension KafkaClientTypes {
 
     /// The type of replication starting position.
-    public enum ReplicationStartingPositionType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ReplicationStartingPositionType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case earliest
         case latest
         case sdkUnknown(Swift.String)
@@ -2210,8 +2211,9 @@ extension KafkaClientTypes {
 }
 
 extension KafkaClientTypes {
+
     /// Configuration for specifying the position in the topics to start replicating from.
-    public struct ReplicationStartingPosition {
+    public struct ReplicationStartingPosition: Swift.Sendable {
         /// The type of replication starting position.
         public var type: KafkaClientTypes.ReplicationStartingPositionType?
 
@@ -2222,13 +2224,12 @@ extension KafkaClientTypes {
             self.type = type
         }
     }
-
 }
 
 extension KafkaClientTypes {
 
     /// The type of replicated topic name.
-    public enum ReplicationTopicNameConfigurationType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ReplicationTopicNameConfigurationType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case identical
         case prefixedWithSourceClusterAlias
         case sdkUnknown(Swift.String)
@@ -2256,8 +2257,9 @@ extension KafkaClientTypes {
 }
 
 extension KafkaClientTypes {
+
     /// Configuration for specifying replicated topic names should be the same as their corresponding upstream topics or prefixed with source cluster alias.
-    public struct ReplicationTopicNameConfiguration {
+    public struct ReplicationTopicNameConfiguration: Swift.Sendable {
         /// The type of replicated topic name.
         public var type: KafkaClientTypes.ReplicationTopicNameConfigurationType?
 
@@ -2268,12 +2270,12 @@ extension KafkaClientTypes {
             self.type = type
         }
     }
-
 }
 
 extension KafkaClientTypes {
+
     /// Details about topic replication.
-    public struct TopicReplication {
+    public struct TopicReplication: Swift.Sendable {
         /// Whether to periodically configure remote topic ACLs to match their corresponding upstream topics.
         public var copyAccessControlListsForTopics: Swift.Bool?
         /// Whether to periodically configure remote topics to match their corresponding upstream topics.
@@ -2309,12 +2311,12 @@ extension KafkaClientTypes {
             self.topicsToReplicate = topicsToReplicate
         }
     }
-
 }
 
 extension KafkaClientTypes {
+
     /// Specifies configuration for replication between a source and target Kafka cluster.
-    public struct ReplicationInfo {
+    public struct ReplicationInfo: Swift.Sendable {
         /// Configuration relating to consumer group replication.
         /// This member is required.
         public var consumerGroupReplication: KafkaClientTypes.ConsumerGroupReplication?
@@ -2346,12 +2348,12 @@ extension KafkaClientTypes {
             self.topicReplication = topicReplication
         }
     }
-
 }
 
 extension KafkaClientTypes {
+
     /// Specifies configuration for replication between a source and target Kafka cluster (sourceKafkaClusterAlias -> targetKafkaClusterAlias)
-    public struct ReplicationInfoDescription {
+    public struct ReplicationInfoDescription: Swift.Sendable {
         /// Configuration relating to consumer group replication.
         public var consumerGroupReplication: KafkaClientTypes.ConsumerGroupReplication?
         /// The alias of the source Kafka cluster.
@@ -2378,12 +2380,12 @@ extension KafkaClientTypes {
             self.topicReplication = topicReplication
         }
     }
-
 }
 
 extension KafkaClientTypes {
+
     /// Summarized information of replication between clusters.
-    public struct ReplicationInfoSummary {
+    public struct ReplicationInfoSummary: Swift.Sendable {
         /// The alias of the source Kafka cluster.
         public var sourceKafkaClusterAlias: Swift.String?
         /// The alias of the target Kafka cluster.
@@ -2398,13 +2400,12 @@ extension KafkaClientTypes {
             self.targetKafkaClusterAlias = targetKafkaClusterAlias
         }
     }
-
 }
 
 extension KafkaClientTypes {
 
     /// The state of a replicator.
-    public enum ReplicatorState: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ReplicatorState: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case creating
         case deleting
         case failed
@@ -2441,8 +2442,9 @@ extension KafkaClientTypes {
 }
 
 extension KafkaClientTypes {
+
     /// Information about a replicator.
-    public struct ReplicatorSummary {
+    public struct ReplicatorSummary: Swift.Sendable {
         /// The time the replicator was created.
         public var creationTime: Foundation.Date?
         /// The current version of the replicator.
@@ -2485,12 +2487,12 @@ extension KafkaClientTypes {
             self.replicatorState = replicatorState
         }
     }
-
 }
 
 extension KafkaClientTypes {
+
     /// Error info for scram secret associate/disassociate failure.
-    public struct UnprocessedScramSecret {
+    public struct UnprocessedScramSecret: Swift.Sendable {
         /// Error code for associate/disassociate failure.
         public var errorCode: Swift.String?
         /// Error message for associate/disassociate failure.
@@ -2509,12 +2511,12 @@ extension KafkaClientTypes {
             self.secretArn = secretArn
         }
     }
-
 }
 
 extension KafkaClientTypes {
+
     /// The VPC connection object.
-    public struct VpcConnection {
+    public struct VpcConnection: Swift.Sendable {
         /// Information about the auth scheme of Vpc Connection.
         public var authentication: Swift.String?
         /// Creation time of the Vpc Connection.
@@ -2547,7 +2549,6 @@ extension KafkaClientTypes {
             self.vpcId = vpcId
         }
     }
-
 }
 
 /// Returns information about an error.
@@ -2754,7 +2755,7 @@ public struct UnauthorizedException: ClientRuntime.ModeledError, AWSClientRuntim
 }
 
 /// Associates sasl scram secrets to cluster.
-public struct BatchAssociateScramSecretInput {
+public struct BatchAssociateScramSecretInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the cluster to be updated.
     /// This member is required.
     public var clusterArn: Swift.String?
@@ -2772,7 +2773,7 @@ public struct BatchAssociateScramSecretInput {
     }
 }
 
-public struct BatchAssociateScramSecretOutput {
+public struct BatchAssociateScramSecretOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the cluster.
     public var clusterArn: Swift.String?
     /// List of errors when associating secrets to cluster.
@@ -2789,7 +2790,7 @@ public struct BatchAssociateScramSecretOutput {
 }
 
 /// Disassociates sasl scram secrets to cluster.
-public struct BatchDisassociateScramSecretInput {
+public struct BatchDisassociateScramSecretInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the cluster to be updated.
     /// This member is required.
     public var clusterArn: Swift.String?
@@ -2807,7 +2808,7 @@ public struct BatchDisassociateScramSecretInput {
     }
 }
 
-public struct BatchDisassociateScramSecretOutput {
+public struct BatchDisassociateScramSecretOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the cluster.
     public var clusterArn: Swift.String?
     /// List of errors when disassociating secrets to cluster.
@@ -2824,8 +2825,9 @@ public struct BatchDisassociateScramSecretOutput {
 }
 
 extension KafkaClientTypes {
+
     /// Returns information about a provisioned cluster operation.
-    public struct ClusterOperationV2Provisioned {
+    public struct ClusterOperationV2Provisioned: Swift.Sendable {
         /// Steps completed during the operation.
         public var operationSteps: [KafkaClientTypes.ClusterOperationStep]?
         /// Information about cluster attributes before a cluster is updated.
@@ -2848,12 +2850,12 @@ extension KafkaClientTypes {
             self.vpcConnectionInfo = vpcConnectionInfo
         }
     }
-
 }
 
 extension KafkaClientTypes {
+
     /// Description of the VPC connection.
-    public struct VpcConnectionInfoServerless {
+    public struct VpcConnectionInfoServerless: Swift.Sendable {
         /// The time when Amazon MSK creates the VPC Connnection.
         public var creationTime: Foundation.Date?
         /// The owner of the VPC Connection.
@@ -2876,12 +2878,12 @@ extension KafkaClientTypes {
             self.vpcConnectionArn = vpcConnectionArn
         }
     }
-
 }
 
 extension KafkaClientTypes {
+
     /// Returns information about a serverless cluster operation.
-    public struct ClusterOperationV2Serverless {
+    public struct ClusterOperationV2Serverless: Swift.Sendable {
         /// Description of the VPC connection for CreateVpcConnection and DeleteVpcConnection operations.
         public var vpcConnectionInfo: KafkaClientTypes.VpcConnectionInfoServerless?
 
@@ -2892,12 +2894,12 @@ extension KafkaClientTypes {
             self.vpcConnectionInfo = vpcConnectionInfo
         }
     }
-
 }
 
 extension KafkaClientTypes {
+
     /// Returns information about a cluster operation.
-    public struct ClusterOperationV2 {
+    public struct ClusterOperationV2: Swift.Sendable {
         /// ARN of the cluster.
         public var clusterArn: Swift.String?
         /// Type of the backend cluster.
@@ -2944,7 +2946,6 @@ extension KafkaClientTypes {
             self.startTime = startTime
         }
     }
-
 }
 
 /// Returns information about an error.
@@ -2977,8 +2978,9 @@ public struct ConflictException: ClientRuntime.ModeledError, AWSClientRuntime.AW
 }
 
 extension KafkaClientTypes {
+
     /// Details about consumer group replication.
-    public struct ConsumerGroupReplicationUpdate {
+    public struct ConsumerGroupReplicationUpdate: Swift.Sendable {
         /// List of regular expression patterns indicating the consumer groups that should not be replicated.
         /// This member is required.
         public var consumerGroupsToExclude: [Swift.String]?
@@ -3005,10 +3007,9 @@ extension KafkaClientTypes {
             self.synchroniseConsumerGroupOffsets = synchroniseConsumerGroupOffsets
         }
     }
-
 }
 
-public struct CreateClusterInput {
+public struct CreateClusterInput: Swift.Sendable {
     /// Information about the broker nodes in the cluster.
     /// This member is required.
     public var brokerNodeGroupInfo: KafkaClientTypes.BrokerNodeGroupInfo?
@@ -3067,7 +3068,7 @@ public struct CreateClusterInput {
     }
 }
 
-public struct CreateClusterOutput {
+public struct CreateClusterOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the cluster.
     public var clusterArn: Swift.String?
     /// The name of the MSK cluster.
@@ -3088,8 +3089,9 @@ public struct CreateClusterOutput {
 }
 
 extension KafkaClientTypes {
+
     /// Provisioned cluster request.
-    public struct ProvisionedRequest {
+    public struct ProvisionedRequest: Swift.Sendable {
         /// Information about the brokers.
         /// This member is required.
         public var brokerNodeGroupInfo: KafkaClientTypes.BrokerNodeGroupInfo?
@@ -3139,12 +3141,12 @@ extension KafkaClientTypes {
             self.storageMode = storageMode
         }
     }
-
 }
 
 extension KafkaClientTypes {
+
     /// Serverless cluster request.
-    public struct ServerlessRequest {
+    public struct ServerlessRequest: Swift.Sendable {
         /// Includes all client authentication information.
         public var clientAuthentication: KafkaClientTypes.ServerlessClientAuthentication?
         /// The configuration of the Amazon VPCs for the cluster.
@@ -3160,10 +3162,9 @@ extension KafkaClientTypes {
             self.vpcConfigs = vpcConfigs
         }
     }
-
 }
 
-public struct CreateClusterV2Input {
+public struct CreateClusterV2Input: Swift.Sendable {
     /// The name of the cluster.
     /// This member is required.
     public var clusterName: Swift.String?
@@ -3188,7 +3189,7 @@ public struct CreateClusterV2Input {
     }
 }
 
-public struct CreateClusterV2Output {
+public struct CreateClusterV2Output: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the cluster.
     public var clusterArn: Swift.String?
     /// The name of the MSK cluster.
@@ -3212,7 +3213,7 @@ public struct CreateClusterV2Output {
     }
 }
 
-public struct CreateConfigurationInput {
+public struct CreateConfigurationInput: Swift.Sendable {
     /// The description of the configuration.
     public var description: Swift.String?
     /// The versions of Apache Kafka with which you can use this MSK configuration.
@@ -3238,7 +3239,7 @@ public struct CreateConfigurationInput {
     }
 }
 
-public struct CreateConfigurationOutput {
+public struct CreateConfigurationOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the configuration.
     public var arn: Swift.String?
     /// The time when the configuration was created.
@@ -3267,7 +3268,7 @@ public struct CreateConfigurationOutput {
 }
 
 /// Creates a replicator using the specified configuration.
-public struct CreateReplicatorInput {
+public struct CreateReplicatorInput: Swift.Sendable {
     /// A summary description of the replicator.
     public var description: Swift.String?
     /// Kafka Clusters to use in setting up sources / targets for replication.
@@ -3303,7 +3304,7 @@ public struct CreateReplicatorInput {
     }
 }
 
-public struct CreateReplicatorOutput {
+public struct CreateReplicatorOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the replicator.
     public var replicatorArn: Swift.String?
     /// Name of the replicator provided by the customer.
@@ -3323,7 +3324,7 @@ public struct CreateReplicatorOutput {
     }
 }
 
-public struct CreateVpcConnectionInput {
+public struct CreateVpcConnectionInput: Swift.Sendable {
     /// The authentication type of VPC connection.
     /// This member is required.
     public var authentication: Swift.String?
@@ -3360,7 +3361,7 @@ public struct CreateVpcConnectionInput {
     }
 }
 
-public struct CreateVpcConnectionOutput {
+public struct CreateVpcConnectionOutput: Swift.Sendable {
     /// The authentication type of VPC connection.
     public var authentication: Swift.String?
     /// The list of client subnets.
@@ -3400,7 +3401,7 @@ public struct CreateVpcConnectionOutput {
     }
 }
 
-public struct DeleteClusterInput {
+public struct DeleteClusterInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) that uniquely identifies the cluster.
     /// This member is required.
     public var clusterArn: Swift.String?
@@ -3417,7 +3418,7 @@ public struct DeleteClusterInput {
     }
 }
 
-public struct DeleteClusterOutput {
+public struct DeleteClusterOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the cluster.
     public var clusterArn: Swift.String?
     /// The state of the cluster. The possible states are ACTIVE, CREATING, DELETING, FAILED, HEALING, MAINTENANCE, REBOOTING_BROKER, and UPDATING.
@@ -3433,7 +3434,7 @@ public struct DeleteClusterOutput {
     }
 }
 
-public struct DeleteClusterPolicyInput {
+public struct DeleteClusterPolicyInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the cluster.
     /// This member is required.
     public var clusterArn: Swift.String?
@@ -3446,12 +3447,12 @@ public struct DeleteClusterPolicyInput {
     }
 }
 
-public struct DeleteClusterPolicyOutput {
+public struct DeleteClusterPolicyOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteConfigurationInput {
+public struct DeleteConfigurationInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) that uniquely identifies an MSK configuration.
     /// This member is required.
     public var arn: Swift.String?
@@ -3464,7 +3465,7 @@ public struct DeleteConfigurationInput {
     }
 }
 
-public struct DeleteConfigurationOutput {
+public struct DeleteConfigurationOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) that uniquely identifies an MSK configuration.
     public var arn: Swift.String?
     /// The state of the configuration. The possible states are ACTIVE, DELETING, and DELETE_FAILED.
@@ -3480,7 +3481,7 @@ public struct DeleteConfigurationOutput {
     }
 }
 
-public struct DeleteReplicatorInput {
+public struct DeleteReplicatorInput: Swift.Sendable {
     /// The current version of the replicator.
     public var currentVersion: Swift.String?
     /// The Amazon Resource Name (ARN) of the replicator to be deleted.
@@ -3497,7 +3498,7 @@ public struct DeleteReplicatorInput {
     }
 }
 
-public struct DeleteReplicatorOutput {
+public struct DeleteReplicatorOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the replicator.
     public var replicatorArn: Swift.String?
     /// The state of the replicator.
@@ -3513,7 +3514,7 @@ public struct DeleteReplicatorOutput {
     }
 }
 
-public struct DeleteVpcConnectionInput {
+public struct DeleteVpcConnectionInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) that uniquely identifies an MSK VPC connection.
     /// This member is required.
     public var arn: Swift.String?
@@ -3526,7 +3527,7 @@ public struct DeleteVpcConnectionInput {
     }
 }
 
-public struct DeleteVpcConnectionOutput {
+public struct DeleteVpcConnectionOutput: Swift.Sendable {
     /// The state of the VPC connection.
     public var state: KafkaClientTypes.VpcConnectionState?
     /// The Amazon Resource Name (ARN) that uniquely identifies an MSK VPC connection.
@@ -3542,7 +3543,7 @@ public struct DeleteVpcConnectionOutput {
     }
 }
 
-public struct DescribeClusterInput {
+public struct DescribeClusterInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) that uniquely identifies the cluster.
     /// This member is required.
     public var clusterArn: Swift.String?
@@ -3555,7 +3556,7 @@ public struct DescribeClusterInput {
     }
 }
 
-public struct DescribeClusterOutput {
+public struct DescribeClusterOutput: Swift.Sendable {
     /// The cluster information.
     public var clusterInfo: KafkaClientTypes.ClusterInfo?
 
@@ -3567,7 +3568,7 @@ public struct DescribeClusterOutput {
     }
 }
 
-public struct DescribeClusterOperationInput {
+public struct DescribeClusterOperationInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) that uniquely identifies the MSK cluster operation.
     /// This member is required.
     public var clusterOperationArn: Swift.String?
@@ -3580,7 +3581,7 @@ public struct DescribeClusterOperationInput {
     }
 }
 
-public struct DescribeClusterOperationOutput {
+public struct DescribeClusterOperationOutput: Swift.Sendable {
     /// Cluster operation information
     public var clusterOperationInfo: KafkaClientTypes.ClusterOperationInfo?
 
@@ -3592,7 +3593,7 @@ public struct DescribeClusterOperationOutput {
     }
 }
 
-public struct DescribeClusterOperationV2Input {
+public struct DescribeClusterOperationV2Input: Swift.Sendable {
     /// ARN of the cluster operation to describe.
     /// This member is required.
     public var clusterOperationArn: Swift.String?
@@ -3605,7 +3606,7 @@ public struct DescribeClusterOperationV2Input {
     }
 }
 
-public struct DescribeClusterOperationV2Output {
+public struct DescribeClusterOperationV2Output: Swift.Sendable {
     /// Cluster operation information
     public var clusterOperationInfo: KafkaClientTypes.ClusterOperationV2?
 
@@ -3617,7 +3618,7 @@ public struct DescribeClusterOperationV2Output {
     }
 }
 
-public struct DescribeClusterV2Input {
+public struct DescribeClusterV2Input: Swift.Sendable {
     /// The Amazon Resource Name (ARN) that uniquely identifies the cluster.
     /// This member is required.
     public var clusterArn: Swift.String?
@@ -3630,7 +3631,7 @@ public struct DescribeClusterV2Input {
     }
 }
 
-public struct DescribeClusterV2Output {
+public struct DescribeClusterV2Output: Swift.Sendable {
     /// The cluster information.
     public var clusterInfo: KafkaClientTypes.Cluster?
 
@@ -3642,7 +3643,7 @@ public struct DescribeClusterV2Output {
     }
 }
 
-public struct DescribeConfigurationInput {
+public struct DescribeConfigurationInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) that uniquely identifies an MSK configuration and all of its revisions.
     /// This member is required.
     public var arn: Swift.String?
@@ -3655,7 +3656,7 @@ public struct DescribeConfigurationInput {
     }
 }
 
-public struct DescribeConfigurationOutput {
+public struct DescribeConfigurationOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the configuration.
     public var arn: Swift.String?
     /// The time when the configuration was created.
@@ -3691,7 +3692,7 @@ public struct DescribeConfigurationOutput {
     }
 }
 
-public struct DescribeConfigurationRevisionInput {
+public struct DescribeConfigurationRevisionInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) that uniquely identifies an MSK configuration and all of its revisions.
     /// This member is required.
     public var arn: Swift.String?
@@ -3709,7 +3710,7 @@ public struct DescribeConfigurationRevisionInput {
     }
 }
 
-public struct DescribeConfigurationRevisionOutput {
+public struct DescribeConfigurationRevisionOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the configuration.
     public var arn: Swift.String?
     /// The time when the configuration was created.
@@ -3737,7 +3738,7 @@ public struct DescribeConfigurationRevisionOutput {
     }
 }
 
-public struct DescribeReplicatorInput {
+public struct DescribeReplicatorInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the replicator to be described.
     /// This member is required.
     public var replicatorArn: Swift.String?
@@ -3751,8 +3752,9 @@ public struct DescribeReplicatorInput {
 }
 
 extension KafkaClientTypes {
+
     /// Details about the state of a replicator
-    public struct ReplicationStateInfo {
+    public struct ReplicationStateInfo: Swift.Sendable {
         /// Code that describes the current state of the replicator.
         public var code: Swift.String?
         /// Message that describes the state of the replicator.
@@ -3767,10 +3769,9 @@ extension KafkaClientTypes {
             self.message = message
         }
     }
-
 }
 
-public struct DescribeReplicatorOutput {
+public struct DescribeReplicatorOutput: Swift.Sendable {
     /// The time when the replicator was created.
     public var creationTime: Foundation.Date?
     /// The current version number of the replicator.
@@ -3830,7 +3831,7 @@ public struct DescribeReplicatorOutput {
     }
 }
 
-public struct DescribeVpcConnectionInput {
+public struct DescribeVpcConnectionInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) that uniquely identifies a MSK VPC connection.
     /// This member is required.
     public var arn: Swift.String?
@@ -3843,7 +3844,7 @@ public struct DescribeVpcConnectionInput {
     }
 }
 
-public struct DescribeVpcConnectionOutput {
+public struct DescribeVpcConnectionOutput: Swift.Sendable {
     /// The authentication type of VPC connection.
     public var authentication: Swift.String?
     /// The creation time of the VPC connection.
@@ -3887,7 +3888,7 @@ public struct DescribeVpcConnectionOutput {
     }
 }
 
-public struct GetBootstrapBrokersInput {
+public struct GetBootstrapBrokersInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) that uniquely identifies the cluster.
     /// This member is required.
     public var clusterArn: Swift.String?
@@ -3900,7 +3901,7 @@ public struct GetBootstrapBrokersInput {
     }
 }
 
-public struct GetBootstrapBrokersOutput {
+public struct GetBootstrapBrokersOutput: Swift.Sendable {
     /// A string containing one or more hostname:port pairs.
     public var bootstrapBrokerString: Swift.String?
     /// A string that contains one or more DNS names (or IP addresses) and SASL IAM port pairs.
@@ -3948,7 +3949,7 @@ public struct GetBootstrapBrokersOutput {
     }
 }
 
-public struct GetClusterPolicyInput {
+public struct GetClusterPolicyInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the cluster.
     /// This member is required.
     public var clusterArn: Swift.String?
@@ -3961,7 +3962,7 @@ public struct GetClusterPolicyInput {
     }
 }
 
-public struct GetClusterPolicyOutput {
+public struct GetClusterPolicyOutput: Swift.Sendable {
     /// The version of cluster policy.
     public var currentVersion: Swift.String?
     /// The cluster policy.
@@ -3977,7 +3978,7 @@ public struct GetClusterPolicyOutput {
     }
 }
 
-public struct GetCompatibleKafkaVersionsInput {
+public struct GetCompatibleKafkaVersionsInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the cluster check.
     public var clusterArn: Swift.String?
 
@@ -3989,7 +3990,7 @@ public struct GetCompatibleKafkaVersionsInput {
     }
 }
 
-public struct GetCompatibleKafkaVersionsOutput {
+public struct GetCompatibleKafkaVersionsOutput: Swift.Sendable {
     /// A list of CompatibleKafkaVersion objects.
     public var compatibleKafkaVersions: [KafkaClientTypes.CompatibleKafkaVersion]?
 
@@ -4001,7 +4002,7 @@ public struct GetCompatibleKafkaVersionsOutput {
     }
 }
 
-public struct ListClientVpcConnectionsInput {
+public struct ListClientVpcConnectionsInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the cluster.
     /// This member is required.
     public var clusterArn: Swift.String?
@@ -4022,7 +4023,7 @@ public struct ListClientVpcConnectionsInput {
     }
 }
 
-public struct ListClientVpcConnectionsOutput {
+public struct ListClientVpcConnectionsOutput: Swift.Sendable {
     /// List of client VPC connections.
     public var clientVpcConnections: [KafkaClientTypes.ClientVpcConnection]?
     /// The paginated results marker. When the result of a ListClientVpcConnections operation is truncated, the call returns NextToken in the response. To get another batch of configurations, provide this token in your next request.
@@ -4038,7 +4039,7 @@ public struct ListClientVpcConnectionsOutput {
     }
 }
 
-public struct ListClusterOperationsInput {
+public struct ListClusterOperationsInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) that uniquely identifies the cluster.
     /// This member is required.
     public var clusterArn: Swift.String?
@@ -4059,7 +4060,7 @@ public struct ListClusterOperationsInput {
     }
 }
 
-public struct ListClusterOperationsOutput {
+public struct ListClusterOperationsOutput: Swift.Sendable {
     /// An array of cluster operation information objects.
     public var clusterOperationInfoList: [KafkaClientTypes.ClusterOperationInfo]?
     /// If the response of ListClusterOperations is truncated, it returns a NextToken in the response. This Nexttoken should be sent in the subsequent request to ListClusterOperations.
@@ -4075,7 +4076,7 @@ public struct ListClusterOperationsOutput {
     }
 }
 
-public struct ListClusterOperationsV2Input {
+public struct ListClusterOperationsV2Input: Swift.Sendable {
     /// The arn of the cluster whose operations are being requested.
     /// This member is required.
     public var clusterArn: Swift.String?
@@ -4096,7 +4097,7 @@ public struct ListClusterOperationsV2Input {
     }
 }
 
-public struct ListClusterOperationsV2Output {
+public struct ListClusterOperationsV2Output: Swift.Sendable {
     /// An array of cluster operation information objects.
     public var clusterOperationInfoList: [KafkaClientTypes.ClusterOperationV2Summary]?
     /// If the response of ListClusterOperationsV2 is truncated, it returns a NextToken in the response. This NextToken should be sent in the subsequent request to ListClusterOperationsV2.
@@ -4112,7 +4113,7 @@ public struct ListClusterOperationsV2Output {
     }
 }
 
-public struct ListClustersInput {
+public struct ListClustersInput: Swift.Sendable {
     /// Specify a prefix of the name of the clusters that you want to list. The service lists all the clusters whose names start with this prefix.
     public var clusterNameFilter: Swift.String?
     /// The maximum number of results to return in the response. If there are more results, the response includes a NextToken parameter.
@@ -4132,7 +4133,7 @@ public struct ListClustersInput {
     }
 }
 
-public struct ListClustersOutput {
+public struct ListClustersOutput: Swift.Sendable {
     /// Information on each of the MSK clusters in the response.
     public var clusterInfoList: [KafkaClientTypes.ClusterInfo]?
     /// The paginated results marker. When the result of a ListClusters operation is truncated, the call returns NextToken in the response. To get another batch of clusters, provide this token in your next request.
@@ -4148,7 +4149,7 @@ public struct ListClustersOutput {
     }
 }
 
-public struct ListClustersV2Input {
+public struct ListClustersV2Input: Swift.Sendable {
     /// Specify a prefix of the names of the clusters that you want to list. The service lists all the clusters whose names start with this prefix.
     public var clusterNameFilter: Swift.String?
     /// Specify either PROVISIONED or SERVERLESS.
@@ -4172,7 +4173,7 @@ public struct ListClustersV2Input {
     }
 }
 
-public struct ListClustersV2Output {
+public struct ListClustersV2Output: Swift.Sendable {
     /// Information on each of the MSK clusters in the response.
     public var clusterInfoList: [KafkaClientTypes.Cluster]?
     /// The paginated results marker. When the result of a ListClusters operation is truncated, the call returns NextToken in the response. To get another batch of clusters, provide this token in your next request.
@@ -4188,7 +4189,7 @@ public struct ListClustersV2Output {
     }
 }
 
-public struct ListConfigurationRevisionsInput {
+public struct ListConfigurationRevisionsInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) that uniquely identifies an MSK configuration and all of its revisions.
     /// This member is required.
     public var arn: Swift.String?
@@ -4209,7 +4210,7 @@ public struct ListConfigurationRevisionsInput {
     }
 }
 
-public struct ListConfigurationRevisionsOutput {
+public struct ListConfigurationRevisionsOutput: Swift.Sendable {
     /// Paginated results marker.
     public var nextToken: Swift.String?
     /// List of ConfigurationRevision objects.
@@ -4225,7 +4226,7 @@ public struct ListConfigurationRevisionsOutput {
     }
 }
 
-public struct ListConfigurationsInput {
+public struct ListConfigurationsInput: Swift.Sendable {
     /// The maximum number of results to return in the response. If there are more results, the response includes a NextToken parameter.
     public var maxResults: Swift.Int?
     /// The paginated results marker. When the result of the operation is truncated, the call returns NextToken in the response. To get the next batch, provide this token in your next request.
@@ -4241,7 +4242,7 @@ public struct ListConfigurationsInput {
     }
 }
 
-public struct ListConfigurationsOutput {
+public struct ListConfigurationsOutput: Swift.Sendable {
     /// An array of MSK configurations.
     public var configurations: [KafkaClientTypes.Configuration]?
     /// The paginated results marker. When the result of a ListConfigurations operation is truncated, the call returns NextToken in the response. To get another batch of configurations, provide this token in your next request.
@@ -4257,7 +4258,7 @@ public struct ListConfigurationsOutput {
     }
 }
 
-public struct ListKafkaVersionsInput {
+public struct ListKafkaVersionsInput: Swift.Sendable {
     /// The maximum number of results to return in the response. If there are more results, the response includes a NextToken parameter.
     public var maxResults: Swift.Int?
     /// The paginated results marker. When the result of the operation is truncated, the call returns NextToken in the response. To get the next batch, provide this token in your next request.
@@ -4273,7 +4274,7 @@ public struct ListKafkaVersionsInput {
     }
 }
 
-public struct ListKafkaVersionsOutput {
+public struct ListKafkaVersionsOutput: Swift.Sendable {
     public var kafkaVersions: [KafkaClientTypes.KafkaVersion]?
     public var nextToken: Swift.String?
 
@@ -4287,7 +4288,7 @@ public struct ListKafkaVersionsOutput {
     }
 }
 
-public struct ListNodesInput {
+public struct ListNodesInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) that uniquely identifies the cluster.
     /// This member is required.
     public var clusterArn: Swift.String?
@@ -4308,7 +4309,7 @@ public struct ListNodesInput {
     }
 }
 
-public struct ListNodesOutput {
+public struct ListNodesOutput: Swift.Sendable {
     /// The paginated results marker. When the result of a ListNodes operation is truncated, the call returns NextToken in the response. To get another batch of nodes, provide this token in your next request.
     public var nextToken: Swift.String?
     /// List containing a NodeInfo object.
@@ -4324,7 +4325,7 @@ public struct ListNodesOutput {
     }
 }
 
-public struct ListReplicatorsInput {
+public struct ListReplicatorsInput: Swift.Sendable {
     /// The maximum number of results to return in the response. If there are more results, the response includes a NextToken parameter.
     public var maxResults: Swift.Int?
     /// If the response of ListReplicators is truncated, it returns a NextToken in the response. This NextToken should be sent in the subsequent request to ListReplicators.
@@ -4344,7 +4345,7 @@ public struct ListReplicatorsInput {
     }
 }
 
-public struct ListReplicatorsOutput {
+public struct ListReplicatorsOutput: Swift.Sendable {
     /// If the response of ListReplicators is truncated, it returns a NextToken in the response. This NextToken should be sent in the subsequent request to ListReplicators.
     public var nextToken: Swift.String?
     /// List containing information of each of the replicators in the account.
@@ -4360,7 +4361,7 @@ public struct ListReplicatorsOutput {
     }
 }
 
-public struct ListScramSecretsInput {
+public struct ListScramSecretsInput: Swift.Sendable {
     /// The arn of the cluster.
     /// This member is required.
     public var clusterArn: Swift.String?
@@ -4381,7 +4382,7 @@ public struct ListScramSecretsInput {
     }
 }
 
-public struct ListScramSecretsOutput {
+public struct ListScramSecretsOutput: Swift.Sendable {
     /// Paginated results marker.
     public var nextToken: Swift.String?
     /// The list of scram secrets associated with the cluster.
@@ -4397,7 +4398,7 @@ public struct ListScramSecretsOutput {
     }
 }
 
-public struct ListTagsForResourceInput {
+public struct ListTagsForResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) that uniquely identifies the resource that's associated with the tags.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -4410,7 +4411,7 @@ public struct ListTagsForResourceInput {
     }
 }
 
-public struct ListTagsForResourceOutput {
+public struct ListTagsForResourceOutput: Swift.Sendable {
     /// The key-value pair for the resource tag.
     public var tags: [Swift.String: Swift.String]?
 
@@ -4422,7 +4423,7 @@ public struct ListTagsForResourceOutput {
     }
 }
 
-public struct ListVpcConnectionsInput {
+public struct ListVpcConnectionsInput: Swift.Sendable {
     /// The maximum number of results to return in the response. If there are more results, the response includes a NextToken parameter.
     public var maxResults: Swift.Int?
     /// The paginated results marker. When the result of the operation is truncated, the call returns NextToken in the response. To get the next batch, provide this token in your next request.
@@ -4438,7 +4439,7 @@ public struct ListVpcConnectionsInput {
     }
 }
 
-public struct ListVpcConnectionsOutput {
+public struct ListVpcConnectionsOutput: Swift.Sendable {
     /// The paginated results marker. When the result of a ListClientVpcConnections operation is truncated, the call returns NextToken in the response. To get another batch of configurations, provide this token in your next request.
     public var nextToken: Swift.String?
     /// List of VPC connections.
@@ -4454,7 +4455,7 @@ public struct ListVpcConnectionsOutput {
     }
 }
 
-public struct PutClusterPolicyInput {
+public struct PutClusterPolicyInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the cluster.
     /// This member is required.
     public var clusterArn: Swift.String?
@@ -4476,7 +4477,7 @@ public struct PutClusterPolicyInput {
     }
 }
 
-public struct PutClusterPolicyOutput {
+public struct PutClusterPolicyOutput: Swift.Sendable {
     /// The policy version.
     public var currentVersion: Swift.String?
 
@@ -4489,7 +4490,7 @@ public struct PutClusterPolicyOutput {
 }
 
 /// Reboots a node.
-public struct RebootBrokerInput {
+public struct RebootBrokerInput: Swift.Sendable {
     /// The list of broker IDs to be rebooted. The reboot-broker operation supports rebooting one broker at a time.
     /// This member is required.
     public var brokerIds: [Swift.String]?
@@ -4507,7 +4508,7 @@ public struct RebootBrokerInput {
     }
 }
 
-public struct RebootBrokerOutput {
+public struct RebootBrokerOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the cluster.
     public var clusterArn: Swift.String?
     /// The Amazon Resource Name (ARN) of the cluster operation.
@@ -4523,7 +4524,7 @@ public struct RebootBrokerOutput {
     }
 }
 
-public struct RejectClientVpcConnectionInput {
+public struct RejectClientVpcConnectionInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the cluster.
     /// This member is required.
     public var clusterArn: Swift.String?
@@ -4541,12 +4542,12 @@ public struct RejectClientVpcConnectionInput {
     }
 }
 
-public struct RejectClientVpcConnectionOutput {
+public struct RejectClientVpcConnectionOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct TagResourceInput {
+public struct TagResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) that uniquely identifies the resource that's associated with the tags.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -4564,7 +4565,7 @@ public struct TagResourceInput {
     }
 }
 
-public struct UntagResourceInput {
+public struct UntagResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) that uniquely identifies the resource that's associated with the tags.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -4590,7 +4591,7 @@ public struct UntagResourceInput {
     }
 }
 
-public struct UpdateBrokerCountInput {
+public struct UpdateBrokerCountInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) that uniquely identifies the cluster.
     /// This member is required.
     public var clusterArn: Swift.String?
@@ -4613,7 +4614,7 @@ public struct UpdateBrokerCountInput {
     }
 }
 
-public struct UpdateBrokerCountOutput {
+public struct UpdateBrokerCountOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the cluster.
     public var clusterArn: Swift.String?
     /// The Amazon Resource Name (ARN) of the cluster operation.
@@ -4629,7 +4630,7 @@ public struct UpdateBrokerCountOutput {
     }
 }
 
-public struct UpdateBrokerStorageInput {
+public struct UpdateBrokerStorageInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) that uniquely identifies the cluster.
     /// This member is required.
     public var clusterArn: Swift.String?
@@ -4652,7 +4653,7 @@ public struct UpdateBrokerStorageInput {
     }
 }
 
-public struct UpdateBrokerStorageOutput {
+public struct UpdateBrokerStorageOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the cluster.
     public var clusterArn: Swift.String?
     /// The Amazon Resource Name (ARN) of the cluster operation.
@@ -4668,7 +4669,7 @@ public struct UpdateBrokerStorageOutput {
     }
 }
 
-public struct UpdateBrokerTypeInput {
+public struct UpdateBrokerTypeInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) that uniquely identifies the cluster.
     /// This member is required.
     public var clusterArn: Swift.String?
@@ -4691,7 +4692,7 @@ public struct UpdateBrokerTypeInput {
     }
 }
 
-public struct UpdateBrokerTypeOutput {
+public struct UpdateBrokerTypeOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the cluster.
     public var clusterArn: Swift.String?
     /// The Amazon Resource Name (ARN) of the cluster operation.
@@ -4707,7 +4708,7 @@ public struct UpdateBrokerTypeOutput {
     }
 }
 
-public struct UpdateClusterConfigurationInput {
+public struct UpdateClusterConfigurationInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) that uniquely identifies the cluster.
     /// This member is required.
     public var clusterArn: Swift.String?
@@ -4730,7 +4731,7 @@ public struct UpdateClusterConfigurationInput {
     }
 }
 
-public struct UpdateClusterConfigurationOutput {
+public struct UpdateClusterConfigurationOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the cluster.
     public var clusterArn: Swift.String?
     /// The Amazon Resource Name (ARN) of the cluster operation.
@@ -4746,7 +4747,7 @@ public struct UpdateClusterConfigurationOutput {
     }
 }
 
-public struct UpdateClusterKafkaVersionInput {
+public struct UpdateClusterKafkaVersionInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the cluster to be updated.
     /// This member is required.
     public var clusterArn: Swift.String?
@@ -4773,7 +4774,7 @@ public struct UpdateClusterKafkaVersionInput {
     }
 }
 
-public struct UpdateClusterKafkaVersionOutput {
+public struct UpdateClusterKafkaVersionOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the cluster.
     public var clusterArn: Swift.String?
     /// The Amazon Resource Name (ARN) of the cluster operation.
@@ -4789,7 +4790,7 @@ public struct UpdateClusterKafkaVersionOutput {
     }
 }
 
-public struct UpdateConfigurationInput {
+public struct UpdateConfigurationInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the configuration.
     /// This member is required.
     public var arn: Swift.String?
@@ -4811,7 +4812,7 @@ public struct UpdateConfigurationInput {
     }
 }
 
-public struct UpdateConfigurationOutput {
+public struct UpdateConfigurationOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the configuration.
     public var arn: Swift.String?
     /// Latest revision of the configuration.
@@ -4828,7 +4829,7 @@ public struct UpdateConfigurationOutput {
 }
 
 /// Request body for UpdateConnectivity.
-public struct UpdateConnectivityInput {
+public struct UpdateConnectivityInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the configuration.
     /// This member is required.
     public var clusterArn: Swift.String?
@@ -4851,7 +4852,7 @@ public struct UpdateConnectivityInput {
     }
 }
 
-public struct UpdateConnectivityOutput {
+public struct UpdateConnectivityOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the cluster.
     public var clusterArn: Swift.String?
     /// The Amazon Resource Name (ARN) of the cluster operation.
@@ -4868,7 +4869,7 @@ public struct UpdateConnectivityOutput {
 }
 
 /// Request body for UpdateMonitoring.
-public struct UpdateMonitoringInput {
+public struct UpdateMonitoringInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) that uniquely identifies the cluster.
     /// This member is required.
     public var clusterArn: Swift.String?
@@ -4897,7 +4898,7 @@ public struct UpdateMonitoringInput {
     }
 }
 
-public struct UpdateMonitoringOutput {
+public struct UpdateMonitoringOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the cluster.
     public var clusterArn: Swift.String?
     /// The Amazon Resource Name (ARN) of the cluster operation.
@@ -4914,8 +4915,9 @@ public struct UpdateMonitoringOutput {
 }
 
 extension KafkaClientTypes {
+
     /// Details for updating the topic replication of a replicator.
-    public struct TopicReplicationUpdate {
+    public struct TopicReplicationUpdate: Swift.Sendable {
         /// Whether to periodically configure remote topic ACLs to match their corresponding upstream topics.
         /// This member is required.
         public var copyAccessControlListsForTopics: Swift.Bool?
@@ -4947,11 +4949,10 @@ extension KafkaClientTypes {
             self.topicsToReplicate = topicsToReplicate
         }
     }
-
 }
 
 /// Update information relating to replication between a given source and target Kafka cluster.
-public struct UpdateReplicationInfoInput {
+public struct UpdateReplicationInfoInput: Swift.Sendable {
     /// Updated consumer group replication information.
     public var consumerGroupReplication: KafkaClientTypes.ConsumerGroupReplicationUpdate?
     /// Current replicator version.
@@ -4987,7 +4988,7 @@ public struct UpdateReplicationInfoInput {
     }
 }
 
-public struct UpdateReplicationInfoOutput {
+public struct UpdateReplicationInfoOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the replicator.
     public var replicatorArn: Swift.String?
     /// State of the replicator.
@@ -5003,7 +5004,7 @@ public struct UpdateReplicationInfoOutput {
     }
 }
 
-public struct UpdateSecurityInput {
+public struct UpdateSecurityInput: Swift.Sendable {
     /// Includes all client authentication related information.
     public var clientAuthentication: KafkaClientTypes.ClientAuthentication?
     /// The Amazon Resource Name (ARN) that uniquely identifies the cluster.
@@ -5029,7 +5030,7 @@ public struct UpdateSecurityInput {
     }
 }
 
-public struct UpdateSecurityOutput {
+public struct UpdateSecurityOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the cluster.
     public var clusterArn: Swift.String?
     /// The Amazon Resource Name (ARN) of the cluster operation.
@@ -5046,7 +5047,7 @@ public struct UpdateSecurityOutput {
 }
 
 /// Request object for UpdateStorage api. Its used to update the storage attributes for the cluster.
-public struct UpdateStorageInput {
+public struct UpdateStorageInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the cluster to be updated.
     /// This member is required.
     public var clusterArn: Swift.String?
@@ -5076,7 +5077,7 @@ public struct UpdateStorageInput {
     }
 }
 
-public struct UpdateStorageOutput {
+public struct UpdateStorageOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the cluster.
     public var clusterArn: Swift.String?
     /// The Amazon Resource Name (ARN) of the cluster operation.

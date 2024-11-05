@@ -1,0 +1,39 @@
+// MARK: - Static Content
+
+extension Target.Dependency {
+    // AWS runtime module
+    static var awsClientRuntime: Self { .product(name: "AWSClientRuntime", package: "aws-sdk-swift") }
+    // Smithy runtime module
+    static var clientRuntime: Self { .product(name: "ClientRuntime", package: "smithy-swift") }
+}
+
+let package = Package(
+    name: "SmokeTests",
+    platforms: [
+        .macOS(.v10_15)
+    ],
+        products: serviceNames.map(productForRunner(_:)),
+    dependencies: [
+        .package(path: "../../smithy-swift"),
+        .package(path: "../../aws-sdk-swift")
+    ],
+    targets: serviceNames.map(targetForRunner(_:))
+)
+
+// MARK: - Helper functions
+
+private func productForRunner(_ serviceName: String) -> Product {
+    .executable(name: "\(serviceName)SmokeTestRunner", targets: ["\(serviceName)SmokeTestRunner"])
+}
+
+private func targetForRunner(_ serviceName: String) -> Target {
+    .executableTarget(
+        name: "\(serviceName)SmokeTestRunner",
+        dependencies: [
+            .clientRuntime,
+            .awsClientRuntime,
+            .product(name: "\(serviceName)", package: "aws-sdk-swift")
+        ],
+        path: "\(serviceName)SmokeTestRunner"
+    )
+}

@@ -29,7 +29,7 @@ import protocol ClientRuntime.ModeledError
 
 extension PIClientTypes {
 
-    public enum AcceptLanguage: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AcceptLanguage: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case enUs
         case sdkUnknown(Swift.String)
 
@@ -54,8 +54,9 @@ extension PIClientTypes {
 }
 
 extension PIClientTypes {
+
     /// This data type helps to determine Performance Insights metric to render for the insight.
-    public struct PerformanceInsightsMetric {
+    public struct PerformanceInsightsMetric: Swift.Sendable {
         /// A dimension map that contains the dimensions for this partition.
         public var dimensions: [Swift.String: Swift.String]?
         /// The Performance Insights metric name.
@@ -78,12 +79,12 @@ extension PIClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension PIClientTypes {
+
     /// List of data objects which provide details about source metrics. This field can be used to determine the PI metric to render for the insight. This data type also includes static values for the metrics for the Insight that were calculated and included in text and annotations on the DB load chart.
-    public struct Data {
+    public struct Data: Swift.Sendable {
         /// This field determines the Performance Insights metric to render for the insight. The name field refers to a Performance Insights metric.
         public var performanceInsightsMetric: PIClientTypes.PerformanceInsightsMetric?
 
@@ -94,12 +95,11 @@ extension PIClientTypes {
             self.performanceInsightsMetric = performanceInsightsMetric
         }
     }
-
 }
 
 extension PIClientTypes {
 
-    public enum ContextType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ContextType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case causal
         case contextual
         case sdkUnknown(Swift.String)
@@ -127,8 +127,9 @@ extension PIClientTypes {
 }
 
 extension PIClientTypes {
+
     /// The list of recommendations for the insight.
-    public struct Recommendation {
+    public struct Recommendation: Swift.Sendable {
         /// The recommendation details to help resolve the performance issue. For example, Investigate the following SQLs that contributed to 100% of the total DBLoad during that time period: sql-id
         public var recommendationDescription: Swift.String?
         /// The unique identifier for the recommendation.
@@ -143,7 +144,6 @@ extension PIClientTypes {
             self.recommendationId = recommendationId
         }
     }
-
 }
 
 extension PIClientTypes.Recommendation: Swift.CustomDebugStringConvertible {
@@ -153,7 +153,7 @@ extension PIClientTypes.Recommendation: Swift.CustomDebugStringConvertible {
 
 extension PIClientTypes {
 
-    public enum Severity: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Severity: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case high
         case low
         case medium
@@ -185,7 +185,7 @@ extension PIClientTypes {
 
 extension PIClientTypes {
 
-    public enum ServiceType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ServiceType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case docdb
         case rds
         case sdkUnknown(Swift.String)
@@ -214,7 +214,7 @@ extension PIClientTypes {
 
 extension PIClientTypes {
 
-    public enum AnalysisStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AnalysisStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case failed
         case running
         case succeeded
@@ -245,8 +245,9 @@ extension PIClientTypes {
 }
 
 extension PIClientTypes {
+
     /// Metadata assigned to an Amazon RDS resource consisting of a key-value pair.
-    public struct Tag {
+    public struct Tag: Swift.Sendable {
         /// A key is the required name of the tag. The string value can be from 1 to 128 Unicode characters in length and can't be prefixed with aws: or rds:. The string can only contain only the set of Unicode letters, digits, white-space, '_', '.', ':', '/', '=', '+', '-', '@' (Java regex: "^([\\p{L}\\p{Z}\\p{N}_.:/=+\\-@]*)$").
         /// This member is required.
         public var key: Swift.String?
@@ -263,12 +264,12 @@ extension PIClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension PIClientTypes {
+
     /// Retrieves the details of the performance analysis report.
-    public struct AnalysisReportSummary {
+    public struct AnalysisReportSummary: Swift.Sendable {
         /// The name of the analysis report.
         public var analysisReportId: Swift.String?
         /// The time you created the analysis report.
@@ -299,12 +300,11 @@ extension PIClientTypes {
             self.tags = tags
         }
     }
-
 }
 
 extension PIClientTypes {
 
-    public enum FineGrainedAction: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum FineGrainedAction: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case describeDimensionKeys
         case getDimensionKeyDetails
         case getResourceMetrics
@@ -406,7 +406,7 @@ public struct NotAuthorizedException: ClientRuntime.ModeledError, AWSClientRunti
     }
 }
 
-public struct CreatePerformanceAnalysisReportInput {
+public struct CreatePerformanceAnalysisReportInput: Swift.Sendable {
     /// The end time defined for the analysis report.
     /// This member is required.
     public var endTime: Foundation.Date?
@@ -438,7 +438,7 @@ public struct CreatePerformanceAnalysisReportInput {
     }
 }
 
-public struct CreatePerformanceAnalysisReportOutput {
+public struct CreatePerformanceAnalysisReportOutput: Swift.Sendable {
     /// A unique identifier for the created analysis report.
     public var analysisReportId: Swift.String?
 
@@ -451,8 +451,9 @@ public struct CreatePerformanceAnalysisReportOutput {
 }
 
 extension PIClientTypes {
+
     /// A timestamp, and a single numerical value, which together represent a measurement at a particular point in time.
-    public struct DataPoint {
+    public struct DataPoint: Swift.Sendable {
         /// The time, in epoch format, associated with a particular Value.
         /// This member is required.
         public var timestamp: Foundation.Date?
@@ -469,10 +470,9 @@ extension PIClientTypes {
             self.value = value
         }
     }
-
 }
 
-public struct DeletePerformanceAnalysisReportInput {
+public struct DeletePerformanceAnalysisReportInput: Swift.Sendable {
     /// The unique identifier of the analysis report for deletion.
     /// This member is required.
     public var analysisReportId: Swift.String?
@@ -495,12 +495,13 @@ public struct DeletePerformanceAnalysisReportInput {
     }
 }
 
-public struct DeletePerformanceAnalysisReportOutput {
+public struct DeletePerformanceAnalysisReportOutput: Swift.Sendable {
 
     public init() { }
 }
 
 extension PIClientTypes {
+
     /// A logical grouping of Performance Insights metrics for a related subject area. For example, the db.sql dimension group consists of the following dimensions:
     ///
     /// * db.sql.id - The hash of a running SQL statement, generated by Performance Insights.
@@ -513,7 +514,7 @@ extension PIClientTypes {
     ///
     ///
     /// Each response element returns a maximum of 500 bytes. For larger elements, such as SQL statements, only the first 500 bytes are returned.
-    public struct DimensionGroup {
+    public struct DimensionGroup: Swift.Sendable {
         /// A list of specific dimensions from a dimension group. If this parameter is not present, then it signifies that all of the dimensions in the group were requested, or are present in the response. Valid values for elements in the Dimensions array are:
         ///
         /// * db.application.name - The name of the application that is connected to the database. Valid values are as follows:
@@ -655,10 +656,9 @@ extension PIClientTypes {
             self.limit = limit
         }
     }
-
 }
 
-public struct DescribeDimensionKeysInput {
+public struct DescribeDimensionKeysInput: Swift.Sendable {
     /// Additional metrics for the top N dimension keys. If the specified dimension group in the GroupBy parameter is db.sql_tokenized, you can specify per-SQL metrics to get the values for the top N SQL digests. The response syntax is as follows: "AdditionalMetrics" : { "string" : "string" }.
     public var additionalMetrics: [Swift.String]?
     /// The date and time specifying the end of the requested time series data. The value specified is exclusive, which means that data points less than (but not equal to) EndTime are returned. The value for EndTime must be later than the value for StartTime.
@@ -752,8 +752,9 @@ public struct DescribeDimensionKeysInput {
 }
 
 extension PIClientTypes {
+
     /// An object that includes the requested dimension key values and aggregated metric values within a dimension group.
-    public struct DimensionKeyDescription {
+    public struct DimensionKeyDescription: Swift.Sendable {
         /// A map that contains the value for each additional metric.
         public var additionalMetrics: [Swift.String: Swift.Double]?
         /// A map of name-value pairs for the dimensions in the group.
@@ -776,12 +777,12 @@ extension PIClientTypes {
             self.total = total
         }
     }
-
 }
 
 extension PIClientTypes {
+
     /// If PartitionBy was specified in a DescribeDimensionKeys request, the dimensions are returned in an array. Each element in the array specifies one dimension.
-    public struct ResponsePartitionKey {
+    public struct ResponsePartitionKey: Swift.Sendable {
         /// A dimension map that contains the dimensions for this partition.
         /// This member is required.
         public var dimensions: [Swift.String: Swift.String]?
@@ -793,10 +794,9 @@ extension PIClientTypes {
             self.dimensions = dimensions
         }
     }
-
 }
 
-public struct DescribeDimensionKeysOutput {
+public struct DescribeDimensionKeysOutput: Swift.Sendable {
     /// The end time for the returned dimension keys, after alignment to a granular boundary (as specified by PeriodInSeconds). AlignedEndTime will be greater than or equal to the value of the user-specified Endtime.
     public var alignedEndTime: Foundation.Date?
     /// The start time for the returned dimension keys, after alignment to a granular boundary (as specified by PeriodInSeconds). AlignedStartTime will be less than or equal to the value of the user-specified StartTime.
@@ -826,7 +826,7 @@ public struct DescribeDimensionKeysOutput {
 
 extension PIClientTypes {
 
-    public enum DetailStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DetailStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case available
         case processing
         case unavailable
@@ -857,8 +857,9 @@ extension PIClientTypes {
 }
 
 extension PIClientTypes {
+
     /// The information about a dimension.
-    public struct DimensionDetail {
+    public struct DimensionDetail: Swift.Sendable {
         /// The identifier of a dimension.
         public var identifier: Swift.String?
 
@@ -869,12 +870,12 @@ extension PIClientTypes {
             self.identifier = identifier
         }
     }
-
 }
 
 extension PIClientTypes {
+
     /// Information about dimensions within a dimension group.
-    public struct DimensionGroupDetail {
+    public struct DimensionGroupDetail: Swift.Sendable {
         /// The dimensions within a dimension group.
         public var dimensions: [PIClientTypes.DimensionDetail]?
         /// The name of the dimension group.
@@ -889,12 +890,12 @@ extension PIClientTypes {
             self.group = group
         }
     }
-
 }
 
 extension PIClientTypes {
+
     /// An object that describes the details for a specified dimension.
-    public struct DimensionKeyDetail {
+    public struct DimensionKeyDetail: Swift.Sendable {
         /// The full name of the dimension. The full name includes the group name and key name. The following values are valid:
         ///
         /// * db.query.statement (Amazon DocumentDB)
@@ -927,12 +928,11 @@ extension PIClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension PIClientTypes {
 
-    public enum FeatureStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum FeatureStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case disabled
         case disabledPendingReboot
         case enabled
@@ -972,8 +972,9 @@ extension PIClientTypes {
 }
 
 extension PIClientTypes {
+
     /// The metadata for a feature. For example, the metadata might indicate that a feature is turned on or off on a specific DB instance.
-    public struct FeatureMetadata {
+    public struct FeatureMetadata: Swift.Sendable {
         /// The status of the feature on the DB instance. Possible values include the following:
         ///
         /// * ENABLED - The feature is enabled on the instance.
@@ -996,10 +997,9 @@ extension PIClientTypes {
             self.status = status
         }
     }
-
 }
 
-public struct GetDimensionKeyDetailsInput {
+public struct GetDimensionKeyDetailsInput: Swift.Sendable {
     /// The name of the dimension group. Performance Insights searches the specified group for the dimension group ID. The following group name values are valid:
     ///
     /// * db.query (Amazon DocumentDB only)
@@ -1043,7 +1043,7 @@ public struct GetDimensionKeyDetailsInput {
     }
 }
 
-public struct GetDimensionKeyDetailsOutput {
+public struct GetDimensionKeyDetailsOutput: Swift.Sendable {
     /// The details for the requested dimensions.
     public var dimensions: [PIClientTypes.DimensionKeyDetail]?
 
@@ -1057,7 +1057,7 @@ public struct GetDimensionKeyDetailsOutput {
 
 extension PIClientTypes {
 
-    public enum TextFormat: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum TextFormat: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case markdown
         case plainText
         case sdkUnknown(Swift.String)
@@ -1084,7 +1084,7 @@ extension PIClientTypes {
     }
 }
 
-public struct GetPerformanceAnalysisReportInput {
+public struct GetPerformanceAnalysisReportInput: Swift.Sendable {
     /// The text language in the report. The default language is EN_US (English).
     public var acceptLanguage: PIClientTypes.AcceptLanguage?
     /// A unique identifier of the created analysis report. For example, report-12345678901234567
@@ -1115,7 +1115,7 @@ public struct GetPerformanceAnalysisReportInput {
     }
 }
 
-public struct GetResourceMetadataInput {
+public struct GetResourceMetadataInput: Swift.Sendable {
     /// An immutable identifier for a data source that is unique for an Amazon Web Services Region. Performance Insights gathers metrics from this data source. To use a DB instance as a data source, specify its DbiResourceId value. For example, specify db-ABCDEFGHIJKLMNOPQRSTU1VW2X.
     /// This member is required.
     public var identifier: Swift.String?
@@ -1133,7 +1133,7 @@ public struct GetResourceMetadataInput {
     }
 }
 
-public struct GetResourceMetadataOutput {
+public struct GetResourceMetadataOutput: Swift.Sendable {
     /// The metadata for different features. For example, the metadata might indicate that a feature is turned on or off on a specific DB instance.
     public var features: [Swift.String: PIClientTypes.FeatureMetadata]?
     /// An immutable identifier for a data source that is unique for an Amazon Web Services Region. Performance Insights gathers metrics from this data source. To use a DB instance as a data source, specify its DbiResourceId value. For example, specify db-ABCDEFGHIJKLMNOPQRSTU1VW2X.
@@ -1150,8 +1150,9 @@ public struct GetResourceMetadataOutput {
 }
 
 extension PIClientTypes {
+
     /// A single query to be processed. You must provide the metric to query and append an aggregate function to the metric. For example, to find the average for the metric db.load you must use db.load.avg. Valid values for aggregate functions include .avg, .min, .max, and .sum. If no other parameters are specified, Performance Insights returns all data points for the specified metric. Optionally, you can request that the data points be aggregated by dimension group (GroupBy), and return only those data points that match your criteria (Filter).
-    public struct MetricQuery {
+    public struct MetricQuery: Swift.Sendable {
         /// One or more filters to apply in the request. Restrictions:
         ///
         /// * Any number of filters by the same dimension, as specified in the GroupBy parameter.
@@ -1189,12 +1190,11 @@ extension PIClientTypes {
             self.metric = metric
         }
     }
-
 }
 
 extension PIClientTypes {
 
-    public enum PeriodAlignment: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum PeriodAlignment: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case endTime
         case startTime
         case sdkUnknown(Swift.String)
@@ -1221,7 +1221,7 @@ extension PIClientTypes {
     }
 }
 
-public struct GetResourceMetricsInput {
+public struct GetResourceMetricsInput: Swift.Sendable {
     /// The date and time specifying the end of the requested time series query range. The value specified is exclusive. Thus, the command returns data points less than (but not equal to) EndTime. The value for EndTime must be later than the value for StartTime.
     /// This member is required.
     public var endTime: Foundation.Date?
@@ -1288,8 +1288,9 @@ public struct GetResourceMetricsInput {
 }
 
 extension PIClientTypes {
+
     /// An object describing a Performance Insights metric and one or more dimensions for that metric.
-    public struct ResponseResourceMetricKey {
+    public struct ResponseResourceMetricKey: Swift.Sendable {
         /// The valid dimensions for the metric.
         public var dimensions: [Swift.String: Swift.String]?
         /// The name of a Performance Insights metric to be measured. Valid values for Metric are:
@@ -1316,12 +1317,12 @@ extension PIClientTypes {
             self.metric = metric
         }
     }
-
 }
 
 extension PIClientTypes {
+
     /// A time-ordered series of data points, corresponding to a dimension of a Performance Insights metric.
-    public struct MetricKeyDataPoints {
+    public struct MetricKeyDataPoints: Swift.Sendable {
         /// An array of timestamp-value pairs, representing measurements over a period of time.
         public var dataPoints: [PIClientTypes.DataPoint]?
         /// The dimensions to which the data points apply.
@@ -1336,10 +1337,9 @@ extension PIClientTypes {
             self.key = key
         }
     }
-
 }
 
-public struct GetResourceMetricsOutput {
+public struct GetResourceMetricsOutput: Swift.Sendable {
     /// The end time for the returned metrics, after alignment to a granular boundary (as specified by PeriodInSeconds). AlignedEndTime will be greater than or equal to the value of the user-specified Endtime.
     public var alignedEndTime: Foundation.Date?
     /// The start time for the returned metrics, after alignment to a granular boundary (as specified by PeriodInSeconds). AlignedStartTime will be less than or equal to the value of the user-specified StartTime.
@@ -1367,7 +1367,7 @@ public struct GetResourceMetricsOutput {
     }
 }
 
-public struct ListAvailableResourceDimensionsInput {
+public struct ListAvailableResourceDimensionsInput: Swift.Sendable {
     /// The actions to discover the dimensions you are authorized to access. If you specify multiple actions, then the response will contain the dimensions common for all the actions. When you don't specify this request parameter or provide an empty list, the response contains all the available dimensions for the target database engine whether or not you are authorized to access them.
     public var authorizedActions: [PIClientTypes.FineGrainedAction]?
     /// An immutable identifier for a data source that is unique within an Amazon Web Services Region. Performance Insights gathers metrics from this data source. To use an Amazon RDS DB instance as a data source, specify its DbiResourceId value. For example, specify db-ABCDEFGHIJKLMNOPQRSTU1VWZ.
@@ -1403,8 +1403,9 @@ public struct ListAvailableResourceDimensionsInput {
 }
 
 extension PIClientTypes {
+
     /// The available dimension information for a metric type.
-    public struct MetricDimensionGroups {
+    public struct MetricDimensionGroups: Swift.Sendable {
         /// The available dimension groups for a metric type.
         public var groups: [PIClientTypes.DimensionGroupDetail]?
         /// The metric type to which the dimension information belongs.
@@ -1419,10 +1420,9 @@ extension PIClientTypes {
             self.metric = metric
         }
     }
-
 }
 
-public struct ListAvailableResourceDimensionsOutput {
+public struct ListAvailableResourceDimensionsOutput: Swift.Sendable {
     /// The dimension information returned for requested metric types.
     public var metricDimensions: [PIClientTypes.MetricDimensionGroups]?
     /// An optional pagination token provided by a previous request. If this parameter is specified, the response includes only records beyond the token, up to the value specified by MaxRecords.
@@ -1438,7 +1438,7 @@ public struct ListAvailableResourceDimensionsOutput {
     }
 }
 
-public struct ListAvailableResourceMetricsInput {
+public struct ListAvailableResourceMetricsInput: Swift.Sendable {
     /// An immutable identifier for a data source that is unique within an Amazon Web Services Region. Performance Insights gathers metrics from this data source. To use an Amazon RDS DB instance as a data source, specify its DbiResourceId value. For example, specify db-ABCDEFGHIJKLMNOPQRSTU1VWZ.
     /// This member is required.
     public var identifier: Swift.String?
@@ -1478,8 +1478,9 @@ public struct ListAvailableResourceMetricsInput {
 }
 
 extension PIClientTypes {
+
     /// An object that contains the full name, description, and unit of a metric.
-    public struct ResponseResourceMetric {
+    public struct ResponseResourceMetric: Swift.Sendable {
         /// The description of the metric.
         public var description: Swift.String?
         /// The full name of the metric.
@@ -1498,10 +1499,9 @@ extension PIClientTypes {
             self.unit = unit
         }
     }
-
 }
 
-public struct ListAvailableResourceMetricsOutput {
+public struct ListAvailableResourceMetricsOutput: Swift.Sendable {
     /// An array of metrics available to query. Each array element contains the full name, description, and unit of the metric.
     public var metrics: [PIClientTypes.ResponseResourceMetric]?
     /// A pagination token that indicates the response didn’t return all available records because MaxRecords was specified in the previous request. To get the remaining records, specify NextToken in a separate request with this value.
@@ -1517,7 +1517,7 @@ public struct ListAvailableResourceMetricsOutput {
     }
 }
 
-public struct ListPerformanceAnalysisReportsInput {
+public struct ListPerformanceAnalysisReportsInput: Swift.Sendable {
     /// An immutable identifier for a data source that is unique for an Amazon Web Services Region. Performance Insights gathers metrics from this data source. In the console, the identifier is shown as ResourceID. When you call DescribeDBInstances, the identifier is returned as DbiResourceId. To use a DB instance as a data source, specify its DbiResourceId value. For example, specify db-ABCDEFGHIJKLMNOPQRSTU1VW2X.
     /// This member is required.
     public var identifier: Swift.String?
@@ -1547,7 +1547,7 @@ public struct ListPerformanceAnalysisReportsInput {
     }
 }
 
-public struct ListPerformanceAnalysisReportsOutput {
+public struct ListPerformanceAnalysisReportsOutput: Swift.Sendable {
     /// List of reports including the report identifier, start and end time, creation time, and status.
     public var analysisReports: [PIClientTypes.AnalysisReportSummary]?
     /// An optional pagination token provided by a previous request. If this parameter is specified, the response includes only records beyond the token, up to the value specified by MaxResults.
@@ -1563,7 +1563,7 @@ public struct ListPerformanceAnalysisReportsOutput {
     }
 }
 
-public struct ListTagsForResourceInput {
+public struct ListTagsForResourceInput: Swift.Sendable {
     /// Lists all the tags for the Amazon RDS Performance Insights resource. This value is an Amazon Resource Name (ARN). For information about creating an ARN, see [ Constructing an RDS Amazon Resource Name (ARN)](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_Tagging.ARN.html#USER_Tagging.ARN.Constructing).
     /// This member is required.
     public var resourceARN: Swift.String?
@@ -1581,7 +1581,7 @@ public struct ListTagsForResourceInput {
     }
 }
 
-public struct ListTagsForResourceOutput {
+public struct ListTagsForResourceOutput: Swift.Sendable {
     /// The metadata assigned to an Amazon RDS resource consisting of a key-value pair.
     public var tags: [PIClientTypes.Tag]?
 
@@ -1593,7 +1593,7 @@ public struct ListTagsForResourceOutput {
     }
 }
 
-public struct TagResourceInput {
+public struct TagResourceInput: Swift.Sendable {
     /// The Amazon RDS Performance Insights resource that the tags are added to. This value is an Amazon Resource Name (ARN). For information about creating an ARN, see [ Constructing an RDS Amazon Resource Name (ARN)](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_Tagging.ARN.html#USER_Tagging.ARN.Constructing).
     /// This member is required.
     public var resourceARN: Swift.String?
@@ -1616,12 +1616,12 @@ public struct TagResourceInput {
     }
 }
 
-public struct TagResourceOutput {
+public struct TagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UntagResourceInput {
+public struct UntagResourceInput: Swift.Sendable {
     /// The Amazon RDS Performance Insights resource that the tags are added to. This value is an Amazon Resource Name (ARN). For information about creating an ARN, see [ Constructing an RDS Amazon Resource Name (ARN)](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_Tagging.ARN.html#USER_Tagging.ARN.Constructing).
     /// This member is required.
     public var resourceARN: Swift.String?
@@ -1644,14 +1644,15 @@ public struct UntagResourceInput {
     }
 }
 
-public struct UntagResourceOutput {
+public struct UntagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
 extension PIClientTypes {
+
     /// Retrieves the list of performance issues which are identified.
-    public struct Insight {
+    public struct Insight: Swift.Sendable {
         /// Metric names and values from the timeframe used as baseline to generate the insight.
         public var baselineData: [PIClientTypes.Data]?
         /// Indicates if the insight is causal or correlated insight.
@@ -1703,7 +1704,6 @@ extension PIClientTypes {
             self.supportingInsights = supportingInsights
         }
     }
-
 }
 
 extension PIClientTypes.Insight: Swift.CustomDebugStringConvertible {
@@ -1712,8 +1712,9 @@ extension PIClientTypes.Insight: Swift.CustomDebugStringConvertible {
 }
 
 extension PIClientTypes {
+
     /// Retrieves the summary of the performance analysis report created for a time period.
-    public struct AnalysisReport {
+    public struct AnalysisReport: Swift.Sendable {
         /// The name of the analysis report.
         /// This member is required.
         public var analysisReportId: Swift.String?
@@ -1757,10 +1758,9 @@ extension PIClientTypes {
             self.status = status
         }
     }
-
 }
 
-public struct GetPerformanceAnalysisReportOutput {
+public struct GetPerformanceAnalysisReportOutput: Swift.Sendable {
     /// The summary of the performance analysis report created for a time period.
     public var analysisReport: PIClientTypes.AnalysisReport?
 

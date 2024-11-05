@@ -127,7 +127,7 @@ public struct ValidationException: ClientRuntime.ModeledError, AWSClientRuntime.
     }
 }
 
-public struct CreateSavingsPlanInput {
+public struct CreateSavingsPlanInput: Swift.Sendable {
     /// A unique, case-sensitive identifier that you provide to ensure the idempotency of the request.
     public var clientToken: Swift.String?
     /// The hourly commitment, in the same currency of the savingsPlanOfferingId. This is a value between 0.001 and 1 million. You cannot specify more than five digits after the decimal point.
@@ -161,7 +161,7 @@ public struct CreateSavingsPlanInput {
     }
 }
 
-public struct CreateSavingsPlanOutput {
+public struct CreateSavingsPlanOutput: Swift.Sendable {
     /// The ID of the Savings Plan.
     public var savingsPlanId: Swift.String?
 
@@ -173,7 +173,7 @@ public struct CreateSavingsPlanOutput {
     }
 }
 
-public struct DeleteQueuedSavingsPlanInput {
+public struct DeleteQueuedSavingsPlanInput: Swift.Sendable {
     /// The ID of the Savings Plan.
     /// This member is required.
     public var savingsPlanId: Swift.String?
@@ -186,14 +186,14 @@ public struct DeleteQueuedSavingsPlanInput {
     }
 }
 
-public struct DeleteQueuedSavingsPlanOutput {
+public struct DeleteQueuedSavingsPlanOutput: Swift.Sendable {
 
     public init() { }
 }
 
 extension SavingsplansClientTypes {
 
-    public enum SavingsPlanRateFilterName: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SavingsPlanRateFilterName: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case instanceType
         case operation
         case productDescription
@@ -239,8 +239,9 @@ extension SavingsplansClientTypes {
 }
 
 extension SavingsplansClientTypes {
+
     /// Information about a Savings Plan rate filter.
-    public struct SavingsPlanRateFilter {
+    public struct SavingsPlanRateFilter: Swift.Sendable {
         /// The filter name.
         public var name: SavingsplansClientTypes.SavingsPlanRateFilterName?
         /// The filter values.
@@ -255,10 +256,9 @@ extension SavingsplansClientTypes {
             self.values = values
         }
     }
-
 }
 
-public struct DescribeSavingsPlanRatesInput {
+public struct DescribeSavingsPlanRatesInput: Swift.Sendable {
     /// The filters.
     public var filters: [SavingsplansClientTypes.SavingsPlanRateFilter]?
     /// The maximum number of results to return with a single call. To retrieve additional results, make another call with the returned token value.
@@ -285,7 +285,7 @@ public struct DescribeSavingsPlanRatesInput {
 
 extension SavingsplansClientTypes {
 
-    public enum CurrencyCode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum CurrencyCode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case cny
         case usd
         case sdkUnknown(Swift.String)
@@ -314,7 +314,7 @@ extension SavingsplansClientTypes {
 
 extension SavingsplansClientTypes {
 
-    public enum SavingsPlanProductType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SavingsPlanProductType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case ec2
         case fargate
         case lambda
@@ -349,7 +349,7 @@ extension SavingsplansClientTypes {
 
 extension SavingsplansClientTypes {
 
-    public enum SavingsPlanRatePropertyKey: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SavingsPlanRatePropertyKey: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case instanceFamily
         case instanceType
         case productDescription
@@ -386,8 +386,9 @@ extension SavingsplansClientTypes {
 }
 
 extension SavingsplansClientTypes {
+
     /// Information about a Savings Plan rate property.
-    public struct SavingsPlanRateProperty {
+    public struct SavingsPlanRateProperty: Swift.Sendable {
         /// The property name.
         public var name: SavingsplansClientTypes.SavingsPlanRatePropertyKey?
         /// The property value.
@@ -402,12 +403,11 @@ extension SavingsplansClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension SavingsplansClientTypes {
 
-    public enum SavingsPlanRateServiceCode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SavingsPlanRateServiceCode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case ec2
         case fargate
         case fargateEks
@@ -445,7 +445,7 @@ extension SavingsplansClientTypes {
 
 extension SavingsplansClientTypes {
 
-    public enum SavingsPlanRateUnit: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SavingsPlanRateUnit: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case hours
         case lambdaGbSecond
         case request
@@ -476,8 +476,9 @@ extension SavingsplansClientTypes {
 }
 
 extension SavingsplansClientTypes {
+
     /// Information about a Savings Plan rate.
-    public struct SavingsPlanRate {
+    public struct SavingsPlanRate: Swift.Sendable {
         /// The currency.
         public var currency: SavingsplansClientTypes.CurrencyCode?
         /// The specific Amazon Web Services operation for the line item in the billing report.
@@ -516,10 +517,9 @@ extension SavingsplansClientTypes {
             self.usageType = usageType
         }
     }
-
 }
 
-public struct DescribeSavingsPlanRatesOutput {
+public struct DescribeSavingsPlanRatesOutput: Swift.Sendable {
     /// The token to use to retrieve the next page of results. This value is null when there are no more results to return.
     public var nextToken: Swift.String?
     /// The ID of the Savings Plan.
@@ -541,7 +541,7 @@ public struct DescribeSavingsPlanRatesOutput {
 
 extension SavingsplansClientTypes {
 
-    public enum SavingsPlansFilterName: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SavingsPlansFilterName: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case commitment
         case ec2InstanceFamily
         case end
@@ -590,8 +590,9 @@ extension SavingsplansClientTypes {
 }
 
 extension SavingsplansClientTypes {
+
     /// Information about a Savings Plan filter.
-    public struct SavingsPlanFilter {
+    public struct SavingsPlanFilter: Swift.Sendable {
         /// The filter name.
         public var name: SavingsplansClientTypes.SavingsPlansFilterName?
         /// The filter value.
@@ -606,12 +607,11 @@ extension SavingsplansClientTypes {
             self.values = values
         }
     }
-
 }
 
 extension SavingsplansClientTypes {
 
-    public enum SavingsPlanState: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SavingsPlanState: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case active
         case paymentFailed
         case paymentPending
@@ -656,7 +656,7 @@ extension SavingsplansClientTypes {
     }
 }
 
-public struct DescribeSavingsPlansInput {
+public struct DescribeSavingsPlansInput: Swift.Sendable {
     /// The filters.
     public var filters: [SavingsplansClientTypes.SavingsPlanFilter]?
     /// The maximum number of results to return with a single call. To retrieve additional results, make another call with the returned token value.
@@ -690,7 +690,7 @@ public struct DescribeSavingsPlansInput {
 
 extension SavingsplansClientTypes {
 
-    public enum SavingsPlanPaymentOption: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SavingsPlanPaymentOption: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case allUpfront
         case noUpfront
         case partialUpfront
@@ -722,7 +722,7 @@ extension SavingsplansClientTypes {
 
 extension SavingsplansClientTypes {
 
-    public enum SavingsPlanType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SavingsPlanType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case compute
         case ec2Instance
         case sagemaker
@@ -753,8 +753,9 @@ extension SavingsplansClientTypes {
 }
 
 extension SavingsplansClientTypes {
+
     /// Information about a Savings Plan.
-    public struct SavingsPlan {
+    public struct SavingsPlan: Swift.Sendable {
         /// The hourly commitment amount in the specified currency.
         public var commitment: Swift.String?
         /// The currency.
@@ -837,10 +838,9 @@ extension SavingsplansClientTypes {
             self.upfrontPaymentAmount = upfrontPaymentAmount
         }
     }
-
 }
 
-public struct DescribeSavingsPlansOutput {
+public struct DescribeSavingsPlansOutput: Swift.Sendable {
     /// The token to use to retrieve the next page of results. This value is null when there are no more results to return.
     public var nextToken: Swift.String?
     /// Information about the Savings Plans.
@@ -858,7 +858,7 @@ public struct DescribeSavingsPlansOutput {
 
 extension SavingsplansClientTypes {
 
-    public enum SavingsPlanRateFilterAttribute: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SavingsPlanRateFilterAttribute: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case instanceFamily
         case instanceType
         case productDescription
@@ -898,8 +898,9 @@ extension SavingsplansClientTypes {
 }
 
 extension SavingsplansClientTypes {
+
     /// Information about a Savings Plan offering rate filter.
-    public struct SavingsPlanOfferingRateFilterElement {
+    public struct SavingsPlanOfferingRateFilterElement: Swift.Sendable {
         /// The filter name.
         public var name: SavingsplansClientTypes.SavingsPlanRateFilterAttribute?
         /// The filter values.
@@ -914,10 +915,9 @@ extension SavingsplansClientTypes {
             self.values = values
         }
     }
-
 }
 
-public struct DescribeSavingsPlansOfferingRatesInput {
+public struct DescribeSavingsPlansOfferingRatesInput: Swift.Sendable {
     /// The filters.
     public var filters: [SavingsplansClientTypes.SavingsPlanOfferingRateFilterElement]?
     /// The maximum number of results to return with a single call. To retrieve additional results, make another call with the returned token value.
@@ -966,8 +966,9 @@ public struct DescribeSavingsPlansOfferingRatesInput {
 }
 
 extension SavingsplansClientTypes {
+
     /// Information about a Savings Plan offering rate property.
-    public struct SavingsPlanOfferingRateProperty {
+    public struct SavingsPlanOfferingRateProperty: Swift.Sendable {
         /// The property name.
         public var name: Swift.String?
         /// The property value.
@@ -982,12 +983,12 @@ extension SavingsplansClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension SavingsplansClientTypes {
+
     /// Information about a Savings Plan offering.
-    public struct ParentSavingsPlanOffering {
+    public struct ParentSavingsPlanOffering: Swift.Sendable {
         /// The currency.
         public var currency: SavingsplansClientTypes.CurrencyCode?
         /// The duration, in seconds.
@@ -1018,12 +1019,12 @@ extension SavingsplansClientTypes {
             self.planType = planType
         }
     }
-
 }
 
 extension SavingsplansClientTypes {
+
     /// Information about a Savings Plan offering rate.
-    public struct SavingsPlanOfferingRate {
+    public struct SavingsPlanOfferingRate: Swift.Sendable {
         /// The specific Amazon Web Services operation for the line item in the billing report.
         public var operation: Swift.String?
         /// The product type.
@@ -1062,10 +1063,9 @@ extension SavingsplansClientTypes {
             self.usageType = usageType
         }
     }
-
 }
 
-public struct DescribeSavingsPlansOfferingRatesOutput {
+public struct DescribeSavingsPlansOfferingRatesOutput: Swift.Sendable {
     /// The token to use to retrieve the next page of results. This value is null when there are no more results to return.
     public var nextToken: Swift.String?
     /// Information about the Savings Plans offering rates.
@@ -1083,7 +1083,7 @@ public struct DescribeSavingsPlansOfferingRatesOutput {
 
 extension SavingsplansClientTypes {
 
-    public enum SavingsPlanOfferingFilterAttribute: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SavingsPlanOfferingFilterAttribute: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case instancefamily
         case region
         case sdkUnknown(Swift.String)
@@ -1111,8 +1111,9 @@ extension SavingsplansClientTypes {
 }
 
 extension SavingsplansClientTypes {
+
     /// Information about a Savings Plan offering filter.
-    public struct SavingsPlanOfferingFilterElement {
+    public struct SavingsPlanOfferingFilterElement: Swift.Sendable {
         /// The filter name.
         public var name: SavingsplansClientTypes.SavingsPlanOfferingFilterAttribute?
         /// The filter values.
@@ -1127,10 +1128,9 @@ extension SavingsplansClientTypes {
             self.values = values
         }
     }
-
 }
 
-public struct DescribeSavingsPlansOfferingsInput {
+public struct DescribeSavingsPlansOfferingsInput: Swift.Sendable {
     /// The currencies.
     public var currencies: [SavingsplansClientTypes.CurrencyCode]?
     /// The descriptions.
@@ -1192,7 +1192,7 @@ public struct DescribeSavingsPlansOfferingsInput {
 
 extension SavingsplansClientTypes {
 
-    public enum SavingsPlanOfferingPropertyKey: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SavingsPlanOfferingPropertyKey: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case instanceFamily
         case region
         case sdkUnknown(Swift.String)
@@ -1220,8 +1220,9 @@ extension SavingsplansClientTypes {
 }
 
 extension SavingsplansClientTypes {
+
     /// Information about a Savings Plan offering property.
-    public struct SavingsPlanOfferingProperty {
+    public struct SavingsPlanOfferingProperty: Swift.Sendable {
         /// The property name.
         public var name: SavingsplansClientTypes.SavingsPlanOfferingPropertyKey?
         /// The property value.
@@ -1236,12 +1237,12 @@ extension SavingsplansClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension SavingsplansClientTypes {
+
     /// Information about a Savings Plan offering.
-    public struct SavingsPlanOffering {
+    public struct SavingsPlanOffering: Swift.Sendable {
         /// The currency.
         public var currency: SavingsplansClientTypes.CurrencyCode?
         /// The description.
@@ -1292,10 +1293,9 @@ extension SavingsplansClientTypes {
             self.usageType = usageType
         }
     }
-
 }
 
-public struct DescribeSavingsPlansOfferingsOutput {
+public struct DescribeSavingsPlansOfferingsOutput: Swift.Sendable {
     /// The token to use to retrieve the next page of results. This value is null when there are no more results to return.
     public var nextToken: Swift.String?
     /// Information about the Savings Plans offerings.
@@ -1311,7 +1311,7 @@ public struct DescribeSavingsPlansOfferingsOutput {
     }
 }
 
-public struct ListTagsForResourceInput {
+public struct ListTagsForResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the resource.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -1324,7 +1324,7 @@ public struct ListTagsForResourceInput {
     }
 }
 
-public struct ListTagsForResourceOutput {
+public struct ListTagsForResourceOutput: Swift.Sendable {
     /// Information about the tags.
     public var tags: [Swift.String: Swift.String]?
 
@@ -1336,7 +1336,7 @@ public struct ListTagsForResourceOutput {
     }
 }
 
-public struct ReturnSavingsPlanInput {
+public struct ReturnSavingsPlanInput: Swift.Sendable {
     /// A unique, case-sensitive identifier that you provide to ensure the idempotency of the request.
     public var clientToken: Swift.String?
     /// The ID of the Savings Plan.
@@ -1353,7 +1353,7 @@ public struct ReturnSavingsPlanInput {
     }
 }
 
-public struct ReturnSavingsPlanOutput {
+public struct ReturnSavingsPlanOutput: Swift.Sendable {
     /// The ID of the Savings Plan.
     public var savingsPlanId: Swift.String?
 
@@ -1365,7 +1365,7 @@ public struct ReturnSavingsPlanOutput {
     }
 }
 
-public struct TagResourceInput {
+public struct TagResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the resource.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -1383,12 +1383,12 @@ public struct TagResourceInput {
     }
 }
 
-public struct TagResourceOutput {
+public struct TagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UntagResourceInput {
+public struct UntagResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the resource.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -1406,7 +1406,7 @@ public struct UntagResourceInput {
     }
 }
 
-public struct UntagResourceOutput {
+public struct UntagResourceOutput: Swift.Sendable {
 
     public init() { }
 }

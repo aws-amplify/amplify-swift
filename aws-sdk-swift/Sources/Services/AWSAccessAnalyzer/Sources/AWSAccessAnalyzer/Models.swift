@@ -30,49 +30,51 @@ import struct Smithy.URIQueryItem
 @_spi(SmithyReadWrite) import struct SmithyReadWrite.WritingClosureBox
 @_spi(SmithyTimestamps) import struct SmithyTimestamps.TimestampFormatter
 
-public struct ApplyArchiveRuleOutput {
+
+public struct ApplyArchiveRuleOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct CreateArchiveRuleOutput {
+public struct CreateArchiveRuleOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteAnalyzerOutput {
+public struct DeleteAnalyzerOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteArchiveRuleOutput {
+public struct DeleteArchiveRuleOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct GenerateFindingRecommendationOutput {
+public struct GenerateFindingRecommendationOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct StartResourceScanOutput {
+public struct StartResourceScanOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdateArchiveRuleOutput {
+public struct UpdateArchiveRuleOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdateFindingsOutput {
+public struct UpdateFindingsOutput: Swift.Sendable {
 
     public init() { }
 }
 
 extension AccessAnalyzerClientTypes {
+
     /// Contains information about actions and resources that define permissions to check against a policy.
-    public struct Access {
+    public struct Access: Swift.Sendable {
         /// A list of actions for the access permissions. Any strings that can be used as an action in an IAM policy can be used in the list of actions to check.
         public var actions: [Swift.String]?
         /// A list of resources for the access permissions. Any strings that can be used as a resource in an IAM policy can be used in the list of resources to check.
@@ -87,7 +89,6 @@ extension AccessAnalyzerClientTypes {
             self.resources = resources
         }
     }
-
 }
 
 /// You do not have sufficient access to perform this action.
@@ -279,8 +280,9 @@ public struct ThrottlingException: ClientRuntime.ModeledError, AWSClientRuntime.
 }
 
 extension AccessAnalyzerClientTypes {
+
     /// Contains information about a validation exception.
-    public struct ValidationExceptionField {
+    public struct ValidationExceptionField: Swift.Sendable {
         /// A message about the validation exception.
         /// This member is required.
         public var message: Swift.String?
@@ -297,12 +299,11 @@ extension AccessAnalyzerClientTypes {
             self.name = name
         }
     }
-
 }
 
 extension AccessAnalyzerClientTypes {
 
-    public enum ValidationExceptionReason: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ValidationExceptionReason: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case cannotParse
         case fieldValidationFailed
         case notSupported
@@ -373,8 +374,9 @@ public struct ValidationException: ClientRuntime.ModeledError, AWSClientRuntime.
 }
 
 extension AccessAnalyzerClientTypes {
+
     /// The criteria to use in the filter that defines the archive rule. For more information on available filter keys, see [IAM Access Analyzer filter keys](https://docs.aws.amazon.com/IAM/latest/UserGuide/access-analyzer-reference-filter-keys.html).
-    public struct Criterion {
+    public struct Criterion: Swift.Sendable {
         /// A "contains" operator to match for the filter used to create the rule.
         public var contains: [Swift.String]?
         /// An "equals" operator to match for the filter used to create the rule.
@@ -397,11 +399,10 @@ extension AccessAnalyzerClientTypes {
             self.neq = neq
         }
     }
-
 }
 
 /// Creates an archive rule.
-public struct CreateArchiveRuleInput {
+public struct CreateArchiveRuleInput: Swift.Sendable {
     /// The name of the created analyzer.
     /// This member is required.
     public var analyzerName: Swift.String?
@@ -429,7 +430,7 @@ public struct CreateArchiveRuleInput {
 }
 
 /// Deletes an archive rule.
-public struct DeleteArchiveRuleInput {
+public struct DeleteArchiveRuleInput: Swift.Sendable {
     /// The name of the analyzer that associated with the archive rule to delete.
     /// This member is required.
     public var analyzerName: Swift.String?
@@ -452,7 +453,7 @@ public struct DeleteArchiveRuleInput {
 }
 
 /// Retrieves an archive rule.
-public struct GetArchiveRuleInput {
+public struct GetArchiveRuleInput: Swift.Sendable {
     /// The name of the analyzer to retrieve rules from.
     /// This member is required.
     public var analyzerName: Swift.String?
@@ -471,8 +472,9 @@ public struct GetArchiveRuleInput {
 }
 
 extension AccessAnalyzerClientTypes {
+
     /// Contains information about an archive rule.
-    public struct ArchiveRuleSummary {
+    public struct ArchiveRuleSummary: Swift.Sendable {
         /// The time at which the archive rule was created.
         /// This member is required.
         public var createdAt: Foundation.Date?
@@ -499,11 +501,10 @@ extension AccessAnalyzerClientTypes {
             self.updatedAt = updatedAt
         }
     }
-
 }
 
 /// The response to the request.
-public struct GetArchiveRuleOutput {
+public struct GetArchiveRuleOutput: Swift.Sendable {
     /// Contains information about an archive rule.
     /// This member is required.
     public var archiveRule: AccessAnalyzerClientTypes.ArchiveRuleSummary?
@@ -517,7 +518,7 @@ public struct GetArchiveRuleOutput {
 }
 
 /// Retrieves a list of archive rules created for the specified analyzer.
-public struct ListArchiveRulesInput {
+public struct ListArchiveRulesInput: Swift.Sendable {
     /// The name of the analyzer to retrieve rules from.
     /// This member is required.
     public var analyzerName: Swift.String?
@@ -539,7 +540,7 @@ public struct ListArchiveRulesInput {
 }
 
 /// The response to the request.
-public struct ListArchiveRulesOutput {
+public struct ListArchiveRulesOutput: Swift.Sendable {
     /// A list of archive rules created for the specified analyzer.
     /// This member is required.
     public var archiveRules: [AccessAnalyzerClientTypes.ArchiveRuleSummary]?
@@ -557,7 +558,7 @@ public struct ListArchiveRulesOutput {
 }
 
 /// Updates the specified archive rule.
-public struct UpdateArchiveRuleInput {
+public struct UpdateArchiveRuleInput: Swift.Sendable {
     /// The name of the analyzer to update the archive rules for.
     /// This member is required.
     public var analyzerName: Swift.String?
@@ -585,8 +586,9 @@ public struct UpdateArchiveRuleInput {
 }
 
 extension AccessAnalyzerClientTypes {
+
     /// An criterion statement in an archive rule. Each archive rule may have multiple criteria.
-    public struct InlineArchiveRule {
+    public struct InlineArchiveRule: Swift.Sendable {
         /// The condition and values for a criterion.
         /// This member is required.
         public var filter: [Swift.String: AccessAnalyzerClientTypes.Criterion]?
@@ -603,12 +605,12 @@ extension AccessAnalyzerClientTypes {
             self.ruleName = ruleName
         }
     }
-
 }
 
 extension AccessAnalyzerClientTypes {
+
     /// Contains information about an unused access analyzer.
-    public struct UnusedAccessConfiguration {
+    public struct UnusedAccessConfiguration: Swift.Sendable {
         /// The specified access age in days for which to generate findings for unused access. For example, if you specify 90 days, the analyzer will generate findings for IAM entities within the accounts of the selected organization for any access that hasn't been used in 90 or more days since the analyzer's last scan. You can choose a value between 1 and 180 days.
         public var unusedAccessAge: Swift.Int?
 
@@ -619,22 +621,21 @@ extension AccessAnalyzerClientTypes {
             self.unusedAccessAge = unusedAccessAge
         }
     }
-
 }
 
 extension AccessAnalyzerClientTypes {
+
     /// Contains information about the configuration of an unused access analyzer for an Amazon Web Services organization or account.
-    public enum AnalyzerConfiguration {
+    public enum AnalyzerConfiguration: Swift.Sendable {
         /// Specifies the configuration of an unused access analyzer for an Amazon Web Services organization or account. External access analyzers do not support any configuration.
         case unusedaccess(AccessAnalyzerClientTypes.UnusedAccessConfiguration)
         case sdkUnknown(Swift.String)
     }
-
 }
 
 extension AccessAnalyzerClientTypes {
 
-    public enum ModelType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ModelType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case account
         case accountUnusedAccess
         case organization
@@ -668,7 +669,7 @@ extension AccessAnalyzerClientTypes {
 }
 
 /// Creates an analyzer.
-public struct CreateAnalyzerInput {
+public struct CreateAnalyzerInput: Swift.Sendable {
     /// The name of the analyzer to create.
     /// This member is required.
     public var analyzerName: Swift.String?
@@ -703,7 +704,7 @@ public struct CreateAnalyzerInput {
 }
 
 /// The response to the request to create an analyzer.
-public struct CreateAnalyzerOutput {
+public struct CreateAnalyzerOutput: Swift.Sendable {
     /// The ARN of the analyzer that was created by the request.
     public var arn: Swift.String?
 
@@ -716,7 +717,7 @@ public struct CreateAnalyzerOutput {
 }
 
 /// Deletes an analyzer.
-public struct DeleteAnalyzerInput {
+public struct DeleteAnalyzerInput: Swift.Sendable {
     /// The name of the analyzer to delete.
     /// This member is required.
     public var analyzerName: Swift.String?
@@ -734,7 +735,7 @@ public struct DeleteAnalyzerInput {
 }
 
 /// Retrieves an analyzer.
-public struct GetAnalyzerInput {
+public struct GetAnalyzerInput: Swift.Sendable {
     /// The name of the analyzer retrieved.
     /// This member is required.
     public var analyzerName: Swift.String?
@@ -749,7 +750,7 @@ public struct GetAnalyzerInput {
 
 extension AccessAnalyzerClientTypes {
 
-    public enum AnalyzerStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AnalyzerStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case active
         case creating
         case disabled
@@ -784,7 +785,7 @@ extension AccessAnalyzerClientTypes {
 
 extension AccessAnalyzerClientTypes {
 
-    public enum ReasonCode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ReasonCode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case awsServiceAccessDisabled
         case delegatedAdministratorDeregistered
         case organizationDeleted
@@ -818,8 +819,9 @@ extension AccessAnalyzerClientTypes {
 }
 
 extension AccessAnalyzerClientTypes {
+
     /// Provides more details about the current status of the analyzer. For example, if the creation for the analyzer fails, a Failed status is returned. For an analyzer with organization as the type, this failure can be due to an issue with creating the service-linked roles required in the member accounts of the Amazon Web Services organization.
-    public struct StatusReason {
+    public struct StatusReason: Swift.Sendable {
         /// The reason code for the current status of the analyzer.
         /// This member is required.
         public var code: AccessAnalyzerClientTypes.ReasonCode?
@@ -831,12 +833,12 @@ extension AccessAnalyzerClientTypes {
             self.code = code
         }
     }
-
 }
 
 extension AccessAnalyzerClientTypes {
+
     /// Contains information about the analyzer.
-    public struct AnalyzerSummary {
+    public struct AnalyzerSummary: Swift.Sendable {
         /// The ARN of the analyzer.
         /// This member is required.
         public var arn: Swift.String?
@@ -888,11 +890,10 @@ extension AccessAnalyzerClientTypes {
             self.type = type
         }
     }
-
 }
 
 /// The response to the request.
-public struct GetAnalyzerOutput {
+public struct GetAnalyzerOutput: Swift.Sendable {
     /// An AnalyzerSummary object that contains information about the analyzer.
     /// This member is required.
     public var analyzer: AccessAnalyzerClientTypes.AnalyzerSummary?
@@ -906,7 +907,7 @@ public struct GetAnalyzerOutput {
 }
 
 /// Retrieves a list of analyzers.
-public struct ListAnalyzersInput {
+public struct ListAnalyzersInput: Swift.Sendable {
     /// The maximum number of results to return in the response.
     public var maxResults: Swift.Int?
     /// A token used for pagination of results returned.
@@ -927,7 +928,7 @@ public struct ListAnalyzersInput {
 }
 
 /// The response to the request.
-public struct ListAnalyzersOutput {
+public struct ListAnalyzersOutput: Swift.Sendable {
     /// The analyzers retrieved.
     /// This member is required.
     public var analyzers: [AccessAnalyzerClientTypes.AnalyzerSummary]?
@@ -945,7 +946,7 @@ public struct ListAnalyzersOutput {
 }
 
 /// Retroactively applies an archive rule.
-public struct ApplyArchiveRuleInput {
+public struct ApplyArchiveRuleInput: Swift.Sendable {
     /// The Amazon resource name (ARN) of the analyzer.
     /// This member is required.
     public var analyzerArn: Swift.String?
@@ -967,7 +968,7 @@ public struct ApplyArchiveRuleInput {
     }
 }
 
-public struct CancelPolicyGenerationInput {
+public struct CancelPolicyGenerationInput: Swift.Sendable {
     /// The JobId that is returned by the StartPolicyGeneration operation. The JobId can be used with GetGeneratedPolicy to retrieve the generated policies or used with CancelPolicyGeneration to cancel the policy generation request.
     /// This member is required.
     public var jobId: Swift.String?
@@ -980,7 +981,7 @@ public struct CancelPolicyGenerationInput {
     }
 }
 
-public struct CancelPolicyGenerationOutput {
+public struct CancelPolicyGenerationOutput: Swift.Sendable {
 
     public init() { }
 }
@@ -1037,7 +1038,7 @@ public struct UnprocessableEntityException: ClientRuntime.ModeledError, AWSClien
 
 extension AccessAnalyzerClientTypes {
 
-    public enum AccessCheckPolicyType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AccessCheckPolicyType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case identityPolicy
         case resourcePolicy
         case sdkUnknown(Swift.String)
@@ -1064,7 +1065,7 @@ extension AccessAnalyzerClientTypes {
     }
 }
 
-public struct CheckAccessNotGrantedInput {
+public struct CheckAccessNotGrantedInput: Swift.Sendable {
     /// An access object containing the permissions that shouldn't be granted by the specified policy. If only actions are specified, IAM Access Analyzer checks for access of the actions on all resources in the policy. If only resources are specified, then IAM Access Analyzer checks which actions have access to the specified resources. If both actions and resources are specified, then IAM Access Analyzer checks which of the specified actions have access to the specified resources.
     /// This member is required.
     public var access: [AccessAnalyzerClientTypes.Access]?
@@ -1093,8 +1094,9 @@ extension CheckAccessNotGrantedInput: Swift.CustomDebugStringConvertible {
 }
 
 extension AccessAnalyzerClientTypes {
+
     /// Contains information about the reasoning why a check for access passed or failed.
-    public struct ReasonSummary {
+    public struct ReasonSummary: Swift.Sendable {
         /// A description of the reasoning of a result of checking for access.
         public var description: Swift.String?
         /// The identifier for the reason statement.
@@ -1113,12 +1115,11 @@ extension AccessAnalyzerClientTypes {
             self.statementIndex = statementIndex
         }
     }
-
 }
 
 extension AccessAnalyzerClientTypes {
 
-    public enum CheckAccessNotGrantedResult: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum CheckAccessNotGrantedResult: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case fail
         case pass
         case sdkUnknown(Swift.String)
@@ -1145,7 +1146,7 @@ extension AccessAnalyzerClientTypes {
     }
 }
 
-public struct CheckAccessNotGrantedOutput {
+public struct CheckAccessNotGrantedOutput: Swift.Sendable {
     /// The message indicating whether the specified access is allowed.
     public var message: Swift.String?
     /// A description of the reasoning of the result.
@@ -1165,7 +1166,7 @@ public struct CheckAccessNotGrantedOutput {
     }
 }
 
-public struct CheckNoNewAccessInput {
+public struct CheckNoNewAccessInput: Swift.Sendable {
     /// The JSON policy document to use as the content for the existing policy.
     /// This member is required.
     public var existingPolicyDocument: Swift.String?
@@ -1195,7 +1196,7 @@ extension CheckNoNewAccessInput: Swift.CustomDebugStringConvertible {
 
 extension AccessAnalyzerClientTypes {
 
-    public enum CheckNoNewAccessResult: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum CheckNoNewAccessResult: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case fail
         case pass
         case sdkUnknown(Swift.String)
@@ -1222,7 +1223,7 @@ extension AccessAnalyzerClientTypes {
     }
 }
 
-public struct CheckNoNewAccessOutput {
+public struct CheckNoNewAccessOutput: Swift.Sendable {
     /// The message indicating whether the updated policy allows new access.
     public var message: Swift.String?
     /// A description of the reasoning of the result.
@@ -1244,7 +1245,7 @@ public struct CheckNoNewAccessOutput {
 
 extension AccessAnalyzerClientTypes {
 
-    public enum AccessCheckResourceType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AccessCheckResourceType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case dynamodbStream
         case dynamodbTable
         case efsFilesystem
@@ -1319,7 +1320,7 @@ extension AccessAnalyzerClientTypes {
     }
 }
 
-public struct CheckNoPublicAccessInput {
+public struct CheckNoPublicAccessInput: Swift.Sendable {
     /// The JSON policy document to evaluate for public access.
     /// This member is required.
     public var policyDocument: Swift.String?
@@ -1344,7 +1345,7 @@ extension CheckNoPublicAccessInput: Swift.CustomDebugStringConvertible {
 
 extension AccessAnalyzerClientTypes {
 
-    public enum CheckNoPublicAccessResult: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum CheckNoPublicAccessResult: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case fail
         case pass
         case sdkUnknown(Swift.String)
@@ -1371,7 +1372,7 @@ extension AccessAnalyzerClientTypes {
     }
 }
 
-public struct CheckNoPublicAccessOutput {
+public struct CheckNoPublicAccessOutput: Swift.Sendable {
     /// The message indicating whether the specified policy allows public access to resources.
     public var message: Swift.String?
     /// A list of reasons why the specified resource policy grants public access for the resource type.
@@ -1392,6 +1393,7 @@ public struct CheckNoPublicAccessOutput {
 }
 
 extension AccessAnalyzerClientTypes {
+
     /// The proposed access control configuration for a DynamoDB stream. You can propose a configuration for a new DynamoDB stream or an existing DynamoDB stream that you own by specifying the policy for the DynamoDB stream. For more information, see [PutResourcePolicy](https://docs.aws.amazon.com/amazondynamodb/latest/APIReference/API_PutResourcePolicy.html).
     ///
     /// * If the configuration is for an existing DynamoDB stream and you do not specify the DynamoDB policy, then the access preview uses the existing DynamoDB policy for the stream.
@@ -1399,7 +1401,7 @@ extension AccessAnalyzerClientTypes {
     /// * If the access preview is for a new resource and you do not specify the policy, then the access preview assumes a DynamoDB stream without a policy.
     ///
     /// * To propose deletion of an existing DynamoDB stream policy, you can specify an empty string for the DynamoDB policy.
-    public struct DynamodbStreamConfiguration {
+    public struct DynamodbStreamConfiguration: Swift.Sendable {
         /// The proposed resource policy defining who can access or manage the DynamoDB stream.
         public var streamPolicy: Swift.String?
 
@@ -1410,10 +1412,10 @@ extension AccessAnalyzerClientTypes {
             self.streamPolicy = streamPolicy
         }
     }
-
 }
 
 extension AccessAnalyzerClientTypes {
+
     /// The proposed access control configuration for a DynamoDB table or index. You can propose a configuration for a new DynamoDB table or index or an existing DynamoDB table or index that you own by specifying the policy for the DynamoDB table or index. For more information, see [PutResourcePolicy](https://docs.aws.amazon.com/amazondynamodb/latest/APIReference/API_PutResourcePolicy.html).
     ///
     /// * If the configuration is for an existing DynamoDB table or index and you do not specify the DynamoDB policy, then the access preview uses the existing DynamoDB policy for the table or index.
@@ -1421,7 +1423,7 @@ extension AccessAnalyzerClientTypes {
     /// * If the access preview is for a new resource and you do not specify the policy, then the access preview assumes a DynamoDB table without a policy.
     ///
     /// * To propose deletion of an existing DynamoDB table or index policy, you can specify an empty string for the DynamoDB policy.
-    public struct DynamodbTableConfiguration {
+    public struct DynamodbTableConfiguration: Swift.Sendable {
         /// The proposed resource policy defining who can access or manage the DynamoDB table.
         public var tablePolicy: Swift.String?
 
@@ -1432,12 +1434,12 @@ extension AccessAnalyzerClientTypes {
             self.tablePolicy = tablePolicy
         }
     }
-
 }
 
 extension AccessAnalyzerClientTypes {
+
     /// The proposed access control configuration for an Amazon EBS volume snapshot. You can propose a configuration for a new Amazon EBS volume snapshot or an Amazon EBS volume snapshot that you own by specifying the user IDs, groups, and optional KMS encryption key. For more information, see [ModifySnapshotAttribute](https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_ModifySnapshotAttribute.html).
-    public struct EbsSnapshotConfiguration {
+    public struct EbsSnapshotConfiguration: Swift.Sendable {
         /// The groups that have access to the Amazon EBS volume snapshot. If the value all is specified, then the Amazon EBS volume snapshot is public.
         ///
         /// * If the configuration is for an existing Amazon EBS volume snapshot and you do not specify the groups, then the access preview uses the existing shared groups for the snapshot.
@@ -1472,10 +1474,10 @@ extension AccessAnalyzerClientTypes {
             self.userIds = userIds
         }
     }
-
 }
 
 extension AccessAnalyzerClientTypes {
+
     /// The proposed access control configuration for an Amazon ECR repository. You can propose a configuration for a new Amazon ECR repository or an existing Amazon ECR repository that you own by specifying the Amazon ECR policy. For more information, see [Repository](https://docs.aws.amazon.com/AmazonECR/latest/APIReference/API_Repository.html).
     ///
     /// * If the configuration is for an existing Amazon ECR repository and you do not specify the Amazon ECR policy, then the access preview uses the existing Amazon ECR policy for the repository.
@@ -1483,7 +1485,7 @@ extension AccessAnalyzerClientTypes {
     /// * If the access preview is for a new resource and you do not specify the policy, then the access preview assumes an Amazon ECR repository without a policy.
     ///
     /// * To propose deletion of an existing Amazon ECR repository policy, you can specify an empty string for the Amazon ECR policy.
-    public struct EcrRepositoryConfiguration {
+    public struct EcrRepositoryConfiguration: Swift.Sendable {
         /// The JSON repository policy text to apply to the Amazon ECR repository. For more information, see [Private repository policy examples](https://docs.aws.amazon.com/AmazonECR/latest/userguide/repository-policy-examples.html) in the Amazon ECR User Guide.
         public var repositoryPolicy: Swift.String?
 
@@ -1494,10 +1496,10 @@ extension AccessAnalyzerClientTypes {
             self.repositoryPolicy = repositoryPolicy
         }
     }
-
 }
 
 extension AccessAnalyzerClientTypes {
+
     /// The proposed access control configuration for an Amazon EFS file system. You can propose a configuration for a new Amazon EFS file system or an existing Amazon EFS file system that you own by specifying the Amazon EFS policy. For more information, see [Using file systems in Amazon EFS](https://docs.aws.amazon.com/efs/latest/ug/using-fs.html).
     ///
     /// * If the configuration is for an existing Amazon EFS file system and you do not specify the Amazon EFS policy, then the access preview uses the existing Amazon EFS policy for the file system.
@@ -1505,7 +1507,7 @@ extension AccessAnalyzerClientTypes {
     /// * If the access preview is for a new resource and you do not specify the policy, then the access preview assumes an Amazon EFS file system without a policy.
     ///
     /// * To propose deletion of an existing Amazon EFS file system policy, you can specify an empty string for the Amazon EFS policy.
-    public struct EfsFileSystemConfiguration {
+    public struct EfsFileSystemConfiguration: Swift.Sendable {
         /// The JSON policy definition to apply to the Amazon EFS file system. For more information on the elements that make up a file system policy, see [Amazon EFS Resource-based policies](https://docs.aws.amazon.com/efs/latest/ug/access-control-overview.html#access-control-manage-access-intro-resource-policies).
         public var fileSystemPolicy: Swift.String?
 
@@ -1516,12 +1518,12 @@ extension AccessAnalyzerClientTypes {
             self.fileSystemPolicy = fileSystemPolicy
         }
     }
-
 }
 
 extension AccessAnalyzerClientTypes {
+
     /// The proposed access control configuration for an IAM role. You can propose a configuration for a new IAM role or an existing IAM role that you own by specifying the trust policy. If the configuration is for a new IAM role, you must specify the trust policy. If the configuration is for an existing IAM role that you own and you do not propose the trust policy, the access preview uses the existing trust policy for the role. The proposed trust policy cannot be an empty string. For more information about role trust policy limits, see [IAM and STS quotas](https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_iam-quotas.html).
-    public struct IamRoleConfiguration {
+    public struct IamRoleConfiguration: Swift.Sendable {
         /// The proposed trust policy for the IAM role.
         public var trustPolicy: Swift.String?
 
@@ -1532,12 +1534,12 @@ extension AccessAnalyzerClientTypes {
             self.trustPolicy = trustPolicy
         }
     }
-
 }
 
 extension AccessAnalyzerClientTypes {
+
     /// Use this structure to propose allowing [cryptographic operations](https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#cryptographic-operations) in the grant only when the operation request includes the specified [encryption context](https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#encrypt_context). You can specify only one type of encryption context. An empty map is treated as not specified. For more information, see [GrantConstraints](https://docs.aws.amazon.com/kms/latest/APIReference/API_GrantConstraints.html).
-    public struct KmsGrantConstraints {
+    public struct KmsGrantConstraints: Swift.Sendable {
         /// A list of key-value pairs that must match the encryption context in the [cryptographic operation](https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#cryptographic-operations) request. The grant allows the operation only when the encryption context in the request is the same as the encryption context specified in this constraint.
         public var encryptionContextEquals: [Swift.String: Swift.String]?
         /// A list of key-value pairs that must be included in the encryption context of the [cryptographic operation](https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#cryptographic-operations) request. The grant allows the cryptographic operation only when the encryption context in the request includes the key-value pairs specified in this constraint, although it can include additional key-value pairs.
@@ -1552,12 +1554,11 @@ extension AccessAnalyzerClientTypes {
             self.encryptionContextSubset = encryptionContextSubset
         }
     }
-
 }
 
 extension AccessAnalyzerClientTypes {
 
-    public enum KmsGrantOperation: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum KmsGrantOperation: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case createGrant
         case decrypt
         case describeKey
@@ -1621,8 +1622,9 @@ extension AccessAnalyzerClientTypes {
 }
 
 extension AccessAnalyzerClientTypes {
+
     /// A proposed grant configuration for a KMS key. For more information, see [CreateGrant](https://docs.aws.amazon.com/kms/latest/APIReference/API_CreateGrant.html).
-    public struct KmsGrantConfiguration {
+    public struct KmsGrantConfiguration: Swift.Sendable {
         /// Use this structure to propose allowing [cryptographic operations](https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#cryptographic-operations) in the grant only when the operation request includes the specified [encryption context](https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#encrypt_context).
         public var constraints: AccessAnalyzerClientTypes.KmsGrantConstraints?
         /// The principal that is given permission to perform the operations that the grant permits.
@@ -1652,12 +1654,12 @@ extension AccessAnalyzerClientTypes {
             self.retiringPrincipal = retiringPrincipal
         }
     }
-
 }
 
 extension AccessAnalyzerClientTypes {
+
     /// Proposed access control configuration for a KMS key. You can propose a configuration for a new KMS key or an existing KMS key that you own by specifying the key policy and KMS grant configuration. If the configuration is for an existing key and you do not specify the key policy, the access preview uses the existing policy for the key. If the access preview is for a new resource and you do not specify the key policy, then the access preview uses the default key policy. The proposed key policy cannot be an empty string. For more information, see [Default key policy](https://docs.aws.amazon.com/kms/latest/developerguide/key-policies.html#key-policy-default). For more information about key policy limits, see [Resource quotas](https://docs.aws.amazon.com/kms/latest/developerguide/resource-limits.html).
-    public struct KmsKeyConfiguration {
+    public struct KmsKeyConfiguration: Swift.Sendable {
         /// A list of proposed grant configurations for the KMS key. If the proposed grant configuration is for an existing key, the access preview uses the proposed list of grant configurations in place of the existing grants. Otherwise, the access preview uses the existing grants for the key.
         public var grants: [AccessAnalyzerClientTypes.KmsGrantConfiguration]?
         /// Resource policy configuration for the KMS key. The only valid value for the name of the key policy is default. For more information, see [Default key policy](https://docs.aws.amazon.com/kms/latest/developerguide/key-policies.html#key-policy-default).
@@ -1672,12 +1674,12 @@ extension AccessAnalyzerClientTypes {
             self.keyPolicies = keyPolicies
         }
     }
-
 }
 
 extension AccessAnalyzerClientTypes {
+
     /// The values for a manual Amazon RDS DB cluster snapshot attribute.
-    public enum RdsDbClusterSnapshotAttributeValue {
+    public enum RdsDbClusterSnapshotAttributeValue: Swift.Sendable {
         /// The Amazon Web Services account IDs that have access to the manual Amazon RDS DB cluster snapshot. If the value all is specified, then the Amazon RDS DB cluster snapshot is public and can be copied or restored by all Amazon Web Services accounts.
         ///
         /// * If the configuration is for an existing Amazon RDS DB cluster snapshot and you do not specify the accountIds in RdsDbClusterSnapshotAttributeValue, then the access preview uses the existing shared accountIds for the snapshot.
@@ -1688,12 +1690,12 @@ extension AccessAnalyzerClientTypes {
         case accountids([Swift.String])
         case sdkUnknown(Swift.String)
     }
-
 }
 
 extension AccessAnalyzerClientTypes {
+
     /// The proposed access control configuration for an Amazon RDS DB cluster snapshot. You can propose a configuration for a new Amazon RDS DB cluster snapshot or an Amazon RDS DB cluster snapshot that you own by specifying the RdsDbClusterSnapshotAttributeValue and optional KMS encryption key. For more information, see [ModifyDBClusterSnapshotAttribute](https://docs.aws.amazon.com/AmazonRDS/latest/APIReference/API_ModifyDBClusterSnapshotAttribute.html).
-    public struct RdsDbClusterSnapshotConfiguration {
+    public struct RdsDbClusterSnapshotConfiguration: Swift.Sendable {
         /// The names and values of manual DB cluster snapshot attributes. Manual DB cluster snapshot attributes are used to authorize other Amazon Web Services accounts to restore a manual DB cluster snapshot. The only valid value for AttributeName for the attribute map is restore
         public var attributes: [Swift.String: AccessAnalyzerClientTypes.RdsDbClusterSnapshotAttributeValue]?
         /// The KMS key identifier for an encrypted Amazon RDS DB cluster snapshot. The KMS key identifier is the key ARN, key ID, alias ARN, or alias name for the KMS key.
@@ -1712,12 +1714,12 @@ extension AccessAnalyzerClientTypes {
             self.kmsKeyId = kmsKeyId
         }
     }
-
 }
 
 extension AccessAnalyzerClientTypes {
+
     /// The name and values of a manual Amazon RDS DB snapshot attribute. Manual DB snapshot attributes are used to authorize other Amazon Web Services accounts to restore a manual DB snapshot.
-    public enum RdsDbSnapshotAttributeValue {
+    public enum RdsDbSnapshotAttributeValue: Swift.Sendable {
         /// The Amazon Web Services account IDs that have access to the manual Amazon RDS DB snapshot. If the value all is specified, then the Amazon RDS DB snapshot is public and can be copied or restored by all Amazon Web Services accounts.
         ///
         /// * If the configuration is for an existing Amazon RDS DB snapshot and you do not specify the accountIds in RdsDbSnapshotAttributeValue, then the access preview uses the existing shared accountIds for the snapshot.
@@ -1728,12 +1730,12 @@ extension AccessAnalyzerClientTypes {
         case accountids([Swift.String])
         case sdkUnknown(Swift.String)
     }
-
 }
 
 extension AccessAnalyzerClientTypes {
+
     /// The proposed access control configuration for an Amazon RDS DB snapshot. You can propose a configuration for a new Amazon RDS DB snapshot or an Amazon RDS DB snapshot that you own by specifying the RdsDbSnapshotAttributeValue and optional KMS encryption key. For more information, see [ModifyDBSnapshotAttribute](https://docs.aws.amazon.com/AmazonRDS/latest/APIReference/API_ModifyDBSnapshotAttribute.html).
-    public struct RdsDbSnapshotConfiguration {
+    public struct RdsDbSnapshotConfiguration: Swift.Sendable {
         /// The names and values of manual DB snapshot attributes. Manual DB snapshot attributes are used to authorize other Amazon Web Services accounts to restore a manual DB snapshot. The only valid value for attributeName for the attribute map is restore.
         public var attributes: [Swift.String: AccessAnalyzerClientTypes.RdsDbSnapshotAttributeValue]?
         /// The KMS key identifier for an encrypted Amazon RDS DB snapshot. The KMS key identifier is the key ARN, key ID, alias ARN, or alias name for the KMS key.
@@ -1752,21 +1754,21 @@ extension AccessAnalyzerClientTypes {
             self.kmsKeyId = kmsKeyId
         }
     }
-
 }
 
 extension AccessAnalyzerClientTypes {
+
     /// This configuration sets the network origin for the Amazon S3 access point or multi-region access point to Internet.
-    public struct InternetConfiguration {
+    public struct InternetConfiguration: Swift.Sendable {
 
         public init() { }
     }
-
 }
 
 extension AccessAnalyzerClientTypes {
+
     /// The proposed virtual private cloud (VPC) configuration for the Amazon S3 access point. VPC configuration does not apply to multi-region access points. For more information, see [VpcConfiguration](https://docs.aws.amazon.com/AmazonS3/latest/API/API_control_VpcConfiguration.html).
-    public struct VpcConfiguration {
+    public struct VpcConfiguration: Swift.Sendable {
         /// If this field is specified, this access point will only allow connections from the specified VPC ID.
         /// This member is required.
         public var vpcId: Swift.String?
@@ -1778,24 +1780,24 @@ extension AccessAnalyzerClientTypes {
             self.vpcId = vpcId
         }
     }
-
 }
 
 extension AccessAnalyzerClientTypes {
+
     /// The proposed InternetConfiguration or VpcConfiguration to apply to the Amazon S3 access point. VpcConfiguration does not apply to multi-region access points. You can make the access point accessible from the internet, or you can specify that all requests made through that access point must originate from a specific virtual private cloud (VPC). You can specify only one type of network configuration. For more information, see [Creating access points](https://docs.aws.amazon.com/AmazonS3/latest/dev/creating-access-points.html).
-    public enum NetworkOriginConfiguration {
+    public enum NetworkOriginConfiguration: Swift.Sendable {
         /// The proposed virtual private cloud (VPC) configuration for the Amazon S3 access point. VPC configuration does not apply to multi-region access points. For more information, see [VpcConfiguration](https://docs.aws.amazon.com/AmazonS3/latest/API/API_control_VpcConfiguration.html).
         case vpcconfiguration(AccessAnalyzerClientTypes.VpcConfiguration)
         /// The configuration for the Amazon S3 access point or multi-region access point with an Internet origin.
         case internetconfiguration(AccessAnalyzerClientTypes.InternetConfiguration)
         case sdkUnknown(Swift.String)
     }
-
 }
 
 extension AccessAnalyzerClientTypes {
+
     /// The PublicAccessBlock configuration to apply to this Amazon S3 bucket. If the proposed configuration is for an existing Amazon S3 bucket and the configuration is not specified, the access preview uses the existing setting. If the proposed configuration is for a new bucket and the configuration is not specified, the access preview uses false. If the proposed configuration is for a new access point or multi-region access point and the access point BPA configuration is not specified, the access preview uses true. For more information, see [PublicAccessBlockConfiguration](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-s3-bucket-publicaccessblockconfiguration.html).
-    public struct S3PublicAccessBlockConfiguration {
+    public struct S3PublicAccessBlockConfiguration: Swift.Sendable {
         /// Specifies whether Amazon S3 should ignore public ACLs for this bucket and objects in this bucket.
         /// This member is required.
         public var ignorePublicAcls: Swift.Bool?
@@ -1812,12 +1814,12 @@ extension AccessAnalyzerClientTypes {
             self.restrictPublicBuckets = restrictPublicBuckets
         }
     }
-
 }
 
 extension AccessAnalyzerClientTypes {
+
     /// The configuration for an Amazon S3 access point or multi-region access point for the bucket. You can propose up to 10 access points or multi-region access points per bucket. If the proposed Amazon S3 access point configuration is for an existing bucket, the access preview uses the proposed access point configuration in place of the existing access points. To propose an access point without a policy, you can provide an empty string as the access point policy. For more information, see [Creating access points](https://docs.aws.amazon.com/AmazonS3/latest/dev/creating-access-points.html). For more information about access point policy limits, see [Access points restrictions and limitations](https://docs.aws.amazon.com/AmazonS3/latest/dev/access-points-restrictions-limitations.html).
-    public struct S3AccessPointConfiguration {
+    public struct S3AccessPointConfiguration: Swift.Sendable {
         /// The access point or multi-region access point policy.
         public var accessPointPolicy: Swift.String?
         /// The proposed Internet and VpcConfiguration to apply to this Amazon S3 access point. VpcConfiguration does not apply to multi-region access points. If the access preview is for a new resource and neither is specified, the access preview uses Internet for the network origin. If the access preview is for an existing resource and neither is specified, the access preview uses the exiting network origin.
@@ -1836,24 +1838,23 @@ extension AccessAnalyzerClientTypes {
             self.publicAccessBlock = publicAccessBlock
         }
     }
-
 }
 
 extension AccessAnalyzerClientTypes {
+
     /// You specify each grantee as a type-value pair using one of these types. You can specify only one type of grantee. For more information, see [PutBucketAcl](https://docs.aws.amazon.com/AmazonS3/latest/API/API_PutBucketAcl.html).
-    public enum AclGrantee {
+    public enum AclGrantee: Swift.Sendable {
         /// The value specified is the canonical user ID of an Amazon Web Services account.
         case id(Swift.String)
         /// Used for granting permissions to a predefined group.
         case uri(Swift.String)
         case sdkUnknown(Swift.String)
     }
-
 }
 
 extension AccessAnalyzerClientTypes {
 
-    public enum AclPermission: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AclPermission: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case fullControl
         case read
         case readAcp
@@ -1890,8 +1891,9 @@ extension AccessAnalyzerClientTypes {
 }
 
 extension AccessAnalyzerClientTypes {
+
     /// A proposed access control list grant configuration for an Amazon S3 bucket. For more information, see [How to Specify an ACL](https://docs.aws.amazon.com/AmazonS3/latest/dev/acl-overview.html#setting-acls).
-    public struct S3BucketAclGrantConfiguration {
+    public struct S3BucketAclGrantConfiguration: Swift.Sendable {
         /// The grantee to whom you’re assigning access rights.
         /// This member is required.
         public var grantee: AccessAnalyzerClientTypes.AclGrantee?
@@ -1908,12 +1910,12 @@ extension AccessAnalyzerClientTypes {
             self.permission = permission
         }
     }
-
 }
 
 extension AccessAnalyzerClientTypes {
+
     /// Proposed access control configuration for an Amazon S3 bucket. You can propose a configuration for a new Amazon S3 bucket or an existing Amazon S3 bucket that you own by specifying the Amazon S3 bucket policy, bucket ACLs, bucket BPA settings, Amazon S3 access points, and multi-region access points attached to the bucket. If the configuration is for an existing Amazon S3 bucket and you do not specify the Amazon S3 bucket policy, the access preview uses the existing policy attached to the bucket. If the access preview is for a new resource and you do not specify the Amazon S3 bucket policy, the access preview assumes a bucket without a policy. To propose deletion of an existing bucket policy, you can specify an empty string. For more information about bucket policy limits, see [Bucket Policy Examples](https://docs.aws.amazon.com/AmazonS3/latest/dev/example-bucket-policies.html).
-    public struct S3BucketConfiguration {
+    public struct S3BucketConfiguration: Swift.Sendable {
         /// The configuration of Amazon S3 access points or multi-region access points for the bucket. You can propose up to 10 new access points per bucket.
         public var accessPoints: [Swift.String: AccessAnalyzerClientTypes.S3AccessPointConfiguration]?
         /// The proposed list of ACL grants for the Amazon S3 bucket. You can propose up to 100 ACL grants per bucket. If the proposed grant configuration is for an existing bucket, the access preview uses the proposed list of grant configurations in place of the existing grants. Otherwise, the access preview uses the existing grants for the bucket.
@@ -1936,12 +1938,12 @@ extension AccessAnalyzerClientTypes {
             self.bucketPublicAccessBlock = bucketPublicAccessBlock
         }
     }
-
 }
 
 extension AccessAnalyzerClientTypes {
+
     /// Proposed access control configuration for an Amazon S3 directory bucket. You can propose a configuration for a new Amazon S3 directory bucket or an existing Amazon S3 directory bucket that you own by specifying the Amazon S3 bucket policy. If the configuration is for an existing Amazon S3 directory bucket and you do not specify the Amazon S3 bucket policy, the access preview uses the existing policy attached to the directory bucket. If the access preview is for a new resource and you do not specify the Amazon S3 bucket policy, the access preview assumes an directory bucket without a policy. To propose deletion of an existing bucket policy, you can specify an empty string. For more information about Amazon S3 directory bucket policies, see [Example directory bucket policies for S3 Express One Zone](https://docs.aws.amazon.com/AmazonS3/latest/userguide/s3-express-security-iam-example-bucket-policies.html).
-    public struct S3ExpressDirectoryBucketConfiguration {
+    public struct S3ExpressDirectoryBucketConfiguration: Swift.Sendable {
         /// The proposed bucket policy for the Amazon S3 directory bucket.
         public var bucketPolicy: Swift.String?
 
@@ -1952,12 +1954,12 @@ extension AccessAnalyzerClientTypes {
             self.bucketPolicy = bucketPolicy
         }
     }
-
 }
 
 extension AccessAnalyzerClientTypes {
+
     /// The configuration for a Secrets Manager secret. For more information, see [CreateSecret](https://docs.aws.amazon.com/secretsmanager/latest/apireference/API_CreateSecret.html). You can propose a configuration for a new secret or an existing secret that you own by specifying the secret policy and optional KMS encryption key. If the configuration is for an existing secret and you do not specify the secret policy, the access preview uses the existing policy for the secret. If the access preview is for a new resource and you do not specify the policy, the access preview assumes a secret without a policy. To propose deletion of an existing policy, you can specify an empty string. If the proposed configuration is for a new secret and you do not specify the KMS key ID, the access preview uses the Amazon Web Services managed key aws/secretsmanager. If you specify an empty string for the KMS key ID, the access preview uses the Amazon Web Services managed key of the Amazon Web Services account. For more information about secret policy limits, see [Quotas for Secrets Manager.](https://docs.aws.amazon.com/secretsmanager/latest/userguide/reference_limits.html).
-    public struct SecretsManagerSecretConfiguration {
+    public struct SecretsManagerSecretConfiguration: Swift.Sendable {
         /// The proposed ARN, key ID, or alias of the KMS key.
         public var kmsKeyId: Swift.String?
         /// The proposed resource policy defining who can access or manage the secret.
@@ -1972,12 +1974,12 @@ extension AccessAnalyzerClientTypes {
             self.secretPolicy = secretPolicy
         }
     }
-
 }
 
 extension AccessAnalyzerClientTypes {
+
     /// The proposed access control configuration for an Amazon SNS topic. You can propose a configuration for a new Amazon SNS topic or an existing Amazon SNS topic that you own by specifying the policy. If the configuration is for an existing Amazon SNS topic and you do not specify the Amazon SNS policy, then the access preview uses the existing Amazon SNS policy for the topic. If the access preview is for a new resource and you do not specify the policy, then the access preview assumes an Amazon SNS topic without a policy. To propose deletion of an existing Amazon SNS topic policy, you can specify an empty string for the Amazon SNS policy. For more information, see [Topic](https://docs.aws.amazon.com/sns/latest/api/API_Topic.html).
-    public struct SnsTopicConfiguration {
+    public struct SnsTopicConfiguration: Swift.Sendable {
         /// The JSON policy text that defines who can access an Amazon SNS topic. For more information, see [Example cases for Amazon SNS access control](https://docs.aws.amazon.com/sns/latest/dg/sns-access-policy-use-cases.html) in the Amazon SNS Developer Guide.
         public var topicPolicy: Swift.String?
 
@@ -1988,12 +1990,12 @@ extension AccessAnalyzerClientTypes {
             self.topicPolicy = topicPolicy
         }
     }
-
 }
 
 extension AccessAnalyzerClientTypes {
+
     /// The proposed access control configuration for an Amazon SQS queue. You can propose a configuration for a new Amazon SQS queue or an existing Amazon SQS queue that you own by specifying the Amazon SQS policy. If the configuration is for an existing Amazon SQS queue and you do not specify the Amazon SQS policy, the access preview uses the existing Amazon SQS policy for the queue. If the access preview is for a new resource and you do not specify the policy, the access preview assumes an Amazon SQS queue without a policy. To propose deletion of an existing Amazon SQS queue policy, you can specify an empty string for the Amazon SQS policy. For more information about Amazon SQS policy limits, see [Quotas related to policies](https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/quotas-policies.html).
-    public struct SqsQueueConfiguration {
+    public struct SqsQueueConfiguration: Swift.Sendable {
         /// The proposed resource policy for the Amazon SQS queue.
         public var queuePolicy: Swift.String?
 
@@ -2004,12 +2006,12 @@ extension AccessAnalyzerClientTypes {
             self.queuePolicy = queuePolicy
         }
     }
-
 }
 
 extension AccessAnalyzerClientTypes {
+
     /// Access control configuration structures for your resource. You specify the configuration as a type-value pair. You can specify only one type of access control configuration.
-    public enum Configuration {
+    public enum Configuration: Swift.Sendable {
         /// The access control configuration is for an Amazon EBS volume snapshot.
         case ebssnapshot(AccessAnalyzerClientTypes.EbsSnapshotConfiguration)
         /// The access control configuration is for an Amazon ECR repository.
@@ -2040,10 +2042,9 @@ extension AccessAnalyzerClientTypes {
         case dynamodbtable(AccessAnalyzerClientTypes.DynamodbTableConfiguration)
         case sdkUnknown(Swift.String)
     }
-
 }
 
-public struct CreateAccessPreviewInput {
+public struct CreateAccessPreviewInput: Swift.Sendable {
     /// The [ARN of the account analyzer](https://docs.aws.amazon.com/IAM/latest/UserGuide/access-analyzer-getting-started.html#permission-resources) used to generate the access preview. You can only create an access preview for analyzers with an Account type and Active status.
     /// This member is required.
     public var analyzerArn: Swift.String?
@@ -2065,7 +2066,7 @@ public struct CreateAccessPreviewInput {
     }
 }
 
-public struct CreateAccessPreviewOutput {
+public struct CreateAccessPreviewOutput: Swift.Sendable {
     /// The unique ID for the access preview.
     /// This member is required.
     public var id: Swift.String?
@@ -2078,7 +2079,7 @@ public struct CreateAccessPreviewOutput {
     }
 }
 
-public struct GenerateFindingRecommendationInput {
+public struct GenerateFindingRecommendationInput: Swift.Sendable {
     /// The [ARN of the analyzer](https://docs.aws.amazon.com/IAM/latest/UserGuide/access-analyzer-getting-started.html#permission-resources) used to generate the finding recommendation.
     /// This member is required.
     public var analyzerArn: Swift.String?
@@ -2096,7 +2097,7 @@ public struct GenerateFindingRecommendationInput {
     }
 }
 
-public struct GetAccessPreviewInput {
+public struct GetAccessPreviewInput: Swift.Sendable {
     /// The unique ID for the access preview.
     /// This member is required.
     public var accessPreviewId: Swift.String?
@@ -2116,7 +2117,7 @@ public struct GetAccessPreviewInput {
 
 extension AccessAnalyzerClientTypes {
 
-    public enum AccessPreviewStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AccessPreviewStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case completed
         case creating
         case failed
@@ -2148,7 +2149,7 @@ extension AccessAnalyzerClientTypes {
 
 extension AccessAnalyzerClientTypes {
 
-    public enum AccessPreviewStatusReasonCode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AccessPreviewStatusReasonCode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case internalError
         case invalidConfiguration
         case sdkUnknown(Swift.String)
@@ -2176,8 +2177,9 @@ extension AccessAnalyzerClientTypes {
 }
 
 extension AccessAnalyzerClientTypes {
+
     /// Provides more details about the current status of the access preview. For example, if the creation of the access preview fails, a Failed status is returned. This failure can be due to an internal issue with the analysis or due to an invalid proposed resource configuration.
-    public struct AccessPreviewStatusReason {
+    public struct AccessPreviewStatusReason: Swift.Sendable {
         /// The reason code for the current status of the access preview.
         /// This member is required.
         public var code: AccessAnalyzerClientTypes.AccessPreviewStatusReasonCode?
@@ -2189,12 +2191,12 @@ extension AccessAnalyzerClientTypes {
             self.code = code
         }
     }
-
 }
 
 extension AccessAnalyzerClientTypes {
+
     /// Contains information about an access preview.
-    public struct AccessPreview {
+    public struct AccessPreview: Swift.Sendable {
         /// The ARN of the analyzer used to generate the access preview.
         /// This member is required.
         public var analyzerArn: Swift.String?
@@ -2236,10 +2238,9 @@ extension AccessAnalyzerClientTypes {
             self.statusReason = statusReason
         }
     }
-
 }
 
-public struct GetAccessPreviewOutput {
+public struct GetAccessPreviewOutput: Swift.Sendable {
     /// An object that contains information about the access preview.
     /// This member is required.
     public var accessPreview: AccessAnalyzerClientTypes.AccessPreview?
@@ -2253,7 +2254,7 @@ public struct GetAccessPreviewOutput {
 }
 
 /// Retrieves an analyzed resource.
-public struct GetAnalyzedResourceInput {
+public struct GetAnalyzedResourceInput: Swift.Sendable {
     /// The [ARN of the analyzer](https://docs.aws.amazon.com/IAM/latest/UserGuide/access-analyzer-getting-started.html#permission-resources) to retrieve information from.
     /// This member is required.
     public var analyzerArn: Swift.String?
@@ -2273,7 +2274,7 @@ public struct GetAnalyzedResourceInput {
 
 extension AccessAnalyzerClientTypes {
 
-    public enum ResourceType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ResourceType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case awsDynamodbStream
         case awsDynamodbTable
         case awsEc2Snapshot
@@ -2344,7 +2345,7 @@ extension AccessAnalyzerClientTypes {
 
 extension AccessAnalyzerClientTypes {
 
-    public enum FindingStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum FindingStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case active
         case archived
         case resolved
@@ -2375,8 +2376,9 @@ extension AccessAnalyzerClientTypes {
 }
 
 extension AccessAnalyzerClientTypes {
+
     /// Contains details about the analyzed resource.
-    public struct AnalyzedResource {
+    public struct AnalyzedResource: Swift.Sendable {
         /// The actions that an external principal is granted permission to use by the policy that generated the finding.
         public var actions: [Swift.String]?
         /// The time at which the resource was analyzed.
@@ -2434,11 +2436,10 @@ extension AccessAnalyzerClientTypes {
             self.updatedAt = updatedAt
         }
     }
-
 }
 
 /// The response to the request.
-public struct GetAnalyzedResourceOutput {
+public struct GetAnalyzedResourceOutput: Swift.Sendable {
     /// An AnalyzedResource object that contains information that IAM Access Analyzer found when it analyzed the resource.
     public var resource: AccessAnalyzerClientTypes.AnalyzedResource?
 
@@ -2451,7 +2452,7 @@ public struct GetAnalyzedResourceOutput {
 }
 
 /// Retrieves a finding.
-public struct GetFindingInput {
+public struct GetFindingInput: Swift.Sendable {
     /// The [ARN of the analyzer](https://docs.aws.amazon.com/IAM/latest/UserGuide/access-analyzer-getting-started.html#permission-resources) that generated the finding.
     /// This member is required.
     public var analyzerArn: Swift.String?
@@ -2470,8 +2471,9 @@ public struct GetFindingInput {
 }
 
 extension AccessAnalyzerClientTypes {
+
     /// Includes details about how the access that generated the finding is granted. This is populated for Amazon S3 bucket findings.
-    public struct FindingSourceDetail {
+    public struct FindingSourceDetail: Swift.Sendable {
         /// The account of the cross-account access point that generated the finding.
         public var accessPointAccount: Swift.String?
         /// The ARN of the access point that generated the finding. The ARN format depends on whether the ARN represents an access point or a multi-region access point.
@@ -2486,12 +2488,11 @@ extension AccessAnalyzerClientTypes {
             self.accessPointArn = accessPointArn
         }
     }
-
 }
 
 extension AccessAnalyzerClientTypes {
 
-    public enum FindingSourceType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum FindingSourceType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case bucketAcl
         case policy
         case s3AccessPoint
@@ -2525,8 +2526,9 @@ extension AccessAnalyzerClientTypes {
 }
 
 extension AccessAnalyzerClientTypes {
+
     /// The source of the finding. This indicates how the access that generated the finding is granted. It is populated for Amazon S3 bucket findings.
-    public struct FindingSource {
+    public struct FindingSource: Swift.Sendable {
         /// Includes details about how the access that generated the finding is granted. This is populated for Amazon S3 bucket findings.
         public var detail: AccessAnalyzerClientTypes.FindingSourceDetail?
         /// Indicates the type of access that generated the finding.
@@ -2542,12 +2544,12 @@ extension AccessAnalyzerClientTypes {
             self.type = type
         }
     }
-
 }
 
 extension AccessAnalyzerClientTypes {
+
     /// Contains information about a finding.
-    public struct Finding {
+    public struct Finding: Swift.Sendable {
         /// The action in the analyzed policy statement that an external principal has permission to use.
         public var action: [Swift.String]?
         /// The time at which the resource was analyzed.
@@ -2618,11 +2620,10 @@ extension AccessAnalyzerClientTypes {
             self.updatedAt = updatedAt
         }
     }
-
 }
 
 /// The response to the request.
-public struct GetFindingOutput {
+public struct GetFindingOutput: Swift.Sendable {
     /// A finding object that contains finding details.
     public var finding: AccessAnalyzerClientTypes.Finding?
 
@@ -2634,7 +2635,7 @@ public struct GetFindingOutput {
     }
 }
 
-public struct GetFindingRecommendationInput {
+public struct GetFindingRecommendationInput: Swift.Sendable {
     /// The [ARN of the analyzer](https://docs.aws.amazon.com/IAM/latest/UserGuide/access-analyzer-getting-started.html#permission-resources) used to generate the finding recommendation.
     /// This member is required.
     public var analyzerArn: Swift.String?
@@ -2661,8 +2662,9 @@ public struct GetFindingRecommendationInput {
 }
 
 extension AccessAnalyzerClientTypes {
+
     /// Contains information about the reason that the retrieval of a recommendation for a finding failed.
-    public struct RecommendationError {
+    public struct RecommendationError: Swift.Sendable {
         /// The error code for a failed retrieval of a recommendation for a finding.
         /// This member is required.
         public var code: Swift.String?
@@ -2679,12 +2681,11 @@ extension AccessAnalyzerClientTypes {
             self.message = message
         }
     }
-
 }
 
 extension AccessAnalyzerClientTypes {
 
-    public enum RecommendationType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum RecommendationType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case unusedPermissionRecommendation
         case sdkUnknown(Swift.String)
 
@@ -2710,7 +2711,7 @@ extension AccessAnalyzerClientTypes {
 
 extension AccessAnalyzerClientTypes {
 
-    public enum RecommendedRemediationAction: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum RecommendedRemediationAction: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case createPolicy
         case detachPolicy
         case sdkUnknown(Swift.String)
@@ -2738,8 +2739,9 @@ extension AccessAnalyzerClientTypes {
 }
 
 extension AccessAnalyzerClientTypes {
+
     /// Contains information about the action to take for a policy in an unused permissions finding.
-    public struct UnusedPermissionsRecommendedStep {
+    public struct UnusedPermissionsRecommendedStep: Swift.Sendable {
         /// If the recommended action for the unused permissions finding is to detach a policy, the ID of an existing policy to be detached.
         public var existingPolicyId: Swift.String?
         /// The time at which the existing policy for the unused permissions finding was last updated.
@@ -2763,22 +2765,21 @@ extension AccessAnalyzerClientTypes {
             self.recommendedPolicy = recommendedPolicy
         }
     }
-
 }
 
 extension AccessAnalyzerClientTypes {
+
     /// Contains information about a recommended step for an unused access analyzer finding.
-    public enum RecommendedStep {
+    public enum RecommendedStep: Swift.Sendable {
         /// A recommended step for an unused permissions finding.
         case unusedpermissionsrecommendedstep(AccessAnalyzerClientTypes.UnusedPermissionsRecommendedStep)
         case sdkUnknown(Swift.String)
     }
-
 }
 
 extension AccessAnalyzerClientTypes {
 
-    public enum Status: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Status: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case failed
         case inProgress
         case succeeded
@@ -2808,7 +2809,7 @@ extension AccessAnalyzerClientTypes {
     }
 }
 
-public struct GetFindingRecommendationOutput {
+public struct GetFindingRecommendationOutput: Swift.Sendable {
     /// The time at which the retrieval of the finding recommendation was completed.
     public var completedAt: Foundation.Date?
     /// Detailed information about the reason that the retrieval of a recommendation for the finding failed.
@@ -2852,7 +2853,7 @@ public struct GetFindingRecommendationOutput {
     }
 }
 
-public struct GetFindingV2Input {
+public struct GetFindingV2Input: Swift.Sendable {
     /// The [ARN of the analyzer](https://docs.aws.amazon.com/IAM/latest/UserGuide/access-analyzer-getting-started.html#permission-resources) that generated the finding.
     /// This member is required.
     public var analyzerArn: Swift.String?
@@ -2879,8 +2880,9 @@ public struct GetFindingV2Input {
 }
 
 extension AccessAnalyzerClientTypes {
+
     /// Contains information about an external access finding.
-    public struct ExternalAccessDetails {
+    public struct ExternalAccessDetails: Swift.Sendable {
         /// The action in the analyzed policy statement that an external principal has permission to use.
         public var action: [Swift.String]?
         /// The condition in the analyzed policy statement that resulted in an external access finding.
@@ -2908,12 +2910,12 @@ extension AccessAnalyzerClientTypes {
             self.sources = sources
         }
     }
-
 }
 
 extension AccessAnalyzerClientTypes {
+
     /// Contains information about an unused access finding for an IAM role. IAM Access Analyzer charges for unused access analysis based on the number of IAM roles and users analyzed per month. For more details on pricing, see [IAM Access Analyzer pricing](https://aws.amazon.com/iam/access-analyzer/pricing).
-    public struct UnusedIamRoleDetails {
+    public struct UnusedIamRoleDetails: Swift.Sendable {
         /// The time at which the role was last accessed.
         public var lastAccessed: Foundation.Date?
 
@@ -2924,12 +2926,12 @@ extension AccessAnalyzerClientTypes {
             self.lastAccessed = lastAccessed
         }
     }
-
 }
 
 extension AccessAnalyzerClientTypes {
+
     /// Contains information about an unused access finding for an IAM user access key. IAM Access Analyzer charges for unused access analysis based on the number of IAM roles and users analyzed per month. For more details on pricing, see [IAM Access Analyzer pricing](https://aws.amazon.com/iam/access-analyzer/pricing).
-    public struct UnusedIamUserAccessKeyDetails {
+    public struct UnusedIamUserAccessKeyDetails: Swift.Sendable {
         /// The ID of the access key for which the unused access finding was generated.
         /// This member is required.
         public var accessKeyId: Swift.String?
@@ -2945,12 +2947,12 @@ extension AccessAnalyzerClientTypes {
             self.lastAccessed = lastAccessed
         }
     }
-
 }
 
 extension AccessAnalyzerClientTypes {
+
     /// Contains information about an unused access finding for an IAM user password. IAM Access Analyzer charges for unused access analysis based on the number of IAM roles and users analyzed per month. For more details on pricing, see [IAM Access Analyzer pricing](https://aws.amazon.com/iam/access-analyzer/pricing).
-    public struct UnusedIamUserPasswordDetails {
+    public struct UnusedIamUserPasswordDetails: Swift.Sendable {
         /// The time at which the password was last accessed.
         public var lastAccessed: Foundation.Date?
 
@@ -2961,12 +2963,12 @@ extension AccessAnalyzerClientTypes {
             self.lastAccessed = lastAccessed
         }
     }
-
 }
 
 extension AccessAnalyzerClientTypes {
+
     /// Contains information about an unused access finding for an action. IAM Access Analyzer charges for unused access analysis based on the number of IAM roles and users analyzed per month. For more details on pricing, see [IAM Access Analyzer pricing](https://aws.amazon.com/iam/access-analyzer/pricing).
-    public struct UnusedAction {
+    public struct UnusedAction: Swift.Sendable {
         /// The action for which the unused access finding was generated.
         /// This member is required.
         public var action: Swift.String?
@@ -2982,12 +2984,12 @@ extension AccessAnalyzerClientTypes {
             self.lastAccessed = lastAccessed
         }
     }
-
 }
 
 extension AccessAnalyzerClientTypes {
+
     /// Contains information about an unused access finding for a permission. IAM Access Analyzer charges for unused access analysis based on the number of IAM roles and users analyzed per month. For more details on pricing, see [IAM Access Analyzer pricing](https://aws.amazon.com/iam/access-analyzer/pricing).
-    public struct UnusedPermissionDetails {
+    public struct UnusedPermissionDetails: Swift.Sendable {
         /// A list of unused actions for which the unused access finding was generated.
         public var actions: [AccessAnalyzerClientTypes.UnusedAction]?
         /// The time at which the permission was last accessed.
@@ -3007,12 +3009,12 @@ extension AccessAnalyzerClientTypes {
             self.serviceNamespace = serviceNamespace
         }
     }
-
 }
 
 extension AccessAnalyzerClientTypes {
+
     /// Contains information about an external access or unused access finding. Only one parameter can be used in a FindingDetails object.
-    public enum FindingDetails {
+    public enum FindingDetails: Swift.Sendable {
         /// The details for an external access analyzer finding.
         case externalaccessdetails(AccessAnalyzerClientTypes.ExternalAccessDetails)
         /// The details for an unused access analyzer finding with an unused permission finding type.
@@ -3025,12 +3027,11 @@ extension AccessAnalyzerClientTypes {
         case unusediamuserpassworddetails(AccessAnalyzerClientTypes.UnusedIamUserPasswordDetails)
         case sdkUnknown(Swift.String)
     }
-
 }
 
 extension AccessAnalyzerClientTypes {
 
-    public enum FindingType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum FindingType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case externalAccess
         case unusedIamRole
         case unusedIamUserAccessKey
@@ -3066,7 +3067,7 @@ extension AccessAnalyzerClientTypes {
     }
 }
 
-public struct GetFindingV2Output {
+public struct GetFindingV2Output: Swift.Sendable {
     /// The time at which the resource-based policy or IAM entity that generated the finding was analyzed.
     /// This member is required.
     public var analyzedAt: Foundation.Date?
@@ -3130,7 +3131,7 @@ public struct GetFindingV2Output {
     }
 }
 
-public struct GetGeneratedPolicyInput {
+public struct GetGeneratedPolicyInput: Swift.Sendable {
     /// The level of detail that you want to generate. You can specify whether to generate policies with placeholders for resource ARNs for actions that support resource level granularity in policies. For example, in the resource section of a policy, you can receive a placeholder such as "Resource":"arn:aws:s3:::${BucketName}" instead of "*".
     public var includeResourcePlaceholders: Swift.Bool?
     /// The level of detail that you want to generate. You can specify whether to generate service-level policies. IAM Access Analyzer uses iam:servicelastaccessed to identify services that have been used recently to create this service-level template.
@@ -3152,8 +3153,9 @@ public struct GetGeneratedPolicyInput {
 }
 
 extension AccessAnalyzerClientTypes {
+
     /// Contains the text for the generated policy.
-    public struct GeneratedPolicy {
+    public struct GeneratedPolicy: Swift.Sendable {
         /// The text to use as the content for the new policy. The policy is created using the [CreatePolicy](https://docs.aws.amazon.com/IAM/latest/APIReference/API_CreatePolicy.html) action.
         /// This member is required.
         public var policy: Swift.String?
@@ -3165,12 +3167,12 @@ extension AccessAnalyzerClientTypes {
             self.policy = policy
         }
     }
-
 }
 
 extension AccessAnalyzerClientTypes {
+
     /// Contains details about the CloudTrail trail being analyzed to generate a policy.
-    public struct TrailProperties {
+    public struct TrailProperties: Swift.Sendable {
         /// Possible values are true or false. If set to true, IAM Access Analyzer retrieves CloudTrail data from all regions to analyze and generate a policy.
         public var allRegions: Swift.Bool?
         /// Specifies the ARN of the trail. The format of a trail ARN is arn:aws:cloudtrail:us-east-2:123456789012:trail/MyTrail.
@@ -3190,12 +3192,12 @@ extension AccessAnalyzerClientTypes {
             self.regions = regions
         }
     }
-
 }
 
 extension AccessAnalyzerClientTypes {
+
     /// Contains information about CloudTrail access.
-    public struct CloudTrailProperties {
+    public struct CloudTrailProperties: Swift.Sendable {
         /// The end of the time range for which IAM Access Analyzer reviews your CloudTrail events. Events with a timestamp after this time are not considered to generate a policy. If this is not included in the request, the default value is the current time.
         /// This member is required.
         public var endTime: Foundation.Date?
@@ -3217,12 +3219,12 @@ extension AccessAnalyzerClientTypes {
             self.trailProperties = trailProperties
         }
     }
-
 }
 
 extension AccessAnalyzerClientTypes {
+
     /// Contains the generated policy details.
-    public struct GeneratedPolicyProperties {
+    public struct GeneratedPolicyProperties: Swift.Sendable {
         /// Lists details about the Trail used to generated policy.
         public var cloudTrailProperties: AccessAnalyzerClientTypes.CloudTrailProperties?
         /// This value is set to true if the generated policy contains all possible actions for a service that IAM Access Analyzer identified from the CloudTrail trail that you specified, and false otherwise.
@@ -3242,12 +3244,12 @@ extension AccessAnalyzerClientTypes {
             self.principalArn = principalArn
         }
     }
-
 }
 
 extension AccessAnalyzerClientTypes {
+
     /// Contains the text for the generated policy and its details.
-    public struct GeneratedPolicyResult {
+    public struct GeneratedPolicyResult: Swift.Sendable {
         /// The text to use as the content for the new policy. The policy is created using the [CreatePolicy](https://docs.aws.amazon.com/IAM/latest/APIReference/API_CreatePolicy.html) action.
         public var generatedPolicies: [AccessAnalyzerClientTypes.GeneratedPolicy]?
         /// A GeneratedPolicyProperties object that contains properties of the generated policy.
@@ -3263,12 +3265,11 @@ extension AccessAnalyzerClientTypes {
             self.properties = properties
         }
     }
-
 }
 
 extension AccessAnalyzerClientTypes {
 
-    public enum JobErrorCode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum JobErrorCode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case authorizationError
         case resourceNotFoundError
         case serviceError
@@ -3302,8 +3303,9 @@ extension AccessAnalyzerClientTypes {
 }
 
 extension AccessAnalyzerClientTypes {
+
     /// Contains the details about the policy generation error.
-    public struct JobError {
+    public struct JobError: Swift.Sendable {
         /// The job error code.
         /// This member is required.
         public var code: AccessAnalyzerClientTypes.JobErrorCode?
@@ -3320,12 +3322,11 @@ extension AccessAnalyzerClientTypes {
             self.message = message
         }
     }
-
 }
 
 extension AccessAnalyzerClientTypes {
 
-    public enum JobStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum JobStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case canceled
         case failed
         case inProgress
@@ -3359,8 +3360,9 @@ extension AccessAnalyzerClientTypes {
 }
 
 extension AccessAnalyzerClientTypes {
+
     /// Contains details about the policy generation request.
-    public struct JobDetails {
+    public struct JobDetails: Swift.Sendable {
         /// A timestamp of when the job was completed.
         public var completedOn: Foundation.Date?
         /// The job error for the policy generation request.
@@ -3390,10 +3392,9 @@ extension AccessAnalyzerClientTypes {
             self.status = status
         }
     }
-
 }
 
-public struct GetGeneratedPolicyOutput {
+public struct GetGeneratedPolicyOutput: Swift.Sendable {
     /// A GeneratedPolicyResult object that contains the generated policies and associated details.
     /// This member is required.
     public var generatedPolicyResult: AccessAnalyzerClientTypes.GeneratedPolicyResult?
@@ -3411,7 +3412,7 @@ public struct GetGeneratedPolicyOutput {
     }
 }
 
-public struct ListAccessPreviewFindingsInput {
+public struct ListAccessPreviewFindingsInput: Swift.Sendable {
     /// The unique ID for the access preview.
     /// This member is required.
     public var accessPreviewId: Swift.String?
@@ -3443,7 +3444,7 @@ public struct ListAccessPreviewFindingsInput {
 
 extension AccessAnalyzerClientTypes {
 
-    public enum FindingChangeType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum FindingChangeType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case changed
         case new
         case unchanged
@@ -3474,8 +3475,9 @@ extension AccessAnalyzerClientTypes {
 }
 
 extension AccessAnalyzerClientTypes {
+
     /// An access preview finding generated by the access preview.
-    public struct AccessPreviewFinding {
+    public struct AccessPreviewFinding: Swift.Sendable {
         /// The action in the analyzed policy statement that an external principal has permission to perform.
         public var action: [Swift.String]?
         /// Provides context on how the access preview finding compares to existing access identified in IAM Access Analyzer.
@@ -3557,10 +3559,9 @@ extension AccessAnalyzerClientTypes {
             self.status = status
         }
     }
-
 }
 
-public struct ListAccessPreviewFindingsOutput {
+public struct ListAccessPreviewFindingsOutput: Swift.Sendable {
     /// A list of access preview findings that match the specified filter criteria.
     /// This member is required.
     public var findings: [AccessAnalyzerClientTypes.AccessPreviewFinding]?
@@ -3577,7 +3578,7 @@ public struct ListAccessPreviewFindingsOutput {
     }
 }
 
-public struct ListAccessPreviewsInput {
+public struct ListAccessPreviewsInput: Swift.Sendable {
     /// The [ARN of the analyzer](https://docs.aws.amazon.com/IAM/latest/UserGuide/access-analyzer-getting-started.html#permission-resources) used to generate the access preview.
     /// This member is required.
     public var analyzerArn: Swift.String?
@@ -3599,8 +3600,9 @@ public struct ListAccessPreviewsInput {
 }
 
 extension AccessAnalyzerClientTypes {
+
     /// Contains a summary of information about an access preview.
-    public struct AccessPreviewSummary {
+    public struct AccessPreviewSummary: Swift.Sendable {
         /// The ARN of the analyzer used to generate the access preview.
         /// This member is required.
         public var analyzerArn: Swift.String?
@@ -3637,10 +3639,9 @@ extension AccessAnalyzerClientTypes {
             self.statusReason = statusReason
         }
     }
-
 }
 
-public struct ListAccessPreviewsOutput {
+public struct ListAccessPreviewsOutput: Swift.Sendable {
     /// A list of access previews retrieved for the analyzer.
     /// This member is required.
     public var accessPreviews: [AccessAnalyzerClientTypes.AccessPreviewSummary]?
@@ -3658,7 +3659,7 @@ public struct ListAccessPreviewsOutput {
 }
 
 /// Retrieves a list of resources that have been analyzed.
-public struct ListAnalyzedResourcesInput {
+public struct ListAnalyzedResourcesInput: Swift.Sendable {
     /// The [ARN of the analyzer](https://docs.aws.amazon.com/IAM/latest/UserGuide/access-analyzer-getting-started.html#permission-resources) to retrieve a list of analyzed resources from.
     /// This member is required.
     public var analyzerArn: Swift.String?
@@ -3684,8 +3685,9 @@ public struct ListAnalyzedResourcesInput {
 }
 
 extension AccessAnalyzerClientTypes {
+
     /// Contains the ARN of the analyzed resource.
-    public struct AnalyzedResourceSummary {
+    public struct AnalyzedResourceSummary: Swift.Sendable {
         /// The ARN of the analyzed resource.
         /// This member is required.
         public var resourceArn: Swift.String?
@@ -3707,11 +3709,10 @@ extension AccessAnalyzerClientTypes {
             self.resourceType = resourceType
         }
     }
-
 }
 
 /// The response to the request.
-public struct ListAnalyzedResourcesOutput {
+public struct ListAnalyzedResourcesOutput: Swift.Sendable {
     /// A list of resources that were analyzed.
     /// This member is required.
     public var analyzedResources: [AccessAnalyzerClientTypes.AnalyzedResourceSummary]?
@@ -3730,7 +3731,7 @@ public struct ListAnalyzedResourcesOutput {
 
 extension AccessAnalyzerClientTypes {
 
-    public enum OrderBy: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum OrderBy: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case asc
         case desc
         case sdkUnknown(Swift.String)
@@ -3758,8 +3759,9 @@ extension AccessAnalyzerClientTypes {
 }
 
 extension AccessAnalyzerClientTypes {
+
     /// The criteria used to sort.
-    public struct SortCriteria {
+    public struct SortCriteria: Swift.Sendable {
         /// The name of the attribute to sort on.
         public var attributeName: Swift.String?
         /// The sort order, ascending or descending.
@@ -3774,11 +3776,10 @@ extension AccessAnalyzerClientTypes {
             self.orderBy = orderBy
         }
     }
-
 }
 
 /// Retrieves a list of findings generated by the specified analyzer.
-public struct ListFindingsInput {
+public struct ListFindingsInput: Swift.Sendable {
     /// The [ARN of the analyzer](https://docs.aws.amazon.com/IAM/latest/UserGuide/access-analyzer-getting-started.html#permission-resources) to retrieve findings from.
     /// This member is required.
     public var analyzerArn: Swift.String?
@@ -3808,8 +3809,9 @@ public struct ListFindingsInput {
 }
 
 extension AccessAnalyzerClientTypes {
+
     /// Contains information about a finding.
-    public struct FindingSummary {
+    public struct FindingSummary: Swift.Sendable {
         /// The action in the analyzed policy statement that an external principal has permission to use.
         public var action: [Swift.String]?
         /// The time at which the resource-based policy that generated the finding was analyzed.
@@ -3880,11 +3882,10 @@ extension AccessAnalyzerClientTypes {
             self.updatedAt = updatedAt
         }
     }
-
 }
 
 /// The response to the request.
-public struct ListFindingsOutput {
+public struct ListFindingsOutput: Swift.Sendable {
     /// A list of findings retrieved from the analyzer that match the filter criteria specified, if any.
     /// This member is required.
     public var findings: [AccessAnalyzerClientTypes.FindingSummary]?
@@ -3901,7 +3902,7 @@ public struct ListFindingsOutput {
     }
 }
 
-public struct ListFindingsV2Input {
+public struct ListFindingsV2Input: Swift.Sendable {
     /// The [ARN of the analyzer](https://docs.aws.amazon.com/IAM/latest/UserGuide/access-analyzer-getting-started.html#permission-resources) to retrieve findings from.
     /// This member is required.
     public var analyzerArn: Swift.String?
@@ -3931,8 +3932,9 @@ public struct ListFindingsV2Input {
 }
 
 extension AccessAnalyzerClientTypes {
+
     /// Contains information about a finding.
-    public struct FindingSummaryV2 {
+    public struct FindingSummaryV2: Swift.Sendable {
         /// The time at which the resource-based policy or IAM entity that generated the finding was analyzed.
         /// This member is required.
         public var analyzedAt: Foundation.Date?
@@ -3986,10 +3988,9 @@ extension AccessAnalyzerClientTypes {
             self.updatedAt = updatedAt
         }
     }
-
 }
 
-public struct ListFindingsV2Output {
+public struct ListFindingsV2Output: Swift.Sendable {
     /// A list of findings retrieved from the analyzer that match the filter criteria specified, if any.
     /// This member is required.
     public var findings: [AccessAnalyzerClientTypes.FindingSummaryV2]?
@@ -4006,7 +4007,7 @@ public struct ListFindingsV2Output {
     }
 }
 
-public struct ListPolicyGenerationsInput {
+public struct ListPolicyGenerationsInput: Swift.Sendable {
     /// The maximum number of results to return in the response.
     public var maxResults: Swift.Int?
     /// A token used for pagination of results returned.
@@ -4027,8 +4028,9 @@ public struct ListPolicyGenerationsInput {
 }
 
 extension AccessAnalyzerClientTypes {
+
     /// Contains details about the policy generation status and properties.
-    public struct PolicyGeneration {
+    public struct PolicyGeneration: Swift.Sendable {
         /// A timestamp of when the policy generation was completed.
         public var completedOn: Foundation.Date?
         /// The JobId that is returned by the StartPolicyGeneration operation. The JobId can be used with GetGeneratedPolicy to retrieve the generated policies or used with CancelPolicyGeneration to cancel the policy generation request.
@@ -4059,10 +4061,9 @@ extension AccessAnalyzerClientTypes {
             self.status = status
         }
     }
-
 }
 
-public struct ListPolicyGenerationsOutput {
+public struct ListPolicyGenerationsOutput: Swift.Sendable {
     /// A token used for pagination of results returned.
     public var nextToken: Swift.String?
     /// A PolicyGeneration object that contains details about the generated policy.
@@ -4080,7 +4081,7 @@ public struct ListPolicyGenerationsOutput {
 }
 
 /// Retrieves a list of tags applied to the specified resource.
-public struct ListTagsForResourceInput {
+public struct ListTagsForResourceInput: Swift.Sendable {
     /// The ARN of the resource to retrieve tags from.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -4094,7 +4095,7 @@ public struct ListTagsForResourceInput {
 }
 
 /// The response to the request.
-public struct ListTagsForResourceOutput {
+public struct ListTagsForResourceOutput: Swift.Sendable {
     /// The tags that are applied to the specified resource.
     public var tags: [Swift.String: Swift.String]?
 
@@ -4107,8 +4108,9 @@ public struct ListTagsForResourceOutput {
 }
 
 extension AccessAnalyzerClientTypes {
+
     /// Contains details about the CloudTrail trail being analyzed to generate a policy.
-    public struct Trail {
+    public struct Trail: Swift.Sendable {
         /// Possible values are true or false. If set to true, IAM Access Analyzer retrieves CloudTrail data from all regions to analyze and generate a policy.
         public var allRegions: Swift.Bool?
         /// Specifies the ARN of the trail. The format of a trail ARN is arn:aws:cloudtrail:us-east-2:123456789012:trail/MyTrail.
@@ -4128,12 +4130,12 @@ extension AccessAnalyzerClientTypes {
             self.regions = regions
         }
     }
-
 }
 
 extension AccessAnalyzerClientTypes {
+
     /// Contains information about CloudTrail access.
-    public struct CloudTrailDetails {
+    public struct CloudTrailDetails: Swift.Sendable {
         /// The ARN of the service role that IAM Access Analyzer uses to access your CloudTrail trail and service last accessed information.
         /// This member is required.
         public var accessRole: Swift.String?
@@ -4159,12 +4161,12 @@ extension AccessAnalyzerClientTypes {
             self.trails = trails
         }
     }
-
 }
 
 extension AccessAnalyzerClientTypes {
+
     /// Contains the ARN details about the IAM entity for which the policy is generated.
-    public struct PolicyGenerationDetails {
+    public struct PolicyGenerationDetails: Swift.Sendable {
         /// The ARN of the IAM entity (user or role) for which you are generating a policy.
         /// This member is required.
         public var principalArn: Swift.String?
@@ -4176,10 +4178,9 @@ extension AccessAnalyzerClientTypes {
             self.principalArn = principalArn
         }
     }
-
 }
 
-public struct StartPolicyGenerationInput {
+public struct StartPolicyGenerationInput: Swift.Sendable {
     /// A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. Idempotency ensures that an API request completes only once. With an idempotent request, if the original request completes successfully, the subsequent retries with the same client token return the result from the original successful request and they have no additional effect. If you do not specify a client token, one is automatically generated by the Amazon Web Services SDK.
     public var clientToken: Swift.String?
     /// A CloudTrailDetails object that contains details about a Trail that you want to analyze to generate policies.
@@ -4200,7 +4201,7 @@ public struct StartPolicyGenerationInput {
     }
 }
 
-public struct StartPolicyGenerationOutput {
+public struct StartPolicyGenerationOutput: Swift.Sendable {
     /// The JobId that is returned by the StartPolicyGeneration operation. The JobId can be used with GetGeneratedPolicy to retrieve the generated policies or used with CancelPolicyGeneration to cancel the policy generation request.
     /// This member is required.
     public var jobId: Swift.String?
@@ -4214,7 +4215,7 @@ public struct StartPolicyGenerationOutput {
 }
 
 /// Starts a scan of the policies applied to the specified resource.
-public struct StartResourceScanInput {
+public struct StartResourceScanInput: Swift.Sendable {
     /// The [ARN of the analyzer](https://docs.aws.amazon.com/IAM/latest/UserGuide/access-analyzer-getting-started.html#permission-resources) to use to scan the policies applied to the specified resource.
     /// This member is required.
     public var analyzerArn: Swift.String?
@@ -4237,7 +4238,7 @@ public struct StartResourceScanInput {
 }
 
 /// Adds a tag to the specified resource.
-public struct TagResourceInput {
+public struct TagResourceInput: Swift.Sendable {
     /// The ARN of the resource to add the tag to.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -4256,13 +4257,13 @@ public struct TagResourceInput {
 }
 
 /// The response to the request.
-public struct TagResourceOutput {
+public struct TagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
 /// Removes a tag from the specified resource.
-public struct UntagResourceInput {
+public struct UntagResourceInput: Swift.Sendable {
     /// The ARN of the resource to remove the tag from.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -4281,14 +4282,14 @@ public struct UntagResourceInput {
 }
 
 /// The response to the request.
-public struct UntagResourceOutput {
+public struct UntagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
 extension AccessAnalyzerClientTypes {
 
-    public enum FindingStatusUpdate: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum FindingStatusUpdate: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case active
         case archived
         case sdkUnknown(Swift.String)
@@ -4316,7 +4317,7 @@ extension AccessAnalyzerClientTypes {
 }
 
 /// Updates findings with the new values provided in the request.
-public struct UpdateFindingsInput {
+public struct UpdateFindingsInput: Swift.Sendable {
     /// The [ARN of the analyzer](https://docs.aws.amazon.com/IAM/latest/UserGuide/access-analyzer-getting-started.html#permission-resources) that generated the findings to update.
     /// This member is required.
     public var analyzerArn: Swift.String?
@@ -4348,7 +4349,7 @@ public struct UpdateFindingsInput {
 
 extension AccessAnalyzerClientTypes {
 
-    public enum Locale: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Locale: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case de
         case en
         case es
@@ -4401,7 +4402,7 @@ extension AccessAnalyzerClientTypes {
 
 extension AccessAnalyzerClientTypes {
 
-    public enum PolicyType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum PolicyType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case identityPolicy
         case resourcePolicy
         case serviceControlPolicy
@@ -4433,7 +4434,7 @@ extension AccessAnalyzerClientTypes {
 
 extension AccessAnalyzerClientTypes {
 
-    public enum ValidatePolicyResourceType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ValidatePolicyResourceType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case dynamodbTable
         case roleTrust
         case s3AccessPoint
@@ -4472,7 +4473,7 @@ extension AccessAnalyzerClientTypes {
     }
 }
 
-public struct ValidatePolicyInput {
+public struct ValidatePolicyInput: Swift.Sendable {
     /// The locale to use for localizing the findings.
     public var locale: AccessAnalyzerClientTypes.Locale?
     /// The maximum number of results to return in the response.
@@ -4508,7 +4509,7 @@ public struct ValidatePolicyInput {
 
 extension AccessAnalyzerClientTypes {
 
-    public enum ValidatePolicyFindingType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ValidatePolicyFindingType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case error
         case securityWarning
         case suggestion
@@ -4542,8 +4543,9 @@ extension AccessAnalyzerClientTypes {
 }
 
 extension AccessAnalyzerClientTypes {
+
     /// A reference to a substring of a literal string in a JSON document.
-    public struct Substring {
+    public struct Substring: Swift.Sendable {
         /// The length of the substring.
         /// This member is required.
         public var length: Swift.Int?
@@ -4560,12 +4562,12 @@ extension AccessAnalyzerClientTypes {
             self.start = start
         }
     }
-
 }
 
 extension AccessAnalyzerClientTypes {
+
     /// A single element in a path through the JSON representation of a policy.
-    public enum PathElement {
+    public enum PathElement: Swift.Sendable {
         /// Refers to an index in a JSON array.
         case index(Swift.Int)
         /// Refers to a key in a JSON object.
@@ -4576,12 +4578,12 @@ extension AccessAnalyzerClientTypes {
         case value(Swift.String)
         case sdkUnknown(Swift.String)
     }
-
 }
 
 extension AccessAnalyzerClientTypes {
+
     /// A position in a policy.
-    public struct Position {
+    public struct Position: Swift.Sendable {
         /// The column of the position, starting from 0.
         /// This member is required.
         public var column: Swift.Int?
@@ -4603,12 +4605,12 @@ extension AccessAnalyzerClientTypes {
             self.offset = offset
         }
     }
-
 }
 
 extension AccessAnalyzerClientTypes {
+
     /// A span in a policy. The span consists of a start position (inclusive) and end position (exclusive).
-    public struct Span {
+    public struct Span: Swift.Sendable {
         /// The end position of the span (exclusive).
         /// This member is required.
         public var end: AccessAnalyzerClientTypes.Position?
@@ -4625,12 +4627,12 @@ extension AccessAnalyzerClientTypes {
             self.start = start
         }
     }
-
 }
 
 extension AccessAnalyzerClientTypes {
+
     /// A location in a policy that is represented as a path through the JSON representation and a corresponding span.
-    public struct Location {
+    public struct Location: Swift.Sendable {
         /// A path in a policy, represented as a sequence of path elements.
         /// This member is required.
         public var path: [AccessAnalyzerClientTypes.PathElement]?
@@ -4647,12 +4649,12 @@ extension AccessAnalyzerClientTypes {
             self.span = span
         }
     }
-
 }
 
 extension AccessAnalyzerClientTypes {
+
     /// A finding in a policy. Each finding is an actionable recommendation that can be used to improve the policy.
-    public struct ValidatePolicyFinding {
+    public struct ValidatePolicyFinding: Swift.Sendable {
         /// A localized message that explains the finding and provides guidance on how to address it.
         /// This member is required.
         public var findingDetails: Swift.String?
@@ -4684,10 +4686,9 @@ extension AccessAnalyzerClientTypes {
             self.locations = locations
         }
     }
-
 }
 
-public struct ValidatePolicyOutput {
+public struct ValidatePolicyOutput: Swift.Sendable {
     /// The list of findings in a policy returned by IAM Access Analyzer based on its suite of policy checks.
     /// This member is required.
     public var findings: [AccessAnalyzerClientTypes.ValidatePolicyFinding]?

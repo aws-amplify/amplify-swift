@@ -56,8 +56,9 @@ public struct AccessDeniedException: ClientRuntime.ModeledError, AWSClientRuntim
 }
 
 extension LookoutVisionClientTypes {
+
     /// Information about the pixels in an anomaly mask. For more information, see [Anomaly]. PixelAnomaly is only returned by image segmentation models.
-    public struct PixelAnomaly {
+    public struct PixelAnomaly: Swift.Sendable {
         /// A hex color value for the mask that covers an anomaly type. Each anomaly type has a different mask color. The color maps to the color of the anomaly type used in the training dataset.
         public var color: Swift.String?
         /// The percentage area of the image that the anomaly type covers.
@@ -72,12 +73,12 @@ extension LookoutVisionClientTypes {
             self.totalPercentageArea = totalPercentageArea
         }
     }
-
 }
 
 extension LookoutVisionClientTypes {
+
     /// Information about an anomaly type found on an image by an image segmentation model. For more information, see [DetectAnomalies].
-    public struct Anomaly {
+    public struct Anomaly: Swift.Sendable {
         /// The name of an anomaly type found in an image. Name maps to an anomaly type in the training dataset, apart from the anomaly type background. The service automatically inserts the background anomaly type into the response from DetectAnomalies.
         public var name: Swift.String?
         /// Information about the pixel mask that covers an anomaly type.
@@ -92,12 +93,11 @@ extension LookoutVisionClientTypes {
             self.pixelAnomaly = pixelAnomaly
         }
     }
-
 }
 
 extension LookoutVisionClientTypes {
 
-    public enum ResourceType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ResourceType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case dataset
         case model
         case modelPackageJob
@@ -338,8 +338,9 @@ public struct ValidationException: ClientRuntime.ModeledError, AWSClientRuntime.
 }
 
 extension LookoutVisionClientTypes {
+
     /// Amazon S3 Location information for an input manifest file.
-    public struct InputS3Object {
+    public struct InputS3Object: Swift.Sendable {
         /// The Amazon S3 bucket that contains the manifest.
         /// This member is required.
         public var bucket: Swift.String?
@@ -360,12 +361,12 @@ extension LookoutVisionClientTypes {
             self.versionId = versionId
         }
     }
-
 }
 
 extension LookoutVisionClientTypes {
+
     /// Location information about a manifest file. You can use a manifest file to create a dataset.
-    public struct DatasetGroundTruthManifest {
+    public struct DatasetGroundTruthManifest: Swift.Sendable {
         /// The S3 bucket location for the manifest file.
         public var s3Object: LookoutVisionClientTypes.InputS3Object?
 
@@ -376,12 +377,12 @@ extension LookoutVisionClientTypes {
             self.s3Object = s3Object
         }
     }
-
 }
 
 extension LookoutVisionClientTypes {
+
     /// Information about the location of a manifest file that Amazon Lookout for Vision uses to to create a dataset.
-    public struct DatasetSource {
+    public struct DatasetSource: Swift.Sendable {
         /// Location information for the manifest file.
         public var groundTruthManifest: LookoutVisionClientTypes.DatasetGroundTruthManifest?
 
@@ -392,10 +393,9 @@ extension LookoutVisionClientTypes {
             self.groundTruthManifest = groundTruthManifest
         }
     }
-
 }
 
-public struct CreateDatasetInput {
+public struct CreateDatasetInput: Swift.Sendable {
     /// ClientToken is an idempotency token that ensures a call to CreateDataset completes only once. You choose the value to pass. For example, An issue might prevent you from getting a response from CreateDataset. In this case, safely retry your call to CreateDataset by using the same ClientToken parameter value. If you don't supply a value for ClientToken, the AWS SDK you are using inserts a value for you. This prevents retries after a network error from making multiple dataset creation requests. You'll need to provide your own value for other use cases. An error occurs if the other input parameters are not the same as in the first request. Using a different value for ClientToken is considered a new call to CreateDataset. An idempotency token is active for 8 hours.
     public var clientToken: Swift.String?
     /// The location of the manifest file that Amazon Lookout for Vision uses to create the dataset. If you don't specify DatasetSource, an empty dataset is created and the operation synchronously returns. Later, you can add JSON Lines by calling [UpdateDatasetEntries]. If you specify a value for DataSource, the manifest at the S3 location is validated and used to create the dataset. The call to CreateDataset is asynchronous and might take a while to complete. To find out the current status, Check the value of Status returned in a call to [DescribeDataset].
@@ -423,7 +423,7 @@ public struct CreateDatasetInput {
 
 extension LookoutVisionClientTypes {
 
-    public enum DatasetStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DatasetStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case createComplete
         case createFailed
         case createInProgress
@@ -475,8 +475,9 @@ extension LookoutVisionClientTypes {
 }
 
 extension LookoutVisionClientTypes {
+
     /// Summary information for an Amazon Lookout for Vision dataset. For more information, see [DescribeDataset] and [ProjectDescription].
-    public struct DatasetMetadata {
+    public struct DatasetMetadata: Swift.Sendable {
         /// The Unix timestamp for the date and time that the dataset was created.
         public var creationTimestamp: Foundation.Date?
         /// The type of the dataset.
@@ -499,10 +500,9 @@ extension LookoutVisionClientTypes {
             self.statusMessage = statusMessage
         }
     }
-
 }
 
-public struct CreateDatasetOutput {
+public struct CreateDatasetOutput: Swift.Sendable {
     /// Information about the dataset.
     public var datasetMetadata: LookoutVisionClientTypes.DatasetMetadata?
 
@@ -515,8 +515,9 @@ public struct CreateDatasetOutput {
 }
 
 extension LookoutVisionClientTypes {
+
     /// Information about the location of training output or the output of a model packaging job.
-    public struct S3Location {
+    public struct S3Location: Swift.Sendable {
         /// The S3 bucket that contains the training or model packaging job output. If you are training a model, the bucket must in your AWS account. If you use an S3 bucket for a model packaging job, the S3 bucket must be in the same AWS Region and AWS account in which you use AWS IoT Greengrass.
         /// This member is required.
         public var bucket: Swift.String?
@@ -532,12 +533,12 @@ extension LookoutVisionClientTypes {
             self.`prefix` = `prefix`
         }
     }
-
 }
 
 extension LookoutVisionClientTypes {
+
     /// The S3 location where Amazon Lookout for Vision saves model training files.
-    public struct OutputConfig {
+    public struct OutputConfig: Swift.Sendable {
         /// The S3 location for the output.
         /// This member is required.
         public var s3Location: LookoutVisionClientTypes.S3Location?
@@ -549,12 +550,12 @@ extension LookoutVisionClientTypes {
             self.s3Location = s3Location
         }
     }
-
 }
 
 extension LookoutVisionClientTypes {
+
     /// A key and value pair that is attached to the specified Amazon Lookout for Vision model.
-    public struct Tag {
+    public struct Tag: Swift.Sendable {
         /// The key of the tag that is attached to the specified model.
         /// This member is required.
         public var key: Swift.String?
@@ -571,10 +572,9 @@ extension LookoutVisionClientTypes {
             self.value = value
         }
     }
-
 }
 
-public struct CreateModelInput {
+public struct CreateModelInput: Swift.Sendable {
     /// ClientToken is an idempotency token that ensures a call to CreateModel completes only once. You choose the value to pass. For example, An issue might prevent you from getting a response from CreateModel. In this case, safely retry your call to CreateModel by using the same ClientToken parameter value. If you don't supply a value for ClientToken, the AWS SDK you are using inserts a value for you. This prevents retries after a network error from starting multiple training jobs. You'll need to provide your own value for other use cases. An error occurs if the other input parameters are not the same as in the first request. Using a different value for ClientToken is considered a new call to CreateModel. An idempotency token is active for 8 hours.
     public var clientToken: Swift.String?
     /// A description for the version of the model.
@@ -609,8 +609,9 @@ public struct CreateModelInput {
 }
 
 extension LookoutVisionClientTypes {
+
     /// Information about the evaluation performance of a trained model.
-    public struct ModelPerformance {
+    public struct ModelPerformance: Swift.Sendable {
         /// The overall F1 score metric for the trained model.
         public var f1Score: Swift.Float?
         /// The overall precision metric value for the trained model.
@@ -629,12 +630,11 @@ extension LookoutVisionClientTypes {
             self.recall = recall
         }
     }
-
 }
 
 extension LookoutVisionClientTypes {
 
-    public enum ModelStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ModelStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case deleting
         case hosted
         case hostingFailed
@@ -683,8 +683,9 @@ extension LookoutVisionClientTypes {
 }
 
 extension LookoutVisionClientTypes {
+
     /// Describes an Amazon Lookout for Vision model.
-    public struct ModelMetadata {
+    public struct ModelMetadata: Swift.Sendable {
         /// The unix timestamp for the date and time that the model was created.
         public var creationTimestamp: Foundation.Date?
         /// The description for the model.
@@ -719,10 +720,9 @@ extension LookoutVisionClientTypes {
             self.statusMessage = statusMessage
         }
     }
-
 }
 
-public struct CreateModelOutput {
+public struct CreateModelOutput: Swift.Sendable {
     /// The response from a call to CreateModel.
     public var modelMetadata: LookoutVisionClientTypes.ModelMetadata?
 
@@ -734,7 +734,7 @@ public struct CreateModelOutput {
     }
 }
 
-public struct CreateProjectInput {
+public struct CreateProjectInput: Swift.Sendable {
     /// ClientToken is an idempotency token that ensures a call to CreateProject completes only once. You choose the value to pass. For example, An issue might prevent you from getting a response from CreateProject. In this case, safely retry your call to CreateProject by using the same ClientToken parameter value. If you don't supply a value for ClientToken, the AWS SDK you are using inserts a value for you. This prevents retries after a network error from making multiple project creation requests. You'll need to provide your own value for other use cases. An error occurs if the other input parameters are not the same as in the first request. Using a different value for ClientToken is considered a new call to CreateProject. An idempotency token is active for 8 hours.
     public var clientToken: Swift.String?
     /// The name for the project.
@@ -752,8 +752,9 @@ public struct CreateProjectInput {
 }
 
 extension LookoutVisionClientTypes {
+
     /// Metadata about an Amazon Lookout for Vision project.
-    public struct ProjectMetadata {
+    public struct ProjectMetadata: Swift.Sendable {
         /// The unix timestamp for the date and time that the project was created.
         public var creationTimestamp: Foundation.Date?
         /// The Amazon Resource Name (ARN) of the project.
@@ -772,10 +773,9 @@ extension LookoutVisionClientTypes {
             self.projectName = projectName
         }
     }
-
 }
 
-public struct CreateProjectOutput {
+public struct CreateProjectOutput: Swift.Sendable {
     /// Information about the project.
     public var projectMetadata: LookoutVisionClientTypes.ProjectMetadata?
 
@@ -788,8 +788,9 @@ public struct CreateProjectOutput {
 }
 
 extension LookoutVisionClientTypes {
+
     /// Statistics about the images in a dataset.
-    public struct DatasetImageStats {
+    public struct DatasetImageStats: Swift.Sendable {
         /// the total number of images labeled as an anomaly.
         public var anomaly: Swift.Int?
         /// The total number of labeled images.
@@ -812,12 +813,12 @@ extension LookoutVisionClientTypes {
             self.total = total
         }
     }
-
 }
 
 extension LookoutVisionClientTypes {
+
     /// The description for a dataset. For more information, see [DescribeDataset].
-    public struct DatasetDescription {
+    public struct DatasetDescription: Swift.Sendable {
         /// The Unix timestamp for the time and date that the dataset was created.
         public var creationTimestamp: Foundation.Date?
         /// The type of the dataset. The value train represents a training dataset or single dataset project. The value test represents a test dataset.
@@ -852,10 +853,9 @@ extension LookoutVisionClientTypes {
             self.statusMessage = statusMessage
         }
     }
-
 }
 
-public struct DeleteDatasetInput {
+public struct DeleteDatasetInput: Swift.Sendable {
     /// ClientToken is an idempotency token that ensures a call to DeleteDataset completes only once. You choose the value to pass. For example, An issue might prevent you from getting a response from DeleteDataset. In this case, safely retry your call to DeleteDataset by using the same ClientToken parameter value. If you don't supply a value for ClientToken, the AWS SDK you are using inserts a value for you. This prevents retries after a network error from making multiple deletetion requests. You'll need to provide your own value for other use cases. An error occurs if the other input parameters are not the same as in the first request. Using a different value for ClientToken is considered a new call to DeleteDataset. An idempotency token is active for 8 hours.
     public var clientToken: Swift.String?
     /// The type of the dataset to delete. Specify train to delete the training dataset. Specify test to delete the test dataset. To delete the dataset in a single dataset project, specify train.
@@ -877,12 +877,12 @@ public struct DeleteDatasetInput {
     }
 }
 
-public struct DeleteDatasetOutput {
+public struct DeleteDatasetOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteModelInput {
+public struct DeleteModelInput: Swift.Sendable {
     /// ClientToken is an idempotency token that ensures a call to DeleteModel completes only once. You choose the value to pass. For example, an issue might prevent you from getting a response from DeleteModel. In this case, safely retry your call to DeleteModel by using the same ClientToken parameter value. If you don't supply a value for ClientToken, the AWS SDK you are using inserts a value for you. This prevents retries after a network error from making multiple model deletion requests. You'll need to provide your own value for other use cases. An error occurs if the other input parameters are not the same as in the first request. Using a different value for ClientToken is considered a new call to DeleteModel. An idempotency token is active for 8 hours.
     public var clientToken: Swift.String?
     /// The version of the model that you want to delete.
@@ -904,7 +904,7 @@ public struct DeleteModelInput {
     }
 }
 
-public struct DeleteModelOutput {
+public struct DeleteModelOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the model that was deleted.
     public var modelArn: Swift.String?
 
@@ -916,7 +916,7 @@ public struct DeleteModelOutput {
     }
 }
 
-public struct DeleteProjectInput {
+public struct DeleteProjectInput: Swift.Sendable {
     /// ClientToken is an idempotency token that ensures a call to DeleteProject completes only once. You choose the value to pass. For example, An issue might prevent you from getting a response from DeleteProject. In this case, safely retry your call to DeleteProject by using the same ClientToken parameter value. If you don't supply a value for ClientToken, the AWS SDK you are using inserts a value for you. This prevents retries after a network error from making multiple project deletion requests. You'll need to provide your own value for other use cases. An error occurs if the other input parameters are not the same as in the first request. Using a different value for ClientToken is considered a new call to DeleteProject. An idempotency token is active for 8 hours.
     public var clientToken: Swift.String?
     /// The name of the project to delete.
@@ -933,7 +933,7 @@ public struct DeleteProjectInput {
     }
 }
 
-public struct DeleteProjectOutput {
+public struct DeleteProjectOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the project that was deleted.
     public var projectArn: Swift.String?
 
@@ -945,7 +945,7 @@ public struct DeleteProjectOutput {
     }
 }
 
-public struct DescribeDatasetInput {
+public struct DescribeDatasetInput: Swift.Sendable {
     /// The type of the dataset to describe. Specify train to describe the training dataset. Specify test to describe the test dataset. If you have a single dataset project, specify train
     /// This member is required.
     public var datasetType: Swift.String?
@@ -963,7 +963,7 @@ public struct DescribeDatasetInput {
     }
 }
 
-public struct DescribeDatasetOutput {
+public struct DescribeDatasetOutput: Swift.Sendable {
     /// The description of the requested dataset.
     public var datasetDescription: LookoutVisionClientTypes.DatasetDescription?
 
@@ -975,7 +975,7 @@ public struct DescribeDatasetOutput {
     }
 }
 
-public struct DescribeModelInput {
+public struct DescribeModelInput: Swift.Sendable {
     /// The version of the model that you want to describe.
     /// This member is required.
     public var modelVersion: Swift.String?
@@ -994,8 +994,9 @@ public struct DescribeModelInput {
 }
 
 extension LookoutVisionClientTypes {
+
     /// The S3 location where Amazon Lookout for Vision saves training output.
-    public struct OutputS3Object {
+    public struct OutputS3Object: Swift.Sendable {
         /// The bucket that contains the training output.
         /// This member is required.
         public var bucket: Swift.String?
@@ -1012,12 +1013,12 @@ extension LookoutVisionClientTypes {
             self.key = key
         }
     }
-
 }
 
 extension LookoutVisionClientTypes {
+
     /// Describes an Amazon Lookout for Vision model.
-    public struct ModelDescription {
+    public struct ModelDescription: Swift.Sendable {
         /// The unix timestamp for the date and time that the model was created.
         public var creationTimestamp: Foundation.Date?
         /// The description for the model.
@@ -1080,10 +1081,9 @@ extension LookoutVisionClientTypes {
             self.statusMessage = statusMessage
         }
     }
-
 }
 
-public struct DescribeModelOutput {
+public struct DescribeModelOutput: Swift.Sendable {
     /// Contains the description of the model.
     public var modelDescription: LookoutVisionClientTypes.ModelDescription?
 
@@ -1095,7 +1095,7 @@ public struct DescribeModelOutput {
     }
 }
 
-public struct DescribeModelPackagingJobInput {
+public struct DescribeModelPackagingJobInput: Swift.Sendable {
     /// The job name for the model packaging job.
     /// This member is required.
     public var jobName: Swift.String?
@@ -1115,7 +1115,7 @@ public struct DescribeModelPackagingJobInput {
 
 extension LookoutVisionClientTypes {
 
-    public enum TargetDevice: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum TargetDevice: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case jetsonXavier
         case sdkUnknown(Swift.String)
 
@@ -1141,7 +1141,7 @@ extension LookoutVisionClientTypes {
 
 extension LookoutVisionClientTypes {
 
-    public enum TargetPlatformAccelerator: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum TargetPlatformAccelerator: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case nvidia
         case sdkUnknown(Swift.String)
 
@@ -1167,7 +1167,7 @@ extension LookoutVisionClientTypes {
 
 extension LookoutVisionClientTypes {
 
-    public enum TargetPlatformArch: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum TargetPlatformArch: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case arm64
         case x8664
         case sdkUnknown(Swift.String)
@@ -1196,7 +1196,7 @@ extension LookoutVisionClientTypes {
 
 extension LookoutVisionClientTypes {
 
-    public enum TargetPlatformOs: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum TargetPlatformOs: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case linux
         case sdkUnknown(Swift.String)
 
@@ -1221,8 +1221,9 @@ extension LookoutVisionClientTypes {
 }
 
 extension LookoutVisionClientTypes {
+
     /// The platform on which a model runs on an AWS IoT Greengrass core device.
-    public struct TargetPlatform {
+    public struct TargetPlatform: Swift.Sendable {
         /// The target accelerator for the model. Currently, Amazon Lookout for Vision only supports NVIDIA (Nvidia graphics processing unit) and CPU accelerators. If you specify NVIDIA as an accelerator, you must also specify the gpu-code, trt-ver, and cuda-ver compiler options. If you don't specify an accelerator, Lookout for Vision uses the CPU for compilation and we highly recommend that you use the [GreengrassConfiguration$CompilerOptions] field. For example, you can use the following compiler options for CPU:
         ///
         /// * mcpu: CPU micro-architecture. For example, {'mcpu': 'skylake-avx512'}
@@ -1247,12 +1248,12 @@ extension LookoutVisionClientTypes {
             self.os = os
         }
     }
-
 }
 
 extension LookoutVisionClientTypes {
+
     /// Configuration information for the AWS IoT Greengrass component created in a model packaging job. For more information, see [StartModelPackagingJob]. You can't specify a component with the same ComponentName and Componentversion as an existing component with the same component name and component version.
-    public struct GreengrassConfiguration {
+    public struct GreengrassConfiguration: Swift.Sendable {
         /// Additional compiler options for the Greengrass component. Currently, only NVIDIA Graphics Processing Units (GPU) and CPU accelerators are supported. If you specify TargetDevice, don't specify CompilerOptions. For more information, see Compiler options in the Amazon Lookout for Vision Developer Guide.
         public var compilerOptions: Swift.String?
         /// A description for the AWS IoT Greengrass component.
@@ -1293,12 +1294,12 @@ extension LookoutVisionClientTypes {
             self.targetPlatform = targetPlatform
         }
     }
-
 }
 
 extension LookoutVisionClientTypes {
+
     /// Configuration information for a Amazon Lookout for Vision model packaging job. For more information, see [StartModelPackagingJob].
-    public struct ModelPackagingConfiguration {
+    public struct ModelPackagingConfiguration: Swift.Sendable {
         /// Configuration information for the AWS IoT Greengrass component in a model packaging job.
         /// This member is required.
         public var greengrass: LookoutVisionClientTypes.GreengrassConfiguration?
@@ -1310,12 +1311,12 @@ extension LookoutVisionClientTypes {
             self.greengrass = greengrass
         }
     }
-
 }
 
 extension LookoutVisionClientTypes {
+
     /// Information about the AWS IoT Greengrass component created by a model packaging job.
-    public struct GreengrassOutputDetails {
+    public struct GreengrassOutputDetails: Swift.Sendable {
         /// The name of the component.
         public var componentName: Swift.String?
         /// The version of the component.
@@ -1334,12 +1335,12 @@ extension LookoutVisionClientTypes {
             self.componentVersionArn = componentVersionArn
         }
     }
-
 }
 
 extension LookoutVisionClientTypes {
+
     /// Information about the output from a model packaging job.
-    public struct ModelPackagingOutputDetails {
+    public struct ModelPackagingOutputDetails: Swift.Sendable {
         /// Information about the AWS IoT Greengrass component in a model packaging job.
         public var greengrass: LookoutVisionClientTypes.GreengrassOutputDetails?
 
@@ -1350,12 +1351,11 @@ extension LookoutVisionClientTypes {
             self.greengrass = greengrass
         }
     }
-
 }
 
 extension LookoutVisionClientTypes {
 
-    public enum ModelPackagingJobStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ModelPackagingJobStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case created
         case failed
         case running
@@ -1389,8 +1389,9 @@ extension LookoutVisionClientTypes {
 }
 
 extension LookoutVisionClientTypes {
+
     /// Information about a model packaging job. For more information, see [DescribeModelPackagingJob].
-    public struct ModelPackagingDescription {
+    public struct ModelPackagingDescription: Swift.Sendable {
         /// The Unix timestamp for the time and date that the model packaging job was created.
         public var creationTimestamp: Foundation.Date?
         /// The name of the model packaging job.
@@ -1441,10 +1442,9 @@ extension LookoutVisionClientTypes {
             self.statusMessage = statusMessage
         }
     }
-
 }
 
-public struct DescribeModelPackagingJobOutput {
+public struct DescribeModelPackagingJobOutput: Swift.Sendable {
     /// The description of the model packaging job.
     public var modelPackagingDescription: LookoutVisionClientTypes.ModelPackagingDescription?
 
@@ -1456,7 +1456,7 @@ public struct DescribeModelPackagingJobOutput {
     }
 }
 
-public struct DescribeProjectInput {
+public struct DescribeProjectInput: Swift.Sendable {
     /// The name of the project that you want to describe.
     /// This member is required.
     public var projectName: Swift.String?
@@ -1470,8 +1470,9 @@ public struct DescribeProjectInput {
 }
 
 extension LookoutVisionClientTypes {
+
     /// Describe an Amazon Lookout for Vision project. For more information, see [DescribeProject].
-    public struct ProjectDescription {
+    public struct ProjectDescription: Swift.Sendable {
         /// The unix timestamp for the date and time that the project was created.
         public var creationTimestamp: Foundation.Date?
         /// A list of datasets in the project.
@@ -1494,10 +1495,9 @@ extension LookoutVisionClientTypes {
             self.projectName = projectName
         }
     }
-
 }
 
-public struct DescribeProjectOutput {
+public struct DescribeProjectOutput: Swift.Sendable {
     /// The description of the project.
     public var projectDescription: LookoutVisionClientTypes.ProjectDescription?
 
@@ -1509,7 +1509,7 @@ public struct DescribeProjectOutput {
     }
 }
 
-public struct DetectAnomaliesInput {
+public struct DetectAnomaliesInput: Swift.Sendable {
     /// The unencrypted image bytes that you want to analyze.
     /// This member is required.
     public var body: Smithy.ByteStream?
@@ -1538,8 +1538,9 @@ public struct DetectAnomaliesInput {
 }
 
 extension LookoutVisionClientTypes {
+
     /// The source for an image.
-    public struct ImageSource {
+    public struct ImageSource: Swift.Sendable {
         /// The type of the image.
         public var type: Swift.String?
 
@@ -1550,12 +1551,12 @@ extension LookoutVisionClientTypes {
             self.type = type
         }
     }
-
 }
 
 extension LookoutVisionClientTypes {
+
     /// The prediction results from a call to [DetectAnomalies]. DetectAnomalyResult includes classification information for the prediction (IsAnomalous and Confidence). If the model you use is an image segementation model, DetectAnomalyResult also includes segmentation information (Anomalies and AnomalyMask). Classification information is calculated separately from segmentation information and you shouldn't assume a relationship between them.
-    public struct DetectAnomalyResult {
+    public struct DetectAnomalyResult: Swift.Sendable {
         /// If the model is an image segmentation model, Anomalies contains a list of anomaly types found in the image. There is one entry for each type of anomaly found (even if multiple instances of an anomaly type exist on the image). The first element in the list is always an anomaly type representing the image background ('background') and shouldn't be considered an anomaly. Amazon Lookout for Vision automatically add the background anomaly type to the response, and you don't need to declare a background anomaly type in your dataset. If the list has one entry ('background'), no anomalies were found on the image. An image classification model doesn't return an Anomalies list.
         public var anomalies: [LookoutVisionClientTypes.Anomaly]?
         /// If the model is an image segmentation model, AnomalyMask contains pixel masks that covers all anomaly types found on the image. Each anomaly type has a different mask color. To map a color to an anomaly type, see the color field of the [PixelAnomaly] object. An image classification model doesn't return an Anomalies list.
@@ -1582,10 +1583,9 @@ extension LookoutVisionClientTypes {
             self.source = source
         }
     }
-
 }
 
-public struct DetectAnomaliesOutput {
+public struct DetectAnomaliesOutput: Swift.Sendable {
     /// The results of the DetectAnomalies operation.
     public var detectAnomalyResult: LookoutVisionClientTypes.DetectAnomalyResult?
 
@@ -1597,7 +1597,7 @@ public struct DetectAnomaliesOutput {
     }
 }
 
-public struct ListDatasetEntriesInput {
+public struct ListDatasetEntriesInput: Swift.Sendable {
     /// Only includes entries after the specified date in the response. For example, 2020-06-23T00:00:00.
     public var afterCreationDate: Foundation.Date?
     /// Specify normal to include only normal images. Specify anomaly to only include anomalous entries. If you don't specify a value, Amazon Lookout for Vision returns normal and anomalous images.
@@ -1643,7 +1643,7 @@ public struct ListDatasetEntriesInput {
     }
 }
 
-public struct ListDatasetEntriesOutput {
+public struct ListDatasetEntriesOutput: Swift.Sendable {
     /// A list of the entries (JSON Lines) within the dataset.
     public var datasetEntries: [Swift.String]?
     /// If the response is truncated, Amazon Lookout for Vision returns this token that you can use in the subsequent request to retrieve the next set ofdataset entries.
@@ -1659,7 +1659,7 @@ public struct ListDatasetEntriesOutput {
     }
 }
 
-public struct ListModelPackagingJobsInput {
+public struct ListModelPackagingJobsInput: Swift.Sendable {
     /// The maximum number of results to return per paginated call. The largest value you can specify is 100. If you specify a value greater than 100, a ValidationException error occurs. The default value is 100.
     public var maxResults: Swift.Int?
     /// If the previous response was incomplete (because there is more results to retrieve), Amazon Lookout for Vision returns a pagination token in the response. You can use this pagination token to retrieve the next set of results.
@@ -1681,8 +1681,9 @@ public struct ListModelPackagingJobsInput {
 }
 
 extension LookoutVisionClientTypes {
+
     /// Metadata for a model packaging job. For more information, see [ListModelPackagingJobs].
-    public struct ModelPackagingJobMetadata {
+    public struct ModelPackagingJobMetadata: Swift.Sendable {
         /// The Unix timestamp for the time and date that the model packaging job was created.
         public var creationTimestamp: Foundation.Date?
         /// The name of the model packaging job.
@@ -1725,10 +1726,9 @@ extension LookoutVisionClientTypes {
             self.statusMessage = statusMessage
         }
     }
-
 }
 
-public struct ListModelPackagingJobsOutput {
+public struct ListModelPackagingJobsOutput: Swift.Sendable {
     /// A list of the model packaging jobs created for the specified Amazon Lookout for Vision project.
     public var modelPackagingJobs: [LookoutVisionClientTypes.ModelPackagingJobMetadata]?
     /// If the previous response was incomplete (because there is more results to retrieve), Amazon Lookout for Vision returns a pagination token in the response. You can use this pagination token to retrieve the next set of results.
@@ -1744,7 +1744,7 @@ public struct ListModelPackagingJobsOutput {
     }
 }
 
-public struct ListModelsInput {
+public struct ListModelsInput: Swift.Sendable {
     /// The maximum number of results to return per paginated call. The largest value you can specify is 100. If you specify a value greater than 100, a ValidationException error occurs. The default value is 100.
     public var maxResults: Swift.Int?
     /// If the previous response was incomplete (because there is more data to retrieve), Amazon Lookout for Vision returns a pagination token in the response. You can use this pagination token to retrieve the next set of models.
@@ -1765,7 +1765,7 @@ public struct ListModelsInput {
     }
 }
 
-public struct ListModelsOutput {
+public struct ListModelsOutput: Swift.Sendable {
     /// A list of model versions in the specified project.
     public var models: [LookoutVisionClientTypes.ModelMetadata]?
     /// If the response is truncated, Amazon Lookout for Vision returns this token that you can use in the subsequent request to retrieve the next set of models.
@@ -1781,7 +1781,7 @@ public struct ListModelsOutput {
     }
 }
 
-public struct ListProjectsInput {
+public struct ListProjectsInput: Swift.Sendable {
     /// The maximum number of results to return per paginated call. The largest value you can specify is 100. If you specify a value greater than 100, a ValidationException error occurs. The default value is 100.
     public var maxResults: Swift.Int?
     /// If the previous response was incomplete (because there is more data to retrieve), Amazon Lookout for Vision returns a pagination token in the response. You can use this pagination token to retrieve the next set of projects.
@@ -1797,7 +1797,7 @@ public struct ListProjectsInput {
     }
 }
 
-public struct ListProjectsOutput {
+public struct ListProjectsOutput: Swift.Sendable {
     /// If the response is truncated, Amazon Lookout for Vision returns this token that you can use in the subsequent request to retrieve the next set of projects.
     public var nextToken: Swift.String?
     /// A list of projects in your AWS account.
@@ -1813,7 +1813,7 @@ public struct ListProjectsOutput {
     }
 }
 
-public struct ListTagsForResourceInput {
+public struct ListTagsForResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the model for which you want to list tags.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -1826,7 +1826,7 @@ public struct ListTagsForResourceInput {
     }
 }
 
-public struct ListTagsForResourceOutput {
+public struct ListTagsForResourceOutput: Swift.Sendable {
     /// A map of tag keys and values attached to the specified model.
     public var tags: [LookoutVisionClientTypes.Tag]?
 
@@ -1838,7 +1838,7 @@ public struct ListTagsForResourceOutput {
     }
 }
 
-public struct StartModelInput {
+public struct StartModelInput: Swift.Sendable {
     /// ClientToken is an idempotency token that ensures a call to StartModel completes only once. You choose the value to pass. For example, An issue might prevent you from getting a response from StartModel. In this case, safely retry your call to StartModel by using the same ClientToken parameter value. If you don't supply a value for ClientToken, the AWS SDK you are using inserts a value for you. This prevents retries after a network error from making multiple start requests. You'll need to provide your own value for other use cases. An error occurs if the other input parameters are not the same as in the first request. Using a different value for ClientToken is considered a new call to StartModel. An idempotency token is active for 8 hours.
     public var clientToken: Swift.String?
     /// The maximum number of inference units to use for auto-scaling the model. If you don't specify a value, Amazon Lookout for Vision doesn't auto-scale the model.
@@ -1871,7 +1871,7 @@ public struct StartModelInput {
 
 extension LookoutVisionClientTypes {
 
-    public enum ModelHostingStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ModelHostingStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case hosted
         case hostingFailed
         case startingHosting
@@ -1907,7 +1907,7 @@ extension LookoutVisionClientTypes {
     }
 }
 
-public struct StartModelOutput {
+public struct StartModelOutput: Swift.Sendable {
     /// The current running status of the model.
     public var status: LookoutVisionClientTypes.ModelHostingStatus?
 
@@ -1919,7 +1919,7 @@ public struct StartModelOutput {
     }
 }
 
-public struct StartModelPackagingJobInput {
+public struct StartModelPackagingJobInput: Swift.Sendable {
     /// ClientToken is an idempotency token that ensures a call to StartModelPackagingJob completes only once. You choose the value to pass. For example, An issue might prevent you from getting a response from StartModelPackagingJob. In this case, safely retry your call to StartModelPackagingJob by using the same ClientToken parameter value. If you don't supply a value for ClientToken, the AWS SDK you are using inserts a value for you. This prevents retries after a network error from making multiple dataset creation requests. You'll need to provide your own value for other use cases. An error occurs if the other input parameters are not the same as in the first request. Using a different value for ClientToken is considered a new call to StartModelPackagingJob. An idempotency token is active for 8 hours.
     public var clientToken: Swift.String?
     /// The configuration for the model packaging job.
@@ -1954,7 +1954,7 @@ public struct StartModelPackagingJobInput {
     }
 }
 
-public struct StartModelPackagingJobOutput {
+public struct StartModelPackagingJobOutput: Swift.Sendable {
     /// The job name for the model packaging job. If you don't supply a job name in the JobName input parameter, the service creates a job name for you.
     public var jobName: Swift.String?
 
@@ -1966,7 +1966,7 @@ public struct StartModelPackagingJobOutput {
     }
 }
 
-public struct StopModelInput {
+public struct StopModelInput: Swift.Sendable {
     /// ClientToken is an idempotency token that ensures a call to StopModel completes only once. You choose the value to pass. For example, An issue might prevent you from getting a response from StopModel. In this case, safely retry your call to StopModel by using the same ClientToken parameter value. If you don't supply a value for ClientToken, the AWS SDK you are using inserts a value for you. This prevents retries after a network error from making multiple stop requests. You'll need to provide your own value for other use cases. An error occurs if the other input parameters are not the same as in the first request. Using a different value for ClientToken is considered a new call to StopModel. An idempotency token is active for 8 hours.
     public var clientToken: Swift.String?
     /// The version of the model that you want to stop.
@@ -1988,7 +1988,7 @@ public struct StopModelInput {
     }
 }
 
-public struct StopModelOutput {
+public struct StopModelOutput: Swift.Sendable {
     /// The status of the model.
     public var status: LookoutVisionClientTypes.ModelHostingStatus?
 
@@ -2000,7 +2000,7 @@ public struct StopModelOutput {
     }
 }
 
-public struct TagResourceInput {
+public struct TagResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the model to assign the tags.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -2018,12 +2018,12 @@ public struct TagResourceInput {
     }
 }
 
-public struct TagResourceOutput {
+public struct TagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UntagResourceInput {
+public struct UntagResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the model from which you want to remove tags.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -2041,12 +2041,12 @@ public struct UntagResourceInput {
     }
 }
 
-public struct UntagResourceOutput {
+public struct UntagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdateDatasetEntriesInput {
+public struct UpdateDatasetEntriesInput: Swift.Sendable {
     /// The entries to add to the dataset.
     /// This member is required.
     public var changes: Foundation.Data?
@@ -2073,7 +2073,7 @@ public struct UpdateDatasetEntriesInput {
     }
 }
 
-public struct UpdateDatasetEntriesOutput {
+public struct UpdateDatasetEntriesOutput: Swift.Sendable {
     /// The status of the dataset update.
     public var status: LookoutVisionClientTypes.DatasetStatus?
 

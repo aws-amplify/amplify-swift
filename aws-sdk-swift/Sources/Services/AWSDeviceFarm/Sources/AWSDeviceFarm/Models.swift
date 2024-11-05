@@ -27,8 +27,9 @@ import protocol ClientRuntime.ModeledError
 @_spi(UnknownAWSHTTPServiceError) import struct AWSClientRuntime.UnknownAWSHTTPServiceError
 
 extension DeviceFarmClientTypes {
+
     /// Represents information about free trial device minutes for an AWS account.
-    public struct TrialMinutes {
+    public struct TrialMinutes: Swift.Sendable {
         /// The number of free trial minutes remaining in the account.
         public var remaining: Swift.Double?
         /// The total number of free trial minutes that the account started with.
@@ -43,12 +44,11 @@ extension DeviceFarmClientTypes {
             self.total = total
         }
     }
-
 }
 
 extension DeviceFarmClientTypes {
 
-    public enum DevicePlatform: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DevicePlatform: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case android
         case ios
         case sdkUnknown(Swift.String)
@@ -76,8 +76,9 @@ extension DeviceFarmClientTypes {
 }
 
 extension DeviceFarmClientTypes {
+
     /// A container for account-level settings in AWS Device Farm.
-    public struct AccountSettings {
+    public struct AccountSettings: Swift.Sendable {
         /// The AWS account number specified in the AccountSettings container.
         public var awsAccountNumber: Swift.String?
         /// The default number of minutes (at the account level) a test run executes before it times out. The default value is 150 minutes.
@@ -116,7 +117,6 @@ extension DeviceFarmClientTypes {
             self.unmeteredRemoteAccessDevices = unmeteredRemoteAccessDevices
         }
     }
-
 }
 
 /// An invalid argument was specified.
@@ -146,7 +146,7 @@ public struct ArgumentException: ClientRuntime.ModeledError, AWSClientRuntime.AW
 
 extension DeviceFarmClientTypes {
 
-    public enum ArtifactType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ArtifactType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case appiumJavaOutput
         case appiumJavaXmlOutput
         case appiumPythonOutput
@@ -252,8 +252,9 @@ extension DeviceFarmClientTypes {
 }
 
 extension DeviceFarmClientTypes {
+
     /// Represents the output of a test. Examples of artifacts include logs and screenshots.
-    public struct Artifact {
+    public struct Artifact: Swift.Sendable {
         /// The artifact's ARN.
         public var arn: Swift.String?
         /// The artifact's file extension.
@@ -322,12 +323,11 @@ extension DeviceFarmClientTypes {
             self.url = url
         }
     }
-
 }
 
 extension DeviceFarmClientTypes {
 
-    public enum ArtifactCategory: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ArtifactCategory: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case file
         case log
         case screenshot
@@ -359,7 +359,7 @@ extension DeviceFarmClientTypes {
 
 extension DeviceFarmClientTypes {
 
-    public enum BillingMethod: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum BillingMethod: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case metered
         case unmetered
         case sdkUnknown(Swift.String)
@@ -411,8 +411,9 @@ public struct CannotDeleteException: ClientRuntime.ModeledError, AWSClientRuntim
 }
 
 extension DeviceFarmClientTypes {
+
     /// Represents entity counters.
-    public struct Counters {
+    public struct Counters: Swift.Sendable {
         /// The number of errored entities.
         public var errored: Swift.Int?
         /// The number of failed entities.
@@ -447,12 +448,12 @@ extension DeviceFarmClientTypes {
             self.warned = warned
         }
     }
-
 }
 
 extension DeviceFarmClientTypes {
+
     /// Represents the amount of CPU that an app is using on a physical device. Does not represent system-wide CPU usage.
-    public struct CPU {
+    public struct CPU: Swift.Sendable {
         /// The CPU's architecture (for example, x86 or ARM).
         public var architecture: Swift.String?
         /// The clock speed of the device's CPU, expressed in hertz (Hz). For example, a 1.2 GHz CPU is expressed as 1200000000.
@@ -471,7 +472,6 @@ extension DeviceFarmClientTypes {
             self.frequency = frequency
         }
     }
-
 }
 
 /// A limit was exceeded.
@@ -551,7 +551,7 @@ public struct ServiceAccountException: ClientRuntime.ModeledError, AWSClientRunt
 
 extension DeviceFarmClientTypes {
 
-    public enum DeviceAttribute: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DeviceAttribute: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case appiumVersion
         case arn
         case availability
@@ -613,7 +613,7 @@ extension DeviceFarmClientTypes {
 
 extension DeviceFarmClientTypes {
 
-    public enum RuleOperator: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum RuleOperator: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case contains
         case equals
         case greaterThan
@@ -659,8 +659,9 @@ extension DeviceFarmClientTypes {
 }
 
 extension DeviceFarmClientTypes {
+
     /// Represents a condition for a device pool.
-    public struct Rule {
+    public struct Rule: Swift.Sendable {
         /// The rule's stringified attribute. For example, specify the value as "\"abc\"". The supported operators for each attribute are provided in the following list. APPIUM_VERSION The Appium version for the test. Supported operators: CONTAINS ARN The Amazon Resource Name (ARN) of the device (for example, arn:aws:devicefarm:us-west-2::device:12345Example. Supported operators: EQUALS, IN, NOT_IN AVAILABILITY The current availability of the device. Valid values are AVAILABLE, HIGHLY_AVAILABLE, BUSY, or TEMPORARY_NOT_AVAILABLE. Supported operators: EQUALS FLEET_TYPE The fleet type. Valid values are PUBLIC or PRIVATE. Supported operators: EQUALS FORM_FACTOR The device form factor. Valid values are PHONE or TABLET. Supported operators: EQUALS, IN, NOT_IN INSTANCE_ARN The Amazon Resource Name (ARN) of the device instance. Supported operators: IN, NOT_IN INSTANCE_LABELS The label of the device instance. Supported operators: CONTAINS MANUFACTURER The device manufacturer (for example, Apple). Supported operators: EQUALS, IN, NOT_IN MODEL The device model, such as Apple iPad Air 2 or Google Pixel. Supported operators: CONTAINS, EQUALS, IN, NOT_IN OS_VERSION The operating system version (for example, 10.3.2). Supported operators: EQUALS, GREATER_THAN, GREATER_THAN_OR_EQUALS, IN, LESS_THAN, LESS_THAN_OR_EQUALS, NOT_IN PLATFORM The device platform. Valid values are ANDROID or IOS. Supported operators: EQUALS, IN, NOT_IN REMOTE_ACCESS_ENABLED Whether the device is enabled for remote access. Valid values are TRUE or FALSE. Supported operators: EQUALS REMOTE_DEBUG_ENABLED Whether the device is enabled for remote debugging. Valid values are TRUE or FALSE. Supported operators: EQUALS Because remote debugging is [no longer supported](https://docs.aws.amazon.com/devicefarm/latest/developerguide/history.html), this filter is ignored.
         public var attribute: DeviceFarmClientTypes.DeviceAttribute?
         /// Specifies how Device Farm compares the rule's attribute to the value. For the operators that are supported by each attribute, see the attribute descriptions.
@@ -679,11 +680,10 @@ extension DeviceFarmClientTypes {
             self.value = value
         }
     }
-
 }
 
 /// Represents a request to the create device pool operation.
-public struct CreateDevicePoolInput {
+public struct CreateDevicePoolInput: Swift.Sendable {
     /// The device pool's description.
     public var description: Swift.String?
     /// The number of devices that Device Farm can add to your device pool. Device Farm adds devices that are available and meet the criteria that you assign for the rules parameter. Depending on how many devices meet these constraints, your device pool might contain fewer devices than the value for this parameter. By specifying the maximum number of devices, you can control the costs that you incur by running tests.
@@ -716,7 +716,7 @@ public struct CreateDevicePoolInput {
 
 extension DeviceFarmClientTypes {
 
-    public enum DevicePoolType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DevicePoolType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case curated
         case `private`
         case sdkUnknown(Swift.String)
@@ -744,8 +744,9 @@ extension DeviceFarmClientTypes {
 }
 
 extension DeviceFarmClientTypes {
+
     /// Represents a collection of device types.
-    public struct DevicePool {
+    public struct DevicePool: Swift.Sendable {
         /// The device pool's ARN.
         public var arn: Swift.String?
         /// The device pool's description.
@@ -780,11 +781,10 @@ extension DeviceFarmClientTypes {
             self.type = type
         }
     }
-
 }
 
 /// Represents the result of a create device pool request.
-public struct CreateDevicePoolOutput {
+public struct CreateDevicePoolOutput: Swift.Sendable {
     /// The newly created device pool.
     public var devicePool: DeviceFarmClientTypes.DevicePool?
 
@@ -796,7 +796,7 @@ public struct CreateDevicePoolOutput {
     }
 }
 
-public struct CreateInstanceProfileInput {
+public struct CreateInstanceProfileInput: Swift.Sendable {
     /// The description of your instance profile.
     public var description: Swift.String?
     /// An array of strings that specifies the list of app packages that should not be cleaned up from the device after a test run. The list of packages is considered only if you set packageCleanup to true.
@@ -826,8 +826,9 @@ public struct CreateInstanceProfileInput {
 }
 
 extension DeviceFarmClientTypes {
+
     /// Represents the instance profile.
-    public struct InstanceProfile {
+    public struct InstanceProfile: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the instance profile.
         public var arn: Swift.String?
         /// The description of the instance profile.
@@ -858,10 +859,9 @@ extension DeviceFarmClientTypes {
             self.rebootAfterUse = rebootAfterUse
         }
     }
-
 }
 
-public struct CreateInstanceProfileOutput {
+public struct CreateInstanceProfileOutput: Swift.Sendable {
     /// An object that contains information about your instance profile.
     public var instanceProfile: DeviceFarmClientTypes.InstanceProfile?
 
@@ -875,7 +875,7 @@ public struct CreateInstanceProfileOutput {
 
 extension DeviceFarmClientTypes {
 
-    public enum NetworkProfileType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum NetworkProfileType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case curated
         case `private`
         case sdkUnknown(Swift.String)
@@ -902,7 +902,7 @@ extension DeviceFarmClientTypes {
     }
 }
 
-public struct CreateNetworkProfileInput {
+public struct CreateNetworkProfileInput: Swift.Sendable {
     /// The description of the network profile.
     public var description: Swift.String?
     /// The data throughput rate in bits per second, as an integer from 0 to 104857600.
@@ -961,8 +961,9 @@ public struct CreateNetworkProfileInput {
 }
 
 extension DeviceFarmClientTypes {
+
     /// An array of settings that describes characteristics of a network profile.
-    public struct NetworkProfile {
+    public struct NetworkProfile: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the network profile.
         public var arn: Swift.String?
         /// The description of the network profile.
@@ -1017,10 +1018,9 @@ extension DeviceFarmClientTypes {
             self.uplinkLossPercent = uplinkLossPercent
         }
     }
-
 }
 
-public struct CreateNetworkProfileOutput {
+public struct CreateNetworkProfileOutput: Swift.Sendable {
     /// The network profile that is returned by the create network profile request.
     public var networkProfile: DeviceFarmClientTypes.NetworkProfile?
 
@@ -1060,8 +1060,9 @@ public struct TagOperationException: ClientRuntime.ModeledError, AWSClientRuntim
 }
 
 extension DeviceFarmClientTypes {
+
     /// Contains the VPC configuration data necessary to interface with AWS Device Farm's services.
-    public struct VpcConfig {
+    public struct VpcConfig: Swift.Sendable {
         /// An array of one or more security groups IDs in your Amazon VPC.
         /// This member is required.
         public var securityGroupIds: [Swift.String]?
@@ -1083,11 +1084,10 @@ extension DeviceFarmClientTypes {
             self.vpcId = vpcId
         }
     }
-
 }
 
 /// Represents a request to the create project operation.
-public struct CreateProjectInput {
+public struct CreateProjectInput: Swift.Sendable {
     /// Sets the execution timeout value (in minutes) for a project. All test runs in this project use the specified execution timeout value unless overridden when scheduling a run.
     public var defaultJobTimeoutMinutes: Swift.Int?
     /// The project's name.
@@ -1109,8 +1109,9 @@ public struct CreateProjectInput {
 }
 
 extension DeviceFarmClientTypes {
+
     /// Represents an operating-system neutral workspace for running and managing tests.
-    public struct Project {
+    public struct Project: Swift.Sendable {
         /// The project's ARN.
         public var arn: Swift.String?
         /// When the project was created.
@@ -1137,11 +1138,10 @@ extension DeviceFarmClientTypes {
             self.vpcConfig = vpcConfig
         }
     }
-
 }
 
 /// Represents the result of a create project request.
-public struct CreateProjectOutput {
+public struct CreateProjectOutput: Swift.Sendable {
     /// The newly created project.
     public var project: DeviceFarmClientTypes.Project?
 
@@ -1154,8 +1154,9 @@ public struct CreateProjectOutput {
 }
 
 extension DeviceFarmClientTypes {
+
     /// Configuration settings for a remote access session, including billing method.
-    public struct CreateRemoteAccessSessionConfiguration {
+    public struct CreateRemoteAccessSessionConfiguration: Swift.Sendable {
         /// The billing method for the remote access session.
         public var billingMethod: DeviceFarmClientTypes.BillingMethod?
         /// An array of ARNs included in the VPC endpoint configuration.
@@ -1170,12 +1171,11 @@ extension DeviceFarmClientTypes {
             self.vpceConfigurationArns = vpceConfigurationArns
         }
     }
-
 }
 
 extension DeviceFarmClientTypes {
 
-    public enum InteractionMode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum InteractionMode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case interactive
         case noVideo
         case videoOnly
@@ -1206,7 +1206,7 @@ extension DeviceFarmClientTypes {
 }
 
 /// Creates and submits a request to start a remote access session.
-public struct CreateRemoteAccessSessionInput {
+public struct CreateRemoteAccessSessionInput: Swift.Sendable {
     /// Unique identifier for the client. If you want access to multiple devices on the same client, you should pass the same clientId value in each call to CreateRemoteAccessSession. This identifier is required only if remoteDebugEnabled is set to true. Remote debugging is [no longer supported](https://docs.aws.amazon.com/devicefarm/latest/developerguide/history.html).
     public var clientId: Swift.String?
     /// The configuration information for the remote access session request.
@@ -1272,7 +1272,7 @@ public struct CreateRemoteAccessSessionInput {
 
 extension DeviceFarmClientTypes {
 
-    public enum DeviceAvailability: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DeviceAvailability: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case available
         case busy
         case highlyAvailable
@@ -1307,7 +1307,7 @@ extension DeviceFarmClientTypes {
 
 extension DeviceFarmClientTypes {
 
-    public enum DeviceFormFactor: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DeviceFormFactor: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case phone
         case tablet
         case sdkUnknown(Swift.String)
@@ -1336,7 +1336,7 @@ extension DeviceFarmClientTypes {
 
 extension DeviceFarmClientTypes {
 
-    public enum InstanceStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum InstanceStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case available
         case inUse
         case notAvailable
@@ -1370,8 +1370,9 @@ extension DeviceFarmClientTypes {
 }
 
 extension DeviceFarmClientTypes {
+
     /// Represents the device instance.
-    public struct DeviceInstance {
+    public struct DeviceInstance: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the device instance.
         public var arn: Swift.String?
         /// The ARN of the device.
@@ -1402,12 +1403,12 @@ extension DeviceFarmClientTypes {
             self.udid = udid
         }
     }
-
 }
 
 extension DeviceFarmClientTypes {
+
     /// Represents the screen resolution of a device in height and width, expressed in pixels.
-    public struct Resolution {
+    public struct Resolution: Swift.Sendable {
         /// The screen resolution's height, expressed in pixels.
         public var height: Swift.Int?
         /// The screen resolution's width, expressed in pixels.
@@ -1422,12 +1423,12 @@ extension DeviceFarmClientTypes {
             self.width = width
         }
     }
-
 }
 
 extension DeviceFarmClientTypes {
+
     /// Represents a device type that an app is tested against.
-    public struct Device {
+    public struct Device: Swift.Sendable {
         /// The device's ARN.
         public var arn: Swift.String?
         /// Indicates how likely a device is available for a test run. Currently available in the [ListDevices] and GetDevice API methods.
@@ -1526,12 +1527,12 @@ extension DeviceFarmClientTypes {
             self.resolution = resolution
         }
     }
-
 }
 
 extension DeviceFarmClientTypes {
+
     /// Represents the total (metered or unmetered) minutes used by the resource to run tests. Contains the sum of minutes consumed by all children.
-    public struct DeviceMinutes {
+    public struct DeviceMinutes: Swift.Sendable {
         /// When specified, represents only the sum of metered minutes used by the resource to run tests.
         public var metered: Swift.Double?
         /// When specified, represents the total minutes used by the resource to run tests.
@@ -1550,12 +1551,11 @@ extension DeviceFarmClientTypes {
             self.unmetered = unmetered
         }
     }
-
 }
 
 extension DeviceFarmClientTypes {
 
-    public enum ExecutionResult: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ExecutionResult: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case errored
         case failed
         case passed
@@ -1599,7 +1599,7 @@ extension DeviceFarmClientTypes {
 
 extension DeviceFarmClientTypes {
 
-    public enum ExecutionStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ExecutionStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case completed
         case pending
         case pendingConcurrnecy
@@ -1648,8 +1648,9 @@ extension DeviceFarmClientTypes {
 }
 
 extension DeviceFarmClientTypes {
+
     /// Represents information about the remote access session.
-    public struct RemoteAccessSession {
+    public struct RemoteAccessSession: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the remote access session.
         public var arn: Swift.String?
         /// The billing method of the remote access session. Possible values include METERED or UNMETERED. For more information about metered devices, see [AWS Device Farm terminology](https://docs.aws.amazon.com/devicefarm/latest/developerguide/welcome.html#welcome-terminology).
@@ -1782,11 +1783,10 @@ extension DeviceFarmClientTypes {
             self.vpcConfig = vpcConfig
         }
     }
-
 }
 
 /// Represents the server response from a request to create a remote access session.
-public struct CreateRemoteAccessSessionOutput {
+public struct CreateRemoteAccessSessionOutput: Swift.Sendable {
     /// A container that describes the remote access session when the request to create a remote access session is sent.
     public var remoteAccessSession: DeviceFarmClientTypes.RemoteAccessSession?
 
@@ -1823,8 +1823,9 @@ public struct InternalServiceException: ClientRuntime.ModeledError, AWSClientRun
 }
 
 extension DeviceFarmClientTypes {
+
     /// The VPC security groups and subnets that are attached to a project.
-    public struct TestGridVpcConfig {
+    public struct TestGridVpcConfig: Swift.Sendable {
         /// A list of VPC security group IDs in your Amazon VPC.
         /// This member is required.
         public var securityGroupIds: [Swift.String]?
@@ -1846,10 +1847,9 @@ extension DeviceFarmClientTypes {
             self.vpcId = vpcId
         }
     }
-
 }
 
-public struct CreateTestGridProjectInput {
+public struct CreateTestGridProjectInput: Swift.Sendable {
     /// Human-readable description of the project.
     public var description: Swift.String?
     /// Human-readable name of the Selenium testing project.
@@ -1871,8 +1871,9 @@ public struct CreateTestGridProjectInput {
 }
 
 extension DeviceFarmClientTypes {
+
     /// A Selenium testing project. Projects are used to collect and collate sessions.
-    public struct TestGridProject {
+    public struct TestGridProject: Swift.Sendable {
         /// The ARN for the project.
         public var arn: Swift.String?
         /// When the project was created.
@@ -1899,10 +1900,9 @@ extension DeviceFarmClientTypes {
             self.vpcConfig = vpcConfig
         }
     }
-
 }
 
-public struct CreateTestGridProjectOutput {
+public struct CreateTestGridProjectOutput: Swift.Sendable {
     /// ARN of the Selenium testing project that was created.
     public var testGridProject: DeviceFarmClientTypes.TestGridProject?
 
@@ -1914,7 +1914,7 @@ public struct CreateTestGridProjectOutput {
     }
 }
 
-public struct CreateTestGridUrlInput {
+public struct CreateTestGridUrlInput: Swift.Sendable {
     /// Lifetime, in seconds, of the URL.
     /// This member is required.
     public var expiresInSeconds: Swift.Int?
@@ -1932,7 +1932,7 @@ public struct CreateTestGridUrlInput {
     }
 }
 
-public struct CreateTestGridUrlOutput {
+public struct CreateTestGridUrlOutput: Swift.Sendable {
     /// The number of seconds the URL from [CreateTestGridUrlResult$url] stays active.
     public var expires: Foundation.Date?
     /// A signed URL, expiring in [CreateTestGridUrlRequest$expiresInSeconds] seconds, to be passed to a RemoteWebDriver.
@@ -1955,7 +1955,7 @@ extension CreateTestGridUrlOutput: Swift.CustomDebugStringConvertible {
 
 extension DeviceFarmClientTypes {
 
-    public enum UploadType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum UploadType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case androidApp
         case appiumJavaJunitTestPackage
         case appiumJavaJunitTestSpec
@@ -2073,7 +2073,7 @@ extension DeviceFarmClientTypes {
 }
 
 /// Represents a request to the create upload operation.
-public struct CreateUploadInput {
+public struct CreateUploadInput: Swift.Sendable {
     /// The upload's content type (for example, application/octet-stream).
     public var contentType: Swift.String?
     /// The upload's file name. The name should not contain any forward slashes (/). If you are uploading an iOS app, the file name must end with the .ipa extension. If you are uploading an Android app, the file name must end with the .apk extension. For all others, the file name must end with the .zip file extension.
@@ -2163,7 +2163,7 @@ public struct CreateUploadInput {
 
 extension DeviceFarmClientTypes {
 
-    public enum UploadCategory: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum UploadCategory: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case curated
         case `private`
         case sdkUnknown(Swift.String)
@@ -2192,7 +2192,7 @@ extension DeviceFarmClientTypes {
 
 extension DeviceFarmClientTypes {
 
-    public enum UploadStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum UploadStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case failed
         case initialized
         case processing
@@ -2226,8 +2226,9 @@ extension DeviceFarmClientTypes {
 }
 
 extension DeviceFarmClientTypes {
+
     /// An app or a set of one or more tests to upload or that have been uploaded.
-    public struct Upload {
+    public struct Upload: Swift.Sendable {
         /// The upload's ARN.
         public var arn: Swift.String?
         /// The upload's category. Allowed values include:
@@ -2344,7 +2345,6 @@ extension DeviceFarmClientTypes {
             self.url = url
         }
     }
-
 }
 
 extension DeviceFarmClientTypes.Upload: Swift.CustomDebugStringConvertible {
@@ -2353,7 +2353,7 @@ extension DeviceFarmClientTypes.Upload: Swift.CustomDebugStringConvertible {
 }
 
 /// Represents the result of a create upload request.
-public struct CreateUploadOutput {
+public struct CreateUploadOutput: Swift.Sendable {
     /// The newly created upload.
     public var upload: DeviceFarmClientTypes.Upload?
 
@@ -2365,7 +2365,7 @@ public struct CreateUploadOutput {
     }
 }
 
-public struct CreateVPCEConfigurationInput {
+public struct CreateVPCEConfigurationInput: Swift.Sendable {
     /// The DNS name of the service running in your VPC that you want Device Farm to test.
     /// This member is required.
     public var serviceDnsName: Swift.String?
@@ -2393,8 +2393,9 @@ public struct CreateVPCEConfigurationInput {
 }
 
 extension DeviceFarmClientTypes {
+
     /// Represents an Amazon Virtual Private Cloud (VPC) endpoint configuration.
-    public struct VPCEConfiguration {
+    public struct VPCEConfiguration: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the VPC endpoint configuration.
         public var arn: Swift.String?
         /// The DNS name that maps to the private IP address of the service you want to access.
@@ -2421,10 +2422,9 @@ extension DeviceFarmClientTypes {
             self.vpceServiceName = vpceServiceName
         }
     }
-
 }
 
-public struct CreateVPCEConfigurationOutput {
+public struct CreateVPCEConfigurationOutput: Swift.Sendable {
     /// An object that contains information about your VPC endpoint configuration.
     public var vpceConfiguration: DeviceFarmClientTypes.VPCEConfiguration?
 
@@ -2438,7 +2438,7 @@ public struct CreateVPCEConfigurationOutput {
 
 extension DeviceFarmClientTypes {
 
-    public enum CurrencyCode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum CurrencyCode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case usd
         case sdkUnknown(Swift.String)
 
@@ -2463,8 +2463,9 @@ extension DeviceFarmClientTypes {
 }
 
 extension DeviceFarmClientTypes {
+
     /// A JSON object that specifies the paths where the artifacts generated by the customer's tests, on the device or in the test environment, are pulled from. Specify deviceHostPaths and optionally specify either iosPaths or androidPaths. For web app tests, you can specify both iosPaths and androidPaths.
-    public struct CustomerArtifactPaths {
+    public struct CustomerArtifactPaths: Swift.Sendable {
         /// Comma-separated list of paths on the Android device where the artifacts generated by the customer's tests are pulled from.
         public var androidPaths: [Swift.String]?
         /// Comma-separated list of paths in the test execution environment where the artifacts generated by the customer's tests are pulled from.
@@ -2483,11 +2484,10 @@ extension DeviceFarmClientTypes {
             self.iosPaths = iosPaths
         }
     }
-
 }
 
 /// Represents a request to the delete device pool operation.
-public struct DeleteDevicePoolInput {
+public struct DeleteDevicePoolInput: Swift.Sendable {
     /// Represents the Amazon Resource Name (ARN) of the Device Farm device pool to delete.
     /// This member is required.
     public var arn: Swift.String?
@@ -2501,12 +2501,12 @@ public struct DeleteDevicePoolInput {
 }
 
 /// Represents the result of a delete device pool request.
-public struct DeleteDevicePoolOutput {
+public struct DeleteDevicePoolOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteInstanceProfileInput {
+public struct DeleteInstanceProfileInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the instance profile you are requesting to delete.
     /// This member is required.
     public var arn: Swift.String?
@@ -2519,12 +2519,12 @@ public struct DeleteInstanceProfileInput {
     }
 }
 
-public struct DeleteInstanceProfileOutput {
+public struct DeleteInstanceProfileOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteNetworkProfileInput {
+public struct DeleteNetworkProfileInput: Swift.Sendable {
     /// The ARN of the network profile to delete.
     /// This member is required.
     public var arn: Swift.String?
@@ -2537,13 +2537,13 @@ public struct DeleteNetworkProfileInput {
     }
 }
 
-public struct DeleteNetworkProfileOutput {
+public struct DeleteNetworkProfileOutput: Swift.Sendable {
 
     public init() { }
 }
 
 /// Represents a request to the delete project operation.
-public struct DeleteProjectInput {
+public struct DeleteProjectInput: Swift.Sendable {
     /// Represents the Amazon Resource Name (ARN) of the Device Farm project to delete.
     /// This member is required.
     public var arn: Swift.String?
@@ -2557,13 +2557,13 @@ public struct DeleteProjectInput {
 }
 
 /// Represents the result of a delete project request.
-public struct DeleteProjectOutput {
+public struct DeleteProjectOutput: Swift.Sendable {
 
     public init() { }
 }
 
 /// Represents the request to delete the specified remote access session.
-public struct DeleteRemoteAccessSessionInput {
+public struct DeleteRemoteAccessSessionInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the session for which you want to delete remote access.
     /// This member is required.
     public var arn: Swift.String?
@@ -2577,13 +2577,13 @@ public struct DeleteRemoteAccessSessionInput {
 }
 
 /// The response from the server when a request is made to delete the remote access session.
-public struct DeleteRemoteAccessSessionOutput {
+public struct DeleteRemoteAccessSessionOutput: Swift.Sendable {
 
     public init() { }
 }
 
 /// Represents a request to the delete run operation.
-public struct DeleteRunInput {
+public struct DeleteRunInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) for the run to delete.
     /// This member is required.
     public var arn: Swift.String?
@@ -2597,12 +2597,12 @@ public struct DeleteRunInput {
 }
 
 /// Represents the result of a delete run request.
-public struct DeleteRunOutput {
+public struct DeleteRunOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteTestGridProjectInput {
+public struct DeleteTestGridProjectInput: Swift.Sendable {
     /// The ARN of the project to delete, from [CreateTestGridProject] or [ListTestGridProjects].
     /// This member is required.
     public var projectArn: Swift.String?
@@ -2615,13 +2615,13 @@ public struct DeleteTestGridProjectInput {
     }
 }
 
-public struct DeleteTestGridProjectOutput {
+public struct DeleteTestGridProjectOutput: Swift.Sendable {
 
     public init() { }
 }
 
 /// Represents a request to the delete upload operation.
-public struct DeleteUploadInput {
+public struct DeleteUploadInput: Swift.Sendable {
     /// Represents the Amazon Resource Name (ARN) of the Device Farm upload to delete.
     /// This member is required.
     public var arn: Swift.String?
@@ -2635,7 +2635,7 @@ public struct DeleteUploadInput {
 }
 
 /// Represents the result of a delete upload request.
-public struct DeleteUploadOutput {
+public struct DeleteUploadOutput: Swift.Sendable {
 
     public init() { }
 }
@@ -2664,7 +2664,7 @@ public struct InvalidOperationException: ClientRuntime.ModeledError, AWSClientRu
     }
 }
 
-public struct DeleteVPCEConfigurationInput {
+public struct DeleteVPCEConfigurationInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the VPC endpoint configuration you want to delete.
     /// This member is required.
     public var arn: Swift.String?
@@ -2677,19 +2677,19 @@ public struct DeleteVPCEConfigurationInput {
     }
 }
 
-public struct DeleteVPCEConfigurationOutput {
+public struct DeleteVPCEConfigurationOutput: Swift.Sendable {
 
     public init() { }
 }
 
 /// Represents the request sent to retrieve the account settings.
-public struct GetAccountSettingsInput {
+public struct GetAccountSettingsInput: Swift.Sendable {
 
     public init() { }
 }
 
 /// Represents the account settings return values from the GetAccountSettings request.
-public struct GetAccountSettingsOutput {
+public struct GetAccountSettingsOutput: Swift.Sendable {
     /// The account settings.
     public var accountSettings: DeviceFarmClientTypes.AccountSettings?
 
@@ -2702,7 +2702,7 @@ public struct GetAccountSettingsOutput {
 }
 
 /// Represents a request to the get device request.
-public struct GetDeviceInput {
+public struct GetDeviceInput: Swift.Sendable {
     /// The device type's ARN.
     /// This member is required.
     public var arn: Swift.String?
@@ -2716,7 +2716,7 @@ public struct GetDeviceInput {
 }
 
 /// Represents the result of a get device request.
-public struct GetDeviceOutput {
+public struct GetDeviceOutput: Swift.Sendable {
     /// An object that contains information about the requested device.
     public var device: DeviceFarmClientTypes.Device?
 
@@ -2728,7 +2728,7 @@ public struct GetDeviceOutput {
     }
 }
 
-public struct GetDeviceInstanceInput {
+public struct GetDeviceInstanceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the instance you're requesting information about.
     /// This member is required.
     public var arn: Swift.String?
@@ -2741,7 +2741,7 @@ public struct GetDeviceInstanceInput {
     }
 }
 
-public struct GetDeviceInstanceOutput {
+public struct GetDeviceInstanceOutput: Swift.Sendable {
     /// An object that contains information about your device instance.
     public var deviceInstance: DeviceFarmClientTypes.DeviceInstance?
 
@@ -2754,7 +2754,7 @@ public struct GetDeviceInstanceOutput {
 }
 
 /// Represents a request to the get device pool operation.
-public struct GetDevicePoolInput {
+public struct GetDevicePoolInput: Swift.Sendable {
     /// The device pool's ARN.
     /// This member is required.
     public var arn: Swift.String?
@@ -2768,7 +2768,7 @@ public struct GetDevicePoolInput {
 }
 
 /// Represents the result of a get device pool request.
-public struct GetDevicePoolOutput {
+public struct GetDevicePoolOutput: Swift.Sendable {
     /// An object that contains information about the requested device pool.
     public var devicePool: DeviceFarmClientTypes.DevicePool?
 
@@ -2781,8 +2781,9 @@ public struct GetDevicePoolOutput {
 }
 
 extension DeviceFarmClientTypes {
+
     /// Represents a latitude and longitude pair, expressed in geographic coordinate system degrees (for example, 47.6204, -122.3491). Elevation is currently not supported.
-    public struct Location {
+    public struct Location: Swift.Sendable {
         /// The latitude.
         /// This member is required.
         public var latitude: Swift.Double?
@@ -2799,12 +2800,12 @@ extension DeviceFarmClientTypes {
             self.longitude = longitude
         }
     }
-
 }
 
 extension DeviceFarmClientTypes {
+
     /// Represents the set of radios and their states on a device. Examples of radios include Wi-Fi, GPS, Bluetooth, and NFC.
-    public struct Radios {
+    public struct Radios: Swift.Sendable {
         /// True if Bluetooth is enabled at the beginning of the test. Otherwise, false.
         public var bluetooth: Swift.Bool?
         /// True if GPS is enabled at the beginning of the test. Otherwise, false.
@@ -2827,12 +2828,12 @@ extension DeviceFarmClientTypes {
             self.wifi = wifi
         }
     }
-
 }
 
 extension DeviceFarmClientTypes {
+
     /// Represents the settings for a run. Includes things like location, radio states, auxiliary apps, and network profiles.
-    public struct ScheduleRunConfiguration {
+    public struct ScheduleRunConfiguration: Swift.Sendable {
         /// A list of upload ARNs for app packages to be installed with your app.
         public var auxiliaryApps: [Swift.String]?
         /// Specifies the billing method for a test run: metered or unmetered. If the parameter is not specified, the default value is metered. If you have purchased unmetered device slots, you must set this parameter to unmetered to make use of them. Otherwise, your run counts against your metered time.
@@ -2875,12 +2876,11 @@ extension DeviceFarmClientTypes {
             self.vpceConfigurationArns = vpceConfigurationArns
         }
     }
-
 }
 
 extension DeviceFarmClientTypes {
 
-    public enum TestType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum TestType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case appiumJavaJunit
         case appiumJavaTestng
         case appiumNode
@@ -2944,8 +2944,9 @@ extension DeviceFarmClientTypes {
 }
 
 extension DeviceFarmClientTypes {
+
     /// Represents test settings. This data structure is passed in as the test parameter to ScheduleRun. For an example of the JSON request syntax, see [ScheduleRun].
-    public struct ScheduleRunTest {
+    public struct ScheduleRunTest: Swift.Sendable {
         /// The test's filter.
         public var filter: Swift.String?
         /// The test's parameters, such as test framework parameters and fixture settings. Parameters are represented by name-value pairs of strings. For all tests:
@@ -3053,11 +3054,10 @@ extension DeviceFarmClientTypes {
             self.type = type
         }
     }
-
 }
 
 /// Represents a request to the get device pool compatibility operation.
-public struct GetDevicePoolCompatibilityInput {
+public struct GetDevicePoolCompatibilityInput: Swift.Sendable {
     /// The ARN of the app that is associated with the specified device pool.
     public var appArn: Swift.String?
     /// An object that contains information about the settings for a run.
@@ -3115,8 +3115,9 @@ public struct GetDevicePoolCompatibilityInput {
 }
 
 extension DeviceFarmClientTypes {
+
     /// Represents information about incompatibility.
-    public struct IncompatibilityMessage {
+    public struct IncompatibilityMessage: Swift.Sendable {
         /// A message about the incompatibility.
         public var message: Swift.String?
         /// The type of incompatibility. Allowed values include:
@@ -3143,12 +3144,12 @@ extension DeviceFarmClientTypes {
             self.type = type
         }
     }
-
 }
 
 extension DeviceFarmClientTypes {
+
     /// Represents a device pool compatibility result.
-    public struct DevicePoolCompatibilityResult {
+    public struct DevicePoolCompatibilityResult: Swift.Sendable {
         /// Whether the result was compatible with the device pool.
         public var compatible: Swift.Bool?
         /// The device (phone or tablet) to return information about.
@@ -3167,11 +3168,10 @@ extension DeviceFarmClientTypes {
             self.incompatibilityMessages = incompatibilityMessages
         }
     }
-
 }
 
 /// Represents the result of describe device pool compatibility request.
-public struct GetDevicePoolCompatibilityOutput {
+public struct GetDevicePoolCompatibilityOutput: Swift.Sendable {
     /// Information about compatible devices.
     public var compatibleDevices: [DeviceFarmClientTypes.DevicePoolCompatibilityResult]?
     /// Information about incompatible devices.
@@ -3187,7 +3187,7 @@ public struct GetDevicePoolCompatibilityOutput {
     }
 }
 
-public struct GetInstanceProfileInput {
+public struct GetInstanceProfileInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of an instance profile.
     /// This member is required.
     public var arn: Swift.String?
@@ -3200,7 +3200,7 @@ public struct GetInstanceProfileInput {
     }
 }
 
-public struct GetInstanceProfileOutput {
+public struct GetInstanceProfileOutput: Swift.Sendable {
     /// An object that contains information about an instance profile.
     public var instanceProfile: DeviceFarmClientTypes.InstanceProfile?
 
@@ -3213,7 +3213,7 @@ public struct GetInstanceProfileOutput {
 }
 
 /// Represents a request to the get job operation.
-public struct GetJobInput {
+public struct GetJobInput: Swift.Sendable {
     /// The job's ARN.
     /// This member is required.
     public var arn: Swift.String?
@@ -3227,8 +3227,9 @@ public struct GetJobInput {
 }
 
 extension DeviceFarmClientTypes {
+
     /// Represents a device.
-    public struct Job {
+    public struct Job: Swift.Sendable {
         /// The job's ARN.
         public var arn: Swift.String?
         /// The job's result counters.
@@ -3355,11 +3356,10 @@ extension DeviceFarmClientTypes {
             self.videoEndpoint = videoEndpoint
         }
     }
-
 }
 
 /// Represents the result of a get job request.
-public struct GetJobOutput {
+public struct GetJobOutput: Swift.Sendable {
     /// An object that contains information about the requested job.
     public var job: DeviceFarmClientTypes.Job?
 
@@ -3371,7 +3371,7 @@ public struct GetJobOutput {
     }
 }
 
-public struct GetNetworkProfileInput {
+public struct GetNetworkProfileInput: Swift.Sendable {
     /// The ARN of the network profile to return information about.
     /// This member is required.
     public var arn: Swift.String?
@@ -3384,7 +3384,7 @@ public struct GetNetworkProfileInput {
     }
 }
 
-public struct GetNetworkProfileOutput {
+public struct GetNetworkProfileOutput: Swift.Sendable {
     /// The network profile.
     public var networkProfile: DeviceFarmClientTypes.NetworkProfile?
 
@@ -3422,7 +3422,7 @@ public struct NotEligibleException: ClientRuntime.ModeledError, AWSClientRuntime
 }
 
 /// Represents the request to retrieve the offering status for the specified customer or account.
-public struct GetOfferingStatusInput {
+public struct GetOfferingStatusInput: Swift.Sendable {
     /// An identifier that was returned from the previous call to this operation, which can be used to return the next set of items in the list.
     public var nextToken: Swift.String?
 
@@ -3435,8 +3435,9 @@ public struct GetOfferingStatusInput {
 }
 
 extension DeviceFarmClientTypes {
+
     /// A number that represents the monetary amount for an offering or transaction.
-    public struct MonetaryAmount {
+    public struct MonetaryAmount: Swift.Sendable {
         /// The numerical amount of an offering or transaction.
         public var amount: Swift.Double?
         /// The currency code of a monetary amount. For example, USD means U.S. dollars.
@@ -3451,12 +3452,11 @@ extension DeviceFarmClientTypes {
             self.currencyCode = currencyCode
         }
     }
-
 }
 
 extension DeviceFarmClientTypes {
 
-    public enum RecurringChargeFrequency: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum RecurringChargeFrequency: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case monthly
         case sdkUnknown(Swift.String)
 
@@ -3481,8 +3481,9 @@ extension DeviceFarmClientTypes {
 }
 
 extension DeviceFarmClientTypes {
+
     /// Specifies whether charges for devices are recurring.
-    public struct RecurringCharge {
+    public struct RecurringCharge: Swift.Sendable {
         /// The cost of the recurring charge.
         public var cost: DeviceFarmClientTypes.MonetaryAmount?
         /// The frequency in which charges recur.
@@ -3497,12 +3498,11 @@ extension DeviceFarmClientTypes {
             self.frequency = frequency
         }
     }
-
 }
 
 extension DeviceFarmClientTypes {
 
-    public enum OfferingType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum OfferingType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case recurring
         case sdkUnknown(Swift.String)
 
@@ -3527,8 +3527,9 @@ extension DeviceFarmClientTypes {
 }
 
 extension DeviceFarmClientTypes {
+
     /// Represents the metadata of a device offering.
-    public struct Offering {
+    public struct Offering: Swift.Sendable {
         /// A string that describes the offering.
         public var description: Swift.String?
         /// The ID that corresponds to a device offering.
@@ -3555,12 +3556,11 @@ extension DeviceFarmClientTypes {
             self.type = type
         }
     }
-
 }
 
 extension DeviceFarmClientTypes {
 
-    public enum OfferingTransactionType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum OfferingTransactionType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case purchase
         case renew
         case system
@@ -3591,8 +3591,9 @@ extension DeviceFarmClientTypes {
 }
 
 extension DeviceFarmClientTypes {
+
     /// The status of the offering.
-    public struct OfferingStatus {
+    public struct OfferingStatus: Swift.Sendable {
         /// The date on which the offering is effective.
         public var effectiveOn: Foundation.Date?
         /// Represents the metadata of an offering status.
@@ -3615,11 +3616,10 @@ extension DeviceFarmClientTypes {
             self.type = type
         }
     }
-
 }
 
 /// Returns the status result for a device offering.
-public struct GetOfferingStatusOutput {
+public struct GetOfferingStatusOutput: Swift.Sendable {
     /// When specified, gets the offering status for the current period.
     public var current: [Swift.String: DeviceFarmClientTypes.OfferingStatus]?
     /// When specified, gets the offering status for the next period.
@@ -3640,7 +3640,7 @@ public struct GetOfferingStatusOutput {
 }
 
 /// Represents a request to the get project operation.
-public struct GetProjectInput {
+public struct GetProjectInput: Swift.Sendable {
     /// The project's ARN.
     /// This member is required.
     public var arn: Swift.String?
@@ -3654,7 +3654,7 @@ public struct GetProjectInput {
 }
 
 /// Represents the result of a get project request.
-public struct GetProjectOutput {
+public struct GetProjectOutput: Swift.Sendable {
     /// The project to get information about.
     public var project: DeviceFarmClientTypes.Project?
 
@@ -3667,7 +3667,7 @@ public struct GetProjectOutput {
 }
 
 /// Represents the request to get information about the specified remote access session.
-public struct GetRemoteAccessSessionInput {
+public struct GetRemoteAccessSessionInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the remote access session about which you want to get session information.
     /// This member is required.
     public var arn: Swift.String?
@@ -3681,7 +3681,7 @@ public struct GetRemoteAccessSessionInput {
 }
 
 /// Represents the response from the server that lists detailed information about the remote access session.
-public struct GetRemoteAccessSessionOutput {
+public struct GetRemoteAccessSessionOutput: Swift.Sendable {
     /// A container that lists detailed information about the remote access session.
     public var remoteAccessSession: DeviceFarmClientTypes.RemoteAccessSession?
 
@@ -3694,7 +3694,7 @@ public struct GetRemoteAccessSessionOutput {
 }
 
 /// Represents a request to the get run operation.
-public struct GetRunInput {
+public struct GetRunInput: Swift.Sendable {
     /// The run's ARN.
     /// This member is required.
     public var arn: Swift.String?
@@ -3709,7 +3709,7 @@ public struct GetRunInput {
 
 extension DeviceFarmClientTypes {
 
-    public enum DeviceFilterAttribute: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DeviceFilterAttribute: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case arn
         case availability
         case fleetType
@@ -3767,8 +3767,9 @@ extension DeviceFarmClientTypes {
 }
 
 extension DeviceFarmClientTypes {
+
     /// Represents a device filter used to select a set of devices to be included in a test run. This data structure is passed in as the deviceSelectionConfiguration parameter to ScheduleRun. For an example of the JSON request syntax, see [ScheduleRun]. It is also passed in as the filters parameter to ListDevices. For an example of the JSON request syntax, see [ListDevices].
-    public struct DeviceFilter {
+    public struct DeviceFilter: Swift.Sendable {
         /// The aspect of a device such as platform or model used as the selection criteria in a device filter. The supported operators for each attribute are provided in the following list. ARN The Amazon Resource Name (ARN) of the device (for example, arn:aws:devicefarm:us-west-2::device:12345Example). Supported operators: EQUALS, IN, NOT_IN PLATFORM The device platform. Valid values are ANDROID or IOS. Supported operators: EQUALS OS_VERSION The operating system version (for example, 10.3.2). Supported operators: EQUALS, GREATER_THAN, GREATER_THAN_OR_EQUALS, IN, LESS_THAN, LESS_THAN_OR_EQUALS, NOT_IN MODEL The device model (for example, iPad 5th Gen). Supported operators: CONTAINS, EQUALS, IN, NOT_IN AVAILABILITY The current availability of the device. Valid values are AVAILABLE, HIGHLY_AVAILABLE, BUSY, or TEMPORARY_NOT_AVAILABLE. Supported operators: EQUALS FORM_FACTOR The device form factor. Valid values are PHONE or TABLET. Supported operators: EQUALS MANUFACTURER The device manufacturer (for example, Apple). Supported operators: EQUALS, IN, NOT_IN REMOTE_ACCESS_ENABLED Whether the device is enabled for remote access. Valid values are TRUE or FALSE. Supported operators: EQUALS REMOTE_DEBUG_ENABLED Whether the device is enabled for remote debugging. Valid values are TRUE or FALSE. Supported operators: EQUALS Because remote debugging is [no longer supported](https://docs.aws.amazon.com/devicefarm/latest/developerguide/history.html), this filter is ignored. INSTANCE_ARN The Amazon Resource Name (ARN) of the device instance. Supported operators: EQUALS, IN, NOT_IN INSTANCE_LABELS The label of the device instance. Supported operators: CONTAINS FLEET_TYPE The fleet type. Valid values are PUBLIC or PRIVATE. Supported operators: EQUALS
         /// This member is required.
         public var attribute: DeviceFarmClientTypes.DeviceFilterAttribute?
@@ -3805,12 +3806,12 @@ extension DeviceFarmClientTypes {
             self.values = values
         }
     }
-
 }
 
 extension DeviceFarmClientTypes {
+
     /// Contains the run results requested by the device selection configuration and how many devices were returned. For an example of the JSON response syntax, see [ScheduleRun].
-    public struct DeviceSelectionResult {
+    public struct DeviceSelectionResult: Swift.Sendable {
         /// The filters in a device selection result.
         public var filters: [DeviceFarmClientTypes.DeviceFilter]?
         /// The number of devices that matched the device filter selection criteria.
@@ -3829,12 +3830,11 @@ extension DeviceFarmClientTypes {
             self.maxDevices = maxDevices
         }
     }
-
 }
 
 extension DeviceFarmClientTypes {
 
-    public enum ExecutionResultCode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ExecutionResultCode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case parsingFailed
         case vpcEndpointSetupFailed
         case sdkUnknown(Swift.String)
@@ -3862,8 +3862,9 @@ extension DeviceFarmClientTypes {
 }
 
 extension DeviceFarmClientTypes {
+
     /// Represents a test run on a set of devices with a given app package, test parameters, and so on.
-    public struct Run {
+    public struct Run: Swift.Sendable {
         /// An app to upload or that has been uploaded.
         public var appUpload: Swift.String?
         /// The run's ARN.
@@ -4062,11 +4063,10 @@ extension DeviceFarmClientTypes {
             self.webUrl = webUrl
         }
     }
-
 }
 
 /// Represents the result of a get run request.
-public struct GetRunOutput {
+public struct GetRunOutput: Swift.Sendable {
     /// The run to get results from.
     public var run: DeviceFarmClientTypes.Run?
 
@@ -4079,7 +4079,7 @@ public struct GetRunOutput {
 }
 
 /// Represents a request to the get suite operation.
-public struct GetSuiteInput {
+public struct GetSuiteInput: Swift.Sendable {
     /// The suite's ARN.
     /// This member is required.
     public var arn: Swift.String?
@@ -4093,8 +4093,9 @@ public struct GetSuiteInput {
 }
 
 extension DeviceFarmClientTypes {
+
     /// Represents a collection of one or more tests.
-    public struct Suite {
+    public struct Suite: Swift.Sendable {
         /// The suite's ARN.
         public var arn: Swift.String?
         /// The suite's result counters.
@@ -4205,11 +4206,10 @@ extension DeviceFarmClientTypes {
             self.type = type
         }
     }
-
 }
 
 /// Represents the result of a get suite request.
-public struct GetSuiteOutput {
+public struct GetSuiteOutput: Swift.Sendable {
     /// A collection of one or more tests.
     public var suite: DeviceFarmClientTypes.Suite?
 
@@ -4222,7 +4222,7 @@ public struct GetSuiteOutput {
 }
 
 /// Represents a request to the get test operation.
-public struct GetTestInput {
+public struct GetTestInput: Swift.Sendable {
     /// The test's ARN.
     /// This member is required.
     public var arn: Swift.String?
@@ -4236,8 +4236,9 @@ public struct GetTestInput {
 }
 
 extension DeviceFarmClientTypes {
+
     /// Represents a condition that is evaluated.
-    public struct Test {
+    public struct Test: Swift.Sendable {
         /// The test's ARN.
         public var arn: Swift.String?
         /// The test's result counters.
@@ -4348,11 +4349,10 @@ extension DeviceFarmClientTypes {
             self.type = type
         }
     }
-
 }
 
 /// Represents the result of a get test request.
-public struct GetTestOutput {
+public struct GetTestOutput: Swift.Sendable {
     /// A test condition that is evaluated.
     public var test: DeviceFarmClientTypes.Test?
 
@@ -4364,7 +4364,7 @@ public struct GetTestOutput {
     }
 }
 
-public struct GetTestGridProjectInput {
+public struct GetTestGridProjectInput: Swift.Sendable {
     /// The ARN of the Selenium testing project, from either [CreateTestGridProject] or [ListTestGridProjects].
     /// This member is required.
     public var projectArn: Swift.String?
@@ -4377,7 +4377,7 @@ public struct GetTestGridProjectInput {
     }
 }
 
-public struct GetTestGridProjectOutput {
+public struct GetTestGridProjectOutput: Swift.Sendable {
     /// A [TestGridProject].
     public var testGridProject: DeviceFarmClientTypes.TestGridProject?
 
@@ -4389,7 +4389,7 @@ public struct GetTestGridProjectOutput {
     }
 }
 
-public struct GetTestGridSessionInput {
+public struct GetTestGridSessionInput: Swift.Sendable {
     /// The ARN for the project that this session belongs to. See [CreateTestGridProject] and [ListTestGridProjects].
     public var projectArn: Swift.String?
     /// An ARN that uniquely identifies a [TestGridSession].
@@ -4411,7 +4411,7 @@ public struct GetTestGridSessionInput {
 
 extension DeviceFarmClientTypes {
 
-    public enum TestGridSessionStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum TestGridSessionStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case active
         case closed
         case errored
@@ -4442,8 +4442,9 @@ extension DeviceFarmClientTypes {
 }
 
 extension DeviceFarmClientTypes {
+
     /// A [TestGridSession] is a single instance of a browser launched from the URL provided by a call to [CreateTestGridUrl].
-    public struct TestGridSession {
+    public struct TestGridSession: Swift.Sendable {
         /// The ARN of the session.
         public var arn: Swift.String?
         /// The number of billed minutes that were used for this session.
@@ -4474,10 +4475,9 @@ extension DeviceFarmClientTypes {
             self.status = status
         }
     }
-
 }
 
-public struct GetTestGridSessionOutput {
+public struct GetTestGridSessionOutput: Swift.Sendable {
     /// The [TestGridSession] that was requested.
     public var testGridSession: DeviceFarmClientTypes.TestGridSession?
 
@@ -4490,7 +4490,7 @@ public struct GetTestGridSessionOutput {
 }
 
 /// Represents a request to the get upload operation.
-public struct GetUploadInput {
+public struct GetUploadInput: Swift.Sendable {
     /// The upload's ARN.
     /// This member is required.
     public var arn: Swift.String?
@@ -4504,7 +4504,7 @@ public struct GetUploadInput {
 }
 
 /// Represents the result of a get upload request.
-public struct GetUploadOutput {
+public struct GetUploadOutput: Swift.Sendable {
     /// An app or a set of one or more tests to upload or that have been uploaded.
     public var upload: DeviceFarmClientTypes.Upload?
 
@@ -4516,7 +4516,7 @@ public struct GetUploadOutput {
     }
 }
 
-public struct GetVPCEConfigurationInput {
+public struct GetVPCEConfigurationInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the VPC endpoint configuration you want to describe.
     /// This member is required.
     public var arn: Swift.String?
@@ -4529,7 +4529,7 @@ public struct GetVPCEConfigurationInput {
     }
 }
 
-public struct GetVPCEConfigurationOutput {
+public struct GetVPCEConfigurationOutput: Swift.Sendable {
     /// An object that contains information about your VPC endpoint configuration.
     public var vpceConfiguration: DeviceFarmClientTypes.VPCEConfiguration?
 
@@ -4542,7 +4542,7 @@ public struct GetVPCEConfigurationOutput {
 }
 
 /// Represents the request to install an Android application (in .apk format) or an iOS application (in .ipa format) as part of a remote access session.
-public struct InstallToRemoteAccessSessionInput {
+public struct InstallToRemoteAccessSessionInput: Swift.Sendable {
     /// The ARN of the app about which you are requesting information.
     /// This member is required.
     public var appArn: Swift.String?
@@ -4561,7 +4561,7 @@ public struct InstallToRemoteAccessSessionInput {
 }
 
 /// Represents the response from the server after AWS Device Farm makes a request to install to a remote access session.
-public struct InstallToRemoteAccessSessionOutput {
+public struct InstallToRemoteAccessSessionOutput: Swift.Sendable {
     /// An app to upload or that has been uploaded.
     public var appUpload: DeviceFarmClientTypes.Upload?
 
@@ -4574,7 +4574,7 @@ public struct InstallToRemoteAccessSessionOutput {
 }
 
 /// Represents a request to the list artifacts operation.
-public struct ListArtifactsInput {
+public struct ListArtifactsInput: Swift.Sendable {
     /// The run, job, suite, or test ARN.
     /// This member is required.
     public var arn: Swift.String?
@@ -4603,7 +4603,7 @@ public struct ListArtifactsInput {
 }
 
 /// Represents the result of a list artifacts operation.
-public struct ListArtifactsOutput {
+public struct ListArtifactsOutput: Swift.Sendable {
     /// Information about the artifacts.
     public var artifacts: [DeviceFarmClientTypes.Artifact]?
     /// If the number of items that are returned is significantly large, this is an identifier that is also returned. It can be used in a subsequent call to this operation to return the next set of items in the list.
@@ -4619,7 +4619,7 @@ public struct ListArtifactsOutput {
     }
 }
 
-public struct ListDeviceInstancesInput {
+public struct ListDeviceInstancesInput: Swift.Sendable {
     /// An integer that specifies the maximum number of items you want to return in the API response.
     public var maxResults: Swift.Int?
     /// An identifier that was returned from the previous call to this operation, which can be used to return the next set of items in the list.
@@ -4635,7 +4635,7 @@ public struct ListDeviceInstancesInput {
     }
 }
 
-public struct ListDeviceInstancesOutput {
+public struct ListDeviceInstancesOutput: Swift.Sendable {
     /// An object that contains information about your device instances.
     public var deviceInstances: [DeviceFarmClientTypes.DeviceInstance]?
     /// An identifier that can be used in the next call to this operation to return the next set of items in the list.
@@ -4652,7 +4652,7 @@ public struct ListDeviceInstancesOutput {
 }
 
 /// Represents the result of a list device pools request.
-public struct ListDevicePoolsInput {
+public struct ListDevicePoolsInput: Swift.Sendable {
     /// The project ARN.
     /// This member is required.
     public var arn: Swift.String?
@@ -4678,7 +4678,7 @@ public struct ListDevicePoolsInput {
 }
 
 /// Represents the result of a list device pools request.
-public struct ListDevicePoolsOutput {
+public struct ListDevicePoolsOutput: Swift.Sendable {
     /// Information about the device pools.
     public var devicePools: [DeviceFarmClientTypes.DevicePool]?
     /// If the number of items that are returned is significantly large, this is an identifier that is also returned. It can be used in a subsequent call to this operation to return the next set of items in the list.
@@ -4695,7 +4695,7 @@ public struct ListDevicePoolsOutput {
 }
 
 /// Represents the result of a list devices request.
-public struct ListDevicesInput {
+public struct ListDevicesInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the project.
     public var arn: Swift.String?
     /// Used to select a set of devices. A filter is made up of an attribute, an operator, and one or more values.
@@ -4766,7 +4766,7 @@ public struct ListDevicesInput {
 }
 
 /// Represents the result of a list devices operation.
-public struct ListDevicesOutput {
+public struct ListDevicesOutput: Swift.Sendable {
     /// Information about the devices.
     public var devices: [DeviceFarmClientTypes.Device]?
     /// If the number of items that are returned is significantly large, this is an identifier that is also returned. It can be used in a subsequent call to this operation to return the next set of items in the list.
@@ -4782,7 +4782,7 @@ public struct ListDevicesOutput {
     }
 }
 
-public struct ListInstanceProfilesInput {
+public struct ListInstanceProfilesInput: Swift.Sendable {
     /// An integer that specifies the maximum number of items you want to return in the API response.
     public var maxResults: Swift.Int?
     /// An identifier that was returned from the previous call to this operation, which can be used to return the next set of items in the list.
@@ -4798,7 +4798,7 @@ public struct ListInstanceProfilesInput {
     }
 }
 
-public struct ListInstanceProfilesOutput {
+public struct ListInstanceProfilesOutput: Swift.Sendable {
     /// An object that contains information about your instance profiles.
     public var instanceProfiles: [DeviceFarmClientTypes.InstanceProfile]?
     /// An identifier that can be used in the next call to this operation to return the next set of items in the list.
@@ -4815,7 +4815,7 @@ public struct ListInstanceProfilesOutput {
 }
 
 /// Represents a request to the list jobs operation.
-public struct ListJobsInput {
+public struct ListJobsInput: Swift.Sendable {
     /// The run's Amazon Resource Name (ARN).
     /// This member is required.
     public var arn: Swift.String?
@@ -4833,7 +4833,7 @@ public struct ListJobsInput {
 }
 
 /// Represents the result of a list jobs request.
-public struct ListJobsOutput {
+public struct ListJobsOutput: Swift.Sendable {
     /// Information about the jobs.
     public var jobs: [DeviceFarmClientTypes.Job]?
     /// If the number of items that are returned is significantly large, this is an identifier that is also returned. It can be used in a subsequent call to this operation to return the next set of items in the list.
@@ -4849,7 +4849,7 @@ public struct ListJobsOutput {
     }
 }
 
-public struct ListNetworkProfilesInput {
+public struct ListNetworkProfilesInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the project for which you want to list network profiles.
     /// This member is required.
     public var arn: Swift.String?
@@ -4870,7 +4870,7 @@ public struct ListNetworkProfilesInput {
     }
 }
 
-public struct ListNetworkProfilesOutput {
+public struct ListNetworkProfilesOutput: Swift.Sendable {
     /// A list of the available network profiles.
     public var networkProfiles: [DeviceFarmClientTypes.NetworkProfile]?
     /// An identifier that was returned from the previous call to this operation, which can be used to return the next set of items in the list.
@@ -4886,7 +4886,7 @@ public struct ListNetworkProfilesOutput {
     }
 }
 
-public struct ListOfferingPromotionsInput {
+public struct ListOfferingPromotionsInput: Swift.Sendable {
     /// An identifier that was returned from the previous call to this operation, which can be used to return the next set of items in the list.
     public var nextToken: Swift.String?
 
@@ -4899,8 +4899,9 @@ public struct ListOfferingPromotionsInput {
 }
 
 extension DeviceFarmClientTypes {
+
     /// Represents information about an offering promotion.
-    public struct OfferingPromotion {
+    public struct OfferingPromotion: Swift.Sendable {
         /// A string that describes the offering promotion.
         public var description: Swift.String?
         /// The ID of the offering promotion.
@@ -4915,10 +4916,9 @@ extension DeviceFarmClientTypes {
             self.id = id
         }
     }
-
 }
 
-public struct ListOfferingPromotionsOutput {
+public struct ListOfferingPromotionsOutput: Swift.Sendable {
     /// An identifier to be used in the next call to this operation, to return the next set of items in the list.
     public var nextToken: Swift.String?
     /// Information about the offering promotions.
@@ -4935,7 +4935,7 @@ public struct ListOfferingPromotionsOutput {
 }
 
 /// Represents the request to list all offerings.
-public struct ListOfferingsInput {
+public struct ListOfferingsInput: Swift.Sendable {
     /// An identifier that was returned from the previous call to this operation, which can be used to return the next set of items in the list.
     public var nextToken: Swift.String?
 
@@ -4948,7 +4948,7 @@ public struct ListOfferingsInput {
 }
 
 /// Represents the return values of the list of offerings.
-public struct ListOfferingsOutput {
+public struct ListOfferingsOutput: Swift.Sendable {
     /// An identifier that was returned from the previous call to this operation, which can be used to return the next set of items in the list.
     public var nextToken: Swift.String?
     /// A value that represents the list offering results.
@@ -4965,7 +4965,7 @@ public struct ListOfferingsOutput {
 }
 
 /// Represents the request to list the offering transaction history.
-public struct ListOfferingTransactionsInput {
+public struct ListOfferingTransactionsInput: Swift.Sendable {
     /// An identifier that was returned from the previous call to this operation, which can be used to return the next set of items in the list.
     public var nextToken: Swift.String?
 
@@ -4978,8 +4978,9 @@ public struct ListOfferingTransactionsInput {
 }
 
 extension DeviceFarmClientTypes {
+
     /// Represents the metadata of an offering transaction.
-    public struct OfferingTransaction {
+    public struct OfferingTransaction: Swift.Sendable {
         /// The cost of an offering transaction.
         public var cost: DeviceFarmClientTypes.MonetaryAmount?
         /// The date on which an offering transaction was created.
@@ -5006,11 +5007,10 @@ extension DeviceFarmClientTypes {
             self.transactionId = transactionId
         }
     }
-
 }
 
 /// Returns the transaction log of the specified offerings.
-public struct ListOfferingTransactionsOutput {
+public struct ListOfferingTransactionsOutput: Swift.Sendable {
     /// An identifier that was returned from the previous call to this operation, which can be used to return the next set of items in the list.
     public var nextToken: Swift.String?
     /// The audit log of subscriptions you have purchased and modified through AWS Device Farm.
@@ -5027,7 +5027,7 @@ public struct ListOfferingTransactionsOutput {
 }
 
 /// Represents a request to the list projects operation.
-public struct ListProjectsInput {
+public struct ListProjectsInput: Swift.Sendable {
     /// Optional. If no Amazon Resource Name (ARN) is specified, then AWS Device Farm returns a list of all projects for the AWS account. You can also specify a project ARN.
     public var arn: Swift.String?
     /// An identifier that was returned from the previous call to this operation, which can be used to return the next set of items in the list.
@@ -5044,7 +5044,7 @@ public struct ListProjectsInput {
 }
 
 /// Represents the result of a list projects request.
-public struct ListProjectsOutput {
+public struct ListProjectsOutput: Swift.Sendable {
     /// If the number of items that are returned is significantly large, this is an identifier that is also returned. It can be used in a subsequent call to this operation to return the next set of items in the list.
     public var nextToken: Swift.String?
     /// Information about the projects.
@@ -5061,7 +5061,7 @@ public struct ListProjectsOutput {
 }
 
 /// Represents the request to return information about the remote access session.
-public struct ListRemoteAccessSessionsInput {
+public struct ListRemoteAccessSessionsInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the project about which you are requesting information.
     /// This member is required.
     public var arn: Swift.String?
@@ -5079,7 +5079,7 @@ public struct ListRemoteAccessSessionsInput {
 }
 
 /// Represents the response from the server after AWS Device Farm makes a request to return information about the remote access session.
-public struct ListRemoteAccessSessionsOutput {
+public struct ListRemoteAccessSessionsOutput: Swift.Sendable {
     /// An identifier that was returned from the previous call to this operation, which can be used to return the next set of items in the list.
     public var nextToken: Swift.String?
     /// A container that represents the metadata from the service about each remote access session you are requesting.
@@ -5096,7 +5096,7 @@ public struct ListRemoteAccessSessionsOutput {
 }
 
 /// Represents a request to the list runs operation.
-public struct ListRunsInput {
+public struct ListRunsInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the project for which you want to list runs.
     /// This member is required.
     public var arn: Swift.String?
@@ -5114,7 +5114,7 @@ public struct ListRunsInput {
 }
 
 /// Represents the result of a list runs request.
-public struct ListRunsOutput {
+public struct ListRunsOutput: Swift.Sendable {
     /// If the number of items that are returned is significantly large, this is an identifier that is also returned. It can be used in a subsequent call to this operation to return the next set of items in the list.
     public var nextToken: Swift.String?
     /// Information about the runs.
@@ -5131,7 +5131,7 @@ public struct ListRunsOutput {
 }
 
 /// Represents a request to the list samples operation.
-public struct ListSamplesInput {
+public struct ListSamplesInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the job used to list samples.
     /// This member is required.
     public var arn: Swift.String?
@@ -5150,7 +5150,7 @@ public struct ListSamplesInput {
 
 extension DeviceFarmClientTypes {
 
-    public enum SampleType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SampleType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case cpu
         case memory
         case nativeAvgDrawtime
@@ -5223,8 +5223,9 @@ extension DeviceFarmClientTypes {
 }
 
 extension DeviceFarmClientTypes {
+
     /// Represents a sample of performance data.
-    public struct Sample {
+    public struct Sample: Swift.Sendable {
         /// The sample's ARN.
         public var arn: Swift.String?
         /// The sample's type. Must be one of the following values:
@@ -5277,11 +5278,10 @@ extension DeviceFarmClientTypes {
             self.url = url
         }
     }
-
 }
 
 /// Represents the result of a list samples request.
-public struct ListSamplesOutput {
+public struct ListSamplesOutput: Swift.Sendable {
     /// If the number of items that are returned is significantly large, this is an identifier that is also returned. It can be used in a subsequent call to this operation to return the next set of items in the list.
     public var nextToken: Swift.String?
     /// Information about the samples.
@@ -5298,7 +5298,7 @@ public struct ListSamplesOutput {
 }
 
 /// Represents a request to the list suites operation.
-public struct ListSuitesInput {
+public struct ListSuitesInput: Swift.Sendable {
     /// The job's Amazon Resource Name (ARN).
     /// This member is required.
     public var arn: Swift.String?
@@ -5316,7 +5316,7 @@ public struct ListSuitesInput {
 }
 
 /// Represents the result of a list suites request.
-public struct ListSuitesOutput {
+public struct ListSuitesOutput: Swift.Sendable {
     /// If the number of items that are returned is significantly large, this is an identifier that is also returned. It can be used in a subsequent call to this operation to return the next set of items in the list.
     public var nextToken: Swift.String?
     /// Information about the suites.
@@ -5332,7 +5332,7 @@ public struct ListSuitesOutput {
     }
 }
 
-public struct ListTagsForResourceInput {
+public struct ListTagsForResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the resource or resources for which to list tags. You can associate tags with the following Device Farm resources: PROJECT, RUN, NETWORK_PROFILE, INSTANCE_PROFILE, DEVICE_INSTANCE, SESSION, DEVICE_POOL, DEVICE, and VPCE_CONFIGURATION.
     /// This member is required.
     public var resourceARN: Swift.String?
@@ -5346,8 +5346,9 @@ public struct ListTagsForResourceInput {
 }
 
 extension DeviceFarmClientTypes {
+
     /// The metadata that you apply to a resource to help you categorize and organize it. Each tag consists of a key and an optional value, both of which you define. Tag keys can have a maximum character length of 128 characters. Tag values can have a maximum length of 256 characters.
-    public struct Tag {
+    public struct Tag: Swift.Sendable {
         /// One part of a key-value pair that makes up a tag. A key is a general label that acts like a category for more specific tag values.
         /// This member is required.
         public var key: Swift.String?
@@ -5364,10 +5365,9 @@ extension DeviceFarmClientTypes {
             self.value = value
         }
     }
-
 }
 
-public struct ListTagsForResourceOutput {
+public struct ListTagsForResourceOutput: Swift.Sendable {
     /// The tags to add to the resource. A tag is an array of key-value pairs. Tag keys can have a maximum character length of 128 characters. Tag values can have a maximum length of 256 characters.
     public var tags: [DeviceFarmClientTypes.Tag]?
 
@@ -5379,7 +5379,7 @@ public struct ListTagsForResourceOutput {
     }
 }
 
-public struct ListTestGridProjectsInput {
+public struct ListTestGridProjectsInput: Swift.Sendable {
     /// Return no more than this number of results.
     public var maxResult: Swift.Int?
     /// From a response, used to continue a paginated listing.
@@ -5395,7 +5395,7 @@ public struct ListTestGridProjectsInput {
     }
 }
 
-public struct ListTestGridProjectsOutput {
+public struct ListTestGridProjectsOutput: Swift.Sendable {
     /// Used for pagination. Pass into [ListTestGridProjects] to get more results in a paginated request.
     public var nextToken: Swift.String?
     /// The list of TestGridProjects, based on a [ListTestGridProjectsRequest].
@@ -5411,7 +5411,7 @@ public struct ListTestGridProjectsOutput {
     }
 }
 
-public struct ListTestGridSessionActionsInput {
+public struct ListTestGridSessionActionsInput: Swift.Sendable {
     /// The maximum number of sessions to return per response.
     public var maxResult: Swift.Int?
     /// Pagination token.
@@ -5433,8 +5433,9 @@ public struct ListTestGridSessionActionsInput {
 }
 
 extension DeviceFarmClientTypes {
+
     /// An action taken by a [TestGridSession] browser instance.
-    public struct TestGridSessionAction {
+    public struct TestGridSessionAction: Swift.Sendable {
         /// The action taken by the session.
         public var action: Swift.String?
         /// The time, in milliseconds, that the action took to complete in the browser.
@@ -5461,10 +5462,9 @@ extension DeviceFarmClientTypes {
             self.statusCode = statusCode
         }
     }
-
 }
 
-public struct ListTestGridSessionActionsOutput {
+public struct ListTestGridSessionActionsOutput: Swift.Sendable {
     /// The action taken by the session.
     public var actions: [DeviceFarmClientTypes.TestGridSessionAction]?
     /// Pagination token.
@@ -5482,7 +5482,7 @@ public struct ListTestGridSessionActionsOutput {
 
 extension DeviceFarmClientTypes {
 
-    public enum TestGridSessionArtifactCategory: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum TestGridSessionArtifactCategory: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case log
         case video
         case sdkUnknown(Swift.String)
@@ -5509,7 +5509,7 @@ extension DeviceFarmClientTypes {
     }
 }
 
-public struct ListTestGridSessionArtifactsInput {
+public struct ListTestGridSessionArtifactsInput: Swift.Sendable {
     /// The maximum number of results to be returned by a request.
     public var maxResult: Swift.Int?
     /// Pagination token.
@@ -5536,7 +5536,7 @@ public struct ListTestGridSessionArtifactsInput {
 
 extension DeviceFarmClientTypes {
 
-    public enum TestGridSessionArtifactType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum TestGridSessionArtifactType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case seleniumLog
         case unknown
         case video
@@ -5567,8 +5567,9 @@ extension DeviceFarmClientTypes {
 }
 
 extension DeviceFarmClientTypes {
+
     /// Artifacts are video and other files that are produced in the process of running a browser in an automated context. Video elements might be broken up into multiple artifacts as they grow in size during creation.
-    public struct TestGridSessionArtifact {
+    public struct TestGridSessionArtifact: Swift.Sendable {
         /// The file name of the artifact.
         public var filename: Swift.String?
         /// The kind of artifact.
@@ -5587,7 +5588,6 @@ extension DeviceFarmClientTypes {
             self.url = url
         }
     }
-
 }
 
 extension DeviceFarmClientTypes.TestGridSessionArtifact: Swift.CustomDebugStringConvertible {
@@ -5595,7 +5595,7 @@ extension DeviceFarmClientTypes.TestGridSessionArtifact: Swift.CustomDebugString
         "TestGridSessionArtifact(filename: \(Swift.String(describing: filename)), type: \(Swift.String(describing: type)), url: \"CONTENT_REDACTED\")"}
 }
 
-public struct ListTestGridSessionArtifactsOutput {
+public struct ListTestGridSessionArtifactsOutput: Swift.Sendable {
     /// A list of test grid session artifacts for a [TestGridSession].
     public var artifacts: [DeviceFarmClientTypes.TestGridSessionArtifact]?
     /// Pagination token.
@@ -5611,7 +5611,7 @@ public struct ListTestGridSessionArtifactsOutput {
     }
 }
 
-public struct ListTestGridSessionsInput {
+public struct ListTestGridSessionsInput: Swift.Sendable {
     /// Return only sessions created after this time.
     public var creationTimeAfter: Foundation.Date?
     /// Return only sessions created before this time.
@@ -5652,7 +5652,7 @@ public struct ListTestGridSessionsInput {
     }
 }
 
-public struct ListTestGridSessionsOutput {
+public struct ListTestGridSessionsOutput: Swift.Sendable {
     /// Pagination token.
     public var nextToken: Swift.String?
     /// The sessions that match the criteria in a [ListTestGridSessionsRequest].
@@ -5669,7 +5669,7 @@ public struct ListTestGridSessionsOutput {
 }
 
 /// Represents a request to the list tests operation.
-public struct ListTestsInput {
+public struct ListTestsInput: Swift.Sendable {
     /// The test suite's Amazon Resource Name (ARN).
     /// This member is required.
     public var arn: Swift.String?
@@ -5687,7 +5687,7 @@ public struct ListTestsInput {
 }
 
 /// Represents the result of a list tests request.
-public struct ListTestsOutput {
+public struct ListTestsOutput: Swift.Sendable {
     /// If the number of items that are returned is significantly large, this is an identifier that is also returned. It can be used in a subsequent call to this operation to return the next set of items in the list.
     public var nextToken: Swift.String?
     /// Information about the tests.
@@ -5704,7 +5704,7 @@ public struct ListTestsOutput {
 }
 
 /// Represents a request to the list unique problems operation.
-public struct ListUniqueProblemsInput {
+public struct ListUniqueProblemsInput: Swift.Sendable {
     /// The unique problems' ARNs.
     /// This member is required.
     public var arn: Swift.String?
@@ -5722,8 +5722,9 @@ public struct ListUniqueProblemsInput {
 }
 
 extension DeviceFarmClientTypes {
+
     /// Information about a problem detail.
-    public struct ProblemDetail {
+    public struct ProblemDetail: Swift.Sendable {
         /// The problem detail's ARN.
         public var arn: Swift.String?
         /// The problem detail's name.
@@ -5738,12 +5739,12 @@ extension DeviceFarmClientTypes {
             self.name = name
         }
     }
-
 }
 
 extension DeviceFarmClientTypes {
+
     /// Represents a specific warning or failure.
-    public struct Problem {
+    public struct Problem: Swift.Sendable {
         /// Information about the associated device.
         public var device: DeviceFarmClientTypes.Device?
         /// Information about the associated job.
@@ -5792,12 +5793,12 @@ extension DeviceFarmClientTypes {
             self.test = test
         }
     }
-
 }
 
 extension DeviceFarmClientTypes {
+
     /// A collection of one or more problems, grouped by their result.
-    public struct UniqueProblem {
+    public struct UniqueProblem: Swift.Sendable {
         /// A message about the unique problems' result.
         public var message: Swift.String?
         /// Information about the problems.
@@ -5812,11 +5813,10 @@ extension DeviceFarmClientTypes {
             self.problems = problems
         }
     }
-
 }
 
 /// Represents the result of a list unique problems request.
-public struct ListUniqueProblemsOutput {
+public struct ListUniqueProblemsOutput: Swift.Sendable {
     /// If the number of items that are returned is significantly large, this is an identifier that is also returned. It can be used in a subsequent call to this operation to return the next set of items in the list.
     public var nextToken: Swift.String?
     /// Information about the unique problems. Allowed values include:
@@ -5847,7 +5847,7 @@ public struct ListUniqueProblemsOutput {
 }
 
 /// Represents a request to the list uploads operation.
-public struct ListUploadsInput {
+public struct ListUploadsInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the project for which you want to list uploads.
     /// This member is required.
     public var arn: Swift.String?
@@ -5927,7 +5927,7 @@ public struct ListUploadsInput {
 }
 
 /// Represents the result of a list uploads request.
-public struct ListUploadsOutput {
+public struct ListUploadsOutput: Swift.Sendable {
     /// If the number of items that are returned is significantly large, this is an identifier that is also returned. It can be used in a subsequent call to this operation to return the next set of items in the list.
     public var nextToken: Swift.String?
     /// Information about the uploads.
@@ -5943,7 +5943,7 @@ public struct ListUploadsOutput {
     }
 }
 
-public struct ListVPCEConfigurationsInput {
+public struct ListVPCEConfigurationsInput: Swift.Sendable {
     /// An integer that specifies the maximum number of items you want to return in the API response.
     public var maxResults: Swift.Int?
     /// An identifier that was returned from the previous call to this operation, which can be used to return the next set of items in the list.
@@ -5959,7 +5959,7 @@ public struct ListVPCEConfigurationsInput {
     }
 }
 
-public struct ListVPCEConfigurationsOutput {
+public struct ListVPCEConfigurationsOutput: Swift.Sendable {
     /// An identifier that was returned from the previous call to this operation, which can be used to return the next set of items in the list.
     public var nextToken: Swift.String?
     /// An array of VPCEConfiguration objects that contain information about your VPC endpoint configuration.
@@ -5976,7 +5976,7 @@ public struct ListVPCEConfigurationsOutput {
 }
 
 /// Represents a request for a purchase offering.
-public struct PurchaseOfferingInput {
+public struct PurchaseOfferingInput: Swift.Sendable {
     /// The ID of the offering.
     /// This member is required.
     public var offeringId: Swift.String?
@@ -5999,7 +5999,7 @@ public struct PurchaseOfferingInput {
 }
 
 /// The result of the purchase offering (for example, success or failure).
-public struct PurchaseOfferingOutput {
+public struct PurchaseOfferingOutput: Swift.Sendable {
     /// Represents the offering transaction for the purchase result.
     public var offeringTransaction: DeviceFarmClientTypes.OfferingTransaction?
 
@@ -6012,7 +6012,7 @@ public struct PurchaseOfferingOutput {
 }
 
 /// A request that represents an offering renewal.
-public struct RenewOfferingInput {
+public struct RenewOfferingInput: Swift.Sendable {
     /// The ID of a request to renew an offering.
     /// This member is required.
     public var offeringId: Swift.String?
@@ -6031,7 +6031,7 @@ public struct RenewOfferingInput {
 }
 
 /// The result of a renewal offering.
-public struct RenewOfferingOutput {
+public struct RenewOfferingOutput: Swift.Sendable {
     /// Represents the status of the offering transaction for the renewal.
     public var offeringTransaction: DeviceFarmClientTypes.OfferingTransaction?
 
@@ -6069,8 +6069,9 @@ public struct IdempotencyException: ClientRuntime.ModeledError, AWSClientRuntime
 }
 
 extension DeviceFarmClientTypes {
+
     /// Represents the device filters used in a test run and the maximum number of devices to be included in the run. It is passed in as the deviceSelectionConfiguration request parameter in [ScheduleRun].
-    public struct DeviceSelectionConfiguration {
+    public struct DeviceSelectionConfiguration: Swift.Sendable {
         /// Used to dynamically select a set of devices for a test run. A filter is made up of an attribute, an operator, and one or more values.
         ///
         /// * Attribute The aspect of a device such as platform or model used as the selection criteria in a device filter. Allowed values include:
@@ -6146,12 +6147,12 @@ extension DeviceFarmClientTypes {
             self.maxDevices = maxDevices
         }
     }
-
 }
 
 extension DeviceFarmClientTypes {
+
     /// Represents configuration information about a test run, such as the execution timeout (in minutes).
-    public struct ExecutionConfiguration {
+    public struct ExecutionConfiguration: Swift.Sendable {
         /// True if account cleanup is enabled at the beginning of the test. Otherwise, false.
         public var accountsCleanup: Swift.Bool?
         /// True if app package cleanup is enabled at the beginning of the test. Otherwise, false.
@@ -6178,11 +6179,10 @@ extension DeviceFarmClientTypes {
             self.videoCapture = videoCapture
         }
     }
-
 }
 
 /// Represents a request to the schedule run operation.
-public struct ScheduleRunInput {
+public struct ScheduleRunInput: Swift.Sendable {
     /// The ARN of an application package to run tests against, created with [CreateUpload]. See [ListUploads].
     public var appArn: Swift.String?
     /// Information about the settings for the run to be scheduled.
@@ -6225,7 +6225,7 @@ public struct ScheduleRunInput {
 }
 
 /// Represents the result of a schedule run request.
-public struct ScheduleRunOutput {
+public struct ScheduleRunOutput: Swift.Sendable {
     /// Information about the scheduled run.
     public var run: DeviceFarmClientTypes.Run?
 
@@ -6237,7 +6237,7 @@ public struct ScheduleRunOutput {
     }
 }
 
-public struct StopJobInput {
+public struct StopJobInput: Swift.Sendable {
     /// Represents the Amazon Resource Name (ARN) of the Device Farm job to stop.
     /// This member is required.
     public var arn: Swift.String?
@@ -6250,7 +6250,7 @@ public struct StopJobInput {
     }
 }
 
-public struct StopJobOutput {
+public struct StopJobOutput: Swift.Sendable {
     /// The job that was stopped.
     public var job: DeviceFarmClientTypes.Job?
 
@@ -6263,7 +6263,7 @@ public struct StopJobOutput {
 }
 
 /// Represents the request to stop the remote access session.
-public struct StopRemoteAccessSessionInput {
+public struct StopRemoteAccessSessionInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the remote access session to stop.
     /// This member is required.
     public var arn: Swift.String?
@@ -6277,7 +6277,7 @@ public struct StopRemoteAccessSessionInput {
 }
 
 /// Represents the response from the server that describes the remote access session when AWS Device Farm stops the session.
-public struct StopRemoteAccessSessionOutput {
+public struct StopRemoteAccessSessionOutput: Swift.Sendable {
     /// A container that represents the metadata from the service about the remote access session you are stopping.
     public var remoteAccessSession: DeviceFarmClientTypes.RemoteAccessSession?
 
@@ -6290,7 +6290,7 @@ public struct StopRemoteAccessSessionOutput {
 }
 
 /// Represents the request to stop a specific run.
-public struct StopRunInput {
+public struct StopRunInput: Swift.Sendable {
     /// Represents the Amazon Resource Name (ARN) of the Device Farm run to stop.
     /// This member is required.
     public var arn: Swift.String?
@@ -6304,7 +6304,7 @@ public struct StopRunInput {
 }
 
 /// Represents the results of your stop run attempt.
-public struct StopRunOutput {
+public struct StopRunOutput: Swift.Sendable {
     /// The run that was stopped.
     public var run: DeviceFarmClientTypes.Run?
 
@@ -6370,7 +6370,7 @@ public struct TooManyTagsException: ClientRuntime.ModeledError, AWSClientRuntime
     }
 }
 
-public struct TagResourceInput {
+public struct TagResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the resource or resources to which to add tags. You can associate tags with the following Device Farm resources: PROJECT, RUN, NETWORK_PROFILE, INSTANCE_PROFILE, DEVICE_INSTANCE, SESSION, DEVICE_POOL, DEVICE, and VPCE_CONFIGURATION.
     /// This member is required.
     public var resourceARN: Swift.String?
@@ -6388,12 +6388,12 @@ public struct TagResourceInput {
     }
 }
 
-public struct TagResourceOutput {
+public struct TagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UntagResourceInput {
+public struct UntagResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the resource or resources from which to delete tags. You can associate tags with the following Device Farm resources: PROJECT, RUN, NETWORK_PROFILE, INSTANCE_PROFILE, DEVICE_INSTANCE, SESSION, DEVICE_POOL, DEVICE, and VPCE_CONFIGURATION.
     /// This member is required.
     public var resourceARN: Swift.String?
@@ -6411,12 +6411,12 @@ public struct UntagResourceInput {
     }
 }
 
-public struct UntagResourceOutput {
+public struct UntagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdateDeviceInstanceInput {
+public struct UpdateDeviceInstanceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the device instance.
     /// This member is required.
     public var arn: Swift.String?
@@ -6437,7 +6437,7 @@ public struct UpdateDeviceInstanceInput {
     }
 }
 
-public struct UpdateDeviceInstanceOutput {
+public struct UpdateDeviceInstanceOutput: Swift.Sendable {
     /// An object that contains information about your device instance.
     public var deviceInstance: DeviceFarmClientTypes.DeviceInstance?
 
@@ -6450,7 +6450,7 @@ public struct UpdateDeviceInstanceOutput {
 }
 
 /// Represents a request to the update device pool operation.
-public struct UpdateDevicePoolInput {
+public struct UpdateDevicePoolInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the Device Farm device pool to update.
     /// This member is required.
     public var arn: Swift.String?
@@ -6484,7 +6484,7 @@ public struct UpdateDevicePoolInput {
 }
 
 /// Represents the result of an update device pool request.
-public struct UpdateDevicePoolOutput {
+public struct UpdateDevicePoolOutput: Swift.Sendable {
     /// The device pool you just updated.
     public var devicePool: DeviceFarmClientTypes.DevicePool?
 
@@ -6496,7 +6496,7 @@ public struct UpdateDevicePoolOutput {
     }
 }
 
-public struct UpdateInstanceProfileInput {
+public struct UpdateInstanceProfileInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the instance profile.
     /// This member is required.
     public var arn: Swift.String?
@@ -6529,7 +6529,7 @@ public struct UpdateInstanceProfileInput {
     }
 }
 
-public struct UpdateInstanceProfileOutput {
+public struct UpdateInstanceProfileOutput: Swift.Sendable {
     /// An object that contains information about your instance profile.
     public var instanceProfile: DeviceFarmClientTypes.InstanceProfile?
 
@@ -6541,7 +6541,7 @@ public struct UpdateInstanceProfileOutput {
     }
 }
 
-public struct UpdateNetworkProfileInput {
+public struct UpdateNetworkProfileInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the project for which you want to update network profile settings.
     /// This member is required.
     public var arn: Swift.String?
@@ -6598,7 +6598,7 @@ public struct UpdateNetworkProfileInput {
     }
 }
 
-public struct UpdateNetworkProfileOutput {
+public struct UpdateNetworkProfileOutput: Swift.Sendable {
     /// A list of the available network profiles.
     public var networkProfile: DeviceFarmClientTypes.NetworkProfile?
 
@@ -6611,7 +6611,7 @@ public struct UpdateNetworkProfileOutput {
 }
 
 /// Represents a request to the update project operation.
-public struct UpdateProjectInput {
+public struct UpdateProjectInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the project whose name to update.
     /// This member is required.
     public var arn: Swift.String?
@@ -6637,7 +6637,7 @@ public struct UpdateProjectInput {
 }
 
 /// Represents the result of an update project request.
-public struct UpdateProjectOutput {
+public struct UpdateProjectOutput: Swift.Sendable {
     /// The project to update.
     public var project: DeviceFarmClientTypes.Project?
 
@@ -6649,7 +6649,7 @@ public struct UpdateProjectOutput {
     }
 }
 
-public struct UpdateTestGridProjectInput {
+public struct UpdateTestGridProjectInput: Swift.Sendable {
     /// Human-readable description for the project.
     public var description: Swift.String?
     /// Human-readable name for the project.
@@ -6674,7 +6674,7 @@ public struct UpdateTestGridProjectInput {
     }
 }
 
-public struct UpdateTestGridProjectOutput {
+public struct UpdateTestGridProjectOutput: Swift.Sendable {
     /// The project, including updated information.
     public var testGridProject: DeviceFarmClientTypes.TestGridProject?
 
@@ -6686,7 +6686,7 @@ public struct UpdateTestGridProjectOutput {
     }
 }
 
-public struct UpdateUploadInput {
+public struct UpdateUploadInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the uploaded test spec.
     /// This member is required.
     public var arn: Swift.String?
@@ -6711,7 +6711,7 @@ public struct UpdateUploadInput {
     }
 }
 
-public struct UpdateUploadOutput {
+public struct UpdateUploadOutput: Swift.Sendable {
     /// A test spec uploaded to Device Farm.
     public var upload: DeviceFarmClientTypes.Upload?
 
@@ -6723,7 +6723,7 @@ public struct UpdateUploadOutput {
     }
 }
 
-public struct UpdateVPCEConfigurationInput {
+public struct UpdateVPCEConfigurationInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the VPC endpoint configuration you want to update.
     /// This member is required.
     public var arn: Swift.String?
@@ -6752,7 +6752,7 @@ public struct UpdateVPCEConfigurationInput {
     }
 }
 
-public struct UpdateVPCEConfigurationOutput {
+public struct UpdateVPCEConfigurationOutput: Swift.Sendable {
     /// An object that contains information about your VPC endpoint configuration.
     public var vpceConfiguration: DeviceFarmClientTypes.VPCEConfiguration?
 

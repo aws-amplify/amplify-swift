@@ -53,8 +53,9 @@ public struct AccessDeniedException: ClientRuntime.ModeledError, AWSClientRuntim
 }
 
 extension OutpostsClientTypes {
+
     /// Information about an address.
-    public struct Address {
+    public struct Address: Swift.Sendable {
         /// The first line of the address.
         /// This member is required.
         public var addressLine1: Swift.String?
@@ -110,12 +111,11 @@ extension OutpostsClientTypes {
             self.stateOrRegion = stateOrRegion
         }
     }
-
 }
 
 extension OutpostsClientTypes {
 
-    public enum AddressType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AddressType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case operatingAddress
         case shippingAddress
         case sdkUnknown(Swift.String)
@@ -143,8 +143,9 @@ extension OutpostsClientTypes {
 }
 
 extension OutpostsClientTypes {
+
     /// Information about the position of the asset in a rack.
-    public struct AssetLocation {
+    public struct AssetLocation: Swift.Sendable {
         /// The position of an asset in a rack measured in rack units.
         public var rackElevation: Swift.Float?
 
@@ -155,12 +156,11 @@ extension OutpostsClientTypes {
             self.rackElevation = rackElevation
         }
     }
-
 }
 
 extension OutpostsClientTypes {
 
-    public enum AssetType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AssetType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case compute
         case sdkUnknown(Swift.String)
 
@@ -186,7 +186,7 @@ extension OutpostsClientTypes {
 
 extension OutpostsClientTypes {
 
-    public enum ComputeAssetState: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ComputeAssetState: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case active
         case isolated
         case retiring
@@ -217,8 +217,9 @@ extension OutpostsClientTypes {
 }
 
 extension OutpostsClientTypes {
+
     /// Information about compute hardware assets.
-    public struct ComputeAttributes {
+    public struct ComputeAttributes: Swift.Sendable {
         /// The host ID of the Dedicated Host on the asset.
         public var hostId: Swift.String?
         /// A list of the names of instance families that are currently associated with a given asset.
@@ -243,12 +244,12 @@ extension OutpostsClientTypes {
             self.state = state
         }
     }
-
 }
 
 extension OutpostsClientTypes {
+
     /// Information about hardware assets.
-    public struct AssetInfo {
+    public struct AssetInfo: Swift.Sendable {
         /// The ID of the asset.
         public var assetId: Swift.String?
         /// The position of an asset in a rack.
@@ -275,12 +276,11 @@ extension OutpostsClientTypes {
             self.rackId = rackId
         }
     }
-
 }
 
 extension OutpostsClientTypes {
 
-    public enum AssetState: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AssetState: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case active
         case isolated
         case retiring
@@ -312,7 +312,7 @@ extension OutpostsClientTypes {
 
 extension OutpostsClientTypes {
 
-    public enum ResourceType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ResourceType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case order
         case outpost
         case sdkUnknown(Swift.String)
@@ -443,7 +443,7 @@ public struct ValidationException: ClientRuntime.ModeledError, AWSClientRuntime.
     }
 }
 
-public struct CancelCapacityTaskInput {
+public struct CancelCapacityTaskInput: Swift.Sendable {
     /// ID of the capacity task that you want to cancel.
     /// This member is required.
     public var capacityTaskId: Swift.String?
@@ -461,12 +461,12 @@ public struct CancelCapacityTaskInput {
     }
 }
 
-public struct CancelCapacityTaskOutput {
+public struct CancelCapacityTaskOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct CancelOrderInput {
+public struct CancelOrderInput: Swift.Sendable {
     /// The ID of the order.
     /// This member is required.
     public var orderId: Swift.String?
@@ -479,14 +479,14 @@ public struct CancelOrderInput {
     }
 }
 
-public struct CancelOrderOutput {
+public struct CancelOrderOutput: Swift.Sendable {
 
     public init() { }
 }
 
 extension OutpostsClientTypes {
 
-    public enum CapacityTaskFailureType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum CapacityTaskFailureType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case unsupportedCapacityConfiguration
         case sdkUnknown(Swift.String)
 
@@ -511,8 +511,9 @@ extension OutpostsClientTypes {
 }
 
 extension OutpostsClientTypes {
+
     /// The capacity tasks that failed.
-    public struct CapacityTaskFailure {
+    public struct CapacityTaskFailure: Swift.Sendable {
         /// The reason that the specified capacity task failed.
         /// This member is required.
         public var reason: Swift.String?
@@ -528,12 +529,11 @@ extension OutpostsClientTypes {
             self.type = type
         }
     }
-
 }
 
 extension OutpostsClientTypes {
 
-    public enum CapacityTaskStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum CapacityTaskStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case cancelled
         case completed
         case failed
@@ -570,8 +570,9 @@ extension OutpostsClientTypes {
 }
 
 extension OutpostsClientTypes {
+
     /// The summary of the capacity task.
-    public struct CapacityTaskSummary {
+    public struct CapacityTaskSummary: Swift.Sendable {
         /// The ID of the specified capacity task.
         public var capacityTaskId: Swift.String?
         /// The status of the capacity task.
@@ -606,12 +607,12 @@ extension OutpostsClientTypes {
             self.outpostId = outpostId
         }
     }
-
 }
 
 extension OutpostsClientTypes {
+
     /// Information about EC2 capacity.
-    public struct EC2Capacity {
+    public struct EC2Capacity: Swift.Sendable {
         /// The family of the EC2 capacity.
         public var family: Swift.String?
         /// The maximum size of the EC2 capacity.
@@ -630,12 +631,11 @@ extension OutpostsClientTypes {
             self.quantity = quantity
         }
     }
-
 }
 
 extension OutpostsClientTypes {
 
-    public enum CatalogItemStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum CatalogItemStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case available
         case discontinued
         case sdkUnknown(Swift.String)
@@ -664,7 +664,7 @@ extension OutpostsClientTypes {
 
 extension OutpostsClientTypes {
 
-    public enum SupportedStorageEnum: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SupportedStorageEnum: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case ebs
         case s3
         case sdkUnknown(Swift.String)
@@ -692,8 +692,9 @@ extension OutpostsClientTypes {
 }
 
 extension OutpostsClientTypes {
+
     /// Information about a catalog item.
-    public struct CatalogItem {
+    public struct CatalogItem: Swift.Sendable {
         /// The ID of the catalog item.
         public var catalogItemId: Swift.String?
         /// Information about the EC2 capacity of an item.
@@ -728,12 +729,11 @@ extension OutpostsClientTypes {
             self.weightLbs = weightLbs
         }
     }
-
 }
 
 extension OutpostsClientTypes {
 
-    public enum CatalogItemClass: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum CatalogItemClass: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case rack
         case server
         case sdkUnknown(Swift.String)
@@ -761,8 +761,9 @@ extension OutpostsClientTypes {
 }
 
 extension OutpostsClientTypes {
+
     /// Information about a connection.
-    public struct ConnectionDetails {
+    public struct ConnectionDetails: Swift.Sendable {
         /// The allowed IP addresses.
         public var allowedIps: [Swift.String]?
         /// The public key of the client.
@@ -793,7 +794,6 @@ extension OutpostsClientTypes {
             self.serverTunnelAddress = serverTunnelAddress
         }
     }
-
 }
 
 /// You have exceeded a service quota.
@@ -821,8 +821,9 @@ public struct ServiceQuotaExceededException: ClientRuntime.ModeledError, AWSClie
 }
 
 extension OutpostsClientTypes {
+
     /// Information about a line item request.
-    public struct LineItemRequest {
+    public struct LineItemRequest: Swift.Sendable {
         /// The ID of the catalog item.
         public var catalogItemId: Swift.String?
         /// The quantity of a line item request.
@@ -837,12 +838,11 @@ extension OutpostsClientTypes {
             self.quantity = quantity
         }
     }
-
 }
 
 extension OutpostsClientTypes {
 
-    public enum PaymentOption: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum PaymentOption: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case allUpfront
         case noUpfront
         case partialUpfront
@@ -874,7 +874,7 @@ extension OutpostsClientTypes {
 
 extension OutpostsClientTypes {
 
-    public enum PaymentTerm: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum PaymentTerm: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case oneYear
         case threeYears
         case sdkUnknown(Swift.String)
@@ -901,7 +901,7 @@ extension OutpostsClientTypes {
     }
 }
 
-public struct CreateOrderInput {
+public struct CreateOrderInput: Swift.Sendable {
     /// The line items that make up the order.
     /// This member is required.
     public var lineItems: [OutpostsClientTypes.LineItemRequest]?
@@ -929,8 +929,9 @@ public struct CreateOrderInput {
 }
 
 extension OutpostsClientTypes {
+
     /// Information about a line item asset.
-    public struct LineItemAssetInformation {
+    public struct LineItemAssetInformation: Swift.Sendable {
         /// The ID of the asset.
         public var assetId: Swift.String?
         /// The MAC addresses of the asset.
@@ -945,12 +946,11 @@ extension OutpostsClientTypes {
             self.macAddressList = macAddressList
         }
     }
-
 }
 
 extension OutpostsClientTypes {
 
-    public enum ShipmentCarrier: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ShipmentCarrier: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case dbs
         case dhl
         case expeditors
@@ -987,8 +987,9 @@ extension OutpostsClientTypes {
 }
 
 extension OutpostsClientTypes {
+
     /// Information about a line item shipment.
-    public struct ShipmentInformation {
+    public struct ShipmentInformation: Swift.Sendable {
         /// The carrier of the shipment.
         public var shipmentCarrier: OutpostsClientTypes.ShipmentCarrier?
         /// The tracking number of the shipment.
@@ -1003,12 +1004,11 @@ extension OutpostsClientTypes {
             self.shipmentTrackingNumber = shipmentTrackingNumber
         }
     }
-
 }
 
 extension OutpostsClientTypes {
 
-    public enum LineItemStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum LineItemStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case building
         case cancelled
         case delivered
@@ -1057,8 +1057,9 @@ extension OutpostsClientTypes {
 }
 
 extension OutpostsClientTypes {
+
     /// Information about a line item.
-    public struct LineItem {
+    public struct LineItem: Swift.Sendable {
         /// Information about assets.
         public var assetInformationList: [OutpostsClientTypes.LineItemAssetInformation]?
         /// The ID of the catalog item.
@@ -1097,12 +1098,11 @@ extension OutpostsClientTypes {
             self.status = status
         }
     }
-
 }
 
 extension OutpostsClientTypes {
 
-    public enum OrderType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum OrderType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case outpost
         case replacement
         case sdkUnknown(Swift.String)
@@ -1131,9 +1131,10 @@ extension OutpostsClientTypes {
 
 extension OutpostsClientTypes {
 
-    public enum OrderStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum OrderStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case cancelled
         case completed
+        case delivered
         case error
         case fulfilled
         case installing
@@ -1148,6 +1149,7 @@ extension OutpostsClientTypes {
             return [
                 .cancelled,
                 .completed,
+                .delivered,
                 .error,
                 .fulfilled,
                 .installing,
@@ -1168,6 +1170,7 @@ extension OutpostsClientTypes {
             switch self {
             case .cancelled: return "CANCELLED"
             case .completed: return "COMPLETED"
+            case .delivered: return "DELIVERED"
             case .error: return "ERROR"
             case .fulfilled: return "FULFILLED"
             case .installing: return "INSTALLING"
@@ -1183,8 +1186,9 @@ extension OutpostsClientTypes {
 }
 
 extension OutpostsClientTypes {
+
     /// Information about an order.
-    public struct Order {
+    public struct Order: Swift.Sendable {
         /// The line items for the order
         public var lineItems: [OutpostsClientTypes.LineItem]?
         /// The fulfillment date of the order.
@@ -1205,7 +1209,9 @@ extension OutpostsClientTypes {
         ///
         /// * PREPARING - Order is received and being prepared.
         ///
-        /// * IN_PROGRESS - Order is either being built, shipped, or installed. To get more details, see the line item status.
+        /// * IN_PROGRESS - Order is either being built or shipped. To get more details, see the line item status.
+        ///
+        /// * DELIVERED - Order was delivered to the Outpost site.
         ///
         /// * COMPLETED - Order is complete.
         ///
@@ -1240,10 +1246,9 @@ extension OutpostsClientTypes {
             self.status = status
         }
     }
-
 }
 
-public struct CreateOrderOutput {
+public struct CreateOrderOutput: Swift.Sendable {
     /// Information about this order.
     public var order: OutpostsClientTypes.Order?
 
@@ -1257,7 +1262,7 @@ public struct CreateOrderOutput {
 
 extension OutpostsClientTypes {
 
-    public enum SupportedHardwareType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SupportedHardwareType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case rack
         case server
         case sdkUnknown(Swift.String)
@@ -1284,7 +1289,7 @@ extension OutpostsClientTypes {
     }
 }
 
-public struct CreateOutpostInput {
+public struct CreateOutpostInput: Swift.Sendable {
     /// The Availability Zone.
     public var availabilityZone: Swift.String?
     /// The ID of the Availability Zone.
@@ -1323,8 +1328,9 @@ public struct CreateOutpostInput {
 }
 
 extension OutpostsClientTypes {
+
     /// Information about an Outpost.
-    public struct Outpost {
+    public struct Outpost: Swift.Sendable {
         /// The Availability Zone.
         public var availabilityZone: Swift.String?
         /// The ID of the Availability Zone.
@@ -1379,10 +1385,9 @@ extension OutpostsClientTypes {
             self.tags = tags
         }
     }
-
 }
 
-public struct CreateOutpostOutput {
+public struct CreateOutpostOutput: Swift.Sendable {
     /// Information about an Outpost.
     public var outpost: OutpostsClientTypes.Outpost?
 
@@ -1396,7 +1401,7 @@ public struct CreateOutpostOutput {
 
 extension OutpostsClientTypes {
 
-    public enum FiberOpticCableType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum FiberOpticCableType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case multiMode
         case singleMode
         case sdkUnknown(Swift.String)
@@ -1425,7 +1430,7 @@ extension OutpostsClientTypes {
 
 extension OutpostsClientTypes {
 
-    public enum MaximumSupportedWeightLbs: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum MaximumSupportedWeightLbs: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case max1400Lbs
         case max1600Lbs
         case max1800Lbs
@@ -1463,7 +1468,7 @@ extension OutpostsClientTypes {
 
 extension OutpostsClientTypes {
 
-    public enum OpticalStandard: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum OpticalStandard: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case optic1000baseLx
         case optic1000baseSx
         case optic100gbaseCwdm4
@@ -1525,7 +1530,7 @@ extension OutpostsClientTypes {
 
 extension OutpostsClientTypes {
 
-    public enum PowerConnector: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum PowerConnector: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case ah530p7w
         case ah532p6w
         case iec309
@@ -1560,7 +1565,7 @@ extension OutpostsClientTypes {
 
 extension OutpostsClientTypes {
 
-    public enum PowerDrawKva: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum PowerDrawKva: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case power10Kva
         case power15Kva
         case power30Kva
@@ -1595,7 +1600,7 @@ extension OutpostsClientTypes {
 
 extension OutpostsClientTypes {
 
-    public enum PowerFeedDrop: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum PowerFeedDrop: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case aboveRack
         case belowRack
         case sdkUnknown(Swift.String)
@@ -1624,7 +1629,7 @@ extension OutpostsClientTypes {
 
 extension OutpostsClientTypes {
 
-    public enum PowerPhase: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum PowerPhase: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case singlePhase
         case threePhase
         case sdkUnknown(Swift.String)
@@ -1653,7 +1658,7 @@ extension OutpostsClientTypes {
 
 extension OutpostsClientTypes {
 
-    public enum UplinkCount: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum UplinkCount: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case uplinkCount1
         case uplinkCount12
         case uplinkCount16
@@ -1706,7 +1711,7 @@ extension OutpostsClientTypes {
 
 extension OutpostsClientTypes {
 
-    public enum UplinkGbps: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum UplinkGbps: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case uplink100g
         case uplink10g
         case uplink1g
@@ -1740,8 +1745,9 @@ extension OutpostsClientTypes {
 }
 
 extension OutpostsClientTypes {
+
     /// Information about the physical and logistical details for racks at sites. For more information about hardware requirements for racks, see [Network readiness checklist](https://docs.aws.amazon.com/outposts/latest/userguide/outposts-requirements.html#checklist) in the Amazon Web Services Outposts User Guide.
-    public struct RackPhysicalProperties {
+    public struct RackPhysicalProperties: Swift.Sendable {
         /// The type of fiber used to attach the Outpost to the network.
         public var fiberOpticCableType: OutpostsClientTypes.FiberOpticCableType?
         /// The maximum rack weight that this site can support. NO_LIMIT is over 2000 lbs (907 kg).
@@ -1784,10 +1790,9 @@ extension OutpostsClientTypes {
             self.uplinkGbps = uplinkGbps
         }
     }
-
 }
 
-public struct CreateSiteInput {
+public struct CreateSiteInput: Swift.Sendable {
     /// The description of the site.
     public var description: Swift.String?
     /// The name of the site.
@@ -1825,8 +1830,9 @@ public struct CreateSiteInput {
 }
 
 extension OutpostsClientTypes {
+
     /// Information about a site.
-    public struct Site {
+    public struct Site: Swift.Sendable {
         /// The ID of the Amazon Web Services account.
         public var accountId: Swift.String?
         /// The description of the site.
@@ -1877,10 +1883,9 @@ extension OutpostsClientTypes {
             self.tags = tags
         }
     }
-
 }
 
-public struct CreateSiteOutput {
+public struct CreateSiteOutput: Swift.Sendable {
     /// Information about a site.
     public var site: OutpostsClientTypes.Site?
 
@@ -1892,7 +1897,7 @@ public struct CreateSiteOutput {
     }
 }
 
-public struct DeleteOutpostInput {
+public struct DeleteOutpostInput: Swift.Sendable {
     /// The ID or ARN of the Outpost.
     /// This member is required.
     public var outpostId: Swift.String?
@@ -1905,12 +1910,12 @@ public struct DeleteOutpostInput {
     }
 }
 
-public struct DeleteOutpostOutput {
+public struct DeleteOutpostOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteSiteInput {
+public struct DeleteSiteInput: Swift.Sendable {
     /// The ID or the Amazon Resource Name (ARN) of the site.
     /// This member is required.
     public var siteId: Swift.String?
@@ -1923,12 +1928,12 @@ public struct DeleteSiteInput {
     }
 }
 
-public struct DeleteSiteOutput {
+public struct DeleteSiteOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct GetCapacityTaskInput {
+public struct GetCapacityTaskInput: Swift.Sendable {
     /// ID of the capacity task.
     /// This member is required.
     public var capacityTaskId: Swift.String?
@@ -1947,8 +1952,9 @@ public struct GetCapacityTaskInput {
 }
 
 extension OutpostsClientTypes {
+
     /// The instance type that you specify determines the combination of CPU, memory, storage, and networking capacity.
-    public struct InstanceTypeCapacity {
+    public struct InstanceTypeCapacity: Swift.Sendable {
         /// The number of instances for the specified instance type.
         /// This member is required.
         public var count: Swift.Int
@@ -1965,10 +1971,9 @@ extension OutpostsClientTypes {
             self.instanceType = instanceType
         }
     }
-
 }
 
-public struct GetCapacityTaskOutput {
+public struct GetCapacityTaskOutput: Swift.Sendable {
     /// ID of the capacity task.
     public var capacityTaskId: Swift.String?
     /// Status of the capacity task. A capacity task can have one of the following statuses:
@@ -2022,7 +2027,7 @@ public struct GetCapacityTaskOutput {
     }
 }
 
-public struct GetCatalogItemInput {
+public struct GetCatalogItemInput: Swift.Sendable {
     /// The ID of the catalog item.
     /// This member is required.
     public var catalogItemId: Swift.String?
@@ -2035,7 +2040,7 @@ public struct GetCatalogItemInput {
     }
 }
 
-public struct GetCatalogItemOutput {
+public struct GetCatalogItemOutput: Swift.Sendable {
     /// Information about this catalog item.
     public var catalogItem: OutpostsClientTypes.CatalogItem?
 
@@ -2047,7 +2052,7 @@ public struct GetCatalogItemOutput {
     }
 }
 
-public struct GetConnectionInput {
+public struct GetConnectionInput: Swift.Sendable {
     /// The ID of the connection.
     /// This member is required.
     public var connectionId: Swift.String?
@@ -2060,7 +2065,7 @@ public struct GetConnectionInput {
     }
 }
 
-public struct GetConnectionOutput {
+public struct GetConnectionOutput: Swift.Sendable {
     /// Information about the connection.
     public var connectionDetails: OutpostsClientTypes.ConnectionDetails?
     /// The ID of the connection.
@@ -2076,7 +2081,7 @@ public struct GetConnectionOutput {
     }
 }
 
-public struct GetOrderInput {
+public struct GetOrderInput: Swift.Sendable {
     /// The ID of the order.
     /// This member is required.
     public var orderId: Swift.String?
@@ -2089,7 +2094,7 @@ public struct GetOrderInput {
     }
 }
 
-public struct GetOrderOutput {
+public struct GetOrderOutput: Swift.Sendable {
     /// Information about an order.
     public var order: OutpostsClientTypes.Order?
 
@@ -2101,7 +2106,7 @@ public struct GetOrderOutput {
     }
 }
 
-public struct GetOutpostInput {
+public struct GetOutpostInput: Swift.Sendable {
     /// The ID or ARN of the Outpost.
     /// This member is required.
     public var outpostId: Swift.String?
@@ -2114,7 +2119,7 @@ public struct GetOutpostInput {
     }
 }
 
-public struct GetOutpostOutput {
+public struct GetOutpostOutput: Swift.Sendable {
     /// Information about an Outpost.
     public var outpost: OutpostsClientTypes.Outpost?
 
@@ -2126,7 +2131,7 @@ public struct GetOutpostOutput {
     }
 }
 
-public struct GetOutpostInstanceTypesInput {
+public struct GetOutpostInstanceTypesInput: Swift.Sendable {
     /// The maximum page size.
     public var maxResults: Swift.Int?
     /// The pagination token.
@@ -2148,22 +2153,26 @@ public struct GetOutpostInstanceTypesInput {
 }
 
 extension OutpostsClientTypes {
+
     /// Information about an instance type.
-    public struct InstanceTypeItem {
+    public struct InstanceTypeItem: Swift.Sendable {
         /// The instance type.
         public var instanceType: Swift.String?
+        /// The number of default VCPUs in an instance type.
+        public var vcpUs: Swift.Int?
 
         public init(
-            instanceType: Swift.String? = nil
+            instanceType: Swift.String? = nil,
+            vcpUs: Swift.Int? = nil
         )
         {
             self.instanceType = instanceType
+            self.vcpUs = vcpUs
         }
     }
-
 }
 
-public struct GetOutpostInstanceTypesOutput {
+public struct GetOutpostInstanceTypesOutput: Swift.Sendable {
     /// Information about the instance types.
     public var instanceTypes: [OutpostsClientTypes.InstanceTypeItem]?
     /// The pagination token.
@@ -2187,7 +2196,7 @@ public struct GetOutpostInstanceTypesOutput {
     }
 }
 
-public struct GetOutpostSupportedInstanceTypesInput {
+public struct GetOutpostSupportedInstanceTypesInput: Swift.Sendable {
     /// The maximum page size.
     public var maxResults: Swift.Int?
     /// The pagination token.
@@ -2213,7 +2222,7 @@ public struct GetOutpostSupportedInstanceTypesInput {
     }
 }
 
-public struct GetOutpostSupportedInstanceTypesOutput {
+public struct GetOutpostSupportedInstanceTypesOutput: Swift.Sendable {
     /// Information about the instance types.
     public var instanceTypes: [OutpostsClientTypes.InstanceTypeItem]?
     /// The pagination token.
@@ -2229,7 +2238,7 @@ public struct GetOutpostSupportedInstanceTypesOutput {
     }
 }
 
-public struct GetSiteInput {
+public struct GetSiteInput: Swift.Sendable {
     /// The ID or the Amazon Resource Name (ARN) of the site.
     /// This member is required.
     public var siteId: Swift.String?
@@ -2242,7 +2251,7 @@ public struct GetSiteInput {
     }
 }
 
-public struct GetSiteOutput {
+public struct GetSiteOutput: Swift.Sendable {
     /// Information about a site.
     public var site: OutpostsClientTypes.Site?
 
@@ -2254,7 +2263,7 @@ public struct GetSiteOutput {
     }
 }
 
-public struct GetSiteAddressInput {
+public struct GetSiteAddressInput: Swift.Sendable {
     /// The type of the address you request.
     /// This member is required.
     public var addressType: OutpostsClientTypes.AddressType?
@@ -2272,7 +2281,7 @@ public struct GetSiteAddressInput {
     }
 }
 
-public struct GetSiteAddressOutput {
+public struct GetSiteAddressOutput: Swift.Sendable {
     /// Information about the address.
     public var address: OutpostsClientTypes.Address?
     /// The type of the address you receive.
@@ -2292,7 +2301,7 @@ public struct GetSiteAddressOutput {
     }
 }
 
-public struct ListAssetsInput {
+public struct ListAssetsInput: Swift.Sendable {
     /// Filters the results by the host ID of a Dedicated Host.
     public var hostIdFilter: [Swift.String]?
     /// The maximum page size.
@@ -2321,7 +2330,7 @@ public struct ListAssetsInput {
     }
 }
 
-public struct ListAssetsOutput {
+public struct ListAssetsOutput: Swift.Sendable {
     /// Information about the hardware assets.
     public var assets: [OutpostsClientTypes.AssetInfo]?
     /// The pagination token.
@@ -2337,7 +2346,7 @@ public struct ListAssetsOutput {
     }
 }
 
-public struct ListCapacityTasksInput {
+public struct ListCapacityTasksInput: Swift.Sendable {
     /// A list of statuses. For example, REQUESTED or WAITING_FOR_EVACUATION.
     public var capacityTaskStatusFilter: [OutpostsClientTypes.CapacityTaskStatus]?
     /// The maximum page size.
@@ -2361,7 +2370,7 @@ public struct ListCapacityTasksInput {
     }
 }
 
-public struct ListCapacityTasksOutput {
+public struct ListCapacityTasksOutput: Swift.Sendable {
     /// Lists all the capacity tasks.
     public var capacityTasks: [OutpostsClientTypes.CapacityTaskSummary]?
     /// The pagination token.
@@ -2377,7 +2386,7 @@ public struct ListCapacityTasksOutput {
     }
 }
 
-public struct ListCatalogItemsInput {
+public struct ListCatalogItemsInput: Swift.Sendable {
     /// Filters the results by EC2 family (for example, M5).
     public var ec2FamilyFilter: [Swift.String]?
     /// Filters the results by item class.
@@ -2405,7 +2414,7 @@ public struct ListCatalogItemsInput {
     }
 }
 
-public struct ListCatalogItemsOutput {
+public struct ListCatalogItemsOutput: Swift.Sendable {
     /// Information about the catalog items.
     public var catalogItems: [OutpostsClientTypes.CatalogItem]?
     /// The pagination token.
@@ -2421,7 +2430,7 @@ public struct ListCatalogItemsOutput {
     }
 }
 
-public struct ListOrdersInput {
+public struct ListOrdersInput: Swift.Sendable {
     /// The maximum page size.
     public var maxResults: Swift.Int?
     /// The pagination token.
@@ -2442,8 +2451,9 @@ public struct ListOrdersInput {
 }
 
 extension OutpostsClientTypes {
+
     /// A summary of line items in your order.
-    public struct OrderSummary {
+    public struct OrderSummary: Swift.Sendable {
         /// The status of all line items in the order.
         public var lineItemCountsByStatus: [Swift.String: Swift.Int]?
         /// The fulfilment date for the order.
@@ -2491,10 +2501,9 @@ extension OutpostsClientTypes {
             self.status = status
         }
     }
-
 }
 
-public struct ListOrdersOutput {
+public struct ListOrdersOutput: Swift.Sendable {
     /// The pagination token.
     public var nextToken: Swift.String?
     /// Information about the orders.
@@ -2510,7 +2519,7 @@ public struct ListOrdersOutput {
     }
 }
 
-public struct ListOutpostsInput {
+public struct ListOutpostsInput: Swift.Sendable {
     /// Filters the results by Availability Zone (for example, us-east-1a).
     public var availabilityZoneFilter: [Swift.String]?
     /// Filters the results by AZ ID (for example, use1-az1).
@@ -2538,7 +2547,7 @@ public struct ListOutpostsInput {
     }
 }
 
-public struct ListOutpostsOutput {
+public struct ListOutpostsOutput: Swift.Sendable {
     /// The pagination token.
     public var nextToken: Swift.String?
     /// Information about the Outposts.
@@ -2554,7 +2563,7 @@ public struct ListOutpostsOutput {
     }
 }
 
-public struct ListSitesInput {
+public struct ListSitesInput: Swift.Sendable {
     /// The maximum page size.
     public var maxResults: Swift.Int?
     /// The pagination token.
@@ -2582,7 +2591,7 @@ public struct ListSitesInput {
     }
 }
 
-public struct ListSitesOutput {
+public struct ListSitesOutput: Swift.Sendable {
     /// The pagination token.
     public var nextToken: Swift.String?
     /// Information about the sites.
@@ -2598,7 +2607,7 @@ public struct ListSitesOutput {
     }
 }
 
-public struct ListTagsForResourceInput {
+public struct ListTagsForResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the resource.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -2611,7 +2620,7 @@ public struct ListTagsForResourceInput {
     }
 }
 
-public struct ListTagsForResourceOutput {
+public struct ListTagsForResourceOutput: Swift.Sendable {
     /// The resource tags.
     public var tags: [Swift.String: Swift.String]?
 
@@ -2623,7 +2632,7 @@ public struct ListTagsForResourceOutput {
     }
 }
 
-public struct StartCapacityTaskInput {
+public struct StartCapacityTaskInput: Swift.Sendable {
     /// You can request a dry run to determine if the instance type and instance size changes is above or below available instance capacity. Requesting a dry run does not make any changes to your plan.
     public var dryRun: Swift.Bool?
     /// The instance pools specified in the capacity task.
@@ -2650,7 +2659,7 @@ public struct StartCapacityTaskInput {
     }
 }
 
-public struct StartCapacityTaskOutput {
+public struct StartCapacityTaskOutput: Swift.Sendable {
     /// ID of the capacity task that you want to start.
     public var capacityTaskId: Swift.String?
     /// Status of the specified capacity task.
@@ -2698,7 +2707,7 @@ public struct StartCapacityTaskOutput {
     }
 }
 
-public struct StartConnectionInput {
+public struct StartConnectionInput: Swift.Sendable {
     /// The ID of the Outpost server.
     /// This member is required.
     public var assetId: Swift.String?
@@ -2725,7 +2734,7 @@ public struct StartConnectionInput {
     }
 }
 
-public struct StartConnectionOutput {
+public struct StartConnectionOutput: Swift.Sendable {
     /// The ID of the connection.
     public var connectionId: Swift.String?
     /// The underlay IP address.
@@ -2741,7 +2750,7 @@ public struct StartConnectionOutput {
     }
 }
 
-public struct TagResourceInput {
+public struct TagResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the resource.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -2759,12 +2768,12 @@ public struct TagResourceInput {
     }
 }
 
-public struct TagResourceOutput {
+public struct TagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UntagResourceInput {
+public struct UntagResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the resource.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -2782,12 +2791,12 @@ public struct UntagResourceInput {
     }
 }
 
-public struct UntagResourceOutput {
+public struct UntagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdateOutpostInput {
+public struct UpdateOutpostInput: Swift.Sendable {
     /// The description of the Outpost.
     public var description: Swift.String?
     /// The name of the Outpost.
@@ -2812,7 +2821,7 @@ public struct UpdateOutpostInput {
     }
 }
 
-public struct UpdateOutpostOutput {
+public struct UpdateOutpostOutput: Swift.Sendable {
     /// Information about an Outpost.
     public var outpost: OutpostsClientTypes.Outpost?
 
@@ -2824,7 +2833,7 @@ public struct UpdateOutpostOutput {
     }
 }
 
-public struct UpdateSiteInput {
+public struct UpdateSiteInput: Swift.Sendable {
     /// The description of the site.
     public var description: Swift.String?
     /// The name of the site.
@@ -2849,7 +2858,7 @@ public struct UpdateSiteInput {
     }
 }
 
-public struct UpdateSiteOutput {
+public struct UpdateSiteOutput: Swift.Sendable {
     /// Information about a site.
     public var site: OutpostsClientTypes.Site?
 
@@ -2861,7 +2870,7 @@ public struct UpdateSiteOutput {
     }
 }
 
-public struct UpdateSiteAddressInput {
+public struct UpdateSiteAddressInput: Swift.Sendable {
     /// The address for the site.
     /// This member is required.
     public var address: OutpostsClientTypes.Address?
@@ -2884,7 +2893,7 @@ public struct UpdateSiteAddressInput {
     }
 }
 
-public struct UpdateSiteAddressOutput {
+public struct UpdateSiteAddressOutput: Swift.Sendable {
     /// Information about an address.
     public var address: OutpostsClientTypes.Address?
     /// The type of the address.
@@ -2900,7 +2909,7 @@ public struct UpdateSiteAddressOutput {
     }
 }
 
-public struct UpdateSiteRackPhysicalPropertiesInput {
+public struct UpdateSiteRackPhysicalPropertiesInput: Swift.Sendable {
     /// The type of fiber that you will use to attach the Outpost to your network.
     public var fiberOpticCableType: OutpostsClientTypes.FiberOpticCableType?
     /// The maximum rack weight that this site can support. NO_LIMIT is over 2000lbs.
@@ -3000,7 +3009,7 @@ public struct UpdateSiteRackPhysicalPropertiesInput {
     }
 }
 
-public struct UpdateSiteRackPhysicalPropertiesOutput {
+public struct UpdateSiteRackPhysicalPropertiesOutput: Swift.Sendable {
     /// Information about a site.
     public var site: OutpostsClientTypes.Site?
 
@@ -4852,6 +4861,7 @@ extension OutpostsClientTypes.InstanceTypeItem {
         guard reader.hasContent else { throw SmithyReadWrite.ReaderError.requiredValueNotPresent }
         var value = OutpostsClientTypes.InstanceTypeItem()
         value.instanceType = try reader["InstanceType"].readIfPresent()
+        value.vcpUs = try reader["VCPUs"].readIfPresent()
         return value
     }
 }

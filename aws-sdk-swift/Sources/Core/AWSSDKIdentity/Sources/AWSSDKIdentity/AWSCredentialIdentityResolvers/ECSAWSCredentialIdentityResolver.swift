@@ -17,6 +17,10 @@ import struct Foundation.URLComponents
 /// A credential identity resolver that sources credentials from ECS container metadata
 public struct ECSAWSCredentialIdentityResolver: AWSCredentialIdentityResolvedByCRT {
     public let crtAWSCredentialIdentityResolver: AwsCommonRuntimeKit.CredentialsProvider
+    public let resolvedHost: String
+    public let resolvedPathAndQuery: String
+    public let resolvedAuthorizationToken: String?
+
     /// Creates a credential identity resolver that resolves credentials from ECS container metadata.
     /// ECS creds provider can be used to access creds via either relative uri to a fixed endpoint http://169.254.170.2,
     /// or via a full uri specified by environment variables:
@@ -46,6 +50,7 @@ public struct ECSAWSCredentialIdentityResolver: AWSCredentialIdentityResolvedByC
         let defaultHost = "169.254.170.2"
         var host = defaultHost
         var pathAndQuery = resolvedRelativeURI ?? ""
+        var resolvedAuthToken: String?
 
         if let relative = resolvedRelativeURI {
             pathAndQuery = relative
@@ -53,14 +58,19 @@ public struct ECSAWSCredentialIdentityResolver: AWSCredentialIdentityResolvedByC
             let (absoluteHost, absolutePathAndQuery) = try retrieveHostPathAndQuery(from: absoluteURL)
             host = absoluteHost
             pathAndQuery = absolutePathAndQuery
+            resolvedAuthToken = try resolveToken(authorizationToken, env)
         } else {
             throw HTTPClientError.pathCreationFailed(
                 "Failed to retrieve either relative or absolute URI! URI may be malformed."
             )
         }
 
+        self.resolvedHost = host
+        self.resolvedPathAndQuery = pathAndQuery
+        self.resolvedAuthorizationToken = resolvedAuthToken
         self.crtAWSCredentialIdentityResolver = try AwsCommonRuntimeKit.CredentialsProvider(source: .ecs(
             bootstrap: SDKDefaultIO.shared.clientBootstrap,
+            authToken: resolvedAuthToken,
             pathAndQuery: pathAndQuery,
             host: host
         ))
@@ -88,6 +98,26 @@ private func isValidAbsoluteURI(_ uri: String?) -> Bool {
         return false
     }
     return true
+}
+
+private func resolveToken(_ authorizationToken: String?, _ env: ProcessEnvironment) throws -> String? {
+    // Initialize token variable
+    var tokenFromFile: String?
+    if let tokenPath = env.environmentVariable(
+        key: "AWS_CONTAINER_AUTHORIZATION_TOKEN_FILE"
+    ) {
+        do {
+            // Load the token from the file
+            let tokenFilePath = URL(fileURLWithPath: tokenPath)
+            tokenFromFile = try String(contentsOf: tokenFilePath, encoding: .utf8)
+                .trimmingCharacters(in: .whitespacesAndNewlines)
+        } catch {
+            throw ClientError.dataNotFound("Error reading the token file: \(error)")
+        }
+    }
+
+    // AWS_CONTAINER_AUTHORIZATION_TOKEN should only be used if AWS_CONTAINER_AUTHORIZATION_TOKEN_FILE is not set
+    return authorizationToken ?? tokenFromFile ?? env.environmentVariable(key: "AWS_CONTAINER_AUTHORIZATION_TOKEN")
 }
 
 private struct ProcessEnvironment {

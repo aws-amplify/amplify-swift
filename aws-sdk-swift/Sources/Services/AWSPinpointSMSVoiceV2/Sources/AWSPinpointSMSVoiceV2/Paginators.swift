@@ -187,7 +187,8 @@ extension DescribeOptOutListsInput: ClientRuntime.PaginateToken {
         return DescribeOptOutListsInput(
             maxResults: self.maxResults,
             nextToken: token,
-            optOutListNames: self.optOutListNames
+            optOutListNames: self.optOutListNames,
+            owner: self.owner
         )}
 }
 
@@ -219,6 +220,7 @@ extension DescribePhoneNumbersInput: ClientRuntime.PaginateToken {
             filters: self.filters,
             maxResults: self.maxResults,
             nextToken: token,
+            owner: self.owner,
             phoneNumberIds: self.phoneNumberIds
         )}
 }
@@ -251,6 +253,7 @@ extension DescribePoolsInput: ClientRuntime.PaginateToken {
             filters: self.filters,
             maxResults: self.maxResults,
             nextToken: token,
+            owner: self.owner,
             poolIds: self.poolIds
         )}
 }
@@ -543,6 +546,7 @@ extension DescribeSenderIdsInput: ClientRuntime.PaginateToken {
             filters: self.filters,
             maxResults: self.maxResults,
             nextToken: token,
+            owner: self.owner,
             senderIds: self.senderIds
         )}
 }

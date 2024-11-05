@@ -29,27 +29,28 @@ import struct Smithy.URIQueryItem
 @_spi(SmithyReadWrite) import struct SmithyReadWrite.ReadingClosureBox
 @_spi(SmithyReadWrite) import struct SmithyReadWrite.WritingClosureBox
 
-public struct DeleteChannelOutput {
+
+public struct DeleteChannelOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeletePlaybackRestrictionPolicyOutput {
+public struct DeletePlaybackRestrictionPolicyOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteRecordingConfigurationOutput {
+public struct DeleteRecordingConfigurationOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteStreamKeyOutput {
+public struct DeleteStreamKeyOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct PutMetadataOutput {
+public struct PutMetadataOutput: Swift.Sendable {
 
     public init() { }
 }
@@ -79,7 +80,7 @@ public struct AccessDeniedException: ClientRuntime.ModeledError, AWSClientRuntim
     }
 }
 
-public struct BatchGetChannelInput {
+public struct BatchGetChannelInput: Swift.Sendable {
     /// Array of ARNs, one per channel.
     /// This member is required.
     public var arns: [Swift.String]?
@@ -94,7 +95,7 @@ public struct BatchGetChannelInput {
 
 extension IvsClientTypes {
 
-    public enum ChannelLatencyMode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ChannelLatencyMode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case lowlatency
         case normallatency
         case sdkUnknown(Swift.String)
@@ -123,7 +124,7 @@ extension IvsClientTypes {
 
 extension IvsClientTypes {
 
-    public enum TranscodePreset: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum TranscodePreset: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case constrainedbandwidthtranscodepreset
         case higherbandwidthtranscodepreset
         case sdkUnknown(Swift.String)
@@ -151,8 +152,9 @@ extension IvsClientTypes {
 }
 
 extension IvsClientTypes {
+
     /// Specifies information needed to stream using the SRT protocol.
-    public struct Srt {
+    public struct Srt: Swift.Sendable {
         /// The endpoint to be used when streaming with IVS using the SRT protocol.
         public var endpoint: Swift.String?
         /// Auto-generated passphrase to enable encryption. This field is applicable only if the end user has not enabled the insecureIngest option for the channel.
@@ -167,7 +169,6 @@ extension IvsClientTypes {
             self.passphrase = passphrase
         }
     }
-
 }
 
 extension IvsClientTypes.Srt: Swift.CustomDebugStringConvertible {
@@ -177,7 +178,7 @@ extension IvsClientTypes.Srt: Swift.CustomDebugStringConvertible {
 
 extension IvsClientTypes {
 
-    public enum ChannelType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ChannelType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case advancedhdchanneltype
         case advancedsdchanneltype
         case basicchanneltype
@@ -211,8 +212,9 @@ extension IvsClientTypes {
 }
 
 extension IvsClientTypes {
+
     /// Object specifying a channel.
-    public struct Channel {
+    public struct Channel: Swift.Sendable {
         /// Channel ARN.
         public var arn: Swift.String?
         /// Whether the channel is private (enabled for playback authorization). Default: false.
@@ -271,12 +273,12 @@ extension IvsClientTypes {
             self.type = type
         }
     }
-
 }
 
 extension IvsClientTypes {
+
     /// Error related to a specific channel, specified by its ARN.
-    public struct BatchError {
+    public struct BatchError: Swift.Sendable {
         /// ARN of an IVS resource; e.g., channel.
         public var arn: Swift.String?
         /// Error code.
@@ -295,10 +297,9 @@ extension IvsClientTypes {
             self.message = message
         }
     }
-
 }
 
-public struct BatchGetChannelOutput {
+public struct BatchGetChannelOutput: Swift.Sendable {
     ///
     public var channels: [IvsClientTypes.Channel]?
     /// Each error object is related to a specific ARN in the request.
@@ -314,7 +315,7 @@ public struct BatchGetChannelOutput {
     }
 }
 
-public struct BatchGetStreamKeyInput {
+public struct BatchGetStreamKeyInput: Swift.Sendable {
     /// Array of ARNs, one per stream key.
     /// This member is required.
     public var arns: [Swift.String]?
@@ -328,8 +329,9 @@ public struct BatchGetStreamKeyInput {
 }
 
 extension IvsClientTypes {
+
     /// Object specifying a stream key.
-    public struct StreamKey {
+    public struct StreamKey: Swift.Sendable {
         /// Stream-key ARN.
         public var arn: Swift.String?
         /// Channel ARN for the stream.
@@ -352,7 +354,6 @@ extension IvsClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension IvsClientTypes.StreamKey: Swift.CustomDebugStringConvertible {
@@ -360,7 +361,7 @@ extension IvsClientTypes.StreamKey: Swift.CustomDebugStringConvertible {
         "StreamKey(arn: \(Swift.String(describing: arn)), channelArn: \(Swift.String(describing: channelArn)), tags: \(Swift.String(describing: tags)), value: \"CONTENT_REDACTED\")"}
 }
 
-public struct BatchGetStreamKeyOutput {
+public struct BatchGetStreamKeyOutput: Swift.Sendable {
     ///
     public var errors: [IvsClientTypes.BatchError]?
     ///
@@ -452,8 +453,9 @@ public struct ValidationException: ClientRuntime.ModeledError, AWSClientRuntime.
 }
 
 extension IvsClientTypes {
+
     /// A viewer session to revoke in the call to [BatchStartViewerSessionRevocation].
-    public struct BatchStartViewerSessionRevocationViewerSession {
+    public struct BatchStartViewerSessionRevocationViewerSession: Swift.Sendable {
         /// The ARN of the channel associated with the viewer session to revoke.
         /// This member is required.
         public var channelArn: Swift.String?
@@ -474,10 +476,9 @@ extension IvsClientTypes {
             self.viewerSessionVersionsLessThanOrEqualTo = viewerSessionVersionsLessThanOrEqualTo
         }
     }
-
 }
 
-public struct BatchStartViewerSessionRevocationInput {
+public struct BatchStartViewerSessionRevocationInput: Swift.Sendable {
     /// Array of viewer sessions, one per channel-ARN and viewer-ID pair.
     /// This member is required.
     public var viewerSessions: [IvsClientTypes.BatchStartViewerSessionRevocationViewerSession]?
@@ -491,8 +492,9 @@ public struct BatchStartViewerSessionRevocationInput {
 }
 
 extension IvsClientTypes {
+
     /// Error for a request in the batch for BatchStartViewerSessionRevocation. Each error is related to a specific channel-ARN and viewer-ID pair.
-    public struct BatchStartViewerSessionRevocationError {
+    public struct BatchStartViewerSessionRevocationError: Swift.Sendable {
         /// Channel ARN.
         /// This member is required.
         public var channelArn: Swift.String?
@@ -517,10 +519,9 @@ extension IvsClientTypes {
             self.viewerId = viewerId
         }
     }
-
 }
 
-public struct BatchStartViewerSessionRevocationOutput {
+public struct BatchStartViewerSessionRevocationOutput: Swift.Sendable {
     /// Each error object is related to a specific channelArn and viewerId pair in the request.
     public var errors: [IvsClientTypes.BatchStartViewerSessionRevocationError]?
 
@@ -582,7 +583,7 @@ public struct ServiceQuotaExceededException: ClientRuntime.ModeledError, AWSClie
     }
 }
 
-public struct CreateChannelInput {
+public struct CreateChannelInput: Swift.Sendable {
     /// Whether the channel is private (enabled for playback authorization). Default: false.
     public var authorized: Swift.Bool
     /// Whether the channel allows insecure RTMP and SRT ingest. Default: false.
@@ -626,7 +627,7 @@ public struct CreateChannelInput {
     }
 }
 
-public struct CreateChannelOutput {
+public struct CreateChannelOutput: Swift.Sendable {
     ///
     public var channel: IvsClientTypes.Channel?
     ///
@@ -642,7 +643,7 @@ public struct CreateChannelOutput {
     }
 }
 
-public struct CreatePlaybackRestrictionPolicyInput {
+public struct CreatePlaybackRestrictionPolicyInput: Swift.Sendable {
     /// A list of country codes that control geoblocking restriction. Allowed values are the officially assigned [ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2) codes. Default: All countries (an empty array).
     public var allowedCountries: [Swift.String]?
     /// A list of origin sites that control CORS restriction. Allowed values are the same as valid values of the Origin header defined at [https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Origin](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Origin). Default: All origins (an empty array).
@@ -671,8 +672,9 @@ public struct CreatePlaybackRestrictionPolicyInput {
 }
 
 extension IvsClientTypes {
+
     /// An object representing a policy to constrain playback by country and/or origin sites.
-    public struct PlaybackRestrictionPolicy {
+    public struct PlaybackRestrictionPolicy: Swift.Sendable {
         /// A list of country codes that control geoblocking restriction. Allowed values are the officially assigned [ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2) codes. Default: All countries (an empty array).
         /// This member is required.
         public var allowedCountries: [Swift.String]?
@@ -706,10 +708,9 @@ extension IvsClientTypes {
             self.tags = tags
         }
     }
-
 }
 
-public struct CreatePlaybackRestrictionPolicyOutput {
+public struct CreatePlaybackRestrictionPolicyOutput: Swift.Sendable {
     ///
     public var playbackRestrictionPolicy: IvsClientTypes.PlaybackRestrictionPolicy?
 
@@ -772,8 +773,9 @@ public struct InternalServerException: ClientRuntime.ModeledError, AWSClientRunt
 }
 
 extension IvsClientTypes {
+
     /// A complex type that describes an S3 location where recorded videos will be stored.
-    public struct S3DestinationConfiguration {
+    public struct S3DestinationConfiguration: Swift.Sendable {
         /// Location (S3 bucket name) where recorded videos will be stored.
         /// This member is required.
         public var bucketName: Swift.String?
@@ -785,12 +787,12 @@ extension IvsClientTypes {
             self.bucketName = bucketName
         }
     }
-
 }
 
 extension IvsClientTypes {
+
     /// A complex type that describes a location where recorded videos will be stored. Each member represents a type of destination configuration. For recording, you define one and only one type of destination configuration.
-    public struct DestinationConfiguration {
+    public struct DestinationConfiguration: Swift.Sendable {
         /// An S3 destination configuration where recorded videos will be stored.
         public var s3: IvsClientTypes.S3DestinationConfiguration?
 
@@ -801,12 +803,11 @@ extension IvsClientTypes {
             self.s3 = s3
         }
     }
-
 }
 
 extension IvsClientTypes {
 
-    public enum RenditionConfigurationRendition: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum RenditionConfigurationRendition: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case fullHd
         case hd
         case lowestResolution
@@ -841,7 +842,7 @@ extension IvsClientTypes {
 
 extension IvsClientTypes {
 
-    public enum RenditionConfigurationRenditionSelection: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum RenditionConfigurationRenditionSelection: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case all
         case custom
         case `none`
@@ -872,8 +873,9 @@ extension IvsClientTypes {
 }
 
 extension IvsClientTypes {
+
     /// Object that describes which renditions should be recorded for a stream.
-    public struct RenditionConfiguration {
+    public struct RenditionConfiguration: Swift.Sendable {
         /// Indicates which set of renditions are recorded for a stream. For BASIC channels, the CUSTOM value has no effect. If CUSTOM is specified, a set of renditions must be specified in the renditions field. Default: ALL.
         public var renditionSelection: IvsClientTypes.RenditionConfigurationRenditionSelection?
         /// Indicates which renditions are recorded for a stream, if renditionSelection is CUSTOM; otherwise, this field is irrelevant. The selected renditions are recorded if they are available during the stream. If a selected rendition is unavailable, the best available rendition is recorded. For details on the resolution dimensions of each rendition, see [Auto-Record to Amazon S3](https://docs.aws.amazon.com/ivs/latest/userguide/record-to-s3.html).
@@ -888,12 +890,11 @@ extension IvsClientTypes {
             self.renditions = renditions
         }
     }
-
 }
 
 extension IvsClientTypes {
 
-    public enum RecordingMode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum RecordingMode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case disabled
         case interval
         case sdkUnknown(Swift.String)
@@ -922,7 +923,7 @@ extension IvsClientTypes {
 
 extension IvsClientTypes {
 
-    public enum ThumbnailConfigurationResolution: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ThumbnailConfigurationResolution: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case fullHd
         case hd
         case lowestResolution
@@ -957,7 +958,7 @@ extension IvsClientTypes {
 
 extension IvsClientTypes {
 
-    public enum ThumbnailConfigurationStorage: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ThumbnailConfigurationStorage: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case latest
         case sequential
         case sdkUnknown(Swift.String)
@@ -985,8 +986,9 @@ extension IvsClientTypes {
 }
 
 extension IvsClientTypes {
+
     /// An object representing a configuration of thumbnails for recorded video.
-    public struct ThumbnailConfiguration {
+    public struct ThumbnailConfiguration: Swift.Sendable {
         /// Thumbnail recording mode. Default: INTERVAL.
         public var recordingMode: IvsClientTypes.RecordingMode?
         /// Indicates the desired resolution of recorded thumbnails. Thumbnails are recorded at the selected resolution if the corresponding rendition is available during the stream; otherwise, they are recorded at source resolution. For more information about resolution values and their corresponding height and width dimensions, see [Auto-Record to Amazon S3](https://docs.aws.amazon.com/ivs/latest/userguide/record-to-s3.html). Default: Null (source resolution is returned).
@@ -1009,10 +1011,9 @@ extension IvsClientTypes {
             self.targetIntervalSeconds = targetIntervalSeconds
         }
     }
-
 }
 
-public struct CreateRecordingConfigurationInput {
+public struct CreateRecordingConfigurationInput: Swift.Sendable {
     /// A complex type that contains a destination configuration for where recorded video will be stored.
     /// This member is required.
     public var destinationConfiguration: IvsClientTypes.DestinationConfiguration?
@@ -1047,7 +1048,7 @@ public struct CreateRecordingConfigurationInput {
 
 extension IvsClientTypes {
 
-    public enum RecordingConfigurationState: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum RecordingConfigurationState: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case active
         case createfailed
         case creating
@@ -1078,8 +1079,9 @@ extension IvsClientTypes {
 }
 
 extension IvsClientTypes {
+
     /// An object representing a configuration to record a channel stream.
-    public struct RecordingConfiguration {
+    public struct RecordingConfiguration: Swift.Sendable {
         /// Recording-configuration ARN.
         /// This member is required.
         public var arn: Swift.String?
@@ -1121,10 +1123,9 @@ extension IvsClientTypes {
             self.thumbnailConfiguration = thumbnailConfiguration
         }
     }
-
 }
 
-public struct CreateRecordingConfigurationOutput {
+public struct CreateRecordingConfigurationOutput: Swift.Sendable {
     ///
     public var recordingConfiguration: IvsClientTypes.RecordingConfiguration?
 
@@ -1136,7 +1137,7 @@ public struct CreateRecordingConfigurationOutput {
     }
 }
 
-public struct CreateStreamKeyInput {
+public struct CreateStreamKeyInput: Swift.Sendable {
     /// ARN of the channel for which to create the stream key.
     /// This member is required.
     public var channelArn: Swift.String?
@@ -1153,7 +1154,7 @@ public struct CreateStreamKeyInput {
     }
 }
 
-public struct CreateStreamKeyOutput {
+public struct CreateStreamKeyOutput: Swift.Sendable {
     /// Stream key used to authenticate an RTMPS stream for ingestion.
     public var streamKey: IvsClientTypes.StreamKey?
 
@@ -1165,7 +1166,7 @@ public struct CreateStreamKeyOutput {
     }
 }
 
-public struct DeleteChannelInput {
+public struct DeleteChannelInput: Swift.Sendable {
     /// ARN of the channel to be deleted.
     /// This member is required.
     public var arn: Swift.String?
@@ -1178,7 +1179,7 @@ public struct DeleteChannelInput {
     }
 }
 
-public struct DeletePlaybackKeyPairInput {
+public struct DeletePlaybackKeyPairInput: Swift.Sendable {
     /// ARN of the key pair to be deleted.
     /// This member is required.
     public var arn: Swift.String?
@@ -1191,12 +1192,12 @@ public struct DeletePlaybackKeyPairInput {
     }
 }
 
-public struct DeletePlaybackKeyPairOutput {
+public struct DeletePlaybackKeyPairOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeletePlaybackRestrictionPolicyInput {
+public struct DeletePlaybackRestrictionPolicyInput: Swift.Sendable {
     /// ARN of the playback restriction policy to be deleted.
     /// This member is required.
     public var arn: Swift.String?
@@ -1209,7 +1210,7 @@ public struct DeletePlaybackRestrictionPolicyInput {
     }
 }
 
-public struct DeleteRecordingConfigurationInput {
+public struct DeleteRecordingConfigurationInput: Swift.Sendable {
     /// ARN of the recording configuration to be deleted.
     /// This member is required.
     public var arn: Swift.String?
@@ -1222,7 +1223,7 @@ public struct DeleteRecordingConfigurationInput {
     }
 }
 
-public struct DeleteStreamKeyInput {
+public struct DeleteStreamKeyInput: Swift.Sendable {
     /// ARN of the stream key to be deleted.
     /// This member is required.
     public var arn: Swift.String?
@@ -1235,7 +1236,7 @@ public struct DeleteStreamKeyInput {
     }
 }
 
-public struct GetChannelInput {
+public struct GetChannelInput: Swift.Sendable {
     /// ARN of the channel for which the configuration is to be retrieved.
     /// This member is required.
     public var arn: Swift.String?
@@ -1248,7 +1249,7 @@ public struct GetChannelInput {
     }
 }
 
-public struct GetChannelOutput {
+public struct GetChannelOutput: Swift.Sendable {
     ///
     public var channel: IvsClientTypes.Channel?
 
@@ -1260,7 +1261,7 @@ public struct GetChannelOutput {
     }
 }
 
-public struct GetPlaybackKeyPairInput {
+public struct GetPlaybackKeyPairInput: Swift.Sendable {
     /// ARN of the key pair to be returned.
     /// This member is required.
     public var arn: Swift.String?
@@ -1274,8 +1275,9 @@ public struct GetPlaybackKeyPairInput {
 }
 
 extension IvsClientTypes {
+
     /// A key pair used to sign and validate a playback authorization token.
-    public struct PlaybackKeyPair {
+    public struct PlaybackKeyPair: Swift.Sendable {
         /// Key-pair ARN.
         public var arn: Swift.String?
         /// Key-pair identifier.
@@ -1298,10 +1300,9 @@ extension IvsClientTypes {
             self.tags = tags
         }
     }
-
 }
 
-public struct GetPlaybackKeyPairOutput {
+public struct GetPlaybackKeyPairOutput: Swift.Sendable {
     ///
     public var keyPair: IvsClientTypes.PlaybackKeyPair?
 
@@ -1313,7 +1314,7 @@ public struct GetPlaybackKeyPairOutput {
     }
 }
 
-public struct GetPlaybackRestrictionPolicyInput {
+public struct GetPlaybackRestrictionPolicyInput: Swift.Sendable {
     /// ARN of the playback restriction policy to be returned.
     /// This member is required.
     public var arn: Swift.String?
@@ -1326,7 +1327,7 @@ public struct GetPlaybackRestrictionPolicyInput {
     }
 }
 
-public struct GetPlaybackRestrictionPolicyOutput {
+public struct GetPlaybackRestrictionPolicyOutput: Swift.Sendable {
     ///
     public var playbackRestrictionPolicy: IvsClientTypes.PlaybackRestrictionPolicy?
 
@@ -1338,7 +1339,7 @@ public struct GetPlaybackRestrictionPolicyOutput {
     }
 }
 
-public struct GetRecordingConfigurationInput {
+public struct GetRecordingConfigurationInput: Swift.Sendable {
     /// ARN of the recording configuration to be retrieved.
     /// This member is required.
     public var arn: Swift.String?
@@ -1351,7 +1352,7 @@ public struct GetRecordingConfigurationInput {
     }
 }
 
-public struct GetRecordingConfigurationOutput {
+public struct GetRecordingConfigurationOutput: Swift.Sendable {
     ///
     public var recordingConfiguration: IvsClientTypes.RecordingConfiguration?
 
@@ -1388,7 +1389,7 @@ public struct ChannelNotBroadcasting: ClientRuntime.ModeledError, AWSClientRunti
     }
 }
 
-public struct GetStreamInput {
+public struct GetStreamInput: Swift.Sendable {
     /// Channel ARN for stream to be accessed.
     /// This member is required.
     public var channelArn: Swift.String?
@@ -1403,7 +1404,7 @@ public struct GetStreamInput {
 
 extension IvsClientTypes {
 
-    public enum StreamHealth: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum StreamHealth: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case starving
         case streamhealthy
         case unknown
@@ -1435,7 +1436,7 @@ extension IvsClientTypes {
 
 extension IvsClientTypes {
 
-    public enum StreamState: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum StreamState: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case streamlive
         case streamoffline
         case sdkUnknown(Swift.String)
@@ -1463,8 +1464,9 @@ extension IvsClientTypes {
 }
 
 extension IvsClientTypes {
+
     /// Specifies a live video stream that has been ingested and distributed.
-    public struct Stream {
+    public struct Stream: Swift.Sendable {
         /// Channel ARN for the stream.
         public var channelArn: Swift.String?
         /// The stream’s health.
@@ -1499,10 +1501,9 @@ extension IvsClientTypes {
             self.viewerCount = viewerCount
         }
     }
-
 }
 
-public struct GetStreamOutput {
+public struct GetStreamOutput: Swift.Sendable {
     ///
     public var stream: IvsClientTypes.Stream?
 
@@ -1514,7 +1515,7 @@ public struct GetStreamOutput {
     }
 }
 
-public struct GetStreamKeyInput {
+public struct GetStreamKeyInput: Swift.Sendable {
     /// ARN for the stream key to be retrieved.
     /// This member is required.
     public var arn: Swift.String?
@@ -1527,7 +1528,7 @@ public struct GetStreamKeyInput {
     }
 }
 
-public struct GetStreamKeyOutput {
+public struct GetStreamKeyOutput: Swift.Sendable {
     ///
     public var streamKey: IvsClientTypes.StreamKey?
 
@@ -1539,7 +1540,7 @@ public struct GetStreamKeyOutput {
     }
 }
 
-public struct GetStreamSessionInput {
+public struct GetStreamSessionInput: Swift.Sendable {
     /// ARN of the channel resource
     /// This member is required.
     public var channelArn: Swift.String?
@@ -1557,8 +1558,9 @@ public struct GetStreamSessionInput {
 }
 
 extension IvsClientTypes {
+
     /// Object specifying a stream’s audio configuration, as set up by the broadcaster (usually in an encoder). This is part of the [IngestConfiguration] object and used for monitoring stream health.
-    public struct AudioConfiguration {
+    public struct AudioConfiguration: Swift.Sendable {
         /// Number of audio channels.
         public var channels: Swift.Int
         /// Codec used for the audio encoding.
@@ -1581,12 +1583,12 @@ extension IvsClientTypes {
             self.targetBitrate = targetBitrate
         }
     }
-
 }
 
 extension IvsClientTypes {
+
     /// Object specifying a stream’s video configuration, as set up by the broadcaster (usually in an encoder). This is part of the [IngestConfiguration] object and used for monitoring stream health.
-    public struct VideoConfiguration {
+    public struct VideoConfiguration: Swift.Sendable {
         /// Indicates the degree of required decoder performance for a profile. Normally this is set automatically by the encoder. For details, see the H.264 specification.
         public var avcLevel: Swift.String?
         /// Indicates to the decoder the requirements for decoding the stream. For definitions of the valid values, see the H.264 specification.
@@ -1625,12 +1627,12 @@ extension IvsClientTypes {
             self.videoWidth = videoWidth
         }
     }
-
 }
 
 extension IvsClientTypes {
+
     /// Object specifying the ingest configuration set up by the broadcaster, usually in an encoder.
-    public struct IngestConfiguration {
+    public struct IngestConfiguration: Swift.Sendable {
         /// Encoder settings for audio.
         public var audio: IvsClientTypes.AudioConfiguration?
         /// Encoder settings for video.
@@ -1645,12 +1647,20 @@ extension IvsClientTypes {
             self.video = video
         }
     }
-
 }
 
 extension IvsClientTypes {
+
     /// Object specifying a stream’s events. For a list of events, see [Using Amazon EventBridge with Amazon IVS](https://docs.aws.amazon.com/ivs/latest/userguide/eventbridge.html).
-    public struct StreamEvent {
+    public struct StreamEvent: Swift.Sendable {
+        /// Provides additional details about the stream event. There are several values; note that the long descriptions are provided in the IVS console but not delivered through the IVS API or EventBridge:
+        ///
+        /// * StreamTakeoverMediaMismatch — The broadcast client attempted to take over with different media properties (e.g., codec, resolution, or video track type) from the original stream.
+        ///
+        /// * StreamTakeoverInvalidPriority — The broadcast client attempted a takeover with either a priority integer value equal to or lower than the original stream's value or a value outside the allowed range of 1 to 2,147,483,647.
+        ///
+        /// * StreamTakeoverLimitBreached — The broadcast client reached the maximum allowed takeover attempts for this stream.
+        public var code: Swift.String?
         /// Time when the event occurred. This is an ISO 8601 timestamp; note that this is returned as a string.
         public var eventTime: Foundation.Date?
         /// Name that identifies the stream event within a type.
@@ -1659,22 +1669,24 @@ extension IvsClientTypes {
         public var type: Swift.String?
 
         public init(
+            code: Swift.String? = nil,
             eventTime: Foundation.Date? = nil,
             name: Swift.String? = nil,
             type: Swift.String? = nil
         )
         {
+            self.code = code
             self.eventTime = eventTime
             self.name = name
             self.type = type
         }
     }
-
 }
 
 extension IvsClientTypes {
+
     /// Object that captures the Amazon IVS configuration that the customer provisioned, the ingest configurations that the broadcaster used, and the most recent Amazon IVS stream events it encountered.
-    public struct StreamSession {
+    public struct StreamSession: Swift.Sendable {
         /// The properties of the channel at the time of going live.
         public var channel: IvsClientTypes.Channel?
         /// Time when the channel went offline. This is an ISO 8601 timestamp; note that this is returned as a string. For live streams, this is NULL.
@@ -1709,10 +1721,9 @@ extension IvsClientTypes {
             self.truncatedEvents = truncatedEvents
         }
     }
-
 }
 
-public struct GetStreamSessionOutput {
+public struct GetStreamSessionOutput: Swift.Sendable {
     /// List of stream details.
     public var streamSession: IvsClientTypes.StreamSession?
 
@@ -1724,7 +1735,7 @@ public struct GetStreamSessionOutput {
     }
 }
 
-public struct ImportPlaybackKeyPairInput {
+public struct ImportPlaybackKeyPairInput: Swift.Sendable {
     /// Playback-key-pair name. The value does not need to be unique.
     public var name: Swift.String?
     /// The public portion of a customer-generated key pair.
@@ -1745,7 +1756,7 @@ public struct ImportPlaybackKeyPairInput {
     }
 }
 
-public struct ImportPlaybackKeyPairOutput {
+public struct ImportPlaybackKeyPairOutput: Swift.Sendable {
     ///
     public var keyPair: IvsClientTypes.PlaybackKeyPair?
 
@@ -1757,7 +1768,7 @@ public struct ImportPlaybackKeyPairOutput {
     }
 }
 
-public struct ListChannelsInput {
+public struct ListChannelsInput: Swift.Sendable {
     /// Filters the channel list to match the specified name.
     public var filterByName: Swift.String?
     /// Filters the channel list to match the specified policy.
@@ -1786,8 +1797,9 @@ public struct ListChannelsInput {
 }
 
 extension IvsClientTypes {
+
     /// Summary information about a channel.
-    public struct ChannelSummary {
+    public struct ChannelSummary: Swift.Sendable {
         /// Channel ARN.
         public var arn: Swift.String?
         /// Whether the channel is private (enabled for playback authorization). Default: false.
@@ -1834,10 +1846,9 @@ extension IvsClientTypes {
             self.type = type
         }
     }
-
 }
 
-public struct ListChannelsOutput {
+public struct ListChannelsOutput: Swift.Sendable {
     /// List of the matching channels.
     /// This member is required.
     public var channels: [IvsClientTypes.ChannelSummary]?
@@ -1854,7 +1865,7 @@ public struct ListChannelsOutput {
     }
 }
 
-public struct ListPlaybackKeyPairsInput {
+public struct ListPlaybackKeyPairsInput: Swift.Sendable {
     /// Maximum number of key pairs to return. Default: your service quota or 100, whichever is smaller.
     public var maxResults: Swift.Int?
     /// The first key pair to retrieve. This is used for pagination; see the nextToken response field.
@@ -1871,8 +1882,9 @@ public struct ListPlaybackKeyPairsInput {
 }
 
 extension IvsClientTypes {
+
     /// Summary information about a playback key pair.
-    public struct PlaybackKeyPairSummary {
+    public struct PlaybackKeyPairSummary: Swift.Sendable {
         /// Key-pair ARN.
         public var arn: Swift.String?
         /// Playback-key-pair name. The value does not need to be unique.
@@ -1891,10 +1903,9 @@ extension IvsClientTypes {
             self.tags = tags
         }
     }
-
 }
 
-public struct ListPlaybackKeyPairsOutput {
+public struct ListPlaybackKeyPairsOutput: Swift.Sendable {
     /// List of key pairs.
     /// This member is required.
     public var keyPairs: [IvsClientTypes.PlaybackKeyPairSummary]?
@@ -1911,7 +1922,7 @@ public struct ListPlaybackKeyPairsOutput {
     }
 }
 
-public struct ListPlaybackRestrictionPoliciesInput {
+public struct ListPlaybackRestrictionPoliciesInput: Swift.Sendable {
     /// Maximum number of policies to return. Default: 1.
     public var maxResults: Swift.Int?
     /// The first policy to retrieve. This is used for pagination; see the nextToken response field.
@@ -1928,8 +1939,9 @@ public struct ListPlaybackRestrictionPoliciesInput {
 }
 
 extension IvsClientTypes {
+
     /// Summary information about a PlaybackRestrictionPolicy.
-    public struct PlaybackRestrictionPolicySummary {
+    public struct PlaybackRestrictionPolicySummary: Swift.Sendable {
         /// A list of country codes that control geoblocking restriction. Allowed values are the officially assigned [ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2) codes. Default: All countries (an empty array).
         /// This member is required.
         public var allowedCountries: [Swift.String]?
@@ -1963,10 +1975,9 @@ extension IvsClientTypes {
             self.tags = tags
         }
     }
-
 }
 
-public struct ListPlaybackRestrictionPoliciesOutput {
+public struct ListPlaybackRestrictionPoliciesOutput: Swift.Sendable {
     /// If there are more channels than maxResults, use nextToken in the request to get the next set.
     public var nextToken: Swift.String?
     /// List of the matching policies.
@@ -1983,7 +1994,7 @@ public struct ListPlaybackRestrictionPoliciesOutput {
     }
 }
 
-public struct ListRecordingConfigurationsInput {
+public struct ListRecordingConfigurationsInput: Swift.Sendable {
     /// Maximum number of recording configurations to return. Default: your service quota or 100, whichever is smaller.
     public var maxResults: Swift.Int?
     /// The first recording configuration to retrieve. This is used for pagination; see the nextToken response field.
@@ -2000,8 +2011,9 @@ public struct ListRecordingConfigurationsInput {
 }
 
 extension IvsClientTypes {
+
     /// Summary information about a RecordingConfiguration.
-    public struct RecordingConfigurationSummary {
+    public struct RecordingConfigurationSummary: Swift.Sendable {
         /// Recording-configuration ARN.
         /// This member is required.
         public var arn: Swift.String?
@@ -2031,10 +2043,9 @@ extension IvsClientTypes {
             self.tags = tags
         }
     }
-
 }
 
-public struct ListRecordingConfigurationsOutput {
+public struct ListRecordingConfigurationsOutput: Swift.Sendable {
     /// If there are more recording configurations than maxResults, use nextToken in the request to get the next set.
     public var nextToken: Swift.String?
     /// List of the matching recording configurations.
@@ -2051,7 +2062,7 @@ public struct ListRecordingConfigurationsOutput {
     }
 }
 
-public struct ListStreamKeysInput {
+public struct ListStreamKeysInput: Swift.Sendable {
     /// Channel ARN used to filter the list.
     /// This member is required.
     public var channelArn: Swift.String?
@@ -2073,8 +2084,9 @@ public struct ListStreamKeysInput {
 }
 
 extension IvsClientTypes {
+
     /// Summary information about a stream key.
-    public struct StreamKeySummary {
+    public struct StreamKeySummary: Swift.Sendable {
         /// Stream-key ARN.
         public var arn: Swift.String?
         /// Channel ARN for the stream.
@@ -2093,10 +2105,9 @@ extension IvsClientTypes {
             self.tags = tags
         }
     }
-
 }
 
-public struct ListStreamKeysOutput {
+public struct ListStreamKeysOutput: Swift.Sendable {
     /// If there are more stream keys than maxResults, use nextToken in the request to get the next set.
     public var nextToken: Swift.String?
     /// List of stream keys.
@@ -2114,8 +2125,9 @@ public struct ListStreamKeysOutput {
 }
 
 extension IvsClientTypes {
+
     /// Object specifying the stream attribute on which to filter.
-    public struct StreamFilters {
+    public struct StreamFilters: Swift.Sendable {
         /// The stream’s health.
         public var health: IvsClientTypes.StreamHealth?
 
@@ -2126,10 +2138,9 @@ extension IvsClientTypes {
             self.health = health
         }
     }
-
 }
 
-public struct ListStreamsInput {
+public struct ListStreamsInput: Swift.Sendable {
     /// Filters the stream list to match the specified criterion.
     public var filterBy: IvsClientTypes.StreamFilters?
     /// Maximum number of streams to return. Default: 100.
@@ -2150,8 +2161,9 @@ public struct ListStreamsInput {
 }
 
 extension IvsClientTypes {
+
     /// Summary information about a stream.
-    public struct StreamSummary {
+    public struct StreamSummary: Swift.Sendable {
         /// Channel ARN for the stream.
         public var channelArn: Swift.String?
         /// The stream’s health.
@@ -2182,10 +2194,9 @@ extension IvsClientTypes {
             self.viewerCount = viewerCount
         }
     }
-
 }
 
-public struct ListStreamsOutput {
+public struct ListStreamsOutput: Swift.Sendable {
     /// If there are more streams than maxResults, use nextToken in the request to get the next set.
     public var nextToken: Swift.String?
     /// List of streams.
@@ -2202,7 +2213,7 @@ public struct ListStreamsOutput {
     }
 }
 
-public struct ListStreamSessionsInput {
+public struct ListStreamSessionsInput: Swift.Sendable {
     /// Channel ARN used to filter the list.
     /// This member is required.
     public var channelArn: Swift.String?
@@ -2224,8 +2235,9 @@ public struct ListStreamSessionsInput {
 }
 
 extension IvsClientTypes {
+
     /// Summary information about a stream session.
-    public struct StreamSessionSummary {
+    public struct StreamSessionSummary: Swift.Sendable {
         /// Time when the channel went offline. This is an ISO 8601 timestamp; note that this is returned as a string. For live streams, this is NULL.
         public var endTime: Foundation.Date?
         /// If true, this stream encountered a quota breach or failure.
@@ -2248,10 +2260,9 @@ extension IvsClientTypes {
             self.streamId = streamId
         }
     }
-
 }
 
-public struct ListStreamSessionsOutput {
+public struct ListStreamSessionsOutput: Swift.Sendable {
     /// If there are more streams than maxResults, use nextToken in the request to get the next set.
     public var nextToken: Swift.String?
     /// List of stream sessions.
@@ -2268,7 +2279,7 @@ public struct ListStreamSessionsOutput {
     }
 }
 
-public struct ListTagsForResourceInput {
+public struct ListTagsForResourceInput: Swift.Sendable {
     /// The ARN of the resource to be retrieved. The ARN must be URL-encoded.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -2281,7 +2292,7 @@ public struct ListTagsForResourceInput {
     }
 }
 
-public struct ListTagsForResourceOutput {
+public struct ListTagsForResourceOutput: Swift.Sendable {
     /// Tags attached to the resource. Array of maps, each of the form string:string (key:value).
     /// This member is required.
     public var tags: [Swift.String: Swift.String]?
@@ -2294,7 +2305,7 @@ public struct ListTagsForResourceOutput {
     }
 }
 
-public struct PutMetadataInput {
+public struct PutMetadataInput: Swift.Sendable {
     /// ARN of the channel into which metadata is inserted. This channel must have an active stream.
     /// This member is required.
     public var channelArn: Swift.String?
@@ -2317,7 +2328,7 @@ extension PutMetadataInput: Swift.CustomDebugStringConvertible {
         "PutMetadataInput(channelArn: \(Swift.String(describing: channelArn)), metadata: \"CONTENT_REDACTED\")"}
 }
 
-public struct StartViewerSessionRevocationInput {
+public struct StartViewerSessionRevocationInput: Swift.Sendable {
     /// The ARN of the channel associated with the viewer session to revoke.
     /// This member is required.
     public var channelArn: Swift.String?
@@ -2339,7 +2350,7 @@ public struct StartViewerSessionRevocationInput {
     }
 }
 
-public struct StartViewerSessionRevocationOutput {
+public struct StartViewerSessionRevocationOutput: Swift.Sendable {
 
     public init() { }
 }
@@ -2369,7 +2380,7 @@ public struct StreamUnavailable: ClientRuntime.ModeledError, AWSClientRuntime.AW
     }
 }
 
-public struct StopStreamInput {
+public struct StopStreamInput: Swift.Sendable {
     /// ARN of the channel for which the stream is to be stopped.
     /// This member is required.
     public var channelArn: Swift.String?
@@ -2382,12 +2393,12 @@ public struct StopStreamInput {
     }
 }
 
-public struct StopStreamOutput {
+public struct StopStreamOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct TagResourceInput {
+public struct TagResourceInput: Swift.Sendable {
     /// ARN of the resource for which tags are to be added or updated. The ARN must be URL-encoded.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -2405,12 +2416,12 @@ public struct TagResourceInput {
     }
 }
 
-public struct TagResourceOutput {
+public struct TagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UntagResourceInput {
+public struct UntagResourceInput: Swift.Sendable {
     /// ARN of the resource for which tags are to be removed. The ARN must be URL-encoded.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -2428,12 +2439,12 @@ public struct UntagResourceInput {
     }
 }
 
-public struct UntagResourceOutput {
+public struct UntagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdateChannelInput {
+public struct UpdateChannelInput: Swift.Sendable {
     /// ARN of the channel to be updated.
     /// This member is required.
     public var arn: Swift.String?
@@ -2478,7 +2489,7 @@ public struct UpdateChannelInput {
     }
 }
 
-public struct UpdateChannelOutput {
+public struct UpdateChannelOutput: Swift.Sendable {
     /// Object specifying the updated channel.
     public var channel: IvsClientTypes.Channel?
 
@@ -2490,7 +2501,7 @@ public struct UpdateChannelOutput {
     }
 }
 
-public struct UpdatePlaybackRestrictionPolicyInput {
+public struct UpdatePlaybackRestrictionPolicyInput: Swift.Sendable {
     /// A list of country codes that control geoblocking restriction. Allowed values are the officially assigned [ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2) codes. Default: All countries (an empty array).
     public var allowedCountries: [Swift.String]?
     /// A list of origin sites that control CORS restriction. Allowed values are the same as valid values of the Origin header defined at [https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Origin](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Origin). Default: All origins (an empty array).
@@ -2519,7 +2530,7 @@ public struct UpdatePlaybackRestrictionPolicyInput {
     }
 }
 
-public struct UpdatePlaybackRestrictionPolicyOutput {
+public struct UpdatePlaybackRestrictionPolicyOutput: Swift.Sendable {
     /// Object specifying the updated policy.
     public var playbackRestrictionPolicy: IvsClientTypes.PlaybackRestrictionPolicy?
 
@@ -4435,6 +4446,7 @@ extension IvsClientTypes.StreamEvent {
         value.name = try reader["name"].readIfPresent()
         value.type = try reader["type"].readIfPresent()
         value.eventTime = try reader["eventTime"].readTimestampIfPresent(format: SmithyTimestamps.TimestampFormat.dateTime)
+        value.code = try reader["code"].readIfPresent()
         return value
     }
 }

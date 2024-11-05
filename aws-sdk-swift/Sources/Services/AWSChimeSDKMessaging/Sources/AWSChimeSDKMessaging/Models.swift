@@ -30,64 +30,65 @@ import struct SmithyHTTPAPI.Header
 import struct SmithyHTTPAPI.Headers
 @_spi(SmithyTimestamps) import struct SmithyTimestamps.TimestampFormatter
 
-public struct AssociateChannelFlowOutput {
+
+public struct AssociateChannelFlowOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteChannelBanOutput {
+public struct DeleteChannelBanOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteChannelFlowOutput {
+public struct DeleteChannelFlowOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteChannelMembershipOutput {
+public struct DeleteChannelMembershipOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteChannelMessageOutput {
+public struct DeleteChannelMessageOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteChannelModeratorOutput {
+public struct DeleteChannelModeratorOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteChannelOutput {
+public struct DeleteChannelOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteMessagingStreamingConfigurationsOutput {
+public struct DeleteMessagingStreamingConfigurationsOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DisassociateChannelFlowOutput {
+public struct DisassociateChannelFlowOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct TagResourceOutput {
+public struct TagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UntagResourceOutput {
+public struct UntagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
 extension ChimeSDKMessagingClientTypes {
 
-    public enum AllowNotifications: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AllowNotifications: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case all
         case filtered
         case `none`
@@ -119,7 +120,7 @@ extension ChimeSDKMessagingClientTypes {
 
 extension ChimeSDKMessagingClientTypes {
 
-    public enum ChannelMembershipType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ChannelMembershipType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case `default`
         case hidden
         case sdkUnknown(Swift.String)
@@ -147,8 +148,9 @@ extension ChimeSDKMessagingClientTypes {
 }
 
 extension ChimeSDKMessagingClientTypes {
+
     /// Summary of the membership details of an AppInstanceUser.
-    public struct AppInstanceUserMembershipSummary {
+    public struct AppInstanceUserMembershipSummary: Swift.Sendable {
         /// The time at which an AppInstanceUser last marked a channel as read.
         public var readMarkerTimestamp: Foundation.Date?
         /// The ID of the SubChannel that the AppInstanceUser is a member of.
@@ -167,12 +169,11 @@ extension ChimeSDKMessagingClientTypes {
             self.type = type
         }
     }
-
 }
 
 extension ChimeSDKMessagingClientTypes {
 
-    public enum ErrorCode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ErrorCode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case accessdenied
         case badrequest
         case conflict
@@ -454,7 +455,7 @@ public struct UnauthorizedClientException: ClientRuntime.ModeledError, AWSClient
     }
 }
 
-public struct AssociateChannelFlowInput {
+public struct AssociateChannelFlowInput: Swift.Sendable {
     /// The ARN of the channel.
     /// This member is required.
     public var channelArn: Swift.String?
@@ -478,8 +479,9 @@ public struct AssociateChannelFlowInput {
 }
 
 extension ChimeSDKMessagingClientTypes {
+
     /// The details of a user or bot.
-    public struct Identity {
+    public struct Identity: Swift.Sendable {
         /// The ARN in an Identity.
         public var arn: Swift.String?
         /// The name in an Identity.
@@ -494,7 +496,6 @@ extension ChimeSDKMessagingClientTypes {
             self.name = name
         }
     }
-
 }
 
 extension ChimeSDKMessagingClientTypes.Identity: Swift.CustomDebugStringConvertible {
@@ -503,8 +504,9 @@ extension ChimeSDKMessagingClientTypes.Identity: Swift.CustomDebugStringConverti
 }
 
 extension ChimeSDKMessagingClientTypes {
+
     /// The membership information, including member ARNs, the channel ARN, and membership types.
-    public struct BatchChannelMemberships {
+    public struct BatchChannelMemberships: Swift.Sendable {
         /// The ARN of the channel to which you're adding members.
         public var channelArn: Swift.String?
         /// The identifier of the member who invited another member.
@@ -531,7 +533,6 @@ extension ChimeSDKMessagingClientTypes {
             self.type = type
         }
     }
-
 }
 
 /// The request exceeds the resource limit.
@@ -561,7 +562,7 @@ public struct ResourceLimitExceededException: ClientRuntime.ModeledError, AWSCli
     }
 }
 
-public struct BatchCreateChannelMembershipInput {
+public struct BatchCreateChannelMembershipInput: Swift.Sendable {
     /// The ARN of the channel to which you're adding users or bots.
     /// This member is required.
     public var channelArn: Swift.String?
@@ -593,8 +594,9 @@ public struct BatchCreateChannelMembershipInput {
 }
 
 extension ChimeSDKMessagingClientTypes {
+
     /// A list of failed member ARNs, error codes, and error messages.
-    public struct BatchCreateChannelMembershipError {
+    public struct BatchCreateChannelMembershipError: Swift.Sendable {
         /// The error code.
         public var errorCode: ChimeSDKMessagingClientTypes.ErrorCode?
         /// The error message.
@@ -613,10 +615,9 @@ extension ChimeSDKMessagingClientTypes {
             self.memberArn = memberArn
         }
     }
-
 }
 
-public struct BatchCreateChannelMembershipOutput {
+public struct BatchCreateChannelMembershipOutput: Swift.Sendable {
     /// The list of channel memberships in the response.
     public var batchChannelMemberships: ChimeSDKMessagingClientTypes.BatchChannelMemberships?
     /// If the action fails for one or more of the memberships in the request, a list of the memberships is returned, along with error codes and error messages.
@@ -633,8 +634,9 @@ public struct BatchCreateChannelMembershipOutput {
 }
 
 extension ChimeSDKMessagingClientTypes {
+
     /// The attributes required to configure and create an elastic channel. An elastic channel can support a maximum of 1-million members.
-    public struct ElasticChannelConfiguration {
+    public struct ElasticChannelConfiguration: Swift.Sendable {
         /// The maximum number of SubChannels that you want to allow in the elastic channel.
         /// This member is required.
         public var maximumSubChannels: Swift.Int?
@@ -656,12 +658,11 @@ extension ChimeSDKMessagingClientTypes {
             self.targetMembershipsPerSubChannel = targetMembershipsPerSubChannel
         }
     }
-
 }
 
 extension ChimeSDKMessagingClientTypes {
 
-    public enum ExpirationCriterion: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ExpirationCriterion: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case createdTimestamp
         case lastMessageTimestamp
         case sdkUnknown(Swift.String)
@@ -689,8 +690,9 @@ extension ChimeSDKMessagingClientTypes {
 }
 
 extension ChimeSDKMessagingClientTypes {
+
     /// Settings that control the interval after which a channel is deleted.
-    public struct ExpirationSettings {
+    public struct ExpirationSettings: Swift.Sendable {
         /// The conditions that must be met for a channel to expire.
         /// This member is required.
         public var expirationCriterion: ChimeSDKMessagingClientTypes.ExpirationCriterion?
@@ -707,12 +709,11 @@ extension ChimeSDKMessagingClientTypes {
             self.expirationDays = expirationDays
         }
     }
-
 }
 
 extension ChimeSDKMessagingClientTypes {
 
-    public enum ChannelMode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ChannelMode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case restricted
         case unrestricted
         case sdkUnknown(Swift.String)
@@ -741,7 +742,7 @@ extension ChimeSDKMessagingClientTypes {
 
 extension ChimeSDKMessagingClientTypes {
 
-    public enum ChannelPrivacy: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ChannelPrivacy: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case `private`
         case `public`
         case sdkUnknown(Swift.String)
@@ -769,8 +770,9 @@ extension ChimeSDKMessagingClientTypes {
 }
 
 extension ChimeSDKMessagingClientTypes {
+
     /// The details of a channel.
-    public struct Channel {
+    public struct Channel: Swift.Sendable {
         /// The ARN of a channel.
         public var channelArn: Swift.String?
         /// The ARN of the channel flow.
@@ -825,7 +827,6 @@ extension ChimeSDKMessagingClientTypes {
             self.privacy = privacy
         }
     }
-
 }
 
 extension ChimeSDKMessagingClientTypes.Channel: Swift.CustomDebugStringConvertible {
@@ -834,8 +835,9 @@ extension ChimeSDKMessagingClientTypes.Channel: Swift.CustomDebugStringConvertib
 }
 
 extension ChimeSDKMessagingClientTypes {
+
     /// Summary of details of a channel associated with channel flow.
-    public struct ChannelAssociatedWithFlowSummary {
+    public struct ChannelAssociatedWithFlowSummary: Swift.Sendable {
         /// The ARN of the channel.
         public var channelArn: Swift.String?
         /// The channel's metadata.
@@ -862,7 +864,6 @@ extension ChimeSDKMessagingClientTypes {
             self.privacy = privacy
         }
     }
-
 }
 
 extension ChimeSDKMessagingClientTypes.ChannelAssociatedWithFlowSummary: Swift.CustomDebugStringConvertible {
@@ -871,8 +872,9 @@ extension ChimeSDKMessagingClientTypes.ChannelAssociatedWithFlowSummary: Swift.C
 }
 
 extension ChimeSDKMessagingClientTypes {
+
     /// The details of a channel ban.
-    public struct ChannelBan {
+    public struct ChannelBan: Swift.Sendable {
         /// The ARN of the channel from which a member is being banned.
         public var channelArn: Swift.String?
         /// The AppInstanceUser who created the ban.
@@ -895,12 +897,12 @@ extension ChimeSDKMessagingClientTypes {
             self.member = member
         }
     }
-
 }
 
 extension ChimeSDKMessagingClientTypes {
+
     /// Summary of the details of a ChannelBan.
-    public struct ChannelBanSummary {
+    public struct ChannelBanSummary: Swift.Sendable {
         /// The member being banned from a channel.
         public var member: ChimeSDKMessagingClientTypes.Identity?
 
@@ -911,12 +913,11 @@ extension ChimeSDKMessagingClientTypes {
             self.member = member
         }
     }
-
 }
 
 extension ChimeSDKMessagingClientTypes {
 
-    public enum InvocationType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum InvocationType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case async
         case sdkUnknown(Swift.String)
 
@@ -941,8 +942,9 @@ extension ChimeSDKMessagingClientTypes {
 }
 
 extension ChimeSDKMessagingClientTypes {
+
     /// Stores metadata about a Lambda processor.
-    public struct LambdaConfiguration {
+    public struct LambdaConfiguration: Swift.Sendable {
         /// Controls how the Lambda function is invoked.
         /// This member is required.
         public var invocationType: ChimeSDKMessagingClientTypes.InvocationType?
@@ -959,12 +961,12 @@ extension ChimeSDKMessagingClientTypes {
             self.resourceArn = resourceArn
         }
     }
-
 }
 
 extension ChimeSDKMessagingClientTypes {
+
     /// A processor's metadata.
-    public struct ProcessorConfiguration {
+    public struct ProcessorConfiguration: Swift.Sendable {
         /// Indicates that the processor is of type Lambda.
         /// This member is required.
         public var lambda: ChimeSDKMessagingClientTypes.LambdaConfiguration?
@@ -976,12 +978,11 @@ extension ChimeSDKMessagingClientTypes {
             self.lambda = lambda
         }
     }
-
 }
 
 extension ChimeSDKMessagingClientTypes {
 
-    public enum FallbackAction: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum FallbackAction: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case abort
         case `continue`
         case sdkUnknown(Swift.String)
@@ -1009,8 +1010,9 @@ extension ChimeSDKMessagingClientTypes {
 }
 
 extension ChimeSDKMessagingClientTypes {
+
     /// The information about a processor in a channel flow.
-    public struct Processor {
+    public struct Processor: Swift.Sendable {
         /// The information about the type of processor and its identifier.
         /// This member is required.
         public var configuration: ChimeSDKMessagingClientTypes.ProcessorConfiguration?
@@ -1037,7 +1039,6 @@ extension ChimeSDKMessagingClientTypes {
             self.name = name
         }
     }
-
 }
 
 extension ChimeSDKMessagingClientTypes.Processor: Swift.CustomDebugStringConvertible {
@@ -1046,8 +1047,9 @@ extension ChimeSDKMessagingClientTypes.Processor: Swift.CustomDebugStringConvert
 }
 
 extension ChimeSDKMessagingClientTypes {
+
     /// The details of a channel flow.
-    public struct ChannelFlow {
+    public struct ChannelFlow: Swift.Sendable {
         /// The ARN of the channel flow.
         public var channelFlowArn: Swift.String?
         /// The time at which the channel flow was created.
@@ -1074,7 +1076,6 @@ extension ChimeSDKMessagingClientTypes {
             self.processors = processors
         }
     }
-
 }
 
 extension ChimeSDKMessagingClientTypes.ChannelFlow: Swift.CustomDebugStringConvertible {
@@ -1083,8 +1084,9 @@ extension ChimeSDKMessagingClientTypes.ChannelFlow: Swift.CustomDebugStringConve
 }
 
 extension ChimeSDKMessagingClientTypes {
+
     /// A list of message attribute values.
-    public struct MessageAttributeValue {
+    public struct MessageAttributeValue: Swift.Sendable {
         /// The strings in a message attribute value.
         public var stringValues: [Swift.String]?
 
@@ -1095,7 +1097,6 @@ extension ChimeSDKMessagingClientTypes {
             self.stringValues = stringValues
         }
     }
-
 }
 
 extension ChimeSDKMessagingClientTypes.MessageAttributeValue: Swift.CustomDebugStringConvertible {
@@ -1105,7 +1106,7 @@ extension ChimeSDKMessagingClientTypes.MessageAttributeValue: Swift.CustomDebugS
 
 extension ChimeSDKMessagingClientTypes {
 
-    public enum PushNotificationType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum PushNotificationType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case `default`
         case voip
         case sdkUnknown(Swift.String)
@@ -1133,8 +1134,9 @@ extension ChimeSDKMessagingClientTypes {
 }
 
 extension ChimeSDKMessagingClientTypes {
+
     /// The push notification configuration of the message.
-    public struct PushNotificationConfiguration {
+    public struct PushNotificationConfiguration: Swift.Sendable {
         /// The body of the push notification.
         public var body: Swift.String?
         /// The title of the push notification.
@@ -1153,7 +1155,6 @@ extension ChimeSDKMessagingClientTypes {
             self.type = type
         }
     }
-
 }
 
 extension ChimeSDKMessagingClientTypes.PushNotificationConfiguration: Swift.CustomDebugStringConvertible {
@@ -1162,8 +1163,9 @@ extension ChimeSDKMessagingClientTypes.PushNotificationConfiguration: Swift.Cust
 }
 
 extension ChimeSDKMessagingClientTypes {
+
     /// Stores information about a callback.
-    public struct ChannelMessageCallback {
+    public struct ChannelMessageCallback: Swift.Sendable {
         /// The message content. For Amazon Lex V2 bot responses, this field holds a list of messages originating from the bot. For more information, refer to [Processing responses from an AppInstanceBot](https://docs.aws.amazon.com/chime-sdk/latest/dg/appinstance-bots#process-response.html) in the Amazon Chime SDK Messaging Developer Guide.
         public var content: Swift.String?
         /// The content type of the call-back message. For Amazon Lex V2 bot responses, the content type is application/amz-chime-lex-msgs for success responses and application/amz-chime-lex-error for failure responses. For more information, refer to [Processing responses from an AppInstanceBot](https://docs.aws.amazon.com/chime-sdk/latest/dg/appinstance-bots#process-response.html) in the Amazon Chime SDK Messaging Developer Guide.
@@ -1199,7 +1201,6 @@ extension ChimeSDKMessagingClientTypes {
             self.subChannelId = subChannelId
         }
     }
-
 }
 
 extension ChimeSDKMessagingClientTypes.ChannelMessageCallback: Swift.CustomDebugStringConvertible {
@@ -1207,7 +1208,7 @@ extension ChimeSDKMessagingClientTypes.ChannelMessageCallback: Swift.CustomDebug
         "ChannelMessageCallback(messageId: \(Swift.String(describing: messageId)), pushNotification: \(Swift.String(describing: pushNotification)), subChannelId: \(Swift.String(describing: subChannelId)), content: \"CONTENT_REDACTED\", contentType: \"CONTENT_REDACTED\", messageAttributes: [keys: \"CONTENT_REDACTED\", values: \(Swift.String(describing: messageAttributes?.values))], metadata: \"CONTENT_REDACTED\")"}
 }
 
-public struct ChannelFlowCallbackInput {
+public struct ChannelFlowCallbackInput: Swift.Sendable {
     /// The identifier passed to the processor by the service when invoked. Use the identifier to call back the service.
     /// This member is required.
     public var callbackId: Swift.String?
@@ -1234,7 +1235,7 @@ public struct ChannelFlowCallbackInput {
     }
 }
 
-public struct ChannelFlowCallbackOutput {
+public struct ChannelFlowCallbackOutput: Swift.Sendable {
     /// The call back ID passed in the request.
     public var callbackId: Swift.String?
     /// The ARN of the channel.
@@ -1251,8 +1252,9 @@ public struct ChannelFlowCallbackOutput {
 }
 
 extension ChimeSDKMessagingClientTypes {
+
     /// Summary of details of a channel flow.
-    public struct ChannelFlowSummary {
+    public struct ChannelFlowSummary: Swift.Sendable {
         /// The ARN of the channel flow.
         public var channelFlowArn: Swift.String?
         /// The name of the channel flow.
@@ -1271,7 +1273,6 @@ extension ChimeSDKMessagingClientTypes {
             self.processors = processors
         }
     }
-
 }
 
 extension ChimeSDKMessagingClientTypes.ChannelFlowSummary: Swift.CustomDebugStringConvertible {
@@ -1280,8 +1281,9 @@ extension ChimeSDKMessagingClientTypes.ChannelFlowSummary: Swift.CustomDebugStri
 }
 
 extension ChimeSDKMessagingClientTypes {
+
     /// The details of a channel member.
-    public struct ChannelMembership {
+    public struct ChannelMembership: Swift.Sendable {
         /// The ARN of the member's channel.
         public var channelArn: Swift.String?
         /// The time at which the channel membership was created.
@@ -1316,12 +1318,12 @@ extension ChimeSDKMessagingClientTypes {
             self.type = type
         }
     }
-
 }
 
 extension ChimeSDKMessagingClientTypes {
+
     /// Summary of the details of a Channel.
-    public struct ChannelSummary {
+    public struct ChannelSummary: Swift.Sendable {
         /// The ARN of the channel.
         public var channelArn: Swift.String?
         /// The time at which the last persistent message visible to the caller in a channel was sent.
@@ -1352,7 +1354,6 @@ extension ChimeSDKMessagingClientTypes {
             self.privacy = privacy
         }
     }
-
 }
 
 extension ChimeSDKMessagingClientTypes.ChannelSummary: Swift.CustomDebugStringConvertible {
@@ -1361,8 +1362,9 @@ extension ChimeSDKMessagingClientTypes.ChannelSummary: Swift.CustomDebugStringCo
 }
 
 extension ChimeSDKMessagingClientTypes {
+
     /// Summary of the channel membership details of an AppInstanceUser.
-    public struct ChannelMembershipForAppInstanceUserSummary {
+    public struct ChannelMembershipForAppInstanceUserSummary: Swift.Sendable {
         /// Returns the channel membership data for an AppInstance.
         public var appInstanceUserMembershipSummary: ChimeSDKMessagingClientTypes.AppInstanceUserMembershipSummary?
         /// Returns the channel data for an AppInstance.
@@ -1377,12 +1379,12 @@ extension ChimeSDKMessagingClientTypes {
             self.channelSummary = channelSummary
         }
     }
-
 }
 
 extension ChimeSDKMessagingClientTypes {
+
     /// The channel membership preferences for push notification.
-    public struct PushNotificationPreferences {
+    public struct PushNotificationPreferences: Swift.Sendable {
         /// Enum value that indicates which push notifications to send to the requested member of a channel. ALL sends all push notifications, NONE sends no push notifications, FILTERED sends only filtered push notifications.
         /// This member is required.
         public var allowNotifications: ChimeSDKMessagingClientTypes.AllowNotifications?
@@ -1398,7 +1400,6 @@ extension ChimeSDKMessagingClientTypes {
             self.filterRule = filterRule
         }
     }
-
 }
 
 extension ChimeSDKMessagingClientTypes.PushNotificationPreferences: Swift.CustomDebugStringConvertible {
@@ -1407,8 +1408,9 @@ extension ChimeSDKMessagingClientTypes.PushNotificationPreferences: Swift.Custom
 }
 
 extension ChimeSDKMessagingClientTypes {
+
     /// The channel membership preferences for an AppInstanceUser.
-    public struct ChannelMembershipPreferences {
+    public struct ChannelMembershipPreferences: Swift.Sendable {
         /// The push notification configuration of a message.
         public var pushNotifications: ChimeSDKMessagingClientTypes.PushNotificationPreferences?
 
@@ -1419,12 +1421,12 @@ extension ChimeSDKMessagingClientTypes {
             self.pushNotifications = pushNotifications
         }
     }
-
 }
 
 extension ChimeSDKMessagingClientTypes {
+
     /// Summary of the details of a ChannelMembership.
-    public struct ChannelMembershipSummary {
+    public struct ChannelMembershipSummary: Swift.Sendable {
         /// A member's summary data.
         public var member: ChimeSDKMessagingClientTypes.Identity?
 
@@ -1435,12 +1437,11 @@ extension ChimeSDKMessagingClientTypes {
             self.member = member
         }
     }
-
 }
 
 extension ChimeSDKMessagingClientTypes {
 
-    public enum ChannelMessagePersistenceType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ChannelMessagePersistenceType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case nonPersistent
         case persistent
         case sdkUnknown(Swift.String)
@@ -1469,7 +1470,7 @@ extension ChimeSDKMessagingClientTypes {
 
 extension ChimeSDKMessagingClientTypes {
 
-    public enum ChannelMessageStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ChannelMessageStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case denied
         case failed
         case pending
@@ -1503,8 +1504,9 @@ extension ChimeSDKMessagingClientTypes {
 }
 
 extension ChimeSDKMessagingClientTypes {
+
     /// Stores information about a message status.
-    public struct ChannelMessageStatusStructure {
+    public struct ChannelMessageStatusStructure: Swift.Sendable {
         /// Contains more details about the message status.
         public var detail: Swift.String?
         /// The message status value.
@@ -1519,12 +1521,12 @@ extension ChimeSDKMessagingClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension ChimeSDKMessagingClientTypes {
+
     /// The target of a message, a sender, a user, or a bot. Only the target and the sender can view targeted messages. Only users who can see targeted messages can take actions on them. However, administrators can delete targeted messages that they can’t see.
-    public struct Target {
+    public struct Target: Swift.Sendable {
         /// The ARN of the target channel member.
         public var memberArn: Swift.String?
 
@@ -1535,12 +1537,11 @@ extension ChimeSDKMessagingClientTypes {
             self.memberArn = memberArn
         }
     }
-
 }
 
 extension ChimeSDKMessagingClientTypes {
 
-    public enum ChannelMessageType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ChannelMessageType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case control
         case standard
         case sdkUnknown(Swift.String)
@@ -1568,8 +1569,9 @@ extension ChimeSDKMessagingClientTypes {
 }
 
 extension ChimeSDKMessagingClientTypes {
+
     /// The details of a message in a channel.
-    public struct ChannelMessage {
+    public struct ChannelMessage: Swift.Sendable {
         /// The ARN of the channel.
         public var channelArn: Swift.String?
         /// The content of the channel message. For Amazon Lex V2 bot responses, this field holds a list of messages originating from the bot. For more information, refer to [Processing responses from an AppInstanceBot](https://docs.aws.amazon.com/chime-sdk/latest/dg/appinstance-bots#process-response.html) in the Amazon Chime SDK Messaging Developer Guide.
@@ -1640,7 +1642,6 @@ extension ChimeSDKMessagingClientTypes {
             self.type = type
         }
     }
-
 }
 
 extension ChimeSDKMessagingClientTypes.ChannelMessage: Swift.CustomDebugStringConvertible {
@@ -1649,8 +1650,9 @@ extension ChimeSDKMessagingClientTypes.ChannelMessage: Swift.CustomDebugStringCo
 }
 
 extension ChimeSDKMessagingClientTypes {
+
     /// Summary of the messages in a Channel.
-    public struct ChannelMessageSummary {
+    public struct ChannelMessageSummary: Swift.Sendable {
         /// The content of the channel message. For Amazon Lex V2 bot responses, this field holds a list of messages originating from the bot. For more information, refer to [Processing responses from an AppInstanceBot](https://docs.aws.amazon.com/chime-sdk/latest/dg/appinstance-bots#process-response.html) in the Amazon Chime SDK Messaging Developer Guide.
         public var content: Swift.String?
         /// The content type of the channel message listed in the summary. For Amazon Lex V2 bot responses, the content type is application/amz-chime-lex-msgs for success responses and application/amz-chime-lex-error for failure responses. For more information, refer to [Processing responses from an AppInstanceBot](https://docs.aws.amazon.com/chime-sdk/latest/dg/appinstance-bots#process-response.html) in the Amazon Chime SDK Messaging Developer Guide.
@@ -1709,7 +1711,6 @@ extension ChimeSDKMessagingClientTypes {
             self.type = type
         }
     }
-
 }
 
 extension ChimeSDKMessagingClientTypes.ChannelMessageSummary: Swift.CustomDebugStringConvertible {
@@ -1718,8 +1719,9 @@ extension ChimeSDKMessagingClientTypes.ChannelMessageSummary: Swift.CustomDebugS
 }
 
 extension ChimeSDKMessagingClientTypes {
+
     /// Summary of the details of a moderated channel.
-    public struct ChannelModeratedByAppInstanceUserSummary {
+    public struct ChannelModeratedByAppInstanceUserSummary: Swift.Sendable {
         /// Summary of the details of a Channel.
         public var channelSummary: ChimeSDKMessagingClientTypes.ChannelSummary?
 
@@ -1730,12 +1732,12 @@ extension ChimeSDKMessagingClientTypes {
             self.channelSummary = channelSummary
         }
     }
-
 }
 
 extension ChimeSDKMessagingClientTypes {
+
     /// The details of a channel moderator.
-    public struct ChannelModerator {
+    public struct ChannelModerator: Swift.Sendable {
         /// The ARN of the moderator's channel.
         public var channelArn: Swift.String?
         /// The AppInstanceUser who created the moderator.
@@ -1758,12 +1760,12 @@ extension ChimeSDKMessagingClientTypes {
             self.moderator = moderator
         }
     }
-
 }
 
 extension ChimeSDKMessagingClientTypes {
+
     /// Summary of the details of a ChannelModerator.
-    public struct ChannelModeratorSummary {
+    public struct ChannelModeratorSummary: Swift.Sendable {
         /// The data for a moderator.
         public var moderator: ChimeSDKMessagingClientTypes.Identity?
 
@@ -1774,12 +1776,12 @@ extension ChimeSDKMessagingClientTypes {
             self.moderator = moderator
         }
     }
-
 }
 
 extension ChimeSDKMessagingClientTypes {
+
     /// A tag object containing a key-value pair.
-    public struct Tag {
+    public struct Tag: Swift.Sendable {
         /// The key in a tag.
         /// This member is required.
         public var key: Swift.String?
@@ -1796,7 +1798,6 @@ extension ChimeSDKMessagingClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension ChimeSDKMessagingClientTypes.Tag: Swift.CustomDebugStringConvertible {
@@ -1804,7 +1805,7 @@ extension ChimeSDKMessagingClientTypes.Tag: Swift.CustomDebugStringConvertible {
         "Tag(key: \"CONTENT_REDACTED\", value: \"CONTENT_REDACTED\")"}
 }
 
-public struct CreateChannelInput {
+public struct CreateChannelInput: Swift.Sendable {
     /// The ARN of the channel request.
     /// This member is required.
     public var appInstanceArn: Swift.String?
@@ -1873,7 +1874,7 @@ extension CreateChannelInput: Swift.CustomDebugStringConvertible {
         "CreateChannelInput(appInstanceArn: \(Swift.String(describing: appInstanceArn)), chimeBearer: \(Swift.String(describing: chimeBearer)), elasticChannelConfiguration: \(Swift.String(describing: elasticChannelConfiguration)), expirationSettings: \(Swift.String(describing: expirationSettings)), memberArns: \(Swift.String(describing: memberArns)), mode: \(Swift.String(describing: mode)), moderatorArns: \(Swift.String(describing: moderatorArns)), privacy: \(Swift.String(describing: privacy)), tags: \(Swift.String(describing: tags)), channelId: \"CONTENT_REDACTED\", clientRequestToken: \"CONTENT_REDACTED\", metadata: \"CONTENT_REDACTED\", name: \"CONTENT_REDACTED\")"}
 }
 
-public struct CreateChannelOutput {
+public struct CreateChannelOutput: Swift.Sendable {
     /// The ARN of the channel.
     public var channelArn: Swift.String?
 
@@ -1885,7 +1886,7 @@ public struct CreateChannelOutput {
     }
 }
 
-public struct CreateChannelBanInput {
+public struct CreateChannelBanInput: Swift.Sendable {
     /// The ARN of the ban request.
     /// This member is required.
     public var channelArn: Swift.String?
@@ -1908,7 +1909,7 @@ public struct CreateChannelBanInput {
     }
 }
 
-public struct CreateChannelBanOutput {
+public struct CreateChannelBanOutput: Swift.Sendable {
     /// The ARN of the response to the ban request.
     public var channelArn: Swift.String?
     /// The ChannelArn and BannedIdentity of the member in the ban response.
@@ -1924,7 +1925,7 @@ public struct CreateChannelBanOutput {
     }
 }
 
-public struct CreateChannelFlowInput {
+public struct CreateChannelFlowInput: Swift.Sendable {
     /// The ARN of the channel flow request.
     /// This member is required.
     public var appInstanceArn: Swift.String?
@@ -1961,7 +1962,7 @@ extension CreateChannelFlowInput: Swift.CustomDebugStringConvertible {
         "CreateChannelFlowInput(appInstanceArn: \(Swift.String(describing: appInstanceArn)), processors: \(Swift.String(describing: processors)), tags: \(Swift.String(describing: tags)), clientRequestToken: \"CONTENT_REDACTED\", name: \"CONTENT_REDACTED\")"}
 }
 
-public struct CreateChannelFlowOutput {
+public struct CreateChannelFlowOutput: Swift.Sendable {
     /// The ARN of the channel flow.
     public var channelFlowArn: Swift.String?
 
@@ -1973,7 +1974,7 @@ public struct CreateChannelFlowOutput {
     }
 }
 
-public struct CreateChannelMembershipInput {
+public struct CreateChannelMembershipInput: Swift.Sendable {
     /// The ARN of the channel to which you're adding users.
     /// This member is required.
     public var channelArn: Swift.String?
@@ -2005,7 +2006,7 @@ public struct CreateChannelMembershipInput {
     }
 }
 
-public struct CreateChannelMembershipOutput {
+public struct CreateChannelMembershipOutput: Swift.Sendable {
     /// The ARN of the channel.
     public var channelArn: Swift.String?
     /// The ARN and metadata of the member being added.
@@ -2025,7 +2026,7 @@ public struct CreateChannelMembershipOutput {
     }
 }
 
-public struct CreateChannelModeratorInput {
+public struct CreateChannelModeratorInput: Swift.Sendable {
     /// The ARN of the channel.
     /// This member is required.
     public var channelArn: Swift.String?
@@ -2048,7 +2049,7 @@ public struct CreateChannelModeratorInput {
     }
 }
 
-public struct CreateChannelModeratorOutput {
+public struct CreateChannelModeratorOutput: Swift.Sendable {
     /// The ARN of the channel.
     public var channelArn: Swift.String?
     /// The ARNs of the channel and the moderator.
@@ -2064,7 +2065,7 @@ public struct CreateChannelModeratorOutput {
     }
 }
 
-public struct DeleteChannelInput {
+public struct DeleteChannelInput: Swift.Sendable {
     /// The ARN of the channel being deleted.
     /// This member is required.
     public var channelArn: Swift.String?
@@ -2082,7 +2083,7 @@ public struct DeleteChannelInput {
     }
 }
 
-public struct DeleteChannelBanInput {
+public struct DeleteChannelBanInput: Swift.Sendable {
     /// The ARN of the channel from which the AppInstanceUser was banned.
     /// This member is required.
     public var channelArn: Swift.String?
@@ -2105,7 +2106,7 @@ public struct DeleteChannelBanInput {
     }
 }
 
-public struct DeleteChannelFlowInput {
+public struct DeleteChannelFlowInput: Swift.Sendable {
     /// The ARN of the channel flow.
     /// This member is required.
     public var channelFlowArn: Swift.String?
@@ -2118,7 +2119,7 @@ public struct DeleteChannelFlowInput {
     }
 }
 
-public struct DeleteChannelMembershipInput {
+public struct DeleteChannelMembershipInput: Swift.Sendable {
     /// The ARN of the channel from which you want to remove the user.
     /// This member is required.
     public var channelArn: Swift.String?
@@ -2145,7 +2146,7 @@ public struct DeleteChannelMembershipInput {
     }
 }
 
-public struct DeleteChannelMessageInput {
+public struct DeleteChannelMessageInput: Swift.Sendable {
     /// The ARN of the channel.
     /// This member is required.
     public var channelArn: Swift.String?
@@ -2172,7 +2173,7 @@ public struct DeleteChannelMessageInput {
     }
 }
 
-public struct DeleteChannelModeratorInput {
+public struct DeleteChannelModeratorInput: Swift.Sendable {
     /// The ARN of the channel.
     /// This member is required.
     public var channelArn: Swift.String?
@@ -2195,7 +2196,7 @@ public struct DeleteChannelModeratorInput {
     }
 }
 
-public struct DeleteMessagingStreamingConfigurationsInput {
+public struct DeleteMessagingStreamingConfigurationsInput: Swift.Sendable {
     /// The ARN of the streaming configurations being deleted.
     /// This member is required.
     public var appInstanceArn: Swift.String?
@@ -2208,7 +2209,7 @@ public struct DeleteMessagingStreamingConfigurationsInput {
     }
 }
 
-public struct DescribeChannelInput {
+public struct DescribeChannelInput: Swift.Sendable {
     /// The ARN of the channel.
     /// This member is required.
     public var channelArn: Swift.String?
@@ -2226,7 +2227,7 @@ public struct DescribeChannelInput {
     }
 }
 
-public struct DescribeChannelOutput {
+public struct DescribeChannelOutput: Swift.Sendable {
     /// The channel details.
     public var channel: ChimeSDKMessagingClientTypes.Channel?
 
@@ -2238,7 +2239,7 @@ public struct DescribeChannelOutput {
     }
 }
 
-public struct DescribeChannelBanInput {
+public struct DescribeChannelBanInput: Swift.Sendable {
     /// The ARN of the channel from which the user is banned.
     /// This member is required.
     public var channelArn: Swift.String?
@@ -2261,7 +2262,7 @@ public struct DescribeChannelBanInput {
     }
 }
 
-public struct DescribeChannelBanOutput {
+public struct DescribeChannelBanOutput: Swift.Sendable {
     /// The details of the ban.
     public var channelBan: ChimeSDKMessagingClientTypes.ChannelBan?
 
@@ -2273,7 +2274,7 @@ public struct DescribeChannelBanOutput {
     }
 }
 
-public struct DescribeChannelFlowInput {
+public struct DescribeChannelFlowInput: Swift.Sendable {
     /// The ARN of the channel flow.
     /// This member is required.
     public var channelFlowArn: Swift.String?
@@ -2286,7 +2287,7 @@ public struct DescribeChannelFlowInput {
     }
 }
 
-public struct DescribeChannelFlowOutput {
+public struct DescribeChannelFlowOutput: Swift.Sendable {
     /// The channel flow details.
     public var channelFlow: ChimeSDKMessagingClientTypes.ChannelFlow?
 
@@ -2298,7 +2299,7 @@ public struct DescribeChannelFlowOutput {
     }
 }
 
-public struct DescribeChannelMembershipInput {
+public struct DescribeChannelMembershipInput: Swift.Sendable {
     /// The ARN of the channel.
     /// This member is required.
     public var channelArn: Swift.String?
@@ -2325,7 +2326,7 @@ public struct DescribeChannelMembershipInput {
     }
 }
 
-public struct DescribeChannelMembershipOutput {
+public struct DescribeChannelMembershipOutput: Swift.Sendable {
     /// The details of the membership.
     public var channelMembership: ChimeSDKMessagingClientTypes.ChannelMembership?
 
@@ -2337,7 +2338,7 @@ public struct DescribeChannelMembershipOutput {
     }
 }
 
-public struct DescribeChannelMembershipForAppInstanceUserInput {
+public struct DescribeChannelMembershipForAppInstanceUserInput: Swift.Sendable {
     /// The ARN of the user or bot in a channel.
     /// This member is required.
     public var appInstanceUserArn: Swift.String?
@@ -2360,7 +2361,7 @@ public struct DescribeChannelMembershipForAppInstanceUserInput {
     }
 }
 
-public struct DescribeChannelMembershipForAppInstanceUserOutput {
+public struct DescribeChannelMembershipForAppInstanceUserOutput: Swift.Sendable {
     /// The channel to which a user belongs.
     public var channelMembership: ChimeSDKMessagingClientTypes.ChannelMembershipForAppInstanceUserSummary?
 
@@ -2372,7 +2373,7 @@ public struct DescribeChannelMembershipForAppInstanceUserOutput {
     }
 }
 
-public struct DescribeChannelModeratedByAppInstanceUserInput {
+public struct DescribeChannelModeratedByAppInstanceUserInput: Swift.Sendable {
     /// The ARN of the user or bot in the moderated channel.
     /// This member is required.
     public var appInstanceUserArn: Swift.String?
@@ -2395,7 +2396,7 @@ public struct DescribeChannelModeratedByAppInstanceUserInput {
     }
 }
 
-public struct DescribeChannelModeratedByAppInstanceUserOutput {
+public struct DescribeChannelModeratedByAppInstanceUserOutput: Swift.Sendable {
     /// The moderated channel.
     public var channel: ChimeSDKMessagingClientTypes.ChannelModeratedByAppInstanceUserSummary?
 
@@ -2407,7 +2408,7 @@ public struct DescribeChannelModeratedByAppInstanceUserOutput {
     }
 }
 
-public struct DescribeChannelModeratorInput {
+public struct DescribeChannelModeratorInput: Swift.Sendable {
     /// The ARN of the channel.
     /// This member is required.
     public var channelArn: Swift.String?
@@ -2430,7 +2431,7 @@ public struct DescribeChannelModeratorInput {
     }
 }
 
-public struct DescribeChannelModeratorOutput {
+public struct DescribeChannelModeratorOutput: Swift.Sendable {
     /// The details of the channel moderator.
     public var channelModerator: ChimeSDKMessagingClientTypes.ChannelModerator?
 
@@ -2442,7 +2443,7 @@ public struct DescribeChannelModeratorOutput {
     }
 }
 
-public struct DisassociateChannelFlowInput {
+public struct DisassociateChannelFlowInput: Swift.Sendable {
     /// The ARN of the channel.
     /// This member is required.
     public var channelArn: Swift.String?
@@ -2465,7 +2466,7 @@ public struct DisassociateChannelFlowInput {
     }
 }
 
-public struct GetChannelMembershipPreferencesInput {
+public struct GetChannelMembershipPreferencesInput: Swift.Sendable {
     /// The ARN of the channel.
     /// This member is required.
     public var channelArn: Swift.String?
@@ -2488,7 +2489,7 @@ public struct GetChannelMembershipPreferencesInput {
     }
 }
 
-public struct GetChannelMembershipPreferencesOutput {
+public struct GetChannelMembershipPreferencesOutput: Swift.Sendable {
     /// The ARN of the channel.
     public var channelArn: Swift.String?
     /// The details of a user.
@@ -2508,7 +2509,7 @@ public struct GetChannelMembershipPreferencesOutput {
     }
 }
 
-public struct GetChannelMessageInput {
+public struct GetChannelMessageInput: Swift.Sendable {
     /// The ARN of the channel.
     /// This member is required.
     public var channelArn: Swift.String?
@@ -2535,7 +2536,7 @@ public struct GetChannelMessageInput {
     }
 }
 
-public struct GetChannelMessageOutput {
+public struct GetChannelMessageOutput: Swift.Sendable {
     /// The details of and content in the message.
     public var channelMessage: ChimeSDKMessagingClientTypes.ChannelMessage?
 
@@ -2547,7 +2548,7 @@ public struct GetChannelMessageOutput {
     }
 }
 
-public struct GetChannelMessageStatusInput {
+public struct GetChannelMessageStatusInput: Swift.Sendable {
     /// The ARN of the channel
     /// This member is required.
     public var channelArn: Swift.String?
@@ -2574,7 +2575,7 @@ public struct GetChannelMessageStatusInput {
     }
 }
 
-public struct GetChannelMessageStatusOutput {
+public struct GetChannelMessageStatusOutput: Swift.Sendable {
     /// The message status and details.
     public var status: ChimeSDKMessagingClientTypes.ChannelMessageStatusStructure?
 
@@ -2586,14 +2587,15 @@ public struct GetChannelMessageStatusOutput {
     }
 }
 
-public struct GetMessagingSessionEndpointInput {
+public struct GetMessagingSessionEndpointInput: Swift.Sendable {
 
     public init() { }
 }
 
 extension ChimeSDKMessagingClientTypes {
+
     /// The websocket endpoint used to connect to Amazon Chime SDK messaging.
-    public struct MessagingSessionEndpoint {
+    public struct MessagingSessionEndpoint: Swift.Sendable {
         /// The endpoint to which you establish a websocket connection.
         public var url: Swift.String?
 
@@ -2604,10 +2606,9 @@ extension ChimeSDKMessagingClientTypes {
             self.url = url
         }
     }
-
 }
 
-public struct GetMessagingSessionEndpointOutput {
+public struct GetMessagingSessionEndpointOutput: Swift.Sendable {
     /// The endpoint returned in the response.
     public var endpoint: ChimeSDKMessagingClientTypes.MessagingSessionEndpoint?
 
@@ -2619,7 +2620,7 @@ public struct GetMessagingSessionEndpointOutput {
     }
 }
 
-public struct GetMessagingStreamingConfigurationsInput {
+public struct GetMessagingStreamingConfigurationsInput: Swift.Sendable {
     /// The ARN of the streaming configurations.
     /// This member is required.
     public var appInstanceArn: Swift.String?
@@ -2634,7 +2635,7 @@ public struct GetMessagingStreamingConfigurationsInput {
 
 extension ChimeSDKMessagingClientTypes {
 
-    public enum MessagingDataType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum MessagingDataType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case channel
         case channelmessage
         case sdkUnknown(Swift.String)
@@ -2662,8 +2663,9 @@ extension ChimeSDKMessagingClientTypes {
 }
 
 extension ChimeSDKMessagingClientTypes {
+
     /// The configuration for connecting a messaging stream to Amazon Kinesis.
-    public struct StreamingConfiguration {
+    public struct StreamingConfiguration: Swift.Sendable {
         /// The data type of the configuration.
         /// This member is required.
         public var dataType: ChimeSDKMessagingClientTypes.MessagingDataType?
@@ -2680,10 +2682,9 @@ extension ChimeSDKMessagingClientTypes {
             self.resourceArn = resourceArn
         }
     }
-
 }
 
-public struct GetMessagingStreamingConfigurationsOutput {
+public struct GetMessagingStreamingConfigurationsOutput: Swift.Sendable {
     /// The streaming settings.
     public var streamingConfigurations: [ChimeSDKMessagingClientTypes.StreamingConfiguration]?
 
@@ -2695,7 +2696,7 @@ public struct GetMessagingStreamingConfigurationsOutput {
     }
 }
 
-public struct ListChannelBansInput {
+public struct ListChannelBansInput: Swift.Sendable {
     /// The ARN of the channel.
     /// This member is required.
     public var channelArn: Swift.String?
@@ -2726,7 +2727,7 @@ extension ListChannelBansInput: Swift.CustomDebugStringConvertible {
         "ListChannelBansInput(channelArn: \(Swift.String(describing: channelArn)), chimeBearer: \(Swift.String(describing: chimeBearer)), maxResults: \(Swift.String(describing: maxResults)), nextToken: \"CONTENT_REDACTED\")"}
 }
 
-public struct ListChannelBansOutput {
+public struct ListChannelBansOutput: Swift.Sendable {
     /// The ARN of the channel.
     public var channelArn: Swift.String?
     /// The information for each requested ban.
@@ -2751,7 +2752,7 @@ extension ListChannelBansOutput: Swift.CustomDebugStringConvertible {
         "ListChannelBansOutput(channelArn: \(Swift.String(describing: channelArn)), channelBans: \(Swift.String(describing: channelBans)), nextToken: \"CONTENT_REDACTED\")"}
 }
 
-public struct ListChannelFlowsInput {
+public struct ListChannelFlowsInput: Swift.Sendable {
     /// The ARN of the app instance.
     /// This member is required.
     public var appInstanceArn: Swift.String?
@@ -2777,7 +2778,7 @@ extension ListChannelFlowsInput: Swift.CustomDebugStringConvertible {
         "ListChannelFlowsInput(appInstanceArn: \(Swift.String(describing: appInstanceArn)), maxResults: \(Swift.String(describing: maxResults)), nextToken: \"CONTENT_REDACTED\")"}
 }
 
-public struct ListChannelFlowsOutput {
+public struct ListChannelFlowsOutput: Swift.Sendable {
     /// The information about each channel flow.
     public var channelFlows: [ChimeSDKMessagingClientTypes.ChannelFlowSummary]?
     /// The token passed by previous API calls until all requested channels are returned.
@@ -2798,7 +2799,7 @@ extension ListChannelFlowsOutput: Swift.CustomDebugStringConvertible {
         "ListChannelFlowsOutput(channelFlows: \(Swift.String(describing: channelFlows)), nextToken: \"CONTENT_REDACTED\")"}
 }
 
-public struct ListChannelMembershipsInput {
+public struct ListChannelMembershipsInput: Swift.Sendable {
     /// The maximum number of channel memberships that you want returned.
     /// This member is required.
     public var channelArn: Swift.String?
@@ -2837,7 +2838,7 @@ extension ListChannelMembershipsInput: Swift.CustomDebugStringConvertible {
         "ListChannelMembershipsInput(channelArn: \(Swift.String(describing: channelArn)), chimeBearer: \(Swift.String(describing: chimeBearer)), maxResults: \(Swift.String(describing: maxResults)), subChannelId: \(Swift.String(describing: subChannelId)), type: \(Swift.String(describing: type)), nextToken: \"CONTENT_REDACTED\")"}
 }
 
-public struct ListChannelMembershipsOutput {
+public struct ListChannelMembershipsOutput: Swift.Sendable {
     /// The ARN of the channel.
     public var channelArn: Swift.String?
     /// The information for the requested channel memberships.
@@ -2862,7 +2863,7 @@ extension ListChannelMembershipsOutput: Swift.CustomDebugStringConvertible {
         "ListChannelMembershipsOutput(channelArn: \(Swift.String(describing: channelArn)), channelMemberships: \(Swift.String(describing: channelMemberships)), nextToken: \"CONTENT_REDACTED\")"}
 }
 
-public struct ListChannelMembershipsForAppInstanceUserInput {
+public struct ListChannelMembershipsForAppInstanceUserInput: Swift.Sendable {
     /// The ARN of the user or bot.
     public var appInstanceUserArn: Swift.String?
     /// The ARN of the AppInstanceUser or AppInstanceBot that makes the API call.
@@ -2892,7 +2893,7 @@ extension ListChannelMembershipsForAppInstanceUserInput: Swift.CustomDebugString
         "ListChannelMembershipsForAppInstanceUserInput(appInstanceUserArn: \(Swift.String(describing: appInstanceUserArn)), chimeBearer: \(Swift.String(describing: chimeBearer)), maxResults: \(Swift.String(describing: maxResults)), nextToken: \"CONTENT_REDACTED\")"}
 }
 
-public struct ListChannelMembershipsForAppInstanceUserOutput {
+public struct ListChannelMembershipsForAppInstanceUserOutput: Swift.Sendable {
     /// The information for the requested channel memberships.
     public var channelMemberships: [ChimeSDKMessagingClientTypes.ChannelMembershipForAppInstanceUserSummary]?
     /// The token passed by previous API calls until all requested users are returned.
@@ -2915,7 +2916,7 @@ extension ListChannelMembershipsForAppInstanceUserOutput: Swift.CustomDebugStrin
 
 extension ChimeSDKMessagingClientTypes {
 
-    public enum SortOrder: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SortOrder: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case ascending
         case descending
         case sdkUnknown(Swift.String)
@@ -2942,7 +2943,7 @@ extension ChimeSDKMessagingClientTypes {
     }
 }
 
-public struct ListChannelMessagesInput {
+public struct ListChannelMessagesInput: Swift.Sendable {
     /// The ARN of the channel.
     /// This member is required.
     public var channelArn: Swift.String?
@@ -2989,7 +2990,7 @@ extension ListChannelMessagesInput: Swift.CustomDebugStringConvertible {
         "ListChannelMessagesInput(channelArn: \(Swift.String(describing: channelArn)), chimeBearer: \(Swift.String(describing: chimeBearer)), maxResults: \(Swift.String(describing: maxResults)), notAfter: \(Swift.String(describing: notAfter)), notBefore: \(Swift.String(describing: notBefore)), sortOrder: \(Swift.String(describing: sortOrder)), subChannelId: \(Swift.String(describing: subChannelId)), nextToken: \"CONTENT_REDACTED\")"}
 }
 
-public struct ListChannelMessagesOutput {
+public struct ListChannelMessagesOutput: Swift.Sendable {
     /// The ARN of the channel containing the requested messages.
     public var channelArn: Swift.String?
     /// The information about, and content of, each requested message.
@@ -3018,7 +3019,7 @@ extension ListChannelMessagesOutput: Swift.CustomDebugStringConvertible {
         "ListChannelMessagesOutput(channelArn: \(Swift.String(describing: channelArn)), channelMessages: \(Swift.String(describing: channelMessages)), subChannelId: \(Swift.String(describing: subChannelId)), nextToken: \"CONTENT_REDACTED\")"}
 }
 
-public struct ListChannelModeratorsInput {
+public struct ListChannelModeratorsInput: Swift.Sendable {
     /// The ARN of the channel.
     /// This member is required.
     public var channelArn: Swift.String?
@@ -3049,7 +3050,7 @@ extension ListChannelModeratorsInput: Swift.CustomDebugStringConvertible {
         "ListChannelModeratorsInput(channelArn: \(Swift.String(describing: channelArn)), chimeBearer: \(Swift.String(describing: chimeBearer)), maxResults: \(Swift.String(describing: maxResults)), nextToken: \"CONTENT_REDACTED\")"}
 }
 
-public struct ListChannelModeratorsOutput {
+public struct ListChannelModeratorsOutput: Swift.Sendable {
     /// The ARN of the channel.
     public var channelArn: Swift.String?
     /// The information about and names of each moderator.
@@ -3074,7 +3075,7 @@ extension ListChannelModeratorsOutput: Swift.CustomDebugStringConvertible {
         "ListChannelModeratorsOutput(channelArn: \(Swift.String(describing: channelArn)), channelModerators: \(Swift.String(describing: channelModerators)), nextToken: \"CONTENT_REDACTED\")"}
 }
 
-public struct ListChannelsInput {
+public struct ListChannelsInput: Swift.Sendable {
     /// The ARN of the AppInstance.
     /// This member is required.
     public var appInstanceArn: Swift.String?
@@ -3109,7 +3110,7 @@ extension ListChannelsInput: Swift.CustomDebugStringConvertible {
         "ListChannelsInput(appInstanceArn: \(Swift.String(describing: appInstanceArn)), chimeBearer: \(Swift.String(describing: chimeBearer)), maxResults: \(Swift.String(describing: maxResults)), privacy: \(Swift.String(describing: privacy)), nextToken: \"CONTENT_REDACTED\")"}
 }
 
-public struct ListChannelsOutput {
+public struct ListChannelsOutput: Swift.Sendable {
     /// The information about each channel.
     public var channels: [ChimeSDKMessagingClientTypes.ChannelSummary]?
     /// The token returned from previous API requests until the number of channels is reached.
@@ -3130,7 +3131,7 @@ extension ListChannelsOutput: Swift.CustomDebugStringConvertible {
         "ListChannelsOutput(channels: \(Swift.String(describing: channels)), nextToken: \"CONTENT_REDACTED\")"}
 }
 
-public struct ListChannelsAssociatedWithChannelFlowInput {
+public struct ListChannelsAssociatedWithChannelFlowInput: Swift.Sendable {
     /// The ARN of the channel flow.
     /// This member is required.
     public var channelFlowArn: Swift.String?
@@ -3156,7 +3157,7 @@ extension ListChannelsAssociatedWithChannelFlowInput: Swift.CustomDebugStringCon
         "ListChannelsAssociatedWithChannelFlowInput(channelFlowArn: \(Swift.String(describing: channelFlowArn)), maxResults: \(Swift.String(describing: maxResults)), nextToken: \"CONTENT_REDACTED\")"}
 }
 
-public struct ListChannelsAssociatedWithChannelFlowOutput {
+public struct ListChannelsAssociatedWithChannelFlowOutput: Swift.Sendable {
     /// The information about each channel.
     public var channels: [ChimeSDKMessagingClientTypes.ChannelAssociatedWithFlowSummary]?
     /// The token passed by previous API calls until all requested channels are returned.
@@ -3177,7 +3178,7 @@ extension ListChannelsAssociatedWithChannelFlowOutput: Swift.CustomDebugStringCo
         "ListChannelsAssociatedWithChannelFlowOutput(channels: \(Swift.String(describing: channels)), nextToken: \"CONTENT_REDACTED\")"}
 }
 
-public struct ListChannelsModeratedByAppInstanceUserInput {
+public struct ListChannelsModeratedByAppInstanceUserInput: Swift.Sendable {
     /// The ARN of the user or bot in the moderated channel.
     public var appInstanceUserArn: Swift.String?
     /// The ARN of the AppInstanceUser or AppInstanceBot that makes the API call.
@@ -3207,7 +3208,7 @@ extension ListChannelsModeratedByAppInstanceUserInput: Swift.CustomDebugStringCo
         "ListChannelsModeratedByAppInstanceUserInput(appInstanceUserArn: \(Swift.String(describing: appInstanceUserArn)), chimeBearer: \(Swift.String(describing: chimeBearer)), maxResults: \(Swift.String(describing: maxResults)), nextToken: \"CONTENT_REDACTED\")"}
 }
 
-public struct ListChannelsModeratedByAppInstanceUserOutput {
+public struct ListChannelsModeratedByAppInstanceUserOutput: Swift.Sendable {
     /// The moderated channels in the request.
     public var channels: [ChimeSDKMessagingClientTypes.ChannelModeratedByAppInstanceUserSummary]?
     /// The token returned from previous API requests until the number of channels moderated by the user is reached.
@@ -3228,7 +3229,7 @@ extension ListChannelsModeratedByAppInstanceUserOutput: Swift.CustomDebugStringC
         "ListChannelsModeratedByAppInstanceUserOutput(channels: \(Swift.String(describing: channels)), nextToken: \"CONTENT_REDACTED\")"}
 }
 
-public struct ListSubChannelsInput {
+public struct ListSubChannelsInput: Swift.Sendable {
     /// The ARN of elastic channel.
     /// This member is required.
     public var channelArn: Swift.String?
@@ -3260,8 +3261,9 @@ extension ListSubChannelsInput: Swift.CustomDebugStringConvertible {
 }
 
 extension ChimeSDKMessagingClientTypes {
+
     /// Summary of the sub-channels associated with the elastic channel.
-    public struct SubChannelSummary {
+    public struct SubChannelSummary: Swift.Sendable {
         /// The number of members in a SubChannel.
         public var membershipCount: Swift.Int?
         /// The unique ID of a SubChannel.
@@ -3276,10 +3278,9 @@ extension ChimeSDKMessagingClientTypes {
             self.subChannelId = subChannelId
         }
     }
-
 }
 
-public struct ListSubChannelsOutput {
+public struct ListSubChannelsOutput: Swift.Sendable {
     /// The ARN of elastic channel.
     public var channelArn: Swift.String?
     /// The token passed by previous API calls until all requested sub-channels are returned.
@@ -3304,7 +3305,7 @@ extension ListSubChannelsOutput: Swift.CustomDebugStringConvertible {
         "ListSubChannelsOutput(channelArn: \(Swift.String(describing: channelArn)), subChannels: \(Swift.String(describing: subChannels)), nextToken: \"CONTENT_REDACTED\")"}
 }
 
-public struct ListTagsForResourceInput {
+public struct ListTagsForResourceInput: Swift.Sendable {
     /// The ARN of the resource.
     /// This member is required.
     public var resourceARN: Swift.String?
@@ -3317,7 +3318,7 @@ public struct ListTagsForResourceInput {
     }
 }
 
-public struct ListTagsForResourceOutput {
+public struct ListTagsForResourceOutput: Swift.Sendable {
     /// The tag key-value pairs.
     public var tags: [ChimeSDKMessagingClientTypes.Tag]?
 
@@ -3329,7 +3330,7 @@ public struct ListTagsForResourceOutput {
     }
 }
 
-public struct PutChannelExpirationSettingsInput {
+public struct PutChannelExpirationSettingsInput: Swift.Sendable {
     /// The ARN of the channel.
     /// This member is required.
     public var channelArn: Swift.String?
@@ -3350,7 +3351,7 @@ public struct PutChannelExpirationSettingsInput {
     }
 }
 
-public struct PutChannelExpirationSettingsOutput {
+public struct PutChannelExpirationSettingsOutput: Swift.Sendable {
     /// The channel ARN.
     public var channelArn: Swift.String?
     /// Settings that control the interval after which a channel is deleted.
@@ -3366,7 +3367,7 @@ public struct PutChannelExpirationSettingsOutput {
     }
 }
 
-public struct PutChannelMembershipPreferencesInput {
+public struct PutChannelMembershipPreferencesInput: Swift.Sendable {
     /// The ARN of the channel.
     /// This member is required.
     public var channelArn: Swift.String?
@@ -3394,7 +3395,7 @@ public struct PutChannelMembershipPreferencesInput {
     }
 }
 
-public struct PutChannelMembershipPreferencesOutput {
+public struct PutChannelMembershipPreferencesOutput: Swift.Sendable {
     /// The ARN of the channel.
     public var channelArn: Swift.String?
     /// The details of a user.
@@ -3414,7 +3415,7 @@ public struct PutChannelMembershipPreferencesOutput {
     }
 }
 
-public struct PutMessagingStreamingConfigurationsInput {
+public struct PutMessagingStreamingConfigurationsInput: Swift.Sendable {
     /// The ARN of the streaming configuration.
     /// This member is required.
     public var appInstanceArn: Swift.String?
@@ -3432,7 +3433,7 @@ public struct PutMessagingStreamingConfigurationsInput {
     }
 }
 
-public struct PutMessagingStreamingConfigurationsOutput {
+public struct PutMessagingStreamingConfigurationsOutput: Swift.Sendable {
     /// The requested streaming configurations.
     public var streamingConfigurations: [ChimeSDKMessagingClientTypes.StreamingConfiguration]?
 
@@ -3444,7 +3445,7 @@ public struct PutMessagingStreamingConfigurationsOutput {
     }
 }
 
-public struct RedactChannelMessageInput {
+public struct RedactChannelMessageInput: Swift.Sendable {
     /// The ARN of the channel containing the messages that you want to redact.
     /// This member is required.
     public var channelArn: Swift.String?
@@ -3471,7 +3472,7 @@ public struct RedactChannelMessageInput {
     }
 }
 
-public struct RedactChannelMessageOutput {
+public struct RedactChannelMessageOutput: Swift.Sendable {
     /// The ARN of the channel containing the messages that you want to redact.
     public var channelArn: Swift.String?
     /// The ID of the message being redacted.
@@ -3493,7 +3494,7 @@ public struct RedactChannelMessageOutput {
 
 extension ChimeSDKMessagingClientTypes {
 
-    public enum SearchFieldKey: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SearchFieldKey: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case members
         case sdkUnknown(Swift.String)
 
@@ -3519,7 +3520,7 @@ extension ChimeSDKMessagingClientTypes {
 
 extension ChimeSDKMessagingClientTypes {
 
-    public enum SearchFieldOperator: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SearchFieldOperator: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case equals
         case includes
         case sdkUnknown(Swift.String)
@@ -3547,8 +3548,9 @@ extension ChimeSDKMessagingClientTypes {
 }
 
 extension ChimeSDKMessagingClientTypes {
+
     /// A Field of the channel that you want to search.
-    public struct SearchField {
+    public struct SearchField: Swift.Sendable {
         /// An enum value that indicates the key to search the channel on. MEMBERS allows you to search channels based on memberships. You can use it with the EQUALS operator to get channels whose memberships are equal to the specified values, and with the INCLUDES operator to get channels whose memberships include the specified values.
         /// This member is required.
         public var key: ChimeSDKMessagingClientTypes.SearchFieldKey?
@@ -3570,10 +3572,9 @@ extension ChimeSDKMessagingClientTypes {
             self.values = values
         }
     }
-
 }
 
-public struct SearchChannelsInput {
+public struct SearchChannelsInput: Swift.Sendable {
     /// The AppInstanceUserArn of the user making the API call.
     public var chimeBearer: Swift.String?
     /// A list of the Field objects in the channel being searched.
@@ -3603,7 +3604,7 @@ extension SearchChannelsInput: Swift.CustomDebugStringConvertible {
         "SearchChannelsInput(chimeBearer: \(Swift.String(describing: chimeBearer)), fields: \(Swift.String(describing: fields)), maxResults: \(Swift.String(describing: maxResults)), nextToken: \"CONTENT_REDACTED\")"}
 }
 
-public struct SearchChannelsOutput {
+public struct SearchChannelsOutput: Swift.Sendable {
     /// A list of the channels in the request.
     public var channels: [ChimeSDKMessagingClientTypes.ChannelSummary]?
     /// The token returned from previous API responses until the number of channels is reached.
@@ -3624,7 +3625,7 @@ extension SearchChannelsOutput: Swift.CustomDebugStringConvertible {
         "SearchChannelsOutput(channels: \(Swift.String(describing: channels)), nextToken: \"CONTENT_REDACTED\")"}
 }
 
-public struct SendChannelMessageInput {
+public struct SendChannelMessageInput: Swift.Sendable {
     /// The ARN of the channel.
     /// This member is required.
     public var channelArn: Swift.String?
@@ -3691,7 +3692,7 @@ extension SendChannelMessageInput: Swift.CustomDebugStringConvertible {
         "SendChannelMessageInput(channelArn: \(Swift.String(describing: channelArn)), chimeBearer: \(Swift.String(describing: chimeBearer)), persistence: \(Swift.String(describing: persistence)), pushNotification: \(Swift.String(describing: pushNotification)), subChannelId: \(Swift.String(describing: subChannelId)), target: \(Swift.String(describing: target)), type: \(Swift.String(describing: type)), clientRequestToken: \"CONTENT_REDACTED\", content: \"CONTENT_REDACTED\", contentType: \"CONTENT_REDACTED\", messageAttributes: [keys: \"CONTENT_REDACTED\", values: \(Swift.String(describing: messageAttributes?.values))], metadata: \"CONTENT_REDACTED\")"}
 }
 
-public struct SendChannelMessageOutput {
+public struct SendChannelMessageOutput: Swift.Sendable {
     /// The ARN of the channel.
     public var channelArn: Swift.String?
     /// The ID string assigned to each message.
@@ -3715,7 +3716,7 @@ public struct SendChannelMessageOutput {
     }
 }
 
-public struct TagResourceInput {
+public struct TagResourceInput: Swift.Sendable {
     /// The resource ARN.
     /// This member is required.
     public var resourceARN: Swift.String?
@@ -3733,7 +3734,7 @@ public struct TagResourceInput {
     }
 }
 
-public struct UntagResourceInput {
+public struct UntagResourceInput: Swift.Sendable {
     /// The resource ARN.
     /// This member is required.
     public var resourceARN: Swift.String?
@@ -3756,7 +3757,7 @@ extension UntagResourceInput: Swift.CustomDebugStringConvertible {
         "UntagResourceInput(resourceARN: \(Swift.String(describing: resourceARN)), tagKeys: \"CONTENT_REDACTED\")"}
 }
 
-public struct UpdateChannelInput {
+public struct UpdateChannelInput: Swift.Sendable {
     /// The ARN of the channel.
     /// This member is required.
     public var channelArn: Swift.String?
@@ -3791,7 +3792,7 @@ extension UpdateChannelInput: Swift.CustomDebugStringConvertible {
         "UpdateChannelInput(channelArn: \(Swift.String(describing: channelArn)), chimeBearer: \(Swift.String(describing: chimeBearer)), mode: \(Swift.String(describing: mode)), metadata: \"CONTENT_REDACTED\", name: \"CONTENT_REDACTED\")"}
 }
 
-public struct UpdateChannelOutput {
+public struct UpdateChannelOutput: Swift.Sendable {
     /// The ARN of the channel.
     public var channelArn: Swift.String?
 
@@ -3803,7 +3804,7 @@ public struct UpdateChannelOutput {
     }
 }
 
-public struct UpdateChannelFlowInput {
+public struct UpdateChannelFlowInput: Swift.Sendable {
     /// The ARN of the channel flow.
     /// This member is required.
     public var channelFlowArn: Swift.String?
@@ -3831,7 +3832,7 @@ extension UpdateChannelFlowInput: Swift.CustomDebugStringConvertible {
         "UpdateChannelFlowInput(channelFlowArn: \(Swift.String(describing: channelFlowArn)), processors: \(Swift.String(describing: processors)), name: \"CONTENT_REDACTED\")"}
 }
 
-public struct UpdateChannelFlowOutput {
+public struct UpdateChannelFlowOutput: Swift.Sendable {
     /// The ARN of the channel flow.
     public var channelFlowArn: Swift.String?
 
@@ -3843,7 +3844,7 @@ public struct UpdateChannelFlowOutput {
     }
 }
 
-public struct UpdateChannelMessageInput {
+public struct UpdateChannelMessageInput: Swift.Sendable {
     /// The ARN of the channel.
     /// This member is required.
     public var channelArn: Swift.String?
@@ -3888,7 +3889,7 @@ extension UpdateChannelMessageInput: Swift.CustomDebugStringConvertible {
         "UpdateChannelMessageInput(channelArn: \(Swift.String(describing: channelArn)), chimeBearer: \(Swift.String(describing: chimeBearer)), messageId: \(Swift.String(describing: messageId)), subChannelId: \(Swift.String(describing: subChannelId)), content: \"CONTENT_REDACTED\", contentType: \"CONTENT_REDACTED\", metadata: \"CONTENT_REDACTED\")"}
 }
 
-public struct UpdateChannelMessageOutput {
+public struct UpdateChannelMessageOutput: Swift.Sendable {
     /// The ARN of the channel.
     public var channelArn: Swift.String?
     /// The ID string of the message being updated.
@@ -3912,7 +3913,7 @@ public struct UpdateChannelMessageOutput {
     }
 }
 
-public struct UpdateChannelReadMarkerInput {
+public struct UpdateChannelReadMarkerInput: Swift.Sendable {
     /// The ARN of the channel.
     /// This member is required.
     public var channelArn: Swift.String?
@@ -3930,7 +3931,7 @@ public struct UpdateChannelReadMarkerInput {
     }
 }
 
-public struct UpdateChannelReadMarkerOutput {
+public struct UpdateChannelReadMarkerOutput: Swift.Sendable {
     /// The ARN of the channel.
     public var channelArn: Swift.String?
 

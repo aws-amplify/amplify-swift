@@ -25,47 +25,48 @@ import protocol ClientRuntime.ModeledError
 @_spi(SmithyReadWrite) import struct AWSClientRuntime.AWSJSONError
 @_spi(UnknownAWSHTTPServiceError) import struct AWSClientRuntime.UnknownAWSHTTPServiceError
 
-public struct ActivateEventSourceOutput {
+
+public struct ActivateEventSourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeactivateEventSourceOutput {
+public struct DeactivateEventSourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteEventBusOutput {
+public struct DeleteEventBusOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeletePartnerEventSourceOutput {
+public struct DeletePartnerEventSourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteRuleOutput {
+public struct DeleteRuleOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DisableRuleOutput {
+public struct DisableRuleOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct EnableRuleOutput {
+public struct EnableRuleOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct PutPermissionOutput {
+public struct PutPermissionOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct RemovePermissionOutput {
+public struct RemovePermissionOutput: Swift.Sendable {
 
     public init() { }
 }
@@ -190,7 +191,7 @@ public struct ResourceNotFoundException: ClientRuntime.ModeledError, AWSClientRu
     }
 }
 
-public struct ActivateEventSourceInput {
+public struct ActivateEventSourceInput: Swift.Sendable {
     /// The name of the partner event source to activate.
     /// This member is required.
     public var name: Swift.String?
@@ -205,7 +206,7 @@ public struct ActivateEventSourceInput {
 
 extension CloudWatchEventsClientTypes {
 
-    public enum ApiDestinationState: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ApiDestinationState: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case active
         case inactive
         case sdkUnknown(Swift.String)
@@ -234,7 +235,7 @@ extension CloudWatchEventsClientTypes {
 
 extension CloudWatchEventsClientTypes {
 
-    public enum ApiDestinationHttpMethod: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ApiDestinationHttpMethod: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case delete
         case `get`
         case head
@@ -277,8 +278,9 @@ extension CloudWatchEventsClientTypes {
 }
 
 extension CloudWatchEventsClientTypes {
+
     /// Contains details about an API destination.
-    public struct ApiDestination {
+    public struct ApiDestination: Swift.Sendable {
         /// The ARN of the API destination.
         public var apiDestinationArn: Swift.String?
         /// The state of the API destination.
@@ -321,12 +323,11 @@ extension CloudWatchEventsClientTypes {
             self.name = name
         }
     }
-
 }
 
 extension CloudWatchEventsClientTypes {
 
-    public enum ArchiveState: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ArchiveState: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case createFailed
         case creating
         case disabled
@@ -366,8 +367,9 @@ extension CloudWatchEventsClientTypes {
 }
 
 extension CloudWatchEventsClientTypes {
+
     /// An Archive object that contains details about an archive.
-    public struct Archive {
+    public struct Archive: Swift.Sendable {
         /// The name of the archive.
         public var archiveName: Swift.String?
         /// The time stamp for the time that the archive was created.
@@ -406,12 +408,11 @@ extension CloudWatchEventsClientTypes {
             self.stateReason = stateReason
         }
     }
-
 }
 
 extension CloudWatchEventsClientTypes {
 
-    public enum AssignPublicIp: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AssignPublicIp: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case disabled
         case enabled
         case sdkUnknown(Swift.String)
@@ -462,7 +463,7 @@ public struct IllegalStatusException: ClientRuntime.ModeledError, AWSClientRunti
     }
 }
 
-public struct CancelReplayInput {
+public struct CancelReplayInput: Swift.Sendable {
     /// The name of the replay to cancel.
     /// This member is required.
     public var replayName: Swift.String?
@@ -477,7 +478,7 @@ public struct CancelReplayInput {
 
 extension CloudWatchEventsClientTypes {
 
-    public enum ReplayState: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ReplayState: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case cancelled
         case cancelling
         case completed
@@ -516,7 +517,7 @@ extension CloudWatchEventsClientTypes {
     }
 }
 
-public struct CancelReplayOutput {
+public struct CancelReplayOutput: Swift.Sendable {
     /// The ARN of the replay to cancel.
     public var replayArn: Swift.String?
     /// The current state of the replay.
@@ -584,7 +585,7 @@ public struct ResourceAlreadyExistsException: ClientRuntime.ModeledError, AWSCli
     }
 }
 
-public struct CreateApiDestinationInput {
+public struct CreateApiDestinationInput: Swift.Sendable {
     /// The ARN of the connection to use for the API destination. The destination endpoint must support the authorization type specified for the connection.
     /// This member is required.
     public var connectionArn: Swift.String?
@@ -620,7 +621,7 @@ public struct CreateApiDestinationInput {
     }
 }
 
-public struct CreateApiDestinationOutput {
+public struct CreateApiDestinationOutput: Swift.Sendable {
     /// The ARN of the API destination that was created by the request.
     public var apiDestinationArn: Swift.String?
     /// The state of the API destination that was created by the request.
@@ -668,7 +669,7 @@ public struct InvalidEventPatternException: ClientRuntime.ModeledError, AWSClien
     }
 }
 
-public struct CreateArchiveInput {
+public struct CreateArchiveInput: Swift.Sendable {
     /// The name for the archive to create.
     /// This member is required.
     public var archiveName: Swift.String?
@@ -698,7 +699,7 @@ public struct CreateArchiveInput {
     }
 }
 
-public struct CreateArchiveOutput {
+public struct CreateArchiveOutput: Swift.Sendable {
     /// The ARN of the archive that was created.
     public var archiveArn: Swift.String?
     /// The time at which the archive was created.
@@ -724,7 +725,7 @@ public struct CreateArchiveOutput {
 
 extension CloudWatchEventsClientTypes {
 
-    public enum ConnectionAuthorizationType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ConnectionAuthorizationType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case apiKey
         case basic
         case oauthClientCredentials
@@ -755,8 +756,9 @@ extension CloudWatchEventsClientTypes {
 }
 
 extension CloudWatchEventsClientTypes {
+
     /// Contains the API key authorization parameters for the connection.
-    public struct CreateConnectionApiKeyAuthRequestParameters {
+    public struct CreateConnectionApiKeyAuthRequestParameters: Swift.Sendable {
         /// The name of the API key to use for authorization.
         /// This member is required.
         public var apiKeyName: Swift.String?
@@ -773,7 +775,6 @@ extension CloudWatchEventsClientTypes {
             self.apiKeyValue = apiKeyValue
         }
     }
-
 }
 
 extension CloudWatchEventsClientTypes.CreateConnectionApiKeyAuthRequestParameters: Swift.CustomDebugStringConvertible {
@@ -782,8 +783,9 @@ extension CloudWatchEventsClientTypes.CreateConnectionApiKeyAuthRequestParameter
 }
 
 extension CloudWatchEventsClientTypes {
+
     /// Contains the Basic authorization parameters to use for the connection.
-    public struct CreateConnectionBasicAuthRequestParameters {
+    public struct CreateConnectionBasicAuthRequestParameters: Swift.Sendable {
         /// The password associated with the user name to use for Basic authorization.
         /// This member is required.
         public var password: Swift.String?
@@ -800,7 +802,6 @@ extension CloudWatchEventsClientTypes {
             self.username = username
         }
     }
-
 }
 
 extension CloudWatchEventsClientTypes.CreateConnectionBasicAuthRequestParameters: Swift.CustomDebugStringConvertible {
@@ -809,8 +810,9 @@ extension CloudWatchEventsClientTypes.CreateConnectionBasicAuthRequestParameters
 }
 
 extension CloudWatchEventsClientTypes {
+
     /// Additional parameter included in the body. You can include up to 100 additional body parameters per request. An event payload cannot exceed 64 KB.
-    public struct ConnectionBodyParameter {
+    public struct ConnectionBodyParameter: Swift.Sendable {
         /// Specified whether the value is secret.
         public var isValueSecret: Swift.Bool
         /// The key for the parameter.
@@ -829,7 +831,6 @@ extension CloudWatchEventsClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension CloudWatchEventsClientTypes.ConnectionBodyParameter: Swift.CustomDebugStringConvertible {
@@ -838,8 +839,9 @@ extension CloudWatchEventsClientTypes.ConnectionBodyParameter: Swift.CustomDebug
 }
 
 extension CloudWatchEventsClientTypes {
+
     /// Additional parameter included in the header. You can include up to 100 additional header parameters per request. An event payload cannot exceed 64 KB.
-    public struct ConnectionHeaderParameter {
+    public struct ConnectionHeaderParameter: Swift.Sendable {
         /// Specified whether the value is a secret.
         public var isValueSecret: Swift.Bool
         /// The key for the parameter.
@@ -858,7 +860,6 @@ extension CloudWatchEventsClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension CloudWatchEventsClientTypes.ConnectionHeaderParameter: Swift.CustomDebugStringConvertible {
@@ -867,8 +868,9 @@ extension CloudWatchEventsClientTypes.ConnectionHeaderParameter: Swift.CustomDeb
 }
 
 extension CloudWatchEventsClientTypes {
+
     /// Additional query string parameter for the connection. You can include up to 100 additional query string parameters per request. Each additional parameter counts towards the event payload size, which cannot exceed 64 KB.
-    public struct ConnectionQueryStringParameter {
+    public struct ConnectionQueryStringParameter: Swift.Sendable {
         /// Specifies whether the value is secret.
         public var isValueSecret: Swift.Bool
         /// The key for a query string parameter.
@@ -887,7 +889,6 @@ extension CloudWatchEventsClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension CloudWatchEventsClientTypes.ConnectionQueryStringParameter: Swift.CustomDebugStringConvertible {
@@ -896,8 +897,9 @@ extension CloudWatchEventsClientTypes.ConnectionQueryStringParameter: Swift.Cust
 }
 
 extension CloudWatchEventsClientTypes {
+
     /// Contains additional parameters for the connection.
-    public struct ConnectionHttpParameters {
+    public struct ConnectionHttpParameters: Swift.Sendable {
         /// Contains additional body string parameters for the connection.
         public var bodyParameters: [CloudWatchEventsClientTypes.ConnectionBodyParameter]?
         /// Contains additional header parameters for the connection.
@@ -916,12 +918,12 @@ extension CloudWatchEventsClientTypes {
             self.queryStringParameters = queryStringParameters
         }
     }
-
 }
 
 extension CloudWatchEventsClientTypes {
+
     /// Contains the Basic authorization parameters to use for the connection.
-    public struct CreateConnectionOAuthClientRequestParameters {
+    public struct CreateConnectionOAuthClientRequestParameters: Swift.Sendable {
         /// The client ID to use for OAuth authorization for the connection.
         /// This member is required.
         public var clientID: Swift.String?
@@ -938,7 +940,6 @@ extension CloudWatchEventsClientTypes {
             self.clientSecret = clientSecret
         }
     }
-
 }
 
 extension CloudWatchEventsClientTypes.CreateConnectionOAuthClientRequestParameters: Swift.CustomDebugStringConvertible {
@@ -948,7 +949,7 @@ extension CloudWatchEventsClientTypes.CreateConnectionOAuthClientRequestParamete
 
 extension CloudWatchEventsClientTypes {
 
-    public enum ConnectionOAuthHttpMethod: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ConnectionOAuthHttpMethod: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case `get`
         case post
         case put
@@ -979,8 +980,9 @@ extension CloudWatchEventsClientTypes {
 }
 
 extension CloudWatchEventsClientTypes {
+
     /// Contains the OAuth authorization parameters to use for the connection.
-    public struct CreateConnectionOAuthRequestParameters {
+    public struct CreateConnectionOAuthRequestParameters: Swift.Sendable {
         /// The URL to the authorization endpoint when OAuth is specified as the authorization type.
         /// This member is required.
         public var authorizationEndpoint: Swift.String?
@@ -1006,12 +1008,12 @@ extension CloudWatchEventsClientTypes {
             self.oAuthHttpParameters = oAuthHttpParameters
         }
     }
-
 }
 
 extension CloudWatchEventsClientTypes {
+
     /// Contains the authorization parameters for the connection.
-    public struct CreateConnectionAuthRequestParameters {
+    public struct CreateConnectionAuthRequestParameters: Swift.Sendable {
         /// A CreateConnectionApiKeyAuthRequestParameters object that contains the API key authorization parameters to use for the connection.
         public var apiKeyAuthParameters: CloudWatchEventsClientTypes.CreateConnectionApiKeyAuthRequestParameters?
         /// A CreateConnectionBasicAuthRequestParameters object that contains the Basic authorization parameters to use for the connection.
@@ -1034,10 +1036,9 @@ extension CloudWatchEventsClientTypes {
             self.oAuthParameters = oAuthParameters
         }
     }
-
 }
 
-public struct CreateConnectionInput {
+public struct CreateConnectionInput: Swift.Sendable {
     /// A CreateConnectionAuthRequestParameters object that contains the authorization parameters to use to authorize with the endpoint.
     /// This member is required.
     public var authParameters: CloudWatchEventsClientTypes.CreateConnectionAuthRequestParameters?
@@ -1066,7 +1067,7 @@ public struct CreateConnectionInput {
 
 extension CloudWatchEventsClientTypes {
 
-    public enum ConnectionState: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ConnectionState: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case authorized
         case authorizing
         case creating
@@ -1108,7 +1109,7 @@ extension CloudWatchEventsClientTypes {
     }
 }
 
-public struct CreateConnectionOutput {
+public struct CreateConnectionOutput: Swift.Sendable {
     /// The ARN of the connection that was created by the request.
     public var connectionArn: Swift.String?
     /// The state of the connection that was created by the request.
@@ -1133,8 +1134,9 @@ public struct CreateConnectionOutput {
 }
 
 extension CloudWatchEventsClientTypes {
+
     /// A key-value pair associated with an Amazon Web Services resource. In EventBridge, rules and event buses support tagging.
-    public struct Tag {
+    public struct Tag: Swift.Sendable {
         /// A string you can use to assign a value. The combination of tag keys and values can help you organize and categorize your resources.
         /// This member is required.
         public var key: Swift.String?
@@ -1151,10 +1153,9 @@ extension CloudWatchEventsClientTypes {
             self.value = value
         }
     }
-
 }
 
-public struct CreateEventBusInput {
+public struct CreateEventBusInput: Swift.Sendable {
     /// If you are creating a partner event bus, this specifies the partner event source that the new event bus will be matched with.
     public var eventSourceName: Swift.String?
     /// The name of the new event bus. Event bus names cannot contain the / character. You can't use the name default for a custom event bus, as this name is already used for your account's default event bus. If this is a partner event bus, the name must exactly match the name of the partner event source that this event bus is matched to.
@@ -1175,7 +1176,7 @@ public struct CreateEventBusInput {
     }
 }
 
-public struct CreateEventBusOutput {
+public struct CreateEventBusOutput: Swift.Sendable {
     /// The ARN of the new event bus.
     public var eventBusArn: Swift.String?
 
@@ -1187,7 +1188,7 @@ public struct CreateEventBusOutput {
     }
 }
 
-public struct CreatePartnerEventSourceInput {
+public struct CreatePartnerEventSourceInput: Swift.Sendable {
     /// The Amazon Web Services account ID that is permitted to create a matching partner event bus for this partner event source.
     /// This member is required.
     public var account: Swift.String?
@@ -1205,7 +1206,7 @@ public struct CreatePartnerEventSourceInput {
     }
 }
 
-public struct CreatePartnerEventSourceOutput {
+public struct CreatePartnerEventSourceOutput: Swift.Sendable {
     /// The ARN of the partner event source.
     public var eventSourceArn: Swift.String?
 
@@ -1217,7 +1218,7 @@ public struct CreatePartnerEventSourceOutput {
     }
 }
 
-public struct DeactivateEventSourceInput {
+public struct DeactivateEventSourceInput: Swift.Sendable {
     /// The name of the partner event source to deactivate.
     /// This member is required.
     public var name: Swift.String?
@@ -1230,7 +1231,7 @@ public struct DeactivateEventSourceInput {
     }
 }
 
-public struct DeauthorizeConnectionInput {
+public struct DeauthorizeConnectionInput: Swift.Sendable {
     /// The name of the connection to remove authorization from.
     /// This member is required.
     public var name: Swift.String?
@@ -1243,7 +1244,7 @@ public struct DeauthorizeConnectionInput {
     }
 }
 
-public struct DeauthorizeConnectionOutput {
+public struct DeauthorizeConnectionOutput: Swift.Sendable {
     /// The ARN of the connection that authorization was removed from.
     public var connectionArn: Swift.String?
     /// The state of the connection.
@@ -1271,7 +1272,7 @@ public struct DeauthorizeConnectionOutput {
     }
 }
 
-public struct DeleteApiDestinationInput {
+public struct DeleteApiDestinationInput: Swift.Sendable {
     /// The name of the destination to delete.
     /// This member is required.
     public var name: Swift.String?
@@ -1284,12 +1285,12 @@ public struct DeleteApiDestinationInput {
     }
 }
 
-public struct DeleteApiDestinationOutput {
+public struct DeleteApiDestinationOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteArchiveInput {
+public struct DeleteArchiveInput: Swift.Sendable {
     /// The name of the archive to delete.
     /// This member is required.
     public var archiveName: Swift.String?
@@ -1302,12 +1303,12 @@ public struct DeleteArchiveInput {
     }
 }
 
-public struct DeleteArchiveOutput {
+public struct DeleteArchiveOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteConnectionInput {
+public struct DeleteConnectionInput: Swift.Sendable {
     /// The name of the connection to delete.
     /// This member is required.
     public var name: Swift.String?
@@ -1320,7 +1321,7 @@ public struct DeleteConnectionInput {
     }
 }
 
-public struct DeleteConnectionOutput {
+public struct DeleteConnectionOutput: Swift.Sendable {
     /// The ARN of the connection that was deleted.
     public var connectionArn: Swift.String?
     /// The state of the connection before it was deleted.
@@ -1348,7 +1349,7 @@ public struct DeleteConnectionOutput {
     }
 }
 
-public struct DeleteEventBusInput {
+public struct DeleteEventBusInput: Swift.Sendable {
     /// The name of the event bus to delete.
     /// This member is required.
     public var name: Swift.String?
@@ -1361,7 +1362,7 @@ public struct DeleteEventBusInput {
     }
 }
 
-public struct DeletePartnerEventSourceInput {
+public struct DeletePartnerEventSourceInput: Swift.Sendable {
     /// The Amazon Web Services account ID of the Amazon Web Services customer that the event source was created for.
     /// This member is required.
     public var account: Swift.String?
@@ -1403,7 +1404,7 @@ public struct ManagedRuleException: ClientRuntime.ModeledError, AWSClientRuntime
     }
 }
 
-public struct DeleteRuleInput {
+public struct DeleteRuleInput: Swift.Sendable {
     /// The name or ARN of the event bus associated with the rule. If you omit this, the default event bus is used.
     public var eventBusName: Swift.String?
     /// If this is a managed rule, created by an Amazon Web Services service on your behalf, you must specify Force as True to delete the rule. This parameter is ignored for rules that are not managed rules. You can check whether a rule is a managed rule by using DescribeRule or ListRules and checking the ManagedBy field of the response.
@@ -1424,7 +1425,7 @@ public struct DeleteRuleInput {
     }
 }
 
-public struct DescribeApiDestinationInput {
+public struct DescribeApiDestinationInput: Swift.Sendable {
     /// The name of the API destination to retrieve.
     /// This member is required.
     public var name: Swift.String?
@@ -1437,7 +1438,7 @@ public struct DescribeApiDestinationInput {
     }
 }
 
-public struct DescribeApiDestinationOutput {
+public struct DescribeApiDestinationOutput: Swift.Sendable {
     /// The ARN of the API destination retrieved.
     public var apiDestinationArn: Swift.String?
     /// The state of the API destination retrieved.
@@ -1485,7 +1486,7 @@ public struct DescribeApiDestinationOutput {
     }
 }
 
-public struct DescribeArchiveInput {
+public struct DescribeArchiveInput: Swift.Sendable {
     /// The name of the archive to retrieve.
     /// This member is required.
     public var archiveName: Swift.String?
@@ -1498,7 +1499,7 @@ public struct DescribeArchiveInput {
     }
 }
 
-public struct DescribeArchiveOutput {
+public struct DescribeArchiveOutput: Swift.Sendable {
     /// The ARN of the archive.
     public var archiveArn: Swift.String?
     /// The name of the archive.
@@ -1550,7 +1551,7 @@ public struct DescribeArchiveOutput {
     }
 }
 
-public struct DescribeConnectionInput {
+public struct DescribeConnectionInput: Swift.Sendable {
     /// The name of the connection to retrieve.
     /// This member is required.
     public var name: Swift.String?
@@ -1564,8 +1565,9 @@ public struct DescribeConnectionInput {
 }
 
 extension CloudWatchEventsClientTypes {
+
     /// Contains the authorization parameters for the connection if API Key is specified as the authorization type.
-    public struct ConnectionApiKeyAuthResponseParameters {
+    public struct ConnectionApiKeyAuthResponseParameters: Swift.Sendable {
         /// The name of the header to use for the APIKeyValue used for authorization.
         public var apiKeyName: Swift.String?
 
@@ -1576,12 +1578,12 @@ extension CloudWatchEventsClientTypes {
             self.apiKeyName = apiKeyName
         }
     }
-
 }
 
 extension CloudWatchEventsClientTypes {
+
     /// Contains the authorization parameters for the connection if Basic is specified as the authorization type.
-    public struct ConnectionBasicAuthResponseParameters {
+    public struct ConnectionBasicAuthResponseParameters: Swift.Sendable {
         /// The user name to use for Basic authorization.
         public var username: Swift.String?
 
@@ -1592,12 +1594,12 @@ extension CloudWatchEventsClientTypes {
             self.username = username
         }
     }
-
 }
 
 extension CloudWatchEventsClientTypes {
+
     /// Contains the client response parameters for the connection when OAuth is specified as the authorization type.
-    public struct ConnectionOAuthClientResponseParameters {
+    public struct ConnectionOAuthClientResponseParameters: Swift.Sendable {
         /// The client ID associated with the response to the connection request.
         public var clientID: Swift.String?
 
@@ -1608,12 +1610,12 @@ extension CloudWatchEventsClientTypes {
             self.clientID = clientID
         }
     }
-
 }
 
 extension CloudWatchEventsClientTypes {
+
     /// Contains the response parameters when OAuth is specified as the authorization type.
-    public struct ConnectionOAuthResponseParameters {
+    public struct ConnectionOAuthResponseParameters: Swift.Sendable {
         /// The URL to the HTTP endpoint that authorized the request.
         public var authorizationEndpoint: Swift.String?
         /// A ConnectionOAuthClientResponseParameters object that contains details about the client parameters returned when OAuth is specified as the authorization type.
@@ -1636,12 +1638,12 @@ extension CloudWatchEventsClientTypes {
             self.oAuthHttpParameters = oAuthHttpParameters
         }
     }
-
 }
 
 extension CloudWatchEventsClientTypes {
+
     /// Contains the authorization parameters to use for the connection.
-    public struct ConnectionAuthResponseParameters {
+    public struct ConnectionAuthResponseParameters: Swift.Sendable {
         /// The API Key parameters to use for authorization.
         public var apiKeyAuthParameters: CloudWatchEventsClientTypes.ConnectionApiKeyAuthResponseParameters?
         /// The authorization parameters for Basic authorization.
@@ -1664,10 +1666,9 @@ extension CloudWatchEventsClientTypes {
             self.oAuthParameters = oAuthParameters
         }
     }
-
 }
 
-public struct DescribeConnectionOutput {
+public struct DescribeConnectionOutput: Swift.Sendable {
     /// The parameters to use for authorization for the connection.
     public var authParameters: CloudWatchEventsClientTypes.ConnectionAuthResponseParameters?
     /// The type of authorization specified for the connection.
@@ -1719,7 +1720,7 @@ public struct DescribeConnectionOutput {
     }
 }
 
-public struct DescribeEventBusInput {
+public struct DescribeEventBusInput: Swift.Sendable {
     /// The name or ARN of the event bus to show details for. If you omit this, the default event bus is displayed.
     public var name: Swift.String?
 
@@ -1731,7 +1732,7 @@ public struct DescribeEventBusInput {
     }
 }
 
-public struct DescribeEventBusOutput {
+public struct DescribeEventBusOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the account permitted to write events to the current account.
     public var arn: Swift.String?
     /// The name of the event bus. Currently, this is always default.
@@ -1751,7 +1752,7 @@ public struct DescribeEventBusOutput {
     }
 }
 
-public struct DescribeEventSourceInput {
+public struct DescribeEventSourceInput: Swift.Sendable {
     /// The name of the partner event source to display the details of.
     /// This member is required.
     public var name: Swift.String?
@@ -1766,7 +1767,7 @@ public struct DescribeEventSourceInput {
 
 extension CloudWatchEventsClientTypes {
 
-    public enum EventSourceState: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum EventSourceState: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case active
         case deleted
         case pending
@@ -1796,7 +1797,7 @@ extension CloudWatchEventsClientTypes {
     }
 }
 
-public struct DescribeEventSourceOutput {
+public struct DescribeEventSourceOutput: Swift.Sendable {
     /// The ARN of the partner event source.
     public var arn: Swift.String?
     /// The name of the SaaS partner that created the event source.
@@ -1828,7 +1829,7 @@ public struct DescribeEventSourceOutput {
     }
 }
 
-public struct DescribePartnerEventSourceInput {
+public struct DescribePartnerEventSourceInput: Swift.Sendable {
     /// The name of the event source to display.
     /// This member is required.
     public var name: Swift.String?
@@ -1841,7 +1842,7 @@ public struct DescribePartnerEventSourceInput {
     }
 }
 
-public struct DescribePartnerEventSourceOutput {
+public struct DescribePartnerEventSourceOutput: Swift.Sendable {
     /// The ARN of the event source.
     public var arn: Swift.String?
     /// The name of the event source.
@@ -1857,7 +1858,7 @@ public struct DescribePartnerEventSourceOutput {
     }
 }
 
-public struct DescribeReplayInput {
+public struct DescribeReplayInput: Swift.Sendable {
     /// The name of the replay to retrieve.
     /// This member is required.
     public var replayName: Swift.String?
@@ -1871,8 +1872,9 @@ public struct DescribeReplayInput {
 }
 
 extension CloudWatchEventsClientTypes {
+
     /// A ReplayDestination object that contains details about a replay.
-    public struct ReplayDestination {
+    public struct ReplayDestination: Swift.Sendable {
         /// The ARN of the event bus to replay event to. You can replay events only to the event bus specified to create the archive.
         /// This member is required.
         public var arn: Swift.String?
@@ -1888,10 +1890,9 @@ extension CloudWatchEventsClientTypes {
             self.filterArns = filterArns
         }
     }
-
 }
 
-public struct DescribeReplayOutput {
+public struct DescribeReplayOutput: Swift.Sendable {
     /// The description of the replay.
     public var description: Swift.String?
     /// A ReplayDestination object that contains details about the replay.
@@ -1947,7 +1948,7 @@ public struct DescribeReplayOutput {
     }
 }
 
-public struct DescribeRuleInput {
+public struct DescribeRuleInput: Swift.Sendable {
     /// The name or ARN of the event bus associated with the rule. If you omit this, the default event bus is used.
     public var eventBusName: Swift.String?
     /// The name of the rule.
@@ -1966,7 +1967,7 @@ public struct DescribeRuleInput {
 
 extension CloudWatchEventsClientTypes {
 
-    public enum RuleState: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum RuleState: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case disabled
         case enabled
         case sdkUnknown(Swift.String)
@@ -1993,7 +1994,7 @@ extension CloudWatchEventsClientTypes {
     }
 }
 
-public struct DescribeRuleOutput {
+public struct DescribeRuleOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the rule.
     public var arn: Swift.String?
     /// The account ID of the user that created the rule. If you use PutRule to put a rule on an event bus in another account, the other account is the owner of the rule, and the rule ARN includes the account ID for that account. However, the value for CreatedBy is the account ID as the account that created the rule in the other account.
@@ -2041,7 +2042,7 @@ public struct DescribeRuleOutput {
     }
 }
 
-public struct DisableRuleInput {
+public struct DisableRuleInput: Swift.Sendable {
     /// The name or ARN of the event bus associated with the rule. If you omit this, the default event bus is used.
     public var eventBusName: Swift.String?
     /// The name of the rule.
@@ -2058,7 +2059,7 @@ public struct DisableRuleInput {
     }
 }
 
-public struct EnableRuleInput {
+public struct EnableRuleInput: Swift.Sendable {
     /// The name or ARN of the event bus associated with the rule. If you omit this, the default event bus is used.
     public var eventBusName: Swift.String?
     /// The name of the rule.
@@ -2075,7 +2076,7 @@ public struct EnableRuleInput {
     }
 }
 
-public struct ListApiDestinationsInput {
+public struct ListApiDestinationsInput: Swift.Sendable {
     /// The ARN of the connection specified for the API destination.
     public var connectionArn: Swift.String?
     /// The maximum number of API destinations to include in the response.
@@ -2099,7 +2100,7 @@ public struct ListApiDestinationsInput {
     }
 }
 
-public struct ListApiDestinationsOutput {
+public struct ListApiDestinationsOutput: Swift.Sendable {
     /// An array of ApiDestination objects that include information about an API destination.
     public var apiDestinations: [CloudWatchEventsClientTypes.ApiDestination]?
     /// A token you can use in a subsequent request to retrieve the next set of results.
@@ -2115,7 +2116,7 @@ public struct ListApiDestinationsOutput {
     }
 }
 
-public struct ListArchivesInput {
+public struct ListArchivesInput: Swift.Sendable {
     /// The ARN of the event source associated with the archive.
     public var eventSourceArn: Swift.String?
     /// The maximum number of results to return.
@@ -2143,7 +2144,7 @@ public struct ListArchivesInput {
     }
 }
 
-public struct ListArchivesOutput {
+public struct ListArchivesOutput: Swift.Sendable {
     /// An array of Archive objects that include details about an archive.
     public var archives: [CloudWatchEventsClientTypes.Archive]?
     /// The token returned by a previous call to retrieve the next set of results.
@@ -2159,7 +2160,7 @@ public struct ListArchivesOutput {
     }
 }
 
-public struct ListConnectionsInput {
+public struct ListConnectionsInput: Swift.Sendable {
     /// The state of the connection.
     public var connectionState: CloudWatchEventsClientTypes.ConnectionState?
     /// The maximum number of connections to return.
@@ -2184,8 +2185,9 @@ public struct ListConnectionsInput {
 }
 
 extension CloudWatchEventsClientTypes {
+
     /// Contains information about a connection.
-    public struct Connection {
+    public struct Connection: Swift.Sendable {
         /// The authorization type specified for the connection.
         public var authorizationType: CloudWatchEventsClientTypes.ConnectionAuthorizationType?
         /// The ARN of the connection.
@@ -2224,10 +2226,9 @@ extension CloudWatchEventsClientTypes {
             self.stateReason = stateReason
         }
     }
-
 }
 
-public struct ListConnectionsOutput {
+public struct ListConnectionsOutput: Swift.Sendable {
     /// An array of connections objects that include details about the connections.
     public var connections: [CloudWatchEventsClientTypes.Connection]?
     /// A token you can use in a subsequent request to retrieve the next set of results.
@@ -2243,7 +2244,7 @@ public struct ListConnectionsOutput {
     }
 }
 
-public struct ListEventBusesInput {
+public struct ListEventBusesInput: Swift.Sendable {
     /// Specifying this limits the number of results returned by this operation. The operation also returns a NextToken which you can use in a subsequent operation to retrieve the next set of results.
     public var limit: Swift.Int?
     /// Specifying this limits the results to only those event buses with names that start with the specified prefix.
@@ -2264,8 +2265,9 @@ public struct ListEventBusesInput {
 }
 
 extension CloudWatchEventsClientTypes {
+
     /// An event bus receives events from a source and routes them to rules associated with that event bus. Your account's default event bus receives events from Amazon Web Services services. A custom event bus can receive events from your custom applications and services. A partner event bus receives events from an event source created by an SaaS partner. These events come from the partners services or applications.
-    public struct EventBus {
+    public struct EventBus: Swift.Sendable {
         /// The ARN of the event bus.
         public var arn: Swift.String?
         /// The name of the event bus.
@@ -2284,10 +2286,9 @@ extension CloudWatchEventsClientTypes {
             self.policy = policy
         }
     }
-
 }
 
-public struct ListEventBusesOutput {
+public struct ListEventBusesOutput: Swift.Sendable {
     /// This list of event buses.
     public var eventBuses: [CloudWatchEventsClientTypes.EventBus]?
     /// A token you can use in a subsequent operation to retrieve the next set of results.
@@ -2303,7 +2304,7 @@ public struct ListEventBusesOutput {
     }
 }
 
-public struct ListEventSourcesInput {
+public struct ListEventSourcesInput: Swift.Sendable {
     /// Specifying this limits the number of results returned by this operation. The operation also returns a NextToken which you can use in a subsequent operation to retrieve the next set of results.
     public var limit: Swift.Int?
     /// Specifying this limits the results to only those partner event sources with names that start with the specified prefix.
@@ -2324,8 +2325,9 @@ public struct ListEventSourcesInput {
 }
 
 extension CloudWatchEventsClientTypes {
+
     /// A partner event source is created by an SaaS partner. If a customer creates a partner event bus that matches this event source, that Amazon Web Services account can receive events from the partner's applications or services.
-    public struct EventSource {
+    public struct EventSource: Swift.Sendable {
         /// The ARN of the event source.
         public var arn: Swift.String?
         /// The name of the partner that created the event source.
@@ -2356,10 +2358,9 @@ extension CloudWatchEventsClientTypes {
             self.state = state
         }
     }
-
 }
 
-public struct ListEventSourcesOutput {
+public struct ListEventSourcesOutput: Swift.Sendable {
     /// The list of event sources.
     public var eventSources: [CloudWatchEventsClientTypes.EventSource]?
     /// A token you can use in a subsequent operation to retrieve the next set of results.
@@ -2375,7 +2376,7 @@ public struct ListEventSourcesOutput {
     }
 }
 
-public struct ListPartnerEventSourceAccountsInput {
+public struct ListPartnerEventSourceAccountsInput: Swift.Sendable {
     /// The name of the partner event source to display account information about.
     /// This member is required.
     public var eventSourceName: Swift.String?
@@ -2397,8 +2398,9 @@ public struct ListPartnerEventSourceAccountsInput {
 }
 
 extension CloudWatchEventsClientTypes {
+
     /// The Amazon Web Services account that a partner event source has been offered to.
-    public struct PartnerEventSourceAccount {
+    public struct PartnerEventSourceAccount: Swift.Sendable {
         /// The Amazon Web Services account ID that the partner event source was offered to.
         public var account: Swift.String?
         /// The date and time the event source was created.
@@ -2421,10 +2423,9 @@ extension CloudWatchEventsClientTypes {
             self.state = state
         }
     }
-
 }
 
-public struct ListPartnerEventSourceAccountsOutput {
+public struct ListPartnerEventSourceAccountsOutput: Swift.Sendable {
     /// A token you can use in a subsequent operation to retrieve the next set of results.
     public var nextToken: Swift.String?
     /// The list of partner event sources returned by the operation.
@@ -2440,7 +2441,7 @@ public struct ListPartnerEventSourceAccountsOutput {
     }
 }
 
-public struct ListPartnerEventSourcesInput {
+public struct ListPartnerEventSourcesInput: Swift.Sendable {
     /// pecifying this limits the number of results returned by this operation. The operation also returns a NextToken which you can use in a subsequent operation to retrieve the next set of results.
     public var limit: Swift.Int?
     /// If you specify this, the results are limited to only those partner event sources that start with the string you specify.
@@ -2462,8 +2463,9 @@ public struct ListPartnerEventSourcesInput {
 }
 
 extension CloudWatchEventsClientTypes {
+
     /// A partner event source is created by an SaaS partner. If a customer creates a partner event bus that matches this event source, that Amazon Web Services account can receive events from the partner's applications or services.
-    public struct PartnerEventSource {
+    public struct PartnerEventSource: Swift.Sendable {
         /// The ARN of the partner event source.
         public var arn: Swift.String?
         /// The name of the partner event source.
@@ -2478,10 +2480,9 @@ extension CloudWatchEventsClientTypes {
             self.name = name
         }
     }
-
 }
 
-public struct ListPartnerEventSourcesOutput {
+public struct ListPartnerEventSourcesOutput: Swift.Sendable {
     /// A token you can use in a subsequent operation to retrieve the next set of results.
     public var nextToken: Swift.String?
     /// The list of partner event sources returned by the operation.
@@ -2497,7 +2498,7 @@ public struct ListPartnerEventSourcesOutput {
     }
 }
 
-public struct ListReplaysInput {
+public struct ListReplaysInput: Swift.Sendable {
     /// The ARN of the archive from which the events are replayed.
     public var eventSourceArn: Swift.String?
     /// The maximum number of replays to retrieve.
@@ -2526,8 +2527,9 @@ public struct ListReplaysInput {
 }
 
 extension CloudWatchEventsClientTypes {
+
     /// A Replay object that contains details about a replay.
-    public struct Replay {
+    public struct Replay: Swift.Sendable {
         /// A time stamp for the time to start replaying events. Any event with a creation time prior to the EventEndTime specified is replayed.
         public var eventEndTime: Foundation.Date?
         /// A time stamp for the time that the last event was replayed.
@@ -2570,10 +2572,9 @@ extension CloudWatchEventsClientTypes {
             self.stateReason = stateReason
         }
     }
-
 }
 
-public struct ListReplaysOutput {
+public struct ListReplaysOutput: Swift.Sendable {
     /// The token returned by a previous call to retrieve the next set of results.
     public var nextToken: Swift.String?
     /// An array of Replay objects that contain information about the replay.
@@ -2589,7 +2590,7 @@ public struct ListReplaysOutput {
     }
 }
 
-public struct ListRuleNamesByTargetInput {
+public struct ListRuleNamesByTargetInput: Swift.Sendable {
     /// The name or ARN of the event bus to list rules for. If you omit this, the default event bus is used.
     public var eventBusName: Swift.String?
     /// The maximum number of results to return.
@@ -2614,7 +2615,7 @@ public struct ListRuleNamesByTargetInput {
     }
 }
 
-public struct ListRuleNamesByTargetOutput {
+public struct ListRuleNamesByTargetOutput: Swift.Sendable {
     /// Indicates whether there are additional results to retrieve. If there are no more results, the value is null.
     public var nextToken: Swift.String?
     /// The names of the rules that can invoke the given target.
@@ -2630,7 +2631,7 @@ public struct ListRuleNamesByTargetOutput {
     }
 }
 
-public struct ListRulesInput {
+public struct ListRulesInput: Swift.Sendable {
     /// The name or ARN of the event bus to list the rules for. If you omit this, the default event bus is used.
     public var eventBusName: Swift.String?
     /// The maximum number of results to return.
@@ -2655,8 +2656,9 @@ public struct ListRulesInput {
 }
 
 extension CloudWatchEventsClientTypes {
+
     /// Contains information about a rule in Amazon EventBridge.
-    public struct Rule {
+    public struct Rule: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the rule.
         public var arn: Swift.String?
         /// The description of the rule.
@@ -2699,10 +2701,9 @@ extension CloudWatchEventsClientTypes {
             self.state = state
         }
     }
-
 }
 
-public struct ListRulesOutput {
+public struct ListRulesOutput: Swift.Sendable {
     /// Indicates whether there are additional results to retrieve. If there are no more results, the value is null.
     public var nextToken: Swift.String?
     /// The rules that match the specified criteria.
@@ -2718,7 +2719,7 @@ public struct ListRulesOutput {
     }
 }
 
-public struct ListTagsForResourceInput {
+public struct ListTagsForResourceInput: Swift.Sendable {
     /// The ARN of the EventBridge resource for which you want to view tags.
     /// This member is required.
     public var resourceARN: Swift.String?
@@ -2731,7 +2732,7 @@ public struct ListTagsForResourceInput {
     }
 }
 
-public struct ListTagsForResourceOutput {
+public struct ListTagsForResourceOutput: Swift.Sendable {
     /// The list of tag keys and values associated with the resource you specified
     public var tags: [CloudWatchEventsClientTypes.Tag]?
 
@@ -2743,7 +2744,7 @@ public struct ListTagsForResourceOutput {
     }
 }
 
-public struct ListTargetsByRuleInput {
+public struct ListTargetsByRuleInput: Swift.Sendable {
     /// The name or ARN of the event bus associated with the rule. If you omit this, the default event bus is used.
     public var eventBusName: Swift.String?
     /// The maximum number of results to return.
@@ -2769,8 +2770,9 @@ public struct ListTargetsByRuleInput {
 }
 
 extension CloudWatchEventsClientTypes {
+
     /// The array properties for the submitted job, such as the size of the array. The array size can be between 2 and 10,000. If you specify array properties for a job, it becomes an array job. This parameter is used only if the target is an Batch job.
-    public struct BatchArrayProperties {
+    public struct BatchArrayProperties: Swift.Sendable {
         /// The size of the array, if this is an array batch job. Valid values are integers between 2 and 10,000.
         public var size: Swift.Int
 
@@ -2781,12 +2783,12 @@ extension CloudWatchEventsClientTypes {
             self.size = size
         }
     }
-
 }
 
 extension CloudWatchEventsClientTypes {
+
     /// The retry strategy to use for failed jobs, if the target is an Batch job. If you specify a retry strategy here, it overrides the retry strategy defined in the job definition.
-    public struct BatchRetryStrategy {
+    public struct BatchRetryStrategy: Swift.Sendable {
         /// The number of times to attempt to retry, if the job fails. Valid values are 1–10.
         public var attempts: Swift.Int
 
@@ -2797,12 +2799,12 @@ extension CloudWatchEventsClientTypes {
             self.attempts = attempts
         }
     }
-
 }
 
 extension CloudWatchEventsClientTypes {
+
     /// The custom parameters to be used when the target is an Batch job.
-    public struct BatchParameters {
+    public struct BatchParameters: Swift.Sendable {
         /// The array properties for the submitted job, such as the size of the array. The array size can be between 2 and 10,000. If you specify array properties for a job, it becomes an array job. This parameter is used only if the target is an Batch job.
         public var arrayProperties: CloudWatchEventsClientTypes.BatchArrayProperties?
         /// The ARN or name of the job definition to use if the event target is an Batch job. This job definition must already exist.
@@ -2827,12 +2829,12 @@ extension CloudWatchEventsClientTypes {
             self.retryStrategy = retryStrategy
         }
     }
-
 }
 
 extension CloudWatchEventsClientTypes {
+
     /// A DeadLetterConfig object that contains information about a dead-letter queue configuration.
-    public struct DeadLetterConfig {
+    public struct DeadLetterConfig: Swift.Sendable {
         /// The ARN of the SQS queue specified as the target for the dead-letter queue.
         public var arn: Swift.String?
 
@@ -2843,12 +2845,12 @@ extension CloudWatchEventsClientTypes {
             self.arn = arn
         }
     }
-
 }
 
 extension CloudWatchEventsClientTypes {
+
     /// The details of a capacity provider strategy. To learn more, see [CapacityProviderStrategyItem](https://docs.aws.amazon.com/AmazonECS/latest/APIReference/API_CapacityProviderStrategyItem.html) in the Amazon ECS API Reference.
-    public struct CapacityProviderStrategyItem {
+    public struct CapacityProviderStrategyItem: Swift.Sendable {
         /// The base value designates how many tasks, at a minimum, to run on the specified capacity provider. Only one capacity provider in a capacity provider strategy can have a base defined. If no value is specified, the default value of 0 is used.
         public var base: Swift.Int
         /// The short name of the capacity provider.
@@ -2868,12 +2870,11 @@ extension CloudWatchEventsClientTypes {
             self.weight = weight
         }
     }
-
 }
 
 extension CloudWatchEventsClientTypes {
 
-    public enum LaunchType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum LaunchType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case ec2
         case external
         case fargate
@@ -2904,8 +2905,9 @@ extension CloudWatchEventsClientTypes {
 }
 
 extension CloudWatchEventsClientTypes {
+
     /// This structure specifies the VPC subnets and security groups for the task, and whether a public IP address is to be used. This structure is relevant only for ECS tasks that use the awsvpc network mode.
-    public struct AwsVpcConfiguration {
+    public struct AwsVpcConfiguration: Swift.Sendable {
         /// Specifies whether the task's elastic network interface receives a public IP address. You can specify ENABLED only when LaunchType in EcsParameters is set to FARGATE.
         public var assignPublicIp: CloudWatchEventsClientTypes.AssignPublicIp?
         /// Specifies the security groups associated with the task. These security groups must all be in the same VPC. You can specify as many as five security groups. If you do not specify a security group, the default security group for the VPC is used.
@@ -2925,12 +2927,12 @@ extension CloudWatchEventsClientTypes {
             self.subnets = subnets
         }
     }
-
 }
 
 extension CloudWatchEventsClientTypes {
+
     /// This structure specifies the network configuration for an ECS task.
-    public struct NetworkConfiguration {
+    public struct NetworkConfiguration: Swift.Sendable {
         /// Use this structure to specify the VPC subnets and security groups for the task, and whether a public IP address is to be used. This structure is relevant only for ECS tasks that use the awsvpc network mode.
         public var awsvpcConfiguration: CloudWatchEventsClientTypes.AwsVpcConfiguration?
 
@@ -2941,12 +2943,11 @@ extension CloudWatchEventsClientTypes {
             self.awsvpcConfiguration = awsvpcConfiguration
         }
     }
-
 }
 
 extension CloudWatchEventsClientTypes {
 
-    public enum PlacementConstraintType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum PlacementConstraintType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case distinctInstance
         case memberOf
         case sdkUnknown(Swift.String)
@@ -2974,8 +2975,9 @@ extension CloudWatchEventsClientTypes {
 }
 
 extension CloudWatchEventsClientTypes {
+
     /// An object representing a constraint on task placement. To learn more, see [Task Placement Constraints](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/task-placement-constraints.html) in the Amazon Elastic Container Service Developer Guide.
-    public struct PlacementConstraint {
+    public struct PlacementConstraint: Swift.Sendable {
         /// A cluster query language expression to apply to the constraint. You cannot specify an expression if the constraint type is distinctInstance. To learn more, see [Cluster Query Language](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/cluster-query-language.html) in the Amazon Elastic Container Service Developer Guide.
         public var expression: Swift.String?
         /// The type of constraint. Use distinctInstance to ensure that each task in a particular group is running on a different container instance. Use memberOf to restrict the selection to a group of valid candidates.
@@ -2990,12 +2992,11 @@ extension CloudWatchEventsClientTypes {
             self.type = type
         }
     }
-
 }
 
 extension CloudWatchEventsClientTypes {
 
-    public enum PlacementStrategyType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum PlacementStrategyType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case binpack
         case random
         case spread
@@ -3026,8 +3027,9 @@ extension CloudWatchEventsClientTypes {
 }
 
 extension CloudWatchEventsClientTypes {
+
     /// The task placement strategy for a task or service. To learn more, see [Task Placement Strategies](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/task-placement-strategies.html) in the Amazon Elastic Container Service Service Developer Guide.
-    public struct PlacementStrategy {
+    public struct PlacementStrategy: Swift.Sendable {
         /// The field to apply the placement strategy against. For the spread placement strategy, valid values are instanceId (or host, which has the same effect), or any platform or custom attribute that is applied to a container instance, such as attribute:ecs.availability-zone. For the binpack placement strategy, valid values are cpu and memory. For the random placement strategy, this field is not used.
         public var field: Swift.String?
         /// The type of placement strategy. The random placement strategy randomly places tasks on available candidates. The spread placement strategy spreads placement across available candidates evenly based on the field parameter. The binpack strategy places tasks on available candidates that have the least available amount of the resource that is specified with the field parameter. For example, if you binpack on memory, a task is placed on the instance with the least amount of remaining memory (but still enough to run the task).
@@ -3042,12 +3044,11 @@ extension CloudWatchEventsClientTypes {
             self.type = type
         }
     }
-
 }
 
 extension CloudWatchEventsClientTypes {
 
-    public enum PropagateTags: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum PropagateTags: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case taskDefinition
         case sdkUnknown(Swift.String)
 
@@ -3072,8 +3073,9 @@ extension CloudWatchEventsClientTypes {
 }
 
 extension CloudWatchEventsClientTypes {
+
     /// The custom parameters to be used when the target is an Amazon ECS task.
-    public struct EcsParameters {
+    public struct EcsParameters: Swift.Sendable {
         /// The capacity provider strategy to use for the task. If a capacityProviderStrategy is specified, the launchType parameter must be omitted. If no capacityProviderStrategy or launchType is specified, the defaultCapacityProviderStrategy for the cluster is used.
         public var capacityProviderStrategy: [CloudWatchEventsClientTypes.CapacityProviderStrategyItem]?
         /// Specifies whether to enable Amazon ECS managed tags for the task. For more information, see [Tagging Your Amazon ECS Resources](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ecs-using-tags.html) in the Amazon Elastic Container Service Developer Guide.
@@ -3137,12 +3139,12 @@ extension CloudWatchEventsClientTypes {
             self.taskDefinitionArn = taskDefinitionArn
         }
     }
-
 }
 
 extension CloudWatchEventsClientTypes {
+
     /// These are custom parameter to be used when the target is an API Gateway REST APIs or EventBridge ApiDestinations. In the latter case, these are merged with any InvocationParameters specified on the Connection, with any values from the Connection taking precedence.
-    public struct HttpParameters {
+    public struct HttpParameters: Swift.Sendable {
         /// The headers that need to be sent as part of request invoking the API Gateway REST API or EventBridge ApiDestination.
         public var headerParameters: [Swift.String: Swift.String]?
         /// The path parameter values to be used to populate API Gateway REST API or EventBridge ApiDestination path wildcards ("*").
@@ -3161,12 +3163,12 @@ extension CloudWatchEventsClientTypes {
             self.queryStringParameters = queryStringParameters
         }
     }
-
 }
 
 extension CloudWatchEventsClientTypes {
+
     /// Contains the parameters needed for you to provide custom input to a target based on one or more pieces of data extracted from the event.
-    public struct InputTransformer {
+    public struct InputTransformer: Swift.Sendable {
         /// Map of JSON paths to be extracted from the event. You can then insert these in the template in InputTemplate to produce the output you want to be sent to the target. InputPathsMap is an array key-value pairs, where each value is a valid JSON path. You can have as many as 100 key-value pairs. You must use JSON dot notation, not bracket notation. The keys cannot start with "Amazon Web Services."
         public var inputPathsMap: [Swift.String: Swift.String]?
         /// Input template where you specify placeholders that will be filled with the values of the keys from InputPathsMap to customize the data sent to the target. Enclose each InputPathsMaps value in brackets: <value> The InputTemplate must be valid JSON. If InputTemplate is a JSON object (surrounded by curly braces), the following restrictions apply:
@@ -3215,12 +3217,12 @@ extension CloudWatchEventsClientTypes {
             self.inputTemplate = inputTemplate
         }
     }
-
 }
 
 extension CloudWatchEventsClientTypes {
+
     /// This object enables you to specify a JSON path to extract from the event and use as the partition key for the Amazon Kinesis data stream, so that you can control the shard to which the event goes. If you do not include this parameter, the default is to use the eventId as the partition key.
-    public struct KinesisParameters {
+    public struct KinesisParameters: Swift.Sendable {
         /// The JSON path to be extracted from the event and used as the partition key. For more information, see [Amazon Kinesis Streams Key Concepts](https://docs.aws.amazon.com/streams/latest/dev/key-concepts.html#partition-key) in the Amazon Kinesis Streams Developer Guide.
         /// This member is required.
         public var partitionKeyPath: Swift.String?
@@ -3232,12 +3234,12 @@ extension CloudWatchEventsClientTypes {
             self.partitionKeyPath = partitionKeyPath
         }
     }
-
 }
 
 extension CloudWatchEventsClientTypes {
+
     /// These are custom parameters to be used when the target is a Amazon Redshift cluster to invoke the Amazon Redshift Data API ExecuteStatement based on EventBridge events.
-    public struct RedshiftDataParameters {
+    public struct RedshiftDataParameters: Swift.Sendable {
         /// The name of the database. Required when authenticating using temporary credentials.
         /// This member is required.
         public var database: Swift.String?
@@ -3270,12 +3272,12 @@ extension CloudWatchEventsClientTypes {
             self.withEvent = withEvent
         }
     }
-
 }
 
 extension CloudWatchEventsClientTypes {
+
     /// A RetryPolicy object that includes information about the retry policy settings.
-    public struct RetryPolicy {
+    public struct RetryPolicy: Swift.Sendable {
         /// The maximum amount of time, in seconds, to continue to make retry attempts.
         public var maximumEventAgeInSeconds: Swift.Int?
         /// The maximum number of retry attempts to make before the request fails. Retry attempts continue until either the maximum number of attempts is made or until the duration of the MaximumEventAgeInSeconds is met.
@@ -3290,12 +3292,12 @@ extension CloudWatchEventsClientTypes {
             self.maximumRetryAttempts = maximumRetryAttempts
         }
     }
-
 }
 
 extension CloudWatchEventsClientTypes {
+
     /// Information about the EC2 instances that are to be sent the command, specified as key-value pairs. Each RunCommandTarget block can include only one key, but this key may specify multiple values.
-    public struct RunCommandTarget {
+    public struct RunCommandTarget: Swift.Sendable {
         /// Can be either tag: tag-key or InstanceIds.
         /// This member is required.
         public var key: Swift.String?
@@ -3312,12 +3314,12 @@ extension CloudWatchEventsClientTypes {
             self.values = values
         }
     }
-
 }
 
 extension CloudWatchEventsClientTypes {
+
     /// This parameter contains the criteria (either InstanceIds or a tag) used to specify which EC2 instances are to be sent the command.
-    public struct RunCommandParameters {
+    public struct RunCommandParameters: Swift.Sendable {
         /// Currently, we support including only one RunCommandTarget block, which specifies either an array of InstanceIds or a tag.
         /// This member is required.
         public var runCommandTargets: [CloudWatchEventsClientTypes.RunCommandTarget]?
@@ -3329,12 +3331,12 @@ extension CloudWatchEventsClientTypes {
             self.runCommandTargets = runCommandTargets
         }
     }
-
 }
 
 extension CloudWatchEventsClientTypes {
+
     /// Name/Value pair of a parameter to start execution of a SageMaker Model Building Pipeline.
-    public struct SageMakerPipelineParameter {
+    public struct SageMakerPipelineParameter: Swift.Sendable {
         /// Name of parameter to start execution of a SageMaker Model Building Pipeline.
         /// This member is required.
         public var name: Swift.String?
@@ -3351,12 +3353,12 @@ extension CloudWatchEventsClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension CloudWatchEventsClientTypes {
+
     /// These are custom parameters to use when the target is a SageMaker Model Building Pipeline that starts based on EventBridge events.
-    public struct SageMakerPipelineParameters {
+    public struct SageMakerPipelineParameters: Swift.Sendable {
         /// List of Parameter names and values for SageMaker Model Building Pipeline execution.
         public var pipelineParameterList: [CloudWatchEventsClientTypes.SageMakerPipelineParameter]?
 
@@ -3367,12 +3369,12 @@ extension CloudWatchEventsClientTypes {
             self.pipelineParameterList = pipelineParameterList
         }
     }
-
 }
 
 extension CloudWatchEventsClientTypes {
+
     /// This structure includes the custom parameter to be used when the target is an SQS FIFO queue.
-    public struct SqsParameters {
+    public struct SqsParameters: Swift.Sendable {
         /// The FIFO message group ID to use as the target.
         public var messageGroupId: Swift.String?
 
@@ -3383,12 +3385,12 @@ extension CloudWatchEventsClientTypes {
             self.messageGroupId = messageGroupId
         }
     }
-
 }
 
 extension CloudWatchEventsClientTypes {
+
     /// Targets are the resources to be invoked when a rule is triggered. For a complete list of services and resources that can be set as a target, see [PutTargets](https://docs.aws.amazon.com/eventbridge/latest/APIReference/API_PutTargets.html). If you are setting the event bus of another account as the target, and that account granted permission to your account through an organization instead of directly by the account ID, then you must specify a RoleArn with proper permissions in the Target structure. For more information, see [Sending and Receiving Events Between Amazon Web Services Accounts](https://docs.aws.amazon.com/eventbridge/latest/userguide/eventbridge-cross-account-event-delivery.html) in the Amazon EventBridge User Guide.
-    public struct Target {
+    public struct Target: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the target.
         /// This member is required.
         public var arn: Swift.String?
@@ -3461,10 +3463,9 @@ extension CloudWatchEventsClientTypes {
             self.sqsParameters = sqsParameters
         }
     }
-
 }
 
-public struct ListTargetsByRuleOutput {
+public struct ListTargetsByRuleOutput: Swift.Sendable {
     /// Indicates whether there are additional results to retrieve. If there are no more results, the value is null.
     public var nextToken: Swift.String?
     /// The targets assigned to the rule.
@@ -3481,8 +3482,9 @@ public struct ListTargetsByRuleOutput {
 }
 
 extension CloudWatchEventsClientTypes {
+
     /// Represents an event to be submitted.
-    public struct PutEventsRequestEntry {
+    public struct PutEventsRequestEntry: Swift.Sendable {
         /// A valid JSON string. There is no other schema imposed. The JSON string may contain fields and nested subobjects.
         public var detail: Swift.String?
         /// Free-form string used to decide what fields to expect in the event detail.
@@ -3517,10 +3519,9 @@ extension CloudWatchEventsClientTypes {
             self.traceHeader = traceHeader
         }
     }
-
 }
 
-public struct PutEventsInput {
+public struct PutEventsInput: Swift.Sendable {
     /// The entry that defines an event in your system. You can specify several parameters for the entry such as the source and type of the event, resources associated with the event, and so on.
     /// This member is required.
     public var entries: [CloudWatchEventsClientTypes.PutEventsRequestEntry]?
@@ -3534,8 +3535,9 @@ public struct PutEventsInput {
 }
 
 extension CloudWatchEventsClientTypes {
+
     /// Represents an event that failed to be submitted.
-    public struct PutEventsResultEntry {
+    public struct PutEventsResultEntry: Swift.Sendable {
         /// The error code that indicates why the event submission failed.
         public var errorCode: Swift.String?
         /// The error message that explains why the event submission failed.
@@ -3554,10 +3556,9 @@ extension CloudWatchEventsClientTypes {
             self.eventId = eventId
         }
     }
-
 }
 
-public struct PutEventsOutput {
+public struct PutEventsOutput: Swift.Sendable {
     /// The successfully and unsuccessfully ingested events results. If the ingestion was successful, the entry has the event ID in it. Otherwise, you can use the error code and error message to identify the problem with the entry.
     public var entries: [CloudWatchEventsClientTypes.PutEventsResultEntry]?
     /// The number of failed entries.
@@ -3574,8 +3575,9 @@ public struct PutEventsOutput {
 }
 
 extension CloudWatchEventsClientTypes {
+
     /// The details about an event generated by an SaaS partner.
-    public struct PutPartnerEventsRequestEntry {
+    public struct PutPartnerEventsRequestEntry: Swift.Sendable {
         /// A valid JSON string. There is no other schema imposed. The JSON string may contain fields and nested subobjects.
         public var detail: Swift.String?
         /// A free-form string used to decide what fields to expect in the event detail.
@@ -3602,10 +3604,9 @@ extension CloudWatchEventsClientTypes {
             self.time = time
         }
     }
-
 }
 
-public struct PutPartnerEventsInput {
+public struct PutPartnerEventsInput: Swift.Sendable {
     /// The list of events to write to the event bus.
     /// This member is required.
     public var entries: [CloudWatchEventsClientTypes.PutPartnerEventsRequestEntry]?
@@ -3619,8 +3620,9 @@ public struct PutPartnerEventsInput {
 }
 
 extension CloudWatchEventsClientTypes {
+
     /// Represents an event that a partner tried to generate, but failed.
-    public struct PutPartnerEventsResultEntry {
+    public struct PutPartnerEventsResultEntry: Swift.Sendable {
         /// The error code that indicates why the event submission failed.
         public var errorCode: Swift.String?
         /// The error message that explains why the event submission failed.
@@ -3639,10 +3641,9 @@ extension CloudWatchEventsClientTypes {
             self.eventId = eventId
         }
     }
-
 }
 
-public struct PutPartnerEventsOutput {
+public struct PutPartnerEventsOutput: Swift.Sendable {
     /// The list of events from this operation that were successfully written to the partner event bus.
     public var entries: [CloudWatchEventsClientTypes.PutPartnerEventsResultEntry]?
     /// The number of events from this operation that could not be written to the partner event bus.
@@ -3683,8 +3684,9 @@ public struct PolicyLengthExceededException: ClientRuntime.ModeledError, AWSClie
 }
 
 extension CloudWatchEventsClientTypes {
+
     /// A JSON string which you can use to limit the event bus permissions you are granting to only accounts that fulfill the condition. Currently, the only supported condition is membership in a certain Amazon Web Services organization. The string must contain Type, Key, and Value fields. The Value field specifies the ID of the Amazon Web Services organization. Following is an example value for Condition: '{"Type" : "StringEquals", "Key": "aws:PrincipalOrgID", "Value": "o-1234567890"}'
-    public struct Condition {
+    public struct Condition: Swift.Sendable {
         /// Specifies the key for the condition. Currently the only supported key is aws:PrincipalOrgID.
         /// This member is required.
         public var key: Swift.String?
@@ -3706,10 +3708,9 @@ extension CloudWatchEventsClientTypes {
             self.value = value
         }
     }
-
 }
 
-public struct PutPermissionInput {
+public struct PutPermissionInput: Swift.Sendable {
     /// The action that you are enabling the other account to perform.
     public var action: Swift.String?
     /// This parameter enables you to limit the permission to accounts that fulfill a certain condition, such as being a member of a certain Amazon Web Services organization. For more information about Amazon Web Services Organizations, see [What Is Amazon Web Services Organizations](https://docs.aws.amazon.com/organizations/latest/userguide/orgs_introduction.html) in the Amazon Web Services Organizations User Guide. If you specify Condition with an Amazon Web Services organization ID, and specify "*" as the value for Principal, you grant permission to all the accounts in the named organization. The Condition is a JSON string which must contain Type, Key, and Value fields.
@@ -3741,7 +3742,7 @@ public struct PutPermissionInput {
     }
 }
 
-public struct PutRuleInput {
+public struct PutRuleInput: Swift.Sendable {
     /// A description of the rule.
     public var description: Swift.String?
     /// The name or ARN of the event bus to associate with this rule. If you omit this, the default event bus is used.
@@ -3782,7 +3783,7 @@ public struct PutRuleInput {
     }
 }
 
-public struct PutRuleOutput {
+public struct PutRuleOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the rule.
     public var ruleArn: Swift.String?
 
@@ -3794,7 +3795,7 @@ public struct PutRuleOutput {
     }
 }
 
-public struct PutTargetsInput {
+public struct PutTargetsInput: Swift.Sendable {
     /// The name or ARN of the event bus associated with the rule. If you omit this, the default event bus is used.
     public var eventBusName: Swift.String?
     /// The name of the rule.
@@ -3817,8 +3818,9 @@ public struct PutTargetsInput {
 }
 
 extension CloudWatchEventsClientTypes {
+
     /// Represents a target that failed to be added to a rule.
-    public struct PutTargetsResultEntry {
+    public struct PutTargetsResultEntry: Swift.Sendable {
         /// The error code that indicates why the target addition failed. If the value is ConcurrentModificationException, too many requests were made at the same time.
         public var errorCode: Swift.String?
         /// The error message that explains why the target addition failed.
@@ -3837,10 +3839,9 @@ extension CloudWatchEventsClientTypes {
             self.targetId = targetId
         }
     }
-
 }
 
-public struct PutTargetsOutput {
+public struct PutTargetsOutput: Swift.Sendable {
     /// The failed target entries.
     public var failedEntries: [CloudWatchEventsClientTypes.PutTargetsResultEntry]?
     /// The number of failed entries.
@@ -3856,7 +3857,7 @@ public struct PutTargetsOutput {
     }
 }
 
-public struct RemovePermissionInput {
+public struct RemovePermissionInput: Swift.Sendable {
     /// The name of the event bus to revoke permissions for. If you omit this, the default event bus is used.
     public var eventBusName: Swift.String?
     /// Specifies whether to remove all permissions.
@@ -3876,7 +3877,7 @@ public struct RemovePermissionInput {
     }
 }
 
-public struct RemoveTargetsInput {
+public struct RemoveTargetsInput: Swift.Sendable {
     /// The name or ARN of the event bus associated with the rule. If you omit this, the default event bus is used.
     public var eventBusName: Swift.String?
     /// If this is a managed rule, created by an Amazon Web Services service on your behalf, you must specify Force as True to remove targets. This parameter is ignored for rules that are not managed rules. You can check whether a rule is a managed rule by using DescribeRule or ListRules and checking the ManagedBy field of the response.
@@ -3903,8 +3904,9 @@ public struct RemoveTargetsInput {
 }
 
 extension CloudWatchEventsClientTypes {
+
     /// Represents a target that failed to be removed from a rule.
-    public struct RemoveTargetsResultEntry {
+    public struct RemoveTargetsResultEntry: Swift.Sendable {
         /// The error code that indicates why the target removal failed. If the value is ConcurrentModificationException, too many requests were made at the same time.
         public var errorCode: Swift.String?
         /// The error message that explains why the target removal failed.
@@ -3923,10 +3925,9 @@ extension CloudWatchEventsClientTypes {
             self.targetId = targetId
         }
     }
-
 }
 
-public struct RemoveTargetsOutput {
+public struct RemoveTargetsOutput: Swift.Sendable {
     /// The failed target entries.
     public var failedEntries: [CloudWatchEventsClientTypes.RemoveTargetsResultEntry]?
     /// The number of failed entries.
@@ -3942,7 +3943,7 @@ public struct RemoveTargetsOutput {
     }
 }
 
-public struct StartReplayInput {
+public struct StartReplayInput: Swift.Sendable {
     /// A description for the replay to start.
     public var description: Swift.String?
     /// A ReplayDestination object that includes details about the destination for the replay.
@@ -3979,7 +3980,7 @@ public struct StartReplayInput {
     }
 }
 
-public struct StartReplayOutput {
+public struct StartReplayOutput: Swift.Sendable {
     /// The ARN of the replay.
     public var replayArn: Swift.String?
     /// The time at which the replay started.
@@ -4003,7 +4004,7 @@ public struct StartReplayOutput {
     }
 }
 
-public struct TagResourceInput {
+public struct TagResourceInput: Swift.Sendable {
     /// The ARN of the EventBridge resource that you're adding tags to.
     /// This member is required.
     public var resourceARN: Swift.String?
@@ -4021,12 +4022,12 @@ public struct TagResourceInput {
     }
 }
 
-public struct TagResourceOutput {
+public struct TagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct TestEventPatternInput {
+public struct TestEventPatternInput: Swift.Sendable {
     /// The event, in JSON format, to test against the event pattern. The JSON must follow the format specified in [Amazon Web Services Events](https://docs.aws.amazon.com/eventbridge/latest/userguide/aws-events.html), and the following fields are mandatory:
     ///
     /// * id
@@ -4058,7 +4059,7 @@ public struct TestEventPatternInput {
     }
 }
 
-public struct TestEventPatternOutput {
+public struct TestEventPatternOutput: Swift.Sendable {
     /// Indicates whether the event matches the event pattern.
     public var result: Swift.Bool
 
@@ -4070,7 +4071,7 @@ public struct TestEventPatternOutput {
     }
 }
 
-public struct UntagResourceInput {
+public struct UntagResourceInput: Swift.Sendable {
     /// The ARN of the EventBridge resource from which you are removing tags.
     /// This member is required.
     public var resourceARN: Swift.String?
@@ -4088,12 +4089,12 @@ public struct UntagResourceInput {
     }
 }
 
-public struct UntagResourceOutput {
+public struct UntagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdateApiDestinationInput {
+public struct UpdateApiDestinationInput: Swift.Sendable {
     /// The ARN of the connection to use for the API destination.
     public var connectionArn: Swift.String?
     /// The name of the API destination to update.
@@ -4126,7 +4127,7 @@ public struct UpdateApiDestinationInput {
     }
 }
 
-public struct UpdateApiDestinationOutput {
+public struct UpdateApiDestinationOutput: Swift.Sendable {
     /// The ARN of the API destination that was updated.
     public var apiDestinationArn: Swift.String?
     /// The state of the API destination that was updated.
@@ -4150,7 +4151,7 @@ public struct UpdateApiDestinationOutput {
     }
 }
 
-public struct UpdateArchiveInput {
+public struct UpdateArchiveInput: Swift.Sendable {
     /// The name of the archive to update.
     /// This member is required.
     public var archiveName: Swift.String?
@@ -4175,7 +4176,7 @@ public struct UpdateArchiveInput {
     }
 }
 
-public struct UpdateArchiveOutput {
+public struct UpdateArchiveOutput: Swift.Sendable {
     /// The ARN of the archive.
     public var archiveArn: Swift.String?
     /// The time at which the archive was updated.
@@ -4200,8 +4201,9 @@ public struct UpdateArchiveOutput {
 }
 
 extension CloudWatchEventsClientTypes {
+
     /// Contains the API key authorization parameters to use to update the connection.
-    public struct UpdateConnectionApiKeyAuthRequestParameters {
+    public struct UpdateConnectionApiKeyAuthRequestParameters: Swift.Sendable {
         /// The name of the API key to use for authorization.
         public var apiKeyName: Swift.String?
         /// The value associated with teh API key to use for authorization.
@@ -4216,7 +4218,6 @@ extension CloudWatchEventsClientTypes {
             self.apiKeyValue = apiKeyValue
         }
     }
-
 }
 
 extension CloudWatchEventsClientTypes.UpdateConnectionApiKeyAuthRequestParameters: Swift.CustomDebugStringConvertible {
@@ -4225,8 +4226,9 @@ extension CloudWatchEventsClientTypes.UpdateConnectionApiKeyAuthRequestParameter
 }
 
 extension CloudWatchEventsClientTypes {
+
     /// Contains the Basic authorization parameters for the connection.
-    public struct UpdateConnectionBasicAuthRequestParameters {
+    public struct UpdateConnectionBasicAuthRequestParameters: Swift.Sendable {
         /// The password associated with the user name to use for Basic authorization.
         public var password: Swift.String?
         /// The user name to use for Basic authorization.
@@ -4241,7 +4243,6 @@ extension CloudWatchEventsClientTypes {
             self.username = username
         }
     }
-
 }
 
 extension CloudWatchEventsClientTypes.UpdateConnectionBasicAuthRequestParameters: Swift.CustomDebugStringConvertible {
@@ -4250,8 +4251,9 @@ extension CloudWatchEventsClientTypes.UpdateConnectionBasicAuthRequestParameters
 }
 
 extension CloudWatchEventsClientTypes {
+
     /// Contains the OAuth authorization parameters to use for the connection.
-    public struct UpdateConnectionOAuthClientRequestParameters {
+    public struct UpdateConnectionOAuthClientRequestParameters: Swift.Sendable {
         /// The client ID to use for OAuth authorization.
         public var clientID: Swift.String?
         /// The client secret assciated with the client ID to use for OAuth authorization.
@@ -4266,7 +4268,6 @@ extension CloudWatchEventsClientTypes {
             self.clientSecret = clientSecret
         }
     }
-
 }
 
 extension CloudWatchEventsClientTypes.UpdateConnectionOAuthClientRequestParameters: Swift.CustomDebugStringConvertible {
@@ -4275,8 +4276,9 @@ extension CloudWatchEventsClientTypes.UpdateConnectionOAuthClientRequestParamete
 }
 
 extension CloudWatchEventsClientTypes {
+
     /// Contains the OAuth request parameters to use for the connection.
-    public struct UpdateConnectionOAuthRequestParameters {
+    public struct UpdateConnectionOAuthRequestParameters: Swift.Sendable {
         /// The URL to the authorization endpoint when OAuth is specified as the authorization type.
         public var authorizationEndpoint: Swift.String?
         /// A UpdateConnectionOAuthClientRequestParameters object that contains the client parameters to use for the connection when OAuth is specified as the authorization type.
@@ -4299,12 +4301,12 @@ extension CloudWatchEventsClientTypes {
             self.oAuthHttpParameters = oAuthHttpParameters
         }
     }
-
 }
 
 extension CloudWatchEventsClientTypes {
+
     /// Contains the additional parameters to use for the connection.
-    public struct UpdateConnectionAuthRequestParameters {
+    public struct UpdateConnectionAuthRequestParameters: Swift.Sendable {
         /// A UpdateConnectionApiKeyAuthRequestParameters object that contains the authorization parameters for API key authorization.
         public var apiKeyAuthParameters: CloudWatchEventsClientTypes.UpdateConnectionApiKeyAuthRequestParameters?
         /// A UpdateConnectionBasicAuthRequestParameters object that contains the authorization parameters for Basic authorization.
@@ -4327,10 +4329,9 @@ extension CloudWatchEventsClientTypes {
             self.oAuthParameters = oAuthParameters
         }
     }
-
 }
 
-public struct UpdateConnectionInput {
+public struct UpdateConnectionInput: Swift.Sendable {
     /// The authorization parameters to use for the connection.
     public var authParameters: CloudWatchEventsClientTypes.UpdateConnectionAuthRequestParameters?
     /// The type of authorization to use for the connection.
@@ -4355,7 +4356,7 @@ public struct UpdateConnectionInput {
     }
 }
 
-public struct UpdateConnectionOutput {
+public struct UpdateConnectionOutput: Swift.Sendable {
     /// The ARN of the connection that was updated.
     public var connectionArn: Swift.String?
     /// The state of the connection that was updated.

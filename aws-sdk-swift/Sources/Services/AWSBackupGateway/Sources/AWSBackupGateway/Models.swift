@@ -83,7 +83,7 @@ public struct ConflictException: ClientRuntime.ModeledError, AWSClientRuntime.AW
     }
 }
 
-public struct AssociateGatewayToServerInput {
+public struct AssociateGatewayToServerInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the gateway. Use the ListGateways operation to return a list of gateways for your account and Amazon Web Services Region.
     /// This member is required.
     public var gatewayArn: Swift.String?
@@ -101,7 +101,7 @@ public struct AssociateGatewayToServerInput {
     }
 }
 
-public struct AssociateGatewayToServerOutput {
+public struct AssociateGatewayToServerOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of a gateway.
     public var gatewayArn: Swift.String?
 
@@ -141,7 +141,7 @@ public struct ResourceNotFoundException: ClientRuntime.ModeledError, AWSClientRu
     }
 }
 
-public struct GetBandwidthRateLimitScheduleInput {
+public struct GetBandwidthRateLimitScheduleInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the gateway. Use the [ListGateways](https://docs.aws.amazon.com/aws-backup/latest/devguide/API_BGW_ListGateways.html) operation to return a list of gateways for your account and Amazon Web Services Region.
     /// This member is required.
     public var gatewayArn: Swift.String?
@@ -155,8 +155,9 @@ public struct GetBandwidthRateLimitScheduleInput {
 }
 
 extension BackupGatewayClientTypes {
+
     /// Describes a bandwidth rate limit interval for a gateway. A bandwidth rate limit schedule consists of one or more bandwidth rate limit intervals. A bandwidth rate limit interval defines a period of time on one or more days of the week, during which bandwidth rate limits are specified for uploading, downloading, or both.
-    public struct BandwidthRateLimitInterval {
+    public struct BandwidthRateLimitInterval: Swift.Sendable {
         /// The average upload rate limit component of the bandwidth rate limit interval, in bits per second. This field does not appear in the response if the upload rate limit is not set. For Backup Gateway, the minimum value is (Value).
         public var averageUploadRateLimitInBitsPerSec: Swift.Int?
         /// The days of the week component of the bandwidth rate limit interval, represented as ordinal numbers from 0 to 6, where 0 represents Sunday and 6 represents Saturday.
@@ -192,10 +193,9 @@ extension BackupGatewayClientTypes {
             self.startMinuteOfHour = startMinuteOfHour
         }
     }
-
 }
 
-public struct GetBandwidthRateLimitScheduleOutput {
+public struct GetBandwidthRateLimitScheduleOutput: Swift.Sendable {
     /// An array containing bandwidth rate limit schedule intervals for a gateway. When no bandwidth rate limit intervals have been scheduled, the array is empty.
     public var bandwidthRateLimitIntervals: [BackupGatewayClientTypes.BandwidthRateLimitInterval]?
     /// The Amazon Resource Name (ARN) of the gateway. Use the [ListGateways](https://docs.aws.amazon.com/aws-backup/latest/devguide/API_BGW_ListGateways.html) operation to return a list of gateways for your account and Amazon Web Services Region.
@@ -211,7 +211,7 @@ public struct GetBandwidthRateLimitScheduleOutput {
     }
 }
 
-public struct PutBandwidthRateLimitScheduleInput {
+public struct PutBandwidthRateLimitScheduleInput: Swift.Sendable {
     /// An array containing bandwidth rate limit schedule intervals for a gateway. When no bandwidth rate limit intervals have been scheduled, the array is empty.
     /// This member is required.
     public var bandwidthRateLimitIntervals: [BackupGatewayClientTypes.BandwidthRateLimitInterval]?
@@ -229,7 +229,7 @@ public struct PutBandwidthRateLimitScheduleInput {
     }
 }
 
-public struct PutBandwidthRateLimitScheduleOutput {
+public struct PutBandwidthRateLimitScheduleOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the gateway. Use the [ListGateways](https://docs.aws.amazon.com/aws-backup/latest/devguide/API_BGW_ListGateways.html) operation to return a list of gateways for your account and Amazon Web Services Region.
     public var gatewayArn: Swift.String?
 
@@ -243,7 +243,7 @@ public struct PutBandwidthRateLimitScheduleOutput {
 
 extension BackupGatewayClientTypes {
 
-    public enum GatewayType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum GatewayType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case backupVm
         case sdkUnknown(Swift.String)
 
@@ -268,8 +268,9 @@ extension BackupGatewayClientTypes {
 }
 
 extension BackupGatewayClientTypes {
+
     /// A key-value pair you can use to manage, filter, and search for your resources. Allowed characters include UTF-8 letters, numbers, spaces, and the following characters: + - = . _ : /.
-    public struct Tag {
+    public struct Tag: Swift.Sendable {
         /// The key part of a tag's key-value pair. The key can't start with aws:.
         /// This member is required.
         public var key: Swift.String?
@@ -286,10 +287,9 @@ extension BackupGatewayClientTypes {
             self.value = value
         }
     }
-
 }
 
-public struct CreateGatewayInput {
+public struct CreateGatewayInput: Swift.Sendable {
     /// The activation key of the created gateway.
     /// This member is required.
     public var activationKey: Swift.String?
@@ -316,7 +316,7 @@ public struct CreateGatewayInput {
     }
 }
 
-public struct CreateGatewayOutput {
+public struct CreateGatewayOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the gateway you create.
     public var gatewayArn: Swift.String?
 
@@ -328,7 +328,7 @@ public struct CreateGatewayOutput {
     }
 }
 
-public struct DeleteGatewayInput {
+public struct DeleteGatewayInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the gateway to delete.
     /// This member is required.
     public var gatewayArn: Swift.String?
@@ -341,7 +341,7 @@ public struct DeleteGatewayInput {
     }
 }
 
-public struct DeleteGatewayOutput {
+public struct DeleteGatewayOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the gateway you deleted.
     public var gatewayArn: Swift.String?
 
@@ -353,7 +353,7 @@ public struct DeleteGatewayOutput {
     }
 }
 
-public struct DisassociateGatewayFromServerInput {
+public struct DisassociateGatewayFromServerInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the gateway to disassociate.
     /// This member is required.
     public var gatewayArn: Swift.String?
@@ -366,7 +366,7 @@ public struct DisassociateGatewayFromServerInput {
     }
 }
 
-public struct DisassociateGatewayFromServerOutput {
+public struct DisassociateGatewayFromServerOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the gateway you disassociated.
     public var gatewayArn: Swift.String?
 
@@ -378,7 +378,7 @@ public struct DisassociateGatewayFromServerOutput {
     }
 }
 
-public struct GetGatewayInput {
+public struct GetGatewayInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the gateway.
     /// This member is required.
     public var gatewayArn: Swift.String?
@@ -392,8 +392,9 @@ public struct GetGatewayInput {
 }
 
 extension BackupGatewayClientTypes {
+
     /// This is your gateway's weekly maintenance start time including the day and time of the week. Note that values are in terms of the gateway's time zone. Can be weekly or monthly.
-    public struct MaintenanceStartTime {
+    public struct MaintenanceStartTime: Swift.Sendable {
         /// The day of the month component of the maintenance start time represented as an ordinal number from 1 to 28, where 1 represents the first day of the month and 28 represents the last day of the month.
         public var dayOfMonth: Swift.Int?
         /// An ordinal number between 0 and 6 that represents the day of the week, where 0 represents Sunday and 6 represents Saturday. The day of week is in the time zone of the gateway.
@@ -418,12 +419,12 @@ extension BackupGatewayClientTypes {
             self.minuteOfHour = minuteOfHour
         }
     }
-
 }
 
 extension BackupGatewayClientTypes {
+
     /// The details of gateway.
-    public struct GatewayDetails {
+    public struct GatewayDetails: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the gateway. Use the ListGateways operation to return a list of gateways for your account and Amazon Web Services Region.
         public var gatewayArn: Swift.String?
         /// The display name of the gateway.
@@ -462,10 +463,9 @@ extension BackupGatewayClientTypes {
             self.vpcEndpoint = vpcEndpoint
         }
     }
-
 }
 
-public struct GetGatewayOutput {
+public struct GetGatewayOutput: Swift.Sendable {
     /// By providing the ARN (Amazon Resource Name), this API returns the gateway.
     public var gateway: BackupGatewayClientTypes.GatewayDetails?
 
@@ -477,7 +477,7 @@ public struct GetGatewayOutput {
     }
 }
 
-public struct ListGatewaysInput {
+public struct ListGatewaysInput: Swift.Sendable {
     /// The maximum number of gateways to list.
     public var maxResults: Swift.Int?
     /// The next item following a partial list of returned resources. For example, if a request is made to return MaxResults number of resources, NextToken allows you to return more items in your list starting at the location pointed to by the next token.
@@ -494,8 +494,9 @@ public struct ListGatewaysInput {
 }
 
 extension BackupGatewayClientTypes {
+
     /// A gateway is an Backup Gateway appliance that runs on the customer's network to provide seamless connectivity to backup storage in the Amazon Web Services Cloud.
-    public struct Gateway {
+    public struct Gateway: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the gateway. Use the ListGateways operation to return a list of gateways for your account and Amazon Web Services Region.
         public var gatewayArn: Swift.String?
         /// The display name of the gateway.
@@ -522,10 +523,9 @@ extension BackupGatewayClientTypes {
             self.lastSeenTime = lastSeenTime
         }
     }
-
 }
 
-public struct ListGatewaysOutput {
+public struct ListGatewaysOutput: Swift.Sendable {
     /// A list of your gateways.
     public var gateways: [BackupGatewayClientTypes.Gateway]?
     /// The next item following a partial list of returned resources. For example, if a request is made to return maxResults number of resources, NextToken allows you to return more items in your list starting at the location pointed to by the next token.
@@ -541,7 +541,7 @@ public struct ListGatewaysOutput {
     }
 }
 
-public struct PutMaintenanceStartTimeInput {
+public struct PutMaintenanceStartTimeInput: Swift.Sendable {
     /// The day of the month start maintenance on a gateway. Valid values range from Sunday to Saturday.
     public var dayOfMonth: Swift.Int?
     /// The day of the week to start maintenance on a gateway.
@@ -572,7 +572,7 @@ public struct PutMaintenanceStartTimeInput {
     }
 }
 
-public struct PutMaintenanceStartTimeOutput {
+public struct PutMaintenanceStartTimeOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of a gateway for which you set the maintenance start time.
     public var gatewayArn: Swift.String?
 
@@ -584,7 +584,7 @@ public struct PutMaintenanceStartTimeOutput {
     }
 }
 
-public struct TestHypervisorConfigurationInput {
+public struct TestHypervisorConfigurationInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the gateway to the hypervisor to test.
     /// This member is required.
     public var gatewayArn: Swift.String?
@@ -615,12 +615,12 @@ extension TestHypervisorConfigurationInput: Swift.CustomDebugStringConvertible {
         "TestHypervisorConfigurationInput(gatewayArn: \(Swift.String(describing: gatewayArn)), host: \(Swift.String(describing: host)), password: \"CONTENT_REDACTED\", username: \"CONTENT_REDACTED\")"}
 }
 
-public struct TestHypervisorConfigurationOutput {
+public struct TestHypervisorConfigurationOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdateGatewayInformationInput {
+public struct UpdateGatewayInformationInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the gateway to update.
     /// This member is required.
     public var gatewayArn: Swift.String?
@@ -637,7 +637,7 @@ public struct UpdateGatewayInformationInput {
     }
 }
 
-public struct UpdateGatewayInformationOutput {
+public struct UpdateGatewayInformationOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the gateway you updated.
     public var gatewayArn: Swift.String?
 
@@ -649,7 +649,7 @@ public struct UpdateGatewayInformationOutput {
     }
 }
 
-public struct UpdateGatewaySoftwareNowInput {
+public struct UpdateGatewaySoftwareNowInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the gateway to be updated.
     /// This member is required.
     public var gatewayArn: Swift.String?
@@ -662,7 +662,7 @@ public struct UpdateGatewaySoftwareNowInput {
     }
 }
 
-public struct UpdateGatewaySoftwareNowOutput {
+public struct UpdateGatewaySoftwareNowOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the gateway you updated.
     public var gatewayArn: Swift.String?
 
@@ -674,7 +674,7 @@ public struct UpdateGatewaySoftwareNowOutput {
     }
 }
 
-public struct DeleteHypervisorInput {
+public struct DeleteHypervisorInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the hypervisor to delete.
     /// This member is required.
     public var hypervisorArn: Swift.String?
@@ -687,7 +687,7 @@ public struct DeleteHypervisorInput {
     }
 }
 
-public struct DeleteHypervisorOutput {
+public struct DeleteHypervisorOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the hypervisor you deleted.
     public var hypervisorArn: Swift.String?
 
@@ -699,7 +699,7 @@ public struct DeleteHypervisorOutput {
     }
 }
 
-public struct GetHypervisorInput {
+public struct GetHypervisorInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the hypervisor.
     /// This member is required.
     public var hypervisorArn: Swift.String?
@@ -714,7 +714,7 @@ public struct GetHypervisorInput {
 
 extension BackupGatewayClientTypes {
 
-    public enum SyncMetadataStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SyncMetadataStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case created
         case failed
         case partiallyFailed
@@ -752,7 +752,7 @@ extension BackupGatewayClientTypes {
 
 extension BackupGatewayClientTypes {
 
-    public enum HypervisorState: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum HypervisorState: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case error
         case offline
         case online
@@ -786,8 +786,9 @@ extension BackupGatewayClientTypes {
 }
 
 extension BackupGatewayClientTypes {
+
     /// These are the details of the specified hypervisor. A hypervisor is hardware, software, or firmware that creates and manages virtual machines, and allocates resources to them.
-    public struct HypervisorDetails {
+    public struct HypervisorDetails: Swift.Sendable {
         /// The server host of the hypervisor. This can be either an IP address or a fully-qualified domain name (FQDN).
         public var host: Swift.String?
         /// The Amazon Resource Name (ARN) of the hypervisor.
@@ -830,10 +831,9 @@ extension BackupGatewayClientTypes {
             self.state = state
         }
     }
-
 }
 
-public struct GetHypervisorOutput {
+public struct GetHypervisorOutput: Swift.Sendable {
     /// Details about the requested hypervisor.
     public var hypervisor: BackupGatewayClientTypes.HypervisorDetails?
 
@@ -845,7 +845,7 @@ public struct GetHypervisorOutput {
     }
 }
 
-public struct GetHypervisorPropertyMappingsInput {
+public struct GetHypervisorPropertyMappingsInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the hypervisor.
     /// This member is required.
     public var hypervisorArn: Swift.String?
@@ -859,8 +859,9 @@ public struct GetHypervisorPropertyMappingsInput {
 }
 
 extension BackupGatewayClientTypes {
+
     /// This displays the mapping of on-premises VMware tags to the corresponding Amazon Web Services tags.
-    public struct VmwareToAwsTagMapping {
+    public struct VmwareToAwsTagMapping: Swift.Sendable {
         /// The key part of the Amazon Web Services tag's key-value pair.
         /// This member is required.
         public var awsTagKey: Swift.String?
@@ -887,10 +888,9 @@ extension BackupGatewayClientTypes {
             self.vmwareTagName = vmwareTagName
         }
     }
-
 }
 
-public struct GetHypervisorPropertyMappingsOutput {
+public struct GetHypervisorPropertyMappingsOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the hypervisor.
     public var hypervisorArn: Swift.String?
     /// The Amazon Resource Name (ARN) of the IAM role.
@@ -910,7 +910,7 @@ public struct GetHypervisorPropertyMappingsOutput {
     }
 }
 
-public struct PutHypervisorPropertyMappingsInput {
+public struct PutHypervisorPropertyMappingsInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the hypervisor.
     /// This member is required.
     public var hypervisorArn: Swift.String?
@@ -933,7 +933,7 @@ public struct PutHypervisorPropertyMappingsInput {
     }
 }
 
-public struct PutHypervisorPropertyMappingsOutput {
+public struct PutHypervisorPropertyMappingsOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the hypervisor.
     public var hypervisorArn: Swift.String?
 
@@ -945,7 +945,7 @@ public struct PutHypervisorPropertyMappingsOutput {
     }
 }
 
-public struct ImportHypervisorConfigurationInput {
+public struct ImportHypervisorConfigurationInput: Swift.Sendable {
     /// The server host of the hypervisor. This can be either an IP address or a fully-qualified domain name (FQDN).
     /// This member is required.
     public var host: Swift.String?
@@ -984,7 +984,7 @@ extension ImportHypervisorConfigurationInput: Swift.CustomDebugStringConvertible
         "ImportHypervisorConfigurationInput(host: \(Swift.String(describing: host)), kmsKeyArn: \(Swift.String(describing: kmsKeyArn)), name: \(Swift.String(describing: name)), tags: \(Swift.String(describing: tags)), password: \"CONTENT_REDACTED\", username: \"CONTENT_REDACTED\")"}
 }
 
-public struct ImportHypervisorConfigurationOutput {
+public struct ImportHypervisorConfigurationOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the hypervisor you disassociated.
     public var hypervisorArn: Swift.String?
 
@@ -996,7 +996,7 @@ public struct ImportHypervisorConfigurationOutput {
     }
 }
 
-public struct ListHypervisorsInput {
+public struct ListHypervisorsInput: Swift.Sendable {
     /// The maximum number of hypervisors to list.
     public var maxResults: Swift.Int?
     /// The next item following a partial list of returned resources. For example, if a request is made to return maxResults number of resources, NextToken allows you to return more items in your list starting at the location pointed to by the next token.
@@ -1013,8 +1013,9 @@ public struct ListHypervisorsInput {
 }
 
 extension BackupGatewayClientTypes {
+
     /// Represents the hypervisor's permissions to which the gateway will connect. A hypervisor is hardware, software, or firmware that creates and manages virtual machines, and allocates resources to them.
-    public struct Hypervisor {
+    public struct Hypervisor: Swift.Sendable {
         /// The server host of the hypervisor. This can be either an IP address or a fully-qualified domain name (FQDN).
         public var host: Swift.String?
         /// The Amazon Resource Name (ARN) of the hypervisor.
@@ -1041,10 +1042,9 @@ extension BackupGatewayClientTypes {
             self.state = state
         }
     }
-
 }
 
-public struct ListHypervisorsOutput {
+public struct ListHypervisorsOutput: Swift.Sendable {
     /// A list of your Hypervisor objects, ordered by their Amazon Resource Names (ARNs).
     public var hypervisors: [BackupGatewayClientTypes.Hypervisor]?
     /// The next item following a partial list of returned resources. For example, if a request is made to return maxResults number of resources, NextToken allows you to return more items in your list starting at the location pointed to by the next token.
@@ -1060,7 +1060,7 @@ public struct ListHypervisorsOutput {
     }
 }
 
-public struct StartVirtualMachinesMetadataSyncInput {
+public struct StartVirtualMachinesMetadataSyncInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the hypervisor.
     /// This member is required.
     public var hypervisorArn: Swift.String?
@@ -1073,7 +1073,7 @@ public struct StartVirtualMachinesMetadataSyncInput {
     }
 }
 
-public struct StartVirtualMachinesMetadataSyncOutput {
+public struct StartVirtualMachinesMetadataSyncOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the hypervisor.
     public var hypervisorArn: Swift.String?
 
@@ -1085,7 +1085,7 @@ public struct StartVirtualMachinesMetadataSyncOutput {
     }
 }
 
-public struct UpdateHypervisorInput {
+public struct UpdateHypervisorInput: Swift.Sendable {
     /// The updated host of the hypervisor. This can be either an IP address or a fully-qualified domain name (FQDN).
     public var host: Swift.String?
     /// The Amazon Resource Name (ARN) of the hypervisor to update.
@@ -1123,7 +1123,7 @@ extension UpdateHypervisorInput: Swift.CustomDebugStringConvertible {
         "UpdateHypervisorInput(host: \(Swift.String(describing: host)), hypervisorArn: \(Swift.String(describing: hypervisorArn)), logGroupArn: \(Swift.String(describing: logGroupArn)), name: \(Swift.String(describing: name)), password: \"CONTENT_REDACTED\", username: \"CONTENT_REDACTED\")"}
 }
 
-public struct UpdateHypervisorOutput {
+public struct UpdateHypervisorOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the hypervisor you updated.
     public var hypervisorArn: Swift.String?
 
@@ -1163,7 +1163,7 @@ public struct InternalServerException: ClientRuntime.ModeledError, AWSClientRunt
     }
 }
 
-public struct ListTagsForResourceInput {
+public struct ListTagsForResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the resource's tags to list.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -1176,7 +1176,7 @@ public struct ListTagsForResourceInput {
     }
 }
 
-public struct ListTagsForResourceOutput {
+public struct ListTagsForResourceOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the resource's tags that you listed.
     public var resourceArn: Swift.String?
     /// A list of the resource's tags.
@@ -1192,7 +1192,7 @@ public struct ListTagsForResourceOutput {
     }
 }
 
-public struct TagResourceInput {
+public struct TagResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the resource to tag.
     /// This member is required.
     public var resourceARN: Swift.String?
@@ -1210,7 +1210,7 @@ public struct TagResourceInput {
     }
 }
 
-public struct TagResourceOutput {
+public struct TagResourceOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the resource you tagged.
     public var resourceARN: Swift.String?
 
@@ -1251,7 +1251,7 @@ public struct ThrottlingException: ClientRuntime.ModeledError, AWSClientRuntime.
     }
 }
 
-public struct UntagResourceInput {
+public struct UntagResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the resource from which to remove tags.
     /// This member is required.
     public var resourceARN: Swift.String?
@@ -1269,7 +1269,7 @@ public struct UntagResourceInput {
     }
 }
 
-public struct UntagResourceOutput {
+public struct UntagResourceOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the resource from which you removed tags.
     public var resourceARN: Swift.String?
 
@@ -1309,7 +1309,7 @@ public struct ValidationException: ClientRuntime.ModeledError, AWSClientRuntime.
     }
 }
 
-public struct GetVirtualMachineInput {
+public struct GetVirtualMachineInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the virtual machine.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -1323,8 +1323,9 @@ public struct GetVirtualMachineInput {
 }
 
 extension BackupGatewayClientTypes {
+
     /// A VMware tag is a tag attached to a specific virtual machine. A [tag](https://docs.aws.amazon.com/aws-backup/latest/devguide/API_BGW_Tag.html) is a key-value pair you can use to manage, filter, and search for your resources. The content of VMware tags can be matched to Amazon Web Services tags.
-    public struct VmwareTag {
+    public struct VmwareTag: Swift.Sendable {
         /// The is the category of VMware.
         public var vmwareCategory: Swift.String?
         /// This is a user-defined description of a VMware tag.
@@ -1343,12 +1344,12 @@ extension BackupGatewayClientTypes {
             self.vmwareTagName = vmwareTagName
         }
     }
-
 }
 
 extension BackupGatewayClientTypes {
+
     /// Your VirtualMachine objects, ordered by their Amazon Resource Names (ARNs).
-    public struct VirtualMachineDetails {
+    public struct VirtualMachineDetails: Swift.Sendable {
         /// The host name of the virtual machine.
         public var hostName: Swift.String?
         /// The ID of the virtual machine's hypervisor.
@@ -1383,10 +1384,9 @@ extension BackupGatewayClientTypes {
             self.vmwareTags = vmwareTags
         }
     }
-
 }
 
-public struct GetVirtualMachineOutput {
+public struct GetVirtualMachineOutput: Swift.Sendable {
     /// This object contains the basic attributes of VirtualMachine contained by the output of GetVirtualMachine
     public var virtualMachine: BackupGatewayClientTypes.VirtualMachineDetails?
 
@@ -1398,7 +1398,7 @@ public struct GetVirtualMachineOutput {
     }
 }
 
-public struct ListVirtualMachinesInput {
+public struct ListVirtualMachinesInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the hypervisor connected to your virtual machine.
     public var hypervisorArn: Swift.String?
     /// The maximum number of virtual machines to list.
@@ -1419,8 +1419,9 @@ public struct ListVirtualMachinesInput {
 }
 
 extension BackupGatewayClientTypes {
+
     /// A virtual machine that is on a hypervisor.
-    public struct VirtualMachine {
+    public struct VirtualMachine: Swift.Sendable {
         /// The host name of the virtual machine.
         public var hostName: Swift.String?
         /// The ID of the virtual machine's hypervisor.
@@ -1451,10 +1452,9 @@ extension BackupGatewayClientTypes {
             self.resourceArn = resourceArn
         }
     }
-
 }
 
-public struct ListVirtualMachinesOutput {
+public struct ListVirtualMachinesOutput: Swift.Sendable {
     /// The next item following a partial list of returned resources. For example, if a request is made to return maxResults number of resources, NextToken allows you to return more items in your list starting at the location pointed to by the next token.
     public var nextToken: Swift.String?
     /// A list of your VirtualMachine objects, ordered by their Amazon Resource Names (ARNs).

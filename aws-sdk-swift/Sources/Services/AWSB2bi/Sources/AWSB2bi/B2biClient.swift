@@ -427,9 +427,95 @@ extension B2biClient {
         return try await op.execute(input: input)
     }
 
+    /// Performs the `CreateStarterMappingTemplate` operation on the `B2BI` service.
+    ///
+    /// Amazon Web Services B2B Data Interchange uses a mapping template in JSONata or XSLT format to transform a customer input file into a JSON or XML file that can be converted to EDI. If you provide a sample EDI file with the same structure as the EDI files that you wish to generate, then the service can generate a mapping template. The starter template contains placeholder values which you can replace with JSONata or XSLT expressions to take data from your input file and insert it into the JSON or XML file that is used to generate the EDI. If you do not provide a sample EDI file, then the service can generate a mapping template based on the EDI settings in the templateDetails parameter. Currently, we only support generating a template that can generate the input to produce an Outbound X12 EDI file.
+    ///
+    /// - Parameter CreateStarterMappingTemplateInput : [no documentation found]
+    ///
+    /// - Returns: `CreateStarterMappingTemplateOutput` : [no documentation found]
+    ///
+    /// - Throws: One of the exceptions listed below __Possible Exceptions__.
+    ///
+    /// __Possible Exceptions:__
+    /// - `AccessDeniedException` : You do not have sufficient access to perform this action.
+    /// - `InternalServerException` : This exception is thrown when an error occurs in the Amazon Web Services B2B Data Interchange service.
+    /// - `ResourceNotFoundException` : Occurs when the requested resource does not exist, or cannot be found. In some cases, the resource exists in a region other than the region specified in the API call.
+    /// - `ValidationException` : Occurs when a B2BI object cannot be validated against a request from another object.
+    public func createStarterMappingTemplate(input: CreateStarterMappingTemplateInput) async throws -> CreateStarterMappingTemplateOutput {
+        let context = Smithy.ContextBuilder()
+                      .withMethod(value: .post)
+                      .withServiceName(value: serviceName)
+                      .withOperation(value: "createStarterMappingTemplate")
+                      .withIdempotencyTokenGenerator(value: config.idempotencyTokenGenerator)
+                      .withLogger(value: config.logger)
+                      .withPartitionID(value: config.partitionID)
+                      .withAuthSchemes(value: config.authSchemes ?? [])
+                      .withAuthSchemeResolver(value: config.authSchemeResolver)
+                      .withUnsignedPayloadTrait(value: false)
+                      .withSocketTimeout(value: config.httpClientConfiguration.socketTimeout)
+                      .withIdentityResolver(value: config.bearerTokenIdentityResolver, schemeID: "smithy.api#httpBearerAuth")
+                      .withIdentityResolver(value: config.awsCredentialIdentityResolver, schemeID: "aws.auth#sigv4")
+                      .withIdentityResolver(value: config.awsCredentialIdentityResolver, schemeID: "aws.auth#sigv4a")
+                      .withRegion(value: config.region)
+                      .withSigningName(value: "b2bi")
+                      .withSigningRegion(value: config.signingRegion)
+                      .build()
+        let builder = ClientRuntime.OrchestratorBuilder<CreateStarterMappingTemplateInput, CreateStarterMappingTemplateOutput, SmithyHTTPAPI.HTTPRequest, SmithyHTTPAPI.HTTPResponse>()
+        config.interceptorProviders.forEach { provider in
+            builder.interceptors.add(provider.create())
+        }
+        config.httpInterceptorProviders.forEach { provider in
+            builder.interceptors.add(provider.create())
+        }
+        builder.interceptors.add(ClientRuntime.URLPathMiddleware<CreateStarterMappingTemplateInput, CreateStarterMappingTemplateOutput>(CreateStarterMappingTemplateInput.urlPathProvider(_:)))
+        builder.interceptors.add(ClientRuntime.URLHostMiddleware<CreateStarterMappingTemplateInput, CreateStarterMappingTemplateOutput>())
+        builder.interceptors.add(ClientRuntime.ContentLengthMiddleware<CreateStarterMappingTemplateInput, CreateStarterMappingTemplateOutput>())
+        builder.deserialize(ClientRuntime.DeserializeMiddleware<CreateStarterMappingTemplateOutput>(CreateStarterMappingTemplateOutput.httpOutput(from:), CreateStarterMappingTemplateOutputError.httpError(from:)))
+        builder.interceptors.add(ClientRuntime.LoggerMiddleware<CreateStarterMappingTemplateInput, CreateStarterMappingTemplateOutput>(clientLogMode: config.clientLogMode))
+        builder.retryStrategy(SmithyRetries.DefaultRetryStrategy(options: config.retryStrategyOptions))
+        builder.retryErrorInfoProvider(AWSClientRuntime.AWSRetryErrorInfoProvider.errorInfo(for:))
+        builder.applySigner(ClientRuntime.SignerMiddleware<CreateStarterMappingTemplateOutput>())
+        let endpointParams = EndpointParams(endpoint: config.endpoint, region: config.region, useDualStack: config.useDualStack ?? false, useFIPS: config.useFIPS ?? false)
+        builder.applyEndpoint(AWSClientRuntime.EndpointResolverMiddleware<CreateStarterMappingTemplateOutput, EndpointParams>(endpointResolverBlock: { [config] in try config.endpointResolver.resolve(params: $0) }, endpointParams: endpointParams))
+        builder.interceptors.add(AWSClientRuntime.UserAgentMiddleware<CreateStarterMappingTemplateInput, CreateStarterMappingTemplateOutput>(serviceID: serviceName, version: "1.0", config: config))
+        builder.interceptors.add(AWSClientRuntime.XAmzTargetMiddleware<CreateStarterMappingTemplateInput, CreateStarterMappingTemplateOutput>(xAmzTarget: "B2BI.CreateStarterMappingTemplate"))
+        builder.serialize(ClientRuntime.BodyMiddleware<CreateStarterMappingTemplateInput, CreateStarterMappingTemplateOutput, SmithyJSON.Writer>(rootNodeInfo: "", inputWritingClosure: CreateStarterMappingTemplateInput.write(value:to:)))
+        builder.interceptors.add(ClientRuntime.ContentTypeMiddleware<CreateStarterMappingTemplateInput, CreateStarterMappingTemplateOutput>(contentType: "application/x-amz-json-1.0"))
+        builder.selectAuthScheme(ClientRuntime.AuthSchemeMiddleware<CreateStarterMappingTemplateOutput>())
+        builder.interceptors.add(AWSClientRuntime.AmzSdkInvocationIdMiddleware<CreateStarterMappingTemplateInput, CreateStarterMappingTemplateOutput>())
+        builder.interceptors.add(AWSClientRuntime.AmzSdkRequestMiddleware<CreateStarterMappingTemplateInput, CreateStarterMappingTemplateOutput>(maxRetries: config.retryStrategyOptions.maxRetriesBase))
+        var metricsAttributes = Smithy.Attributes()
+        metricsAttributes.set(key: ClientRuntime.OrchestratorMetricsAttributesKeys.service, value: "B2bi")
+        metricsAttributes.set(key: ClientRuntime.OrchestratorMetricsAttributesKeys.method, value: "CreateStarterMappingTemplate")
+        let op = builder.attributes(context)
+            .telemetry(ClientRuntime.OrchestratorTelemetry(
+                telemetryProvider: config.telemetryProvider,
+                metricsAttributes: metricsAttributes,
+                meterScope: serviceName,
+                tracerScope: serviceName
+            ))
+            .executeRequest(client)
+            .build()
+        return try await op.execute(input: input)
+    }
+
     /// Performs the `CreateTransformer` operation on the `B2BI` service.
     ///
-    /// Creates a transformer. A transformer describes how to process the incoming EDI documents and extract the necessary information to the output file.
+    /// Creates a transformer. Amazon Web Services B2B Data Interchange currently supports two scenarios:
+    ///
+    /// * Inbound EDI: the Amazon Web Services customer receives an EDI file from their trading partner. Amazon Web Services B2B Data Interchange converts this EDI file into a JSON or XML file with a service-defined structure. A mapping template provided by the customer, in JSONata or XSLT format, is optionally applied to this file to produce a JSON or XML file with the structure the customer requires.
+    ///
+    /// * Outbound EDI: the Amazon Web Services customer has a JSON or XML file containing data that they wish to use in an EDI file. A mapping template, provided by the customer (in either JSONata or XSLT format) is applied to this file to generate a JSON or XML file in the service-defined structure. This file is then converted to an EDI file.
+    ///
+    ///
+    /// The following fields are provided for backwards compatibility only: fileFormat, mappingTemplate, ediType, and sampleDocument.
+    ///
+    /// * Use the mapping data type in place of mappingTemplate and fileFormat
+    ///
+    /// * Use the sampleDocuments data type in place of sampleDocument
+    ///
+    /// * Use either the inputConversion or outputConversion in place of ediType
     ///
     /// - Parameter CreateTransformerInput : [no documentation found]
     ///
@@ -731,7 +817,7 @@ extension B2biClient {
 
     /// Performs the `DeleteTransformer` operation on the `B2BI` service.
     ///
-    /// Deletes the specified transformer. A transformer describes how to process the incoming EDI documents and extract the necessary information to the output file.
+    /// Deletes the specified transformer. A transformer can take an EDI file as input and transform it into a JSON-or XML-formatted document. Alternatively, a transformer can take a JSON-or XML-formatted document as input and transform it into an EDI file.
     ///
     /// - Parameter DeleteTransformerInput : [no documentation found]
     ///
@@ -1028,7 +1114,7 @@ extension B2biClient {
 
     /// Performs the `GetTransformer` operation on the `B2BI` service.
     ///
-    /// Retrieves the details for the transformer specified by the transformer ID. A transformer describes how to process the incoming EDI documents and extract the necessary information to the output file.
+    /// Retrieves the details for the transformer specified by the transformer ID. A transformer can take an EDI file as input and transform it into a JSON-or XML-formatted document. Alternatively, a transformer can take a JSON-or XML-formatted document as input and transform it into an EDI file.
     ///
     /// - Parameter GetTransformerInput : [no documentation found]
     ///
@@ -1472,7 +1558,7 @@ extension B2biClient {
 
     /// Performs the `ListTransformers` operation on the `B2BI` service.
     ///
-    /// Lists the available transformers. A transformer describes how to process the incoming EDI documents and extract the necessary information to the output file.
+    /// Lists the available transformers. A transformer can take an EDI file as input and transform it into a JSON-or XML-formatted document. Alternatively, a transformer can take a JSON-or XML-formatted document as input and transform it into an EDI file.
     ///
     /// - Parameter ListTransformersInput : [no documentation found]
     ///
@@ -1546,7 +1632,7 @@ extension B2biClient {
 
     /// Performs the `StartTransformerJob` operation on the `B2BI` service.
     ///
-    /// Runs a job, using a transformer, to parse input EDI (electronic data interchange) file into the output structures used by Amazon Web Services B2BI Data Interchange. If you only want to transform EDI (electronic data interchange) documents, you don't need to create profiles, partnerships or capabilities. Just create and configure a transformer, and then run the StartTransformerJob API to process your files.
+    /// Runs a job, using a transformer, to parse input EDI (electronic data interchange) file into the output structures used by Amazon Web Services B2B Data Interchange. If you only want to transform EDI (electronic data interchange) documents, you don't need to create profiles, partnerships or capabilities. Just create and configure a transformer, and then run the StartTransformerJob API to process your files.
     ///
     /// - Parameter StartTransformerJobInput : [no documentation found]
     ///
@@ -1681,6 +1767,80 @@ extension B2biClient {
         var metricsAttributes = Smithy.Attributes()
         metricsAttributes.set(key: ClientRuntime.OrchestratorMetricsAttributesKeys.service, value: "B2bi")
         metricsAttributes.set(key: ClientRuntime.OrchestratorMetricsAttributesKeys.method, value: "TagResource")
+        let op = builder.attributes(context)
+            .telemetry(ClientRuntime.OrchestratorTelemetry(
+                telemetryProvider: config.telemetryProvider,
+                metricsAttributes: metricsAttributes,
+                meterScope: serviceName,
+                tracerScope: serviceName
+            ))
+            .executeRequest(client)
+            .build()
+        return try await op.execute(input: input)
+    }
+
+    /// Performs the `TestConversion` operation on the `B2BI` service.
+    ///
+    /// This operation mimics the latter half of a typical Outbound EDI request. It takes an input JSON/XML in the B2Bi shape as input, converts it to an X12 EDI string, and return that string.
+    ///
+    /// - Parameter TestConversionInput : [no documentation found]
+    ///
+    /// - Returns: `TestConversionOutput` : [no documentation found]
+    ///
+    /// - Throws: One of the exceptions listed below __Possible Exceptions__.
+    ///
+    /// __Possible Exceptions:__
+    /// - `AccessDeniedException` : You do not have sufficient access to perform this action.
+    /// - `InternalServerException` : This exception is thrown when an error occurs in the Amazon Web Services B2B Data Interchange service.
+    /// - `ResourceNotFoundException` : Occurs when the requested resource does not exist, or cannot be found. In some cases, the resource exists in a region other than the region specified in the API call.
+    /// - `ThrottlingException` : The request was denied due to throttling: the data speed and rendering may be limited depending on various parameters and conditions.
+    /// - `ValidationException` : Occurs when a B2BI object cannot be validated against a request from another object.
+    public func testConversion(input: TestConversionInput) async throws -> TestConversionOutput {
+        let context = Smithy.ContextBuilder()
+                      .withMethod(value: .post)
+                      .withServiceName(value: serviceName)
+                      .withOperation(value: "testConversion")
+                      .withIdempotencyTokenGenerator(value: config.idempotencyTokenGenerator)
+                      .withLogger(value: config.logger)
+                      .withPartitionID(value: config.partitionID)
+                      .withAuthSchemes(value: config.authSchemes ?? [])
+                      .withAuthSchemeResolver(value: config.authSchemeResolver)
+                      .withUnsignedPayloadTrait(value: false)
+                      .withSocketTimeout(value: config.httpClientConfiguration.socketTimeout)
+                      .withIdentityResolver(value: config.bearerTokenIdentityResolver, schemeID: "smithy.api#httpBearerAuth")
+                      .withIdentityResolver(value: config.awsCredentialIdentityResolver, schemeID: "aws.auth#sigv4")
+                      .withIdentityResolver(value: config.awsCredentialIdentityResolver, schemeID: "aws.auth#sigv4a")
+                      .withRegion(value: config.region)
+                      .withSigningName(value: "b2bi")
+                      .withSigningRegion(value: config.signingRegion)
+                      .build()
+        let builder = ClientRuntime.OrchestratorBuilder<TestConversionInput, TestConversionOutput, SmithyHTTPAPI.HTTPRequest, SmithyHTTPAPI.HTTPResponse>()
+        config.interceptorProviders.forEach { provider in
+            builder.interceptors.add(provider.create())
+        }
+        config.httpInterceptorProviders.forEach { provider in
+            builder.interceptors.add(provider.create())
+        }
+        builder.interceptors.add(ClientRuntime.URLPathMiddleware<TestConversionInput, TestConversionOutput>(TestConversionInput.urlPathProvider(_:)))
+        builder.interceptors.add(ClientRuntime.URLHostMiddleware<TestConversionInput, TestConversionOutput>())
+        builder.interceptors.add(ClientRuntime.ContentLengthMiddleware<TestConversionInput, TestConversionOutput>())
+        builder.deserialize(ClientRuntime.DeserializeMiddleware<TestConversionOutput>(TestConversionOutput.httpOutput(from:), TestConversionOutputError.httpError(from:)))
+        builder.interceptors.add(ClientRuntime.LoggerMiddleware<TestConversionInput, TestConversionOutput>(clientLogMode: config.clientLogMode))
+        builder.retryStrategy(SmithyRetries.DefaultRetryStrategy(options: config.retryStrategyOptions))
+        builder.retryErrorInfoProvider(AWSClientRuntime.AWSRetryErrorInfoProvider.errorInfo(for:))
+        builder.applySigner(ClientRuntime.SignerMiddleware<TestConversionOutput>())
+        let endpointParams = EndpointParams(endpoint: config.endpoint, region: config.region, useDualStack: config.useDualStack ?? false, useFIPS: config.useFIPS ?? false)
+        builder.applyEndpoint(AWSClientRuntime.EndpointResolverMiddleware<TestConversionOutput, EndpointParams>(endpointResolverBlock: { [config] in try config.endpointResolver.resolve(params: $0) }, endpointParams: endpointParams))
+        builder.interceptors.add(AWSClientRuntime.UserAgentMiddleware<TestConversionInput, TestConversionOutput>(serviceID: serviceName, version: "1.0", config: config))
+        builder.interceptors.add(AWSClientRuntime.XAmzTargetMiddleware<TestConversionInput, TestConversionOutput>(xAmzTarget: "B2BI.TestConversion"))
+        builder.serialize(ClientRuntime.BodyMiddleware<TestConversionInput, TestConversionOutput, SmithyJSON.Writer>(rootNodeInfo: "", inputWritingClosure: TestConversionInput.write(value:to:)))
+        builder.interceptors.add(ClientRuntime.ContentTypeMiddleware<TestConversionInput, TestConversionOutput>(contentType: "application/x-amz-json-1.0"))
+        builder.selectAuthScheme(ClientRuntime.AuthSchemeMiddleware<TestConversionOutput>())
+        builder.interceptors.add(AWSClientRuntime.AmzSdkInvocationIdMiddleware<TestConversionInput, TestConversionOutput>())
+        builder.interceptors.add(AWSClientRuntime.AmzSdkRequestMiddleware<TestConversionInput, TestConversionOutput>(maxRetries: config.retryStrategyOptions.maxRetriesBase))
+        var metricsAttributes = Smithy.Attributes()
+        metricsAttributes.set(key: ClientRuntime.OrchestratorMetricsAttributesKeys.service, value: "B2bi")
+        metricsAttributes.set(key: ClientRuntime.OrchestratorMetricsAttributesKeys.method, value: "TestConversion")
         let op = builder.attributes(context)
             .telemetry(ClientRuntime.OrchestratorTelemetry(
                 telemetryProvider: config.telemetryProvider,
@@ -2144,7 +2304,7 @@ extension B2biClient {
 
     /// Performs the `UpdateTransformer` operation on the `B2BI` service.
     ///
-    /// Updates the specified parameters for a transformer. A transformer describes how to process the incoming EDI documents and extract the necessary information to the output file.
+    /// Updates the specified parameters for a transformer. A transformer can take an EDI file as input and transform it into a JSON-or XML-formatted document. Alternatively, a transformer can take a JSON-or XML-formatted document as input and transform it into an EDI file.
     ///
     /// - Parameter UpdateTransformerInput : [no documentation found]
     ///

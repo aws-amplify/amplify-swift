@@ -28,7 +28,8 @@ import struct Smithy.URIQueryItem
 import struct SmithyHTTPAPI.Header
 import struct SmithyHTTPAPI.Headers
 
-public struct SetCognitoEventsOutput {
+
+public struct SetCognitoEventsOutput: Swift.Sendable {
 
     public init() { }
 }
@@ -190,7 +191,7 @@ public struct ResourceNotFoundException: ClientRuntime.ModeledError, AWSClientRu
 }
 
 /// The input for the BulkPublish operation.
-public struct BulkPublishInput {
+public struct BulkPublishInput: Swift.Sendable {
     /// A name-spaced GUID (for example, us-east-1:23EC4050-6AEA-7089-A2DD-08002EXAMPLE) created by Amazon Cognito. GUID generation is unique within a region.
     /// This member is required.
     public var identityPoolId: Swift.String?
@@ -204,7 +205,7 @@ public struct BulkPublishInput {
 }
 
 /// The output for the BulkPublish operation.
-public struct BulkPublishOutput {
+public struct BulkPublishOutput: Swift.Sendable {
     /// A name-spaced GUID (for example, us-east-1:23EC4050-6AEA-7089-A2DD-08002EXAMPLE) created by Amazon Cognito. GUID generation is unique within a region.
     public var identityPoolId: Swift.String?
 
@@ -269,7 +270,7 @@ public struct TooManyRequestsException: ClientRuntime.ModeledError, AWSClientRun
 }
 
 /// A request to delete the specific dataset.
-public struct DeleteDatasetInput {
+public struct DeleteDatasetInput: Swift.Sendable {
     /// A string of up to 128 characters. Allowed characters are a-z, A-Z, 0-9, '_' (underscore), '-' (dash), and '.' (dot).
     /// This member is required.
     public var datasetName: Swift.String?
@@ -293,8 +294,9 @@ public struct DeleteDatasetInput {
 }
 
 extension CognitoSyncClientTypes {
+
     /// A collection of data for an identity pool. An identity pool can have multiple datasets. A dataset is per identity and can be general or associated with a particular entity in an application (like a saved game). Datasets are automatically created if they don't exist. Data is synced by dataset, and a dataset can hold up to 1MB of key-value pairs.
-    public struct Dataset {
+    public struct Dataset: Swift.Sendable {
         /// Date on which the dataset was created.
         public var creationDate: Foundation.Date?
         /// Total size in bytes of the records in this dataset.
@@ -329,11 +331,10 @@ extension CognitoSyncClientTypes {
             self.numRecords = numRecords
         }
     }
-
 }
 
 /// Response to a successful DeleteDataset request.
-public struct DeleteDatasetOutput {
+public struct DeleteDatasetOutput: Swift.Sendable {
     /// A collection of data for an identity pool. An identity pool can have multiple datasets. A dataset is per identity and can be general or associated with a particular entity in an application (like a saved game). Datasets are automatically created if they don't exist. Data is synced by dataset, and a dataset can hold up to 1MB of key-value pairs.
     public var dataset: CognitoSyncClientTypes.Dataset?
 
@@ -346,7 +347,7 @@ public struct DeleteDatasetOutput {
 }
 
 /// A request for meta data about a dataset (creation date, number of records, size) by owner and dataset name.
-public struct DescribeDatasetInput {
+public struct DescribeDatasetInput: Swift.Sendable {
     /// A string of up to 128 characters. Allowed characters are a-z, A-Z, 0-9, '_' (underscore), '-' (dash), and '.' (dot).
     /// This member is required.
     public var datasetName: Swift.String?
@@ -370,7 +371,7 @@ public struct DescribeDatasetInput {
 }
 
 /// Response to a successful DescribeDataset request.
-public struct DescribeDatasetOutput {
+public struct DescribeDatasetOutput: Swift.Sendable {
     /// Meta data for a collection of data for an identity. An identity can have multiple datasets. A dataset can be general or associated with a particular entity in an application (like a saved game). Datasets are automatically created if they don't exist. Data is synced by dataset, and a dataset can hold up to 1MB of key-value pairs.
     public var dataset: CognitoSyncClientTypes.Dataset?
 
@@ -383,7 +384,7 @@ public struct DescribeDatasetOutput {
 }
 
 /// A request for usage information about the identity pool.
-public struct DescribeIdentityPoolUsageInput {
+public struct DescribeIdentityPoolUsageInput: Swift.Sendable {
     /// A name-spaced GUID (for example, us-east-1:23EC4050-6AEA-7089-A2DD-08002EXAMPLE) created by Amazon Cognito. GUID generation is unique within a region.
     /// This member is required.
     public var identityPoolId: Swift.String?
@@ -397,8 +398,9 @@ public struct DescribeIdentityPoolUsageInput {
 }
 
 extension CognitoSyncClientTypes {
+
     /// Usage information for the identity pool.
-    public struct IdentityPoolUsage {
+    public struct IdentityPoolUsage: Swift.Sendable {
         /// Data storage information for the identity pool.
         public var dataStorage: Swift.Int?
         /// A name-spaced GUID (for example, us-east-1:23EC4050-6AEA-7089-A2DD-08002EXAMPLE) created by Amazon Cognito. GUID generation is unique within a region.
@@ -421,11 +423,10 @@ extension CognitoSyncClientTypes {
             self.syncSessionsCount = syncSessionsCount
         }
     }
-
 }
 
 /// Response to a successful DescribeIdentityPoolUsage request.
-public struct DescribeIdentityPoolUsageOutput {
+public struct DescribeIdentityPoolUsageOutput: Swift.Sendable {
     /// Information about the usage of the identity pool.
     public var identityPoolUsage: CognitoSyncClientTypes.IdentityPoolUsage?
 
@@ -438,7 +439,7 @@ public struct DescribeIdentityPoolUsageOutput {
 }
 
 /// A request for information about the usage of an identity pool.
-public struct DescribeIdentityUsageInput {
+public struct DescribeIdentityUsageInput: Swift.Sendable {
     /// A name-spaced GUID (for example, us-east-1:23EC4050-6AEA-7089-A2DD-08002EXAMPLE) created by Amazon Cognito. GUID generation is unique within a region.
     /// This member is required.
     public var identityId: Swift.String?
@@ -457,8 +458,9 @@ public struct DescribeIdentityUsageInput {
 }
 
 extension CognitoSyncClientTypes {
+
     /// Usage information for the identity.
-    public struct IdentityUsage {
+    public struct IdentityUsage: Swift.Sendable {
         /// Total data storage for this identity.
         public var dataStorage: Swift.Int?
         /// Number of datasets for the identity.
@@ -485,11 +487,10 @@ extension CognitoSyncClientTypes {
             self.lastModifiedDate = lastModifiedDate
         }
     }
-
 }
 
 /// The response to a successful DescribeIdentityUsage request.
-public struct DescribeIdentityUsageOutput {
+public struct DescribeIdentityUsageOutput: Swift.Sendable {
     /// Usage information for the identity.
     public var identityUsage: CognitoSyncClientTypes.IdentityUsage?
 
@@ -502,7 +503,7 @@ public struct DescribeIdentityUsageOutput {
 }
 
 /// The input for the GetBulkPublishDetails operation.
-public struct GetBulkPublishDetailsInput {
+public struct GetBulkPublishDetailsInput: Swift.Sendable {
     /// A name-spaced GUID (for example, us-east-1:23EC4050-6AEA-7089-A2DD-08002EXAMPLE) created by Amazon Cognito. GUID generation is unique within a region.
     /// This member is required.
     public var identityPoolId: Swift.String?
@@ -517,7 +518,7 @@ public struct GetBulkPublishDetailsInput {
 
 extension CognitoSyncClientTypes {
 
-    public enum BulkPublishStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum BulkPublishStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case failed
         case inProgress
         case notStarted
@@ -551,7 +552,7 @@ extension CognitoSyncClientTypes {
 }
 
 /// The output for the GetBulkPublishDetails operation.
-public struct GetBulkPublishDetailsOutput {
+public struct GetBulkPublishDetailsOutput: Swift.Sendable {
     /// If BulkPublishStatus is SUCCEEDED, the time the last bulk publish operation completed.
     public var bulkPublishCompleteTime: Foundation.Date?
     /// The date/time at which the last bulk publish was initiated.
@@ -580,7 +581,7 @@ public struct GetBulkPublishDetailsOutput {
 }
 
 /// A request for a list of the configured Cognito Events
-public struct GetCognitoEventsInput {
+public struct GetCognitoEventsInput: Swift.Sendable {
     /// The Cognito Identity Pool ID for the request
     /// This member is required.
     public var identityPoolId: Swift.String?
@@ -594,7 +595,7 @@ public struct GetCognitoEventsInput {
 }
 
 /// The response from the GetCognitoEvents request
-public struct GetCognitoEventsOutput {
+public struct GetCognitoEventsOutput: Swift.Sendable {
     /// The Cognito Events returned from the GetCognitoEvents request
     public var events: [Swift.String: Swift.String]?
 
@@ -607,7 +608,7 @@ public struct GetCognitoEventsOutput {
 }
 
 /// The input for the GetIdentityPoolConfiguration operation.
-public struct GetIdentityPoolConfigurationInput {
+public struct GetIdentityPoolConfigurationInput: Swift.Sendable {
     /// A name-spaced GUID (for example, us-east-1:23EC4050-6AEA-7089-A2DD-08002EXAMPLE) created by Amazon Cognito. This is the ID of the pool for which to return a configuration.
     /// This member is required.
     public var identityPoolId: Swift.String?
@@ -622,7 +623,7 @@ public struct GetIdentityPoolConfigurationInput {
 
 extension CognitoSyncClientTypes {
 
-    public enum StreamingStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum StreamingStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case disabled
         case enabled
         case sdkUnknown(Swift.String)
@@ -650,8 +651,9 @@ extension CognitoSyncClientTypes {
 }
 
 extension CognitoSyncClientTypes {
+
     /// Configuration options for configure Cognito streams.
-    public struct CognitoStreams {
+    public struct CognitoStreams: Swift.Sendable {
         /// The ARN of the role Amazon Cognito can assume in order to publish to the stream. This role must grant access to Amazon Cognito (cognito-sync) to invoke PutRecord on your Cognito stream.
         public var roleArn: Swift.String?
         /// The name of the Cognito stream to receive updates. This stream must be in the developers account and in the same region as the identity pool.
@@ -670,12 +672,12 @@ extension CognitoSyncClientTypes {
             self.streamingStatus = streamingStatus
         }
     }
-
 }
 
 extension CognitoSyncClientTypes {
+
     /// Configuration options to be applied to the identity pool.
-    public struct PushSync {
+    public struct PushSync: Swift.Sendable {
         /// List of SNS platform application ARNs that could be used by clients.
         public var applicationArns: [Swift.String]?
         /// A role configured to allow Cognito to call SNS on behalf of the developer.
@@ -690,11 +692,10 @@ extension CognitoSyncClientTypes {
             self.roleArn = roleArn
         }
     }
-
 }
 
 /// The output for the GetIdentityPoolConfiguration operation.
-public struct GetIdentityPoolConfigurationOutput {
+public struct GetIdentityPoolConfigurationOutput: Swift.Sendable {
     /// Options to apply to this identity pool for Amazon Cognito streams.
     public var cognitoStreams: CognitoSyncClientTypes.CognitoStreams?
     /// A name-spaced GUID (for example, us-east-1:23EC4050-6AEA-7089-A2DD-08002EXAMPLE) created by Amazon Cognito.
@@ -715,7 +716,7 @@ public struct GetIdentityPoolConfigurationOutput {
 }
 
 /// Request for a list of datasets for an identity.
-public struct ListDatasetsInput {
+public struct ListDatasetsInput: Swift.Sendable {
     /// A name-spaced GUID (for example, us-east-1:23EC4050-6AEA-7089-A2DD-08002EXAMPLE) created by Amazon Cognito. GUID generation is unique within a region.
     /// This member is required.
     public var identityId: Swift.String?
@@ -742,7 +743,7 @@ public struct ListDatasetsInput {
 }
 
 /// Returned for a successful ListDatasets request.
-public struct ListDatasetsOutput {
+public struct ListDatasetsOutput: Swift.Sendable {
     /// Number of datasets returned.
     public var count: Swift.Int
     /// A set of datasets.
@@ -763,7 +764,7 @@ public struct ListDatasetsOutput {
 }
 
 /// A request for usage information on an identity pool.
-public struct ListIdentityPoolUsageInput {
+public struct ListIdentityPoolUsageInput: Swift.Sendable {
     /// The maximum number of results to be returned.
     public var maxResults: Swift.Int?
     /// A pagination token for obtaining the next page of results.
@@ -780,7 +781,7 @@ public struct ListIdentityPoolUsageInput {
 }
 
 /// Returned for a successful ListIdentityPoolUsage request.
-public struct ListIdentityPoolUsageOutput {
+public struct ListIdentityPoolUsageOutput: Swift.Sendable {
     /// Total number of identities for the identity pool.
     public var count: Swift.Int
     /// Usage information for the identity pools.
@@ -805,7 +806,7 @@ public struct ListIdentityPoolUsageOutput {
 }
 
 /// A request for a list of records.
-public struct ListRecordsInput {
+public struct ListRecordsInput: Swift.Sendable {
     /// A string of up to 128 characters. Allowed characters are a-z, A-Z, 0-9, '_' (underscore), '-' (dash), and '.' (dot).
     /// This member is required.
     public var datasetName: Swift.String?
@@ -845,8 +846,9 @@ public struct ListRecordsInput {
 }
 
 extension CognitoSyncClientTypes {
+
     /// The basic data structure of a dataset.
-    public struct Record {
+    public struct Record: Swift.Sendable {
         /// The last modified date of the client device.
         public var deviceLastModifiedDate: Foundation.Date?
         /// The key for the record.
@@ -877,11 +879,10 @@ extension CognitoSyncClientTypes {
             self.value = value
         }
     }
-
 }
 
 /// Returned for a successful ListRecordsRequest.
-public struct ListRecordsOutput {
+public struct ListRecordsOutput: Swift.Sendable {
     /// Total number of records.
     public var count: Swift.Int
     /// A boolean value specifying whether to delete the dataset locally.
@@ -952,7 +953,7 @@ public struct InvalidConfigurationException: ClientRuntime.ModeledError, AWSClie
 
 extension CognitoSyncClientTypes {
 
-    public enum Platform: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Platform: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case adm
         case apns
         case apnsSandbox
@@ -986,7 +987,7 @@ extension CognitoSyncClientTypes {
 }
 
 /// A request to RegisterDevice.
-public struct RegisterDeviceInput {
+public struct RegisterDeviceInput: Swift.Sendable {
     /// The unique ID for this identity.
     /// This member is required.
     public var identityId: Swift.String?
@@ -1015,7 +1016,7 @@ public struct RegisterDeviceInput {
 }
 
 /// Response to a RegisterDevice request.
-public struct RegisterDeviceOutput {
+public struct RegisterDeviceOutput: Swift.Sendable {
     /// The unique ID generated for this device by Cognito.
     public var deviceId: Swift.String?
 
@@ -1028,7 +1029,7 @@ public struct RegisterDeviceOutput {
 }
 
 /// A request to configure Cognito Events""
-public struct SetCognitoEventsInput {
+public struct SetCognitoEventsInput: Swift.Sendable {
     /// The events to configure
     /// This member is required.
     public var events: [Swift.String: Swift.String]?
@@ -1073,7 +1074,7 @@ public struct ConcurrentModificationException: ClientRuntime.ModeledError, AWSCl
 }
 
 /// The input for the SetIdentityPoolConfiguration operation.
-public struct SetIdentityPoolConfigurationInput {
+public struct SetIdentityPoolConfigurationInput: Swift.Sendable {
     /// Options to apply to this identity pool for Amazon Cognito streams.
     public var cognitoStreams: CognitoSyncClientTypes.CognitoStreams?
     /// A name-spaced GUID (for example, us-east-1:23EC4050-6AEA-7089-A2DD-08002EXAMPLE) created by Amazon Cognito. This is the ID of the pool to modify.
@@ -1095,7 +1096,7 @@ public struct SetIdentityPoolConfigurationInput {
 }
 
 /// The output for the SetIdentityPoolConfiguration operation
-public struct SetIdentityPoolConfigurationOutput {
+public struct SetIdentityPoolConfigurationOutput: Swift.Sendable {
     /// Options to apply to this identity pool for Amazon Cognito streams.
     public var cognitoStreams: CognitoSyncClientTypes.CognitoStreams?
     /// A name-spaced GUID (for example, us-east-1:23EC4050-6AEA-7089-A2DD-08002EXAMPLE) created by Amazon Cognito.
@@ -1116,7 +1117,7 @@ public struct SetIdentityPoolConfigurationOutput {
 }
 
 /// A request to SubscribeToDatasetRequest.
-public struct SubscribeToDatasetInput {
+public struct SubscribeToDatasetInput: Swift.Sendable {
     /// The name of the dataset to subcribe to.
     /// This member is required.
     public var datasetName: Swift.String?
@@ -1145,13 +1146,13 @@ public struct SubscribeToDatasetInput {
 }
 
 /// Response to a SubscribeToDataset request.
-public struct SubscribeToDatasetOutput {
+public struct SubscribeToDatasetOutput: Swift.Sendable {
 
     public init() { }
 }
 
 /// A request to UnsubscribeFromDataset.
-public struct UnsubscribeFromDatasetInput {
+public struct UnsubscribeFromDatasetInput: Swift.Sendable {
     /// The name of the dataset from which to unsubcribe.
     /// This member is required.
     public var datasetName: Swift.String?
@@ -1180,7 +1181,7 @@ public struct UnsubscribeFromDatasetInput {
 }
 
 /// Response to an UnsubscribeFromDataset request.
-public struct UnsubscribeFromDatasetOutput {
+public struct UnsubscribeFromDatasetOutput: Swift.Sendable {
 
     public init() { }
 }
@@ -1265,7 +1266,7 @@ public struct LimitExceededException: ClientRuntime.ModeledError, AWSClientRunti
 
 extension CognitoSyncClientTypes {
 
-    public enum Operation: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Operation: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case remove
         case replace
         case sdkUnknown(Swift.String)
@@ -1293,8 +1294,9 @@ extension CognitoSyncClientTypes {
 }
 
 extension CognitoSyncClientTypes {
+
     /// An update operation for a record.
-    public struct RecordPatch {
+    public struct RecordPatch: Swift.Sendable {
         /// The last modified date of the client device.
         public var deviceLastModifiedDate: Foundation.Date?
         /// The key associated with the record patch.
@@ -1324,11 +1326,10 @@ extension CognitoSyncClientTypes {
             self.value = value
         }
     }
-
 }
 
 /// A request to post updates to records or add and delete records for a dataset and user.
-public struct UpdateRecordsInput {
+public struct UpdateRecordsInput: Swift.Sendable {
     /// Intended to supply a device ID that will populate the lastModifiedBy field referenced in other methods. The ClientContext field is not yet implemented.
     public var clientContext: Swift.String?
     /// A string of up to 128 characters. Allowed characters are a-z, A-Z, 0-9, '_' (underscore), '-' (dash), and '.' (dot).
@@ -1369,7 +1370,7 @@ public struct UpdateRecordsInput {
 }
 
 /// Returned for a successful UpdateRecordsRequest.
-public struct UpdateRecordsOutput {
+public struct UpdateRecordsOutput: Swift.Sendable {
     /// A list of records that have been updated.
     public var records: [CognitoSyncClientTypes.Record]?
 

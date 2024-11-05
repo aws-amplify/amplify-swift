@@ -724,6 +724,77 @@ extension WorkMailClient {
         return try await op.execute(input: input)
     }
 
+    /// Performs the `CreateIdentityCenterApplication` operation on the `WorkMailService` service.
+    ///
+    /// Creates the WorkMail application in IAM Identity Center that can be used later in the WorkMail - IdC integration. For more information, see PutIdentityProviderConfiguration. This action does not affect the authentication settings for any WorkMail organizations.
+    ///
+    /// - Parameter CreateIdentityCenterApplicationInput : [no documentation found]
+    ///
+    /// - Returns: `CreateIdentityCenterApplicationOutput` : [no documentation found]
+    ///
+    /// - Throws: One of the exceptions listed below __Possible Exceptions__.
+    ///
+    /// __Possible Exceptions:__
+    /// - `InvalidParameterException` : One or more of the input parameters don't match the service's restrictions.
+    public func createIdentityCenterApplication(input: CreateIdentityCenterApplicationInput) async throws -> CreateIdentityCenterApplicationOutput {
+        let context = Smithy.ContextBuilder()
+                      .withMethod(value: .post)
+                      .withServiceName(value: serviceName)
+                      .withOperation(value: "createIdentityCenterApplication")
+                      .withIdempotencyTokenGenerator(value: config.idempotencyTokenGenerator)
+                      .withLogger(value: config.logger)
+                      .withPartitionID(value: config.partitionID)
+                      .withAuthSchemes(value: config.authSchemes ?? [])
+                      .withAuthSchemeResolver(value: config.authSchemeResolver)
+                      .withUnsignedPayloadTrait(value: false)
+                      .withSocketTimeout(value: config.httpClientConfiguration.socketTimeout)
+                      .withIdentityResolver(value: config.bearerTokenIdentityResolver, schemeID: "smithy.api#httpBearerAuth")
+                      .withIdentityResolver(value: config.awsCredentialIdentityResolver, schemeID: "aws.auth#sigv4")
+                      .withIdentityResolver(value: config.awsCredentialIdentityResolver, schemeID: "aws.auth#sigv4a")
+                      .withRegion(value: config.region)
+                      .withSigningName(value: "workmail")
+                      .withSigningRegion(value: config.signingRegion)
+                      .build()
+        let builder = ClientRuntime.OrchestratorBuilder<CreateIdentityCenterApplicationInput, CreateIdentityCenterApplicationOutput, SmithyHTTPAPI.HTTPRequest, SmithyHTTPAPI.HTTPResponse>()
+        config.interceptorProviders.forEach { provider in
+            builder.interceptors.add(provider.create())
+        }
+        config.httpInterceptorProviders.forEach { provider in
+            builder.interceptors.add(provider.create())
+        }
+        builder.interceptors.add(ClientRuntime.IdempotencyTokenMiddleware<CreateIdentityCenterApplicationInput, CreateIdentityCenterApplicationOutput>(keyPath: \.clientToken))
+        builder.interceptors.add(ClientRuntime.URLPathMiddleware<CreateIdentityCenterApplicationInput, CreateIdentityCenterApplicationOutput>(CreateIdentityCenterApplicationInput.urlPathProvider(_:)))
+        builder.interceptors.add(ClientRuntime.URLHostMiddleware<CreateIdentityCenterApplicationInput, CreateIdentityCenterApplicationOutput>())
+        builder.interceptors.add(ClientRuntime.ContentLengthMiddleware<CreateIdentityCenterApplicationInput, CreateIdentityCenterApplicationOutput>())
+        builder.deserialize(ClientRuntime.DeserializeMiddleware<CreateIdentityCenterApplicationOutput>(CreateIdentityCenterApplicationOutput.httpOutput(from:), CreateIdentityCenterApplicationOutputError.httpError(from:)))
+        builder.interceptors.add(ClientRuntime.LoggerMiddleware<CreateIdentityCenterApplicationInput, CreateIdentityCenterApplicationOutput>(clientLogMode: config.clientLogMode))
+        builder.retryStrategy(SmithyRetries.DefaultRetryStrategy(options: config.retryStrategyOptions))
+        builder.retryErrorInfoProvider(AWSClientRuntime.AWSRetryErrorInfoProvider.errorInfo(for:))
+        builder.applySigner(ClientRuntime.SignerMiddleware<CreateIdentityCenterApplicationOutput>())
+        let endpointParams = EndpointParams(endpoint: config.endpoint, region: config.region, useDualStack: config.useDualStack ?? false, useFIPS: config.useFIPS ?? false)
+        builder.applyEndpoint(AWSClientRuntime.EndpointResolverMiddleware<CreateIdentityCenterApplicationOutput, EndpointParams>(endpointResolverBlock: { [config] in try config.endpointResolver.resolve(params: $0) }, endpointParams: endpointParams))
+        builder.interceptors.add(AWSClientRuntime.UserAgentMiddleware<CreateIdentityCenterApplicationInput, CreateIdentityCenterApplicationOutput>(serviceID: serviceName, version: "1.0", config: config))
+        builder.interceptors.add(AWSClientRuntime.XAmzTargetMiddleware<CreateIdentityCenterApplicationInput, CreateIdentityCenterApplicationOutput>(xAmzTarget: "WorkMailService.CreateIdentityCenterApplication"))
+        builder.serialize(ClientRuntime.BodyMiddleware<CreateIdentityCenterApplicationInput, CreateIdentityCenterApplicationOutput, SmithyJSON.Writer>(rootNodeInfo: "", inputWritingClosure: CreateIdentityCenterApplicationInput.write(value:to:)))
+        builder.interceptors.add(ClientRuntime.ContentTypeMiddleware<CreateIdentityCenterApplicationInput, CreateIdentityCenterApplicationOutput>(contentType: "application/x-amz-json-1.1"))
+        builder.selectAuthScheme(ClientRuntime.AuthSchemeMiddleware<CreateIdentityCenterApplicationOutput>())
+        builder.interceptors.add(AWSClientRuntime.AmzSdkInvocationIdMiddleware<CreateIdentityCenterApplicationInput, CreateIdentityCenterApplicationOutput>())
+        builder.interceptors.add(AWSClientRuntime.AmzSdkRequestMiddleware<CreateIdentityCenterApplicationInput, CreateIdentityCenterApplicationOutput>(maxRetries: config.retryStrategyOptions.maxRetriesBase))
+        var metricsAttributes = Smithy.Attributes()
+        metricsAttributes.set(key: ClientRuntime.OrchestratorMetricsAttributesKeys.service, value: "WorkMail")
+        metricsAttributes.set(key: ClientRuntime.OrchestratorMetricsAttributesKeys.method, value: "CreateIdentityCenterApplication")
+        let op = builder.attributes(context)
+            .telemetry(ClientRuntime.OrchestratorTelemetry(
+                telemetryProvider: config.telemetryProvider,
+                metricsAttributes: metricsAttributes,
+                meterScope: serviceName,
+                tracerScope: serviceName
+            ))
+            .executeRequest(client)
+            .build()
+        return try await op.execute(input: input)
+    }
+
     /// Performs the `CreateImpersonationRole` operation on the `WorkMailService` service.
     ///
     /// Creates an impersonation role for the given WorkMail organization. Idempotency ensures that an API request completes no more than one time. With an idempotent request, if the original request completes successfully, any subsequent retries also complete successfully without performing any further actions.
@@ -1468,6 +1539,149 @@ extension WorkMailClient {
         return try await op.execute(input: input)
     }
 
+    /// Performs the `DeleteIdentityCenterApplication` operation on the `WorkMailService` service.
+    ///
+    /// Deletes the IAM Identity Center application from WorkMail. This action does not affect the authentication settings for any WorkMail organizations.
+    ///
+    /// - Parameter DeleteIdentityCenterApplicationInput : [no documentation found]
+    ///
+    /// - Returns: `DeleteIdentityCenterApplicationOutput` : [no documentation found]
+    ///
+    /// - Throws: One of the exceptions listed below __Possible Exceptions__.
+    ///
+    /// __Possible Exceptions:__
+    /// - `InvalidParameterException` : One or more of the input parameters don't match the service's restrictions.
+    /// - `OrganizationStateException` : The organization must have a valid state to perform certain operations on the organization or its members.
+    public func deleteIdentityCenterApplication(input: DeleteIdentityCenterApplicationInput) async throws -> DeleteIdentityCenterApplicationOutput {
+        let context = Smithy.ContextBuilder()
+                      .withMethod(value: .post)
+                      .withServiceName(value: serviceName)
+                      .withOperation(value: "deleteIdentityCenterApplication")
+                      .withIdempotencyTokenGenerator(value: config.idempotencyTokenGenerator)
+                      .withLogger(value: config.logger)
+                      .withPartitionID(value: config.partitionID)
+                      .withAuthSchemes(value: config.authSchemes ?? [])
+                      .withAuthSchemeResolver(value: config.authSchemeResolver)
+                      .withUnsignedPayloadTrait(value: false)
+                      .withSocketTimeout(value: config.httpClientConfiguration.socketTimeout)
+                      .withIdentityResolver(value: config.bearerTokenIdentityResolver, schemeID: "smithy.api#httpBearerAuth")
+                      .withIdentityResolver(value: config.awsCredentialIdentityResolver, schemeID: "aws.auth#sigv4")
+                      .withIdentityResolver(value: config.awsCredentialIdentityResolver, schemeID: "aws.auth#sigv4a")
+                      .withRegion(value: config.region)
+                      .withSigningName(value: "workmail")
+                      .withSigningRegion(value: config.signingRegion)
+                      .build()
+        let builder = ClientRuntime.OrchestratorBuilder<DeleteIdentityCenterApplicationInput, DeleteIdentityCenterApplicationOutput, SmithyHTTPAPI.HTTPRequest, SmithyHTTPAPI.HTTPResponse>()
+        config.interceptorProviders.forEach { provider in
+            builder.interceptors.add(provider.create())
+        }
+        config.httpInterceptorProviders.forEach { provider in
+            builder.interceptors.add(provider.create())
+        }
+        builder.interceptors.add(ClientRuntime.URLPathMiddleware<DeleteIdentityCenterApplicationInput, DeleteIdentityCenterApplicationOutput>(DeleteIdentityCenterApplicationInput.urlPathProvider(_:)))
+        builder.interceptors.add(ClientRuntime.URLHostMiddleware<DeleteIdentityCenterApplicationInput, DeleteIdentityCenterApplicationOutput>())
+        builder.interceptors.add(ClientRuntime.ContentLengthMiddleware<DeleteIdentityCenterApplicationInput, DeleteIdentityCenterApplicationOutput>())
+        builder.deserialize(ClientRuntime.DeserializeMiddleware<DeleteIdentityCenterApplicationOutput>(DeleteIdentityCenterApplicationOutput.httpOutput(from:), DeleteIdentityCenterApplicationOutputError.httpError(from:)))
+        builder.interceptors.add(ClientRuntime.LoggerMiddleware<DeleteIdentityCenterApplicationInput, DeleteIdentityCenterApplicationOutput>(clientLogMode: config.clientLogMode))
+        builder.retryStrategy(SmithyRetries.DefaultRetryStrategy(options: config.retryStrategyOptions))
+        builder.retryErrorInfoProvider(AWSClientRuntime.AWSRetryErrorInfoProvider.errorInfo(for:))
+        builder.applySigner(ClientRuntime.SignerMiddleware<DeleteIdentityCenterApplicationOutput>())
+        let endpointParams = EndpointParams(endpoint: config.endpoint, region: config.region, useDualStack: config.useDualStack ?? false, useFIPS: config.useFIPS ?? false)
+        builder.applyEndpoint(AWSClientRuntime.EndpointResolverMiddleware<DeleteIdentityCenterApplicationOutput, EndpointParams>(endpointResolverBlock: { [config] in try config.endpointResolver.resolve(params: $0) }, endpointParams: endpointParams))
+        builder.interceptors.add(AWSClientRuntime.UserAgentMiddleware<DeleteIdentityCenterApplicationInput, DeleteIdentityCenterApplicationOutput>(serviceID: serviceName, version: "1.0", config: config))
+        builder.interceptors.add(AWSClientRuntime.XAmzTargetMiddleware<DeleteIdentityCenterApplicationInput, DeleteIdentityCenterApplicationOutput>(xAmzTarget: "WorkMailService.DeleteIdentityCenterApplication"))
+        builder.serialize(ClientRuntime.BodyMiddleware<DeleteIdentityCenterApplicationInput, DeleteIdentityCenterApplicationOutput, SmithyJSON.Writer>(rootNodeInfo: "", inputWritingClosure: DeleteIdentityCenterApplicationInput.write(value:to:)))
+        builder.interceptors.add(ClientRuntime.ContentTypeMiddleware<DeleteIdentityCenterApplicationInput, DeleteIdentityCenterApplicationOutput>(contentType: "application/x-amz-json-1.1"))
+        builder.selectAuthScheme(ClientRuntime.AuthSchemeMiddleware<DeleteIdentityCenterApplicationOutput>())
+        builder.interceptors.add(AWSClientRuntime.AmzSdkInvocationIdMiddleware<DeleteIdentityCenterApplicationInput, DeleteIdentityCenterApplicationOutput>())
+        builder.interceptors.add(AWSClientRuntime.AmzSdkRequestMiddleware<DeleteIdentityCenterApplicationInput, DeleteIdentityCenterApplicationOutput>(maxRetries: config.retryStrategyOptions.maxRetriesBase))
+        var metricsAttributes = Smithy.Attributes()
+        metricsAttributes.set(key: ClientRuntime.OrchestratorMetricsAttributesKeys.service, value: "WorkMail")
+        metricsAttributes.set(key: ClientRuntime.OrchestratorMetricsAttributesKeys.method, value: "DeleteIdentityCenterApplication")
+        let op = builder.attributes(context)
+            .telemetry(ClientRuntime.OrchestratorTelemetry(
+                telemetryProvider: config.telemetryProvider,
+                metricsAttributes: metricsAttributes,
+                meterScope: serviceName,
+                tracerScope: serviceName
+            ))
+            .executeRequest(client)
+            .build()
+        return try await op.execute(input: input)
+    }
+
+    /// Performs the `DeleteIdentityProviderConfiguration` operation on the `WorkMailService` service.
+    ///
+    /// Disables the integration between IdC and WorkMail. Authentication will continue with the directory as it was before the IdC integration. You might have to reset your directory passwords and reconfigure your desktop and mobile email clients.
+    ///
+    /// - Parameter DeleteIdentityProviderConfigurationInput : [no documentation found]
+    ///
+    /// - Returns: `DeleteIdentityProviderConfigurationOutput` : [no documentation found]
+    ///
+    /// - Throws: One of the exceptions listed below __Possible Exceptions__.
+    ///
+    /// __Possible Exceptions:__
+    /// - `InvalidParameterException` : One or more of the input parameters don't match the service's restrictions.
+    /// - `OrganizationNotFoundException` : An operation received a valid organization identifier that either doesn't belong or exist in the system.
+    /// - `OrganizationStateException` : The organization must have a valid state to perform certain operations on the organization or its members.
+    public func deleteIdentityProviderConfiguration(input: DeleteIdentityProviderConfigurationInput) async throws -> DeleteIdentityProviderConfigurationOutput {
+        let context = Smithy.ContextBuilder()
+                      .withMethod(value: .post)
+                      .withServiceName(value: serviceName)
+                      .withOperation(value: "deleteIdentityProviderConfiguration")
+                      .withIdempotencyTokenGenerator(value: config.idempotencyTokenGenerator)
+                      .withLogger(value: config.logger)
+                      .withPartitionID(value: config.partitionID)
+                      .withAuthSchemes(value: config.authSchemes ?? [])
+                      .withAuthSchemeResolver(value: config.authSchemeResolver)
+                      .withUnsignedPayloadTrait(value: false)
+                      .withSocketTimeout(value: config.httpClientConfiguration.socketTimeout)
+                      .withIdentityResolver(value: config.bearerTokenIdentityResolver, schemeID: "smithy.api#httpBearerAuth")
+                      .withIdentityResolver(value: config.awsCredentialIdentityResolver, schemeID: "aws.auth#sigv4")
+                      .withIdentityResolver(value: config.awsCredentialIdentityResolver, schemeID: "aws.auth#sigv4a")
+                      .withRegion(value: config.region)
+                      .withSigningName(value: "workmail")
+                      .withSigningRegion(value: config.signingRegion)
+                      .build()
+        let builder = ClientRuntime.OrchestratorBuilder<DeleteIdentityProviderConfigurationInput, DeleteIdentityProviderConfigurationOutput, SmithyHTTPAPI.HTTPRequest, SmithyHTTPAPI.HTTPResponse>()
+        config.interceptorProviders.forEach { provider in
+            builder.interceptors.add(provider.create())
+        }
+        config.httpInterceptorProviders.forEach { provider in
+            builder.interceptors.add(provider.create())
+        }
+        builder.interceptors.add(ClientRuntime.URLPathMiddleware<DeleteIdentityProviderConfigurationInput, DeleteIdentityProviderConfigurationOutput>(DeleteIdentityProviderConfigurationInput.urlPathProvider(_:)))
+        builder.interceptors.add(ClientRuntime.URLHostMiddleware<DeleteIdentityProviderConfigurationInput, DeleteIdentityProviderConfigurationOutput>())
+        builder.interceptors.add(ClientRuntime.ContentLengthMiddleware<DeleteIdentityProviderConfigurationInput, DeleteIdentityProviderConfigurationOutput>())
+        builder.deserialize(ClientRuntime.DeserializeMiddleware<DeleteIdentityProviderConfigurationOutput>(DeleteIdentityProviderConfigurationOutput.httpOutput(from:), DeleteIdentityProviderConfigurationOutputError.httpError(from:)))
+        builder.interceptors.add(ClientRuntime.LoggerMiddleware<DeleteIdentityProviderConfigurationInput, DeleteIdentityProviderConfigurationOutput>(clientLogMode: config.clientLogMode))
+        builder.retryStrategy(SmithyRetries.DefaultRetryStrategy(options: config.retryStrategyOptions))
+        builder.retryErrorInfoProvider(AWSClientRuntime.AWSRetryErrorInfoProvider.errorInfo(for:))
+        builder.applySigner(ClientRuntime.SignerMiddleware<DeleteIdentityProviderConfigurationOutput>())
+        let endpointParams = EndpointParams(endpoint: config.endpoint, region: config.region, useDualStack: config.useDualStack ?? false, useFIPS: config.useFIPS ?? false)
+        builder.applyEndpoint(AWSClientRuntime.EndpointResolverMiddleware<DeleteIdentityProviderConfigurationOutput, EndpointParams>(endpointResolverBlock: { [config] in try config.endpointResolver.resolve(params: $0) }, endpointParams: endpointParams))
+        builder.interceptors.add(AWSClientRuntime.UserAgentMiddleware<DeleteIdentityProviderConfigurationInput, DeleteIdentityProviderConfigurationOutput>(serviceID: serviceName, version: "1.0", config: config))
+        builder.interceptors.add(AWSClientRuntime.XAmzTargetMiddleware<DeleteIdentityProviderConfigurationInput, DeleteIdentityProviderConfigurationOutput>(xAmzTarget: "WorkMailService.DeleteIdentityProviderConfiguration"))
+        builder.serialize(ClientRuntime.BodyMiddleware<DeleteIdentityProviderConfigurationInput, DeleteIdentityProviderConfigurationOutput, SmithyJSON.Writer>(rootNodeInfo: "", inputWritingClosure: DeleteIdentityProviderConfigurationInput.write(value:to:)))
+        builder.interceptors.add(ClientRuntime.ContentTypeMiddleware<DeleteIdentityProviderConfigurationInput, DeleteIdentityProviderConfigurationOutput>(contentType: "application/x-amz-json-1.1"))
+        builder.selectAuthScheme(ClientRuntime.AuthSchemeMiddleware<DeleteIdentityProviderConfigurationOutput>())
+        builder.interceptors.add(AWSClientRuntime.AmzSdkInvocationIdMiddleware<DeleteIdentityProviderConfigurationInput, DeleteIdentityProviderConfigurationOutput>())
+        builder.interceptors.add(AWSClientRuntime.AmzSdkRequestMiddleware<DeleteIdentityProviderConfigurationInput, DeleteIdentityProviderConfigurationOutput>(maxRetries: config.retryStrategyOptions.maxRetriesBase))
+        var metricsAttributes = Smithy.Attributes()
+        metricsAttributes.set(key: ClientRuntime.OrchestratorMetricsAttributesKeys.service, value: "WorkMail")
+        metricsAttributes.set(key: ClientRuntime.OrchestratorMetricsAttributesKeys.method, value: "DeleteIdentityProviderConfiguration")
+        let op = builder.attributes(context)
+            .telemetry(ClientRuntime.OrchestratorTelemetry(
+                telemetryProvider: config.telemetryProvider,
+                metricsAttributes: metricsAttributes,
+                meterScope: serviceName,
+                tracerScope: serviceName
+            ))
+            .executeRequest(client)
+            .build()
+        return try await op.execute(input: input)
+    }
+
     /// Performs the `DeleteImpersonationRole` operation on the `WorkMailService` service.
     ///
     /// Deletes an impersonation role for the given WorkMail organization.
@@ -1820,6 +2034,78 @@ extension WorkMailClient {
         var metricsAttributes = Smithy.Attributes()
         metricsAttributes.set(key: ClientRuntime.OrchestratorMetricsAttributesKeys.service, value: "WorkMail")
         metricsAttributes.set(key: ClientRuntime.OrchestratorMetricsAttributesKeys.method, value: "DeleteOrganization")
+        let op = builder.attributes(context)
+            .telemetry(ClientRuntime.OrchestratorTelemetry(
+                telemetryProvider: config.telemetryProvider,
+                metricsAttributes: metricsAttributes,
+                meterScope: serviceName,
+                tracerScope: serviceName
+            ))
+            .executeRequest(client)
+            .build()
+        return try await op.execute(input: input)
+    }
+
+    /// Performs the `DeletePersonalAccessToken` operation on the `WorkMailService` service.
+    ///
+    /// Deletes the Personal Access Token from the provided WorkMail Organization.
+    ///
+    /// - Parameter DeletePersonalAccessTokenInput : [no documentation found]
+    ///
+    /// - Returns: `DeletePersonalAccessTokenOutput` : [no documentation found]
+    ///
+    /// - Throws: One of the exceptions listed below __Possible Exceptions__.
+    ///
+    /// __Possible Exceptions:__
+    /// - `InvalidParameterException` : One or more of the input parameters don't match the service's restrictions.
+    /// - `OrganizationNotFoundException` : An operation received a valid organization identifier that either doesn't belong or exist in the system.
+    /// - `OrganizationStateException` : The organization must have a valid state to perform certain operations on the organization or its members.
+    public func deletePersonalAccessToken(input: DeletePersonalAccessTokenInput) async throws -> DeletePersonalAccessTokenOutput {
+        let context = Smithy.ContextBuilder()
+                      .withMethod(value: .post)
+                      .withServiceName(value: serviceName)
+                      .withOperation(value: "deletePersonalAccessToken")
+                      .withIdempotencyTokenGenerator(value: config.idempotencyTokenGenerator)
+                      .withLogger(value: config.logger)
+                      .withPartitionID(value: config.partitionID)
+                      .withAuthSchemes(value: config.authSchemes ?? [])
+                      .withAuthSchemeResolver(value: config.authSchemeResolver)
+                      .withUnsignedPayloadTrait(value: false)
+                      .withSocketTimeout(value: config.httpClientConfiguration.socketTimeout)
+                      .withIdentityResolver(value: config.bearerTokenIdentityResolver, schemeID: "smithy.api#httpBearerAuth")
+                      .withIdentityResolver(value: config.awsCredentialIdentityResolver, schemeID: "aws.auth#sigv4")
+                      .withIdentityResolver(value: config.awsCredentialIdentityResolver, schemeID: "aws.auth#sigv4a")
+                      .withRegion(value: config.region)
+                      .withSigningName(value: "workmail")
+                      .withSigningRegion(value: config.signingRegion)
+                      .build()
+        let builder = ClientRuntime.OrchestratorBuilder<DeletePersonalAccessTokenInput, DeletePersonalAccessTokenOutput, SmithyHTTPAPI.HTTPRequest, SmithyHTTPAPI.HTTPResponse>()
+        config.interceptorProviders.forEach { provider in
+            builder.interceptors.add(provider.create())
+        }
+        config.httpInterceptorProviders.forEach { provider in
+            builder.interceptors.add(provider.create())
+        }
+        builder.interceptors.add(ClientRuntime.URLPathMiddleware<DeletePersonalAccessTokenInput, DeletePersonalAccessTokenOutput>(DeletePersonalAccessTokenInput.urlPathProvider(_:)))
+        builder.interceptors.add(ClientRuntime.URLHostMiddleware<DeletePersonalAccessTokenInput, DeletePersonalAccessTokenOutput>())
+        builder.interceptors.add(ClientRuntime.ContentLengthMiddleware<DeletePersonalAccessTokenInput, DeletePersonalAccessTokenOutput>())
+        builder.deserialize(ClientRuntime.DeserializeMiddleware<DeletePersonalAccessTokenOutput>(DeletePersonalAccessTokenOutput.httpOutput(from:), DeletePersonalAccessTokenOutputError.httpError(from:)))
+        builder.interceptors.add(ClientRuntime.LoggerMiddleware<DeletePersonalAccessTokenInput, DeletePersonalAccessTokenOutput>(clientLogMode: config.clientLogMode))
+        builder.retryStrategy(SmithyRetries.DefaultRetryStrategy(options: config.retryStrategyOptions))
+        builder.retryErrorInfoProvider(AWSClientRuntime.AWSRetryErrorInfoProvider.errorInfo(for:))
+        builder.applySigner(ClientRuntime.SignerMiddleware<DeletePersonalAccessTokenOutput>())
+        let endpointParams = EndpointParams(endpoint: config.endpoint, region: config.region, useDualStack: config.useDualStack ?? false, useFIPS: config.useFIPS ?? false)
+        builder.applyEndpoint(AWSClientRuntime.EndpointResolverMiddleware<DeletePersonalAccessTokenOutput, EndpointParams>(endpointResolverBlock: { [config] in try config.endpointResolver.resolve(params: $0) }, endpointParams: endpointParams))
+        builder.interceptors.add(AWSClientRuntime.UserAgentMiddleware<DeletePersonalAccessTokenInput, DeletePersonalAccessTokenOutput>(serviceID: serviceName, version: "1.0", config: config))
+        builder.interceptors.add(AWSClientRuntime.XAmzTargetMiddleware<DeletePersonalAccessTokenInput, DeletePersonalAccessTokenOutput>(xAmzTarget: "WorkMailService.DeletePersonalAccessToken"))
+        builder.serialize(ClientRuntime.BodyMiddleware<DeletePersonalAccessTokenInput, DeletePersonalAccessTokenOutput, SmithyJSON.Writer>(rootNodeInfo: "", inputWritingClosure: DeletePersonalAccessTokenInput.write(value:to:)))
+        builder.interceptors.add(ClientRuntime.ContentTypeMiddleware<DeletePersonalAccessTokenInput, DeletePersonalAccessTokenOutput>(contentType: "application/x-amz-json-1.1"))
+        builder.selectAuthScheme(ClientRuntime.AuthSchemeMiddleware<DeletePersonalAccessTokenOutput>())
+        builder.interceptors.add(AWSClientRuntime.AmzSdkInvocationIdMiddleware<DeletePersonalAccessTokenInput, DeletePersonalAccessTokenOutput>())
+        builder.interceptors.add(AWSClientRuntime.AmzSdkRequestMiddleware<DeletePersonalAccessTokenInput, DeletePersonalAccessTokenOutput>(maxRetries: config.retryStrategyOptions.maxRetriesBase))
+        var metricsAttributes = Smithy.Attributes()
+        metricsAttributes.set(key: ClientRuntime.OrchestratorMetricsAttributesKeys.service, value: "WorkMail")
+        metricsAttributes.set(key: ClientRuntime.OrchestratorMetricsAttributesKeys.method, value: "DeletePersonalAccessToken")
         let op = builder.attributes(context)
             .telemetry(ClientRuntime.OrchestratorTelemetry(
                 telemetryProvider: config.telemetryProvider,
@@ -2421,6 +2707,79 @@ extension WorkMailClient {
         return try await op.execute(input: input)
     }
 
+    /// Performs the `DescribeIdentityProviderConfiguration` operation on the `WorkMailService` service.
+    ///
+    /// Returns detailed information on the current IdC setup for the WorkMail organization.
+    ///
+    /// - Parameter DescribeIdentityProviderConfigurationInput : [no documentation found]
+    ///
+    /// - Returns: `DescribeIdentityProviderConfigurationOutput` : [no documentation found]
+    ///
+    /// - Throws: One of the exceptions listed below __Possible Exceptions__.
+    ///
+    /// __Possible Exceptions:__
+    /// - `InvalidParameterException` : One or more of the input parameters don't match the service's restrictions.
+    /// - `OrganizationNotFoundException` : An operation received a valid organization identifier that either doesn't belong or exist in the system.
+    /// - `OrganizationStateException` : The organization must have a valid state to perform certain operations on the organization or its members.
+    /// - `ResourceNotFoundException` : The resource cannot be found.
+    public func describeIdentityProviderConfiguration(input: DescribeIdentityProviderConfigurationInput) async throws -> DescribeIdentityProviderConfigurationOutput {
+        let context = Smithy.ContextBuilder()
+                      .withMethod(value: .post)
+                      .withServiceName(value: serviceName)
+                      .withOperation(value: "describeIdentityProviderConfiguration")
+                      .withIdempotencyTokenGenerator(value: config.idempotencyTokenGenerator)
+                      .withLogger(value: config.logger)
+                      .withPartitionID(value: config.partitionID)
+                      .withAuthSchemes(value: config.authSchemes ?? [])
+                      .withAuthSchemeResolver(value: config.authSchemeResolver)
+                      .withUnsignedPayloadTrait(value: false)
+                      .withSocketTimeout(value: config.httpClientConfiguration.socketTimeout)
+                      .withIdentityResolver(value: config.bearerTokenIdentityResolver, schemeID: "smithy.api#httpBearerAuth")
+                      .withIdentityResolver(value: config.awsCredentialIdentityResolver, schemeID: "aws.auth#sigv4")
+                      .withIdentityResolver(value: config.awsCredentialIdentityResolver, schemeID: "aws.auth#sigv4a")
+                      .withRegion(value: config.region)
+                      .withSigningName(value: "workmail")
+                      .withSigningRegion(value: config.signingRegion)
+                      .build()
+        let builder = ClientRuntime.OrchestratorBuilder<DescribeIdentityProviderConfigurationInput, DescribeIdentityProviderConfigurationOutput, SmithyHTTPAPI.HTTPRequest, SmithyHTTPAPI.HTTPResponse>()
+        config.interceptorProviders.forEach { provider in
+            builder.interceptors.add(provider.create())
+        }
+        config.httpInterceptorProviders.forEach { provider in
+            builder.interceptors.add(provider.create())
+        }
+        builder.interceptors.add(ClientRuntime.URLPathMiddleware<DescribeIdentityProviderConfigurationInput, DescribeIdentityProviderConfigurationOutput>(DescribeIdentityProviderConfigurationInput.urlPathProvider(_:)))
+        builder.interceptors.add(ClientRuntime.URLHostMiddleware<DescribeIdentityProviderConfigurationInput, DescribeIdentityProviderConfigurationOutput>())
+        builder.interceptors.add(ClientRuntime.ContentLengthMiddleware<DescribeIdentityProviderConfigurationInput, DescribeIdentityProviderConfigurationOutput>())
+        builder.deserialize(ClientRuntime.DeserializeMiddleware<DescribeIdentityProviderConfigurationOutput>(DescribeIdentityProviderConfigurationOutput.httpOutput(from:), DescribeIdentityProviderConfigurationOutputError.httpError(from:)))
+        builder.interceptors.add(ClientRuntime.LoggerMiddleware<DescribeIdentityProviderConfigurationInput, DescribeIdentityProviderConfigurationOutput>(clientLogMode: config.clientLogMode))
+        builder.retryStrategy(SmithyRetries.DefaultRetryStrategy(options: config.retryStrategyOptions))
+        builder.retryErrorInfoProvider(AWSClientRuntime.AWSRetryErrorInfoProvider.errorInfo(for:))
+        builder.applySigner(ClientRuntime.SignerMiddleware<DescribeIdentityProviderConfigurationOutput>())
+        let endpointParams = EndpointParams(endpoint: config.endpoint, region: config.region, useDualStack: config.useDualStack ?? false, useFIPS: config.useFIPS ?? false)
+        builder.applyEndpoint(AWSClientRuntime.EndpointResolverMiddleware<DescribeIdentityProviderConfigurationOutput, EndpointParams>(endpointResolverBlock: { [config] in try config.endpointResolver.resolve(params: $0) }, endpointParams: endpointParams))
+        builder.interceptors.add(AWSClientRuntime.UserAgentMiddleware<DescribeIdentityProviderConfigurationInput, DescribeIdentityProviderConfigurationOutput>(serviceID: serviceName, version: "1.0", config: config))
+        builder.interceptors.add(AWSClientRuntime.XAmzTargetMiddleware<DescribeIdentityProviderConfigurationInput, DescribeIdentityProviderConfigurationOutput>(xAmzTarget: "WorkMailService.DescribeIdentityProviderConfiguration"))
+        builder.serialize(ClientRuntime.BodyMiddleware<DescribeIdentityProviderConfigurationInput, DescribeIdentityProviderConfigurationOutput, SmithyJSON.Writer>(rootNodeInfo: "", inputWritingClosure: DescribeIdentityProviderConfigurationInput.write(value:to:)))
+        builder.interceptors.add(ClientRuntime.ContentTypeMiddleware<DescribeIdentityProviderConfigurationInput, DescribeIdentityProviderConfigurationOutput>(contentType: "application/x-amz-json-1.1"))
+        builder.selectAuthScheme(ClientRuntime.AuthSchemeMiddleware<DescribeIdentityProviderConfigurationOutput>())
+        builder.interceptors.add(AWSClientRuntime.AmzSdkInvocationIdMiddleware<DescribeIdentityProviderConfigurationInput, DescribeIdentityProviderConfigurationOutput>())
+        builder.interceptors.add(AWSClientRuntime.AmzSdkRequestMiddleware<DescribeIdentityProviderConfigurationInput, DescribeIdentityProviderConfigurationOutput>(maxRetries: config.retryStrategyOptions.maxRetriesBase))
+        var metricsAttributes = Smithy.Attributes()
+        metricsAttributes.set(key: ClientRuntime.OrchestratorMetricsAttributesKeys.service, value: "WorkMail")
+        metricsAttributes.set(key: ClientRuntime.OrchestratorMetricsAttributesKeys.method, value: "DescribeIdentityProviderConfiguration")
+        let op = builder.attributes(context)
+            .telemetry(ClientRuntime.OrchestratorTelemetry(
+                telemetryProvider: config.telemetryProvider,
+                metricsAttributes: metricsAttributes,
+                meterScope: serviceName,
+                tracerScope: serviceName
+            ))
+            .executeRequest(client)
+            .build()
+        return try await op.execute(input: input)
+    }
+
     /// Performs the `DescribeInboundDmarcSettings` operation on the `WorkMailService` service.
     ///
     /// Lists the settings in a DMARC policy for a specified organization.
@@ -2721,6 +3080,8 @@ extension WorkMailClient {
     /// - Throws: One of the exceptions listed below __Possible Exceptions__.
     ///
     /// __Possible Exceptions:__
+    /// - `DirectoryServiceAuthenticationFailedException` : The directory service doesn't recognize the credentials supplied by WorkMail.
+    /// - `DirectoryUnavailableException` : The directory is unavailable. It might be located in another Region or deleted.
     /// - `EntityNotFoundException` : The identifier supplied for the user, group, or resource does not exist in your organization.
     /// - `InvalidParameterException` : One or more of the input parameters don't match the service's restrictions.
     /// - `OrganizationNotFoundException` : An operation received a valid organization identifier that either doesn't belong or exist in the system.
@@ -3522,6 +3883,79 @@ extension WorkMailClient {
         return try await op.execute(input: input)
     }
 
+    /// Performs the `GetPersonalAccessTokenMetadata` operation on the `WorkMailService` service.
+    ///
+    /// Requests details of a specific Personal Access Token within the WorkMail organization.
+    ///
+    /// - Parameter GetPersonalAccessTokenMetadataInput : [no documentation found]
+    ///
+    /// - Returns: `GetPersonalAccessTokenMetadataOutput` : [no documentation found]
+    ///
+    /// - Throws: One of the exceptions listed below __Possible Exceptions__.
+    ///
+    /// __Possible Exceptions:__
+    /// - `InvalidParameterException` : One or more of the input parameters don't match the service's restrictions.
+    /// - `OrganizationNotFoundException` : An operation received a valid organization identifier that either doesn't belong or exist in the system.
+    /// - `OrganizationStateException` : The organization must have a valid state to perform certain operations on the organization or its members.
+    /// - `ResourceNotFoundException` : The resource cannot be found.
+    public func getPersonalAccessTokenMetadata(input: GetPersonalAccessTokenMetadataInput) async throws -> GetPersonalAccessTokenMetadataOutput {
+        let context = Smithy.ContextBuilder()
+                      .withMethod(value: .post)
+                      .withServiceName(value: serviceName)
+                      .withOperation(value: "getPersonalAccessTokenMetadata")
+                      .withIdempotencyTokenGenerator(value: config.idempotencyTokenGenerator)
+                      .withLogger(value: config.logger)
+                      .withPartitionID(value: config.partitionID)
+                      .withAuthSchemes(value: config.authSchemes ?? [])
+                      .withAuthSchemeResolver(value: config.authSchemeResolver)
+                      .withUnsignedPayloadTrait(value: false)
+                      .withSocketTimeout(value: config.httpClientConfiguration.socketTimeout)
+                      .withIdentityResolver(value: config.bearerTokenIdentityResolver, schemeID: "smithy.api#httpBearerAuth")
+                      .withIdentityResolver(value: config.awsCredentialIdentityResolver, schemeID: "aws.auth#sigv4")
+                      .withIdentityResolver(value: config.awsCredentialIdentityResolver, schemeID: "aws.auth#sigv4a")
+                      .withRegion(value: config.region)
+                      .withSigningName(value: "workmail")
+                      .withSigningRegion(value: config.signingRegion)
+                      .build()
+        let builder = ClientRuntime.OrchestratorBuilder<GetPersonalAccessTokenMetadataInput, GetPersonalAccessTokenMetadataOutput, SmithyHTTPAPI.HTTPRequest, SmithyHTTPAPI.HTTPResponse>()
+        config.interceptorProviders.forEach { provider in
+            builder.interceptors.add(provider.create())
+        }
+        config.httpInterceptorProviders.forEach { provider in
+            builder.interceptors.add(provider.create())
+        }
+        builder.interceptors.add(ClientRuntime.URLPathMiddleware<GetPersonalAccessTokenMetadataInput, GetPersonalAccessTokenMetadataOutput>(GetPersonalAccessTokenMetadataInput.urlPathProvider(_:)))
+        builder.interceptors.add(ClientRuntime.URLHostMiddleware<GetPersonalAccessTokenMetadataInput, GetPersonalAccessTokenMetadataOutput>())
+        builder.interceptors.add(ClientRuntime.ContentLengthMiddleware<GetPersonalAccessTokenMetadataInput, GetPersonalAccessTokenMetadataOutput>())
+        builder.deserialize(ClientRuntime.DeserializeMiddleware<GetPersonalAccessTokenMetadataOutput>(GetPersonalAccessTokenMetadataOutput.httpOutput(from:), GetPersonalAccessTokenMetadataOutputError.httpError(from:)))
+        builder.interceptors.add(ClientRuntime.LoggerMiddleware<GetPersonalAccessTokenMetadataInput, GetPersonalAccessTokenMetadataOutput>(clientLogMode: config.clientLogMode))
+        builder.retryStrategy(SmithyRetries.DefaultRetryStrategy(options: config.retryStrategyOptions))
+        builder.retryErrorInfoProvider(AWSClientRuntime.AWSRetryErrorInfoProvider.errorInfo(for:))
+        builder.applySigner(ClientRuntime.SignerMiddleware<GetPersonalAccessTokenMetadataOutput>())
+        let endpointParams = EndpointParams(endpoint: config.endpoint, region: config.region, useDualStack: config.useDualStack ?? false, useFIPS: config.useFIPS ?? false)
+        builder.applyEndpoint(AWSClientRuntime.EndpointResolverMiddleware<GetPersonalAccessTokenMetadataOutput, EndpointParams>(endpointResolverBlock: { [config] in try config.endpointResolver.resolve(params: $0) }, endpointParams: endpointParams))
+        builder.interceptors.add(AWSClientRuntime.UserAgentMiddleware<GetPersonalAccessTokenMetadataInput, GetPersonalAccessTokenMetadataOutput>(serviceID: serviceName, version: "1.0", config: config))
+        builder.interceptors.add(AWSClientRuntime.XAmzTargetMiddleware<GetPersonalAccessTokenMetadataInput, GetPersonalAccessTokenMetadataOutput>(xAmzTarget: "WorkMailService.GetPersonalAccessTokenMetadata"))
+        builder.serialize(ClientRuntime.BodyMiddleware<GetPersonalAccessTokenMetadataInput, GetPersonalAccessTokenMetadataOutput, SmithyJSON.Writer>(rootNodeInfo: "", inputWritingClosure: GetPersonalAccessTokenMetadataInput.write(value:to:)))
+        builder.interceptors.add(ClientRuntime.ContentTypeMiddleware<GetPersonalAccessTokenMetadataInput, GetPersonalAccessTokenMetadataOutput>(contentType: "application/x-amz-json-1.1"))
+        builder.selectAuthScheme(ClientRuntime.AuthSchemeMiddleware<GetPersonalAccessTokenMetadataOutput>())
+        builder.interceptors.add(AWSClientRuntime.AmzSdkInvocationIdMiddleware<GetPersonalAccessTokenMetadataInput, GetPersonalAccessTokenMetadataOutput>())
+        builder.interceptors.add(AWSClientRuntime.AmzSdkRequestMiddleware<GetPersonalAccessTokenMetadataInput, GetPersonalAccessTokenMetadataOutput>(maxRetries: config.retryStrategyOptions.maxRetriesBase))
+        var metricsAttributes = Smithy.Attributes()
+        metricsAttributes.set(key: ClientRuntime.OrchestratorMetricsAttributesKeys.service, value: "WorkMail")
+        metricsAttributes.set(key: ClientRuntime.OrchestratorMetricsAttributesKeys.method, value: "GetPersonalAccessTokenMetadata")
+        let op = builder.attributes(context)
+            .telemetry(ClientRuntime.OrchestratorTelemetry(
+                telemetryProvider: config.telemetryProvider,
+                metricsAttributes: metricsAttributes,
+                meterScope: serviceName,
+                tracerScope: serviceName
+            ))
+            .executeRequest(client)
+            .build()
+        return try await op.execute(input: input)
+    }
+
     /// Performs the `ListAccessControlRules` operation on the `WorkMailService` service.
     ///
     /// Lists the access control rules for the specified organization.
@@ -3678,6 +4112,7 @@ extension WorkMailClient {
     /// - Throws: One of the exceptions listed below __Possible Exceptions__.
     ///
     /// __Possible Exceptions:__
+    /// - `InvalidParameterException` : One or more of the input parameters don't match the service's restrictions.
     /// - `OrganizationNotFoundException` : An operation received a valid organization identifier that either doesn't belong or exist in the system.
     /// - `OrganizationStateException` : The organization must have a valid state to perform certain operations on the organization or its members.
     public func listAvailabilityConfigurations(input: ListAvailabilityConfigurationsInput) async throws -> ListAvailabilityConfigurationsOutput {
@@ -4463,6 +4898,80 @@ extension WorkMailClient {
         return try await op.execute(input: input)
     }
 
+    /// Performs the `ListPersonalAccessTokens` operation on the `WorkMailService` service.
+    ///
+    /// Returns a summary of your Personal Access Tokens.
+    ///
+    /// - Parameter ListPersonalAccessTokensInput : [no documentation found]
+    ///
+    /// - Returns: `ListPersonalAccessTokensOutput` : [no documentation found]
+    ///
+    /// - Throws: One of the exceptions listed below __Possible Exceptions__.
+    ///
+    /// __Possible Exceptions:__
+    /// - `EntityNotFoundException` : The identifier supplied for the user, group, or resource does not exist in your organization.
+    /// - `EntityStateException` : You are performing an operation on a user, group, or resource that isn't in the expected state, such as trying to delete an active user.
+    /// - `InvalidParameterException` : One or more of the input parameters don't match the service's restrictions.
+    /// - `OrganizationNotFoundException` : An operation received a valid organization identifier that either doesn't belong or exist in the system.
+    /// - `OrganizationStateException` : The organization must have a valid state to perform certain operations on the organization or its members.
+    public func listPersonalAccessTokens(input: ListPersonalAccessTokensInput) async throws -> ListPersonalAccessTokensOutput {
+        let context = Smithy.ContextBuilder()
+                      .withMethod(value: .post)
+                      .withServiceName(value: serviceName)
+                      .withOperation(value: "listPersonalAccessTokens")
+                      .withIdempotencyTokenGenerator(value: config.idempotencyTokenGenerator)
+                      .withLogger(value: config.logger)
+                      .withPartitionID(value: config.partitionID)
+                      .withAuthSchemes(value: config.authSchemes ?? [])
+                      .withAuthSchemeResolver(value: config.authSchemeResolver)
+                      .withUnsignedPayloadTrait(value: false)
+                      .withSocketTimeout(value: config.httpClientConfiguration.socketTimeout)
+                      .withIdentityResolver(value: config.bearerTokenIdentityResolver, schemeID: "smithy.api#httpBearerAuth")
+                      .withIdentityResolver(value: config.awsCredentialIdentityResolver, schemeID: "aws.auth#sigv4")
+                      .withIdentityResolver(value: config.awsCredentialIdentityResolver, schemeID: "aws.auth#sigv4a")
+                      .withRegion(value: config.region)
+                      .withSigningName(value: "workmail")
+                      .withSigningRegion(value: config.signingRegion)
+                      .build()
+        let builder = ClientRuntime.OrchestratorBuilder<ListPersonalAccessTokensInput, ListPersonalAccessTokensOutput, SmithyHTTPAPI.HTTPRequest, SmithyHTTPAPI.HTTPResponse>()
+        config.interceptorProviders.forEach { provider in
+            builder.interceptors.add(provider.create())
+        }
+        config.httpInterceptorProviders.forEach { provider in
+            builder.interceptors.add(provider.create())
+        }
+        builder.interceptors.add(ClientRuntime.URLPathMiddleware<ListPersonalAccessTokensInput, ListPersonalAccessTokensOutput>(ListPersonalAccessTokensInput.urlPathProvider(_:)))
+        builder.interceptors.add(ClientRuntime.URLHostMiddleware<ListPersonalAccessTokensInput, ListPersonalAccessTokensOutput>())
+        builder.interceptors.add(ClientRuntime.ContentLengthMiddleware<ListPersonalAccessTokensInput, ListPersonalAccessTokensOutput>())
+        builder.deserialize(ClientRuntime.DeserializeMiddleware<ListPersonalAccessTokensOutput>(ListPersonalAccessTokensOutput.httpOutput(from:), ListPersonalAccessTokensOutputError.httpError(from:)))
+        builder.interceptors.add(ClientRuntime.LoggerMiddleware<ListPersonalAccessTokensInput, ListPersonalAccessTokensOutput>(clientLogMode: config.clientLogMode))
+        builder.retryStrategy(SmithyRetries.DefaultRetryStrategy(options: config.retryStrategyOptions))
+        builder.retryErrorInfoProvider(AWSClientRuntime.AWSRetryErrorInfoProvider.errorInfo(for:))
+        builder.applySigner(ClientRuntime.SignerMiddleware<ListPersonalAccessTokensOutput>())
+        let endpointParams = EndpointParams(endpoint: config.endpoint, region: config.region, useDualStack: config.useDualStack ?? false, useFIPS: config.useFIPS ?? false)
+        builder.applyEndpoint(AWSClientRuntime.EndpointResolverMiddleware<ListPersonalAccessTokensOutput, EndpointParams>(endpointResolverBlock: { [config] in try config.endpointResolver.resolve(params: $0) }, endpointParams: endpointParams))
+        builder.interceptors.add(AWSClientRuntime.UserAgentMiddleware<ListPersonalAccessTokensInput, ListPersonalAccessTokensOutput>(serviceID: serviceName, version: "1.0", config: config))
+        builder.interceptors.add(AWSClientRuntime.XAmzTargetMiddleware<ListPersonalAccessTokensInput, ListPersonalAccessTokensOutput>(xAmzTarget: "WorkMailService.ListPersonalAccessTokens"))
+        builder.serialize(ClientRuntime.BodyMiddleware<ListPersonalAccessTokensInput, ListPersonalAccessTokensOutput, SmithyJSON.Writer>(rootNodeInfo: "", inputWritingClosure: ListPersonalAccessTokensInput.write(value:to:)))
+        builder.interceptors.add(ClientRuntime.ContentTypeMiddleware<ListPersonalAccessTokensInput, ListPersonalAccessTokensOutput>(contentType: "application/x-amz-json-1.1"))
+        builder.selectAuthScheme(ClientRuntime.AuthSchemeMiddleware<ListPersonalAccessTokensOutput>())
+        builder.interceptors.add(AWSClientRuntime.AmzSdkInvocationIdMiddleware<ListPersonalAccessTokensInput, ListPersonalAccessTokensOutput>())
+        builder.interceptors.add(AWSClientRuntime.AmzSdkRequestMiddleware<ListPersonalAccessTokensInput, ListPersonalAccessTokensOutput>(maxRetries: config.retryStrategyOptions.maxRetriesBase))
+        var metricsAttributes = Smithy.Attributes()
+        metricsAttributes.set(key: ClientRuntime.OrchestratorMetricsAttributesKeys.service, value: "WorkMail")
+        metricsAttributes.set(key: ClientRuntime.OrchestratorMetricsAttributesKeys.method, value: "ListPersonalAccessTokens")
+        let op = builder.attributes(context)
+            .telemetry(ClientRuntime.OrchestratorTelemetry(
+                telemetryProvider: config.telemetryProvider,
+                metricsAttributes: metricsAttributes,
+                meterScope: serviceName,
+                tracerScope: serviceName
+            ))
+            .executeRequest(client)
+            .build()
+        return try await op.execute(input: input)
+    }
+
     /// Performs the `ListResourceDelegates` operation on the `WorkMailService` service.
     ///
     /// Lists the delegates associated with a resource. Users and groups can be resource delegates and answer requests on behalf of the resource.
@@ -4889,6 +5398,79 @@ extension WorkMailClient {
         var metricsAttributes = Smithy.Attributes()
         metricsAttributes.set(key: ClientRuntime.OrchestratorMetricsAttributesKeys.service, value: "WorkMail")
         metricsAttributes.set(key: ClientRuntime.OrchestratorMetricsAttributesKeys.method, value: "PutEmailMonitoringConfiguration")
+        let op = builder.attributes(context)
+            .telemetry(ClientRuntime.OrchestratorTelemetry(
+                telemetryProvider: config.telemetryProvider,
+                metricsAttributes: metricsAttributes,
+                meterScope: serviceName,
+                tracerScope: serviceName
+            ))
+            .executeRequest(client)
+            .build()
+        return try await op.execute(input: input)
+    }
+
+    /// Performs the `PutIdentityProviderConfiguration` operation on the `WorkMailService` service.
+    ///
+    /// Enables integration between IAM Identity Center (IdC) and WorkMail to proxy authentication requests for mailbox users. You can connect your IdC directory or your external directory to WorkMail through IdC and manage access to WorkMail mailboxes in a single place. For enhanced protection, you could enable Multifactor Authentication (MFA) and Personal Access Tokens.
+    ///
+    /// - Parameter PutIdentityProviderConfigurationInput : [no documentation found]
+    ///
+    /// - Returns: `PutIdentityProviderConfigurationOutput` : [no documentation found]
+    ///
+    /// - Throws: One of the exceptions listed below __Possible Exceptions__.
+    ///
+    /// __Possible Exceptions:__
+    /// - `InvalidParameterException` : One or more of the input parameters don't match the service's restrictions.
+    /// - `OrganizationNotFoundException` : An operation received a valid organization identifier that either doesn't belong or exist in the system.
+    /// - `OrganizationStateException` : The organization must have a valid state to perform certain operations on the organization or its members.
+    /// - `ResourceNotFoundException` : The resource cannot be found.
+    public func putIdentityProviderConfiguration(input: PutIdentityProviderConfigurationInput) async throws -> PutIdentityProviderConfigurationOutput {
+        let context = Smithy.ContextBuilder()
+                      .withMethod(value: .post)
+                      .withServiceName(value: serviceName)
+                      .withOperation(value: "putIdentityProviderConfiguration")
+                      .withIdempotencyTokenGenerator(value: config.idempotencyTokenGenerator)
+                      .withLogger(value: config.logger)
+                      .withPartitionID(value: config.partitionID)
+                      .withAuthSchemes(value: config.authSchemes ?? [])
+                      .withAuthSchemeResolver(value: config.authSchemeResolver)
+                      .withUnsignedPayloadTrait(value: false)
+                      .withSocketTimeout(value: config.httpClientConfiguration.socketTimeout)
+                      .withIdentityResolver(value: config.bearerTokenIdentityResolver, schemeID: "smithy.api#httpBearerAuth")
+                      .withIdentityResolver(value: config.awsCredentialIdentityResolver, schemeID: "aws.auth#sigv4")
+                      .withIdentityResolver(value: config.awsCredentialIdentityResolver, schemeID: "aws.auth#sigv4a")
+                      .withRegion(value: config.region)
+                      .withSigningName(value: "workmail")
+                      .withSigningRegion(value: config.signingRegion)
+                      .build()
+        let builder = ClientRuntime.OrchestratorBuilder<PutIdentityProviderConfigurationInput, PutIdentityProviderConfigurationOutput, SmithyHTTPAPI.HTTPRequest, SmithyHTTPAPI.HTTPResponse>()
+        config.interceptorProviders.forEach { provider in
+            builder.interceptors.add(provider.create())
+        }
+        config.httpInterceptorProviders.forEach { provider in
+            builder.interceptors.add(provider.create())
+        }
+        builder.interceptors.add(ClientRuntime.URLPathMiddleware<PutIdentityProviderConfigurationInput, PutIdentityProviderConfigurationOutput>(PutIdentityProviderConfigurationInput.urlPathProvider(_:)))
+        builder.interceptors.add(ClientRuntime.URLHostMiddleware<PutIdentityProviderConfigurationInput, PutIdentityProviderConfigurationOutput>())
+        builder.interceptors.add(ClientRuntime.ContentLengthMiddleware<PutIdentityProviderConfigurationInput, PutIdentityProviderConfigurationOutput>())
+        builder.deserialize(ClientRuntime.DeserializeMiddleware<PutIdentityProviderConfigurationOutput>(PutIdentityProviderConfigurationOutput.httpOutput(from:), PutIdentityProviderConfigurationOutputError.httpError(from:)))
+        builder.interceptors.add(ClientRuntime.LoggerMiddleware<PutIdentityProviderConfigurationInput, PutIdentityProviderConfigurationOutput>(clientLogMode: config.clientLogMode))
+        builder.retryStrategy(SmithyRetries.DefaultRetryStrategy(options: config.retryStrategyOptions))
+        builder.retryErrorInfoProvider(AWSClientRuntime.AWSRetryErrorInfoProvider.errorInfo(for:))
+        builder.applySigner(ClientRuntime.SignerMiddleware<PutIdentityProviderConfigurationOutput>())
+        let endpointParams = EndpointParams(endpoint: config.endpoint, region: config.region, useDualStack: config.useDualStack ?? false, useFIPS: config.useFIPS ?? false)
+        builder.applyEndpoint(AWSClientRuntime.EndpointResolverMiddleware<PutIdentityProviderConfigurationOutput, EndpointParams>(endpointResolverBlock: { [config] in try config.endpointResolver.resolve(params: $0) }, endpointParams: endpointParams))
+        builder.interceptors.add(AWSClientRuntime.UserAgentMiddleware<PutIdentityProviderConfigurationInput, PutIdentityProviderConfigurationOutput>(serviceID: serviceName, version: "1.0", config: config))
+        builder.interceptors.add(AWSClientRuntime.XAmzTargetMiddleware<PutIdentityProviderConfigurationInput, PutIdentityProviderConfigurationOutput>(xAmzTarget: "WorkMailService.PutIdentityProviderConfiguration"))
+        builder.serialize(ClientRuntime.BodyMiddleware<PutIdentityProviderConfigurationInput, PutIdentityProviderConfigurationOutput, SmithyJSON.Writer>(rootNodeInfo: "", inputWritingClosure: PutIdentityProviderConfigurationInput.write(value:to:)))
+        builder.interceptors.add(ClientRuntime.ContentTypeMiddleware<PutIdentityProviderConfigurationInput, PutIdentityProviderConfigurationOutput>(contentType: "application/x-amz-json-1.1"))
+        builder.selectAuthScheme(ClientRuntime.AuthSchemeMiddleware<PutIdentityProviderConfigurationOutput>())
+        builder.interceptors.add(AWSClientRuntime.AmzSdkInvocationIdMiddleware<PutIdentityProviderConfigurationInput, PutIdentityProviderConfigurationOutput>())
+        builder.interceptors.add(AWSClientRuntime.AmzSdkRequestMiddleware<PutIdentityProviderConfigurationInput, PutIdentityProviderConfigurationOutput>(maxRetries: config.retryStrategyOptions.maxRetriesBase))
+        var metricsAttributes = Smithy.Attributes()
+        metricsAttributes.set(key: ClientRuntime.OrchestratorMetricsAttributesKeys.service, value: "WorkMail")
+        metricsAttributes.set(key: ClientRuntime.OrchestratorMetricsAttributesKeys.method, value: "PutIdentityProviderConfiguration")
         let op = builder.attributes(context)
             .telemetry(ClientRuntime.OrchestratorTelemetry(
                 telemetryProvider: config.telemetryProvider,
@@ -5866,7 +6448,7 @@ extension WorkMailClient {
 
     /// Performs the `UpdateGroup` operation on the `WorkMailService` service.
     ///
-    /// Updates attibutes in a group.
+    /// Updates attributes in a group.
     ///
     /// - Parameter UpdateGroupInput : [no documentation found]
     ///

@@ -52,8 +52,9 @@ public struct AccessDeniedException: ClientRuntime.ModeledError, AWSClientRuntim
 }
 
 extension IdentitystoreClientTypes {
+
     /// The address associated with the specified user.
-    public struct Address {
+    public struct Address: Swift.Sendable {
         /// The country of the address.
         public var country: Swift.String?
         /// A string containing a formatted version of the address for display.
@@ -92,7 +93,6 @@ extension IdentitystoreClientTypes {
             self.type = type
         }
     }
-
 }
 
 extension IdentitystoreClientTypes.Address: Swift.CustomDebugStringConvertible {
@@ -101,8 +101,9 @@ extension IdentitystoreClientTypes.Address: Swift.CustomDebugStringConvertible {
 }
 
 extension IdentitystoreClientTypes {
+
     /// The identifier issued to this resource by an external identity provider.
-    public struct ExternalId {
+    public struct ExternalId: Swift.Sendable {
         /// The identifier issued to this resource by an external identity provider.
         /// This member is required.
         public var id: Swift.String?
@@ -119,7 +120,6 @@ extension IdentitystoreClientTypes {
             self.issuer = issuer
         }
     }
-
 }
 
 extension IdentitystoreClientTypes.ExternalId: Swift.CustomDebugStringConvertible {
@@ -128,8 +128,9 @@ extension IdentitystoreClientTypes.ExternalId: Swift.CustomDebugStringConvertibl
 }
 
 extension IdentitystoreClientTypes {
+
     /// An entity attribute that's unique to a specific entity.
-    public struct UniqueAttribute {
+    public struct UniqueAttribute: Swift.Sendable {
         /// A string representation of the path to a given attribute or sub-attribute. Supports JMESPath.
         /// This member is required.
         public var attributePath: Swift.String?
@@ -146,24 +147,24 @@ extension IdentitystoreClientTypes {
             self.attributeValue = attributeValue
         }
     }
-
 }
 
 extension IdentitystoreClientTypes {
+
     /// A unique identifier for a user or group that is not the primary identifier. This value can be an identifier from an external identity provider (IdP) that is associated with the user, the group, or a unique attribute.
-    public enum AlternateIdentifier {
+    public enum AlternateIdentifier: Swift.Sendable {
         /// The identifier issued to this resource by an external identity provider.
         case externalid(IdentitystoreClientTypes.ExternalId)
         /// An entity attribute that's unique to a specific entity.
         case uniqueattribute(IdentitystoreClientTypes.UniqueAttribute)
         case sdkUnknown(Swift.String)
     }
-
 }
 
 extension IdentitystoreClientTypes {
+
     /// An operation that applies to the requested group. This operation might add, replace, or remove an attribute.
-    public struct AttributeOperation {
+    public struct AttributeOperation: Swift.Sendable {
         /// A string representation of the path to a given attribute or sub-attribute. Supports JMESPath.
         /// This member is required.
         public var attributePath: Swift.String?
@@ -179,12 +180,11 @@ extension IdentitystoreClientTypes {
             self.attributeValue = attributeValue
         }
     }
-
 }
 
 extension IdentitystoreClientTypes {
 
-    public enum ResourceType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ResourceType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case group
         case groupMembership
         case identityStore
@@ -281,7 +281,7 @@ public struct ValidationException: ClientRuntime.ModeledError, AWSClientRuntime.
     }
 }
 
-public struct GetGroupIdInput {
+public struct GetGroupIdInput: Swift.Sendable {
     /// A unique identifier for a user or group that is not the primary identifier. This value can be an identifier from an external identity provider (IdP) that is associated with the user, the group, or a unique attribute. For the unique attribute, the only valid path is displayName.
     /// This member is required.
     public var alternateIdentifier: IdentitystoreClientTypes.AlternateIdentifier?
@@ -299,7 +299,7 @@ public struct GetGroupIdInput {
     }
 }
 
-public struct GetGroupIdOutput {
+public struct GetGroupIdOutput: Swift.Sendable {
     /// The identifier for a group in the identity store.
     /// This member is required.
     public var groupId: Swift.String?
@@ -318,16 +318,16 @@ public struct GetGroupIdOutput {
 }
 
 extension IdentitystoreClientTypes {
+
     /// An object containing the identifier of a group member.
-    public enum MemberId {
+    public enum MemberId: Swift.Sendable {
         /// An object containing the identifiers of resources that can be members.
         case userid(Swift.String)
         case sdkUnknown(Swift.String)
     }
-
 }
 
-public struct GetGroupMembershipIdInput {
+public struct GetGroupMembershipIdInput: Swift.Sendable {
     /// The identifier for a group in the identity store.
     /// This member is required.
     public var groupId: Swift.String?
@@ -350,7 +350,7 @@ public struct GetGroupMembershipIdInput {
     }
 }
 
-public struct GetGroupMembershipIdOutput {
+public struct GetGroupMembershipIdOutput: Swift.Sendable {
     /// The globally unique identifier for the identity store.
     /// This member is required.
     public var identityStoreId: Swift.String?
@@ -368,7 +368,7 @@ public struct GetGroupMembershipIdOutput {
     }
 }
 
-public struct GetUserIdInput {
+public struct GetUserIdInput: Swift.Sendable {
     /// A unique identifier for a user or group that is not the primary identifier. This value can be an identifier from an external identity provider (IdP) that is associated with the user, the group, or a unique attribute. For the unique attribute, the only valid paths are userName and emails.value.
     /// This member is required.
     public var alternateIdentifier: IdentitystoreClientTypes.AlternateIdentifier?
@@ -386,7 +386,7 @@ public struct GetUserIdInput {
     }
 }
 
-public struct GetUserIdOutput {
+public struct GetUserIdOutput: Swift.Sendable {
     /// The globally unique identifier for the identity store.
     /// This member is required.
     public var identityStoreId: Swift.String?
@@ -406,7 +406,7 @@ public struct GetUserIdOutput {
 
 extension IdentitystoreClientTypes {
 
-    public enum ConflictExceptionReason: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ConflictExceptionReason: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case concurrentModification
         case uniquenessConstraintViolation
         case sdkUnknown(Swift.String)
@@ -501,7 +501,7 @@ public struct ServiceQuotaExceededException: ClientRuntime.ModeledError, AWSClie
     }
 }
 
-public struct CreateGroupMembershipInput {
+public struct CreateGroupMembershipInput: Swift.Sendable {
     /// The identifier for a group in the identity store.
     /// This member is required.
     public var groupId: Swift.String?
@@ -524,7 +524,7 @@ public struct CreateGroupMembershipInput {
     }
 }
 
-public struct CreateGroupMembershipOutput {
+public struct CreateGroupMembershipOutput: Swift.Sendable {
     /// The globally unique identifier for the identity store.
     /// This member is required.
     public var identityStoreId: Swift.String?
@@ -542,7 +542,7 @@ public struct CreateGroupMembershipOutput {
     }
 }
 
-public struct DeleteGroupMembershipInput {
+public struct DeleteGroupMembershipInput: Swift.Sendable {
     /// The globally unique identifier for the identity store.
     /// This member is required.
     public var identityStoreId: Swift.String?
@@ -560,12 +560,12 @@ public struct DeleteGroupMembershipInput {
     }
 }
 
-public struct DeleteGroupMembershipOutput {
+public struct DeleteGroupMembershipOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DescribeGroupMembershipInput {
+public struct DescribeGroupMembershipInput: Swift.Sendable {
     /// The globally unique identifier for the identity store.
     /// This member is required.
     public var identityStoreId: Swift.String?
@@ -583,7 +583,7 @@ public struct DescribeGroupMembershipInput {
     }
 }
 
-public struct DescribeGroupMembershipOutput {
+public struct DescribeGroupMembershipOutput: Swift.Sendable {
     /// The identifier for a group in the identity store.
     /// This member is required.
     public var groupId: Swift.String?
@@ -611,7 +611,7 @@ public struct DescribeGroupMembershipOutput {
     }
 }
 
-public struct ListGroupMembershipsInput {
+public struct ListGroupMembershipsInput: Swift.Sendable {
     /// The identifier for a group in the identity store.
     /// This member is required.
     public var groupId: Swift.String?
@@ -638,8 +638,9 @@ public struct ListGroupMembershipsInput {
 }
 
 extension IdentitystoreClientTypes {
+
     /// Contains the identifiers for a group, a group member, and a GroupMembership object in the identity store.
-    public struct GroupMembership {
+    public struct GroupMembership: Swift.Sendable {
         /// The identifier for a group in the identity store.
         public var groupId: Swift.String?
         /// The globally unique identifier for the identity store.
@@ -663,10 +664,9 @@ extension IdentitystoreClientTypes {
             self.membershipId = membershipId
         }
     }
-
 }
 
-public struct ListGroupMembershipsOutput {
+public struct ListGroupMembershipsOutput: Swift.Sendable {
     /// A list of GroupMembership objects in the group.
     /// This member is required.
     public var groupMemberships: [IdentitystoreClientTypes.GroupMembership]?
@@ -683,7 +683,7 @@ public struct ListGroupMembershipsOutput {
     }
 }
 
-public struct CreateGroupInput {
+public struct CreateGroupInput: Swift.Sendable {
     /// A string containing the description of the group.
     public var description: Swift.String?
     /// A string containing the name of the group. This value is commonly displayed when the group is referenced. Administrator and AWSAdministrators are reserved names and can't be used for users or groups.
@@ -709,7 +709,7 @@ extension CreateGroupInput: Swift.CustomDebugStringConvertible {
         "CreateGroupInput(identityStoreId: \(Swift.String(describing: identityStoreId)), description: \"CONTENT_REDACTED\", displayName: \"CONTENT_REDACTED\")"}
 }
 
-public struct CreateGroupOutput {
+public struct CreateGroupOutput: Swift.Sendable {
     /// The identifier of the newly created group in the identity store.
     /// This member is required.
     public var groupId: Swift.String?
@@ -727,7 +727,7 @@ public struct CreateGroupOutput {
     }
 }
 
-public struct DeleteGroupInput {
+public struct DeleteGroupInput: Swift.Sendable {
     /// The identifier for a group in the identity store.
     /// This member is required.
     public var groupId: Swift.String?
@@ -745,12 +745,12 @@ public struct DeleteGroupInput {
     }
 }
 
-public struct DeleteGroupOutput {
+public struct DeleteGroupOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DescribeGroupInput {
+public struct DescribeGroupInput: Swift.Sendable {
     /// The identifier for a group in the identity store.
     /// This member is required.
     public var groupId: Swift.String?
@@ -768,7 +768,7 @@ public struct DescribeGroupInput {
     }
 }
 
-public struct DescribeGroupOutput {
+public struct DescribeGroupOutput: Swift.Sendable {
     /// A string containing a description of the group.
     public var description: Swift.String?
     /// The group’s display name value. The length limit is 1,024 characters. This value can consist of letters, accented characters, symbols, numbers, punctuation, tab, new line, carriage return, space, and nonbreaking space in this attribute. This value is specified at the time that the group is created and stored as an attribute of the group object in the identity store.
@@ -804,8 +804,9 @@ extension DescribeGroupOutput: Swift.CustomDebugStringConvertible {
 }
 
 extension IdentitystoreClientTypes {
+
     /// A query filter used by ListUsers and ListGroups. This filter object provides the attribute name and attribute value to search users or groups.
-    public struct Filter {
+    public struct Filter: Swift.Sendable {
         /// The attribute path that is used to specify which attribute name to search. Length limit is 255 characters. For example, UserName is a valid attribute path for the ListUsers API, and DisplayName is a valid attribute path for the ListGroups API.
         /// This member is required.
         public var attributePath: Swift.String?
@@ -822,7 +823,6 @@ extension IdentitystoreClientTypes {
             self.attributeValue = attributeValue
         }
     }
-
 }
 
 extension IdentitystoreClientTypes.Filter: Swift.CustomDebugStringConvertible {
@@ -830,7 +830,7 @@ extension IdentitystoreClientTypes.Filter: Swift.CustomDebugStringConvertible {
         "Filter(attributePath: \(Swift.String(describing: attributePath)), attributeValue: \"CONTENT_REDACTED\")"}
 }
 
-public struct ListGroupsInput {
+public struct ListGroupsInput: Swift.Sendable {
     /// A list of Filter objects, which is used in the ListUsers and ListGroups requests.
     @available(*, deprecated, message: "Using filters with ListGroups API is deprecated, please use GetGroupId API instead.")
     public var filters: [IdentitystoreClientTypes.Filter]?
@@ -857,8 +857,9 @@ public struct ListGroupsInput {
 }
 
 extension IdentitystoreClientTypes {
+
     /// A group object that contains the metadata and attributes for a specified group.
-    public struct Group {
+    public struct Group: Swift.Sendable {
         /// A string containing a description of the specified group.
         public var description: Swift.String?
         /// The display name value for the group. The length limit is 1,024 characters. This value can consist of letters, accented characters, symbols, numbers, punctuation, tab, new line, carriage return, space, and nonbreaking space in this attribute. This value is specified at the time the group is created and stored as an attribute of the group object in the identity store.
@@ -887,7 +888,6 @@ extension IdentitystoreClientTypes {
             self.identityStoreId = identityStoreId
         }
     }
-
 }
 
 extension IdentitystoreClientTypes.Group: Swift.CustomDebugStringConvertible {
@@ -895,7 +895,7 @@ extension IdentitystoreClientTypes.Group: Swift.CustomDebugStringConvertible {
         "Group(externalIds: \(Swift.String(describing: externalIds)), groupId: \(Swift.String(describing: groupId)), identityStoreId: \(Swift.String(describing: identityStoreId)), description: \"CONTENT_REDACTED\", displayName: \"CONTENT_REDACTED\")"}
 }
 
-public struct ListGroupsOutput {
+public struct ListGroupsOutput: Swift.Sendable {
     /// A list of Group objects in the identity store.
     /// This member is required.
     public var groups: [IdentitystoreClientTypes.Group]?
@@ -912,7 +912,7 @@ public struct ListGroupsOutput {
     }
 }
 
-public struct UpdateGroupInput {
+public struct UpdateGroupInput: Swift.Sendable {
     /// The identifier for a group in the identity store.
     /// This member is required.
     public var groupId: Swift.String?
@@ -935,7 +935,7 @@ public struct UpdateGroupInput {
     }
 }
 
-public struct UpdateGroupOutput {
+public struct UpdateGroupOutput: Swift.Sendable {
 
     public init() { }
 }
@@ -972,7 +972,7 @@ public struct InternalServerException: ClientRuntime.ModeledError, AWSClientRunt
     }
 }
 
-public struct IsMemberInGroupsInput {
+public struct IsMemberInGroupsInput: Swift.Sendable {
     /// A list of identifiers for groups in the identity store.
     /// This member is required.
     public var groupIds: [Swift.String]?
@@ -996,8 +996,9 @@ public struct IsMemberInGroupsInput {
 }
 
 extension IdentitystoreClientTypes {
+
     /// Indicates whether a resource is a member of a group in the identity store.
-    public struct GroupMembershipExistenceResult {
+    public struct GroupMembershipExistenceResult: Swift.Sendable {
         /// The identifier for a group in the identity store.
         public var groupId: Swift.String?
         /// An object that contains the identifier of a group member. Setting the UserID field to the specific identifier for a user indicates that the user is a member of the group.
@@ -1016,7 +1017,6 @@ extension IdentitystoreClientTypes {
             self.membershipExists = membershipExists
         }
     }
-
 }
 
 extension IdentitystoreClientTypes.GroupMembershipExistenceResult: Swift.CustomDebugStringConvertible {
@@ -1024,7 +1024,7 @@ extension IdentitystoreClientTypes.GroupMembershipExistenceResult: Swift.CustomD
         "GroupMembershipExistenceResult(groupId: \(Swift.String(describing: groupId)), memberId: \(Swift.String(describing: memberId)), membershipExists: \"CONTENT_REDACTED\")"}
 }
 
-public struct IsMemberInGroupsOutput {
+public struct IsMemberInGroupsOutput: Swift.Sendable {
     /// A list containing the results of membership existence checks.
     /// This member is required.
     public var results: [IdentitystoreClientTypes.GroupMembershipExistenceResult]?
@@ -1037,7 +1037,7 @@ public struct IsMemberInGroupsOutput {
     }
 }
 
-public struct ListGroupMembershipsForMemberInput {
+public struct ListGroupMembershipsForMemberInput: Swift.Sendable {
     /// The globally unique identifier for the identity store.
     /// This member is required.
     public var identityStoreId: Swift.String?
@@ -1063,7 +1063,7 @@ public struct ListGroupMembershipsForMemberInput {
     }
 }
 
-public struct ListGroupMembershipsForMemberOutput {
+public struct ListGroupMembershipsForMemberOutput: Swift.Sendable {
     /// A list of GroupMembership objects in the group for a specified member.
     /// This member is required.
     public var groupMemberships: [IdentitystoreClientTypes.GroupMembership]?
@@ -1113,8 +1113,9 @@ public struct ThrottlingException: ClientRuntime.ModeledError, AWSClientRuntime.
 }
 
 extension IdentitystoreClientTypes {
+
     /// The email address associated with the user.
-    public struct Email {
+    public struct Email: Swift.Sendable {
         /// A Boolean value representing whether this is the primary email address for the associated resource.
         public var primary: Swift.Bool
         /// A string representing the type of address. For example, "Work."
@@ -1133,7 +1134,6 @@ extension IdentitystoreClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension IdentitystoreClientTypes.Email: Swift.CustomDebugStringConvertible {
@@ -1142,8 +1142,9 @@ extension IdentitystoreClientTypes.Email: Swift.CustomDebugStringConvertible {
 }
 
 extension IdentitystoreClientTypes {
+
     /// The full name of the user.
-    public struct Name {
+    public struct Name: Swift.Sendable {
         /// The family name of the user.
         public var familyName: Swift.String?
         /// A string containing a formatted version of the name for display.
@@ -1174,7 +1175,6 @@ extension IdentitystoreClientTypes {
             self.middleName = middleName
         }
     }
-
 }
 
 extension IdentitystoreClientTypes.Name: Swift.CustomDebugStringConvertible {
@@ -1183,8 +1183,9 @@ extension IdentitystoreClientTypes.Name: Swift.CustomDebugStringConvertible {
 }
 
 extension IdentitystoreClientTypes {
+
     /// The phone number associated with the user.
-    public struct PhoneNumber {
+    public struct PhoneNumber: Swift.Sendable {
         /// A Boolean value representing whether this is the primary phone number for the associated resource.
         public var primary: Swift.Bool
         /// A string representing the type of a phone number. For example, "Mobile."
@@ -1203,7 +1204,6 @@ extension IdentitystoreClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension IdentitystoreClientTypes.PhoneNumber: Swift.CustomDebugStringConvertible {
@@ -1211,7 +1211,7 @@ extension IdentitystoreClientTypes.PhoneNumber: Swift.CustomDebugStringConvertib
         "PhoneNumber(primary: \"CONTENT_REDACTED\", type: \"CONTENT_REDACTED\", value: \"CONTENT_REDACTED\")"}
 }
 
-public struct CreateUserInput {
+public struct CreateUserInput: Swift.Sendable {
     /// A list of Address objects containing addresses associated with the user.
     public var addresses: [IdentitystoreClientTypes.Address]?
     /// A string containing the name of the user. This value is typically formatted for display when the user is referenced. For example, "John Doe."
@@ -1281,7 +1281,7 @@ extension CreateUserInput: Swift.CustomDebugStringConvertible {
         "CreateUserInput(addresses: \(Swift.String(describing: addresses)), emails: \(Swift.String(describing: emails)), identityStoreId: \(Swift.String(describing: identityStoreId)), name: \(Swift.String(describing: name)), phoneNumbers: \(Swift.String(describing: phoneNumbers)), displayName: \"CONTENT_REDACTED\", locale: \"CONTENT_REDACTED\", nickName: \"CONTENT_REDACTED\", preferredLanguage: \"CONTENT_REDACTED\", profileUrl: \"CONTENT_REDACTED\", timezone: \"CONTENT_REDACTED\", title: \"CONTENT_REDACTED\", userName: \"CONTENT_REDACTED\", userType: \"CONTENT_REDACTED\")"}
 }
 
-public struct CreateUserOutput {
+public struct CreateUserOutput: Swift.Sendable {
     /// The globally unique identifier for the identity store.
     /// This member is required.
     public var identityStoreId: Swift.String?
@@ -1299,7 +1299,7 @@ public struct CreateUserOutput {
     }
 }
 
-public struct DeleteUserInput {
+public struct DeleteUserInput: Swift.Sendable {
     /// The globally unique identifier for the identity store.
     /// This member is required.
     public var identityStoreId: Swift.String?
@@ -1317,12 +1317,12 @@ public struct DeleteUserInput {
     }
 }
 
-public struct DeleteUserOutput {
+public struct DeleteUserOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DescribeUserInput {
+public struct DescribeUserInput: Swift.Sendable {
     /// The globally unique identifier for the identity store, such as d-1234567890. In this example, d- is a fixed prefix, and 1234567890 is a randomly generated string that contains numbers and lower case letters. This value is generated at the time that a new identity store is created.
     /// This member is required.
     public var identityStoreId: Swift.String?
@@ -1340,7 +1340,7 @@ public struct DescribeUserInput {
     }
 }
 
-public struct DescribeUserOutput {
+public struct DescribeUserOutput: Swift.Sendable {
     /// The physical address of the user.
     public var addresses: [IdentitystoreClientTypes.Address]?
     /// The display name of the user.
@@ -1419,7 +1419,7 @@ extension DescribeUserOutput: Swift.CustomDebugStringConvertible {
         "DescribeUserOutput(addresses: \(Swift.String(describing: addresses)), emails: \(Swift.String(describing: emails)), externalIds: \(Swift.String(describing: externalIds)), identityStoreId: \(Swift.String(describing: identityStoreId)), name: \(Swift.String(describing: name)), phoneNumbers: \(Swift.String(describing: phoneNumbers)), userId: \(Swift.String(describing: userId)), displayName: \"CONTENT_REDACTED\", locale: \"CONTENT_REDACTED\", nickName: \"CONTENT_REDACTED\", preferredLanguage: \"CONTENT_REDACTED\", profileUrl: \"CONTENT_REDACTED\", timezone: \"CONTENT_REDACTED\", title: \"CONTENT_REDACTED\", userName: \"CONTENT_REDACTED\", userType: \"CONTENT_REDACTED\")"}
 }
 
-public struct ListUsersInput {
+public struct ListUsersInput: Swift.Sendable {
     /// A list of Filter objects, which is used in the ListUsers and ListGroups requests.
     @available(*, deprecated, message: "Using filters with ListUsers API is deprecated, please use GetGroupId API instead.")
     public var filters: [IdentitystoreClientTypes.Filter]?
@@ -1446,8 +1446,9 @@ public struct ListUsersInput {
 }
 
 extension IdentitystoreClientTypes {
+
     /// A user object that contains the metadata and attributes for a specified user.
-    public struct User {
+    public struct User: Swift.Sendable {
         /// A list of Address objects containing addresses associated with the user.
         public var addresses: [IdentitystoreClientTypes.Address]?
         /// A string containing the name of the user that is formatted for display when the user is referenced. For example, "John Doe."
@@ -1520,7 +1521,6 @@ extension IdentitystoreClientTypes {
             self.userType = userType
         }
     }
-
 }
 
 extension IdentitystoreClientTypes.User: Swift.CustomDebugStringConvertible {
@@ -1528,7 +1528,7 @@ extension IdentitystoreClientTypes.User: Swift.CustomDebugStringConvertible {
         "User(addresses: \(Swift.String(describing: addresses)), emails: \(Swift.String(describing: emails)), externalIds: \(Swift.String(describing: externalIds)), identityStoreId: \(Swift.String(describing: identityStoreId)), name: \(Swift.String(describing: name)), phoneNumbers: \(Swift.String(describing: phoneNumbers)), userId: \(Swift.String(describing: userId)), displayName: \"CONTENT_REDACTED\", locale: \"CONTENT_REDACTED\", nickName: \"CONTENT_REDACTED\", preferredLanguage: \"CONTENT_REDACTED\", profileUrl: \"CONTENT_REDACTED\", timezone: \"CONTENT_REDACTED\", title: \"CONTENT_REDACTED\", userName: \"CONTENT_REDACTED\", userType: \"CONTENT_REDACTED\")"}
 }
 
-public struct ListUsersOutput {
+public struct ListUsersOutput: Swift.Sendable {
     /// The pagination token used for the ListUsers and ListGroups API operations. This value is generated by the identity store service. It is returned in the API response if the total results are more than the size of one page. This token is also returned when it is used in the API request to search for the next page.
     public var nextToken: Swift.String?
     /// A list of User objects in the identity store.
@@ -1545,7 +1545,7 @@ public struct ListUsersOutput {
     }
 }
 
-public struct UpdateUserInput {
+public struct UpdateUserInput: Swift.Sendable {
     /// The globally unique identifier for the identity store.
     /// This member is required.
     public var identityStoreId: Swift.String?
@@ -1568,7 +1568,7 @@ public struct UpdateUserInput {
     }
 }
 
-public struct UpdateUserOutput {
+public struct UpdateUserOutput: Swift.Sendable {
 
     public init() { }
 }

@@ -27,84 +27,85 @@ import protocol ClientRuntime.ModeledError
 @_spi(SmithyReadWrite) import struct SmithyReadWrite.ReadingClosureBox
 @_spi(SmithyReadWrite) import struct SmithyReadWrite.WritingClosureBox
 
-public struct CreateAliasOutput {
+
+public struct CreateAliasOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteAliasOutput {
+public struct DeleteAliasOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteImportedKeyMaterialOutput {
+public struct DeleteImportedKeyMaterialOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DisableKeyOutput {
+public struct DisableKeyOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DisableKeyRotationOutput {
+public struct DisableKeyRotationOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct EnableKeyOutput {
+public struct EnableKeyOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct EnableKeyRotationOutput {
+public struct EnableKeyRotationOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct PutKeyPolicyOutput {
+public struct PutKeyPolicyOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct RetireGrantOutput {
+public struct RetireGrantOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct RevokeGrantOutput {
+public struct RevokeGrantOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct TagResourceOutput {
+public struct TagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UntagResourceOutput {
+public struct UntagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdateAliasOutput {
+public struct UpdateAliasOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdateKeyDescriptionOutput {
+public struct UpdateKeyDescriptionOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdatePrimaryRegionOutput {
+public struct UpdatePrimaryRegionOutput: Swift.Sendable {
 
     public init() { }
 }
 
 extension KMSClientTypes {
 
-    public enum AlgorithmSpec: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AlgorithmSpec: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case rsaesOaepSha1
         case rsaesOaepSha256
         case rsaesPkcs1V15
@@ -144,8 +145,9 @@ extension KMSClientTypes {
 }
 
 extension KMSClientTypes {
+
     /// Contains information about an alias.
-    public struct AliasListEntry {
+    public struct AliasListEntry: Swift.Sendable {
         /// String that contains the key ARN.
         public var aliasArn: Swift.String?
         /// String that contains the alias. This value begins with alias/.
@@ -172,7 +174,6 @@ extension KMSClientTypes {
             self.targetKeyId = targetKeyId
         }
     }
-
 }
 
 /// The request was rejected because it attempted to create a resource that already exists.
@@ -323,7 +324,7 @@ public struct NotFoundException: ClientRuntime.ModeledError, AWSClientRuntime.AW
     }
 }
 
-public struct CancelKeyDeletionInput {
+public struct CancelKeyDeletionInput: Swift.Sendable {
     /// Identifies the KMS key whose deletion is being canceled. Specify the key ID or key ARN of the KMS key. For example:
     ///
     /// * Key ID: 1234abcd-12ab-34cd-56ef-1234567890ab
@@ -343,7 +344,7 @@ public struct CancelKeyDeletionInput {
     }
 }
 
-public struct CancelKeyDeletionOutput {
+public struct CancelKeyDeletionOutput: Swift.Sendable {
     /// The Amazon Resource Name ([key ARN](https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#key-id-key-ARN)) of the KMS key whose deletion is canceled.
     public var keyId: Swift.String?
 
@@ -566,7 +567,7 @@ public struct CustomKeyStoreNotFoundException: ClientRuntime.ModeledError, AWSCl
     }
 }
 
-public struct ConnectCustomKeyStoreInput {
+public struct ConnectCustomKeyStoreInput: Swift.Sendable {
     /// Enter the key store ID of the custom key store that you want to connect. To find the ID of a custom key store, use the [DescribeCustomKeyStores] operation.
     /// This member is required.
     public var customKeyStoreId: Swift.String?
@@ -579,14 +580,14 @@ public struct ConnectCustomKeyStoreInput {
     }
 }
 
-public struct ConnectCustomKeyStoreOutput {
+public struct ConnectCustomKeyStoreOutput: Swift.Sendable {
 
     public init() { }
 }
 
 extension KMSClientTypes {
 
-    public enum ConnectionErrorCodeType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ConnectionErrorCodeType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case clusterNotFound
         case insufficientCloudhsmHsms
         case insufficientFreeAddressesInSubnet
@@ -663,7 +664,7 @@ extension KMSClientTypes {
 
 extension KMSClientTypes {
 
-    public enum ConnectionStateType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ConnectionStateType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case connected
         case connecting
         case disconnected
@@ -747,7 +748,7 @@ public struct LimitExceededException: ClientRuntime.ModeledError, AWSClientRunti
     }
 }
 
-public struct CreateAliasInput {
+public struct CreateAliasInput: Swift.Sendable {
     /// Specifies the alias name. This value must begin with alias/ followed by a name, such as alias/ExampleAlias. Do not include confidential or sensitive information in this field. This field may be displayed in plaintext in CloudTrail logs and other output. The AliasName value must be string of 1-256 characters. It can contain only alphanumeric characters, forward slashes (/), underscores (_), and dashes (-). The alias name cannot begin with alias/aws/. The alias/aws/ prefix is reserved for [Amazon Web Services managed keys](https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#aws-managed-cmk).
     /// This member is required.
     public var aliasName: Swift.String?
@@ -1038,7 +1039,7 @@ public struct XksProxyVpcEndpointServiceNotFoundException: ClientRuntime.Modeled
 
 extension KMSClientTypes {
 
-    public enum CustomKeyStoreType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum CustomKeyStoreType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case awsCloudhsm
         case externalKeyStore
         case sdkUnknown(Swift.String)
@@ -1066,8 +1067,9 @@ extension KMSClientTypes {
 }
 
 extension KMSClientTypes {
+
     /// KMS uses the authentication credential to sign requests that it sends to the external key store proxy (XKS proxy) on your behalf. You establish these credentials on your external key store proxy and report them to KMS. The XksProxyAuthenticationCredential includes two required elements.
-    public struct XksProxyAuthenticationCredentialType {
+    public struct XksProxyAuthenticationCredentialType: Swift.Sendable {
         /// A unique identifier for the raw secret access key.
         /// This member is required.
         public var accessKeyId: Swift.String?
@@ -1084,7 +1086,6 @@ extension KMSClientTypes {
             self.rawSecretAccessKey = rawSecretAccessKey
         }
     }
-
 }
 
 extension KMSClientTypes.XksProxyAuthenticationCredentialType: Swift.CustomDebugStringConvertible {
@@ -1094,7 +1095,7 @@ extension KMSClientTypes.XksProxyAuthenticationCredentialType: Swift.CustomDebug
 
 extension KMSClientTypes {
 
-    public enum XksProxyConnectivityType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum XksProxyConnectivityType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case publicEndpoint
         case vpcEndpointService
         case sdkUnknown(Swift.String)
@@ -1121,7 +1122,7 @@ extension KMSClientTypes {
     }
 }
 
-public struct CreateCustomKeyStoreInput {
+public struct CreateCustomKeyStoreInput: Swift.Sendable {
     /// Identifies the CloudHSM cluster for an CloudHSM key store. This parameter is required for custom key stores with CustomKeyStoreType of AWS_CLOUDHSM. Enter the cluster ID of any active CloudHSM cluster that is not already associated with a custom key store. To find the cluster ID, use the [DescribeClusters](https://docs.aws.amazon.com/cloudhsm/latest/APIReference/API_DescribeClusters.html) operation.
     public var cloudHsmClusterId: Swift.String?
     /// Specifies a friendly name for the custom key store. The name must be unique in your Amazon Web Services account and Region. This parameter is required for all custom key stores. Do not include confidential or sensitive information in this field. This field may be displayed in plaintext in CloudTrail logs and other output.
@@ -1185,7 +1186,7 @@ extension CreateCustomKeyStoreInput: Swift.CustomDebugStringConvertible {
         "CreateCustomKeyStoreInput(cloudHsmClusterId: \(Swift.String(describing: cloudHsmClusterId)), customKeyStoreName: \(Swift.String(describing: customKeyStoreName)), customKeyStoreType: \(Swift.String(describing: customKeyStoreType)), trustAnchorCertificate: \(Swift.String(describing: trustAnchorCertificate)), xksProxyAuthenticationCredential: \(Swift.String(describing: xksProxyAuthenticationCredential)), xksProxyConnectivity: \(Swift.String(describing: xksProxyConnectivity)), xksProxyUriEndpoint: \(Swift.String(describing: xksProxyUriEndpoint)), xksProxyUriPath: \(Swift.String(describing: xksProxyUriPath)), xksProxyVpcEndpointServiceName: \(Swift.String(describing: xksProxyVpcEndpointServiceName)), keyStorePassword: \"CONTENT_REDACTED\")"}
 }
 
-public struct CreateCustomKeyStoreOutput {
+public struct CreateCustomKeyStoreOutput: Swift.Sendable {
     /// A unique identifier for the new custom key store.
     public var customKeyStoreId: Swift.String?
 
@@ -1270,8 +1271,9 @@ public struct InvalidGrantTokenException: ClientRuntime.ModeledError, AWSClientR
 }
 
 extension KMSClientTypes {
+
     /// Use this structure to allow [cryptographic operations](https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#cryptographic-operations) in the grant only when the operation request includes the specified [encryption context](https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#encrypt_context). KMS applies the grant constraints only to cryptographic operations that support an encryption context, that is, all cryptographic operations with a [symmetric KMS key](https://docs.aws.amazon.com/kms/latest/developerguide/symm-asymm-concepts.html#symmetric-cmks). Grant constraints are not applied to operations that do not support an encryption context, such as cryptographic operations with asymmetric KMS keys and management operations, such as [DescribeKey] or [RetireGrant]. In a cryptographic operation, the encryption context in the decryption operation must be an exact, case-sensitive match for the keys and values in the encryption context of the encryption operation. Only the order of the pairs can vary. However, in a grant constraint, the key in each key-value pair is not case sensitive, but the value is case sensitive. To avoid confusion, do not use multiple encryption context pairs that differ only by case. To require a fully case-sensitive encryption context, use the kms:EncryptionContext: and kms:EncryptionContextKeys conditions in an IAM or key policy. For details, see [kms:EncryptionContext:](https://docs.aws.amazon.com/kms/latest/developerguide/policy-conditions.html#conditions-kms-encryption-context) in the Key Management Service Developer Guide .
-    public struct GrantConstraints {
+    public struct GrantConstraints: Swift.Sendable {
         /// A list of key-value pairs that must match the encryption context in the [cryptographic operation](https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#cryptographic-operations) request. The grant allows the operation only when the encryption context in the request is the same as the encryption context specified in this constraint.
         public var encryptionContextEquals: [Swift.String: Swift.String]?
         /// A list of key-value pairs that must be included in the encryption context of the [cryptographic operation](https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#cryptographic-operations) request. The grant allows the cryptographic operation only when the encryption context in the request includes the key-value pairs specified in this constraint, although it can include additional key-value pairs.
@@ -1286,12 +1288,11 @@ extension KMSClientTypes {
             self.encryptionContextSubset = encryptionContextSubset
         }
     }
-
 }
 
 extension KMSClientTypes {
 
-    public enum GrantOperation: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum GrantOperation: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case creategrant
         case decrypt
         case derivesharedsecret
@@ -1363,7 +1364,7 @@ extension KMSClientTypes {
     }
 }
 
-public struct CreateGrantInput {
+public struct CreateGrantInput: Swift.Sendable {
     /// Specifies a grant constraint. Do not include confidential or sensitive information in this field. This field may be displayed in plaintext in CloudTrail logs and other output. KMS supports the EncryptionContextEquals and EncryptionContextSubset grant constraints, which allow the permissions in the grant only when the encryption context in the request matches (EncryptionContextEquals) or includes (EncryptionContextSubset) the encryption context specified in the constraint. The encryption context grant constraints are supported only on [grant operations](https://docs.aws.amazon.com/kms/latest/developerguide/grants.html#terms-grant-operations) that include an EncryptionContext parameter, such as cryptographic operations on symmetric encryption KMS keys. Grants with grant constraints can include the [DescribeKey] and [RetireGrant] operations, but the constraint doesn't apply to these operations. If a grant with a grant constraint includes the CreateGrant operation, the constraint requires that any grants created with the CreateGrant permission have an equally strict or stricter encryption context constraint. You cannot use an encryption context grant constraint for cryptographic operations with asymmetric KMS keys or HMAC KMS keys. Operations with these keys don't support an encryption context. Each constraint value can include up to 8 encryption context pairs. The encryption context value in each constraint cannot exceed 384 characters. For information about grant constraints, see [Using grant constraints](https://docs.aws.amazon.com/kms/latest/developerguide/create-grant-overview.html#grant-constraints) in the Key Management Service Developer Guide. For more information about encryption context, see [Encryption context](https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#encrypt_context) in the Key Management Service Developer Guide .
     public var constraints: KMSClientTypes.GrantConstraints?
     /// Checks if your request will succeed. DryRun is an optional parameter. To learn more about how to use this parameter, see [Testing your KMS API calls](https://docs.aws.amazon.com/kms/latest/developerguide/programming-dryrun.html) in the Key Management Service Developer Guide.
@@ -1413,7 +1414,7 @@ public struct CreateGrantInput {
     }
 }
 
-public struct CreateGrantOutput {
+public struct CreateGrantOutput: Swift.Sendable {
     /// The unique identifier for the grant. You can use the GrantId in a [ListGrants], [RetireGrant], or [RevokeGrant] operation.
     public var grantId: Swift.String?
     /// The grant token. Use a grant token when your permission to call this operation comes from a new grant that has not yet achieved eventual consistency. For more information, see [Grant token](https://docs.aws.amazon.com/kms/latest/developerguide/grants.html#grant_token) and [Using a grant token](https://docs.aws.amazon.com/kms/latest/developerguide/grant-manage.html#using-grant-token) in the Key Management Service Developer Guide.
@@ -1576,7 +1577,7 @@ public struct XksKeyNotFoundException: ClientRuntime.ModeledError, AWSClientRunt
 extension KMSClientTypes {
 
     @available(*, deprecated, message: "This enum has been deprecated. Instead, use the KeySpec enum.")
-    public enum CustomerMasterKeySpec: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum CustomerMasterKeySpec: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case eccNistP256
         case eccNistP384
         case eccNistP521
@@ -1638,7 +1639,7 @@ extension KMSClientTypes {
 
 extension KMSClientTypes {
 
-    public enum KeySpec: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum KeySpec: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case eccNistP256
         case eccNistP384
         case eccNistP521
@@ -1700,7 +1701,7 @@ extension KMSClientTypes {
 
 extension KMSClientTypes {
 
-    public enum KeyUsageType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum KeyUsageType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case encryptDecrypt
         case generateVerifyMac
         case keyAgreement
@@ -1735,7 +1736,7 @@ extension KMSClientTypes {
 
 extension KMSClientTypes {
 
-    public enum OriginType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum OriginType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case awsCloudhsm
         case awsKms
         case external
@@ -1769,8 +1770,9 @@ extension KMSClientTypes {
 }
 
 extension KMSClientTypes {
+
     /// A key-value pair. A tag consists of a tag key and a tag value. Tag keys and tag values are both required, but tag values can be empty (null) strings. Do not include confidential or sensitive information in this field. This field may be displayed in plaintext in CloudTrail logs and other output. For information about the rules that apply to tag keys and tag values, see [User-Defined Tag Restrictions](https://docs.aws.amazon.com/awsaccountbilling/latest/aboutv2/allocation-tag-restrictions.html) in the Amazon Web Services Billing and Cost Management User Guide.
-    public struct Tag {
+    public struct Tag: Swift.Sendable {
         /// The key of the tag.
         /// This member is required.
         public var tagKey: Swift.String?
@@ -1787,10 +1789,9 @@ extension KMSClientTypes {
             self.tagValue = tagValue
         }
     }
-
 }
 
-public struct CreateKeyInput {
+public struct CreateKeyInput: Swift.Sendable {
     /// Skips ("bypasses") the key policy lockout safety check. The default value is false. Setting this value to true increases the risk that the KMS key becomes unmanageable. Do not set this value to true indiscriminately. For more information, see [Default key policy](https://docs.aws.amazon.com/kms/latest/developerguide/key-policy-default.html#prevent-unmanageable-key) in the Key Management Service Developer Guide. Use this parameter only when you intend to prevent the principal that is making the request from making a subsequent [PutKeyPolicy](https://docs.aws.amazon.com/kms/latest/APIReference/API_PutKeyPolicy.html) request on the KMS key.
     public var bypassPolicyLockoutSafetyCheck: Swift.Bool?
     /// Creates the KMS key in the specified [custom key store](https://docs.aws.amazon.com/kms/latest/developerguide/custom-key-store-overview.html). The ConnectionState of the custom key store must be CONNECTED. To find the CustomKeyStoreID and ConnectionState use the [DescribeCustomKeyStores] operation. This parameter is valid only for symmetric encryption KMS keys in a single Region. You cannot create any other type of KMS key in a custom key store. When you create a KMS key in an CloudHSM key store, KMS generates a non-exportable 256-bit symmetric key in its associated CloudHSM cluster and associates it with the KMS key. When you create a KMS key in an external key store, you must use the XksKeyId parameter to specify an external key that serves as key material for the KMS key.
@@ -1917,7 +1918,7 @@ public struct CreateKeyInput {
 
 extension KMSClientTypes {
 
-    public enum EncryptionAlgorithmSpec: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum EncryptionAlgorithmSpec: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case rsaesOaepSha1
         case rsaesOaepSha256
         case sm2pke
@@ -1952,7 +1953,7 @@ extension KMSClientTypes {
 
 extension KMSClientTypes {
 
-    public enum ExpirationModelType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ExpirationModelType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case keyMaterialDoesNotExpire
         case keyMaterialExpires
         case sdkUnknown(Swift.String)
@@ -1981,7 +1982,7 @@ extension KMSClientTypes {
 
 extension KMSClientTypes {
 
-    public enum KeyAgreementAlgorithmSpec: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum KeyAgreementAlgorithmSpec: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case ecdh
         case sdkUnknown(Swift.String)
 
@@ -2007,7 +2008,7 @@ extension KMSClientTypes {
 
 extension KMSClientTypes {
 
-    public enum KeyManagerType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum KeyManagerType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case aws
         case customer
         case sdkUnknown(Swift.String)
@@ -2036,7 +2037,7 @@ extension KMSClientTypes {
 
 extension KMSClientTypes {
 
-    public enum KeyState: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum KeyState: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case creating
         case disabled
         case enabled
@@ -2083,7 +2084,7 @@ extension KMSClientTypes {
 
 extension KMSClientTypes {
 
-    public enum MacAlgorithmSpec: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum MacAlgorithmSpec: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case hmacSha224
         case hmacSha256
         case hmacSha384
@@ -2118,7 +2119,7 @@ extension KMSClientTypes {
 
 extension KMSClientTypes {
 
-    public enum MultiRegionKeyType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum MultiRegionKeyType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case primary
         case replica
         case sdkUnknown(Swift.String)
@@ -2146,8 +2147,9 @@ extension KMSClientTypes {
 }
 
 extension KMSClientTypes {
+
     /// Describes the primary or replica key in a multi-Region key.
-    public struct MultiRegionKey {
+    public struct MultiRegionKey: Swift.Sendable {
         /// Displays the key ARN of a primary or replica key of a multi-Region key.
         public var arn: Swift.String?
         /// Displays the Amazon Web Services Region of a primary or replica key in a multi-Region key.
@@ -2162,12 +2164,12 @@ extension KMSClientTypes {
             self.region = region
         }
     }
-
 }
 
 extension KMSClientTypes {
+
     /// Describes the configuration of this multi-Region key. This field appears only when the KMS key is a primary or replica of a multi-Region key. For more information about any listed KMS key, use the [DescribeKey] operation.
-    public struct MultiRegionConfiguration {
+    public struct MultiRegionConfiguration: Swift.Sendable {
         /// Indicates whether the KMS key is a PRIMARY or REPLICA key.
         public var multiRegionKeyType: KMSClientTypes.MultiRegionKeyType?
         /// Displays the key ARN and Region of the primary key. This field includes the current KMS key if it is the primary key.
@@ -2186,12 +2188,11 @@ extension KMSClientTypes {
             self.replicaKeys = replicaKeys
         }
     }
-
 }
 
 extension KMSClientTypes {
 
-    public enum SigningAlgorithmSpec: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SigningAlgorithmSpec: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case ecdsaSha256
         case ecdsaSha384
         case ecdsaSha512
@@ -2243,8 +2244,9 @@ extension KMSClientTypes {
 }
 
 extension KMSClientTypes {
+
     /// Information about the [external key ](https://docs.aws.amazon.com/kms/latest/developerguide/keystore-external.html#concept-external-key)that is associated with a KMS key in an external key store. This element appears in a [CreateKey] or [DescribeKey] response only for a KMS key in an external key store. The external key is a symmetric encryption key that is hosted by an external key manager outside of Amazon Web Services. When you use the KMS key in an external key store in a cryptographic operation, the cryptographic operation is performed in the external key manager using the specified external key. For more information, see [External key](https://docs.aws.amazon.com/kms/latest/developerguide/keystore-external.html#concept-external-key) in the Key Management Service Developer Guide.
-    public struct XksKeyConfigurationType {
+    public struct XksKeyConfigurationType: Swift.Sendable {
         /// The ID of the external key in its external key manager. This is the ID that the external key store proxy uses to identify the external key.
         public var id: Swift.String?
 
@@ -2255,12 +2257,12 @@ extension KMSClientTypes {
             self.id = id
         }
     }
-
 }
 
 extension KMSClientTypes {
+
     /// Contains metadata about a KMS key. This data type is used as a response element for the [CreateKey], [DescribeKey], and [ReplicateKey] operations.
-    public struct KeyMetadata {
+    public struct KeyMetadata: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the KMS key. For examples, see [Key Management Service (KMS)](https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html#arn-syntax-kms) in the Example ARNs section of the Amazon Web Services General Reference.
         public var arn: Swift.String?
         /// The twelve-digit account ID of the Amazon Web Services account that owns the KMS key.
@@ -2375,10 +2377,9 @@ extension KMSClientTypes {
             self.xksKeyConfiguration = xksKeyConfiguration
         }
     }
-
 }
 
-public struct CreateKeyOutput {
+public struct CreateKeyOutput: Swift.Sendable {
     /// Metadata associated with the KMS key.
     public var keyMetadata: KMSClientTypes.KeyMetadata?
 
@@ -2415,8 +2416,9 @@ public struct CustomKeyStoreHasCMKsException: ClientRuntime.ModeledError, AWSCli
 }
 
 extension KMSClientTypes {
+
     /// Detailed information about the external key store proxy (XKS proxy). Your external key store proxy translates KMS requests into a format that your external key manager can understand. These fields appear in a [DescribeCustomKeyStores] response only when the CustomKeyStoreType is EXTERNAL_KEY_STORE.
-    public struct XksProxyConfigurationType {
+    public struct XksProxyConfigurationType: Swift.Sendable {
         /// The part of the external key store [proxy authentication credential](https://docs.aws.amazon.com/kms/latest/APIReference/API_CreateCustomKeyStore.html#KMS-CreateCustomKeyStore-request-XksProxyAuthenticationCredential) that uniquely identifies the secret access key.
         public var accessKeyId: Swift.String?
         /// Indicates whether the external key store proxy uses a public endpoint or an Amazon VPC endpoint service to communicate with KMS.
@@ -2443,7 +2445,6 @@ extension KMSClientTypes {
             self.vpcEndpointServiceName = vpcEndpointServiceName
         }
     }
-
 }
 
 extension KMSClientTypes.XksProxyConfigurationType: Swift.CustomDebugStringConvertible {
@@ -2452,8 +2453,9 @@ extension KMSClientTypes.XksProxyConfigurationType: Swift.CustomDebugStringConve
 }
 
 extension KMSClientTypes {
+
     /// Contains information about each custom key store in the custom key store list.
-    public struct CustomKeyStoresListEntry {
+    public struct CustomKeyStoresListEntry: Swift.Sendable {
         /// A unique identifier for the CloudHSM cluster that is associated with an CloudHSM key store. This field appears only when the CustomKeyStoreType is AWS_CLOUDHSM.
         public var cloudHsmClusterId: Swift.String?
         /// Describes the connection error. This field appears in the response only when the ConnectionState is FAILED. Many failures can be resolved by updating the properties of the custom key store. To update a custom key store, disconnect it ([DisconnectCustomKeyStore]), correct the errors ([UpdateCustomKeyStore]), and try to connect again ([ConnectCustomKeyStore]). For additional help resolving these errors, see [How to Fix a Connection Failure](https://docs.aws.amazon.com/kms/latest/developerguide/fix-keystore.html#fix-keystore-failed) in Key Management Service Developer Guide. All custom key stores:
@@ -2557,12 +2559,11 @@ extension KMSClientTypes {
             self.xksProxyConfiguration = xksProxyConfiguration
         }
     }
-
 }
 
 extension KMSClientTypes {
 
-    public enum DataKeyPairSpec: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DataKeyPairSpec: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case eccNistP256
         case eccNistP384
         case eccNistP521
@@ -2609,7 +2610,7 @@ extension KMSClientTypes {
 
 extension KMSClientTypes {
 
-    public enum DataKeySpec: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DataKeySpec: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case aes128
         case aes256
         case sdkUnknown(Swift.String)
@@ -2741,7 +2742,7 @@ public struct KeyUnavailableException: ClientRuntime.ModeledError, AWSClientRunt
 
 extension KMSClientTypes {
 
-    public enum KeyEncryptionMechanism: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum KeyEncryptionMechanism: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case rsaesOaepSha256
         case sdkUnknown(Swift.String)
 
@@ -2766,8 +2767,9 @@ extension KMSClientTypes {
 }
 
 extension KMSClientTypes {
+
     /// Contains information about the party that receives the response from the API operation. This data type is designed to support Amazon Web Services Nitro Enclaves, which lets you create an isolated compute environment in Amazon EC2. For information about the interaction between KMS and Amazon Web Services Nitro Enclaves, see [How Amazon Web Services Nitro Enclaves uses KMS](https://docs.aws.amazon.com/kms/latest/developerguide/services-nitro-enclaves.html) in the Key Management Service Developer Guide.
-    public struct RecipientInfo {
+    public struct RecipientInfo: Swift.Sendable {
         /// The attestation document for an Amazon Web Services Nitro Enclave. This document includes the enclave's public key.
         public var attestationDocument: Foundation.Data?
         /// The encryption algorithm that KMS should use with the public key for an Amazon Web Services Nitro Enclave to encrypt plaintext values for the response. The only valid value is RSAES_OAEP_SHA_256.
@@ -2782,10 +2784,9 @@ extension KMSClientTypes {
             self.keyEncryptionAlgorithm = keyEncryptionAlgorithm
         }
     }
-
 }
 
-public struct DecryptInput {
+public struct DecryptInput: Swift.Sendable {
     /// Ciphertext to be decrypted. The blob includes metadata.
     /// This member is required.
     public var ciphertextBlob: Foundation.Data?
@@ -2833,7 +2834,7 @@ public struct DecryptInput {
     }
 }
 
-public struct DecryptOutput {
+public struct DecryptOutput: Swift.Sendable {
     /// The plaintext data encrypted with the public key in the attestation document. This field is included in the response only when the Recipient parameter in the request includes a valid attestation document from an Amazon Web Services Nitro enclave. For information about the interaction between KMS and Amazon Web Services Nitro Enclaves, see [How Amazon Web Services Nitro Enclaves uses KMS](https://docs.aws.amazon.com/kms/latest/developerguide/services-nitro-enclaves.html) in the Key Management Service Developer Guide.
     public var ciphertextForRecipient: Foundation.Data?
     /// The encryption algorithm that was used to decrypt the ciphertext.
@@ -2862,7 +2863,7 @@ extension DecryptOutput: Swift.CustomDebugStringConvertible {
         "DecryptOutput(ciphertextForRecipient: \(Swift.String(describing: ciphertextForRecipient)), encryptionAlgorithm: \(Swift.String(describing: encryptionAlgorithm)), keyId: \(Swift.String(describing: keyId)), plaintext: \"CONTENT_REDACTED\")"}
 }
 
-public struct DeleteAliasInput {
+public struct DeleteAliasInput: Swift.Sendable {
     /// The alias to be deleted. The alias name must begin with alias/ followed by the alias name, such as alias/ExampleAlias.
     /// This member is required.
     public var aliasName: Swift.String?
@@ -2875,7 +2876,7 @@ public struct DeleteAliasInput {
     }
 }
 
-public struct DeleteCustomKeyStoreInput {
+public struct DeleteCustomKeyStoreInput: Swift.Sendable {
     /// Enter the ID of the custom key store you want to delete. To find the ID of a custom key store, use the [DescribeCustomKeyStores] operation.
     /// This member is required.
     public var customKeyStoreId: Swift.String?
@@ -2888,12 +2889,12 @@ public struct DeleteCustomKeyStoreInput {
     }
 }
 
-public struct DeleteCustomKeyStoreOutput {
+public struct DeleteCustomKeyStoreOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteImportedKeyMaterialInput {
+public struct DeleteImportedKeyMaterialInput: Swift.Sendable {
     /// Identifies the KMS key from which you are deleting imported key material. The Origin of the KMS key must be EXTERNAL. Specify the key ID or key ARN of the KMS key. For example:
     ///
     /// * Key ID: 1234abcd-12ab-34cd-56ef-1234567890ab
@@ -2913,7 +2914,7 @@ public struct DeleteImportedKeyMaterialInput {
     }
 }
 
-public struct DeriveSharedSecretInput {
+public struct DeriveSharedSecretInput: Swift.Sendable {
     /// Checks if your request will succeed. DryRun is an optional parameter. To learn more about how to use this parameter, see [Testing your KMS API calls](https://docs.aws.amazon.com/kms/latest/developerguide/programming-dryrun.html) in the Key Management Service Developer Guide.
     public var dryRun: Swift.Bool?
     /// A list of grant tokens. Use a grant token when your permission to call this operation comes from a new grant that has not yet achieved eventual consistency. For more information, see [Grant token](https://docs.aws.amazon.com/kms/latest/developerguide/grants.html#grant_token) and [Using a grant token](https://docs.aws.amazon.com/kms/latest/developerguide/grant-manage.html#using-grant-token) in the Key Management Service Developer Guide.
@@ -2959,7 +2960,7 @@ public struct DeriveSharedSecretInput {
     }
 }
 
-public struct DeriveSharedSecretOutput {
+public struct DeriveSharedSecretOutput: Swift.Sendable {
     /// The plaintext shared secret encrypted with the public key in the attestation document. This field is included in the response only when the Recipient parameter in the request includes a valid attestation document from an Amazon Web Services Nitro enclave. For information about the interaction between KMS and Amazon Web Services Nitro Enclaves, see [How Amazon Web Services Nitro Enclaves uses KMS](https://docs.aws.amazon.com/kms/latest/developerguide/services-nitro-enclaves.html) in the Key Management Service Developer Guide.
     public var ciphertextForRecipient: Foundation.Data?
     /// Identifies the key agreement algorithm used to derive the shared secret.
@@ -3016,7 +3017,7 @@ public struct InvalidMarkerException: ClientRuntime.ModeledError, AWSClientRunti
     }
 }
 
-public struct DescribeCustomKeyStoresInput {
+public struct DescribeCustomKeyStoresInput: Swift.Sendable {
     /// Gets only information about the specified custom key store. Enter the key store ID. By default, this operation gets information about all custom key stores in the account and Region. To limit the output to a particular custom key store, provide either the CustomKeyStoreId or CustomKeyStoreName parameter, but not both.
     public var customKeyStoreId: Swift.String?
     /// Gets only information about the specified custom key store. Enter the friendly name of the custom key store. By default, this operation gets information about all custom key stores in the account and Region. To limit the output to a particular custom key store, provide either the CustomKeyStoreId or CustomKeyStoreName parameter, but not both.
@@ -3040,7 +3041,7 @@ public struct DescribeCustomKeyStoresInput {
     }
 }
 
-public struct DescribeCustomKeyStoresOutput {
+public struct DescribeCustomKeyStoresOutput: Swift.Sendable {
     /// Contains metadata about each custom key store.
     public var customKeyStores: [KMSClientTypes.CustomKeyStoresListEntry]?
     /// When Truncated is true, this element is present and contains the value to use for the Marker parameter in a subsequent request.
@@ -3060,7 +3061,7 @@ public struct DescribeCustomKeyStoresOutput {
     }
 }
 
-public struct DescribeKeyInput {
+public struct DescribeKeyInput: Swift.Sendable {
     /// A list of grant tokens. Use a grant token when your permission to call this operation comes from a new grant that has not yet achieved eventual consistency. For more information, see [Grant token](https://docs.aws.amazon.com/kms/latest/developerguide/grants.html#grant_token) and [Using a grant token](https://docs.aws.amazon.com/kms/latest/developerguide/grant-manage.html#using-grant-token) in the Key Management Service Developer Guide.
     public var grantTokens: [Swift.String]?
     /// Describes the specified KMS key. If you specify a predefined Amazon Web Services alias (an Amazon Web Services alias with no key ID), KMS associates the alias with an [Amazon Web Services managed key](https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html##aws-managed-cmk) and returns its KeyId and Arn in the response. To specify a KMS key, use its key ID, key ARN, alias name, or alias ARN. When using an alias name, prefix it with "alias/". To specify a KMS key in a different Amazon Web Services account, you must use the key ARN or alias ARN. For example:
@@ -3088,7 +3089,7 @@ public struct DescribeKeyInput {
     }
 }
 
-public struct DescribeKeyOutput {
+public struct DescribeKeyOutput: Swift.Sendable {
     /// Metadata associated with the key.
     public var keyMetadata: KMSClientTypes.KeyMetadata?
 
@@ -3100,7 +3101,7 @@ public struct DescribeKeyOutput {
     }
 }
 
-public struct DisableKeyInput {
+public struct DisableKeyInput: Swift.Sendable {
     /// Identifies the KMS key to disable. Specify the key ID or key ARN of the KMS key. For example:
     ///
     /// * Key ID: 1234abcd-12ab-34cd-56ef-1234567890ab
@@ -3120,7 +3121,7 @@ public struct DisableKeyInput {
     }
 }
 
-public struct DisableKeyRotationInput {
+public struct DisableKeyRotationInput: Swift.Sendable {
     /// Identifies a symmetric encryption KMS key. You cannot enable or disable automatic rotation of [asymmetric KMS keys](https://docs.aws.amazon.com/kms/latest/developerguide/symmetric-asymmetric.html#asymmetric-cmks), [HMAC KMS keys](https://docs.aws.amazon.com/kms/latest/developerguide/hmac.html), KMS keys with [imported key material](https://docs.aws.amazon.com/kms/latest/developerguide/importing-keys.html), or KMS keys in a [custom key store](https://docs.aws.amazon.com/kms/latest/developerguide/custom-key-store-overview.html). Specify the key ID or key ARN of the KMS key. For example:
     ///
     /// * Key ID: 1234abcd-12ab-34cd-56ef-1234567890ab
@@ -3140,7 +3141,7 @@ public struct DisableKeyRotationInput {
     }
 }
 
-public struct DisconnectCustomKeyStoreInput {
+public struct DisconnectCustomKeyStoreInput: Swift.Sendable {
     /// Enter the ID of the custom key store you want to disconnect. To find the ID of a custom key store, use the [DescribeCustomKeyStores] operation.
     /// This member is required.
     public var customKeyStoreId: Swift.String?
@@ -3153,12 +3154,12 @@ public struct DisconnectCustomKeyStoreInput {
     }
 }
 
-public struct DisconnectCustomKeyStoreOutput {
+public struct DisconnectCustomKeyStoreOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct EnableKeyInput {
+public struct EnableKeyInput: Swift.Sendable {
     /// Identifies the KMS key to enable. Specify the key ID or key ARN of the KMS key. For example:
     ///
     /// * Key ID: 1234abcd-12ab-34cd-56ef-1234567890ab
@@ -3178,7 +3179,7 @@ public struct EnableKeyInput {
     }
 }
 
-public struct EnableKeyRotationInput {
+public struct EnableKeyRotationInput: Swift.Sendable {
     /// Identifies a symmetric encryption KMS key. You cannot enable automatic rotation of [asymmetric KMS keys](https://docs.aws.amazon.com/kms/latest/developerguide/symmetric-asymmetric.html), [HMAC KMS keys](https://docs.aws.amazon.com/kms/latest/developerguide/hmac.html), KMS keys with [imported key material](https://docs.aws.amazon.com/kms/latest/developerguide/importing-keys.html), or KMS keys in a [custom key store](https://docs.aws.amazon.com/kms/latest/developerguide/custom-key-store-overview.html). To enable or disable automatic rotation of a set of related [multi-Region keys](https://docs.aws.amazon.com/kms/latest/developerguide/multi-region-keys-manage.html#multi-region-rotate), set the property on the primary key. Specify the key ID or key ARN of the KMS key. For example:
     ///
     /// * Key ID: 1234abcd-12ab-34cd-56ef-1234567890ab
@@ -3202,7 +3203,7 @@ public struct EnableKeyRotationInput {
     }
 }
 
-public struct EncryptInput {
+public struct EncryptInput: Swift.Sendable {
     /// Checks if your request will succeed. DryRun is an optional parameter. To learn more about how to use this parameter, see [Testing your KMS API calls](https://docs.aws.amazon.com/kms/latest/developerguide/programming-dryrun.html) in the Key Management Service Developer Guide.
     public var dryRun: Swift.Bool?
     /// Specifies the encryption algorithm that KMS will use to encrypt the plaintext message. The algorithm must be compatible with the KMS key that you specify. This parameter is required only for asymmetric KMS keys. The default value, SYMMETRIC_DEFAULT, is the algorithm used for symmetric encryption KMS keys. If you are using an asymmetric KMS key, we recommend RSAES_OAEP_SHA_256. The SM2PKE algorithm is only available in China Regions.
@@ -3252,7 +3253,7 @@ extension EncryptInput: Swift.CustomDebugStringConvertible {
         "EncryptInput(dryRun: \(Swift.String(describing: dryRun)), encryptionAlgorithm: \(Swift.String(describing: encryptionAlgorithm)), encryptionContext: \(Swift.String(describing: encryptionContext)), grantTokens: \(Swift.String(describing: grantTokens)), keyId: \(Swift.String(describing: keyId)), plaintext: \"CONTENT_REDACTED\")"}
 }
 
-public struct EncryptOutput {
+public struct EncryptOutput: Swift.Sendable {
     /// The encrypted plaintext. When you use the HTTP API or the Amazon Web Services CLI, the value is Base64-encoded. Otherwise, it is not Base64-encoded.
     public var ciphertextBlob: Foundation.Data?
     /// The encryption algorithm that was used to encrypt the plaintext.
@@ -3296,7 +3297,7 @@ public struct ExpiredImportTokenException: ClientRuntime.ModeledError, AWSClient
     }
 }
 
-public struct GenerateDataKeyInput {
+public struct GenerateDataKeyInput: Swift.Sendable {
     /// Checks if your request will succeed. DryRun is an optional parameter. To learn more about how to use this parameter, see [Testing your KMS API calls](https://docs.aws.amazon.com/kms/latest/developerguide/programming-dryrun.html) in the Key Management Service Developer Guide.
     public var dryRun: Swift.Bool?
     /// Specifies the encryption context that will be used when encrypting the data key. Do not include confidential or sensitive information in this field. This field may be displayed in plaintext in CloudTrail logs and other output. An encryption context is a collection of non-secret key-value pairs that represent additional authenticated data. When you use an encryption context to encrypt data, you must specify the same (an exact case-sensitive match) encryption context to decrypt the data. An encryption context is supported only on operations with symmetric encryption KMS keys. On operations with symmetric encryption KMS keys, an encryption context is optional, but it is strongly recommended. For more information, see [Encryption context](https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#encrypt_context) in the Key Management Service Developer Guide.
@@ -3344,7 +3345,7 @@ public struct GenerateDataKeyInput {
     }
 }
 
-public struct GenerateDataKeyOutput {
+public struct GenerateDataKeyOutput: Swift.Sendable {
     /// The encrypted copy of the data key. When you use the HTTP API or the Amazon Web Services CLI, the value is Base64-encoded. Otherwise, it is not Base64-encoded.
     public var ciphertextBlob: Foundation.Data?
     /// The plaintext data key encrypted with the public key from the Nitro enclave. This ciphertext can be decrypted only by using a private key in the Nitro enclave. This field is included in the response only when the Recipient parameter in the request includes a valid attestation document from an Amazon Web Services Nitro enclave. For information about the interaction between KMS and Amazon Web Services Nitro Enclaves, see [How Amazon Web Services Nitro Enclaves uses KMS](https://docs.aws.amazon.com/kms/latest/developerguide/services-nitro-enclaves.html) in the Key Management Service Developer Guide.
@@ -3373,7 +3374,7 @@ extension GenerateDataKeyOutput: Swift.CustomDebugStringConvertible {
         "GenerateDataKeyOutput(ciphertextBlob: \(Swift.String(describing: ciphertextBlob)), ciphertextForRecipient: \(Swift.String(describing: ciphertextForRecipient)), keyId: \(Swift.String(describing: keyId)), plaintext: \"CONTENT_REDACTED\")"}
 }
 
-public struct GenerateDataKeyPairInput {
+public struct GenerateDataKeyPairInput: Swift.Sendable {
     /// Checks if your request will succeed. DryRun is an optional parameter. To learn more about how to use this parameter, see [Testing your KMS API calls](https://docs.aws.amazon.com/kms/latest/developerguide/programming-dryrun.html) in the Key Management Service Developer Guide.
     public var dryRun: Swift.Bool?
     /// Specifies the encryption context that will be used when encrypting the private key in the data key pair. Do not include confidential or sensitive information in this field. This field may be displayed in plaintext in CloudTrail logs and other output. An encryption context is a collection of non-secret key-value pairs that represent additional authenticated data. When you use an encryption context to encrypt data, you must specify the same (an exact case-sensitive match) encryption context to decrypt the data. An encryption context is supported only on operations with symmetric encryption KMS keys. On operations with symmetric encryption KMS keys, an encryption context is optional, but it is strongly recommended. For more information, see [Encryption context](https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#encrypt_context) in the Key Management Service Developer Guide.
@@ -3418,7 +3419,7 @@ public struct GenerateDataKeyPairInput {
     }
 }
 
-public struct GenerateDataKeyPairOutput {
+public struct GenerateDataKeyPairOutput: Swift.Sendable {
     /// The plaintext private data key encrypted with the public key from the Nitro enclave. This ciphertext can be decrypted only by using a private key in the Nitro enclave. This field is included in the response only when the Recipient parameter in the request includes a valid attestation document from an Amazon Web Services Nitro enclave. For information about the interaction between KMS and Amazon Web Services Nitro Enclaves, see [How Amazon Web Services Nitro Enclaves uses KMS](https://docs.aws.amazon.com/kms/latest/developerguide/services-nitro-enclaves.html) in the Key Management Service Developer Guide.
     public var ciphertextForRecipient: Foundation.Data?
     /// The Amazon Resource Name ([key ARN](https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#key-id-key-ARN)) of the KMS key that encrypted the private key.
@@ -3455,7 +3456,7 @@ extension GenerateDataKeyPairOutput: Swift.CustomDebugStringConvertible {
         "GenerateDataKeyPairOutput(ciphertextForRecipient: \(Swift.String(describing: ciphertextForRecipient)), keyId: \(Swift.String(describing: keyId)), keyPairSpec: \(Swift.String(describing: keyPairSpec)), privateKeyCiphertextBlob: \(Swift.String(describing: privateKeyCiphertextBlob)), publicKey: \(Swift.String(describing: publicKey)), privateKeyPlaintext: \"CONTENT_REDACTED\")"}
 }
 
-public struct GenerateDataKeyPairWithoutPlaintextInput {
+public struct GenerateDataKeyPairWithoutPlaintextInput: Swift.Sendable {
     /// Checks if your request will succeed. DryRun is an optional parameter. To learn more about how to use this parameter, see [Testing your KMS API calls](https://docs.aws.amazon.com/kms/latest/developerguide/programming-dryrun.html) in the Key Management Service Developer Guide.
     public var dryRun: Swift.Bool?
     /// Specifies the encryption context that will be used when encrypting the private key in the data key pair. Do not include confidential or sensitive information in this field. This field may be displayed in plaintext in CloudTrail logs and other output. An encryption context is a collection of non-secret key-value pairs that represent additional authenticated data. When you use an encryption context to encrypt data, you must specify the same (an exact case-sensitive match) encryption context to decrypt the data. An encryption context is supported only on operations with symmetric encryption KMS keys. On operations with symmetric encryption KMS keys, an encryption context is optional, but it is strongly recommended. For more information, see [Encryption context](https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#encrypt_context) in the Key Management Service Developer Guide.
@@ -3496,7 +3497,7 @@ public struct GenerateDataKeyPairWithoutPlaintextInput {
     }
 }
 
-public struct GenerateDataKeyPairWithoutPlaintextOutput {
+public struct GenerateDataKeyPairWithoutPlaintextOutput: Swift.Sendable {
     /// The Amazon Resource Name ([key ARN](https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#key-id-key-ARN)) of the KMS key that encrypted the private key.
     public var keyId: Swift.String?
     /// The type of data key pair that was generated.
@@ -3520,7 +3521,7 @@ public struct GenerateDataKeyPairWithoutPlaintextOutput {
     }
 }
 
-public struct GenerateDataKeyWithoutPlaintextInput {
+public struct GenerateDataKeyWithoutPlaintextInput: Swift.Sendable {
     /// Checks if your request will succeed. DryRun is an optional parameter. To learn more about how to use this parameter, see [Testing your KMS API calls](https://docs.aws.amazon.com/kms/latest/developerguide/programming-dryrun.html) in the Key Management Service Developer Guide.
     public var dryRun: Swift.Bool?
     /// Specifies the encryption context that will be used when encrypting the data key. Do not include confidential or sensitive information in this field. This field may be displayed in plaintext in CloudTrail logs and other output. An encryption context is a collection of non-secret key-value pairs that represent additional authenticated data. When you use an encryption context to encrypt data, you must specify the same (an exact case-sensitive match) encryption context to decrypt the data. An encryption context is supported only on operations with symmetric encryption KMS keys. On operations with symmetric encryption KMS keys, an encryption context is optional, but it is strongly recommended. For more information, see [Encryption context](https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#encrypt_context) in the Key Management Service Developer Guide.
@@ -3564,7 +3565,7 @@ public struct GenerateDataKeyWithoutPlaintextInput {
     }
 }
 
-public struct GenerateDataKeyWithoutPlaintextOutput {
+public struct GenerateDataKeyWithoutPlaintextOutput: Swift.Sendable {
     /// The encrypted data key. When you use the HTTP API or the Amazon Web Services CLI, the value is Base64-encoded. Otherwise, it is not Base64-encoded.
     public var ciphertextBlob: Foundation.Data?
     /// The Amazon Resource Name ([key ARN](https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#key-id-key-ARN)) of the KMS key that encrypted the data key.
@@ -3580,7 +3581,7 @@ public struct GenerateDataKeyWithoutPlaintextOutput {
     }
 }
 
-public struct GenerateMacInput {
+public struct GenerateMacInput: Swift.Sendable {
     /// Checks if your request will succeed. DryRun is an optional parameter. To learn more about how to use this parameter, see [Testing your KMS API calls](https://docs.aws.amazon.com/kms/latest/developerguide/programming-dryrun.html) in the Key Management Service Developer Guide.
     public var dryRun: Swift.Bool?
     /// A list of grant tokens. Use a grant token when your permission to call this operation comes from a new grant that has not yet achieved eventual consistency. For more information, see [Grant token](https://docs.aws.amazon.com/kms/latest/developerguide/grants.html#grant_token) and [Using a grant token](https://docs.aws.amazon.com/kms/latest/developerguide/grant-manage.html#using-grant-token) in the Key Management Service Developer Guide.
@@ -3616,7 +3617,7 @@ extension GenerateMacInput: Swift.CustomDebugStringConvertible {
         "GenerateMacInput(dryRun: \(Swift.String(describing: dryRun)), grantTokens: \(Swift.String(describing: grantTokens)), keyId: \(Swift.String(describing: keyId)), macAlgorithm: \(Swift.String(describing: macAlgorithm)), message: \"CONTENT_REDACTED\")"}
 }
 
-public struct GenerateMacOutput {
+public struct GenerateMacOutput: Swift.Sendable {
     /// The HMAC KMS key used in the operation.
     public var keyId: Swift.String?
     /// The hash-based message authentication code (HMAC) that was generated for the specified message, HMAC KMS key, and MAC algorithm. This is the standard, raw HMAC defined in [RFC 2104](https://datatracker.ietf.org/doc/html/rfc2104).
@@ -3636,7 +3637,7 @@ public struct GenerateMacOutput {
     }
 }
 
-public struct GenerateRandomInput {
+public struct GenerateRandomInput: Swift.Sendable {
     /// Generates the random byte string in the CloudHSM cluster that is associated with the specified CloudHSM key store. To find the ID of a custom key store, use the [DescribeCustomKeyStores] operation. External key store IDs are not valid for this parameter. If you specify the ID of an external key store, GenerateRandom throws an UnsupportedOperationException.
     public var customKeyStoreId: Swift.String?
     /// The length of the random byte string. This parameter is required.
@@ -3656,7 +3657,7 @@ public struct GenerateRandomInput {
     }
 }
 
-public struct GenerateRandomOutput {
+public struct GenerateRandomOutput: Swift.Sendable {
     /// The plaintext random bytes encrypted with the public key from the Nitro enclave. This ciphertext can be decrypted only by using a private key in the Nitro enclave. This field is included in the response only when the Recipient parameter in the request includes a valid attestation document from an Amazon Web Services Nitro enclave. For information about the interaction between KMS and Amazon Web Services Nitro Enclaves, see [How Amazon Web Services Nitro Enclaves uses KMS](https://docs.aws.amazon.com/kms/latest/developerguide/services-nitro-enclaves.html) in the Key Management Service Developer Guide.
     public var ciphertextForRecipient: Foundation.Data?
     /// The random byte string. When you use the HTTP API or the Amazon Web Services CLI, the value is Base64-encoded. Otherwise, it is not Base64-encoded. If the response includes the CiphertextForRecipient field, the Plaintext field is null or empty.
@@ -3677,7 +3678,7 @@ extension GenerateRandomOutput: Swift.CustomDebugStringConvertible {
         "GenerateRandomOutput(ciphertextForRecipient: \(Swift.String(describing: ciphertextForRecipient)), plaintext: \"CONTENT_REDACTED\")"}
 }
 
-public struct GetKeyPolicyInput {
+public struct GetKeyPolicyInput: Swift.Sendable {
     /// Gets the key policy for the specified KMS key. Specify the key ID or key ARN of the KMS key. For example:
     ///
     /// * Key ID: 1234abcd-12ab-34cd-56ef-1234567890ab
@@ -3701,7 +3702,7 @@ public struct GetKeyPolicyInput {
     }
 }
 
-public struct GetKeyPolicyOutput {
+public struct GetKeyPolicyOutput: Swift.Sendable {
     /// A key policy document in JSON format.
     public var policy: Swift.String?
     /// The name of the key policy. The only valid value is default.
@@ -3717,7 +3718,7 @@ public struct GetKeyPolicyOutput {
     }
 }
 
-public struct GetKeyRotationStatusInput {
+public struct GetKeyRotationStatusInput: Swift.Sendable {
     /// Gets the rotation status for the specified KMS key. Specify the key ID or key ARN of the KMS key. To specify a KMS key in a different Amazon Web Services account, you must use the key ARN. For example:
     ///
     /// * Key ID: 1234abcd-12ab-34cd-56ef-1234567890ab
@@ -3737,7 +3738,7 @@ public struct GetKeyRotationStatusInput {
     }
 }
 
-public struct GetKeyRotationStatusOutput {
+public struct GetKeyRotationStatusOutput: Swift.Sendable {
     /// Identifies the specified symmetric encryption KMS key.
     public var keyId: Swift.String?
     /// A Boolean value that specifies whether key rotation is enabled.
@@ -3767,7 +3768,7 @@ public struct GetKeyRotationStatusOutput {
 
 extension KMSClientTypes {
 
-    public enum WrappingKeySpec: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum WrappingKeySpec: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case rsa2048
         case rsa3072
         case rsa4096
@@ -3800,7 +3801,7 @@ extension KMSClientTypes {
     }
 }
 
-public struct GetParametersForImportInput {
+public struct GetParametersForImportInput: Swift.Sendable {
     /// The identifier of the KMS key that will be associated with the imported key material. The Origin of the KMS key must be EXTERNAL. All KMS key types are supported, including multi-Region keys. However, you cannot import key material into a KMS key in a custom key store. Specify the key ID or key ARN of the KMS key. For example:
     ///
     /// * Key ID: 1234abcd-12ab-34cd-56ef-1234567890ab
@@ -3840,7 +3841,7 @@ public struct GetParametersForImportInput {
     }
 }
 
-public struct GetParametersForImportOutput {
+public struct GetParametersForImportOutput: Swift.Sendable {
     /// The import token to send in a subsequent [ImportKeyMaterial] request.
     public var importToken: Foundation.Data?
     /// The Amazon Resource Name ([key ARN](https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#key-id-key-ARN)) of the KMS key to use in a subsequent [ImportKeyMaterial] request. This is the same KMS key specified in the GetParametersForImport request.
@@ -3869,7 +3870,7 @@ extension GetParametersForImportOutput: Swift.CustomDebugStringConvertible {
         "GetParametersForImportOutput(importToken: \(Swift.String(describing: importToken)), keyId: \(Swift.String(describing: keyId)), parametersValidTo: \(Swift.String(describing: parametersValidTo)), publicKey: \"CONTENT_REDACTED\")"}
 }
 
-public struct GetPublicKeyInput {
+public struct GetPublicKeyInput: Swift.Sendable {
     /// A list of grant tokens. Use a grant token when your permission to call this operation comes from a new grant that has not yet achieved eventual consistency. For more information, see [Grant token](https://docs.aws.amazon.com/kms/latest/developerguide/grants.html#grant_token) and [Using a grant token](https://docs.aws.amazon.com/kms/latest/developerguide/grant-manage.html#using-grant-token) in the Key Management Service Developer Guide.
     public var grantTokens: [Swift.String]?
     /// Identifies the asymmetric KMS key that includes the public key. To specify a KMS key, use its key ID, key ARN, alias name, or alias ARN. When using an alias name, prefix it with "alias/". To specify a KMS key in a different Amazon Web Services account, you must use the key ARN or alias ARN. For example:
@@ -3897,7 +3898,7 @@ public struct GetPublicKeyInput {
     }
 }
 
-public struct GetPublicKeyOutput {
+public struct GetPublicKeyOutput: Swift.Sendable {
     /// Instead, use the KeySpec field in the GetPublicKey response. The KeySpec and CustomerMasterKeySpec fields have the same value. We recommend that you use the KeySpec field in your code. However, to avoid breaking changes, KMS supports both fields.
     @available(*, deprecated, message: "This field has been deprecated. Instead, use the KeySpec field.")
     public var customerMasterKeySpec: KMSClientTypes.CustomerMasterKeySpec?
@@ -3939,8 +3940,9 @@ public struct GetPublicKeyOutput {
 }
 
 extension KMSClientTypes {
+
     /// Contains information about a grant.
-    public struct GrantListEntry {
+    public struct GrantListEntry: Swift.Sendable {
         /// A list of key-value pairs that must be present in the encryption context of certain subsequent operations that the grant allows.
         public var constraints: KMSClientTypes.GrantConstraints?
         /// The date and time when the grant was created.
@@ -3983,7 +3985,6 @@ extension KMSClientTypes {
             self.retiringPrincipal = retiringPrincipal
         }
     }
-
 }
 
 /// The request was rejected because the key material in the request is, expired, invalid, or is not the same key material that was previously imported into this KMS key.
@@ -4034,7 +4035,7 @@ public struct InvalidImportTokenException: ClientRuntime.ModeledError, AWSClient
     }
 }
 
-public struct ImportKeyMaterialInput {
+public struct ImportKeyMaterialInput: Swift.Sendable {
     /// The encrypted key material to import. The key material must be encrypted under the public wrapping key that [GetParametersForImport] returned, using the wrapping algorithm that you specified in the same GetParametersForImport request.
     /// This member is required.
     public var encryptedKeyMaterial: Foundation.Data?
@@ -4072,7 +4073,7 @@ public struct ImportKeyMaterialInput {
     }
 }
 
-public struct ImportKeyMaterialOutput {
+public struct ImportKeyMaterialOutput: Swift.Sendable {
 
     public init() { }
 }
@@ -4102,8 +4103,9 @@ public struct InvalidGrantIdException: ClientRuntime.ModeledError, AWSClientRunt
 }
 
 extension KMSClientTypes {
+
     /// Contains information about each entry in the key list.
-    public struct KeyListEntry {
+    public struct KeyListEntry: Swift.Sendable {
         /// ARN of the key.
         public var keyArn: Swift.String?
         /// Unique identifier of the key.
@@ -4118,7 +4120,6 @@ extension KMSClientTypes {
             self.keyId = keyId
         }
     }
-
 }
 
 /// The request was rejected because the HMAC verification failed. HMAC verification fails when the HMAC computed by using the specified message, HMAC KMS key, and MAC algorithm does not match the HMAC specified in the request.
@@ -4169,7 +4170,7 @@ public struct KMSInvalidSignatureException: ClientRuntime.ModeledError, AWSClien
     }
 }
 
-public struct ListAliasesInput {
+public struct ListAliasesInput: Swift.Sendable {
     /// Lists only aliases that are associated with the specified KMS key. Enter a KMS key in your Amazon Web Services account. This parameter is optional. If you omit it, ListAliases returns all aliases in the account and Region. Specify the key ID or key ARN of the KMS key. For example:
     ///
     /// * Key ID: 1234abcd-12ab-34cd-56ef-1234567890ab
@@ -4196,7 +4197,7 @@ public struct ListAliasesInput {
     }
 }
 
-public struct ListAliasesOutput {
+public struct ListAliasesOutput: Swift.Sendable {
     /// A list of aliases.
     public var aliases: [KMSClientTypes.AliasListEntry]?
     /// When Truncated is true, this element is present and contains the value to use for the Marker parameter in a subsequent request.
@@ -4216,7 +4217,7 @@ public struct ListAliasesOutput {
     }
 }
 
-public struct ListGrantsInput {
+public struct ListGrantsInput: Swift.Sendable {
     /// Returns only the grant with the specified grant ID. The grant ID uniquely identifies the grant.
     public var grantId: Swift.String?
     /// Returns only grants where the specified principal is the grantee principal for the grant.
@@ -4252,7 +4253,7 @@ public struct ListGrantsInput {
     }
 }
 
-public struct ListGrantsOutput {
+public struct ListGrantsOutput: Swift.Sendable {
     /// A list of grants.
     public var grants: [KMSClientTypes.GrantListEntry]?
     /// When Truncated is true, this element is present and contains the value to use for the Marker parameter in a subsequent request.
@@ -4272,7 +4273,7 @@ public struct ListGrantsOutput {
     }
 }
 
-public struct ListKeyPoliciesInput {
+public struct ListKeyPoliciesInput: Swift.Sendable {
     /// Gets the names of key policies for the specified KMS key. Specify the key ID or key ARN of the KMS key. For example:
     ///
     /// * Key ID: 1234abcd-12ab-34cd-56ef-1234567890ab
@@ -4300,7 +4301,7 @@ public struct ListKeyPoliciesInput {
     }
 }
 
-public struct ListKeyPoliciesOutput {
+public struct ListKeyPoliciesOutput: Swift.Sendable {
     /// When Truncated is true, this element is present and contains the value to use for the Marker parameter in a subsequent request.
     public var nextMarker: Swift.String?
     /// A list of key policy names. The only valid value is default.
@@ -4320,7 +4321,7 @@ public struct ListKeyPoliciesOutput {
     }
 }
 
-public struct ListKeyRotationsInput {
+public struct ListKeyRotationsInput: Swift.Sendable {
     /// Gets the key rotations for the specified KMS key. Specify the key ID or key ARN of the KMS key. For example:
     ///
     /// * Key ID: 1234abcd-12ab-34cd-56ef-1234567890ab
@@ -4350,7 +4351,7 @@ public struct ListKeyRotationsInput {
 
 extension KMSClientTypes {
 
-    public enum RotationType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum RotationType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case automatic
         case onDemand
         case sdkUnknown(Swift.String)
@@ -4378,8 +4379,9 @@ extension KMSClientTypes {
 }
 
 extension KMSClientTypes {
+
     /// Contains information about completed key material rotations.
-    public struct RotationsListEntry {
+    public struct RotationsListEntry: Swift.Sendable {
         /// Unique identifier of the key.
         public var keyId: Swift.String?
         /// Date and time that the key material rotation completed. Formatted as Unix time.
@@ -4398,10 +4400,9 @@ extension KMSClientTypes {
             self.rotationType = rotationType
         }
     }
-
 }
 
-public struct ListKeyRotationsOutput {
+public struct ListKeyRotationsOutput: Swift.Sendable {
     /// When Truncated is true, this element is present and contains the value to use for the Marker parameter in a subsequent request.
     public var nextMarker: Swift.String?
     /// A list of completed key material rotations.
@@ -4421,7 +4422,7 @@ public struct ListKeyRotationsOutput {
     }
 }
 
-public struct ListKeysInput {
+public struct ListKeysInput: Swift.Sendable {
     /// Use this parameter to specify the maximum number of items to return. When this value is present, KMS does not return more than the specified number of items, but it might return fewer. This value is optional. If you include a value, it must be between 1 and 1000, inclusive. If you do not include a value, it defaults to 100.
     public var limit: Swift.Int?
     /// Use this parameter in a subsequent request after you receive a response with truncated results. Set it to the value of NextMarker from the truncated response you just received.
@@ -4437,7 +4438,7 @@ public struct ListKeysInput {
     }
 }
 
-public struct ListKeysOutput {
+public struct ListKeysOutput: Swift.Sendable {
     /// A list of KMS keys.
     public var keys: [KMSClientTypes.KeyListEntry]?
     /// When Truncated is true, this element is present and contains the value to use for the Marker parameter in a subsequent request.
@@ -4457,7 +4458,7 @@ public struct ListKeysOutput {
     }
 }
 
-public struct ListResourceTagsInput {
+public struct ListResourceTagsInput: Swift.Sendable {
     /// Gets tags on the specified KMS key. Specify the key ID or key ARN of the KMS key. For example:
     ///
     /// * Key ID: 1234abcd-12ab-34cd-56ef-1234567890ab
@@ -4485,7 +4486,7 @@ public struct ListResourceTagsInput {
     }
 }
 
-public struct ListResourceTagsOutput {
+public struct ListResourceTagsOutput: Swift.Sendable {
     /// When Truncated is true, this element is present and contains the value to use for the Marker parameter in a subsequent request. Do not assume or infer any information from this value.
     public var nextMarker: Swift.String?
     /// A list of tags. Each tag consists of a tag key and a tag value. Tagging or untagging a KMS key can allow or deny permission to the KMS key. For details, see [ABAC for KMS](https://docs.aws.amazon.com/kms/latest/developerguide/abac.html) in the Key Management Service Developer Guide.
@@ -4505,7 +4506,7 @@ public struct ListResourceTagsOutput {
     }
 }
 
-public struct ListRetirableGrantsInput {
+public struct ListRetirableGrantsInput: Swift.Sendable {
     /// Use this parameter to specify the maximum number of items to return. When this value is present, KMS does not return more than the specified number of items, but it might return fewer. This value is optional. If you include a value, it must be between 1 and 100, inclusive. If you do not include a value, it defaults to 50.
     public var limit: Swift.Int?
     /// Use this parameter in a subsequent request after you receive a response with truncated results. Set it to the value of NextMarker from the truncated response you just received.
@@ -4526,7 +4527,7 @@ public struct ListRetirableGrantsInput {
     }
 }
 
-public struct ListRetirableGrantsOutput {
+public struct ListRetirableGrantsOutput: Swift.Sendable {
     /// A list of grants.
     public var grants: [KMSClientTypes.GrantListEntry]?
     /// When Truncated is true, this element is present and contains the value to use for the Marker parameter in a subsequent request.
@@ -4548,7 +4549,7 @@ public struct ListRetirableGrantsOutput {
 
 extension KMSClientTypes {
 
-    public enum MessageType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum MessageType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case digest
         case raw
         case sdkUnknown(Swift.String)
@@ -4575,7 +4576,7 @@ extension KMSClientTypes {
     }
 }
 
-public struct PutKeyPolicyInput {
+public struct PutKeyPolicyInput: Swift.Sendable {
     /// Skips ("bypasses") the key policy lockout safety check. The default value is false. Setting this value to true increases the risk that the KMS key becomes unmanageable. Do not set this value to true indiscriminately. For more information, see [Default key policy](https://docs.aws.amazon.com/kms/latest/developerguide/key-policy-default.html#prevent-unmanageable-key) in the Key Management Service Developer Guide. Use this parameter only when you intend to prevent the principal that is making the request from making a subsequent [PutKeyPolicy](https://docs.aws.amazon.com/kms/latest/APIReference/API_PutKeyPolicy.html) request on the KMS key.
     public var bypassPolicyLockoutSafetyCheck: Swift.Bool?
     /// Sets the key policy on the specified KMS key. Specify the key ID or key ARN of the KMS key. For example:
@@ -4624,7 +4625,7 @@ public struct PutKeyPolicyInput {
     }
 }
 
-public struct ReEncryptInput {
+public struct ReEncryptInput: Swift.Sendable {
     /// Ciphertext of the data to reencrypt.
     /// This member is required.
     public var ciphertextBlob: Foundation.Data?
@@ -4692,7 +4693,7 @@ public struct ReEncryptInput {
     }
 }
 
-public struct ReEncryptOutput {
+public struct ReEncryptOutput: Swift.Sendable {
     /// The reencrypted data. When you use the HTTP API or the Amazon Web Services CLI, the value is Base64-encoded. Otherwise, it is not Base64-encoded.
     public var ciphertextBlob: Foundation.Data?
     /// The encryption algorithm that was used to reencrypt the data.
@@ -4720,7 +4721,7 @@ public struct ReEncryptOutput {
     }
 }
 
-public struct ReplicateKeyInput {
+public struct ReplicateKeyInput: Swift.Sendable {
     /// Skips ("bypasses") the key policy lockout safety check. The default value is false. Setting this value to true increases the risk that the KMS key becomes unmanageable. Do not set this value to true indiscriminately. For more information, see [Default key policy](https://docs.aws.amazon.com/kms/latest/developerguide/key-policy-default.html#prevent-unmanageable-key) in the Key Management Service Developer Guide. Use this parameter only when you intend to prevent the principal that is making the request from making a subsequent [PutKeyPolicy](https://docs.aws.amazon.com/kms/latest/APIReference/API_PutKeyPolicy.html) request on the KMS key.
     public var bypassPolicyLockoutSafetyCheck: Swift.Bool?
     /// A description of the KMS key. The default value is an empty string (no description). Do not include confidential or sensitive information in this field. This field may be displayed in plaintext in CloudTrail logs and other output. The description is not a shared property of multi-Region keys. You can specify the same description or a different description for each key in a set of related multi-Region keys. KMS does not synchronize this property.
@@ -4777,7 +4778,7 @@ public struct ReplicateKeyInput {
     }
 }
 
-public struct ReplicateKeyOutput {
+public struct ReplicateKeyOutput: Swift.Sendable {
     /// Displays details about the new replica key, including its Amazon Resource Name ([key ARN](https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#key-id-key-ARN)) and [Key states of KMS keys](https://docs.aws.amazon.com/kms/latest/developerguide/key-state.html). It also includes the ARN and Amazon Web Services Region of its primary key and other replica keys.
     public var replicaKeyMetadata: KMSClientTypes.KeyMetadata?
     /// The key policy of the new replica key. The value is a key policy document in JSON format.
@@ -4797,7 +4798,7 @@ public struct ReplicateKeyOutput {
     }
 }
 
-public struct RetireGrantInput {
+public struct RetireGrantInput: Swift.Sendable {
     /// Checks if your request will succeed. DryRun is an optional parameter. To learn more about how to use this parameter, see [Testing your KMS API calls](https://docs.aws.amazon.com/kms/latest/developerguide/programming-dryrun.html) in the Key Management Service Developer Guide.
     public var dryRun: Swift.Bool?
     /// Identifies the grant to retire. To get the grant ID, use [CreateGrant], [ListGrants], or [ListRetirableGrants].
@@ -4823,7 +4824,7 @@ public struct RetireGrantInput {
     }
 }
 
-public struct RevokeGrantInput {
+public struct RevokeGrantInput: Swift.Sendable {
     /// Checks if your request will succeed. DryRun is an optional parameter. To learn more about how to use this parameter, see [Testing your KMS API calls](https://docs.aws.amazon.com/kms/latest/developerguide/programming-dryrun.html) in the Key Management Service Developer Guide.
     public var dryRun: Swift.Bool?
     /// Identifies the grant to revoke. To get the grant ID, use [CreateGrant], [ListGrants], or [ListRetirableGrants].
@@ -4852,7 +4853,7 @@ public struct RevokeGrantInput {
     }
 }
 
-public struct RotateKeyOnDemandInput {
+public struct RotateKeyOnDemandInput: Swift.Sendable {
     /// Identifies a symmetric encryption KMS key. You cannot perform on-demand rotation of [asymmetric KMS keys](https://docs.aws.amazon.com/kms/latest/developerguide/symmetric-asymmetric.html), [HMAC KMS keys](https://docs.aws.amazon.com/kms/latest/developerguide/hmac.html), KMS keys with [imported key material](https://docs.aws.amazon.com/kms/latest/developerguide/importing-keys.html), or KMS keys in a [custom key store](https://docs.aws.amazon.com/kms/latest/developerguide/custom-key-store-overview.html). To perform on-demand rotation of a set of related [multi-Region keys](https://docs.aws.amazon.com/kms/latest/developerguide/multi-region-keys-manage.html#multi-region-rotate), invoke the on-demand rotation on the primary key. Specify the key ID or key ARN of the KMS key. For example:
     ///
     /// * Key ID: 1234abcd-12ab-34cd-56ef-1234567890ab
@@ -4872,7 +4873,7 @@ public struct RotateKeyOnDemandInput {
     }
 }
 
-public struct RotateKeyOnDemandOutput {
+public struct RotateKeyOnDemandOutput: Swift.Sendable {
     /// Identifies the symmetric encryption KMS key that you initiated on-demand rotation on.
     public var keyId: Swift.String?
 
@@ -4884,7 +4885,7 @@ public struct RotateKeyOnDemandOutput {
     }
 }
 
-public struct ScheduleKeyDeletionInput {
+public struct ScheduleKeyDeletionInput: Swift.Sendable {
     /// The unique identifier of the KMS key to delete. Specify the key ID or key ARN of the KMS key. For example:
     ///
     /// * Key ID: 1234abcd-12ab-34cd-56ef-1234567890ab
@@ -4908,7 +4909,7 @@ public struct ScheduleKeyDeletionInput {
     }
 }
 
-public struct ScheduleKeyDeletionOutput {
+public struct ScheduleKeyDeletionOutput: Swift.Sendable {
     /// The date and time after which KMS deletes the KMS key. If the KMS key is a multi-Region primary key with replica keys, this field does not appear. The deletion date for the primary key isn't known until its last replica key is deleted.
     public var deletionDate: Foundation.Date?
     /// The Amazon Resource Name ([key ARN](https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#key-id-key-ARN)) of the KMS key whose deletion is scheduled.
@@ -4932,7 +4933,7 @@ public struct ScheduleKeyDeletionOutput {
     }
 }
 
-public struct SignInput {
+public struct SignInput: Swift.Sendable {
     /// Checks if your request will succeed. DryRun is an optional parameter. To learn more about how to use this parameter, see [Testing your KMS API calls](https://docs.aws.amazon.com/kms/latest/developerguide/programming-dryrun.html) in the Key Management Service Developer Guide.
     public var dryRun: Swift.Bool?
     /// A list of grant tokens. Use a grant token when your permission to call this operation comes from a new grant that has not yet achieved eventual consistency. For more information, see [Grant token](https://docs.aws.amazon.com/kms/latest/developerguide/grants.html#grant_token) and [Using a grant token](https://docs.aws.amazon.com/kms/latest/developerguide/grant-manage.html#using-grant-token) in the Key Management Service Developer Guide.
@@ -4991,7 +4992,7 @@ extension SignInput: Swift.CustomDebugStringConvertible {
         "SignInput(dryRun: \(Swift.String(describing: dryRun)), grantTokens: \(Swift.String(describing: grantTokens)), keyId: \(Swift.String(describing: keyId)), messageType: \(Swift.String(describing: messageType)), signingAlgorithm: \(Swift.String(describing: signingAlgorithm)), message: \"CONTENT_REDACTED\")"}
 }
 
-public struct SignOutput {
+public struct SignOutput: Swift.Sendable {
     /// The Amazon Resource Name ([key ARN](https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#key-id-key-ARN)) of the asymmetric KMS key that was used to sign the message.
     public var keyId: Swift.String?
     /// The cryptographic signature that was generated for the message.
@@ -5018,7 +5019,7 @@ public struct SignOutput {
     }
 }
 
-public struct TagResourceInput {
+public struct TagResourceInput: Swift.Sendable {
     /// Identifies a customer managed key in the account and Region. Specify the key ID or key ARN of the KMS key. For example:
     ///
     /// * Key ID: 1234abcd-12ab-34cd-56ef-1234567890ab
@@ -5043,7 +5044,7 @@ public struct TagResourceInput {
     }
 }
 
-public struct UntagResourceInput {
+public struct UntagResourceInput: Swift.Sendable {
     /// Identifies the KMS key from which you are removing tags. Specify the key ID or key ARN of the KMS key. For example:
     ///
     /// * Key ID: 1234abcd-12ab-34cd-56ef-1234567890ab
@@ -5068,7 +5069,7 @@ public struct UntagResourceInput {
     }
 }
 
-public struct UpdateAliasInput {
+public struct UpdateAliasInput: Swift.Sendable {
     /// Identifies the alias that is changing its KMS key. This value must begin with alias/ followed by the alias name, such as alias/ExampleAlias. You cannot use UpdateAlias to change the alias name. Do not include confidential or sensitive information in this field. This field may be displayed in plaintext in CloudTrail logs and other output.
     /// This member is required.
     public var aliasName: Swift.String?
@@ -5093,7 +5094,7 @@ public struct UpdateAliasInput {
     }
 }
 
-public struct UpdateCustomKeyStoreInput {
+public struct UpdateCustomKeyStoreInput: Swift.Sendable {
     /// Associates the custom key store with a related CloudHSM cluster. This parameter is valid only for custom key stores with a CustomKeyStoreType of AWS_CLOUDHSM. Enter the cluster ID of the cluster that you used to create the custom key store or a cluster that shares a backup history and has the same cluster certificate as the original cluster. You cannot use this parameter to associate a custom key store with an unrelated cluster. In addition, the replacement cluster must [fulfill the requirements](https://docs.aws.amazon.com/kms/latest/developerguide/create-keystore.html#before-keystore) for a cluster associated with a custom key store. To view the cluster certificate of a cluster, use the [DescribeClusters](https://docs.aws.amazon.com/cloudhsm/latest/APIReference/API_DescribeClusters.html) operation. To change this value, the CloudHSM key store must be disconnected.
     public var cloudHsmClusterId: Swift.String?
     /// Identifies the custom key store that you want to update. Enter the ID of the custom key store. To find the ID of a custom key store, use the [DescribeCustomKeyStores] operation.
@@ -5143,12 +5144,12 @@ extension UpdateCustomKeyStoreInput: Swift.CustomDebugStringConvertible {
         "UpdateCustomKeyStoreInput(cloudHsmClusterId: \(Swift.String(describing: cloudHsmClusterId)), customKeyStoreId: \(Swift.String(describing: customKeyStoreId)), newCustomKeyStoreName: \(Swift.String(describing: newCustomKeyStoreName)), xksProxyAuthenticationCredential: \(Swift.String(describing: xksProxyAuthenticationCredential)), xksProxyConnectivity: \(Swift.String(describing: xksProxyConnectivity)), xksProxyUriEndpoint: \(Swift.String(describing: xksProxyUriEndpoint)), xksProxyUriPath: \(Swift.String(describing: xksProxyUriPath)), xksProxyVpcEndpointServiceName: \(Swift.String(describing: xksProxyVpcEndpointServiceName)), keyStorePassword: \"CONTENT_REDACTED\")"}
 }
 
-public struct UpdateCustomKeyStoreOutput {
+public struct UpdateCustomKeyStoreOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdateKeyDescriptionInput {
+public struct UpdateKeyDescriptionInput: Swift.Sendable {
     /// New description for the KMS key. Do not include confidential or sensitive information in this field. This field may be displayed in plaintext in CloudTrail logs and other output.
     /// This member is required.
     public var description: Swift.String?
@@ -5173,7 +5174,7 @@ public struct UpdateKeyDescriptionInput {
     }
 }
 
-public struct UpdatePrimaryRegionInput {
+public struct UpdatePrimaryRegionInput: Swift.Sendable {
     /// Identifies the current primary key. When the operation completes, this KMS key will be a replica key. Specify the key ID or key ARN of a multi-Region primary key. For example:
     ///
     /// * Key ID: mrk-1234abcd12ab34cd56ef1234567890ab
@@ -5198,7 +5199,7 @@ public struct UpdatePrimaryRegionInput {
     }
 }
 
-public struct VerifyInput {
+public struct VerifyInput: Swift.Sendable {
     /// Checks if your request will succeed. DryRun is an optional parameter. To learn more about how to use this parameter, see [Testing your KMS API calls](https://docs.aws.amazon.com/kms/latest/developerguide/programming-dryrun.html) in the Key Management Service Developer Guide.
     public var dryRun: Swift.Bool?
     /// A list of grant tokens. Use a grant token when your permission to call this operation comes from a new grant that has not yet achieved eventual consistency. For more information, see [Grant token](https://docs.aws.amazon.com/kms/latest/developerguide/grants.html#grant_token) and [Using a grant token](https://docs.aws.amazon.com/kms/latest/developerguide/grant-manage.html#using-grant-token) in the Key Management Service Developer Guide.
@@ -5262,7 +5263,7 @@ extension VerifyInput: Swift.CustomDebugStringConvertible {
         "VerifyInput(dryRun: \(Swift.String(describing: dryRun)), grantTokens: \(Swift.String(describing: grantTokens)), keyId: \(Swift.String(describing: keyId)), messageType: \(Swift.String(describing: messageType)), signature: \(Swift.String(describing: signature)), signingAlgorithm: \(Swift.String(describing: signingAlgorithm)), message: \"CONTENT_REDACTED\")"}
 }
 
-public struct VerifyOutput {
+public struct VerifyOutput: Swift.Sendable {
     /// The Amazon Resource Name ([key ARN](https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#key-id-key-ARN)) of the asymmetric KMS key that was used to verify the signature.
     public var keyId: Swift.String?
     /// A Boolean value that indicates whether the signature was verified. A value of True indicates that the Signature was produced by signing the Message with the specified KeyID and SigningAlgorithm. If the signature is not verified, the Verify operation fails with a KMSInvalidSignatureException exception.
@@ -5282,7 +5283,7 @@ public struct VerifyOutput {
     }
 }
 
-public struct VerifyMacInput {
+public struct VerifyMacInput: Swift.Sendable {
     /// Checks if your request will succeed. DryRun is an optional parameter. To learn more about how to use this parameter, see [Testing your KMS API calls](https://docs.aws.amazon.com/kms/latest/developerguide/programming-dryrun.html) in the Key Management Service Developer Guide.
     public var dryRun: Swift.Bool?
     /// A list of grant tokens. Use a grant token when your permission to call this operation comes from a new grant that has not yet achieved eventual consistency. For more information, see [Grant token](https://docs.aws.amazon.com/kms/latest/developerguide/grants.html#grant_token) and [Using a grant token](https://docs.aws.amazon.com/kms/latest/developerguide/grant-manage.html#using-grant-token) in the Key Management Service Developer Guide.
@@ -5323,7 +5324,7 @@ extension VerifyMacInput: Swift.CustomDebugStringConvertible {
         "VerifyMacInput(dryRun: \(Swift.String(describing: dryRun)), grantTokens: \(Swift.String(describing: grantTokens)), keyId: \(Swift.String(describing: keyId)), mac: \(Swift.String(describing: mac)), macAlgorithm: \(Swift.String(describing: macAlgorithm)), message: \"CONTENT_REDACTED\")"}
 }
 
-public struct VerifyMacOutput {
+public struct VerifyMacOutput: Swift.Sendable {
     /// The HMAC KMS key used in the verification.
     public var keyId: Swift.String?
     /// The MAC algorithm used in the verification.

@@ -28,42 +28,43 @@ import protocol ClientRuntime.ModeledError
 @_spi(SmithyReadWrite) import struct SmithyReadWrite.WritingClosureBox
 @_spi(SmithyTimestamps) import struct SmithyTimestamps.TimestampFormatter
 
-public struct AddTagsToCertificateOutput {
+
+public struct AddTagsToCertificateOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteCertificateOutput {
+public struct DeleteCertificateOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct GetAccountConfigurationInput {
+public struct GetAccountConfigurationInput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct PutAccountConfigurationOutput {
+public struct PutAccountConfigurationOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct RemoveTagsFromCertificateOutput {
+public struct RemoveTagsFromCertificateOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct RenewCertificateOutput {
+public struct RenewCertificateOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct ResendValidationEmailOutput {
+public struct ResendValidationEmailOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdateCertificateOptionsOutput {
+public struct UpdateCertificateOptionsOutput: Swift.Sendable {
 
     public init() { }
 }
@@ -261,8 +262,9 @@ public struct TooManyTagsException: ClientRuntime.ModeledError, AWSClientRuntime
 }
 
 extension ACMClientTypes {
+
     /// A key-value pair that identifies or specifies metadata about an ACM resource.
-    public struct Tag {
+    public struct Tag: Swift.Sendable {
         /// The key of the tag.
         /// This member is required.
         public var key: Swift.String?
@@ -278,10 +280,9 @@ extension ACMClientTypes {
             self.value = value
         }
     }
-
 }
 
-public struct AddTagsToCertificateInput {
+public struct AddTagsToCertificateInput: Swift.Sendable {
     /// String that contains the ARN of the ACM certificate to which the tag is to be applied. This must be of the form: arn:aws:acm:region:123456789012:certificate/12345678-1234-1234-1234-123456789012 For more information about ARNs, see [Amazon Resource Names (ARNs)](https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html).
     /// This member is required.
     public var certificateArn: Swift.String?
@@ -301,7 +302,7 @@ public struct AddTagsToCertificateInput {
 
 extension ACMClientTypes {
 
-    public enum RecordType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum RecordType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case cname
         case sdkUnknown(Swift.String)
 
@@ -326,8 +327,9 @@ extension ACMClientTypes {
 }
 
 extension ACMClientTypes {
+
     /// Contains a DNS record value that you can use to validate ownership or control of a domain. This is used by the [DescribeCertificate] action.
-    public struct ResourceRecord {
+    public struct ResourceRecord: Swift.Sendable {
         /// The name of the DNS record to create in your domain. This is supplied by ACM.
         /// This member is required.
         public var name: Swift.String?
@@ -349,12 +351,11 @@ extension ACMClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension ACMClientTypes {
 
-    public enum ValidationMethod: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ValidationMethod: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case dns
         case email
         case sdkUnknown(Swift.String)
@@ -383,7 +384,7 @@ extension ACMClientTypes {
 
 extension ACMClientTypes {
 
-    public enum DomainStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DomainStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case failed
         case pendingValidation
         case success
@@ -414,8 +415,9 @@ extension ACMClientTypes {
 }
 
 extension ACMClientTypes {
+
     /// Contains information about the validation of each domain name in the certificate.
-    public struct DomainValidation {
+    public struct DomainValidation: Swift.Sendable {
         /// A fully qualified domain name (FQDN) in the certificate. For example, www.example.com or example.com.
         /// This member is required.
         public var domainName: Swift.String?
@@ -453,12 +455,11 @@ extension ACMClientTypes {
             self.validationStatus = validationStatus
         }
     }
-
 }
 
 extension ACMClientTypes {
 
-    public enum ExtendedKeyUsageName: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ExtendedKeyUsageName: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case any
         case codeSigning
         case custom
@@ -516,8 +517,9 @@ extension ACMClientTypes {
 }
 
 extension ACMClientTypes {
+
     /// The Extended Key Usage X.509 v3 extension defines one or more purposes for which the public key can be used. This is in addition to or in place of the basic purposes specified by the Key Usage extension.
-    public struct ExtendedKeyUsage {
+    public struct ExtendedKeyUsage: Swift.Sendable {
         /// The name of an Extended Key Usage value.
         public var name: ACMClientTypes.ExtendedKeyUsageName?
         /// An object identifier (OID) for the extension value. OIDs are strings of numbers separated by periods. The following OIDs are defined in RFC 3280 and RFC 5280.
@@ -550,12 +552,11 @@ extension ACMClientTypes {
             self.oid = oid
         }
     }
-
 }
 
 extension ACMClientTypes {
 
-    public enum FailureReason: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum FailureReason: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case additionalVerificationRequired
         case caaError
         case domainNotAllowed
@@ -629,7 +630,7 @@ extension ACMClientTypes {
 
 extension ACMClientTypes {
 
-    public enum KeyAlgorithm: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum KeyAlgorithm: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case ecPrime256v1
         case ecSecp384r1
         case ecSecp521r1
@@ -673,7 +674,7 @@ extension ACMClientTypes {
 
 extension ACMClientTypes {
 
-    public enum KeyUsageName: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum KeyUsageName: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case any
         case certificateSigning
         case crlSigning
@@ -728,8 +729,9 @@ extension ACMClientTypes {
 }
 
 extension ACMClientTypes {
+
     /// The Key Usage X.509 v3 extension defines the purpose of the public key contained in the certificate.
-    public struct KeyUsage {
+    public struct KeyUsage: Swift.Sendable {
         /// A string value that contains a Key Usage extension name.
         public var name: ACMClientTypes.KeyUsageName?
 
@@ -740,12 +742,11 @@ extension ACMClientTypes {
             self.name = name
         }
     }
-
 }
 
 extension ACMClientTypes {
 
-    public enum CertificateTransparencyLoggingPreference: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum CertificateTransparencyLoggingPreference: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case disabled
         case enabled
         case sdkUnknown(Swift.String)
@@ -773,8 +774,9 @@ extension ACMClientTypes {
 }
 
 extension ACMClientTypes {
+
     /// Structure that contains options for your certificate. Currently, you can use this only to specify whether to opt in to or out of certificate transparency logging. Some browsers require that public certificates issued for your domain be recorded in a log. Certificates that are not logged typically generate a browser error. Transparency makes it possible for you to detect SSL/TLS certificates that have been mistakenly or maliciously issued for your domain. For general information, see [Certificate Transparency Logging](https://docs.aws.amazon.com/acm/latest/userguide/acm-concepts.html#concept-transparency).
-    public struct CertificateOptions {
+    public struct CertificateOptions: Swift.Sendable {
         /// You can opt out of certificate transparency logging by specifying the DISABLED option. Opt in by specifying ENABLED.
         public var certificateTransparencyLoggingPreference: ACMClientTypes.CertificateTransparencyLoggingPreference?
 
@@ -785,12 +787,11 @@ extension ACMClientTypes {
             self.certificateTransparencyLoggingPreference = certificateTransparencyLoggingPreference
         }
     }
-
 }
 
 extension ACMClientTypes {
 
-    public enum RenewalEligibility: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum RenewalEligibility: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case eligible
         case ineligible
         case sdkUnknown(Swift.String)
@@ -819,7 +820,7 @@ extension ACMClientTypes {
 
 extension ACMClientTypes {
 
-    public enum RenewalStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum RenewalStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case failed
         case pendingAutoRenewal
         case pendingValidation
@@ -853,8 +854,9 @@ extension ACMClientTypes {
 }
 
 extension ACMClientTypes {
+
     /// Contains information about the status of ACM's [managed renewal](https://docs.aws.amazon.com/acm/latest/userguide/acm-renewal.html) for the certificate. This structure exists only when the certificate type is AMAZON_ISSUED.
-    public struct RenewalSummary {
+    public struct RenewalSummary: Swift.Sendable {
         /// Contains information about the validation of each domain name in the certificate, as it pertains to ACM's [managed renewal](https://docs.aws.amazon.com/acm/latest/userguide/acm-renewal.html). This is different from the initial validation that occurs as a result of the [RequestCertificate] request. This field exists only when the certificate type is AMAZON_ISSUED.
         /// This member is required.
         public var domainValidationOptions: [ACMClientTypes.DomainValidation]?
@@ -880,12 +882,11 @@ extension ACMClientTypes {
             self.updatedAt = updatedAt
         }
     }
-
 }
 
 extension ACMClientTypes {
 
-    public enum RevocationReason: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum RevocationReason: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case affiliationChanged
         case aACompromise
         case caCompromise
@@ -938,7 +939,7 @@ extension ACMClientTypes {
 
 extension ACMClientTypes {
 
-    public enum CertificateStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum CertificateStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case expired
         case failed
         case inactive
@@ -982,7 +983,7 @@ extension ACMClientTypes {
 
 extension ACMClientTypes {
 
-    public enum CertificateType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum CertificateType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case amazonIssued
         case imported
         case `private`
@@ -1013,8 +1014,9 @@ extension ACMClientTypes {
 }
 
 extension ACMClientTypes {
+
     /// Contains metadata about an ACM certificate. This structure is returned in the response to a [DescribeCertificate] request.
-    public struct CertificateDetail {
+    public struct CertificateDetail: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the certificate. For more information about ARNs, see [Amazon Resource Names (ARNs)](https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html) in the Amazon Web Services General Reference.
         public var certificateArn: Swift.String?
         /// The Amazon Resource Name (ARN) of the private certificate authority (CA) that issued the certificate. This has the following format: arn:aws:acm-pca:region:account:certificate-authority/12345678-1234-1234-1234-123456789012
@@ -1125,7 +1127,6 @@ extension ACMClientTypes {
             self.type = type
         }
     }
-
 }
 
 /// You are trying to update a resource or configuration that is already being created or updated. Wait for the previous operation to finish and try again.
@@ -1176,7 +1177,7 @@ public struct ResourceInUseException: ClientRuntime.ModeledError, AWSClientRunti
     }
 }
 
-public struct DeleteCertificateInput {
+public struct DeleteCertificateInput: Swift.Sendable {
     /// String that contains the ARN of the ACM certificate to be deleted. This must be of the form: arn:aws:acm:region:123456789012:certificate/12345678-1234-1234-1234-123456789012 For more information about ARNs, see [Amazon Resource Names (ARNs)](https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html).
     /// This member is required.
     public var certificateArn: Swift.String?
@@ -1189,7 +1190,7 @@ public struct DeleteCertificateInput {
     }
 }
 
-public struct DescribeCertificateInput {
+public struct DescribeCertificateInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the ACM certificate. The ARN must have the following form: arn:aws:acm:region:123456789012:certificate/12345678-1234-1234-1234-123456789012 For more information about ARNs, see [Amazon Resource Names (ARNs)](https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html).
     /// This member is required.
     public var certificateArn: Swift.String?
@@ -1202,7 +1203,7 @@ public struct DescribeCertificateInput {
     }
 }
 
-public struct DescribeCertificateOutput {
+public struct DescribeCertificateOutput: Swift.Sendable {
     /// Metadata about an ACM certificate.
     public var certificate: ACMClientTypes.CertificateDetail?
 
@@ -1238,7 +1239,7 @@ public struct RequestInProgressException: ClientRuntime.ModeledError, AWSClientR
     }
 }
 
-public struct ExportCertificateInput {
+public struct ExportCertificateInput: Swift.Sendable {
     /// An Amazon Resource Name (ARN) of the issued certificate. This must be of the form: arn:aws:acm:region:account:certificate/12345678-1234-1234-1234-123456789012
     /// This member is required.
     public var certificateArn: Swift.String?
@@ -1261,7 +1262,7 @@ extension ExportCertificateInput: Swift.CustomDebugStringConvertible {
         "ExportCertificateInput(certificateArn: \(Swift.String(describing: certificateArn)), passphrase: \"CONTENT_REDACTED\")"}
 }
 
-public struct ExportCertificateOutput {
+public struct ExportCertificateOutput: Swift.Sendable {
     /// The base64 PEM-encoded certificate.
     public var certificate: Swift.String?
     /// The base64 PEM-encoded certificate chain. This does not include the certificate that you are exporting.
@@ -1287,8 +1288,9 @@ extension ExportCertificateOutput: Swift.CustomDebugStringConvertible {
 }
 
 extension ACMClientTypes {
+
     /// Object containing expiration events options associated with an Amazon Web Services account.
-    public struct ExpiryEventsConfiguration {
+    public struct ExpiryEventsConfiguration: Swift.Sendable {
         /// Specifies the number of days prior to certificate expiration when ACM starts generating EventBridge events. ACM sends one event per day per certificate until the certificate expires. By default, accounts receive events starting 45 days before certificate expiration.
         public var daysBeforeExpiry: Swift.Int?
 
@@ -1299,10 +1301,9 @@ extension ACMClientTypes {
             self.daysBeforeExpiry = daysBeforeExpiry
         }
     }
-
 }
 
-public struct GetAccountConfigurationOutput {
+public struct GetAccountConfigurationOutput: Swift.Sendable {
     /// Expiration events configuration options associated with the Amazon Web Services account.
     public var expiryEvents: ACMClientTypes.ExpiryEventsConfiguration?
 
@@ -1314,7 +1315,7 @@ public struct GetAccountConfigurationOutput {
     }
 }
 
-public struct GetCertificateInput {
+public struct GetCertificateInput: Swift.Sendable {
     /// String that contains a certificate ARN in the following format: arn:aws:acm:region:123456789012:certificate/12345678-1234-1234-1234-123456789012 For more information about ARNs, see [Amazon Resource Names (ARNs)](https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html).
     /// This member is required.
     public var certificateArn: Swift.String?
@@ -1327,7 +1328,7 @@ public struct GetCertificateInput {
     }
 }
 
-public struct GetCertificateOutput {
+public struct GetCertificateOutput: Swift.Sendable {
     /// The ACM-issued certificate corresponding to the ARN specified as input.
     public var certificate: Swift.String?
     /// Certificates forming the requested certificate's chain of trust. The chain consists of the certificate of the issuing CA and the intermediate certificates of any other subordinate CAs.
@@ -1367,7 +1368,7 @@ public struct LimitExceededException: ClientRuntime.ModeledError, AWSClientRunti
     }
 }
 
-public struct ImportCertificateInput {
+public struct ImportCertificateInput: Swift.Sendable {
     /// The certificate to import.
     /// This member is required.
     public var certificate: Foundation.Data?
@@ -1402,7 +1403,7 @@ extension ImportCertificateInput: Swift.CustomDebugStringConvertible {
         "ImportCertificateInput(certificate: \(Swift.String(describing: certificate)), certificateArn: \(Swift.String(describing: certificateArn)), certificateChain: \(Swift.String(describing: certificateChain)), tags: \(Swift.String(describing: tags)), privateKey: \"CONTENT_REDACTED\")"}
 }
 
-public struct ImportCertificateOutput {
+public struct ImportCertificateOutput: Swift.Sendable {
     /// The [Amazon Resource Name (ARN)](https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html) of the imported certificate.
     public var certificateArn: Swift.String?
 
@@ -1463,8 +1464,9 @@ public struct ValidationException: ClientRuntime.ModeledError, AWSClientRuntime.
 }
 
 extension ACMClientTypes {
+
     /// This structure can be used in the [ListCertificates] action to filter the output of the certificate list.
-    public struct Filters {
+    public struct Filters: Swift.Sendable {
         /// Specify one or more [ExtendedKeyUsage] extension values.
         public var extendedKeyUsage: [ACMClientTypes.ExtendedKeyUsageName]?
         /// Specify one or more algorithms that can be used to generate key pairs. Default filtering returns only RSA_1024 and RSA_2048 certificates that have at least one domain. To return other certificate types, provide the desired type signatures in a comma-separated list. For example, "keyTypes": ["RSA_2048","RSA_4096"] returns both RSA_2048 and RSA_4096 certificates.
@@ -1483,12 +1485,11 @@ extension ACMClientTypes {
             self.keyUsage = keyUsage
         }
     }
-
 }
 
 extension ACMClientTypes {
 
-    public enum SortBy: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SortBy: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case createdAt
         case sdkUnknown(Swift.String)
 
@@ -1514,7 +1515,7 @@ extension ACMClientTypes {
 
 extension ACMClientTypes {
 
-    public enum SortOrder: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SortOrder: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case ascending
         case descending
         case sdkUnknown(Swift.String)
@@ -1541,7 +1542,7 @@ extension ACMClientTypes {
     }
 }
 
-public struct ListCertificatesInput {
+public struct ListCertificatesInput: Swift.Sendable {
     /// Filter the certificate list by status value.
     public var certificateStatuses: [ACMClientTypes.CertificateStatus]?
     /// Filter the certificate list. For more information, see the [Filters] structure.
@@ -1574,8 +1575,9 @@ public struct ListCertificatesInput {
 }
 
 extension ACMClientTypes {
+
     /// This structure is returned in the response object of [ListCertificates] action.
-    public struct CertificateSummary {
+    public struct CertificateSummary: Swift.Sendable {
         /// Amazon Resource Name (ARN) of the certificate. This is of the form: arn:aws:acm:region:123456789012:certificate/12345678-1234-1234-1234-123456789012 For more information about ARNs, see [Amazon Resource Names (ARNs)](https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html).
         public var certificateArn: Swift.String?
         /// The time at which the certificate was requested.
@@ -1654,10 +1656,9 @@ extension ACMClientTypes {
             self.type = type
         }
     }
-
 }
 
-public struct ListCertificatesOutput {
+public struct ListCertificatesOutput: Swift.Sendable {
     /// A list of ACM certificates.
     public var certificateSummaryList: [ACMClientTypes.CertificateSummary]?
     /// When the list is truncated, this value is present and contains the value to use for the NextToken parameter in a subsequent pagination request.
@@ -1673,7 +1674,7 @@ public struct ListCertificatesOutput {
     }
 }
 
-public struct ListTagsForCertificateInput {
+public struct ListTagsForCertificateInput: Swift.Sendable {
     /// String that contains the ARN of the ACM certificate for which you want to list the tags. This must have the following form: arn:aws:acm:region:123456789012:certificate/12345678-1234-1234-1234-123456789012 For more information about ARNs, see [Amazon Resource Names (ARNs)](https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html).
     /// This member is required.
     public var certificateArn: Swift.String?
@@ -1686,7 +1687,7 @@ public struct ListTagsForCertificateInput {
     }
 }
 
-public struct ListTagsForCertificateOutput {
+public struct ListTagsForCertificateOutput: Swift.Sendable {
     /// The key-value pairs that define the applied tags.
     public var tags: [ACMClientTypes.Tag]?
 
@@ -1698,7 +1699,7 @@ public struct ListTagsForCertificateOutput {
     }
 }
 
-public struct PutAccountConfigurationInput {
+public struct PutAccountConfigurationInput: Swift.Sendable {
     /// Specifies expiration events associated with an account.
     public var expiryEvents: ACMClientTypes.ExpiryEventsConfiguration?
     /// Customer-chosen string used to distinguish between calls to PutAccountConfiguration. Idempotency tokens time out after one hour. If you call PutAccountConfiguration multiple times with the same unexpired idempotency token, ACM treats it as the same request and returns the original result. If you change the idempotency token for each call, ACM treats each call as a new request.
@@ -1715,7 +1716,7 @@ public struct PutAccountConfigurationInput {
     }
 }
 
-public struct RemoveTagsFromCertificateInput {
+public struct RemoveTagsFromCertificateInput: Swift.Sendable {
     /// String that contains the ARN of the ACM Certificate with one or more tags that you want to remove. This must be of the form: arn:aws:acm:region:123456789012:certificate/12345678-1234-1234-1234-123456789012 For more information about ARNs, see [Amazon Resource Names (ARNs)](https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html).
     /// This member is required.
     public var certificateArn: Swift.String?
@@ -1733,7 +1734,7 @@ public struct RemoveTagsFromCertificateInput {
     }
 }
 
-public struct RenewCertificateInput {
+public struct RenewCertificateInput: Swift.Sendable {
     /// String that contains the ARN of the ACM certificate to be renewed. This must be of the form: arn:aws:acm:region:123456789012:certificate/12345678-1234-1234-1234-123456789012 For more information about ARNs, see [Amazon Resource Names (ARNs)](https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html).
     /// This member is required.
     public var certificateArn: Swift.String?
@@ -1771,8 +1772,9 @@ public struct InvalidDomainValidationOptionsException: ClientRuntime.ModeledErro
 }
 
 extension ACMClientTypes {
+
     /// Contains information about the domain names that you want ACM to use to send you emails that enable you to validate domain ownership.
-    public struct DomainValidationOption {
+    public struct DomainValidationOption: Swift.Sendable {
         /// A fully qualified domain name (FQDN) in the certificate request.
         /// This member is required.
         public var domainName: Swift.String?
@@ -1799,10 +1801,9 @@ extension ACMClientTypes {
             self.validationDomain = validationDomain
         }
     }
-
 }
 
-public struct RequestCertificateInput {
+public struct RequestCertificateInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the private certificate authority (CA) that will be used to issue the certificate. If you do not provide an ARN and you are trying to request a private certificate, ACM will attempt to issue a public certificate. For more information about private CAs, see the [Amazon Web Services Private Certificate Authority](https://docs.aws.amazon.com/privateca/latest/userguide/PcaWelcome.html) user guide. The ARN must have the following form: arn:aws:acm-pca:region:account:certificate-authority/12345678-1234-1234-1234-123456789012
     public var certificateAuthorityArn: Swift.String?
     /// Fully qualified domain name (FQDN), such as www.example.com, that you want to secure with an ACM certificate. Use an asterisk (*) to create a wildcard certificate that protects several sites in the same domain. For example, *.example.com protects www.example.com, site.example.com, and images.example.com. In compliance with [RFC 5280](https://datatracker.ietf.org/doc/html/rfc5280), the length of the domain name (technically, the Common Name) that you provide cannot exceed 64 octets (characters), including periods. To add a longer domain name, specify it in the Subject Alternative Name field, which supports names up to 253 octets in length.
@@ -1862,7 +1863,7 @@ public struct RequestCertificateInput {
     }
 }
 
-public struct RequestCertificateOutput {
+public struct RequestCertificateOutput: Swift.Sendable {
     /// String that contains the ARN of the issued certificate. This must be of the form: arn:aws:acm:us-east-1:123456789012:certificate/12345678-1234-1234-1234-123456789012
     public var certificateArn: Swift.String?
 
@@ -1898,7 +1899,7 @@ public struct InvalidStateException: ClientRuntime.ModeledError, AWSClientRuntim
     }
 }
 
-public struct ResendValidationEmailInput {
+public struct ResendValidationEmailInput: Swift.Sendable {
     /// String that contains the ARN of the requested certificate. The certificate ARN is generated and returned by the [RequestCertificate] action as soon as the request is made. By default, using this parameter causes email to be sent to all top-level domains you specified in the certificate request. The ARN must be of the form: arn:aws:acm:us-east-1:123456789012:certificate/12345678-1234-1234-1234-123456789012
     /// This member is required.
     public var certificateArn: Swift.String?
@@ -1931,7 +1932,7 @@ public struct ResendValidationEmailInput {
     }
 }
 
-public struct UpdateCertificateOptionsInput {
+public struct UpdateCertificateOptionsInput: Swift.Sendable {
     /// ARN of the requested certificate to update. This must be of the form: arn:aws:acm:us-east-1:account:certificate/12345678-1234-1234-1234-123456789012
     /// This member is required.
     public var certificateArn: Swift.String?

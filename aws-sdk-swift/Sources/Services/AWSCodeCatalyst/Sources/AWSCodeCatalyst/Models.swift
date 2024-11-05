@@ -27,7 +27,8 @@ import protocol ClientRuntime.ModeledError
 import struct Smithy.URIQueryItem
 @_spi(SmithyTimestamps) import struct SmithyTimestamps.TimestampFormatter
 
-public struct VerifySessionInput {
+
+public struct VerifySessionInput: Swift.Sendable {
 
     public init() { }
 }
@@ -57,7 +58,7 @@ public struct AccessDeniedException: ClientRuntime.ModeledError, AWSClientRuntim
     }
 }
 
-public struct CreateAccessTokenInput {
+public struct CreateAccessTokenInput: Swift.Sendable {
     /// The date and time the personal access token expires, in coordinated universal time (UTC) timestamp format as specified in [RFC 3339](https://www.rfc-editor.org/rfc/rfc3339#section-5.6).
     public var expiresTime: Foundation.Date?
     /// The friendly name of the personal access token.
@@ -74,7 +75,7 @@ public struct CreateAccessTokenInput {
     }
 }
 
-public struct CreateAccessTokenOutput {
+public struct CreateAccessTokenOutput: Swift.Sendable {
     /// The system-generated unique ID of the access token.
     /// This member is required.
     public var accessTokenId: Swift.String?
@@ -107,7 +108,7 @@ extension CreateAccessTokenOutput: Swift.CustomDebugStringConvertible {
         "CreateAccessTokenOutput(accessTokenId: \(Swift.String(describing: accessTokenId)), expiresTime: \(Swift.String(describing: expiresTime)), name: \(Swift.String(describing: name)), secret: \"CONTENT_REDACTED\")"}
 }
 
-public struct DeleteAccessTokenInput {
+public struct DeleteAccessTokenInput: Swift.Sendable {
     /// The ID of the personal access token to delete. You can find the IDs of all PATs associated with your Amazon Web Services Builder ID in a space by calling [ListAccessTokens].
     /// This member is required.
     public var id: Swift.String?
@@ -120,12 +121,12 @@ public struct DeleteAccessTokenInput {
     }
 }
 
-public struct DeleteAccessTokenOutput {
+public struct DeleteAccessTokenOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct ListAccessTokensInput {
+public struct ListAccessTokensInput: Swift.Sendable {
     /// The maximum number of results to show in a single call to this API. If the number of results is larger than the number you specified, the response will include a NextToken element, which you can use to obtain additional results.
     public var maxResults: Swift.Int?
     /// A token returned from a call to this API to indicate the next batch of results to return, if any.
@@ -142,8 +143,9 @@ public struct ListAccessTokensInput {
 }
 
 extension CodeCatalystClientTypes {
+
     /// Information about a specified personal access token (PAT).
-    public struct AccessTokenSummary {
+    public struct AccessTokenSummary: Swift.Sendable {
         /// The date and time when the personal access token will expire, in coordinated universal time (UTC) timestamp format as specified in [RFC 3339](https://www.rfc-editor.org/rfc/rfc3339#section-5.6).
         public var expiresTime: Foundation.Date?
         /// The system-generated ID of the personal access token.
@@ -164,10 +166,9 @@ extension CodeCatalystClientTypes {
             self.name = name
         }
     }
-
 }
 
-public struct ListAccessTokensOutput {
+public struct ListAccessTokensOutput: Swift.Sendable {
     /// A list of personal access tokens (PATs) associated with the calling user identity.
     /// This member is required.
     public var items: [CodeCatalystClientTypes.AccessTokenSummary]?
@@ -209,7 +210,7 @@ public struct ConflictException: ClientRuntime.ModeledError, AWSClientRuntime.AW
     }
 }
 
-public struct GetUserDetailsInput {
+public struct GetUserDetailsInput: Swift.Sendable {
     /// The system-generated unique ID of the user.
     public var id: Swift.String?
     /// The name of the user as displayed in Amazon CodeCatalyst.
@@ -226,8 +227,9 @@ public struct GetUserDetailsInput {
 }
 
 extension CodeCatalystClientTypes {
+
     /// Information about an email address.
-    public struct EmailAddress {
+    public struct EmailAddress: Swift.Sendable {
         /// The email address.
         public var email: Swift.String?
         /// Whether the email address has been verified.
@@ -242,10 +244,9 @@ extension CodeCatalystClientTypes {
             self.verified = verified
         }
     }
-
 }
 
-public struct GetUserDetailsOutput {
+public struct GetUserDetailsOutput: Swift.Sendable {
     /// The friendly name displayed for the user in Amazon CodeCatalyst.
     public var displayName: Swift.String?
     /// The email address provided by the user when they signed up.
@@ -323,7 +324,7 @@ public struct ServiceQuotaExceededException: ClientRuntime.ModeledError, AWSClie
     }
 }
 
-public struct DeleteSpaceInput {
+public struct DeleteSpaceInput: Swift.Sendable {
     /// The name of the space. To retrieve a list of space names, use [ListSpaces].
     /// This member is required.
     public var name: Swift.String?
@@ -336,7 +337,7 @@ public struct DeleteSpaceInput {
     }
 }
 
-public struct DeleteSpaceOutput {
+public struct DeleteSpaceOutput: Swift.Sendable {
     /// The friendly name of the space displayed to users of the space in Amazon CodeCatalyst.
     public var displayName: Swift.String?
     /// The name of the space.
@@ -353,7 +354,7 @@ public struct DeleteSpaceOutput {
     }
 }
 
-public struct ListEventLogsInput {
+public struct ListEventLogsInput: Swift.Sendable {
     /// The time after which you do not want any events retrieved, in coordinated universal time (UTC) timestamp format as specified in [RFC 3339](https://www.rfc-editor.org/rfc/rfc3339#section-5.6).
     /// This member is required.
     public var endTime: Foundation.Date?
@@ -390,7 +391,7 @@ public struct ListEventLogsInput {
 
 extension CodeCatalystClientTypes {
 
-    public enum OperationType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum OperationType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case mutation
         case readonly
         case sdkUnknown(Swift.String)
@@ -418,8 +419,9 @@ extension CodeCatalystClientTypes {
 }
 
 extension CodeCatalystClientTypes {
+
     /// Information about a project in a space.
-    public struct ProjectInformation {
+    public struct ProjectInformation: Swift.Sendable {
         /// The name of the project in the space.
         public var name: Swift.String?
         /// The system-generated unique ID of the project.
@@ -434,12 +436,12 @@ extension CodeCatalystClientTypes {
             self.projectId = projectId
         }
     }
-
 }
 
 extension CodeCatalystClientTypes {
+
     /// Information about the payload of an event recording Amazon CodeCatalyst activity.
-    public struct EventPayload {
+    public struct EventPayload: Swift.Sendable {
         /// The type of content in the event payload.
         public var contentType: Swift.String?
         /// The data included in the event payload.
@@ -454,12 +456,11 @@ extension CodeCatalystClientTypes {
             self.data = data
         }
     }
-
 }
 
 extension CodeCatalystClientTypes {
 
-    public enum UserType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum UserType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case awsAccount
         case unknown
         case user
@@ -490,8 +491,9 @@ extension CodeCatalystClientTypes {
 }
 
 extension CodeCatalystClientTypes {
+
     /// Information about a user whose activity is recorded in an event for a space.
-    public struct UserIdentity {
+    public struct UserIdentity: Swift.Sendable {
         /// The Amazon Web Services account number of the user in Amazon Web Services, if any.
         public var awsAccountId: Swift.String?
         /// The ID of the Amazon CodeCatalyst service principal.
@@ -516,12 +518,12 @@ extension CodeCatalystClientTypes {
             self.userType = userType
         }
     }
-
 }
 
 extension CodeCatalystClientTypes {
+
     /// Information about an entry in an event log of Amazon CodeCatalyst activity.
-    public struct EventLogEntry {
+    public struct EventLogEntry: Swift.Sendable {
         /// The code of the error, if any.
         public var errorCode: Swift.String?
         /// The category for the event.
@@ -596,10 +598,9 @@ extension CodeCatalystClientTypes {
             self.userIdentity = userIdentity
         }
     }
-
 }
 
-public struct ListEventLogsOutput {
+public struct ListEventLogsOutput: Swift.Sendable {
     /// Information about each event retrieved in the list.
     /// This member is required.
     public var items: [CodeCatalystClientTypes.EventLogEntry]?
@@ -616,7 +617,7 @@ public struct ListEventLogsOutput {
     }
 }
 
-public struct GetSpaceInput {
+public struct GetSpaceInput: Swift.Sendable {
     /// The name of the space.
     /// This member is required.
     public var name: Swift.String?
@@ -629,7 +630,7 @@ public struct GetSpaceInput {
     }
 }
 
-public struct GetSpaceOutput {
+public struct GetSpaceOutput: Swift.Sendable {
     /// The description of the space.
     public var description: Swift.String?
     /// The friendly name of the space displayed to users.
@@ -656,8 +657,9 @@ public struct GetSpaceOutput {
 }
 
 extension CodeCatalystClientTypes {
+
     /// Information about a filter used to limit results of a query.
-    public struct Filter {
+    public struct Filter: Swift.Sendable {
         /// The operator used to compare the fields.
         public var comparisonOperator: Swift.String?
         /// A key that can be used to sort results.
@@ -678,10 +680,9 @@ extension CodeCatalystClientTypes {
             self.values = values
         }
     }
-
 }
 
-public struct ListDevEnvironmentsInput {
+public struct ListDevEnvironmentsInput: Swift.Sendable {
     /// Information about filters to apply to narrow the results returned in the list.
     public var filters: [CodeCatalystClientTypes.Filter]?
     /// The maximum number of results to show in a single call to this API. If the number of results is larger than the number you specified, the response will include a NextToken element, which you can use to obtain additional results.
@@ -711,8 +712,9 @@ public struct ListDevEnvironmentsInput {
 }
 
 extension CodeCatalystClientTypes {
+
     /// Information about an integrated development environment (IDE) used in a Dev Environment.
-    public struct Ide {
+    public struct Ide: Swift.Sendable {
         /// The name of the IDE.
         public var name: Swift.String?
         /// A link to the IDE runtime image.
@@ -727,12 +729,11 @@ extension CodeCatalystClientTypes {
             self.runtime = runtime
         }
     }
-
 }
 
 extension CodeCatalystClientTypes {
 
-    public enum InstanceType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum InstanceType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case devStandard1Large
         case devStandard1Medium
         case devStandard1Small
@@ -766,8 +767,9 @@ extension CodeCatalystClientTypes {
 }
 
 extension CodeCatalystClientTypes {
+
     /// Information about the persistent storage for a Dev Environment.
-    public struct PersistentStorage {
+    public struct PersistentStorage: Swift.Sendable {
         /// The size of the persistent storage in gigabytes (specifically GiB). Valid values for storage are based on memory sizes in 16GB increments. Valid values are 16, 32, and 64.
         /// This member is required.
         public var sizeInGiB: Swift.Int?
@@ -779,12 +781,12 @@ extension CodeCatalystClientTypes {
             self.sizeInGiB = sizeInGiB
         }
     }
-
 }
 
 extension CodeCatalystClientTypes {
+
     /// Information about the source repsitory for a Dev Environment.
-    public struct DevEnvironmentRepositorySummary {
+    public struct DevEnvironmentRepositorySummary: Swift.Sendable {
         /// The name of the branch in a source repository cloned into the Dev Environment.
         public var branchName: Swift.String?
         /// The name of the source repository.
@@ -800,12 +802,11 @@ extension CodeCatalystClientTypes {
             self.repositoryName = repositoryName
         }
     }
-
 }
 
 extension CodeCatalystClientTypes {
 
-    public enum DevEnvironmentStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DevEnvironmentStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case deleted
         case deleting
         case failed
@@ -851,8 +852,9 @@ extension CodeCatalystClientTypes {
 }
 
 extension CodeCatalystClientTypes {
+
     /// Information about a Dev Environment.
-    public struct DevEnvironmentSummary {
+    public struct DevEnvironmentSummary: Swift.Sendable {
         /// The user-specified alias for the Dev Environment.
         public var alias: Swift.String?
         /// The system-generated unique ID of the user who created the Dev Environment.
@@ -923,10 +925,9 @@ extension CodeCatalystClientTypes {
             self.vpcConnectionName = vpcConnectionName
         }
     }
-
 }
 
-public struct ListDevEnvironmentsOutput {
+public struct ListDevEnvironmentsOutput: Swift.Sendable {
     /// Information about the Dev Environments in a project.
     /// This member is required.
     public var items: [CodeCatalystClientTypes.DevEnvironmentSummary]?
@@ -943,7 +944,7 @@ public struct ListDevEnvironmentsOutput {
     }
 }
 
-public struct ListSpacesInput {
+public struct ListSpacesInput: Swift.Sendable {
     /// A token returned from a call to this API to indicate the next batch of results to return, if any.
     public var nextToken: Swift.String?
 
@@ -956,8 +957,9 @@ public struct ListSpacesInput {
 }
 
 extension CodeCatalystClientTypes {
+
     /// Information about an space.
-    public struct SpaceSummary {
+    public struct SpaceSummary: Swift.Sendable {
         /// The description of the space.
         public var description: Swift.String?
         /// The friendly name of the space displayed to users.
@@ -982,10 +984,9 @@ extension CodeCatalystClientTypes {
             self.regionName = regionName
         }
     }
-
 }
 
-public struct ListSpacesOutput {
+public struct ListSpacesOutput: Swift.Sendable {
     /// Information about the spaces.
     public var items: [CodeCatalystClientTypes.SpaceSummary]?
     /// A token returned from a call to this API to indicate the next batch of results to return, if any.
@@ -1001,7 +1002,7 @@ public struct ListSpacesOutput {
     }
 }
 
-public struct CreateProjectInput {
+public struct CreateProjectInput: Swift.Sendable {
     /// The description of the project. This description will be displayed to all users of the project. We recommend providing a brief description of the project and its intended purpose.
     public var description: Swift.String?
     /// The friendly name of the project that will be displayed to users.
@@ -1023,7 +1024,7 @@ public struct CreateProjectInput {
     }
 }
 
-public struct CreateProjectOutput {
+public struct CreateProjectOutput: Swift.Sendable {
     /// The description of the project.
     public var description: Swift.String?
     /// The friendly name of the project.
@@ -1048,7 +1049,7 @@ public struct CreateProjectOutput {
     }
 }
 
-public struct DeleteProjectInput {
+public struct DeleteProjectInput: Swift.Sendable {
     /// The name of the project in the space. To retrieve a list of project names, use [ListProjects].
     /// This member is required.
     public var name: Swift.String?
@@ -1066,7 +1067,7 @@ public struct DeleteProjectInput {
     }
 }
 
-public struct DeleteProjectOutput {
+public struct DeleteProjectOutput: Swift.Sendable {
     /// The friendly name displayed to users of the project in Amazon CodeCatalyst.
     public var displayName: Swift.String?
     /// The name of the project in the space.
@@ -1089,8 +1090,9 @@ public struct DeleteProjectOutput {
 }
 
 extension CodeCatalystClientTypes {
+
     /// Information about the configuration of an integrated development environment (IDE) for a Dev Environment.
-    public struct IdeConfiguration {
+    public struct IdeConfiguration: Swift.Sendable {
         /// The name of the IDE. Valid values include Cloud9, IntelliJ, PyCharm, GoLand, and VSCode.
         public var name: Swift.String?
         /// A link to the IDE runtime image. This parameter is not required for VSCode.
@@ -1105,12 +1107,12 @@ extension CodeCatalystClientTypes {
             self.runtime = runtime
         }
     }
-
 }
 
 extension CodeCatalystClientTypes {
+
     /// Information about the configuration of persistent storage for a Dev Environment.
-    public struct PersistentStorageConfiguration {
+    public struct PersistentStorageConfiguration: Swift.Sendable {
         /// The size of the persistent storage in gigabytes (specifically GiB). Valid values for storage are based on memory sizes in 16GB increments. Valid values are 16, 32, and 64.
         /// This member is required.
         public var sizeInGiB: Swift.Int?
@@ -1122,12 +1124,12 @@ extension CodeCatalystClientTypes {
             self.sizeInGiB = sizeInGiB
         }
     }
-
 }
 
 extension CodeCatalystClientTypes {
+
     /// Information about a repository that will be cloned to a Dev Environment.
-    public struct RepositoryInput {
+    public struct RepositoryInput: Swift.Sendable {
         /// The name of the branch in a source repository.
         public var branchName: Swift.String?
         /// The name of the source repository.
@@ -1143,10 +1145,9 @@ extension CodeCatalystClientTypes {
             self.repositoryName = repositoryName
         }
     }
-
 }
 
-public struct CreateDevEnvironmentInput {
+public struct CreateDevEnvironmentInput: Swift.Sendable {
     /// The user-defined alias for a Dev Environment.
     public var alias: Swift.String?
     /// A user-specified idempotency token. Idempotency ensures that an API request completes only once. With an idempotent request, if the original request completes successfully, the subsequent retries return the result from the original successful request and have no additional effect.
@@ -1198,7 +1199,7 @@ public struct CreateDevEnvironmentInput {
     }
 }
 
-public struct CreateDevEnvironmentOutput {
+public struct CreateDevEnvironmentOutput: Swift.Sendable {
     /// The system-generated unique ID of the Dev Environment.
     /// This member is required.
     public var id: Swift.String?
@@ -1225,7 +1226,7 @@ public struct CreateDevEnvironmentOutput {
     }
 }
 
-public struct DeleteDevEnvironmentInput {
+public struct DeleteDevEnvironmentInput: Swift.Sendable {
     /// The system-generated unique ID of the Dev Environment you want to delete. To retrieve a list of Dev Environment IDs, use [ListDevEnvironments].
     /// This member is required.
     public var id: Swift.String?
@@ -1248,7 +1249,7 @@ public struct DeleteDevEnvironmentInput {
     }
 }
 
-public struct DeleteDevEnvironmentOutput {
+public struct DeleteDevEnvironmentOutput: Swift.Sendable {
     /// The system-generated unique ID of the deleted Dev Environment.
     /// This member is required.
     public var id: Swift.String?
@@ -1271,7 +1272,7 @@ public struct DeleteDevEnvironmentOutput {
     }
 }
 
-public struct GetDevEnvironmentInput {
+public struct GetDevEnvironmentInput: Swift.Sendable {
     /// The system-generated unique ID of the Dev Environment for which you want to view information. To retrieve a list of Dev Environment IDs, use [ListDevEnvironments].
     /// This member is required.
     public var id: Swift.String?
@@ -1294,7 +1295,7 @@ public struct GetDevEnvironmentInput {
     }
 }
 
-public struct GetDevEnvironmentOutput {
+public struct GetDevEnvironmentOutput: Swift.Sendable {
     /// The user-specified alias for the Dev Environment.
     public var alias: Swift.String?
     /// The system-generated unique ID of the user who created the Dev Environment.
@@ -1368,7 +1369,7 @@ public struct GetDevEnvironmentOutput {
     }
 }
 
-public struct ListDevEnvironmentSessionsInput {
+public struct ListDevEnvironmentSessionsInput: Swift.Sendable {
     /// The system-generated unique ID of the Dev Environment.
     /// This member is required.
     public var devEnvironmentId: Swift.String?
@@ -1400,8 +1401,9 @@ public struct ListDevEnvironmentSessionsInput {
 }
 
 extension CodeCatalystClientTypes {
+
     /// Information about active sessions for a Dev Environment.
-    public struct DevEnvironmentSessionSummary {
+    public struct DevEnvironmentSessionSummary: Swift.Sendable {
         /// The system-generated unique ID of the Dev Environment.
         /// This member is required.
         public var devEnvironmentId: Swift.String?
@@ -1433,10 +1435,9 @@ extension CodeCatalystClientTypes {
             self.startedTime = startedTime
         }
     }
-
 }
 
-public struct ListDevEnvironmentSessionsOutput {
+public struct ListDevEnvironmentSessionsOutput: Swift.Sendable {
     /// Information about each session retrieved in the list.
     /// This member is required.
     public var items: [CodeCatalystClientTypes.DevEnvironmentSessionSummary]?
@@ -1453,7 +1454,7 @@ public struct ListDevEnvironmentSessionsOutput {
     }
 }
 
-public struct StartDevEnvironmentInput {
+public struct StartDevEnvironmentInput: Swift.Sendable {
     /// The system-generated unique ID of the Dev Environment.
     /// This member is required.
     public var id: Swift.String?
@@ -1488,7 +1489,7 @@ public struct StartDevEnvironmentInput {
     }
 }
 
-public struct StartDevEnvironmentOutput {
+public struct StartDevEnvironmentOutput: Swift.Sendable {
     /// The system-generated unique ID of the Dev Environment.
     /// This member is required.
     public var id: Swift.String?
@@ -1517,8 +1518,9 @@ public struct StartDevEnvironmentOutput {
 }
 
 extension CodeCatalystClientTypes {
+
     /// Information about the commands that will be run on a Dev Environment when an SSH session begins.
-    public struct ExecuteCommandSessionConfiguration {
+    public struct ExecuteCommandSessionConfiguration: Swift.Sendable {
         /// An array of arguments containing arguments and members.
         public var arguments: [Swift.String]?
         /// The command used at the beginning of the SSH session to a Dev Environment.
@@ -1534,12 +1536,11 @@ extension CodeCatalystClientTypes {
             self.command = command
         }
     }
-
 }
 
 extension CodeCatalystClientTypes {
 
-    public enum DevEnvironmentSessionType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DevEnvironmentSessionType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case ssh
         case ssm
         case sdkUnknown(Swift.String)
@@ -1567,8 +1568,9 @@ extension CodeCatalystClientTypes {
 }
 
 extension CodeCatalystClientTypes {
+
     /// Information about the configuration of a Dev Environment session.
-    public struct DevEnvironmentSessionConfiguration {
+    public struct DevEnvironmentSessionConfiguration: Swift.Sendable {
         /// Information about optional commands that will be run on the Dev Environment when the SSH session begins.
         public var executeCommandSessionConfiguration: CodeCatalystClientTypes.ExecuteCommandSessionConfiguration?
         /// The type of the session.
@@ -1584,10 +1586,9 @@ extension CodeCatalystClientTypes {
             self.sessionType = sessionType
         }
     }
-
 }
 
-public struct StartDevEnvironmentSessionInput {
+public struct StartDevEnvironmentSessionInput: Swift.Sendable {
     /// The system-generated unique ID of the Dev Environment.
     /// This member is required.
     public var id: Swift.String?
@@ -1616,8 +1617,9 @@ public struct StartDevEnvironmentSessionInput {
 }
 
 extension CodeCatalystClientTypes {
+
     /// Information about connection details for a Dev Environment.
-    public struct DevEnvironmentAccessDetails {
+    public struct DevEnvironmentAccessDetails: Swift.Sendable {
         /// The URL used to send commands to and from the Dev Environment.
         /// This member is required.
         public var streamUrl: Swift.String?
@@ -1634,7 +1636,6 @@ extension CodeCatalystClientTypes {
             self.tokenValue = tokenValue
         }
     }
-
 }
 
 extension CodeCatalystClientTypes.DevEnvironmentAccessDetails: Swift.CustomDebugStringConvertible {
@@ -1643,7 +1644,7 @@ extension CodeCatalystClientTypes.DevEnvironmentAccessDetails: Swift.CustomDebug
     }
 }
 
-public struct StartDevEnvironmentSessionOutput {
+public struct StartDevEnvironmentSessionOutput: Swift.Sendable {
     /// Information about connection details for a Dev Environment.
     /// This member is required.
     public var accessDetails: CodeCatalystClientTypes.DevEnvironmentAccessDetails?
@@ -1680,7 +1681,7 @@ extension StartDevEnvironmentSessionOutput: Swift.CustomDebugStringConvertible {
         "StartDevEnvironmentSessionOutput(id: \(Swift.String(describing: id)), projectName: \(Swift.String(describing: projectName)), sessionId: \(Swift.String(describing: sessionId)), spaceName: \(Swift.String(describing: spaceName)), accessDetails: \"CONTENT_REDACTED\")"}
 }
 
-public struct StopDevEnvironmentInput {
+public struct StopDevEnvironmentInput: Swift.Sendable {
     /// The system-generated unique ID of the Dev Environment.
     /// This member is required.
     public var id: Swift.String?
@@ -1703,7 +1704,7 @@ public struct StopDevEnvironmentInput {
     }
 }
 
-public struct StopDevEnvironmentOutput {
+public struct StopDevEnvironmentOutput: Swift.Sendable {
     /// The system-generated unique ID of the Dev Environment.
     /// This member is required.
     public var id: Swift.String?
@@ -1731,7 +1732,7 @@ public struct StopDevEnvironmentOutput {
     }
 }
 
-public struct StopDevEnvironmentSessionInput {
+public struct StopDevEnvironmentSessionInput: Swift.Sendable {
     /// The system-generated unique ID of the Dev Environment. To obtain this ID, use [ListDevEnvironments].
     /// This member is required.
     public var id: Swift.String?
@@ -1759,7 +1760,7 @@ public struct StopDevEnvironmentSessionInput {
     }
 }
 
-public struct StopDevEnvironmentSessionOutput {
+public struct StopDevEnvironmentSessionOutput: Swift.Sendable {
     /// The system-generated unique ID of the Dev Environment.
     /// This member is required.
     public var id: Swift.String?
@@ -1787,7 +1788,7 @@ public struct StopDevEnvironmentSessionOutput {
     }
 }
 
-public struct UpdateDevEnvironmentInput {
+public struct UpdateDevEnvironmentInput: Swift.Sendable {
     /// The user-specified alias for the Dev Environment. Changing this value will not cause a restart.
     public var alias: Swift.String?
     /// A user-specified idempotency token. Idempotency ensures that an API request completes only once. With an idempotent request, if the original request completes successfully, the subsequent retries return the result from the original successful request and have no additional effect.
@@ -1830,7 +1831,7 @@ public struct UpdateDevEnvironmentInput {
     }
 }
 
-public struct UpdateDevEnvironmentOutput {
+public struct UpdateDevEnvironmentOutput: Swift.Sendable {
     /// The user-specified alias for the Dev Environment.
     public var alias: Swift.String?
     /// A user-specified idempotency token. Idempotency ensures that an API request completes only once. With an idempotent request, if the original request completes successfully, the subsequent retries return the result from the original successful request and have no additional effect.
@@ -1873,7 +1874,7 @@ public struct UpdateDevEnvironmentOutput {
     }
 }
 
-public struct GetProjectInput {
+public struct GetProjectInput: Swift.Sendable {
     /// The name of the project in the space.
     /// This member is required.
     public var name: Swift.String?
@@ -1891,7 +1892,7 @@ public struct GetProjectInput {
     }
 }
 
-public struct GetProjectOutput {
+public struct GetProjectOutput: Swift.Sendable {
     /// The description of the project.
     public var description: Swift.String?
     /// The friendly name of the project displayed to users in Amazon CodeCatalyst.
@@ -1918,7 +1919,7 @@ public struct GetProjectOutput {
 
 extension CodeCatalystClientTypes {
 
-    public enum ComparisonOperator: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ComparisonOperator: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case beginsWith
         case equals
         case greaterThan
@@ -1959,7 +1960,7 @@ extension CodeCatalystClientTypes {
 
 extension CodeCatalystClientTypes {
 
-    public enum FilterKey: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum FilterKey: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case hasAccessTo
         case name
         case sdkUnknown(Swift.String)
@@ -1987,8 +1988,9 @@ extension CodeCatalystClientTypes {
 }
 
 extension CodeCatalystClientTypes {
+
     /// nformation about the filter used to narrow the results returned in a list of projects.
-    public struct ProjectListFilter {
+    public struct ProjectListFilter: Swift.Sendable {
         /// The operator used to compare the fields.
         public var comparisonOperator: CodeCatalystClientTypes.ComparisonOperator?
         /// A key that can be used to sort results.
@@ -2009,10 +2011,9 @@ extension CodeCatalystClientTypes {
             self.values = values
         }
     }
-
 }
 
-public struct ListProjectsInput {
+public struct ListProjectsInput: Swift.Sendable {
     /// Information about filters to apply to narrow the results returned in the list.
     public var filters: [CodeCatalystClientTypes.ProjectListFilter]?
     /// The maximum number of results to show in a single call to this API. If the number of results is larger than the number you specified, the response will include a NextToken element, which you can use to obtain additional results.
@@ -2038,8 +2039,9 @@ public struct ListProjectsInput {
 }
 
 extension CodeCatalystClientTypes {
+
     /// Information about a project.
-    public struct ProjectSummary {
+    public struct ProjectSummary: Swift.Sendable {
         /// The description of the project.
         public var description: Swift.String?
         /// The friendly name displayed to users of the project in Amazon CodeCatalyst.
@@ -2059,10 +2061,9 @@ extension CodeCatalystClientTypes {
             self.name = name
         }
     }
-
 }
 
-public struct ListProjectsOutput {
+public struct ListProjectsOutput: Swift.Sendable {
     /// Information about the projects.
     public var items: [CodeCatalystClientTypes.ProjectSummary]?
     /// A token returned from a call to this API to indicate the next batch of results to return, if any.
@@ -2078,7 +2079,7 @@ public struct ListProjectsOutput {
     }
 }
 
-public struct CreateSourceRepositoryInput {
+public struct CreateSourceRepositoryInput: Swift.Sendable {
     /// The description of the source repository.
     public var description: Swift.String?
     /// The name of the source repository. For more information about name requirements, see [Quotas for source repositories](https://docs.aws.amazon.com/codecatalyst/latest/userguide/source-quotas.html).
@@ -2105,7 +2106,7 @@ public struct CreateSourceRepositoryInput {
     }
 }
 
-public struct CreateSourceRepositoryOutput {
+public struct CreateSourceRepositoryOutput: Swift.Sendable {
     /// The description of the source repository.
     public var description: Swift.String?
     /// The name of the source repository.
@@ -2132,7 +2133,7 @@ public struct CreateSourceRepositoryOutput {
     }
 }
 
-public struct DeleteSourceRepositoryInput {
+public struct DeleteSourceRepositoryInput: Swift.Sendable {
     /// The name of the source repository.
     /// This member is required.
     public var name: Swift.String?
@@ -2155,7 +2156,7 @@ public struct DeleteSourceRepositoryInput {
     }
 }
 
-public struct DeleteSourceRepositoryOutput {
+public struct DeleteSourceRepositoryOutput: Swift.Sendable {
     /// The name of the repository.
     /// This member is required.
     public var name: Swift.String?
@@ -2178,7 +2179,7 @@ public struct DeleteSourceRepositoryOutput {
     }
 }
 
-public struct GetSourceRepositoryInput {
+public struct GetSourceRepositoryInput: Swift.Sendable {
     /// The name of the source repository.
     /// This member is required.
     public var name: Swift.String?
@@ -2201,7 +2202,7 @@ public struct GetSourceRepositoryInput {
     }
 }
 
-public struct GetSourceRepositoryOutput {
+public struct GetSourceRepositoryOutput: Swift.Sendable {
     /// The time the source repository was created, in coordinated universal time (UTC) timestamp format as specified in [RFC 3339](https://www.rfc-editor.org/rfc/rfc3339#section-5.6).
     /// This member is required.
     public var createdTime: Foundation.Date?
@@ -2238,7 +2239,7 @@ public struct GetSourceRepositoryOutput {
     }
 }
 
-public struct GetSourceRepositoryCloneUrlsInput {
+public struct GetSourceRepositoryCloneUrlsInput: Swift.Sendable {
     /// The name of the project in the space.
     /// This member is required.
     public var projectName: Swift.String?
@@ -2261,7 +2262,7 @@ public struct GetSourceRepositoryCloneUrlsInput {
     }
 }
 
-public struct GetSourceRepositoryCloneUrlsOutput {
+public struct GetSourceRepositoryCloneUrlsOutput: Swift.Sendable {
     /// The HTTPS URL to use when cloning the source repository.
     /// This member is required.
     public var https: Swift.String?
@@ -2274,7 +2275,7 @@ public struct GetSourceRepositoryCloneUrlsOutput {
     }
 }
 
-public struct ListSourceRepositoriesInput {
+public struct ListSourceRepositoriesInput: Swift.Sendable {
     /// The maximum number of results to show in a single call to this API. If the number of results is larger than the number you specified, the response will include a NextToken element, which you can use to obtain additional results.
     public var maxResults: Swift.Int?
     /// A token returned from a call to this API to indicate the next batch of results to return, if any.
@@ -2301,8 +2302,9 @@ public struct ListSourceRepositoriesInput {
 }
 
 extension CodeCatalystClientTypes {
+
     /// Information about a source repository returned in a list of source repositories.
-    public struct ListSourceRepositoriesItem {
+    public struct ListSourceRepositoriesItem: Swift.Sendable {
         /// The time the source repository was created, in coordinated universal time (UTC) timestamp format as specified in [RFC 3339](https://www.rfc-editor.org/rfc/rfc3339#section-5.6).
         /// This member is required.
         public var createdTime: Foundation.Date?
@@ -2333,10 +2335,9 @@ extension CodeCatalystClientTypes {
             self.name = name
         }
     }
-
 }
 
-public struct ListSourceRepositoriesOutput {
+public struct ListSourceRepositoriesOutput: Swift.Sendable {
     /// Information about the source repositories.
     public var items: [CodeCatalystClientTypes.ListSourceRepositoriesItem]?
     /// A token returned from a call to this API to indicate the next batch of results to return, if any.
@@ -2352,7 +2353,7 @@ public struct ListSourceRepositoriesOutput {
     }
 }
 
-public struct CreateSourceRepositoryBranchInput {
+public struct CreateSourceRepositoryBranchInput: Swift.Sendable {
     /// The commit ID in an existing branch from which you want to create the new branch.
     public var headCommitId: Swift.String?
     /// The name for the branch you're creating.
@@ -2384,7 +2385,7 @@ public struct CreateSourceRepositoryBranchInput {
     }
 }
 
-public struct CreateSourceRepositoryBranchOutput {
+public struct CreateSourceRepositoryBranchOutput: Swift.Sendable {
     /// The commit ID of the tip of the newly created branch.
     public var headCommitId: Swift.String?
     /// The time the branch was last updated, in coordinated universal time (UTC) timestamp format as specified in [RFC 3339](https://www.rfc-editor.org/rfc/rfc3339#section-5.6).
@@ -2408,7 +2409,7 @@ public struct CreateSourceRepositoryBranchOutput {
     }
 }
 
-public struct ListSourceRepositoryBranchesInput {
+public struct ListSourceRepositoryBranchesInput: Swift.Sendable {
     /// The maximum number of results to show in a single call to this API. If the number of results is larger than the number you specified, the response will include a NextToken element, which you can use to obtain additional results.
     public var maxResults: Swift.Int?
     /// A token returned from a call to this API to indicate the next batch of results to return, if any.
@@ -2440,8 +2441,9 @@ public struct ListSourceRepositoryBranchesInput {
 }
 
 extension CodeCatalystClientTypes {
+
     /// Information about a branch of a source repository returned in a list of branches.
-    public struct ListSourceRepositoryBranchesItem {
+    public struct ListSourceRepositoryBranchesItem: Swift.Sendable {
         /// The commit ID of the tip of the branch at the time of the request, also known as the head commit.
         public var headCommitId: Swift.String?
         /// The time the branch was last updated, in coordinated universal time (UTC) timestamp format as specified in [RFC 3339](https://www.rfc-editor.org/rfc/rfc3339#section-5.6).
@@ -2464,10 +2466,9 @@ extension CodeCatalystClientTypes {
             self.ref = ref
         }
     }
-
 }
 
-public struct ListSourceRepositoryBranchesOutput {
+public struct ListSourceRepositoryBranchesOutput: Swift.Sendable {
     /// Information about the source branches.
     /// This member is required.
     public var items: [CodeCatalystClientTypes.ListSourceRepositoryBranchesItem]?
@@ -2484,7 +2485,7 @@ public struct ListSourceRepositoryBranchesOutput {
     }
 }
 
-public struct UpdateProjectInput {
+public struct UpdateProjectInput: Swift.Sendable {
     /// The description of the project.
     public var description: Swift.String?
     /// The name of the project.
@@ -2506,7 +2507,7 @@ public struct UpdateProjectInput {
     }
 }
 
-public struct UpdateProjectOutput {
+public struct UpdateProjectOutput: Swift.Sendable {
     /// The description of the project.
     public var description: Swift.String?
     /// The friendly name of the project displayed to users in Amazon CodeCatalyst.
@@ -2530,7 +2531,7 @@ public struct UpdateProjectOutput {
     }
 }
 
-public struct GetWorkflowInput {
+public struct GetWorkflowInput: Swift.Sendable {
     /// The ID of the workflow. To rerieve a list of workflow IDs, use [ListWorkflows].
     /// This member is required.
     public var id: Swift.String?
@@ -2554,8 +2555,9 @@ public struct GetWorkflowInput {
 }
 
 extension CodeCatalystClientTypes {
+
     /// Information about a workflow definition file.
-    public struct WorkflowDefinition {
+    public struct WorkflowDefinition: Swift.Sendable {
         /// The path to the workflow definition file stored in the source repository for the project, including the file name.
         /// This member is required.
         public var path: Swift.String?
@@ -2567,12 +2569,11 @@ extension CodeCatalystClientTypes {
             self.path = path
         }
     }
-
 }
 
 extension CodeCatalystClientTypes {
 
-    public enum WorkflowRunMode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum WorkflowRunMode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case parallel
         case queued
         case superseded
@@ -2604,7 +2605,7 @@ extension CodeCatalystClientTypes {
 
 extension CodeCatalystClientTypes {
 
-    public enum WorkflowStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum WorkflowStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case active
         case invalid
         case sdkUnknown(Swift.String)
@@ -2631,7 +2632,7 @@ extension CodeCatalystClientTypes {
     }
 }
 
-public struct GetWorkflowOutput {
+public struct GetWorkflowOutput: Swift.Sendable {
     /// The date and time the workflow was created, in coordinated universal time (UTC) timestamp format as specified in [RFC 3339](https://www.rfc-editor.org/rfc/rfc3339#section-5.6)
     /// This member is required.
     public var createdTime: Foundation.Date?
@@ -2693,15 +2694,15 @@ public struct GetWorkflowOutput {
 }
 
 extension CodeCatalystClientTypes {
+
     /// Information used to sort workflows in the returned list.
-    public struct WorkflowSortCriteria {
+    public struct WorkflowSortCriteria: Swift.Sendable {
 
         public init() { }
     }
-
 }
 
-public struct ListWorkflowsInput {
+public struct ListWorkflowsInput: Swift.Sendable {
     /// The maximum number of results to show in a single call to this API. If the number of results is larger than the number you specified, the response will include a NextToken element, which you can use to obtain additional results.
     public var maxResults: Swift.Int?
     /// A token returned from a call to this API to indicate the next batch of results to return, if any.
@@ -2732,8 +2733,9 @@ public struct ListWorkflowsInput {
 }
 
 extension CodeCatalystClientTypes {
+
     /// Information about a workflow definition.
-    public struct WorkflowDefinitionSummary {
+    public struct WorkflowDefinitionSummary: Swift.Sendable {
         /// The path to the workflow definition file stored in the source repository for the project, including the file name.
         /// This member is required.
         public var path: Swift.String?
@@ -2745,12 +2747,12 @@ extension CodeCatalystClientTypes {
             self.path = path
         }
     }
-
 }
 
 extension CodeCatalystClientTypes {
+
     /// Information about a workflow.
-    public struct WorkflowSummary {
+    public struct WorkflowSummary: Swift.Sendable {
         /// The date and time the workflow was created, in coordinated universal time (UTC) timestamp format as specified in [RFC 3339](https://www.rfc-editor.org/rfc/rfc3339#section-5.6)
         /// This member is required.
         public var createdTime: Foundation.Date?
@@ -2802,10 +2804,9 @@ extension CodeCatalystClientTypes {
             self.status = status
         }
     }
-
 }
 
-public struct ListWorkflowsOutput {
+public struct ListWorkflowsOutput: Swift.Sendable {
     /// Information about the workflows in a project.
     public var items: [CodeCatalystClientTypes.WorkflowSummary]?
     /// A token returned from a call to this API to indicate the next batch of results to return, if any.
@@ -2821,7 +2822,7 @@ public struct ListWorkflowsOutput {
     }
 }
 
-public struct GetWorkflowRunInput {
+public struct GetWorkflowRunInput: Swift.Sendable {
     /// The ID of the workflow run. To retrieve a list of workflow run IDs, use [ListWorkflowRuns].
     /// This member is required.
     public var id: Swift.String?
@@ -2846,7 +2847,7 @@ public struct GetWorkflowRunInput {
 
 extension CodeCatalystClientTypes {
 
-    public enum WorkflowRunStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum WorkflowRunStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case abandoned
         case cancelled
         case failed
@@ -2901,15 +2902,15 @@ extension CodeCatalystClientTypes {
 }
 
 extension CodeCatalystClientTypes {
+
     /// Information about the status of a workflow run.
-    public struct WorkflowRunStatusReason {
+    public struct WorkflowRunStatusReason: Swift.Sendable {
 
         public init() { }
     }
-
 }
 
-public struct GetWorkflowRunOutput {
+public struct GetWorkflowRunOutput: Swift.Sendable {
     /// The date and time the workflow run ended, in coordinated universal time (UTC) timestamp format as specified in [RFC 3339](https://www.rfc-editor.org/rfc/rfc3339#section-5.6).
     public var endTime: Foundation.Date?
     /// The ID of the workflow run.
@@ -2961,15 +2962,15 @@ public struct GetWorkflowRunOutput {
 }
 
 extension CodeCatalystClientTypes {
+
     /// Information used to sort workflow runs in the returned list.
-    public struct WorkflowRunSortCriteria {
+    public struct WorkflowRunSortCriteria: Swift.Sendable {
 
         public init() { }
     }
-
 }
 
-public struct ListWorkflowRunsInput {
+public struct ListWorkflowRunsInput: Swift.Sendable {
     /// The maximum number of results to show in a single call to this API. If the number of results is larger than the number you specified, the response will include a NextToken element, which you can use to obtain additional results.
     public var maxResults: Swift.Int?
     /// A token returned from a call to this API to indicate the next batch of results to return, if any.
@@ -3004,8 +3005,9 @@ public struct ListWorkflowRunsInput {
 }
 
 extension CodeCatalystClientTypes {
+
     /// Information about a workflow run.
-    public struct WorkflowRunSummary {
+    public struct WorkflowRunSummary: Swift.Sendable {
         /// The date and time the workflow run ended, in coordinated universal time (UTC) timestamp format as specified in [RFC 3339](https://www.rfc-editor.org/rfc/rfc3339#section-5.6)
         public var endTime: Foundation.Date?
         /// The system-generated unique ID of the workflow run.
@@ -3050,10 +3052,9 @@ extension CodeCatalystClientTypes {
             self.workflowName = workflowName
         }
     }
-
 }
 
-public struct ListWorkflowRunsOutput {
+public struct ListWorkflowRunsOutput: Swift.Sendable {
     /// Information about the runs of a workflow.
     public var items: [CodeCatalystClientTypes.WorkflowRunSummary]?
     /// A token returned from a call to this API to indicate the next batch of results to return, if any.
@@ -3069,7 +3070,7 @@ public struct ListWorkflowRunsOutput {
     }
 }
 
-public struct StartWorkflowRunInput {
+public struct StartWorkflowRunInput: Swift.Sendable {
     /// A user-specified idempotency token. Idempotency ensures that an API request completes only once. With an idempotent request, if the original request completes successfully, the subsequent retries return the result from the original successful request and have no additional effect.
     public var clientToken: Swift.String?
     /// The name of the project in the space.
@@ -3096,7 +3097,7 @@ public struct StartWorkflowRunInput {
     }
 }
 
-public struct StartWorkflowRunOutput {
+public struct StartWorkflowRunOutput: Swift.Sendable {
     /// The system-generated unique ID of the workflow run.
     /// This member is required.
     public var id: Swift.String?
@@ -3124,7 +3125,7 @@ public struct StartWorkflowRunOutput {
     }
 }
 
-public struct GetSubscriptionInput {
+public struct GetSubscriptionInput: Swift.Sendable {
     /// The name of the space.
     /// This member is required.
     public var spaceName: Swift.String?
@@ -3137,7 +3138,7 @@ public struct GetSubscriptionInput {
     }
 }
 
-public struct GetSubscriptionOutput {
+public struct GetSubscriptionOutput: Swift.Sendable {
     /// The display name of the Amazon Web Services account used for billing for the space.
     public var awsAccountName: Swift.String?
     /// The day and time the pending change will be applied to the space, in coordinated universal time (UTC) timestamp format as specified in [RFC 3339](https://www.rfc-editor.org/rfc/rfc3339#section-5.6).
@@ -3161,7 +3162,7 @@ public struct GetSubscriptionOutput {
     }
 }
 
-public struct UpdateSpaceInput {
+public struct UpdateSpaceInput: Swift.Sendable {
     /// The description of the space.
     public var description: Swift.String?
     /// The name of the space.
@@ -3178,7 +3179,7 @@ public struct UpdateSpaceInput {
     }
 }
 
-public struct UpdateSpaceOutput {
+public struct UpdateSpaceOutput: Swift.Sendable {
     /// The description of the space.
     public var description: Swift.String?
     /// The friendly name of the space displayed to users in Amazon CodeCatalyst.
@@ -3248,7 +3249,7 @@ public struct ValidationException: ClientRuntime.ModeledError, AWSClientRuntime.
     }
 }
 
-public struct VerifySessionOutput {
+public struct VerifySessionOutput: Swift.Sendable {
     /// The system-generated unique ID of the user in Amazon CodeCatalyst.
     public var identity: Swift.String?
 

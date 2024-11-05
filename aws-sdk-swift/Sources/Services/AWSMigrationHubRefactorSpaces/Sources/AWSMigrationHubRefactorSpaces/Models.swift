@@ -56,7 +56,7 @@ public struct AccessDeniedException: ClientRuntime.ModeledError, AWSClientRuntim
 
 extension MigrationHubRefactorSpacesClientTypes {
 
-    public enum ApiGatewayEndpointType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ApiGatewayEndpointType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case `private`
         case regional
         case sdkUnknown(Swift.String)
@@ -84,8 +84,9 @@ extension MigrationHubRefactorSpacesClientTypes {
 }
 
 extension MigrationHubRefactorSpacesClientTypes {
+
     /// A wrapper object holding the Amazon API Gateway proxy configuration.
-    public struct ApiGatewayProxyConfig {
+    public struct ApiGatewayProxyConfig: Swift.Sendable {
         /// The resource ID of the API Gateway for the proxy.
         public var apiGatewayId: Swift.String?
         /// The type of API Gateway endpoint created.
@@ -120,12 +121,12 @@ extension MigrationHubRefactorSpacesClientTypes {
             self.vpcLinkId = vpcLinkId
         }
     }
-
 }
 
 extension MigrationHubRefactorSpacesClientTypes {
+
     /// A wrapper object holding the Amazon API Gateway endpoint input.
-    public struct ApiGatewayProxyInput {
+    public struct ApiGatewayProxyInput: Swift.Sendable {
         /// The type of endpoint to use for the API Gateway proxy. If no value is specified in the request, the value is set to REGIONAL by default. If the value is set to PRIVATE in the request, this creates a private API endpoint that is isolated from the public internet. The private endpoint can only be accessed by using Amazon Virtual Private Cloud (Amazon VPC) interface endpoints for the Amazon API Gateway that has been granted access. For more information about creating a private connection with Refactor Spaces and interface endpoint (Amazon Web Services PrivateLink) availability, see [Access Refactor Spaces using an interface endpoint (Amazon Web Services PrivateLink)](https://docs.aws.amazon.com/migrationhub-refactor-spaces/latest/userguide/vpc-interface-endpoints.html).
         public var endpointType: MigrationHubRefactorSpacesClientTypes.ApiGatewayEndpointType?
         /// The name of the API Gateway stage. The name defaults to prod.
@@ -140,12 +141,12 @@ extension MigrationHubRefactorSpacesClientTypes {
             self.stageName = stageName
         }
     }
-
 }
 
 extension MigrationHubRefactorSpacesClientTypes {
+
     /// A wrapper object holding the Amazon API Gateway proxy summary.
-    public struct ApiGatewayProxySummary {
+    public struct ApiGatewayProxySummary: Swift.Sendable {
         /// The resource ID of the API Gateway for the proxy.
         public var apiGatewayId: Swift.String?
         /// The type of API Gateway endpoint created.
@@ -180,12 +181,11 @@ extension MigrationHubRefactorSpacesClientTypes {
             self.vpcLinkId = vpcLinkId
         }
     }
-
 }
 
 extension MigrationHubRefactorSpacesClientTypes {
 
-    public enum ApplicationState: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ApplicationState: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case active
         case creating
         case deleting
@@ -223,7 +223,7 @@ extension MigrationHubRefactorSpacesClientTypes {
 
 extension MigrationHubRefactorSpacesClientTypes {
 
-    public enum ErrorCode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ErrorCode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case invalidResourceState
         case notAuthorized
         case requestLimitExceeded
@@ -282,7 +282,7 @@ extension MigrationHubRefactorSpacesClientTypes {
 
 extension MigrationHubRefactorSpacesClientTypes {
 
-    public enum ErrorResourceType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ErrorResourceType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case apiGateway
         case application
         case environment
@@ -361,8 +361,9 @@ extension MigrationHubRefactorSpacesClientTypes {
 }
 
 extension MigrationHubRefactorSpacesClientTypes {
+
     /// Error associated with a resource returned for a Get or List resource response.
-    public struct ErrorResponse {
+    public struct ErrorResponse: Swift.Sendable {
         /// The Amazon Web Services account ID of the resource owner.
         public var accountId: Swift.String?
         /// Additional details about the error.
@@ -393,12 +394,11 @@ extension MigrationHubRefactorSpacesClientTypes {
             self.resourceType = resourceType
         }
     }
-
 }
 
 extension MigrationHubRefactorSpacesClientTypes {
 
-    public enum ProxyType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ProxyType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case apiGateway
         case sdkUnknown(Swift.String)
 
@@ -423,8 +423,9 @@ extension MigrationHubRefactorSpacesClientTypes {
 }
 
 extension MigrationHubRefactorSpacesClientTypes {
+
     /// The list of ApplicationSummary objects.
-    public struct ApplicationSummary {
+    public struct ApplicationSummary: Swift.Sendable {
         /// The endpoint URL of the Amazon API Gateway proxy.
         public var apiGatewayProxy: MigrationHubRefactorSpacesClientTypes.ApiGatewayProxySummary?
         /// The unique identifier of the application.
@@ -487,7 +488,6 @@ extension MigrationHubRefactorSpacesClientTypes {
             self.vpcId = vpcId
         }
     }
-
 }
 
 extension MigrationHubRefactorSpacesClientTypes.ApplicationSummary: Swift.CustomDebugStringConvertible {
@@ -696,7 +696,7 @@ public struct ValidationException: ClientRuntime.ModeledError, AWSClientRuntime.
     }
 }
 
-public struct CreateApplicationInput {
+public struct CreateApplicationInput: Swift.Sendable {
     /// A wrapper object holding the API Gateway endpoint type and stage name for the proxy.
     public var apiGatewayProxy: MigrationHubRefactorSpacesClientTypes.ApiGatewayProxyInput?
     /// A unique, case-sensitive identifier that you provide to ensure the idempotency of the request.
@@ -741,7 +741,7 @@ extension CreateApplicationInput: Swift.CustomDebugStringConvertible {
         "CreateApplicationInput(apiGatewayProxy: \(Swift.String(describing: apiGatewayProxy)), clientToken: \(Swift.String(describing: clientToken)), environmentIdentifier: \(Swift.String(describing: environmentIdentifier)), name: \(Swift.String(describing: name)), proxyType: \(Swift.String(describing: proxyType)), vpcId: \(Swift.String(describing: vpcId)), tags: \"CONTENT_REDACTED\")"}
 }
 
-public struct CreateApplicationOutput {
+public struct CreateApplicationOutput: Swift.Sendable {
     /// A wrapper object holding the API Gateway endpoint type and stage name for the proxy.
     public var apiGatewayProxy: MigrationHubRefactorSpacesClientTypes.ApiGatewayProxyInput?
     /// The unique identifier of the application.
@@ -808,7 +808,7 @@ extension CreateApplicationOutput: Swift.CustomDebugStringConvertible {
 
 extension MigrationHubRefactorSpacesClientTypes {
 
-    public enum NetworkFabricType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum NetworkFabricType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case `none`
         case transitGateway
         case sdkUnknown(Swift.String)
@@ -835,7 +835,7 @@ extension MigrationHubRefactorSpacesClientTypes {
     }
 }
 
-public struct CreateEnvironmentInput {
+public struct CreateEnvironmentInput: Swift.Sendable {
     /// A unique, case-sensitive identifier that you provide to ensure the idempotency of the request.
     public var clientToken: Swift.String?
     /// The description of the environment.
@@ -872,7 +872,7 @@ extension CreateEnvironmentInput: Swift.CustomDebugStringConvertible {
 
 extension MigrationHubRefactorSpacesClientTypes {
 
-    public enum EnvironmentState: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum EnvironmentState: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case active
         case creating
         case deleting
@@ -905,7 +905,7 @@ extension MigrationHubRefactorSpacesClientTypes {
     }
 }
 
-public struct CreateEnvironmentOutput {
+public struct CreateEnvironmentOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the environment.
     public var arn: Swift.String?
     /// A timestamp that indicates when the environment is created.
@@ -960,7 +960,7 @@ extension CreateEnvironmentOutput: Swift.CustomDebugStringConvertible {
 
 extension MigrationHubRefactorSpacesClientTypes {
 
-    public enum RouteActivationState: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum RouteActivationState: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case active
         case inactive
         case sdkUnknown(Swift.String)
@@ -988,8 +988,9 @@ extension MigrationHubRefactorSpacesClientTypes {
 }
 
 extension MigrationHubRefactorSpacesClientTypes {
+
     /// The configuration for the default route type.
-    public struct DefaultRouteInput {
+    public struct DefaultRouteInput: Swift.Sendable {
         /// If set to ACTIVE, traffic is forwarded to this route’s service after the route is created.
         public var activationState: MigrationHubRefactorSpacesClientTypes.RouteActivationState?
 
@@ -1000,12 +1001,11 @@ extension MigrationHubRefactorSpacesClientTypes {
             self.activationState = activationState
         }
     }
-
 }
 
 extension MigrationHubRefactorSpacesClientTypes {
 
-    public enum RouteType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum RouteType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case `default`
         case uriPath
         case sdkUnknown(Swift.String)
@@ -1034,7 +1034,7 @@ extension MigrationHubRefactorSpacesClientTypes {
 
 extension MigrationHubRefactorSpacesClientTypes {
 
-    public enum HttpMethod: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum HttpMethod: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case delete
         case `get`
         case head
@@ -1077,8 +1077,9 @@ extension MigrationHubRefactorSpacesClientTypes {
 }
 
 extension MigrationHubRefactorSpacesClientTypes {
+
     /// The configuration for the URI path route type.
-    public struct UriPathRouteInput {
+    public struct UriPathRouteInput: Swift.Sendable {
         /// If set to ACTIVE, traffic is forwarded to this route’s service after the route is created.
         /// This member is required.
         public var activationState: MigrationHubRefactorSpacesClientTypes.RouteActivationState?
@@ -1107,10 +1108,9 @@ extension MigrationHubRefactorSpacesClientTypes {
             self.sourcePath = sourcePath
         }
     }
-
 }
 
-public struct CreateRouteInput {
+public struct CreateRouteInput: Swift.Sendable {
     /// The ID of the application within which the route is being created.
     /// This member is required.
     public var applicationIdentifier: Swift.String?
@@ -1161,7 +1161,7 @@ extension CreateRouteInput: Swift.CustomDebugStringConvertible {
 
 extension MigrationHubRefactorSpacesClientTypes {
 
-    public enum RouteState: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum RouteState: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case active
         case creating
         case deleting
@@ -1200,7 +1200,7 @@ extension MigrationHubRefactorSpacesClientTypes {
     }
 }
 
-public struct CreateRouteOutput {
+public struct CreateRouteOutput: Swift.Sendable {
     /// The ID of the application in which the route is created.
     public var applicationId: Swift.String?
     /// The Amazon Resource Name (ARN) of the route. The format for this ARN is arn:aws:refactor-spaces:region:account-id:resource-type/resource-id . For more information about ARNs, see [ Amazon Resource Names (ARNs)](https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html) in the Amazon Web Services General Reference.
@@ -1263,7 +1263,7 @@ extension CreateRouteOutput: Swift.CustomDebugStringConvertible {
 
 extension MigrationHubRefactorSpacesClientTypes {
 
-    public enum ServiceEndpointType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ServiceEndpointType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case lambda
         case url
         case sdkUnknown(Swift.String)
@@ -1291,8 +1291,9 @@ extension MigrationHubRefactorSpacesClientTypes {
 }
 
 extension MigrationHubRefactorSpacesClientTypes {
+
     /// The input for the Lambda endpoint type.
-    public struct LambdaEndpointInput {
+    public struct LambdaEndpointInput: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the Lambda function or alias.
         /// This member is required.
         public var arn: Swift.String?
@@ -1304,12 +1305,12 @@ extension MigrationHubRefactorSpacesClientTypes {
             self.arn = arn
         }
     }
-
 }
 
 extension MigrationHubRefactorSpacesClientTypes {
+
     /// The configuration for the URL endpoint type.
-    public struct UrlEndpointInput {
+    public struct UrlEndpointInput: Swift.Sendable {
         /// The health check URL of the URL endpoint type. If the URL is a public endpoint, the HealthUrl must also be a public endpoint. If the URL is a private endpoint inside a virtual private cloud (VPC), the health URL must also be a private endpoint, and the host must be the same as the URL.
         public var healthUrl: Swift.String?
         /// The URL to route traffic to. The URL must be an [rfc3986-formatted URL](https://datatracker.ietf.org/doc/html/rfc3986). If the host is a domain name, the name must be resolvable over the public internet. If the scheme is https, the top level domain of the host must be listed in the [IANA root zone database](https://www.iana.org/domains/root/db).
@@ -1325,10 +1326,9 @@ extension MigrationHubRefactorSpacesClientTypes {
             self.url = url
         }
     }
-
 }
 
-public struct CreateServiceInput {
+public struct CreateServiceInput: Swift.Sendable {
     /// The ID of the application which the service is created.
     /// This member is required.
     public var applicationIdentifier: Swift.String?
@@ -1387,7 +1387,7 @@ extension CreateServiceInput: Swift.CustomDebugStringConvertible {
 
 extension MigrationHubRefactorSpacesClientTypes {
 
-    public enum ServiceState: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ServiceState: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case active
         case creating
         case deleting
@@ -1420,7 +1420,7 @@ extension MigrationHubRefactorSpacesClientTypes {
     }
 }
 
-public struct CreateServiceOutput {
+public struct CreateServiceOutput: Swift.Sendable {
     /// The ID of the application that the created service belongs to.
     public var applicationId: Swift.String?
     /// The Amazon Resource Name (ARN) of the service.
@@ -1497,7 +1497,7 @@ extension CreateServiceOutput: Swift.CustomDebugStringConvertible {
         "CreateServiceOutput(applicationId: \(Swift.String(describing: applicationId)), arn: \(Swift.String(describing: arn)), createdByAccountId: \(Swift.String(describing: createdByAccountId)), createdTime: \(Swift.String(describing: createdTime)), description: \(Swift.String(describing: description)), endpointType: \(Swift.String(describing: endpointType)), environmentId: \(Swift.String(describing: environmentId)), lambdaEndpoint: \(Swift.String(describing: lambdaEndpoint)), lastUpdatedTime: \(Swift.String(describing: lastUpdatedTime)), name: \(Swift.String(describing: name)), ownerAccountId: \(Swift.String(describing: ownerAccountId)), serviceId: \(Swift.String(describing: serviceId)), state: \(Swift.String(describing: state)), urlEndpoint: \(Swift.String(describing: urlEndpoint)), vpcId: \(Swift.String(describing: vpcId)), tags: \"CONTENT_REDACTED\")"}
 }
 
-public struct DeleteApplicationInput {
+public struct DeleteApplicationInput: Swift.Sendable {
     /// The ID of the application.
     /// This member is required.
     public var applicationIdentifier: Swift.String?
@@ -1515,7 +1515,7 @@ public struct DeleteApplicationInput {
     }
 }
 
-public struct DeleteApplicationOutput {
+public struct DeleteApplicationOutput: Swift.Sendable {
     /// The ID of the application.
     public var applicationId: Swift.String?
     /// The Amazon Resource Name (ARN) of the application.
@@ -1547,7 +1547,7 @@ public struct DeleteApplicationOutput {
     }
 }
 
-public struct DeleteEnvironmentInput {
+public struct DeleteEnvironmentInput: Swift.Sendable {
     /// The ID of the environment.
     /// This member is required.
     public var environmentIdentifier: Swift.String?
@@ -1560,7 +1560,7 @@ public struct DeleteEnvironmentInput {
     }
 }
 
-public struct DeleteEnvironmentOutput {
+public struct DeleteEnvironmentOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the environment.
     public var arn: Swift.String?
     /// The unique identifier of the environment.
@@ -1588,7 +1588,7 @@ public struct DeleteEnvironmentOutput {
     }
 }
 
-public struct DeleteResourcePolicyInput {
+public struct DeleteResourcePolicyInput: Swift.Sendable {
     /// Amazon Resource Name (ARN) of the resource associated with the policy.
     /// This member is required.
     public var identifier: Swift.String?
@@ -1601,12 +1601,12 @@ public struct DeleteResourcePolicyInput {
     }
 }
 
-public struct DeleteResourcePolicyOutput {
+public struct DeleteResourcePolicyOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteRouteInput {
+public struct DeleteRouteInput: Swift.Sendable {
     /// The ID of the application to delete the route from.
     /// This member is required.
     public var applicationIdentifier: Swift.String?
@@ -1629,7 +1629,7 @@ public struct DeleteRouteInput {
     }
 }
 
-public struct DeleteRouteOutput {
+public struct DeleteRouteOutput: Swift.Sendable {
     /// The ID of the application that the route belongs to.
     public var applicationId: Swift.String?
     /// The Amazon Resource Name (ARN) of the route.
@@ -1661,7 +1661,7 @@ public struct DeleteRouteOutput {
     }
 }
 
-public struct DeleteServiceInput {
+public struct DeleteServiceInput: Swift.Sendable {
     /// Deletes a Refactor Spaces service. The RefactorSpacesSecurityGroup security group must be removed from all Amazon Web Services resources in the virtual private cloud (VPC) prior to deleting a service with a URL endpoint in a VPC.
     /// This member is required.
     public var applicationIdentifier: Swift.String?
@@ -1684,7 +1684,7 @@ public struct DeleteServiceInput {
     }
 }
 
-public struct DeleteServiceOutput {
+public struct DeleteServiceOutput: Swift.Sendable {
     /// The ID of the application that the service is in.
     public var applicationId: Swift.String?
     /// The Amazon Resource Name (ARN) of the service.
@@ -1721,8 +1721,9 @@ public struct DeleteServiceOutput {
 }
 
 extension MigrationHubRefactorSpacesClientTypes {
+
     /// The summary information for environments as a response to ListEnvironments.
-    public struct EnvironmentSummary {
+    public struct EnvironmentSummary: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the environment.
         public var arn: Swift.String?
         /// A timestamp that indicates when the environment is created.
@@ -1777,7 +1778,6 @@ extension MigrationHubRefactorSpacesClientTypes {
             self.transitGatewayId = transitGatewayId
         }
     }
-
 }
 
 extension MigrationHubRefactorSpacesClientTypes.EnvironmentSummary: Swift.CustomDebugStringConvertible {
@@ -1786,8 +1786,9 @@ extension MigrationHubRefactorSpacesClientTypes.EnvironmentSummary: Swift.Custom
 }
 
 extension MigrationHubRefactorSpacesClientTypes {
+
     /// Provides summary information for the EnvironmentVpc resource as a response to ListEnvironmentVpc.
-    public struct EnvironmentVpc {
+    public struct EnvironmentVpc: Swift.Sendable {
         /// The Amazon Web Services account ID of the virtual private cloud (VPC) owner.
         public var accountId: Swift.String?
         /// The list of Amazon Virtual Private Cloud (Amazon VPC) CIDR blocks.
@@ -1822,10 +1823,9 @@ extension MigrationHubRefactorSpacesClientTypes {
             self.vpcName = vpcName
         }
     }
-
 }
 
-public struct GetApplicationInput {
+public struct GetApplicationInput: Swift.Sendable {
     /// The ID of the application.
     /// This member is required.
     public var applicationIdentifier: Swift.String?
@@ -1843,7 +1843,7 @@ public struct GetApplicationInput {
     }
 }
 
-public struct GetApplicationOutput {
+public struct GetApplicationOutput: Swift.Sendable {
     /// The endpoint URL of the API Gateway proxy.
     public var apiGatewayProxy: MigrationHubRefactorSpacesClientTypes.ApiGatewayProxyConfig?
     /// The unique identifier of the application.
@@ -1912,7 +1912,7 @@ extension GetApplicationOutput: Swift.CustomDebugStringConvertible {
         "GetApplicationOutput(apiGatewayProxy: \(Swift.String(describing: apiGatewayProxy)), applicationId: \(Swift.String(describing: applicationId)), arn: \(Swift.String(describing: arn)), createdByAccountId: \(Swift.String(describing: createdByAccountId)), createdTime: \(Swift.String(describing: createdTime)), environmentId: \(Swift.String(describing: environmentId)), error: \(Swift.String(describing: error)), lastUpdatedTime: \(Swift.String(describing: lastUpdatedTime)), name: \(Swift.String(describing: name)), ownerAccountId: \(Swift.String(describing: ownerAccountId)), proxyType: \(Swift.String(describing: proxyType)), state: \(Swift.String(describing: state)), vpcId: \(Swift.String(describing: vpcId)), tags: \"CONTENT_REDACTED\")"}
 }
 
-public struct GetEnvironmentInput {
+public struct GetEnvironmentInput: Swift.Sendable {
     /// The ID of the environment.
     /// This member is required.
     public var environmentIdentifier: Swift.String?
@@ -1925,7 +1925,7 @@ public struct GetEnvironmentInput {
     }
 }
 
-public struct GetEnvironmentOutput {
+public struct GetEnvironmentOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the environment.
     public var arn: Swift.String?
     /// A timestamp that indicates when the environment is created.
@@ -1986,7 +1986,7 @@ extension GetEnvironmentOutput: Swift.CustomDebugStringConvertible {
         "GetEnvironmentOutput(arn: \(Swift.String(describing: arn)), createdTime: \(Swift.String(describing: createdTime)), description: \(Swift.String(describing: description)), environmentId: \(Swift.String(describing: environmentId)), error: \(Swift.String(describing: error)), lastUpdatedTime: \(Swift.String(describing: lastUpdatedTime)), name: \(Swift.String(describing: name)), networkFabricType: \(Swift.String(describing: networkFabricType)), ownerAccountId: \(Swift.String(describing: ownerAccountId)), state: \(Swift.String(describing: state)), transitGatewayId: \(Swift.String(describing: transitGatewayId)), tags: \"CONTENT_REDACTED\")"}
 }
 
-public struct GetResourcePolicyInput {
+public struct GetResourcePolicyInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the resource associated with the policy.
     /// This member is required.
     public var identifier: Swift.String?
@@ -1999,7 +1999,7 @@ public struct GetResourcePolicyInput {
     }
 }
 
-public struct GetResourcePolicyOutput {
+public struct GetResourcePolicyOutput: Swift.Sendable {
     /// A JSON-formatted string for an Amazon Web Services resource-based policy.
     public var policy: Swift.String?
 
@@ -2011,7 +2011,7 @@ public struct GetResourcePolicyOutput {
     }
 }
 
-public struct GetRouteInput {
+public struct GetRouteInput: Swift.Sendable {
     /// The ID of the application.
     /// This member is required.
     public var applicationIdentifier: Swift.String?
@@ -2034,7 +2034,7 @@ public struct GetRouteInput {
     }
 }
 
-public struct GetRouteOutput {
+public struct GetRouteOutput: Swift.Sendable {
     /// If set to true, this option appends the source path to the service URL endpoint.
     public var appendSourcePath: Swift.Bool?
     /// The ID of the application that the route belongs to.
@@ -2119,7 +2119,7 @@ extension GetRouteOutput: Swift.CustomDebugStringConvertible {
         "GetRouteOutput(appendSourcePath: \(Swift.String(describing: appendSourcePath)), applicationId: \(Swift.String(describing: applicationId)), arn: \(Swift.String(describing: arn)), createdByAccountId: \(Swift.String(describing: createdByAccountId)), createdTime: \(Swift.String(describing: createdTime)), environmentId: \(Swift.String(describing: environmentId)), error: \(Swift.String(describing: error)), includeChildPaths: \(Swift.String(describing: includeChildPaths)), lastUpdatedTime: \(Swift.String(describing: lastUpdatedTime)), methods: \(Swift.String(describing: methods)), ownerAccountId: \(Swift.String(describing: ownerAccountId)), pathResourceToId: \(Swift.String(describing: pathResourceToId)), routeId: \(Swift.String(describing: routeId)), routeType: \(Swift.String(describing: routeType)), serviceId: \(Swift.String(describing: serviceId)), sourcePath: \(Swift.String(describing: sourcePath)), state: \(Swift.String(describing: state)), tags: \"CONTENT_REDACTED\")"}
 }
 
-public struct GetServiceInput {
+public struct GetServiceInput: Swift.Sendable {
     /// The ID of the application.
     /// This member is required.
     public var applicationIdentifier: Swift.String?
@@ -2143,8 +2143,9 @@ public struct GetServiceInput {
 }
 
 extension MigrationHubRefactorSpacesClientTypes {
+
     /// The configuration for the Lambda endpoint type.
-    public struct LambdaEndpointConfig {
+    public struct LambdaEndpointConfig: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the Lambda endpoint.
         public var arn: Swift.String?
 
@@ -2155,12 +2156,12 @@ extension MigrationHubRefactorSpacesClientTypes {
             self.arn = arn
         }
     }
-
 }
 
 extension MigrationHubRefactorSpacesClientTypes {
+
     /// The configuration for the URL endpoint type.
-    public struct UrlEndpointConfig {
+    public struct UrlEndpointConfig: Swift.Sendable {
         /// The health check URL of the URL endpoint type.
         public var healthUrl: Swift.String?
         /// The HTTP URL endpoint.
@@ -2175,10 +2176,9 @@ extension MigrationHubRefactorSpacesClientTypes {
             self.url = url
         }
     }
-
 }
 
-public struct GetServiceOutput {
+public struct GetServiceOutput: Swift.Sendable {
     /// The ID of the application.
     public var applicationId: Swift.String?
     /// The Amazon Resource Name (ARN) of the service.
@@ -2285,8 +2285,9 @@ public struct InvalidResourcePolicyException: ClientRuntime.ModeledError, AWSCli
 }
 
 extension MigrationHubRefactorSpacesClientTypes {
+
     /// The summary for the Lambda endpoint type.
-    public struct LambdaEndpointSummary {
+    public struct LambdaEndpointSummary: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the Lambda endpoint.
         public var arn: Swift.String?
 
@@ -2297,10 +2298,9 @@ extension MigrationHubRefactorSpacesClientTypes {
             self.arn = arn
         }
     }
-
 }
 
-public struct ListApplicationsInput {
+public struct ListApplicationsInput: Swift.Sendable {
     /// The ID of the environment.
     /// This member is required.
     public var environmentIdentifier: Swift.String?
@@ -2321,7 +2321,7 @@ public struct ListApplicationsInput {
     }
 }
 
-public struct ListApplicationsOutput {
+public struct ListApplicationsOutput: Swift.Sendable {
     /// The list of ApplicationSummary objects.
     public var applicationSummaryList: [MigrationHubRefactorSpacesClientTypes.ApplicationSummary]?
     /// The token for the next page of results.
@@ -2337,7 +2337,7 @@ public struct ListApplicationsOutput {
     }
 }
 
-public struct ListEnvironmentsInput {
+public struct ListEnvironmentsInput: Swift.Sendable {
     /// The maximum number of results to return with a single call. To retrieve the remaining results, make another call with the returned nextToken value.
     public var maxResults: Swift.Int?
     /// The token for the next page of results.
@@ -2353,7 +2353,7 @@ public struct ListEnvironmentsInput {
     }
 }
 
-public struct ListEnvironmentsOutput {
+public struct ListEnvironmentsOutput: Swift.Sendable {
     /// The list of EnvironmentSummary objects.
     public var environmentSummaryList: [MigrationHubRefactorSpacesClientTypes.EnvironmentSummary]?
     /// The token for the next page of results.
@@ -2369,7 +2369,7 @@ public struct ListEnvironmentsOutput {
     }
 }
 
-public struct ListEnvironmentVpcsInput {
+public struct ListEnvironmentVpcsInput: Swift.Sendable {
     /// The ID of the environment.
     /// This member is required.
     public var environmentIdentifier: Swift.String?
@@ -2390,7 +2390,7 @@ public struct ListEnvironmentVpcsInput {
     }
 }
 
-public struct ListEnvironmentVpcsOutput {
+public struct ListEnvironmentVpcsOutput: Swift.Sendable {
     /// The list of EnvironmentVpc objects.
     public var environmentVpcList: [MigrationHubRefactorSpacesClientTypes.EnvironmentVpc]?
     /// The token for the next page of results.
@@ -2406,7 +2406,7 @@ public struct ListEnvironmentVpcsOutput {
     }
 }
 
-public struct ListRoutesInput {
+public struct ListRoutesInput: Swift.Sendable {
     /// The ID of the application.
     /// This member is required.
     public var applicationIdentifier: Swift.String?
@@ -2433,8 +2433,9 @@ public struct ListRoutesInput {
 }
 
 extension MigrationHubRefactorSpacesClientTypes {
+
     /// The summary information for the routes as a response to ListRoutes.
-    public struct RouteSummary {
+    public struct RouteSummary: Swift.Sendable {
         /// If set to true, this option appends the source path to the service URL endpoint.
         public var appendSourcePath: Swift.Bool?
         /// The unique identifier of the application.
@@ -2513,7 +2514,6 @@ extension MigrationHubRefactorSpacesClientTypes {
             self.tags = tags
         }
     }
-
 }
 
 extension MigrationHubRefactorSpacesClientTypes.RouteSummary: Swift.CustomDebugStringConvertible {
@@ -2521,7 +2521,7 @@ extension MigrationHubRefactorSpacesClientTypes.RouteSummary: Swift.CustomDebugS
         "RouteSummary(appendSourcePath: \(Swift.String(describing: appendSourcePath)), applicationId: \(Swift.String(describing: applicationId)), arn: \(Swift.String(describing: arn)), createdByAccountId: \(Swift.String(describing: createdByAccountId)), createdTime: \(Swift.String(describing: createdTime)), environmentId: \(Swift.String(describing: environmentId)), error: \(Swift.String(describing: error)), includeChildPaths: \(Swift.String(describing: includeChildPaths)), lastUpdatedTime: \(Swift.String(describing: lastUpdatedTime)), methods: \(Swift.String(describing: methods)), ownerAccountId: \(Swift.String(describing: ownerAccountId)), pathResourceToId: \(Swift.String(describing: pathResourceToId)), routeId: \(Swift.String(describing: routeId)), routeType: \(Swift.String(describing: routeType)), serviceId: \(Swift.String(describing: serviceId)), sourcePath: \(Swift.String(describing: sourcePath)), state: \(Swift.String(describing: state)), tags: \"CONTENT_REDACTED\")"}
 }
 
-public struct ListRoutesOutput {
+public struct ListRoutesOutput: Swift.Sendable {
     /// The token for the next page of results.
     public var nextToken: Swift.String?
     /// The list of RouteSummary objects.
@@ -2537,7 +2537,7 @@ public struct ListRoutesOutput {
     }
 }
 
-public struct ListServicesInput {
+public struct ListServicesInput: Swift.Sendable {
     /// The ID of the application.
     /// This member is required.
     public var applicationIdentifier: Swift.String?
@@ -2564,8 +2564,9 @@ public struct ListServicesInput {
 }
 
 extension MigrationHubRefactorSpacesClientTypes {
+
     /// The summary of the configuration for the URL endpoint type.
-    public struct UrlEndpointSummary {
+    public struct UrlEndpointSummary: Swift.Sendable {
         /// The health check URL of the URL endpoint type. If the URL is a public endpoint, the HealthUrl must also be a public endpoint. If the URL is a private endpoint inside a virtual private cloud (VPC), the health URL must also be a private endpoint, and the host must be the same as the URL.
         public var healthUrl: Swift.String?
         /// The URL to route traffic to. The URL must be an [rfc3986-formatted URL](https://datatracker.ietf.org/doc/html/rfc3986). If the host is a domain name, the name must be resolvable over the public internet. If the scheme is https, the top level domain of the host must be listed in the [IANA root zone database](https://www.iana.org/domains/root/db).
@@ -2580,12 +2581,12 @@ extension MigrationHubRefactorSpacesClientTypes {
             self.url = url
         }
     }
-
 }
 
 extension MigrationHubRefactorSpacesClientTypes {
+
     /// A summary for the service as a response to ListServices.
-    public struct ServiceSummary {
+    public struct ServiceSummary: Swift.Sendable {
         /// The unique identifier of the application.
         public var applicationId: Swift.String?
         /// The Amazon Resource Name (ARN) of the service.
@@ -2660,7 +2661,6 @@ extension MigrationHubRefactorSpacesClientTypes {
             self.vpcId = vpcId
         }
     }
-
 }
 
 extension MigrationHubRefactorSpacesClientTypes.ServiceSummary: Swift.CustomDebugStringConvertible {
@@ -2668,7 +2668,7 @@ extension MigrationHubRefactorSpacesClientTypes.ServiceSummary: Swift.CustomDebu
         "ServiceSummary(applicationId: \(Swift.String(describing: applicationId)), arn: \(Swift.String(describing: arn)), createdByAccountId: \(Swift.String(describing: createdByAccountId)), createdTime: \(Swift.String(describing: createdTime)), description: \(Swift.String(describing: description)), endpointType: \(Swift.String(describing: endpointType)), environmentId: \(Swift.String(describing: environmentId)), error: \(Swift.String(describing: error)), lambdaEndpoint: \(Swift.String(describing: lambdaEndpoint)), lastUpdatedTime: \(Swift.String(describing: lastUpdatedTime)), name: \(Swift.String(describing: name)), ownerAccountId: \(Swift.String(describing: ownerAccountId)), serviceId: \(Swift.String(describing: serviceId)), state: \(Swift.String(describing: state)), urlEndpoint: \(Swift.String(describing: urlEndpoint)), vpcId: \(Swift.String(describing: vpcId)), tags: \"CONTENT_REDACTED\")"}
 }
 
-public struct ListServicesOutput {
+public struct ListServicesOutput: Swift.Sendable {
     /// The token for the next page of results.
     public var nextToken: Swift.String?
     /// The list of ServiceSummary objects.
@@ -2684,7 +2684,7 @@ public struct ListServicesOutput {
     }
 }
 
-public struct ListTagsForResourceInput {
+public struct ListTagsForResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the resource.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -2697,7 +2697,7 @@ public struct ListTagsForResourceInput {
     }
 }
 
-public struct ListTagsForResourceOutput {
+public struct ListTagsForResourceOutput: Swift.Sendable {
     /// The list of tags assigned to the resource.
     public var tags: [Swift.String: Swift.String]?
 
@@ -2714,7 +2714,7 @@ extension ListTagsForResourceOutput: Swift.CustomDebugStringConvertible {
         "ListTagsForResourceOutput(tags: \"CONTENT_REDACTED\")"}
 }
 
-public struct PutResourcePolicyInput {
+public struct PutResourcePolicyInput: Swift.Sendable {
     /// A JSON-formatted string for an Amazon Web Services resource-based policy.
     /// This member is required.
     public var policy: Swift.String?
@@ -2732,12 +2732,12 @@ public struct PutResourcePolicyInput {
     }
 }
 
-public struct PutResourcePolicyOutput {
+public struct PutResourcePolicyOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct TagResourceInput {
+public struct TagResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the resource.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -2760,12 +2760,12 @@ extension TagResourceInput: Swift.CustomDebugStringConvertible {
         "TagResourceInput(resourceArn: \(Swift.String(describing: resourceArn)), tags: \"CONTENT_REDACTED\")"}
 }
 
-public struct TagResourceOutput {
+public struct TagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UntagResourceInput {
+public struct UntagResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the resource.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -2788,12 +2788,12 @@ extension UntagResourceInput: Swift.CustomDebugStringConvertible {
         "UntagResourceInput(resourceArn: \(Swift.String(describing: resourceArn)), tagKeys: \"CONTENT_REDACTED\")"}
 }
 
-public struct UntagResourceOutput {
+public struct UntagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdateRouteInput {
+public struct UpdateRouteInput: Swift.Sendable {
     /// If set to ACTIVE, traffic is forwarded to this route’s service after the route is updated.
     /// This member is required.
     public var activationState: MigrationHubRefactorSpacesClientTypes.RouteActivationState?
@@ -2821,7 +2821,7 @@ public struct UpdateRouteInput {
     }
 }
 
-public struct UpdateRouteOutput {
+public struct UpdateRouteOutput: Swift.Sendable {
     /// The ID of the application in which the route is being updated.
     public var applicationId: Swift.String?
     /// The Amazon Resource Name (ARN) of the route. The format for this ARN is arn:aws:refactor-spaces:region:account-id:resource-type/resource-id . For more information about ARNs, see [ Amazon Resource Names (ARNs)](https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html) in the Amazon Web Services General Reference.

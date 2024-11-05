@@ -25,62 +25,64 @@ import protocol ClientRuntime.ModeledError
 @_spi(SmithyReadWrite) import struct AWSClientRuntime.AWSQueryError
 @_spi(UnknownAWSHTTPServiceError) import struct AWSClientRuntime.UnknownAWSHTTPServiceError
 
-public struct AddRoleToDBClusterOutput {
+
+public struct AddRoleToDBClusterOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct AddRoleToDBInstanceOutput {
+public struct AddRoleToDBInstanceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct AddTagsToResourceOutput {
+public struct AddTagsToResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteDBClusterParameterGroupOutput {
+public struct DeleteDBClusterParameterGroupOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteDBParameterGroupOutput {
+public struct DeleteDBParameterGroupOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteDBSecurityGroupOutput {
+public struct DeleteDBSecurityGroupOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteDBSubnetGroupOutput {
+public struct DeleteDBSubnetGroupOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteOptionGroupOutput {
+public struct DeleteOptionGroupOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct RemoveRoleFromDBClusterOutput {
+public struct RemoveRoleFromDBClusterOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct RemoveRoleFromDBInstanceOutput {
+public struct RemoveRoleFromDBInstanceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct RemoveTagsFromResourceOutput {
+public struct RemoveTagsFromResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
 extension RDSClientTypes {
+
     /// Describes a quota for an Amazon Web Services account. The following are account quotas:
     ///
     /// * AllocatedStorage - The total allocated storage per account, in GiB. The used value is the total allocated storage in the account, in GiB.
@@ -121,7 +123,7 @@ extension RDSClientTypes {
     ///
     ///
     /// For more information, see [Quotas for Amazon RDS](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/CHAP_Limits.html) in the Amazon RDS User Guide and [Quotas for Amazon Aurora](https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/CHAP_Limits.html) in the Amazon Aurora User Guide.
-    public struct AccountQuota {
+    public struct AccountQuota: Swift.Sendable {
         /// The name of the Amazon RDS quota for this Amazon Web Services account.
         public var accountQuotaName: Swift.String?
         /// The maximum allowed value for the quota.
@@ -140,12 +142,11 @@ extension RDSClientTypes {
             self.used = used
         }
     }
-
 }
 
 extension RDSClientTypes {
 
-    public enum ActivityStreamMode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ActivityStreamMode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case async
         case sync
         case sdkUnknown(Swift.String)
@@ -174,7 +175,7 @@ extension RDSClientTypes {
 
 extension RDSClientTypes {
 
-    public enum ActivityStreamPolicyStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ActivityStreamPolicyStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case locked
         case lockingPolicy
         case unlocked
@@ -209,7 +210,7 @@ extension RDSClientTypes {
 
 extension RDSClientTypes {
 
-    public enum ActivityStreamStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ActivityStreamStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case started
         case starting
         case stopped
@@ -338,7 +339,7 @@ public struct InvalidDBClusterStateFault: ClientRuntime.ModeledError, AWSClientR
     }
 }
 
-public struct AddRoleToDBClusterInput {
+public struct AddRoleToDBClusterInput: Swift.Sendable {
     /// The name of the DB cluster to associate the IAM role with.
     /// This member is required.
     public var dbClusterIdentifier: Swift.String?
@@ -456,7 +457,7 @@ public struct InvalidDBInstanceStateFault: ClientRuntime.ModeledError, AWSClient
     }
 }
 
-public struct AddRoleToDBInstanceInput {
+public struct AddRoleToDBInstanceInput: Swift.Sendable {
     /// The name of the DB instance to associate the IAM role with.
     /// This member is required.
     public var dbInstanceIdentifier: Swift.String?
@@ -528,7 +529,7 @@ public struct SubscriptionNotFoundFault: ClientRuntime.ModeledError, AWSClientRu
 }
 
 ///
-public struct AddSourceIdentifierToSubscriptionInput {
+public struct AddSourceIdentifierToSubscriptionInput: Swift.Sendable {
     /// The identifier of the event source to be added. Constraints:
     ///
     /// * If the source type is a DB instance, a DBInstanceIdentifier value must be supplied.
@@ -561,8 +562,9 @@ public struct AddSourceIdentifierToSubscriptionInput {
 }
 
 extension RDSClientTypes {
+
     /// Contains the results of a successful invocation of the DescribeEventSubscriptions action.
-    public struct EventSubscription {
+    public struct EventSubscription: Swift.Sendable {
         /// The RDS event notification subscription Id.
         public var custSubscriptionId: Swift.String?
         /// The Amazon Web Services customer account associated with the RDS event notification subscription.
@@ -609,10 +611,9 @@ extension RDSClientTypes {
             self.subscriptionCreationTime = subscriptionCreationTime
         }
     }
-
 }
 
-public struct AddSourceIdentifierToSubscriptionOutput {
+public struct AddSourceIdentifierToSubscriptionOutput: Swift.Sendable {
     /// Contains the results of a successful invocation of the DescribeEventSubscriptions action.
     public var eventSubscription: RDSClientTypes.EventSubscription?
 
@@ -793,8 +794,9 @@ public struct TenantDatabaseNotFoundFault: ClientRuntime.ModeledError, AWSClient
 }
 
 extension RDSClientTypes {
+
     /// Metadata assigned to an Amazon RDS resource consisting of a key-value pair. For more information, see [Tagging Amazon RDS resources](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_Tagging.html) in the Amazon RDS User Guide or [Tagging Amazon Aurora and Amazon RDS resources](https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/USER_Tagging.html) in the Amazon Aurora User Guide.
-    public struct Tag {
+    public struct Tag: Swift.Sendable {
         /// A key is the required name of the tag. The string value can be from 1 to 128 Unicode characters in length and can't be prefixed with aws: or rds:. The string can only contain only the set of Unicode letters, digits, white-space, '_', '.', ':', '/', '=', '+', '-', '@' (Java regex: "^([\\p{L}\\p{Z}\\p{N}_.:/=+\\-@]*)$").
         public var key: Swift.String?
         /// A value is the optional value of the tag. The string value can be from 1 to 256 Unicode characters in length and can't be prefixed with aws: or rds:. The string can only contain only the set of Unicode letters, digits, white-space, '_', '.', ':', '/', '=', '+', '-', '@' (Java regex: "^([\\p{L}\\p{Z}\\p{N}_.:/=+\\-@]*)$").
@@ -809,11 +811,10 @@ extension RDSClientTypes {
             self.value = value
         }
     }
-
 }
 
 ///
-public struct AddTagsToResourceInput {
+public struct AddTagsToResourceInput: Swift.Sendable {
     /// The Amazon RDS resource that the tags are added to. This value is an Amazon Resource Name (ARN). For information about creating an ARN, see [ Constructing an RDS Amazon Resource Name (ARN)](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_Tagging.ARN.html#USER_Tagging.ARN.Constructing).
     /// This member is required.
     public var resourceName: Swift.String?
@@ -856,8 +857,21 @@ public struct ResourceNotFoundFault: ClientRuntime.ModeledError, AWSClientRuntim
 }
 
 ///
-public struct ApplyPendingMaintenanceActionInput {
-    /// The pending maintenance action to apply to this resource. Valid Values: system-update, db-upgrade, hardware-maintenance, ca-certificate-rotation
+public struct ApplyPendingMaintenanceActionInput: Swift.Sendable {
+    /// The pending maintenance action to apply to this resource. Valid Values:
+    ///
+    /// * ca-certificate-rotation
+    ///
+    /// * db-upgrade
+    ///
+    /// * hardware-maintenance
+    ///
+    /// * os-upgrade
+    ///
+    /// * system-update
+    ///
+    ///
+    /// For more information about these actions, see [Maintenance actions for Amazon Aurora](https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/USER_UpgradeDBInstance.Maintenance.html#maintenance-actions-aurora) or [Maintenance actions for Amazon RDS](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_UpgradeDBInstance.Maintenance.html#maintenance-actions-rds).
     /// This member is required.
     public var applyAction: Swift.String?
     /// A value that specifies the type of opt-in request, or undoes an opt-in request. An opt-in request of type immediate can't be undone. Valid Values:
@@ -886,9 +900,23 @@ public struct ApplyPendingMaintenanceActionInput {
 }
 
 extension RDSClientTypes {
+
     /// Provides information about a pending maintenance action for a resource.
-    public struct PendingMaintenanceAction {
-        /// The type of pending maintenance action that is available for the resource. For more information about maintenance actions, see [Maintaining a DB instance](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_UpgradeDBInstance.Maintenance.html). Valid Values: system-update | db-upgrade | hardware-maintenance | ca-certificate-rotation
+    public struct PendingMaintenanceAction: Swift.Sendable {
+        /// The type of pending maintenance action that is available for the resource. For more information about maintenance actions, see [Maintaining a DB instance](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_UpgradeDBInstance.Maintenance.html). Valid Values:
+        ///
+        /// * ca-certificate-rotation
+        ///
+        /// * db-upgrade
+        ///
+        /// * hardware-maintenance
+        ///
+        /// * os-upgrade
+        ///
+        /// * system-update
+        ///
+        ///
+        /// For more information about these actions, see [Maintenance actions for Amazon Aurora](https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/USER_UpgradeDBInstance.Maintenance.html#maintenance-actions-aurora) or [Maintenance actions for Amazon RDS](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_UpgradeDBInstance.Maintenance.html#maintenance-actions-rds).
         public var action: Swift.String?
         /// The date of the maintenance window when the action is applied. The maintenance action is applied to the resource during its first maintenance window after this date.
         public var autoAppliedAfterDate: Foundation.Date?
@@ -918,12 +946,12 @@ extension RDSClientTypes {
             self.optInStatus = optInStatus
         }
     }
-
 }
 
 extension RDSClientTypes {
+
     /// Describes the pending maintenance actions for a resource.
-    public struct ResourcePendingMaintenanceActions {
+    public struct ResourcePendingMaintenanceActions: Swift.Sendable {
         /// A list that provides details about the pending maintenance actions for the resource.
         public var pendingMaintenanceActionDetails: [RDSClientTypes.PendingMaintenanceAction]?
         /// The ARN of the resource that has pending maintenance actions.
@@ -938,10 +966,9 @@ extension RDSClientTypes {
             self.resourceIdentifier = resourceIdentifier
         }
     }
-
 }
 
-public struct ApplyPendingMaintenanceActionOutput {
+public struct ApplyPendingMaintenanceActionOutput: Swift.Sendable {
     /// Describes the pending maintenance actions for a resource.
     public var resourcePendingMaintenanceActions: RDSClientTypes.ResourcePendingMaintenanceActions?
 
@@ -1050,7 +1077,7 @@ public struct InvalidDBSecurityGroupStateFault: ClientRuntime.ModeledError, AWSC
 }
 
 ///
-public struct AuthorizeDBSecurityGroupIngressInput {
+public struct AuthorizeDBSecurityGroupIngressInput: Swift.Sendable {
     /// The IP range to authorize.
     public var cidrip: Swift.String?
     /// The name of the DB security group to add authorization to.
@@ -1080,6 +1107,7 @@ public struct AuthorizeDBSecurityGroupIngressInput {
 }
 
 extension RDSClientTypes {
+
     /// This data type is used as a response element in the following actions:
     ///
     /// * AuthorizeDBSecurityGroupIngress
@@ -1087,7 +1115,7 @@ extension RDSClientTypes {
     /// * DescribeDBSecurityGroups
     ///
     /// * RevokeDBSecurityGroupIngress
-    public struct EC2SecurityGroup {
+    public struct EC2SecurityGroup: Swift.Sendable {
         /// Specifies the id of the EC2 security group.
         public var ec2SecurityGroupId: Swift.String?
         /// Specifies the name of the EC2 security group.
@@ -1110,12 +1138,12 @@ extension RDSClientTypes {
             self.status = status
         }
     }
-
 }
 
 extension RDSClientTypes {
+
     /// This data type is used as a response element in the DescribeDBSecurityGroups action.
-    public struct IPRange {
+    public struct IPRange: Swift.Sendable {
         /// The IP range.
         public var cidrip: Swift.String?
         /// The status of the IP range. Status can be "authorizing", "authorized", "revoking", and "revoked".
@@ -1130,12 +1158,12 @@ extension RDSClientTypes {
             self.status = status
         }
     }
-
 }
 
 extension RDSClientTypes {
+
     /// Contains the details for an Amazon RDS DB security group. This data type is used as a response element in the DescribeDBSecurityGroups action.
-    public struct DBSecurityGroup {
+    public struct DBSecurityGroup: Swift.Sendable {
         /// The Amazon Resource Name (ARN) for the DB security group.
         public var dbSecurityGroupArn: Swift.String?
         /// Provides the description of the DB security group.
@@ -1170,10 +1198,9 @@ extension RDSClientTypes {
             self.vpcId = vpcId
         }
     }
-
 }
 
-public struct AuthorizeDBSecurityGroupIngressOutput {
+public struct AuthorizeDBSecurityGroupIngressOutput: Swift.Sendable {
     /// Contains the details for an Amazon RDS DB security group. This data type is used as a response element in the DescribeDBSecurityGroups action.
     public var dbSecurityGroup: RDSClientTypes.DBSecurityGroup?
 
@@ -1186,7 +1213,7 @@ public struct AuthorizeDBSecurityGroupIngressOutput {
 }
 
 ///
-public struct BacktrackDBClusterInput {
+public struct BacktrackDBClusterInput: Swift.Sendable {
     /// The timestamp of the time to backtrack the DB cluster to, specified in ISO 8601 format. For more information about ISO 8601, see the [ISO8601 Wikipedia page.](http://en.wikipedia.org/wiki/ISO_8601) If the specified time isn't a consistent time for the DB cluster, Aurora automatically chooses the nearest possible consistent time for the DB cluster. Constraints:
     ///
     /// * Must contain a valid ISO 8601 timestamp.
@@ -1229,7 +1256,7 @@ public struct BacktrackDBClusterInput {
 }
 
 /// This data type is used as a response element in the DescribeDBClusterBacktracks action.
-public struct BacktrackDBClusterOutput {
+public struct BacktrackDBClusterOutput: Swift.Sendable {
     /// Contains the backtrack identifier.
     public var backtrackIdentifier: Swift.String?
     /// The timestamp of the time at which the backtrack was requested.
@@ -1317,7 +1344,7 @@ public struct InvalidExportTaskStateFault: ClientRuntime.ModeledError, AWSClient
     }
 }
 
-public struct CancelExportTaskInput {
+public struct CancelExportTaskInput: Swift.Sendable {
     /// The identifier of the snapshot or cluster export task to cancel.
     /// This member is required.
     public var exportTaskIdentifier: Swift.String?
@@ -1332,7 +1359,7 @@ public struct CancelExportTaskInput {
 
 extension RDSClientTypes {
 
-    public enum ExportSourceType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ExportSourceType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case cluster
         case snapshot
         case sdkUnknown(Swift.String)
@@ -1360,7 +1387,7 @@ extension RDSClientTypes {
 }
 
 /// Contains the details of a snapshot or cluster export to Amazon S3. This data type is used as a response element in the DescribeExportTasks operation.
-public struct CancelExportTaskOutput {
+public struct CancelExportTaskOutput: Swift.Sendable {
     /// The data exported from the snapshot or cluster. Valid Values:
     ///
     /// * database - Export all the data from a specified database.
@@ -1524,7 +1551,7 @@ public struct DBParameterGroupQuotaExceededFault: ClientRuntime.ModeledError, AW
     }
 }
 
-public struct CopyDBClusterParameterGroupInput {
+public struct CopyDBClusterParameterGroupInput: Swift.Sendable {
     /// The identifier or Amazon Resource Name (ARN) for the source DB cluster parameter group. For information about creating an ARN, see [ Constructing an ARN for Amazon RDS](https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/USER_Tagging.ARN.html#USER_Tagging.ARN.Constructing) in the Amazon Aurora User Guide. Constraints:
     ///
     /// * Must specify a valid DB cluster parameter group.
@@ -1565,8 +1592,9 @@ public struct CopyDBClusterParameterGroupInput {
 }
 
 extension RDSClientTypes {
+
     /// Contains the details of an Amazon RDS DB cluster parameter group. This data type is used as a response element in the DescribeDBClusterParameterGroups action.
-    public struct DBClusterParameterGroup {
+    public struct DBClusterParameterGroup: Swift.Sendable {
         /// The Amazon Resource Name (ARN) for the DB cluster parameter group.
         public var dbClusterParameterGroupArn: Swift.String?
         /// The name of the DB cluster parameter group.
@@ -1589,10 +1617,9 @@ extension RDSClientTypes {
             self.description = description
         }
     }
-
 }
 
-public struct CopyDBClusterParameterGroupOutput {
+public struct CopyDBClusterParameterGroupOutput: Swift.Sendable {
     /// Contains the details of an Amazon RDS DB cluster parameter group. This data type is used as a response element in the DescribeDBClusterParameterGroups action.
     public var dbClusterParameterGroup: RDSClientTypes.DBClusterParameterGroup?
 
@@ -1725,7 +1752,7 @@ public struct SnapshotQuotaExceededFault: ClientRuntime.ModeledError, AWSClientR
 }
 
 ///
-public struct CopyDBClusterSnapshotInput {
+public struct CopyDBClusterSnapshotInput: Swift.Sendable {
     /// Specifies whether to copy all tags from the source DB cluster snapshot to the target DB cluster snapshot. By default, tags are not copied.
     public var copyTags: Swift.Bool?
     /// The Amazon Web Services KMS key identifier for an encrypted DB cluster snapshot. The Amazon Web Services KMS key identifier is the key ARN, key ID, alias ARN, or alias name for the Amazon Web Services KMS key. If you copy an encrypted DB cluster snapshot from your Amazon Web Services account, you can specify a value for KmsKeyId to encrypt the copy with a new KMS key. If you don't specify a value for KmsKeyId, then the copy of the DB cluster snapshot is encrypted with the same KMS key as the source DB cluster snapshot. If you copy an encrypted DB cluster snapshot that is shared from another Amazon Web Services account, then you must specify a value for KmsKeyId. To copy an encrypted DB cluster snapshot to another Amazon Web Services Region, you must set KmsKeyId to the Amazon Web Services KMS key identifier you want to use to encrypt the copy of the DB cluster snapshot in the destination Amazon Web Services Region. KMS keys are specific to the Amazon Web Services Region that they are created in, and you can't use KMS keys from one Amazon Web Services Region in another Amazon Web Services Region. If you copy an unencrypted DB cluster snapshot and specify a value for the KmsKeyId parameter, an error is returned.
@@ -1787,8 +1814,9 @@ public struct CopyDBClusterSnapshotInput {
 }
 
 extension RDSClientTypes {
+
     /// Contains the details for an Amazon RDS DB cluster snapshot This data type is used as a response element in the DescribeDBClusterSnapshots action.
-    public struct DBClusterSnapshot {
+    public struct DBClusterSnapshot: Swift.Sendable {
         /// The allocated storage size of the DB cluster snapshot in gibibytes (GiB).
         public var allocatedStorage: Swift.Int?
         /// The list of Availability Zones (AZs) where instances in the DB cluster snapshot can be restored.
@@ -1905,10 +1933,9 @@ extension RDSClientTypes {
             self.vpcId = vpcId
         }
     }
-
 }
 
-public struct CopyDBClusterSnapshotOutput {
+public struct CopyDBClusterSnapshotOutput: Swift.Sendable {
     /// Contains the details for an Amazon RDS DB cluster snapshot This data type is used as a response element in the DescribeDBClusterSnapshots action.
     public var dbClusterSnapshot: RDSClientTypes.DBClusterSnapshot?
 
@@ -1921,7 +1948,7 @@ public struct CopyDBClusterSnapshotOutput {
 }
 
 ///
-public struct CopyDBParameterGroupInput {
+public struct CopyDBParameterGroupInput: Swift.Sendable {
     /// The identifier or ARN for the source DB parameter group. For information about creating an ARN, see [ Constructing an ARN for Amazon RDS](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_Tagging.ARN.html#USER_Tagging.ARN.Constructing) in the Amazon RDS User Guide. Constraints:
     ///
     /// * Must specify a valid DB parameter group.
@@ -1962,8 +1989,9 @@ public struct CopyDBParameterGroupInput {
 }
 
 extension RDSClientTypes {
+
     /// Contains the details of an Amazon RDS DB parameter group. This data type is used as a response element in the DescribeDBParameterGroups action.
-    public struct DBParameterGroup {
+    public struct DBParameterGroup: Swift.Sendable {
         /// The Amazon Resource Name (ARN) for the DB parameter group.
         public var dbParameterGroupArn: Swift.String?
         /// The name of the DB parameter group family that this DB parameter group is compatible with.
@@ -1986,10 +2014,9 @@ extension RDSClientTypes {
             self.description = description
         }
     }
-
 }
 
-public struct CopyDBParameterGroupOutput {
+public struct CopyDBParameterGroupOutput: Swift.Sendable {
     /// Contains the details of an Amazon RDS DB parameter group. This data type is used as a response element in the DescribeDBParameterGroups action.
     public var dbParameterGroup: RDSClientTypes.DBParameterGroup?
 
@@ -2074,7 +2101,7 @@ public struct InvalidDBSnapshotStateFault: ClientRuntime.ModeledError, AWSClient
 }
 
 ///
-public struct CopyDBSnapshotInput {
+public struct CopyDBSnapshotInput: Swift.Sendable {
     /// Specifies whether to copy the DB option group associated with the source DB snapshot to the target Amazon Web Services account and associate with the target DB snapshot. The associated option group can be copied only with cross-account snapshot copy calls.
     public var copyOptionGroup: Swift.Bool?
     /// Specifies whether to copy all tags from the source DB snapshot to the target DB snapshot. By default, tags aren't copied.
@@ -2146,6 +2173,7 @@ public struct CopyDBSnapshotInput {
 }
 
 extension RDSClientTypes {
+
     /// Contains the processor features of a DB instance class. To specify the number of CPU cores, use the coreCount feature name for the Name parameter. To specify the number of threads per core, use the threadsPerCore feature name for the Name parameter. You can set the processor features of the DB instance class for a DB instance when you call one of the following actions:
     ///
     /// * CreateDBInstance
@@ -2178,7 +2206,7 @@ extension RDSClientTypes {
     ///
     ///
     /// For more information, see [ Configuring the processor for a DB instance class in RDS for Oracle](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Concepts.DBInstanceClass.html#USER_ConfigureProcessor) in the Amazon RDS User Guide.
-    public struct ProcessorFeature {
+    public struct ProcessorFeature: Swift.Sendable {
         /// The name of the processor feature. Valid names are coreCount and threadsPerCore.
         public var name: Swift.String?
         /// The value of a processor feature.
@@ -2193,12 +2221,12 @@ extension RDSClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension RDSClientTypes {
+
     /// Contains the details of an Amazon RDS DB snapshot. This data type is used as a response element in the DescribeDBSnapshots action.
-    public struct DBSnapshot {
+    public struct DBSnapshot: Swift.Sendable {
         /// Specifies the allocated storage size in gibibytes (GiB).
         public var allocatedStorage: Swift.Int?
         /// Specifies the name of the Availability Zone the DB instance was located in at the time of the DB snapshot.
@@ -2349,10 +2377,9 @@ extension RDSClientTypes {
             self.vpcId = vpcId
         }
     }
-
 }
 
-public struct CopyDBSnapshotOutput {
+public struct CopyDBSnapshotOutput: Swift.Sendable {
     /// Contains the details of an Amazon RDS DB snapshot. This data type is used as a response element in the DescribeDBSnapshots action.
     public var dbSnapshot: RDSClientTypes.DBSnapshot?
 
@@ -2437,7 +2464,7 @@ public struct OptionGroupQuotaExceededFault: ClientRuntime.ModeledError, AWSClie
 }
 
 ///
-public struct CopyOptionGroupInput {
+public struct CopyOptionGroupInput: Swift.Sendable {
     /// The identifier for the source option group. Constraints:
     ///
     /// * Must specify a valid option group.
@@ -2478,6 +2505,7 @@ public struct CopyOptionGroupInput {
 }
 
 extension RDSClientTypes {
+
     /// This data type is used as a response element in the following actions:
     ///
     /// * ModifyDBInstance
@@ -2487,7 +2515,7 @@ extension RDSClientTypes {
     /// * RestoreDBInstanceFromDBSnapshot
     ///
     /// * RestoreDBInstanceToPointInTime
-    public struct DBSecurityGroupMembership {
+    public struct DBSecurityGroupMembership: Swift.Sendable {
         /// The name of the DB security group.
         public var dbSecurityGroupName: Swift.String?
         /// The status of the DB security group.
@@ -2502,12 +2530,12 @@ extension RDSClientTypes {
             self.status = status
         }
     }
-
 }
 
 extension RDSClientTypes {
+
     /// Option settings are the actual settings being applied or configured for that option. It is used when you modify an option group or describe option groups. For example, the NATIVE_NETWORK_ENCRYPTION option has a setting called SQLNET.ENCRYPTION_SERVER that can have several different values.
-    public struct OptionSetting {
+    public struct OptionSetting: Swift.Sendable {
         /// The allowed values of the option setting.
         public var allowedValues: Swift.String?
         /// The DB engine specific parameter type.
@@ -2550,12 +2578,12 @@ extension RDSClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension RDSClientTypes {
+
     /// This data type is used as a response element for queries on VPC security group membership.
-    public struct VpcSecurityGroupMembership {
+    public struct VpcSecurityGroupMembership: Swift.Sendable {
         /// The membership status of the VPC security group. Currently, the only valid status is active.
         public var status: Swift.String?
         /// The name of the VPC security group.
@@ -2570,12 +2598,12 @@ extension RDSClientTypes {
             self.vpcSecurityGroupId = vpcSecurityGroupId
         }
     }
-
 }
 
 extension RDSClientTypes {
+
     /// The details of an option.
-    public struct Option {
+    public struct Option: Swift.Sendable {
         /// If the option requires access to a port, then this DB security group allows access to the port.
         public var dbSecurityGroupMemberships: [RDSClientTypes.DBSecurityGroupMembership]?
         /// The description of the option.
@@ -2618,12 +2646,12 @@ extension RDSClientTypes {
             self.vpcSecurityGroupMemberships = vpcSecurityGroupMemberships
         }
     }
-
 }
 
 extension RDSClientTypes {
+
     ///
-    public struct OptionGroup {
+    public struct OptionGroup: Swift.Sendable {
         /// Indicates whether this option group can be applied to both VPC and non-VPC instances. The value true indicates the option group can be applied to both VPC and non-VPC instances.
         public var allowsVpcAndNonVpcInstanceMemberships: Swift.Bool?
         /// Indicates when the option group was copied.
@@ -2674,10 +2702,9 @@ extension RDSClientTypes {
             self.vpcId = vpcId
         }
     }
-
 }
 
-public struct CopyOptionGroupOutput {
+public struct CopyOptionGroupOutput: Swift.Sendable {
     ///
     public var optionGroup: RDSClientTypes.OptionGroup?
 
@@ -2833,7 +2860,7 @@ public struct SourceDatabaseNotSupportedFault: ClientRuntime.ModeledError, AWSCl
     }
 }
 
-public struct CreateBlueGreenDeploymentInput {
+public struct CreateBlueGreenDeploymentInput: Swift.Sendable {
     /// The name of the blue/green deployment. Constraints:
     ///
     /// * Can't be the same as an existing blue/green deployment name in the same account and Amazon Web Services Region.
@@ -2878,8 +2905,9 @@ public struct CreateBlueGreenDeploymentInput {
 }
 
 extension RDSClientTypes {
+
     /// Contains the details about a blue/green deployment. For more information, see [Using Amazon RDS Blue/Green Deployments for database updates](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/blue-green-deployments.html) in the Amazon RDS User Guide and [Using Amazon RDS Blue/Green Deployments for database updates](https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/blue-green-deployments.html) in the Amazon Aurora User Guide.
-    public struct SwitchoverDetail {
+    public struct SwitchoverDetail: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of a resource in the blue environment.
         public var sourceMember: Swift.String?
         /// The switchover status of a resource in a blue/green deployment. Values:
@@ -2912,12 +2940,12 @@ extension RDSClientTypes {
             self.targetMember = targetMember
         }
     }
-
 }
 
 extension RDSClientTypes {
+
     /// Details about a task for a blue/green deployment. For more information, see [Using Amazon RDS Blue/Green Deployments for database updates](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/blue-green-deployments.html) in the Amazon RDS User Guide and [Using Amazon RDS Blue/Green Deployments for database updates](https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/blue-green-deployments.html) in the Amazon Aurora User Guide.
-    public struct BlueGreenDeploymentTask {
+    public struct BlueGreenDeploymentTask: Swift.Sendable {
         /// The name of the blue/green deployment task.
         public var name: Swift.String?
         /// The status of the blue/green deployment task. Valid Values:
@@ -2940,12 +2968,12 @@ extension RDSClientTypes {
             self.status = status
         }
     }
-
 }
 
 extension RDSClientTypes {
+
     /// Details about a blue/green deployment. For more information, see [Using Amazon RDS Blue/Green Deployments for database updates](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/blue-green-deployments.html) in the Amazon RDS User Guide and [Using Amazon RDS Blue/Green Deployments for database updates](https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/blue-green-deployments.html) in the Amazon Aurora User Guide.
-    public struct BlueGreenDeployment {
+    public struct BlueGreenDeployment: Swift.Sendable {
         /// The unique identifier of the blue/green deployment.
         public var blueGreenDeploymentIdentifier: Swift.String?
         /// The user-supplied name of the blue/green deployment.
@@ -3010,10 +3038,9 @@ extension RDSClientTypes {
             self.tasks = tasks
         }
     }
-
 }
 
-public struct CreateBlueGreenDeploymentOutput {
+public struct CreateBlueGreenDeploymentOutput: Swift.Sendable {
     /// Details about a blue/green deployment. For more information, see [Using Amazon RDS Blue/Green Deployments for database updates](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/blue-green-deployments.html) in the Amazon RDS User Guide and [Using Amazon RDS Blue/Green Deployments for database updates](https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/blue-green-deployments.html) in the Amazon Aurora User Guide.
     public var blueGreenDeployment: RDSClientTypes.BlueGreenDeployment?
 
@@ -3121,7 +3148,7 @@ public struct Ec2ImagePropertiesNotSupportedFault: ClientRuntime.ModeledError, A
     }
 }
 
-public struct CreateCustomDBEngineVersionInput {
+public struct CreateCustomDBEngineVersionInput: Swift.Sendable {
     /// The name of an Amazon S3 bucket that contains database installation files for your CEV. For example, a valid bucket name is my-custom-installation-files.
     public var databaseInstallationFilesS3BucketName: Swift.String?
     /// The Amazon S3 directory that contains the database installation files for your CEV. For example, a valid bucket name is 123456789012/cev1. If this setting isn't specified, no prefix is assumed.
@@ -3184,8 +3211,9 @@ public struct CreateCustomDBEngineVersionInput {
 }
 
 extension RDSClientTypes {
+
     /// This data type is used as a response element in the action DescribeDBEngineVersions.
-    public struct CharacterSet {
+    public struct CharacterSet: Swift.Sendable {
         /// The description of the character set.
         public var characterSetDescription: Swift.String?
         /// The name of the character set.
@@ -3200,12 +3228,12 @@ extension RDSClientTypes {
             self.characterSetName = characterSetName
         }
     }
-
 }
 
 extension RDSClientTypes {
+
     /// A value that indicates the AMI information.
-    public struct CustomDBEngineVersionAMI {
+    public struct CustomDBEngineVersionAMI: Swift.Sendable {
         /// A value that indicates the ID of the AMI.
         public var imageId: Swift.String?
         /// A value that indicates the status of a custom engine version (CEV).
@@ -3220,12 +3248,12 @@ extension RDSClientTypes {
             self.status = status
         }
     }
-
 }
 
 extension RDSClientTypes {
+
     /// A time zone associated with a DBInstance or a DBSnapshot. This data type is an element in the response to the DescribeDBInstances, the DescribeDBSnapshots, and the DescribeDBEngineVersions actions.
-    public struct Timezone {
+    public struct Timezone: Swift.Sendable {
         /// The name of the time zone.
         public var timezoneName: Swift.String?
 
@@ -3236,12 +3264,12 @@ extension RDSClientTypes {
             self.timezoneName = timezoneName
         }
     }
-
 }
 
 extension RDSClientTypes {
+
     /// The version of the database engine that a DB instance can be upgraded to.
-    public struct UpgradeTarget {
+    public struct UpgradeTarget: Swift.Sendable {
         /// Indicates whether the target version is applied to any source DB instances that have AutoMinorVersionUpgrade set to true. This parameter is dynamic, and is set by RDS.
         public var autoUpgrade: Swift.Bool?
         /// The version of the database engine that a DB instance can be upgraded to.
@@ -3296,11 +3324,10 @@ extension RDSClientTypes {
             self.supportsParallelQuery = supportsParallelQuery
         }
     }
-
 }
 
 /// This data type is used as a response element in the action DescribeDBEngineVersions.
-public struct CreateCustomDBEngineVersionOutput {
+public struct CreateCustomDBEngineVersionOutput: Swift.Sendable {
     /// The creation time of the DB engine version.
     public var createTime: Foundation.Date?
     /// JSON string that lists the installation files and parameters that RDS Custom uses to create a custom engine version (CEV). RDS Custom applies the patches in the order in which they're listed in the manifest. You can set the Oracle home, Oracle base, and UNIX/Linux user and group using the installation parameters. For more information, see [JSON fields in the CEV manifest](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/custom-cev.preparing.html#custom-cev.preparing.manifest.fields) in the Amazon RDS User Guide.
@@ -3758,7 +3785,36 @@ public struct StorageQuotaExceededFault: ClientRuntime.ModeledError, AWSClientRu
 
 extension RDSClientTypes {
 
-    public enum ReplicaMode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ClusterScalabilityType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+        case limitless
+        case standard
+        case sdkUnknown(Swift.String)
+
+        public static var allCases: [ClusterScalabilityType] {
+            return [
+                .limitless,
+                .standard
+            ]
+        }
+
+        public init?(rawValue: Swift.String) {
+            let value = Self.allCases.first(where: { $0.rawValue == rawValue })
+            self = value ?? Self.sdkUnknown(rawValue)
+        }
+
+        public var rawValue: Swift.String {
+            switch self {
+            case .limitless: return "limitless"
+            case .standard: return "standard"
+            case let .sdkUnknown(s): return s
+            }
+        }
+    }
+}
+
+extension RDSClientTypes {
+
+    public enum ReplicaMode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case mounted
         case openReadOnly
         case sdkUnknown(Swift.String)
@@ -3786,8 +3842,9 @@ extension RDSClientTypes {
 }
 
 extension RDSClientTypes {
+
     /// Reserved for future use.
-    public struct RdsCustomClusterConfiguration {
+    public struct RdsCustomClusterConfiguration: Swift.Sendable {
         /// Reserved for future use.
         public var interconnectSubnetId: Swift.String?
         /// Reserved for future use.
@@ -3806,12 +3863,12 @@ extension RDSClientTypes {
             self.transitGatewayMulticastDomainId = transitGatewayMulticastDomainId
         }
     }
-
 }
 
 extension RDSClientTypes {
+
     /// Contains the scaling configuration of an Aurora Serverless v1 DB cluster. For more information, see [Using Amazon Aurora Serverless v1](https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/aurora-serverless.html) in the Amazon Aurora User Guide.
-    public struct ScalingConfiguration {
+    public struct ScalingConfiguration: Swift.Sendable {
         /// Indicates whether to allow or disallow automatic pause for an Aurora DB cluster in serverless DB engine mode. A DB cluster can be paused only when it's idle (it has no connections). If a DB cluster is paused for more than seven days, the DB cluster might be backed up with a snapshot. In this case, the DB cluster is restored when there is a request to connect to it.
         public var autoPause: Swift.Bool?
         /// The maximum capacity for an Aurora DB cluster in serverless DB engine mode. For Aurora MySQL, valid capacity values are 1, 2, 4, 8, 16, 32, 64, 128, and 256. For Aurora PostgreSQL, valid capacity values are 2, 4, 8, 16, 32, 64, 192, and 384. The maximum capacity must be greater than or equal to the minimum capacity.
@@ -3842,12 +3899,12 @@ extension RDSClientTypes {
             self.timeoutAction = timeoutAction
         }
     }
-
 }
 
 extension RDSClientTypes {
+
     /// Contains the scaling configuration of an Aurora Serverless v2 DB cluster. For more information, see [Using Amazon Aurora Serverless v2](https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/aurora-serverless-v2.html) in the Amazon Aurora User Guide.
-    public struct ServerlessV2ScalingConfiguration {
+    public struct ServerlessV2ScalingConfiguration: Swift.Sendable {
         /// The maximum number of Aurora capacity units (ACUs) for a DB instance in an Aurora Serverless v2 cluster. You can specify ACU values in half-step increments, such as 40, 40.5, 41, and so on. The largest value that you can use is 128.
         public var maxCapacity: Swift.Double?
         /// The minimum number of Aurora capacity units (ACUs) for a DB instance in an Aurora Serverless v2 cluster. You can specify ACU values in half-step increments, such as 8, 8.5, 9, and so on. The smallest value that you can use is 0.5.
@@ -3862,11 +3919,10 @@ extension RDSClientTypes {
             self.minCapacity = minCapacity
         }
     }
-
 }
 
 ///
-public struct CreateDBClusterInput {
+public struct CreateDBClusterInput: Swift.Sendable {
     /// The amount of storage in gibibytes (GiB) to allocate to each DB instance in the Multi-AZ DB cluster. Valid for Cluster Type: Multi-AZ DB clusters only This setting is required to create a Multi-AZ DB cluster.
     public var allocatedStorage: Swift.Int?
     /// Specifies whether minor engine upgrades are applied automatically to the DB cluster during the maintenance window. By default, minor engine upgrades are applied automatically. Valid for Cluster Type: Multi-AZ DB clusters only
@@ -3887,6 +3943,8 @@ public struct CreateDBClusterInput {
     public var caCertificateIdentifier: Swift.String?
     /// The name of the character set (CharacterSet) to associate the DB cluster with. Valid for Cluster Type: Aurora DB clusters only
     public var characterSetName: Swift.String?
+    /// Specifies the scalability mode of the Aurora DB cluster. When set to limitless, the cluster operates as an Aurora Limitless Database. When set to standard (the default), the cluster uses normal DB instance creation. Valid for: Aurora DB clusters only You can't modify this setting after you create the DB cluster.
+    public var clusterScalabilityType: RDSClientTypes.ClusterScalabilityType?
     /// Specifies whether to copy all tags from the DB cluster to snapshots of the DB cluster. The default is not to copy them. Valid for Cluster Type: Aurora DB clusters and Multi-AZ DB clusters
     public var copyTagsToSnapshot: Swift.Bool?
     /// The name for your database of up to 64 alphanumeric characters. A database named postgres is always created. If this parameter is specified, an additional database with this name is created. Valid for Cluster Type: Aurora DB clusters and Multi-AZ DB clusters
@@ -3948,9 +4006,9 @@ public struct CreateDBClusterInput {
     ///
     /// For more information, see [Using RDS Data API](https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/data-api.html) in the Amazon Aurora User Guide. Valid for Cluster Type: Aurora DB clusters only
     public var enableHttpEndpoint: Swift.Bool?
-    /// Specifies whether to enable mapping of Amazon Web Services Identity and Access Management (IAM) accounts to database accounts. By default, mapping isn't enabled. For more information, see [ IAM Database Authentication](https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/UsingWithRDS.IAMDBAuth.html) in the Amazon Aurora User Guide. Valid for Cluster Type: Aurora DB clusters only
+    /// Specifies whether to enable mapping of Amazon Web Services Identity and Access Management (IAM) accounts to database accounts. By default, mapping isn't enabled. For more information, see [ IAM Database Authentication](https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/UsingWithRDS.IAMDBAuth.html) in the Amazon Aurora User Guide or [IAM database authentication for MariaDB, MySQL, and PostgreSQL](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/UsingWithRDS.IAMDBAuth.html) in the Amazon RDS User Guide. Valid for Cluster Type: Aurora DB clusters and Multi-AZ DB clusters
     public var enableIAMDatabaseAuthentication: Swift.Bool?
-    /// Specifies whether to enable Aurora Limitless Database. You must enable Aurora Limitless Database to create a DB shard group. Valid for: Aurora DB clusters only
+    /// Specifies whether to enable Aurora Limitless Database. You must enable Aurora Limitless Database to create a DB shard group. Valid for: Aurora DB clusters only This setting is no longer used. Instead use the ClusterScalabilityType setting.
     public var enableLimitlessDatabase: Swift.Bool?
     /// Specifies whether read replicas can forward write operations to the writer DB instance in the DB cluster. By default, write operations aren't allowed on reader DB instances. Valid for: Aurora DB clusters only
     public var enableLocalWriteForwarding: Swift.Bool?
@@ -4147,6 +4205,7 @@ public struct CreateDBClusterInput {
         backupRetentionPeriod: Swift.Int? = nil,
         caCertificateIdentifier: Swift.String? = nil,
         characterSetName: Swift.String? = nil,
+        clusterScalabilityType: RDSClientTypes.ClusterScalabilityType? = nil,
         copyTagsToSnapshot: Swift.Bool? = nil,
         databaseName: Swift.String? = nil,
         dbClusterIdentifier: Swift.String? = nil,
@@ -4203,6 +4262,7 @@ public struct CreateDBClusterInput {
         self.backupRetentionPeriod = backupRetentionPeriod
         self.caCertificateIdentifier = caCertificateIdentifier
         self.characterSetName = characterSetName
+        self.clusterScalabilityType = clusterScalabilityType
         self.copyTagsToSnapshot = copyTagsToSnapshot
         self.databaseName = databaseName
         self.dbClusterIdentifier = dbClusterIdentifier
@@ -4254,8 +4314,9 @@ public struct CreateDBClusterInput {
 }
 
 extension RDSClientTypes {
+
     /// Describes an Amazon Web Services Identity and Access Management (IAM) role that is associated with a DB cluster.
-    public struct DBClusterRole {
+    public struct DBClusterRole: Swift.Sendable {
         /// The name of the feature associated with the Amazon Web Services Identity and Access Management (IAM) role. For information about supported feature names, see [DBEngineVersion].
         public var featureName: Swift.String?
         /// The Amazon Resource Name (ARN) of the IAM role that is associated with the DB cluster.
@@ -4280,12 +4341,12 @@ extension RDSClientTypes {
             self.status = status
         }
     }
-
 }
 
 extension RDSClientTypes {
+
     /// The details of the DB instance’s server certificate. For more information, see [Using SSL/TLS to encrypt a connection to a DB instance](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/UsingWithRDS.SSL.html) in the Amazon RDS User Guide and [ Using SSL/TLS to encrypt a connection to a DB cluster](https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/UsingWithRDS.SSL.html) in the Amazon Aurora User Guide.
-    public struct CertificateDetails {
+    public struct CertificateDetails: Swift.Sendable {
         /// The CA identifier of the CA certificate used for the DB instance's server certificate.
         public var caIdentifier: Swift.String?
         /// The expiration date of the DB instance’s server certificate.
@@ -4300,12 +4361,12 @@ extension RDSClientTypes {
             self.validTill = validTill
         }
     }
-
 }
 
 extension RDSClientTypes {
+
     /// Contains information about an instance that is part of a DB cluster.
-    public struct DBClusterMember {
+    public struct DBClusterMember: Swift.Sendable {
         /// Specifies the status of the DB cluster parameter group for this member of the DB cluster.
         public var dbClusterParameterGroupStatus: Swift.String?
         /// Specifies the instance identifier for this member of the DB cluster.
@@ -4328,12 +4389,12 @@ extension RDSClientTypes {
             self.promotionTier = promotionTier
         }
     }
-
 }
 
 extension RDSClientTypes {
+
     /// Contains status information for a DB cluster option group.
-    public struct DBClusterOptionGroupStatus {
+    public struct DBClusterOptionGroupStatus: Swift.Sendable {
         /// Specifies the name of the DB cluster option group.
         public var dbClusterOptionGroupName: Swift.String?
         /// Specifies the status of the DB cluster option group.
@@ -4348,12 +4409,12 @@ extension RDSClientTypes {
             self.status = status
         }
     }
-
 }
 
 extension RDSClientTypes {
+
     /// An Active Directory Domain membership record associated with the DB instance or cluster.
-    public struct DomainMembership {
+    public struct DomainMembership: Swift.Sendable {
         /// The ARN for the Secrets Manager secret with the credentials for the user that's a member of the domain.
         public var authSecretArn: Swift.String?
         /// The IPv4 DNS IP addresses of the primary and secondary Active Directory domain controllers.
@@ -4388,12 +4449,11 @@ extension RDSClientTypes {
             self.status = status
         }
     }
-
 }
 
 extension RDSClientTypes {
 
-    public enum WriteForwardingStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum WriteForwardingStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case disabled
         case disabling
         case enabled
@@ -4431,7 +4491,7 @@ extension RDSClientTypes {
 
 extension RDSClientTypes {
 
-    public enum LimitlessDatabaseStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum LimitlessDatabaseStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case active
         case disabled
         case disabling
@@ -4477,8 +4537,9 @@ extension RDSClientTypes {
 }
 
 extension RDSClientTypes {
+
     /// Contains details for Aurora Limitless Database.
-    public struct LimitlessDatabase {
+    public struct LimitlessDatabase: Swift.Sendable {
         /// The minimum required capacity for Aurora Limitless Database in Aurora capacity units (ACUs).
         public var minRequiredACU: Swift.Double?
         /// The status of Aurora Limitless Database.
@@ -4493,12 +4554,11 @@ extension RDSClientTypes {
             self.status = status
         }
     }
-
 }
 
 extension RDSClientTypes {
 
-    public enum LocalWriteForwardingStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum LocalWriteForwardingStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case disabled
         case disabling
         case enabled
@@ -4535,8 +4595,9 @@ extension RDSClientTypes {
 }
 
 extension RDSClientTypes {
+
     /// Contains the secret managed by RDS in Amazon Web Services Secrets Manager for the master user password. For more information, see [Password management with Amazon Web Services Secrets Manager](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/rds-secrets-manager.html) in the Amazon RDS User Guide and [Password management with Amazon Web Services Secrets Manager](https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/rds-secrets-manager.html) in the Amazon Aurora User Guide.
-    public struct MasterUserSecret {
+    public struct MasterUserSecret: Swift.Sendable {
         /// The Amazon Web Services KMS key identifier that is used to encrypt the secret.
         public var kmsKeyId: Swift.String?
         /// The Amazon Resource Name (ARN) of the secret.
@@ -4563,12 +4624,12 @@ extension RDSClientTypes {
             self.secretStatus = secretStatus
         }
     }
-
 }
 
 extension RDSClientTypes {
+
     /// A list of the log types whose configuration is still pending. In other words, these log types are in the process of being activated or deactivated.
-    public struct PendingCloudwatchLogsExports {
+    public struct PendingCloudwatchLogsExports: Swift.Sendable {
         /// Log types that are in the process of being enabled. After they are enabled, these log types are exported to CloudWatch Logs.
         public var logTypesToDisable: [Swift.String]?
         /// Log types that are in the process of being deactivated. After they are deactivated, these log types aren't exported to CloudWatch Logs.
@@ -4583,12 +4644,12 @@ extension RDSClientTypes {
             self.logTypesToEnable = logTypesToEnable
         }
     }
-
 }
 
 extension RDSClientTypes {
+
     /// This data type is used as a response element in the ModifyDBCluster operation and contains changes that will be applied during the next maintenance window.
-    public struct ClusterPendingModifiedValues {
+    public struct ClusterPendingModifiedValues: Swift.Sendable {
         /// The allocated storage size in gibibytes (GiB) for all database engines except Amazon Aurora. For Aurora, AllocatedStorage always returns 1, because Aurora DB cluster storage size isn't fixed, but instead automatically adjusts as needed.
         public var allocatedStorage: Swift.Int?
         /// The number of days for which automatic DB snapshots are retained.
@@ -4639,12 +4700,12 @@ extension RDSClientTypes {
             self.storageType = storageType
         }
     }
-
 }
 
 extension RDSClientTypes {
+
     /// The scaling configuration for an Aurora DB cluster in serverless DB engine mode. For more information, see [Using Amazon Aurora Serverless v1](https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/aurora-serverless.html) in the Amazon Aurora User Guide.
-    public struct ScalingConfigurationInfo {
+    public struct ScalingConfigurationInfo: Swift.Sendable {
         /// Indicates whether automatic pause is allowed for the Aurora DB cluster in serverless DB engine mode. When the value is set to false for an Aurora Serverless v1 DB cluster, the DB cluster automatically resumes.
         public var autoPause: Swift.Bool?
         /// The maximum capacity for an Aurora DB cluster in serverless DB engine mode.
@@ -4675,12 +4736,12 @@ extension RDSClientTypes {
             self.timeoutAction = timeoutAction
         }
     }
-
 }
 
 extension RDSClientTypes {
+
     /// The scaling configuration for an Aurora Serverless v2 DB cluster. For more information, see [Using Amazon Aurora Serverless v2](https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/aurora-serverless-v2.html) in the Amazon Aurora User Guide.
-    public struct ServerlessV2ScalingConfigurationInfo {
+    public struct ServerlessV2ScalingConfigurationInfo: Swift.Sendable {
         /// The maximum number of Aurora capacity units (ACUs) for a DB instance in an Aurora Serverless v2 cluster. You can specify ACU values in half-step increments, such as 40, 40.5, 41, and so on. The largest value that you can use is 128.
         public var maxCapacity: Swift.Double?
         /// The minimum number of Aurora capacity units (ACUs) for a DB instance in an Aurora Serverless v2 cluster. You can specify ACU values in half-step increments, such as 8, 8.5, 9, and so on. The smallest value that you can use is 0.5.
@@ -4695,12 +4756,12 @@ extension RDSClientTypes {
             self.minCapacity = minCapacity
         }
     }
-
 }
 
 extension RDSClientTypes {
+
     /// Reserved for future use.
-    public struct DBClusterStatusInfo {
+    public struct DBClusterStatusInfo: Swift.Sendable {
         /// Reserved for future use.
         public var message: Swift.String?
         /// Reserved for future use.
@@ -4723,12 +4784,12 @@ extension RDSClientTypes {
             self.statusType = statusType
         }
     }
-
 }
 
 extension RDSClientTypes {
+
     /// Contains the details of an Amazon Aurora DB cluster or Multi-AZ DB cluster. For an Amazon Aurora DB cluster, this data type is used as a response element in the operations CreateDBCluster, DeleteDBCluster, DescribeDBClusters, FailoverDBCluster, ModifyDBCluster, PromoteReadReplicaDBCluster, RestoreDBClusterFromS3, RestoreDBClusterFromSnapshot, RestoreDBClusterToPointInTime, StartDBCluster, and StopDBCluster. For a Multi-AZ DB cluster, this data type is used as a response element in the operations CreateDBCluster, DeleteDBCluster, DescribeDBClusters, FailoverDBCluster, ModifyDBCluster, RebootDBCluster, RestoreDBClusterFromSnapshot, and RestoreDBClusterToPointInTime. For more information on Amazon Aurora DB clusters, see [ What is Amazon Aurora?](https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/CHAP_AuroraOverview.html) in the Amazon Aurora User Guide. For more information on Multi-AZ DB clusters, see [ Multi-AZ deployments with two readable standby DB instances](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/multi-az-db-clusters-concepts.html) in the Amazon RDS User Guide.
-    public struct DBCluster {
+    public struct DBCluster: Swift.Sendable {
         /// The name of the Amazon Kinesis data stream used for the database activity stream.
         public var activityStreamKinesisStreamName: Swift.String?
         /// The Amazon Web Services KMS key identifier used for encrypting messages in the database activity stream. The Amazon Web Services KMS key identifier is the key ARN, key ID, alias ARN, or alias name for the KMS key.
@@ -4765,6 +4826,8 @@ extension RDSClientTypes {
         public var cloneGroupId: Swift.String?
         /// The time when the DB cluster was created, in Universal Coordinated Time (UTC).
         public var clusterCreateTime: Foundation.Date?
+        /// The scalability mode of the Aurora DB cluster. When set to limitless, the cluster operates as an Aurora Limitless Database. When set to standard (the default), the cluster uses normal DB instance creation.
+        public var clusterScalabilityType: RDSClientTypes.ClusterScalabilityType?
         /// Indicates whether tags are copied from the DB cluster to snapshots of the DB cluster.
         public var copyTagsToSnapshot: Swift.Bool?
         /// Indicates whether the DB cluster is a clone of a DB cluster owned by a different Amazon Web Services account.
@@ -4918,6 +4981,7 @@ extension RDSClientTypes {
             characterSetName: Swift.String? = nil,
             cloneGroupId: Swift.String? = nil,
             clusterCreateTime: Foundation.Date? = nil,
+            clusterScalabilityType: RDSClientTypes.ClusterScalabilityType? = nil,
             copyTagsToSnapshot: Swift.Bool? = nil,
             crossAccountClone: Swift.Bool? = nil,
             customEndpoints: [Swift.String]? = nil,
@@ -5000,6 +5064,7 @@ extension RDSClientTypes {
             self.characterSetName = characterSetName
             self.cloneGroupId = cloneGroupId
             self.clusterCreateTime = clusterCreateTime
+            self.clusterScalabilityType = clusterScalabilityType
             self.copyTagsToSnapshot = copyTagsToSnapshot
             self.crossAccountClone = crossAccountClone
             self.customEndpoints = customEndpoints
@@ -5064,10 +5129,9 @@ extension RDSClientTypes {
             self.vpcSecurityGroups = vpcSecurityGroups
         }
     }
-
 }
 
-public struct CreateDBClusterOutput {
+public struct CreateDBClusterOutput: Swift.Sendable {
     /// Contains the details of an Amazon Aurora DB cluster or Multi-AZ DB cluster. For an Amazon Aurora DB cluster, this data type is used as a response element in the operations CreateDBCluster, DeleteDBCluster, DescribeDBClusters, FailoverDBCluster, ModifyDBCluster, PromoteReadReplicaDBCluster, RestoreDBClusterFromS3, RestoreDBClusterFromSnapshot, RestoreDBClusterToPointInTime, StartDBCluster, and StopDBCluster. For a Multi-AZ DB cluster, this data type is used as a response element in the operations CreateDBCluster, DeleteDBCluster, DescribeDBClusters, FailoverDBCluster, ModifyDBCluster, RebootDBCluster, RestoreDBClusterFromSnapshot, and RestoreDBClusterToPointInTime. For more information on Amazon Aurora DB clusters, see [ What is Amazon Aurora?](https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/CHAP_AuroraOverview.html) in the Amazon Aurora User Guide. For more information on Multi-AZ DB clusters, see [ Multi-AZ deployments with two readable standby DB instances](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/multi-az-db-clusters-concepts.html) in the Amazon RDS User Guide.
     public var dbCluster: RDSClientTypes.DBCluster?
 
@@ -5127,7 +5191,7 @@ public struct DBClusterEndpointQuotaExceededFault: ClientRuntime.ModeledError, A
     }
 }
 
-public struct CreateDBClusterEndpointInput {
+public struct CreateDBClusterEndpointInput: Swift.Sendable {
     /// The identifier to use for the new endpoint. This parameter is stored as a lowercase string.
     /// This member is required.
     public var dbClusterEndpointIdentifier: Swift.String?
@@ -5174,7 +5238,7 @@ public struct CreateDBClusterEndpointInput {
 ///
 ///
 /// For the data structure that represents Amazon RDS DB instance endpoints, see Endpoint.
-public struct CreateDBClusterEndpointOutput {
+public struct CreateDBClusterEndpointOutput: Swift.Sendable {
     /// The type associated with a custom endpoint. One of: READER, WRITER, ANY.
     public var customEndpointType: Swift.String?
     /// The Amazon Resource Name (ARN) for the endpoint.
@@ -5223,7 +5287,7 @@ public struct CreateDBClusterEndpointOutput {
 }
 
 ///
-public struct CreateDBClusterParameterGroupInput {
+public struct CreateDBClusterParameterGroupInput: Swift.Sendable {
     /// The name of the DB cluster parameter group. Constraints:
     ///
     /// * Must not match the name of an existing DB cluster parameter group.
@@ -5263,7 +5327,7 @@ public struct CreateDBClusterParameterGroupInput {
     }
 }
 
-public struct CreateDBClusterParameterGroupOutput {
+public struct CreateDBClusterParameterGroupOutput: Swift.Sendable {
     /// Contains the details of an Amazon RDS DB cluster parameter group. This data type is used as a response element in the DescribeDBClusterParameterGroups action.
     public var dbClusterParameterGroup: RDSClientTypes.DBClusterParameterGroup?
 
@@ -5276,7 +5340,7 @@ public struct CreateDBClusterParameterGroupOutput {
 }
 
 ///
-public struct CreateDBClusterSnapshotInput {
+public struct CreateDBClusterSnapshotInput: Swift.Sendable {
     /// The identifier of the DB cluster to create a snapshot for. This parameter isn't case-sensitive. Constraints:
     ///
     /// * Must match the identifier of an existing DBCluster.
@@ -5312,7 +5376,7 @@ public struct CreateDBClusterSnapshotInput {
     }
 }
 
-public struct CreateDBClusterSnapshotOutput {
+public struct CreateDBClusterSnapshotOutput: Swift.Sendable {
     /// Contains the details for an Amazon RDS DB cluster snapshot This data type is used as a response element in the DescribeDBClusterSnapshots action.
     public var dbClusterSnapshot: RDSClientTypes.DBClusterSnapshot?
 
@@ -5517,7 +5581,7 @@ public struct TenantDatabaseQuotaExceededFault: ClientRuntime.ModeledError, AWSC
 }
 
 ///
-public struct CreateDBInstanceInput {
+public struct CreateDBInstanceInput: Swift.Sendable {
     /// The amount of storage in gibibytes (GiB) to allocate for the DB instance. This setting doesn't apply to Amazon Aurora DB instances. Aurora cluster volumes automatically grow as the amount of data in your database increases, though you are only charged for the space that you use in an Aurora cluster volume. Amazon RDS Custom Constraints to the amount of storage for each storage type are the following:
     ///
     /// * General Purpose (SSD) storage (gp2, gp3): Must be an integer from 40 to 65536 for RDS Custom for Oracle, 16384 for RDS Custom for SQL Server.
@@ -6178,8 +6242,9 @@ public struct CreateDBInstanceInput {
 }
 
 extension RDSClientTypes {
+
     /// Information about an Amazon Web Services Identity and Access Management (IAM) role that is associated with a DB instance.
-    public struct DBInstanceRole {
+    public struct DBInstanceRole: Swift.Sendable {
         /// The name of the feature associated with the Amazon Web Services Identity and Access Management (IAM) role. For information about supported feature names, see DBEngineVersion.
         public var featureName: Swift.String?
         /// The Amazon Resource Name (ARN) of the IAM role that is associated with the DB instance.
@@ -6204,12 +6269,11 @@ extension RDSClientTypes {
             self.status = status
         }
     }
-
 }
 
 extension RDSClientTypes {
 
-    public enum AutomationMode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AutomationMode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case allPaused
         case full
         case sdkUnknown(Swift.String)
@@ -6237,8 +6301,9 @@ extension RDSClientTypes {
 }
 
 extension RDSClientTypes {
+
     /// Automated backups of a DB instance replicated to another Amazon Web Services Region. They consist of system backups, transaction logs, and database instance properties.
-    public struct DBInstanceAutomatedBackupsReplication {
+    public struct DBInstanceAutomatedBackupsReplication: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the replicated automated backups.
         public var dbInstanceAutomatedBackupsArn: Swift.String?
 
@@ -6249,10 +6314,10 @@ extension RDSClientTypes {
             self.dbInstanceAutomatedBackupsArn = dbInstanceAutomatedBackupsArn
         }
     }
-
 }
 
 extension RDSClientTypes {
+
     /// The status of the DB parameter group. This data type is used as a response element in the following actions:
     ///
     /// * CreateDBInstance
@@ -6266,7 +6331,7 @@ extension RDSClientTypes {
     /// * RebootDBInstance
     ///
     /// * RestoreDBInstanceFromDBSnapshot
-    public struct DBParameterGroupStatus {
+    public struct DBParameterGroupStatus: Swift.Sendable {
         /// The name of the DB parameter group.
         public var dbParameterGroupName: Swift.String?
         /// The status of parameter updates. Valid values are:
@@ -6291,12 +6356,12 @@ extension RDSClientTypes {
             self.parameterApplyStatus = parameterApplyStatus
         }
     }
-
 }
 
 extension RDSClientTypes {
+
     /// Contains Availability Zone information. This data type is used as an element in the OrderableDBInstanceOption data type.
-    public struct AvailabilityZone {
+    public struct AvailabilityZone: Swift.Sendable {
         /// The name of the Availability Zone.
         public var name: Swift.String?
 
@@ -6307,12 +6372,12 @@ extension RDSClientTypes {
             self.name = name
         }
     }
-
 }
 
 extension RDSClientTypes {
+
     /// A data type that represents an Outpost. For more information about RDS on Outposts, see [Amazon RDS on Amazon Web Services Outposts](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/rds-on-outposts.html) in the Amazon RDS User Guide.
-    public struct Outpost {
+    public struct Outpost: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the Outpost.
         public var arn: Swift.String?
 
@@ -6323,12 +6388,12 @@ extension RDSClientTypes {
             self.arn = arn
         }
     }
-
 }
 
 extension RDSClientTypes {
+
     /// This data type is used as a response element for the DescribeDBSubnetGroups operation.
-    public struct Subnet {
+    public struct Subnet: Swift.Sendable {
         /// Contains Availability Zone information. This data type is used as an element in the OrderableDBInstanceOption data type.
         public var subnetAvailabilityZone: RDSClientTypes.AvailabilityZone?
         /// The identifier of the subnet.
@@ -6351,12 +6416,12 @@ extension RDSClientTypes {
             self.subnetStatus = subnetStatus
         }
     }
-
 }
 
 extension RDSClientTypes {
+
     /// Contains the details of an Amazon RDS DB subnet group. This data type is used as a response element in the DescribeDBSubnetGroups action.
-    public struct DBSubnetGroup {
+    public struct DBSubnetGroup: Swift.Sendable {
         /// The Amazon Resource Name (ARN) for the DB subnet group.
         public var dbSubnetGroupArn: Swift.String?
         /// Provides the description of the DB subnet group.
@@ -6398,10 +6463,10 @@ extension RDSClientTypes {
             self.vpcId = vpcId
         }
     }
-
 }
 
 extension RDSClientTypes {
+
     /// This data type represents the information you need to connect to an Amazon RDS DB instance. This data type is used as a response element in the following actions:
     ///
     /// * CreateDBInstance
@@ -6412,7 +6477,7 @@ extension RDSClientTypes {
     ///
     ///
     /// For the data structure that represents Amazon Aurora DB cluster endpoints, see DBClusterEndpoint.
-    public struct Endpoint {
+    public struct Endpoint: Swift.Sendable {
         /// Specifies the DNS address of the DB instance.
         public var address: Swift.String?
         /// Specifies the ID that Amazon Route 53 assigns when you create a hosted zone.
@@ -6431,12 +6496,12 @@ extension RDSClientTypes {
             self.port = port
         }
     }
-
 }
 
 extension RDSClientTypes {
+
     /// Provides information on the option groups the DB instance is a member of.
-    public struct OptionGroupMembership {
+    public struct OptionGroupMembership: Swift.Sendable {
         /// The name of the option group that the instance belongs to.
         public var optionGroupName: Swift.String?
         /// The status of the DB instance's option group membership. Valid values are: in-sync, pending-apply, pending-removal, pending-maintenance-apply, pending-maintenance-removal, applying, removing, and failed.
@@ -6451,12 +6516,12 @@ extension RDSClientTypes {
             self.status = status
         }
     }
-
 }
 
 extension RDSClientTypes {
+
     /// This data type is used as a response element in the ModifyDBInstance operation and contains changes that will be applied during the next maintenance window.
-    public struct PendingModifiedValues {
+    public struct PendingModifiedValues: Swift.Sendable {
         /// The allocated storage size for the DB instance specified in gibibytes (GiB).
         public var allocatedStorage: Swift.Int?
         /// The automation mode of the RDS Custom DB instance: full or all-paused. If full, the DB instance automates monitoring and instance recovery. If all-paused, the instance pauses automation for the duration set by --resume-full-automation-mode-minutes.
@@ -6551,12 +6616,12 @@ extension RDSClientTypes {
             self.storageType = storageType
         }
     }
-
 }
 
 extension RDSClientTypes {
+
     /// Provides a list of status information for a DB instance.
-    public struct DBInstanceStatusInfo {
+    public struct DBInstanceStatusInfo: Swift.Sendable {
         /// Details of the error if there is an error for the instance. If the instance isn't in an error state, this value is blank.
         public var message: Swift.String?
         /// Indicates whether the instance is operating normally (TRUE) or is in an error state (FALSE).
@@ -6579,12 +6644,12 @@ extension RDSClientTypes {
             self.statusType = statusType
         }
     }
-
 }
 
 extension RDSClientTypes {
+
     /// Contains the details of an Amazon RDS DB instance. This data type is used as a response element in the operations CreateDBInstance, CreateDBInstanceReadReplica, DeleteDBInstance, DescribeDBInstances, ModifyDBInstance, PromoteReadReplica, RebootDBInstance, RestoreDBInstanceFromDBSnapshot, RestoreDBInstanceFromS3, RestoreDBInstanceToPointInTime, StartDBInstance, and StopDBInstance.
-    public struct DBInstance {
+    public struct DBInstance: Swift.Sendable {
         /// Indicates whether engine-native audit fields are included in the database activity stream.
         public var activityStreamEngineNativeAuditFieldsIncluded: Swift.Bool?
         /// The name of the Amazon Kinesis data stream used for the database activity stream.
@@ -6953,10 +7018,9 @@ extension RDSClientTypes {
             self.vpcSecurityGroups = vpcSecurityGroups
         }
     }
-
 }
 
-public struct CreateDBInstanceOutput {
+public struct CreateDBInstanceOutput: Swift.Sendable {
     /// Contains the details of an Amazon RDS DB instance. This data type is used as a response element in the operations CreateDBInstance, CreateDBInstanceReadReplica, DeleteDBInstance, DescribeDBInstances, ModifyDBInstance, PromoteReadReplica, RebootDBInstance, RestoreDBInstanceFromDBSnapshot, RestoreDBInstanceFromS3, RestoreDBInstanceToPointInTime, StartDBInstance, and StopDBInstance.
     public var dbInstance: RDSClientTypes.DBInstance?
 
@@ -6992,7 +7056,7 @@ public struct DBSubnetGroupNotAllowedFault: ClientRuntime.ModeledError, AWSClien
     }
 }
 
-public struct CreateDBInstanceReadReplicaInput {
+public struct CreateDBInstanceReadReplicaInput: Swift.Sendable {
     /// The amount of storage (in gibibytes) to allocate initially for the read replica. Follow the allocation rules specified in CreateDBInstance. Be sure to allocate enough storage for your read replica so that the create operation can succeed. You can also allocate additional storage for future growth.
     public var allocatedStorage: Swift.Int?
     /// Specifies whether to automatically apply minor engine upgrades to the read replica during the maintenance window. This setting doesn't apply to RDS Custom DB instances. Default: Inherits the value from the source DB instance.
@@ -7276,7 +7340,7 @@ public struct CreateDBInstanceReadReplicaInput {
     }
 }
 
-public struct CreateDBInstanceReadReplicaOutput {
+public struct CreateDBInstanceReadReplicaOutput: Swift.Sendable {
     /// Contains the details of an Amazon RDS DB instance. This data type is used as a response element in the operations CreateDBInstance, CreateDBInstanceReadReplica, DeleteDBInstance, DescribeDBInstances, ModifyDBInstance, PromoteReadReplica, RebootDBInstance, RestoreDBInstanceFromDBSnapshot, RestoreDBInstanceFromS3, RestoreDBInstanceToPointInTime, StartDBInstance, and StopDBInstance.
     public var dbInstance: RDSClientTypes.DBInstance?
 
@@ -7289,7 +7353,7 @@ public struct CreateDBInstanceReadReplicaOutput {
 }
 
 ///
-public struct CreateDBParameterGroupInput {
+public struct CreateDBParameterGroupInput: Swift.Sendable {
     /// The DB parameter group family name. A DB parameter group can be associated with one and only one DB parameter group family, and can be applied only to a DB instance running a database engine and engine version compatible with that DB parameter group family. To list all of the available parameter group families for a DB engine, use the following command: aws rds describe-db-engine-versions --query "DBEngineVersions[].DBParameterGroupFamily" --engine  For example, to list all of the available parameter group families for the MySQL DB engine, use the following command: aws rds describe-db-engine-versions --query "DBEngineVersions[].DBParameterGroupFamily" --engine mysql The output contains duplicates. The following are the valid DB engine values:
     ///
     /// * aurora-mysql
@@ -7353,7 +7417,7 @@ public struct CreateDBParameterGroupInput {
     }
 }
 
-public struct CreateDBParameterGroupOutput {
+public struct CreateDBParameterGroupOutput: Swift.Sendable {
     /// Contains the details of an Amazon RDS DB parameter group. This data type is used as a response element in the DescribeDBParameterGroups action.
     public var dbParameterGroup: RDSClientTypes.DBParameterGroup?
 
@@ -7415,7 +7479,7 @@ public struct DBProxyQuotaExceededFault: ClientRuntime.ModeledError, AWSClientRu
 
 extension RDSClientTypes {
 
-    public enum AuthScheme: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AuthScheme: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case secrets
         case sdkUnknown(Swift.String)
 
@@ -7441,7 +7505,7 @@ extension RDSClientTypes {
 
 extension RDSClientTypes {
 
-    public enum ClientPasswordAuthType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ClientPasswordAuthType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case mysqlNativePassword
         case postgresMd5
         case postgresScramSha256
@@ -7476,7 +7540,7 @@ extension RDSClientTypes {
 
 extension RDSClientTypes {
 
-    public enum IAMAuthMode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum IAMAuthMode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case disabled
         case enabled
         case `required`
@@ -7507,8 +7571,9 @@ extension RDSClientTypes {
 }
 
 extension RDSClientTypes {
+
     /// Specifies the details of authentication used by a proxy to log in as a specific database user.
-    public struct UserAuthConfig {
+    public struct UserAuthConfig: Swift.Sendable {
         /// The type of authentication that the proxy uses for connections from the proxy to the underlying database.
         public var authScheme: RDSClientTypes.AuthScheme?
         /// The type of authentication the proxy uses for connections from clients.
@@ -7539,12 +7604,11 @@ extension RDSClientTypes {
             self.userName = userName
         }
     }
-
 }
 
 extension RDSClientTypes {
 
-    public enum EngineFamily: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum EngineFamily: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case mysql
         case postgresql
         case sqlserver
@@ -7574,7 +7638,7 @@ extension RDSClientTypes {
     }
 }
 
-public struct CreateDBProxyInput {
+public struct CreateDBProxyInput: Swift.Sendable {
     /// The authorization mechanism that the proxy uses.
     /// This member is required.
     public var auth: [RDSClientTypes.UserAuthConfig]?
@@ -7628,8 +7692,9 @@ public struct CreateDBProxyInput {
 }
 
 extension RDSClientTypes {
+
     /// Returns the details of authentication used by a proxy to log in as a specific database user.
-    public struct UserAuthConfigInfo {
+    public struct UserAuthConfigInfo: Swift.Sendable {
         /// The type of authentication that the proxy uses for connections from the proxy to the underlying database.
         public var authScheme: RDSClientTypes.AuthScheme?
         /// The type of authentication the proxy uses for connections from clients.
@@ -7660,12 +7725,11 @@ extension RDSClientTypes {
             self.userName = userName
         }
     }
-
 }
 
 extension RDSClientTypes {
 
-    public enum DBProxyStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DBProxyStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case available
         case creating
         case deleting
@@ -7714,8 +7778,9 @@ extension RDSClientTypes {
 }
 
 extension RDSClientTypes {
+
     /// The data structure representing a proxy managed by the RDS Proxy. This data type is used as a response element in the DescribeDBProxies action.
-    public struct DBProxy {
+    public struct DBProxy: Swift.Sendable {
         /// One or more data structures specifying the authorization mechanism to connect to the associated RDS DB instance or Aurora DB cluster.
         public var auth: [RDSClientTypes.UserAuthConfigInfo]?
         /// The date and time when the proxy was first created.
@@ -7782,10 +7847,9 @@ extension RDSClientTypes {
             self.vpcSubnetIds = vpcSubnetIds
         }
     }
-
 }
 
-public struct CreateDBProxyOutput {
+public struct CreateDBProxyOutput: Swift.Sendable {
     /// The DBProxy structure corresponding to the new proxy.
     public var dbProxy: RDSClientTypes.DBProxy?
 
@@ -7871,7 +7935,7 @@ public struct InvalidDBProxyStateFault: ClientRuntime.ModeledError, AWSClientRun
 
 extension RDSClientTypes {
 
-    public enum DBProxyEndpointTargetRole: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DBProxyEndpointTargetRole: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case readOnly
         case readWrite
         case sdkUnknown(Swift.String)
@@ -7898,7 +7962,7 @@ extension RDSClientTypes {
     }
 }
 
-public struct CreateDBProxyEndpointInput {
+public struct CreateDBProxyEndpointInput: Swift.Sendable {
     /// The name of the DB proxy endpoint to create.
     /// This member is required.
     public var dbProxyEndpointName: Swift.String?
@@ -7935,7 +7999,7 @@ public struct CreateDBProxyEndpointInput {
 
 extension RDSClientTypes {
 
-    public enum DBProxyEndpointStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DBProxyEndpointStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case available
         case creating
         case deleting
@@ -7975,8 +8039,9 @@ extension RDSClientTypes {
 }
 
 extension RDSClientTypes {
+
     /// The data structure representing an endpoint associated with a DB proxy. RDS automatically creates one endpoint for each DB proxy. For Aurora DB clusters, you can associate additional endpoints with the same DB proxy. These endpoints can be read/write or read-only. They can also reside in different VPCs than the associated DB proxy. This data type is used as a response element in the DescribeDBProxyEndpoints operation.
-    public struct DBProxyEndpoint {
+    public struct DBProxyEndpoint: Swift.Sendable {
         /// The date and time when the DB proxy endpoint was first created.
         public var createdDate: Foundation.Date?
         /// The Amazon Resource Name (ARN) for the DB proxy endpoint.
@@ -8027,10 +8092,9 @@ extension RDSClientTypes {
             self.vpcSubnetIds = vpcSubnetIds
         }
     }
-
 }
 
-public struct CreateDBProxyEndpointOutput {
+public struct CreateDBProxyEndpointOutput: Swift.Sendable {
     /// The DBProxyEndpoint object that is created by the API operation. The DB proxy endpoint that you create might provide capabilities such as read/write or read-only operations, or using a different VPC than the proxy's default VPC.
     public var dbProxyEndpoint: RDSClientTypes.DBProxyEndpoint?
 
@@ -8115,7 +8179,7 @@ public struct DBSecurityGroupQuotaExceededFault: ClientRuntime.ModeledError, AWS
 }
 
 ///
-public struct CreateDBSecurityGroupInput {
+public struct CreateDBSecurityGroupInput: Swift.Sendable {
     /// The description for the DB security group.
     /// This member is required.
     public var dbSecurityGroupDescription: Swift.String?
@@ -8148,7 +8212,7 @@ public struct CreateDBSecurityGroupInput {
     }
 }
 
-public struct CreateDBSecurityGroupOutput {
+public struct CreateDBSecurityGroupOutput: Swift.Sendable {
     /// Contains the details for an Amazon RDS DB security group. This data type is used as a response element in the DescribeDBSecurityGroups action.
     public var dbSecurityGroup: RDSClientTypes.DBSecurityGroup?
 
@@ -8232,7 +8296,7 @@ public struct UnsupportedDBEngineVersionFault: ClientRuntime.ModeledError, AWSCl
     }
 }
 
-public struct CreateDBShardGroupInput {
+public struct CreateDBShardGroupInput: Swift.Sendable {
     /// Specifies whether to create standby DB shard groups for the DB shard group. Valid values are the following:
     ///
     /// * 0 - Creates a DB shard group without a standby DB shard group. This is the default value.
@@ -8265,6 +8329,8 @@ public struct CreateDBShardGroupInput {
     ///
     /// * If the subnets are part of a VPC that has an internet gateway attached to it, the DB shard group is public.
     public var publiclyAccessible: Swift.Bool?
+    /// A list of tags. For more information, see [Tagging Amazon RDS resources](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_Tagging.html) in the Amazon RDS User Guide or [Tagging Amazon Aurora and Amazon RDS resources](https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/USER_Tagging.html) in the Amazon Aurora User Guide.
+    public var tags: [RDSClientTypes.Tag]?
 
     public init(
         computeRedundancy: Swift.Int? = nil,
@@ -8272,7 +8338,8 @@ public struct CreateDBShardGroupInput {
         dbShardGroupIdentifier: Swift.String? = nil,
         maxACU: Swift.Double? = nil,
         minACU: Swift.Double? = nil,
-        publiclyAccessible: Swift.Bool? = nil
+        publiclyAccessible: Swift.Bool? = nil,
+        tags: [RDSClientTypes.Tag]? = nil
     )
     {
         self.computeRedundancy = computeRedundancy
@@ -8281,10 +8348,11 @@ public struct CreateDBShardGroupInput {
         self.maxACU = maxACU
         self.minACU = minACU
         self.publiclyAccessible = publiclyAccessible
+        self.tags = tags
     }
 }
 
-public struct CreateDBShardGroupOutput {
+public struct CreateDBShardGroupOutput: Swift.Sendable {
     /// Specifies whether to create standby DB shard groups for the DB shard group. Valid values are the following:
     ///
     /// * 0 - Creates a DB shard group without a standby DB shard group. This is the default value.
@@ -8311,6 +8379,8 @@ public struct CreateDBShardGroupOutput {
     public var publiclyAccessible: Swift.Bool?
     /// The status of the DB shard group.
     public var status: Swift.String?
+    /// A list of tags. For more information, see [Tagging Amazon RDS resources](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_Tagging.html) in the Amazon RDS User Guide or [Tagging Amazon Aurora and Amazon RDS resources](https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/USER_Tagging.html) in the Amazon Aurora User Guide.
+    public var tagList: [RDSClientTypes.Tag]?
 
     public init(
         computeRedundancy: Swift.Int? = nil,
@@ -8322,7 +8392,8 @@ public struct CreateDBShardGroupOutput {
         maxACU: Swift.Double? = nil,
         minACU: Swift.Double? = nil,
         publiclyAccessible: Swift.Bool? = nil,
-        status: Swift.String? = nil
+        status: Swift.String? = nil,
+        tagList: [RDSClientTypes.Tag]? = nil
     )
     {
         self.computeRedundancy = computeRedundancy
@@ -8335,11 +8406,12 @@ public struct CreateDBShardGroupOutput {
         self.minACU = minACU
         self.publiclyAccessible = publiclyAccessible
         self.status = status
+        self.tagList = tagList
     }
 }
 
 ///
-public struct CreateDBSnapshotInput {
+public struct CreateDBSnapshotInput: Swift.Sendable {
     /// The identifier of the DB instance that you want to create the snapshot of. Constraints:
     ///
     /// * Must match the identifier of an existing DBInstance.
@@ -8374,7 +8446,7 @@ public struct CreateDBSnapshotInput {
     }
 }
 
-public struct CreateDBSnapshotOutput {
+public struct CreateDBSnapshotOutput: Swift.Sendable {
     /// Contains the details of an Amazon RDS DB snapshot. This data type is used as a response element in the DescribeDBSnapshots action.
     public var dbSnapshot: RDSClientTypes.DBSnapshot?
 
@@ -8459,7 +8531,7 @@ public struct DBSubnetQuotaExceededFault: ClientRuntime.ModeledError, AWSClientR
 }
 
 ///
-public struct CreateDBSubnetGroupInput {
+public struct CreateDBSubnetGroupInput: Swift.Sendable {
     /// The description for the DB subnet group.
     /// This member is required.
     public var dbSubnetGroupDescription: Swift.String?
@@ -8495,7 +8567,7 @@ public struct CreateDBSubnetGroupInput {
     }
 }
 
-public struct CreateDBSubnetGroupOutput {
+public struct CreateDBSubnetGroupOutput: Swift.Sendable {
     /// Contains the details of an Amazon RDS DB subnet group. This data type is used as a response element in the DescribeDBSubnetGroups action.
     public var dbSubnetGroup: RDSClientTypes.DBSubnetGroup?
 
@@ -8652,7 +8724,7 @@ public struct SubscriptionCategoryNotFoundFault: ClientRuntime.ModeledError, AWS
 }
 
 ///
-public struct CreateEventSubscriptionInput {
+public struct CreateEventSubscriptionInput: Swift.Sendable {
     /// Specifies whether to activate the subscription. If the event notification subscription isn't activated, the subscription is created but not active.
     public var enabled: Swift.Bool?
     /// A list of event categories for a particular source type (SourceType) that you want to subscribe to. You can see a list of the categories for a given source type in the "Amazon RDS event categories and event messages" section of the [ Amazon RDS User Guide ](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_Events.Messages.html) or the [ Amazon Aurora User Guide ](https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/USER_Events.Messages.html). You can also see this list by using the DescribeEventCategories operation.
@@ -8706,7 +8778,7 @@ public struct CreateEventSubscriptionInput {
     }
 }
 
-public struct CreateEventSubscriptionOutput {
+public struct CreateEventSubscriptionOutput: Swift.Sendable {
     /// Contains the results of a successful invocation of the DescribeEventSubscriptions action.
     public var eventSubscription: RDSClientTypes.EventSubscription?
 
@@ -8718,7 +8790,7 @@ public struct CreateEventSubscriptionOutput {
     }
 }
 
-/// The GlobalClusterIdentifier already exists. Choose a new global database identifier (unique name) to create a new global database cluster.
+/// The GlobalClusterIdentifier already exists. Specify a new global database identifier (unique name) to create a new global database cluster or to rename an existing one.
 public struct GlobalClusterAlreadyExistsFault: ClientRuntime.ModeledError, AWSClientRuntime.AWSServiceError, ClientRuntime.HTTPError, Swift.Error {
 
     public struct Properties {
@@ -8766,7 +8838,7 @@ public struct GlobalClusterQuotaExceededFault: ClientRuntime.ModeledError, AWSCl
     }
 }
 
-public struct CreateGlobalClusterInput {
+public struct CreateGlobalClusterInput: Swift.Sendable {
     /// The name for your database of up to 64 alphanumeric characters. If you don't specify a name, Amazon Aurora doesn't create a database in the global database cluster. Constraints:
     ///
     /// * Can't be specified if SourceDBClusterIdentifier is specified. In this case, Amazon Aurora uses the database name from the source DB cluster.
@@ -8828,7 +8900,7 @@ public struct CreateGlobalClusterInput {
 
 extension RDSClientTypes {
 
-    public enum FailoverStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum FailoverStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case cancelling
         case failingOver
         case pending
@@ -8859,8 +8931,9 @@ extension RDSClientTypes {
 }
 
 extension RDSClientTypes {
+
     /// Contains the state of scheduled or in-process operations on a global cluster (Aurora global database). This data type is empty unless a switchover or failover operation is scheduled or is in progress on the Aurora global database.
-    public struct FailoverState {
+    public struct FailoverState: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the Aurora DB cluster that is currently being demoted, and which is associated with this state.
         public var fromDbClusterArn: Swift.String?
         /// Indicates whether the operation is a global switchover or a global failover. If data loss is allowed, then the operation is a global failover. Otherwise, it's a switchover.
@@ -8891,12 +8964,11 @@ extension RDSClientTypes {
             self.toDbClusterArn = toDbClusterArn
         }
     }
-
 }
 
 extension RDSClientTypes {
 
-    public enum GlobalClusterMemberSynchronizationStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum GlobalClusterMemberSynchronizationStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case connected
         case pendingResync
         case sdkUnknown(Swift.String)
@@ -8924,8 +8996,9 @@ extension RDSClientTypes {
 }
 
 extension RDSClientTypes {
+
     /// A data structure with information about any primary and secondary clusters associated with a global cluster (Aurora global database).
-    public struct GlobalClusterMember {
+    public struct GlobalClusterMember: Swift.Sendable {
         /// The Amazon Resource Name (ARN) for each Aurora DB cluster in the global cluster.
         public var dbClusterArn: Swift.String?
         /// The status of write forwarding for a secondary cluster in the global cluster.
@@ -8952,16 +9025,18 @@ extension RDSClientTypes {
             self.synchronizationStatus = synchronizationStatus
         }
     }
-
 }
 
 extension RDSClientTypes {
+
     /// A data type representing an Aurora global database.
-    public struct GlobalCluster {
+    public struct GlobalCluster: Swift.Sendable {
         /// The default database name within the new global database cluster.
         public var databaseName: Swift.String?
         /// The deletion protection setting for the new global database cluster.
         public var deletionProtection: Swift.Bool?
+        /// The writer endpoint for the new global database cluster. This endpoint always points to the writer DB instance in the current primary cluster.
+        public var endpoint: Swift.String?
         /// The Aurora database engine used by the global database cluster.
         public var engine: Swift.String?
         /// The life cycle type for the global cluster. For more information, see CreateGlobalCluster.
@@ -8988,6 +9063,7 @@ extension RDSClientTypes {
         public init(
             databaseName: Swift.String? = nil,
             deletionProtection: Swift.Bool? = nil,
+            endpoint: Swift.String? = nil,
             engine: Swift.String? = nil,
             engineLifecycleSupport: Swift.String? = nil,
             engineVersion: Swift.String? = nil,
@@ -9003,6 +9079,7 @@ extension RDSClientTypes {
         {
             self.databaseName = databaseName
             self.deletionProtection = deletionProtection
+            self.endpoint = endpoint
             self.engine = engine
             self.engineLifecycleSupport = engineLifecycleSupport
             self.engineVersion = engineVersion
@@ -9016,10 +9093,9 @@ extension RDSClientTypes {
             self.tagList = tagList
         }
     }
-
 }
 
-public struct CreateGlobalClusterOutput {
+public struct CreateGlobalClusterOutput: Swift.Sendable {
     /// A data type representing an Aurora global database.
     public var globalCluster: RDSClientTypes.GlobalCluster?
 
@@ -9103,7 +9179,7 @@ public struct IntegrationQuotaExceededFault: ClientRuntime.ModeledError, AWSClie
     }
 }
 
-public struct CreateIntegrationInput {
+public struct CreateIntegrationInput: Swift.Sendable {
     /// An optional set of non-secret key–value pairs that contains additional contextual information about the data. For more information, see [Encryption context](https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#encrypt_context) in the Amazon Web Services Key Management Service Developer Guide. You can only include this parameter if you specify the KMSKeyId parameter.
     public var additionalEncryptionContext: [Swift.String: Swift.String]?
     /// Data filtering options for the integration. For more information, see [Data filtering for Aurora zero-ETL integrations with Amazon Redshift](https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/zero-etl.filtering.html). Valid for: Integrations with Aurora MySQL source DB clusters only
@@ -9147,8 +9223,9 @@ public struct CreateIntegrationInput {
 }
 
 extension RDSClientTypes {
+
     /// An error associated with a zero-ETL integration with Amazon Redshift.
-    public struct IntegrationError {
+    public struct IntegrationError: Swift.Sendable {
         /// The error code associated with the integration.
         /// This member is required.
         public var errorCode: Swift.String?
@@ -9164,12 +9241,11 @@ extension RDSClientTypes {
             self.errorMessage = errorMessage
         }
     }
-
 }
 
 extension RDSClientTypes {
 
-    public enum IntegrationStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum IntegrationStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case active
         case creating
         case deleting
@@ -9212,7 +9288,7 @@ extension RDSClientTypes {
 }
 
 /// A zero-ETL integration with Amazon Redshift.
-public struct CreateIntegrationOutput {
+public struct CreateIntegrationOutput: Swift.Sendable {
     /// The encryption context for the integration. For more information, see [Encryption context](https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#encrypt_context) in the Amazon Web Services Key Management Service Developer Guide.
     public var additionalEncryptionContext: [Swift.String: Swift.String]?
     /// The time when the integration was created, in Universal Coordinated Time (UTC).
@@ -9269,7 +9345,7 @@ public struct CreateIntegrationOutput {
 }
 
 ///
-public struct CreateOptionGroupInput {
+public struct CreateOptionGroupInput: Swift.Sendable {
     /// The name of the engine to associate this option group with. Valid Values:
     ///
     /// * db2-ae
@@ -9336,7 +9412,7 @@ public struct CreateOptionGroupInput {
     }
 }
 
-public struct CreateOptionGroupOutput {
+public struct CreateOptionGroupOutput: Swift.Sendable {
     ///
     public var optionGroup: RDSClientTypes.OptionGroup?
 
@@ -9372,7 +9448,7 @@ public struct TenantDatabaseAlreadyExistsFault: ClientRuntime.ModeledError, AWSC
     }
 }
 
-public struct CreateTenantDatabaseInput {
+public struct CreateTenantDatabaseInput: Swift.Sendable {
     /// The character set for your tenant database. If you don't specify a value, the character set name defaults to AL32UTF8.
     public var characterSetName: Swift.String?
     /// The user-supplied DB instance identifier. RDS creates your tenant database in this DB instance. This parameter isn't case-sensitive.
@@ -9428,8 +9504,9 @@ extension CreateTenantDatabaseInput: Swift.CustomDebugStringConvertible {
 }
 
 extension RDSClientTypes {
+
     /// A response element in the ModifyTenantDatabase operation that describes changes that will be applied. Specific changes are identified by subelements.
-    public struct TenantDatabasePendingModifiedValues {
+    public struct TenantDatabasePendingModifiedValues: Swift.Sendable {
         /// The master password for the tenant database.
         public var masterUserPassword: Swift.String?
         /// The name of the tenant database.
@@ -9444,7 +9521,6 @@ extension RDSClientTypes {
             self.tenantDBName = tenantDBName
         }
     }
-
 }
 
 extension RDSClientTypes.TenantDatabasePendingModifiedValues: Swift.CustomDebugStringConvertible {
@@ -9453,8 +9529,9 @@ extension RDSClientTypes.TenantDatabasePendingModifiedValues: Swift.CustomDebugS
 }
 
 extension RDSClientTypes {
+
     /// A tenant database in the DB instance. This data type is an element in the response to the DescribeTenantDatabases action.
-    public struct TenantDatabase {
+    public struct TenantDatabase: Swift.Sendable {
         /// The character set of the tenant database.
         public var characterSetName: Swift.String?
         /// The ID of the DB instance that contains the tenant database.
@@ -9513,10 +9590,9 @@ extension RDSClientTypes {
             self.tenantDatabaseResourceId = tenantDatabaseResourceId
         }
     }
-
 }
 
-public struct CreateTenantDatabaseOutput {
+public struct CreateTenantDatabaseOutput: Swift.Sendable {
     /// A tenant database in the DB instance. This data type is an element in the response to the DescribeTenantDatabases action.
     public var tenantDatabase: RDSClientTypes.TenantDatabase?
 
@@ -9552,7 +9628,7 @@ public struct InvalidBlueGreenDeploymentStateFault: ClientRuntime.ModeledError, 
     }
 }
 
-public struct DeleteBlueGreenDeploymentInput {
+public struct DeleteBlueGreenDeploymentInput: Swift.Sendable {
     /// The unique identifier of the blue/green deployment to delete. This parameter isn't case-sensitive. Constraints:
     ///
     /// * Must match an existing blue/green deployment identifier.
@@ -9571,7 +9647,7 @@ public struct DeleteBlueGreenDeploymentInput {
     }
 }
 
-public struct DeleteBlueGreenDeploymentOutput {
+public struct DeleteBlueGreenDeploymentOutput: Swift.Sendable {
     /// Details about a blue/green deployment. For more information, see [Using Amazon RDS Blue/Green Deployments for database updates](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/blue-green-deployments.html) in the Amazon RDS User Guide and [Using Amazon RDS Blue/Green Deployments for database updates](https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/blue-green-deployments.html) in the Amazon Aurora User Guide.
     public var blueGreenDeployment: RDSClientTypes.BlueGreenDeployment?
 
@@ -9631,7 +9707,7 @@ public struct InvalidCustomDBEngineVersionStateFault: ClientRuntime.ModeledError
     }
 }
 
-public struct DeleteCustomDBEngineVersionInput {
+public struct DeleteCustomDBEngineVersionInput: Swift.Sendable {
     /// The database engine. RDS Custom for Oracle supports the following values:
     ///
     /// * custom-oracle-ee
@@ -9658,7 +9734,7 @@ public struct DeleteCustomDBEngineVersionInput {
 }
 
 /// This data type is used as a response element in the action DescribeDBEngineVersions.
-public struct DeleteCustomDBEngineVersionOutput {
+public struct DeleteCustomDBEngineVersionOutput: Swift.Sendable {
     /// The creation time of the DB engine version.
     public var createTime: Foundation.Date?
     /// JSON string that lists the installation files and parameters that RDS Custom uses to create a custom engine version (CEV). RDS Custom applies the patches in the order in which they're listed in the manifest. You can set the Oracle home, Oracle base, and UNIX/Linux user and group using the installation parameters. For more information, see [JSON fields in the CEV manifest](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/custom-cev.preparing.html#custom-cev.preparing.manifest.fields) in the Amazon RDS User Guide.
@@ -9827,7 +9903,7 @@ public struct DBClusterAutomatedBackupQuotaExceededFault: ClientRuntime.ModeledE
 }
 
 ///
-public struct DeleteDBClusterInput {
+public struct DeleteDBClusterInput: Swift.Sendable {
     /// The DB cluster identifier for the DB cluster to be deleted. This parameter isn't case-sensitive. Constraints:
     ///
     /// * Must match an existing DBClusterIdentifier.
@@ -9860,7 +9936,7 @@ public struct DeleteDBClusterInput {
     }
 }
 
-public struct DeleteDBClusterOutput {
+public struct DeleteDBClusterOutput: Swift.Sendable {
     /// Contains the details of an Amazon Aurora DB cluster or Multi-AZ DB cluster. For an Amazon Aurora DB cluster, this data type is used as a response element in the operations CreateDBCluster, DeleteDBCluster, DescribeDBClusters, FailoverDBCluster, ModifyDBCluster, PromoteReadReplicaDBCluster, RestoreDBClusterFromS3, RestoreDBClusterFromSnapshot, RestoreDBClusterToPointInTime, StartDBCluster, and StopDBCluster. For a Multi-AZ DB cluster, this data type is used as a response element in the operations CreateDBCluster, DeleteDBCluster, DescribeDBClusters, FailoverDBCluster, ModifyDBCluster, RebootDBCluster, RestoreDBClusterFromSnapshot, and RestoreDBClusterToPointInTime. For more information on Amazon Aurora DB clusters, see [ What is Amazon Aurora?](https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/CHAP_AuroraOverview.html) in the Amazon Aurora User Guide. For more information on Multi-AZ DB clusters, see [ Multi-AZ deployments with two readable standby DB instances](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/multi-az-db-clusters-concepts.html) in the Amazon RDS User Guide.
     public var dbCluster: RDSClientTypes.DBCluster?
 
@@ -9920,7 +9996,7 @@ public struct InvalidDBClusterAutomatedBackupStateFault: ClientRuntime.ModeledEr
     }
 }
 
-public struct DeleteDBClusterAutomatedBackupInput {
+public struct DeleteDBClusterAutomatedBackupInput: Swift.Sendable {
     /// The identifier for the source DB cluster, which can't be changed and which is unique to an Amazon Web Services Region.
     /// This member is required.
     public var dbClusterResourceId: Swift.String?
@@ -9934,8 +10010,9 @@ public struct DeleteDBClusterAutomatedBackupInput {
 }
 
 extension RDSClientTypes {
+
     /// Earliest and latest time an instance can be restored to:
-    public struct RestoreWindow {
+    public struct RestoreWindow: Swift.Sendable {
         /// The earliest time you can restore an instance to.
         public var earliestTime: Foundation.Date?
         /// The latest time you can restore an instance to.
@@ -9950,12 +10027,12 @@ extension RDSClientTypes {
             self.latestTime = latestTime
         }
     }
-
 }
 
 extension RDSClientTypes {
+
     /// An automated backup of a DB cluster. It consists of system backups, transaction logs, and the database cluster properties that existed at the time you deleted the source cluster.
-    public struct DBClusterAutomatedBackup {
+    public struct DBClusterAutomatedBackup: Swift.Sendable {
         /// For all database engines except Amazon Aurora, AllocatedStorage specifies the allocated storage size in gibibytes (GiB). For Aurora, AllocatedStorage always returns 1, because Aurora DB cluster storage size isn't fixed, but instead automatically adjusts as needed.
         public var allocatedStorage: Swift.Int?
         /// The Availability Zones where instances in the DB cluster can be created. For information on Amazon Web Services Regions and Availability Zones, see [Regions and Availability Zones](https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/Concepts.RegionsAndAvailabilityZones.html).
@@ -10064,10 +10141,9 @@ extension RDSClientTypes {
             self.vpcId = vpcId
         }
     }
-
 }
 
-public struct DeleteDBClusterAutomatedBackupOutput {
+public struct DeleteDBClusterAutomatedBackupOutput: Swift.Sendable {
     /// An automated backup of a DB cluster. It consists of system backups, transaction logs, and the database cluster properties that existed at the time you deleted the source cluster.
     public var dbClusterAutomatedBackup: RDSClientTypes.DBClusterAutomatedBackup?
 
@@ -10127,7 +10203,7 @@ public struct InvalidDBClusterEndpointStateFault: ClientRuntime.ModeledError, AW
     }
 }
 
-public struct DeleteDBClusterEndpointInput {
+public struct DeleteDBClusterEndpointInput: Swift.Sendable {
     /// The identifier associated with the custom endpoint. This parameter is stored as a lowercase string.
     /// This member is required.
     public var dbClusterEndpointIdentifier: Swift.String?
@@ -10152,7 +10228,7 @@ public struct DeleteDBClusterEndpointInput {
 ///
 ///
 /// For the data structure that represents Amazon RDS DB instance endpoints, see Endpoint.
-public struct DeleteDBClusterEndpointOutput {
+public struct DeleteDBClusterEndpointOutput: Swift.Sendable {
     /// The type associated with a custom endpoint. One of: READER, WRITER, ANY.
     public var customEndpointType: Swift.String?
     /// The Amazon Resource Name (ARN) for the endpoint.
@@ -10225,7 +10301,7 @@ public struct InvalidDBParameterGroupStateFault: ClientRuntime.ModeledError, AWS
 }
 
 ///
-public struct DeleteDBClusterParameterGroupInput {
+public struct DeleteDBClusterParameterGroupInput: Swift.Sendable {
     /// The name of the DB cluster parameter group. Constraints:
     ///
     /// * Must be the name of an existing DB cluster parameter group.
@@ -10245,7 +10321,7 @@ public struct DeleteDBClusterParameterGroupInput {
 }
 
 ///
-public struct DeleteDBClusterSnapshotInput {
+public struct DeleteDBClusterSnapshotInput: Swift.Sendable {
     /// The identifier of the DB cluster snapshot to delete. Constraints: Must be the name of an existing DB cluster snapshot in the available state.
     /// This member is required.
     public var dbClusterSnapshotIdentifier: Swift.String?
@@ -10258,7 +10334,7 @@ public struct DeleteDBClusterSnapshotInput {
     }
 }
 
-public struct DeleteDBClusterSnapshotOutput {
+public struct DeleteDBClusterSnapshotOutput: Swift.Sendable {
     /// Contains the details for an Amazon RDS DB cluster snapshot This data type is used as a response element in the DescribeDBClusterSnapshots action.
     public var dbClusterSnapshot: RDSClientTypes.DBClusterSnapshot?
 
@@ -10295,7 +10371,7 @@ public struct DBInstanceAutomatedBackupQuotaExceededFault: ClientRuntime.Modeled
 }
 
 ///
-public struct DeleteDBInstanceInput {
+public struct DeleteDBInstanceInput: Swift.Sendable {
     /// The DB instance identifier for the DB instance to be deleted. This parameter isn't case-sensitive. Constraints:
     ///
     /// * Must match the name of an existing DB instance.
@@ -10330,7 +10406,7 @@ public struct DeleteDBInstanceInput {
     }
 }
 
-public struct DeleteDBInstanceOutput {
+public struct DeleteDBInstanceOutput: Swift.Sendable {
     /// Contains the details of an Amazon RDS DB instance. This data type is used as a response element in the operations CreateDBInstance, CreateDBInstanceReadReplica, DeleteDBInstance, DescribeDBInstances, ModifyDBInstance, PromoteReadReplica, RebootDBInstance, RestoreDBInstanceFromDBSnapshot, RestoreDBInstanceFromS3, RestoreDBInstanceToPointInTime, StartDBInstance, and StopDBInstance.
     public var dbInstance: RDSClientTypes.DBInstance?
 
@@ -10391,7 +10467,7 @@ public struct InvalidDBInstanceAutomatedBackupStateFault: ClientRuntime.ModeledE
 }
 
 /// Parameter input for the DeleteDBInstanceAutomatedBackup operation.
-public struct DeleteDBInstanceAutomatedBackupInput {
+public struct DeleteDBInstanceAutomatedBackupInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the automated backups to delete, for example, arn:aws:rds:us-east-1:123456789012:auto-backup:ab-L2IJCEXJP7XQ7HOJ4SIEXAMPLE. This setting doesn't apply to RDS Custom.
     public var dbInstanceAutomatedBackupsArn: Swift.String?
     /// The identifier for the source DB instance, which can't be changed and which is unique to an Amazon Web Services Region.
@@ -10408,8 +10484,9 @@ public struct DeleteDBInstanceAutomatedBackupInput {
 }
 
 extension RDSClientTypes {
+
     /// An automated backup of a DB instance. It consists of system backups, transaction logs, and the database instance properties that existed at the time you deleted the source instance.
-    public struct DBInstanceAutomatedBackup {
+    public struct DBInstanceAutomatedBackup: Swift.Sendable {
         /// The allocated storage size for the the automated backup in gibibytes (GiB).
         public var allocatedStorage: Swift.Int?
         /// The Availability Zone that the automated backup was created in. For information on Amazon Web Services Regions and Availability Zones, see [Regions and Availability Zones](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Concepts.RegionsAndAvailabilityZones.html).
@@ -10546,10 +10623,9 @@ extension RDSClientTypes {
             self.vpcId = vpcId
         }
     }
-
 }
 
-public struct DeleteDBInstanceAutomatedBackupOutput {
+public struct DeleteDBInstanceAutomatedBackupOutput: Swift.Sendable {
     /// An automated backup of a DB instance. It consists of system backups, transaction logs, and the database instance properties that existed at the time you deleted the source instance.
     public var dbInstanceAutomatedBackup: RDSClientTypes.DBInstanceAutomatedBackup?
 
@@ -10562,7 +10638,7 @@ public struct DeleteDBInstanceAutomatedBackupOutput {
 }
 
 ///
-public struct DeleteDBParameterGroupInput {
+public struct DeleteDBParameterGroupInput: Swift.Sendable {
     /// The name of the DB parameter group. Constraints:
     ///
     /// * Must be the name of an existing DB parameter group
@@ -10581,7 +10657,7 @@ public struct DeleteDBParameterGroupInput {
     }
 }
 
-public struct DeleteDBProxyInput {
+public struct DeleteDBProxyInput: Swift.Sendable {
     /// The name of the DB proxy to delete.
     /// This member is required.
     public var dbProxyName: Swift.String?
@@ -10594,7 +10670,7 @@ public struct DeleteDBProxyInput {
     }
 }
 
-public struct DeleteDBProxyOutput {
+public struct DeleteDBProxyOutput: Swift.Sendable {
     /// The data structure representing the details of the DB proxy that you delete.
     public var dbProxy: RDSClientTypes.DBProxy?
 
@@ -10654,7 +10730,7 @@ public struct InvalidDBProxyEndpointStateFault: ClientRuntime.ModeledError, AWSC
     }
 }
 
-public struct DeleteDBProxyEndpointInput {
+public struct DeleteDBProxyEndpointInput: Swift.Sendable {
     /// The name of the DB proxy endpoint to delete.
     /// This member is required.
     public var dbProxyEndpointName: Swift.String?
@@ -10667,7 +10743,7 @@ public struct DeleteDBProxyEndpointInput {
     }
 }
 
-public struct DeleteDBProxyEndpointOutput {
+public struct DeleteDBProxyEndpointOutput: Swift.Sendable {
     /// The data structure representing the details of the DB proxy endpoint that you delete.
     public var dbProxyEndpoint: RDSClientTypes.DBProxyEndpoint?
 
@@ -10680,7 +10756,7 @@ public struct DeleteDBProxyEndpointOutput {
 }
 
 ///
-public struct DeleteDBSecurityGroupInput {
+public struct DeleteDBSecurityGroupInput: Swift.Sendable {
     /// The name of the DB security group to delete. You can't delete the default DB security group. Constraints:
     ///
     /// * Must be 1 to 255 letters, numbers, or hyphens.
@@ -10749,8 +10825,8 @@ public struct InvalidDBShardGroupStateFault: ClientRuntime.ModeledError, AWSClie
     }
 }
 
-public struct DeleteDBShardGroupInput {
-    /// Teh name of the DB shard group to delete.
+public struct DeleteDBShardGroupInput: Swift.Sendable {
+    /// The name of the DB shard group to delete.
     /// This member is required.
     public var dbShardGroupIdentifier: Swift.String?
 
@@ -10762,7 +10838,7 @@ public struct DeleteDBShardGroupInput {
     }
 }
 
-public struct DeleteDBShardGroupOutput {
+public struct DeleteDBShardGroupOutput: Swift.Sendable {
     /// Specifies whether to create standby DB shard groups for the DB shard group. Valid values are the following:
     ///
     /// * 0 - Creates a DB shard group without a standby DB shard group. This is the default value.
@@ -10789,6 +10865,8 @@ public struct DeleteDBShardGroupOutput {
     public var publiclyAccessible: Swift.Bool?
     /// The status of the DB shard group.
     public var status: Swift.String?
+    /// A list of tags. For more information, see [Tagging Amazon RDS resources](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_Tagging.html) in the Amazon RDS User Guide or [Tagging Amazon Aurora and Amazon RDS resources](https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/USER_Tagging.html) in the Amazon Aurora User Guide.
+    public var tagList: [RDSClientTypes.Tag]?
 
     public init(
         computeRedundancy: Swift.Int? = nil,
@@ -10800,7 +10878,8 @@ public struct DeleteDBShardGroupOutput {
         maxACU: Swift.Double? = nil,
         minACU: Swift.Double? = nil,
         publiclyAccessible: Swift.Bool? = nil,
-        status: Swift.String? = nil
+        status: Swift.String? = nil,
+        tagList: [RDSClientTypes.Tag]? = nil
     )
     {
         self.computeRedundancy = computeRedundancy
@@ -10813,11 +10892,12 @@ public struct DeleteDBShardGroupOutput {
         self.minACU = minACU
         self.publiclyAccessible = publiclyAccessible
         self.status = status
+        self.tagList = tagList
     }
 }
 
 ///
-public struct DeleteDBSnapshotInput {
+public struct DeleteDBSnapshotInput: Swift.Sendable {
     /// The DB snapshot identifier. Constraints: Must be the name of an existing DB snapshot in the available state.
     /// This member is required.
     public var dbSnapshotIdentifier: Swift.String?
@@ -10830,7 +10910,7 @@ public struct DeleteDBSnapshotInput {
     }
 }
 
-public struct DeleteDBSnapshotOutput {
+public struct DeleteDBSnapshotOutput: Swift.Sendable {
     /// Contains the details of an Amazon RDS DB snapshot. This data type is used as a response element in the DescribeDBSnapshots action.
     public var dbSnapshot: RDSClientTypes.DBSnapshot?
 
@@ -10867,7 +10947,7 @@ public struct InvalidDBSubnetStateFault: ClientRuntime.ModeledError, AWSClientRu
 }
 
 ///
-public struct DeleteDBSubnetGroupInput {
+public struct DeleteDBSubnetGroupInput: Swift.Sendable {
     /// The name of the database subnet group to delete. You can't delete the default subnet group. Constraints: Must match the name of an existing DBSubnetGroup. Must not be default. Example: mydbsubnetgroup
     /// This member is required.
     public var dbSubnetGroupName: Swift.String?
@@ -10905,7 +10985,7 @@ public struct InvalidEventSubscriptionStateFault: ClientRuntime.ModeledError, AW
 }
 
 ///
-public struct DeleteEventSubscriptionInput {
+public struct DeleteEventSubscriptionInput: Swift.Sendable {
     /// The name of the RDS event notification subscription you want to delete.
     /// This member is required.
     public var subscriptionName: Swift.String?
@@ -10918,7 +10998,7 @@ public struct DeleteEventSubscriptionInput {
     }
 }
 
-public struct DeleteEventSubscriptionOutput {
+public struct DeleteEventSubscriptionOutput: Swift.Sendable {
     /// Contains the results of a successful invocation of the DescribeEventSubscriptions action.
     public var eventSubscription: RDSClientTypes.EventSubscription?
 
@@ -10930,7 +11010,7 @@ public struct DeleteEventSubscriptionOutput {
     }
 }
 
-public struct DeleteGlobalClusterInput {
+public struct DeleteGlobalClusterInput: Swift.Sendable {
     /// The cluster identifier of the global database cluster being deleted.
     /// This member is required.
     public var globalClusterIdentifier: Swift.String?
@@ -10943,7 +11023,7 @@ public struct DeleteGlobalClusterInput {
     }
 }
 
-public struct DeleteGlobalClusterOutput {
+public struct DeleteGlobalClusterOutput: Swift.Sendable {
     /// A data type representing an Aurora global database.
     public var globalCluster: RDSClientTypes.GlobalCluster?
 
@@ -10979,7 +11059,7 @@ public struct InvalidIntegrationStateFault: ClientRuntime.ModeledError, AWSClien
     }
 }
 
-public struct DeleteIntegrationInput {
+public struct DeleteIntegrationInput: Swift.Sendable {
     /// The unique identifier of the integration.
     /// This member is required.
     public var integrationIdentifier: Swift.String?
@@ -10993,7 +11073,7 @@ public struct DeleteIntegrationInput {
 }
 
 /// A zero-ETL integration with Amazon Redshift.
-public struct DeleteIntegrationOutput {
+public struct DeleteIntegrationOutput: Swift.Sendable {
     /// The encryption context for the integration. For more information, see [Encryption context](https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#encrypt_context) in the Amazon Web Services Key Management Service Developer Guide.
     public var additionalEncryptionContext: [Swift.String: Swift.String]?
     /// The time when the integration was created, in Universal Coordinated Time (UTC).
@@ -11074,7 +11154,7 @@ public struct InvalidOptionGroupStateFault: ClientRuntime.ModeledError, AWSClien
 }
 
 ///
-public struct DeleteOptionGroupInput {
+public struct DeleteOptionGroupInput: Swift.Sendable {
     /// The name of the option group to be deleted. You can't delete default option groups.
     /// This member is required.
     public var optionGroupName: Swift.String?
@@ -11087,7 +11167,7 @@ public struct DeleteOptionGroupInput {
     }
 }
 
-public struct DeleteTenantDatabaseInput {
+public struct DeleteTenantDatabaseInput: Swift.Sendable {
     /// The user-supplied identifier for the DB instance that contains the tenant database that you want to delete.
     /// This member is required.
     public var dbInstanceIdentifier: Swift.String?
@@ -11113,7 +11193,7 @@ public struct DeleteTenantDatabaseInput {
     }
 }
 
-public struct DeleteTenantDatabaseOutput {
+public struct DeleteTenantDatabaseOutput: Swift.Sendable {
     /// A tenant database in the DB instance. This data type is an element in the response to the DescribeTenantDatabases action.
     public var tenantDatabase: RDSClientTypes.TenantDatabase?
 
@@ -11149,7 +11229,7 @@ public struct DBProxyTargetNotFoundFault: ClientRuntime.ModeledError, AWSClientR
     }
 }
 
-public struct DeregisterDBProxyTargetsInput {
+public struct DeregisterDBProxyTargetsInput: Swift.Sendable {
     /// One or more DB cluster identifiers.
     public var dbClusterIdentifiers: [Swift.String]?
     /// One or more DB instance identifiers.
@@ -11174,19 +11254,19 @@ public struct DeregisterDBProxyTargetsInput {
     }
 }
 
-public struct DeregisterDBProxyTargetsOutput {
+public struct DeregisterDBProxyTargetsOutput: Swift.Sendable {
 
     public init() { }
 }
 
 ///
-public struct DescribeAccountAttributesInput {
+public struct DescribeAccountAttributesInput: Swift.Sendable {
 
     public init() { }
 }
 
 /// Data returned by the DescribeAccountAttributes action.
-public struct DescribeAccountAttributesOutput {
+public struct DescribeAccountAttributesOutput: Swift.Sendable {
     /// A list of AccountQuota objects. Within this list, each quota has a name, a count of usage toward the quota maximum, and a maximum value for the quota.
     public var accountQuotas: [RDSClientTypes.AccountQuota]?
 
@@ -11199,6 +11279,7 @@ public struct DescribeAccountAttributesOutput {
 }
 
 extension RDSClientTypes {
+
     /// A filter name and value pair that is used to return a more specific list of results from a describe operation. Filters can be used to match a set of resources by specific criteria, such as IDs. The filters supported by a describe operation are documented with the describe operation. Currently, wildcards are not supported in filters. The following actions can be filtered:
     ///
     /// * DescribeDBClusterBacktracks
@@ -11214,7 +11295,7 @@ extension RDSClientTypes {
     /// * DescribeDBShardGroups
     ///
     /// * DescribePendingMaintenanceActions
-    public struct Filter {
+    public struct Filter: Swift.Sendable {
         /// The name of the filter. Filter names are case-sensitive.
         /// This member is required.
         public var name: Swift.String?
@@ -11231,10 +11312,9 @@ extension RDSClientTypes {
             self.values = values
         }
     }
-
 }
 
-public struct DescribeBlueGreenDeploymentsInput {
+public struct DescribeBlueGreenDeploymentsInput: Swift.Sendable {
     /// The blue/green deployment identifier. If you specify this parameter, the response only includes information about the specific blue/green deployment. This parameter isn't case-sensitive. Constraints:
     ///
     /// * Must match an existing blue/green deployment identifier.
@@ -11272,7 +11352,7 @@ public struct DescribeBlueGreenDeploymentsInput {
     }
 }
 
-public struct DescribeBlueGreenDeploymentsOutput {
+public struct DescribeBlueGreenDeploymentsOutput: Swift.Sendable {
     /// A list of blue/green deployments in the current account and Amazon Web Services Region.
     public var blueGreenDeployments: [RDSClientTypes.BlueGreenDeployment]?
     /// A pagination token that can be used in a later DescribeBlueGreenDeployments request.
@@ -11289,7 +11369,7 @@ public struct DescribeBlueGreenDeploymentsOutput {
 }
 
 ///
-public struct DescribeCertificatesInput {
+public struct DescribeCertificatesInput: Swift.Sendable {
     /// The user-supplied certificate identifier. If this parameter is specified, information for only the identified certificate is returned. This parameter isn't case-sensitive. Constraints:
     ///
     /// * Must match an existing CertificateIdentifier.
@@ -11316,8 +11396,9 @@ public struct DescribeCertificatesInput {
 }
 
 extension RDSClientTypes {
+
     /// A CA certificate for an Amazon Web Services account. For more information, see [Using SSL/TLS to encrypt a connection to a DB instance](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/UsingWithRDS.SSL.html) in the Amazon RDS User Guide and [ Using SSL/TLS to encrypt a connection to a DB cluster](https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/UsingWithRDS.SSL.html) in the Amazon Aurora User Guide.
-    public struct Certificate {
+    public struct Certificate: Swift.Sendable {
         /// The Amazon Resource Name (ARN) for the certificate.
         public var certificateArn: Swift.String?
         /// The unique key that identifies a certificate.
@@ -11356,11 +11437,10 @@ extension RDSClientTypes {
             self.validTill = validTill
         }
     }
-
 }
 
 /// Data returned by the DescribeCertificates action.
-public struct DescribeCertificatesOutput {
+public struct DescribeCertificatesOutput: Swift.Sendable {
     /// The list of Certificate objects for the Amazon Web Services account.
     public var certificates: [RDSClientTypes.Certificate]?
     /// The default root CA for new databases created by your Amazon Web Services account. This is either the root CA override set on your Amazon Web Services account or the system default CA for the Region if no override exists. To override the default CA, use the ModifyCertificates operation.
@@ -11380,7 +11460,7 @@ public struct DescribeCertificatesOutput {
     }
 }
 
-public struct DescribeDBClusterAutomatedBackupsInput {
+public struct DescribeDBClusterAutomatedBackupsInput: Swift.Sendable {
     /// (Optional) The user-supplied DB cluster identifier. If this parameter is specified, it must match the identifier of an existing DB cluster. It returns information from the specific DB cluster's automated backup. This parameter isn't case-sensitive.
     public var dbClusterIdentifier: Swift.String?
     /// The resource ID of the DB cluster that is the source of the automated backup. This parameter isn't case-sensitive.
@@ -11422,7 +11502,7 @@ public struct DescribeDBClusterAutomatedBackupsInput {
     }
 }
 
-public struct DescribeDBClusterAutomatedBackupsOutput {
+public struct DescribeDBClusterAutomatedBackupsOutput: Swift.Sendable {
     /// A list of DBClusterAutomatedBackup backups.
     public var dbClusterAutomatedBackups: [RDSClientTypes.DBClusterAutomatedBackup]?
     /// The pagination token provided in the previous request. If this parameter is specified the response includes only records beyond the marker, up to MaxRecords.
@@ -11463,7 +11543,7 @@ public struct DBClusterBacktrackNotFoundFault: ClientRuntime.ModeledError, AWSCl
 }
 
 ///
-public struct DescribeDBClusterBacktracksInput {
+public struct DescribeDBClusterBacktracksInput: Swift.Sendable {
     /// If specified, this value is the backtrack identifier of the backtrack to be described. Constraints:
     ///
     /// * Must contain a valid universally unique identifier (UUID). For more information about UUIDs, see [Universally unique identifier](https://en.wikipedia.org/wiki/Universally_unique_identifier).
@@ -11522,8 +11602,9 @@ public struct DescribeDBClusterBacktracksInput {
 }
 
 extension RDSClientTypes {
+
     /// This data type is used as a response element in the DescribeDBClusterBacktracks action.
-    public struct DBClusterBacktrack {
+    public struct DBClusterBacktrack: Swift.Sendable {
         /// Contains the backtrack identifier.
         public var backtrackIdentifier: Swift.String?
         /// The timestamp of the time at which the backtrack was requested.
@@ -11562,11 +11643,10 @@ extension RDSClientTypes {
             self.status = status
         }
     }
-
 }
 
 /// Contains the result of a successful invocation of the DescribeDBClusterBacktracks action.
-public struct DescribeDBClusterBacktracksOutput {
+public struct DescribeDBClusterBacktracksOutput: Swift.Sendable {
     /// Contains a list of backtracks for the user.
     public var dbClusterBacktracks: [RDSClientTypes.DBClusterBacktrack]?
     /// A pagination token that can be used in a later DescribeDBClusterBacktracks request.
@@ -11582,7 +11662,7 @@ public struct DescribeDBClusterBacktracksOutput {
     }
 }
 
-public struct DescribeDBClusterEndpointsInput {
+public struct DescribeDBClusterEndpointsInput: Swift.Sendable {
     /// The identifier of the endpoint to describe. This parameter is stored as a lowercase string.
     public var dbClusterEndpointIdentifier: Swift.String?
     /// The DB cluster identifier of the DB cluster associated with the endpoint. This parameter is stored as a lowercase string.
@@ -11611,6 +11691,7 @@ public struct DescribeDBClusterEndpointsInput {
 }
 
 extension RDSClientTypes {
+
     /// This data type represents the information you need to connect to an Amazon Aurora DB cluster. This data type is used as a response element in the following actions:
     ///
     /// * CreateDBClusterEndpoint
@@ -11623,7 +11704,7 @@ extension RDSClientTypes {
     ///
     ///
     /// For the data structure that represents Amazon RDS DB instance endpoints, see Endpoint.
-    public struct DBClusterEndpoint {
+    public struct DBClusterEndpoint: Swift.Sendable {
         /// The type associated with a custom endpoint. One of: READER, WRITER, ANY.
         public var customEndpointType: Swift.String?
         /// The Amazon Resource Name (ARN) for the endpoint.
@@ -11670,10 +11751,9 @@ extension RDSClientTypes {
             self.status = status
         }
     }
-
 }
 
-public struct DescribeDBClusterEndpointsOutput {
+public struct DescribeDBClusterEndpointsOutput: Swift.Sendable {
     /// Contains the details of the endpoints associated with the cluster and matching any filter conditions.
     public var dbClusterEndpoints: [RDSClientTypes.DBClusterEndpoint]?
     /// An optional pagination token provided by a previous DescribeDBClusterEndpoints request. If this parameter is specified, the response includes only records beyond the marker, up to the value specified by MaxRecords.
@@ -11690,7 +11770,7 @@ public struct DescribeDBClusterEndpointsOutput {
 }
 
 ///
-public struct DescribeDBClusterParameterGroupsInput {
+public struct DescribeDBClusterParameterGroupsInput: Swift.Sendable {
     /// The name of a specific DB cluster parameter group to return details for. Constraints:
     ///
     /// * If supplied, must match the name of an existing DBClusterParameterGroup.
@@ -11717,7 +11797,7 @@ public struct DescribeDBClusterParameterGroupsInput {
 }
 
 ///
-public struct DescribeDBClusterParameterGroupsOutput {
+public struct DescribeDBClusterParameterGroupsOutput: Swift.Sendable {
     /// A list of DB cluster parameter groups.
     public var dbClusterParameterGroups: [RDSClientTypes.DBClusterParameterGroup]?
     /// An optional pagination token provided by a previous DescribeDBClusterParameterGroups request. If this parameter is specified, the response includes only records beyond the marker, up to the value specified by MaxRecords.
@@ -11734,7 +11814,7 @@ public struct DescribeDBClusterParameterGroupsOutput {
 }
 
 ///
-public struct DescribeDBClusterParametersInput {
+public struct DescribeDBClusterParametersInput: Swift.Sendable {
     /// The name of a specific DB cluster parameter group to return parameter details for. Constraints:
     ///
     /// * If supplied, must match the name of an existing DBClusterParameterGroup.
@@ -11773,7 +11853,7 @@ public struct DescribeDBClusterParametersInput {
 
 extension RDSClientTypes {
 
-    public enum ApplyMethod: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ApplyMethod: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case immediate
         case pendingReboot
         case sdkUnknown(Swift.String)
@@ -11801,8 +11881,9 @@ extension RDSClientTypes {
 }
 
 extension RDSClientTypes {
+
     /// This data type is used as a request parameter in the ModifyDBParameterGroup and ResetDBParameterGroup actions. This data type is used as a response element in the DescribeEngineDefaultParameters and DescribeDBParameters actions.
-    public struct Parameter : Swift.Equatable {
+    public struct Parameter: Swift.Sendable, Swift.Equatable {
         /// Specifies the valid range of values for the parameter.
         public var allowedValues: Swift.String?
         /// Indicates when to apply parameter updates.
@@ -11853,11 +11934,10 @@ extension RDSClientTypes {
             self.supportedEngineModes = supportedEngineModes
         }
     }
-
 }
 
 /// Provides details about a DB cluster parameter group including the parameters in the DB cluster parameter group.
-public struct DescribeDBClusterParametersOutput {
+public struct DescribeDBClusterParametersOutput: Swift.Sendable {
     /// An optional pagination token provided by a previous DescribeDBClusterParameters request. If this parameter is specified, the response includes only records beyond the marker, up to the value specified by MaxRecords.
     public var marker: Swift.String?
     /// Provides a list of parameters for the DB cluster parameter group.
@@ -11874,7 +11954,7 @@ public struct DescribeDBClusterParametersOutput {
 }
 
 ///
-public struct DescribeDBClustersInput {
+public struct DescribeDBClustersInput: Swift.Sendable {
     /// The user-supplied DB cluster identifier or the Amazon Resource Name (ARN) of the DB cluster. If this parameter is specified, information for only the specific DB cluster is returned. This parameter isn't case-sensitive. Constraints:
     ///
     /// * If supplied, must match an existing DB cluster identifier.
@@ -11915,7 +11995,7 @@ public struct DescribeDBClustersInput {
 }
 
 /// Contains the result of a successful invocation of the DescribeDBClusters action.
-public struct DescribeDBClustersOutput {
+public struct DescribeDBClustersOutput: Swift.Sendable {
     /// Contains a list of DB clusters for the user.
     public var dbClusters: [RDSClientTypes.DBCluster]?
     /// A pagination token that can be used in a later DescribeDBClusters request.
@@ -11932,7 +12012,7 @@ public struct DescribeDBClustersOutput {
 }
 
 ///
-public struct DescribeDBClusterSnapshotAttributesInput {
+public struct DescribeDBClusterSnapshotAttributesInput: Swift.Sendable {
     /// The identifier for the DB cluster snapshot to describe the attributes for.
     /// This member is required.
     public var dbClusterSnapshotIdentifier: Swift.String?
@@ -11946,8 +12026,9 @@ public struct DescribeDBClusterSnapshotAttributesInput {
 }
 
 extension RDSClientTypes {
+
     /// Contains the name and values of a manual DB cluster snapshot attribute. Manual DB cluster snapshot attributes are used to authorize other Amazon Web Services accounts to restore a manual DB cluster snapshot. For more information, see the ModifyDBClusterSnapshotAttribute API action.
-    public struct DBClusterSnapshotAttribute {
+    public struct DBClusterSnapshotAttribute: Swift.Sendable {
         /// The name of the manual DB cluster snapshot attribute. The attribute named restore refers to the list of Amazon Web Services accounts that have permission to copy or restore the manual DB cluster snapshot. For more information, see the ModifyDBClusterSnapshotAttribute API action.
         public var attributeName: Swift.String?
         /// The value(s) for the manual DB cluster snapshot attribute. If the AttributeName field is set to restore, then this element returns a list of IDs of the Amazon Web Services accounts that are authorized to copy or restore the manual DB cluster snapshot. If a value of all is in the list, then the manual DB cluster snapshot is public and available for any Amazon Web Services account to copy or restore.
@@ -11962,12 +12043,12 @@ extension RDSClientTypes {
             self.attributeValues = attributeValues
         }
     }
-
 }
 
 extension RDSClientTypes {
+
     /// Contains the results of a successful call to the DescribeDBClusterSnapshotAttributes API action. Manual DB cluster snapshot attributes are used to authorize other Amazon Web Services accounts to copy or restore a manual DB cluster snapshot. For more information, see the ModifyDBClusterSnapshotAttribute API action.
-    public struct DBClusterSnapshotAttributesResult {
+    public struct DBClusterSnapshotAttributesResult: Swift.Sendable {
         /// The list of attributes and values for the manual DB cluster snapshot.
         public var dbClusterSnapshotAttributes: [RDSClientTypes.DBClusterSnapshotAttribute]?
         /// The identifier of the manual DB cluster snapshot that the attributes apply to.
@@ -11982,10 +12063,9 @@ extension RDSClientTypes {
             self.dbClusterSnapshotIdentifier = dbClusterSnapshotIdentifier
         }
     }
-
 }
 
-public struct DescribeDBClusterSnapshotAttributesOutput {
+public struct DescribeDBClusterSnapshotAttributesOutput: Swift.Sendable {
     /// Contains the results of a successful call to the DescribeDBClusterSnapshotAttributes API action. Manual DB cluster snapshot attributes are used to authorize other Amazon Web Services accounts to copy or restore a manual DB cluster snapshot. For more information, see the ModifyDBClusterSnapshotAttribute API action.
     public var dbClusterSnapshotAttributesResult: RDSClientTypes.DBClusterSnapshotAttributesResult?
 
@@ -11998,7 +12078,7 @@ public struct DescribeDBClusterSnapshotAttributesOutput {
 }
 
 ///
-public struct DescribeDBClusterSnapshotsInput {
+public struct DescribeDBClusterSnapshotsInput: Swift.Sendable {
     /// The ID of the DB cluster to retrieve the list of DB cluster snapshots for. This parameter can't be used in conjunction with the DBClusterSnapshotIdentifier parameter. This parameter isn't case-sensitive. Constraints:
     ///
     /// * If supplied, must match the identifier of an existing DBCluster.
@@ -12068,7 +12148,7 @@ public struct DescribeDBClusterSnapshotsInput {
 }
 
 /// Provides a list of DB cluster snapshots for the user as the result of a call to the DescribeDBClusterSnapshots action.
-public struct DescribeDBClusterSnapshotsOutput {
+public struct DescribeDBClusterSnapshotsOutput: Swift.Sendable {
     /// Provides a list of DB cluster snapshots for the user.
     public var dbClusterSnapshots: [RDSClientTypes.DBClusterSnapshot]?
     /// An optional pagination token provided by a previous DescribeDBClusterSnapshots request. If this parameter is specified, the response includes only records beyond the marker, up to the value specified by MaxRecords.
@@ -12084,7 +12164,7 @@ public struct DescribeDBClusterSnapshotsOutput {
     }
 }
 
-public struct DescribeDBEngineVersionsInput {
+public struct DescribeDBEngineVersionsInput: Swift.Sendable {
     /// The name of a specific DB parameter group family to return details for. Constraints:
     ///
     /// * If supplied, must match an existing DB parameter group family.
@@ -12200,8 +12280,9 @@ public struct DescribeDBEngineVersionsInput {
 }
 
 extension RDSClientTypes {
+
     /// This data type is used as a response element in the action DescribeDBEngineVersions.
-    public struct DBEngineVersion {
+    public struct DBEngineVersion: Swift.Sendable {
         /// The creation time of the DB engine version.
         public var createTime: Foundation.Date?
         /// JSON string that lists the installation files and parameters that RDS Custom uses to create a custom engine version (CEV). RDS Custom applies the patches in the order in which they're listed in the manifest. You can set the Oracle home, Oracle base, and UNIX/Linux user and group using the installation parameters. For more information, see [JSON fields in the CEV manifest](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/custom-cev.preparing.html#custom-cev.preparing.manifest.fields) in the Amazon RDS User Guide.
@@ -12344,11 +12425,10 @@ extension RDSClientTypes {
             self.validUpgradeTarget = validUpgradeTarget
         }
     }
-
 }
 
 /// Contains the result of a successful invocation of the DescribeDBEngineVersions action.
-public struct DescribeDBEngineVersionsOutput {
+public struct DescribeDBEngineVersionsOutput: Swift.Sendable {
     /// A list of DBEngineVersion elements.
     public var dbEngineVersions: [RDSClientTypes.DBEngineVersion]?
     /// An optional pagination token provided by a previous request. If this parameter is specified, the response includes only records beyond the marker, up to the value specified by MaxRecords.
@@ -12365,7 +12445,7 @@ public struct DescribeDBEngineVersionsOutput {
 }
 
 /// Parameter input for DescribeDBInstanceAutomatedBackups.
-public struct DescribeDBInstanceAutomatedBackupsInput {
+public struct DescribeDBInstanceAutomatedBackupsInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the replicated automated backups, for example, arn:aws:rds:us-east-1:123456789012:auto-backup:ab-L2IJCEXJP7XQ7HOJ4SIEXAMPLE. This setting doesn't apply to RDS Custom.
     public var dbInstanceAutomatedBackupsArn: Swift.String?
     /// (Optional) The user-supplied instance identifier. If this parameter is specified, it must match the identifier of an existing DB instance. It returns information from the specific DB instance's automated backup. This parameter isn't case-sensitive.
@@ -12416,7 +12496,7 @@ public struct DescribeDBInstanceAutomatedBackupsInput {
 }
 
 /// Contains the result of a successful invocation of the DescribeDBInstanceAutomatedBackups action.
-public struct DescribeDBInstanceAutomatedBackupsOutput {
+public struct DescribeDBInstanceAutomatedBackupsOutput: Swift.Sendable {
     /// A list of DBInstanceAutomatedBackup instances.
     public var dbInstanceAutomatedBackups: [RDSClientTypes.DBInstanceAutomatedBackup]?
     /// An optional pagination token provided by a previous request. If this parameter is specified, the response includes only records beyond the marker, up to the value specified by MaxRecords.
@@ -12433,7 +12513,7 @@ public struct DescribeDBInstanceAutomatedBackupsOutput {
 }
 
 ///
-public struct DescribeDBInstancesInput {
+public struct DescribeDBInstancesInput: Swift.Sendable {
     /// The user-supplied instance identifier or the Amazon Resource Name (ARN) of the DB instance. If this parameter is specified, information from only the specific DB instance is returned. This parameter isn't case-sensitive. Constraints:
     ///
     /// * If supplied, must match the identifier of an existing DB instance.
@@ -12470,7 +12550,7 @@ public struct DescribeDBInstancesInput {
 }
 
 /// Contains the result of a successful invocation of the DescribeDBInstances action.
-public struct DescribeDBInstancesOutput {
+public struct DescribeDBInstancesOutput: Swift.Sendable {
     /// A list of DBInstance instances.
     public var dbInstances: [RDSClientTypes.DBInstance]?
     /// An optional pagination token provided by a previous request. If this parameter is specified, the response includes only records beyond the marker, up to the value specified by MaxRecords .
@@ -12487,7 +12567,7 @@ public struct DescribeDBInstancesOutput {
 }
 
 ///
-public struct DescribeDBLogFilesInput {
+public struct DescribeDBLogFilesInput: Swift.Sendable {
     /// The customer-assigned name of the DB instance that contains the log files you want to list. Constraints:
     ///
     /// * Must match the identifier of an existing DBInstance.
@@ -12527,8 +12607,9 @@ public struct DescribeDBLogFilesInput {
 }
 
 extension RDSClientTypes {
+
     /// This data type is used as a response element to DescribeDBLogFiles.
-    public struct DescribeDBLogFilesDetails {
+    public struct DescribeDBLogFilesDetails: Swift.Sendable {
         /// A POSIX timestamp when the last log entry was written.
         public var lastWritten: Swift.Int?
         /// The name of the log file for the specified DB instance.
@@ -12547,11 +12628,10 @@ extension RDSClientTypes {
             self.size = size
         }
     }
-
 }
 
 /// The response from a call to DescribeDBLogFiles.
-public struct DescribeDBLogFilesOutput {
+public struct DescribeDBLogFilesOutput: Swift.Sendable {
     /// The DB log files returned.
     public var describeDBLogFiles: [RDSClientTypes.DescribeDBLogFilesDetails]?
     /// A pagination token that can be used in a later DescribeDBLogFiles request.
@@ -12568,7 +12648,7 @@ public struct DescribeDBLogFilesOutput {
 }
 
 ///
-public struct DescribeDBParameterGroupsInput {
+public struct DescribeDBParameterGroupsInput: Swift.Sendable {
     /// The name of a specific DB parameter group to return details for. Constraints:
     ///
     /// * If supplied, must match the name of an existing DBClusterParameterGroup.
@@ -12595,7 +12675,7 @@ public struct DescribeDBParameterGroupsInput {
 }
 
 /// Contains the result of a successful invocation of the DescribeDBParameterGroups action.
-public struct DescribeDBParameterGroupsOutput {
+public struct DescribeDBParameterGroupsOutput: Swift.Sendable {
     /// A list of DBParameterGroup instances.
     public var dbParameterGroups: [RDSClientTypes.DBParameterGroup]?
     /// An optional pagination token provided by a previous request. If this parameter is specified, the response includes only records beyond the marker, up to the value specified by MaxRecords.
@@ -12611,7 +12691,7 @@ public struct DescribeDBParameterGroupsOutput {
     }
 }
 
-public struct DescribeDBParametersInput {
+public struct DescribeDBParametersInput: Swift.Sendable {
     /// The name of a specific DB parameter group to return details for. Constraints:
     ///
     /// * If supplied, must match the name of an existing DBParameterGroup.
@@ -12643,7 +12723,7 @@ public struct DescribeDBParametersInput {
 }
 
 /// Contains the result of a successful invocation of the DescribeDBParameters action.
-public struct DescribeDBParametersOutput {
+public struct DescribeDBParametersOutput: Swift.Sendable {
     /// An optional pagination token provided by a previous request. If this parameter is specified, the response includes only records beyond the marker, up to the value specified by MaxRecords.
     public var marker: Swift.String?
     /// A list of Parameter values.
@@ -12659,7 +12739,7 @@ public struct DescribeDBParametersOutput {
     }
 }
 
-public struct DescribeDBProxiesInput {
+public struct DescribeDBProxiesInput: Swift.Sendable {
     /// The name of the DB proxy. If you omit this parameter, the output includes information about all DB proxies owned by your Amazon Web Services account ID.
     public var dbProxyName: Swift.String?
     /// This parameter is not currently supported.
@@ -12683,7 +12763,7 @@ public struct DescribeDBProxiesInput {
     }
 }
 
-public struct DescribeDBProxiesOutput {
+public struct DescribeDBProxiesOutput: Swift.Sendable {
     /// A return value representing an arbitrary number of DBProxy data structures.
     public var dbProxies: [RDSClientTypes.DBProxy]?
     /// An optional pagination token provided by a previous request. If this parameter is specified, the response includes only records beyond the marker, up to the value specified by MaxRecords.
@@ -12699,7 +12779,7 @@ public struct DescribeDBProxiesOutput {
     }
 }
 
-public struct DescribeDBProxyEndpointsInput {
+public struct DescribeDBProxyEndpointsInput: Swift.Sendable {
     /// The name of a DB proxy endpoint to describe. If you omit this parameter, the output includes information about all DB proxy endpoints associated with the specified proxy.
     public var dbProxyEndpointName: Swift.String?
     /// The name of the DB proxy whose endpoints you want to describe. If you omit this parameter, the output includes information about all DB proxy endpoints associated with all your DB proxies.
@@ -12727,7 +12807,7 @@ public struct DescribeDBProxyEndpointsInput {
     }
 }
 
-public struct DescribeDBProxyEndpointsOutput {
+public struct DescribeDBProxyEndpointsOutput: Swift.Sendable {
     /// The list of ProxyEndpoint objects returned by the API operation.
     public var dbProxyEndpoints: [RDSClientTypes.DBProxyEndpoint]?
     /// An optional pagination token provided by a previous request. If this parameter is specified, the response includes only records beyond the marker, up to the value specified by MaxRecords.
@@ -12743,7 +12823,7 @@ public struct DescribeDBProxyEndpointsOutput {
     }
 }
 
-public struct DescribeDBProxyTargetGroupsInput {
+public struct DescribeDBProxyTargetGroupsInput: Swift.Sendable {
     /// The identifier of the DBProxy associated with the target group.
     /// This member is required.
     public var dbProxyName: Swift.String?
@@ -12773,8 +12853,9 @@ public struct DescribeDBProxyTargetGroupsInput {
 }
 
 extension RDSClientTypes {
+
     /// Displays the settings that control the size and behavior of the connection pool associated with a DBProxyTarget.
-    public struct ConnectionPoolConfigurationInfo {
+    public struct ConnectionPoolConfigurationInfo: Swift.Sendable {
         /// The number of seconds for a proxy to wait for a connection to become available in the connection pool. Only applies when the proxy has opened its maximum number of connections and all connections are busy with client sessions.
         public var connectionBorrowTimeout: Swift.Int?
         /// One or more SQL statements for the proxy to run when opening each new database connection. Typically used with SET statements to make sure that each connection has identical settings such as time zone and character set. This setting is empty by default. For multiple statements, use semicolons as the separator. You can also include multiple variables in a single SET statement, such as SET x=1, y=2.
@@ -12801,12 +12882,12 @@ extension RDSClientTypes {
             self.sessionPinningFilters = sessionPinningFilters
         }
     }
-
 }
 
 extension RDSClientTypes {
+
     /// Represents a set of RDS DB instances, Aurora DB clusters, or both that a proxy can connect to. Currently, each target group is associated with exactly one RDS DB instance or Aurora DB cluster. This data type is used as a response element in the DescribeDBProxyTargetGroups action.
-    public struct DBProxyTargetGroup {
+    public struct DBProxyTargetGroup: Swift.Sendable {
         /// The settings that determine the size and behavior of the connection pool for the target group.
         public var connectionPoolConfig: RDSClientTypes.ConnectionPoolConfigurationInfo?
         /// The date and time when the target group was first created.
@@ -12845,10 +12926,9 @@ extension RDSClientTypes {
             self.updatedDate = updatedDate
         }
     }
-
 }
 
-public struct DescribeDBProxyTargetGroupsOutput {
+public struct DescribeDBProxyTargetGroupsOutput: Swift.Sendable {
     /// An optional pagination token provided by a previous request. If this parameter is specified, the response includes only records beyond the marker, up to the value specified by MaxRecords.
     public var marker: Swift.String?
     /// An arbitrary number of DBProxyTargetGroup objects, containing details of the corresponding target groups.
@@ -12864,7 +12944,7 @@ public struct DescribeDBProxyTargetGroupsOutput {
     }
 }
 
-public struct DescribeDBProxyTargetsInput {
+public struct DescribeDBProxyTargetsInput: Swift.Sendable {
     /// The identifier of the DBProxyTarget to describe.
     /// This member is required.
     public var dbProxyName: Swift.String?
@@ -12895,7 +12975,7 @@ public struct DescribeDBProxyTargetsInput {
 
 extension RDSClientTypes {
 
-    public enum TargetRole: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum TargetRole: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case readOnly
         case readWrite
         case unknown
@@ -12927,7 +13007,7 @@ extension RDSClientTypes {
 
 extension RDSClientTypes {
 
-    public enum TargetHealthReason: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum TargetHealthReason: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case authFailure
         case connectionFailed
         case invalidReplicationState
@@ -12965,7 +13045,7 @@ extension RDSClientTypes {
 
 extension RDSClientTypes {
 
-    public enum TargetState: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum TargetState: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case available
         case registering
         case unavailable
@@ -12996,8 +13076,9 @@ extension RDSClientTypes {
 }
 
 extension RDSClientTypes {
+
     /// Information about the connection health of an RDS Proxy target.
-    public struct TargetHealth {
+    public struct TargetHealth: Swift.Sendable {
         /// A description of the health of the RDS Proxy target. If the State is AVAILABLE, a description is not included.
         public var description: Swift.String?
         /// The reason for the current health State of the RDS Proxy target.
@@ -13016,12 +13097,11 @@ extension RDSClientTypes {
             self.state = state
         }
     }
-
 }
 
 extension RDSClientTypes {
 
-    public enum TargetType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum TargetType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case rdsInstance
         case rdsServerlessEndpoint
         case trackedCluster
@@ -13052,8 +13132,9 @@ extension RDSClientTypes {
 }
 
 extension RDSClientTypes {
+
     /// Contains the details for an RDS Proxy target. It represents an RDS DB instance or Aurora DB cluster that the proxy can connect to. One or more targets are associated with an RDS Proxy target group. This data type is used as a response element in the DescribeDBProxyTargets action.
-    public struct DBProxyTarget {
+    public struct DBProxyTarget: Swift.Sendable {
         /// The writer endpoint for the RDS DB instance or Aurora DB cluster.
         public var endpoint: Swift.String?
         /// The port that the RDS Proxy uses to connect to the target RDS DB instance or Aurora DB cluster.
@@ -13092,10 +13173,9 @@ extension RDSClientTypes {
             self.type = type
         }
     }
-
 }
 
-public struct DescribeDBProxyTargetsOutput {
+public struct DescribeDBProxyTargetsOutput: Swift.Sendable {
     /// An optional pagination token provided by a previous request. If this parameter is specified, the response includes only records beyond the marker, up to the value specified by MaxRecords.
     public var marker: Swift.String?
     /// An arbitrary number of DBProxyTarget objects, containing details of the corresponding targets.
@@ -13111,7 +13191,7 @@ public struct DescribeDBProxyTargetsOutput {
     }
 }
 
-public struct DescribeDBRecommendationsInput {
+public struct DescribeDBRecommendationsInput: Swift.Sendable {
     /// A filter that specifies one or more recommendations to describe. Supported Filters:
     ///
     /// * recommendation-id - Accepts a list of recommendation identifiers. The results list only includes the recommendations whose identifier is one of the specified filter values.
@@ -13206,6 +13286,7 @@ public struct DescribeDBRecommendationsInput {
 }
 
 extension RDSClientTypes {
+
     /// A logical grouping of Performance Insights metrics for a related subject area. For example, the db.sql dimension group consists of the following dimensions:
     ///
     /// * db.sql.id - The hash of a running SQL statement, generated by Performance Insights.
@@ -13218,7 +13299,7 @@ extension RDSClientTypes {
     ///
     ///
     /// Each response element returns a maximum of 500 bytes. For larger elements, such as SQL statements, only the first 500 bytes are returned.
-    public struct PerformanceInsightsMetricDimensionGroup {
+    public struct PerformanceInsightsMetricDimensionGroup: Swift.Sendable {
         /// A list of specific dimensions from a dimension group. If this list isn't included, then all of the dimensions in the group were requested, or are present in the response.
         public var dimensions: [Swift.String]?
         /// The available dimension groups for Performance Insights metric type.
@@ -13237,14 +13318,14 @@ extension RDSClientTypes {
             self.limit = limit
         }
     }
-
 }
 
 extension RDSClientTypes {
+
     /// A single Performance Insights metric query to process. You must provide the metric to the query. If other parameters aren't specified, Performance Insights returns all data points for the specified metric. Optionally, you can request the data points to be aggregated by dimension group (GroupBy) and return only those data points that match your criteria (Filter). Constraints:
     ///
     /// * Must be a valid Performance Insights query.
-    public struct PerformanceInsightsMetricQuery {
+    public struct PerformanceInsightsMetricQuery: Swift.Sendable {
         /// A specification for how to aggregate the data points from a query result. You must specify a valid dimension group. Performance Insights will return all of the dimensions within that group, unless you provide the names of specific dimensions within that group. You can also request that Performance Insights return a limited number of values for a dimension.
         public var groupBy: RDSClientTypes.PerformanceInsightsMetricDimensionGroup?
         /// The name of a Performance Insights metric to be measured. Valid Values:
@@ -13268,12 +13349,12 @@ extension RDSClientTypes {
             self.metric = metric
         }
     }
-
 }
 
 extension RDSClientTypes {
+
     /// The query to retrieve metric data points.
-    public struct MetricQuery {
+    public struct MetricQuery: Swift.Sendable {
         /// The Performance Insights query that you can use to retrieve Performance Insights metric data points.
         public var performanceInsightsMetricQuery: RDSClientTypes.PerformanceInsightsMetricQuery?
 
@@ -13284,12 +13365,12 @@ extension RDSClientTypes {
             self.performanceInsightsMetricQuery = performanceInsightsMetricQuery
         }
     }
-
 }
 
 extension RDSClientTypes {
+
     /// The metric reference details when the reference is a scalar.
-    public struct ScalarReferenceDetails {
+    public struct ScalarReferenceDetails: Swift.Sendable {
         /// The value of a scalar reference.
         public var value: Swift.Double?
 
@@ -13300,12 +13381,12 @@ extension RDSClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension RDSClientTypes {
+
     /// The reference details of a metric.
-    public struct ReferenceDetails {
+    public struct ReferenceDetails: Swift.Sendable {
         /// The metric reference details when the reference is a scalar.
         public var scalarReferenceDetails: RDSClientTypes.ScalarReferenceDetails?
 
@@ -13316,12 +13397,12 @@ extension RDSClientTypes {
             self.scalarReferenceDetails = scalarReferenceDetails
         }
     }
-
 }
 
 extension RDSClientTypes {
+
     /// The reference (threshold) for a metric.
-    public struct MetricReference {
+    public struct MetricReference: Swift.Sendable {
         /// The name of the metric reference.
         public var name: Swift.String?
         /// The details of a performance issue.
@@ -13336,12 +13417,12 @@ extension RDSClientTypes {
             self.referenceDetails = referenceDetails
         }
     }
-
 }
 
 extension RDSClientTypes {
+
     /// The representation of a metric.
-    public struct Metric {
+    public struct Metric: Swift.Sendable {
         /// The query to retrieve metric data points.
         public var metricQuery: RDSClientTypes.MetricQuery?
         /// The name of a metric.
@@ -13364,12 +13445,12 @@ extension RDSClientTypes {
             self.statisticsDetails = statisticsDetails
         }
     }
-
 }
 
 extension RDSClientTypes {
+
     /// Details of the performance issue.
-    public struct PerformanceIssueDetails {
+    public struct PerformanceIssueDetails: Swift.Sendable {
         /// The analysis of the performance issue. The information might contain markdown.
         public var analysis: Swift.String?
         /// The time when the performance issue stopped.
@@ -13392,12 +13473,12 @@ extension RDSClientTypes {
             self.startTime = startTime
         }
     }
-
 }
 
 extension RDSClientTypes {
+
     /// The details of an issue with your DB instances, DB clusters, and DB parameter groups.
-    public struct IssueDetails {
+    public struct IssueDetails: Swift.Sendable {
         /// A detailed description of the issue when the recommendation category is performance.
         public var performanceIssueDetails: RDSClientTypes.PerformanceIssueDetails?
 
@@ -13408,12 +13489,12 @@ extension RDSClientTypes {
             self.performanceIssueDetails = performanceIssueDetails
         }
     }
-
 }
 
 extension RDSClientTypes {
+
     /// A link to documentation that provides additional information for a recommendation.
-    public struct DocLink {
+    public struct DocLink: Swift.Sendable {
         /// The text with the link to documentation for the recommendation.
         public var text: Swift.String?
         /// The URL for the documentation for the recommendation.
@@ -13428,12 +13509,12 @@ extension RDSClientTypes {
             self.url = url
         }
     }
-
 }
 
 extension RDSClientTypes {
+
     /// The additional attributes of RecommendedAction data type.
-    public struct ContextAttribute {
+    public struct ContextAttribute: Swift.Sendable {
         /// The key of ContextAttribute.
         public var key: Swift.String?
         /// The value of ContextAttribute.
@@ -13448,12 +13529,12 @@ extension RDSClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension RDSClientTypes {
+
     /// A single parameter to use with the RecommendedAction API operation to apply the action.
-    public struct RecommendedActionParameter {
+    public struct RecommendedActionParameter: Swift.Sendable {
         /// The key of the parameter to use with the RecommendedAction API operation.
         public var key: Swift.String?
         /// The value of the parameter to use with the RecommendedAction API operation.
@@ -13468,12 +13549,12 @@ extension RDSClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension RDSClientTypes {
+
     /// The recommended actions to apply to resolve the issues associated with your DB instances, DB clusters, and DB parameter groups.
-    public struct RecommendedAction {
+    public struct RecommendedAction: Swift.Sendable {
         /// The unique identifier of the recommended action.
         public var actionId: Swift.String?
         /// The methods to apply the recommended action. Valid values:
@@ -13530,12 +13611,12 @@ extension RDSClientTypes {
             self.title = title
         }
     }
-
 }
 
 extension RDSClientTypes {
+
     /// The recommendation for your DB instances, DB clusters, and DB parameter groups.
-    public struct DBRecommendation {
+    public struct DBRecommendation: Swift.Sendable {
         /// Additional information about the recommendation. The information might contain markdown.
         public var additionalInfo: Swift.String?
         /// The category of the recommendation. Valid values:
@@ -13650,10 +13731,9 @@ extension RDSClientTypes {
             self.updatedTime = updatedTime
         }
     }
-
 }
 
-public struct DescribeDBRecommendationsOutput {
+public struct DescribeDBRecommendationsOutput: Swift.Sendable {
     /// A list of recommendations which is returned from DescribeDBRecommendations API request.
     public var dbRecommendations: [RDSClientTypes.DBRecommendation]?
     /// An optional pagination token provided by a previous DBRecommendationsMessage request. This token can be used later in a DescribeDBRecomendations request.
@@ -13670,7 +13750,7 @@ public struct DescribeDBRecommendationsOutput {
 }
 
 ///
-public struct DescribeDBSecurityGroupsInput {
+public struct DescribeDBSecurityGroupsInput: Swift.Sendable {
     /// The name of the DB security group to return details for.
     public var dbSecurityGroupName: Swift.String?
     /// This parameter isn't currently supported.
@@ -13695,7 +13775,7 @@ public struct DescribeDBSecurityGroupsInput {
 }
 
 /// Contains the result of a successful invocation of the DescribeDBSecurityGroups action.
-public struct DescribeDBSecurityGroupsOutput {
+public struct DescribeDBSecurityGroupsOutput: Swift.Sendable {
     /// A list of DBSecurityGroup instances.
     public var dbSecurityGroups: [RDSClientTypes.DBSecurityGroup]?
     /// An optional pagination token provided by a previous request. If this parameter is specified, the response includes only records beyond the marker, up to the value specified by MaxRecords.
@@ -13711,8 +13791,8 @@ public struct DescribeDBSecurityGroupsOutput {
     }
 }
 
-public struct DescribeDBShardGroupsInput {
-    /// The user-supplied DB shard group identifier or the Amazon Resource Name (ARN) of the DB shard group. If this parameter is specified, information for only the specific DB shard group is returned. This parameter isn't case-sensitive. Constraints:
+public struct DescribeDBShardGroupsInput: Swift.Sendable {
+    /// The user-supplied DB shard group identifier. If this parameter is specified, information for only the specific DB shard group is returned. This parameter isn't case-sensitive. Constraints:
     ///
     /// * If supplied, must match an existing DB shard group identifier.
     public var dbShardGroupIdentifier: Swift.String?
@@ -13738,7 +13818,8 @@ public struct DescribeDBShardGroupsInput {
 }
 
 extension RDSClientTypes {
-    public struct DBShardGroup {
+
+    public struct DBShardGroup: Swift.Sendable {
         /// Specifies whether to create standby DB shard groups for the DB shard group. Valid values are the following:
         ///
         /// * 0 - Creates a DB shard group without a standby DB shard group. This is the default value.
@@ -13765,6 +13846,8 @@ extension RDSClientTypes {
         public var publiclyAccessible: Swift.Bool?
         /// The status of the DB shard group.
         public var status: Swift.String?
+        /// A list of tags. For more information, see [Tagging Amazon RDS resources](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_Tagging.html) in the Amazon RDS User Guide or [Tagging Amazon Aurora and Amazon RDS resources](https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/USER_Tagging.html) in the Amazon Aurora User Guide.
+        public var tagList: [RDSClientTypes.Tag]?
 
         public init(
             computeRedundancy: Swift.Int? = nil,
@@ -13776,7 +13859,8 @@ extension RDSClientTypes {
             maxACU: Swift.Double? = nil,
             minACU: Swift.Double? = nil,
             publiclyAccessible: Swift.Bool? = nil,
-            status: Swift.String? = nil
+            status: Swift.String? = nil,
+            tagList: [RDSClientTypes.Tag]? = nil
         )
         {
             self.computeRedundancy = computeRedundancy
@@ -13789,12 +13873,12 @@ extension RDSClientTypes {
             self.minACU = minACU
             self.publiclyAccessible = publiclyAccessible
             self.status = status
+            self.tagList = tagList
         }
     }
-
 }
 
-public struct DescribeDBShardGroupsOutput {
+public struct DescribeDBShardGroupsOutput: Swift.Sendable {
     /// Contains a list of DB shard groups for the user.
     public var dbShardGroups: [RDSClientTypes.DBShardGroup]?
     /// A pagination token that can be used in a later DescribeDBClusters request.
@@ -13811,7 +13895,7 @@ public struct DescribeDBShardGroupsOutput {
 }
 
 ///
-public struct DescribeDBSnapshotAttributesInput {
+public struct DescribeDBSnapshotAttributesInput: Swift.Sendable {
     /// The identifier for the DB snapshot to describe the attributes for.
     /// This member is required.
     public var dbSnapshotIdentifier: Swift.String?
@@ -13825,8 +13909,9 @@ public struct DescribeDBSnapshotAttributesInput {
 }
 
 extension RDSClientTypes {
+
     /// Contains the name and values of a manual DB snapshot attribute Manual DB snapshot attributes are used to authorize other Amazon Web Services accounts to restore a manual DB snapshot. For more information, see the ModifyDBSnapshotAttribute API.
-    public struct DBSnapshotAttribute {
+    public struct DBSnapshotAttribute: Swift.Sendable {
         /// The name of the manual DB snapshot attribute. The attribute named restore refers to the list of Amazon Web Services accounts that have permission to copy or restore the manual DB cluster snapshot. For more information, see the ModifyDBSnapshotAttribute API action.
         public var attributeName: Swift.String?
         /// The value or values for the manual DB snapshot attribute. If the AttributeName field is set to restore, then this element returns a list of IDs of the Amazon Web Services accounts that are authorized to copy or restore the manual DB snapshot. If a value of all is in the list, then the manual DB snapshot is public and available for any Amazon Web Services account to copy or restore.
@@ -13841,12 +13926,12 @@ extension RDSClientTypes {
             self.attributeValues = attributeValues
         }
     }
-
 }
 
 extension RDSClientTypes {
+
     /// Contains the results of a successful call to the DescribeDBSnapshotAttributes API action. Manual DB snapshot attributes are used to authorize other Amazon Web Services accounts to copy or restore a manual DB snapshot. For more information, see the ModifyDBSnapshotAttribute API action.
-    public struct DBSnapshotAttributesResult {
+    public struct DBSnapshotAttributesResult: Swift.Sendable {
         /// The list of attributes and values for the manual DB snapshot.
         public var dbSnapshotAttributes: [RDSClientTypes.DBSnapshotAttribute]?
         /// The identifier of the manual DB snapshot that the attributes apply to.
@@ -13861,10 +13946,9 @@ extension RDSClientTypes {
             self.dbSnapshotIdentifier = dbSnapshotIdentifier
         }
     }
-
 }
 
-public struct DescribeDBSnapshotAttributesOutput {
+public struct DescribeDBSnapshotAttributesOutput: Swift.Sendable {
     /// Contains the results of a successful call to the DescribeDBSnapshotAttributes API action. Manual DB snapshot attributes are used to authorize other Amazon Web Services accounts to copy or restore a manual DB snapshot. For more information, see the ModifyDBSnapshotAttribute API action.
     public var dbSnapshotAttributesResult: RDSClientTypes.DBSnapshotAttributesResult?
 
@@ -13877,7 +13961,7 @@ public struct DescribeDBSnapshotAttributesOutput {
 }
 
 ///
-public struct DescribeDBSnapshotsInput {
+public struct DescribeDBSnapshotsInput: Swift.Sendable {
     /// The ID of the DB instance to retrieve the list of DB snapshots for. This parameter isn't case-sensitive. Constraints:
     ///
     /// * If supplied, must match the identifier of an existing DBInstance.
@@ -13951,7 +14035,7 @@ public struct DescribeDBSnapshotsInput {
 }
 
 /// Contains the result of a successful invocation of the DescribeDBSnapshots action.
-public struct DescribeDBSnapshotsOutput {
+public struct DescribeDBSnapshotsOutput: Swift.Sendable {
     /// A list of DBSnapshot instances.
     public var dbSnapshots: [RDSClientTypes.DBSnapshot]?
     /// An optional pagination token provided by a previous request. If this parameter is specified, the response includes only records beyond the marker, up to the value specified by MaxRecords.
@@ -13967,7 +14051,7 @@ public struct DescribeDBSnapshotsOutput {
     }
 }
 
-public struct DescribeDBSnapshotTenantDatabasesInput {
+public struct DescribeDBSnapshotTenantDatabasesInput: Swift.Sendable {
     /// The ID of the DB instance used to create the DB snapshots. This parameter isn't case-sensitive. Constraints:
     ///
     /// * If supplied, must match the identifier of an existing DBInstance.
@@ -14032,8 +14116,9 @@ public struct DescribeDBSnapshotTenantDatabasesInput {
 }
 
 extension RDSClientTypes {
+
     /// Contains the details of a tenant database in a snapshot of a DB instance.
-    public struct DBSnapshotTenantDatabase {
+    public struct DBSnapshotTenantDatabase: Swift.Sendable {
         /// The name of the character set of a tenant database.
         public var characterSetName: Swift.String?
         /// The ID for the DB instance that contains the tenant databases.
@@ -14092,10 +14177,9 @@ extension RDSClientTypes {
             self.tenantDatabaseResourceId = tenantDatabaseResourceId
         }
     }
-
 }
 
-public struct DescribeDBSnapshotTenantDatabasesOutput {
+public struct DescribeDBSnapshotTenantDatabasesOutput: Swift.Sendable {
     /// A list of DB snapshot tenant databases.
     public var dbSnapshotTenantDatabases: [RDSClientTypes.DBSnapshotTenantDatabase]?
     /// An optional pagination token provided by a previous request. If this parameter is specified, the response includes only records beyond the marker, up to the value specified by MaxRecords.
@@ -14112,7 +14196,7 @@ public struct DescribeDBSnapshotTenantDatabasesOutput {
 }
 
 ///
-public struct DescribeDBSubnetGroupsInput {
+public struct DescribeDBSubnetGroupsInput: Swift.Sendable {
     /// The name of the DB subnet group to return details for.
     public var dbSubnetGroupName: Swift.String?
     /// This parameter isn't currently supported.
@@ -14137,7 +14221,7 @@ public struct DescribeDBSubnetGroupsInput {
 }
 
 /// Contains the result of a successful invocation of the DescribeDBSubnetGroups action.
-public struct DescribeDBSubnetGroupsOutput {
+public struct DescribeDBSubnetGroupsOutput: Swift.Sendable {
     /// A list of DBSubnetGroup instances.
     public var dbSubnetGroups: [RDSClientTypes.DBSubnetGroup]?
     /// An optional pagination token provided by a previous request. If this parameter is specified, the response includes only records beyond the marker, up to the value specified by MaxRecords.
@@ -14154,7 +14238,7 @@ public struct DescribeDBSubnetGroupsOutput {
 }
 
 ///
-public struct DescribeEngineDefaultClusterParametersInput {
+public struct DescribeEngineDefaultClusterParametersInput: Swift.Sendable {
     /// The name of the DB cluster parameter group family to return engine parameter information for.
     /// This member is required.
     public var dbParameterGroupFamily: Swift.String?
@@ -14180,8 +14264,9 @@ public struct DescribeEngineDefaultClusterParametersInput {
 }
 
 extension RDSClientTypes {
+
     /// Contains the result of a successful invocation of the DescribeEngineDefaultParameters action.
-    public struct EngineDefaults : Swift.Equatable {
+    public struct EngineDefaults: Swift.Sendable, Swift.Equatable {
         /// Specifies the name of the DB parameter group family that the engine default parameters apply to.
         public var dbParameterGroupFamily: Swift.String?
         /// An optional pagination token provided by a previous EngineDefaults request. If this parameter is specified, the response includes only records beyond the marker, up to the value specified by MaxRecords .
@@ -14200,10 +14285,9 @@ extension RDSClientTypes {
             self.parameters = parameters
         }
     }
-
 }
 
-public struct DescribeEngineDefaultClusterParametersOutput {
+public struct DescribeEngineDefaultClusterParametersOutput: Swift.Sendable {
     /// Contains the result of a successful invocation of the DescribeEngineDefaultParameters action.
     public var engineDefaults: RDSClientTypes.EngineDefaults?
 
@@ -14216,7 +14300,7 @@ public struct DescribeEngineDefaultClusterParametersOutput {
 }
 
 ///
-public struct DescribeEngineDefaultParametersInput {
+public struct DescribeEngineDefaultParametersInput: Swift.Sendable {
     /// The name of the DB parameter group family. Valid Values:
     ///
     /// * aurora-mysql5.7
@@ -14339,7 +14423,7 @@ public struct DescribeEngineDefaultParametersInput {
     }
 }
 
-public struct DescribeEngineDefaultParametersOutput {
+public struct DescribeEngineDefaultParametersOutput: Swift.Sendable {
     /// Contains the result of a successful invocation of the DescribeEngineDefaultParameters action.
     public var engineDefaults: RDSClientTypes.EngineDefaults?
 
@@ -14352,7 +14436,7 @@ public struct DescribeEngineDefaultParametersOutput {
 }
 
 ///
-public struct DescribeEventCategoriesInput {
+public struct DescribeEventCategoriesInput: Swift.Sendable {
     /// This parameter isn't currently supported.
     public var filters: [RDSClientTypes.Filter]?
     /// The type of source that is generating the events. For RDS Proxy events, specify db-proxy. Valid Values: db-instance | db-cluster | db-parameter-group | db-security-group | db-snapshot | db-cluster-snapshot | db-proxy
@@ -14369,8 +14453,9 @@ public struct DescribeEventCategoriesInput {
 }
 
 extension RDSClientTypes {
+
     /// Contains the results of a successful invocation of the [DescribeEventCategories](https://docs.aws.amazon.com/AmazonRDS/latest/APIReference/API_DescribeEventCategories.html) operation.
-    public struct EventCategoriesMap {
+    public struct EventCategoriesMap: Swift.Sendable {
         /// The event categories for the specified source type
         public var eventCategories: [Swift.String]?
         /// The source type that the returned categories belong to
@@ -14385,11 +14470,10 @@ extension RDSClientTypes {
             self.sourceType = sourceType
         }
     }
-
 }
 
 /// Data returned from the DescribeEventCategories operation.
-public struct DescribeEventCategoriesOutput {
+public struct DescribeEventCategoriesOutput: Swift.Sendable {
     /// A list of EventCategoriesMap data types.
     public var eventCategoriesMapList: [RDSClientTypes.EventCategoriesMap]?
 
@@ -14403,7 +14487,7 @@ public struct DescribeEventCategoriesOutput {
 
 extension RDSClientTypes {
 
-    public enum SourceType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SourceType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case blueGreenDeployment
         case customEngineVersion
         case dbCluster
@@ -14452,7 +14536,7 @@ extension RDSClientTypes {
 }
 
 ///
-public struct DescribeEventsInput {
+public struct DescribeEventsInput: Swift.Sendable {
     /// The number of minutes to retrieve events for. Default: 60
     public var duration: Swift.Int?
     /// The end of the time interval for which to retrieve events, specified in ISO 8601 format. For more information about ISO 8601, go to the [ISO8601 Wikipedia page.](http://en.wikipedia.org/wiki/ISO_8601) Example: 2009-07-08T18:00Z
@@ -14515,8 +14599,9 @@ public struct DescribeEventsInput {
 }
 
 extension RDSClientTypes {
+
     /// This data type is used as a response element in the [DescribeEvents](https://docs.aws.amazon.com/AmazonRDS/latest/APIReference/API_DescribeEvents.html) action.
-    public struct Event {
+    public struct Event: Swift.Sendable {
         /// Specifies the date and time of the event.
         public var date: Foundation.Date?
         /// Specifies the category for the event.
@@ -14547,11 +14632,10 @@ extension RDSClientTypes {
             self.sourceType = sourceType
         }
     }
-
 }
 
 /// Contains the result of a successful invocation of the DescribeEvents action.
-public struct DescribeEventsOutput {
+public struct DescribeEventsOutput: Swift.Sendable {
     /// A list of Event instances.
     public var events: [RDSClientTypes.Event]?
     /// An optional pagination token provided by a previous Events request. If this parameter is specified, the response includes only records beyond the marker, up to the value specified by MaxRecords.
@@ -14568,7 +14652,7 @@ public struct DescribeEventsOutput {
 }
 
 ///
-public struct DescribeEventSubscriptionsInput {
+public struct DescribeEventSubscriptionsInput: Swift.Sendable {
     /// This parameter isn't currently supported.
     public var filters: [RDSClientTypes.Filter]?
     /// An optional pagination token provided by a previous DescribeOrderableDBInstanceOptions request. If this parameter is specified, the response includes only records beyond the marker, up to the value specified by MaxRecords .
@@ -14593,7 +14677,7 @@ public struct DescribeEventSubscriptionsInput {
 }
 
 /// Data returned by the DescribeEventSubscriptions action.
-public struct DescribeEventSubscriptionsOutput {
+public struct DescribeEventSubscriptionsOutput: Swift.Sendable {
     /// A list of EventSubscriptions data types.
     public var eventSubscriptionsList: [RDSClientTypes.EventSubscription]?
     /// An optional pagination token provided by a previous DescribeOrderableDBInstanceOptions request. If this parameter is specified, the response includes only records beyond the marker, up to the value specified by MaxRecords.
@@ -14609,7 +14693,7 @@ public struct DescribeEventSubscriptionsOutput {
     }
 }
 
-public struct DescribeExportTasksInput {
+public struct DescribeExportTasksInput: Swift.Sendable {
     /// The identifier of the snapshot or cluster export task to be described.
     public var exportTaskIdentifier: Swift.String?
     /// Filters specify one or more snapshot or cluster exports to describe. The filters are specified as name-value pairs that define what to include in the output. Filter names and values are case-sensitive. Supported filters include the following:
@@ -14662,8 +14746,9 @@ public struct DescribeExportTasksInput {
 }
 
 extension RDSClientTypes {
+
     /// Contains the details of a snapshot or cluster export to Amazon S3. This data type is used as a response element in the DescribeExportTasks operation.
-    public struct ExportTask {
+    public struct ExportTask: Swift.Sendable {
         /// The data exported from the snapshot or cluster. Valid Values:
         ///
         /// * database - Export all the data from a specified database.
@@ -14754,10 +14839,9 @@ extension RDSClientTypes {
             self.warningMessage = warningMessage
         }
     }
-
 }
 
-public struct DescribeExportTasksOutput {
+public struct DescribeExportTasksOutput: Swift.Sendable {
     /// Information about an export of a snapshot or cluster to Amazon S3.
     public var exportTasks: [RDSClientTypes.ExportTask]?
     /// A pagination token that can be used in a later DescribeExportTasks request. A marker is used for pagination to identify the location to begin output for the next response of DescribeExportTasks.
@@ -14773,7 +14857,7 @@ public struct DescribeExportTasksOutput {
     }
 }
 
-public struct DescribeGlobalClustersInput {
+public struct DescribeGlobalClustersInput: Swift.Sendable {
     /// A filter that specifies one or more global database clusters to describe. This parameter is case-sensitive. Currently, the only supported filter is region. If used, the request returns information about any global cluster with at least one member (primary or secondary) in the specified Amazon Web Services Regions.
     public var filters: [RDSClientTypes.Filter]?
     /// The user-supplied DB cluster identifier. If this parameter is specified, information from only the specific DB cluster is returned. This parameter isn't case-sensitive. Constraints:
@@ -14799,7 +14883,7 @@ public struct DescribeGlobalClustersInput {
     }
 }
 
-public struct DescribeGlobalClustersOutput {
+public struct DescribeGlobalClustersOutput: Swift.Sendable {
     /// The list of global clusters returned by this request.
     public var globalClusters: [RDSClientTypes.GlobalCluster]?
     /// An optional pagination token provided by a previous DescribeGlobalClusters request. If this parameter is specified, the response includes only records beyond the marker, up to the value specified by MaxRecords.
@@ -14815,7 +14899,7 @@ public struct DescribeGlobalClustersOutput {
     }
 }
 
-public struct DescribeIntegrationsInput {
+public struct DescribeIntegrationsInput: Swift.Sendable {
     /// A filter that specifies one or more resources to return.
     public var filters: [RDSClientTypes.Filter]?
     /// The unique identifier of the integration.
@@ -14840,8 +14924,9 @@ public struct DescribeIntegrationsInput {
 }
 
 extension RDSClientTypes {
+
     /// A zero-ETL integration with Amazon Redshift.
-    public struct Integration {
+    public struct Integration: Swift.Sendable {
         /// The encryption context for the integration. For more information, see [Encryption context](https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#encrypt_context) in the Amazon Web Services Key Management Service Developer Guide.
         public var additionalEncryptionContext: [Swift.String: Swift.String]?
         /// The time when the integration was created, in Universal Coordinated Time (UTC).
@@ -14896,10 +14981,9 @@ extension RDSClientTypes {
             self.targetArn = targetArn
         }
     }
-
 }
 
-public struct DescribeIntegrationsOutput {
+public struct DescribeIntegrationsOutput: Swift.Sendable {
     /// A list of integrations.
     public var integrations: [RDSClientTypes.Integration]?
     /// A pagination token that can be used in a later DescribeIntegrations request.
@@ -14916,7 +15000,7 @@ public struct DescribeIntegrationsOutput {
 }
 
 ///
-public struct DescribeOptionGroupOptionsInput {
+public struct DescribeOptionGroupOptionsInput: Swift.Sendable {
     /// The name of the engine to describe options for. Valid Values:
     ///
     /// * db2-ae
@@ -14972,8 +15056,9 @@ public struct DescribeOptionGroupOptionsInput {
 }
 
 extension RDSClientTypes {
+
     /// The minimum DB engine version required for each corresponding allowed value for an option setting.
-    public struct MinimumEngineVersionPerAllowedValue {
+    public struct MinimumEngineVersionPerAllowedValue: Swift.Sendable {
         /// The allowed value for an option setting.
         public var allowedValue: Swift.String?
         /// The minimum DB engine version required for the allowed value.
@@ -14988,12 +15073,12 @@ extension RDSClientTypes {
             self.minimumEngineVersion = minimumEngineVersion
         }
     }
-
 }
 
 extension RDSClientTypes {
+
     /// Option group option settings are used to display settings available for each option with their default values and other information. These values are used with the DescribeOptionGroupOptions action.
-    public struct OptionGroupOptionSetting {
+    public struct OptionGroupOptionSetting: Swift.Sendable {
         /// Indicates the acceptable values for the option group option.
         public var allowedValues: Swift.String?
         /// The DB engine specific parameter type for the option group option.
@@ -15032,12 +15117,12 @@ extension RDSClientTypes {
             self.settingName = settingName
         }
     }
-
 }
 
 extension RDSClientTypes {
+
     /// The version for an option. Option group option versions are returned by the DescribeOptionGroupOptions action.
-    public struct OptionVersion {
+    public struct OptionVersion: Swift.Sendable {
         /// Indicates whether the version is the default version of the option.
         public var isDefault: Swift.Bool?
         /// The version of the option.
@@ -15052,12 +15137,12 @@ extension RDSClientTypes {
             self.version = version
         }
     }
-
 }
 
 extension RDSClientTypes {
+
     /// Available option.
-    public struct OptionGroupOption {
+    public struct OptionGroupOption: Swift.Sendable {
         /// Indicates whether the option can be copied across Amazon Web Services accounts.
         public var copyableCrossAccount: Swift.Bool?
         /// If the option requires a port, specifies the default port for the option.
@@ -15132,11 +15217,10 @@ extension RDSClientTypes {
             self.vpcOnly = vpcOnly
         }
     }
-
 }
 
 ///
-public struct DescribeOptionGroupOptionsOutput {
+public struct DescribeOptionGroupOptionsOutput: Swift.Sendable {
     /// An optional pagination token provided by a previous request. If this parameter is specified, the response includes only records beyond the marker, up to the value specified by MaxRecords.
     public var marker: Swift.String?
     /// List of available option group options.
@@ -15153,7 +15237,7 @@ public struct DescribeOptionGroupOptionsOutput {
 }
 
 ///
-public struct DescribeOptionGroupsInput {
+public struct DescribeOptionGroupsInput: Swift.Sendable {
     /// A filter to only include option groups associated with this database engine. Valid Values:
     ///
     /// * db2-ae
@@ -15212,7 +15296,7 @@ public struct DescribeOptionGroupsInput {
 }
 
 /// List of option groups.
-public struct DescribeOptionGroupsOutput {
+public struct DescribeOptionGroupsOutput: Swift.Sendable {
     /// An optional pagination token provided by a previous request. If this parameter is specified, the response includes only records beyond the marker, up to the value specified by MaxRecords.
     public var marker: Swift.String?
     /// List of option groups.
@@ -15229,7 +15313,7 @@ public struct DescribeOptionGroupsOutput {
 }
 
 ///
-public struct DescribeOrderableDBInstanceOptionsInput {
+public struct DescribeOrderableDBInstanceOptionsInput: Swift.Sendable {
     /// The Availability Zone group associated with a Local Zone. Specify this parameter to retrieve available options for the Local Zones in the group. Omit this parameter to show the available options in the specified Amazon Web Services Region. This setting doesn't apply to RDS Custom DB instances.
     public var availabilityZoneGroup: Swift.String?
     /// A filter to include only the available options for the specified DB instance class.
@@ -15313,8 +15397,9 @@ public struct DescribeOrderableDBInstanceOptionsInput {
 }
 
 extension RDSClientTypes {
+
     /// Contains the available processor feature information for the DB instance class of a DB instance. For more information, see [Configuring the Processor of the DB Instance Class](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Concepts.DBInstanceClass.html#USER_ConfigureProcessor) in the Amazon RDS User Guide.
-    public struct AvailableProcessorFeature {
+    public struct AvailableProcessorFeature: Swift.Sendable {
         /// The allowed values for the processor feature of the DB instance class.
         public var allowedValues: Swift.String?
         /// The default value for the processor feature of the DB instance class.
@@ -15333,12 +15418,12 @@ extension RDSClientTypes {
             self.name = name
         }
     }
-
 }
 
 extension RDSClientTypes {
+
     /// Contains a list of available options for a DB instance. This data type is used as a response element in the DescribeOrderableDBInstanceOptions action.
-    public struct OrderableDBInstanceOption {
+    public struct OrderableDBInstanceOption: Swift.Sendable {
         /// The Availability Zone group for a DB instance.
         public var availabilityZoneGroup: Swift.String?
         /// A list of Availability Zones for a DB instance.
@@ -15489,11 +15574,10 @@ extension RDSClientTypes {
             self.vpc = vpc
         }
     }
-
 }
 
 /// Contains the result of a successful invocation of the DescribeOrderableDBInstanceOptions action.
-public struct DescribeOrderableDBInstanceOptionsOutput {
+public struct DescribeOrderableDBInstanceOptionsOutput: Swift.Sendable {
     /// An optional pagination token provided by a previous OrderableDBInstanceOptions request. If this parameter is specified, the response includes only records beyond the marker, up to the value specified by MaxRecords.
     public var marker: Swift.String?
     /// An OrderableDBInstanceOption structure containing information about orderable options for the DB instance.
@@ -15510,7 +15594,7 @@ public struct DescribeOrderableDBInstanceOptionsOutput {
 }
 
 ///
-public struct DescribePendingMaintenanceActionsInput {
+public struct DescribePendingMaintenanceActionsInput: Swift.Sendable {
     /// A filter that specifies one or more resources to return pending maintenance actions for. Supported filters:
     ///
     /// * db-cluster-id - Accepts DB cluster identifiers and DB cluster Amazon Resource Names (ARNs). The results list only includes pending maintenance actions for the DB clusters identified by these ARNs.
@@ -15539,7 +15623,7 @@ public struct DescribePendingMaintenanceActionsInput {
 }
 
 /// Data returned from the DescribePendingMaintenanceActions action.
-public struct DescribePendingMaintenanceActionsOutput {
+public struct DescribePendingMaintenanceActionsOutput: Swift.Sendable {
     /// An optional pagination token provided by a previous DescribePendingMaintenanceActions request. If this parameter is specified, the response includes only records beyond the marker, up to a number of records specified by MaxRecords.
     public var marker: Swift.String?
     /// A list of the pending maintenance actions for the resource.
@@ -15580,7 +15664,7 @@ public struct ReservedDBInstanceNotFoundFault: ClientRuntime.ModeledError, AWSCl
 }
 
 ///
-public struct DescribeReservedDBInstancesInput {
+public struct DescribeReservedDBInstancesInput: Swift.Sendable {
     /// The DB instance class filter value. Specify this parameter to show only those reservations matching the specified DB instances class.
     public var dbInstanceClass: Swift.String?
     /// The duration filter value, specified in years or seconds. Specify this parameter to show only reservations for this duration. Valid Values: 1 | 3 | 31536000 | 94608000
@@ -15633,8 +15717,9 @@ public struct DescribeReservedDBInstancesInput {
 }
 
 extension RDSClientTypes {
+
     /// This data type is used as a response element in the DescribeReservedDBInstances and DescribeReservedDBInstancesOfferings actions.
-    public struct RecurringCharge {
+    public struct RecurringCharge: Swift.Sendable {
         /// The amount of the recurring charge.
         public var recurringChargeAmount: Swift.Double?
         /// The frequency of the recurring charge.
@@ -15649,12 +15734,12 @@ extension RDSClientTypes {
             self.recurringChargeFrequency = recurringChargeFrequency
         }
     }
-
 }
 
 extension RDSClientTypes {
+
     /// This data type is used as a response element in the DescribeReservedDBInstances and PurchaseReservedDBInstancesOffering actions.
-    public struct ReservedDBInstance {
+    public struct ReservedDBInstance: Swift.Sendable {
         /// The currency code for the reserved DB instance.
         public var currencyCode: Swift.String?
         /// The DB instance class for the reserved DB instance.
@@ -15725,11 +15810,10 @@ extension RDSClientTypes {
             self.usagePrice = usagePrice
         }
     }
-
 }
 
 /// Contains the result of a successful invocation of the DescribeReservedDBInstances action.
-public struct DescribeReservedDBInstancesOutput {
+public struct DescribeReservedDBInstancesOutput: Swift.Sendable {
     /// An optional pagination token provided by a previous request. If this parameter is specified, the response includes only records beyond the marker, up to the value specified by MaxRecords.
     public var marker: Swift.String?
     /// A list of reserved DB instances.
@@ -15770,7 +15854,7 @@ public struct ReservedDBInstancesOfferingNotFoundFault: ClientRuntime.ModeledErr
 }
 
 ///
-public struct DescribeReservedDBInstancesOfferingsInput {
+public struct DescribeReservedDBInstancesOfferingsInput: Swift.Sendable {
     /// The DB instance class filter value. Specify this parameter to show only the available offerings matching the specified DB instance class.
     public var dbInstanceClass: Swift.String?
     /// Duration filter value, specified in years or seconds. Specify this parameter to show only reservations for this duration. Valid Values: 1 | 3 | 31536000 | 94608000
@@ -15815,8 +15899,9 @@ public struct DescribeReservedDBInstancesOfferingsInput {
 }
 
 extension RDSClientTypes {
+
     /// This data type is used as a response element in the DescribeReservedDBInstancesOfferings action.
-    public struct ReservedDBInstancesOffering {
+    public struct ReservedDBInstancesOffering: Swift.Sendable {
         /// The currency code for the reserved DB instance offering.
         public var currencyCode: Swift.String?
         /// The DB instance class for the reserved DB instance.
@@ -15863,11 +15948,10 @@ extension RDSClientTypes {
             self.usagePrice = usagePrice
         }
     }
-
 }
 
 /// Contains the result of a successful invocation of the DescribeReservedDBInstancesOfferings action.
-public struct DescribeReservedDBInstancesOfferingsOutput {
+public struct DescribeReservedDBInstancesOfferingsOutput: Swift.Sendable {
     /// An optional pagination token provided by a previous request. If this parameter is specified, the response includes only records beyond the marker, up to the value specified by MaxRecords.
     public var marker: Swift.String?
     /// A list of reserved DB instance offerings.
@@ -15884,7 +15968,7 @@ public struct DescribeReservedDBInstancesOfferingsOutput {
 }
 
 ///
-public struct DescribeSourceRegionsInput {
+public struct DescribeSourceRegionsInput: Swift.Sendable {
     /// This parameter isn't currently supported.
     public var filters: [RDSClientTypes.Filter]?
     /// An optional pagination token provided by a previous DescribeSourceRegions request. If this parameter is specified, the response includes only records beyond the marker, up to the value specified by MaxRecords.
@@ -15911,8 +15995,9 @@ public struct DescribeSourceRegionsInput {
 }
 
 extension RDSClientTypes {
+
     /// Contains an Amazon Web Services Region name as the result of a successful call to the DescribeSourceRegions action.
-    public struct SourceRegion {
+    public struct SourceRegion: Swift.Sendable {
         /// The endpoint for the source Amazon Web Services Region endpoint.
         public var endpoint: Swift.String?
         /// The name of the source Amazon Web Services Region.
@@ -15935,11 +16020,10 @@ extension RDSClientTypes {
             self.supportsDBInstanceAutomatedBackupsReplication = supportsDBInstanceAutomatedBackupsReplication
         }
     }
-
 }
 
 /// Contains the result of a successful invocation of the DescribeSourceRegions action.
-public struct DescribeSourceRegionsOutput {
+public struct DescribeSourceRegionsOutput: Swift.Sendable {
     /// An optional pagination token provided by a previous request. If this parameter is specified, the response includes only records beyond the marker, up to the value specified by MaxRecords.
     public var marker: Swift.String?
     /// A list of SourceRegion instances that contains each source Amazon Web Services Region that the current Amazon Web Services Region can get a read replica or a DB snapshot from.
@@ -15955,7 +16039,7 @@ public struct DescribeSourceRegionsOutput {
     }
 }
 
-public struct DescribeTenantDatabasesInput {
+public struct DescribeTenantDatabasesInput: Swift.Sendable {
     /// The user-supplied DB instance identifier, which must match the identifier of an existing instance owned by the Amazon Web Services account. This parameter isn't case-sensitive.
     public var dbInstanceIdentifier: Swift.String?
     /// A filter that specifies one or more database tenants to describe. Supported filters:
@@ -15989,7 +16073,7 @@ public struct DescribeTenantDatabasesInput {
     }
 }
 
-public struct DescribeTenantDatabasesOutput {
+public struct DescribeTenantDatabasesOutput: Swift.Sendable {
     /// An optional pagination token provided by a previous DescribeTenantDatabases request. If this parameter is specified, the response includes only records beyond the marker, up to the value specified by MaxRecords.
     public var marker: Swift.String?
     /// An array of the tenant databases requested by the DescribeTenantDatabases operation.
@@ -16006,7 +16090,7 @@ public struct DescribeTenantDatabasesOutput {
 }
 
 ///
-public struct DescribeValidDBInstanceModificationsInput {
+public struct DescribeValidDBInstanceModificationsInput: Swift.Sendable {
     /// The customer identifier or the ARN of your DB instance.
     /// This member is required.
     public var dbInstanceIdentifier: Swift.String?
@@ -16020,8 +16104,9 @@ public struct DescribeValidDBInstanceModificationsInput {
 }
 
 extension RDSClientTypes {
+
     /// A range of double values.
-    public struct DoubleRange {
+    public struct DoubleRange: Swift.Sendable {
         /// The minimum value in the range.
         public var from: Swift.Double?
         /// The maximum value in the range.
@@ -16036,12 +16121,12 @@ extension RDSClientTypes {
             self.to = to
         }
     }
-
 }
 
 extension RDSClientTypes {
+
     /// A range of integer values.
-    public struct Range {
+    public struct Range: Swift.Sendable {
         /// The minimum value in the range.
         public var from: Swift.Int?
         /// The step value for the range. For example, if you have a range of 5,000 to 10,000, with a step value of 1,000, the valid values start at 5,000 and step up by 1,000. Even though 7,500 is within the range, it isn't a valid value for the range. The valid values are 5,000, 6,000, 7,000, 8,000...
@@ -16060,12 +16145,12 @@ extension RDSClientTypes {
             self.to = to
         }
     }
-
 }
 
 extension RDSClientTypes {
+
     /// Information about valid modifications that you can make to your DB instance. Contains the result of a successful call to the DescribeValidDBInstanceModifications action.
-    public struct ValidStorageOptions {
+    public struct ValidStorageOptions: Swift.Sendable {
         /// The valid range of Provisioned IOPS to gibibytes of storage multiplier. For example, 3-10, which means that provisioned IOPS can be between 3 and 10 times storage.
         public var iopsToStorageRatio: [RDSClientTypes.DoubleRange]?
         /// The valid range of provisioned IOPS. For example, 1000-256,000.
@@ -16100,12 +16185,12 @@ extension RDSClientTypes {
             self.supportsStorageAutoscaling = supportsStorageAutoscaling
         }
     }
-
 }
 
 extension RDSClientTypes {
+
     /// Information about valid modifications that you can make to your DB instance. Contains the result of a successful call to the DescribeValidDBInstanceModifications action. You can use this information when you call ModifyDBInstance.
-    public struct ValidDBInstanceModificationsMessage {
+    public struct ValidDBInstanceModificationsMessage: Swift.Sendable {
         /// Valid storage options for your DB instance.
         public var storage: [RDSClientTypes.ValidStorageOptions]?
         /// Indicates whether a DB instance supports using a dedicated log volume (DLV).
@@ -16124,10 +16209,9 @@ extension RDSClientTypes {
             self.validProcessorFeatures = validProcessorFeatures
         }
     }
-
 }
 
-public struct DescribeValidDBInstanceModificationsOutput {
+public struct DescribeValidDBInstanceModificationsOutput: Swift.Sendable {
     /// Information about valid modifications that you can make to your DB instance. Contains the result of a successful call to the DescribeValidDBInstanceModifications action. You can use this information when you call ModifyDBInstance.
     public var validDBInstanceModificationsMessage: RDSClientTypes.ValidDBInstanceModificationsMessage?
 
@@ -16163,7 +16247,7 @@ public struct InvalidResourceStateFault: ClientRuntime.ModeledError, AWSClientRu
     }
 }
 
-public struct DisableHttpEndpointInput {
+public struct DisableHttpEndpointInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the DB cluster.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -16176,7 +16260,7 @@ public struct DisableHttpEndpointInput {
     }
 }
 
-public struct DisableHttpEndpointOutput {
+public struct DisableHttpEndpointOutput: Swift.Sendable {
     /// Indicates whether the HTTP endpoint is enabled or disabled for the DB cluster.
     public var httpEndpointEnabled: Swift.Bool?
     /// The ARN of the DB cluster.
@@ -16217,7 +16301,7 @@ public struct DBLogFileNotFoundFault: ClientRuntime.ModeledError, AWSClientRunti
 }
 
 ///
-public struct DownloadDBLogFilePortionInput {
+public struct DownloadDBLogFilePortionInput: Swift.Sendable {
     /// The customer-assigned name of the DB instance that contains the log files you want to list. Constraints:
     ///
     /// * Must match the identifier of an existing DBInstance.
@@ -16254,7 +16338,7 @@ public struct DownloadDBLogFilePortionInput {
 }
 
 /// This data type is used as a response element to DownloadDBLogFilePortion.
-public struct DownloadDBLogFilePortionOutput {
+public struct DownloadDBLogFilePortionOutput: Swift.Sendable {
     /// A Boolean value that, if true, indicates there is more data to be downloaded.
     public var additionalDataPending: Swift.Bool?
     /// Entries from the specified log file.
@@ -16274,7 +16358,7 @@ public struct DownloadDBLogFilePortionOutput {
     }
 }
 
-public struct EnableHttpEndpointInput {
+public struct EnableHttpEndpointInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the DB cluster.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -16287,7 +16371,7 @@ public struct EnableHttpEndpointInput {
     }
 }
 
-public struct EnableHttpEndpointOutput {
+public struct EnableHttpEndpointOutput: Swift.Sendable {
     /// Indicates whether the HTTP endpoint is enabled or disabled for the DB cluster.
     public var httpEndpointEnabled: Swift.Bool?
     /// The ARN of the DB cluster.
@@ -16304,7 +16388,7 @@ public struct EnableHttpEndpointOutput {
 }
 
 ///
-public struct FailoverDBClusterInput {
+public struct FailoverDBClusterInput: Swift.Sendable {
     /// The identifier of the DB cluster to force a failover for. This parameter isn't case-sensitive. Constraints:
     ///
     /// * Must match the identifier of an existing DB cluster.
@@ -16323,7 +16407,7 @@ public struct FailoverDBClusterInput {
     }
 }
 
-public struct FailoverDBClusterOutput {
+public struct FailoverDBClusterOutput: Swift.Sendable {
     /// Contains the details of an Amazon Aurora DB cluster or Multi-AZ DB cluster. For an Amazon Aurora DB cluster, this data type is used as a response element in the operations CreateDBCluster, DeleteDBCluster, DescribeDBClusters, FailoverDBCluster, ModifyDBCluster, PromoteReadReplicaDBCluster, RestoreDBClusterFromS3, RestoreDBClusterFromSnapshot, RestoreDBClusterToPointInTime, StartDBCluster, and StopDBCluster. For a Multi-AZ DB cluster, this data type is used as a response element in the operations CreateDBCluster, DeleteDBCluster, DescribeDBClusters, FailoverDBCluster, ModifyDBCluster, RebootDBCluster, RestoreDBClusterFromSnapshot, and RestoreDBClusterToPointInTime. For more information on Amazon Aurora DB clusters, see [ What is Amazon Aurora?](https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/CHAP_AuroraOverview.html) in the Amazon Aurora User Guide. For more information on Multi-AZ DB clusters, see [ Multi-AZ deployments with two readable standby DB instances](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/multi-az-db-clusters-concepts.html) in the Amazon RDS User Guide.
     public var dbCluster: RDSClientTypes.DBCluster?
 
@@ -16335,7 +16419,7 @@ public struct FailoverDBClusterOutput {
     }
 }
 
-public struct FailoverGlobalClusterInput {
+public struct FailoverGlobalClusterInput: Swift.Sendable {
     /// Specifies whether to allow data loss for this global database cluster operation. Allowing data loss triggers a global failover operation. If you don't specify AllowDataLoss, the global database cluster operation defaults to a switchover. Constraints:
     ///
     /// * Can't be specified together with the Switchover parameter.
@@ -16367,7 +16451,7 @@ public struct FailoverGlobalClusterInput {
     }
 }
 
-public struct FailoverGlobalClusterOutput {
+public struct FailoverGlobalClusterOutput: Swift.Sendable {
     /// A data type representing an Aurora global database.
     public var globalCluster: RDSClientTypes.GlobalCluster?
 
@@ -16380,7 +16464,7 @@ public struct FailoverGlobalClusterOutput {
 }
 
 ///
-public struct ListTagsForResourceInput {
+public struct ListTagsForResourceInput: Swift.Sendable {
     /// This parameter isn't currently supported.
     public var filters: [RDSClientTypes.Filter]?
     /// The Amazon RDS resource with tags to be listed. This value is an Amazon Resource Name (ARN). For information about creating an ARN, see [ Constructing an ARN for Amazon RDS](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_Tagging.ARN.html#USER_Tagging.ARN.Constructing) in the Amazon RDS User Guide.
@@ -16398,7 +16482,7 @@ public struct ListTagsForResourceInput {
 }
 
 ///
-public struct ListTagsForResourceOutput {
+public struct ListTagsForResourceOutput: Swift.Sendable {
     /// List of tags returned by the ListTagsForResource operation.
     public var tagList: [RDSClientTypes.Tag]?
 
@@ -16412,7 +16496,7 @@ public struct ListTagsForResourceOutput {
 
 extension RDSClientTypes {
 
-    public enum AuditPolicyState: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AuditPolicyState: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case lockedPolicy
         case unlockedPolicy
         case sdkUnknown(Swift.String)
@@ -16439,7 +16523,7 @@ extension RDSClientTypes {
     }
 }
 
-public struct ModifyActivityStreamInput {
+public struct ModifyActivityStreamInput: Swift.Sendable {
     /// The audit policy state. When a policy is unlocked, it is read/write. When it is locked, it is read-only. You can edit your audit policy only when the activity stream is unlocked or stopped.
     public var auditPolicyState: RDSClientTypes.AuditPolicyState?
     /// The Amazon Resource Name (ARN) of the RDS for Oracle or Microsoft SQL Server DB instance. For example, arn:aws:rds:us-east-1:12345667890:db:my-orcl-db.
@@ -16455,7 +16539,7 @@ public struct ModifyActivityStreamInput {
     }
 }
 
-public struct ModifyActivityStreamOutput {
+public struct ModifyActivityStreamOutput: Swift.Sendable {
     /// Indicates whether engine-native audit fields are included in the database activity stream.
     public var engineNativeAuditFieldsIncluded: Swift.Bool?
     /// The name of the Amazon Kinesis data stream to be used for the database activity stream.
@@ -16487,7 +16571,7 @@ public struct ModifyActivityStreamOutput {
     }
 }
 
-public struct ModifyCertificatesInput {
+public struct ModifyCertificatesInput: Swift.Sendable {
     /// The new default certificate identifier to override the current one with. To determine the valid values, use the describe-certificates CLI command or the DescribeCertificates API operation.
     public var certificateIdentifier: Swift.String?
     /// Specifies whether to remove the override for the default certificate. If the override is removed, the default certificate is the system default.
@@ -16503,7 +16587,7 @@ public struct ModifyCertificatesInput {
     }
 }
 
-public struct ModifyCertificatesOutput {
+public struct ModifyCertificatesOutput: Swift.Sendable {
     /// A CA certificate for an Amazon Web Services account. For more information, see [Using SSL/TLS to encrypt a connection to a DB instance](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/UsingWithRDS.SSL.html) in the Amazon RDS User Guide and [ Using SSL/TLS to encrypt a connection to a DB cluster](https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/UsingWithRDS.SSL.html) in the Amazon Aurora User Guide.
     public var certificate: RDSClientTypes.Certificate?
 
@@ -16539,7 +16623,7 @@ public struct InvalidDBClusterCapacityFault: ClientRuntime.ModeledError, AWSClie
     }
 }
 
-public struct ModifyCurrentDBClusterCapacityInput {
+public struct ModifyCurrentDBClusterCapacityInput: Swift.Sendable {
     /// The DB cluster capacity. When you change the capacity of a paused Aurora Serverless v1 DB cluster, it automatically resumes. Constraints:
     ///
     /// * For Aurora MySQL, valid capacity values are 1, 2, 4, 8, 16, 32, 64, 128, and 256.
@@ -16570,7 +16654,7 @@ public struct ModifyCurrentDBClusterCapacityInput {
     }
 }
 
-public struct ModifyCurrentDBClusterCapacityOutput {
+public struct ModifyCurrentDBClusterCapacityOutput: Swift.Sendable {
     /// The current capacity of the DB cluster.
     public var currentCapacity: Swift.Int?
     /// A user-supplied DB cluster identifier. This identifier is the unique key that identifies a DB cluster.
@@ -16600,7 +16684,7 @@ public struct ModifyCurrentDBClusterCapacityOutput {
 
 extension RDSClientTypes {
 
-    public enum CustomEngineVersionStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum CustomEngineVersionStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case available
         case inactive
         case inactiveExceptRestore
@@ -16630,7 +16714,7 @@ extension RDSClientTypes {
     }
 }
 
-public struct ModifyCustomDBEngineVersionInput {
+public struct ModifyCustomDBEngineVersionInput: Swift.Sendable {
     /// An optional description of your CEV.
     public var description: Swift.String?
     /// The database engine. RDS Custom for Oracle supports the following values:
@@ -16665,7 +16749,7 @@ public struct ModifyCustomDBEngineVersionInput {
 }
 
 /// This data type is used as a response element in the action DescribeDBEngineVersions.
-public struct ModifyCustomDBEngineVersionOutput {
+public struct ModifyCustomDBEngineVersionOutput: Swift.Sendable {
     /// The creation time of the DB engine version.
     public var createTime: Foundation.Date?
     /// JSON string that lists the installation files and parameters that RDS Custom uses to create a custom engine version (CEV). RDS Custom applies the patches in the order in which they're listed in the manifest. You can set the Oracle home, Oracle base, and UNIX/Linux user and group using the installation parameters. For more information, see [JSON fields in the CEV manifest](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/custom-cev.preparing.html#custom-cev.preparing.manifest.fields) in the Amazon RDS User Guide.
@@ -16834,8 +16918,9 @@ public struct StorageTypeNotAvailableFault: ClientRuntime.ModeledError, AWSClien
 }
 
 extension RDSClientTypes {
+
     /// The configuration setting for the log types to be enabled for export to CloudWatch Logs for a specific DB instance or DB cluster. The EnableLogTypes and DisableLogTypes arrays determine which logs will be exported (or not exported) to CloudWatch Logs. The values within these arrays depend on the DB engine being used. For more information about exporting CloudWatch Logs for Amazon RDS DB instances, see [Publishing Database Logs to Amazon CloudWatch Logs ](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_LogAccess.html#USER_LogAccess.Procedural.UploadtoCloudWatch) in the Amazon RDS User Guide. For more information about exporting CloudWatch Logs for Amazon Aurora DB clusters, see [Publishing Database Logs to Amazon CloudWatch Logs](https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/USER_LogAccess.html#USER_LogAccess.Procedural.UploadtoCloudWatch) in the Amazon Aurora User Guide.
-    public struct CloudwatchLogsExportConfiguration {
+    public struct CloudwatchLogsExportConfiguration: Swift.Sendable {
         /// The list of log types to disable.
         public var disableLogTypes: [Swift.String]?
         /// The list of log types to enable.
@@ -16850,11 +16935,10 @@ extension RDSClientTypes {
             self.enableLogTypes = enableLogTypes
         }
     }
-
 }
 
 ///
-public struct ModifyDBClusterInput {
+public struct ModifyDBClusterInput: Swift.Sendable {
     /// The amount of storage in gibibytes (GiB) to allocate to each DB instance in the Multi-AZ DB cluster. Valid for Cluster Type: Multi-AZ DB clusters only
     public var allocatedStorage: Swift.Int?
     /// Specifies whether engine mode changes from serverless to provisioned are allowed. Valid for Cluster Type: Aurora Serverless v1 DB clusters only Constraints:
@@ -16921,13 +17005,13 @@ public struct ModifyDBClusterInput {
     public var enableGlobalWriteForwarding: Swift.Bool?
     /// Specifies whether to enable the HTTP endpoint for an Aurora Serverless v1 DB cluster. By default, the HTTP endpoint isn't enabled. When enabled, the HTTP endpoint provides a connectionless web service API (RDS Data API) for running SQL queries on the Aurora Serverless v1 DB cluster. You can also query your database from inside the RDS console with the RDS query editor. For more information, see [Using RDS Data API](https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/data-api.html) in the Amazon Aurora User Guide. This parameter applies only to Aurora Serverless v1 DB clusters. To enable or disable the HTTP endpoint for an Aurora PostgreSQL Serverless v2 or provisioned DB cluster, use the EnableHttpEndpoint and DisableHttpEndpoint operations. Valid for Cluster Type: Aurora DB clusters only
     public var enableHttpEndpoint: Swift.Bool?
-    /// Specifies whether to enable mapping of Amazon Web Services Identity and Access Management (IAM) accounts to database accounts. By default, mapping isn't enabled. For more information, see [ IAM Database Authentication](https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/UsingWithRDS.IAMDBAuth.html) in the Amazon Aurora User Guide. Valid for Cluster Type: Aurora DB clusters only
+    /// Specifies whether to enable mapping of Amazon Web Services Identity and Access Management (IAM) accounts to database accounts. By default, mapping isn't enabled. For more information, see [ IAM Database Authentication](https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/UsingWithRDS.IAMDBAuth.html) in the Amazon Aurora User Guide or [IAM database authentication for MariaDB, MySQL, and PostgreSQL](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/UsingWithRDS.IAMDBAuth.html) in the Amazon RDS User Guide. Valid for Cluster Type: Aurora DB clusters and Multi-AZ DB clusters
     public var enableIAMDatabaseAuthentication: Swift.Bool?
-    /// Specifies whether to enable Aurora Limitless Database. You must enable Aurora Limitless Database to create a DB shard group. Valid for: Aurora DB clusters only
+    /// Specifies whether to enable Aurora Limitless Database. You must enable Aurora Limitless Database to create a DB shard group. Valid for: Aurora DB clusters only This setting is no longer used. Instead use the ClusterScalabilityType setting when you create your Aurora Limitless Database DB cluster.
     public var enableLimitlessDatabase: Swift.Bool?
     /// Specifies whether read replicas can forward write operations to the writer DB instance in the DB cluster. By default, write operations aren't allowed on reader DB instances. Valid for: Aurora DB clusters only
     public var enableLocalWriteForwarding: Swift.Bool?
-    /// Specifies whether to turn on Performance Insights for the DB cluster. For more information, see [ Using Amazon Performance Insights](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_PerfInsights.html) in the Amazon RDS User Guide. Valid for Cluster Type: Multi-AZ DB clusters only
+    /// Specifies whether to turn on Performance Insights for the DB cluster. For more information, see [ Using Amazon Performance Insights](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_PerfInsights.html) in the Amazon RDS User Guide. Valid for Cluster Type: Aurora DB clusters and Multi-AZ DB clusters
     public var enablePerformanceInsights: Swift.Bool?
     /// The DB engine mode of the DB cluster, either provisioned or serverless. The DB engine mode can be modified only from serverless to provisioned. For more information, see [ CreateDBCluster](https://docs.aws.amazon.com/AmazonRDS/latest/APIReference/API_CreateDBCluster.html). Valid for Cluster Type: Aurora DB clusters only
     public var engineMode: Swift.String?
@@ -17130,7 +17214,7 @@ public struct ModifyDBClusterInput {
     }
 }
 
-public struct ModifyDBClusterOutput {
+public struct ModifyDBClusterOutput: Swift.Sendable {
     /// Contains the details of an Amazon Aurora DB cluster or Multi-AZ DB cluster. For an Amazon Aurora DB cluster, this data type is used as a response element in the operations CreateDBCluster, DeleteDBCluster, DescribeDBClusters, FailoverDBCluster, ModifyDBCluster, PromoteReadReplicaDBCluster, RestoreDBClusterFromS3, RestoreDBClusterFromSnapshot, RestoreDBClusterToPointInTime, StartDBCluster, and StopDBCluster. For a Multi-AZ DB cluster, this data type is used as a response element in the operations CreateDBCluster, DeleteDBCluster, DescribeDBClusters, FailoverDBCluster, ModifyDBCluster, RebootDBCluster, RestoreDBClusterFromSnapshot, and RestoreDBClusterToPointInTime. For more information on Amazon Aurora DB clusters, see [ What is Amazon Aurora?](https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/CHAP_AuroraOverview.html) in the Amazon Aurora User Guide. For more information on Multi-AZ DB clusters, see [ Multi-AZ deployments with two readable standby DB instances](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/multi-az-db-clusters-concepts.html) in the Amazon RDS User Guide.
     public var dbCluster: RDSClientTypes.DBCluster?
 
@@ -17142,7 +17226,7 @@ public struct ModifyDBClusterOutput {
     }
 }
 
-public struct ModifyDBClusterEndpointInput {
+public struct ModifyDBClusterEndpointInput: Swift.Sendable {
     /// The identifier of the endpoint to modify. This parameter is stored as a lowercase string.
     /// This member is required.
     public var dbClusterEndpointIdentifier: Swift.String?
@@ -17179,7 +17263,7 @@ public struct ModifyDBClusterEndpointInput {
 ///
 ///
 /// For the data structure that represents Amazon RDS DB instance endpoints, see Endpoint.
-public struct ModifyDBClusterEndpointOutput {
+public struct ModifyDBClusterEndpointOutput: Swift.Sendable {
     /// The type associated with a custom endpoint. One of: READER, WRITER, ANY.
     public var customEndpointType: Swift.String?
     /// The Amazon Resource Name (ARN) for the endpoint.
@@ -17228,7 +17312,7 @@ public struct ModifyDBClusterEndpointOutput {
 }
 
 ///
-public struct ModifyDBClusterParameterGroupInput {
+public struct ModifyDBClusterParameterGroupInput: Swift.Sendable {
     /// The name of the DB cluster parameter group to modify.
     /// This member is required.
     public var dbClusterParameterGroupName: Swift.String?
@@ -17247,7 +17331,7 @@ public struct ModifyDBClusterParameterGroupInput {
 }
 
 ///
-public struct ModifyDBClusterParameterGroupOutput {
+public struct ModifyDBClusterParameterGroupOutput: Swift.Sendable {
     /// The name of the DB cluster parameter group. Constraints:
     ///
     /// * Must be 1 to 255 letters or numbers.
@@ -17293,7 +17377,7 @@ public struct SharedSnapshotQuotaExceededFault: ClientRuntime.ModeledError, AWSC
 }
 
 ///
-public struct ModifyDBClusterSnapshotAttributeInput {
+public struct ModifyDBClusterSnapshotAttributeInput: Swift.Sendable {
     /// The name of the DB cluster snapshot attribute to modify. To manage authorization for other Amazon Web Services accounts to copy or restore a manual DB cluster snapshot, set this value to restore. To view the list of attributes available to modify, use the [DescribeDBClusterSnapshotAttributes] API operation.
     /// This member is required.
     public var attributeName: Swift.String?
@@ -17319,7 +17403,7 @@ public struct ModifyDBClusterSnapshotAttributeInput {
     }
 }
 
-public struct ModifyDBClusterSnapshotAttributeOutput {
+public struct ModifyDBClusterSnapshotAttributeOutput: Swift.Sendable {
     /// Contains the results of a successful call to the DescribeDBClusterSnapshotAttributes API action. Manual DB cluster snapshot attributes are used to authorize other Amazon Web Services accounts to copy or restore a manual DB cluster snapshot. For more information, see the ModifyDBClusterSnapshotAttribute API action.
     public var dbClusterSnapshotAttributesResult: RDSClientTypes.DBClusterSnapshotAttributesResult?
 
@@ -17356,7 +17440,7 @@ public struct DBUpgradeDependencyFailureFault: ClientRuntime.ModeledError, AWSCl
 }
 
 ///
-public struct ModifyDBInstanceInput {
+public struct ModifyDBInstanceInput: Swift.Sendable {
     /// The new amount of storage in gibibytes (GiB) to allocate for the DB instance. For RDS for Db2, MariaDB, RDS for MySQL, RDS for Oracle, and RDS for PostgreSQL, the value supplied must be at least 10% greater than the current value. Values that are not at least 10% greater than the existing value are rounded up so that they are 10% greater than the current value. For the valid values for allocated storage for each engine, see CreateDBInstance. Constraints:
     ///
     /// * When you increase the allocated storage for a DB instance that uses Provisioned IOPS (gp3, io1, or io2 storage type), you must also specify the Iops parameter. You can use the current value for Iops.
@@ -17802,7 +17886,7 @@ public struct ModifyDBInstanceInput {
     }
 }
 
-public struct ModifyDBInstanceOutput {
+public struct ModifyDBInstanceOutput: Swift.Sendable {
     /// Contains the details of an Amazon RDS DB instance. This data type is used as a response element in the operations CreateDBInstance, CreateDBInstanceReadReplica, DeleteDBInstance, DescribeDBInstances, ModifyDBInstance, PromoteReadReplica, RebootDBInstance, RestoreDBInstanceFromDBSnapshot, RestoreDBInstanceFromS3, RestoreDBInstanceToPointInTime, StartDBInstance, and StopDBInstance.
     public var dbInstance: RDSClientTypes.DBInstance?
 
@@ -17815,7 +17899,7 @@ public struct ModifyDBInstanceOutput {
 }
 
 ///
-public struct ModifyDBParameterGroupInput {
+public struct ModifyDBParameterGroupInput: Swift.Sendable {
     /// The name of the DB parameter group. Constraints:
     ///
     /// * If supplied, must match the name of an existing DBParameterGroup.
@@ -17836,7 +17920,7 @@ public struct ModifyDBParameterGroupInput {
 }
 
 /// Contains the result of a successful invocation of the ModifyDBParameterGroup or ResetDBParameterGroup operation.
-public struct ModifyDBParameterGroupOutput {
+public struct ModifyDBParameterGroupOutput: Swift.Sendable {
     /// The name of the DB parameter group.
     public var dbParameterGroupName: Swift.String?
 
@@ -17848,7 +17932,7 @@ public struct ModifyDBParameterGroupOutput {
     }
 }
 
-public struct ModifyDBProxyInput {
+public struct ModifyDBProxyInput: Swift.Sendable {
     /// The new authentication settings for the DBProxy.
     public var auth: [RDSClientTypes.UserAuthConfig]?
     /// The identifier for the DBProxy to modify.
@@ -17889,7 +17973,7 @@ public struct ModifyDBProxyInput {
     }
 }
 
-public struct ModifyDBProxyOutput {
+public struct ModifyDBProxyOutput: Swift.Sendable {
     /// The DBProxy object representing the new settings for the proxy.
     public var dbProxy: RDSClientTypes.DBProxy?
 
@@ -17901,7 +17985,7 @@ public struct ModifyDBProxyOutput {
     }
 }
 
-public struct ModifyDBProxyEndpointInput {
+public struct ModifyDBProxyEndpointInput: Swift.Sendable {
     /// The name of the DB proxy sociated with the DB proxy endpoint that you want to modify.
     /// This member is required.
     public var dbProxyEndpointName: Swift.String?
@@ -17922,7 +18006,7 @@ public struct ModifyDBProxyEndpointInput {
     }
 }
 
-public struct ModifyDBProxyEndpointOutput {
+public struct ModifyDBProxyEndpointOutput: Swift.Sendable {
     /// The DBProxyEndpoint object representing the new settings for the DB proxy endpoint.
     public var dbProxyEndpoint: RDSClientTypes.DBProxyEndpoint?
 
@@ -17935,8 +18019,9 @@ public struct ModifyDBProxyEndpointOutput {
 }
 
 extension RDSClientTypes {
+
     /// Specifies the settings that control the size and behavior of the connection pool associated with a DBProxyTargetGroup.
-    public struct ConnectionPoolConfiguration {
+    public struct ConnectionPoolConfiguration: Swift.Sendable {
         /// The number of seconds for a proxy to wait for a connection to become available in the connection pool. This setting only applies when the proxy has opened its maximum number of connections and all connections are busy with client sessions. Default: 120 Constraints:
         ///
         /// * Must be between 0 and 3600.
@@ -17969,10 +18054,9 @@ extension RDSClientTypes {
             self.sessionPinningFilters = sessionPinningFilters
         }
     }
-
 }
 
-public struct ModifyDBProxyTargetGroupInput {
+public struct ModifyDBProxyTargetGroupInput: Swift.Sendable {
     /// The settings that determine the size and behavior of the connection pool for the target group.
     public var connectionPoolConfig: RDSClientTypes.ConnectionPoolConfiguration?
     /// The name of the proxy.
@@ -17998,7 +18082,7 @@ public struct ModifyDBProxyTargetGroupInput {
     }
 }
 
-public struct ModifyDBProxyTargetGroupOutput {
+public struct ModifyDBProxyTargetGroupOutput: Swift.Sendable {
     /// The settings of the modified DBProxyTarget.
     public var dbProxyTargetGroup: RDSClientTypes.DBProxyTargetGroup?
 
@@ -18011,8 +18095,9 @@ public struct ModifyDBProxyTargetGroupOutput {
 }
 
 extension RDSClientTypes {
+
     /// The recommended status to update for the specified recommendation action ID.
-    public struct RecommendedActionUpdate {
+    public struct RecommendedActionUpdate: Swift.Sendable {
         /// A unique identifier of the updated recommendation action.
         /// This member is required.
         public var actionId: Swift.String?
@@ -18033,10 +18118,9 @@ extension RDSClientTypes {
             self.status = status
         }
     }
-
 }
 
-public struct ModifyDBRecommendationInput {
+public struct ModifyDBRecommendationInput: Swift.Sendable {
     /// The language of the modified recommendation.
     public var locale: Swift.String?
     /// The identifier of the recommendation to update.
@@ -18065,7 +18149,7 @@ public struct ModifyDBRecommendationInput {
     }
 }
 
-public struct ModifyDBRecommendationOutput {
+public struct ModifyDBRecommendationOutput: Swift.Sendable {
     /// The recommendation for your DB instances, DB clusters, and DB parameter groups.
     public var dbRecommendation: RDSClientTypes.DBRecommendation?
 
@@ -18077,7 +18161,7 @@ public struct ModifyDBRecommendationOutput {
     }
 }
 
-public struct ModifyDBShardGroupInput {
+public struct ModifyDBShardGroupInput: Swift.Sendable {
     /// Specifies whether to create standby DB shard groups for the DB shard group. Valid values are the following:
     ///
     /// * 0 - Creates a DB shard group without a standby DB shard group. This is the default value.
@@ -18108,7 +18192,7 @@ public struct ModifyDBShardGroupInput {
     }
 }
 
-public struct ModifyDBShardGroupOutput {
+public struct ModifyDBShardGroupOutput: Swift.Sendable {
     /// Specifies whether to create standby DB shard groups for the DB shard group. Valid values are the following:
     ///
     /// * 0 - Creates a DB shard group without a standby DB shard group. This is the default value.
@@ -18135,6 +18219,8 @@ public struct ModifyDBShardGroupOutput {
     public var publiclyAccessible: Swift.Bool?
     /// The status of the DB shard group.
     public var status: Swift.String?
+    /// A list of tags. For more information, see [Tagging Amazon RDS resources](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_Tagging.html) in the Amazon RDS User Guide or [Tagging Amazon Aurora and Amazon RDS resources](https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/USER_Tagging.html) in the Amazon Aurora User Guide.
+    public var tagList: [RDSClientTypes.Tag]?
 
     public init(
         computeRedundancy: Swift.Int? = nil,
@@ -18146,7 +18232,8 @@ public struct ModifyDBShardGroupOutput {
         maxACU: Swift.Double? = nil,
         minACU: Swift.Double? = nil,
         publiclyAccessible: Swift.Bool? = nil,
-        status: Swift.String? = nil
+        status: Swift.String? = nil,
+        tagList: [RDSClientTypes.Tag]? = nil
     )
     {
         self.computeRedundancy = computeRedundancy
@@ -18159,10 +18246,11 @@ public struct ModifyDBShardGroupOutput {
         self.minACU = minACU
         self.publiclyAccessible = publiclyAccessible
         self.status = status
+        self.tagList = tagList
     }
 }
 
-public struct ModifyDBSnapshotInput {
+public struct ModifyDBSnapshotInput: Swift.Sendable {
     /// The identifier of the DB snapshot to modify.
     /// This member is required.
     public var dbSnapshotIdentifier: Swift.String?
@@ -18196,7 +18284,7 @@ public struct ModifyDBSnapshotInput {
     }
 }
 
-public struct ModifyDBSnapshotOutput {
+public struct ModifyDBSnapshotOutput: Swift.Sendable {
     /// Contains the details of an Amazon RDS DB snapshot. This data type is used as a response element in the DescribeDBSnapshots action.
     public var dbSnapshot: RDSClientTypes.DBSnapshot?
 
@@ -18209,7 +18297,7 @@ public struct ModifyDBSnapshotOutput {
 }
 
 ///
-public struct ModifyDBSnapshotAttributeInput {
+public struct ModifyDBSnapshotAttributeInput: Swift.Sendable {
     /// The name of the DB snapshot attribute to modify. To manage authorization for other Amazon Web Services accounts to copy or restore a manual DB snapshot, set this value to restore. To view the list of attributes available to modify, use the [DescribeDBSnapshotAttributes] API operation.
     /// This member is required.
     public var attributeName: Swift.String?
@@ -18235,7 +18323,7 @@ public struct ModifyDBSnapshotAttributeInput {
     }
 }
 
-public struct ModifyDBSnapshotAttributeOutput {
+public struct ModifyDBSnapshotAttributeOutput: Swift.Sendable {
     /// Contains the results of a successful call to the DescribeDBSnapshotAttributes API action. Manual DB snapshot attributes are used to authorize other Amazon Web Services accounts to copy or restore a manual DB snapshot. For more information, see the ModifyDBSnapshotAttribute API action.
     public var dbSnapshotAttributesResult: RDSClientTypes.DBSnapshotAttributesResult?
 
@@ -18272,7 +18360,7 @@ public struct SubnetAlreadyInUse: ClientRuntime.ModeledError, AWSClientRuntime.A
 }
 
 ///
-public struct ModifyDBSubnetGroupInput {
+public struct ModifyDBSubnetGroupInput: Swift.Sendable {
     /// The description for the DB subnet group.
     public var dbSubnetGroupDescription: Swift.String?
     /// The name for the DB subnet group. This value is stored as a lowercase string. You can't modify the default subnet group. Constraints: Must match the name of an existing DBSubnetGroup. Must not be default. Example: mydbsubnetgroup
@@ -18294,7 +18382,7 @@ public struct ModifyDBSubnetGroupInput {
     }
 }
 
-public struct ModifyDBSubnetGroupOutput {
+public struct ModifyDBSubnetGroupOutput: Swift.Sendable {
     /// Contains the details of an Amazon RDS DB subnet group. This data type is used as a response element in the DescribeDBSubnetGroups action.
     public var dbSubnetGroup: RDSClientTypes.DBSubnetGroup?
 
@@ -18307,7 +18395,7 @@ public struct ModifyDBSubnetGroupOutput {
 }
 
 ///
-public struct ModifyEventSubscriptionInput {
+public struct ModifyEventSubscriptionInput: Swift.Sendable {
     /// Specifies whether to activate the subscription.
     public var enabled: Swift.Bool?
     /// A list of event categories for a source type (SourceType) that you want to subscribe to. You can see a list of the categories for a given source type in [Events](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_Events.html) in the Amazon RDS User Guide or by using the DescribeEventCategories operation.
@@ -18336,7 +18424,7 @@ public struct ModifyEventSubscriptionInput {
     }
 }
 
-public struct ModifyEventSubscriptionOutput {
+public struct ModifyEventSubscriptionOutput: Swift.Sendable {
     /// Contains the results of a successful invocation of the DescribeEventSubscriptions action.
     public var eventSubscription: RDSClientTypes.EventSubscription?
 
@@ -18348,7 +18436,7 @@ public struct ModifyEventSubscriptionOutput {
     }
 }
 
-public struct ModifyGlobalClusterInput {
+public struct ModifyGlobalClusterInput: Swift.Sendable {
     /// Specifies whether to allow major version upgrades. Constraints: Must be enabled if you specify a value for the EngineVersion parameter that's a different major version than the global cluster's current version. If you upgrade the major version of a global database, the cluster and DB instance parameter groups are set to the default parameter groups for the new version. Apply any custom parameter groups after completing the upgrade.
     public var allowMajorVersionUpgrade: Swift.Bool?
     /// Specifies whether to enable deletion protection for the global database cluster. The global database cluster can't be deleted when deletion protection is enabled.
@@ -18387,7 +18475,7 @@ public struct ModifyGlobalClusterInput {
     }
 }
 
-public struct ModifyGlobalClusterOutput {
+public struct ModifyGlobalClusterOutput: Swift.Sendable {
     /// A data type representing an Aurora global database.
     public var globalCluster: RDSClientTypes.GlobalCluster?
 
@@ -18399,7 +18487,7 @@ public struct ModifyGlobalClusterOutput {
     }
 }
 
-public struct ModifyIntegrationInput {
+public struct ModifyIntegrationInput: Swift.Sendable {
     /// A new data filter for the integration. For more information, see [Data filtering for Aurora zero-ETL integrations with Amazon Redshift](https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/USER_Zero_ETL_Filtering.html).
     public var dataFilter: Swift.String?
     /// A new description for the integration.
@@ -18425,7 +18513,7 @@ public struct ModifyIntegrationInput {
 }
 
 /// A zero-ETL integration with Amazon Redshift.
-public struct ModifyIntegrationOutput {
+public struct ModifyIntegrationOutput: Swift.Sendable {
     /// The encryption context for the integration. For more information, see [Encryption context](https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#encrypt_context) in the Amazon Web Services Key Management Service Developer Guide.
     public var additionalEncryptionContext: [Swift.String: Swift.String]?
     /// The time when the integration was created, in Universal Coordinated Time (UTC).
@@ -18482,8 +18570,9 @@ public struct ModifyIntegrationOutput {
 }
 
 extension RDSClientTypes {
+
     /// A list of all available options for an option group.
-    public struct OptionConfiguration {
+    public struct OptionConfiguration: Swift.Sendable {
         /// A list of DB security groups used for this option.
         public var dbSecurityGroupMemberships: [Swift.String]?
         /// The configuration of options to include in a group.
@@ -18515,11 +18604,10 @@ extension RDSClientTypes {
             self.vpcSecurityGroupMemberships = vpcSecurityGroupMemberships
         }
     }
-
 }
 
 ///
-public struct ModifyOptionGroupInput {
+public struct ModifyOptionGroupInput: Swift.Sendable {
     /// Specifies whether to apply the change immediately or during the next maintenance window for each instance associated with the option group.
     public var applyImmediately: Swift.Bool?
     /// The name of the option group to be modified. Permanent options, such as the TDE option for Oracle Advanced Security TDE, can't be removed from an option group, and that option group can't be removed from a DB instance once it is associated with a DB instance
@@ -18544,7 +18632,7 @@ public struct ModifyOptionGroupInput {
     }
 }
 
-public struct ModifyOptionGroupOutput {
+public struct ModifyOptionGroupOutput: Swift.Sendable {
     ///
     public var optionGroup: RDSClientTypes.OptionGroup?
 
@@ -18556,7 +18644,7 @@ public struct ModifyOptionGroupOutput {
     }
 }
 
-public struct ModifyTenantDatabaseInput {
+public struct ModifyTenantDatabaseInput: Swift.Sendable {
     /// The identifier of the DB instance that contains the tenant database that you are modifying. This parameter isn't case-sensitive. Constraints:
     ///
     /// * Must match the identifier of an existing DB instance.
@@ -18602,7 +18690,7 @@ extension ModifyTenantDatabaseInput: Swift.CustomDebugStringConvertible {
         "ModifyTenantDatabaseInput(dbInstanceIdentifier: \(Swift.String(describing: dbInstanceIdentifier)), newTenantDBName: \(Swift.String(describing: newTenantDBName)), tenantDBName: \(Swift.String(describing: tenantDBName)), masterUserPassword: \"CONTENT_REDACTED\")"}
 }
 
-public struct ModifyTenantDatabaseOutput {
+public struct ModifyTenantDatabaseOutput: Swift.Sendable {
     /// A tenant database in the DB instance. This data type is an element in the response to the DescribeTenantDatabases action.
     public var tenantDatabase: RDSClientTypes.TenantDatabase?
 
@@ -18615,7 +18703,7 @@ public struct ModifyTenantDatabaseOutput {
 }
 
 ///
-public struct PromoteReadReplicaInput {
+public struct PromoteReadReplicaInput: Swift.Sendable {
     /// The number of days for which automated backups are retained. Setting this parameter to a positive number enables backups. Setting this parameter to 0 disables automated backups. Default: 1 Constraints:
     ///
     /// * Must be a value from 0 to 35.
@@ -18653,7 +18741,7 @@ public struct PromoteReadReplicaInput {
     }
 }
 
-public struct PromoteReadReplicaOutput {
+public struct PromoteReadReplicaOutput: Swift.Sendable {
     /// Contains the details of an Amazon RDS DB instance. This data type is used as a response element in the operations CreateDBInstance, CreateDBInstanceReadReplica, DeleteDBInstance, DescribeDBInstances, ModifyDBInstance, PromoteReadReplica, RebootDBInstance, RestoreDBInstanceFromDBSnapshot, RestoreDBInstanceFromS3, RestoreDBInstanceToPointInTime, StartDBInstance, and StopDBInstance.
     public var dbInstance: RDSClientTypes.DBInstance?
 
@@ -18666,7 +18754,7 @@ public struct PromoteReadReplicaOutput {
 }
 
 ///
-public struct PromoteReadReplicaDBClusterInput {
+public struct PromoteReadReplicaDBClusterInput: Swift.Sendable {
     /// The identifier of the DB cluster read replica to promote. This parameter isn't case-sensitive. Constraints:
     ///
     /// * Must match the identifier of an existing DB cluster read replica.
@@ -18684,7 +18772,7 @@ public struct PromoteReadReplicaDBClusterInput {
     }
 }
 
-public struct PromoteReadReplicaDBClusterOutput {
+public struct PromoteReadReplicaDBClusterOutput: Swift.Sendable {
     /// Contains the details of an Amazon Aurora DB cluster or Multi-AZ DB cluster. For an Amazon Aurora DB cluster, this data type is used as a response element in the operations CreateDBCluster, DeleteDBCluster, DescribeDBClusters, FailoverDBCluster, ModifyDBCluster, PromoteReadReplicaDBCluster, RestoreDBClusterFromS3, RestoreDBClusterFromSnapshot, RestoreDBClusterToPointInTime, StartDBCluster, and StopDBCluster. For a Multi-AZ DB cluster, this data type is used as a response element in the operations CreateDBCluster, DeleteDBCluster, DescribeDBClusters, FailoverDBCluster, ModifyDBCluster, RebootDBCluster, RestoreDBClusterFromSnapshot, and RestoreDBClusterToPointInTime. For more information on Amazon Aurora DB clusters, see [ What is Amazon Aurora?](https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/CHAP_AuroraOverview.html) in the Amazon Aurora User Guide. For more information on Multi-AZ DB clusters, see [ Multi-AZ deployments with two readable standby DB instances](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/multi-az-db-clusters-concepts.html) in the Amazon RDS User Guide.
     public var dbCluster: RDSClientTypes.DBCluster?
 
@@ -18745,7 +18833,7 @@ public struct ReservedDBInstanceQuotaExceededFault: ClientRuntime.ModeledError, 
 }
 
 ///
-public struct PurchaseReservedDBInstancesOfferingInput {
+public struct PurchaseReservedDBInstancesOfferingInput: Swift.Sendable {
     /// The number of instances to reserve. Default: 1
     public var dbInstanceCount: Swift.Int?
     /// Customer-specified identifier to track this reservation. Example: myreservationID
@@ -18770,7 +18858,7 @@ public struct PurchaseReservedDBInstancesOfferingInput {
     }
 }
 
-public struct PurchaseReservedDBInstancesOfferingOutput {
+public struct PurchaseReservedDBInstancesOfferingOutput: Swift.Sendable {
     /// This data type is used as a response element in the DescribeReservedDBInstances and PurchaseReservedDBInstancesOffering actions.
     public var reservedDBInstance: RDSClientTypes.ReservedDBInstance?
 
@@ -18782,7 +18870,7 @@ public struct PurchaseReservedDBInstancesOfferingOutput {
     }
 }
 
-public struct RebootDBClusterInput {
+public struct RebootDBClusterInput: Swift.Sendable {
     /// The DB cluster identifier. This parameter is stored as a lowercase string. Constraints:
     ///
     /// * Must match the identifier of an existing DBCluster.
@@ -18797,7 +18885,7 @@ public struct RebootDBClusterInput {
     }
 }
 
-public struct RebootDBClusterOutput {
+public struct RebootDBClusterOutput: Swift.Sendable {
     /// Contains the details of an Amazon Aurora DB cluster or Multi-AZ DB cluster. For an Amazon Aurora DB cluster, this data type is used as a response element in the operations CreateDBCluster, DeleteDBCluster, DescribeDBClusters, FailoverDBCluster, ModifyDBCluster, PromoteReadReplicaDBCluster, RestoreDBClusterFromS3, RestoreDBClusterFromSnapshot, RestoreDBClusterToPointInTime, StartDBCluster, and StopDBCluster. For a Multi-AZ DB cluster, this data type is used as a response element in the operations CreateDBCluster, DeleteDBCluster, DescribeDBClusters, FailoverDBCluster, ModifyDBCluster, RebootDBCluster, RestoreDBClusterFromSnapshot, and RestoreDBClusterToPointInTime. For more information on Amazon Aurora DB clusters, see [ What is Amazon Aurora?](https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/CHAP_AuroraOverview.html) in the Amazon Aurora User Guide. For more information on Multi-AZ DB clusters, see [ Multi-AZ deployments with two readable standby DB instances](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/multi-az-db-clusters-concepts.html) in the Amazon RDS User Guide.
     public var dbCluster: RDSClientTypes.DBCluster?
 
@@ -18810,7 +18898,7 @@ public struct RebootDBClusterOutput {
 }
 
 ///
-public struct RebootDBInstanceInput {
+public struct RebootDBInstanceInput: Swift.Sendable {
     /// The DB instance identifier. This parameter is stored as a lowercase string. Constraints:
     ///
     /// * Must match the identifier of an existing DBInstance.
@@ -18829,7 +18917,7 @@ public struct RebootDBInstanceInput {
     }
 }
 
-public struct RebootDBInstanceOutput {
+public struct RebootDBInstanceOutput: Swift.Sendable {
     /// Contains the details of an Amazon RDS DB instance. This data type is used as a response element in the operations CreateDBInstance, CreateDBInstanceReadReplica, DeleteDBInstance, DescribeDBInstances, ModifyDBInstance, PromoteReadReplica, RebootDBInstance, RestoreDBInstanceFromDBSnapshot, RestoreDBInstanceFromS3, RestoreDBInstanceToPointInTime, StartDBInstance, and StopDBInstance.
     public var dbInstance: RDSClientTypes.DBInstance?
 
@@ -18841,7 +18929,7 @@ public struct RebootDBInstanceOutput {
     }
 }
 
-public struct RebootDBShardGroupInput {
+public struct RebootDBShardGroupInput: Swift.Sendable {
     /// The name of the DB shard group to reboot.
     /// This member is required.
     public var dbShardGroupIdentifier: Swift.String?
@@ -18854,7 +18942,7 @@ public struct RebootDBShardGroupInput {
     }
 }
 
-public struct RebootDBShardGroupOutput {
+public struct RebootDBShardGroupOutput: Swift.Sendable {
     /// Specifies whether to create standby DB shard groups for the DB shard group. Valid values are the following:
     ///
     /// * 0 - Creates a DB shard group without a standby DB shard group. This is the default value.
@@ -18881,6 +18969,8 @@ public struct RebootDBShardGroupOutput {
     public var publiclyAccessible: Swift.Bool?
     /// The status of the DB shard group.
     public var status: Swift.String?
+    /// A list of tags. For more information, see [Tagging Amazon RDS resources](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_Tagging.html) in the Amazon RDS User Guide or [Tagging Amazon Aurora and Amazon RDS resources](https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/USER_Tagging.html) in the Amazon Aurora User Guide.
+    public var tagList: [RDSClientTypes.Tag]?
 
     public init(
         computeRedundancy: Swift.Int? = nil,
@@ -18892,7 +18982,8 @@ public struct RebootDBShardGroupOutput {
         maxACU: Swift.Double? = nil,
         minACU: Swift.Double? = nil,
         publiclyAccessible: Swift.Bool? = nil,
-        status: Swift.String? = nil
+        status: Swift.String? = nil,
+        tagList: [RDSClientTypes.Tag]? = nil
     )
     {
         self.computeRedundancy = computeRedundancy
@@ -18905,6 +18996,7 @@ public struct RebootDBShardGroupOutput {
         self.minACU = minACU
         self.publiclyAccessible = publiclyAccessible
         self.status = status
+        self.tagList = tagList
     }
 }
 
@@ -18956,7 +19048,7 @@ public struct InsufficientAvailableIPsInSubnetFault: ClientRuntime.ModeledError,
     }
 }
 
-public struct RegisterDBProxyTargetsInput {
+public struct RegisterDBProxyTargetsInput: Swift.Sendable {
     /// One or more DB cluster identifiers.
     public var dbClusterIdentifiers: [Swift.String]?
     /// One or more DB instance identifiers.
@@ -18981,7 +19073,7 @@ public struct RegisterDBProxyTargetsInput {
     }
 }
 
-public struct RegisterDBProxyTargetsOutput {
+public struct RegisterDBProxyTargetsOutput: Swift.Sendable {
     /// One or more DBProxyTarget objects that are created when you register targets with a target group.
     public var dbProxyTargets: [RDSClientTypes.DBProxyTarget]?
 
@@ -18993,7 +19085,7 @@ public struct RegisterDBProxyTargetsOutput {
     }
 }
 
-public struct RemoveFromGlobalClusterInput {
+public struct RemoveFromGlobalClusterInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) identifying the cluster that was detached from the Aurora global database cluster.
     public var dbClusterIdentifier: Swift.String?
     /// The cluster identifier to detach from the Aurora global database cluster.
@@ -19009,7 +19101,7 @@ public struct RemoveFromGlobalClusterInput {
     }
 }
 
-public struct RemoveFromGlobalClusterOutput {
+public struct RemoveFromGlobalClusterOutput: Swift.Sendable {
     /// A data type representing an Aurora global database.
     public var globalCluster: RDSClientTypes.GlobalCluster?
 
@@ -19045,7 +19137,7 @@ public struct DBClusterRoleNotFoundFault: ClientRuntime.ModeledError, AWSClientR
     }
 }
 
-public struct RemoveRoleFromDBClusterInput {
+public struct RemoveRoleFromDBClusterInput: Swift.Sendable {
     /// The name of the DB cluster to disassociate the IAM role from.
     /// This member is required.
     public var dbClusterIdentifier: Swift.String?
@@ -19091,7 +19183,7 @@ public struct DBInstanceRoleNotFoundFault: ClientRuntime.ModeledError, AWSClient
     }
 }
 
-public struct RemoveRoleFromDBInstanceInput {
+public struct RemoveRoleFromDBInstanceInput: Swift.Sendable {
     /// The name of the DB instance to disassociate the IAM role from.
     /// This member is required.
     public var dbInstanceIdentifier: Swift.String?
@@ -19115,7 +19207,7 @@ public struct RemoveRoleFromDBInstanceInput {
 }
 
 ///
-public struct RemoveSourceIdentifierFromSubscriptionInput {
+public struct RemoveSourceIdentifierFromSubscriptionInput: Swift.Sendable {
     /// The source identifier to be removed from the subscription, such as the DB instance identifier for a DB instance or the name of a security group.
     /// This member is required.
     public var sourceIdentifier: Swift.String?
@@ -19133,7 +19225,7 @@ public struct RemoveSourceIdentifierFromSubscriptionInput {
     }
 }
 
-public struct RemoveSourceIdentifierFromSubscriptionOutput {
+public struct RemoveSourceIdentifierFromSubscriptionOutput: Swift.Sendable {
     /// Contains the results of a successful invocation of the DescribeEventSubscriptions action.
     public var eventSubscription: RDSClientTypes.EventSubscription?
 
@@ -19146,7 +19238,7 @@ public struct RemoveSourceIdentifierFromSubscriptionOutput {
 }
 
 ///
-public struct RemoveTagsFromResourceInput {
+public struct RemoveTagsFromResourceInput: Swift.Sendable {
     /// The Amazon RDS resource that the tags are removed from. This value is an Amazon Resource Name (ARN). For information about creating an ARN, see [ Constructing an ARN for Amazon RDS](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_Tagging.ARN.html#USER_Tagging.ARN.Constructing) in the Amazon RDS User Guide.
     /// This member is required.
     public var resourceName: Swift.String?
@@ -19165,7 +19257,7 @@ public struct RemoveTagsFromResourceInput {
 }
 
 ///
-public struct ResetDBClusterParameterGroupInput {
+public struct ResetDBClusterParameterGroupInput: Swift.Sendable {
     /// The name of the DB cluster parameter group to reset.
     /// This member is required.
     public var dbClusterParameterGroupName: Swift.String?
@@ -19187,7 +19279,7 @@ public struct ResetDBClusterParameterGroupInput {
 }
 
 ///
-public struct ResetDBClusterParameterGroupOutput {
+public struct ResetDBClusterParameterGroupOutput: Swift.Sendable {
     /// The name of the DB cluster parameter group. Constraints:
     ///
     /// * Must be 1 to 255 letters or numbers.
@@ -19209,7 +19301,7 @@ public struct ResetDBClusterParameterGroupOutput {
 }
 
 ///
-public struct ResetDBParameterGroupInput {
+public struct ResetDBParameterGroupInput: Swift.Sendable {
     /// The name of the DB parameter group. Constraints:
     ///
     /// * Must match the name of an existing DBParameterGroup.
@@ -19233,7 +19325,7 @@ public struct ResetDBParameterGroupInput {
 }
 
 /// Contains the result of a successful invocation of the ModifyDBParameterGroup or ResetDBParameterGroup operation.
-public struct ResetDBParameterGroupOutput {
+public struct ResetDBParameterGroupOutput: Swift.Sendable {
     /// The name of the DB parameter group.
     public var dbParameterGroupName: Swift.String?
 
@@ -19269,7 +19361,7 @@ public struct InvalidS3BucketFault: ClientRuntime.ModeledError, AWSClientRuntime
     }
 }
 
-public struct RestoreDBClusterFromS3Input {
+public struct RestoreDBClusterFromS3Input: Swift.Sendable {
     /// A list of Availability Zones (AZs) where instances in the restored DB cluster can be created.
     public var availabilityZones: [Swift.String]?
     /// The target backtrack window, in seconds. To disable backtracking, set this value to 0. Currently, Backtrack is only supported for Aurora MySQL DB clusters. Default: 0 Constraints:
@@ -19481,7 +19573,7 @@ public struct RestoreDBClusterFromS3Input {
     }
 }
 
-public struct RestoreDBClusterFromS3Output {
+public struct RestoreDBClusterFromS3Output: Swift.Sendable {
     /// Contains the details of an Amazon Aurora DB cluster or Multi-AZ DB cluster. For an Amazon Aurora DB cluster, this data type is used as a response element in the operations CreateDBCluster, DeleteDBCluster, DescribeDBClusters, FailoverDBCluster, ModifyDBCluster, PromoteReadReplicaDBCluster, RestoreDBClusterFromS3, RestoreDBClusterFromSnapshot, RestoreDBClusterToPointInTime, StartDBCluster, and StopDBCluster. For a Multi-AZ DB cluster, this data type is used as a response element in the operations CreateDBCluster, DeleteDBCluster, DescribeDBClusters, FailoverDBCluster, ModifyDBCluster, RebootDBCluster, RestoreDBClusterFromSnapshot, and RestoreDBClusterToPointInTime. For more information on Amazon Aurora DB clusters, see [ What is Amazon Aurora?](https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/CHAP_AuroraOverview.html) in the Amazon Aurora User Guide. For more information on Multi-AZ DB clusters, see [ Multi-AZ deployments with two readable standby DB instances](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/multi-az-db-clusters-concepts.html) in the Amazon RDS User Guide.
     public var dbCluster: RDSClientTypes.DBCluster?
 
@@ -19542,7 +19634,7 @@ public struct InvalidRestoreFault: ClientRuntime.ModeledError, AWSClientRuntime.
 }
 
 ///
-public struct RestoreDBClusterFromSnapshotInput {
+public struct RestoreDBClusterFromSnapshotInput: Swift.Sendable {
     /// Provides the list of Availability Zones (AZs) where instances in the restored DB cluster can be created. Valid for: Aurora DB clusters only
     public var availabilityZones: [Swift.String]?
     /// The target backtrack window, in seconds. To disable backtracking, set this value to 0. Currently, Backtrack is only supported for Aurora MySQL DB clusters. Default: 0 Constraints:
@@ -19593,8 +19685,10 @@ public struct RestoreDBClusterFromSnapshotInput {
     public var domainIAMRoleName: Swift.String?
     /// The list of logs that the restored DB cluster is to export to Amazon CloudWatch Logs. The values in the list depend on the DB engine being used. RDS for MySQL Possible values are error, general, and slowquery. RDS for PostgreSQL Possible values are postgresql and upgrade. Aurora MySQL Possible values are audit, error, general, and slowquery. Aurora PostgreSQL Possible value is postgresql. For more information about exporting CloudWatch Logs for Amazon RDS, see [Publishing Database Logs to Amazon CloudWatch Logs](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_LogAccess.html#USER_LogAccess.Procedural.UploadtoCloudWatch) in the Amazon RDS User Guide. For more information about exporting CloudWatch Logs for Amazon Aurora, see [Publishing Database Logs to Amazon CloudWatch Logs](https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/USER_LogAccess.html#USER_LogAccess.Procedural.UploadtoCloudWatch) in the Amazon Aurora User Guide. Valid for: Aurora DB clusters and Multi-AZ DB clusters
     public var enableCloudwatchLogsExports: [Swift.String]?
-    /// Specifies whether to enable mapping of Amazon Web Services Identity and Access Management (IAM) accounts to database accounts. By default, mapping isn't enabled. For more information, see [ IAM Database Authentication](https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/UsingWithRDS.IAMDBAuth.html) in the Amazon Aurora User Guide. Valid for: Aurora DB clusters only
+    /// Specifies whether to enable mapping of Amazon Web Services Identity and Access Management (IAM) accounts to database accounts. By default, mapping isn't enabled. For more information, see [ IAM Database Authentication](https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/UsingWithRDS.IAMDBAuth.html) in the Amazon Aurora User Guide or [ IAM database authentication for MariaDB, MySQL, and PostgreSQL](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/UsingWithRDS.IAMDBAuth.html) in the Amazon RDS User Guide. Valid for: Aurora DB clusters and Multi-AZ DB clusters
     public var enableIAMDatabaseAuthentication: Swift.Bool?
+    /// Specifies whether to turn on Performance Insights for the DB cluster.
+    public var enablePerformanceInsights: Swift.Bool?
     /// The database engine to use for the new DB cluster. Default: The same as source Constraint: Must be compatible with the engine of the source Valid for: Aurora DB clusters and Multi-AZ DB clusters
     /// This member is required.
     public var engine: Swift.String?
@@ -19622,6 +19716,10 @@ public struct RestoreDBClusterFromSnapshotInput {
     ///
     /// Valid for: Aurora DB clusters and Multi-AZ DB clusters
     public var kmsKeyId: Swift.String?
+    /// The interval, in seconds, between points when Enhanced Monitoring metrics are collected for the DB cluster. To turn off collecting Enhanced Monitoring metrics, specify 0. If MonitoringRoleArn is specified, also set MonitoringInterval to a value other than 0. Valid Values: 0 | 1 | 5 | 10 | 15 | 30 | 60 Default: 0
+    public var monitoringInterval: Swift.Int?
+    /// The Amazon Resource Name (ARN) for the IAM role that permits RDS to send Enhanced Monitoring metrics to Amazon CloudWatch Logs. An example is arn:aws:iam:123456789012:role/emaccess. If MonitoringInterval is set to a value other than 0, supply a MonitoringRoleArn value.
+    public var monitoringRoleArn: Swift.String?
     /// The network type of the DB cluster. Valid Values:
     ///
     /// * IPV4
@@ -19633,6 +19731,19 @@ public struct RestoreDBClusterFromSnapshotInput {
     public var networkType: Swift.String?
     /// The name of the option group to use for the restored DB cluster. DB clusters are associated with a default option group that can't be modified.
     public var optionGroupName: Swift.String?
+    /// The Amazon Web Services KMS key identifier for encryption of Performance Insights data. The Amazon Web Services KMS key identifier is the key ARN, key ID, alias ARN, or alias name for the KMS key. If you don't specify a value for PerformanceInsightsKMSKeyId, then Amazon RDS uses your default KMS key. There is a default KMS key for your Amazon Web Services account. Your Amazon Web Services account has a different default KMS key for each Amazon Web Services Region.
+    public var performanceInsightsKMSKeyId: Swift.String?
+    /// The number of days to retain Performance Insights data. Valid Values:
+    ///
+    /// * 7
+    ///
+    /// * month * 31, where month is a number of months from 1-23. Examples: 93 (3 months * 31), 341 (11 months * 31), 589 (19 months * 31)
+    ///
+    /// * 731
+    ///
+    ///
+    /// Default: 7 days If you specify a retention period that isn't valid, such as 94, Amazon RDS issues an error.
+    public var performanceInsightsRetentionPeriod: Swift.Int?
     /// The port number on which the new DB cluster accepts connections. Constraints: This value must be 1150-65535 Default: The same port as the original DB cluster. Valid for: Aurora DB clusters and Multi-AZ DB clusters
     public var port: Swift.Int?
     /// Specifies whether the DB cluster is publicly accessible. When the DB cluster is publicly accessible, its Domain Name System (DNS) endpoint resolves to the private IP address from within the DB cluster's virtual private cloud (VPC). It resolves to the public IP address from outside of the DB cluster's VPC. Access to the DB cluster is ultimately controlled by the security group it uses. That public access is not permitted if the security group assigned to the DB cluster doesn't permit it. When the DB cluster isn't publicly accessible, it is an internal DB cluster with a DNS name that resolves to a private IP address. Default: The default behavior varies depending on whether DBSubnetGroupName is specified. If DBSubnetGroupName isn't specified, and PubliclyAccessible isn't specified, the following applies:
@@ -19686,14 +19797,19 @@ public struct RestoreDBClusterFromSnapshotInput {
         domainIAMRoleName: Swift.String? = nil,
         enableCloudwatchLogsExports: [Swift.String]? = nil,
         enableIAMDatabaseAuthentication: Swift.Bool? = nil,
+        enablePerformanceInsights: Swift.Bool? = nil,
         engine: Swift.String? = nil,
         engineLifecycleSupport: Swift.String? = nil,
         engineMode: Swift.String? = nil,
         engineVersion: Swift.String? = nil,
         iops: Swift.Int? = nil,
         kmsKeyId: Swift.String? = nil,
+        monitoringInterval: Swift.Int? = nil,
+        monitoringRoleArn: Swift.String? = nil,
         networkType: Swift.String? = nil,
         optionGroupName: Swift.String? = nil,
+        performanceInsightsKMSKeyId: Swift.String? = nil,
+        performanceInsightsRetentionPeriod: Swift.Int? = nil,
         port: Swift.Int? = nil,
         publiclyAccessible: Swift.Bool? = nil,
         rdsCustomClusterConfiguration: RDSClientTypes.RdsCustomClusterConfiguration? = nil,
@@ -19718,14 +19834,19 @@ public struct RestoreDBClusterFromSnapshotInput {
         self.domainIAMRoleName = domainIAMRoleName
         self.enableCloudwatchLogsExports = enableCloudwatchLogsExports
         self.enableIAMDatabaseAuthentication = enableIAMDatabaseAuthentication
+        self.enablePerformanceInsights = enablePerformanceInsights
         self.engine = engine
         self.engineLifecycleSupport = engineLifecycleSupport
         self.engineMode = engineMode
         self.engineVersion = engineVersion
         self.iops = iops
         self.kmsKeyId = kmsKeyId
+        self.monitoringInterval = monitoringInterval
+        self.monitoringRoleArn = monitoringRoleArn
         self.networkType = networkType
         self.optionGroupName = optionGroupName
+        self.performanceInsightsKMSKeyId = performanceInsightsKMSKeyId
+        self.performanceInsightsRetentionPeriod = performanceInsightsRetentionPeriod
         self.port = port
         self.publiclyAccessible = publiclyAccessible
         self.rdsCustomClusterConfiguration = rdsCustomClusterConfiguration
@@ -19738,7 +19859,7 @@ public struct RestoreDBClusterFromSnapshotInput {
     }
 }
 
-public struct RestoreDBClusterFromSnapshotOutput {
+public struct RestoreDBClusterFromSnapshotOutput: Swift.Sendable {
     /// Contains the details of an Amazon Aurora DB cluster or Multi-AZ DB cluster. For an Amazon Aurora DB cluster, this data type is used as a response element in the operations CreateDBCluster, DeleteDBCluster, DescribeDBClusters, FailoverDBCluster, ModifyDBCluster, PromoteReadReplicaDBCluster, RestoreDBClusterFromS3, RestoreDBClusterFromSnapshot, RestoreDBClusterToPointInTime, StartDBCluster, and StopDBCluster. For a Multi-AZ DB cluster, this data type is used as a response element in the operations CreateDBCluster, DeleteDBCluster, DescribeDBClusters, FailoverDBCluster, ModifyDBCluster, RebootDBCluster, RestoreDBClusterFromSnapshot, and RestoreDBClusterToPointInTime. For more information on Amazon Aurora DB clusters, see [ What is Amazon Aurora?](https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/CHAP_AuroraOverview.html) in the Amazon Aurora User Guide. For more information on Multi-AZ DB clusters, see [ Multi-AZ deployments with two readable standby DB instances](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/multi-az-db-clusters-concepts.html) in the Amazon RDS User Guide.
     public var dbCluster: RDSClientTypes.DBCluster?
 
@@ -19751,7 +19872,7 @@ public struct RestoreDBClusterFromSnapshotOutput {
 }
 
 ///
-public struct RestoreDBClusterToPointInTimeInput {
+public struct RestoreDBClusterToPointInTimeInput: Swift.Sendable {
     /// The target backtrack window, in seconds. To disable backtracking, set this value to 0. Default: 0 Constraints:
     ///
     /// * If specified, this value must be set to a number from 0 to 259,200 (72 hours).
@@ -19798,8 +19919,10 @@ public struct RestoreDBClusterToPointInTimeInput {
     public var domainIAMRoleName: Swift.String?
     /// The list of logs that the restored DB cluster is to export to CloudWatch Logs. The values in the list depend on the DB engine being used. RDS for MySQL Possible values are error, general, and slowquery. RDS for PostgreSQL Possible values are postgresql and upgrade. Aurora MySQL Possible values are audit, error, general, and slowquery. Aurora PostgreSQL Possible value is postgresql. For more information about exporting CloudWatch Logs for Amazon RDS, see [Publishing Database Logs to Amazon CloudWatch Logs](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_LogAccess.html#USER_LogAccess.Procedural.UploadtoCloudWatch) in the Amazon RDS User Guide. For more information about exporting CloudWatch Logs for Amazon Aurora, see [Publishing Database Logs to Amazon CloudWatch Logs](https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/USER_LogAccess.html#USER_LogAccess.Procedural.UploadtoCloudWatch) in the Amazon Aurora User Guide. Valid for: Aurora DB clusters and Multi-AZ DB clusters
     public var enableCloudwatchLogsExports: [Swift.String]?
-    /// Specifies whether to enable mapping of Amazon Web Services Identity and Access Management (IAM) accounts to database accounts. By default, mapping isn't enabled. For more information, see [ IAM Database Authentication](https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/UsingWithRDS.IAMDBAuth.html) in the Amazon Aurora User Guide. Valid for: Aurora DB clusters only
+    /// Specifies whether to enable mapping of Amazon Web Services Identity and Access Management (IAM) accounts to database accounts. By default, mapping isn't enabled. For more information, see [ IAM Database Authentication](https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/UsingWithRDS.IAMDBAuth.html) in the Amazon Aurora User Guide or [ IAM database authentication for MariaDB, MySQL, and PostgreSQL](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/UsingWithRDS.IAMDBAuth.html) in the Amazon RDS User Guide. Valid for: Aurora DB clusters and Multi-AZ DB clusters
     public var enableIAMDatabaseAuthentication: Swift.Bool?
+    /// Specifies whether to turn on Performance Insights for the DB cluster.
+    public var enablePerformanceInsights: Swift.Bool?
     /// The life cycle type for this DB cluster. By default, this value is set to open-source-rds-extended-support, which enrolls your DB cluster into Amazon RDS Extended Support. At the end of standard support, you can avoid charges for Extended Support by setting the value to open-source-rds-extended-support-disabled. In this case, RDS automatically upgrades your restored DB cluster to a higher engine version, if the major engine version is past its end of standard support date. You can use this setting to enroll your DB cluster into Amazon RDS Extended Support. With RDS Extended Support, you can run the selected major engine version on your DB cluster past the end of standard support for that engine version. For more information, see the following sections:
     ///
     /// * Amazon Aurora (PostgreSQL only) - [Using Amazon RDS Extended Support](https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/extended-support.html) in the Amazon Aurora User Guide
@@ -19822,6 +19945,10 @@ public struct RestoreDBClusterToPointInTimeInput {
     ///
     /// If DBClusterIdentifier refers to a DB cluster that isn't encrypted, then the restore request is rejected. Valid for: Aurora DB clusters and Multi-AZ DB clusters
     public var kmsKeyId: Swift.String?
+    /// The interval, in seconds, between points when Enhanced Monitoring metrics are collected for the DB cluster. To turn off collecting Enhanced Monitoring metrics, specify 0. If MonitoringRoleArn is specified, also set MonitoringInterval to a value other than 0. Valid Values: 0 | 1 | 5 | 10 | 15 | 30 | 60 Default: 0
+    public var monitoringInterval: Swift.Int?
+    /// The Amazon Resource Name (ARN) for the IAM role that permits RDS to send Enhanced Monitoring metrics to Amazon CloudWatch Logs. An example is arn:aws:iam:123456789012:role/emaccess. If MonitoringInterval is set to a value other than 0, supply a MonitoringRoleArn value.
+    public var monitoringRoleArn: Swift.String?
     /// The network type of the DB cluster. Valid Values:
     ///
     /// * IPV4
@@ -19833,6 +19960,19 @@ public struct RestoreDBClusterToPointInTimeInput {
     public var networkType: Swift.String?
     /// The name of the option group for the new DB cluster. DB clusters are associated with a default option group that can't be modified.
     public var optionGroupName: Swift.String?
+    /// The Amazon Web Services KMS key identifier for encryption of Performance Insights data. The Amazon Web Services KMS key identifier is the key ARN, key ID, alias ARN, or alias name for the KMS key. If you don't specify a value for PerformanceInsightsKMSKeyId, then Amazon RDS uses your default KMS key. There is a default KMS key for your Amazon Web Services account. Your Amazon Web Services account has a different default KMS key for each Amazon Web Services Region.
+    public var performanceInsightsKMSKeyId: Swift.String?
+    /// The number of days to retain Performance Insights data. Valid Values:
+    ///
+    /// * 7
+    ///
+    /// * month * 31, where month is a number of months from 1-23. Examples: 93 (3 months * 31), 341 (11 months * 31), 589 (19 months * 31)
+    ///
+    /// * 731
+    ///
+    ///
+    /// Default: 7 days If you specify a retention period that isn't valid, such as 94, Amazon RDS issues an error.
+    public var performanceInsightsRetentionPeriod: Swift.Int?
     /// The port number on which the new DB cluster accepts connections. Constraints: A value from 1150-65535. Default: The default port for the engine. Valid for: Aurora DB clusters and Multi-AZ DB clusters
     public var port: Swift.Int?
     /// Specifies whether the DB cluster is publicly accessible. When the DB cluster is publicly accessible, its Domain Name System (DNS) endpoint resolves to the private IP address from within the DB cluster's virtual private cloud (VPC). It resolves to the public IP address from outside of the DB cluster's VPC. Access to the DB cluster is ultimately controlled by the security group it uses. That public access is not permitted if the security group assigned to the DB cluster doesn't permit it. When the DB cluster isn't publicly accessible, it is an internal DB cluster with a DNS name that resolves to a private IP address. Default: The default behavior varies depending on whether DBSubnetGroupName is specified. If DBSubnetGroupName isn't specified, and PubliclyAccessible isn't specified, the following applies:
@@ -19909,12 +20049,17 @@ public struct RestoreDBClusterToPointInTimeInput {
         domainIAMRoleName: Swift.String? = nil,
         enableCloudwatchLogsExports: [Swift.String]? = nil,
         enableIAMDatabaseAuthentication: Swift.Bool? = nil,
+        enablePerformanceInsights: Swift.Bool? = nil,
         engineLifecycleSupport: Swift.String? = nil,
         engineMode: Swift.String? = nil,
         iops: Swift.Int? = nil,
         kmsKeyId: Swift.String? = nil,
+        monitoringInterval: Swift.Int? = nil,
+        monitoringRoleArn: Swift.String? = nil,
         networkType: Swift.String? = nil,
         optionGroupName: Swift.String? = nil,
+        performanceInsightsKMSKeyId: Swift.String? = nil,
+        performanceInsightsRetentionPeriod: Swift.Int? = nil,
         port: Swift.Int? = nil,
         publiclyAccessible: Swift.Bool? = nil,
         rdsCustomClusterConfiguration: RDSClientTypes.RdsCustomClusterConfiguration? = nil,
@@ -19941,12 +20086,17 @@ public struct RestoreDBClusterToPointInTimeInput {
         self.domainIAMRoleName = domainIAMRoleName
         self.enableCloudwatchLogsExports = enableCloudwatchLogsExports
         self.enableIAMDatabaseAuthentication = enableIAMDatabaseAuthentication
+        self.enablePerformanceInsights = enablePerformanceInsights
         self.engineLifecycleSupport = engineLifecycleSupport
         self.engineMode = engineMode
         self.iops = iops
         self.kmsKeyId = kmsKeyId
+        self.monitoringInterval = monitoringInterval
+        self.monitoringRoleArn = monitoringRoleArn
         self.networkType = networkType
         self.optionGroupName = optionGroupName
+        self.performanceInsightsKMSKeyId = performanceInsightsKMSKeyId
+        self.performanceInsightsRetentionPeriod = performanceInsightsRetentionPeriod
         self.port = port
         self.publiclyAccessible = publiclyAccessible
         self.rdsCustomClusterConfiguration = rdsCustomClusterConfiguration
@@ -19963,7 +20113,7 @@ public struct RestoreDBClusterToPointInTimeInput {
     }
 }
 
-public struct RestoreDBClusterToPointInTimeOutput {
+public struct RestoreDBClusterToPointInTimeOutput: Swift.Sendable {
     /// Contains the details of an Amazon Aurora DB cluster or Multi-AZ DB cluster. For an Amazon Aurora DB cluster, this data type is used as a response element in the operations CreateDBCluster, DeleteDBCluster, DescribeDBClusters, FailoverDBCluster, ModifyDBCluster, PromoteReadReplicaDBCluster, RestoreDBClusterFromS3, RestoreDBClusterFromSnapshot, RestoreDBClusterToPointInTime, StartDBCluster, and StopDBCluster. For a Multi-AZ DB cluster, this data type is used as a response element in the operations CreateDBCluster, DeleteDBCluster, DescribeDBClusters, FailoverDBCluster, ModifyDBCluster, RebootDBCluster, RestoreDBClusterFromSnapshot, and RestoreDBClusterToPointInTime. For more information on Amazon Aurora DB clusters, see [ What is Amazon Aurora?](https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/CHAP_AuroraOverview.html) in the Amazon Aurora User Guide. For more information on Multi-AZ DB clusters, see [ Multi-AZ deployments with two readable standby DB instances](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/multi-az-db-clusters-concepts.html) in the Amazon RDS User Guide.
     public var dbCluster: RDSClientTypes.DBCluster?
 
@@ -19976,7 +20126,7 @@ public struct RestoreDBClusterToPointInTimeOutput {
 }
 
 ///
-public struct RestoreDBInstanceFromDBSnapshotInput {
+public struct RestoreDBInstanceFromDBSnapshotInput: Swift.Sendable {
     /// The amount of storage (in gibibytes) to allocate initially for the DB instance. Follow the allocation rules specified in CreateDBInstance. Be sure to allocate enough storage for your new DB instance so that the restore operation can succeed. You can also allocate additional storage for future growth.
     public var allocatedStorage: Swift.Int?
     /// Specifies whether to automatically apply minor version upgrades to the DB instance during the maintenance window. If you restore an RDS Custom DB instance, you must disable this parameter.
@@ -20272,7 +20422,7 @@ public struct RestoreDBInstanceFromDBSnapshotInput {
     }
 }
 
-public struct RestoreDBInstanceFromDBSnapshotOutput {
+public struct RestoreDBInstanceFromDBSnapshotOutput: Swift.Sendable {
     /// Contains the details of an Amazon RDS DB instance. This data type is used as a response element in the operations CreateDBInstance, CreateDBInstanceReadReplica, DeleteDBInstance, DescribeDBInstances, ModifyDBInstance, PromoteReadReplica, RebootDBInstance, RestoreDBInstanceFromDBSnapshot, RestoreDBInstanceFromS3, RestoreDBInstanceToPointInTime, StartDBInstance, and StopDBInstance.
     public var dbInstance: RDSClientTypes.DBInstance?
 
@@ -20284,7 +20434,7 @@ public struct RestoreDBInstanceFromDBSnapshotOutput {
     }
 }
 
-public struct RestoreDBInstanceFromS3Input {
+public struct RestoreDBInstanceFromS3Input: Swift.Sendable {
     /// The amount of storage (in gibibytes) to allocate initially for the DB instance. Follow the allocation rules specified in CreateDBInstance. Be sure to allocate enough storage for your new DB instance so that the restore operation can succeed. You can also allocate additional storage for future growth.
     public var allocatedStorage: Swift.Int?
     /// Specifies whether to automatically apply minor engine upgrades to the DB instance during the maintenance window. By default, minor engine upgrades are not applied automatically.
@@ -20584,7 +20734,7 @@ public struct RestoreDBInstanceFromS3Input {
     }
 }
 
-public struct RestoreDBInstanceFromS3Output {
+public struct RestoreDBInstanceFromS3Output: Swift.Sendable {
     /// Contains the details of an Amazon RDS DB instance. This data type is used as a response element in the operations CreateDBInstance, CreateDBInstanceReadReplica, DeleteDBInstance, DescribeDBInstances, ModifyDBInstance, PromoteReadReplica, RebootDBInstance, RestoreDBInstanceFromDBSnapshot, RestoreDBInstanceFromS3, RestoreDBInstanceToPointInTime, StartDBInstance, and StopDBInstance.
     public var dbInstance: RDSClientTypes.DBInstance?
 
@@ -20621,7 +20771,7 @@ public struct PointInTimeRestoreNotEnabledFault: ClientRuntime.ModeledError, AWS
 }
 
 ///
-public struct RestoreDBInstanceToPointInTimeInput {
+public struct RestoreDBInstanceToPointInTimeInput: Swift.Sendable {
     /// The amount of storage (in gibibytes) to allocate initially for the DB instance. Follow the allocation rules specified in CreateDBInstance. Be sure to allocate enough storage for your new DB instance so that the restore operation can succeed. You can also allocate additional storage for future growth.
     public var allocatedStorage: Swift.Int?
     /// Specifies whether minor version upgrades are applied automatically to the DB instance during the maintenance window. This setting doesn't apply to RDS Custom.
@@ -20955,7 +21105,7 @@ public struct RestoreDBInstanceToPointInTimeInput {
     }
 }
 
-public struct RestoreDBInstanceToPointInTimeOutput {
+public struct RestoreDBInstanceToPointInTimeOutput: Swift.Sendable {
     /// Contains the details of an Amazon RDS DB instance. This data type is used as a response element in the operations CreateDBInstance, CreateDBInstanceReadReplica, DeleteDBInstance, DescribeDBInstances, ModifyDBInstance, PromoteReadReplica, RebootDBInstance, RestoreDBInstanceFromDBSnapshot, RestoreDBInstanceFromS3, RestoreDBInstanceToPointInTime, StartDBInstance, and StopDBInstance.
     public var dbInstance: RDSClientTypes.DBInstance?
 
@@ -20968,7 +21118,7 @@ public struct RestoreDBInstanceToPointInTimeOutput {
 }
 
 ///
-public struct RevokeDBSecurityGroupIngressInput {
+public struct RevokeDBSecurityGroupIngressInput: Swift.Sendable {
     /// The IP range to revoke access from. Must be a valid CIDR range. If CIDRIP is specified, EC2SecurityGroupName, EC2SecurityGroupId and EC2SecurityGroupOwnerId can't be provided.
     public var cidrip: Swift.String?
     /// The name of the DB security group to revoke ingress from.
@@ -20997,7 +21147,7 @@ public struct RevokeDBSecurityGroupIngressInput {
     }
 }
 
-public struct RevokeDBSecurityGroupIngressOutput {
+public struct RevokeDBSecurityGroupIngressOutput: Swift.Sendable {
     /// Contains the details for an Amazon RDS DB security group. This data type is used as a response element in the DescribeDBSecurityGroups action.
     public var dbSecurityGroup: RDSClientTypes.DBSecurityGroup?
 
@@ -21009,7 +21159,7 @@ public struct RevokeDBSecurityGroupIngressOutput {
     }
 }
 
-public struct StartActivityStreamInput {
+public struct StartActivityStreamInput: Swift.Sendable {
     /// Specifies whether or not the database activity stream is to start as soon as possible, regardless of the maintenance window for the database.
     public var applyImmediately: Swift.Bool?
     /// Specifies whether the database activity stream includes engine-native audit fields. This option applies to an Oracle or Microsoft SQL Server DB instance. By default, no engine-native audit fields are included.
@@ -21040,7 +21190,7 @@ public struct StartActivityStreamInput {
     }
 }
 
-public struct StartActivityStreamOutput {
+public struct StartActivityStreamOutput: Swift.Sendable {
     /// Indicates whether or not the database activity stream will start as soon as possible, regardless of the maintenance window for the database.
     public var applyImmediately: Swift.Bool?
     /// Indicates whether engine-native audit fields are included in the database activity stream.
@@ -21072,7 +21222,7 @@ public struct StartActivityStreamOutput {
     }
 }
 
-public struct StartDBClusterInput {
+public struct StartDBClusterInput: Swift.Sendable {
     /// The DB cluster identifier of the Amazon Aurora DB cluster to be started. This parameter is stored as a lowercase string.
     /// This member is required.
     public var dbClusterIdentifier: Swift.String?
@@ -21085,7 +21235,7 @@ public struct StartDBClusterInput {
     }
 }
 
-public struct StartDBClusterOutput {
+public struct StartDBClusterOutput: Swift.Sendable {
     /// Contains the details of an Amazon Aurora DB cluster or Multi-AZ DB cluster. For an Amazon Aurora DB cluster, this data type is used as a response element in the operations CreateDBCluster, DeleteDBCluster, DescribeDBClusters, FailoverDBCluster, ModifyDBCluster, PromoteReadReplicaDBCluster, RestoreDBClusterFromS3, RestoreDBClusterFromSnapshot, RestoreDBClusterToPointInTime, StartDBCluster, and StopDBCluster. For a Multi-AZ DB cluster, this data type is used as a response element in the operations CreateDBCluster, DeleteDBCluster, DescribeDBClusters, FailoverDBCluster, ModifyDBCluster, RebootDBCluster, RestoreDBClusterFromSnapshot, and RestoreDBClusterToPointInTime. For more information on Amazon Aurora DB clusters, see [ What is Amazon Aurora?](https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/CHAP_AuroraOverview.html) in the Amazon Aurora User Guide. For more information on Multi-AZ DB clusters, see [ Multi-AZ deployments with two readable standby DB instances](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/multi-az-db-clusters-concepts.html) in the Amazon RDS User Guide.
     public var dbCluster: RDSClientTypes.DBCluster?
 
@@ -21097,7 +21247,7 @@ public struct StartDBClusterOutput {
     }
 }
 
-public struct StartDBInstanceInput {
+public struct StartDBInstanceInput: Swift.Sendable {
     /// The user-supplied instance identifier.
     /// This member is required.
     public var dbInstanceIdentifier: Swift.String?
@@ -21110,7 +21260,7 @@ public struct StartDBInstanceInput {
     }
 }
 
-public struct StartDBInstanceOutput {
+public struct StartDBInstanceOutput: Swift.Sendable {
     /// Contains the details of an Amazon RDS DB instance. This data type is used as a response element in the operations CreateDBInstance, CreateDBInstanceReadReplica, DeleteDBInstance, DescribeDBInstances, ModifyDBInstance, PromoteReadReplica, RebootDBInstance, RestoreDBInstanceFromDBSnapshot, RestoreDBInstanceFromS3, RestoreDBInstanceToPointInTime, StartDBInstance, and StopDBInstance.
     public var dbInstance: RDSClientTypes.DBInstance?
 
@@ -21122,7 +21272,7 @@ public struct StartDBInstanceOutput {
     }
 }
 
-public struct StartDBInstanceAutomatedBackupsReplicationInput {
+public struct StartDBInstanceAutomatedBackupsReplicationInput: Swift.Sendable {
     /// The retention period for the replicated automated backups.
     public var backupRetentionPeriod: Swift.Int?
     /// The Amazon Web Services KMS key identifier for encryption of the replicated automated backups. The KMS key ID is the Amazon Resource Name (ARN) for the KMS encryption key in the destination Amazon Web Services Region, for example, arn:aws:kms:us-east-1:123456789012:key/AKIAIOSFODNN7EXAMPLE.
@@ -21147,7 +21297,7 @@ public struct StartDBInstanceAutomatedBackupsReplicationInput {
     }
 }
 
-public struct StartDBInstanceAutomatedBackupsReplicationOutput {
+public struct StartDBInstanceAutomatedBackupsReplicationOutput: Swift.Sendable {
     /// An automated backup of a DB instance. It consists of system backups, transaction logs, and the database instance properties that existed at the time you deleted the source instance.
     public var dbInstanceAutomatedBackup: RDSClientTypes.DBInstanceAutomatedBackup?
 
@@ -21279,7 +21429,7 @@ public struct InvalidExportSourceStateFault: ClientRuntime.ModeledError, AWSClie
     }
 }
 
-public struct StartExportTaskInput {
+public struct StartExportTaskInput: Swift.Sendable {
     /// The data to be exported from the snapshot or cluster. If this parameter isn't provided, all of the data is exported. Valid Values:
     ///
     /// * database - Export all the data from a specified database.
@@ -21364,7 +21514,7 @@ public struct StartExportTaskInput {
 }
 
 /// Contains the details of a snapshot or cluster export to Amazon S3. This data type is used as a response element in the DescribeExportTasks operation.
-public struct StartExportTaskOutput {
+public struct StartExportTaskOutput: Swift.Sendable {
     /// The data exported from the snapshot or cluster. Valid Values:
     ///
     /// * database - Export all the data from a specified database.
@@ -21456,7 +21606,7 @@ public struct StartExportTaskOutput {
     }
 }
 
-public struct StopActivityStreamInput {
+public struct StopActivityStreamInput: Swift.Sendable {
     /// Specifies whether or not the database activity stream is to stop as soon as possible, regardless of the maintenance window for the database.
     public var applyImmediately: Swift.Bool?
     /// The Amazon Resource Name (ARN) of the DB cluster for the database activity stream. For example, arn:aws:rds:us-east-1:12345667890:cluster:das-cluster.
@@ -21473,7 +21623,7 @@ public struct StopActivityStreamInput {
     }
 }
 
-public struct StopActivityStreamOutput {
+public struct StopActivityStreamOutput: Swift.Sendable {
     /// The name of the Amazon Kinesis data stream used for the database activity stream.
     public var kinesisStreamName: Swift.String?
     /// The Amazon Web Services KMS key identifier used for encrypting messages in the database activity stream. The Amazon Web Services KMS key identifier is the key ARN, key ID, alias ARN, or alias name for the KMS key.
@@ -21493,7 +21643,7 @@ public struct StopActivityStreamOutput {
     }
 }
 
-public struct StopDBClusterInput {
+public struct StopDBClusterInput: Swift.Sendable {
     /// The DB cluster identifier of the Amazon Aurora DB cluster to be stopped. This parameter is stored as a lowercase string.
     /// This member is required.
     public var dbClusterIdentifier: Swift.String?
@@ -21506,7 +21656,7 @@ public struct StopDBClusterInput {
     }
 }
 
-public struct StopDBClusterOutput {
+public struct StopDBClusterOutput: Swift.Sendable {
     /// Contains the details of an Amazon Aurora DB cluster or Multi-AZ DB cluster. For an Amazon Aurora DB cluster, this data type is used as a response element in the operations CreateDBCluster, DeleteDBCluster, DescribeDBClusters, FailoverDBCluster, ModifyDBCluster, PromoteReadReplicaDBCluster, RestoreDBClusterFromS3, RestoreDBClusterFromSnapshot, RestoreDBClusterToPointInTime, StartDBCluster, and StopDBCluster. For a Multi-AZ DB cluster, this data type is used as a response element in the operations CreateDBCluster, DeleteDBCluster, DescribeDBClusters, FailoverDBCluster, ModifyDBCluster, RebootDBCluster, RestoreDBClusterFromSnapshot, and RestoreDBClusterToPointInTime. For more information on Amazon Aurora DB clusters, see [ What is Amazon Aurora?](https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/CHAP_AuroraOverview.html) in the Amazon Aurora User Guide. For more information on Multi-AZ DB clusters, see [ Multi-AZ deployments with two readable standby DB instances](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/multi-az-db-clusters-concepts.html) in the Amazon RDS User Guide.
     public var dbCluster: RDSClientTypes.DBCluster?
 
@@ -21518,7 +21668,7 @@ public struct StopDBClusterOutput {
     }
 }
 
-public struct StopDBInstanceInput {
+public struct StopDBInstanceInput: Swift.Sendable {
     /// The user-supplied instance identifier.
     /// This member is required.
     public var dbInstanceIdentifier: Swift.String?
@@ -21535,7 +21685,7 @@ public struct StopDBInstanceInput {
     }
 }
 
-public struct StopDBInstanceOutput {
+public struct StopDBInstanceOutput: Swift.Sendable {
     /// Contains the details of an Amazon RDS DB instance. This data type is used as a response element in the operations CreateDBInstance, CreateDBInstanceReadReplica, DeleteDBInstance, DescribeDBInstances, ModifyDBInstance, PromoteReadReplica, RebootDBInstance, RestoreDBInstanceFromDBSnapshot, RestoreDBInstanceFromS3, RestoreDBInstanceToPointInTime, StartDBInstance, and StopDBInstance.
     public var dbInstance: RDSClientTypes.DBInstance?
 
@@ -21547,7 +21697,7 @@ public struct StopDBInstanceOutput {
     }
 }
 
-public struct StopDBInstanceAutomatedBackupsReplicationInput {
+public struct StopDBInstanceAutomatedBackupsReplicationInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the source DB instance for which to stop replicating automate backups, for example, arn:aws:rds:us-west-2:123456789012:db:mydatabase.
     /// This member is required.
     public var sourceDBInstanceArn: Swift.String?
@@ -21560,7 +21710,7 @@ public struct StopDBInstanceAutomatedBackupsReplicationInput {
     }
 }
 
-public struct StopDBInstanceAutomatedBackupsReplicationOutput {
+public struct StopDBInstanceAutomatedBackupsReplicationOutput: Swift.Sendable {
     /// An automated backup of a DB instance. It consists of system backups, transaction logs, and the database instance properties that existed at the time you deleted the source instance.
     public var dbInstanceAutomatedBackup: RDSClientTypes.DBInstanceAutomatedBackup?
 
@@ -21572,10 +21722,10 @@ public struct StopDBInstanceAutomatedBackupsReplicationOutput {
     }
 }
 
-public struct SwitchoverBlueGreenDeploymentInput {
-    /// The unique identifier of the blue/green deployment. Constraints:
+public struct SwitchoverBlueGreenDeploymentInput: Swift.Sendable {
+    /// The resource ID of the blue/green deployment. Constraints:
     ///
-    /// * Must match an existing blue/green deployment identifier.
+    /// * Must match an existing blue/green deployment resource ID.
     /// This member is required.
     public var blueGreenDeploymentIdentifier: Swift.String?
     /// The amount of time, in seconds, for the switchover to complete. Default: 300 If the switchover takes longer than the specified duration, then any changes are rolled back, and no changes are made to the environments.
@@ -21591,7 +21741,7 @@ public struct SwitchoverBlueGreenDeploymentInput {
     }
 }
 
-public struct SwitchoverBlueGreenDeploymentOutput {
+public struct SwitchoverBlueGreenDeploymentOutput: Swift.Sendable {
     /// Details about a blue/green deployment. For more information, see [Using Amazon RDS Blue/Green Deployments for database updates](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/blue-green-deployments.html) in the Amazon RDS User Guide and [Using Amazon RDS Blue/Green Deployments for database updates](https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/blue-green-deployments.html) in the Amazon Aurora User Guide.
     public var blueGreenDeployment: RDSClientTypes.BlueGreenDeployment?
 
@@ -21603,7 +21753,7 @@ public struct SwitchoverBlueGreenDeploymentOutput {
     }
 }
 
-public struct SwitchoverGlobalClusterInput {
+public struct SwitchoverGlobalClusterInput: Swift.Sendable {
     /// The identifier of the global database cluster to switch over. This parameter isn't case-sensitive. Constraints:
     ///
     /// * Must match the identifier of an existing global database cluster (Aurora global database).
@@ -21623,7 +21773,7 @@ public struct SwitchoverGlobalClusterInput {
     }
 }
 
-public struct SwitchoverGlobalClusterOutput {
+public struct SwitchoverGlobalClusterOutput: Swift.Sendable {
     /// A data type representing an Aurora global database.
     public var globalCluster: RDSClientTypes.GlobalCluster?
 
@@ -21635,7 +21785,7 @@ public struct SwitchoverGlobalClusterOutput {
     }
 }
 
-public struct SwitchoverReadReplicaInput {
+public struct SwitchoverReadReplicaInput: Swift.Sendable {
     /// The DB instance identifier of the current standby database. This value is stored as a lowercase string. Constraints:
     ///
     /// * Must match the identiﬁer of an existing Oracle read replica DB instance.
@@ -21650,7 +21800,7 @@ public struct SwitchoverReadReplicaInput {
     }
 }
 
-public struct SwitchoverReadReplicaOutput {
+public struct SwitchoverReadReplicaOutput: Swift.Sendable {
     /// Contains the details of an Amazon RDS DB instance. This data type is used as a response element in the operations CreateDBInstance, CreateDBInstanceReadReplica, DeleteDBInstance, DescribeDBInstances, ModifyDBInstance, PromoteReadReplica, RebootDBInstance, RestoreDBInstanceFromDBSnapshot, RestoreDBInstanceFromS3, RestoreDBInstanceToPointInTime, StartDBInstance, and StopDBInstance.
     public var dbInstance: RDSClientTypes.DBInstance?
 
@@ -23011,6 +23161,7 @@ extension CreateDBClusterInput {
         try writer["BackupRetentionPeriod"].write(value.backupRetentionPeriod)
         try writer["CACertificateIdentifier"].write(value.caCertificateIdentifier)
         try writer["CharacterSetName"].write(value.characterSetName)
+        try writer["ClusterScalabilityType"].write(value.clusterScalabilityType)
         try writer["CopyTagsToSnapshot"].write(value.copyTagsToSnapshot)
         try writer["DBClusterIdentifier"].write(value.dbClusterIdentifier)
         try writer["DBClusterInstanceClass"].write(value.dbClusterInstanceClass)
@@ -23298,6 +23449,7 @@ extension CreateDBShardGroupInput {
         try writer["MaxACU"].write(value.maxACU)
         try writer["MinACU"].write(value.minACU)
         try writer["PubliclyAccessible"].write(value.publiclyAccessible)
+        try writer["Tags"].writeList(value.tags, memberWritingClosure: RDSClientTypes.Tag.write(value:to:), memberNodeInfo: "Tag", isFlattened: false)
         try writer["Action"].write("CreateDBShardGroup")
         try writer["Version"].write("2014-10-31")
     }
@@ -24960,14 +25112,19 @@ extension RestoreDBClusterFromSnapshotInput {
         try writer["DomainIAMRoleName"].write(value.domainIAMRoleName)
         try writer["EnableCloudwatchLogsExports"].writeList(value.enableCloudwatchLogsExports, memberWritingClosure: SmithyReadWrite.WritingClosures.writeString(value:to:), memberNodeInfo: "member", isFlattened: false)
         try writer["EnableIAMDatabaseAuthentication"].write(value.enableIAMDatabaseAuthentication)
+        try writer["EnablePerformanceInsights"].write(value.enablePerformanceInsights)
         try writer["Engine"].write(value.engine)
         try writer["EngineLifecycleSupport"].write(value.engineLifecycleSupport)
         try writer["EngineMode"].write(value.engineMode)
         try writer["EngineVersion"].write(value.engineVersion)
         try writer["Iops"].write(value.iops)
         try writer["KmsKeyId"].write(value.kmsKeyId)
+        try writer["MonitoringInterval"].write(value.monitoringInterval)
+        try writer["MonitoringRoleArn"].write(value.monitoringRoleArn)
         try writer["NetworkType"].write(value.networkType)
         try writer["OptionGroupName"].write(value.optionGroupName)
+        try writer["PerformanceInsightsKMSKeyId"].write(value.performanceInsightsKMSKeyId)
+        try writer["PerformanceInsightsRetentionPeriod"].write(value.performanceInsightsRetentionPeriod)
         try writer["Port"].write(value.port)
         try writer["PubliclyAccessible"].write(value.publiclyAccessible)
         try writer["RdsCustomClusterConfiguration"].write(value.rdsCustomClusterConfiguration, with: RDSClientTypes.RdsCustomClusterConfiguration.write(value:to:))
@@ -24997,12 +25154,17 @@ extension RestoreDBClusterToPointInTimeInput {
         try writer["DomainIAMRoleName"].write(value.domainIAMRoleName)
         try writer["EnableCloudwatchLogsExports"].writeList(value.enableCloudwatchLogsExports, memberWritingClosure: SmithyReadWrite.WritingClosures.writeString(value:to:), memberNodeInfo: "member", isFlattened: false)
         try writer["EnableIAMDatabaseAuthentication"].write(value.enableIAMDatabaseAuthentication)
+        try writer["EnablePerformanceInsights"].write(value.enablePerformanceInsights)
         try writer["EngineLifecycleSupport"].write(value.engineLifecycleSupport)
         try writer["EngineMode"].write(value.engineMode)
         try writer["Iops"].write(value.iops)
         try writer["KmsKeyId"].write(value.kmsKeyId)
+        try writer["MonitoringInterval"].write(value.monitoringInterval)
+        try writer["MonitoringRoleArn"].write(value.monitoringRoleArn)
         try writer["NetworkType"].write(value.networkType)
         try writer["OptionGroupName"].write(value.optionGroupName)
+        try writer["PerformanceInsightsKMSKeyId"].write(value.performanceInsightsKMSKeyId)
+        try writer["PerformanceInsightsRetentionPeriod"].write(value.performanceInsightsRetentionPeriod)
         try writer["Port"].write(value.port)
         try writer["PubliclyAccessible"].write(value.publiclyAccessible)
         try writer["RdsCustomClusterConfiguration"].write(value.rdsCustomClusterConfiguration, with: RDSClientTypes.RdsCustomClusterConfiguration.write(value:to:))
@@ -25702,6 +25864,7 @@ extension CreateDBShardGroupOutput {
         value.minACU = try reader["MinACU"].readIfPresent()
         value.publiclyAccessible = try reader["PubliclyAccessible"].readIfPresent()
         value.status = try reader["Status"].readIfPresent()
+        value.tagList = try reader["TagList"].readListIfPresent(memberReadingClosure: RDSClientTypes.Tag.read(from:), memberNodeInfo: "Tag", isFlattened: false)
         return value
     }
 }
@@ -26001,6 +26164,7 @@ extension DeleteDBShardGroupOutput {
         value.minACU = try reader["MinACU"].readIfPresent()
         value.publiclyAccessible = try reader["PubliclyAccessible"].readIfPresent()
         value.status = try reader["Status"].readIfPresent()
+        value.tagList = try reader["TagList"].readListIfPresent(memberReadingClosure: RDSClientTypes.Tag.read(from:), memberNodeInfo: "Tag", isFlattened: false)
         return value
     }
 }
@@ -26988,6 +27152,7 @@ extension ModifyDBShardGroupOutput {
         value.minACU = try reader["MinACU"].readIfPresent()
         value.publiclyAccessible = try reader["PubliclyAccessible"].readIfPresent()
         value.status = try reader["Status"].readIfPresent()
+        value.tagList = try reader["TagList"].readListIfPresent(memberReadingClosure: RDSClientTypes.Tag.read(from:), memberNodeInfo: "Tag", isFlattened: false)
         return value
     }
 }
@@ -27176,6 +27341,7 @@ extension RebootDBShardGroupOutput {
         value.minACU = try reader["MinACU"].readIfPresent()
         value.publiclyAccessible = try reader["PubliclyAccessible"].readIfPresent()
         value.status = try reader["Status"].readIfPresent()
+        value.tagList = try reader["TagList"].readListIfPresent(memberReadingClosure: RDSClientTypes.Tag.read(from:), memberNodeInfo: "Tag", isFlattened: false)
         return value
     }
 }
@@ -28009,6 +28175,7 @@ enum CreateDBShardGroupOutputError {
             case "InvalidDBClusterStateFault": return try InvalidDBClusterStateFault.makeError(baseError: baseError)
             case "InvalidVPCNetworkStateFault": return try InvalidVPCNetworkStateFault.makeError(baseError: baseError)
             case "MaxDBShardGroupLimitReached": return try MaxDBShardGroupLimitReached.makeError(baseError: baseError)
+            case "NetworkTypeNotSupported": return try NetworkTypeNotSupported.makeError(baseError: baseError)
             case "UnsupportedDBEngineVersion": return try UnsupportedDBEngineVersionFault.makeError(baseError: baseError)
             default: return try AWSClientRuntime.UnknownAWSHTTPServiceError.makeError(baseError: baseError)
         }
@@ -29552,6 +29719,7 @@ enum ModifyGlobalClusterOutputError {
         let baseError = try AWSClientRuntime.AWSQueryError(httpResponse: httpResponse, responseReader: responseReader, noErrorWrapping: false)
         if let error = baseError.customError() { return error }
         switch baseError.code {
+            case "GlobalClusterAlreadyExistsFault": return try GlobalClusterAlreadyExistsFault.makeError(baseError: baseError)
             case "GlobalClusterNotFoundFault": return try GlobalClusterNotFoundFault.makeError(baseError: baseError)
             case "InvalidDBClusterStateFault": return try InvalidDBClusterStateFault.makeError(baseError: baseError)
             case "InvalidDBInstanceState": return try InvalidDBInstanceStateFault.makeError(baseError: baseError)
@@ -32636,6 +32804,7 @@ extension RDSClientTypes.DBCluster {
         value.awsBackupRecoveryPointArn = try reader["AwsBackupRecoveryPointArn"].readIfPresent()
         value.limitlessDatabase = try reader["LimitlessDatabase"].readIfPresent(with: RDSClientTypes.LimitlessDatabase.read(from:))
         value.storageThroughput = try reader["StorageThroughput"].readIfPresent()
+        value.clusterScalabilityType = try reader["ClusterScalabilityType"].readIfPresent()
         value.certificateDetails = try reader["CertificateDetails"].readIfPresent(with: RDSClientTypes.CertificateDetails.read(from:))
         value.engineLifecycleSupport = try reader["EngineLifecycleSupport"].readIfPresent()
         return value
@@ -33136,6 +33305,7 @@ extension RDSClientTypes.GlobalCluster {
         value.storageEncrypted = try reader["StorageEncrypted"].readIfPresent()
         value.deletionProtection = try reader["DeletionProtection"].readIfPresent()
         value.globalClusterMembers = try reader["GlobalClusterMembers"].readListIfPresent(memberReadingClosure: RDSClientTypes.GlobalClusterMember.read(from:), memberNodeInfo: "GlobalClusterMember", isFlattened: false)
+        value.endpoint = try reader["Endpoint"].readIfPresent()
         value.failoverState = try reader["FailoverState"].readIfPresent(with: RDSClientTypes.FailoverState.read(from:))
         value.tagList = try reader["TagList"].readListIfPresent(memberReadingClosure: RDSClientTypes.Tag.read(from:), memberNodeInfo: "Tag", isFlattened: false)
         return value
@@ -33728,6 +33898,7 @@ extension RDSClientTypes.DBShardGroup {
         value.publiclyAccessible = try reader["PubliclyAccessible"].readIfPresent()
         value.endpoint = try reader["Endpoint"].readIfPresent()
         value.dbShardGroupArn = try reader["DBShardGroupArn"].readIfPresent()
+        value.tagList = try reader["TagList"].readListIfPresent(memberReadingClosure: RDSClientTypes.Tag.read(from:), memberNodeInfo: "Tag", isFlattened: false)
         return value
     }
 }

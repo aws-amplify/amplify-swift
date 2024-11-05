@@ -32,39 +32,74 @@ import struct SmithyHTTPAPI.Headers
 @_spi(SmithyReadWrite) import struct SmithyReadWrite.WritingClosureBox
 @_spi(SmithyTimestamps) import struct SmithyTimestamps.TimestampFormatter
 
-public struct CancelJobOutput {
+
+public struct CancelJobOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteAssetOutput {
+public struct DeleteAssetOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteDataSetOutput {
+public struct DeleteDataGrantOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteEventActionOutput {
+public struct DeleteDataSetOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteRevisionOutput {
+public struct DeleteEventActionOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct TagResourceOutput {
+public struct DeleteRevisionOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UntagResourceOutput {
+public struct TagResourceOutput: Swift.Sendable {
 
     public init() { }
+}
+
+public struct UntagResourceOutput: Swift.Sendable {
+
+    public init() { }
+}
+
+extension DataExchangeClientTypes {
+
+    public enum AcceptanceStateFilterValue: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+        case accepted
+        case pendingReceiverAcceptance
+        case sdkUnknown(Swift.String)
+
+        public static var allCases: [AcceptanceStateFilterValue] {
+            return [
+                .accepted,
+                .pendingReceiverAcceptance
+            ]
+        }
+
+        public init?(rawValue: Swift.String) {
+            let value = Self.allCases.first(where: { $0.rawValue == rawValue })
+            self = value ?? Self.sdkUnknown(rawValue)
+        }
+
+        public var rawValue: Swift.String {
+            switch self {
+            case .accepted: return "ACCEPTED"
+            case .pendingReceiverAcceptance: return "PENDING_RECEIVER_ACCEPTANCE"
+            case let .sdkUnknown(s): return s
+            }
+        }
+    }
 }
 
 /// Access to the resource is denied.
@@ -95,691 +130,9 @@ public struct AccessDeniedException: ClientRuntime.ModeledError, AWSClientRuntim
 
 extension DataExchangeClientTypes {
 
-    public enum ServerSideEncryptionTypes: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
-        case aes256
-        case awsKms
-        case sdkUnknown(Swift.String)
-
-        public static var allCases: [ServerSideEncryptionTypes] {
-            return [
-                .aes256,
-                .awsKms
-            ]
-        }
-
-        public init?(rawValue: Swift.String) {
-            let value = Self.allCases.first(where: { $0.rawValue == rawValue })
-            self = value ?? Self.sdkUnknown(rawValue)
-        }
-
-        public var rawValue: Swift.String {
-            switch self {
-            case .aes256: return "AES256"
-            case .awsKms: return "aws:kms"
-            case let .sdkUnknown(s): return s
-            }
-        }
-    }
-}
-
-extension DataExchangeClientTypes {
-    /// Encryption configuration of the export job. Includes the encryption type in addition to the AWS KMS key. The KMS key is only necessary if you chose the KMS encryption type.
-    public struct ExportServerSideEncryption {
-        /// The Amazon Resource Name (ARN) of the AWS KMS key you want to use to encrypt the Amazon S3 objects. This parameter is required if you choose aws:kms as an encryption type.
-        public var kmsKeyArn: Swift.String?
-        /// The type of server side encryption used for encrypting the objects in Amazon S3.
-        /// This member is required.
-        public var type: DataExchangeClientTypes.ServerSideEncryptionTypes?
-
-        public init(
-            kmsKeyArn: Swift.String? = nil,
-            type: DataExchangeClientTypes.ServerSideEncryptionTypes? = nil
-        )
-        {
-            self.kmsKeyArn = kmsKeyArn
-            self.type = type
-        }
-    }
-
-}
-
-extension DataExchangeClientTypes {
-    /// A revision destination is the Amazon S3 bucket folder destination to where the export will be sent.
-    public struct AutoExportRevisionDestinationEntry {
-        /// The Amazon S3 bucket that is the destination for the event action.
-        /// This member is required.
-        public var bucket: Swift.String?
-        /// A string representing the pattern for generated names of the individual assets in the revision. For more information about key patterns, see [Key patterns when exporting revisions](https://docs.aws.amazon.com/data-exchange/latest/userguide/jobs.html#revision-export-keypatterns).
-        public var keyPattern: Swift.String?
-
-        public init(
-            bucket: Swift.String? = nil,
-            keyPattern: Swift.String? = nil
-        )
-        {
-            self.bucket = bucket
-            self.keyPattern = keyPattern
-        }
-    }
-
-}
-
-extension DataExchangeClientTypes {
-    /// Details of the operation to be performed by the job.
-    public struct AutoExportRevisionToS3RequestDetails {
-        /// Encryption configuration for the auto export job.
-        public var encryption: DataExchangeClientTypes.ExportServerSideEncryption?
-        /// A revision destination is the Amazon S3 bucket folder destination to where the export will be sent.
-        /// This member is required.
-        public var revisionDestination: DataExchangeClientTypes.AutoExportRevisionDestinationEntry?
-
-        public init(
-            encryption: DataExchangeClientTypes.ExportServerSideEncryption? = nil,
-            revisionDestination: DataExchangeClientTypes.AutoExportRevisionDestinationEntry? = nil
-        )
-        {
-            self.encryption = encryption
-            self.revisionDestination = revisionDestination
-        }
-    }
-
-}
-
-extension DataExchangeClientTypes {
-    /// What occurs after a certain event.
-    public struct Action {
-        /// Details for the export revision to Amazon S3 action.
-        public var exportRevisionToS3: DataExchangeClientTypes.AutoExportRevisionToS3RequestDetails?
-
-        public init(
-            exportRevisionToS3: DataExchangeClientTypes.AutoExportRevisionToS3RequestDetails? = nil
-        )
-        {
-            self.exportRevisionToS3 = exportRevisionToS3
-        }
-    }
-
-}
-
-extension DataExchangeClientTypes {
-
-    public enum ProtocolType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
-        case rest
-        case sdkUnknown(Swift.String)
-
-        public static var allCases: [ProtocolType] {
-            return [
-                .rest
-            ]
-        }
-
-        public init?(rawValue: Swift.String) {
-            let value = Self.allCases.first(where: { $0.rawValue == rawValue })
-            self = value ?? Self.sdkUnknown(rawValue)
-        }
-
-        public var rawValue: Swift.String {
-            switch self {
-            case .rest: return "REST"
-            case let .sdkUnknown(s): return s
-            }
-        }
-    }
-}
-
-extension DataExchangeClientTypes {
-    /// The API Gateway API that is the asset.
-    public struct ApiGatewayApiAsset {
-        /// The API description of the API asset.
-        public var apiDescription: Swift.String?
-        /// The API endpoint of the API asset.
-        public var apiEndpoint: Swift.String?
-        /// The unique identifier of the API asset.
-        public var apiId: Swift.String?
-        /// The API key of the API asset.
-        public var apiKey: Swift.String?
-        /// The API name of the API asset.
-        public var apiName: Swift.String?
-        /// The download URL of the API specification of the API asset.
-        public var apiSpecificationDownloadUrl: Swift.String?
-        /// The date and time that the upload URL expires, in ISO 8601 format.
-        public var apiSpecificationDownloadUrlExpiresAt: Foundation.Date?
-        /// The protocol type of the API asset.
-        public var protocolType: DataExchangeClientTypes.ProtocolType?
-        /// The stage of the API asset.
-        public var stage: Swift.String?
-
-        public init(
-            apiDescription: Swift.String? = nil,
-            apiEndpoint: Swift.String? = nil,
-            apiId: Swift.String? = nil,
-            apiKey: Swift.String? = nil,
-            apiName: Swift.String? = nil,
-            apiSpecificationDownloadUrl: Swift.String? = nil,
-            apiSpecificationDownloadUrlExpiresAt: Foundation.Date? = nil,
-            protocolType: DataExchangeClientTypes.ProtocolType? = nil,
-            stage: Swift.String? = nil
-        )
-        {
-            self.apiDescription = apiDescription
-            self.apiEndpoint = apiEndpoint
-            self.apiId = apiId
-            self.apiKey = apiKey
-            self.apiName = apiName
-            self.apiSpecificationDownloadUrl = apiSpecificationDownloadUrl
-            self.apiSpecificationDownloadUrlExpiresAt = apiSpecificationDownloadUrlExpiresAt
-            self.protocolType = protocolType
-            self.stage = stage
-        }
-    }
-
-}
-
-extension DataExchangeClientTypes {
-    /// The destination for the asset.
-    public struct AssetDestinationEntry {
-        /// The unique identifier for the asset.
-        /// This member is required.
-        public var assetId: Swift.String?
-        /// The Amazon S3 bucket that is the destination for the asset.
-        /// This member is required.
-        public var bucket: Swift.String?
-        /// The name of the object in Amazon S3 for the asset.
-        public var key: Swift.String?
-
-        public init(
-            assetId: Swift.String? = nil,
-            bucket: Swift.String? = nil,
-            key: Swift.String? = nil
-        )
-        {
-            self.assetId = assetId
-            self.bucket = bucket
-            self.key = key
-        }
-    }
-
-}
-
-extension DataExchangeClientTypes {
-    /// A structure that allows an LF-admin to grant permissions on certain conditions.
-    public struct LFTag {
-        /// The key name for the LF-tag.
-        /// This member is required.
-        public var tagKey: Swift.String?
-        /// A list of LF-tag values.
-        /// This member is required.
-        public var tagValues: [Swift.String]?
-
-        public init(
-            tagKey: Swift.String? = nil,
-            tagValues: [Swift.String]? = nil
-        )
-        {
-            self.tagKey = tagKey
-            self.tagValues = tagValues
-        }
-    }
-
-}
-
-extension DataExchangeClientTypes {
-    /// The LF-tag policy for database resources.
-    public struct DatabaseLFTagPolicy {
-        /// A list of LF-tag conditions that apply to database resources.
-        /// This member is required.
-        public var expression: [DataExchangeClientTypes.LFTag]?
-
-        public init(
-            expression: [DataExchangeClientTypes.LFTag]? = nil
-        )
-        {
-            self.expression = expression
-        }
-    }
-
-}
-
-extension DataExchangeClientTypes {
-    /// The LF-tag policy for a table resource.
-    public struct TableLFTagPolicy {
-        /// A list of LF-tag conditions that apply to table resources.
-        /// This member is required.
-        public var expression: [DataExchangeClientTypes.LFTag]?
-
-        public init(
-            expression: [DataExchangeClientTypes.LFTag]? = nil
-        )
-        {
-            self.expression = expression
-        }
-    }
-
-}
-
-extension DataExchangeClientTypes {
-    /// Details about the AWS Lake Formation resource (Table or Database) included in the AWS Lake Formation data permission.
-    public struct LFResourceDetails {
-        /// Details about the database resource included in the AWS Lake Formation data permission.
-        public var database: DataExchangeClientTypes.DatabaseLFTagPolicy?
-        /// Details about the table resource included in the AWS Lake Formation data permission.
-        public var table: DataExchangeClientTypes.TableLFTagPolicy?
-
-        public init(
-            database: DataExchangeClientTypes.DatabaseLFTagPolicy? = nil,
-            table: DataExchangeClientTypes.TableLFTagPolicy? = nil
-        )
-        {
-            self.database = database
-            self.table = table
-        }
-    }
-
-}
-
-extension DataExchangeClientTypes {
-
-    public enum LFResourceType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
-        case database
-        case table
-        case sdkUnknown(Swift.String)
-
-        public static var allCases: [LFResourceType] {
-            return [
-                .database,
-                .table
-            ]
-        }
-
-        public init?(rawValue: Swift.String) {
-            let value = Self.allCases.first(where: { $0.rawValue == rawValue })
-            self = value ?? Self.sdkUnknown(rawValue)
-        }
-
-        public var rawValue: Swift.String {
-            switch self {
-            case .database: return "DATABASE"
-            case .table: return "TABLE"
-            case let .sdkUnknown(s): return s
-            }
-        }
-    }
-}
-
-extension DataExchangeClientTypes {
-    /// Details about the LF-tag policy.
-    public struct LFTagPolicyDetails {
-        /// The identifier for the AWS Glue Data Catalog.
-        /// This member is required.
-        public var catalogId: Swift.String?
-        /// Details for the Lake Formation Resources included in the LF-tag policy.
-        /// This member is required.
-        public var resourceDetails: DataExchangeClientTypes.LFResourceDetails?
-        /// The resource type for which the LF-tag policy applies.
-        /// This member is required.
-        public var resourceType: DataExchangeClientTypes.LFResourceType?
-
-        public init(
-            catalogId: Swift.String? = nil,
-            resourceDetails: DataExchangeClientTypes.LFResourceDetails? = nil,
-            resourceType: DataExchangeClientTypes.LFResourceType? = nil
-        )
-        {
-            self.catalogId = catalogId
-            self.resourceDetails = resourceDetails
-            self.resourceType = resourceType
-        }
-    }
-
-}
-
-extension DataExchangeClientTypes {
-    /// Details about the AWS Lake Formation data permission.
-    public struct LakeFormationDataPermissionDetails {
-        /// Details about the LF-tag policy.
-        public var lfTagPolicy: DataExchangeClientTypes.LFTagPolicyDetails?
-
-        public init(
-            lfTagPolicy: DataExchangeClientTypes.LFTagPolicyDetails? = nil
-        )
-        {
-            self.lfTagPolicy = lfTagPolicy
-        }
-    }
-
-}
-
-extension DataExchangeClientTypes {
-
-    public enum LakeFormationDataPermissionType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
-        case lftagpolicy
-        case sdkUnknown(Swift.String)
-
-        public static var allCases: [LakeFormationDataPermissionType] {
-            return [
-                .lftagpolicy
-            ]
-        }
-
-        public init?(rawValue: Swift.String) {
-            let value = Self.allCases.first(where: { $0.rawValue == rawValue })
-            self = value ?? Self.sdkUnknown(rawValue)
-        }
-
-        public var rawValue: Swift.String {
-            switch self {
-            case .lftagpolicy: return "LFTagPolicy"
-            case let .sdkUnknown(s): return s
-            }
-        }
-    }
-}
-
-extension DataExchangeClientTypes {
-
-    public enum LFPermission: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
-        case describe
-        case select
-        case sdkUnknown(Swift.String)
-
-        public static var allCases: [LFPermission] {
-            return [
-                .describe,
-                .select
-            ]
-        }
-
-        public init?(rawValue: Swift.String) {
-            let value = Self.allCases.first(where: { $0.rawValue == rawValue })
-            self = value ?? Self.sdkUnknown(rawValue)
-        }
-
-        public var rawValue: Swift.String {
-            switch self {
-            case .describe: return "DESCRIBE"
-            case .select: return "SELECT"
-            case let .sdkUnknown(s): return s
-            }
-        }
-    }
-}
-
-extension DataExchangeClientTypes {
-    /// The AWS Lake Formation data permission asset.
-    public struct LakeFormationDataPermissionAsset {
-        /// Details about the AWS Lake Formation data permission.
-        /// This member is required.
-        public var lakeFormationDataPermissionDetails: DataExchangeClientTypes.LakeFormationDataPermissionDetails?
-        /// The data permission type.
-        /// This member is required.
-        public var lakeFormationDataPermissionType: DataExchangeClientTypes.LakeFormationDataPermissionType?
-        /// The permissions granted to the subscribers on the resource.
-        /// This member is required.
-        public var permissions: [DataExchangeClientTypes.LFPermission]?
-        /// The IAM role's ARN that allows AWS Data Exchange to assume the role and grant and revoke permissions to AWS Lake Formation data permissions.
-        public var roleArn: Swift.String?
-
-        public init(
-            lakeFormationDataPermissionDetails: DataExchangeClientTypes.LakeFormationDataPermissionDetails? = nil,
-            lakeFormationDataPermissionType: DataExchangeClientTypes.LakeFormationDataPermissionType? = nil,
-            permissions: [DataExchangeClientTypes.LFPermission]? = nil,
-            roleArn: Swift.String? = nil
-        )
-        {
-            self.lakeFormationDataPermissionDetails = lakeFormationDataPermissionDetails
-            self.lakeFormationDataPermissionType = lakeFormationDataPermissionType
-            self.permissions = permissions
-            self.roleArn = roleArn
-        }
-    }
-
-}
-
-extension DataExchangeClientTypes {
-    /// The Amazon Redshift datashare asset.
-    public struct RedshiftDataShareAsset {
-        /// The Amazon Resource Name (ARN) of the datashare asset.
-        /// This member is required.
-        public var arn: Swift.String?
-
-        public init(
-            arn: Swift.String? = nil
-        )
-        {
-            self.arn = arn
-        }
-    }
-
-}
-
-extension DataExchangeClientTypes {
-    /// The Amazon Resource Name (ARN) of the AWS KMS key used to encrypt the shared S3 objects.
-    public struct KmsKeyToGrant {
-        /// The AWS KMS CMK (Key Management System Customer Managed Key) used to encrypt S3 objects in the shared S3 Bucket. AWS Data exchange will create a KMS grant for each subscriber to allow them to access and decrypt their entitled data that is encrypted using this KMS key specified.
-        /// This member is required.
-        public var kmsKeyArn: Swift.String?
-
-        public init(
-            kmsKeyArn: Swift.String? = nil
-        )
-        {
-            self.kmsKeyArn = kmsKeyArn
-        }
-    }
-
-}
-
-extension DataExchangeClientTypes {
-    /// The Amazon S3 data access that is the asset.
-    public struct S3DataAccessAsset {
-        /// The Amazon S3 bucket hosting data to be shared in the S3 data access.
-        /// This member is required.
-        public var bucket: Swift.String?
-        /// The Amazon S3 bucket used for hosting shared data in the Amazon S3 data access.
-        public var keyPrefixes: [Swift.String]?
-        /// S3 keys made available using this asset.
-        public var keys: [Swift.String]?
-        /// List of AWS KMS CMKs (Key Management System Customer Managed Keys) and ARNs used to encrypt S3 objects being shared in this S3 Data Access asset. Providers must include all AWS KMS keys used to encrypt these shared S3 objects.
-        public var kmsKeysToGrant: [DataExchangeClientTypes.KmsKeyToGrant]?
-        /// The automatically-generated bucket-style alias for your Amazon S3 Access Point. Customers can access their entitled data using the S3 Access Point alias.
-        public var s3AccessPointAlias: Swift.String?
-        /// The ARN for your Amazon S3 Access Point. Customers can also access their entitled data using the S3 Access Point ARN.
-        public var s3AccessPointArn: Swift.String?
-
-        public init(
-            bucket: Swift.String? = nil,
-            keyPrefixes: [Swift.String]? = nil,
-            keys: [Swift.String]? = nil,
-            kmsKeysToGrant: [DataExchangeClientTypes.KmsKeyToGrant]? = nil,
-            s3AccessPointAlias: Swift.String? = nil,
-            s3AccessPointArn: Swift.String? = nil
-        )
-        {
-            self.bucket = bucket
-            self.keyPrefixes = keyPrefixes
-            self.keys = keys
-            self.kmsKeysToGrant = kmsKeysToGrant
-            self.s3AccessPointAlias = s3AccessPointAlias
-            self.s3AccessPointArn = s3AccessPointArn
-        }
-    }
-
-}
-
-extension DataExchangeClientTypes {
-    /// The Amazon S3 object that is the asset.
-    public struct S3SnapshotAsset {
-        /// The size of the Amazon S3 object that is the object.
-        /// This member is required.
-        public var size: Swift.Double?
-
-        public init(
-            size: Swift.Double? = 0.0
-        )
-        {
-            self.size = size
-        }
-    }
-
-}
-
-extension DataExchangeClientTypes {
-    /// Details about the asset.
-    public struct AssetDetails {
-        /// Information about the API Gateway API asset.
-        public var apiGatewayApiAsset: DataExchangeClientTypes.ApiGatewayApiAsset?
-        /// The AWS Lake Formation data permission that is the asset.
-        public var lakeFormationDataPermissionAsset: DataExchangeClientTypes.LakeFormationDataPermissionAsset?
-        /// The Amazon Redshift datashare that is the asset.
-        public var redshiftDataShareAsset: DataExchangeClientTypes.RedshiftDataShareAsset?
-        /// The Amazon S3 data access that is the asset.
-        public var s3DataAccessAsset: DataExchangeClientTypes.S3DataAccessAsset?
-        /// The Amazon S3 object that is the asset.
-        public var s3SnapshotAsset: DataExchangeClientTypes.S3SnapshotAsset?
-
-        public init(
-            apiGatewayApiAsset: DataExchangeClientTypes.ApiGatewayApiAsset? = nil,
-            lakeFormationDataPermissionAsset: DataExchangeClientTypes.LakeFormationDataPermissionAsset? = nil,
-            redshiftDataShareAsset: DataExchangeClientTypes.RedshiftDataShareAsset? = nil,
-            s3DataAccessAsset: DataExchangeClientTypes.S3DataAccessAsset? = nil,
-            s3SnapshotAsset: DataExchangeClientTypes.S3SnapshotAsset? = nil
-        )
-        {
-            self.apiGatewayApiAsset = apiGatewayApiAsset
-            self.lakeFormationDataPermissionAsset = lakeFormationDataPermissionAsset
-            self.redshiftDataShareAsset = redshiftDataShareAsset
-            self.s3DataAccessAsset = s3DataAccessAsset
-            self.s3SnapshotAsset = s3SnapshotAsset
-        }
-    }
-
-}
-
-extension DataExchangeClientTypes {
-
-    public enum AssetType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
-        case apiGatewayApi
-        case lakeFormationDataPermission
-        case redshiftDataShare
-        case s3DataAccess
-        case s3Snapshot
-        case sdkUnknown(Swift.String)
-
-        public static var allCases: [AssetType] {
-            return [
-                .apiGatewayApi,
-                .lakeFormationDataPermission,
-                .redshiftDataShare,
-                .s3DataAccess,
-                .s3Snapshot
-            ]
-        }
-
-        public init?(rawValue: Swift.String) {
-            let value = Self.allCases.first(where: { $0.rawValue == rawValue })
-            self = value ?? Self.sdkUnknown(rawValue)
-        }
-
-        public var rawValue: Swift.String {
-            switch self {
-            case .apiGatewayApi: return "API_GATEWAY_API"
-            case .lakeFormationDataPermission: return "LAKE_FORMATION_DATA_PERMISSION"
-            case .redshiftDataShare: return "REDSHIFT_DATA_SHARE"
-            case .s3DataAccess: return "S3_DATA_ACCESS"
-            case .s3Snapshot: return "S3_SNAPSHOT"
-            case let .sdkUnknown(s): return s
-            }
-        }
-    }
-}
-
-extension DataExchangeClientTypes {
-    /// An asset in AWS Data Exchange is a piece of data (Amazon S3 object) or a means of fulfilling data (Amazon Redshift datashare or Amazon API Gateway API, AWS Lake Formation data permission, or Amazon S3 data access). The asset can be a structured data file, an image file, or some other data file that can be stored as an Amazon S3 object, an Amazon API Gateway API, or an Amazon Redshift datashare, an AWS Lake Formation data permission, or an Amazon S3 data access. When you create an import job for your files, API Gateway APIs, Amazon Redshift datashares, AWS Lake Formation data permission, or Amazon S3 data access, you create an asset in AWS Data Exchange.
-    public struct AssetEntry {
-        /// The ARN for the asset.
-        /// This member is required.
-        public var arn: Swift.String?
-        /// Details about the asset.
-        /// This member is required.
-        public var assetDetails: DataExchangeClientTypes.AssetDetails?
-        /// The type of asset that is added to a data set.
-        /// This member is required.
-        public var assetType: DataExchangeClientTypes.AssetType?
-        /// The date and time that the asset was created, in ISO 8601 format.
-        /// This member is required.
-        public var createdAt: Foundation.Date?
-        /// The unique identifier for the data set associated with this asset.
-        /// This member is required.
-        public var dataSetId: Swift.String?
-        /// The unique identifier for the asset.
-        /// This member is required.
-        public var id: Swift.String?
-        /// The name of the asset. When importing from Amazon S3, the Amazon S3 object key is used as the asset name. When exporting to Amazon S3, the asset name is used as default target Amazon S3 object key. When importing from Amazon API Gateway API, the API name is used as the asset name. When importing from Amazon Redshift, the datashare name is used as the asset name. When importing from AWS Lake Formation, the static values of "Database(s) included in LF-tag policy" or "Table(s) included in LF-tag policy" are used as the asset name.
-        /// This member is required.
-        public var name: Swift.String?
-        /// The unique identifier for the revision associated with this asset.
-        /// This member is required.
-        public var revisionId: Swift.String?
-        /// The asset ID of the owned asset corresponding to the entitled asset being viewed. This parameter is returned when an asset owner is viewing the entitled copy of its owned asset.
-        public var sourceId: Swift.String?
-        /// The date and time that the asset was last updated, in ISO 8601 format.
-        /// This member is required.
-        public var updatedAt: Foundation.Date?
-
-        public init(
-            arn: Swift.String? = nil,
-            assetDetails: DataExchangeClientTypes.AssetDetails? = nil,
-            assetType: DataExchangeClientTypes.AssetType? = nil,
-            createdAt: Foundation.Date? = nil,
-            dataSetId: Swift.String? = nil,
-            id: Swift.String? = nil,
-            name: Swift.String? = nil,
-            revisionId: Swift.String? = nil,
-            sourceId: Swift.String? = nil,
-            updatedAt: Foundation.Date? = nil
-        )
-        {
-            self.arn = arn
-            self.assetDetails = assetDetails
-            self.assetType = assetType
-            self.createdAt = createdAt
-            self.dataSetId = dataSetId
-            self.id = id
-            self.name = name
-            self.revisionId = revisionId
-            self.sourceId = sourceId
-            self.updatedAt = updatedAt
-        }
-    }
-
-}
-
-extension DataExchangeClientTypes {
-    /// The source of the assets.
-    public struct AssetSourceEntry {
-        /// The Amazon S3 bucket that's part of the source of the asset.
-        /// This member is required.
-        public var bucket: Swift.String?
-        /// The name of the object in Amazon S3 for the asset.
-        /// This member is required.
-        public var key: Swift.String?
-
-        public init(
-            bucket: Swift.String? = nil,
-            key: Swift.String? = nil
-        )
-        {
-            self.bucket = bucket
-            self.key = key
-        }
-    }
-
-}
-
-extension DataExchangeClientTypes {
-
-    public enum ResourceType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ResourceType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case asset
+        case dataGrant
         case dataSet
         case eventAction
         case job
@@ -789,6 +142,7 @@ extension DataExchangeClientTypes {
         public static var allCases: [ResourceType] {
             return [
                 .asset,
+                .dataGrant,
                 .dataSet,
                 .eventAction,
                 .job,
@@ -804,6 +158,7 @@ extension DataExchangeClientTypes {
         public var rawValue: Swift.String {
             switch self {
             case .asset: return "ASSET"
+            case .dataGrant: return "DATA_GRANT"
             case .dataSet: return "DATA_SET"
             case .eventAction: return "EVENT_ACTION"
             case .job: return "JOB"
@@ -936,7 +291,7 @@ public struct ThrottlingException: ClientRuntime.ModeledError, AWSClientRuntime.
 
 extension DataExchangeClientTypes {
 
-    public enum ExceptionCause: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ExceptionCause: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case insufficients3bucketpolicy
         case s3accessdenied
         case sdkUnknown(Swift.String)
@@ -993,7 +348,830 @@ public struct ValidationException: ClientRuntime.ModeledError, AWSClientRuntime.
     }
 }
 
-public struct CancelJobInput {
+public struct AcceptDataGrantInput: Swift.Sendable {
+    /// The Amazon Resource Name (ARN) of the data grant to accept.
+    /// This member is required.
+    public var dataGrantArn: Swift.String?
+
+    public init(
+        dataGrantArn: Swift.String? = nil
+    )
+    {
+        self.dataGrantArn = dataGrantArn
+    }
+}
+
+extension DataExchangeClientTypes {
+
+    public enum DataGrantAcceptanceState: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+        case accepted
+        case pendingReceiverAcceptance
+        case sdkUnknown(Swift.String)
+
+        public static var allCases: [DataGrantAcceptanceState] {
+            return [
+                .accepted,
+                .pendingReceiverAcceptance
+            ]
+        }
+
+        public init?(rawValue: Swift.String) {
+            let value = Self.allCases.first(where: { $0.rawValue == rawValue })
+            self = value ?? Self.sdkUnknown(rawValue)
+        }
+
+        public var rawValue: Swift.String {
+            switch self {
+            case .accepted: return "ACCEPTED"
+            case .pendingReceiverAcceptance: return "PENDING_RECEIVER_ACCEPTANCE"
+            case let .sdkUnknown(s): return s
+            }
+        }
+    }
+}
+
+extension DataExchangeClientTypes {
+
+    public enum GrantDistributionScope: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+        case awsOrganization
+        case `none`
+        case sdkUnknown(Swift.String)
+
+        public static var allCases: [GrantDistributionScope] {
+            return [
+                .awsOrganization,
+                .none
+            ]
+        }
+
+        public init?(rawValue: Swift.String) {
+            let value = Self.allCases.first(where: { $0.rawValue == rawValue })
+            self = value ?? Self.sdkUnknown(rawValue)
+        }
+
+        public var rawValue: Swift.String {
+            switch self {
+            case .awsOrganization: return "AWS_ORGANIZATION"
+            case .none: return "NONE"
+            case let .sdkUnknown(s): return s
+            }
+        }
+    }
+}
+
+public struct AcceptDataGrantOutput: Swift.Sendable {
+    /// The acceptance state of the data grant.
+    /// This member is required.
+    public var acceptanceState: DataExchangeClientTypes.DataGrantAcceptanceState?
+    /// The timestamp of when the data grant was accepted.
+    public var acceptedAt: Foundation.Date?
+    /// The Amazon Resource Name (ARN) of the accepted data grant.
+    /// This member is required.
+    public var arn: Swift.String?
+    /// The timestamp of when the data grant was created.
+    /// This member is required.
+    public var createdAt: Foundation.Date?
+    /// The ID of the data set associated to the data grant.
+    /// This member is required.
+    public var dataSetId: Swift.String?
+    /// The description of the accepted data grant.
+    public var description: Swift.String?
+    /// The timestamp of when access to the associated data set ends.
+    public var endsAt: Foundation.Date?
+    /// The distribution scope for the data grant.
+    /// This member is required.
+    public var grantDistributionScope: DataExchangeClientTypes.GrantDistributionScope?
+    /// The ID of the data grant.
+    /// This member is required.
+    public var id: Swift.String?
+    /// The name of the accepted data grant.
+    /// This member is required.
+    public var name: Swift.String?
+    /// The Amazon Web Services account ID of the data grant receiver.
+    /// This member is required.
+    public var receiverPrincipal: Swift.String?
+    /// The Amazon Web Services account ID of the data grant sender.
+    public var senderPrincipal: Swift.String?
+    /// The timestamp of when the data grant was last updated.
+    /// This member is required.
+    public var updatedAt: Foundation.Date?
+
+    public init(
+        acceptanceState: DataExchangeClientTypes.DataGrantAcceptanceState? = nil,
+        acceptedAt: Foundation.Date? = nil,
+        arn: Swift.String? = nil,
+        createdAt: Foundation.Date? = nil,
+        dataSetId: Swift.String? = nil,
+        description: Swift.String? = nil,
+        endsAt: Foundation.Date? = nil,
+        grantDistributionScope: DataExchangeClientTypes.GrantDistributionScope? = nil,
+        id: Swift.String? = nil,
+        name: Swift.String? = nil,
+        receiverPrincipal: Swift.String? = nil,
+        senderPrincipal: Swift.String? = nil,
+        updatedAt: Foundation.Date? = nil
+    )
+    {
+        self.acceptanceState = acceptanceState
+        self.acceptedAt = acceptedAt
+        self.arn = arn
+        self.createdAt = createdAt
+        self.dataSetId = dataSetId
+        self.description = description
+        self.endsAt = endsAt
+        self.grantDistributionScope = grantDistributionScope
+        self.id = id
+        self.name = name
+        self.receiverPrincipal = receiverPrincipal
+        self.senderPrincipal = senderPrincipal
+        self.updatedAt = updatedAt
+    }
+}
+
+extension DataExchangeClientTypes {
+
+    public enum ServerSideEncryptionTypes: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+        case aes256
+        case awsKms
+        case sdkUnknown(Swift.String)
+
+        public static var allCases: [ServerSideEncryptionTypes] {
+            return [
+                .aes256,
+                .awsKms
+            ]
+        }
+
+        public init?(rawValue: Swift.String) {
+            let value = Self.allCases.first(where: { $0.rawValue == rawValue })
+            self = value ?? Self.sdkUnknown(rawValue)
+        }
+
+        public var rawValue: Swift.String {
+            switch self {
+            case .aes256: return "AES256"
+            case .awsKms: return "aws:kms"
+            case let .sdkUnknown(s): return s
+            }
+        }
+    }
+}
+
+extension DataExchangeClientTypes {
+
+    /// Encryption configuration of the export job. Includes the encryption type in addition to the AWS KMS key. The KMS key is only necessary if you chose the KMS encryption type.
+    public struct ExportServerSideEncryption: Swift.Sendable {
+        /// The Amazon Resource Name (ARN) of the AWS KMS key you want to use to encrypt the Amazon S3 objects. This parameter is required if you choose aws:kms as an encryption type.
+        public var kmsKeyArn: Swift.String?
+        /// The type of server side encryption used for encrypting the objects in Amazon S3.
+        /// This member is required.
+        public var type: DataExchangeClientTypes.ServerSideEncryptionTypes?
+
+        public init(
+            kmsKeyArn: Swift.String? = nil,
+            type: DataExchangeClientTypes.ServerSideEncryptionTypes? = nil
+        )
+        {
+            self.kmsKeyArn = kmsKeyArn
+            self.type = type
+        }
+    }
+}
+
+extension DataExchangeClientTypes {
+
+    /// A revision destination is the Amazon S3 bucket folder destination to where the export will be sent.
+    public struct AutoExportRevisionDestinationEntry: Swift.Sendable {
+        /// The Amazon S3 bucket that is the destination for the event action.
+        /// This member is required.
+        public var bucket: Swift.String?
+        /// A string representing the pattern for generated names of the individual assets in the revision. For more information about key patterns, see [Key patterns when exporting revisions](https://docs.aws.amazon.com/data-exchange/latest/userguide/jobs.html#revision-export-keypatterns).
+        public var keyPattern: Swift.String?
+
+        public init(
+            bucket: Swift.String? = nil,
+            keyPattern: Swift.String? = nil
+        )
+        {
+            self.bucket = bucket
+            self.keyPattern = keyPattern
+        }
+    }
+}
+
+extension DataExchangeClientTypes {
+
+    /// Details of the operation to be performed by the job.
+    public struct AutoExportRevisionToS3RequestDetails: Swift.Sendable {
+        /// Encryption configuration for the auto export job.
+        public var encryption: DataExchangeClientTypes.ExportServerSideEncryption?
+        /// A revision destination is the Amazon S3 bucket folder destination to where the export will be sent.
+        /// This member is required.
+        public var revisionDestination: DataExchangeClientTypes.AutoExportRevisionDestinationEntry?
+
+        public init(
+            encryption: DataExchangeClientTypes.ExportServerSideEncryption? = nil,
+            revisionDestination: DataExchangeClientTypes.AutoExportRevisionDestinationEntry? = nil
+        )
+        {
+            self.encryption = encryption
+            self.revisionDestination = revisionDestination
+        }
+    }
+}
+
+extension DataExchangeClientTypes {
+
+    /// What occurs after a certain event.
+    public struct Action: Swift.Sendable {
+        /// Details for the export revision to Amazon S3 action.
+        public var exportRevisionToS3: DataExchangeClientTypes.AutoExportRevisionToS3RequestDetails?
+
+        public init(
+            exportRevisionToS3: DataExchangeClientTypes.AutoExportRevisionToS3RequestDetails? = nil
+        )
+        {
+            self.exportRevisionToS3 = exportRevisionToS3
+        }
+    }
+}
+
+extension DataExchangeClientTypes {
+
+    public enum ProtocolType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+        case rest
+        case sdkUnknown(Swift.String)
+
+        public static var allCases: [ProtocolType] {
+            return [
+                .rest
+            ]
+        }
+
+        public init?(rawValue: Swift.String) {
+            let value = Self.allCases.first(where: { $0.rawValue == rawValue })
+            self = value ?? Self.sdkUnknown(rawValue)
+        }
+
+        public var rawValue: Swift.String {
+            switch self {
+            case .rest: return "REST"
+            case let .sdkUnknown(s): return s
+            }
+        }
+    }
+}
+
+extension DataExchangeClientTypes {
+
+    /// The API Gateway API that is the asset.
+    public struct ApiGatewayApiAsset: Swift.Sendable {
+        /// The API description of the API asset.
+        public var apiDescription: Swift.String?
+        /// The API endpoint of the API asset.
+        public var apiEndpoint: Swift.String?
+        /// The unique identifier of the API asset.
+        public var apiId: Swift.String?
+        /// The API key of the API asset.
+        public var apiKey: Swift.String?
+        /// The API name of the API asset.
+        public var apiName: Swift.String?
+        /// The download URL of the API specification of the API asset.
+        public var apiSpecificationDownloadUrl: Swift.String?
+        /// The date and time that the upload URL expires, in ISO 8601 format.
+        public var apiSpecificationDownloadUrlExpiresAt: Foundation.Date?
+        /// The protocol type of the API asset.
+        public var protocolType: DataExchangeClientTypes.ProtocolType?
+        /// The stage of the API asset.
+        public var stage: Swift.String?
+
+        public init(
+            apiDescription: Swift.String? = nil,
+            apiEndpoint: Swift.String? = nil,
+            apiId: Swift.String? = nil,
+            apiKey: Swift.String? = nil,
+            apiName: Swift.String? = nil,
+            apiSpecificationDownloadUrl: Swift.String? = nil,
+            apiSpecificationDownloadUrlExpiresAt: Foundation.Date? = nil,
+            protocolType: DataExchangeClientTypes.ProtocolType? = nil,
+            stage: Swift.String? = nil
+        )
+        {
+            self.apiDescription = apiDescription
+            self.apiEndpoint = apiEndpoint
+            self.apiId = apiId
+            self.apiKey = apiKey
+            self.apiName = apiName
+            self.apiSpecificationDownloadUrl = apiSpecificationDownloadUrl
+            self.apiSpecificationDownloadUrlExpiresAt = apiSpecificationDownloadUrlExpiresAt
+            self.protocolType = protocolType
+            self.stage = stage
+        }
+    }
+}
+
+extension DataExchangeClientTypes {
+
+    /// The destination for the asset.
+    public struct AssetDestinationEntry: Swift.Sendable {
+        /// The unique identifier for the asset.
+        /// This member is required.
+        public var assetId: Swift.String?
+        /// The Amazon S3 bucket that is the destination for the asset.
+        /// This member is required.
+        public var bucket: Swift.String?
+        /// The name of the object in Amazon S3 for the asset.
+        public var key: Swift.String?
+
+        public init(
+            assetId: Swift.String? = nil,
+            bucket: Swift.String? = nil,
+            key: Swift.String? = nil
+        )
+        {
+            self.assetId = assetId
+            self.bucket = bucket
+            self.key = key
+        }
+    }
+}
+
+extension DataExchangeClientTypes {
+
+    /// A structure that allows an LF-admin to grant permissions on certain conditions.
+    public struct LFTag: Swift.Sendable {
+        /// The key name for the LF-tag.
+        /// This member is required.
+        public var tagKey: Swift.String?
+        /// A list of LF-tag values.
+        /// This member is required.
+        public var tagValues: [Swift.String]?
+
+        public init(
+            tagKey: Swift.String? = nil,
+            tagValues: [Swift.String]? = nil
+        )
+        {
+            self.tagKey = tagKey
+            self.tagValues = tagValues
+        }
+    }
+}
+
+extension DataExchangeClientTypes {
+
+    /// The LF-tag policy for database resources.
+    public struct DatabaseLFTagPolicy: Swift.Sendable {
+        /// A list of LF-tag conditions that apply to database resources.
+        /// This member is required.
+        public var expression: [DataExchangeClientTypes.LFTag]?
+
+        public init(
+            expression: [DataExchangeClientTypes.LFTag]? = nil
+        )
+        {
+            self.expression = expression
+        }
+    }
+}
+
+extension DataExchangeClientTypes {
+
+    /// The LF-tag policy for a table resource.
+    public struct TableLFTagPolicy: Swift.Sendable {
+        /// A list of LF-tag conditions that apply to table resources.
+        /// This member is required.
+        public var expression: [DataExchangeClientTypes.LFTag]?
+
+        public init(
+            expression: [DataExchangeClientTypes.LFTag]? = nil
+        )
+        {
+            self.expression = expression
+        }
+    }
+}
+
+extension DataExchangeClientTypes {
+
+    /// Details about the AWS Lake Formation resource (Table or Database) included in the AWS Lake Formation data permission.
+    public struct LFResourceDetails: Swift.Sendable {
+        /// Details about the database resource included in the AWS Lake Formation data permission.
+        public var database: DataExchangeClientTypes.DatabaseLFTagPolicy?
+        /// Details about the table resource included in the AWS Lake Formation data permission.
+        public var table: DataExchangeClientTypes.TableLFTagPolicy?
+
+        public init(
+            database: DataExchangeClientTypes.DatabaseLFTagPolicy? = nil,
+            table: DataExchangeClientTypes.TableLFTagPolicy? = nil
+        )
+        {
+            self.database = database
+            self.table = table
+        }
+    }
+}
+
+extension DataExchangeClientTypes {
+
+    public enum LFResourceType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+        case database
+        case table
+        case sdkUnknown(Swift.String)
+
+        public static var allCases: [LFResourceType] {
+            return [
+                .database,
+                .table
+            ]
+        }
+
+        public init?(rawValue: Swift.String) {
+            let value = Self.allCases.first(where: { $0.rawValue == rawValue })
+            self = value ?? Self.sdkUnknown(rawValue)
+        }
+
+        public var rawValue: Swift.String {
+            switch self {
+            case .database: return "DATABASE"
+            case .table: return "TABLE"
+            case let .sdkUnknown(s): return s
+            }
+        }
+    }
+}
+
+extension DataExchangeClientTypes {
+
+    /// Details about the LF-tag policy.
+    public struct LFTagPolicyDetails: Swift.Sendable {
+        /// The identifier for the AWS Glue Data Catalog.
+        /// This member is required.
+        public var catalogId: Swift.String?
+        /// Details for the Lake Formation Resources included in the LF-tag policy.
+        /// This member is required.
+        public var resourceDetails: DataExchangeClientTypes.LFResourceDetails?
+        /// The resource type for which the LF-tag policy applies.
+        /// This member is required.
+        public var resourceType: DataExchangeClientTypes.LFResourceType?
+
+        public init(
+            catalogId: Swift.String? = nil,
+            resourceDetails: DataExchangeClientTypes.LFResourceDetails? = nil,
+            resourceType: DataExchangeClientTypes.LFResourceType? = nil
+        )
+        {
+            self.catalogId = catalogId
+            self.resourceDetails = resourceDetails
+            self.resourceType = resourceType
+        }
+    }
+}
+
+extension DataExchangeClientTypes {
+
+    /// Details about the AWS Lake Formation data permission.
+    public struct LakeFormationDataPermissionDetails: Swift.Sendable {
+        /// Details about the LF-tag policy.
+        public var lfTagPolicy: DataExchangeClientTypes.LFTagPolicyDetails?
+
+        public init(
+            lfTagPolicy: DataExchangeClientTypes.LFTagPolicyDetails? = nil
+        )
+        {
+            self.lfTagPolicy = lfTagPolicy
+        }
+    }
+}
+
+extension DataExchangeClientTypes {
+
+    public enum LakeFormationDataPermissionType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+        case lftagpolicy
+        case sdkUnknown(Swift.String)
+
+        public static var allCases: [LakeFormationDataPermissionType] {
+            return [
+                .lftagpolicy
+            ]
+        }
+
+        public init?(rawValue: Swift.String) {
+            let value = Self.allCases.first(where: { $0.rawValue == rawValue })
+            self = value ?? Self.sdkUnknown(rawValue)
+        }
+
+        public var rawValue: Swift.String {
+            switch self {
+            case .lftagpolicy: return "LFTagPolicy"
+            case let .sdkUnknown(s): return s
+            }
+        }
+    }
+}
+
+extension DataExchangeClientTypes {
+
+    public enum LFPermission: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+        case describe
+        case select
+        case sdkUnknown(Swift.String)
+
+        public static var allCases: [LFPermission] {
+            return [
+                .describe,
+                .select
+            ]
+        }
+
+        public init?(rawValue: Swift.String) {
+            let value = Self.allCases.first(where: { $0.rawValue == rawValue })
+            self = value ?? Self.sdkUnknown(rawValue)
+        }
+
+        public var rawValue: Swift.String {
+            switch self {
+            case .describe: return "DESCRIBE"
+            case .select: return "SELECT"
+            case let .sdkUnknown(s): return s
+            }
+        }
+    }
+}
+
+extension DataExchangeClientTypes {
+
+    /// The AWS Lake Formation data permission asset.
+    public struct LakeFormationDataPermissionAsset: Swift.Sendable {
+        /// Details about the AWS Lake Formation data permission.
+        /// This member is required.
+        public var lakeFormationDataPermissionDetails: DataExchangeClientTypes.LakeFormationDataPermissionDetails?
+        /// The data permission type.
+        /// This member is required.
+        public var lakeFormationDataPermissionType: DataExchangeClientTypes.LakeFormationDataPermissionType?
+        /// The permissions granted to the subscribers on the resource.
+        /// This member is required.
+        public var permissions: [DataExchangeClientTypes.LFPermission]?
+        /// The IAM role's ARN that allows AWS Data Exchange to assume the role and grant and revoke permissions to AWS Lake Formation data permissions.
+        public var roleArn: Swift.String?
+
+        public init(
+            lakeFormationDataPermissionDetails: DataExchangeClientTypes.LakeFormationDataPermissionDetails? = nil,
+            lakeFormationDataPermissionType: DataExchangeClientTypes.LakeFormationDataPermissionType? = nil,
+            permissions: [DataExchangeClientTypes.LFPermission]? = nil,
+            roleArn: Swift.String? = nil
+        )
+        {
+            self.lakeFormationDataPermissionDetails = lakeFormationDataPermissionDetails
+            self.lakeFormationDataPermissionType = lakeFormationDataPermissionType
+            self.permissions = permissions
+            self.roleArn = roleArn
+        }
+    }
+}
+
+extension DataExchangeClientTypes {
+
+    /// The Amazon Redshift datashare asset.
+    public struct RedshiftDataShareAsset: Swift.Sendable {
+        /// The Amazon Resource Name (ARN) of the datashare asset.
+        /// This member is required.
+        public var arn: Swift.String?
+
+        public init(
+            arn: Swift.String? = nil
+        )
+        {
+            self.arn = arn
+        }
+    }
+}
+
+extension DataExchangeClientTypes {
+
+    /// The Amazon Resource Name (ARN) of the AWS KMS key used to encrypt the shared S3 objects.
+    public struct KmsKeyToGrant: Swift.Sendable {
+        /// The AWS KMS CMK (Key Management System Customer Managed Key) used to encrypt S3 objects in the shared S3 Bucket. AWS Data exchange will create a KMS grant for each subscriber to allow them to access and decrypt their entitled data that is encrypted using this KMS key specified.
+        /// This member is required.
+        public var kmsKeyArn: Swift.String?
+
+        public init(
+            kmsKeyArn: Swift.String? = nil
+        )
+        {
+            self.kmsKeyArn = kmsKeyArn
+        }
+    }
+}
+
+extension DataExchangeClientTypes {
+
+    /// The Amazon S3 data access that is the asset.
+    public struct S3DataAccessAsset: Swift.Sendable {
+        /// The Amazon S3 bucket hosting data to be shared in the S3 data access.
+        /// This member is required.
+        public var bucket: Swift.String?
+        /// The Amazon S3 bucket used for hosting shared data in the Amazon S3 data access.
+        public var keyPrefixes: [Swift.String]?
+        /// S3 keys made available using this asset.
+        public var keys: [Swift.String]?
+        /// List of AWS KMS CMKs (Key Management System Customer Managed Keys) and ARNs used to encrypt S3 objects being shared in this S3 Data Access asset. Providers must include all AWS KMS keys used to encrypt these shared S3 objects.
+        public var kmsKeysToGrant: [DataExchangeClientTypes.KmsKeyToGrant]?
+        /// The automatically-generated bucket-style alias for your Amazon S3 Access Point. Customers can access their entitled data using the S3 Access Point alias.
+        public var s3AccessPointAlias: Swift.String?
+        /// The ARN for your Amazon S3 Access Point. Customers can also access their entitled data using the S3 Access Point ARN.
+        public var s3AccessPointArn: Swift.String?
+
+        public init(
+            bucket: Swift.String? = nil,
+            keyPrefixes: [Swift.String]? = nil,
+            keys: [Swift.String]? = nil,
+            kmsKeysToGrant: [DataExchangeClientTypes.KmsKeyToGrant]? = nil,
+            s3AccessPointAlias: Swift.String? = nil,
+            s3AccessPointArn: Swift.String? = nil
+        )
+        {
+            self.bucket = bucket
+            self.keyPrefixes = keyPrefixes
+            self.keys = keys
+            self.kmsKeysToGrant = kmsKeysToGrant
+            self.s3AccessPointAlias = s3AccessPointAlias
+            self.s3AccessPointArn = s3AccessPointArn
+        }
+    }
+}
+
+extension DataExchangeClientTypes {
+
+    /// The Amazon S3 object that is the asset.
+    public struct S3SnapshotAsset: Swift.Sendable {
+        /// The size of the Amazon S3 object that is the object.
+        /// This member is required.
+        public var size: Swift.Double?
+
+        public init(
+            size: Swift.Double? = 0.0
+        )
+        {
+            self.size = size
+        }
+    }
+}
+
+extension DataExchangeClientTypes {
+
+    /// Details about the asset.
+    public struct AssetDetails: Swift.Sendable {
+        /// Information about the API Gateway API asset.
+        public var apiGatewayApiAsset: DataExchangeClientTypes.ApiGatewayApiAsset?
+        /// The AWS Lake Formation data permission that is the asset.
+        public var lakeFormationDataPermissionAsset: DataExchangeClientTypes.LakeFormationDataPermissionAsset?
+        /// The Amazon Redshift datashare that is the asset.
+        public var redshiftDataShareAsset: DataExchangeClientTypes.RedshiftDataShareAsset?
+        /// The Amazon S3 data access that is the asset.
+        public var s3DataAccessAsset: DataExchangeClientTypes.S3DataAccessAsset?
+        /// The Amazon S3 object that is the asset.
+        public var s3SnapshotAsset: DataExchangeClientTypes.S3SnapshotAsset?
+
+        public init(
+            apiGatewayApiAsset: DataExchangeClientTypes.ApiGatewayApiAsset? = nil,
+            lakeFormationDataPermissionAsset: DataExchangeClientTypes.LakeFormationDataPermissionAsset? = nil,
+            redshiftDataShareAsset: DataExchangeClientTypes.RedshiftDataShareAsset? = nil,
+            s3DataAccessAsset: DataExchangeClientTypes.S3DataAccessAsset? = nil,
+            s3SnapshotAsset: DataExchangeClientTypes.S3SnapshotAsset? = nil
+        )
+        {
+            self.apiGatewayApiAsset = apiGatewayApiAsset
+            self.lakeFormationDataPermissionAsset = lakeFormationDataPermissionAsset
+            self.redshiftDataShareAsset = redshiftDataShareAsset
+            self.s3DataAccessAsset = s3DataAccessAsset
+            self.s3SnapshotAsset = s3SnapshotAsset
+        }
+    }
+}
+
+extension DataExchangeClientTypes {
+
+    public enum AssetType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+        case apiGatewayApi
+        case lakeFormationDataPermission
+        case redshiftDataShare
+        case s3DataAccess
+        case s3Snapshot
+        case sdkUnknown(Swift.String)
+
+        public static var allCases: [AssetType] {
+            return [
+                .apiGatewayApi,
+                .lakeFormationDataPermission,
+                .redshiftDataShare,
+                .s3DataAccess,
+                .s3Snapshot
+            ]
+        }
+
+        public init?(rawValue: Swift.String) {
+            let value = Self.allCases.first(where: { $0.rawValue == rawValue })
+            self = value ?? Self.sdkUnknown(rawValue)
+        }
+
+        public var rawValue: Swift.String {
+            switch self {
+            case .apiGatewayApi: return "API_GATEWAY_API"
+            case .lakeFormationDataPermission: return "LAKE_FORMATION_DATA_PERMISSION"
+            case .redshiftDataShare: return "REDSHIFT_DATA_SHARE"
+            case .s3DataAccess: return "S3_DATA_ACCESS"
+            case .s3Snapshot: return "S3_SNAPSHOT"
+            case let .sdkUnknown(s): return s
+            }
+        }
+    }
+}
+
+extension DataExchangeClientTypes {
+
+    /// An asset in AWS Data Exchange is a piece of data (Amazon S3 object) or a means of fulfilling data (Amazon Redshift datashare or Amazon API Gateway API, AWS Lake Formation data permission, or Amazon S3 data access). The asset can be a structured data file, an image file, or some other data file that can be stored as an Amazon S3 object, an Amazon API Gateway API, or an Amazon Redshift datashare, an AWS Lake Formation data permission, or an Amazon S3 data access. When you create an import job for your files, API Gateway APIs, Amazon Redshift datashares, AWS Lake Formation data permission, or Amazon S3 data access, you create an asset in AWS Data Exchange.
+    public struct AssetEntry: Swift.Sendable {
+        /// The ARN for the asset.
+        /// This member is required.
+        public var arn: Swift.String?
+        /// Details about the asset.
+        /// This member is required.
+        public var assetDetails: DataExchangeClientTypes.AssetDetails?
+        /// The type of asset that is added to a data set.
+        /// This member is required.
+        public var assetType: DataExchangeClientTypes.AssetType?
+        /// The date and time that the asset was created, in ISO 8601 format.
+        /// This member is required.
+        public var createdAt: Foundation.Date?
+        /// The unique identifier for the data set associated with this asset.
+        /// This member is required.
+        public var dataSetId: Swift.String?
+        /// The unique identifier for the asset.
+        /// This member is required.
+        public var id: Swift.String?
+        /// The name of the asset. When importing from Amazon S3, the Amazon S3 object key is used as the asset name. When exporting to Amazon S3, the asset name is used as default target Amazon S3 object key. When importing from Amazon API Gateway API, the API name is used as the asset name. When importing from Amazon Redshift, the datashare name is used as the asset name. When importing from AWS Lake Formation, the static values of "Database(s) included in LF-tag policy" or "Table(s) included in LF-tag policy" are used as the asset name.
+        /// This member is required.
+        public var name: Swift.String?
+        /// The unique identifier for the revision associated with this asset.
+        /// This member is required.
+        public var revisionId: Swift.String?
+        /// The asset ID of the owned asset corresponding to the entitled asset being viewed. This parameter is returned when an asset owner is viewing the entitled copy of its owned asset.
+        public var sourceId: Swift.String?
+        /// The date and time that the asset was last updated, in ISO 8601 format.
+        /// This member is required.
+        public var updatedAt: Foundation.Date?
+
+        public init(
+            arn: Swift.String? = nil,
+            assetDetails: DataExchangeClientTypes.AssetDetails? = nil,
+            assetType: DataExchangeClientTypes.AssetType? = nil,
+            createdAt: Foundation.Date? = nil,
+            dataSetId: Swift.String? = nil,
+            id: Swift.String? = nil,
+            name: Swift.String? = nil,
+            revisionId: Swift.String? = nil,
+            sourceId: Swift.String? = nil,
+            updatedAt: Foundation.Date? = nil
+        )
+        {
+            self.arn = arn
+            self.assetDetails = assetDetails
+            self.assetType = assetType
+            self.createdAt = createdAt
+            self.dataSetId = dataSetId
+            self.id = id
+            self.name = name
+            self.revisionId = revisionId
+            self.sourceId = sourceId
+            self.updatedAt = updatedAt
+        }
+    }
+}
+
+extension DataExchangeClientTypes {
+
+    /// The source of the assets.
+    public struct AssetSourceEntry: Swift.Sendable {
+        /// The Amazon S3 bucket that's part of the source of the asset.
+        /// This member is required.
+        public var bucket: Swift.String?
+        /// The name of the object in Amazon S3 for the asset.
+        /// This member is required.
+        public var key: Swift.String?
+
+        public init(
+            bucket: Swift.String? = nil,
+            key: Swift.String? = nil
+        )
+        {
+            self.bucket = bucket
+            self.key = key
+        }
+    }
+}
+
+public struct CancelJobInput: Swift.Sendable {
     /// The unique identifier for a job.
     /// This member is required.
     public var jobId: Swift.String?
@@ -1008,7 +1186,7 @@ public struct CancelJobInput {
 
 extension DataExchangeClientTypes {
 
-    public enum Code: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Code: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case accessDeniedException
         case internalServerException
         case malwareDetected
@@ -1052,8 +1230,9 @@ extension DataExchangeClientTypes {
 
 extension DataExchangeClientTypes {
 
-    public enum LimitName: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum LimitName: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case awsLakeFormationDataPermissionAssetsPerRevision
+        case activeAndPendingDataGrants
         case amazonApiGatewayApiAssetsPerRevision
         case amazonRedshiftDatashareAssetsPerImportJobFromRedshift
         case amazonRedshiftDatashareAssetsPerRevision
@@ -1075,6 +1254,7 @@ extension DataExchangeClientTypes {
         case dataSetsPerAccount
         case dataSetsPerProduct
         case eventActionsPerAccount
+        case pendingDataGrantsPerConsumer
         case productsPerAccount
         case revisionsPerAwsLakeFormationDataPermissionDataSet
         case revisionsPerAmazonApiGatewayApiDataSet
@@ -1086,6 +1266,7 @@ extension DataExchangeClientTypes {
         public static var allCases: [LimitName] {
             return [
                 .awsLakeFormationDataPermissionAssetsPerRevision,
+                .activeAndPendingDataGrants,
                 .amazonApiGatewayApiAssetsPerRevision,
                 .amazonRedshiftDatashareAssetsPerImportJobFromRedshift,
                 .amazonRedshiftDatashareAssetsPerRevision,
@@ -1107,6 +1288,7 @@ extension DataExchangeClientTypes {
                 .dataSetsPerAccount,
                 .dataSetsPerProduct,
                 .eventActionsPerAccount,
+                .pendingDataGrantsPerConsumer,
                 .productsPerAccount,
                 .revisionsPerAwsLakeFormationDataPermissionDataSet,
                 .revisionsPerAmazonApiGatewayApiDataSet,
@@ -1124,6 +1306,7 @@ extension DataExchangeClientTypes {
         public var rawValue: Swift.String {
             switch self {
             case .awsLakeFormationDataPermissionAssetsPerRevision: return "AWS Lake Formation data permission assets per revision"
+            case .activeAndPendingDataGrants: return "Active and pending data grants"
             case .amazonApiGatewayApiAssetsPerRevision: return "Amazon API Gateway API assets per revision"
             case .amazonRedshiftDatashareAssetsPerImportJobFromRedshift: return "Amazon Redshift datashare assets per import job from Redshift"
             case .amazonRedshiftDatashareAssetsPerRevision: return "Amazon Redshift datashare assets per revision"
@@ -1145,6 +1328,7 @@ extension DataExchangeClientTypes {
             case .dataSetsPerAccount: return "Data sets per account"
             case .dataSetsPerProduct: return "Data sets per product"
             case .eventActionsPerAccount: return "Event actions per account"
+            case .pendingDataGrantsPerConsumer: return "Pending data grants per consumer"
             case .productsPerAccount: return "Products per account"
             case .revisionsPerAwsLakeFormationDataPermissionDataSet: return "Revisions per AWS Lake Formation data permission data set"
             case .revisionsPerAmazonApiGatewayApiDataSet: return "Revisions per Amazon API Gateway API data set"
@@ -1191,7 +1375,126 @@ public struct ServiceLimitExceededException: ClientRuntime.ModeledError, AWSClie
     }
 }
 
-public struct CreateDataSetInput {
+public struct CreateDataGrantInput: Swift.Sendable {
+    /// The description of the data grant.
+    public var description: Swift.String?
+    /// The timestamp of when access to the associated data set ends.
+    public var endsAt: Foundation.Date?
+    /// The distribution scope of the data grant.
+    /// This member is required.
+    public var grantDistributionScope: DataExchangeClientTypes.GrantDistributionScope?
+    /// The name of the data grant.
+    /// This member is required.
+    public var name: Swift.String?
+    /// The Amazon Web Services account ID of the data grant receiver.
+    /// This member is required.
+    public var receiverPrincipal: Swift.String?
+    /// The ID of the data set used to create the data grant.
+    /// This member is required.
+    public var sourceDataSetId: Swift.String?
+    /// The tags to add to the data grant. A tag is a key-value pair.
+    public var tags: [Swift.String: Swift.String]?
+
+    public init(
+        description: Swift.String? = nil,
+        endsAt: Foundation.Date? = nil,
+        grantDistributionScope: DataExchangeClientTypes.GrantDistributionScope? = nil,
+        name: Swift.String? = nil,
+        receiverPrincipal: Swift.String? = nil,
+        sourceDataSetId: Swift.String? = nil,
+        tags: [Swift.String: Swift.String]? = nil
+    )
+    {
+        self.description = description
+        self.endsAt = endsAt
+        self.grantDistributionScope = grantDistributionScope
+        self.name = name
+        self.receiverPrincipal = receiverPrincipal
+        self.sourceDataSetId = sourceDataSetId
+        self.tags = tags
+    }
+}
+
+public struct CreateDataGrantOutput: Swift.Sendable {
+    /// The acceptance state of the data grant.
+    /// This member is required.
+    public var acceptanceState: DataExchangeClientTypes.DataGrantAcceptanceState?
+    /// The timestamp of when the data grant was accepted.
+    public var acceptedAt: Foundation.Date?
+    /// The Amazon Resource Name (ARN) of the data grant.
+    /// This member is required.
+    public var arn: Swift.String?
+    /// The timestamp of when the data grant was created.
+    /// This member is required.
+    public var createdAt: Foundation.Date?
+    /// The ID of the data set associated to the data grant.
+    /// This member is required.
+    public var dataSetId: Swift.String?
+    /// The description of the data grant.
+    public var description: Swift.String?
+    /// The timestamp of when access to the associated data set ends.
+    public var endsAt: Foundation.Date?
+    /// The distribution scope for the data grant.
+    /// This member is required.
+    public var grantDistributionScope: DataExchangeClientTypes.GrantDistributionScope?
+    /// The ID of the data grant.
+    /// This member is required.
+    public var id: Swift.String?
+    /// The name of the data grant.
+    /// This member is required.
+    public var name: Swift.String?
+    /// The Amazon Web Services account ID of the data grant receiver.
+    /// This member is required.
+    public var receiverPrincipal: Swift.String?
+    /// The Amazon Web Services account ID of the data grant sender.
+    /// This member is required.
+    public var senderPrincipal: Swift.String?
+    /// The ID of the data set used to create the data grant.
+    /// This member is required.
+    public var sourceDataSetId: Swift.String?
+    /// The tags associated to the data grant. A tag is a key-value pair.
+    public var tags: [Swift.String: Swift.String]?
+    /// The timestamp of when the data grant was last updated.
+    /// This member is required.
+    public var updatedAt: Foundation.Date?
+
+    public init(
+        acceptanceState: DataExchangeClientTypes.DataGrantAcceptanceState? = nil,
+        acceptedAt: Foundation.Date? = nil,
+        arn: Swift.String? = nil,
+        createdAt: Foundation.Date? = nil,
+        dataSetId: Swift.String? = nil,
+        description: Swift.String? = nil,
+        endsAt: Foundation.Date? = nil,
+        grantDistributionScope: DataExchangeClientTypes.GrantDistributionScope? = nil,
+        id: Swift.String? = nil,
+        name: Swift.String? = nil,
+        receiverPrincipal: Swift.String? = nil,
+        senderPrincipal: Swift.String? = nil,
+        sourceDataSetId: Swift.String? = nil,
+        tags: [Swift.String: Swift.String]? = nil,
+        updatedAt: Foundation.Date? = nil
+    )
+    {
+        self.acceptanceState = acceptanceState
+        self.acceptedAt = acceptedAt
+        self.arn = arn
+        self.createdAt = createdAt
+        self.dataSetId = dataSetId
+        self.description = description
+        self.endsAt = endsAt
+        self.grantDistributionScope = grantDistributionScope
+        self.id = id
+        self.name = name
+        self.receiverPrincipal = receiverPrincipal
+        self.senderPrincipal = senderPrincipal
+        self.sourceDataSetId = sourceDataSetId
+        self.tags = tags
+        self.updatedAt = updatedAt
+    }
+}
+
+public struct CreateDataSetInput: Swift.Sendable {
     /// The type of asset that is added to a data set.
     /// This member is required.
     public var assetType: DataExchangeClientTypes.AssetType?
@@ -1220,7 +1523,7 @@ public struct CreateDataSetInput {
 
 extension DataExchangeClientTypes {
 
-    public enum Origin: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Origin: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case entitled
         case owned
         case sdkUnknown(Swift.String)
@@ -1248,22 +1551,26 @@ extension DataExchangeClientTypes {
 }
 
 extension DataExchangeClientTypes {
+
     /// Details about the origin of the data set.
-    public struct OriginDetails {
+    public struct OriginDetails: Swift.Sendable {
+        /// The ID of the data grant.
+        public var dataGrantId: Swift.String?
         /// The product ID of the origin of the data set.
         public var productId: Swift.String?
 
         public init(
+            dataGrantId: Swift.String? = nil,
             productId: Swift.String? = nil
         )
         {
+            self.dataGrantId = dataGrantId
             self.productId = productId
         }
     }
-
 }
 
-public struct CreateDataSetOutput {
+public struct CreateDataSetOutput: Swift.Sendable {
     /// The ARN for the data set.
     public var arn: Swift.String?
     /// The type of asset that is added to a data set.
@@ -1316,8 +1623,9 @@ public struct CreateDataSetOutput {
 }
 
 extension DataExchangeClientTypes {
+
     /// Information about the published revision.
-    public struct RevisionPublished {
+    public struct RevisionPublished: Swift.Sendable {
         /// The data set ID of the published revision.
         /// This member is required.
         public var dataSetId: Swift.String?
@@ -1329,12 +1637,12 @@ extension DataExchangeClientTypes {
             self.dataSetId = dataSetId
         }
     }
-
 }
 
 extension DataExchangeClientTypes {
+
     /// What occurs to start an action.
-    public struct Event {
+    public struct Event: Swift.Sendable {
         /// What occurs to start the revision publish action.
         public var revisionPublished: DataExchangeClientTypes.RevisionPublished?
 
@@ -1345,10 +1653,9 @@ extension DataExchangeClientTypes {
             self.revisionPublished = revisionPublished
         }
     }
-
 }
 
-public struct CreateEventActionInput {
+public struct CreateEventActionInput: Swift.Sendable {
     /// What occurs after a certain event.
     /// This member is required.
     public var action: DataExchangeClientTypes.Action?
@@ -1366,7 +1673,7 @@ public struct CreateEventActionInput {
     }
 }
 
-public struct CreateEventActionOutput {
+public struct CreateEventActionOutput: Swift.Sendable {
     /// What occurs after a certain event.
     public var action: DataExchangeClientTypes.Action?
     /// The ARN for the event action.
@@ -1399,8 +1706,9 @@ public struct CreateEventActionOutput {
 }
 
 extension DataExchangeClientTypes {
+
     /// Source details for an Amazon S3 data access asset.
-    public struct S3DataAccessAssetSourceEntry {
+    public struct S3DataAccessAssetSourceEntry: Swift.Sendable {
         /// The Amazon S3 bucket used for hosting shared data in the Amazon S3 data access.
         /// This member is required.
         public var bucket: Swift.String?
@@ -1424,12 +1732,12 @@ extension DataExchangeClientTypes {
             self.kmsKeysToGrant = kmsKeysToGrant
         }
     }
-
 }
 
 extension DataExchangeClientTypes {
+
     /// Details of the operation to create an Amazon S3 data access from an S3 bucket.
-    public struct CreateS3DataAccessFromS3BucketRequestDetails {
+    public struct CreateS3DataAccessFromS3BucketRequestDetails: Swift.Sendable {
         /// Details about the S3 data access source asset.
         /// This member is required.
         public var assetSource: DataExchangeClientTypes.S3DataAccessAssetSourceEntry?
@@ -1451,12 +1759,12 @@ extension DataExchangeClientTypes {
             self.revisionId = revisionId
         }
     }
-
 }
 
 extension DataExchangeClientTypes {
+
     /// Details of the operation to be performed by the job.
-    public struct ExportAssetsToS3RequestDetails {
+    public struct ExportAssetsToS3RequestDetails: Swift.Sendable {
         /// The destination for the asset.
         /// This member is required.
         public var assetDestinations: [DataExchangeClientTypes.AssetDestinationEntry]?
@@ -1482,12 +1790,12 @@ extension DataExchangeClientTypes {
             self.revisionId = revisionId
         }
     }
-
 }
 
 extension DataExchangeClientTypes {
+
     /// Details of the operation to be performed by the job.
-    public struct ExportAssetToSignedUrlRequestDetails {
+    public struct ExportAssetToSignedUrlRequestDetails: Swift.Sendable {
         /// The unique identifier for the asset that is exported to a signed URL.
         /// This member is required.
         public var assetId: Swift.String?
@@ -1509,12 +1817,12 @@ extension DataExchangeClientTypes {
             self.revisionId = revisionId
         }
     }
-
 }
 
 extension DataExchangeClientTypes {
+
     /// The destination where the assets in the revision will be exported.
-    public struct RevisionDestinationEntry {
+    public struct RevisionDestinationEntry: Swift.Sendable {
         /// The Amazon S3 bucket that is the destination for the assets in the revision.
         /// This member is required.
         public var bucket: Swift.String?
@@ -1535,12 +1843,12 @@ extension DataExchangeClientTypes {
             self.revisionId = revisionId
         }
     }
-
 }
 
 extension DataExchangeClientTypes {
+
     /// Details of the operation to be performed by the job.
-    public struct ExportRevisionsToS3RequestDetails {
+    public struct ExportRevisionsToS3RequestDetails: Swift.Sendable {
         /// The unique identifier for the data set associated with this export job.
         /// This member is required.
         public var dataSetId: Swift.String?
@@ -1561,12 +1869,12 @@ extension DataExchangeClientTypes {
             self.revisionDestinations = revisionDestinations
         }
     }
-
 }
 
 extension DataExchangeClientTypes {
+
     /// The request details.
-    public struct ImportAssetFromApiGatewayApiRequestDetails {
+    public struct ImportAssetFromApiGatewayApiRequestDetails: Swift.Sendable {
         /// The API description. Markdown supported.
         public var apiDescription: Swift.String?
         /// The API Gateway API ID.
@@ -1616,12 +1924,12 @@ extension DataExchangeClientTypes {
             self.stage = stage
         }
     }
-
 }
 
 extension DataExchangeClientTypes {
+
     /// Details of the operation to be performed by the job.
-    public struct ImportAssetFromSignedUrlRequestDetails {
+    public struct ImportAssetFromSignedUrlRequestDetails: Swift.Sendable {
         /// The name of the asset. When importing from Amazon S3, the Amazon S3 object key is used as the asset name.
         /// This member is required.
         public var assetName: Swift.String?
@@ -1648,12 +1956,11 @@ extension DataExchangeClientTypes {
             self.revisionId = revisionId
         }
     }
-
 }
 
 extension DataExchangeClientTypes {
 
-    public enum DatabaseLFTagPolicyPermission: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DatabaseLFTagPolicyPermission: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case describe
         case sdkUnknown(Swift.String)
 
@@ -1678,8 +1985,9 @@ extension DataExchangeClientTypes {
 }
 
 extension DataExchangeClientTypes {
+
     /// The LF-tag policy and permissions for database resources.
-    public struct DatabaseLFTagPolicyAndPermissions {
+    public struct DatabaseLFTagPolicyAndPermissions: Swift.Sendable {
         /// A list of LF-tag conditions that apply to database resources.
         /// This member is required.
         public var expression: [DataExchangeClientTypes.LFTag]?
@@ -1696,12 +2004,11 @@ extension DataExchangeClientTypes {
             self.permissions = permissions
         }
     }
-
 }
 
 extension DataExchangeClientTypes {
 
-    public enum TableTagPolicyLFPermission: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum TableTagPolicyLFPermission: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case describe
         case select
         case sdkUnknown(Swift.String)
@@ -1729,8 +2036,9 @@ extension DataExchangeClientTypes {
 }
 
 extension DataExchangeClientTypes {
+
     /// The LF-tag policy and permissions that apply to table resources.
-    public struct TableLFTagPolicyAndPermissions {
+    public struct TableLFTagPolicyAndPermissions: Swift.Sendable {
         /// A list of LF-tag conditions that apply to table resources.
         /// This member is required.
         public var expression: [DataExchangeClientTypes.LFTag]?
@@ -1747,12 +2055,12 @@ extension DataExchangeClientTypes {
             self.permissions = permissions
         }
     }
-
 }
 
 extension DataExchangeClientTypes {
+
     /// Details about the assets imported from an AWS Lake Formation tag policy request.
-    public struct ImportAssetsFromLakeFormationTagPolicyRequestDetails {
+    public struct ImportAssetsFromLakeFormationTagPolicyRequestDetails: Swift.Sendable {
         /// The identifier for the AWS Glue Data Catalog.
         /// This member is required.
         public var catalogId: Swift.String?
@@ -1787,12 +2095,12 @@ extension DataExchangeClientTypes {
             self.table = table
         }
     }
-
 }
 
 extension DataExchangeClientTypes {
+
     /// The source of the Amazon Redshift datashare asset.
-    public struct RedshiftDataShareAssetSourceEntry {
+    public struct RedshiftDataShareAssetSourceEntry: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the datashare asset.
         /// This member is required.
         public var dataShareArn: Swift.String?
@@ -1804,12 +2112,12 @@ extension DataExchangeClientTypes {
             self.dataShareArn = dataShareArn
         }
     }
-
 }
 
 extension DataExchangeClientTypes {
+
     /// Details from an import from Amazon Redshift datashare request.
-    public struct ImportAssetsFromRedshiftDataSharesRequestDetails {
+    public struct ImportAssetsFromRedshiftDataSharesRequestDetails: Swift.Sendable {
         /// A list of Amazon Redshift datashare assets.
         /// This member is required.
         public var assetSources: [DataExchangeClientTypes.RedshiftDataShareAssetSourceEntry]?
@@ -1831,12 +2139,12 @@ extension DataExchangeClientTypes {
             self.revisionId = revisionId
         }
     }
-
 }
 
 extension DataExchangeClientTypes {
+
     /// Details of the operation to be performed by the job.
-    public struct ImportAssetsFromS3RequestDetails {
+    public struct ImportAssetsFromS3RequestDetails: Swift.Sendable {
         /// Is a list of Amazon S3 bucket and object key pairs.
         /// This member is required.
         public var assetSources: [DataExchangeClientTypes.AssetSourceEntry]?
@@ -1858,12 +2166,12 @@ extension DataExchangeClientTypes {
             self.revisionId = revisionId
         }
     }
-
 }
 
 extension DataExchangeClientTypes {
+
     /// The details for the request.
-    public struct RequestDetails {
+    public struct RequestDetails: Swift.Sendable {
         /// Details of the request to create S3 data access from the Amazon S3 bucket.
         public var createS3DataAccessFromS3Bucket: DataExchangeClientTypes.CreateS3DataAccessFromS3BucketRequestDetails?
         /// Details about the export to signed URL request.
@@ -1906,12 +2214,11 @@ extension DataExchangeClientTypes {
             self.importAssetsFromS3 = importAssetsFromS3
         }
     }
-
 }
 
 extension DataExchangeClientTypes {
 
-    public enum ModelType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ModelType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case createS3DataAccessFromS3Bucket
         case exportAssetsToS3
         case exportAssetToSignedUrl
@@ -1959,7 +2266,7 @@ extension DataExchangeClientTypes {
     }
 }
 
-public struct CreateJobInput {
+public struct CreateJobInput: Swift.Sendable {
     /// The details for the CreateJob request.
     /// This member is required.
     public var details: DataExchangeClientTypes.RequestDetails?
@@ -1978,8 +2285,9 @@ public struct CreateJobInput {
 }
 
 extension DataExchangeClientTypes {
+
     /// Details about the response of the operation to create an S3 data access from an S3 bucket.
-    public struct CreateS3DataAccessFromS3BucketResponseDetails {
+    public struct CreateS3DataAccessFromS3BucketResponseDetails: Swift.Sendable {
         /// Details about the asset source from an Amazon S3 bucket.
         /// This member is required.
         public var assetSource: DataExchangeClientTypes.S3DataAccessAssetSourceEntry?
@@ -2001,12 +2309,12 @@ extension DataExchangeClientTypes {
             self.revisionId = revisionId
         }
     }
-
 }
 
 extension DataExchangeClientTypes {
+
     /// Details about the export to Amazon S3 response.
-    public struct ExportAssetsToS3ResponseDetails {
+    public struct ExportAssetsToS3ResponseDetails: Swift.Sendable {
         /// The destination in Amazon S3 where the asset is exported.
         /// This member is required.
         public var assetDestinations: [DataExchangeClientTypes.AssetDestinationEntry]?
@@ -2032,12 +2340,12 @@ extension DataExchangeClientTypes {
             self.revisionId = revisionId
         }
     }
-
 }
 
 extension DataExchangeClientTypes {
+
     /// The details of the export to signed URL response.
-    public struct ExportAssetToSignedUrlResponseDetails {
+    public struct ExportAssetToSignedUrlResponseDetails: Swift.Sendable {
         /// The unique identifier for the asset associated with this export job.
         /// This member is required.
         public var assetId: Swift.String?
@@ -2067,12 +2375,12 @@ extension DataExchangeClientTypes {
             self.signedUrlExpiresAt = signedUrlExpiresAt
         }
     }
-
 }
 
 extension DataExchangeClientTypes {
+
     /// Details about the export revisions to Amazon S3 response.
-    public struct ExportRevisionsToS3ResponseDetails {
+    public struct ExportRevisionsToS3ResponseDetails: Swift.Sendable {
         /// The unique identifier for the data set associated with this export job.
         /// This member is required.
         public var dataSetId: Swift.String?
@@ -2097,12 +2405,12 @@ extension DataExchangeClientTypes {
             self.revisionDestinations = revisionDestinations
         }
     }
-
 }
 
 extension DataExchangeClientTypes {
+
     /// The response details.
-    public struct ImportAssetFromApiGatewayApiResponseDetails {
+    public struct ImportAssetFromApiGatewayApiResponseDetails: Swift.Sendable {
         /// The API description.
         public var apiDescription: Swift.String?
         /// The API ID.
@@ -2162,12 +2470,12 @@ extension DataExchangeClientTypes {
             self.stage = stage
         }
     }
-
 }
 
 extension DataExchangeClientTypes {
+
     /// The details in the response for an import request, including the signed URL and other information.
-    public struct ImportAssetFromSignedUrlResponseDetails {
+    public struct ImportAssetFromSignedUrlResponseDetails: Swift.Sendable {
         /// The name for the asset associated with this import job.
         /// This member is required.
         public var assetName: Swift.String?
@@ -2201,12 +2509,12 @@ extension DataExchangeClientTypes {
             self.signedUrlExpiresAt = signedUrlExpiresAt
         }
     }
-
 }
 
 extension DataExchangeClientTypes {
+
     /// Details from an import AWS Lake Formation tag policy job response.
-    public struct ImportAssetsFromLakeFormationTagPolicyResponseDetails {
+    public struct ImportAssetsFromLakeFormationTagPolicyResponseDetails: Swift.Sendable {
         /// The identifier for the AWS Glue Data Catalog.
         /// This member is required.
         public var catalogId: Swift.String?
@@ -2241,12 +2549,12 @@ extension DataExchangeClientTypes {
             self.table = table
         }
     }
-
 }
 
 extension DataExchangeClientTypes {
+
     /// Details from an import from Amazon Redshift datashare response.
-    public struct ImportAssetsFromRedshiftDataSharesResponseDetails {
+    public struct ImportAssetsFromRedshiftDataSharesResponseDetails: Swift.Sendable {
         /// A list of Amazon Redshift datashare asset sources.
         /// This member is required.
         public var assetSources: [DataExchangeClientTypes.RedshiftDataShareAssetSourceEntry]?
@@ -2268,12 +2576,12 @@ extension DataExchangeClientTypes {
             self.revisionId = revisionId
         }
     }
-
 }
 
 extension DataExchangeClientTypes {
+
     /// Details from an import from Amazon S3 response.
-    public struct ImportAssetsFromS3ResponseDetails {
+    public struct ImportAssetsFromS3ResponseDetails: Swift.Sendable {
         /// Is a list of Amazon S3 bucket and object key pairs.
         /// This member is required.
         public var assetSources: [DataExchangeClientTypes.AssetSourceEntry]?
@@ -2295,12 +2603,12 @@ extension DataExchangeClientTypes {
             self.revisionId = revisionId
         }
     }
-
 }
 
 extension DataExchangeClientTypes {
+
     /// Details for the response.
-    public struct ResponseDetails {
+    public struct ResponseDetails: Swift.Sendable {
         /// Response details from the CreateS3DataAccessFromS3Bucket job.
         public var createS3DataAccessFromS3Bucket: DataExchangeClientTypes.CreateS3DataAccessFromS3BucketResponseDetails?
         /// Details for the export to signed URL response.
@@ -2343,12 +2651,12 @@ extension DataExchangeClientTypes {
             self.importAssetsFromS3 = importAssetsFromS3
         }
     }
-
 }
 
 extension DataExchangeClientTypes {
+
     /// Details about the job error.
-    public struct ImportAssetFromSignedUrlJobErrorDetails {
+    public struct ImportAssetFromSignedUrlJobErrorDetails: Swift.Sendable {
         /// Details about the job error.
         /// This member is required.
         public var assetName: Swift.String?
@@ -2360,12 +2668,12 @@ extension DataExchangeClientTypes {
             self.assetName = assetName
         }
     }
-
 }
 
 extension DataExchangeClientTypes {
+
     /// Information about the job error.
-    public struct Details {
+    public struct Details: Swift.Sendable {
         /// Information about the job error.
         public var importAssetFromSignedUrlJobErrorDetails: DataExchangeClientTypes.ImportAssetFromSignedUrlJobErrorDetails?
         /// Details about the job error.
@@ -2380,12 +2688,11 @@ extension DataExchangeClientTypes {
             self.importAssetsFromS3JobErrorDetails = importAssetsFromS3JobErrorDetails
         }
     }
-
 }
 
 extension DataExchangeClientTypes {
 
-    public enum JobErrorLimitName: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum JobErrorLimitName: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case awsLakeFormationDataPermissionAssetsPerRevision
         case amazonRedshiftDatashareAssetsPerRevision
         case amazonS3DataAccessAssetsPerRevision
@@ -2423,7 +2730,7 @@ extension DataExchangeClientTypes {
 
 extension DataExchangeClientTypes {
 
-    public enum JobErrorResourceTypes: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum JobErrorResourceTypes: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case asset
         case dataSet
         case revision
@@ -2454,8 +2761,9 @@ extension DataExchangeClientTypes {
 }
 
 extension DataExchangeClientTypes {
+
     /// An error that occurred with the job request.
-    public struct JobError {
+    public struct JobError: Swift.Sendable {
         /// The code for the job error.
         /// This member is required.
         public var code: DataExchangeClientTypes.Code?
@@ -2492,12 +2800,11 @@ extension DataExchangeClientTypes {
             self.resourceType = resourceType
         }
     }
-
 }
 
 extension DataExchangeClientTypes {
 
-    public enum State: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum State: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case cancelled
         case completed
         case error
@@ -2536,7 +2843,7 @@ extension DataExchangeClientTypes {
     }
 }
 
-public struct CreateJobOutput {
+public struct CreateJobOutput: Swift.Sendable {
     /// The ARN for the job.
     public var arn: Swift.String?
     /// The date and time that the job was created, in ISO 8601 format.
@@ -2576,7 +2883,7 @@ public struct CreateJobOutput {
     }
 }
 
-public struct CreateRevisionInput {
+public struct CreateRevisionInput: Swift.Sendable {
     /// An optional comment about the revision.
     public var comment: Swift.String?
     /// The unique identifier for a data set.
@@ -2597,7 +2904,7 @@ public struct CreateRevisionInput {
     }
 }
 
-public struct CreateRevisionOutput {
+public struct CreateRevisionOutput: Swift.Sendable {
     /// The ARN for the revision.
     public var arn: Swift.String?
     /// An optional comment about the revision.
@@ -2653,7 +2960,7 @@ public struct CreateRevisionOutput {
     }
 }
 
-public struct DeleteAssetInput {
+public struct DeleteAssetInput: Swift.Sendable {
     /// The unique identifier for an asset.
     /// This member is required.
     public var assetId: Swift.String?
@@ -2676,7 +2983,20 @@ public struct DeleteAssetInput {
     }
 }
 
-public struct DeleteDataSetInput {
+public struct DeleteDataGrantInput: Swift.Sendable {
+    /// The ID of the data grant to delete.
+    /// This member is required.
+    public var dataGrantId: Swift.String?
+
+    public init(
+        dataGrantId: Swift.String? = nil
+    )
+    {
+        self.dataGrantId = dataGrantId
+    }
+}
+
+public struct DeleteDataSetInput: Swift.Sendable {
     /// The unique identifier for a data set.
     /// This member is required.
     public var dataSetId: Swift.String?
@@ -2689,7 +3009,7 @@ public struct DeleteDataSetInput {
     }
 }
 
-public struct DeleteEventActionInput {
+public struct DeleteEventActionInput: Swift.Sendable {
     /// The unique identifier for the event action.
     /// This member is required.
     public var eventActionId: Swift.String?
@@ -2702,7 +3022,7 @@ public struct DeleteEventActionInput {
     }
 }
 
-public struct DeleteRevisionInput {
+public struct DeleteRevisionInput: Swift.Sendable {
     /// The unique identifier for a data set.
     /// This member is required.
     public var dataSetId: Swift.String?
@@ -2720,7 +3040,7 @@ public struct DeleteRevisionInput {
     }
 }
 
-public struct GetAssetInput {
+public struct GetAssetInput: Swift.Sendable {
     /// The unique identifier for an asset.
     /// This member is required.
     public var assetId: Swift.String?
@@ -2743,7 +3063,7 @@ public struct GetAssetInput {
     }
 }
 
-public struct GetAssetOutput {
+public struct GetAssetOutput: Swift.Sendable {
     /// The ARN for the asset.
     public var arn: Swift.String?
     /// Details about the asset.
@@ -2791,7 +3111,99 @@ public struct GetAssetOutput {
     }
 }
 
-public struct GetDataSetInput {
+public struct GetDataGrantInput: Swift.Sendable {
+    /// The ID of the data grant.
+    /// This member is required.
+    public var dataGrantId: Swift.String?
+
+    public init(
+        dataGrantId: Swift.String? = nil
+    )
+    {
+        self.dataGrantId = dataGrantId
+    }
+}
+
+public struct GetDataGrantOutput: Swift.Sendable {
+    /// The acceptance state of the data grant.
+    /// This member is required.
+    public var acceptanceState: DataExchangeClientTypes.DataGrantAcceptanceState?
+    /// The timestamp of when the data grant was accepted.
+    public var acceptedAt: Foundation.Date?
+    /// The Amazon Resource Name (ARN) of the data grant.
+    /// This member is required.
+    public var arn: Swift.String?
+    /// The timestamp of when the data grant was created.
+    /// This member is required.
+    public var createdAt: Foundation.Date?
+    /// The ID of the data set associated to the data grant.
+    /// This member is required.
+    public var dataSetId: Swift.String?
+    /// The description of the data grant.
+    public var description: Swift.String?
+    /// The timestamp of when access to the associated data set ends.
+    public var endsAt: Foundation.Date?
+    /// The distribution scope for the data grant.
+    /// This member is required.
+    public var grantDistributionScope: DataExchangeClientTypes.GrantDistributionScope?
+    /// The ID of the data grant.
+    /// This member is required.
+    public var id: Swift.String?
+    /// The name of the data grant.
+    /// This member is required.
+    public var name: Swift.String?
+    /// The Amazon Web Services account ID of the data grant receiver.
+    /// This member is required.
+    public var receiverPrincipal: Swift.String?
+    /// The Amazon Web Services account ID of the data grant sender.
+    /// This member is required.
+    public var senderPrincipal: Swift.String?
+    /// The ID of the data set used to create the data grant.
+    /// This member is required.
+    public var sourceDataSetId: Swift.String?
+    /// The tags associated to the data grant. A tag is a key-value pair.
+    public var tags: [Swift.String: Swift.String]?
+    /// The timestamp of when the data grant was last updated.
+    /// This member is required.
+    public var updatedAt: Foundation.Date?
+
+    public init(
+        acceptanceState: DataExchangeClientTypes.DataGrantAcceptanceState? = nil,
+        acceptedAt: Foundation.Date? = nil,
+        arn: Swift.String? = nil,
+        createdAt: Foundation.Date? = nil,
+        dataSetId: Swift.String? = nil,
+        description: Swift.String? = nil,
+        endsAt: Foundation.Date? = nil,
+        grantDistributionScope: DataExchangeClientTypes.GrantDistributionScope? = nil,
+        id: Swift.String? = nil,
+        name: Swift.String? = nil,
+        receiverPrincipal: Swift.String? = nil,
+        senderPrincipal: Swift.String? = nil,
+        sourceDataSetId: Swift.String? = nil,
+        tags: [Swift.String: Swift.String]? = nil,
+        updatedAt: Foundation.Date? = nil
+    )
+    {
+        self.acceptanceState = acceptanceState
+        self.acceptedAt = acceptedAt
+        self.arn = arn
+        self.createdAt = createdAt
+        self.dataSetId = dataSetId
+        self.description = description
+        self.endsAt = endsAt
+        self.grantDistributionScope = grantDistributionScope
+        self.id = id
+        self.name = name
+        self.receiverPrincipal = receiverPrincipal
+        self.senderPrincipal = senderPrincipal
+        self.sourceDataSetId = sourceDataSetId
+        self.tags = tags
+        self.updatedAt = updatedAt
+    }
+}
+
+public struct GetDataSetInput: Swift.Sendable {
     /// The unique identifier for a data set.
     /// This member is required.
     public var dataSetId: Swift.String?
@@ -2804,7 +3216,7 @@ public struct GetDataSetInput {
     }
 }
 
-public struct GetDataSetOutput {
+public struct GetDataSetOutput: Swift.Sendable {
     /// The ARN for the data set.
     public var arn: Swift.String?
     /// The type of asset that is added to a data set.
@@ -2856,7 +3268,7 @@ public struct GetDataSetOutput {
     }
 }
 
-public struct GetEventActionInput {
+public struct GetEventActionInput: Swift.Sendable {
     /// The unique identifier for the event action.
     /// This member is required.
     public var eventActionId: Swift.String?
@@ -2869,7 +3281,7 @@ public struct GetEventActionInput {
     }
 }
 
-public struct GetEventActionOutput {
+public struct GetEventActionOutput: Swift.Sendable {
     /// What occurs after a certain event.
     public var action: DataExchangeClientTypes.Action?
     /// The ARN for the event action.
@@ -2901,7 +3313,7 @@ public struct GetEventActionOutput {
     }
 }
 
-public struct GetJobInput {
+public struct GetJobInput: Swift.Sendable {
     /// The unique identifier for a job.
     /// This member is required.
     public var jobId: Swift.String?
@@ -2914,7 +3326,7 @@ public struct GetJobInput {
     }
 }
 
-public struct GetJobOutput {
+public struct GetJobOutput: Swift.Sendable {
     /// The ARN for the job.
     public var arn: Swift.String?
     /// The date and time that the job was created, in ISO 8601 format.
@@ -2954,7 +3366,89 @@ public struct GetJobOutput {
     }
 }
 
-public struct GetRevisionInput {
+public struct GetReceivedDataGrantInput: Swift.Sendable {
+    /// The Amazon Resource Name (ARN) of the data grant.
+    /// This member is required.
+    public var dataGrantArn: Swift.String?
+
+    public init(
+        dataGrantArn: Swift.String? = nil
+    )
+    {
+        self.dataGrantArn = dataGrantArn
+    }
+}
+
+public struct GetReceivedDataGrantOutput: Swift.Sendable {
+    /// The acceptance state of the data grant.
+    /// This member is required.
+    public var acceptanceState: DataExchangeClientTypes.DataGrantAcceptanceState?
+    /// The timestamp of when the data grant was accepted.
+    public var acceptedAt: Foundation.Date?
+    /// The Amazon Resource Name (ARN) of the data grant.
+    /// This member is required.
+    public var arn: Swift.String?
+    /// The timestamp of when the data grant was created.
+    /// This member is required.
+    public var createdAt: Foundation.Date?
+    /// The ID of the data set associated to the data grant.
+    /// This member is required.
+    public var dataSetId: Swift.String?
+    /// The description of the data grant.
+    public var description: Swift.String?
+    /// The timestamp of when access to the associated data set ends.
+    public var endsAt: Foundation.Date?
+    /// The distribution scope for the data grant.
+    /// This member is required.
+    public var grantDistributionScope: DataExchangeClientTypes.GrantDistributionScope?
+    /// The ID of the data grant.
+    /// This member is required.
+    public var id: Swift.String?
+    /// The name of the data grant.
+    /// This member is required.
+    public var name: Swift.String?
+    /// The Amazon Web Services account ID of the data grant receiver.
+    /// This member is required.
+    public var receiverPrincipal: Swift.String?
+    /// The Amazon Web Services account ID of the data grant sender.
+    public var senderPrincipal: Swift.String?
+    /// The timestamp of when the data grant was last updated.
+    /// This member is required.
+    public var updatedAt: Foundation.Date?
+
+    public init(
+        acceptanceState: DataExchangeClientTypes.DataGrantAcceptanceState? = nil,
+        acceptedAt: Foundation.Date? = nil,
+        arn: Swift.String? = nil,
+        createdAt: Foundation.Date? = nil,
+        dataSetId: Swift.String? = nil,
+        description: Swift.String? = nil,
+        endsAt: Foundation.Date? = nil,
+        grantDistributionScope: DataExchangeClientTypes.GrantDistributionScope? = nil,
+        id: Swift.String? = nil,
+        name: Swift.String? = nil,
+        receiverPrincipal: Swift.String? = nil,
+        senderPrincipal: Swift.String? = nil,
+        updatedAt: Foundation.Date? = nil
+    )
+    {
+        self.acceptanceState = acceptanceState
+        self.acceptedAt = acceptedAt
+        self.arn = arn
+        self.createdAt = createdAt
+        self.dataSetId = dataSetId
+        self.description = description
+        self.endsAt = endsAt
+        self.grantDistributionScope = grantDistributionScope
+        self.id = id
+        self.name = name
+        self.receiverPrincipal = receiverPrincipal
+        self.senderPrincipal = senderPrincipal
+        self.updatedAt = updatedAt
+    }
+}
+
+public struct GetRevisionInput: Swift.Sendable {
     /// The unique identifier for a data set.
     /// This member is required.
     public var dataSetId: Swift.String?
@@ -2972,7 +3466,7 @@ public struct GetRevisionInput {
     }
 }
 
-public struct GetRevisionOutput {
+public struct GetRevisionOutput: Swift.Sendable {
     /// The ARN for the revision.
     public var arn: Swift.String?
     /// An optional comment about the revision.
@@ -3028,7 +3522,109 @@ public struct GetRevisionOutput {
     }
 }
 
-public struct ListDataSetRevisionsInput {
+public struct ListDataGrantsInput: Swift.Sendable {
+    /// The maximum number of results to be included in the next page.
+    public var maxResults: Swift.Int?
+    /// The pagination token used to retrieve the next page of results for this operation.
+    public var nextToken: Swift.String?
+
+    public init(
+        maxResults: Swift.Int? = 0,
+        nextToken: Swift.String? = nil
+    )
+    {
+        self.maxResults = maxResults
+        self.nextToken = nextToken
+    }
+}
+
+extension DataExchangeClientTypes {
+
+    /// Information about a data grant.
+    public struct DataGrantSummaryEntry: Swift.Sendable {
+        /// The acceptance state of the data grant.
+        /// This member is required.
+        public var acceptanceState: DataExchangeClientTypes.DataGrantAcceptanceState?
+        /// The timestamp of when the data grant was accepted.
+        public var acceptedAt: Foundation.Date?
+        /// The Amazon Resource Name (ARN) of the data grant.
+        /// This member is required.
+        public var arn: Swift.String?
+        /// The timestamp of when the data grant was created.
+        /// This member is required.
+        public var createdAt: Foundation.Date?
+        /// The ID of the data set associated to the data grant.
+        /// This member is required.
+        public var dataSetId: Swift.String?
+        /// The timestamp of when access to the associated data set ends.
+        public var endsAt: Foundation.Date?
+        /// The ID of the data grant.
+        /// This member is required.
+        public var id: Swift.String?
+        /// The name of the data grant.
+        /// This member is required.
+        public var name: Swift.String?
+        /// The Amazon Web Services account ID of the data grant receiver.
+        /// This member is required.
+        public var receiverPrincipal: Swift.String?
+        /// The Amazon Web Services account ID of the data grant sender.
+        /// This member is required.
+        public var senderPrincipal: Swift.String?
+        /// The ID of the data set used to create the data grant.
+        /// This member is required.
+        public var sourceDataSetId: Swift.String?
+        /// The timestamp of when the data grant was last updated.
+        /// This member is required.
+        public var updatedAt: Foundation.Date?
+
+        public init(
+            acceptanceState: DataExchangeClientTypes.DataGrantAcceptanceState? = nil,
+            acceptedAt: Foundation.Date? = nil,
+            arn: Swift.String? = nil,
+            createdAt: Foundation.Date? = nil,
+            dataSetId: Swift.String? = nil,
+            endsAt: Foundation.Date? = nil,
+            id: Swift.String? = nil,
+            name: Swift.String? = nil,
+            receiverPrincipal: Swift.String? = nil,
+            senderPrincipal: Swift.String? = nil,
+            sourceDataSetId: Swift.String? = nil,
+            updatedAt: Foundation.Date? = nil
+        )
+        {
+            self.acceptanceState = acceptanceState
+            self.acceptedAt = acceptedAt
+            self.arn = arn
+            self.createdAt = createdAt
+            self.dataSetId = dataSetId
+            self.endsAt = endsAt
+            self.id = id
+            self.name = name
+            self.receiverPrincipal = receiverPrincipal
+            self.senderPrincipal = senderPrincipal
+            self.sourceDataSetId = sourceDataSetId
+            self.updatedAt = updatedAt
+        }
+    }
+}
+
+public struct ListDataGrantsOutput: Swift.Sendable {
+    /// An object that contains a list of data grant information.
+    public var dataGrantSummaries: [DataExchangeClientTypes.DataGrantSummaryEntry]?
+    /// The pagination token used to retrieve the next page of results for this operation.
+    public var nextToken: Swift.String?
+
+    public init(
+        dataGrantSummaries: [DataExchangeClientTypes.DataGrantSummaryEntry]? = nil,
+        nextToken: Swift.String? = nil
+    )
+    {
+        self.dataGrantSummaries = dataGrantSummaries
+        self.nextToken = nextToken
+    }
+}
+
+public struct ListDataSetRevisionsInput: Swift.Sendable {
     /// The unique identifier for a data set.
     /// This member is required.
     public var dataSetId: Swift.String?
@@ -3050,8 +3646,9 @@ public struct ListDataSetRevisionsInput {
 }
 
 extension DataExchangeClientTypes {
+
     /// A revision is a container for one or more assets.
-    public struct RevisionEntry {
+    public struct RevisionEntry: Swift.Sendable {
         /// The ARN for the revision.
         /// This member is required.
         public var arn: Swift.String?
@@ -3107,10 +3704,9 @@ extension DataExchangeClientTypes {
             self.updatedAt = updatedAt
         }
     }
-
 }
 
-public struct ListDataSetRevisionsOutput {
+public struct ListDataSetRevisionsOutput: Swift.Sendable {
     /// The token value retrieved from a previous call to access the next page of results.
     public var nextToken: Swift.String?
     /// The asset objects listed by the request.
@@ -3126,7 +3722,7 @@ public struct ListDataSetRevisionsOutput {
     }
 }
 
-public struct ListDataSetsInput {
+public struct ListDataSetsInput: Swift.Sendable {
     /// The maximum number of results returned by a single call.
     public var maxResults: Swift.Int?
     /// The token value retrieved from a previous call to access the next page of results.
@@ -3147,8 +3743,9 @@ public struct ListDataSetsInput {
 }
 
 extension DataExchangeClientTypes {
+
     /// A data set is an AWS resource with one or more revisions.
-    public struct DataSetEntry {
+    public struct DataSetEntry: Swift.Sendable {
         /// The ARN for the data set.
         /// This member is required.
         public var arn: Swift.String?
@@ -3203,10 +3800,9 @@ extension DataExchangeClientTypes {
             self.updatedAt = updatedAt
         }
     }
-
 }
 
-public struct ListDataSetsOutput {
+public struct ListDataSetsOutput: Swift.Sendable {
     /// The data set objects listed by the request.
     public var dataSets: [DataExchangeClientTypes.DataSetEntry]?
     /// The token value retrieved from a previous call to access the next page of results.
@@ -3222,7 +3818,7 @@ public struct ListDataSetsOutput {
     }
 }
 
-public struct ListEventActionsInput {
+public struct ListEventActionsInput: Swift.Sendable {
     /// The unique identifier for the event source.
     public var eventSourceId: Swift.String?
     /// The maximum number of results returned by a single call.
@@ -3243,8 +3839,9 @@ public struct ListEventActionsInput {
 }
 
 extension DataExchangeClientTypes {
+
     /// An event action is an object that defines the relationship between a specific event and an automated action that will be taken on behalf of the customer.
-    public struct EventActionEntry {
+    public struct EventActionEntry: Swift.Sendable {
         /// What occurs after a certain event.
         /// This member is required.
         public var action: DataExchangeClientTypes.Action?
@@ -3281,10 +3878,9 @@ extension DataExchangeClientTypes {
             self.updatedAt = updatedAt
         }
     }
-
 }
 
-public struct ListEventActionsOutput {
+public struct ListEventActionsOutput: Swift.Sendable {
     /// The event action objects listed by the request.
     public var eventActions: [DataExchangeClientTypes.EventActionEntry]?
     /// The token value retrieved from a previous call to access the next page of results.
@@ -3300,7 +3896,7 @@ public struct ListEventActionsOutput {
     }
 }
 
-public struct ListJobsInput {
+public struct ListJobsInput: Swift.Sendable {
     /// The unique identifier for a data set.
     public var dataSetId: Swift.String?
     /// The maximum number of results returned by a single call.
@@ -3325,8 +3921,9 @@ public struct ListJobsInput {
 }
 
 extension DataExchangeClientTypes {
+
     /// AWS Data Exchange Jobs are asynchronous import or export operations used to create or copy assets. A data set owner can both import and export as they see fit. Someone with an entitlement to a data set can only export. Jobs are deleted 90 days after they are created.
-    public struct JobEntry {
+    public struct JobEntry: Swift.Sendable {
         /// The ARN for the job.
         /// This member is required.
         public var arn: Swift.String?
@@ -3372,10 +3969,9 @@ extension DataExchangeClientTypes {
             self.updatedAt = updatedAt
         }
     }
-
 }
 
-public struct ListJobsOutput {
+public struct ListJobsOutput: Swift.Sendable {
     /// The jobs listed by the request.
     public var jobs: [DataExchangeClientTypes.JobEntry]?
     /// The token value retrieved from a previous call to access the next page of results.
@@ -3391,7 +3987,108 @@ public struct ListJobsOutput {
     }
 }
 
-public struct ListRevisionAssetsInput {
+public struct ListReceivedDataGrantsInput: Swift.Sendable {
+    /// The acceptance state of the data grants to list.
+    public var acceptanceState: [DataExchangeClientTypes.AcceptanceStateFilterValue]?
+    /// The maximum number of results to be included in the next page.
+    public var maxResults: Swift.Int?
+    /// The pagination token used to retrieve the next page of results for this operation.
+    public var nextToken: Swift.String?
+
+    public init(
+        acceptanceState: [DataExchangeClientTypes.AcceptanceStateFilterValue]? = nil,
+        maxResults: Swift.Int? = 0,
+        nextToken: Swift.String? = nil
+    )
+    {
+        self.acceptanceState = acceptanceState
+        self.maxResults = maxResults
+        self.nextToken = nextToken
+    }
+}
+
+extension DataExchangeClientTypes {
+
+    /// Information about a received data grant.
+    public struct ReceivedDataGrantSummariesEntry: Swift.Sendable {
+        /// The acceptance state of the data grant.
+        /// This member is required.
+        public var acceptanceState: DataExchangeClientTypes.DataGrantAcceptanceState?
+        /// The timestamp of when the data grant was accepted.
+        public var acceptedAt: Foundation.Date?
+        /// The Amazon Resource Name (ARN) of the data grant.
+        /// This member is required.
+        public var arn: Swift.String?
+        /// The timestamp of when the data grant was created.
+        /// This member is required.
+        public var createdAt: Foundation.Date?
+        /// The ID of the data set associated to the data grant.
+        /// This member is required.
+        public var dataSetId: Swift.String?
+        /// The timestamp of when access to the associated data set ends.
+        public var endsAt: Foundation.Date?
+        /// The ID of the data grant.
+        /// This member is required.
+        public var id: Swift.String?
+        /// The name of the data grant.
+        /// This member is required.
+        public var name: Swift.String?
+        /// The Amazon Web Services account ID of the data grant receiver.
+        /// This member is required.
+        public var receiverPrincipal: Swift.String?
+        /// The Amazon Web Services account ID of the data grant sender.
+        /// This member is required.
+        public var senderPrincipal: Swift.String?
+        /// The timestamp of when the data grant was last updated.
+        /// This member is required.
+        public var updatedAt: Foundation.Date?
+
+        public init(
+            acceptanceState: DataExchangeClientTypes.DataGrantAcceptanceState? = nil,
+            acceptedAt: Foundation.Date? = nil,
+            arn: Swift.String? = nil,
+            createdAt: Foundation.Date? = nil,
+            dataSetId: Swift.String? = nil,
+            endsAt: Foundation.Date? = nil,
+            id: Swift.String? = nil,
+            name: Swift.String? = nil,
+            receiverPrincipal: Swift.String? = nil,
+            senderPrincipal: Swift.String? = nil,
+            updatedAt: Foundation.Date? = nil
+        )
+        {
+            self.acceptanceState = acceptanceState
+            self.acceptedAt = acceptedAt
+            self.arn = arn
+            self.createdAt = createdAt
+            self.dataSetId = dataSetId
+            self.endsAt = endsAt
+            self.id = id
+            self.name = name
+            self.receiverPrincipal = receiverPrincipal
+            self.senderPrincipal = senderPrincipal
+            self.updatedAt = updatedAt
+        }
+    }
+}
+
+public struct ListReceivedDataGrantsOutput: Swift.Sendable {
+    /// An object that contains a list of received data grant information.
+    public var dataGrantSummaries: [DataExchangeClientTypes.ReceivedDataGrantSummariesEntry]?
+    /// The pagination token used to retrieve the next page of results for this operation.
+    public var nextToken: Swift.String?
+
+    public init(
+        dataGrantSummaries: [DataExchangeClientTypes.ReceivedDataGrantSummariesEntry]? = nil,
+        nextToken: Swift.String? = nil
+    )
+    {
+        self.dataGrantSummaries = dataGrantSummaries
+        self.nextToken = nextToken
+    }
+}
+
+public struct ListRevisionAssetsInput: Swift.Sendable {
     /// The unique identifier for a data set.
     /// This member is required.
     public var dataSetId: Swift.String?
@@ -3417,7 +4114,7 @@ public struct ListRevisionAssetsInput {
     }
 }
 
-public struct ListRevisionAssetsOutput {
+public struct ListRevisionAssetsOutput: Swift.Sendable {
     /// The asset objects listed by the request.
     public var assets: [DataExchangeClientTypes.AssetEntry]?
     /// The token value retrieved from a previous call to access the next page of results.
@@ -3433,7 +4130,7 @@ public struct ListRevisionAssetsOutput {
     }
 }
 
-public struct ListTagsForResourceInput {
+public struct ListTagsForResourceInput: Swift.Sendable {
     /// An Amazon Resource Name (ARN) that uniquely identifies an AWS resource.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -3446,7 +4143,7 @@ public struct ListTagsForResourceInput {
     }
 }
 
-public struct ListTagsForResourceOutput {
+public struct ListTagsForResourceOutput: Swift.Sendable {
     /// A label that consists of a customer-defined key and an optional value.
     public var tags: [Swift.String: Swift.String]?
 
@@ -3458,7 +4155,7 @@ public struct ListTagsForResourceOutput {
     }
 }
 
-public struct RevokeRevisionInput {
+public struct RevokeRevisionInput: Swift.Sendable {
     /// The unique identifier for a data set.
     /// This member is required.
     public var dataSetId: Swift.String?
@@ -3481,7 +4178,7 @@ public struct RevokeRevisionInput {
     }
 }
 
-public struct RevokeRevisionOutput {
+public struct RevokeRevisionOutput: Swift.Sendable {
     /// The ARN for the revision.
     public var arn: Swift.String?
     /// An optional comment about the revision.
@@ -3533,7 +4230,7 @@ public struct RevokeRevisionOutput {
     }
 }
 
-public struct SendApiAssetInput {
+public struct SendApiAssetInput: Swift.Sendable {
     /// Asset ID value for the API request.
     /// This member is required.
     public var assetId: Swift.String?
@@ -3576,7 +4273,7 @@ public struct SendApiAssetInput {
     }
 }
 
-public struct SendApiAssetOutput {
+public struct SendApiAssetOutput: Swift.Sendable {
     /// The response body from the underlying API tracked by the API asset.
     public var body: Swift.String?
     /// The response headers from the underlying API tracked by the API asset.
@@ -3593,8 +4290,9 @@ public struct SendApiAssetOutput {
 }
 
 extension DataExchangeClientTypes {
+
     /// Extra details specific to a data update type notification.
-    public struct DataUpdateRequestDetails {
+    public struct DataUpdateRequestDetails: Swift.Sendable {
         /// A datetime in the past when the data was updated. This typically means that the underlying resource supporting the data set was updated.
         public var dataUpdatedAt: Foundation.Date?
 
@@ -3605,12 +4303,12 @@ extension DataExchangeClientTypes {
             self.dataUpdatedAt = dataUpdatedAt
         }
     }
-
 }
 
 extension DataExchangeClientTypes {
+
     /// Extra details specific to a deprecation type notification.
-    public struct DeprecationRequestDetails {
+    public struct DeprecationRequestDetails: Swift.Sendable {
         /// A datetime in the future when the data set will be deprecated.
         /// This member is required.
         public var deprecationAt: Foundation.Date?
@@ -3622,12 +4320,11 @@ extension DataExchangeClientTypes {
             self.deprecationAt = deprecationAt
         }
     }
-
 }
 
 extension DataExchangeClientTypes {
 
-    public enum SchemaChangeType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SchemaChangeType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case add
         case modify
         case remove
@@ -3658,8 +4355,9 @@ extension DataExchangeClientTypes {
 }
 
 extension DataExchangeClientTypes {
+
     /// Object encompassing information about a schema change to a single, particular field, a notification can have up to 100 of these.
-    public struct SchemaChangeDetails {
+    public struct SchemaChangeDetails: Swift.Sendable {
         /// Description of what's changing about this field. This value can be up to 512 characters long.
         public var description: Swift.String?
         /// Name of the changing field. This value can be up to 255 characters long.
@@ -3680,12 +4378,12 @@ extension DataExchangeClientTypes {
             self.type = type
         }
     }
-
 }
 
 extension DataExchangeClientTypes {
+
     /// Extra details specific to this schema change type notification.
-    public struct SchemaChangeRequestDetails {
+    public struct SchemaChangeRequestDetails: Swift.Sendable {
         /// List of schema changes happening in the scope of this notification. This can have up to 100 entries.
         public var changes: [DataExchangeClientTypes.SchemaChangeDetails]?
         /// A date in the future when the schema change is taking effect.
@@ -3701,12 +4399,12 @@ extension DataExchangeClientTypes {
             self.schemaChangeAt = schemaChangeAt
         }
     }
-
 }
 
 extension DataExchangeClientTypes {
+
     /// Extra details specific to this notification.
-    public struct NotificationDetails {
+    public struct NotificationDetails: Swift.Sendable {
         /// Extra details specific to a data update type notification.
         public var dataUpdate: DataExchangeClientTypes.DataUpdateRequestDetails?
         /// Extra details specific to a deprecation type notification.
@@ -3725,12 +4423,12 @@ extension DataExchangeClientTypes {
             self.schemaChange = schemaChange
         }
     }
-
 }
 
 extension DataExchangeClientTypes {
+
     /// Extra details specific to the affected scope in this LF data set.
-    public struct LakeFormationTagPolicyDetails {
+    public struct LakeFormationTagPolicyDetails: Swift.Sendable {
         /// The underlying Glue database that the notification is referring to.
         public var database: Swift.String?
         /// The underlying Glue table that the notification is referring to.
@@ -3745,12 +4443,12 @@ extension DataExchangeClientTypes {
             self.table = table
         }
     }
-
 }
 
 extension DataExchangeClientTypes {
+
     /// Extra details specific to the affected scope in this Redshift data set.
-    public struct RedshiftDataShareDetails {
+    public struct RedshiftDataShareDetails: Swift.Sendable {
         /// The ARN of the underlying Redshift data share that is being affected by this notification.
         /// This member is required.
         public var arn: Swift.String?
@@ -3783,12 +4481,12 @@ extension DataExchangeClientTypes {
             self.view = view
         }
     }
-
 }
 
 extension DataExchangeClientTypes {
+
     /// Extra details specific to the affected scope in this S3 Data Access data set.
-    public struct S3DataAccessDetails {
+    public struct S3DataAccessDetails: Swift.Sendable {
         /// A list of the key prefixes affected by this notification. This can have up to 50 entries.
         public var keyPrefixes: [Swift.String]?
         /// A list of the keys affected by this notification. This can have up to 50 entries.
@@ -3803,12 +4501,12 @@ extension DataExchangeClientTypes {
             self.keys = keys
         }
     }
-
 }
 
 extension DataExchangeClientTypes {
+
     /// Details about the scope of the notifications such as the affected resources.
-    public struct ScopeDetails {
+    public struct ScopeDetails: Swift.Sendable {
         /// Underlying LF resources that will be affected by this notification.
         public var lakeFormationTagPolicies: [DataExchangeClientTypes.LakeFormationTagPolicyDetails]?
         /// Underlying Redshift resources that will be affected by this notification.
@@ -3827,12 +4525,11 @@ extension DataExchangeClientTypes {
             self.s3DataAccesses = s3DataAccesses
         }
     }
-
 }
 
 extension DataExchangeClientTypes {
 
-    public enum NotificationType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum NotificationType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case dataDelay
         case dataUpdate
         case deprecation
@@ -3865,7 +4562,7 @@ extension DataExchangeClientTypes {
     }
 }
 
-public struct SendDataSetNotificationInput {
+public struct SendDataSetNotificationInput: Swift.Sendable {
     /// Idempotency key for the notification, this key allows us to deduplicate notifications that are sent in quick succession erroneously.
     public var clientToken: Swift.String?
     /// Free-form text field for providers to add information about their notifications.
@@ -3899,12 +4596,12 @@ public struct SendDataSetNotificationInput {
     }
 }
 
-public struct SendDataSetNotificationOutput {
+public struct SendDataSetNotificationOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct StartJobInput {
+public struct StartJobInput: Swift.Sendable {
     /// The unique identifier for a job.
     /// This member is required.
     public var jobId: Swift.String?
@@ -3917,12 +4614,12 @@ public struct StartJobInput {
     }
 }
 
-public struct StartJobOutput {
+public struct StartJobOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct TagResourceInput {
+public struct TagResourceInput: Swift.Sendable {
     /// An Amazon Resource Name (ARN) that uniquely identifies an AWS resource.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -3940,7 +4637,7 @@ public struct TagResourceInput {
     }
 }
 
-public struct UntagResourceInput {
+public struct UntagResourceInput: Swift.Sendable {
     /// An Amazon Resource Name (ARN) that uniquely identifies an AWS resource.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -3958,7 +4655,7 @@ public struct UntagResourceInput {
     }
 }
 
-public struct UpdateAssetInput {
+public struct UpdateAssetInput: Swift.Sendable {
     /// The unique identifier for an asset.
     /// This member is required.
     public var assetId: Swift.String?
@@ -3986,7 +4683,7 @@ public struct UpdateAssetInput {
     }
 }
 
-public struct UpdateAssetOutput {
+public struct UpdateAssetOutput: Swift.Sendable {
     /// The ARN for the asset.
     public var arn: Swift.String?
     /// Details about the asset.
@@ -4034,7 +4731,7 @@ public struct UpdateAssetOutput {
     }
 }
 
-public struct UpdateDataSetInput {
+public struct UpdateDataSetInput: Swift.Sendable {
     /// The unique identifier for a data set.
     /// This member is required.
     public var dataSetId: Swift.String?
@@ -4055,7 +4752,7 @@ public struct UpdateDataSetInput {
     }
 }
 
-public struct UpdateDataSetOutput {
+public struct UpdateDataSetOutput: Swift.Sendable {
     /// The ARN for the data set.
     public var arn: Swift.String?
     /// The type of asset that is added to a data set.
@@ -4103,7 +4800,7 @@ public struct UpdateDataSetOutput {
     }
 }
 
-public struct UpdateEventActionInput {
+public struct UpdateEventActionInput: Swift.Sendable {
     /// What occurs after a certain event.
     public var action: DataExchangeClientTypes.Action?
     /// The unique identifier for the event action.
@@ -4120,7 +4817,7 @@ public struct UpdateEventActionInput {
     }
 }
 
-public struct UpdateEventActionOutput {
+public struct UpdateEventActionOutput: Swift.Sendable {
     /// What occurs after a certain event.
     public var action: DataExchangeClientTypes.Action?
     /// The ARN for the event action.
@@ -4152,7 +4849,7 @@ public struct UpdateEventActionOutput {
     }
 }
 
-public struct UpdateRevisionInput {
+public struct UpdateRevisionInput: Swift.Sendable {
     /// An optional comment about the revision.
     public var comment: Swift.String?
     /// The unique identifier for a data set.
@@ -4178,7 +4875,7 @@ public struct UpdateRevisionInput {
     }
 }
 
-public struct UpdateRevisionOutput {
+public struct UpdateRevisionOutput: Swift.Sendable {
     /// The ARN for the revision.
     public var arn: Swift.String?
     /// An optional comment about the revision.
@@ -4230,6 +4927,16 @@ public struct UpdateRevisionOutput {
     }
 }
 
+extension AcceptDataGrantInput {
+
+    static func urlPathProvider(_ value: AcceptDataGrantInput) -> Swift.String? {
+        guard let dataGrantArn = value.dataGrantArn else {
+            return nil
+        }
+        return "/v1/data-grants/\(dataGrantArn.urlPercentEncoding())/accept"
+    }
+}
+
 extension CancelJobInput {
 
     static func urlPathProvider(_ value: CancelJobInput) -> Swift.String? {
@@ -4237,6 +4944,13 @@ extension CancelJobInput {
             return nil
         }
         return "/v1/jobs/\(jobId.urlPercentEncoding())"
+    }
+}
+
+extension CreateDataGrantInput {
+
+    static func urlPathProvider(_ value: CreateDataGrantInput) -> Swift.String? {
+        return "/v1/data-grants"
     }
 }
 
@@ -4284,6 +4998,16 @@ extension DeleteAssetInput {
             return nil
         }
         return "/v1/data-sets/\(dataSetId.urlPercentEncoding())/revisions/\(revisionId.urlPercentEncoding())/assets/\(assetId.urlPercentEncoding())"
+    }
+}
+
+extension DeleteDataGrantInput {
+
+    static func urlPathProvider(_ value: DeleteDataGrantInput) -> Swift.String? {
+        guard let dataGrantId = value.dataGrantId else {
+            return nil
+        }
+        return "/v1/data-grants/\(dataGrantId.urlPercentEncoding())"
     }
 }
 
@@ -4336,6 +5060,16 @@ extension GetAssetInput {
     }
 }
 
+extension GetDataGrantInput {
+
+    static func urlPathProvider(_ value: GetDataGrantInput) -> Swift.String? {
+        guard let dataGrantId = value.dataGrantId else {
+            return nil
+        }
+        return "/v1/data-grants/\(dataGrantId.urlPercentEncoding())"
+    }
+}
+
 extension GetDataSetInput {
 
     static func urlPathProvider(_ value: GetDataSetInput) -> Swift.String? {
@@ -4366,6 +5100,16 @@ extension GetJobInput {
     }
 }
 
+extension GetReceivedDataGrantInput {
+
+    static func urlPathProvider(_ value: GetReceivedDataGrantInput) -> Swift.String? {
+        guard let dataGrantArn = value.dataGrantArn else {
+            return nil
+        }
+        return "/v1/received-data-grants/\(dataGrantArn.urlPercentEncoding())"
+    }
+}
+
 extension GetRevisionInput {
 
     static func urlPathProvider(_ value: GetRevisionInput) -> Swift.String? {
@@ -4376,6 +5120,29 @@ extension GetRevisionInput {
             return nil
         }
         return "/v1/data-sets/\(dataSetId.urlPercentEncoding())/revisions/\(revisionId.urlPercentEncoding())"
+    }
+}
+
+extension ListDataGrantsInput {
+
+    static func urlPathProvider(_ value: ListDataGrantsInput) -> Swift.String? {
+        return "/v1/data-grants"
+    }
+}
+
+extension ListDataGrantsInput {
+
+    static func queryItemProvider(_ value: ListDataGrantsInput) throws -> [Smithy.URIQueryItem] {
+        var items = [Smithy.URIQueryItem]()
+        if let nextToken = value.nextToken {
+            let nextTokenQueryItem = Smithy.URIQueryItem(name: "nextToken".urlPercentEncoding(), value: Swift.String(nextToken).urlPercentEncoding())
+            items.append(nextTokenQueryItem)
+        }
+        if let maxResults = value.maxResults {
+            let maxResultsQueryItem = Smithy.URIQueryItem(name: "maxResults".urlPercentEncoding(), value: Swift.String(maxResults).urlPercentEncoding())
+            items.append(maxResultsQueryItem)
+        }
+        return items
     }
 }
 
@@ -4485,6 +5252,35 @@ extension ListJobsInput {
         if let revisionId = value.revisionId {
             let revisionIdQueryItem = Smithy.URIQueryItem(name: "revisionId".urlPercentEncoding(), value: Swift.String(revisionId).urlPercentEncoding())
             items.append(revisionIdQueryItem)
+        }
+        return items
+    }
+}
+
+extension ListReceivedDataGrantsInput {
+
+    static func urlPathProvider(_ value: ListReceivedDataGrantsInput) -> Swift.String? {
+        return "/v1/received-data-grants"
+    }
+}
+
+extension ListReceivedDataGrantsInput {
+
+    static func queryItemProvider(_ value: ListReceivedDataGrantsInput) throws -> [Smithy.URIQueryItem] {
+        var items = [Smithy.URIQueryItem]()
+        if let acceptanceState = value.acceptanceState {
+            acceptanceState.forEach { queryItemValue in
+                let queryItem = Smithy.URIQueryItem(name: "acceptanceState".urlPercentEncoding(), value: Swift.String(queryItemValue.rawValue).urlPercentEncoding())
+                items.append(queryItem)
+            }
+        }
+        if let nextToken = value.nextToken {
+            let nextTokenQueryItem = Smithy.URIQueryItem(name: "nextToken".urlPercentEncoding(), value: Swift.String(nextToken).urlPercentEncoding())
+            items.append(nextTokenQueryItem)
+        }
+        if let maxResults = value.maxResults {
+            let maxResultsQueryItem = Smithy.URIQueryItem(name: "maxResults".urlPercentEncoding(), value: Swift.String(maxResults).urlPercentEncoding())
+            items.append(maxResultsQueryItem)
         }
         return items
     }
@@ -4699,6 +5495,20 @@ extension UpdateRevisionInput {
     }
 }
 
+extension CreateDataGrantInput {
+
+    static func write(value: CreateDataGrantInput?, to writer: SmithyJSON.Writer) throws {
+        guard let value else { return }
+        try writer["Description"].write(value.description)
+        try writer["EndsAt"].writeTimestamp(value.endsAt, format: SmithyTimestamps.TimestampFormat.dateTime)
+        try writer["GrantDistributionScope"].write(value.grantDistributionScope)
+        try writer["Name"].write(value.name)
+        try writer["ReceiverPrincipal"].write(value.receiverPrincipal)
+        try writer["SourceDataSetId"].write(value.sourceDataSetId)
+        try writer["Tags"].writeMap(value.tags, valueWritingClosure: SmithyReadWrite.WritingClosures.writeString(value:to:), keyNodeInfo: "key", valueNodeInfo: "value", isFlattened: false)
+    }
+}
+
 extension CreateDataSetInput {
 
     static func write(value: CreateDataSetInput?, to writer: SmithyJSON.Writer) throws {
@@ -4807,10 +5617,60 @@ extension UpdateRevisionInput {
     }
 }
 
+extension AcceptDataGrantOutput {
+
+    static func httpOutput(from httpResponse: SmithyHTTPAPI.HTTPResponse) async throws -> AcceptDataGrantOutput {
+        let data = try await httpResponse.data()
+        let responseReader = try SmithyJSON.Reader.from(data: data)
+        let reader = responseReader
+        var value = AcceptDataGrantOutput()
+        value.acceptanceState = try reader["AcceptanceState"].readIfPresent() ?? .sdkUnknown("")
+        value.acceptedAt = try reader["AcceptedAt"].readTimestampIfPresent(format: SmithyTimestamps.TimestampFormat.dateTime)
+        value.arn = try reader["Arn"].readIfPresent() ?? ""
+        value.createdAt = try reader["CreatedAt"].readTimestampIfPresent(format: SmithyTimestamps.TimestampFormat.dateTime) ?? SmithyTimestamps.TimestampFormatter(format: .dateTime).date(from: "1970-01-01T00:00:00Z")
+        value.dataSetId = try reader["DataSetId"].readIfPresent() ?? ""
+        value.description = try reader["Description"].readIfPresent()
+        value.endsAt = try reader["EndsAt"].readTimestampIfPresent(format: SmithyTimestamps.TimestampFormat.dateTime)
+        value.grantDistributionScope = try reader["GrantDistributionScope"].readIfPresent() ?? .sdkUnknown("")
+        value.id = try reader["Id"].readIfPresent() ?? ""
+        value.name = try reader["Name"].readIfPresent() ?? ""
+        value.receiverPrincipal = try reader["ReceiverPrincipal"].readIfPresent() ?? ""
+        value.senderPrincipal = try reader["SenderPrincipal"].readIfPresent()
+        value.updatedAt = try reader["UpdatedAt"].readTimestampIfPresent(format: SmithyTimestamps.TimestampFormat.dateTime) ?? SmithyTimestamps.TimestampFormatter(format: .dateTime).date(from: "1970-01-01T00:00:00Z")
+        return value
+    }
+}
+
 extension CancelJobOutput {
 
     static func httpOutput(from httpResponse: SmithyHTTPAPI.HTTPResponse) async throws -> CancelJobOutput {
         return CancelJobOutput()
+    }
+}
+
+extension CreateDataGrantOutput {
+
+    static func httpOutput(from httpResponse: SmithyHTTPAPI.HTTPResponse) async throws -> CreateDataGrantOutput {
+        let data = try await httpResponse.data()
+        let responseReader = try SmithyJSON.Reader.from(data: data)
+        let reader = responseReader
+        var value = CreateDataGrantOutput()
+        value.acceptanceState = try reader["AcceptanceState"].readIfPresent() ?? .sdkUnknown("")
+        value.acceptedAt = try reader["AcceptedAt"].readTimestampIfPresent(format: SmithyTimestamps.TimestampFormat.dateTime)
+        value.arn = try reader["Arn"].readIfPresent() ?? ""
+        value.createdAt = try reader["CreatedAt"].readTimestampIfPresent(format: SmithyTimestamps.TimestampFormat.dateTime) ?? SmithyTimestamps.TimestampFormatter(format: .dateTime).date(from: "1970-01-01T00:00:00Z")
+        value.dataSetId = try reader["DataSetId"].readIfPresent() ?? ""
+        value.description = try reader["Description"].readIfPresent()
+        value.endsAt = try reader["EndsAt"].readTimestampIfPresent(format: SmithyTimestamps.TimestampFormat.dateTime)
+        value.grantDistributionScope = try reader["GrantDistributionScope"].readIfPresent() ?? .sdkUnknown("")
+        value.id = try reader["Id"].readIfPresent() ?? ""
+        value.name = try reader["Name"].readIfPresent() ?? ""
+        value.receiverPrincipal = try reader["ReceiverPrincipal"].readIfPresent() ?? ""
+        value.senderPrincipal = try reader["SenderPrincipal"].readIfPresent() ?? ""
+        value.sourceDataSetId = try reader["SourceDataSetId"].readIfPresent() ?? ""
+        value.tags = try reader["Tags"].readMapIfPresent(valueReadingClosure: SmithyReadWrite.ReadingClosures.readString(from:), keyNodeInfo: "key", valueNodeInfo: "value", isFlattened: false)
+        value.updatedAt = try reader["UpdatedAt"].readTimestampIfPresent(format: SmithyTimestamps.TimestampFormat.dateTime) ?? SmithyTimestamps.TimestampFormatter(format: .dateTime).date(from: "1970-01-01T00:00:00Z")
+        return value
     }
 }
 
@@ -4902,6 +5762,13 @@ extension DeleteAssetOutput {
     }
 }
 
+extension DeleteDataGrantOutput {
+
+    static func httpOutput(from httpResponse: SmithyHTTPAPI.HTTPResponse) async throws -> DeleteDataGrantOutput {
+        return DeleteDataGrantOutput()
+    }
+}
+
 extension DeleteDataSetOutput {
 
     static func httpOutput(from httpResponse: SmithyHTTPAPI.HTTPResponse) async throws -> DeleteDataSetOutput {
@@ -4940,6 +5807,32 @@ extension GetAssetOutput {
         value.revisionId = try reader["RevisionId"].readIfPresent()
         value.sourceId = try reader["SourceId"].readIfPresent()
         value.updatedAt = try reader["UpdatedAt"].readTimestampIfPresent(format: SmithyTimestamps.TimestampFormat.dateTime)
+        return value
+    }
+}
+
+extension GetDataGrantOutput {
+
+    static func httpOutput(from httpResponse: SmithyHTTPAPI.HTTPResponse) async throws -> GetDataGrantOutput {
+        let data = try await httpResponse.data()
+        let responseReader = try SmithyJSON.Reader.from(data: data)
+        let reader = responseReader
+        var value = GetDataGrantOutput()
+        value.acceptanceState = try reader["AcceptanceState"].readIfPresent() ?? .sdkUnknown("")
+        value.acceptedAt = try reader["AcceptedAt"].readTimestampIfPresent(format: SmithyTimestamps.TimestampFormat.dateTime)
+        value.arn = try reader["Arn"].readIfPresent() ?? ""
+        value.createdAt = try reader["CreatedAt"].readTimestampIfPresent(format: SmithyTimestamps.TimestampFormat.dateTime) ?? SmithyTimestamps.TimestampFormatter(format: .dateTime).date(from: "1970-01-01T00:00:00Z")
+        value.dataSetId = try reader["DataSetId"].readIfPresent() ?? ""
+        value.description = try reader["Description"].readIfPresent()
+        value.endsAt = try reader["EndsAt"].readTimestampIfPresent(format: SmithyTimestamps.TimestampFormat.dateTime)
+        value.grantDistributionScope = try reader["GrantDistributionScope"].readIfPresent() ?? .sdkUnknown("")
+        value.id = try reader["Id"].readIfPresent() ?? ""
+        value.name = try reader["Name"].readIfPresent() ?? ""
+        value.receiverPrincipal = try reader["ReceiverPrincipal"].readIfPresent() ?? ""
+        value.senderPrincipal = try reader["SenderPrincipal"].readIfPresent() ?? ""
+        value.sourceDataSetId = try reader["SourceDataSetId"].readIfPresent() ?? ""
+        value.tags = try reader["Tags"].readMapIfPresent(valueReadingClosure: SmithyReadWrite.ReadingClosures.readString(from:), keyNodeInfo: "key", valueNodeInfo: "value", isFlattened: false)
+        value.updatedAt = try reader["UpdatedAt"].readTimestampIfPresent(format: SmithyTimestamps.TimestampFormat.dateTime) ?? SmithyTimestamps.TimestampFormatter(format: .dateTime).date(from: "1970-01-01T00:00:00Z")
         return value
     }
 }
@@ -5002,6 +5895,30 @@ extension GetJobOutput {
     }
 }
 
+extension GetReceivedDataGrantOutput {
+
+    static func httpOutput(from httpResponse: SmithyHTTPAPI.HTTPResponse) async throws -> GetReceivedDataGrantOutput {
+        let data = try await httpResponse.data()
+        let responseReader = try SmithyJSON.Reader.from(data: data)
+        let reader = responseReader
+        var value = GetReceivedDataGrantOutput()
+        value.acceptanceState = try reader["AcceptanceState"].readIfPresent() ?? .sdkUnknown("")
+        value.acceptedAt = try reader["AcceptedAt"].readTimestampIfPresent(format: SmithyTimestamps.TimestampFormat.dateTime)
+        value.arn = try reader["Arn"].readIfPresent() ?? ""
+        value.createdAt = try reader["CreatedAt"].readTimestampIfPresent(format: SmithyTimestamps.TimestampFormat.dateTime) ?? SmithyTimestamps.TimestampFormatter(format: .dateTime).date(from: "1970-01-01T00:00:00Z")
+        value.dataSetId = try reader["DataSetId"].readIfPresent() ?? ""
+        value.description = try reader["Description"].readIfPresent()
+        value.endsAt = try reader["EndsAt"].readTimestampIfPresent(format: SmithyTimestamps.TimestampFormat.dateTime)
+        value.grantDistributionScope = try reader["GrantDistributionScope"].readIfPresent() ?? .sdkUnknown("")
+        value.id = try reader["Id"].readIfPresent() ?? ""
+        value.name = try reader["Name"].readIfPresent() ?? ""
+        value.receiverPrincipal = try reader["ReceiverPrincipal"].readIfPresent() ?? ""
+        value.senderPrincipal = try reader["SenderPrincipal"].readIfPresent()
+        value.updatedAt = try reader["UpdatedAt"].readTimestampIfPresent(format: SmithyTimestamps.TimestampFormat.dateTime) ?? SmithyTimestamps.TimestampFormatter(format: .dateTime).date(from: "1970-01-01T00:00:00Z")
+        return value
+    }
+}
+
 extension GetRevisionOutput {
 
     static func httpOutput(from httpResponse: SmithyHTTPAPI.HTTPResponse) async throws -> GetRevisionOutput {
@@ -5021,6 +5938,19 @@ extension GetRevisionOutput {
         value.sourceId = try reader["SourceId"].readIfPresent()
         value.tags = try reader["Tags"].readMapIfPresent(valueReadingClosure: SmithyReadWrite.ReadingClosures.readString(from:), keyNodeInfo: "key", valueNodeInfo: "value", isFlattened: false)
         value.updatedAt = try reader["UpdatedAt"].readTimestampIfPresent(format: SmithyTimestamps.TimestampFormat.dateTime)
+        return value
+    }
+}
+
+extension ListDataGrantsOutput {
+
+    static func httpOutput(from httpResponse: SmithyHTTPAPI.HTTPResponse) async throws -> ListDataGrantsOutput {
+        let data = try await httpResponse.data()
+        let responseReader = try SmithyJSON.Reader.from(data: data)
+        let reader = responseReader
+        var value = ListDataGrantsOutput()
+        value.dataGrantSummaries = try reader["DataGrantSummaries"].readListIfPresent(memberReadingClosure: DataExchangeClientTypes.DataGrantSummaryEntry.read(from:), memberNodeInfo: "member", isFlattened: false)
+        value.nextToken = try reader["NextToken"].readIfPresent()
         return value
     }
 }
@@ -5072,6 +6002,19 @@ extension ListJobsOutput {
         let reader = responseReader
         var value = ListJobsOutput()
         value.jobs = try reader["Jobs"].readListIfPresent(memberReadingClosure: DataExchangeClientTypes.JobEntry.read(from:), memberNodeInfo: "member", isFlattened: false)
+        value.nextToken = try reader["NextToken"].readIfPresent()
+        return value
+    }
+}
+
+extension ListReceivedDataGrantsOutput {
+
+    static func httpOutput(from httpResponse: SmithyHTTPAPI.HTTPResponse) async throws -> ListReceivedDataGrantsOutput {
+        let data = try await httpResponse.data()
+        let responseReader = try SmithyJSON.Reader.from(data: data)
+        let reader = responseReader
+        var value = ListReceivedDataGrantsOutput()
+        value.dataGrantSummaries = try reader["DataGrantSummaries"].readListIfPresent(memberReadingClosure: DataExchangeClientTypes.ReceivedDataGrantSummariesEntry.read(from:), memberNodeInfo: "member", isFlattened: false)
         value.nextToken = try reader["NextToken"].readIfPresent()
         return value
     }
@@ -5255,6 +6198,25 @@ extension UpdateRevisionOutput {
     }
 }
 
+enum AcceptDataGrantOutputError {
+
+    static func httpError(from httpResponse: SmithyHTTPAPI.HTTPResponse) async throws -> Swift.Error {
+        let data = try await httpResponse.data()
+        let responseReader = try SmithyJSON.Reader.from(data: data)
+        let baseError = try AWSClientRuntime.RestJSONError(httpResponse: httpResponse, responseReader: responseReader, noErrorWrapping: false)
+        if let error = baseError.customError() { return error }
+        switch baseError.code {
+            case "AccessDeniedException": return try AccessDeniedException.makeError(baseError: baseError)
+            case "ConflictException": return try ConflictException.makeError(baseError: baseError)
+            case "InternalServerException": return try InternalServerException.makeError(baseError: baseError)
+            case "ResourceNotFoundException": return try ResourceNotFoundException.makeError(baseError: baseError)
+            case "ThrottlingException": return try ThrottlingException.makeError(baseError: baseError)
+            case "ValidationException": return try ValidationException.makeError(baseError: baseError)
+            default: return try AWSClientRuntime.UnknownAWSHTTPServiceError.makeError(baseError: baseError)
+        }
+    }
+}
+
 enum CancelJobOutputError {
 
     static func httpError(from httpResponse: SmithyHTTPAPI.HTTPResponse) async throws -> Swift.Error {
@@ -5266,6 +6228,25 @@ enum CancelJobOutputError {
             case "ConflictException": return try ConflictException.makeError(baseError: baseError)
             case "InternalServerException": return try InternalServerException.makeError(baseError: baseError)
             case "ResourceNotFoundException": return try ResourceNotFoundException.makeError(baseError: baseError)
+            case "ThrottlingException": return try ThrottlingException.makeError(baseError: baseError)
+            case "ValidationException": return try ValidationException.makeError(baseError: baseError)
+            default: return try AWSClientRuntime.UnknownAWSHTTPServiceError.makeError(baseError: baseError)
+        }
+    }
+}
+
+enum CreateDataGrantOutputError {
+
+    static func httpError(from httpResponse: SmithyHTTPAPI.HTTPResponse) async throws -> Swift.Error {
+        let data = try await httpResponse.data()
+        let responseReader = try SmithyJSON.Reader.from(data: data)
+        let baseError = try AWSClientRuntime.RestJSONError(httpResponse: httpResponse, responseReader: responseReader, noErrorWrapping: false)
+        if let error = baseError.customError() { return error }
+        switch baseError.code {
+            case "AccessDeniedException": return try AccessDeniedException.makeError(baseError: baseError)
+            case "InternalServerException": return try InternalServerException.makeError(baseError: baseError)
+            case "ResourceNotFoundException": return try ResourceNotFoundException.makeError(baseError: baseError)
+            case "ServiceLimitExceededException": return try ServiceLimitExceededException.makeError(baseError: baseError)
             case "ThrottlingException": return try ThrottlingException.makeError(baseError: baseError)
             case "ValidationException": return try ValidationException.makeError(baseError: baseError)
             default: return try AWSClientRuntime.UnknownAWSHTTPServiceError.makeError(baseError: baseError)
@@ -5365,6 +6346,24 @@ enum DeleteAssetOutputError {
     }
 }
 
+enum DeleteDataGrantOutputError {
+
+    static func httpError(from httpResponse: SmithyHTTPAPI.HTTPResponse) async throws -> Swift.Error {
+        let data = try await httpResponse.data()
+        let responseReader = try SmithyJSON.Reader.from(data: data)
+        let baseError = try AWSClientRuntime.RestJSONError(httpResponse: httpResponse, responseReader: responseReader, noErrorWrapping: false)
+        if let error = baseError.customError() { return error }
+        switch baseError.code {
+            case "AccessDeniedException": return try AccessDeniedException.makeError(baseError: baseError)
+            case "InternalServerException": return try InternalServerException.makeError(baseError: baseError)
+            case "ResourceNotFoundException": return try ResourceNotFoundException.makeError(baseError: baseError)
+            case "ThrottlingException": return try ThrottlingException.makeError(baseError: baseError)
+            case "ValidationException": return try ValidationException.makeError(baseError: baseError)
+            default: return try AWSClientRuntime.UnknownAWSHTTPServiceError.makeError(baseError: baseError)
+        }
+    }
+}
+
 enum DeleteDataSetOutputError {
 
     static func httpError(from httpResponse: SmithyHTTPAPI.HTTPResponse) async throws -> Swift.Error {
@@ -5437,6 +6436,24 @@ enum GetAssetOutputError {
     }
 }
 
+enum GetDataGrantOutputError {
+
+    static func httpError(from httpResponse: SmithyHTTPAPI.HTTPResponse) async throws -> Swift.Error {
+        let data = try await httpResponse.data()
+        let responseReader = try SmithyJSON.Reader.from(data: data)
+        let baseError = try AWSClientRuntime.RestJSONError(httpResponse: httpResponse, responseReader: responseReader, noErrorWrapping: false)
+        if let error = baseError.customError() { return error }
+        switch baseError.code {
+            case "AccessDeniedException": return try AccessDeniedException.makeError(baseError: baseError)
+            case "InternalServerException": return try InternalServerException.makeError(baseError: baseError)
+            case "ResourceNotFoundException": return try ResourceNotFoundException.makeError(baseError: baseError)
+            case "ThrottlingException": return try ThrottlingException.makeError(baseError: baseError)
+            case "ValidationException": return try ValidationException.makeError(baseError: baseError)
+            default: return try AWSClientRuntime.UnknownAWSHTTPServiceError.makeError(baseError: baseError)
+        }
+    }
+}
+
 enum GetDataSetOutputError {
 
     static func httpError(from httpResponse: SmithyHTTPAPI.HTTPResponse) async throws -> Swift.Error {
@@ -5488,6 +6505,24 @@ enum GetJobOutputError {
     }
 }
 
+enum GetReceivedDataGrantOutputError {
+
+    static func httpError(from httpResponse: SmithyHTTPAPI.HTTPResponse) async throws -> Swift.Error {
+        let data = try await httpResponse.data()
+        let responseReader = try SmithyJSON.Reader.from(data: data)
+        let baseError = try AWSClientRuntime.RestJSONError(httpResponse: httpResponse, responseReader: responseReader, noErrorWrapping: false)
+        if let error = baseError.customError() { return error }
+        switch baseError.code {
+            case "AccessDeniedException": return try AccessDeniedException.makeError(baseError: baseError)
+            case "InternalServerException": return try InternalServerException.makeError(baseError: baseError)
+            case "ResourceNotFoundException": return try ResourceNotFoundException.makeError(baseError: baseError)
+            case "ThrottlingException": return try ThrottlingException.makeError(baseError: baseError)
+            case "ValidationException": return try ValidationException.makeError(baseError: baseError)
+            default: return try AWSClientRuntime.UnknownAWSHTTPServiceError.makeError(baseError: baseError)
+        }
+    }
+}
+
 enum GetRevisionOutputError {
 
     static func httpError(from httpResponse: SmithyHTTPAPI.HTTPResponse) async throws -> Swift.Error {
@@ -5496,6 +6531,24 @@ enum GetRevisionOutputError {
         let baseError = try AWSClientRuntime.RestJSONError(httpResponse: httpResponse, responseReader: responseReader, noErrorWrapping: false)
         if let error = baseError.customError() { return error }
         switch baseError.code {
+            case "InternalServerException": return try InternalServerException.makeError(baseError: baseError)
+            case "ResourceNotFoundException": return try ResourceNotFoundException.makeError(baseError: baseError)
+            case "ThrottlingException": return try ThrottlingException.makeError(baseError: baseError)
+            case "ValidationException": return try ValidationException.makeError(baseError: baseError)
+            default: return try AWSClientRuntime.UnknownAWSHTTPServiceError.makeError(baseError: baseError)
+        }
+    }
+}
+
+enum ListDataGrantsOutputError {
+
+    static func httpError(from httpResponse: SmithyHTTPAPI.HTTPResponse) async throws -> Swift.Error {
+        let data = try await httpResponse.data()
+        let responseReader = try SmithyJSON.Reader.from(data: data)
+        let baseError = try AWSClientRuntime.RestJSONError(httpResponse: httpResponse, responseReader: responseReader, noErrorWrapping: false)
+        if let error = baseError.customError() { return error }
+        switch baseError.code {
+            case "AccessDeniedException": return try AccessDeniedException.makeError(baseError: baseError)
             case "InternalServerException": return try InternalServerException.makeError(baseError: baseError)
             case "ResourceNotFoundException": return try ResourceNotFoundException.makeError(baseError: baseError)
             case "ThrottlingException": return try ThrottlingException.makeError(baseError: baseError)
@@ -5564,6 +6617,24 @@ enum ListJobsOutputError {
         let baseError = try AWSClientRuntime.RestJSONError(httpResponse: httpResponse, responseReader: responseReader, noErrorWrapping: false)
         if let error = baseError.customError() { return error }
         switch baseError.code {
+            case "InternalServerException": return try InternalServerException.makeError(baseError: baseError)
+            case "ResourceNotFoundException": return try ResourceNotFoundException.makeError(baseError: baseError)
+            case "ThrottlingException": return try ThrottlingException.makeError(baseError: baseError)
+            case "ValidationException": return try ValidationException.makeError(baseError: baseError)
+            default: return try AWSClientRuntime.UnknownAWSHTTPServiceError.makeError(baseError: baseError)
+        }
+    }
+}
+
+enum ListReceivedDataGrantsOutputError {
+
+    static func httpError(from httpResponse: SmithyHTTPAPI.HTTPResponse) async throws -> Swift.Error {
+        let data = try await httpResponse.data()
+        let responseReader = try SmithyJSON.Reader.from(data: data)
+        let baseError = try AWSClientRuntime.RestJSONError(httpResponse: httpResponse, responseReader: responseReader, noErrorWrapping: false)
+        if let error = baseError.customError() { return error }
+        switch baseError.code {
+            case "AccessDeniedException": return try AccessDeniedException.makeError(baseError: baseError)
             case "InternalServerException": return try InternalServerException.makeError(baseError: baseError)
             case "ResourceNotFoundException": return try ResourceNotFoundException.makeError(baseError: baseError)
             case "ThrottlingException": return try ThrottlingException.makeError(baseError: baseError)
@@ -5793,6 +6864,19 @@ extension ResourceNotFoundException {
     }
 }
 
+extension AccessDeniedException {
+
+    static func makeError(baseError: AWSClientRuntime.RestJSONError) throws -> AccessDeniedException {
+        let reader = baseError.errorBodyReader
+        var value = AccessDeniedException()
+        value.properties.message = try reader["Message"].readIfPresent() ?? ""
+        value.httpResponse = baseError.httpResponse
+        value.requestID = baseError.requestID
+        value.message = baseError.message
+        return value
+    }
+}
+
 extension ThrottlingException {
 
     static func makeError(baseError: AWSClientRuntime.RestJSONError) throws -> ThrottlingException {
@@ -5848,19 +6932,6 @@ extension ConflictException {
     }
 }
 
-extension AccessDeniedException {
-
-    static func makeError(baseError: AWSClientRuntime.RestJSONError) throws -> AccessDeniedException {
-        let reader = baseError.errorBodyReader
-        var value = AccessDeniedException()
-        value.properties.message = try reader["Message"].readIfPresent() ?? ""
-        value.httpResponse = baseError.httpResponse
-        value.requestID = baseError.requestID
-        value.message = baseError.message
-        return value
-    }
-}
-
 extension ServiceLimitExceededException {
 
     static func makeError(baseError: AWSClientRuntime.RestJSONError) throws -> ServiceLimitExceededException {
@@ -5882,6 +6953,7 @@ extension DataExchangeClientTypes.OriginDetails {
         guard reader.hasContent else { throw SmithyReadWrite.ReaderError.requiredValueNotPresent }
         var value = DataExchangeClientTypes.OriginDetails()
         value.productId = try reader["ProductId"].readIfPresent()
+        value.dataGrantId = try reader["DataGrantId"].readIfPresent()
         return value
     }
 }
@@ -6453,6 +7525,27 @@ extension DataExchangeClientTypes.S3SnapshotAsset {
     }
 }
 
+extension DataExchangeClientTypes.DataGrantSummaryEntry {
+
+    static func read(from reader: SmithyJSON.Reader) throws -> DataExchangeClientTypes.DataGrantSummaryEntry {
+        guard reader.hasContent else { throw SmithyReadWrite.ReaderError.requiredValueNotPresent }
+        var value = DataExchangeClientTypes.DataGrantSummaryEntry()
+        value.name = try reader["Name"].readIfPresent() ?? ""
+        value.senderPrincipal = try reader["SenderPrincipal"].readIfPresent() ?? ""
+        value.receiverPrincipal = try reader["ReceiverPrincipal"].readIfPresent() ?? ""
+        value.acceptanceState = try reader["AcceptanceState"].readIfPresent() ?? .sdkUnknown("")
+        value.acceptedAt = try reader["AcceptedAt"].readTimestampIfPresent(format: SmithyTimestamps.TimestampFormat.dateTime)
+        value.endsAt = try reader["EndsAt"].readTimestampIfPresent(format: SmithyTimestamps.TimestampFormat.dateTime)
+        value.dataSetId = try reader["DataSetId"].readIfPresent() ?? ""
+        value.sourceDataSetId = try reader["SourceDataSetId"].readIfPresent() ?? ""
+        value.id = try reader["Id"].readIfPresent() ?? ""
+        value.arn = try reader["Arn"].readIfPresent() ?? ""
+        value.createdAt = try reader["CreatedAt"].readTimestampIfPresent(format: SmithyTimestamps.TimestampFormat.dateTime) ?? SmithyTimestamps.TimestampFormatter(format: .dateTime).date(from: "1970-01-01T00:00:00Z")
+        value.updatedAt = try reader["UpdatedAt"].readTimestampIfPresent(format: SmithyTimestamps.TimestampFormat.dateTime) ?? SmithyTimestamps.TimestampFormatter(format: .dateTime).date(from: "1970-01-01T00:00:00Z")
+        return value
+    }
+}
+
 extension DataExchangeClientTypes.RevisionEntry {
 
     static func read(from reader: SmithyJSON.Reader) throws -> DataExchangeClientTypes.RevisionEntry {
@@ -6519,6 +7612,26 @@ extension DataExchangeClientTypes.JobEntry {
         value.id = try reader["Id"].readIfPresent() ?? ""
         value.state = try reader["State"].readIfPresent() ?? .sdkUnknown("")
         value.type = try reader["Type"].readIfPresent() ?? .sdkUnknown("")
+        value.updatedAt = try reader["UpdatedAt"].readTimestampIfPresent(format: SmithyTimestamps.TimestampFormat.dateTime) ?? SmithyTimestamps.TimestampFormatter(format: .dateTime).date(from: "1970-01-01T00:00:00Z")
+        return value
+    }
+}
+
+extension DataExchangeClientTypes.ReceivedDataGrantSummariesEntry {
+
+    static func read(from reader: SmithyJSON.Reader) throws -> DataExchangeClientTypes.ReceivedDataGrantSummariesEntry {
+        guard reader.hasContent else { throw SmithyReadWrite.ReaderError.requiredValueNotPresent }
+        var value = DataExchangeClientTypes.ReceivedDataGrantSummariesEntry()
+        value.name = try reader["Name"].readIfPresent() ?? ""
+        value.senderPrincipal = try reader["SenderPrincipal"].readIfPresent() ?? ""
+        value.receiverPrincipal = try reader["ReceiverPrincipal"].readIfPresent() ?? ""
+        value.acceptanceState = try reader["AcceptanceState"].readIfPresent() ?? .sdkUnknown("")
+        value.acceptedAt = try reader["AcceptedAt"].readTimestampIfPresent(format: SmithyTimestamps.TimestampFormat.dateTime)
+        value.endsAt = try reader["EndsAt"].readTimestampIfPresent(format: SmithyTimestamps.TimestampFormat.dateTime)
+        value.dataSetId = try reader["DataSetId"].readIfPresent() ?? ""
+        value.id = try reader["Id"].readIfPresent() ?? ""
+        value.arn = try reader["Arn"].readIfPresent() ?? ""
+        value.createdAt = try reader["CreatedAt"].readTimestampIfPresent(format: SmithyTimestamps.TimestampFormat.dateTime) ?? SmithyTimestamps.TimestampFormatter(format: .dateTime).date(from: "1970-01-01T00:00:00Z")
         value.updatedAt = try reader["UpdatedAt"].readTimestampIfPresent(format: SmithyTimestamps.TimestampFormat.dateTime) ?? SmithyTimestamps.TimestampFormatter(format: .dateTime).date(from: "1970-01-01T00:00:00Z")
         return value
     }

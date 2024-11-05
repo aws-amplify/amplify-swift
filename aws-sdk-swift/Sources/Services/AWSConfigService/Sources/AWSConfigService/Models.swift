@@ -28,109 +28,111 @@ import protocol ClientRuntime.ModeledError
 @_spi(SmithyReadWrite) import struct SmithyReadWrite.WritingClosureBox
 @_spi(SmithyTimestamps) import struct SmithyTimestamps.TimestampFormatter
 
-public struct DeleteAggregationAuthorizationOutput {
+
+public struct DeleteAggregationAuthorizationOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteConfigRuleOutput {
+public struct DeleteConfigRuleOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteConfigurationAggregatorOutput {
+public struct DeleteConfigurationAggregatorOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteConfigurationRecorderOutput {
+public struct DeleteConfigurationRecorderOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteConformancePackOutput {
+public struct DeleteConformancePackOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteDeliveryChannelOutput {
+public struct DeleteDeliveryChannelOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteOrganizationConfigRuleOutput {
+public struct DeleteOrganizationConfigRuleOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteOrganizationConformancePackOutput {
+public struct DeleteOrganizationConformancePackOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeletePendingAggregationRequestOutput {
+public struct DeletePendingAggregationRequestOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteResourceConfigOutput {
+public struct DeleteResourceConfigOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteRetentionConfigurationOutput {
+public struct DeleteRetentionConfigurationOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct GetComplianceSummaryByConfigRuleInput {
+public struct GetComplianceSummaryByConfigRuleInput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct PutConfigRuleOutput {
+public struct PutConfigRuleOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct PutConfigurationRecorderOutput {
+public struct PutConfigurationRecorderOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct PutDeliveryChannelOutput {
+public struct PutDeliveryChannelOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct PutResourceConfigOutput {
+public struct PutResourceConfigOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct StartConfigurationRecorderOutput {
+public struct StartConfigurationRecorderOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct StopConfigurationRecorderOutput {
+public struct StopConfigurationRecorderOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct TagResourceOutput {
+public struct TagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UntagResourceOutput {
+public struct UntagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
 extension ConfigClientTypes {
+
     /// A collection of accounts and regions.
-    public struct AccountAggregationSource {
+    public struct AccountAggregationSource: Swift.Sendable {
         /// The 12-digit account ID of the account being aggregated.
         /// This member is required.
         public var accountIds: [Swift.String]?
@@ -150,12 +152,12 @@ extension ConfigClientTypes {
             self.awsRegions = awsRegions
         }
     }
-
 }
 
 extension ConfigClientTypes {
+
     /// The number of Amazon Web Services resources or Config rules responsible for the current compliance of the item, up to a maximum number.
-    public struct ComplianceContributorCount {
+    public struct ComplianceContributorCount: Swift.Sendable {
         /// Indicates whether the maximum count is reached.
         public var capExceeded: Swift.Bool
         /// The number of Amazon Web Services resources or Config rules responsible for the current compliance of the item.
@@ -170,12 +172,11 @@ extension ConfigClientTypes {
             self.cappedCount = cappedCount
         }
     }
-
 }
 
 extension ConfigClientTypes {
 
-    public enum ComplianceType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ComplianceType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case compliant
         case insufficientData
         case nonCompliant
@@ -209,8 +210,9 @@ extension ConfigClientTypes {
 }
 
 extension ConfigClientTypes {
+
     /// Indicates whether an Amazon Web Services resource or Config rule is compliant and provides the number of contributors that affect the compliance.
-    public struct Compliance {
+    public struct Compliance: Swift.Sendable {
         /// The number of Amazon Web Services resources or Config rules that cause a result of NON_COMPLIANT, up to a maximum number.
         public var complianceContributorCount: ConfigClientTypes.ComplianceContributorCount?
         /// Indicates whether an Amazon Web Services resource or Config rule is compliant. A resource is compliant if it complies with all of the Config rules that evaluate it. A resource is noncompliant if it does not comply with one or more of these rules. A rule is compliant if all of the resources that the rule evaluates comply with it. A rule is noncompliant if any of these resources do not comply. Config returns the INSUFFICIENT_DATA value when no evaluation results are available for the Amazon Web Services resource or Config rule. For the Compliance data type, Config supports only COMPLIANT, NON_COMPLIANT, and INSUFFICIENT_DATA values. Config does not support the NOT_APPLICABLE value for the Compliance data type.
@@ -225,12 +227,12 @@ extension ConfigClientTypes {
             self.complianceType = complianceType
         }
     }
-
 }
 
 extension ConfigClientTypes {
+
     /// Indicates whether an Config rule is compliant based on account ID, region, compliance, and rule name. A rule is compliant if all of the resources that the rule evaluated comply with it. It is noncompliant if any of these resources do not comply.
-    public struct AggregateComplianceByConfigRule {
+    public struct AggregateComplianceByConfigRule: Swift.Sendable {
         /// The 12-digit account ID of the source account.
         public var accountId: Swift.String?
         /// The source region from where the data is aggregated.
@@ -253,12 +255,11 @@ extension ConfigClientTypes {
             self.configRuleName = configRuleName
         }
     }
-
 }
 
 extension ConfigClientTypes {
 
-    public enum ConformancePackComplianceType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ConformancePackComplianceType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case compliant
         case insufficientData
         case nonCompliant
@@ -289,8 +290,9 @@ extension ConfigClientTypes {
 }
 
 extension ConfigClientTypes {
+
     /// Provides the number of compliant and noncompliant rules within a conformance pack. Also provides the compliance status of the conformance pack and the total rule count which includes compliant rules, noncompliant rules, and rules that cannot be evaluated due to insufficient data. A conformance pack is compliant if all of the rules in a conformance packs are compliant. It is noncompliant if any of the rules are not compliant. The compliance status of a conformance pack is INSUFFICIENT_DATA only if all rules within a conformance pack cannot be evaluated due to insufficient data. If some of the rules in a conformance pack are compliant but the compliance status of other rules in that same conformance pack is INSUFFICIENT_DATA, the conformance pack shows compliant.
-    public struct AggregateConformancePackCompliance {
+    public struct AggregateConformancePackCompliance: Swift.Sendable {
         /// The compliance status of the conformance pack.
         public var complianceType: ConfigClientTypes.ConformancePackComplianceType?
         /// The number of compliant Config Rules.
@@ -313,12 +315,12 @@ extension ConfigClientTypes {
             self.totalRuleCount = totalRuleCount
         }
     }
-
 }
 
 extension ConfigClientTypes {
+
     /// Provides aggregate compliance of the conformance pack. Indicates whether a conformance pack is compliant based on the name of the conformance pack, account ID, and region. A conformance pack is compliant if all of the rules in a conformance packs are compliant. It is noncompliant if any of the rules are not compliant. The compliance status of a conformance pack is INSUFFICIENT_DATA only if all rules within a conformance pack cannot be evaluated due to insufficient data. If some of the rules in a conformance pack are compliant but the compliance status of other rules in that same conformance pack is INSUFFICIENT_DATA, the conformance pack shows compliant.
-    public struct AggregateComplianceByConformancePack {
+    public struct AggregateComplianceByConformancePack: Swift.Sendable {
         /// The 12-digit Amazon Web Services account ID of the source account.
         public var accountId: Swift.String?
         /// The source Amazon Web Services Region from where the data is aggregated.
@@ -341,12 +343,12 @@ extension ConfigClientTypes {
             self.conformancePackName = conformancePackName
         }
     }
-
 }
 
 extension ConfigClientTypes {
+
     /// The number of Config rules or Amazon Web Services resources that are compliant and noncompliant.
-    public struct ComplianceSummary {
+    public struct ComplianceSummary: Swift.Sendable {
         /// The time that Config created the compliance summary.
         public var complianceSummaryTimestamp: Foundation.Date?
         /// The number of Config rules or Amazon Web Services resources that are compliant, up to a maximum of 25 for rules and 100 for resources.
@@ -365,12 +367,12 @@ extension ConfigClientTypes {
             self.nonCompliantResourceCount = nonCompliantResourceCount
         }
     }
-
 }
 
 extension ConfigClientTypes {
+
     /// Returns the number of compliant and noncompliant rules for one or more accounts and regions in an aggregator.
-    public struct AggregateComplianceCount {
+    public struct AggregateComplianceCount: Swift.Sendable {
         /// The number of compliant and noncompliant Config rules.
         public var complianceSummary: ConfigClientTypes.ComplianceSummary?
         /// The 12-digit account ID or region based on the GroupByKey value.
@@ -385,12 +387,12 @@ extension ConfigClientTypes {
             self.groupName = groupName
         }
     }
-
 }
 
 extension ConfigClientTypes {
+
     /// The number of conformance packs that are compliant and noncompliant.
-    public struct AggregateConformancePackComplianceCount {
+    public struct AggregateConformancePackComplianceCount: Swift.Sendable {
         /// Number of compliant conformance packs.
         public var compliantConformancePackCount: Swift.Int
         /// Number of noncompliant conformance packs.
@@ -405,12 +407,12 @@ extension ConfigClientTypes {
             self.nonCompliantConformancePackCount = nonCompliantConformancePackCount
         }
     }
-
 }
 
 extension ConfigClientTypes {
+
     /// Filters the conformance packs based on an account ID, region, compliance type, and the name of the conformance pack.
-    public struct AggregateConformancePackComplianceFilters {
+    public struct AggregateConformancePackComplianceFilters: Swift.Sendable {
         /// The 12-digit Amazon Web Services account ID of the source account.
         public var accountId: Swift.String?
         /// The source Amazon Web Services Region from where the data is aggregated.
@@ -433,12 +435,12 @@ extension ConfigClientTypes {
             self.conformancePackName = conformancePackName
         }
     }
-
 }
 
 extension ConfigClientTypes {
+
     /// Provides a summary of compliance based on either account ID or region.
-    public struct AggregateConformancePackComplianceSummary {
+    public struct AggregateConformancePackComplianceSummary: Swift.Sendable {
         /// Returns an AggregateConformancePackComplianceCount object.
         public var complianceSummary: ConfigClientTypes.AggregateConformancePackComplianceCount?
         /// Groups the result based on Amazon Web Services account ID or Amazon Web Services Region.
@@ -453,12 +455,12 @@ extension ConfigClientTypes {
             self.groupName = groupName
         }
     }
-
 }
 
 extension ConfigClientTypes {
+
     /// Filters the results based on account ID and region.
-    public struct AggregateConformancePackComplianceSummaryFilters {
+    public struct AggregateConformancePackComplianceSummaryFilters: Swift.Sendable {
         /// The 12-digit Amazon Web Services account ID of the source account.
         public var accountId: Swift.String?
         /// The source Amazon Web Services Region from where the data is aggregated.
@@ -473,12 +475,11 @@ extension ConfigClientTypes {
             self.awsRegion = awsRegion
         }
     }
-
 }
 
 extension ConfigClientTypes {
 
-    public enum AggregateConformancePackComplianceSummaryGroupKey: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AggregateConformancePackComplianceSummaryGroupKey: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case accountId
         case awsRegion
         case sdkUnknown(Swift.String)
@@ -507,7 +508,7 @@ extension ConfigClientTypes {
 
 extension ConfigClientTypes {
 
-    public enum AggregatedSourceStatusType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AggregatedSourceStatusType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case failed
         case outdated
         case succeeded
@@ -539,7 +540,7 @@ extension ConfigClientTypes {
 
 extension ConfigClientTypes {
 
-    public enum AggregatedSourceType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AggregatedSourceType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case account
         case organization
         case sdkUnknown(Swift.String)
@@ -567,8 +568,9 @@ extension ConfigClientTypes {
 }
 
 extension ConfigClientTypes {
+
     /// The current sync status between the source and the aggregator account.
-    public struct AggregatedSourceStatus {
+    public struct AggregatedSourceStatus: Swift.Sendable {
         /// The region authorized to collect aggregated data.
         public var awsRegion: Swift.String?
         /// The error code that Config returned when the source account aggregation last failed.
@@ -609,12 +611,11 @@ extension ConfigClientTypes {
             self.sourceType = sourceType
         }
     }
-
 }
 
 extension ConfigClientTypes {
 
-    public enum EvaluationMode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum EvaluationMode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case detective
         case proactive
         case sdkUnknown(Swift.String)
@@ -642,8 +643,9 @@ extension ConfigClientTypes {
 }
 
 extension ConfigClientTypes {
+
     /// Identifies an Config rule that evaluated an Amazon Web Services resource, and provides the type and ID of the resource that the rule evaluated.
-    public struct EvaluationResultQualifier {
+    public struct EvaluationResultQualifier: Swift.Sendable {
         /// The name of the Config rule that was used in the evaluation.
         public var configRuleName: Swift.String?
         /// The mode of an evaluation. The valid values are Detective or Proactive.
@@ -666,12 +668,12 @@ extension ConfigClientTypes {
             self.resourceType = resourceType
         }
     }
-
 }
 
 extension ConfigClientTypes {
+
     /// Uniquely identifies an evaluation result.
-    public struct EvaluationResultIdentifier {
+    public struct EvaluationResultIdentifier: Swift.Sendable {
         /// Identifies an Config rule used to evaluate an Amazon Web Services resource, and provides the type and ID of the evaluated resource.
         public var evaluationResultQualifier: ConfigClientTypes.EvaluationResultQualifier?
         /// The time of the event that triggered the evaluation of your Amazon Web Services resources. The time can indicate when Config delivered a configuration item change notification, or it can indicate when Config delivered the configuration snapshot, depending on which event triggered the evaluation.
@@ -690,12 +692,12 @@ extension ConfigClientTypes {
             self.resourceEvaluationId = resourceEvaluationId
         }
     }
-
 }
 
 extension ConfigClientTypes {
+
     /// The details of an Config evaluation for an account ID and region in an aggregator. Provides the Amazon Web Services resource that was evaluated, the compliance of the resource, related time stamps, and supplementary information.
-    public struct AggregateEvaluationResult {
+    public struct AggregateEvaluationResult: Swift.Sendable {
         /// The 12-digit account ID of the source account.
         public var accountId: Swift.String?
         /// Supplementary information about how the agrregate evaluation determined the compliance.
@@ -730,12 +732,11 @@ extension ConfigClientTypes {
             self.resultRecordedTime = resultRecordedTime
         }
     }
-
 }
 
 extension ConfigClientTypes {
 
-    public enum ResourceType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ResourceType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case acmpcacertificateauthority
         case acmpcacertificateauthorityactivation
         case apsrulegroupsnamespace
@@ -1978,8 +1979,9 @@ extension ConfigClientTypes {
 }
 
 extension ConfigClientTypes {
+
     /// The details that identify a resource that is collected by Config aggregator, including the resource type, ID, (if available) the custom resource name, the source account, and source region.
-    public struct AggregateResourceIdentifier {
+    public struct AggregateResourceIdentifier: Swift.Sendable {
         /// The ID of the Amazon Web Services resource.
         /// This member is required.
         public var resourceId: Swift.String?
@@ -2010,12 +2012,12 @@ extension ConfigClientTypes {
             self.sourceRegion = sourceRegion
         }
     }
-
 }
 
 extension ConfigClientTypes {
+
     /// An object that represents the authorizations granted to aggregator accounts and regions.
-    public struct AggregationAuthorization {
+    public struct AggregationAuthorization: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the aggregation object.
         public var aggregationAuthorizationArn: Swift.String?
         /// The 12-digit account ID of the account authorized to aggregate data.
@@ -2038,12 +2040,11 @@ extension ConfigClientTypes {
             self.creationTime = creationTime
         }
     }
-
 }
 
 extension ConfigClientTypes {
 
-    public enum ConfigurationItemStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ConfigurationItemStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case ok
         case resourcedeleted
         case resourcedeletednotrecorded
@@ -2081,7 +2082,7 @@ extension ConfigClientTypes {
 
 extension ConfigClientTypes {
 
-    public enum RecordingFrequency: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum RecordingFrequency: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case continuous
         case daily
         case sdkUnknown(Swift.String)
@@ -2109,8 +2110,9 @@ extension ConfigClientTypes {
 }
 
 extension ConfigClientTypes {
+
     /// The detailed configurations of a specified resource.
-    public struct BaseConfigurationItem {
+    public struct BaseConfigurationItem: Swift.Sendable {
         /// The 12-digit Amazon Web Services account ID associated with the resource.
         public var accountId: Swift.String?
         /// The Amazon Resource Name (ARN) of the resource.
@@ -2191,7 +2193,6 @@ extension ConfigClientTypes {
             self.version = version
         }
     }
-
 }
 
 /// You have specified a configuration aggregator that does not exist.
@@ -2244,7 +2245,7 @@ public struct ValidationException: ClientRuntime.ModeledError, AWSClientRuntime.
     }
 }
 
-public struct BatchGetAggregateResourceConfigInput {
+public struct BatchGetAggregateResourceConfigInput: Swift.Sendable {
     /// The name of the configuration aggregator.
     /// This member is required.
     public var configurationAggregatorName: Swift.String?
@@ -2262,7 +2263,7 @@ public struct BatchGetAggregateResourceConfigInput {
     }
 }
 
-public struct BatchGetAggregateResourceConfigOutput {
+public struct BatchGetAggregateResourceConfigOutput: Swift.Sendable {
     /// A list that contains the current configuration of one or more resources.
     public var baseConfigurationItems: [ConfigClientTypes.BaseConfigurationItem]?
     /// A list of resource identifiers that were not processed with current scope. The list is empty if all the resources are processed.
@@ -2304,8 +2305,9 @@ public struct NoAvailableConfigurationRecorderException: ClientRuntime.ModeledEr
 }
 
 extension ConfigClientTypes {
+
     /// The details that identify a resource within Config, including the resource type and resource ID.
-    public struct ResourceKey {
+    public struct ResourceKey: Swift.Sendable {
         /// The ID of the resource (for example., sg-xxxxxx).
         /// This member is required.
         public var resourceId: Swift.String?
@@ -2322,10 +2324,9 @@ extension ConfigClientTypes {
             self.resourceType = resourceType
         }
     }
-
 }
 
-public struct BatchGetResourceConfigInput {
+public struct BatchGetResourceConfigInput: Swift.Sendable {
     /// A list of resource keys to be processed with the current request. Each element in the list consists of the resource type and resource ID.
     /// This member is required.
     public var resourceKeys: [ConfigClientTypes.ResourceKey]?
@@ -2338,7 +2339,7 @@ public struct BatchGetResourceConfigInput {
     }
 }
 
-public struct BatchGetResourceConfigOutput {
+public struct BatchGetResourceConfigOutput: Swift.Sendable {
     /// A list that contains the current configuration of one or more resources.
     public var baseConfigurationItems: [ConfigClientTypes.BaseConfigurationItem]?
     /// A list of resource keys that were not processed with the current response. The unprocessesResourceKeys value is in the same form as ResourceKeys, so the value can be directly provided to a subsequent BatchGetResourceConfig operation. If there are no unprocessed resource keys, the response contains an empty unprocessedResourceKeys list.
@@ -2356,7 +2357,7 @@ public struct BatchGetResourceConfigOutput {
 
 extension ConfigClientTypes {
 
-    public enum ChronologicalOrder: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ChronologicalOrder: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case forward
         case reverse
         case sdkUnknown(Swift.String)
@@ -2384,8 +2385,9 @@ extension ConfigClientTypes {
 }
 
 extension ConfigClientTypes {
+
     /// Indicates whether an Config rule is compliant. A rule is compliant if all of the resources that the rule evaluated comply with it. A rule is noncompliant if any of these resources do not comply.
-    public struct ComplianceByConfigRule {
+    public struct ComplianceByConfigRule: Swift.Sendable {
         /// Indicates whether the Config rule is compliant.
         public var compliance: ConfigClientTypes.Compliance?
         /// The name of the Config rule.
@@ -2400,12 +2402,12 @@ extension ConfigClientTypes {
             self.configRuleName = configRuleName
         }
     }
-
 }
 
 extension ConfigClientTypes {
+
     /// Indicates whether an Amazon Web Services resource that is evaluated according to one or more Config rules is compliant. A resource is compliant if it complies with all of the rules that evaluate it. A resource is noncompliant if it does not comply with one or more of these rules.
-    public struct ComplianceByResource {
+    public struct ComplianceByResource: Swift.Sendable {
         /// Indicates whether the Amazon Web Services resource complies with all of the Config rules that evaluated it.
         public var compliance: ConfigClientTypes.Compliance?
         /// The ID of the Amazon Web Services resource that was evaluated.
@@ -2424,12 +2426,12 @@ extension ConfigClientTypes {
             self.resourceType = resourceType
         }
     }
-
 }
 
 extension ConfigClientTypes {
+
     /// The number of Amazon Web Services resources of a specific type that are compliant or noncompliant, up to a maximum of 100 for each.
-    public struct ComplianceSummaryByResourceType {
+    public struct ComplianceSummaryByResourceType: Swift.Sendable {
         /// The number of Amazon Web Services resources that are compliant or noncompliant, up to a maximum of 100 for each.
         public var complianceSummary: ConfigClientTypes.ComplianceSummary?
         /// The type of Amazon Web Services resource.
@@ -2444,12 +2446,11 @@ extension ConfigClientTypes {
             self.resourceType = resourceType
         }
     }
-
 }
 
 extension ConfigClientTypes {
 
-    public enum DeliveryStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DeliveryStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case failure
         case notApplicable
         case success
@@ -2480,8 +2481,9 @@ extension ConfigClientTypes {
 }
 
 extension ConfigClientTypes {
+
     /// Provides status of the delivery of the snapshot or the configuration history to the specified Amazon S3 bucket. Also provides the status of notifications about the Amazon S3 delivery to the specified Amazon SNS topic.
-    public struct ConfigExportDeliveryInfo {
+    public struct ConfigExportDeliveryInfo: Swift.Sendable {
         /// The time of the last attempted delivery.
         public var lastAttemptTime: Foundation.Date?
         /// The error code from the last attempted delivery.
@@ -2512,12 +2514,11 @@ extension ConfigClientTypes {
             self.nextDeliveryTime = nextDeliveryTime
         }
     }
-
 }
 
 extension ConfigClientTypes {
 
-    public enum ConfigRuleState: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ConfigRuleState: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case active
         case deleting
         case deletingResults
@@ -2551,8 +2552,9 @@ extension ConfigClientTypes {
 }
 
 extension ConfigClientTypes {
+
     /// The configuration object for Config rule evaluation mode. The supported valid values are Detective or Proactive.
-    public struct EvaluationModeConfiguration {
+    public struct EvaluationModeConfiguration: Swift.Sendable {
         /// The mode of an evaluation. The valid values are Detective or Proactive.
         public var mode: ConfigClientTypes.EvaluationMode?
 
@@ -2563,12 +2565,11 @@ extension ConfigClientTypes {
             self.mode = mode
         }
     }
-
 }
 
 extension ConfigClientTypes {
 
-    public enum MaximumExecutionFrequency: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum MaximumExecutionFrequency: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case oneHour
         case sixHours
         case threeHours
@@ -2605,8 +2606,9 @@ extension ConfigClientTypes {
 }
 
 extension ConfigClientTypes {
+
     /// Defines which resources trigger an evaluation for an Config rule. The scope can include one or more resource types, a combination of a tag key and value, or a combination of one resource type and one resource ID. Specify a scope to constrain which resources trigger an evaluation for a rule. Otherwise, evaluations for the rule are triggered when any resource in your recording group changes in configuration.
-    public struct Scope {
+    public struct Scope: Swift.Sendable {
         /// The ID of the only Amazon Web Services resource that you want to trigger an evaluation for the rule. If you specify a resource ID, you must specify one resource type for ComplianceResourceTypes.
         public var complianceResourceId: Swift.String?
         /// The resource types of only those Amazon Web Services resources that you want to trigger an evaluation for the rule. You can only specify one type if you also specify a resource ID for ComplianceResourceId.
@@ -2629,12 +2631,12 @@ extension ConfigClientTypes {
             self.tagValue = tagValue
         }
     }
-
 }
 
 extension ConfigClientTypes {
+
     /// Provides the runtime system, policy definition, and whether debug logging enabled. You can specify the following CustomPolicyDetails parameter values only for Config Custom Policy rules.
-    public struct CustomPolicyDetails {
+    public struct CustomPolicyDetails: Swift.Sendable {
         /// The boolean expression for enabling debug logging for your Config Custom Policy rule. The default value is false.
         public var enableDebugLogDelivery: Swift.Bool
         /// The runtime system for your Config Custom Policy rule. Guard is a policy-as-code language that allows you to write policies that are enforced by Config Custom Policy rules. For more information about Guard, see the [Guard GitHub Repository](https://github.com/aws-cloudformation/cloudformation-guard).
@@ -2655,12 +2657,11 @@ extension ConfigClientTypes {
             self.policyText = policyText
         }
     }
-
 }
 
 extension ConfigClientTypes {
 
-    public enum Owner: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Owner: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case aws
         case customLambda
         case customPolicy
@@ -2692,7 +2693,7 @@ extension ConfigClientTypes {
 
 extension ConfigClientTypes {
 
-    public enum EventSource: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum EventSource: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case awsConfig
         case sdkUnknown(Swift.String)
 
@@ -2718,7 +2719,7 @@ extension ConfigClientTypes {
 
 extension ConfigClientTypes {
 
-    public enum MessageType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum MessageType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case configurationitemchangenotification
         case configurationsnapshotdeliverycompleted
         case oversizedconfigurationitemchangenotification
@@ -2752,8 +2753,9 @@ extension ConfigClientTypes {
 }
 
 extension ConfigClientTypes {
+
     /// Provides the source and the message types that trigger Config to evaluate your Amazon Web Services resources against a rule. It also provides the frequency with which you want Config to run evaluations for the rule if the trigger type is periodic. You can specify the parameter values for SourceDetail only for custom rules.
-    public struct SourceDetail {
+    public struct SourceDetail: Swift.Sendable {
         /// The source of the event, such as an Amazon Web Services service, that triggers Config to evaluate your Amazon Web Services resources.
         public var eventSource: ConfigClientTypes.EventSource?
         /// The frequency at which you want Config to run evaluations for a custom rule with a periodic trigger. If you specify a value for MaximumExecutionFrequency, then MessageType must use the ScheduledNotification value. By default, rules with a periodic trigger are evaluated every 24 hours. To change the frequency, specify a valid value for the MaximumExecutionFrequency parameter. Based on the valid value you choose, Config runs evaluations once for each valid value. For example, if you choose Three_Hours, Config runs evaluations once every three hours. In this case, Three_Hours is the frequency of this rule.
@@ -2783,12 +2785,12 @@ extension ConfigClientTypes {
             self.messageType = messageType
         }
     }
-
 }
 
 extension ConfigClientTypes {
+
     /// Provides the CustomPolicyDetails, the rule owner (Amazon Web Services for managed rules, CUSTOM_POLICY for Custom Policy rules, and CUSTOM_LAMBDA for Custom Lambda rules), the rule identifier, and the events that cause the evaluation of your Amazon Web Services resources.
-    public struct Source {
+    public struct Source: Swift.Sendable {
         /// Provides the runtime system, policy definition, and whether debug logging is enabled. Required when owner is set to CUSTOM_POLICY.
         public var customPolicyDetails: ConfigClientTypes.CustomPolicyDetails?
         /// Indicates whether Amazon Web Services or the customer owns and manages the Config rule. Config Managed Rules are predefined rules owned by Amazon Web Services. For more information, see [Config Managed Rules](https://docs.aws.amazon.com/config/latest/developerguide/evaluate-config_use-managed-rules.html) in the Config developer guide. Config Custom Rules are rules that you can develop either with Guard (CUSTOM_POLICY) or Lambda (CUSTOM_LAMBDA). For more information, see [Config Custom Rules ](https://docs.aws.amazon.com/config/latest/developerguide/evaluate-config_develop-rules.html) in the Config developer guide.
@@ -2812,12 +2814,12 @@ extension ConfigClientTypes {
             self.sourceIdentifier = sourceIdentifier
         }
     }
-
 }
 
 extension ConfigClientTypes {
+
     /// Config rules evaluate the configuration settings of your Amazon Web Services resources. A rule can run when Config detects a configuration change to an Amazon Web Services resource or at a periodic frequency that you choose (for example, every 24 hours). There are two types of rules: Config Managed Rules and Config Custom Rules. Config Managed Rules are predefined, customizable rules created by Config. For a list of managed rules, see [List of Config Managed Rules](https://docs.aws.amazon.com/config/latest/developerguide/managed-rules-by-aws-config.html). Config Custom Rules are rules that you create from scratch. There are two ways to create Config custom rules: with Lambda functions ([ Lambda Developer Guide](https://docs.aws.amazon.com/config/latest/developerguide/gettingstarted-concepts.html#gettingstarted-concepts-function)) and with Guard ([Guard GitHub Repository](https://github.com/aws-cloudformation/cloudformation-guard)), a policy-as-code language. Config custom rules created with Lambda are called Config Custom Lambda Rules and Config custom rules created with Guard are called Config Custom Policy Rules. For more information about developing and using Config rules, see [Evaluating Resource with Config Rules](https://docs.aws.amazon.com/config/latest/developerguide/evaluate-config.html) in the Config Developer Guide. You can use the Amazon Web Services CLI and Amazon Web Services SDKs if you want to create a rule that triggers evaluations for your resources when Config delivers the configuration snapshot. For more information, see [ConfigSnapshotDeliveryProperties].
-    public struct ConfigRule {
+    public struct ConfigRule: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the Config rule.
         public var configRuleArn: Swift.String?
         /// The ID of the Config rule.
@@ -2876,12 +2878,12 @@ extension ConfigClientTypes {
             self.source = source
         }
     }
-
 }
 
 extension ConfigClientTypes {
+
     /// Filters the compliance results based on account ID, region, compliance type, and rule name.
-    public struct ConfigRuleComplianceFilters {
+    public struct ConfigRuleComplianceFilters: Swift.Sendable {
         /// The 12-digit account ID of the source account.
         public var accountId: Swift.String?
         /// The source region where the data is aggregated.
@@ -2904,12 +2906,12 @@ extension ConfigClientTypes {
             self.configRuleName = configRuleName
         }
     }
-
 }
 
 extension ConfigClientTypes {
+
     /// Filters the results based on the account IDs and regions.
-    public struct ConfigRuleComplianceSummaryFilters {
+    public struct ConfigRuleComplianceSummaryFilters: Swift.Sendable {
         /// The 12-digit account ID of the source account.
         public var accountId: Swift.String?
         /// The source region where the data is aggregated.
@@ -2924,12 +2926,11 @@ extension ConfigClientTypes {
             self.awsRegion = awsRegion
         }
     }
-
 }
 
 extension ConfigClientTypes {
 
-    public enum ConfigRuleComplianceSummaryGroupKey: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ConfigRuleComplianceSummaryGroupKey: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case accountId
         case awsRegion
         case sdkUnknown(Swift.String)
@@ -2957,8 +2958,9 @@ extension ConfigClientTypes {
 }
 
 extension ConfigClientTypes {
+
     /// Status information for your Config Managed rules and Config Custom Policy rules. The status includes information such as the last time the rule ran, the last time it failed, and the related error for the last failure. This action does not return status information about Config Custom Lambda rules.
-    public struct ConfigRuleEvaluationStatus {
+    public struct ConfigRuleEvaluationStatus: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the Config rule.
         public var configRuleArn: Swift.String?
         /// The ID of the Config rule.
@@ -3029,10 +3031,10 @@ extension ConfigClientTypes {
             self.lastSuccessfulInvocationTime = lastSuccessfulInvocationTime
         }
     }
-
 }
 
 extension ConfigClientTypes {
+
     /// Provides options for how often Config delivers configuration snapshots to the Amazon S3 bucket in your delivery channel. The frequency for a rule that triggers evaluations for your resources when Config delivers the configuration snapshot is set by one of two values, depending on which is less frequent:
     ///
     /// * The value for the deliveryFrequency parameter within the delivery channel configuration, which sets how often Config delivers configuration snapshots. This value also sets how often Config invokes evaluations for Config rules.
@@ -3052,7 +3054,7 @@ extension ConfigClientTypes {
     ///
     ///
     /// You should set the MaximumExecutionFrequency value to be at least as frequent as the deliveryFrequency value. You can view the deliveryFrequency value by using the DescribeDeliveryChannnels action. To update the deliveryFrequency with which Config delivers your configuration snapshots, use the PutDeliveryChannel action.
-    public struct ConfigSnapshotDeliveryProperties {
+    public struct ConfigSnapshotDeliveryProperties: Swift.Sendable {
         /// The frequency with which Config delivers configuration snapshots.
         public var deliveryFrequency: ConfigClientTypes.MaximumExecutionFrequency?
 
@@ -3063,12 +3065,12 @@ extension ConfigClientTypes {
             self.deliveryFrequency = deliveryFrequency
         }
     }
-
 }
 
 extension ConfigClientTypes {
+
     /// A list that contains the status of the delivery of the configuration stream notification to the Amazon SNS topic.
-    public struct ConfigStreamDeliveryInfo {
+    public struct ConfigStreamDeliveryInfo: Swift.Sendable {
         /// The error code from the last attempted delivery.
         public var lastErrorCode: Swift.String?
         /// The error message from the last attempted delivery.
@@ -3091,12 +3093,12 @@ extension ConfigClientTypes {
             self.lastStatusChangeTime = lastStatusChangeTime
         }
     }
-
 }
 
 extension ConfigClientTypes {
+
     /// This object contains regions to set up the aggregator and an IAM role to retrieve organization details.
-    public struct OrganizationAggregationSource {
+    public struct OrganizationAggregationSource: Swift.Sendable {
         /// If true, aggregate existing Config regions and future regions.
         public var allAwsRegions: Swift.Bool
         /// The source regions being aggregated.
@@ -3116,12 +3118,12 @@ extension ConfigClientTypes {
             self.roleArn = roleArn
         }
     }
-
 }
 
 extension ConfigClientTypes {
+
     /// The details about the configuration aggregator, including information about source accounts, regions, and metadata of the aggregator.
-    public struct ConfigurationAggregator {
+    public struct ConfigurationAggregator: Swift.Sendable {
         /// Provides a list of source accounts and regions to be aggregated.
         public var accountAggregationSources: [ConfigClientTypes.AccountAggregationSource]?
         /// The Amazon Resource Name (ARN) of the aggregator.
@@ -3156,12 +3158,12 @@ extension ConfigClientTypes {
             self.organizationAggregationSource = organizationAggregationSource
         }
     }
-
 }
 
 extension ConfigClientTypes {
+
     /// The relationship of the related resource to the main resource.
-    public struct Relationship {
+    public struct Relationship: Swift.Sendable {
         /// The type of relationship with the related resource.
         public var relationshipName: Swift.String?
         /// The ID of the related resource (for example, sg-xxxxxx).
@@ -3184,12 +3186,12 @@ extension ConfigClientTypes {
             self.resourceType = resourceType
         }
     }
-
 }
 
 extension ConfigClientTypes {
+
     /// A list that contains detailed configurations of a specified resource.
-    public struct ConfigurationItem {
+    public struct ConfigurationItem: Swift.Sendable {
         /// The 12-digit Amazon Web Services account ID associated with the resource.
         public var accountId: Swift.String?
         /// Amazon Resource Name (ARN) associated with the resource.
@@ -3286,10 +3288,10 @@ extension ConfigClientTypes {
             self.version = version
         }
     }
-
 }
 
 extension ConfigClientTypes {
+
     /// Specifies whether the configuration recorder excludes certain resource types from being recorded. Use the resourceTypes field to enter a comma-separated list of resource types you want to exclude from recording. By default, when Config adds support for a new resource type in the Region where you set up the configuration recorder, including global resource types, Config starts recording resources of that type automatically. How to use the exclusion recording strategy To use this option, you must set the useOnly field of [RecordingStrategy](https://docs.aws.amazon.com/config/latest/APIReference/API_RecordingStrategy.html) to EXCLUSION_BY_RESOURCE_TYPES. Config will then record configuration changes for all supported resource types, except the resource types that you specify to exclude from being recorded. Global resource types and the exclusion recording strategy Unless specifically listed as exclusions, AWS::RDS::GlobalCluster will be recorded automatically in all supported Config Regions were the configuration recorder is enabled. IAM users, groups, roles, and customer managed policies will be recorded in the Region where you set up the configuration recorder if that is a Region where Config was available before February 2022. You cannot be record the global IAM resouce types in Regions supported by Config after February 2022. This list where you cannot record the global IAM resource types includes the following Regions:
     ///
     /// * Asia Pacific (Hyderabad)
@@ -3305,7 +3307,7 @@ extension ConfigClientTypes {
     /// * Israel (Tel Aviv)
     ///
     /// * Middle East (UAE)
-    public struct ExclusionByResourceTypes {
+    public struct ExclusionByResourceTypes: Swift.Sendable {
         /// A comma-separated list of resource types to exclude from recording by the configuration recorder.
         public var resourceTypes: [ConfigClientTypes.ResourceType]?
 
@@ -3316,12 +3318,11 @@ extension ConfigClientTypes {
             self.resourceTypes = resourceTypes
         }
     }
-
 }
 
 extension ConfigClientTypes {
 
-    public enum RecordingStrategyType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum RecordingStrategyType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case allSupportedResourceTypes
         case exclusionByResourceTypes
         case inclusionByResourceTypes
@@ -3352,8 +3353,9 @@ extension ConfigClientTypes {
 }
 
 extension ConfigClientTypes {
+
     /// Specifies the recording strategy of the configuration recorder.
-    public struct RecordingStrategy {
+    public struct RecordingStrategy: Swift.Sendable {
         /// The recording strategy for the configuration recorder.
         ///
         /// * If you set this option to ALL_SUPPORTED_RESOURCE_TYPES, Config records configuration changes for all supported resource types, excluding the global IAM resource types. You also must set the allSupported field of [RecordingGroup](https://docs.aws.amazon.com/config/latest/APIReference/API_RecordingGroup.html) to true. When Config adds support for a new resource type, Config automatically starts recording resources of that type. For a list of supported resource types, see [Supported Resource Types](https://docs.aws.amazon.com/config/latest/developerguide/resource-config-reference.html#supported-resources) in the Config developer guide.
@@ -3387,10 +3389,10 @@ extension ConfigClientTypes {
             self.useOnly = useOnly
         }
     }
-
 }
 
 extension ConfigClientTypes {
+
     /// Specifies which resource types Config records for configuration changes. By default, Config records configuration changes for all current and future supported resource types in the Amazon Web Services Region where you have enabled Config, excluding the global IAM resource types: IAM users, groups, roles, and customer managed policies. In the recording group, you specify whether you want to record all supported current and future supported resource types or to include or exclude specific resources types. For a list of supported resource types, see [Supported Resource Types](https://docs.aws.amazon.com/config/latest/developerguide/resource-config-reference.html#supported-resources) in the Config developer guide. If you don't want Config to record all current and future supported resource types (excluding the global IAM resource types), use one of the following recording strategies:
     ///
     /// * Record all current and future resource types with exclusions (EXCLUSION_BY_RESOURCE_TYPES), or
@@ -3399,7 +3401,7 @@ extension ConfigClientTypes {
     ///
     ///
     /// If you use the recording strategy to Record all current and future resource types (ALL_SUPPORTED_RESOURCE_TYPES), you can use the flag includeGlobalResourceTypes to include the global IAM resource types in your recording. Aurora global clusters are recorded in all enabled Regions The AWS::RDS::GlobalCluster resource type will be recorded in all supported Config Regions where the configuration recorder is enabled. If you do not want to record AWS::RDS::GlobalCluster in all enabled Regions, use the EXCLUSION_BY_RESOURCE_TYPES or INCLUSION_BY_RESOURCE_TYPES recording strategy.
-    public struct RecordingGroup {
+    public struct RecordingGroup: Swift.Sendable {
         /// Specifies whether Config records configuration changes for all supported resource types, excluding the global IAM resource types. If you set this field to true, when Config adds support for a new resource type, Config starts recording resources of that type automatically. If you set this field to true, you cannot enumerate specific resource types to record in the resourceTypes field of [RecordingGroup](https://docs.aws.amazon.com/config/latest/APIReference/API_RecordingGroup.html), or to exclude in the resourceTypes field of [ExclusionByResourceTypes](https://docs.aws.amazon.com/config/latest/APIReference/API_ExclusionByResourceTypes.html). Region availability Check [Resource Coverage by Region Availability](https://docs.aws.amazon.com/config/latest/developerguide/what-is-resource-config-coverage.html) to see if a resource type is supported in the Amazon Web Services Region where you set up Config.
         public var allSupported: Swift.Bool
         /// An object that specifies how Config excludes resource types from being recorded by the configuration recorder. Required fields To use this option, you must set the useOnly field of [RecordingStrategy](https://docs.aws.amazon.com/config/latest/APIReference/API_RecordingStrategy.html) to EXCLUSION_BY_RESOURCE_TYPES.
@@ -3473,12 +3475,12 @@ extension ConfigClientTypes {
             self.resourceTypes = resourceTypes
         }
     }
-
 }
 
 extension ConfigClientTypes {
+
     /// An object for you to specify your overrides for the recording mode.
-    public struct RecordingModeOverride {
+    public struct RecordingModeOverride: Swift.Sendable {
         /// A description that you provide for the override.
         public var description: Swift.String?
         /// The recording frequency that will be applied to all the resource types specified in the override.
@@ -3512,10 +3514,10 @@ extension ConfigClientTypes {
             self.resourceTypes = resourceTypes
         }
     }
-
 }
 
 extension ConfigClientTypes {
+
     /// Specifies the default recording frequency that Config uses to record configuration changes. Config supports Continuous recording and Daily recording.
     ///
     /// * Continuous recording allows you to record configuration changes continuously whenever a change occurs.
@@ -3524,7 +3526,7 @@ extension ConfigClientTypes {
     ///
     ///
     /// Firewall Manager depends on continuous recording to monitor your resources. If you are using Firewall Manager, it is recommended that you set the recording frequency to Continuous. You can also override the recording frequency for specific resource types.
-    public struct RecordingMode {
+    public struct RecordingMode: Swift.Sendable {
         /// The default recording frequency that Config uses to record configuration changes. Daily recording is not supported for the following resource types:
         ///
         /// * AWS::Config::ResourceCompliance
@@ -3549,12 +3551,12 @@ extension ConfigClientTypes {
             self.recordingModeOverrides = recordingModeOverrides
         }
     }
-
 }
 
 extension ConfigClientTypes {
+
     /// Records configuration changes to your specified resource types. For more information about the configuration recorder, see [ Managing the Configuration Recorder ](https://docs.aws.amazon.com/config/latest/developerguide/stop-start-recorder.html) in the Config Developer Guide.
-    public struct ConfigurationRecorder {
+    public struct ConfigurationRecorder: Swift.Sendable {
         /// The name of the configuration recorder. Config automatically assigns the name of "default" when creating the configuration recorder. You cannot change the name of the configuration recorder after it has been created. To change the configuration recorder name, you must delete it and create a new configuration recorder with a new name.
         public var name: Swift.String?
         /// Specifies which resource types Config records for configuration changes. High Number of Config Evaluations You may notice increased activity in your account during your initial month recording with Config when compared to subsequent months. During the initial bootstrapping process, Config runs evaluations on all the resources in your account that you have selected for Config to record. If you are running ephemeral workloads, you may see increased activity from Config as it records configuration changes associated with creating and deleting these temporary resources. An ephemeral workload is a temporary use of computing resources that are loaded and run when needed. Examples include Amazon Elastic Compute Cloud (Amazon EC2) Spot Instances, Amazon EMR jobs, and Auto Scaling. If you want to avoid the increased activity from running ephemeral workloads, you can run these types of workloads in a separate account with Config turned off to avoid increased configuration recording and rule evaluations.
@@ -3584,12 +3586,11 @@ extension ConfigClientTypes {
             self.roleARN = roleARN
         }
     }
-
 }
 
 extension ConfigClientTypes {
 
-    public enum RecorderStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum RecorderStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case failure
         case pending
         case success
@@ -3620,8 +3621,9 @@ extension ConfigClientTypes {
 }
 
 extension ConfigClientTypes {
+
     /// The current status of the configuration recorder. For a detailed status of recording events over time, add your Config events to CloudWatch metrics and use CloudWatch metrics.
-    public struct ConfigurationRecorderStatus {
+    public struct ConfigurationRecorderStatus: Swift.Sendable {
         /// The latest error code from when the recorder last failed.
         public var lastErrorCode: Swift.String?
         /// The latest error message from when the recorder last failed.
@@ -3660,12 +3662,12 @@ extension ConfigClientTypes {
             self.recording = recording
         }
     }
-
 }
 
 extension ConfigClientTypes {
+
     /// Filters the conformance pack by compliance types and Config rule names.
-    public struct ConformancePackComplianceFilters {
+    public struct ConformancePackComplianceFilters: Swift.Sendable {
         /// Filters the results by compliance. The allowed values are COMPLIANT and NON_COMPLIANT. INSUFFICIENT_DATA is not supported.
         public var complianceType: ConfigClientTypes.ConformancePackComplianceType?
         /// Filters the results by Config rule names.
@@ -3680,12 +3682,12 @@ extension ConfigClientTypes {
             self.configRuleNames = configRuleNames
         }
     }
-
 }
 
 extension ConfigClientTypes {
+
     /// A compliance score is the percentage of the number of compliant rule-resource combinations in a conformance pack compared to the number of total possible rule-resource combinations in the conformance pack. This metric provides you with a high-level view of the compliance state of your conformance packs. You can use it to identify, investigate, and understand the level of compliance in your conformance packs.
-    public struct ConformancePackComplianceScore {
+    public struct ConformancePackComplianceScore: Swift.Sendable {
         /// The name of the conformance pack.
         public var conformancePackName: Swift.String?
         /// The time that the conformance pack compliance score was last updated.
@@ -3704,12 +3706,12 @@ extension ConfigClientTypes {
             self.score = score
         }
     }
-
 }
 
 extension ConfigClientTypes {
+
     /// A list of filters to apply to the conformance pack compliance score result set.
-    public struct ConformancePackComplianceScoresFilters {
+    public struct ConformancePackComplianceScoresFilters: Swift.Sendable {
         /// The names of the conformance packs whose compliance scores you want to include in the conformance pack compliance score result set. You can include up to 25 conformance packs in the ConformancePackNames array of strings, each with a character limit of 256 characters for the conformance pack name.
         /// This member is required.
         public var conformancePackNames: [Swift.String]?
@@ -3721,12 +3723,12 @@ extension ConfigClientTypes {
             self.conformancePackNames = conformancePackNames
         }
     }
-
 }
 
 extension ConfigClientTypes {
+
     /// Summary includes the name and status of the conformance pack.
-    public struct ConformancePackComplianceSummary {
+    public struct ConformancePackComplianceSummary: Swift.Sendable {
         /// The status of the conformance pack.
         /// This member is required.
         public var conformancePackComplianceStatus: ConfigClientTypes.ConformancePackComplianceType?
@@ -3743,12 +3745,12 @@ extension ConfigClientTypes {
             self.conformancePackName = conformancePackName
         }
     }
-
 }
 
 extension ConfigClientTypes {
+
     /// Input parameters in the form of key-value pairs for the conformance pack, both of which you define. Keys can have a maximum character length of 255 characters, and values can have a maximum length of 4096 characters.
-    public struct ConformancePackInputParameter {
+    public struct ConformancePackInputParameter: Swift.Sendable {
         /// One part of a key-value pair.
         /// This member is required.
         public var parameterName: Swift.String?
@@ -3765,12 +3767,12 @@ extension ConfigClientTypes {
             self.parameterValue = parameterValue
         }
     }
-
 }
 
 extension ConfigClientTypes {
+
     /// This API allows you to create a conformance pack template with an Amazon Web Services Systems Manager document (SSM document). To deploy a conformance pack using an SSM document, first create an SSM document with conformance pack content, and then provide the DocumentName in the [PutConformancePack API](https://docs.aws.amazon.com/config/latest/APIReference/API_PutConformancePack.html). You can also provide the DocumentVersion. The TemplateSSMDocumentDetails object contains the name of the SSM document and the version of the SSM document.
-    public struct TemplateSSMDocumentDetails {
+    public struct TemplateSSMDocumentDetails: Swift.Sendable {
         /// The name or Amazon Resource Name (ARN) of the SSM document to use to create a conformance pack. If you use the document name, Config checks only your account and Amazon Web Services Region for the SSM document.
         /// This member is required.
         public var documentName: Swift.String?
@@ -3786,12 +3788,12 @@ extension ConfigClientTypes {
             self.documentVersion = documentVersion
         }
     }
-
 }
 
 extension ConfigClientTypes {
+
     /// Returns details of a conformance pack. A conformance pack is a collection of Config rules and remediation actions that can be easily deployed in an account and a region.
-    public struct ConformancePackDetail {
+    public struct ConformancePackDetail: Swift.Sendable {
         /// Amazon Resource Name (ARN) of the conformance pack.
         /// This member is required.
         public var conformancePackArn: Swift.String?
@@ -3837,12 +3839,12 @@ extension ConfigClientTypes {
             self.templateSSMDocumentDetails = templateSSMDocumentDetails
         }
     }
-
 }
 
 extension ConfigClientTypes {
+
     /// Filters a conformance pack by Config rule names, compliance types, Amazon Web Services resource types, and resource IDs.
-    public struct ConformancePackEvaluationFilters {
+    public struct ConformancePackEvaluationFilters: Swift.Sendable {
         /// Filters the results by compliance. The allowed values are COMPLIANT and NON_COMPLIANT. INSUFFICIENT_DATA is not supported.
         public var complianceType: ConfigClientTypes.ConformancePackComplianceType?
         /// Filters the results by Config rule names.
@@ -3865,12 +3867,12 @@ extension ConfigClientTypes {
             self.resourceType = resourceType
         }
     }
-
 }
 
 extension ConfigClientTypes {
+
     /// The details of a conformance pack evaluation. Provides Config rule and Amazon Web Services resource type that was evaluated, the compliance of the conformance pack, related time stamps, and supplementary information.
-    public struct ConformancePackEvaluationResult {
+    public struct ConformancePackEvaluationResult: Swift.Sendable {
         /// Supplementary information about how the evaluation determined the compliance.
         public var annotation: Swift.String?
         /// The compliance type. The allowed values are COMPLIANT and NON_COMPLIANT. INSUFFICIENT_DATA is not supported.
@@ -3901,12 +3903,12 @@ extension ConfigClientTypes {
             self.resultRecordedTime = resultRecordedTime
         }
     }
-
 }
 
 extension ConfigClientTypes {
+
     /// Compliance information of one or more Config rules within a conformance pack. You can filter using Config rule names and compliance types.
-    public struct ConformancePackRuleCompliance {
+    public struct ConformancePackRuleCompliance: Swift.Sendable {
         /// Compliance of the Config rule.
         public var complianceType: ConfigClientTypes.ConformancePackComplianceType?
         /// Name of the Config rule.
@@ -3925,12 +3927,11 @@ extension ConfigClientTypes {
             self.controls = controls
         }
     }
-
 }
 
 extension ConfigClientTypes {
 
-    public enum ConformancePackState: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ConformancePackState: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case createComplete
         case createFailed
         case createInProgress
@@ -3967,8 +3968,9 @@ extension ConfigClientTypes {
 }
 
 extension ConfigClientTypes {
+
     /// Status details of a conformance pack.
-    public struct ConformancePackStatusDetail {
+    public struct ConformancePackStatusDetail: Swift.Sendable {
         /// Amazon Resource Name (ARN) of comformance pack.
         /// This member is required.
         public var conformancePackArn: Swift.String?
@@ -4023,7 +4025,6 @@ extension ConfigClientTypes {
             self.stackArn = stackArn
         }
     }
-
 }
 
 /// You have specified a template that is not valid or supported.
@@ -4076,7 +4077,7 @@ public struct InvalidParameterValueException: ClientRuntime.ModeledError, AWSCli
     }
 }
 
-public struct DeleteAggregationAuthorizationInput {
+public struct DeleteAggregationAuthorizationInput: Swift.Sendable {
     /// The 12-digit account ID of the account authorized to aggregate data.
     /// This member is required.
     public var authorizedAccountId: Swift.String?
@@ -4159,7 +4160,7 @@ public struct ResourceInUseException: ClientRuntime.ModeledError, AWSClientRunti
 }
 
 ///
-public struct DeleteConfigRuleInput {
+public struct DeleteConfigRuleInput: Swift.Sendable {
     /// The name of the Config rule that you want to delete.
     /// This member is required.
     public var configRuleName: Swift.String?
@@ -4172,7 +4173,7 @@ public struct DeleteConfigRuleInput {
     }
 }
 
-public struct DeleteConfigurationAggregatorInput {
+public struct DeleteConfigurationAggregatorInput: Swift.Sendable {
     /// The name of the configuration aggregator.
     /// This member is required.
     public var configurationAggregatorName: Swift.String?
@@ -4211,7 +4212,7 @@ public struct NoSuchConfigurationRecorderException: ClientRuntime.ModeledError, 
 }
 
 /// The request object for the DeleteConfigurationRecorder action.
-public struct DeleteConfigurationRecorderInput {
+public struct DeleteConfigurationRecorderInput: Swift.Sendable {
     /// The name of the configuration recorder to be deleted. You can retrieve the name of your configuration recorder by using the DescribeConfigurationRecorders action.
     /// This member is required.
     public var configurationRecorderName: Swift.String?
@@ -4249,7 +4250,7 @@ public struct NoSuchConformancePackException: ClientRuntime.ModeledError, AWSCli
     }
 }
 
-public struct DeleteConformancePackInput {
+public struct DeleteConformancePackInput: Swift.Sendable {
     /// Name of the conformance pack you want to delete.
     /// This member is required.
     public var conformancePackName: Swift.String?
@@ -4313,7 +4314,7 @@ public struct NoSuchDeliveryChannelException: ClientRuntime.ModeledError, AWSCli
 }
 
 /// The input for the [DeleteDeliveryChannel] action. The action accepts the following data, in JSON format.
-public struct DeleteDeliveryChannelInput {
+public struct DeleteDeliveryChannelInput: Swift.Sendable {
     /// The name of the delivery channel to delete.
     /// This member is required.
     public var deliveryChannelName: Swift.String?
@@ -4327,7 +4328,7 @@ public struct DeleteDeliveryChannelInput {
 }
 
 ///
-public struct DeleteEvaluationResultsInput {
+public struct DeleteEvaluationResultsInput: Swift.Sendable {
     /// The name of the Config rule for which you want to delete the evaluation results.
     /// This member is required.
     public var configRuleName: Swift.String?
@@ -4341,7 +4342,7 @@ public struct DeleteEvaluationResultsInput {
 }
 
 /// The output when you delete the evaluation results for the specified Config rule.
-public struct DeleteEvaluationResultsOutput {
+public struct DeleteEvaluationResultsOutput: Swift.Sendable {
 
     public init() { }
 }
@@ -4407,7 +4408,7 @@ public struct OrganizationAccessDeniedException: ClientRuntime.ModeledError, AWS
     }
 }
 
-public struct DeleteOrganizationConfigRuleInput {
+public struct DeleteOrganizationConfigRuleInput: Swift.Sendable {
     /// The name of organization Config rule that you want to delete.
     /// This member is required.
     public var organizationConfigRuleName: Swift.String?
@@ -4445,7 +4446,7 @@ public struct NoSuchOrganizationConformancePackException: ClientRuntime.ModeledE
     }
 }
 
-public struct DeleteOrganizationConformancePackInput {
+public struct DeleteOrganizationConformancePackInput: Swift.Sendable {
     /// The name of organization conformance pack that you want to delete.
     /// This member is required.
     public var organizationConformancePackName: Swift.String?
@@ -4458,7 +4459,7 @@ public struct DeleteOrganizationConformancePackInput {
     }
 }
 
-public struct DeletePendingAggregationRequestInput {
+public struct DeletePendingAggregationRequestInput: Swift.Sendable {
     /// The 12-digit account ID of the account requesting to aggregate data.
     /// This member is required.
     public var requesterAccountId: Swift.String?
@@ -4563,7 +4564,7 @@ public struct RemediationInProgressException: ClientRuntime.ModeledError, AWSCli
     }
 }
 
-public struct DeleteRemediationConfigurationInput {
+public struct DeleteRemediationConfigurationInput: Swift.Sendable {
     /// The name of the Config rule for which you want to delete remediation configuration.
     /// This member is required.
     public var configRuleName: Swift.String?
@@ -4580,7 +4581,7 @@ public struct DeleteRemediationConfigurationInput {
     }
 }
 
-public struct DeleteRemediationConfigurationOutput {
+public struct DeleteRemediationConfigurationOutput: Swift.Sendable {
 
     public init() { }
 }
@@ -4611,8 +4612,9 @@ public struct NoSuchRemediationExceptionException: ClientRuntime.ModeledError, A
 }
 
 extension ConfigClientTypes {
+
     /// The details that identify a resource within Config, including the resource type and resource ID.
-    public struct RemediationExceptionResourceKey {
+    public struct RemediationExceptionResourceKey: Swift.Sendable {
         /// The ID of the resource (for example., sg-xxxxxx).
         public var resourceId: Swift.String?
         /// The type of a resource.
@@ -4627,10 +4629,9 @@ extension ConfigClientTypes {
             self.resourceType = resourceType
         }
     }
-
 }
 
-public struct DeleteRemediationExceptionsInput {
+public struct DeleteRemediationExceptionsInput: Swift.Sendable {
     /// The name of the Config rule for which you want to delete remediation exception configuration.
     /// This member is required.
     public var configRuleName: Swift.String?
@@ -4649,8 +4650,9 @@ public struct DeleteRemediationExceptionsInput {
 }
 
 extension ConfigClientTypes {
+
     /// List of each of the failed delete remediation exceptions with specific reasons.
-    public struct FailedDeleteRemediationExceptionsBatch {
+    public struct FailedDeleteRemediationExceptionsBatch: Swift.Sendable {
         /// Returns remediation exception resource key object of the failed items.
         public var failedItems: [ConfigClientTypes.RemediationExceptionResourceKey]?
         /// Returns a failure message for delete remediation exception. For example, Config creates an exception due to an internal error.
@@ -4665,10 +4667,9 @@ extension ConfigClientTypes {
             self.failureMessage = failureMessage
         }
     }
-
 }
 
-public struct DeleteRemediationExceptionsOutput {
+public struct DeleteRemediationExceptionsOutput: Swift.Sendable {
     /// Returns a list of failed delete remediation exceptions batch objects. Each object in the batch consists of a list of failed items and failure messages.
     public var failedBatches: [ConfigClientTypes.FailedDeleteRemediationExceptionsBatch]?
 
@@ -4705,7 +4706,7 @@ public struct NoRunningConfigurationRecorderException: ClientRuntime.ModeledErro
     }
 }
 
-public struct DeleteResourceConfigInput {
+public struct DeleteResourceConfigInput: Swift.Sendable {
     /// Unique identifier of the resource.
     /// This member is required.
     public var resourceId: Swift.String?
@@ -4748,7 +4749,7 @@ public struct NoSuchRetentionConfigurationException: ClientRuntime.ModeledError,
     }
 }
 
-public struct DeleteRetentionConfigurationInput {
+public struct DeleteRetentionConfigurationInput: Swift.Sendable {
     /// The name of the retention configuration to delete.
     /// This member is required.
     public var retentionConfigurationName: Swift.String?
@@ -4786,7 +4787,7 @@ public struct ResourceNotFoundException: ClientRuntime.ModeledError, AWSClientRu
     }
 }
 
-public struct DeleteStoredQueryInput {
+public struct DeleteStoredQueryInput: Swift.Sendable {
     /// The name of the query that you want to delete.
     /// This member is required.
     public var queryName: Swift.String?
@@ -4799,13 +4800,13 @@ public struct DeleteStoredQueryInput {
     }
 }
 
-public struct DeleteStoredQueryOutput {
+public struct DeleteStoredQueryOutput: Swift.Sendable {
 
     public init() { }
 }
 
 /// The input for the [DeliverConfigSnapshot] action.
-public struct DeliverConfigSnapshotInput {
+public struct DeliverConfigSnapshotInput: Swift.Sendable {
     /// The name of the delivery channel through which the snapshot is delivered.
     /// This member is required.
     public var deliveryChannelName: Swift.String?
@@ -4819,7 +4820,7 @@ public struct DeliverConfigSnapshotInput {
 }
 
 /// The output for the [DeliverConfigSnapshot] action, in JSON format.
-public struct DeliverConfigSnapshotOutput {
+public struct DeliverConfigSnapshotOutput: Swift.Sendable {
     /// The ID of the snapshot that is being created.
     public var configSnapshotId: Swift.String?
 
@@ -4832,8 +4833,9 @@ public struct DeliverConfigSnapshotOutput {
 }
 
 extension ConfigClientTypes {
+
     /// The channel through which Config delivers notifications and updated configuration states.
-    public struct DeliveryChannel {
+    public struct DeliveryChannel: Swift.Sendable {
         /// The options for how often Config delivers configuration snapshots to the Amazon S3 bucket.
         public var configSnapshotDeliveryProperties: ConfigClientTypes.ConfigSnapshotDeliveryProperties?
         /// The name of the delivery channel. By default, Config assigns the name "default" when creating the delivery channel. To change the delivery channel name, you must use the DeleteDeliveryChannel action to delete your current delivery channel, and then you must use the PutDeliveryChannel command to create a delivery channel that has the desired name.
@@ -4864,12 +4866,12 @@ extension ConfigClientTypes {
             self.snsTopicARN = snsTopicARN
         }
     }
-
 }
 
 extension ConfigClientTypes {
+
     /// The status of a specified delivery channel. Valid values: Success | Failure
-    public struct DeliveryChannelStatus {
+    public struct DeliveryChannelStatus: Swift.Sendable {
         /// A list that contains the status of the delivery of the configuration history to the specified Amazon S3 bucket.
         public var configHistoryDeliveryInfo: ConfigClientTypes.ConfigExportDeliveryInfo?
         /// A list containing the status of the delivery of the snapshot to the specified Amazon S3 bucket.
@@ -4892,7 +4894,6 @@ extension ConfigClientTypes {
             self.name = name
         }
     }
-
 }
 
 /// The specified limit is outside the allowable range.
@@ -4945,7 +4946,7 @@ public struct InvalidNextTokenException: ClientRuntime.ModeledError, AWSClientRu
     }
 }
 
-public struct DescribeAggregateComplianceByConfigRulesInput {
+public struct DescribeAggregateComplianceByConfigRulesInput: Swift.Sendable {
     /// The name of the configuration aggregator.
     /// This member is required.
     public var configurationAggregatorName: Swift.String?
@@ -4970,7 +4971,7 @@ public struct DescribeAggregateComplianceByConfigRulesInput {
     }
 }
 
-public struct DescribeAggregateComplianceByConfigRulesOutput {
+public struct DescribeAggregateComplianceByConfigRulesOutput: Swift.Sendable {
     /// Returns a list of AggregateComplianceByConfigRule object.
     public var aggregateComplianceByConfigRules: [ConfigClientTypes.AggregateComplianceByConfigRule]?
     /// The nextToken string returned on a previous page that you use to get the next page of results in a paginated response.
@@ -4986,7 +4987,7 @@ public struct DescribeAggregateComplianceByConfigRulesOutput {
     }
 }
 
-public struct DescribeAggregateComplianceByConformancePacksInput {
+public struct DescribeAggregateComplianceByConformancePacksInput: Swift.Sendable {
     /// The name of the configuration aggregator.
     /// This member is required.
     public var configurationAggregatorName: Swift.String?
@@ -5011,7 +5012,7 @@ public struct DescribeAggregateComplianceByConformancePacksInput {
     }
 }
 
-public struct DescribeAggregateComplianceByConformancePacksOutput {
+public struct DescribeAggregateComplianceByConformancePacksOutput: Swift.Sendable {
     /// Returns the AggregateComplianceByConformancePack object.
     public var aggregateComplianceByConformancePacks: [ConfigClientTypes.AggregateComplianceByConformancePack]?
     /// The nextToken string returned on a previous page that you use to get the next page of results in a paginated response.
@@ -5027,7 +5028,7 @@ public struct DescribeAggregateComplianceByConformancePacksOutput {
     }
 }
 
-public struct DescribeAggregationAuthorizationsInput {
+public struct DescribeAggregationAuthorizationsInput: Swift.Sendable {
     /// The maximum number of AggregationAuthorizations returned on each page. The default is maximum. If you specify 0, Config uses the default.
     public var limit: Swift.Int?
     /// The nextToken string returned on a previous page that you use to get the next page of results in a paginated response.
@@ -5043,7 +5044,7 @@ public struct DescribeAggregationAuthorizationsInput {
     }
 }
 
-public struct DescribeAggregationAuthorizationsOutput {
+public struct DescribeAggregationAuthorizationsOutput: Swift.Sendable {
     /// Returns a list of authorizations granted to various aggregator accounts and regions.
     public var aggregationAuthorizations: [ConfigClientTypes.AggregationAuthorization]?
     /// The nextToken string returned on a previous page that you use to get the next page of results in a paginated response.
@@ -5060,7 +5061,7 @@ public struct DescribeAggregationAuthorizationsOutput {
 }
 
 ///
-public struct DescribeComplianceByConfigRuleInput {
+public struct DescribeComplianceByConfigRuleInput: Swift.Sendable {
     /// Filters the results by compliance.
     public var complianceTypes: [ConfigClientTypes.ComplianceType]?
     /// Specify one or more Config rule names to filter the results by rule.
@@ -5081,7 +5082,7 @@ public struct DescribeComplianceByConfigRuleInput {
 }
 
 ///
-public struct DescribeComplianceByConfigRuleOutput {
+public struct DescribeComplianceByConfigRuleOutput: Swift.Sendable {
     /// Indicates whether each of the specified Config rules is compliant.
     public var complianceByConfigRules: [ConfigClientTypes.ComplianceByConfigRule]?
     /// The string that you use in a subsequent request to get the next page of results in a paginated response.
@@ -5098,7 +5099,7 @@ public struct DescribeComplianceByConfigRuleOutput {
 }
 
 ///
-public struct DescribeComplianceByResourceInput {
+public struct DescribeComplianceByResourceInput: Swift.Sendable {
     /// Filters the results by compliance.
     public var complianceTypes: [ConfigClientTypes.ComplianceType]?
     /// The maximum number of evaluation results returned on each page. The default is 10. You cannot specify a number greater than 100. If you specify 0, Config uses the default.
@@ -5127,7 +5128,7 @@ public struct DescribeComplianceByResourceInput {
 }
 
 ///
-public struct DescribeComplianceByResourceOutput {
+public struct DescribeComplianceByResourceOutput: Swift.Sendable {
     /// Indicates whether the specified Amazon Web Services resource complies with all of the Config rules that evaluate it.
     public var complianceByResources: [ConfigClientTypes.ComplianceByResource]?
     /// The string that you use in a subsequent request to get the next page of results in a paginated response.
@@ -5144,7 +5145,7 @@ public struct DescribeComplianceByResourceOutput {
 }
 
 ///
-public struct DescribeConfigRuleEvaluationStatusInput {
+public struct DescribeConfigRuleEvaluationStatusInput: Swift.Sendable {
     /// The name of the Config managed rules for which you want status information. If you do not specify any names, Config returns status information for all Config managed rules that you use.
     public var configRuleNames: [Swift.String]?
     /// The number of rule evaluation results that you want returned. This parameter is required if the rule limit for your account is more than the default of 1000 rules. For information about requesting a rule limit increase, see [Config Limits](http://docs.aws.amazon.com/general/latest/gr/aws_service_limits.html#limits_config) in the Amazon Web Services General Reference Guide.
@@ -5165,7 +5166,7 @@ public struct DescribeConfigRuleEvaluationStatusInput {
 }
 
 ///
-public struct DescribeConfigRuleEvaluationStatusOutput {
+public struct DescribeConfigRuleEvaluationStatusOutput: Swift.Sendable {
     /// Status information about your Config managed rules.
     public var configRulesEvaluationStatus: [ConfigClientTypes.ConfigRuleEvaluationStatus]?
     /// The string that you use in a subsequent request to get the next page of results in a paginated response.
@@ -5182,8 +5183,9 @@ public struct DescribeConfigRuleEvaluationStatusOutput {
 }
 
 extension ConfigClientTypes {
+
     /// Returns a filtered list of Detective or Proactive Config rules. By default, if the filter is not defined, this API returns an unfiltered list. For more information on Detective or Proactive Config rules, see [ Evaluation Mode ](https://docs.aws.amazon.com/config/latest/developerguide/evaluate-config-rules.html) in the Config Developer Guide.
-    public struct DescribeConfigRulesFilters {
+    public struct DescribeConfigRulesFilters: Swift.Sendable {
         /// The mode of an evaluation. The valid values are Detective or Proactive.
         public var evaluationMode: ConfigClientTypes.EvaluationMode?
 
@@ -5194,11 +5196,10 @@ extension ConfigClientTypes {
             self.evaluationMode = evaluationMode
         }
     }
-
 }
 
 ///
-public struct DescribeConfigRulesInput {
+public struct DescribeConfigRulesInput: Swift.Sendable {
     /// The names of the Config rules for which you want details. If you do not specify any names, Config returns details for all your rules.
     public var configRuleNames: [Swift.String]?
     /// Returns a list of Detective or Proactive Config rules. By default, this API returns an unfiltered list. For more information on Detective or Proactive Config rules, see [ Evaluation Mode ](https://docs.aws.amazon.com/config/latest/developerguide/evaluate-config-rules.html) in the Config Developer Guide.
@@ -5219,7 +5220,7 @@ public struct DescribeConfigRulesInput {
 }
 
 ///
-public struct DescribeConfigRulesOutput {
+public struct DescribeConfigRulesOutput: Swift.Sendable {
     /// The details about your Config rules.
     public var configRules: [ConfigClientTypes.ConfigRule]?
     /// The string that you use in a subsequent request to get the next page of results in a paginated response.
@@ -5235,7 +5236,7 @@ public struct DescribeConfigRulesOutput {
     }
 }
 
-public struct DescribeConfigurationAggregatorsInput {
+public struct DescribeConfigurationAggregatorsInput: Swift.Sendable {
     /// The name of the configuration aggregators.
     public var configurationAggregatorNames: [Swift.String]?
     /// The maximum number of configuration aggregators returned on each page. The default is maximum. If you specify 0, Config uses the default.
@@ -5255,7 +5256,7 @@ public struct DescribeConfigurationAggregatorsInput {
     }
 }
 
-public struct DescribeConfigurationAggregatorsOutput {
+public struct DescribeConfigurationAggregatorsOutput: Swift.Sendable {
     /// Returns a ConfigurationAggregators object.
     public var configurationAggregators: [ConfigClientTypes.ConfigurationAggregator]?
     /// The nextToken string returned on a previous page that you use to get the next page of results in a paginated response.
@@ -5271,7 +5272,7 @@ public struct DescribeConfigurationAggregatorsOutput {
     }
 }
 
-public struct DescribeConfigurationAggregatorSourcesStatusInput {
+public struct DescribeConfigurationAggregatorSourcesStatusInput: Swift.Sendable {
     /// The name of the configuration aggregator.
     /// This member is required.
     public var configurationAggregatorName: Swift.String?
@@ -5302,7 +5303,7 @@ public struct DescribeConfigurationAggregatorSourcesStatusInput {
     }
 }
 
-public struct DescribeConfigurationAggregatorSourcesStatusOutput {
+public struct DescribeConfigurationAggregatorSourcesStatusOutput: Swift.Sendable {
     /// Returns an AggregatedSourceStatus object.
     public var aggregatedSourceStatusList: [ConfigClientTypes.AggregatedSourceStatus]?
     /// The nextToken string returned on a previous page that you use to get the next page of results in a paginated response.
@@ -5319,7 +5320,7 @@ public struct DescribeConfigurationAggregatorSourcesStatusOutput {
 }
 
 /// The input for the [DescribeConfigurationRecorders] action.
-public struct DescribeConfigurationRecordersInput {
+public struct DescribeConfigurationRecordersInput: Swift.Sendable {
     /// A list of configuration recorder names.
     public var configurationRecorderNames: [Swift.String]?
 
@@ -5332,7 +5333,7 @@ public struct DescribeConfigurationRecordersInput {
 }
 
 /// The output for the [DescribeConfigurationRecorders] action.
-public struct DescribeConfigurationRecordersOutput {
+public struct DescribeConfigurationRecordersOutput: Swift.Sendable {
     /// A list that contains the descriptions of the specified configuration recorders.
     public var configurationRecorders: [ConfigClientTypes.ConfigurationRecorder]?
 
@@ -5345,7 +5346,7 @@ public struct DescribeConfigurationRecordersOutput {
 }
 
 /// The input for the [DescribeConfigurationRecorderStatus] action.
-public struct DescribeConfigurationRecorderStatusInput {
+public struct DescribeConfigurationRecorderStatusInput: Swift.Sendable {
     /// The name(s) of the configuration recorder. If the name is not specified, the action returns the current status of all the configuration recorders associated with the account.
     public var configurationRecorderNames: [Swift.String]?
 
@@ -5358,7 +5359,7 @@ public struct DescribeConfigurationRecorderStatusInput {
 }
 
 /// The output for the [DescribeConfigurationRecorderStatus] action, in JSON format.
-public struct DescribeConfigurationRecorderStatusOutput {
+public struct DescribeConfigurationRecorderStatusOutput: Swift.Sendable {
     /// A list that contains status of the specified recorders.
     public var configurationRecordersStatus: [ConfigClientTypes.ConfigurationRecorderStatus]?
 
@@ -5395,7 +5396,7 @@ public struct NoSuchConfigRuleInConformancePackException: ClientRuntime.ModeledE
     }
 }
 
-public struct DescribeConformancePackComplianceInput {
+public struct DescribeConformancePackComplianceInput: Swift.Sendable {
     /// Name of the conformance pack.
     /// This member is required.
     public var conformancePackName: Swift.String?
@@ -5420,7 +5421,7 @@ public struct DescribeConformancePackComplianceInput {
     }
 }
 
-public struct DescribeConformancePackComplianceOutput {
+public struct DescribeConformancePackComplianceOutput: Swift.Sendable {
     /// Name of the conformance pack.
     /// This member is required.
     public var conformancePackName: Swift.String?
@@ -5442,7 +5443,7 @@ public struct DescribeConformancePackComplianceOutput {
     }
 }
 
-public struct DescribeConformancePacksInput {
+public struct DescribeConformancePacksInput: Swift.Sendable {
     /// Comma-separated list of conformance pack names for which you want details. If you do not specify any names, Config returns details for all your conformance packs.
     public var conformancePackNames: [Swift.String]?
     /// The maximum number of conformance packs returned on each page.
@@ -5462,7 +5463,7 @@ public struct DescribeConformancePacksInput {
     }
 }
 
-public struct DescribeConformancePacksOutput {
+public struct DescribeConformancePacksOutput: Swift.Sendable {
     /// Returns a list of ConformancePackDetail objects.
     public var conformancePackDetails: [ConfigClientTypes.ConformancePackDetail]?
     /// The nextToken string returned in a previous request that you use to request the next page of results in a paginated response.
@@ -5478,7 +5479,7 @@ public struct DescribeConformancePacksOutput {
     }
 }
 
-public struct DescribeConformancePackStatusInput {
+public struct DescribeConformancePackStatusInput: Swift.Sendable {
     /// Comma-separated list of conformance pack names.
     public var conformancePackNames: [Swift.String]?
     /// The maximum number of conformance packs status returned on each page.
@@ -5498,7 +5499,7 @@ public struct DescribeConformancePackStatusInput {
     }
 }
 
-public struct DescribeConformancePackStatusOutput {
+public struct DescribeConformancePackStatusOutput: Swift.Sendable {
     /// A list of ConformancePackStatusDetail objects.
     public var conformancePackStatusDetails: [ConfigClientTypes.ConformancePackStatusDetail]?
     /// The nextToken string returned in a previous request that you use to request the next page of results in a paginated response.
@@ -5515,7 +5516,7 @@ public struct DescribeConformancePackStatusOutput {
 }
 
 /// The input for the [DescribeDeliveryChannels] action.
-public struct DescribeDeliveryChannelsInput {
+public struct DescribeDeliveryChannelsInput: Swift.Sendable {
     /// A list of delivery channel names.
     public var deliveryChannelNames: [Swift.String]?
 
@@ -5528,7 +5529,7 @@ public struct DescribeDeliveryChannelsInput {
 }
 
 /// The output for the [DescribeDeliveryChannels] action.
-public struct DescribeDeliveryChannelsOutput {
+public struct DescribeDeliveryChannelsOutput: Swift.Sendable {
     /// A list that contains the descriptions of the specified delivery channel.
     public var deliveryChannels: [ConfigClientTypes.DeliveryChannel]?
 
@@ -5541,7 +5542,7 @@ public struct DescribeDeliveryChannelsOutput {
 }
 
 /// The input for the [DeliveryChannelStatus] action.
-public struct DescribeDeliveryChannelStatusInput {
+public struct DescribeDeliveryChannelStatusInput: Swift.Sendable {
     /// A list of delivery channel names.
     public var deliveryChannelNames: [Swift.String]?
 
@@ -5554,7 +5555,7 @@ public struct DescribeDeliveryChannelStatusInput {
 }
 
 /// The output for the [DescribeDeliveryChannelStatus] action.
-public struct DescribeDeliveryChannelStatusOutput {
+public struct DescribeDeliveryChannelStatusOutput: Swift.Sendable {
     /// A list that contains the status of a specified delivery channel.
     public var deliveryChannelsStatus: [ConfigClientTypes.DeliveryChannelStatus]?
 
@@ -5566,7 +5567,7 @@ public struct DescribeDeliveryChannelStatusOutput {
     }
 }
 
-public struct DescribeOrganizationConfigRulesInput {
+public struct DescribeOrganizationConfigRulesInput: Swift.Sendable {
     /// The maximum number of organization Config rules returned on each page. If you do no specify a number, Config uses the default. The default is 100.
     public var limit: Swift.Int?
     /// The nextToken string returned on a previous page that you use to get the next page of results in a paginated response.
@@ -5588,7 +5589,7 @@ public struct DescribeOrganizationConfigRulesInput {
 
 extension ConfigClientTypes {
 
-    public enum OrganizationConfigRuleTriggerTypeNoSN: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum OrganizationConfigRuleTriggerTypeNoSN: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case configurationItemChangeNotification
         case oversizedConfigurationItemChangeNotifcation
         case sdkUnknown(Swift.String)
@@ -5616,8 +5617,9 @@ extension ConfigClientTypes {
 }
 
 extension ConfigClientTypes {
+
     /// metadata for your organization Config Custom Policy rule including the runtime system in use, which accounts have debug logging enabled, and other custom rule metadata such as resource type, resource ID of Amazon Web Services resource, and organization trigger types that trigger Config to evaluate Amazon Web Services resources against a rule.
-    public struct OrganizationCustomPolicyRuleMetadataNoPolicy {
+    public struct OrganizationCustomPolicyRuleMetadataNoPolicy: Swift.Sendable {
         /// A list of accounts that you can enable debug logging for your organization Config Custom Policy rule. List is null when debug logging is enabled for all accounts.
         public var debugLogDeliveryAccounts: [Swift.String]?
         /// The description that you provide for your organization Config Custom Policy rule.
@@ -5668,12 +5670,11 @@ extension ConfigClientTypes {
             self.tagValueScope = tagValueScope
         }
     }
-
 }
 
 extension ConfigClientTypes {
 
-    public enum OrganizationConfigRuleTriggerType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum OrganizationConfigRuleTriggerType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case configurationItemChangeNotification
         case oversizedConfigurationItemChangeNotifcation
         case scheduledNotification
@@ -5704,8 +5705,9 @@ extension ConfigClientTypes {
 }
 
 extension ConfigClientTypes {
+
     /// An object that specifies organization custom rule metadata such as resource type, resource ID of Amazon Web Services resource, Lambda function ARN, and organization trigger types that trigger Config to evaluate your Amazon Web Services resources against a rule. It also provides the frequency with which you want Config to run evaluations for the rule if the trigger type is periodic.
-    public struct OrganizationCustomRuleMetadata {
+    public struct OrganizationCustomRuleMetadata: Swift.Sendable {
         /// The description that you provide for your organization Config rule.
         public var description: Swift.String?
         /// A string, in JSON format, that is passed to your organization Config rule Lambda function.
@@ -5756,12 +5758,12 @@ extension ConfigClientTypes {
             self.tagValueScope = tagValueScope
         }
     }
-
 }
 
 extension ConfigClientTypes {
+
     /// An object that specifies organization managed rule metadata such as resource type and ID of Amazon Web Services resource along with the rule identifier. It also provides the frequency with which you want Config to run evaluations for the rule if the trigger type is periodic.
-    public struct OrganizationManagedRuleMetadata {
+    public struct OrganizationManagedRuleMetadata: Swift.Sendable {
         /// The description that you provide for your organization Config rule.
         public var description: Swift.String?
         /// A string, in JSON format, that is passed to your organization Config rule Lambda function.
@@ -5801,12 +5803,12 @@ extension ConfigClientTypes {
             self.tagValueScope = tagValueScope
         }
     }
-
 }
 
 extension ConfigClientTypes {
+
     /// An organization Config rule that has information about Config rules that Config creates in member accounts.
-    public struct OrganizationConfigRule {
+    public struct OrganizationConfigRule: Swift.Sendable {
         /// A comma-separated list of accounts excluded from organization Config rule.
         public var excludedAccounts: [Swift.String]?
         /// The timestamp of the last update.
@@ -5843,10 +5845,9 @@ extension ConfigClientTypes {
             self.organizationManagedRuleMetadata = organizationManagedRuleMetadata
         }
     }
-
 }
 
-public struct DescribeOrganizationConfigRulesOutput {
+public struct DescribeOrganizationConfigRulesOutput: Swift.Sendable {
     /// The nextToken string returned on a previous page that you use to get the next page of results in a paginated response.
     public var nextToken: Swift.String?
     /// Returns a list of OrganizationConfigRule objects.
@@ -5862,7 +5863,7 @@ public struct DescribeOrganizationConfigRulesOutput {
     }
 }
 
-public struct DescribeOrganizationConfigRuleStatusesInput {
+public struct DescribeOrganizationConfigRuleStatusesInput: Swift.Sendable {
     /// The maximum number of OrganizationConfigRuleStatuses returned on each page. If you do no specify a number, Config uses the default. The default is 100.
     public var limit: Swift.Int?
     /// The nextToken string returned on a previous page that you use to get the next page of results in a paginated response.
@@ -5884,7 +5885,7 @@ public struct DescribeOrganizationConfigRuleStatusesInput {
 
 extension ConfigClientTypes {
 
-    public enum OrganizationRuleStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum OrganizationRuleStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case createFailed
         case createInProgress
         case createSuccessful
@@ -5933,8 +5934,9 @@ extension ConfigClientTypes {
 }
 
 extension ConfigClientTypes {
+
     /// Returns the status for an organization Config rule in an organization.
-    public struct OrganizationConfigRuleStatus {
+    public struct OrganizationConfigRuleStatus: Swift.Sendable {
         /// An error code that is returned when organization Config rule creation or deletion has failed.
         public var errorCode: Swift.String?
         /// An error message indicating that organization Config rule creation or deletion failed due to an error.
@@ -5981,10 +5983,9 @@ extension ConfigClientTypes {
             self.organizationRuleStatus = organizationRuleStatus
         }
     }
-
 }
 
-public struct DescribeOrganizationConfigRuleStatusesOutput {
+public struct DescribeOrganizationConfigRuleStatusesOutput: Swift.Sendable {
     /// The nextToken string returned on a previous page that you use to get the next page of results in a paginated response.
     public var nextToken: Swift.String?
     /// A list of OrganizationConfigRuleStatus objects.
@@ -6000,7 +6001,7 @@ public struct DescribeOrganizationConfigRuleStatusesOutput {
     }
 }
 
-public struct DescribeOrganizationConformancePacksInput {
+public struct DescribeOrganizationConformancePacksInput: Swift.Sendable {
     /// The maximum number of organization config packs returned on each page. If you do no specify a number, Config uses the default. The default is 100.
     public var limit: Swift.Int?
     /// The nextToken string returned on a previous page that you use to get the next page of results in a paginated response.
@@ -6021,8 +6022,9 @@ public struct DescribeOrganizationConformancePacksInput {
 }
 
 extension ConfigClientTypes {
+
     /// An organization conformance pack that has information about conformance packs that Config creates in member accounts.
-    public struct OrganizationConformancePack {
+    public struct OrganizationConformancePack: Swift.Sendable {
         /// A list of ConformancePackInputParameter objects.
         public var conformancePackInputParameters: [ConfigClientTypes.ConformancePackInputParameter]?
         /// The name of the Amazon S3 bucket where Config stores conformance pack templates. This field is optional.
@@ -6060,10 +6062,9 @@ extension ConfigClientTypes {
             self.organizationConformancePackName = organizationConformancePackName
         }
     }
-
 }
 
-public struct DescribeOrganizationConformancePacksOutput {
+public struct DescribeOrganizationConformancePacksOutput: Swift.Sendable {
     /// The nextToken string returned on a previous page that you use to get the next page of results in a paginated response.
     public var nextToken: Swift.String?
     /// Returns a list of OrganizationConformancePacks objects.
@@ -6079,7 +6080,7 @@ public struct DescribeOrganizationConformancePacksOutput {
     }
 }
 
-public struct DescribeOrganizationConformancePackStatusesInput {
+public struct DescribeOrganizationConformancePackStatusesInput: Swift.Sendable {
     /// The maximum number of OrganizationConformancePackStatuses returned on each page. If you do no specify a number, Config uses the default. The default is 100.
     public var limit: Swift.Int?
     /// The nextToken string returned on a previous page that you use to get the next page of results in a paginated response.
@@ -6101,7 +6102,7 @@ public struct DescribeOrganizationConformancePackStatusesInput {
 
 extension ConfigClientTypes {
 
-    public enum OrganizationResourceStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum OrganizationResourceStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case createFailed
         case createInProgress
         case createSuccessful
@@ -6150,8 +6151,9 @@ extension ConfigClientTypes {
 }
 
 extension ConfigClientTypes {
+
     /// Returns the status for an organization conformance pack in an organization.
-    public struct OrganizationConformancePackStatus {
+    public struct OrganizationConformancePackStatus: Swift.Sendable {
         /// An error code that is returned when organization conformance pack creation or deletion has failed in a member account.
         public var errorCode: Swift.String?
         /// An error message indicating that organization conformance pack creation or deletion failed due to an error.
@@ -6198,10 +6200,9 @@ extension ConfigClientTypes {
             self.status = status
         }
     }
-
 }
 
-public struct DescribeOrganizationConformancePackStatusesOutput {
+public struct DescribeOrganizationConformancePackStatusesOutput: Swift.Sendable {
     /// The nextToken string returned on a previous page that you use to get the next page of results in a paginated response.
     public var nextToken: Swift.String?
     /// A list of OrganizationConformancePackStatus objects.
@@ -6217,7 +6218,7 @@ public struct DescribeOrganizationConformancePackStatusesOutput {
     }
 }
 
-public struct DescribePendingAggregationRequestsInput {
+public struct DescribePendingAggregationRequestsInput: Swift.Sendable {
     /// The maximum number of evaluation results returned on each page. The default is maximum. If you specify 0, Config uses the default.
     public var limit: Swift.Int?
     /// The nextToken string returned on a previous page that you use to get the next page of results in a paginated response.
@@ -6234,8 +6235,9 @@ public struct DescribePendingAggregationRequestsInput {
 }
 
 extension ConfigClientTypes {
+
     /// An object that represents the account ID and region of an aggregator account that is requesting authorization but is not yet authorized.
-    public struct PendingAggregationRequest {
+    public struct PendingAggregationRequest: Swift.Sendable {
         /// The 12-digit account ID of the account requesting to aggregate data.
         public var requesterAccountId: Swift.String?
         /// The region requesting to aggregate data.
@@ -6250,10 +6252,9 @@ extension ConfigClientTypes {
             self.requesterAwsRegion = requesterAwsRegion
         }
     }
-
 }
 
-public struct DescribePendingAggregationRequestsOutput {
+public struct DescribePendingAggregationRequestsOutput: Swift.Sendable {
     /// The nextToken string returned on a previous page that you use to get the next page of results in a paginated response.
     public var nextToken: Swift.String?
     /// Returns a PendingAggregationRequests object.
@@ -6269,7 +6270,7 @@ public struct DescribePendingAggregationRequestsOutput {
     }
 }
 
-public struct DescribeRemediationConfigurationsInput {
+public struct DescribeRemediationConfigurationsInput: Swift.Sendable {
     /// A list of Config rule names of remediation configurations for which you want details.
     /// This member is required.
     public var configRuleNames: [Swift.String]?
@@ -6283,8 +6284,9 @@ public struct DescribeRemediationConfigurationsInput {
 }
 
 extension ConfigClientTypes {
+
     /// Amazon Web Services Systems Manager (SSM) specific remediation controls.
-    public struct SsmControls {
+    public struct SsmControls: Swift.Sendable {
         /// The maximum percentage of remediation actions allowed to run in parallel on the non-compliant resources for that specific rule. You can specify a percentage, such as 10%. The default value is 10.
         public var concurrentExecutionRatePercentage: Swift.Int?
         /// The percentage of errors that are allowed before SSM stops running automations on non-compliant resources for that specific rule. You can specify a percentage of errors, for example 10%. If you do not specifiy a percentage, the default is 50%. For example, if you set the ErrorPercentage to 40% for 10 non-compliant resources, then SSM stops running the automations when the fifth error is received.
@@ -6299,12 +6301,12 @@ extension ConfigClientTypes {
             self.errorPercentage = errorPercentage
         }
     }
-
 }
 
 extension ConfigClientTypes {
+
     /// The controls that Config uses for executing remediations.
-    public struct ExecutionControls {
+    public struct ExecutionControls: Swift.Sendable {
         /// A SsmControls object.
         public var ssmControls: ConfigClientTypes.SsmControls?
 
@@ -6315,12 +6317,11 @@ extension ConfigClientTypes {
             self.ssmControls = ssmControls
         }
     }
-
 }
 
 extension ConfigClientTypes {
 
-    public enum ResourceValueType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ResourceValueType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case resourceId
         case sdkUnknown(Swift.String)
 
@@ -6345,8 +6346,9 @@ extension ConfigClientTypes {
 }
 
 extension ConfigClientTypes {
+
     /// The dynamic value of the resource.
-    public struct ResourceValue {
+    public struct ResourceValue: Swift.Sendable {
         /// The value is a resource ID.
         /// This member is required.
         public var value: ConfigClientTypes.ResourceValueType?
@@ -6358,12 +6360,12 @@ extension ConfigClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension ConfigClientTypes {
+
     /// The static value of the resource.
-    public struct StaticValue {
+    public struct StaticValue: Swift.Sendable {
         /// A list of values. For example, the ARN of the assumed role.
         /// This member is required.
         public var values: [Swift.String]?
@@ -6375,12 +6377,12 @@ extension ConfigClientTypes {
             self.values = values
         }
     }
-
 }
 
 extension ConfigClientTypes {
+
     /// The value is either a dynamic (resource) value or a static value. You must select either a dynamic value or a static value.
-    public struct RemediationParameterValue {
+    public struct RemediationParameterValue: Swift.Sendable {
         /// The value is dynamic and changes at run-time.
         public var resourceValue: ConfigClientTypes.ResourceValue?
         /// The value is static and does not change at run-time.
@@ -6395,12 +6397,11 @@ extension ConfigClientTypes {
             self.staticValue = staticValue
         }
     }
-
 }
 
 extension ConfigClientTypes {
 
-    public enum RemediationTargetType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum RemediationTargetType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case ssmDocument
         case sdkUnknown(Swift.String)
 
@@ -6425,8 +6426,9 @@ extension ConfigClientTypes {
 }
 
 extension ConfigClientTypes {
+
     /// An object that represents the details about the remediation configuration that includes the remediation action, parameters, and data to execute the action.
-    public struct RemediationConfiguration {
+    public struct RemediationConfiguration: Swift.Sendable {
         /// Amazon Resource Name (ARN) of remediation configuration.
         public var arn: Swift.String?
         /// The remediation is triggered automatically.
@@ -6484,10 +6486,9 @@ extension ConfigClientTypes {
             self.targetVersion = targetVersion
         }
     }
-
 }
 
-public struct DescribeRemediationConfigurationsOutput {
+public struct DescribeRemediationConfigurationsOutput: Swift.Sendable {
     /// Returns a remediation configuration object.
     public var remediationConfigurations: [ConfigClientTypes.RemediationConfiguration]?
 
@@ -6499,7 +6500,7 @@ public struct DescribeRemediationConfigurationsOutput {
     }
 }
 
-public struct DescribeRemediationExceptionsInput {
+public struct DescribeRemediationExceptionsInput: Swift.Sendable {
     /// The name of the Config rule.
     /// This member is required.
     public var configRuleName: Swift.String?
@@ -6525,8 +6526,9 @@ public struct DescribeRemediationExceptionsInput {
 }
 
 extension ConfigClientTypes {
+
     /// An object that represents the details about the remediation exception. The details include the rule name, an explanation of an exception, the time when the exception will be deleted, the resource ID, and resource type.
-    public struct RemediationException {
+    public struct RemediationException: Swift.Sendable {
         /// The name of the Config rule.
         /// This member is required.
         public var configRuleName: Swift.String?
@@ -6556,10 +6558,9 @@ extension ConfigClientTypes {
             self.resourceType = resourceType
         }
     }
-
 }
 
-public struct DescribeRemediationExceptionsOutput {
+public struct DescribeRemediationExceptionsOutput: Swift.Sendable {
     /// The nextToken string returned in a previous request that you use to request the next page of results in a paginated response.
     public var nextToken: Swift.String?
     /// Returns a list of remediation exception objects.
@@ -6575,7 +6576,7 @@ public struct DescribeRemediationExceptionsOutput {
     }
 }
 
-public struct DescribeRemediationExecutionStatusInput {
+public struct DescribeRemediationExecutionStatusInput: Swift.Sendable {
     /// A list of Config rule names.
     /// This member is required.
     public var configRuleName: Swift.String?
@@ -6602,7 +6603,7 @@ public struct DescribeRemediationExecutionStatusInput {
 
 extension ConfigClientTypes {
 
-    public enum RemediationExecutionState: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum RemediationExecutionState: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case failed
         case inProgress
         case queued
@@ -6637,7 +6638,7 @@ extension ConfigClientTypes {
 
 extension ConfigClientTypes {
 
-    public enum RemediationExecutionStepState: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum RemediationExecutionStepState: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case failed
         case pending
         case succeeded
@@ -6668,8 +6669,9 @@ extension ConfigClientTypes {
 }
 
 extension ConfigClientTypes {
+
     /// Name of the step from the SSM document.
-    public struct RemediationExecutionStep {
+    public struct RemediationExecutionStep: Swift.Sendable {
         /// An error message if the step was interrupted during execution.
         public var errorMessage: Swift.String?
         /// The details of the step.
@@ -6696,12 +6698,12 @@ extension ConfigClientTypes {
             self.stopTime = stopTime
         }
     }
-
 }
 
 extension ConfigClientTypes {
+
     /// Provides details of the current status of the invoked remediation action for that resource.
-    public struct RemediationExecutionStatus {
+    public struct RemediationExecutionStatus: Swift.Sendable {
         /// Start time when the remediation was executed.
         public var invocationTime: Foundation.Date?
         /// The time when the remediation execution was last updated.
@@ -6728,10 +6730,9 @@ extension ConfigClientTypes {
             self.stepDetails = stepDetails
         }
     }
-
 }
 
-public struct DescribeRemediationExecutionStatusOutput {
+public struct DescribeRemediationExecutionStatusOutput: Swift.Sendable {
     /// The nextToken string returned on a previous page that you use to get the next page of results in a paginated response.
     public var nextToken: Swift.String?
     /// Returns a list of remediation execution statuses objects.
@@ -6747,7 +6748,7 @@ public struct DescribeRemediationExecutionStatusOutput {
     }
 }
 
-public struct DescribeRetentionConfigurationsInput {
+public struct DescribeRetentionConfigurationsInput: Swift.Sendable {
     /// The nextToken string returned on a previous page that you use to get the next page of results in a paginated response.
     public var nextToken: Swift.String?
     /// A list of names of retention configurations for which you want details. If you do not specify a name, Config returns details for all the retention configurations for that account. Currently, Config supports only one retention configuration per region in your account.
@@ -6764,8 +6765,9 @@ public struct DescribeRetentionConfigurationsInput {
 }
 
 extension ConfigClientTypes {
+
     /// An object with the name of the retention configuration and the retention period in days. The object stores the configuration for data retention in Config.
-    public struct RetentionConfiguration {
+    public struct RetentionConfiguration: Swift.Sendable {
         /// The name of the retention configuration object.
         /// This member is required.
         public var name: Swift.String?
@@ -6782,10 +6784,9 @@ extension ConfigClientTypes {
             self.retentionPeriodInDays = retentionPeriodInDays
         }
     }
-
 }
 
-public struct DescribeRetentionConfigurationsOutput {
+public struct DescribeRetentionConfigurationsOutput: Swift.Sendable {
     /// The nextToken string returned on a previous page that you use to get the next page of results in a paginated response.
     public var nextToken: Swift.String?
     /// Returns a retention configuration object.
@@ -6802,8 +6803,9 @@ public struct DescribeRetentionConfigurationsOutput {
 }
 
 extension ConfigClientTypes {
+
     /// Identifies an Amazon Web Services resource and indicates whether it complies with the Config rule that it was evaluated against.
-    public struct Evaluation {
+    public struct Evaluation: Swift.Sendable {
         /// Supplementary information about how the evaluation determined the compliance.
         public var annotation: Swift.String?
         /// The ID of the Amazon Web Services resource that was evaluated.
@@ -6834,12 +6836,12 @@ extension ConfigClientTypes {
             self.orderingTimestamp = orderingTimestamp
         }
     }
-
 }
 
 extension ConfigClientTypes {
+
     /// Use EvaluationContext to group independently initiated proactive resource evaluations. For example, CFN Stack. If you want to check just a resource definition, you do not need to provide evaluation context.
-    public struct EvaluationContext {
+    public struct EvaluationContext: Swift.Sendable {
         /// A unique EvaluationContextIdentifier ID for an EvaluationContext.
         public var evaluationContextIdentifier: Swift.String?
 
@@ -6850,12 +6852,12 @@ extension ConfigClientTypes {
             self.evaluationContextIdentifier = evaluationContextIdentifier
         }
     }
-
 }
 
 extension ConfigClientTypes {
+
     /// The details of an Config evaluation. Provides the Amazon Web Services resource that was evaluated, the compliance of the resource, related time stamps, and supplementary information.
-    public struct EvaluationResult {
+    public struct EvaluationResult: Swift.Sendable {
         /// Supplementary information about how the evaluation determined the compliance.
         public var annotation: Swift.String?
         /// Indicates whether the Amazon Web Services resource complies with the Config rule that evaluated it. For the EvaluationResult data type, Config supports only the COMPLIANT, NON_COMPLIANT, and NOT_APPLICABLE values. Config does not support the INSUFFICIENT_DATA value for the EvaluationResult data type.
@@ -6886,12 +6888,11 @@ extension ConfigClientTypes {
             self.resultToken = resultToken
         }
     }
-
 }
 
 extension ConfigClientTypes {
 
-    public enum ResourceEvaluationStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ResourceEvaluationStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case failed
         case inProgress
         case succeeded
@@ -6922,8 +6923,9 @@ extension ConfigClientTypes {
 }
 
 extension ConfigClientTypes {
+
     /// Returns status details of an evaluation.
-    public struct EvaluationStatus {
+    public struct EvaluationStatus: Swift.Sendable {
         /// An explanation for failed execution status.
         public var failureReason: Swift.String?
         /// The status of an execution. The valid values are In_Progress, Succeeded or Failed.
@@ -6939,12 +6941,12 @@ extension ConfigClientTypes {
             self.status = status
         }
     }
-
 }
 
 extension ConfigClientTypes {
+
     /// Identifies an Amazon Web Services resource and indicates whether it complies with the Config rule that it was evaluated against.
-    public struct ExternalEvaluation {
+    public struct ExternalEvaluation: Swift.Sendable {
         /// Supplementary information about the reason of compliance. For example, this task was completed on a specific date.
         public var annotation: Swift.String?
         /// The evaluated compliance resource ID. Config accepts only Amazon Web Services account ID.
@@ -6975,12 +6977,12 @@ extension ConfigClientTypes {
             self.orderingTimestamp = orderingTimestamp
         }
     }
-
 }
 
 extension ConfigClientTypes {
+
     /// List of each of the failed remediations with specific reasons.
-    public struct FailedRemediationBatch {
+    public struct FailedRemediationBatch: Swift.Sendable {
         /// Returns remediation configurations of the failed items.
         public var failedItems: [ConfigClientTypes.RemediationConfiguration]?
         /// Returns a failure message. For example, the resource is already compliant.
@@ -6995,12 +6997,12 @@ extension ConfigClientTypes {
             self.failureMessage = failureMessage
         }
     }
-
 }
 
 extension ConfigClientTypes {
+
     /// List of each of the failed remediation exceptions with specific reasons.
-    public struct FailedRemediationExceptionBatch {
+    public struct FailedRemediationExceptionBatch: Swift.Sendable {
         /// Returns remediation exception resource key object of the failed items.
         public var failedItems: [ConfigClientTypes.RemediationException]?
         /// Returns a failure message. For example, the auto-remediation has failed.
@@ -7015,12 +7017,12 @@ extension ConfigClientTypes {
             self.failureMessage = failureMessage
         }
     }
-
 }
 
 extension ConfigClientTypes {
+
     /// Details about the fields such as name of the field.
-    public struct FieldInfo {
+    public struct FieldInfo: Swift.Sendable {
         /// Name of the field.
         public var name: Swift.String?
 
@@ -7031,10 +7033,9 @@ extension ConfigClientTypes {
             self.name = name
         }
     }
-
 }
 
-public struct GetAggregateComplianceDetailsByConfigRuleInput {
+public struct GetAggregateComplianceDetailsByConfigRuleInput: Swift.Sendable {
     /// The 12-digit account ID of the source account.
     /// This member is required.
     public var accountId: Swift.String?
@@ -7074,7 +7075,7 @@ public struct GetAggregateComplianceDetailsByConfigRuleInput {
     }
 }
 
-public struct GetAggregateComplianceDetailsByConfigRuleOutput {
+public struct GetAggregateComplianceDetailsByConfigRuleOutput: Swift.Sendable {
     /// Returns an AggregateEvaluationResults object.
     public var aggregateEvaluationResults: [ConfigClientTypes.AggregateEvaluationResult]?
     /// The nextToken string returned on a previous page that you use to get the next page of results in a paginated response.
@@ -7090,7 +7091,7 @@ public struct GetAggregateComplianceDetailsByConfigRuleOutput {
     }
 }
 
-public struct GetAggregateConfigRuleComplianceSummaryInput {
+public struct GetAggregateConfigRuleComplianceSummaryInput: Swift.Sendable {
     /// The name of the configuration aggregator.
     /// This member is required.
     public var configurationAggregatorName: Swift.String?
@@ -7119,7 +7120,7 @@ public struct GetAggregateConfigRuleComplianceSummaryInput {
     }
 }
 
-public struct GetAggregateConfigRuleComplianceSummaryOutput {
+public struct GetAggregateConfigRuleComplianceSummaryOutput: Swift.Sendable {
     /// Returns a list of AggregateComplianceCounts object.
     public var aggregateComplianceCounts: [ConfigClientTypes.AggregateComplianceCount]?
     /// Groups the result based on ACCOUNT_ID or AWS_REGION.
@@ -7139,7 +7140,7 @@ public struct GetAggregateConfigRuleComplianceSummaryOutput {
     }
 }
 
-public struct GetAggregateConformancePackComplianceSummaryInput {
+public struct GetAggregateConformancePackComplianceSummaryInput: Swift.Sendable {
     /// The name of the configuration aggregator.
     /// This member is required.
     public var configurationAggregatorName: Swift.String?
@@ -7168,7 +7169,7 @@ public struct GetAggregateConformancePackComplianceSummaryInput {
     }
 }
 
-public struct GetAggregateConformancePackComplianceSummaryOutput {
+public struct GetAggregateConformancePackComplianceSummaryOutput: Swift.Sendable {
     /// Returns a list of AggregateConformancePackComplianceSummary object.
     public var aggregateConformancePackComplianceSummaries: [ConfigClientTypes.AggregateConformancePackComplianceSummary]?
     /// Groups the result based on Amazon Web Services account ID or Amazon Web Services Region.
@@ -7189,8 +7190,9 @@ public struct GetAggregateConformancePackComplianceSummaryOutput {
 }
 
 extension ConfigClientTypes {
+
     /// Filters the resource count based on account ID, region, and resource type.
-    public struct ResourceCountFilters {
+    public struct ResourceCountFilters: Swift.Sendable {
         /// The 12-digit ID of the account.
         public var accountId: Swift.String?
         /// The region where the account is located.
@@ -7209,12 +7211,11 @@ extension ConfigClientTypes {
             self.resourceType = resourceType
         }
     }
-
 }
 
 extension ConfigClientTypes {
 
-    public enum ResourceCountGroupKey: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ResourceCountGroupKey: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case accountId
         case awsRegion
         case resourceType
@@ -7244,7 +7245,7 @@ extension ConfigClientTypes {
     }
 }
 
-public struct GetAggregateDiscoveredResourceCountsInput {
+public struct GetAggregateDiscoveredResourceCountsInput: Swift.Sendable {
     /// The name of the configuration aggregator.
     /// This member is required.
     public var configurationAggregatorName: Swift.String?
@@ -7274,8 +7275,9 @@ public struct GetAggregateDiscoveredResourceCountsInput {
 }
 
 extension ConfigClientTypes {
+
     /// The count of resources that are grouped by the group name.
-    public struct GroupedResourceCount {
+    public struct GroupedResourceCount: Swift.Sendable {
         /// The name of the group that can be region, account ID, or resource type. For example, region1, region2 if the region was chosen as GroupByKey.
         /// This member is required.
         public var groupName: Swift.String?
@@ -7292,10 +7294,9 @@ extension ConfigClientTypes {
             self.resourceCount = resourceCount
         }
     }
-
 }
 
-public struct GetAggregateDiscoveredResourceCountsOutput {
+public struct GetAggregateDiscoveredResourceCountsOutput: Swift.Sendable {
     /// The key passed into the request object. If GroupByKey is not provided, the result will be empty.
     public var groupByKey: Swift.String?
     /// Returns a list of GroupedResourceCount objects.
@@ -7370,7 +7371,7 @@ public struct ResourceNotDiscoveredException: ClientRuntime.ModeledError, AWSCli
     }
 }
 
-public struct GetAggregateResourceConfigInput {
+public struct GetAggregateResourceConfigInput: Swift.Sendable {
     /// The name of the configuration aggregator.
     /// This member is required.
     public var configurationAggregatorName: Swift.String?
@@ -7388,7 +7389,7 @@ public struct GetAggregateResourceConfigInput {
     }
 }
 
-public struct GetAggregateResourceConfigOutput {
+public struct GetAggregateResourceConfigOutput: Swift.Sendable {
     /// Returns a ConfigurationItem object.
     public var configurationItem: ConfigClientTypes.ConfigurationItem?
 
@@ -7401,7 +7402,7 @@ public struct GetAggregateResourceConfigOutput {
 }
 
 ///
-public struct GetComplianceDetailsByConfigRuleInput {
+public struct GetComplianceDetailsByConfigRuleInput: Swift.Sendable {
     /// Filters the results by compliance. INSUFFICIENT_DATA is a valid ComplianceType that is returned when an Config rule cannot be evaluated. However, INSUFFICIENT_DATA cannot be used as a ComplianceType for filtering results.
     public var complianceTypes: [ConfigClientTypes.ComplianceType]?
     /// The name of the Config rule for which you want compliance information.
@@ -7427,7 +7428,7 @@ public struct GetComplianceDetailsByConfigRuleInput {
 }
 
 ///
-public struct GetComplianceDetailsByConfigRuleOutput {
+public struct GetComplianceDetailsByConfigRuleOutput: Swift.Sendable {
     /// Indicates whether the Amazon Web Services resource complies with the specified Config rule.
     public var evaluationResults: [ConfigClientTypes.EvaluationResult]?
     /// The string that you use in a subsequent request to get the next page of results in a paginated response.
@@ -7444,7 +7445,7 @@ public struct GetComplianceDetailsByConfigRuleOutput {
 }
 
 ///
-public struct GetComplianceDetailsByResourceInput {
+public struct GetComplianceDetailsByResourceInput: Swift.Sendable {
     /// Filters the results by compliance. INSUFFICIENT_DATA is a valid ComplianceType that is returned when an Config rule cannot be evaluated. However, INSUFFICIENT_DATA cannot be used as a ComplianceType for filtering results.
     public var complianceTypes: [ConfigClientTypes.ComplianceType]?
     /// The nextToken string returned on a previous page that you use to get the next page of results in a paginated response.
@@ -7473,7 +7474,7 @@ public struct GetComplianceDetailsByResourceInput {
 }
 
 ///
-public struct GetComplianceDetailsByResourceOutput {
+public struct GetComplianceDetailsByResourceOutput: Swift.Sendable {
     /// Indicates whether the specified Amazon Web Services resource complies each Config rule.
     public var evaluationResults: [ConfigClientTypes.EvaluationResult]?
     /// The string that you use in a subsequent request to get the next page of results in a paginated response.
@@ -7490,7 +7491,7 @@ public struct GetComplianceDetailsByResourceOutput {
 }
 
 ///
-public struct GetComplianceSummaryByConfigRuleOutput {
+public struct GetComplianceSummaryByConfigRuleOutput: Swift.Sendable {
     /// The number of Config rules that are compliant and the number that are noncompliant, up to a maximum of 25 for each.
     public var complianceSummary: ConfigClientTypes.ComplianceSummary?
 
@@ -7503,7 +7504,7 @@ public struct GetComplianceSummaryByConfigRuleOutput {
 }
 
 ///
-public struct GetComplianceSummaryByResourceTypeInput {
+public struct GetComplianceSummaryByResourceTypeInput: Swift.Sendable {
     /// Specify one or more resource types to get the number of resources that are compliant and the number that are noncompliant for each resource type. For this request, you can specify an Amazon Web Services resource type such as AWS::EC2::Instance. You can specify that the resource type is an Amazon Web Services account by specifying AWS::::Account.
     public var resourceTypes: [Swift.String]?
 
@@ -7516,7 +7517,7 @@ public struct GetComplianceSummaryByResourceTypeInput {
 }
 
 ///
-public struct GetComplianceSummaryByResourceTypeOutput {
+public struct GetComplianceSummaryByResourceTypeOutput: Swift.Sendable {
     /// The number of resources that are compliant and the number that are noncompliant. If one or more resource types were provided with the request, the numbers are returned for each resource type. The maximum number returned is 100.
     public var complianceSummariesByResourceType: [ConfigClientTypes.ComplianceSummaryByResourceType]?
 
@@ -7528,7 +7529,7 @@ public struct GetComplianceSummaryByResourceTypeOutput {
     }
 }
 
-public struct GetConformancePackComplianceDetailsInput {
+public struct GetConformancePackComplianceDetailsInput: Swift.Sendable {
     /// Name of the conformance pack.
     /// This member is required.
     public var conformancePackName: Swift.String?
@@ -7553,7 +7554,7 @@ public struct GetConformancePackComplianceDetailsInput {
     }
 }
 
-public struct GetConformancePackComplianceDetailsOutput {
+public struct GetConformancePackComplianceDetailsOutput: Swift.Sendable {
     /// Name of the conformance pack.
     /// This member is required.
     public var conformancePackName: Swift.String?
@@ -7574,7 +7575,7 @@ public struct GetConformancePackComplianceDetailsOutput {
     }
 }
 
-public struct GetConformancePackComplianceSummaryInput {
+public struct GetConformancePackComplianceSummaryInput: Swift.Sendable {
     /// Names of conformance packs.
     /// This member is required.
     public var conformancePackNames: [Swift.String]?
@@ -7595,7 +7596,7 @@ public struct GetConformancePackComplianceSummaryInput {
     }
 }
 
-public struct GetConformancePackComplianceSummaryOutput {
+public struct GetConformancePackComplianceSummaryOutput: Swift.Sendable {
     /// A list of ConformancePackComplianceSummary objects.
     public var conformancePackComplianceSummaryList: [ConfigClientTypes.ConformancePackComplianceSummary]?
     /// The nextToken string returned on a previous page that you use to get the next page of results in a paginated response.
@@ -7611,7 +7612,7 @@ public struct GetConformancePackComplianceSummaryOutput {
     }
 }
 
-public struct GetCustomRulePolicyInput {
+public struct GetCustomRulePolicyInput: Swift.Sendable {
     /// The name of your Config Custom Policy rule.
     public var configRuleName: Swift.String?
 
@@ -7623,7 +7624,7 @@ public struct GetCustomRulePolicyInput {
     }
 }
 
-public struct GetCustomRulePolicyOutput {
+public struct GetCustomRulePolicyOutput: Swift.Sendable {
     /// The policy definition containing the logic for your Config Custom Policy rule.
     public var policyText: Swift.String?
 
@@ -7635,7 +7636,7 @@ public struct GetCustomRulePolicyOutput {
     }
 }
 
-public struct GetDiscoveredResourceCountsInput {
+public struct GetDiscoveredResourceCountsInput: Swift.Sendable {
     /// The maximum number of [ResourceCount] objects returned on each page. The default is 100. You cannot specify a number greater than 100. If you specify 0, Config uses the default.
     public var limit: Swift.Int?
     /// The nextToken string returned on a previous page that you use to get the next page of results in a paginated response.
@@ -7656,8 +7657,9 @@ public struct GetDiscoveredResourceCountsInput {
 }
 
 extension ConfigClientTypes {
+
     /// An object that contains the resource type and the number of resources.
-    public struct ResourceCount {
+    public struct ResourceCount: Swift.Sendable {
         /// The number of resources.
         public var count: Swift.Int
         /// The resource type (for example, "AWS::EC2::Instance").
@@ -7672,10 +7674,9 @@ extension ConfigClientTypes {
             self.resourceType = resourceType
         }
     }
-
 }
 
-public struct GetDiscoveredResourceCountsOutput {
+public struct GetDiscoveredResourceCountsOutput: Swift.Sendable {
     /// The string that you use in a subsequent request to get the next page of results in a paginated response.
     public var nextToken: Swift.String?
     /// The list of ResourceCount objects. Each object is listed in descending order by the number of resources.
@@ -7703,7 +7704,7 @@ public struct GetDiscoveredResourceCountsOutput {
 
 extension ConfigClientTypes {
 
-    public enum MemberAccountRuleStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum MemberAccountRuleStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case createFailed
         case createInProgress
         case createSuccessful
@@ -7752,8 +7753,9 @@ extension ConfigClientTypes {
 }
 
 extension ConfigClientTypes {
+
     /// Status filter object to filter results based on specific member account ID or status type for an organization Config rule.
-    public struct StatusDetailFilters {
+    public struct StatusDetailFilters: Swift.Sendable {
         /// The 12-digit account ID of the member account within an organization.
         public var accountId: Swift.String?
         /// Indicates deployment status for Config rule in the member account. When management account calls PutOrganizationConfigRule action for the first time, Config rule status is created in the member account. When management account calls PutOrganizationConfigRule action for the second time, Config rule status is updated in the member account. Config rule status is deleted when the management account deletes OrganizationConfigRule and disables service access for config-multiaccountsetup.amazonaws.com. Config sets the state of the rule to:
@@ -7786,10 +7788,9 @@ extension ConfigClientTypes {
             self.memberAccountRuleStatus = memberAccountRuleStatus
         }
     }
-
 }
 
-public struct GetOrganizationConfigRuleDetailedStatusInput {
+public struct GetOrganizationConfigRuleDetailedStatusInput: Swift.Sendable {
     /// A StatusDetailFilters object.
     public var filters: ConfigClientTypes.StatusDetailFilters?
     /// The maximum number of OrganizationConfigRuleDetailedStatus returned on each page. If you do not specify a number, Config uses the default. The default is 100.
@@ -7815,8 +7816,9 @@ public struct GetOrganizationConfigRuleDetailedStatusInput {
 }
 
 extension ConfigClientTypes {
+
     /// Organization Config rule creation or deletion status in each member account. This includes the name of the rule, the status, error code and error message when the rule creation or deletion failed.
-    public struct MemberAccountStatus {
+    public struct MemberAccountStatus: Swift.Sendable {
         /// The 12-digit account ID of a member account.
         /// This member is required.
         public var accountId: Swift.String?
@@ -7868,10 +7870,9 @@ extension ConfigClientTypes {
             self.memberAccountRuleStatus = memberAccountRuleStatus
         }
     }
-
 }
 
-public struct GetOrganizationConfigRuleDetailedStatusOutput {
+public struct GetOrganizationConfigRuleDetailedStatusOutput: Swift.Sendable {
     /// The nextToken string returned on a previous page that you use to get the next page of results in a paginated response.
     public var nextToken: Swift.String?
     /// A list of MemberAccountStatus objects.
@@ -7889,7 +7890,7 @@ public struct GetOrganizationConfigRuleDetailedStatusOutput {
 
 extension ConfigClientTypes {
 
-    public enum OrganizationResourceDetailedStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum OrganizationResourceDetailedStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case createFailed
         case createInProgress
         case createSuccessful
@@ -7938,8 +7939,9 @@ extension ConfigClientTypes {
 }
 
 extension ConfigClientTypes {
+
     /// Status filter object to filter results based on specific member account ID or status type for an organization conformance pack.
-    public struct OrganizationResourceDetailedStatusFilters {
+    public struct OrganizationResourceDetailedStatusFilters: Swift.Sendable {
         /// The 12-digit account ID of the member account within an organization.
         public var accountId: Swift.String?
         /// Indicates deployment status for conformance pack in a member account. When management account calls PutOrganizationConformancePack action for the first time, conformance pack status is created in the member account. When management account calls PutOrganizationConformancePack action for the second time, conformance pack status is updated in the member account. Conformance pack status is deleted when the management account deletes OrganizationConformancePack and disables service access for config-multiaccountsetup.amazonaws.com. Config sets the state of the conformance pack to:
@@ -7972,10 +7974,9 @@ extension ConfigClientTypes {
             self.status = status
         }
     }
-
 }
 
-public struct GetOrganizationConformancePackDetailedStatusInput {
+public struct GetOrganizationConformancePackDetailedStatusInput: Swift.Sendable {
     /// An OrganizationResourceDetailedStatusFilters object.
     public var filters: ConfigClientTypes.OrganizationResourceDetailedStatusFilters?
     /// The maximum number of OrganizationConformancePackDetailedStatuses returned on each page. If you do not specify a number, Config uses the default. The default is 100.
@@ -8001,8 +8002,9 @@ public struct GetOrganizationConformancePackDetailedStatusInput {
 }
 
 extension ConfigClientTypes {
+
     /// Organization conformance pack creation or deletion status in each member account. This includes the name of the conformance pack, the status, error code and error message when the conformance pack creation or deletion failed.
-    public struct OrganizationConformancePackDetailedStatus {
+    public struct OrganizationConformancePackDetailedStatus: Swift.Sendable {
         /// The 12-digit account ID of a member account.
         /// This member is required.
         public var accountId: Swift.String?
@@ -8054,10 +8056,9 @@ extension ConfigClientTypes {
             self.status = status
         }
     }
-
 }
 
-public struct GetOrganizationConformancePackDetailedStatusOutput {
+public struct GetOrganizationConformancePackDetailedStatusOutput: Swift.Sendable {
     /// The nextToken string returned on a previous page that you use to get the next page of results in a paginated response.
     public var nextToken: Swift.String?
     /// A list of OrganizationConformancePackDetailedStatus objects.
@@ -8073,7 +8074,7 @@ public struct GetOrganizationConformancePackDetailedStatusOutput {
     }
 }
 
-public struct GetOrganizationCustomRulePolicyInput {
+public struct GetOrganizationCustomRulePolicyInput: Swift.Sendable {
     /// The name of your organization Config Custom Policy rule.
     /// This member is required.
     public var organizationConfigRuleName: Swift.String?
@@ -8086,7 +8087,7 @@ public struct GetOrganizationCustomRulePolicyInput {
     }
 }
 
-public struct GetOrganizationCustomRulePolicyOutput {
+public struct GetOrganizationCustomRulePolicyOutput: Swift.Sendable {
     /// The policy definition containing the logic for your organization Config Custom Policy rule.
     public var policyText: Swift.String?
 
@@ -8124,7 +8125,7 @@ public struct InvalidTimeRangeException: ClientRuntime.ModeledError, AWSClientRu
 }
 
 /// The input for the [GetResourceConfigHistory] action.
-public struct GetResourceConfigHistoryInput {
+public struct GetResourceConfigHistoryInput: Swift.Sendable {
     /// The chronological order for configuration items listed. By default, the results are listed in reverse chronological order.
     public var chronologicalOrder: ConfigClientTypes.ChronologicalOrder?
     /// The chronologically earliest time in the time range for which the history requested. If not specified, the action returns paginated results that contain configuration items that start when the first configuration item was recorded.
@@ -8163,7 +8164,7 @@ public struct GetResourceConfigHistoryInput {
 }
 
 /// The output for the [GetResourceConfigHistory] action.
-public struct GetResourceConfigHistoryOutput {
+public struct GetResourceConfigHistoryOutput: Swift.Sendable {
     /// A list that contains the configuration history of one or more resources.
     public var configurationItems: [ConfigClientTypes.ConfigurationItem]?
     /// The string that you use in a subsequent request to get the next page of results in a paginated response.
@@ -8179,7 +8180,7 @@ public struct GetResourceConfigHistoryOutput {
     }
 }
 
-public struct GetResourceEvaluationSummaryInput {
+public struct GetResourceEvaluationSummaryInput: Swift.Sendable {
     /// The unique ResourceEvaluationId of Amazon Web Services resource execution for which you want to retrieve the evaluation summary.
     /// This member is required.
     public var resourceEvaluationId: Swift.String?
@@ -8194,7 +8195,7 @@ public struct GetResourceEvaluationSummaryInput {
 
 extension ConfigClientTypes {
 
-    public enum ResourceConfigurationSchemaType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ResourceConfigurationSchemaType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case cfnResourceSchema
         case sdkUnknown(Swift.String)
 
@@ -8219,8 +8220,9 @@ extension ConfigClientTypes {
 }
 
 extension ConfigClientTypes {
+
     /// Returns information about the resource being evaluated.
-    public struct ResourceDetails {
+    public struct ResourceDetails: Swift.Sendable {
         /// The resource definition to be evaluated as per the resource configuration schema type.
         /// This member is required.
         public var resourceConfiguration: Swift.String?
@@ -8246,10 +8248,9 @@ extension ConfigClientTypes {
             self.resourceType = resourceType
         }
     }
-
 }
 
-public struct GetResourceEvaluationSummaryOutput {
+public struct GetResourceEvaluationSummaryOutput: Swift.Sendable {
     /// The compliance status of the resource evaluation summary.
     public var compliance: ConfigClientTypes.ComplianceType?
     /// Returns an EvaluationContext object.
@@ -8285,7 +8286,7 @@ public struct GetResourceEvaluationSummaryOutput {
     }
 }
 
-public struct GetStoredQueryInput {
+public struct GetStoredQueryInput: Swift.Sendable {
     /// The name of the query.
     /// This member is required.
     public var queryName: Swift.String?
@@ -8299,8 +8300,9 @@ public struct GetStoredQueryInput {
 }
 
 extension ConfigClientTypes {
+
     /// Provides the details of a stored query.
-    public struct StoredQuery {
+    public struct StoredQuery: Swift.Sendable {
         /// A unique description for the query.
         public var description: Swift.String?
         /// The expression of the query. For example, SELECT resourceId, resourceType, supplementaryConfiguration.BucketVersioningConfiguration.status WHERE resourceType = 'AWS::S3::Bucket' AND supplementaryConfiguration.BucketVersioningConfiguration.status = 'Off'.
@@ -8328,10 +8330,9 @@ extension ConfigClientTypes {
             self.queryName = queryName
         }
     }
-
 }
 
-public struct GetStoredQueryOutput {
+public struct GetStoredQueryOutput: Swift.Sendable {
     /// Returns a StoredQuery object.
     public var storedQuery: ConfigClientTypes.StoredQuery?
 
@@ -8658,8 +8659,9 @@ public struct LimitExceededException: ClientRuntime.ModeledError, AWSClientRunti
 }
 
 extension ConfigClientTypes {
+
     /// Filters the results by resource account ID, region, resource ID, and resource name.
-    public struct ResourceFilters {
+    public struct ResourceFilters: Swift.Sendable {
         /// The 12-digit source account ID.
         public var accountId: Swift.String?
         /// The source region.
@@ -8682,10 +8684,9 @@ extension ConfigClientTypes {
             self.resourceName = resourceName
         }
     }
-
 }
 
-public struct ListAggregateDiscoveredResourcesInput {
+public struct ListAggregateDiscoveredResourcesInput: Swift.Sendable {
     /// The name of the configuration aggregator.
     /// This member is required.
     public var configurationAggregatorName: Swift.String?
@@ -8715,7 +8716,7 @@ public struct ListAggregateDiscoveredResourcesInput {
     }
 }
 
-public struct ListAggregateDiscoveredResourcesOutput {
+public struct ListAggregateDiscoveredResourcesOutput: Swift.Sendable {
     /// The nextToken string returned on a previous page that you use to get the next page of results in a paginated response.
     public var nextToken: Swift.String?
     /// Returns a list of ResourceIdentifiers objects.
@@ -8733,7 +8734,7 @@ public struct ListAggregateDiscoveredResourcesOutput {
 
 extension ConfigClientTypes {
 
-    public enum SortBy: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SortBy: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case score
         case sdkUnknown(Swift.String)
 
@@ -8759,7 +8760,7 @@ extension ConfigClientTypes {
 
 extension ConfigClientTypes {
 
-    public enum SortOrder: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SortOrder: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case ascending
         case descending
         case sdkUnknown(Swift.String)
@@ -8786,7 +8787,7 @@ extension ConfigClientTypes {
     }
 }
 
-public struct ListConformancePackComplianceScoresInput {
+public struct ListConformancePackComplianceScoresInput: Swift.Sendable {
     /// Filters the results based on the ConformancePackComplianceScoresFilters.
     public var filters: ConfigClientTypes.ConformancePackComplianceScoresFilters?
     /// The maximum number of conformance pack compliance scores returned on each page.
@@ -8814,7 +8815,7 @@ public struct ListConformancePackComplianceScoresInput {
     }
 }
 
-public struct ListConformancePackComplianceScoresOutput {
+public struct ListConformancePackComplianceScoresOutput: Swift.Sendable {
     /// A list of ConformancePackComplianceScore objects.
     /// This member is required.
     public var conformancePackComplianceScores: [ConfigClientTypes.ConformancePackComplianceScore]?
@@ -8832,7 +8833,7 @@ public struct ListConformancePackComplianceScoresOutput {
 }
 
 ///
-public struct ListDiscoveredResourcesInput {
+public struct ListDiscoveredResourcesInput: Swift.Sendable {
     /// Specifies whether Config includes deleted resources in the results. By default, deleted resources are not included.
     public var includeDeletedResources: Swift.Bool?
     /// The maximum number of resource identifiers returned on each page. The default is 100. You cannot specify a number greater than 100. If you specify 0, Config uses the default.
@@ -8866,8 +8867,9 @@ public struct ListDiscoveredResourcesInput {
 }
 
 extension ConfigClientTypes {
+
     /// The details that identify a resource that is discovered by Config, including the resource type, ID, and (if available) the custom resource name.
-    public struct ResourceIdentifier {
+    public struct ResourceIdentifier: Swift.Sendable {
         /// The time that the resource was deleted.
         public var resourceDeletionTime: Foundation.Date?
         /// The ID of the resource (for example, sg-xxxxxx).
@@ -8890,11 +8892,10 @@ extension ConfigClientTypes {
             self.resourceType = resourceType
         }
     }
-
 }
 
 ///
-public struct ListDiscoveredResourcesOutput {
+public struct ListDiscoveredResourcesOutput: Swift.Sendable {
     /// The string that you use in a subsequent request to get the next page of results in a paginated response.
     public var nextToken: Swift.String?
     /// The details that identify a resource that is discovered by Config, including the resource type, ID, and (if available) the custom resource name.
@@ -8911,8 +8912,9 @@ public struct ListDiscoveredResourcesOutput {
 }
 
 extension ConfigClientTypes {
+
     /// Filters evaluation results based on start and end times.
-    public struct TimeWindow {
+    public struct TimeWindow: Swift.Sendable {
         /// The end time of an execution. The end time must be after the start date.
         public var endTime: Foundation.Date?
         /// The start time of an execution.
@@ -8927,12 +8929,12 @@ extension ConfigClientTypes {
             self.startTime = startTime
         }
     }
-
 }
 
 extension ConfigClientTypes {
+
     /// Returns details of a resource evaluation based on the selected filter.
-    public struct ResourceEvaluationFilters {
+    public struct ResourceEvaluationFilters: Swift.Sendable {
         /// Filters evaluations for a given infrastructure deployment. For example: CFN Stack.
         public var evaluationContextIdentifier: Swift.String?
         /// Filters all resource evaluations results based on an evaluation mode. Currently, DECTECTIVE is not supported as a valid value. Ignore other documentation stating otherwise.
@@ -8951,10 +8953,9 @@ extension ConfigClientTypes {
             self.timeWindow = timeWindow
         }
     }
-
 }
 
-public struct ListResourceEvaluationsInput {
+public struct ListResourceEvaluationsInput: Swift.Sendable {
     /// Returns a ResourceEvaluationFilters object.
     public var filters: ConfigClientTypes.ResourceEvaluationFilters?
     /// The maximum number of evaluations returned on each page. The default is 10. You cannot specify a number greater than 100. If you specify 0, Config uses the default.
@@ -8975,8 +8976,9 @@ public struct ListResourceEvaluationsInput {
 }
 
 extension ConfigClientTypes {
+
     /// Returns details of a resource evaluation.
-    public struct ResourceEvaluation {
+    public struct ResourceEvaluation: Swift.Sendable {
         /// The mode of an evaluation. The valid values are Detective or Proactive.
         public var evaluationMode: ConfigClientTypes.EvaluationMode?
         /// The starting time of an execution.
@@ -8995,10 +8997,9 @@ extension ConfigClientTypes {
             self.resourceEvaluationId = resourceEvaluationId
         }
     }
-
 }
 
-public struct ListResourceEvaluationsOutput {
+public struct ListResourceEvaluationsOutput: Swift.Sendable {
     /// The nextToken string returned on a previous page that you use to get the next page of results in a paginated response.
     public var nextToken: Swift.String?
     /// Returns a ResourceEvaluations object.
@@ -9014,7 +9015,7 @@ public struct ListResourceEvaluationsOutput {
     }
 }
 
-public struct ListStoredQueriesInput {
+public struct ListStoredQueriesInput: Swift.Sendable {
     /// The maximum number of results to be returned with a single call.
     public var maxResults: Swift.Int?
     /// The nextToken string returned in a previous request that you use to request the next page of results in a paginated response.
@@ -9031,8 +9032,9 @@ public struct ListStoredQueriesInput {
 }
 
 extension ConfigClientTypes {
+
     /// Returns details of a specific query.
-    public struct StoredQueryMetadata {
+    public struct StoredQueryMetadata: Swift.Sendable {
         /// A unique description for the query.
         public var description: Swift.String?
         /// Amazon Resource Name (ARN) of the query. For example, arn:partition:service:region:account-id:resource-type/resource-name/resource-id.
@@ -9058,10 +9060,9 @@ extension ConfigClientTypes {
             self.queryName = queryName
         }
     }
-
 }
 
-public struct ListStoredQueriesOutput {
+public struct ListStoredQueriesOutput: Swift.Sendable {
     /// If the previous paginated request didn't return all of the remaining results, the response object's NextToken parameter value is set to a token. To retrieve the next set of results, call this action again and assign that token to the request object's NextToken parameter. If there are no remaining results, the previous response object's NextToken parameter is set to null.
     public var nextToken: Swift.String?
     /// A list of StoredQueryMetadata objects.
@@ -9077,7 +9078,7 @@ public struct ListStoredQueriesOutput {
     }
 }
 
-public struct ListTagsForResourceInput {
+public struct ListTagsForResourceInput: Swift.Sendable {
     /// The maximum number of tags returned on each page. The limit maximum is 50. You cannot specify a number greater than 50. If you specify 0, Config uses the default.
     public var limit: Swift.Int?
     /// The nextToken string returned on a previous page that you use to get the next page of results in a paginated response.
@@ -9099,8 +9100,9 @@ public struct ListTagsForResourceInput {
 }
 
 extension ConfigClientTypes {
+
     /// The tags for the resource. The metadata that you apply to a resource to help you categorize and organize them. Each tag consists of a key and an optional value, both of which you define. Tag keys can have a maximum character length of 128 characters, and tag values can have a maximum length of 256 characters.
-    public struct Tag {
+    public struct Tag: Swift.Sendable {
         /// One part of a key-value pair that make up a tag. A key is a general label that acts like a category for more specific tag values.
         public var key: Swift.String?
         /// The optional part of a key-value pair that make up a tag. A value acts as a descriptor within a tag category (key).
@@ -9115,10 +9117,9 @@ extension ConfigClientTypes {
             self.value = value
         }
     }
-
 }
 
-public struct ListTagsForResourceOutput {
+public struct ListTagsForResourceOutput: Swift.Sendable {
     /// The nextToken string returned on a previous page that you use to get the next page of results in a paginated response.
     public var nextToken: Swift.String?
     /// The tags for the resource.
@@ -9460,8 +9461,9 @@ public struct OrganizationConformancePackTemplateValidationException: ClientRunt
 }
 
 extension ConfigClientTypes {
+
     /// An object that specifies metadata for your organization's Config Custom Policy rule. The metadata includes the runtime system in use, which accounts have debug logging enabled, and other custom rule metadata, such as resource type, resource ID of Amazon Web Services resource, and organization trigger types that initiate Config to evaluate Amazon Web Services resources against a rule.
-    public struct OrganizationCustomPolicyRuleMetadata {
+    public struct OrganizationCustomPolicyRuleMetadata: Swift.Sendable {
         /// A list of accounts that you can enable debug logging for your organization Config Custom Policy rule. List is null when debug logging is enabled for all accounts.
         public var debugLogDeliveryAccounts: [Swift.String]?
         /// The description that you provide for your organization Config Custom Policy rule.
@@ -9518,10 +9520,9 @@ extension ConfigClientTypes {
             self.tagValueScope = tagValueScope
         }
     }
-
 }
 
-public struct PutAggregationAuthorizationInput {
+public struct PutAggregationAuthorizationInput: Swift.Sendable {
     /// The 12-digit account ID of the account authorized to aggregate data.
     /// This member is required.
     public var authorizedAccountId: Swift.String?
@@ -9543,7 +9544,7 @@ public struct PutAggregationAuthorizationInput {
     }
 }
 
-public struct PutAggregationAuthorizationOutput {
+public struct PutAggregationAuthorizationOutput: Swift.Sendable {
     /// Returns an AggregationAuthorization object.
     public var aggregationAuthorization: ConfigClientTypes.AggregationAuthorization?
 
@@ -9555,7 +9556,7 @@ public struct PutAggregationAuthorizationOutput {
     }
 }
 
-public struct PutConfigRuleInput {
+public struct PutConfigRuleInput: Swift.Sendable {
     /// The rule that you want to add to your account.
     /// This member is required.
     public var configRule: ConfigClientTypes.ConfigRule?
@@ -9572,7 +9573,7 @@ public struct PutConfigRuleInput {
     }
 }
 
-public struct PutConfigurationAggregatorInput {
+public struct PutConfigurationAggregatorInput: Swift.Sendable {
     /// A list of AccountAggregationSource object.
     public var accountAggregationSources: [ConfigClientTypes.AccountAggregationSource]?
     /// The name of the configuration aggregator.
@@ -9597,7 +9598,7 @@ public struct PutConfigurationAggregatorInput {
     }
 }
 
-public struct PutConfigurationAggregatorOutput {
+public struct PutConfigurationAggregatorOutput: Swift.Sendable {
     /// Returns a ConfigurationAggregator object.
     public var configurationAggregator: ConfigClientTypes.ConfigurationAggregator?
 
@@ -9610,7 +9611,7 @@ public struct PutConfigurationAggregatorOutput {
 }
 
 /// The input for the [PutConfigurationRecorder] action.
-public struct PutConfigurationRecorderInput {
+public struct PutConfigurationRecorderInput: Swift.Sendable {
     /// An object for the configuration recorder to record configuration changes for specified resource types.
     /// This member is required.
     public var configurationRecorder: ConfigClientTypes.ConfigurationRecorder?
@@ -9623,7 +9624,7 @@ public struct PutConfigurationRecorderInput {
     }
 }
 
-public struct PutConformancePackInput {
+public struct PutConformancePackInput: Swift.Sendable {
     /// A list of ConformancePackInputParameter objects.
     public var conformancePackInputParameters: [ConfigClientTypes.ConformancePackInputParameter]?
     /// The unique name of the conformance pack you want to deploy.
@@ -9660,7 +9661,7 @@ public struct PutConformancePackInput {
     }
 }
 
-public struct PutConformancePackOutput {
+public struct PutConformancePackOutput: Swift.Sendable {
     /// ARN of the conformance pack.
     public var conformancePackArn: Swift.String?
 
@@ -9673,7 +9674,7 @@ public struct PutConformancePackOutput {
 }
 
 /// The input for the [PutDeliveryChannel] action.
-public struct PutDeliveryChannelInput {
+public struct PutDeliveryChannelInput: Swift.Sendable {
     /// The configuration delivery channel object that delivers the configuration information to an Amazon S3 bucket and to an Amazon SNS topic.
     /// This member is required.
     public var deliveryChannel: ConfigClientTypes.DeliveryChannel?
@@ -9687,7 +9688,7 @@ public struct PutDeliveryChannelInput {
 }
 
 ///
-public struct PutEvaluationsInput {
+public struct PutEvaluationsInput: Swift.Sendable {
     /// The assessments that the Lambda function performs. Each evaluation identifies an Amazon Web Services resource and indicates whether it complies with the Config rule that invokes the Lambda function.
     public var evaluations: [ConfigClientTypes.Evaluation]?
     /// An encrypted token that associates an evaluation with an Config rule. Identifies the rule and the event that triggered the evaluation.
@@ -9709,7 +9710,7 @@ public struct PutEvaluationsInput {
 }
 
 ///
-public struct PutEvaluationsOutput {
+public struct PutEvaluationsOutput: Swift.Sendable {
     /// Requests that failed because of a client or server error.
     public var failedEvaluations: [ConfigClientTypes.Evaluation]?
 
@@ -9721,7 +9722,7 @@ public struct PutEvaluationsOutput {
     }
 }
 
-public struct PutExternalEvaluationInput {
+public struct PutExternalEvaluationInput: Swift.Sendable {
     /// The name of the Config rule.
     /// This member is required.
     public var configRuleName: Swift.String?
@@ -9739,12 +9740,12 @@ public struct PutExternalEvaluationInput {
     }
 }
 
-public struct PutExternalEvaluationOutput {
+public struct PutExternalEvaluationOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct PutOrganizationConfigRuleInput {
+public struct PutOrganizationConfigRuleInput: Swift.Sendable {
     /// A comma-separated list of accounts that you want to exclude from an organization Config rule.
     public var excludedAccounts: [Swift.String]?
     /// The name that you assign to an organization Config rule.
@@ -9773,7 +9774,7 @@ public struct PutOrganizationConfigRuleInput {
     }
 }
 
-public struct PutOrganizationConfigRuleOutput {
+public struct PutOrganizationConfigRuleOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of an organization Config rule.
     public var organizationConfigRuleArn: Swift.String?
 
@@ -9785,7 +9786,7 @@ public struct PutOrganizationConfigRuleOutput {
     }
 }
 
-public struct PutOrganizationConformancePackInput {
+public struct PutOrganizationConformancePackInput: Swift.Sendable {
     /// A list of ConformancePackInputParameter objects.
     public var conformancePackInputParameters: [ConfigClientTypes.ConformancePackInputParameter]?
     /// The name of the Amazon S3 bucket where Config stores conformance pack templates. This field is optional. If used, it must be prefixed with awsconfigconforms.
@@ -9822,7 +9823,7 @@ public struct PutOrganizationConformancePackInput {
     }
 }
 
-public struct PutOrganizationConformancePackOutput {
+public struct PutOrganizationConformancePackOutput: Swift.Sendable {
     /// ARN of the organization conformance pack.
     public var organizationConformancePackArn: Swift.String?
 
@@ -9834,7 +9835,7 @@ public struct PutOrganizationConformancePackOutput {
     }
 }
 
-public struct PutRemediationConfigurationsInput {
+public struct PutRemediationConfigurationsInput: Swift.Sendable {
     /// A list of remediation configuration objects.
     /// This member is required.
     public var remediationConfigurations: [ConfigClientTypes.RemediationConfiguration]?
@@ -9847,7 +9848,7 @@ public struct PutRemediationConfigurationsInput {
     }
 }
 
-public struct PutRemediationConfigurationsOutput {
+public struct PutRemediationConfigurationsOutput: Swift.Sendable {
     /// Returns a list of failed remediation batch objects.
     public var failedBatches: [ConfigClientTypes.FailedRemediationBatch]?
 
@@ -9859,7 +9860,7 @@ public struct PutRemediationConfigurationsOutput {
     }
 }
 
-public struct PutRemediationExceptionsInput {
+public struct PutRemediationExceptionsInput: Swift.Sendable {
     /// The name of the Config rule for which you want to create remediation exception.
     /// This member is required.
     public var configRuleName: Swift.String?
@@ -9885,7 +9886,7 @@ public struct PutRemediationExceptionsInput {
     }
 }
 
-public struct PutRemediationExceptionsOutput {
+public struct PutRemediationExceptionsOutput: Swift.Sendable {
     /// Returns a list of failed remediation exceptions batch objects. Each object in the batch consists of a list of failed items and failure messages.
     public var failedBatches: [ConfigClientTypes.FailedRemediationExceptionBatch]?
 
@@ -9897,7 +9898,7 @@ public struct PutRemediationExceptionsOutput {
     }
 }
 
-public struct PutResourceConfigInput {
+public struct PutResourceConfigInput: Swift.Sendable {
     /// The configuration object of the resource in valid JSON format. It must match the schema registered with CloudFormation. The configuration JSON must not exceed 64 KB.
     /// This member is required.
     public var configuration: Swift.String?
@@ -9933,7 +9934,7 @@ public struct PutResourceConfigInput {
     }
 }
 
-public struct PutRetentionConfigurationInput {
+public struct PutRetentionConfigurationInput: Swift.Sendable {
     /// Number of days Config stores your historical information. Currently, only applicable to the configuration item history.
     /// This member is required.
     public var retentionPeriodInDays: Swift.Int?
@@ -9946,7 +9947,7 @@ public struct PutRetentionConfigurationInput {
     }
 }
 
-public struct PutRetentionConfigurationOutput {
+public struct PutRetentionConfigurationOutput: Swift.Sendable {
     /// Returns a retention configuration object.
     public var retentionConfiguration: ConfigClientTypes.RetentionConfiguration?
 
@@ -10007,7 +10008,7 @@ public struct TooManyTagsException: ClientRuntime.ModeledError, AWSClientRuntime
     }
 }
 
-public struct PutStoredQueryInput {
+public struct PutStoredQueryInput: Swift.Sendable {
     /// A list of StoredQuery objects. The mandatory fields are QueryName and Expression. When you are creating a query, you must provide a query name and an expression. When you are updating a query, you must provide a query name but updating the description is optional.
     /// This member is required.
     public var storedQuery: ConfigClientTypes.StoredQuery?
@@ -10024,7 +10025,7 @@ public struct PutStoredQueryInput {
     }
 }
 
-public struct PutStoredQueryOutput {
+public struct PutStoredQueryOutput: Swift.Sendable {
     /// Amazon Resource Name (ARN) of the query. For example, arn:partition:service:region:account-id:resource-type/resource-name/resource-id.
     public var queryArn: Swift.String?
 
@@ -10037,8 +10038,9 @@ public struct PutStoredQueryOutput {
 }
 
 extension ConfigClientTypes {
+
     /// Details about the query.
-    public struct QueryInfo {
+    public struct QueryInfo: Swift.Sendable {
         /// Returns a FieldInfo object.
         public var selectFields: [ConfigClientTypes.FieldInfo]?
 
@@ -10049,10 +10051,9 @@ extension ConfigClientTypes {
             self.selectFields = selectFields
         }
     }
-
 }
 
-public struct SelectAggregateResourceConfigInput {
+public struct SelectAggregateResourceConfigInput: Swift.Sendable {
     /// The name of the configuration aggregator.
     /// This member is required.
     public var configurationAggregatorName: Swift.String?
@@ -10082,7 +10083,7 @@ public struct SelectAggregateResourceConfigInput {
     }
 }
 
-public struct SelectAggregateResourceConfigOutput {
+public struct SelectAggregateResourceConfigOutput: Swift.Sendable {
     /// The nextToken string returned in a previous request that you use to request the next page of results in a paginated response.
     public var nextToken: Swift.String?
     /// Details about the query.
@@ -10102,7 +10103,7 @@ public struct SelectAggregateResourceConfigOutput {
     }
 }
 
-public struct SelectResourceConfigInput {
+public struct SelectResourceConfigInput: Swift.Sendable {
     /// The SQL query SELECT command.
     /// This member is required.
     public var expression: Swift.String?
@@ -10123,7 +10124,7 @@ public struct SelectResourceConfigInput {
     }
 }
 
-public struct SelectResourceConfigOutput {
+public struct SelectResourceConfigOutput: Swift.Sendable {
     /// The nextToken string returned in a previous request that you use to request the next page of results in a paginated response.
     public var nextToken: Swift.String?
     /// Returns the QueryInfo object.
@@ -10144,7 +10145,7 @@ public struct SelectResourceConfigOutput {
 }
 
 ///
-public struct StartConfigRulesEvaluationInput {
+public struct StartConfigRulesEvaluationInput: Swift.Sendable {
     /// The list of names of Config rules that you want to run evaluations for.
     public var configRuleNames: [Swift.String]?
 
@@ -10157,13 +10158,13 @@ public struct StartConfigRulesEvaluationInput {
 }
 
 /// The output when you start the evaluation for the specified Config rule.
-public struct StartConfigRulesEvaluationOutput {
+public struct StartConfigRulesEvaluationOutput: Swift.Sendable {
 
     public init() { }
 }
 
 /// The input for the [StartConfigurationRecorder] action.
-public struct StartConfigurationRecorderInput {
+public struct StartConfigurationRecorderInput: Swift.Sendable {
     /// The name of the recorder object that records each configuration change made to the resources.
     /// This member is required.
     public var configurationRecorderName: Swift.String?
@@ -10176,7 +10177,7 @@ public struct StartConfigurationRecorderInput {
     }
 }
 
-public struct StartRemediationExecutionInput {
+public struct StartRemediationExecutionInput: Swift.Sendable {
     /// The list of names of Config rules that you want to run remediation execution for.
     /// This member is required.
     public var configRuleName: Swift.String?
@@ -10194,7 +10195,7 @@ public struct StartRemediationExecutionInput {
     }
 }
 
-public struct StartRemediationExecutionOutput {
+public struct StartRemediationExecutionOutput: Swift.Sendable {
     /// For resources that have failed to start execution, the API returns a resource key object.
     public var failedItems: [ConfigClientTypes.ResourceKey]?
     /// Returns a failure message. For example, the resource is already compliant.
@@ -10210,7 +10211,7 @@ public struct StartRemediationExecutionOutput {
     }
 }
 
-public struct StartResourceEvaluationInput {
+public struct StartResourceEvaluationInput: Swift.Sendable {
     /// A client token is a unique, case-sensitive string of up to 64 ASCII characters. To make an idempotent API request using one of these actions, specify a client token in the request. Avoid reusing the same client token for other API requests. If you retry a request that completed successfully using the same client token and the same parameters, the retry succeeds without performing any further actions. If you retry a successful request using the same client token, but one or more of the parameters are different, other than the Region or Availability Zone, the retry fails with an IdempotentParameterMismatch error.
     public var clientToken: Swift.String?
     /// Returns an EvaluationContext object.
@@ -10240,7 +10241,7 @@ public struct StartResourceEvaluationInput {
     }
 }
 
-public struct StartResourceEvaluationOutput {
+public struct StartResourceEvaluationOutput: Swift.Sendable {
     /// A unique ResourceEvaluationId that is associated with a single execution.
     public var resourceEvaluationId: Swift.String?
 
@@ -10253,7 +10254,7 @@ public struct StartResourceEvaluationOutput {
 }
 
 /// The input for the [StopConfigurationRecorder] action.
-public struct StopConfigurationRecorderInput {
+public struct StopConfigurationRecorderInput: Swift.Sendable {
     /// The name of the recorder object that records each configuration change made to the resources.
     /// This member is required.
     public var configurationRecorderName: Swift.String?
@@ -10266,7 +10267,7 @@ public struct StopConfigurationRecorderInput {
     }
 }
 
-public struct TagResourceInput {
+public struct TagResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) that identifies the resource for which to list the tags. Currently, the supported resources are ConfigRule, ConfigurationAggregator and AggregatorAuthorization.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -10284,7 +10285,7 @@ public struct TagResourceInput {
     }
 }
 
-public struct UntagResourceInput {
+public struct UntagResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) that identifies the resource for which to list the tags. Currently, the supported resources are ConfigRule, ConfigurationAggregator and AggregatorAuthorization.
     /// This member is required.
     public var resourceArn: Swift.String?

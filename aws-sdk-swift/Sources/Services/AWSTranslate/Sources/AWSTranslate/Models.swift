@@ -25,14 +25,16 @@ import protocol ClientRuntime.ModeledError
 @_spi(SmithyReadWrite) import struct AWSClientRuntime.AWSJSONError
 @_spi(UnknownAWSHTTPServiceError) import struct AWSClientRuntime.UnknownAWSHTTPServiceError
 
-public struct DeleteTerminologyOutput {
+
+public struct DeleteTerminologyOutput: Swift.Sendable {
 
     public init() { }
 }
 
 extension TranslateClientTypes {
+
     /// The term being translated by the custom terminology.
-    public struct Term {
+    public struct Term: Swift.Sendable {
         /// The source text of the term being translated by the custom terminology.
         public var sourceText: Swift.String?
         /// The target text of the term being translated by the custom terminology.
@@ -47,12 +49,12 @@ extension TranslateClientTypes {
             self.targetText = targetText
         }
     }
-
 }
 
 extension TranslateClientTypes {
+
     /// The custom terminology applied to the input text by Amazon Translate for the translated text response. This is optional in the response and will only be present if you specified terminology input in the request. Currently, only one terminology can be applied per TranslateText request.
-    public struct AppliedTerminology {
+    public struct AppliedTerminology: Swift.Sendable {
         /// The name of the custom terminology applied to the input text by Amazon Translate for the translated text response.
         public var name: Swift.String?
         /// The specific terms of the custom terminology applied to the input text by Amazon Translate for the translated text response. A maximum of 250 terms will be returned, and the specific terms applied will be the first 250 terms in the source text.
@@ -67,7 +69,6 @@ extension TranslateClientTypes {
             self.terms = terms
         }
     }
-
 }
 
 /// Another modification is being made. That modification must complete before you can make your change.
@@ -267,7 +268,7 @@ public struct TooManyTagsException: ClientRuntime.ModeledError, AWSClientRuntime
 
 extension TranslateClientTypes {
 
-    public enum EncryptionKeyType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum EncryptionKeyType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case kms
         case sdkUnknown(Swift.String)
 
@@ -292,8 +293,9 @@ extension TranslateClientTypes {
 }
 
 extension TranslateClientTypes {
+
     /// The encryption key used to encrypt this object.
-    public struct EncryptionKey {
+    public struct EncryptionKey: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the encryption key being used to encrypt this object.
         /// This member is required.
         public var id: Swift.String?
@@ -310,12 +312,11 @@ extension TranslateClientTypes {
             self.type = type
         }
     }
-
 }
 
 extension TranslateClientTypes {
 
-    public enum ParallelDataFormat: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ParallelDataFormat: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case csv
         case tmx
         case tsv
@@ -346,8 +347,9 @@ extension TranslateClientTypes {
 }
 
 extension TranslateClientTypes {
+
     /// Specifies the format and S3 location of the parallel data input file.
-    public struct ParallelDataConfig {
+    public struct ParallelDataConfig: Swift.Sendable {
         /// The format of the parallel data input file.
         public var format: TranslateClientTypes.ParallelDataFormat?
         /// The URI of the Amazon S3 folder that contains the parallel data input file. The folder must be in the same Region as the API endpoint you are calling.
@@ -362,12 +364,12 @@ extension TranslateClientTypes {
             self.s3Uri = s3Uri
         }
     }
-
 }
 
 extension TranslateClientTypes {
+
     /// A key-value pair that adds as a metadata to a resource used by Amazon Translate.
-    public struct Tag {
+    public struct Tag: Swift.Sendable {
         /// The initial part of a key-value pair that forms a tag associated with a given resource.
         /// This member is required.
         public var key: Swift.String?
@@ -384,10 +386,9 @@ extension TranslateClientTypes {
             self.value = value
         }
     }
-
 }
 
-public struct CreateParallelDataInput {
+public struct CreateParallelDataInput: Swift.Sendable {
     /// A unique identifier for the request. This token is automatically generated when you use Amazon Translate through an AWS SDK.
     /// This member is required.
     public var clientToken: Swift.String?
@@ -424,7 +425,7 @@ public struct CreateParallelDataInput {
 
 extension TranslateClientTypes {
 
-    public enum ParallelDataStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ParallelDataStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case active
         case creating
         case deleting
@@ -460,7 +461,7 @@ extension TranslateClientTypes {
     }
 }
 
-public struct CreateParallelDataOutput {
+public struct CreateParallelDataOutput: Swift.Sendable {
     /// The custom name that you assigned to the parallel data resource.
     public var name: Swift.String?
     /// The status of the parallel data resource. When the resource is ready for you to use, the status is ACTIVE.
@@ -500,7 +501,7 @@ public struct ResourceNotFoundException: ClientRuntime.ModeledError, AWSClientRu
     }
 }
 
-public struct DeleteParallelDataInput {
+public struct DeleteParallelDataInput: Swift.Sendable {
     /// The name of the parallel data resource that is being deleted.
     /// This member is required.
     public var name: Swift.String?
@@ -513,7 +514,7 @@ public struct DeleteParallelDataInput {
     }
 }
 
-public struct DeleteParallelDataOutput {
+public struct DeleteParallelDataOutput: Swift.Sendable {
     /// The name of the parallel data resource that is being deleted.
     public var name: Swift.String?
     /// The status of the parallel data deletion.
@@ -529,7 +530,7 @@ public struct DeleteParallelDataOutput {
     }
 }
 
-public struct DeleteTerminologyInput {
+public struct DeleteTerminologyInput: Swift.Sendable {
     /// The name of the custom terminology being deleted.
     /// This member is required.
     public var name: Swift.String?
@@ -542,7 +543,7 @@ public struct DeleteTerminologyInput {
     }
 }
 
-public struct DescribeTextTranslationJobInput {
+public struct DescribeTextTranslationJobInput: Swift.Sendable {
     /// The identifier that Amazon Translate generated for the job. The [StartTextTranslationJob] operation returns this identifier in its response.
     /// This member is required.
     public var jobId: Swift.String?
@@ -556,8 +557,9 @@ public struct DescribeTextTranslationJobInput {
 }
 
 extension TranslateClientTypes {
+
     /// The input configuration properties for requesting a batch translation job.
-    public struct InputDataConfig {
+    public struct InputDataConfig: Swift.Sendable {
         /// Describes the format of the data that you submit to Amazon Translate as input. You can specify one of the following multipurpose internet mail extension (MIME) types:
         ///
         /// * text/html: The input data consists of one or more HTML files. Amazon Translate translates only the text that resides in the html element in each file.
@@ -589,12 +591,12 @@ extension TranslateClientTypes {
             self.s3Uri = s3Uri
         }
     }
-
 }
 
 extension TranslateClientTypes {
+
     /// The number of documents successfully and unsuccessfully processed during a translation job.
-    public struct JobDetails {
+    public struct JobDetails: Swift.Sendable {
         /// The number of documents that could not be processed during a translation job.
         public var documentsWithErrorsCount: Swift.Int?
         /// The number of documents used as input in a translation job.
@@ -613,12 +615,11 @@ extension TranslateClientTypes {
             self.translatedDocumentsCount = translatedDocumentsCount
         }
     }
-
 }
 
 extension TranslateClientTypes {
 
-    public enum JobStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum JobStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case completed
         case completedWithError
         case failed
@@ -661,8 +662,9 @@ extension TranslateClientTypes {
 }
 
 extension TranslateClientTypes {
+
     /// The output configuration properties for a batch translation job.
-    public struct OutputDataConfig {
+    public struct OutputDataConfig: Swift.Sendable {
         /// The encryption key used to encrypt this object.
         public var encryptionKey: TranslateClientTypes.EncryptionKey?
         /// The URI of the S3 folder that contains a translation job's output file. The folder must be in the same Region as the API endpoint that you are calling.
@@ -678,12 +680,11 @@ extension TranslateClientTypes {
             self.s3Uri = s3Uri
         }
     }
-
 }
 
 extension TranslateClientTypes {
 
-    public enum Brevity: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Brevity: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case on
         case sdkUnknown(Swift.String)
 
@@ -709,7 +710,7 @@ extension TranslateClientTypes {
 
 extension TranslateClientTypes {
 
-    public enum Formality: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Formality: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case formal
         case informal
         case sdkUnknown(Swift.String)
@@ -738,7 +739,7 @@ extension TranslateClientTypes {
 
 extension TranslateClientTypes {
 
-    public enum Profanity: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Profanity: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case mask
         case sdkUnknown(Swift.String)
 
@@ -763,6 +764,7 @@ extension TranslateClientTypes {
 }
 
 extension TranslateClientTypes {
+
     /// Settings to configure your translation output. You can configure the following options:
     ///
     /// * Brevity: reduces the length of the translation output for most translations. Available for TranslateText only.
@@ -770,7 +772,7 @@ extension TranslateClientTypes {
     /// * Formality: sets the formality level of the translation output.
     ///
     /// * Profanity: masks profane words and phrases in the translation output.
-    public struct TranslationSettings {
+    public struct TranslationSettings: Swift.Sendable {
         /// When you turn on brevity, Amazon Translate reduces the length of the translation output for most translations (when compared with the same translation with brevity turned off). By default, brevity is turned off. If you turn on brevity for a translation request with an unsupported language pair, the translation proceeds with the brevity setting turned off. For the language pairs that brevity supports, see [Using brevity](https://docs.aws.amazon.com/translate/latest/dg/customizing-translations-brevity) in the Amazon Translate Developer Guide.
         public var brevity: TranslateClientTypes.Brevity?
         /// You can specify the desired level of formality for translations to supported target languages. The formality setting controls the level of formal language usage (also known as [register](https://en.wikipedia.org/wiki/Register_(sociolinguistics))) in the translation output. You can set the value to informal or formal. If you don't specify a value for formality, or if the target language doesn't support formality, the translation will ignore the formality setting. If you specify multiple target languages for the job, translate ignores the formality setting for any unsupported target language. For a list of target languages that support formality, see [Supported languages](https://docs.aws.amazon.com/translate/latest/dg/customizing-translations-formality.html#customizing-translations-formality-languages) in the Amazon Translate Developer Guide.
@@ -789,12 +791,12 @@ extension TranslateClientTypes {
             self.profanity = profanity
         }
     }
-
 }
 
 extension TranslateClientTypes {
+
     /// Provides information about a translation job.
-    public struct TextTranslationJobProperties {
+    public struct TextTranslationJobProperties: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of an AWS Identity Access and Management (IAM) role that granted Amazon Translate read access to the job's input data.
         public var dataAccessRoleArn: Swift.String?
         /// The time at which the translation job ended.
@@ -861,10 +863,9 @@ extension TranslateClientTypes {
             self.terminologyNames = terminologyNames
         }
     }
-
 }
 
-public struct DescribeTextTranslationJobOutput {
+public struct DescribeTextTranslationJobOutput: Swift.Sendable {
     /// An object that contains the properties associated with an asynchronous batch translation job.
     public var textTranslationJobProperties: TranslateClientTypes.TextTranslationJobProperties?
 
@@ -876,7 +877,7 @@ public struct DescribeTextTranslationJobOutput {
     }
 }
 
-public struct GetParallelDataInput {
+public struct GetParallelDataInput: Swift.Sendable {
     /// The name of the parallel data resource that is being retrieved.
     /// This member is required.
     public var name: Swift.String?
@@ -890,8 +891,9 @@ public struct GetParallelDataInput {
 }
 
 extension TranslateClientTypes {
+
     /// The location of the most recent parallel data input file that was successfully imported into Amazon Translate.
-    public struct ParallelDataDataLocation {
+    public struct ParallelDataDataLocation: Swift.Sendable {
         /// The Amazon S3 location of the parallel data input file. The location is returned as a presigned URL to that has a 30-minute expiration. Amazon Translate doesn't scan all input files for the risk of CSV injection attacks. CSV injection occurs when a .csv or .tsv file is altered so that a record contains malicious code. The record begins with a special character, such as =, +, -, or @. When the file is opened in a spreadsheet program, the program might interpret the record as a formula and run the code within it. Before you download an input file from Amazon S3, ensure that you recognize the file and trust its creator.
         /// This member is required.
         public var location: Swift.String?
@@ -908,12 +910,12 @@ extension TranslateClientTypes {
             self.repositoryType = repositoryType
         }
     }
-
 }
 
 extension TranslateClientTypes {
+
     /// The properties of a parallel data resource.
-    public struct ParallelDataProperties {
+    public struct ParallelDataProperties: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the parallel data resource.
         public var arn: Swift.String?
         /// The time at which the parallel data resource was created.
@@ -988,10 +990,9 @@ extension TranslateClientTypes {
             self.targetLanguageCodes = targetLanguageCodes
         }
     }
-
 }
 
-public struct GetParallelDataOutput {
+public struct GetParallelDataOutput: Swift.Sendable {
     /// The Amazon S3 location of a file that provides any errors or warnings that were produced by your input file. This file was created when Amazon Translate attempted to create a parallel data resource. The location is returned as a presigned URL to that has a 30-minute expiration.
     public var auxiliaryDataLocation: TranslateClientTypes.ParallelDataDataLocation?
     /// The Amazon S3 location of the most recent parallel data input file that was successfully imported into Amazon Translate. The location is returned as a presigned URL that has a 30-minute expiration. Amazon Translate doesn't scan all input files for the risk of CSV injection attacks. CSV injection occurs when a .csv or .tsv file is altered so that a record contains malicious code. The record begins with a special character, such as =, +, -, or @. When the file is opened in a spreadsheet program, the program might interpret the record as a formula and run the code within it. Before you download an input file from Amazon S3, ensure that you recognize the file and trust its creator.
@@ -1017,7 +1018,7 @@ public struct GetParallelDataOutput {
 
 extension TranslateClientTypes {
 
-    public enum TerminologyDataFormat: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum TerminologyDataFormat: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case csv
         case tmx
         case tsv
@@ -1047,7 +1048,7 @@ extension TranslateClientTypes {
     }
 }
 
-public struct GetTerminologyInput {
+public struct GetTerminologyInput: Swift.Sendable {
     /// The name of the custom terminology being retrieved.
     /// This member is required.
     public var name: Swift.String?
@@ -1065,8 +1066,9 @@ public struct GetTerminologyInput {
 }
 
 extension TranslateClientTypes {
+
     /// The location of the custom terminology data.
-    public struct TerminologyDataLocation {
+    public struct TerminologyDataLocation: Swift.Sendable {
         /// The Amazon S3 location of the most recent custom terminology input file that was successfully imported into Amazon Translate. The location is returned as a presigned URL that has a 30-minute expiration . Amazon Translate doesn't scan all input files for the risk of CSV injection attacks. CSV injection occurs when a .csv or .tsv file is altered so that a record contains malicious code. The record begins with a special character, such as =, +, -, or @. When the file is opened in a spreadsheet program, the program might interpret the record as a formula and run the code within it. Before you download an input file from Amazon S3, ensure that you recognize the file and trust its creator.
         /// This member is required.
         public var location: Swift.String?
@@ -1083,12 +1085,11 @@ extension TranslateClientTypes {
             self.repositoryType = repositoryType
         }
     }
-
 }
 
 extension TranslateClientTypes {
 
-    public enum Directionality: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Directionality: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case multi
         case uni
         case sdkUnknown(Swift.String)
@@ -1116,8 +1117,9 @@ extension TranslateClientTypes {
 }
 
 extension TranslateClientTypes {
+
     /// The properties of the custom terminology.
-    public struct TerminologyProperties {
+    public struct TerminologyProperties: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the custom terminology.
         public var arn: Swift.String?
         /// The time at which the custom terminology was created, based on the timestamp.
@@ -1180,10 +1182,9 @@ extension TranslateClientTypes {
             self.termCount = termCount
         }
     }
-
 }
 
-public struct GetTerminologyOutput {
+public struct GetTerminologyOutput: Swift.Sendable {
     /// The Amazon S3 location of a file that provides any errors or warnings that were produced by your input file. This file was created when Amazon Translate attempted to create a terminology resource. The location is returned as a presigned URL to that has a 30-minute expiration.
     public var auxiliaryDataLocation: TranslateClientTypes.TerminologyDataLocation?
     /// The Amazon S3 location of the most recent custom terminology input file that was successfully imported into Amazon Translate. The location is returned as a presigned URL that has a 30-minute expiration. Amazon Translate doesn't scan all input files for the risk of CSV injection attacks. CSV injection occurs when a .csv or .tsv file is altered so that a record contains malicious code. The record begins with a special character, such as =, +, -, or @. When the file is opened in a spreadsheet program, the program might interpret the record as a formula and run the code within it. Before you download an input file from Amazon S3, ensure that you recognize the file and trust its creator.
@@ -1205,7 +1206,7 @@ public struct GetTerminologyOutput {
 
 extension TranslateClientTypes {
 
-    public enum MergeStrategy: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum MergeStrategy: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case overwrite
         case sdkUnknown(Swift.String)
 
@@ -1230,8 +1231,9 @@ extension TranslateClientTypes {
 }
 
 extension TranslateClientTypes {
+
     /// The data associated with the custom terminology. For information about the custom terminology file, see [ Creating a Custom Terminology](https://docs.aws.amazon.com/translate/latest/dg/creating-custom-terminology.html).
-    public struct TerminologyData {
+    public struct TerminologyData: Swift.Sendable {
         /// The directionality of your terminology resource indicates whether it has one source language (uni-directional) or multiple (multi-directional). UNI The terminology resource has one source language (for example, the first column in a CSV file), and all of its other languages are target languages. MULTI Any language in the terminology resource can be the source language or a target language. A single multi-directional terminology resource can be used for jobs that translate different language pairs. For example, if the terminology contains English and Spanish terms, it can be used for jobs that translate English to Spanish and Spanish to English. When you create a custom terminology resource without specifying the directionality, it behaves as uni-directional terminology, although this parameter will have a null value.
         public var directionality: TranslateClientTypes.Directionality?
         /// The file containing the custom terminology data. Your version of the AWS SDK performs a Base64-encoding on this field before sending a request to the AWS service. Users of the SDK should not perform Base64-encoding themselves.
@@ -1252,7 +1254,6 @@ extension TranslateClientTypes {
             self.format = format
         }
     }
-
 }
 
 extension TranslateClientTypes.TerminologyData: Swift.CustomDebugStringConvertible {
@@ -1260,7 +1261,7 @@ extension TranslateClientTypes.TerminologyData: Swift.CustomDebugStringConvertib
         "TerminologyData(directionality: \(Swift.String(describing: directionality)), format: \(Swift.String(describing: format)), file: \"CONTENT_REDACTED\")"}
 }
 
-public struct ImportTerminologyInput {
+public struct ImportTerminologyInput: Swift.Sendable {
     /// The description of the custom terminology being imported.
     public var description: Swift.String?
     /// The encryption key for the custom terminology being imported.
@@ -1295,7 +1296,7 @@ public struct ImportTerminologyInput {
     }
 }
 
-public struct ImportTerminologyOutput {
+public struct ImportTerminologyOutput: Swift.Sendable {
     /// The Amazon S3 location of a file that provides any errors or warnings that were produced by your input file. This file was created when Amazon Translate attempted to create a terminology resource. The location is returned as a presigned URL to that has a 30 minute expiration.
     public var auxiliaryDataLocation: TranslateClientTypes.TerminologyDataLocation?
     /// The properties of the custom terminology being imported.
@@ -1341,7 +1342,7 @@ public struct UnsupportedDisplayLanguageCodeException: ClientRuntime.ModeledErro
 
 extension TranslateClientTypes {
 
-    public enum DisplayLanguageCode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DisplayLanguageCode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case de
         case en
         case es
@@ -1392,7 +1393,7 @@ extension TranslateClientTypes {
     }
 }
 
-public struct ListLanguagesInput {
+public struct ListLanguagesInput: Swift.Sendable {
     /// The language code for the language to use to display the language names in the response. The language code is en by default.
     public var displayLanguageCode: TranslateClientTypes.DisplayLanguageCode?
     /// The maximum number of results to return in each response.
@@ -1413,8 +1414,9 @@ public struct ListLanguagesInput {
 }
 
 extension TranslateClientTypes {
+
     /// A supported language.
-    public struct Language {
+    public struct Language: Swift.Sendable {
         /// Language code for the supported language.
         /// This member is required.
         public var languageCode: Swift.String?
@@ -1431,10 +1433,9 @@ extension TranslateClientTypes {
             self.languageName = languageName
         }
     }
-
 }
 
-public struct ListLanguagesOutput {
+public struct ListLanguagesOutput: Swift.Sendable {
     /// The language code passed in with the request.
     public var displayLanguageCode: TranslateClientTypes.DisplayLanguageCode?
     /// The list of supported languages.
@@ -1454,7 +1455,7 @@ public struct ListLanguagesOutput {
     }
 }
 
-public struct ListParallelDataInput {
+public struct ListParallelDataInput: Swift.Sendable {
     /// The maximum number of parallel data resources returned for each request.
     public var maxResults: Swift.Int?
     /// A string that specifies the next page of results to return in a paginated response.
@@ -1470,7 +1471,7 @@ public struct ListParallelDataInput {
     }
 }
 
-public struct ListParallelDataOutput {
+public struct ListParallelDataOutput: Swift.Sendable {
     /// The string to use in a subsequent request to get the next page of results in a paginated response. This value is null if there are no additional pages.
     public var nextToken: Swift.String?
     /// The properties of the parallel data resources returned by this request.
@@ -1486,7 +1487,7 @@ public struct ListParallelDataOutput {
     }
 }
 
-public struct ListTagsForResourceInput {
+public struct ListTagsForResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the given Amazon Translate resource you are querying.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -1499,7 +1500,7 @@ public struct ListTagsForResourceInput {
     }
 }
 
-public struct ListTagsForResourceOutput {
+public struct ListTagsForResourceOutput: Swift.Sendable {
     /// Tags associated with the Amazon Translate resource being queried. A tag is a key-value pair that adds as a metadata to a resource used by Amazon Translate. For example, a tag with "Sales" as the key might be added to a resource to indicate its use by the sales department.
     public var tags: [TranslateClientTypes.Tag]?
 
@@ -1511,7 +1512,7 @@ public struct ListTagsForResourceOutput {
     }
 }
 
-public struct ListTerminologiesInput {
+public struct ListTerminologiesInput: Swift.Sendable {
     /// The maximum number of custom terminologies returned per list request.
     public var maxResults: Swift.Int?
     /// If the result of the request to ListTerminologies was truncated, include the NextToken to fetch the next group of custom terminologies.
@@ -1527,7 +1528,7 @@ public struct ListTerminologiesInput {
     }
 }
 
-public struct ListTerminologiesOutput {
+public struct ListTerminologiesOutput: Swift.Sendable {
     /// If the response to the ListTerminologies was truncated, the NextToken fetches the next group of custom terminologies.
     public var nextToken: Swift.String?
     /// The properties list of the custom terminologies returned on the list request.
@@ -1568,8 +1569,9 @@ public struct InvalidFilterException: ClientRuntime.ModeledError, AWSClientRunti
 }
 
 extension TranslateClientTypes {
+
     /// Provides information for filtering a list of translation jobs. For more information, see [ListTextTranslationJobs].
-    public struct TextTranslationJobFilter {
+    public struct TextTranslationJobFilter: Swift.Sendable {
         /// Filters the list of jobs by name.
         public var jobName: Swift.String?
         /// Filters the list of jobs based by job status.
@@ -1592,10 +1594,9 @@ extension TranslateClientTypes {
             self.submittedBeforeTime = submittedBeforeTime
         }
     }
-
 }
 
-public struct ListTextTranslationJobsInput {
+public struct ListTextTranslationJobsInput: Swift.Sendable {
     /// The parameters that specify which batch translation jobs to retrieve. Filters include job name, job status, and submission time. You can only set one filter at a time.
     public var filter: TranslateClientTypes.TextTranslationJobFilter?
     /// The maximum number of results to return in each page. The default value is 100.
@@ -1615,7 +1616,7 @@ public struct ListTextTranslationJobsInput {
     }
 }
 
-public struct ListTextTranslationJobsOutput {
+public struct ListTextTranslationJobsOutput: Swift.Sendable {
     /// The token to use to retrieve the next page of results. This value is null when there are no more results to return.
     public var nextToken: Swift.String?
     /// A list containing the properties of each job that is returned.
@@ -1663,7 +1664,7 @@ public struct UnsupportedLanguagePairException: ClientRuntime.ModeledError, AWSC
     }
 }
 
-public struct StartTextTranslationJobInput {
+public struct StartTextTranslationJobInput: Swift.Sendable {
     /// A unique identifier for the request. This token is generated for you when using the Amazon Translate SDK.
     /// This member is required.
     public var clientToken: Swift.String?
@@ -1723,7 +1724,7 @@ public struct StartTextTranslationJobInput {
     }
 }
 
-public struct StartTextTranslationJobOutput {
+public struct StartTextTranslationJobOutput: Swift.Sendable {
     /// The identifier generated for the job. To get the status of a job, use this ID with the [DescribeTextTranslationJob] operation.
     public var jobId: Swift.String?
     /// The status of the job. Possible values include:
@@ -1753,7 +1754,7 @@ public struct StartTextTranslationJobOutput {
     }
 }
 
-public struct StopTextTranslationJobInput {
+public struct StopTextTranslationJobInput: Swift.Sendable {
     /// The job ID of the job to be stopped.
     /// This member is required.
     public var jobId: Swift.String?
@@ -1766,7 +1767,7 @@ public struct StopTextTranslationJobInput {
     }
 }
 
-public struct StopTextTranslationJobOutput {
+public struct StopTextTranslationJobOutput: Swift.Sendable {
     /// The job ID of the stopped batch translation job.
     public var jobId: Swift.String?
     /// The status of the designated job. Upon successful completion, the job's status will be STOPPED.
@@ -1782,7 +1783,7 @@ public struct StopTextTranslationJobOutput {
     }
 }
 
-public struct TagResourceInput {
+public struct TagResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the given Amazon Translate resource to which you want to associate the tags.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -1800,7 +1801,7 @@ public struct TagResourceInput {
     }
 }
 
-public struct TagResourceOutput {
+public struct TagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
@@ -1830,8 +1831,9 @@ public struct ServiceUnavailableException: ClientRuntime.ModeledError, AWSClient
 }
 
 extension TranslateClientTypes {
+
     /// The content and content type of a document.
-    public struct Document {
+    public struct Document: Swift.Sendable {
         /// The Contentfield type is Binary large object (blob). This object contains the document content converted into base64-encoded binary data. If you use one of the AWS SDKs, the SDK performs the Base64-encoding on this field before sending the request.
         /// This member is required.
         public var content: Foundation.Data?
@@ -1854,7 +1856,6 @@ extension TranslateClientTypes {
             self.contentType = contentType
         }
     }
-
 }
 
 extension TranslateClientTypes.Document: Swift.CustomDebugStringConvertible {
@@ -1862,7 +1863,7 @@ extension TranslateClientTypes.Document: Swift.CustomDebugStringConvertible {
         "Document(contentType: \(Swift.String(describing: contentType)), content: \"CONTENT_REDACTED\")"}
 }
 
-public struct TranslateDocumentInput {
+public struct TranslateDocumentInput: Swift.Sendable {
     /// The content and content type for the document to be translated. The document size must not exceed 100 KB.
     /// This member is required.
     public var document: TranslateClientTypes.Document?
@@ -1900,8 +1901,9 @@ public struct TranslateDocumentInput {
 }
 
 extension TranslateClientTypes {
+
     /// The translated content.
-    public struct TranslatedDocument {
+    public struct TranslatedDocument: Swift.Sendable {
         /// The document containing the translated content.
         /// This member is required.
         public var content: Foundation.Data?
@@ -1913,7 +1915,6 @@ extension TranslateClientTypes {
             self.content = content
         }
     }
-
 }
 
 extension TranslateClientTypes.TranslatedDocument: Swift.CustomDebugStringConvertible {
@@ -1921,7 +1922,7 @@ extension TranslateClientTypes.TranslatedDocument: Swift.CustomDebugStringConver
         "TranslatedDocument(content: \"CONTENT_REDACTED\")"}
 }
 
-public struct TranslateDocumentOutput {
+public struct TranslateDocumentOutput: Swift.Sendable {
     /// Settings to configure your translation output. You can configure the following options:
     ///
     /// * Brevity: reduces the length of the translation output for most translations. Available for TranslateText only.
@@ -2010,7 +2011,7 @@ public struct TextSizeLimitExceededException: ClientRuntime.ModeledError, AWSCli
     }
 }
 
-public struct TranslateTextInput {
+public struct TranslateTextInput: Swift.Sendable {
     /// Settings to configure your translation output. You can configure the following options:
     ///
     /// * Brevity: reduces the length of the translated output for most translations.
@@ -2047,7 +2048,7 @@ public struct TranslateTextInput {
     }
 }
 
-public struct TranslateTextOutput {
+public struct TranslateTextOutput: Swift.Sendable {
     /// Optional settings that modify the translation output.
     public var appliedSettings: TranslateClientTypes.TranslationSettings?
     /// The names of the custom terminologies applied to the input text by Amazon Translate for the translated text response.
@@ -2078,7 +2079,7 @@ public struct TranslateTextOutput {
     }
 }
 
-public struct UntagResourceInput {
+public struct UntagResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the given Amazon Translate resource from which you want to remove the tags.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -2096,12 +2097,12 @@ public struct UntagResourceInput {
     }
 }
 
-public struct UntagResourceOutput {
+public struct UntagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdateParallelDataInput {
+public struct UpdateParallelDataInput: Swift.Sendable {
     /// A unique identifier for the request. This token is automatically generated when you use Amazon Translate through an AWS SDK.
     /// This member is required.
     public var clientToken: Swift.String?
@@ -2128,7 +2129,7 @@ public struct UpdateParallelDataInput {
     }
 }
 
-public struct UpdateParallelDataOutput {
+public struct UpdateParallelDataOutput: Swift.Sendable {
     /// The time that the most recent update was attempted.
     public var latestUpdateAttemptAt: Foundation.Date?
     /// The status of the parallel data update attempt. When the updated parallel data resource is ready for you to use, the status is ACTIVE.

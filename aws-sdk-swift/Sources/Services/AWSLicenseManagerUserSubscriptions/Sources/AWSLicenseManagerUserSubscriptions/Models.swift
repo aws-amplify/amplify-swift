@@ -48,8 +48,9 @@ public struct AccessDeniedException: ClientRuntime.ModeledError, AWSClientRuntim
 }
 
 extension LicenseManagerUserSubscriptionsClientTypes {
+
     /// Details about an Active Directory identity provider.
-    public struct ActiveDirectoryIdentityProvider {
+    public struct ActiveDirectoryIdentityProvider: Swift.Sendable {
         /// The directory ID for an Active Directory identity provider.
         public var directoryId: Swift.String?
 
@@ -60,7 +61,6 @@ extension LicenseManagerUserSubscriptionsClientTypes {
             self.directoryId = directoryId
         }
     }
-
 }
 
 /// The request couldn't be completed because it conflicted with the current state of the resource.
@@ -208,16 +208,16 @@ public struct ValidationException: ClientRuntime.ModeledError, AWSClientRuntime.
 }
 
 extension LicenseManagerUserSubscriptionsClientTypes {
+
     /// Details about an identity provider.
-    public enum IdentityProvider {
+    public enum IdentityProvider: Swift.Sendable {
         /// An object that details an Active Directory identity provider.
         case activedirectoryidentityprovider(LicenseManagerUserSubscriptionsClientTypes.ActiveDirectoryIdentityProvider)
         case sdkUnknown(Swift.String)
     }
-
 }
 
-public struct AssociateUserInput {
+public struct AssociateUserInput: Swift.Sendable {
     /// The domain name of the user.
     public var domain: Swift.String?
     /// The identity provider of the user.
@@ -245,8 +245,9 @@ public struct AssociateUserInput {
 }
 
 extension LicenseManagerUserSubscriptionsClientTypes {
+
     /// Describes users of an EC2 instance providing user-based subscriptions.
-    public struct InstanceUserSummary {
+    public struct InstanceUserSummary: Swift.Sendable {
         /// The date a user was associated with an EC2 instance.
         public var associationDate: Swift.String?
         /// The date a user was disassociated from an EC2 instance.
@@ -289,10 +290,9 @@ extension LicenseManagerUserSubscriptionsClientTypes {
             self.username = username
         }
     }
-
 }
 
-public struct AssociateUserOutput {
+public struct AssociateUserOutput: Swift.Sendable {
     /// Metadata that describes the associate user operation.
     /// This member is required.
     public var instanceUserSummary: LicenseManagerUserSubscriptionsClientTypes.InstanceUserSummary?
@@ -305,7 +305,7 @@ public struct AssociateUserOutput {
     }
 }
 
-public struct DeregisterIdentityProviderInput {
+public struct DeregisterIdentityProviderInput: Swift.Sendable {
     /// An object that specifies details for the identity provider.
     /// This member is required.
     public var identityProvider: LicenseManagerUserSubscriptionsClientTypes.IdentityProvider?
@@ -324,8 +324,9 @@ public struct DeregisterIdentityProviderInput {
 }
 
 extension LicenseManagerUserSubscriptionsClientTypes {
+
     /// The registered identity provider’s product related configuration settings such as the subnets to provision VPC endpoints, and the security group ID that is associated with the VPC endpoints. The security group should permit inbound TCP port 1688 communication from resources in the VPC.
-    public struct Settings {
+    public struct Settings: Swift.Sendable {
         /// A security group ID that allows inbound TCP port 1688 communication between resources in your VPC and the VPC endpoint for activation servers.
         /// This member is required.
         public var securityGroupId: Swift.String?
@@ -342,12 +343,12 @@ extension LicenseManagerUserSubscriptionsClientTypes {
             self.subnets = subnets
         }
     }
-
 }
 
 extension LicenseManagerUserSubscriptionsClientTypes {
+
     /// Describes an identity provider.
-    public struct IdentityProviderSummary {
+    public struct IdentityProviderSummary: Swift.Sendable {
         /// The failure message associated with an identity provider.
         public var failureMessage: Swift.String?
         /// An object that specifies details for the identity provider.
@@ -378,10 +379,9 @@ extension LicenseManagerUserSubscriptionsClientTypes {
             self.status = status
         }
     }
-
 }
 
-public struct DeregisterIdentityProviderOutput {
+public struct DeregisterIdentityProviderOutput: Swift.Sendable {
     /// Metadata that describes the results of an identity provider operation.
     /// This member is required.
     public var identityProviderSummary: LicenseManagerUserSubscriptionsClientTypes.IdentityProviderSummary?
@@ -394,7 +394,7 @@ public struct DeregisterIdentityProviderOutput {
     }
 }
 
-public struct DisassociateUserInput {
+public struct DisassociateUserInput: Swift.Sendable {
     /// The domain name of the user.
     public var domain: Swift.String?
     /// An object that specifies details for the identity provider.
@@ -421,7 +421,7 @@ public struct DisassociateUserInput {
     }
 }
 
-public struct DisassociateUserOutput {
+public struct DisassociateUserOutput: Swift.Sendable {
     /// Metadata that describes the associate user operation.
     /// This member is required.
     public var instanceUserSummary: LicenseManagerUserSubscriptionsClientTypes.InstanceUserSummary?
@@ -435,8 +435,9 @@ public struct DisassociateUserOutput {
 }
 
 extension LicenseManagerUserSubscriptionsClientTypes {
+
     /// A filter name and value pair that is used to return more specific results from a describe operation. Filters can be used to match a set of resources by specific criteria, such as tags, attributes, or IDs.
-    public struct Filter {
+    public struct Filter: Swift.Sendable {
         /// The name of an attribute to use as a filter.
         public var attribute: Swift.String?
         /// The type of search (For example, eq, geq, leq)
@@ -455,12 +456,12 @@ extension LicenseManagerUserSubscriptionsClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension LicenseManagerUserSubscriptionsClientTypes {
+
     /// Describes an EC2 instance providing user-based subscriptions.
-    public struct InstanceSummary {
+    public struct InstanceSummary: Swift.Sendable {
         /// The ID of the EC2 instance, which provides user-based subscriptions.
         /// This member is required.
         public var instanceId: Swift.String?
@@ -490,10 +491,9 @@ extension LicenseManagerUserSubscriptionsClientTypes {
             self.statusMessage = statusMessage
         }
     }
-
 }
 
-public struct ListIdentityProvidersInput {
+public struct ListIdentityProvidersInput: Swift.Sendable {
     /// Maximum number of results to return in a single call.
     public var maxResults: Swift.Int?
     /// Token for the next set of results.
@@ -509,7 +509,7 @@ public struct ListIdentityProvidersInput {
     }
 }
 
-public struct ListIdentityProvidersOutput {
+public struct ListIdentityProvidersOutput: Swift.Sendable {
     /// Metadata that describes the list identity providers operation.
     /// This member is required.
     public var identityProviderSummaries: [LicenseManagerUserSubscriptionsClientTypes.IdentityProviderSummary]?
@@ -526,7 +526,7 @@ public struct ListIdentityProvidersOutput {
     }
 }
 
-public struct ListInstancesInput {
+public struct ListInstancesInput: Swift.Sendable {
     /// An array of structures that you can use to filter the results to those that match one or more sets of key-value pairs that you specify.
     public var filters: [LicenseManagerUserSubscriptionsClientTypes.Filter]?
     /// Maximum number of results to return in a single call.
@@ -546,7 +546,7 @@ public struct ListInstancesInput {
     }
 }
 
-public struct ListInstancesOutput {
+public struct ListInstancesOutput: Swift.Sendable {
     /// Metadata that describes the list instances operation.
     public var instanceSummaries: [LicenseManagerUserSubscriptionsClientTypes.InstanceSummary]?
     /// Token for the next set of results.
@@ -562,7 +562,7 @@ public struct ListInstancesOutput {
     }
 }
 
-public struct ListProductSubscriptionsInput {
+public struct ListProductSubscriptionsInput: Swift.Sendable {
     /// An array of structures that you can use to filter the results to those that match one or more sets of key-value pairs that you specify.
     public var filters: [LicenseManagerUserSubscriptionsClientTypes.Filter]?
     /// An object that specifies details for the identity provider.
@@ -593,8 +593,9 @@ public struct ListProductSubscriptionsInput {
 }
 
 extension LicenseManagerUserSubscriptionsClientTypes {
+
     /// The summary of the user-based subscription products for a user.
-    public struct ProductUserSummary {
+    public struct ProductUserSummary: Swift.Sendable {
         /// The domain name of the user.
         public var domain: Swift.String?
         /// An object that specifies details for the identity provider.
@@ -637,10 +638,9 @@ extension LicenseManagerUserSubscriptionsClientTypes {
             self.username = username
         }
     }
-
 }
 
-public struct ListProductSubscriptionsOutput {
+public struct ListProductSubscriptionsOutput: Swift.Sendable {
     /// Token for the next set of results.
     public var nextToken: Swift.String?
     /// Metadata that describes the list product subscriptions operation.
@@ -656,7 +656,7 @@ public struct ListProductSubscriptionsOutput {
     }
 }
 
-public struct ListUserAssociationsInput {
+public struct ListUserAssociationsInput: Swift.Sendable {
     /// An array of structures that you can use to filter the results to those that match one or more sets of key-value pairs that you specify.
     public var filters: [LicenseManagerUserSubscriptionsClientTypes.Filter]?
     /// An object that specifies details for the identity provider.
@@ -686,7 +686,7 @@ public struct ListUserAssociationsInput {
     }
 }
 
-public struct ListUserAssociationsOutput {
+public struct ListUserAssociationsOutput: Swift.Sendable {
     /// Metadata that describes the list user association operation.
     public var instanceUserSummaries: [LicenseManagerUserSubscriptionsClientTypes.InstanceUserSummary]?
     /// Token for the next set of results.
@@ -702,7 +702,7 @@ public struct ListUserAssociationsOutput {
     }
 }
 
-public struct RegisterIdentityProviderInput {
+public struct RegisterIdentityProviderInput: Swift.Sendable {
     /// An object that specifies details for the identity provider.
     /// This member is required.
     public var identityProvider: LicenseManagerUserSubscriptionsClientTypes.IdentityProvider?
@@ -724,7 +724,7 @@ public struct RegisterIdentityProviderInput {
     }
 }
 
-public struct RegisterIdentityProviderOutput {
+public struct RegisterIdentityProviderOutput: Swift.Sendable {
     /// Metadata that describes the results of an identity provider operation.
     /// This member is required.
     public var identityProviderSummary: LicenseManagerUserSubscriptionsClientTypes.IdentityProviderSummary?
@@ -737,7 +737,7 @@ public struct RegisterIdentityProviderOutput {
     }
 }
 
-public struct StartProductSubscriptionInput {
+public struct StartProductSubscriptionInput: Swift.Sendable {
     /// The domain name of the user.
     public var domain: Swift.String?
     /// An object that specifies details for the identity provider.
@@ -764,7 +764,7 @@ public struct StartProductSubscriptionInput {
     }
 }
 
-public struct StartProductSubscriptionOutput {
+public struct StartProductSubscriptionOutput: Swift.Sendable {
     /// Metadata that describes the start product subscription operation.
     /// This member is required.
     public var productUserSummary: LicenseManagerUserSubscriptionsClientTypes.ProductUserSummary?
@@ -777,7 +777,7 @@ public struct StartProductSubscriptionOutput {
     }
 }
 
-public struct StopProductSubscriptionInput {
+public struct StopProductSubscriptionInput: Swift.Sendable {
     /// The domain name of the user.
     public var domain: Swift.String?
     /// An object that specifies details for the identity provider.
@@ -804,7 +804,7 @@ public struct StopProductSubscriptionInput {
     }
 }
 
-public struct StopProductSubscriptionOutput {
+public struct StopProductSubscriptionOutput: Swift.Sendable {
     /// Metadata that describes the start product subscription operation.
     /// This member is required.
     public var productUserSummary: LicenseManagerUserSubscriptionsClientTypes.ProductUserSummary?
@@ -818,8 +818,9 @@ public struct StopProductSubscriptionOutput {
 }
 
 extension LicenseManagerUserSubscriptionsClientTypes {
+
     /// Updates the registered identity provider’s product related configuration settings such as the subnets to provision VPC endpoints.
-    public struct UpdateSettings {
+    public struct UpdateSettings: Swift.Sendable {
         /// The ID of one or more subnets in which License Manager will create a VPC endpoint for products that require connectivity to activation servers.
         /// This member is required.
         public var addSubnets: [Swift.String]?
@@ -840,10 +841,9 @@ extension LicenseManagerUserSubscriptionsClientTypes {
             self.securityGroupId = securityGroupId
         }
     }
-
 }
 
-public struct UpdateIdentityProviderSettingsInput {
+public struct UpdateIdentityProviderSettingsInput: Swift.Sendable {
     /// Details about an identity provider.
     /// This member is required.
     public var identityProvider: LicenseManagerUserSubscriptionsClientTypes.IdentityProvider?
@@ -872,7 +872,7 @@ public struct UpdateIdentityProviderSettingsInput {
     }
 }
 
-public struct UpdateIdentityProviderSettingsOutput {
+public struct UpdateIdentityProviderSettingsOutput: Swift.Sendable {
     /// Describes an identity provider.
     /// This member is required.
     public var identityProviderSummary: LicenseManagerUserSubscriptionsClientTypes.IdentityProviderSummary?

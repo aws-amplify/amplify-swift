@@ -53,7 +53,7 @@ public struct AccessDeniedException: ClientRuntime.ModeledError, AWSClientRuntim
 
 extension FinspaceClientTypes {
 
-    public enum AutoScalingMetric: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AutoScalingMetric: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case cpuUtilizationPercentage
         case sdkUnknown(Swift.String)
 
@@ -78,8 +78,9 @@ extension FinspaceClientTypes {
 }
 
 extension FinspaceClientTypes {
+
     /// The configuration based on which FinSpace will scale in or scale out nodes in your cluster.
-    public struct AutoScalingConfiguration {
+    public struct AutoScalingConfiguration: Swift.Sendable {
         /// The metric your cluster will track in order to scale in and out. For example, CPU_UTILIZATION_PERCENTAGE is the average CPU usage across all the nodes in a cluster.
         public var autoScalingMetric: FinspaceClientTypes.AutoScalingMetric?
         /// The highest number of nodes to scale. This value cannot be greater than 5.
@@ -110,7 +111,6 @@ extension FinspaceClientTypes {
             self.scaleOutCooldownSeconds = scaleOutCooldownSeconds
         }
     }
-
 }
 
 /// The request processing has failed because of an unknown error, exception or failure.
@@ -235,7 +235,7 @@ public struct ValidationException: ClientRuntime.ModeledError, AWSClientRuntime.
 
 extension FinspaceClientTypes {
 
-    public enum FederationMode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum FederationMode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case federated
         case local
         case sdkUnknown(Swift.String)
@@ -263,8 +263,9 @@ extension FinspaceClientTypes {
 }
 
 extension FinspaceClientTypes {
+
     /// Configuration information when authentication mode is FEDERATED.
-    public struct FederationParameters {
+    public struct FederationParameters: Swift.Sendable {
         /// The redirect or sign-in URL that should be entered into the SAML 2.0 compliant identity provider configuration (IdP).
         public var applicationCallBackURL: Swift.String?
         /// SAML attribute name and value. The name must always be Email and the value should be set to the attribute definition in which user email is set. For example, name would be Email and value http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress. Please check your SAML 2.0 compliant identity provider (IdP) documentation for details.
@@ -295,12 +296,12 @@ extension FinspaceClientTypes {
             self.samlMetadataURL = samlMetadataURL
         }
     }
-
 }
 
 extension FinspaceClientTypes {
+
     /// Configuration information for the superuser.
-    public struct SuperuserParameters {
+    public struct SuperuserParameters: Swift.Sendable {
         /// The email address of the superuser.
         /// This member is required.
         public var emailAddress: Swift.String?
@@ -322,7 +323,6 @@ extension FinspaceClientTypes {
             self.lastName = lastName
         }
     }
-
 }
 
 extension FinspaceClientTypes.SuperuserParameters: Swift.CustomDebugStringConvertible {
@@ -330,7 +330,7 @@ extension FinspaceClientTypes.SuperuserParameters: Swift.CustomDebugStringConver
         "SuperuserParameters(firstName: \(Swift.String(describing: firstName)), lastName: \(Swift.String(describing: lastName)), emailAddress: \"CONTENT_REDACTED\")"}
 }
 
-public struct CreateEnvironmentInput {
+public struct CreateEnvironmentInput: Swift.Sendable {
     /// The list of Amazon Resource Names (ARN) of the data bundles to install. Currently supported data bundle ARNs:
     ///
     /// * arn:aws:finspace:${Region}::data-bundle/capital-markets-sample - Contains sample Capital Markets datasets, categories and controlled vocabularies.
@@ -379,7 +379,7 @@ public struct CreateEnvironmentInput {
     }
 }
 
-public struct CreateEnvironmentOutput {
+public struct CreateEnvironmentOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the FinSpace environment that you created.
     public var environmentArn: Swift.String?
     /// The unique identifier for FinSpace environment that you created.
@@ -453,7 +453,7 @@ public struct ResourceNotFoundException: ClientRuntime.ModeledError, AWSClientRu
 
 extension FinspaceClientTypes {
 
-    public enum ChangeType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ChangeType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case delete
         case put
         case sdkUnknown(Swift.String)
@@ -481,8 +481,9 @@ extension FinspaceClientTypes {
 }
 
 extension FinspaceClientTypes {
+
     /// A list of change request objects.
-    public struct ChangeRequest {
+    public struct ChangeRequest: Swift.Sendable {
         /// Defines the type of change request. A changeType can have the following values:
         ///
         /// * PUT – Adds or updates files in a database.
@@ -507,10 +508,9 @@ extension FinspaceClientTypes {
             self.s3Path = s3Path
         }
     }
-
 }
 
-public struct CreateKxChangesetInput {
+public struct CreateKxChangesetInput: Swift.Sendable {
     /// A list of change request objects that are run in order. A change request object consists of changeType , s3Path, and dbPath. A changeType can have the following values:
     ///
     /// * PUT – Adds or updates files in a database.
@@ -557,7 +557,7 @@ public struct CreateKxChangesetInput {
 
 extension FinspaceClientTypes {
 
-    public enum ErrorDetails: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ErrorDetails: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case accessDenied
         case cancelled
         case internalServiceException
@@ -603,8 +603,9 @@ extension FinspaceClientTypes {
 }
 
 extension FinspaceClientTypes {
+
     /// Provides details in the event of a failed flow, including the error type and the related error message.
-    public struct ErrorInfo {
+    public struct ErrorInfo: Swift.Sendable {
         /// Specifies the error message that appears if a flow fails.
         public var errorMessage: Swift.String?
         /// Specifies the type of error.
@@ -619,12 +620,11 @@ extension FinspaceClientTypes {
             self.errorType = errorType
         }
     }
-
 }
 
 extension FinspaceClientTypes {
 
-    public enum ChangesetStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ChangesetStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case completed
         case failed
         case pending
@@ -657,7 +657,7 @@ extension FinspaceClientTypes {
     }
 }
 
-public struct CreateKxChangesetOutput {
+public struct CreateKxChangesetOutput: Swift.Sendable {
     /// A list of change requests.
     public var changeRequests: [FinspaceClientTypes.ChangeRequest]?
     /// A unique identifier for the changeset.
@@ -707,7 +707,7 @@ public struct CreateKxChangesetOutput {
 
 extension FinspaceClientTypes {
 
-    public enum KxAzMode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum KxAzMode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case multi
         case single
         case sdkUnknown(Swift.String)
@@ -735,8 +735,9 @@ extension FinspaceClientTypes {
 }
 
 extension FinspaceClientTypes {
+
     /// The configuration for read only disk cache associated with a cluster.
-    public struct KxCacheStorageConfiguration {
+    public struct KxCacheStorageConfiguration: Swift.Sendable {
         /// The size of cache in Gigabytes.
         /// This member is required.
         public var size: Swift.Int?
@@ -762,12 +763,12 @@ extension FinspaceClientTypes {
             self.type = type
         }
     }
-
 }
 
 extension FinspaceClientTypes {
+
     /// A structure for the metadata of a cluster. It includes information like the CPUs needed, memory of instances, and number of instances.
-    public struct CapacityConfiguration {
+    public struct CapacityConfiguration: Swift.Sendable {
         /// The number of instances running in a cluster.
         public var nodeCount: Swift.Int?
         /// The type that determines the hardware of the host computer used for your cluster instance. Each node type offers different memory and storage capabilities. Choose a node type based on the requirements of the application or software that you plan to run on your instance. You can only specify one of the following values:
@@ -796,12 +797,11 @@ extension FinspaceClientTypes {
             self.nodeType = nodeType
         }
     }
-
 }
 
 extension FinspaceClientTypes {
 
-    public enum KxClusterType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum KxClusterType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case gateway
         case gp
         case hdb
@@ -838,8 +838,9 @@ extension FinspaceClientTypes {
 }
 
 extension FinspaceClientTypes {
+
     /// The structure of the customer code available within the running cluster.
-    public struct CodeConfiguration {
+    public struct CodeConfiguration: Swift.Sendable {
         /// A unique name for the S3 bucket.
         public var s3Bucket: Swift.String?
         /// The full S3 path (excluding bucket) to the .zip file. This file contains the code that is loaded onto the cluster when it's started.
@@ -858,12 +859,12 @@ extension FinspaceClientTypes {
             self.s3ObjectVersion = s3ObjectVersion
         }
     }
-
 }
 
 extension FinspaceClientTypes {
+
     /// Defines the key-value pairs to make them available inside the cluster.
-    public struct KxCommandLineArgument {
+    public struct KxCommandLineArgument: Swift.Sendable {
         /// The name of the key.
         public var key: Swift.String?
         /// The value of the key.
@@ -878,12 +879,12 @@ extension FinspaceClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension FinspaceClientTypes {
+
     /// The structure of database cache configuration that is used for mapping database paths to cache types in clusters.
-    public struct KxDatabaseCacheConfiguration {
+    public struct KxDatabaseCacheConfiguration: Swift.Sendable {
         /// The type of disk cache. This parameter is used to map the database path to cache storage. The valid values are:
         ///
         /// * CACHE_1000 – This type provides at least 1000 MB/s disk access throughput.
@@ -906,12 +907,12 @@ extension FinspaceClientTypes {
             self.dbPaths = dbPaths
         }
     }
-
 }
 
 extension FinspaceClientTypes {
+
     /// The configuration that contains the database path of the data that you want to place on each selected volume. Each segment must have a unique database path for each volume. If you do not explicitly specify any database path for a volume, they are accessible from the cluster through the default S3/object store segment.
-    public struct KxDataviewSegmentConfiguration {
+    public struct KxDataviewSegmentConfiguration: Swift.Sendable {
         /// The database path of the data that you want to place on each selected volume for the segment. Each segment must have a unique database path for each volume.
         /// This member is required.
         public var dbPaths: [Swift.String]?
@@ -932,12 +933,12 @@ extension FinspaceClientTypes {
             self.volumeName = volumeName
         }
     }
-
 }
 
 extension FinspaceClientTypes {
+
     /// The structure that stores the configuration details of a dataview.
-    public struct KxDataviewConfiguration {
+    public struct KxDataviewConfiguration: Swift.Sendable {
         /// A unique identifier for the changeset.
         public var changesetId: Swift.String?
         /// The unique identifier of the dataview.
@@ -960,12 +961,12 @@ extension FinspaceClientTypes {
             self.segmentConfigurations = segmentConfigurations
         }
     }
-
 }
 
 extension FinspaceClientTypes {
+
     /// The configuration of data that is available for querying from this database.
-    public struct KxDatabaseConfiguration {
+    public struct KxDatabaseConfiguration: Swift.Sendable {
         /// Configuration details for the disk cache used to increase performance reading from a kdb database mounted to the cluster.
         public var cacheConfigurations: [FinspaceClientTypes.KxDatabaseCacheConfiguration]?
         /// A unique identifier of the changeset that is associated with the cluster.
@@ -993,12 +994,11 @@ extension FinspaceClientTypes {
             self.dataviewName = dataviewName
         }
     }
-
 }
 
 extension FinspaceClientTypes {
 
-    public enum KxSavedownStorageType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum KxSavedownStorageType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case sds01
         case sdkUnknown(Swift.String)
 
@@ -1023,8 +1023,9 @@ extension FinspaceClientTypes {
 }
 
 extension FinspaceClientTypes {
+
     /// The size and type of temporary storage that is used to hold data during the savedown process. All the data written to this storage space is lost when the cluster node is restarted.
-    public struct KxSavedownStorageConfiguration {
+    public struct KxSavedownStorageConfiguration: Swift.Sendable {
         /// The size of temporary storage in gibibytes.
         public var size: Swift.Int?
         /// The type of writeable storage space for temporarily storing your savedown data. The valid values are:
@@ -1045,12 +1046,12 @@ extension FinspaceClientTypes {
             self.volumeName = volumeName
         }
     }
-
 }
 
 extension FinspaceClientTypes {
+
     /// The structure that stores the capacity configuration details of a scaling group.
-    public struct KxScalingGroupConfiguration {
+    public struct KxScalingGroupConfiguration: Swift.Sendable {
         /// The number of vCPUs that you want to reserve for each node of this kdb cluster on the scaling group host.
         public var cpu: Swift.Double?
         /// An optional hard limit on the amount of memory a kdb cluster can use.
@@ -1080,12 +1081,12 @@ extension FinspaceClientTypes {
             self.scalingGroupName = scalingGroupName
         }
     }
-
 }
 
 extension FinspaceClientTypes {
+
     /// A configuration to store the Tickerplant logs. It consists of a list of volumes that will be mounted to your cluster. For the cluster type Tickerplant, the location of the TP volume on the cluster will be available by using the global variable .aws.tp_log_path.
-    public struct TickerplantLogConfiguration {
+    public struct TickerplantLogConfiguration: Swift.Sendable {
         /// The name of the volumes for tickerplant logs.
         public var tickerplantLogVolumes: [Swift.String]?
 
@@ -1096,12 +1097,11 @@ extension FinspaceClientTypes {
             self.tickerplantLogVolumes = tickerplantLogVolumes
         }
     }
-
 }
 
 extension FinspaceClientTypes {
 
-    public enum IPAddressType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum IPAddressType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case ipV4
         case sdkUnknown(Swift.String)
 
@@ -1126,8 +1126,9 @@ extension FinspaceClientTypes {
 }
 
 extension FinspaceClientTypes {
+
     /// Configuration details about the network where the Privatelink endpoint of the cluster resides.
-    public struct VpcConfiguration {
+    public struct VpcConfiguration: Swift.Sendable {
         /// The IP address type for cluster network configuration parameters. The following type is available:
         ///
         /// * IP_V4 – IP address version 4
@@ -1152,10 +1153,9 @@ extension FinspaceClientTypes {
             self.vpcId = vpcId
         }
     }
-
 }
 
-public struct CreateKxClusterInput {
+public struct CreateKxClusterInput: Swift.Sendable {
     /// The configuration based on which FinSpace will scale in or scale out nodes in your cluster.
     public var autoScalingConfiguration: FinspaceClientTypes.AutoScalingConfiguration?
     /// The availability zone identifiers for the requested regions.
@@ -1269,7 +1269,7 @@ public struct CreateKxClusterInput {
 
 extension FinspaceClientTypes {
 
-    public enum KxClusterStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum KxClusterStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case createFailed
         case creating
         case deleted
@@ -1316,7 +1316,7 @@ extension FinspaceClientTypes {
 
 extension FinspaceClientTypes {
 
-    public enum VolumeType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum VolumeType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case nas1
         case sdkUnknown(Swift.String)
 
@@ -1341,8 +1341,9 @@ extension FinspaceClientTypes {
 }
 
 extension FinspaceClientTypes {
+
     /// The structure that consists of name and type of volume.
-    public struct Volume {
+    public struct Volume: Swift.Sendable {
         /// A unique identifier for the volume.
         public var volumeName: Swift.String?
         /// The type of file system volume. Currently, FinSpace only supports NAS_1 volume type.
@@ -1357,10 +1358,9 @@ extension FinspaceClientTypes {
             self.volumeType = volumeType
         }
     }
-
 }
 
-public struct CreateKxClusterOutput {
+public struct CreateKxClusterOutput: Swift.Sendable {
     /// The configuration based on which FinSpace will scale in or scale out nodes in your cluster.
     public var autoScalingConfiguration: FinspaceClientTypes.AutoScalingConfiguration?
     /// The availability zone identifiers for the requested regions.
@@ -1518,7 +1518,7 @@ public struct ResourceAlreadyExistsException: ClientRuntime.ModeledError, AWSCli
     }
 }
 
-public struct CreateKxDatabaseInput {
+public struct CreateKxDatabaseInput: Swift.Sendable {
     /// A token that ensures idempotency. This token expires in 10 minutes.
     /// This member is required.
     public var clientToken: Swift.String?
@@ -1549,7 +1549,7 @@ public struct CreateKxDatabaseInput {
     }
 }
 
-public struct CreateKxDatabaseOutput {
+public struct CreateKxDatabaseOutput: Swift.Sendable {
     /// The timestamp at which the database is created in FinSpace. The value is determined as epoch time in milliseconds. For example, the value for Monday, November 1, 2021 12:00:00 PM UTC is specified as 1635768000000.
     public var createdTimestamp: Foundation.Date?
     /// The ARN identifier of the database.
@@ -1581,7 +1581,7 @@ public struct CreateKxDatabaseOutput {
     }
 }
 
-public struct CreateKxDataviewInput {
+public struct CreateKxDataviewInput: Swift.Sendable {
     /// The option to specify whether you want to apply all the future additions and corrections automatically to the dataview, when you ingest new changesets. The default value is false.
     public var autoUpdate: Swift.Bool?
     /// The identifier of the availability zones.
@@ -1652,7 +1652,7 @@ public struct CreateKxDataviewInput {
 
 extension FinspaceClientTypes {
 
-    public enum KxDataviewStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum KxDataviewStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case active
         case creating
         case deleting
@@ -1688,7 +1688,7 @@ extension FinspaceClientTypes {
     }
 }
 
-public struct CreateKxDataviewOutput {
+public struct CreateKxDataviewOutput: Swift.Sendable {
     /// The option to select whether you want to apply all the future additions and corrections automatically to the dataview when you ingest new changesets. The default value is false.
     public var autoUpdate: Swift.Bool
     /// The identifier of the availability zones.
@@ -1754,7 +1754,7 @@ public struct CreateKxDataviewOutput {
     }
 }
 
-public struct CreateKxEnvironmentInput {
+public struct CreateKxEnvironmentInput: Swift.Sendable {
     /// A token that ensures idempotency. This token expires in 10 minutes.
     public var clientToken: Swift.String?
     /// A description for the kdb environment.
@@ -1786,7 +1786,7 @@ public struct CreateKxEnvironmentInput {
 
 extension FinspaceClientTypes {
 
-    public enum EnvironmentStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum EnvironmentStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case created
         case createRequested
         case creating
@@ -1846,7 +1846,7 @@ extension FinspaceClientTypes {
     }
 }
 
-public struct CreateKxEnvironmentOutput {
+public struct CreateKxEnvironmentOutput: Swift.Sendable {
     /// The timestamp at which the kdb environment was created in FinSpace.
     public var creationTimestamp: Foundation.Date?
     /// A description for the kdb environment.
@@ -1882,7 +1882,7 @@ public struct CreateKxEnvironmentOutput {
     }
 }
 
-public struct CreateKxScalingGroupInput {
+public struct CreateKxScalingGroupInput: Swift.Sendable {
     /// The identifier of the availability zones.
     /// This member is required.
     public var availabilityZoneId: Swift.String?
@@ -1939,7 +1939,7 @@ public struct CreateKxScalingGroupInput {
 
 extension FinspaceClientTypes {
 
-    public enum KxScalingGroupStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum KxScalingGroupStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case active
         case createFailed
         case creating
@@ -1978,7 +1978,7 @@ extension FinspaceClientTypes {
     }
 }
 
-public struct CreateKxScalingGroupOutput {
+public struct CreateKxScalingGroupOutput: Swift.Sendable {
     /// The identifier of the availability zones.
     public var availabilityZoneId: Swift.String?
     /// The timestamp at which the scaling group was created in FinSpace. The value is determined as epoch time in milliseconds. For example, the value for Monday, November 1, 2021 12:00:00 PM UTC is specified as 1635768000000.
@@ -2030,7 +2030,7 @@ public struct CreateKxScalingGroupOutput {
     }
 }
 
-public struct CreateKxUserInput {
+public struct CreateKxUserInput: Swift.Sendable {
     /// A token that ensures idempotency. This token expires in 10 minutes.
     public var clientToken: Swift.String?
     /// A unique identifier for the kdb environment where you want to create a user.
@@ -2061,7 +2061,7 @@ public struct CreateKxUserInput {
     }
 }
 
-public struct CreateKxUserOutput {
+public struct CreateKxUserOutput: Swift.Sendable {
     /// A unique identifier for the kdb environment.
     public var environmentId: Swift.String?
     /// The IAM role ARN that will be associated with the user.
@@ -2087,7 +2087,7 @@ public struct CreateKxUserOutput {
 
 extension FinspaceClientTypes {
 
-    public enum KxNAS1Type: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum KxNAS1Type: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case hdd12
         case ssd1000
         case ssd250
@@ -2118,8 +2118,9 @@ extension FinspaceClientTypes {
 }
 
 extension FinspaceClientTypes {
+
     /// The structure containing the size and type of the network attached storage (NAS_1) file system volume.
-    public struct KxNAS1Configuration {
+    public struct KxNAS1Configuration: Swift.Sendable {
         /// The size of the network attached storage. For storage type SSD_1000 and SSD_250 you can select the minimum size as 1200 GB or increments of 2400 GB. For storage type HDD_12 you can select the minimum size as 6000 GB or increments of 6000 GB.
         public var size: Swift.Int?
         /// The type of the network attached storage.
@@ -2134,12 +2135,11 @@ extension FinspaceClientTypes {
             self.type = type
         }
     }
-
 }
 
 extension FinspaceClientTypes {
 
-    public enum KxVolumeType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum KxVolumeType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case nas1
         case sdkUnknown(Swift.String)
 
@@ -2163,7 +2163,7 @@ extension FinspaceClientTypes {
     }
 }
 
-public struct CreateKxVolumeInput {
+public struct CreateKxVolumeInput: Swift.Sendable {
     /// The identifier of the availability zones.
     /// This member is required.
     public var availabilityZoneIds: [Swift.String]?
@@ -2214,7 +2214,7 @@ public struct CreateKxVolumeInput {
 
 extension FinspaceClientTypes {
 
-    public enum KxVolumeStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum KxVolumeStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case active
         case createFailed
         case creating
@@ -2262,7 +2262,7 @@ extension FinspaceClientTypes {
     }
 }
 
-public struct CreateKxVolumeOutput {
+public struct CreateKxVolumeOutput: Swift.Sendable {
     /// The identifier of the availability zones.
     public var availabilityZoneIds: [Swift.String]?
     /// The number of availability zones you want to assign per volume. Currently, FinSpace only supports SINGLE for volumes. This places dataview in a single AZ.
@@ -2332,7 +2332,7 @@ public struct CreateKxVolumeOutput {
     }
 }
 
-public struct DeleteEnvironmentInput {
+public struct DeleteEnvironmentInput: Swift.Sendable {
     /// The identifier for the FinSpace environment.
     /// This member is required.
     public var environmentId: Swift.String?
@@ -2345,12 +2345,12 @@ public struct DeleteEnvironmentInput {
     }
 }
 
-public struct DeleteEnvironmentOutput {
+public struct DeleteEnvironmentOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteKxClusterInput {
+public struct DeleteKxClusterInput: Swift.Sendable {
     /// A token that ensures idempotency. This token expires in 10 minutes.
     public var clientToken: Swift.String?
     /// The name of the cluster that you want to delete.
@@ -2372,12 +2372,12 @@ public struct DeleteKxClusterInput {
     }
 }
 
-public struct DeleteKxClusterOutput {
+public struct DeleteKxClusterOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteKxClusterNodeInput {
+public struct DeleteKxClusterNodeInput: Swift.Sendable {
     /// The name of the cluster, for which you want to delete the nodes.
     /// This member is required.
     public var clusterName: Swift.String?
@@ -2400,12 +2400,12 @@ public struct DeleteKxClusterNodeInput {
     }
 }
 
-public struct DeleteKxClusterNodeOutput {
+public struct DeleteKxClusterNodeOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteKxDatabaseInput {
+public struct DeleteKxDatabaseInput: Swift.Sendable {
     /// A token that ensures idempotency. This token expires in 10 minutes.
     /// This member is required.
     public var clientToken: Swift.String?
@@ -2428,12 +2428,12 @@ public struct DeleteKxDatabaseInput {
     }
 }
 
-public struct DeleteKxDatabaseOutput {
+public struct DeleteKxDatabaseOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteKxDataviewInput {
+public struct DeleteKxDataviewInput: Swift.Sendable {
     /// A token that ensures idempotency. This token expires in 10 minutes.
     /// This member is required.
     public var clientToken: Swift.String?
@@ -2461,12 +2461,12 @@ public struct DeleteKxDataviewInput {
     }
 }
 
-public struct DeleteKxDataviewOutput {
+public struct DeleteKxDataviewOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteKxEnvironmentInput {
+public struct DeleteKxEnvironmentInput: Swift.Sendable {
     /// A token that ensures idempotency. This token expires in 10 minutes.
     public var clientToken: Swift.String?
     /// A unique identifier for the kdb environment.
@@ -2483,12 +2483,12 @@ public struct DeleteKxEnvironmentInput {
     }
 }
 
-public struct DeleteKxEnvironmentOutput {
+public struct DeleteKxEnvironmentOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteKxScalingGroupInput {
+public struct DeleteKxScalingGroupInput: Swift.Sendable {
     /// A token that ensures idempotency. This token expires in 10 minutes.
     public var clientToken: Swift.String?
     /// A unique identifier for the kdb environment, from where you want to delete the dataview.
@@ -2510,12 +2510,12 @@ public struct DeleteKxScalingGroupInput {
     }
 }
 
-public struct DeleteKxScalingGroupOutput {
+public struct DeleteKxScalingGroupOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteKxUserInput {
+public struct DeleteKxUserInput: Swift.Sendable {
     /// A token that ensures idempotency. This token expires in 10 minutes.
     public var clientToken: Swift.String?
     /// A unique identifier for the kdb environment.
@@ -2537,12 +2537,12 @@ public struct DeleteKxUserInput {
     }
 }
 
-public struct DeleteKxUserOutput {
+public struct DeleteKxUserOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteKxVolumeInput {
+public struct DeleteKxVolumeInput: Swift.Sendable {
     /// A token that ensures idempotency. This token expires in 10 minutes.
     public var clientToken: Swift.String?
     /// A unique identifier for the kdb environment, whose clusters can attach to the volume.
@@ -2564,12 +2564,12 @@ public struct DeleteKxVolumeInput {
     }
 }
 
-public struct DeleteKxVolumeOutput {
+public struct DeleteKxVolumeOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct GetEnvironmentInput {
+public struct GetEnvironmentInput: Swift.Sendable {
     /// The identifier of the FinSpace environment.
     /// This member is required.
     public var environmentId: Swift.String?
@@ -2583,8 +2583,9 @@ public struct GetEnvironmentInput {
 }
 
 extension FinspaceClientTypes {
+
     /// Represents an FinSpace environment.
-    public struct Environment {
+    public struct Environment: Swift.Sendable {
         /// The ID of the AWS account in which the FinSpace environment is created.
         public var awsAccountId: Swift.String?
         /// The AWS account ID of the dedicated service account associated with your FinSpace environment.
@@ -2639,10 +2640,9 @@ extension FinspaceClientTypes {
             self.status = status
         }
     }
-
 }
 
-public struct GetEnvironmentOutput {
+public struct GetEnvironmentOutput: Swift.Sendable {
     /// The name of the FinSpace environment.
     public var environment: FinspaceClientTypes.Environment?
 
@@ -2654,7 +2654,7 @@ public struct GetEnvironmentOutput {
     }
 }
 
-public struct GetKxChangesetInput {
+public struct GetKxChangesetInput: Swift.Sendable {
     /// A unique identifier of the changeset for which you want to retrieve data.
     /// This member is required.
     public var changesetId: Swift.String?
@@ -2677,7 +2677,7 @@ public struct GetKxChangesetInput {
     }
 }
 
-public struct GetKxChangesetOutput {
+public struct GetKxChangesetOutput: Swift.Sendable {
     /// Beginning time from which the changeset is active. The value is determined as epoch time in milliseconds. For example, the value for Monday, November 1, 2021 12:00:00 PM UTC is specified as 1635768000000.
     public var activeFromTimestamp: Foundation.Date?
     /// A list of change request objects that are run in order.
@@ -2729,7 +2729,7 @@ public struct GetKxChangesetOutput {
     }
 }
 
-public struct GetKxClusterInput {
+public struct GetKxClusterInput: Swift.Sendable {
     /// The name of the cluster that you want to retrieve.
     /// This member is required.
     public var clusterName: Swift.String?
@@ -2747,7 +2747,7 @@ public struct GetKxClusterInput {
     }
 }
 
-public struct GetKxClusterOutput {
+public struct GetKxClusterOutput: Swift.Sendable {
     /// The configuration based on which FinSpace will scale in or scale out nodes in your cluster.
     public var autoScalingConfiguration: FinspaceClientTypes.AutoScalingConfiguration?
     /// The availability zone identifiers for the requested regions.
@@ -2877,7 +2877,7 @@ public struct GetKxClusterOutput {
     }
 }
 
-public struct GetKxConnectionStringInput {
+public struct GetKxConnectionStringInput: Swift.Sendable {
     /// A name of the kdb cluster.
     /// This member is required.
     public var clusterName: Swift.String?
@@ -2900,7 +2900,7 @@ public struct GetKxConnectionStringInput {
     }
 }
 
-public struct GetKxConnectionStringOutput {
+public struct GetKxConnectionStringOutput: Swift.Sendable {
     /// The signed connection string that you can use to connect to clusters.
     public var signedConnectionString: Swift.String?
 
@@ -2917,7 +2917,7 @@ extension GetKxConnectionStringOutput: Swift.CustomDebugStringConvertible {
         "GetKxConnectionStringOutput(signedConnectionString: \"CONTENT_REDACTED\")"}
 }
 
-public struct GetKxDatabaseInput {
+public struct GetKxDatabaseInput: Swift.Sendable {
     /// The name of the kdb database.
     /// This member is required.
     public var databaseName: Swift.String?
@@ -2935,7 +2935,7 @@ public struct GetKxDatabaseInput {
     }
 }
 
-public struct GetKxDatabaseOutput {
+public struct GetKxDatabaseOutput: Swift.Sendable {
     /// The timestamp at which the database is created in FinSpace. The value is determined as epoch time in milliseconds. For example, the value for Monday, November 1, 2021 12:00:00 PM UTC is specified as 1635768000000.
     public var createdTimestamp: Foundation.Date?
     /// The ARN identifier of the database.
@@ -2983,7 +2983,7 @@ public struct GetKxDatabaseOutput {
     }
 }
 
-public struct GetKxDataviewInput {
+public struct GetKxDataviewInput: Swift.Sendable {
     /// The name of the database where you created the dataview.
     /// This member is required.
     public var databaseName: Swift.String?
@@ -3007,8 +3007,9 @@ public struct GetKxDataviewInput {
 }
 
 extension FinspaceClientTypes {
+
     /// The active version of the dataview that is currently in use by this cluster.
-    public struct KxDataviewActiveVersion {
+    public struct KxDataviewActiveVersion: Swift.Sendable {
         /// The list of clusters that are currently using this dataview.
         public var attachedClusters: [Swift.String]?
         /// A unique identifier for the changeset.
@@ -3035,10 +3036,9 @@ extension FinspaceClientTypes {
             self.versionId = versionId
         }
     }
-
 }
 
-public struct GetKxDataviewOutput {
+public struct GetKxDataviewOutput: Swift.Sendable {
     /// The current active changeset versions of the database on the given dataview.
     public var activeVersions: [FinspaceClientTypes.KxDataviewActiveVersion]?
     /// The option to specify whether you want to apply all the future additions and corrections automatically to the dataview when new changesets are ingested. The default value is false.
@@ -3112,7 +3112,7 @@ public struct GetKxDataviewOutput {
     }
 }
 
-public struct GetKxEnvironmentInput {
+public struct GetKxEnvironmentInput: Swift.Sendable {
     /// A unique identifier for the kdb environment.
     /// This member is required.
     public var environmentId: Swift.String?
@@ -3126,8 +3126,9 @@ public struct GetKxEnvironmentInput {
 }
 
 extension FinspaceClientTypes {
+
     /// A list of DNS server name and server IP. This is used to set up Route-53 outbound resolvers.
-    public struct CustomDNSServer {
+    public struct CustomDNSServer: Swift.Sendable {
         /// The IP address of the DNS server.
         /// This member is required.
         public var customDNSServerIP: Swift.String?
@@ -3144,12 +3145,11 @@ extension FinspaceClientTypes {
             self.customDNSServerName = customDNSServerName
         }
     }
-
 }
 
 extension FinspaceClientTypes {
 
-    public enum DnsStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DnsStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case failedUpdate
         case `none`
         case successfullyUpdated
@@ -3187,7 +3187,7 @@ extension FinspaceClientTypes {
 
 extension FinspaceClientTypes {
 
-    public enum TgwStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum TgwStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case failedUpdate
         case `none`
         case successfullyUpdated
@@ -3224,8 +3224,9 @@ extension FinspaceClientTypes {
 }
 
 extension FinspaceClientTypes {
+
     /// Defines the ICMP protocol that consists of the ICMP type and code.
-    public struct IcmpTypeCode {
+    public struct IcmpTypeCode: Swift.Sendable {
         /// The ICMP code. A value of -1 means all codes for the specified ICMP type.
         /// This member is required.
         public var code: Swift.Int
@@ -3242,12 +3243,12 @@ extension FinspaceClientTypes {
             self.type = type
         }
     }
-
 }
 
 extension FinspaceClientTypes {
+
     /// The range of ports the rule applies to.
-    public struct PortRange {
+    public struct PortRange: Swift.Sendable {
         /// The first port in the range.
         /// This member is required.
         public var from: Swift.Int
@@ -3264,12 +3265,11 @@ extension FinspaceClientTypes {
             self.to = to
         }
     }
-
 }
 
 extension FinspaceClientTypes {
 
-    public enum RuleAction: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum RuleAction: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case allow
         case deny
         case sdkUnknown(Swift.String)
@@ -3297,8 +3297,9 @@ extension FinspaceClientTypes {
 }
 
 extension FinspaceClientTypes {
+
     /// The network access control list (ACL) is an optional layer of security for your VPC that acts as a firewall for controlling traffic in and out of one or more subnets. The entry is a set of numbered ingress and egress rules that determine whether a packet should be allowed in or out of a subnet associated with the ACL. We process the entries in the ACL according to the rule numbers, in ascending order.
-    public struct NetworkACLEntry {
+    public struct NetworkACLEntry: Swift.Sendable {
         /// The IPv4 network range to allow or deny, in CIDR notation. For example, 172.16.0.0/24. We modify the specified CIDR block to its canonical form. For example, if you specify 100.68.0.18/18, we modify it to 100.68.0.0/18.
         /// This member is required.
         public var cidrBlock: Swift.String?
@@ -3333,12 +3334,12 @@ extension FinspaceClientTypes {
             self.ruleNumber = ruleNumber
         }
     }
-
 }
 
 extension FinspaceClientTypes {
+
     /// The structure of the transit gateway and network configuration that is used to connect the kdb environment to an internal network.
-    public struct TransitGatewayConfiguration {
+    public struct TransitGatewayConfiguration: Swift.Sendable {
         /// The rules that define how you manage the outbound traffic from kdb network to your internal network.
         public var attachmentNetworkAclConfiguration: [FinspaceClientTypes.NetworkACLEntry]?
         /// The routing CIDR on behalf of kdb environment. It could be any "/26 range in the 100.64.0.0 CIDR space. After providing, it will be added to the customer's transit gateway routing table so that the traffics could be routed to kdb network.
@@ -3359,10 +3360,9 @@ extension FinspaceClientTypes {
             self.transitGatewayID = transitGatewayID
         }
     }
-
 }
 
-public struct GetKxEnvironmentOutput {
+public struct GetKxEnvironmentOutput: Swift.Sendable {
     /// The identifier of the availability zones where subnets for the environment are created.
     public var availabilityZoneIds: [Swift.String]?
     /// The unique identifier of the AWS account that is used to create the kdb environment.
@@ -3438,7 +3438,7 @@ public struct GetKxEnvironmentOutput {
     }
 }
 
-public struct GetKxScalingGroupInput {
+public struct GetKxScalingGroupInput: Swift.Sendable {
     /// A unique identifier for the kdb environment.
     /// This member is required.
     public var environmentId: Swift.String?
@@ -3456,7 +3456,7 @@ public struct GetKxScalingGroupInput {
     }
 }
 
-public struct GetKxScalingGroupOutput {
+public struct GetKxScalingGroupOutput: Swift.Sendable {
     /// The identifier of the availability zones.
     public var availabilityZoneId: Swift.String?
     /// The list of Managed kdb clusters that are currently active in the given scaling group.
@@ -3534,7 +3534,7 @@ public struct GetKxScalingGroupOutput {
     }
 }
 
-public struct GetKxUserInput {
+public struct GetKxUserInput: Swift.Sendable {
     /// A unique identifier for the kdb environment.
     /// This member is required.
     public var environmentId: Swift.String?
@@ -3552,7 +3552,7 @@ public struct GetKxUserInput {
     }
 }
 
-public struct GetKxUserOutput {
+public struct GetKxUserOutput: Swift.Sendable {
     /// A unique identifier for the kdb environment.
     public var environmentId: Swift.String?
     /// The IAM role ARN that is associated with the user.
@@ -3576,7 +3576,7 @@ public struct GetKxUserOutput {
     }
 }
 
-public struct GetKxVolumeInput {
+public struct GetKxVolumeInput: Swift.Sendable {
     /// A unique identifier for the kdb environment, whose clusters can attach to the volume.
     /// This member is required.
     public var environmentId: Swift.String?
@@ -3595,8 +3595,9 @@ public struct GetKxVolumeInput {
 }
 
 extension FinspaceClientTypes {
+
     /// The structure containing the metadata of the attached clusters.
-    public struct KxAttachedCluster {
+    public struct KxAttachedCluster: Swift.Sendable {
         /// A unique name for the attached cluster.
         public var clusterName: Swift.String?
         /// The status of the attached cluster.
@@ -3631,10 +3632,9 @@ extension FinspaceClientTypes {
             self.clusterType = clusterType
         }
     }
-
 }
 
-public struct GetKxVolumeOutput {
+public struct GetKxVolumeOutput: Swift.Sendable {
     /// A list of cluster identifiers that a volume is attached to.
     public var attachedClusters: [FinspaceClientTypes.KxAttachedCluster]?
     /// The identifier of the availability zones.
@@ -3712,7 +3712,7 @@ public struct GetKxVolumeOutput {
     }
 }
 
-public struct ListEnvironmentsInput {
+public struct ListEnvironmentsInput: Swift.Sendable {
     /// The maximum number of results to return in this request.
     public var maxResults: Swift.Int?
     /// A token generated by FinSpace that specifies where to continue pagination if a previous request was truncated. To get the next set of pages, pass in the nextTokennextToken value from the response object of the previous page call.
@@ -3728,7 +3728,7 @@ public struct ListEnvironmentsInput {
     }
 }
 
-public struct ListEnvironmentsOutput {
+public struct ListEnvironmentsOutput: Swift.Sendable {
     /// A list of all of your FinSpace environments.
     public var environments: [FinspaceClientTypes.Environment]?
     /// A token that you can use in a subsequent call to retrieve the next set of results.
@@ -3744,7 +3744,7 @@ public struct ListEnvironmentsOutput {
     }
 }
 
-public struct ListKxChangesetsInput {
+public struct ListKxChangesetsInput: Swift.Sendable {
     /// The name of the kdb database.
     /// This member is required.
     public var databaseName: Swift.String?
@@ -3771,8 +3771,9 @@ public struct ListKxChangesetsInput {
 }
 
 extension FinspaceClientTypes {
+
     /// Details of changeset.
-    public struct KxChangesetListEntry {
+    public struct KxChangesetListEntry: Swift.Sendable {
         /// Beginning time from which the changeset is active. The value is determined as epoch time in milliseconds. For example, the value for Monday, November 1, 2021 12:00:00 PM UTC is specified as 1635768000000.
         public var activeFromTimestamp: Foundation.Date?
         /// A unique identifier for the changeset.
@@ -3807,10 +3808,9 @@ extension FinspaceClientTypes {
             self.status = status
         }
     }
-
 }
 
-public struct ListKxChangesetsOutput {
+public struct ListKxChangesetsOutput: Swift.Sendable {
     /// A list of changesets for a database.
     public var kxChangesets: [FinspaceClientTypes.KxChangesetListEntry]?
     /// A token that indicates where a results page should begin.
@@ -3826,7 +3826,7 @@ public struct ListKxChangesetsOutput {
     }
 }
 
-public struct ListKxClusterNodesInput {
+public struct ListKxClusterNodesInput: Swift.Sendable {
     /// A unique name for the cluster.
     /// This member is required.
     public var clusterName: Swift.String?
@@ -3854,7 +3854,7 @@ public struct ListKxClusterNodesInput {
 
 extension FinspaceClientTypes {
 
-    public enum KxNodeStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum KxNodeStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case provisioning
         case running
         case sdkUnknown(Swift.String)
@@ -3882,8 +3882,9 @@ extension FinspaceClientTypes {
 }
 
 extension FinspaceClientTypes {
+
     /// A structure that stores metadata for a kdb node.
-    public struct KxNode {
+    public struct KxNode: Swift.Sendable {
         /// The identifier of the availability zones where subnets for the environment are created.
         public var availabilityZoneId: Swift.String?
         /// The time when a particular node is started. The value is determined as epoch time in milliseconds. For example, the value for Monday, November 1, 2021 12:00:00 PM UTC is specified as 1635768000000.
@@ -3910,10 +3911,9 @@ extension FinspaceClientTypes {
             self.status = status
         }
     }
-
 }
 
-public struct ListKxClusterNodesOutput {
+public struct ListKxClusterNodesOutput: Swift.Sendable {
     /// A token that indicates where a results page should begin.
     public var nextToken: Swift.String?
     /// A list of nodes associated with the cluster.
@@ -3929,7 +3929,7 @@ public struct ListKxClusterNodesOutput {
     }
 }
 
-public struct ListKxClustersInput {
+public struct ListKxClustersInput: Swift.Sendable {
     /// Specifies the type of KDB database that is being created. The following types are available:
     ///
     /// * HDB – A Historical Database. The data is only accessible with read-only permissions from one of the FinSpace managed kdb databases mounted to the cluster.
@@ -3965,8 +3965,9 @@ public struct ListKxClustersInput {
 }
 
 extension FinspaceClientTypes {
+
     /// The details of a kdb cluster.
-    public struct KxCluster {
+    public struct KxCluster: Swift.Sendable {
         /// The availability zone identifiers for the requested regions.
         public var availabilityZoneId: Swift.String?
         /// The number of availability zones assigned per cluster. This can be one of the following:
@@ -4055,10 +4056,9 @@ extension FinspaceClientTypes {
             self.volumes = volumes
         }
     }
-
 }
 
-public struct ListKxClustersOutput {
+public struct ListKxClustersOutput: Swift.Sendable {
     /// Lists the cluster details.
     public var kxClusterSummaries: [FinspaceClientTypes.KxCluster]?
     /// A token that indicates where a results page should begin.
@@ -4074,7 +4074,7 @@ public struct ListKxClustersOutput {
     }
 }
 
-public struct ListKxDatabasesInput {
+public struct ListKxDatabasesInput: Swift.Sendable {
     /// A unique identifier for the kdb environment.
     /// This member is required.
     public var environmentId: Swift.String?
@@ -4096,8 +4096,9 @@ public struct ListKxDatabasesInput {
 }
 
 extension FinspaceClientTypes {
+
     /// Details about a FinSpace managed kdb database
-    public struct KxDatabaseListEntry {
+    public struct KxDatabaseListEntry: Swift.Sendable {
         /// The timestamp at which the database was created in FinSpace. The value is determined as epoch time in milliseconds. For example, the value for Monday, November 1, 2021 12:00:00 PM UTC is specified as 1635768000000.
         public var createdTimestamp: Foundation.Date?
         /// The name of the kdb database.
@@ -4116,10 +4117,9 @@ extension FinspaceClientTypes {
             self.lastModifiedTimestamp = lastModifiedTimestamp
         }
     }
-
 }
 
-public struct ListKxDatabasesOutput {
+public struct ListKxDatabasesOutput: Swift.Sendable {
     /// A list of databases in the kdb environment.
     public var kxDatabases: [FinspaceClientTypes.KxDatabaseListEntry]?
     /// A token that indicates where a results page should begin.
@@ -4135,7 +4135,7 @@ public struct ListKxDatabasesOutput {
     }
 }
 
-public struct ListKxDataviewsInput {
+public struct ListKxDataviewsInput: Swift.Sendable {
     /// The name of the database where the dataviews were created.
     /// This member is required.
     public var databaseName: Swift.String?
@@ -4162,8 +4162,9 @@ public struct ListKxDataviewsInput {
 }
 
 extension FinspaceClientTypes {
+
     /// A collection of kdb dataview entries.
-    public struct KxDataviewListEntry {
+    public struct KxDataviewListEntry: Swift.Sendable {
         /// The active changeset versions for the given dataview entry.
         public var activeVersions: [FinspaceClientTypes.KxDataviewActiveVersion]?
         /// The option to specify whether you want to apply all the future additions and corrections automatically to the dataview when you ingest new changesets. The default value is false.
@@ -4230,10 +4231,9 @@ extension FinspaceClientTypes {
             self.statusReason = statusReason
         }
     }
-
 }
 
-public struct ListKxDataviewsOutput {
+public struct ListKxDataviewsOutput: Swift.Sendable {
     /// The list of kdb dataviews that are currently active for the given database.
     public var kxDataviews: [FinspaceClientTypes.KxDataviewListEntry]?
     /// A token that indicates where a results page should begin.
@@ -4249,7 +4249,7 @@ public struct ListKxDataviewsOutput {
     }
 }
 
-public struct ListKxEnvironmentsInput {
+public struct ListKxEnvironmentsInput: Swift.Sendable {
     /// The maximum number of results to return in this request.
     public var maxResults: Swift.Int?
     /// A token that indicates where a results page should begin.
@@ -4266,8 +4266,9 @@ public struct ListKxEnvironmentsInput {
 }
 
 extension FinspaceClientTypes {
+
     /// The details of a kdb environment.
-    public struct KxEnvironment {
+    public struct KxEnvironment: Swift.Sendable {
         /// The identifier of the availability zones where subnets for the environment are created.
         public var availabilityZoneIds: [Swift.String]?
         /// The unique identifier of the AWS account in which you create the kdb environment.
@@ -4360,10 +4361,9 @@ extension FinspaceClientTypes {
             self.updateTimestamp = updateTimestamp
         }
     }
-
 }
 
-public struct ListKxEnvironmentsOutput {
+public struct ListKxEnvironmentsOutput: Swift.Sendable {
     /// A list of environments in an account.
     public var environments: [FinspaceClientTypes.KxEnvironment]?
     /// A token that indicates where a results page should begin.
@@ -4379,7 +4379,7 @@ public struct ListKxEnvironmentsOutput {
     }
 }
 
-public struct ListKxScalingGroupsInput {
+public struct ListKxScalingGroupsInput: Swift.Sendable {
     /// A unique identifier for the kdb environment, for which you want to retrieve a list of scaling groups.
     /// This member is required.
     public var environmentId: Swift.String?
@@ -4401,8 +4401,9 @@ public struct ListKxScalingGroupsInput {
 }
 
 extension FinspaceClientTypes {
+
     /// A structure for storing metadata of scaling group.
-    public struct KxScalingGroup {
+    public struct KxScalingGroup: Swift.Sendable {
         /// The identifier of the availability zones.
         public var availabilityZoneId: Swift.String?
         /// The list of clusters currently active in a given scaling group.
@@ -4459,10 +4460,9 @@ extension FinspaceClientTypes {
             self.statusReason = statusReason
         }
     }
-
 }
 
-public struct ListKxScalingGroupsOutput {
+public struct ListKxScalingGroupsOutput: Swift.Sendable {
     /// A token that indicates where a results page should begin.
     public var nextToken: Swift.String?
     /// A list of scaling groups available in a kdb environment.
@@ -4478,7 +4478,7 @@ public struct ListKxScalingGroupsOutput {
     }
 }
 
-public struct ListKxUsersInput {
+public struct ListKxUsersInput: Swift.Sendable {
     /// A unique identifier for the kdb environment.
     /// This member is required.
     public var environmentId: Swift.String?
@@ -4500,8 +4500,9 @@ public struct ListKxUsersInput {
 }
 
 extension FinspaceClientTypes {
+
     /// A structure that stores metadata for a kdb user.
-    public struct KxUser {
+    public struct KxUser: Swift.Sendable {
         /// The timestamp at which the kdb user was created.
         public var createTimestamp: Foundation.Date?
         /// The IAM role ARN that is associated with the user.
@@ -4528,10 +4529,9 @@ extension FinspaceClientTypes {
             self.userName = userName
         }
     }
-
 }
 
-public struct ListKxUsersOutput {
+public struct ListKxUsersOutput: Swift.Sendable {
     /// A token that indicates where a results page should begin.
     public var nextToken: Swift.String?
     /// A list of users in a kdb environment.
@@ -4547,7 +4547,7 @@ public struct ListKxUsersOutput {
     }
 }
 
-public struct ListKxVolumesInput {
+public struct ListKxVolumesInput: Swift.Sendable {
     /// A unique identifier for the kdb environment, whose clusters can attach to the volume.
     /// This member is required.
     public var environmentId: Swift.String?
@@ -4573,8 +4573,9 @@ public struct ListKxVolumesInput {
 }
 
 extension FinspaceClientTypes {
+
     /// The structure that contains the metadata of the volume.
-    public struct KxVolume {
+    public struct KxVolume: Swift.Sendable {
         /// The identifier of the availability zones.
         public var availabilityZoneIds: [Swift.String]?
         /// The number of availability zones you want to assign per volume. Currently, FinSpace only supports SINGLE for volumes. This places dataview in a single AZ.
@@ -4635,10 +4636,9 @@ extension FinspaceClientTypes {
             self.volumeType = volumeType
         }
     }
-
 }
 
-public struct ListKxVolumesOutput {
+public struct ListKxVolumesOutput: Swift.Sendable {
     /// A summary of volumes.
     public var kxVolumeSummaries: [FinspaceClientTypes.KxVolume]?
     /// A token that indicates where a results page should begin.
@@ -4678,7 +4678,7 @@ public struct InvalidRequestException: ClientRuntime.ModeledError, AWSClientRunt
     }
 }
 
-public struct ListTagsForResourceInput {
+public struct ListTagsForResourceInput: Swift.Sendable {
     /// The Amazon Resource Name of the resource.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -4691,7 +4691,7 @@ public struct ListTagsForResourceInput {
     }
 }
 
-public struct ListTagsForResourceOutput {
+public struct ListTagsForResourceOutput: Swift.Sendable {
     /// A list of all tags for a resource.
     public var tags: [Swift.String: Swift.String]?
 
@@ -4703,7 +4703,7 @@ public struct ListTagsForResourceOutput {
     }
 }
 
-public struct TagResourceInput {
+public struct TagResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) for the resource.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -4721,12 +4721,12 @@ public struct TagResourceInput {
     }
 }
 
-public struct TagResourceOutput {
+public struct TagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UntagResourceInput {
+public struct UntagResourceInput: Swift.Sendable {
     /// A FinSpace resource from which you want to remove a tag or tags. The value for this parameter is an Amazon Resource Name (ARN).
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -4744,12 +4744,12 @@ public struct UntagResourceInput {
     }
 }
 
-public struct UntagResourceOutput {
+public struct UntagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdateEnvironmentInput {
+public struct UpdateEnvironmentInput: Swift.Sendable {
     /// The description of the environment.
     public var description: Swift.String?
     /// The identifier of the FinSpace environment.
@@ -4782,7 +4782,7 @@ public struct UpdateEnvironmentInput {
     }
 }
 
-public struct UpdateEnvironmentOutput {
+public struct UpdateEnvironmentOutput: Swift.Sendable {
     /// Returns the FinSpace environment object.
     public var environment: FinspaceClientTypes.Environment?
 
@@ -4796,7 +4796,7 @@ public struct UpdateEnvironmentOutput {
 
 extension FinspaceClientTypes {
 
-    public enum KxClusterCodeDeploymentStrategy: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum KxClusterCodeDeploymentStrategy: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case force
         case noRestart
         case rolling
@@ -4827,8 +4827,9 @@ extension FinspaceClientTypes {
 }
 
 extension FinspaceClientTypes {
+
     /// The configuration that allows you to choose how you want to update code on a cluster. Depending on the option you choose, you can reduce the time it takes to update the cluster.
-    public struct KxClusterCodeDeploymentConfiguration {
+    public struct KxClusterCodeDeploymentConfiguration: Swift.Sendable {
         /// The type of deployment that you want on a cluster.
         ///
         /// * ROLLING – This options updates the cluster by stopping the exiting q process and starting a new q process with updated configuration.
@@ -4846,10 +4847,9 @@ extension FinspaceClientTypes {
             self.deploymentStrategy = deploymentStrategy
         }
     }
-
 }
 
-public struct UpdateKxClusterCodeConfigurationInput {
+public struct UpdateKxClusterCodeConfigurationInput: Swift.Sendable {
     /// A token that ensures idempotency. This token expires in 10 minutes.
     public var clientToken: Swift.String?
     /// The name of the cluster.
@@ -4888,14 +4888,14 @@ public struct UpdateKxClusterCodeConfigurationInput {
     }
 }
 
-public struct UpdateKxClusterCodeConfigurationOutput {
+public struct UpdateKxClusterCodeConfigurationOutput: Swift.Sendable {
 
     public init() { }
 }
 
 extension FinspaceClientTypes {
 
-    public enum KxDeploymentStrategy: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum KxDeploymentStrategy: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case noRestart
         case rolling
         case sdkUnknown(Swift.String)
@@ -4923,8 +4923,9 @@ extension FinspaceClientTypes {
 }
 
 extension FinspaceClientTypes {
+
     /// The configuration that allows you to choose how you want to update the databases on a cluster. Depending on the option you choose, you can reduce the time it takes to update the cluster.
-    public struct KxDeploymentConfiguration {
+    public struct KxDeploymentConfiguration: Swift.Sendable {
         /// The type of deployment that you want on a cluster.
         ///
         /// * ROLLING – This options updates the cluster by stopping the exiting q process and starting a new q process with updated configuration.
@@ -4940,10 +4941,9 @@ extension FinspaceClientTypes {
             self.deploymentStrategy = deploymentStrategy
         }
     }
-
 }
 
-public struct UpdateKxClusterDatabasesInput {
+public struct UpdateKxClusterDatabasesInput: Swift.Sendable {
     /// A token that ensures idempotency. This token expires in 10 minutes.
     public var clientToken: Swift.String?
     /// A unique name for the cluster that you want to modify.
@@ -4974,12 +4974,12 @@ public struct UpdateKxClusterDatabasesInput {
     }
 }
 
-public struct UpdateKxClusterDatabasesOutput {
+public struct UpdateKxClusterDatabasesOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdateKxDatabaseInput {
+public struct UpdateKxDatabaseInput: Swift.Sendable {
     /// A token that ensures idempotency. This token expires in 10 minutes.
     /// This member is required.
     public var clientToken: Swift.String?
@@ -5006,7 +5006,7 @@ public struct UpdateKxDatabaseInput {
     }
 }
 
-public struct UpdateKxDatabaseOutput {
+public struct UpdateKxDatabaseOutput: Swift.Sendable {
     /// The name of the kdb database.
     public var databaseName: Swift.String?
     /// A description of the database.
@@ -5030,7 +5030,7 @@ public struct UpdateKxDatabaseOutput {
     }
 }
 
-public struct UpdateKxDataviewInput {
+public struct UpdateKxDataviewInput: Swift.Sendable {
     /// A unique identifier for the changeset.
     public var changesetId: Swift.String?
     /// A token that ensures idempotency. This token expires in 10 minutes.
@@ -5070,7 +5070,7 @@ public struct UpdateKxDataviewInput {
     }
 }
 
-public struct UpdateKxDataviewOutput {
+public struct UpdateKxDataviewOutput: Swift.Sendable {
     /// The current active changeset versions of the database on the given dataview.
     public var activeVersions: [FinspaceClientTypes.KxDataviewActiveVersion]?
     /// The option to specify whether you want to apply all the future additions and corrections automatically to the dataview when new changesets are ingested. The default value is false.
@@ -5140,7 +5140,7 @@ public struct UpdateKxDataviewOutput {
     }
 }
 
-public struct UpdateKxEnvironmentInput {
+public struct UpdateKxEnvironmentInput: Swift.Sendable {
     /// A token that ensures idempotency. This token expires in 10 minutes.
     public var clientToken: Swift.String?
     /// A description of the kdb environment.
@@ -5165,7 +5165,7 @@ public struct UpdateKxEnvironmentInput {
     }
 }
 
-public struct UpdateKxEnvironmentOutput {
+public struct UpdateKxEnvironmentOutput: Swift.Sendable {
     /// The identifier of the availability zones where subnets for the environment are created.
     public var availabilityZoneIds: [Swift.String]?
     /// The unique identifier of the AWS account that is used to create the kdb environment.
@@ -5237,7 +5237,7 @@ public struct UpdateKxEnvironmentOutput {
     }
 }
 
-public struct UpdateKxEnvironmentNetworkInput {
+public struct UpdateKxEnvironmentNetworkInput: Swift.Sendable {
     /// A token that ensures idempotency. This token expires in 10 minutes.
     public var clientToken: Swift.String?
     /// A list of DNS server name and server IP. This is used to set up Route-53 outbound resolvers.
@@ -5262,7 +5262,7 @@ public struct UpdateKxEnvironmentNetworkInput {
     }
 }
 
-public struct UpdateKxEnvironmentNetworkOutput {
+public struct UpdateKxEnvironmentNetworkOutput: Swift.Sendable {
     /// The identifier of the availability zones where subnets for the environment are created.
     public var availabilityZoneIds: [Swift.String]?
     /// The unique identifier of the AWS account that is used to create the kdb environment.
@@ -5334,7 +5334,7 @@ public struct UpdateKxEnvironmentNetworkOutput {
     }
 }
 
-public struct UpdateKxUserInput {
+public struct UpdateKxUserInput: Swift.Sendable {
     /// A token that ensures idempotency. This token expires in 10 minutes.
     public var clientToken: Swift.String?
     /// A unique identifier for the kdb environment.
@@ -5361,7 +5361,7 @@ public struct UpdateKxUserInput {
     }
 }
 
-public struct UpdateKxUserOutput {
+public struct UpdateKxUserOutput: Swift.Sendable {
     /// A unique identifier for the kdb environment.
     public var environmentId: Swift.String?
     /// The IAM role ARN that is associated with the user.
@@ -5385,7 +5385,7 @@ public struct UpdateKxUserOutput {
     }
 }
 
-public struct UpdateKxVolumeInput {
+public struct UpdateKxVolumeInput: Swift.Sendable {
     /// A token that ensures idempotency. This token expires in 10 minutes.
     public var clientToken: Swift.String?
     /// A description of the volume.
@@ -5415,7 +5415,7 @@ public struct UpdateKxVolumeInput {
     }
 }
 
-public struct UpdateKxVolumeOutput {
+public struct UpdateKxVolumeOutput: Swift.Sendable {
     /// Specifies the clusters that a volume is attached to.
     public var attachedClusters: [FinspaceClientTypes.KxAttachedCluster]?
     /// The identifier of the availability zones.

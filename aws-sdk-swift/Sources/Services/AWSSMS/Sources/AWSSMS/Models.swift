@@ -27,7 +27,7 @@ import protocol ClientRuntime.ModeledError
 
 extension SMSClientTypes {
 
-    public enum AppLaunchConfigurationStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AppLaunchConfigurationStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case configured
         case notconfigured
         case sdkUnknown(Swift.String)
@@ -56,7 +56,7 @@ extension SMSClientTypes {
 
 extension SMSClientTypes {
 
-    public enum AppLaunchStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AppLaunchStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case configurationinprogress
         case configurationinvalid
         case deltalaunchfailed
@@ -124,7 +124,7 @@ extension SMSClientTypes {
 
 extension SMSClientTypes {
 
-    public enum AppReplicationConfigurationStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AppReplicationConfigurationStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case configured
         case notconfigured
         case sdkUnknown(Swift.String)
@@ -153,7 +153,7 @@ extension SMSClientTypes {
 
 extension SMSClientTypes {
 
-    public enum AppReplicationStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AppReplicationStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case configurationinprogress
         case configurationinvalid
         case deltareplicated
@@ -223,8 +223,9 @@ extension SMSClientTypes {
 }
 
 extension SMSClientTypes {
+
     /// Details about the latest launch of an application.
-    public struct LaunchDetails {
+    public struct LaunchDetails: Swift.Sendable {
         /// The latest time that this application was launched successfully.
         public var latestLaunchTime: Foundation.Date?
         /// The ID of the latest stack launched for this application.
@@ -243,12 +244,11 @@ extension SMSClientTypes {
             self.stackName = stackName
         }
     }
-
 }
 
 extension SMSClientTypes {
 
-    public enum AppStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AppStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case active
         case creating
         case deleteFailed
@@ -288,8 +288,9 @@ extension SMSClientTypes {
 }
 
 extension SMSClientTypes {
+
     /// Information about the application.
-    public struct AppSummary {
+    public struct AppSummary: Swift.Sendable {
         /// The unique ID of the application.
         public var appId: Swift.String?
         /// The creation time of the application.
@@ -372,12 +373,11 @@ extension SMSClientTypes {
             self.totalServers = totalServers
         }
     }
-
 }
 
 extension SMSClientTypes {
 
-    public enum AppValidationStrategy: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AppValidationStrategy: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case ssm
         case sdkUnknown(Swift.String)
 
@@ -403,7 +403,7 @@ extension SMSClientTypes {
 
 extension SMSClientTypes {
 
-    public enum ScriptType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ScriptType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case powershellScript
         case shellScript
         case sdkUnknown(Swift.String)
@@ -431,8 +431,9 @@ extension SMSClientTypes {
 }
 
 extension SMSClientTypes {
+
     /// Location of an Amazon S3 object.
-    public struct S3Location {
+    public struct S3Location: Swift.Sendable {
         /// The Amazon S3 bucket name.
         public var bucket: Swift.String?
         /// The Amazon S3 bucket key.
@@ -447,12 +448,12 @@ extension SMSClientTypes {
             self.key = key
         }
     }
-
 }
 
 extension SMSClientTypes {
+
     /// Contains the location of a validation script.
-    public struct Source {
+    public struct Source: Swift.Sendable {
         /// Location of an Amazon S3 object.
         public var s3Location: SMSClientTypes.S3Location?
 
@@ -463,12 +464,12 @@ extension SMSClientTypes {
             self.s3Location = s3Location
         }
     }
-
 }
 
 extension SMSClientTypes {
+
     /// Contains validation parameters.
-    public struct SSMValidationParameters {
+    public struct SSMValidationParameters: Swift.Sendable {
         /// The command to run the validation script.
         public var command: Swift.String?
         /// The timeout interval, in seconds.
@@ -499,12 +500,12 @@ extension SMSClientTypes {
             self.source = source
         }
     }
-
 }
 
 extension SMSClientTypes {
+
     /// Configuration for validating an application.
-    public struct AppValidationConfiguration {
+    public struct AppValidationConfiguration: Swift.Sendable {
         /// The validation strategy.
         public var appValidationStrategy: SMSClientTypes.AppValidationStrategy?
         /// The name of the configuration.
@@ -527,12 +528,12 @@ extension SMSClientTypes {
             self.validationId = validationId
         }
     }
-
 }
 
 extension SMSClientTypes {
+
     /// Contains the location of validation output.
-    public struct SSMOutput {
+    public struct SSMOutput: Swift.Sendable {
         /// Location of an Amazon S3 object.
         public var s3Location: SMSClientTypes.S3Location?
 
@@ -543,12 +544,12 @@ extension SMSClientTypes {
             self.s3Location = s3Location
         }
     }
-
 }
 
 extension SMSClientTypes {
+
     /// Output from validating an application.
-    public struct AppValidationOutput {
+    public struct AppValidationOutput: Swift.Sendable {
         /// Output from using SSM to validate the application.
         public var ssmOutput: SMSClientTypes.SSMOutput?
 
@@ -559,7 +560,6 @@ extension SMSClientTypes {
             self.ssmOutput = ssmOutput
         }
     }
-
 }
 
 /// An internal error occurred.
@@ -684,7 +684,7 @@ public struct UnauthorizedOperationException: ClientRuntime.ModeledError, AWSCli
 
 extension SMSClientTypes {
 
-    public enum ServerType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ServerType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case virtualmachine
         case sdkUnknown(Swift.String)
 
@@ -710,7 +710,7 @@ extension SMSClientTypes {
 
 extension SMSClientTypes {
 
-    public enum VmManagerType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum VmManagerType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case hypervmanager
         case scvmm
         case vsphere
@@ -741,8 +741,9 @@ extension SMSClientTypes {
 }
 
 extension SMSClientTypes {
+
     /// Represents a VM server location.
-    public struct VmServerAddress {
+    public struct VmServerAddress: Swift.Sendable {
         /// The ID of the VM.
         public var vmId: Swift.String?
         /// The ID of the VM manager.
@@ -757,12 +758,12 @@ extension SMSClientTypes {
             self.vmManagerId = vmManagerId
         }
     }
-
 }
 
 extension SMSClientTypes {
+
     /// Represents a VM server.
-    public struct VmServer {
+    public struct VmServer: Swift.Sendable {
         /// The name of the VM manager.
         public var vmManagerName: Swift.String?
         /// The type of VM management product.
@@ -789,12 +790,12 @@ extension SMSClientTypes {
             self.vmServerAddress = vmServerAddress
         }
     }
-
 }
 
 extension SMSClientTypes {
+
     /// Represents a server.
-    public struct Server {
+    public struct Server: Swift.Sendable {
         /// The ID of the replication job.
         public var replicationJobId: Swift.String?
         /// Indicates whether the replication job is deleted or failed.
@@ -821,12 +822,12 @@ extension SMSClientTypes {
             self.vmServer = vmServer
         }
     }
-
 }
 
 extension SMSClientTypes {
+
     /// Logical grouping of servers.
-    public struct ServerGroup {
+    public struct ServerGroup: Swift.Sendable {
         /// The name of a server group.
         public var name: Swift.String?
         /// The ID of a server group.
@@ -845,12 +846,12 @@ extension SMSClientTypes {
             self.serverList = serverList
         }
     }
-
 }
 
 extension SMSClientTypes {
+
     /// Key/value pair that can be assigned to an application.
-    public struct Tag {
+    public struct Tag: Swift.Sendable {
         /// The tag key.
         public var key: Swift.String?
         /// The tag value.
@@ -865,10 +866,9 @@ extension SMSClientTypes {
             self.value = value
         }
     }
-
 }
 
-public struct CreateAppInput {
+public struct CreateAppInput: Swift.Sendable {
     /// A unique, case-sensitive identifier that you provide to ensure the idempotency of application creation.
     public var clientToken: Swift.String?
     /// The description of the new application
@@ -900,7 +900,7 @@ public struct CreateAppInput {
     }
 }
 
-public struct CreateAppOutput {
+public struct CreateAppOutput: Swift.Sendable {
     /// A summary description of the application.
     public var appSummary: SMSClientTypes.AppSummary?
     /// The server groups included in the application.
@@ -1007,7 +1007,7 @@ public struct TemporarilyUnavailableException: ClientRuntime.ModeledError, AWSCl
 
 extension SMSClientTypes {
 
-    public enum LicenseType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum LicenseType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case aws
         case byol
         case sdkUnknown(Swift.String)
@@ -1034,7 +1034,7 @@ extension SMSClientTypes {
     }
 }
 
-public struct CreateReplicationJobInput {
+public struct CreateReplicationJobInput: Swift.Sendable {
     /// The description of the replication job.
     public var description: Swift.String?
     /// Indicates whether the replication job produces encrypted AMIs.
@@ -1095,7 +1095,7 @@ public struct CreateReplicationJobInput {
     }
 }
 
-public struct CreateReplicationJobOutput {
+public struct CreateReplicationJobOutput: Swift.Sendable {
     /// The unique identifier of the replication job.
     public var replicationJobId: Swift.String?
 
@@ -1107,7 +1107,7 @@ public struct CreateReplicationJobOutput {
     }
 }
 
-public struct DeleteAppInput {
+public struct DeleteAppInput: Swift.Sendable {
     /// The ID of the application.
     public var appId: Swift.String?
     /// Indicates whether to stop all replication jobs corresponding to the servers in the application while deleting the application.
@@ -1127,12 +1127,12 @@ public struct DeleteAppInput {
     }
 }
 
-public struct DeleteAppOutput {
+public struct DeleteAppOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteAppLaunchConfigurationInput {
+public struct DeleteAppLaunchConfigurationInput: Swift.Sendable {
     /// The ID of the application.
     public var appId: Swift.String?
 
@@ -1144,12 +1144,12 @@ public struct DeleteAppLaunchConfigurationInput {
     }
 }
 
-public struct DeleteAppLaunchConfigurationOutput {
+public struct DeleteAppLaunchConfigurationOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteAppReplicationConfigurationInput {
+public struct DeleteAppReplicationConfigurationInput: Swift.Sendable {
     /// The ID of the application.
     public var appId: Swift.String?
 
@@ -1161,12 +1161,12 @@ public struct DeleteAppReplicationConfigurationInput {
     }
 }
 
-public struct DeleteAppReplicationConfigurationOutput {
+public struct DeleteAppReplicationConfigurationOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteAppValidationConfigurationInput {
+public struct DeleteAppValidationConfigurationInput: Swift.Sendable {
     /// The ID of the application.
     /// This member is required.
     public var appId: Swift.String?
@@ -1179,7 +1179,7 @@ public struct DeleteAppValidationConfigurationInput {
     }
 }
 
-public struct DeleteAppValidationConfigurationOutput {
+public struct DeleteAppValidationConfigurationOutput: Swift.Sendable {
 
     public init() { }
 }
@@ -1208,7 +1208,7 @@ public struct ReplicationJobNotFoundException: ClientRuntime.ModeledError, AWSCl
     }
 }
 
-public struct DeleteReplicationJobInput {
+public struct DeleteReplicationJobInput: Swift.Sendable {
     /// The ID of the replication job.
     /// This member is required.
     public var replicationJobId: Swift.String?
@@ -1221,22 +1221,22 @@ public struct DeleteReplicationJobInput {
     }
 }
 
-public struct DeleteReplicationJobOutput {
+public struct DeleteReplicationJobOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteServerCatalogInput {
+public struct DeleteServerCatalogInput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteServerCatalogOutput {
+public struct DeleteServerCatalogOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DisassociateConnectorInput {
+public struct DisassociateConnectorInput: Swift.Sendable {
     /// The ID of the connector.
     /// This member is required.
     public var connectorId: Swift.String?
@@ -1249,14 +1249,14 @@ public struct DisassociateConnectorInput {
     }
 }
 
-public struct DisassociateConnectorOutput {
+public struct DisassociateConnectorOutput: Swift.Sendable {
 
     public init() { }
 }
 
 extension SMSClientTypes {
 
-    public enum OutputFormat: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum OutputFormat: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case json
         case yaml
         case sdkUnknown(Swift.String)
@@ -1283,7 +1283,7 @@ extension SMSClientTypes {
     }
 }
 
-public struct GenerateChangeSetInput {
+public struct GenerateChangeSetInput: Swift.Sendable {
     /// The ID of the application associated with the change set.
     public var appId: Swift.String?
     /// The format for the change set.
@@ -1299,7 +1299,7 @@ public struct GenerateChangeSetInput {
     }
 }
 
-public struct GenerateChangeSetOutput {
+public struct GenerateChangeSetOutput: Swift.Sendable {
     /// The location of the Amazon S3 object.
     public var s3Location: SMSClientTypes.S3Location?
 
@@ -1311,7 +1311,7 @@ public struct GenerateChangeSetOutput {
     }
 }
 
-public struct GenerateTemplateInput {
+public struct GenerateTemplateInput: Swift.Sendable {
     /// The ID of the application associated with the CloudFormation template.
     public var appId: Swift.String?
     /// The format for generating the CloudFormation template.
@@ -1327,7 +1327,7 @@ public struct GenerateTemplateInput {
     }
 }
 
-public struct GenerateTemplateOutput {
+public struct GenerateTemplateOutput: Swift.Sendable {
     /// The location of the Amazon S3 object.
     public var s3Location: SMSClientTypes.S3Location?
 
@@ -1339,7 +1339,7 @@ public struct GenerateTemplateOutput {
     }
 }
 
-public struct GetAppInput {
+public struct GetAppInput: Swift.Sendable {
     /// The ID of the application.
     public var appId: Swift.String?
 
@@ -1351,7 +1351,7 @@ public struct GetAppInput {
     }
 }
 
-public struct GetAppOutput {
+public struct GetAppOutput: Swift.Sendable {
     /// Information about the application.
     public var appSummary: SMSClientTypes.AppSummary?
     /// The server groups that belong to the application.
@@ -1371,7 +1371,7 @@ public struct GetAppOutput {
     }
 }
 
-public struct GetAppLaunchConfigurationInput {
+public struct GetAppLaunchConfigurationInput: Swift.Sendable {
     /// The ID of the application.
     public var appId: Swift.String?
 
@@ -1384,8 +1384,9 @@ public struct GetAppLaunchConfigurationInput {
 }
 
 extension SMSClientTypes {
+
     /// A script that runs on first launch of an Amazon EC2 instance. Used for configuring the server during launch.
-    public struct UserData {
+    public struct UserData: Swift.Sendable {
         /// Amazon S3 location of the user-data script.
         public var s3Location: SMSClientTypes.S3Location?
 
@@ -1396,12 +1397,12 @@ extension SMSClientTypes {
             self.s3Location = s3Location
         }
     }
-
 }
 
 extension SMSClientTypes {
+
     /// Launch configuration for a server.
-    public struct ServerLaunchConfiguration {
+    public struct ServerLaunchConfiguration: Swift.Sendable {
         /// Indicates whether a publicly accessible IP address is created when launching the server.
         public var associatePublicIpAddress: Swift.Bool?
         /// Location of an Amazon S3 object.
@@ -1456,12 +1457,12 @@ extension SMSClientTypes {
             self.vpc = vpc
         }
     }
-
 }
 
 extension SMSClientTypes {
+
     /// Launch configuration for a server group.
-    public struct ServerGroupLaunchConfiguration {
+    public struct ServerGroupLaunchConfiguration: Swift.Sendable {
         /// The launch order of servers in the server group.
         public var launchOrder: Swift.Int?
         /// The ID of the server group with which the launch configuration is associated.
@@ -1480,10 +1481,9 @@ extension SMSClientTypes {
             self.serverLaunchConfigurations = serverLaunchConfigurations
         }
     }
-
 }
 
-public struct GetAppLaunchConfigurationOutput {
+public struct GetAppLaunchConfigurationOutput: Swift.Sendable {
     /// The ID of the application.
     public var appId: Swift.String?
     /// Indicates whether the application is configured to launch automatically after replication is complete.
@@ -1507,7 +1507,7 @@ public struct GetAppLaunchConfigurationOutput {
     }
 }
 
-public struct GetAppReplicationConfigurationInput {
+public struct GetAppReplicationConfigurationInput: Swift.Sendable {
     /// The ID of the application.
     public var appId: Swift.String?
 
@@ -1520,8 +1520,9 @@ public struct GetAppReplicationConfigurationInput {
 }
 
 extension SMSClientTypes {
+
     /// The replication parameters for replicating a server.
-    public struct ServerReplicationParameters {
+    public struct ServerReplicationParameters: Swift.Sendable {
         /// Indicates whether the replication job produces encrypted AMIs.
         public var encrypted: Swift.Bool?
         /// The frequency of creating replication jobs for the server.
@@ -1567,12 +1568,12 @@ extension SMSClientTypes {
             self.seedTime = seedTime
         }
     }
-
 }
 
 extension SMSClientTypes {
+
     /// Replication configuration of a server.
-    public struct ServerReplicationConfiguration {
+    public struct ServerReplicationConfiguration: Swift.Sendable {
         /// The ID of the server with which this replication configuration is associated.
         public var server: SMSClientTypes.Server?
         /// The parameters for replicating the server.
@@ -1587,12 +1588,12 @@ extension SMSClientTypes {
             self.serverReplicationParameters = serverReplicationParameters
         }
     }
-
 }
 
 extension SMSClientTypes {
+
     /// Replication configuration for a server group.
-    public struct ServerGroupReplicationConfiguration {
+    public struct ServerGroupReplicationConfiguration: Swift.Sendable {
         /// The ID of the server group with which this replication configuration is associated.
         public var serverGroupId: Swift.String?
         /// The replication configuration for servers in the server group.
@@ -1607,10 +1608,9 @@ extension SMSClientTypes {
             self.serverReplicationConfigurations = serverReplicationConfigurations
         }
     }
-
 }
 
-public struct GetAppReplicationConfigurationOutput {
+public struct GetAppReplicationConfigurationOutput: Swift.Sendable {
     /// The replication configurations associated with server groups in this application.
     public var serverGroupReplicationConfigurations: [SMSClientTypes.ServerGroupReplicationConfiguration]?
 
@@ -1622,7 +1622,7 @@ public struct GetAppReplicationConfigurationOutput {
     }
 }
 
-public struct GetAppValidationConfigurationInput {
+public struct GetAppValidationConfigurationInput: Swift.Sendable {
     /// The ID of the application.
     /// This member is required.
     public var appId: Swift.String?
@@ -1637,7 +1637,7 @@ public struct GetAppValidationConfigurationInput {
 
 extension SMSClientTypes {
 
-    public enum ServerValidationStrategy: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ServerValidationStrategy: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case userdata
         case sdkUnknown(Swift.String)
 
@@ -1662,8 +1662,9 @@ extension SMSClientTypes {
 }
 
 extension SMSClientTypes {
+
     /// Contains validation parameters.
-    public struct UserDataValidationParameters {
+    public struct UserDataValidationParameters: Swift.Sendable {
         /// The type of validation script.
         public var scriptType: SMSClientTypes.ScriptType?
         /// The location of the validation script.
@@ -1678,12 +1679,12 @@ extension SMSClientTypes {
             self.source = source
         }
     }
-
 }
 
 extension SMSClientTypes {
+
     /// Configuration for validating an instance.
-    public struct ServerValidationConfiguration {
+    public struct ServerValidationConfiguration: Swift.Sendable {
         /// The name of the configuration.
         public var name: Swift.String?
         /// Represents a server.
@@ -1710,12 +1711,12 @@ extension SMSClientTypes {
             self.validationId = validationId
         }
     }
-
 }
 
 extension SMSClientTypes {
+
     /// Configuration for validating an instance.
-    public struct ServerGroupValidationConfiguration {
+    public struct ServerGroupValidationConfiguration: Swift.Sendable {
         /// The ID of the server group.
         public var serverGroupId: Swift.String?
         /// The validation configuration.
@@ -1730,10 +1731,9 @@ extension SMSClientTypes {
             self.serverValidationConfigurations = serverValidationConfigurations
         }
     }
-
 }
 
-public struct GetAppValidationConfigurationOutput {
+public struct GetAppValidationConfigurationOutput: Swift.Sendable {
     /// The configuration for application validation.
     public var appValidationConfigurations: [SMSClientTypes.AppValidationConfiguration]?
     /// The configuration for instance validation.
@@ -1749,7 +1749,7 @@ public struct GetAppValidationConfigurationOutput {
     }
 }
 
-public struct GetAppValidationOutputInput {
+public struct GetAppValidationOutputInput: Swift.Sendable {
     /// The ID of the application.
     /// This member is required.
     public var appId: Swift.String?
@@ -1763,8 +1763,9 @@ public struct GetAppValidationOutputInput {
 }
 
 extension SMSClientTypes {
+
     /// Contains output from validating an instance.
-    public struct ServerValidationOutput {
+    public struct ServerValidationOutput: Swift.Sendable {
         /// Represents a server.
         public var server: SMSClientTypes.Server?
 
@@ -1775,12 +1776,11 @@ extension SMSClientTypes {
             self.server = server
         }
     }
-
 }
 
 extension SMSClientTypes {
 
-    public enum ValidationStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ValidationStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case failed
         case inprogress
         case pending
@@ -1817,8 +1817,9 @@ extension SMSClientTypes {
 }
 
 extension SMSClientTypes {
+
     /// Contains validation output.
-    public struct ValidationOutput {
+    public struct ValidationOutput: Swift.Sendable {
         /// The output from validating an application.
         public var appValidationOutput: SMSClientTypes.AppValidationOutput?
         /// The latest time that the validation was performed.
@@ -1853,10 +1854,9 @@ extension SMSClientTypes {
             self.validationId = validationId
         }
     }
-
 }
 
-public struct GetAppValidationOutputOutput {
+public struct GetAppValidationOutputOutput: Swift.Sendable {
     /// The validation output.
     public var validationOutputList: [SMSClientTypes.ValidationOutput]?
 
@@ -1868,7 +1868,7 @@ public struct GetAppValidationOutputOutput {
     }
 }
 
-public struct GetConnectorsInput {
+public struct GetConnectorsInput: Swift.Sendable {
     /// The maximum number of results to return in a single call. The default value is 50. To retrieve the remaining results, make another call with the returned NextToken value.
     public var maxResults: Swift.Int?
     /// The token for the next set of results.
@@ -1886,7 +1886,7 @@ public struct GetConnectorsInput {
 
 extension SMSClientTypes {
 
-    public enum ConnectorCapability: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ConnectorCapability: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case hypervmanager
         case scvmm
         case smsoptimized
@@ -1924,7 +1924,7 @@ extension SMSClientTypes {
 
 extension SMSClientTypes {
 
-    public enum ConnectorStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ConnectorStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case healthy
         case unhealthy
         case sdkUnknown(Swift.String)
@@ -1952,8 +1952,9 @@ extension SMSClientTypes {
 }
 
 extension SMSClientTypes {
+
     /// Represents a connector.
-    public struct Connector {
+    public struct Connector: Swift.Sendable {
         /// The time the connector was associated.
         public var associatedOn: Foundation.Date?
         /// The capabilities of the connector.
@@ -2000,10 +2001,9 @@ extension SMSClientTypes {
             self.vmManagerType = vmManagerType
         }
     }
-
 }
 
-public struct GetConnectorsOutput {
+public struct GetConnectorsOutput: Swift.Sendable {
     /// Information about the registered connectors.
     public var connectorList: [SMSClientTypes.Connector]?
     /// The token required to retrieve the next set of results. This value is null when there are no more results to return.
@@ -2019,7 +2019,7 @@ public struct GetConnectorsOutput {
     }
 }
 
-public struct GetReplicationJobsInput {
+public struct GetReplicationJobsInput: Swift.Sendable {
     /// The maximum number of results to return in a single call. The default value is 50. To retrieve the remaining results, make another call with the returned NextToken value.
     public var maxResults: Swift.Int?
     /// The token for the next set of results.
@@ -2040,8 +2040,9 @@ public struct GetReplicationJobsInput {
 }
 
 extension SMSClientTypes {
+
     /// Details of the current stage of a replication run.
-    public struct ReplicationRunStageDetails {
+    public struct ReplicationRunStageDetails: Swift.Sendable {
         /// The current stage of a replication run.
         public var stage: Swift.String?
         /// The progress of the current stage of a replication run.
@@ -2056,12 +2057,11 @@ extension SMSClientTypes {
             self.stageProgress = stageProgress
         }
     }
-
 }
 
 extension SMSClientTypes {
 
-    public enum ReplicationRunState: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ReplicationRunState: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case active
         case completed
         case deleted
@@ -2105,7 +2105,7 @@ extension SMSClientTypes {
 
 extension SMSClientTypes {
 
-    public enum ReplicationRunType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ReplicationRunType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case automatic
         case ondemand
         case sdkUnknown(Swift.String)
@@ -2133,8 +2133,9 @@ extension SMSClientTypes {
 }
 
 extension SMSClientTypes {
+
     /// Represents a replication run.
-    public struct ReplicationRun {
+    public struct ReplicationRun: Swift.Sendable {
         /// The ID of the Amazon Machine Image (AMI) from the replication run.
         public var amiId: Swift.String?
         /// The completion time of the last replication run.
@@ -2196,12 +2197,11 @@ extension SMSClientTypes {
             self.type = type
         }
     }
-
 }
 
 extension SMSClientTypes {
 
-    public enum ReplicationJobState: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ReplicationJobState: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case active
         case completed
         case deleted
@@ -2247,8 +2247,9 @@ extension SMSClientTypes {
 }
 
 extension SMSClientTypes {
+
     /// Represents a replication job.
-    public struct ReplicationJob {
+    public struct ReplicationJob: Swift.Sendable {
         /// The description of the replication job.
         public var description: Swift.String?
         /// Indicates whether the replication job should produce encrypted AMIs.
@@ -2338,10 +2339,9 @@ extension SMSClientTypes {
             self.vmServer = vmServer
         }
     }
-
 }
 
-public struct GetReplicationJobsOutput {
+public struct GetReplicationJobsOutput: Swift.Sendable {
     /// The token required to retrieve the next set of results. This value is null when there are no more results to return.
     public var nextToken: Swift.String?
     /// Information about the replication jobs.
@@ -2357,7 +2357,7 @@ public struct GetReplicationJobsOutput {
     }
 }
 
-public struct GetReplicationRunsInput {
+public struct GetReplicationRunsInput: Swift.Sendable {
     /// The maximum number of results to return in a single call. The default value is 50. To retrieve the remaining results, make another call with the returned NextToken value.
     public var maxResults: Swift.Int?
     /// The token for the next set of results.
@@ -2378,7 +2378,7 @@ public struct GetReplicationRunsInput {
     }
 }
 
-public struct GetReplicationRunsOutput {
+public struct GetReplicationRunsOutput: Swift.Sendable {
     /// The token required to retrieve the next set of results. This value is null when there are no more results to return.
     public var nextToken: Swift.String?
     /// Information about the replication job.
@@ -2398,7 +2398,7 @@ public struct GetReplicationRunsOutput {
     }
 }
 
-public struct GetServersInput {
+public struct GetServersInput: Swift.Sendable {
     /// The maximum number of results to return in a single call. The default value is 50. To retrieve the remaining results, make another call with the returned NextToken value.
     public var maxResults: Swift.Int?
     /// The token for the next set of results.
@@ -2420,7 +2420,7 @@ public struct GetServersInput {
 
 extension SMSClientTypes {
 
-    public enum ServerCatalogStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ServerCatalogStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case available
         case deleted
         case expired
@@ -2456,7 +2456,7 @@ extension SMSClientTypes {
     }
 }
 
-public struct GetServersOutput {
+public struct GetServersOutput: Swift.Sendable {
     /// The time when the server was last modified.
     public var lastModifiedOn: Foundation.Date?
     /// The token required to retrieve the next set of results. This value is null when there are no more results to return.
@@ -2480,7 +2480,7 @@ public struct GetServersOutput {
     }
 }
 
-public struct ImportAppCatalogInput {
+public struct ImportAppCatalogInput: Swift.Sendable {
     /// The name of the service role. If you omit this parameter, we create a service-linked role for Migration Hub in your account. Otherwise, the role that you provide must have the [policy and trust policy](https://docs.aws.amazon.com/migrationhub/latest/ug/new-customer-setup.html#sms-managed) described in the Migration Hub User Guide.
     public var roleName: Swift.String?
 
@@ -2492,22 +2492,22 @@ public struct ImportAppCatalogInput {
     }
 }
 
-public struct ImportAppCatalogOutput {
+public struct ImportAppCatalogOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct ImportServerCatalogInput {
+public struct ImportServerCatalogInput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct ImportServerCatalogOutput {
+public struct ImportServerCatalogOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct LaunchAppInput {
+public struct LaunchAppInput: Swift.Sendable {
     /// The ID of the application.
     public var appId: Swift.String?
 
@@ -2519,12 +2519,12 @@ public struct LaunchAppInput {
     }
 }
 
-public struct LaunchAppOutput {
+public struct LaunchAppOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct ListAppsInput {
+public struct ListAppsInput: Swift.Sendable {
     /// The unique application IDs.
     public var appIds: [Swift.String]?
     /// The maximum number of results to return in a single call. The default value is 100. To retrieve the remaining results, make another call with the returned NextToken value.
@@ -2544,7 +2544,7 @@ public struct ListAppsInput {
     }
 }
 
-public struct ListAppsOutput {
+public struct ListAppsOutput: Swift.Sendable {
     /// The application summaries.
     public var apps: [SMSClientTypes.AppSummary]?
     /// The token required to retrieve the next set of results. This value is null when there are no more results to return.
@@ -2561,8 +2561,9 @@ public struct ListAppsOutput {
 }
 
 extension SMSClientTypes {
+
     /// Contains the status of validating an application.
-    public struct NotificationContext {
+    public struct NotificationContext: Swift.Sendable {
         /// The status of the validation.
         public var status: SMSClientTypes.ValidationStatus?
         /// The status message.
@@ -2581,10 +2582,9 @@ extension SMSClientTypes {
             self.validationId = validationId
         }
     }
-
 }
 
-public struct NotifyAppValidationOutputInput {
+public struct NotifyAppValidationOutputInput: Swift.Sendable {
     /// The ID of the application.
     /// This member is required.
     public var appId: Swift.String?
@@ -2601,12 +2601,12 @@ public struct NotifyAppValidationOutputInput {
     }
 }
 
-public struct NotifyAppValidationOutputOutput {
+public struct NotifyAppValidationOutputOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct PutAppLaunchConfigurationInput {
+public struct PutAppLaunchConfigurationInput: Swift.Sendable {
     /// The ID of the application.
     public var appId: Swift.String?
     /// Indicates whether the application is configured to launch automatically after replication is complete.
@@ -2630,12 +2630,12 @@ public struct PutAppLaunchConfigurationInput {
     }
 }
 
-public struct PutAppLaunchConfigurationOutput {
+public struct PutAppLaunchConfigurationOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct PutAppReplicationConfigurationInput {
+public struct PutAppReplicationConfigurationInput: Swift.Sendable {
     /// The ID of the application.
     public var appId: Swift.String?
     /// Information about the replication configurations for server groups in the application.
@@ -2651,12 +2651,12 @@ public struct PutAppReplicationConfigurationInput {
     }
 }
 
-public struct PutAppReplicationConfigurationOutput {
+public struct PutAppReplicationConfigurationOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct PutAppValidationConfigurationInput {
+public struct PutAppValidationConfigurationInput: Swift.Sendable {
     /// The ID of the application.
     /// This member is required.
     public var appId: Swift.String?
@@ -2677,12 +2677,12 @@ public struct PutAppValidationConfigurationInput {
     }
 }
 
-public struct PutAppValidationConfigurationOutput {
+public struct PutAppValidationConfigurationOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct StartAppReplicationInput {
+public struct StartAppReplicationInput: Swift.Sendable {
     /// The ID of the application.
     public var appId: Swift.String?
 
@@ -2694,12 +2694,12 @@ public struct StartAppReplicationInput {
     }
 }
 
-public struct StartAppReplicationOutput {
+public struct StartAppReplicationOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct StartOnDemandAppReplicationInput {
+public struct StartOnDemandAppReplicationInput: Swift.Sendable {
     /// The ID of the application.
     /// This member is required.
     public var appId: Swift.String?
@@ -2716,7 +2716,7 @@ public struct StartOnDemandAppReplicationInput {
     }
 }
 
-public struct StartOnDemandAppReplicationOutput {
+public struct StartOnDemandAppReplicationOutput: Swift.Sendable {
 
     public init() { }
 }
@@ -2769,7 +2769,7 @@ public struct ReplicationRunLimitExceededException: ClientRuntime.ModeledError, 
     }
 }
 
-public struct StartOnDemandReplicationRunInput {
+public struct StartOnDemandReplicationRunInput: Swift.Sendable {
     /// The description of the replication run.
     public var description: Swift.String?
     /// The ID of the replication job.
@@ -2786,7 +2786,7 @@ public struct StartOnDemandReplicationRunInput {
     }
 }
 
-public struct StartOnDemandReplicationRunOutput {
+public struct StartOnDemandReplicationRunOutput: Swift.Sendable {
     /// The ID of the replication run.
     public var replicationRunId: Swift.String?
 
@@ -2798,7 +2798,7 @@ public struct StartOnDemandReplicationRunOutput {
     }
 }
 
-public struct StopAppReplicationInput {
+public struct StopAppReplicationInput: Swift.Sendable {
     /// The ID of the application.
     public var appId: Swift.String?
 
@@ -2810,12 +2810,12 @@ public struct StopAppReplicationInput {
     }
 }
 
-public struct StopAppReplicationOutput {
+public struct StopAppReplicationOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct TerminateAppInput {
+public struct TerminateAppInput: Swift.Sendable {
     /// The ID of the application.
     public var appId: Swift.String?
 
@@ -2827,12 +2827,12 @@ public struct TerminateAppInput {
     }
 }
 
-public struct TerminateAppOutput {
+public struct TerminateAppOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdateAppInput {
+public struct UpdateAppInput: Swift.Sendable {
     /// The ID of the application.
     public var appId: Swift.String?
     /// The new description of the application.
@@ -2864,7 +2864,7 @@ public struct UpdateAppInput {
     }
 }
 
-public struct UpdateAppOutput {
+public struct UpdateAppOutput: Swift.Sendable {
     /// A summary description of the application.
     public var appSummary: SMSClientTypes.AppSummary?
     /// The updated server groups in the application.
@@ -2884,7 +2884,7 @@ public struct UpdateAppOutput {
     }
 }
 
-public struct UpdateReplicationJobInput {
+public struct UpdateReplicationJobInput: Swift.Sendable {
     /// The description of the replication job.
     public var description: Swift.String?
     /// When true, the replication job produces encrypted AMIs. For more information, KmsKeyId.
@@ -2940,7 +2940,7 @@ public struct UpdateReplicationJobInput {
     }
 }
 
-public struct UpdateReplicationJobOutput {
+public struct UpdateReplicationJobOutput: Swift.Sendable {
 
     public init() { }
 }

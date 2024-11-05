@@ -241,8 +241,9 @@ public struct TimestampOutOfBoundsException: ClientRuntime.ModeledError, AWSClie
 }
 
 extension MarketplaceMeteringClientTypes {
+
     /// Metadata assigned to an allocation. Each tag is made up of a key and a value.
-    public struct Tag {
+    public struct Tag: Swift.Sendable {
         /// One part of a key-value pair that makes up a tag. A key is a label that acts like a category for the specific tag values.
         /// This member is required.
         public var key: Swift.String?
@@ -259,12 +260,12 @@ extension MarketplaceMeteringClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension MarketplaceMeteringClientTypes {
+
     /// Usage allocations allow you to split usage into buckets by tags. Each UsageAllocation indicates the usage quantity for a specific set of tags.
-    public struct UsageAllocation {
+    public struct UsageAllocation: Swift.Sendable {
         /// The total quantity allocated to this bucket of usage.
         /// This member is required.
         public var allocatedUsageQuantity: Swift.Int?
@@ -280,12 +281,12 @@ extension MarketplaceMeteringClientTypes {
             self.tags = tags
         }
     }
-
 }
 
 extension MarketplaceMeteringClientTypes {
+
     /// A UsageRecord indicates a quantity of usage for a given product, customer, dimension and time. Multiple requests with the same UsageRecords as input will be de-duplicated to prevent double charges.
-    public struct UsageRecord {
+    public struct UsageRecord: Swift.Sendable {
         /// The CustomerIdentifier is obtained through the ResolveCustomer operation and represents an individual buyer in your application.
         /// This member is required.
         public var customerIdentifier: Swift.String?
@@ -315,11 +316,10 @@ extension MarketplaceMeteringClientTypes {
             self.usageAllocations = usageAllocations
         }
     }
-
 }
 
 /// A BatchMeterUsageRequest contains UsageRecords, which indicate quantities of usage within your application.
-public struct BatchMeterUsageInput {
+public struct BatchMeterUsageInput: Swift.Sendable {
     /// Product code is used to uniquely identify a product in AWS Marketplace. The product code should be the same as the one used during the publishing of a new product.
     /// This member is required.
     public var productCode: Swift.String?
@@ -339,7 +339,7 @@ public struct BatchMeterUsageInput {
 
 extension MarketplaceMeteringClientTypes {
 
-    public enum UsageRecordResultStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum UsageRecordResultStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case customerNotSubscribed
         case duplicateRecord
         case success
@@ -370,8 +370,9 @@ extension MarketplaceMeteringClientTypes {
 }
 
 extension MarketplaceMeteringClientTypes {
+
     /// A UsageRecordResult indicates the status of a given UsageRecord processed by BatchMeterUsage.
-    public struct UsageRecordResult {
+    public struct UsageRecordResult: Swift.Sendable {
         /// The MeteringRecordId is a unique identifier for this metering event.
         public var meteringRecordId: Swift.String?
         /// The UsageRecordResultStatus indicates the status of an individual UsageRecord processed by BatchMeterUsage.
@@ -405,11 +406,10 @@ extension MarketplaceMeteringClientTypes {
             self.usageRecord = usageRecord
         }
     }
-
 }
 
 /// Contains the UsageRecords processed by BatchMeterUsage and any records that have failed due to transient error.
-public struct BatchMeterUsageOutput {
+public struct BatchMeterUsageOutput: Swift.Sendable {
     /// Contains all UsageRecords processed by BatchMeterUsage. These records were either honored by AWS Marketplace Metering Service or were invalid. Invalid records should be fixed before being resubmitted.
     public var results: [MarketplaceMeteringClientTypes.UsageRecordResult]?
     /// Contains all UsageRecords that were not processed by BatchMeterUsage. This is a list of UsageRecords. You can retry the failed request by making another BatchMeterUsage call with this list as input in the BatchMeterUsageRequest.
@@ -497,7 +497,7 @@ public struct InvalidEndpointRegionException: ClientRuntime.ModeledError, AWSCli
     }
 }
 
-public struct MeterUsageInput {
+public struct MeterUsageInput: Swift.Sendable {
     /// Checks whether you have the permissions required for the action, but does not make the request. If you have the permissions, the request returns DryRunOperation; otherwise, it returns UnauthorizedException. Defaults to false if not specified.
     public var dryRun: Swift.Bool?
     /// Product code is used to uniquely identify a product in AWS Marketplace. The product code should be the same as the one used during the publishing of a new product.
@@ -532,7 +532,7 @@ public struct MeterUsageInput {
     }
 }
 
-public struct MeterUsageOutput {
+public struct MeterUsageOutput: Swift.Sendable {
     /// Metering record id.
     public var meteringRecordId: Swift.String?
 
@@ -616,7 +616,7 @@ public struct PlatformNotSupportedException: ClientRuntime.ModeledError, AWSClie
     }
 }
 
-public struct RegisterUsageInput {
+public struct RegisterUsageInput: Swift.Sendable {
     /// (Optional) To scope down the registration to a specific running software instance and guard against replay attacks.
     public var nonce: Swift.String?
     /// Product code is used to uniquely identify a product in AWS Marketplace. The product code should be the same as the one used during the publishing of a new product.
@@ -638,7 +638,7 @@ public struct RegisterUsageInput {
     }
 }
 
-public struct RegisterUsageOutput {
+public struct RegisterUsageOutput: Swift.Sendable {
     /// (Optional) Only included when public key version has expired
     public var publicKeyRotationTimestamp: Foundation.Date?
     /// JWT Token
@@ -703,7 +703,7 @@ public struct InvalidTokenException: ClientRuntime.ModeledError, AWSClientRuntim
 }
 
 /// Contains input to the ResolveCustomer operation.
-public struct ResolveCustomerInput {
+public struct ResolveCustomerInput: Swift.Sendable {
     /// When a buyer visits your website during the registration process, the buyer submits a registration token through the browser. The registration token is resolved to obtain a CustomerIdentifier along with the CustomerAWSAccountId and ProductCode.
     /// This member is required.
     public var registrationToken: Swift.String?
@@ -717,7 +717,7 @@ public struct ResolveCustomerInput {
 }
 
 /// The result of the ResolveCustomer operation. Contains the CustomerIdentifier along with the CustomerAWSAccountId and ProductCode.
-public struct ResolveCustomerOutput {
+public struct ResolveCustomerOutput: Swift.Sendable {
     /// The CustomerAWSAccountId provides the AWS account ID associated with the CustomerIdentifier for the individual customer.
     public var customerAWSAccountId: Swift.String?
     /// The CustomerIdentifier is used to identify an individual customer in your application. Calls to BatchMeterUsage require CustomerIdentifiers for each UsageRecord.

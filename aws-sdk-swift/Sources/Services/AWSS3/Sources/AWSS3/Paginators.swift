@@ -28,8 +28,10 @@ extension S3Client {
 extension ListBucketsInput: ClientRuntime.PaginateToken {
     public func usingPaginationToken(_ token: Swift.String) -> ListBucketsInput {
         return ListBucketsInput(
+            bucketRegion: self.bucketRegion,
             continuationToken: token,
-            maxBuckets: self.maxBuckets
+            maxBuckets: self.maxBuckets,
+            prefix: self.prefix
         )}
 }
 

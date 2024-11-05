@@ -79,6 +79,36 @@ extension PaginatorSequence where OperationStackInput == GetStatementResultInput
     }
 }
 extension RedshiftDataClient {
+    /// Paginate over `[GetStatementResultV2Output]` results.
+    ///
+    /// When this operation is called, an `AsyncSequence` is created. AsyncSequences are lazy so no service
+    /// calls are made until the sequence is iterated over. This also means there is no guarantee that the request is valid
+    /// until then. If there are errors in your request, you will see the failures only after you start iterating.
+    /// - Parameters:
+    ///     - input: A `[GetStatementResultV2Input]` to start pagination
+    /// - Returns: An `AsyncSequence` that can iterate over `GetStatementResultV2Output`
+    public func getStatementResultV2Paginated(input: GetStatementResultV2Input) -> ClientRuntime.PaginatorSequence<GetStatementResultV2Input, GetStatementResultV2Output> {
+        return ClientRuntime.PaginatorSequence<GetStatementResultV2Input, GetStatementResultV2Output>(input: input, inputKey: \.nextToken, outputKey: \.nextToken, paginationFunction: self.getStatementResultV2(input:))
+    }
+}
+
+extension GetStatementResultV2Input: ClientRuntime.PaginateToken {
+    public func usingPaginationToken(_ token: Swift.String) -> GetStatementResultV2Input {
+        return GetStatementResultV2Input(
+            id: self.id,
+            nextToken: token
+        )}
+}
+
+extension PaginatorSequence where OperationStackInput == GetStatementResultV2Input, OperationStackOutput == GetStatementResultV2Output {
+    /// This paginator transforms the `AsyncSequence` returned by `getStatementResultV2Paginated`
+    /// to access the nested member `[RedshiftDataClientTypes.QueryRecords]`
+    /// - Returns: `[RedshiftDataClientTypes.QueryRecords]`
+    public func records() async throws -> [RedshiftDataClientTypes.QueryRecords] {
+        return try await self.asyncCompactMap { item in item.records }
+    }
+}
+extension RedshiftDataClient {
     /// Paginate over `[ListDatabasesOutput]` results.
     ///
     /// When this operation is called, an `AsyncSequence` is created. AsyncSequences are lazy so no service

@@ -47,7 +47,8 @@ extension SPRPublisher {
     }
 
     private func createMetadata() -> PackageInfo {
-        let now = Date().ISO8601Format()
+        let formatter = ISO8601DateFormatter()
+        let now = formatter.string(from: Date())
         let organization = PackageInfo.Metadata.Author.Organization(name: "Amazon Web Services", email: nil, description: nil, url: URL(string: "https://aws.amazon.com/")!)
         let author = PackageInfo.Metadata.Author(name: "AWS SDK for Swift Team", email: nil, description: nil, organization: organization, url: nil)
         let resource = Resource(name: "source-archive", type: "application/zip", checksum: checksum, signing: nil)

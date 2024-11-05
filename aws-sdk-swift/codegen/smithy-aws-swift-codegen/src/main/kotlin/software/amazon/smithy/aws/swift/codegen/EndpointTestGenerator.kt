@@ -156,7 +156,7 @@ class EndpointTestGenerator(
             }
 
             is ArrayValue -> {
-                val castStmt = if (castToAnyHashable) " as [AnyHashable]$delimeter" else ""
+                val castStmt = if (castToAnyHashable) " as [AnyHashable]$delimeter" else delimeter
                 writer.openBlock("[", "]$castStmt") {
                     value.values.forEachIndexed { idx, item ->
                         writer.call {

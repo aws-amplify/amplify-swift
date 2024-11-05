@@ -308,7 +308,7 @@ public struct ThrottlingException: ClientRuntime.ModeledError, AWSClientRuntime.
     }
 }
 
-public struct SendSerialConsoleSSHPublicKeyInput {
+public struct SendSerialConsoleSSHPublicKeyInput: Swift.Sendable {
     /// The ID of the EC2 instance.
     /// This member is required.
     public var instanceId: Swift.String?
@@ -330,7 +330,7 @@ public struct SendSerialConsoleSSHPublicKeyInput {
     }
 }
 
-public struct SendSerialConsoleSSHPublicKeyOutput {
+public struct SendSerialConsoleSSHPublicKeyOutput: Swift.Sendable {
     /// The ID of the request. Please provide this ID when contacting AWS Support for assistance.
     public var requestId: Swift.String?
     /// Is true if the request succeeds and an error otherwise.
@@ -346,7 +346,7 @@ public struct SendSerialConsoleSSHPublicKeyOutput {
     }
 }
 
-public struct SendSSHPublicKeyInput {
+public struct SendSSHPublicKeyInput: Swift.Sendable {
     /// The Availability Zone in which the EC2 instance was launched.
     public var availabilityZone: Swift.String?
     /// The ID of the EC2 instance.
@@ -373,7 +373,7 @@ public struct SendSSHPublicKeyInput {
     }
 }
 
-public struct SendSSHPublicKeyOutput {
+public struct SendSSHPublicKeyOutput: Swift.Sendable {
     /// The ID of the request. Please provide this ID when contacting AWS Support for assistance.
     public var requestId: Swift.String?
     /// Is true if the request succeeds and an error otherwise.
@@ -495,32 +495,6 @@ enum SendSSHPublicKeyOutputError {
     }
 }
 
-extension EC2InstanceNotFoundException {
-
-    static func makeError(baseError: AWSClientRuntime.AWSJSONError) throws -> EC2InstanceNotFoundException {
-        let reader = baseError.errorBodyReader
-        var value = EC2InstanceNotFoundException()
-        value.properties.message = try reader["Message"].readIfPresent()
-        value.httpResponse = baseError.httpResponse
-        value.requestID = baseError.requestID
-        value.message = baseError.message
-        return value
-    }
-}
-
-extension ServiceException {
-
-    static func makeError(baseError: AWSClientRuntime.AWSJSONError) throws -> ServiceException {
-        let reader = baseError.errorBodyReader
-        var value = ServiceException()
-        value.properties.message = try reader["Message"].readIfPresent()
-        value.httpResponse = baseError.httpResponse
-        value.requestID = baseError.requestID
-        value.message = baseError.message
-        return value
-    }
-}
-
 extension EC2InstanceStateInvalidException {
 
     static func makeError(baseError: AWSClientRuntime.AWSJSONError) throws -> EC2InstanceStateInvalidException {
@@ -547,11 +521,11 @@ extension SerialConsoleSessionUnavailableException {
     }
 }
 
-extension AuthException {
+extension InvalidArgsException {
 
-    static func makeError(baseError: AWSClientRuntime.AWSJSONError) throws -> AuthException {
+    static func makeError(baseError: AWSClientRuntime.AWSJSONError) throws -> InvalidArgsException {
         let reader = baseError.errorBodyReader
-        var value = AuthException()
+        var value = InvalidArgsException()
         value.properties.message = try reader["Message"].readIfPresent()
         value.httpResponse = baseError.httpResponse
         value.requestID = baseError.requestID
@@ -560,11 +534,50 @@ extension AuthException {
     }
 }
 
-extension InvalidArgsException {
+extension EC2InstanceUnavailableException {
 
-    static func makeError(baseError: AWSClientRuntime.AWSJSONError) throws -> InvalidArgsException {
+    static func makeError(baseError: AWSClientRuntime.AWSJSONError) throws -> EC2InstanceUnavailableException {
         let reader = baseError.errorBodyReader
-        var value = InvalidArgsException()
+        var value = EC2InstanceUnavailableException()
+        value.properties.message = try reader["Message"].readIfPresent()
+        value.httpResponse = baseError.httpResponse
+        value.requestID = baseError.requestID
+        value.message = baseError.message
+        return value
+    }
+}
+
+extension EC2InstanceNotFoundException {
+
+    static func makeError(baseError: AWSClientRuntime.AWSJSONError) throws -> EC2InstanceNotFoundException {
+        let reader = baseError.errorBodyReader
+        var value = EC2InstanceNotFoundException()
+        value.properties.message = try reader["Message"].readIfPresent()
+        value.httpResponse = baseError.httpResponse
+        value.requestID = baseError.requestID
+        value.message = baseError.message
+        return value
+    }
+}
+
+extension ServiceException {
+
+    static func makeError(baseError: AWSClientRuntime.AWSJSONError) throws -> ServiceException {
+        let reader = baseError.errorBodyReader
+        var value = ServiceException()
+        value.properties.message = try reader["Message"].readIfPresent()
+        value.httpResponse = baseError.httpResponse
+        value.requestID = baseError.requestID
+        value.message = baseError.message
+        return value
+    }
+}
+
+extension AuthException {
+
+    static func makeError(baseError: AWSClientRuntime.AWSJSONError) throws -> AuthException {
+        let reader = baseError.errorBodyReader
+        var value = AuthException()
         value.properties.message = try reader["Message"].readIfPresent()
         value.httpResponse = baseError.httpResponse
         value.requestID = baseError.requestID
@@ -591,19 +604,6 @@ extension SerialConsoleSessionUnsupportedException {
     static func makeError(baseError: AWSClientRuntime.AWSJSONError) throws -> SerialConsoleSessionUnsupportedException {
         let reader = baseError.errorBodyReader
         var value = SerialConsoleSessionUnsupportedException()
-        value.properties.message = try reader["Message"].readIfPresent()
-        value.httpResponse = baseError.httpResponse
-        value.requestID = baseError.requestID
-        value.message = baseError.message
-        return value
-    }
-}
-
-extension EC2InstanceUnavailableException {
-
-    static func makeError(baseError: AWSClientRuntime.AWSJSONError) throws -> EC2InstanceUnavailableException {
-        let reader = baseError.errorBodyReader
-        var value = EC2InstanceUnavailableException()
         value.properties.message = try reader["Message"].readIfPresent()
         value.httpResponse = baseError.httpResponse
         value.requestID = baseError.requestID

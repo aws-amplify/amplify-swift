@@ -28,7 +28,7 @@ import struct Smithy.URIQueryItem
 
 extension IoTSecureTunnelingClientTypes {
 
-    public enum ClientMode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ClientMode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case all
         case destination
         case source
@@ -82,7 +82,7 @@ public struct ResourceNotFoundException: ClientRuntime.ModeledError, AWSClientRu
     }
 }
 
-public struct CloseTunnelInput {
+public struct CloseTunnelInput: Swift.Sendable {
     /// When set to true, IoT Secure Tunneling deletes the tunnel data immediately.
     public var delete: Swift.Bool?
     /// The ID of the tunnel to close.
@@ -99,14 +99,14 @@ public struct CloseTunnelInput {
     }
 }
 
-public struct CloseTunnelOutput {
+public struct CloseTunnelOutput: Swift.Sendable {
 
     public init() { }
 }
 
 extension IoTSecureTunnelingClientTypes {
 
-    public enum ConnectionStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ConnectionStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case connected
         case disconnected
         case sdkUnknown(Swift.String)
@@ -134,8 +134,9 @@ extension IoTSecureTunnelingClientTypes {
 }
 
 extension IoTSecureTunnelingClientTypes {
+
     /// The state of a connection.
-    public struct ConnectionState {
+    public struct ConnectionState: Swift.Sendable {
         /// The last time the connection status was updated.
         public var lastUpdatedAt: Foundation.Date?
         /// The connection status of the tunnel. Valid values are CONNECTED and DISCONNECTED.
@@ -150,10 +151,9 @@ extension IoTSecureTunnelingClientTypes {
             self.status = status
         }
     }
-
 }
 
-public struct DescribeTunnelInput {
+public struct DescribeTunnelInput: Swift.Sendable {
     /// The tunnel to describe.
     /// This member is required.
     public var tunnelId: Swift.String?
@@ -167,8 +167,9 @@ public struct DescribeTunnelInput {
 }
 
 extension IoTSecureTunnelingClientTypes {
+
     /// The destination configuration.
-    public struct DestinationConfig {
+    public struct DestinationConfig: Swift.Sendable {
         /// A list of service names that identify the target application. The IoT client running on the destination device reads this value and uses it to look up a port or an IP address and a port. The IoT client instantiates the local proxy, which uses this information to connect to the destination application.
         /// This member is required.
         public var services: [Swift.String]?
@@ -184,12 +185,11 @@ extension IoTSecureTunnelingClientTypes {
             self.thingName = thingName
         }
     }
-
 }
 
 extension IoTSecureTunnelingClientTypes {
 
-    public enum TunnelStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum TunnelStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case closed
         case `open`
         case sdkUnknown(Swift.String)
@@ -217,8 +217,9 @@ extension IoTSecureTunnelingClientTypes {
 }
 
 extension IoTSecureTunnelingClientTypes {
+
     /// An arbitary key/value pair used to add searchable metadata to secure tunnel resources.
-    public struct Tag {
+    public struct Tag: Swift.Sendable {
         /// The key of the tag.
         /// This member is required.
         public var key: Swift.String?
@@ -235,12 +236,12 @@ extension IoTSecureTunnelingClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension IoTSecureTunnelingClientTypes {
+
     /// Tunnel timeout configuration.
-    public struct TimeoutConfig {
+    public struct TimeoutConfig: Swift.Sendable {
         /// The maximum amount of time (in minutes) a tunnel can remain open. If not specified, maxLifetimeTimeoutMinutes defaults to 720 minutes. Valid values are from 1 minute to 12 hours (720 minutes)
         public var maxLifetimeTimeoutMinutes: Swift.Int?
 
@@ -251,12 +252,12 @@ extension IoTSecureTunnelingClientTypes {
             self.maxLifetimeTimeoutMinutes = maxLifetimeTimeoutMinutes
         }
     }
-
 }
 
 extension IoTSecureTunnelingClientTypes {
+
     /// A connection between a source computer and a destination device.
-    public struct Tunnel {
+    public struct Tunnel: Swift.Sendable {
         /// The time when the tunnel was created.
         public var createdAt: Foundation.Date?
         /// A description of the tunnel.
@@ -307,10 +308,9 @@ extension IoTSecureTunnelingClientTypes {
             self.tunnelId = tunnelId
         }
     }
-
 }
 
-public struct DescribeTunnelOutput {
+public struct DescribeTunnelOutput: Swift.Sendable {
     /// The tunnel being described.
     public var tunnel: IoTSecureTunnelingClientTypes.Tunnel?
 
@@ -322,7 +322,7 @@ public struct DescribeTunnelOutput {
     }
 }
 
-public struct ListTagsForResourceInput {
+public struct ListTagsForResourceInput: Swift.Sendable {
     /// The resource ARN.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -335,7 +335,7 @@ public struct ListTagsForResourceInput {
     }
 }
 
-public struct ListTagsForResourceOutput {
+public struct ListTagsForResourceOutput: Swift.Sendable {
     /// The tags for the specified resource.
     public var tags: [IoTSecureTunnelingClientTypes.Tag]?
 
@@ -347,7 +347,7 @@ public struct ListTagsForResourceOutput {
     }
 }
 
-public struct ListTunnelsInput {
+public struct ListTunnelsInput: Swift.Sendable {
     /// The maximum number of results to return at once.
     public var maxResults: Swift.Int?
     /// To retrieve the next set of results, the nextToken value from a previous response; otherwise null to receive the first set of results.
@@ -368,8 +368,9 @@ public struct ListTunnelsInput {
 }
 
 extension IoTSecureTunnelingClientTypes {
+
     /// Information about the tunnel.
-    public struct TunnelSummary {
+    public struct TunnelSummary: Swift.Sendable {
         /// The time the tunnel was created.
         public var createdAt: Foundation.Date?
         /// A description of the tunnel.
@@ -400,10 +401,9 @@ extension IoTSecureTunnelingClientTypes {
             self.tunnelId = tunnelId
         }
     }
-
 }
 
-public struct ListTunnelsOutput {
+public struct ListTunnelsOutput: Swift.Sendable {
     /// The token to use to get the next set of results, or null if there are no additional results.
     public var nextToken: Swift.String?
     /// A short description of the tunnels in an Amazon Web Services account.
@@ -443,7 +443,7 @@ public struct LimitExceededException: ClientRuntime.ModeledError, AWSClientRunti
     }
 }
 
-public struct OpenTunnelInput {
+public struct OpenTunnelInput: Swift.Sendable {
     /// A short text description of the tunnel.
     public var description: Swift.String?
     /// The destination configuration for the OpenTunnel request.
@@ -467,7 +467,7 @@ public struct OpenTunnelInput {
     }
 }
 
-public struct OpenTunnelOutput {
+public struct OpenTunnelOutput: Swift.Sendable {
     /// The access token the destination local proxy uses to connect to IoT Secure Tunneling.
     public var destinationAccessToken: Swift.String?
     /// The access token the source local proxy uses to connect to IoT Secure Tunneling.
@@ -496,7 +496,7 @@ extension OpenTunnelOutput: Swift.CustomDebugStringConvertible {
         "OpenTunnelOutput(tunnelArn: \(Swift.String(describing: tunnelArn)), tunnelId: \(Swift.String(describing: tunnelId)), destinationAccessToken: \"CONTENT_REDACTED\", sourceAccessToken: \"CONTENT_REDACTED\")"}
 }
 
-public struct RotateTunnelAccessTokenInput {
+public struct RotateTunnelAccessTokenInput: Swift.Sendable {
     /// The mode of the client that will use the client token, which can be either the source or destination, or both source and destination.
     /// This member is required.
     public var clientMode: IoTSecureTunnelingClientTypes.ClientMode?
@@ -518,7 +518,7 @@ public struct RotateTunnelAccessTokenInput {
     }
 }
 
-public struct RotateTunnelAccessTokenOutput {
+public struct RotateTunnelAccessTokenOutput: Swift.Sendable {
     /// The client access token that the destination local proxy uses to connect to IoT Secure Tunneling.
     public var destinationAccessToken: Swift.String?
     /// The client access token that the source local proxy uses to connect to IoT Secure Tunneling.
@@ -543,7 +543,7 @@ extension RotateTunnelAccessTokenOutput: Swift.CustomDebugStringConvertible {
         "RotateTunnelAccessTokenOutput(tunnelArn: \(Swift.String(describing: tunnelArn)), destinationAccessToken: \"CONTENT_REDACTED\", sourceAccessToken: \"CONTENT_REDACTED\")"}
 }
 
-public struct TagResourceInput {
+public struct TagResourceInput: Swift.Sendable {
     /// The ARN of the resource.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -561,12 +561,12 @@ public struct TagResourceInput {
     }
 }
 
-public struct TagResourceOutput {
+public struct TagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UntagResourceInput {
+public struct UntagResourceInput: Swift.Sendable {
     /// The resource ARN.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -584,7 +584,7 @@ public struct UntagResourceInput {
     }
 }
 
-public struct UntagResourceOutput {
+public struct UntagResourceOutput: Swift.Sendable {
 
     public init() { }
 }

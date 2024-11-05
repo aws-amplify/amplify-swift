@@ -803,6 +803,7 @@ extension RedshiftServerlessClient {
     /// - `ConflictException` : The submitted action has conflicts.
     /// - `InsufficientCapacityException` : There is an insufficient capacity to perform the action.
     /// - `InternalServerException` : The request processing has failed because of an unknown error, exception or failure.
+    /// - `Ipv6CidrBlockNotFoundException` : There are no subnets in your VPC with associated IPv6 CIDR blocks. To use dual-stack mode, associate an IPv6 CIDR block with each subnet in your VPC.
     /// - `ResourceNotFoundException` : The resource could not be found.
     /// - `TooManyTagsException` : The request exceeded the number of tags allowed for a resource.
     /// - `ValidationException` : The input failed to satisfy the constraints specified by an AWS service.
@@ -4160,6 +4161,7 @@ extension RedshiftServerlessClient {
     /// - `ConflictException` : The submitted action has conflicts.
     /// - `InsufficientCapacityException` : There is an insufficient capacity to perform the action.
     /// - `InternalServerException` : The request processing has failed because of an unknown error, exception or failure.
+    /// - `Ipv6CidrBlockNotFoundException` : There are no subnets in your VPC with associated IPv6 CIDR blocks. To use dual-stack mode, associate an IPv6 CIDR block with each subnet in your VPC.
     /// - `ResourceNotFoundException` : The resource could not be found.
     /// - `ValidationException` : The input failed to satisfy the constraints specified by an AWS service.
     public func updateWorkgroup(input: UpdateWorkgroupInput) async throws -> UpdateWorkgroupOutput {

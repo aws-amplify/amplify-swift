@@ -28,7 +28,8 @@ import protocol ClientRuntime.ModeledError
 @_spi(UnknownAWSHTTPServiceError) import struct AWSClientRuntime.UnknownAWSHTTPServiceError
 import struct Smithy.URIQueryItem
 
-public struct PingInput {
+
+public struct PingInput: Swift.Sendable {
 
     public init() { }
 }
@@ -124,8 +125,9 @@ public struct ResourceNotFoundException: ClientRuntime.ModeledError, AWSClientRu
 }
 
 extension PrivateNetworksClientTypes {
+
     /// Information about a field that failed validation.
-    public struct ValidationExceptionField {
+    public struct ValidationExceptionField: Swift.Sendable {
         /// The message about the validation failure.
         /// This member is required.
         public var message: Swift.String?
@@ -142,12 +144,11 @@ extension PrivateNetworksClientTypes {
             self.name = name
         }
     }
-
 }
 
 extension PrivateNetworksClientTypes {
 
-    public enum ValidationExceptionReason: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ValidationExceptionReason: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case cannotAssumeRole
         case cannotParse
         case fieldValidationFailed
@@ -218,7 +219,7 @@ public struct ValidationException: ClientRuntime.ModeledError, AWSClientRuntime.
     }
 }
 
-public struct AcknowledgeOrderReceiptInput {
+public struct AcknowledgeOrderReceiptInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the order.
     /// This member is required.
     public var orderArn: Swift.String?
@@ -233,7 +234,7 @@ public struct AcknowledgeOrderReceiptInput {
 
 extension PrivateNetworksClientTypes {
 
-    public enum AcknowledgmentStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AcknowledgmentStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case acknowledged
         case acknowledging
         case unacknowledged
@@ -265,7 +266,7 @@ extension PrivateNetworksClientTypes {
 
 extension PrivateNetworksClientTypes {
 
-    public enum CommitmentLength: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum CommitmentLength: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case oneYear
         case sixtyDays
         case threeYears
@@ -296,8 +297,9 @@ extension PrivateNetworksClientTypes {
 }
 
 extension PrivateNetworksClientTypes {
+
     /// Determines the duration and renewal status of the commitment period for a radio unit. For pricing, see [Amazon Web Services Private 5G Pricing](http://aws.amazon.com/private5g/pricing).
-    public struct CommitmentConfiguration {
+    public struct CommitmentConfiguration: Swift.Sendable {
         /// Determines whether the commitment period for a radio unit is set to automatically renew for an additional 1 year after your current commitment period expires. Set to True, if you want your commitment period to automatically renew. Set to False if you do not want your commitment to automatically renew. You can do the following:
         ///
         /// * Set a 1-year commitment to automatically renew for an additional 1 year. The hourly rate for the additional year will continue to be the same as your existing 1-year rate.
@@ -323,12 +325,11 @@ extension PrivateNetworksClientTypes {
             self.commitmentLength = commitmentLength
         }
     }
-
 }
 
 extension PrivateNetworksClientTypes {
 
-    public enum NetworkResourceDefinitionType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum NetworkResourceDefinitionType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case deviceIdentifier
         case radioUnit
         case sdkUnknown(Swift.String)
@@ -356,8 +357,9 @@ extension PrivateNetworksClientTypes {
 }
 
 extension PrivateNetworksClientTypes {
+
     /// Details of the network resources in the order.
-    public struct OrderedResourceDefinition {
+    public struct OrderedResourceDefinition: Swift.Sendable {
         /// The duration and renewal status of the commitment period for each radio unit in the order. Does not show details if the resource type is DEVICE_IDENTIFIER.
         public var commitmentConfiguration: PrivateNetworksClientTypes.CommitmentConfiguration?
         /// The number of network resources in the order.
@@ -378,12 +380,12 @@ extension PrivateNetworksClientTypes {
             self.type = type
         }
     }
-
 }
 
 extension PrivateNetworksClientTypes {
+
     /// Information about an address.
-    public struct Address {
+    public struct Address: Swift.Sendable {
         /// The city for this address.
         /// This member is required.
         public var city: Swift.String?
@@ -440,7 +442,6 @@ extension PrivateNetworksClientTypes {
             self.street3 = street3
         }
     }
-
 }
 
 extension PrivateNetworksClientTypes.Address: Swift.CustomDebugStringConvertible {
@@ -449,8 +450,9 @@ extension PrivateNetworksClientTypes.Address: Swift.CustomDebugStringConvertible
 }
 
 extension PrivateNetworksClientTypes {
+
     /// Information about tracking a shipment.
-    public struct TrackingInformation {
+    public struct TrackingInformation: Swift.Sendable {
         /// The tracking number of the shipment.
         public var trackingNumber: Swift.String?
 
@@ -461,12 +463,12 @@ extension PrivateNetworksClientTypes {
             self.trackingNumber = trackingNumber
         }
     }
-
 }
 
 extension PrivateNetworksClientTypes {
+
     /// Information about an order.
-    public struct Order {
+    public struct Order: Swift.Sendable {
         /// The acknowledgement status of the order.
         public var acknowledgmentStatus: PrivateNetworksClientTypes.AcknowledgmentStatus?
         /// The creation time of the order.
@@ -505,10 +507,9 @@ extension PrivateNetworksClientTypes {
             self.trackingInformation = trackingInformation
         }
     }
-
 }
 
-public struct AcknowledgeOrderReceiptOutput {
+public struct AcknowledgeOrderReceiptOutput: Swift.Sendable {
     /// Information about the order.
     /// This member is required.
     public var order: PrivateNetworksClientTypes.Order?
@@ -521,7 +522,7 @@ public struct AcknowledgeOrderReceiptOutput {
     }
 }
 
-public struct ActivateDeviceIdentifierInput {
+public struct ActivateDeviceIdentifierInput: Swift.Sendable {
     /// Unique, case-sensitive identifier that you provide to ensure the idempotency of the request. For more information, see [How to ensure idempotency](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/Run_Instance_Idempotency.html).
     public var clientToken: Swift.String?
     /// The Amazon Resource Name (ARN) of the device identifier.
@@ -540,7 +541,7 @@ public struct ActivateDeviceIdentifierInput {
 
 extension PrivateNetworksClientTypes {
 
-    public enum DeviceIdentifierStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DeviceIdentifierStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case active
         case inactive
         case sdkUnknown(Swift.String)
@@ -568,8 +569,9 @@ extension PrivateNetworksClientTypes {
 }
 
 extension PrivateNetworksClientTypes {
+
     /// Information about a subscriber of a device that can use a network.
-    public struct DeviceIdentifier {
+    public struct DeviceIdentifier: Swift.Sendable {
         /// The creation time of this device identifier.
         public var createdAt: Foundation.Date?
         /// The Amazon Resource Name (ARN) of the device identifier.
@@ -612,7 +614,6 @@ extension PrivateNetworksClientTypes {
             self.vendor = vendor
         }
     }
-
 }
 
 extension PrivateNetworksClientTypes.DeviceIdentifier: Swift.CustomDebugStringConvertible {
@@ -620,7 +621,7 @@ extension PrivateNetworksClientTypes.DeviceIdentifier: Swift.CustomDebugStringCo
         "DeviceIdentifier(createdAt: \(Swift.String(describing: createdAt)), deviceIdentifierArn: \(Swift.String(describing: deviceIdentifierArn)), iccid: \(Swift.String(describing: iccid)), networkArn: \(Swift.String(describing: networkArn)), orderArn: \(Swift.String(describing: orderArn)), status: \(Swift.String(describing: status)), trafficGroupArn: \(Swift.String(describing: trafficGroupArn)), vendor: \(Swift.String(describing: vendor)), imsi: \"CONTENT_REDACTED\")"}
 }
 
-public struct ActivateDeviceIdentifierOutput {
+public struct ActivateDeviceIdentifierOutput: Swift.Sendable {
     /// Information about the device identifier.
     /// This member is required.
     public var deviceIdentifier: PrivateNetworksClientTypes.DeviceIdentifier?
@@ -642,7 +643,7 @@ extension ActivateDeviceIdentifierOutput: Swift.CustomDebugStringConvertible {
         "ActivateDeviceIdentifierOutput(deviceIdentifier: \(Swift.String(describing: deviceIdentifier)), tags: \"CONTENT_REDACTED\")"}
 }
 
-public struct ActivateNetworkSiteInput {
+public struct ActivateNetworkSiteInput: Swift.Sendable {
     /// Unique, case-sensitive identifier that you provide to ensure the idempotency of the request. For more information, see [How to ensure idempotency](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/Run_Instance_Idempotency.html).
     public var clientToken: Swift.String?
     /// Determines the duration and renewal status of the commitment period for all pending radio units. If you include commitmentConfiguration in the ActivateNetworkSiteRequest action, you must specify the following:
@@ -676,8 +677,9 @@ public struct ActivateNetworkSiteInput {
 }
 
 extension PrivateNetworksClientTypes {
+
     /// Information about a name/value pair.
-    public struct NameValuePair {
+    public struct NameValuePair: Swift.Sendable {
         /// The name of the pair.
         /// This member is required.
         public var name: Swift.String?
@@ -693,12 +695,12 @@ extension PrivateNetworksClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension PrivateNetworksClientTypes {
+
     /// Information about a network resource definition.
-    public struct NetworkResourceDefinition {
+    public struct NetworkResourceDefinition: Swift.Sendable {
         /// The count in the network resource definition.
         /// This member is required.
         public var count: Swift.Int?
@@ -719,12 +721,12 @@ extension PrivateNetworksClientTypes {
             self.type = type
         }
     }
-
 }
 
 extension PrivateNetworksClientTypes {
+
     /// Information about a site plan.
-    public struct SitePlan {
+    public struct SitePlan: Swift.Sendable {
         /// The options of the plan.
         public var options: [PrivateNetworksClientTypes.NameValuePair]?
         /// The resource definitions of the plan.
@@ -739,12 +741,11 @@ extension PrivateNetworksClientTypes {
             self.resourceDefinitions = resourceDefinitions
         }
     }
-
 }
 
 extension PrivateNetworksClientTypes {
 
-    public enum NetworkSiteStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum NetworkSiteStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case available
         case created
         case deleted
@@ -781,8 +782,9 @@ extension PrivateNetworksClientTypes {
 }
 
 extension PrivateNetworksClientTypes {
+
     /// Information about a network site.
-    public struct NetworkSite {
+    public struct NetworkSite: Swift.Sendable {
         /// The parent Availability Zone for the network site.
         public var availabilityZone: Swift.String?
         /// The parent Availability Zone ID for the network site.
@@ -837,10 +839,9 @@ extension PrivateNetworksClientTypes {
             self.statusReason = statusReason
         }
     }
-
 }
 
-public struct ActivateNetworkSiteOutput {
+public struct ActivateNetworkSiteOutput: Swift.Sendable {
     /// Information about the network site.
     public var networkSite: PrivateNetworksClientTypes.NetworkSite?
 
@@ -853,8 +854,9 @@ public struct ActivateNetworkSiteOutput {
 }
 
 extension PrivateNetworksClientTypes {
+
     /// Shows the duration, the date and time that the contract started and ends, and the renewal status of the commitment period for the radio unit.
-    public struct CommitmentInformation {
+    public struct CommitmentInformation: Swift.Sendable {
         /// The duration and renewal status of the commitment period for the radio unit.
         /// This member is required.
         public var commitmentConfiguration: PrivateNetworksClientTypes.CommitmentConfiguration?
@@ -874,12 +876,11 @@ extension PrivateNetworksClientTypes {
             self.startAt = startAt
         }
     }
-
 }
 
 extension PrivateNetworksClientTypes {
 
-    public enum ElevationReference: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ElevationReference: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case agl
         case amsl
         case sdkUnknown(Swift.String)
@@ -908,7 +909,7 @@ extension PrivateNetworksClientTypes {
 
 extension PrivateNetworksClientTypes {
 
-    public enum ElevationUnit: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ElevationUnit: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         /// Feet.
         case feet
         case sdkUnknown(Swift.String)
@@ -934,8 +935,9 @@ extension PrivateNetworksClientTypes {
 }
 
 extension PrivateNetworksClientTypes {
+
     /// Information about a position.
-    public struct Position {
+    public struct Position: Swift.Sendable {
         /// The elevation of the equipment at this position.
         public var elevation: Swift.Double?
         /// The reference point from which elevation is reported.
@@ -962,10 +964,9 @@ extension PrivateNetworksClientTypes {
             self.longitude = longitude
         }
     }
-
 }
 
-public struct ConfigureAccessPointInput {
+public struct ConfigureAccessPointInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the network resource.
     /// This member is required.
     public var accessPointArn: Swift.String?
@@ -1005,7 +1006,7 @@ extension ConfigureAccessPointInput: Swift.CustomDebugStringConvertible {
 
 extension PrivateNetworksClientTypes {
 
-    public enum HealthStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum HealthStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case healthy
         case initial
         case unhealthy
@@ -1036,8 +1037,9 @@ extension PrivateNetworksClientTypes {
 }
 
 extension PrivateNetworksClientTypes {
+
     /// Information about a request to return a network resource.
-    public struct ReturnInformation {
+    public struct ReturnInformation: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the replacement order.
         public var replacementOrderArn: Swift.String?
         /// The reason for the return. If the return request did not include a reason for the return, this value is null.
@@ -1060,12 +1062,11 @@ extension PrivateNetworksClientTypes {
             self.shippingLabel = shippingLabel
         }
     }
-
 }
 
 extension PrivateNetworksClientTypes {
 
-    public enum NetworkResourceStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum NetworkResourceStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case available
         case creatingShippingLabel
         case deleted
@@ -1115,7 +1116,7 @@ extension PrivateNetworksClientTypes {
 
 extension PrivateNetworksClientTypes {
 
-    public enum NetworkResourceType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum NetworkResourceType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case radioUnit
         case sdkUnknown(Swift.String)
 
@@ -1140,8 +1141,9 @@ extension PrivateNetworksClientTypes {
 }
 
 extension PrivateNetworksClientTypes {
+
     /// Information about a network resource.
-    public struct NetworkResource {
+    public struct NetworkResource: Swift.Sendable {
         /// The attributes of the network resource.
         public var attributes: [PrivateNetworksClientTypes.NameValuePair]?
         /// Information about the commitment period for the radio unit. Shows the duration, the date and time that the contract started and ends, and the renewal status of the commitment period.
@@ -1216,10 +1218,9 @@ extension PrivateNetworksClientTypes {
             self.vendor = vendor
         }
     }
-
 }
 
-public struct ConfigureAccessPointOutput {
+public struct ConfigureAccessPointOutput: Swift.Sendable {
     /// Information about the network resource.
     /// This member is required.
     public var accessPoint: PrivateNetworksClientTypes.NetworkResource?
@@ -1257,7 +1258,7 @@ public struct LimitExceededException: ClientRuntime.ModeledError, AWSClientRunti
     }
 }
 
-public struct CreateNetworkInput {
+public struct CreateNetworkInput: Swift.Sendable {
     /// Unique, case-sensitive identifier that you provide to ensure the idempotency of the request. For more information, see [How to ensure idempotency](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/Run_Instance_Idempotency.html).
     public var clientToken: Swift.String?
     /// The description of the network.
@@ -1289,7 +1290,7 @@ extension CreateNetworkInput: Swift.CustomDebugStringConvertible {
 
 extension PrivateNetworksClientTypes {
 
-    public enum NetworkStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum NetworkStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case available
         case created
         case deleted
@@ -1326,8 +1327,9 @@ extension PrivateNetworksClientTypes {
 }
 
 extension PrivateNetworksClientTypes {
+
     /// Information about a network.
-    public struct Network {
+    public struct Network: Swift.Sendable {
         /// The creation time of the network.
         public var createdAt: Foundation.Date?
         /// The description of the network.
@@ -1361,10 +1363,9 @@ extension PrivateNetworksClientTypes {
             self.statusReason = statusReason
         }
     }
-
 }
 
-public struct CreateNetworkOutput {
+public struct CreateNetworkOutput: Swift.Sendable {
     /// Information about the network.
     /// This member is required.
     public var network: PrivateNetworksClientTypes.Network?
@@ -1386,7 +1387,7 @@ extension CreateNetworkOutput: Swift.CustomDebugStringConvertible {
         "CreateNetworkOutput(network: \(Swift.String(describing: network)), tags: \"CONTENT_REDACTED\")"}
 }
 
-public struct CreateNetworkSiteInput {
+public struct CreateNetworkSiteInput: Swift.Sendable {
     /// The Availability Zone that is the parent of this site. You can't change the Availability Zone after you create the site.
     public var availabilityZone: Swift.String?
     /// The ID of the Availability Zone that is the parent of this site. You can't change the Availability Zone after you create the site.
@@ -1433,7 +1434,7 @@ extension CreateNetworkSiteInput: Swift.CustomDebugStringConvertible {
         "CreateNetworkSiteInput(availabilityZone: \(Swift.String(describing: availabilityZone)), availabilityZoneId: \(Swift.String(describing: availabilityZoneId)), clientToken: \(Swift.String(describing: clientToken)), description: \(Swift.String(describing: description)), networkArn: \(Swift.String(describing: networkArn)), networkSiteName: \(Swift.String(describing: networkSiteName)), pendingPlan: \(Swift.String(describing: pendingPlan)), tags: \"CONTENT_REDACTED\")"}
 }
 
-public struct CreateNetworkSiteOutput {
+public struct CreateNetworkSiteOutput: Swift.Sendable {
     /// Information about the network site.
     public var networkSite: PrivateNetworksClientTypes.NetworkSite?
     /// The network site tags.
@@ -1454,7 +1455,7 @@ extension CreateNetworkSiteOutput: Swift.CustomDebugStringConvertible {
         "CreateNetworkSiteOutput(networkSite: \(Swift.String(describing: networkSite)), tags: \"CONTENT_REDACTED\")"}
 }
 
-public struct DeactivateDeviceIdentifierInput {
+public struct DeactivateDeviceIdentifierInput: Swift.Sendable {
     /// Unique, case-sensitive identifier that you provide to ensure the idempotency of the request. For more information, see [How to ensure idempotency](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/Run_Instance_Idempotency.html).
     public var clientToken: Swift.String?
     /// The Amazon Resource Name (ARN) of the device identifier.
@@ -1471,7 +1472,7 @@ public struct DeactivateDeviceIdentifierInput {
     }
 }
 
-public struct DeactivateDeviceIdentifierOutput {
+public struct DeactivateDeviceIdentifierOutput: Swift.Sendable {
     /// Information about the device identifier.
     /// This member is required.
     public var deviceIdentifier: PrivateNetworksClientTypes.DeviceIdentifier?
@@ -1484,7 +1485,7 @@ public struct DeactivateDeviceIdentifierOutput {
     }
 }
 
-public struct DeleteNetworkInput {
+public struct DeleteNetworkInput: Swift.Sendable {
     /// Unique, case-sensitive identifier that you provide to ensure the idempotency of the request. For more information, see [How to ensure idempotency](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/Run_Instance_Idempotency.html).
     public var clientToken: Swift.String?
     /// The Amazon Resource Name (ARN) of the network.
@@ -1501,7 +1502,7 @@ public struct DeleteNetworkInput {
     }
 }
 
-public struct DeleteNetworkOutput {
+public struct DeleteNetworkOutput: Swift.Sendable {
     /// Information about the network.
     /// This member is required.
     public var network: PrivateNetworksClientTypes.Network?
@@ -1514,7 +1515,7 @@ public struct DeleteNetworkOutput {
     }
 }
 
-public struct DeleteNetworkSiteInput {
+public struct DeleteNetworkSiteInput: Swift.Sendable {
     /// Unique, case-sensitive identifier that you provide to ensure the idempotency of the request. For more information, see [How to ensure idempotency](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/Run_Instance_Idempotency.html).
     public var clientToken: Swift.String?
     /// The Amazon Resource Name (ARN) of the network site.
@@ -1531,7 +1532,7 @@ public struct DeleteNetworkSiteInput {
     }
 }
 
-public struct DeleteNetworkSiteOutput {
+public struct DeleteNetworkSiteOutput: Swift.Sendable {
     /// Information about the network site.
     public var networkSite: PrivateNetworksClientTypes.NetworkSite?
 
@@ -1545,7 +1546,7 @@ public struct DeleteNetworkSiteOutput {
 
 extension PrivateNetworksClientTypes {
 
-    public enum DeviceIdentifierFilterKeys: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DeviceIdentifierFilterKeys: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case order
         case status
         case trafficGroup
@@ -1575,7 +1576,7 @@ extension PrivateNetworksClientTypes {
     }
 }
 
-public struct GetDeviceIdentifierInput {
+public struct GetDeviceIdentifierInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the device identifier.
     /// This member is required.
     public var deviceIdentifierArn: Swift.String?
@@ -1588,7 +1589,7 @@ public struct GetDeviceIdentifierInput {
     }
 }
 
-public struct GetDeviceIdentifierOutput {
+public struct GetDeviceIdentifierOutput: Swift.Sendable {
     /// Information about the device identifier.
     public var deviceIdentifier: PrivateNetworksClientTypes.DeviceIdentifier?
     /// The device identifier tags.
@@ -1609,7 +1610,7 @@ extension GetDeviceIdentifierOutput: Swift.CustomDebugStringConvertible {
         "GetDeviceIdentifierOutput(deviceIdentifier: \(Swift.String(describing: deviceIdentifier)), tags: \"CONTENT_REDACTED\")"}
 }
 
-public struct GetNetworkInput {
+public struct GetNetworkInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the network.
     /// This member is required.
     public var networkArn: Swift.String?
@@ -1622,7 +1623,7 @@ public struct GetNetworkInput {
     }
 }
 
-public struct GetNetworkOutput {
+public struct GetNetworkOutput: Swift.Sendable {
     /// Information about the network.
     /// This member is required.
     public var network: PrivateNetworksClientTypes.Network?
@@ -1644,7 +1645,7 @@ extension GetNetworkOutput: Swift.CustomDebugStringConvertible {
         "GetNetworkOutput(network: \(Swift.String(describing: network)), tags: \"CONTENT_REDACTED\")"}
 }
 
-public struct GetNetworkResourceInput {
+public struct GetNetworkResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the network resource.
     /// This member is required.
     public var networkResourceArn: Swift.String?
@@ -1657,7 +1658,7 @@ public struct GetNetworkResourceInput {
     }
 }
 
-public struct GetNetworkResourceOutput {
+public struct GetNetworkResourceOutput: Swift.Sendable {
     /// Information about the network resource.
     /// This member is required.
     public var networkResource: PrivateNetworksClientTypes.NetworkResource?
@@ -1679,7 +1680,7 @@ extension GetNetworkResourceOutput: Swift.CustomDebugStringConvertible {
         "GetNetworkResourceOutput(networkResource: \(Swift.String(describing: networkResource)), tags: \"CONTENT_REDACTED\")"}
 }
 
-public struct GetNetworkSiteInput {
+public struct GetNetworkSiteInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the network site.
     /// This member is required.
     public var networkSiteArn: Swift.String?
@@ -1692,7 +1693,7 @@ public struct GetNetworkSiteInput {
     }
 }
 
-public struct GetNetworkSiteOutput {
+public struct GetNetworkSiteOutput: Swift.Sendable {
     /// Information about the network site.
     public var networkSite: PrivateNetworksClientTypes.NetworkSite?
     /// The network site tags.
@@ -1713,7 +1714,7 @@ extension GetNetworkSiteOutput: Swift.CustomDebugStringConvertible {
         "GetNetworkSiteOutput(networkSite: \(Swift.String(describing: networkSite)), tags: \"CONTENT_REDACTED\")"}
 }
 
-public struct GetOrderInput {
+public struct GetOrderInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the order.
     /// This member is required.
     public var orderArn: Swift.String?
@@ -1726,7 +1727,7 @@ public struct GetOrderInput {
     }
 }
 
-public struct GetOrderOutput {
+public struct GetOrderOutput: Swift.Sendable {
     /// Information about the order.
     /// This member is required.
     public var order: PrivateNetworksClientTypes.Order?
@@ -1748,7 +1749,7 @@ extension GetOrderOutput: Swift.CustomDebugStringConvertible {
         "GetOrderOutput(order: \(Swift.String(describing: order)), tags: \"CONTENT_REDACTED\")"}
 }
 
-public struct ListDeviceIdentifiersInput {
+public struct ListDeviceIdentifiersInput: Swift.Sendable {
     /// The filters.
     ///
     /// * ORDER - The Amazon Resource Name (ARN) of the order.
@@ -1782,7 +1783,7 @@ public struct ListDeviceIdentifiersInput {
     }
 }
 
-public struct ListDeviceIdentifiersOutput {
+public struct ListDeviceIdentifiersOutput: Swift.Sendable {
     /// Information about the device identifiers.
     public var deviceIdentifiers: [PrivateNetworksClientTypes.DeviceIdentifier]?
     /// The token for the next page of results.
@@ -1800,7 +1801,7 @@ public struct ListDeviceIdentifiersOutput {
 
 extension PrivateNetworksClientTypes {
 
-    public enum NetworkResourceFilterKeys: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum NetworkResourceFilterKeys: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case order
         case status
         case sdkUnknown(Swift.String)
@@ -1827,7 +1828,7 @@ extension PrivateNetworksClientTypes {
     }
 }
 
-public struct ListNetworkResourcesInput {
+public struct ListNetworkResourcesInput: Swift.Sendable {
     /// The filters.
     ///
     /// * ORDER - The Amazon Resource Name (ARN) of the order.
@@ -1859,7 +1860,7 @@ public struct ListNetworkResourcesInput {
     }
 }
 
-public struct ListNetworkResourcesOutput {
+public struct ListNetworkResourcesOutput: Swift.Sendable {
     /// Information about network resources.
     public var networkResources: [PrivateNetworksClientTypes.NetworkResource]?
     /// The token for the next page of results.
@@ -1877,7 +1878,7 @@ public struct ListNetworkResourcesOutput {
 
 extension PrivateNetworksClientTypes {
 
-    public enum NetworkFilterKeys: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum NetworkFilterKeys: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case status
         case sdkUnknown(Swift.String)
 
@@ -1901,7 +1902,7 @@ extension PrivateNetworksClientTypes {
     }
 }
 
-public struct ListNetworksInput {
+public struct ListNetworksInput: Swift.Sendable {
     /// The filters.
     ///
     /// * STATUS - The status (AVAILABLE | CREATED | DELETED | DEPROVISIONING | PROVISIONING).
@@ -1926,7 +1927,7 @@ public struct ListNetworksInput {
     }
 }
 
-public struct ListNetworksOutput {
+public struct ListNetworksOutput: Swift.Sendable {
     /// The networks.
     public var networks: [PrivateNetworksClientTypes.Network]?
     /// The token for the next page of results.
@@ -1944,7 +1945,7 @@ public struct ListNetworksOutput {
 
 extension PrivateNetworksClientTypes {
 
-    public enum NetworkSiteFilterKeys: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum NetworkSiteFilterKeys: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case status
         case sdkUnknown(Swift.String)
 
@@ -1968,7 +1969,7 @@ extension PrivateNetworksClientTypes {
     }
 }
 
-public struct ListNetworkSitesInput {
+public struct ListNetworkSitesInput: Swift.Sendable {
     /// The filters. Add filters to your request to return a more specific list of results. Use filters to match the status of the network sites.
     ///
     /// * STATUS - The status (AVAILABLE | CREATED | DELETED | DEPROVISIONING | PROVISIONING).
@@ -1998,7 +1999,7 @@ public struct ListNetworkSitesInput {
     }
 }
 
-public struct ListNetworkSitesOutput {
+public struct ListNetworkSitesOutput: Swift.Sendable {
     /// Information about the network sites.
     public var networkSites: [PrivateNetworksClientTypes.NetworkSite]?
     /// The token for the next page of results.
@@ -2016,7 +2017,7 @@ public struct ListNetworkSitesOutput {
 
 extension PrivateNetworksClientTypes {
 
-    public enum OrderFilterKeys: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum OrderFilterKeys: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case networkSite
         case status
         case sdkUnknown(Swift.String)
@@ -2043,7 +2044,7 @@ extension PrivateNetworksClientTypes {
     }
 }
 
-public struct ListOrdersInput {
+public struct ListOrdersInput: Swift.Sendable {
     /// The filters.
     ///
     /// * NETWORK_SITE - The Amazon Resource Name (ARN) of the network site.
@@ -2075,7 +2076,7 @@ public struct ListOrdersInput {
     }
 }
 
-public struct ListOrdersOutput {
+public struct ListOrdersOutput: Swift.Sendable {
     /// The token for the next page of results.
     public var nextToken: Swift.String?
     /// Information about the orders.
@@ -2115,7 +2116,7 @@ public struct ThrottlingException: ClientRuntime.ModeledError, AWSClientRuntime.
     }
 }
 
-public struct ListTagsForResourceInput {
+public struct ListTagsForResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the resource.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -2128,7 +2129,7 @@ public struct ListTagsForResourceInput {
     }
 }
 
-public struct ListTagsForResourceOutput {
+public struct ListTagsForResourceOutput: Swift.Sendable {
     /// The resource tags.
     public var tags: [Swift.String: Swift.String]?
 
@@ -2145,7 +2146,7 @@ extension ListTagsForResourceOutput: Swift.CustomDebugStringConvertible {
         "ListTagsForResourceOutput(tags: \"CONTENT_REDACTED\")"}
 }
 
-public struct PingOutput {
+public struct PingOutput: Swift.Sendable {
     /// Information about the health of the service.
     public var status: Swift.String?
 
@@ -2159,7 +2160,7 @@ public struct PingOutput {
 
 extension PrivateNetworksClientTypes {
 
-    public enum UpdateType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum UpdateType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case commitment
         case replace
         case `return`
@@ -2189,7 +2190,7 @@ extension PrivateNetworksClientTypes {
     }
 }
 
-public struct StartNetworkResourceUpdateInput {
+public struct StartNetworkResourceUpdateInput: Swift.Sendable {
     /// Use this action to extend and automatically renew the commitment period for the radio unit. You can do the following:
     ///
     /// * Change a 60-day commitment to a 1-year or 3-year commitment. The change is immediate and the hourly rate decreases to the rate for the new commitment period.
@@ -2238,7 +2239,7 @@ public struct StartNetworkResourceUpdateInput {
     }
 }
 
-public struct StartNetworkResourceUpdateOutput {
+public struct StartNetworkResourceUpdateOutput: Swift.Sendable {
     /// The network resource.
     public var networkResource: PrivateNetworksClientTypes.NetworkResource?
 
@@ -2250,7 +2251,7 @@ public struct StartNetworkResourceUpdateOutput {
     }
 }
 
-public struct TagResourceInput {
+public struct TagResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the resource.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -2273,12 +2274,12 @@ extension TagResourceInput: Swift.CustomDebugStringConvertible {
         "TagResourceInput(resourceArn: \(Swift.String(describing: resourceArn)), tags: \"CONTENT_REDACTED\")"}
 }
 
-public struct TagResourceOutput {
+public struct TagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UntagResourceInput {
+public struct UntagResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the resource.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -2301,12 +2302,12 @@ extension UntagResourceInput: Swift.CustomDebugStringConvertible {
         "UntagResourceInput(resourceArn: \(Swift.String(describing: resourceArn)), tagKeys: \"CONTENT_REDACTED\")"}
 }
 
-public struct UntagResourceOutput {
+public struct UntagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdateNetworkSiteInput {
+public struct UpdateNetworkSiteInput: Swift.Sendable {
     /// Unique, case-sensitive identifier that you provide to ensure the idempotency of the request. For more information, see [How to ensure idempotency](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/Run_Instance_Idempotency.html).
     public var clientToken: Swift.String?
     /// The description.
@@ -2327,7 +2328,7 @@ public struct UpdateNetworkSiteInput {
     }
 }
 
-public struct UpdateNetworkSiteOutput {
+public struct UpdateNetworkSiteOutput: Swift.Sendable {
     /// Information about the network site.
     public var networkSite: PrivateNetworksClientTypes.NetworkSite?
     /// The network site tags.
@@ -2348,7 +2349,7 @@ extension UpdateNetworkSiteOutput: Swift.CustomDebugStringConvertible {
         "UpdateNetworkSiteOutput(networkSite: \(Swift.String(describing: networkSite)), tags: \"CONTENT_REDACTED\")"}
 }
 
-public struct UpdateNetworkSitePlanInput {
+public struct UpdateNetworkSitePlanInput: Swift.Sendable {
     /// Unique, case-sensitive identifier that you provide to ensure the idempotency of the request. For more information, see [How to ensure idempotency](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/Run_Instance_Idempotency.html).
     public var clientToken: Swift.String?
     /// The Amazon Resource Name (ARN) of the network site.
@@ -2370,7 +2371,7 @@ public struct UpdateNetworkSitePlanInput {
     }
 }
 
-public struct UpdateNetworkSitePlanOutput {
+public struct UpdateNetworkSitePlanOutput: Swift.Sendable {
     /// Information about the network site.
     public var networkSite: PrivateNetworksClientTypes.NetworkSite?
     /// The network site tags.

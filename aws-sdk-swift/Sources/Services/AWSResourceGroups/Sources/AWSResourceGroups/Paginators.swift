@@ -11,6 +11,38 @@ import protocol ClientRuntime.PaginateToken
 import struct ClientRuntime.PaginatorSequence
 
 extension ResourceGroupsClient {
+    /// Paginate over `[ListGroupingStatusesOutput]` results.
+    ///
+    /// When this operation is called, an `AsyncSequence` is created. AsyncSequences are lazy so no service
+    /// calls are made until the sequence is iterated over. This also means there is no guarantee that the request is valid
+    /// until then. If there are errors in your request, you will see the failures only after you start iterating.
+    /// - Parameters:
+    ///     - input: A `[ListGroupingStatusesInput]` to start pagination
+    /// - Returns: An `AsyncSequence` that can iterate over `ListGroupingStatusesOutput`
+    public func listGroupingStatusesPaginated(input: ListGroupingStatusesInput) -> ClientRuntime.PaginatorSequence<ListGroupingStatusesInput, ListGroupingStatusesOutput> {
+        return ClientRuntime.PaginatorSequence<ListGroupingStatusesInput, ListGroupingStatusesOutput>(input: input, inputKey: \.nextToken, outputKey: \.nextToken, paginationFunction: self.listGroupingStatuses(input:))
+    }
+}
+
+extension ListGroupingStatusesInput: ClientRuntime.PaginateToken {
+    public func usingPaginationToken(_ token: Swift.String) -> ListGroupingStatusesInput {
+        return ListGroupingStatusesInput(
+            filters: self.filters,
+            group: self.group,
+            maxResults: self.maxResults,
+            nextToken: token
+        )}
+}
+
+extension PaginatorSequence where OperationStackInput == ListGroupingStatusesInput, OperationStackOutput == ListGroupingStatusesOutput {
+    /// This paginator transforms the `AsyncSequence` returned by `listGroupingStatusesPaginated`
+    /// to access the nested member `[ResourceGroupsClientTypes.GroupingStatusesItem]`
+    /// - Returns: `[ResourceGroupsClientTypes.GroupingStatusesItem]`
+    public func groupingStatuses() async throws -> [ResourceGroupsClientTypes.GroupingStatusesItem] {
+        return try await self.asyncCompactMap { item in item.groupingStatuses }
+    }
+}
+extension ResourceGroupsClient {
     /// Paginate over `[ListGroupResourcesOutput]` results.
     ///
     /// When this operation is called, an `AsyncSequence` is created. AsyncSequences are lazy so no service
@@ -72,6 +104,37 @@ extension PaginatorSequence where OperationStackInput == ListGroupsInput, Operat
     /// - Returns: `[ResourceGroupsClientTypes.GroupIdentifier]`
     public func groupIdentifiers() async throws -> [ResourceGroupsClientTypes.GroupIdentifier] {
         return try await self.asyncCompactMap { item in item.groupIdentifiers }
+    }
+}
+extension ResourceGroupsClient {
+    /// Paginate over `[ListTagSyncTasksOutput]` results.
+    ///
+    /// When this operation is called, an `AsyncSequence` is created. AsyncSequences are lazy so no service
+    /// calls are made until the sequence is iterated over. This also means there is no guarantee that the request is valid
+    /// until then. If there are errors in your request, you will see the failures only after you start iterating.
+    /// - Parameters:
+    ///     - input: A `[ListTagSyncTasksInput]` to start pagination
+    /// - Returns: An `AsyncSequence` that can iterate over `ListTagSyncTasksOutput`
+    public func listTagSyncTasksPaginated(input: ListTagSyncTasksInput) -> ClientRuntime.PaginatorSequence<ListTagSyncTasksInput, ListTagSyncTasksOutput> {
+        return ClientRuntime.PaginatorSequence<ListTagSyncTasksInput, ListTagSyncTasksOutput>(input: input, inputKey: \.nextToken, outputKey: \.nextToken, paginationFunction: self.listTagSyncTasks(input:))
+    }
+}
+
+extension ListTagSyncTasksInput: ClientRuntime.PaginateToken {
+    public func usingPaginationToken(_ token: Swift.String) -> ListTagSyncTasksInput {
+        return ListTagSyncTasksInput(
+            filters: self.filters,
+            maxResults: self.maxResults,
+            nextToken: token
+        )}
+}
+
+extension PaginatorSequence where OperationStackInput == ListTagSyncTasksInput, OperationStackOutput == ListTagSyncTasksOutput {
+    /// This paginator transforms the `AsyncSequence` returned by `listTagSyncTasksPaginated`
+    /// to access the nested member `[ResourceGroupsClientTypes.TagSyncTaskItem]`
+    /// - Returns: `[ResourceGroupsClientTypes.TagSyncTaskItem]`
+    public func tagSyncTasks() async throws -> [ResourceGroupsClientTypes.TagSyncTaskItem] {
+        return try await self.asyncCompactMap { item in item.tagSyncTasks }
     }
 }
 extension ResourceGroupsClient {

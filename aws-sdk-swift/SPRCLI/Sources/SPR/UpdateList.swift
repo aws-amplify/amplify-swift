@@ -63,9 +63,9 @@ extension SPRPublisher {
                 throw Error("URL is invalid")
             }
             return baseURL
-                .appending(component: scope)
-                .appending(component: name)
-                .appending(component: version)
+                .appendingPathComponent(scope)
+                .appendingPathComponent(name)
+                .appendingPathComponent(version)
         }
     }
 }

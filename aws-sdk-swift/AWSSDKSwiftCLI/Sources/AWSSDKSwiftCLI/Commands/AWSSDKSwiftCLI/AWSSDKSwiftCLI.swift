@@ -17,7 +17,8 @@ struct AWSSDKSwiftCLI: ParsableCommand {
             PrepareReleaseCommand.self,
             SyncClientRuntimeVersionCommand.self,
             TestAWSSDKCommand.self,
-            GenerateDocIndexCommand.self
+            GenerateDocIndexCommand.self,
+            GenerateSmokeTestsPackageManifestCommand.self
         ]
     )
 }

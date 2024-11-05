@@ -389,7 +389,7 @@ extension VerifiedPermissionsClient {
     ///
     /// * Amazon Cognito user pool: Namespace::[Entity type]::[User pool ID]|[user principal attribute], for example MyCorp::User::us-east-1_EXAMPLE|a1b2c3d4-5678-90ab-cdef-EXAMPLE11111.
     ///
-    /// * OpenID Connect (OIDC) provider: Namespace::[Entity type]::[principalIdClaim]|[user principal attribute], for example MyCorp::User::MyOIDCProvider|a1b2c3d4-5678-90ab-cdef-EXAMPLE22222.
+    /// * OpenID Connect (OIDC) provider: Namespace::[Entity type]::[entityIdPrefix]|[user principal attribute], for example MyCorp::User::MyOIDCProvider|a1b2c3d4-5678-90ab-cdef-EXAMPLE22222.
     ///
     ///
     /// Verified Permissions is [eventually consistent](https://wikipedia.org/wiki/Eventual_consistency) . It can take a few seconds for a new or changed element to propagate through the service and be visible in the results of other Verified Permissions operations.
@@ -1728,7 +1728,7 @@ extension VerifiedPermissionsClient {
 
     /// Performs the `IsAuthorizedWithToken` operation on the `VerifiedPermissions` service.
     ///
-    /// Makes an authorization decision about a service request described in the parameters. The principal in this request comes from an external identity source in the form of an identity token formatted as a [JSON web token (JWT)](https://wikipedia.org/wiki/JSON_Web_Token). The information in the parameters can also define additional context that Verified Permissions can include in the evaluation. The request is evaluated against all matching policies in the specified policy store. The result of the decision is either Allow or Deny, along with a list of the policies that resulted in the decision. At this time, Verified Permissions accepts tokens from only Amazon Cognito. Verified Permissions validates each token that is specified in a request by checking its expiration date and its signature. Tokens from an identity source user continue to be usable until they expire. Token revocation and resource deletion have no effect on the validity of a token in your policy store
+    /// Makes an authorization decision about a service request described in the parameters. The principal in this request comes from an external identity source in the form of an identity token formatted as a [JSON web token (JWT)](https://wikipedia.org/wiki/JSON_Web_Token). The information in the parameters can also define additional context that Verified Permissions can include in the evaluation. The request is evaluated against all matching policies in the specified policy store. The result of the decision is either Allow or Deny, along with a list of the policies that resulted in the decision. Verified Permissions validates each token that is specified in a request by checking its expiration date and its signature. Tokens from an identity source user continue to be usable until they expire. Token revocation and resource deletion have no effect on the validity of a token in your policy store
     ///
     /// - Parameter IsAuthorizedWithTokenInput : [no documentation found]
     ///

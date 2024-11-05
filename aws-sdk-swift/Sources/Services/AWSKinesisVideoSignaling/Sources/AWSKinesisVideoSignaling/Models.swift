@@ -168,7 +168,7 @@ public struct SessionExpiredException: ClientRuntime.ModeledError, AWSClientRunt
 
 extension KinesisVideoSignalingClientTypes {
 
-    public enum Service: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Service: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case turn
         case sdkUnknown(Swift.String)
 
@@ -192,7 +192,7 @@ extension KinesisVideoSignalingClientTypes {
     }
 }
 
-public struct GetIceServerConfigInput {
+public struct GetIceServerConfigInput: Swift.Sendable {
     /// The ARN of the signaling channel to be used for the peer-to-peer connection between configured peers.
     /// This member is required.
     public var channelARN: Swift.String?
@@ -218,8 +218,9 @@ public struct GetIceServerConfigInput {
 }
 
 extension KinesisVideoSignalingClientTypes {
+
     /// A structure for the ICE server connection data.
-    public struct IceServer {
+    public struct IceServer: Swift.Sendable {
         /// A password to login to the ICE server.
         public var password: Swift.String?
         /// The period of time, in seconds, during which the username and password are valid.
@@ -242,10 +243,9 @@ extension KinesisVideoSignalingClientTypes {
             self.username = username
         }
     }
-
 }
 
-public struct GetIceServerConfigOutput {
+public struct GetIceServerConfigOutput: Swift.Sendable {
     /// The list of ICE server information objects.
     public var iceServerList: [KinesisVideoSignalingClientTypes.IceServer]?
 
@@ -257,7 +257,7 @@ public struct GetIceServerConfigOutput {
     }
 }
 
-public struct SendAlexaOfferToMasterInput {
+public struct SendAlexaOfferToMasterInput: Swift.Sendable {
     /// The ARN of the signaling channel by which Alexa and the master peer communicate.
     /// This member is required.
     public var channelARN: Swift.String?
@@ -280,7 +280,7 @@ public struct SendAlexaOfferToMasterInput {
     }
 }
 
-public struct SendAlexaOfferToMasterOutput {
+public struct SendAlexaOfferToMasterOutput: Swift.Sendable {
     /// The base64-encoded SDP answer content.
     public var answer: Swift.String?
 

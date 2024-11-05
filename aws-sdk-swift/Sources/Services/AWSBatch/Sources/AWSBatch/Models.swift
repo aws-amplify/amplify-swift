@@ -29,7 +29,7 @@ import struct Smithy.URIQueryItem
 
 extension BatchClientTypes {
 
-    public enum ArrayJobDependency: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ArrayJobDependency: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case nToN
         case sequential
         case sdkUnknown(Swift.String)
@@ -57,8 +57,9 @@ extension BatchClientTypes {
 }
 
 extension BatchClientTypes {
+
     /// An object that represents an Batch array job.
-    public struct ArrayProperties {
+    public struct ArrayProperties: Swift.Sendable {
         /// The size of the array job.
         public var size: Swift.Int?
 
@@ -69,12 +70,12 @@ extension BatchClientTypes {
             self.size = size
         }
     }
-
 }
 
 extension BatchClientTypes {
+
     /// An object that represents the array properties of a job.
-    public struct ArrayPropertiesDetail {
+    public struct ArrayPropertiesDetail: Swift.Sendable {
         /// The job index within the array that's associated with this job. This parameter is returned for array job children.
         public var index: Swift.Int?
         /// The size of the array job. This parameter is returned for parent array jobs.
@@ -93,12 +94,12 @@ extension BatchClientTypes {
             self.statusSummary = statusSummary
         }
     }
-
 }
 
 extension BatchClientTypes {
+
     /// An object that represents the array properties of a job.
-    public struct ArrayPropertiesSummary {
+    public struct ArrayPropertiesSummary: Swift.Sendable {
         /// The job index within the array that's associated with this job. This parameter is returned for children of array jobs.
         public var index: Swift.Int?
         /// The size of the array job. This parameter is returned for parent array jobs.
@@ -113,12 +114,11 @@ extension BatchClientTypes {
             self.size = size
         }
     }
-
 }
 
 extension BatchClientTypes {
 
-    public enum AssignPublicIp: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AssignPublicIp: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case disabled
         case enabled
         case sdkUnknown(Swift.String)
@@ -146,8 +146,9 @@ extension BatchClientTypes {
 }
 
 extension BatchClientTypes {
+
     /// An object that represents the elastic network interface for a multi-node parallel job node.
-    public struct NetworkInterface {
+    public struct NetworkInterface: Swift.Sendable {
         /// The attachment ID for the network interface.
         public var attachmentId: Swift.String?
         /// The private IPv6 address for the network interface.
@@ -166,12 +167,12 @@ extension BatchClientTypes {
             self.privateIpv4Address = privateIpv4Address
         }
     }
-
 }
 
 extension BatchClientTypes {
+
     /// An object that represents the details of a container that's part of a job attempt.
-    public struct AttemptContainerDetail {
+    public struct AttemptContainerDetail: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the Amazon ECS container instance that hosts the job attempt.
         public var containerInstanceArn: Swift.String?
         /// The exit code for the job attempt. A non-zero exit code is considered failed.
@@ -202,12 +203,12 @@ extension BatchClientTypes {
             self.taskArn = taskArn
         }
     }
-
 }
 
 extension BatchClientTypes {
+
     /// An object that represents the details of a container that's part of a job attempt.
-    public struct AttemptTaskContainerDetails {
+    public struct AttemptTaskContainerDetails: Swift.Sendable {
         /// The exit code for the container’s attempt. A non-zero exit code is considered failed.
         public var exitCode: Swift.Int?
         /// The name of the Amazon CloudWatch Logs log stream that's associated with the container. The log group for Batch jobs is /aws/batch/job. Each container attempt receives a log stream name when they reach the RUNNING status.
@@ -234,12 +235,12 @@ extension BatchClientTypes {
             self.reason = reason
         }
     }
-
 }
 
 extension BatchClientTypes {
+
     /// An object that represents the details of a task.
-    public struct AttemptEcsTaskDetails {
+    public struct AttemptEcsTaskDetails: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the container instance that hosts the task.
         public var containerInstanceArn: Swift.String?
         /// A list of containers that are included in the taskProperties list.
@@ -258,12 +259,12 @@ extension BatchClientTypes {
             self.taskArn = taskArn
         }
     }
-
 }
 
 extension BatchClientTypes {
+
     /// An object that represents a job attempt.
-    public struct AttemptDetail {
+    public struct AttemptDetail: Swift.Sendable {
         /// The details for the container in this job attempt.
         public var container: BatchClientTypes.AttemptContainerDetail?
         /// The Unix timestamp (in milliseconds) for when the attempt was started (when the attempt transitioned from the STARTING state to the RUNNING state).
@@ -290,7 +291,6 @@ extension BatchClientTypes {
             self.taskProperties = taskProperties
         }
     }
-
 }
 
 /// These errors are usually caused by a client action. One example cause is using an action or resource on behalf of a user that doesn't have permissions to use the action or resource. Another cause is specifying an identifier that's not valid.
@@ -342,11 +342,11 @@ public struct ServerException: ClientRuntime.ModeledError, AWSClientRuntime.AWSS
 }
 
 /// Contains the parameters for CancelJob.
-public struct CancelJobInput {
+public struct CancelJobInput: Swift.Sendable {
     /// The Batch job ID of the job to cancel.
     /// This member is required.
     public var jobId: Swift.String?
-    /// A message to attach to the job that explains the reason for canceling it. This message is returned by future [DescribeJobs] operations on the job. This message is also recorded in the Batch activity logs.
+    /// A message to attach to the job that explains the reason for canceling it. This message is returned by future [DescribeJobs] operations on the job. It is also recorded in the Batch activity logs. This parameter has as limit of 1024 characters.
     /// This member is required.
     public var reason: Swift.String?
 
@@ -360,14 +360,14 @@ public struct CancelJobInput {
     }
 }
 
-public struct CancelJobOutput {
+public struct CancelJobOutput: Swift.Sendable {
 
     public init() { }
 }
 
 extension BatchClientTypes {
 
-    public enum CRAllocationStrategy: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum CRAllocationStrategy: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case bestFit
         case bestFitProgressive
         case spotCapacityOptimized
@@ -401,8 +401,9 @@ extension BatchClientTypes {
 }
 
 extension BatchClientTypes {
+
     /// Provides information used to select Amazon Machine Images (AMIs) for instances in the compute environment. If Ec2Configuration isn't specified, the default is ECS_AL2 ([Amazon Linux 2](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ecs-optimized_AMI.html#al2ami)). This object isn't applicable to jobs that are running on Fargate resources.
-    public struct Ec2Configuration {
+    public struct Ec2Configuration: Swift.Sendable {
         /// The AMI ID used for instances launched in the compute environment that match the image type. This setting overrides the imageId set in the computeResource object. The AMI that you choose for a compute environment must match the architecture of the instance types that you intend to use for that compute environment. For example, if your compute environment uses A1 instance types, the compute resource AMI that you choose must support ARM instances. Amazon ECS vends both x86 and ARM versions of the Amazon ECS-optimized Amazon Linux 2 AMI. For more information, see [Amazon ECS-optimized Amazon Linux 2 AMI](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ecs-optimized_AMI.html#ecs-optimized-ami-linux-variants.html) in the Amazon Elastic Container Service Developer Guide.
         public var imageIdOverride: Swift.String?
         /// The Kubernetes version for the compute environment. If you don't specify a value, the latest version that Batch supports is used.
@@ -422,12 +423,12 @@ extension BatchClientTypes {
             self.imageType = imageType
         }
     }
-
 }
 
 extension BatchClientTypes {
+
     /// An object that represents a launch template that's associated with a compute resource. You must specify either the launch template ID or launch template name in the request, but not both. If security groups are specified using both the securityGroupIds parameter of CreateComputeEnvironment and the launch template, the values in the securityGroupIds parameter of CreateComputeEnvironment will be used. This object isn't applicable to jobs that are running on Fargate resources.
-    public struct LaunchTemplateSpecification {
+    public struct LaunchTemplateSpecification: Swift.Sendable {
         /// The ID of the launch template.
         public var launchTemplateId: Swift.String?
         /// The name of the launch template.
@@ -446,12 +447,11 @@ extension BatchClientTypes {
             self.version = version
         }
     }
-
 }
 
 extension BatchClientTypes {
 
-    public enum CRType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum CRType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case ec2
         case fargate
         case fargateSpot
@@ -485,8 +485,9 @@ extension BatchClientTypes {
 }
 
 extension BatchClientTypes {
+
     /// An object that represents an Batch compute resource. For more information, see [Compute environments](https://docs.aws.amazon.com/batch/latest/userguide/compute_environments.html) in the Batch User Guide.
-    public struct ComputeResource {
+    public struct ComputeResource: Swift.Sendable {
         /// The allocation strategy to use for the compute resource if not enough instances of the best fitting instance type can be allocated. This might be because of availability of the instance type in the Region or [Amazon EC2 service limits](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-resource-limits.html). For more information, see [Allocation strategies](https://docs.aws.amazon.com/batch/latest/userguide/allocation-strategies.html) in the Batch User Guide. This parameter isn't applicable to jobs that are running on Fargate resources. Don't specify it. BEST_FIT (default) Batch selects an instance type that best fits the needs of the jobs with a preference for the lowest-cost instance type. If additional instances of the selected instance type aren't available, Batch waits for the additional instances to be available. If there aren't enough instances available or the user is reaching [Amazon EC2 service limits](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-resource-limits.html), additional jobs aren't run until the currently running jobs are completed. This allocation strategy keeps costs lower but can limit scaling. If you're using Spot Fleets with BEST_FIT, the Spot Fleet IAM Role must be specified. Compute resources that use a BEST_FIT allocation strategy don't support infrastructure updates and can't update some parameters. For more information, see [Updating compute environments](https://docs.aws.amazon.com/batch/latest/userguide/updating-compute-environments.html) in the Batch User Guide. BEST_FIT_PROGRESSIVE Batch selects additional instance types that are large enough to meet the requirements of the jobs in the queue. Its preference is for instance types with lower cost vCPUs. If additional instances of the previously selected instance types aren't available, Batch selects new instance types. SPOT_CAPACITY_OPTIMIZED Batch selects one or more instance types that are large enough to meet the requirements of the jobs in the queue. Its preference is for instance types that are less likely to be interrupted. This allocation strategy is only available for Spot Instance compute resources. SPOT_PRICE_CAPACITY_OPTIMIZED The price and capacity optimized allocation strategy looks at both price and capacity to select the Spot Instance pools that are the least likely to be interrupted and have the lowest possible price. This allocation strategy is only available for Spot Instance compute resources. With BEST_FIT_PROGRESSIVE,SPOT_CAPACITY_OPTIMIZED and SPOT_PRICE_CAPACITY_OPTIMIZED (recommended) strategies using On-Demand or Spot Instances, and the BEST_FIT strategy using Spot Instances, Batch might need to exceed maxvCpus to meet your capacity requirements. In this event, Batch never exceeds maxvCpus by more than a single instance.
         public var allocationStrategy: BatchClientTypes.CRAllocationStrategy?
         /// The maximum percentage that a Spot Instance price can be when compared with the On-Demand price for that instance type before instances are launched. For example, if your maximum percentage is 20%, then the Spot price must be less than 20% of the current On-Demand price for that Amazon EC2 instance. You always pay the lowest (market) price and never more than your maximum percentage. If you leave this field empty, the default value is 100% of the On-Demand price. For most use cases, we recommend leaving this field empty. This parameter isn't applicable to jobs that are running on Fargate resources. Don't specify it.
@@ -565,12 +566,12 @@ extension BatchClientTypes {
             self.type = type
         }
     }
-
 }
 
 extension BatchClientTypes {
+
     /// Configuration for the Amazon EKS cluster that supports the Batch compute environment. The cluster must exist before the compute environment can be created.
-    public struct EksConfiguration {
+    public struct EksConfiguration: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the Amazon EKS cluster. An example is arn:aws:eks:us-east-1:123456789012:cluster/ClusterForBatch .
         /// This member is required.
         public var eksClusterArn: Swift.String?
@@ -587,12 +588,11 @@ extension BatchClientTypes {
             self.kubernetesNamespace = kubernetesNamespace
         }
     }
-
 }
 
 extension BatchClientTypes {
 
-    public enum CEState: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum CEState: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case disabled
         case enabled
         case sdkUnknown(Swift.String)
@@ -621,7 +621,7 @@ extension BatchClientTypes {
 
 extension BatchClientTypes {
 
-    public enum CEType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum CEType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case managed
         case unmanaged
         case sdkUnknown(Swift.String)
@@ -649,7 +649,7 @@ extension BatchClientTypes {
 }
 
 /// Contains the parameters for CreateComputeEnvironment.
-public struct CreateComputeEnvironmentInput {
+public struct CreateComputeEnvironmentInput: Swift.Sendable {
     /// The name for your compute environment. It can be up to 128 characters long. It can contain uppercase and lowercase letters, numbers, hyphens (-), and underscores (_).
     /// This member is required.
     public var computeEnvironmentName: Swift.String?
@@ -695,7 +695,7 @@ public struct CreateComputeEnvironmentInput {
     }
 }
 
-public struct CreateComputeEnvironmentOutput {
+public struct CreateComputeEnvironmentOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the compute environment.
     public var computeEnvironmentArn: Swift.String?
     /// The name of the compute environment. It can be up to 128 characters long. It can contain uppercase and lowercase letters, numbers, hyphens (-), and underscores (_).
@@ -712,8 +712,9 @@ public struct CreateComputeEnvironmentOutput {
 }
 
 extension BatchClientTypes {
+
     /// The order that compute environments are tried in for job placement within a queue. Compute environments are tried in ascending order. For example, if two compute environments are associated with a job queue, the compute environment with a lower order integer value is tried for job placement first. Compute environments must be in the VALID state before you can associate them with a job queue. All of the compute environments must be either EC2 (EC2 or SPOT) or Fargate (FARGATE or FARGATE_SPOT); Amazon EC2 and Fargate compute environments can't be mixed. All compute environments that are associated with a job queue must share the same architecture. Batch doesn't support mixing compute environment architecture types in a single job queue.
-    public struct ComputeEnvironmentOrder {
+    public struct ComputeEnvironmentOrder: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the compute environment.
         /// This member is required.
         public var computeEnvironment: Swift.String?
@@ -730,12 +731,11 @@ extension BatchClientTypes {
             self.order = order
         }
     }
-
 }
 
 extension BatchClientTypes {
 
-    public enum JobStateTimeLimitActionsAction: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum JobStateTimeLimitActionsAction: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case cancel
         case sdkUnknown(Swift.String)
 
@@ -761,7 +761,7 @@ extension BatchClientTypes {
 
 extension BatchClientTypes {
 
-    public enum JobStateTimeLimitActionsState: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum JobStateTimeLimitActionsState: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case runnable
         case sdkUnknown(Swift.String)
 
@@ -786,8 +786,9 @@ extension BatchClientTypes {
 }
 
 extension BatchClientTypes {
+
     /// Specifies an action that Batch will take after the job has remained at the head of the queue in the specified state for longer than the specified time.
-    public struct JobStateTimeLimitAction {
+    public struct JobStateTimeLimitAction: Swift.Sendable {
         /// The action to take when a job is at the head of the job queue in the specified state for the specified period of time. The only supported value is CANCEL, which will cancel the job.
         /// This member is required.
         public var action: BatchClientTypes.JobStateTimeLimitActionsAction?
@@ -814,12 +815,11 @@ extension BatchClientTypes {
             self.state = state
         }
     }
-
 }
 
 extension BatchClientTypes {
 
-    public enum JQState: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum JQState: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case disabled
         case enabled
         case sdkUnknown(Swift.String)
@@ -847,19 +847,19 @@ extension BatchClientTypes {
 }
 
 /// Contains the parameters for CreateJobQueue.
-public struct CreateJobQueueInput {
+public struct CreateJobQueueInput: Swift.Sendable {
     /// The set of compute environments mapped to a job queue and their order relative to each other. The job scheduler uses this parameter to determine which compute environment runs a specific job. Compute environments must be in the VALID state before you can associate them with a job queue. You can associate up to three compute environments with a job queue. All of the compute environments must be either EC2 (EC2 or SPOT) or Fargate (FARGATE or FARGATE_SPOT); EC2 and Fargate compute environments can't be mixed. All compute environments that are associated with a job queue must share the same architecture. Batch doesn't support mixing compute environment architecture types in a single job queue.
     /// This member is required.
     public var computeEnvironmentOrder: [BatchClientTypes.ComputeEnvironmentOrder]?
     /// The name of the job queue. It can be up to 128 letters long. It can contain uppercase and lowercase letters, numbers, hyphens (-), and underscores (_).
     /// This member is required.
     public var jobQueueName: Swift.String?
-    /// The set of actions that Batch performs on jobs that remain at the head of the job queue in the specified state longer than specified times. Batch will perform each action after maxTimeSeconds has passed.
+    /// The set of actions that Batch performs on jobs that remain at the head of the job queue in the specified state longer than specified times. Batch will perform each action after maxTimeSeconds has passed. (Note: The minimum value for maxTimeSeconds is 600 (10 minutes) and its maximum value is 86,400 (24 hours).)
     public var jobStateTimeLimitActions: [BatchClientTypes.JobStateTimeLimitAction]?
     /// The priority of the job queue. Job queues with a higher priority (or a higher integer value for the priority parameter) are evaluated first when associated with the same compute environment. Priority is determined in descending order. For example, a job queue with a priority value of 10 is given scheduling preference over a job queue with a priority value of 1. All of the compute environments must be either EC2 (EC2 or SPOT) or Fargate (FARGATE or FARGATE_SPOT); EC2 and Fargate compute environments can't be mixed.
     /// This member is required.
     public var priority: Swift.Int?
-    /// The Amazon Resource Name (ARN) of the fair share scheduling policy. If this parameter is specified, the job queue uses a fair share scheduling policy. If this parameter isn't specified, the job queue uses a first in, first out (FIFO) scheduling policy. After a job queue is created, you can replace but can't remove the fair share scheduling policy. The format is aws:Partition:batch:Region:Account:scheduling-policy/Name . An example is aws:aws:batch:us-west-2:123456789012:scheduling-policy/MySchedulingPolicy.
+    /// The Amazon Resource Name (ARN) of the fair share scheduling policy. Job queues that don't have a scheduling policy are scheduled in a first-in, first-out (FIFO) model. After a job queue has a scheduling policy, it can be replaced but can't be removed. The format is aws:Partition:batch:Region:Account:scheduling-policy/Name . An example is aws:aws:batch:us-west-2:123456789012:scheduling-policy/MySchedulingPolicy. A job queue without a scheduling policy is scheduled as a FIFO job queue and can't have a scheduling policy added. Jobs queues with a scheduling policy can have a maximum of 500 active fair share identifiers. When the limit has been reached, submissions of any jobs that add a new fair share identifier fail.
     public var schedulingPolicyArn: Swift.String?
     /// The state of the job queue. If the job queue state is ENABLED, it is able to accept jobs. If the job queue state is DISABLED, new jobs can't be added to the queue, but jobs already in the queue can finish.
     public var state: BatchClientTypes.JQState?
@@ -886,7 +886,7 @@ public struct CreateJobQueueInput {
     }
 }
 
-public struct CreateJobQueueOutput {
+public struct CreateJobQueueOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the job queue.
     /// This member is required.
     public var jobQueueArn: Swift.String?
@@ -905,8 +905,9 @@ public struct CreateJobQueueOutput {
 }
 
 extension BatchClientTypes {
+
     /// Specifies the weights for the fair share identifiers for the fair share policy. Fair share identifiers that aren't included have a default weight of 1.0.
-    public struct ShareAttributes {
+    public struct ShareAttributes: Swift.Sendable {
         /// A fair share identifier or fair share identifier prefix. If the string ends with an asterisk (*), this entry specifies the weight factor to use for fair share identifiers that start with that prefix. The list of fair share identifiers in a fair share policy can't overlap. For example, you can't have one that specifies a shareIdentifier of UserA* and another that specifies a shareIdentifier of UserA-1. There can be no more than 500 fair share identifiers active in a job queue. The string is limited to 255 alphanumeric characters, and can be followed by an asterisk (*).
         /// This member is required.
         public var shareIdentifier: Swift.String?
@@ -922,12 +923,12 @@ extension BatchClientTypes {
             self.weightFactor = weightFactor
         }
     }
-
 }
 
 extension BatchClientTypes {
+
     /// The fair share policy for a scheduling policy.
-    public struct FairsharePolicy {
+    public struct FairsharePolicy: Swift.Sendable {
         /// A value used to reserve some of the available maximum vCPU for fair share identifiers that aren't already used. The reserved ratio is (computeReservation/100)^ActiveFairShares  where  ActiveFairShares  is the number of active fair share identifiers. For example, a computeReservation value of 50 indicates that Batch reserves 50% of the maximum available vCPU if there's only one fair share identifier. It reserves 25% if there are two fair share identifiers. It reserves 12.5% if there are three fair share identifiers. A computeReservation value of 25 indicates that Batch should reserve 25% of the maximum available vCPU if there's only one fair share identifier, 6.25% if there are two fair share identifiers, and 1.56% if there are three fair share identifiers. The minimum value is 0 and the maximum value is 99.
         public var computeReservation: Swift.Int?
         /// The amount of time (in seconds) to use to calculate a fair share percentage for each fair share identifier in use. A value of zero (0) indicates that only current usage is measured. The decay allows for more recently run jobs to have more weight than jobs that ran earlier. The maximum supported value is 604800 (1 week).
@@ -946,11 +947,10 @@ extension BatchClientTypes {
             self.shareDistribution = shareDistribution
         }
     }
-
 }
 
 /// Contains the parameters for CreateSchedulingPolicy.
-public struct CreateSchedulingPolicyInput {
+public struct CreateSchedulingPolicyInput: Swift.Sendable {
     /// The fair share policy of the scheduling policy.
     public var fairsharePolicy: BatchClientTypes.FairsharePolicy?
     /// The name of the scheduling policy. It can be up to 128 letters long. It can contain uppercase and lowercase letters, numbers, hyphens (-), and underscores (_).
@@ -971,7 +971,7 @@ public struct CreateSchedulingPolicyInput {
     }
 }
 
-public struct CreateSchedulingPolicyOutput {
+public struct CreateSchedulingPolicyOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the scheduling policy. The format is aws:Partition:batch:Region:Account:scheduling-policy/Name . For example, aws:aws:batch:us-west-2:123456789012:scheduling-policy/MySchedulingPolicy.
     /// This member is required.
     public var arn: Swift.String?
@@ -990,7 +990,7 @@ public struct CreateSchedulingPolicyOutput {
 }
 
 /// Contains the parameters for DeleteComputeEnvironment.
-public struct DeleteComputeEnvironmentInput {
+public struct DeleteComputeEnvironmentInput: Swift.Sendable {
     /// The name or Amazon Resource Name (ARN) of the compute environment to delete.
     /// This member is required.
     public var computeEnvironment: Swift.String?
@@ -1003,13 +1003,13 @@ public struct DeleteComputeEnvironmentInput {
     }
 }
 
-public struct DeleteComputeEnvironmentOutput {
+public struct DeleteComputeEnvironmentOutput: Swift.Sendable {
 
     public init() { }
 }
 
 /// Contains the parameters for DeleteJobQueue.
-public struct DeleteJobQueueInput {
+public struct DeleteJobQueueInput: Swift.Sendable {
     /// The short name or full Amazon Resource Name (ARN) of the queue to delete.
     /// This member is required.
     public var jobQueue: Swift.String?
@@ -1022,13 +1022,13 @@ public struct DeleteJobQueueInput {
     }
 }
 
-public struct DeleteJobQueueOutput {
+public struct DeleteJobQueueOutput: Swift.Sendable {
 
     public init() { }
 }
 
 /// Contains the parameters for DeleteSchedulingPolicy.
-public struct DeleteSchedulingPolicyInput {
+public struct DeleteSchedulingPolicyInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the scheduling policy to delete.
     /// This member is required.
     public var arn: Swift.String?
@@ -1041,12 +1041,12 @@ public struct DeleteSchedulingPolicyInput {
     }
 }
 
-public struct DeleteSchedulingPolicyOutput {
+public struct DeleteSchedulingPolicyOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeregisterJobDefinitionInput {
+public struct DeregisterJobDefinitionInput: Swift.Sendable {
     /// The name and revision (name:revision) or full Amazon Resource Name (ARN) of the job definition to deregister.
     /// This member is required.
     public var jobDefinition: Swift.String?
@@ -1059,13 +1059,13 @@ public struct DeregisterJobDefinitionInput {
     }
 }
 
-public struct DeregisterJobDefinitionOutput {
+public struct DeregisterJobDefinitionOutput: Swift.Sendable {
 
     public init() { }
 }
 
 /// Contains the parameters for DescribeComputeEnvironments.
-public struct DescribeComputeEnvironmentsInput {
+public struct DescribeComputeEnvironmentsInput: Swift.Sendable {
     /// A list of up to 100 compute environment names or full Amazon Resource Name (ARN) entries.
     public var computeEnvironments: [Swift.String]?
     /// The maximum number of cluster results returned by DescribeComputeEnvironments in paginated output. When this parameter is used, DescribeComputeEnvironments only returns maxResults results in a single page along with a nextToken response element. The remaining results of the initial request can be seen by sending another DescribeComputeEnvironments request with the returned nextToken value. This value can be between 1 and 100. If this parameter isn't used, then DescribeComputeEnvironments returns up to 100 results and a nextToken value if applicable.
@@ -1087,7 +1087,7 @@ public struct DescribeComputeEnvironmentsInput {
 
 extension BatchClientTypes {
 
-    public enum OrchestrationType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum OrchestrationType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case ecs
         case eks
         case sdkUnknown(Swift.String)
@@ -1116,7 +1116,7 @@ extension BatchClientTypes {
 
 extension BatchClientTypes {
 
-    public enum CEStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum CEStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case creating
         case deleted
         case deleting
@@ -1156,8 +1156,9 @@ extension BatchClientTypes {
 }
 
 extension BatchClientTypes {
+
     /// Specifies the infrastructure update policy for the compute environment. For more information about infrastructure updates, see [Updating compute environments](https://docs.aws.amazon.com/batch/latest/userguide/updating-compute-environments.html) in the Batch User Guide.
-    public struct UpdatePolicy {
+    public struct UpdatePolicy: Swift.Sendable {
         /// Specifies the job timeout (in minutes) when the compute environment infrastructure is updated. The default value is 30.
         public var jobExecutionTimeoutMinutes: Swift.Int?
         /// Specifies whether jobs are automatically terminated when the computer environment infrastructure is updated. The default value is false.
@@ -1172,12 +1173,12 @@ extension BatchClientTypes {
             self.terminateJobsOnUpdate = terminateJobsOnUpdate
         }
     }
-
 }
 
 extension BatchClientTypes {
+
     /// An object that represents an Batch compute environment.
-    public struct ComputeEnvironmentDetail {
+    public struct ComputeEnvironmentDetail: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the compute environment.
         /// This member is required.
         public var computeEnvironmentArn: Swift.String?
@@ -1250,10 +1251,9 @@ extension BatchClientTypes {
             self.uuid = uuid
         }
     }
-
 }
 
-public struct DescribeComputeEnvironmentsOutput {
+public struct DescribeComputeEnvironmentsOutput: Swift.Sendable {
     /// The list of compute environments.
     public var computeEnvironments: [BatchClientTypes.ComputeEnvironmentDetail]?
     /// The nextToken value to include in a future DescribeComputeEnvironments request. When the results of a DescribeComputeEnvironments request exceed maxResults, this value can be used to retrieve the next page of results. This value is null when there are no more results to return.
@@ -1270,7 +1270,7 @@ public struct DescribeComputeEnvironmentsOutput {
 }
 
 /// Contains the parameters for DescribeJobDefinitions.
-public struct DescribeJobDefinitionsInput {
+public struct DescribeJobDefinitionsInput: Swift.Sendable {
     /// The name of the job definition to describe.
     public var jobDefinitionName: Swift.String?
     /// A list of up to 100 job definitions. Each entry in the list can either be an ARN in the format arn:aws:batch:${Region}:${Account}:job-definition/${JobDefinitionName}:${Revision} or a short version using the form ${JobDefinitionName}:${Revision}. This parameter can't be used with other parameters.
@@ -1299,8 +1299,9 @@ public struct DescribeJobDefinitionsInput {
 }
 
 extension BatchClientTypes {
+
     /// A key-value pair object.
-    public struct KeyValuePair {
+    public struct KeyValuePair: Swift.Sendable {
         /// The name of the key-value pair. For environment variables, this is the name of the environment variable.
         public var name: Swift.String?
         /// The value of the key-value pair. For environment variables, this is the value of the environment variable.
@@ -1315,12 +1316,12 @@ extension BatchClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension BatchClientTypes {
+
     /// The amount of ephemeral storage to allocate for the task. This parameter is used to expand the total amount of ephemeral storage available, beyond the default amount, for tasks hosted on Fargate.
-    public struct EphemeralStorage {
+    public struct EphemeralStorage: Swift.Sendable {
         /// The total amount, in GiB, of ephemeral storage to set for the task. The minimum supported value is 21 GiB and the maximum supported value is 200 GiB.
         /// This member is required.
         public var sizeInGiB: Swift.Int?
@@ -1332,12 +1333,12 @@ extension BatchClientTypes {
             self.sizeInGiB = sizeInGiB
         }
     }
-
 }
 
 extension BatchClientTypes {
+
     /// The platform configuration for jobs that are running on Fargate resources. Jobs that run on Amazon EC2 resources must not specify this parameter.
-    public struct FargatePlatformConfiguration {
+    public struct FargatePlatformConfiguration: Swift.Sendable {
         /// The Fargate platform version where the jobs are running. A platform version is specified only for jobs that are running on Fargate resources. If one isn't specified, the LATEST platform version is used by default. This uses a recent, approved version of the Fargate platform for compute resources. For more information, see [Fargate platform versions](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/platform_versions.html) in the Amazon Elastic Container Service Developer Guide.
         public var platformVersion: Swift.String?
 
@@ -1348,12 +1349,11 @@ extension BatchClientTypes {
             self.platformVersion = platformVersion
         }
     }
-
 }
 
 extension BatchClientTypes {
 
-    public enum DeviceCgroupPermission: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DeviceCgroupPermission: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case mknod
         case read
         case write
@@ -1384,8 +1384,9 @@ extension BatchClientTypes {
 }
 
 extension BatchClientTypes {
+
     /// An object that represents a container instance host device. This object isn't applicable to jobs that are running on Fargate resources and shouldn't be provided.
-    public struct Device {
+    public struct Device: Swift.Sendable {
         /// The path inside the container that's used to expose the host device. By default, the hostPath value is used.
         public var containerPath: Swift.String?
         /// The path for the device on the host container instance.
@@ -1405,12 +1406,12 @@ extension BatchClientTypes {
             self.permissions = permissions
         }
     }
-
 }
 
 extension BatchClientTypes {
+
     /// The container path, mount options, and size of the tmpfs mount. This object isn't applicable to jobs that are running on Fargate resources.
-    public struct Tmpfs {
+    public struct Tmpfs: Swift.Sendable {
         /// The absolute file path in the container where the tmpfs volume is mounted.
         /// This member is required.
         public var containerPath: Swift.String?
@@ -1431,12 +1432,12 @@ extension BatchClientTypes {
             self.size = size
         }
     }
-
 }
 
 extension BatchClientTypes {
+
     /// Linux-specific modifications that are applied to the container, such as details for device mappings.
-    public struct LinuxParameters {
+    public struct LinuxParameters: Swift.Sendable {
         /// Any of the host devices to expose to the container. This parameter maps to Devices in the [Create a container](https://docs.docker.com/engine/api/v1.23/#create-a-container) section of the [Docker Remote API](https://docs.docker.com/engine/api/v1.23/) and the --device option to [docker run](https://docs.docker.com/engine/reference/run/). This parameter isn't applicable to jobs that are running on Fargate resources. Don't provide it for these jobs.
         public var devices: [BatchClientTypes.Device]?
         /// If true, run an init process inside the container that forwards signals and reaps processes. This parameter maps to the --init option to [docker run](https://docs.docker.com/engine/reference/run/). This parameter requires version 1.25 of the Docker Remote API or greater on your container instance. To check the Docker Remote API version on your container instance, log in to your container instance and run the following command: sudo docker version | grep "Server API version"
@@ -1476,12 +1477,11 @@ extension BatchClientTypes {
             self.tmpfs = tmpfs
         }
     }
-
 }
 
 extension BatchClientTypes {
 
-    public enum LogDriver: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum LogDriver: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case awslogs
         case fluentd
         case gelf
@@ -1524,6 +1524,7 @@ extension BatchClientTypes {
 }
 
 extension BatchClientTypes {
+
     /// An object that represents the secret to expose to your container. Secrets can be exposed to a container in the following ways:
     ///
     /// * To inject sensitive data into your containers as environment variables, use the secrets container definition parameter.
@@ -1532,7 +1533,7 @@ extension BatchClientTypes {
     ///
     ///
     /// For more information, see [Specifying sensitive data](https://docs.aws.amazon.com/batch/latest/userguide/specifying-sensitive-data.html) in the Batch User Guide.
-    public struct Secret {
+    public struct Secret: Swift.Sendable {
         /// The name of the secret.
         /// This member is required.
         public var name: Swift.String?
@@ -1549,12 +1550,12 @@ extension BatchClientTypes {
             self.valueFrom = valueFrom
         }
     }
-
 }
 
 extension BatchClientTypes {
+
     /// Log configuration options to send to a custom log driver for the container.
-    public struct LogConfiguration {
+    public struct LogConfiguration: Swift.Sendable {
         /// The log driver to use for the container. The valid values that are listed for this parameter are log drivers that the Amazon ECS container agent can communicate with by default. The supported log drivers are awslogs, fluentd, gelf, json-file, journald, logentries, syslog, and splunk. Jobs that are running on Fargate resources are restricted to the awslogs and splunk log drivers. awslogs Specifies the Amazon CloudWatch Logs logging driver. For more information, see [Using the awslogs log driver](https://docs.aws.amazon.com/batch/latest/userguide/using_awslogs.html) in the Batch User Guide and [Amazon CloudWatch Logs logging driver](https://docs.docker.com/config/containers/logging/awslogs/) in the Docker documentation. fluentd Specifies the Fluentd logging driver. For more information including usage and options, see [Fluentd logging driver](https://docs.docker.com/config/containers/logging/fluentd/) in the Docker documentation. gelf Specifies the Graylog Extended Format (GELF) logging driver. For more information including usage and options, see [Graylog Extended Format logging driver](https://docs.docker.com/config/containers/logging/gelf/) in the Docker documentation. journald Specifies the journald logging driver. For more information including usage and options, see [Journald logging driver](https://docs.docker.com/config/containers/logging/journald/) in the Docker documentation. json-file Specifies the JSON file logging driver. For more information including usage and options, see [JSON File logging driver](https://docs.docker.com/config/containers/logging/json-file/) in the Docker documentation. splunk Specifies the Splunk logging driver. For more information including usage and options, see [Splunk logging driver](https://docs.docker.com/config/containers/logging/splunk/) in the Docker documentation. syslog Specifies the syslog logging driver. For more information including usage and options, see [Syslog logging driver](https://docs.docker.com/config/containers/logging/syslog/) in the Docker documentation. If you have a custom driver that's not listed earlier that you want to work with the Amazon ECS container agent, you can fork the Amazon ECS container agent project that's [available on GitHub](https://github.com/aws/amazon-ecs-agent) and customize it to work with that driver. We encourage you to submit pull requests for changes that you want to have included. However, Amazon Web Services doesn't currently support running modified copies of this software. This parameter requires version 1.18 of the Docker Remote API or greater on your container instance. To check the Docker Remote API version on your container instance, log in to your container instance and run the following command: sudo docker version | grep "Server API version"
         /// This member is required.
         public var logDriver: BatchClientTypes.LogDriver?
@@ -1574,12 +1575,12 @@ extension BatchClientTypes {
             self.secretOptions = secretOptions
         }
     }
-
 }
 
 extension BatchClientTypes {
+
     /// Details for a Docker volume mount point that's used in a job's container properties. This parameter maps to Volumes in the [Create a container](https://docs.docker.com/engine/api/v1.43/#tag/Container/operation/ContainerCreate) section of the Docker Remote API and the --volume option to docker run.
-    public struct MountPoint {
+    public struct MountPoint: Swift.Sendable {
         /// The path on the container where the host volume is mounted.
         public var containerPath: Swift.String?
         /// If this value is true, the container has read-only access to the volume. Otherwise, the container can write to the volume. The default value is false.
@@ -1598,12 +1599,12 @@ extension BatchClientTypes {
             self.sourceVolume = sourceVolume
         }
     }
-
 }
 
 extension BatchClientTypes {
+
     /// The network configuration for jobs that are running on Fargate resources. Jobs that are running on Amazon EC2 resources must not specify this parameter.
-    public struct NetworkConfiguration {
+    public struct NetworkConfiguration: Swift.Sendable {
         /// Indicates whether the job has a public IP address. For a job that's running on Fargate resources in a private subnet to send outbound traffic to the internet (for example, to pull container images), the private subnet requires a NAT gateway be attached to route requests to the internet. For more information, see [Amazon ECS task networking](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/task-networking.html) in the Amazon Elastic Container Service Developer Guide. The default value is "DISABLED".
         public var assignPublicIp: BatchClientTypes.AssignPublicIp?
 
@@ -1614,12 +1615,12 @@ extension BatchClientTypes {
             self.assignPublicIp = assignPublicIp
         }
     }
-
 }
 
 extension BatchClientTypes {
+
     /// The repository credentials for private registry authentication.
-    public struct RepositoryCredentials {
+    public struct RepositoryCredentials: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the secret containing the private repository credentials.
         /// This member is required.
         public var credentialsParameter: Swift.String?
@@ -1631,12 +1632,11 @@ extension BatchClientTypes {
             self.credentialsParameter = credentialsParameter
         }
     }
-
 }
 
 extension BatchClientTypes {
 
-    public enum ResourceType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ResourceType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case gpu
         case memory
         case vcpu
@@ -1667,8 +1667,9 @@ extension BatchClientTypes {
 }
 
 extension BatchClientTypes {
+
     /// The type and amount of a resource to assign to a container. The supported resources include GPU, MEMORY, and VCPU.
-    public struct ResourceRequirement {
+    public struct ResourceRequirement: Swift.Sendable {
         /// The type of resource to assign to a container. The supported resources include GPU, MEMORY, and VCPU.
         /// This member is required.
         public var type: BatchClientTypes.ResourceType?
@@ -1685,12 +1686,12 @@ extension BatchClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension BatchClientTypes {
+
     /// An object that represents the compute environment architecture for Batch jobs on Fargate.
-    public struct RuntimePlatform {
+    public struct RuntimePlatform: Swift.Sendable {
         /// The vCPU architecture. The default value is X86_64. Valid values are X86_64 and ARM64. This parameter must be set to X86_64 for Windows containers. Fargate Spot is not supported for ARM64 and Windows-based containers on Fargate. A job queue will be blocked if a Fargate ARM64 or Windows job is submitted to a job queue with only Fargate Spot compute environments. However, you can attach both FARGATE and FARGATE_SPOT compute environments to the same job queue.
         public var cpuArchitecture: Swift.String?
         /// The operating system for the compute environment. Valid values are: LINUX (default), WINDOWS_SERVER_2019_CORE, WINDOWS_SERVER_2019_FULL, WINDOWS_SERVER_2022_CORE, and WINDOWS_SERVER_2022_FULL. The following parameters can’t be set for Windows containers: linuxParameters, privileged, user, ulimits, readonlyRootFilesystem, and efsVolumeConfiguration. The Batch Scheduler checks the compute environments that are attached to the job queue before registering a task definition with Fargate. In this scenario, the job queue is where the job is submitted. If the job requires a Windows container and the first compute environment is LINUX, the compute environment is skipped and the next compute environment is checked until a Windows-based compute environment is found. Fargate Spot is not supported for ARM64 and Windows-based containers on Fargate. A job queue will be blocked if a Fargate ARM64 or Windows job is submitted to a job queue with only Fargate Spot compute environments. However, you can attach both FARGATE and FARGATE_SPOT compute environments to the same job queue.
@@ -1705,12 +1706,12 @@ extension BatchClientTypes {
             self.operatingSystemFamily = operatingSystemFamily
         }
     }
-
 }
 
 extension BatchClientTypes {
+
     /// The ulimit settings to pass to the container. For more information, see [Ulimit](https://docs.aws.amazon.com/AmazonECS/latest/APIReference/API_Ulimit.html). This object isn't applicable to jobs that are running on Fargate resources.
-    public struct Ulimit {
+    public struct Ulimit: Swift.Sendable {
         /// The hard limit for the ulimit type.
         /// This member is required.
         public var hardLimit: Swift.Int?
@@ -1732,12 +1733,11 @@ extension BatchClientTypes {
             self.softLimit = softLimit
         }
     }
-
 }
 
 extension BatchClientTypes {
 
-    public enum EFSAuthorizationConfigIAM: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum EFSAuthorizationConfigIAM: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case disabled
         case enabled
         case sdkUnknown(Swift.String)
@@ -1765,8 +1765,9 @@ extension BatchClientTypes {
 }
 
 extension BatchClientTypes {
+
     /// The authorization configuration details for the Amazon EFS file system.
-    public struct EFSAuthorizationConfig {
+    public struct EFSAuthorizationConfig: Swift.Sendable {
         /// The Amazon EFS access point ID to use. If an access point is specified, the root directory value specified in the EFSVolumeConfiguration must either be omitted or set to / which enforces the path set on the EFS access point. If an access point is used, transit encryption must be enabled in the EFSVolumeConfiguration. For more information, see [Working with Amazon EFS access points](https://docs.aws.amazon.com/efs/latest/ug/efs-access-points.html) in the Amazon Elastic File System User Guide.
         public var accessPointId: Swift.String?
         /// Whether or not to use the Batch job IAM role defined in a job definition when mounting the Amazon EFS file system. If enabled, transit encryption must be enabled in the EFSVolumeConfiguration. If this parameter is omitted, the default value of DISABLED is used. For more information, see [Using Amazon EFS access points](https://docs.aws.amazon.com/batch/latest/userguide/efs-volumes.html#efs-volume-accesspoints) in the Batch User Guide. EFS IAM authorization requires that TransitEncryption be ENABLED and that a JobRoleArn is specified.
@@ -1781,12 +1782,11 @@ extension BatchClientTypes {
             self.iam = iam
         }
     }
-
 }
 
 extension BatchClientTypes {
 
-    public enum EFSTransitEncryption: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum EFSTransitEncryption: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case disabled
         case enabled
         case sdkUnknown(Swift.String)
@@ -1814,8 +1814,9 @@ extension BatchClientTypes {
 }
 
 extension BatchClientTypes {
+
     /// This is used when you're using an Amazon Elastic File System file system for job storage. For more information, see [Amazon EFS Volumes](https://docs.aws.amazon.com/batch/latest/userguide/efs-volumes.html) in the Batch User Guide.
-    public struct EFSVolumeConfiguration {
+    public struct EFSVolumeConfiguration: Swift.Sendable {
         /// The authorization configuration details for the Amazon EFS file system.
         public var authorizationConfig: BatchClientTypes.EFSAuthorizationConfig?
         /// The Amazon EFS file system ID to use.
@@ -1843,12 +1844,12 @@ extension BatchClientTypes {
             self.transitEncryptionPort = transitEncryptionPort
         }
     }
-
 }
 
 extension BatchClientTypes {
+
     /// Determine whether your data volume persists on the host container instance and where it's stored. If this parameter is empty, then the Docker daemon assigns a host path for your data volume. However, the data isn't guaranteed to persist after the containers that are associated with it stop running.
-    public struct Host {
+    public struct Host: Swift.Sendable {
         /// The path on the host container instance that's presented to the container. If this parameter is empty, then the Docker daemon has assigned a host path for you. If this parameter contains a file location, then the data volume persists at the specified location on the host container instance until you delete it manually. If the source path location doesn't exist on the host container instance, the Docker daemon creates it. If the location does exist, the contents of the source path folder are exported. This parameter isn't applicable to jobs that run on Fargate resources. Don't provide this for these jobs.
         public var sourcePath: Swift.String?
 
@@ -1859,12 +1860,12 @@ extension BatchClientTypes {
             self.sourcePath = sourcePath
         }
     }
-
 }
 
 extension BatchClientTypes {
+
     /// A data volume that's used in a job's container properties.
-    public struct Volume {
+    public struct Volume: Swift.Sendable {
         /// This parameter is specified when you're using an Amazon Elastic File System file system for job storage. Jobs that are running on Fargate resources must specify a platformVersion of at least 1.4.0.
         public var efsVolumeConfiguration: BatchClientTypes.EFSVolumeConfiguration?
         /// The contents of the host parameter determine whether your data volume persists on the host container instance and where it's stored. If the host parameter is empty, then the Docker daemon assigns a host path for your data volume. However, the data isn't guaranteed to persist after the containers that are associated with it stop running. This parameter isn't applicable to jobs that are running on Fargate resources and shouldn't be provided.
@@ -1883,12 +1884,12 @@ extension BatchClientTypes {
             self.name = name
         }
     }
-
 }
 
 extension BatchClientTypes {
+
     /// Container properties are used for Amazon ECS based job definitions. These properties to describe the container that's launched as part of a job.
-    public struct ContainerProperties {
+    public struct ContainerProperties: Swift.Sendable {
         /// The command that's passed to the container. This parameter maps to Cmd in the [Create a container](https://docs.docker.com/engine/api/v1.23/#create-a-container) section of the [Docker Remote API](https://docs.docker.com/engine/api/v1.23/) and the COMMAND parameter to [docker run](https://docs.docker.com/engine/reference/run/). For more information, see [https://docs.docker.com/engine/reference/builder/#cmd](https://docs.docker.com/engine/reference/builder/#cmd).
         public var command: [Swift.String]?
         /// The environment variables to pass to a container. This parameter maps to Env in the [Create a container](https://docs.docker.com/engine/api/v1.23/#create-a-container) section of the [Docker Remote API](https://docs.docker.com/engine/api/v1.23/) and the --env option to [docker run](https://docs.docker.com/engine/reference/run/). We don't recommend using plaintext environment variables for sensitive information, such as credential data. Environment variables cannot start with "AWS_BATCH". This naming convention is reserved for variables that Batch sets.
@@ -1999,12 +2000,12 @@ extension BatchClientTypes {
             self.volumes = volumes
         }
     }
-
 }
 
 extension BatchClientTypes {
+
     /// A list of containers that this task depends on.
-    public struct TaskContainerDependency {
+    public struct TaskContainerDependency: Swift.Sendable {
         /// The dependency condition of the container. The following are the available conditions and their behavior:
         ///
         /// * START - This condition emulates the behavior of links and volumes today. It validates that a dependent container is started before permitting other containers to start.
@@ -2025,12 +2026,12 @@ extension BatchClientTypes {
             self.containerName = containerName
         }
     }
-
 }
 
 extension BatchClientTypes {
+
     /// Container properties are used for Amazon ECS-based job definitions. These properties to describe the container that's launched as part of a job.
-    public struct TaskContainerProperties {
+    public struct TaskContainerProperties: Swift.Sendable {
         /// The command that's passed to the container. This parameter maps to Cmd in the [Create a container](https://docs.docker.com/engine/api/v1.23/#create-a-container) section of the [Docker Remote API](https://docs.docker.com/engine/api/v1.23/) and the COMMAND parameter to [docker run](https://docs.docker.com/engine/reference/run/). For more information, see [Dockerfile reference: CMD](https://docs.docker.com/engine/reference/builder/#cmd).
         public var command: [Swift.String]?
         /// A list of containers that this container depends on.
@@ -2117,12 +2118,12 @@ extension BatchClientTypes {
             self.user = user
         }
     }
-
 }
 
 extension BatchClientTypes {
+
     /// The properties for a task definition that describes the container and volume definitions of an Amazon ECS task. You can specify which Docker images to use, the required resources, and other configurations related to launching the task definition through an Amazon ECS service or task.
-    public struct EcsTaskProperties {
+    public struct EcsTaskProperties: Swift.Sendable {
         /// This object is a list of containers.
         /// This member is required.
         public var containers: [BatchClientTypes.TaskContainerProperties]?
@@ -2170,13 +2171,13 @@ extension BatchClientTypes {
             self.volumes = volumes
         }
     }
-
 }
 
 extension BatchClientTypes {
+
     /// An object that contains the properties for the Amazon ECS resources of a job.
-    public struct EcsProperties {
-        /// An object that contains the properties for the Amazon ECS task definition of a job. This object is currently limited to one element.
+    public struct EcsProperties: Swift.Sendable {
+        /// An object that contains the properties for the Amazon ECS task definition of a job. This object is currently limited to one task element. However, the task element can run up to 10 containers.
         /// This member is required.
         public var taskProperties: [BatchClientTypes.EcsTaskProperties]?
 
@@ -2187,12 +2188,12 @@ extension BatchClientTypes {
             self.taskProperties = taskProperties
         }
     }
-
 }
 
 extension BatchClientTypes {
+
     /// An environment variable.
-    public struct EksContainerEnvironmentVariable {
+    public struct EksContainerEnvironmentVariable: Swift.Sendable {
         /// The name of the environment variable.
         /// This member is required.
         public var name: Swift.String?
@@ -2208,12 +2209,12 @@ extension BatchClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension BatchClientTypes {
+
     /// The type and amount of resources to assign to a container. The supported resources include memory, cpu, and nvidia.com/gpu. For more information, see [Resource management for pods and containers](https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/) in the Kubernetes documentation.
-    public struct EksContainerResourceRequirements {
+    public struct EksContainerResourceRequirements: Swift.Sendable {
         /// The type and quantity of the resources to reserve for the container. The values vary based on the name that's specified. Resources can be requested using either the limits or the requests objects. memory The memory hard limit (in MiB) for the container, using whole integers, with a "Mi" suffix. If your container attempts to exceed the memory specified, the container is terminated. You must specify at least 4 MiB of memory for a job. memory can be specified in limits, requests, or both. If memory is specified in both places, then the value that's specified in limits must be equal to the value that's specified in requests. To maximize your resource utilization, provide your jobs with as much memory as possible for the specific instance type that you are using. To learn how, see [Memory management](https://docs.aws.amazon.com/batch/latest/userguide/memory-management.html) in the Batch User Guide. cpu The number of CPUs that's reserved for the container. Values must be an even multiple of 0.25. cpu can be specified in limits, requests, or both. If cpu is specified in both places, then the value that's specified in limits must be at least as large as the value that's specified in requests. nvidia.com/gpu The number of GPUs that's reserved for the container. Values must be a whole integer. memory can be specified in limits, requests, or both. If memory is specified in both places, then the value that's specified in limits must be equal to the value that's specified in requests.
         public var limits: [Swift.String: Swift.String]?
         /// The type and quantity of the resources to request for the container. The values vary based on the name that's specified. Resources can be requested by using either the limits or the requests objects. memory The memory hard limit (in MiB) for the container, using whole integers, with a "Mi" suffix. If your container attempts to exceed the memory specified, the container is terminated. You must specify at least 4 MiB of memory for a job. memory can be specified in limits, requests, or both. If memory is specified in both, then the value that's specified in limits must be equal to the value that's specified in requests. If you're trying to maximize your resource utilization by providing your jobs as much memory as possible for a particular instance type, see [Memory management](https://docs.aws.amazon.com/batch/latest/userguide/memory-management.html) in the Batch User Guide. cpu The number of CPUs that are reserved for the container. Values must be an even multiple of 0.25. cpu can be specified in limits, requests, or both. If cpu is specified in both, then the value that's specified in limits must be at least as large as the value that's specified in requests. nvidia.com/gpu The number of GPUs that are reserved for the container. Values must be a whole integer. nvidia.com/gpu can be specified in limits, requests, or both. If nvidia.com/gpu is specified in both, then the value that's specified in limits must be equal to the value that's specified in requests.
@@ -2228,12 +2229,12 @@ extension BatchClientTypes {
             self.requests = requests
         }
     }
-
 }
 
 extension BatchClientTypes {
+
     /// The security context for a job. For more information, see [Configure a security context for a pod or container](https://kubernetes.io/docs/tasks/configure-pod-container/security-context/) in the Kubernetes documentation.
-    public struct EksContainerSecurityContext {
+    public struct EksContainerSecurityContext: Swift.Sendable {
         /// Whether or not a container or a Kubernetes pod is allowed to gain more privileges than its parent process. The default value is false.
         public var allowPrivilegeEscalation: Swift.Bool?
         /// When this parameter is true, the container is given elevated permissions on the host container instance. The level of permissions are similar to the root user permissions. The default value is false. This parameter maps to privileged policy in the [Privileged pod security policies](https://kubernetes.io/docs/concepts/security/pod-security-policy/#privileged) in the Kubernetes documentation.
@@ -2264,12 +2265,12 @@ extension BatchClientTypes {
             self.runAsUser = runAsUser
         }
     }
-
 }
 
 extension BatchClientTypes {
+
     /// The volume mounts for a container for an Amazon EKS job. For more information about volumes and volume mounts in Kubernetes, see [Volumes](https://kubernetes.io/docs/concepts/storage/volumes/) in the Kubernetes documentation.
-    public struct EksContainerVolumeMount {
+    public struct EksContainerVolumeMount: Swift.Sendable {
         /// The path on the container where the volume is mounted.
         public var mountPath: Swift.String?
         /// The name the volume mount. This must match the name of one of the volumes in the pod.
@@ -2288,12 +2289,12 @@ extension BatchClientTypes {
             self.readOnly = readOnly
         }
     }
-
 }
 
 extension BatchClientTypes {
+
     /// EKS container properties are used in job definitions for Amazon EKS based job definitions to describe the properties for a container node in the pod that's launched as part of a job. This can't be specified for Amazon ECS based job definitions.
-    public struct EksContainer {
+    public struct EksContainer: Swift.Sendable {
         /// An array of arguments to the entrypoint. If this isn't specified, the CMD of the container image is used. This corresponds to the args member in the [Entrypoint](https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/pod-v1/#entrypoint) portion of the [Pod](https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/pod-v1/) in Kubernetes. Environment variable references are expanded using the container's environment. If the referenced environment variable doesn't exist, the reference in the command isn't changed. For example, if the reference is to "$(NAME1)" and the NAME1 environment variable doesn't exist, the command string will remain "$(NAME1)." $$ is replaced with $, and the resulting string isn't expanded. For example, $$(VAR_NAME) is passed as $(VAR_NAME) whether or not the VAR_NAME environment variable exists. For more information, see [Dockerfile reference: CMD](https://docs.docker.com/engine/reference/builder/#cmd) and [Define a command and arguments for a pod](https://kubernetes.io/docs/tasks/inject-data-application/define-command-argument-container/) in the Kubernetes documentation.
         public var args: [Swift.String]?
         /// The entrypoint for the container. This isn't run within a shell. If this isn't specified, the ENTRYPOINT of the container image is used. Environment variable references are expanded using the container's environment. If the referenced environment variable doesn't exist, the reference in the command isn't changed. For example, if the reference is to "$(NAME1)" and the NAME1 environment variable doesn't exist, the command string will remain "$(NAME1)." $$ is replaced with $ and the resulting string isn't expanded. For example, $$(VAR_NAME) will be passed as $(VAR_NAME) whether or not the VAR_NAME environment variable exists. The entrypoint can't be updated. For more information, see [ENTRYPOINT](https://docs.docker.com/engine/reference/builder/#entrypoint) in the Dockerfile reference and [Define a command and arguments for a container](https://kubernetes.io/docs/tasks/inject-data-application/define-command-argument-container/) and [Entrypoint](https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/pod-v1/#entrypoint) in the Kubernetes documentation.
@@ -2337,12 +2338,12 @@ extension BatchClientTypes {
             self.volumeMounts = volumeMounts
         }
     }
-
 }
 
 extension BatchClientTypes {
+
     /// References a Kubernetes secret resource. This name of the secret must start and end with an alphanumeric character, is required to be lowercase, can include periods (.) and hyphens (-), and can't contain more than 253 characters.
-    public struct ImagePullSecret {
+    public struct ImagePullSecret: Swift.Sendable {
         /// Provides a unique identifier for the ImagePullSecret. This object is required when EksPodProperties$imagePullSecrets is used.
         /// This member is required.
         public var name: Swift.String?
@@ -2354,12 +2355,12 @@ extension BatchClientTypes {
             self.name = name
         }
     }
-
 }
 
 extension BatchClientTypes {
+
     /// Describes and uniquely identifies Kubernetes resources. For example, the compute environment that a pod runs in or the jobID for a job running in the pod. For more information, see [Understanding Kubernetes Objects](https://kubernetes.io/docs/concepts/overview/working-with-objects/kubernetes-objects/) in the Kubernetes documentation.
-    public struct EksMetadata {
+    public struct EksMetadata: Swift.Sendable {
         /// Key-value pairs used to identify, sort, and organize cube resources. Can contain up to 63 uppercase letters, lowercase letters, numbers, hyphens (-), and underscores (_). Labels can be added or modified at any time. Each resource can have multiple labels, but each key must be unique for a given object.
         public var labels: [Swift.String: Swift.String]?
 
@@ -2370,12 +2371,12 @@ extension BatchClientTypes {
             self.labels = labels
         }
     }
-
 }
 
 extension BatchClientTypes {
+
     /// Specifies the configuration of a Kubernetes emptyDir volume. An emptyDir volume is first created when a pod is assigned to a node. It exists as long as that pod is running on that node. The emptyDir volume is initially empty. All containers in the pod can read and write the files in the emptyDir volume. However, the emptyDir volume can be mounted at the same or different paths in each container. When a pod is removed from a node for any reason, the data in the emptyDir is deleted permanently. For more information, see [emptyDir](https://kubernetes.io/docs/concepts/storage/volumes/#emptydir) in the Kubernetes documentation.
-    public struct EksEmptyDir {
+    public struct EksEmptyDir: Swift.Sendable {
         /// The medium to store the volume. The default value is an empty string, which uses the storage of the node. "" (Default) Use the disk storage of the node. "Memory" Use the tmpfs volume that's backed by the RAM of the node. Contents of the volume are lost when the node reboots, and any storage on the volume counts against the container's memory limit.
         public var medium: Swift.String?
         /// The maximum size of the volume. By default, there's no maximum size defined.
@@ -2390,12 +2391,12 @@ extension BatchClientTypes {
             self.sizeLimit = sizeLimit
         }
     }
-
 }
 
 extension BatchClientTypes {
+
     /// Specifies the configuration of a Kubernetes hostPath volume. A hostPath volume mounts an existing file or directory from the host node's filesystem into your pod. For more information, see [hostPath](https://kubernetes.io/docs/concepts/storage/volumes/#hostpath) in the Kubernetes documentation.
-    public struct EksHostPath {
+    public struct EksHostPath: Swift.Sendable {
         /// The path of the file or directory on the host to mount into containers on the pod.
         public var path: Swift.String?
 
@@ -2406,12 +2407,12 @@ extension BatchClientTypes {
             self.path = path
         }
     }
-
 }
 
 extension BatchClientTypes {
+
     /// Specifies the configuration of a Kubernetes secret volume. For more information, see [secret](https://kubernetes.io/docs/concepts/storage/volumes/#secret) in the Kubernetes documentation.
-    public struct EksSecret {
+    public struct EksSecret: Swift.Sendable {
         /// Specifies whether the secret or the secret's keys must be defined.
         public var `optional`: Swift.Bool?
         /// The name of the secret. The name must be allowed as a DNS subdomain name. For more information, see [DNS subdomain names](https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#dns-subdomain-names) in the Kubernetes documentation.
@@ -2427,12 +2428,12 @@ extension BatchClientTypes {
             self.secretName = secretName
         }
     }
-
 }
 
 extension BatchClientTypes {
+
     /// Specifies an Amazon EKS volume for a job definition.
-    public struct EksVolume {
+    public struct EksVolume: Swift.Sendable {
         /// Specifies the configuration of a Kubernetes emptyDir volume. For more information, see [emptyDir](https://kubernetes.io/docs/concepts/storage/volumes/#emptydir) in the Kubernetes documentation.
         public var emptyDir: BatchClientTypes.EksEmptyDir?
         /// Specifies the configuration of a Kubernetes hostPath volume. For more information, see [hostPath](https://kubernetes.io/docs/concepts/storage/volumes/#hostpath) in the Kubernetes documentation.
@@ -2456,13 +2457,13 @@ extension BatchClientTypes {
             self.secret = secret
         }
     }
-
 }
 
 extension BatchClientTypes {
+
     /// The properties for the pod.
-    public struct EksPodProperties {
-        /// The properties of the container that's used on the Amazon EKS pod.
+    public struct EksPodProperties: Swift.Sendable {
+        /// The properties of the container that's used on the Amazon EKS pod. This object is limited to 10 elements.
         public var containers: [BatchClientTypes.EksContainer]?
         /// The DNS policy for the pod. The default value is ClusterFirst. If the hostNetwork parameter is not specified, the default is ClusterFirstWithHostNet. ClusterFirst indicates that any DNS query that does not match the configured cluster domain suffix is forwarded to the upstream nameserver inherited from the node. For more information, see [Pod's DNS policy](https://kubernetes.io/docs/concepts/services-networking/dns-pod-service/#pod-s-dns-policy) in the Kubernetes documentation. Valid values: Default | ClusterFirst | ClusterFirstWithHostNet
         public var dnsPolicy: Swift.String?
@@ -2470,7 +2471,7 @@ extension BatchClientTypes {
         public var hostNetwork: Swift.Bool?
         /// References a Kubernetes secret resource. It holds a list of secrets. These secrets help to gain access to pull an images from a private registry. ImagePullSecret$name is required when this object is used.
         public var imagePullSecrets: [BatchClientTypes.ImagePullSecret]?
-        /// These containers run before application containers, always runs to completion, and must complete successfully before the next container starts. These containers are registered with the Amazon EKS Connector agent and persists the registration information in the Kubernetes backend data store. For more information, see [Init Containers](https://kubernetes.io/docs/concepts/workloads/pods/init-containers/) in the Kubernetes documentation. This object is limited to 10 elements
+        /// These containers run before application containers, always runs to completion, and must complete successfully before the next container starts. These containers are registered with the Amazon EKS Connector agent and persists the registration information in the Kubernetes backend data store. For more information, see [Init Containers](https://kubernetes.io/docs/concepts/workloads/pods/init-containers/) in the Kubernetes documentation. This object is limited to 10 elements.
         public var initContainers: [BatchClientTypes.EksContainer]?
         /// Metadata about the Kubernetes pod. For more information, see [Understanding Kubernetes Objects](https://kubernetes.io/docs/concepts/overview/working-with-objects/kubernetes-objects/) in the Kubernetes documentation.
         public var metadata: BatchClientTypes.EksMetadata?
@@ -2504,12 +2505,12 @@ extension BatchClientTypes {
             self.volumes = volumes
         }
     }
-
 }
 
 extension BatchClientTypes {
+
     /// An object that contains the properties for the Kubernetes resources of a job.
-    public struct EksProperties {
+    public struct EksProperties: Swift.Sendable {
         /// The properties for the Kubernetes pod resources of a job.
         public var podProperties: BatchClientTypes.EksPodProperties?
 
@@ -2520,12 +2521,12 @@ extension BatchClientTypes {
             self.podProperties = podProperties
         }
     }
-
 }
 
 extension BatchClientTypes {
+
     /// This is an object that represents the properties of the node range for a multi-node parallel job.
-    public struct NodeRangeProperty {
+    public struct NodeRangeProperty: Swift.Sendable {
         /// The container details for the node range.
         public var container: BatchClientTypes.ContainerProperties?
         /// This is an object that represents the properties of the node range for a multi-node parallel job.
@@ -2553,12 +2554,12 @@ extension BatchClientTypes {
             self.targetNodes = targetNodes
         }
     }
-
 }
 
 extension BatchClientTypes {
+
     /// An object that represents the node properties of a multi-node parallel job. Node properties can't be specified for Amazon EKS based job definitions.
-    public struct NodeProperties {
+    public struct NodeProperties: Swift.Sendable {
         /// Specifies the node index for the main node of a multi-node parallel job. This node index value must be fewer than the number of nodes.
         /// This member is required.
         public var mainNode: Swift.Int?
@@ -2580,12 +2581,11 @@ extension BatchClientTypes {
             self.numNodes = numNodes
         }
     }
-
 }
 
 extension BatchClientTypes {
 
-    public enum PlatformCapability: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum PlatformCapability: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case ec2
         case fargate
         case sdkUnknown(Swift.String)
@@ -2614,7 +2614,7 @@ extension BatchClientTypes {
 
 extension BatchClientTypes {
 
-    public enum RetryAction: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum RetryAction: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case exit
         case retry
         case sdkUnknown(Swift.String)
@@ -2642,8 +2642,9 @@ extension BatchClientTypes {
 }
 
 extension BatchClientTypes {
+
     /// Specifies an array of up to 5 conditions to be met, and an action to take (RETRY or EXIT) if all conditions are met. If none of the EvaluateOnExit conditions in a RetryStrategy match, then the job is retried.
-    public struct EvaluateOnExit {
+    public struct EvaluateOnExit: Swift.Sendable {
         /// Specifies the action to take if all of the specified conditions (onStatusReason, onReason, and onExitCode) are met. The values aren't case sensitive.
         /// This member is required.
         public var action: BatchClientTypes.RetryAction?
@@ -2667,12 +2668,12 @@ extension BatchClientTypes {
             self.onStatusReason = onStatusReason
         }
     }
-
 }
 
 extension BatchClientTypes {
+
     /// The retry strategy that's associated with a job. For more information, see [Automated job retries](https://docs.aws.amazon.com/batch/latest/userguide/job_retries.html) in the Batch User Guide.
-    public struct RetryStrategy {
+    public struct RetryStrategy: Swift.Sendable {
         /// The number of times to move a job to the RUNNABLE status. You can specify between 1 and 10 attempts. If the value of attempts is greater than one, the job is retried on failure the same number of attempts as the value.
         public var attempts: Swift.Int?
         /// Array of up to 5 objects that specify the conditions where jobs are retried or failed. If this parameter is specified, then the attempts parameter must also be specified. If none of the listed conditions match, then the job is retried.
@@ -2687,12 +2688,12 @@ extension BatchClientTypes {
             self.evaluateOnExit = evaluateOnExit
         }
     }
-
 }
 
 extension BatchClientTypes {
+
     /// An object that represents a job timeout configuration.
-    public struct JobTimeout {
+    public struct JobTimeout: Swift.Sendable {
         /// The job timeout time (in seconds) that's measured from the job attempt's startedAt timestamp. After this time passes, Batch terminates your jobs if they aren't finished. The minimum value for the timeout is 60 seconds. For array jobs, the timeout applies to the child jobs, not to the parent array job. For multi-node parallel (MNP) jobs, the timeout applies to the whole job, not to the individual nodes.
         public var attemptDurationSeconds: Swift.Int?
 
@@ -2703,12 +2704,12 @@ extension BatchClientTypes {
             self.attemptDurationSeconds = attemptDurationSeconds
         }
     }
-
 }
 
 extension BatchClientTypes {
+
     /// An object that represents an Batch job definition.
-    public struct JobDefinition {
+    public struct JobDefinition: Swift.Sendable {
         /// The orchestration type of the compute environment. The valid values are ECS (default) or EKS.
         public var containerOrchestrationType: BatchClientTypes.OrchestrationType?
         /// An object with properties specific to Amazon ECS-based jobs. When containerProperties is used in the job definition, it can't be used in addition to eksProperties, ecsProperties, or nodeProperties.
@@ -2787,10 +2788,9 @@ extension BatchClientTypes {
             self.type = type
         }
     }
-
 }
 
-public struct DescribeJobDefinitionsOutput {
+public struct DescribeJobDefinitionsOutput: Swift.Sendable {
     /// The list of job definitions.
     public var jobDefinitions: [BatchClientTypes.JobDefinition]?
     /// The nextToken value to include in a future DescribeJobDefinitions request. When the results of a DescribeJobDefinitions request exceed maxResults, this value can be used to retrieve the next page of results. This value is null when there are no more results to return.
@@ -2807,7 +2807,7 @@ public struct DescribeJobDefinitionsOutput {
 }
 
 /// Contains the parameters for DescribeJobQueues.
-public struct DescribeJobQueuesInput {
+public struct DescribeJobQueuesInput: Swift.Sendable {
     /// A list of up to 100 queue names or full queue Amazon Resource Name (ARN) entries.
     public var jobQueues: [Swift.String]?
     /// The maximum number of results returned by DescribeJobQueues in paginated output. When this parameter is used, DescribeJobQueues only returns maxResults results in a single page and a nextToken response element. The remaining results of the initial request can be seen by sending another DescribeJobQueues request with the returned nextToken value. This value can be between 1 and 100. If this parameter isn't used, then DescribeJobQueues returns up to 100 results and a nextToken value if applicable.
@@ -2829,7 +2829,7 @@ public struct DescribeJobQueuesInput {
 
 extension BatchClientTypes {
 
-    public enum JQStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum JQStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case creating
         case deleted
         case deleting
@@ -2869,8 +2869,9 @@ extension BatchClientTypes {
 }
 
 extension BatchClientTypes {
+
     /// An object that represents the details for an Batch job queue.
-    public struct JobQueueDetail {
+    public struct JobQueueDetail: Swift.Sendable {
         /// The compute environments that are attached to the job queue and the order that job placement is preferred. Compute environments are selected for job placement in ascending order.
         /// This member is required.
         public var computeEnvironmentOrder: [BatchClientTypes.ComputeEnvironmentOrder]?
@@ -2922,10 +2923,9 @@ extension BatchClientTypes {
             self.tags = tags
         }
     }
-
 }
 
-public struct DescribeJobQueuesOutput {
+public struct DescribeJobQueuesOutput: Swift.Sendable {
     /// The list of job queues.
     public var jobQueues: [BatchClientTypes.JobQueueDetail]?
     /// The nextToken value to include in a future DescribeJobQueues request. When the results of a DescribeJobQueues request exceed maxResults, this value can be used to retrieve the next page of results. This value is null when there are no more results to return.
@@ -2942,7 +2942,7 @@ public struct DescribeJobQueuesOutput {
 }
 
 /// Contains the parameters for DescribeJobs.
-public struct DescribeJobsInput {
+public struct DescribeJobsInput: Swift.Sendable {
     /// A list of up to 100 job IDs.
     /// This member is required.
     public var jobs: [Swift.String]?
@@ -2956,8 +2956,9 @@ public struct DescribeJobsInput {
 }
 
 extension BatchClientTypes {
+
     /// An object that represents the details of a container that's part of a job.
-    public struct ContainerDetail {
+    public struct ContainerDetail: Swift.Sendable {
         /// The command that's passed to the container.
         public var command: [Swift.String]?
         /// The Amazon Resource Name (ARN) of the container instance that the container is running on.
@@ -3080,12 +3081,12 @@ extension BatchClientTypes {
             self.volumes = volumes
         }
     }
-
 }
 
 extension BatchClientTypes {
+
     /// An object that represents an Batch job dependency.
-    public struct JobDependency {
+    public struct JobDependency: Swift.Sendable {
         /// The job ID of the Batch job that's associated with this dependency.
         public var jobId: Swift.String?
         /// The type of the job dependency.
@@ -3100,12 +3101,12 @@ extension BatchClientTypes {
             self.type = type
         }
     }
-
 }
 
 extension BatchClientTypes {
+
     /// The details for the container in this task attempt.
-    public struct TaskContainerDetails {
+    public struct TaskContainerDetails: Swift.Sendable {
         /// The command that's passed to the container. This parameter maps to Cmd in the [Create a container](https://docs.docker.com/engine/api/v1.23/#create-a-container) section of the [Docker Remote API](https://docs.docker.com/engine/api/v1.23/) and the COMMAND parameter to [docker run](https://docs.docker.com/engine/reference/run/). For more information, see [https://docs.docker.com/engine/reference/builder/#cmd](https://docs.docker.com/engine/reference/builder/#cmd).
         public var command: [Swift.String]?
         /// A list of containers that this container depends on.
@@ -3208,12 +3209,12 @@ extension BatchClientTypes {
             self.user = user
         }
     }
-
 }
 
 extension BatchClientTypes {
+
     /// The details of a task definition that describes the container and volume definitions of an Amazon ECS task.
-    public struct EcsTaskDetails {
+    public struct EcsTaskDetails: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the container instance that hosts the task.
         public var containerInstanceArn: Swift.String?
         /// A list of containers that are included in the taskProperties list.
@@ -3268,12 +3269,12 @@ extension BatchClientTypes {
             self.volumes = volumes
         }
     }
-
 }
 
 extension BatchClientTypes {
+
     /// An object that contains the details for the Amazon ECS resources of a job.
-    public struct EcsPropertiesDetail {
+    public struct EcsPropertiesDetail: Swift.Sendable {
         /// The properties for the Amazon ECS task definition of a job.
         public var taskProperties: [BatchClientTypes.EcsTaskDetails]?
 
@@ -3284,12 +3285,14 @@ extension BatchClientTypes {
             self.taskProperties = taskProperties
         }
     }
-
 }
 
 extension BatchClientTypes {
+
     /// An object that represents the details for an attempt for a job attempt that an Amazon EKS container runs.
-    public struct EksAttemptContainerDetail {
+    public struct EksAttemptContainerDetail: Swift.Sendable {
+        /// The ID for the container.
+        public var containerID: Swift.String?
         /// The exit code returned for the job attempt. A non-zero exit code is considered failed.
         public var exitCode: Swift.Int?
         /// The name of a container.
@@ -3298,22 +3301,24 @@ extension BatchClientTypes {
         public var reason: Swift.String?
 
         public init(
+            containerID: Swift.String? = nil,
             exitCode: Swift.Int? = nil,
             name: Swift.String? = nil,
             reason: Swift.String? = nil
         )
         {
+            self.containerID = containerID
             self.exitCode = exitCode
             self.name = name
             self.reason = reason
         }
     }
-
 }
 
 extension BatchClientTypes {
+
     /// An object that represents the details of a job attempt for a job attempt by an Amazon EKS container.
-    public struct EksAttemptDetail {
+    public struct EksAttemptDetail: Swift.Sendable {
         /// The details for the final status of the containers for this job attempt.
         public var containers: [BatchClientTypes.EksAttemptContainerDetail]?
         /// The Amazon Resource Name (ARN) of the Amazon EKS cluster.
@@ -3324,6 +3329,8 @@ extension BatchClientTypes {
         public var nodeName: Swift.String?
         /// The name of the pod for this job attempt.
         public var podName: Swift.String?
+        /// The namespace of the Amazon EKS cluster that the pod exists in.
+        public var podNamespace: Swift.String?
         /// The Unix timestamp (in milliseconds) for when the attempt was started (when the attempt transitioned from the STARTING state to the RUNNING state).
         public var startedAt: Swift.Int?
         /// A short, human-readable string to provide additional details for the current status of the job attempt.
@@ -3337,6 +3344,7 @@ extension BatchClientTypes {
             initContainers: [BatchClientTypes.EksAttemptContainerDetail]? = nil,
             nodeName: Swift.String? = nil,
             podName: Swift.String? = nil,
+            podNamespace: Swift.String? = nil,
             startedAt: Swift.Int? = nil,
             statusReason: Swift.String? = nil,
             stoppedAt: Swift.Int? = nil
@@ -3347,17 +3355,18 @@ extension BatchClientTypes {
             self.initContainers = initContainers
             self.nodeName = nodeName
             self.podName = podName
+            self.podNamespace = podNamespace
             self.startedAt = startedAt
             self.statusReason = statusReason
             self.stoppedAt = stoppedAt
         }
     }
-
 }
 
 extension BatchClientTypes {
+
     /// The details for container properties that are returned by DescribeJobs for jobs that use Amazon EKS.
-    public struct EksContainerDetail {
+    public struct EksContainerDetail: Swift.Sendable {
         /// An array of arguments to the entrypoint. If this isn't specified, the CMD of the container image is used. This corresponds to the args member in the [Entrypoint](https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/pod-v1/#entrypoint) portion of the [Pod](https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/pod-v1/) in Kubernetes. Environment variable references are expanded using the container's environment. If the referenced environment variable doesn't exist, the reference in the command isn't changed. For example, if the reference is to "$(NAME1)" and the NAME1 environment variable doesn't exist, the command string will remain "$(NAME1)". $$ is replaced with $ and the resulting string isn't expanded. For example, $$(VAR_NAME) is passed as $(VAR_NAME) whether or not the VAR_NAME environment variable exists. For more information, see [Dockerfile reference: CMD](https://docs.docker.com/engine/reference/builder/#cmd) and [Define a command and arguments for a pod](https://kubernetes.io/docs/tasks/inject-data-application/define-command-argument-container/) in the Kubernetes documentation.
         public var args: [Swift.String]?
         /// The entrypoint for the container. For more information, see [Entrypoint](https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/pod-v1/#entrypoint) in the Kubernetes documentation.
@@ -3408,12 +3417,12 @@ extension BatchClientTypes {
             self.volumeMounts = volumeMounts
         }
     }
-
 }
 
 extension BatchClientTypes {
+
     /// The details for the pod.
-    public struct EksPodPropertiesDetail {
+    public struct EksPodPropertiesDetail: Swift.Sendable {
         /// The properties of the container that's used on the Amazon EKS pod.
         public var containers: [BatchClientTypes.EksContainerDetail]?
         /// The DNS policy for the pod. The default value is ClusterFirst. If the hostNetwork parameter is not specified, the default is ClusterFirstWithHostNet. ClusterFirst indicates that any DNS query that does not match the configured cluster domain suffix is forwarded to the upstream nameserver inherited from the node. If no value was specified for dnsPolicy in the [RegisterJobDefinition](https://docs.aws.amazon.com/batch/latest/APIReference/API_RegisterJobDefinition.html) API operation, then no value will be returned for dnsPolicy by either of [DescribeJobDefinitions](https://docs.aws.amazon.com/batch/latest/APIReference/API_DescribeJobDefinitions.html) or [DescribeJobs](https://docs.aws.amazon.com/batch/latest/APIReference/API_DescribeJobs.html) API operations. The pod spec setting will contain either ClusterFirst or ClusterFirstWithHostNet, depending on the value of the hostNetwork parameter. For more information, see [Pod's DNS policy](https://kubernetes.io/docs/concepts/services-networking/dns-pod-service/#pod-s-dns-policy) in the Kubernetes documentation. Valid values: Default | ClusterFirst | ClusterFirstWithHostNet
@@ -3464,12 +3473,12 @@ extension BatchClientTypes {
             self.volumes = volumes
         }
     }
-
 }
 
 extension BatchClientTypes {
+
     /// An object that contains the details for the Kubernetes resources of a job.
-    public struct EksPropertiesDetail {
+    public struct EksPropertiesDetail: Swift.Sendable {
         /// The properties for the Kubernetes pod resources of a job.
         public var podProperties: BatchClientTypes.EksPodPropertiesDetail?
 
@@ -3480,12 +3489,12 @@ extension BatchClientTypes {
             self.podProperties = podProperties
         }
     }
-
 }
 
 extension BatchClientTypes {
+
     /// An object that represents the details of a multi-node parallel job node.
-    public struct NodeDetails {
+    public struct NodeDetails: Swift.Sendable {
         /// Specifies whether the current node is the main node for a multi-node parallel job.
         public var isMainNode: Swift.Bool?
         /// The node index for the node. Node index numbering starts at zero. This index is also available on the node with the AWS_BATCH_JOB_NODE_INDEX environment variable.
@@ -3500,12 +3509,11 @@ extension BatchClientTypes {
             self.nodeIndex = nodeIndex
         }
     }
-
 }
 
 extension BatchClientTypes {
 
-    public enum JobStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum JobStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case failed
         case pending
         case runnable
@@ -3548,8 +3556,9 @@ extension BatchClientTypes {
 }
 
 extension BatchClientTypes {
+
     /// An object that represents an Batch job.
-    public struct JobDetail {
+    public struct JobDetail: Swift.Sendable {
         /// The array properties of the job, if it's an array job.
         public var arrayProperties: BatchClientTypes.ArrayPropertiesDetail?
         /// A list of job attempts that are associated with this job.
@@ -3686,10 +3695,9 @@ extension BatchClientTypes {
             self.timeout = timeout
         }
     }
-
 }
 
-public struct DescribeJobsOutput {
+public struct DescribeJobsOutput: Swift.Sendable {
     /// The list of jobs.
     public var jobs: [BatchClientTypes.JobDetail]?
 
@@ -3702,7 +3710,7 @@ public struct DescribeJobsOutput {
 }
 
 /// Contains the parameters for DescribeSchedulingPolicies.
-public struct DescribeSchedulingPoliciesInput {
+public struct DescribeSchedulingPoliciesInput: Swift.Sendable {
     /// A list of up to 100 scheduling policy Amazon Resource Name (ARN) entries.
     /// This member is required.
     public var arns: [Swift.String]?
@@ -3716,8 +3724,9 @@ public struct DescribeSchedulingPoliciesInput {
 }
 
 extension BatchClientTypes {
+
     /// An object that represents a scheduling policy.
-    public struct SchedulingPolicyDetail {
+    public struct SchedulingPolicyDetail: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the scheduling policy. An example is arn:aws:batch:us-east-1:123456789012:scheduling-policy/HighPriority .
         /// This member is required.
         public var arn: Swift.String?
@@ -3742,10 +3751,9 @@ extension BatchClientTypes {
             self.tags = tags
         }
     }
-
 }
 
-public struct DescribeSchedulingPoliciesOutput {
+public struct DescribeSchedulingPoliciesOutput: Swift.Sendable {
     /// The list of scheduling policies.
     public var schedulingPolicies: [BatchClientTypes.SchedulingPolicyDetail]?
 
@@ -3757,7 +3765,7 @@ public struct DescribeSchedulingPoliciesOutput {
     }
 }
 
-public struct GetJobQueueSnapshotInput {
+public struct GetJobQueueSnapshotInput: Swift.Sendable {
     /// The job queue’s name or full queue Amazon Resource Name (ARN).
     /// This member is required.
     public var jobQueue: Swift.String?
@@ -3771,8 +3779,9 @@ public struct GetJobQueueSnapshotInput {
 }
 
 extension BatchClientTypes {
+
     /// An object that represents summary details for the first 100 RUNNABLE jobs in a job queue.
-    public struct FrontOfQueueJobSummary {
+    public struct FrontOfQueueJobSummary: Swift.Sendable {
         /// The Unix timestamp (in milliseconds) for when the job transitioned to its current position in the job queue.
         public var earliestTimeAtPosition: Swift.Int?
         /// The ARN for a job in a named job queue.
@@ -3787,12 +3796,12 @@ extension BatchClientTypes {
             self.jobArn = jobArn
         }
     }
-
 }
 
 extension BatchClientTypes {
+
     /// Contains a list of the first 100 RUNNABLE jobs associated to a single job queue.
-    public struct FrontOfQueueDetail {
+    public struct FrontOfQueueDetail: Swift.Sendable {
         /// The Amazon Resource Names (ARNs) of the first 100 RUNNABLE jobs in a named job queue. For first-in-first-out (FIFO) job queues, jobs are ordered based on their submission time. For fair share scheduling (FSS) job queues, jobs are ordered based on their job priority and share usage.
         public var jobs: [BatchClientTypes.FrontOfQueueJobSummary]?
         /// The Unix timestamp (in milliseconds) for when each of the first 100 RUNNABLE jobs were last updated.
@@ -3807,10 +3816,9 @@ extension BatchClientTypes {
             self.lastUpdatedAt = lastUpdatedAt
         }
     }
-
 }
 
-public struct GetJobQueueSnapshotOutput {
+public struct GetJobQueueSnapshotOutput: Swift.Sendable {
     /// The list of the first 100 RUNNABLE jobs in each job queue. For first-in-first-out (FIFO) job queues, jobs are ordered based on their submission time. For fair share scheduling (FSS) job queues, jobs are ordered based on their job priority and share usage.
     public var frontOfQueue: BatchClientTypes.FrontOfQueueDetail?
 
@@ -3823,8 +3831,9 @@ public struct GetJobQueueSnapshotOutput {
 }
 
 extension BatchClientTypes {
+
     /// A filter name and value pair that's used to return a more specific list of results from a ListJobs API operation.
-    public struct KeyValuesPair {
+    public struct KeyValuesPair: Swift.Sendable {
         /// The name of the filter. Filter names are case sensitive.
         public var name: Swift.String?
         /// The filter values.
@@ -3839,11 +3848,10 @@ extension BatchClientTypes {
             self.values = values
         }
     }
-
 }
 
 /// Contains the parameters for ListJobs.
-public struct ListJobsInput {
+public struct ListJobsInput: Swift.Sendable {
     /// The job ID for an array job. Specifying an array job ID with this parameter lists all child jobs from within the specified array.
     public var arrayJobId: Swift.String?
     /// The filter to apply to the query. Only one filter can be used at a time. When the filter is used, jobStatus is ignored. The filter doesn't apply to child jobs in an array or multi-node parallel (MNP) jobs. The results are sorted by the createdAt field, with the most recent jobs being first. JOB_NAME The value of the filter is a case-insensitive match for the job name. If the value ends with an asterisk (*), the filter matches any job name that begins with the string before the '*'. This corresponds to the jobName value. For example, test1 matches both Test1 and test1, and test1* matches both test1 and Test10. When the JOB_NAME filter is used, the results are grouped by the job name and version. JOB_DEFINITION The value for the filter is the name or Amazon Resource Name (ARN) of the job definition. This corresponds to the jobDefinition value. The value is case sensitive. When the value for the filter is the job definition name, the results include all the jobs that used any revision of that job definition name. If the value ends with an asterisk (*), the filter matches any job definition name that begins with the string before the '*'. For example, jd1 matches only jd1, and jd1* matches both jd1 and jd1A. The version of the job definition that's used doesn't affect the sort order. When the JOB_DEFINITION filter is used and the ARN is used (which is in the form arn:${Partition}:batch:${Region}:${Account}:job-definition/${JobDefinitionName}:${Revision}), the results include jobs that used the specified revision of the job definition. Asterisk (*) isn't supported when the ARN is used. BEFORE_CREATED_AT The value for the filter is the time that's before the job was created. This corresponds to the createdAt value. The value is a string representation of the number of milliseconds since 00:00:00 UTC (midnight) on January 1, 1970. AFTER_CREATED_AT The value for the filter is the time that's after the job was created. This corresponds to the createdAt value. The value is a string representation of the number of milliseconds since 00:00:00 UTC (midnight) on January 1, 1970.
@@ -3888,8 +3896,9 @@ public struct ListJobsInput {
 }
 
 extension BatchClientTypes {
+
     /// An object that represents summary details of a container within a job.
-    public struct ContainerSummary {
+    public struct ContainerSummary: Swift.Sendable {
         /// The exit code to return upon completion.
         public var exitCode: Swift.Int?
         /// A short (255 max characters) human-readable string to provide additional details for a running or stopped container.
@@ -3904,12 +3913,12 @@ extension BatchClientTypes {
             self.reason = reason
         }
     }
-
 }
 
 extension BatchClientTypes {
+
     /// An object that represents the properties of a node that's associated with a multi-node parallel job.
-    public struct NodePropertiesSummary {
+    public struct NodePropertiesSummary: Swift.Sendable {
         /// Specifies whether the current node is the main node for a multi-node parallel job.
         public var isMainNode: Swift.Bool?
         /// The node index for the node. Node index numbering begins at zero. This index is also available on the node with the AWS_BATCH_JOB_NODE_INDEX environment variable.
@@ -3928,12 +3937,12 @@ extension BatchClientTypes {
             self.numNodes = numNodes
         }
     }
-
 }
 
 extension BatchClientTypes {
+
     /// An object that represents summary details of a job.
-    public struct JobSummary {
+    public struct JobSummary: Swift.Sendable {
         /// The array properties of the job, if it's an array job.
         public var arrayProperties: BatchClientTypes.ArrayPropertiesSummary?
         /// An object that represents the details of the container that's associated with the job.
@@ -3990,10 +3999,9 @@ extension BatchClientTypes {
             self.stoppedAt = stoppedAt
         }
     }
-
 }
 
-public struct ListJobsOutput {
+public struct ListJobsOutput: Swift.Sendable {
     /// A list of job summaries that match the request.
     /// This member is required.
     public var jobSummaryList: [BatchClientTypes.JobSummary]?
@@ -4011,7 +4019,7 @@ public struct ListJobsOutput {
 }
 
 /// Contains the parameters for ListSchedulingPolicies.
-public struct ListSchedulingPoliciesInput {
+public struct ListSchedulingPoliciesInput: Swift.Sendable {
     /// The maximum number of results that's returned by ListSchedulingPolicies in paginated output. When this parameter is used, ListSchedulingPolicies only returns maxResults results in a single page and a nextToken response element. You can see the remaining results of the initial request by sending another ListSchedulingPolicies request with the returned nextToken value. This value can be between 1 and 100. If this parameter isn't used, ListSchedulingPolicies returns up to 100 results and a nextToken value if applicable.
     public var maxResults: Swift.Int?
     /// The nextToken value that's returned from a previous paginated ListSchedulingPolicies request where maxResults was used and the results exceeded the value of that parameter. Pagination continues from the end of the previous results that returned the nextToken value. This value is null when there are no more results to return. Treat this token as an opaque identifier that's only used to retrieve the next items in a list and not for other programmatic purposes.
@@ -4028,8 +4036,9 @@ public struct ListSchedulingPoliciesInput {
 }
 
 extension BatchClientTypes {
+
     /// An object that contains the details of a scheduling policy that's returned in a ListSchedulingPolicy action.
-    public struct SchedulingPolicyListingDetail {
+    public struct SchedulingPolicyListingDetail: Swift.Sendable {
         /// Amazon Resource Name (ARN) of the scheduling policy.
         /// This member is required.
         public var arn: Swift.String?
@@ -4041,10 +4050,9 @@ extension BatchClientTypes {
             self.arn = arn
         }
     }
-
 }
 
-public struct ListSchedulingPoliciesOutput {
+public struct ListSchedulingPoliciesOutput: Swift.Sendable {
     /// The nextToken value to include in a future ListSchedulingPolicies request. When the results of a ListSchedulingPolicies request exceed maxResults, this value can be used to retrieve the next page of results. This value is null when there are no more results to return.
     public var nextToken: Swift.String?
     /// A list of scheduling policies that match the request.
@@ -4061,7 +4069,7 @@ public struct ListSchedulingPoliciesOutput {
 }
 
 /// Contains the parameters for ListTagsForResource.
-public struct ListTagsForResourceInput {
+public struct ListTagsForResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) that identifies the resource that tags are listed for. Batch resources that support tags are compute environments, jobs, job definitions, job queues, and scheduling policies. ARNs for child jobs of array and multi-node parallel (MNP) jobs aren't supported.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -4074,7 +4082,7 @@ public struct ListTagsForResourceInput {
     }
 }
 
-public struct ListTagsForResourceOutput {
+public struct ListTagsForResourceOutput: Swift.Sendable {
     /// The tags for the resource.
     public var tags: [Swift.String: Swift.String]?
 
@@ -4088,7 +4096,7 @@ public struct ListTagsForResourceOutput {
 
 extension BatchClientTypes {
 
-    public enum JobDefinitionType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum JobDefinitionType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case container
         case multinode
         case sdkUnknown(Swift.String)
@@ -4116,7 +4124,7 @@ extension BatchClientTypes {
 }
 
 /// Contains the parameters for RegisterJobDefinition.
-public struct RegisterJobDefinitionInput {
+public struct RegisterJobDefinitionInput: Swift.Sendable {
     /// An object with properties specific to Amazon ECS-based single-node container-based jobs. If the job definition's type parameter is container, then you must specify either containerProperties or nodeProperties. This must not be specified for Amazon EKS-based job definitions. If the job runs on Fargate resources, then you must not specify nodeProperties; use only containerProperties.
     public var containerProperties: BatchClientTypes.ContainerProperties?
     /// An object with properties that are specific to Amazon ECS-based jobs. This must not be specified for Amazon EKS-based job definitions.
@@ -4185,7 +4193,7 @@ public struct RegisterJobDefinitionInput {
     }
 }
 
-public struct RegisterJobDefinitionOutput {
+public struct RegisterJobDefinitionOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the job definition.
     /// This member is required.
     public var jobDefinitionArn: Swift.String?
@@ -4209,8 +4217,9 @@ public struct RegisterJobDefinitionOutput {
 }
 
 extension BatchClientTypes {
+
     /// The overrides that should be sent to a container. For information about using Batch overrides when you connect event sources to targets, see [BatchContainerOverrides](https://docs.aws.amazon.com/eventbridge/latest/pipes-reference/API_BatchContainerOverrides.html).
-    public struct ContainerOverrides {
+    public struct ContainerOverrides: Swift.Sendable {
         /// The command to send to the container that overrides the default command from the Docker image or the job definition. This parameter can't contain an empty string.
         public var command: [Swift.String]?
         /// The environment variables to send to the container. You can add new environment variables, which are added to the container at launch, or you can override the existing environment variables from the Docker image or the job definition. Environment variables cannot start with "AWS_BATCH". This naming convention is reserved for variables that Batch sets.
@@ -4243,12 +4252,12 @@ extension BatchClientTypes {
             self.vcpus = vcpus
         }
     }
-
 }
 
 extension BatchClientTypes {
+
     /// The overrides that should be sent to a container. For information about using Batch overrides when you connect event sources to targets, see [BatchContainerOverrides](https://docs.aws.amazon.com/eventbridge/latest/pipes-reference/API_BatchContainerOverrides.html).
-    public struct TaskContainerOverrides {
+    public struct TaskContainerOverrides: Swift.Sendable {
         /// The command to send to the container that overrides the default command from the Docker image or the job definition. This parameter can't contain an empty string.
         public var command: [Swift.String]?
         /// The environment variables to send to the container. You can add new environment variables, which are added to the container at launch, or you can override the existing environment variables from the Docker image or the job definition. Environment variables cannot start with AWS_BATCH. This naming convention is reserved for variables that Batch sets.
@@ -4271,12 +4280,12 @@ extension BatchClientTypes {
             self.resourceRequirements = resourceRequirements
         }
     }
-
 }
 
 extension BatchClientTypes {
+
     /// An object that contains overrides for the task definition of a job.
-    public struct TaskPropertiesOverride {
+    public struct TaskPropertiesOverride: Swift.Sendable {
         /// The overrides for the container definition of a job.
         public var containers: [BatchClientTypes.TaskContainerOverrides]?
 
@@ -4287,12 +4296,12 @@ extension BatchClientTypes {
             self.containers = containers
         }
     }
-
 }
 
 extension BatchClientTypes {
+
     /// An object that contains overrides for the Amazon ECS task definition of a job.
-    public struct EcsPropertiesOverride {
+    public struct EcsPropertiesOverride: Swift.Sendable {
         /// The overrides for the Amazon ECS task definition of a job. This object is currently limited to one element.
         public var taskProperties: [BatchClientTypes.TaskPropertiesOverride]?
 
@@ -4303,12 +4312,12 @@ extension BatchClientTypes {
             self.taskProperties = taskProperties
         }
     }
-
 }
 
 extension BatchClientTypes {
+
     /// Object representing any Kubernetes overrides to a job definition that's used in a [SubmitJob](https://docs.aws.amazon.com/batch/latest/APIReference/API_SubmitJob.html) API operation.
-    public struct EksContainerOverride {
+    public struct EksContainerOverride: Swift.Sendable {
         /// The arguments to the entrypoint to send to the container that overrides the default arguments from the Docker image or the job definition. For more information, see [Dockerfile reference: CMD](https://docs.docker.com/engine/reference/builder/#cmd) and [Define a command an arguments for a pod](https://kubernetes.io/docs/tasks/inject-data-application/define-command-argument-container/) in the Kubernetes documentation.
         public var args: [Swift.String]?
         /// The command to send to the container that overrides the default command from the Docker image or the job definition.
@@ -4339,15 +4348,15 @@ extension BatchClientTypes {
             self.resources = resources
         }
     }
-
 }
 
 extension BatchClientTypes {
+
     /// An object that contains overrides for the Kubernetes pod properties of a job.
-    public struct EksPodPropertiesOverride {
+    public struct EksPodPropertiesOverride: Swift.Sendable {
         /// The overrides for the container that's used on the Amazon EKS pod.
         public var containers: [BatchClientTypes.EksContainerOverride]?
-        /// The overrides for the conatainers defined in the Amazon EKS pod. These containers run before application containers, always runs to completion, and must complete successfully before the next container starts. These containers are registered with the Amazon EKS Connector agent and persists the registration information in the Kubernetes backend data store. For more information, see [Init Containers](https://kubernetes.io/docs/concepts/workloads/pods/init-containers/) in the Kubernetes documentation. This object is limited to 10 elements
+        /// The overrides for the initContainers defined in the Amazon EKS pod. These containers run before application containers, always runs to completion, and must complete successfully before the next container starts. These containers are registered with the Amazon EKS Connector agent and persists the registration information in the Kubernetes backend data store. For more information, see [Init Containers](https://kubernetes.io/docs/concepts/workloads/pods/init-containers/) in the Kubernetes documentation.
         public var initContainers: [BatchClientTypes.EksContainerOverride]?
         /// Metadata about the overrides for the container that's used on the Amazon EKS pod.
         public var metadata: BatchClientTypes.EksMetadata?
@@ -4363,12 +4372,12 @@ extension BatchClientTypes {
             self.metadata = metadata
         }
     }
-
 }
 
 extension BatchClientTypes {
+
     /// An object that contains overrides for the Kubernetes resources of a job.
-    public struct EksPropertiesOverride {
+    public struct EksPropertiesOverride: Swift.Sendable {
         /// The overrides for the Kubernetes pod resources of a job.
         public var podProperties: BatchClientTypes.EksPodPropertiesOverride?
 
@@ -4379,12 +4388,12 @@ extension BatchClientTypes {
             self.podProperties = podProperties
         }
     }
-
 }
 
 extension BatchClientTypes {
+
     /// The object that represents any node overrides to a job definition that's used in a [SubmitJob](https://docs.aws.amazon.com/batch/latest/APIReference/API_SubmitJob.html) API operation.
-    public struct NodePropertyOverride {
+    public struct NodePropertyOverride: Swift.Sendable {
         /// The overrides that are sent to a node range.
         public var containerOverrides: BatchClientTypes.ContainerOverrides?
         /// An object that contains the properties that you want to replace for the existing Amazon ECS resources of a job.
@@ -4412,12 +4421,12 @@ extension BatchClientTypes {
             self.targetNodes = targetNodes
         }
     }
-
 }
 
 extension BatchClientTypes {
+
     /// An object that represents any node overrides to a job definition that's used in a [SubmitJob](https://docs.aws.amazon.com/batch/latest/APIReference/API_SubmitJob.html) API operation. This parameter isn't applicable to jobs that are running on Fargate resources. Don't provide it for these jobs. Rather, use containerOverrides instead.
-    public struct NodeOverrides {
+    public struct NodeOverrides: Swift.Sendable {
         /// The node property overrides for the job.
         public var nodePropertyOverrides: [BatchClientTypes.NodePropertyOverride]?
         /// The number of nodes to use with a multi-node parallel job. This value overrides the number of nodes that are specified in the job definition. To use this override, you must meet the following conditions:
@@ -4438,11 +4447,10 @@ extension BatchClientTypes {
             self.numNodes = numNodes
         }
     }
-
 }
 
 /// Contains the parameters for SubmitJob.
-public struct SubmitJobInput {
+public struct SubmitJobInput: Swift.Sendable {
     /// The array properties for the submitted job, such as the size of the array. The array size can be between 2 and 10,000. If you specify array properties for a job, it becomes an array job. For more information, see [Array Jobs](https://docs.aws.amazon.com/batch/latest/userguide/array_jobs.html) in the Batch User Guide.
     public var arrayProperties: BatchClientTypes.ArrayProperties?
     /// An object with properties that override the defaults for the job definition that specify the name of a container in the specified job definition and the overrides it should receive. You can override the default command for a container, which is specified in the job definition or the Docker image, with a command override. You can also override existing environment variables on a container or add new environment variables to it with an environment override.
@@ -4517,7 +4525,7 @@ public struct SubmitJobInput {
     }
 }
 
-public struct SubmitJobOutput {
+public struct SubmitJobOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) for the job.
     public var jobArn: Swift.String?
     /// The unique identifier for the job.
@@ -4540,7 +4548,7 @@ public struct SubmitJobOutput {
 }
 
 /// Contains the parameters for TagResource.
-public struct TagResourceInput {
+public struct TagResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the resource that tags are added to. Batch resources that support tags are compute environments, jobs, job definitions, job queues, and scheduling policies. ARNs for child jobs of array and multi-node parallel (MNP) jobs aren't supported.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -4558,17 +4566,17 @@ public struct TagResourceInput {
     }
 }
 
-public struct TagResourceOutput {
+public struct TagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
 /// Contains the parameters for TerminateJob.
-public struct TerminateJobInput {
+public struct TerminateJobInput: Swift.Sendable {
     /// The Batch job ID of the job to terminate.
     /// This member is required.
     public var jobId: Swift.String?
-    /// A message to attach to the job that explains the reason for canceling it. This message is returned by future [DescribeJobs] operations on the job. This message is also recorded in the Batch activity logs.
+    /// A message to attach to the job that explains the reason for canceling it. This message is returned by future [DescribeJobs] operations on the job. It is also recorded in the Batch activity logs. This parameter has as limit of 1024 characters.
     /// This member is required.
     public var reason: Swift.String?
 
@@ -4582,13 +4590,13 @@ public struct TerminateJobInput {
     }
 }
 
-public struct TerminateJobOutput {
+public struct TerminateJobOutput: Swift.Sendable {
 
     public init() { }
 }
 
 /// Contains the parameters for UntagResource.
-public struct UntagResourceInput {
+public struct UntagResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the resource from which to delete tags. Batch resources that support tags are compute environments, jobs, job definitions, job queues, and scheduling policies. ARNs for child jobs of array and multi-node parallel (MNP) jobs aren't supported.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -4606,14 +4614,14 @@ public struct UntagResourceInput {
     }
 }
 
-public struct UntagResourceOutput {
+public struct UntagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
 extension BatchClientTypes {
 
-    public enum CRUpdateAllocationStrategy: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum CRUpdateAllocationStrategy: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case bestFitProgressive
         case spotCapacityOptimized
         case spotPriceCapacityOptimized
@@ -4644,8 +4652,9 @@ extension BatchClientTypes {
 }
 
 extension BatchClientTypes {
+
     /// An object that represents the attributes of a compute environment that can be updated. For more information, see [Updating compute environments](https://docs.aws.amazon.com/batch/latest/userguide/updating-compute-environments.html) in the Batch User Guide.
-    public struct ComputeResourceUpdate {
+    public struct ComputeResourceUpdate: Swift.Sendable {
         /// The allocation strategy to use for the compute resource if there's not enough instances of the best fitting instance type that can be allocated. This might be because of availability of the instance type in the Region or [Amazon EC2 service limits](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-resource-limits.html). For more information, see [Allocation strategies](https://docs.aws.amazon.com/batch/latest/userguide/allocation-strategies.html) in the Batch User Guide. When updating a compute environment, changing the allocation strategy requires an infrastructure update of the compute environment. For more information, see [Updating compute environments](https://docs.aws.amazon.com/batch/latest/userguide/updating-compute-environments.html) in the Batch User Guide. BEST_FIT isn't supported when updating a compute environment. This parameter isn't applicable to jobs that are running on Fargate resources. Don't specify it. BEST_FIT_PROGRESSIVE Batch selects additional instance types that are large enough to meet the requirements of the jobs in the queue. Its preference is for instance types with lower cost vCPUs. If additional instances of the previously selected instance types aren't available, Batch selects new instance types. SPOT_CAPACITY_OPTIMIZED Batch selects one or more instance types that are large enough to meet the requirements of the jobs in the queue. Its preference is for instance types that are less likely to be interrupted. This allocation strategy is only available for Spot Instance compute resources. SPOT_PRICE_CAPACITY_OPTIMIZED The price and capacity optimized allocation strategy looks at both price and capacity to select the Spot Instance pools that are the least likely to be interrupted and have the lowest possible price. This allocation strategy is only available for Spot Instance compute resources. With BEST_FIT_PROGRESSIVE,SPOT_CAPACITY_OPTIMIZED and SPOT_PRICE_CAPACITY_OPTIMIZED (recommended) strategies using On-Demand or Spot Instances, and the BEST_FIT strategy using Spot Instances, Batch might need to exceed maxvCpus to meet your capacity requirements. In this event, Batch never exceeds maxvCpus by more than a single instance.
         public var allocationStrategy: BatchClientTypes.CRUpdateAllocationStrategy?
         /// The maximum percentage that a Spot Instance price can be when compared with the On-Demand price for that instance type before instances are launched. For example, if your maximum percentage is 20%, the Spot price must be less than 20% of the current On-Demand price for that Amazon EC2 instance. You always pay the lowest (market) price and never more than your maximum percentage. For most use cases, we recommend leaving this field empty. When updating a compute environment, changing the bid percentage requires an infrastructure update of the compute environment. For more information, see [Updating compute environments](https://docs.aws.amazon.com/batch/latest/userguide/updating-compute-environments.html) in the Batch User Guide. This parameter isn't applicable to jobs that are running on Fargate resources. Don't specify it.
@@ -4720,11 +4729,10 @@ extension BatchClientTypes {
             self.updateToLatestImageVersion = updateToLatestImageVersion
         }
     }
-
 }
 
 /// Contains the parameters for UpdateComputeEnvironment.
-public struct UpdateComputeEnvironmentInput {
+public struct UpdateComputeEnvironmentInput: Swift.Sendable {
     /// The name or full Amazon Resource Name (ARN) of the compute environment to update.
     /// This member is required.
     public var computeEnvironment: Swift.String?
@@ -4761,7 +4769,7 @@ public struct UpdateComputeEnvironmentInput {
     }
 }
 
-public struct UpdateComputeEnvironmentOutput {
+public struct UpdateComputeEnvironmentOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the compute environment.
     public var computeEnvironmentArn: Swift.String?
     /// The name of the compute environment. It can be up to 128 characters long. It can contain uppercase and lowercase letters, numbers, hyphens (-), and underscores (_).
@@ -4778,13 +4786,13 @@ public struct UpdateComputeEnvironmentOutput {
 }
 
 /// Contains the parameters for UpdateJobQueue.
-public struct UpdateJobQueueInput {
+public struct UpdateJobQueueInput: Swift.Sendable {
     /// Details the set of compute environments mapped to a job queue and their order relative to each other. This is one of the parameters used by the job scheduler to determine which compute environment runs a given job. Compute environments must be in the VALID state before you can associate them with a job queue. All of the compute environments must be either EC2 (EC2 or SPOT) or Fargate (FARGATE or FARGATE_SPOT). EC2 and Fargate compute environments can't be mixed. All compute environments that are associated with a job queue must share the same architecture. Batch doesn't support mixing compute environment architecture types in a single job queue.
     public var computeEnvironmentOrder: [BatchClientTypes.ComputeEnvironmentOrder]?
     /// The name or the Amazon Resource Name (ARN) of the job queue.
     /// This member is required.
     public var jobQueue: Swift.String?
-    /// The set of actions that Batch perform on jobs that remain at the head of the job queue in the specified state longer than specified times. Batch will perform each action after maxTimeSeconds has passed.
+    /// The set of actions that Batch perform on jobs that remain at the head of the job queue in the specified state longer than specified times. Batch will perform each action after maxTimeSeconds has passed. (Note: The minimum value for maxTimeSeconds is 600 (10 minutes) and its maximum value is 86,400 (24 hours).)
     public var jobStateTimeLimitActions: [BatchClientTypes.JobStateTimeLimitAction]?
     /// The priority of the job queue. Job queues with a higher priority (or a higher integer value for the priority parameter) are evaluated first when associated with the same compute environment. Priority is determined in descending order. For example, a job queue with a priority value of 10 is given scheduling preference over a job queue with a priority value of 1. All of the compute environments must be either EC2 (EC2 or SPOT) or Fargate (FARGATE or FARGATE_SPOT). EC2 and Fargate compute environments can't be mixed.
     public var priority: Swift.Int?
@@ -4811,7 +4819,7 @@ public struct UpdateJobQueueInput {
     }
 }
 
-public struct UpdateJobQueueOutput {
+public struct UpdateJobQueueOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the job queue.
     public var jobQueueArn: Swift.String?
     /// The name of the job queue.
@@ -4828,7 +4836,7 @@ public struct UpdateJobQueueOutput {
 }
 
 /// Contains the parameters for UpdateSchedulingPolicy.
-public struct UpdateSchedulingPolicyInput {
+public struct UpdateSchedulingPolicyInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the scheduling policy to update.
     /// This member is required.
     public var arn: Swift.String?
@@ -4845,7 +4853,7 @@ public struct UpdateSchedulingPolicyInput {
     }
 }
 
-public struct UpdateSchedulingPolicyOutput {
+public struct UpdateSchedulingPolicyOutput: Swift.Sendable {
 
     public init() { }
 }
@@ -7163,6 +7171,7 @@ extension BatchClientTypes.EksAttemptDetail {
         value.initContainers = try reader["initContainers"].readListIfPresent(memberReadingClosure: BatchClientTypes.EksAttemptContainerDetail.read(from:), memberNodeInfo: "member", isFlattened: false)
         value.eksClusterArn = try reader["eksClusterArn"].readIfPresent()
         value.podName = try reader["podName"].readIfPresent()
+        value.podNamespace = try reader["podNamespace"].readIfPresent()
         value.nodeName = try reader["nodeName"].readIfPresent()
         value.startedAt = try reader["startedAt"].readIfPresent()
         value.stoppedAt = try reader["stoppedAt"].readIfPresent()
@@ -7177,6 +7186,7 @@ extension BatchClientTypes.EksAttemptContainerDetail {
         guard reader.hasContent else { throw SmithyReadWrite.ReaderError.requiredValueNotPresent }
         var value = BatchClientTypes.EksAttemptContainerDetail()
         value.name = try reader["name"].readIfPresent()
+        value.containerID = try reader["containerID"].readIfPresent()
         value.exitCode = try reader["exitCode"].readIfPresent()
         value.reason = try reader["reason"].readIfPresent()
         return value

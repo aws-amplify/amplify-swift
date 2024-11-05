@@ -56,7 +56,7 @@ public struct AccessDeniedException: ClientRuntime.ModeledError, AWSClientRuntim
 extension BudgetsClientTypes {
 
     /// The type of threshold for a notification.
-    public enum ThresholdType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ThresholdType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case absoluteValue
         case percentage
         case sdkUnknown(Swift.String)
@@ -84,8 +84,9 @@ extension BudgetsClientTypes {
 }
 
 extension BudgetsClientTypes {
+
     /// The trigger threshold of the action.
-    public struct ActionThreshold {
+    public struct ActionThreshold: Swift.Sendable {
         /// The type of threshold for a notification.
         /// This member is required.
         public var actionThresholdType: BudgetsClientTypes.ThresholdType?
@@ -102,12 +103,11 @@ extension BudgetsClientTypes {
             self.actionThresholdValue = actionThresholdValue
         }
     }
-
 }
 
 extension BudgetsClientTypes {
 
-    public enum ActionType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ActionType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case iam
         case scp
         case ssm
@@ -139,7 +139,7 @@ extension BudgetsClientTypes {
 
 extension BudgetsClientTypes {
 
-    public enum ApprovalModel: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ApprovalModel: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case auto
         case manual
         case sdkUnknown(Swift.String)
@@ -167,8 +167,9 @@ extension BudgetsClientTypes {
 }
 
 extension BudgetsClientTypes {
+
     /// The Identity and Access Management (IAM) action definition details.
-    public struct IamActionDefinition {
+    public struct IamActionDefinition: Swift.Sendable {
         /// A list of groups to be attached. There must be at least one group.
         public var groups: [Swift.String]?
         /// The Amazon Resource Name (ARN) of the policy to be attached.
@@ -192,12 +193,12 @@ extension BudgetsClientTypes {
             self.users = users
         }
     }
-
 }
 
 extension BudgetsClientTypes {
+
     /// The service control policies (SCP) action definition details.
-    public struct ScpActionDefinition {
+    public struct ScpActionDefinition: Swift.Sendable {
         /// The policy ID attached.
         /// This member is required.
         public var policyId: Swift.String?
@@ -214,12 +215,11 @@ extension BudgetsClientTypes {
             self.targetIds = targetIds
         }
     }
-
 }
 
 extension BudgetsClientTypes {
 
-    public enum ActionSubType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ActionSubType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case stopEc2
         case stopRds
         case sdkUnknown(Swift.String)
@@ -247,8 +247,9 @@ extension BudgetsClientTypes {
 }
 
 extension BudgetsClientTypes {
+
     /// The Amazon Web Services Systems Manager (SSM) action definition details.
-    public struct SsmActionDefinition {
+    public struct SsmActionDefinition: Swift.Sendable {
         /// The action subType.
         /// This member is required.
         public var actionSubType: BudgetsClientTypes.ActionSubType?
@@ -270,12 +271,12 @@ extension BudgetsClientTypes {
             self.region = region
         }
     }
-
 }
 
 extension BudgetsClientTypes {
+
     /// Specifies all of the type-specific parameters.
-    public struct Definition {
+    public struct Definition: Swift.Sendable {
         /// The Identity and Access Management (IAM) action definition details.
         public var iamActionDefinition: BudgetsClientTypes.IamActionDefinition?
         /// The service control policies (SCPs) action definition details.
@@ -294,13 +295,12 @@ extension BudgetsClientTypes {
             self.ssmActionDefinition = ssmActionDefinition
         }
     }
-
 }
 
 extension BudgetsClientTypes {
 
     /// The type of a notification. It must be ACTUAL or FORECASTED.
-    public enum NotificationType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum NotificationType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case actual
         case forecasted
         case sdkUnknown(Swift.String)
@@ -329,7 +329,7 @@ extension BudgetsClientTypes {
 
 extension BudgetsClientTypes {
 
-    public enum ActionStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ActionStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case executionFailure
         case executionInProgress
         case executionSuccess
@@ -383,7 +383,7 @@ extension BudgetsClientTypes {
 extension BudgetsClientTypes {
 
     /// The subscription type of the subscriber. It can be SMS or EMAIL.
-    public enum SubscriptionType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SubscriptionType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case email
         case sns
         case sdkUnknown(Swift.String)
@@ -411,12 +411,13 @@ extension BudgetsClientTypes {
 }
 
 extension BudgetsClientTypes {
+
     /// The subscriber to a budget notification. The subscriber consists of a subscription type and either an Amazon SNS topic or an email address. For example, an email subscriber has the following parameters:
     ///
     /// * A subscriptionType of EMAIL
     ///
     /// * An address of example@example.com
-    public struct Subscriber {
+    public struct Subscriber: Swift.Sendable {
         /// The address that Amazon Web Services sends budget notifications to, either an SNS topic or an email. When you create a subscriber, the value of Address can't contain line breaks.
         /// This member is required.
         public var address: Swift.String?
@@ -433,7 +434,6 @@ extension BudgetsClientTypes {
             self.subscriptionType = subscriptionType
         }
     }
-
 }
 
 extension BudgetsClientTypes.Subscriber: Swift.CustomDebugStringConvertible {
@@ -442,8 +442,9 @@ extension BudgetsClientTypes.Subscriber: Swift.CustomDebugStringConvertible {
 }
 
 extension BudgetsClientTypes {
+
     /// A budget action resource.
-    public struct Action {
+    public struct Action: Swift.Sendable {
         /// A system-generated universally unique identifier (UUID) for the action.
         /// This member is required.
         public var actionId: Swift.String?
@@ -500,12 +501,12 @@ extension BudgetsClientTypes {
             self.subscribers = subscribers
         }
     }
-
 }
 
 extension BudgetsClientTypes {
+
     /// The description of the details for the event.
-    public struct ActionHistoryDetails {
+    public struct ActionHistoryDetails: Swift.Sendable {
         /// The budget action resource.
         /// This member is required.
         public var action: BudgetsClientTypes.Action?
@@ -522,12 +523,11 @@ extension BudgetsClientTypes {
             self.message = message
         }
     }
-
 }
 
 extension BudgetsClientTypes {
 
-    public enum EventType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum EventType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case createaction
         case deleteaction
         case executeaction
@@ -564,8 +564,9 @@ extension BudgetsClientTypes {
 }
 
 extension BudgetsClientTypes {
+
     /// The historical records for a budget action.
-    public struct ActionHistory {
+    public struct ActionHistory: Swift.Sendable {
         /// The description of the details for the event.
         /// This member is required.
         public var actionHistoryDetails: BudgetsClientTypes.ActionHistoryDetails?
@@ -592,12 +593,11 @@ extension BudgetsClientTypes {
             self.timestamp = timestamp
         }
     }
-
 }
 
 extension BudgetsClientTypes {
 
-    public enum AutoAdjustType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AutoAdjustType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case forecast
         case historical
         case sdkUnknown(Swift.String)
@@ -625,8 +625,9 @@ extension BudgetsClientTypes {
 }
 
 extension BudgetsClientTypes {
+
     /// The parameters that define or describe the historical data that your auto-adjusting budget is based on.
-    public struct HistoricalOptions {
+    public struct HistoricalOptions: Swift.Sendable {
         /// The number of budget periods included in the moving-average calculation that determines your auto-adjusted budget amount. The maximum value depends on the TimeUnit granularity of the budget:
         ///
         /// * For the DAILY granularity, the maximum value is 60.
@@ -650,12 +651,12 @@ extension BudgetsClientTypes {
             self.lookBackAvailablePeriods = lookBackAvailablePeriods
         }
     }
-
 }
 
 extension BudgetsClientTypes {
+
     /// The parameters that determine the budget amount for an auto-adjusting budget.
-    public struct AutoAdjustData {
+    public struct AutoAdjustData: Swift.Sendable {
         /// The string that defines whether your budget auto-adjusts based on historical or forecasted data.
         /// This member is required.
         public var autoAdjustType: BudgetsClientTypes.AutoAdjustType?
@@ -675,7 +676,6 @@ extension BudgetsClientTypes {
             self.lastAutoAdjustTime = lastAutoAdjustTime
         }
     }
-
 }
 
 /// You've exceeded the notification or subscriber limit.
@@ -829,6 +829,7 @@ public struct ThrottlingException: ClientRuntime.ModeledError, AWSClientRuntime.
 }
 
 extension BudgetsClientTypes {
+
     /// The amount of cost or usage that's measured for a budget. Cost example: A Spend for 3 USD of costs has the following parameters:
     ///
     /// * An Amount of 3
@@ -841,7 +842,7 @@ extension BudgetsClientTypes {
     /// * An Amount of 3
     ///
     /// * A Unit of GB
-    public struct Spend {
+    public struct Spend: Swift.Sendable {
         /// The cost or usage amount that's associated with a budget forecast, actual spend, or budget threshold.
         /// This member is required.
         public var amount: Swift.String?
@@ -858,13 +859,12 @@ extension BudgetsClientTypes {
             self.unit = unit
         }
     }
-
 }
 
 extension BudgetsClientTypes {
 
     /// The type of a budget. It must be one of the following types: COST, USAGE, RI_UTILIZATION, RI_COVERAGE, SAVINGS_PLANS_UTILIZATION, or SAVINGS_PLANS_COVERAGE.
-    public enum BudgetType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum BudgetType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case cost
         case ricoverage
         case riutilization
@@ -904,8 +904,9 @@ extension BudgetsClientTypes {
 }
 
 extension BudgetsClientTypes {
+
     /// The spend objects that are associated with this budget. The actualSpend tracks how much you've used, cost, usage, RI units, or Savings Plans units and the forecastedSpend tracks how much that you're predicted to spend based on your historical usage profile. For example, if it's the 20th of the month and you have spent 50 dollars on Amazon EC2, your actualSpend is 50 USD, and your forecastedSpend is 75 USD.
-    public struct CalculatedSpend {
+    public struct CalculatedSpend: Swift.Sendable {
         /// The amount of cost, usage, RI units, or Savings Plans units that you used.
         /// This member is required.
         public var actualSpend: BudgetsClientTypes.Spend?
@@ -921,12 +922,12 @@ extension BudgetsClientTypes {
             self.forecastedSpend = forecastedSpend
         }
     }
-
 }
 
 extension BudgetsClientTypes {
+
     /// The types of cost that are included in a COST budget, such as tax and subscriptions. USAGE, RI_UTILIZATION, RI_COVERAGE, SAVINGS_PLANS_UTILIZATION, and SAVINGS_PLANS_COVERAGE budgets don't have CostTypes.
-    public struct CostTypes {
+    public struct CostTypes: Swift.Sendable {
         /// Specifies whether a budget includes credits. The default value is true.
         public var includeCredit: Swift.Bool?
         /// Specifies whether a budget includes discounts. The default value is true.
@@ -977,12 +978,12 @@ extension BudgetsClientTypes {
             self.useBlended = useBlended
         }
     }
-
 }
 
 extension BudgetsClientTypes {
+
     /// The period of time that's covered by a budget. The period has a start date and an end date. The start date must come before the end date. There are no restrictions on the end date.
-    public struct TimePeriod {
+    public struct TimePeriod: Swift.Sendable {
         /// The end date for a budget. If you didn't specify an end date, Amazon Web Services set your end date to 06/15/87 00:00 UTC. The defaults are the same for the Billing and Cost Management console and the API. After the end date, Amazon Web Services deletes the budget and all the associated notifications and subscribers. You can change your end date with the UpdateBudget operation.
         public var end: Foundation.Date?
         /// The start date for a budget. If you created your budget and didn't specify a start date, Amazon Web Services defaults to the start of your chosen time period (DAILY, MONTHLY, QUARTERLY, or ANNUALLY). For example, if you created your budget on January 24, 2018, chose DAILY, and didn't set a start date, Amazon Web Services set your start date to 01/24/18 00:00 UTC. If you chose MONTHLY, Amazon Web Services set your start date to 01/01/18 00:00 UTC. The defaults are the same for the Billing and Cost Management console and the API. You can change your start date with the UpdateBudget operation.
@@ -997,13 +998,12 @@ extension BudgetsClientTypes {
             self.start = start
         }
     }
-
 }
 
 extension BudgetsClientTypes {
 
     /// The time unit of the budget, such as MONTHLY or QUARTERLY.
-    public enum TimeUnit: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum TimeUnit: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case annually
         case daily
         case monthly
@@ -1037,8 +1037,9 @@ extension BudgetsClientTypes {
 }
 
 extension BudgetsClientTypes {
+
     /// Represents the output of the CreateBudget operation. The content consists of the detailed metadata and data file information, and the current status of the budget object. This is the Amazon Resource Name (ARN) pattern for a budget: arn:aws:budgets::AccountId:budget/budgetName
-    public struct Budget {
+    public struct Budget: Swift.Sendable {
         /// The parameters that determine the budget amount for an auto-adjusting budget.
         public var autoAdjustData: BudgetsClientTypes.AutoAdjustData?
         /// The total amount of cost, usage, RI utilization, RI coverage, Savings Plans utilization, or Savings Plans coverage that you want to track with your budget. BudgetLimit is required for cost or usage budgets, but optional for RI or Savings Plans utilization or coverage budgets. RI and Savings Plans utilization or coverage budgets default to 100. This is the only valid value for RI or Savings Plans utilization or coverage budgets. You can't use BudgetLimit with PlannedBudgetLimits for CreateBudget and UpdateBudget actions.
@@ -1102,13 +1103,12 @@ extension BudgetsClientTypes {
             self.timeUnit = timeUnit
         }
     }
-
 }
 
 extension BudgetsClientTypes {
 
     /// The comparison operator of a notification. Currently, the service supports the following operators: GREATER_THAN, LESS_THAN, EQUAL_TO
-    public enum ComparisonOperator: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ComparisonOperator: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case equalTo
         case greaterThan
         case lessThan
@@ -1140,7 +1140,7 @@ extension BudgetsClientTypes {
 
 extension BudgetsClientTypes {
 
-    public enum NotificationState: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum NotificationState: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case alarm
         case ok
         case sdkUnknown(Swift.String)
@@ -1168,6 +1168,7 @@ extension BudgetsClientTypes {
 }
 
 extension BudgetsClientTypes {
+
     /// A notification that's associated with a budget. A budget can have up to ten notifications. Each notification must have at least one subscriber. A notification can have one SNS subscriber and up to 10 email subscribers, for a total of 11 subscribers. For example, if you have a budget for 200 dollars and you want to be notified when you go over 160 dollars, create a notification with the following parameters:
     ///
     /// * A notificationType of ACTUAL
@@ -1177,7 +1178,7 @@ extension BudgetsClientTypes {
     /// * A comparisonOperator of GREATER_THAN
     ///
     /// * A notification threshold of 80
-    public struct Notification {
+    public struct Notification: Swift.Sendable {
         /// The comparison that's used for this notification.
         /// This member is required.
         public var comparisonOperator: BudgetsClientTypes.ComparisonOperator?
@@ -1207,12 +1208,12 @@ extension BudgetsClientTypes {
             self.thresholdType = thresholdType
         }
     }
-
 }
 
 extension BudgetsClientTypes {
+
     /// A notification with subscribers. A notification can have one SNS subscriber and up to 10 email subscribers, for a total of 11 subscribers.
-    public struct NotificationWithSubscribers {
+    public struct NotificationWithSubscribers: Swift.Sendable {
         /// The notification that's associated with a budget.
         /// This member is required.
         public var notification: BudgetsClientTypes.Notification?
@@ -1229,12 +1230,12 @@ extension BudgetsClientTypes {
             self.subscribers = subscribers
         }
     }
-
 }
 
 extension BudgetsClientTypes {
+
     /// The tag structure that contains a tag key and value.
-    public struct ResourceTag {
+    public struct ResourceTag: Swift.Sendable {
         /// The key that's associated with the tag.
         /// This member is required.
         public var key: Swift.String?
@@ -1251,11 +1252,10 @@ extension BudgetsClientTypes {
             self.value = value
         }
     }
-
 }
 
 /// Request of CreateBudget
-public struct CreateBudgetInput {
+public struct CreateBudgetInput: Swift.Sendable {
     /// The accountId that is associated with the budget.
     /// This member is required.
     public var accountId: Swift.String?
@@ -1282,7 +1282,7 @@ public struct CreateBudgetInput {
 }
 
 /// Response of CreateBudget
-public struct CreateBudgetOutput {
+public struct CreateBudgetOutput: Swift.Sendable {
 
     public init() { }
 }
@@ -1312,7 +1312,7 @@ public struct NotFoundException: ClientRuntime.ModeledError, AWSClientRuntime.AW
     }
 }
 
-public struct CreateBudgetActionInput {
+public struct CreateBudgetActionInput: Swift.Sendable {
     /// The account ID of the user. It's a 12-digit number.
     /// This member is required.
     public var accountId: Swift.String?
@@ -1369,7 +1369,7 @@ public struct CreateBudgetActionInput {
     }
 }
 
-public struct CreateBudgetActionOutput {
+public struct CreateBudgetActionOutput: Swift.Sendable {
     /// The account ID of the user. It's a 12-digit number.
     /// This member is required.
     public var accountId: Swift.String?
@@ -1393,7 +1393,7 @@ public struct CreateBudgetActionOutput {
 }
 
 /// Request of CreateNotification
-public struct CreateNotificationInput {
+public struct CreateNotificationInput: Swift.Sendable {
     /// The accountId that is associated with the budget that you want to create a notification for.
     /// This member is required.
     public var accountId: Swift.String?
@@ -1422,13 +1422,13 @@ public struct CreateNotificationInput {
 }
 
 /// Response of CreateNotification
-public struct CreateNotificationOutput {
+public struct CreateNotificationOutput: Swift.Sendable {
 
     public init() { }
 }
 
 /// Request of CreateSubscriber
-public struct CreateSubscriberInput {
+public struct CreateSubscriberInput: Swift.Sendable {
     /// The accountId that is associated with the budget that you want to create a subscriber for.
     /// This member is required.
     public var accountId: Swift.String?
@@ -1457,13 +1457,13 @@ public struct CreateSubscriberInput {
 }
 
 /// Response of CreateSubscriber
-public struct CreateSubscriberOutput {
+public struct CreateSubscriberOutput: Swift.Sendable {
 
     public init() { }
 }
 
 /// Request of DeleteBudget
-public struct DeleteBudgetInput {
+public struct DeleteBudgetInput: Swift.Sendable {
     /// The accountId that is associated with the budget that you want to delete.
     /// This member is required.
     public var accountId: Swift.String?
@@ -1482,7 +1482,7 @@ public struct DeleteBudgetInput {
 }
 
 /// Response of DeleteBudget
-public struct DeleteBudgetOutput {
+public struct DeleteBudgetOutput: Swift.Sendable {
 
     public init() { }
 }
@@ -1512,7 +1512,7 @@ public struct ResourceLockedException: ClientRuntime.ModeledError, AWSClientRunt
     }
 }
 
-public struct DeleteBudgetActionInput {
+public struct DeleteBudgetActionInput: Swift.Sendable {
     /// The account ID of the user. It's a 12-digit number.
     /// This member is required.
     public var accountId: Swift.String?
@@ -1535,7 +1535,7 @@ public struct DeleteBudgetActionInput {
     }
 }
 
-public struct DeleteBudgetActionOutput {
+public struct DeleteBudgetActionOutput: Swift.Sendable {
     /// The account ID of the user. It's a 12-digit number.
     /// This member is required.
     public var accountId: Swift.String?
@@ -1559,7 +1559,7 @@ public struct DeleteBudgetActionOutput {
 }
 
 /// Request of DeleteNotification
-public struct DeleteNotificationInput {
+public struct DeleteNotificationInput: Swift.Sendable {
     /// The accountId that is associated with the budget whose notification you want to delete.
     /// This member is required.
     public var accountId: Swift.String?
@@ -1583,13 +1583,13 @@ public struct DeleteNotificationInput {
 }
 
 /// Response of DeleteNotification
-public struct DeleteNotificationOutput {
+public struct DeleteNotificationOutput: Swift.Sendable {
 
     public init() { }
 }
 
 /// Request of DeleteSubscriber
-public struct DeleteSubscriberInput {
+public struct DeleteSubscriberInput: Swift.Sendable {
     /// The accountId that is associated with the budget whose subscriber you want to delete.
     /// This member is required.
     public var accountId: Swift.String?
@@ -1618,13 +1618,13 @@ public struct DeleteSubscriberInput {
 }
 
 /// Response of DeleteSubscriber
-public struct DeleteSubscriberOutput {
+public struct DeleteSubscriberOutput: Swift.Sendable {
 
     public init() { }
 }
 
 /// Request of DescribeBudget
-public struct DescribeBudgetInput {
+public struct DescribeBudgetInput: Swift.Sendable {
     /// The accountId that is associated with the budget that you want a description of.
     /// This member is required.
     public var accountId: Swift.String?
@@ -1643,7 +1643,7 @@ public struct DescribeBudgetInput {
 }
 
 /// Response of DescribeBudget
-public struct DescribeBudgetOutput {
+public struct DescribeBudgetOutput: Swift.Sendable {
     /// The description of the budget.
     public var budget: BudgetsClientTypes.Budget?
 
@@ -1655,7 +1655,7 @@ public struct DescribeBudgetOutput {
     }
 }
 
-public struct DescribeBudgetActionInput {
+public struct DescribeBudgetActionInput: Swift.Sendable {
     /// The account ID of the user. It's a 12-digit number.
     /// This member is required.
     public var accountId: Swift.String?
@@ -1678,7 +1678,7 @@ public struct DescribeBudgetActionInput {
     }
 }
 
-public struct DescribeBudgetActionOutput {
+public struct DescribeBudgetActionOutput: Swift.Sendable {
     /// The account ID of the user. It's a 12-digit number.
     /// This member is required.
     public var accountId: Swift.String?
@@ -1726,7 +1726,7 @@ public struct InvalidNextTokenException: ClientRuntime.ModeledError, AWSClientRu
     }
 }
 
-public struct DescribeBudgetActionHistoriesInput {
+public struct DescribeBudgetActionHistoriesInput: Swift.Sendable {
     /// The account ID of the user. It's a 12-digit number.
     /// This member is required.
     public var accountId: Swift.String?
@@ -1761,7 +1761,7 @@ public struct DescribeBudgetActionHistoriesInput {
     }
 }
 
-public struct DescribeBudgetActionHistoriesOutput {
+public struct DescribeBudgetActionHistoriesOutput: Swift.Sendable {
     /// The historical record of the budget action resource.
     /// This member is required.
     public var actionHistories: [BudgetsClientTypes.ActionHistory]?
@@ -1778,7 +1778,7 @@ public struct DescribeBudgetActionHistoriesOutput {
     }
 }
 
-public struct DescribeBudgetActionsForAccountInput {
+public struct DescribeBudgetActionsForAccountInput: Swift.Sendable {
     /// The account ID of the user. It's a 12-digit number.
     /// This member is required.
     public var accountId: Swift.String?
@@ -1799,7 +1799,7 @@ public struct DescribeBudgetActionsForAccountInput {
     }
 }
 
-public struct DescribeBudgetActionsForAccountOutput {
+public struct DescribeBudgetActionsForAccountOutput: Swift.Sendable {
     /// A list of the budget action resources information.
     /// This member is required.
     public var actions: [BudgetsClientTypes.Action]?
@@ -1816,7 +1816,7 @@ public struct DescribeBudgetActionsForAccountOutput {
     }
 }
 
-public struct DescribeBudgetActionsForBudgetInput {
+public struct DescribeBudgetActionsForBudgetInput: Swift.Sendable {
     /// The account ID of the user. It's a 12-digit number.
     /// This member is required.
     public var accountId: Swift.String?
@@ -1842,7 +1842,7 @@ public struct DescribeBudgetActionsForBudgetInput {
     }
 }
 
-public struct DescribeBudgetActionsForBudgetOutput {
+public struct DescribeBudgetActionsForBudgetOutput: Swift.Sendable {
     /// A list of the budget action resources information.
     /// This member is required.
     public var actions: [BudgetsClientTypes.Action]?
@@ -1884,7 +1884,7 @@ public struct ExpiredNextTokenException: ClientRuntime.ModeledError, AWSClientRu
     }
 }
 
-public struct DescribeBudgetNotificationsForAccountInput {
+public struct DescribeBudgetNotificationsForAccountInput: Swift.Sendable {
     /// The account ID of the user. It's a 12-digit number.
     /// This member is required.
     public var accountId: Swift.String?
@@ -1906,8 +1906,9 @@ public struct DescribeBudgetNotificationsForAccountInput {
 }
 
 extension BudgetsClientTypes {
+
     /// The budget name and associated notifications for an account.
-    public struct BudgetNotificationsForAccount {
+    public struct BudgetNotificationsForAccount: Swift.Sendable {
         /// A string that represents the budget name. The ":" and "\" characters, and the "/action/" substring, aren't allowed.
         public var budgetName: Swift.String?
         /// A list of notifications.
@@ -1922,10 +1923,9 @@ extension BudgetsClientTypes {
             self.notifications = notifications
         }
     }
-
 }
 
-public struct DescribeBudgetNotificationsForAccountOutput {
+public struct DescribeBudgetNotificationsForAccountOutput: Swift.Sendable {
     /// A list of budget names and associated notifications for an account.
     public var budgetNotificationsForAccount: [BudgetsClientTypes.BudgetNotificationsForAccount]?
     /// A generic string.
@@ -1941,7 +1941,7 @@ public struct DescribeBudgetNotificationsForAccountOutput {
     }
 }
 
-public struct DescribeBudgetPerformanceHistoryInput {
+public struct DescribeBudgetPerformanceHistoryInput: Swift.Sendable {
     /// The account ID of the user. It's a 12-digit number.
     /// This member is required.
     public var accountId: Swift.String?
@@ -1972,8 +1972,9 @@ public struct DescribeBudgetPerformanceHistoryInput {
 }
 
 extension BudgetsClientTypes {
+
     /// The amount of cost or usage that you created the budget for, compared to your actual costs or usage.
-    public struct BudgetedAndActualAmounts {
+    public struct BudgetedAndActualAmounts: Swift.Sendable {
         /// Your actual costs or usage for a budget period.
         public var actualAmount: BudgetsClientTypes.Spend?
         /// The amount of cost or usage that you created the budget for.
@@ -1992,12 +1993,12 @@ extension BudgetsClientTypes {
             self.timePeriod = timePeriod
         }
     }
-
 }
 
 extension BudgetsClientTypes {
+
     /// A history of the state of a budget at the end of the budget's specified time period.
-    public struct BudgetPerformanceHistory {
+    public struct BudgetPerformanceHistory: Swift.Sendable {
         /// A string that represents the budget name. The ":" and "\" characters, and the "/action/" substring, aren't allowed.
         public var budgetName: Swift.String?
         /// The type of a budget. It must be one of the following types: COST, USAGE, RI_UTILIZATION, RI_COVERAGE, SAVINGS_PLANS_UTILIZATION, or SAVINGS_PLANS_COVERAGE.
@@ -2028,10 +2029,9 @@ extension BudgetsClientTypes {
             self.timeUnit = timeUnit
         }
     }
-
 }
 
-public struct DescribeBudgetPerformanceHistoryOutput {
+public struct DescribeBudgetPerformanceHistoryOutput: Swift.Sendable {
     /// The history of how often the budget has gone into an ALARM state. For DAILY budgets, the history saves the state of the budget for the last 60 days. For MONTHLY budgets, the history saves the state of the budget for the current month plus the last 12 months. For QUARTERLY budgets, the history saves the state of the budget for the last four quarters.
     public var budgetPerformanceHistory: BudgetsClientTypes.BudgetPerformanceHistory?
     /// A generic string.
@@ -2048,7 +2048,7 @@ public struct DescribeBudgetPerformanceHistoryOutput {
 }
 
 /// Request of DescribeBudgets
-public struct DescribeBudgetsInput {
+public struct DescribeBudgetsInput: Swift.Sendable {
     /// The accountId that is associated with the budgets that you want to describe.
     /// This member is required.
     public var accountId: Swift.String?
@@ -2070,7 +2070,7 @@ public struct DescribeBudgetsInput {
 }
 
 /// Response of DescribeBudgets
-public struct DescribeBudgetsOutput {
+public struct DescribeBudgetsOutput: Swift.Sendable {
     /// A list of budgets.
     public var budgets: [BudgetsClientTypes.Budget]?
     /// The pagination token in the service response that indicates the next set of results that you can retrieve.
@@ -2087,7 +2087,7 @@ public struct DescribeBudgetsOutput {
 }
 
 /// Request of DescribeNotificationsForBudget
-public struct DescribeNotificationsForBudgetInput {
+public struct DescribeNotificationsForBudgetInput: Swift.Sendable {
     /// The accountId that is associated with the budget whose notifications you want descriptions of.
     /// This member is required.
     public var accountId: Swift.String?
@@ -2114,7 +2114,7 @@ public struct DescribeNotificationsForBudgetInput {
 }
 
 /// Response of GetNotificationsForBudget
-public struct DescribeNotificationsForBudgetOutput {
+public struct DescribeNotificationsForBudgetOutput: Swift.Sendable {
     /// The pagination token in the service response that indicates the next set of results that you can retrieve.
     public var nextToken: Swift.String?
     /// A list of notifications that are associated with a budget.
@@ -2131,7 +2131,7 @@ public struct DescribeNotificationsForBudgetOutput {
 }
 
 /// Request of DescribeSubscribersForNotification
-public struct DescribeSubscribersForNotificationInput {
+public struct DescribeSubscribersForNotificationInput: Swift.Sendable {
     /// The accountId that is associated with the budget whose subscribers you want descriptions of.
     /// This member is required.
     public var accountId: Swift.String?
@@ -2163,7 +2163,7 @@ public struct DescribeSubscribersForNotificationInput {
 }
 
 /// Response of DescribeSubscribersForNotification
-public struct DescribeSubscribersForNotificationOutput {
+public struct DescribeSubscribersForNotificationOutput: Swift.Sendable {
     /// The pagination token in the service response that indicates the next set of results that you can retrieve.
     public var nextToken: Swift.String?
     /// A list of subscribers that are associated with a notification.
@@ -2181,7 +2181,7 @@ public struct DescribeSubscribersForNotificationOutput {
 
 extension BudgetsClientTypes {
 
-    public enum ExecutionType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ExecutionType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case approvebudgetaction
         case resetbudgetaction
         case retrybudgetaction
@@ -2214,7 +2214,7 @@ extension BudgetsClientTypes {
     }
 }
 
-public struct ExecuteBudgetActionInput {
+public struct ExecuteBudgetActionInput: Swift.Sendable {
     /// The account ID of the user. It's a 12-digit number.
     /// This member is required.
     public var accountId: Swift.String?
@@ -2242,7 +2242,7 @@ public struct ExecuteBudgetActionInput {
     }
 }
 
-public struct ExecuteBudgetActionOutput {
+public struct ExecuteBudgetActionOutput: Swift.Sendable {
     /// The account ID of the user. It's a 12-digit number.
     /// This member is required.
     public var accountId: Swift.String?
@@ -2270,7 +2270,7 @@ public struct ExecuteBudgetActionOutput {
     }
 }
 
-public struct ListTagsForResourceInput {
+public struct ListTagsForResourceInput: Swift.Sendable {
     /// The unique identifier for the resource.
     /// This member is required.
     public var resourceARN: Swift.String?
@@ -2283,7 +2283,7 @@ public struct ListTagsForResourceInput {
     }
 }
 
-public struct ListTagsForResourceOutput {
+public struct ListTagsForResourceOutput: Swift.Sendable {
     /// The tags associated with the resource.
     public var resourceTags: [BudgetsClientTypes.ResourceTag]?
 
@@ -2295,7 +2295,7 @@ public struct ListTagsForResourceOutput {
     }
 }
 
-public struct TagResourceInput {
+public struct TagResourceInput: Swift.Sendable {
     /// The unique identifier for the resource.
     /// This member is required.
     public var resourceARN: Swift.String?
@@ -2313,12 +2313,12 @@ public struct TagResourceInput {
     }
 }
 
-public struct TagResourceOutput {
+public struct TagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UntagResourceInput {
+public struct UntagResourceInput: Swift.Sendable {
     /// The unique identifier for the resource.
     /// This member is required.
     public var resourceARN: Swift.String?
@@ -2336,13 +2336,13 @@ public struct UntagResourceInput {
     }
 }
 
-public struct UntagResourceOutput {
+public struct UntagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
 /// Request of UpdateBudget
-public struct UpdateBudgetInput {
+public struct UpdateBudgetInput: Swift.Sendable {
     /// The accountId that is associated with the budget that you want to update.
     /// This member is required.
     public var accountId: Swift.String?
@@ -2361,12 +2361,12 @@ public struct UpdateBudgetInput {
 }
 
 /// Response of UpdateBudget
-public struct UpdateBudgetOutput {
+public struct UpdateBudgetOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdateBudgetActionInput {
+public struct UpdateBudgetActionInput: Swift.Sendable {
     /// The account ID of the user. It's a 12-digit number.
     /// This member is required.
     public var accountId: Swift.String?
@@ -2413,7 +2413,7 @@ public struct UpdateBudgetActionInput {
     }
 }
 
-public struct UpdateBudgetActionOutput {
+public struct UpdateBudgetActionOutput: Swift.Sendable {
     /// The account ID of the user. It's a 12-digit number.
     /// This member is required.
     public var accountId: Swift.String?
@@ -2442,7 +2442,7 @@ public struct UpdateBudgetActionOutput {
 }
 
 /// Request of UpdateNotification
-public struct UpdateNotificationInput {
+public struct UpdateNotificationInput: Swift.Sendable {
     /// The accountId that is associated with the budget whose notification you want to update.
     /// This member is required.
     public var accountId: Swift.String?
@@ -2471,13 +2471,13 @@ public struct UpdateNotificationInput {
 }
 
 /// Response of UpdateNotification
-public struct UpdateNotificationOutput {
+public struct UpdateNotificationOutput: Swift.Sendable {
 
     public init() { }
 }
 
 /// Request of UpdateSubscriber
-public struct UpdateSubscriberInput {
+public struct UpdateSubscriberInput: Swift.Sendable {
     /// The accountId that is associated with the budget whose subscriber you want to update.
     /// This member is required.
     public var accountId: Swift.String?
@@ -2511,7 +2511,7 @@ public struct UpdateSubscriberInput {
 }
 
 /// Response of UpdateSubscriber
-public struct UpdateSubscriberOutput {
+public struct UpdateSubscriberOutput: Swift.Sendable {
 
     public init() { }
 }

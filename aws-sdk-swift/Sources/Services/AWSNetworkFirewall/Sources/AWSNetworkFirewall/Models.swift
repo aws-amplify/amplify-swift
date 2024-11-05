@@ -28,8 +28,9 @@ import protocol ClientRuntime.ModeledError
 @_spi(SmithyReadWrite) import struct SmithyReadWrite.WritingClosureBox
 
 extension NetworkFirewallClientTypes {
+
     /// The value to use in an Amazon CloudWatch custom metric dimension. This is used in the PublishMetrics[CustomAction]. A CloudWatch custom metric dimension is a name/value pair that's part of the identity of a metric. Network Firewall sets the dimension name to CustomAction and you provide the dimension value. For more information about CloudWatch custom metric dimensions, see [Publishing Custom Metrics](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/publishingMetrics.html#usingDimensions) in the [Amazon CloudWatch User Guide](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/WhatIsCloudWatch.html).
-    public struct Dimension {
+    public struct Dimension: Swift.Sendable {
         /// The value to use in the custom metric dimension.
         /// This member is required.
         public var value: Swift.String?
@@ -41,12 +42,12 @@ extension NetworkFirewallClientTypes {
             self.value = value
         }
     }
-
 }
 
 extension NetworkFirewallClientTypes {
+
     /// Stateless inspection criteria that publishes the specified metrics to Amazon CloudWatch for the matching packet. This setting defines a CloudWatch dimension value to be published.
-    public struct PublishMetricAction {
+    public struct PublishMetricAction: Swift.Sendable {
         ///
         /// This member is required.
         public var dimensions: [NetworkFirewallClientTypes.Dimension]?
@@ -58,12 +59,12 @@ extension NetworkFirewallClientTypes {
             self.dimensions = dimensions
         }
     }
-
 }
 
 extension NetworkFirewallClientTypes {
+
     /// A custom action to use in stateless rule actions settings. This is used in [CustomAction].
-    public struct ActionDefinition {
+    public struct ActionDefinition: Swift.Sendable {
         /// Stateless inspection criteria that publishes the specified metrics to Amazon CloudWatch for the matching packet. This setting defines a CloudWatch dimension value to be published. You can pair this custom action with any of the standard stateless rule actions. For example, you could pair this in a rule action with the standard action that forwards the packet for stateful inspection. Then, when a packet matches the rule, Network Firewall publishes metrics for the packet and forwards it.
         public var publishMetricAction: NetworkFirewallClientTypes.PublishMetricAction?
 
@@ -74,12 +75,12 @@ extension NetworkFirewallClientTypes {
             self.publishMetricAction = publishMetricAction
         }
     }
-
 }
 
 extension NetworkFirewallClientTypes {
+
     /// A single IP address specification. This is used in the [MatchAttributes] source and destination specifications.
-    public struct Address {
+    public struct Address: Swift.Sendable {
         /// Specify an IP address or a block of IP addresses in Classless Inter-Domain Routing (CIDR) notation. Network Firewall supports all address ranges for IPv4 and IPv6. Examples:
         ///
         /// * To configure Network Firewall to inspect for the IP address 192.0.2.44, specify 192.0.2.44/32.
@@ -102,12 +103,11 @@ extension NetworkFirewallClientTypes {
             self.addressDefinition = addressDefinition
         }
     }
-
 }
 
 extension NetworkFirewallClientTypes {
 
-    public enum IdentifiedType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum IdentifiedType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case statelessRuleContainsTcpFlags
         case statelessRuleForwardingAsymmetrically
         case sdkUnknown(Swift.String)
@@ -135,8 +135,9 @@ extension NetworkFirewallClientTypes {
 }
 
 extension NetworkFirewallClientTypes {
+
     /// The analysis result for Network Firewall's stateless rule group analyzer. Every time you call [CreateRuleGroup], [UpdateRuleGroup], or [DescribeRuleGroup] on a stateless rule group, Network Firewall analyzes the stateless rule groups in your account and identifies the rules that might adversely effect your firewall's functionality. For example, if Network Firewall detects a rule that's routing traffic asymmetrically, which impacts the service's ability to properly process traffic, the service includes the rule in a list of analysis results.
-    public struct AnalysisResult {
+    public struct AnalysisResult: Swift.Sendable {
         /// Provides analysis details for the identified rule.
         public var analysisDetail: Swift.String?
         /// The priority number of the stateless rules identified in the analysis.
@@ -163,7 +164,6 @@ extension NetworkFirewallClientTypes {
             self.identifiedType = identifiedType
         }
     }
-
 }
 
 /// Your request is valid, but Network Firewall couldn't perform the operation because of a system problem. Retry your request.
@@ -316,7 +316,7 @@ public struct ThrottlingException: ClientRuntime.ModeledError, AWSClientRuntime.
     }
 }
 
-public struct AssociateFirewallPolicyInput {
+public struct AssociateFirewallPolicyInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the firewall. You must specify the ARN or the name, and you can specify both.
     public var firewallArn: Swift.String?
     /// The descriptive name of the firewall. You can't change the name of a firewall after you create it. You must specify the ARN or the name, and you can specify both.
@@ -341,7 +341,7 @@ public struct AssociateFirewallPolicyInput {
     }
 }
 
-public struct AssociateFirewallPolicyOutput {
+public struct AssociateFirewallPolicyOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the firewall.
     public var firewallArn: Swift.String?
     /// The descriptive name of the firewall. You can't change the name of a firewall after you create it.
@@ -391,7 +391,7 @@ public struct InsufficientCapacityException: ClientRuntime.ModeledError, AWSClie
 
 extension NetworkFirewallClientTypes {
 
-    public enum IPAddressType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum IPAddressType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case dualstack
         case ipv4
         case ipv6
@@ -422,8 +422,9 @@ extension NetworkFirewallClientTypes {
 }
 
 extension NetworkFirewallClientTypes {
+
     /// The ID for a subnet that you want to associate with the firewall. This is used with [CreateFirewall] and [AssociateSubnets]. Network Firewall creates an instance of the associated firewall in each subnet that you specify, to filter traffic in the subnet's Availability Zone.
-    public struct SubnetMapping {
+    public struct SubnetMapping: Swift.Sendable {
         /// The subnet's IP address type. You can't change the IP address type after you create the subnet.
         public var ipAddressType: NetworkFirewallClientTypes.IPAddressType?
         /// The unique identifier for the subnet.
@@ -439,10 +440,9 @@ extension NetworkFirewallClientTypes {
             self.subnetId = subnetId
         }
     }
-
 }
 
-public struct AssociateSubnetsInput {
+public struct AssociateSubnetsInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the firewall. You must specify the ARN or the name, and you can specify both.
     public var firewallArn: Swift.String?
     /// The descriptive name of the firewall. You can't change the name of a firewall after you create it. You must specify the ARN or the name, and you can specify both.
@@ -467,7 +467,7 @@ public struct AssociateSubnetsInput {
     }
 }
 
-public struct AssociateSubnetsOutput {
+public struct AssociateSubnetsOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the firewall.
     public var firewallArn: Swift.String?
     /// The descriptive name of the firewall. You can't change the name of a firewall after you create it.
@@ -493,7 +493,7 @@ public struct AssociateSubnetsOutput {
 
 extension NetworkFirewallClientTypes {
 
-    public enum AttachmentStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AttachmentStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case creating
         case deleting
         case error
@@ -533,8 +533,9 @@ extension NetworkFirewallClientTypes {
 }
 
 extension NetworkFirewallClientTypes {
+
     /// The configuration and status for a single subnet that you've specified for use by the Network Firewall firewall. This is part of the [FirewallStatus].
-    public struct Attachment {
+    public struct Attachment: Swift.Sendable {
         /// The identifier of the firewall endpoint that Network Firewall has instantiated in the subnet. You use this to identify the firewall endpoint in the VPC route tables, when you redirect the VPC traffic through the endpoint.
         public var endpointId: Swift.String?
         /// The current status of the firewall endpoint in the subnet. This value reflects both the instantiation of the endpoint in the VPC subnet and the sync states that are reported in the Config settings. When this value is READY, the endpoint is available and configured properly to handle network traffic. When the endpoint isn't available for traffic, this value will reflect its state, for example CREATING or DELETING.
@@ -557,12 +558,12 @@ extension NetworkFirewallClientTypes {
             self.subnetId = subnetId
         }
     }
-
 }
 
 extension NetworkFirewallClientTypes {
+
     /// General information about the IP set.
-    public struct IPSetMetadata {
+    public struct IPSetMetadata: Swift.Sendable {
         /// Describes the total number of CIDR blocks currently in use by the IP set references in a firewall. To determine how many CIDR blocks are available for you to use in a firewall, you can call AvailableCIDRCount.
         public var resolvedCIDRCount: Swift.Int?
 
@@ -573,12 +574,12 @@ extension NetworkFirewallClientTypes {
             self.resolvedCIDRCount = resolvedCIDRCount
         }
     }
-
 }
 
 extension NetworkFirewallClientTypes {
+
     /// Summarizes the CIDR blocks used by the IP set references in a firewall. Network Firewall calculates the number of CIDRs by taking an aggregated count of all CIDRs used by the IP sets you are referencing.
-    public struct CIDRSummary {
+    public struct CIDRSummary: Swift.Sendable {
         /// The number of CIDR blocks available for use by the IP set references in a firewall.
         public var availableCIDRCount: Swift.Int?
         /// The list of the IP set references used by a firewall.
@@ -597,12 +598,12 @@ extension NetworkFirewallClientTypes {
             self.utilizedCIDRCount = utilizedCIDRCount
         }
     }
-
 }
 
 extension NetworkFirewallClientTypes {
+
     /// The capacity usage summary of the resources used by the [ReferenceSets] in a firewall.
-    public struct CapacityUsageSummary {
+    public struct CapacityUsageSummary: Swift.Sendable {
         /// Describes the capacity usage of the CIDR blocks used by the IP set references in a firewall.
         public var cidRs: NetworkFirewallClientTypes.CIDRSummary?
 
@@ -613,12 +614,12 @@ extension NetworkFirewallClientTypes {
             self.cidRs = cidRs
         }
     }
-
 }
 
 extension NetworkFirewallClientTypes {
+
     /// Contains metadata about an Certificate Manager certificate.
-    public struct TlsCertificateData {
+    public struct TlsCertificateData: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the certificate.
         public var certificateArn: Swift.String?
         /// The serial number of the certificate.
@@ -641,12 +642,11 @@ extension NetworkFirewallClientTypes {
             self.statusMessage = statusMessage
         }
     }
-
 }
 
 extension NetworkFirewallClientTypes {
 
-    public enum RevocationCheckAction: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum RevocationCheckAction: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case drop
         case pass
         case reject
@@ -677,8 +677,9 @@ extension NetworkFirewallClientTypes {
 }
 
 extension NetworkFirewallClientTypes {
+
     /// Defines the actions to take on the SSL/TLS connection if the certificate presented by the server in the connection has a revoked or unknown status.
-    public struct CheckCertificateRevocationStatusActions {
+    public struct CheckCertificateRevocationStatusActions: Swift.Sendable {
         /// Configures how Network Firewall processes traffic when it determines that the certificate presented by the server in the SSL/TLS connection has a revoked status.
         ///
         /// * PASS - Allow the connection to continue, and pass subsequent packets to the stateful engine for inspection.
@@ -705,12 +706,11 @@ extension NetworkFirewallClientTypes {
             self.unknownStatusAction = unknownStatusAction
         }
     }
-
 }
 
 extension NetworkFirewallClientTypes {
 
-    public enum ConfigurationSyncState: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ConfigurationSyncState: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case capacityConstrained
         case inSync
         case pending
@@ -766,7 +766,7 @@ public struct LimitExceededException: ClientRuntime.ModeledError, AWSClientRunti
 
 extension NetworkFirewallClientTypes {
 
-    public enum EncryptionType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum EncryptionType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case awsOwnedKmsKey
         case customerKms
         case sdkUnknown(Swift.String)
@@ -794,8 +794,9 @@ extension NetworkFirewallClientTypes {
 }
 
 extension NetworkFirewallClientTypes {
+
     /// A complex type that contains optional Amazon Web Services Key Management Service (KMS) encryption settings for your Network Firewall resources. Your data is encrypted by default with an Amazon Web Services owned key that Amazon Web Services owns and manages for you. You can use either the Amazon Web Services owned key, or provide your own customer managed key. To learn more about KMS encryption of your Network Firewall resources, see [Encryption at rest with Amazon Web Services Key Managment Service](https://docs.aws.amazon.com/kms/latest/developerguide/kms-encryption-at-rest.html) in the Network Firewall Developer Guide.
-    public struct EncryptionConfiguration {
+    public struct EncryptionConfiguration: Swift.Sendable {
         /// The ID of the Amazon Web Services Key Management Service (KMS) customer managed key. You can use any of the key identifiers that KMS supports, unless you're using a key that's managed by another account. If you're using a key managed by another account, then specify the key ARN. For more information, see [Key ID](https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#key-id) in the Amazon Web Services KMS Developer Guide.
         public var keyId: Swift.String?
         /// The type of Amazon Web Services KMS key to use for encryption of your Network Firewall resources.
@@ -811,12 +812,12 @@ extension NetworkFirewallClientTypes {
             self.type = type
         }
     }
-
 }
 
 extension NetworkFirewallClientTypes {
+
     /// A key:value pair associated with an Amazon Web Services resource. The key:value pair can be anything you define. Typically, the tag key represents a category (such as "environment") and the tag value represents a specific value within that category (such as "test," "development," or "production"). You can add up to 50 tags to each Amazon Web Services resource.
-    public struct Tag {
+    public struct Tag: Swift.Sendable {
         /// The part of the key:value pair that defines a tag. You can use a tag key to describe a category of information, such as "customer." Tag keys are case-sensitive.
         /// This member is required.
         public var key: Swift.String?
@@ -833,10 +834,9 @@ extension NetworkFirewallClientTypes {
             self.value = value
         }
     }
-
 }
 
-public struct CreateFirewallInput {
+public struct CreateFirewallInput: Swift.Sendable {
     /// A flag indicating whether it is possible to delete the firewall. A setting of TRUE indicates that the firewall is protected against deletion. Use this setting to protect against accidentally deleting a firewall that is in use. When you create a firewall, the operation initializes this flag to TRUE.
     public var deleteProtection: Swift.Bool?
     /// A description of the firewall.
@@ -889,8 +889,9 @@ public struct CreateFirewallInput {
 }
 
 extension NetworkFirewallClientTypes {
+
     /// The firewall defines the configuration settings for an Network Firewall firewall. These settings include the firewall policy, the subnets in your VPC to use for the firewall endpoints, and any tags that are attached to the firewall Amazon Web Services resource. The status of the firewall, for example whether it's ready to filter network traffic, is provided in the corresponding [FirewallStatus]. You can retrieve both objects by calling [DescribeFirewall].
-    public struct Firewall {
+    public struct Firewall: Swift.Sendable {
         /// A flag indicating whether it is possible to delete the firewall. A setting of TRUE indicates that the firewall is protected against deletion. Use this setting to protect against accidentally deleting a firewall that is in use. When you create a firewall, the operation initializes this flag to TRUE.
         public var deleteProtection: Swift.Bool
         /// A description of the firewall.
@@ -949,12 +950,11 @@ extension NetworkFirewallClientTypes {
             self.vpcId = vpcId
         }
     }
-
 }
 
 extension NetworkFirewallClientTypes {
 
-    public enum FirewallStatusValue: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum FirewallStatusValue: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case deleting
         case provisioning
         case ready
@@ -986,7 +986,7 @@ extension NetworkFirewallClientTypes {
 
 extension NetworkFirewallClientTypes {
 
-    public enum PerObjectSyncStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum PerObjectSyncStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case capacityConstrained
         case inSync
         case pending
@@ -1017,8 +1017,9 @@ extension NetworkFirewallClientTypes {
 }
 
 extension NetworkFirewallClientTypes {
+
     /// Provides configuration status for a single policy or rule group that is used for a firewall endpoint. Network Firewall provides each endpoint with the rules that are configured in the firewall policy. Each time you add a subnet or modify the associated firewall policy, Network Firewall synchronizes the rules in the endpoint, so it can properly filter network traffic. This is part of a [SyncState] for a firewall.
-    public struct PerObjectStatus {
+    public struct PerObjectStatus: Swift.Sendable {
         /// Indicates whether this object is in sync with the version indicated in the update token.
         public var syncStatus: NetworkFirewallClientTypes.PerObjectSyncStatus?
         /// The current version of the object that is either in sync or pending synchronization.
@@ -1033,10 +1034,10 @@ extension NetworkFirewallClientTypes {
             self.updateToken = updateToken
         }
     }
-
 }
 
 extension NetworkFirewallClientTypes {
+
     /// The status of the firewall endpoint and firewall policy configuration for a single VPC subnet. For each VPC subnet that you associate with a firewall, Network Firewall does the following:
     ///
     /// * Instantiates a firewall endpoint in the subnet, ready to take traffic.
@@ -1045,7 +1046,7 @@ extension NetworkFirewallClientTypes {
     ///
     ///
     /// When you update a firewall, for example to add a subnet association or change a rule group in the firewall policy, the affected sync states reflect out-of-sync or not ready status until the changes are complete.
-    public struct SyncState {
+    public struct SyncState: Swift.Sendable {
         /// The attachment status of the firewall's association with a single VPC subnet. For each configured subnet, Network Firewall creates the attachment by instantiating the firewall endpoint in the subnet so that it's ready to take traffic. This is part of the [FirewallStatus].
         public var attachment: NetworkFirewallClientTypes.Attachment?
         /// The configuration status of the firewall endpoint in a single VPC subnet. Network Firewall provides each endpoint with the rules that are configured in the firewall policy. Each time you add a subnet or modify the associated firewall policy, Network Firewall synchronizes the rules in the endpoint, so it can properly filter network traffic. This is part of the [FirewallStatus].
@@ -1060,12 +1061,12 @@ extension NetworkFirewallClientTypes {
             self.config = config
         }
     }
-
 }
 
 extension NetworkFirewallClientTypes {
+
     /// Detailed information about the current status of a [Firewall]. You can retrieve this for a firewall by calling [DescribeFirewall] and providing the firewall name and ARN.
-    public struct FirewallStatus {
+    public struct FirewallStatus: Swift.Sendable {
         /// Describes the capacity usage of the resources contained in a firewall's reference sets. Network Firewall calclulates the capacity usage by taking an aggregated count of all of the resources used by all of the reference sets in a firewall.
         public var capacityUsageSummary: NetworkFirewallClientTypes.CapacityUsageSummary?
         /// The configuration sync state for the firewall. This summarizes the sync states reported in the Config settings for all of the Availability Zones where you have configured the firewall. When you create a firewall or update its configuration, for example by adding a rule group to its firewall policy, Network Firewall distributes the configuration changes to all zones where the firewall is in use. This summary indicates whether the configuration changes have been applied everywhere. This status must be IN_SYNC for the firewall to be ready for use, but it doesn't indicate that the firewall is ready. The Status setting indicates firewall readiness.
@@ -1090,10 +1091,9 @@ extension NetworkFirewallClientTypes {
             self.syncStates = syncStates
         }
     }
-
 }
 
-public struct CreateFirewallOutput {
+public struct CreateFirewallOutput: Swift.Sendable {
     /// The configuration settings for the firewall. These settings include the firewall policy and the subnets in your VPC to use for the firewall endpoints.
     public var firewall: NetworkFirewallClientTypes.Firewall?
     /// Detailed information about the current status of a [Firewall]. You can retrieve this for a firewall by calling [DescribeFirewall] and providing the firewall name and ARN.
@@ -1110,8 +1110,9 @@ public struct CreateFirewallOutput {
 }
 
 extension NetworkFirewallClientTypes {
+
     /// A list of IP addresses and address ranges, in CIDR notation. This is part of a [RuleVariables].
-    public struct IPSet {
+    public struct IPSet: Swift.Sendable {
         /// The list of IP addresses and address ranges, in CIDR notation.
         /// This member is required.
         public var definition: [Swift.String]?
@@ -1123,12 +1124,12 @@ extension NetworkFirewallClientTypes {
             self.definition = definition
         }
     }
-
 }
 
 extension NetworkFirewallClientTypes {
+
     /// Contains variables that you can use to override default Suricata settings in your firewall policy.
-    public struct PolicyVariables {
+    public struct PolicyVariables: Swift.Sendable {
         /// The IPv4 or IPv6 addresses in CIDR notation to use for the Suricata HOME_NET variable. If your firewall uses an inspection VPC, you might want to override the HOME_NET variable with the CIDRs of your home networks. If you don't override HOME_NET with your own CIDRs, Network Firewall by default uses the CIDR of your inspection VPC.
         public var ruleVariables: [Swift.String: NetworkFirewallClientTypes.IPSet]?
 
@@ -1139,12 +1140,27 @@ extension NetworkFirewallClientTypes {
             self.ruleVariables = ruleVariables
         }
     }
-
 }
 
 extension NetworkFirewallClientTypes {
 
-    public enum RuleOrder: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    /// Describes the amount of time that can pass without any traffic sent through the firewall before the firewall determines that the connection is idle and Network Firewall removes the flow entry from its flow table. Existing connections and flows are not impacted when you update this value. Only new connections after you update this value are impacted.
+    public struct FlowTimeouts: Swift.Sendable {
+        /// The number of seconds that can pass without any TCP traffic sent through the firewall before the firewall determines that the connection is idle. After the idle timeout passes, data packets are dropped, however, the next TCP SYN packet is considered a new flow and is processed by the firewall. Clients or targets can use TCP keepalive packets to reset the idle timeout. You can define the TcpIdleTimeoutSeconds value to be between 60 and 6000 seconds. If no value is provided, it defaults to 350 seconds.
+        public var tcpIdleTimeoutSeconds: Swift.Int?
+
+        public init(
+            tcpIdleTimeoutSeconds: Swift.Int? = nil
+        )
+        {
+            self.tcpIdleTimeoutSeconds = tcpIdleTimeoutSeconds
+        }
+    }
+}
+
+extension NetworkFirewallClientTypes {
+
+    public enum RuleOrder: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case defaultActionOrder
         case strictOrder
         case sdkUnknown(Swift.String)
@@ -1173,7 +1189,7 @@ extension NetworkFirewallClientTypes {
 
 extension NetworkFirewallClientTypes {
 
-    public enum StreamExceptionPolicy: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum StreamExceptionPolicy: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case `continue`
         case drop
         case reject
@@ -1204,8 +1220,11 @@ extension NetworkFirewallClientTypes {
 }
 
 extension NetworkFirewallClientTypes {
+
     /// Configuration settings for the handling of the stateful rule groups in a firewall policy.
-    public struct StatefulEngineOptions {
+    public struct StatefulEngineOptions: Swift.Sendable {
+        /// Configures the amount of time that can pass without any traffic sent through the firewall before the firewall determines that the connection is idle.
+        public var flowTimeouts: NetworkFirewallClientTypes.FlowTimeouts?
         /// Indicates how to manage the order of stateful rule evaluation for the policy. STRICT_ORDER is the default and recommended option. With STRICT_ORDER, provide your rules in the order that you want them to be evaluated. You can then choose one or more default actions for packets that don't match any rules. Choose STRICT_ORDER to have the stateful rules engine determine the evaluation order of your rules. The default action for this rule order is PASS, followed by DROP, REJECT, and ALERT actions. Stateful rules are provided to the rule engine as Suricata compatible strings, and Suricata evaluates them based on your settings. For more information, see [Evaluation order for stateful rules](https://docs.aws.amazon.com/network-firewall/latest/developerguide/suricata-rule-evaluation-order.html) in the Network Firewall Developer Guide.
         public var ruleOrder: NetworkFirewallClientTypes.RuleOrder?
         /// Configures how Network Firewall processes traffic when a network connection breaks midstream. Network connections can break due to disruptions in external networks or within the firewall itself.
@@ -1218,20 +1237,21 @@ extension NetworkFirewallClientTypes {
         public var streamExceptionPolicy: NetworkFirewallClientTypes.StreamExceptionPolicy?
 
         public init(
+            flowTimeouts: NetworkFirewallClientTypes.FlowTimeouts? = nil,
             ruleOrder: NetworkFirewallClientTypes.RuleOrder? = nil,
             streamExceptionPolicy: NetworkFirewallClientTypes.StreamExceptionPolicy? = nil
         )
         {
+            self.flowTimeouts = flowTimeouts
             self.ruleOrder = ruleOrder
             self.streamExceptionPolicy = streamExceptionPolicy
         }
     }
-
 }
 
 extension NetworkFirewallClientTypes {
 
-    public enum OverrideAction: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum OverrideAction: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case dropToAlert
         case sdkUnknown(Swift.String)
 
@@ -1256,8 +1276,9 @@ extension NetworkFirewallClientTypes {
 }
 
 extension NetworkFirewallClientTypes {
+
     /// The setting that allows the policy owner to change the behavior of the rule group within a policy.
-    public struct StatefulRuleGroupOverride {
+    public struct StatefulRuleGroupOverride: Swift.Sendable {
         /// The action that changes the rule group from DROP to ALERT. This only applies to managed rule groups.
         public var action: NetworkFirewallClientTypes.OverrideAction?
 
@@ -1268,12 +1289,12 @@ extension NetworkFirewallClientTypes {
             self.action = action
         }
     }
-
 }
 
 extension NetworkFirewallClientTypes {
+
     /// Identifier for a single stateful rule group, used in a firewall policy to refer to a rule group.
-    public struct StatefulRuleGroupReference {
+    public struct StatefulRuleGroupReference: Swift.Sendable {
         /// The action that allows the policy owner to override the behavior of the rule group within a policy.
         public var `override`: NetworkFirewallClientTypes.StatefulRuleGroupOverride?
         /// An integer setting that indicates the order in which to run the stateful rule groups in a single [FirewallPolicy]. This setting only applies to firewall policies that specify the STRICT_ORDER rule order in the stateful engine options settings. Network Firewall evalutes each stateful rule group against a packet starting with the group that has the lowest priority setting. You must ensure that the priority settings are unique within each policy. You can change the priority settings of your rule groups at any time. To make it easier to insert rule groups later, number them so there's a wide range in between, for example use 100, 200, and so on.
@@ -1293,16 +1314,16 @@ extension NetworkFirewallClientTypes {
             self.resourceArn = resourceArn
         }
     }
-
 }
 
 extension NetworkFirewallClientTypes {
+
     /// An optional, non-standard action to use for stateless packet handling. You can define this in addition to the standard action that you must specify. You define and name the custom actions that you want to be able to use, and then you reference them by name in your actions settings. You can use custom actions in the following places:
     ///
     /// * In a rule group's [StatelessRulesAndCustomActions] specification. The custom actions are available for use by name inside the StatelessRulesAndCustomActions where you define them. You can use them for your stateless rule actions to specify what to do with a packet that matches the rule's match attributes.
     ///
     /// * In a [FirewallPolicy] specification, in StatelessCustomActions. The custom actions are available for use inside the policy where you define them. You can use them for the policy's default stateless actions settings to specify what to do with packets that don't match any of the policy's stateless rules.
-    public struct CustomAction {
+    public struct CustomAction: Swift.Sendable {
         /// The custom action associated with the action name.
         /// This member is required.
         public var actionDefinition: NetworkFirewallClientTypes.ActionDefinition?
@@ -1319,12 +1340,12 @@ extension NetworkFirewallClientTypes {
             self.actionName = actionName
         }
     }
-
 }
 
 extension NetworkFirewallClientTypes {
+
     /// Identifier for a single stateless rule group, used in a firewall policy to refer to the rule group.
-    public struct StatelessRuleGroupReference {
+    public struct StatelessRuleGroupReference: Swift.Sendable {
         /// An integer setting that indicates the order in which to run the stateless rule groups in a single [FirewallPolicy]. Network Firewall applies each stateless rule group to a packet starting with the group that has the lowest priority setting. You must ensure that the priority settings are unique within each policy.
         /// This member is required.
         public var priority: Swift.Int?
@@ -1341,12 +1362,12 @@ extension NetworkFirewallClientTypes {
             self.resourceArn = resourceArn
         }
     }
-
 }
 
 extension NetworkFirewallClientTypes {
+
     /// The firewall policy defines the behavior of a firewall using a collection of stateless and stateful rule groups and other settings. You can use one firewall policy for multiple firewalls. This, along with [FirewallPolicyResponse], define the policy. You can retrieve all objects for a firewall policy by calling [DescribeFirewallPolicy].
-    public struct FirewallPolicy {
+    public struct FirewallPolicy: Swift.Sendable {
         /// Contains variables that you can use to override default Suricata settings in your firewall policy.
         public var policyVariables: NetworkFirewallClientTypes.PolicyVariables?
         /// The default actions to take on a packet that doesn't match any stateful rules. The stateful default action is optional, and is only valid when using the strict rule order. Valid values of the stateful default action:
@@ -1402,10 +1423,9 @@ extension NetworkFirewallClientTypes {
             self.tlsInspectionConfigurationArn = tlsInspectionConfigurationArn
         }
     }
-
 }
 
-public struct CreateFirewallPolicyInput {
+public struct CreateFirewallPolicyInput: Swift.Sendable {
     /// A description of the firewall policy.
     public var description: Swift.String?
     /// Indicates whether you want Network Firewall to just check the validity of the request, rather than run the request. If set to TRUE, Network Firewall checks whether the request can run successfully, but doesn't actually make the requested changes. The call returns the value that the request would return if you ran it with dry run set to FALSE, but doesn't make additions or changes to your resources. This option allows you to make sure that you have the required permissions to run the request and that your request parameters are valid. If set to FALSE, Network Firewall makes the requested changes to your resources.
@@ -1441,7 +1461,7 @@ public struct CreateFirewallPolicyInput {
 
 extension NetworkFirewallClientTypes {
 
-    public enum ResourceStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ResourceStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case active
         case deleting
         case error
@@ -1472,8 +1492,9 @@ extension NetworkFirewallClientTypes {
 }
 
 extension NetworkFirewallClientTypes {
+
     /// The high-level properties of a firewall policy. This, along with the [FirewallPolicy], define the policy. You can retrieve all objects for a firewall policy by calling [DescribeFirewallPolicy].
-    public struct FirewallPolicyResponse {
+    public struct FirewallPolicyResponse: Swift.Sendable {
         /// The number of capacity units currently consumed by the policy's stateful rules.
         public var consumedStatefulRuleCapacity: Swift.Int?
         /// The number of capacity units currently consumed by the policy's stateless rules.
@@ -1527,10 +1548,9 @@ extension NetworkFirewallClientTypes {
             self.tags = tags
         }
     }
-
 }
 
-public struct CreateFirewallPolicyOutput {
+public struct CreateFirewallPolicyOutput: Swift.Sendable {
     /// The high-level properties of a firewall policy. This, along with the [FirewallPolicy], define the policy. You can retrieve all objects for a firewall policy by calling [DescribeFirewallPolicy].
     /// This member is required.
     public var firewallPolicyResponse: NetworkFirewallClientTypes.FirewallPolicyResponse?
@@ -1549,8 +1569,9 @@ public struct CreateFirewallPolicyOutput {
 }
 
 extension NetworkFirewallClientTypes {
+
     /// Configures one or more IP set references for a Suricata-compatible rule group. This is used in [CreateRuleGroup] or [UpdateRuleGroup]. An IP set reference is a rule variable that references resources that you create and manage in another Amazon Web Services service, such as an Amazon VPC prefix list. Network Firewall IP set references enable you to dynamically update the contents of your rules. When you create, update, or delete the resource you are referencing in your rule, Network Firewall automatically updates the rule's content with the changes. For more information about IP set references in Network Firewall, see [Using IP set references](https://docs.aws.amazon.com/network-firewall/latest/developerguide/rule-groups-ip-set-references) in the Network Firewall Developer Guide. Network Firewall currently supports [Amazon VPC prefix lists](https://docs.aws.amazon.com/vpc/latest/userguide/managed-prefix-lists.html) and [resource groups](https://docs.aws.amazon.com/network-firewall/latest/developerguide/rule-groups-ip-set-references.html#rule-groups-referencing-resource-groups) in IP set references.
-    public struct IPSetReference {
+    public struct IPSetReference: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the resource that you are referencing in your rule group.
         public var referenceArn: Swift.String?
 
@@ -1561,12 +1582,12 @@ extension NetworkFirewallClientTypes {
             self.referenceArn = referenceArn
         }
     }
-
 }
 
 extension NetworkFirewallClientTypes {
+
     /// Contains a set of IP set references.
-    public struct ReferenceSets {
+    public struct ReferenceSets: Swift.Sendable {
         /// The list of IP set references.
         public var ipSetReferences: [Swift.String: NetworkFirewallClientTypes.IPSetReference]?
 
@@ -1577,12 +1598,11 @@ extension NetworkFirewallClientTypes {
             self.ipSetReferences = ipSetReferences
         }
     }
-
 }
 
 extension NetworkFirewallClientTypes {
 
-    public enum GeneratedRulesType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum GeneratedRulesType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case allowlist
         case denylist
         case sdkUnknown(Swift.String)
@@ -1611,7 +1631,7 @@ extension NetworkFirewallClientTypes {
 
 extension NetworkFirewallClientTypes {
 
-    public enum TargetType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum TargetType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case httpHost
         case tlsSni
         case sdkUnknown(Swift.String)
@@ -1639,8 +1659,9 @@ extension NetworkFirewallClientTypes {
 }
 
 extension NetworkFirewallClientTypes {
+
     /// Stateful inspection criteria for a domain list rule group. For HTTPS traffic, domain filtering is SNI-based. It uses the server name indicator extension of the TLS handshake. By default, Network Firewall domain list inspection only includes traffic coming from the VPC where you deploy the firewall. To inspect traffic from IP addresses outside of the deployment VPC, you set the HOME_NET rule variable to include the CIDR range of the deployment VPC plus the other CIDR ranges. For more information, see [RuleVariables] in this guide and [Stateful domain list rule groups in Network Firewall](https://docs.aws.amazon.com/network-firewall/latest/developerguide/stateful-rule-groups-domain-names.html) in the Network Firewall Developer Guide.
-    public struct RulesSourceList {
+    public struct RulesSourceList: Swift.Sendable {
         /// Whether you want to allow or deny access to the domains in your target list.
         /// This member is required.
         public var generatedRulesType: NetworkFirewallClientTypes.GeneratedRulesType?
@@ -1666,12 +1687,11 @@ extension NetworkFirewallClientTypes {
             self.targets = targets
         }
     }
-
 }
 
 extension NetworkFirewallClientTypes {
 
-    public enum StatefulAction: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum StatefulAction: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case alert
         case drop
         case pass
@@ -1706,7 +1726,7 @@ extension NetworkFirewallClientTypes {
 
 extension NetworkFirewallClientTypes {
 
-    public enum StatefulRuleDirection: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum StatefulRuleDirection: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case any
         case forward
         case sdkUnknown(Swift.String)
@@ -1735,7 +1755,7 @@ extension NetworkFirewallClientTypes {
 
 extension NetworkFirewallClientTypes {
 
-    public enum StatefulRuleProtocol: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum StatefulRuleProtocol: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case any
         case dcerpc
         case dhcp
@@ -1814,8 +1834,9 @@ extension NetworkFirewallClientTypes {
 }
 
 extension NetworkFirewallClientTypes {
+
     /// The basic rule criteria for Network Firewall to use to inspect packet headers in stateful traffic flow inspection. Traffic flows that match the criteria are a match for the corresponding [StatefulRule].
-    public struct Header {
+    public struct Header: Swift.Sendable {
         /// The destination IP address or address range to inspect for, in CIDR notation. To match with any address, specify ANY. Specify an IP address or a block of IP addresses in Classless Inter-Domain Routing (CIDR) notation. Network Firewall supports all address ranges for IPv4 and IPv6. Examples:
         ///
         /// * To configure Network Firewall to inspect for the IP address 192.0.2.44, specify 192.0.2.44/32.
@@ -1874,12 +1895,12 @@ extension NetworkFirewallClientTypes {
             self.sourcePort = sourcePort
         }
     }
-
 }
 
 extension NetworkFirewallClientTypes {
+
     /// Additional settings for a stateful rule. This is part of the [StatefulRule] configuration.
-    public struct RuleOption {
+    public struct RuleOption: Swift.Sendable {
         /// The keyword for the Suricata compatible rule option. You must include a sid (signature ID), and can optionally include other keywords. For information about Suricata compatible keywords, see [Rule options](https://suricata.readthedocs.io/en/suricata-6.0.9/rules/intro.html#rule-options) in the Suricata documentation.
         /// This member is required.
         public var keyword: Swift.String?
@@ -1895,12 +1916,12 @@ extension NetworkFirewallClientTypes {
             self.settings = settings
         }
     }
-
 }
 
 extension NetworkFirewallClientTypes {
+
     /// A single Suricata rules specification, for use in a stateful rule group. Use this option to specify a simple Suricata rule with protocol, source and destination, ports, direction, and rule options. For information about the Suricata Rules format, see [Rules Format](https://suricata.readthedocs.io/en/suricata-6.0.9/rules/intro.html).
-    public struct StatefulRule {
+    public struct StatefulRule: Swift.Sendable {
         /// Defines what Network Firewall should do with the packets in a traffic flow when the flow matches the stateful rule criteria. For all actions, Network Firewall performs the specified action and discontinues stateful inspection of the traffic flow. The actions for a stateful rule are defined as follows:
         ///
         /// * PASS - Permits the packets to go to the intended destination.
@@ -1908,6 +1929,8 @@ extension NetworkFirewallClientTypes {
         /// * DROP - Blocks the packets from going to the intended destination and sends an alert log message, if alert logging is configured in the [Firewall][LoggingConfiguration].
         ///
         /// * ALERT - Sends an alert log message, if alert logging is configured in the [Firewall][LoggingConfiguration]. You can use this action to test a rule that you intend to use to drop traffic. You can enable the rule with ALERT action, verify in the logs that the rule is filtering as you want, then change the action to DROP.
+        ///
+        /// * REJECT - Drops traffic that matches the conditions of the stateful rule, and sends a TCP reset packet back to sender of the packet. A TCP reset packet is a packet with no payload and an RST bit contained in the TCP header flags. REJECT is available only for TCP traffic. This option doesn't support FTP or IMAP protocols.
         /// This member is required.
         public var action: NetworkFirewallClientTypes.StatefulAction?
         /// The stateful inspection criteria for this rule, used to inspect traffic flows.
@@ -1928,12 +1951,12 @@ extension NetworkFirewallClientTypes {
             self.ruleOptions = ruleOptions
         }
     }
-
 }
 
 extension NetworkFirewallClientTypes {
+
     /// A single port range specification. This is used for source and destination port ranges in the stateless rule [MatchAttributes], SourcePorts, and DestinationPorts settings.
-    public struct PortRange {
+    public struct PortRange: Swift.Sendable {
         /// The lower limit of the port range. This must be less than or equal to the ToPort specification.
         /// This member is required.
         public var fromPort: Swift.Int
@@ -1950,12 +1973,11 @@ extension NetworkFirewallClientTypes {
             self.toPort = toPort
         }
     }
-
 }
 
 extension NetworkFirewallClientTypes {
 
-    public enum TCPFlag: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum TCPFlag: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case ack
         case cwr
         case ece
@@ -2001,8 +2023,9 @@ extension NetworkFirewallClientTypes {
 }
 
 extension NetworkFirewallClientTypes {
+
     /// TCP flags and masks to inspect packets for, used in stateless rules [MatchAttributes] settings.
-    public struct TCPFlagField {
+    public struct TCPFlagField: Swift.Sendable {
         /// Used in conjunction with the Masks setting to define the flags that must be set and flags that must not be set in order for the packet to match. This setting can only specify values that are also specified in the Masks setting. For the flags that are specified in the masks setting, the following must be true for the packet to match:
         ///
         /// * The ones that are set in this flags setting must be set in the packet.
@@ -2022,12 +2045,12 @@ extension NetworkFirewallClientTypes {
             self.masks = masks
         }
     }
-
 }
 
 extension NetworkFirewallClientTypes {
+
     /// Criteria for Network Firewall to use to inspect an individual packet in stateless rule inspection. Each match attributes set can include one or more items such as IP address, CIDR range, port number, protocol, and TCP flags.
-    public struct MatchAttributes {
+    public struct MatchAttributes: Swift.Sendable {
         /// The destination ports to inspect for. If not specified, this matches with any destination port. This setting is only used for protocols 6 (TCP) and 17 (UDP). You can specify individual ports, for example 1994 and you can specify port ranges, for example 1990:1994.
         public var destinationPorts: [NetworkFirewallClientTypes.PortRange]?
         /// The destination IP addresses and address ranges to inspect for, in CIDR notation. If not specified, this matches with any destination address.
@@ -2058,12 +2081,12 @@ extension NetworkFirewallClientTypes {
             self.tcpFlags = tcpFlags
         }
     }
-
 }
 
 extension NetworkFirewallClientTypes {
+
     /// The inspection criteria and action for a single stateless rule. Network Firewall inspects each packet for the specified matching criteria. When a packet matches the criteria, Network Firewall performs the rule's actions on the packet.
-    public struct RuleDefinition {
+    public struct RuleDefinition: Swift.Sendable {
         /// The actions to take on a packet that matches one of the stateless rule definition's match attributes. You must specify a standard action and you can add custom actions. Network Firewall only forwards a packet for stateful rule inspection if you specify aws:forward_to_sfe for a rule that the packet matches, or if the packet doesn't match any stateless rule and you specify aws:forward_to_sfe for the StatelessDefaultActions setting for the [FirewallPolicy]. For every rule, you must specify exactly one of the following standard actions.
         ///
         /// * aws:pass - Discontinues all inspection of the packet and permits it to go to its intended destination.
@@ -2089,12 +2112,12 @@ extension NetworkFirewallClientTypes {
             self.matchAttributes = matchAttributes
         }
     }
-
 }
 
 extension NetworkFirewallClientTypes {
+
     /// A single stateless rule. This is used in [StatelessRulesAndCustomActions].
-    public struct StatelessRule {
+    public struct StatelessRule: Swift.Sendable {
         /// Indicates the order in which to run this rule relative to all of the rules that are defined for a stateless rule group. Network Firewall evaluates the rules in a rule group starting with the lowest priority setting. You must ensure that the priority settings are unique for the rule group. Each stateless rule group uses exactly one StatelessRulesAndCustomActions object, and each StatelessRulesAndCustomActions contains exactly one StatelessRules object. To ensure unique priority settings for your rule groups, set unique priorities for the stateless rules that you define inside any single StatelessRules object. You can change the priority settings of your rules at any time. To make it easier to insert rules later, number them so there's a wide range in between, for example use 100, 200, and so on.
         /// This member is required.
         public var priority: Swift.Int?
@@ -2111,12 +2134,12 @@ extension NetworkFirewallClientTypes {
             self.ruleDefinition = ruleDefinition
         }
     }
-
 }
 
 extension NetworkFirewallClientTypes {
+
     /// Stateless inspection criteria. Each stateless rule group uses exactly one of these data types to define its stateless rules.
-    public struct StatelessRulesAndCustomActions {
+    public struct StatelessRulesAndCustomActions: Swift.Sendable {
         /// Defines an array of individual custom action definitions that are available for use by the stateless rules in this StatelessRulesAndCustomActions specification. You name each custom action that you define, and then you can use it by name in your [StatelessRule][RuleDefinition]Actions specification.
         public var customActions: [NetworkFirewallClientTypes.CustomAction]?
         /// Defines the set of stateless rules for use in a stateless rule group.
@@ -2132,12 +2155,12 @@ extension NetworkFirewallClientTypes {
             self.statelessRules = statelessRules
         }
     }
-
 }
 
 extension NetworkFirewallClientTypes {
+
     /// The stateless or stateful rules definitions for use in a single rule group. Each rule group requires a single RulesSource. You can use an instance of this for either stateless rules or stateful rules.
-    public struct RulesSource {
+    public struct RulesSource: Swift.Sendable {
         /// Stateful inspection criteria for a domain list rule group.
         public var rulesSourceList: NetworkFirewallClientTypes.RulesSourceList?
         /// Stateful inspection criteria, provided in Suricata compatible rules. Suricata is an open-source threat detection framework that includes a standard rule-based language for network traffic inspection. These rules contain the inspection criteria and the action to take for traffic that matches the criteria, so this type of rule group doesn't have a separate action setting. You can't use the priority keyword if the RuleOrder option in [StatefulRuleOptions] is set to STRICT_ORDER.
@@ -2160,12 +2183,12 @@ extension NetworkFirewallClientTypes {
             self.statelessRulesAndCustomActions = statelessRulesAndCustomActions
         }
     }
-
 }
 
 extension NetworkFirewallClientTypes {
+
     /// A set of port ranges for use in the rules in a rule group.
-    public struct PortSet {
+    public struct PortSet: Swift.Sendable {
         /// The set of port ranges.
         public var definition: [Swift.String]?
 
@@ -2176,12 +2199,12 @@ extension NetworkFirewallClientTypes {
             self.definition = definition
         }
     }
-
 }
 
 extension NetworkFirewallClientTypes {
+
     /// Settings that are available for use in the rules in the [RuleGroup] where this is defined.
-    public struct RuleVariables {
+    public struct RuleVariables: Swift.Sendable {
         /// A list of IP addresses and address ranges, in CIDR notation.
         public var ipSets: [Swift.String: NetworkFirewallClientTypes.IPSet]?
         /// A list of port ranges.
@@ -2196,12 +2219,12 @@ extension NetworkFirewallClientTypes {
             self.portSets = portSets
         }
     }
-
 }
 
 extension NetworkFirewallClientTypes {
+
     /// Additional options governing how Network Firewall handles the rule group. You can only use these for stateful rule groups.
-    public struct StatefulRuleOptions {
+    public struct StatefulRuleOptions: Swift.Sendable {
         /// Indicates how to manage the order of the rule evaluation for the rule group. DEFAULT_ACTION_ORDER is the default behavior. Stateful rules are provided to the rule engine as Suricata compatible strings, and Suricata evaluates them based on certain settings. For more information, see [Evaluation order for stateful rules](https://docs.aws.amazon.com/network-firewall/latest/developerguide/suricata-rule-evaluation-order.html) in the Network Firewall Developer Guide.
         public var ruleOrder: NetworkFirewallClientTypes.RuleOrder?
 
@@ -2212,12 +2235,12 @@ extension NetworkFirewallClientTypes {
             self.ruleOrder = ruleOrder
         }
     }
-
 }
 
 extension NetworkFirewallClientTypes {
+
     /// The object that defines the rules in a rule group. This, along with [RuleGroupResponse], define the rule group. You can retrieve all objects for a rule group by calling [DescribeRuleGroup]. Network Firewall uses a rule group to inspect and control network traffic. You define stateless rule groups to inspect individual packets and you define stateful rule groups to inspect packets in the context of their traffic flow. To use a rule group, you include it by reference in an Network Firewall firewall policy, then you use the policy in a firewall. You can reference a rule group from more than one firewall policy, and you can use a firewall policy in more than one firewall.
-    public struct RuleGroup {
+    public struct RuleGroup: Swift.Sendable {
         /// The list of a rule group's reference sets.
         public var referenceSets: NetworkFirewallClientTypes.ReferenceSets?
         /// Settings that are available for use in the rules in the rule group. You can only use these for stateful rule groups.
@@ -2241,12 +2264,12 @@ extension NetworkFirewallClientTypes {
             self.statefulRuleOptions = statefulRuleOptions
         }
     }
-
 }
 
 extension NetworkFirewallClientTypes {
+
     /// High-level information about the managed rule group that your own rule group is copied from. You can use the the metadata to track version updates made to the originating rule group. You can retrieve all objects for a rule group by calling [DescribeRuleGroup](https://docs.aws.amazon.com/network-firewall/latest/APIReference/API_DescribeRuleGroup.html).
-    public struct SourceMetadata {
+    public struct SourceMetadata: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the rule group that your own rule group is copied from.
         public var sourceArn: Swift.String?
         /// The update token of the Amazon Web Services managed rule group that your own rule group is copied from. To determine the update token for the managed rule group, call [DescribeRuleGroup](https://docs.aws.amazon.com/network-firewall/latest/APIReference/API_DescribeRuleGroup.html#networkfirewall-DescribeRuleGroup-response-UpdateToken).
@@ -2261,12 +2284,11 @@ extension NetworkFirewallClientTypes {
             self.sourceUpdateToken = sourceUpdateToken
         }
     }
-
 }
 
 extension NetworkFirewallClientTypes {
 
-    public enum RuleGroupType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum RuleGroupType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case stateful
         case stateless
         case sdkUnknown(Swift.String)
@@ -2293,7 +2315,7 @@ extension NetworkFirewallClientTypes {
     }
 }
 
-public struct CreateRuleGroupInput {
+public struct CreateRuleGroupInput: Swift.Sendable {
     /// Indicates whether you want Network Firewall to analyze the stateless rules in the rule group for rule behavior such as asymmetric routing. If set to TRUE, Network Firewall runs the analysis and then creates the rule group for you. To run the stateless rule group analyzer without creating the rule group, set DryRun to TRUE.
     public var analyzeRuleGroup: Swift.Bool?
     /// The maximum operating resources that this rule group can use. Rule group capacity is fixed at creation. When you update a rule group, you are limited to this capacity. When you reference a rule group from a firewall policy, Network Firewall reserves this capacity for the rule group. You can retrieve the capacity that would be required for a rule group before you create the rule group by calling [CreateRuleGroup] with DryRun set to TRUE. You can't change or exceed this capacity when you update the rule group, so leave room for your rule group to grow. Capacity for a stateless rule group For a stateless rule group, the capacity required is the sum of the capacity requirements of the individual rules that you expect to have in the rule group. To calculate the capacity requirement of a single rule, multiply the capacity requirement values of each of the rule's match settings:
@@ -2358,8 +2380,9 @@ public struct CreateRuleGroupInput {
 }
 
 extension NetworkFirewallClientTypes {
+
     /// The high-level properties of a rule group. This, along with the [RuleGroup], define the rule group. You can retrieve all objects for a rule group by calling [DescribeRuleGroup].
-    public struct RuleGroupResponse {
+    public struct RuleGroupResponse: Swift.Sendable {
         /// The list of analysis results for AnalyzeRuleGroup. If you set AnalyzeRuleGroup to TRUE in [CreateRuleGroup], [UpdateRuleGroup], or [DescribeRuleGroup], Network Firewall analyzes the rule group and identifies the rules that might adversely effect your firewall's functionality. For example, if Network Firewall detects a rule that's routing traffic asymmetrically, which impacts the service's ability to properly process traffic, the service includes the rule in the list of analysis results.
         public var analysisResults: [NetworkFirewallClientTypes.AnalysisResult]?
         /// The maximum operating resources that this rule group can use. Rule group capacity is fixed at creation. When you update a rule group, you are limited to this capacity. When you reference a rule group from a firewall policy, Network Firewall reserves this capacity for the rule group. You can retrieve the capacity that would be required for a rule group before you create the rule group by calling [CreateRuleGroup] with DryRun set to TRUE.
@@ -2429,10 +2452,9 @@ extension NetworkFirewallClientTypes {
             self.type = type
         }
     }
-
 }
 
-public struct CreateRuleGroupOutput {
+public struct CreateRuleGroupOutput: Swift.Sendable {
     /// The high-level properties of a rule group. This, along with the [RuleGroup], define the rule group. You can retrieve all objects for a rule group by calling [DescribeRuleGroup].
     /// This member is required.
     public var ruleGroupResponse: NetworkFirewallClientTypes.RuleGroupResponse?
@@ -2451,8 +2473,9 @@ public struct CreateRuleGroupOutput {
 }
 
 extension NetworkFirewallClientTypes {
+
     /// Settings that define the Secure Sockets Layer/Transport Layer Security (SSL/TLS) traffic that Network Firewall should decrypt for inspection by the stateful rule engine.
-    public struct ServerCertificateScope {
+    public struct ServerCertificateScope: Swift.Sendable {
         /// The destination ports to decrypt for inspection, in Transmission Control Protocol (TCP) format. If not specified, this matches with any destination port. You can specify individual ports, for example 1994, and you can specify port ranges, such as 1990:1994.
         public var destinationPorts: [NetworkFirewallClientTypes.PortRange]?
         /// The destination IP addresses and address ranges to decrypt for inspection, in CIDR notation. If not specified, this matches with any destination address.
@@ -2479,12 +2502,12 @@ extension NetworkFirewallClientTypes {
             self.sources = sources
         }
     }
-
 }
 
 extension NetworkFirewallClientTypes {
+
     /// Any Certificate Manager (ACM) Secure Sockets Layer/Transport Layer Security (SSL/TLS) server certificate that's associated with a [ServerCertificateConfiguration]. Used in a [TLSInspectionConfiguration] for inspection of inbound traffic to your firewall. You must request or import a SSL/TLS certificate into ACM for each domain Network Firewall needs to decrypt and inspect. Network Firewall uses the SSL/TLS certificates to decrypt specified inbound SSL/TLS traffic going to your firewall. For information about working with certificates in Certificate Manager, see [Request a public certificate ](https://docs.aws.amazon.com/acm/latest/userguide/gs-acm-request-public.html) or [Importing certificates](https://docs.aws.amazon.com/acm/latest/userguide/import-certificate.html) in the Certificate Manager User Guide.
-    public struct ServerCertificate {
+    public struct ServerCertificate: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the Certificate Manager SSL/TLS server certificate that's used for inbound SSL/TLS inspection.
         public var resourceArn: Swift.String?
 
@@ -2495,12 +2518,12 @@ extension NetworkFirewallClientTypes {
             self.resourceArn = resourceArn
         }
     }
-
 }
 
 extension NetworkFirewallClientTypes {
+
     /// Configures the Certificate Manager certificates and scope that Network Firewall uses to decrypt and re-encrypt traffic using a [TLSInspectionConfiguration]. You can configure ServerCertificates for inbound SSL/TLS inspection, a CertificateAuthorityArn for outbound SSL/TLS inspection, or both. For information about working with certificates for TLS inspection, see [ Using SSL/TLS server certficiates with TLS inspection configurations](https://docs.aws.amazon.com/network-firewall/latest/developerguide/tls-inspection-certificate-requirements.html) in the Network Firewall Developer Guide. If a server certificate that's associated with your [TLSInspectionConfiguration] is revoked, deleted, or expired it can result in client-side TLS errors.
-    public struct ServerCertificateConfiguration {
+    public struct ServerCertificateConfiguration: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the imported certificate authority (CA) certificate within Certificate Manager (ACM) to use for outbound SSL/TLS inspection. The following limitations apply:
         ///
         /// * You can use CA certificates that you imported into ACM, but you can't generate CA certificates with ACM.
@@ -2530,12 +2553,12 @@ extension NetworkFirewallClientTypes {
             self.serverCertificates = serverCertificates
         }
     }
-
 }
 
 extension NetworkFirewallClientTypes {
+
     /// The object that defines a TLS inspection configuration. This, along with [TLSInspectionConfigurationResponse], define the TLS inspection configuration. You can retrieve all objects for a TLS inspection configuration by calling [DescribeTLSInspectionConfiguration]. Network Firewall uses a TLS inspection configuration to decrypt traffic. Network Firewall re-encrypts the traffic before sending it to its destination. To use a TLS inspection configuration, you add it to a new Network Firewall firewall policy, then you apply the firewall policy to a firewall. Network Firewall acts as a proxy service to decrypt and inspect the traffic traveling through your firewalls. You can reference a TLS inspection configuration from more than one firewall policy, and you can use a firewall policy in more than one firewall. For more information about using TLS inspection configurations, see [Inspecting SSL/TLS traffic with TLS inspection configurations](https://docs.aws.amazon.com/network-firewall/latest/developerguide/tls-inspection.html) in the Network Firewall Developer Guide.
-    public struct TLSInspectionConfiguration {
+    public struct TLSInspectionConfiguration: Swift.Sendable {
         /// Lists the server certificate configurations that are associated with the TLS configuration.
         public var serverCertificateConfigurations: [NetworkFirewallClientTypes.ServerCertificateConfiguration]?
 
@@ -2546,10 +2569,9 @@ extension NetworkFirewallClientTypes {
             self.serverCertificateConfigurations = serverCertificateConfigurations
         }
     }
-
 }
 
-public struct CreateTLSInspectionConfigurationInput {
+public struct CreateTLSInspectionConfigurationInput: Swift.Sendable {
     /// A description of the TLS inspection configuration.
     public var description: Swift.String?
     /// A complex type that contains optional Amazon Web Services Key Management Service (KMS) encryption settings for your Network Firewall resources. Your data is encrypted by default with an Amazon Web Services owned key that Amazon Web Services owns and manages for you. You can use either the Amazon Web Services owned key, or provide your own customer managed key. To learn more about KMS encryption of your Network Firewall resources, see [Encryption at rest with Amazon Web Services Key Managment Service](https://docs.aws.amazon.com/kms/latest/developerguide/kms-encryption-at-rest.html) in the Network Firewall Developer Guide.
@@ -2580,8 +2602,9 @@ public struct CreateTLSInspectionConfigurationInput {
 }
 
 extension NetworkFirewallClientTypes {
+
     /// The high-level properties of a TLS inspection configuration. This, along with the TLSInspectionConfiguration, define the TLS inspection configuration. You can retrieve all objects for a TLS inspection configuration by calling DescribeTLSInspectionConfiguration.
-    public struct TLSInspectionConfigurationResponse {
+    public struct TLSInspectionConfigurationResponse: Swift.Sendable {
         /// Contains metadata about an Certificate Manager certificate.
         public var certificateAuthority: NetworkFirewallClientTypes.TlsCertificateData?
         /// A list of the certificates associated with the TLS inspection configuration.
@@ -2635,10 +2658,9 @@ extension NetworkFirewallClientTypes {
             self.tlsInspectionConfigurationStatus = tlsInspectionConfigurationStatus
         }
     }
-
 }
 
-public struct CreateTLSInspectionConfigurationOutput {
+public struct CreateTLSInspectionConfigurationOutput: Swift.Sendable {
     /// The high-level properties of a TLS inspection configuration. This, along with the [TLSInspectionConfiguration], define the TLS inspection configuration. You can retrieve all objects for a TLS inspection configuration by calling [DescribeTLSInspectionConfiguration].
     /// This member is required.
     public var tlsInspectionConfigurationResponse: NetworkFirewallClientTypes.TLSInspectionConfigurationResponse?
@@ -2680,7 +2702,7 @@ public struct UnsupportedOperationException: ClientRuntime.ModeledError, AWSClie
     }
 }
 
-public struct DeleteFirewallInput {
+public struct DeleteFirewallInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the firewall. You must specify the ARN or the name, and you can specify both.
     public var firewallArn: Swift.String?
     /// The descriptive name of the firewall. You can't change the name of a firewall after you create it. You must specify the ARN or the name, and you can specify both.
@@ -2696,7 +2718,7 @@ public struct DeleteFirewallInput {
     }
 }
 
-public struct DeleteFirewallOutput {
+public struct DeleteFirewallOutput: Swift.Sendable {
     /// The firewall defines the configuration settings for an Network Firewall firewall. These settings include the firewall policy, the subnets in your VPC to use for the firewall endpoints, and any tags that are attached to the firewall Amazon Web Services resource. The status of the firewall, for example whether it's ready to filter network traffic, is provided in the corresponding [FirewallStatus]. You can retrieve both objects by calling [DescribeFirewall].
     public var firewall: NetworkFirewallClientTypes.Firewall?
     /// Detailed information about the current status of a [Firewall]. You can retrieve this for a firewall by calling [DescribeFirewall] and providing the firewall name and ARN.
@@ -2712,7 +2734,7 @@ public struct DeleteFirewallOutput {
     }
 }
 
-public struct DeleteFirewallPolicyInput {
+public struct DeleteFirewallPolicyInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the firewall policy. You must specify the ARN or the name, and you can specify both.
     public var firewallPolicyArn: Swift.String?
     /// The descriptive name of the firewall policy. You can't change the name of a firewall policy after you create it. You must specify the ARN or the name, and you can specify both.
@@ -2728,7 +2750,7 @@ public struct DeleteFirewallPolicyInput {
     }
 }
 
-public struct DeleteFirewallPolicyOutput {
+public struct DeleteFirewallPolicyOutput: Swift.Sendable {
     /// The object containing the definition of the [FirewallPolicyResponse] that you asked to delete.
     /// This member is required.
     public var firewallPolicyResponse: NetworkFirewallClientTypes.FirewallPolicyResponse?
@@ -2765,7 +2787,7 @@ public struct InvalidResourcePolicyException: ClientRuntime.ModeledError, AWSCli
     }
 }
 
-public struct DeleteResourcePolicyInput {
+public struct DeleteResourcePolicyInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the rule group or firewall policy whose resource policy you want to delete.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -2778,12 +2800,12 @@ public struct DeleteResourcePolicyInput {
     }
 }
 
-public struct DeleteResourcePolicyOutput {
+public struct DeleteResourcePolicyOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteRuleGroupInput {
+public struct DeleteRuleGroupInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the rule group. You must specify the ARN or the name, and you can specify both.
     public var ruleGroupArn: Swift.String?
     /// The descriptive name of the rule group. You can't change the name of a rule group after you create it. You must specify the ARN or the name, and you can specify both.
@@ -2803,7 +2825,7 @@ public struct DeleteRuleGroupInput {
     }
 }
 
-public struct DeleteRuleGroupOutput {
+public struct DeleteRuleGroupOutput: Swift.Sendable {
     /// The high-level properties of a rule group. This, along with the [RuleGroup], define the rule group. You can retrieve all objects for a rule group by calling [DescribeRuleGroup].
     /// This member is required.
     public var ruleGroupResponse: NetworkFirewallClientTypes.RuleGroupResponse?
@@ -2816,7 +2838,7 @@ public struct DeleteRuleGroupOutput {
     }
 }
 
-public struct DeleteTLSInspectionConfigurationInput {
+public struct DeleteTLSInspectionConfigurationInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the TLS inspection configuration. You must specify the ARN or the name, and you can specify both.
     public var tlsInspectionConfigurationArn: Swift.String?
     /// The descriptive name of the TLS inspection configuration. You can't change the name of a TLS inspection configuration after you create it. You must specify the ARN or the name, and you can specify both.
@@ -2832,7 +2854,7 @@ public struct DeleteTLSInspectionConfigurationInput {
     }
 }
 
-public struct DeleteTLSInspectionConfigurationOutput {
+public struct DeleteTLSInspectionConfigurationOutput: Swift.Sendable {
     /// The high-level properties of a TLS inspection configuration. This, along with the [TLSInspectionConfiguration], define the TLS inspection configuration. You can retrieve all objects for a TLS inspection configuration by calling [DescribeTLSInspectionConfiguration].
     /// This member is required.
     public var tlsInspectionConfigurationResponse: NetworkFirewallClientTypes.TLSInspectionConfigurationResponse?
@@ -2845,7 +2867,7 @@ public struct DeleteTLSInspectionConfigurationOutput {
     }
 }
 
-public struct DescribeFirewallInput {
+public struct DescribeFirewallInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the firewall. You must specify the ARN or the name, and you can specify both.
     public var firewallArn: Swift.String?
     /// The descriptive name of the firewall. You can't change the name of a firewall after you create it. You must specify the ARN or the name, and you can specify both.
@@ -2861,7 +2883,7 @@ public struct DescribeFirewallInput {
     }
 }
 
-public struct DescribeFirewallOutput {
+public struct DescribeFirewallOutput: Swift.Sendable {
     /// The configuration settings for the firewall. These settings include the firewall policy and the subnets in your VPC to use for the firewall endpoints.
     public var firewall: NetworkFirewallClientTypes.Firewall?
     /// Detailed information about the current status of a [Firewall]. You can retrieve this for a firewall by calling [DescribeFirewall] and providing the firewall name and ARN.
@@ -2881,7 +2903,7 @@ public struct DescribeFirewallOutput {
     }
 }
 
-public struct DescribeFirewallPolicyInput {
+public struct DescribeFirewallPolicyInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the firewall policy. You must specify the ARN or the name, and you can specify both.
     public var firewallPolicyArn: Swift.String?
     /// The descriptive name of the firewall policy. You can't change the name of a firewall policy after you create it. You must specify the ARN or the name, and you can specify both.
@@ -2897,7 +2919,7 @@ public struct DescribeFirewallPolicyInput {
     }
 }
 
-public struct DescribeFirewallPolicyOutput {
+public struct DescribeFirewallPolicyOutput: Swift.Sendable {
     /// The policy for the specified firewall policy.
     public var firewallPolicy: NetworkFirewallClientTypes.FirewallPolicy?
     /// The high-level properties of a firewall policy. This, along with the [FirewallPolicy], define the policy. You can retrieve all objects for a firewall policy by calling [DescribeFirewallPolicy].
@@ -2919,7 +2941,7 @@ public struct DescribeFirewallPolicyOutput {
     }
 }
 
-public struct DescribeLoggingConfigurationInput {
+public struct DescribeLoggingConfigurationInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the firewall. You must specify the ARN or the name, and you can specify both.
     public var firewallArn: Swift.String?
     /// The descriptive name of the firewall. You can't change the name of a firewall after you create it. You must specify the ARN or the name, and you can specify both.
@@ -2937,7 +2959,7 @@ public struct DescribeLoggingConfigurationInput {
 
 extension NetworkFirewallClientTypes {
 
-    public enum LogDestinationType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum LogDestinationType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case cloudwatchLogs
         case kinesisDataFirehose
         case s3
@@ -2969,15 +2991,17 @@ extension NetworkFirewallClientTypes {
 
 extension NetworkFirewallClientTypes {
 
-    public enum LogType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum LogType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case alert
         case flow
+        case tls
         case sdkUnknown(Swift.String)
 
         public static var allCases: [LogType] {
             return [
                 .alert,
-                .flow
+                .flow,
+                .tls
             ]
         }
 
@@ -2990,6 +3014,7 @@ extension NetworkFirewallClientTypes {
             switch self {
             case .alert: return "ALERT"
             case .flow: return "FLOW"
+            case .tls: return "TLS"
             case let .sdkUnknown(s): return s
             }
         }
@@ -2997,8 +3022,9 @@ extension NetworkFirewallClientTypes {
 }
 
 extension NetworkFirewallClientTypes {
-    /// Defines where Network Firewall sends logs for the firewall for one log type. This is used in [LoggingConfiguration]. You can send each type of log to an Amazon S3 bucket, a CloudWatch log group, or a Firehose delivery stream. Network Firewall generates logs for stateful rule groups. You can save alert and flow log types. The stateful rules engine records flow logs for all network traffic that it receives. It records alert logs for traffic that matches stateful rules that have the rule action set to DROP or ALERT.
-    public struct LogDestinationConfig {
+
+    /// Defines where Network Firewall sends logs for the firewall for one log type. This is used in [LoggingConfiguration]. You can send each type of log to an Amazon S3 bucket, a CloudWatch log group, or a Firehose delivery stream. Network Firewall generates logs for stateful rule groups. You can save alert, flow, and TLS log types.
+    public struct LogDestinationConfig: Swift.Sendable {
         /// The named location for the logs, provided in a key:value mapping that is specific to the chosen destination type.
         ///
         /// * For an Amazon S3 bucket, provide the name of the bucket, with key bucketName, and optionally provide a prefix, with key prefix. The following example specifies an Amazon S3 bucket named DOC-EXAMPLE-BUCKET and the prefix alerts: "LogDestination": { "bucketName": "DOC-EXAMPLE-BUCKET", "prefix": "alerts" }
@@ -3011,7 +3037,13 @@ extension NetworkFirewallClientTypes {
         /// The type of storage destination to send these logs to. You can send logs to an Amazon S3 bucket, a CloudWatch log group, or a Firehose delivery stream.
         /// This member is required.
         public var logDestinationType: NetworkFirewallClientTypes.LogDestinationType?
-        /// The type of log to send. Alert logs report traffic that matches a [StatefulRule] with an action setting that sends an alert log message. Flow logs are standard network traffic flow logs.
+        /// The type of log to record. You can record the following types of logs from your Network Firewall stateful engine.
+        ///
+        /// * ALERT - Logs for traffic that matches your stateful rules and that have an action that sends an alert. A stateful rule sends alerts for the rule actions DROP, ALERT, and REJECT. For more information, see [StatefulRule].
+        ///
+        /// * FLOW - Standard network traffic flow logs. The stateful rules engine records flow logs for all network traffic that it receives. Each flow log record captures the network flow for a specific standard stateless rule group.
+        ///
+        /// * TLS - Logs for events that are related to TLS inspection. For more information, see [Inspecting SSL/TLS traffic with TLS inspection configurations](https://docs.aws.amazon.com/network-firewall/latest/developerguide/tls-inspection-configurations.html) in the Network Firewall Developer Guide.
         /// This member is required.
         public var logType: NetworkFirewallClientTypes.LogType?
 
@@ -3026,12 +3058,12 @@ extension NetworkFirewallClientTypes {
             self.logType = logType
         }
     }
-
 }
 
 extension NetworkFirewallClientTypes {
+
     /// Defines how Network Firewall performs logging for a [Firewall].
-    public struct LoggingConfiguration {
+    public struct LoggingConfiguration: Swift.Sendable {
         /// Defines the logging destinations for the logs for a firewall. Network Firewall generates logs for stateful rule groups.
         /// This member is required.
         public var logDestinationConfigs: [NetworkFirewallClientTypes.LogDestinationConfig]?
@@ -3043,10 +3075,9 @@ extension NetworkFirewallClientTypes {
             self.logDestinationConfigs = logDestinationConfigs
         }
     }
-
 }
 
-public struct DescribeLoggingConfigurationOutput {
+public struct DescribeLoggingConfigurationOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the firewall.
     public var firewallArn: Swift.String?
     /// Defines how Network Firewall performs logging for a [Firewall].
@@ -3062,7 +3093,7 @@ public struct DescribeLoggingConfigurationOutput {
     }
 }
 
-public struct DescribeResourcePolicyInput {
+public struct DescribeResourcePolicyInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the rule group or firewall policy whose resource policy you want to retrieve.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -3075,7 +3106,7 @@ public struct DescribeResourcePolicyInput {
     }
 }
 
-public struct DescribeResourcePolicyOutput {
+public struct DescribeResourcePolicyOutput: Swift.Sendable {
     /// The IAM policy for the resource.
     public var policy: Swift.String?
 
@@ -3087,7 +3118,7 @@ public struct DescribeResourcePolicyOutput {
     }
 }
 
-public struct DescribeRuleGroupInput {
+public struct DescribeRuleGroupInput: Swift.Sendable {
     /// Indicates whether you want Network Firewall to analyze the stateless rules in the rule group for rule behavior such as asymmetric routing. If set to TRUE, Network Firewall runs the analysis.
     public var analyzeRuleGroup: Swift.Bool?
     /// The Amazon Resource Name (ARN) of the rule group. You must specify the ARN or the name, and you can specify both.
@@ -3111,7 +3142,7 @@ public struct DescribeRuleGroupInput {
     }
 }
 
-public struct DescribeRuleGroupOutput {
+public struct DescribeRuleGroupOutput: Swift.Sendable {
     /// The object that defines the rules in a rule group. This, along with [RuleGroupResponse], define the rule group. You can retrieve all objects for a rule group by calling [DescribeRuleGroup]. Network Firewall uses a rule group to inspect and control network traffic. You define stateless rule groups to inspect individual packets and you define stateful rule groups to inspect packets in the context of their traffic flow. To use a rule group, you include it by reference in an Network Firewall firewall policy, then you use the policy in a firewall. You can reference a rule group from more than one firewall policy, and you can use a firewall policy in more than one firewall.
     public var ruleGroup: NetworkFirewallClientTypes.RuleGroup?
     /// The high-level properties of a rule group. This, along with the [RuleGroup], define the rule group. You can retrieve all objects for a rule group by calling [DescribeRuleGroup].
@@ -3133,7 +3164,7 @@ public struct DescribeRuleGroupOutput {
     }
 }
 
-public struct DescribeRuleGroupMetadataInput {
+public struct DescribeRuleGroupMetadataInput: Swift.Sendable {
     /// The descriptive name of the rule group. You can't change the name of a rule group after you create it. You must specify the ARN or the name, and you can specify both.
     public var ruleGroupArn: Swift.String?
     /// The descriptive name of the rule group. You can't change the name of a rule group after you create it. You must specify the ARN or the name, and you can specify both.
@@ -3153,7 +3184,7 @@ public struct DescribeRuleGroupMetadataInput {
     }
 }
 
-public struct DescribeRuleGroupMetadataOutput {
+public struct DescribeRuleGroupMetadataOutput: Swift.Sendable {
     /// The maximum operating resources that this rule group can use. Rule group capacity is fixed at creation. When you update a rule group, you are limited to this capacity. When you reference a rule group from a firewall policy, Network Firewall reserves this capacity for the rule group. You can retrieve the capacity that would be required for a rule group before you create the rule group by calling [CreateRuleGroup] with DryRun set to TRUE.
     public var capacity: Swift.Int?
     /// Returns the metadata objects for the specified rule group.
@@ -3191,7 +3222,7 @@ public struct DescribeRuleGroupMetadataOutput {
     }
 }
 
-public struct DescribeTLSInspectionConfigurationInput {
+public struct DescribeTLSInspectionConfigurationInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the TLS inspection configuration. You must specify the ARN or the name, and you can specify both.
     public var tlsInspectionConfigurationArn: Swift.String?
     /// The descriptive name of the TLS inspection configuration. You can't change the name of a TLS inspection configuration after you create it. You must specify the ARN or the name, and you can specify both.
@@ -3207,7 +3238,7 @@ public struct DescribeTLSInspectionConfigurationInput {
     }
 }
 
-public struct DescribeTLSInspectionConfigurationOutput {
+public struct DescribeTLSInspectionConfigurationOutput: Swift.Sendable {
     /// The object that defines a TLS inspection configuration. This, along with [TLSInspectionConfigurationResponse], define the TLS inspection configuration. You can retrieve all objects for a TLS inspection configuration by calling [DescribeTLSInspectionConfiguration]. Network Firewall uses a TLS inspection configuration to decrypt traffic. Network Firewall re-encrypts the traffic before sending it to its destination. To use a TLS inspection configuration, you add it to a new Network Firewall firewall policy, then you apply the firewall policy to a firewall. Network Firewall acts as a proxy service to decrypt and inspect the traffic traveling through your firewalls. You can reference a TLS inspection configuration from more than one firewall policy, and you can use a firewall policy in more than one firewall. For more information about using TLS inspection configurations, see [Inspecting SSL/TLS traffic with TLS inspection configurations](https://docs.aws.amazon.com/network-firewall/latest/developerguide/tls-inspection.html) in the Network Firewall Developer Guide.
     public var tlsInspectionConfiguration: NetworkFirewallClientTypes.TLSInspectionConfiguration?
     /// The high-level properties of a TLS inspection configuration. This, along with the [TLSInspectionConfiguration], define the TLS inspection configuration. You can retrieve all objects for a TLS inspection configuration by calling [DescribeTLSInspectionConfiguration].
@@ -3229,7 +3260,7 @@ public struct DescribeTLSInspectionConfigurationOutput {
     }
 }
 
-public struct DisassociateSubnetsInput {
+public struct DisassociateSubnetsInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the firewall. You must specify the ARN or the name, and you can specify both.
     public var firewallArn: Swift.String?
     /// The descriptive name of the firewall. You can't change the name of a firewall after you create it. You must specify the ARN or the name, and you can specify both.
@@ -3254,7 +3285,7 @@ public struct DisassociateSubnetsInput {
     }
 }
 
-public struct DisassociateSubnetsOutput {
+public struct DisassociateSubnetsOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the firewall.
     public var firewallArn: Swift.String?
     /// The descriptive name of the firewall. You can't change the name of a firewall after you create it.
@@ -3279,8 +3310,9 @@ public struct DisassociateSubnetsOutput {
 }
 
 extension NetworkFirewallClientTypes {
+
     /// High-level information about a firewall, returned by operations like create and describe. You can use the information provided in the metadata to retrieve and manage a firewall.
-    public struct FirewallMetadata {
+    public struct FirewallMetadata: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the firewall.
         public var firewallArn: Swift.String?
         /// The descriptive name of the firewall. You can't change the name of a firewall after you create it.
@@ -3295,12 +3327,12 @@ extension NetworkFirewallClientTypes {
             self.firewallName = firewallName
         }
     }
-
 }
 
 extension NetworkFirewallClientTypes {
+
     /// High-level information about a firewall policy, returned by operations like create and describe. You can use the information provided in the metadata to retrieve and manage a firewall policy. You can retrieve all objects for a firewall policy by calling [DescribeFirewallPolicy].
-    public struct FirewallPolicyMetadata {
+    public struct FirewallPolicyMetadata: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the firewall policy.
         public var arn: Swift.String?
         /// The descriptive name of the firewall policy. You can't change the name of a firewall policy after you create it.
@@ -3315,10 +3347,9 @@ extension NetworkFirewallClientTypes {
             self.name = name
         }
     }
-
 }
 
-public struct ListFirewallPoliciesInput {
+public struct ListFirewallPoliciesInput: Swift.Sendable {
     /// The maximum number of objects that you want Network Firewall to return for this request. If more objects are available, in the response, Network Firewall provides a NextToken value that you can use in a subsequent call to get the next batch of objects.
     public var maxResults: Swift.Int?
     /// When you request a list of objects with a MaxResults setting, if the number of objects that are still available for retrieval exceeds the maximum you requested, Network Firewall returns a NextToken value in the response. To retrieve the next batch of objects, use the token returned from the prior request in your next request.
@@ -3334,7 +3365,7 @@ public struct ListFirewallPoliciesInput {
     }
 }
 
-public struct ListFirewallPoliciesOutput {
+public struct ListFirewallPoliciesOutput: Swift.Sendable {
     /// The metadata for the firewall policies. Depending on your setting for max results and the number of firewall policies that you have, this might not be the full list.
     public var firewallPolicies: [NetworkFirewallClientTypes.FirewallPolicyMetadata]?
     /// When you request a list of objects with a MaxResults setting, if the number of objects that are still available for retrieval exceeds the maximum you requested, Network Firewall returns a NextToken value in the response. To retrieve the next batch of objects, use the token returned from the prior request in your next request.
@@ -3350,7 +3381,7 @@ public struct ListFirewallPoliciesOutput {
     }
 }
 
-public struct ListFirewallsInput {
+public struct ListFirewallsInput: Swift.Sendable {
     /// The maximum number of objects that you want Network Firewall to return for this request. If more objects are available, in the response, Network Firewall provides a NextToken value that you can use in a subsequent call to get the next batch of objects.
     public var maxResults: Swift.Int?
     /// When you request a list of objects with a MaxResults setting, if the number of objects that are still available for retrieval exceeds the maximum you requested, Network Firewall returns a NextToken value in the response. To retrieve the next batch of objects, use the token returned from the prior request in your next request.
@@ -3370,7 +3401,7 @@ public struct ListFirewallsInput {
     }
 }
 
-public struct ListFirewallsOutput {
+public struct ListFirewallsOutput: Swift.Sendable {
     /// The firewall metadata objects for the VPCs that you specified. Depending on your setting for max results and the number of firewalls you have, a single call might not be the full list.
     public var firewalls: [NetworkFirewallClientTypes.FirewallMetadata]?
     /// When you request a list of objects with a MaxResults setting, if the number of objects that are still available for retrieval exceeds the maximum you requested, Network Firewall returns a NextToken value in the response. To retrieve the next batch of objects, use the token returned from the prior request in your next request.
@@ -3388,7 +3419,7 @@ public struct ListFirewallsOutput {
 
 extension NetworkFirewallClientTypes {
 
-    public enum ResourceManagedType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ResourceManagedType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case awsManagedDomainLists
         case awsManagedThreatSignatures
         case sdkUnknown(Swift.String)
@@ -3417,7 +3448,7 @@ extension NetworkFirewallClientTypes {
 
 extension NetworkFirewallClientTypes {
 
-    public enum ResourceManagedStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ResourceManagedStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case account
         case managed
         case sdkUnknown(Swift.String)
@@ -3444,7 +3475,7 @@ extension NetworkFirewallClientTypes {
     }
 }
 
-public struct ListRuleGroupsInput {
+public struct ListRuleGroupsInput: Swift.Sendable {
     /// Indicates the general category of the Amazon Web Services managed rule group.
     public var managedType: NetworkFirewallClientTypes.ResourceManagedType?
     /// The maximum number of objects that you want Network Firewall to return for this request. If more objects are available, in the response, Network Firewall provides a NextToken value that you can use in a subsequent call to get the next batch of objects.
@@ -3473,8 +3504,9 @@ public struct ListRuleGroupsInput {
 }
 
 extension NetworkFirewallClientTypes {
+
     /// High-level information about a rule group, returned by [ListRuleGroups]. You can use the information provided in the metadata to retrieve and manage a rule group.
-    public struct RuleGroupMetadata {
+    public struct RuleGroupMetadata: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the rule group.
         public var arn: Swift.String?
         /// The descriptive name of the rule group. You can't change the name of a rule group after you create it.
@@ -3489,10 +3521,9 @@ extension NetworkFirewallClientTypes {
             self.name = name
         }
     }
-
 }
 
-public struct ListRuleGroupsOutput {
+public struct ListRuleGroupsOutput: Swift.Sendable {
     /// When you request a list of objects with a MaxResults setting, if the number of objects that are still available for retrieval exceeds the maximum you requested, Network Firewall returns a NextToken value in the response. To retrieve the next batch of objects, use the token returned from the prior request in your next request.
     public var nextToken: Swift.String?
     /// The rule group metadata objects that you've defined. Depending on your setting for max results and the number of rule groups, this might not be the full list.
@@ -3508,7 +3539,7 @@ public struct ListRuleGroupsOutput {
     }
 }
 
-public struct ListTagsForResourceInput {
+public struct ListTagsForResourceInput: Swift.Sendable {
     /// The maximum number of objects that you want Network Firewall to return for this request. If more objects are available, in the response, Network Firewall provides a NextToken value that you can use in a subsequent call to get the next batch of objects.
     public var maxResults: Swift.Int?
     /// When you request a list of objects with a MaxResults setting, if the number of objects that are still available for retrieval exceeds the maximum you requested, Network Firewall returns a NextToken value in the response. To retrieve the next batch of objects, use the token returned from the prior request in your next request.
@@ -3529,7 +3560,7 @@ public struct ListTagsForResourceInput {
     }
 }
 
-public struct ListTagsForResourceOutput {
+public struct ListTagsForResourceOutput: Swift.Sendable {
     /// When you request a list of objects with a MaxResults setting, if the number of objects that are still available for retrieval exceeds the maximum you requested, Network Firewall returns a NextToken value in the response. To retrieve the next batch of objects, use the token returned from the prior request in your next request.
     public var nextToken: Swift.String?
     /// The tags that are associated with the resource.
@@ -3545,7 +3576,7 @@ public struct ListTagsForResourceOutput {
     }
 }
 
-public struct ListTLSInspectionConfigurationsInput {
+public struct ListTLSInspectionConfigurationsInput: Swift.Sendable {
     /// The maximum number of objects that you want Network Firewall to return for this request. If more objects are available, in the response, Network Firewall provides a NextToken value that you can use in a subsequent call to get the next batch of objects.
     public var maxResults: Swift.Int?
     /// When you request a list of objects with a MaxResults setting, if the number of objects that are still available for retrieval exceeds the maximum you requested, Network Firewall returns a NextToken value in the response. To retrieve the next batch of objects, use the token returned from the prior request in your next request.
@@ -3562,8 +3593,9 @@ public struct ListTLSInspectionConfigurationsInput {
 }
 
 extension NetworkFirewallClientTypes {
+
     /// High-level information about a TLS inspection configuration, returned by ListTLSInspectionConfigurations. You can use the information provided in the metadata to retrieve and manage a TLS configuration.
-    public struct TLSInspectionConfigurationMetadata {
+    public struct TLSInspectionConfigurationMetadata: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the TLS inspection configuration.
         public var arn: Swift.String?
         /// The descriptive name of the TLS inspection configuration. You can't change the name of a TLS inspection configuration after you create it.
@@ -3578,10 +3610,9 @@ extension NetworkFirewallClientTypes {
             self.name = name
         }
     }
-
 }
 
-public struct ListTLSInspectionConfigurationsOutput {
+public struct ListTLSInspectionConfigurationsOutput: Swift.Sendable {
     /// When you request a list of objects with a MaxResults setting, if the number of objects that are still available for retrieval exceeds the maximum you requested, Network Firewall returns a NextToken value in the response. To retrieve the next batch of objects, use the token returned from the prior request in your next request.
     public var nextToken: Swift.String?
     /// The TLS inspection configuration metadata objects that you've defined. Depending on your setting for max results and the number of TLS inspection configurations, this might not be the full list.
@@ -3621,7 +3652,7 @@ public struct LogDestinationPermissionException: ClientRuntime.ModeledError, AWS
     }
 }
 
-public struct PutResourcePolicyInput {
+public struct PutResourcePolicyInput: Swift.Sendable {
     /// The IAM policy statement that lists the accounts that you want to share your rule group or firewall policy with and the operations that you want the accounts to be able to perform. For a rule group resource, you can specify the following operations in the Actions section of the statement:
     ///
     /// * network-firewall:CreateFirewallPolicy
@@ -3655,12 +3686,12 @@ public struct PutResourcePolicyInput {
     }
 }
 
-public struct PutResourcePolicyOutput {
+public struct PutResourcePolicyOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct TagResourceInput {
+public struct TagResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the resource.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -3678,12 +3709,12 @@ public struct TagResourceInput {
     }
 }
 
-public struct TagResourceOutput {
+public struct TagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UntagResourceInput {
+public struct UntagResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the resource.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -3701,7 +3732,7 @@ public struct UntagResourceInput {
     }
 }
 
-public struct UntagResourceOutput {
+public struct UntagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
@@ -3730,7 +3761,7 @@ public struct ResourceOwnerCheckException: ClientRuntime.ModeledError, AWSClient
     }
 }
 
-public struct UpdateFirewallDeleteProtectionInput {
+public struct UpdateFirewallDeleteProtectionInput: Swift.Sendable {
     /// A flag indicating whether it is possible to delete the firewall. A setting of TRUE indicates that the firewall is protected against deletion. Use this setting to protect against accidentally deleting a firewall that is in use. When you create a firewall, the operation initializes this flag to TRUE.
     /// This member is required.
     public var deleteProtection: Swift.Bool?
@@ -3755,7 +3786,7 @@ public struct UpdateFirewallDeleteProtectionInput {
     }
 }
 
-public struct UpdateFirewallDeleteProtectionOutput {
+public struct UpdateFirewallDeleteProtectionOutput: Swift.Sendable {
     /// A flag indicating whether it is possible to delete the firewall. A setting of TRUE indicates that the firewall is protected against deletion. Use this setting to protect against accidentally deleting a firewall that is in use. When you create a firewall, the operation initializes this flag to TRUE.
     public var deleteProtection: Swift.Bool
     /// The Amazon Resource Name (ARN) of the firewall.
@@ -3779,7 +3810,7 @@ public struct UpdateFirewallDeleteProtectionOutput {
     }
 }
 
-public struct UpdateFirewallDescriptionInput {
+public struct UpdateFirewallDescriptionInput: Swift.Sendable {
     /// The new description for the firewall. If you omit this setting, Network Firewall removes the description for the firewall.
     public var description: Swift.String?
     /// The Amazon Resource Name (ARN) of the firewall. You must specify the ARN or the name, and you can specify both.
@@ -3803,7 +3834,7 @@ public struct UpdateFirewallDescriptionInput {
     }
 }
 
-public struct UpdateFirewallDescriptionOutput {
+public struct UpdateFirewallDescriptionOutput: Swift.Sendable {
     /// A description of the firewall.
     public var description: Swift.String?
     /// The Amazon Resource Name (ARN) of the firewall.
@@ -3827,7 +3858,7 @@ public struct UpdateFirewallDescriptionOutput {
     }
 }
 
-public struct UpdateFirewallEncryptionConfigurationInput {
+public struct UpdateFirewallEncryptionConfigurationInput: Swift.Sendable {
     /// A complex type that contains optional Amazon Web Services Key Management Service (KMS) encryption settings for your Network Firewall resources. Your data is encrypted by default with an Amazon Web Services owned key that Amazon Web Services owns and manages for you. You can use either the Amazon Web Services owned key, or provide your own customer managed key. To learn more about KMS encryption of your Network Firewall resources, see [Encryption at rest with Amazon Web Services Key Managment Service](https://docs.aws.amazon.com/kms/latest/developerguide/kms-encryption-at-rest.html) in the Network Firewall Developer Guide.
     public var encryptionConfiguration: NetworkFirewallClientTypes.EncryptionConfiguration?
     /// The Amazon Resource Name (ARN) of the firewall.
@@ -3851,7 +3882,7 @@ public struct UpdateFirewallEncryptionConfigurationInput {
     }
 }
 
-public struct UpdateFirewallEncryptionConfigurationOutput {
+public struct UpdateFirewallEncryptionConfigurationOutput: Swift.Sendable {
     /// A complex type that contains optional Amazon Web Services Key Management Service (KMS) encryption settings for your Network Firewall resources. Your data is encrypted by default with an Amazon Web Services owned key that Amazon Web Services owns and manages for you. You can use either the Amazon Web Services owned key, or provide your own customer managed key. To learn more about KMS encryption of your Network Firewall resources, see [Encryption at rest with Amazon Web Services Key Managment Service](https://docs.aws.amazon.com/kms/latest/developerguide/kms-encryption-at-rest.html) in the Network Firewall Developer Guide.
     public var encryptionConfiguration: NetworkFirewallClientTypes.EncryptionConfiguration?
     /// The Amazon Resource Name (ARN) of the firewall.
@@ -3875,7 +3906,7 @@ public struct UpdateFirewallEncryptionConfigurationOutput {
     }
 }
 
-public struct UpdateFirewallPolicyInput {
+public struct UpdateFirewallPolicyInput: Swift.Sendable {
     /// A description of the firewall policy.
     public var description: Swift.String?
     /// Indicates whether you want Network Firewall to just check the validity of the request, rather than run the request. If set to TRUE, Network Firewall checks whether the request can run successfully, but doesn't actually make the requested changes. The call returns the value that the request would return if you ran it with dry run set to FALSE, but doesn't make additions or changes to your resources. This option allows you to make sure that you have the required permissions to run the request and that your request parameters are valid. If set to FALSE, Network Firewall makes the requested changes to your resources.
@@ -3913,7 +3944,7 @@ public struct UpdateFirewallPolicyInput {
     }
 }
 
-public struct UpdateFirewallPolicyOutput {
+public struct UpdateFirewallPolicyOutput: Swift.Sendable {
     /// The high-level properties of a firewall policy. This, along with the [FirewallPolicy], define the policy. You can retrieve all objects for a firewall policy by calling [DescribeFirewallPolicy].
     /// This member is required.
     public var firewallPolicyResponse: NetworkFirewallClientTypes.FirewallPolicyResponse?
@@ -3931,7 +3962,7 @@ public struct UpdateFirewallPolicyOutput {
     }
 }
 
-public struct UpdateFirewallPolicyChangeProtectionInput {
+public struct UpdateFirewallPolicyChangeProtectionInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the firewall. You must specify the ARN or the name, and you can specify both.
     public var firewallArn: Swift.String?
     /// The descriptive name of the firewall. You can't change the name of a firewall after you create it. You must specify the ARN or the name, and you can specify both.
@@ -3956,7 +3987,7 @@ public struct UpdateFirewallPolicyChangeProtectionInput {
     }
 }
 
-public struct UpdateFirewallPolicyChangeProtectionOutput {
+public struct UpdateFirewallPolicyChangeProtectionOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the firewall.
     public var firewallArn: Swift.String?
     /// The descriptive name of the firewall. You can't change the name of a firewall after you create it.
@@ -3980,7 +4011,7 @@ public struct UpdateFirewallPolicyChangeProtectionOutput {
     }
 }
 
-public struct UpdateLoggingConfigurationInput {
+public struct UpdateLoggingConfigurationInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the firewall. You must specify the ARN or the name, and you can specify both.
     public var firewallArn: Swift.String?
     /// The descriptive name of the firewall. You can't change the name of a firewall after you create it. You must specify the ARN or the name, and you can specify both.
@@ -4000,7 +4031,7 @@ public struct UpdateLoggingConfigurationInput {
     }
 }
 
-public struct UpdateLoggingConfigurationOutput {
+public struct UpdateLoggingConfigurationOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the firewall.
     public var firewallArn: Swift.String?
     /// The descriptive name of the firewall. You can't change the name of a firewall after you create it.
@@ -4020,7 +4051,7 @@ public struct UpdateLoggingConfigurationOutput {
     }
 }
 
-public struct UpdateRuleGroupInput {
+public struct UpdateRuleGroupInput: Swift.Sendable {
     /// Indicates whether you want Network Firewall to analyze the stateless rules in the rule group for rule behavior such as asymmetric routing. If set to TRUE, Network Firewall runs the analysis and then updates the rule group for you. To run the stateless rule group analyzer without updating the rule group, set DryRun to TRUE.
     public var analyzeRuleGroup: Swift.Bool?
     /// A description of the rule group.
@@ -4073,7 +4104,7 @@ public struct UpdateRuleGroupInput {
     }
 }
 
-public struct UpdateRuleGroupOutput {
+public struct UpdateRuleGroupOutput: Swift.Sendable {
     /// The high-level properties of a rule group. This, along with the [RuleGroup], define the rule group. You can retrieve all objects for a rule group by calling [DescribeRuleGroup].
     /// This member is required.
     public var ruleGroupResponse: NetworkFirewallClientTypes.RuleGroupResponse?
@@ -4091,7 +4122,7 @@ public struct UpdateRuleGroupOutput {
     }
 }
 
-public struct UpdateSubnetChangeProtectionInput {
+public struct UpdateSubnetChangeProtectionInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the firewall. You must specify the ARN or the name, and you can specify both.
     public var firewallArn: Swift.String?
     /// The descriptive name of the firewall. You can't change the name of a firewall after you create it. You must specify the ARN or the name, and you can specify both.
@@ -4116,7 +4147,7 @@ public struct UpdateSubnetChangeProtectionInput {
     }
 }
 
-public struct UpdateSubnetChangeProtectionOutput {
+public struct UpdateSubnetChangeProtectionOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the firewall.
     public var firewallArn: Swift.String?
     /// The descriptive name of the firewall. You can't change the name of a firewall after you create it.
@@ -4140,7 +4171,7 @@ public struct UpdateSubnetChangeProtectionOutput {
     }
 }
 
-public struct UpdateTLSInspectionConfigurationInput {
+public struct UpdateTLSInspectionConfigurationInput: Swift.Sendable {
     /// A description of the TLS inspection configuration.
     public var description: Swift.String?
     /// A complex type that contains the Amazon Web Services KMS encryption configuration settings for your TLS inspection configuration.
@@ -4174,7 +4205,7 @@ public struct UpdateTLSInspectionConfigurationInput {
     }
 }
 
-public struct UpdateTLSInspectionConfigurationOutput {
+public struct UpdateTLSInspectionConfigurationOutput: Swift.Sendable {
     /// The high-level properties of a TLS inspection configuration. This, along with the [TLSInspectionConfiguration], define the TLS inspection configuration. You can retrieve all objects for a TLS inspection configuration by calling [DescribeTLSInspectionConfiguration].
     /// This member is required.
     public var tlsInspectionConfigurationResponse: NetworkFirewallClientTypes.TLSInspectionConfigurationResponse?
@@ -6422,6 +6453,7 @@ extension NetworkFirewallClientTypes.StatefulEngineOptions {
 
     static func write(value: NetworkFirewallClientTypes.StatefulEngineOptions?, to writer: SmithyJSON.Writer) throws {
         guard let value else { return }
+        try writer["FlowTimeouts"].write(value.flowTimeouts, with: NetworkFirewallClientTypes.FlowTimeouts.write(value:to:))
         try writer["RuleOrder"].write(value.ruleOrder)
         try writer["StreamExceptionPolicy"].write(value.streamExceptionPolicy)
     }
@@ -6431,6 +6463,22 @@ extension NetworkFirewallClientTypes.StatefulEngineOptions {
         var value = NetworkFirewallClientTypes.StatefulEngineOptions()
         value.ruleOrder = try reader["RuleOrder"].readIfPresent()
         value.streamExceptionPolicy = try reader["StreamExceptionPolicy"].readIfPresent()
+        value.flowTimeouts = try reader["FlowTimeouts"].readIfPresent(with: NetworkFirewallClientTypes.FlowTimeouts.read(from:))
+        return value
+    }
+}
+
+extension NetworkFirewallClientTypes.FlowTimeouts {
+
+    static func write(value: NetworkFirewallClientTypes.FlowTimeouts?, to writer: SmithyJSON.Writer) throws {
+        guard let value else { return }
+        try writer["TcpIdleTimeoutSeconds"].write(value.tcpIdleTimeoutSeconds)
+    }
+
+    static func read(from reader: SmithyJSON.Reader) throws -> NetworkFirewallClientTypes.FlowTimeouts {
+        guard reader.hasContent else { throw SmithyReadWrite.ReaderError.requiredValueNotPresent }
+        var value = NetworkFirewallClientTypes.FlowTimeouts()
+        value.tcpIdleTimeoutSeconds = try reader["TcpIdleTimeoutSeconds"].readIfPresent()
         return value
     }
 }

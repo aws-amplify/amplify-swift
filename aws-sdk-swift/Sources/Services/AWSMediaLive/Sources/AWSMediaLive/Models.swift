@@ -33,44 +33,46 @@ import struct SmithyHTTPAPI.Headers
 @_spi(SmithyReadWrite) import struct SmithyReadWrite.WritingClosureBox
 @_spi(SmithyTimestamps) import struct SmithyTimestamps.TimestampFormatter
 
-public struct CreateTagsOutput {
+
+public struct CreateTagsOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteCloudWatchAlarmTemplateGroupOutput {
+public struct DeleteCloudWatchAlarmTemplateGroupOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteCloudWatchAlarmTemplateOutput {
+public struct DeleteCloudWatchAlarmTemplateOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteEventBridgeRuleTemplateGroupOutput {
+public struct DeleteEventBridgeRuleTemplateGroupOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteEventBridgeRuleTemplateOutput {
+public struct DeleteEventBridgeRuleTemplateOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteSignalMapOutput {
+public struct DeleteSignalMapOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteTagsOutput {
+public struct DeleteTagsOutput: Swift.Sendable {
 
     public init() { }
 }
 
 extension MediaLiveClientTypes {
+
     /// Input Channel Level
-    public struct InputChannelLevel {
+    public struct InputChannelLevel: Swift.Sendable {
         /// Remixing value. Units are in dB and acceptable values are within the range from -60 (mute) and 6 dB.
         /// This member is required.
         public var gain: Swift.Int?
@@ -87,12 +89,12 @@ extension MediaLiveClientTypes {
             self.inputChannel = inputChannel
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
+
     /// Audio Channel Mapping
-    public struct AudioChannelMapping {
+    public struct AudioChannelMapping: Swift.Sendable {
         /// Indices and gain values for each input channel that should be remixed into this output channel.
         /// This member is required.
         public var inputChannelLevels: [MediaLiveClientTypes.InputChannelLevel]?
@@ -109,13 +111,12 @@ extension MediaLiveClientTypes {
             self.outputChannel = outputChannel
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
 
     /// Dash Role Audio
-    public enum DashRoleAudio: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DashRoleAudio: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case alternate
         case commentary
         case description
@@ -166,7 +167,7 @@ extension MediaLiveClientTypes {
 extension MediaLiveClientTypes {
 
     /// Audio Normalization Algorithm
-    public enum AudioNormalizationAlgorithm: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AudioNormalizationAlgorithm: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case itu17701
         case itu17702
         case sdkUnknown(Swift.String)
@@ -196,7 +197,7 @@ extension MediaLiveClientTypes {
 extension MediaLiveClientTypes {
 
     /// Audio Normalization Algorithm Control
-    public enum AudioNormalizationAlgorithmControl: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AudioNormalizationAlgorithmControl: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case correctAudio
         case sdkUnknown(Swift.String)
 
@@ -221,8 +222,9 @@ extension MediaLiveClientTypes {
 }
 
 extension MediaLiveClientTypes {
+
     /// Audio Normalization Settings
-    public struct AudioNormalizationSettings {
+    public struct AudioNormalizationSettings: Swift.Sendable {
         /// Audio normalization algorithm to use. itu17701 conforms to the CALM Act specification, itu17702 conforms to the EBU R-128 specification.
         public var algorithm: MediaLiveClientTypes.AudioNormalizationAlgorithm?
         /// When set to correctAudio the output audio is corrected using the chosen algorithm. If set to measureOnly, the audio will be measured but not adjusted.
@@ -241,13 +243,12 @@ extension MediaLiveClientTypes {
             self.targetLkfs = targetLkfs
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
 
     /// Audio Type
-    public enum AudioType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AudioType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case cleanEffects
         case hearingImpaired
         case undefined
@@ -283,7 +284,7 @@ extension MediaLiveClientTypes {
 extension MediaLiveClientTypes {
 
     /// Audio Description Audio Type Control
-    public enum AudioDescriptionAudioTypeControl: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AudioDescriptionAudioTypeControl: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case followInput
         case useConfigured
         case sdkUnknown(Swift.String)
@@ -313,7 +314,7 @@ extension MediaLiveClientTypes {
 extension MediaLiveClientTypes {
 
     /// Nielsen Watermarks Cbet Stepaside
-    public enum NielsenWatermarksCbetStepaside: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum NielsenWatermarksCbetStepaside: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case disabled
         case enabled
         case sdkUnknown(Swift.String)
@@ -341,8 +342,9 @@ extension MediaLiveClientTypes {
 }
 
 extension MediaLiveClientTypes {
+
     /// Nielsen CBET
-    public struct NielsenCBET {
+    public struct NielsenCBET: Swift.Sendable {
         /// Enter the CBET check digits to use in the watermark.
         /// This member is required.
         public var cbetCheckDigitString: Swift.String?
@@ -364,13 +366,12 @@ extension MediaLiveClientTypes {
             self.csid = csid
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
 
     /// Nielsen Watermarks Distribution Types
-    public enum NielsenWatermarksDistributionTypes: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum NielsenWatermarksDistributionTypes: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case finalDistributor
         case programContent
         case sdkUnknown(Swift.String)
@@ -400,7 +401,7 @@ extension MediaLiveClientTypes {
 extension MediaLiveClientTypes {
 
     /// Nielsen Watermark Timezones
-    public enum NielsenWatermarkTimezones: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum NielsenWatermarkTimezones: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case americaPuertoRico
         case usAlaska
         case usArizona
@@ -452,8 +453,9 @@ extension MediaLiveClientTypes {
 }
 
 extension MediaLiveClientTypes {
+
     /// Nielsen Naes Ii Nw
-    public struct NielsenNaesIiNw {
+    public struct NielsenNaesIiNw: Swift.Sendable {
         /// Enter the check digit string for the watermark
         /// This member is required.
         public var checkDigitString: Swift.String?
@@ -474,12 +476,12 @@ extension MediaLiveClientTypes {
             self.timezone = timezone
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
+
     /// Nielsen Watermarks Settings
-    public struct NielsenWatermarksSettings {
+    public struct NielsenWatermarksSettings: Swift.Sendable {
         /// Complete these fields only if you want to insert watermarks of type Nielsen CBET
         public var nielsenCbetSettings: MediaLiveClientTypes.NielsenCBET?
         /// Choose the distribution types that you want to assign to the watermarks:
@@ -502,12 +504,12 @@ extension MediaLiveClientTypes {
             self.nielsenNaesIiNwSettings = nielsenNaesIiNwSettings
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
+
     /// Audio Watermark Settings
-    public struct AudioWatermarkSettings {
+    public struct AudioWatermarkSettings: Swift.Sendable {
         /// Settings to configure Nielsen Watermarks in the audio encode
         public var nielsenWatermarksSettings: MediaLiveClientTypes.NielsenWatermarksSettings?
 
@@ -518,13 +520,12 @@ extension MediaLiveClientTypes {
             self.nielsenWatermarksSettings = nielsenWatermarksSettings
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
 
     /// Aac Coding Mode
-    public enum AacCodingMode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AacCodingMode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case adReceiverMix
         case codingMode10
         case codingMode11
@@ -563,7 +564,7 @@ extension MediaLiveClientTypes {
 extension MediaLiveClientTypes {
 
     /// Aac Input Type
-    public enum AacInputType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AacInputType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case broadcasterMixedAd
         case normal
         case sdkUnknown(Swift.String)
@@ -593,7 +594,7 @@ extension MediaLiveClientTypes {
 extension MediaLiveClientTypes {
 
     /// Aac Profile
-    public enum AacProfile: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AacProfile: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case hev1
         case hev2
         case lc
@@ -626,7 +627,7 @@ extension MediaLiveClientTypes {
 extension MediaLiveClientTypes {
 
     /// Aac Rate Control Mode
-    public enum AacRateControlMode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AacRateControlMode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case cbr
         case vbr
         case sdkUnknown(Swift.String)
@@ -656,7 +657,7 @@ extension MediaLiveClientTypes {
 extension MediaLiveClientTypes {
 
     /// Aac Raw Format
-    public enum AacRawFormat: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AacRawFormat: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case latmLoas
         case `none`
         case sdkUnknown(Swift.String)
@@ -686,7 +687,7 @@ extension MediaLiveClientTypes {
 extension MediaLiveClientTypes {
 
     /// Aac Spec
-    public enum AacSpec: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AacSpec: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case mpeg2
         case mpeg4
         case sdkUnknown(Swift.String)
@@ -716,7 +717,7 @@ extension MediaLiveClientTypes {
 extension MediaLiveClientTypes {
 
     /// Aac Vbr Quality
-    public enum AacVbrQuality: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AacVbrQuality: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case high
         case low
         case mediumHigh
@@ -750,8 +751,9 @@ extension MediaLiveClientTypes {
 }
 
 extension MediaLiveClientTypes {
+
     /// Aac Settings
-    public struct AacSettings {
+    public struct AacSettings: Swift.Sendable {
         /// Average bitrate in bits/second. Valid values depend on rate control mode and profile.
         public var bitrate: Swift.Double?
         /// Mono, Stereo, or 5.1 channel layout. Valid values depend on rate control mode and profile. The adReceiverMix setting receives a stereo description plus control track and emits a mono AAC encode of the description track, with control data emitted in the PES header as per ETSI TS 101 154 Annex E.
@@ -794,13 +796,12 @@ extension MediaLiveClientTypes {
             self.vbrQuality = vbrQuality
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
 
     /// Ac3 Attenuation Control
-    public enum Ac3AttenuationControl: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Ac3AttenuationControl: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case attenuate3Db
         case `none`
         case sdkUnknown(Swift.String)
@@ -830,7 +831,7 @@ extension MediaLiveClientTypes {
 extension MediaLiveClientTypes {
 
     /// Ac3 Bitstream Mode
-    public enum Ac3BitstreamMode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Ac3BitstreamMode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case commentary
         case completeMain
         case dialogue
@@ -878,7 +879,7 @@ extension MediaLiveClientTypes {
 extension MediaLiveClientTypes {
 
     /// Ac3 Coding Mode
-    public enum Ac3CodingMode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Ac3CodingMode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case codingMode10
         case codingMode11
         case codingMode20
@@ -914,7 +915,7 @@ extension MediaLiveClientTypes {
 extension MediaLiveClientTypes {
 
     /// Ac3 Drc Profile
-    public enum Ac3DrcProfile: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Ac3DrcProfile: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case filmStandard
         case `none`
         case sdkUnknown(Swift.String)
@@ -944,7 +945,7 @@ extension MediaLiveClientTypes {
 extension MediaLiveClientTypes {
 
     /// Ac3 Lfe Filter
-    public enum Ac3LfeFilter: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Ac3LfeFilter: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case disabled
         case enabled
         case sdkUnknown(Swift.String)
@@ -974,7 +975,7 @@ extension MediaLiveClientTypes {
 extension MediaLiveClientTypes {
 
     /// Ac3 Metadata Control
-    public enum Ac3MetadataControl: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Ac3MetadataControl: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case followInput
         case useConfigured
         case sdkUnknown(Swift.String)
@@ -1002,8 +1003,9 @@ extension MediaLiveClientTypes {
 }
 
 extension MediaLiveClientTypes {
+
     /// Ac3 Settings
-    public struct Ac3Settings {
+    public struct Ac3Settings: Swift.Sendable {
         /// Applies a 3 dB attenuation to the surround channels. Applies only when the coding mode parameter is CODING_MODE_3_2_LFE.
         public var attenuationControl: MediaLiveClientTypes.Ac3AttenuationControl?
         /// Average bitrate in bits/second. Valid bitrates depend on the coding mode.
@@ -1042,13 +1044,12 @@ extension MediaLiveClientTypes {
             self.metadataControl = metadataControl
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
 
     /// Eac3 Atmos Coding Mode
-    public enum Eac3AtmosCodingMode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Eac3AtmosCodingMode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case codingMode514
         case codingMode714
         case codingMode916
@@ -1081,7 +1082,7 @@ extension MediaLiveClientTypes {
 extension MediaLiveClientTypes {
 
     /// Eac3 Atmos Drc Line
-    public enum Eac3AtmosDrcLine: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Eac3AtmosDrcLine: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case filmLight
         case filmStandard
         case musicLight
@@ -1123,7 +1124,7 @@ extension MediaLiveClientTypes {
 extension MediaLiveClientTypes {
 
     /// Eac3 Atmos Drc Rf
-    public enum Eac3AtmosDrcRf: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Eac3AtmosDrcRf: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case filmLight
         case filmStandard
         case musicLight
@@ -1163,8 +1164,9 @@ extension MediaLiveClientTypes {
 }
 
 extension MediaLiveClientTypes {
+
     /// Eac3 Atmos Settings
-    public struct Eac3AtmosSettings {
+    public struct Eac3AtmosSettings: Swift.Sendable {
         /// Average bitrate in bits/second. Valid bitrates depend on the coding mode.
         public var bitrate: Swift.Double?
         /// Dolby Digital Plus with Dolby Atmos coding mode. Determines number of channels.
@@ -1199,13 +1201,12 @@ extension MediaLiveClientTypes {
             self.surroundTrim = surroundTrim
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
 
     /// Eac3 Attenuation Control
-    public enum Eac3AttenuationControl: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Eac3AttenuationControl: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case attenuate3Db
         case `none`
         case sdkUnknown(Swift.String)
@@ -1235,7 +1236,7 @@ extension MediaLiveClientTypes {
 extension MediaLiveClientTypes {
 
     /// Eac3 Bitstream Mode
-    public enum Eac3BitstreamMode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Eac3BitstreamMode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case commentary
         case completeMain
         case emergency
@@ -1274,7 +1275,7 @@ extension MediaLiveClientTypes {
 extension MediaLiveClientTypes {
 
     /// Eac3 Coding Mode
-    public enum Eac3CodingMode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Eac3CodingMode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case codingMode10
         case codingMode20
         case codingMode32
@@ -1307,7 +1308,7 @@ extension MediaLiveClientTypes {
 extension MediaLiveClientTypes {
 
     /// Eac3 Dc Filter
-    public enum Eac3DcFilter: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Eac3DcFilter: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case disabled
         case enabled
         case sdkUnknown(Swift.String)
@@ -1337,7 +1338,7 @@ extension MediaLiveClientTypes {
 extension MediaLiveClientTypes {
 
     /// Eac3 Drc Line
-    public enum Eac3DrcLine: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Eac3DrcLine: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case filmLight
         case filmStandard
         case musicLight
@@ -1379,7 +1380,7 @@ extension MediaLiveClientTypes {
 extension MediaLiveClientTypes {
 
     /// Eac3 Drc Rf
-    public enum Eac3DrcRf: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Eac3DrcRf: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case filmLight
         case filmStandard
         case musicLight
@@ -1421,7 +1422,7 @@ extension MediaLiveClientTypes {
 extension MediaLiveClientTypes {
 
     /// Eac3 Lfe Control
-    public enum Eac3LfeControl: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Eac3LfeControl: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case lfe
         case noLfe
         case sdkUnknown(Swift.String)
@@ -1451,7 +1452,7 @@ extension MediaLiveClientTypes {
 extension MediaLiveClientTypes {
 
     /// Eac3 Lfe Filter
-    public enum Eac3LfeFilter: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Eac3LfeFilter: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case disabled
         case enabled
         case sdkUnknown(Swift.String)
@@ -1481,7 +1482,7 @@ extension MediaLiveClientTypes {
 extension MediaLiveClientTypes {
 
     /// Eac3 Metadata Control
-    public enum Eac3MetadataControl: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Eac3MetadataControl: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case followInput
         case useConfigured
         case sdkUnknown(Swift.String)
@@ -1511,7 +1512,7 @@ extension MediaLiveClientTypes {
 extension MediaLiveClientTypes {
 
     /// Eac3 Passthrough Control
-    public enum Eac3PassthroughControl: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Eac3PassthroughControl: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case noPassthrough
         case whenPossible
         case sdkUnknown(Swift.String)
@@ -1541,7 +1542,7 @@ extension MediaLiveClientTypes {
 extension MediaLiveClientTypes {
 
     /// Eac3 Phase Control
-    public enum Eac3PhaseControl: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Eac3PhaseControl: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case noShift
         case shift90Degrees
         case sdkUnknown(Swift.String)
@@ -1571,7 +1572,7 @@ extension MediaLiveClientTypes {
 extension MediaLiveClientTypes {
 
     /// Eac3 Stereo Downmix
-    public enum Eac3StereoDownmix: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Eac3StereoDownmix: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case dpl2
         case loRo
         case ltRt
@@ -1607,7 +1608,7 @@ extension MediaLiveClientTypes {
 extension MediaLiveClientTypes {
 
     /// Eac3 Surround Ex Mode
-    public enum Eac3SurroundExMode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Eac3SurroundExMode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case disabled
         case enabled
         case notIndicated
@@ -1640,7 +1641,7 @@ extension MediaLiveClientTypes {
 extension MediaLiveClientTypes {
 
     /// Eac3 Surround Mode
-    public enum Eac3SurroundMode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Eac3SurroundMode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case disabled
         case enabled
         case notIndicated
@@ -1671,8 +1672,9 @@ extension MediaLiveClientTypes {
 }
 
 extension MediaLiveClientTypes {
+
     /// Eac3 Settings
-    public struct Eac3Settings {
+    public struct Eac3Settings: Swift.Sendable {
         /// When set to attenuate3Db, applies a 3 dB attenuation to the surround channels. Only used for 3/2 coding mode.
         public var attenuationControl: MediaLiveClientTypes.Eac3AttenuationControl?
         /// Average bitrate in bits/second. Valid bitrates depend on the coding mode.
@@ -1759,13 +1761,12 @@ extension MediaLiveClientTypes {
             self.surroundMode = surroundMode
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
 
     /// Mp2 Coding Mode
-    public enum Mp2CodingMode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Mp2CodingMode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case codingMode10
         case codingMode20
         case sdkUnknown(Swift.String)
@@ -1793,8 +1794,9 @@ extension MediaLiveClientTypes {
 }
 
 extension MediaLiveClientTypes {
+
     /// Mp2 Settings
-    public struct Mp2Settings {
+    public struct Mp2Settings: Swift.Sendable {
         /// Average bitrate in bits/second.
         public var bitrate: Swift.Double?
         /// The MPEG2 Audio coding mode. Valid values are codingMode10 (for mono) or codingMode20 (for stereo).
@@ -1813,22 +1815,21 @@ extension MediaLiveClientTypes {
             self.sampleRate = sampleRate
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
+
     /// Pass Through Settings
-    public struct PassThroughSettings {
+    public struct PassThroughSettings: Swift.Sendable {
 
         public init() { }
     }
-
 }
 
 extension MediaLiveClientTypes {
 
     /// Wav Coding Mode
-    public enum WavCodingMode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum WavCodingMode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case codingMode10
         case codingMode20
         case codingMode40
@@ -1862,8 +1863,9 @@ extension MediaLiveClientTypes {
 }
 
 extension MediaLiveClientTypes {
+
     /// Wav Settings
-    public struct WavSettings {
+    public struct WavSettings: Swift.Sendable {
         /// Bits per sample.
         public var bitDepth: Swift.Double?
         /// The audio coding mode for the WAV audio. The mode determines the number of channels in the audio.
@@ -1882,12 +1884,12 @@ extension MediaLiveClientTypes {
             self.sampleRate = sampleRate
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
+
     /// Audio Codec Settings
-    public struct AudioCodecSettings {
+    public struct AudioCodecSettings: Swift.Sendable {
         /// Aac Settings
         public var aacSettings: MediaLiveClientTypes.AacSettings?
         /// Ac3 Settings
@@ -1922,13 +1924,12 @@ extension MediaLiveClientTypes {
             self.wavSettings = wavSettings
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
 
     /// Dvb Dash Accessibility
-    public enum DvbDashAccessibility: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DvbDashAccessibility: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case dvbdash1VisuallyImpaired
         case dvbdash2HardOfHearing
         case dvbdash3SupplementalCommentary
@@ -1973,7 +1974,7 @@ extension MediaLiveClientTypes {
 extension MediaLiveClientTypes {
 
     /// Audio Description Language Code Control
-    public enum AudioDescriptionLanguageCodeControl: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AudioDescriptionLanguageCodeControl: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case followInput
         case useConfigured
         case sdkUnknown(Swift.String)
@@ -2001,8 +2002,9 @@ extension MediaLiveClientTypes {
 }
 
 extension MediaLiveClientTypes {
+
     /// Remix Settings
-    public struct RemixSettings {
+    public struct RemixSettings: Swift.Sendable {
         /// Mapping of input channels to output channels, with appropriate gain adjustments.
         /// This member is required.
         public var channelMappings: [MediaLiveClientTypes.AudioChannelMapping]?
@@ -2022,12 +2024,12 @@ extension MediaLiveClientTypes {
             self.channelsOut = channelsOut
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
+
     /// Audio Description
-    public struct AudioDescription {
+    public struct AudioDescription: Swift.Sendable {
         /// Identifies the DASH roles to assign to this audio output. Applies only when the audio output is configured for DVB DASH accessibility signaling.
         public var audioDashRoles: [MediaLiveClientTypes.DashRoleAudio]?
         /// Advanced audio normalization settings.
@@ -2088,12 +2090,12 @@ extension MediaLiveClientTypes {
             self.streamName = streamName
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
+
     /// Audio Hls Rendition Selection
-    public struct AudioHlsRenditionSelection {
+    public struct AudioHlsRenditionSelection: Swift.Sendable {
         /// Specifies the GROUP-ID in the #EXT-X-MEDIA tag of the target HLS audio rendition.
         /// This member is required.
         public var groupId: Swift.String?
@@ -2110,13 +2112,12 @@ extension MediaLiveClientTypes {
             self.name = name
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
 
     /// Audio Language Selection Policy
-    public enum AudioLanguageSelectionPolicy: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AudioLanguageSelectionPolicy: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case loose
         case strict
         case sdkUnknown(Swift.String)
@@ -2144,8 +2145,9 @@ extension MediaLiveClientTypes {
 }
 
 extension MediaLiveClientTypes {
+
     /// Audio Language Selection
-    public struct AudioLanguageSelection {
+    public struct AudioLanguageSelection: Swift.Sendable {
         /// Selects a specific three-letter language code from within an audio source.
         /// This member is required.
         public var languageCode: Swift.String?
@@ -2161,12 +2163,12 @@ extension MediaLiveClientTypes {
             self.languageSelectionPolicy = languageSelectionPolicy
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
+
     /// Audio Pid Selection
-    public struct AudioPidSelection {
+    public struct AudioPidSelection: Swift.Sendable {
         /// Selects a specific PID from within a source.
         /// This member is required.
         public var pid: Swift.Int?
@@ -2178,13 +2180,12 @@ extension MediaLiveClientTypes {
             self.pid = pid
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
 
     /// Dolby EProgram Selection
-    public enum DolbyEProgramSelection: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DolbyEProgramSelection: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case allChannels
         case program1
         case program2
@@ -2233,8 +2234,9 @@ extension MediaLiveClientTypes {
 }
 
 extension MediaLiveClientTypes {
+
     /// Audio Dolby EDecode
-    public struct AudioDolbyEDecode {
+    public struct AudioDolbyEDecode: Swift.Sendable {
         /// Applies only to Dolby E. Enter the program ID (according to the metadata in the audio) of the Dolby E program to extract from the specified track. One program extracted per audio selector. To select multiple programs, create multiple selectors with the same Track and different Program numbers. “All channels” means to ignore the program IDs and include all the channels in this selector; useful if metadata is known to be incorrect.
         /// This member is required.
         public var programSelection: MediaLiveClientTypes.DolbyEProgramSelection?
@@ -2246,12 +2248,12 @@ extension MediaLiveClientTypes {
             self.programSelection = programSelection
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
+
     /// Audio Track
-    public struct AudioTrack {
+    public struct AudioTrack: Swift.Sendable {
         /// 1-based integer value that maps to a specific audio track
         /// This member is required.
         public var track: Swift.Int?
@@ -2263,12 +2265,12 @@ extension MediaLiveClientTypes {
             self.track = track
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
+
     /// Audio Track Selection
-    public struct AudioTrackSelection {
+    public struct AudioTrackSelection: Swift.Sendable {
         /// Configure decoding options for Dolby E streams - these should be Dolby E frames carried in PCM streams tagged with SMPTE-337
         public var dolbyEDecode: MediaLiveClientTypes.AudioDolbyEDecode?
         /// Selects one or more unique audio tracks from within a source.
@@ -2284,12 +2286,12 @@ extension MediaLiveClientTypes {
             self.tracks = tracks
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
+
     /// Audio Selector Settings
-    public struct AudioSelectorSettings {
+    public struct AudioSelectorSettings: Swift.Sendable {
         /// Audio Hls Rendition Selection
         public var audioHlsRenditionSelection: MediaLiveClientTypes.AudioHlsRenditionSelection?
         /// Audio Language Selection
@@ -2312,12 +2314,12 @@ extension MediaLiveClientTypes {
             self.audioTrackSelection = audioTrackSelection
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
+
     /// Audio Selector
-    public struct AudioSelector {
+    public struct AudioSelector: Swift.Sendable {
         /// The name of this AudioSelector. AudioDescriptions will use this name to uniquely identify this Selector. Selector names should be unique per input.
         /// This member is required.
         public var name: Swift.String?
@@ -2333,12 +2335,12 @@ extension MediaLiveClientTypes {
             self.selectorSettings = selectorSettings
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
+
     /// Details from a failed operation
-    public struct BatchFailedResultModel {
+    public struct BatchFailedResultModel: Swift.Sendable {
         /// ARN of the resource
         public var arn: Swift.String?
         /// Error code for the failed operation
@@ -2361,12 +2363,12 @@ extension MediaLiveClientTypes {
             self.message = message
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
+
     /// Details from a successful operation
-    public struct BatchSuccessfulResultModel {
+    public struct BatchSuccessfulResultModel: Swift.Sendable {
         /// ARN of the resource
         public var arn: Swift.String?
         /// ID of the resource
@@ -2385,13 +2387,12 @@ extension MediaLiveClientTypes {
             self.state = state
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
 
     /// Accessibility Type
-    public enum AccessibilityType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AccessibilityType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case doesNotImplementAccessibilityFeatures
         case implementsAccessibilityFeatures
         case sdkUnknown(Swift.String)
@@ -2421,7 +2422,7 @@ extension MediaLiveClientTypes {
 extension MediaLiveClientTypes {
 
     /// Dash Role Caption
-    public enum DashRoleCaption: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DashRoleCaption: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case alternate
         case caption
         case commentary
@@ -2482,18 +2483,18 @@ extension MediaLiveClientTypes {
 }
 
 extension MediaLiveClientTypes {
+
     /// Arib Destination Settings
-    public struct AribDestinationSettings {
+    public struct AribDestinationSettings: Swift.Sendable {
 
         public init() { }
     }
-
 }
 
 extension MediaLiveClientTypes {
 
     /// Burn In Alignment
-    public enum BurnInAlignment: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum BurnInAlignment: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case centered
         case `left`
         case smart
@@ -2526,7 +2527,7 @@ extension MediaLiveClientTypes {
 extension MediaLiveClientTypes {
 
     /// Burn In Background Color
-    public enum BurnInBackgroundColor: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum BurnInBackgroundColor: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case black
         case `none`
         case white
@@ -2557,8 +2558,9 @@ extension MediaLiveClientTypes {
 }
 
 extension MediaLiveClientTypes {
+
     /// Input Location
-    public struct InputLocation {
+    public struct InputLocation: Swift.Sendable {
         /// key used to extract the password from EC2 Parameter store
         public var passwordParam: Swift.String?
         /// Uniform Resource Identifier - This should be a path to a file accessible to the Live system (eg. a http:// URI) depending on the output type. For example, a RTMP destination should have a uri simliar to: "rtmp://fmsserver/live".
@@ -2578,13 +2580,12 @@ extension MediaLiveClientTypes {
             self.username = username
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
 
     /// Burn In Font Color
-    public enum BurnInFontColor: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum BurnInFontColor: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case black
         case blue
         case green
@@ -2626,7 +2627,7 @@ extension MediaLiveClientTypes {
 extension MediaLiveClientTypes {
 
     /// Burn In Outline Color
-    public enum BurnInOutlineColor: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum BurnInOutlineColor: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case black
         case blue
         case green
@@ -2668,7 +2669,7 @@ extension MediaLiveClientTypes {
 extension MediaLiveClientTypes {
 
     /// Burn In Shadow Color
-    public enum BurnInShadowColor: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum BurnInShadowColor: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case black
         case `none`
         case white
@@ -2701,7 +2702,7 @@ extension MediaLiveClientTypes {
 extension MediaLiveClientTypes {
 
     /// Burn In Teletext Grid Control
-    public enum BurnInTeletextGridControl: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum BurnInTeletextGridControl: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case fixed
         case scaled
         case sdkUnknown(Swift.String)
@@ -2729,8 +2730,9 @@ extension MediaLiveClientTypes {
 }
 
 extension MediaLiveClientTypes {
+
     /// Burn In Destination Settings
-    public struct BurnInDestinationSettings {
+    public struct BurnInDestinationSettings: Swift.Sendable {
         /// If no explicit xPosition or yPosition is provided, setting alignment to centered will place the captions at the bottom center of the output. Similarly, setting a left alignment will align captions to the bottom left of the output. If x and y positions are given in conjunction with the alignment parameter, the font will be justified (either left or centered) relative to those coordinates. Selecting "smart" justification will left-justify live subtitles and center-justify pre-recorded subtitles. All burn-in and DVB-Sub font settings must match.
         public var alignment: MediaLiveClientTypes.BurnInAlignment?
         /// Specifies the color of the rectangle behind the captions. All burn-in and DVB-Sub font settings must match.
@@ -2805,13 +2807,12 @@ extension MediaLiveClientTypes {
             self.yPosition = yPosition
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
 
     /// Dvb Sub Destination Alignment
-    public enum DvbSubDestinationAlignment: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DvbSubDestinationAlignment: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case centered
         case `left`
         case smart
@@ -2844,7 +2845,7 @@ extension MediaLiveClientTypes {
 extension MediaLiveClientTypes {
 
     /// Dvb Sub Destination Background Color
-    public enum DvbSubDestinationBackgroundColor: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DvbSubDestinationBackgroundColor: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case black
         case `none`
         case white
@@ -2877,7 +2878,7 @@ extension MediaLiveClientTypes {
 extension MediaLiveClientTypes {
 
     /// Dvb Sub Destination Font Color
-    public enum DvbSubDestinationFontColor: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DvbSubDestinationFontColor: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case black
         case blue
         case green
@@ -2919,7 +2920,7 @@ extension MediaLiveClientTypes {
 extension MediaLiveClientTypes {
 
     /// Dvb Sub Destination Outline Color
-    public enum DvbSubDestinationOutlineColor: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DvbSubDestinationOutlineColor: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case black
         case blue
         case green
@@ -2961,7 +2962,7 @@ extension MediaLiveClientTypes {
 extension MediaLiveClientTypes {
 
     /// Dvb Sub Destination Shadow Color
-    public enum DvbSubDestinationShadowColor: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DvbSubDestinationShadowColor: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case black
         case `none`
         case white
@@ -2994,7 +2995,7 @@ extension MediaLiveClientTypes {
 extension MediaLiveClientTypes {
 
     /// Dvb Sub Destination Teletext Grid Control
-    public enum DvbSubDestinationTeletextGridControl: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DvbSubDestinationTeletextGridControl: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case fixed
         case scaled
         case sdkUnknown(Swift.String)
@@ -3022,8 +3023,9 @@ extension MediaLiveClientTypes {
 }
 
 extension MediaLiveClientTypes {
+
     /// Dvb Sub Destination Settings
-    public struct DvbSubDestinationSettings {
+    public struct DvbSubDestinationSettings: Swift.Sendable {
         /// If no explicit xPosition or yPosition is provided, setting alignment to centered will place the captions at the bottom center of the output. Similarly, setting a left alignment will align captions to the bottom left of the output. If x and y positions are given in conjunction with the alignment parameter, the font will be justified (either left or centered) relative to those coordinates. Selecting "smart" justification will left-justify live subtitles and center-justify pre-recorded subtitles. This option is not valid for source captions that are STL or 608/embedded. These source settings are already pre-defined by the caption stream. All burn-in and DVB-Sub font settings must match.
         public var alignment: MediaLiveClientTypes.DvbSubDestinationAlignment?
         /// Specifies the color of the rectangle behind the captions. All burn-in and DVB-Sub font settings must match.
@@ -3098,13 +3100,12 @@ extension MediaLiveClientTypes {
             self.yPosition = yPosition
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
 
     /// Ebu Tt DFill Line Gap Control
-    public enum EbuTtDFillLineGapControl: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum EbuTtDFillLineGapControl: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case disabled
         case enabled
         case sdkUnknown(Swift.String)
@@ -3134,7 +3135,7 @@ extension MediaLiveClientTypes {
 extension MediaLiveClientTypes {
 
     /// Ebu Tt DDestination Style Control
-    public enum EbuTtDDestinationStyleControl: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum EbuTtDDestinationStyleControl: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case exclude
         case include
         case sdkUnknown(Swift.String)
@@ -3162,8 +3163,9 @@ extension MediaLiveClientTypes {
 }
 
 extension MediaLiveClientTypes {
+
     /// Ebu Tt DDestination Settings
-    public struct EbuTtDDestinationSettings {
+    public struct EbuTtDDestinationSettings: Swift.Sendable {
         /// Complete this field if you want to include the name of the copyright holder in the copyright tag in the captions metadata.
         public var copyrightHolder: Swift.String?
         /// Specifies how to handle the gap between the lines (in multi-line captions).
@@ -3198,76 +3200,75 @@ extension MediaLiveClientTypes {
             self.styleControl = styleControl
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
+
     /// Embedded Destination Settings
-    public struct EmbeddedDestinationSettings {
+    public struct EmbeddedDestinationSettings: Swift.Sendable {
 
         public init() { }
     }
-
 }
 
 extension MediaLiveClientTypes {
+
     /// Embedded Plus Scte20 Destination Settings
-    public struct EmbeddedPlusScte20DestinationSettings {
+    public struct EmbeddedPlusScte20DestinationSettings: Swift.Sendable {
 
         public init() { }
     }
-
 }
 
 extension MediaLiveClientTypes {
+
     /// Rtmp Caption Info Destination Settings
-    public struct RtmpCaptionInfoDestinationSettings {
+    public struct RtmpCaptionInfoDestinationSettings: Swift.Sendable {
 
         public init() { }
     }
-
 }
 
 extension MediaLiveClientTypes {
+
     /// Scte20 Plus Embedded Destination Settings
-    public struct Scte20PlusEmbeddedDestinationSettings {
+    public struct Scte20PlusEmbeddedDestinationSettings: Swift.Sendable {
 
         public init() { }
     }
-
 }
 
 extension MediaLiveClientTypes {
+
     /// Scte27 Destination Settings
-    public struct Scte27DestinationSettings {
+    public struct Scte27DestinationSettings: Swift.Sendable {
 
         public init() { }
     }
-
 }
 
 extension MediaLiveClientTypes {
+
     /// Smpte Tt Destination Settings
-    public struct SmpteTtDestinationSettings {
+    public struct SmpteTtDestinationSettings: Swift.Sendable {
 
         public init() { }
     }
-
 }
 
 extension MediaLiveClientTypes {
+
     /// Teletext Destination Settings
-    public struct TeletextDestinationSettings {
+    public struct TeletextDestinationSettings: Swift.Sendable {
 
         public init() { }
     }
-
 }
 
 extension MediaLiveClientTypes {
 
     /// Ttml Destination Style Control
-    public enum TtmlDestinationStyleControl: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum TtmlDestinationStyleControl: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case passthrough
         case useConfigured
         case sdkUnknown(Swift.String)
@@ -3295,8 +3296,9 @@ extension MediaLiveClientTypes {
 }
 
 extension MediaLiveClientTypes {
+
     /// Ttml Destination Settings
-    public struct TtmlDestinationSettings {
+    public struct TtmlDestinationSettings: Swift.Sendable {
         /// This field is not currently supported and will not affect the output styling. Leave the default value.
         public var styleControl: MediaLiveClientTypes.TtmlDestinationStyleControl?
 
@@ -3307,13 +3309,12 @@ extension MediaLiveClientTypes {
             self.styleControl = styleControl
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
 
     /// Webvtt Destination Style Control
-    public enum WebvttDestinationStyleControl: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum WebvttDestinationStyleControl: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case noStyleData
         case passthrough
         case sdkUnknown(Swift.String)
@@ -3341,8 +3342,9 @@ extension MediaLiveClientTypes {
 }
 
 extension MediaLiveClientTypes {
+
     /// Webvtt Destination Settings
-    public struct WebvttDestinationSettings {
+    public struct WebvttDestinationSettings: Swift.Sendable {
         /// Controls whether the color and position of the source captions is passed through to the WebVTT output captions. PASSTHROUGH - Valid only if the source captions are EMBEDDED or TELETEXT. NO_STYLE_DATA - Don't pass through the style. The output captions will not contain any font styling information.
         public var styleControl: MediaLiveClientTypes.WebvttDestinationStyleControl?
 
@@ -3353,12 +3355,12 @@ extension MediaLiveClientTypes {
             self.styleControl = styleControl
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
+
     /// Caption Destination Settings
-    public struct CaptionDestinationSettings {
+    public struct CaptionDestinationSettings: Swift.Sendable {
         /// Arib Destination Settings
         public var aribDestinationSettings: MediaLiveClientTypes.AribDestinationSettings?
         /// Burn In Destination Settings
@@ -3417,12 +3419,12 @@ extension MediaLiveClientTypes {
             self.webvttDestinationSettings = webvttDestinationSettings
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
+
     /// Caption Description
-    public struct CaptionDescription {
+    public struct CaptionDescription: Swift.Sendable {
         /// Indicates whether the caption track implements accessibility features such as written descriptions of spoken dialog, music, and sounds. This signaling is added to HLS output group and MediaPackage output group.
         public var accessibility: MediaLiveClientTypes.AccessibilityType?
         /// Identifies the DASH roles to assign to this captions output. Applies only when the captions output is configured for DVB DASH accessibility signaling.
@@ -3463,12 +3465,12 @@ extension MediaLiveClientTypes {
             self.name = name
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
+
     /// Maps a caption channel to an ISO 693-2 language code (http://www.loc.gov/standards/iso639-2), with an optional description.
-    public struct CaptionLanguageMapping {
+    public struct CaptionLanguageMapping: Swift.Sendable {
         /// The closed caption channel being described by this CaptionLanguageMapping. Each channel mapping must have a unique channel number (maximum of 4)
         /// This member is required.
         public var captionChannel: Swift.Int?
@@ -3490,12 +3492,12 @@ extension MediaLiveClientTypes {
             self.languageDescription = languageDescription
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
+
     /// Ancillary Source Settings
-    public struct AncillarySourceSettings {
+    public struct AncillarySourceSettings: Swift.Sendable {
         /// Specifies the number (1 to 4) of the captions channel you want to extract from the ancillary captions. If you plan to convert the ancillary captions to another format, complete this field. If you plan to choose Embedded as the captions destination in the output (to pass through all the channels in the ancillary captions), leave this field blank because MediaLive ignores the field.
         public var sourceAncillaryChannelNumber: Swift.Int?
 
@@ -3506,22 +3508,21 @@ extension MediaLiveClientTypes {
             self.sourceAncillaryChannelNumber = sourceAncillaryChannelNumber
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
+
     /// Arib Source Settings
-    public struct AribSourceSettings {
+    public struct AribSourceSettings: Swift.Sendable {
 
         public init() { }
     }
-
 }
 
 extension MediaLiveClientTypes {
 
     /// Dvb Sub Ocr Language
-    public enum DvbSubOcrLanguage: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DvbSubOcrLanguage: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case deu
         case eng
         case fra
@@ -3561,8 +3562,9 @@ extension MediaLiveClientTypes {
 }
 
 extension MediaLiveClientTypes {
+
     /// Dvb Sub Source Settings
-    public struct DvbSubSourceSettings {
+    public struct DvbSubSourceSettings: Swift.Sendable {
         /// If you will configure a WebVTT caption description that references this caption selector, use this field to provide the language to consider when translating the image-based source to text.
         public var ocrLanguage: MediaLiveClientTypes.DvbSubOcrLanguage?
         /// When using DVB-Sub with Burn-In or SMPTE-TT, use this PID for the source content. Unused for DVB-Sub passthrough. All DVB-Sub content is passed through, regardless of selectors.
@@ -3577,13 +3579,12 @@ extension MediaLiveClientTypes {
             self.pid = pid
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
 
     /// Embedded Convert608 To708
-    public enum EmbeddedConvert608To708: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum EmbeddedConvert608To708: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case disabled
         case upconvert
         case sdkUnknown(Swift.String)
@@ -3613,7 +3614,7 @@ extension MediaLiveClientTypes {
 extension MediaLiveClientTypes {
 
     /// Embedded Scte20 Detection
-    public enum EmbeddedScte20Detection: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum EmbeddedScte20Detection: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case auto
         case off
         case sdkUnknown(Swift.String)
@@ -3641,8 +3642,9 @@ extension MediaLiveClientTypes {
 }
 
 extension MediaLiveClientTypes {
+
     /// Embedded Source Settings
-    public struct EmbeddedSourceSettings {
+    public struct EmbeddedSourceSettings: Swift.Sendable {
         /// If upconvert, 608 data is both passed through via the "608 compatibility bytes" fields of the 708 wrapper as well as translated into 708. 708 data present in the source content will be discarded.
         public var convert608To708: MediaLiveClientTypes.EmbeddedConvert608To708?
         /// Set to "auto" to handle streams with intermittent and/or non-aligned SCTE-20 and Embedded captions.
@@ -3665,13 +3667,12 @@ extension MediaLiveClientTypes {
             self.source608TrackNumber = source608TrackNumber
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
 
     /// Scte20 Convert608 To708
-    public enum Scte20Convert608To708: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Scte20Convert608To708: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case disabled
         case upconvert
         case sdkUnknown(Swift.String)
@@ -3699,8 +3700,9 @@ extension MediaLiveClientTypes {
 }
 
 extension MediaLiveClientTypes {
+
     /// Scte20 Source Settings
-    public struct Scte20SourceSettings {
+    public struct Scte20SourceSettings: Swift.Sendable {
         /// If upconvert, 608 data is both passed through via the "608 compatibility bytes" fields of the 708 wrapper as well as translated into 708. 708 data present in the source content will be discarded.
         public var convert608To708: MediaLiveClientTypes.Scte20Convert608To708?
         /// Specifies the 608/708 channel number within the video track from which to extract captions. Unused for passthrough.
@@ -3715,13 +3717,12 @@ extension MediaLiveClientTypes {
             self.source608ChannelNumber = source608ChannelNumber
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
 
     /// Scte27 Ocr Language
-    public enum Scte27OcrLanguage: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Scte27OcrLanguage: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case deu
         case eng
         case fra
@@ -3761,8 +3762,9 @@ extension MediaLiveClientTypes {
 }
 
 extension MediaLiveClientTypes {
+
     /// Scte27 Source Settings
-    public struct Scte27SourceSettings {
+    public struct Scte27SourceSettings: Swift.Sendable {
         /// If you will configure a WebVTT caption description that references this caption selector, use this field to provide the language to consider when translating the image-based source to text.
         public var ocrLanguage: MediaLiveClientTypes.Scte27OcrLanguage?
         /// The pid field is used in conjunction with the caption selector languageCode field as follows:
@@ -3785,12 +3787,12 @@ extension MediaLiveClientTypes {
             self.pid = pid
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
+
     /// Caption Rectangle
-    public struct CaptionRectangle {
+    public struct CaptionRectangle: Swift.Sendable {
         /// See the description in leftOffset. For height, specify the entire height of the rectangle as a percentage of the underlying frame height. For example, "80" means the rectangle height is 80% of the underlying frame height. The topOffset and rectangleHeight must add up to 100% or less. This field corresponds to tts:extent - Y in the TTML standard.
         /// This member is required.
         public var height: Swift.Double?
@@ -3817,12 +3819,12 @@ extension MediaLiveClientTypes {
             self.width = width
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
+
     /// Teletext Source Settings
-    public struct TeletextSourceSettings {
+    public struct TeletextSourceSettings: Swift.Sendable {
         /// Optionally defines a region where TTML style captions will be displayed
         public var outputRectangle: MediaLiveClientTypes.CaptionRectangle?
         /// Specifies the teletext page number within the data stream from which to extract captions. Range of 0x100 (256) to 0x8FF (2303). Unused for passthrough. Should be specified as a hexadecimal string with no "0x" prefix.
@@ -3837,12 +3839,12 @@ extension MediaLiveClientTypes {
             self.pageNumber = pageNumber
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
+
     /// Caption Selector Settings
-    public struct CaptionSelectorSettings {
+    public struct CaptionSelectorSettings: Swift.Sendable {
         /// Ancillary Source Settings
         public var ancillarySourceSettings: MediaLiveClientTypes.AncillarySourceSettings?
         /// Arib Source Settings
@@ -3877,12 +3879,12 @@ extension MediaLiveClientTypes {
             self.teletextSourceSettings = teletextSourceSettings
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
+
     /// Caption Selector
-    public struct CaptionSelector {
+    public struct CaptionSelector: Swift.Sendable {
         /// When specified this field indicates the three letter language code of the caption track to extract from the source.
         public var languageCode: Swift.String?
         /// Name identifier for a caption selector. This name is used to associate this caption selector with one or more caption descriptions. Names must be unique within an event.
@@ -3902,12 +3904,12 @@ extension MediaLiveClientTypes {
             self.selectorSettings = selectorSettings
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
+
     /// Placeholder documentation for ChannelEgressEndpoint
-    public struct ChannelEgressEndpoint {
+    public struct ChannelEgressEndpoint: Swift.Sendable {
         /// Public IP of where a channel's output comes from
         public var sourceIp: Swift.String?
 
@@ -3918,13 +3920,12 @@ extension MediaLiveClientTypes {
             self.sourceIp = sourceIp
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
 
     /// Property of RestartChannelPipelinesRequest
-    public enum ChannelPipelineIdToRestart: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ChannelPipelineIdToRestart: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case pipeline0
         case pipeline1
         case sdkUnknown(Swift.String)
@@ -3952,8 +3953,9 @@ extension MediaLiveClientTypes {
 }
 
 extension MediaLiveClientTypes {
+
     /// Elemental anywhere settings
-    public struct DescribeAnywhereSettings {
+    public struct DescribeAnywhereSettings: Swift.Sendable {
         /// The ID of the channel placement group for the channel.
         public var channelPlacementGroupId: Swift.String?
         /// The ID of the cluster for the channel.
@@ -3968,13 +3970,12 @@ extension MediaLiveClientTypes {
             self.clusterId = clusterId
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
 
     /// Maximum CDI input resolution; SD is 480i and 576i up to 30 frames-per-second (fps), HD is 720p up to 60 fps / 1080i up to 30 fps, FHD is 1080p up to 60 fps, UHD is 2160p up to 60 fps
-    public enum CdiInputResolution: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum CdiInputResolution: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case fhd
         case hd
         case sd
@@ -4008,8 +4009,9 @@ extension MediaLiveClientTypes {
 }
 
 extension MediaLiveClientTypes {
+
     /// Placeholder documentation for CdiInputSpecification
-    public struct CdiInputSpecification {
+    public struct CdiInputSpecification: Swift.Sendable {
         /// Maximum CDI input resolution
         public var resolution: MediaLiveClientTypes.CdiInputResolution?
 
@@ -4020,13 +4022,12 @@ extension MediaLiveClientTypes {
             self.resolution = resolution
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
 
     /// A standard channel has two encoding pipelines and a single pipeline channel only has one.
-    public enum ChannelClass: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ChannelClass: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case singlePipeline
         case standard
         case sdkUnknown(Swift.String)
@@ -4054,8 +4055,9 @@ extension MediaLiveClientTypes {
 }
 
 extension MediaLiveClientTypes {
+
     /// MediaPackage Output Destination Settings
-    public struct MediaPackageOutputDestinationSettings {
+    public struct MediaPackageOutputDestinationSettings: Swift.Sendable {
         /// ID of the channel in MediaPackage that is the destination for this output group. You do not need to specify the individual inputs in MediaPackage; MediaLive will handle the connection of the two MediaLive pipelines to the two MediaPackage inputs. The MediaPackage channel and MediaLive channel must be in the same region.
         public var channelId: Swift.String?
 
@@ -4066,12 +4068,12 @@ extension MediaLiveClientTypes {
             self.channelId = channelId
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
+
     /// Multiplex Program Input Destination Settings for outputting a Channel to a Multiplex
-    public struct MultiplexProgramChannelDestinationSettings {
+    public struct MultiplexProgramChannelDestinationSettings: Swift.Sendable {
         /// The ID of the Multiplex that the encoder is providing output to. You do not need to specify the individual inputs to the Multiplex; MediaLive will handle the connection of the two MediaLive pipelines to the two Multiplex instances. The Multiplex must be in the same region as the Channel.
         public var multiplexId: Swift.String?
         /// The program name of the Multiplex program that the encoder is providing output to.
@@ -4086,12 +4088,12 @@ extension MediaLiveClientTypes {
             self.programName = programName
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
+
     /// Placeholder documentation for OutputDestinationSettings
-    public struct OutputDestinationSettings {
+    public struct OutputDestinationSettings: Swift.Sendable {
         /// key used to extract the password from EC2 Parameter store
         public var passwordParam: Swift.String?
         /// Stream name for RTMP destinations (URLs of type rtmp://)
@@ -4114,12 +4116,12 @@ extension MediaLiveClientTypes {
             self.username = username
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
+
     /// Placeholder documentation for SrtOutputDestinationSettings
-    public struct SrtOutputDestinationSettings {
+    public struct SrtOutputDestinationSettings: Swift.Sendable {
         /// Arn used to extract the password from Secrets Manager
         public var encryptionPassphraseSecretArn: Swift.String?
         /// Stream id for SRT destinations (URLs of type srt://)
@@ -4138,12 +4140,12 @@ extension MediaLiveClientTypes {
             self.url = url
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
+
     /// Placeholder documentation for OutputDestination
-    public struct OutputDestination {
+    public struct OutputDestination: Swift.Sendable {
         /// User-specified id. This is used in an output group or an output.
         public var id: Swift.String?
         /// Destination settings for a MediaPackage output; one destination for both encoders.
@@ -4170,12 +4172,12 @@ extension MediaLiveClientTypes {
             self.srtSettings = srtSettings
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
+
     /// Placeholder documentation for AudioSilenceFailoverSettings
-    public struct AudioSilenceFailoverSettings {
+    public struct AudioSilenceFailoverSettings: Swift.Sendable {
         /// The name of the audio selector in the input that MediaLive should monitor to detect silence. Select your most important rendition. If you didn't create an audio selector in this input, leave blank.
         /// This member is required.
         public var audioSelectorName: Swift.String?
@@ -4191,12 +4193,12 @@ extension MediaLiveClientTypes {
             self.audioSilenceThresholdMsec = audioSilenceThresholdMsec
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
+
     /// MediaLive will perform a failover if content is not detected in this input for the specified period.
-    public struct InputLossFailoverSettings {
+    public struct InputLossFailoverSettings: Swift.Sendable {
         /// The amount of time (in milliseconds) that no input is detected. After that time, an input failover will occur.
         public var inputLossThresholdMsec: Swift.Int?
 
@@ -4207,12 +4209,12 @@ extension MediaLiveClientTypes {
             self.inputLossThresholdMsec = inputLossThresholdMsec
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
+
     /// Placeholder documentation for VideoBlackFailoverSettings
-    public struct VideoBlackFailoverSettings {
+    public struct VideoBlackFailoverSettings: Swift.Sendable {
         /// A value used in calculating the threshold below which MediaLive considers a pixel to be 'black'. For the input to be considered black, every pixel in a frame must be below this threshold. The threshold is calculated as a percentage (expressed as a decimal) of white. Therefore .1 means 10% white (or 90% black). Note how the formula works for any color depth. For example, if you set this field to 0.1 in 10-bit color depth: (10230.1=102.3), which means a pixel value of 102 or less is 'black'. If you set this field to .1 in an 8-bit color depth: (2550.1=25.5), which means a pixel value of 25 or less is 'black'. The range is 0.0 to 1.0, with any number of decimal places.
         public var blackDetectThreshold: Swift.Double?
         /// The amount of time (in milliseconds) that the active input must be black before automatic input failover occurs.
@@ -4227,12 +4229,12 @@ extension MediaLiveClientTypes {
             self.videoBlackThresholdMsec = videoBlackThresholdMsec
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
+
     /// Settings for one failover condition.
-    public struct FailoverConditionSettings {
+    public struct FailoverConditionSettings: Swift.Sendable {
         /// MediaLive will perform a failover if the specified audio selector is silent for the specified period.
         public var audioSilenceSettings: MediaLiveClientTypes.AudioSilenceFailoverSettings?
         /// MediaLive will perform a failover if content is not detected in this input for the specified period.
@@ -4251,12 +4253,12 @@ extension MediaLiveClientTypes {
             self.videoBlackSettings = videoBlackSettings
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
+
     /// Failover Condition settings. There can be multiple failover conditions inside AutomaticInputFailoverSettings.
-    public struct FailoverCondition {
+    public struct FailoverCondition: Swift.Sendable {
         /// Failover condition type-specific settings.
         public var failoverConditionSettings: MediaLiveClientTypes.FailoverConditionSettings?
 
@@ -4267,13 +4269,12 @@ extension MediaLiveClientTypes {
             self.failoverConditionSettings = failoverConditionSettings
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
 
     /// Input preference when deciding which input to make active when a previously failed input has recovered. If "EQUAL_INPUT_PREFERENCE", then the active input will stay active as long as it is healthy. If "PRIMARY_INPUT_PREFERRED", then always switch back to the primary input when it is healthy.
-    public enum InputPreference: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum InputPreference: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case equalInputPreference
         case primaryInputPreferred
         case sdkUnknown(Swift.String)
@@ -4301,8 +4302,9 @@ extension MediaLiveClientTypes {
 }
 
 extension MediaLiveClientTypes {
+
     /// The settings for Automatic Input Failover.
-    public struct AutomaticInputFailoverSettings {
+    public struct AutomaticInputFailoverSettings: Swift.Sendable {
         /// This clear time defines the requirement a recovered input must meet to be considered healthy. The input must have no failover conditions for this length of time. Enter a time in milliseconds. This value is particularly important if the input_preference for the failover pair is set to PRIMARY_INPUT_PREFERRED, because after this time, MediaLive will switch back to the primary input.
         public var errorClearTimeMsec: Swift.Int?
         /// A list of failover conditions. If any of these conditions occur, MediaLive will perform a failover to the other input.
@@ -4326,13 +4328,12 @@ extension MediaLiveClientTypes {
             self.secondaryInputId = secondaryInputId
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
 
     /// Input Deblock Filter
-    public enum InputDeblockFilter: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum InputDeblockFilter: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case disabled
         case enabled
         case sdkUnknown(Swift.String)
@@ -4362,7 +4363,7 @@ extension MediaLiveClientTypes {
 extension MediaLiveClientTypes {
 
     /// Input Denoise Filter
-    public enum InputDenoiseFilter: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum InputDenoiseFilter: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case disabled
         case enabled
         case sdkUnknown(Swift.String)
@@ -4392,7 +4393,7 @@ extension MediaLiveClientTypes {
 extension MediaLiveClientTypes {
 
     /// Input Filter
-    public enum InputFilter: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum InputFilter: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case auto
         case disabled
         case forced
@@ -4425,7 +4426,7 @@ extension MediaLiveClientTypes {
 extension MediaLiveClientTypes {
 
     /// Hls Scte35 Source Type
-    public enum HlsScte35SourceType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum HlsScte35SourceType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case manifest
         case segments
         case sdkUnknown(Swift.String)
@@ -4453,8 +4454,9 @@ extension MediaLiveClientTypes {
 }
 
 extension MediaLiveClientTypes {
+
     /// Hls Input Settings
-    public struct HlsInputSettings {
+    public struct HlsInputSettings: Swift.Sendable {
         /// When specified the HLS stream with the m3u8 BANDWIDTH that most closely matches this value will be chosen, otherwise the highest bandwidth stream in the m3u8 will be chosen. The bitrate is specified in bits per second, as in an HLS manifest.
         public var bandwidth: Swift.Int?
         /// When specified, reading of the HLS input will begin this many buffer segments from the end (most recently written segment). When not specified, the HLS input will begin with the first segment specified in the m3u8.
@@ -4481,12 +4483,12 @@ extension MediaLiveClientTypes {
             self.scte35Source = scte35Source
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
+
     /// Multicast-specific input settings.
-    public struct MulticastInputSettings {
+    public struct MulticastInputSettings: Swift.Sendable {
         /// Optionally, a source ip address to filter by for Source-specific Multicast (SSM)
         public var sourceIpAddress: Swift.String?
 
@@ -4497,13 +4499,12 @@ extension MediaLiveClientTypes {
             self.sourceIpAddress = sourceIpAddress
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
 
     /// Network Input Server Validation
-    public enum NetworkInputServerValidation: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum NetworkInputServerValidation: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case checkCryptographyAndValidateName
         case checkCryptographyOnly
         case sdkUnknown(Swift.String)
@@ -4531,8 +4532,9 @@ extension MediaLiveClientTypes {
 }
 
 extension MediaLiveClientTypes {
+
     /// Network source to transcode. Must be accessible to the Elemental Live node that is running the live event through a network connection.
-    public struct NetworkInputSettings {
+    public struct NetworkInputSettings: Swift.Sendable {
         /// Specifies HLS input settings when the uri is for a HLS manifest.
         public var hlsInputSettings: MediaLiveClientTypes.HlsInputSettings?
         /// Specifies multicast input settings when the uri is for a multicast event.
@@ -4551,13 +4553,12 @@ extension MediaLiveClientTypes {
             self.serverValidation = serverValidation
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
 
     /// Smpte2038 Data Preference
-    public enum Smpte2038DataPreference: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Smpte2038DataPreference: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case ignore
         case prefer
         case sdkUnknown(Swift.String)
@@ -4587,7 +4588,7 @@ extension MediaLiveClientTypes {
 extension MediaLiveClientTypes {
 
     /// Input Source End Behavior
-    public enum InputSourceEndBehavior: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum InputSourceEndBehavior: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case `continue`
         case loop
         case sdkUnknown(Swift.String)
@@ -4617,7 +4618,7 @@ extension MediaLiveClientTypes {
 extension MediaLiveClientTypes {
 
     /// Video Selector Color Space
-    public enum VideoSelectorColorSpace: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum VideoSelectorColorSpace: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case follow
         case hdr10
         case hlg2020
@@ -4654,8 +4655,9 @@ extension MediaLiveClientTypes {
 }
 
 extension MediaLiveClientTypes {
+
     /// Hdr10 Settings
-    public struct Hdr10Settings {
+    public struct Hdr10Settings: Swift.Sendable {
         /// Maximum Content Light Level An integer metadata value defining the maximum light level, in nits, of any single pixel within an encoded HDR video stream or file.
         public var maxCll: Swift.Int?
         /// Maximum Frame Average Light Level An integer metadata value defining the maximum average light level, in nits, for any single frame within an encoded HDR video stream or file.
@@ -4670,12 +4672,12 @@ extension MediaLiveClientTypes {
             self.maxFall = maxFall
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
+
     /// Video Selector Color Space Settings
-    public struct VideoSelectorColorSpaceSettings {
+    public struct VideoSelectorColorSpaceSettings: Swift.Sendable {
         /// Hdr10 Settings
         public var hdr10Settings: MediaLiveClientTypes.Hdr10Settings?
 
@@ -4686,13 +4688,12 @@ extension MediaLiveClientTypes {
             self.hdr10Settings = hdr10Settings
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
 
     /// Video Selector Color Space Usage
-    public enum VideoSelectorColorSpaceUsage: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum VideoSelectorColorSpaceUsage: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case fallback
         case force
         case sdkUnknown(Swift.String)
@@ -4720,8 +4721,9 @@ extension MediaLiveClientTypes {
 }
 
 extension MediaLiveClientTypes {
+
     /// Video Selector Pid
-    public struct VideoSelectorPid {
+    public struct VideoSelectorPid: Swift.Sendable {
         /// Selects a specific PID from within a video source.
         public var pid: Swift.Int?
 
@@ -4732,12 +4734,12 @@ extension MediaLiveClientTypes {
             self.pid = pid
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
+
     /// Video Selector Program Id
-    public struct VideoSelectorProgramId {
+    public struct VideoSelectorProgramId: Swift.Sendable {
         /// Selects a specific program from within a multi-program transport stream. If the program doesn't exist, the first program within the transport stream will be selected by default.
         public var programId: Swift.Int?
 
@@ -4748,12 +4750,12 @@ extension MediaLiveClientTypes {
             self.programId = programId
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
+
     /// Video Selector Settings
-    public struct VideoSelectorSettings {
+    public struct VideoSelectorSettings: Swift.Sendable {
         /// Video Selector Pid
         public var videoSelectorPid: MediaLiveClientTypes.VideoSelectorPid?
         /// Video Selector Program Id
@@ -4768,12 +4770,12 @@ extension MediaLiveClientTypes {
             self.videoSelectorProgramId = videoSelectorProgramId
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
+
     /// Specifies a particular video stream within an input source. An input may have only a single video selector.
-    public struct VideoSelector {
+    public struct VideoSelector: Swift.Sendable {
         /// Specifies the color space of an input. This setting works in tandem with colorSpaceUsage and a video description's colorSpaceSettingsChoice to determine if any conversion will be performed.
         public var colorSpace: MediaLiveClientTypes.VideoSelectorColorSpace?
         /// Color space settings
@@ -4796,12 +4798,12 @@ extension MediaLiveClientTypes {
             self.selectorSettings = selectorSettings
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
+
     /// Live Event input parameters. There can be multiple inputs in a single Live Event.
-    public struct InputSettings {
+    public struct InputSettings: Swift.Sendable {
         /// Used to select the audio stream to decode for inputs that have multiple available.
         public var audioSelectors: [MediaLiveClientTypes.AudioSelector]?
         /// Used to select the caption input to use for inputs that have multiple available.
@@ -4862,12 +4864,12 @@ extension MediaLiveClientTypes {
             self.videoSelector = videoSelector
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
+
     /// Placeholder documentation for InputAttachment
-    public struct InputAttachment {
+    public struct InputAttachment: Swift.Sendable {
         /// User-specified settings for defining what the conditions are for declaring the input unhealthy and failing over to a different input.
         public var automaticInputFailoverSettings: MediaLiveClientTypes.AutomaticInputFailoverSettings?
         /// User-specified name for the attachment. This is required if the user wants to use this input in an input switch action.
@@ -4894,13 +4896,12 @@ extension MediaLiveClientTypes {
             self.logicalInterfaceNames = logicalInterfaceNames
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
 
     /// codec in increasing order of complexity
-    public enum InputCodec: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum InputCodec: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case avc
         case hevc
         case mpeg2
@@ -4933,7 +4934,7 @@ extension MediaLiveClientTypes {
 extension MediaLiveClientTypes {
 
     /// Maximum input bitrate in megabits per second. Bitrates up to 50 Mbps are supported currently.
-    public enum InputMaximumBitrate: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum InputMaximumBitrate: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case max10Mbps
         case max20Mbps
         case max50Mbps
@@ -4966,7 +4967,7 @@ extension MediaLiveClientTypes {
 extension MediaLiveClientTypes {
 
     /// Input resolution based on lines of vertical resolution in the input; SD is less than 720 lines, HD is 720 to 1080 lines, UHD is greater than 1080 lines
-    public enum InputResolution: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum InputResolution: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case hd
         case sd
         case uhd
@@ -4997,8 +4998,9 @@ extension MediaLiveClientTypes {
 }
 
 extension MediaLiveClientTypes {
+
     /// Placeholder documentation for InputSpecification
-    public struct InputSpecification {
+    public struct InputSpecification: Swift.Sendable {
         /// Input codec
         public var codec: MediaLiveClientTypes.InputCodec?
         /// Maximum input bitrate, categorized coarsely
@@ -5017,13 +5019,12 @@ extension MediaLiveClientTypes {
             self.resolution = resolution
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
 
     /// The log level the user wants for their channel.
-    public enum LogLevel: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum LogLevel: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case debug
         case disabled
         case error
@@ -5062,7 +5063,7 @@ extension MediaLiveClientTypes {
 extension MediaLiveClientTypes {
 
     /// The currently selected maintenance day.
-    public enum MaintenanceDay: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum MaintenanceDay: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case friday
         case monday
         case saturday
@@ -5105,8 +5106,9 @@ extension MediaLiveClientTypes {
 }
 
 extension MediaLiveClientTypes {
+
     /// Placeholder documentation for MaintenanceStatus
-    public struct MaintenanceStatus {
+    public struct MaintenanceStatus: Swift.Sendable {
         /// The currently selected maintenance day.
         public var maintenanceDay: MediaLiveClientTypes.MaintenanceDay?
         /// Maintenance is required by the displayed date and time. Date and time is in ISO.
@@ -5129,13 +5131,12 @@ extension MediaLiveClientTypes {
             self.maintenanceStartTime = maintenanceStartTime
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
 
     /// Placeholder documentation for ChannelState
-    public enum ChannelState: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ChannelState: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case createFailed
         case creating
         case deleted
@@ -5190,8 +5191,9 @@ extension MediaLiveClientTypes {
 }
 
 extension MediaLiveClientTypes {
+
     /// The properties for a private VPC Output
-    public struct VpcOutputSettingsDescription {
+    public struct VpcOutputSettingsDescription: Swift.Sendable {
         /// The Availability Zones where the vpc subnets are located. The first Availability Zone applies to the first subnet in the list of subnets. The second Availability Zone applies to the second subnet.
         public var availabilityZones: [Swift.String]?
         /// A list of Elastic Network Interfaces created by MediaLive in the customer's VPC
@@ -5214,12 +5216,12 @@ extension MediaLiveClientTypes {
             self.subnetIds = subnetIds
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
+
     /// Placeholder documentation for ChannelSummary
-    public struct ChannelSummary {
+    public struct ChannelSummary: Swift.Sendable {
         /// AnywhereSettings settings for this channel.
         public var anywhereSettings: MediaLiveClientTypes.DescribeAnywhereSettings?
         /// The unique arn of the channel.
@@ -5294,12 +5296,12 @@ extension MediaLiveClientTypes {
             self.vpc = vpc
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
+
     /// Placeholder documentation for CloudWatchAlarmTemplateGroupSummary
-    public struct CloudWatchAlarmTemplateGroupSummary {
+    public struct CloudWatchAlarmTemplateGroupSummary: Swift.Sendable {
         /// A cloudwatch alarm template group's ARN (Amazon Resource Name)
         /// This member is required.
         public var arn: Swift.String?
@@ -5343,13 +5345,12 @@ extension MediaLiveClientTypes {
             self.templateCount = templateCount
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
 
     /// The comparison operator used to compare the specified statistic and the threshold.
-    public enum CloudWatchAlarmTemplateComparisonOperator: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum CloudWatchAlarmTemplateComparisonOperator: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case greaterthanorequaltothreshold
         case greaterthanthreshold
         case lessthanorequaltothreshold
@@ -5385,7 +5386,7 @@ extension MediaLiveClientTypes {
 extension MediaLiveClientTypes {
 
     /// The statistic to apply to the alarm's metric data.
-    public enum CloudWatchAlarmTemplateStatistic: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum CloudWatchAlarmTemplateStatistic: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case average
         case maximum
         case minimum
@@ -5424,7 +5425,7 @@ extension MediaLiveClientTypes {
 extension MediaLiveClientTypes {
 
     /// The resource type this template should dynamically generate cloudwatch metric alarms for.
-    public enum CloudWatchAlarmTemplateTargetResourceType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum CloudWatchAlarmTemplateTargetResourceType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case cloudfrontDistribution
         case mediaconnectFlow
         case medialiveChannel
@@ -5472,7 +5473,7 @@ extension MediaLiveClientTypes {
 extension MediaLiveClientTypes {
 
     /// Specifies how missing data points are treated when evaluating the alarm's condition.
-    public enum CloudWatchAlarmTemplateTreatMissingData: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum CloudWatchAlarmTemplateTreatMissingData: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case breaching
         case ignore
         case missing
@@ -5506,8 +5507,9 @@ extension MediaLiveClientTypes {
 }
 
 extension MediaLiveClientTypes {
+
     /// Placeholder documentation for CloudWatchAlarmTemplateSummary
-    public struct CloudWatchAlarmTemplateSummary {
+    public struct CloudWatchAlarmTemplateSummary: Swift.Sendable {
         /// A cloudwatch alarm template's ARN (Amazon Resource Name)
         /// This member is required.
         public var arn: Swift.String?
@@ -5595,13 +5597,12 @@ extension MediaLiveClientTypes {
             self.treatMissingData = treatMissingData
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
 
     /// Property of colorCorrections. When you are using 3D LUT files to perform color conversion on video, these are the supported color spaces.
-    public enum ColorSpace: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ColorSpace: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case hdr10
         case hlg2020
         case rec601
@@ -5635,8 +5636,9 @@ extension MediaLiveClientTypes {
 }
 
 extension MediaLiveClientTypes {
+
     /// Property of ColorCorrectionSettings. Used for custom color space conversion. The object identifies one 3D LUT file and specifies the input/output color space combination that the file will be used for.
-    public struct ColorCorrection {
+    public struct ColorCorrection: Swift.Sendable {
         /// The color space of the input.
         /// This member is required.
         public var inputColorSpace: MediaLiveClientTypes.ColorSpace?
@@ -5658,13 +5660,12 @@ extension MediaLiveClientTypes {
             self.uri = uri
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
 
     /// Used in DescribeChannelPlacementGroupResult
-    public enum ChannelPlacementGroupState: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ChannelPlacementGroupState: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case assigned
         case assigning
         case deleted
@@ -5707,8 +5708,9 @@ extension MediaLiveClientTypes {
 }
 
 extension MediaLiveClientTypes {
+
     /// Contains the response for ListChannelPlacementGroups
-    public struct DescribeChannelPlacementGroupSummary {
+    public struct DescribeChannelPlacementGroupSummary: Swift.Sendable {
         /// The ARN of this ChannelPlacementGroup. It is automatically assigned when the ChannelPlacementGroup is created.
         public var arn: Swift.String?
         /// Used in ListChannelPlacementGroupsResult
@@ -5743,13 +5745,12 @@ extension MediaLiveClientTypes {
             self.state = state
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
 
     /// Used in CreateClusterSummary, DescribeClusterSummary, DescribeClusterResult, UpdateClusterResult.
-    public enum ClusterType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ClusterType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case onPremises
         case sdkUnknown(Swift.String)
 
@@ -5774,8 +5775,9 @@ extension MediaLiveClientTypes {
 }
 
 extension MediaLiveClientTypes {
+
     /// Used in ClusterNetworkSettings
-    public struct InterfaceMapping {
+    public struct InterfaceMapping: Swift.Sendable {
         /// The logical name for one interface (on every Node) that handles a specific type of traffic. We recommend that the name hints at the physical interface it applies to. For example, it could refer to the traffic that the physical interface handles. For example, my-Inputs-Interface.
         public var logicalInterfaceName: Swift.String?
         /// The ID of the network that you want to connect to the specified logicalInterfaceName.
@@ -5790,12 +5792,12 @@ extension MediaLiveClientTypes {
             self.networkId = networkId
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
+
     /// Used in DescribeClusterResult, DescribeClusterSummary, UpdateClusterResult.
-    public struct ClusterNetworkSettings {
+    public struct ClusterNetworkSettings: Swift.Sendable {
         /// The network interface that is the default route for traffic to and from the node. MediaLive Anywhere uses this default when the destination for the traffic isn't covered by the route table for any of the networks. Specify the value of the appropriate logicalInterfaceName parameter that you create in the interfaceMappings.
         public var defaultRoute: Swift.String?
         /// An array of interfaceMapping objects for this Cluster. Each mapping logically connects one interface on the nodes with one Network. You need only one mapping for each interface because all the Nodes share the mapping.
@@ -5810,13 +5812,12 @@ extension MediaLiveClientTypes {
             self.interfaceMappings = interfaceMappings
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
 
     /// Used in DescribeClusterSummary, DescribeClusterResult, UpdateClusterResult.
-    public enum ClusterState: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ClusterState: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case active
         case createFailed
         case creating
@@ -5856,8 +5857,9 @@ extension MediaLiveClientTypes {
 }
 
 extension MediaLiveClientTypes {
+
     /// Used in ListClustersResult.
-    public struct DescribeClusterSummary {
+    public struct DescribeClusterSummary: Swift.Sendable {
         /// The ARN of this Cluster. It is automatically assigned when the Cluster is created.
         public var arn: Swift.String?
         /// An array of the IDs of the Channels that are associated with this Cluster. One Channel is associated with the Cluster as follows: A Channel belongs to a ChannelPlacementGroup. A ChannelPlacementGroup is attached to a Node. A Node belongs to a Cluster.
@@ -5896,12 +5898,12 @@ extension MediaLiveClientTypes {
             self.state = state
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
+
     /// Used in DescribeNetworkResult, DescribeNetworkSummary, UpdateNetworkResult.
-    public struct IpPool {
+    public struct IpPool: Swift.Sendable {
         /// A CIDR block of IP addresses that are reserved for MediaLive Anywhere.
         public var cidr: Swift.String?
 
@@ -5912,12 +5914,12 @@ extension MediaLiveClientTypes {
             self.cidr = cidr
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
+
     /// Used in DescribeNetworkResult, DescribeNetworkSummary, UpdateNetworkResult.
-    public struct Route {
+    public struct Route: Swift.Sendable {
         /// A CIDR block for one Route.
         public var cidr: Swift.String?
         /// The IP address of the Gateway for this route, if applicable.
@@ -5932,13 +5934,12 @@ extension MediaLiveClientTypes {
             self.gateway = gateway
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
 
     /// Used in DescribeNetworkResult, DescribeNetworkSummary, UpdateNetworkResult.
-    public enum NetworkState: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum NetworkState: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case active
         case createFailed
         case creating
@@ -5987,8 +5988,9 @@ extension MediaLiveClientTypes {
 }
 
 extension MediaLiveClientTypes {
+
     /// Used in ListNetworksResult.
-    public struct DescribeNetworkSummary {
+    public struct DescribeNetworkSummary: Swift.Sendable {
         /// The ARN of this Network. It is automatically assigned when the Network is created.
         public var arn: Swift.String?
         /// Placeholder documentation for __listOf__string
@@ -6023,13 +6025,12 @@ extension MediaLiveClientTypes {
             self.state = state
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
 
     /// Used in DescribeNodeSummary.
-    public enum NodeConnectionState: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum NodeConnectionState: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case connected
         case disconnected
         case sdkUnknown(Swift.String)
@@ -6059,7 +6060,7 @@ extension MediaLiveClientTypes {
 extension MediaLiveClientTypes {
 
     /// Used in NodeInterfaceMapping and NodeInterfaceMappingCreateRequest
-    public enum NetworkInterfaceMode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum NetworkInterfaceMode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case bridge
         case nat
         case sdkUnknown(Swift.String)
@@ -6087,8 +6088,9 @@ extension MediaLiveClientTypes {
 }
 
 extension MediaLiveClientTypes {
+
     /// A mapping that's used to pair a logical network interface name on a Node with the physical interface name exposed in the operating system.
-    public struct NodeInterfaceMapping {
+    public struct NodeInterfaceMapping: Swift.Sendable {
         /// A uniform logical interface name to address in a MediaLive channel configuration.
         public var logicalInterfaceName: Swift.String?
         /// Used in NodeInterfaceMapping and NodeInterfaceMappingCreateRequest
@@ -6107,13 +6109,12 @@ extension MediaLiveClientTypes {
             self.physicalInterfaceName = physicalInterfaceName
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
 
     /// Used in CreateNodeRequest, CreateNodeRegistrationScriptRequest, DescribeNodeResult, DescribeNodeSummary, UpdateNodeRequest.
-    public enum NodeRole: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum NodeRole: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case active
         case backup
         case sdkUnknown(Swift.String)
@@ -6143,7 +6144,7 @@ extension MediaLiveClientTypes {
 extension MediaLiveClientTypes {
 
     /// Used in DescribeNodeSummary.
-    public enum NodeState: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum NodeState: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case activationFailed
         case active
         case created
@@ -6201,8 +6202,9 @@ extension MediaLiveClientTypes {
 }
 
 extension MediaLiveClientTypes {
+
     /// Placeholder documentation for DescribeNodeSummary
-    public struct DescribeNodeSummary {
+    public struct DescribeNodeSummary: Swift.Sendable {
         /// The ARN of the Node. It is automatically assigned when the Node is created.
         public var arn: Swift.String?
         /// An array of IDs. Each ID is one ChannelPlacementGroup that is associated with this Node. Empty if the Node is not yet associated with any groups.
@@ -6253,12 +6255,12 @@ extension MediaLiveClientTypes {
             self.state = state
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
+
     /// Placeholder documentation for EventBridgeRuleTemplateGroupSummary
-    public struct EventBridgeRuleTemplateGroupSummary {
+    public struct EventBridgeRuleTemplateGroupSummary: Swift.Sendable {
         /// An eventbridge rule template group's ARN (Amazon Resource Name)
         /// This member is required.
         public var arn: Swift.String?
@@ -6302,13 +6304,12 @@ extension MediaLiveClientTypes {
             self.templateCount = templateCount
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
 
     /// The type of event to match with the rule.
-    public enum EventBridgeRuleTemplateEventType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum EventBridgeRuleTemplateEventType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case mediaconnectAlert
         case mediaconnectFlowStatusChange
         case mediaconnectOutputHealth
@@ -6369,8 +6370,9 @@ extension MediaLiveClientTypes {
 }
 
 extension MediaLiveClientTypes {
+
     /// Placeholder documentation for EventBridgeRuleTemplateSummary
-    public struct EventBridgeRuleTemplateSummary {
+    public struct EventBridgeRuleTemplateSummary: Swift.Sendable {
         /// An eventbridge rule template's ARN (Amazon Resource Name)
         /// This member is required.
         public var arn: Swift.String?
@@ -6424,12 +6426,12 @@ extension MediaLiveClientTypes {
             self.tags = tags
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
+
     /// The target to which to send matching events.
-    public struct EventBridgeRuleTemplateTarget {
+    public struct EventBridgeRuleTemplateTarget: Swift.Sendable {
         /// Target ARNs must be either an SNS topic or CloudWatch log group.
         /// This member is required.
         public var arn: Swift.String?
@@ -6441,13 +6443,12 @@ extension MediaLiveClientTypes {
             self.arn = arn
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
 
     /// Hls Ad Markers
-    public enum HlsAdMarkers: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum HlsAdMarkers: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case adobe
         case elemental
         case elementalScte35
@@ -6478,8 +6479,9 @@ extension MediaLiveClientTypes {
 }
 
 extension MediaLiveClientTypes {
+
     /// A network route configuration.
-    public struct InputDestinationRoute {
+    public struct InputDestinationRoute: Swift.Sendable {
         /// The CIDR of the route.
         public var cidr: Swift.String?
         /// An optional gateway for the route.
@@ -6494,12 +6496,12 @@ extension MediaLiveClientTypes {
             self.gateway = gateway
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
+
     /// The properties for a VPC type input destination.
-    public struct InputDestinationVpc {
+    public struct InputDestinationVpc: Swift.Sendable {
         /// The availability zone of the Input destination.
         public var availabilityZone: Swift.String?
         /// The network interface ID of the Input destination in the VPC.
@@ -6514,12 +6516,12 @@ extension MediaLiveClientTypes {
             self.networkInterfaceId = networkInterfaceId
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
+
     /// The settings for a PUSH type input.
-    public struct InputDestination {
+    public struct InputDestination: Swift.Sendable {
         /// The system-generated static IP address of endpoint. It remains fixed for the lifetime of the input.
         public var ip: Swift.String?
         /// The ID of the attached network.
@@ -6550,13 +6552,12 @@ extension MediaLiveClientTypes {
             self.vpc = vpc
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
 
     /// A standard input has two sources and a single pipeline input only has one.
-    public enum InputClass: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum InputClass: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case singlePipeline
         case standard
         case sdkUnknown(Swift.String)
@@ -6584,8 +6585,9 @@ extension MediaLiveClientTypes {
 }
 
 extension MediaLiveClientTypes {
+
     /// Settings for an input device.
-    public struct InputDeviceSettings {
+    public struct InputDeviceSettings: Swift.Sendable {
         /// The unique ID for the device.
         public var id: Swift.String?
 
@@ -6596,13 +6598,12 @@ extension MediaLiveClientTypes {
             self.id = id
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
 
     /// With the introduction of MediaLive Anywhere, a MediaLive input can now exist in two different places: AWS or inside an on-premises datacenter. By default all inputs will continue to be AWS inputs.
-    public enum InputNetworkLocation: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum InputNetworkLocation: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case aws
         case onPremises
         case sdkUnknown(Swift.String)
@@ -6632,7 +6633,7 @@ extension MediaLiveClientTypes {
 extension MediaLiveClientTypes {
 
     /// There are two types of input sources, static and dynamic. If an input source is dynamic you can change the source url of the input dynamically using an input switch action. Currently, two input types support a dynamic url at this time, MP4_FILE and TS_FILE. By default all input sources are static.
-    public enum InputSourceType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum InputSourceType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case `dynamic`
         case `static`
         case sdkUnknown(Swift.String)
@@ -6660,8 +6661,9 @@ extension MediaLiveClientTypes {
 }
 
 extension MediaLiveClientTypes {
+
     /// The settings for a MediaConnect Flow.
-    public struct MediaConnectFlow {
+    public struct MediaConnectFlow: Swift.Sendable {
         /// The unique ARN of the MediaConnect Flow being used as a source.
         public var flowArn: Swift.String?
 
@@ -6672,12 +6674,12 @@ extension MediaLiveClientTypes {
             self.flowArn = flowArn
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
+
     /// Pair of multicast url and source ip address (optional) that make up a multicast source.
-    public struct MulticastSource {
+    public struct MulticastSource: Swift.Sendable {
         /// This represents the ip address of the device sending the multicast stream.
         public var sourceIp: Swift.String?
         /// This represents the customer's source URL where multicast stream is pulled from.
@@ -6693,12 +6695,12 @@ extension MediaLiveClientTypes {
             self.url = url
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
+
     /// Settings for a Multicast input. Contains a list of multicast Urls and optional source ip addresses.
-    public struct MulticastSettings {
+    public struct MulticastSettings: Swift.Sendable {
         /// Placeholder documentation for __listOfMulticastSource
         public var sources: [MediaLiveClientTypes.MulticastSource]?
 
@@ -6709,12 +6711,12 @@ extension MediaLiveClientTypes {
             self.sources = sources
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
+
     /// The settings for a PULL type input.
-    public struct InputSource {
+    public struct InputSource: Swift.Sendable {
         /// The key used to extract the password from EC2 Parameter store.
         public var passwordParam: Swift.String?
         /// This represents the customer's source URL where stream is pulled from.
@@ -6733,13 +6735,12 @@ extension MediaLiveClientTypes {
             self.username = username
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
 
     /// Placeholder documentation for Algorithm
-    public enum Algorithm: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Algorithm: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case aes128
         case aes192
         case aes256
@@ -6770,8 +6771,9 @@ extension MediaLiveClientTypes {
 }
 
 extension MediaLiveClientTypes {
+
     /// The decryption settings for the SRT caller source. Present only if the source has decryption enabled.
-    public struct SrtCallerDecryption {
+    public struct SrtCallerDecryption: Swift.Sendable {
         /// The algorithm used to encrypt content.
         public var algorithm: MediaLiveClientTypes.Algorithm?
         /// The ARN for the secret in Secrets Manager. Someone in your organization must create a secret and provide you with its ARN. The secret holds the passphrase that MediaLive uses to decrypt the source content.
@@ -6786,12 +6788,12 @@ extension MediaLiveClientTypes {
             self.passphraseSecretArn = passphraseSecretArn
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
+
     /// The configuration for a source that uses SRT as the connection protocol. In terms of establishing the connection, MediaLive is always caller and the upstream system is always the listener. In terms of transmission of the source content, MediaLive is always the receiver and the upstream system is always the sender.
-    public struct SrtCallerSource {
+    public struct SrtCallerSource: Swift.Sendable {
         /// The decryption settings for the SRT caller source. Present only if the source has decryption enabled.
         public var decryption: MediaLiveClientTypes.SrtCallerDecryption?
         /// The preferred latency (in milliseconds) for implementing packet loss and recovery. Packet recovery is a key feature of SRT.
@@ -6818,12 +6820,12 @@ extension MediaLiveClientTypes {
             self.streamId = streamId
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
+
     /// The configured sources for this SRT input.
-    public struct SrtSettings {
+    public struct SrtSettings: Swift.Sendable {
         /// Placeholder documentation for __listOfSrtCallerSource
         public var srtCallerSources: [MediaLiveClientTypes.SrtCallerSource]?
 
@@ -6834,13 +6836,12 @@ extension MediaLiveClientTypes {
             self.srtCallerSources = srtCallerSources
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
 
     /// Placeholder documentation for InputState
-    public enum InputState: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum InputState: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case attached
         case creating
         case deleted
@@ -6879,7 +6880,7 @@ extension MediaLiveClientTypes {
 extension MediaLiveClientTypes {
 
     /// The different types of inputs that AWS Elemental MediaLive supports.
-    public enum InputType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum InputType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case awsCdi
         case inputDevice
         case mediaconnect
@@ -6937,8 +6938,9 @@ extension MediaLiveClientTypes {
 }
 
 extension MediaLiveClientTypes {
+
     /// Placeholder documentation for Input
-    public struct Input {
+    public struct Input: Swift.Sendable {
         /// The Unique ARN of the input (generated, immutable).
         public var arn: Swift.String?
         /// A list of channel IDs that that input is attached to (currently an input can only be attached to one channel).
@@ -7021,12 +7023,12 @@ extension MediaLiveClientTypes {
             self.type = type
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
+
     /// A network route configuration.
-    public struct InputRequestDestinationRoute {
+    public struct InputRequestDestinationRoute: Swift.Sendable {
         /// The CIDR of the route.
         public var cidr: Swift.String?
         /// An optional gateway for the route.
@@ -7041,12 +7043,12 @@ extension MediaLiveClientTypes {
             self.gateway = gateway
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
+
     /// Endpoint settings for a PUSH type input.
-    public struct InputDestinationRequest {
+    public struct InputDestinationRequest: Swift.Sendable {
         /// If the push input has an input location of ON-PREM, ID the ID of the attached network.
         public var network: Swift.String?
         /// If the push input has an input location of ON-PREM it's a requirement to specify what the route of the input is going to be on the customer local network.
@@ -7069,13 +7071,12 @@ extension MediaLiveClientTypes {
             self.streamName = streamName
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
 
     /// Property of InputDeviceConfigurableAudioChannelPairConfig, which configures one audio channel that the device produces.
-    public enum InputDeviceConfigurableAudioChannelPairProfile: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum InputDeviceConfigurableAudioChannelPairProfile: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case cbrAacHq192000
         case cbrAacHq256000
         case cbrAacHq384000
@@ -7121,8 +7122,9 @@ extension MediaLiveClientTypes {
 }
 
 extension MediaLiveClientTypes {
+
     /// One audio configuration that specifies the format for one audio pair that the device produces as output.
-    public struct InputDeviceConfigurableAudioChannelPairConfig {
+    public struct InputDeviceConfigurableAudioChannelPairConfig: Swift.Sendable {
         /// The ID for one audio pair configuration, a value from 1 to 8.
         public var id: Swift.Int?
         /// The profile to set for one audio pair configuration. Choose an enumeration value. Each value describes one audio configuration using the format (rate control algorithm)-(codec)_(quality)-(bitrate in bytes). For example, CBR-AAC_HQ-192000. Or choose DISABLED, in which case the device won't produce audio for this pair.
@@ -7137,12 +7139,12 @@ extension MediaLiveClientTypes {
             self.profile = profile
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
+
     /// Settings for an input device.
-    public struct InputDeviceRequest {
+    public struct InputDeviceRequest: Swift.Sendable {
         /// The unique ID for the device.
         public var id: Swift.String?
 
@@ -7153,13 +7155,12 @@ extension MediaLiveClientTypes {
             self.id = id
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
 
     /// The state of the connection between the input device and AWS.
-    public enum InputDeviceConnectionState: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum InputDeviceConnectionState: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case connected
         case disconnected
         case sdkUnknown(Swift.String)
@@ -7189,7 +7190,7 @@ extension MediaLiveClientTypes {
 extension MediaLiveClientTypes {
 
     /// The status of the action to synchronize the device configuration. If you change the configuration of the input device (for example, the maximum bitrate), MediaLive sends the new data to the device. The device might not update itself immediately. SYNCED means the device has updated its configuration. SYNCING means that it has not updated its configuration.
-    public enum DeviceSettingsSyncState: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DeviceSettingsSyncState: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case synced
         case syncing
         case sdkUnknown(Swift.String)
@@ -7219,7 +7220,7 @@ extension MediaLiveClientTypes {
 extension MediaLiveClientTypes {
 
     /// The status of software on the input device.
-    public enum DeviceUpdateStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DeviceUpdateStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case notUpToDate
         case updating
         case upToDate
@@ -7252,7 +7253,7 @@ extension MediaLiveClientTypes {
 extension MediaLiveClientTypes {
 
     /// The source at the input device that is currently active.
-    public enum InputDeviceActiveInput: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum InputDeviceActiveInput: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case hdmi
         case sdi
         case sdkUnknown(Swift.String)
@@ -7282,7 +7283,7 @@ extension MediaLiveClientTypes {
 extension MediaLiveClientTypes {
 
     /// The source to activate (use) from the input device.
-    public enum InputDeviceConfiguredInput: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum InputDeviceConfiguredInput: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case auto
         case hdmi
         case sdi
@@ -7315,7 +7316,7 @@ extension MediaLiveClientTypes {
 extension MediaLiveClientTypes {
 
     /// The state of the input device.
-    public enum InputDeviceState: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum InputDeviceState: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case idle
         case streaming
         case sdkUnknown(Swift.String)
@@ -7345,7 +7346,7 @@ extension MediaLiveClientTypes {
 extension MediaLiveClientTypes {
 
     /// The scan type of the video source.
-    public enum InputDeviceScanType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum InputDeviceScanType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case interlaced
         case progressive
         case sdkUnknown(Swift.String)
@@ -7373,8 +7374,9 @@ extension MediaLiveClientTypes {
 }
 
 extension MediaLiveClientTypes {
+
     /// Settings that describe the active source from the input device, and the video characteristics of that source.
-    public struct InputDeviceHdSettings {
+    public struct InputDeviceHdSettings: Swift.Sendable {
         /// If you specified Auto as the configured input, specifies which of the sources is currently active (SDI or HDMI).
         public var activeInput: MediaLiveClientTypes.InputDeviceActiveInput?
         /// The source at the input device that is currently active. You can specify this source.
@@ -7417,13 +7419,12 @@ extension MediaLiveClientTypes {
             self.width = width
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
 
     /// Specifies whether the input device has been configured (outside of MediaLive) to use a dynamic IP address assignment (DHCP) or a static IP address.
-    public enum InputDeviceIpScheme: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum InputDeviceIpScheme: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case dhcp
         case `static`
         case sdkUnknown(Swift.String)
@@ -7451,8 +7452,9 @@ extension MediaLiveClientTypes {
 }
 
 extension MediaLiveClientTypes {
+
     /// The network settings for the input device.
-    public struct InputDeviceNetworkSettings {
+    public struct InputDeviceNetworkSettings: Swift.Sendable {
         /// The DNS addresses of the input device.
         public var dnsAddresses: [Swift.String]?
         /// The network gateway IP address.
@@ -7479,13 +7481,12 @@ extension MediaLiveClientTypes {
             self.subnetMask = subnetMask
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
 
     /// The output attachment type of the input device.
-    public enum InputDeviceOutputType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum InputDeviceOutputType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case mediaconnectFlow
         case medialiveInput
         case `none`
@@ -7518,7 +7519,7 @@ extension MediaLiveClientTypes {
 extension MediaLiveClientTypes {
 
     /// The type of the input device. For an AWS Elemental Link device that outputs resolutions up to 1080, choose "HD".
-    public enum InputDeviceType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum InputDeviceType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case hd
         case uhd
         case sdkUnknown(Swift.String)
@@ -7548,7 +7549,7 @@ extension MediaLiveClientTypes {
 extension MediaLiveClientTypes {
 
     /// Property of InputDeviceUhdAudioChannelPairConfig, which describes one audio channel that the device is configured to produce.
-    public enum InputDeviceUhdAudioChannelPairProfile: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum InputDeviceUhdAudioChannelPairProfile: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case cbrAacHq192000
         case cbrAacHq256000
         case cbrAacHq384000
@@ -7594,8 +7595,9 @@ extension MediaLiveClientTypes {
 }
 
 extension MediaLiveClientTypes {
+
     /// One audio configuration that specifies the format for one audio pair that the device produces as output.
-    public struct InputDeviceUhdAudioChannelPairConfig {
+    public struct InputDeviceUhdAudioChannelPairConfig: Swift.Sendable {
         /// The ID for one audio pair configuration, a value from 1 to 8.
         public var id: Swift.Int?
         /// The profile for one audio pair configuration. This property describes one audio configuration in the format (rate control algorithm)-(codec)_(quality)-(bitrate in bytes). For example, CBR-AAC_HQ-192000. Or DISABLED, in which case the device won't produce audio for this pair.
@@ -7610,13 +7612,12 @@ extension MediaLiveClientTypes {
             self.profile = profile
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
 
     /// The codec to use on the video that the device produces.
-    public enum InputDeviceCodec: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum InputDeviceCodec: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case avc
         case hevc
         case sdkUnknown(Swift.String)
@@ -7644,8 +7645,9 @@ extension MediaLiveClientTypes {
 }
 
 extension MediaLiveClientTypes {
+
     /// Information about the MediaConnect flow attached to the device.
-    public struct InputDeviceMediaConnectSettings {
+    public struct InputDeviceMediaConnectSettings: Swift.Sendable {
         /// The ARN of the MediaConnect flow.
         public var flowArn: Swift.String?
         /// The ARN for the role that MediaLive assumes to access the attached flow and secret.
@@ -7668,12 +7670,12 @@ extension MediaLiveClientTypes {
             self.sourceName = sourceName
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
+
     /// Settings that describe the active source from the input device, and the video characteristics of that source.
-    public struct InputDeviceUhdSettings {
+    public struct InputDeviceUhdSettings: Swift.Sendable {
         /// If you specified Auto as the configured input, specifies which of the sources is currently active (SDI or HDMI).
         public var activeInput: MediaLiveClientTypes.InputDeviceActiveInput?
         /// An array of eight audio configurations, one for each audio pair in the source. Each audio configuration specifies either to exclude the pair, or to format it and include it in the output from the UHD device. Applies only when the device is configured as the source for a MediaConnect flow.
@@ -7728,12 +7730,12 @@ extension MediaLiveClientTypes {
             self.width = width
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
+
     /// Details of the input device.
-    public struct InputDeviceSummary {
+    public struct InputDeviceSummary: Swift.Sendable {
         /// The unique ARN of the input device.
         public var arn: Swift.String?
         /// The Availability Zone associated with this input device.
@@ -7804,13 +7806,12 @@ extension MediaLiveClientTypes {
             self.uhdDeviceSettings = uhdDeviceSettings
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
 
     /// Placeholder documentation for InputSecurityGroupState
-    public enum InputSecurityGroupState: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum InputSecurityGroupState: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case deleted
         case idle
         case inUse
@@ -7844,8 +7845,9 @@ extension MediaLiveClientTypes {
 }
 
 extension MediaLiveClientTypes {
+
     /// Whitelist rule
-    public struct InputWhitelistRule {
+    public struct InputWhitelistRule: Swift.Sendable {
         /// The IPv4 CIDR that's whitelisted.
         public var cidr: Swift.String?
 
@@ -7856,12 +7858,12 @@ extension MediaLiveClientTypes {
             self.cidr = cidr
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
+
     /// An Input Security Group
-    public struct InputSecurityGroup {
+    public struct InputSecurityGroup: Swift.Sendable {
         /// Unique ARN of Input Security Group
         public var arn: Swift.String?
         /// The Id of the Input Security Group
@@ -7892,12 +7894,12 @@ extension MediaLiveClientTypes {
             self.whitelistRules = whitelistRules
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
+
     /// Settings for for a PULL type input.
-    public struct InputSourceRequest {
+    public struct InputSourceRequest: Swift.Sendable {
         /// The key used to extract the password from EC2 Parameter store.
         public var passwordParam: Swift.String?
         /// This represents the customer's source URL where stream is pulled from.
@@ -7916,12 +7918,12 @@ extension MediaLiveClientTypes {
             self.username = username
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
+
     /// An IPv4 CIDR to whitelist.
-    public struct InputWhitelistRuleCidr {
+    public struct InputWhitelistRuleCidr: Swift.Sendable {
         /// The IPv4 CIDR to whitelist.
         public var cidr: Swift.String?
 
@@ -7932,12 +7934,12 @@ extension MediaLiveClientTypes {
             self.cidr = cidr
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
+
     /// Used in ClusterNetworkSettingsCreateRequest.
-    public struct InterfaceMappingCreateRequest {
+    public struct InterfaceMappingCreateRequest: Swift.Sendable {
         /// The logical name for one interface (on every Node) that handles a specific type of traffic. We recommend that the name hints at the physical interface it applies to. For example, it could refer to the traffic that the physical interface handles. For example, my-Inputs-Interface.
         public var logicalInterfaceName: Swift.String?
         /// The ID of the network that you want to connect to the specified logicalInterfaceName.
@@ -7952,12 +7954,12 @@ extension MediaLiveClientTypes {
             self.networkId = networkId
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
+
     /// Placeholder documentation for InterfaceMappingUpdateRequest
-    public struct InterfaceMappingUpdateRequest {
+    public struct InterfaceMappingUpdateRequest: Swift.Sendable {
         /// The logical name for one interface (on every Node) that handles a specific type of traffic. We recommend that the name hints at the physical interface it applies to. For example, it could refer to the traffic that the physical interface handles. For example, my-Inputs-Interface.
         public var logicalInterfaceName: Swift.String?
         /// The ID of the network that you want to connect to the specified logicalInterfaceName. You can use the ListNetworks operation to discover all the IDs.
@@ -7972,12 +7974,12 @@ extension MediaLiveClientTypes {
             self.networkId = networkId
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
+
     /// Used in CreateNetworkRequest.
-    public struct IpPoolCreateRequest {
+    public struct IpPoolCreateRequest: Swift.Sendable {
         /// A CIDR block of IP addresses to reserve for MediaLive Anywhere.
         public var cidr: Swift.String?
 
@@ -7988,12 +7990,12 @@ extension MediaLiveClientTypes {
             self.cidr = cidr
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
+
     /// Used in UpdateNetworkRequest.
-    public struct IpPoolUpdateRequest {
+    public struct IpPoolUpdateRequest: Swift.Sendable {
         /// A CIDR block of IP addresses to reserve for MediaLive Anywhere.
         public var cidr: Swift.String?
 
@@ -8004,12 +8006,12 @@ extension MediaLiveClientTypes {
             self.cidr = cidr
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
+
     /// The settings for a MediaConnect Flow.
-    public struct MediaConnectFlowRequest {
+    public struct MediaConnectFlowRequest: Swift.Sendable {
         /// The ARN of the MediaConnect Flow that you want to use as a source.
         public var flowArn: Swift.String?
 
@@ -8020,12 +8022,12 @@ extension MediaLiveClientTypes {
             self.flowArn = flowArn
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
+
     /// A direct source or destination neighbor to an AWS media resource.
-    public struct MediaResourceNeighbor {
+    public struct MediaResourceNeighbor: Swift.Sendable {
         /// The ARN of a resource used in AWS media workflows.
         /// This member is required.
         public var arn: Swift.String?
@@ -8041,12 +8043,12 @@ extension MediaLiveClientTypes {
             self.name = name
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
+
     /// Pair of multicast url and source ip address (optional) that make up a multicast source.
-    public struct MulticastSourceCreateRequest {
+    public struct MulticastSourceCreateRequest: Swift.Sendable {
         /// This represents the ip address of the device sending the multicast stream.
         public var sourceIp: Swift.String?
         /// This represents the customer's source URL where multicast stream is pulled from.
@@ -8062,12 +8064,12 @@ extension MediaLiveClientTypes {
             self.url = url
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
+
     /// Pair of multicast url and source ip address (optional) that make up a multicast source.
-    public struct MulticastSourceUpdateRequest {
+    public struct MulticastSourceUpdateRequest: Swift.Sendable {
         /// This represents the ip address of the device sending the multicast stream.
         public var sourceIp: Swift.String?
         /// This represents the customer's source URL where multicast stream is pulled from.
@@ -8083,12 +8085,12 @@ extension MediaLiveClientTypes {
             self.url = url
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
+
     /// Multiplex MediaConnect output destination settings.
-    public struct MultiplexMediaConnectOutputDestinationSettings {
+    public struct MultiplexMediaConnectOutputDestinationSettings: Swift.Sendable {
         /// The MediaConnect entitlement ARN available as a Flow source.
         public var entitlementArn: Swift.String?
 
@@ -8099,12 +8101,12 @@ extension MediaLiveClientTypes {
             self.entitlementArn = entitlementArn
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
+
     /// Multiplex output destination settings
-    public struct MultiplexOutputDestination {
+    public struct MultiplexOutputDestination: Swift.Sendable {
         /// Multiplex MediaConnect output destination settings.
         public var mediaConnectSettings: MediaLiveClientTypes.MultiplexMediaConnectOutputDestinationSettings?
 
@@ -8115,12 +8117,12 @@ extension MediaLiveClientTypes {
             self.mediaConnectSettings = mediaConnectSettings
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
+
     /// The current source for one of the pipelines in the multiplex.
-    public struct MultiplexProgramPipelineDetail {
+    public struct MultiplexProgramPipelineDetail: Swift.Sendable {
         /// Identifies the channel pipeline that is currently active for the pipeline (identified by PipelineId) in the multiplex.
         public var activeChannelPipeline: Swift.String?
         /// Identifies a specific pipeline in the multiplex.
@@ -8135,12 +8137,12 @@ extension MediaLiveClientTypes {
             self.pipelineId = pipelineId
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
+
     /// Placeholder documentation for MultiplexProgramSummary
-    public struct MultiplexProgramSummary {
+    public struct MultiplexProgramSummary: Swift.Sendable {
         /// The MediaLive Channel associated with the program.
         public var channelId: Swift.String?
         /// The name of the multiplex program.
@@ -8155,12 +8157,12 @@ extension MediaLiveClientTypes {
             self.programName = programName
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
+
     /// Contains summary configuration for a Multiplex event.
-    public struct MultiplexSettingsSummary {
+    public struct MultiplexSettingsSummary: Swift.Sendable {
         /// Transport stream bit rate.
         public var transportStreamBitrate: Swift.Int?
 
@@ -8171,13 +8173,12 @@ extension MediaLiveClientTypes {
             self.transportStreamBitrate = transportStreamBitrate
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
 
     /// The current state of the multiplex.
-    public enum MultiplexState: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum MultiplexState: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case createFailed
         case creating
         case deleted
@@ -8226,8 +8227,9 @@ extension MediaLiveClientTypes {
 }
 
 extension MediaLiveClientTypes {
+
     /// Placeholder documentation for MultiplexSummary
-    public struct MultiplexSummary {
+    public struct MultiplexSummary: Swift.Sendable {
         /// The unique arn of the multiplex.
         public var arn: Swift.String?
         /// A list of availability zones for the multiplex.
@@ -8270,12 +8272,12 @@ extension MediaLiveClientTypes {
             self.tags = tags
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
+
     /// Used in CreateNodeRequest.
-    public struct NodeInterfaceMappingCreateRequest {
+    public struct NodeInterfaceMappingCreateRequest: Swift.Sendable {
         /// Specify one of the logicalInterfaceNames that you created in the Cluster that this node belongs to. For example, my-Inputs-Interface.
         public var logicalInterfaceName: Swift.String?
         /// The style of the network -- NAT or BRIDGE.
@@ -8294,13 +8296,12 @@ extension MediaLiveClientTypes {
             self.physicalInterfaceName = physicalInterfaceName
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
 
     /// Units for duration, e.g. 'MONTHS'
-    public enum OfferingDurationUnits: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum OfferingDurationUnits: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case months
         case sdkUnknown(Swift.String)
 
@@ -8327,7 +8328,7 @@ extension MediaLiveClientTypes {
 extension MediaLiveClientTypes {
 
     /// Offering type, e.g. 'NO_UPFRONT'
-    public enum OfferingType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum OfferingType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case noUpfront
         case sdkUnknown(Swift.String)
 
@@ -8354,7 +8355,7 @@ extension MediaLiveClientTypes {
 extension MediaLiveClientTypes {
 
     /// Codec, 'MPEG2', 'AVC', 'HEVC', 'AUDIO', 'LINK', or 'AV1'
-    public enum ReservationCodec: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ReservationCodec: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case audio
         case av1
         case avc
@@ -8396,7 +8397,7 @@ extension MediaLiveClientTypes {
 extension MediaLiveClientTypes {
 
     /// Maximum bitrate in megabits per second
-    public enum ReservationMaximumBitrate: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ReservationMaximumBitrate: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case max10Mbps
         case max20Mbps
         case max50Mbps
@@ -8429,7 +8430,7 @@ extension MediaLiveClientTypes {
 extension MediaLiveClientTypes {
 
     /// Maximum framerate in frames per second (Outputs only)
-    public enum ReservationMaximumFramerate: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ReservationMaximumFramerate: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case max30Fps
         case max60Fps
         case sdkUnknown(Swift.String)
@@ -8459,7 +8460,7 @@ extension MediaLiveClientTypes {
 extension MediaLiveClientTypes {
 
     /// Resolution based on lines of vertical resolution; SD is less than 720 lines, HD is 720 to 1080 lines, FHD is 1080 lines, UHD is greater than 1080 lines
-    public enum ReservationResolution: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ReservationResolution: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case fhd
         case hd
         case sd
@@ -8495,7 +8496,7 @@ extension MediaLiveClientTypes {
 extension MediaLiveClientTypes {
 
     /// Resource type, 'INPUT', 'OUTPUT', 'MULTIPLEX', or 'CHANNEL'
-    public enum ReservationResourceType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ReservationResourceType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case channel
         case input
         case multiplex
@@ -8531,7 +8532,7 @@ extension MediaLiveClientTypes {
 extension MediaLiveClientTypes {
 
     /// Special features, 'ADVANCED_AUDIO' 'AUDIO_NORMALIZATION' 'MGHD' or 'MGUHD'
-    public enum ReservationSpecialFeature: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ReservationSpecialFeature: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case advancedAudio
         case audioNormalization
         case mghd
@@ -8567,7 +8568,7 @@ extension MediaLiveClientTypes {
 extension MediaLiveClientTypes {
 
     /// Video quality, e.g. 'STANDARD' (Outputs only)
-    public enum ReservationVideoQuality: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ReservationVideoQuality: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case enhanced
         case premium
         case standard
@@ -8598,8 +8599,9 @@ extension MediaLiveClientTypes {
 }
 
 extension MediaLiveClientTypes {
+
     /// Resource configuration (codec, resolution, bitrate, ...)
-    public struct ReservationResourceSpecification {
+    public struct ReservationResourceSpecification: Swift.Sendable {
         /// Channel class, e.g. 'STANDARD'
         public var channelClass: MediaLiveClientTypes.ChannelClass?
         /// Codec, e.g. 'AVC'
@@ -8638,12 +8640,12 @@ extension MediaLiveClientTypes {
             self.videoQuality = videoQuality
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
+
     /// Reserved resources available for purchase
-    public struct Offering {
+    public struct Offering: Swift.Sendable {
         /// Unique offering ARN, e.g. 'arn:aws:medialive:us-west-2:123456789012:offering:87654321'
         public var arn: Swift.String?
         /// Currency code for usagePrice and fixedPrice in ISO-4217 format, e.g. 'USD'
@@ -8694,13 +8696,12 @@ extension MediaLiveClientTypes {
             self.usagePrice = usagePrice
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
 
     /// M2ts Absent Input Audio Behavior
-    public enum M2tsAbsentInputAudioBehavior: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum M2tsAbsentInputAudioBehavior: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case drop
         case encodeSilence
         case sdkUnknown(Swift.String)
@@ -8730,7 +8731,7 @@ extension MediaLiveClientTypes {
 extension MediaLiveClientTypes {
 
     /// M2ts Arib
-    public enum M2tsArib: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum M2tsArib: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case disabled
         case enabled
         case sdkUnknown(Swift.String)
@@ -8760,7 +8761,7 @@ extension MediaLiveClientTypes {
 extension MediaLiveClientTypes {
 
     /// M2ts Arib Captions Pid Control
-    public enum M2tsAribCaptionsPidControl: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum M2tsAribCaptionsPidControl: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case auto
         case useConfigured
         case sdkUnknown(Swift.String)
@@ -8790,7 +8791,7 @@ extension MediaLiveClientTypes {
 extension MediaLiveClientTypes {
 
     /// M2ts Audio Buffer Model
-    public enum M2tsAudioBufferModel: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum M2tsAudioBufferModel: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case atsc
         case dvb
         case sdkUnknown(Swift.String)
@@ -8820,7 +8821,7 @@ extension MediaLiveClientTypes {
 extension MediaLiveClientTypes {
 
     /// M2ts Audio Stream Type
-    public enum M2tsAudioStreamType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum M2tsAudioStreamType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case atsc
         case dvb
         case sdkUnknown(Swift.String)
@@ -8850,7 +8851,7 @@ extension MediaLiveClientTypes {
 extension MediaLiveClientTypes {
 
     /// M2ts Buffer Model
-    public enum M2tsBufferModel: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum M2tsBufferModel: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case multiplex
         case `none`
         case sdkUnknown(Swift.String)
@@ -8880,7 +8881,7 @@ extension MediaLiveClientTypes {
 extension MediaLiveClientTypes {
 
     /// M2ts Cc Descriptor
-    public enum M2tsCcDescriptor: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum M2tsCcDescriptor: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case disabled
         case enabled
         case sdkUnknown(Swift.String)
@@ -8908,8 +8909,9 @@ extension MediaLiveClientTypes {
 }
 
 extension MediaLiveClientTypes {
+
     /// DVB Network Information Table (NIT)
-    public struct DvbNitSettings {
+    public struct DvbNitSettings: Swift.Sendable {
         /// The numeric value placed in the Network Information Table (NIT).
         /// This member is required.
         public var networkId: Swift.Int?
@@ -8930,13 +8932,12 @@ extension MediaLiveClientTypes {
             self.repInterval = repInterval
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
 
     /// Dvb Sdt Output Sdt
-    public enum DvbSdtOutputSdt: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DvbSdtOutputSdt: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case sdtFollow
         case sdtFollowIfPresent
         case sdtManual
@@ -8970,8 +8971,9 @@ extension MediaLiveClientTypes {
 }
 
 extension MediaLiveClientTypes {
+
     /// DVB Service Description Table (SDT)
-    public struct DvbSdtSettings {
+    public struct DvbSdtSettings: Swift.Sendable {
         /// Selects method of inserting SDT information into output stream. The sdtFollow setting copies SDT information from input stream to output stream. The sdtFollowIfPresent setting copies SDT information from input stream to output stream if SDT information is present in the input, otherwise it will fall back on the user-defined values. The sdtManual setting means user will enter the SDT information. The sdtNone setting means output stream will not contain SDT information.
         public var outputSdt: MediaLiveClientTypes.DvbSdtOutputSdt?
         /// The number of milliseconds between instances of this table in the output transport stream.
@@ -8994,12 +8996,12 @@ extension MediaLiveClientTypes {
             self.serviceProviderName = serviceProviderName
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
+
     /// DVB Time and Date Table (SDT)
-    public struct DvbTdtSettings {
+    public struct DvbTdtSettings: Swift.Sendable {
         /// The number of milliseconds between instances of this table in the output transport stream.
         public var repInterval: Swift.Int?
 
@@ -9010,13 +9012,12 @@ extension MediaLiveClientTypes {
             self.repInterval = repInterval
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
 
     /// M2ts Ebif Control
-    public enum M2tsEbifControl: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum M2tsEbifControl: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case `none`
         case passthrough
         case sdkUnknown(Swift.String)
@@ -9046,7 +9047,7 @@ extension MediaLiveClientTypes {
 extension MediaLiveClientTypes {
 
     /// M2ts Audio Interval
-    public enum M2tsAudioInterval: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum M2tsAudioInterval: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case videoAndFixedIntervals
         case videoInterval
         case sdkUnknown(Swift.String)
@@ -9076,7 +9077,7 @@ extension MediaLiveClientTypes {
 extension MediaLiveClientTypes {
 
     /// M2ts Ebp Placement
-    public enum M2tsEbpPlacement: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum M2tsEbpPlacement: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case videoAndAudioPids
         case videoPid
         case sdkUnknown(Swift.String)
@@ -9106,7 +9107,7 @@ extension MediaLiveClientTypes {
 extension MediaLiveClientTypes {
 
     /// M2ts Es Rate In Pes
-    public enum M2tsEsRateInPes: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum M2tsEsRateInPes: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case exclude
         case include
         case sdkUnknown(Swift.String)
@@ -9136,7 +9137,7 @@ extension MediaLiveClientTypes {
 extension MediaLiveClientTypes {
 
     /// M2ts Klv
-    public enum M2tsKlv: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum M2tsKlv: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case `none`
         case passthrough
         case sdkUnknown(Swift.String)
@@ -9166,7 +9167,7 @@ extension MediaLiveClientTypes {
 extension MediaLiveClientTypes {
 
     /// M2ts Nielsen Id3 Behavior
-    public enum M2tsNielsenId3Behavior: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum M2tsNielsenId3Behavior: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case noPassthrough
         case passthrough
         case sdkUnknown(Swift.String)
@@ -9196,7 +9197,7 @@ extension MediaLiveClientTypes {
 extension MediaLiveClientTypes {
 
     /// M2ts Pcr Control
-    public enum M2tsPcrControl: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum M2tsPcrControl: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case configuredPcrPeriod
         case pcrEveryPesPacket
         case sdkUnknown(Swift.String)
@@ -9226,7 +9227,7 @@ extension MediaLiveClientTypes {
 extension MediaLiveClientTypes {
 
     /// M2ts Rate Mode
-    public enum M2tsRateMode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum M2tsRateMode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case cbr
         case vbr
         case sdkUnknown(Swift.String)
@@ -9256,7 +9257,7 @@ extension MediaLiveClientTypes {
 extension MediaLiveClientTypes {
 
     /// M2ts Scte35 Control
-    public enum M2tsScte35Control: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum M2tsScte35Control: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case `none`
         case passthrough
         case sdkUnknown(Swift.String)
@@ -9286,7 +9287,7 @@ extension MediaLiveClientTypes {
 extension MediaLiveClientTypes {
 
     /// M2ts Segmentation Markers
-    public enum M2tsSegmentationMarkers: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum M2tsSegmentationMarkers: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case ebp
         case ebpLegacy
         case `none`
@@ -9328,7 +9329,7 @@ extension MediaLiveClientTypes {
 extension MediaLiveClientTypes {
 
     /// M2ts Segmentation Style
-    public enum M2tsSegmentationStyle: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum M2tsSegmentationStyle: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case maintainCadence
         case resetCadence
         case sdkUnknown(Swift.String)
@@ -9358,7 +9359,7 @@ extension MediaLiveClientTypes {
 extension MediaLiveClientTypes {
 
     /// M2ts Timed Metadata Behavior
-    public enum M2tsTimedMetadataBehavior: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum M2tsTimedMetadataBehavior: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case noPassthrough
         case passthrough
         case sdkUnknown(Swift.String)
@@ -9386,8 +9387,9 @@ extension MediaLiveClientTypes {
 }
 
 extension MediaLiveClientTypes {
+
     /// M2ts Settings
-    public struct M2tsSettings {
+    public struct M2tsSettings: Swift.Sendable {
         /// When set to drop, output audio streams will be removed from the program if the selected input audio stream is removed from the input. This allows the output audio configuration to dynamically change based on input configuration. If this is set to encodeSilence, all output audio streams will output encoded silence when not connected to an active input stream.
         public var absentInputAudioBehavior: MediaLiveClientTypes.M2tsAbsentInputAudioBehavior?
         /// When set to enabled, uses ARIB-compliant field muxing and removes video descriptor.
@@ -9586,21 +9588,21 @@ extension MediaLiveClientTypes {
             self.videoPid = videoPid
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
+
     /// Raw Settings
-    public struct RawSettings {
+    public struct RawSettings: Swift.Sendable {
 
         public init() { }
     }
-
 }
 
 extension MediaLiveClientTypes {
+
     /// Archive Container Settings
-    public struct ArchiveContainerSettings {
+    public struct ArchiveContainerSettings: Swift.Sendable {
         /// M2ts Settings
         public var m2tsSettings: MediaLiveClientTypes.M2tsSettings?
         /// Raw Settings
@@ -9615,12 +9617,12 @@ extension MediaLiveClientTypes {
             self.rawSettings = rawSettings
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
+
     /// Archive Output Settings
-    public struct ArchiveOutputSettings {
+    public struct ArchiveOutputSettings: Swift.Sendable {
         /// Settings specific to the container type of the file.
         /// This member is required.
         public var containerSettings: MediaLiveClientTypes.ArchiveContainerSettings?
@@ -9640,12 +9642,12 @@ extension MediaLiveClientTypes {
             self.nameModifier = nameModifier
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
+
     /// Cmaf Ingest Output Settings
-    public struct CmafIngestOutputSettings {
+    public struct CmafIngestOutputSettings: Swift.Sendable {
         /// String concatenated to the end of the destination filename. Required for multiple outputs of the same type.
         public var nameModifier: Swift.String?
 
@@ -9656,12 +9658,12 @@ extension MediaLiveClientTypes {
             self.nameModifier = nameModifier
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
+
     /// Frame Capture Output Settings
-    public struct FrameCaptureOutputSettings {
+    public struct FrameCaptureOutputSettings: Swift.Sendable {
         /// Required if the output group contains more than one output. This modifier forms part of the output file name.
         public var nameModifier: Swift.String?
 
@@ -9672,13 +9674,12 @@ extension MediaLiveClientTypes {
             self.nameModifier = nameModifier
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
 
     /// Hls H265 Packaging Type
-    public enum HlsH265PackagingType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum HlsH265PackagingType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case hev1
         case hvc1
         case sdkUnknown(Swift.String)
@@ -9708,7 +9709,7 @@ extension MediaLiveClientTypes {
 extension MediaLiveClientTypes {
 
     /// Audio Only Hls Track Type
-    public enum AudioOnlyHlsTrackType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AudioOnlyHlsTrackType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case alternateAudioAutoSelect
         case alternateAudioAutoSelectDefault
         case alternateAudioNotAutoSelect
@@ -9744,7 +9745,7 @@ extension MediaLiveClientTypes {
 extension MediaLiveClientTypes {
 
     /// Audio Only Hls Segment Type
-    public enum AudioOnlyHlsSegmentType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AudioOnlyHlsSegmentType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case aac
         case fmp4
         case sdkUnknown(Swift.String)
@@ -9772,8 +9773,9 @@ extension MediaLiveClientTypes {
 }
 
 extension MediaLiveClientTypes {
+
     /// Audio Only Hls Settings
-    public struct AudioOnlyHlsSettings {
+    public struct AudioOnlyHlsSettings: Swift.Sendable {
         /// Specifies the group to which the audio Rendition belongs.
         public var audioGroupId: Swift.String?
         /// Optional. Specifies the .jpg or .png image to use as the cover art for an audio-only output. We recommend a low bit-size file because the image increases the output audio bandwidth. The image is attached to the audio as an ID3 tag, frame type APIC, picture type 0x10, as per the "ID3 tag version 2.4.0 - Native Frames" standard.
@@ -9796,13 +9798,12 @@ extension MediaLiveClientTypes {
             self.segmentType = segmentType
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
 
     /// Fmp4 Nielsen Id3 Behavior
-    public enum Fmp4NielsenId3Behavior: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Fmp4NielsenId3Behavior: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case noPassthrough
         case passthrough
         case sdkUnknown(Swift.String)
@@ -9832,7 +9833,7 @@ extension MediaLiveClientTypes {
 extension MediaLiveClientTypes {
 
     /// Fmp4 Timed Metadata Behavior
-    public enum Fmp4TimedMetadataBehavior: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Fmp4TimedMetadataBehavior: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case noPassthrough
         case passthrough
         case sdkUnknown(Swift.String)
@@ -9860,8 +9861,9 @@ extension MediaLiveClientTypes {
 }
 
 extension MediaLiveClientTypes {
+
     /// Fmp4 Hls Settings
-    public struct Fmp4HlsSettings {
+    public struct Fmp4HlsSettings: Swift.Sendable {
         /// List all the audio groups that are used with the video output stream. Input all the audio GROUP-IDs that are associated to the video, separate by ','.
         public var audioRenditionSets: Swift.String?
         /// If set to passthrough, Nielsen inaudible tones for media tracking will be detected in the input audio and an equivalent ID3 tag will be inserted in the output.
@@ -9880,22 +9882,21 @@ extension MediaLiveClientTypes {
             self.timedMetadataBehavior = timedMetadataBehavior
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
+
     /// Frame Capture Hls Settings
-    public struct FrameCaptureHlsSettings {
+    public struct FrameCaptureHlsSettings: Swift.Sendable {
 
         public init() { }
     }
-
 }
 
 extension MediaLiveClientTypes {
 
     /// M3u8 Klv Behavior
-    public enum M3u8KlvBehavior: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum M3u8KlvBehavior: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case noPassthrough
         case passthrough
         case sdkUnknown(Swift.String)
@@ -9925,7 +9926,7 @@ extension MediaLiveClientTypes {
 extension MediaLiveClientTypes {
 
     /// M3u8 Nielsen Id3 Behavior
-    public enum M3u8NielsenId3Behavior: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum M3u8NielsenId3Behavior: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case noPassthrough
         case passthrough
         case sdkUnknown(Swift.String)
@@ -9955,7 +9956,7 @@ extension MediaLiveClientTypes {
 extension MediaLiveClientTypes {
 
     /// M3u8 Pcr Control
-    public enum M3u8PcrControl: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum M3u8PcrControl: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case configuredPcrPeriod
         case pcrEveryPesPacket
         case sdkUnknown(Swift.String)
@@ -9985,7 +9986,7 @@ extension MediaLiveClientTypes {
 extension MediaLiveClientTypes {
 
     /// M3u8 Scte35 Behavior
-    public enum M3u8Scte35Behavior: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum M3u8Scte35Behavior: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case noPassthrough
         case passthrough
         case sdkUnknown(Swift.String)
@@ -10015,7 +10016,7 @@ extension MediaLiveClientTypes {
 extension MediaLiveClientTypes {
 
     /// M3u8 Timed Metadata Behavior
-    public enum M3u8TimedMetadataBehavior: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum M3u8TimedMetadataBehavior: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case noPassthrough
         case passthrough
         case sdkUnknown(Swift.String)
@@ -10043,8 +10044,9 @@ extension MediaLiveClientTypes {
 }
 
 extension MediaLiveClientTypes {
+
     /// Settings information for the .m3u8 container
-    public struct M3u8Settings {
+    public struct M3u8Settings: Swift.Sendable {
         /// The number of audio frames to insert for each PES packet.
         public var audioFramesPerPes: Swift.Int?
         /// Packet Identifier (PID) of the elementary audio stream(s) in the transport stream. Multiple values are accepted, and can be entered in ranges and/or by comma separation. Can be entered as decimal or hexadecimal values.
@@ -10127,12 +10129,12 @@ extension MediaLiveClientTypes {
             self.videoPid = videoPid
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
+
     /// Standard Hls Settings
-    public struct StandardHlsSettings {
+    public struct StandardHlsSettings: Swift.Sendable {
         /// List all the audio groups that are used with the video output stream. Input all the audio GROUP-IDs that are associated to the video, separate by ','.
         public var audioRenditionSets: Swift.String?
         /// Settings information for the .m3u8 container
@@ -10148,12 +10150,12 @@ extension MediaLiveClientTypes {
             self.m3u8Settings = m3u8Settings
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
+
     /// Hls Settings
-    public struct HlsSettings {
+    public struct HlsSettings: Swift.Sendable {
         /// Audio Only Hls Settings
         public var audioOnlyHlsSettings: MediaLiveClientTypes.AudioOnlyHlsSettings?
         /// Fmp4 Hls Settings
@@ -10176,12 +10178,12 @@ extension MediaLiveClientTypes {
             self.standardHlsSettings = standardHlsSettings
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
+
     /// Hls Output Settings
-    public struct HlsOutputSettings {
+    public struct HlsOutputSettings: Swift.Sendable {
         /// Only applicable when this output is referencing an H.265 video description. Specifies whether MP4 segments should be packaged as HEV1 or HVC1.
         public var h265PackagingType: MediaLiveClientTypes.HlsH265PackagingType?
         /// Settings regarding the underlying stream. These settings are different for audio-only outputs.
@@ -10205,22 +10207,21 @@ extension MediaLiveClientTypes {
             self.segmentModifier = segmentModifier
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
+
     /// Media Package Output Settings
-    public struct MediaPackageOutputSettings {
+    public struct MediaPackageOutputSettings: Swift.Sendable {
 
         public init() { }
     }
-
 }
 
 extension MediaLiveClientTypes {
 
     /// Ms Smooth H265 Packaging Type
-    public enum MsSmoothH265PackagingType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum MsSmoothH265PackagingType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case hev1
         case hvc1
         case sdkUnknown(Swift.String)
@@ -10248,8 +10249,9 @@ extension MediaLiveClientTypes {
 }
 
 extension MediaLiveClientTypes {
+
     /// Ms Smooth Output Settings
-    public struct MsSmoothOutputSettings {
+    public struct MsSmoothOutputSettings: Swift.Sendable {
         /// Only applicable when this output is referencing an H.265 video description. Specifies whether MP4 segments should be packaged as HEV1 or HVC1.
         public var h265PackagingType: MediaLiveClientTypes.MsSmoothH265PackagingType?
         /// String concatenated to the end of the destination filename. Required for multiple outputs of the same type.
@@ -10264,12 +10266,12 @@ extension MediaLiveClientTypes {
             self.nameModifier = nameModifier
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
+
     /// Multiplex M2ts Settings
-    public struct MultiplexM2tsSettings {
+    public struct MultiplexM2tsSettings: Swift.Sendable {
         /// When set to drop, output audio streams will be removed from the program if the selected input audio stream is removed from the input. This allows the output audio configuration to dynamically change based on input configuration. If this is set to encodeSilence, all output audio streams will output encoded silence when not connected to an active input stream.
         public var absentInputAudioBehavior: MediaLiveClientTypes.M2tsAbsentInputAudioBehavior?
         /// When set to enabled, uses ARIB-compliant field muxing and removes video descriptor.
@@ -10332,12 +10334,12 @@ extension MediaLiveClientTypes {
             self.scte35PrerollPullupMilliseconds = scte35PrerollPullupMilliseconds
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
+
     /// Multiplex Container Settings
-    public struct MultiplexContainerSettings {
+    public struct MultiplexContainerSettings: Swift.Sendable {
         /// Multiplex M2ts Settings
         public var multiplexM2tsSettings: MediaLiveClientTypes.MultiplexM2tsSettings?
 
@@ -10348,12 +10350,12 @@ extension MediaLiveClientTypes {
             self.multiplexM2tsSettings = multiplexM2tsSettings
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
+
     /// Reference to an OutputDestination ID defined in the channel
-    public struct OutputLocationRef {
+    public struct OutputLocationRef: Swift.Sendable {
         /// Placeholder documentation for __string
         public var destinationRefId: Swift.String?
 
@@ -10364,12 +10366,12 @@ extension MediaLiveClientTypes {
             self.destinationRefId = destinationRefId
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
+
     /// Multiplex Output Settings
-    public struct MultiplexOutputSettings {
+    public struct MultiplexOutputSettings: Swift.Sendable {
         /// Multiplex Container Settings
         public var containerSettings: MediaLiveClientTypes.MultiplexContainerSettings?
         /// Destination is a Multiplex.
@@ -10385,13 +10387,12 @@ extension MediaLiveClientTypes {
             self.destination = destination
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
 
     /// Rtmp Output Certificate Mode
-    public enum RtmpOutputCertificateMode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum RtmpOutputCertificateMode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case selfSigned
         case verifyAuthenticity
         case sdkUnknown(Swift.String)
@@ -10419,8 +10420,9 @@ extension MediaLiveClientTypes {
 }
 
 extension MediaLiveClientTypes {
+
     /// Rtmp Output Settings
-    public struct RtmpOutputSettings {
+    public struct RtmpOutputSettings: Swift.Sendable {
         /// If set to verifyAuthenticity, verify the tls certificate chain to a trusted Certificate Authority (CA). This will cause rtmps outputs with self-signed certificates to fail.
         public var certificateMode: MediaLiveClientTypes.RtmpOutputCertificateMode?
         /// Number of seconds to wait before retrying a connection to the Flash Media server if the connection is lost.
@@ -10444,12 +10446,12 @@ extension MediaLiveClientTypes {
             self.numRetries = numRetries
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
+
     /// Udp Container Settings
-    public struct UdpContainerSettings {
+    public struct UdpContainerSettings: Swift.Sendable {
         /// M2ts Settings
         public var m2tsSettings: MediaLiveClientTypes.M2tsSettings?
 
@@ -10460,13 +10462,12 @@ extension MediaLiveClientTypes {
             self.m2tsSettings = m2tsSettings
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
 
     /// Srt Encryption Type
-    public enum SrtEncryptionType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SrtEncryptionType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case aes128
         case aes192
         case aes256
@@ -10497,8 +10498,9 @@ extension MediaLiveClientTypes {
 }
 
 extension MediaLiveClientTypes {
+
     /// Srt Output Settings
-    public struct SrtOutputSettings {
+    public struct SrtOutputSettings: Swift.Sendable {
         /// SRT output buffering in milliseconds. A higher value increases latency through the encoder. But the benefits are that it helps to maintain a constant, low-jitter SRT output, and it accommodates clock recovery, input switching, input disruptions, picture reordering, and so on. Range: 0-10000 milliseconds.
         public var bufferMsec: Swift.Int?
         /// Udp Container Settings
@@ -10527,13 +10529,12 @@ extension MediaLiveClientTypes {
             self.latency = latency
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
 
     /// Fec Output Include Fec
-    public enum FecOutputIncludeFec: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum FecOutputIncludeFec: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case column
         case columnAndRow
         case sdkUnknown(Swift.String)
@@ -10561,8 +10562,9 @@ extension MediaLiveClientTypes {
 }
 
 extension MediaLiveClientTypes {
+
     /// Fec Output Settings
-    public struct FecOutputSettings {
+    public struct FecOutputSettings: Swift.Sendable {
         /// Parameter D from SMPTE 2022-1. The height of the FEC protection matrix. The number of transport stream packets per column error correction packet. Must be between 4 and 20, inclusive.
         public var columnDepth: Swift.Int?
         /// Enables column only or column and row based FEC
@@ -10581,12 +10583,12 @@ extension MediaLiveClientTypes {
             self.rowLength = rowLength
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
+
     /// Udp Output Settings
-    public struct UdpOutputSettings {
+    public struct UdpOutputSettings: Swift.Sendable {
         /// UDP output buffering in milliseconds. Larger values increase latency through the transcoder but simultaneously assist the transcoder in maintaining a constant, low-jitter UDP/RTP output while accommodating clock recovery, input switching, input disruptions, picture reordering, etc.
         public var bufferMsec: Swift.Int?
         /// Udp Container Settings
@@ -10611,12 +10613,12 @@ extension MediaLiveClientTypes {
             self.fecOutputSettings = fecOutputSettings
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
+
     /// Output Settings
-    public struct OutputSettings {
+    public struct OutputSettings: Swift.Sendable {
         /// Archive Output Settings
         public var archiveOutputSettings: MediaLiveClientTypes.ArchiveOutputSettings?
         /// Cmaf Ingest Output Settings
@@ -10663,12 +10665,12 @@ extension MediaLiveClientTypes {
             self.udpOutputSettings = udpOutputSettings
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
+
     /// Output settings. There can be multiple outputs within a group.
-    public struct Output {
+    public struct Output: Swift.Sendable {
         /// The names of the AudioDescriptions used as audio sources for this output.
         public var audioDescriptionNames: [Swift.String]?
         /// The names of the CaptionDescriptions used as caption sources for this output.
@@ -10696,13 +10698,12 @@ extension MediaLiveClientTypes {
             self.videoDescriptionName = videoDescriptionName
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
 
     /// S3 Canned Acl
-    public enum S3CannedAcl: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum S3CannedAcl: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case authenticatedRead
         case bucketOwnerFullControl
         case bucketOwnerRead
@@ -10736,8 +10737,9 @@ extension MediaLiveClientTypes {
 }
 
 extension MediaLiveClientTypes {
+
     /// Archive S3 Settings
-    public struct ArchiveS3Settings {
+    public struct ArchiveS3Settings: Swift.Sendable {
         /// Specify the canned ACL to apply to each S3 request. Defaults to none.
         public var cannedAcl: MediaLiveClientTypes.S3CannedAcl?
 
@@ -10748,12 +10750,12 @@ extension MediaLiveClientTypes {
             self.cannedAcl = cannedAcl
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
+
     /// Archive Cdn Settings
-    public struct ArchiveCdnSettings {
+    public struct ArchiveCdnSettings: Swift.Sendable {
         /// Archive S3 Settings
         public var archiveS3Settings: MediaLiveClientTypes.ArchiveS3Settings?
 
@@ -10764,12 +10766,12 @@ extension MediaLiveClientTypes {
             self.archiveS3Settings = archiveS3Settings
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
+
     /// Archive Group Settings
-    public struct ArchiveGroupSettings {
+    public struct ArchiveGroupSettings: Swift.Sendable {
         /// Parameters that control interactions with the CDN.
         public var archiveCdnSettings: MediaLiveClientTypes.ArchiveCdnSettings?
         /// A directory and base filename where archive files should be written.
@@ -10789,13 +10791,12 @@ extension MediaLiveClientTypes {
             self.rolloverInterval = rolloverInterval
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
 
     /// Cmaf Nielsen Id3 Behavior
-    public enum CmafNielsenId3Behavior: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum CmafNielsenId3Behavior: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case noPassthrough
         case passthrough
         case sdkUnknown(Swift.String)
@@ -10825,7 +10826,7 @@ extension MediaLiveClientTypes {
 extension MediaLiveClientTypes {
 
     /// Scte35 Type
-    public enum Scte35Type: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Scte35Type: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case `none`
         case scte35WithoutSegmentation
         case sdkUnknown(Swift.String)
@@ -10855,7 +10856,7 @@ extension MediaLiveClientTypes {
 extension MediaLiveClientTypes {
 
     /// Cmaf Ingest Segment Length Units
-    public enum CmafIngestSegmentLengthUnits: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum CmafIngestSegmentLengthUnits: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case milliseconds
         case seconds
         case sdkUnknown(Swift.String)
@@ -10883,8 +10884,9 @@ extension MediaLiveClientTypes {
 }
 
 extension MediaLiveClientTypes {
+
     /// Cmaf Ingest Group Settings
-    public struct CmafIngestGroupSettings {
+    public struct CmafIngestGroupSettings: Swift.Sendable {
         /// A HTTP destination for the tracks
         /// This member is required.
         public var destination: MediaLiveClientTypes.OutputLocationRef?
@@ -10916,12 +10918,12 @@ extension MediaLiveClientTypes {
             self.sendDelayMs = sendDelayMs
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
+
     /// Frame Capture S3 Settings
-    public struct FrameCaptureS3Settings {
+    public struct FrameCaptureS3Settings: Swift.Sendable {
         /// Specify the canned ACL to apply to each S3 request. Defaults to none.
         public var cannedAcl: MediaLiveClientTypes.S3CannedAcl?
 
@@ -10932,12 +10934,12 @@ extension MediaLiveClientTypes {
             self.cannedAcl = cannedAcl
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
+
     /// Frame Capture Cdn Settings
-    public struct FrameCaptureCdnSettings {
+    public struct FrameCaptureCdnSettings: Swift.Sendable {
         /// Frame Capture S3 Settings
         public var frameCaptureS3Settings: MediaLiveClientTypes.FrameCaptureS3Settings?
 
@@ -10948,12 +10950,12 @@ extension MediaLiveClientTypes {
             self.frameCaptureS3Settings = frameCaptureS3Settings
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
+
     /// Frame Capture Group Settings
-    public struct FrameCaptureGroupSettings {
+    public struct FrameCaptureGroupSettings: Swift.Sendable {
         /// The destination for the frame capture files. Either the URI for an Amazon S3 bucket and object, plus a file name prefix (for example, s3ssl://sportsDelivery/highlights/20180820/curling-) or the URI for a MediaStore container, plus a file name prefix (for example, mediastoressl://sportsDelivery/20180820/curling-). The final file names consist of the prefix from the destination field (for example, "curling-") + name modifier + the counter (5 digits, starting from 00001) + extension (which is always .jpg). For example, curling-low.00001.jpg
         /// This member is required.
         public var destination: MediaLiveClientTypes.OutputLocationRef?
@@ -10969,13 +10971,12 @@ extension MediaLiveClientTypes {
             self.frameCaptureCdnSettings = frameCaptureCdnSettings
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
 
     /// Hls Caption Language Setting
-    public enum HlsCaptionLanguageSetting: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum HlsCaptionLanguageSetting: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case insert
         case `none`
         case omit
@@ -11008,7 +11009,7 @@ extension MediaLiveClientTypes {
 extension MediaLiveClientTypes {
 
     /// Hls Client Cache
-    public enum HlsClientCache: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum HlsClientCache: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case disabled
         case enabled
         case sdkUnknown(Swift.String)
@@ -11038,7 +11039,7 @@ extension MediaLiveClientTypes {
 extension MediaLiveClientTypes {
 
     /// Hls Codec Specification
-    public enum HlsCodecSpecification: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum HlsCodecSpecification: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case rfc4281
         case rfc6381
         case sdkUnknown(Swift.String)
@@ -11068,7 +11069,7 @@ extension MediaLiveClientTypes {
 extension MediaLiveClientTypes {
 
     /// Hls Directory Structure
-    public enum HlsDirectoryStructure: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum HlsDirectoryStructure: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case singleDirectory
         case subdirectoryPerStream
         case sdkUnknown(Swift.String)
@@ -11098,7 +11099,7 @@ extension MediaLiveClientTypes {
 extension MediaLiveClientTypes {
 
     /// Hls Discontinuity Tags
-    public enum HlsDiscontinuityTags: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum HlsDiscontinuityTags: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case insert
         case neverInsert
         case sdkUnknown(Swift.String)
@@ -11128,7 +11129,7 @@ extension MediaLiveClientTypes {
 extension MediaLiveClientTypes {
 
     /// Hls Encryption Type
-    public enum HlsEncryptionType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum HlsEncryptionType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case aes128
         case sampleAes
         case sdkUnknown(Swift.String)
@@ -11158,7 +11159,7 @@ extension MediaLiveClientTypes {
 extension MediaLiveClientTypes {
 
     /// Hls Akamai Http Transfer Mode
-    public enum HlsAkamaiHttpTransferMode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum HlsAkamaiHttpTransferMode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case chunked
         case nonChunked
         case sdkUnknown(Swift.String)
@@ -11186,8 +11187,9 @@ extension MediaLiveClientTypes {
 }
 
 extension MediaLiveClientTypes {
+
     /// Hls Akamai Settings
-    public struct HlsAkamaiSettings {
+    public struct HlsAkamaiSettings: Swift.Sendable {
         /// Number of seconds to wait before retrying connection to the CDN if the connection is lost.
         public var connectionRetryInterval: Swift.Int?
         /// Size in seconds of file cache for streaming outputs.
@@ -11222,12 +11224,12 @@ extension MediaLiveClientTypes {
             self.token = token
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
+
     /// Hls Basic Put Settings
-    public struct HlsBasicPutSettings {
+    public struct HlsBasicPutSettings: Swift.Sendable {
         /// Number of seconds to wait before retrying connection to the CDN if the connection is lost.
         public var connectionRetryInterval: Swift.Int?
         /// Size in seconds of file cache for streaming outputs.
@@ -11250,13 +11252,12 @@ extension MediaLiveClientTypes {
             self.restartDelay = restartDelay
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
 
     /// Hls Media Store Storage Class
-    public enum HlsMediaStoreStorageClass: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum HlsMediaStoreStorageClass: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case temporal
         case sdkUnknown(Swift.String)
 
@@ -11281,8 +11282,9 @@ extension MediaLiveClientTypes {
 }
 
 extension MediaLiveClientTypes {
+
     /// Hls Media Store Settings
-    public struct HlsMediaStoreSettings {
+    public struct HlsMediaStoreSettings: Swift.Sendable {
         /// Number of seconds to wait before retrying connection to the CDN if the connection is lost.
         public var connectionRetryInterval: Swift.Int?
         /// Size in seconds of file cache for streaming outputs.
@@ -11309,12 +11311,12 @@ extension MediaLiveClientTypes {
             self.restartDelay = restartDelay
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
+
     /// Hls S3 Settings
-    public struct HlsS3Settings {
+    public struct HlsS3Settings: Swift.Sendable {
         /// Specify the canned ACL to apply to each S3 request. Defaults to none.
         public var cannedAcl: MediaLiveClientTypes.S3CannedAcl?
 
@@ -11325,13 +11327,12 @@ extension MediaLiveClientTypes {
             self.cannedAcl = cannedAcl
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
 
     /// Hls Webdav Http Transfer Mode
-    public enum HlsWebdavHttpTransferMode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum HlsWebdavHttpTransferMode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case chunked
         case nonChunked
         case sdkUnknown(Swift.String)
@@ -11359,8 +11360,9 @@ extension MediaLiveClientTypes {
 }
 
 extension MediaLiveClientTypes {
+
     /// Hls Webdav Settings
-    public struct HlsWebdavSettings {
+    public struct HlsWebdavSettings: Swift.Sendable {
         /// Number of seconds to wait before retrying connection to the CDN if the connection is lost.
         public var connectionRetryInterval: Swift.Int?
         /// Size in seconds of file cache for streaming outputs.
@@ -11387,12 +11389,12 @@ extension MediaLiveClientTypes {
             self.restartDelay = restartDelay
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
+
     /// Hls Cdn Settings
-    public struct HlsCdnSettings {
+    public struct HlsCdnSettings: Swift.Sendable {
         /// Hls Akamai Settings
         public var hlsAkamaiSettings: MediaLiveClientTypes.HlsAkamaiSettings?
         /// Hls Basic Put Settings
@@ -11419,13 +11421,12 @@ extension MediaLiveClientTypes {
             self.hlsWebdavSettings = hlsWebdavSettings
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
 
     /// State of HLS ID3 Segment Tagging
-    public enum HlsId3SegmentTaggingState: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum HlsId3SegmentTaggingState: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case disabled
         case enabled
         case sdkUnknown(Swift.String)
@@ -11455,7 +11456,7 @@ extension MediaLiveClientTypes {
 extension MediaLiveClientTypes {
 
     /// When set to "standard", an I-Frame only playlist will be written out for each video output in the output group. This I-Frame only playlist will contain byte range offsets pointing to the I-frame(s) in each segment.
-    public enum IFrameOnlyPlaylistType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum IFrameOnlyPlaylistType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case disabled
         case standard
         case sdkUnknown(Swift.String)
@@ -11485,7 +11486,7 @@ extension MediaLiveClientTypes {
 extension MediaLiveClientTypes {
 
     /// Hls Incomplete Segment Behavior
-    public enum HlsIncompleteSegmentBehavior: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum HlsIncompleteSegmentBehavior: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case auto
         case suppress
         case sdkUnknown(Swift.String)
@@ -11515,7 +11516,7 @@ extension MediaLiveClientTypes {
 extension MediaLiveClientTypes {
 
     /// Input Loss Action For Hls Out
-    public enum InputLossActionForHlsOut: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum InputLossActionForHlsOut: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case emitOutput
         case pauseOutput
         case sdkUnknown(Swift.String)
@@ -11545,7 +11546,7 @@ extension MediaLiveClientTypes {
 extension MediaLiveClientTypes {
 
     /// Hls Iv In Manifest
-    public enum HlsIvInManifest: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum HlsIvInManifest: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case exclude
         case include
         case sdkUnknown(Swift.String)
@@ -11575,7 +11576,7 @@ extension MediaLiveClientTypes {
 extension MediaLiveClientTypes {
 
     /// Hls Iv Source
-    public enum HlsIvSource: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum HlsIvSource: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case explicit
         case followsSegmentNumber
         case sdkUnknown(Swift.String)
@@ -11603,8 +11604,9 @@ extension MediaLiveClientTypes {
 }
 
 extension MediaLiveClientTypes {
+
     /// Static Key Settings
-    public struct StaticKeySettings {
+    public struct StaticKeySettings: Swift.Sendable {
         /// The URL of the license server used for protecting content.
         public var keyProviderServer: MediaLiveClientTypes.InputLocation?
         /// Static key value as a 32 character hexadecimal string.
@@ -11620,12 +11622,12 @@ extension MediaLiveClientTypes {
             self.staticKeyValue = staticKeyValue
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
+
     /// Key Provider Settings
-    public struct KeyProviderSettings {
+    public struct KeyProviderSettings: Swift.Sendable {
         /// Static Key Settings
         public var staticKeySettings: MediaLiveClientTypes.StaticKeySettings?
 
@@ -11636,13 +11638,12 @@ extension MediaLiveClientTypes {
             self.staticKeySettings = staticKeySettings
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
 
     /// Hls Manifest Compression
-    public enum HlsManifestCompression: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum HlsManifestCompression: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case gzip
         case `none`
         case sdkUnknown(Swift.String)
@@ -11672,7 +11673,7 @@ extension MediaLiveClientTypes {
 extension MediaLiveClientTypes {
 
     /// Hls Manifest Duration Format
-    public enum HlsManifestDurationFormat: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum HlsManifestDurationFormat: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case floatingPoint
         case integer
         case sdkUnknown(Swift.String)
@@ -11702,7 +11703,7 @@ extension MediaLiveClientTypes {
 extension MediaLiveClientTypes {
 
     /// Hls Mode
-    public enum HlsMode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum HlsMode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case live
         case vod
         case sdkUnknown(Swift.String)
@@ -11732,7 +11733,7 @@ extension MediaLiveClientTypes {
 extension MediaLiveClientTypes {
 
     /// Hls Output Selection
-    public enum HlsOutputSelection: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum HlsOutputSelection: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case manifestsAndSegments
         case segmentsOnly
         case variantManifestsAndSegments
@@ -11765,7 +11766,7 @@ extension MediaLiveClientTypes {
 extension MediaLiveClientTypes {
 
     /// Hls Program Date Time
-    public enum HlsProgramDateTime: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum HlsProgramDateTime: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case exclude
         case include
         case sdkUnknown(Swift.String)
@@ -11795,7 +11796,7 @@ extension MediaLiveClientTypes {
 extension MediaLiveClientTypes {
 
     /// Hls Program Date Time Clock
-    public enum HlsProgramDateTimeClock: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum HlsProgramDateTimeClock: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case initializeFromOutputTimecode
         case systemClock
         case sdkUnknown(Swift.String)
@@ -11825,7 +11826,7 @@ extension MediaLiveClientTypes {
 extension MediaLiveClientTypes {
 
     /// Hls Redundant Manifest
-    public enum HlsRedundantManifest: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum HlsRedundantManifest: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case disabled
         case enabled
         case sdkUnknown(Swift.String)
@@ -11855,7 +11856,7 @@ extension MediaLiveClientTypes {
 extension MediaLiveClientTypes {
 
     /// Hls Segmentation Mode
-    public enum HlsSegmentationMode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum HlsSegmentationMode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case useInputSegmentation
         case useSegmentDuration
         case sdkUnknown(Swift.String)
@@ -11885,7 +11886,7 @@ extension MediaLiveClientTypes {
 extension MediaLiveClientTypes {
 
     /// Hls Stream Inf Resolution
-    public enum HlsStreamInfResolution: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum HlsStreamInfResolution: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case exclude
         case include
         case sdkUnknown(Swift.String)
@@ -11915,7 +11916,7 @@ extension MediaLiveClientTypes {
 extension MediaLiveClientTypes {
 
     /// Hls Timed Metadata Id3 Frame
-    public enum HlsTimedMetadataId3Frame: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum HlsTimedMetadataId3Frame: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case `none`
         case priv
         case tdrl
@@ -11948,7 +11949,7 @@ extension MediaLiveClientTypes {
 extension MediaLiveClientTypes {
 
     /// Hls Ts File Mode
-    public enum HlsTsFileMode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum HlsTsFileMode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case segmentedFiles
         case singleFile
         case sdkUnknown(Swift.String)
@@ -11976,8 +11977,9 @@ extension MediaLiveClientTypes {
 }
 
 extension MediaLiveClientTypes {
+
     /// Hls Group Settings
-    public struct HlsGroupSettings {
+    public struct HlsGroupSettings: Swift.Sendable {
         /// Choose one or more ad marker types to pass SCTE35 signals through to this group of Apple HLS outputs.
         public var adMarkers: [MediaLiveClientTypes.HlsAdMarkers]?
         /// A partial URI prefix that will be prepended to each output in the media .m3u8 file. Can be used if base manifest is delivered from a different URL than the main .m3u8 file.
@@ -12157,12 +12159,12 @@ extension MediaLiveClientTypes {
             self.tsFileMode = tsFileMode
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
+
     /// Media Package Group Settings
-    public struct MediaPackageGroupSettings {
+    public struct MediaPackageGroupSettings: Swift.Sendable {
         /// MediaPackage channel destination.
         /// This member is required.
         public var destination: MediaLiveClientTypes.OutputLocationRef?
@@ -12174,13 +12176,12 @@ extension MediaLiveClientTypes {
             self.destination = destination
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
 
     /// Smooth Group Audio Only Timecode Control
-    public enum SmoothGroupAudioOnlyTimecodeControl: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SmoothGroupAudioOnlyTimecodeControl: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case passthrough
         case useConfiguredClock
         case sdkUnknown(Swift.String)
@@ -12210,7 +12211,7 @@ extension MediaLiveClientTypes {
 extension MediaLiveClientTypes {
 
     /// Smooth Group Certificate Mode
-    public enum SmoothGroupCertificateMode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SmoothGroupCertificateMode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case selfSigned
         case verifyAuthenticity
         case sdkUnknown(Swift.String)
@@ -12240,7 +12241,7 @@ extension MediaLiveClientTypes {
 extension MediaLiveClientTypes {
 
     /// Smooth Group Event Id Mode
-    public enum SmoothGroupEventIdMode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SmoothGroupEventIdMode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case noEventId
         case useConfigured
         case useTimestamp
@@ -12273,7 +12274,7 @@ extension MediaLiveClientTypes {
 extension MediaLiveClientTypes {
 
     /// Smooth Group Event Stop Behavior
-    public enum SmoothGroupEventStopBehavior: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SmoothGroupEventStopBehavior: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case `none`
         case sendEos
         case sdkUnknown(Swift.String)
@@ -12303,7 +12304,7 @@ extension MediaLiveClientTypes {
 extension MediaLiveClientTypes {
 
     /// Input Loss Action For Ms Smooth Out
-    public enum InputLossActionForMsSmoothOut: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum InputLossActionForMsSmoothOut: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case emitOutput
         case pauseOutput
         case sdkUnknown(Swift.String)
@@ -12333,7 +12334,7 @@ extension MediaLiveClientTypes {
 extension MediaLiveClientTypes {
 
     /// Smooth Group Segmentation Mode
-    public enum SmoothGroupSegmentationMode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SmoothGroupSegmentationMode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case useInputSegmentation
         case useSegmentDuration
         case sdkUnknown(Swift.String)
@@ -12363,7 +12364,7 @@ extension MediaLiveClientTypes {
 extension MediaLiveClientTypes {
 
     /// Smooth Group Sparse Track Type
-    public enum SmoothGroupSparseTrackType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SmoothGroupSparseTrackType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case `none`
         case scte35
         case scte35WithoutSegmentation
@@ -12396,7 +12397,7 @@ extension MediaLiveClientTypes {
 extension MediaLiveClientTypes {
 
     /// Smooth Group Stream Manifest Behavior
-    public enum SmoothGroupStreamManifestBehavior: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SmoothGroupStreamManifestBehavior: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case doNotSend
         case send
         case sdkUnknown(Swift.String)
@@ -12426,7 +12427,7 @@ extension MediaLiveClientTypes {
 extension MediaLiveClientTypes {
 
     /// Smooth Group Timestamp Offset Mode
-    public enum SmoothGroupTimestampOffsetMode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SmoothGroupTimestampOffsetMode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case useConfiguredOffset
         case useEventStartDate
         case sdkUnknown(Swift.String)
@@ -12454,8 +12455,9 @@ extension MediaLiveClientTypes {
 }
 
 extension MediaLiveClientTypes {
+
     /// Ms Smooth Group Settings
-    public struct MsSmoothGroupSettings {
+    public struct MsSmoothGroupSettings: Swift.Sendable {
         /// The ID to include in each message in the sparse track. Ignored if sparseTrackType is NONE.
         public var acquisitionPointId: Swift.String?
         /// If set to passthrough for an audio-only MS Smooth output, the fragment absolute time will be set to the current timecode. This option does not write timecodes to the audio elementary stream.
@@ -12555,22 +12557,21 @@ extension MediaLiveClientTypes {
             self.timestampOffsetMode = timestampOffsetMode
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
+
     /// Multiplex Group Settings
-    public struct MultiplexGroupSettings {
+    public struct MultiplexGroupSettings: Swift.Sendable {
 
         public init() { }
     }
-
 }
 
 extension MediaLiveClientTypes {
 
     /// Rtmp Ad Markers
-    public enum RtmpAdMarkers: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum RtmpAdMarkers: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case onCuePointScte35
         case sdkUnknown(Swift.String)
 
@@ -12597,7 +12598,7 @@ extension MediaLiveClientTypes {
 extension MediaLiveClientTypes {
 
     /// Authentication Scheme
-    public enum AuthenticationScheme: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AuthenticationScheme: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case akamai
         case common
         case sdkUnknown(Swift.String)
@@ -12627,7 +12628,7 @@ extension MediaLiveClientTypes {
 extension MediaLiveClientTypes {
 
     /// Rtmp Cache Full Behavior
-    public enum RtmpCacheFullBehavior: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum RtmpCacheFullBehavior: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case disconnectImmediately
         case waitForServer
         case sdkUnknown(Swift.String)
@@ -12657,7 +12658,7 @@ extension MediaLiveClientTypes {
 extension MediaLiveClientTypes {
 
     /// Rtmp Caption Data
-    public enum RtmpCaptionData: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum RtmpCaptionData: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case all
         case field1608
         case field1AndField2608
@@ -12690,7 +12691,7 @@ extension MediaLiveClientTypes {
 extension MediaLiveClientTypes {
 
     /// Include Filler Nal Units
-    public enum IncludeFillerNalUnits: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum IncludeFillerNalUnits: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case auto
         case drop
         case include
@@ -12723,7 +12724,7 @@ extension MediaLiveClientTypes {
 extension MediaLiveClientTypes {
 
     /// Input Loss Action For Rtmp Out
-    public enum InputLossActionForRtmpOut: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum InputLossActionForRtmpOut: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case emitOutput
         case pauseOutput
         case sdkUnknown(Swift.String)
@@ -12751,8 +12752,9 @@ extension MediaLiveClientTypes {
 }
 
 extension MediaLiveClientTypes {
+
     /// Rtmp Group Settings
-    public struct RtmpGroupSettings {
+    public struct RtmpGroupSettings: Swift.Sendable {
         /// Choose the ad marker type for this output group. MediaLive will create a message based on the content of each SCTE-35 message, format it for that marker type, and insert it in the datastream.
         public var adMarkers: [MediaLiveClientTypes.RtmpAdMarkers]?
         /// Authentication scheme to use when connecting with CDN
@@ -12795,13 +12797,12 @@ extension MediaLiveClientTypes {
             self.restartDelay = restartDelay
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
 
     /// Input Loss Action For Udp Out
-    public enum InputLossActionForUdpOut: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum InputLossActionForUdpOut: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case dropProgram
         case dropTs
         case emitProgram
@@ -12832,8 +12833,9 @@ extension MediaLiveClientTypes {
 }
 
 extension MediaLiveClientTypes {
+
     /// Srt Group Settings
-    public struct SrtGroupSettings {
+    public struct SrtGroupSettings: Swift.Sendable {
         /// Specifies behavior of last resort when input video is lost, and no more backup inputs are available. When dropTs is selected the entire transport stream will stop being emitted. When dropProgram is selected the program can be dropped from the transport stream (and replaced with null packets to meet the TS bitrate requirement). Or, when emitProgram is chosen the transport stream will continue to be produced normally with repeat frames, black frames, or slate frames substituted for the absent input video.
         public var inputLossAction: MediaLiveClientTypes.InputLossActionForUdpOut?
 
@@ -12844,13 +12846,12 @@ extension MediaLiveClientTypes {
             self.inputLossAction = inputLossAction
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
 
     /// Udp Timed Metadata Id3 Frame
-    public enum UdpTimedMetadataId3Frame: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum UdpTimedMetadataId3Frame: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case `none`
         case priv
         case tdrl
@@ -12881,8 +12882,9 @@ extension MediaLiveClientTypes {
 }
 
 extension MediaLiveClientTypes {
+
     /// Udp Group Settings
-    public struct UdpGroupSettings {
+    public struct UdpGroupSettings: Swift.Sendable {
         /// Specifies behavior of last resort when input video is lost, and no more backup inputs are available. When dropTs is selected the entire transport stream will stop being emitted. When dropProgram is selected the program can be dropped from the transport stream (and replaced with null packets to meet the TS bitrate requirement). Or, when emitProgram is chosen the transport stream will continue to be produced normally with repeat frames, black frames, or slate frames substituted for the absent input video.
         public var inputLossAction: MediaLiveClientTypes.InputLossActionForUdpOut?
         /// Indicates ID3 frame that has the timecode.
@@ -12901,12 +12903,12 @@ extension MediaLiveClientTypes {
             self.timedMetadataId3Period = timedMetadataId3Period
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
+
     /// Output Group Settings
-    public struct OutputGroupSettings {
+    public struct OutputGroupSettings: Swift.Sendable {
         /// Archive Group Settings
         public var archiveGroupSettings: MediaLiveClientTypes.ArchiveGroupSettings?
         /// Cmaf Ingest Group Settings
@@ -12953,12 +12955,12 @@ extension MediaLiveClientTypes {
             self.udpGroupSettings = udpGroupSettings
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
+
     /// Output groups for this Live Event. Output groups contain information about where streams should be distributed.
-    public struct OutputGroup {
+    public struct OutputGroup: Swift.Sendable {
         /// Custom output group name optionally defined by the user.
         public var name: Swift.String?
         /// Settings associated with the output group.
@@ -12979,12 +12981,12 @@ extension MediaLiveClientTypes {
             self.outputs = outputs
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
+
     /// Runtime details of a pipeline when a channel is running.
-    public struct PipelineDetail {
+    public struct PipelineDetail: Swift.Sendable {
         /// The name of the active input attachment currently being ingested by this pipeline.
         public var activeInputAttachmentName: Swift.String?
         /// The name of the input switch schedule action that occurred most recently and that resulted in the switch to the current input attachment for this pipeline.
@@ -13011,13 +13013,12 @@ extension MediaLiveClientTypes {
             self.pipelineId = pipelineId
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
 
     /// Pipeline ID
-    public enum PipelineId: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum PipelineId: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case pipeline0
         case pipeline1
         case sdkUnknown(Swift.String)
@@ -13045,8 +13046,9 @@ extension MediaLiveClientTypes {
 }
 
 extension MediaLiveClientTypes {
+
     /// Settings for pausing a pipeline.
-    public struct PipelinePauseStateSettings {
+    public struct PipelinePauseStateSettings: Swift.Sendable {
         /// Pipeline ID to pause ("PIPELINE_0" or "PIPELINE_1").
         /// This member is required.
         public var pipelineId: MediaLiveClientTypes.PipelineId?
@@ -13058,13 +13060,12 @@ extension MediaLiveClientTypes {
             self.pipelineId = pipelineId
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
 
     /// Automatic Renewal Status for Reservation
-    public enum ReservationAutomaticRenewal: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ReservationAutomaticRenewal: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case disabled
         case enabled
         case unavailable
@@ -13095,8 +13096,9 @@ extension MediaLiveClientTypes {
 }
 
 extension MediaLiveClientTypes {
+
     /// The Renewal settings for Reservations
-    public struct RenewalSettings {
+    public struct RenewalSettings: Swift.Sendable {
         /// Automatic renewal status for the reservation
         public var automaticRenewal: MediaLiveClientTypes.ReservationAutomaticRenewal?
         /// Count for the reservation renewal
@@ -13111,13 +13113,12 @@ extension MediaLiveClientTypes {
             self.renewalCount = renewalCount
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
 
     /// Current reservation state
-    public enum ReservationState: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ReservationState: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case active
         case canceled
         case deleted
@@ -13151,8 +13152,9 @@ extension MediaLiveClientTypes {
 }
 
 extension MediaLiveClientTypes {
+
     /// Reserved resources available to use
-    public struct Reservation {
+    public struct Reservation: Swift.Sendable {
         /// Unique reservation ARN, e.g. 'arn:aws:medialive:us-west-2:123456789012:reservation:1234567'
         public var arn: Swift.String?
         /// Number of reserved resources
@@ -13235,12 +13237,12 @@ extension MediaLiveClientTypes {
             self.usagePrice = usagePrice
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
+
     /// Used in CreateNetworkRequest.
-    public struct RouteCreateRequest {
+    public struct RouteCreateRequest: Swift.Sendable {
         /// A CIDR block for one Route.
         public var cidr: Swift.String?
         /// The IP address of the Gateway for this route, if applicable.
@@ -13255,12 +13257,12 @@ extension MediaLiveClientTypes {
             self.gateway = gateway
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
+
     /// Used in UpdateNetworkRequest.
-    public struct RouteUpdateRequest {
+    public struct RouteUpdateRequest: Swift.Sendable {
         /// A CIDR block for one Route.
         public var cidr: Swift.String?
         /// The IP address of the Gateway for this route, if applicable.
@@ -13275,12 +13277,12 @@ extension MediaLiveClientTypes {
             self.gateway = gateway
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
+
     /// Settings for the action to insert a user-defined ID3 tag in each HLS segment
-    public struct HlsId3SegmentTaggingScheduleActionSettings {
+    public struct HlsId3SegmentTaggingScheduleActionSettings: Swift.Sendable {
         /// Base64 string formatted according to the ID3 specification: http://id3.org/id3v2.4.0-structure
         public var id3: Swift.String?
         /// ID3 tag to insert into each segment. Supports special keyword identifiers to substitute in segment-related values.\nSupported keyword identifiers: https://docs.aws.amazon.com/medialive/latest/ug/variable-data-identifiers.html
@@ -13295,12 +13297,12 @@ extension MediaLiveClientTypes {
             self.tag = tag
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
+
     /// Settings for the action to emit HLS metadata
-    public struct HlsTimedMetadataScheduleActionSettings {
+    public struct HlsTimedMetadataScheduleActionSettings: Swift.Sendable {
         /// Base64 string formatted according to the ID3 specification: http://id3.org/id3v2.4.0-structure
         /// This member is required.
         public var id3: Swift.String?
@@ -13312,13 +13314,12 @@ extension MediaLiveClientTypes {
             self.id3 = id3
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
 
     /// Documentation update needed
-    public enum InputTimecodeSource: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum InputTimecodeSource: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case embedded
         case zerobased
         case sdkUnknown(Swift.String)
@@ -13346,8 +13347,9 @@ extension MediaLiveClientTypes {
 }
 
 extension MediaLiveClientTypes {
+
     /// Settings to identify the start of the clip.
-    public struct StartTimecode {
+    public struct StartTimecode: Swift.Sendable {
         /// The timecode for the frame where you want to start the clip. Optional; if not specified, the clip starts at first frame in the file. Enter the timecode as HH:MM:SS:FF or HH:MM:SS;FF.
         public var timecode: Swift.String?
 
@@ -13358,13 +13360,12 @@ extension MediaLiveClientTypes {
             self.timecode = timecode
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
 
     /// If you specify a StopTimecode in an input (in order to clip the file), you can specify if you want the clip to exclude (the default) or include the frame specified by the timecode.
-    public enum LastFrameClippingBehavior: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum LastFrameClippingBehavior: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case excludeLastFrame
         case includeLastFrame
         case sdkUnknown(Swift.String)
@@ -13392,8 +13393,9 @@ extension MediaLiveClientTypes {
 }
 
 extension MediaLiveClientTypes {
+
     /// Settings to identify the end of the clip.
-    public struct StopTimecode {
+    public struct StopTimecode: Swift.Sendable {
         /// If you specify a StopTimecode in an input (in order to clip the file), you can specify if you want the clip to exclude (the default) or include the frame specified by the timecode.
         public var lastFrameClippingBehavior: MediaLiveClientTypes.LastFrameClippingBehavior?
         /// The timecode for the frame where you want to stop the clip. Optional; if not specified, the clip continues to the end of the file. Enter the timecode as HH:MM:SS:FF or HH:MM:SS;FF.
@@ -13408,12 +13410,12 @@ extension MediaLiveClientTypes {
             self.timecode = timecode
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
+
     /// Settings to let you create a clip of the file input, in order to set up the input to ingest only a portion of the file.
-    public struct InputClippingSettings {
+    public struct InputClippingSettings: Swift.Sendable {
         /// The source of the timecodes in the source being clipped.
         /// This member is required.
         public var inputTimecodeSource: MediaLiveClientTypes.InputTimecodeSource?
@@ -13433,12 +13435,12 @@ extension MediaLiveClientTypes {
             self.stopTimecode = stopTimecode
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
+
     /// Action to prepare an input for a future immediate input switch.
-    public struct InputPrepareScheduleActionSettings {
+    public struct InputPrepareScheduleActionSettings: Swift.Sendable {
         /// The name of the input attachment that should be prepared by this action. If no name is provided, the action will stop the most recent prepare (if any) when activated.
         public var inputAttachmentNameReference: Swift.String?
         /// Settings to let you create a clip of the file input, in order to set up the input to ingest only a portion of the file.
@@ -13457,12 +13459,12 @@ extension MediaLiveClientTypes {
             self.urlPath = urlPath
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
+
     /// Settings for the "switch input" action: to switch from ingesting one input to ingesting another input.
-    public struct InputSwitchScheduleActionSettings {
+    public struct InputSwitchScheduleActionSettings: Swift.Sendable {
         /// The name of the input attachment (not the name of the input!) to switch to. The name is specified in the channel configuration.
         /// This member is required.
         public var inputAttachmentNameReference: Swift.String?
@@ -13482,12 +13484,12 @@ extension MediaLiveClientTypes {
             self.urlPath = urlPath
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
+
     /// Settings to specify the rendering of motion graphics into the video stream.
-    public struct MotionGraphicsActivateScheduleActionSettings {
+    public struct MotionGraphicsActivateScheduleActionSettings: Swift.Sendable {
         /// Duration (in milliseconds) that motion graphics should render on to the video stream. Leaving out this property or setting to 0 will result in rendering continuing until a deactivate action is processed.
         public var duration: Swift.Int?
         /// Key used to extract the password from EC2 Parameter store
@@ -13510,21 +13512,21 @@ extension MediaLiveClientTypes {
             self.username = username
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
+
     /// Settings to specify the ending of rendering motion graphics into the video stream.
-    public struct MotionGraphicsDeactivateScheduleActionSettings {
+    public struct MotionGraphicsDeactivateScheduleActionSettings: Swift.Sendable {
 
         public init() { }
     }
-
 }
 
 extension MediaLiveClientTypes {
+
     /// Settings for the action to set pause state of a channel.
-    public struct PauseStateScheduleActionSettings {
+    public struct PauseStateScheduleActionSettings: Swift.Sendable {
         /// Placeholder documentation for __listOfPipelinePauseStateSettings
         public var pipelines: [MediaLiveClientTypes.PipelinePauseStateSettings]?
 
@@ -13535,13 +13537,12 @@ extension MediaLiveClientTypes {
             self.pipelines = pipelines
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
 
     /// Whether the SCTE-35 input should be the active input or a fixed input.
-    public enum Scte35InputMode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Scte35InputMode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case fixed
         case followActive
         case sdkUnknown(Swift.String)
@@ -13569,8 +13570,9 @@ extension MediaLiveClientTypes {
 }
 
 extension MediaLiveClientTypes {
+
     /// Scte35Input Schedule Action Settings
-    public struct Scte35InputScheduleActionSettings {
+    public struct Scte35InputScheduleActionSettings: Swift.Sendable {
         /// In fixed mode, enter the name of the input attachment that you want to use as a SCTE-35 input. (Don't enter the ID of the input.)"
         public var inputAttachmentNameReference: Swift.String?
         /// Whether the SCTE-35 input should be the active input or a fixed input.
@@ -13586,12 +13588,12 @@ extension MediaLiveClientTypes {
             self.mode = mode
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
+
     /// Settings for a SCTE-35 return_to_network message.
-    public struct Scte35ReturnToNetworkScheduleActionSettings {
+    public struct Scte35ReturnToNetworkScheduleActionSettings: Swift.Sendable {
         /// The splice_event_id for the SCTE-35 splice_insert, as defined in SCTE-35.
         /// This member is required.
         public var spliceEventId: Swift.Int?
@@ -13603,12 +13605,12 @@ extension MediaLiveClientTypes {
             self.spliceEventId = spliceEventId
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
+
     /// Settings for a SCTE-35 splice_insert message.
-    public struct Scte35SpliceInsertScheduleActionSettings {
+    public struct Scte35SpliceInsertScheduleActionSettings: Swift.Sendable {
         /// Optional, the duration for the splice_insert, in 90 KHz ticks. To convert seconds to ticks, multiple the seconds by 90,000. If you enter a duration, there is an expectation that the downstream system can read the duration and cue in at that time. If you do not enter a duration, the splice_insert will continue indefinitely and there is an expectation that you will enter a return_to_network to end the splice_insert at the appropriate time.
         public var duration: Swift.Int?
         /// The splice_event_id for the SCTE-35 splice_insert, as defined in SCTE-35.
@@ -13624,13 +13626,12 @@ extension MediaLiveClientTypes {
             self.spliceEventId = spliceEventId
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
 
     /// Corresponds to the archive_allowed parameter. A value of ARCHIVE_NOT_ALLOWED corresponds to 0 (false) in the SCTE-35 specification. If you include one of the "restriction" flags then you must include all four of them.
-    public enum Scte35ArchiveAllowedFlag: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Scte35ArchiveAllowedFlag: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case archiveAllowed
         case archiveNotAllowed
         case sdkUnknown(Swift.String)
@@ -13660,7 +13661,7 @@ extension MediaLiveClientTypes {
 extension MediaLiveClientTypes {
 
     /// Corresponds to the device_restrictions parameter in a segmentation_descriptor. If you include one of the "restriction" flags then you must include all four of them.
-    public enum Scte35DeviceRestrictions: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Scte35DeviceRestrictions: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case `none`
         case restrictGroup0
         case restrictGroup1
@@ -13696,7 +13697,7 @@ extension MediaLiveClientTypes {
 extension MediaLiveClientTypes {
 
     /// Corresponds to the no_regional_blackout_flag parameter. A value of REGIONAL_BLACKOUT corresponds to 0 (false) in the SCTE-35 specification. If you include one of the "restriction" flags then you must include all four of them.
-    public enum Scte35NoRegionalBlackoutFlag: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Scte35NoRegionalBlackoutFlag: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case noRegionalBlackout
         case regionalBlackout
         case sdkUnknown(Swift.String)
@@ -13726,7 +13727,7 @@ extension MediaLiveClientTypes {
 extension MediaLiveClientTypes {
 
     /// Corresponds to the web_delivery_allowed_flag parameter. A value of WEB_DELIVERY_NOT_ALLOWED corresponds to 0 (false) in the SCTE-35 specification. If you include one of the "restriction" flags then you must include all four of them.
-    public enum Scte35WebDeliveryAllowedFlag: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Scte35WebDeliveryAllowedFlag: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case webDeliveryAllowed
         case webDeliveryNotAllowed
         case sdkUnknown(Swift.String)
@@ -13754,8 +13755,9 @@ extension MediaLiveClientTypes {
 }
 
 extension MediaLiveClientTypes {
+
     /// Corresponds to SCTE-35 delivery_not_restricted_flag parameter. To declare delivery restrictions, include this element and its four "restriction" flags. To declare that there are no restrictions, omit this element.
-    public struct Scte35DeliveryRestrictions {
+    public struct Scte35DeliveryRestrictions: Swift.Sendable {
         /// Corresponds to SCTE-35 archive_allowed_flag.
         /// This member is required.
         public var archiveAllowedFlag: MediaLiveClientTypes.Scte35ArchiveAllowedFlag?
@@ -13782,13 +13784,12 @@ extension MediaLiveClientTypes {
             self.webDeliveryAllowedFlag = webDeliveryAllowedFlag
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
 
     /// Corresponds to SCTE-35 segmentation_event_cancel_indicator. SEGMENTATION_EVENT_NOT_CANCELED corresponds to 0 in the SCTE-35 specification and indicates that this is an insertion request. SEGMENTATION_EVENT_CANCELED corresponds to 1 in the SCTE-35 specification and indicates that this is a cancelation request, in which case complete this field and the existing event ID to cancel.
-    public enum Scte35SegmentationCancelIndicator: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Scte35SegmentationCancelIndicator: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case segmentationEventCanceled
         case segmentationEventNotCanceled
         case sdkUnknown(Swift.String)
@@ -13816,8 +13817,9 @@ extension MediaLiveClientTypes {
 }
 
 extension MediaLiveClientTypes {
+
     /// Corresponds to SCTE-35 segmentation_descriptor.
-    public struct Scte35SegmentationDescriptor {
+    public struct Scte35SegmentationDescriptor: Swift.Sendable {
         /// Holds the four SCTE-35 delivery restriction parameters.
         public var deliveryRestrictions: MediaLiveClientTypes.Scte35DeliveryRestrictions?
         /// Corresponds to SCTE-35 segment_num. A value that is valid for the specified segmentation_type_id.
@@ -13870,12 +13872,12 @@ extension MediaLiveClientTypes {
             self.subSegmentsExpected = subSegmentsExpected
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
+
     /// SCTE-35 Descriptor settings.
-    public struct Scte35DescriptorSettings {
+    public struct Scte35DescriptorSettings: Swift.Sendable {
         /// SCTE-35 Segmentation Descriptor.
         /// This member is required.
         public var segmentationDescriptorScte35DescriptorSettings: MediaLiveClientTypes.Scte35SegmentationDescriptor?
@@ -13887,12 +13889,12 @@ extension MediaLiveClientTypes {
             self.segmentationDescriptorScte35DescriptorSettings = segmentationDescriptorScte35DescriptorSettings
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
+
     /// Holds one set of SCTE-35 Descriptor Settings.
-    public struct Scte35Descriptor {
+    public struct Scte35Descriptor: Swift.Sendable {
         /// SCTE-35 Descriptor Settings.
         /// This member is required.
         public var scte35DescriptorSettings: MediaLiveClientTypes.Scte35DescriptorSettings?
@@ -13904,12 +13906,12 @@ extension MediaLiveClientTypes {
             self.scte35DescriptorSettings = scte35DescriptorSettings
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
+
     /// Settings for a SCTE-35 time_signal.
-    public struct Scte35TimeSignalScheduleActionSettings {
+    public struct Scte35TimeSignalScheduleActionSettings: Swift.Sendable {
         /// The list of SCTE-35 descriptors accompanying the SCTE-35 time_signal.
         /// This member is required.
         public var scte35Descriptors: [MediaLiveClientTypes.Scte35Descriptor]?
@@ -13921,12 +13923,12 @@ extension MediaLiveClientTypes {
             self.scte35Descriptors = scte35Descriptors
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
+
     /// Settings for the action to activate a static image.
-    public struct StaticImageActivateScheduleActionSettings {
+    public struct StaticImageActivateScheduleActionSettings: Swift.Sendable {
         /// The duration in milliseconds for the image to remain on the video. If omitted or set to 0 the duration is unlimited and the image will remain until it is explicitly deactivated.
         public var duration: Swift.Int?
         /// The time in milliseconds for the image to fade in. The fade-in starts at the start time of the overlay. Default is 0 (no fade-in).
@@ -13974,12 +13976,12 @@ extension MediaLiveClientTypes {
             self.width = width
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
+
     /// Settings for the action to deactivate the image in a specific layer.
-    public struct StaticImageDeactivateScheduleActionSettings {
+    public struct StaticImageDeactivateScheduleActionSettings: Swift.Sendable {
         /// The time in milliseconds for the image to fade out. Default is 0 (no fade-out).
         public var fadeOut: Swift.Int?
         /// The image overlay layer to deactivate, 0 to 7. Default is 0.
@@ -13994,12 +13996,12 @@ extension MediaLiveClientTypes {
             self.layer = layer
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
+
     /// Settings for the action to activate a static image.
-    public struct StaticImageOutputActivateScheduleActionSettings {
+    public struct StaticImageOutputActivateScheduleActionSettings: Swift.Sendable {
         /// The duration in milliseconds for the image to remain on the video. If omitted or set to 0 the duration is unlimited and the image will remain until it is explicitly deactivated.
         public var duration: Swift.Int?
         /// The time in milliseconds for the image to fade in. The fade-in starts at the start time of the overlay. Default is 0 (no fade-in).
@@ -14052,12 +14054,12 @@ extension MediaLiveClientTypes {
             self.width = width
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
+
     /// Settings for the action to deactivate the image in a specific layer.
-    public struct StaticImageOutputDeactivateScheduleActionSettings {
+    public struct StaticImageOutputDeactivateScheduleActionSettings: Swift.Sendable {
         /// The time in milliseconds for the image to fade out. Default is 0 (no fade-out).
         public var fadeOut: Swift.Int?
         /// The image overlay layer to deactivate, 0 to 7. Default is 0.
@@ -14077,12 +14079,12 @@ extension MediaLiveClientTypes {
             self.outputNames = outputNames
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
+
     /// Holds the settings for a single schedule action.
-    public struct ScheduleActionSettings {
+    public struct ScheduleActionSettings: Swift.Sendable {
         /// Action to insert HLS ID3 segment tagging
         public var hlsId3SegmentTaggingSettings: MediaLiveClientTypes.HlsId3SegmentTaggingScheduleActionSettings?
         /// Action to insert HLS metadata
@@ -14149,12 +14151,12 @@ extension MediaLiveClientTypes {
             self.staticImageOutputDeactivateSettings = staticImageOutputDeactivateSettings
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
+
     /// Start time for the action.
-    public struct FixedModeScheduleActionStartSettings {
+    public struct FixedModeScheduleActionStartSettings: Swift.Sendable {
         /// Start time for the action to start in the channel. (Not the time for the action to be added to the schedule: actions are always added to the schedule immediately.) UTC format: yyyy-mm-ddThh:mm:ss.nnnZ. All the letters are digits (for example, mm might be 01) except for the two constants "T" for time and "Z" for "UTC format".
         /// This member is required.
         public var time: Swift.String?
@@ -14166,13 +14168,12 @@ extension MediaLiveClientTypes {
             self.time = time
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
 
     /// Follow reference point.
-    public enum FollowPoint: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum FollowPoint: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case end
         case start
         case sdkUnknown(Swift.String)
@@ -14200,8 +14201,9 @@ extension MediaLiveClientTypes {
 }
 
 extension MediaLiveClientTypes {
+
     /// Settings to specify if an action follows another.
-    public struct FollowModeScheduleActionStartSettings {
+    public struct FollowModeScheduleActionStartSettings: Swift.Sendable {
         /// Identifies whether this action starts relative to the start or relative to the end of the reference action.
         /// This member is required.
         public var followPoint: MediaLiveClientTypes.FollowPoint?
@@ -14218,21 +14220,21 @@ extension MediaLiveClientTypes {
             self.referenceActionName = referenceActionName
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
+
     /// Settings to configure an action so that it occurs as soon as possible.
-    public struct ImmediateModeScheduleActionStartSettings {
+    public struct ImmediateModeScheduleActionStartSettings: Swift.Sendable {
 
         public init() { }
     }
-
 }
 
 extension MediaLiveClientTypes {
+
     /// Settings to specify when an action should occur. Only one of the options must be selected.
-    public struct ScheduleActionStartSettings {
+    public struct ScheduleActionStartSettings: Swift.Sendable {
         /// Option for specifying the start time for an action.
         public var fixedModeScheduleActionStartSettings: MediaLiveClientTypes.FixedModeScheduleActionStartSettings?
         /// Option for specifying an action as relative to another action.
@@ -14251,12 +14253,12 @@ extension MediaLiveClientTypes {
             self.immediateModeScheduleActionStartSettings = immediateModeScheduleActionStartSettings
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
+
     /// Contains information on a single schedule action.
-    public struct ScheduleAction {
+    public struct ScheduleAction: Swift.Sendable {
         /// The name of the action, must be unique within the schedule. This name provides the main reference to an action once it is added to the schedule. A name is unique if it is no longer in the schedule. The schedule is automatically cleaned up to remove actions with a start time of more than 1 hour ago (approximately) so at that point a name can be reused.
         /// This member is required.
         public var actionName: Swift.String?
@@ -14278,13 +14280,12 @@ extension MediaLiveClientTypes {
             self.scheduleActionStartSettings = scheduleActionStartSettings
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
 
     /// A signal map's monitor deployment status.
-    public enum SignalMapMonitorDeploymentStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SignalMapMonitorDeploymentStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case deleteComplete
         case deleteFailed
         case deleteInProgress
@@ -14338,7 +14339,7 @@ extension MediaLiveClientTypes {
 extension MediaLiveClientTypes {
 
     /// A signal map's current status which is dependent on its lifecycle actions or associated jobs.
-    public enum SignalMapStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SignalMapStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case createComplete
         case createFailed
         case createInProgress
@@ -14387,8 +14388,9 @@ extension MediaLiveClientTypes {
 }
 
 extension MediaLiveClientTypes {
+
     /// Placeholder documentation for SignalMapSummary
-    public struct SignalMapSummary {
+    public struct SignalMapSummary: Swift.Sendable {
         /// A signal map's ARN (Amazon Resource Name)
         /// This member is required.
         public var arn: Swift.String?
@@ -14437,12 +14439,12 @@ extension MediaLiveClientTypes {
             self.tags = tags
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
+
     /// Complete these parameters only if the content is encrypted.
-    public struct SrtCallerDecryptionRequest {
+    public struct SrtCallerDecryptionRequest: Swift.Sendable {
         /// The algorithm used to encrypt content.
         public var algorithm: MediaLiveClientTypes.Algorithm?
         /// The ARN for the secret in Secrets Manager. Someone in your organization must create a secret and provide you with its ARN. This secret holds the passphrase that MediaLive will use to decrypt the source content.
@@ -14457,12 +14459,12 @@ extension MediaLiveClientTypes {
             self.passphraseSecretArn = passphraseSecretArn
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
+
     /// Configures the connection for a source that uses SRT as the connection protocol. In terms of establishing the connection, MediaLive is always the caller and the upstream system is always the listener. In terms of transmission of the source content, MediaLive is always the receiver and the upstream system is always the sender.
-    public struct SrtCallerSourceRequest {
+    public struct SrtCallerSourceRequest: Swift.Sendable {
         /// Complete these parameters only if the content is encrypted.
         public var decryption: MediaLiveClientTypes.SrtCallerDecryptionRequest?
         /// The preferred latency (in milliseconds) for implementing packet loss and recovery. Packet recovery is a key feature of SRT. Obtain this value from the operator at the upstream system.
@@ -14489,13 +14491,12 @@ extension MediaLiveClientTypes {
             self.streamId = streamId
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
 
     /// Thumbnail type.
-    public enum ThumbnailType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ThumbnailType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case currentActive
         case unspecified
         case sdkUnknown(Swift.String)
@@ -14523,8 +14524,9 @@ extension MediaLiveClientTypes {
 }
 
 extension MediaLiveClientTypes {
+
     /// Details of a single thumbnail
-    public struct Thumbnail {
+    public struct Thumbnail: Swift.Sendable {
         /// The binary data for the latest thumbnail.
         public var body: Swift.String?
         /// The content type for the latest thumbnail.
@@ -14547,12 +14549,12 @@ extension MediaLiveClientTypes {
             self.timeStamp = timeStamp
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
+
     /// Thumbnail details for one pipeline of a running channel.
-    public struct ThumbnailDetail {
+    public struct ThumbnailDetail: Swift.Sendable {
         /// Pipeline ID
         public var pipelineId: Swift.String?
         /// thumbnails of a single pipeline
@@ -14567,13 +14569,12 @@ extension MediaLiveClientTypes {
             self.thumbnails = thumbnails
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
 
     /// The type of device transfer. INCOMING for an input device that is being transferred to you, OUTGOING for an input device that you are transferring to another AWS account.
-    public enum InputDeviceTransferType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum InputDeviceTransferType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case incoming
         case outgoing
         case sdkUnknown(Swift.String)
@@ -14601,8 +14602,9 @@ extension MediaLiveClientTypes {
 }
 
 extension MediaLiveClientTypes {
+
     /// Details about the input device that is being transferred.
-    public struct TransferringInputDeviceSummary {
+    public struct TransferringInputDeviceSummary: Swift.Sendable {
         /// The unique ID of the input device.
         public var id: Swift.String?
         /// The optional message that the sender has attached to the transfer.
@@ -14625,12 +14627,12 @@ extension MediaLiveClientTypes {
             self.transferType = transferType
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
+
     /// Placeholder documentation for ValidationError
-    public struct ValidationError {
+    public struct ValidationError: Swift.Sendable {
         /// Path to the source of the error.
         public var elementPath: Swift.String?
         /// The error message.
@@ -14645,13 +14647,12 @@ extension MediaLiveClientTypes {
             self.errorMessage = errorMessage
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
 
     /// Afd Signaling
-    public enum AfdSignaling: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AfdSignaling: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case auto
         case fixed
         case `none`
@@ -14682,35 +14683,36 @@ extension MediaLiveClientTypes {
 }
 
 extension MediaLiveClientTypes {
+
     /// Passthrough applies no color space conversion to the output
-    public struct ColorSpacePassthroughSettings {
+    public struct ColorSpacePassthroughSettings: Swift.Sendable {
 
         public init() { }
     }
-
 }
 
 extension MediaLiveClientTypes {
+
     /// Rec601 Settings
-    public struct Rec601Settings {
+    public struct Rec601Settings: Swift.Sendable {
 
         public init() { }
     }
-
 }
 
 extension MediaLiveClientTypes {
+
     /// Rec709 Settings
-    public struct Rec709Settings {
+    public struct Rec709Settings: Swift.Sendable {
 
         public init() { }
     }
-
 }
 
 extension MediaLiveClientTypes {
+
     /// Av1 Color Space Settings
-    public struct Av1ColorSpaceSettings {
+    public struct Av1ColorSpaceSettings: Swift.Sendable {
         /// Passthrough applies no color space conversion to the output
         public var colorSpacePassthroughSettings: MediaLiveClientTypes.ColorSpacePassthroughSettings?
         /// Hdr10 Settings
@@ -14733,13 +14735,12 @@ extension MediaLiveClientTypes {
             self.rec709Settings = rec709Settings
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
 
     /// Fixed Afd
-    public enum FixedAfd: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum FixedAfd: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case afd0000
         case afd0010
         case afd0011
@@ -14796,7 +14797,7 @@ extension MediaLiveClientTypes {
 extension MediaLiveClientTypes {
 
     /// Av1 Gop Size Units
-    public enum Av1GopSizeUnits: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Av1GopSizeUnits: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case frames
         case seconds
         case sdkUnknown(Swift.String)
@@ -14826,7 +14827,7 @@ extension MediaLiveClientTypes {
 extension MediaLiveClientTypes {
 
     /// Av1 Level
-    public enum Av1Level: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Av1Level: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case av1Level2
         case av1Level21
         case av1Level3
@@ -14895,7 +14896,7 @@ extension MediaLiveClientTypes {
 extension MediaLiveClientTypes {
 
     /// Av1 Look Ahead Rate Control
-    public enum Av1LookAheadRateControl: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Av1LookAheadRateControl: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case high
         case low
         case medium
@@ -14928,7 +14929,7 @@ extension MediaLiveClientTypes {
 extension MediaLiveClientTypes {
 
     /// Av1 Scene Change Detect
-    public enum Av1SceneChangeDetect: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Av1SceneChangeDetect: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case disabled
         case enabled
         case sdkUnknown(Swift.String)
@@ -14958,7 +14959,7 @@ extension MediaLiveClientTypes {
 extension MediaLiveClientTypes {
 
     /// Timecode Burnin Font Size
-    public enum TimecodeBurninFontSize: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum TimecodeBurninFontSize: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case extraSmall10
         case large48
         case medium32
@@ -14994,7 +14995,7 @@ extension MediaLiveClientTypes {
 extension MediaLiveClientTypes {
 
     /// Timecode Burnin Position
-    public enum TimecodeBurninPosition: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum TimecodeBurninPosition: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case bottomCenter
         case bottomLeft
         case bottomRight
@@ -15043,8 +15044,9 @@ extension MediaLiveClientTypes {
 }
 
 extension MediaLiveClientTypes {
+
     /// Timecode Burnin Settings
-    public struct TimecodeBurninSettings {
+    public struct TimecodeBurninSettings: Swift.Sendable {
         /// Choose a timecode burn-in font size
         /// This member is required.
         public var fontSize: MediaLiveClientTypes.TimecodeBurninFontSize?
@@ -15065,12 +15067,12 @@ extension MediaLiveClientTypes {
             self.`prefix` = `prefix`
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
+
     /// Av1 Settings
-    public struct Av1Settings {
+    public struct Av1Settings: Swift.Sendable {
         /// Configures whether MediaLive will write AFD values into the video. AUTO: MediaLive will try to preserve the input AFD value (in cases where multiple AFD values are valid). FIXED: the AFD value will be the value configured in the fixedAfd parameter. NONE: MediaLive won't write AFD into the video
         public var afdSignaling: MediaLiveClientTypes.AfdSignaling?
         /// The size of the buffer (HRD buffer model) in bits.
@@ -15147,13 +15149,12 @@ extension MediaLiveClientTypes {
             self.timecodeBurninSettings = timecodeBurninSettings
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
 
     /// Frame Capture Interval Unit
-    public enum FrameCaptureIntervalUnit: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum FrameCaptureIntervalUnit: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case milliseconds
         case seconds
         case sdkUnknown(Swift.String)
@@ -15181,8 +15182,9 @@ extension MediaLiveClientTypes {
 }
 
 extension MediaLiveClientTypes {
+
     /// Frame Capture Settings
-    public struct FrameCaptureSettings {
+    public struct FrameCaptureSettings: Swift.Sendable {
         /// The frequency at which to capture frames for inclusion in the output. May be specified in either seconds or milliseconds, as specified by captureIntervalUnits.
         public var captureInterval: Swift.Int?
         /// Unit for the frame capture interval.
@@ -15201,13 +15203,12 @@ extension MediaLiveClientTypes {
             self.timecodeBurninSettings = timecodeBurninSettings
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
 
     /// H264 Adaptive Quantization
-    public enum H264AdaptiveQuantization: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum H264AdaptiveQuantization: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case auto
         case high
         case higher
@@ -15252,7 +15253,7 @@ extension MediaLiveClientTypes {
 extension MediaLiveClientTypes {
 
     /// H264 Color Metadata
-    public enum H264ColorMetadata: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum H264ColorMetadata: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case ignore
         case insert
         case sdkUnknown(Swift.String)
@@ -15280,8 +15281,9 @@ extension MediaLiveClientTypes {
 }
 
 extension MediaLiveClientTypes {
+
     /// H264 Color Space Settings
-    public struct H264ColorSpaceSettings {
+    public struct H264ColorSpaceSettings: Swift.Sendable {
         /// Passthrough applies no color space conversion to the output
         public var colorSpacePassthroughSettings: MediaLiveClientTypes.ColorSpacePassthroughSettings?
         /// Rec601 Settings
@@ -15300,13 +15302,12 @@ extension MediaLiveClientTypes {
             self.rec709Settings = rec709Settings
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
 
     /// H264 Entropy Encoding
-    public enum H264EntropyEncoding: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum H264EntropyEncoding: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case cabac
         case cavlc
         case sdkUnknown(Swift.String)
@@ -15336,7 +15337,7 @@ extension MediaLiveClientTypes {
 extension MediaLiveClientTypes {
 
     /// Bandwidth Reduction Post Filter Sharpening
-    public enum BandwidthReductionPostFilterSharpening: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum BandwidthReductionPostFilterSharpening: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case disabled
         case sharpening1
         case sharpening2
@@ -15372,7 +15373,7 @@ extension MediaLiveClientTypes {
 extension MediaLiveClientTypes {
 
     /// Bandwidth Reduction Filter Strength
-    public enum BandwidthReductionFilterStrength: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum BandwidthReductionFilterStrength: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case auto
         case strength1
         case strength2
@@ -15409,8 +15410,9 @@ extension MediaLiveClientTypes {
 }
 
 extension MediaLiveClientTypes {
+
     /// Bandwidth Reduction Filter Settings
-    public struct BandwidthReductionFilterSettings {
+    public struct BandwidthReductionFilterSettings: Swift.Sendable {
         /// Configures the sharpening control, which is available when the bandwidth reduction filter is enabled. This control sharpens edges and contours, which produces a specific artistic effect that you might want. We recommend that you test each of the values (including DISABLED) to observe the sharpening effect on the content.
         public var postFilterSharpening: MediaLiveClientTypes.BandwidthReductionPostFilterSharpening?
         /// Enables the bandwidth reduction filter. The filter strengths range from 1 to 4. We recommend that you always enable this filter and use AUTO, to let MediaLive apply the optimum filtering for the context.
@@ -15425,13 +15427,12 @@ extension MediaLiveClientTypes {
             self.strength = strength
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
 
     /// Temporal Filter Post Filter Sharpening
-    public enum TemporalFilterPostFilterSharpening: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum TemporalFilterPostFilterSharpening: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case auto
         case disabled
         case enabled
@@ -15464,7 +15465,7 @@ extension MediaLiveClientTypes {
 extension MediaLiveClientTypes {
 
     /// Temporal Filter Strength
-    public enum TemporalFilterStrength: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum TemporalFilterStrength: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case auto
         case strength1
         case strength10
@@ -15537,8 +15538,9 @@ extension MediaLiveClientTypes {
 }
 
 extension MediaLiveClientTypes {
+
     /// Temporal Filter Settings
-    public struct TemporalFilterSettings {
+    public struct TemporalFilterSettings: Swift.Sendable {
         /// If you enable this filter, the results are the following:
         ///
         /// * If the source content is noisy (it contains excessive digital artifacts), the filter cleans up the source.
@@ -15557,12 +15559,12 @@ extension MediaLiveClientTypes {
             self.strength = strength
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
+
     /// H264 Filter Settings
-    public struct H264FilterSettings {
+    public struct H264FilterSettings: Swift.Sendable {
         /// Bandwidth Reduction Filter Settings
         public var bandwidthReductionFilterSettings: MediaLiveClientTypes.BandwidthReductionFilterSettings?
         /// Temporal Filter Settings
@@ -15577,13 +15579,12 @@ extension MediaLiveClientTypes {
             self.temporalFilterSettings = temporalFilterSettings
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
 
     /// H264 Flicker Aq
-    public enum H264FlickerAq: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum H264FlickerAq: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case disabled
         case enabled
         case sdkUnknown(Swift.String)
@@ -15613,7 +15614,7 @@ extension MediaLiveClientTypes {
 extension MediaLiveClientTypes {
 
     /// H264 Force Field Pictures
-    public enum H264ForceFieldPictures: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum H264ForceFieldPictures: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case disabled
         case enabled
         case sdkUnknown(Swift.String)
@@ -15643,7 +15644,7 @@ extension MediaLiveClientTypes {
 extension MediaLiveClientTypes {
 
     /// H264 Framerate Control
-    public enum H264FramerateControl: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum H264FramerateControl: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case initializeFromSource
         case specified
         case sdkUnknown(Swift.String)
@@ -15673,7 +15674,7 @@ extension MediaLiveClientTypes {
 extension MediaLiveClientTypes {
 
     /// H264 Gop BReference
-    public enum H264GopBReference: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum H264GopBReference: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case disabled
         case enabled
         case sdkUnknown(Swift.String)
@@ -15703,7 +15704,7 @@ extension MediaLiveClientTypes {
 extension MediaLiveClientTypes {
 
     /// H264 Gop Size Units
-    public enum H264GopSizeUnits: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum H264GopSizeUnits: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case frames
         case seconds
         case sdkUnknown(Swift.String)
@@ -15733,7 +15734,7 @@ extension MediaLiveClientTypes {
 extension MediaLiveClientTypes {
 
     /// H264 Level
-    public enum H264Level: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum H264Level: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case h264Level1
         case h264Level11
         case h264Level12
@@ -15808,7 +15809,7 @@ extension MediaLiveClientTypes {
 extension MediaLiveClientTypes {
 
     /// H264 Look Ahead Rate Control
-    public enum H264LookAheadRateControl: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum H264LookAheadRateControl: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case high
         case low
         case medium
@@ -15841,7 +15842,7 @@ extension MediaLiveClientTypes {
 extension MediaLiveClientTypes {
 
     /// H264 Par Control
-    public enum H264ParControl: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum H264ParControl: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case initializeFromSource
         case specified
         case sdkUnknown(Swift.String)
@@ -15871,7 +15872,7 @@ extension MediaLiveClientTypes {
 extension MediaLiveClientTypes {
 
     /// H264 Profile
-    public enum H264Profile: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum H264Profile: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case baseline
         case high
         case high10bit
@@ -15913,7 +15914,7 @@ extension MediaLiveClientTypes {
 extension MediaLiveClientTypes {
 
     /// H264 Quality Level
-    public enum H264QualityLevel: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum H264QualityLevel: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case enhancedQuality
         case standardQuality
         case sdkUnknown(Swift.String)
@@ -15943,7 +15944,7 @@ extension MediaLiveClientTypes {
 extension MediaLiveClientTypes {
 
     /// H264 Rate Control Mode
-    public enum H264RateControlMode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum H264RateControlMode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case cbr
         case multiplex
         case qvbr
@@ -15979,7 +15980,7 @@ extension MediaLiveClientTypes {
 extension MediaLiveClientTypes {
 
     /// H264 Scan Type
-    public enum H264ScanType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum H264ScanType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case interlaced
         case progressive
         case sdkUnknown(Swift.String)
@@ -16009,7 +16010,7 @@ extension MediaLiveClientTypes {
 extension MediaLiveClientTypes {
 
     /// H264 Scene Change Detect
-    public enum H264SceneChangeDetect: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum H264SceneChangeDetect: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case disabled
         case enabled
         case sdkUnknown(Swift.String)
@@ -16039,7 +16040,7 @@ extension MediaLiveClientTypes {
 extension MediaLiveClientTypes {
 
     /// H264 Spatial Aq
-    public enum H264SpatialAq: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum H264SpatialAq: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case disabled
         case enabled
         case sdkUnknown(Swift.String)
@@ -16069,7 +16070,7 @@ extension MediaLiveClientTypes {
 extension MediaLiveClientTypes {
 
     /// H264 Sub Gop Length
-    public enum H264SubGopLength: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum H264SubGopLength: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case `dynamic`
         case fixed
         case sdkUnknown(Swift.String)
@@ -16099,7 +16100,7 @@ extension MediaLiveClientTypes {
 extension MediaLiveClientTypes {
 
     /// H264 Syntax
-    public enum H264Syntax: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum H264Syntax: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case `default`
         case rp2027
         case sdkUnknown(Swift.String)
@@ -16129,7 +16130,7 @@ extension MediaLiveClientTypes {
 extension MediaLiveClientTypes {
 
     /// H264 Temporal Aq
-    public enum H264TemporalAq: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum H264TemporalAq: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case disabled
         case enabled
         case sdkUnknown(Swift.String)
@@ -16159,7 +16160,7 @@ extension MediaLiveClientTypes {
 extension MediaLiveClientTypes {
 
     /// H264 Timecode Insertion Behavior
-    public enum H264TimecodeInsertionBehavior: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum H264TimecodeInsertionBehavior: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case disabled
         case picTimingSei
         case sdkUnknown(Swift.String)
@@ -16187,8 +16188,9 @@ extension MediaLiveClientTypes {
 }
 
 extension MediaLiveClientTypes {
+
     /// H264 Settings
-    public struct H264Settings {
+    public struct H264Settings: Swift.Sendable {
         /// Enables or disables adaptive quantization, which is a technique MediaLive can apply to video on a frame-by-frame basis to produce more compression without losing quality. There are three types of adaptive quantization: flicker, spatial, and temporal. Set the field in one of these ways: Set to Auto. Recommended. For each type of AQ, MediaLive will determine if AQ is needed, and if so, the appropriate strength. Set a strength (a value other than Auto or Disable). This strength will apply to any of the AQ fields that you choose to enable. Set to Disabled to disable all types of adaptive quantization.
         public var adaptiveQuantization: MediaLiveClientTypes.H264AdaptiveQuantization?
         /// Indicates that AFD values will be written into the output stream. If afdSignaling is "auto", the system will try to preserve the input AFD value (in cases where multiple AFD values are valid). If set to "fixed", the AFD value will be the value configured in the fixedAfd parameter.
@@ -16385,13 +16387,12 @@ extension MediaLiveClientTypes {
             self.timecodeInsertion = timecodeInsertion
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
 
     /// H265 Adaptive Quantization
-    public enum H265AdaptiveQuantization: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum H265AdaptiveQuantization: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case auto
         case high
         case higher
@@ -16436,7 +16437,7 @@ extension MediaLiveClientTypes {
 extension MediaLiveClientTypes {
 
     /// H265 Alternative Transfer Function
-    public enum H265AlternativeTransferFunction: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum H265AlternativeTransferFunction: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case insert
         case omit
         case sdkUnknown(Swift.String)
@@ -16466,7 +16467,7 @@ extension MediaLiveClientTypes {
 extension MediaLiveClientTypes {
 
     /// H265 Color Metadata
-    public enum H265ColorMetadata: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum H265ColorMetadata: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case ignore
         case insert
         case sdkUnknown(Swift.String)
@@ -16494,17 +16495,18 @@ extension MediaLiveClientTypes {
 }
 
 extension MediaLiveClientTypes {
+
     /// Dolby Vision81 Settings
-    public struct DolbyVision81Settings {
+    public struct DolbyVision81Settings: Swift.Sendable {
 
         public init() { }
     }
-
 }
 
 extension MediaLiveClientTypes {
+
     /// H265 Color Space Settings
-    public struct H265ColorSpaceSettings {
+    public struct H265ColorSpaceSettings: Swift.Sendable {
         /// Passthrough applies no color space conversion to the output
         public var colorSpacePassthroughSettings: MediaLiveClientTypes.ColorSpacePassthroughSettings?
         /// Dolby Vision81 Settings
@@ -16531,12 +16533,12 @@ extension MediaLiveClientTypes {
             self.rec709Settings = rec709Settings
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
+
     /// H265 Filter Settings
-    public struct H265FilterSettings {
+    public struct H265FilterSettings: Swift.Sendable {
         /// Bandwidth Reduction Filter Settings
         public var bandwidthReductionFilterSettings: MediaLiveClientTypes.BandwidthReductionFilterSettings?
         /// Temporal Filter Settings
@@ -16551,13 +16553,12 @@ extension MediaLiveClientTypes {
             self.temporalFilterSettings = temporalFilterSettings
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
 
     /// H265 Flicker Aq
-    public enum H265FlickerAq: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum H265FlickerAq: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case disabled
         case enabled
         case sdkUnknown(Swift.String)
@@ -16587,7 +16588,7 @@ extension MediaLiveClientTypes {
 extension MediaLiveClientTypes {
 
     /// H265 Gop Size Units
-    public enum H265GopSizeUnits: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum H265GopSizeUnits: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case frames
         case seconds
         case sdkUnknown(Swift.String)
@@ -16617,7 +16618,7 @@ extension MediaLiveClientTypes {
 extension MediaLiveClientTypes {
 
     /// H265 Level
-    public enum H265Level: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum H265Level: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case h265Level1
         case h265Level2
         case h265Level21
@@ -16683,7 +16684,7 @@ extension MediaLiveClientTypes {
 extension MediaLiveClientTypes {
 
     /// H265 Look Ahead Rate Control
-    public enum H265LookAheadRateControl: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum H265LookAheadRateControl: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case high
         case low
         case medium
@@ -16716,7 +16717,7 @@ extension MediaLiveClientTypes {
 extension MediaLiveClientTypes {
 
     /// H265 Mv Over Picture Boundaries
-    public enum H265MvOverPictureBoundaries: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum H265MvOverPictureBoundaries: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case disabled
         case enabled
         case sdkUnknown(Swift.String)
@@ -16746,7 +16747,7 @@ extension MediaLiveClientTypes {
 extension MediaLiveClientTypes {
 
     /// H265 Mv Temporal Predictor
-    public enum H265MvTemporalPredictor: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum H265MvTemporalPredictor: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case disabled
         case enabled
         case sdkUnknown(Swift.String)
@@ -16776,7 +16777,7 @@ extension MediaLiveClientTypes {
 extension MediaLiveClientTypes {
 
     /// H265 Profile
-    public enum H265Profile: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum H265Profile: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case main
         case main10bit
         case sdkUnknown(Swift.String)
@@ -16806,7 +16807,7 @@ extension MediaLiveClientTypes {
 extension MediaLiveClientTypes {
 
     /// H265 Rate Control Mode
-    public enum H265RateControlMode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum H265RateControlMode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case cbr
         case multiplex
         case qvbr
@@ -16839,7 +16840,7 @@ extension MediaLiveClientTypes {
 extension MediaLiveClientTypes {
 
     /// H265 Scan Type
-    public enum H265ScanType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum H265ScanType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case interlaced
         case progressive
         case sdkUnknown(Swift.String)
@@ -16869,7 +16870,7 @@ extension MediaLiveClientTypes {
 extension MediaLiveClientTypes {
 
     /// H265 Scene Change Detect
-    public enum H265SceneChangeDetect: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum H265SceneChangeDetect: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case disabled
         case enabled
         case sdkUnknown(Swift.String)
@@ -16899,7 +16900,7 @@ extension MediaLiveClientTypes {
 extension MediaLiveClientTypes {
 
     /// H265 Tier
-    public enum H265Tier: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum H265Tier: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case high
         case main
         case sdkUnknown(Swift.String)
@@ -16929,7 +16930,7 @@ extension MediaLiveClientTypes {
 extension MediaLiveClientTypes {
 
     /// H265 Tile Padding
-    public enum H265TilePadding: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum H265TilePadding: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case `none`
         case padded
         case sdkUnknown(Swift.String)
@@ -16959,7 +16960,7 @@ extension MediaLiveClientTypes {
 extension MediaLiveClientTypes {
 
     /// H265 Timecode Insertion Behavior
-    public enum H265TimecodeInsertionBehavior: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum H265TimecodeInsertionBehavior: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case disabled
         case picTimingSei
         case sdkUnknown(Swift.String)
@@ -16989,7 +16990,7 @@ extension MediaLiveClientTypes {
 extension MediaLiveClientTypes {
 
     /// H265 Treeblock Size
-    public enum H265TreeblockSize: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum H265TreeblockSize: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case auto
         case treeSize32x32
         case sdkUnknown(Swift.String)
@@ -17017,8 +17018,9 @@ extension MediaLiveClientTypes {
 }
 
 extension MediaLiveClientTypes {
+
     /// H265 Settings
-    public struct H265Settings {
+    public struct H265Settings: Swift.Sendable {
         /// Adaptive quantization. Allows intra-frame quantizers to vary to improve visual quality.
         public var adaptiveQuantization: MediaLiveClientTypes.H265AdaptiveQuantization?
         /// Indicates that AFD values will be written into the output stream. If afdSignaling is "auto", the system will try to preserve the input AFD value (in cases where multiple AFD values are valid). If set to "fixed", the AFD value will be the value configured in the fixedAfd parameter.
@@ -17185,13 +17187,12 @@ extension MediaLiveClientTypes {
             self.treeblockSize = treeblockSize
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
 
     /// Mpeg2 Adaptive Quantization
-    public enum Mpeg2AdaptiveQuantization: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Mpeg2AdaptiveQuantization: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case auto
         case high
         case low
@@ -17230,7 +17231,7 @@ extension MediaLiveClientTypes {
 extension MediaLiveClientTypes {
 
     /// Mpeg2 Color Metadata
-    public enum Mpeg2ColorMetadata: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Mpeg2ColorMetadata: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case ignore
         case insert
         case sdkUnknown(Swift.String)
@@ -17260,7 +17261,7 @@ extension MediaLiveClientTypes {
 extension MediaLiveClientTypes {
 
     /// Mpeg2 Color Space
-    public enum Mpeg2ColorSpace: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Mpeg2ColorSpace: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case auto
         case passthrough
         case sdkUnknown(Swift.String)
@@ -17290,7 +17291,7 @@ extension MediaLiveClientTypes {
 extension MediaLiveClientTypes {
 
     /// Mpeg2 Display Ratio
-    public enum Mpeg2DisplayRatio: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Mpeg2DisplayRatio: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case displayratio16x9
         case displayratio4x3
         case sdkUnknown(Swift.String)
@@ -17318,8 +17319,9 @@ extension MediaLiveClientTypes {
 }
 
 extension MediaLiveClientTypes {
+
     /// Mpeg2 Filter Settings
-    public struct Mpeg2FilterSettings {
+    public struct Mpeg2FilterSettings: Swift.Sendable {
         /// Temporal Filter Settings
         public var temporalFilterSettings: MediaLiveClientTypes.TemporalFilterSettings?
 
@@ -17330,13 +17332,12 @@ extension MediaLiveClientTypes {
             self.temporalFilterSettings = temporalFilterSettings
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
 
     /// Mpeg2 Gop Size Units
-    public enum Mpeg2GopSizeUnits: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Mpeg2GopSizeUnits: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case frames
         case seconds
         case sdkUnknown(Swift.String)
@@ -17366,7 +17367,7 @@ extension MediaLiveClientTypes {
 extension MediaLiveClientTypes {
 
     /// Mpeg2 Scan Type
-    public enum Mpeg2ScanType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Mpeg2ScanType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case interlaced
         case progressive
         case sdkUnknown(Swift.String)
@@ -17396,7 +17397,7 @@ extension MediaLiveClientTypes {
 extension MediaLiveClientTypes {
 
     /// Mpeg2 Sub Gop Length
-    public enum Mpeg2SubGopLength: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Mpeg2SubGopLength: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case `dynamic`
         case fixed
         case sdkUnknown(Swift.String)
@@ -17426,7 +17427,7 @@ extension MediaLiveClientTypes {
 extension MediaLiveClientTypes {
 
     /// Mpeg2 Timecode Insertion Behavior
-    public enum Mpeg2TimecodeInsertionBehavior: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Mpeg2TimecodeInsertionBehavior: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case disabled
         case gopTimecode
         case sdkUnknown(Swift.String)
@@ -17454,8 +17455,9 @@ extension MediaLiveClientTypes {
 }
 
 extension MediaLiveClientTypes {
+
     /// Mpeg2 Settings
-    public struct Mpeg2Settings {
+    public struct Mpeg2Settings: Swift.Sendable {
         /// Choose Off to disable adaptive quantization. Or choose another value to enable the quantizer and set its strength. The strengths are: Auto, Off, Low, Medium, High. When you enable this field, MediaLive allows intra-frame quantizers to vary, which might improve visual quality.
         public var adaptiveQuantization: MediaLiveClientTypes.Mpeg2AdaptiveQuantization?
         /// Indicates the AFD values that MediaLive will write into the video encode. If you do not know what AFD signaling is, or if your downstream system has not given you guidance, choose AUTO. AUTO: MediaLive will try to preserve the input AFD value (in cases where multiple AFD values are valid). FIXED: MediaLive will use the value you specify in fixedAFD.
@@ -17532,12 +17534,12 @@ extension MediaLiveClientTypes {
             self.timecodeInsertion = timecodeInsertion
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
+
     /// Video Codec Settings
-    public struct VideoCodecSettings {
+    public struct VideoCodecSettings: Swift.Sendable {
         /// Av1 Settings
         public var av1Settings: MediaLiveClientTypes.Av1Settings?
         /// Frame Capture Settings
@@ -17564,13 +17566,12 @@ extension MediaLiveClientTypes {
             self.mpeg2Settings = mpeg2Settings
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
 
     /// Video Description Respond To Afd
-    public enum VideoDescriptionRespondToAfd: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum VideoDescriptionRespondToAfd: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case `none`
         case passthrough
         case respond
@@ -17603,7 +17604,7 @@ extension MediaLiveClientTypes {
 extension MediaLiveClientTypes {
 
     /// Video Description Scaling Behavior
-    public enum VideoDescriptionScalingBehavior: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum VideoDescriptionScalingBehavior: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case `default`
         case stretchToOutput
         case sdkUnknown(Swift.String)
@@ -17631,8 +17632,9 @@ extension MediaLiveClientTypes {
 }
 
 extension MediaLiveClientTypes {
+
     /// Video settings for this stream.
-    public struct VideoDescription {
+    public struct VideoDescription: Swift.Sendable {
         /// Video codec settings.
         public var codecSettings: MediaLiveClientTypes.VideoCodecSettings?
         /// Output video height, in pixels. Must be an even number. For most codecs, you can leave this field and width blank in order to use the height and width (resolution) from the source. Note, however, that leaving blank is not recommended. For the Frame Capture codec, height and width are required.
@@ -17668,13 +17670,12 @@ extension MediaLiveClientTypes {
             self.width = width
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
 
     /// The HTTP Accept header. Indicates the requested type fothe thumbnail.
-    public enum AcceptHeader: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AcceptHeader: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case imageJpeg
         case sdkUnknown(Swift.String)
 
@@ -17928,7 +17929,7 @@ public struct UnprocessableEntityException: ClientRuntime.ModeledError, AWSClien
 }
 
 /// Placeholder documentation for AcceptInputDeviceTransferRequest
-public struct AcceptInputDeviceTransferInput {
+public struct AcceptInputDeviceTransferInput: Swift.Sendable {
     /// The unique ID of the input device to accept. For example, hd-123456789abcdef.
     /// This member is required.
     public var inputDeviceId: Swift.String?
@@ -17942,14 +17943,15 @@ public struct AcceptInputDeviceTransferInput {
 }
 
 /// Placeholder documentation for AcceptInputDeviceTransferResponse
-public struct AcceptInputDeviceTransferOutput {
+public struct AcceptInputDeviceTransferOutput: Swift.Sendable {
 
     public init() { }
 }
 
 extension MediaLiveClientTypes {
+
     /// Placeholder documentation for AccountConfiguration
-    public struct AccountConfiguration {
+    public struct AccountConfiguration: Swift.Sendable {
         /// Specifies the KMS key to use for all features that use key encryption. Specify the ARN of a KMS key that you have created. Or leave blank to use the key that MediaLive creates and manages for you.
         public var kmsKeyId: Swift.String?
 
@@ -17960,12 +17962,12 @@ extension MediaLiveClientTypes {
             self.kmsKeyId = kmsKeyId
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
+
     /// Elemental anywhere settings
-    public struct AnywhereSettings {
+    public struct AnywhereSettings: Swift.Sendable {
         /// The ID of the channel placement group for the channel.
         public var channelPlacementGroupId: Swift.String?
         /// The ID of the cluster for the channel.
@@ -17980,13 +17982,12 @@ extension MediaLiveClientTypes {
             self.clusterId = clusterId
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
 
     /// Avail Blanking State
-    public enum AvailBlankingState: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AvailBlankingState: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case disabled
         case enabled
         case sdkUnknown(Swift.String)
@@ -18014,8 +18015,9 @@ extension MediaLiveClientTypes {
 }
 
 extension MediaLiveClientTypes {
+
     /// Avail Blanking
-    public struct AvailBlanking {
+    public struct AvailBlanking: Swift.Sendable {
         /// Blanking image to be used. Leave empty for solid black. Only bmp and png images are supported.
         public var availBlankingImage: MediaLiveClientTypes.InputLocation?
         /// When set to enabled, causes video, audio and captions to be blanked when insertion metadata is added.
@@ -18030,12 +18032,12 @@ extension MediaLiveClientTypes {
             self.state = state
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
+
     /// Esam
-    public struct Esam {
+    public struct Esam: Swift.Sendable {
         /// Sent as acquisitionPointIdentity to identify the MediaLive channel to the POIS.
         /// This member is required.
         public var acquisitionPointId: Swift.String?
@@ -18068,13 +18070,12 @@ extension MediaLiveClientTypes {
             self.zoneIdentity = zoneIdentity
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
 
     /// Scte35 Splice Insert No Regional Blackout Behavior
-    public enum Scte35SpliceInsertNoRegionalBlackoutBehavior: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Scte35SpliceInsertNoRegionalBlackoutBehavior: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case follow
         case ignore
         case sdkUnknown(Swift.String)
@@ -18104,7 +18105,7 @@ extension MediaLiveClientTypes {
 extension MediaLiveClientTypes {
 
     /// Scte35 Splice Insert Web Delivery Allowed Behavior
-    public enum Scte35SpliceInsertWebDeliveryAllowedBehavior: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Scte35SpliceInsertWebDeliveryAllowedBehavior: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case follow
         case ignore
         case sdkUnknown(Swift.String)
@@ -18132,8 +18133,9 @@ extension MediaLiveClientTypes {
 }
 
 extension MediaLiveClientTypes {
+
     /// Typical configuration that applies breaks on splice inserts in addition to time signal placement opportunities, breaks, and advertisements.
-    public struct Scte35SpliceInsert {
+    public struct Scte35SpliceInsert: Swift.Sendable {
         /// When specified, this offset (in milliseconds) is added to the input Ad Avail PTS time. This only applies to embedded SCTE 104/35 messages and does not apply to OOB messages.
         public var adAvailOffset: Swift.Int?
         /// When set to ignore, Segment Descriptors with noRegionalBlackoutFlag set to 0 will no longer trigger blackouts or Ad Avail slates
@@ -18152,13 +18154,12 @@ extension MediaLiveClientTypes {
             self.webDeliveryAllowedFlag = webDeliveryAllowedFlag
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
 
     /// Scte35 Apos No Regional Blackout Behavior
-    public enum Scte35AposNoRegionalBlackoutBehavior: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Scte35AposNoRegionalBlackoutBehavior: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case follow
         case ignore
         case sdkUnknown(Swift.String)
@@ -18188,7 +18189,7 @@ extension MediaLiveClientTypes {
 extension MediaLiveClientTypes {
 
     /// Scte35 Apos Web Delivery Allowed Behavior
-    public enum Scte35AposWebDeliveryAllowedBehavior: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Scte35AposWebDeliveryAllowedBehavior: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case follow
         case ignore
         case sdkUnknown(Swift.String)
@@ -18216,8 +18217,9 @@ extension MediaLiveClientTypes {
 }
 
 extension MediaLiveClientTypes {
+
     /// Atypical configuration that applies segment breaks only on SCTE-35 time signal placement opportunities and breaks.
-    public struct Scte35TimeSignalApos {
+    public struct Scte35TimeSignalApos: Swift.Sendable {
         /// When specified, this offset (in milliseconds) is added to the input Ad Avail PTS time. This only applies to embedded SCTE 104/35 messages and does not apply to OOB messages.
         public var adAvailOffset: Swift.Int?
         /// When set to ignore, Segment Descriptors with noRegionalBlackoutFlag set to 0 will no longer trigger blackouts or Ad Avail slates
@@ -18236,12 +18238,12 @@ extension MediaLiveClientTypes {
             self.webDeliveryAllowedFlag = webDeliveryAllowedFlag
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
+
     /// Avail Settings
-    public struct AvailSettings {
+    public struct AvailSettings: Swift.Sendable {
         /// Esam
         public var esam: MediaLiveClientTypes.Esam?
         /// Typical configuration that applies breaks on splice inserts in addition to time signal placement opportunities, breaks, and advertisements.
@@ -18260,13 +18262,12 @@ extension MediaLiveClientTypes {
             self.scte35TimeSignalApos = scte35TimeSignalApos
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
 
     /// Scte35 Segmentation Scope
-    public enum Scte35SegmentationScope: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Scte35SegmentationScope: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case allOutputGroups
         case scte35EnabledOutputGroups
         case sdkUnknown(Swift.String)
@@ -18294,8 +18295,9 @@ extension MediaLiveClientTypes {
 }
 
 extension MediaLiveClientTypes {
+
     /// Avail Configuration
-    public struct AvailConfiguration {
+    public struct AvailConfiguration: Swift.Sendable {
         /// Controls how SCTE-35 messages create cues. Splice Insert mode treats all segmentation signals traditionally. With Time Signal APOS mode only Time Signal Placement Opportunity and Break messages create segment breaks. With ESAM mode, signals are forwarded to an ESAM server for possible update.
         public var availSettings: MediaLiveClientTypes.AvailSettings?
         /// Configures whether SCTE 35 passthrough triggers segment breaks in all output groups that use segmented outputs. Insertion of a SCTE 35 message typically results in a segment break, in addition to the regular cadence of breaks. The segment breaks appear in video outputs, audio outputs, and captions outputs (if any). ALL_OUTPUT_GROUPS: Default. Insert the segment break in in all output groups that have segmented outputs. This is the legacy behavior. SCTE35_ENABLED_OUTPUT_GROUPS: Insert the segment break only in output groups that have SCTE 35 passthrough enabled. This is the recommended value, because it reduces unnecessary segment breaks.
@@ -18310,11 +18312,10 @@ extension MediaLiveClientTypes {
             self.scte35SegmentationScope = scte35SegmentationScope
         }
     }
-
 }
 
 /// A request to delete resources
-public struct BatchDeleteInput {
+public struct BatchDeleteInput: Swift.Sendable {
     /// List of channel IDs
     public var channelIds: [Swift.String]?
     /// List of input IDs
@@ -18339,7 +18340,7 @@ public struct BatchDeleteInput {
 }
 
 /// Placeholder documentation for BatchDeleteResponse
-public struct BatchDeleteOutput {
+public struct BatchDeleteOutput: Swift.Sendable {
     /// List of failed operations
     public var failed: [MediaLiveClientTypes.BatchFailedResultModel]?
     /// List of successful operations
@@ -18356,8 +18357,9 @@ public struct BatchDeleteOutput {
 }
 
 extension MediaLiveClientTypes {
+
     /// A list of schedule actions to create (in a request) or that have been created (in a response).
-    public struct BatchScheduleActionCreateRequest {
+    public struct BatchScheduleActionCreateRequest: Swift.Sendable {
         /// A list of schedule actions to create.
         /// This member is required.
         public var scheduleActions: [MediaLiveClientTypes.ScheduleAction]?
@@ -18369,12 +18371,12 @@ extension MediaLiveClientTypes {
             self.scheduleActions = scheduleActions
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
+
     /// List of actions that have been created in the schedule.
-    public struct BatchScheduleActionCreateResult {
+    public struct BatchScheduleActionCreateResult: Swift.Sendable {
         /// List of actions that have been created in the schedule.
         /// This member is required.
         public var scheduleActions: [MediaLiveClientTypes.ScheduleAction]?
@@ -18386,12 +18388,12 @@ extension MediaLiveClientTypes {
             self.scheduleActions = scheduleActions
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
+
     /// A list of schedule actions to delete.
-    public struct BatchScheduleActionDeleteRequest {
+    public struct BatchScheduleActionDeleteRequest: Swift.Sendable {
         /// A list of schedule actions to delete.
         /// This member is required.
         public var actionNames: [Swift.String]?
@@ -18403,12 +18405,12 @@ extension MediaLiveClientTypes {
             self.actionNames = actionNames
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
+
     /// List of actions that have been deleted from the schedule.
-    public struct BatchScheduleActionDeleteResult {
+    public struct BatchScheduleActionDeleteResult: Swift.Sendable {
         /// List of actions that have been deleted from the schedule.
         /// This member is required.
         public var scheduleActions: [MediaLiveClientTypes.ScheduleAction]?
@@ -18420,11 +18422,10 @@ extension MediaLiveClientTypes {
             self.scheduleActions = scheduleActions
         }
     }
-
 }
 
 /// A request to start resources
-public struct BatchStartInput {
+public struct BatchStartInput: Swift.Sendable {
     /// List of channel IDs
     public var channelIds: [Swift.String]?
     /// List of multiplex IDs
@@ -18441,7 +18442,7 @@ public struct BatchStartInput {
 }
 
 /// Placeholder documentation for BatchStartResponse
-public struct BatchStartOutput {
+public struct BatchStartOutput: Swift.Sendable {
     /// List of failed operations
     public var failed: [MediaLiveClientTypes.BatchFailedResultModel]?
     /// List of successful operations
@@ -18458,7 +18459,7 @@ public struct BatchStartOutput {
 }
 
 /// A request to stop resources
-public struct BatchStopInput {
+public struct BatchStopInput: Swift.Sendable {
     /// List of channel IDs
     public var channelIds: [Swift.String]?
     /// List of multiplex IDs
@@ -18475,7 +18476,7 @@ public struct BatchStopInput {
 }
 
 /// Placeholder documentation for BatchStopResponse
-public struct BatchStopOutput {
+public struct BatchStopOutput: Swift.Sendable {
     /// List of failed operations
     public var failed: [MediaLiveClientTypes.BatchFailedResultModel]?
     /// List of successful operations
@@ -18492,7 +18493,7 @@ public struct BatchStopOutput {
 }
 
 /// List of actions to create and list of actions to delete.
-public struct BatchUpdateScheduleInput {
+public struct BatchUpdateScheduleInput: Swift.Sendable {
     /// Id of the channel whose schedule is being updated.
     /// This member is required.
     public var channelId: Swift.String?
@@ -18514,7 +18515,7 @@ public struct BatchUpdateScheduleInput {
 }
 
 /// Placeholder documentation for BatchUpdateScheduleResponse
-public struct BatchUpdateScheduleOutput {
+public struct BatchUpdateScheduleOutput: Swift.Sendable {
     /// Schedule actions created in the schedule.
     public var creates: MediaLiveClientTypes.BatchScheduleActionCreateResult?
     /// Schedule actions deleted from the schedule.
@@ -18533,7 +18534,7 @@ public struct BatchUpdateScheduleOutput {
 extension MediaLiveClientTypes {
 
     /// Blackout Slate Network End Blackout
-    public enum BlackoutSlateNetworkEndBlackout: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum BlackoutSlateNetworkEndBlackout: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case disabled
         case enabled
         case sdkUnknown(Swift.String)
@@ -18563,7 +18564,7 @@ extension MediaLiveClientTypes {
 extension MediaLiveClientTypes {
 
     /// Blackout Slate State
-    public enum BlackoutSlateState: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum BlackoutSlateState: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case disabled
         case enabled
         case sdkUnknown(Swift.String)
@@ -18591,8 +18592,9 @@ extension MediaLiveClientTypes {
 }
 
 extension MediaLiveClientTypes {
+
     /// Blackout Slate
-    public struct BlackoutSlate {
+    public struct BlackoutSlate: Swift.Sendable {
         /// Blackout slate image to be used. Leave empty for solid black. Only bmp and png images are supported.
         public var blackoutSlateImage: MediaLiveClientTypes.InputLocation?
         /// Setting to enabled causes the encoder to blackout the video, audio, and captions, and raise the "Network Blackout Image" slate when an SCTE104/35 Network End Segmentation Descriptor is encountered. The blackout will be lifted when the Network Start Segmentation Descriptor is encountered. The Network End and Network Start descriptors must contain a network ID that matches the value entered in "Network ID".
@@ -18619,11 +18621,10 @@ extension MediaLiveClientTypes {
             self.state = state
         }
     }
-
 }
 
 /// Placeholder documentation for CancelInputDeviceTransferRequest
-public struct CancelInputDeviceTransferInput {
+public struct CancelInputDeviceTransferInput: Swift.Sendable {
     /// The unique ID of the input device to cancel. For example, hd-123456789abcdef.
     /// This member is required.
     public var inputDeviceId: Swift.String?
@@ -18637,14 +18638,15 @@ public struct CancelInputDeviceTransferInput {
 }
 
 /// Placeholder documentation for CancelInputDeviceTransferResponse
-public struct CancelInputDeviceTransferOutput {
+public struct CancelInputDeviceTransferOutput: Swift.Sendable {
 
     public init() { }
 }
 
 extension MediaLiveClientTypes {
+
     /// Property of encoderSettings. Controls color conversion when you are using 3D LUT files to perform color conversion on video.
-    public struct ColorCorrectionSettings {
+    public struct ColorCorrectionSettings: Swift.Sendable {
         /// An array of colorCorrections that applies when you are using 3D LUT files to perform color conversion on video. Each colorCorrection contains one 3D LUT file (that defines the color mapping for converting an input color space to an output color space), and the input/output combination that this 3D LUT file applies to. MediaLive reads the color space in the input metadata, determines the color space that you have specified for the output, and finds and uses the LUT file that applies to this combination.
         /// This member is required.
         public var globalColorCorrections: [MediaLiveClientTypes.ColorCorrection]?
@@ -18656,13 +18658,12 @@ extension MediaLiveClientTypes {
             self.globalColorCorrections = globalColorCorrections
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
 
     /// Feature Activations Input Prepare Schedule Actions
-    public enum FeatureActivationsInputPrepareScheduleActions: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum FeatureActivationsInputPrepareScheduleActions: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case disabled
         case enabled
         case sdkUnknown(Swift.String)
@@ -18692,7 +18693,7 @@ extension MediaLiveClientTypes {
 extension MediaLiveClientTypes {
 
     /// Feature Activations Output Static Image Overlay Schedule Actions
-    public enum FeatureActivationsOutputStaticImageOverlayScheduleActions: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum FeatureActivationsOutputStaticImageOverlayScheduleActions: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case disabled
         case enabled
         case sdkUnknown(Swift.String)
@@ -18720,8 +18721,9 @@ extension MediaLiveClientTypes {
 }
 
 extension MediaLiveClientTypes {
+
     /// Feature Activations
-    public struct FeatureActivations {
+    public struct FeatureActivations: Swift.Sendable {
         /// Enables the Input Prepare feature. You can create Input Prepare actions in the schedule only if this feature is enabled. If you disable the feature on an existing schedule, make sure that you first delete all input prepare actions from the schedule.
         public var inputPrepareScheduleActions: MediaLiveClientTypes.FeatureActivationsInputPrepareScheduleActions?
         /// Enables the output static image overlay feature. Enabling this feature allows you to send channel schedule updates to display/clear/modify image overlays on an output-by-output bases.
@@ -18736,13 +18738,12 @@ extension MediaLiveClientTypes {
             self.outputStaticImageOverlayScheduleActions = outputStaticImageOverlayScheduleActions
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
 
     /// Global Configuration Input End Action
-    public enum GlobalConfigurationInputEndAction: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum GlobalConfigurationInputEndAction: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case `none`
         case switchAndLoopInputs
         case sdkUnknown(Swift.String)
@@ -18772,7 +18773,7 @@ extension MediaLiveClientTypes {
 extension MediaLiveClientTypes {
 
     /// Input Loss Image Type
-    public enum InputLossImageType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum InputLossImageType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case color
         case slate
         case sdkUnknown(Swift.String)
@@ -18800,8 +18801,9 @@ extension MediaLiveClientTypes {
 }
 
 extension MediaLiveClientTypes {
+
     /// Input Loss Behavior
-    public struct InputLossBehavior {
+    public struct InputLossBehavior: Swift.Sendable {
         /// Documentation update needed
         public var blackFrameMsec: Swift.Int?
         /// When input loss image type is "color" this field specifies the color to use. Value: 6 hex characters representing the values of RGB.
@@ -18828,13 +18830,12 @@ extension MediaLiveClientTypes {
             self.repeatFrameMsec = repeatFrameMsec
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
 
     /// Global Configuration Output Locking Mode
-    public enum GlobalConfigurationOutputLockingMode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum GlobalConfigurationOutputLockingMode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case epochLocking
         case pipelineLocking
         case sdkUnknown(Swift.String)
@@ -18862,8 +18863,9 @@ extension MediaLiveClientTypes {
 }
 
 extension MediaLiveClientTypes {
+
     /// Epoch Locking Settings
-    public struct EpochLockingSettings {
+    public struct EpochLockingSettings: Swift.Sendable {
         /// Optional. Enter a value here to use a custom epoch, instead of the standard epoch (which started at 1970-01-01T00:00:00 UTC). Specify the start time of the custom epoch, in YYYY-MM-DDTHH:MM:SS in UTC. The time must be 2000-01-01T00:00:00 or later. Always set the MM:SS portion to 00:00.
         public var customEpoch: Swift.String?
         /// Optional. Enter a time for the jam sync. The default is midnight UTC. When epoch locking is enabled, MediaLive performs a daily jam sync on every output encode to ensure timecodes don’t diverge from the wall clock. The jam sync applies only to encodes with frame rate of 29.97 or 59.94 FPS. To override, enter a time in HH:MM:SS in UTC. Always set the MM:SS portion to 00:00.
@@ -18878,21 +18880,21 @@ extension MediaLiveClientTypes {
             self.jamSyncTime = jamSyncTime
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
+
     /// Pipeline Locking Settings
-    public struct PipelineLockingSettings {
+    public struct PipelineLockingSettings: Swift.Sendable {
 
         public init() { }
     }
-
 }
 
 extension MediaLiveClientTypes {
+
     /// Output Locking Settings
-    public struct OutputLockingSettings {
+    public struct OutputLockingSettings: Swift.Sendable {
         /// Epoch Locking Settings
         public var epochLockingSettings: MediaLiveClientTypes.EpochLockingSettings?
         /// Pipeline Locking Settings
@@ -18907,13 +18909,12 @@ extension MediaLiveClientTypes {
             self.pipelineLockingSettings = pipelineLockingSettings
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
 
     /// Global Configuration Output Timing Source
-    public enum GlobalConfigurationOutputTimingSource: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum GlobalConfigurationOutputTimingSource: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case inputClock
         case systemClock
         case sdkUnknown(Swift.String)
@@ -18943,7 +18944,7 @@ extension MediaLiveClientTypes {
 extension MediaLiveClientTypes {
 
     /// Global Configuration Low Framerate Inputs
-    public enum GlobalConfigurationLowFramerateInputs: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum GlobalConfigurationLowFramerateInputs: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case disabled
         case enabled
         case sdkUnknown(Swift.String)
@@ -18971,8 +18972,9 @@ extension MediaLiveClientTypes {
 }
 
 extension MediaLiveClientTypes {
+
     /// Global Configuration
-    public struct GlobalConfiguration {
+    public struct GlobalConfiguration: Swift.Sendable {
         /// Value to set the initial audio gain for the Live Event.
         public var initialAudioGain: Swift.Int?
         /// Indicates the action to take when the current input completes (e.g. end-of-file). When switchAndLoopInputs is configured the encoder will restart at the beginning of the first input. When "none" is configured the encoder will transcode either black, a solid color, or a user specified slate images per the "Input Loss Behavior" configuration until the next input switch occurs (which is controlled through the Channel Schedule API).
@@ -19007,13 +19009,12 @@ extension MediaLiveClientTypes {
             self.supportLowFramerateInputs = supportLowFramerateInputs
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
 
     /// Motion Graphics Insertion
-    public enum MotionGraphicsInsertion: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum MotionGraphicsInsertion: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case disabled
         case enabled
         case sdkUnknown(Swift.String)
@@ -19041,17 +19042,18 @@ extension MediaLiveClientTypes {
 }
 
 extension MediaLiveClientTypes {
+
     /// Html Motion Graphics Settings
-    public struct HtmlMotionGraphicsSettings {
+    public struct HtmlMotionGraphicsSettings: Swift.Sendable {
 
         public init() { }
     }
-
 }
 
 extension MediaLiveClientTypes {
+
     /// Motion Graphics Settings
-    public struct MotionGraphicsSettings {
+    public struct MotionGraphicsSettings: Swift.Sendable {
         /// Html Motion Graphics Settings
         public var htmlMotionGraphicsSettings: MediaLiveClientTypes.HtmlMotionGraphicsSettings?
 
@@ -19062,12 +19064,12 @@ extension MediaLiveClientTypes {
             self.htmlMotionGraphicsSettings = htmlMotionGraphicsSettings
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
+
     /// Motion Graphics Configuration
-    public struct MotionGraphicsConfiguration {
+    public struct MotionGraphicsConfiguration: Swift.Sendable {
         /// Motion Graphics Insertion
         public var motionGraphicsInsertion: MediaLiveClientTypes.MotionGraphicsInsertion?
         /// Motion Graphics Settings
@@ -19083,13 +19085,12 @@ extension MediaLiveClientTypes {
             self.motionGraphicsSettings = motionGraphicsSettings
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
 
     /// State of Nielsen PCM to ID3 tagging
-    public enum NielsenPcmToId3TaggingState: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum NielsenPcmToId3TaggingState: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case disabled
         case enabled
         case sdkUnknown(Swift.String)
@@ -19117,8 +19118,9 @@ extension MediaLiveClientTypes {
 }
 
 extension MediaLiveClientTypes {
+
     /// Nielsen Configuration
-    public struct NielsenConfiguration {
+    public struct NielsenConfiguration: Swift.Sendable {
         /// Enter the Distributor ID assigned to your organization by Nielsen.
         public var distributorId: Swift.String?
         /// Enables Nielsen PCM to ID3 tagging
@@ -19133,13 +19135,12 @@ extension MediaLiveClientTypes {
             self.nielsenPcmToId3Tagging = nielsenPcmToId3Tagging
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
 
     /// Thumbnail State
-    public enum ThumbnailState: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ThumbnailState: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case auto
         case disabled
         case sdkUnknown(Swift.String)
@@ -19167,8 +19168,9 @@ extension MediaLiveClientTypes {
 }
 
 extension MediaLiveClientTypes {
+
     /// Thumbnail Configuration
-    public struct ThumbnailConfiguration {
+    public struct ThumbnailConfiguration: Swift.Sendable {
         /// Enables the thumbnail feature. The feature generates thumbnails of the incoming video in each pipeline in the channel. AUTO turns the feature on, DISABLE turns the feature off.
         /// This member is required.
         public var state: MediaLiveClientTypes.ThumbnailState?
@@ -19180,13 +19182,12 @@ extension MediaLiveClientTypes {
             self.state = state
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
 
     /// Timecode Config Source
-    public enum TimecodeConfigSource: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum TimecodeConfigSource: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case embedded
         case systemclock
         case zerobased
@@ -19217,8 +19218,9 @@ extension MediaLiveClientTypes {
 }
 
 extension MediaLiveClientTypes {
+
     /// Timecode Config
-    public struct TimecodeConfig {
+    public struct TimecodeConfig: Swift.Sendable {
         /// Identifies the source for the timecode that will be associated with the events outputs. -Embedded (embedded): Initialize the output timecode with timecode from the the source. If no embedded timecode is detected in the source, the system falls back to using "Start at 0" (zerobased). -System Clock (systemclock): Use the UTC time. -Start at 0 (zerobased): The time of the first frame of the event will be 00:00:00:00.
         /// This member is required.
         public var source: MediaLiveClientTypes.TimecodeConfigSource?
@@ -19234,12 +19236,12 @@ extension MediaLiveClientTypes {
             self.syncThreshold = syncThreshold
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
+
     /// Encoder Settings
-    public struct EncoderSettings {
+    public struct EncoderSettings: Swift.Sendable {
         /// Placeholder documentation for __listOfAudioDescription
         /// This member is required.
         public var audioDescriptions: [MediaLiveClientTypes.AudioDescription]?
@@ -19306,12 +19308,12 @@ extension MediaLiveClientTypes {
             self.videoDescriptions = videoDescriptions
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
+
     /// Placeholder documentation for Channel
-    public struct Channel {
+    public struct Channel: Swift.Sendable {
         /// Anywhere settings for this channel.
         public var anywhereSettings: MediaLiveClientTypes.DescribeAnywhereSettings?
         /// The unique arn of the channel.
@@ -19394,11 +19396,10 @@ extension MediaLiveClientTypes {
             self.vpc = vpc
         }
     }
-
 }
 
 /// A request to claim an AWS Elemental device that you have purchased from a third-party vendor.
-public struct ClaimDeviceInput {
+public struct ClaimDeviceInput: Swift.Sendable {
     /// The id of the device you want to claim.
     public var id: Swift.String?
 
@@ -19411,14 +19412,15 @@ public struct ClaimDeviceInput {
 }
 
 /// Placeholder documentation for ClaimDeviceResponse
-public struct ClaimDeviceOutput {
+public struct ClaimDeviceOutput: Swift.Sendable {
 
     public init() { }
 }
 
 extension MediaLiveClientTypes {
+
     /// Used in a CreateClusterRequest.
-    public struct ClusterNetworkSettingsCreateRequest {
+    public struct ClusterNetworkSettingsCreateRequest: Swift.Sendable {
         /// Specify one network interface as the default route for traffic to and from the Node. MediaLive Anywhere uses this default when the destination for the traffic isn't covered by the route table for any of the networks. Specify the value of the appropriate logicalInterfaceName parameter that you create in the interfaceMappings.
         public var defaultRoute: Swift.String?
         /// An array of interfaceMapping objects for this Cluster. You must create a mapping for node interfaces that you plan to use for encoding traffic. You typically don't create a mapping for the management interface. You define this mapping in the Cluster so that the mapping can be used by all the Nodes. Each mapping logically connects one interface on the nodes with one Network. Each mapping consists of a pair of parameters. The logicalInterfaceName parameter creates a logical name for the Node interface that handles a specific type of traffic. For example, my-Inputs-Interface. The networkID parameter refers to the ID of the network. When you create the Nodes in this Cluster, you will associate the logicalInterfaceName with the appropriate physical interface.
@@ -19433,12 +19435,12 @@ extension MediaLiveClientTypes {
             self.interfaceMappings = interfaceMappings
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
+
     /// Placeholder documentation for ClusterNetworkSettingsUpdateRequest
-    public struct ClusterNetworkSettingsUpdateRequest {
+    public struct ClusterNetworkSettingsUpdateRequest: Swift.Sendable {
         /// Include this parameter only if you want to change the default route for the Cluster. Specify one network interface as the default route for traffic to and from the node. MediaLive Anywhere uses this default when the destination for the traffic isn't covered by the route table for any of the networks. Specify the value of the appropriate logicalInterfaceName parameter that you create in the interfaceMappings.
         public var defaultRoute: Swift.String?
         /// An array of interfaceMapping objects for this Cluster. Include this parameter only if you want to change the interface mappings for the Cluster. Typically, you change the interface mappings only to fix an error you made when creating the mapping. In an update request, make sure that you enter the entire set of mappings again, not just the mappings that you want to add or change. You define this mapping so that the mapping can be used by all the Nodes. Each mapping logically connects one interface on the nodes with one Network. Each mapping consists of a pair of parameters. The logicalInterfaceName parameter creates a logical name for the Node interface that handles a specific type of traffic. For example, my-Inputs-Interface. The networkID parameter refers to the ID of the network. When you create the Nodes in this Cluster, you will associate the logicalInterfaceName with the appropriate physical interface.
@@ -19453,13 +19455,12 @@ extension MediaLiveClientTypes {
             self.interfaceMappings = interfaceMappings
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
 
     /// Specifies the media type of the thumbnail.
-    public enum ContentType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ContentType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case imageJpeg
         case sdkUnknown(Swift.String)
 
@@ -19484,8 +19485,9 @@ extension MediaLiveClientTypes {
 }
 
 extension MediaLiveClientTypes {
+
     /// Placeholder documentation for MaintenanceCreateSettings
-    public struct MaintenanceCreateSettings {
+    public struct MaintenanceCreateSettings: Swift.Sendable {
         /// Choose one day of the week for maintenance. The chosen day is used for all future maintenance windows.
         public var maintenanceDay: MediaLiveClientTypes.MaintenanceDay?
         /// Choose the hour that maintenance will start. The chosen time is used for all future maintenance windows.
@@ -19500,12 +19502,12 @@ extension MediaLiveClientTypes {
             self.maintenanceStartTime = maintenanceStartTime
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
+
     /// The properties for a private VPC Output When this property is specified, the output egress addresses will be created in a user specified VPC
-    public struct VpcOutputSettings {
+    public struct VpcOutputSettings: Swift.Sendable {
         /// List of public address allocation ids to associate with ENIs that will be created in Output VPC. Must specify one for SINGLE_PIPELINE, two for STANDARD channels
         public var publicAddressAllocationIds: [Swift.String]?
         /// A list of up to 5 EC2 VPC security group IDs to attach to the Output VPC network interfaces. If none are specified then the VPC default security group will be used
@@ -19525,11 +19527,10 @@ extension MediaLiveClientTypes {
             self.subnetIds = subnetIds
         }
     }
-
 }
 
 /// A request to create a channel
-public struct CreateChannelInput {
+public struct CreateChannelInput: Swift.Sendable {
     /// The Elemental Anywhere settings for this channel.
     public var anywhereSettings: MediaLiveClientTypes.AnywhereSettings?
     /// Specification of CDI inputs for this channel
@@ -19599,7 +19600,7 @@ public struct CreateChannelInput {
 }
 
 /// Placeholder documentation for CreateChannelResponse
-public struct CreateChannelOutput {
+public struct CreateChannelOutput: Swift.Sendable {
     /// Placeholder documentation for Channel
     public var channel: MediaLiveClientTypes.Channel?
 
@@ -19612,7 +19613,7 @@ public struct CreateChannelOutput {
 }
 
 /// A request to create a channel placement group.
-public struct CreateChannelPlacementGroupInput {
+public struct CreateChannelPlacementGroupInput: Swift.Sendable {
     /// The ID of the cluster.
     /// This member is required.
     public var clusterId: Swift.String?
@@ -19642,7 +19643,7 @@ public struct CreateChannelPlacementGroupInput {
 }
 
 /// Placeholder documentation for CreateChannelPlacementGroupResponse
-public struct CreateChannelPlacementGroupOutput {
+public struct CreateChannelPlacementGroupOutput: Swift.Sendable {
     /// The ARN of this ChannelPlacementGroup. It is automatically assigned when the ChannelPlacementGroup is created.
     public var arn: Swift.String?
     /// Used in ListChannelPlacementGroupsResult
@@ -19679,7 +19680,7 @@ public struct CreateChannelPlacementGroupOutput {
 }
 
 /// Placeholder documentation for CreateCloudWatchAlarmTemplateRequest
-public struct CreateCloudWatchAlarmTemplateInput {
+public struct CreateCloudWatchAlarmTemplateInput: Swift.Sendable {
     /// The comparison operator used to compare the specified statistic and the threshold.
     /// This member is required.
     public var comparisonOperator: MediaLiveClientTypes.CloudWatchAlarmTemplateComparisonOperator?
@@ -19750,7 +19751,7 @@ public struct CreateCloudWatchAlarmTemplateInput {
 }
 
 /// Placeholder documentation for CreateCloudWatchAlarmTemplateResponse
-public struct CreateCloudWatchAlarmTemplateOutput {
+public struct CreateCloudWatchAlarmTemplateOutput: Swift.Sendable {
     /// A cloudwatch alarm template's ARN (Amazon Resource Name)
     public var arn: Swift.String?
     /// The comparison operator used to compare the specified statistic and the threshold.
@@ -19827,7 +19828,7 @@ public struct CreateCloudWatchAlarmTemplateOutput {
 }
 
 /// Placeholder documentation for CreateCloudWatchAlarmTemplateGroupRequest
-public struct CreateCloudWatchAlarmTemplateGroupInput {
+public struct CreateCloudWatchAlarmTemplateGroupInput: Swift.Sendable {
     /// A resource's optional description.
     public var description: Swift.String?
     /// A resource's name. Names must be unique within the scope of a resource type in a specific region.
@@ -19849,7 +19850,7 @@ public struct CreateCloudWatchAlarmTemplateGroupInput {
 }
 
 /// Placeholder documentation for CreateCloudWatchAlarmTemplateGroupResponse
-public struct CreateCloudWatchAlarmTemplateGroupOutput {
+public struct CreateCloudWatchAlarmTemplateGroupOutput: Swift.Sendable {
     /// A cloudwatch alarm template group's ARN (Amazon Resource Name)
     public var arn: Swift.String?
     /// Placeholder documentation for __timestampIso8601
@@ -19886,7 +19887,7 @@ public struct CreateCloudWatchAlarmTemplateGroupOutput {
 }
 
 /// Create as many Clusters as you want, but create at least one. Each Cluster groups together Nodes that you want to treat as a collection. Within the Cluster, you will set up some Nodes as active Nodes, and some as backup Nodes, for Node failover purposes. Each Node can belong to only one Cluster.
-public struct CreateClusterInput {
+public struct CreateClusterInput: Swift.Sendable {
     /// Specify a type. All the Nodes that you later add to this Cluster must be this type of hardware. One Cluster instance can't contain different hardware types. You won't be able to change this parameter after you create the Cluster.
     public var clusterType: MediaLiveClientTypes.ClusterType?
     /// The ARN of the IAM role for the Node in this Cluster. The role must include all the operations that you expect these Node to perform. If necessary, create a role in IAM, then attach it here.
@@ -19919,7 +19920,7 @@ public struct CreateClusterInput {
 }
 
 /// Placeholder documentation for CreateClusterResponse
-public struct CreateClusterOutput {
+public struct CreateClusterOutput: Swift.Sendable {
     /// The ARN of this Cluster. It is automatically assigned when the Cluster is created.
     public var arn: Swift.String?
     /// Placeholder documentation for __listOf__string
@@ -19960,7 +19961,7 @@ public struct CreateClusterOutput {
 }
 
 /// Placeholder documentation for CreateEventBridgeRuleTemplateRequest
-public struct CreateEventBridgeRuleTemplateInput {
+public struct CreateEventBridgeRuleTemplateInput: Swift.Sendable {
     /// A resource's optional description.
     public var description: Swift.String?
     /// Placeholder documentation for __listOfEventBridgeRuleTemplateTarget
@@ -19996,7 +19997,7 @@ public struct CreateEventBridgeRuleTemplateInput {
 }
 
 /// Placeholder documentation for CreateEventBridgeRuleTemplateResponse
-public struct CreateEventBridgeRuleTemplateOutput {
+public struct CreateEventBridgeRuleTemplateOutput: Swift.Sendable {
     /// An eventbridge rule template's ARN (Amazon Resource Name)
     public var arn: Swift.String?
     /// Placeholder documentation for __timestampIso8601
@@ -20045,7 +20046,7 @@ public struct CreateEventBridgeRuleTemplateOutput {
 }
 
 /// Placeholder documentation for CreateEventBridgeRuleTemplateGroupRequest
-public struct CreateEventBridgeRuleTemplateGroupInput {
+public struct CreateEventBridgeRuleTemplateGroupInput: Swift.Sendable {
     /// A resource's optional description.
     public var description: Swift.String?
     /// A resource's name. Names must be unique within the scope of a resource type in a specific region.
@@ -20067,7 +20068,7 @@ public struct CreateEventBridgeRuleTemplateGroupInput {
 }
 
 /// Placeholder documentation for CreateEventBridgeRuleTemplateGroupResponse
-public struct CreateEventBridgeRuleTemplateGroupOutput {
+public struct CreateEventBridgeRuleTemplateGroupOutput: Swift.Sendable {
     /// An eventbridge rule template group's ARN (Amazon Resource Name)
     public var arn: Swift.String?
     /// Placeholder documentation for __timestampIso8601
@@ -20104,8 +20105,9 @@ public struct CreateEventBridgeRuleTemplateGroupOutput {
 }
 
 extension MediaLiveClientTypes {
+
     /// Settings for a Multicast input. Contains a list of multicast Urls and optional source ip addresses.
-    public struct MulticastSettingsCreateRequest {
+    public struct MulticastSettingsCreateRequest: Swift.Sendable {
         /// Placeholder documentation for __listOfMulticastSourceCreateRequest
         public var sources: [MediaLiveClientTypes.MulticastSourceCreateRequest]?
 
@@ -20116,12 +20118,12 @@ extension MediaLiveClientTypes {
             self.sources = sources
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
+
     /// Configures the sources for this SRT input. For a single-pipeline input, include one srtCallerSource in the array. For a standard-pipeline input, include two srtCallerSource.
-    public struct SrtSettingsRequest {
+    public struct SrtSettingsRequest: Swift.Sendable {
         /// Placeholder documentation for __listOfSrtCallerSourceRequest
         public var srtCallerSources: [MediaLiveClientTypes.SrtCallerSourceRequest]?
 
@@ -20132,12 +20134,12 @@ extension MediaLiveClientTypes {
             self.srtCallerSources = srtCallerSources
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
+
     /// Settings for a private VPC Input. When this property is specified, the input destination addresses will be created in a VPC rather than with public Internet addresses. This property requires setting the roleArn property on Input creation. Not compatible with the inputSecurityGroups property.
-    public struct InputVpcRequest {
+    public struct InputVpcRequest: Swift.Sendable {
         /// A list of up to 5 EC2 VPC security group IDs to attach to the Input VPC network interfaces. Requires subnetIds. If none are specified then the VPC default security group will be used.
         public var securityGroupIds: [Swift.String]?
         /// A list of 2 VPC subnet IDs from the same VPC. Subnet IDs must be mapped to two unique availability zones (AZ).
@@ -20153,11 +20155,10 @@ extension MediaLiveClientTypes {
             self.subnetIds = subnetIds
         }
     }
-
 }
 
 /// The name of the input
-public struct CreateInputInput {
+public struct CreateInputInput: Swift.Sendable {
     /// Destination settings for PUSH type inputs.
     public var destinations: [MediaLiveClientTypes.InputDestinationRequest]?
     /// Settings for the devices.
@@ -20222,7 +20223,7 @@ public struct CreateInputInput {
 }
 
 /// Placeholder documentation for CreateInputResponse
-public struct CreateInputOutput {
+public struct CreateInputOutput: Swift.Sendable {
     /// Placeholder documentation for Input
     public var input: MediaLiveClientTypes.Input?
 
@@ -20235,7 +20236,7 @@ public struct CreateInputOutput {
 }
 
 /// The IPv4 CIDRs to whitelist for this Input Security Group
-public struct CreateInputSecurityGroupInput {
+public struct CreateInputSecurityGroupInput: Swift.Sendable {
     /// A collection of key-value pairs.
     public var tags: [Swift.String: Swift.String]?
     /// List of IPv4 CIDR addresses to whitelist
@@ -20252,7 +20253,7 @@ public struct CreateInputSecurityGroupInput {
 }
 
 /// Placeholder documentation for CreateInputSecurityGroupResponse
-public struct CreateInputSecurityGroupOutput {
+public struct CreateInputSecurityGroupOutput: Swift.Sendable {
     /// An Input Security Group
     public var securityGroup: MediaLiveClientTypes.InputSecurityGroup?
 
@@ -20265,8 +20266,9 @@ public struct CreateInputSecurityGroupOutput {
 }
 
 extension MediaLiveClientTypes {
+
     /// Contains configuration for a Multiplex event
-    public struct MultiplexSettings {
+    public struct MultiplexSettings: Swift.Sendable {
         /// Maximum video buffer delay in milliseconds.
         public var maximumVideoBufferDelayMilliseconds: Swift.Int?
         /// Transport stream bit rate.
@@ -20291,11 +20293,10 @@ extension MediaLiveClientTypes {
             self.transportStreamReservedBitrate = transportStreamReservedBitrate
         }
     }
-
 }
 
 /// A request to create a multiplex.
-public struct CreateMultiplexInput {
+public struct CreateMultiplexInput: Swift.Sendable {
     /// A list of availability zones for the multiplex. You must specify exactly two.
     /// This member is required.
     public var availabilityZones: [Swift.String]?
@@ -20328,8 +20329,9 @@ public struct CreateMultiplexInput {
 }
 
 extension MediaLiveClientTypes {
+
     /// The multiplex object.
-    public struct Multiplex {
+    public struct Multiplex: Swift.Sendable {
         /// The unique arn of the multiplex.
         public var arn: Swift.String?
         /// A list of availability zones for the multiplex.
@@ -20376,11 +20378,10 @@ extension MediaLiveClientTypes {
             self.tags = tags
         }
     }
-
 }
 
 /// Placeholder documentation for CreateMultiplexResponse
-public struct CreateMultiplexOutput {
+public struct CreateMultiplexOutput: Swift.Sendable {
     /// The newly created multiplex.
     public var multiplex: MediaLiveClientTypes.Multiplex?
 
@@ -20395,7 +20396,7 @@ public struct CreateMultiplexOutput {
 extension MediaLiveClientTypes {
 
     /// Indicates which pipeline is preferred by the multiplex for program ingest. If set to "PIPELINE_0" or "PIPELINE_1" and an unhealthy ingest causes the multiplex to switch to the non-preferred pipeline, it will switch back once that ingest is healthy again. If set to "CURRENTLY_ACTIVE", it will not switch back to the other pipeline based on it recovering to a healthy state, it will only switch if the active pipeline becomes unhealthy.
-    public enum PreferredChannelPipeline: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum PreferredChannelPipeline: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case currentlyActive
         case pipeline0
         case pipeline1
@@ -20426,8 +20427,9 @@ extension MediaLiveClientTypes {
 }
 
 extension MediaLiveClientTypes {
+
     /// Transport stream service descriptor configuration for the Multiplex program.
-    public struct MultiplexProgramServiceDescriptor {
+    public struct MultiplexProgramServiceDescriptor: Swift.Sendable {
         /// Name of the provider.
         /// This member is required.
         public var providerName: Swift.String?
@@ -20444,12 +20446,12 @@ extension MediaLiveClientTypes {
             self.serviceName = serviceName
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
+
     /// Statmux rate control settings
-    public struct MultiplexStatmuxVideoSettings {
+    public struct MultiplexStatmuxVideoSettings: Swift.Sendable {
         /// Maximum statmux bitrate.
         public var maximumBitrate: Swift.Int?
         /// Minimum statmux bitrate.
@@ -20468,12 +20470,12 @@ extension MediaLiveClientTypes {
             self.priority = priority
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
+
     /// The video configuration for each program in a multiplex.
-    public struct MultiplexVideoSettings {
+    public struct MultiplexVideoSettings: Swift.Sendable {
         /// The constant bitrate configuration for the video encode. When this field is defined, StatmuxSettings must be undefined.
         public var constantBitrate: Swift.Int?
         /// Statmux rate control settings. When this field is defined, ConstantBitrate must be undefined.
@@ -20488,12 +20490,12 @@ extension MediaLiveClientTypes {
             self.statmuxSettings = statmuxSettings
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
+
     /// Multiplex Program settings configuration.
-    public struct MultiplexProgramSettings {
+    public struct MultiplexProgramSettings: Swift.Sendable {
         /// Indicates which pipeline is preferred by the multiplex for program ingest.
         public var preferredChannelPipeline: MediaLiveClientTypes.PreferredChannelPipeline?
         /// Unique program number.
@@ -20517,11 +20519,10 @@ extension MediaLiveClientTypes {
             self.videoSettings = videoSettings
         }
     }
-
 }
 
 /// A request to create a program in a multiplex.
-public struct CreateMultiplexProgramInput {
+public struct CreateMultiplexProgramInput: Swift.Sendable {
     /// ID of the multiplex where the program is to be created.
     /// This member is required.
     public var multiplexId: Swift.String?
@@ -20550,8 +20551,9 @@ public struct CreateMultiplexProgramInput {
 }
 
 extension MediaLiveClientTypes {
+
     /// Packet identifiers map for a given Multiplex program.
-    public struct MultiplexProgramPacketIdentifiersMap {
+    public struct MultiplexProgramPacketIdentifiersMap: Swift.Sendable {
         /// Placeholder documentation for __integer
         public var aribCaptionsPid: Swift.Int?
         /// Placeholder documentation for __listOf__integer
@@ -20626,12 +20628,12 @@ extension MediaLiveClientTypes {
             self.videoPid = videoPid
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
+
     /// The multiplex program object.
-    public struct MultiplexProgram {
+    public struct MultiplexProgram: Swift.Sendable {
         /// The MediaLive channel associated with the program.
         public var channelId: Swift.String?
         /// The settings for this multiplex program.
@@ -20658,11 +20660,10 @@ extension MediaLiveClientTypes {
             self.programName = programName
         }
     }
-
 }
 
 /// Placeholder documentation for CreateMultiplexProgramResponse
-public struct CreateMultiplexProgramOutput {
+public struct CreateMultiplexProgramOutput: Swift.Sendable {
     /// The newly created multiplex program.
     public var multiplexProgram: MediaLiveClientTypes.MultiplexProgram?
 
@@ -20675,7 +20676,7 @@ public struct CreateMultiplexProgramOutput {
 }
 
 /// A request to create a Network.
-public struct CreateNetworkInput {
+public struct CreateNetworkInput: Swift.Sendable {
     /// An array of IpPoolCreateRequests that identify a collection of IP addresses in your network that you want to reserve for use in MediaLive Anywhere. MediaLiveAnywhere uses these IP addresses for Push inputs (in both Bridge and NATnetworks) and for output destinations (only in Bridge networks). EachIpPoolUpdateRequest specifies one CIDR block.
     public var ipPools: [MediaLiveClientTypes.IpPoolCreateRequest]?
     /// Specify a name that is unique in the AWS account. We recommend that you assign a name that hints at the type of traffic on the network. Names are case-sensitive.
@@ -20704,7 +20705,7 @@ public struct CreateNetworkInput {
 }
 
 /// Placeholder documentation for CreateNetworkResponse
-public struct CreateNetworkOutput {
+public struct CreateNetworkOutput: Swift.Sendable {
     /// The ARN of this Network. It is automatically assigned when the Network is created.
     public var arn: Swift.String?
     /// Placeholder documentation for __listOf__string
@@ -20741,7 +20742,7 @@ public struct CreateNetworkOutput {
 }
 
 /// A request to create a node
-public struct CreateNodeInput {
+public struct CreateNodeInput: Swift.Sendable {
     /// The ID of the cluster.
     /// This member is required.
     public var clusterId: Swift.String?
@@ -20775,7 +20776,7 @@ public struct CreateNodeInput {
 }
 
 /// Placeholder documentation for CreateNodeResponse
-public struct CreateNodeOutput {
+public struct CreateNodeOutput: Swift.Sendable {
     /// The ARN of the Node. It is automatically assigned when the Node is created.
     public var arn: Swift.String?
     /// An array of IDs. Each ID is one ChannelPlacementGroup that is associated with this Node. Empty if the Node is not yet associated with any groups.
@@ -20824,7 +20825,7 @@ public struct CreateNodeOutput {
 }
 
 /// A request to create a new node registration script.
-public struct CreateNodeRegistrationScriptInput {
+public struct CreateNodeRegistrationScriptInput: Swift.Sendable {
     /// The ID of the cluster
     /// This member is required.
     public var clusterId: Swift.String?
@@ -20858,7 +20859,7 @@ public struct CreateNodeRegistrationScriptInput {
 }
 
 /// Placeholder documentation for CreateNodeRegistrationScriptResponse
-public struct CreateNodeRegistrationScriptOutput {
+public struct CreateNodeRegistrationScriptOutput: Swift.Sendable {
     /// A script that can be run on a Bring Your Own Device Elemental Anywhere system to create a node in a cluster.
     public var nodeRegistrationScript: Swift.String?
 
@@ -20871,7 +20872,7 @@ public struct CreateNodeRegistrationScriptOutput {
 }
 
 /// A request to create a partner input
-public struct CreatePartnerInputInput {
+public struct CreatePartnerInputInput: Swift.Sendable {
     /// Unique ID of the input.
     /// This member is required.
     public var inputId: Swift.String?
@@ -20893,7 +20894,7 @@ public struct CreatePartnerInputInput {
 }
 
 /// Placeholder documentation for CreatePartnerInputResponse
-public struct CreatePartnerInputOutput {
+public struct CreatePartnerInputOutput: Swift.Sendable {
     /// Placeholder documentation for Input
     public var input: MediaLiveClientTypes.Input?
 
@@ -20906,7 +20907,7 @@ public struct CreatePartnerInputOutput {
 }
 
 /// Placeholder documentation for CreateSignalMapRequest
-public struct CreateSignalMapInput {
+public struct CreateSignalMapInput: Swift.Sendable {
     /// Placeholder documentation for __listOf__stringPatternS
     public var cloudWatchAlarmTemplateGroupIdentifiers: [Swift.String]?
     /// A resource's optional description.
@@ -20941,8 +20942,9 @@ public struct CreateSignalMapInput {
 }
 
 extension MediaLiveClientTypes {
+
     /// An AWS resource used in media workflows.
-    public struct MediaResource {
+    public struct MediaResource: Swift.Sendable {
         /// Placeholder documentation for __listOfMediaResourceNeighbor
         public var destinations: [MediaLiveClientTypes.MediaResourceNeighbor]?
         /// The logical name of an AWS media resource.
@@ -20961,12 +20963,12 @@ extension MediaLiveClientTypes {
             self.sources = sources
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
+
     /// Represents the latest successful monitor deployment of a signal map.
-    public struct SuccessfulMonitorDeployment {
+    public struct SuccessfulMonitorDeployment: Swift.Sendable {
         /// URI associated with a signal map's monitor deployment.
         /// This member is required.
         public var detailsUri: Swift.String?
@@ -20983,12 +20985,12 @@ extension MediaLiveClientTypes {
             self.status = status
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
+
     /// Represents the latest monitor deployment of a signal map.
-    public struct MonitorDeployment {
+    public struct MonitorDeployment: Swift.Sendable {
         /// URI associated with a signal map's monitor deployment.
         public var detailsUri: Swift.String?
         /// Error message associated with a failed monitor deployment of a signal map.
@@ -21008,11 +21010,10 @@ extension MediaLiveClientTypes {
             self.status = status
         }
     }
-
 }
 
 /// Placeholder documentation for CreateSignalMapResponse
-public struct CreateSignalMapOutput {
+public struct CreateSignalMapOutput: Swift.Sendable {
     /// A signal map's ARN (Amazon Resource Name)
     public var arn: Swift.String?
     /// Placeholder documentation for __listOf__stringMin7Max11PatternAws097
@@ -21093,7 +21094,7 @@ public struct CreateSignalMapOutput {
 }
 
 /// Placeholder documentation for CreateTagsRequest
-public struct CreateTagsInput {
+public struct CreateTagsInput: Swift.Sendable {
     /// Placeholder documentation for __string
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -21111,7 +21112,7 @@ public struct CreateTagsInput {
 }
 
 /// Placeholder documentation for DeleteChannelRequest
-public struct DeleteChannelInput {
+public struct DeleteChannelInput: Swift.Sendable {
     /// Unique ID of the channel.
     /// This member is required.
     public var channelId: Swift.String?
@@ -21125,7 +21126,7 @@ public struct DeleteChannelInput {
 }
 
 /// Placeholder documentation for DeleteChannelResponse
-public struct DeleteChannelOutput {
+public struct DeleteChannelOutput: Swift.Sendable {
     /// Anywhere settings for this channel.
     public var anywhereSettings: MediaLiveClientTypes.DescribeAnywhereSettings?
     /// The unique arn of the channel.
@@ -21210,7 +21211,7 @@ public struct DeleteChannelOutput {
 }
 
 /// Placeholder documentation for DeleteChannelPlacementGroupRequest
-public struct DeleteChannelPlacementGroupInput {
+public struct DeleteChannelPlacementGroupInput: Swift.Sendable {
     /// The ID of the channel placement group.
     /// This member is required.
     public var channelPlacementGroupId: Swift.String?
@@ -21229,7 +21230,7 @@ public struct DeleteChannelPlacementGroupInput {
 }
 
 /// Placeholder documentation for DeleteChannelPlacementGroupResponse
-public struct DeleteChannelPlacementGroupOutput {
+public struct DeleteChannelPlacementGroupOutput: Swift.Sendable {
     /// The ARN of this ChannelPlacementGroup. It is automatically assigned when the ChannelPlacementGroup is created.
     public var arn: Swift.String?
     /// Used in ListChannelPlacementGroupsResult
@@ -21266,7 +21267,7 @@ public struct DeleteChannelPlacementGroupOutput {
 }
 
 /// Placeholder documentation for DeleteCloudWatchAlarmTemplateRequest
-public struct DeleteCloudWatchAlarmTemplateInput {
+public struct DeleteCloudWatchAlarmTemplateInput: Swift.Sendable {
     /// A cloudwatch alarm template's identifier. Can be either be its id or current name.
     /// This member is required.
     public var identifier: Swift.String?
@@ -21280,7 +21281,7 @@ public struct DeleteCloudWatchAlarmTemplateInput {
 }
 
 /// Placeholder documentation for DeleteCloudWatchAlarmTemplateGroupRequest
-public struct DeleteCloudWatchAlarmTemplateGroupInput {
+public struct DeleteCloudWatchAlarmTemplateGroupInput: Swift.Sendable {
     /// A cloudwatch alarm template group's identifier. Can be either be its id or current name.
     /// This member is required.
     public var identifier: Swift.String?
@@ -21294,7 +21295,7 @@ public struct DeleteCloudWatchAlarmTemplateGroupInput {
 }
 
 /// Placeholder documentation for DeleteClusterRequest
-public struct DeleteClusterInput {
+public struct DeleteClusterInput: Swift.Sendable {
     /// The ID of the cluster.
     /// This member is required.
     public var clusterId: Swift.String?
@@ -21308,7 +21309,7 @@ public struct DeleteClusterInput {
 }
 
 /// Placeholder documentation for DeleteClusterResponse
-public struct DeleteClusterOutput {
+public struct DeleteClusterOutput: Swift.Sendable {
     /// The ARN of this Cluster. It is automatically assigned when the Cluster is created.
     public var arn: Swift.String?
     /// Placeholder documentation for __listOf__string
@@ -21349,7 +21350,7 @@ public struct DeleteClusterOutput {
 }
 
 /// Placeholder documentation for DeleteEventBridgeRuleTemplateRequest
-public struct DeleteEventBridgeRuleTemplateInput {
+public struct DeleteEventBridgeRuleTemplateInput: Swift.Sendable {
     /// An eventbridge rule template's identifier. Can be either be its id or current name.
     /// This member is required.
     public var identifier: Swift.String?
@@ -21363,7 +21364,7 @@ public struct DeleteEventBridgeRuleTemplateInput {
 }
 
 /// Placeholder documentation for DeleteEventBridgeRuleTemplateGroupRequest
-public struct DeleteEventBridgeRuleTemplateGroupInput {
+public struct DeleteEventBridgeRuleTemplateGroupInput: Swift.Sendable {
     /// An eventbridge rule template group's identifier. Can be either be its id or current name.
     /// This member is required.
     public var identifier: Swift.String?
@@ -21377,7 +21378,7 @@ public struct DeleteEventBridgeRuleTemplateGroupInput {
 }
 
 /// Placeholder documentation for DeleteInputRequest
-public struct DeleteInputInput {
+public struct DeleteInputInput: Swift.Sendable {
     /// Unique ID of the input
     /// This member is required.
     public var inputId: Swift.String?
@@ -21391,13 +21392,13 @@ public struct DeleteInputInput {
 }
 
 /// Placeholder documentation for DeleteInputResponse
-public struct DeleteInputOutput {
+public struct DeleteInputOutput: Swift.Sendable {
 
     public init() { }
 }
 
 /// Placeholder documentation for DeleteInputSecurityGroupRequest
-public struct DeleteInputSecurityGroupInput {
+public struct DeleteInputSecurityGroupInput: Swift.Sendable {
     /// The Input Security Group to delete
     /// This member is required.
     public var inputSecurityGroupId: Swift.String?
@@ -21411,13 +21412,13 @@ public struct DeleteInputSecurityGroupInput {
 }
 
 /// Placeholder documentation for DeleteInputSecurityGroupResponse
-public struct DeleteInputSecurityGroupOutput {
+public struct DeleteInputSecurityGroupOutput: Swift.Sendable {
 
     public init() { }
 }
 
 /// Placeholder documentation for DeleteMultiplexRequest
-public struct DeleteMultiplexInput {
+public struct DeleteMultiplexInput: Swift.Sendable {
     /// The ID of the multiplex.
     /// This member is required.
     public var multiplexId: Swift.String?
@@ -21431,7 +21432,7 @@ public struct DeleteMultiplexInput {
 }
 
 /// Placeholder documentation for DeleteMultiplexResponse
-public struct DeleteMultiplexOutput {
+public struct DeleteMultiplexOutput: Swift.Sendable {
     /// The unique arn of the multiplex.
     public var arn: Swift.String?
     /// A list of availability zones for the multiplex.
@@ -21480,7 +21481,7 @@ public struct DeleteMultiplexOutput {
 }
 
 /// Placeholder documentation for DeleteMultiplexProgramRequest
-public struct DeleteMultiplexProgramInput {
+public struct DeleteMultiplexProgramInput: Swift.Sendable {
     /// The ID of the multiplex that the program belongs to.
     /// This member is required.
     public var multiplexId: Swift.String?
@@ -21499,7 +21500,7 @@ public struct DeleteMultiplexProgramInput {
 }
 
 /// Placeholder documentation for DeleteMultiplexProgramResponse
-public struct DeleteMultiplexProgramOutput {
+public struct DeleteMultiplexProgramOutput: Swift.Sendable {
     /// The MediaLive channel associated with the program.
     public var channelId: Swift.String?
     /// The settings for this multiplex program.
@@ -21528,7 +21529,7 @@ public struct DeleteMultiplexProgramOutput {
 }
 
 /// Placeholder documentation for DeleteNetworkRequest
-public struct DeleteNetworkInput {
+public struct DeleteNetworkInput: Swift.Sendable {
     /// The ID of the network.
     /// This member is required.
     public var networkId: Swift.String?
@@ -21542,7 +21543,7 @@ public struct DeleteNetworkInput {
 }
 
 /// Placeholder documentation for DeleteNetworkResponse
-public struct DeleteNetworkOutput {
+public struct DeleteNetworkOutput: Swift.Sendable {
     /// The ARN of this Network. It is automatically assigned when the Network is created.
     public var arn: Swift.String?
     /// Placeholder documentation for __listOf__string
@@ -21579,7 +21580,7 @@ public struct DeleteNetworkOutput {
 }
 
 /// Placeholder documentation for DeleteNodeRequest
-public struct DeleteNodeInput {
+public struct DeleteNodeInput: Swift.Sendable {
     /// The ID of the cluster
     /// This member is required.
     public var clusterId: Swift.String?
@@ -21598,7 +21599,7 @@ public struct DeleteNodeInput {
 }
 
 /// Placeholder documentation for DeleteNodeResponse
-public struct DeleteNodeOutput {
+public struct DeleteNodeOutput: Swift.Sendable {
     /// The ARN of the Node. It is automatically assigned when the Node is created.
     public var arn: Swift.String?
     /// An array of IDs. Each ID is one ChannelPlacementGroup that is associated with this Node. Empty if the Node is not yet associated with any groups.
@@ -21647,7 +21648,7 @@ public struct DeleteNodeOutput {
 }
 
 /// Placeholder documentation for DeleteReservationRequest
-public struct DeleteReservationInput {
+public struct DeleteReservationInput: Swift.Sendable {
     /// Unique reservation ID, e.g. '1234567'
     /// This member is required.
     public var reservationId: Swift.String?
@@ -21661,7 +21662,7 @@ public struct DeleteReservationInput {
 }
 
 /// Placeholder documentation for DeleteReservationResponse
-public struct DeleteReservationOutput {
+public struct DeleteReservationOutput: Swift.Sendable {
     /// Unique reservation ARN, e.g. 'arn:aws:medialive:us-west-2:123456789012:reservation:1234567'
     public var arn: Swift.String?
     /// Number of reserved resources
@@ -21746,7 +21747,7 @@ public struct DeleteReservationOutput {
 }
 
 /// Placeholder documentation for DeleteScheduleRequest
-public struct DeleteScheduleInput {
+public struct DeleteScheduleInput: Swift.Sendable {
     /// Id of the channel whose schedule is being deleted.
     /// This member is required.
     public var channelId: Swift.String?
@@ -21760,13 +21761,13 @@ public struct DeleteScheduleInput {
 }
 
 /// Placeholder documentation for DeleteScheduleResponse
-public struct DeleteScheduleOutput {
+public struct DeleteScheduleOutput: Swift.Sendable {
 
     public init() { }
 }
 
 /// Placeholder documentation for DeleteSignalMapRequest
-public struct DeleteSignalMapInput {
+public struct DeleteSignalMapInput: Swift.Sendable {
     /// A signal map's identifier. Can be either be its id or current name.
     /// This member is required.
     public var identifier: Swift.String?
@@ -21780,7 +21781,7 @@ public struct DeleteSignalMapInput {
 }
 
 /// Placeholder documentation for DeleteTagsRequest
-public struct DeleteTagsInput {
+public struct DeleteTagsInput: Swift.Sendable {
     /// Placeholder documentation for __string
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -21799,13 +21800,13 @@ public struct DeleteTagsInput {
 }
 
 /// Placeholder documentation for DescribeAccountConfigurationRequest
-public struct DescribeAccountConfigurationInput {
+public struct DescribeAccountConfigurationInput: Swift.Sendable {
 
     public init() { }
 }
 
 /// Placeholder documentation for DescribeAccountConfigurationResponse
-public struct DescribeAccountConfigurationOutput {
+public struct DescribeAccountConfigurationOutput: Swift.Sendable {
     /// Placeholder documentation for AccountConfiguration
     public var accountConfiguration: MediaLiveClientTypes.AccountConfiguration?
 
@@ -21818,7 +21819,7 @@ public struct DescribeAccountConfigurationOutput {
 }
 
 /// Placeholder documentation for DescribeChannelRequest
-public struct DescribeChannelInput {
+public struct DescribeChannelInput: Swift.Sendable {
     /// channel ID
     /// This member is required.
     public var channelId: Swift.String?
@@ -21832,7 +21833,7 @@ public struct DescribeChannelInput {
 }
 
 /// Placeholder documentation for DescribeChannelResponse
-public struct DescribeChannelOutput {
+public struct DescribeChannelOutput: Swift.Sendable {
     /// Anywhere settings for this channel.
     public var anywhereSettings: MediaLiveClientTypes.DescribeAnywhereSettings?
     /// The unique arn of the channel.
@@ -21917,7 +21918,7 @@ public struct DescribeChannelOutput {
 }
 
 /// Placeholder documentation for DescribeChannelPlacementGroupRequest
-public struct DescribeChannelPlacementGroupInput {
+public struct DescribeChannelPlacementGroupInput: Swift.Sendable {
     /// The ID of the channel placement group.
     /// This member is required.
     public var channelPlacementGroupId: Swift.String?
@@ -21936,7 +21937,7 @@ public struct DescribeChannelPlacementGroupInput {
 }
 
 /// Placeholder documentation for DescribeChannelPlacementGroupResponse
-public struct DescribeChannelPlacementGroupOutput {
+public struct DescribeChannelPlacementGroupOutput: Swift.Sendable {
     /// The ARN of this ChannelPlacementGroup. It is automatically assigned when the ChannelPlacementGroup is created.
     public var arn: Swift.String?
     /// Used in ListChannelPlacementGroupsResult
@@ -21973,7 +21974,7 @@ public struct DescribeChannelPlacementGroupOutput {
 }
 
 /// Placeholder documentation for DescribeClusterRequest
-public struct DescribeClusterInput {
+public struct DescribeClusterInput: Swift.Sendable {
     /// The ID of the cluster.
     /// This member is required.
     public var clusterId: Swift.String?
@@ -21987,7 +21988,7 @@ public struct DescribeClusterInput {
 }
 
 /// Placeholder documentation for DescribeClusterResponse
-public struct DescribeClusterOutput {
+public struct DescribeClusterOutput: Swift.Sendable {
     /// The ARN of this Cluster. It is automatically assigned when the Cluster is created.
     public var arn: Swift.String?
     /// Placeholder documentation for __listOf__string
@@ -22028,7 +22029,7 @@ public struct DescribeClusterOutput {
 }
 
 /// Placeholder documentation for DescribeInputRequest
-public struct DescribeInputInput {
+public struct DescribeInputInput: Swift.Sendable {
     /// Unique ID of the input
     /// This member is required.
     public var inputId: Swift.String?
@@ -22042,7 +22043,7 @@ public struct DescribeInputInput {
 }
 
 /// Placeholder documentation for DescribeInputResponse
-public struct DescribeInputOutput {
+public struct DescribeInputOutput: Swift.Sendable {
     /// The Unique ARN of the input (generated, immutable).
     public var arn: Swift.String?
     /// A list of channel IDs that that input is attached to (currently an input can only be attached to one channel).
@@ -22127,7 +22128,7 @@ public struct DescribeInputOutput {
 }
 
 /// Placeholder documentation for DescribeInputDeviceRequest
-public struct DescribeInputDeviceInput {
+public struct DescribeInputDeviceInput: Swift.Sendable {
     /// The unique ID of this input device. For example, hd-123456789abcdef.
     /// This member is required.
     public var inputDeviceId: Swift.String?
@@ -22141,7 +22142,7 @@ public struct DescribeInputDeviceInput {
 }
 
 /// Placeholder documentation for DescribeInputDeviceResponse
-public struct DescribeInputDeviceOutput {
+public struct DescribeInputDeviceOutput: Swift.Sendable {
     /// The unique ARN of the input device.
     public var arn: Swift.String?
     /// The Availability Zone associated with this input device.
@@ -22214,7 +22215,7 @@ public struct DescribeInputDeviceOutput {
 }
 
 /// Placeholder documentation for DescribeInputDeviceThumbnailRequest
-public struct DescribeInputDeviceThumbnailInput {
+public struct DescribeInputDeviceThumbnailInput: Swift.Sendable {
     /// The HTTP Accept header. Indicates the requested type for the thumbnail.
     /// This member is required.
     public var accept: MediaLiveClientTypes.AcceptHeader?
@@ -22233,7 +22234,7 @@ public struct DescribeInputDeviceThumbnailInput {
 }
 
 /// Placeholder documentation for DescribeInputDeviceThumbnailResponse
-public struct DescribeInputDeviceThumbnailOutput {
+public struct DescribeInputDeviceThumbnailOutput: Swift.Sendable {
     /// The binary data for the thumbnail that the Link device has most recently sent to MediaLive.
     public var body: Smithy.ByteStream?
     /// The length of the content.
@@ -22262,7 +22263,7 @@ public struct DescribeInputDeviceThumbnailOutput {
 }
 
 /// Placeholder documentation for DescribeInputSecurityGroupRequest
-public struct DescribeInputSecurityGroupInput {
+public struct DescribeInputSecurityGroupInput: Swift.Sendable {
     /// The id of the Input Security Group to describe
     /// This member is required.
     public var inputSecurityGroupId: Swift.String?
@@ -22276,7 +22277,7 @@ public struct DescribeInputSecurityGroupInput {
 }
 
 /// Placeholder documentation for DescribeInputSecurityGroupResponse
-public struct DescribeInputSecurityGroupOutput {
+public struct DescribeInputSecurityGroupOutput: Swift.Sendable {
     /// Unique ARN of Input Security Group
     public var arn: Swift.String?
     /// The Id of the Input Security Group
@@ -22309,7 +22310,7 @@ public struct DescribeInputSecurityGroupOutput {
 }
 
 /// Placeholder documentation for DescribeMultiplexRequest
-public struct DescribeMultiplexInput {
+public struct DescribeMultiplexInput: Swift.Sendable {
     /// The ID of the multiplex.
     /// This member is required.
     public var multiplexId: Swift.String?
@@ -22323,7 +22324,7 @@ public struct DescribeMultiplexInput {
 }
 
 /// Placeholder documentation for DescribeMultiplexResponse
-public struct DescribeMultiplexOutput {
+public struct DescribeMultiplexOutput: Swift.Sendable {
     /// The unique arn of the multiplex.
     public var arn: Swift.String?
     /// A list of availability zones for the multiplex.
@@ -22372,7 +22373,7 @@ public struct DescribeMultiplexOutput {
 }
 
 /// Placeholder documentation for DescribeMultiplexProgramRequest
-public struct DescribeMultiplexProgramInput {
+public struct DescribeMultiplexProgramInput: Swift.Sendable {
     /// The ID of the multiplex that the program belongs to.
     /// This member is required.
     public var multiplexId: Swift.String?
@@ -22391,7 +22392,7 @@ public struct DescribeMultiplexProgramInput {
 }
 
 /// Placeholder documentation for DescribeMultiplexProgramResponse
-public struct DescribeMultiplexProgramOutput {
+public struct DescribeMultiplexProgramOutput: Swift.Sendable {
     /// The MediaLive channel associated with the program.
     public var channelId: Swift.String?
     /// The settings for this multiplex program.
@@ -22420,7 +22421,7 @@ public struct DescribeMultiplexProgramOutput {
 }
 
 /// Placeholder documentation for DescribeNetworkRequest
-public struct DescribeNetworkInput {
+public struct DescribeNetworkInput: Swift.Sendable {
     /// The ID of the network.
     /// This member is required.
     public var networkId: Swift.String?
@@ -22434,7 +22435,7 @@ public struct DescribeNetworkInput {
 }
 
 /// Placeholder documentation for DescribeNetworkResponse
-public struct DescribeNetworkOutput {
+public struct DescribeNetworkOutput: Swift.Sendable {
     /// The ARN of this Network. It is automatically assigned when the Network is created.
     public var arn: Swift.String?
     /// Placeholder documentation for __listOf__string
@@ -22471,7 +22472,7 @@ public struct DescribeNetworkOutput {
 }
 
 /// Placeholder documentation for DescribeNodeRequest
-public struct DescribeNodeInput {
+public struct DescribeNodeInput: Swift.Sendable {
     /// The ID of the cluster
     /// This member is required.
     public var clusterId: Swift.String?
@@ -22490,7 +22491,7 @@ public struct DescribeNodeInput {
 }
 
 /// Placeholder documentation for DescribeNodeResponse
-public struct DescribeNodeOutput {
+public struct DescribeNodeOutput: Swift.Sendable {
     /// The ARN of the Node. It is automatically assigned when the Node is created.
     public var arn: Swift.String?
     /// An array of IDs. Each ID is one ChannelPlacementGroup that is associated with this Node. Empty if the Node is not yet associated with any groups.
@@ -22539,7 +22540,7 @@ public struct DescribeNodeOutput {
 }
 
 /// Placeholder documentation for DescribeOfferingRequest
-public struct DescribeOfferingInput {
+public struct DescribeOfferingInput: Swift.Sendable {
     /// Unique offering ID, e.g. '87654321'
     /// This member is required.
     public var offeringId: Swift.String?
@@ -22553,7 +22554,7 @@ public struct DescribeOfferingInput {
 }
 
 /// Placeholder documentation for DescribeOfferingResponse
-public struct DescribeOfferingOutput {
+public struct DescribeOfferingOutput: Swift.Sendable {
     /// Unique offering ARN, e.g. 'arn:aws:medialive:us-west-2:123456789012:offering:87654321'
     public var arn: Swift.String?
     /// Currency code for usagePrice and fixedPrice in ISO-4217 format, e.g. 'USD'
@@ -22606,7 +22607,7 @@ public struct DescribeOfferingOutput {
 }
 
 /// Placeholder documentation for DescribeReservationRequest
-public struct DescribeReservationInput {
+public struct DescribeReservationInput: Swift.Sendable {
     /// Unique reservation ID, e.g. '1234567'
     /// This member is required.
     public var reservationId: Swift.String?
@@ -22620,7 +22621,7 @@ public struct DescribeReservationInput {
 }
 
 /// Placeholder documentation for DescribeReservationResponse
-public struct DescribeReservationOutput {
+public struct DescribeReservationOutput: Swift.Sendable {
     /// Unique reservation ARN, e.g. 'arn:aws:medialive:us-west-2:123456789012:reservation:1234567'
     public var arn: Swift.String?
     /// Number of reserved resources
@@ -22705,7 +22706,7 @@ public struct DescribeReservationOutput {
 }
 
 /// Placeholder documentation for DescribeScheduleRequest
-public struct DescribeScheduleInput {
+public struct DescribeScheduleInput: Swift.Sendable {
     /// Id of the channel whose schedule is being updated.
     /// This member is required.
     public var channelId: Swift.String?
@@ -22727,7 +22728,7 @@ public struct DescribeScheduleInput {
 }
 
 /// Placeholder documentation for DescribeScheduleResponse
-public struct DescribeScheduleOutput {
+public struct DescribeScheduleOutput: Swift.Sendable {
     /// The next token; for use in pagination.
     public var nextToken: Swift.String?
     /// The list of actions in the schedule.
@@ -22744,7 +22745,7 @@ public struct DescribeScheduleOutput {
 }
 
 /// Placeholder documentation for DescribeThumbnailsRequest
-public struct DescribeThumbnailsInput {
+public struct DescribeThumbnailsInput: Swift.Sendable {
     /// Unique ID of the channel
     /// This member is required.
     public var channelId: Swift.String?
@@ -22768,7 +22769,7 @@ public struct DescribeThumbnailsInput {
 }
 
 /// Placeholder documentation for DescribeThumbnailsResponse
-public struct DescribeThumbnailsOutput {
+public struct DescribeThumbnailsOutput: Swift.Sendable {
     /// Placeholder documentation for __listOfThumbnailDetail
     public var thumbnailDetails: [MediaLiveClientTypes.ThumbnailDetail]?
 
@@ -22781,7 +22782,7 @@ public struct DescribeThumbnailsOutput {
 }
 
 /// Placeholder documentation for GetCloudWatchAlarmTemplateRequest
-public struct GetCloudWatchAlarmTemplateInput {
+public struct GetCloudWatchAlarmTemplateInput: Swift.Sendable {
     /// A cloudwatch alarm template's identifier. Can be either be its id or current name.
     /// This member is required.
     public var identifier: Swift.String?
@@ -22795,7 +22796,7 @@ public struct GetCloudWatchAlarmTemplateInput {
 }
 
 /// Placeholder documentation for GetCloudWatchAlarmTemplateResponse
-public struct GetCloudWatchAlarmTemplateOutput {
+public struct GetCloudWatchAlarmTemplateOutput: Swift.Sendable {
     /// A cloudwatch alarm template's ARN (Amazon Resource Name)
     public var arn: Swift.String?
     /// The comparison operator used to compare the specified statistic and the threshold.
@@ -22872,7 +22873,7 @@ public struct GetCloudWatchAlarmTemplateOutput {
 }
 
 /// Placeholder documentation for GetCloudWatchAlarmTemplateGroupRequest
-public struct GetCloudWatchAlarmTemplateGroupInput {
+public struct GetCloudWatchAlarmTemplateGroupInput: Swift.Sendable {
     /// A cloudwatch alarm template group's identifier. Can be either be its id or current name.
     /// This member is required.
     public var identifier: Swift.String?
@@ -22886,7 +22887,7 @@ public struct GetCloudWatchAlarmTemplateGroupInput {
 }
 
 /// Placeholder documentation for GetCloudWatchAlarmTemplateGroupResponse
-public struct GetCloudWatchAlarmTemplateGroupOutput {
+public struct GetCloudWatchAlarmTemplateGroupOutput: Swift.Sendable {
     /// A cloudwatch alarm template group's ARN (Amazon Resource Name)
     public var arn: Swift.String?
     /// Placeholder documentation for __timestampIso8601
@@ -22923,7 +22924,7 @@ public struct GetCloudWatchAlarmTemplateGroupOutput {
 }
 
 /// Placeholder documentation for GetEventBridgeRuleTemplateRequest
-public struct GetEventBridgeRuleTemplateInput {
+public struct GetEventBridgeRuleTemplateInput: Swift.Sendable {
     /// An eventbridge rule template's identifier. Can be either be its id or current name.
     /// This member is required.
     public var identifier: Swift.String?
@@ -22937,7 +22938,7 @@ public struct GetEventBridgeRuleTemplateInput {
 }
 
 /// Placeholder documentation for GetEventBridgeRuleTemplateResponse
-public struct GetEventBridgeRuleTemplateOutput {
+public struct GetEventBridgeRuleTemplateOutput: Swift.Sendable {
     /// An eventbridge rule template's ARN (Amazon Resource Name)
     public var arn: Swift.String?
     /// Placeholder documentation for __timestampIso8601
@@ -22986,7 +22987,7 @@ public struct GetEventBridgeRuleTemplateOutput {
 }
 
 /// Placeholder documentation for GetEventBridgeRuleTemplateGroupRequest
-public struct GetEventBridgeRuleTemplateGroupInput {
+public struct GetEventBridgeRuleTemplateGroupInput: Swift.Sendable {
     /// An eventbridge rule template group's identifier. Can be either be its id or current name.
     /// This member is required.
     public var identifier: Swift.String?
@@ -23000,7 +23001,7 @@ public struct GetEventBridgeRuleTemplateGroupInput {
 }
 
 /// Placeholder documentation for GetEventBridgeRuleTemplateGroupResponse
-public struct GetEventBridgeRuleTemplateGroupOutput {
+public struct GetEventBridgeRuleTemplateGroupOutput: Swift.Sendable {
     /// An eventbridge rule template group's ARN (Amazon Resource Name)
     public var arn: Swift.String?
     /// Placeholder documentation for __timestampIso8601
@@ -23037,7 +23038,7 @@ public struct GetEventBridgeRuleTemplateGroupOutput {
 }
 
 /// Placeholder documentation for GetSignalMapRequest
-public struct GetSignalMapInput {
+public struct GetSignalMapInput: Swift.Sendable {
     /// A signal map's identifier. Can be either be its id or current name.
     /// This member is required.
     public var identifier: Swift.String?
@@ -23051,7 +23052,7 @@ public struct GetSignalMapInput {
 }
 
 /// Placeholder documentation for GetSignalMapResponse
-public struct GetSignalMapOutput {
+public struct GetSignalMapOutput: Swift.Sendable {
     /// A signal map's ARN (Amazon Resource Name)
     public var arn: Swift.String?
     /// Placeholder documentation for __listOf__stringMin7Max11PatternAws097
@@ -23132,8 +23133,9 @@ public struct GetSignalMapOutput {
 }
 
 extension MediaLiveClientTypes {
+
     /// Parameters required to attach a MediaConnect flow to the device.
-    public struct InputDeviceMediaConnectConfigurableSettings {
+    public struct InputDeviceMediaConnectConfigurableSettings: Swift.Sendable {
         /// The ARN of the MediaConnect flow to attach this device to.
         public var flowArn: Swift.String?
         /// The ARN for the role that MediaLive assumes to access the attached flow and secret. For more information about how to create this role, see the MediaLive user guide.
@@ -23156,12 +23158,12 @@ extension MediaLiveClientTypes {
             self.sourceName = sourceName
         }
     }
-
 }
 
 extension MediaLiveClientTypes {
+
     /// Configurable settings for the input device.
-    public struct InputDeviceConfigurableSettings {
+    public struct InputDeviceConfigurableSettings: Swift.Sendable {
         /// An array of eight audio configurations, one for each audio pair in the source. Set up each audio configuration either to exclude the pair, or to format it and include it in the output from the device. This parameter applies only to UHD devices, and only when the device is configured as the source for a MediaConnect flow. For an HD device, you configure the audio by setting up audio selectors in the channel configuration.
         public var audioChannelPairs: [MediaLiveClientTypes.InputDeviceConfigurableAudioChannelPairConfig]?
         /// Choose the codec for the video that the device produces. Only UHD devices can specify this parameter.
@@ -23192,11 +23194,10 @@ extension MediaLiveClientTypes {
             self.mediaconnectSettings = mediaconnectSettings
         }
     }
-
 }
 
 /// Placeholder documentation for ListChannelPlacementGroupsRequest
-public struct ListChannelPlacementGroupsInput {
+public struct ListChannelPlacementGroupsInput: Swift.Sendable {
     /// The ID of the cluster
     /// This member is required.
     public var clusterId: Swift.String?
@@ -23218,7 +23219,7 @@ public struct ListChannelPlacementGroupsInput {
 }
 
 /// Placeholder documentation for ListChannelPlacementGroupsResponse
-public struct ListChannelPlacementGroupsOutput {
+public struct ListChannelPlacementGroupsOutput: Swift.Sendable {
     /// An array of ChannelPlacementGroups that exist in the Cluster.
     public var channelPlacementGroups: [MediaLiveClientTypes.DescribeChannelPlacementGroupSummary]?
     /// Token for the next result.
@@ -23235,7 +23236,7 @@ public struct ListChannelPlacementGroupsOutput {
 }
 
 /// Placeholder documentation for ListChannelsRequest
-public struct ListChannelsInput {
+public struct ListChannelsInput: Swift.Sendable {
     /// Placeholder documentation for MaxResults
     public var maxResults: Swift.Int?
     /// Placeholder documentation for __string
@@ -23252,7 +23253,7 @@ public struct ListChannelsInput {
 }
 
 /// Placeholder documentation for ListChannelsResponse
-public struct ListChannelsOutput {
+public struct ListChannelsOutput: Swift.Sendable {
     /// Placeholder documentation for __listOfChannelSummary
     public var channels: [MediaLiveClientTypes.ChannelSummary]?
     /// Placeholder documentation for __string
@@ -23269,7 +23270,7 @@ public struct ListChannelsOutput {
 }
 
 /// Placeholder documentation for ListCloudWatchAlarmTemplateGroupsRequest
-public struct ListCloudWatchAlarmTemplateGroupsInput {
+public struct ListCloudWatchAlarmTemplateGroupsInput: Swift.Sendable {
     /// Placeholder documentation for MaxResults
     public var maxResults: Swift.Int?
     /// A token used to retrieve the next set of results in paginated list responses.
@@ -23294,7 +23295,7 @@ public struct ListCloudWatchAlarmTemplateGroupsInput {
 }
 
 /// Placeholder documentation for ListCloudWatchAlarmTemplateGroupsResponse
-public struct ListCloudWatchAlarmTemplateGroupsOutput {
+public struct ListCloudWatchAlarmTemplateGroupsOutput: Swift.Sendable {
     /// Placeholder documentation for __listOfCloudWatchAlarmTemplateGroupSummary
     public var cloudWatchAlarmTemplateGroups: [MediaLiveClientTypes.CloudWatchAlarmTemplateGroupSummary]?
     /// A token used to retrieve the next set of results in paginated list responses.
@@ -23311,7 +23312,7 @@ public struct ListCloudWatchAlarmTemplateGroupsOutput {
 }
 
 /// Placeholder documentation for ListCloudWatchAlarmTemplatesRequest
-public struct ListCloudWatchAlarmTemplatesInput {
+public struct ListCloudWatchAlarmTemplatesInput: Swift.Sendable {
     /// A cloudwatch alarm template group's identifier. Can be either be its id or current name.
     public var groupIdentifier: Swift.String?
     /// Placeholder documentation for MaxResults
@@ -23340,7 +23341,7 @@ public struct ListCloudWatchAlarmTemplatesInput {
 }
 
 /// Placeholder documentation for ListCloudWatchAlarmTemplatesResponse
-public struct ListCloudWatchAlarmTemplatesOutput {
+public struct ListCloudWatchAlarmTemplatesOutput: Swift.Sendable {
     /// Placeholder documentation for __listOfCloudWatchAlarmTemplateSummary
     public var cloudWatchAlarmTemplates: [MediaLiveClientTypes.CloudWatchAlarmTemplateSummary]?
     /// A token used to retrieve the next set of results in paginated list responses.
@@ -23357,7 +23358,7 @@ public struct ListCloudWatchAlarmTemplatesOutput {
 }
 
 /// Placeholder documentation for ListClustersRequest
-public struct ListClustersInput {
+public struct ListClustersInput: Swift.Sendable {
     /// The maximum number of items to return.
     public var maxResults: Swift.Int?
     /// The token to retrieve the next page of results.
@@ -23374,7 +23375,7 @@ public struct ListClustersInput {
 }
 
 /// Placeholder documentation for ListClustersResponse
-public struct ListClustersOutput {
+public struct ListClustersOutput: Swift.Sendable {
     /// A list of the Clusters that exist in your AWS account.
     public var clusters: [MediaLiveClientTypes.DescribeClusterSummary]?
     /// Token for the next result.
@@ -23391,7 +23392,7 @@ public struct ListClustersOutput {
 }
 
 /// Placeholder documentation for ListEventBridgeRuleTemplateGroupsRequest
-public struct ListEventBridgeRuleTemplateGroupsInput {
+public struct ListEventBridgeRuleTemplateGroupsInput: Swift.Sendable {
     /// Placeholder documentation for MaxResults
     public var maxResults: Swift.Int?
     /// A token used to retrieve the next set of results in paginated list responses.
@@ -23412,7 +23413,7 @@ public struct ListEventBridgeRuleTemplateGroupsInput {
 }
 
 /// Placeholder documentation for ListEventBridgeRuleTemplateGroupsResponse
-public struct ListEventBridgeRuleTemplateGroupsOutput {
+public struct ListEventBridgeRuleTemplateGroupsOutput: Swift.Sendable {
     /// Placeholder documentation for __listOfEventBridgeRuleTemplateGroupSummary
     public var eventBridgeRuleTemplateGroups: [MediaLiveClientTypes.EventBridgeRuleTemplateGroupSummary]?
     /// A token used to retrieve the next set of results in paginated list responses.
@@ -23429,7 +23430,7 @@ public struct ListEventBridgeRuleTemplateGroupsOutput {
 }
 
 /// Placeholder documentation for ListEventBridgeRuleTemplatesRequest
-public struct ListEventBridgeRuleTemplatesInput {
+public struct ListEventBridgeRuleTemplatesInput: Swift.Sendable {
     /// An eventbridge rule template group's identifier. Can be either be its id or current name.
     public var groupIdentifier: Swift.String?
     /// Placeholder documentation for MaxResults
@@ -23454,7 +23455,7 @@ public struct ListEventBridgeRuleTemplatesInput {
 }
 
 /// Placeholder documentation for ListEventBridgeRuleTemplatesResponse
-public struct ListEventBridgeRuleTemplatesOutput {
+public struct ListEventBridgeRuleTemplatesOutput: Swift.Sendable {
     /// Placeholder documentation for __listOfEventBridgeRuleTemplateSummary
     public var eventBridgeRuleTemplates: [MediaLiveClientTypes.EventBridgeRuleTemplateSummary]?
     /// A token used to retrieve the next set of results in paginated list responses.
@@ -23471,7 +23472,7 @@ public struct ListEventBridgeRuleTemplatesOutput {
 }
 
 /// Placeholder documentation for ListInputDevicesRequest
-public struct ListInputDevicesInput {
+public struct ListInputDevicesInput: Swift.Sendable {
     /// Placeholder documentation for MaxResults
     public var maxResults: Swift.Int?
     /// Placeholder documentation for __string
@@ -23488,7 +23489,7 @@ public struct ListInputDevicesInput {
 }
 
 /// Placeholder documentation for ListInputDevicesResponse
-public struct ListInputDevicesOutput {
+public struct ListInputDevicesOutput: Swift.Sendable {
     /// The list of input devices.
     public var inputDevices: [MediaLiveClientTypes.InputDeviceSummary]?
     /// A token to get additional list results.
@@ -23505,7 +23506,7 @@ public struct ListInputDevicesOutput {
 }
 
 /// Placeholder documentation for ListInputDeviceTransfersRequest
-public struct ListInputDeviceTransfersInput {
+public struct ListInputDeviceTransfersInput: Swift.Sendable {
     /// Placeholder documentation for MaxResults
     public var maxResults: Swift.Int?
     /// Placeholder documentation for __string
@@ -23527,7 +23528,7 @@ public struct ListInputDeviceTransfersInput {
 }
 
 /// Placeholder documentation for ListInputDeviceTransfersResponse
-public struct ListInputDeviceTransfersOutput {
+public struct ListInputDeviceTransfersOutput: Swift.Sendable {
     /// The list of devices that you are transferring or are being transferred to you.
     public var inputDeviceTransfers: [MediaLiveClientTypes.TransferringInputDeviceSummary]?
     /// A token to get additional list results.
@@ -23544,7 +23545,7 @@ public struct ListInputDeviceTransfersOutput {
 }
 
 /// Placeholder documentation for ListInputsRequest
-public struct ListInputsInput {
+public struct ListInputsInput: Swift.Sendable {
     /// Placeholder documentation for MaxResults
     public var maxResults: Swift.Int?
     /// Placeholder documentation for __string
@@ -23561,7 +23562,7 @@ public struct ListInputsInput {
 }
 
 /// Placeholder documentation for ListInputsResponse
-public struct ListInputsOutput {
+public struct ListInputsOutput: Swift.Sendable {
     /// Placeholder documentation for __listOfInput
     public var inputs: [MediaLiveClientTypes.Input]?
     /// Placeholder documentation for __string
@@ -23578,7 +23579,7 @@ public struct ListInputsOutput {
 }
 
 /// Placeholder documentation for ListInputSecurityGroupsRequest
-public struct ListInputSecurityGroupsInput {
+public struct ListInputSecurityGroupsInput: Swift.Sendable {
     /// Placeholder documentation for MaxResults
     public var maxResults: Swift.Int?
     /// Placeholder documentation for __string
@@ -23595,7 +23596,7 @@ public struct ListInputSecurityGroupsInput {
 }
 
 /// Placeholder documentation for ListInputSecurityGroupsResponse
-public struct ListInputSecurityGroupsOutput {
+public struct ListInputSecurityGroupsOutput: Swift.Sendable {
     /// List of input security groups
     public var inputSecurityGroups: [MediaLiveClientTypes.InputSecurityGroup]?
     /// Placeholder documentation for __string
@@ -23612,7 +23613,7 @@ public struct ListInputSecurityGroupsOutput {
 }
 
 /// Placeholder documentation for ListMultiplexesRequest
-public struct ListMultiplexesInput {
+public struct ListMultiplexesInput: Swift.Sendable {
     /// The maximum number of items to return.
     public var maxResults: Swift.Int?
     /// The token to retrieve the next page of results.
@@ -23629,7 +23630,7 @@ public struct ListMultiplexesInput {
 }
 
 /// Placeholder documentation for ListMultiplexesResponse
-public struct ListMultiplexesOutput {
+public struct ListMultiplexesOutput: Swift.Sendable {
     /// List of multiplexes.
     public var multiplexes: [MediaLiveClientTypes.MultiplexSummary]?
     /// Token for the next ListMultiplexes request.
@@ -23646,7 +23647,7 @@ public struct ListMultiplexesOutput {
 }
 
 /// Placeholder documentation for ListMultiplexProgramsRequest
-public struct ListMultiplexProgramsInput {
+public struct ListMultiplexProgramsInput: Swift.Sendable {
     /// The maximum number of items to return.
     public var maxResults: Swift.Int?
     /// The ID of the multiplex that the programs belong to.
@@ -23668,7 +23669,7 @@ public struct ListMultiplexProgramsInput {
 }
 
 /// Placeholder documentation for ListMultiplexProgramsResponse
-public struct ListMultiplexProgramsOutput {
+public struct ListMultiplexProgramsOutput: Swift.Sendable {
     /// List of multiplex programs.
     public var multiplexPrograms: [MediaLiveClientTypes.MultiplexProgramSummary]?
     /// Token for the next ListMultiplexProgram request.
@@ -23685,7 +23686,7 @@ public struct ListMultiplexProgramsOutput {
 }
 
 /// Placeholder documentation for ListNetworksRequest
-public struct ListNetworksInput {
+public struct ListNetworksInput: Swift.Sendable {
     /// The maximum number of items to return.
     public var maxResults: Swift.Int?
     /// The token to retrieve the next page of results.
@@ -23702,7 +23703,7 @@ public struct ListNetworksInput {
 }
 
 /// Placeholder documentation for ListNetworksResponse
-public struct ListNetworksOutput {
+public struct ListNetworksOutput: Swift.Sendable {
     /// An array of networks that you have created.
     public var networks: [MediaLiveClientTypes.DescribeNetworkSummary]?
     /// Token for the next ListNetworks request.
@@ -23719,7 +23720,7 @@ public struct ListNetworksOutput {
 }
 
 /// Placeholder documentation for ListNodesRequest
-public struct ListNodesInput {
+public struct ListNodesInput: Swift.Sendable {
     /// The ID of the cluster
     /// This member is required.
     public var clusterId: Swift.String?
@@ -23741,7 +23742,7 @@ public struct ListNodesInput {
 }
 
 /// Placeholder documentation for ListNodesResponse
-public struct ListNodesOutput {
+public struct ListNodesOutput: Swift.Sendable {
     /// Token for the next result.
     public var nextToken: Swift.String?
     /// An array of Nodes that exist in the Cluster.
@@ -23758,7 +23759,7 @@ public struct ListNodesOutput {
 }
 
 /// Placeholder documentation for ListOfferingsRequest
-public struct ListOfferingsInput {
+public struct ListOfferingsInput: Swift.Sendable {
     /// Filter by channel class, 'STANDARD' or 'SINGLE_PIPELINE'
     public var channelClass: Swift.String?
     /// Filter to offerings that match the configuration of an existing channel, e.g. '2345678' (a channel ID)
@@ -23815,7 +23816,7 @@ public struct ListOfferingsInput {
 }
 
 /// Placeholder documentation for ListOfferingsResponse
-public struct ListOfferingsOutput {
+public struct ListOfferingsOutput: Swift.Sendable {
     /// Token to retrieve the next page of results
     public var nextToken: Swift.String?
     /// List of offerings
@@ -23832,7 +23833,7 @@ public struct ListOfferingsOutput {
 }
 
 /// Placeholder documentation for ListReservationsRequest
-public struct ListReservationsInput {
+public struct ListReservationsInput: Swift.Sendable {
     /// Filter by channel class, 'STANDARD' or 'SINGLE_PIPELINE'
     public var channelClass: Swift.String?
     /// Filter by codec, 'AVC', 'HEVC', 'MPEG2', 'AUDIO', 'LINK', or 'AV1'
@@ -23881,7 +23882,7 @@ public struct ListReservationsInput {
 }
 
 /// Placeholder documentation for ListReservationsResponse
-public struct ListReservationsOutput {
+public struct ListReservationsOutput: Swift.Sendable {
     /// Token to retrieve the next page of results
     public var nextToken: Swift.String?
     /// List of reservations
@@ -23898,7 +23899,7 @@ public struct ListReservationsOutput {
 }
 
 /// Placeholder documentation for ListSignalMapsRequest
-public struct ListSignalMapsInput {
+public struct ListSignalMapsInput: Swift.Sendable {
     /// A cloudwatch alarm template group's identifier. Can be either be its id or current name.
     public var cloudWatchAlarmTemplateGroupIdentifier: Swift.String?
     /// An eventbridge rule template group's identifier. Can be either be its id or current name.
@@ -23923,7 +23924,7 @@ public struct ListSignalMapsInput {
 }
 
 /// Placeholder documentation for ListSignalMapsResponse
-public struct ListSignalMapsOutput {
+public struct ListSignalMapsOutput: Swift.Sendable {
     /// A token used to retrieve the next set of results in paginated list responses.
     public var nextToken: Swift.String?
     /// Placeholder documentation for __listOfSignalMapSummary
@@ -23940,7 +23941,7 @@ public struct ListSignalMapsOutput {
 }
 
 /// Placeholder documentation for ListTagsForResourceRequest
-public struct ListTagsForResourceInput {
+public struct ListTagsForResourceInput: Swift.Sendable {
     /// Placeholder documentation for __string
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -23954,7 +23955,7 @@ public struct ListTagsForResourceInput {
 }
 
 /// Placeholder documentation for ListTagsForResourceResponse
-public struct ListTagsForResourceOutput {
+public struct ListTagsForResourceOutput: Swift.Sendable {
     /// Placeholder documentation for Tags
     public var tags: [Swift.String: Swift.String]?
 
@@ -23967,8 +23968,9 @@ public struct ListTagsForResourceOutput {
 }
 
 extension MediaLiveClientTypes {
+
     /// Placeholder documentation for MaintenanceUpdateSettings
-    public struct MaintenanceUpdateSettings {
+    public struct MaintenanceUpdateSettings: Swift.Sendable {
         /// Choose one day of the week for maintenance. The chosen day is used for all future maintenance windows.
         public var maintenanceDay: MediaLiveClientTypes.MaintenanceDay?
         /// Choose a specific date for maintenance to occur. The chosen date is used for the next maintenance window only.
@@ -23987,11 +23989,10 @@ extension MediaLiveClientTypes {
             self.maintenanceStartTime = maintenanceStartTime
         }
     }
-
 }
 
 /// Placeholder documentation for PurchaseOfferingRequest
-public struct PurchaseOfferingInput {
+public struct PurchaseOfferingInput: Swift.Sendable {
     /// Number of resources
     /// This member is required.
     public var count: Swift.Int?
@@ -24030,7 +24031,7 @@ public struct PurchaseOfferingInput {
 }
 
 /// Placeholder documentation for PurchaseOfferingResponse
-public struct PurchaseOfferingOutput {
+public struct PurchaseOfferingOutput: Swift.Sendable {
     /// Reserved resources available to use
     public var reservation: MediaLiveClientTypes.Reservation?
 
@@ -24045,7 +24046,7 @@ public struct PurchaseOfferingOutput {
 extension MediaLiveClientTypes {
 
     /// Whether or not to force reboot the input device.
-    public enum RebootInputDeviceForce: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum RebootInputDeviceForce: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case no
         case yes
         case sdkUnknown(Swift.String)
@@ -24073,7 +24074,7 @@ extension MediaLiveClientTypes {
 }
 
 /// A request to reboot an AWS Elemental device.
-public struct RebootInputDeviceInput {
+public struct RebootInputDeviceInput: Swift.Sendable {
     /// Force a reboot of an input device. If the device is streaming, it will stop streaming and begin rebooting within a few seconds of sending the command. If the device was streaming prior to the reboot, the device will resume streaming when the reboot completes.
     public var force: MediaLiveClientTypes.RebootInputDeviceForce?
     /// The unique ID of the input device to reboot. For example, hd-123456789abcdef.
@@ -24091,13 +24092,13 @@ public struct RebootInputDeviceInput {
 }
 
 /// Placeholder documentation for RebootInputDeviceResponse
-public struct RebootInputDeviceOutput {
+public struct RebootInputDeviceOutput: Swift.Sendable {
 
     public init() { }
 }
 
 /// Placeholder documentation for RejectInputDeviceTransferRequest
-public struct RejectInputDeviceTransferInput {
+public struct RejectInputDeviceTransferInput: Swift.Sendable {
     /// The unique ID of the input device to reject. For example, hd-123456789abcdef.
     /// This member is required.
     public var inputDeviceId: Swift.String?
@@ -24111,13 +24112,13 @@ public struct RejectInputDeviceTransferInput {
 }
 
 /// Placeholder documentation for RejectInputDeviceTransferResponse
-public struct RejectInputDeviceTransferOutput {
+public struct RejectInputDeviceTransferOutput: Swift.Sendable {
 
     public init() { }
 }
 
 /// Pipelines to restart.
-public struct RestartChannelPipelinesInput {
+public struct RestartChannelPipelinesInput: Swift.Sendable {
     /// ID of channel
     /// This member is required.
     public var channelId: Swift.String?
@@ -24135,7 +24136,7 @@ public struct RestartChannelPipelinesInput {
 }
 
 /// Placeholder documentation for RestartChannelPipelinesResponse
-public struct RestartChannelPipelinesOutput {
+public struct RestartChannelPipelinesOutput: Swift.Sendable {
     /// Anywhere settings for this channel.
     public var anywhereSettings: MediaLiveClientTypes.DescribeAnywhereSettings?
     /// The unique arn of the channel.
@@ -24224,7 +24225,7 @@ public struct RestartChannelPipelinesOutput {
 }
 
 /// Placeholder documentation for StartChannelRequest
-public struct StartChannelInput {
+public struct StartChannelInput: Swift.Sendable {
     /// A request to start a channel
     /// This member is required.
     public var channelId: Swift.String?
@@ -24238,7 +24239,7 @@ public struct StartChannelInput {
 }
 
 /// Placeholder documentation for StartChannelResponse
-public struct StartChannelOutput {
+public struct StartChannelOutput: Swift.Sendable {
     /// Anywhere settings for this channel.
     public var anywhereSettings: MediaLiveClientTypes.DescribeAnywhereSettings?
     /// The unique arn of the channel.
@@ -24323,7 +24324,7 @@ public struct StartChannelOutput {
 }
 
 /// Placeholder documentation for StartDeleteMonitorDeploymentRequest
-public struct StartDeleteMonitorDeploymentInput {
+public struct StartDeleteMonitorDeploymentInput: Swift.Sendable {
     /// A signal map's identifier. Can be either be its id or current name.
     /// This member is required.
     public var identifier: Swift.String?
@@ -24337,7 +24338,7 @@ public struct StartDeleteMonitorDeploymentInput {
 }
 
 /// Placeholder documentation for StartDeleteMonitorDeploymentResponse
-public struct StartDeleteMonitorDeploymentOutput {
+public struct StartDeleteMonitorDeploymentOutput: Swift.Sendable {
     /// A signal map's ARN (Amazon Resource Name)
     public var arn: Swift.String?
     /// Placeholder documentation for __listOf__stringMin7Max11PatternAws097
@@ -24418,7 +24419,7 @@ public struct StartDeleteMonitorDeploymentOutput {
 }
 
 /// Placeholder documentation for StartInputDeviceRequest
-public struct StartInputDeviceInput {
+public struct StartInputDeviceInput: Swift.Sendable {
     /// The unique ID of the input device to start. For example, hd-123456789abcdef.
     /// This member is required.
     public var inputDeviceId: Swift.String?
@@ -24432,13 +24433,13 @@ public struct StartInputDeviceInput {
 }
 
 /// Placeholder documentation for StartInputDeviceResponse
-public struct StartInputDeviceOutput {
+public struct StartInputDeviceOutput: Swift.Sendable {
 
     public init() { }
 }
 
 /// Placeholder documentation for StartInputDeviceMaintenanceWindowRequest
-public struct StartInputDeviceMaintenanceWindowInput {
+public struct StartInputDeviceMaintenanceWindowInput: Swift.Sendable {
     /// The unique ID of the input device to start a maintenance window for. For example, hd-123456789abcdef.
     /// This member is required.
     public var inputDeviceId: Swift.String?
@@ -24452,13 +24453,13 @@ public struct StartInputDeviceMaintenanceWindowInput {
 }
 
 /// Placeholder documentation for StartInputDeviceMaintenanceWindowResponse
-public struct StartInputDeviceMaintenanceWindowOutput {
+public struct StartInputDeviceMaintenanceWindowOutput: Swift.Sendable {
 
     public init() { }
 }
 
 /// Placeholder documentation for StartMonitorDeploymentRequest
-public struct StartMonitorDeploymentInput {
+public struct StartMonitorDeploymentInput: Swift.Sendable {
     /// Placeholder documentation for __boolean
     public var dryRun: Swift.Bool?
     /// A signal map's identifier. Can be either be its id or current name.
@@ -24476,7 +24477,7 @@ public struct StartMonitorDeploymentInput {
 }
 
 /// Placeholder documentation for StartMonitorDeploymentResponse
-public struct StartMonitorDeploymentOutput {
+public struct StartMonitorDeploymentOutput: Swift.Sendable {
     /// A signal map's ARN (Amazon Resource Name)
     public var arn: Swift.String?
     /// Placeholder documentation for __listOf__stringMin7Max11PatternAws097
@@ -24557,7 +24558,7 @@ public struct StartMonitorDeploymentOutput {
 }
 
 /// Placeholder documentation for StartMultiplexRequest
-public struct StartMultiplexInput {
+public struct StartMultiplexInput: Swift.Sendable {
     /// The ID of the multiplex.
     /// This member is required.
     public var multiplexId: Swift.String?
@@ -24571,7 +24572,7 @@ public struct StartMultiplexInput {
 }
 
 /// Placeholder documentation for StartMultiplexResponse
-public struct StartMultiplexOutput {
+public struct StartMultiplexOutput: Swift.Sendable {
     /// The unique arn of the multiplex.
     public var arn: Swift.String?
     /// A list of availability zones for the multiplex.
@@ -24620,7 +24621,7 @@ public struct StartMultiplexOutput {
 }
 
 /// Placeholder documentation for StartUpdateSignalMapRequest
-public struct StartUpdateSignalMapInput {
+public struct StartUpdateSignalMapInput: Swift.Sendable {
     /// Placeholder documentation for __listOf__stringPatternS
     public var cloudWatchAlarmTemplateGroupIdentifiers: [Swift.String]?
     /// A resource's optional description.
@@ -24658,7 +24659,7 @@ public struct StartUpdateSignalMapInput {
 }
 
 /// Placeholder documentation for StartUpdateSignalMapResponse
-public struct StartUpdateSignalMapOutput {
+public struct StartUpdateSignalMapOutput: Swift.Sendable {
     /// A signal map's ARN (Amazon Resource Name)
     public var arn: Swift.String?
     /// Placeholder documentation for __listOf__stringMin7Max11PatternAws097
@@ -24739,7 +24740,7 @@ public struct StartUpdateSignalMapOutput {
 }
 
 /// Placeholder documentation for StopChannelRequest
-public struct StopChannelInput {
+public struct StopChannelInput: Swift.Sendable {
     /// A request to stop a running channel
     /// This member is required.
     public var channelId: Swift.String?
@@ -24753,7 +24754,7 @@ public struct StopChannelInput {
 }
 
 /// Placeholder documentation for StopChannelResponse
-public struct StopChannelOutput {
+public struct StopChannelOutput: Swift.Sendable {
     /// Anywhere settings for this channel.
     public var anywhereSettings: MediaLiveClientTypes.DescribeAnywhereSettings?
     /// The unique arn of the channel.
@@ -24838,7 +24839,7 @@ public struct StopChannelOutput {
 }
 
 /// Placeholder documentation for StopInputDeviceRequest
-public struct StopInputDeviceInput {
+public struct StopInputDeviceInput: Swift.Sendable {
     /// The unique ID of the input device to stop. For example, hd-123456789abcdef.
     /// This member is required.
     public var inputDeviceId: Swift.String?
@@ -24852,13 +24853,13 @@ public struct StopInputDeviceInput {
 }
 
 /// Placeholder documentation for StopInputDeviceResponse
-public struct StopInputDeviceOutput {
+public struct StopInputDeviceOutput: Swift.Sendable {
 
     public init() { }
 }
 
 /// Placeholder documentation for StopMultiplexRequest
-public struct StopMultiplexInput {
+public struct StopMultiplexInput: Swift.Sendable {
     /// The ID of the multiplex.
     /// This member is required.
     public var multiplexId: Swift.String?
@@ -24872,7 +24873,7 @@ public struct StopMultiplexInput {
 }
 
 /// Placeholder documentation for StopMultiplexResponse
-public struct StopMultiplexOutput {
+public struct StopMultiplexOutput: Swift.Sendable {
     /// The unique arn of the multiplex.
     public var arn: Swift.String?
     /// A list of availability zones for the multiplex.
@@ -24921,7 +24922,7 @@ public struct StopMultiplexOutput {
 }
 
 /// A request to transfer an input device.
-public struct TransferInputDeviceInput {
+public struct TransferInputDeviceInput: Swift.Sendable {
     /// The unique ID of this input device. For example, hd-123456789abcdef.
     /// This member is required.
     public var inputDeviceId: Swift.String?
@@ -24947,13 +24948,13 @@ public struct TransferInputDeviceInput {
 }
 
 /// Placeholder documentation for TransferInputDeviceResponse
-public struct TransferInputDeviceOutput {
+public struct TransferInputDeviceOutput: Swift.Sendable {
 
     public init() { }
 }
 
 /// List of account configuration parameters to update.
-public struct UpdateAccountConfigurationInput {
+public struct UpdateAccountConfigurationInput: Swift.Sendable {
     /// Placeholder documentation for AccountConfiguration
     public var accountConfiguration: MediaLiveClientTypes.AccountConfiguration?
 
@@ -24966,7 +24967,7 @@ public struct UpdateAccountConfigurationInput {
 }
 
 /// Placeholder documentation for UpdateAccountConfigurationResponse
-public struct UpdateAccountConfigurationOutput {
+public struct UpdateAccountConfigurationOutput: Swift.Sendable {
     /// Placeholder documentation for AccountConfiguration
     public var accountConfiguration: MediaLiveClientTypes.AccountConfiguration?
 
@@ -24979,7 +24980,7 @@ public struct UpdateAccountConfigurationOutput {
 }
 
 /// A request to update a channel.
-public struct UpdateChannelInput {
+public struct UpdateChannelInput: Swift.Sendable {
     /// Specification of CDI inputs for this channel
     public var cdiInputSpecification: MediaLiveClientTypes.CdiInputSpecification?
     /// channel ID
@@ -25029,7 +25030,7 @@ public struct UpdateChannelInput {
 }
 
 /// Placeholder documentation for UpdateChannelResponse
-public struct UpdateChannelOutput {
+public struct UpdateChannelOutput: Swift.Sendable {
     /// Placeholder documentation for Channel
     public var channel: MediaLiveClientTypes.Channel?
 
@@ -25042,7 +25043,7 @@ public struct UpdateChannelOutput {
 }
 
 /// Channel class that the channel should be updated to.
-public struct UpdateChannelClassInput {
+public struct UpdateChannelClassInput: Swift.Sendable {
     /// The channel class that you wish to update this channel to use.
     /// This member is required.
     public var channelClass: MediaLiveClientTypes.ChannelClass?
@@ -25065,7 +25066,7 @@ public struct UpdateChannelClassInput {
 }
 
 /// Placeholder documentation for UpdateChannelClassResponse
-public struct UpdateChannelClassOutput {
+public struct UpdateChannelClassOutput: Swift.Sendable {
     /// Placeholder documentation for Channel
     public var channel: MediaLiveClientTypes.Channel?
 
@@ -25078,7 +25079,7 @@ public struct UpdateChannelClassOutput {
 }
 
 /// A request to update the channel placement group
-public struct UpdateChannelPlacementGroupInput {
+public struct UpdateChannelPlacementGroupInput: Swift.Sendable {
     /// The ID of the channel placement group.
     /// This member is required.
     public var channelPlacementGroupId: Swift.String?
@@ -25105,7 +25106,7 @@ public struct UpdateChannelPlacementGroupInput {
 }
 
 /// Placeholder documentation for UpdateChannelPlacementGroupResponse
-public struct UpdateChannelPlacementGroupOutput {
+public struct UpdateChannelPlacementGroupOutput: Swift.Sendable {
     /// The ARN of this ChannelPlacementGroup. It is automatically assigned when the ChannelPlacementGroup is created.
     public var arn: Swift.String?
     /// Used in ListChannelPlacementGroupsResult
@@ -25142,7 +25143,7 @@ public struct UpdateChannelPlacementGroupOutput {
 }
 
 /// Placeholder documentation for UpdateCloudWatchAlarmTemplateRequest
-public struct UpdateCloudWatchAlarmTemplateInput {
+public struct UpdateCloudWatchAlarmTemplateInput: Swift.Sendable {
     /// The comparison operator used to compare the specified statistic and the threshold.
     public var comparisonOperator: MediaLiveClientTypes.CloudWatchAlarmTemplateComparisonOperator?
     /// The number of datapoints within the evaluation period that must be breaching to trigger the alarm.
@@ -25204,7 +25205,7 @@ public struct UpdateCloudWatchAlarmTemplateInput {
 }
 
 /// Placeholder documentation for UpdateCloudWatchAlarmTemplateResponse
-public struct UpdateCloudWatchAlarmTemplateOutput {
+public struct UpdateCloudWatchAlarmTemplateOutput: Swift.Sendable {
     /// A cloudwatch alarm template's ARN (Amazon Resource Name)
     public var arn: Swift.String?
     /// The comparison operator used to compare the specified statistic and the threshold.
@@ -25281,7 +25282,7 @@ public struct UpdateCloudWatchAlarmTemplateOutput {
 }
 
 /// Placeholder documentation for UpdateCloudWatchAlarmTemplateGroupRequest
-public struct UpdateCloudWatchAlarmTemplateGroupInput {
+public struct UpdateCloudWatchAlarmTemplateGroupInput: Swift.Sendable {
     /// A resource's optional description.
     public var description: Swift.String?
     /// A cloudwatch alarm template group's identifier. Can be either be its id or current name.
@@ -25299,7 +25300,7 @@ public struct UpdateCloudWatchAlarmTemplateGroupInput {
 }
 
 /// Placeholder documentation for UpdateCloudWatchAlarmTemplateGroupResponse
-public struct UpdateCloudWatchAlarmTemplateGroupOutput {
+public struct UpdateCloudWatchAlarmTemplateGroupOutput: Swift.Sendable {
     /// A cloudwatch alarm template group's ARN (Amazon Resource Name)
     public var arn: Swift.String?
     /// Placeholder documentation for __timestampIso8601
@@ -25336,7 +25337,7 @@ public struct UpdateCloudWatchAlarmTemplateGroupOutput {
 }
 
 /// A request to update the cluster.
-public struct UpdateClusterInput {
+public struct UpdateClusterInput: Swift.Sendable {
     /// The ID of the cluster
     /// This member is required.
     public var clusterId: Swift.String?
@@ -25358,7 +25359,7 @@ public struct UpdateClusterInput {
 }
 
 /// Placeholder documentation for UpdateClusterResponse
-public struct UpdateClusterOutput {
+public struct UpdateClusterOutput: Swift.Sendable {
     /// The ARN of the Cluster.
     public var arn: Swift.String?
     /// An array of the IDs of the Channels that are associated with this Cluster. One Channel is associated with the Cluster as follows: A Channel belongs to a ChannelPlacementGroup. A ChannelPlacementGroup is attached to a Node. A Node belongs to a Cluster.
@@ -25395,7 +25396,7 @@ public struct UpdateClusterOutput {
 }
 
 /// Placeholder documentation for UpdateEventBridgeRuleTemplateRequest
-public struct UpdateEventBridgeRuleTemplateInput {
+public struct UpdateEventBridgeRuleTemplateInput: Swift.Sendable {
     /// A resource's optional description.
     public var description: Swift.String?
     /// Placeholder documentation for __listOfEventBridgeRuleTemplateTarget
@@ -25429,7 +25430,7 @@ public struct UpdateEventBridgeRuleTemplateInput {
 }
 
 /// Placeholder documentation for UpdateEventBridgeRuleTemplateResponse
-public struct UpdateEventBridgeRuleTemplateOutput {
+public struct UpdateEventBridgeRuleTemplateOutput: Swift.Sendable {
     /// An eventbridge rule template's ARN (Amazon Resource Name)
     public var arn: Swift.String?
     /// Placeholder documentation for __timestampIso8601
@@ -25478,7 +25479,7 @@ public struct UpdateEventBridgeRuleTemplateOutput {
 }
 
 /// Placeholder documentation for UpdateEventBridgeRuleTemplateGroupRequest
-public struct UpdateEventBridgeRuleTemplateGroupInput {
+public struct UpdateEventBridgeRuleTemplateGroupInput: Swift.Sendable {
     /// A resource's optional description.
     public var description: Swift.String?
     /// An eventbridge rule template group's identifier. Can be either be its id or current name.
@@ -25496,7 +25497,7 @@ public struct UpdateEventBridgeRuleTemplateGroupInput {
 }
 
 /// Placeholder documentation for UpdateEventBridgeRuleTemplateGroupResponse
-public struct UpdateEventBridgeRuleTemplateGroupOutput {
+public struct UpdateEventBridgeRuleTemplateGroupOutput: Swift.Sendable {
     /// An eventbridge rule template group's ARN (Amazon Resource Name)
     public var arn: Swift.String?
     /// Placeholder documentation for __timestampIso8601
@@ -25533,8 +25534,9 @@ public struct UpdateEventBridgeRuleTemplateGroupOutput {
 }
 
 extension MediaLiveClientTypes {
+
     /// Settings for a Multicast input. Contains a list of multicast Urls and optional source ip addresses.
-    public struct MulticastSettingsUpdateRequest {
+    public struct MulticastSettingsUpdateRequest: Swift.Sendable {
         /// Placeholder documentation for __listOfMulticastSourceUpdateRequest
         public var sources: [MediaLiveClientTypes.MulticastSourceUpdateRequest]?
 
@@ -25545,11 +25547,10 @@ extension MediaLiveClientTypes {
             self.sources = sources
         }
     }
-
 }
 
 /// A request to update an input.
-public struct UpdateInputInput {
+public struct UpdateInputInput: Swift.Sendable {
     /// Destination settings for PUSH type inputs.
     public var destinations: [MediaLiveClientTypes.InputDestinationRequest]?
     /// Settings for the devices.
@@ -25599,7 +25600,7 @@ public struct UpdateInputInput {
 }
 
 /// Placeholder documentation for UpdateInputResponse
-public struct UpdateInputOutput {
+public struct UpdateInputOutput: Swift.Sendable {
     /// Placeholder documentation for Input
     public var input: MediaLiveClientTypes.Input?
 
@@ -25612,7 +25613,7 @@ public struct UpdateInputOutput {
 }
 
 /// A request to update an input device.
-public struct UpdateInputDeviceInput {
+public struct UpdateInputDeviceInput: Swift.Sendable {
     /// The Availability Zone you want associated with this input device.
     public var availabilityZone: Swift.String?
     /// The settings that you want to apply to the HD input device.
@@ -25642,7 +25643,7 @@ public struct UpdateInputDeviceInput {
 }
 
 /// Placeholder documentation for UpdateInputDeviceResponse
-public struct UpdateInputDeviceOutput {
+public struct UpdateInputDeviceOutput: Swift.Sendable {
     /// The unique ARN of the input device.
     public var arn: Swift.String?
     /// The Availability Zone associated with this input device.
@@ -25715,7 +25716,7 @@ public struct UpdateInputDeviceOutput {
 }
 
 /// The request to update some combination of the Input Security Group name and the IPv4 CIDRs the Input Security Group should allow.
-public struct UpdateInputSecurityGroupInput {
+public struct UpdateInputSecurityGroupInput: Swift.Sendable {
     /// The id of the Input Security Group to update.
     /// This member is required.
     public var inputSecurityGroupId: Swift.String?
@@ -25737,7 +25738,7 @@ public struct UpdateInputSecurityGroupInput {
 }
 
 /// Placeholder documentation for UpdateInputSecurityGroupResponse
-public struct UpdateInputSecurityGroupOutput {
+public struct UpdateInputSecurityGroupOutput: Swift.Sendable {
     /// An Input Security Group
     public var securityGroup: MediaLiveClientTypes.InputSecurityGroup?
 
@@ -25750,7 +25751,7 @@ public struct UpdateInputSecurityGroupOutput {
 }
 
 /// A request to update a multiplex.
-public struct UpdateMultiplexInput {
+public struct UpdateMultiplexInput: Swift.Sendable {
     /// ID of the multiplex to update.
     /// This member is required.
     public var multiplexId: Swift.String?
@@ -25776,7 +25777,7 @@ public struct UpdateMultiplexInput {
 }
 
 /// Placeholder documentation for UpdateMultiplexResponse
-public struct UpdateMultiplexOutput {
+public struct UpdateMultiplexOutput: Swift.Sendable {
     /// The updated multiplex.
     public var multiplex: MediaLiveClientTypes.Multiplex?
 
@@ -25789,7 +25790,7 @@ public struct UpdateMultiplexOutput {
 }
 
 /// A request to update a program in a multiplex.
-public struct UpdateMultiplexProgramInput {
+public struct UpdateMultiplexProgramInput: Swift.Sendable {
     /// The ID of the multiplex of the program to update.
     /// This member is required.
     public var multiplexId: Swift.String?
@@ -25812,7 +25813,7 @@ public struct UpdateMultiplexProgramInput {
 }
 
 /// Placeholder documentation for UpdateMultiplexProgramResponse
-public struct UpdateMultiplexProgramOutput {
+public struct UpdateMultiplexProgramOutput: Swift.Sendable {
     /// The updated multiplex program.
     public var multiplexProgram: MediaLiveClientTypes.MultiplexProgram?
 
@@ -25825,7 +25826,7 @@ public struct UpdateMultiplexProgramOutput {
 }
 
 /// A request to update the network.
-public struct UpdateNetworkInput {
+public struct UpdateNetworkInput: Swift.Sendable {
     /// Include this parameter only if you want to change the pool of IP addresses in the network. An array of IpPoolCreateRequests that identify a collection of IP addresses in this network that you want to reserve for use in MediaLive Anywhere. MediaLive Anywhere uses these IP addresses for Push inputs (in both Bridge and NAT networks) and for output destinations (only in Bridge networks). Each IpPoolUpdateRequest specifies one CIDR block.
     public var ipPools: [MediaLiveClientTypes.IpPoolUpdateRequest]?
     /// Include this parameter only if you want to change the name of the Network. Specify a name that is unique in the AWS account. Names are case-sensitive.
@@ -25851,7 +25852,7 @@ public struct UpdateNetworkInput {
 }
 
 /// Placeholder documentation for UpdateNetworkResponse
-public struct UpdateNetworkOutput {
+public struct UpdateNetworkOutput: Swift.Sendable {
     /// The ARN of this Network. It is automatically assigned when the Network is created.
     public var arn: Swift.String?
     /// Placeholder documentation for __listOf__string
@@ -25888,7 +25889,7 @@ public struct UpdateNetworkOutput {
 }
 
 /// A request to update the node.
-public struct UpdateNodeInput {
+public struct UpdateNodeInput: Swift.Sendable {
     /// The ID of the cluster
     /// This member is required.
     public var clusterId: Swift.String?
@@ -25915,7 +25916,7 @@ public struct UpdateNodeInput {
 }
 
 /// Placeholder documentation for UpdateNodeResponse
-public struct UpdateNodeOutput {
+public struct UpdateNodeOutput: Swift.Sendable {
     /// The ARN of the Node. It is automatically assigned when the Node is created.
     public var arn: Swift.String?
     /// An array of IDs. Each ID is one ChannelPlacementGroup that is associated with this Node. Empty if the Node is not yet associated with any groups.
@@ -25966,7 +25967,7 @@ public struct UpdateNodeOutput {
 extension MediaLiveClientTypes {
 
     /// Used in UpdateNodeStateRequest.
-    public enum UpdateNodeStateShape: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum UpdateNodeStateShape: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case active
         case draining
         case sdkUnknown(Swift.String)
@@ -25994,7 +25995,7 @@ extension MediaLiveClientTypes {
 }
 
 /// A request to update the state of a node.
-public struct UpdateNodeStateInput {
+public struct UpdateNodeStateInput: Swift.Sendable {
     /// The ID of the cluster
     /// This member is required.
     public var clusterId: Swift.String?
@@ -26017,7 +26018,7 @@ public struct UpdateNodeStateInput {
 }
 
 /// Placeholder documentation for UpdateNodeStateResponse
-public struct UpdateNodeStateOutput {
+public struct UpdateNodeStateOutput: Swift.Sendable {
     /// The ARN of the Node. It is automatically assigned when the Node is created.
     public var arn: Swift.String?
     /// An array of IDs. Each ID is one ChannelPlacementGroup that is associated with this Node. Empty if the Node is not yet associated with any groups.
@@ -26066,7 +26067,7 @@ public struct UpdateNodeStateOutput {
 }
 
 /// Request to update a reservation
-public struct UpdateReservationInput {
+public struct UpdateReservationInput: Swift.Sendable {
     /// Name of the reservation
     public var name: Swift.String?
     /// Renewal settings for the reservation
@@ -26088,7 +26089,7 @@ public struct UpdateReservationInput {
 }
 
 /// Placeholder documentation for UpdateReservationResponse
-public struct UpdateReservationOutput {
+public struct UpdateReservationOutput: Swift.Sendable {
     /// Reserved resources available to use
     public var reservation: MediaLiveClientTypes.Reservation?
 

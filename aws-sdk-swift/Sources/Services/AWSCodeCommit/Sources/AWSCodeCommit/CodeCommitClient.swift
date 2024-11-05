@@ -1147,6 +1147,7 @@ extension CodeCommitClient {
     /// - `InvalidRepositoryNameException` : A specified repository name is not valid. This exception occurs only when a specified repository name is not valid. Other exceptions occur when a required repository parameter is missing, or when a specified repository does not exist.
     /// - `InvalidSystemTagUsageException` : The specified tag is not valid. Key names cannot be prefixed with aws:.
     /// - `InvalidTagsMapException` : The map of tags is not valid.
+    /// - `OperationNotAllowedException` : The requested action is not allowed.
     /// - `RepositoryLimitExceededException` : A repository resource limit was exceeded.
     /// - `RepositoryNameExistsException` : The specified repository name already exists.
     /// - `RepositoryNameRequiredException` : A repository name is required, but was not specified.

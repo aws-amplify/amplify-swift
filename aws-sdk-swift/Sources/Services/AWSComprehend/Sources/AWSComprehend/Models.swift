@@ -29,7 +29,7 @@ import protocol ClientRuntime.ModeledError
 
 extension ComprehendClientTypes {
 
-    public enum AugmentedManifestsDocumentTypeFormat: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum AugmentedManifestsDocumentTypeFormat: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case plainTextDocument
         case semiStructuredDocument
         case sdkUnknown(Swift.String)
@@ -58,7 +58,7 @@ extension ComprehendClientTypes {
 
 extension ComprehendClientTypes {
 
-    public enum Split: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum Split: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case test
         case train
         case sdkUnknown(Swift.String)
@@ -86,8 +86,9 @@ extension ComprehendClientTypes {
 }
 
 extension ComprehendClientTypes {
+
     /// An augmented manifest file that provides training data for your custom model. An augmented manifest file is a labeled dataset that is produced by Amazon SageMaker Ground Truth.
-    public struct AugmentedManifestsListItem {
+    public struct AugmentedManifestsListItem: Swift.Sendable {
         /// The S3 prefix to the annotation files that are referred in the augmented manifest file.
         public var annotationDataS3Uri: Swift.String?
         /// The JSON attribute that contains the annotations for your training documents. The number of attribute names that you specify depends on whether your augmented manifest file is the output of a single labeling job or a chained labeling job. If your file is the output of a single labeling job, specify the LabelAttributeName key that was used when the job was created in Ground Truth. If your file is the output of a chained labeling job, specify the LabelAttributeName key for one or more jobs in the chain. Each LabelAttributeName key provides the annotations from an individual job.
@@ -124,7 +125,6 @@ extension ComprehendClientTypes {
             self.split = split
         }
     }
-
 }
 
 /// The number of documents in the request exceeds the limit of 25. Try your request again with fewer documents.
@@ -177,7 +177,7 @@ public struct InternalServerException: ClientRuntime.ModeledError, AWSClientRunt
 
 extension ComprehendClientTypes {
 
-    public enum InvalidRequestDetailReason: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum InvalidRequestDetailReason: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case documentSizeExceeded
         case pageLimitExceeded
         case textractAccessDenied
@@ -211,8 +211,9 @@ extension ComprehendClientTypes {
 }
 
 extension ComprehendClientTypes {
+
     /// Provides additional detail about why the request failed.
-    public struct InvalidRequestDetail {
+    public struct InvalidRequestDetail: Swift.Sendable {
         /// Reason codes include the following values:
         ///
         /// * DOCUMENT_SIZE_EXCEEDED - Document size is too large. Check the size of your file and resubmit the request.
@@ -237,12 +238,11 @@ extension ComprehendClientTypes {
             self.reason = reason
         }
     }
-
 }
 
 extension ComprehendClientTypes {
 
-    public enum InvalidRequestReason: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum InvalidRequestReason: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case invalidDocument
         case sdkUnknown(Swift.String)
 
@@ -321,7 +321,7 @@ public struct TextSizeLimitExceededException: ClientRuntime.ModeledError, AWSCli
     }
 }
 
-public struct BatchDetectDominantLanguageInput {
+public struct BatchDetectDominantLanguageInput: Swift.Sendable {
     /// A list containing the UTF-8 encoded text of the input documents. The list can contain a maximum of 25 documents. Each document should contain at least 20 characters. The maximum size of each document is 5 KB.
     /// This member is required.
     public var textList: [Swift.String]?
@@ -340,8 +340,9 @@ extension BatchDetectDominantLanguageInput: Swift.CustomDebugStringConvertible {
 }
 
 extension ComprehendClientTypes {
+
     /// Describes an error that occurred while processing a document in a batch. The operation returns on BatchItemError object for each document that contained an error.
-    public struct BatchItemError {
+    public struct BatchItemError: Swift.Sendable {
         /// The numeric error code of the error.
         public var errorCode: Swift.String?
         /// A text description of the error.
@@ -360,12 +361,12 @@ extension ComprehendClientTypes {
             self.index = index
         }
     }
-
 }
 
 extension ComprehendClientTypes {
+
     /// Returns the code for the dominant language in the input text and the level of confidence that Amazon Comprehend has in the accuracy of the detection.
-    public struct DominantLanguage {
+    public struct DominantLanguage: Swift.Sendable {
         /// The RFC 5646 language code for the dominant language. For more information about RFC 5646, see [Tags for Identifying Languages](https://tools.ietf.org/html/rfc5646) on the IETF Tools web site.
         public var languageCode: Swift.String?
         /// The level of confidence that Amazon Comprehend has in the accuracy of the detection.
@@ -380,12 +381,12 @@ extension ComprehendClientTypes {
             self.score = score
         }
     }
-
 }
 
 extension ComprehendClientTypes {
+
     /// The result of calling the operation. The operation returns one object for each document that is successfully processed by the operation.
-    public struct BatchDetectDominantLanguageItemResult {
+    public struct BatchDetectDominantLanguageItemResult: Swift.Sendable {
         /// The zero-based index of the document in the input list.
         public var index: Swift.Int?
         /// One or more [DominantLanguage] objects describing the dominant languages in the document.
@@ -400,10 +401,9 @@ extension ComprehendClientTypes {
             self.languages = languages
         }
     }
-
 }
 
-public struct BatchDetectDominantLanguageOutput {
+public struct BatchDetectDominantLanguageOutput: Swift.Sendable {
     /// A list containing one object for each document that contained an error. The results are sorted in ascending order by the Index field and match the order of the documents in the input list. If there are no errors in the batch, the ErrorList is empty.
     /// This member is required.
     public var errorList: [ComprehendClientTypes.BatchItemError]?
@@ -453,7 +453,7 @@ public struct UnsupportedLanguageException: ClientRuntime.ModeledError, AWSClien
 
 extension ComprehendClientTypes {
 
-    public enum LanguageCode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum LanguageCode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case ar
         case de
         case en
@@ -510,7 +510,7 @@ extension ComprehendClientTypes {
     }
 }
 
-public struct BatchDetectEntitiesInput {
+public struct BatchDetectEntitiesInput: Swift.Sendable {
     /// The language of the input documents. You can specify any of the primary languages supported by Amazon Comprehend. All documents must be in the same language.
     /// This member is required.
     public var languageCode: ComprehendClientTypes.LanguageCode?
@@ -534,8 +534,9 @@ extension BatchDetectEntitiesInput: Swift.CustomDebugStringConvertible {
 }
 
 extension ComprehendClientTypes {
+
     /// Nested block contained within a block.
-    public struct ChildBlock {
+    public struct ChildBlock: Swift.Sendable {
         /// Offset of the start of the child block within its parent block.
         public var beginOffset: Swift.Int?
         /// Unique identifier for the child block.
@@ -554,12 +555,12 @@ extension ComprehendClientTypes {
             self.endOffset = endOffset
         }
     }
-
 }
 
 extension ComprehendClientTypes {
+
     /// A reference to a block.
-    public struct BlockReference {
+    public struct BlockReference: Swift.Sendable {
         /// Offset of the start of the block within its parent block.
         public var beginOffset: Swift.Int?
         /// Unique identifier for the block.
@@ -582,12 +583,11 @@ extension ComprehendClientTypes {
             self.endOffset = endOffset
         }
     }
-
 }
 
 extension ComprehendClientTypes {
 
-    public enum EntityType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum EntityType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case commercialItem
         case date
         case event
@@ -636,8 +636,9 @@ extension ComprehendClientTypes {
 }
 
 extension ComprehendClientTypes {
+
     /// Provides information about an entity.
-    public struct Entity {
+    public struct Entity: Swift.Sendable {
         /// The zero-based offset from the beginning of the source text to the first character in the entity. This field is empty for non-text input.
         public var beginOffset: Swift.Int?
         /// A reference to each block for this entity. This field is empty for plain-text input.
@@ -668,12 +669,12 @@ extension ComprehendClientTypes {
             self.type = type
         }
     }
-
 }
 
 extension ComprehendClientTypes {
+
     /// The result of calling the operation. The operation returns one object for each document that is successfully processed by the operation.
-    public struct BatchDetectEntitiesItemResult {
+    public struct BatchDetectEntitiesItemResult: Swift.Sendable {
         /// One or more [Entity] objects, one for each entity detected in the document.
         public var entities: [ComprehendClientTypes.Entity]?
         /// The zero-based index of the document in the input list.
@@ -688,10 +689,9 @@ extension ComprehendClientTypes {
             self.index = index
         }
     }
-
 }
 
-public struct BatchDetectEntitiesOutput {
+public struct BatchDetectEntitiesOutput: Swift.Sendable {
     /// A list containing one object for each document that contained an error. The results are sorted in ascending order by the Index field and match the order of the documents in the input list. If there are no errors in the batch, the ErrorList is empty.
     /// This member is required.
     public var errorList: [ComprehendClientTypes.BatchItemError]?
@@ -715,7 +715,7 @@ extension BatchDetectEntitiesOutput: Swift.CustomDebugStringConvertible {
     }
 }
 
-public struct BatchDetectKeyPhrasesInput {
+public struct BatchDetectKeyPhrasesInput: Swift.Sendable {
     /// The language of the input documents. You can specify any of the primary languages supported by Amazon Comprehend. All documents must be in the same language.
     /// This member is required.
     public var languageCode: ComprehendClientTypes.LanguageCode?
@@ -739,8 +739,9 @@ extension BatchDetectKeyPhrasesInput: Swift.CustomDebugStringConvertible {
 }
 
 extension ComprehendClientTypes {
+
     /// Describes a key noun phrase.
-    public struct KeyPhrase {
+    public struct KeyPhrase: Swift.Sendable {
         /// The zero-based offset from the beginning of the source text to the first character in the key phrase.
         public var beginOffset: Swift.Int?
         /// The zero-based offset from the beginning of the source text to the last character in the key phrase.
@@ -763,12 +764,12 @@ extension ComprehendClientTypes {
             self.text = text
         }
     }
-
 }
 
 extension ComprehendClientTypes {
+
     /// The result of calling the operation. The operation returns one object for each document that is successfully processed by the operation.
-    public struct BatchDetectKeyPhrasesItemResult {
+    public struct BatchDetectKeyPhrasesItemResult: Swift.Sendable {
         /// The zero-based index of the document in the input list.
         public var index: Swift.Int?
         /// One or more [KeyPhrase] objects, one for each key phrase detected in the document.
@@ -783,10 +784,9 @@ extension ComprehendClientTypes {
             self.keyPhrases = keyPhrases
         }
     }
-
 }
 
-public struct BatchDetectKeyPhrasesOutput {
+public struct BatchDetectKeyPhrasesOutput: Swift.Sendable {
     /// A list containing one object for each document that contained an error. The results are sorted in ascending order by the Index field and match the order of the documents in the input list. If there are no errors in the batch, the ErrorList is empty.
     /// This member is required.
     public var errorList: [ComprehendClientTypes.BatchItemError]?
@@ -810,7 +810,7 @@ extension BatchDetectKeyPhrasesOutput: Swift.CustomDebugStringConvertible {
     }
 }
 
-public struct BatchDetectSentimentInput {
+public struct BatchDetectSentimentInput: Swift.Sendable {
     /// The language of the input documents. You can specify any of the primary languages supported by Amazon Comprehend. All documents must be in the same language.
     /// This member is required.
     public var languageCode: ComprehendClientTypes.LanguageCode?
@@ -835,7 +835,7 @@ extension BatchDetectSentimentInput: Swift.CustomDebugStringConvertible {
 
 extension ComprehendClientTypes {
 
-    public enum SentimentType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SentimentType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case mixed
         case negative
         case neutral
@@ -869,8 +869,9 @@ extension ComprehendClientTypes {
 }
 
 extension ComprehendClientTypes {
+
     /// Describes the level of confidence that Amazon Comprehend has in the accuracy of its detection of sentiments.
-    public struct SentimentScore {
+    public struct SentimentScore: Swift.Sendable {
         /// The level of confidence that Amazon Comprehend has in the accuracy of its detection of the MIXED sentiment.
         public var mixed: Swift.Float?
         /// The level of confidence that Amazon Comprehend has in the accuracy of its detection of the NEGATIVE sentiment.
@@ -893,12 +894,12 @@ extension ComprehendClientTypes {
             self.positive = positive
         }
     }
-
 }
 
 extension ComprehendClientTypes {
+
     /// The result of calling the operation. The operation returns one object for each document that is successfully processed by the operation.
-    public struct BatchDetectSentimentItemResult {
+    public struct BatchDetectSentimentItemResult: Swift.Sendable {
         /// The zero-based index of the document in the input list.
         public var index: Swift.Int?
         /// The sentiment detected in the document.
@@ -917,10 +918,9 @@ extension ComprehendClientTypes {
             self.sentimentScore = sentimentScore
         }
     }
-
 }
 
-public struct BatchDetectSentimentOutput {
+public struct BatchDetectSentimentOutput: Swift.Sendable {
     /// A list containing one object for each document that contained an error. The results are sorted in ascending order by the Index field and match the order of the documents in the input list. If there are no errors in the batch, the ErrorList is empty.
     /// This member is required.
     public var errorList: [ComprehendClientTypes.BatchItemError]?
@@ -946,7 +946,7 @@ extension BatchDetectSentimentOutput: Swift.CustomDebugStringConvertible {
 
 extension ComprehendClientTypes {
 
-    public enum SyntaxLanguageCode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SyntaxLanguageCode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case de
         case en
         case es
@@ -985,7 +985,7 @@ extension ComprehendClientTypes {
     }
 }
 
-public struct BatchDetectSyntaxInput {
+public struct BatchDetectSyntaxInput: Swift.Sendable {
     /// The language of the input documents. You can specify any of the following languages supported by Amazon Comprehend: German ("de"), English ("en"), Spanish ("es"), French ("fr"), Italian ("it"), or Portuguese ("pt"). All documents must be in the same language.
     /// This member is required.
     public var languageCode: ComprehendClientTypes.SyntaxLanguageCode?
@@ -1010,7 +1010,7 @@ extension BatchDetectSyntaxInput: Swift.CustomDebugStringConvertible {
 
 extension ComprehendClientTypes {
 
-    public enum PartOfSpeechTagType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum PartOfSpeechTagType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case adj
         case adp
         case adv
@@ -1086,8 +1086,9 @@ extension ComprehendClientTypes {
 }
 
 extension ComprehendClientTypes {
+
     /// Identifies the part of speech represented by the token and gives the confidence that Amazon Comprehend has that the part of speech was correctly identified. For more information about the parts of speech that Amazon Comprehend can identify, see [Syntax](https://docs.aws.amazon.com/comprehend/latest/dg/how-syntax.html) in the Comprehend Developer Guide.
-    public struct PartOfSpeechTag {
+    public struct PartOfSpeechTag: Swift.Sendable {
         /// The confidence that Amazon Comprehend has that the part of speech was correctly identified.
         public var score: Swift.Float?
         /// Identifies the part of speech that the token represents.
@@ -1102,12 +1103,12 @@ extension ComprehendClientTypes {
             self.tag = tag
         }
     }
-
 }
 
 extension ComprehendClientTypes {
+
     /// Represents a work in the input text that was recognized and assigned a part of speech. There is one syntax token record for each word in the source text.
-    public struct SyntaxToken {
+    public struct SyntaxToken: Swift.Sendable {
         /// The zero-based offset from the beginning of the source text to the first character in the word.
         public var beginOffset: Swift.Int?
         /// The zero-based offset from the beginning of the source text to the last character in the word.
@@ -1134,12 +1135,12 @@ extension ComprehendClientTypes {
             self.tokenId = tokenId
         }
     }
-
 }
 
 extension ComprehendClientTypes {
+
     /// The result of calling the operation. The operation returns one object that is successfully processed by the operation.
-    public struct BatchDetectSyntaxItemResult {
+    public struct BatchDetectSyntaxItemResult: Swift.Sendable {
         /// The zero-based index of the document in the input list.
         public var index: Swift.Int?
         /// The syntax tokens for the words in the document, one token for each word.
@@ -1154,10 +1155,9 @@ extension ComprehendClientTypes {
             self.syntaxTokens = syntaxTokens
         }
     }
-
 }
 
-public struct BatchDetectSyntaxOutput {
+public struct BatchDetectSyntaxOutput: Swift.Sendable {
     /// A list containing one object for each document that contained an error. The results are sorted in ascending order by the Index field and match the order of the documents in the input list. If there are no errors in the batch, the ErrorList is empty.
     /// This member is required.
     public var errorList: [ComprehendClientTypes.BatchItemError]?
@@ -1181,7 +1181,7 @@ extension BatchDetectSyntaxOutput: Swift.CustomDebugStringConvertible {
     }
 }
 
-public struct BatchDetectTargetedSentimentInput {
+public struct BatchDetectTargetedSentimentInput: Swift.Sendable {
     /// The language of the input documents. Currently, English is the only supported language.
     /// This member is required.
     public var languageCode: ComprehendClientTypes.LanguageCode?
@@ -1205,8 +1205,9 @@ extension BatchDetectTargetedSentimentInput: Swift.CustomDebugStringConvertible 
 }
 
 extension ComprehendClientTypes {
+
     /// Contains the sentiment and sentiment score for one mention of an entity. For more information about targeted sentiment, see [Targeted sentiment](https://docs.aws.amazon.com/comprehend/latest/dg/how-targeted-sentiment.html) in the Amazon Comprehend Developer Guide.
-    public struct MentionSentiment {
+    public struct MentionSentiment: Swift.Sendable {
         /// The sentiment of the mention.
         public var sentiment: ComprehendClientTypes.SentimentType?
         /// Describes the level of confidence that Amazon Comprehend has in the accuracy of its detection of sentiments.
@@ -1221,12 +1222,11 @@ extension ComprehendClientTypes {
             self.sentimentScore = sentimentScore
         }
     }
-
 }
 
 extension ComprehendClientTypes {
 
-    public enum TargetedSentimentEntityType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum TargetedSentimentEntityType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case attribute
         case book
         case brand
@@ -1299,8 +1299,9 @@ extension ComprehendClientTypes {
 }
 
 extension ComprehendClientTypes {
+
     /// Information about one mention of an entity. The mention information includes the location of the mention in the text and the sentiment of the mention. For more information about targeted sentiment, see [Targeted sentiment](https://docs.aws.amazon.com/comprehend/latest/dg/how-targeted-sentiment.html) in the Amazon Comprehend Developer Guide.
-    public struct TargetedSentimentMention {
+    public struct TargetedSentimentMention: Swift.Sendable {
         /// The offset into the document text where the mention begins.
         public var beginOffset: Swift.Int?
         /// The offset into the document text where the mention ends.
@@ -1335,12 +1336,12 @@ extension ComprehendClientTypes {
             self.type = type
         }
     }
-
 }
 
 extension ComprehendClientTypes {
+
     /// Information about one of the entities found by targeted sentiment analysis. For more information about targeted sentiment, see [Targeted sentiment](https://docs.aws.amazon.com/comprehend/latest/dg/how-targeted-sentiment.html) in the Amazon Comprehend Developer Guide.
-    public struct TargetedSentimentEntity {
+    public struct TargetedSentimentEntity: Swift.Sendable {
         /// One or more index into the Mentions array that provides the best name for the entity group.
         public var descriptiveMentionIndex: [Swift.Int]?
         /// An array of mentions of the entity in the document. The array represents a co-reference group. See [ Co-reference group](https://docs.aws.amazon.com/comprehend/latest/dg/how-targeted-sentiment.html#how-targeted-sentiment-values) for an example.
@@ -1355,12 +1356,12 @@ extension ComprehendClientTypes {
             self.mentions = mentions
         }
     }
-
 }
 
 extension ComprehendClientTypes {
+
     /// Analysis results for one of the documents in the batch.
-    public struct BatchDetectTargetedSentimentItemResult {
+    public struct BatchDetectTargetedSentimentItemResult: Swift.Sendable {
         /// An array of targeted sentiment entities.
         public var entities: [ComprehendClientTypes.TargetedSentimentEntity]?
         /// The zero-based index of this result in the input list.
@@ -1375,10 +1376,9 @@ extension ComprehendClientTypes {
             self.index = index
         }
     }
-
 }
 
-public struct BatchDetectTargetedSentimentOutput {
+public struct BatchDetectTargetedSentimentOutput: Swift.Sendable {
     /// List of errors that the operation can return.
     /// This member is required.
     public var errorList: [ComprehendClientTypes.BatchItemError]?
@@ -1404,7 +1404,7 @@ extension BatchDetectTargetedSentimentOutput: Swift.CustomDebugStringConvertible
 
 extension ComprehendClientTypes {
 
-    public enum BlockType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum BlockType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case line
         case word
         case sdkUnknown(Swift.String)
@@ -1432,8 +1432,9 @@ extension ComprehendClientTypes {
 }
 
 extension ComprehendClientTypes {
+
     /// The bounding box around the detected page or around an element on a document page. The left (x-coordinate) and top (y-coordinate) are coordinates that represent the top and left sides of the bounding box. Note that the upper-left corner of the image is the origin (0,0). For additional information, see [BoundingBox](https://docs.aws.amazon.com/textract/latest/dg/API_BoundingBox.html) in the Amazon Textract API reference.
-    public struct BoundingBox {
+    public struct BoundingBox: Swift.Sendable {
         /// The height of the bounding box as a ratio of the overall document page height.
         public var height: Swift.Float?
         /// The left coordinate of the bounding box as a ratio of overall document page width.
@@ -1456,12 +1457,12 @@ extension ComprehendClientTypes {
             self.width = width
         }
     }
-
 }
 
 extension ComprehendClientTypes {
+
     /// The X and Y coordinates of a point on a document page. For additional information, see [Point](https://docs.aws.amazon.com/textract/latest/dg/API_Point.html) in the Amazon Textract API reference.
-    public struct Point {
+    public struct Point: Swift.Sendable {
         /// The value of the X coordinate for a point on a polygon
         public var x: Swift.Float?
         /// The value of the Y coordinate for a point on a polygon
@@ -1476,12 +1477,12 @@ extension ComprehendClientTypes {
             self.y = y
         }
     }
-
 }
 
 extension ComprehendClientTypes {
+
     /// Information about the location of items on a document page. For additional information, see [Geometry](https://docs.aws.amazon.com/textract/latest/dg/API_Geometry.html) in the Amazon Textract API reference.
-    public struct Geometry {
+    public struct Geometry: Swift.Sendable {
         /// An axis-aligned coarse representation of the location of the recognized item on the document page.
         public var boundingBox: ComprehendClientTypes.BoundingBox?
         /// Within the bounding box, a fine-grained polygon around the recognized item.
@@ -1496,12 +1497,11 @@ extension ComprehendClientTypes {
             self.polygon = polygon
         }
     }
-
 }
 
 extension ComprehendClientTypes {
 
-    public enum RelationshipType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum RelationshipType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case child
         case sdkUnknown(Swift.String)
 
@@ -1526,8 +1526,9 @@ extension ComprehendClientTypes {
 }
 
 extension ComprehendClientTypes {
+
     /// List of child blocks for the current block.
-    public struct RelationshipsListItem {
+    public struct RelationshipsListItem: Swift.Sendable {
         /// Identifers of the child blocks.
         public var ids: [Swift.String]?
         /// Only supported relationship is a child relationship.
@@ -1542,12 +1543,12 @@ extension ComprehendClientTypes {
             self.type = type
         }
     }
-
 }
 
 extension ComprehendClientTypes {
+
     /// Information about each word or line of text in the input document. For additional information, see [Block](https://docs.aws.amazon.com/textract/latest/dg/API_Block.html) in the Amazon Textract API reference.
-    public struct Block {
+    public struct Block: Swift.Sendable {
         /// The block represents a line of text or one word of text.
         ///
         /// * WORD - A word that's detected on a document page. A word is one or more ISO basic Latin script characters that aren't separated by spaces.
@@ -1582,12 +1583,12 @@ extension ComprehendClientTypes {
             self.text = text
         }
     }
-
 }
 
 extension ComprehendClientTypes {
+
     /// Describes the result metrics for the test data associated with an documentation classifier.
-    public struct ClassifierEvaluationMetrics {
+    public struct ClassifierEvaluationMetrics: Swift.Sendable {
         /// The fraction of the labels that were correct recognized. It is computed by dividing the number of labels in the test documents that were correctly recognized by the total number of labels in the test documents.
         public var accuracy: Swift.Double?
         /// A measure of how accurate the classifier results are for the test data. It is derived from the Precision and Recall values. The F1Score is the harmonic average of the two scores. The highest score is 1, and the worst score is 0.
@@ -1626,12 +1627,12 @@ extension ComprehendClientTypes {
             self.recall = recall
         }
     }
-
 }
 
 extension ComprehendClientTypes {
+
     /// Provides information about a document classifier.
-    public struct ClassifierMetadata {
+    public struct ClassifierMetadata: Swift.Sendable {
         /// Describes the result metrics for the test data associated with an documentation classifier.
         public var evaluationMetrics: ComprehendClientTypes.ClassifierEvaluationMetrics?
         /// The number of labels in the input data.
@@ -1654,7 +1655,6 @@ extension ComprehendClientTypes {
             self.numberOfTrainedDocuments = numberOfTrainedDocuments
         }
     }
-
 }
 
 extension ComprehendClientTypes.ClassifierMetadata: Swift.CustomDebugStringConvertible {
@@ -1689,7 +1689,7 @@ public struct ResourceUnavailableException: ClientRuntime.ModeledError, AWSClien
 
 extension ComprehendClientTypes {
 
-    public enum DocumentReadAction: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DocumentReadAction: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case textractAnalyzeDocument
         case textractDetectDocumentText
         case sdkUnknown(Swift.String)
@@ -1718,7 +1718,7 @@ extension ComprehendClientTypes {
 
 extension ComprehendClientTypes {
 
-    public enum DocumentReadMode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DocumentReadMode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case forceDocumentReadAction
         case serviceDefault
         case sdkUnknown(Swift.String)
@@ -1748,7 +1748,7 @@ extension ComprehendClientTypes {
 extension ComprehendClientTypes {
 
     /// TABLES or FORMS
-    public enum DocumentReadFeatureTypes: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DocumentReadFeatureTypes: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case forms
         case tables
         case sdkUnknown(Swift.String)
@@ -1776,6 +1776,7 @@ extension ComprehendClientTypes {
 }
 
 extension ComprehendClientTypes {
+
     /// Provides configuration parameters to override the default actions for extracting text from PDF documents and image files. By default, Amazon Comprehend performs the following actions to extract text from files, based on the input file type:
     ///
     /// * Word files - Amazon Comprehend parser extracts the text.
@@ -1786,7 +1787,7 @@ extension ComprehendClientTypes {
     ///
     ///
     /// DocumentReaderConfig does not apply to plain text files or Word files. For image files and PDF documents, you can override these default actions using the fields listed below. For more information, see [ Setting text extraction options](https://docs.aws.amazon.com/comprehend/latest/dg/idp-set-textract-options.html) in the Comprehend Developer Guide.
-    public struct DocumentReaderConfig {
+    public struct DocumentReaderConfig: Swift.Sendable {
         /// This field defines the Amazon Textract API operation that Amazon Comprehend uses to extract text from PDF files and image files. Enter one of the following values:
         ///
         /// * TEXTRACT_DETECT_DOCUMENT_TEXT - The Amazon Comprehend service uses the DetectDocumentText API operation.
@@ -1818,10 +1819,9 @@ extension ComprehendClientTypes {
             self.featureTypes = featureTypes
         }
     }
-
 }
 
-public struct ClassifyDocumentInput {
+public struct ClassifyDocumentInput: Swift.Sendable {
     /// Use the Bytes parameter to input a text, PDF, Word or image file. When you classify a document using a custom model, you can also use the Bytes parameter to input an Amazon Textract DetectDocumentText or AnalyzeDocument output file. To classify a document using the prompt safety classifier, use the Text parameter for input. Provide the input document as a sequence of base64-encoded bytes. If your code uses an Amazon Web Services SDK to classify documents, the SDK may encode the document file bytes for you. The maximum length of this field depends on the input document type. For details, see [ Inputs for real-time custom analysis](https://docs.aws.amazon.com/comprehend/latest/dg/idp-inputs-sync.html) in the Comprehend Developer Guide. If you use the Bytes parameter, do not use the Text parameter.
     public var bytes: Foundation.Data?
     /// Provides configuration parameters to override the default actions for extracting text from PDF documents and image files.
@@ -1852,8 +1852,9 @@ extension ClassifyDocumentInput: Swift.CustomDebugStringConvertible {
 }
 
 extension ComprehendClientTypes {
+
     /// Specifies the class that categorizes the document being analyzed
-    public struct DocumentClass {
+    public struct DocumentClass: Swift.Sendable {
         /// The name of the class.
         public var name: Swift.String?
         /// Page number in the input document. This field is present in the response only if your request includes the Byte parameter.
@@ -1872,12 +1873,12 @@ extension ComprehendClientTypes {
             self.score = score
         }
     }
-
 }
 
 extension ComprehendClientTypes {
+
     /// Array of the number of characters extracted from each page.
-    public struct ExtractedCharactersListItem {
+    public struct ExtractedCharactersListItem: Swift.Sendable {
         /// Number of characters extracted from each page.
         public var count: Swift.Int?
         /// Page number.
@@ -1892,12 +1893,12 @@ extension ComprehendClientTypes {
             self.page = page
         }
     }
-
 }
 
 extension ComprehendClientTypes {
+
     /// Information about the document, discovered during text extraction.
-    public struct DocumentMetadata {
+    public struct DocumentMetadata: Swift.Sendable {
         /// List of pages in the document, with the number of characters extracted from each page.
         public var extractedCharacters: [ComprehendClientTypes.ExtractedCharactersListItem]?
         /// Number of pages in the document.
@@ -1912,12 +1913,11 @@ extension ComprehendClientTypes {
             self.pages = pages
         }
     }
-
 }
 
 extension ComprehendClientTypes {
 
-    public enum DocumentType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DocumentType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case image
         case msWord
         case nativePdf
@@ -1960,8 +1960,9 @@ extension ComprehendClientTypes {
 }
 
 extension ComprehendClientTypes {
+
     /// Document type for each page in the document.
-    public struct DocumentTypeListItem {
+    public struct DocumentTypeListItem: Swift.Sendable {
         /// Page number.
         public var page: Swift.Int?
         /// Document type.
@@ -1976,12 +1977,11 @@ extension ComprehendClientTypes {
             self.type = type
         }
     }
-
 }
 
 extension ComprehendClientTypes {
 
-    public enum PageBasedErrorCode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum PageBasedErrorCode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case internalServerError
         case pageCharactersExceeded
         case pageSizeExceeded
@@ -2018,6 +2018,7 @@ extension ComprehendClientTypes {
 }
 
 extension ComprehendClientTypes {
+
     /// Text extraction encountered one or more page-level errors in the input document. The ErrorCode contains one of the following values:
     ///
     /// * TEXTRACT_BAD_PAGE - Amazon Textract cannot read the page. For more information about page limits in Amazon Textract, see [ Page Quotas in Amazon Textract](https://docs.aws.amazon.com/textract/latest/dg/limits-document.html).
@@ -2029,7 +2030,7 @@ extension ComprehendClientTypes {
     /// * PAGE_SIZE_EXCEEDED - The maximum page size is 10 MB.
     ///
     /// * INTERNAL_SERVER_ERROR - The request encountered a service issue. Try the API request again.
-    public struct ErrorsListItem {
+    public struct ErrorsListItem: Swift.Sendable {
         /// Error code for the cause of the error.
         public var errorCode: ComprehendClientTypes.PageBasedErrorCode?
         /// Text message explaining the reason for the error.
@@ -2048,12 +2049,12 @@ extension ComprehendClientTypes {
             self.page = page
         }
     }
-
 }
 
 extension ComprehendClientTypes {
+
     /// Specifies one of the label or labels that categorize the document being analyzed.
-    public struct DocumentLabel {
+    public struct DocumentLabel: Swift.Sendable {
         /// The name of the label.
         public var name: Swift.String?
         /// Page number where the label occurs. This field is present in the response only if your request includes the Byte parameter.
@@ -2072,12 +2073,11 @@ extension ComprehendClientTypes {
             self.score = score
         }
     }
-
 }
 
 extension ComprehendClientTypes {
 
-    public enum PageBasedWarningCode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum PageBasedWarningCode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case inferencingNativeDocumentWithPlaintextTrainedModel
         case inferencingPlaintextWithNativeTrainedModel
         case sdkUnknown(Swift.String)
@@ -2105,12 +2105,13 @@ extension ComprehendClientTypes {
 }
 
 extension ComprehendClientTypes {
+
     /// The system identified one of the following warnings while processing the input document:
     ///
     /// * The document to classify is plain text, but the classifier is a native document model.
     ///
     /// * The document to classify is semi-structured, but the classifier is a plain-text model.
-    public struct WarningsListItem {
+    public struct WarningsListItem: Swift.Sendable {
         /// Page number in the input document.
         public var page: Swift.Int?
         /// The type of warning.
@@ -2129,10 +2130,9 @@ extension ComprehendClientTypes {
             self.warnMessage = warnMessage
         }
     }
-
 }
 
-public struct ClassifyDocumentOutput {
+public struct ClassifyDocumentOutput: Swift.Sendable {
     /// The classes used by the document being analyzed. These are used for models trained in multi-class mode. Individual classes are mutually exclusive and each document is expected to have only a single class assigned to it. For example, an animal can be a dog or a cat, but not both at the same time. For prompt safety classification, the response includes only two classes (SAFE_PROMPT and UNSAFE_PROMPT), along with a confidence score for each class. The value range of the score is zero to one, where one is the highest confidence.
     public var classes: [ComprehendClientTypes.DocumentClass]?
     /// Extraction information about the document. This field is present in the response only if your request includes the Byte parameter.
@@ -2170,7 +2170,7 @@ extension ClassifyDocumentOutput: Swift.CustomDebugStringConvertible {
     }
 }
 
-public struct ContainsPiiEntitiesInput {
+public struct ContainsPiiEntitiesInput: Swift.Sendable {
     /// The language of the input documents.
     /// This member is required.
     public var languageCode: ComprehendClientTypes.LanguageCode?
@@ -2190,7 +2190,7 @@ public struct ContainsPiiEntitiesInput {
 
 extension ComprehendClientTypes {
 
-    public enum PiiEntityType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum PiiEntityType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case address
         case age
         case all
@@ -2323,8 +2323,9 @@ extension ComprehendClientTypes {
 }
 
 extension ComprehendClientTypes {
+
     /// Specifies one of the label or labels that categorize the personally identifiable information (PII) entity being analyzed.
-    public struct EntityLabel {
+    public struct EntityLabel: Swift.Sendable {
         /// The name of the label.
         public var name: ComprehendClientTypes.PiiEntityType?
         /// The level of confidence that Amazon Comprehend has in the accuracy of the detection.
@@ -2339,10 +2340,9 @@ extension ComprehendClientTypes {
             self.score = score
         }
     }
-
 }
 
-public struct ContainsPiiEntitiesOutput {
+public struct ContainsPiiEntitiesOutput: Swift.Sendable {
     /// The labels used in the document being analyzed. Individual labels represent personally identifiable information (PII) entity types.
     public var labels: [ComprehendClientTypes.EntityLabel]?
 
@@ -2476,7 +2476,7 @@ public struct TooManyTagsException: ClientRuntime.ModeledError, AWSClientRuntime
 
 extension ComprehendClientTypes {
 
-    public enum DatasetType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DatasetType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case test
         case train
         case sdkUnknown(Swift.String)
@@ -2504,8 +2504,9 @@ extension ComprehendClientTypes {
 }
 
 extension ComprehendClientTypes {
+
     /// An augmented manifest file that provides training data for your custom model. An augmented manifest file is a labeled dataset that is produced by Amazon SageMaker Ground Truth.
-    public struct DatasetAugmentedManifestsListItem {
+    public struct DatasetAugmentedManifestsListItem: Swift.Sendable {
         /// The S3 prefix to the annotation files that are referred in the augmented manifest file.
         public var annotationDataS3Uri: Swift.String?
         /// The JSON attribute that contains the annotations for your training documents. The number of attribute names that you specify depends on whether your augmented manifest file is the output of a single labeling job or a chained labeling job. If your file is the output of a single labeling job, specify the LabelAttributeName key that was used when the job was created in Ground Truth. If your file is the output of a chained labeling job, specify the LabelAttributeName key for one or more jobs in the chain. Each LabelAttributeName key provides the annotations from an individual job.
@@ -2534,12 +2535,11 @@ extension ComprehendClientTypes {
             self.sourceDocumentsS3Uri = sourceDocumentsS3Uri
         }
     }
-
 }
 
 extension ComprehendClientTypes {
 
-    public enum DatasetDataFormat: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DatasetDataFormat: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case augmentedManifest
         case comprehendCsv
         case sdkUnknown(Swift.String)
@@ -2567,8 +2567,9 @@ extension ComprehendClientTypes {
 }
 
 extension ComprehendClientTypes {
+
     /// Describes the dataset input data configuration for a document classifier model. For more information on how the input file is formatted, see [Preparing training data](https://docs.aws.amazon.com/comprehend/latest/dg/prep-classifier-data.html) in the Comprehend Developer Guide.
-    public struct DatasetDocumentClassifierInputDataConfig {
+    public struct DatasetDocumentClassifierInputDataConfig: Swift.Sendable {
         /// Indicates the delimiter used to separate each label for training a multi-label classifier. The default delimiter between labels is a pipe (|). You can use a different character as a delimiter (if it's an allowed character) by specifying it under Delimiter for labels. If the training documents use a delimiter other than the default or the delimiter you specify, the labels on that line will be combined to make a single unique label, such as LABELLABELLABEL.
         public var labelDelimiter: Swift.String?
         /// The Amazon S3 URI for the input data. The S3 bucket must be in the same Region as the API endpoint that you are calling. The URI can point to a single input file or it can provide the prefix for a collection of input files. For example, if you use the URI S3://bucketName/prefix, if the prefix is a single file, Amazon Comprehend uses that file as input. If more than one file begins with the prefix, Amazon Comprehend uses all of them as input. This parameter is required if you set DataFormat to COMPREHEND_CSV.
@@ -2584,12 +2585,12 @@ extension ComprehendClientTypes {
             self.s3Uri = s3Uri
         }
     }
-
 }
 
 extension ComprehendClientTypes {
+
     /// Describes the annotations associated with a entity recognizer.
-    public struct DatasetEntityRecognizerAnnotations {
+    public struct DatasetEntityRecognizerAnnotations: Swift.Sendable {
         /// Specifies the Amazon S3 location where the training documents for an entity recognizer are located. The URI must be in the same Region as the API endpoint that you are calling.
         /// This member is required.
         public var s3Uri: Swift.String?
@@ -2601,12 +2602,11 @@ extension ComprehendClientTypes {
             self.s3Uri = s3Uri
         }
     }
-
 }
 
 extension ComprehendClientTypes {
 
-    public enum InputFormat: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum InputFormat: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case oneDocPerFile
         case oneDocPerLine
         case sdkUnknown(Swift.String)
@@ -2634,8 +2634,9 @@ extension ComprehendClientTypes {
 }
 
 extension ComprehendClientTypes {
+
     /// Describes the documents submitted with a dataset for an entity recognizer model.
-    public struct DatasetEntityRecognizerDocuments {
+    public struct DatasetEntityRecognizerDocuments: Swift.Sendable {
         /// Specifies how the text in an input file should be processed. This is optional, and the default is ONE_DOC_PER_LINE. ONE_DOC_PER_FILE - Each file is considered a separate document. Use this option when you are processing large documents, such as newspaper articles or scientific papers. ONE_DOC_PER_LINE - Each line in a file is considered a separate document. Use this option when you are processing many short documents, such as text messages.
         public var inputFormat: ComprehendClientTypes.InputFormat?
         /// Specifies the Amazon S3 location where the documents for the dataset are located.
@@ -2651,12 +2652,12 @@ extension ComprehendClientTypes {
             self.s3Uri = s3Uri
         }
     }
-
 }
 
 extension ComprehendClientTypes {
+
     /// Describes the dataset entity list for an entity recognizer model. For more information on how the input file is formatted, see [Preparing training data](https://docs.aws.amazon.com/comprehend/latest/dg/prep-training-data-cer.html) in the Comprehend Developer Guide.
-    public struct DatasetEntityRecognizerEntityList {
+    public struct DatasetEntityRecognizerEntityList: Swift.Sendable {
         /// Specifies the Amazon S3 location where the entity list is located.
         /// This member is required.
         public var s3Uri: Swift.String?
@@ -2668,12 +2669,12 @@ extension ComprehendClientTypes {
             self.s3Uri = s3Uri
         }
     }
-
 }
 
 extension ComprehendClientTypes {
+
     /// Specifies the format and location of the input data. You must provide either the Annotations parameter or the EntityList parameter.
-    public struct DatasetEntityRecognizerInputDataConfig {
+    public struct DatasetEntityRecognizerInputDataConfig: Swift.Sendable {
         /// The S3 location of the annotation documents for your custom entity recognizer.
         public var annotations: ComprehendClientTypes.DatasetEntityRecognizerAnnotations?
         /// The format and location of the training documents for your custom entity recognizer.
@@ -2693,12 +2694,12 @@ extension ComprehendClientTypes {
             self.entityList = entityList
         }
     }
-
 }
 
 extension ComprehendClientTypes {
+
     /// Specifies the format and location of the input data for the dataset.
-    public struct DatasetInputDataConfig {
+    public struct DatasetInputDataConfig: Swift.Sendable {
         /// A list of augmented manifest files that provide training data for your custom model. An augmented manifest file is a labeled dataset that is produced by Amazon SageMaker Ground Truth.
         public var augmentedManifests: [ComprehendClientTypes.DatasetAugmentedManifestsListItem]?
         /// COMPREHEND_CSV: The data format is a two-column CSV file, where the first column contains labels and the second column contains documents. AUGMENTED_MANIFEST: The data format
@@ -2721,12 +2722,12 @@ extension ComprehendClientTypes {
             self.entityRecognizerInputDataConfig = entityRecognizerInputDataConfig
         }
     }
-
 }
 
 extension ComprehendClientTypes {
+
     /// A key-value pair that adds as a metadata to a resource used by Amazon Comprehend. For example, a tag with the key-value pair ‘Department’:’Sales’ might be added to a resource to indicate its use by a particular department.
-    public struct Tag {
+    public struct Tag: Swift.Sendable {
         /// The initial part of a key-value pair that forms a tag associated with a given resource. For instance, if you want to show which resources are used by which departments, you might use “Department” as the key portion of the pair, with multiple possible values such as “sales,” “legal,” and “administration.”
         /// This member is required.
         public var key: Swift.String?
@@ -2742,10 +2743,9 @@ extension ComprehendClientTypes {
             self.value = value
         }
     }
-
 }
 
-public struct CreateDatasetInput {
+public struct CreateDatasetInput: Swift.Sendable {
     /// A unique identifier for the request. If you don't set the client request token, Amazon Comprehend generates one.
     public var clientRequestToken: Swift.String?
     /// Name of the dataset.
@@ -2784,7 +2784,7 @@ public struct CreateDatasetInput {
     }
 }
 
-public struct CreateDatasetOutput {
+public struct CreateDatasetOutput: Swift.Sendable {
     /// The ARN of the dataset.
     public var datasetArn: Swift.String?
 
@@ -2822,7 +2822,7 @@ public struct KmsKeyValidationException: ClientRuntime.ModeledError, AWSClientRu
 
 extension ComprehendClientTypes {
 
-    public enum DocumentClassifierDataFormat: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DocumentClassifierDataFormat: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case augmentedManifest
         case comprehendCsv
         case sdkUnknown(Swift.String)
@@ -2850,8 +2850,9 @@ extension ComprehendClientTypes {
 }
 
 extension ComprehendClientTypes {
+
     /// The location of the training documents. This parameter is required in a request to create a semi-structured document classification model.
-    public struct DocumentClassifierDocuments {
+    public struct DocumentClassifierDocuments: Swift.Sendable {
         /// The S3 URI location of the training documents specified in the S3Uri CSV file.
         /// This member is required.
         public var s3Uri: Swift.String?
@@ -2867,12 +2868,11 @@ extension ComprehendClientTypes {
             self.testS3Uri = testS3Uri
         }
     }
-
 }
 
 extension ComprehendClientTypes {
 
-    public enum DocumentClassifierDocumentTypeFormat: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DocumentClassifierDocumentTypeFormat: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case plainTextDocument
         case semiStructuredDocument
         case sdkUnknown(Swift.String)
@@ -2900,8 +2900,9 @@ extension ComprehendClientTypes {
 }
 
 extension ComprehendClientTypes {
+
     /// The input properties for training a document classifier. For more information on how the input file is formatted, see [Preparing training data](https://docs.aws.amazon.com/comprehend/latest/dg/prep-classifier-data.html) in the Comprehend Developer Guide.
-    public struct DocumentClassifierInputDataConfig {
+    public struct DocumentClassifierInputDataConfig: Swift.Sendable {
         /// A list of augmented manifest files that provide training data for your custom model. An augmented manifest file is a labeled dataset that is produced by Amazon SageMaker Ground Truth. This parameter is required if you set DataFormat to AUGMENTED_MANIFEST.
         public var augmentedManifests: [ComprehendClientTypes.AugmentedManifestsListItem]?
         /// The format of your training data:
@@ -2956,12 +2957,11 @@ extension ComprehendClientTypes {
             self.testS3Uri = testS3Uri
         }
     }
-
 }
 
 extension ComprehendClientTypes {
 
-    public enum DocumentClassifierMode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DocumentClassifierMode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case multiClass
         case multiLabel
         case sdkUnknown(Swift.String)
@@ -2989,8 +2989,9 @@ extension ComprehendClientTypes {
 }
 
 extension ComprehendClientTypes {
+
     /// Provide the location for output data from a custom classifier job. This field is mandatory if you are training a native document model.
-    public struct DocumentClassifierOutputDataConfig {
+    public struct DocumentClassifierOutputDataConfig: Swift.Sendable {
         /// The Amazon S3 prefix for the data lake location of the flywheel statistics.
         public var flywheelStatsS3Prefix: Swift.String?
         /// ID for the Amazon Web Services Key Management Service (KMS) key that Amazon Comprehend uses to encrypt the output results from an analysis job. The KmsKeyId can be one of the following formats:
@@ -3017,12 +3018,12 @@ extension ComprehendClientTypes {
             self.s3Uri = s3Uri
         }
     }
-
 }
 
 extension ComprehendClientTypes {
+
     /// Configuration parameters for an optional private Virtual Private Cloud (VPC) containing the resources you are using for the job. For more information, see [Amazon VPC](https://docs.aws.amazon.com/vpc/latest/userguide/what-is-amazon-vpc.html).
-    public struct VpcConfig {
+    public struct VpcConfig: Swift.Sendable {
         /// The ID number for a security group on an instance of your private VPC. Security groups on your VPC function serve as a virtual firewall to control inbound and outbound traffic and provides security for the resources that you’ll be accessing on the VPC. This ID number is preceded by "sg-", for instance: "sg-03b388029b0a285ea". For more information, see [Security Groups for your VPC](https://docs.aws.amazon.com/vpc/latest/userguide/VPC_SecurityGroups.html).
         /// This member is required.
         public var securityGroupIds: [Swift.String]?
@@ -3039,10 +3040,9 @@ extension ComprehendClientTypes {
             self.subnets = subnets
         }
     }
-
 }
 
-public struct CreateDocumentClassifierInput {
+public struct CreateDocumentClassifierInput: Swift.Sendable {
     /// A unique identifier for the request. If you don't set the client request token, Amazon Comprehend generates one.
     public var clientRequestToken: Swift.String?
     /// The Amazon Resource Name (ARN) of the IAM role that grants Amazon Comprehend read access to your input data.
@@ -3114,7 +3114,7 @@ public struct CreateDocumentClassifierInput {
     }
 }
 
-public struct CreateDocumentClassifierOutput {
+public struct CreateDocumentClassifierOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) that identifies the document classifier.
     public var documentClassifierArn: Swift.String?
 
@@ -3126,7 +3126,7 @@ public struct CreateDocumentClassifierOutput {
     }
 }
 
-public struct CreateEndpointInput {
+public struct CreateEndpointInput: Swift.Sendable {
     /// An idempotency token provided by the customer. If this token matches a previous endpoint creation request, Amazon Comprehend will not return a ResourceInUseException.
     public var clientRequestToken: Swift.String?
     /// The Amazon Resource Name (ARN) of the IAM role that grants Amazon Comprehend read access to trained custom models encrypted with a customer managed key (ModelKmsKeyId).
@@ -3164,7 +3164,7 @@ public struct CreateEndpointInput {
     }
 }
 
-public struct CreateEndpointOutput {
+public struct CreateEndpointOutput: Swift.Sendable {
     /// The Amazon Resource Number (ARN) of the endpoint being created.
     public var endpointArn: Swift.String?
     /// The Amazon Resource Number (ARN) of the model to which the endpoint is attached.
@@ -3181,8 +3181,9 @@ public struct CreateEndpointOutput {
 }
 
 extension ComprehendClientTypes {
+
     /// Describes the annotations associated with a entity recognizer.
-    public struct EntityRecognizerAnnotations {
+    public struct EntityRecognizerAnnotations: Swift.Sendable {
         /// Specifies the Amazon S3 location where the annotations for an entity recognizer are located. The URI must be in the same Region as the API endpoint that you are calling.
         /// This member is required.
         public var s3Uri: Swift.String?
@@ -3198,12 +3199,11 @@ extension ComprehendClientTypes {
             self.testS3Uri = testS3Uri
         }
     }
-
 }
 
 extension ComprehendClientTypes {
 
-    public enum EntityRecognizerDataFormat: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum EntityRecognizerDataFormat: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case augmentedManifest
         case comprehendCsv
         case sdkUnknown(Swift.String)
@@ -3231,8 +3231,9 @@ extension ComprehendClientTypes {
 }
 
 extension ComprehendClientTypes {
+
     /// Describes the training documents submitted with an entity recognizer.
-    public struct EntityRecognizerDocuments {
+    public struct EntityRecognizerDocuments: Swift.Sendable {
         /// Specifies how the text in an input file should be processed. This is optional, and the default is ONE_DOC_PER_LINE. ONE_DOC_PER_FILE - Each file is considered a separate document. Use this option when you are processing large documents, such as newspaper articles or scientific papers. ONE_DOC_PER_LINE - Each line in a file is considered a separate document. Use this option when you are processing many short documents, such as text messages.
         public var inputFormat: ComprehendClientTypes.InputFormat?
         /// Specifies the Amazon S3 location where the training documents for an entity recognizer are located. The URI must be in the same Region as the API endpoint that you are calling.
@@ -3252,12 +3253,12 @@ extension ComprehendClientTypes {
             self.testS3Uri = testS3Uri
         }
     }
-
 }
 
 extension ComprehendClientTypes {
+
     /// Describes the entity list submitted with an entity recognizer.
-    public struct EntityRecognizerEntityList {
+    public struct EntityRecognizerEntityList: Swift.Sendable {
         /// Specifies the Amazon S3 location where the entity list is located. The URI must be in the same Region as the API endpoint that you are calling.
         /// This member is required.
         public var s3Uri: Swift.String?
@@ -3269,12 +3270,12 @@ extension ComprehendClientTypes {
             self.s3Uri = s3Uri
         }
     }
-
 }
 
 extension ComprehendClientTypes {
+
     /// An entity type within a labeled training dataset that Amazon Comprehend uses to train a custom entity recognizer.
-    public struct EntityTypesListItem {
+    public struct EntityTypesListItem: Swift.Sendable {
         /// An entity type within a labeled training dataset that Amazon Comprehend uses to train a custom entity recognizer. Entity types must not contain the following invalid characters: \n (line break), \\n (escaped line break, \r (carriage return), \\r (escaped carriage return), \t (tab), \\t (escaped tab), and , (comma).
         /// This member is required.
         public var type: Swift.String?
@@ -3286,12 +3287,12 @@ extension ComprehendClientTypes {
             self.type = type
         }
     }
-
 }
 
 extension ComprehendClientTypes {
+
     /// Specifies the format and location of the input data.
-    public struct EntityRecognizerInputDataConfig {
+    public struct EntityRecognizerInputDataConfig: Swift.Sendable {
         /// The S3 location of the CSV file that annotates your training documents.
         public var annotations: ComprehendClientTypes.EntityRecognizerAnnotations?
         /// A list of augmented manifest files that provide training data for your custom model. An augmented manifest file is a labeled dataset that is produced by Amazon SageMaker Ground Truth. This parameter is required if you set DataFormat to AUGMENTED_MANIFEST.
@@ -3330,10 +3331,9 @@ extension ComprehendClientTypes {
             self.entityTypes = entityTypes
         }
     }
-
 }
 
-public struct CreateEntityRecognizerInput {
+public struct CreateEntityRecognizerInput: Swift.Sendable {
     /// A unique identifier for the request. If you don't set the client request token, Amazon Comprehend generates one.
     public var clientRequestToken: Swift.String?
     /// The Amazon Resource Name (ARN) of the IAM role that grants Amazon Comprehend read access to your input data.
@@ -3397,7 +3397,7 @@ public struct CreateEntityRecognizerInput {
     }
 }
 
-public struct CreateEntityRecognizerOutput {
+public struct CreateEntityRecognizerOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) that identifies the entity recognizer.
     public var entityRecognizerArn: Swift.String?
 
@@ -3410,8 +3410,9 @@ public struct CreateEntityRecognizerOutput {
 }
 
 extension ComprehendClientTypes {
+
     /// Data security configuration.
-    public struct DataSecurityConfig {
+    public struct DataSecurityConfig: Swift.Sendable {
         /// ID for the KMS key that Amazon Comprehend uses to encrypt the data in the data lake.
         public var dataLakeKmsKeyId: Swift.String?
         /// ID for the KMS key that Amazon Comprehend uses to encrypt trained custom models. The ModelKmsKeyId can be either of the following formats:
@@ -3438,12 +3439,11 @@ extension ComprehendClientTypes {
             self.vpcConfig = vpcConfig
         }
     }
-
 }
 
 extension ComprehendClientTypes {
 
-    public enum ModelType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ModelType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case documentClassifier
         case entityRecognizer
         case sdkUnknown(Swift.String)
@@ -3471,8 +3471,9 @@ extension ComprehendClientTypes {
 }
 
 extension ComprehendClientTypes {
+
     /// Configuration required for a document classification model.
-    public struct DocumentClassificationConfig {
+    public struct DocumentClassificationConfig: Swift.Sendable {
         /// One or more labels to associate with the custom classifier.
         public var labels: [Swift.String]?
         /// Classification mode indicates whether the documents are MULTI_CLASS or MULTI_LABEL.
@@ -3488,12 +3489,12 @@ extension ComprehendClientTypes {
             self.mode = mode
         }
     }
-
 }
 
 extension ComprehendClientTypes {
+
     /// Configuration required for an entity recognition model.
-    public struct EntityRecognitionConfig {
+    public struct EntityRecognitionConfig: Swift.Sendable {
         /// Up to 25 entity types that the model is trained to recognize.
         /// This member is required.
         public var entityTypes: [ComprehendClientTypes.EntityTypesListItem]?
@@ -3505,12 +3506,12 @@ extension ComprehendClientTypes {
             self.entityTypes = entityTypes
         }
     }
-
 }
 
 extension ComprehendClientTypes {
+
     /// Configuration about the model associated with a flywheel.
-    public struct TaskConfig {
+    public struct TaskConfig: Swift.Sendable {
         /// Configuration required for a document classification model.
         public var documentClassificationConfig: ComprehendClientTypes.DocumentClassificationConfig?
         /// Configuration required for an entity recognition model.
@@ -3530,10 +3531,9 @@ extension ComprehendClientTypes {
             self.languageCode = languageCode
         }
     }
-
 }
 
-public struct CreateFlywheelInput {
+public struct CreateFlywheelInput: Swift.Sendable {
     /// To associate an existing model with the flywheel, specify the Amazon Resource Number (ARN) of the model version. Do not set TaskConfig or ModelType if you specify an ActiveModelArn.
     public var activeModelArn: Swift.String?
     /// A unique identifier for the request. If you don't set the client request token, Amazon Comprehend generates one.
@@ -3580,7 +3580,7 @@ public struct CreateFlywheelInput {
     }
 }
 
-public struct CreateFlywheelOutput {
+public struct CreateFlywheelOutput: Swift.Sendable {
     /// The Amazon Resource Number (ARN) of the active model version.
     public var activeModelArn: Swift.String?
     /// The Amazon Resource Number (ARN) of the flywheel.
@@ -3596,7 +3596,7 @@ public struct CreateFlywheelOutput {
     }
 }
 
-public struct DeleteDocumentClassifierInput {
+public struct DeleteDocumentClassifierInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) that identifies the document classifier.
     /// This member is required.
     public var documentClassifierArn: Swift.String?
@@ -3609,12 +3609,12 @@ public struct DeleteDocumentClassifierInput {
     }
 }
 
-public struct DeleteDocumentClassifierOutput {
+public struct DeleteDocumentClassifierOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteEndpointInput {
+public struct DeleteEndpointInput: Swift.Sendable {
     /// The Amazon Resource Number (ARN) of the endpoint being deleted.
     /// This member is required.
     public var endpointArn: Swift.String?
@@ -3627,12 +3627,12 @@ public struct DeleteEndpointInput {
     }
 }
 
-public struct DeleteEndpointOutput {
+public struct DeleteEndpointOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteEntityRecognizerInput {
+public struct DeleteEntityRecognizerInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) that identifies the entity recognizer.
     /// This member is required.
     public var entityRecognizerArn: Swift.String?
@@ -3645,12 +3645,12 @@ public struct DeleteEntityRecognizerInput {
     }
 }
 
-public struct DeleteEntityRecognizerOutput {
+public struct DeleteEntityRecognizerOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteFlywheelInput {
+public struct DeleteFlywheelInput: Swift.Sendable {
     /// The Amazon Resource Number (ARN) of the flywheel to delete.
     /// This member is required.
     public var flywheelArn: Swift.String?
@@ -3663,12 +3663,12 @@ public struct DeleteFlywheelInput {
     }
 }
 
-public struct DeleteFlywheelOutput {
+public struct DeleteFlywheelOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteResourcePolicyInput {
+public struct DeleteResourcePolicyInput: Swift.Sendable {
     /// The revision ID of the policy to delete.
     public var policyRevisionId: Swift.String?
     /// The Amazon Resource Name (ARN) of the custom model version that has the policy to delete.
@@ -3685,12 +3685,12 @@ public struct DeleteResourcePolicyInput {
     }
 }
 
-public struct DeleteResourcePolicyOutput {
+public struct DeleteResourcePolicyOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DescribeDatasetInput {
+public struct DescribeDatasetInput: Swift.Sendable {
     /// The ARN of the dataset.
     /// This member is required.
     public var datasetArn: Swift.String?
@@ -3705,7 +3705,7 @@ public struct DescribeDatasetInput {
 
 extension ComprehendClientTypes {
 
-    public enum DatasetStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum DatasetStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case completed
         case creating
         case failed
@@ -3736,8 +3736,9 @@ extension ComprehendClientTypes {
 }
 
 extension ComprehendClientTypes {
+
     /// Properties associated with the dataset.
-    public struct DatasetProperties {
+    public struct DatasetProperties: Swift.Sendable {
         /// Creation time of the dataset.
         public var creationTime: Foundation.Date?
         /// The ARN of the dataset.
@@ -3784,10 +3785,9 @@ extension ComprehendClientTypes {
             self.status = status
         }
     }
-
 }
 
-public struct DescribeDatasetOutput {
+public struct DescribeDatasetOutput: Swift.Sendable {
     /// The dataset properties.
     public var datasetProperties: ComprehendClientTypes.DatasetProperties?
 
@@ -3823,7 +3823,7 @@ public struct JobNotFoundException: ClientRuntime.ModeledError, AWSClientRuntime
     }
 }
 
-public struct DescribeDocumentClassificationJobInput {
+public struct DescribeDocumentClassificationJobInput: Swift.Sendable {
     /// The identifier that Amazon Comprehend generated for the job. The StartDocumentClassificationJob operation returns this identifier in its response.
     /// This member is required.
     public var jobId: Swift.String?
@@ -3837,8 +3837,9 @@ public struct DescribeDocumentClassificationJobInput {
 }
 
 extension ComprehendClientTypes {
+
     /// The input properties for an inference job. The document reader config field applies only to non-text inputs for custom analysis.
-    public struct InputDataConfig {
+    public struct InputDataConfig: Swift.Sendable {
         /// Provides configuration parameters to override the default actions for extracting text from PDF documents and image files.
         public var documentReaderConfig: ComprehendClientTypes.DocumentReaderConfig?
         /// Specifies how the text in an input file should be processed:
@@ -3862,12 +3863,11 @@ extension ComprehendClientTypes {
             self.s3Uri = s3Uri
         }
     }
-
 }
 
 extension ComprehendClientTypes {
 
-    public enum JobStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum JobStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case completed
         case failed
         case inProgress
@@ -3907,8 +3907,9 @@ extension ComprehendClientTypes {
 }
 
 extension ComprehendClientTypes {
+
     /// Provides configuration parameters for the output of inference jobs.
-    public struct OutputDataConfig {
+    public struct OutputDataConfig: Swift.Sendable {
         /// ID for the Amazon Web Services Key Management Service (KMS) key that Amazon Comprehend uses to encrypt the output results from an analysis job. Specify the Key Id of a symmetric key, because you cannot use an asymmetric key for uploading data to S3. The KmsKeyId can be one of the following formats:
         ///
         /// * KMS Key ID: "1234abcd-12ab-34cd-56ef-1234567890ab"
@@ -3932,12 +3933,12 @@ extension ComprehendClientTypes {
             self.s3Uri = s3Uri
         }
     }
-
 }
 
 extension ComprehendClientTypes {
+
     /// Provides information about a document classification job.
-    public struct DocumentClassificationJobProperties {
+    public struct DocumentClassificationJobProperties: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the IAM role that grants Amazon Comprehend read access to your input data.
         public var dataAccessRoleArn: Swift.String?
         /// The Amazon Resource Name (ARN) that identifies the document classifier.
@@ -4004,10 +4005,9 @@ extension ComprehendClientTypes {
             self.vpcConfig = vpcConfig
         }
     }
-
 }
 
-public struct DescribeDocumentClassificationJobOutput {
+public struct DescribeDocumentClassificationJobOutput: Swift.Sendable {
     /// An object that describes the properties associated with the document classification job.
     public var documentClassificationJobProperties: ComprehendClientTypes.DocumentClassificationJobProperties?
 
@@ -4019,7 +4019,7 @@ public struct DescribeDocumentClassificationJobOutput {
     }
 }
 
-public struct DescribeDocumentClassifierInput {
+public struct DescribeDocumentClassifierInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) that identifies the document classifier. The CreateDocumentClassifier operation returns this identifier in its response.
     /// This member is required.
     public var documentClassifierArn: Swift.String?
@@ -4034,7 +4034,7 @@ public struct DescribeDocumentClassifierInput {
 
 extension ComprehendClientTypes {
 
-    public enum ModelStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ModelStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case deleting
         case inError
         case stopped
@@ -4080,8 +4080,9 @@ extension ComprehendClientTypes {
 }
 
 extension ComprehendClientTypes {
+
     /// Provides information about a document classifier.
-    public struct DocumentClassifierProperties {
+    public struct DocumentClassifierProperties: Swift.Sendable {
         /// Information about the document classifier, including the number of documents used for training the classifier, the number of documents used for test the classifier, and an accuracy rating.
         public var classifierMetadata: ComprehendClientTypes.ClassifierMetadata?
         /// The Amazon Resource Name (ARN) of the IAM role that grants Amazon Comprehend read access to your input data.
@@ -4172,7 +4173,6 @@ extension ComprehendClientTypes {
             self.vpcConfig = vpcConfig
         }
     }
-
 }
 
 extension ComprehendClientTypes.DocumentClassifierProperties: Swift.CustomDebugStringConvertible {
@@ -4180,7 +4180,7 @@ extension ComprehendClientTypes.DocumentClassifierProperties: Swift.CustomDebugS
         "DocumentClassifierProperties(dataAccessRoleArn: \(Swift.String(describing: dataAccessRoleArn)), documentClassifierArn: \(Swift.String(describing: documentClassifierArn)), endTime: \(Swift.String(describing: endTime)), flywheelArn: \(Swift.String(describing: flywheelArn)), inputDataConfig: \(Swift.String(describing: inputDataConfig)), languageCode: \(Swift.String(describing: languageCode)), message: \(Swift.String(describing: message)), mode: \(Swift.String(describing: mode)), modelKmsKeyId: \(Swift.String(describing: modelKmsKeyId)), outputDataConfig: \(Swift.String(describing: outputDataConfig)), sourceModelArn: \(Swift.String(describing: sourceModelArn)), status: \(Swift.String(describing: status)), submitTime: \(Swift.String(describing: submitTime)), trainingEndTime: \(Swift.String(describing: trainingEndTime)), trainingStartTime: \(Swift.String(describing: trainingStartTime)), versionName: \(Swift.String(describing: versionName)), volumeKmsKeyId: \(Swift.String(describing: volumeKmsKeyId)), vpcConfig: \(Swift.String(describing: vpcConfig)), classifierMetadata: \"CONTENT_REDACTED\")"}
 }
 
-public struct DescribeDocumentClassifierOutput {
+public struct DescribeDocumentClassifierOutput: Swift.Sendable {
     /// An object that contains the properties associated with a document classifier.
     public var documentClassifierProperties: ComprehendClientTypes.DocumentClassifierProperties?
 
@@ -4192,7 +4192,7 @@ public struct DescribeDocumentClassifierOutput {
     }
 }
 
-public struct DescribeDominantLanguageDetectionJobInput {
+public struct DescribeDominantLanguageDetectionJobInput: Swift.Sendable {
     /// The identifier that Amazon Comprehend generated for the job. The StartDominantLanguageDetectionJob operation returns this identifier in its response.
     /// This member is required.
     public var jobId: Swift.String?
@@ -4206,8 +4206,9 @@ public struct DescribeDominantLanguageDetectionJobInput {
 }
 
 extension ComprehendClientTypes {
+
     /// Provides information about a dominant language detection job.
-    public struct DominantLanguageDetectionJobProperties {
+    public struct DominantLanguageDetectionJobProperties: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the IAM role that grants Amazon Comprehend read access to your input data.
         public var dataAccessRoleArn: Swift.String?
         /// The time that the dominant language detection job completed.
@@ -4266,10 +4267,9 @@ extension ComprehendClientTypes {
             self.vpcConfig = vpcConfig
         }
     }
-
 }
 
-public struct DescribeDominantLanguageDetectionJobOutput {
+public struct DescribeDominantLanguageDetectionJobOutput: Swift.Sendable {
     /// An object that contains the properties associated with a dominant language detection job.
     public var dominantLanguageDetectionJobProperties: ComprehendClientTypes.DominantLanguageDetectionJobProperties?
 
@@ -4281,7 +4281,7 @@ public struct DescribeDominantLanguageDetectionJobOutput {
     }
 }
 
-public struct DescribeEndpointInput {
+public struct DescribeEndpointInput: Swift.Sendable {
     /// The Amazon Resource Number (ARN) of the endpoint being described.
     /// This member is required.
     public var endpointArn: Swift.String?
@@ -4296,7 +4296,7 @@ public struct DescribeEndpointInput {
 
 extension ComprehendClientTypes {
 
-    public enum EndpointStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum EndpointStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case creating
         case deleting
         case failed
@@ -4333,8 +4333,9 @@ extension ComprehendClientTypes {
 }
 
 extension ComprehendClientTypes {
+
     /// Specifies information about the specified endpoint. For information about endpoints, see [Managing endpoints](https://docs.aws.amazon.com/comprehend/latest/dg/manage-endpoints.html).
-    public struct EndpointProperties {
+    public struct EndpointProperties: Swift.Sendable {
         /// The creation date and time of the endpoint.
         public var creationTime: Foundation.Date?
         /// The number of inference units currently used by the model using this endpoint.
@@ -4389,10 +4390,9 @@ extension ComprehendClientTypes {
             self.status = status
         }
     }
-
 }
 
-public struct DescribeEndpointOutput {
+public struct DescribeEndpointOutput: Swift.Sendable {
     /// Describes information associated with the specific endpoint.
     public var endpointProperties: ComprehendClientTypes.EndpointProperties?
 
@@ -4404,7 +4404,7 @@ public struct DescribeEndpointOutput {
     }
 }
 
-public struct DescribeEntitiesDetectionJobInput {
+public struct DescribeEntitiesDetectionJobInput: Swift.Sendable {
     /// The identifier that Amazon Comprehend generated for the job. The StartEntitiesDetectionJob operation returns this identifier in its response.
     /// This member is required.
     public var jobId: Swift.String?
@@ -4418,8 +4418,9 @@ public struct DescribeEntitiesDetectionJobInput {
 }
 
 extension ComprehendClientTypes {
+
     /// Provides information about an entities detection job.
-    public struct EntitiesDetectionJobProperties {
+    public struct EntitiesDetectionJobProperties: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the IAM role that grants Amazon Comprehend read access to your input data.
         public var dataAccessRoleArn: Swift.String?
         /// The time that the entities detection job completed
@@ -4490,10 +4491,9 @@ extension ComprehendClientTypes {
             self.vpcConfig = vpcConfig
         }
     }
-
 }
 
-public struct DescribeEntitiesDetectionJobOutput {
+public struct DescribeEntitiesDetectionJobOutput: Swift.Sendable {
     /// An object that contains the properties associated with an entities detection job.
     public var entitiesDetectionJobProperties: ComprehendClientTypes.EntitiesDetectionJobProperties?
 
@@ -4505,7 +4505,7 @@ public struct DescribeEntitiesDetectionJobOutput {
     }
 }
 
-public struct DescribeEntityRecognizerInput {
+public struct DescribeEntityRecognizerInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) that identifies the entity recognizer.
     /// This member is required.
     public var entityRecognizerArn: Swift.String?
@@ -4519,8 +4519,9 @@ public struct DescribeEntityRecognizerInput {
 }
 
 extension ComprehendClientTypes {
+
     /// Output data configuration.
-    public struct EntityRecognizerOutputDataConfig {
+    public struct EntityRecognizerOutputDataConfig: Swift.Sendable {
         /// The Amazon S3 prefix for the data lake location of the flywheel statistics.
         public var flywheelStatsS3Prefix: Swift.String?
 
@@ -4531,12 +4532,12 @@ extension ComprehendClientTypes {
             self.flywheelStatsS3Prefix = flywheelStatsS3Prefix
         }
     }
-
 }
 
 extension ComprehendClientTypes {
+
     /// Detailed information about the accuracy of an entity recognizer for a specific entity type.
-    public struct EntityTypesEvaluationMetrics {
+    public struct EntityTypesEvaluationMetrics: Swift.Sendable {
         /// A measure of how accurate the recognizer results are for a specific entity type in the test data. It is derived from the Precision and Recall values. The F1Score is the harmonic average of the two scores. The highest score is 1, and the worst score is 0.
         public var f1Score: Swift.Double?
         /// A measure of the usefulness of the recognizer results for a specific entity type in the test data. High precision means that the recognizer returned substantially more relevant results than irrelevant ones.
@@ -4555,12 +4556,12 @@ extension ComprehendClientTypes {
             self.recall = recall
         }
     }
-
 }
 
 extension ComprehendClientTypes {
+
     /// Individual item from the list of entity types in the metadata of an entity recognizer.
-    public struct EntityRecognizerMetadataEntityTypesListItem {
+    public struct EntityRecognizerMetadataEntityTypesListItem: Swift.Sendable {
         /// Detailed information about the accuracy of the entity recognizer for a specific item on the list of entity types.
         public var evaluationMetrics: ComprehendClientTypes.EntityTypesEvaluationMetrics?
         /// Indicates the number of times the given entity type was seen in the training data.
@@ -4579,12 +4580,12 @@ extension ComprehendClientTypes {
             self.type = type
         }
     }
-
 }
 
 extension ComprehendClientTypes {
+
     /// Detailed information about the accuracy of an entity recognizer.
-    public struct EntityRecognizerEvaluationMetrics {
+    public struct EntityRecognizerEvaluationMetrics: Swift.Sendable {
         /// A measure of how accurate the recognizer results are for the test data. It is derived from the Precision and Recall values. The F1Score is the harmonic average of the two scores. For plain text entity recognizer models, the range is 0 to 100, where 100 is the best score. For PDF/Word entity recognizer models, the range is 0 to 1, where 1 is the best score.
         public var f1Score: Swift.Double?
         /// A measure of the usefulness of the recognizer results in the test data. High precision means that the recognizer returned substantially more relevant results than irrelevant ones.
@@ -4603,12 +4604,12 @@ extension ComprehendClientTypes {
             self.recall = recall
         }
     }
-
 }
 
 extension ComprehendClientTypes {
+
     /// Detailed information about an entity recognizer.
-    public struct EntityRecognizerMetadata {
+    public struct EntityRecognizerMetadata: Swift.Sendable {
         /// Entity types from the metadata of an entity recognizer.
         public var entityTypes: [ComprehendClientTypes.EntityRecognizerMetadataEntityTypesListItem]?
         /// Detailed information about the accuracy of an entity recognizer.
@@ -4631,7 +4632,6 @@ extension ComprehendClientTypes {
             self.numberOfTrainedDocuments = numberOfTrainedDocuments
         }
     }
-
 }
 
 extension ComprehendClientTypes.EntityRecognizerMetadata: Swift.CustomDebugStringConvertible {
@@ -4641,8 +4641,9 @@ extension ComprehendClientTypes.EntityRecognizerMetadata: Swift.CustomDebugStrin
 }
 
 extension ComprehendClientTypes {
+
     /// Describes information about an entity recognizer.
-    public struct EntityRecognizerProperties {
+    public struct EntityRecognizerProperties: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the IAM role that grants Amazon Comprehend read access to your input data.
         public var dataAccessRoleArn: Swift.String?
         /// The time that the recognizer creation completed.
@@ -4729,7 +4730,6 @@ extension ComprehendClientTypes {
             self.vpcConfig = vpcConfig
         }
     }
-
 }
 
 extension ComprehendClientTypes.EntityRecognizerProperties: Swift.CustomDebugStringConvertible {
@@ -4737,7 +4737,7 @@ extension ComprehendClientTypes.EntityRecognizerProperties: Swift.CustomDebugStr
         "EntityRecognizerProperties(dataAccessRoleArn: \(Swift.String(describing: dataAccessRoleArn)), endTime: \(Swift.String(describing: endTime)), entityRecognizerArn: \(Swift.String(describing: entityRecognizerArn)), flywheelArn: \(Swift.String(describing: flywheelArn)), inputDataConfig: \(Swift.String(describing: inputDataConfig)), languageCode: \(Swift.String(describing: languageCode)), message: \(Swift.String(describing: message)), modelKmsKeyId: \(Swift.String(describing: modelKmsKeyId)), outputDataConfig: \(Swift.String(describing: outputDataConfig)), sourceModelArn: \(Swift.String(describing: sourceModelArn)), status: \(Swift.String(describing: status)), submitTime: \(Swift.String(describing: submitTime)), trainingEndTime: \(Swift.String(describing: trainingEndTime)), trainingStartTime: \(Swift.String(describing: trainingStartTime)), versionName: \(Swift.String(describing: versionName)), volumeKmsKeyId: \(Swift.String(describing: volumeKmsKeyId)), vpcConfig: \(Swift.String(describing: vpcConfig)), recognizerMetadata: \"CONTENT_REDACTED\")"}
 }
 
-public struct DescribeEntityRecognizerOutput {
+public struct DescribeEntityRecognizerOutput: Swift.Sendable {
     /// Describes information associated with an entity recognizer.
     public var entityRecognizerProperties: ComprehendClientTypes.EntityRecognizerProperties?
 
@@ -4749,7 +4749,7 @@ public struct DescribeEntityRecognizerOutput {
     }
 }
 
-public struct DescribeEventsDetectionJobInput {
+public struct DescribeEventsDetectionJobInput: Swift.Sendable {
     /// The identifier of the events detection job.
     /// This member is required.
     public var jobId: Swift.String?
@@ -4763,8 +4763,9 @@ public struct DescribeEventsDetectionJobInput {
 }
 
 extension ComprehendClientTypes {
+
     /// Provides information about an events detection job.
-    public struct EventsDetectionJobProperties {
+    public struct EventsDetectionJobProperties: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the IAM role that grants Amazon Comprehend read access to your input data.
         public var dataAccessRoleArn: Swift.String?
         /// The time that the events detection job completed.
@@ -4819,10 +4820,9 @@ extension ComprehendClientTypes {
             self.targetEventTypes = targetEventTypes
         }
     }
-
 }
 
-public struct DescribeEventsDetectionJobOutput {
+public struct DescribeEventsDetectionJobOutput: Swift.Sendable {
     /// An object that contains the properties associated with an event detection job.
     public var eventsDetectionJobProperties: ComprehendClientTypes.EventsDetectionJobProperties?
 
@@ -4834,7 +4834,7 @@ public struct DescribeEventsDetectionJobOutput {
     }
 }
 
-public struct DescribeFlywheelInput {
+public struct DescribeFlywheelInput: Swift.Sendable {
     /// The Amazon Resource Number (ARN) of the flywheel.
     /// This member is required.
     public var flywheelArn: Swift.String?
@@ -4849,7 +4849,7 @@ public struct DescribeFlywheelInput {
 
 extension ComprehendClientTypes {
 
-    public enum FlywheelStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum FlywheelStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case active
         case creating
         case deleting
@@ -4886,8 +4886,9 @@ extension ComprehendClientTypes {
 }
 
 extension ComprehendClientTypes {
+
     /// The flywheel properties.
-    public struct FlywheelProperties {
+    public struct FlywheelProperties: Swift.Sendable {
         /// The Amazon Resource Number (ARN) of the active model version.
         public var activeModelArn: Swift.String?
         /// Creation time of the flywheel.
@@ -4942,10 +4943,9 @@ extension ComprehendClientTypes {
             self.taskConfig = taskConfig
         }
     }
-
 }
 
-public struct DescribeFlywheelOutput {
+public struct DescribeFlywheelOutput: Swift.Sendable {
     /// The flywheel properties.
     public var flywheelProperties: ComprehendClientTypes.FlywheelProperties?
 
@@ -4957,7 +4957,7 @@ public struct DescribeFlywheelOutput {
     }
 }
 
-public struct DescribeFlywheelIterationInput {
+public struct DescribeFlywheelIterationInput: Swift.Sendable {
     ///
     /// This member is required.
     public var flywheelArn: Swift.String?
@@ -4976,8 +4976,9 @@ public struct DescribeFlywheelIterationInput {
 }
 
 extension ComprehendClientTypes {
+
     /// The evaluation metrics associated with the evaluated model.
-    public struct FlywheelModelEvaluationMetrics {
+    public struct FlywheelModelEvaluationMetrics: Swift.Sendable {
         /// Average accuracy metric for the model.
         public var averageAccuracy: Swift.Double?
         /// The average F1 score from the evaluation metrics.
@@ -5000,12 +5001,11 @@ extension ComprehendClientTypes {
             self.averageRecall = averageRecall
         }
     }
-
 }
 
 extension ComprehendClientTypes {
 
-    public enum FlywheelIterationStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum FlywheelIterationStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case completed
         case evaluating
         case failed
@@ -5045,8 +5045,9 @@ extension ComprehendClientTypes {
 }
 
 extension ComprehendClientTypes {
+
     /// The configuration properties of a flywheel iteration.
-    public struct FlywheelIterationProperties {
+    public struct FlywheelIterationProperties: Swift.Sendable {
         /// The creation start time of the flywheel iteration.
         public var creationTime: Foundation.Date?
         /// The completion time of this flywheel iteration.
@@ -5097,10 +5098,9 @@ extension ComprehendClientTypes {
             self.trainedModelMetrics = trainedModelMetrics
         }
     }
-
 }
 
-public struct DescribeFlywheelIterationOutput {
+public struct DescribeFlywheelIterationOutput: Swift.Sendable {
     /// The configuration properties of a flywheel iteration.
     public var flywheelIterationProperties: ComprehendClientTypes.FlywheelIterationProperties?
 
@@ -5112,7 +5112,7 @@ public struct DescribeFlywheelIterationOutput {
     }
 }
 
-public struct DescribeKeyPhrasesDetectionJobInput {
+public struct DescribeKeyPhrasesDetectionJobInput: Swift.Sendable {
     /// The identifier that Amazon Comprehend generated for the job. The StartKeyPhrasesDetectionJob operation returns this identifier in its response.
     /// This member is required.
     public var jobId: Swift.String?
@@ -5126,8 +5126,9 @@ public struct DescribeKeyPhrasesDetectionJobInput {
 }
 
 extension ComprehendClientTypes {
+
     /// Provides information about a key phrases detection job.
-    public struct KeyPhrasesDetectionJobProperties {
+    public struct KeyPhrasesDetectionJobProperties: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the IAM role that grants Amazon Comprehend read access to your input data.
         public var dataAccessRoleArn: Swift.String?
         /// The time that the key phrases detection job completed.
@@ -5190,10 +5191,9 @@ extension ComprehendClientTypes {
             self.vpcConfig = vpcConfig
         }
     }
-
 }
 
-public struct DescribeKeyPhrasesDetectionJobOutput {
+public struct DescribeKeyPhrasesDetectionJobOutput: Swift.Sendable {
     /// An object that contains the properties associated with a key phrases detection job.
     public var keyPhrasesDetectionJobProperties: ComprehendClientTypes.KeyPhrasesDetectionJobProperties?
 
@@ -5205,7 +5205,7 @@ public struct DescribeKeyPhrasesDetectionJobOutput {
     }
 }
 
-public struct DescribePiiEntitiesDetectionJobInput {
+public struct DescribePiiEntitiesDetectionJobInput: Swift.Sendable {
     /// The identifier that Amazon Comprehend generated for the job. The operation returns this identifier in its response.
     /// This member is required.
     public var jobId: Swift.String?
@@ -5220,7 +5220,7 @@ public struct DescribePiiEntitiesDetectionJobInput {
 
 extension ComprehendClientTypes {
 
-    public enum PiiEntitiesDetectionMode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum PiiEntitiesDetectionMode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case onlyOffsets
         case onlyRedaction
         case sdkUnknown(Swift.String)
@@ -5248,8 +5248,9 @@ extension ComprehendClientTypes {
 }
 
 extension ComprehendClientTypes {
+
     /// Provides configuration parameters for the output of PII entity detection jobs.
-    public struct PiiOutputDataConfig {
+    public struct PiiOutputDataConfig: Swift.Sendable {
         /// ID for the Amazon Web Services Key Management Service (KMS) key that Amazon Comprehend uses to encrypt the output results from an analysis job.
         public var kmsKeyId: Swift.String?
         /// When you use the PiiOutputDataConfig object with asynchronous operations, you specify the Amazon S3 location where you want to write the output data. For a PII entity detection job, the output file is plain text, not a compressed archive. The output file name is the same as the input file, with .out appended at the end.
@@ -5265,12 +5266,11 @@ extension ComprehendClientTypes {
             self.s3Uri = s3Uri
         }
     }
-
 }
 
 extension ComprehendClientTypes {
 
-    public enum PiiEntitiesDetectionMaskMode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum PiiEntitiesDetectionMaskMode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case mask
         case replaceWithPiiEntityType
         case sdkUnknown(Swift.String)
@@ -5298,8 +5298,9 @@ extension ComprehendClientTypes {
 }
 
 extension ComprehendClientTypes {
+
     /// Provides configuration parameters for PII entity redaction.
-    public struct RedactionConfig {
+    public struct RedactionConfig: Swift.Sendable {
         /// A character that replaces each character in the redacted PII entity.
         public var maskCharacter: Swift.String?
         /// Specifies whether the PII entity is redacted with the mask character or the entity type.
@@ -5318,12 +5319,12 @@ extension ComprehendClientTypes {
             self.piiEntityTypes = piiEntityTypes
         }
     }
-
 }
 
 extension ComprehendClientTypes {
+
     /// Provides information about a PII entities detection job.
-    public struct PiiEntitiesDetectionJobProperties {
+    public struct PiiEntitiesDetectionJobProperties: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the IAM role that grants Amazon Comprehend read access to your input data.
         public var dataAccessRoleArn: Swift.String?
         /// The time that the PII entities detection job completed.
@@ -5382,10 +5383,9 @@ extension ComprehendClientTypes {
             self.submitTime = submitTime
         }
     }
-
 }
 
-public struct DescribePiiEntitiesDetectionJobOutput {
+public struct DescribePiiEntitiesDetectionJobOutput: Swift.Sendable {
     /// Provides information about a PII entities detection job.
     public var piiEntitiesDetectionJobProperties: ComprehendClientTypes.PiiEntitiesDetectionJobProperties?
 
@@ -5397,7 +5397,7 @@ public struct DescribePiiEntitiesDetectionJobOutput {
     }
 }
 
-public struct DescribeResourcePolicyInput {
+public struct DescribeResourcePolicyInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the custom model version that has the resource policy.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -5410,7 +5410,7 @@ public struct DescribeResourcePolicyInput {
     }
 }
 
-public struct DescribeResourcePolicyOutput {
+public struct DescribeResourcePolicyOutput: Swift.Sendable {
     /// The time at which the policy was created.
     public var creationTime: Foundation.Date?
     /// The time at which the policy was last modified.
@@ -5434,7 +5434,7 @@ public struct DescribeResourcePolicyOutput {
     }
 }
 
-public struct DescribeSentimentDetectionJobInput {
+public struct DescribeSentimentDetectionJobInput: Swift.Sendable {
     /// The identifier that Amazon Comprehend generated for the job. The operation returns this identifier in its response.
     /// This member is required.
     public var jobId: Swift.String?
@@ -5448,8 +5448,9 @@ public struct DescribeSentimentDetectionJobInput {
 }
 
 extension ComprehendClientTypes {
+
     /// Provides information about a sentiment detection job.
-    public struct SentimentDetectionJobProperties {
+    public struct SentimentDetectionJobProperties: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the IAM role that grants Amazon Comprehend read access to your input data.
         public var dataAccessRoleArn: Swift.String?
         /// The time that the sentiment detection job ended.
@@ -5512,10 +5513,9 @@ extension ComprehendClientTypes {
             self.vpcConfig = vpcConfig
         }
     }
-
 }
 
-public struct DescribeSentimentDetectionJobOutput {
+public struct DescribeSentimentDetectionJobOutput: Swift.Sendable {
     /// An object that contains the properties associated with a sentiment detection job.
     public var sentimentDetectionJobProperties: ComprehendClientTypes.SentimentDetectionJobProperties?
 
@@ -5527,7 +5527,7 @@ public struct DescribeSentimentDetectionJobOutput {
     }
 }
 
-public struct DescribeTargetedSentimentDetectionJobInput {
+public struct DescribeTargetedSentimentDetectionJobInput: Swift.Sendable {
     /// The identifier that Amazon Comprehend generated for the job. The StartTargetedSentimentDetectionJob operation returns this identifier in its response.
     /// This member is required.
     public var jobId: Swift.String?
@@ -5541,8 +5541,9 @@ public struct DescribeTargetedSentimentDetectionJobInput {
 }
 
 extension ComprehendClientTypes {
+
     /// Provides information about a targeted sentiment detection job.
-    public struct TargetedSentimentDetectionJobProperties {
+    public struct TargetedSentimentDetectionJobProperties: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the IAM role that grants Amazon Comprehend read access to your input data.
         public var dataAccessRoleArn: Swift.String?
         /// The time that the targeted sentiment detection job ended.
@@ -5605,10 +5606,9 @@ extension ComprehendClientTypes {
             self.vpcConfig = vpcConfig
         }
     }
-
 }
 
-public struct DescribeTargetedSentimentDetectionJobOutput {
+public struct DescribeTargetedSentimentDetectionJobOutput: Swift.Sendable {
     /// An object that contains the properties associated with a targeted sentiment detection job.
     public var targetedSentimentDetectionJobProperties: ComprehendClientTypes.TargetedSentimentDetectionJobProperties?
 
@@ -5620,7 +5620,7 @@ public struct DescribeTargetedSentimentDetectionJobOutput {
     }
 }
 
-public struct DescribeTopicsDetectionJobInput {
+public struct DescribeTopicsDetectionJobInput: Swift.Sendable {
     /// The identifier assigned by the user to the detection job.
     /// This member is required.
     public var jobId: Swift.String?
@@ -5634,8 +5634,9 @@ public struct DescribeTopicsDetectionJobInput {
 }
 
 extension ComprehendClientTypes {
+
     /// Provides information about a topic detection job.
-    public struct TopicsDetectionJobProperties {
+    public struct TopicsDetectionJobProperties: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the IAM role that grants Amazon Comprehend read access to your job data.
         public var dataAccessRoleArn: Swift.String?
         /// The time that the topic detection job was completed.
@@ -5698,10 +5699,9 @@ extension ComprehendClientTypes {
             self.vpcConfig = vpcConfig
         }
     }
-
 }
 
-public struct DescribeTopicsDetectionJobOutput {
+public struct DescribeTopicsDetectionJobOutput: Swift.Sendable {
     /// The list of properties for the requested job.
     public var topicsDetectionJobProperties: ComprehendClientTypes.TopicsDetectionJobProperties?
 
@@ -5713,7 +5713,7 @@ public struct DescribeTopicsDetectionJobOutput {
     }
 }
 
-public struct DetectDominantLanguageInput {
+public struct DetectDominantLanguageInput: Swift.Sendable {
     /// A UTF-8 text string. The string must contain at least 20 characters. The maximum string size is 100 KB.
     /// This member is required.
     public var text: Swift.String?
@@ -5731,7 +5731,7 @@ extension DetectDominantLanguageInput: Swift.CustomDebugStringConvertible {
         "DetectDominantLanguageInput(text: \"CONTENT_REDACTED\")"}
 }
 
-public struct DetectDominantLanguageOutput {
+public struct DetectDominantLanguageOutput: Swift.Sendable {
     /// Array of languages that Amazon Comprehend detected in the input text. The array is sorted in descending order of the score (the dominant language is always the first element in the array). For each language, the response returns the RFC 5646 language code and the level of confidence that Amazon Comprehend has in the accuracy of its inference. For more information about RFC 5646, see [Tags for Identifying Languages](https://tools.ietf.org/html/rfc5646) on the IETF Tools web site.
     public var languages: [ComprehendClientTypes.DominantLanguage]?
 
@@ -5749,7 +5749,7 @@ extension DetectDominantLanguageOutput: Swift.CustomDebugStringConvertible {
     }
 }
 
-public struct DetectEntitiesInput {
+public struct DetectEntitiesInput: Swift.Sendable {
     /// This field applies only when you use a custom entity recognition model that was trained with PDF annotations. For other cases, enter your text input in the Text field. Use the Bytes parameter to input a text, PDF, Word or image file. Using a plain-text file in the Bytes parameter is equivelent to using the Text parameter (the Entities field in the response is identical). You can also use the Bytes parameter to input an Amazon Textract DetectDocumentText or AnalyzeDocument output file. Provide the input document as a sequence of base64-encoded bytes. If your code uses an Amazon Web Services SDK to detect entities, the SDK may encode the document file bytes for you. The maximum length of this field depends on the input document type. For details, see [ Inputs for real-time custom analysis](https://docs.aws.amazon.com/comprehend/latest/dg/idp-inputs-sync.html) in the Comprehend Developer Guide. If you use the Bytes parameter, do not use the Text parameter.
     public var bytes: Foundation.Data?
     /// Provides configuration parameters to override the default actions for extracting text from PDF documents and image files.
@@ -5782,7 +5782,7 @@ extension DetectEntitiesInput: Swift.CustomDebugStringConvertible {
         "DetectEntitiesInput(bytes: \(Swift.String(describing: bytes)), documentReaderConfig: \(Swift.String(describing: documentReaderConfig)), endpointArn: \(Swift.String(describing: endpointArn)), languageCode: \(Swift.String(describing: languageCode)), text: \"CONTENT_REDACTED\")"}
 }
 
-public struct DetectEntitiesOutput {
+public struct DetectEntitiesOutput: Swift.Sendable {
     /// Information about each block of text in the input document. Blocks are nested. A page block contains a block for each line of text, which contains a block for each word. The Block content for a Word input document does not include a Geometry field. The Block field is not present in the response for plain-text inputs.
     public var blocks: [ComprehendClientTypes.Block]?
     /// Information about the document, discovered during text extraction. This field is present in the response only if your request used the Byte parameter.
@@ -5816,7 +5816,7 @@ extension DetectEntitiesOutput: Swift.CustomDebugStringConvertible {
     }
 }
 
-public struct DetectKeyPhrasesInput {
+public struct DetectKeyPhrasesInput: Swift.Sendable {
     /// The language of the input documents. You can specify any of the primary languages supported by Amazon Comprehend. All documents must be in the same language.
     /// This member is required.
     public var languageCode: ComprehendClientTypes.LanguageCode?
@@ -5839,7 +5839,7 @@ extension DetectKeyPhrasesInput: Swift.CustomDebugStringConvertible {
         "DetectKeyPhrasesInput(languageCode: \(Swift.String(describing: languageCode)), text: \"CONTENT_REDACTED\")"}
 }
 
-public struct DetectKeyPhrasesOutput {
+public struct DetectKeyPhrasesOutput: Swift.Sendable {
     /// A collection of key phrases that Amazon Comprehend identified in the input text. For each key phrase, the response provides the text of the key phrase, where the key phrase begins and ends, and the level of confidence that Amazon Comprehend has in the accuracy of the detection.
     public var keyPhrases: [ComprehendClientTypes.KeyPhrase]?
 
@@ -5857,7 +5857,7 @@ extension DetectKeyPhrasesOutput: Swift.CustomDebugStringConvertible {
     }
 }
 
-public struct DetectPiiEntitiesInput {
+public struct DetectPiiEntitiesInput: Swift.Sendable {
     /// The language of the input text. Enter the language code for English (en) or Spanish (es).
     /// This member is required.
     public var languageCode: ComprehendClientTypes.LanguageCode?
@@ -5876,8 +5876,9 @@ public struct DetectPiiEntitiesInput {
 }
 
 extension ComprehendClientTypes {
+
     /// Provides information about a PII entity.
-    public struct PiiEntity {
+    public struct PiiEntity: Swift.Sendable {
         /// The zero-based offset from the beginning of the source text to the first character in the entity.
         public var beginOffset: Swift.Int?
         /// The zero-based offset from the beginning of the source text to the last character in the entity.
@@ -5900,10 +5901,9 @@ extension ComprehendClientTypes {
             self.type = type
         }
     }
-
 }
 
-public struct DetectPiiEntitiesOutput {
+public struct DetectPiiEntitiesOutput: Swift.Sendable {
     /// A collection of PII entities identified in the input text. For each entity, the response provides the entity type, where the entity text begins and ends, and the level of confidence that Amazon Comprehend has in the detection.
     public var entities: [ComprehendClientTypes.PiiEntity]?
 
@@ -5915,7 +5915,7 @@ public struct DetectPiiEntitiesOutput {
     }
 }
 
-public struct DetectSentimentInput {
+public struct DetectSentimentInput: Swift.Sendable {
     /// The language of the input documents. You can specify any of the primary languages supported by Amazon Comprehend. All documents must be in the same language.
     /// This member is required.
     public var languageCode: ComprehendClientTypes.LanguageCode?
@@ -5938,7 +5938,7 @@ extension DetectSentimentInput: Swift.CustomDebugStringConvertible {
         "DetectSentimentInput(languageCode: \(Swift.String(describing: languageCode)), text: \"CONTENT_REDACTED\")"}
 }
 
-public struct DetectSentimentOutput {
+public struct DetectSentimentOutput: Swift.Sendable {
     /// The inferred sentiment that Amazon Comprehend has the highest level of confidence in.
     public var sentiment: ComprehendClientTypes.SentimentType?
     /// An object that lists the sentiments, and their corresponding confidence levels.
@@ -5960,7 +5960,7 @@ extension DetectSentimentOutput: Swift.CustomDebugStringConvertible {
     }
 }
 
-public struct DetectSyntaxInput {
+public struct DetectSyntaxInput: Swift.Sendable {
     /// The language code of the input documents. You can specify any of the following languages supported by Amazon Comprehend: German ("de"), English ("en"), Spanish ("es"), French ("fr"), Italian ("it"), or Portuguese ("pt").
     /// This member is required.
     public var languageCode: ComprehendClientTypes.SyntaxLanguageCode?
@@ -5983,7 +5983,7 @@ extension DetectSyntaxInput: Swift.CustomDebugStringConvertible {
         "DetectSyntaxInput(languageCode: \(Swift.String(describing: languageCode)), text: \"CONTENT_REDACTED\")"}
 }
 
-public struct DetectSyntaxOutput {
+public struct DetectSyntaxOutput: Swift.Sendable {
     /// A collection of syntax tokens describing the text. For each token, the response provides the text, the token type, where the text begins and ends, and the level of confidence that Amazon Comprehend has that the token is correct. For a list of token types, see [Syntax](https://docs.aws.amazon.com/comprehend/latest/dg/how-syntax.html) in the Comprehend Developer Guide.
     public var syntaxTokens: [ComprehendClientTypes.SyntaxToken]?
 
@@ -6001,7 +6001,7 @@ extension DetectSyntaxOutput: Swift.CustomDebugStringConvertible {
     }
 }
 
-public struct DetectTargetedSentimentInput {
+public struct DetectTargetedSentimentInput: Swift.Sendable {
     /// The language of the input documents. Currently, English is the only supported language.
     /// This member is required.
     public var languageCode: ComprehendClientTypes.LanguageCode?
@@ -6024,7 +6024,7 @@ extension DetectTargetedSentimentInput: Swift.CustomDebugStringConvertible {
         "DetectTargetedSentimentInput(languageCode: \(Swift.String(describing: languageCode)), text: \"CONTENT_REDACTED\")"}
 }
 
-public struct DetectTargetedSentimentOutput {
+public struct DetectTargetedSentimentOutput: Swift.Sendable {
     /// Targeted sentiment analysis for each of the entities identified in the input text.
     public var entities: [ComprehendClientTypes.TargetedSentimentEntity]?
 
@@ -6043,8 +6043,9 @@ extension DetectTargetedSentimentOutput: Swift.CustomDebugStringConvertible {
 }
 
 extension ComprehendClientTypes {
+
     /// One of the of text strings. Each string has a size limit of 1KB.
-    public struct TextSegment {
+    public struct TextSegment: Swift.Sendable {
         /// The text content.
         /// This member is required.
         public var text: Swift.String?
@@ -6056,7 +6057,6 @@ extension ComprehendClientTypes {
             self.text = text
         }
     }
-
 }
 
 extension ComprehendClientTypes.TextSegment: Swift.CustomDebugStringConvertible {
@@ -6064,7 +6064,7 @@ extension ComprehendClientTypes.TextSegment: Swift.CustomDebugStringConvertible 
         "TextSegment(text: \"CONTENT_REDACTED\")"}
 }
 
-public struct DetectToxicContentInput {
+public struct DetectToxicContentInput: Swift.Sendable {
     /// The language of the input text. Currently, English is the only supported language.
     /// This member is required.
     public var languageCode: ComprehendClientTypes.LanguageCode?
@@ -6089,7 +6089,7 @@ extension DetectToxicContentInput: Swift.CustomDebugStringConvertible {
 
 extension ComprehendClientTypes {
 
-    public enum ToxicContentType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ToxicContentType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case graphic
         case harassmentOrAbuse
         case hateSpeech
@@ -6132,8 +6132,9 @@ extension ComprehendClientTypes {
 }
 
 extension ComprehendClientTypes {
+
     /// Toxic content analysis result for one string. For more information about toxicity detection, see [Toxicity detection](https://docs.aws.amazon.com/comprehend/latest/dg/toxicity-detection.html) in the Amazon Comprehend Developer Guide
-    public struct ToxicContent {
+    public struct ToxicContent: Swift.Sendable {
         /// The name of the toxic content type.
         public var name: ComprehendClientTypes.ToxicContentType?
         /// Model confidence in the detected content type. Value range is zero to one, where one is highest confidence.
@@ -6148,12 +6149,12 @@ extension ComprehendClientTypes {
             self.score = score
         }
     }
-
 }
 
 extension ComprehendClientTypes {
+
     /// Toxicity analysis result for one string. For more information about toxicity detection, see [Toxicity detection](https://docs.aws.amazon.com/comprehend/latest/dg/toxicity-detection.html) in the Amazon Comprehend Developer Guide.
-    public struct ToxicLabels {
+    public struct ToxicLabels: Swift.Sendable {
         /// Array of toxic content types identified in the string.
         public var labels: [ComprehendClientTypes.ToxicContent]?
         /// Overall toxicity score for the string. Value range is zero to one, where one is the highest confidence.
@@ -6168,10 +6169,9 @@ extension ComprehendClientTypes {
             self.toxicity = toxicity
         }
     }
-
 }
 
-public struct DetectToxicContentOutput {
+public struct DetectToxicContentOutput: Swift.Sendable {
     /// Results of the content moderation analysis. Each entry in the results list contains a list of toxic content types identified in the text, along with a confidence score for each content type. The results list also includes a toxicity score for each entry in the results list.
     public var resultList: [ComprehendClientTypes.ToxicLabels]?
 
@@ -6183,7 +6183,7 @@ public struct DetectToxicContentOutput {
     }
 }
 
-public struct ImportModelInput {
+public struct ImportModelInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the IAM role that grants Amazon Comprehend permission to use Amazon Key Management Service (KMS) to encrypt or decrypt the custom model.
     public var dataAccessRoleArn: Swift.String?
     /// ID for the KMS key that Amazon Comprehend uses to encrypt trained custom models. The ModelKmsKeyId can be either of the following formats:
@@ -6220,7 +6220,7 @@ public struct ImportModelInput {
     }
 }
 
-public struct ImportModelOutput {
+public struct ImportModelOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the custom model being imported.
     public var modelArn: Swift.String?
 
@@ -6257,8 +6257,9 @@ public struct InvalidFilterException: ClientRuntime.ModeledError, AWSClientRunti
 }
 
 extension ComprehendClientTypes {
+
     /// Filter the datasets based on creation time or dataset status.
-    public struct DatasetFilter {
+    public struct DatasetFilter: Swift.Sendable {
         /// Filter the datasets to include datasets created after the specified time.
         public var creationTimeAfter: Foundation.Date?
         /// Filter the datasets to include datasets created before the specified time.
@@ -6281,10 +6282,9 @@ extension ComprehendClientTypes {
             self.status = status
         }
     }
-
 }
 
-public struct ListDatasetsInput {
+public struct ListDatasetsInput: Swift.Sendable {
     /// Filters the datasets to be returned in the response.
     public var filter: ComprehendClientTypes.DatasetFilter?
     /// The Amazon Resource Number (ARN) of the flywheel.
@@ -6308,7 +6308,7 @@ public struct ListDatasetsInput {
     }
 }
 
-public struct ListDatasetsOutput {
+public struct ListDatasetsOutput: Swift.Sendable {
     /// The dataset properties list.
     public var datasetPropertiesList: [ComprehendClientTypes.DatasetProperties]?
     /// Identifies the next page of results to return.
@@ -6325,8 +6325,9 @@ public struct ListDatasetsOutput {
 }
 
 extension ComprehendClientTypes {
+
     /// Provides information for filtering a list of document classification jobs. For more information, see the operation. You can provide only one filter parameter in each request.
-    public struct DocumentClassificationJobFilter {
+    public struct DocumentClassificationJobFilter: Swift.Sendable {
         /// Filters on the name of the job.
         public var jobName: Swift.String?
         /// Filters the list based on job status. Returns only jobs with the specified status.
@@ -6349,10 +6350,9 @@ extension ComprehendClientTypes {
             self.submitTimeBefore = submitTimeBefore
         }
     }
-
 }
 
-public struct ListDocumentClassificationJobsInput {
+public struct ListDocumentClassificationJobsInput: Swift.Sendable {
     /// Filters the jobs that are returned. You can filter jobs on their names, status, or the date and time that they were submitted. You can only set one filter at a time.
     public var filter: ComprehendClientTypes.DocumentClassificationJobFilter?
     /// The maximum number of results to return in each page. The default is 100.
@@ -6372,7 +6372,7 @@ public struct ListDocumentClassificationJobsInput {
     }
 }
 
-public struct ListDocumentClassificationJobsOutput {
+public struct ListDocumentClassificationJobsOutput: Swift.Sendable {
     /// A list containing the properties of each job returned.
     public var documentClassificationJobPropertiesList: [ComprehendClientTypes.DocumentClassificationJobProperties]?
     /// Identifies the next page of results to return.
@@ -6389,8 +6389,9 @@ public struct ListDocumentClassificationJobsOutput {
 }
 
 extension ComprehendClientTypes {
+
     /// Provides information for filtering a list of document classifiers. You can only specify one filtering parameter in a request. For more information, see the ListDocumentClassifiers operation.
-    public struct DocumentClassifierFilter {
+    public struct DocumentClassifierFilter: Swift.Sendable {
         /// The name that you assigned to the document classifier
         public var documentClassifierName: Swift.String?
         /// Filters the list of classifiers based on status.
@@ -6413,10 +6414,9 @@ extension ComprehendClientTypes {
             self.submitTimeBefore = submitTimeBefore
         }
     }
-
 }
 
-public struct ListDocumentClassifiersInput {
+public struct ListDocumentClassifiersInput: Swift.Sendable {
     /// Filters the jobs that are returned. You can filter jobs on their name, status, or the date and time that they were submitted. You can only set one filter at a time.
     public var filter: ComprehendClientTypes.DocumentClassifierFilter?
     /// The maximum number of results to return in each page. The default is 100.
@@ -6436,7 +6436,7 @@ public struct ListDocumentClassifiersInput {
     }
 }
 
-public struct ListDocumentClassifiersOutput {
+public struct ListDocumentClassifiersOutput: Swift.Sendable {
     /// A list containing the properties of each job returned.
     public var documentClassifierPropertiesList: [ComprehendClientTypes.DocumentClassifierProperties]?
     /// Identifies the next page of results to return.
@@ -6452,7 +6452,7 @@ public struct ListDocumentClassifiersOutput {
     }
 }
 
-public struct ListDocumentClassifierSummariesInput {
+public struct ListDocumentClassifierSummariesInput: Swift.Sendable {
     /// The maximum number of results to return on each page. The default is 100.
     public var maxResults: Swift.Int?
     /// Identifies the next page of results to return.
@@ -6469,8 +6469,9 @@ public struct ListDocumentClassifierSummariesInput {
 }
 
 extension ComprehendClientTypes {
+
     /// Describes information about a document classifier and its versions.
-    public struct DocumentClassifierSummary {
+    public struct DocumentClassifierSummary: Swift.Sendable {
         /// The name that you assigned the document classifier.
         public var documentClassifierName: Swift.String?
         /// The time that the latest document classifier version was submitted for processing.
@@ -6497,10 +6498,9 @@ extension ComprehendClientTypes {
             self.numberOfVersions = numberOfVersions
         }
     }
-
 }
 
-public struct ListDocumentClassifierSummariesOutput {
+public struct ListDocumentClassifierSummariesOutput: Swift.Sendable {
     /// The list of summaries of document classifiers.
     public var documentClassifierSummariesList: [ComprehendClientTypes.DocumentClassifierSummary]?
     /// Identifies the next page of results to return.
@@ -6517,8 +6517,9 @@ public struct ListDocumentClassifierSummariesOutput {
 }
 
 extension ComprehendClientTypes {
+
     /// Provides information for filtering a list of dominant language detection jobs. For more information, see the operation.
-    public struct DominantLanguageDetectionJobFilter {
+    public struct DominantLanguageDetectionJobFilter: Swift.Sendable {
         /// Filters on the name of the job.
         public var jobName: Swift.String?
         /// Filters the list of jobs based on job status. Returns only jobs with the specified status.
@@ -6541,10 +6542,9 @@ extension ComprehendClientTypes {
             self.submitTimeBefore = submitTimeBefore
         }
     }
-
 }
 
-public struct ListDominantLanguageDetectionJobsInput {
+public struct ListDominantLanguageDetectionJobsInput: Swift.Sendable {
     /// Filters that jobs that are returned. You can filter jobs on their name, status, or the date and time that they were submitted. You can only set one filter at a time.
     public var filter: ComprehendClientTypes.DominantLanguageDetectionJobFilter?
     /// The maximum number of results to return in each page. The default is 100.
@@ -6564,7 +6564,7 @@ public struct ListDominantLanguageDetectionJobsInput {
     }
 }
 
-public struct ListDominantLanguageDetectionJobsOutput {
+public struct ListDominantLanguageDetectionJobsOutput: Swift.Sendable {
     /// A list containing the properties of each job that is returned.
     public var dominantLanguageDetectionJobPropertiesList: [ComprehendClientTypes.DominantLanguageDetectionJobProperties]?
     /// Identifies the next page of results to return.
@@ -6581,8 +6581,9 @@ public struct ListDominantLanguageDetectionJobsOutput {
 }
 
 extension ComprehendClientTypes {
+
     /// The filter used to determine which endpoints are returned. You can filter jobs on their name, model, status, or the date and time that they were created. You can only set one filter at a time.
-    public struct EndpointFilter {
+    public struct EndpointFilter: Swift.Sendable {
         /// Specifies a date after which the returned endpoint or endpoints were created.
         public var creationTimeAfter: Foundation.Date?
         /// Specifies a date before which the returned endpoint or endpoints were created.
@@ -6605,10 +6606,9 @@ extension ComprehendClientTypes {
             self.status = status
         }
     }
-
 }
 
-public struct ListEndpointsInput {
+public struct ListEndpointsInput: Swift.Sendable {
     /// Filters the endpoints that are returned. You can filter endpoints on their name, model, status, or the date and time that they were created. You can only set one filter at a time.
     public var filter: ComprehendClientTypes.EndpointFilter?
     /// The maximum number of results to return in each page. The default is 100.
@@ -6628,7 +6628,7 @@ public struct ListEndpointsInput {
     }
 }
 
-public struct ListEndpointsOutput {
+public struct ListEndpointsOutput: Swift.Sendable {
     /// Displays a list of endpoint properties being retrieved by the service in response to the request.
     public var endpointPropertiesList: [ComprehendClientTypes.EndpointProperties]?
     /// Identifies the next page of results to return.
@@ -6645,8 +6645,9 @@ public struct ListEndpointsOutput {
 }
 
 extension ComprehendClientTypes {
+
     /// Provides information for filtering a list of dominant language detection jobs. For more information, see the operation.
-    public struct EntitiesDetectionJobFilter {
+    public struct EntitiesDetectionJobFilter: Swift.Sendable {
         /// Filters on the name of the job.
         public var jobName: Swift.String?
         /// Filters the list of jobs based on job status. Returns only jobs with the specified status.
@@ -6669,10 +6670,9 @@ extension ComprehendClientTypes {
             self.submitTimeBefore = submitTimeBefore
         }
     }
-
 }
 
-public struct ListEntitiesDetectionJobsInput {
+public struct ListEntitiesDetectionJobsInput: Swift.Sendable {
     /// Filters the jobs that are returned. You can filter jobs on their name, status, or the date and time that they were submitted. You can only set one filter at a time.
     public var filter: ComprehendClientTypes.EntitiesDetectionJobFilter?
     /// The maximum number of results to return in each page. The default is 100.
@@ -6692,7 +6692,7 @@ public struct ListEntitiesDetectionJobsInput {
     }
 }
 
-public struct ListEntitiesDetectionJobsOutput {
+public struct ListEntitiesDetectionJobsOutput: Swift.Sendable {
     /// A list containing the properties of each job that is returned.
     public var entitiesDetectionJobPropertiesList: [ComprehendClientTypes.EntitiesDetectionJobProperties]?
     /// Identifies the next page of results to return.
@@ -6709,8 +6709,9 @@ public struct ListEntitiesDetectionJobsOutput {
 }
 
 extension ComprehendClientTypes {
+
     /// Provides information for filtering a list of entity recognizers. You can only specify one filtering parameter in a request. For more information, see the ListEntityRecognizers operation./>
-    public struct EntityRecognizerFilter {
+    public struct EntityRecognizerFilter: Swift.Sendable {
         /// The name that you assigned the entity recognizer.
         public var recognizerName: Swift.String?
         /// The status of an entity recognizer.
@@ -6733,10 +6734,9 @@ extension ComprehendClientTypes {
             self.submitTimeBefore = submitTimeBefore
         }
     }
-
 }
 
-public struct ListEntityRecognizersInput {
+public struct ListEntityRecognizersInput: Swift.Sendable {
     /// Filters the list of entities returned. You can filter on Status, SubmitTimeBefore, or SubmitTimeAfter. You can only set one filter at a time.
     public var filter: ComprehendClientTypes.EntityRecognizerFilter?
     /// The maximum number of results to return on each page. The default is 100.
@@ -6756,7 +6756,7 @@ public struct ListEntityRecognizersInput {
     }
 }
 
-public struct ListEntityRecognizersOutput {
+public struct ListEntityRecognizersOutput: Swift.Sendable {
     /// The list of properties of an entity recognizer.
     public var entityRecognizerPropertiesList: [ComprehendClientTypes.EntityRecognizerProperties]?
     /// Identifies the next page of results to return.
@@ -6772,7 +6772,7 @@ public struct ListEntityRecognizersOutput {
     }
 }
 
-public struct ListEntityRecognizerSummariesInput {
+public struct ListEntityRecognizerSummariesInput: Swift.Sendable {
     /// The maximum number of results to return on each page. The default is 100.
     public var maxResults: Swift.Int?
     /// Identifies the next page of results to return.
@@ -6789,8 +6789,9 @@ public struct ListEntityRecognizerSummariesInput {
 }
 
 extension ComprehendClientTypes {
+
     /// Describes the information about an entity recognizer and its versions.
-    public struct EntityRecognizerSummary {
+    public struct EntityRecognizerSummary: Swift.Sendable {
         /// The time that the latest entity recognizer version was submitted for processing.
         public var latestVersionCreatedAt: Foundation.Date?
         /// The version name you assigned to the latest entity recognizer version.
@@ -6817,10 +6818,9 @@ extension ComprehendClientTypes {
             self.recognizerName = recognizerName
         }
     }
-
 }
 
-public struct ListEntityRecognizerSummariesOutput {
+public struct ListEntityRecognizerSummariesOutput: Swift.Sendable {
     /// The list entity recognizer summaries.
     public var entityRecognizerSummariesList: [ComprehendClientTypes.EntityRecognizerSummary]?
     /// Identifies the next page of results to return.
@@ -6837,8 +6837,9 @@ public struct ListEntityRecognizerSummariesOutput {
 }
 
 extension ComprehendClientTypes {
+
     /// Provides information for filtering a list of event detection jobs.
-    public struct EventsDetectionJobFilter {
+    public struct EventsDetectionJobFilter: Swift.Sendable {
         /// Filters on the name of the events detection job.
         public var jobName: Swift.String?
         /// Filters the list of jobs based on job status. Returns only jobs with the specified status.
@@ -6861,10 +6862,9 @@ extension ComprehendClientTypes {
             self.submitTimeBefore = submitTimeBefore
         }
     }
-
 }
 
-public struct ListEventsDetectionJobsInput {
+public struct ListEventsDetectionJobsInput: Swift.Sendable {
     /// Filters the jobs that are returned. You can filter jobs on their name, status, or the date and time that they were submitted. You can only set one filter at a time.
     public var filter: ComprehendClientTypes.EventsDetectionJobFilter?
     /// The maximum number of results to return in each page.
@@ -6884,7 +6884,7 @@ public struct ListEventsDetectionJobsInput {
     }
 }
 
-public struct ListEventsDetectionJobsOutput {
+public struct ListEventsDetectionJobsOutput: Swift.Sendable {
     /// A list containing the properties of each job that is returned.
     public var eventsDetectionJobPropertiesList: [ComprehendClientTypes.EventsDetectionJobProperties]?
     /// Identifies the next page of results to return.
@@ -6901,8 +6901,9 @@ public struct ListEventsDetectionJobsOutput {
 }
 
 extension ComprehendClientTypes {
+
     /// Filter the flywheel iterations based on creation time.
-    public struct FlywheelIterationFilter {
+    public struct FlywheelIterationFilter: Swift.Sendable {
         /// Filter the flywheel iterations to include iterations created after the specified time.
         public var creationTimeAfter: Foundation.Date?
         /// Filter the flywheel iterations to include iterations created before the specified time.
@@ -6917,10 +6918,9 @@ extension ComprehendClientTypes {
             self.creationTimeBefore = creationTimeBefore
         }
     }
-
 }
 
-public struct ListFlywheelIterationHistoryInput {
+public struct ListFlywheelIterationHistoryInput: Swift.Sendable {
     /// Filter the flywheel iteration history based on creation time.
     public var filter: ComprehendClientTypes.FlywheelIterationFilter?
     /// The ARN of the flywheel.
@@ -6945,7 +6945,7 @@ public struct ListFlywheelIterationHistoryInput {
     }
 }
 
-public struct ListFlywheelIterationHistoryOutput {
+public struct ListFlywheelIterationHistoryOutput: Swift.Sendable {
     /// List of flywheel iteration properties
     public var flywheelIterationPropertiesList: [ComprehendClientTypes.FlywheelIterationProperties]?
     /// Next token
@@ -6962,8 +6962,9 @@ public struct ListFlywheelIterationHistoryOutput {
 }
 
 extension ComprehendClientTypes {
+
     /// Filter the flywheels based on creation time or flywheel status.
-    public struct FlywheelFilter {
+    public struct FlywheelFilter: Swift.Sendable {
         /// Filter the flywheels to include flywheels created after the specified time.
         public var creationTimeAfter: Foundation.Date?
         /// Filter the flywheels to include flywheels created before the specified time.
@@ -6982,10 +6983,9 @@ extension ComprehendClientTypes {
             self.status = status
         }
     }
-
 }
 
-public struct ListFlywheelsInput {
+public struct ListFlywheelsInput: Swift.Sendable {
     /// Filters the flywheels that are returned. You can filter flywheels on their status, or the date and time that they were submitted. You can only set one filter at a time.
     public var filter: ComprehendClientTypes.FlywheelFilter?
     /// Maximum number of results to return in a response. The default is 100.
@@ -7006,8 +7006,9 @@ public struct ListFlywheelsInput {
 }
 
 extension ComprehendClientTypes {
+
     /// Flywheel summary information.
-    public struct FlywheelSummary {
+    public struct FlywheelSummary: Swift.Sendable {
         /// ARN of the active model version for the flywheel.
         public var activeModelArn: Swift.String?
         /// Creation time of the flywheel.
@@ -7050,10 +7051,9 @@ extension ComprehendClientTypes {
             self.status = status
         }
     }
-
 }
 
-public struct ListFlywheelsOutput {
+public struct ListFlywheelsOutput: Swift.Sendable {
     /// A list of flywheel properties retrieved by the service in response to the request.
     public var flywheelSummaryList: [ComprehendClientTypes.FlywheelSummary]?
     /// Identifies the next page of results to return.
@@ -7070,8 +7070,9 @@ public struct ListFlywheelsOutput {
 }
 
 extension ComprehendClientTypes {
+
     /// Provides information for filtering a list of dominant language detection jobs. For more information, see the operation.
-    public struct KeyPhrasesDetectionJobFilter {
+    public struct KeyPhrasesDetectionJobFilter: Swift.Sendable {
         /// Filters on the name of the job.
         public var jobName: Swift.String?
         /// Filters the list of jobs based on job status. Returns only jobs with the specified status.
@@ -7094,10 +7095,9 @@ extension ComprehendClientTypes {
             self.submitTimeBefore = submitTimeBefore
         }
     }
-
 }
 
-public struct ListKeyPhrasesDetectionJobsInput {
+public struct ListKeyPhrasesDetectionJobsInput: Swift.Sendable {
     /// Filters the jobs that are returned. You can filter jobs on their name, status, or the date and time that they were submitted. You can only set one filter at a time.
     public var filter: ComprehendClientTypes.KeyPhrasesDetectionJobFilter?
     /// The maximum number of results to return in each page. The default is 100.
@@ -7117,7 +7117,7 @@ public struct ListKeyPhrasesDetectionJobsInput {
     }
 }
 
-public struct ListKeyPhrasesDetectionJobsOutput {
+public struct ListKeyPhrasesDetectionJobsOutput: Swift.Sendable {
     /// A list containing the properties of each job that is returned.
     public var keyPhrasesDetectionJobPropertiesList: [ComprehendClientTypes.KeyPhrasesDetectionJobProperties]?
     /// Identifies the next page of results to return.
@@ -7134,8 +7134,9 @@ public struct ListKeyPhrasesDetectionJobsOutput {
 }
 
 extension ComprehendClientTypes {
+
     /// Provides information for filtering a list of PII entity detection jobs.
-    public struct PiiEntitiesDetectionJobFilter {
+    public struct PiiEntitiesDetectionJobFilter: Swift.Sendable {
         /// Filters on the name of the job.
         public var jobName: Swift.String?
         /// Filters the list of jobs based on job status. Returns only jobs with the specified status.
@@ -7158,10 +7159,9 @@ extension ComprehendClientTypes {
             self.submitTimeBefore = submitTimeBefore
         }
     }
-
 }
 
-public struct ListPiiEntitiesDetectionJobsInput {
+public struct ListPiiEntitiesDetectionJobsInput: Swift.Sendable {
     /// Filters the jobs that are returned. You can filter jobs on their name, status, or the date and time that they were submitted. You can only set one filter at a time.
     public var filter: ComprehendClientTypes.PiiEntitiesDetectionJobFilter?
     /// The maximum number of results to return in each page.
@@ -7181,7 +7181,7 @@ public struct ListPiiEntitiesDetectionJobsInput {
     }
 }
 
-public struct ListPiiEntitiesDetectionJobsOutput {
+public struct ListPiiEntitiesDetectionJobsOutput: Swift.Sendable {
     /// Identifies the next page of results to return.
     public var nextToken: Swift.String?
     /// A list containing the properties of each job that is returned.
@@ -7198,8 +7198,9 @@ public struct ListPiiEntitiesDetectionJobsOutput {
 }
 
 extension ComprehendClientTypes {
+
     /// Provides information for filtering a list of dominant language detection jobs. For more information, see the operation.
-    public struct SentimentDetectionJobFilter {
+    public struct SentimentDetectionJobFilter: Swift.Sendable {
         /// Filters on the name of the job.
         public var jobName: Swift.String?
         /// Filters the list of jobs based on job status. Returns only jobs with the specified status.
@@ -7222,10 +7223,9 @@ extension ComprehendClientTypes {
             self.submitTimeBefore = submitTimeBefore
         }
     }
-
 }
 
-public struct ListSentimentDetectionJobsInput {
+public struct ListSentimentDetectionJobsInput: Swift.Sendable {
     /// Filters the jobs that are returned. You can filter jobs on their name, status, or the date and time that they were submitted. You can only set one filter at a time.
     public var filter: ComprehendClientTypes.SentimentDetectionJobFilter?
     /// The maximum number of results to return in each page. The default is 100.
@@ -7245,7 +7245,7 @@ public struct ListSentimentDetectionJobsInput {
     }
 }
 
-public struct ListSentimentDetectionJobsOutput {
+public struct ListSentimentDetectionJobsOutput: Swift.Sendable {
     /// Identifies the next page of results to return.
     public var nextToken: Swift.String?
     /// A list containing the properties of each job that is returned.
@@ -7261,7 +7261,7 @@ public struct ListSentimentDetectionJobsOutput {
     }
 }
 
-public struct ListTagsForResourceInput {
+public struct ListTagsForResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the given Amazon Comprehend resource you are querying.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -7274,7 +7274,7 @@ public struct ListTagsForResourceInput {
     }
 }
 
-public struct ListTagsForResourceOutput {
+public struct ListTagsForResourceOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the given Amazon Comprehend resource you are querying.
     public var resourceArn: Swift.String?
     /// Tags associated with the Amazon Comprehend resource being queried. A tag is a key-value pair that adds as a metadata to a resource used by Amazon Comprehend. For example, a tag with "Sales" as the key might be added to a resource to indicate its use by the sales department.
@@ -7291,8 +7291,9 @@ public struct ListTagsForResourceOutput {
 }
 
 extension ComprehendClientTypes {
+
     /// Provides information for filtering a list of dominant language detection jobs. For more information, see the ListTargetedSentimentDetectionJobs operation.
-    public struct TargetedSentimentDetectionJobFilter {
+    public struct TargetedSentimentDetectionJobFilter: Swift.Sendable {
         /// Filters on the name of the job.
         public var jobName: Swift.String?
         /// Filters the list of jobs based on job status. Returns only jobs with the specified status.
@@ -7315,10 +7316,9 @@ extension ComprehendClientTypes {
             self.submitTimeBefore = submitTimeBefore
         }
     }
-
 }
 
-public struct ListTargetedSentimentDetectionJobsInput {
+public struct ListTargetedSentimentDetectionJobsInput: Swift.Sendable {
     /// Filters the jobs that are returned. You can filter jobs on their name, status, or the date and time that they were submitted. You can only set one filter at a time.
     public var filter: ComprehendClientTypes.TargetedSentimentDetectionJobFilter?
     /// The maximum number of results to return in each page. The default is 100.
@@ -7338,7 +7338,7 @@ public struct ListTargetedSentimentDetectionJobsInput {
     }
 }
 
-public struct ListTargetedSentimentDetectionJobsOutput {
+public struct ListTargetedSentimentDetectionJobsOutput: Swift.Sendable {
     /// Identifies the next page of results to return.
     public var nextToken: Swift.String?
     /// A list containing the properties of each job that is returned.
@@ -7355,8 +7355,9 @@ public struct ListTargetedSentimentDetectionJobsOutput {
 }
 
 extension ComprehendClientTypes {
+
     /// Provides information for filtering topic detection jobs. For more information, see .
-    public struct TopicsDetectionJobFilter {
+    public struct TopicsDetectionJobFilter: Swift.Sendable {
         ///
         public var jobName: Swift.String?
         /// Filters the list of topic detection jobs based on job status. Returns only jobs with the specified status.
@@ -7379,10 +7380,9 @@ extension ComprehendClientTypes {
             self.submitTimeBefore = submitTimeBefore
         }
     }
-
 }
 
-public struct ListTopicsDetectionJobsInput {
+public struct ListTopicsDetectionJobsInput: Swift.Sendable {
     /// Filters the jobs that are returned. Jobs can be filtered on their name, status, or the date and time that they were submitted. You can set only one filter at a time.
     public var filter: ComprehendClientTypes.TopicsDetectionJobFilter?
     /// The maximum number of results to return in each page. The default is 100.
@@ -7402,7 +7402,7 @@ public struct ListTopicsDetectionJobsInput {
     }
 }
 
-public struct ListTopicsDetectionJobsOutput {
+public struct ListTopicsDetectionJobsOutput: Swift.Sendable {
     /// Identifies the next page of results to return.
     public var nextToken: Swift.String?
     /// A list containing the properties of each job that is returned.
@@ -7418,7 +7418,7 @@ public struct ListTopicsDetectionJobsOutput {
     }
 }
 
-public struct PutResourcePolicyInput {
+public struct PutResourcePolicyInput: Swift.Sendable {
     /// The revision ID that Amazon Comprehend assigned to the policy that you are updating. If you are creating a new policy that has no prior version, don't use this parameter. Amazon Comprehend creates the revision ID for you.
     public var policyRevisionId: Swift.String?
     /// The Amazon Resource Name (ARN) of the custom model to attach the policy to.
@@ -7440,7 +7440,7 @@ public struct PutResourcePolicyInput {
     }
 }
 
-public struct PutResourcePolicyOutput {
+public struct PutResourcePolicyOutput: Swift.Sendable {
     /// The revision ID of the policy. Each time you modify a policy, Amazon Comprehend assigns a new revision ID, and it deletes the prior version of the policy.
     public var policyRevisionId: Swift.String?
 
@@ -7452,7 +7452,7 @@ public struct PutResourcePolicyOutput {
     }
 }
 
-public struct StartDocumentClassificationJobInput {
+public struct StartDocumentClassificationJobInput: Swift.Sendable {
     /// A unique identifier for the request. If you do not set the client request token, Amazon Comprehend generates one.
     public var clientRequestToken: Swift.String?
     /// The Amazon Resource Name (ARN) of the IAM role that grants Amazon Comprehend read access to your input data.
@@ -7507,7 +7507,7 @@ public struct StartDocumentClassificationJobInput {
     }
 }
 
-public struct StartDocumentClassificationJobOutput {
+public struct StartDocumentClassificationJobOutput: Swift.Sendable {
     /// The ARN of the custom classification model.
     public var documentClassifierArn: Swift.String?
     /// The Amazon Resource Name (ARN) of the document classification job. It is a unique, fully qualified identifier for the job. It includes the Amazon Web Services account, Amazon Web Services Region, and the job ID. The format of the ARN is as follows: arn::comprehend:::document-classification-job/ The following is an example job ARN: arn:aws:comprehend:us-west-2:111122223333:document-classification-job/1234abcd12ab34cd56ef1234567890ab
@@ -7543,7 +7543,7 @@ public struct StartDocumentClassificationJobOutput {
     }
 }
 
-public struct StartDominantLanguageDetectionJobInput {
+public struct StartDominantLanguageDetectionJobInput: Swift.Sendable {
     /// A unique identifier for the request. If you do not set the client request token, Amazon Comprehend generates one.
     public var clientRequestToken: Swift.String?
     /// The Amazon Resource Name (ARN) of the IAM role that grants Amazon Comprehend read access to your input data. For more information, see [Role-based permissions](https://docs.aws.amazon.com/comprehend/latest/dg/security_iam_id-based-policy-examples.html#auth-role-permissions).
@@ -7590,7 +7590,7 @@ public struct StartDominantLanguageDetectionJobInput {
     }
 }
 
-public struct StartDominantLanguageDetectionJobOutput {
+public struct StartDominantLanguageDetectionJobOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the dominant language detection job. It is a unique, fully qualified identifier for the job. It includes the Amazon Web Services account, Amazon Web Services Region, and the job ID. The format of the ARN is as follows: arn::comprehend:::dominant-language-detection-job/ The following is an example job ARN: arn:aws:comprehend:us-west-2:111122223333:dominant-language-detection-job/1234abcd12ab34cd56ef1234567890ab
     public var jobArn: Swift.String?
     /// The identifier generated for the job. To get the status of a job, use this identifier with the operation.
@@ -7618,7 +7618,7 @@ public struct StartDominantLanguageDetectionJobOutput {
     }
 }
 
-public struct StartEntitiesDetectionJobInput {
+public struct StartEntitiesDetectionJobInput: Swift.Sendable {
     /// A unique identifier for the request. If you don't set the client request token, Amazon Comprehend generates one.
     public var clientRequestToken: Swift.String?
     /// The Amazon Resource Name (ARN) of the IAM role that grants Amazon Comprehend read access to your input data. For more information, see [Role-based permissions](https://docs.aws.amazon.com/comprehend/latest/dg/security_iam_id-based-policy-examples.html#auth-role-permissions).
@@ -7678,7 +7678,7 @@ public struct StartEntitiesDetectionJobInput {
     }
 }
 
-public struct StartEntitiesDetectionJobOutput {
+public struct StartEntitiesDetectionJobOutput: Swift.Sendable {
     /// The ARN of the custom entity recognition model.
     public var entityRecognizerArn: Swift.String?
     /// The Amazon Resource Name (ARN) of the entities detection job. It is a unique, fully qualified identifier for the job. It includes the Amazon Web Services account, Amazon Web Services Region, and the job ID. The format of the ARN is as follows: arn::comprehend:::entities-detection-job/ The following is an example job ARN: arn:aws:comprehend:us-west-2:111122223333:entities-detection-job/1234abcd12ab34cd56ef1234567890ab
@@ -7714,7 +7714,7 @@ public struct StartEntitiesDetectionJobOutput {
     }
 }
 
-public struct StartEventsDetectionJobInput {
+public struct StartEventsDetectionJobInput: Swift.Sendable {
     /// An unique identifier for the request. If you don't set the client request token, Amazon Comprehend generates one.
     public var clientRequestToken: Swift.String?
     /// The Amazon Resource Name (ARN) of the IAM role that grants Amazon Comprehend read access to your input data.
@@ -7759,7 +7759,7 @@ public struct StartEventsDetectionJobInput {
     }
 }
 
-public struct StartEventsDetectionJobOutput {
+public struct StartEventsDetectionJobOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the events detection job. It is a unique, fully qualified identifier for the job. It includes the Amazon Web Services account, Amazon Web Services Region, and the job ID. The format of the ARN is as follows: arn::comprehend:::events-detection-job/ The following is an example job ARN: arn:aws:comprehend:us-west-2:111122223333:events-detection-job/1234abcd12ab34cd56ef1234567890ab
     public var jobArn: Swift.String?
     /// An unique identifier for the request. If you don't set the client request token, Amazon Comprehend generates one.
@@ -7779,7 +7779,7 @@ public struct StartEventsDetectionJobOutput {
     }
 }
 
-public struct StartFlywheelIterationInput {
+public struct StartFlywheelIterationInput: Swift.Sendable {
     /// A unique identifier for the request. If you don't set the client request token, Amazon Comprehend generates one.
     public var clientRequestToken: Swift.String?
     /// The ARN of the flywheel.
@@ -7796,7 +7796,7 @@ public struct StartFlywheelIterationInput {
     }
 }
 
-public struct StartFlywheelIterationOutput {
+public struct StartFlywheelIterationOutput: Swift.Sendable {
     ///
     public var flywheelArn: Swift.String?
     ///
@@ -7812,7 +7812,7 @@ public struct StartFlywheelIterationOutput {
     }
 }
 
-public struct StartKeyPhrasesDetectionJobInput {
+public struct StartKeyPhrasesDetectionJobInput: Swift.Sendable {
     /// A unique identifier for the request. If you don't set the client request token, Amazon Comprehend generates one.
     public var clientRequestToken: Swift.String?
     /// The Amazon Resource Name (ARN) of the IAM role that grants Amazon Comprehend read access to your input data. For more information, see [Role-based permissions](https://docs.aws.amazon.com/comprehend/latest/dg/security_iam_id-based-policy-examples.html#auth-role-permissions).
@@ -7864,7 +7864,7 @@ public struct StartKeyPhrasesDetectionJobInput {
     }
 }
 
-public struct StartKeyPhrasesDetectionJobOutput {
+public struct StartKeyPhrasesDetectionJobOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the key phrase detection job. It is a unique, fully qualified identifier for the job. It includes the Amazon Web Services account, Amazon Web Services Region, and the job ID. The format of the ARN is as follows: arn::comprehend:::key-phrases-detection-job/ The following is an example job ARN: arn:aws:comprehend:us-west-2:111122223333:key-phrases-detection-job/1234abcd12ab34cd56ef1234567890ab
     public var jobArn: Swift.String?
     /// The identifier generated for the job. To get the status of a job, use this identifier with the operation.
@@ -7892,7 +7892,7 @@ public struct StartKeyPhrasesDetectionJobOutput {
     }
 }
 
-public struct StartPiiEntitiesDetectionJobInput {
+public struct StartPiiEntitiesDetectionJobInput: Swift.Sendable {
     /// A unique identifier for the request. If you don't set the client request token, Amazon Comprehend generates one.
     public var clientRequestToken: Swift.String?
     /// The Amazon Resource Name (ARN) of the IAM role that grants Amazon Comprehend read access to your input data.
@@ -7941,7 +7941,7 @@ public struct StartPiiEntitiesDetectionJobInput {
     }
 }
 
-public struct StartPiiEntitiesDetectionJobOutput {
+public struct StartPiiEntitiesDetectionJobOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the PII entity detection job. It is a unique, fully qualified identifier for the job. It includes the Amazon Web Services account, Amazon Web Services Region, and the job ID. The format of the ARN is as follows: arn::comprehend:::pii-entities-detection-job/ The following is an example job ARN: arn:aws:comprehend:us-west-2:111122223333:pii-entities-detection-job/1234abcd12ab34cd56ef1234567890ab
     public var jobArn: Swift.String?
     /// The identifier generated for the job.
@@ -7961,7 +7961,7 @@ public struct StartPiiEntitiesDetectionJobOutput {
     }
 }
 
-public struct StartSentimentDetectionJobInput {
+public struct StartSentimentDetectionJobInput: Swift.Sendable {
     /// A unique identifier for the request. If you don't set the client request token, Amazon Comprehend generates one.
     public var clientRequestToken: Swift.String?
     /// The Amazon Resource Name (ARN) of the IAM role that grants Amazon Comprehend read access to your input data. For more information, see [Role-based permissions](https://docs.aws.amazon.com/comprehend/latest/dg/security_iam_id-based-policy-examples.html#auth-role-permissions).
@@ -8013,7 +8013,7 @@ public struct StartSentimentDetectionJobInput {
     }
 }
 
-public struct StartSentimentDetectionJobOutput {
+public struct StartSentimentDetectionJobOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the sentiment detection job. It is a unique, fully qualified identifier for the job. It includes the Amazon Web Services account, Amazon Web Services Region, and the job ID. The format of the ARN is as follows: arn::comprehend:::sentiment-detection-job/ The following is an example job ARN: arn:aws:comprehend:us-west-2:111122223333:sentiment-detection-job/1234abcd12ab34cd56ef1234567890ab
     public var jobArn: Swift.String?
     /// The identifier generated for the job. To get the status of a job, use this identifier with the operation.
@@ -8041,7 +8041,7 @@ public struct StartSentimentDetectionJobOutput {
     }
 }
 
-public struct StartTargetedSentimentDetectionJobInput {
+public struct StartTargetedSentimentDetectionJobInput: Swift.Sendable {
     /// A unique identifier for the request. If you don't set the client request token, Amazon Comprehend generates one.
     public var clientRequestToken: Swift.String?
     /// The Amazon Resource Name (ARN) of the IAM role that grants Amazon Comprehend read access to your input data. For more information, see [Role-based permissions](https://docs.aws.amazon.com/comprehend/latest/dg/security_iam_id-based-policy-examples.html#auth-role-permissions).
@@ -8093,7 +8093,7 @@ public struct StartTargetedSentimentDetectionJobInput {
     }
 }
 
-public struct StartTargetedSentimentDetectionJobOutput {
+public struct StartTargetedSentimentDetectionJobOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the targeted sentiment detection job. It is a unique, fully qualified identifier for the job. It includes the Amazon Web Services account, Amazon Web Services Region, and the job ID. The format of the ARN is as follows: arn::comprehend:::targeted-sentiment-detection-job/ The following is an example job ARN: arn:aws:comprehend:us-west-2:111122223333:targeted-sentiment-detection-job/1234abcd12ab34cd56ef1234567890ab
     public var jobArn: Swift.String?
     /// The identifier generated for the job. To get the status of a job, use this identifier with the DescribeTargetedSentimentDetectionJob operation.
@@ -8121,7 +8121,7 @@ public struct StartTargetedSentimentDetectionJobOutput {
     }
 }
 
-public struct StartTopicsDetectionJobInput {
+public struct StartTopicsDetectionJobInput: Swift.Sendable {
     /// A unique identifier for the request. If you do not set the client request token, Amazon Comprehend generates one.
     public var clientRequestToken: Swift.String?
     /// The Amazon Resource Name (ARN) of the IAM role that grants Amazon Comprehend read access to your input data. For more information, see [Role-based permissions](https://docs.aws.amazon.com/comprehend/latest/dg/security_iam_id-based-policy-examples.html#auth-role-permissions).
@@ -8172,7 +8172,7 @@ public struct StartTopicsDetectionJobInput {
     }
 }
 
-public struct StartTopicsDetectionJobOutput {
+public struct StartTopicsDetectionJobOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the topics detection job. It is a unique, fully qualified identifier for the job. It includes the Amazon Web Services account, Amazon Web Services Region, and the job ID. The format of the ARN is as follows: arn::comprehend:::topics-detection-job/ The following is an example job ARN: arn:aws:comprehend:us-west-2:111122223333:document-classification-job/1234abcd12ab34cd56ef1234567890ab
     public var jobArn: Swift.String?
     /// The identifier generated for the job. To get the status of the job, use this identifier with the DescribeTopicDetectionJob operation.
@@ -8200,7 +8200,7 @@ public struct StartTopicsDetectionJobOutput {
     }
 }
 
-public struct StopDominantLanguageDetectionJobInput {
+public struct StopDominantLanguageDetectionJobInput: Swift.Sendable {
     /// The identifier of the dominant language detection job to stop.
     /// This member is required.
     public var jobId: Swift.String?
@@ -8213,7 +8213,7 @@ public struct StopDominantLanguageDetectionJobInput {
     }
 }
 
-public struct StopDominantLanguageDetectionJobOutput {
+public struct StopDominantLanguageDetectionJobOutput: Swift.Sendable {
     /// The identifier of the dominant language detection job to stop.
     public var jobId: Swift.String?
     /// Either STOP_REQUESTED if the job is currently running, or STOPPED if the job was previously stopped with the StopDominantLanguageDetectionJob operation.
@@ -8229,7 +8229,7 @@ public struct StopDominantLanguageDetectionJobOutput {
     }
 }
 
-public struct StopEntitiesDetectionJobInput {
+public struct StopEntitiesDetectionJobInput: Swift.Sendable {
     /// The identifier of the entities detection job to stop.
     /// This member is required.
     public var jobId: Swift.String?
@@ -8242,7 +8242,7 @@ public struct StopEntitiesDetectionJobInput {
     }
 }
 
-public struct StopEntitiesDetectionJobOutput {
+public struct StopEntitiesDetectionJobOutput: Swift.Sendable {
     /// The identifier of the entities detection job to stop.
     public var jobId: Swift.String?
     /// Either STOP_REQUESTED if the job is currently running, or STOPPED if the job was previously stopped with the StopEntitiesDetectionJob operation.
@@ -8258,7 +8258,7 @@ public struct StopEntitiesDetectionJobOutput {
     }
 }
 
-public struct StopEventsDetectionJobInput {
+public struct StopEventsDetectionJobInput: Swift.Sendable {
     /// The identifier of the events detection job to stop.
     /// This member is required.
     public var jobId: Swift.String?
@@ -8271,7 +8271,7 @@ public struct StopEventsDetectionJobInput {
     }
 }
 
-public struct StopEventsDetectionJobOutput {
+public struct StopEventsDetectionJobOutput: Swift.Sendable {
     /// The identifier of the events detection job to stop.
     public var jobId: Swift.String?
     /// The status of the events detection job.
@@ -8287,7 +8287,7 @@ public struct StopEventsDetectionJobOutput {
     }
 }
 
-public struct StopKeyPhrasesDetectionJobInput {
+public struct StopKeyPhrasesDetectionJobInput: Swift.Sendable {
     /// The identifier of the key phrases detection job to stop.
     /// This member is required.
     public var jobId: Swift.String?
@@ -8300,7 +8300,7 @@ public struct StopKeyPhrasesDetectionJobInput {
     }
 }
 
-public struct StopKeyPhrasesDetectionJobOutput {
+public struct StopKeyPhrasesDetectionJobOutput: Swift.Sendable {
     /// The identifier of the key phrases detection job to stop.
     public var jobId: Swift.String?
     /// Either STOP_REQUESTED if the job is currently running, or STOPPED if the job was previously stopped with the StopKeyPhrasesDetectionJob operation.
@@ -8316,7 +8316,7 @@ public struct StopKeyPhrasesDetectionJobOutput {
     }
 }
 
-public struct StopPiiEntitiesDetectionJobInput {
+public struct StopPiiEntitiesDetectionJobInput: Swift.Sendable {
     /// The identifier of the PII entities detection job to stop.
     /// This member is required.
     public var jobId: Swift.String?
@@ -8329,7 +8329,7 @@ public struct StopPiiEntitiesDetectionJobInput {
     }
 }
 
-public struct StopPiiEntitiesDetectionJobOutput {
+public struct StopPiiEntitiesDetectionJobOutput: Swift.Sendable {
     /// The identifier of the PII entities detection job to stop.
     public var jobId: Swift.String?
     /// The status of the PII entities detection job.
@@ -8345,7 +8345,7 @@ public struct StopPiiEntitiesDetectionJobOutput {
     }
 }
 
-public struct StopSentimentDetectionJobInput {
+public struct StopSentimentDetectionJobInput: Swift.Sendable {
     /// The identifier of the sentiment detection job to stop.
     /// This member is required.
     public var jobId: Swift.String?
@@ -8358,7 +8358,7 @@ public struct StopSentimentDetectionJobInput {
     }
 }
 
-public struct StopSentimentDetectionJobOutput {
+public struct StopSentimentDetectionJobOutput: Swift.Sendable {
     /// The identifier of the sentiment detection job to stop.
     public var jobId: Swift.String?
     /// Either STOP_REQUESTED if the job is currently running, or STOPPED if the job was previously stopped with the StopSentimentDetectionJob operation.
@@ -8374,7 +8374,7 @@ public struct StopSentimentDetectionJobOutput {
     }
 }
 
-public struct StopTargetedSentimentDetectionJobInput {
+public struct StopTargetedSentimentDetectionJobInput: Swift.Sendable {
     /// The identifier of the targeted sentiment detection job to stop.
     /// This member is required.
     public var jobId: Swift.String?
@@ -8387,7 +8387,7 @@ public struct StopTargetedSentimentDetectionJobInput {
     }
 }
 
-public struct StopTargetedSentimentDetectionJobOutput {
+public struct StopTargetedSentimentDetectionJobOutput: Swift.Sendable {
     /// The identifier of the targeted sentiment detection job to stop.
     public var jobId: Swift.String?
     /// Either STOP_REQUESTED if the job is currently running, or STOPPED if the job was previously stopped with the StopSentimentDetectionJob operation.
@@ -8403,7 +8403,7 @@ public struct StopTargetedSentimentDetectionJobOutput {
     }
 }
 
-public struct StopTrainingDocumentClassifierInput {
+public struct StopTrainingDocumentClassifierInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) that identifies the document classifier currently being trained.
     /// This member is required.
     public var documentClassifierArn: Swift.String?
@@ -8416,12 +8416,12 @@ public struct StopTrainingDocumentClassifierInput {
     }
 }
 
-public struct StopTrainingDocumentClassifierOutput {
+public struct StopTrainingDocumentClassifierOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct StopTrainingEntityRecognizerInput {
+public struct StopTrainingEntityRecognizerInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) that identifies the entity recognizer currently being trained.
     /// This member is required.
     public var entityRecognizerArn: Swift.String?
@@ -8434,7 +8434,7 @@ public struct StopTrainingEntityRecognizerInput {
     }
 }
 
-public struct StopTrainingEntityRecognizerOutput {
+public struct StopTrainingEntityRecognizerOutput: Swift.Sendable {
 
     public init() { }
 }
@@ -8463,7 +8463,7 @@ public struct ConcurrentModificationException: ClientRuntime.ModeledError, AWSCl
     }
 }
 
-public struct TagResourceInput {
+public struct TagResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the given Amazon Comprehend resource to which you want to associate the tags.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -8481,7 +8481,7 @@ public struct TagResourceInput {
     }
 }
 
-public struct TagResourceOutput {
+public struct TagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
@@ -8510,7 +8510,7 @@ public struct TooManyTagKeysException: ClientRuntime.ModeledError, AWSClientRunt
     }
 }
 
-public struct UntagResourceInput {
+public struct UntagResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the given Amazon Comprehend resource from which you want to remove the tags.
     /// This member is required.
     public var resourceArn: Swift.String?
@@ -8528,12 +8528,12 @@ public struct UntagResourceInput {
     }
 }
 
-public struct UntagResourceOutput {
+public struct UntagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UpdateEndpointInput {
+public struct UpdateEndpointInput: Swift.Sendable {
     /// Data access role ARN to use in case the new model is encrypted with a customer CMK.
     public var desiredDataAccessRoleArn: Swift.String?
     /// The desired number of inference units to be used by the model using this endpoint. Each inference unit represents of a throughput of 100 characters per second.
@@ -8562,7 +8562,7 @@ public struct UpdateEndpointInput {
     }
 }
 
-public struct UpdateEndpointOutput {
+public struct UpdateEndpointOutput: Swift.Sendable {
     /// The Amazon Resource Number (ARN) of the new model.
     public var desiredModelArn: Swift.String?
 
@@ -8575,8 +8575,9 @@ public struct UpdateEndpointOutput {
 }
 
 extension ComprehendClientTypes {
+
     /// Data security configuration.
-    public struct UpdateDataSecurityConfig {
+    public struct UpdateDataSecurityConfig: Swift.Sendable {
         /// ID for the KMS key that Amazon Comprehend uses to encrypt trained custom models. The ModelKmsKeyId can be either of the following formats:
         ///
         /// * KMS Key ID: "1234abcd-12ab-34cd-56ef-1234567890ab"
@@ -8599,10 +8600,9 @@ extension ComprehendClientTypes {
             self.vpcConfig = vpcConfig
         }
     }
-
 }
 
-public struct UpdateFlywheelInput {
+public struct UpdateFlywheelInput: Swift.Sendable {
     /// The Amazon Resource Number (ARN) of the active model version.
     public var activeModelArn: Swift.String?
     /// The Amazon Resource Name (ARN) of the IAM role that grants Amazon Comprehend permission to access the flywheel data.
@@ -8627,7 +8627,7 @@ public struct UpdateFlywheelInput {
     }
 }
 
-public struct UpdateFlywheelOutput {
+public struct UpdateFlywheelOutput: Swift.Sendable {
     /// The flywheel properties.
     public var flywheelProperties: ComprehendClientTypes.FlywheelProperties?
 

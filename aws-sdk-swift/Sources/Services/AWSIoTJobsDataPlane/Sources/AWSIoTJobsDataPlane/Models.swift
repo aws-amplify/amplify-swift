@@ -178,7 +178,7 @@ public struct ThrottlingException: ClientRuntime.ModeledError, AWSClientRuntime.
     }
 }
 
-public struct DescribeJobExecutionInput {
+public struct DescribeJobExecutionInput: Swift.Sendable {
     /// Optional. A number that identifies a particular job execution on a particular device. If not specified, the latest job execution is returned.
     public var executionNumber: Swift.Int?
     /// Optional. When set to true, the response contains the job document. The default is false.
@@ -206,7 +206,7 @@ public struct DescribeJobExecutionInput {
 
 extension IoTJobsDataPlaneClientTypes {
 
-    public enum JobExecutionStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum JobExecutionStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case canceled
         case failed
         case inProgress
@@ -252,8 +252,9 @@ extension IoTJobsDataPlaneClientTypes {
 }
 
 extension IoTJobsDataPlaneClientTypes {
+
     /// Contains data about a job execution.
-    public struct JobExecution {
+    public struct JobExecution: Swift.Sendable {
         /// The estimated number of seconds that remain before the job execution status will be changed to TIMED_OUT.
         public var approximateSecondsBeforeTimedOut: Swift.Int?
         /// A number that identifies a particular job execution on a particular device. It can be used later in commands that return or update job execution information.
@@ -304,10 +305,9 @@ extension IoTJobsDataPlaneClientTypes {
             self.versionNumber = versionNumber
         }
     }
-
 }
 
-public struct DescribeJobExecutionOutput {
+public struct DescribeJobExecutionOutput: Swift.Sendable {
     /// Contains data about a job execution.
     public var execution: IoTJobsDataPlaneClientTypes.JobExecution?
 
@@ -319,7 +319,7 @@ public struct DescribeJobExecutionOutput {
     }
 }
 
-public struct GetPendingJobExecutionsInput {
+public struct GetPendingJobExecutionsInput: Swift.Sendable {
     /// The name of the thing that is executing the job.
     /// This member is required.
     public var thingName: Swift.String?
@@ -333,8 +333,9 @@ public struct GetPendingJobExecutionsInput {
 }
 
 extension IoTJobsDataPlaneClientTypes {
+
     /// Contains a subset of information about a job execution.
-    public struct JobExecutionSummary {
+    public struct JobExecutionSummary: Swift.Sendable {
         /// A number that identifies a particular job execution on a particular device.
         public var executionNumber: Swift.Int?
         /// The unique identifier you assigned to this job when it was created.
@@ -365,10 +366,9 @@ extension IoTJobsDataPlaneClientTypes {
             self.versionNumber = versionNumber
         }
     }
-
 }
 
-public struct GetPendingJobExecutionsOutput {
+public struct GetPendingJobExecutionsOutput: Swift.Sendable {
     /// A list of JobExecutionSummary objects with status IN_PROGRESS.
     public var inProgressJobs: [IoTJobsDataPlaneClientTypes.JobExecutionSummary]?
     /// A list of JobExecutionSummary objects with status QUEUED.
@@ -408,7 +408,7 @@ public struct InvalidStateTransitionException: ClientRuntime.ModeledError, AWSCl
     }
 }
 
-public struct StartNextPendingJobExecutionInput {
+public struct StartNextPendingJobExecutionInput: Swift.Sendable {
     /// A collection of name/value pairs that describe the status of the job execution. If not specified, the statusDetails are unchanged.
     public var statusDetails: [Swift.String: Swift.String]?
     /// Specifies the amount of time this device has to finish execution of this job. If the job execution status is not set to a terminal state before this timer expires, or before the timer is reset (by calling UpdateJobExecution, setting the status to IN_PROGRESS and specifying a new timeout value in field stepTimeoutInMinutes) the job execution status will be automatically set to TIMED_OUT. Note that setting this timeout has no effect on that job execution timeout which may have been specified when the job was created (CreateJob using field timeoutConfig).
@@ -429,7 +429,7 @@ public struct StartNextPendingJobExecutionInput {
     }
 }
 
-public struct StartNextPendingJobExecutionOutput {
+public struct StartNextPendingJobExecutionOutput: Swift.Sendable {
     /// A JobExecution object.
     public var execution: IoTJobsDataPlaneClientTypes.JobExecution?
 
@@ -441,7 +441,7 @@ public struct StartNextPendingJobExecutionOutput {
     }
 }
 
-public struct UpdateJobExecutionInput {
+public struct UpdateJobExecutionInput: Swift.Sendable {
     /// Optional. A number that identifies a particular job execution on a particular device.
     public var executionNumber: Swift.Int?
     /// Optional. The expected current version of the job execution. Each time you update the job execution, its version is incremented. If the version of the job execution stored in Jobs does not match, the update is rejected with a VersionMismatch error, and an ErrorResponse that contains the current job execution status data is returned. (This makes it unnecessary to perform a separate DescribeJobExecution request in order to obtain the job execution status data.)
@@ -489,8 +489,9 @@ public struct UpdateJobExecutionInput {
 }
 
 extension IoTJobsDataPlaneClientTypes {
+
     /// Contains data about the state of a job execution.
-    public struct JobExecutionState {
+    public struct JobExecutionState: Swift.Sendable {
         /// The status of the job execution. Can be one of: "QUEUED", "IN_PROGRESS", "FAILED", "SUCCESS", "CANCELED", "REJECTED", or "REMOVED".
         public var status: IoTJobsDataPlaneClientTypes.JobExecutionStatus?
         /// A collection of name/value pairs that describe the status of the job execution.
@@ -509,10 +510,9 @@ extension IoTJobsDataPlaneClientTypes {
             self.versionNumber = versionNumber
         }
     }
-
 }
 
-public struct UpdateJobExecutionOutput {
+public struct UpdateJobExecutionOutput: Swift.Sendable {
     /// A JobExecutionState object.
     public var executionState: IoTJobsDataPlaneClientTypes.JobExecutionState?
     /// The contents of the Job Documents.

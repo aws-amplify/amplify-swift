@@ -240,6 +240,9 @@ extension M2Client {
         }
         builder.interceptors.add(ClientRuntime.URLPathMiddleware<CancelBatchJobExecutionInput, CancelBatchJobExecutionOutput>(CancelBatchJobExecutionInput.urlPathProvider(_:)))
         builder.interceptors.add(ClientRuntime.URLHostMiddleware<CancelBatchJobExecutionInput, CancelBatchJobExecutionOutput>())
+        builder.interceptors.add(ClientRuntime.ContentTypeMiddleware<CancelBatchJobExecutionInput, CancelBatchJobExecutionOutput>(contentType: "application/json"))
+        builder.serialize(ClientRuntime.BodyMiddleware<CancelBatchJobExecutionInput, CancelBatchJobExecutionOutput, SmithyJSON.Writer>(rootNodeInfo: "", inputWritingClosure: CancelBatchJobExecutionInput.write(value:to:)))
+        builder.interceptors.add(ClientRuntime.ContentLengthMiddleware<CancelBatchJobExecutionInput, CancelBatchJobExecutionOutput>())
         builder.deserialize(ClientRuntime.DeserializeMiddleware<CancelBatchJobExecutionOutput>(CancelBatchJobExecutionOutput.httpOutput(from:), CancelBatchJobExecutionOutputError.httpError(from:)))
         builder.interceptors.add(ClientRuntime.LoggerMiddleware<CancelBatchJobExecutionInput, CancelBatchJobExecutionOutput>(clientLogMode: config.clientLogMode))
         builder.retryStrategy(SmithyRetries.DefaultRetryStrategy(options: config.retryStrategyOptions))
@@ -1625,7 +1628,7 @@ extension M2Client {
 
     /// Performs the `ListBatchJobRestartPoints` operation on the `AwsSupernovaControlPlaneService` service.
     ///
-    /// Lists all the job steps for JCL files to restart a batch job. This is only applicable for Micro Focus engine with versions 8.0.6 and above.
+    /// Lists all the job steps for a JCL file to restart a batch job. This is only applicable for Micro Focus engine with versions 8.0.6 and above.
     ///
     /// - Parameter ListBatchJobRestartPointsInput : [no documentation found]
     ///
@@ -1668,6 +1671,7 @@ extension M2Client {
         }
         builder.interceptors.add(ClientRuntime.URLPathMiddleware<ListBatchJobRestartPointsInput, ListBatchJobRestartPointsOutput>(ListBatchJobRestartPointsInput.urlPathProvider(_:)))
         builder.interceptors.add(ClientRuntime.URLHostMiddleware<ListBatchJobRestartPointsInput, ListBatchJobRestartPointsOutput>())
+        builder.serialize(ClientRuntime.QueryItemMiddleware<ListBatchJobRestartPointsInput, ListBatchJobRestartPointsOutput>(ListBatchJobRestartPointsInput.queryItemProvider(_:)))
         builder.deserialize(ClientRuntime.DeserializeMiddleware<ListBatchJobRestartPointsOutput>(ListBatchJobRestartPointsOutput.httpOutput(from:), ListBatchJobRestartPointsOutputError.httpError(from:)))
         builder.interceptors.add(ClientRuntime.LoggerMiddleware<ListBatchJobRestartPointsInput, ListBatchJobRestartPointsOutput>(clientLogMode: config.clientLogMode))
         builder.retryStrategy(SmithyRetries.DefaultRetryStrategy(options: config.retryStrategyOptions))

@@ -172,8 +172,9 @@ public struct ResourceNotFoundException: ClientRuntime.ModeledError, AWSClientRu
 }
 
 extension KinesisAnalyticsV2ClientTypes {
+
     /// Provides a description of Amazon CloudWatch logging options, including the log stream Amazon Resource Name (ARN).
-    public struct CloudWatchLoggingOption {
+    public struct CloudWatchLoggingOption: Swift.Sendable {
         /// The ARN of the CloudWatch log to receive application messages.
         /// This member is required.
         public var logStreamARN: Swift.String?
@@ -185,10 +186,9 @@ extension KinesisAnalyticsV2ClientTypes {
             self.logStreamARN = logStreamARN
         }
     }
-
 }
 
-public struct AddApplicationCloudWatchLoggingOptionInput {
+public struct AddApplicationCloudWatchLoggingOptionInput: Swift.Sendable {
     /// The Kinesis Data Analytics application name.
     /// This member is required.
     public var applicationName: Swift.String?
@@ -215,8 +215,9 @@ public struct AddApplicationCloudWatchLoggingOptionInput {
 }
 
 extension KinesisAnalyticsV2ClientTypes {
+
     /// Describes the Amazon CloudWatch logging option.
-    public struct CloudWatchLoggingOptionDescription {
+    public struct CloudWatchLoggingOptionDescription: Swift.Sendable {
         /// The ID of the CloudWatch logging option description.
         public var cloudWatchLoggingOptionId: Swift.String?
         /// The Amazon Resource Name (ARN) of the CloudWatch log to receive application messages.
@@ -236,10 +237,9 @@ extension KinesisAnalyticsV2ClientTypes {
             self.roleARN = roleARN
         }
     }
-
 }
 
-public struct AddApplicationCloudWatchLoggingOptionOutput {
+public struct AddApplicationCloudWatchLoggingOptionOutput: Swift.Sendable {
     /// The application's ARN.
     public var applicationARN: Swift.String?
     /// The new version ID of the SQL-based Kinesis Data Analytics application. Kinesis Data Analytics updates the ApplicationVersionId each time you change the CloudWatch logging options.
@@ -288,8 +288,9 @@ public struct CodeValidationException: ClientRuntime.ModeledError, AWSClientRunt
 }
 
 extension KinesisAnalyticsV2ClientTypes {
+
     /// For a SQL-based Kinesis Data Analytics application, describes the number of in-application streams to create for a given streaming source.
-    public struct InputParallelism {
+    public struct InputParallelism: Swift.Sendable {
         /// The number of in-application streams to create.
         public var count: Swift.Int?
 
@@ -300,12 +301,12 @@ extension KinesisAnalyticsV2ClientTypes {
             self.count = count
         }
     }
-
 }
 
 extension KinesisAnalyticsV2ClientTypes {
+
     /// An object that contains the Amazon Resource Name (ARN) of the Amazon Lambda function that is used to preprocess records in the stream in a SQL-based Kinesis Data Analytics application.
-    public struct InputLambdaProcessor {
+    public struct InputLambdaProcessor: Swift.Sendable {
         /// The ARN of the Amazon Lambda function that operates on records in the stream. To specify an earlier version of the Lambda function than the latest, include the Lambda function version in the Lambda function ARN. For more information about Lambda ARNs, see [Example ARNs: Amazon Lambda](https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html#arn-syntax-lambda)
         /// This member is required.
         public var resourceARN: Swift.String?
@@ -317,12 +318,12 @@ extension KinesisAnalyticsV2ClientTypes {
             self.resourceARN = resourceARN
         }
     }
-
 }
 
 extension KinesisAnalyticsV2ClientTypes {
+
     /// For a SQL-based Kinesis Data Analytics application, describes a processor that is used to preprocess the records in the stream before being processed by your application code. Currently, the only input processor available is [Amazon Lambda](https://docs.aws.amazon.com/lambda/).
-    public struct InputProcessingConfiguration {
+    public struct InputProcessingConfiguration: Swift.Sendable {
         /// The [InputLambdaProcessor] that is used to preprocess the records in the stream before being processed by your application code.
         /// This member is required.
         public var inputLambdaProcessor: KinesisAnalyticsV2ClientTypes.InputLambdaProcessor?
@@ -334,12 +335,12 @@ extension KinesisAnalyticsV2ClientTypes {
             self.inputLambdaProcessor = inputLambdaProcessor
         }
     }
-
 }
 
 extension KinesisAnalyticsV2ClientTypes {
+
     /// For a SQL-based Kinesis Data Analytics application, describes the mapping of each data element in the streaming source to the corresponding column in the in-application stream. Also used to describe the format of the reference data source.
-    public struct RecordColumn {
+    public struct RecordColumn: Swift.Sendable {
         /// A reference to the data element in the streaming input or the reference data source.
         public var mapping: Swift.String?
         /// The name of the column that is created in the in-application input stream or reference table.
@@ -360,13 +361,13 @@ extension KinesisAnalyticsV2ClientTypes {
             self.sqlType = sqlType
         }
     }
-
 }
 
 extension KinesisAnalyticsV2ClientTypes {
+
     /// For a SQL-based Kinesis Data Analytics application, provides additional mapping information when the record format uses delimiters, such as CSV. For example, the following sample records use CSV format, where the records use the '\n' as the row delimiter and a comma (",") as the column delimiter: "name1", "address1"
     ///     "name2", "address2"
-    public struct CSVMappingParameters {
+    public struct CSVMappingParameters: Swift.Sendable {
         /// The column delimiter. For example, in a CSV format, a comma (",") is the typical column delimiter.
         /// This member is required.
         public var recordColumnDelimiter: Swift.String?
@@ -383,12 +384,12 @@ extension KinesisAnalyticsV2ClientTypes {
             self.recordRowDelimiter = recordRowDelimiter
         }
     }
-
 }
 
 extension KinesisAnalyticsV2ClientTypes {
+
     /// For a SQL-based Kinesis Data Analytics application, provides additional mapping information when JSON is the record format on the streaming source.
-    public struct JSONMappingParameters {
+    public struct JSONMappingParameters: Swift.Sendable {
         /// The path to the top-level parent that contains the records.
         /// This member is required.
         public var recordRowPath: Swift.String?
@@ -400,12 +401,12 @@ extension KinesisAnalyticsV2ClientTypes {
             self.recordRowPath = recordRowPath
         }
     }
-
 }
 
 extension KinesisAnalyticsV2ClientTypes {
+
     /// When you configure a SQL-based Kinesis Data Analytics application's input at the time of creating or updating an application, provides additional mapping information specific to the record format (such as JSON, CSV, or record fields delimited by some delimiter) on the streaming source.
-    public struct MappingParameters {
+    public struct MappingParameters: Swift.Sendable {
         /// Provides additional mapping information when the record format uses delimiters (for example, CSV).
         public var csvMappingParameters: KinesisAnalyticsV2ClientTypes.CSVMappingParameters?
         /// Provides additional mapping information when JSON is the record format on the streaming source.
@@ -420,12 +421,11 @@ extension KinesisAnalyticsV2ClientTypes {
             self.jsonMappingParameters = jsonMappingParameters
         }
     }
-
 }
 
 extension KinesisAnalyticsV2ClientTypes {
 
-    public enum RecordFormatType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum RecordFormatType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case csv
         case json
         case sdkUnknown(Swift.String)
@@ -453,8 +453,9 @@ extension KinesisAnalyticsV2ClientTypes {
 }
 
 extension KinesisAnalyticsV2ClientTypes {
+
     /// For a SQL-based Kinesis Data Analytics application, describes the record format and relevant mapping information that should be applied to schematize the records on the stream.
-    public struct RecordFormat {
+    public struct RecordFormat: Swift.Sendable {
         /// When you configure application input at the time of creating or updating an application, provides additional mapping information specific to the record format (such as JSON, CSV, or record fields delimited by some delimiter) on the streaming source.
         public var mappingParameters: KinesisAnalyticsV2ClientTypes.MappingParameters?
         /// The type of record format.
@@ -470,12 +471,12 @@ extension KinesisAnalyticsV2ClientTypes {
             self.recordFormatType = recordFormatType
         }
     }
-
 }
 
 extension KinesisAnalyticsV2ClientTypes {
+
     /// For a SQL-based Kinesis Data Analytics application, describes the format of the data in the streaming source, and how each data element maps to corresponding columns created in the in-application stream.
-    public struct SourceSchema {
+    public struct SourceSchema: Swift.Sendable {
         /// A list of RecordColumn objects.
         /// This member is required.
         public var recordColumns: [KinesisAnalyticsV2ClientTypes.RecordColumn]?
@@ -496,12 +497,12 @@ extension KinesisAnalyticsV2ClientTypes {
             self.recordFormat = recordFormat
         }
     }
-
 }
 
 extension KinesisAnalyticsV2ClientTypes {
+
     /// For a SQL-based Kinesis Data Analytics application, identifies a Kinesis Data Firehose delivery stream as the streaming source. You provide the delivery stream's Amazon Resource Name (ARN).
-    public struct KinesisFirehoseInput {
+    public struct KinesisFirehoseInput: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the delivery stream.
         /// This member is required.
         public var resourceARN: Swift.String?
@@ -513,12 +514,12 @@ extension KinesisAnalyticsV2ClientTypes {
             self.resourceARN = resourceARN
         }
     }
-
 }
 
 extension KinesisAnalyticsV2ClientTypes {
+
     /// Identifies a Kinesis data stream as the streaming source. You provide the stream's Amazon Resource Name (ARN).
-    public struct KinesisStreamsInput {
+    public struct KinesisStreamsInput: Swift.Sendable {
         /// The ARN of the input Kinesis data stream to read.
         /// This member is required.
         public var resourceARN: Swift.String?
@@ -530,12 +531,12 @@ extension KinesisAnalyticsV2ClientTypes {
             self.resourceARN = resourceARN
         }
     }
-
 }
 
 extension KinesisAnalyticsV2ClientTypes {
+
     /// When you configure the application input for a SQL-based Kinesis Data Analytics application, you specify the streaming source, the in-application stream name that is created, and the mapping between the two.
-    public struct Input {
+    public struct Input: Swift.Sendable {
         /// Describes the number of in-application streams to create.
         public var inputParallelism: KinesisAnalyticsV2ClientTypes.InputParallelism?
         /// The [InputProcessingConfiguration] for the input. An input processor transforms records as they are received from the stream, before the application's SQL code executes. Currently, the only input processing configuration available is [InputLambdaProcessor].
@@ -568,10 +569,9 @@ extension KinesisAnalyticsV2ClientTypes {
             self.namePrefix = namePrefix
         }
     }
-
 }
 
-public struct AddApplicationInputInput {
+public struct AddApplicationInputInput: Swift.Sendable {
     /// The name of your existing application to which you want to add the streaming source.
     /// This member is required.
     public var applicationName: Swift.String?
@@ -595,8 +595,9 @@ public struct AddApplicationInputInput {
 }
 
 extension KinesisAnalyticsV2ClientTypes {
+
     /// For a SQL-based Kinesis Data Analytics application, an object that contains the Amazon Resource Name (ARN) of the Amazon Lambda function that is used to preprocess records in the stream.
-    public struct InputLambdaProcessorDescription {
+    public struct InputLambdaProcessorDescription: Swift.Sendable {
         /// The ARN of the Amazon Lambda function that is used to preprocess the records in the stream. To specify an earlier version of the Lambda function than the latest, include the Lambda function version in the Lambda function ARN. For more information about Lambda ARNs, see [Example ARNs: Amazon Lambda](https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html#arn-syntax-lambda)
         /// This member is required.
         public var resourceARN: Swift.String?
@@ -612,12 +613,12 @@ extension KinesisAnalyticsV2ClientTypes {
             self.roleARN = roleARN
         }
     }
-
 }
 
 extension KinesisAnalyticsV2ClientTypes {
+
     /// For a SQL-based Kinesis Data Analytics application, provides the configuration information about an input processor. Currently, the only input processor available is [Amazon Lambda](https://docs.aws.amazon.com/lambda/).
-    public struct InputProcessingConfigurationDescription {
+    public struct InputProcessingConfigurationDescription: Swift.Sendable {
         /// Provides configuration information about the associated [InputLambdaProcessorDescription]
         public var inputLambdaProcessorDescription: KinesisAnalyticsV2ClientTypes.InputLambdaProcessorDescription?
 
@@ -628,12 +629,11 @@ extension KinesisAnalyticsV2ClientTypes {
             self.inputLambdaProcessorDescription = inputLambdaProcessorDescription
         }
     }
-
 }
 
 extension KinesisAnalyticsV2ClientTypes {
 
-    public enum InputStartingPosition: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum InputStartingPosition: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case lastStoppedPoint
         case now
         case trimHorizon
@@ -664,8 +664,9 @@ extension KinesisAnalyticsV2ClientTypes {
 }
 
 extension KinesisAnalyticsV2ClientTypes {
+
     /// Describes the point at which the application reads from the streaming source.
-    public struct InputStartingPositionConfiguration {
+    public struct InputStartingPositionConfiguration: Swift.Sendable {
         /// The starting position on the stream.
         ///
         /// * NOW - Start reading just after the most recent record in the stream, and start at the request timestamp that the customer issued.
@@ -682,12 +683,12 @@ extension KinesisAnalyticsV2ClientTypes {
             self.inputStartingPosition = inputStartingPosition
         }
     }
-
 }
 
 extension KinesisAnalyticsV2ClientTypes {
+
     /// Describes the Amazon Kinesis Data Firehose delivery stream that is configured as the streaming source in the application input configuration.
-    public struct KinesisFirehoseInputDescription {
+    public struct KinesisFirehoseInputDescription: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the delivery stream.
         /// This member is required.
         public var resourceARN: Swift.String?
@@ -703,12 +704,12 @@ extension KinesisAnalyticsV2ClientTypes {
             self.roleARN = roleARN
         }
     }
-
 }
 
 extension KinesisAnalyticsV2ClientTypes {
+
     /// For a SQL-based Kinesis Data Analytics application, describes the Kinesis data stream that is configured as the streaming source in the application input configuration.
-    public struct KinesisStreamsInputDescription {
+    public struct KinesisStreamsInputDescription: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the Kinesis data stream.
         /// This member is required.
         public var resourceARN: Swift.String?
@@ -724,12 +725,12 @@ extension KinesisAnalyticsV2ClientTypes {
             self.roleARN = roleARN
         }
     }
-
 }
 
 extension KinesisAnalyticsV2ClientTypes {
+
     /// Describes the application input configuration for a SQL-based Kinesis Data Analytics application.
-    public struct InputDescription {
+    public struct InputDescription: Swift.Sendable {
         /// Returns the in-application stream names that are mapped to the stream source.
         public var inAppStreamNames: [Swift.String]?
         /// The input ID that is associated with the application input. This is the ID that Kinesis Data Analytics assigns to each input configuration that you add to your application.
@@ -772,10 +773,9 @@ extension KinesisAnalyticsV2ClientTypes {
             self.namePrefix = namePrefix
         }
     }
-
 }
 
-public struct AddApplicationInputOutput {
+public struct AddApplicationInputOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the application.
     public var applicationARN: Swift.String?
     /// Provides the current application version.
@@ -795,7 +795,7 @@ public struct AddApplicationInputOutput {
     }
 }
 
-public struct AddApplicationInputProcessingConfigurationInput {
+public struct AddApplicationInputProcessingConfigurationInput: Swift.Sendable {
     /// The name of the application to which you want to add the input processing configuration.
     /// This member is required.
     public var applicationName: Swift.String?
@@ -823,7 +823,7 @@ public struct AddApplicationInputProcessingConfigurationInput {
     }
 }
 
-public struct AddApplicationInputProcessingConfigurationOutput {
+public struct AddApplicationInputProcessingConfigurationOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the application.
     public var applicationARN: Swift.String?
     /// Provides the current application version.
@@ -848,8 +848,9 @@ public struct AddApplicationInputProcessingConfigurationOutput {
 }
 
 extension KinesisAnalyticsV2ClientTypes {
+
     /// Describes the data format when records are written to the destination in a SQL-based Kinesis Data Analytics application.
-    public struct DestinationSchema {
+    public struct DestinationSchema: Swift.Sendable {
         /// Specifies the format of the records on the output stream.
         /// This member is required.
         public var recordFormatType: KinesisAnalyticsV2ClientTypes.RecordFormatType?
@@ -861,12 +862,12 @@ extension KinesisAnalyticsV2ClientTypes {
             self.recordFormatType = recordFormatType
         }
     }
-
 }
 
 extension KinesisAnalyticsV2ClientTypes {
+
     /// For a SQL-based Kinesis Data Analytics application, when configuring application output, identifies a Kinesis Data Firehose delivery stream as the destination. You provide the stream Amazon Resource Name (ARN) of the delivery stream.
-    public struct KinesisFirehoseOutput {
+    public struct KinesisFirehoseOutput: Swift.Sendable {
         /// The ARN of the destination delivery stream to write to.
         /// This member is required.
         public var resourceARN: Swift.String?
@@ -878,12 +879,12 @@ extension KinesisAnalyticsV2ClientTypes {
             self.resourceARN = resourceARN
         }
     }
-
 }
 
 extension KinesisAnalyticsV2ClientTypes {
+
     /// When you configure a SQL-based Kinesis Data Analytics application's output, identifies a Kinesis data stream as the destination. You provide the stream Amazon Resource Name (ARN).
-    public struct KinesisStreamsOutput {
+    public struct KinesisStreamsOutput: Swift.Sendable {
         /// The ARN of the destination Kinesis data stream to write to.
         /// This member is required.
         public var resourceARN: Swift.String?
@@ -895,12 +896,12 @@ extension KinesisAnalyticsV2ClientTypes {
             self.resourceARN = resourceARN
         }
     }
-
 }
 
 extension KinesisAnalyticsV2ClientTypes {
+
     /// When you configure a SQL-based Kinesis Data Analytics application's output, identifies an Amazon Lambda function as the destination. You provide the function Amazon Resource Name (ARN) of the Lambda function.
-    public struct LambdaOutput {
+    public struct LambdaOutput: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the destination Lambda function to write to. To specify an earlier version of the Lambda function than the latest, include the Lambda function version in the Lambda function ARN. For more information about Lambda ARNs, see [Example ARNs: Amazon Lambda](https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html#arn-syntax-lambda)
         /// This member is required.
         public var resourceARN: Swift.String?
@@ -912,12 +913,12 @@ extension KinesisAnalyticsV2ClientTypes {
             self.resourceARN = resourceARN
         }
     }
-
 }
 
 extension KinesisAnalyticsV2ClientTypes {
+
     /// Describes a SQL-based Kinesis Data Analytics application's output configuration, in which you identify an in-application stream and a destination where you want the in-application stream data to be written. The destination can be a Kinesis data stream or a Kinesis Data Firehose delivery stream.
-    public struct Output {
+    public struct Output: Swift.Sendable {
         /// Describes the data format when records are written to the destination.
         /// This member is required.
         public var destinationSchema: KinesisAnalyticsV2ClientTypes.DestinationSchema?
@@ -946,10 +947,9 @@ extension KinesisAnalyticsV2ClientTypes {
             self.name = name
         }
     }
-
 }
 
-public struct AddApplicationOutputInput {
+public struct AddApplicationOutputInput: Swift.Sendable {
     /// The name of the application to which you want to add the output configuration.
     /// This member is required.
     public var applicationName: Swift.String?
@@ -973,8 +973,9 @@ public struct AddApplicationOutputInput {
 }
 
 extension KinesisAnalyticsV2ClientTypes {
+
     /// For a SQL-based Kinesis Data Analytics application's output, describes the Kinesis Data Firehose delivery stream that is configured as its destination.
-    public struct KinesisFirehoseOutputDescription {
+    public struct KinesisFirehoseOutputDescription: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the delivery stream.
         /// This member is required.
         public var resourceARN: Swift.String?
@@ -990,12 +991,12 @@ extension KinesisAnalyticsV2ClientTypes {
             self.roleARN = roleARN
         }
     }
-
 }
 
 extension KinesisAnalyticsV2ClientTypes {
+
     /// For an SQL-based Kinesis Data Analytics application's output, describes the Kinesis data stream that is configured as its destination.
-    public struct KinesisStreamsOutputDescription {
+    public struct KinesisStreamsOutputDescription: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the Kinesis data stream.
         /// This member is required.
         public var resourceARN: Swift.String?
@@ -1011,12 +1012,12 @@ extension KinesisAnalyticsV2ClientTypes {
             self.roleARN = roleARN
         }
     }
-
 }
 
 extension KinesisAnalyticsV2ClientTypes {
+
     /// For a SQL-based Kinesis Data Analytics application's output, describes the Amazon Lambda function that is configured as its destination.
-    public struct LambdaOutputDescription {
+    public struct LambdaOutputDescription: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the destination Lambda function.
         /// This member is required.
         public var resourceARN: Swift.String?
@@ -1032,12 +1033,12 @@ extension KinesisAnalyticsV2ClientTypes {
             self.roleARN = roleARN
         }
     }
-
 }
 
 extension KinesisAnalyticsV2ClientTypes {
+
     /// For a SQL-based Kinesis Data Analytics application, describes the application output configuration, which includes the in-application stream name and the destination where the stream data is written. The destination can be a Kinesis data stream or a Kinesis Data Firehose delivery stream.
-    public struct OutputDescription {
+    public struct OutputDescription: Swift.Sendable {
         /// The data format used for writing data to the destination.
         public var destinationSchema: KinesisAnalyticsV2ClientTypes.DestinationSchema?
         /// Describes the Kinesis Data Firehose delivery stream that is configured as the destination where output is written.
@@ -1068,10 +1069,9 @@ extension KinesisAnalyticsV2ClientTypes {
             self.outputId = outputId
         }
     }
-
 }
 
-public struct AddApplicationOutputOutput {
+public struct AddApplicationOutputOutput: Swift.Sendable {
     /// The application Amazon Resource Name (ARN).
     public var applicationARN: Swift.String?
     /// The updated application version ID. Kinesis Data Analytics increments this ID when the application is updated.
@@ -1092,8 +1092,9 @@ public struct AddApplicationOutputOutput {
 }
 
 extension KinesisAnalyticsV2ClientTypes {
+
     /// For a SQL-based Kinesis Data Analytics application, identifies the Amazon S3 bucket and object that contains the reference data. A SQL-based Kinesis Data Analytics application loads reference data only once. If the data changes, you call the [UpdateApplication] operation to trigger reloading of data into your application.
-    public struct S3ReferenceDataSource {
+    public struct S3ReferenceDataSource: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the S3 bucket.
         public var bucketARN: Swift.String?
         /// The object key name containing the reference data.
@@ -1108,12 +1109,12 @@ extension KinesisAnalyticsV2ClientTypes {
             self.fileKey = fileKey
         }
     }
-
 }
 
 extension KinesisAnalyticsV2ClientTypes {
+
     /// For a SQL-based Kinesis Data Analytics application, describes the reference data source by providing the source information (Amazon S3 bucket name and object key name), the resulting in-application table name that is created, and the necessary schema to map the data elements in the Amazon S3 object to the in-application table.
-    public struct ReferenceDataSource {
+    public struct ReferenceDataSource: Swift.Sendable {
         /// Describes the format of the data in the streaming source, and how each data element maps to corresponding columns created in the in-application stream.
         /// This member is required.
         public var referenceSchema: KinesisAnalyticsV2ClientTypes.SourceSchema?
@@ -1134,10 +1135,9 @@ extension KinesisAnalyticsV2ClientTypes {
             self.tableName = tableName
         }
     }
-
 }
 
-public struct AddApplicationReferenceDataSourceInput {
+public struct AddApplicationReferenceDataSourceInput: Swift.Sendable {
     /// The name of an existing application.
     /// This member is required.
     public var applicationName: Swift.String?
@@ -1161,8 +1161,9 @@ public struct AddApplicationReferenceDataSourceInput {
 }
 
 extension KinesisAnalyticsV2ClientTypes {
+
     /// For a SQL-based Kinesis Data Analytics application, provides the bucket name and object key name that stores the reference data.
-    public struct S3ReferenceDataSourceDescription {
+    public struct S3ReferenceDataSourceDescription: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the S3 bucket.
         /// This member is required.
         public var bucketARN: Swift.String?
@@ -1183,12 +1184,12 @@ extension KinesisAnalyticsV2ClientTypes {
             self.referenceRoleARN = referenceRoleARN
         }
     }
-
 }
 
 extension KinesisAnalyticsV2ClientTypes {
+
     /// For a SQL-based Kinesis Data Analytics application, describes the reference data source configured for an application.
-    public struct ReferenceDataSourceDescription {
+    public struct ReferenceDataSourceDescription: Swift.Sendable {
         /// The ID of the reference data source. This is the ID that Kinesis Data Analytics assigns when you add the reference data source to your application using the [CreateApplication] or [UpdateApplication] operation.
         /// This member is required.
         public var referenceId: Swift.String?
@@ -1214,10 +1215,9 @@ extension KinesisAnalyticsV2ClientTypes {
             self.tableName = tableName
         }
     }
-
 }
 
-public struct AddApplicationReferenceDataSourceOutput {
+public struct AddApplicationReferenceDataSourceOutput: Swift.Sendable {
     /// The application Amazon Resource Name (ARN).
     public var applicationARN: Swift.String?
     /// The updated application version ID. Kinesis Data Analytics increments this ID when the application is updated.
@@ -1238,8 +1238,9 @@ public struct AddApplicationReferenceDataSourceOutput {
 }
 
 extension KinesisAnalyticsV2ClientTypes {
+
     /// Describes the parameters of a VPC used by the application.
-    public struct VpcConfiguration {
+    public struct VpcConfiguration: Swift.Sendable {
         /// The array of [SecurityGroup](https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_SecurityGroup.html) IDs used by the VPC configuration.
         /// This member is required.
         public var securityGroupIds: [Swift.String]?
@@ -1256,10 +1257,9 @@ extension KinesisAnalyticsV2ClientTypes {
             self.subnetIds = subnetIds
         }
     }
-
 }
 
-public struct AddApplicationVpcConfigurationInput {
+public struct AddApplicationVpcConfigurationInput: Swift.Sendable {
     /// The name of an existing application.
     /// This member is required.
     public var applicationName: Swift.String?
@@ -1286,8 +1286,9 @@ public struct AddApplicationVpcConfigurationInput {
 }
 
 extension KinesisAnalyticsV2ClientTypes {
+
     /// Describes the parameters of a VPC used by the application.
-    public struct VpcConfigurationDescription {
+    public struct VpcConfigurationDescription: Swift.Sendable {
         /// The array of [SecurityGroup](https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_SecurityGroup.html) IDs used by the VPC configuration.
         /// This member is required.
         public var securityGroupIds: [Swift.String]?
@@ -1314,10 +1315,9 @@ extension KinesisAnalyticsV2ClientTypes {
             self.vpcId = vpcId
         }
     }
-
 }
 
-public struct AddApplicationVpcConfigurationOutput {
+public struct AddApplicationVpcConfigurationOutput: Swift.Sendable {
     /// The ARN of the application.
     public var applicationARN: Swift.String?
     /// Provides the current application version. Managed Service for Apache Flink updates the ApplicationVersionId each time you update the application.
@@ -1342,8 +1342,9 @@ public struct AddApplicationVpcConfigurationOutput {
 }
 
 extension KinesisAnalyticsV2ClientTypes {
+
     /// For a Managed Service for Apache Flink application provides a description of an Amazon S3 object, including the Amazon Resource Name (ARN) of the S3 bucket, the name of the Amazon S3 object that contains the data, and the version number of the Amazon S3 object that contains the data.
-    public struct S3ContentLocation {
+    public struct S3ContentLocation: Swift.Sendable {
         /// The Amazon Resource Name (ARN) for the S3 bucket containing the application code.
         /// This member is required.
         public var bucketARN: Swift.String?
@@ -1364,12 +1365,12 @@ extension KinesisAnalyticsV2ClientTypes {
             self.objectVersion = objectVersion
         }
     }
-
 }
 
 extension KinesisAnalyticsV2ClientTypes {
+
     /// Specifies either the application code, or the location of the application code, for a Managed Service for Apache Flink application.
-    public struct CodeContent {
+    public struct CodeContent: Swift.Sendable {
         /// Information about the Amazon S3 bucket that contains the application code.
         public var s3ContentLocation: KinesisAnalyticsV2ClientTypes.S3ContentLocation?
         /// The text-format code for a Managed Service for Apache Flink application.
@@ -1388,12 +1389,11 @@ extension KinesisAnalyticsV2ClientTypes {
             self.zipFileContent = zipFileContent
         }
     }
-
 }
 
 extension KinesisAnalyticsV2ClientTypes {
 
-    public enum CodeContentType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum CodeContentType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case plaintext
         case zipfile
         case sdkUnknown(Swift.String)
@@ -1421,8 +1421,9 @@ extension KinesisAnalyticsV2ClientTypes {
 }
 
 extension KinesisAnalyticsV2ClientTypes {
+
     /// Describes code configuration for an application.
-    public struct ApplicationCodeConfiguration {
+    public struct ApplicationCodeConfiguration: Swift.Sendable {
         /// The location and type of the application code.
         public var codeContent: KinesisAnalyticsV2ClientTypes.CodeContent?
         /// Specifies whether the code content is in text or zip format.
@@ -1438,12 +1439,12 @@ extension KinesisAnalyticsV2ClientTypes {
             self.codeContentType = codeContentType
         }
     }
-
 }
 
 extension KinesisAnalyticsV2ClientTypes {
+
     /// Describes the location of an application's code stored in an S3 bucket.
-    public struct S3ApplicationCodeLocationDescription {
+    public struct S3ApplicationCodeLocationDescription: Swift.Sendable {
         /// The Amazon Resource Name (ARN) for the S3 bucket containing the application code.
         /// This member is required.
         public var bucketARN: Swift.String?
@@ -1464,12 +1465,12 @@ extension KinesisAnalyticsV2ClientTypes {
             self.objectVersion = objectVersion
         }
     }
-
 }
 
 extension KinesisAnalyticsV2ClientTypes {
+
     /// Describes details about the code of a Managed Service for Apache Flink application.
-    public struct CodeContentDescription {
+    public struct CodeContentDescription: Swift.Sendable {
         /// The checksum that can be used to validate zip-format code.
         public var codeMD5: Swift.String?
         /// The size in bytes of the application code. Can be used to validate zip-format code.
@@ -1492,12 +1493,12 @@ extension KinesisAnalyticsV2ClientTypes {
             self.textContent = textContent
         }
     }
-
 }
 
 extension KinesisAnalyticsV2ClientTypes {
+
     /// Describes code configuration for an application.
-    public struct ApplicationCodeConfigurationDescription {
+    public struct ApplicationCodeConfigurationDescription: Swift.Sendable {
         /// Describes details about the location and format of the application code.
         public var codeContentDescription: KinesisAnalyticsV2ClientTypes.CodeContentDescription?
         /// Specifies whether the code content is in text or zip format.
@@ -1513,12 +1514,12 @@ extension KinesisAnalyticsV2ClientTypes {
             self.codeContentType = codeContentType
         }
     }
-
 }
 
 extension KinesisAnalyticsV2ClientTypes {
+
     /// Describes an update for the Amazon S3 code content location for an application.
-    public struct S3ContentLocationUpdate {
+    public struct S3ContentLocationUpdate: Swift.Sendable {
         /// The new Amazon Resource Name (ARN) for the S3 bucket containing the application code.
         public var bucketARNUpdate: Swift.String?
         /// The new file key for the object containing the application code.
@@ -1537,12 +1538,12 @@ extension KinesisAnalyticsV2ClientTypes {
             self.objectVersionUpdate = objectVersionUpdate
         }
     }
-
 }
 
 extension KinesisAnalyticsV2ClientTypes {
+
     /// Describes an update to the code of an application. Not supported for Apache Zeppelin.
-    public struct CodeContentUpdate {
+    public struct CodeContentUpdate: Swift.Sendable {
         /// Describes an update to the location of code for an application.
         public var s3ContentLocationUpdate: KinesisAnalyticsV2ClientTypes.S3ContentLocationUpdate?
         /// Describes an update to the text code for an application.
@@ -1561,12 +1562,12 @@ extension KinesisAnalyticsV2ClientTypes {
             self.zipFileContentUpdate = zipFileContentUpdate
         }
     }
-
 }
 
 extension KinesisAnalyticsV2ClientTypes {
+
     /// Describes code configuration updates for an application. This is supported for a Managed Service for Apache Flink application or a SQL-based Kinesis Data Analytics application.
-    public struct ApplicationCodeConfigurationUpdate {
+    public struct ApplicationCodeConfigurationUpdate: Swift.Sendable {
         /// Describes updates to the code content type.
         public var codeContentTypeUpdate: KinesisAnalyticsV2ClientTypes.CodeContentType?
         /// Describes updates to the code content of an application.
@@ -1581,12 +1582,12 @@ extension KinesisAnalyticsV2ClientTypes {
             self.codeContentUpdate = codeContentUpdate
         }
     }
-
 }
 
 extension KinesisAnalyticsV2ClientTypes {
+
     /// Describes whether snapshots are enabled for a Managed Service for Apache Flink application.
-    public struct ApplicationSnapshotConfiguration {
+    public struct ApplicationSnapshotConfiguration: Swift.Sendable {
         /// Describes whether snapshots are enabled for a Managed Service for Apache Flink application.
         /// This member is required.
         public var snapshotsEnabled: Swift.Bool?
@@ -1598,12 +1599,12 @@ extension KinesisAnalyticsV2ClientTypes {
             self.snapshotsEnabled = snapshotsEnabled
         }
     }
-
 }
 
 extension KinesisAnalyticsV2ClientTypes {
+
     /// Describes system rollback configuration for a Managed Service for Apache Flink application
-    public struct ApplicationSystemRollbackConfiguration {
+    public struct ApplicationSystemRollbackConfiguration: Swift.Sendable {
         /// Describes whether system rollbacks are enabled for a Managed Service for Apache Flink application
         /// This member is required.
         public var rollbackEnabled: Swift.Bool?
@@ -1615,12 +1616,12 @@ extension KinesisAnalyticsV2ClientTypes {
             self.rollbackEnabled = rollbackEnabled
         }
     }
-
 }
 
 extension KinesisAnalyticsV2ClientTypes {
+
     /// Property key-value pairs passed into an application.
-    public struct PropertyGroup {
+    public struct PropertyGroup: Swift.Sendable {
         /// Describes the key of an application execution property key-value pair.
         /// This member is required.
         public var propertyGroupId: Swift.String?
@@ -1637,12 +1638,12 @@ extension KinesisAnalyticsV2ClientTypes {
             self.propertyMap = propertyMap
         }
     }
-
 }
 
 extension KinesisAnalyticsV2ClientTypes {
+
     /// Describes execution properties for a Managed Service for Apache Flink application.
-    public struct EnvironmentProperties {
+    public struct EnvironmentProperties: Swift.Sendable {
         /// Describes the execution property groups.
         /// This member is required.
         public var propertyGroups: [KinesisAnalyticsV2ClientTypes.PropertyGroup]?
@@ -1654,12 +1655,11 @@ extension KinesisAnalyticsV2ClientTypes {
             self.propertyGroups = propertyGroups
         }
     }
-
 }
 
 extension KinesisAnalyticsV2ClientTypes {
 
-    public enum ConfigurationType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ConfigurationType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case custom
         case `default`
         case sdkUnknown(Swift.String)
@@ -1687,8 +1687,9 @@ extension KinesisAnalyticsV2ClientTypes {
 }
 
 extension KinesisAnalyticsV2ClientTypes {
+
     /// Describes an application's checkpointing configuration. Checkpointing is the process of persisting application state for fault tolerance. For more information, see [ Checkpoints for Fault Tolerance](https://nightlies.apache.org/flink/flink-docs-release-1.19/docs/dev/datastream/fault-tolerance/checkpointing/#enabling-and-configuring-checkpointing) in the [Apache Flink Documentation](https://nightlies.apache.org/flink/flink-docs-release-1.19/).
-    public struct CheckpointConfiguration {
+    public struct CheckpointConfiguration: Swift.Sendable {
         /// Describes the interval in milliseconds between checkpoint operations. If CheckpointConfiguration.ConfigurationType is DEFAULT, the application will use a CheckpointInterval value of 60000, even if this value is set to another value using this API or in application code.
         public var checkpointInterval: Swift.Int?
         /// Describes whether checkpointing is enabled for a Managed Service for Apache Flink application. If CheckpointConfiguration.ConfigurationType is DEFAULT, the application will use a CheckpointingEnabled value of true, even if this value is set to another value using this API or in application code.
@@ -1718,12 +1719,11 @@ extension KinesisAnalyticsV2ClientTypes {
             self.minPauseBetweenCheckpoints = minPauseBetweenCheckpoints
         }
     }
-
 }
 
 extension KinesisAnalyticsV2ClientTypes {
 
-    public enum LogLevel: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum LogLevel: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case debug
         case error
         case info
@@ -1758,7 +1758,7 @@ extension KinesisAnalyticsV2ClientTypes {
 
 extension KinesisAnalyticsV2ClientTypes {
 
-    public enum MetricsLevel: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum MetricsLevel: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case application
         case `operator`
         case parallelism
@@ -1792,8 +1792,9 @@ extension KinesisAnalyticsV2ClientTypes {
 }
 
 extension KinesisAnalyticsV2ClientTypes {
+
     /// Describes configuration parameters for Amazon CloudWatch logging for an application. For more information about CloudWatch logging, see [Monitoring](https://docs.aws.amazon.com/kinesisanalytics/latest/java/monitoring-overview.html).
-    public struct MonitoringConfiguration {
+    public struct MonitoringConfiguration: Swift.Sendable {
         /// Describes whether to use the default CloudWatch logging configuration for an application. You must set this property to CUSTOM in order to set the LogLevel or MetricsLevel parameters.
         /// This member is required.
         public var configurationType: KinesisAnalyticsV2ClientTypes.ConfigurationType?
@@ -1813,12 +1814,12 @@ extension KinesisAnalyticsV2ClientTypes {
             self.metricsLevel = metricsLevel
         }
     }
-
 }
 
 extension KinesisAnalyticsV2ClientTypes {
+
     /// Describes parameters for how a Managed Service for Apache Flink application executes multiple tasks simultaneously. For more information about parallelism, see [Parallel Execution](https://nightlies.apache.org/flink/flink-docs-release-1.19/dev/parallel.html) in the [Apache Flink Documentation](https://nightlies.apache.org/flink/flink-docs-release-1.19/).
-    public struct ParallelismConfiguration {
+    public struct ParallelismConfiguration: Swift.Sendable {
         /// Describes whether the Managed Service for Apache Flink service can increase the parallelism of the application in response to increased throughput.
         public var autoScalingEnabled: Swift.Bool?
         /// Describes whether the application uses the default parallelism for the Managed Service for Apache Flink service. You must set this property to CUSTOM in order to change your application's AutoScalingEnabled, Parallelism, or ParallelismPerKPU properties.
@@ -1842,12 +1843,12 @@ extension KinesisAnalyticsV2ClientTypes {
             self.parallelismPerKPU = parallelismPerKPU
         }
     }
-
 }
 
 extension KinesisAnalyticsV2ClientTypes {
+
     /// Describes configuration parameters for a Managed Service for Apache Flink application or a Studio notebook.
-    public struct FlinkApplicationConfiguration {
+    public struct FlinkApplicationConfiguration: Swift.Sendable {
         /// Describes an application's checkpointing configuration. Checkpointing is the process of persisting application state for fault tolerance. For more information, see [ Checkpoints for Fault Tolerance](https://nightlies.apache.org/flink/flink-docs-release-1.19/docs/dev/datastream/fault-tolerance/checkpointing/#enabling-and-configuring-checkpointing) in the [Apache Flink Documentation](https://nightlies.apache.org/flink/flink-docs-release-1.19/).
         public var checkpointConfiguration: KinesisAnalyticsV2ClientTypes.CheckpointConfiguration?
         /// Describes configuration parameters for Amazon CloudWatch logging for an application.
@@ -1866,12 +1867,12 @@ extension KinesisAnalyticsV2ClientTypes {
             self.parallelismConfiguration = parallelismConfiguration
         }
     }
-
 }
 
 extension KinesisAnalyticsV2ClientTypes {
+
     /// Describes the inputs, outputs, and reference data sources for a SQL-based Kinesis Data Analytics application.
-    public struct SqlApplicationConfiguration {
+    public struct SqlApplicationConfiguration: Swift.Sendable {
         /// The array of [Input] objects describing the input streams used by the application.
         public var inputs: [KinesisAnalyticsV2ClientTypes.Input]?
         /// The array of [Output] objects describing the destination streams used by the application.
@@ -1890,12 +1891,12 @@ extension KinesisAnalyticsV2ClientTypes {
             self.referenceDataSources = referenceDataSources
         }
     }
-
 }
 
 extension KinesisAnalyticsV2ClientTypes {
+
     /// The configuration of the Glue Data Catalog that you use for Apache Flink SQL queries and table API transforms that you write in an application.
-    public struct GlueDataCatalogConfiguration {
+    public struct GlueDataCatalogConfiguration: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the database.
         /// This member is required.
         public var databaseARN: Swift.String?
@@ -1907,12 +1908,12 @@ extension KinesisAnalyticsV2ClientTypes {
             self.databaseARN = databaseARN
         }
     }
-
 }
 
 extension KinesisAnalyticsV2ClientTypes {
+
     /// The configuration parameters for the default Amazon Glue database. You use this database for SQL queries that you write in a Managed Service for Apache Flink Studio notebook.
-    public struct CatalogConfiguration {
+    public struct CatalogConfiguration: Swift.Sendable {
         /// The configuration parameters for the default Amazon Glue database. You use this database for Apache Flink SQL queries and table API transforms that you write in a Managed Service for Apache Flink Studio notebook.
         /// This member is required.
         public var glueDataCatalogConfiguration: KinesisAnalyticsV2ClientTypes.GlueDataCatalogConfiguration?
@@ -1924,12 +1925,11 @@ extension KinesisAnalyticsV2ClientTypes {
             self.glueDataCatalogConfiguration = glueDataCatalogConfiguration
         }
     }
-
 }
 
 extension KinesisAnalyticsV2ClientTypes {
 
-    public enum ArtifactType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ArtifactType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case dependencyJar
         case udf
         case sdkUnknown(Swift.String)
@@ -1957,8 +1957,9 @@ extension KinesisAnalyticsV2ClientTypes {
 }
 
 extension KinesisAnalyticsV2ClientTypes {
+
     /// The information required to specify a Maven reference. You can use Maven references to specify dependency JAR files.
-    public struct MavenReference {
+    public struct MavenReference: Swift.Sendable {
         /// The artifact ID of the Maven reference.
         /// This member is required.
         public var artifactId: Swift.String?
@@ -1980,12 +1981,12 @@ extension KinesisAnalyticsV2ClientTypes {
             self.version = version
         }
     }
-
 }
 
 extension KinesisAnalyticsV2ClientTypes {
+
     /// Specifies dependency JARs, as well as JAR files that contain user-defined functions (UDF).
-    public struct CustomArtifactConfiguration {
+    public struct CustomArtifactConfiguration: Swift.Sendable {
         /// UDF stands for user-defined functions. This type of artifact must be in an S3 bucket. A DEPENDENCY_JAR can be in either Maven or an S3 bucket.
         /// This member is required.
         public var artifactType: KinesisAnalyticsV2ClientTypes.ArtifactType?
@@ -2005,12 +2006,12 @@ extension KinesisAnalyticsV2ClientTypes {
             self.s3ContentLocation = s3ContentLocation
         }
     }
-
 }
 
 extension KinesisAnalyticsV2ClientTypes {
+
     /// The S3 bucket that holds the application information.
-    public struct S3ContentBaseLocation {
+    public struct S3ContentBaseLocation: Swift.Sendable {
         /// The base path for the S3 bucket.
         public var basePath: Swift.String?
         /// The Amazon Resource Name (ARN) of the S3 bucket.
@@ -2026,12 +2027,12 @@ extension KinesisAnalyticsV2ClientTypes {
             self.bucketARN = bucketARN
         }
     }
-
 }
 
 extension KinesisAnalyticsV2ClientTypes {
+
     /// The information required to deploy a Managed Service for Apache Flink Studio notebook as an application with durable state.
-    public struct DeployAsApplicationConfiguration {
+    public struct DeployAsApplicationConfiguration: Swift.Sendable {
         /// The description of an Amazon S3 object that contains the Amazon Data Analytics application, including the Amazon Resource Name (ARN) of the S3 bucket, the name of the Amazon S3 object that contains the data, and the version number of the Amazon S3 object that contains the data.
         /// This member is required.
         public var s3ContentLocation: KinesisAnalyticsV2ClientTypes.S3ContentBaseLocation?
@@ -2043,12 +2044,12 @@ extension KinesisAnalyticsV2ClientTypes {
             self.s3ContentLocation = s3ContentLocation
         }
     }
-
 }
 
 extension KinesisAnalyticsV2ClientTypes {
+
     /// Describes configuration parameters for Amazon CloudWatch logging for a Managed Service for Apache Flink Studio notebook. For more information about CloudWatch logging, see [Monitoring](https://docs.aws.amazon.com/kinesisanalytics/latest/java/monitoring-overview.html).
-    public struct ZeppelinMonitoringConfiguration {
+    public struct ZeppelinMonitoringConfiguration: Swift.Sendable {
         /// The verbosity of the CloudWatch Logs for an application.
         /// This member is required.
         public var logLevel: KinesisAnalyticsV2ClientTypes.LogLevel?
@@ -2060,12 +2061,12 @@ extension KinesisAnalyticsV2ClientTypes {
             self.logLevel = logLevel
         }
     }
-
 }
 
 extension KinesisAnalyticsV2ClientTypes {
+
     /// The configuration of a Managed Service for Apache Flink Studio notebook.
-    public struct ZeppelinApplicationConfiguration {
+    public struct ZeppelinApplicationConfiguration: Swift.Sendable {
         /// The Amazon Glue Data Catalog that you use in queries in a Managed Service for Apache Flink Studio notebook.
         public var catalogConfiguration: KinesisAnalyticsV2ClientTypes.CatalogConfiguration?
         /// Custom artifacts are dependency JARs and user-defined functions (UDF).
@@ -2088,12 +2089,12 @@ extension KinesisAnalyticsV2ClientTypes {
             self.monitoringConfiguration = monitoringConfiguration
         }
     }
-
 }
 
 extension KinesisAnalyticsV2ClientTypes {
+
     /// Specifies the creation parameters for a Managed Service for Apache Flink application.
-    public struct ApplicationConfiguration {
+    public struct ApplicationConfiguration: Swift.Sendable {
         /// The code location and type parameters for a Managed Service for Apache Flink application.
         public var applicationCodeConfiguration: KinesisAnalyticsV2ClientTypes.ApplicationCodeConfiguration?
         /// Describes whether snapshots are enabled for a Managed Service for Apache Flink application.
@@ -2132,12 +2133,12 @@ extension KinesisAnalyticsV2ClientTypes {
             self.zeppelinApplicationConfiguration = zeppelinApplicationConfiguration
         }
     }
-
 }
 
 extension KinesisAnalyticsV2ClientTypes {
+
     /// Describes whether snapshots are enabled for a Managed Service for Apache Flink application.
-    public struct ApplicationSnapshotConfigurationDescription {
+    public struct ApplicationSnapshotConfigurationDescription: Swift.Sendable {
         /// Describes whether snapshots are enabled for a Managed Service for Apache Flink application.
         /// This member is required.
         public var snapshotsEnabled: Swift.Bool?
@@ -2149,12 +2150,12 @@ extension KinesisAnalyticsV2ClientTypes {
             self.snapshotsEnabled = snapshotsEnabled
         }
     }
-
 }
 
 extension KinesisAnalyticsV2ClientTypes {
+
     /// Describes system rollback configuration for a Managed Service for Apache Flink application
-    public struct ApplicationSystemRollbackConfigurationDescription {
+    public struct ApplicationSystemRollbackConfigurationDescription: Swift.Sendable {
         /// Describes whether system rollbacks are enabled for a Managed Service for Apache Flink application
         /// This member is required.
         public var rollbackEnabled: Swift.Bool?
@@ -2166,12 +2167,12 @@ extension KinesisAnalyticsV2ClientTypes {
             self.rollbackEnabled = rollbackEnabled
         }
     }
-
 }
 
 extension KinesisAnalyticsV2ClientTypes {
+
     /// Describes the execution properties for an Apache Flink runtime.
-    public struct EnvironmentPropertyDescriptions {
+    public struct EnvironmentPropertyDescriptions: Swift.Sendable {
         /// Describes the execution property groups.
         public var propertyGroupDescriptions: [KinesisAnalyticsV2ClientTypes.PropertyGroup]?
 
@@ -2182,12 +2183,12 @@ extension KinesisAnalyticsV2ClientTypes {
             self.propertyGroupDescriptions = propertyGroupDescriptions
         }
     }
-
 }
 
 extension KinesisAnalyticsV2ClientTypes {
+
     /// Describes checkpointing parameters for a Managed Service for Apache Flink application.
-    public struct CheckpointConfigurationDescription {
+    public struct CheckpointConfigurationDescription: Swift.Sendable {
         /// Describes the interval in milliseconds between checkpoint operations. If CheckpointConfiguration.ConfigurationType is DEFAULT, the application will use a CheckpointInterval value of 60000, even if this value is set to another value using this API or in application code.
         public var checkpointInterval: Swift.Int?
         /// Describes whether checkpointing is enabled for a Managed Service for Apache Flink application. If CheckpointConfiguration.ConfigurationType is DEFAULT, the application will use a CheckpointingEnabled value of true, even if this value is set to another value using this API or in application code.
@@ -2216,12 +2217,12 @@ extension KinesisAnalyticsV2ClientTypes {
             self.minPauseBetweenCheckpoints = minPauseBetweenCheckpoints
         }
     }
-
 }
 
 extension KinesisAnalyticsV2ClientTypes {
+
     /// Describes configuration parameters for CloudWatch logging for an application.
-    public struct MonitoringConfigurationDescription {
+    public struct MonitoringConfigurationDescription: Swift.Sendable {
         /// Describes whether to use the default CloudWatch logging configuration for an application.
         public var configurationType: KinesisAnalyticsV2ClientTypes.ConfigurationType?
         /// Describes the verbosity of the CloudWatch Logs for an application.
@@ -2240,12 +2241,12 @@ extension KinesisAnalyticsV2ClientTypes {
             self.metricsLevel = metricsLevel
         }
     }
-
 }
 
 extension KinesisAnalyticsV2ClientTypes {
+
     /// Describes parameters for how a Managed Service for Apache Flink application executes multiple tasks simultaneously.
-    public struct ParallelismConfigurationDescription {
+    public struct ParallelismConfigurationDescription: Swift.Sendable {
         /// Describes whether the Managed Service for Apache Flink service can increase the parallelism of the application in response to increased throughput.
         public var autoScalingEnabled: Swift.Bool?
         /// Describes whether the application uses the default parallelism for the Managed Service for Apache Flink service.
@@ -2272,12 +2273,12 @@ extension KinesisAnalyticsV2ClientTypes {
             self.parallelismPerKPU = parallelismPerKPU
         }
     }
-
 }
 
 extension KinesisAnalyticsV2ClientTypes {
+
     /// Describes configuration parameters for a Managed Service for Apache Flink application.
-    public struct FlinkApplicationConfigurationDescription {
+    public struct FlinkApplicationConfigurationDescription: Swift.Sendable {
         /// Describes an application's checkpointing configuration. Checkpointing is the process of persisting application state for fault tolerance.
         public var checkpointConfigurationDescription: KinesisAnalyticsV2ClientTypes.CheckpointConfigurationDescription?
         /// The job plan for an application. For more information about the job plan, see [Jobs and Scheduling](https://nightlies.apache.org/flink/flink-docs-release-1.19/internals/job_scheduling.html) in the [Apache Flink Documentation](https://nightlies.apache.org/flink/flink-docs-release-1.19/). To retrieve the job plan for the application, use the [DescribeApplicationRequest$IncludeAdditionalDetails] parameter of the [DescribeApplication] operation.
@@ -2300,12 +2301,11 @@ extension KinesisAnalyticsV2ClientTypes {
             self.parallelismConfigurationDescription = parallelismConfigurationDescription
         }
     }
-
 }
 
 extension KinesisAnalyticsV2ClientTypes {
 
-    public enum ApplicationRestoreType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ApplicationRestoreType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case restoreFromCustomSnapshot
         case restoreFromLatestSnapshot
         case skipRestoreFromSnapshot
@@ -2336,8 +2336,9 @@ extension KinesisAnalyticsV2ClientTypes {
 }
 
 extension KinesisAnalyticsV2ClientTypes {
+
     /// Specifies the method and snapshot to use when restarting an application using previously saved application state.
-    public struct ApplicationRestoreConfiguration {
+    public struct ApplicationRestoreConfiguration: Swift.Sendable {
         /// Specifies how the application should be restored.
         /// This member is required.
         public var applicationRestoreType: KinesisAnalyticsV2ClientTypes.ApplicationRestoreType?
@@ -2353,12 +2354,12 @@ extension KinesisAnalyticsV2ClientTypes {
             self.snapshotName = snapshotName
         }
     }
-
 }
 
 extension KinesisAnalyticsV2ClientTypes {
+
     /// Describes the starting parameters for a Managed Service for Apache Flink application.
-    public struct FlinkRunConfiguration {
+    public struct FlinkRunConfiguration: Swift.Sendable {
         /// When restoring from a snapshot, specifies whether the runtime is allowed to skip a state that cannot be mapped to the new program. This will happen if the program is updated between snapshots to remove stateful parameters, and state data in the snapshot no longer corresponds to valid application data. For more information, see [ Allowing Non-Restored State](https://nightlies.apache.org/flink/flink-docs-release-1.19/docs/ops/state/savepoints/#allowing-non-restored-state) in the [Apache Flink documentation](https://nightlies.apache.org/flink/flink-docs-release-1.19/). This value defaults to false. If you update your application without specifying this parameter, AllowNonRestoredState will be set to false, even if it was previously set to true.
         public var allowNonRestoredState: Swift.Bool?
 
@@ -2369,12 +2370,12 @@ extension KinesisAnalyticsV2ClientTypes {
             self.allowNonRestoredState = allowNonRestoredState
         }
     }
-
 }
 
 extension KinesisAnalyticsV2ClientTypes {
+
     /// Describes the starting properties for a Managed Service for Apache Flink application.
-    public struct RunConfigurationDescription {
+    public struct RunConfigurationDescription: Swift.Sendable {
         /// Describes the restore behavior of a restarting application.
         public var applicationRestoreConfigurationDescription: KinesisAnalyticsV2ClientTypes.ApplicationRestoreConfiguration?
         /// Describes the starting parameters for a Managed Service for Apache Flink application.
@@ -2389,12 +2390,12 @@ extension KinesisAnalyticsV2ClientTypes {
             self.flinkRunConfigurationDescription = flinkRunConfigurationDescription
         }
     }
-
 }
 
 extension KinesisAnalyticsV2ClientTypes {
+
     /// Describes the inputs, outputs, and reference data sources for a SQL-based Kinesis Data Analytics application.
-    public struct SqlApplicationConfigurationDescription {
+    public struct SqlApplicationConfigurationDescription: Swift.Sendable {
         /// The array of [InputDescription] objects describing the input streams used by the application.
         public var inputDescriptions: [KinesisAnalyticsV2ClientTypes.InputDescription]?
         /// The array of [OutputDescription] objects describing the destination streams used by the application.
@@ -2413,12 +2414,12 @@ extension KinesisAnalyticsV2ClientTypes {
             self.referenceDataSourceDescriptions = referenceDataSourceDescriptions
         }
     }
-
 }
 
 extension KinesisAnalyticsV2ClientTypes {
+
     /// The configuration of the Glue Data Catalog that you use for Apache Flink SQL queries and table API transforms that you write in an application.
-    public struct GlueDataCatalogConfigurationDescription {
+    public struct GlueDataCatalogConfigurationDescription: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the database.
         /// This member is required.
         public var databaseARN: Swift.String?
@@ -2430,12 +2431,12 @@ extension KinesisAnalyticsV2ClientTypes {
             self.databaseARN = databaseARN
         }
     }
-
 }
 
 extension KinesisAnalyticsV2ClientTypes {
+
     /// The configuration parameters for the default Amazon Glue database. You use this database for Apache Flink SQL queries and table API transforms that you write in a Managed Service for Apache Flink Studio notebook.
-    public struct CatalogConfigurationDescription {
+    public struct CatalogConfigurationDescription: Swift.Sendable {
         /// The configuration parameters for the default Amazon Glue database. You use this database for SQL queries that you write in a Managed Service for Apache Flink Studio notebook.
         /// This member is required.
         public var glueDataCatalogConfigurationDescription: KinesisAnalyticsV2ClientTypes.GlueDataCatalogConfigurationDescription?
@@ -2447,12 +2448,12 @@ extension KinesisAnalyticsV2ClientTypes {
             self.glueDataCatalogConfigurationDescription = glueDataCatalogConfigurationDescription
         }
     }
-
 }
 
 extension KinesisAnalyticsV2ClientTypes {
+
     /// Specifies a dependency JAR or a JAR of user-defined functions.
-    public struct CustomArtifactConfigurationDescription {
+    public struct CustomArtifactConfigurationDescription: Swift.Sendable {
         /// UDF stands for user-defined functions. This type of artifact must be in an S3 bucket. A DEPENDENCY_JAR can be in either Maven or an S3 bucket.
         public var artifactType: KinesisAnalyticsV2ClientTypes.ArtifactType?
         /// The parameters that are required to specify a Maven dependency.
@@ -2471,12 +2472,12 @@ extension KinesisAnalyticsV2ClientTypes {
             self.s3ContentLocationDescription = s3ContentLocationDescription
         }
     }
-
 }
 
 extension KinesisAnalyticsV2ClientTypes {
+
     /// The description of the S3 base location that holds the application.
-    public struct S3ContentBaseLocationDescription {
+    public struct S3ContentBaseLocationDescription: Swift.Sendable {
         /// The base path for the S3 bucket.
         public var basePath: Swift.String?
         /// The Amazon Resource Name (ARN) of the S3 bucket.
@@ -2492,12 +2493,12 @@ extension KinesisAnalyticsV2ClientTypes {
             self.bucketARN = bucketARN
         }
     }
-
 }
 
 extension KinesisAnalyticsV2ClientTypes {
+
     /// The configuration information required to deploy an Amazon Data Analytics Studio notebook as an application with durable state.
-    public struct DeployAsApplicationConfigurationDescription {
+    public struct DeployAsApplicationConfigurationDescription: Swift.Sendable {
         /// The location that holds the data required to specify an Amazon Data Analytics application.
         /// This member is required.
         public var s3ContentLocationDescription: KinesisAnalyticsV2ClientTypes.S3ContentBaseLocationDescription?
@@ -2509,12 +2510,12 @@ extension KinesisAnalyticsV2ClientTypes {
             self.s3ContentLocationDescription = s3ContentLocationDescription
         }
     }
-
 }
 
 extension KinesisAnalyticsV2ClientTypes {
+
     /// The monitoring configuration for Apache Zeppelin within a Managed Service for Apache Flink Studio notebook.
-    public struct ZeppelinMonitoringConfigurationDescription {
+    public struct ZeppelinMonitoringConfigurationDescription: Swift.Sendable {
         /// Describes the verbosity of the CloudWatch Logs for an application.
         public var logLevel: KinesisAnalyticsV2ClientTypes.LogLevel?
 
@@ -2525,12 +2526,12 @@ extension KinesisAnalyticsV2ClientTypes {
             self.logLevel = logLevel
         }
     }
-
 }
 
 extension KinesisAnalyticsV2ClientTypes {
+
     /// The configuration of a Managed Service for Apache Flink Studio notebook.
-    public struct ZeppelinApplicationConfigurationDescription {
+    public struct ZeppelinApplicationConfigurationDescription: Swift.Sendable {
         /// The Amazon Glue Data Catalog that is associated with the Managed Service for Apache Flink Studio notebook.
         public var catalogConfigurationDescription: KinesisAnalyticsV2ClientTypes.CatalogConfigurationDescription?
         /// Custom artifacts are dependency JARs and user-defined functions (UDF).
@@ -2554,12 +2555,12 @@ extension KinesisAnalyticsV2ClientTypes {
             self.monitoringConfigurationDescription = monitoringConfigurationDescription
         }
     }
-
 }
 
 extension KinesisAnalyticsV2ClientTypes {
+
     /// Describes details about the application code and starting parameters for a Managed Service for Apache Flink application.
-    public struct ApplicationConfigurationDescription {
+    public struct ApplicationConfigurationDescription: Swift.Sendable {
         /// The details about the application code for a Managed Service for Apache Flink application.
         public var applicationCodeConfigurationDescription: KinesisAnalyticsV2ClientTypes.ApplicationCodeConfigurationDescription?
         /// Describes whether snapshots are enabled for a Managed Service for Apache Flink application.
@@ -2602,12 +2603,12 @@ extension KinesisAnalyticsV2ClientTypes {
             self.zeppelinApplicationConfigurationDescription = zeppelinApplicationConfigurationDescription
         }
     }
-
 }
 
 extension KinesisAnalyticsV2ClientTypes {
+
     /// Describes updates to whether snapshots are enabled for a Managed Service for Apache Flink application.
-    public struct ApplicationSnapshotConfigurationUpdate {
+    public struct ApplicationSnapshotConfigurationUpdate: Swift.Sendable {
         /// Describes updates to whether snapshots are enabled for an application.
         /// This member is required.
         public var snapshotsEnabledUpdate: Swift.Bool?
@@ -2619,12 +2620,12 @@ extension KinesisAnalyticsV2ClientTypes {
             self.snapshotsEnabledUpdate = snapshotsEnabledUpdate
         }
     }
-
 }
 
 extension KinesisAnalyticsV2ClientTypes {
+
     /// Describes system rollback configuration for a Managed Service for Apache Flink application
-    public struct ApplicationSystemRollbackConfigurationUpdate {
+    public struct ApplicationSystemRollbackConfigurationUpdate: Swift.Sendable {
         /// Describes whether system rollbacks are enabled for a Managed Service for Apache Flink application
         /// This member is required.
         public var rollbackEnabledUpdate: Swift.Bool?
@@ -2636,12 +2637,12 @@ extension KinesisAnalyticsV2ClientTypes {
             self.rollbackEnabledUpdate = rollbackEnabledUpdate
         }
     }
-
 }
 
 extension KinesisAnalyticsV2ClientTypes {
+
     /// Describes updates to the execution property groups for a Managed Service for Apache Flink application or a Studio notebook.
-    public struct EnvironmentPropertyUpdates {
+    public struct EnvironmentPropertyUpdates: Swift.Sendable {
         /// Describes updates to the execution property groups.
         /// This member is required.
         public var propertyGroups: [KinesisAnalyticsV2ClientTypes.PropertyGroup]?
@@ -2653,12 +2654,12 @@ extension KinesisAnalyticsV2ClientTypes {
             self.propertyGroups = propertyGroups
         }
     }
-
 }
 
 extension KinesisAnalyticsV2ClientTypes {
+
     /// Describes updates to the checkpointing parameters for a Managed Service for Apache Flink application.
-    public struct CheckpointConfigurationUpdate {
+    public struct CheckpointConfigurationUpdate: Swift.Sendable {
         /// Describes updates to the interval in milliseconds between checkpoint operations. If CheckpointConfiguration.ConfigurationType is DEFAULT, the application will use a CheckpointInterval value of 60000, even if this value is set to another value using this API or in application code.
         public var checkpointIntervalUpdate: Swift.Int?
         /// Describes updates to whether checkpointing is enabled for an application. If CheckpointConfiguration.ConfigurationType is DEFAULT, the application will use a CheckpointingEnabled value of true, even if this value is set to another value using this API or in application code.
@@ -2687,12 +2688,12 @@ extension KinesisAnalyticsV2ClientTypes {
             self.minPauseBetweenCheckpointsUpdate = minPauseBetweenCheckpointsUpdate
         }
     }
-
 }
 
 extension KinesisAnalyticsV2ClientTypes {
+
     /// Describes updates to configuration parameters for Amazon CloudWatch logging for an application.
-    public struct MonitoringConfigurationUpdate {
+    public struct MonitoringConfigurationUpdate: Swift.Sendable {
         /// Describes updates to whether to use the default CloudWatch logging configuration for an application. You must set this property to CUSTOM in order to set the LogLevel or MetricsLevel parameters.
         public var configurationTypeUpdate: KinesisAnalyticsV2ClientTypes.ConfigurationType?
         /// Describes updates to the verbosity of the CloudWatch Logs for an application.
@@ -2711,12 +2712,12 @@ extension KinesisAnalyticsV2ClientTypes {
             self.metricsLevelUpdate = metricsLevelUpdate
         }
     }
-
 }
 
 extension KinesisAnalyticsV2ClientTypes {
+
     /// Describes updates to parameters for how an application executes multiple tasks simultaneously.
-    public struct ParallelismConfigurationUpdate {
+    public struct ParallelismConfigurationUpdate: Swift.Sendable {
         /// Describes updates to whether the Managed Service for Apache Flink service can increase the parallelism of a Managed Service for Apache Flink application in response to increased throughput.
         public var autoScalingEnabledUpdate: Swift.Bool?
         /// Describes updates to whether the application uses the default parallelism for the Managed Service for Apache Flink service, or if a custom parallelism is used. You must set this property to CUSTOM in order to change your application's AutoScalingEnabled, Parallelism, or ParallelismPerKPU properties.
@@ -2739,12 +2740,12 @@ extension KinesisAnalyticsV2ClientTypes {
             self.parallelismUpdate = parallelismUpdate
         }
     }
-
 }
 
 extension KinesisAnalyticsV2ClientTypes {
+
     /// Describes updates to the configuration parameters for a Managed Service for Apache Flink application.
-    public struct FlinkApplicationConfigurationUpdate {
+    public struct FlinkApplicationConfigurationUpdate: Swift.Sendable {
         /// Describes updates to an application's checkpointing configuration. Checkpointing is the process of persisting application state for fault tolerance.
         public var checkpointConfigurationUpdate: KinesisAnalyticsV2ClientTypes.CheckpointConfigurationUpdate?
         /// Describes updates to the configuration parameters for Amazon CloudWatch logging for an application.
@@ -2763,12 +2764,12 @@ extension KinesisAnalyticsV2ClientTypes {
             self.parallelismConfigurationUpdate = parallelismConfigurationUpdate
         }
     }
-
 }
 
 extension KinesisAnalyticsV2ClientTypes {
+
     /// For a SQL-based Kinesis Data Analytics application, provides updates to the parallelism count.
-    public struct InputParallelismUpdate {
+    public struct InputParallelismUpdate: Swift.Sendable {
         /// The number of in-application streams to create for the specified streaming source.
         /// This member is required.
         public var countUpdate: Swift.Int?
@@ -2780,12 +2781,12 @@ extension KinesisAnalyticsV2ClientTypes {
             self.countUpdate = countUpdate
         }
     }
-
 }
 
 extension KinesisAnalyticsV2ClientTypes {
+
     /// For a SQL-based Kinesis Data Analytics application, represents an update to the [InputLambdaProcessor] that is used to preprocess the records in the stream.
-    public struct InputLambdaProcessorUpdate {
+    public struct InputLambdaProcessorUpdate: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the new Amazon Lambda function that is used to preprocess the records in the stream. To specify an earlier version of the Lambda function than the latest, include the Lambda function version in the Lambda function ARN. For more information about Lambda ARNs, see [Example ARNs: Amazon Lambda](https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html#arn-syntax-lambda)
         /// This member is required.
         public var resourceARNUpdate: Swift.String?
@@ -2797,12 +2798,12 @@ extension KinesisAnalyticsV2ClientTypes {
             self.resourceARNUpdate = resourceARNUpdate
         }
     }
-
 }
 
 extension KinesisAnalyticsV2ClientTypes {
+
     /// For a SQL-based Kinesis Data Analytics application, describes updates to an [InputProcessingConfiguration].
-    public struct InputProcessingConfigurationUpdate {
+    public struct InputProcessingConfigurationUpdate: Swift.Sendable {
         /// Provides update information for an [InputLambdaProcessor].
         /// This member is required.
         public var inputLambdaProcessorUpdate: KinesisAnalyticsV2ClientTypes.InputLambdaProcessorUpdate?
@@ -2814,12 +2815,12 @@ extension KinesisAnalyticsV2ClientTypes {
             self.inputLambdaProcessorUpdate = inputLambdaProcessorUpdate
         }
     }
-
 }
 
 extension KinesisAnalyticsV2ClientTypes {
+
     /// Describes updates for an SQL-based Kinesis Data Analytics application's input schema.
-    public struct InputSchemaUpdate {
+    public struct InputSchemaUpdate: Swift.Sendable {
         /// A list of RecordColumn objects. Each object describes the mapping of the streaming source element to the corresponding column in the in-application stream.
         public var recordColumnUpdates: [KinesisAnalyticsV2ClientTypes.RecordColumn]?
         /// Specifies the encoding of the records in the streaming source; for example, UTF-8.
@@ -2838,12 +2839,12 @@ extension KinesisAnalyticsV2ClientTypes {
             self.recordFormatUpdate = recordFormatUpdate
         }
     }
-
 }
 
 extension KinesisAnalyticsV2ClientTypes {
+
     /// For a SQL-based Kinesis Data Analytics application, when updating application input configuration, provides information about a Kinesis Data Firehose delivery stream as the streaming source.
-    public struct KinesisFirehoseInputUpdate {
+    public struct KinesisFirehoseInputUpdate: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the input delivery stream to read.
         /// This member is required.
         public var resourceARNUpdate: Swift.String?
@@ -2855,12 +2856,12 @@ extension KinesisAnalyticsV2ClientTypes {
             self.resourceARNUpdate = resourceARNUpdate
         }
     }
-
 }
 
 extension KinesisAnalyticsV2ClientTypes {
+
     /// When you update the input configuration for a SQL-based Kinesis Data Analytics application, provides information about a Kinesis stream as the streaming source.
-    public struct KinesisStreamsInputUpdate {
+    public struct KinesisStreamsInputUpdate: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the input Kinesis data stream to read.
         /// This member is required.
         public var resourceARNUpdate: Swift.String?
@@ -2872,12 +2873,12 @@ extension KinesisAnalyticsV2ClientTypes {
             self.resourceARNUpdate = resourceARNUpdate
         }
     }
-
 }
 
 extension KinesisAnalyticsV2ClientTypes {
+
     /// For a SQL-based Kinesis Data Analytics application, describes updates to a specific input configuration (identified by the InputId of an application).
-    public struct InputUpdate {
+    public struct InputUpdate: Swift.Sendable {
         /// The input ID of the application input to be updated.
         /// This member is required.
         public var inputId: Swift.String?
@@ -2913,12 +2914,12 @@ extension KinesisAnalyticsV2ClientTypes {
             self.namePrefixUpdate = namePrefixUpdate
         }
     }
-
 }
 
 extension KinesisAnalyticsV2ClientTypes {
+
     /// For a SQL-based Kinesis Data Analytics application, when updating an output configuration using the [UpdateApplication] operation, provides information about a Kinesis Data Firehose delivery stream that is configured as the destination.
-    public struct KinesisFirehoseOutputUpdate {
+    public struct KinesisFirehoseOutputUpdate: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the delivery stream to write to.
         /// This member is required.
         public var resourceARNUpdate: Swift.String?
@@ -2930,12 +2931,12 @@ extension KinesisAnalyticsV2ClientTypes {
             self.resourceARNUpdate = resourceARNUpdate
         }
     }
-
 }
 
 extension KinesisAnalyticsV2ClientTypes {
+
     /// When you update a SQL-based Kinesis Data Analytics application's output configuration using the [UpdateApplication] operation, provides information about a Kinesis data stream that is configured as the destination.
-    public struct KinesisStreamsOutputUpdate {
+    public struct KinesisStreamsOutputUpdate: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the Kinesis data stream where you want to write the output.
         /// This member is required.
         public var resourceARNUpdate: Swift.String?
@@ -2947,12 +2948,12 @@ extension KinesisAnalyticsV2ClientTypes {
             self.resourceARNUpdate = resourceARNUpdate
         }
     }
-
 }
 
 extension KinesisAnalyticsV2ClientTypes {
+
     /// When you update an SQL-based Kinesis Data Analytics application's output configuration using the [UpdateApplication] operation, provides information about an Amazon Lambda function that is configured as the destination.
-    public struct LambdaOutputUpdate {
+    public struct LambdaOutputUpdate: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the destination Amazon Lambda function. To specify an earlier version of the Lambda function than the latest, include the Lambda function version in the Lambda function ARN. For more information about Lambda ARNs, see [Example ARNs: Amazon Lambda](https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html#arn-syntax-lambda)
         /// This member is required.
         public var resourceARNUpdate: Swift.String?
@@ -2964,12 +2965,12 @@ extension KinesisAnalyticsV2ClientTypes {
             self.resourceARNUpdate = resourceARNUpdate
         }
     }
-
 }
 
 extension KinesisAnalyticsV2ClientTypes {
+
     /// For a SQL-based Kinesis Data Analytics application, describes updates to the output configuration identified by the OutputId.
-    public struct OutputUpdate {
+    public struct OutputUpdate: Swift.Sendable {
         /// Describes the data format when records are written to the destination.
         public var destinationSchemaUpdate: KinesisAnalyticsV2ClientTypes.DestinationSchema?
         /// Describes a Kinesis Data Firehose delivery stream as the destination for the output.
@@ -3001,12 +3002,12 @@ extension KinesisAnalyticsV2ClientTypes {
             self.outputId = outputId
         }
     }
-
 }
 
 extension KinesisAnalyticsV2ClientTypes {
+
     /// For a SQL-based Kinesis Data Analytics application, describes the Amazon S3 bucket name and object key name for an in-application reference table.
-    public struct S3ReferenceDataSourceUpdate {
+    public struct S3ReferenceDataSourceUpdate: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the S3 bucket.
         public var bucketARNUpdate: Swift.String?
         /// The object key name.
@@ -3021,12 +3022,12 @@ extension KinesisAnalyticsV2ClientTypes {
             self.fileKeyUpdate = fileKeyUpdate
         }
     }
-
 }
 
 extension KinesisAnalyticsV2ClientTypes {
+
     /// When you update a reference data source configuration for a SQL-based Kinesis Data Analytics application, this object provides all the updated values (such as the source bucket name and object key name), the in-application table name that is created, and updated mapping information that maps the data in the Amazon S3 object to the in-application reference table that is created.
-    public struct ReferenceDataSourceUpdate {
+    public struct ReferenceDataSourceUpdate: Swift.Sendable {
         /// The ID of the reference data source that is being updated. You can use the [DescribeApplication] operation to get this value.
         /// This member is required.
         public var referenceId: Swift.String?
@@ -3050,12 +3051,12 @@ extension KinesisAnalyticsV2ClientTypes {
             self.tableNameUpdate = tableNameUpdate
         }
     }
-
 }
 
 extension KinesisAnalyticsV2ClientTypes {
+
     /// Describes updates to the input streams, destination streams, and reference data sources for a SQL-based Kinesis Data Analytics application.
-    public struct SqlApplicationConfigurationUpdate {
+    public struct SqlApplicationConfigurationUpdate: Swift.Sendable {
         /// The array of [InputUpdate] objects describing the new input streams used by the application.
         public var inputUpdates: [KinesisAnalyticsV2ClientTypes.InputUpdate]?
         /// The array of [OutputUpdate] objects describing the new destination streams used by the application.
@@ -3074,12 +3075,12 @@ extension KinesisAnalyticsV2ClientTypes {
             self.referenceDataSourceUpdates = referenceDataSourceUpdates
         }
     }
-
 }
 
 extension KinesisAnalyticsV2ClientTypes {
+
     /// Describes updates to the VPC configuration used by the application.
-    public struct VpcConfigurationUpdate {
+    public struct VpcConfigurationUpdate: Swift.Sendable {
         /// Describes updates to the array of [SecurityGroup](https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_SecurityGroup.html) IDs used by the VPC configuration.
         public var securityGroupIdUpdates: [Swift.String]?
         /// Describes updates to the array of [Subnet](https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_Subnet.html) IDs used by the VPC configuration.
@@ -3099,12 +3100,12 @@ extension KinesisAnalyticsV2ClientTypes {
             self.vpcConfigurationId = vpcConfigurationId
         }
     }
-
 }
 
 extension KinesisAnalyticsV2ClientTypes {
+
     /// Updates to the configuration of the Glue Data Catalog that you use for SQL queries that you write in a Managed Service for Apache Flink Studio notebook.
-    public struct GlueDataCatalogConfigurationUpdate {
+    public struct GlueDataCatalogConfigurationUpdate: Swift.Sendable {
         /// The updated Amazon Resource Name (ARN) of the database.
         /// This member is required.
         public var databaseARNUpdate: Swift.String?
@@ -3116,12 +3117,12 @@ extension KinesisAnalyticsV2ClientTypes {
             self.databaseARNUpdate = databaseARNUpdate
         }
     }
-
 }
 
 extension KinesisAnalyticsV2ClientTypes {
+
     /// Updates to the configuration parameters for the default Amazon Glue database. You use this database for SQL queries that you write in a Managed Service for Apache Flink Studio notebook.
-    public struct CatalogConfigurationUpdate {
+    public struct CatalogConfigurationUpdate: Swift.Sendable {
         /// Updates to the configuration parameters for the default Amazon Glue database. You use this database for SQL queries that you write in a Managed Service for Apache Flink Studio notebook.
         /// This member is required.
         public var glueDataCatalogConfigurationUpdate: KinesisAnalyticsV2ClientTypes.GlueDataCatalogConfigurationUpdate?
@@ -3133,12 +3134,12 @@ extension KinesisAnalyticsV2ClientTypes {
             self.glueDataCatalogConfigurationUpdate = glueDataCatalogConfigurationUpdate
         }
     }
-
 }
 
 extension KinesisAnalyticsV2ClientTypes {
+
     /// The information required to update the S3 base location that holds the application.
-    public struct S3ContentBaseLocationUpdate {
+    public struct S3ContentBaseLocationUpdate: Swift.Sendable {
         /// The updated S3 bucket path.
         public var basePathUpdate: Swift.String?
         /// The updated Amazon Resource Name (ARN) of the S3 bucket.
@@ -3153,12 +3154,12 @@ extension KinesisAnalyticsV2ClientTypes {
             self.bucketARNUpdate = bucketARNUpdate
         }
     }
-
 }
 
 extension KinesisAnalyticsV2ClientTypes {
+
     /// Updates to the configuration information required to deploy an Amazon Data Analytics Studio notebook as an application with durable state.
-    public struct DeployAsApplicationConfigurationUpdate {
+    public struct DeployAsApplicationConfigurationUpdate: Swift.Sendable {
         /// Updates to the location that holds the data required to specify an Amazon Data Analytics application.
         public var s3ContentLocationUpdate: KinesisAnalyticsV2ClientTypes.S3ContentBaseLocationUpdate?
 
@@ -3169,12 +3170,12 @@ extension KinesisAnalyticsV2ClientTypes {
             self.s3ContentLocationUpdate = s3ContentLocationUpdate
         }
     }
-
 }
 
 extension KinesisAnalyticsV2ClientTypes {
+
     /// Updates to the monitoring configuration for Apache Zeppelin within a Managed Service for Apache Flink Studio notebook.
-    public struct ZeppelinMonitoringConfigurationUpdate {
+    public struct ZeppelinMonitoringConfigurationUpdate: Swift.Sendable {
         /// Updates to the logging level for Apache Zeppelin within a Managed Service for Apache Flink Studio notebook.
         /// This member is required.
         public var logLevelUpdate: KinesisAnalyticsV2ClientTypes.LogLevel?
@@ -3186,12 +3187,12 @@ extension KinesisAnalyticsV2ClientTypes {
             self.logLevelUpdate = logLevelUpdate
         }
     }
-
 }
 
 extension KinesisAnalyticsV2ClientTypes {
+
     /// Updates to the configuration of Managed Service for Apache Flink Studio notebook.
-    public struct ZeppelinApplicationConfigurationUpdate {
+    public struct ZeppelinApplicationConfigurationUpdate: Swift.Sendable {
         /// Updates to the configuration of the Amazon Glue Data Catalog that is associated with the Managed Service for Apache Flink Studio notebook.
         public var catalogConfigurationUpdate: KinesisAnalyticsV2ClientTypes.CatalogConfigurationUpdate?
         /// Updates to the customer artifacts. Custom artifacts are dependency JAR files and user-defined functions (UDF).
@@ -3214,12 +3215,12 @@ extension KinesisAnalyticsV2ClientTypes {
             self.monitoringConfigurationUpdate = monitoringConfigurationUpdate
         }
     }
-
 }
 
 extension KinesisAnalyticsV2ClientTypes {
+
     /// Describes updates to an application's configuration.
-    public struct ApplicationConfigurationUpdate {
+    public struct ApplicationConfigurationUpdate: Swift.Sendable {
         /// Describes updates to an application's code configuration.
         public var applicationCodeConfigurationUpdate: KinesisAnalyticsV2ClientTypes.ApplicationCodeConfigurationUpdate?
         /// Describes whether snapshots are enabled for a Managed Service for Apache Flink application.
@@ -3258,12 +3259,12 @@ extension KinesisAnalyticsV2ClientTypes {
             self.zeppelinApplicationConfigurationUpdate = zeppelinApplicationConfigurationUpdate
         }
     }
-
 }
 
 extension KinesisAnalyticsV2ClientTypes {
+
     /// The details of the maintenance configuration for the application.
-    public struct ApplicationMaintenanceConfigurationDescription {
+    public struct ApplicationMaintenanceConfigurationDescription: Swift.Sendable {
         /// The end time for the maintenance window.
         /// This member is required.
         public var applicationMaintenanceWindowEndTime: Swift.String?
@@ -3280,12 +3281,11 @@ extension KinesisAnalyticsV2ClientTypes {
             self.applicationMaintenanceWindowStartTime = applicationMaintenanceWindowStartTime
         }
     }
-
 }
 
 extension KinesisAnalyticsV2ClientTypes {
 
-    public enum ApplicationMode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ApplicationMode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case interactive
         case streaming
         case sdkUnknown(Swift.String)
@@ -3314,7 +3314,7 @@ extension KinesisAnalyticsV2ClientTypes {
 
 extension KinesisAnalyticsV2ClientTypes {
 
-    public enum ApplicationStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum ApplicationStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case autoscaling
         case deleting
         case forceStopping
@@ -3370,7 +3370,7 @@ extension KinesisAnalyticsV2ClientTypes {
 
 extension KinesisAnalyticsV2ClientTypes {
 
-    public enum RuntimeEnvironment: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum RuntimeEnvironment: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case flink111
         case flink113
         case flink115
@@ -3428,8 +3428,9 @@ extension KinesisAnalyticsV2ClientTypes {
 }
 
 extension KinesisAnalyticsV2ClientTypes {
+
     /// Describes the application, including the application Amazon Resource Name (ARN), status, latest version, and input and output configurations.
-    public struct ApplicationDetail {
+    public struct ApplicationDetail: Swift.Sendable {
         /// The ARN of the application.
         /// This member is required.
         public var applicationARN: Swift.String?
@@ -3513,12 +3514,12 @@ extension KinesisAnalyticsV2ClientTypes {
             self.serviceExecutionRole = serviceExecutionRole
         }
     }
-
 }
 
 extension KinesisAnalyticsV2ClientTypes {
+
     /// Describes the updated maintenance configuration for the application.
-    public struct ApplicationMaintenanceConfigurationUpdate {
+    public struct ApplicationMaintenanceConfigurationUpdate: Swift.Sendable {
         /// The updated start time for the maintenance window.
         /// This member is required.
         public var applicationMaintenanceWindowStartTimeUpdate: Swift.String?
@@ -3530,13 +3531,12 @@ extension KinesisAnalyticsV2ClientTypes {
             self.applicationMaintenanceWindowStartTimeUpdate = applicationMaintenanceWindowStartTimeUpdate
         }
     }
-
 }
 
 extension KinesisAnalyticsV2ClientTypes {
 
     /// Status of the operation performed on an application
-    public enum OperationStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum OperationStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case cancelled
         case failed
         case inProgress
@@ -3570,8 +3570,9 @@ extension KinesisAnalyticsV2ClientTypes {
 }
 
 extension KinesisAnalyticsV2ClientTypes {
+
     /// Provides a description of the operation, such as the type and status of operation
-    public struct ApplicationOperationInfo {
+    public struct ApplicationOperationInfo: Swift.Sendable {
         /// The timestamp at which the operation finished for the application
         public var endTime: Foundation.Date?
         /// Type of operation performed on an application
@@ -3598,12 +3599,12 @@ extension KinesisAnalyticsV2ClientTypes {
             self.startTime = startTime
         }
     }
-
 }
 
 extension KinesisAnalyticsV2ClientTypes {
+
     /// Contains information about the application version changes due to an operation
-    public struct ApplicationVersionChangeDetails {
+    public struct ApplicationVersionChangeDetails: Swift.Sendable {
         /// The operation was performed on this version of the application
         /// This member is required.
         public var applicationVersionUpdatedFrom: Swift.Int?
@@ -3620,12 +3621,12 @@ extension KinesisAnalyticsV2ClientTypes {
             self.applicationVersionUpdatedTo = applicationVersionUpdatedTo
         }
     }
-
 }
 
 extension KinesisAnalyticsV2ClientTypes {
+
     /// Provides a description of the operation failure error
-    public struct ErrorInfo {
+    public struct ErrorInfo: Swift.Sendable {
         /// Error message resulting in failure of the operation
         public var errorString: Swift.String?
 
@@ -3636,12 +3637,12 @@ extension KinesisAnalyticsV2ClientTypes {
             self.errorString = errorString
         }
     }
-
 }
 
 extension KinesisAnalyticsV2ClientTypes {
+
     /// Provides a description of the operation failure
-    public struct OperationFailureDetails {
+    public struct OperationFailureDetails: Swift.Sendable {
         /// Provides a description of the operation failure error
         public var errorInfo: KinesisAnalyticsV2ClientTypes.ErrorInfo?
         /// Provides the operation ID of a system-rollback operation executed due to failure in the current operation
@@ -3656,12 +3657,12 @@ extension KinesisAnalyticsV2ClientTypes {
             self.rollbackOperationId = rollbackOperationId
         }
     }
-
 }
 
 extension KinesisAnalyticsV2ClientTypes {
+
     /// Provides a description of the operation, such as the operation-type and status
-    public struct ApplicationOperationInfoDetails {
+    public struct ApplicationOperationInfoDetails: Swift.Sendable {
         /// Contains information about the application version changes due to an operation
         public var applicationVersionChangeDetails: KinesisAnalyticsV2ClientTypes.ApplicationVersionChangeDetails?
         /// The timestamp at which the operation finished for the application
@@ -3696,12 +3697,12 @@ extension KinesisAnalyticsV2ClientTypes {
             self.startTime = startTime
         }
     }
-
 }
 
 extension KinesisAnalyticsV2ClientTypes {
+
     /// Provides application summary information, including the application Amazon Resource Name (ARN), name, and status.
-    public struct ApplicationSummary {
+    public struct ApplicationSummary: Swift.Sendable {
         /// The ARN of the application.
         /// This member is required.
         public var applicationARN: Swift.String?
@@ -3737,12 +3738,12 @@ extension KinesisAnalyticsV2ClientTypes {
             self.runtimeEnvironment = runtimeEnvironment
         }
     }
-
 }
 
 extension KinesisAnalyticsV2ClientTypes {
+
     /// The summary of the application version.
-    public struct ApplicationVersionSummary {
+    public struct ApplicationVersionSummary: Swift.Sendable {
         /// The status of the application.
         /// This member is required.
         public var applicationStatus: KinesisAnalyticsV2ClientTypes.ApplicationStatus?
@@ -3759,12 +3760,12 @@ extension KinesisAnalyticsV2ClientTypes {
             self.applicationVersionId = applicationVersionId
         }
     }
-
 }
 
 extension KinesisAnalyticsV2ClientTypes {
+
     /// Describes the Amazon CloudWatch logging option updates.
-    public struct CloudWatchLoggingOptionUpdate {
+    public struct CloudWatchLoggingOptionUpdate: Swift.Sendable {
         /// The ID of the CloudWatch logging option to update
         /// This member is required.
         public var cloudWatchLoggingOptionId: Swift.String?
@@ -3780,7 +3781,6 @@ extension KinesisAnalyticsV2ClientTypes {
             self.logStreamARNUpdate = logStreamARNUpdate
         }
     }
-
 }
 
 /// The number of allowed resources has been exceeded.
@@ -3856,8 +3856,9 @@ public struct UnsupportedOperationException: ClientRuntime.ModeledError, AWSClie
 }
 
 extension KinesisAnalyticsV2ClientTypes {
+
     /// A key-value pair (the value is optional) that you can define and assign to Amazon resources. If you specify a tag that already exists, the tag value is replaced with the value that you specify in the request. Note that the maximum number of application tags includes system tags. The maximum number of user-defined application tags is 50. For more information, see [Using Tagging](https://docs.aws.amazon.com/kinesisanalytics/latest/java/how-tagging.html).
-    public struct Tag {
+    public struct Tag: Swift.Sendable {
         /// The key of the key-value tag.
         /// This member is required.
         public var key: Swift.String?
@@ -3873,10 +3874,9 @@ extension KinesisAnalyticsV2ClientTypes {
             self.value = value
         }
     }
-
 }
 
-public struct CreateApplicationInput {
+public struct CreateApplicationInput: Swift.Sendable {
     /// Use this parameter to configure the application.
     public var applicationConfiguration: KinesisAnalyticsV2ClientTypes.ApplicationConfiguration?
     /// A summary description of the application.
@@ -3919,7 +3919,7 @@ public struct CreateApplicationInput {
     }
 }
 
-public struct CreateApplicationOutput {
+public struct CreateApplicationOutput: Swift.Sendable {
     /// In response to your CreateApplication request, Managed Service for Apache Flink returns a response with details of the application it created.
     /// This member is required.
     public var applicationDetail: KinesisAnalyticsV2ClientTypes.ApplicationDetail?
@@ -3934,7 +3934,7 @@ public struct CreateApplicationOutput {
 
 extension KinesisAnalyticsV2ClientTypes {
 
-    public enum UrlType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum UrlType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case flinkDashboardUrl
         case zeppelinUiUrl
         case sdkUnknown(Swift.String)
@@ -3961,7 +3961,7 @@ extension KinesisAnalyticsV2ClientTypes {
     }
 }
 
-public struct CreateApplicationPresignedUrlInput {
+public struct CreateApplicationPresignedUrlInput: Swift.Sendable {
     /// The name of the application.
     /// This member is required.
     public var applicationName: Swift.String?
@@ -3983,7 +3983,7 @@ public struct CreateApplicationPresignedUrlInput {
     }
 }
 
-public struct CreateApplicationPresignedUrlOutput {
+public struct CreateApplicationPresignedUrlOutput: Swift.Sendable {
     /// The URL of the extension.
     public var authorizedUrl: Swift.String?
 
@@ -3995,7 +3995,7 @@ public struct CreateApplicationPresignedUrlOutput {
     }
 }
 
-public struct CreateApplicationSnapshotInput {
+public struct CreateApplicationSnapshotInput: Swift.Sendable {
     /// The name of an existing application
     /// This member is required.
     public var applicationName: Swift.String?
@@ -4013,12 +4013,12 @@ public struct CreateApplicationSnapshotInput {
     }
 }
 
-public struct CreateApplicationSnapshotOutput {
+public struct CreateApplicationSnapshotOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteApplicationInput {
+public struct DeleteApplicationInput: Swift.Sendable {
     /// The name of the application to delete.
     /// This member is required.
     public var applicationName: Swift.String?
@@ -4036,12 +4036,12 @@ public struct DeleteApplicationInput {
     }
 }
 
-public struct DeleteApplicationOutput {
+public struct DeleteApplicationOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteApplicationCloudWatchLoggingOptionInput {
+public struct DeleteApplicationCloudWatchLoggingOptionInput: Swift.Sendable {
     /// The application name.
     /// This member is required.
     public var applicationName: Swift.String?
@@ -4067,7 +4067,7 @@ public struct DeleteApplicationCloudWatchLoggingOptionInput {
     }
 }
 
-public struct DeleteApplicationCloudWatchLoggingOptionOutput {
+public struct DeleteApplicationCloudWatchLoggingOptionOutput: Swift.Sendable {
     /// The application's Amazon Resource Name (ARN).
     public var applicationARN: Swift.String?
     /// The version ID of the application. Kinesis Data Analytics updates the ApplicationVersionId each time you change the CloudWatch logging options.
@@ -4091,7 +4091,7 @@ public struct DeleteApplicationCloudWatchLoggingOptionOutput {
     }
 }
 
-public struct DeleteApplicationInputProcessingConfigurationInput {
+public struct DeleteApplicationInputProcessingConfigurationInput: Swift.Sendable {
     /// The name of the application.
     /// This member is required.
     public var applicationName: Swift.String?
@@ -4114,7 +4114,7 @@ public struct DeleteApplicationInputProcessingConfigurationInput {
     }
 }
 
-public struct DeleteApplicationInputProcessingConfigurationOutput {
+public struct DeleteApplicationInputProcessingConfigurationOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the application.
     public var applicationARN: Swift.String?
     /// The current application version ID.
@@ -4130,7 +4130,7 @@ public struct DeleteApplicationInputProcessingConfigurationOutput {
     }
 }
 
-public struct DeleteApplicationOutputInput {
+public struct DeleteApplicationOutputInput: Swift.Sendable {
     /// The application name.
     /// This member is required.
     public var applicationName: Swift.String?
@@ -4153,7 +4153,7 @@ public struct DeleteApplicationOutputInput {
     }
 }
 
-public struct DeleteApplicationOutputOutput {
+public struct DeleteApplicationOutputOutput: Swift.Sendable {
     /// The application Amazon Resource Name (ARN).
     public var applicationARN: Swift.String?
     /// The current application version ID.
@@ -4169,7 +4169,7 @@ public struct DeleteApplicationOutputOutput {
     }
 }
 
-public struct DeleteApplicationReferenceDataSourceInput {
+public struct DeleteApplicationReferenceDataSourceInput: Swift.Sendable {
     /// The name of an existing application.
     /// This member is required.
     public var applicationName: Swift.String?
@@ -4192,7 +4192,7 @@ public struct DeleteApplicationReferenceDataSourceInput {
     }
 }
 
-public struct DeleteApplicationReferenceDataSourceOutput {
+public struct DeleteApplicationReferenceDataSourceOutput: Swift.Sendable {
     /// The application Amazon Resource Name (ARN).
     public var applicationARN: Swift.String?
     /// The updated version ID of the application.
@@ -4208,7 +4208,7 @@ public struct DeleteApplicationReferenceDataSourceOutput {
     }
 }
 
-public struct DeleteApplicationSnapshotInput {
+public struct DeleteApplicationSnapshotInput: Swift.Sendable {
     /// The name of an existing application.
     /// This member is required.
     public var applicationName: Swift.String?
@@ -4231,12 +4231,12 @@ public struct DeleteApplicationSnapshotInput {
     }
 }
 
-public struct DeleteApplicationSnapshotOutput {
+public struct DeleteApplicationSnapshotOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct DeleteApplicationVpcConfigurationInput {
+public struct DeleteApplicationVpcConfigurationInput: Swift.Sendable {
     /// The name of an existing application.
     /// This member is required.
     public var applicationName: Swift.String?
@@ -4262,7 +4262,7 @@ public struct DeleteApplicationVpcConfigurationInput {
     }
 }
 
-public struct DeleteApplicationVpcConfigurationOutput {
+public struct DeleteApplicationVpcConfigurationOutput: Swift.Sendable {
     /// The ARN of the Managed Service for Apache Flink application.
     public var applicationARN: Swift.String?
     /// The updated version ID of the application.
@@ -4282,7 +4282,7 @@ public struct DeleteApplicationVpcConfigurationOutput {
     }
 }
 
-public struct DescribeApplicationInput {
+public struct DescribeApplicationInput: Swift.Sendable {
     /// The name of the application.
     /// This member is required.
     public var applicationName: Swift.String?
@@ -4299,7 +4299,7 @@ public struct DescribeApplicationInput {
     }
 }
 
-public struct DescribeApplicationOutput {
+public struct DescribeApplicationOutput: Swift.Sendable {
     /// Provides a description of the application, such as the application's Amazon Resource Name (ARN), status, and latest version.
     /// This member is required.
     public var applicationDetail: KinesisAnalyticsV2ClientTypes.ApplicationDetail?
@@ -4313,7 +4313,7 @@ public struct DescribeApplicationOutput {
 }
 
 /// Request for information about a specific operation performed on a Managed Service for Apache Flink application
-public struct DescribeApplicationOperationInput {
+public struct DescribeApplicationOperationInput: Swift.Sendable {
     /// The name of the application
     /// This member is required.
     public var applicationName: Swift.String?
@@ -4332,7 +4332,7 @@ public struct DescribeApplicationOperationInput {
 }
 
 /// Provides details of the operation corresponding to the operation-ID on a Managed Service for Apache Flink application
-public struct DescribeApplicationOperationOutput {
+public struct DescribeApplicationOperationOutput: Swift.Sendable {
     /// Provides a description of the operation, such as the operation-type and status
     public var applicationOperationInfoDetails: KinesisAnalyticsV2ClientTypes.ApplicationOperationInfoDetails?
 
@@ -4344,7 +4344,7 @@ public struct DescribeApplicationOperationOutput {
     }
 }
 
-public struct DescribeApplicationSnapshotInput {
+public struct DescribeApplicationSnapshotInput: Swift.Sendable {
     /// The name of an existing application.
     /// This member is required.
     public var applicationName: Swift.String?
@@ -4364,7 +4364,7 @@ public struct DescribeApplicationSnapshotInput {
 
 extension KinesisAnalyticsV2ClientTypes {
 
-    public enum SnapshotStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+    public enum SnapshotStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case creating
         case deleting
         case failed
@@ -4398,8 +4398,9 @@ extension KinesisAnalyticsV2ClientTypes {
 }
 
 extension KinesisAnalyticsV2ClientTypes {
+
     /// Provides details about a snapshot of application state.
-    public struct SnapshotDetails {
+    public struct SnapshotDetails: Swift.Sendable {
         /// The current application version ID when the snapshot was created.
         /// This member is required.
         public var applicationVersionId: Swift.Int?
@@ -4429,10 +4430,9 @@ extension KinesisAnalyticsV2ClientTypes {
             self.snapshotStatus = snapshotStatus
         }
     }
-
 }
 
-public struct DescribeApplicationSnapshotOutput {
+public struct DescribeApplicationSnapshotOutput: Swift.Sendable {
     /// An object containing information about the application snapshot.
     /// This member is required.
     public var snapshotDetails: KinesisAnalyticsV2ClientTypes.SnapshotDetails?
@@ -4445,7 +4445,7 @@ public struct DescribeApplicationSnapshotOutput {
     }
 }
 
-public struct DescribeApplicationVersionInput {
+public struct DescribeApplicationVersionInput: Swift.Sendable {
     /// The name of the application for which you want to get the version description.
     /// This member is required.
     public var applicationName: Swift.String?
@@ -4463,7 +4463,7 @@ public struct DescribeApplicationVersionInput {
     }
 }
 
-public struct DescribeApplicationVersionOutput {
+public struct DescribeApplicationVersionOutput: Swift.Sendable {
     /// Describes the application, including the application Amazon Resource Name (ARN), status, latest version, and input and output configurations.
     public var applicationVersionDetail: KinesisAnalyticsV2ClientTypes.ApplicationDetail?
 
@@ -4556,8 +4556,9 @@ public struct UnableToDetectSchemaException: ClientRuntime.ModeledError, AWSClie
 }
 
 extension KinesisAnalyticsV2ClientTypes {
+
     /// For a SQL-based Kinesis Data Analytics application, provides a description of an Amazon S3 data source, including the Amazon Resource Name (ARN) of the S3 bucket and the name of the Amazon S3 object that contains the data.
-    public struct S3Configuration {
+    public struct S3Configuration: Swift.Sendable {
         /// The ARN of the S3 bucket that contains the data.
         /// This member is required.
         public var bucketARN: Swift.String?
@@ -4574,10 +4575,9 @@ extension KinesisAnalyticsV2ClientTypes {
             self.fileKey = fileKey
         }
     }
-
 }
 
-public struct DiscoverInputSchemaInput {
+public struct DiscoverInputSchemaInput: Swift.Sendable {
     /// The [InputProcessingConfiguration] to use to preprocess the records before discovering the schema of the records.
     public var inputProcessingConfiguration: KinesisAnalyticsV2ClientTypes.InputProcessingConfiguration?
     /// The point at which you want Kinesis Data Analytics to start reading records from the specified streaming source for discovery purposes.
@@ -4606,7 +4606,7 @@ public struct DiscoverInputSchemaInput {
     }
 }
 
-public struct DiscoverInputSchemaOutput {
+public struct DiscoverInputSchemaOutput: Swift.Sendable {
     /// The schema inferred from the streaming source. It identifies the format of the data in the streaming source and how each data element maps to corresponding columns in the in-application stream that you can create.
     public var inputSchema: KinesisAnalyticsV2ClientTypes.SourceSchema?
     /// An array of elements, where each element corresponds to a row in a stream record (a stream record can have more than one row).
@@ -4631,7 +4631,7 @@ public struct DiscoverInputSchemaOutput {
 }
 
 /// Request to list operations performed on an application
-public struct ListApplicationOperationsInput {
+public struct ListApplicationOperationsInput: Swift.Sendable {
     /// The name of the application
     /// This member is required.
     public var applicationName: Swift.String?
@@ -4661,7 +4661,7 @@ public struct ListApplicationOperationsInput {
 }
 
 /// Response with the list of operations for an application
-public struct ListApplicationOperationsOutput {
+public struct ListApplicationOperationsOutput: Swift.Sendable {
     /// List of ApplicationOperationInfo for an application
     public var applicationOperationInfoList: [KinesisAnalyticsV2ClientTypes.ApplicationOperationInfo]?
     /// If a previous command returned a pagination token, pass it into this value to retrieve the next set of results
@@ -4677,7 +4677,7 @@ public struct ListApplicationOperationsOutput {
     }
 }
 
-public struct ListApplicationsInput {
+public struct ListApplicationsInput: Swift.Sendable {
     /// The maximum number of applications to list.
     public var limit: Swift.Int?
     /// If a previous command returned a pagination token, pass it into this value to retrieve the next set of results. For more information about pagination, see [Using the Amazon Command Line Interface's Pagination Options](https://docs.aws.amazon.com/cli/latest/userguide/pagination.html).
@@ -4693,7 +4693,7 @@ public struct ListApplicationsInput {
     }
 }
 
-public struct ListApplicationsOutput {
+public struct ListApplicationsOutput: Swift.Sendable {
     /// A list of ApplicationSummary objects.
     /// This member is required.
     public var applicationSummaries: [KinesisAnalyticsV2ClientTypes.ApplicationSummary]?
@@ -4710,7 +4710,7 @@ public struct ListApplicationsOutput {
     }
 }
 
-public struct ListApplicationSnapshotsInput {
+public struct ListApplicationSnapshotsInput: Swift.Sendable {
     /// The name of an existing application.
     /// This member is required.
     public var applicationName: Swift.String?
@@ -4731,7 +4731,7 @@ public struct ListApplicationSnapshotsInput {
     }
 }
 
-public struct ListApplicationSnapshotsOutput {
+public struct ListApplicationSnapshotsOutput: Swift.Sendable {
     /// The token for the next set of results, or null if there are no additional results.
     public var nextToken: Swift.String?
     /// A collection of objects containing information about the application snapshots.
@@ -4747,7 +4747,7 @@ public struct ListApplicationSnapshotsOutput {
     }
 }
 
-public struct ListApplicationVersionsInput {
+public struct ListApplicationVersionsInput: Swift.Sendable {
     /// The name of the application for which you want to list all versions.
     /// This member is required.
     public var applicationName: Swift.String?
@@ -4768,7 +4768,7 @@ public struct ListApplicationVersionsInput {
     }
 }
 
-public struct ListApplicationVersionsOutput {
+public struct ListApplicationVersionsOutput: Swift.Sendable {
     /// A list of the application versions and the associated configuration summaries. The list includes application versions that were rolled back. To get the complete description of a specific application version, invoke the [DescribeApplicationVersion] operation.
     public var applicationVersionSummaries: [KinesisAnalyticsV2ClientTypes.ApplicationVersionSummary]?
     /// The pagination token for the next set of results, or null if there are no additional results. To retrieve the next set of items, pass this token into a subsequent invocation of this operation. For more information about pagination, see [Using the Amazon Command Line Interface's Pagination Options](https://docs.aws.amazon.com/cli/latest/userguide/pagination.html).
@@ -4784,7 +4784,7 @@ public struct ListApplicationVersionsOutput {
     }
 }
 
-public struct ListTagsForResourceInput {
+public struct ListTagsForResourceInput: Swift.Sendable {
     /// The ARN of the application for which to retrieve tags.
     /// This member is required.
     public var resourceARN: Swift.String?
@@ -4797,7 +4797,7 @@ public struct ListTagsForResourceInput {
     }
 }
 
-public struct ListTagsForResourceOutput {
+public struct ListTagsForResourceOutput: Swift.Sendable {
     /// The key-value tags assigned to the application.
     public var tags: [KinesisAnalyticsV2ClientTypes.Tag]?
 
@@ -4809,7 +4809,7 @@ public struct ListTagsForResourceOutput {
     }
 }
 
-public struct RollbackApplicationInput {
+public struct RollbackApplicationInput: Swift.Sendable {
     /// The name of the application.
     /// This member is required.
     public var applicationName: Swift.String?
@@ -4827,7 +4827,7 @@ public struct RollbackApplicationInput {
     }
 }
 
-public struct RollbackApplicationOutput {
+public struct RollbackApplicationOutput: Swift.Sendable {
     /// Describes the application, including the application Amazon Resource Name (ARN), status, latest version, and input and output configurations.
     /// This member is required.
     public var applicationDetail: KinesisAnalyticsV2ClientTypes.ApplicationDetail?
@@ -4845,8 +4845,9 @@ public struct RollbackApplicationOutput {
 }
 
 extension KinesisAnalyticsV2ClientTypes {
+
     /// Describes the starting parameters for a SQL-based Kinesis Data Analytics application.
-    public struct SqlRunConfiguration {
+    public struct SqlRunConfiguration: Swift.Sendable {
         /// The input source ID. You can get this ID by calling the [DescribeApplication] operation.
         /// This member is required.
         public var inputId: Swift.String?
@@ -4863,12 +4864,12 @@ extension KinesisAnalyticsV2ClientTypes {
             self.inputStartingPositionConfiguration = inputStartingPositionConfiguration
         }
     }
-
 }
 
 extension KinesisAnalyticsV2ClientTypes {
+
     /// Describes the starting parameters for an Managed Service for Apache Flink application.
-    public struct RunConfiguration {
+    public struct RunConfiguration: Swift.Sendable {
         /// Describes the restore behavior of a restarting application.
         public var applicationRestoreConfiguration: KinesisAnalyticsV2ClientTypes.ApplicationRestoreConfiguration?
         /// Describes the starting parameters for a Managed Service for Apache Flink application.
@@ -4887,10 +4888,9 @@ extension KinesisAnalyticsV2ClientTypes {
             self.sqlRunConfigurations = sqlRunConfigurations
         }
     }
-
 }
 
-public struct StartApplicationInput {
+public struct StartApplicationInput: Swift.Sendable {
     /// The name of the application.
     /// This member is required.
     public var applicationName: Swift.String?
@@ -4907,7 +4907,7 @@ public struct StartApplicationInput {
     }
 }
 
-public struct StartApplicationOutput {
+public struct StartApplicationOutput: Swift.Sendable {
     /// Operation ID for tracking StartApplication request
     public var operationId: Swift.String?
 
@@ -4919,7 +4919,7 @@ public struct StartApplicationOutput {
     }
 }
 
-public struct StopApplicationInput {
+public struct StopApplicationInput: Swift.Sendable {
     /// The name of the running application to stop.
     /// This member is required.
     public var applicationName: Swift.String?
@@ -4936,7 +4936,7 @@ public struct StopApplicationInput {
     }
 }
 
-public struct StopApplicationOutput {
+public struct StopApplicationOutput: Swift.Sendable {
     /// Operation ID for tracking StopApplication request
     public var operationId: Swift.String?
 
@@ -4948,7 +4948,7 @@ public struct StopApplicationOutput {
     }
 }
 
-public struct TagResourceInput {
+public struct TagResourceInput: Swift.Sendable {
     /// The ARN of the application to assign the tags.
     /// This member is required.
     public var resourceARN: Swift.String?
@@ -4966,12 +4966,12 @@ public struct TagResourceInput {
     }
 }
 
-public struct TagResourceOutput {
+public struct TagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
-public struct UntagResourceInput {
+public struct UntagResourceInput: Swift.Sendable {
     /// The ARN of the Managed Service for Apache Flink application from which to remove the tags.
     /// This member is required.
     public var resourceARN: Swift.String?
@@ -4989,14 +4989,15 @@ public struct UntagResourceInput {
     }
 }
 
-public struct UntagResourceOutput {
+public struct UntagResourceOutput: Swift.Sendable {
 
     public init() { }
 }
 
 extension KinesisAnalyticsV2ClientTypes {
+
     /// Describes the updates to the starting parameters for a Managed Service for Apache Flink application.
-    public struct RunConfigurationUpdate {
+    public struct RunConfigurationUpdate: Swift.Sendable {
         /// Describes updates to the restore behavior of a restarting application.
         public var applicationRestoreConfiguration: KinesisAnalyticsV2ClientTypes.ApplicationRestoreConfiguration?
         /// Describes the starting parameters for a Managed Service for Apache Flink application.
@@ -5011,10 +5012,9 @@ extension KinesisAnalyticsV2ClientTypes {
             self.flinkRunConfiguration = flinkRunConfiguration
         }
     }
-
 }
 
-public struct UpdateApplicationInput {
+public struct UpdateApplicationInput: Swift.Sendable {
     /// Describes application configuration updates.
     public var applicationConfigurationUpdate: KinesisAnalyticsV2ClientTypes.ApplicationConfigurationUpdate?
     /// The name of the application to update.
@@ -5059,7 +5059,7 @@ public struct UpdateApplicationInput {
     }
 }
 
-public struct UpdateApplicationOutput {
+public struct UpdateApplicationOutput: Swift.Sendable {
     /// Describes application updates.
     /// This member is required.
     public var applicationDetail: KinesisAnalyticsV2ClientTypes.ApplicationDetail?
@@ -5076,7 +5076,7 @@ public struct UpdateApplicationOutput {
     }
 }
 
-public struct UpdateApplicationMaintenanceConfigurationInput {
+public struct UpdateApplicationMaintenanceConfigurationInput: Swift.Sendable {
     /// Describes the application maintenance configuration update.
     /// This member is required.
     public var applicationMaintenanceConfigurationUpdate: KinesisAnalyticsV2ClientTypes.ApplicationMaintenanceConfigurationUpdate?
@@ -5094,7 +5094,7 @@ public struct UpdateApplicationMaintenanceConfigurationInput {
     }
 }
 
-public struct UpdateApplicationMaintenanceConfigurationOutput {
+public struct UpdateApplicationMaintenanceConfigurationOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the application.
     public var applicationARN: Swift.String?
     /// The application maintenance configuration description after the update.
